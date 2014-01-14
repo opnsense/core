@@ -10104,7 +10104,7 @@ msgstr "「申し訳ありませんが、我々は%s.用一致するサブネッ
 #: usr/local/www/firewall_virtual_ip_edit.php:182
 #: usr/local/www/firewall_virtual_ip_edit.php:182
 msgid "For this type of vip a carp parent is not allowed."
-msgstr "VIPこの種のコイ親が許可されていません。"
+msgstr "VIPこのタイプのCARPの親が許可されていません。"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:188
 #: usr/local/www/firewall_virtual_ip_edit.php:191
@@ -10113,7 +10113,7 @@ msgstr "VIPこの種のコイ親が許可されていません。"
 #: usr/local/www/firewall_virtual_ip_edit.php:203
 #: usr/local/www/firewall_virtual_ip_edit.php:203
 msgid "For this type of VIP, a CARP parent is not allowed."
-msgstr "VIPのこの種のコイの親が許可されていません。"
+msgstr "VIPのこのタイプの、CARP親が許可されていません。"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:202
 msgid "This entry cannot be modified because it is still referenced by CARP"
