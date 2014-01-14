@@ -9587,7 +9587,7 @@ msgstr "新しいL7ルール·グループを作成する"
 #: usr/local/www/firewall_shaper_layer7.php:445
 #: usr/local/www/firewall_shaper_layer7.php:445
 msgid "Rule(s)"
-msgstr "規則（単数または複数）"
+msgstr "本則"
 
 #: usr/local/www/firewall_shaper_layer7.php:457
 #: usr/local/www/firewall_shaper_layer7.php:457
@@ -9597,12 +9597,12 @@ msgstr "1つ以上のルールを追加"
 #: usr/local/www/firewall_shaper_layer7.php:473
 #: usr/local/www/firewall_shaper_layer7.php:473
 msgid "Structure"
-msgstr "構造"
+msgstr "ストラクチャー"
 
 #: usr/local/www/firewall_shaper_layer7.php:480
 #: usr/local/www/firewall_shaper_layer7.php:480
 msgid "Behaviour"
-msgstr "行動"
+msgstr "ビヘイビア"
 
 #: usr/local/www/firewall_shaper_layer7.php:558
 #: usr/local/www/interfaces_groups_edit.php:315
