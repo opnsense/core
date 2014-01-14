@@ -9004,7 +9004,7 @@ msgstr "現在インストールされないパッケージがありません。
 
 #: usr/local/www/easyrule.php:34 usr/local/www/easyrule.php:34
 msgid "Status : EasyRule"
-msgstr "ステータス： EasyRule"
+msgstr "ステータス： 簡単なルール"
 
 #: usr/local/www/easyrule.php:69 usr/local/www/easyrule.php:69
 msgid "Message"
@@ -9323,9 +9323,8 @@ msgstr "別名"
 #: usr/local/www/firewall_aliases_edit.php:585
 #: usr/local/www/firewall_aliases_import.php:137
 msgid ""
-"The name of the alias may only consist of the characters "a-z, A-Z and "
-"0-9"."
-msgstr "AZ 、 AZと "0-9 ""エイリアスの名前が文字のみで構成することができる」 。"
+"The name of the alias may only consist of the characters a-z, A-Z and 0-9."
+msgstr "エイリアスの名前は、ASCII文字のみのa-z、A-Zと0-9で構成することができる。"
 
 #: usr/local/www/firewall_aliases_import.php:142
 #: usr/local/www/interfaces_lagg_edit.php:211
@@ -11214,7 +11213,7 @@ msgstr "ポータル認証"
 #: usr/local/www/diag_logs_resolver.php:83
 #: usr/local/www/diag_logs_filter_summary.php:189
 msgid "IPsec"
-msgstr "IPsecの"
+msgstr "IPsec"
 
 #: usr/local/www/diag_logs.php:82 usr/local/www/diag_logs_auth.php:70
 #: usr/local/www/diag_logs_dhcp.php:75 usr/local/www/diag_logs_filter.php:106
@@ -11411,7 +11410,7 @@ msgstr "VPN"
 #: usr/local/www/diag_logs_filter_summary.php:193 etc/inc/system.inc:1694
 #: etc/inc/service-utils.inc:349
 msgid "OpenVPN"
-msgstr "OpenVPNの"
+msgstr "OpenVPN"
 
 #: usr/local/www/diag_logs.php:86 usr/local/www/diag_logs_auth.php:74
 #: usr/local/www/diag_logs_dhcp.php:79 usr/local/www/diag_logs_filter.php:110
@@ -12544,12 +12543,12 @@ msgstr "PPTP生"
 #: usr/local/www/diag_logs_vpn.php:150 usr/local/www/diag_logs_vpn.php:149
 #: usr/local/www/diag_logs_vpn.php:149
 msgid "PPPoE Logins"
-msgstr "PPPoEのログイン"
+msgstr "PPPoEログイン"
 
 #: usr/local/www/diag_logs_vpn.php:153 usr/local/www/diag_logs_vpn.php:152
 #: usr/local/www/diag_logs_vpn.php:152
 msgid "PPPoE Raw"
-msgstr "PPPoEの生"
+msgstr "PPPoE生"
 
 #: usr/local/www/diag_logs_vpn.php:156 usr/local/www/diag_logs_vpn.php:155
 #: usr/local/www/diag_logs_vpn.php:155
@@ -12616,7 +12615,7 @@ msgstr "ユーザー"
 #: usr/local/www/fbegin.inc:231 usr/local/www/fbegin.inc:231
 #: usr/local/www/diag_nanobsd.php:49
 msgid "NanoBSD"
-msgstr "NanoBSDの"
+msgstr "NanoBSD"
 
 #: usr/local/www/diag_nanobsd.php:70 usr/local/www/diag_nanobsd.php:69
 #: usr/local/www/diag_nanobsd.php:69
@@ -12737,7 +12736,7 @@ msgstr "情報をブートアップ"
 #: usr/local/www/diag_nanobsd.php:159 usr/local/www/diag_nanobsd.php:150
 #: usr/local/www/diag_nanobsd.php:150
 msgid "NanoBSD Image size"
-msgstr "NanoBSDの画像サイズ"
+msgstr "NanoBSD画像サイズ"
 
 #: usr/local/www/diag_nanobsd.php:145 usr/local/www/diag_nanobsd.php:144
 #: usr/local/www/diag_nanobsd.php:165 usr/local/www/diag_nanobsd.php:156
@@ -12793,7 +12792,7 @@ msgstr "定期的なデータバックアップ"
 #: usr/local/www/diag_nanobsd.php:185 usr/local/www/diag_nanobsd.php:184
 #: usr/local/www/diag_nanobsd.php:243
 msgid "RRD Backup"
-msgstr "RRDのバックアップ"
+msgstr "RRDバックアップ"
 
 #: usr/local/www/diag_nanobsd.php:188 usr/local/www/diag_nanobsd.php:205
 #: usr/local/www/diag_nanobsd.php:187 usr/local/www/diag_nanobsd.php:204
