@@ -22,12 +22,12 @@ msgstr ""
 #: etc/inc/PEAR.inc:161
 #, php-format
 msgid "PEAR constructor called, class=%s\n"
-msgstr "と呼ばれるPEARのコンストラクター、クラス="
+msgstr "と呼ばれるPEARのコンストラクタ, class=%s\n"
 
 #: etc/inc/PEAR.inc:198
 #, php-format
 msgid "PEAR destructor called, class=%s\n"
-msgstr "と呼ばれるPEARのデストラクタ、クラス="
+msgstr "と呼ばれるPEARのデストラクタ, class=%s\n"
 
 #: etc/inc/PEAR.inc:337 etc/inc/PEAR.inc:595 etc/inc/PEAR.inc:632
 msgid "invalid error callback"
@@ -55,12 +55,14 @@ msgstr "PEAR_ERROR_EXCEPTIONは例外の廃止され、使用クラスのPEAR_Er
 msgid ""
 "[%s: message="%s" code=%d mode=callback callback=%s prefix="%s" info="%s"
 ""]"
-msgstr ""((%s: message="%s" code=%d mode=callback callback=%s prefix="%s" info="%s""))"
+msgstr""
+"[%s: message="%s" code=%d mode=callback callback=%s prefix="%s" info="%s"
+""]"
 
 #: etc/inc/PEAR.inc:1041
 #, php-format
 msgid "[%s: message="%s" code=%d mode=%s level=%s prefix="%s" info="%s"]"
-msgstr "((%s: message="%s" code=%d mode=%s level=%s prefix="%s" info="%s"))"
+msgstr "[%s: message="%s" code=%d mode=%s level=%s prefix="%s" info="%s"]"
 
 #: etc/inc/array_intersect_key.inc:37 etc/inc/array_intersect_key.inc:37
 msgid "Wrong parameter count for array_intersect_key()"
@@ -68,7 +70,7 @@ msgstr "間違ったパラメータ数 array_intersect_key.()"
 
 #: etc/inc/array_intersect_key.inc:45 etc/inc/array_intersect_key.inc:45
 msgid "array_intersect_key() Argument #"
-msgstr "array_intersect_key.() アーギュメント #"
+msgstr "array_intersect_key.()アーギュメント #"
 
 #: etc/inc/array_intersect_key.inc:46 etc/inc/array_intersect_key.inc:46
 msgid " is not an array"
@@ -119,49 +121,49 @@ msgstr "LDAP：ホスト%sを参照した結果、CAを検索できませんで�
 msgid ""
 "ERROR! ldap_get_user_ous() backed selected with no LDAP authentication "
 "server defined."
-msgstr "エラー! ldap_get_user_ous.() が定義されていないLDAP認証サーバと選択したバックアップ。"
+msgstr "エラー! ldap_get_user_ous.()が定義されていないLDAP認証サーバと選択したバックアップ。"
 
 #: etc/inc/auth.inc:807 etc/inc/auth.inc:816 etc/inc/auth.inc:818
 #: etc/inc/auth.inc:818
 #, php-format
 msgid "ERROR! ldap_get_user_ous() could not bind anonymously to server %s."
-msgstr "エラー! ldap_get_user_ous.() サーバ%sに匿名でバインドできませんでした。"
+msgstr "エラー! ldap_get_user_ous.()サーバ%sに匿名でバインドできませんでした。"
 
 #: etc/inc/auth.inc:812 etc/inc/auth.inc:821 etc/inc/auth.inc:823
 #: etc/inc/auth.inc:823
 #, php-format
 msgid "ERROR! ldap_get_user_ous() could not bind to server %s."
-msgstr "エラー! ldap_get_user_ous.() サーバ%sをバインドできませんでした。"
+msgstr "エラー! ldap_get_user_ous.()サーバ%sをバインドできませんでした。"
 
 #: etc/inc/auth.inc:908 etc/inc/auth.inc:917 etc/inc/auth.inc:919
 #: etc/inc/auth.inc:919
 #, php-format
 msgid "ERROR! ldap_get_groups() Could not connect to server %s."
-msgstr "エラー! ldap_get_groups.() サーバー%sに接続できませんでした。"
+msgstr "エラー! ldap_get_groups.()サーバー%sに接続できませんでした。"
 
 #: etc/inc/auth.inc:918 etc/inc/auth.inc:927 etc/inc/auth.inc:930
 #: etc/inc/auth.inc:930
 #, php-format
 msgid "ERROR! ldap_get_groups() could not bind anonymously to server %s."
-msgstr "エラー! ldap_get_groups.() サーバ%sに匿名でバインドできませんでした。"
+msgstr "エラー! ldap_get_groups.()サーバ%sに匿名でバインドできませんでした。"
 
 #: etc/inc/auth.inc:923 etc/inc/auth.inc:932 etc/inc/auth.inc:935
 #: etc/inc/auth.inc:935
 #, php-format
 msgid "ERROR! ldap_get_groups() could not bind to server %s."
-msgstr "エラー! ldap_get_groups.() サーバ%sをバインドできませんでした。"
+msgstr "エラー! ldap_get_groups.()サーバ%sをバインドできませんでした。"
 
 #: etc/inc/auth.inc:1020 etc/inc/auth.inc:1029 etc/inc/auth.inc:1033
 #: etc/inc/auth.inc:1036 etc/inc/auth.inc:1036
 msgid ""
 "ERROR! ldap_backed() called with no LDAP authentication server defined. "
 "Defaulting to local user database. Visit System -> User Manager."
-msgstr ""エラー\! ldap_backed.() はLDAP認証サーバーの定義なく呼び出されました。"ローカルユーザデータベースにデフォルト設定。"へ システム -> ユーザーマネージャ"
+msgstr ""エラー\! ldap_backed.()はLDAP認証サーバーの定義なく呼び出されました。"ローカルユーザデータベースにデフォルト設定。"へ システム -> ユーザーマネージャ"
 
 #: etc/inc/auth.inc:1023 etc/inc/auth.inc:1032 etc/inc/auth.inc:1036
 #: etc/inc/auth.inc:1039 etc/inc/auth.inc:1039
 msgid "ERROR! ldap_backed() called with no LDAP authentication server defined."
-msgstr "エラー! ldap_backed.() はLDAP認証サーバーの定義なく呼び出されました。"
+msgstr "エラー! ldap_backed.()はLDAP認証サーバーの定義なく呼び出されました。"
 
 #: etc/inc/auth.inc:1054 etc/inc/auth.inc:1063 etc/inc/auth.inc:1067
 #: etc/inc/auth.inc:1071 etc/inc/auth.inc:1071
@@ -650,7 +652,7 @@ msgstr "IPsecのルールを作成中..."
 msgid ""
 "Please use filter_tdr_install_cron() function tdr_install_cron will be "
 "deprecated!"
-msgstr ""filter_tdr_install_cron.() を使用してください機能tdr_install_cronはは廃止されます！"
+msgstr ""filter_tdr_install_cron.()を使用してください機能tdr_install_cronはは廃止されます！"
 
 #: etc/inc/filter.inc:2747 etc/inc/filter.inc:2960 etc/inc/filter.inc:2986
 #: etc/inc/filter.inc:3072 etc/inc/filter.inc:3096 etc/inc/filter.inc:3101
@@ -682,7 +684,7 @@ msgstr "%sのパッケージフィルタルール解析中にエラーが発生�
 #: etc/inc/interfaces.inc:51 etc/inc/interfaces.inc:53
 #: etc/inc/interfaces.inc:51
 msgid "interfaces_bring_up() was called but no variable defined."
-msgstr "interfaces_bring_up.() が呼び出さしかし、誰変数が定義されていなかった。"
+msgstr "interfaces_bring_up.()が呼び出さしかし、誰変数が定義されていなかった。"
 
 #: etc/inc/interfaces.inc:213 etc/inc/interfaces.inc:215
 #: etc/inc/interfaces.inc:214 etc/inc/interfaces.inc:212
@@ -806,7 +808,7 @@ msgstr "%s を設定中"
 #: etc/inc/interfaces.inc:1412 etc/inc/interfaces.inc:1412
 #, php-format
 msgid "Can't find PPP config for %s in interface_ppps_configure()."
-msgstr "interface_ppps_configure.() を処理%sのPPP設定を見つけることができません。"
+msgstr "interface_ppps_configure.()を処理%sのPPP設定を見つけることができません。"
 
 #: etc/inc/interfaces.inc:1362 etc/inc/interfaces.inc:1402
 #: etc/inc/interfaces.inc:1401 etc/inc/interfaces.inc:1464
@@ -982,16 +984,15 @@ msgstr ""無効なMACアドレスのインタフェースは%1$s上(ff:ff:ff:ff:
 
 #: etc/inc/interfaces.inc:2910
 msgid "Could not bring wanif up in terface_carpdev_dhcp_configure()"
-msgstr "terface_carpdev_dhcp_configure.() を処理wanifを持ち出すことができませんでした"
+msgstr "terface_carpdev_dhcp_configure.()を処理wanifを持ち出すことができませんでした"
 
 #: etc/inc/interfaces.inc:3016
 #, php-format
 msgid ""
 "Error: cannot open dhclient_%s.conf in interfaces_wan_dhcp_configure() for "
 "writing.%s"
-msgstr ""エラー：writing.%sため interfaces_wan_dhcp_configure.() にdhclient_%s.conf"を開くことはできません"
+msgstr "エラー：writing.%sためinterfaces_wan_dhcp_configure.()にdhclient_%s.conf"を開くことはできません"
 
-msgstr ""エラー：writing.%sため interfaces_wan_dhcp_configure.() にdhclient_%s.conf"を開くことはできません"
 
 #: etc/inc/interfaces.inc:3029 etc/inc/interfaces.inc:3513
 #: etc/inc/interfaces.inc:3373 etc/inc/interfaces.inc:3466
@@ -999,7 +1000,7 @@ msgstr ""エラー：writing.%sため interfaces_wan_dhcp_configure.() にdhclie
 #: etc/inc/interfaces.inc:3538
 #, php-format
 msgid "Invalid interface "%s" in interface_dhcp_configure()"
-msgstr "interface_dhcp_configure.() 内の無効なインターフェイス"%s""
+msgstr "interface_dhcp_configure.()内の無効なインターフェイス"%s""
 
 #: etc/inc/interfaces.inc:3064 etc/inc/interfaces.inc:3548
 #: etc/inc/interfaces.inc:3408 etc/inc/interfaces.inc:3501
@@ -1007,7 +1008,7 @@ msgstr "interface_dhcp_configure.() 内の無効なインターフェイス"%s""
 #: etc/inc/interfaces.inc:3573
 #, php-format
 msgid "Could not bring up %s interface in interface_dhcp_configure()"
-msgstr "interface_dhcp_configure.() で%sはインターフェイスを起動できませんでした"
+msgstr "interface_dhcp_configure.()で%sはインターフェイスを起動できませんでした"
 
 #: etc/inc/notices.inc:76 etc/inc/notices.inc:76
 #, php-format
@@ -1136,7 +1137,7 @@ msgstr "XMLRPC要求は、エラーは%1$sで失敗しました：%2$s"
 #: etc/inc/pfsense-utils.inc:795 etc/inc/pfsense-utils.inc:810
 #: etc/inc/pfsense-utils.inc:795
 msgid "reload_interfaces_sync() is starting."
-msgstr "reload_interfaces_sync.() 開始しています。"
+msgstr "reload_interfaces_sync.()開始しています。"
 
 #: etc/inc/pfsense-utils.inc:803 etc/inc/pfsense-utils.inc:818
 #: etc/inc/pfsense-utils.inc:803
@@ -1430,19 +1431,19 @@ msgstr "カスタムコマンド..."
 #: etc/inc/pkg-utils.inc:810 etc/inc/pkg-utils.inc:845
 #: etc/inc/pkg-utils.inc:845
 msgid "Executing custom_php_global_functions()..."
-msgstr "custom_php_global_functions.() を実行..."
+msgstr "custom_php_global_functions.()を実行..."
 
 #: etc/inc/pkg-utils.inc:790 etc/inc/pkg-utils.inc:816
 #: etc/inc/pkg-utils.inc:817 etc/inc/pkg-utils.inc:852
 #: etc/inc/pkg-utils.inc:852
 msgid "Executing custom_php_install_command()..."
-msgstr "custom_php_global_functions.() を実行..."
+msgstr "custom_php_global_functions.()を実行..."
 
 #: etc/inc/pkg-utils.inc:809 etc/inc/pkg-utils.inc:845
 #: etc/inc/pkg-utils.inc:846 etc/inc/pkg-utils.inc:881
 #: etc/inc/pkg-utils.inc:881
 msgid "Executing custom_php_resync_config_command()..."
-msgstr "custom_php_global_functions.() を実行..."
+msgstr "custom_php_global_functions.()を実行..."
 
 #: etc/inc/pkg-utils.inc:818 etc/inc/pkg-utils.inc:972
 #: etc/inc/pkg-utils.inc:854 etc/inc/pkg-utils.inc:1009
@@ -3253,7 +3254,7 @@ msgstr "警告：サブシステムをマークできませんでした：汚い
 
 #: etc/inc/util.inc:119 etc/inc/util.inc:121 etc/inc/util.inc:121
 msgid "WARNING: You must give a name as parameter to lock() function."
-msgstr "警告：あなたが機能を lock.() パラメータとして名前を付ける必要があります。"
+msgstr "警告：あなたが機能をlock.()パラメータとして名前を付ける必要があります。"
 
 #: etc/inc/util.inc:213 etc/inc/util.inc:208 etc/inc/util.inc:238
 #: etc/inc/util.inc:240 etc/inc/util.inc:240
