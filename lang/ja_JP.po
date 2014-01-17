@@ -22,33 +22,33 @@ msgstr ""
 #: etc/inc/PEAR.inc:161
 #, php-format
 msgid "PEAR constructor called, class=%s\n"
-msgstr "と呼ばれるPEARのコンストラクタ, class=%s\n"
+msgstr "PEAR コンストラクタが呼ばれました: class=%s\n"
 
 #: etc/inc/PEAR.inc:198
 #, php-format
 msgid "PEAR destructor called, class=%s\n"
-msgstr "と呼ばれるPEARのデストラクタ, class=%s\n"
+msgstr "PEAR デストラクタが呼ばれました: class=%s\n"
 
 #: etc/inc/PEAR.inc:337 etc/inc/PEAR.inc:595 etc/inc/PEAR.inc:632
 msgid "invalid error callback"
-msgstr "エラー·コールバック無効"
+msgstr "無効なエラーコールバックです"
 
 #: etc/inc/PEAR.inc:342 etc/inc/PEAR.inc:600 etc/inc/PEAR.inc:637
 msgid "invalid error mode"
-msgstr "エラーモード無効"
+msgstr "無効なエラーモードです"
 
 #: etc/inc/PEAR.inc:445 etc/inc/PEAR.inc:451
 msgid "The expected error you submitted does not exist"
-msgstr "あなたが提出した予想されるエラーが存在していません"
+msgstr "提出された予想されるエラーは存在しません"
 
 #: etc/inc/PEAR.inc:455
 msgid "The expected error you submitted is empty"
-msgstr "あなたが提出した予想されるエラーは空です"
+msgstr "提出された予想されるエラーは空です"
 
 #: etc/inc/PEAR.inc:866
 msgid ""
 "PEAR_ERROR_EXCEPTION is obsolete, use class PEAR_ErrorStack for exceptions"
-msgstr "PEAR_ERROR_EXCEPTIONは例外の廃止され、使用クラスのPEAR_ErrorStackです"
+msgstr "PEAR_ERROR_EXCEPTION は廃止されました。PEAR_ErrorStack クラスを使用してください"
 
 #: etc/inc/PEAR.inc:1023
 #, php-format
@@ -66,11 +66,11 @@ msgstr "[%s: message="%s" code=%d mode=%s level=%s prefix="%s" info="%s"]"
 
 #: etc/inc/array_intersect_key.inc:37 etc/inc/array_intersect_key.inc:37
 msgid "Wrong parameter count for array_intersect_key()"
-msgstr "間違ったパラメータ数 array_intersect_key.()"
+msgstr "array_intersect_key() の不正なパラメータ数"
 
 #: etc/inc/array_intersect_key.inc:45 etc/inc/array_intersect_key.inc:45
 msgid "array_intersect_key() Argument #"
-msgstr "array_intersect_key.()アーギュメント #"
+msgstr "array_intersect_key() 引数 #"
 
 #: etc/inc/array_intersect_key.inc:46 etc/inc/array_intersect_key.inc:46
 msgid " is not an array"
@@ -81,15 +81,18 @@ msgid ""
 "Potential DNS Rebind attack detected, see http://en.wikipedia.org/wiki/"
 "DNS_rebinding<br/>Try accessing the router by IP address instead of by "
 "hostname."
-msgstr ""検出された潜在的なDNS再バインド攻撃, 見る http://en.wikipedia.org/wiki/"DNS_rebinding<br/>"IPアドレスでルータにアクセスする代わりにホスト名でみてください。"
+msgstr ""
+"DNS リバインディングと思われる攻撃を検知しました"
+"参照 http://en.wikipedia.org/wiki/DNS_rebinding<br/>"
+"ホスト名ではなく、IP アドレスでルータにアクセスしてみてください"
 
 #: etc/inc/auth.inc:115 etc/inc/auth.inc:115
 msgid "Redirecting..."
-msgstr "リダイレクト..."
+msgstr "リダイレクトしています..."
 
 #: etc/inc/auth.inc:115 etc/inc/auth.inc:115
 msgid "Redirecting to the dashboard..."
-msgstr "ダッシュボードへのリダイレクト..."
+msgstr "ダッシュボードにリダイレクトしています..."
 
 #: etc/inc/auth.inc:315 etc/inc/auth.inc:335 etc/inc/auth.inc:406
 #: etc/inc/auth.inc:433 etc/inc/auth.inc:478 etc/inc/auth.inc:609
@@ -100,7 +103,7 @@ msgstr "ダッシュボードへのリダイレクト..."
 #: etc/inc/auth.inc:487 etc/inc/auth.inc:618 etc/inc/auth.inc:630
 #, php-format
 msgid "Running: %s"
-msgstr "%s 実行中"
+msgstr "実行中: %s "
 
 #: etc/inc/auth.inc:656 etc/inc/auth.inc:728 etc/inc/auth.inc:796
 #: etc/inc/auth.inc:1040 etc/inc/auth.inc:665 etc/inc/auth.inc:737
@@ -109,126 +112,129 @@ msgstr "%s 実行中"
 #: etc/inc/auth.inc:737 etc/inc/auth.inc:806 etc/inc/auth.inc:1057
 #, php-format
 msgid "ERROR! Could not connect to server %s."
-msgstr "エラー!サーバー%sに接続できませんでした。"
+msgstr "エラー! サーバ %s に接続できませんでした"
 
 #: etc/inc/auth.inc:674 etc/inc/auth.inc:683 etc/inc/auth.inc:683
 #, php-format
 msgid "LDAP: Could not lookup CA by reference for host %s."
-msgstr "LDAP：ホスト%sを参照した結果、CAを検索できませんでした。"
+msgstr "LDAP：ホスト %s を参照しましたが、CA を検索できませんでした"
 
 #: etc/inc/auth.inc:783 etc/inc/auth.inc:792 etc/inc/auth.inc:793
 #: etc/inc/auth.inc:793
 msgid ""
 "ERROR! ldap_get_user_ous() backed selected with no LDAP authentication "
 "server defined."
-msgstr "エラー! ldap_get_user_ous.()が定義されていないLDAP認証サーバと選択したバックアップ。"
+msgstr "エラー! ldap_get_user_ous() バックエンドが選択されましたが"
+"LDAP 認証サーバが定義されていません"
 
 #: etc/inc/auth.inc:807 etc/inc/auth.inc:816 etc/inc/auth.inc:818
 #: etc/inc/auth.inc:818
 #, php-format
 msgid "ERROR! ldap_get_user_ous() could not bind anonymously to server %s."
-msgstr "エラー! ldap_get_user_ous.()サーバ%sに匿名でバインドできませんでした。"
+msgstr "エラー! ldap_get_user_ous() サーバ %s に匿名でバインドできませんでした"
 
 #: etc/inc/auth.inc:812 etc/inc/auth.inc:821 etc/inc/auth.inc:823
 #: etc/inc/auth.inc:823
 #, php-format
 msgid "ERROR! ldap_get_user_ous() could not bind to server %s."
-msgstr "エラー! ldap_get_user_ous.()サーバ%sをバインドできませんでした。"
+msgstr "エラー! ldap_get_user_ous() サーバ %s をバインドできませんでした"
 
 #: etc/inc/auth.inc:908 etc/inc/auth.inc:917 etc/inc/auth.inc:919
 #: etc/inc/auth.inc:919
 #, php-format
 msgid "ERROR! ldap_get_groups() Could not connect to server %s."
-msgstr "エラー! ldap_get_groups.()サーバー%sに接続できませんでした。"
+msgstr "エラー! ldap_get_groups() サーバ %s に接続できませんでした"
 
 #: etc/inc/auth.inc:918 etc/inc/auth.inc:927 etc/inc/auth.inc:930
 #: etc/inc/auth.inc:930
 #, php-format
 msgid "ERROR! ldap_get_groups() could not bind anonymously to server %s."
-msgstr "エラー! ldap_get_groups.()サーバ%sに匿名でバインドできませんでした。"
+msgstr "エラー! ldap_get_groups() サーバ %s に匿名でバインドできませんでした"
 
 #: etc/inc/auth.inc:923 etc/inc/auth.inc:932 etc/inc/auth.inc:935
 #: etc/inc/auth.inc:935
 #, php-format
 msgid "ERROR! ldap_get_groups() could not bind to server %s."
-msgstr "エラー! ldap_get_groups.()サーバ%sをバインドできませんでした。"
+msgstr "エラー! ldap_get_groups() サーバ %s をバインドできませんでした"
 
 #: etc/inc/auth.inc:1020 etc/inc/auth.inc:1029 etc/inc/auth.inc:1033
 #: etc/inc/auth.inc:1036 etc/inc/auth.inc:1036
 msgid ""
 "ERROR! ldap_backed() called with no LDAP authentication server defined. "
 "Defaulting to local user database. Visit System -> User Manager."
-msgstr ""エラー\! ldap_backed.()はLDAP認証サーバーの定義なく呼び出されました。"ローカルユーザデータベースにデフォルト設定。"へ システム -> ユーザーマネージャ"
+msgstr ""
+"エラー! ldap_backed() が LDAP 認証サーバの定義がない状態で呼ばれました"
+"規定値はローカルユーザデータベースです。システム -> ユーザ管理 で設定できます"
 
 #: etc/inc/auth.inc:1023 etc/inc/auth.inc:1032 etc/inc/auth.inc:1036
 #: etc/inc/auth.inc:1039 etc/inc/auth.inc:1039
 msgid "ERROR! ldap_backed() called with no LDAP authentication server defined."
-msgstr "エラー! ldap_backed.()はLDAP認証サーバーの定義なく呼び出されました。"
+msgstr "エラー! ldap_backed() が LDAP 認証サーバの定義がない状態で呼ばれました"
 
 #: etc/inc/auth.inc:1054 etc/inc/auth.inc:1063 etc/inc/auth.inc:1067
 #: etc/inc/auth.inc:1071 etc/inc/auth.inc:1071
 #, php-format
 msgid "ERROR! Could not bind to server %s."
-msgstr "エラー! サーバー%sにバインドできませんでした。"
+msgstr "エラー! サーバ %s にバインドできませんでした"
 
 #: etc/inc/auth.inc:1071 etc/inc/auth.inc:1080 etc/inc/auth.inc:1084
 #: etc/inc/auth.inc:1085 etc/inc/auth.inc:1089 etc/inc/auth.inc:1089
 #, php-format
 msgid "Now Searching for %s in directory."
-msgstr "ディレクトリ内で%sを検索中。"
+msgstr "ディレクトリ内部を %s で検索しています"
 
 #: etc/inc/auth.inc:1075 etc/inc/auth.inc:1084 etc/inc/auth.inc:1088
 #: etc/inc/auth.inc:1090 etc/inc/auth.inc:1094 etc/inc/auth.inc:1094
 #, php-format
 msgid "Now Searching in server %1$s, container %2$s with filter %3$s."
-msgstr "サーバー%1$sとコンテナ%2$s内をフィルター%3$sで検索中。"
+msgstr "サーバ %1$s コンテナ %2$s をフィルタ %3$s で検索しています"
 
 #: etc/inc/auth.inc:1086 etc/inc/auth.inc:1095 etc/inc/auth.inc:1099
 #: etc/inc/auth.inc:1101 etc/inc/auth.inc:1105 etc/inc/auth.inc:1105
 #, php-format
 msgid "Search resulted in error: %s"
-msgstr "検索結果エラー：%s"
+msgstr "エラーの検索結果: %s"
 
 #: etc/inc/auth.inc:1102 etc/inc/auth.inc:1111 etc/inc/auth.inc:1115
 #: etc/inc/auth.inc:1117 etc/inc/auth.inc:1121 etc/inc/auth.inc:1121
 msgid "ERROR! Either LDAP search failed, or multiple users were found."
-msgstr "エラー! LDAP検索に失敗しました、または複数のユーザーが見つかりました。"
+msgstr "エラー! LDAP 検索に失敗、もしくは複数のユーザが見つかりました"
 
 #: etc/inc/auth.inc:1108 etc/inc/auth.inc:1117 etc/inc/auth.inc:1121
 #: etc/inc/auth.inc:1123
 #, php-format
 msgid "ERROR! Could not login to server %1$s as user %2$s."
-msgstr "エラー! ユーザー名%2$sはサーバ%1$sにログインできませんでした。"
+msgstr "エラー! サーバ %1$s にユーザ %2$s でログインできませんでした"
 
 #: etc/inc/auth.inc:1113 etc/inc/auth.inc:1122 etc/inc/auth.inc:1126
 #: etc/inc/auth.inc:1129 etc/inc/auth.inc:1133 etc/inc/auth.inc:1133
 #, php-format
 msgid "Logged in successfully as %1$s via LDAP server %2$s with DN = %3$s."
-msgstr "DN = %3$sとLDAPサーバー%2$s経由%1$sとして正常にログインし"
+msgstr "%1$s として LDAP サーバ %2$s DN = %3$s 経由で正常にログインしました"
 
 #: etc/inc/auth.inc:1144 etc/inc/auth.inc:1153 etc/inc/auth.inc:1157
 #: etc/inc/auth.inc:1163 etc/inc/auth.inc:1167 etc/inc/auth.inc:1167
 #, php-format
 msgid "Radius start: %s<br>\n"
-msgstr "RADIUSスタート: "
+msgstr "RADIUS スタート: %s<br>\n"
 
 #: etc/inc/auth.inc:1155 etc/inc/auth.inc:1164 etc/inc/auth.inc:1168
 #: etc/inc/auth.inc:1174 etc/inc/auth.inc:1178 etc/inc/auth.inc:1178
 #, php-format
 msgid "Radius send failed: %s<br>\n"
-msgstr "RADIUS送信に失敗しました: %s<br>\n"
+msgstr "RADIUS 送信に失敗しました: %s<br>\n"
 
 #: etc/inc/auth.inc:1159 etc/inc/auth.inc:1170 etc/inc/auth.inc:1174
 #: etc/inc/auth.inc:1180 etc/inc/auth.inc:1184 etc/inc/auth.inc:1184
 #, php-format
 msgid "Radius Auth succeeded"
-msgstr "RADIUS認証が成功しました"
+msgstr "RADIUS 認証が成功しました"
 
 #: etc/inc/auth.inc:1164 etc/inc/auth.inc:1175 etc/inc/auth.inc:1179
 #: etc/inc/auth.inc:1185 etc/inc/auth.inc:1189 etc/inc/auth.inc:1189
 #, php-format
 msgid "Radius Auth rejected"
-msgstr "RADIUS認証は拒否"
+msgstr "RADIUS 認証は拒否されました"
 
 #: etc/inc/auth.inc:1207 etc/inc/auth.inc:1222 etc/inc/auth.inc:1218
 #: etc/inc/auth.inc:1233 etc/inc/auth.inc:1237 etc/inc/auth.inc:1228
@@ -246,38 +252,38 @@ msgstr "ローカル認証"
 #: etc/inc/auth.inc:1327 etc/inc/auth.inc:1331 etc/inc/auth.inc:1331
 #, php-format
 msgid "Successful login for user '%1$s' from: %2$s"
-msgstr "%2$sからユーザー'%1$s'ためのログインに成功"
+msgstr "ユーザ '%1$s' へのログインに成功しました: %2$s"
 
 #: etc/inc/auth.inc:1347 etc/inc/auth.inc:1371 etc/inc/auth.inc:1375
 #: etc/inc/auth.inc:1381 etc/inc/auth.inc:1385 etc/inc/auth.inc:1385
 #, php-format
 msgid "Session timed out for user '%1$s' from: %2$s"
-msgstr "セッションは%2$sからユーザー'%1$s'ためタイムアウトしました"
+msgstr "ユーザ '%1$s' へのセッションはタイムアウトしました: %2$s"
 
 #: etc/inc/auth.inc:1349 etc/inc/auth.inc:1373 etc/inc/auth.inc:1377
 #: etc/inc/auth.inc:1383 etc/inc/auth.inc:1387 etc/inc/auth.inc:1387
 #, php-format
 msgid "User logged out for user '%1$s' from: %2$s"
-msgstr "ユーザーは%2$sからユーザー'%1$s'がログアウトする"
+msgstr "ユーザ '%1$s' からユーザがログアウトしました: %2$s"
 
 #: etc/inc/captiveportal.inc:1374 etc/inc/captiveportal.inc:1383
 #: etc/inc/captiveportal.inc:1420 etc/inc/captiveportal.inc:1335
 #: etc/inc/captiveportal.inc:1338 etc/inc/captiveportal.inc:1338
 #, php-format
 msgid "Error: cannot open '%s' in captiveportal_write_elements()%s"
-msgstr "エラー: captiveportal_write_elements.()%s を処理'%s'を開くことができません"
+msgstr "エラー: captiveportal_write_elements()%s で '%s' を開けません"
 
 #: etc/inc/config.inc:100 etc/inc/config.inc:100
 msgid "Upgrading m0n0wall configuration to pfSense... "
-msgstr "pfSenseにm0n0wall構成のアップグレード... "
+msgstr "m0n0wall 構成を pfSense にアップグレードしています... "
 
 #: etc/inc/config.inc:103 etc/inc/config.inc:103
 msgid "ERROR! Could not convert m0n0wall -> pfsense in config.xml"
-msgstr "エラー! m0n0wallはconfig.xmlにpfsenseに変換することができませんでした"
+msgstr "エラー! config.xml で m0n0wall を pfsense に変換できませんでした"
 
 #: etc/inc/config.inc:133 etc/inc/config.inc:133
 msgid "CDROM build"
-msgstr "CD-ROMのビルド"
+msgstr "CD-ROM ビルド"
 
 #: etc/inc/config.inc:134 etc/inc/config.inc:135 etc/inc/config.inc:134
 #: etc/inc/config.inc:135
@@ -292,7 +298,7 @@ msgstr "タイプ:"
 #: etc/inc/config.inc:166
 #, php-format
 msgid "Found configuration on %s.%s"
-msgstr "%s.%sタブの設定"
+msgstr "%s.%s で構成が見つかりました"
 
 #: etc/inc/config.inc:180 etc/inc/config.inc:181 etc/inc/config.lib.inc:105
 #: etc/inc/config.lib.inc:106 etc/inc/config.lib.inc:245
@@ -301,21 +307,21 @@ msgstr "%s.%sタブの設定"
 #: etc/inc/config.lib.inc:106 etc/inc/config.lib.inc:245
 #: etc/inc/config.lib.inc:266 etc/inc/config.lib.inc:267
 msgid "No config.xml found, attempting last known config restore."
-msgstr "いいえconfig.xmlには最後の既知の設定の復元を試みて、見つからなかった。"
+msgstr "config.xml が見つからないため、最後に使用された設定の復元を試みます"
 
 #: etc/inc/config.inc:184 etc/inc/config.inc:184
 msgid "No config.xml or config backups found, resetting to factory defaults."
-msgstr "全くconfig.xmlや設定のバックアップ工場出荷時設定へのリセット、見つかりませんでした。"
+msgstr "config.xml もしくは設定のバックアップが見つからないため、工場出荷時設定にリセットします"
 
 #: etc/inc/filter.inc:197 etc/inc/filter.inc:194 etc/inc/filter.inc:193
 #: etc/inc/filter.inc:168 etc/inc/filter.inc:168
 msgid "Initializing"
-msgstr "イニシャライズ"
+msgstr "初期化"
 
 #: etc/inc/filter.inc:209 etc/inc/filter.inc:206 etc/inc/filter.inc:205
 #: etc/inc/filter.inc:180 etc/inc/filter.inc:180
 msgid "Configuring firewall"
-msgstr "設定ファイアウォール"
+msgstr "ファイアウォールの構成"
 
 #: etc/inc/filter.inc:214 etc/inc/filter.inc:211 etc/inc/filter.inc:210
 #: etc/inc/filter.inc:185 etc/inc/filter.inc:185
@@ -325,37 +331,37 @@ msgstr "エイリアスの作成"
 #: etc/inc/filter.inc:219 etc/inc/filter.inc:218 etc/inc/filter.inc:193
 #: etc/inc/filter.inc:193
 msgid "Generating NAT rules"
-msgstr "NATのルールを生成する"
+msgstr "NAT ルールの生成"
 
 #: etc/inc/filter.inc:224 etc/inc/filter.inc:223 etc/inc/filter.inc:198
 #: etc/inc/filter.inc:198
 msgid "Generating filter rules"
-msgstr "フィルタルールを生成する"
+msgstr "フィルタルールの生成"
 
 #: etc/inc/filter.inc:230 etc/inc/filter.inc:229 etc/inc/filter.inc:204
 #: etc/inc/filter.inc:204
 msgid "Generating ALTQ queues"
-msgstr "ALTQキューを生成する"
+msgstr "ALTQ キューの生成"
 
 #: etc/inc/filter.inc:232 etc/inc/filter.inc:216 etc/inc/filter.inc:215
 #: etc/inc/filter.inc:190 etc/inc/filter.inc:190
 msgid "Generating Limiter rules"
-msgstr "リミッタールールを生成する"
+msgstr "リミッタルールの生成"
 
 #: etc/inc/filter.inc:234 etc/inc/filter.inc:232 etc/inc/filter.inc:231
 #: etc/inc/filter.inc:206 etc/inc/filter.inc:206
 msgid "Generating Layer7 rules"
-msgstr "生成レイヤ7ルール"
+msgstr "レイヤ 7 ルールの生成"
 
 #: etc/inc/filter.inc:238 etc/inc/filter.inc:236 etc/inc/filter.inc:235
 #: etc/inc/filter.inc:210 etc/inc/filter.inc:210
 msgid "Loading filter rules"
-msgstr "フィルタルールのロード"
+msgstr "フィルタルールの読み込み"
 
 #: etc/inc/filter.inc:245 etc/inc/filter.inc:243 etc/inc/filter.inc:242
 #: etc/inc/filter.inc:217 etc/inc/filter.inc:217
 msgid "Filter is disabled. Not loading rules."
-msgstr "フィルタが無効になっています。ルールをロードしていない。"
+msgstr "フィルタは無効です。ルールは読み込まれません"
 
 #: etc/inc/filter.inc:247 etc/inc/filter.inc:418 etc/inc/interfaces.inc:217
 #: etc/inc/interfaces.inc:234 etc/inc/interfaces.inc:360
@@ -460,7 +466,7 @@ msgstr "フィルタが無効になっています。ルールをロードして
 #: etc/inc/system.inc:874 etc/inc/system.inc:1237 etc/inc/system.inc:1377
 #: etc/inc/system.inc:1516 etc/inc/rrd.inc:834
 msgid "done."
-msgstr "完了。"
+msgstr "完了"
 
 #: etc/inc/filter.inc:259 etc/inc/filter.inc:265 etc/inc/filter.inc:289
 #: etc/inc/filter.inc:269 etc/inc/filter.inc:269
@@ -470,50 +476,50 @@ msgstr "ログ情報の設定"
 #: etc/inc/filter.inc:290 etc/inc/filter.inc:294 etc/inc/filter.inc:274
 #: etc/inc/filter.inc:274
 msgid "Setting up SCRUB information"
-msgstr "SCRUB情報を設定する"
+msgstr "SCRUB 情報の設定"
 
 #: etc/inc/filter.inc:336 etc/inc/filter.inc:338 etc/inc/filter.inc:341
 #: etc/inc/filter.inc:313 etc/inc/filter.inc:313
 #, php-format
 msgid "The line in question reads [%1$d]: %2$s"
-msgstr "%2$s：問題の行は((%1$d))を読み込み"
+msgstr "問題の行の読み込み [%1$d]: %2$s"
 
 #: etc/inc/filter.inc:338 etc/inc/filter.inc:340 etc/inc/filter.inc:342
 #: etc/inc/filter.inc:343 etc/inc/filter.inc:345 etc/inc/filter.inc:316
 #: etc/inc/filter.inc:317 etc/inc/filter.inc:316 etc/inc/filter.inc:317
 #, php-format
 msgid "There were error(s) loading the rules: %1$s - %2$s"
-msgstr "ルールのロード中にエラー（S）がありました：%1$s - %2$s"
+msgstr "ルール読み込み中にエラーが発生しました：%1$s - %2$s"
 
 #: etc/inc/filter.inc:349 etc/inc/filter.inc:351 etc/inc/filter.inc:354
 #: etc/inc/filter.inc:324 etc/inc/filter.inc:324
 msgid "PF was wedged/busy and has been reset."
-msgstr "PFは忙しい/押し込まれ、リセットされました。"
+msgstr "PF は反応がない、もしくはビジーのため、リセットされました"
 
 #: etc/inc/filter.inc:355 etc/inc/filter.inc:357 etc/inc/filter.inc:360
 #: etc/inc/filter.inc:329 etc/inc/filter.inc:333 etc/inc/filter.inc:333
 msgid "Starting up layer7 daemon"
-msgstr "レイヤ7デーモンを起動"
+msgstr "レイヤ 7 デーモンを起動"
 
 #: etc/inc/filter.inc:403 etc/inc/filter.inc:405 etc/inc/filter.inc:408
 #: etc/inc/filter.inc:380 etc/inc/filter.inc:384 etc/inc/filter.inc:384
 msgid "Processing down interface states"
-msgstr "界面準位を下処理"
+msgstr "インタフェースの状態をダウンにしています"
 
 #: etc/inc/filter.inc:407 etc/inc/filter.inc:409 etc/inc/filter.inc:412
 #: etc/inc/filter.inc:384 etc/inc/filter.inc:388 etc/inc/filter.inc:388
 msgid "Running plugins"
-msgstr "プラグインを実行している"
+msgstr "プラグインの実行"
 
 #: etc/inc/filter.inc:411 etc/inc/filter.inc:413 etc/inc/filter.inc:416
 #: etc/inc/filter.inc:388 etc/inc/filter.inc:392 etc/inc/filter.inc:392
 msgid "Running plugins (pf)"
-msgstr "実行されているプラグイン（PF）"
+msgstr "実行中のプラグイン（pf）"
 
 #: etc/inc/filter.inc:413 etc/inc/filter.inc:415 etc/inc/filter.inc:418
 #: etc/inc/filter.inc:390 etc/inc/filter.inc:394 etc/inc/filter.inc:394
 msgid "Plugins completed."
-msgstr "プラグイン完了"
+msgstr "プラグインが完了しました"
 
 #: etc/inc/filter.inc:416 usr/local/www/restart_httpd.php:52
 #: usr/local/www/restart_httpd.php:55 usr/local/www/restart_httpd.php:58
@@ -523,19 +529,19 @@ msgstr "プラグイン完了"
 #: usr/local/www/restart_httpd.php:58 usr/local/www/restart_httpd.php:61
 #: etc/inc/filter.inc:397
 msgid "Done"
-msgstr "行う"
+msgstr "完了"
 
 #: etc/inc/filter.inc:636 etc/inc/filter.inc:649 etc/inc/filter.inc:652
 #: etc/inc/filter.inc:641 etc/inc/filter.inc:657 etc/inc/filter.inc:652
 msgid "Creating gateway group item..."
-msgstr "ゲートウェイ·グループ項目を作成しています..."
+msgstr "ゲートウェイグループ項目を作成しています..."
 
 #: etc/inc/filter.inc:666 etc/inc/filter.inc:681 etc/inc/filter.inc:684
 #: etc/inc/filter.inc:673 etc/inc/filter.inc:687 etc/inc/filter.inc:692
 #: etc/inc/filter.inc:687
 #, php-format
 msgid "Setting up route with %1$s on %2$s"
-msgstr "%2$sの上の%1$sでルートを設定する"
+msgstr "%1$s とのルートを %2$s に設定します"
 
 #: etc/inc/filter.inc:673 etc/inc/filter.inc:688 etc/inc/filter.inc:691
 #: etc/inc/filter.inc:680 etc/inc/filter.inc:694 etc/inc/filter.inc:699
@@ -544,107 +550,109 @@ msgstr "%2$sの上の%1$sでルートを設定する"
 msgid ""
 "An error occurred while trying to find the interface got %s . The rule has "
 "not been added."
-msgstr ""インタフェースは%sを持っ見つけようとしているときにエラーが発生しました。"ルールが追加されていません。"
+msgstr ""
+"%s を持つインタフェースを検索中にエラーが発生しました"
+"ルールが追加されていません"
 
 #: etc/inc/filter.inc:937 etc/inc/filter.inc:987 etc/inc/filter.inc:975
 #: etc/inc/filter.inc:1009 etc/inc/filter.inc:1027 etc/inc/filter.inc:1032
 #: etc/inc/filter.inc:1027
 #, php-format
 msgid "Creating reflection NAT rule for %s..."
-msgstr "%sのための反射NATルールを作成しています..."
+msgstr "%s に対するリフレクション NAT ルールを作成しています..."
 
 #: etc/inc/filter.inc:991 etc/inc/filter.inc:1076 etc/inc/filter.inc:1064
 #: etc/inc/filter.inc:1098 etc/inc/filter.inc:1116 etc/inc/filter.inc:1121
 #: etc/inc/filter.inc:1116
 #, php-format
 msgid "Creating reflection rule for %s..."
-msgstr "%sのための反射のルールを作成しています..."
+msgstr "%s に対するリフレクションルールを作成しています..."
 
 #: etc/inc/filter.inc:1251 etc/inc/filter.inc:1338 etc/inc/filter.inc:1326
 #: etc/inc/filter.inc:1360 etc/inc/filter.inc:1378 etc/inc/filter.inc:1383
 #: etc/inc/filter.inc:1378
 msgid "Creating 1:1 rules..."
-msgstr "1:1のルールを作成しています..."
+msgstr "1:1 ルールを作成しています..."
 
 #: etc/inc/filter.inc:1350 etc/inc/filter.inc:1437 etc/inc/filter.inc:1454
 #: etc/inc/filter.inc:1501 etc/inc/filter.inc:1519 etc/inc/filter.inc:1524
 #: etc/inc/filter.inc:1519
 #, php-format
 msgid "Creating advanced outbound rule %s"
-msgstr "高度なアウトバウンドルール%sを作成"
+msgstr "高度な外向きルール %s を作成"
 
 #: etc/inc/filter.inc:1386 etc/inc/filter.inc:1473 etc/inc/filter.inc:1490
 #: etc/inc/filter.inc:1533 etc/inc/filter.inc:1551 etc/inc/filter.inc:1556
 #: etc/inc/filter.inc:1551
 msgid "Creating outbound NAT rules"
-msgstr "アウトバウンドNATルールを作成する"
+msgstr "外向き NAT ルールを作成"
 
 #: etc/inc/filter.inc:1481 etc/inc/filter.inc:1566 etc/inc/filter.inc:1583
 #: etc/inc/filter.inc:1626 etc/inc/filter.inc:1644 etc/inc/filter.inc:1649
 #: etc/inc/filter.inc:1644
 #, php-format
 msgid "Creating outbound rules %1$s - (%2$s)"
-msgstr "%1$s - (%2$s) をアウトバウンドルールの作成"
+msgstr "アウトバウンドルール %1$s - (%2$s) の作成"
 
 #: etc/inc/filter.inc:1499 etc/inc/filter.inc:1584 etc/inc/filter.inc:1601
 #: etc/inc/filter.inc:1644 etc/inc/filter.inc:1662 etc/inc/filter.inc:1667
 #: etc/inc/filter.inc:1662
 msgid "Setting up TFTP helper"
-msgstr "TFTPヘルパーの設定"
+msgstr "TFTP ヘルパーの設定"
 
 #: etc/inc/filter.inc:1545 etc/inc/filter.inc:1630 etc/inc/filter.inc:1644
 #: etc/inc/filter.inc:1676 etc/inc/filter.inc:1694 etc/inc/filter.inc:1699
 #: etc/inc/filter.inc:1694
 #, php-format
 msgid "Creating NAT rule %s"
-msgstr "NATルール%sは作成"
+msgstr "NAT ルール %s の作成"
 
 #: etc/inc/filter.inc:1689 etc/inc/filter.inc:1837 etc/inc/filter.inc:1850
 #: etc/inc/filter.inc:1882 etc/inc/filter.inc:1900 etc/inc/filter.inc:1905
 #: etc/inc/filter.inc:1900
 #, php-format
 msgid "Creating filter rule %s ..."
-msgstr "フィルタルール%sは作成..."
+msgstr "フィルタルール %s を作成しています..."
 
 #: etc/inc/filter.inc:1827 etc/inc/filter.inc:1975 etc/inc/filter.inc:1988
 #: etc/inc/filter.inc:2024 etc/inc/filter.inc:2054 etc/inc/filter.inc:2059
 #: etc/inc/filter.inc:2054
 #, php-format
 msgid "filter_generate_address: %s is not a valid source port."
-msgstr "filter_generate_address：%sを、有効な送信元ポートではありません。"
+msgstr "filter_generate_address：%s は有効な送信元ポートではありません"
 
 #: etc/inc/filter.inc:1943 etc/inc/filter.inc:2094 etc/inc/filter.inc:2107
 #: etc/inc/filter.inc:2142 etc/inc/filter.inc:2172 etc/inc/filter.inc:2177
 #: etc/inc/filter.inc:2172
 #, php-format
 msgid "Setting up pass/block rules %s"
-msgstr "パス/ブロックルール%sの設定"
+msgstr "パス/ブロックルール %s の設定"
 
 #: etc/inc/filter.inc:1962 etc/inc/filter.inc:2113 etc/inc/filter.inc:2126
 #: etc/inc/filter.inc:2157 etc/inc/filter.inc:2187 etc/inc/filter.inc:2192
 #: etc/inc/filter.inc:2187
 #, php-format
 msgid "Could not find IPv4 gateway for interface (%s)."
-msgstr "インターフェイスのIPv4ゲートウェイ(%s)を見つけることができませんでした。"
+msgstr "インターフェイス (%s) の IPv4 ゲートウェイが見つかりません"
 
 #: etc/inc/filter.inc:1989 etc/inc/filter.inc:2140 etc/inc/filter.inc:2153
 #: etc/inc/filter.inc:2182 etc/inc/filter.inc:2214 etc/inc/filter.inc:2219
 #: etc/inc/filter.inc:2214
 #, php-format
 msgid "Creating rule %s"
-msgstr "ルール%sを作成中"
+msgstr "ルール %s を作成"
 
 #: etc/inc/filter.inc:2198 etc/inc/filter.inc:2355 etc/inc/filter.inc:2378
 #: etc/inc/filter.inc:2407 etc/inc/filter.inc:2439 etc/inc/filter.inc:2444
 #: etc/inc/filter.inc:2439
 msgid "Creating default rules"
-msgstr "デフォルトのルールを作成中"
+msgstr "デフォルトルールを作成"
 
 #: etc/inc/filter.inc:2649 etc/inc/filter.inc:2862 etc/inc/filter.inc:2887
 #: etc/inc/filter.inc:2976 etc/inc/filter.inc:3000 etc/inc/filter.inc:3005
 #: etc/inc/filter.inc:3000
 msgid "Creating IPsec rules..."
-msgstr "IPsecのルールを作成中..."
+msgstr "IPsec ルールを作成しています..."
 
 #: etc/inc/filter.inc:2702 etc/inc/filter.inc:2915 etc/inc/filter.inc:2940
 #: etc/inc/filter.inc:3026 etc/inc/filter.inc:3050 etc/inc/filter.inc:3055
@@ -652,13 +660,15 @@ msgstr "IPsecのルールを作成中..."
 msgid ""
 "Please use filter_tdr_install_cron() function tdr_install_cron will be "
 "deprecated!"
-msgstr ""filter_tdr_install_cron.()を使用してください機能tdr_install_cronはは廃止されます！"
+msgstr ""
+"filter_tdr_install_cron() を使用してください"
+"関数 tdr_install_cron は廃止されます！"
 
 #: etc/inc/filter.inc:2747 etc/inc/filter.inc:2960 etc/inc/filter.inc:2986
 #: etc/inc/filter.inc:3072 etc/inc/filter.inc:3096 etc/inc/filter.inc:3101
 #: etc/inc/filter.inc:3096
 msgid "Installed 15 minute filter reload for Time Based Rules"
-msgstr "時間ベースのルールのためにインストールさ15分のフィルターリロード"
+msgstr "インストールされている 15 分フィルターを時間基準ルールに対して再読み込みします"
 
 #: etc/inc/filter.inc:3102 etc/inc/filter.inc:3313 etc/inc/filter.inc:3293
 #: etc/inc/filter.inc:3389 etc/inc/filter.inc:3413 etc/inc/filter.inc:3418
