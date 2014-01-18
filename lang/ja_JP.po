@@ -1458,7 +1458,7 @@ msgstr "%2$s%3$s%4$s で %1$s にファイルモードを変更しています"
 #: etc/inc/pkg-utils.inc:826 etc/inc/pkg-utils.inc:1098
 #: etc/inc/pkg-utils.inc:826 etc/inc/pkg-utils.inc:1098
 msgid "Loading package instructions..."
-msgstr "パッケージの取扱説明書を読み込んでいます..."
+msgstr "パッケージの処理を読み込んでいます..."
 
 #: etc/inc/pkg-utils.inc:779 etc/inc/pkg-utils.inc:805
 #: etc/inc/pkg-utils.inc:806 etc/inc/pkg-utils.inc:841
@@ -1568,7 +1568,7 @@ msgstr "アンインストールコマンド... "
 #: etc/inc/pkg-utils.inc:1107 etc/inc/pkg-utils.inc:1142
 #: etc/inc/pkg-utils.inc:1142
 msgid "Removing package instructions..."
-msgstr "パッケージの取扱説明書を削除しています..."
+msgstr "パッケージの処理を削除しています..."
 
 #: etc/inc/pkg-utils.inc:1071 etc/inc/pkg-utils.inc:1108
 #: etc/inc/pkg-utils.inc:1109 etc/inc/pkg-utils.inc:1144
@@ -1602,87 +1602,88 @@ msgstr "構成... "
 msgid ""
 " >>> Unable to communicate with %1$s. Please verify DNS and interface "
 "configuration, and that %2$s has functional Internet connectivity."
-msgstr ""%1$sと通信できません。DNSとインターフェイスの設定を確認してください、"その%2$s、機能、インターネット接続を持っています。"
+msgstr " >>> %1$s と通信できません。DNS とインタフェースの構成、"
+"及び %2$s にインターネット接続機能があることを確認して下さい"
 
 #: etc/inc/radius.inc:404 etc/inc/radius.inc:406 etc/inc/radius.inc:406
 msgid "Error sending request:"
-msgstr "リクエスト送信エラー："
+msgstr "リクエスト送信エラー: "
 
 #: etc/inc/radius.inc:410 etc/inc/radius.inc:412 etc/inc/radius.inc:412
 msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting"
-msgstr "RADIUS_ACCESS_ACCEPTは、会計のために予想外である"
+msgstr "RADIUS_ACCESS_ACCEPT: アカウント認証で予期せぬエラーが発生しました"
 
 #: etc/inc/radius.inc:419 etc/inc/radius.inc:421 etc/inc/radius.inc:421
 msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
-msgstr "RADIUS_ACCOUNTING_RESPONSEは、認証のために予想外である"
+msgstr "RADIUS_ACCOUNTING_RESPONSE: 認証で予期せぬエラーが発生しました"
 
 #: etc/inc/radius.inc:424 etc/inc/radius.inc:426 etc/inc/radius.inc:426
 #, php-format
 msgid "Unexpected return value: %s"
-msgstr "予期しない戻り値：%s"
+msgstr "予期せぬ戻り値です: %s"
 
 #: etc/inc/services.inc:262 etc/inc/services.inc:333 etc/inc/services.inc:360
 #: etc/inc/services.inc:369 etc/inc/services.inc:371 etc/inc/services.inc:373
 #, php-format
 msgid "DHCP leases restore failed exited with %1$s, the error is: %2$s%3$s"
-msgstr "DHCPリースは%1$sで終了しました復元に失敗しました、エラー：%2$s%3$s"
+msgstr "DHCP リースは復元に失敗したため %1$s で終了しました: エラー %2$s%3$s"
 
 #: etc/inc/services.inc:275 etc/inc/services.inc:346 etc/inc/services.inc:373
 #: etc/inc/services.inc:382 etc/inc/services.inc:387 etc/inc/services.inc:389
 msgid "Starting DHCP service..."
-msgstr "DHCPサービスを開始..."
+msgstr "DHCP サービス を開始しています..."
 
 #: etc/inc/services.inc:282 etc/inc/services.inc:353 etc/inc/services.inc:380
 #: etc/inc/services.inc:820 etc/inc/services.inc:825 etc/inc/services.inc:877
 #, php-format
 msgid "Error: cannot open dhcpd.conf in services_dhcpdv4_configure().%s"
-msgstr "エラー：services_dhcpdv4_configure.().%s を処理dhcpd.confの開くことができません。"
+msgstr "エラー: dhcpd.conf を services_dhcpdv4_configure().%s で開けません"
 
 #: etc/inc/services.inc:353 etc/inc/services.inc:434 etc/inc/services.inc:461
 #: etc/inc/services.inc:463 etc/inc/services.inc:468 etc/inc/services.inc:469
 msgid "Warning! DHCP Failover setup and no CARP virtual IP's defined!"
-msgstr "警告！DHCPフェールオーバーの設定なしCARP仮想IPの定義された！"
+msgstr "警告！DHCP フェールオーバーがセットアップされていますが、CARP 仮想 IP が定義されていません！"
 
 #: etc/inc/services.inc:949 etc/inc/services.inc:1078
 #: etc/inc/services.inc:1210 etc/inc/services.inc:1203
 #: etc/inc/services.inc:1209 etc/inc/services.inc:1261
 msgid "Could not write Igmpproxy configuration file!"
-msgstr "Igmpproxy設定ファイルを書き込むことができませんでした！"
+msgstr "IGMP プロキシ構成ファイルを書き込めません！"
 
 #: etc/inc/services.inc:956
 msgid "Started Igmpproxy service successfully."
-msgstr "首尾Igmpproxyサービスを開始しました。"
+msgstr "IGMP プロキシサービスを正常に開始しました"
 
 #: etc/inc/services.inc:980 etc/inc/services.inc:1109
 #: etc/inc/services.inc:1241 etc/inc/services.inc:1235
 #: etc/inc/services.inc:1242 etc/inc/services.inc:1294
 msgid "Starting DHCP relay service..."
-msgstr "DHCPリレーサービスを開始..."
+msgstr "DHCP リレーサービスを開始しています..."
 
 #: etc/inc/services.inc:1096 etc/inc/services.inc:1223
 #: etc/inc/services.inc:1355 etc/inc/services.inc:1350
 #: etc/inc/services.inc:1365 etc/inc/services.inc:1417
 msgid "Starting DHCPv6 relay service..."
-msgstr "DHCPv6リレーサービスを開始..."
+msgstr "DHCPv6 リレーサービスを開始しています..."
 
 #: etc/inc/services.inc:1222 etc/inc/services.inc:1358
 #: etc/inc/services.inc:1493 etc/inc/services.inc:1489
 #: etc/inc/services.inc:1505 etc/inc/services.inc:1557
 msgid "Starting DynDNS clients..."
-msgstr "DynDNSクライアント起動中..."
+msgstr "DynDNS クライアントを起動しています..."
 
 #: etc/inc/services.inc:1255 etc/inc/services.inc:1392
 #: etc/inc/services.inc:1531 etc/inc/services.inc:1545
 #: etc/inc/services.inc:1562 etc/inc/services.inc:1622
 msgid "Starting DNS forwarder..."
-msgstr "DNSフォワーダを開始..."
+msgstr "DNS フォワーダを起動しています..."
 
 #: etc/inc/services.inc:1324 etc/inc/services.inc:1507
 #: etc/inc/services.inc:1646 etc/inc/services.inc:1623
 #: etc/inc/services.inc:1655 etc/inc/services.inc:1686
 #: etc/inc/services.inc:1750
 msgid "Starting SNMP daemon... "
-msgstr "SNMPデーモンを起動する... "
+msgstr "SNMP デーモンを起動しています... "
 
 #: etc/inc/services.inc:1329 etc/inc/services.inc:1512
 #: etc/inc/services.inc:1651 etc/inc/services.inc:1628
@@ -1690,28 +1691,28 @@ msgstr "SNMPデーモンを起動する... "
 #: etc/inc/services.inc:1755
 #, php-format
 msgid "Error: cannot open snmpd.conf in services_snmpd_configure().%s"
-msgstr "エラー：services_snmpd_configure.().%sを処理のsnmpd.confを開くことはできません"
+msgstr "エラー: snmpd.conf を services_snmpd_configure().%s で開けません"
 
 #: etc/inc/services.inc:1875 etc/inc/services.inc:2067
 #: etc/inc/services.inc:1919 etc/inc/services.inc:1908
 #: etc/inc/services.inc:1948 etc/inc/services.inc:1979
 #: etc/inc/services.inc:2043
 msgid "pfSense specific crontab entries"
-msgstr "pfSense特定crontabのエントリ"
+msgstr "pfSense 固有の crontab エントリ"
 
 #: etc/inc/services.inc:1876 etc/inc/services.inc:2068
 #: etc/inc/services.inc:1920 etc/inc/services.inc:1909
 #: etc/inc/services.inc:1949 etc/inc/services.inc:1980
 #: etc/inc/services.inc:2044
 msgid "Created:"
-msgstr "作成："
+msgstr "作成しました: "
 
 #: etc/inc/services.inc:1890 etc/inc/services.inc:2082
 #: etc/inc/services.inc:1934 etc/inc/services.inc:1923
 #: etc/inc/services.inc:1963 etc/inc/services.inc:1994
 #: etc/inc/services.inc:2058
 msgid "If possible do not add items to this file manually."
-msgstr "できればこのファイルに項目を手動で追加しないでください。"
+msgstr "なるべくこのファイルに手動で項目を追加しないでください"
 
 #: etc/inc/services.inc:1891 etc/inc/services.inc:2083
 #: etc/inc/services.inc:1935 etc/inc/services.inc:1924
@@ -1719,14 +1720,15 @@ msgstr "できればこのファイルに項目を手動で追加しないでく
 #: etc/inc/services.inc:2059
 msgid ""
 "If you do so, this file must be terminated with a blank line (e.g. new line)"
-msgstr ""その場合、このファイルには、空白行（例えば新しい行）で終了する必要があります"
+msgstr ""
+"追加する場合は、このファイルの末尾を空白行（例: 新規行）にする必要があります"
 
 #: etc/inc/services.inc:1934 etc/inc/services.inc:2126
 #: etc/inc/services.inc:1978 etc/inc/services.inc:1968
 #: etc/inc/services.inc:2008 etc/inc/services.inc:2039
 #: etc/inc/services.inc:2103
 msgid "Starting UPnP service... "
-msgstr "UPnPサービスを開始... "
+msgstr "UPnP サービスを開始しています... "
 
 #: etc/inc/services.inc:1969 etc/inc/services.inc:2161
 #: etc/inc/services.inc:2013 etc/inc/services.inc:2005
@@ -1734,7 +1736,7 @@ msgstr "UPnPサービスを開始... "
 #: etc/inc/services.inc:2140
 #, php-format
 msgid "Installed cron job for %s"
-msgstr "%sのためにインストールcronジョブ"
+msgstr "%s の cron ジョブをインストールしました"
 
 #: etc/inc/services.inc:1972 etc/inc/services.inc:2164
 #: etc/inc/services.inc:2016 etc/inc/services.inc:2008
@@ -1742,23 +1744,23 @@ msgstr "%sのためにインストールcronジョブ"
 #: etc/inc/services.inc:2143
 #, php-format
 msgid "Updated cron job for %s"
-msgstr "%sのための更新されたcronジョブ"
+msgstr "%s の cron ジョブを更新しました"
 
 #: etc/inc/services.inc:1977 etc/inc/services.inc:2169
 #: etc/inc/services.inc:2021
 #, php-format
 msgid "Remvoed cron job for %s"
-msgstr "%sのために取り外さcronジョブ"
+msgstr "%s の cron ジョブ を削除しました"
 
 #: etc/inc/shaper.inc:189 etc/inc/shaper.inc:190 etc/inc/shaper.inc:190
 #, php-format
 msgid "The field '%s' contains invalid characters."
-msgstr "フィールドが '%s'は無効な文字が含まれています。"
+msgstr "フィールド '%s' には無効な文字が含まれています"
 
 #: etc/inc/shaper.inc:195 etc/inc/shaper.inc:196 etc/inc/shaper.inc:196
 #, php-format
 msgid "The field '%s' is required."
-msgstr "フィールドが '%s'が必要です。"
+msgstr "フィールド '%s' が必要です"
 
 #: etc/inc/shaper.inc:317 etc/inc/shaper.inc:651 etc/inc/shaper.inc:1544
 #: etc/inc/shaper.inc:1850 etc/inc/shaper.inc:2192 etc/inc/shaper.inc:2327
@@ -1810,7 +1812,7 @@ msgstr "帯域幅タイプ"
 #: etc/inc/shaper.inc:2265 etc/inc/shaper.inc:2545 etc/inc/shaper.inc:328
 #: etc/inc/shaper.inc:1609 etc/inc/shaper.inc:2265 etc/inc/shaper.inc:2545
 msgid "Bandwidth must be an integer."
-msgstr "帯域幅は、整数でなければなりません。"
+msgstr "帯域幅は整数です"
 
 #: etc/inc/shaper.inc:326 etc/inc/shaper.inc:1555 etc/inc/shaper.inc:2203
 #: etc/inc/shaper.inc:2478 etc/inc/shaper.inc:327 etc/inc/shaper.inc:1557
@@ -1821,27 +1823,27 @@ msgstr "帯域幅は、整数でなければなりません。"
 #: etc/inc/shaper.inc:330 etc/inc/shaper.inc:1612 etc/inc/shaper.inc:2269
 #: etc/inc/shaper.inc:2549
 msgid "Bandwidth cannot be negative."
-msgstr "帯域幅は、負にすることはできません。"
+msgstr "帯域幅はマイナスにできません"
 
 #: etc/inc/shaper.inc:328 etc/inc/shaper.inc:329 etc/inc/shaper.inc:332
 #: etc/inc/shaper.inc:332
 msgid "Qlimit must be an integer."
-msgstr "Qlimitは整数でなければなりません。"
+msgstr "Qlimit は整数値です"
 
 #: etc/inc/shaper.inc:330 etc/inc/shaper.inc:331 etc/inc/shaper.inc:334
 #: etc/inc/shaper.inc:334
 msgid "Qlimit must be an positive."
-msgstr "Qlimitは正でなければなりません。"
+msgstr "Qlimit は正の値です"
 
 #: etc/inc/shaper.inc:332 etc/inc/shaper.inc:333 etc/inc/shaper.inc:336
 #: etc/inc/shaper.inc:336
 msgid "Tbrsize must be an integer."
-msgstr "Tbrsizeは整数でなければなりません。"
+msgstr "Tbrsize は整数値です"
 
 #: etc/inc/shaper.inc:334 etc/inc/shaper.inc:335 etc/inc/shaper.inc:338
 #: etc/inc/shaper.inc:338
 msgid "Tbrsize must be an positive."
-msgstr "Tbrsizeは正でなければなりません。"
+msgstr "Tbrsize は正の値です"
 
 #: etc/inc/shaper.inc:614 etc/inc/shaper.inc:1120 etc/inc/shaper.inc:3269
 #: etc/inc/shaper.inc:3488 etc/inc/shaper.inc:615 etc/inc/shaper.inc:1121
@@ -1853,7 +1855,7 @@ msgstr "Tbrsizeは正でなければなりません。"
 #: etc/inc/shaper.inc:637 etc/inc/shaper.inc:1169 etc/inc/shaper.inc:3589
 #: etc/inc/shaper.inc:3836
 msgid "Enable/Disable"
-msgstr "有効/無効"
+msgstr "有効 / 無効"
 
 #: etc/inc/shaper.inc:619 etc/inc/shaper.inc:620 etc/inc/shaper.inc:622
 #: etc/inc/shaper.inc:642 etc/inc/shaper.inc:642
