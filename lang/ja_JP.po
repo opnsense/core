@@ -39,11 +39,11 @@ msgstr "無効なエラーモードです"
 
 #: etc/inc/PEAR.inc:445 etc/inc/PEAR.inc:451
 msgid "The expected error you submitted does not exist"
-msgstr "提出された予想されるエラーは存在しません"
+msgstr "提出した予想されるエラーは存在しません"
 
 #: etc/inc/PEAR.inc:455
 msgid "The expected error you submitted is empty"
-msgstr "提出された予想されるエラーは空です"
+msgstr "提出した予想されるエラーは空です"
 
 #: etc/inc/PEAR.inc:866
 msgid ""
@@ -592,7 +592,7 @@ msgstr "外向き NAT ルールを作成"
 #: etc/inc/filter.inc:1644
 #, php-format
 msgid "Creating outbound rules %1$s - (%2$s)"
-msgstr "アウトバウンドルール %1$s - (%2$s) の作成"
+msgstr "外向きルール %1$s - (%2$s) の作成"
 
 #: etc/inc/filter.inc:1499 etc/inc/filter.inc:1584 etc/inc/filter.inc:1601
 #: etc/inc/filter.inc:1644 etc/inc/filter.inc:1662 etc/inc/filter.inc:1667
@@ -619,7 +619,7 @@ msgstr "フィルタルール %s を作成しています..."
 #: etc/inc/filter.inc:2054
 #, php-format
 msgid "filter_generate_address: %s is not a valid source port."
-msgstr "filter_generate_address：%s は有効な送信元ポートではありません"
+msgstr "filter_generate_address: %s は有効な送信元ポートではありません"
 
 #: etc/inc/filter.inc:1943 etc/inc/filter.inc:2094 etc/inc/filter.inc:2107
 #: etc/inc/filter.inc:2142 etc/inc/filter.inc:2172 etc/inc/filter.inc:2177
@@ -633,7 +633,7 @@ msgstr "パス/ブロックルール %s の設定"
 #: etc/inc/filter.inc:2187
 #, php-format
 msgid "Could not find IPv4 gateway for interface (%s)."
-msgstr "インターフェイス (%s) の IPv4 ゲートウェイが見つかりません"
+msgstr "インタフェース (%s) の IPv4 ゲートウェイが見つかりません"
 
 #: etc/inc/filter.inc:1989 etc/inc/filter.inc:2140 etc/inc/filter.inc:2153
 #: etc/inc/filter.inc:2182 etc/inc/filter.inc:2214 etc/inc/filter.inc:2219
@@ -668,55 +668,55 @@ msgstr ""
 #: etc/inc/filter.inc:3072 etc/inc/filter.inc:3096 etc/inc/filter.inc:3101
 #: etc/inc/filter.inc:3096
 msgid "Installed 15 minute filter reload for Time Based Rules"
-msgstr "インストールされている 15 分フィルターを時間基準ルールに対して再読み込みします"
+msgstr "インストールされている 15 分フィルタを、時間基準ルールに対して再読み込みします"
 
 #: etc/inc/filter.inc:3102 etc/inc/filter.inc:3313 etc/inc/filter.inc:3293
 #: etc/inc/filter.inc:3389 etc/inc/filter.inc:3413 etc/inc/filter.inc:3418
 #: etc/inc/filter.inc:3412
 #, php-format
 msgid "Checking for %1$s PF hooks in package %2$s"
-msgstr "パッケージ%2$sを処理%1$s PFフックのチェック"
+msgstr "パッケージ %2$s の %1$s PF フックを確認しています"
 
 #: etc/inc/filter.inc:3107 etc/inc/filter.inc:3318 etc/inc/filter.inc:3299
 #: etc/inc/filter.inc:3395 etc/inc/filter.inc:3419 etc/inc/filter.inc:3424
 #: etc/inc/filter.inc:3418
 #, php-format
 msgid "Processing early %1$s rules for package %2$s"
-msgstr "パッケージ%2$sを早期%1$sのルールの処理"
+msgstr "パッケージ %2$s に対する初期 %1$s ルールを処理しています"
 
 #: etc/inc/filter.inc:3112 etc/inc/filter.inc:3323 etc/inc/filter.inc:3304
 #: etc/inc/filter.inc:3400 etc/inc/filter.inc:3424 etc/inc/filter.inc:3429
 #: etc/inc/filter.inc:3423
 #, php-format
 msgid "There was an error while parsing the package filter rules for %s."
-msgstr "%sのパッケージフィルタルール解析中にエラーが発生しました。"
+msgstr "%s に対するパッケージフィルタルール解析中にエラーが発生しました"
 
 #: etc/inc/interfaces.inc:51 etc/inc/interfaces.inc:53
 #: etc/inc/interfaces.inc:51
 msgid "interfaces_bring_up() was called but no variable defined."
-msgstr "interfaces_bring_up.()が呼び出さしかし、誰変数が定義されていなかった。"
+msgstr "interfaces_bring_up(): 変数が定義されていません"
 
 #: etc/inc/interfaces.inc:213 etc/inc/interfaces.inc:215
 #: etc/inc/interfaces.inc:214 etc/inc/interfaces.inc:212
 #: etc/inc/interfaces.inc:212
 msgid "Configuring loopback interface..."
-msgstr "ループバックインターフェイスを設定中..."
+msgstr "ループバックインタフェースを構成しています..."
 
 #: etc/inc/interfaces.inc:224 etc/inc/interfaces.inc:226
 #: etc/inc/interfaces.inc:225 etc/inc/interfaces.inc:223
 #: etc/inc/interfaces.inc:223
 msgid "Configuring VLAN interfaces..."
-msgstr "VLANインターフェイスを設定中..."
+msgstr "VLAN インタフェースを構成しています..."
 
 #: etc/inc/interfaces.inc:241 etc/inc/interfaces.inc:243
 #: etc/inc/interfaces.inc:242 etc/inc/interfaces.inc:240
 #: etc/inc/interfaces.inc:240
 msgid "VLAN: called with wrong options. Problems with config!"
-msgstr "VLAN：間違ったオプションを使用して呼び出さ。設定に問題が！"
+msgstr "VLAN: オプションが不正です。設定に問題があります！"
 
 #: etc/inc/interfaces.inc:249
 msgid "interface_vlan_confgure called with if undefined."
-msgstr "定義されていない場合で呼び出されinterface_vlan_confgure。"
+msgstr "interface_vlan_confgure: インタフェースが未定義です"
 
 #: etc/inc/interfaces.inc:283 etc/inc/interfaces.inc:367
 #: etc/inc/interfaces.inc:285 etc/inc/interfaces.inc:369
@@ -725,54 +725,54 @@ msgstr "定義されていない場合で呼び出されinterface_vlan_confgure�
 #: etc/inc/interfaces.inc:282 etc/inc/interfaces.inc:372
 #, php-format
 msgid "QinQ compat VLAN: called with wrong options. Problems with config!%s"
-msgstr "QinQの互換VLAN：間違ったオプションを使用して呼び出さ。設定に問題が！%s"
+msgstr "QinQ 互換 VLAN: オプションが不正です。設定に問題があります！%s"
 
 #: etc/inc/interfaces.inc:290 etc/inc/interfaces.inc:375
 #, php-format
 msgid "interface_qinq_confgure called with if undefined.%s"
-msgstr "と呼ばinterface_qinq_confgure場合undefined.%s"
+msgstr "interface_qinq_confgure: インタフェースが未定義です %s"
 
 #: etc/inc/interfaces.inc:352 etc/inc/interfaces.inc:354
 #: etc/inc/interfaces.inc:353 etc/inc/interfaces.inc:357
 #: etc/inc/interfaces.inc:357
 msgid "Configuring QinQ interfaces..."
-msgstr "QinQサブインターフェイスの設定..."
+msgstr "QinQ インタフェースの構成をしています..."
 
 #: etc/inc/interfaces.inc:396 etc/inc/interfaces.inc:398
 #: etc/inc/interfaces.inc:397
 msgid "Creating other wireless clone interfaces..."
-msgstr "他のワイヤレスクローン·インターフェースを作成中..."
+msgstr "その他の無線クローンインタフェースを作成しています..."
 
 #: etc/inc/interfaces.inc:439 etc/inc/interfaces.inc:438
 #: etc/inc/interfaces.inc:437 etc/inc/interfaces.inc:466
 #: etc/inc/interfaces.inc:466
 #, php-format
 msgid "No members found on %s"
-msgstr "%sにはメンバーが見つかりませんでした"
+msgstr "%s にメンバがありません"
 
 #: etc/inc/interfaces.inc:505 etc/inc/interfaces.inc:512
 #: etc/inc/interfaces.inc:511 etc/inc/interfaces.inc:541
 #: etc/inc/interfaces.inc:541
 msgid "realif not defined in interfaces bridge - up"
-msgstr "realifインターフェースブリッジで定義されていません - アップ"
+msgstr "インタフェースブリッジのアップで、実インタフェースが未定義です"
 
 #: etc/inc/interfaces.inc:618 etc/inc/interfaces.inc:625
 #: etc/inc/interfaces.inc:624 etc/inc/interfaces.inc:654
 #: etc/inc/interfaces.inc:654
 msgid "bridgeif not defined -- could not bring interface up"
-msgstr "bridgeif定義されていない - インタフェースを持ち出すことができませんでした"
+msgstr "ブリッジインタフェースが未定義です。インタフェースをアップできません"
 
 #: etc/inc/interfaces.inc:652 etc/inc/interfaces.inc:659
 #: etc/inc/interfaces.inc:658 etc/inc/interfaces.inc:685
 #: etc/inc/interfaces.inc:685
 msgid "Configuring LAGG interfaces..."
-msgstr "LAGGインターフェイスの設定..."
+msgstr "LAGG インタフェースを構成しています..."
 
 #: etc/inc/interfaces.inc:790 etc/inc/interfaces.inc:801
 #: etc/inc/interfaces.inc:800 etc/inc/interfaces.inc:835
 #: etc/inc/interfaces.inc:835
 msgid "Could not bring greif up -- variable not defined."
-msgstr "変数定義されていません - 最大グライフなれなかった。"
+msgstr "GRE インタフェースをアップできません。変数が未定義です"
 
 #: etc/inc/interfaces.inc:833 etc/inc/interfaces.inc:851
 #: etc/inc/interfaces.inc:850 etc/inc/interfaces.inc:899
@@ -780,13 +780,15 @@ msgstr "変数定義されていません - 最大グライフなれなかった
 msgid ""
 "could not bring realif up -- variable not defined -- "
 "interface_gif_configure()"
-msgstr ""変数に定義されていない - - interface_gif_configure.()"を最大realifなれなかった"
+msgstr ""
+"interface_gif_configure(): 実インタフェースをアップできません"
+"変数が未定義です"
 
 #: etc/inc/interfaces.inc:856 etc/inc/interfaces.inc:874
 #: etc/inc/interfaces.inc:873 etc/inc/interfaces.inc:922
 #: etc/inc/interfaces.inc:922
 msgid "could not bring gifif up -- variable not defined"
-msgstr "変数定義されていません - 最大gififなれなかった"
+msgstr "gif インタフェースをアップできません。変数が未定義です"
 
 #: etc/inc/interfaces.inc:919 etc/inc/interfaces.inc:957
 #: etc/inc/interfaces.inc:972 etc/inc/interfaces.inc:945
@@ -798,7 +800,7 @@ msgstr "変数定義されていません - 最大gififなれなかった"
 #: etc/inc/interfaces.inc:1047 etc/inc/interfaces.inc:1062
 #, php-format
 msgid "Configuring %s interface..."
-msgstr "%sのインターフェイスを設定中..."
+msgstr "%s インタフェースを構成しています..."
 
 #: etc/inc/interfaces.inc:921 etc/inc/interfaces.inc:959
 #: etc/inc/interfaces.inc:974 etc/inc/interfaces.inc:948
@@ -811,14 +813,14 @@ msgstr "%sのインターフェイスを設定中..."
 #: etc/inc/interfaces.inc:1064
 #, php-format
 msgid "Configuring %s"
-msgstr "%s を設定中"
+msgstr "%s を構成しています"
 
 #: etc/inc/interfaces.inc:1299 etc/inc/interfaces.inc:1339
 #: etc/inc/interfaces.inc:1338 etc/inc/interfaces.inc:1407
 #: etc/inc/interfaces.inc:1412 etc/inc/interfaces.inc:1412
 #, php-format
 msgid "Can't find PPP config for %s in interface_ppps_configure()."
-msgstr "interface_ppps_configure.()を処理%sのPPP設定を見つけることができません。"
+msgstr "interface_ppps_configure(): %s に対する PPP 設定が見つかりません"
 
 #: etc/inc/interfaces.inc:1362 etc/inc/interfaces.inc:1402
 #: etc/inc/interfaces.inc:1401 etc/inc/interfaces.inc:1464
@@ -827,7 +829,9 @@ msgstr "interface_ppps_configure.()を処理%sのPPP設定を見つけること�
 msgid ""
 "Could not get a PPTP/L2TP Remote IP address from %1$s for %2$s in "
 "interfaces_ppps_configure."
-msgstr ""interfaces_ppps_configure中%2$sをため%1$sからPPTP/L2TPリモート"IPアドレスを取得できませんでした。"
+msgstr ""
+"interfaces_ppps_configure: %1$s から %2$s に対する"
+"PPTP/L2TP リモート IP アドレスを取得できません"
 
 #: etc/inc/interfaces.inc:1369 etc/inc/interfaces.inc:1409
 #: etc/inc/interfaces.inc:1408 etc/inc/interfaces.inc:1471
@@ -835,77 +839,78 @@ msgstr ""interfaces_ppps_configure中%2$sをため%1$sからPPTP/L2TPリモー�
 #, php-format
 msgid ""
 "Device %s does not exist. PPP link cannot start without the modem device."
-msgstr ""デバイス%sは存在しません。 PPPリンクは、モデム装置なしで開始することはできません。"
+msgstr ""
+"デバイス %s が存在しません。 PPP リンクを開始するにはモデムデバイスが必要です"
 
 #: etc/inc/interfaces.inc:1374 etc/inc/interfaces.inc:1414
 #: etc/inc/interfaces.inc:1413 etc/inc/interfaces.inc:1476
 #: etc/inc/interfaces.inc:1481 etc/inc/interfaces.inc:1481
 #, php-format
 msgid "Unkown %s configured as ppp interface."
-msgstr "UNKOWN %sは、PPPインターフェイスとして設定。"
+msgstr "PPP インタフェースとして構成されている %s は不明です"
 
 #: etc/inc/interfaces.inc:1641 etc/inc/interfaces.inc:1686
 #: etc/inc/interfaces.inc:1685 etc/inc/interfaces.inc:1748
 #: etc/inc/interfaces.inc:1753 etc/inc/interfaces.inc:1753
 #, php-format
 msgid "Error: cannot open mpd_%s.conf in interface_ppps_configure().%s"
-msgstr "エラー：interface_ppps_configure.().%s を処理mpd_%s.conf開くことができません。"
+msgstr "エラー: mpd_%s.conf が interface_ppps_configure().%s で開けません"
 
 #: etc/inc/interfaces.inc:1702 etc/inc/interfaces.inc:1771
 #: etc/inc/interfaces.inc:1770 etc/inc/interfaces.inc:1828
 #: etc/inc/interfaces.inc:1833 etc/inc/interfaces.inc:1833
 msgid "Configuring CARP settings..."
-msgstr "CARPを設定中..."
+msgstr "CARP 設定を構成しています..."
 
 #: etc/inc/interfaces.inc:1723 etc/inc/interfaces.inc:1788
 #: etc/inc/interfaces.inc:1787
 msgid "Enable CARP ARP-balancing"
-msgstr "CARP ARPバランスを有効にする"
+msgstr "CARP ARP バランスを有効"
 
 #: etc/inc/interfaces.inc:1724 etc/inc/interfaces.inc:1789
 #: etc/inc/interfaces.inc:1788
 msgid "Disallow CARP preemption"
-msgstr "CARPプリエンプションを禁止する"
+msgstr "CARP プリエンプションを禁止"
 
 #: etc/inc/interfaces.inc:1726 etc/inc/interfaces.inc:1791
 #: etc/inc/interfaces.inc:1790
 msgid "Enable CARP preemption"
-msgstr "CARPプリエンプションを有効にする"
+msgstr "CARP プリエンプションを有効"
 
 #: etc/inc/interfaces.inc:1728 etc/inc/interfaces.inc:1793
 #: etc/inc/interfaces.inc:1792
 msgid "Enable CARP logging"
-msgstr "CARPのログを有効にする"
+msgstr "CARP ログを有効"
 
 #: etc/inc/interfaces.inc:1744 etc/inc/interfaces.inc:1809
 #: etc/inc/interfaces.inc:1808
 msgid "Could not create rules.boot file!"
-msgstr "rules.bootファイルを作成できませんでした！"
+msgstr "rules.boot ファイルを作成できません！"
 
 #: etc/inc/interfaces.inc:1750 etc/inc/interfaces.inc:1815
 #: etc/inc/interfaces.inc:1814
 msgid "Bring up pfsync0 syncpeer"
-msgstr "pfsync0のsyncpeerを持ち出す"
+msgstr "pfsync0 を syncpeer でアップ"
 
 #: etc/inc/interfaces.inc:1752 etc/inc/interfaces.inc:1817
 #: etc/inc/interfaces.inc:1816
 msgid "Bring up pfsync0 syncdev"
-msgstr "pfsync0のsyncdevを持ち出す"
+msgstr "pfsync0 を syncdev でアップ"
 
 #: etc/inc/interfaces.inc:1754 etc/inc/interfaces.inc:1819
 #: etc/inc/interfaces.inc:1818
 msgid "Bring up pfsync0"
-msgstr "pfsync0を持ち出す"
+msgstr "pfsync0 をアップ"
 
 #: etc/inc/interfaces.inc:1768 etc/inc/interfaces.inc:1833
 #: etc/inc/interfaces.inc:1837
 msgid "Allow CARP."
-msgstr "CARPを許可します。"
+msgstr "CARP を許可"
 
 #: etc/inc/interfaces.inc:1770 etc/inc/interfaces.inc:1835
 #: etc/inc/interfaces.inc:1839
 msgid "Disallow CARP."
-msgstr "CARPを禁止。"
+msgstr "CARP を禁止"
 
 #: etc/inc/interfaces.inc:1963 etc/inc/interfaces.inc:2038
 #: etc/inc/interfaces.inc:2020 etc/inc/interfaces.inc:2099
@@ -915,7 +920,9 @@ msgstr "CARPを禁止。"
 msgid ""
 "Interface specified for the virtual IP address %s does not exist. Skipping "
 "this VIP."
-msgstr ""仮想IPアドレス%sに指定されたインタフェースが存在しません。このVIPをスキップする。"
+msgstr ""
+"仮想 IP アドレス %s を指定されたインタフェースが存在しません"
+"この仮想 IP アドレスをスキップします"
 
 #: etc/inc/interfaces.inc:1972 etc/inc/interfaces.inc:2029
 #: etc/inc/interfaces.inc:2025 etc/inc/interfaces.inc:2065
@@ -924,7 +931,9 @@ msgstr ""仮想IPアドレス%sに指定されたインタフェースが存在�
 msgid ""
 "Sorry but we could not find a matching real interface subnet for the virtual "
 "IP address %s."
-msgstr ""申し訳ありませんが、我々は仮想IPv4アドレス%sのマッチング実際"のインターフェイスのサブネットを見つけられませんでした。"
+msgstr ""
+"仮想 IP アドレス %s と一致する実インターフェースのサブネットが"
+"見つかりませんでした"
 
 #: etc/inc/interfaces.inc:1981 etc/inc/interfaces.inc:2038
 #: etc/inc/interfaces.inc:2034 etc/inc/interfaces.inc:2074
@@ -933,55 +942,59 @@ msgstr ""申し訳ありませんが、我々は仮想IPv4アドレス%sのマ�
 msgid ""
 "Sorry but we could not find a matching real interface subnet for the virtual "
 "IPv6 address %s."
-msgstr ""申し訳ありませんが、我々は仮想IPv6アドレス%sのマッチング実際"のインターフェイスのサブネットを見つけられませんでした。"
+msgstr ""
+"仮想 IPv6 アドレス %s と一致する実インターフェースのサブネットが"
+"見つかりませんでした"
 
 #: etc/inc/interfaces.inc:2084
 #, php-format
 msgid ""
 "Error: cannot open dhclient_%s.conf in interfaces_carpdev_configure() for "
 "writing.%s"
-msgstr ""エラー：writing.%s用interfaces_carpdev_configure.()を処理dhclient_%s.confを開くことはできません"
+msgstr ""
+"エラー: dhclient_%s.conf が interfaces_carpdev_configure() の"
+"writing.%s で開けません"
 
 #: etc/inc/interfaces.inc:2117 etc/inc/interfaces.inc:2185
 #: etc/inc/interfaces.inc:2104 etc/inc/interfaces.inc:2144
 #: etc/inc/interfaces.inc:2149 etc/inc/interfaces.inc:2149
 #, php-format
 msgid "Interface %s changed to hostap mode"
-msgstr "インターフェース%sをhostapモードに変更"
+msgstr "インターフェース %s は hostap モードに変更されました"
 
 #: etc/inc/interfaces.inc:2121 etc/inc/interfaces.inc:2189
 #: etc/inc/interfaces.inc:2108 etc/inc/interfaces.inc:2148
 #: etc/inc/interfaces.inc:2153 etc/inc/interfaces.inc:2153
 #, php-format
 msgid "Interface %s changed to adhoc mode"
-msgstr "インターフェース%sはアドホックモードに変更"
+msgstr "インターフェース %s はアドホックモードに変更されました"
 
 #: etc/inc/interfaces.inc:2125 etc/inc/interfaces.inc:2193
 #: etc/inc/interfaces.inc:2112 etc/inc/interfaces.inc:2152
 #: etc/inc/interfaces.inc:2157 etc/inc/interfaces.inc:2157
 #, php-format
 msgid "Interface %s changed to infrastructure mode"
-msgstr "インターフェース%sアドホックモードに変更"
+msgstr "インターフェース %s はインフラストラクチャーモードに変更されました"
 
 #: etc/inc/interfaces.inc:2137 etc/inc/interfaces.inc:2205
 #: etc/inc/interfaces.inc:2124 etc/inc/interfaces.inc:2164
 #: etc/inc/interfaces.inc:2169 etc/inc/interfaces.inc:2169
 #, php-format
 msgid "Cloning new wireless interface %s"
-msgstr "新しい無線インタフェース%sのクローン作成"
+msgstr "新しい無線インタフェース %s をクローンしています"
 
 #: etc/inc/interfaces.inc:2142 etc/inc/interfaces.inc:2210
 #: etc/inc/interfaces.inc:2129 etc/inc/interfaces.inc:2169
 #: etc/inc/interfaces.inc:2174 etc/inc/interfaces.inc:2174
 #, php-format
 msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
-msgstr "エラーコード%2$s、出力%3$sとのインタフェースは%1$sのクローンを作成できませんでした"
+msgstr "インタフェース %1$s のクローンに失敗しました: エラーコード %2$s 出力 %3$s"
 
 #: etc/inc/interfaces.inc:2715 etc/inc/interfaces.inc:2790
 #: etc/inc/interfaces.inc:2709 etc/inc/interfaces.inc:2761
 #: etc/inc/interfaces.inc:2784 etc/inc/interfaces.inc:2784
 msgid "Generating new MAC address."
-msgstr "新しいMACアドレスを生成する。"
+msgstr "新しい MAC アドレスを生成しています"
 
 #: etc/inc/interfaces.inc:2721 etc/inc/interfaces.inc:2796
 #: etc/inc/interfaces.inc:2715 etc/inc/interfaces.inc:2767
@@ -990,19 +1003,22 @@ msgstr "新しいMACアドレスを生成する。"
 msgid ""
 "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %1$s has been "
 "automatically replaced with %2$s"
-msgstr ""無効なMACアドレスのインタフェースは%1$s上(ff:ff:ff:ff:ff:ff)"が自動的%2$sに置き換えられました"
+msgstr ""
+"インタフェース %1$s の無効な MAC アドレス (ff:ff:ff:ff:ff:ff) は"
+"自動的に %2$s に書き換えられました"
 
 #: etc/inc/interfaces.inc:2910
 msgid "Could not bring wanif up in terface_carpdev_dhcp_configure()"
-msgstr "terface_carpdev_dhcp_configure.()を処理wanifを持ち出すことができませんでした"
+msgstr "terface_carpdev_dhcp_configure(): WAN インタフェースをアップできません"
 
 #: etc/inc/interfaces.inc:3016
 #, php-format
 msgid ""
 "Error: cannot open dhclient_%s.conf in interfaces_wan_dhcp_configure() for "
 "writing.%s"
-msgstr "エラー：writing.%sためinterfaces_wan_dhcp_configure.()にdhclient_%s.conf"を開くことはできません"
-
+msgstr ""
+"エラー: dhclient_%s.conf が interfaces_wan_dhcp_configure() の"
+"writing.%s で開けません"
 
 #: etc/inc/interfaces.inc:3029 etc/inc/interfaces.inc:3513
 #: etc/inc/interfaces.inc:3373 etc/inc/interfaces.inc:3466
@@ -1010,7 +1026,7 @@ msgstr "エラー：writing.%sためinterfaces_wan_dhcp_configure.()にdhclient_
 #: etc/inc/interfaces.inc:3538
 #, php-format
 msgid "Invalid interface "%s" in interface_dhcp_configure()"
-msgstr "interface_dhcp_configure.()内の無効なインターフェイス"%s""
+msgstr "interface_dhcp_configure(): インタフェース "%s" は無効です"
 
 #: etc/inc/interfaces.inc:3064 etc/inc/interfaces.inc:3548
 #: etc/inc/interfaces.inc:3408 etc/inc/interfaces.inc:3501
@@ -1018,33 +1034,33 @@ msgstr "interface_dhcp_configure.()内の無効なインターフェイス"%s""
 #: etc/inc/interfaces.inc:3573
 #, php-format
 msgid "Could not bring up %s interface in interface_dhcp_configure()"
-msgstr "interface_dhcp_configure.()で%sはインターフェイスを起動できませんでした"
+msgstr "interface_dhcp_configure(): %s インタフェースをアップできません"
 
 #: etc/inc/notices.inc:76 etc/inc/notices.inc:76
 #, php-format
 msgid "Could not open %s for writing"
-msgstr "書き込み用%sを開くことができませんでした"
+msgstr "書き込み用として %s を開けません"
 
 #: etc/inc/notices.inc:327 etc/inc/notices.inc:327
 #, php-format
 msgid "Message sent to %s OK"
-msgstr "((OK))を%sはに送信されたメッセージ"
+msgstr "%s へのメッセージ送信に成功"
 
 #: etc/inc/notices.inc:330 etc/inc/notices.inc:331 etc/inc/notices.inc:330
 #: etc/inc/notices.inc:331
 #, php-format
 msgid "Could not send the message to %1$s -- Error: %2$s"
-msgstr "%1$sにメッセージを送信できませんでした - エラー：%2$s"
+msgstr "%1$s にメッセージを送信できません -- エラー: %2$s"
 
 #: etc/inc/openvpn.inc:83 etc/inc/openvpn.inc:90 etc/inc/openvpn.inc:81
 #: etc/inc/openvpn.inc:88 etc/inc/openvpn.inc:81 etc/inc/openvpn.inc:88
 msgid "Peer to Peer ( SSL/TLS )"
-msgstr "ピア·ツー·ピア（SSL / TLS）"
+msgstr "ピアツーピア ( SSL/TLS )"
 
 #: etc/inc/openvpn.inc:84 etc/inc/openvpn.inc:91 etc/inc/openvpn.inc:82
 #: etc/inc/openvpn.inc:89 etc/inc/openvpn.inc:82 etc/inc/openvpn.inc:89
 msgid "Peer to Peer ( Shared Key )"
-msgstr "ピアツーピア（共有鍵）"
+msgstr "ピアツーピア ( 共有鍵 )"
 
 #: etc/inc/openvpn.inc:85 etc/inc/openvpn.inc:83 etc/inc/openvpn.inc:83
 msgid "Remote Access ( SSL/TLS )"
@@ -1052,39 +1068,41 @@ msgstr "リモートアクセス ( SSL/TLS )"
 
 #: etc/inc/openvpn.inc:86 etc/inc/openvpn.inc:84 etc/inc/openvpn.inc:84
 msgid "Remote Access ( User Auth )"
-msgstr "リモートアクセス（ユーザ認証）"
+msgstr "リモートアクセス ( ユーザ認証 )"
 
 #: etc/inc/openvpn.inc:87 etc/inc/openvpn.inc:85 etc/inc/openvpn.inc:85
 msgid "Remote Access ( SSL/TLS + User Auth )"
-msgstr "リモートアクセス ( SSL/TLS + ユーザ認証)"
+msgstr "リモートアクセス ( SSL/TLS + ユーザ認証 )"
 
 #: etc/inc/openvpn.inc:179 etc/inc/openvpn.inc:177 etc/inc/openvpn.inc:195
 #: etc/inc/openvpn.inc:195
 msgid "None (No Encryption)"
-msgstr "なし（暗号化なし）"
+msgstr "なし ( 暗号化なし )"
 
 #: etc/inc/openvpn.inc:203 etc/inc/openvpn.inc:201 etc/inc/openvpn.inc:238
 #: etc/inc/openvpn.inc:238
 #, php-format
 msgid "The field '%s' must contain a valid IP address or domain name."
-msgstr "フィールドが '%s'は有効なIPアドレスまたはドメイン名が含まれている必要があります。"
+msgstr "フィールド '%s' には、有効な IP アドレスもしくはドメイン名が含まれている必要があります"
 
 #: etc/inc/openvpn.inc:210 etc/inc/openvpn.inc:208 etc/inc/openvpn.inc:245
 #: etc/inc/openvpn.inc:245
 #, php-format
 msgid "The field '%s' must contain a valid port, ranging from 0 to 65535."
-msgstr "フィールドが '%s'は0〜65535範囲、有効なポートが含まれている必要があります。"
+msgstr "フィールド '%s' には、0〜65535 の有効なポート番号が含まれている必要があります"
 
 #: etc/inc/openvpn.inc:219 etc/inc/openvpn.inc:217
 #, php-format
 msgid "The field '%s' must contain a valid CIDR range."
-msgstr "フィールドが '%s'は有効なCIDR範囲が含まれている必要があります。"
+msgstr "フィールド '%s' には有効な CIDR 範囲が含まれている必要があります"
 
 #: etc/inc/pfsense-utils.inc:345 etc/inc/pfsense-utils.inc:330
 #: etc/inc/pfsense-utils.inc:330
 msgid "MASTER"
 # ikenote: not sure if this is the best word to use?
-msgstr "マスター"
+# chie: This word translated "マスタ" in japanese man page of carp. 
+# chie: See http://www.jp.freebsd.org/cgi/mroff.cgi?subdir=man&lc=1&cmd=&man=carp&dir=jpman-11.0.2%2Fman&sect=0
+msgstr "マスタ"
 
 #: etc/inc/pfsense-utils.inc:347 etc/inc/pfsense-utils.inc:332
 #: etc/inc/pfsense-utils.inc:332
@@ -1095,64 +1113,65 @@ msgstr "バックアップ"
 #: etc/inc/pfsense-utils.inc:334
 msgid "INIT"
 # ikenote: not sure if this is the best word to use?
-msgstr "イニシャライズ"
+# chie: I think "初期状態" is better than "イニシャライズ".
+msgstr "初期状態"
 
 #: etc/inc/pfsense-utils.inc:417 etc/inc/pfsense-utils.inc:402
 #: etc/inc/pfsense-utils.inc:402
 msgid "After synch increase advertising skew"
-msgstr "後の同期の増加広告スキュー"
+msgstr "同期後にスキューの広告が増加しています"
 
 #: etc/inc/pfsense-utils.inc:462 etc/inc/pfsense-utils.inc:447
 #: etc/inc/pfsense-utils.inc:447
 msgid "Error creating socket!"
-msgstr "エラーソケットを作成する！"
+msgstr "ソケット作成中にエラーが発生しました！"
 
 #: etc/inc/pfsense-utils.inc:463 etc/inc/pfsense-utils.inc:448
 #: etc/inc/pfsense-utils.inc:448
 #, php-format
 msgid "Error code is '%1$s' - %2$s"
-msgstr "'%2$s' - エラーコードは'%1$s'です"
+msgstr "エラーコード '%1$s' - %2$s"
 
 #: etc/inc/pfsense-utils.inc:468 etc/inc/pfsense-utils.inc:453
 #: etc/inc/pfsense-utils.inc:453
 #, php-format
 msgid "setsockopt() failed, error: %s"
-msgstr "%s ：setsockopt.() 、エラー、障害が発生した"
+msgstr "setsockopt() に失敗しました: エラー %s"
 
 #: etc/inc/pfsense-utils.inc:471 etc/inc/pfsense-utils.inc:456
 #: etc/inc/pfsense-utils.inc:456
 #, php-format
 msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s"
-msgstr "マジックパケットは、MAC=%3$sを{%2$s}するは(%1$s)を送った"
+msgstr "マジックパケットが (%1$s) から {%2$s} MAC=%3$s へ送信されました"
 
 #: etc/inc/pfsense-utils.inc:518 etc/inc/pfsense-utils.inc:540
 #: etc/inc/pfsense-utils.inc:533 etc/inc/pfsense-utils.inc:555
 #: etc/inc/pfsense-utils.inc:518 etc/inc/pfsense-utils.inc:540
 #, php-format
 msgid "Restored %s of config file (maybe from CARP partner)"
-msgstr "configファイルの復元%sは（多分CARPパートナーから）"
+msgstr "%s 構成ファイルが復元されました ( CARP パートナーを元にした可能性があります )"
 
 #: etc/inc/pfsense-utils.inc:699 etc/inc/pfsense-utils.inc:714
 #: etc/inc/pfsense-utils.inc:699
 #, php-format
 msgid "XMLRPC communication error: %s"
-msgstr "XMLRPC通信エラー：%s"
+msgstr "XMLRPC 通信エラー: %s"
 
 #: etc/inc/pfsense-utils.inc:702 etc/inc/pfsense-utils.inc:717
 #: etc/inc/pfsense-utils.inc:702
 #, php-format
 msgid "XMLRPC request failed with error %1$s: %2$s"
-msgstr "XMLRPC要求は、エラーは%1$sで失敗しました：%2$s"
+msgstr "XMLRPC リクエストは失敗しました: エラー %1$s: %2$s"
 
 #: etc/inc/pfsense-utils.inc:795 etc/inc/pfsense-utils.inc:810
 #: etc/inc/pfsense-utils.inc:795
 msgid "reload_interfaces_sync() is starting."
-msgstr "reload_interfaces_sync.()開始しています。"
+msgstr "reload_interfaces_sync(): 開始しています"
 
 #: etc/inc/pfsense-utils.inc:803 etc/inc/pfsense-utils.inc:818
 #: etc/inc/pfsense-utils.inc:803
 msgid "Enabling system routing"
-msgstr "システムルーティングを有効にする"
+msgstr "システムルーティングを有効"
 
 #: etc/inc/pfsense-utils.inc:806 etc/inc/pfsense-utils.inc:821
 #: etc/inc/pfsense-utils.inc:806
@@ -1162,25 +1181,25 @@ msgstr "インタフェースのクリーンアップ"
 #: etc/inc/pfsense-utils.inc:912 etc/inc/pfsense-utils.inc:927
 #: etc/inc/pfsense-utils.inc:936 etc/inc/pfsense-utils.inc:936
 msgid "Enabling auto login was not possible."
-msgstr "自動ログインを有効にすることはできませんでした。"
+msgstr "自動ログインを有効にできませんでした"
 
 #: etc/inc/pfsense-utils.inc:1100 etc/inc/pfsense-utils.inc:1137
 #: etc/inc/pfsense-utils.inc:1191 etc/inc/pfsense-utils.inc:1196
 #: etc/inc/pfsense-utils.inc:1196
 msgid "No history data found!"
-msgstr "履歴はありませんデータ発見！"
+msgstr "履歴データはありません！"
 
 #: etc/inc/pfsense-utils.inc:1222 etc/inc/pfsense-utils.inc:1260
 #: etc/inc/pfsense-utils.inc:1313 etc/inc/pfsense-utils.inc:1318
 #: etc/inc/pfsense-utils.inc:1318
 msgid "device not present! Is the modem attached to the system?"
-msgstr "デバイスが存在しません！モデムがシステムに接続されていませんか？"
+msgstr "デバイスが存在しません！モデムはシステムに接続されていますか？"
 
 #: etc/inc/pfsense-utils.inc:1262 etc/inc/pfsense-utils.inc:1327
 #: etc/inc/pfsense-utils.inc:1380 etc/inc/pfsense-utils.inc:1385
 #: etc/inc/pfsense-utils.inc:1385
 msgid "running"
-msgstr "ランニング"
+msgstr "実行中"
 
 #: etc/inc/pfsense-utils.inc:1263 usr/local/www/graph.php:201
 #: etc/inc/pfsense-utils.inc:1328 etc/inc/pfsense-utils.inc:1381
@@ -1199,13 +1218,13 @@ msgstr "ブロッキング"
 #: etc/inc/pfsense-utils.inc:1424 etc/inc/pfsense-utils.inc:1429
 #: etc/inc/pfsense-utils.inc:1429
 msgid "check for ethernet loops"
-msgstr "イーサネットループの有無を調べる"
+msgstr "イーサネットループの確認"
 
 #: etc/inc/pfsense-utils.inc:1303 etc/inc/pfsense-utils.inc:1374
 #: etc/inc/pfsense-utils.inc:1427 etc/inc/pfsense-utils.inc:1432
 #: etc/inc/pfsense-utils.inc:1432
 msgid "learning"
-msgstr "ラーニング"
+msgstr "学習"
 
 #: etc/inc/pfsense-utils.inc:1306 etc/inc/pfsense-utils.inc:1377
 #: etc/inc/pfsense-utils.inc:1430 etc/inc/pfsense-utils.inc:1435
@@ -1218,17 +1237,17 @@ msgstr "転送"
 #: etc/inc/pfsense-utils.inc:1555
 #, php-format
 msgid "DNSCACHE: Found old IP %1$s and new IP %2$s"
-msgstr "DNSCACHE：実測古いIPは%1$sと新しいIP %2$s"
+msgstr "DNSCACHE: 旧 IP %1$s と 新 IP %2$s が見つかりました"
 
 #: etc/inc/pkg-utils.inc:211 etc/inc/pkg-utils.inc:226
 #: etc/inc/pkg-utils.inc:244 etc/inc/pkg-utils.inc:244
 msgid "Resyncing configuration for all packages."
-msgstr "すべてのパッケージの構成を再同期。"
+msgstr "全パッケージの構成を再同期しています"
 
 #: etc/inc/pkg-utils.inc:231 etc/inc/pkg-utils.inc:246
 #: etc/inc/pkg-utils.inc:264 etc/inc/pkg-utils.inc:264
 msgid "Syncing packages:"
-msgstr "パッケージを同期する："
+msgstr "パッケージの同期："
 
 #: etc/inc/pkg-utils.inc:273 etc/inc/pkg-utils.inc:288
 #: etc/inc/pkg-utils.inc:306 etc/inc/pkg-utils.inc:306
@@ -1236,7 +1255,9 @@ msgstr "パッケージを同期する："
 msgid ""
 "The %1$s package is missing required dependencies and must be reinstalled. "
 "%2$s"
-msgstr ""%1$sパッケージには、必要な依存関係が欠落して、再インストールする必要があります。"%2$s"
+msgstr ""
+"%1$s パッケージは、必要な依存関係が不足しているため、再インストールする必要があります"
+"%2$s"
 
 #: etc/inc/pkg-utils.inc:297 etc/inc/pkg-utils.inc:437
 #: etc/inc/pkg-utils.inc:312 etc/inc/pkg-utils.inc:462
@@ -1246,7 +1267,8 @@ msgstr ""%1$sパッケージには、必要な依存関係が欠落して、再�
 #, php-format
 msgid ""
 "The %s package is missing required dependencies and must be reinstalled."
-msgstr ""%sパッケージには、必要な依存関係が欠落して、再インストールする必要があります。"
+msgstr ""
+"%s パッケージは、必要な依存関係が不足しているため、再インストールする必要があります"
 
 #: etc/inc/pkg-utils.inc:404 etc/inc/pkg-utils.inc:429
 #: etc/inc/pkg-utils.inc:431 etc/inc/pkg-utils.inc:448
@@ -1254,7 +1276,8 @@ msgstr ""%sパッケージには、必要な依存関係が欠落して、再イ
 #, php-format
 msgid ""
 "The %s package is missing its configuration file and must be reinstalled."
-msgstr ""%sパッケージには、その設定ファイルが欠落して、再インストールする必要があります。"
+msgstr ""
+"%s パッケージは、構成ファイルが不足しているため、再インストールする必要があります"
 
 #: etc/inc/pkg-utils.inc:563 usr/local/www/pkg_mgr_install.php:101
 #: etc/inc/pkg-utils.inc:589 etc/inc/pkg-utils.inc:590
@@ -1262,7 +1285,7 @@ msgstr ""%sパッケージには、その設定ファイルが欠落して、再
 #: usr/local/www/pkg_mgr_install.php:97 usr/local/www/pkg_mgr_install.php:97
 #: etc/inc/pkg-utils.inc:625
 msgid "Beginning package installation."
-msgstr "パッケージのインストールを開始する。"
+msgstr "パッケージのインストールを開始しています"
 
 #: etc/inc/pkg-utils.inc:564 etc/inc/pkg-utils.inc:565
 #: etc/inc/pkg-utils.inc:590 etc/inc/pkg-utils.inc:591
@@ -1271,26 +1294,27 @@ msgstr "パッケージのインストールを開始する。"
 #: etc/inc/pkg-utils.inc:627
 #, php-format
 msgid "Beginning package installation for %s ."
-msgstr "%sために開始するパッケージのインストール。"
+msgstr "%s にパッケージのインストールを開始しています"
 
 #: etc/inc/pkg-utils.inc:569 etc/inc/pkg-utils.inc:595
 #: etc/inc/pkg-utils.inc:596 etc/inc/pkg-utils.inc:631
 #: etc/inc/pkg-utils.inc:631
 msgid "Downloading package configuration file... "
-msgstr "パッケージ構成ファイルのダウンロード... "
+msgstr "パッケージ構成ファイルをダウンロードしています... "
 
 #: etc/inc/pkg-utils.inc:571 etc/inc/pkg-utils.inc:597
 #: etc/inc/pkg-utils.inc:598 etc/inc/pkg-utils.inc:633
 #: etc/inc/pkg-utils.inc:633
 msgid "Downloading package configuration file..."
-msgstr "パッケージ構成ファイルのダウンロード..."
+msgstr "パッケージ構成ファイルをダウンロードしています..."
 
 #: etc/inc/pkg-utils.inc:575 etc/inc/pkg-utils.inc:601
 #: etc/inc/pkg-utils.inc:602 etc/inc/pkg-utils.inc:637
 #: etc/inc/pkg-utils.inc:637
 msgid ""
 "ERROR! Unable to fetch package configuration file. Aborting installation."
-msgstr ""エラー！パッケージ構成ファイルを取得することができません。インストールを中止しています。"
+msgstr ""
+"エラー！パッケージ構成ファイルを取得することができません。インストールを中止しています"
 
 #: etc/inc/pkg-utils.inc:577 etc/inc/pkg-utils.inc:603
 #: etc/inc/pkg-utils.inc:604 etc/inc/pkg-utils.inc:639
@@ -1298,7 +1322,9 @@ msgstr ""エラー！パッケージ構成ファイルを取得することが�
 msgid ""
 "ERROR! Unable to fetch package configuration file. Aborting package "
 "installation."
-msgstr ""エラー！パッケージ構成ファイルを取得することができません。"パッケージのインストールを中止しています。"
+msgstr ""
+"エラー！パッケージ構成ファイルを取得することができません"
+"パッケージのインストールを中止しています"
 
 #: etc/inc/pkg-utils.inc:579 etc/inc/pkg-utils.inc:605
 #: etc/inc/pkg-utils.inc:606 etc/inc/pkg-utils.inc:641
@@ -1307,82 +1333,85 @@ msgid ""
 "failed!\n"
 "\n"
 "Installation aborted.\n"
-msgstr ""失敗しました！\n"\n"インストールが中止されました。\n"
+msgstr ""
+"失敗しました！\n"
+"\n"
+"インストールが中止されました\n"
 
 #: etc/inc/pkg-utils.inc:591 etc/inc/pkg-utils.inc:617
 #: etc/inc/pkg-utils.inc:618 etc/inc/pkg-utils.inc:653
 #: etc/inc/pkg-utils.inc:653
 msgid "Saving updated package information..."
-msgstr "更新されたパッケージ情報の保存..."
+msgstr "更新されたパッケージ情報を保存しています..."
 
 #: etc/inc/pkg-utils.inc:595 etc/inc/pkg-utils.inc:621
 #: etc/inc/pkg-utils.inc:622 etc/inc/pkg-utils.inc:657
 #: etc/inc/pkg-utils.inc:657
 #, php-format
 msgid "Installed %s package."
-msgstr "インストールされてパッケージ。"
+msgstr "%s パッケージはインストールされました"
 
 #: etc/inc/pkg-utils.inc:599 etc/inc/pkg-utils.inc:625
 #: etc/inc/pkg-utils.inc:626 etc/inc/pkg-utils.inc:661
 #: etc/inc/pkg-utils.inc:661
 #, php-format
 msgid "Overwrote previous installation of %s."
-msgstr "%sの上書き以前のインストール。"
+msgstr "%s の前回のインストールを上書き"
 
 #: etc/inc/pkg-utils.inc:600 etc/inc/pkg-utils.inc:626
 #: etc/inc/pkg-utils.inc:627 etc/inc/pkg-utils.inc:662
 #: etc/inc/pkg-utils.inc:662
 msgid "overwrite!"
-msgstr "オーバーライト!"
+msgstr "上書き！"
 
 #: etc/inc/pkg-utils.inc:612 etc/inc/pkg-utils.inc:638
 #: etc/inc/pkg-utils.inc:639 etc/inc/pkg-utils.inc:674
 #: etc/inc/pkg-utils.inc:674
 msgid "Failed to install package."
-msgstr "パッケージのインストールに失敗しました。"
+msgstr "パッケージのインストールに失敗しました"
 
 #: etc/inc/pkg-utils.inc:616 etc/inc/pkg-utils.inc:642
 #: etc/inc/pkg-utils.inc:643 etc/inc/pkg-utils.inc:678
 #: etc/inc/pkg-utils.inc:678
 msgid "Writing configuration... "
-msgstr "設定を書き込み中... "
+msgstr "構成を書き込みしています... "
 
 #: etc/inc/pkg-utils.inc:652 etc/inc/pkg-utils.inc:678
 #: etc/inc/pkg-utils.inc:679 etc/inc/pkg-utils.inc:714
 #: etc/inc/pkg-utils.inc:714
 #, php-format
 msgid "The %s package is not installed.%sInstallation aborted."
-msgstr "%sパッケージがインストールされていません。%sインストールが中止されました。"
+msgstr "%s パッケージがインストールされていません。%s インストールが中止されました"
 
 #: etc/inc/pkg-utils.inc:667 etc/inc/pkg-utils.inc:693
 #: etc/inc/pkg-utils.inc:694 etc/inc/pkg-utils.inc:729
 #: etc/inc/pkg-utils.inc:729
 msgid "Installing"
-msgstr "インストール"
+msgstr "インストールしています"
 
 #: etc/inc/pkg-utils.inc:667 etc/inc/pkg-utils.inc:693
 #: etc/inc/pkg-utils.inc:694 etc/inc/pkg-utils.inc:729
 #: etc/inc/pkg-utils.inc:729
 msgid "and its dependencies."
-msgstr "とその依存関係。"
+msgstr "及び依存関係"
 
 #: etc/inc/pkg-utils.inc:668 etc/inc/pkg-utils.inc:694
 #: etc/inc/pkg-utils.inc:695 etc/inc/pkg-utils.inc:730
 #: etc/inc/pkg-utils.inc:730
 msgid "Downloading"
-msgstr "ダウンロード中"
+msgstr "ダウンロードしています"
 
 #: etc/inc/pkg-utils.inc:668 etc/inc/pkg-utils.inc:694
 #: etc/inc/pkg-utils.inc:695 etc/inc/pkg-utils.inc:730
 #: etc/inc/pkg-utils.inc:730
 msgid "and its dependencies... "
-msgstr "とその依存関係... "
+msgstr "及び依存関係... "
 
 #: etc/inc/pkg-utils.inc:680 etc/inc/pkg-utils.inc:706
 #: etc/inc/pkg-utils.inc:707 etc/inc/pkg-utils.inc:742
 #: etc/inc/pkg-utils.inc:742
 msgid "Package WAS NOT installed properly."
-msgstr "パッケージが正しくインストールされていません。"
+msgstr "パッケージが正しくインストールされていません"
 
 #: etc/inc/pkg-utils.inc:693 etc/inc/pkg-utils.inc:719
 #: etc/inc/pkg-utils.inc:720 etc/inc/pkg-utils.inc:755
@@ -1394,7 +1423,7 @@ msgstr "パッケージ構成を読み込んでいます... "
 #: etc/inc/pkg-utils.inc:725 etc/inc/pkg-utils.inc:760
 #: etc/inc/pkg-utils.inc:760
 msgid "Configuring package components...\n"
-msgstr "パッケージコンポーネントの設定...\n"
+msgstr "パッケージコンポーネントの構成をしています...\n"
 
 #: etc/inc/pkg-utils.inc:704 etc/inc/pkg-utils.inc:1049
 #: etc/inc/pkg-utils.inc:730 etc/inc/pkg-utils.inc:1086
@@ -1414,14 +1443,14 @@ msgstr "追加ファイル..."
 #: etc/inc/pkg-utils.inc:769 etc/inc/pkg-utils.inc:804
 #: etc/inc/pkg-utils.inc:804
 msgid "Extracting tarball to -C for "
-msgstr "のために -C へのtarballを解凍"
+msgstr "tarball を -C オプションで解凍しています: "
 
 #: etc/inc/pkg-utils.inc:748 etc/inc/pkg-utils.inc:774
 #: etc/inc/pkg-utils.inc:775 etc/inc/pkg-utils.inc:810
 #: etc/inc/pkg-utils.inc:810
 #, php-format
 msgid "Changing file mode to %1$s for %2$s%3$s%4$s"
-msgstr "%2$s%3$s%4$sをするために%1$sにファイルモードを変更する"
+msgstr "%2$s%3$s%4$s で %1$s にファイルモードを変更しています"
 
 #: etc/inc/pkg-utils.inc:764 etc/inc/pkg-utils.inc:1025
 #: etc/inc/pkg-utils.inc:790 etc/inc/pkg-utils.inc:1062
@@ -1429,7 +1458,7 @@ msgstr "%2$s%3$s%4$sをするために%1$sにファイルモードを変更す�
 #: etc/inc/pkg-utils.inc:826 etc/inc/pkg-utils.inc:1098
 #: etc/inc/pkg-utils.inc:826 etc/inc/pkg-utils.inc:1098
 msgid "Loading package instructions..."
-msgstr "ローディングパッケージの説明書..."
+msgstr "パッケージの取扱説明書を読み込んでいます..."
 
 #: etc/inc/pkg-utils.inc:779 etc/inc/pkg-utils.inc:805
 #: etc/inc/pkg-utils.inc:806 etc/inc/pkg-utils.inc:841
@@ -1441,19 +1470,19 @@ msgstr "カスタムコマンド..."
 #: etc/inc/pkg-utils.inc:810 etc/inc/pkg-utils.inc:845
 #: etc/inc/pkg-utils.inc:845
 msgid "Executing custom_php_global_functions()..."
-msgstr "custom_php_global_functions.()を実行..."
+msgstr "custom_php_global_functions() を実行しています..."
 
 #: etc/inc/pkg-utils.inc:790 etc/inc/pkg-utils.inc:816
 #: etc/inc/pkg-utils.inc:817 etc/inc/pkg-utils.inc:852
 #: etc/inc/pkg-utils.inc:852
 msgid "Executing custom_php_install_command()..."
-msgstr "custom_php_global_functions.()を実行..."
+msgstr "custom_php_global_functions() を実行しています..."
 
 #: etc/inc/pkg-utils.inc:809 etc/inc/pkg-utils.inc:845
 #: etc/inc/pkg-utils.inc:846 etc/inc/pkg-utils.inc:881
 #: etc/inc/pkg-utils.inc:881
 msgid "Executing custom_php_resync_config_command()..."
-msgstr "custom_php_global_functions.()を実行..."
+msgstr "custom_php_global_functions() を実行しています..."
 
 #: etc/inc/pkg-utils.inc:818 etc/inc/pkg-utils.inc:972
 #: etc/inc/pkg-utils.inc:854 etc/inc/pkg-utils.inc:1009
@@ -1487,41 +1516,41 @@ msgstr "パッケージ構成を読み込んでいます...失敗しました！
 #: etc/inc/pkg-utils.inc:902 etc/inc/pkg-utils.inc:937
 #: etc/inc/pkg-utils.inc:937
 msgid "Installation aborted."
-msgstr "インストールが中止されました。"
+msgstr "インストールが中止されました"
 
 #: etc/inc/pkg-utils.inc:867 etc/inc/pkg-utils.inc:903
 #: etc/inc/pkg-utils.inc:904 etc/inc/pkg-utils.inc:939
 #: etc/inc/pkg-utils.inc:939
 msgid "Unable to load package configuration. Installation aborted."
-msgstr "パッケージ構成を読み込むことができません。インストールが中止されました。"
+msgstr "パッケージ構成を読み込めません。インストールが中止されました"
 
 #: etc/inc/pkg-utils.inc:911 etc/inc/pkg-utils.inc:948
 #: etc/inc/pkg-utils.inc:949 etc/inc/pkg-utils.inc:984
 #: etc/inc/pkg-utils.inc:984
 #, php-format
 msgid "Starting package deletion for %s..."
-msgstr "%sのパッケージの削除を開始する..."
+msgstr "%s パッケージの削除を開始します..."
 
 #: etc/inc/pkg-utils.inc:931 etc/inc/pkg-utils.inc:968
 #: etc/inc/pkg-utils.inc:969 etc/inc/pkg-utils.inc:1004
 #: etc/inc/pkg-utils.inc:1004
 #, php-format
 msgid "The %s package is not installed.%sDeletion aborted."
-msgstr "%sのパッケージがインストールされていません。%sを削除は中止されました。"
+msgstr "%s パッケージがインストールされていません。%s の削除は中止されました"
 
 #: etc/inc/pkg-utils.inc:942 etc/inc/pkg-utils.inc:979
 #: etc/inc/pkg-utils.inc:980 etc/inc/pkg-utils.inc:1015
 #: etc/inc/pkg-utils.inc:1015
 #, php-format
 msgid "Removing %s package... "
-msgstr "%sのパッケージを削除しています..."
+msgstr "%s パッケージを削除しています..."
 
 #: etc/inc/pkg-utils.inc:943 etc/inc/pkg-utils.inc:980
 #: etc/inc/pkg-utils.inc:981 etc/inc/pkg-utils.inc:1016
 #: etc/inc/pkg-utils.inc:1016
 #, php-format
 msgid "Removing %s components..."
-msgstr "%sのコンポーネントを削除しています..."
+msgstr "%s コンポーネントを削除しています..."
 
 #: etc/inc/pkg-utils.inc:955 etc/inc/pkg-utils.inc:992
 #: etc/inc/pkg-utils.inc:993 etc/inc/pkg-utils.inc:1028
@@ -1539,14 +1568,14 @@ msgstr "アンインストールコマンド... "
 #: etc/inc/pkg-utils.inc:1107 etc/inc/pkg-utils.inc:1142
 #: etc/inc/pkg-utils.inc:1142
 msgid "Removing package instructions..."
-msgstr "パッケージの指示に従って削除しています..."
+msgstr "パッケージの取扱説明書を削除しています..."
 
 #: etc/inc/pkg-utils.inc:1071 etc/inc/pkg-utils.inc:1108
 #: etc/inc/pkg-utils.inc:1109 etc/inc/pkg-utils.inc:1144
 #: etc/inc/pkg-utils.inc:1144
 #, php-format
 msgid "Remove '%s'"
-msgstr "'%s'をを削除"
+msgstr "'%s' を削除"
 
 #: etc/inc/pkg-utils.inc:1078 etc/inc/pkg-utils.inc:1115
 #: etc/inc/pkg-utils.inc:1116 etc/inc/pkg-utils.inc:1151
@@ -1558,13 +1587,13 @@ msgstr "補助ファイル... "
 #: etc/inc/pkg-utils.inc:1130 etc/inc/pkg-utils.inc:1165
 #: etc/inc/pkg-utils.inc:1165
 msgid "Package XML... "
-msgstr "パッケージXML... "
+msgstr "パッケージ XML... "
 
 #: etc/inc/pkg-utils.inc:1111 etc/inc/pkg-utils.inc:1148
 #: etc/inc/pkg-utils.inc:1149 etc/inc/pkg-utils.inc:1184
 #: etc/inc/pkg-utils.inc:1184
 msgid "Configuration... "
-msgstr "コンフィギュレーション··· "
+msgstr "構成... "
 
 #: etc/inc/pkg-utils.inc:1205 etc/inc/pkg-utils.inc:1242
 #: etc/inc/pkg-utils.inc:1243 etc/inc/pkg-utils.inc:1274
