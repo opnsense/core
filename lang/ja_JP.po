@@ -2108,7 +2108,7 @@ msgstr "キュー制限"
 #: etc/inc/shaper.inc:1150 etc/inc/shaper.inc:1151 etc/inc/shaper.inc:1152
 #: etc/inc/shaper.inc:1156 etc/inc/shaper.inc:1199 etc/inc/shaper.inc:1199
 msgid "Queue limit in packets per second."
-msgstr "キュー制限 ( 1 秒毎のパケット数 )"
+msgstr "キュー制限 ( パケット数 / 秒 )"
 
 #: etc/inc/shaper.inc:1153 etc/inc/shaper.inc:1154 etc/inc/shaper.inc:1155
 #: etc/inc/shaper.inc:1159 etc/inc/shaper.inc:1202 etc/inc/shaper.inc:1202
