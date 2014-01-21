@@ -2575,18 +2575,18 @@ msgstr "帯域幅の割合は 1 〜 100 です"
 #: etc/inc/shaper.inc:1576 etc/inc/shaper.inc:1578 etc/inc/shaper.inc:1579
 #: etc/inc/shaper.inc:1582 etc/inc/shaper.inc:1633 etc/inc/shaper.inc:1633
 msgid "upperlimit service curve defined but missing (d) value"
-msgstr "上限サービス曲線が定義されていますが、(d) 値が入力されていません"
+msgstr "上限サービスカーブが定義されていますが、(d) 値が入力されていません"
 
 #: etc/inc/shaper.inc:1578 etc/inc/shaper.inc:1580 etc/inc/shaper.inc:1581
 #: etc/inc/shaper.inc:1584 etc/inc/shaper.inc:1635 etc/inc/shaper.inc:1635
 msgid ""
 "upperlimit service curve defined but missing initial bandwidth (m1) value"
-msgstr "上限サービス曲線が定義されていますが、初期帯域幅 (m1) が入力されていません"
+msgstr "上限サービスカーブが定義されていますが、初期帯域幅 (m1) が入力されていません"
 
 #: etc/inc/shaper.inc:1580 etc/inc/shaper.inc:1582 etc/inc/shaper.inc:1583
 #: etc/inc/shaper.inc:1586 etc/inc/shaper.inc:1637 etc/inc/shaper.inc:1637
 msgid "upperlimit m1 value needs to be Kb, Mb, Gb, or %"
-msgstr "上限 m1 値は KB、MB、GB、または % になります"
+msgstr "上限 m1 値には KB、MB、GB、または % が必要です"
 
 #: etc/inc/shaper.inc:1582 etc/inc/shaper.inc:1584 etc/inc/shaper.inc:1585
 #: etc/inc/shaper.inc:1588 etc/inc/shaper.inc:1639 etc/inc/shaper.inc:1639
@@ -2596,23 +2596,23 @@ msgstr "上限 d 値は数値です"
 #: etc/inc/shaper.inc:1584 etc/inc/shaper.inc:1586 etc/inc/shaper.inc:1587
 #: etc/inc/shaper.inc:1590 etc/inc/shaper.inc:1641 etc/inc/shaper.inc:1641
 msgid "upperlimit m2 value needs to be Kb, Mb, Gb, or %"
-msgstr "上限 m2 値は KB、MB、GB、または % になります"
+msgstr "上限 m2 値には KB、MB、GB、または % が必要です"
 
 #: etc/inc/shaper.inc:1598 etc/inc/shaper.inc:1600 etc/inc/shaper.inc:1601
 #: etc/inc/shaper.inc:1604 etc/inc/shaper.inc:1655 etc/inc/shaper.inc:1655
 msgid "linkshare service curve defined but missing (d) value"
-msgstr "リンク共有サービス曲線が定義されていますが、(d) 値が入力されていません"
+msgstr "リンク共有サービスカーブが定義されていますが、(d) 値が入力されていません"
 
 #: etc/inc/shaper.inc:1600 etc/inc/shaper.inc:1602 etc/inc/shaper.inc:1603
 #: etc/inc/shaper.inc:1606 etc/inc/shaper.inc:1657 etc/inc/shaper.inc:1657
 msgid ""
 "linkshare service curve defined but missing initial bandwidth (m1) value"
-msgstr ""リンク共有サービス曲線が定義されていますが、初期帯域幅 (m1) が入力されていません"
+msgstr ""リンク共有サービスカーブが定義されていますが、初期帯域幅 (m1) が入力されていません"
 
 #: etc/inc/shaper.inc:1602 etc/inc/shaper.inc:1604 etc/inc/shaper.inc:1605
 #: etc/inc/shaper.inc:1608 etc/inc/shaper.inc:1659 etc/inc/shaper.inc:1659
 msgid "linkshare m1 value needs to be Kb, Mb, Gb, or %"
-msgstr "リンク共有 m1 値は KB、MB、GB、または % になります"
+msgstr "リンク共有 m1 値には KB、MB、GB、または % が必要です"
 
 #: etc/inc/shaper.inc:1604 etc/inc/shaper.inc:1606 etc/inc/shaper.inc:1607
 #: etc/inc/shaper.inc:1610 etc/inc/shaper.inc:1661 etc/inc/shaper.inc:1661
@@ -2622,22 +2622,22 @@ msgstr "リンク共有 d 値は数値です"
 #: etc/inc/shaper.inc:1606 etc/inc/shaper.inc:1608 etc/inc/shaper.inc:1609
 #: etc/inc/shaper.inc:1612 etc/inc/shaper.inc:1663 etc/inc/shaper.inc:1663
 msgid "linkshare m2 value needs to be Kb, Mb, Gb, or %"
-msgstr "リンク共有 m2 値は KB、MB、GB、または % になります"
+msgstr "リンク共有 m2 値には KB、MB、GB、または % が必要です"
 
 #: etc/inc/shaper.inc:1608 etc/inc/shaper.inc:1610 etc/inc/shaper.inc:1611
 #: etc/inc/shaper.inc:1614 etc/inc/shaper.inc:1665 etc/inc/shaper.inc:1665
 msgid "realtime service curve defined but missing (d) value"
-msgstr "リアルタイムサービス曲線が定義されていますが、(d) 値が入力されていません"
+msgstr "リアルタイムサービスカーブが定義されていますが、(d) 値が入力されていません"
 
 #: etc/inc/shaper.inc:1610 etc/inc/shaper.inc:1612 etc/inc/shaper.inc:1613
 #: etc/inc/shaper.inc:1616 etc/inc/shaper.inc:1667 etc/inc/shaper.inc:1667
 msgid "realtime service curve defined but missing initial bandwidth (m1) value"
-msgstr "リアルタイムサービス曲線が定義されていますが、初期帯域幅 (m1) が入力されていません"
+msgstr "リアルタイムサービスカーブが定義されていますが、初期帯域幅 (m1) が入力されていません"
 
 #: etc/inc/shaper.inc:1625 etc/inc/shaper.inc:1627 etc/inc/shaper.inc:1628
 #: etc/inc/shaper.inc:1631 etc/inc/shaper.inc:1682 etc/inc/shaper.inc:1682
 msgid "realtime m1 value needs to be Kb, Mb, Gb, or %"
-msgstr "リアルタイム m1 値は KB、MB、GB、または % になります"
+msgstr "リアルタイム m1 値には KB、MB、GB、または % が必要です"
 
 #: etc/inc/shaper.inc:1627 etc/inc/shaper.inc:1629 etc/inc/shaper.inc:1630
 #: etc/inc/shaper.inc:1633 etc/inc/shaper.inc:1684 etc/inc/shaper.inc:1684
@@ -2647,7 +2647,7 @@ msgstr "リアルタイム d 値は数値です"
 #: etc/inc/shaper.inc:1629 etc/inc/shaper.inc:1631 etc/inc/shaper.inc:1632
 #: etc/inc/shaper.inc:1635 etc/inc/shaper.inc:1686 etc/inc/shaper.inc:1686
 msgid "realtime m2 value needs to be Kb, Mb, Gb, or %"
-msgstr "リアルタイム m2 値は KB、MB、GB、または % になります"
+msgstr "リアルタイム m2 値には KB、MB、GB、または % が必要です"
 
 #: etc/inc/shaper.inc:1858 etc/inc/shaper.inc:2336 etc/inc/shaper.inc:2602
 #: etc/inc/shaper.inc:3039 etc/inc/shaper.inc:1860 etc/inc/shaper.inc:2338
@@ -2657,7 +2657,7 @@ msgstr "リアルタイム m2 値は KB、MB、GB、または % になります"
 #: etc/inc/shaper.inc:2407 etc/inc/shaper.inc:2678 etc/inc/shaper.inc:1924
 #: etc/inc/shaper.inc:2407 etc/inc/shaper.inc:2678
 msgid "Gbit/s"
-msgstr "ギガビット / 秒"
+msgstr "Gbit/s"
 
 #: etc/inc/shaper.inc:1862 etc/inc/shaper.inc:2340 etc/inc/shaper.inc:2606
 #: etc/inc/shaper.inc:3035 etc/inc/shaper.inc:1864 etc/inc/shaper.inc:2342
@@ -2667,7 +2667,7 @@ msgstr "ギガビット / 秒"
 #: etc/inc/shaper.inc:2411 etc/inc/shaper.inc:2682 etc/inc/shaper.inc:1928
 #: etc/inc/shaper.inc:2411 etc/inc/shaper.inc:2682
 msgid "Mbit/s"
-msgstr "メガビット / 秒"
+msgstr "Mbit/s"
 
 #: etc/inc/shaper.inc:1866 etc/inc/shaper.inc:2344 etc/inc/shaper.inc:2610
 #: etc/inc/shaper.inc:3031 usr/local/www/services_captiveportal.php:560
@@ -2686,7 +2686,7 @@ msgstr "メガビット / 秒"
 #: usr/local/www/services_captiveportal.php:585 etc/inc/shaper.inc:1932
 #: etc/inc/shaper.inc:2415 etc/inc/shaper.inc:2686
 msgid "Kbit/s"
-msgstr "キロビット / 秒"
+msgstr "Kbit/s"
 
 #: etc/inc/shaper.inc:1870 etc/inc/shaper.inc:2348 etc/inc/shaper.inc:2614
 #: etc/inc/shaper.inc:3043 etc/inc/shaper.inc:1872 etc/inc/shaper.inc:2350
@@ -2696,7 +2696,7 @@ msgstr "キロビット / 秒"
 #: etc/inc/shaper.inc:2419 etc/inc/shaper.inc:2690 etc/inc/shaper.inc:1936
 #: etc/inc/shaper.inc:2419 etc/inc/shaper.inc:2690
 msgid "Bit/s"
-msgstr "ビット / 秒"
+msgstr "Bit/s"
 
 #: etc/inc/shaper.inc:1876 etc/inc/shaper.inc:2354 etc/inc/shaper.inc:2620
 #: etc/inc/shaper.inc:1878 etc/inc/shaper.inc:2356 etc/inc/shaper.inc:2622
@@ -2710,7 +2710,7 @@ msgstr "このキューの帯域幅の量を選択してください"
 #: etc/inc/shaper.inc:1879 etc/inc/shaper.inc:1881 etc/inc/shaper.inc:1882
 #: etc/inc/shaper.inc:1887 etc/inc/shaper.inc:1945 etc/inc/shaper.inc:1945
 msgid "Service Curve (sc)"
-msgstr "サービス曲線 (SC)"
+msgstr "サービスカーブ (SC)"
 
 #: etc/inc/shaper.inc:1886 etc/inc/shaper.inc:1888 etc/inc/shaper.inc:1889
 #: etc/inc/shaper.inc:1894 etc/inc/shaper.inc:1952 etc/inc/shaper.inc:1952
@@ -2750,7 +2750,7 @@ msgid ""
 "control the initial bandwidth assignment. For the first d milliseconds the "
 "queue gets the bandwidth given as m1, afterwards the value given in m2."
 msgstr ""
-"サービス曲線の仕様形式は、(m1、d、m2) です。 "
+"サービスカーブの仕様形式は、(m1、d、m2) です。 "
 "m2 はキューに割り当てられた帯域幅を制御します。"
 "m1 及び d は任意で、割り当てられる帯域幅の初期値を制御することができます。"
 "最初の d ミリ秒間は、キューは m1 で与えられる帯域幅を取得し"
@@ -2796,7 +2796,7 @@ msgstr "PLR は 1 〜 100 の整数です"
 #: etc/inc/shaper.inc:2800 etc/inc/shaper.inc:2802 etc/inc/shaper.inc:2803
 #: etc/inc/shaper.inc:2808 etc/inc/shaper.inc:2876 etc/inc/shaper.inc:2895
 msgid "Buckets must be an integer between 16 and 65535."
-msgstr "バケットは、16 〜 65535 の間の整数でなければなりません"
+msgstr "バケットは 16 〜 65535 の整数です"
 
 #: etc/inc/shaper.inc:2902 etc/inc/shaper.inc:2906 etc/inc/shaper.inc:2921
 #: etc/inc/shaper.inc:2922 etc/inc/shaper.inc:2927 etc/inc/shaper.inc:2995
@@ -3083,12 +3083,11 @@ msgstr ""
 "ヒント: 通常はフィールドを空のままにしてください"
 "ハッシュサイズの設定が増加します"
 
-
 #: etc/inc/shaper.inc:3176 etc/inc/shaper.inc:3184 etc/inc/shaper.inc:3339
 #: etc/inc/shaper.inc:3340 etc/inc/shaper.inc:3347 etc/inc/shaper.inc:3415
 #: etc/inc/shaper.inc:3495
 msgid "Weight must be an integer between 1 and 100."
-msgstr "重みは 1 〜 100 の整数です"
+msgstr "重み付けは 1 〜 100 の整数です"
 
 #: etc/inc/shaper.inc:3274 etc/inc/shaper.inc:3282 etc/inc/shaper.inc:3437
 #: etc/inc/shaper.inc:3438 etc/inc/shaper.inc:3445 etc/inc/shaper.inc:3513
@@ -3141,7 +3140,7 @@ msgstr "なし"
 #: usr/local/www/system_gateways_edit.php:587 etc/inc/shaper.inc:3564
 #: usr/local/www/system_gateways_edit.php:587 etc/inc/shaper.inc:3666
 msgid "Weight"
-msgstr "重み"
+msgstr "重み付け"
 
 #: etc/inc/shaper.inc:3325 etc/inc/shaper.inc:3337 etc/inc/shaper.inc:3492
 #: etc/inc/shaper.inc:3493 etc/inc/shaper.inc:3500 etc/inc/shaper.inc:3568
@@ -3261,7 +3260,7 @@ msgstr "エラー: ca.pem を system_webgui_start.()%s で開けません"
 #: etc/inc/system.inc:1134 etc/inc/system.inc:1186 etc/inc/system.inc:1166
 #: etc/inc/system.inc:1115 etc/inc/system.inc:1174
 msgid "ssl configuration"
-msgstr "SSL 構成"
+msgstr "SSL の構成"
 
 #: etc/inc/system.inc:1161 etc/inc/system.inc:1213 etc/inc/system.inc:1193
 #: etc/inc/system.inc:1142 etc/inc/system.inc:1201
@@ -3366,97 +3365,97 @@ msgstr "エラー: psk.txt を vpn_ipsec_configure() で開けません"
 #: etc/inc/vpn.inc:312 etc/inc/vpn.inc:311
 #, php-format
 msgid "Error: cannot open racoon.conf in vpn_ipsec_configure()."
-msgstr "エラー： vpn_ipsec_configure.()でのracoon.confを開くことができません。"
+msgstr "エラー: racoon.conf を vpn_ipsec_configure() で開けません"
 
 #: etc/inc/vpn.inc:404 etc/inc/vpn.inc:403
 #, php-format
 msgid "Error: cannot open server %s in vpn.\n"
-msgstr "エラー： vpn.\nでサーバー%sを開くことはできません"
+msgstr "エラー: VPN でサーバ %s を開けません"
 
 #: etc/inc/vpn.inc:560 etc/inc/vpn.inc:559 etc/inc/vpn.inc:546
 #: etc/inc/vpn.inc:549 etc/inc/vpn.inc:548
 #, php-format
 msgid "Error: Invalid phase1 certificate reference for %s"
-msgstr "エラー： %sの無効なフェーズ1証明書の参照"
+msgstr "エラー: %s のフェーズ 1 証明書参照は無効です"
 
 #: etc/inc/vpn.inc:569 etc/inc/vpn.inc:568 etc/inc/vpn.inc:555
 #: etc/inc/vpn.inc:558 etc/inc/vpn.inc:557
 #, php-format
 msgid "Error: Cannot write phase1 certificate file for %s"
-msgstr "エラー： %sためのフェーズ1の証明書ファイルを書き込むことができません"
+msgstr "エラー: %s のフェーズ 1 証明書ファイルを書き込めません"
 
 #: etc/inc/vpn.inc:580 etc/inc/vpn.inc:579 etc/inc/vpn.inc:566
 #: etc/inc/vpn.inc:569 etc/inc/vpn.inc:568
 #, php-format
 msgid "Error: Cannot write phase1 key file for %s"
-msgstr "エラー： %sためのフェーズ1キーファイルを書き込むことができません"
+msgstr "エラー: %s のフェーズ 1 鍵ファイルを書き込めません"
 
 #: etc/inc/vpn.inc:593 etc/inc/vpn.inc:592 etc/inc/vpn.inc:579
 #: etc/inc/vpn.inc:582 etc/inc/vpn.inc:581
 #, php-format
 msgid "Error: Cannot write phase1 CA certificate file for %s"
-msgstr "エラー： %sためのフェーズ1のCA証明書ファイルを書き込むことができません"
+msgstr "エラー: %s のフェーズ 1 CA 証明書ファイルを書き込めません"
 
 #: etc/inc/vpn.inc:826 etc/inc/vpn.inc:829
 #, php-format
 msgid "Error: cannot open spd.conf in vpn_ipsec_configure()."
-msgstr "エラー： vpn_ipsec_configure.()にspd.confを開くことができません。"
+msgstr "エラー: spd.conf を vpn_ipsec_configure() で開けません"
 
 #: etc/inc/vpn.inc:1008 etc/inc/vpn.inc:1014 etc/inc/vpn.inc:1013
 #: etc/inc/vpn.inc:1022 etc/inc/vpn.inc:1035 etc/inc/vpn.inc:1034
 msgid "Forcefully reloading IPsec racoon daemon"
-msgstr "強制的にIPsec racoonデーモンを再ロード"
+msgstr "強制的に IPsec racoon デーモンを再読み込みしています"
 
 #: etc/inc/vpn.inc:1052 etc/inc/vpn.inc:1058 etc/inc/vpn.inc:1056
 #: etc/inc/vpn.inc:1065 etc/inc/vpn.inc:1078 etc/inc/vpn.inc:1077
 msgid "Configuring PPTP VPN service... "
-msgstr "PPTPのVPNサービスの設定..."
+msgstr "PPTP の VPN サービスの構成をしています..."
 
 #: etc/inc/vpn.inc:1062 etc/inc/vpn.inc:1068 etc/inc/vpn.inc:1066
 #: etc/inc/vpn.inc:1075 etc/inc/vpn.inc:1088 etc/inc/vpn.inc:1087
 msgid "Could not kill mpd within 3 seconds. Trying again."
-msgstr "3秒以内にMPDを殺すことができませんでした。再試行。"
+msgstr "3 秒以内に MPD を殺せませんでした。再試行しています"
 
 #: etc/inc/vpn.inc:1085 etc/inc/vpn.inc:1091 etc/inc/vpn.inc:1089
 #: etc/inc/vpn.inc:1098 etc/inc/vpn.inc:1111 etc/inc/vpn.inc:1110
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_pptpd_configure()."
-msgstr "エラー： vpn_pptpd_configure.()にmpd.confを開くことができません。"
+msgstr "エラー: mpd.conf を vpn_pptpd_configure() で開けません"
 
 #: etc/inc/vpn.inc:1198 etc/inc/vpn.inc:1204 etc/inc/vpn.inc:1202
 #: etc/inc/vpn.inc:1212 etc/inc/vpn.inc:1225 etc/inc/vpn.inc:1224
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_pptpd_configure()."
-msgstr "エラー： vpn_pptpd_configure.()にmpd.linksを開くことができません。"
+msgstr "エラー: mpd.links を vpn_pptpd_configure() で開けません"
 
 #: etc/inc/vpn.inc:1222 etc/inc/vpn.inc:1228 etc/inc/vpn.inc:1226
 #: etc/inc/vpn.inc:1237 etc/inc/vpn.inc:1250 etc/inc/vpn.inc:1249
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_pptpd_configure()."
-msgstr "エラー： vpn_pptpd_configure.()にmpd.secretを開くことができません。"
+msgstr "エラー: mpd.secret を vpn_pptpd_configure() で開けません"
 
 #: etc/inc/vpn.inc:1279 etc/inc/vpn.inc:1285 etc/inc/vpn.inc:1283
 #: etc/inc/vpn.inc:1295 etc/inc/vpn.inc:1308 etc/inc/vpn.inc:1307
 msgid "Configuring PPPoE VPN service... "
-msgstr "PPPoEのVPNサービスの設定..."
+msgstr "PPPoE VPN サービスの構成をしています..."
 
 #: etc/inc/vpn.inc:1303 etc/inc/vpn.inc:1309 etc/inc/vpn.inc:1307
 #: etc/inc/vpn.inc:1319 etc/inc/vpn.inc:1332 etc/inc/vpn.inc:1331
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_pppoe_configure()."
-msgstr "エラー： vpn_pppoe_configure.()にmpd.confを開くことができません。"
+msgstr "エラー: mpd.conf を vpn_pppoe_configure() で開けません"
 
 #: etc/inc/vpn.inc:1406 etc/inc/vpn.inc:1412 etc/inc/vpn.inc:1410
 #: etc/inc/vpn.inc:1423 etc/inc/vpn.inc:1436 etc/inc/vpn.inc:1435
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_pppoe_configure()."
-msgstr "エラー： vpn_pppoe_configure.()にmpd.linksを開くことができません。"
+msgstr "エラー: mpd.links を vpn_pppoe_configure() で開けません"
 
 #: etc/inc/vpn.inc:1432 etc/inc/vpn.inc:1438 etc/inc/vpn.inc:1436
 #: etc/inc/vpn.inc:1450 etc/inc/vpn.inc:1463 etc/inc/vpn.inc:1462
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_pppoe_configure()."
-msgstr "エラー： vpn_pppoe_configure.()にmpd.secretを開くことができません。"
+msgstr "エラー: mpd.secret を vpn_pppoe_configure() で開けません"
 
 #: etc/inc/vpn.inc:1460 usr/local/www/system_firmware_check.php:139
 #: etc/inc/vpn.inc:1470 etc/inc/vpn.inc:1468
@@ -3464,36 +3463,36 @@ msgstr "エラー： vpn_pppoe_configure.()にmpd.secretを開くことができ
 #: usr/local/www/system_firmware_check.php:133 etc/inc/vpn.inc:1496
 #: usr/local/www/system_firmware_check.php:133 etc/inc/vpn.inc:1495
 msgid "done"
-msgstr "終わった"
+msgstr "完了"
 
 #: etc/inc/vpn.inc:1479 etc/inc/vpn.inc:1489 etc/inc/vpn.inc:1487
 #: etc/inc/vpn.inc:1502 etc/inc/vpn.inc:1515 etc/inc/vpn.inc:1514
 msgid "Configuring l2tp VPN service... "
-msgstr "L2TPのVPNサービスの設定..."
+msgstr "L2TP VPN サービスの構成をしています..."
 
 #: etc/inc/vpn.inc:1504 etc/inc/vpn.inc:1514 etc/inc/vpn.inc:1512
 #: etc/inc/vpn.inc:1527 etc/inc/vpn.inc:1540 etc/inc/vpn.inc:1539
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_l2tp_configure()."
-msgstr "エラー： vpn_l2tp_configure.()にmpd.confを開くことができません。"
+msgstr "エラー: mpd.conf を vpn_l2tp_configure() で開けません"
 
 #: etc/inc/vpn.inc:1597 etc/inc/vpn.inc:1607 etc/inc/vpn.inc:1605
 #: etc/inc/vpn.inc:1621 etc/inc/vpn.inc:1634 etc/inc/vpn.inc:1633
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_l2tp_configure()."
-msgstr "エラー： vpn_l2tp_configure.()にmpd.linksを開くことができません。"
+msgstr "エラー: mpd.links を vpn_l2tp_configure() で開けません"
 
 #: etc/inc/vpn.inc:1622 etc/inc/vpn.inc:1632 etc/inc/vpn.inc:1630
 #: etc/inc/vpn.inc:1647 etc/inc/vpn.inc:1660 etc/inc/vpn.inc:1659
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_l2tp_configure()."
-msgstr "エラー： vpn_l2tp_configure.()にmpd.secretを開くことができません。"
+msgstr "エラー: mpd.secret を vpn_l2tp_configure() で開けません"
 
 #: etc/inc/vpn.inc:1769 etc/inc/vpn.inc:1779 etc/inc/vpn.inc:1764
 #: etc/inc/vpn.inc:1836 etc/inc/vpn.inc:1849 etc/inc/vpn.inc:1846
 #, php-format
 msgid "Could not determine VPN endpoint for '%s'"
-msgstr "「 %s'のVPNエンドポイントを決定することができませんでした"
+msgstr "'%s' の VPN エンドポイントを確立できませんでした"
 
 #: etc/inc/vpn.inc:1774 etc/inc/vpn.inc:1784 etc/inc/vpn.inc:1769
 #: etc/inc/vpn.inc:1841 etc/inc/vpn.inc:1854 etc/inc/vpn.inc:1851
@@ -3501,7 +3500,8 @@ msgstr "「 %s'のVPNエンドポイントを決定することができませ�
 msgid ""
 "IPSEC: ERROR: One of the endpoints is not a IP address. Old EP '%1$s' new EP "
 "'%2$s'"
-msgstr "「 IPSEC ：エラー：エンドポイントの一つは、 IPアドレスの旧EP "は%1$s'新EPではありません」 「 %2$s'"
+msgstr "IPSEC: エラー: エンドポイントの 1 つが IP アドレスではありません"
+"旧 EP '%1$s' 新 EP '%2$s'"
 
 #: etc/inc/vpn.inc:1777 etc/inc/vpn.inc:1787 etc/inc/vpn.inc:1772
 #: etc/inc/vpn.inc:1844 etc/inc/vpn.inc:1857 etc/inc/vpn.inc:1854
@@ -3509,7 +3509,8 @@ msgstr "「 IPSEC ：エラー：エンドポイントの一つは、 IPアド�
 msgid ""
 "IPSEC: ERROR: One of the remote endpoints is not a IP address. Old RG '%1$s' "
 "new RG '%2$s'"
-msgstr "「 IPSEC ：エラー：リモートエンドポイントの一つは、 IPアドレスオールドRG'は%1$s 」ではない「新しいRG' %2$s'"
+msgstr "IPSEC: エラー: リモートエンドポイントの 1 つが IP アドレスではありません"
+"旧 RG '%1$s' 新 RG '%2$s'"
 
 #: etc/inc/vpn.inc:1833 etc/inc/vpn.inc:1843 etc/inc/vpn.inc:1835
 #: etc/inc/vpn.inc:1907 etc/inc/vpn.inc:1920 etc/inc/vpn.inc:1917
@@ -3517,34 +3518,36 @@ msgstr "「 IPSEC ：エラー：リモートエンドポイントの一つは�
 msgid ""
 "Reloading IPsec tunnel '%1$s'. Previous IP '%2$s', current IP '%3$s'. "
 "Reloading policy"
-msgstr "「リロードIPsecトンネル」は%1$s' 。以前のIP' %2$s'、現在のIP' %3$s' 。 "リロードポリシー"
+msgstr ""
+"IPsec トンネル '%1$s' を再読み込みしています。前 IP ' %2$s' 現 IP ' %3$s'"
+"ポリシを再読み込みしています"
 
 #: etc/inc/xmlparse.inc:85 etc/inc/xmlparse_attr.inc:78
 #: etc/inc/xmlparse_attr.inc:78 etc/inc/xmlparse.inc:85
 #, php-format
 msgid "XML error: %1$s at line %2$d cannot occur more than once"
-msgstr "XMLエラー：行％ 2の $ dのは%1$sが複数回出現することはできません"
+msgstr "XML エラー: %2$d 行の %1$s は複数回記述できません"
 
 #: etc/inc/xmlparse.inc:176 etc/inc/xmlparse_attr.inc:187
 #: etc/inc/xmlparse_attr.inc:187 etc/inc/xmlparse.inc:176
 msgid "Error: could not open XML input"
-msgstr "エラー： XML入力をオープンできませんでした"
+msgstr "エラー: XML 入力を開けませんでした"
 
 #: etc/inc/xmlparse.inc:182 etc/inc/xmlparse.inc:182
 #, php-format
 msgid "XML error: %1$s at line %2$d in %3$s"
-msgstr "XMLエラー：行％では%1$s %3$s中2 $ dの"
+msgstr "XML エラー: %3$s: %2$d 行: %1$s"
 
 #: etc/inc/xmlparse.inc:198 etc/inc/xmlparse_attr.inc:210
 #: etc/inc/xmlparse.inc:199 etc/inc/xmlparse_attr.inc:210
 #: etc/inc/xmlparse.inc:199
 #, php-format
 msgid "XML error: no %s object found!"
-msgstr "XMLエラー：なし%sオブジェクト見つからない ！"
+msgstr "XML エラー: %s オブジェクトがありません！"
 
 #: etc/inc/xmlrpc_client.inc:152 etc/inc/xmlrpc_client.inc:152
 msgid "Unknown method"
-msgstr "未知の方法"
+msgstr "不明なメソッドです"
 
 #: etc/inc/xmlrpc_client.inc:153 etc/inc/xmlrpc_client.inc:153
 msgid "Invalid return payload: enable debugging to examine incoming payload"
@@ -6674,7 +6677,7 @@ msgstr "RRDダンプがは%1$sで終了しました失敗し、エラーは、�
 #: etc/inc/rrd.inc:98
 #, php-format
 msgid "RRD create failed exited with %1$s, the error is: %2$s"
-msgstr "RRDは%1$sで終了しました作成に失敗しました、エラー： %2$s"
+msgstr "RRDは%1$sで終了しました作成に失敗しました、エラー: %2$s"
 
 #: etc/inc/rrd.inc:70 etc/inc/rrd.inc:106 etc/inc/rrd.inc:110
 #: etc/inc/rrd.inc:113 etc/inc/rrd.inc:113
@@ -6698,7 +6701,7 @@ msgstr "RRDグラフを生成する..."
 #: etc/inc/rrd.inc:247
 #, php-format
 msgid "RRD restore failed exited with %1$s, the error is: %2$s%3$s"
-msgstr "RRDは%1$sで終了しました復元に失敗しました、エラー： %2$s%3$s"
+msgstr "RRDは%1$sで終了しました復元に失敗しました、エラー: %2$s%3$s"
 
 #: etc/inc/rrd.inc:758 etc/inc/rrd.inc:782 etc/inc/rrd.inc:803
 #: etc/inc/rrd.inc:805 etc/inc/rrd.inc:808 etc/inc/rrd.inc:808
@@ -7135,7 +7138,7 @@ msgstr "バウチャーのサポートを有効にする..."
 #: etc/inc/voucher.inc:505 etc/inc/voucher.inc:508 etc/inc/voucher.inc:523
 #, php-format
 msgid "Error: cannot write voucher.cfg"
-msgstr "エラー： voucher.cfgを書き込むことはできません"
+msgstr "エラー: voucher.cfgを書き込むことはできません"
 
 #: etc/inc/voucher.inc:556 etc/inc/voucher.inc:559 etc/inc/voucher.inc:574
 #, php-format
@@ -34746,7 +34749,7 @@ msgstr "申し訳ありませんが、我々は%sため、グラフにデータ�
 #: usr/local/www/status_rrd_graph_img.php:1113
 #, php-format
 msgid "Failed to create graph with error code %1$s, the error is: %2$s"
-msgstr "エラーコードは%1$sでグラフの作成に失敗しました、エラー： %2$s"
+msgstr "エラーコードは%1$sでグラフの作成に失敗しました、エラー: %2$s"
 
 #: usr/local/www/status_rrd_graph_img.php:1117
 #: usr/local/www/status_rrd_graph_img.php:1124
