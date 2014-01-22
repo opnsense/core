@@ -1247,7 +1247,7 @@ msgstr "全パッケージの構成を再同期しています"
 #: etc/inc/pkg-utils.inc:231 etc/inc/pkg-utils.inc:246
 #: etc/inc/pkg-utils.inc:264 etc/inc/pkg-utils.inc:264
 msgid "Syncing packages:"
-msgstr "パッケージの同期："
+msgstr "パッケージの同期: "
 
 #: etc/inc/pkg-utils.inc:273 etc/inc/pkg-utils.inc:288
 #: etc/inc/pkg-utils.inc:306 etc/inc/pkg-utils.inc:306
@@ -3519,7 +3519,7 @@ msgid ""
 "Reloading IPsec tunnel '%1$s'. Previous IP '%2$s', current IP '%3$s'. "
 "Reloading policy"
 msgstr ""
-"IPsec トンネル '%1$s' を再読み込みしています。前 IP ' %2$s' 現 IP ' %3$s'"
+"IPsec トンネル '%1$s' を再読み込みしています。前 IP '%2$s' 現 IP '%3$s'"
 "ポリシを再読み込みしています"
 
 #: etc/inc/xmlparse.inc:85 etc/inc/xmlparse_attr.inc:78
@@ -3551,139 +3551,150 @@ msgstr "不明なメソッドです"
 
 #: etc/inc/xmlrpc_client.inc:153 etc/inc/xmlrpc_client.inc:153
 msgid "Invalid return payload: enable debugging to examine incoming payload"
-msgstr "無効な戻りペイロード：受信ペイロードを検査するためにデバッグを有効に"
+msgstr "戻りペイロードが無効です: 受信ペイロードを検査するにはデバッグを有効にしてください"
 
 #: etc/inc/xmlrpc_client.inc:154 etc/inc/xmlrpc_client.inc:154
 msgid "Incorrect parameters passed to method"
-msgstr "メソッドに渡されたパラメータが正しくありません"
+msgstr "メソッドに渡されたパラメータが不正です"
 
 #: etc/inc/xmlrpc_client.inc:155 etc/inc/xmlrpc_client.inc:155
 msgid "Can't introspect: method unknown"
-msgstr "イントロスペクションすることはできません：メソッド未知"
+msgstr "イントロスペクションできません: 不明なメソッドです"
 
 #: etc/inc/xmlrpc_client.inc:156 etc/inc/xmlrpc_client.inc:156
 msgid "Didn't receive 200 OK from remote server."
-msgstr "リモートサーバから200 OKを受信しませんでした。"
+msgstr "リモートサーバから 200 OK を受信しませんでした"
 
 #: etc/inc/xmlrpc_client.inc:157 etc/inc/xmlrpc_client.inc:157
 msgid "The requested method didn't return an XML_RPC_Response object."
-msgstr "要求されたメソッドは、はXML_RPC_Responseオブジェクトが返されませんでした。"
+msgstr "要求されたメソッドは XML_RPC_Response オブジェクト を返しませんでした"
 
 #: etc/inc/xmlrpc_client.inc:158 etc/inc/xmlrpc_client.inc:158
 msgid "Invalid request payload"
-msgstr "無効な要求ペイロード"
+msgstr "要求ペイロードが無効です"
 
 #: etc/inc/xmlrpc_client.inc:260 etc/inc/xmlrpc_client.inc:260
 msgid "missing top level xmlrpc element"
-msgstr "トップレベルのXMLRPC要素がありません"
+msgstr "トップレベル XMLRPC 要素がありません"
 
 #: etc/inc/xmlrpc_client.inc:268 etc/inc/xmlrpc_client.inc:268
 #, php-format
 msgid "xmlrpc element %1$s cannot be child of %2$s"
-msgstr "XMLRPC要素は%1$sは%2$sの子にすることはできません"
+msgstr "XMLRPC 要素 %1$s は %2$s の子にできません"
 
 #: etc/inc/xmlrpc_client.inc:431 etc/inc/xmlrpc_client.inc:431
 msgid "Non-numeric value received in INT or DOUBLE"
-msgstr "数値以外の値がINTまたはDOUBLEで受信"
+msgstr "INT もしくは DOUBLE として数値ではない値を受信しました"
 
 #: etc/inc/xmlrpc_client.inc:860 etc/inc/xmlrpc_client.inc:860
 #, php-format
 msgid "send()'s %s parameter must be an XML_RPC_Message object."
-msgstr "send.()の%sパラメータはXML_RPC_Messageオブジェクトでなければなりません。"
+msgstr "send() の %s パラメータは XML_RPC_Message オブジェクトです"
 
 #: etc/inc/xmlrpc_client.inc:951 etc/inc/xmlrpc_client.inc:951
 #, php-format
 msgid ""
 "Connection to proxy server \n"
 " %1$s:%2$s failed. %3$s"
-msgstr "は%1$s 「プロキシサーバ\nへの接続」 ： %2$sに失敗しました。 %3$s"
+msgstr ""
+"プロキシサーバに接続しています\n"
+"%1$s: %2$s 失敗しました。%3$s"
 
 #: etc/inc/xmlrpc_client.inc:957 etc/inc/xmlrpc_client.inc:957
 #, php-format
 msgid ""
 "Connection to RPC server \n"
 " %1$s:%2$s failed. %3$s"
-msgstr "は%1$s 「RPCサーバー\nへの接続」 ： %2$sに失敗しました。 %3$s"
+msgstr ""
+"PRC サーバに接続しています\n"
+"%1$s: %2$s 失敗しました。%3$s"
 
 #: etc/inc/xmlrpc_client.inc:1330 etc/inc/xmlrpc_client.inc:1330
 msgid "The submitted request did not contain this parameter"
-msgstr "送信された要求は、このパラメータが含まれていませんでした"
+msgstr "送信された要求に、このパラメータが含まれていませんでした"
 
 #: etc/inc/xmlrpc_client.inc:1361 etc/inc/xmlrpc_client.inc:1361
 msgid "mb_convert_encoding() is not available"
-msgstr "mb_convert_encoding.()は使用できません"
+msgstr "mb_convert_encoding() は使用できません"
 
 #: etc/inc/xmlrpc_client.inc:1470 etc/inc/xmlrpc_client.inc:1470
 #, php-format
 msgid "HTTP error, got response: %s"
-msgstr "HTTPエラー、持っ応答： %s"
+msgstr "HTTP エラー 受信した応答:  %s"
 
 #: etc/inc/xmlrpc_client.inc:1496
 msgid "XML error at line 1, check URL"
-msgstr "1行目のXMLエラー、 URLを確認してください"
+msgstr "1行目が XML エラーです。URL を確認してください"
 
 #: etc/inc/xmlrpc_client.inc:1591 etc/inc/xmlrpc_client.inc:1593
 #: etc/inc/xmlrpc_client.inc:1593
 msgid "Scalar can have only one value"
-msgstr "スカラ1つの値しか持つことができます"
+msgstr "スカラ が持てる値は 1 つだけです"
 
 #: etc/inc/xmlrpc_client.inc:1598 etc/inc/xmlrpc_client.inc:1600
 #: etc/inc/xmlrpc_client.inc:1600
 #, php-format
 msgid "Not a scalar type (%s)"
-msgstr "スカラ型でない（ %s ）"
+msgstr "スカラ型ではありません ( %s )"
 
 #: etc/inc/xmlrpc_client.inc:1634 etc/inc/xmlrpc_client.inc:1650
 #: etc/inc/xmlrpc_client.inc:1636 etc/inc/xmlrpc_client.inc:1652
 #: etc/inc/xmlrpc_client.inc:1636 etc/inc/xmlrpc_client.inc:1652
 #, php-format
 msgid "Already initialized as a [%s]"
-msgstr "すでに（ ） （ %s ）として初期化"
+msgstr "[%s] として初期化済みです"
 
 #: etc/inc/xmlrpc_server.inc:48 etc/inc/xmlrpc_server.inc:48
 msgid ""
 "This method lists all the methods that the XML-RPC server knows how to "
 "dispatch"
-msgstr "発送"このメソッドは、XML -RPCサーバがどのように知っているすべてのメソッドが一覧表示されます""
+msgstr ""
+"このメソッドは XML-RPC サーバがディスパッチ方法を知っている"
+"全メソッドのリストを作成します"
 
 #: etc/inc/xmlrpc_server.inc:66 etc/inc/xmlrpc_server.inc:66
 msgid ""
 "Returns an array of known signatures (an array of arrays) for the method "
 "name passed. If no signatures are known, returns a none-array (test for "
 "type != array to detect missing signature)"
-msgstr "渡された名前"メソッドのために知られてシグネチャの配列（配列の配列）を返します」 。全く署名が知られていない場合は、 （ 「タイプ ！ =行方不明の署名を検出するためのアレイのためのテスト）なし - 配列を返します"
+msgstr ""
+"メソッド名を渡すことで、既知の署名の配列 ( 配列の配列 )を返します"
+"既知の署名がない場合は、配列ではないデータを返します"
+"( type != array で足りない署名を確認できます )"
 
 #: etc/inc/xmlrpc_server.inc:86 etc/inc/xmlrpc_server.inc:86
 msgid ""
 "Returns help text if defined for the method passed, otherwise returns an "
 "empty string"
-msgstr "空の文字列"渡されたメソッドのために定義されている場合戻り値は、テキストを助ける、そうでなければ返す」"
+msgstr ""
+"メソッドに定義されていればヘルプテキストを返します"
+"未定義なら空の文字列を返します"
 
 #: etc/inc/authgui.inc:73 etc/inc/authgui.inc:73
 msgid "No page assigned to this user! Click here to logout."
-msgstr "このユーザーに割り当てられたページです！ログアウトするにはここをクリックしてください。"
+msgstr "このユーザに割り当てられたページはありません！ログアウトするにはここをクリックしてください"
 
 #: etc/inc/authgui.inc:97 etc/inc/authgui.inc:103 etc/inc/authgui.inc:103
 #, php-format
 msgid "Error: %1$s Description: %2$s"
-msgstr "エラー：は%1$sの説明： %2$s"
+msgstr "エラー: %1$s 説明: %2$s"
 
 #: etc/inc/authgui.inc:160 etc/inc/authgui.inc:159 etc/inc/authgui.inc:165
 #: etc/inc/authgui.inc:165
 msgid "unknown reason"
-msgstr "未知の原因"
+msgstr "原因が不明です"
 
 #: etc/inc/authgui.inc:161 etc/inc/authgui.inc:160 etc/inc/authgui.inc:166
 #: etc/inc/authgui.inc:166
 #, php-format
 msgid "Invalid login (%s)."
-msgstr "無効なログイン（ %s ） 。"
+msgstr "ログインは無効です ( %s )"
 
 #: etc/inc/authgui.inc:166 etc/inc/authgui.inc:165 etc/inc/authgui.inc:171
 #: etc/inc/authgui.inc:171
 #, php-format
 msgid "This device is currently being maintained by: %s."
-msgstr "%s. ：このデバイスは、現在で維持されている"
+msgstr "このデバイスは現在メンテナンスされています: %s"
 
 #: etc/inc/authgui.inc:214 etc/inc/authgui.inc:277 etc/inc/authgui.inc:212
 #: etc/inc/authgui.inc:275 etc/inc/authgui.inc:235 etc/inc/authgui.inc:298
@@ -3697,12 +3708,15 @@ msgid ""
 "You are accessing this router by an IP address not configured locally, which "
 "may be forwarded by NAT or other means. <br/><br/>If you did not setup this "
 "forwarding, you may be the target of a man-in-the-middle attack."
-msgstr "NATまたはその他の手段によって転送されてもよい」はローカルに設定されていないIPアドレスによって、このルータにアクセスしている」 。セットアップこの「転送しなかった<br/><br/>Ifは、 man-in-the-middle攻撃の標的となる可能性がある。"
+msgstr ""
+"このルータには、NAT もしくはその他の手法で転送された、"
+"ローカルで構成されていないIPアドレスでアクセス可能です<br/><br/>"
+"もし転送設定をしていない場合は、中間者攻撃のターゲットになる恐れがあります"
 
 #: etc/inc/authgui.inc:251 etc/inc/authgui.inc:249 etc/inc/authgui.inc:272
 #: etc/inc/authgui.inc:272
 msgid "Username:"
-msgstr "ユーザー名："
+msgstr "ユーザ名: "
 
 #: etc/inc/authgui.inc:258 usr/local/www/diag_backup.php:597
 #: usr/local/www/system_authservers.php:627 etc/inc/authgui.inc:256
@@ -3711,59 +3725,59 @@ msgstr "ユーザー名："
 #: etc/inc/authgui.inc:279 usr/local/www/system_authservers.php:639
 #: usr/local/www/diag_backup.php:681 etc/inc/authgui.inc:279
 msgid "Password:"
-msgstr "パスワード："
+msgstr "パスワード: "
 
 #: etc/inc/authgui.inc:265 etc/inc/authgui.inc:263 etc/inc/authgui.inc:286
 #: etc/inc/authgui.inc:286
 msgid "Enter username and password to login."
-msgstr "ユーザ名とパスワードを入力してログインします。"
+msgstr "ログインするにはユーザ名とパスワードを入力してください"
 
 #: etc/inc/authgui.inc:271 etc/inc/authgui.inc:269 etc/inc/authgui.inc:292
 #: etc/inc/authgui.inc:292
 msgid "Your browser must support cookies to login."
-msgstr "お使いのブラウザは、ログインするためにCookieをサポートしている必要があります。"
+msgstr "ログインには Cookie 機能があるブラウザが必要です"
 
 #: etc/inc/cmd_chain.inc:101
 #, php-format
 msgid "CmdCHAIN is executing -> %1$s - %2$s"
-msgstr "CmdCHAIN​​が実行されている - u003eは%1$s - %2$s"
+msgstr "CmdCHAIN ​​を実行しています -> %1$s - %2$s"
 
 #: etc/inc/cmd_chain.inc:109 etc/inc/cmd_chain.inc:111
 #, php-format
 msgid "%1$s failed with return code -> %2$s. The command was %3$s"
-msgstr "は%1$s 、戻りコードで失敗しました - u003e %2$s 。コマンドは%3$sた"
+msgstr "%1$s は失敗しました: 戻りコード: %2$s コマンド: %3$s"
 
 #: etc/inc/config.console.inc:58 etc/inc/config.console.inc:58
 msgid "DANGER! WARNING! ACHTUNG!"
-msgstr "危険 ！警告 ！ ACHTUNG ！"
+msgstr "危険！ 警告！ 注意！"
 
 #: etc/inc/config.console.inc:59 etc/inc/config.console.inc:59
 #, php-format
 msgid "%s requires *AT LEAST* %s RAM to function correctly.%s"
-msgstr "%sは* correctly.%s機能するには、少なくとも* %s RAMが必要です"
+msgstr "%s が正しく機能するには「最低でも」%s RAM が必要です:  %s"
 
 #: etc/inc/config.console.inc:60 etc/inc/config.console.inc:60
 #, php-format
 msgid "Only (%s) MB RAM has been detected.%s"
-msgstr "のみ（ %s ） MBのRAMがdetected.%sされている"
+msgstr "%s MB RAM のみが検出されました: %s"
 
 #: etc/inc/config.console.inc:61 etc/inc/config.console.inc:61
 msgid "Press ENTER to continue."
-msgstr "Enterキーを押して続行します。"
+msgstr "続行には Enter キーを押してください"
 
 #: etc/inc/config.console.inc:83 etc/inc/config.console.inc:495
 #: etc/inc/config.console.inc:497 etc/inc/config.console.inc:83
 #: etc/inc/config.console.inc:497
 msgid "No interfaces found!"
-msgstr "何のインターフェイスは、見つからない！"
+msgstr "インタフェースがありません！"
 
 #: etc/inc/config.console.inc:181 etc/inc/config.console.inc:181
 msgid "VLAN interfaces:"
-msgstr "VLANインタフェース："
+msgstr "VLAN インタフェース: "
 
 #: etc/inc/config.console.inc:207 etc/inc/config.console.inc:207
 msgid "Enter the WAN interface name or 'a' for auto-detection:"
-msgstr "： WANインターフェイス名、または自動検出のための「A」を入力してください"
+msgstr "WAN インタフェース名を入力してください。もしくは a で自動検出します"
 
 #: etc/inc/config.console.inc:215 etc/inc/config.console.inc:276
 #: etc/inc/config.console.inc:518 etc/inc/config.console.inc:520
@@ -3772,113 +3786,117 @@ msgstr "： WANインターフェイス名、または自動検出のための�
 #: etc/inc/config.console.inc:520
 #, php-format
 msgid "%sInvalid interface name '%s'%s"
-msgstr "%sInvalidインタフェース名「 %s' %s"
+msgstr "%s インタフェース名は無効です '%s'%s"
 
 #: etc/inc/config.console.inc:222 etc/inc/config.console.inc:222
 #, php-format
 msgid ""
 "%sEnter the LAN interface name or 'a' for auto-detection %sNOTE: this "
 "enables full Firewalling/NAT mode.%s(or nothing if finished):%s"
-msgstr "「LANインタフェース名または''自動検出%sNOTEため%sEnter ：これは「フルファイアウォー/ NAT mode.%s （または完成した場合Nothing）を有効にします。 %s"
+msgstr ""
+"%sLAN インタフェース名を入力してください。もしくは a で自動検出します %s"
+"注意: これで全てのファイアウォール / NAT モードが有効になります%s( 何も入力しなければ終了します ): %s"
 
 #: etc/inc/config.console.inc:244
 #, php-format
 msgid "%sInvalid interface name '%s'%s)"
-msgstr "%sInvalidインタフェース名「 %s' %s ）"
+msgstr "%sインタフェース名が無効です '%s' %s )"
 
 #: etc/inc/config.console.inc:261 etc/inc/config.console.inc:261
 #, php-format
 msgid "%sOptional interface %s description found: %s"
-msgstr "%s ： %sOptionalインタフェースが記述発見を%s"
+msgstr "%s任意のインタフェース %s の説明があります: %s"
 
 #: etc/inc/config.console.inc:264
 #, php-format
 msgid "(or nothing if finished):%s"
-msgstr "（または何も終わっている場合） ： %s"
+msgstr "( 何も入力しなければ終了します ): %s"
 
 #: etc/inc/config.console.inc:270 etc/inc/config.console.inc:270
 msgid "Optional"
-msgstr "オプショナル"
+msgstr "任意"
 
 #: etc/inc/config.console.inc:304 etc/inc/config.console.inc:304
 msgid "The interfaces will be assigned as follows:"
-msgstr "次のようにインタフェースが割り当てられます。"
+msgstr "以下の通りにインタフェースが割り当てられます: "
 
 #: etc/inc/config.console.inc:416 etc/inc/config.console.inc:418
 #: etc/inc/config.console.inc:418
 #, php-format
 msgid "%sWriting configuration..."
-msgstr "設定を%sWriting..."
+msgstr "%s構成を書き込んでいます..."
 
 #: etc/inc/config.console.inc:418 etc/inc/config.console.inc:420
 #: etc/inc/config.console.inc:420
 #, php-format
 msgid "done.%s"
-msgstr "done.%s"
+msgstr "完了しました%s"
 
 #: etc/inc/config.console.inc:425 etc/inc/config.console.inc:427
 #: etc/inc/config.console.inc:427
 msgid "One moment while we reload the settings..."
-msgstr "一瞬我々は、設定をリロードしながら..."
+msgstr "少々お待ちください。設定を再読み込みしています..."
 
 #: etc/inc/config.console.inc:429 etc/inc/config.console.inc:431
 #: etc/inc/config.console.inc:431
 msgid " done!"
-msgstr "行わ ！"
+msgstr "完了しました！"
 
 #: etc/inc/config.console.inc:449 etc/inc/config.console.inc:451
 #: etc/inc/config.console.inc:451
 #, php-format
 msgid "Detected link-up on interface %s.%s"
-msgstr "インタフェース%s.%sで検出されたリンクアップ"
+msgstr "インタフェースのリンクアップを検出しました %s.%s"
 
 #: etc/inc/config.console.inc:454 etc/inc/config.console.inc:456
 #: etc/inc/config.console.inc:456
 #, php-format
 msgid "No link-up detected.%s"
-msgstr "いいえリンクアップdetected.%sん"
+msgstr "リンクアップが検出されませんでした %s"
 
 #: etc/inc/config.console.inc:493 etc/inc/config.console.inc:495
 #: etc/inc/config.console.inc:495
 msgid "VLAN Capable interfaces:"
-msgstr "VLAN対応インターフェイス："
+msgstr "VLAN 対応インタフェース: "
 
 #: etc/inc/config.console.inc:508 etc/inc/config.console.inc:510
 #: etc/inc/config.console.inc:510
 msgid "No VLAN capable interfaces detected."
-msgstr "いいえ、VLANが可能なインターフェイスは、検出されません。"
+msgstr "VLAN 対応インタフェースは検出されませんでした"
 
 #: etc/inc/config.console.inc:512 etc/inc/config.console.inc:514
 #: etc/inc/config.console.inc:514
 msgid ""
 "Enter the parent interface name for the new VLAN (or nothing if finished):"
-msgstr "「新しいVLAN （または完成した場合はNothing）の親インタフェース名を入力します。"
+msgstr ""
+"新規 VLAN の親インタフェース名を入力してください ( 何も入力しなければ終了します ):"
 
 #: etc/inc/config.console.inc:525 etc/inc/config.console.inc:527
 #: etc/inc/config.console.inc:527
 msgid "Enter the VLAN tag (1-4094):"
-msgstr "VLANタグ（ 1-4094 ）を入力します。"
+msgstr "VLAN タグ ( 1 〜 4094 ) を入力してください: "
 
 #: etc/inc/config.console.inc:529 etc/inc/config.console.inc:531
 #: etc/inc/config.console.inc:531
 #, php-format
 msgid "%sInvalid VLAN tag '%s'%s"
-msgstr "%sInvalid VLANタグ「 %s' %s"
+msgstr "%sVLAN タグが無効です %s'%s"
 
 #: etc/inc/config.lib.inc:79 etc/inc/config.lib.inc:79
 msgid "Config.xml unlocked."
-msgstr "config.xmlがアンロック。"
+msgstr "config.xml がロック解除されました"
 
 #: etc/inc/config.lib.inc:82 etc/inc/config.lib.inc:82
 msgid "Invalid password entered. Please try again."
-msgstr "無効なパスワードが入力されました。もう一度やり直してください。"
+msgstr "無効なパスワードが入力されました。再入力してください"
 
 #: etc/inc/config.lib.inc:110 etc/inc/config.lib.inc:140
 #: etc/inc/config.lib.inc:271 etc/inc/config.lib.inc:110
 #: etc/inc/config.lib.inc:140 etc/inc/config.lib.inc:271
 msgid ""
 "Config.xml is corrupted and is 0 bytes. Could not restore a previous backup."
-msgstr "「 config.xmlという破損し、 0バイトである。以前のバックアップを復元できませんでしたされている。"
+msgstr ""
+"config.xml が破損して 0 バイトになっています。前回のバックアップを復元できません"
 
 #: etc/inc/config.lib.inc:138 etc/inc/config.lib.inc:149
 #: etc/inc/config.lib.inc:552 etc/inc/config.lib.inc:560
@@ -3886,17 +3904,17 @@ msgstr "「 config.xmlという破損し、 0バイトである。以前のバ�
 #: etc/inc/config.lib.inc:138 etc/inc/config.lib.inc:149
 #: etc/inc/config.lib.inc:555
 msgid "Could not restore config.xml."
-msgstr "config.xmlには復元できませんでした。"
+msgstr "config.xml を復元できませんでした"
 
 #: etc/inc/config.lib.inc:210 etc/inc/config.lib.inc:211
 #: etc/inc/config.lib.inc:210 etc/inc/config.lib.inc:211
 #, php-format
 msgid "%1$s is restoring the configuration %2$s"
-msgstr "は%1$sは、コンフィギュレーション%2$sを復元されている"
+msgstr "%1$s を構成 %2$s で復元しています"
 
 #: etc/inc/config.lib.inc:233 etc/inc/config.lib.inc:233
 msgid "Resetting factory defaults..."
-msgstr "工場出荷時の設定をリセットする..."
+msgstr "出荷時の規定値にリセットしています..."
 
 #: etc/inc/config.lib.inc:236 etc/inc/config.lib.inc:236
 msgid ""
@@ -3904,103 +3922,107 @@ msgid ""
 "Make sure that the configuration floppy disk with the conf/config.xml\n"
 "file is inserted. If it isn't, your configuration changes will be lost\n"
 "on reboot.\n"
-msgstr "「見つかりませんXML設定ファイル - 工場defaults.\n使用」を参照してください。そうでない場合は研究会/ config.xml\n "ファイルを使用して構成をフロッピーディスクが挿入されていることを確認し、設定の変更はlost\nできなくなります「 reboot.\n上"
+msgstr "XML 構成ファイルがありません -  出荷時の既定値を使用します\n"
+"構成フロッピーディスクに conf.xml もしくは config.xml ファイルが\n"
+"入っていないかどうか確認して下さい\n"
+"入っていない場合は、構成の変更は再起動時に失われた可能性があります\n"
 
 #: etc/inc/config.lib.inc:249 etc/inc/config.lib.inc:249
 #, php-format
 msgid "XML configuration file not found. %s cannot continue booting."
-msgstr "XML設定ファイルが見つかりません。 %sはブートを続行できません。"
+msgstr "XML 構成ファイルがありません。%s は起動を続行できません"
 
 #: etc/inc/config.lib.inc:255 etc/inc/config.lib.inc:255
 msgid ""
 "Last known config found and restored. Please double check your "
 "configuration file for accuracy."
-msgstr "精度のための設定ファイル「最後の既知の設定が見つかり、復元された。あなたを再確認してください」 。"
+msgstr "前回の構成を発見して復元しました"
+"正確を期すために、構成ファイルを再確認して下さい"
 
 #: etc/inc/config.lib.inc:317 etc/inc/config.lib.inc:320
 #: etc/inc/config.lib.inc:320
 msgid "Disk is dirty. Running fsck -y"
-msgstr "ディスクが汚れています。 fsckを-Y稼働"
+msgstr "ディスクがダーティです。fsck -y を実行しています"
 
 #: etc/inc/config.lib.inc:328 etc/inc/config.lib.inc:331
 #: etc/inc/config.lib.inc:331
 msgid "File system is dirty. Launching FSCK for /"
-msgstr "ファイルシステムは汚れている。 /のための起動FSCK"
+msgstr "ファイルシステムがダーティです。/ に対する FSCK を起動しています"
 
 #: etc/inc/config.lib.inc:379 etc/inc/config.lib.inc:382
 #: etc/inc/config.lib.inc:382
 #, php-format
 msgid "Start Configuration upgrade at %s, set execution timeout to 15 minutes"
-msgstr "%sでのコンフィギュレーションのアップグレード、 15分に設定され、実行のタイムアウトを開始"
+msgstr "%s での構成のアップグレードを開始します。実行のタイムアウトは 15 分に設定されています"
 
 #: etc/inc/config.lib.inc:389 etc/inc/config.lib.inc:390
 #: etc/inc/config.lib.inc:392 etc/inc/config.lib.inc:393
 #: etc/inc/config.lib.inc:392 etc/inc/config.lib.inc:393
 msgid "Updated bogon update frequency to 3am"
-msgstr "午前3時に更新されたbogonの更新頻度"
+msgstr "bogon 更新の更新頻度は午前 3 時です"
 
 #: etc/inc/config.lib.inc:420 etc/inc/config.lib.inc:423
 #: etc/inc/config.lib.inc:423
 #, php-format
 msgid "Ended Configuration upgrade at %s"
-msgstr "%sでエンド構成のアップグレード"
+msgstr "構成のアップグレードが %s で終了しました"
 
 #: etc/inc/config.lib.inc:423 etc/inc/config.lib.inc:426
 #: etc/inc/config.lib.inc:426
 #, php-format
 msgid "Upgraded config version level from %1$s to %2$s"
-msgstr "%2$sには%1$sからアップグレードしたコンフィギュレーションのバージョン·レベル"
+msgstr "構成バージョンレベルを %1$s から %2$s へアップグレードしました"
 
 #: etc/inc/config.lib.inc:512 etc/inc/config.lib.inc:520
 #: etc/inc/config.lib.inc:537 etc/inc/config.lib.inc:903
 #: etc/inc/config.lib.inc:903
 #, php-format
 msgid "%s made unknown change"
-msgstr "%sは、未知の変更を行った"
+msgstr "%s は不明な変更を行いました"
 
 #: etc/inc/config.lib.inc:525 etc/inc/config.lib.inc:533
 #: etc/inc/config.lib.inc:550 etc/inc/config.lib.inc:528
 #: etc/inc/config.lib.inc:528
 msgid "WARNING: Config contents could not be save. Could not open file!"
-msgstr "警告：構成内容は保存されませんでした。ファイルを開くことができませんでした！"
+msgstr "警告: 構成内容を保存できませんでした。ファイルを開けません！"
 
 #: etc/inc/config.lib.inc:527 etc/inc/config.lib.inc:535
 #: etc/inc/config.lib.inc:552 etc/inc/config.lib.inc:530
 #: etc/inc/config.lib.inc:530
 #, php-format
 msgid "Unable to open %s/config.xml for writing in write_config()%s"
-msgstr "write_config.()%sに書き込むため%s / config.xmlのを開くことができません。"
+msgstr "write_config() で %s もしくは config.xml を書き込み用に開けません%s"
 
 #: etc/inc/config.lib.inc:636 etc/inc/config.lib.inc:644
 #: etc/inc/config.lib.inc:661 etc/inc/config.lib.inc:639
 #: etc/inc/config.lib.inc:639
 msgid "Reverted to"
-msgstr "に戻った"
+msgstr "以下に戻されました: "
 
 #: etc/inc/config.lib.inc:651 etc/inc/config.lib.inc:659
 #: etc/inc/config.lib.inc:676 etc/inc/config.lib.inc:654
 #: etc/inc/config.lib.inc:654
 msgid "Installing configuration..."
-msgstr "構成をインストール..."
+msgstr "構成をインストールしています..."
 
 #: etc/inc/config.lib.inc:653 etc/inc/config.lib.inc:661
 #: etc/inc/config.lib.inc:678 etc/inc/config.lib.inc:656
 #: etc/inc/config.lib.inc:656
 msgid "Installing configuration ...."
-msgstr "構成をインストール...."
+msgstr "構成をインストールしています...."
 
 #: etc/inc/config.lib.inc:704 etc/inc/config.lib.inc:712
 #: etc/inc/config.lib.inc:729 etc/inc/config.lib.inc:707
 #: etc/inc/config.lib.inc:707
 msgid "XML error: unable to open file"
-msgstr "XMLエラー：ファイルをオープンできません"
+msgstr "XML エラー: ファイルを開けません"
 
 #: etc/inc/config.lib.inc:710 etc/inc/config.lib.inc:718
 #: etc/inc/config.lib.inc:735 etc/inc/config.lib.inc:713
 #: etc/inc/config.lib.inc:713
 #, php-format
 msgid "%1$s at line %2$d"
-msgstr "行％では%1$s 2 $ dの"
+msgstr "%2$d 行: %1$s"
 
 #: etc/inc/config.lib.inc:756 etc/inc/config.lib.inc:758
 #: etc/inc/config.lib.inc:764 etc/inc/config.lib.inc:766
@@ -4009,107 +4031,107 @@ msgstr "行％では%1$s 2 $ dの"
 #: etc/inc/config.lib.inc:759 etc/inc/config.lib.inc:761
 #, php-format
 msgid "The backup cache file %s is corrupted. Unlinking."
-msgstr "バックアップキャッシュファイル%sが破損しています。リンク解除。"
+msgstr "バックアップキャッシュファイル %s が破損しています。リンク解除しています"
 
 #: etc/inc/easyrule.inc:116 etc/inc/easyrule.inc:117 etc/inc/easyrule.inc:117
 msgid "Easy Rule: Blocked from Firewall Log View"
-msgstr "簡単なルール：ファイアウォールログの表示がブロックされ"
+msgstr "簡易ルール: ファイアウォールログからブロックを表示"
 
 #: etc/inc/easyrule.inc:165 etc/inc/easyrule.inc:173 etc/inc/easyrule.inc:181
 #: etc/inc/easyrule.inc:177 etc/inc/easyrule.inc:185 etc/inc/easyrule.inc:178
 #: etc/inc/easyrule.inc:186 etc/inc/easyrule.inc:178 etc/inc/easyrule.inc:186
 msgid "Entry added"
-msgstr "副出記入"
+msgstr "エントリを追加しました"
 
 #: etc/inc/easyrule.inc:170 etc/inc/easyrule.inc:178 etc/inc/easyrule.inc:182
 #: etc/inc/easyrule.inc:183 etc/inc/easyrule.inc:183
 msgid "Hosts blocked from Firewall Log view"
-msgstr "ファイアウォールログビューからブロックのホスト"
+msgstr "ファイアウォールログからブロックされたホストを表示"
 
 #: etc/inc/easyrule.inc:249 etc/inc/easyrule.inc:257 etc/inc/easyrule.inc:262
 #: etc/inc/easyrule.inc:263 etc/inc/easyrule.inc:263
 msgid "Easy Rule: Passed from Firewall Log View"
-msgstr "簡単なルール：ファイアウォールログビューから渡された"
+msgstr "簡易ルール: ファイアウォールログからパスを表示"
 
 #: etc/inc/easyrule.inc:280 etc/inc/easyrule.inc:303 etc/inc/easyrule.inc:309
 #: etc/inc/easyrule.inc:313 etc/inc/easyrule.inc:318 etc/inc/easyrule.inc:318
 msgid "Tried to block invalid IP:"
-msgstr "無効なIPをブロックしようとした。"
+msgstr "無効な IP のブロックを試みました: "
 
 #: etc/inc/easyrule.inc:284 etc/inc/easyrule.inc:307 etc/inc/easyrule.inc:313
 #: etc/inc/easyrule.inc:317 etc/inc/easyrule.inc:322 etc/inc/easyrule.inc:322
 msgid "Invalid interface for block rule:"
-msgstr "ブロックルールの無効なインターフェイス："
+msgstr "ブロックルールに設定されたインタフェースは無効です: "
 
 #: etc/inc/easyrule.inc:287 etc/inc/easyrule.inc:310 etc/inc/easyrule.inc:316
 #: etc/inc/easyrule.inc:320 etc/inc/easyrule.inc:325 etc/inc/easyrule.inc:325
 msgid "Host added successfully"
-msgstr "ホスト正常に追加"
+msgstr "ホストが正常に追加されました"
 
 #: etc/inc/easyrule.inc:289 etc/inc/easyrule.inc:312 etc/inc/easyrule.inc:318
 #: etc/inc/easyrule.inc:322 etc/inc/easyrule.inc:327 etc/inc/easyrule.inc:327
 msgid "Failed to create block rule, alias, or add host."
-msgstr "ブロックルール、エイリアス、またはホストを追加の作成に失敗しました。"
+msgstr "ブロックルール、エイリアスの作成、もしくはホストの追加に失敗しました"
 
 #: etc/inc/easyrule.inc:292 etc/inc/easyrule.inc:315 etc/inc/easyrule.inc:321
 #: etc/inc/easyrule.inc:325 etc/inc/easyrule.inc:330 etc/inc/easyrule.inc:330
 msgid "Tried to block but had no host IP or interface"
-msgstr "ブロックしようとしたが、持っていたんホストIPませんまたはインタフェース"
+msgstr "ブロックを試みましたが、ホストの IP もしくはインタフェースがありません"
 
 #: etc/inc/easyrule.inc:294 etc/inc/easyrule.inc:317 etc/inc/easyrule.inc:323
 #: etc/inc/easyrule.inc:327 etc/inc/easyrule.inc:332 etc/inc/easyrule.inc:332
 msgid "Unknown block error."
-msgstr "不明なブロックエラー。"
+msgstr "不明なブロックエラーです"
 
 #: etc/inc/easyrule.inc:303 etc/inc/easyrule.inc:326 etc/inc/easyrule.inc:334
 #: etc/inc/easyrule.inc:338 etc/inc/easyrule.inc:343 etc/inc/easyrule.inc:343
 msgid "Invalid interface for pass rule:"
-msgstr "パス·ルールの無効なインターフェイス："
+msgstr "パスルールに設定されたインタフェースは無効です: "
 
 #: etc/inc/easyrule.inc:306 etc/inc/easyrule.inc:329 etc/inc/easyrule.inc:337
 #: etc/inc/easyrule.inc:341 etc/inc/easyrule.inc:346 etc/inc/easyrule.inc:346
 msgid "Invalid protocol for pass rule:"
-msgstr "パス·ルールの無効なプロトコル："
+msgstr "パスルールに設定されたプロトコルは無効です: "
 
 #: etc/inc/easyrule.inc:309 etc/inc/easyrule.inc:332 etc/inc/easyrule.inc:340
 #: etc/inc/easyrule.inc:344 etc/inc/easyrule.inc:349 etc/inc/easyrule.inc:349
 msgid "Tried to pass invalid source IP:"
-msgstr "無効な送信元IPアドレスを渡そうとしました。"
+msgstr "パスを試みた送信元 IP は無効です: "
 
 #: etc/inc/easyrule.inc:312 etc/inc/easyrule.inc:335 etc/inc/easyrule.inc:343
 #: etc/inc/easyrule.inc:347 etc/inc/easyrule.inc:352 etc/inc/easyrule.inc:352
 msgid "Tried to pass invalid destination IP:"
-msgstr "無効な送信先IPを渡そうとしました。"
+msgstr "パスを試みた送信先 IP は無効です: "
 
 #: etc/inc/easyrule.inc:316 etc/inc/easyrule.inc:339 etc/inc/easyrule.inc:347
 #: etc/inc/easyrule.inc:351 etc/inc/easyrule.inc:356 etc/inc/easyrule.inc:356
 msgid "Missing destination port:"
-msgstr "不足している宛先ポート："
+msgstr "送信先ポートが設定されていません: "
 
 #: etc/inc/easyrule.inc:319 etc/inc/easyrule.inc:342 etc/inc/easyrule.inc:350
 #: etc/inc/easyrule.inc:354 etc/inc/easyrule.inc:359 etc/inc/easyrule.inc:359
 msgid "Tried to pass invalid destination port:"
-msgstr "無効な宛先ポートを渡そうとしました。"
+msgstr "パスを試みた送信先ポートは無効です: "
 
 #: etc/inc/easyrule.inc:326 etc/inc/easyrule.inc:349 etc/inc/easyrule.inc:357
 #: etc/inc/easyrule.inc:361 etc/inc/easyrule.inc:366 etc/inc/easyrule.inc:366
 msgid "Successfully added pass rule!"
-msgstr "正常に追加され、パスのルール ！"
+msgstr "パスルールは正常に追加されました！"
 
 #: etc/inc/easyrule.inc:328 etc/inc/easyrule.inc:351 etc/inc/easyrule.inc:359
 #: etc/inc/easyrule.inc:363 etc/inc/easyrule.inc:368 etc/inc/easyrule.inc:368
 msgid "Failed to add pass rule."
-msgstr "パス·ルールを追加できませんでした。"
+msgstr "パスルールの追加に失敗しました"
 
 #: etc/inc/easyrule.inc:331 etc/inc/easyrule.inc:354 etc/inc/easyrule.inc:362
 #: etc/inc/easyrule.inc:366 etc/inc/easyrule.inc:371 etc/inc/easyrule.inc:371
 msgid "Missing parameters for pass rule."
-msgstr "パス·ルールのパラメータがありません。"
+msgstr "パスルールのパラメータが設定されていません"
 
 #: etc/inc/easyrule.inc:333 etc/inc/easyrule.inc:356 etc/inc/easyrule.inc:364
 #: etc/inc/easyrule.inc:368 etc/inc/easyrule.inc:373 etc/inc/easyrule.inc:373
 msgid "Unknown pass error."
-msgstr "未知のパスエラー。"
+msgstr "不明なパスエラーです"
 
 #: etc/inc/filter_log.inc:164 etc/inc/filter_log.inc:167
 #: etc/inc/filter_log.inc:191 etc/inc/filter_log.inc:201
@@ -4117,14 +4139,15 @@ msgstr "未知のパスエラー。"
 #, php-format
 msgid ""
 "There was a error parsing rule: %s. Please report to mailing list or forum."
-msgstr "%s.がメーリングリストやフォーラムに報告してください。「エラー解析ルールがありました。"
+msgstr ""
+"解析ルールにエラーが発生しました: %s メーリングリストかフォーラムに報告してください"
 
 #: etc/inc/filter_log.inc:208 etc/inc/filter_log.inc:210
 #: etc/inc/filter_log.inc:213 etc/inc/filter_log.inc:237
 #: etc/inc/filter_log.inc:247 etc/inc/filter_log.inc:247
 #, php-format
 msgid "Service %1$s/%2$s: %3$s"
-msgstr "サービス%1$s/%2$s ： %3$s"
+msgstr "サービス %1$s/%2$s: %3$s"
 
 #: etc/inc/gwlb.inc:230 etc/inc/gwlb.inc:237 etc/inc/gwlb.inc:242
 #: etc/inc/gwlb.inc:244 etc/inc/gwlb.inc:244
