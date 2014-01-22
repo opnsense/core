@@ -3710,7 +3710,7 @@ msgid ""
 "forwarding, you may be the target of a man-in-the-middle attack."
 msgstr ""
 "このルータには、NAT もしくはその他の手法で転送された、"
-"ローカルで構成されていないIPアドレスでアクセス可能です<br/><br/>"
+"ローカルで構成されていない IP アドレスでアクセス可能です<br/><br/>"
 "もし転送設定をしていない場合は、中間者攻撃のターゲットになる恐れがあります"
 
 #: etc/inc/authgui.inc:251 etc/inc/authgui.inc:249 etc/inc/authgui.inc:272
@@ -3754,12 +3754,12 @@ msgstr "危険！ 警告！ 注意！"
 #: etc/inc/config.console.inc:59 etc/inc/config.console.inc:59
 #, php-format
 msgid "%s requires *AT LEAST* %s RAM to function correctly.%s"
-msgstr "%s が正しく機能するには「最低でも」%s RAM が必要です:  %s"
+msgstr "%s が正しく機能するには「最低でも」%s RAM が必要です%s"
 
 #: etc/inc/config.console.inc:60 etc/inc/config.console.inc:60
 #, php-format
 msgid "Only (%s) MB RAM has been detected.%s"
-msgstr "%s MB RAM のみが検出されました: %s"
+msgstr "%s MB RAM のみが検出されました%s"
 
 #: etc/inc/config.console.inc:61 etc/inc/config.console.inc:61
 msgid "Press ENTER to continue."
@@ -3805,7 +3805,7 @@ msgstr "%sインタフェース名が無効です '%s' %s )"
 #: etc/inc/config.console.inc:261 etc/inc/config.console.inc:261
 #, php-format
 msgid "%sOptional interface %s description found: %s"
-msgstr "%s任意のインタフェース %s の説明があります: %s"
+msgstr "%sオプションのインタフェース %s の説明があります: %s"
 
 #: etc/inc/config.console.inc:264
 #, php-format
@@ -3814,7 +3814,7 @@ msgstr "( 何も入力しなければ終了します ): %s"
 
 #: etc/inc/config.console.inc:270 etc/inc/config.console.inc:270
 msgid "Optional"
-msgstr "任意"
+msgstr "オプション"
 
 #: etc/inc/config.console.inc:304 etc/inc/config.console.inc:304
 msgid "The interfaces will be assigned as follows:"
@@ -3942,12 +3942,12 @@ msgstr "前回の構成を発見して復元しました"
 #: etc/inc/config.lib.inc:317 etc/inc/config.lib.inc:320
 #: etc/inc/config.lib.inc:320
 msgid "Disk is dirty. Running fsck -y"
-msgstr "ディスクがダーティです。fsck -y を実行しています"
+msgstr "ディスクが破損しています。fsck -y を実行しています"
 
 #: etc/inc/config.lib.inc:328 etc/inc/config.lib.inc:331
 #: etc/inc/config.lib.inc:331
 msgid "File system is dirty. Launching FSCK for /"
-msgstr "ファイルシステムがダーティです。/ に対する FSCK を起動しています"
+msgstr "ファイルシステムが破損しています。/ に対する FSCK を起動しています"
 
 #: etc/inc/config.lib.inc:379 etc/inc/config.lib.inc:382
 #: etc/inc/config.lib.inc:382
@@ -4035,7 +4035,7 @@ msgstr "バックアップキャッシュファイル %s が破損していま�
 
 #: etc/inc/easyrule.inc:116 etc/inc/easyrule.inc:117 etc/inc/easyrule.inc:117
 msgid "Easy Rule: Blocked from Firewall Log View"
-msgstr "簡易ルール: ファイアウォールログからブロックを表示"
+msgstr "簡易ルール: ファイアウォールログ表示から拒否"
 
 #: etc/inc/easyrule.inc:165 etc/inc/easyrule.inc:173 etc/inc/easyrule.inc:181
 #: etc/inc/easyrule.inc:177 etc/inc/easyrule.inc:185 etc/inc/easyrule.inc:178
@@ -4046,22 +4046,22 @@ msgstr "エントリを追加しました"
 #: etc/inc/easyrule.inc:170 etc/inc/easyrule.inc:178 etc/inc/easyrule.inc:182
 #: etc/inc/easyrule.inc:183 etc/inc/easyrule.inc:183
 msgid "Hosts blocked from Firewall Log view"
-msgstr "ファイアウォールログからブロックされたホストを表示"
+msgstr "ファイアウォールログ表示からホストを拒否"
 
 #: etc/inc/easyrule.inc:249 etc/inc/easyrule.inc:257 etc/inc/easyrule.inc:262
 #: etc/inc/easyrule.inc:263 etc/inc/easyrule.inc:263
 msgid "Easy Rule: Passed from Firewall Log View"
-msgstr "簡易ルール: ファイアウォールログからパスを表示"
+msgstr "簡易ルール: ファイアウォールログ表示から許可"
 
 #: etc/inc/easyrule.inc:280 etc/inc/easyrule.inc:303 etc/inc/easyrule.inc:309
 #: etc/inc/easyrule.inc:313 etc/inc/easyrule.inc:318 etc/inc/easyrule.inc:318
 msgid "Tried to block invalid IP:"
-msgstr "無効な IP のブロックを試みました: "
+msgstr "無効な IP の拒否を試みました: "
 
 #: etc/inc/easyrule.inc:284 etc/inc/easyrule.inc:307 etc/inc/easyrule.inc:313
 #: etc/inc/easyrule.inc:317 etc/inc/easyrule.inc:322 etc/inc/easyrule.inc:322
 msgid "Invalid interface for block rule:"
-msgstr "ブロックルールに設定されたインタフェースは無効です: "
+msgstr "拒否ルールに設定されたインタフェースは無効です: "
 
 #: etc/inc/easyrule.inc:287 etc/inc/easyrule.inc:310 etc/inc/easyrule.inc:316
 #: etc/inc/easyrule.inc:320 etc/inc/easyrule.inc:325 etc/inc/easyrule.inc:325
@@ -4071,37 +4071,37 @@ msgstr "ホストが正常に追加されました"
 #: etc/inc/easyrule.inc:289 etc/inc/easyrule.inc:312 etc/inc/easyrule.inc:318
 #: etc/inc/easyrule.inc:322 etc/inc/easyrule.inc:327 etc/inc/easyrule.inc:327
 msgid "Failed to create block rule, alias, or add host."
-msgstr "ブロックルール、エイリアスの作成、もしくはホストの追加に失敗しました"
+msgstr "拒否ルール、エイリアスの作成、もしくはホストの追加に失敗しました"
 
 #: etc/inc/easyrule.inc:292 etc/inc/easyrule.inc:315 etc/inc/easyrule.inc:321
 #: etc/inc/easyrule.inc:325 etc/inc/easyrule.inc:330 etc/inc/easyrule.inc:330
 msgid "Tried to block but had no host IP or interface"
-msgstr "ブロックを試みましたが、ホストの IP もしくはインタフェースがありません"
+msgstr "拒否を試みましたが、ホストの IP もしくはインタフェースがありません"
 
 #: etc/inc/easyrule.inc:294 etc/inc/easyrule.inc:317 etc/inc/easyrule.inc:323
 #: etc/inc/easyrule.inc:327 etc/inc/easyrule.inc:332 etc/inc/easyrule.inc:332
 msgid "Unknown block error."
-msgstr "不明なブロックエラーです"
+msgstr "不明な拒否エラーです"
 
 #: etc/inc/easyrule.inc:303 etc/inc/easyrule.inc:326 etc/inc/easyrule.inc:334
 #: etc/inc/easyrule.inc:338 etc/inc/easyrule.inc:343 etc/inc/easyrule.inc:343
 msgid "Invalid interface for pass rule:"
-msgstr "パスルールに設定されたインタフェースは無効です: "
+msgstr "許可ルールに設定されたインタフェースは無効です: "
 
 #: etc/inc/easyrule.inc:306 etc/inc/easyrule.inc:329 etc/inc/easyrule.inc:337
 #: etc/inc/easyrule.inc:341 etc/inc/easyrule.inc:346 etc/inc/easyrule.inc:346
 msgid "Invalid protocol for pass rule:"
-msgstr "パスルールに設定されたプロトコルは無効です: "
+msgstr "許可ルールに設定されたプロトコルは無効です: "
 
 #: etc/inc/easyrule.inc:309 etc/inc/easyrule.inc:332 etc/inc/easyrule.inc:340
 #: etc/inc/easyrule.inc:344 etc/inc/easyrule.inc:349 etc/inc/easyrule.inc:349
 msgid "Tried to pass invalid source IP:"
-msgstr "パスを試みた送信元 IP は無効です: "
+msgstr "許可を試みた送信元 IP は無効です: "
 
 #: etc/inc/easyrule.inc:312 etc/inc/easyrule.inc:335 etc/inc/easyrule.inc:343
 #: etc/inc/easyrule.inc:347 etc/inc/easyrule.inc:352 etc/inc/easyrule.inc:352
 msgid "Tried to pass invalid destination IP:"
-msgstr "パスを試みた送信先 IP は無効です: "
+msgstr "許可を試みた送信先 IP は無効です: "
 
 #: etc/inc/easyrule.inc:316 etc/inc/easyrule.inc:339 etc/inc/easyrule.inc:347
 #: etc/inc/easyrule.inc:351 etc/inc/easyrule.inc:356 etc/inc/easyrule.inc:356
@@ -4111,27 +4111,27 @@ msgstr "送信先ポートが設定されていません: "
 #: etc/inc/easyrule.inc:319 etc/inc/easyrule.inc:342 etc/inc/easyrule.inc:350
 #: etc/inc/easyrule.inc:354 etc/inc/easyrule.inc:359 etc/inc/easyrule.inc:359
 msgid "Tried to pass invalid destination port:"
-msgstr "パスを試みた送信先ポートは無効です: "
+msgstr "許可を試みた送信先ポートは無効です: "
 
 #: etc/inc/easyrule.inc:326 etc/inc/easyrule.inc:349 etc/inc/easyrule.inc:357
 #: etc/inc/easyrule.inc:361 etc/inc/easyrule.inc:366 etc/inc/easyrule.inc:366
 msgid "Successfully added pass rule!"
-msgstr "パスルールは正常に追加されました！"
+msgstr "許可ルールは正常に追加されました！"
 
 #: etc/inc/easyrule.inc:328 etc/inc/easyrule.inc:351 etc/inc/easyrule.inc:359
 #: etc/inc/easyrule.inc:363 etc/inc/easyrule.inc:368 etc/inc/easyrule.inc:368
 msgid "Failed to add pass rule."
-msgstr "パスルールの追加に失敗しました"
+msgstr "許可ルールの追加に失敗しました"
 
 #: etc/inc/easyrule.inc:331 etc/inc/easyrule.inc:354 etc/inc/easyrule.inc:362
 #: etc/inc/easyrule.inc:366 etc/inc/easyrule.inc:371 etc/inc/easyrule.inc:371
 msgid "Missing parameters for pass rule."
-msgstr "パスルールのパラメータが設定されていません"
+msgstr "許可ルールのパラメータが設定されていません"
 
 #: etc/inc/easyrule.inc:333 etc/inc/easyrule.inc:356 etc/inc/easyrule.inc:364
 #: etc/inc/easyrule.inc:368 etc/inc/easyrule.inc:373 etc/inc/easyrule.inc:373
 msgid "Unknown pass error."
-msgstr "不明なパスエラーです"
+msgstr "不明な許可エラーです"
 
 #: etc/inc/filter_log.inc:164 etc/inc/filter_log.inc:167
 #: etc/inc/filter_log.inc:191 etc/inc/filter_log.inc:201
