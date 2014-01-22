@@ -4056,7 +4056,7 @@ msgstr "簡易ルール: ファイアウォールログ表示から許可"
 #: etc/inc/easyrule.inc:280 etc/inc/easyrule.inc:303 etc/inc/easyrule.inc:309
 #: etc/inc/easyrule.inc:313 etc/inc/easyrule.inc:318 etc/inc/easyrule.inc:318
 msgid "Tried to block invalid IP:"
-msgstr "無効な IP の拒否を試みました: "
+msgstr "拒否を試みた IP は無効です: "
 
 #: etc/inc/easyrule.inc:284 etc/inc/easyrule.inc:307 etc/inc/easyrule.inc:313
 #: etc/inc/easyrule.inc:317 etc/inc/easyrule.inc:322 etc/inc/easyrule.inc:322
