@@ -4173,14 +4173,14 @@ msgstr "モニタ: %s が高レイテンシです。ルーティンググルー�
 
 #: etc/inc/gwlb.inc:526 etc/inc/gwlb.inc:752 etc/inc/gwlb.inc:775
 msgid "Gateways status could not be determined, considering all as up/active."
-msgstr "ゲートウェイの状態は決定できませんでした。全てアップもしくはアクティブと見なします"
+msgstr "ゲートウェイのステータスは決定できませんでした。全てアップもしくはアクティブと見なします"
 
 #: etc/inc/gwlb.inc:580 etc/inc/gwlb.inc:809 etc/inc/gwlb.inc:835
 #: etc/inc/gwlb.inc:844 etc/inc/gwlb.inc:823 etc/inc/gwlb.inc:807
 #: etc/inc/gwlb.inc:807
 #, php-format
 msgid "Updating gateway group gateway for %1$s - new gateway is %2$s"
-msgstr "%1$s に対するゲートウェイのグループゲートウェイを更新 - 新規ゲートウェイは %2$s です"
+msgstr "%1$s に対するゲートウェイグループのゲートウェイを更新 - 新規ゲートウェイは %2$s です"
 
 #: etc/inc/ipsec.inc:39 etc/inc/ipsec.inc:39
 msgid "My IP address"
@@ -4707,7 +4707,7 @@ msgstr "WebCfg - 診断: ステータスリセットページ"
 #: etc/inc/priv.defs.inc:203 etc/inc/priv.defs.inc:221
 #: etc/inc/priv.defs.inc:227 etc/inc/priv.defs.inc:227
 msgid "Allow access to the 'Diagnostics: Reset state' page."
-msgstr "診断: 状態リセット: ページへのアクセスを許可"
+msgstr "診断: ステータスリセット: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:208 etc/inc/priv.defs.inc:226
 #: etc/inc/priv.defs.inc:232 etc/inc/priv.defs.inc:232
