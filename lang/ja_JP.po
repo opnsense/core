@@ -271,7 +271,7 @@ msgstr "ユーザ '%1$s' からユーザがログアウトしました: %2$s"
 #: etc/inc/captiveportal.inc:1338 etc/inc/captiveportal.inc:1338
 #, php-format
 msgid "Error: cannot open '%s' in captiveportal_write_elements()%s"
-msgstr "エラー: captiveportal_write_elements()%s で '%s' を開けません"
+msgstr "エラー: captiveportal_write_elements() で '%s' を開けません%s"
 
 #: etc/inc/config.inc:100 etc/inc/config.inc:100
 msgid "Upgrading m0n0wall configuration to pfSense... "
@@ -298,7 +298,7 @@ msgstr "タイプ:"
 #: etc/inc/config.inc:166
 #, php-format
 msgid "Found configuration on %s.%s"
-msgstr "%s.%s で構成が見つかりました"
+msgstr "%s で構成が見つかりました%s"
 
 #: etc/inc/config.inc:180 etc/inc/config.inc:181 etc/inc/config.lib.inc:105
 #: etc/inc/config.lib.inc:106 etc/inc/config.lib.inc:245
@@ -514,7 +514,7 @@ msgstr "プラグインの実行"
 #: etc/inc/filter.inc:411 etc/inc/filter.inc:413 etc/inc/filter.inc:416
 #: etc/inc/filter.inc:388 etc/inc/filter.inc:392 etc/inc/filter.inc:392
 msgid "Running plugins (pf)"
-msgstr "実行中のプラグイン（pf）"
+msgstr "実行中のプラグイン (pf)"
 
 #: etc/inc/filter.inc:413 etc/inc/filter.inc:415 etc/inc/filter.inc:418
 #: etc/inc/filter.inc:390 etc/inc/filter.inc:394 etc/inc/filter.inc:394
@@ -730,7 +730,7 @@ msgstr "QinQ 互換 VLAN: オプションが不正です。設定に問題があ
 #: etc/inc/interfaces.inc:290 etc/inc/interfaces.inc:375
 #, php-format
 msgid "interface_qinq_confgure called with if undefined.%s"
-msgstr "interface_qinq_confgure: インタフェースが未定義です %s"
+msgstr "interface_qinq_confgure: インタフェースが未定義です%s"
 
 #: etc/inc/interfaces.inc:352 etc/inc/interfaces.inc:354
 #: etc/inc/interfaces.inc:353 etc/inc/interfaces.inc:357
@@ -781,7 +781,7 @@ msgid ""
 "could not bring realif up -- variable not defined -- "
 "interface_gif_configure()"
 msgstr ""
-"interface_gif_configure(): 実インタフェースをアップできません"
+"interface_gif_configure(): 実インタフェースをアップできません。"
 "変数が未定義です"
 
 #: etc/inc/interfaces.inc:856 etc/inc/interfaces.inc:874
@@ -854,7 +854,7 @@ msgstr "PPP インタフェースとして構成されている %s は不明で�
 #: etc/inc/interfaces.inc:1753 etc/inc/interfaces.inc:1753
 #, php-format
 msgid "Error: cannot open mpd_%s.conf in interface_ppps_configure().%s"
-msgstr "エラー: mpd_%s.conf が interface_ppps_configure().%s で開けません"
+msgstr "エラー: mpd_%s.conf が interface_ppps_configure() で開けません%s"
 
 #: etc/inc/interfaces.inc:1702 etc/inc/interfaces.inc:1771
 #: etc/inc/interfaces.inc:1770 etc/inc/interfaces.inc:1828
@@ -921,7 +921,7 @@ msgid ""
 "Interface specified for the virtual IP address %s does not exist. Skipping "
 "this VIP."
 msgstr ""
-"仮想 IP アドレス %s を指定されたインタフェースが存在しません"
+"仮想 IP アドレス %s を指定されたインタフェースが存在しません。"
 "この仮想 IP アドレスをスキップします"
 
 #: etc/inc/interfaces.inc:1972 etc/inc/interfaces.inc:2029
@@ -953,7 +953,7 @@ msgid ""
 "writing.%s"
 msgstr ""
 "エラー: dhclient_%s.conf が interfaces_carpdev_configure() の"
-"writing.%s で開けません"
+"書き込みで開けません%s"
 
 #: etc/inc/interfaces.inc:2117 etc/inc/interfaces.inc:2185
 #: etc/inc/interfaces.inc:2104 etc/inc/interfaces.inc:2144
@@ -1018,7 +1018,7 @@ msgid ""
 "writing.%s"
 msgstr ""
 "エラー: dhclient_%s.conf が interfaces_wan_dhcp_configure() の"
-"writing.%s で開けません"
+"書き込みで開けません%s"
 
 #: etc/inc/interfaces.inc:3029 etc/inc/interfaces.inc:3513
 #: etc/inc/interfaces.inc:3373 etc/inc/interfaces.inc:3466
@@ -1536,7 +1536,7 @@ msgstr "%s パッケージの削除を開始します..."
 #: etc/inc/pkg-utils.inc:1004
 #, php-format
 msgid "The %s package is not installed.%sDeletion aborted."
-msgstr "%s パッケージがインストールされていません。%s の削除は中止されました"
+msgstr "%s パッケージがインストールされていません。%s 削除は中止されました"
 
 #: etc/inc/pkg-utils.inc:942 etc/inc/pkg-utils.inc:979
 #: etc/inc/pkg-utils.inc:980 etc/inc/pkg-utils.inc:1015
@@ -1575,7 +1575,7 @@ msgstr "パッケージの処理を削除しています..."
 #: etc/inc/pkg-utils.inc:1144
 #, php-format
 msgid "Remove '%s'"
-msgstr "'%s' を削除"
+msgstr "%s を削除"
 
 #: etc/inc/pkg-utils.inc:1078 etc/inc/pkg-utils.inc:1115
 #: etc/inc/pkg-utils.inc:1116 etc/inc/pkg-utils.inc:1151
@@ -1602,7 +1602,8 @@ msgstr "構成... "
 msgid ""
 " >>> Unable to communicate with %1$s. Please verify DNS and interface "
 "configuration, and that %2$s has functional Internet connectivity."
-msgstr " >>> %1$s と通信できません。DNS とインタフェースの構成、"
+msgstr ""
+" >>> %1$s と通信できません。DNS とインタフェースの構成、"
 "及び %2$s にインターネット接続機能があることを確認して下さい"
 
 #: etc/inc/radius.inc:404 etc/inc/radius.inc:406 etc/inc/radius.inc:406
@@ -1637,7 +1638,7 @@ msgstr "DHCP サービス を開始しています..."
 #: etc/inc/services.inc:820 etc/inc/services.inc:825 etc/inc/services.inc:877
 #, php-format
 msgid "Error: cannot open dhcpd.conf in services_dhcpdv4_configure().%s"
-msgstr "エラー: dhcpd.conf を services_dhcpdv4_configure().%s で開けません"
+msgstr "エラー: dhcpd.conf を services_dhcpdv4_configure() で開けません%s"
 
 #: etc/inc/services.inc:353 etc/inc/services.inc:434 etc/inc/services.inc:461
 #: etc/inc/services.inc:463 etc/inc/services.inc:468 etc/inc/services.inc:469
@@ -1691,7 +1692,7 @@ msgstr "SNMP デーモンを起動しています... "
 #: etc/inc/services.inc:1755
 #, php-format
 msgid "Error: cannot open snmpd.conf in services_snmpd_configure().%s"
-msgstr "エラー: snmpd.conf を services_snmpd_configure().%s で開けません"
+msgstr "エラー: snmpd.conf を services_snmpd_configure() で開けません%s"
 
 #: etc/inc/services.inc:1875 etc/inc/services.inc:2067
 #: etc/inc/services.inc:1919 etc/inc/services.inc:1908
@@ -2069,7 +2070,7 @@ msgid ""
 "Enter the name of the queue here. Do not use spaces and limit the size to "
 "15 characters."
 msgstr ""
-"ここにキューの名前を入力してください"
+"ここにキューの名前を入力してください。"
 "スペースは使用不可、使用可能文字数は 15 文字までです"
 
 #: etc/inc/shaper.inc:1139 usr/local/www/interfaces_bridge_edit.php:354
@@ -2097,7 +2098,7 @@ msgid ""
 "For hfsc, the range is 0 to 7. The default is 1. Hfsc queues with a higher "
 "priority are preferred in the case of overload."
 msgstr ""
-"HFSC の範囲は 0 〜 7 で、デフォルトは 1 です"
+"HFSC の範囲は 0 〜 7 で、デフォルトは 1 です。"
 "高負荷の場合は HFSC キューの優先度を高くするとよいでしょう"
 
 #: etc/inc/shaper.inc:1146 etc/inc/shaper.inc:1147 etc/inc/shaper.inc:1148
@@ -3080,7 +3081,7 @@ msgid ""
 "Hint: in most cases, you should leave the field empty. It increases the hash "
 "size set."
 msgstr ""
-"ヒント: 通常はフィールドを空のままにしてください"
+"ヒント: 通常はフィールドを空のままにしてください。"
 "ハッシュサイズの設定が増加します"
 
 #: etc/inc/shaper.inc:3176 etc/inc/shaper.inc:3184 etc/inc/shaper.inc:3339
@@ -3150,7 +3151,7 @@ msgid ""
 "gets(values range from 1 to 100, you can leave it blank otherwise)"
 msgstr ""
 "ヒント: この設定を指定することで、親が同じキューが取得する設定を共有します"
-"( 値の範囲は 1 〜 100 、もしくは、空白でも構いません )"
+" ( 値の範囲は 1 〜 100 、もしくは、空白でも構いません )"
 
 #: etc/inc/shaper.inc:3353 etc/inc/shaper.inc:3365 etc/inc/shaper.inc:3520
 #: etc/inc/shaper.inc:3521 etc/inc/shaper.inc:3528 etc/inc/shaper.inc:3596
@@ -3233,12 +3234,12 @@ msgstr "失敗しました！"
 #: etc/inc/system.inc:687 etc/inc/system.inc:735 etc/inc/system.inc:739
 #: etc/inc/system.inc:748 etc/inc/system.inc:807
 msgid "Starting webConfigurator..."
-msgstr "Web 設定管理ツールを開始しています..."
+msgstr "Web 設定管理画面を開始しています..."
 
 #: etc/inc/system.inc:719 etc/inc/system.inc:767 etc/inc/system.inc:771
 #: etc/inc/system.inc:775 etc/inc/system.inc:834
 msgid "webConfigurator default"
-msgstr "Web 設定管理ツールデフォルト"
+msgstr "Web 設定管理画面デフォルト"
 
 #: etc/inc/system.inc:729 etc/inc/system.inc:777 etc/inc/system.inc:781
 #: etc/inc/system.inc:785 etc/inc/system.inc:844
@@ -3249,13 +3250,13 @@ msgstr "HTTPS 証明書のインポート"
 #: etc/inc/system.inc:1096 etc/inc/system.inc:1155
 #, php-format
 msgid "Error: cannot open cert.pem in system_webgui_start().%s"
-msgstr "エラー: cert.pem を system_webgui_start().%s で開けません"
+msgstr "エラー: cert.pem を system_webgui_start() で開けません%s"
 
 #: etc/inc/system.inc:1126 etc/inc/system.inc:1178 etc/inc/system.inc:1158
 #: etc/inc/system.inc:1107 etc/inc/system.inc:1166
 #, php-format
 msgid "Error: cannot open ca.pem in system_webgui_start().%s"
-msgstr "エラー: ca.pem を system_webgui_start.()%s で開けません"
+msgstr "エラー: ca.pem を system_webgui_start() で開けません%s"
 
 #: etc/inc/system.inc:1134 etc/inc/system.inc:1186 etc/inc/system.inc:1166
 #: etc/inc/system.inc:1115 etc/inc/system.inc:1174
@@ -3266,7 +3267,7 @@ msgstr "SSL の構成"
 #: etc/inc/system.inc:1142 etc/inc/system.inc:1201
 #, php-format
 msgid "Error: cannot open %s in system_generate_lighty_config().%s"
-msgstr "エラー: %s を system_generate_lighty_config().%s で開けません"
+msgstr "エラー: %s を system_generate_lighty_config() で開けません%s"
 
 #: etc/inc/system.inc:1181 etc/inc/system.inc:1233 etc/inc/system.inc:1213
 #: etc/inc/system.inc:1162 etc/inc/system.inc:1221
@@ -3282,7 +3283,7 @@ msgstr "起動前にシステムの時刻を同期しています..."
 #: etc/inc/system.inc:1424 etc/inc/system.inc:1483
 #, php-format
 msgid "Error: cannot open dmesg.boot in system_dmesg_save().%s"
-msgstr "エラー: dmesg.boot を system_dmesg_save().%s で開けません"
+msgstr "エラー: dmesg.boot を system_dmesg_save() で開けません%s"
 
 #: etc/inc/system.inc:1397 etc/inc/system.inc:1454 etc/inc/system.inc:1496
 #: etc/inc/system.inc:1445 etc/inc/system.inc:1504
@@ -3510,7 +3511,7 @@ msgid ""
 "IPSEC: ERROR: One of the remote endpoints is not a IP address. Old RG '%1$s' "
 "new RG '%2$s'"
 msgstr "IPSEC: エラー: リモートエンドポイントの 1 つが IP アドレスではありません"
-"旧 RG '%1$s' 新 RG '%2$s'"
+" 旧 RG '%1$s' 新 RG '%2$s'"
 
 #: etc/inc/vpn.inc:1833 etc/inc/vpn.inc:1843 etc/inc/vpn.inc:1835
 #: etc/inc/vpn.inc:1907 etc/inc/vpn.inc:1920 etc/inc/vpn.inc:1917
@@ -3658,16 +3659,16 @@ msgid ""
 "name passed. If no signatures are known, returns a none-array (test for "
 "type != array to detect missing signature)"
 msgstr ""
-"メソッド名を渡すことで、既知の署名の配列 ( 配列の配列 )を返します"
+"メソッド名を渡すことで、既知の署名の配列 ( 配列の配列 )を返します。"
 "既知の署名がない場合は、配列ではないデータを返します"
-"( type != array で足りない署名を確認できます )"
+" ( type != array で足りない署名を確認できます )"
 
 #: etc/inc/xmlrpc_server.inc:86 etc/inc/xmlrpc_server.inc:86
 msgid ""
 "Returns help text if defined for the method passed, otherwise returns an "
 "empty string"
 msgstr ""
-"メソッドに定義されていればヘルプテキストを返します"
+"メソッドに定義されていればヘルプテキストを返します。"
 "未定義なら空の文字列を返します"
 
 #: etc/inc/authgui.inc:73 etc/inc/authgui.inc:73
@@ -3846,13 +3847,13 @@ msgstr "完了しました！"
 #: etc/inc/config.console.inc:451
 #, php-format
 msgid "Detected link-up on interface %s.%s"
-msgstr "インタフェースのリンクアップを検出しました %s.%s"
+msgstr "%s インタフェースのリンクアップを検出しました%s"
 
 #: etc/inc/config.console.inc:454 etc/inc/config.console.inc:456
 #: etc/inc/config.console.inc:456
 #, php-format
 msgid "No link-up detected.%s"
-msgstr "リンクアップが検出されませんでした %s"
+msgstr "リンクアップが検出されませんでした%s"
 
 #: etc/inc/config.console.inc:493 etc/inc/config.console.inc:495
 #: etc/inc/config.console.inc:495
@@ -3880,7 +3881,7 @@ msgstr "VLAN タグ ( 1 〜 4094 ) を入力してください: "
 #: etc/inc/config.console.inc:531
 #, php-format
 msgid "%sInvalid VLAN tag '%s'%s"
-msgstr "%sVLAN タグが無効です %s'%s"
+msgstr "%sVLAN タグ '%s' が無効です%s"
 
 #: etc/inc/config.lib.inc:79 etc/inc/config.lib.inc:79
 msgid "Config.xml unlocked."
@@ -3922,7 +3923,8 @@ msgid ""
 "Make sure that the configuration floppy disk with the conf/config.xml\n"
 "file is inserted. If it isn't, your configuration changes will be lost\n"
 "on reboot.\n"
-msgstr "XML 構成ファイルがありません -  出荷時の既定値を使用します\n"
+msgstr ""
+"XML 構成ファイルがありません -  出荷時の既定値を使用します\n"
 "構成フロッピーディスクに conf.xml もしくは config.xml ファイルが\n"
 "入っていないかどうか確認して下さい\n"
 "入っていない場合は、構成の変更は再起動時に失われた可能性があります\n"
@@ -3936,7 +3938,8 @@ msgstr "XML 構成ファイルがありません。%s は起動を続行でき�
 msgid ""
 "Last known config found and restored. Please double check your "
 "configuration file for accuracy."
-msgstr "前回の構成を発見して復元しました"
+msgstr ""
+"前回の構成を発見して復元しました"
 "正確を期すために、構成ファイルを再確認して下さい"
 
 #: etc/inc/config.lib.inc:317 etc/inc/config.lib.inc:320
@@ -4737,7 +4740,7 @@ msgstr "WebCfg - 診断: PF IPアドレステーブル"
 #: etc/inc/priv.defs.inc:233 etc/inc/priv.defs.inc:251
 #: etc/inc/priv.defs.inc:257 etc/inc/priv.defs.inc:257
 msgid "Allow access to the 'Diagnostics: Tables' page."
-msgstr "診断: テーブル: ページへのアクセスを許可します。"
+msgstr "診断: テーブル: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:238 etc/inc/priv.defs.inc:256
 #: etc/inc/priv.defs.inc:262 etc/inc/priv.defs.inc:262
@@ -5253,7 +5256,7 @@ msgstr "WebCfg - インタフェース: LAGG ページ"
 #: etc/inc/priv.defs.inc:517 etc/inc/priv.defs.inc:511
 #: etc/inc/priv.defs.inc:517
 msgid "Edit Interface LAGG"
-msgstr "インタフェース LAGG の編集"
+msgstr "LAGG インタフェースの編集"
 
 #: etc/inc/priv.defs.inc:496 etc/inc/priv.defs.inc:514
 #: etc/inc/priv.defs.inc:520 etc/inc/priv.defs.inc:516
@@ -5307,7 +5310,7 @@ msgstr "WebCfg - インタフェース: QinQ: 編集ページ""
 #: etc/inc/priv.defs.inc:545 etc/inc/priv.defs.inc:541
 #: etc/inc/priv.defs.inc:541
 msgid "Edit Interface qinq"
-msgstr "インタフェース QinQ の編集"
+msgstr "QinQ インタフェースの編集"
 
 #: etc/inc/priv.defs.inc:526 etc/inc/priv.defs.inc:544
 #: etc/inc/priv.defs.inc:550 etc/inc/priv.defs.inc:546
@@ -6348,13 +6351,13 @@ msgstr "システム: グループ管理: ページへのアクセスを許可"
 #: etc/inc/priv.defs.inc:1092 etc/inc/priv.defs.inc:1100
 #: etc/inc/priv.defs.inc:1100
 msgid "WebCfg - System: Group Manager: Add Privileges page"
-msgstr "WebCfg - システム: グループ管理: 特権追加ページ"
+msgstr "WebCfg - システム: グループ管理: 権限追加ページ"
 
 #: etc/inc/priv.defs.inc:1069 etc/inc/priv.defs.inc:1087
 #: etc/inc/priv.defs.inc:1093 etc/inc/priv.defs.inc:1101
 #: etc/inc/priv.defs.inc:1101
 msgid "Allow access to the 'System: Group Manager: Add Privileges' page."
-msgstr "システム: グループ管理: 特権追加: ページへのアクセスを許可"
+msgstr "システム: グループ管理: 権限追加: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1074 etc/inc/priv.defs.inc:1092
 #: etc/inc/priv.defs.inc:1098 etc/inc/priv.defs.inc:1106
@@ -6396,13 +6399,13 @@ msgstr "システム: ユーザ管理: ページへのアクセスを許可"
 #: etc/inc/priv.defs.inc:1116 etc/inc/priv.defs.inc:1124
 #: etc/inc/priv.defs.inc:1124
 msgid "WebCfg - System: User Manager: Add Privileges page"
-msgstr "WebCfg - システム: ユーザ管理: 特権追加ページ"
+msgstr "WebCfg - システム: ユーザ管理: 権限追加ページ"
 
 #: etc/inc/priv.defs.inc:1093 etc/inc/priv.defs.inc:1111
 #: etc/inc/priv.defs.inc:1117 etc/inc/priv.defs.inc:1125
 #: etc/inc/priv.defs.inc:1125
 msgid "Allow access to the 'System: User Manager: Add Privileges' page."
-msgstr "システム: ユーザ管理: 特権追加: ページへのアクセスを許可"
+msgstr "システム: ユーザ管理: 権限追加: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1098 etc/inc/priv.defs.inc:1116
 #: etc/inc/priv.defs.inc:1122 etc/inc/priv.defs.inc:1130
@@ -6449,7 +6452,7 @@ msgstr "WebCfg - システム: ファームウェア: 手動更新 ( プログ�
 #: etc/inc/priv.defs.inc:1149
 msgid ""
 "Allow access to the 'System: Firmware: Manual Update: Progress bar' page."
-msgstr "システム: ファームウェア: 手動更新 ( プログレスバー ): ページへのアクセスを許可"
+msgstr "システム: ファームウェア: 手動更新: プログレスバー: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1122 etc/inc/priv.defs.inc:1140
 #: etc/inc/priv.defs.inc:1146 etc/inc/priv.defs.inc:1154
@@ -6479,7 +6482,7 @@ msgstr "VPN: IPsec: ページへのアクセスを許可"
 #: etc/inc/priv.defs.inc:1158 etc/inc/priv.defs.inc:1166
 #: etc/inc/priv.defs.inc:1166
 msgid "WebCfg - VPN: IPsec: Pre-Shared Keys List"
-msgstr "WebCfg - VPN: IPsec: 事前共有鍵リストページ"
+msgstr "WebCfg - VPN: IPsec: 事前共有鍵リスト"
 
 #: etc/inc/priv.defs.inc:1135 etc/inc/priv.defs.inc:1153
 #: etc/inc/priv.defs.inc:1159 etc/inc/priv.defs.inc:1167
@@ -6563,144 +6566,144 @@ msgstr "WebCfg - VPN: VPN L2TP: ユーザ: ページへのアクセスを許可"
 #: etc/inc/priv.defs.inc:1200 etc/inc/priv.defs.inc:1208
 #: etc/inc/priv.defs.inc:1208
 msgid "WebCfg - VPN: VPN L2TP : Users : Edit page"
-msgstr "WebCfg - VPN ： VPN L2TP ：ユーザー： Editページ"
+msgstr "WebCfg - VPN: VPN L2TP: ユーザ: 編集ページ"
 
 #: etc/inc/priv.defs.inc:1177 etc/inc/priv.defs.inc:1195
 #: etc/inc/priv.defs.inc:1201 etc/inc/priv.defs.inc:1209
 #: etc/inc/priv.defs.inc:1209
 msgid "Allow access to the 'VPN: VPN L2TP : Users : Edit' page."
-msgstr "ページ' ： VPN L2TP ：ユーザーの編集VPN 」へのアクセスを許可します。"
+msgstr "VPN: VPN L2TP: ユーザ: 編集: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1182 etc/inc/priv.defs.inc:1200
 #: etc/inc/priv.defs.inc:1206 etc/inc/priv.defs.inc:1214
 #: etc/inc/priv.defs.inc:1214
 msgid "WebCfg - OpenVPN: Client page"
-msgstr "WebCfg - OpenVPNの： Clientページ"
+msgstr "WebCfg - OpenVPN: クライアントページ"
 
 #: etc/inc/priv.defs.inc:1183 etc/inc/priv.defs.inc:1201
 #: etc/inc/priv.defs.inc:1207 etc/inc/priv.defs.inc:1215
 #: etc/inc/priv.defs.inc:1215
 msgid "Allow access to the 'OpenVPN: Client' page."
-msgstr "ページ：'クライアントのOpenVPN 」へのアクセスを許可します。"
+msgstr "OpenVPN: クライアント: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1188 etc/inc/priv.defs.inc:1206
 #: etc/inc/priv.defs.inc:1212 etc/inc/priv.defs.inc:1220
 #: etc/inc/priv.defs.inc:1220
 msgid "WebCfg - OpenVPN: Client Specific Override page"
-msgstr "WebCfg - OpenVPNの：クライアント固有のオーバーライドページ"
+msgstr "WebCfg - OpenVPN: クライアント固有の上書きページ"
 
 #: etc/inc/priv.defs.inc:1189 etc/inc/priv.defs.inc:1207
 #: etc/inc/priv.defs.inc:1213 etc/inc/priv.defs.inc:1221
 #: etc/inc/priv.defs.inc:1221
 msgid "Allow access to the 'OpenVPN: Client Specific Override' page."
-msgstr "ページ：'クライアントの特定のオーバーライドOpenVPNの'へのアクセスを許可します。"
+msgstr "OpenVPN: クライアント固有の上書き: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1194 etc/inc/priv.defs.inc:1212
 #: etc/inc/priv.defs.inc:1218 etc/inc/priv.defs.inc:1226
 #: etc/inc/priv.defs.inc:1226
 msgid "WebCfg - OpenVPN: Server page"
-msgstr "WebCfg - OpenVPNの： Serverページ"
+msgstr "WebCfg - OpenVPN: サーバページ"
 
 #: etc/inc/priv.defs.inc:1195 etc/inc/priv.defs.inc:1213
 #: etc/inc/priv.defs.inc:1219 etc/inc/priv.defs.inc:1227
 #: etc/inc/priv.defs.inc:1227
 msgid "Allow access to the 'OpenVPN: Server' page."
-msgstr "ページ：'サーバーOpenVPNの'へのアクセスを許可します。"
+msgstr "OpenVPN: サーバ: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1200 etc/inc/priv.defs.inc:1218
 #: etc/inc/priv.defs.inc:1224 etc/inc/priv.defs.inc:1232
 #: etc/inc/priv.defs.inc:1232
 msgid "WebCfg - Services: PPPoE Server page"
-msgstr "WebCfg - サービス： PPPoEサーバページに"
+msgstr "WebCfg - サービス: PPPoE サーバページ"
 
 #: etc/inc/priv.defs.inc:1201 etc/inc/priv.defs.inc:1219
 #: etc/inc/priv.defs.inc:1225 etc/inc/priv.defs.inc:1233
 #: etc/inc/priv.defs.inc:1233
 msgid "Allow access to the 'Services: PPPoE Server' page."
-msgstr "ページ：'のPPPoEサーバサービス」へのアクセスを許可します。"
+msgstr "サービス: PPPoE サーバ: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1206 etc/inc/priv.defs.inc:1224
 #: etc/inc/priv.defs.inc:1230 etc/inc/priv.defs.inc:1238
 #: etc/inc/priv.defs.inc:1238
 msgid "WebCfg - Services: PPPoE Server: Edit page"
-msgstr "WebCfg - サービス： PPPoEサーバ： Editページ"
+msgstr "WebCfg - サービス: PPPoE サーバ: 編集ページ"
 
 #: etc/inc/priv.defs.inc:1207 etc/inc/priv.defs.inc:1225
 #: etc/inc/priv.defs.inc:1231 etc/inc/priv.defs.inc:1239
 #: etc/inc/priv.defs.inc:1239
 msgid "Allow access to the 'Services: PPPoE Server: Edit' page."
-msgstr "ページ'： PPPoEサーバサービスを編集」へのアクセスを許可します。"
+msgstr "サービス: PPPoE サーバ: 編集: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1212 etc/inc/priv.defs.inc:1230
 #: etc/inc/priv.defs.inc:1236 etc/inc/priv.defs.inc:1244
 #: etc/inc/priv.defs.inc:1244
 msgid "WebCfg - VPN: VPN PPTP page"
-msgstr "WebCfg - VPN ： VPNのPPTPページ"
+msgstr "WebCfg - VPN: VPN PPTP ページ"
 
 #: etc/inc/priv.defs.inc:1213 etc/inc/priv.defs.inc:1231
 #: etc/inc/priv.defs.inc:1237 etc/inc/priv.defs.inc:1245
 #: etc/inc/priv.defs.inc:1245
 msgid "Allow access to the 'VPN: VPN PPTP' page."
-msgstr "ページ： 「 VPN PPTP VPN 」へのアクセスを許可します。"
+msgstr "VPN: VPN PPTP: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1218 etc/inc/priv.defs.inc:1236
 #: etc/inc/priv.defs.inc:1242 etc/inc/priv.defs.inc:1250
 #: etc/inc/priv.defs.inc:1250
 msgid "WebCfg - VPN: VPN PPTP: Users page"
-msgstr "WebCfg - VPN ： VPNのPPTP ：ユーザーのページ"
+msgstr "WebCfg - VPN: VPN PPTP: ユーザページ"
 
 #: etc/inc/priv.defs.inc:1219 etc/inc/priv.defs.inc:1237
 #: etc/inc/priv.defs.inc:1243 etc/inc/priv.defs.inc:1251
 #: etc/inc/priv.defs.inc:1251
 msgid "Allow access to the 'VPN: VPN PPTP: Users' page."
-msgstr "ページ'： VPN PPTPユーザーVPN 」へのアクセスを許可します。"
+msgstr "VPN: VPN PPTP: ユーザ: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1224 etc/inc/priv.defs.inc:1242
 #: etc/inc/priv.defs.inc:1248 etc/inc/priv.defs.inc:1256
 #: etc/inc/priv.defs.inc:1256
 msgid "WebCfg - VPN: VPN PPTP: User: Edit page"
-msgstr "WebCfg - VPN ： VPN PPTPユーザー： Editページ"
+msgstr "WebCfg - VPN: VPN PPTP: ユーザ: 編集ページ"
 
 #: etc/inc/priv.defs.inc:1225 etc/inc/priv.defs.inc:1243
 #: etc/inc/priv.defs.inc:1249 etc/inc/priv.defs.inc:1257
 #: etc/inc/priv.defs.inc:1257
 msgid "Allow access to the 'VPN: VPN PPTP: User: Edit' page."
-msgstr "ページ' ： VPN PPTP ：ユーザーの編集VPN 」へのアクセスを許可します。"
+msgstr "VPN: VPN PPTP: ユーザ: 編集: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1230 etc/inc/priv.defs.inc:1248
 #: etc/inc/priv.defs.inc:1254 etc/inc/priv.defs.inc:1262
 #: etc/inc/priv.defs.inc:1262
 msgid "WebCfg - pfSense wizard subsystem page"
-msgstr "WebCfg - pfSenseウィザード·サブページ"
+msgstr "WebCfg - pfSense ウィザードサブシステムページ"
 
 #: etc/inc/priv.defs.inc:1231 etc/inc/priv.defs.inc:1249
 #: etc/inc/priv.defs.inc:1255 etc/inc/priv.defs.inc:1263
 #: etc/inc/priv.defs.inc:1263
 msgid "Allow access to the 'pfSense wizard subsystem' page."
-msgstr "「 pfSenseウィザードサブシステム」ページへのアクセスを許可します。"
+msgstr "pfSense ウィザードサブシステム: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1236 etc/inc/priv.defs.inc:1254
 #: etc/inc/priv.defs.inc:1260 etc/inc/priv.defs.inc:1268
 #: etc/inc/priv.defs.inc:1268
 msgid "WebCfg - XMLRPC Library page"
-msgstr "WebCfg - XMLRPCライブラリページ"
+msgstr "WebCfg - XMLRPC ライブラリページ"
 
 #: etc/inc/priv.defs.inc:1237 etc/inc/priv.defs.inc:1255
 #: etc/inc/priv.defs.inc:1261 etc/inc/priv.defs.inc:1269
 #: etc/inc/priv.defs.inc:1269
 msgid "Allow access to the 'XMLRPC Library' page."
-msgstr "' XMLRPCライブラリ」ページへのアクセスを許可します。"
+msgstr "XMLRPC ライブラリ: ページへのアクセスを許可"
 
 #: etc/inc/rrd.inc:45 etc/inc/rrd.inc:45
 #, php-format
 msgid "RRD dump failed exited with %1$s, the error is: %2$s"
-msgstr "RRDダンプがは%1$sで終了しました失敗し、エラーは、次のとおりです。 %2$s"
+msgstr "RRD ダンプに %1$s で失敗して終了しました。エラー: %2$s"
 
 #: etc/inc/rrd.inc:56 etc/inc/rrd.inc:92 etc/inc/rrd.inc:96 etc/inc/rrd.inc:98
 #: etc/inc/rrd.inc:98
 #, php-format
 msgid "RRD create failed exited with %1$s, the error is: %2$s"
-msgstr "RRDは%1$sで終了しました作成に失敗しました、エラー: %2$s"
+msgstr "RRD 新規作成に %1$s で失敗して終了しました。エラー: %2$s"
 
 #: etc/inc/rrd.inc:70 etc/inc/rrd.inc:106 etc/inc/rrd.inc:110
 #: etc/inc/rrd.inc:113 etc/inc/rrd.inc:113
@@ -6708,273 +6711,288 @@ msgstr "RRDは%1$sで終了しました作成に失敗しました、エラー: 
 msgid ""
 "Import RRD has %1$s DS values and %2$s RRA databases, new format RRD has "
 "%3$s DS values and %4$s RRA databases"
-msgstr "%3$s DSの値および％ 4 $ sのRRAデータベース「インポートRRDはは%1$s 、DS値と%2$sのRRAデータベース、 RRDが持つ新しいフォーマットを持っている」"
+msgstr ""
+"インポートする RRD は%1$s DS 値及び %2$s RRA データベース、"
+"新しい形式の RRD は %3$s DS 値及び %4$s RRA データベースです"
 
 #: etc/inc/rrd.inc:154 etc/inc/rrd.inc:190 etc/inc/rrd.inc:194
 #: etc/inc/rrd.inc:197 etc/inc/rrd.inc:197
 #, php-format
 msgid "The new RRD now has %1$s DS values and %2$s RRA databases"
-msgstr "新しいRRDは今は%1$s DSの値と%2$sのRRAデータベースを持っている"
+msgstr "新しい RRD は現在 %1$s DS 値及び %2$s RRA データベースです"
 
 #: etc/inc/rrd.inc:162 etc/inc/rrd.inc:198 etc/inc/rrd.inc:202
 #: etc/inc/rrd.inc:205 etc/inc/rrd.inc:205
 msgid "Generating RRD graphs..."
-msgstr "RRDグラフを生成する..."
+msgstr "RRD グラフを生成しています..."
 
 #: etc/inc/rrd.inc:247
 #, php-format
 msgid "RRD restore failed exited with %1$s, the error is: %2$s%3$s"
-msgstr "RRDは%1$sで終了しました復元に失敗しました、エラー: %2$s%3$s"
+msgstr "RRD 復元に %1$s で失敗して終了しました。エラー: %2$s%3$s"
 
 #: etc/inc/rrd.inc:758 etc/inc/rrd.inc:782 etc/inc/rrd.inc:803
 #: etc/inc/rrd.inc:805 etc/inc/rrd.inc:808 etc/inc/rrd.inc:808
 msgid "Creating rrd update script"
-msgstr "RRD更新スクリプトの作成"
+msgstr "RRD 更新スクリプトを作成しています"
 
 #: etc/inc/smtp.inc:92 etc/inc/smtp.inc:92
 msgid ": data access time out"
-msgstr "：外データアクセス時間"
+msgstr ": データアクセスはタイムアウトしました"
 
 #: etc/inc/smtp.inc:95 etc/inc/smtp.inc:95
 msgid ": the server disconnected"
-msgstr "：切断されたサーバー"
+msgstr ": サーバは切断しました"
 
 #: etc/inc/smtp.inc:107 etc/inc/smtp.inc:107
 msgid "reached the end of data while reading from the SMTP server conection"
-msgstr "SMTPサーバたっから読み取り中にデータの最後に到達した"
+msgstr "SMTP サーバ接続からデータの読み込み中にデータの最後に到達しました"
 
 #: etc/inc/smtp.inc:113 etc/inc/smtp.inc:113
 msgid "it was not possible to read line from the SMTP server"
-msgstr "それは、SMTPサーバーからのラインを読むことができませんでした"
+msgstr "SMTP サーバから行を読み込むことができません"
 
 #: etc/inc/smtp.inc:135 etc/inc/smtp.inc:135
 msgid "it was not possible to send a line to the SMTP server"
-msgstr "それはSMTPサーバに行を送信することはできませんでした"
+msgstr "SMTP サーバに行を送信するとができません"
 
 #: etc/inc/smtp.inc:149 etc/inc/smtp.inc:149
 msgid "it was not possible to send data to the SMTP server"
-msgstr "これは、SMTPサーバーにデータを送信することはできませんでした"
+msgstr "SMTP サーバにデータを送信するとができません"
 
 #: etc/inc/smtp.inc:221 etc/inc/smtp.inc:221
 msgid "establishing SSL connections requires at least PHP version 4.3.0"
-msgstr "SSL接続を確立することは、少なくとも、PHPのバージョン4.3.0が必要です"
+msgstr "SSL 接続を確立するには、PHP バージョン 4.3.0 以降が必要です"
 
 #: etc/inc/smtp.inc:224 etc/inc/smtp.inc:224
 msgid "establishing SSL connections requires the OpenSSL extension enabled"
-msgstr "SSL接続を確立することは有効のOpenSSL拡張モジュールを必要と"
+msgstr "SSL 接続を確立するには、OpenSSL 拡張を有効にする必要があります"
 
 #: etc/inc/smtp.inc:233 etc/inc/smtp.inc:233
 #, php-format
 msgid "could not resolve host "%s""
-msgstr "ホスト「 %s "を解決できませんでした"
+msgstr "ホスト %s を解決できません"
 
 #: etc/inc/smtp.inc:237 etc/inc/smtp.inc:237
 #, php-format
 msgid "domain "%s" resolved to an address excluded to be valid"
-msgstr "有効であるために除外されたアドレスに解決されたドメイン」 %s 」"
+msgstr "domain "%s" が解決されたアドレスは、有効アドレスから除外されています"
 
 #: etc/inc/smtp.inc:239 etc/inc/smtp.inc:239
 #, php-format
 msgid "Connecting to host address "%1$s" port %2$s..."
-msgstr "アドレス "は%1$s "ポート%2$sをホストに接続する..."
+msgstr "ホストアドレス: %1$s ポート: %2$s に接続しています..."
 
 #: etc/inc/smtp.inc:246 etc/inc/smtp.inc:246
 msgid "-3 socket could not be created"
-msgstr "-3ソケットを作成できませんでした"
+msgstr "-3 ソケットを作成できません"
 
 #: etc/inc/smtp.inc:248 etc/inc/smtp.inc:248
 #, php-format
 msgid "-4 dns lookup on hostname "%s" failed"
-msgstr "-4 DNSルックアップのホスト名の「 %s 「失敗した"
+msgstr "-4 ホスト名 "%s" の DNS ルックアップに失敗しました"
 
 #: etc/inc/smtp.inc:250 etc/inc/smtp.inc:250
 msgid "-5 connection refused or timed out"
-msgstr "-5接続が拒否またはタイムアウト"
+msgstr "-5 接続を拒否もしくはタイムアウトしました"
 
 #: etc/inc/smtp.inc:252 etc/inc/smtp.inc:252
 msgid "-6 fdopen() call failed"
-msgstr "-6 fdopen.()呼び出しに失敗しました"
+msgstr "-6 fdopen() 呼び出しに失敗しました"
 
 #: etc/inc/smtp.inc:254 etc/inc/smtp.inc:254
 msgid "-7 setvbuf() call failed"
-msgstr "-7 setvbuf.()呼び出しに失敗しました"
+msgstr "-7 setvbuf() 呼び出しに失敗しました"
 
 #: etc/inc/smtp.inc:256 etc/inc/smtp.inc:256
 #, php-format
 msgid "could not connect to the host "%1$s": %2$s"
-msgstr "ホスト"は%1$s "に接続できませんでした。 %2$s"
+msgstr "ホスト "%1$s" に接続できません: %2$s"
 
 #: etc/inc/smtp.inc:265 etc/inc/smtp.inc:265
 msgid ""
 "it is not possible to authenticate using the specified mechanism because the "
 "SASL library class is not loaded"
-msgstr "SASLライブラリクラスロードされていない」ことが原因指定されたメカニズムを使用して認証することはできません」"
+msgstr ""
+"SASL ライブラリクラスが読み込まれていないため、"
+"指定された機構を使用して認証できません"
 
 #: etc/inc/smtp.inc:289 etc/inc/smtp.inc:289
 #, php-format
 msgid "authenticated mechanism %1$s may not be used: %2$s"
-msgstr "認証された機構は%1$sを使用することはできません。 %2$s"
+msgstr "認証された機構 %1$s を使用できません: %2$s"
 
 #: etc/inc/smtp.inc:294 etc/inc/smtp.inc:294
 msgid "Could not start the SASL authentication client:"
-msgstr "SASL認証クライアントを起動できませんでした："
+msgstr "SASL 認証 クライアントを起動できません: "
 
 #: etc/inc/smtp.inc:301 etc/inc/smtp.inc:301
 msgid "Could not send the AUTH command"
-msgstr "AUTHコマンドを送信できませんでした"
+msgstr "AUTH コマンドを送信できません"
 
 #: etc/inc/smtp.inc:316 etc/inc/smtp.inc:346 etc/inc/smtp.inc:316
 #: etc/inc/smtp.inc:346
 msgid "Authentication error:"
-msgstr "認証エラー："
+msgstr "認証エラー: "
 
 #: etc/inc/smtp.inc:331 etc/inc/smtp.inc:331
 msgid "Could not send the authentication step message"
-msgstr "認証ステップメッセージを送信できませんでした"
+msgstr "認証ステップメッセージを送信できません"
 
 #: etc/inc/smtp.inc:351 etc/inc/smtp.inc:351
 msgid "Could not process the SASL authentication step:"
-msgstr "SASL認証ステップを処理できませんでした。"
+msgstr "SASL 認証ステップを処理できません"
 
 #: etc/inc/smtp.inc:365 etc/inc/smtp.inc:365
 msgid "connection is already established"
-msgstr "接続がすでに確立されている"
+msgstr "接続は既に確立しています"
 
 #: etc/inc/smtp.inc:403 etc/inc/smtp.inc:403
 msgid "it was not specified the POP3 authentication user"
-msgstr "それは、POP3認証ユーザーに指定されていなかった"
+msgstr "POP3 認証ユーザは指定されていません"
 
 #: etc/inc/smtp.inc:409 etc/inc/smtp.inc:409
 msgid "it was not specified the POP3 authentication password"
-msgstr "それは、POP3認証パスワードを指定しなかった"
+msgstr "POP3 認証パスワードは指定されていません"
 
 #: etc/inc/smtp.inc:413 etc/inc/smtp.inc:413
 #, php-format
 msgid "Resolving POP3 authentication host "%s"..."
-msgstr "POP3認証ホスト」 %s 」を解決する..."
+msgstr "POP3 認証ホスト "%s" を名前解決しています..."
 
 #: etc/inc/smtp.inc:420 etc/inc/smtp.inc:420
 msgid "POP3 authentication server greeting was not found"
-msgstr "POP3認証サーバのグリーティングが見つかりませんでした"
+msgstr "POP3 認証サーバの挨拶メッセージがありません"
 
 #: etc/inc/smtp.inc:428 etc/inc/smtp.inc:428
 msgid "POP3 authentication user was not accepted:"
-msgstr "POP3認証ユーザーが受け入れられませんでした。"
+msgstr "POP3 認証ユーザは承認されませんでした"
 
 #: etc/inc/smtp.inc:436 etc/inc/smtp.inc:436
 msgid "POP3 authentication password was not accepted:"
-msgstr "POP3認証のパスワードが受け入れられませんでした。"
+msgstr "POP3 認証パスワードは承認されませんでした"
 
 #: etc/inc/smtp.inc:445 etc/inc/smtp.inc:445
 msgid "could not determine the SMTP to connect"
-msgstr "接続するためにSMTPを決定することができませんでした"
+msgstr "接続する SMTP を決定できません"
 
 #: etc/inc/smtp.inc:451 etc/inc/smtp.inc:451
 #, php-format
 msgid "Resolving SMTP server domain "%s"..."
-msgstr "解決SMTPサーバドメイン」 %s "..."
+msgstr "SMTP サーバドメイン "%s" の名前解決しています...
 
 #: etc/inc/smtp.inc:463 etc/inc/smtp.inc:463
 #, php-format
 msgid "Connected to SMTP server "%s"."
-msgstr "SMTPサーバ」 %s 」に接続されている。"
+msgstr "SMTP サーバ "%s" に接続されました"
 
 #: etc/inc/smtp.inc:517 etc/inc/smtp.inc:519 etc/inc/smtp.inc:519
 msgid "server does not require authentication"
-msgstr "サーバが認証を必要としない"
+msgstr "認証不要のサーバです"
 
 #: etc/inc/smtp.inc:581 etc/inc/smtp.inc:583 etc/inc/smtp.inc:583
 msgid ""
 "it is not supported any of the authentication mechanisms required by the "
 "server"
-msgstr "サーバー」とは、によって必要とされる認証メカニズムのいずれもサポートされていません ""
+msgstr ""
+"このサーバが必要とする認証機構を、"
+"いずれもサポートしていません"
 
 #: etc/inc/smtp.inc:613 etc/inc/smtp.inc:615 etc/inc/smtp.inc:615
 msgid ""
 "direct delivery connection is already established and sender is already set"
-msgstr "「直接受け渡し接続がすでに確立され、送信者がすでに設定されています"
+msgstr "直接配送接続は確立しており、送信者も設定されています"
 
 #: etc/inc/smtp.inc:621 etc/inc/smtp.inc:623 etc/inc/smtp.inc:623
 msgid "connection is not in the initial state"
-msgstr "接続は、初期状態ではありません"
+msgstr "接続は初期状態ではありません"
 
 #: etc/inc/smtp.inc:643 etc/inc/smtp.inc:645 etc/inc/smtp.inc:645
 msgid "it was not specified a valid direct recipient"
-msgstr "それは、有効な直接受信者に指定されていなかった"
+msgstr "有効な直接受信者に指定されていません"
 
 #: etc/inc/smtp.inc:662 etc/inc/smtp.inc:664 etc/inc/smtp.inc:664
 msgid ""
 "it is not possible to deliver directly to recipients of different domains"
-msgstr "「それは異なるドメインの受信者に直接配信することはできません"
+msgstr "異なるドメインの受信者に直接配送することはできません"
 
 #: etc/inc/smtp.inc:667 etc/inc/smtp.inc:669 etc/inc/smtp.inc:669
 msgid "connection is already established and the recipient is already set"
-msgstr "接続がすでに確立され、受信者がすでに設定されています"
+msgstr "接続は確立しており、受信者も設定されています"
 
 #: etc/inc/smtp.inc:679 etc/inc/smtp.inc:681 etc/inc/smtp.inc:681
 msgid "connection is not in the recipient setting state"
-msgstr "接続は、受信者の設定状態ではありません"
+msgstr "接続ステータスは、受信者設定ではありません"
 
 #: etc/inc/smtp.inc:708 etc/inc/smtp.inc:710 etc/inc/smtp.inc:710
 msgid "connection is not in the start sending data state"
-msgstr "接続が開始送信データ状態ではありません"
+msgstr "接続ステータスは、データ送信開始ではありません"
 
 #: etc/inc/smtp.inc:738 etc/inc/smtp.inc:749 etc/inc/smtp.inc:740
 #: etc/inc/smtp.inc:751 etc/inc/smtp.inc:740 etc/inc/smtp.inc:751
 msgid "connection is not in the sending data state"
-msgstr "接続は、データ送信状態ではない"
+msgstr "接続ステータスは、データ送信中ではありません"
 
 #: etc/inc/smtp.inc:785 etc/inc/smtp.inc:787 etc/inc/smtp.inc:787
 msgid "it was not previously established a SMTP connection"
-msgstr "それは、以前のSMTP接続を確立していなかった"
+msgstr "前回確立した SMTP 接続ではありません"
 
 #: etc/inc/upgrade_config.inc:113 etc/inc/upgrade_config.inc:113
 #, php-format
 msgid "%sWarning: filter rule removed (interface '%s' does not exist anymore)."
-msgstr "%sWarning ：削除フィルタルール（インタフェース「 %s 」はもはや存在しない） 。"
+msgstr "%s警告: フィルタルールが削除されました ( インタフェース '%s' は現在存在しません )"
 
 #: etc/inc/upgrade_config.inc:125 etc/inc/upgrade_config.inc:125
 #, php-format
 msgid ""
 "%sWarning: filter rule removed (source network '%s' does not exist anymore)."
-msgstr "「 %sWarning ：削除フィルタルール（ソース·ネットワーク」 %s 」はもはや存在しない） 。"
+msgstr ""
+"%s警告: フィルタルールが削除されました ( 送信元ネットワーク '%s' は現在存在しません )"
 
 #: etc/inc/upgrade_config.inc:138 etc/inc/upgrade_config.inc:138
 #, php-format
 msgid ""
 "%sWarning: filter rule removed (destination network '%s' does not exist "
 "anymore)."
-msgstr "「 ： （もう%sWarning削除フィルタルール宛先ネットワーク' %s'は存在しません」 ） 。"
+msgstr ""
+"%s警告: フィルタルールが削除されました"
+" ( 送信先ネットワーク '%s' は現在存在しません )"
 
 #: etc/inc/upgrade_config.inc:158 etc/inc/upgrade_config.inc:158
 #, php-format
 msgid ""
 "%sWarning: traffic shaper rule removed (interface '%s' does not exist "
 "anymore)."
-msgstr "「 ： （もう%sWarning削除トラフィックシェールールインターフェース「 %s'は存在しません」 ） 。"
+msgstr ""
+"%s警告: トラフィックシェイパルールが削除されました"
+" ( インタフェース '%s' は現在存在しません )"
 
 #: etc/inc/upgrade_config.inc:170 etc/inc/upgrade_config.inc:170
 #, php-format
 msgid ""
 "%sWarning: traffic shaper rule removed (source network '%s' does not exist "
 "anymore)."
-msgstr "「 ： （もう%sWarning削除トラフィックシェールールソース·ネットワーク」 %s'は存在しません」 ） 。"
+msgstr ""
+"%s警告: トラフィックシェイパルールが削除されました"
+" ( 送信元ネットワーク '%s' は現在存在しません )"
 
 #: etc/inc/upgrade_config.inc:183 etc/inc/upgrade_config.inc:183
 #, php-format
 msgid ""
 "%sWarning: traffic shaper rule removed (destination network '%s' does not "
 "exist anymore)."
-msgstr "「 %sWarning ：削除トラフィックシェールール（' %s'宛先ネットワークがありません」もはや存在） 。"
+msgstr ""
+"%s警告: トラフィックシェイパルールが削除されました"
+" ( 送信先ネットワーク '%s' は現在存在しません )"
 
 #: etc/inc/upgrade_config.inc:333 etc/inc/upgrade_config.inc:333
 #, php-format
 msgid "CARP vhid %s"
-msgstr "CARPのVHIDの%s"
+msgstr "CARP vhid %s"
 
 #: etc/inc/upgrade_config.inc:510 etc/inc/upgrade_config.inc:510
 msgid "Permit IPsec traffic."
-msgstr "IPsecトラフィックを許可します。"
+msgstr "IPsec トラフィックを許可"
 
 #: etc/inc/upgrade_config.inc:585 etc/inc/upgrade_config.inc:585
 msgid "System Administrators"
@@ -6984,18 +7002,23 @@ msgstr "システム管理者"
 msgid ""
 "Indicates whether this user will lock access to the webConfigurator for "
 "other users."
-msgstr "他のユーザー「このユーザーが探しwebConfiguratorへのアクセスをロックするかどうかを示します」 。"
+msgstr ""
+"このユーザが、他のユーザに対して Web 設定管理画面へのアクセスをロックするかどうかを"
+"示します"
 
 #: etc/inc/upgrade_config.inc:607 etc/inc/upgrade_config.inc:607
 msgid ""
 "Indicates whether this user will lock individual HTML pages after having "
 "accessed a particular page (the lock will be freed if the user leaves or "
 "saves the page form)."
-msgstr "特定のページを（ユーザーがログオフしたとき、または「ページのフォームを保存する場合は、ロックが解放されます）にアクセスし、「このユーザーがした後、個々のHTMLページをロックするかどうかを示します」 。"
+msgstr ""
+"このユーザが、特定のページにアクセスすることで、個別の HTML ページをロックするかどうかを"
+"示します"
+" ( ロックはユーザが特に設定しないか、もしくはページフォームを保存することで解除されます )"
 
 #: etc/inc/upgrade_config.inc:610 etc/inc/upgrade_config.inc:610
 msgid "Indicates whether this user is able to login for example via SSH."
-msgstr "このユーザーは、SSH経由で例えばログインすることであるかどうかを示します。"
+msgstr "このユーザが、例えば SSH 経由でログイン可能かどうかを示します"
 
 #: etc/inc/upgrade_config.inc:613 etc/inc/upgrade_config.inc:613
 #, php-format
@@ -7003,33 +7026,38 @@ msgid ""
 "Indicates whether this user is allowed to copy files onto the %s appliance "
 "via SCP/SFTP. If you are going to use this privilege, you must install "
 "scponly on the appliance (Hint: pkg_add -r scponly)."
-msgstr "SCP / SFTP経由で「このユーザーが%sアプライアンスにファイルをコピーできるかどうかを示します」 。この権限を使用しようとしている場合は、アプライアンス（ ： scponlyのpkg_addに-Rヒント）にscponlyの「インストールする必要があります。"
+msgstr ""
+"このユーザが SCP/SFTP 経由で %s アプライアンスにファイルをコピーすることを"
+"許可するかどうかを示します。この権限を使用する場合は、アプライアンスに"
+" scponly をインストールする必要があります ( ヒント: pkg_add -r scponly )"
 
 #: etc/inc/upgrade_config.inc:616 etc/inc/upgrade_config.inc:616
 msgid ""
 "This user is associated with the UNIX root user (you should associate this "
 "privilege only with one single user)."
-msgstr "「 （一つだけ単一のユーザと権限このユーザーは、UNIXのrootユーザーこれを関連付ける必要があります）と関連している」 。"
+msgstr ""
+"このユーザは UNIX 管理者ユーザとして関連付けられます"
+" ( この特権に関連付けるのは 1 ユーザに限定すべきでしょう )"
 
 #: etc/inc/upgrade_config.inc:633 etc/inc/upgrade_config.inc:633
 msgid "Drop packets to closed TCP ports without returning a RST"
-msgstr "RSTを返さずに、閉じたTCPポートにパケットをドロップする"
+msgstr "閉じた TCP ポートへのパケットを RST を返さずに棄却"
 
 #: etc/inc/upgrade_config.inc:637 etc/inc/upgrade_config.inc:637
 msgid "Do not send ICMP port unreachable messages for closed UDP ports"
-msgstr "閉じられたUDPポートのためのICMPポート到達不能メッセージを送信しないでください"
+msgstr "閉じた UDP ポートに ICMP ポート到達不能メッセージを送信しないでください"
 
 #: etc/inc/upgrade_config.inc:641 etc/inc/upgrade_config.inc:641
 msgid "Randomize the ID field in IP packets (default is 0: sequential IP IDs)"
-msgstr "IPパケット内のIDフィールドをランダム化します（デフォルトは0である：連続したIPのID ）"
+msgstr "IP パケットの ID フィールドをランダム化 ( デフォルト 0: シーケンシャル IP ID ）"
 
 #: etc/inc/upgrade_config.inc:645 etc/inc/upgrade_config.inc:645
 msgid "Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)"
-msgstr "ドロップSYN- FINパケット（休憩のRFC1379が、誰もとにかくそれを使用しません）"
+msgstr "SYN-FIN パケットを棄却 ( RFC1379 に違反しますが、現在使用されていません )"
 
 #: etc/inc/upgrade_config.inc:649 etc/inc/upgrade_config.inc:649
 msgid "Sending of IPv4 ICMP redirects"
-msgstr "IPv4のICMPリダイレクトを送信"
+msgstr "IPv4 ICMP リダイレクトを送信"
 
 #: etc/inc/upgrade_config.inc:653 etc/inc/upgrade_config.inc:653
 msgid "Sending of IPv6 ICMP redirects"
@@ -7037,126 +7065,132 @@ msgstr "IPv6のICMPリダイレクトを送信"
 
 #: etc/inc/upgrade_config.inc:657 etc/inc/upgrade_config.inc:657
 msgid "Generate SYN cookies for outbound SYN-ACK packets"
-msgstr "アウトバウンドSYN- ACKパケットのためにSYNクッキーを生成"
+msgstr "外向き SYN-ACK パケットに対する SYN クッキーを生成"
 
 #: etc/inc/upgrade_config.inc:661 etc/inc/upgrade_config.inc:661
 msgid "Maximum incoming TCP datagram size"
-msgstr "最大着信TCPデータグラムサイズ"
+msgstr "着信 TCP データグラムサイズの最大値"
 
 #: etc/inc/upgrade_config.inc:665 etc/inc/upgrade_config.inc:665
 msgid "Maximum outgoing TCP datagram size"
-msgstr "最大発信TCPデータグラムサイズ"
+msgstr "発信 TCP データグラムサイズの最大値"
 
 #: etc/inc/upgrade_config.inc:669 etc/inc/upgrade_config.inc:669
 msgid ""
 "Fastforwarding (see http://lists.freebsd.org/pipermail/freebsd-net/2004-"
 "January/002534.html)"
-msgstr "「 （ January/002534.htmlを早送りはhttp://lists.freebsd.org/pipermail/freebsd-net/2004-を参照してください。 "）"
+msgstr ""
+"ファストフォワーディング"
+" ( 参照 http://lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html )"
 
 #: etc/inc/upgrade_config.inc:673 etc/inc/upgrade_config.inc:673
 msgid "Do not delay ACK to try and piggyback it onto a data packet"
-msgstr "データパケットにそれを試してみて、ピギーバックにACKを遅らせないでください"
+msgstr "データパケットにピギーバックしようとして、ACK を遅延させないでください"
 
 #: etc/inc/upgrade_config.inc:677 etc/inc/upgrade_config.inc:677
 msgid "Maximum outgoing UDP datagram size"
-msgstr "最大送信UDPデータグラムサイズ"
+msgstr "送信 UDP データグラムサイズの最大値"
 
 #: etc/inc/upgrade_config.inc:681 etc/inc/upgrade_config.inc:681
 msgid ""
 "Handling of non-IP packets which are not passed to pfil (see if_bridge(4))"
-msgstr "「 pfilをに渡されません非IPパケットの処理は、 （ if_bridge （4）を参照）"
+msgstr ""
+"pfik に渡されない、非 IP パケットの処理 ( 参照 if_bridge(4) )"
 
 #: etc/inc/upgrade_config.inc:685 etc/inc/upgrade_config.inc:685
 msgid "Allow unprivileged access to tap(4) device nodes"
-msgstr "（ 4 ）デバイスノードをタップして、権限のないアクセスを可能にする"
+msgstr "tap(4) デバイスノードに対する非特権アクセスを許可"
 
 #: etc/inc/upgrade_config.inc:689 etc/inc/upgrade_config.inc:689
 msgid "Randomize PID's (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())"
-msgstr "ランダム化、PIDの（SRC / SYS /カーン/ kern_fork.c参照： sysctl_kern_randompid.() ）"
+msgstr "PID のランダム化 ( 参照 src/sys/kern/kern_fork.c: sysctl_kern_randompid() )"
 
 #: etc/inc/upgrade_config.inc:693 etc/inc/upgrade_config.inc:693
 msgid ""
 "The system will attempt to calculate the bandwidth delay product for each "
 "connection and limit the amount of data queued to the network to just the "
 "amount required to maintain optimum throughput. "
-msgstr "接続し、ネットワークにキューされたデータの量を制限する「システム毎に帯域幅遅延積を計算しようとする「最適なスループットを維持するために必要なわずかな」量である。"
+msgstr ""
+"システムは、接続毎に帯域幅遅延積を算出し、データキューの大きさを、"
+"ネットワークの最適なスループットの維持に必要な"
+"最適値に制限しようとします"
 
 #: etc/inc/upgrade_config.inc:697 etc/inc/upgrade_config.inc:697
 msgid "Set ICMP Limits"
-msgstr "ICMPの制限を設定"
+msgstr "ICMP 制限の設定"
 
 #: etc/inc/upgrade_config.inc:701 etc/inc/upgrade_config.inc:701
 msgid "TCP Offload engine"
-msgstr "TCPオフロードエンジン"
+msgstr "TCP オフロードエンジン"
 
 #: etc/inc/upgrade_config.inc:742 etc/inc/upgrade_config.inc:742
 #, php-format
 msgid "Interface %s Static Gateway"
-msgstr "インターフェイス%s静的ゲートウェイ"
+msgstr "%s インタフェース静的ゲートウェイ"
 
 #: etc/inc/upgrade_config.inc:745 etc/inc/upgrade_config.inc:745
 #, php-format
 msgid "Interface %s Dynamic Gateway"
-msgstr "インターフェイス%sダイナミックゲートウェイ"
+msgstr "%s インタフェース動的ゲートウェイ"
 
 #: etc/inc/upgrade_config.inc:810 etc/inc/upgrade_config.inc:811
 #: etc/inc/upgrade_config.inc:811
 #, php-format
 msgid "Upgraded static route for %s"
-msgstr "%sためにアップグレードスタティックルート"
+msgstr "%s に対する静的ルートを更新"
 
 #: etc/inc/upgrade_config.inc:907 etc/inc/upgrade_config.inc:908
 #: etc/inc/upgrade_config.inc:908
 #, php-format
 msgid "Sitedown pool for VS: %s"
-msgstr "VS用Sitedownプール： %s"
+msgstr "VS の サイトダウンプール: %s"
 
 #: etc/inc/upgrade_config.inc:1060 etc/inc/upgrade_config.inc:1062
 #: etc/inc/upgrade_config.inc:1063 etc/inc/upgrade_config.inc:1063
 #, php-format
 msgid "phase2 for %s"
-msgstr "%sためのフェーズ2"
+msgstr "%s のフェーズ 2"
 
 #: etc/inc/upgrade_config.inc:1287 etc/inc/upgrade_config.inc:1289
 #: etc/inc/upgrade_config.inc:1290 etc/inc/upgrade_config.inc:1290
 #, php-format
 msgid "Upgraded Dyndns %s"
-msgstr "アップグレードされたダイナミックDNS %s"
+msgstr "ダイナミック DNS %s のアップグレード"
 
 #: etc/inc/upgrade_config.inc:1339 etc/inc/upgrade_config.inc:1341
 #: etc/inc/upgrade_config.inc:1342 etc/inc/upgrade_config.inc:1342
 msgid "All Users"
-msgstr "すべてのユーザー"
+msgstr "全ユーザ"
 
 #: etc/inc/upgrade_config.inc:1471 etc/inc/upgrade_config.inc:1473
 #: etc/inc/upgrade_config.inc:1474 etc/inc/upgrade_config.inc:1474
 #, php-format
 msgid "Converted bridged %s"
-msgstr "変換された橋かけ%s"
+msgstr "ブリッジされた %s の変換"
 
 #: etc/inc/upgrade_config.inc:1797 etc/inc/upgrade_config.inc:1845
 #: etc/inc/upgrade_config.inc:1847 etc/inc/upgrade_config.inc:1848
 #: etc/inc/upgrade_config.inc:1848
 msgid "Auto added OpenVPN rule from config upgrade."
-msgstr "自動設定のアップグレードからOpenVPNのルールを追加しました。"
+msgstr "構成のアップグレードから OpenVPN ルールを自動追加"
 
 #: etc/inc/voucher.inc:364 etc/inc/voucher.inc:367 etc/inc/voucher.inc:382
 #, php-format
 msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes"
-msgstr "は%1$s （ %2$s/%3$s ）アクティブおよび％ 4 の$ d分のために良い"
+msgstr "%1$s (%2$s/%3$s) は %4$d 分間、アクティブで良好です"
 
 #: etc/inc/voucher.inc:401 etc/inc/voucher.inc:404 etc/inc/voucher.inc:419
 msgid "Access denied!"
-msgstr "アクセスは、を否定！"
+msgstr "アクセスを拒否！"
 
 #: etc/inc/voucher.inc:403 etc/inc/voucher.inc:406 etc/inc/voucher.inc:421
 #, php-format
 msgid "Access granted for %d Minutes in total."
-msgstr "アクセスは全部で％ d分に付与された。"
+msgstr "アクセスは許可されたのは、合計 %d 分間です"
 
 #: etc/inc/voucher.inc:466 etc/inc/voucher.inc:469 etc/inc/voucher.inc:484
 msgid "Enabling voucher support... "
-msgstr "バウチャーのサポートを有効にする..."
+msgstr "バウチャーサポートを有効にしています..."
 
 #: etc/inc/voucher.inc:505 etc/inc/voucher.inc:508 etc/inc/voucher.inc:523
 #, php-format
