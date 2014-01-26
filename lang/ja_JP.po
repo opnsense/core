@@ -7061,7 +7061,7 @@ msgstr "IPv4 ICMP リダイレクトを送信"
 
 #: etc/inc/upgrade_config.inc:653 etc/inc/upgrade_config.inc:653
 msgid "Sending of IPv6 ICMP redirects"
-msgstr "IPv6のICMPリダイレクトを送信"
+msgstr "IPv6 ICMP リダイレクトを送信"
 
 #: etc/inc/upgrade_config.inc:657 etc/inc/upgrade_config.inc:657
 msgid "Generate SYN cookies for outbound SYN-ACK packets"
@@ -7186,7 +7186,7 @@ msgstr "アクセスを拒否！"
 #: etc/inc/voucher.inc:403 etc/inc/voucher.inc:406 etc/inc/voucher.inc:421
 #, php-format
 msgid "Access granted for %d Minutes in total."
-msgstr "アクセスは許可されたのは、合計 %d 分間です"
+msgstr "アクセスが許可されたのは、合計 %d 分間です"
 
 #: etc/inc/voucher.inc:466 etc/inc/voucher.inc:469 etc/inc/voucher.inc:484
 msgid "Enabling voucher support... "
@@ -7195,39 +7195,39 @@ msgstr "バウチャーサポートを有効にしています..."
 #: etc/inc/voucher.inc:505 etc/inc/voucher.inc:508 etc/inc/voucher.inc:523
 #, php-format
 msgid "Error: cannot write voucher.cfg"
-msgstr "エラー: voucher.cfgを書き込むことはできません"
+msgstr "エラー: voucher.cfg に書き込めません"
 
 #: etc/inc/voucher.inc:556 etc/inc/voucher.inc:559 etc/inc/voucher.inc:574
 #, php-format
 msgid "cant write %1$s/voucher_%s_used_%2$s.db"
-msgstr "カント書き込み%1$s/voucher_%s_used_%2$s.db"
+msgstr "%1$s/voucher_%s_used_%2$s.db に書き込めません"
 
 #: etc/inc/voucher.inc:635 etc/inc/voucher.inc:638 etc/inc/voucher.inc:653
 #, php-format
 msgid "cant read %1$s/voucher_%s_used_%2$s.db"
-msgstr "カント%1$s/voucher_%s_used_%2$s.dbを読む"
+msgstr "%1$s/voucher_%s_used_%2$s.db を読み込めません"
 
 #: etc/inc/voucher.inc:653 etc/inc/voucher.inc:652 etc/inc/voucher.inc:655
 #: etc/inc/voucher.inc:670
 #, php-format
 msgid "Voucher: %s"
-msgstr "バウチャー： %s"
+msgstr "バウチャー: %s"
 
 #: etc/inc/xmlparse_attr.inc:197 etc/inc/xmlparse_attr.inc:197
 #, php-format
 msgid "XML error: %1$s at line %2$d"
-msgstr "XMLエラー：行％では%1$s 2 $ dの"
+msgstr "XML エラー: %2$d 行: %1$s"
 
 #: etc/inc/xmlreader.inc:129 etc/inc/xmlreader.inc:129
 #, php-format
 msgid "Error returned while trying to parse %s"
-msgstr "%sを解析しようとしてエラーが返さ"
+msgstr "%s の解析中にエラーが返されました"
 
 #: etc/inc/zeromq.inc:225 etc/inc/zeromq.inc:236 etc/inc/zeromq.inc:225
 #: etc/inc/zeromq.inc:236
 #, php-format
 msgid "Merged in config (%s sections) from ZeroMQ client."
-msgstr "ZeroMQクライアントから（セクション%s ）設定に合併しました。"
+msgstr "ZeroMQ クライアントから構成 ( %s セクション ) をマージしました"
 
 #: usr/local/www/load_balancer_virtual_server.php:94
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:96
@@ -7428,7 +7428,7 @@ msgstr "サービス"
 #: usr/local/www/diag_logs_resolver.php:86
 #: usr/local/www/diag_logs_filter_summary.php:192
 msgid "Load Balancer"
-msgstr "バランサをロードする"
+msgstr "ロードバランサ"
 
 #: usr/local/www/load_balancer_virtual_server.php:94
 #: usr/local/www/load_balancer_virtual_server.php:116
@@ -7454,13 +7454,13 @@ msgstr "バランサをロードする"
 #: usr/local/www/load_balancer_virtual_server.php:114
 #: usr/local/www/status_lb_vs.php:68
 msgid "Virtual Servers"
-msgstr "仮想サーバー"
+msgstr "仮想サーバ"
 
 #: usr/local/www/load_balancer_virtual_server.php:108
 #: usr/local/www/load_balancer_virtual_server.php:106
 #: usr/local/www/load_balancer_virtual_server.php:106
 msgid "The virtual server configuration has been changed"
-msgstr "仮想サーバーの構成が変更されました"
+msgstr "仮想サーバの構成が変更されました"
 
 #: usr/local/www/load_balancer_virtual_server.php:108
 #: usr/local/www/firewall_shaper_layer7.php:401
@@ -7540,7 +7540,7 @@ msgstr "仮想サーバーの構成が変更されました"
 #: usr/local/www/load_balancer_virtual_server.php:106
 #: usr/local/www/vpn_ipsec_keys.php:85 usr/local/www/interfaces.php:1364
 msgid "You must apply the changes in order for them to take effect."
-msgstr "あなたはそれらを有効にするために変更を適用する必要があります。"
+msgstr "変更を有効にするには、変更の適用が必要です"
 
 #: usr/local/www/load_balancer_virtual_server.php:115
 #: usr/local/www/load_balancer_relay_action.php:126
@@ -7585,7 +7585,7 @@ msgstr "プール"
 #: usr/local/www/load_balancer_monitor.php:109
 #: usr/local/www/load_balancer_virtual_server.php:115
 msgid "Monitors"
-msgstr "モニター"
+msgstr "モニタ"
 
 #: usr/local/www/load_balancer_virtual_server.php:129
 #: usr/local/www/firewall_shaper_layer7.php:466
@@ -7698,7 +7698,7 @@ msgstr "プロトコル"
 #: usr/local/www/system_advanced_notifications.php:194
 #: usr/local/www/load_balancer_virtual_server.php:129
 msgid "IP Address"
-msgstr "IPアドレス"
+msgstr "IP アドレス"
 
 #: usr/local/www/load_balancer_virtual_server.php:131
 #: usr/local/www/diag_packet_capture.php:165
@@ -7837,7 +7837,7 @@ msgstr "プールのフォールバック"
 #: usr/local/www/diag_sockets.php:44 usr/local/www/diag_nanobsd.php:49
 #: usr/local/www/crash_reporter.php:82
 msgid "Diagnostics"
-msgstr "診断法"
+msgstr "診断"
 
 #: usr/local/www/diag_tables.php:44 usr/local/www/fbegin.inc:199
 #: usr/local/www/fbegin.inc:217 usr/local/www/fbegin.inc:225
@@ -7849,18 +7849,18 @@ msgstr "テーブル"
 #: usr/local/www/diag_tables.php:86 usr/local/www/diag_tables.php:87
 #: usr/local/www/diag_tables.php:87
 msgid "The bogons database has been updated."
-msgstr "bogonsデータベースが更新されました。"
+msgstr "bogon データベースが更新されました"
 
 #: usr/local/www/diag_tables.php:118 usr/local/www/diag_tables.php:117
 #: usr/local/www/diag_tables.php:118
 msgid "Table:"
-msgstr "表："
+msgstr "テーブル: "
 
 #: usr/local/www/diag_tables.php:152 usr/local/www/diag_tables.php:151
 #: usr/local/www/diag_tables.php:153 usr/local/www/diag_tables.php:155
 #: usr/local/www/diag_tables.php:153 usr/local/www/diag_tables.php:155
 msgid "No entries exist in this table."
-msgstr "エントリはこの表に存在しません。"
+msgstr "このテーブルにエントリが存在しません"
 
 #: usr/local/www/diag_tables.php:160 usr/local/www/diag_backup.php:163
 #: usr/local/www/exec.php:273 usr/local/www/exec.php:283
@@ -7879,7 +7879,7 @@ msgstr "ダウンロード"
 #: usr/local/www/diag_tables.php:153 usr/local/www/diag_tables.php:162
 #: usr/local/www/diag_tables.php:153 usr/local/www/diag_tables.php:162
 msgid " the latest bogon data."
-msgstr "最新のbogonデータ。"
+msgstr "最新 bogon データ"
 
 #: usr/local/www/diag_tables.php:162
 #: usr/local/www/firewall_shaper_layer7.php:576
@@ -7898,19 +7898,19 @@ msgstr "削除"
 #: usr/local/www/diag_tables.php:162 usr/local/www/diag_tables.php:161
 #: usr/local/www/diag_tables.php:165 usr/local/www/diag_tables.php:165
 msgid "all"
-msgstr "すべて"
+msgstr "全て"
 
 #: usr/local/www/diag_tables.php:162 usr/local/www/diag_tables.php:161
 #: usr/local/www/diag_tables.php:165 usr/local/www/diag_tables.php:162
 #: usr/local/www/diag_tables.php:165
 msgid "entries in this table."
-msgstr "この表のエントリ。"
+msgstr "このテーブルのエントリ"
 
 #: usr/local/www/pkg_edit.php:61 usr/local/www/pkg.php:51
 #: usr/local/www/pkg.php:55 usr/local/www/pkg_edit.php:69
 #: usr/local/www/pkg.php:55 usr/local/www/pkg_edit.php:69
 msgid "ERROR: No package defined."
-msgstr "エラー：パッケージ定義されています。"
+msgstr "エラー: パッケージが定義されていません"
 
 #: usr/local/www/pkg_edit.php:256
 #: usr/local/www/firewall_virtual_ip_edit.php:281
@@ -8005,7 +8005,7 @@ msgstr "編集"
 #: usr/local/www/pkg_edit.php:260 usr/local/www/pkg_edit.php:255
 #: usr/local/www/pkg_edit.php:258 usr/local/www/pkg_edit.php:258
 msgid "Package Editor"
-msgstr "パッケージ·エディター"
+msgstr "パッケージエディタ"
 
 #: usr/local/www/pkg_edit.php:405
 #: usr/local/www/firewall_aliases_import.php:154
@@ -8418,7 +8418,7 @@ msgstr "高度な機能"
 #: usr/local/www/pkg_edit.php:921 usr/local/www/status_queues.php:163
 #: usr/local/www/carp_status.php:187
 msgid "Note"
-msgstr "ノート"
+msgstr "注意"
 
 #: usr/local/www/pkg_edit.php:823 usr/local/www/pkg_edit.php:835
 #: usr/local/www/firewall_aliases_import.php:155
@@ -8790,7 +8790,7 @@ msgstr "キャンセル"
 #: usr/local/www/vpn_openvpn_server.php:1648 usr/local/www/interfaces.php:1474
 #: usr/local/www/interfaces.php:2171
 msgid "Advanced"
-msgstr "高度な"
+msgstr "高度"
 
 #: usr/local/www/pkg_edit.php:1037 usr/local/www/firewall_rules_edit.php:1083
 #: usr/local/www/firewall_rules_edit.php:1117
@@ -8867,7 +8867,7 @@ msgstr "高度な"
 #: usr/local/www/firewall_rules_edit.php:1551 usr/local/www/pkg_edit.php:1114
 #: usr/local/www/services_dnsmasq.php:300 usr/local/www/interfaces.php:1474
 msgid "Show advanced option"
-msgstr "高度なオプションを表示する"
+msgstr "高度なオプションを表示"
 
 #: usr/local/www/pkg_mgr_installed.php:45
 #: usr/local/www/pkg_mgr_installed.php:63 usr/local/www/diag_logs.php:65
@@ -9032,7 +9032,7 @@ msgstr "システム"
 #: usr/local/www/pkg_mgr.php:104 usr/local/www/diag_backup.php:190
 #: usr/local/www/pkg_mgr_install.php:55 usr/local/www/fbegin.inc:420
 msgid "Package Manager"
-msgstr "パッケージマネージャー"
+msgstr "パッケージ管理"
 
 #: usr/local/www/pkg_mgr_installed.php:76 usr/local/www/pkg_mgr.php:99
 #: usr/local/www/pkg_mgr.php:115 usr/local/www/pkg_mgr_installed.php:97
@@ -9049,7 +9049,7 @@ msgstr "利用可能なパッケージ"
 #: usr/local/www/pkg_mgr_installed.php:103 usr/local/www/pkg_mgr.php:128
 #: usr/local/www/pkg_mgr_settings.php:92
 msgid "Installed Packages"
-msgstr "インストール済みパッケージ"
+msgstr "インストール済パッケージ"
 
 #: usr/local/www/pkg_mgr_installed.php:90 usr/local/www/pkg_mgr.php:113
 msgid "Package Name"
@@ -9085,7 +9085,7 @@ msgstr "パッケージバージョン"
 #: usr/local/www/pkg_mgr_installed.php:153
 #: usr/local/www/pkg_mgr_installed.php:155
 msgid "Available"
-msgstr "利用できる"
+msgstr "利用可能"
 
 #: usr/local/www/pkg_mgr_installed.php:117
 #: usr/local/www/pkg_mgr_installed.php:123
@@ -9096,11 +9096,11 @@ msgstr "利用できる"
 #: usr/local/www/pkg_mgr_installed.php:147
 #: usr/local/www/pkg_mgr_installed.php:156
 msgid "Installed"
-msgstr "インストールされて"
+msgstr "インストール済"
 
 #: usr/local/www/pkg_mgr_installed.php:152 usr/local/www/pkg_mgr.php:202
 msgid "No info, check the"
-msgstr "情報無、チェックしない"
+msgstr "情報がありません。確認して下さい: "
 
 #: usr/local/www/pkg_mgr_installed.php:152 usr/local/www/pkg_mgr.php:202
 msgid "forum"
@@ -9108,19 +9108,19 @@ msgstr "フォーラム"
 
 #: usr/local/www/pkg_mgr_installed.php:163
 msgid "Do you really want to remove this package?"
-msgstr "あなたは本当にこのパッケージを削除しますか？"
+msgstr "本当にこのパッケージを削除しますか？"
 
 #: usr/local/www/pkg_mgr_installed.php:164
 msgid "Remove this package."
-msgstr "このパッケージを削除します。"
+msgstr "このパッケージを削除"
 
 #: usr/local/www/pkg_mgr_installed.php:168
 msgid "Reinstall this package."
-msgstr "このパッケージを再インストールしてください。"
+msgstr "このパッケージを再インストール"
 
 #: usr/local/www/pkg_mgr_installed.php:171
 msgid "Reinstall this package's GUI components."
-msgstr "このパッケージのGUIコンポーネントを再インストールします。"
+msgstr "このパッケージの GUI コンポーネントを再インストール"
 
 #: usr/local/www/pkg_mgr_installed.php:181
 #: usr/local/www/pkg_mgr_installed.php:222
@@ -9128,11 +9128,11 @@ msgstr "このパッケージのGUIコンポーネントを再インストール
 #: usr/local/www/pkg_mgr_installed.php:227
 #: usr/local/www/pkg_mgr_installed.php:227
 msgid "There are no packages currently installed."
-msgstr "現在インストールされないパッケージがありません。"
+msgstr "現在インストール済のパッケージがありません"
 
 #: usr/local/www/easyrule.php:34 usr/local/www/easyrule.php:34
 msgid "Status : EasyRule"
-msgstr "ステータス： 簡単なルール"
+msgstr "ステータス: 簡易ルール"
 
 #: usr/local/www/easyrule.php:69 usr/local/www/easyrule.php:69
 msgid "Message"
@@ -9143,13 +9143,18 @@ msgid ""
 "This is the Easy Rule status page, mainly used to display errors when adding "
 "rules. If you are seeing this, there apparently was not an error, and you "
 "navigated to the page directly without telling it what to do"
-msgstr "ルールを"これは主に追加するときにエラーを表示するために使用される、簡単なルールのステータスページ」です。あなたはこれを見ている場合は、明らかに誤りがなかったし、あなたが「何を行うには、それを伝えることなく、直接ページに移動"
+msgstr ""
+"これは簡易ルールステータスページです。主にルール追加時のエラー表示に使用します。"
+"これを参照していれば、特にエラーがないようなら、"
+"何をするかを指示されることなく直接ページに移動します"
 
 #: usr/local/www/easyrule.php:75 usr/local/www/easyrule.php:75
 msgid ""
 "This page is meant to be called from the block/pass buttons on the Firewall "
 "Logs page"
-msgstr "このページは、ファイアウォールのログページ上のブロック/パスボタンから呼び出されることを意図して"
+msgstr ""
+"このページはファイアウォールログページの拒否 / 許可ボタンから"
+"表示されます"
 
 #: usr/local/www/easyrule.php:75 usr/local/www/diag_logs.php:65
 #: usr/local/www/diag_logs_auth.php:54 usr/local/www/diag_logs_dhcp.php:59
@@ -9404,7 +9409,7 @@ msgstr "一括インポート"
 #: usr/local/www/firewall_aliases_import.php:64
 #: usr/local/www/firewall_aliases_import.php:64
 msgid "The alias name may only consist of the characters"
-msgstr "エイリアス名は、文字だけで構成することができる"
+msgstr "エイリアス名には文字だけが使用できます"
 
 #: usr/local/www/firewall_aliases_import.php:68
 #: usr/local/www/firewall_aliases_edit.php:151
@@ -9412,7 +9417,7 @@ msgstr "エイリアス名は、文字だけで構成することができる"
 #: usr/local/www/firewall_aliases_import.php:68
 #: usr/local/www/firewall_aliases_edit.php:145
 msgid "An alias with this name already exists."
-msgstr "この名前の別名がすでに存在しています。"
+msgstr "同じ名前のエイリアスが既に存在します"
 
 #: usr/local/www/firewall_aliases_import.php:74
 #: usr/local/www/firewall_aliases_edit.php:160
@@ -9421,7 +9426,7 @@ msgstr "この名前の別名がすでに存在しています。"
 #: usr/local/www/firewall_aliases_edit.php:154
 #, php-format
 msgid "Cannot use a reserved keyword as alias name %s"
-msgstr "別名%sとして予約キーワードを使用することはできません"
+msgstr "エイリアス名 %s として予約語を使用できません"
 
 #: usr/local/www/firewall_aliases_import.php:79
 #: usr/local/www/firewall_aliases_edit.php:165
@@ -9429,13 +9434,13 @@ msgstr "別名%sとして予約キーワードを使用することはできま�
 #: usr/local/www/firewall_aliases_import.php:79
 #: usr/local/www/firewall_aliases_edit.php:159
 msgid "An interface description with this name already exists."
-msgstr "この名前のインターフェイスの説明は、すでに存在しています。"
+msgstr "この名前のインタフェースの説明は、既に存在しています"
 
 #: usr/local/www/firewall_aliases_import.php:94
 #: usr/local/www/firewall_aliases_import.php:94
 #, php-format
 msgid "%s is not an IP address. Please correct the error to continue"
-msgstr "%sは、IPアドレスではありません。継続して、エラーを修正してください"
+msgstr "%s はIP アドレスではありません。継続するには、エラーを修正してください"
 
 #: usr/local/www/firewall_aliases_import.php:131
 #: usr/local/www/firewall_aliases_import.php:131
@@ -9445,14 +9450,15 @@ msgstr "エイリアスのインポート"
 #: usr/local/www/firewall_aliases_import.php:134
 #: usr/local/www/firewall_aliases_import.php:134
 msgid "Alias Name"
-msgstr "別名"
+msgstr "エイリアス名"
 
 #: usr/local/www/firewall_aliases_import.php:137
 #: usr/local/www/firewall_aliases_edit.php:585
 #: usr/local/www/firewall_aliases_import.php:137
 msgid ""
 "The name of the alias may only consist of the characters a-z, A-Z and 0-9."
-msgstr "エイリアスの名前は、ASCII文字のみのa-z、A-Zと0-9で構成することができる。"
+msgstr ""
+"エイリアス名には a-z、A-Z、0-9 の文字のみが使用できます"
 
 #: usr/local/www/firewall_aliases_import.php:142
 #: usr/local/www/interfaces_lagg_edit.php:211
@@ -9506,7 +9512,7 @@ msgstr "エイリアスの名前は、ASCII文字のみのa-z、A-Zと0-9で構�
 #: usr/local/www/vpn_openvpn_server.php:854
 #: usr/local/www/vpn_ipsec_phase2.php:651
 msgid "You may enter a description here for your reference (not parsed)"
-msgstr "ここに参照用の説明文を入力することもできます（構文解析されません）"
+msgstr "自分用のメモを入力できます ( 自由形式 )"
 
 #: usr/local/www/firewall_aliases_import.php:146
 #: usr/local/www/firewall_aliases_import.php:146
@@ -9518,12 +9524,14 @@ msgstr "インポートするエイリアス"
 msgid ""
 "Paste in the aliases to import separated by a carriage return. Common "
 "examples are lists of IPs, networks, blacklists, etc."
-msgstr "「キャリッジリターンで区切られたインポートする別名に貼り付けます。共通」の例であるなどIPS、ネットワーク、ブラックリストの一覧表示"
+msgstr ""
+"インポートするエイリアスを区切るには、改行コードを貼り付けてください。"
+"よくある例としては、IP リスト、ネットワークリスト、ブラックリスト等です"
 
 #: usr/local/www/firewall_aliases_import.php:149
 #: usr/local/www/firewall_aliases_import.php:149
 msgid "The list may contain only IP addresses."
-msgstr "リストは、 IPアドレスを含んでもよい。"
+msgstr "リストに含まれるのは IP アドレスのみです"
 
 #: usr/local/www/firewall_shaper_layer7.php:59
 #: usr/local/www/firewall_shaper_vinterface.php:54
@@ -9537,7 +9545,7 @@ msgstr "リストは、 IPアドレスを含んでもよい。"
 #: usr/local/www/firewall_shaper_wizards.php:73
 #: usr/local/www/diag_backup.php:199 usr/local/www/fbegin.inc:132
 msgid "Traffic Shaper"
-msgstr "トラフィックシェー"
+msgstr "トラフィックシェーパ"
 
 #: usr/local/www/firewall_shaper_layer7.php:59
 #: usr/local/www/firewall_shaper_layer7.php:410
@@ -9565,12 +9573,12 @@ msgstr "トラフィックシェー"
 #: usr/local/www/firewall_shaper_queues.php:197
 #: usr/local/www/firewall_shaper_wizards.php:106
 msgid "Layer7"
-msgstr "レイヤ7"
+msgstr "レイヤ 7"
 
 #: usr/local/www/firewall_shaper_layer7.php:66
 #: usr/local/www/firewall_shaper_layer7.php:66
 msgid "You can add new layer7 protocol patterns by simply uploading the file"
-msgstr "あなたは、単にファイルをアップロードすることにより、新たなレイヤ7プロトコルのパターンを追加することができます"
+msgstr "ファイルをアップロードするだけで、新規レイヤ 7 プロトコルパターンを追加できます"
 
 #: usr/local/www/firewall_shaper_layer7.php:66
 #: usr/local/www/firewall_virtual_ip.php:243 usr/local/www/interfaces.php:2550
@@ -9590,17 +9598,17 @@ msgstr "あなたは、単にファイルをアップロードすることによ
 #: usr/local/www/status_queues.php:165 usr/local/www/interfaces.php:2806
 #: usr/local/www/interfaces.php:2815 usr/local/www/carp_status.php:189
 msgid "here"
-msgstr "ここに"
+msgstr "ここ"
 
 #: usr/local/www/firewall_shaper_layer7.php:111
 #: usr/local/www/firewall_shaper_layer7.php:111
 msgid "Layer7 Rules Container not found!"
-msgstr "レイヤ7ルールコンテナが見つかりません ！"
+msgstr "レイヤ 7 ルールコンテナがありません！"
 
 #: usr/local/www/firewall_shaper_layer7.php:161
 #: usr/local/www/firewall_shaper_layer7.php:161
 msgid "Found the following repeated protocol definitions"
-msgstr "次の反復プロトコル定義を見つけた"
+msgstr "次のプロトコル定義が反復されています"
 
 #: usr/local/www/firewall_shaper_layer7.php:401
 #: usr/local/www/firewall_shaper_queues.php:187
@@ -9628,7 +9636,7 @@ msgstr "トラフィックシェーパの構成が変更されました"
 #: usr/local/www/firewall_shaper_queues.php:194
 #: usr/local/www/firewall_shaper_wizards.php:103
 msgid "By Interface"
-msgstr "インタフェースで"
+msgstr "インタフェース"
 
 #: usr/local/www/firewall_shaper_layer7.php:408
 #: usr/local/www/firewall_shaper_vinterface.php:373
@@ -9648,7 +9656,7 @@ msgstr "インタフェースで"
 #: usr/local/www/firewall_shaper_queues.php:195
 #: usr/local/www/firewall_shaper_wizards.php:104
 msgid "By Queue"
-msgstr "キューによって"
+msgstr "キュー"
 
 #: usr/local/www/firewall_shaper_layer7.php:409
 #: usr/local/www/firewall_shaper_vinterface.php:54
@@ -9704,32 +9712,32 @@ msgstr "リミッタ"
 #: usr/local/www/firewall_shaper_wizards.php:107
 #: usr/local/www/vpn_openvpn_server.php:703
 msgid "Wizards"
-msgstr "ウィザーズ"
+msgstr "ウィザード"
 
 #: usr/local/www/firewall_shaper_layer7.php:432
 #: usr/local/www/firewall_shaper_layer7.php:432
 msgid "Create new l7 rules group"
-msgstr "新しいL7ルール·グループを作成する"
+msgstr "新規 L7 ルールグループを作成"
 
 #: usr/local/www/firewall_shaper_layer7.php:445
 #: usr/local/www/firewall_shaper_layer7.php:445
 msgid "Rule(s)"
-msgstr "本則"
+msgstr "ルール"
 
 #: usr/local/www/firewall_shaper_layer7.php:457
 #: usr/local/www/firewall_shaper_layer7.php:457
 msgid "Add one or more rules"
-msgstr "1つ以上のルールを追加"
+msgstr "1 つ以上のルールを追加"
 
 #: usr/local/www/firewall_shaper_layer7.php:473
 #: usr/local/www/firewall_shaper_layer7.php:473
 msgid "Structure"
-msgstr "ストラクチャー"
+msgstr "構造"
 
 #: usr/local/www/firewall_shaper_layer7.php:480
 #: usr/local/www/firewall_shaper_layer7.php:480
 msgid "Behaviour"
-msgstr "ビヘイビア"
+msgstr "振舞い"
 
 #: usr/local/www/firewall_shaper_layer7.php:558
 #: usr/local/www/interfaces_groups_edit.php:315
@@ -9780,20 +9788,22 @@ msgstr "別のエントリを追加"
 msgid ""
 "This pipe/queue is referenced in filter rules, please remove references from "
 "there before deleting."
-msgstr "削除する前に、そこに「このパイプ/キューはフィルタルールで参照されてから参照を削除してください」 。"
+msgstr ""
+"このパイプもしくはキューは、フィルタルールで参照されています。"
+"削除する前に参照を削除してください"
 
 #: usr/local/www/firewall_shaper_vinterface.php:114
 #: usr/local/www/firewall_shaper_vinterface.php:114
 #, php-format
 msgid "No queue with name %s was found!"
-msgstr "名前%sとのキューが見つかりませんでした ！"
+msgstr "%s という名前のキューはありません！"
 
 #: usr/local/www/firewall_shaper_vinterface.php:160
 #: usr/local/www/firewall_shaper.php:159 usr/local/www/firewall_shaper.php:160
 #: usr/local/www/firewall_shaper.php:160
 #: usr/local/www/firewall_shaper_vinterface.php:160
 msgid "Could not create new queue/discipline!"
-msgstr "新しいキュー/規律を作成することができませんでした！"
+msgstr "新規キューもしくは領域を作成できませんでした！"
 
 #: usr/local/www/firewall_shaper_vinterface.php:172
 #: usr/local/www/firewall_shaper_vinterface.php:181
@@ -9813,7 +9823,7 @@ msgstr "新しいキュー/規律を作成することができませんでし�
 #: usr/local/www/firewall_shaper_vinterface.php:183
 #: usr/local/www/firewall_shaper_vinterface.php:193
 msgid "Queue not found!"
-msgstr "キューが見つかりません ！"
+msgstr "キューがありません！"
 
 #: usr/local/www/firewall_shaper_vinterface.php:235
 #: usr/local/www/firewall_shaper.php:270
@@ -9823,7 +9833,7 @@ msgstr "キューが見つかりません ！"
 #: usr/local/www/firewall_shaper.php:271
 #: usr/local/www/firewall_shaper_vinterface.php:247
 msgid "Could not add new queue."
-msgstr "新しいキューを追加できませんでした。"
+msgstr "キューを追加できません"
 
 #: usr/local/www/firewall_shaper_vinterface.php:304
 #: usr/local/www/firewall_shaper.php:346
@@ -9833,7 +9843,7 @@ msgstr "新しいキューを追加できませんでした。"
 #: usr/local/www/firewall_shaper.php:347
 #: usr/local/www/firewall_shaper_vinterface.php:316
 msgid "Queue Actions"
-msgstr "アクションをキュー"
+msgstr "キュー操作"
 
 #: usr/local/www/firewall_shaper_vinterface.php:315
 #: usr/local/www/firewall_shaper.php:357
@@ -9843,7 +9853,7 @@ msgstr "アクションをキュー"
 #: usr/local/www/firewall_shaper.php:358
 #: usr/local/www/firewall_shaper_vinterface.php:327
 msgid "Add new queue"
-msgstr "新しいキューを追加する"
+msgstr "新規キューの追加"
 
 #: usr/local/www/firewall_shaper_vinterface.php:326
 #: usr/local/www/firewall_shaper.php:367
@@ -9853,14 +9863,14 @@ msgstr "新しいキューを追加する"
 #: usr/local/www/firewall_shaper.php:368
 #: usr/local/www/firewall_shaper_vinterface.php:338
 msgid "Delete this queue"
-msgstr "このキューの削除"
+msgstr "このキューを削除"
 
 #: usr/local/www/firewall_shaper_vinterface.php:328
 #: usr/local/www/firewall_shaper_vinterface.php:338
 #: usr/local/www/firewall_shaper_vinterface.php:340
 #: usr/local/www/firewall_shaper_vinterface.php:340
 msgid "Delete virtual interface"
-msgstr "仮想インターフェイスを削除する"
+msgstr "仮想インタフェースの削除"
 
 #: usr/local/www/firewall_shaper_vinterface.php:366
 #: usr/local/www/firewall_shaper_wizards.php:96
@@ -9875,7 +9885,7 @@ msgstr "仮想インターフェイスを削除する"
 #: usr/local/www/firewall_shaper_vinterface.php:386
 #: usr/local/www/firewall_shaper_wizards.php:97
 msgid "The traffic shaper configuration has been changed."
-msgstr "トラフィックシェーパの構成が変更されています。"
+msgstr "トラフィックシェーパの構成が変更されました"
 
 #: usr/local/www/firewall_shaper_vinterface.php:395
 #: usr/local/www/firewall_shaper_vinterface.php:405
@@ -9883,27 +9893,27 @@ msgstr "トラフィックシェーパの構成が変更されています。"
 #: usr/local/www/firewall_shaper_vinterface.php:415
 #: usr/local/www/firewall_shaper_vinterface.php:415
 msgid "Create new limiter"
-msgstr "新しいリミッターを作成"
+msgstr "新規リミッタの作成"
 
 #: usr/local/www/firewall_shaper_wizards.php:76
 #: usr/local/www/firewall_shaper_wizards.php:76
 msgid "Single Lan multi Wan"
-msgstr "単一のLANマルチワン"
+msgstr "シングル LAN マルチ WAN"
 
 #: usr/local/www/firewall_shaper_wizards.php:77
 #: usr/local/www/firewall_shaper_wizards.php:77
 msgid "Single Wan multi Lan"
-msgstr "シングルワンマルチ蘭"
+msgstr "シングル WAN マルチ LAN"
 
 #: usr/local/www/firewall_shaper_wizards.php:78
 #: usr/local/www/firewall_shaper_wizards.php:78
 msgid "Multiple Lan/Wan"
-msgstr "複数のLAN / WAN"
+msgstr "マルチ LAN / WAN"
 
 #: usr/local/www/firewall_shaper_wizards.php:79
 #: usr/local/www/firewall_shaper_wizards.php:79
 msgid "Dedicated Links"
-msgstr "の専用リンク"
+msgstr "専用リンク"
 
 #: usr/local/www/firewall_shaper_wizards.php:115
 #: usr/local/www/firewall_shaper_wizards.php:116
@@ -9915,7 +9925,7 @@ msgstr "ウィザード機能"
 #: usr/local/www/firewall_shaper_wizards.php:117
 #: usr/local/www/firewall_shaper_wizards.php:117
 msgid "Wizard Link"
-msgstr "ウィザードのリンク"
+msgstr "ウィザードリンク"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:65
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:107
@@ -9960,12 +9970,12 @@ msgstr "ドメイン"
 #: usr/local/www/services_dnsmasq_edit.php:89
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:87
 msgid "A valid domain must be specified."
-msgstr "有効なドメインを指定する必要があります。"
+msgstr "有効なドメインを指定する必要があります"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:73
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:90
 msgid "A valid IP address must be specified, or # for an exclusion."
-msgstr "有効なIPアドレスが指定された、またはする必要があります"
+msgstr "有効な IP アドレスが指定するか、もしくは # で除外してください"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:96
 #: usr/local/www/services_dhcp.php:878 usr/local/www/services_dnsmasq.php:119
@@ -9984,19 +9994,19 @@ msgstr "有効なIPアドレスが指定された、またはする必要があ�
 #: usr/local/www/services_dnsmasq.php:146
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:118
 msgid "DNS forwarder"
-msgstr "DNSフォワーダ"
+msgstr "DNS フォワーダ"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:96
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:118
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:118
 msgid "Edit Domain Override"
-msgstr "ドメイン編集オーバーライド"
+msgstr "ドメイン上書きの編集"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:110
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:133
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:133
 msgid "Domain to override (NOTE: this does not have to be a valid TLD!)"
-msgstr "オーバーライドするドメイン（注：これが有効なTLD である必要はありません）"
+msgstr "上書きするドメイン ( 注意: 有効な TLD である必要はありません )"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:111
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:118
@@ -10024,7 +10034,7 @@ msgstr "オーバーライドするドメイン（注：これが有効なTLD �
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:134
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:141
 msgid "e.g."
-msgstr "例えば"
+msgstr "例: "
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:111
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:134
@@ -10036,7 +10046,7 @@ msgstr "テスト"
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:140
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:140
 msgid "IP address of the authoritative DNS server for this domain"
-msgstr "このドメインの権限DNSサーバのIPアドレス"
+msgstr "このドメインの権威 DNS サーバの IP アドレス"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:118
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:141
@@ -10044,7 +10054,9 @@ msgstr "このドメインの権限DNSサーバのIPアドレス"
 msgid ""
 "Or enter # for an exclusion to pass through this host/subdomain to standard "
 "nameservers instead of a previous override."
-msgstr ""またはEnter"
+msgstr ""
+"もしくは # で除外入力することで、このホストもしくはサブドメインは"
+"前回の上書き内容ではなく、標準の DNS サーバを経由します"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:106
 #: usr/local/www/firewall_virtual_ip_edit.php:415
@@ -10156,7 +10168,7 @@ msgstr "タイプ"
 #: usr/local/www/firewall_virtual_ip_edit.php:115
 #: usr/local/www/services_dnsmasq_edit.php:92
 msgid "A valid IP address must be specified."
-msgstr "有効なIPアドレスを指定する必要があります。"
+msgstr "有効な IP アドレスを指定してください"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:116
 #: usr/local/www/firewall_virtual_ip_edit.php:119
@@ -10165,33 +10177,35 @@ msgstr "有効なIPアドレスを指定する必要があります。"
 msgid ""
 "The interface chosen for the VIP has no IPv4 or IPv6 address configured so "
 "it cannot be used as a parent for the VIP."
-msgstr "「 VIPのために選択したインターフェイスにはIPv4アドレスを持っていないか、設定されたIPv6アドレスは、その「それは、VIPの親として使用することはできません。"
+msgstr ""
+"VIP として選択されたインタフェースは IPv4 もしくは IPv6 アドレスが"
+"構成されていないため、VIP の親として使用できません"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:118
 #: usr/local/www/firewall_virtual_ip_edit.php:121
 #, php-format
 msgid "The %s IP address may not be used in a virtual entry."
-msgstr "%s IPアドレスは、仮想エントリで使用することはできません。"
+msgstr "%s IP アドレスは、仮想エントリで使用できません"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:123
 #: usr/local/www/firewall_virtual_ip_edit.php:126
 msgid "The /32 subnet mask is invalid for CARP IPs."
-msgstr "/ 32サブネットマスクは、CARPのIPアドレスは無効です。"
+msgstr "CARP IP に対する /32 サブネットマスクは無効です"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:127
 #: usr/local/www/firewall_virtual_ip_edit.php:130
 msgid "The /128 subnet mask is invalid for CARP IPs."
-msgstr "/ 128サブネットマスクは、CARPのIPアドレスは無効です。"
+msgstr "CARP IP に対する /128 サブネットマスクは無効です"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:135
 #: usr/local/www/firewall_virtual_ip_edit.php:138
 msgid "There is already a virtual IP entry for the specified IP address."
-msgstr "指定したIPアドレスの仮想IPエントリが既に存在します。"
+msgstr "指定した IP アドレスには仮想 IP エントリが既に存在します"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:150
 #, php-format
 msgid "VHID %s is already in use. Pick a unique number."
-msgstr "VHIDの%sは既に使用されています。一意の番号を選ぶ。"
+msgstr "VHID %s は既に使用されています。固有の番号を選んでください"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:154
 #: usr/local/www/firewall_virtual_ip_edit.php:157
@@ -10201,7 +10215,8 @@ msgstr "VHIDの%sは既に使用されています。一意の番号を選ぶ。
 #: usr/local/www/firewall_virtual_ip_edit.php:164
 msgid ""
 "You must specify a CARP password that is shared between the two VHID members."
-msgstr ""あなたは2 VHIDメンバー間で共有されているCARPのパスワードを指定する必要があります。"
+msgstr ""
+"2 つの VHID メンバ間で共有する CARP パスワードを指定してください"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:161
 #: usr/local/www/firewall_virtual_ip_edit.php:170
@@ -10222,7 +10237,9 @@ msgstr ""あなたは2 VHIDメンバー間で共有されているCARPのパス�
 msgid ""
 "Sorry, we could not locate an interface with a matching subnet for %s. "
 "Please add an IP alias in this subnet on this interface."
-msgstr "「申し訳ありませんが、我々は%s.用一致するサブネットとのインタフェースを見つけることができませんでした」このインターフェイスでこのサブネット内のIPエイリアスを追加してください。"
+msgstr ""
+"%s のサブネットと一致するインタフェースが見つかりません。"
+"このインタフェースに、そのサブネットの IP エイリアスを追加してください"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:174
 #: usr/local/www/firewall_virtual_ip_edit.php:177
@@ -10231,7 +10248,7 @@ msgstr "「申し訳ありませんが、我々は%s.用一致するサブネッ
 #: usr/local/www/firewall_virtual_ip_edit.php:182
 #: usr/local/www/firewall_virtual_ip_edit.php:182
 msgid "For this type of vip a carp parent is not allowed."
-msgstr "VIPこのタイプのCARPの親が許可されていません。"
+msgstr "このタイプの VIP には、CARP の親は許可されません"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:188
 #: usr/local/www/firewall_virtual_ip_edit.php:191
@@ -10240,11 +10257,11 @@ msgstr "VIPこのタイプのCARPの親が許可されていません。"
 #: usr/local/www/firewall_virtual_ip_edit.php:203
 #: usr/local/www/firewall_virtual_ip_edit.php:203
 msgid "For this type of VIP, a CARP parent is not allowed."
-msgstr "VIPのこのタイプの、CARP親が許可されていません。"
+msgstr "このタイプの VIP には、CARP の親は許可されません"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:202
 msgid "This entry cannot be modified because it is still referenced by CARP"
-msgstr "それはまだCARPによって参照されているため、このエントリは変更できません"
+msgstr "このエントリは変更できません。CARP に参照されています"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:281
 #: usr/local/www/firewall_virtual_ip_edit.php:268
@@ -10253,7 +10270,7 @@ msgstr "それはまだCARPによって参照されているため、このエ�
 #: usr/local/www/firewall_virtual_ip_edit.php:273
 #: usr/local/www/firewall_virtual_ip_edit.php:273
 msgid "Virtual IP Address"
-msgstr "仮想IPアドレス"
+msgstr "仮想 IP アドレス"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:300
 #: usr/local/www/firewall_virtual_ip_edit.php:302
@@ -10269,7 +10286,8 @@ msgstr "仮想IPアドレス"
 #: usr/local/www/firewall_virtual_ip_edit.php:301
 msgid ""
 "This must be the network's subnet mask. It does not specify a CIDR range."
-msgstr "「これは、ネットワークのサブネットマスクである必要があります。これは、 CIDR範囲を指定していません。"
+msgstr ""
+"これはネットワークのサブネットマスクです。CIDR 範囲の指定ではありません"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:301
 #: usr/local/www/firewall_virtual_ip_edit.php:289
@@ -10278,7 +10296,7 @@ msgstr "「これは、ネットワークのサブネットマスクである必
 #: usr/local/www/firewall_virtual_ip_edit.php:300
 #: usr/local/www/firewall_virtual_ip_edit.php:300
 msgid "This is a CIDR block of proxy ARP addresses."
-msgstr "これは、プロキシARPのアドレスのCIDRブロックです。"
+msgstr "これはプロキシ ARP アドレスの CIDR ブロックです"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:412
 #: usr/local/www/firewall_virtual_ip_edit.php:400
@@ -10287,7 +10305,7 @@ msgstr "これは、プロキシARPのアドレスのCIDRブロックです。"
 #: usr/local/www/firewall_virtual_ip_edit.php:364
 #: usr/local/www/firewall_virtual_ip_edit.php:364
 msgid "Edit Virtual IP"
-msgstr "仮想IPを編集"
+msgstr "仮想 IP の編集"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:418
 #: usr/local/www/firewall_virtual_ip_edit.php:406
@@ -10296,7 +10314,7 @@ msgstr "仮想IPを編集"
 #: usr/local/www/firewall_virtual_ip_edit.php:374
 #: usr/local/www/firewall_virtual_ip_edit.php:374
 msgid "Proxy ARP"
-msgstr "プロキシARP"
+msgstr "プロキシ ARP"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:420
 #: usr/local/www/carp_status.php:100
@@ -10326,7 +10344,7 @@ msgstr "その他"
 #: usr/local/www/firewall_virtual_ip_edit.php:370
 #: usr/local/www/firewall_virtual_ip_edit.php:370
 msgid "IP Alias"
-msgstr "IPエイリアス"
+msgstr "IP エイリアス"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:435
 #: usr/local/www/diag_packet_capture.php:119
@@ -10486,7 +10504,7 @@ msgstr "IPエイリアス"
 #: usr/local/www/interfaces_gif.php:111
 #: usr/local/www/interfaces_assign.php:420
 msgid "Interface"
-msgstr "インターフェース"
+msgstr "インタフェース"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:452
 #: usr/local/www/firewall_virtual_ip_edit.php:440
@@ -10495,7 +10513,7 @@ msgstr "インターフェース"
 #: usr/local/www/firewall_virtual_ip_edit.php:397
 #: usr/local/www/firewall_virtual_ip_edit.php:397
 msgid "IP Address(es)"
-msgstr "IPアドレス（ ES ）"
+msgstr "IP アドレス"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:456
 #: usr/local/www/firewall_nat_1to1_edit.php:338
@@ -10551,7 +10569,7 @@ msgstr "IPアドレス（ ES ）"
 #: usr/local/www/firewall_nat_out_edit.php:501
 #: usr/local/www/firewall_nat_out_edit.php:536
 msgid "Type:"
-msgstr "タイプ："
+msgstr "タイプ: "
 
 #: usr/local/www/firewall_virtual_ip_edit.php:459
 #: usr/local/www/firewall_virtual_ip_edit.php:447
@@ -10560,7 +10578,7 @@ msgstr "タイプ："
 #: usr/local/www/firewall_virtual_ip_edit.php:404
 #: usr/local/www/firewall_virtual_ip_edit.php:404
 msgid "Single address"
-msgstr "単一のアドレス"
+msgstr "シングルアドレス"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:461
 #: usr/local/www/firewall_aliases_edit.php:452
@@ -10728,7 +10746,7 @@ msgstr "ネットワーク"
 #: usr/local/www/vpn_ipsec_phase2.php:553
 #: usr/local/www/vpn_ipsec_phase2.php:589
 msgid "Address:"
-msgstr "住所："
+msgstr "アドレス: "
 
 #: usr/local/www/firewall_virtual_ip_edit.php:479
 #: usr/local/www/firewall_virtual_ip_edit.php:467
@@ -10737,7 +10755,7 @@ msgstr "住所："
 #: usr/local/www/firewall_virtual_ip_edit.php:424
 #: usr/local/www/firewall_virtual_ip_edit.php:424
 msgid "Expansion:"
-msgstr "拡大："
+msgstr "拡張: "
 
 #: usr/local/www/firewall_virtual_ip_edit.php:499
 #: usr/local/www/firewall_virtual_ip_edit.php:487
@@ -10746,7 +10764,7 @@ msgstr "拡大："
 #: usr/local/www/firewall_virtual_ip_edit.php:444
 #: usr/local/www/firewall_virtual_ip_edit.php:444
 msgid "Virtual IP Password"
-msgstr "仮想IPパスワード"
+msgstr "仮想 IP パスワード"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:501
 #: usr/local/www/firewall_virtual_ip_edit.php:489
@@ -10755,7 +10773,7 @@ msgstr "仮想IPパスワード"
 #: usr/local/www/firewall_virtual_ip_edit.php:446
 #: usr/local/www/firewall_virtual_ip_edit.php:446
 msgid "Enter the VHID group password."
-msgstr "VHIDグループのパスワードを入力してください。"
+msgstr "VHID グループのパスワードを入力してください"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:505
 #: usr/local/www/firewall_virtual_ip_edit.php:493
@@ -10764,7 +10782,7 @@ msgstr "VHIDグループのパスワードを入力してください。"
 #: usr/local/www/firewall_virtual_ip_edit.php:450
 #: usr/local/www/firewall_virtual_ip_edit.php:450
 msgid "VHID Group"
-msgstr "VHIDグループ"
+msgstr "VHID グループ"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:513
 #: usr/local/www/firewall_virtual_ip_edit.php:501
@@ -10773,7 +10791,7 @@ msgstr "VHIDグループ"
 #: usr/local/www/firewall_virtual_ip_edit.php:458
 #: usr/local/www/firewall_virtual_ip_edit.php:458
 msgid "Enter the VHID group that the machines will share"
-msgstr "マシンが共有するVHIDグループを入力してください"
+msgstr "マシンが共有する VHID グループを入力してください"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:517
 #: usr/local/www/firewall_virtual_ip_edit.php:505
@@ -10794,7 +10812,10 @@ msgid ""
 "The frequency that this machine will advertise. 0 means usually master. "
 "Otherwise the lowest combination of both values in the cluster determines "
 "the master."
-msgstr "「このマシンが広告することを周波数。 0は通常のマスターを意味する」そうでない場合は、クラスタ内の両方の値の最も低い組み合わせは"マスターが決定されます。"
+msgstr ""
+"このマシンが広告する頻度のこと。0 は通常マスタを意味します。"
+"もしくは、クラスタ内で、両方の値の組み合わせが最も低いものが、"
+"マスタとして決定されます"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:557
 #: usr/local/www/diag_logs_settings.php:326
@@ -10966,7 +10987,7 @@ msgstr "「このマシンが広告することを周波数。 0は通常のマ�
 #: usr/local/www/system_gateway_groups.php:205
 #: usr/local/www/interfaces.php:2073
 msgid "Note:"
-msgstr "注意："
+msgstr "注意: "
 
 #: usr/local/www/firewall_virtual_ip_edit.php:559
 #: usr/local/www/firewall_virtual_ip_edit.php:547
@@ -10978,7 +10999,10 @@ msgid ""
 "Proxy ARP and Other type Virtual IPs cannot be bound to by anything running "
 "on the firewall, such as IPsec, OpenVPN, etc. Use a CARP or IP Alias type "
 "address for these cases."
-msgstr "このような場合のために、CARPまたはIPエイリアスタイプ "アドレスを使用してくださいなどのIPsec 、 OpenVPNを、として、ファイアウォールの「プロキシARPおよび他のタイプの仮想IPは何も実行してにバインドすることはできません」 。"
+msgstr ""
+"プロキシ ARP 及びその他のタイプの仮想 IP は、IPsec、OpenVPN 等のように"
+"ファイアウォール上で実行されるいかなるものでも、バインドできません。"
+"このような場合は、CARP や IP エイリアスタイプのアドレスを使用します"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:560
 #: usr/local/www/firewall_virtual_ip_edit.php:548
@@ -10987,7 +11011,7 @@ msgstr "このような場合のために、CARPまたはIPエイリアスタイ
 #: usr/local/www/firewall_virtual_ip_edit.php:504
 #: usr/local/www/firewall_virtual_ip_edit.php:504
 msgid "For more information on CARP and the above values, visit the OpenBSD "
-msgstr "CARPと上記の値の詳細については、 OpenBSDのをご覧ください"
+msgstr "CARP 及び上記の値の詳細については OpenBSD を参照してください"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:560
 #: usr/local/www/firewall_virtual_ip_edit.php:548
@@ -10996,21 +11020,23 @@ msgstr "CARPと上記の値の詳細については、 OpenBSDのをご覧くだ
 #: usr/local/www/firewall_virtual_ip_edit.php:504
 #: usr/local/www/firewall_virtual_ip_edit.php:504
 msgid "CARP FAQ"
-msgstr "CARPよくある質問"
+msgstr "CARP FAQ"
 
 #: usr/local/www/load_balancer_relay_action.php:74
 #: usr/local/www/load_balancer_relay_action.php:74
 msgid ""
 "This entry cannot be deleted because it is still referenced by at least one "
 "relay protocol."
-msgstr "リレープロトコル"それはまだ少なくとも1によって参照されているため、このエントリは削除できません」 。"
+msgstr ""
+"このエントリは削除できません。"
+"少なくても 1 つのリレープロトコルから参照されています"
 
 #: usr/local/www/load_balancer_relay_action.php:104
 #: usr/local/www/load_balancer_relay_action_edit.php:180
 #: usr/local/www/load_balancer_relay_action.php:104
 #: usr/local/www/load_balancer_relay_action_edit.php:180
 msgid "Relay Action"
-msgstr "リレー動作"
+msgstr "リレー操作"
 
 #: usr/local/www/load_balancer_relay_action.php:118
 #: usr/local/www/load_balancer_relay_action.php:116
@@ -11018,13 +11044,15 @@ msgstr "リレー動作"
 msgid ""
 "The load balancer configuration has been changed.<br>You must apply the "
 "changes in order for them to take effect."
-msgstr "それらを有効にするための変更」ロードバランサ設定が変更されています。検索して、適用する必要があります」 。"
+msgstr ""
+"ロードバランサの構成が変更されました<br>"
+"変更を有効にするには、変更の適用が必要です"
 
 #: usr/local/www/load_balancer_relay_action.php:128
 #: usr/local/www/load_balancer_relay_action.php:126
 #: usr/local/www/load_balancer_relay_action.php:126
 msgid "Relay Actions"
-msgstr "アクションリレー"
+msgstr "リレー操作"
 
 #: usr/local/www/load_balancer_relay_action.php:129
 #: usr/local/www/load_balancer_relay_action.php:127
@@ -11057,17 +11085,21 @@ msgstr "オプション"
 msgid ""
 "The system has been reset to factory defaults and is now rebooting. This may "
 "take one minute."
-msgstr "「システムは工場出荷時の設定にリセットされ、現在、再起動されている。これは可能性"1分ほどかかる。"
+msgstr ""
+"システムは出荷時の規定値にリセットされ、現在再起動しています。"
+"この作業には 1 分ほどかかります"
+
+「システムは工場出荷時の設定にリセットされ、現在、再起動されている。これは可能性"1分ほどかかる。"
 
 #: usr/local/www/diag_defaults.php:58 usr/local/www/diag_defaults.php:52
 #: usr/local/www/diag_defaults.php:52
 msgid "Factory defaults"
-msgstr "工場出荷時のデフォルト"
+msgstr "出荷時の規定値"
 
 #: usr/local/www/diag_defaults.php:67 usr/local/www/diag_defaults.php:70
 #: usr/local/www/diag_defaults.php:70
 msgid "If you click"
-msgstr "あなたがクリックした場合"
+msgstr "もし、"
 
 #: usr/local/www/diag_defaults.php:67 usr/local/www/diag_defaults.php:81
 #: usr/local/www/crash_reporter.php:76 usr/local/www/halt.php:69
@@ -11089,7 +11121,7 @@ msgstr "はい"
 #: usr/local/www/diag_defaults.php:67 usr/local/www/diag_defaults.php:70
 #: usr/local/www/diag_defaults.php:70
 msgid "the firewall will:"
-msgstr "ファイアウォールは、以下となります。"
+msgstr "をクリックすると、ファイアウォールは以下の構成になります: "
 
 #: usr/local/www/diag_defaults.php:70 usr/local/www/diag_defaults.php:72
 #: usr/local/www/diag_defaults.php:72
@@ -11099,39 +11131,41 @@ msgstr "工場出荷時の設定にリセット"
 #: usr/local/www/diag_defaults.php:71 usr/local/www/diag_defaults.php:73
 #: usr/local/www/diag_defaults.php:73
 msgid "LAN IP address will be reset to 192.168.1.1"
-msgstr "LAN IPアドレスは192.168.1.1にリセットされます"
+msgstr "LAN IP アドレスは 192.168.1.1 にリセット"
 
 #: usr/local/www/diag_defaults.php:72 usr/local/www/diag_defaults.php:74
 #: usr/local/www/diag_defaults.php:74
 msgid "System will be configured as a DHCP server on the default LAN interface"
-msgstr "システムはデフォルトのLANインターフェイス上でDHCPサーバとして設定されます"
+msgstr "デフォルト LAN インタフェースの DHCP サーバとしてシステムを構成"
 
 #: usr/local/www/diag_defaults.php:73 usr/local/www/diag_defaults.php:75
 #: usr/local/www/diag_defaults.php:75
 msgid "Reboot after changes are installed"
-msgstr "変更がインストールされた後に再起動します"
+msgstr "変更のインストール後に再起動"
 
 #: usr/local/www/diag_defaults.php:74 usr/local/www/diag_defaults.php:76
 #: usr/local/www/diag_defaults.php:76
 msgid ""
 "WAN interface will be set to obtain an address automatically from a DHCP "
 "server"
-msgstr "サーバ」 WANインターフェイスがDHCPから自動的にアドレスを取得するように設定される""
+msgstr ""
+"WAN インタフェースは アドレスを DHCP サーバから自動取得するよう"
+"設定されます"
 
 #: usr/local/www/diag_defaults.php:75 usr/local/www/diag_defaults.php:77
 #: usr/local/www/diag_defaults.php:77
 msgid "webConfigurator admin username will be reset to 'admin'"
-msgstr "webConfigurator管理者のユーザー名がリセットされます「管理者」に"
+msgstr "Web 設定管理画面の管理者ユーザー名は 'admin' にリセット"
 
 #: usr/local/www/diag_defaults.php:76 usr/local/www/diag_defaults.php:78
 #: usr/local/www/diag_defaults.php:78
 msgid "webConfigurator admin password will be reset to"
-msgstr "webConfigurator管理者パスワードにリセットされます"
+msgstr "Web 設定管理画面の管理者パスワードは次の通りリセット: "
 
 #: usr/local/www/diag_defaults.php:79 usr/local/www/diag_defaults.php:80
 #: usr/local/www/diag_defaults.php:80
 msgid "Are you sure you want to proceed?"
-msgstr "あなたが続行してもよろしいですか？"
+msgstr "続行してもよろしいですか？"
 
 #: usr/local/www/diag_defaults.php:82 usr/local/www/crash_reporter.php:77
 #: usr/local/www/halt.php:70 usr/local/www/pkg.php:340
@@ -11620,7 +11654,7 @@ msgstr "OpenNTPD"
 #: usr/local/www/diag_logs_wireless.php:89
 #: usr/local/www/diag_logs_resolver.php:101
 msgid "Wireless"
-msgstr "ワイヤレス"
+msgstr "無線"
 
 #: usr/local/www/diag_logs.php:88 usr/local/www/diag_logs_auth.php:76
 #: usr/local/www/diag_logs_dhcp.php:81 usr/local/www/diag_logs_filter.php:112
@@ -11711,7 +11745,7 @@ msgstr "ワイヤレス"
 #: usr/local/www/diag_logs_resolver.php:89
 #: usr/local/www/diag_logs_filter_summary.php:195
 msgid "Settings"
-msgstr "セッティング"
+msgstr "設定"
 
 #: usr/local/www/diag_logs.php:98 usr/local/www/diag_logs_resolver.php:110
 #: usr/local/www/diag_logs.php:109 usr/local/www/diag_logs_gateways.php:110
@@ -11721,7 +11755,7 @@ msgstr "セッティング"
 #: usr/local/www/diag_logs_resolver.php:111
 #, php-format
 msgid "Last %s system log entries"
-msgstr "最後%sシステムログエントリ"
+msgstr "最新 %s システムログエントリ"
 
 #: usr/local/www/diag_logs.php:109 usr/local/www/diag_logs_auth.php:90
 #: usr/local/www/diag_logs_dhcp.php:95 usr/local/www/diag_logs_filter.php:208
@@ -11781,24 +11815,24 @@ msgstr "ログの消去"
 #: usr/local/www/diag_logs.php:126 usr/local/www/diag_logs_gateways.php:128
 #: usr/local/www/diag_logs_resolver.php:128
 msgid "Filter"
-msgstr "フィルター"
+msgstr "フィルタ"
 
 #: usr/local/www/diag_logs_auth.php:86 usr/local/www/diag_logs_auth.php:85
 #: usr/local/www/diag_logs_auth.php:86
 #, php-format
 msgid "Last %s Portal Auth log entries"
-msgstr "最後%sポータル認証ログエントリ"
+msgstr "最新 %s ポータル認証ログエントリ"
 
 #: usr/local/www/diag_logs_dhcp.php:91 usr/local/www/diag_logs_dhcp.php:90
 #: usr/local/www/diag_logs_dhcp.php:91
 #, php-format
 msgid "Last %s DHCP service log entries"
-msgstr "最後%s DHCPサービスのログエントリ"
+msgstr "最新 %s DHCP サービスログエントリ"
 
 #: usr/local/www/diag_logs_filter.php:56 usr/local/www/diag_logs_filter.php:63
 #: usr/local/www/diag_logs_filter.php:63
 msgid "The rule that triggered this action is"
-msgstr "このアクションをトリガしたルールがある"
+msgstr "この操作のトリガとなったルール: "
 
 #: usr/local/www/diag_logs_filter.php:122
 #: usr/local/www/diag_logs_filter_dynamic.php:119
@@ -11813,7 +11847,7 @@ msgstr "このアクションをトリガしたルールがある"
 #: usr/local/www/diag_logs_filter_dynamic.php:118
 #: usr/local/www/diag_logs_filter_summary.php:204
 msgid "Normal View"
-msgstr "通常のビュー"
+msgstr "通常表示"
 
 #: usr/local/www/diag_logs_filter.php:122
 #: usr/local/www/diag_logs_filter_dynamic.php:119
@@ -11828,7 +11862,7 @@ msgstr "通常のビュー"
 #: usr/local/www/diag_logs_filter_dynamic.php:118
 #: usr/local/www/diag_logs_filter_summary.php:204
 msgid "Dynamic View"
-msgstr "動的ビュー"
+msgstr "動的表示"
 
 #: usr/local/www/diag_logs_filter.php:122
 #: usr/local/www/diag_logs_filter_dynamic.php:119
@@ -11843,7 +11877,7 @@ msgstr "動的ビュー"
 #: usr/local/www/diag_logs_filter_dynamic.php:118
 #: usr/local/www/diag_logs_filter_summary.php:204
 msgid "Summary View"
-msgstr "概要ビュー"
+msgstr "概要表示"
 
 #: usr/local/www/diag_logs_filter.php:139
 #: usr/local/www/diag_logs_filter.php:138
@@ -11852,7 +11886,7 @@ msgstr "概要ビュー"
 #: usr/local/www/diag_logs_filter.php:296
 #, php-format
 msgid "Last %s firewall log entries."
-msgstr "最後%sはログエントリをファイアウォール。"
+msgstr "最新 %s ファイアウォールログエントリ"
 
 #: usr/local/www/diag_logs_filter.php:141
 #: usr/local/www/diag_logs_filter.php:140
@@ -11860,7 +11894,7 @@ msgstr "最後%sはログエントリをファイアウォール。"
 #: usr/local/www/diag_logs_filter.php:298
 #: usr/local/www/diag_logs_filter.php:298
 msgid "matched log entries."
-msgstr "一致したログエントリ。"
+msgstr "一致したログエントリ"
 
 #: usr/local/www/diag_logs_filter.php:143
 #: usr/local/www/diag_logs_filter.php:142
@@ -11869,7 +11903,7 @@ msgstr "一致したログエントリ。"
 #: usr/local/www/diag_logs_filter.php:299
 #, php-format
 msgid "Max(%s)"
-msgstr "マックス（ %s ）"
+msgstr "最大 ( %s )"
 
 #: usr/local/www/diag_logs_filter.php:146
 #: usr/local/www/diag_logs_filter_dynamic.php:126
@@ -11885,7 +11919,7 @@ msgstr "マックス（ %s ）"
 #: usr/local/www/diag_logs_filter_dynamic.php:128
 #: usr/local/www/widgets/widgets/log.widget.php:174
 msgid "Act"
-msgstr "行為"
+msgstr "動作"
 
 #: usr/local/www/diag_logs_filter.php:147
 #: usr/local/www/diag_logs_filter_dynamic.php:127
@@ -11923,7 +11957,7 @@ msgstr "時間"
 #: usr/local/www/diag_logs_filter_dynamic.php:130
 #: usr/local/www/firewall_nat.php:203
 msgid "If"
-msgstr "もし"
+msgstr "IF"
 
 #: usr/local/www/diag_logs_filter.php:149
 #: usr/local/www/diag_logs_filter_dynamic.php:129
@@ -11982,7 +12016,7 @@ msgstr "もし"
 #: usr/local/www/firewall_nat_out_edit.php:497
 #: usr/local/www/diag_ipsec_sad.php:88
 msgid "Source"
-msgstr "ソース"
+msgstr "送信元"
 
 #: usr/local/www/diag_logs_filter.php:150
 #: usr/local/www/diag_logs_filter_dynamic.php:130
@@ -12038,7 +12072,7 @@ msgstr "ソース"
 #: usr/local/www/firewall_nat_out_edit.php:528
 #: usr/local/www/diag_ipsec_sad.php:89
 msgid "Destination"
-msgstr "先"
+msgstr "送信先"
 
 #: usr/local/www/diag_logs_filter.php:151
 #: usr/local/www/diag_logs_filter_dynamic.php:131
@@ -12062,7 +12096,7 @@ msgstr "先"
 #: usr/local/www/diag_logs_filter_dynamic.php:133
 #: usr/local/www/firewall_nat.php:204 usr/local/www/firewall_rules.php:358
 msgid "Proto"
-msgstr "プロト"
+msgstr "プロトコル"
 
 #: usr/local/www/diag_logs_filter.php:178
 #: usr/local/www/diag_logs_filter.php:183
@@ -12086,7 +12120,7 @@ msgstr "プロト"
 #: usr/local/www/widgets/widgets/log.widget.php:200
 #: usr/local/www/diag_logs_filter_summary.php:82
 msgid "Reverse Resolve with DNS"
-msgstr "DNSに逆解決"
+msgstr "DNS の逆引き"
 
 #: usr/local/www/diag_logs_filter.php:179
 #: usr/local/www/diag_logs_filter.php:176
@@ -12094,7 +12128,7 @@ msgstr "DNSに逆解決"
 #: usr/local/www/diag_logs_filter.php:355
 #: usr/local/www/diag_logs_filter.php:355
 msgid "Easy Rule: Add to Block List"
-msgstr "簡単なルール：リストをブロックするために追加する"
+msgstr "簡易ルール: 拒否リストに追加"
 
 #: usr/local/www/diag_logs_filter.php:179
 #: usr/local/www/diag_logs_filter.php:176
@@ -12102,7 +12136,7 @@ msgstr "簡単なルール：リストをブロックするために追加する
 #: usr/local/www/diag_logs_filter.php:355
 #: usr/local/www/diag_logs_filter.php:355
 msgid "Do you really want to add this BLOCK rule?"
-msgstr "あなたは本当にこのブロックルールを追加しますか？"
+msgstr "本当にこれを拒否ルールを追加しますか？"
 
 #: usr/local/www/diag_logs_filter.php:179
 #: usr/local/www/diag_logs_filter.php:184
@@ -12115,7 +12149,7 @@ msgstr "あなたは本当にこのブロックルールを追加しますか？
 #: usr/local/www/diag_logs_filter.php:355
 #: usr/local/www/diag_logs_filter.php:364
 msgid "Easy Rule is still experimental."
-msgstr "簡単なルールは、まだ実験的なものです。"
+msgstr "簡易ルールは実験的な実装です"
 
 #: usr/local/www/diag_logs_filter.php:179
 #: usr/local/www/diag_logs_filter.php:184
@@ -12128,7 +12162,7 @@ msgstr "簡単なルールは、まだ実験的なものです。"
 #: usr/local/www/diag_logs_filter.php:355
 #: usr/local/www/diag_logs_filter.php:364
 msgid "Continue at risk of your own peril."
-msgstr "あなた自身の危険のリスクが継続する。"
+msgstr "継続すると自分自身に危険なリスクがあります"
 
 #: usr/local/www/diag_logs_filter.php:179
 #: usr/local/www/diag_logs_filter.php:184
@@ -12141,7 +12175,7 @@ msgstr "あなた自身の危険のリスクが継続する。"
 #: usr/local/www/diag_logs_filter.php:355
 #: usr/local/www/diag_logs_filter.php:364
 msgid "Backups are also nice."
-msgstr "バックアップもいいです。"
+msgstr "バックアップもいいですね"
 
 #: usr/local/www/diag_logs_filter.php:184
 #: usr/local/www/diag_logs_filter.php:181
@@ -12149,7 +12183,7 @@ msgstr "バックアップもいいです。"
 #: usr/local/www/diag_logs_filter.php:364
 #: usr/local/www/diag_logs_filter.php:364
 msgid "Easy Rule: Pass this traffic"
-msgstr "簡単なルール：このトラフィックを通過させる"
+msgstr "簡易ルール: このトラフィックを許可"
 
 #: usr/local/www/diag_logs_filter.php:184
 #: usr/local/www/diag_logs_filter.php:181
@@ -12157,7 +12191,7 @@ msgstr "簡単なルール：このトラフィックを通過させる"
 #: usr/local/www/diag_logs_filter.php:364
 #: usr/local/www/diag_logs_filter.php:364
 msgid "Do you really want to add this PASS rule?"
-msgstr "あなたは本当にこのパスの規則を追加しますか？"
+msgstr "本当にこれを許可ルールに追加しますか？"
 
 #: usr/local/www/diag_logs_filter.php:196
 #: usr/local/www/diag_logs_filter.php:193
@@ -12166,12 +12200,12 @@ msgstr "あなたは本当にこのパスの規則を追加しますか？"
 #: usr/local/www/diag_logs_filter.php:385
 #, php-format
 msgid "Last %s firewall log entries"
-msgstr "最後%sファイアウォールのログエントリ"
+msgstr "最新 %s ファイアウォールログエントリ"
 
 #: usr/local/www/diag_logs_filter_dynamic.php:61
 #: usr/local/www/diag_logs_filter_dynamic.php:61
 msgid "Firewall (Dynamic View)"
-msgstr "ファイアウォール（ダイナミックビュー）"
+msgstr "ファイアウォール ( 動的表示 )"
 
 #: usr/local/www/diag_logs_filter_dynamic.php:122
 #: usr/local/www/diag_logs_filter_dynamic.php:120
@@ -12180,7 +12214,7 @@ msgstr "ファイアウォール（ダイナミックビュー）"
 #: usr/local/www/diag_logs_filter_dynamic.php:124
 #, php-format
 msgid "Last %s records"
-msgstr "最後%sレコード"
+msgstr "最新 %s レコード"
 
 #: usr/local/www/diag_logs_filter_dynamic.php:122
 #: usr/local/www/diag_logs_filter_dynamic.php:120
@@ -12188,7 +12222,7 @@ msgstr "最後%sレコード"
 #: usr/local/www/diag_logs_filter_dynamic.php:124
 #: usr/local/www/diag_logs_filter_dynamic.php:124
 msgid "Pause:"
-msgstr "一時停止："
+msgstr "一時停止: "
 
 #: usr/local/www/diag_logs_filter_dynamic.php:153
 #: usr/local/www/diag_logs_filter_dynamic.php:151
@@ -12196,7 +12230,7 @@ msgstr "一時停止："
 #: usr/local/www/diag_logs_filter_dynamic.php:165
 #: usr/local/www/diag_logs_filter_dynamic.php:165
 msgid "TCP Flags"
-msgstr "TCPフラグ"
+msgstr "TCP フラグ"
 
 #: usr/local/www/diag_logs_ipsec.php:91 usr/local/www/status_services.php:330
 #: usr/local/www/widgets/widgets/services_status.widget.php:135
@@ -12204,31 +12238,31 @@ msgstr "TCPフラグ"
 #: etc/inc/service-utils.inc:336 usr/local/www/diag_logs_ipsec.php:91
 #: etc/inc/service-utils.inc:336
 msgid "IPsec VPN"
-msgstr "IPSec VPNの"
+msgstr "IPSec VPN"
 
 #: usr/local/www/diag_logs_ipsec.php:123 usr/local/www/diag_logs_ipsec.php:122
 #: usr/local/www/diag_logs_ipsec.php:123
 #, php-format
 msgid "Last %s IPsec log entries"
-msgstr "最後%s IPsecのログエントリ"
+msgstr "最新 %s IPsec ログエントリ"
 
 #: usr/local/www/diag_logs_ipsec.php:135 usr/local/www/diag_logs_ppp.php:99
 #: usr/local/www/diag_logs_ipsec.php:134 usr/local/www/diag_logs_ppp.php:98
 #: usr/local/www/diag_logs_ipsec.php:136 usr/local/www/diag_logs_ipsec.php:136
 msgid "Unknown Gateway/Dynamic"
-msgstr "未知のゲートウェイ/ダイナミック"
+msgstr "不明なゲートウェイ / 動的"
 
 #: usr/local/www/diag_logs_ntpd.php:86
 #, php-format
 msgid "Last %s OpenNTPD log entries"
-msgstr "最後%sはログエントリをOpenNTPD"
+msgstr "最新 %s OpenNTPD ログエントリ"
 
 #: usr/local/www/diag_logs_openvpn.php:90
 #: usr/local/www/diag_logs_openvpn.php:89
 #: usr/local/www/diag_logs_openvpn.php:90
 #, php-format
 msgid "Last %s OpenVPN log entries"
-msgstr "最後%s OpenVPNのログエントリ"
+msgstr "最新 %s OpenVPN ログエントリ"
 
 #: usr/local/www/diag_dump_states.php:51 usr/local/www/status_openvpn.php:59
 #: usr/local/www/widgets/widgets/openvpn.widget.php:16
@@ -12239,12 +12273,12 @@ msgstr "最後%s OpenVPNのログエントリ"
 #: usr/local/www/diag_dump_states_sources.php:51
 #: usr/local/www/widgets/widgets/openvpn.widget.php:17
 msgid "invalid input"
-msgstr "無効入力"
+msgstr "無効な入力です"
 
 #: usr/local/www/diag_dump_states.php:65 usr/local/www/diag_dump_states.php:75
 #: usr/local/www/diag_dump_states.php:67 usr/local/www/diag_dump_states.php:67
 msgid "Show States"
-msgstr "表示状態"
+msgstr "ステータス表示"
 
 #: usr/local/www/diag_dump_states.php:95 usr/local/www/status_openvpn.php:130
 #: usr/local/www/widgets/widgets/openvpn.widget.php:84
@@ -12259,7 +12293,7 @@ msgstr "表示状態"
 #: usr/local/www/diag_dump_states_sources.php:94
 #: usr/local/www/widgets/widgets/openvpn.widget.php:84
 msgid "An error occurred."
-msgstr "エラーが発生しました。"
+msgstr "エラーが発生しました"
 
 #: usr/local/www/diag_dump_states.php:110
 #: usr/local/www/diag_states_summary.php:151
@@ -12285,7 +12319,7 @@ msgstr "エラーが発生しました。"
 #: usr/local/www/system_advanced_misc.php:549
 #: usr/local/www/diag_resetstate.php:77 usr/local/www/fbegin.inc:225
 msgid "States"
-msgstr "米国"
+msgstr "ステータス"
 
 #: usr/local/www/diag_dump_states.php:112 usr/local/www/diag_resetstate.php:79
 #: usr/local/www/diag_dump_states_sources.php:111
@@ -12297,7 +12331,7 @@ msgstr "米国"
 #: usr/local/www/diag_dump_states_sources.php:110
 #: usr/local/www/diag_resetstate.php:79
 msgid "Source Tracking"
-msgstr "ソースの追跡"
+msgstr "送信元の追跡"
 
 #: usr/local/www/diag_dump_states.php:113 usr/local/www/diag_resetstate.php:80
 #: usr/local/www/diag_dump_states_sources.php:112
@@ -12309,11 +12343,11 @@ msgstr "ソースの追跡"
 #: usr/local/www/diag_dump_states_sources.php:111
 #: usr/local/www/diag_resetstate.php:80
 msgid "Reset States"
-msgstr "米国のリセット"
+msgstr "ステータスのリセット"
 
 #: usr/local/www/diag_dump_states.php:134
 msgid "Current state count:"
-msgstr "現在の状態カウント："
+msgstr "現在のステータスの合計: "
 
 #: usr/local/www/diag_dump_states.php:136
 #: usr/local/www/diag_dump_states_sources.php:131
@@ -12324,7 +12358,7 @@ msgstr "現在の状態カウント："
 #: usr/local/www/diag_dump_states.php:139
 #: usr/local/www/diag_dump_states_sources.php:130
 msgid "Filter expression:"
-msgstr "式をフィルタ："
+msgstr "フィルタ式: "
 
 #: usr/local/www/diag_dump_states.php:151
 #: usr/local/www/diag_dump_states.php:169
@@ -12332,7 +12366,7 @@ msgstr "式をフィルタ："
 #: usr/local/www/diag_dump_states.php:157
 #: usr/local/www/diag_dump_states.php:157
 msgid "Source -> Router -> Destination"
-msgstr "ソース - u003eルータ - u003e目的地"
+msgstr "発信元 -> ルータ -> 発信先"
 
 #: usr/local/www/diag_dump_states.php:152
 #: usr/local/www/status_dhcpv6_leases.php:486
@@ -12346,7 +12380,7 @@ msgstr "ソース - u003eルータ - u003e目的地"
 #: usr/local/www/diag_dump_states.php:158
 #: usr/local/www/diag_system_pftop.php:142
 msgid "State"
-msgstr "状態"
+msgstr "ステータス"
 
 #: usr/local/www/diag_dump_states.php:185
 #: usr/local/www/diag_dump_states.php:203
@@ -12354,7 +12388,7 @@ msgstr "状態"
 #: usr/local/www/diag_dump_states.php:194
 #: usr/local/www/diag_dump_states.php:194
 msgid "Remove all state entries from"
-msgstr "からすべての状態のエントリを削除する"
+msgstr "全てのステータスエントリを削除: "
 
 #: usr/local/www/diag_dump_states.php:185
 #: usr/local/www/firewall_nat_edit.php:620
@@ -12393,7 +12427,7 @@ msgstr "からすべての状態のエントリを削除する"
 #: usr/local/www/services_dhcpv6.php:593 usr/local/www/services_dhcpv6.php:600
 #: usr/local/www/diag_confbak.php:111
 msgid "to"
-msgstr "へ"
+msgstr "->"
 
 #: usr/local/www/diag_dump_states.php:194
 #: usr/local/www/diag_dump_states.php:212
@@ -12401,79 +12435,84 @@ msgstr "へ"
 #: usr/local/www/diag_dump_states.php:205
 #: usr/local/www/diag_dump_states.php:205
 msgid "No states were found."
-msgstr "何の状態が見つかりませんでした。"
+msgstr "ステータスはありません"
 
 #: usr/local/www/diag_logs_settings.php:79
 msgid "A valid IP address must be specified for remote syslog server #1."
-msgstr "有効なIPアドレスは、リモートsyslogサーバを指定する必要があります"
+msgstr "リモート syslog サーバ #1 には有効な IP アドレスの指定が必要です"
 
 #: usr/local/www/diag_logs_settings.php:82
 msgid "A valid IP address must be specified for remote syslog server #2."
-msgstr "有効なIPアドレスは、リモートsyslogサーバを指定する必要があります"
+msgstr "リモート syslog サーバ #2 には有効な IP アドレスの指定が必要です"
 
 #: usr/local/www/diag_logs_settings.php:85
 msgid "A valid IP address must be specified for remote syslog server #3."
-msgstr "有効なIPアドレスは、リモートsyslogサーバを指定する必要があります"
+msgstr "リモート syslog サーバ #3 には有効な IP アドレスの指定が必要です"
 
 #: usr/local/www/diag_logs_settings.php:92
 #: usr/local/www/diag_logs_settings.php:96
 #: usr/local/www/diag_logs_settings.php:97
 #: usr/local/www/diag_logs_settings.php:97
 msgid "Number of log entries to show must be between 5 and 2000."
-msgstr "表示するログエントリの数は、 5年から2000年の間でなければなりません。"
+msgstr "表示するログエントリの数は 5 〜 2000 です"
 
 #: usr/local/www/diag_logs_settings.php:232
 #: usr/local/www/diag_logs_settings.php:239
 #: usr/local/www/diag_logs_settings.php:246
 #: usr/local/www/diag_logs_settings.php:246
 msgid "Show log entries in reverse order (newest entries on top)"
-msgstr "逆の順序で表示するログエントリ（一番上の最新のエントリ）"
+msgstr "ログエントリを逆順に表示 ( 最新を一番上にする )"
 
 #: usr/local/www/diag_logs_settings.php:236
 msgid "Number of log entries to show:"
-msgstr "ショーのログエントリの数："
+msgstr "表示するログエントリの数: "
 
 #: usr/local/www/diag_logs_settings.php:242
 #: usr/local/www/diag_logs_settings.php:250
 #: usr/local/www/diag_logs_settings.php:257
 #: usr/local/www/diag_logs_settings.php:257
 msgid "Log packets blocked by the default rule"
-msgstr "デフォルトのルールでブロックされたパケットをログに記録する"
+msgstr "デフォルトルールで拒否されたパケットをログに記録"
 
 #: usr/local/www/diag_logs_settings.php:243
 msgid ""
 "Hint: packets that are blocked by the implicit default block rule will not "
 "be logged anymore if you uncheck this option. Per-rule logging options are "
 "not affected."
-msgstr ""ヒント：暗黙のデフォルトのブロックルールによってブロックされたパケットがない」このオプションをオフにした場合はもうログインする。ルールごとのログオプション」の影響を受けません。"
+msgstr ""
+"ヒント: このオプションのチェックを外すと、暗黙でデフォルト拒否ルールが"
+"拒否したパケットは、ログに記録されなくなります。"
+"ルール毎のログオプションには影響しません"
 
 #: usr/local/www/diag_logs_settings.php:250
 #: usr/local/www/diag_logs_settings.php:258
 #: usr/local/www/diag_logs_settings.php:265
 #: usr/local/www/diag_logs_settings.php:265
 msgid "Show raw filter logs"
-msgstr "生のフィルタログを表示する"
+msgstr "生のフィルタログを表示"
 
 #: usr/local/www/diag_logs_settings.php:251
 msgid ""
 "Hint: If this is checked, filter logs are shown as generated by the packet "
 "filter, without any formatting. This will reveal more detailed information."
-msgstr ""ヒント：これをチェックすると、パケットによって生成されるように、フィルタログが表示されます"をフォーマットせずに、フィルタ。これは、より詳細な情報を明らかにする。"
+msgstr ""
+"ヒント: これをチェックすると、パケットフィルタが生成した整形されていない"
+"フィルタログを表示します。より詳細な情報を見ることができます"
 
 #: usr/local/www/diag_logs_settings.php:256
 #: usr/local/www/diag_logs_settings.php:267
 #: usr/local/www/diag_logs_settings.php:287
 #: usr/local/www/diag_logs_settings.php:287
 msgid "Disable writing log files to the local RAM disk"
-msgstr "ローカルRAMディスクにログファイルを書き込み不可に"
+msgstr "ローカル RAM ディスクへのログファイルの書き込みを無効"
 
 #: usr/local/www/diag_logs_settings.php:261
 msgid "Enable syslog'ing to remote syslog server"
-msgstr "リモートsyslogサーバにsyslog'ing有効にします"
+msgstr "リモート syslog サーバへの syslog 取得を有効"
 
 #: usr/local/www/diag_logs_settings.php:264
 msgid "Remote syslog servers"
-msgstr "リモートsyslogサーバ"
+msgstr "リモート syslog サーバ"
 
 #: usr/local/www/diag_logs_settings.php:269
 #: usr/local/www/diag_logs_settings.php:277
@@ -12582,18 +12621,18 @@ msgstr "リモートsyslogサーバ"
 #: usr/local/www/vpn_openvpn_server.php:1622
 #: usr/local/www/vpn_openvpn_server.php:1630
 msgid "Server"
-msgstr "サーバー"
+msgstr "サーバ"
 
 #: usr/local/www/diag_logs_settings.php:296
 msgid "IP addresses of remote syslog servers"
-msgstr "リモートsyslogサーバのIPアドレス"
+msgstr "リモート syslog サーバの IP アドレス"
 
 #: usr/local/www/diag_logs_settings.php:300
 #: usr/local/www/diag_logs_settings.php:309
 #: usr/local/www/diag_logs_settings.php:329
 #: usr/local/www/diag_logs_settings.php:329
 msgid "System events"
-msgstr "システム·イベント"
+msgstr "システムイベント"
 
 #: usr/local/www/diag_logs_settings.php:302
 #: usr/local/www/diag_logs_settings.php:311
@@ -12607,7 +12646,7 @@ msgstr "ファイアウォールイベント"
 #: usr/local/www/diag_logs_settings.php:333
 #: usr/local/www/diag_logs_settings.php:333
 msgid "DHCP service events"
-msgstr "DHCPサービスのイベント"
+msgstr "DHCP サービスイベント"
 
 #: usr/local/www/diag_logs_settings.php:306
 #: usr/local/www/diag_logs_settings.php:315
@@ -12621,7 +12660,7 @@ msgstr "ポータル認証イベント"
 #: usr/local/www/diag_logs_settings.php:337
 #: usr/local/www/diag_logs_settings.php:337
 msgid "VPN (PPTP, IPsec, OpenVPN) events"
-msgstr "VPN （ PPTP 、 IPsecの、 OpenVPNの）イベント"
+msgstr "VPN ( PPTP 、IPsec、OpenVPN ) イベント"
 
 #: usr/local/www/diag_logs_settings.php:310
 #: usr/local/www/diag_logs_settings.php:319
@@ -12642,14 +12681,14 @@ msgstr "サーバロードバランサイベント"
 #: usr/local/www/diag_logs_settings.php:343
 #: usr/local/www/diag_logs_settings.php:343
 msgid "Wireless events"
-msgstr "ワイヤレスイベント"
+msgstr "無線イベント"
 
 #: usr/local/www/diag_logs_settings.php:316
 #: usr/local/www/diag_logs_settings.php:307
 #: usr/local/www/diag_logs_settings.php:327
 #: usr/local/www/diag_logs_settings.php:327
 msgid "Everything"
-msgstr "すべてのもの"
+msgstr "全て"
 
 #: usr/local/www/diag_logs_settings.php:327
 msgid ""
@@ -46543,7 +46582,7 @@ msgstr "URLは"
 #: usr/local/www/firewall_aliases.php:195
 #: usr/local/www/firewall_aliases.php:275
 msgid "Add a new alias"
-msgstr "新しいエイリアスを追加します。"
+msgstr "新規エイリアスを追加します。"
 
 #: usr/local/www/firewall_aliases.php:255
 #: usr/local/www/firewall_aliases.php:256
