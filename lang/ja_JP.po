@@ -9145,8 +9145,8 @@ msgid ""
 "navigated to the page directly without telling it what to do"
 msgstr ""
 "これは簡易ルールステータスページです。主にルール追加時のエラー表示に使用します。"
-"これを参照していれば、特にエラーがないようなら、"
-"何をするかを指示されることなく直接ページに移動します"
+"これを参照していて、特にエラーがなければ、"
+"指示が表示されることなく直接ページに移動します"
 
 #: usr/local/www/easyrule.php:75 usr/local/www/easyrule.php:75
 msgid ""
@@ -9440,7 +9440,7 @@ msgstr "この名前のインタフェースの説明は、既に存在してい
 #: usr/local/www/firewall_aliases_import.php:94
 #, php-format
 msgid "%s is not an IP address. Please correct the error to continue"
-msgstr "%s はIP アドレスではありません。継続するには、エラーを修正してください"
+msgstr "%s は IP アドレスではありません。継続するには、エラーを修正してください"
 
 #: usr/local/www/firewall_aliases_import.php:131
 #: usr/local/www/firewall_aliases_import.php:131
@@ -9843,7 +9843,7 @@ msgstr "キューを追加できません"
 #: usr/local/www/firewall_shaper.php:347
 #: usr/local/www/firewall_shaper_vinterface.php:316
 msgid "Queue Actions"
-msgstr "キュー操作"
+msgstr "キューの動作"
 
 #: usr/local/www/firewall_shaper_vinterface.php:315
 #: usr/local/www/firewall_shaper.php:357
@@ -10056,7 +10056,7 @@ msgid ""
 "nameservers instead of a previous override."
 msgstr ""
 "もしくは # で除外入力することで、このホストもしくはサブドメインは"
-"前回の上書き内容ではなく、標準の DNS サーバを経由します"
+"前の上書き内容ではなく、標準の DNS サーバを経由します"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:106
 #: usr/local/www/firewall_virtual_ip_edit.php:415
@@ -10800,7 +10800,7 @@ msgstr "マシンが共有する VHID グループを入力してください"
 #: usr/local/www/firewall_virtual_ip_edit.php:462
 #: usr/local/www/firewall_virtual_ip_edit.php:462
 msgid "Advertising Frequency"
-msgstr "広告頻度"
+msgstr "広告周期"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:534
 #: usr/local/www/firewall_virtual_ip_edit.php:522
@@ -10813,7 +10813,7 @@ msgid ""
 "Otherwise the lowest combination of both values in the cluster determines "
 "the master."
 msgstr ""
-"このマシンが広告する頻度のこと。0 は通常マスタを意味します。"
+"このマシンが広告する周期のこと。0 は通常マスタを意味します。"
 "もしくは、クラスタ内で、両方の値の組み合わせが最も低いものが、"
 "マスタとして決定されます"
 
@@ -11036,7 +11036,7 @@ msgstr ""
 #: usr/local/www/load_balancer_relay_action.php:104
 #: usr/local/www/load_balancer_relay_action_edit.php:180
 msgid "Relay Action"
-msgstr "リレー操作"
+msgstr "リレーの動作"
 
 #: usr/local/www/load_balancer_relay_action.php:118
 #: usr/local/www/load_balancer_relay_action.php:116
@@ -11052,7 +11052,7 @@ msgstr ""
 #: usr/local/www/load_balancer_relay_action.php:126
 #: usr/local/www/load_balancer_relay_action.php:126
 msgid "Relay Actions"
-msgstr "リレー操作"
+msgstr "リレーの動作"
 
 #: usr/local/www/load_balancer_relay_action.php:129
 #: usr/local/www/load_balancer_relay_action.php:127
@@ -11088,8 +11088,6 @@ msgid ""
 msgstr ""
 "システムは出荷時の規定値にリセットされ、現在再起動しています。"
 "この作業には 1 分ほどかかります"
-
-「システムは工場出荷時の設定にリセットされ、現在、再起動されている。これは可能性"1分ほどかかる。"
 
 #: usr/local/www/diag_defaults.php:58 usr/local/www/diag_defaults.php:52
 #: usr/local/www/diag_defaults.php:52
@@ -11160,7 +11158,7 @@ msgstr "Web 設定管理画面の管理者ユーザー名は 'admin' にリセ�
 #: usr/local/www/diag_defaults.php:76 usr/local/www/diag_defaults.php:78
 #: usr/local/www/diag_defaults.php:78
 msgid "webConfigurator admin password will be reset to"
-msgstr "Web 設定管理画面の管理者パスワードは次の通りリセット: "
+msgstr "Web 設定管理画面の管理者パスワードは次の通りにリセット: "
 
 #: usr/local/www/diag_defaults.php:79 usr/local/www/diag_defaults.php:80
 #: usr/local/www/diag_defaults.php:80
@@ -11832,7 +11830,7 @@ msgstr "最新 %s DHCP サービスログエントリ"
 #: usr/local/www/diag_logs_filter.php:56 usr/local/www/diag_logs_filter.php:63
 #: usr/local/www/diag_logs_filter.php:63
 msgid "The rule that triggered this action is"
-msgstr "この操作のトリガとなったルール: "
+msgstr "この動作のトリガとなったルール: "
 
 #: usr/local/www/diag_logs_filter.php:122
 #: usr/local/www/diag_logs_filter_dynamic.php:119
@@ -12120,7 +12118,7 @@ msgstr "プロトコル"
 #: usr/local/www/widgets/widgets/log.widget.php:200
 #: usr/local/www/diag_logs_filter_summary.php:82
 msgid "Reverse Resolve with DNS"
-msgstr "DNS の逆引き"
+msgstr "DNS で逆引き"
 
 #: usr/local/www/diag_logs_filter.php:179
 #: usr/local/www/diag_logs_filter.php:176
@@ -12162,7 +12160,7 @@ msgstr "簡易ルールは実験的な実装です"
 #: usr/local/www/diag_logs_filter.php:355
 #: usr/local/www/diag_logs_filter.php:364
 msgid "Continue at risk of your own peril."
-msgstr "継続すると自分自身に危険なリスクがあります"
+msgstr "続行すると自分自身に危険なリスクがあります"
 
 #: usr/local/www/diag_logs_filter.php:179
 #: usr/local/www/diag_logs_filter.php:184
@@ -12175,7 +12173,7 @@ msgstr "継続すると自分自身に危険なリスクがあります"
 #: usr/local/www/diag_logs_filter.php:355
 #: usr/local/www/diag_logs_filter.php:364
 msgid "Backups are also nice."
-msgstr "バックアップもいいですね"
+msgstr "バックアップもお勧めします"
 
 #: usr/local/www/diag_logs_filter.php:184
 #: usr/local/www/diag_logs_filter.php:181
@@ -12461,7 +12459,7 @@ msgstr "表示するログエントリの数は 5 〜 2000 です"
 #: usr/local/www/diag_logs_settings.php:246
 #: usr/local/www/diag_logs_settings.php:246
 msgid "Show log entries in reverse order (newest entries on top)"
-msgstr "ログエントリを逆順に表示 ( 最新を一番上にする )"
+msgstr "ログエントリを逆順に表示 ( 最新エントリを一番上にする )"
 
 #: usr/local/www/diag_logs_settings.php:236
 msgid "Number of log entries to show:"
@@ -12695,43 +12693,46 @@ msgid ""
 "syslog sends UDP datagrams to port 514 on the specified remote syslog "
 "server. Be sure to set syslogd on the remote server to accept syslog "
 "messages from"
-msgstr "サーバー「 syslogが指定されたリモートのsyslogのポート514にUDPデータグラムを送信します」 。からのsyslog 」のメッセージを受け入れるようにリモート·サーバー上のsyslogd設定してください"
+msgstr ""
+"syslog は指定されたリモート syslog サーバのポート 514 に UDP ダイアグラムを送信します。"
+"リモートサーバの syslogd が次からの syslog メッセージを受信する設定になっているか"
+"確認して下さい: "
 
 #: usr/local/www/diag_logs_vpn.php:144 usr/local/www/diag_logs_vpn.php:143
 #: usr/local/www/diag_logs_vpn.php:143
 msgid "PPTP Logins"
-msgstr "PPTPログイン"
+msgstr "PPTP ログイン"
 
 #: usr/local/www/diag_logs_vpn.php:147 usr/local/www/diag_logs_vpn.php:146
 #: usr/local/www/diag_logs_vpn.php:146
 msgid "PPTP Raw"
-msgstr "PPTP生"
+msgstr "PPTP 生"
 
 #: usr/local/www/diag_logs_vpn.php:150 usr/local/www/diag_logs_vpn.php:149
 #: usr/local/www/diag_logs_vpn.php:149
 msgid "PPPoE Logins"
-msgstr "PPPoEログイン"
+msgstr "PPPoE ログイン"
 
 #: usr/local/www/diag_logs_vpn.php:153 usr/local/www/diag_logs_vpn.php:152
 #: usr/local/www/diag_logs_vpn.php:152
 msgid "PPPoE Raw"
-msgstr "PPPoE生"
+msgstr "PPPoE 生"
 
 #: usr/local/www/diag_logs_vpn.php:156 usr/local/www/diag_logs_vpn.php:155
 #: usr/local/www/diag_logs_vpn.php:155
 msgid "L2TP Logins"
-msgstr "L2TPログイン"
+msgstr "L2TP ログイン"
 
 #: usr/local/www/diag_logs_vpn.php:159 usr/local/www/diag_logs_vpn.php:158
 #: usr/local/www/diag_logs_vpn.php:158
 msgid "L2TP Raw"
-msgstr "L2TP生"
+msgstr "L2TP 生"
 
 #: usr/local/www/diag_logs_vpn.php:171 usr/local/www/diag_logs_vpn.php:170
 #: usr/local/www/diag_logs_vpn.php:170
 #, php-format
 msgid "Last %1$s %2$s VPN log entries"
-msgstr "最後は%1$s %2$s VPNのログエントリ"
+msgstr "最新 %1$s %2$s VPN ログエントリ"
 
 #: usr/local/www/diag_logs_vpn.php:176
 #: usr/local/www/firewall_rules_edit.php:659
@@ -12752,7 +12753,7 @@ msgstr "最後は%1$s %2$s VPNのログエントリ"
 #: usr/local/www/load_balancer_relay_action_edit.php:481
 #: usr/local/www/diag_logs_vpn.php:175
 msgid "Action"
-msgstr "アクション"
+msgstr "動作"
 
 #: usr/local/www/diag_logs_vpn.php:177
 #: usr/local/www/diag_authentication.php:59
@@ -12775,7 +12776,7 @@ msgstr "アクション"
 #: usr/local/www/system_usermanager.php:89
 #: usr/local/www/system_usermanager.php:832
 msgid "User"
-msgstr "ユーザー"
+msgstr "ユーザ"
 
 #: usr/local/www/diag_nanobsd.php:49 usr/local/www/fbegin.inc:212
 #: usr/local/www/fbegin.inc:230 usr/local/www/fbegin.inc:239
@@ -12787,34 +12788,36 @@ msgstr "NanoBSD"
 #: usr/local/www/diag_nanobsd.php:70 usr/local/www/diag_nanobsd.php:69
 #: usr/local/www/diag_nanobsd.php:69
 msgid "Setting slice information, please wait..."
-msgstr "スライス情報を設定しています。しばらくお待ちください..."
+msgstr "スライス情報を設定しています。お待ちください..."
 
 #: usr/local/www/diag_nanobsd.php:79 usr/local/www/diag_nanobsd.php:78
 #: usr/local/www/diag_nanobsd.php:78
 msgid "The boot slice has been set to"
-msgstr "ブート·スライスに設定されている"
+msgstr "ブートスライスに設定: "
 
 #: usr/local/www/diag_nanobsd.php:86 usr/local/www/diag_nanobsd.php:85
 #: usr/local/www/diag_nanobsd.php:85
 msgid "Duplicating slice. Please wait, this will take a moment..."
-msgstr "スライスを複製。これは少し時間がかかるでしょう、しばらくお待ちください..."
+msgstr "スライスを複製しています。少し時間がかかりますので、お待ちください..."
 
 #: usr/local/www/diag_nanobsd.php:95 usr/local/www/diag_nanobsd.php:94
 #: usr/local/www/diag_nanobsd.php:94
 msgid "The slice has been duplicated."
-msgstr "スライスが複製されています。"
+msgstr "スライスが複製されました"
 
 #: usr/local/www/diag_nanobsd.php:95 usr/local/www/diag_nanobsd.php:94
 #: usr/local/www/diag_nanobsd.php:94
 msgid ""
 "If you would like to boot from this newly duplicated slice please set it "
 "using the bootup information area."
-msgstr "ブートアップ情報領域を使用して「あなたは、この新たに複製されたスライスから起動したい場合に設定してください」 。"
+msgstr ""
+"新たに複製したスライスから起動したい場合は、"
+"ブートアップ情報領域を使用して設定してください"
 
 #: usr/local/www/diag_nanobsd.php:97 usr/local/www/diag_nanobsd.php:96
 #: usr/local/www/diag_nanobsd.php:96
 msgid "There was an error while duplicating the slice. Operation aborted."
-msgstr "スライスを複製中にエラーが発生しました。操作は中断されました。"
+msgstr "スライスを複製中にエラーが発生しました。処理を中断しました"
 
 #: usr/local/www/diag_nanobsd.php:128 usr/local/www/interfaces.php:2550
 #: usr/local/www/interfaces.php:2559
@@ -12866,7 +12869,7 @@ msgstr "スライスを複製中にエラーが発生しました。操作は中
 #: usr/local/www/system_advanced_sysctl.php:163
 #: usr/local/www/interfaces.php:2806 usr/local/www/interfaces.php:2815
 msgid "NOTE:"
-msgstr "注："
+msgstr "注意: "
 
 #: usr/local/www/diag_nanobsd.php:130
 #: usr/local/www/system_advanced_admin.php:291
@@ -12891,19 +12894,19 @@ msgstr "注："
 #: usr/local/www/diag_nanobsd.php:141
 #: usr/local/www/system_advanced_sysctl.php:165
 msgid "The options on this page are intended for use by advanced users only."
-msgstr "このページのオプションは、上級ユーザーのみが使用するためのものです。"
+msgstr "このページのオプションは、上級ユーザが対象です"
 
 #: usr/local/www/diag_nanobsd.php:136 usr/local/www/diag_nanobsd.php:135
 #: usr/local/www/diag_nanobsd.php:156 usr/local/www/diag_nanobsd.php:147
 #: usr/local/www/diag_nanobsd.php:147
 msgid "Bootup information"
-msgstr "情報をブートアップ"
+msgstr "ブートアップ情報"
 
 #: usr/local/www/diag_nanobsd.php:139 usr/local/www/diag_nanobsd.php:138
 #: usr/local/www/diag_nanobsd.php:159 usr/local/www/diag_nanobsd.php:150
 #: usr/local/www/diag_nanobsd.php:150
 msgid "NanoBSD Image size"
-msgstr "NanoBSD画像サイズ"
+msgstr "NanoBSD イメージサイズ"
 
 #: usr/local/www/diag_nanobsd.php:145 usr/local/www/diag_nanobsd.php:144
 #: usr/local/www/diag_nanobsd.php:165 usr/local/www/diag_nanobsd.php:156
@@ -12915,19 +12918,19 @@ msgstr "ブートアップ"
 #: usr/local/www/diag_nanobsd.php:168 usr/local/www/diag_nanobsd.php:159
 #: usr/local/www/diag_nanobsd.php:159
 msgid "Bootup slice is currently:"
-msgstr "ブートアップスライスは、現在、次のとおりです"
+msgstr "ブートアップスライスは、現在次の通りです: "
 
 #: usr/local/www/diag_nanobsd.php:149 usr/local/www/diag_nanobsd.php:148
 #: usr/local/www/diag_nanobsd.php:169 usr/local/www/diag_nanobsd.php:160
 #: usr/local/www/diag_nanobsd.php:160
 msgid "This will switch the bootup slice to the alternate slice."
-msgstr "これは別のスライスにブートアップスライスを切り替えます。"
+msgstr "ブートアップスライスを、代替スライスに切り替えます"
 
 #: usr/local/www/diag_nanobsd.php:159 usr/local/www/diag_nanobsd.php:158
 #: usr/local/www/diag_nanobsd.php:217 usr/local/www/diag_nanobsd.php:208
 #: usr/local/www/diag_nanobsd.php:208
 msgid "Duplicate bootup slice to alternate"
-msgstr "交互にブートアップスライスを複製"
+msgstr "ブートアップスライスを代替用に複製"
 
 #: usr/local/www/diag_nanobsd.php:162 usr/local/www/diag_nanobsd.php:161
 #: usr/local/www/diag_nanobsd.php:220 usr/local/www/diag_nanobsd.php:211
@@ -12939,7 +12942,7 @@ msgstr "ブートアップスライスを複製"
 #: usr/local/www/diag_nanobsd.php:223 usr/local/www/diag_nanobsd.php:214
 #: usr/local/www/diag_nanobsd.php:214
 msgid "Destination slice:"
-msgstr "先のスライス："
+msgstr "コピー先スライス: "
 
 #: usr/local/www/diag_nanobsd.php:172 usr/local/www/diag_nanobsd.php:171
 #: usr/local/www/diag_nanobsd.php:230 usr/local/www/diag_nanobsd.php:221
@@ -12948,18 +12951,21 @@ msgid ""
 "This will duplicate the bootup slice to the alternate slice. Use this if "
 "you would like to duplicate the known good working boot partition to the "
 "alternate."
-msgstr ""これは別のスライスに、起動スライスを複製します。場合は、これを使用して"あなたは"代替に知られている良好なブートパーティションを複製したいと思います。"
+msgstr ""
+"これはブートアップスライスを代替スライスとして複製します。"
+"正しく動作するとわかっているブートパーティションを代替として複製したい場合は"
+"これを使用します。"
 
 #: usr/local/www/diag_nanobsd.php:182 usr/local/www/diag_nanobsd.php:181
 #: usr/local/www/diag_nanobsd.php:240 usr/local/www/diag_nanobsd.php:231
 #: usr/local/www/diag_nanobsd.php:231
 msgid "Periodic Data Backup"
-msgstr "定期的なデータバックアップ"
+msgstr "定期データバックアップ"
 
 #: usr/local/www/diag_nanobsd.php:185 usr/local/www/diag_nanobsd.php:184
 #: usr/local/www/diag_nanobsd.php:243
 msgid "RRD Backup"
-msgstr "RRDバックアップ"
+msgstr "RRD バックアップ"
 
 #: usr/local/www/diag_nanobsd.php:188 usr/local/www/diag_nanobsd.php:205
 #: usr/local/www/diag_nanobsd.php:187 usr/local/www/diag_nanobsd.php:204
@@ -12969,7 +12975,7 @@ msgstr "RRDバックアップ"
 #: usr/local/www/system_advanced_misc.php:602
 #: usr/local/www/system_advanced_misc.php:618
 msgid "Frequency:"
-msgstr "周波数："
+msgstr "頻度: "
 
 #: usr/local/www/diag_nanobsd.php:190 usr/local/www/diag_nanobsd.php:207
 #: usr/local/www/system_firmware.php:133
@@ -13001,7 +13007,7 @@ msgstr "周波数："
 #: usr/local/www/system_advanced_firewall.php:473
 #: usr/local/www/vpn_ipsec_phase1.php:843
 msgid "Disable"
-msgstr "無効にする"
+msgstr "無効"
 
 #: usr/local/www/diag_nanobsd.php:192 usr/local/www/diag_nanobsd.php:209
 #: usr/local/www/diag_nanobsd.php:191 usr/local/www/diag_nanobsd.php:208
@@ -13011,7 +13017,7 @@ msgstr "無効にする"
 #: usr/local/www/system_advanced_misc.php:606
 #: usr/local/www/system_advanced_misc.php:622
 msgid "hour"
-msgstr "時間"
+msgstr "時"
 
 #: usr/local/www/diag_nanobsd.php:196 usr/local/www/diag_nanobsd.php:195
 #: usr/local/www/diag_nanobsd.php:254
@@ -13021,12 +13027,15 @@ msgid ""
 "This will periodically backup the RRD data so it can be restored "
 "automatically on the next boot. Keep in mind that the more frequent the "
 "backup, the more writes will happen to your media."
-msgstr "次回の起動時に自動的に "これはRRDデータを定期的にバックアップ復元することができますので」 。より頻繁には、「バックアップ、より多くの書き込みが、メディアはどうなることに注意してください。"
+msgstr "'
+"これは次の起動時に自動的に復元される RRD データを定期的にバックアップするものです。"
+"バックアップをより頻繁に行えば、"
+"メディアへの書き込みもより多く発生することに注意してください"
 
 #: usr/local/www/diag_nanobsd.php:202 usr/local/www/diag_nanobsd.php:201
 #: usr/local/www/diag_nanobsd.php:260
 msgid "DHCP Leases Backup"
-msgstr "DHCPは、バックアップのリース"
+msgstr "DHCP リースのバックアップ"
 
 #: usr/local/www/diag_nanobsd.php:213 usr/local/www/diag_nanobsd.php:212
 #: usr/local/www/diag_nanobsd.php:271
@@ -13036,19 +13045,22 @@ msgid ""
 "This will periodically backup the DHCP leases data so it can be restored "
 "automatically on the next boot. Keep in mind that the more frequent the "
 "backup, the more writes will happen to your media."
-msgstr "次回の起動時に自動的に「それが復元できるようにこれは、DHCPは、データを定期的にバックアップリースます」 。より頻繁には、「バックアップ、より多くの書き込みが、メディアはどうなることに注意してください。"
+msgstr ""
+"これは次の起動時に自動的に復元される DHCP リースデータを定期的にバックアップするものです。"
+"バックアップをより頻繁に行えば、"
+"メディアへの書き込みもより多く発生することに注意してください"
 
 #: usr/local/www/diag_nanobsd.php:226 usr/local/www/diag_nanobsd.php:225
 #: usr/local/www/diag_nanobsd.php:284 usr/local/www/diag_nanobsd.php:244
 #: usr/local/www/diag_nanobsd.php:244
 msgid "View upgrade log"
-msgstr "ビューアップグレードログ"
+msgstr "アップグレードログ表示"
 
 #: usr/local/www/diag_nanobsd.php:229 usr/local/www/diag_nanobsd.php:228
 #: usr/local/www/diag_nanobsd.php:287 usr/local/www/diag_nanobsd.php:247
 #: usr/local/www/diag_nanobsd.php:247
 msgid "View previous upgrade log"
-msgstr "前回のアップグレードログを表示する"
+msgstr "前回のアップグレードログ表示"
 
 #: usr/local/www/diag_packet_capture.php:38
 #: usr/local/www/diag_packet_capture.php:225
@@ -13097,7 +13109,7 @@ msgstr "パケットキャプチャ"
 #: usr/local/www/diag_packet_capture.php:359
 #: usr/local/www/status_dhcp_leases.php:344
 msgid "Start"
-msgstr "スタート"
+msgstr "開始"
 
 #: usr/local/www/diag_packet_capture.php:78
 #: usr/local/www/diag_packet_capture.php:219
@@ -13131,7 +13143,7 @@ msgstr "パケットキャプチャ"
 #: usr/local/www/diag_packet_capture.php:200
 #: usr/local/www/diag_packet_capture.php:200
 msgid "Select the interface on which to capture traffic."
-msgstr "トラフィックをキャプチャするインターフェイスを選択します。"
+msgstr "トラフィックをキャプチャするインタフェースを選択"
 
 #: usr/local/www/diag_packet_capture.php:145
 #: usr/local/www/system_gateways_edit.php:376
@@ -13154,7 +13166,9 @@ msgstr "アドレスファミリ"
 msgid ""
 "Select the type of traffic to be captured, either Any, IPv4 only or IPv6 "
 "only."
-msgstr "「捕獲されるトラフィックの種類を選択し、いずれか任意のはIPv4のみまたはIPv6 」のみ。"
+msgstr ""
+"任意、IPv4 のみ、IPv6 のみのいずれかから、"
+"キャプチャされるトラフィックのタイプを選択してください"
 
 #: usr/local/www/diag_packet_capture.php:156
 #: usr/local/www/diag_packet_capture.php:176
@@ -13172,7 +13186,9 @@ msgstr "ホストアドレス"
 msgid ""
 "This value is either the Source or Destination IP address or subnet in CIDR "
 "notation. The packet capture will look for this address in either field."
-msgstr "表記"この値は、CIDRでのソースまたは宛先IPアドレスやサブネットのどちらかである」 。パケットキャプチャは、フィールドのいずれかで、このアドレスを検索します。"
+msgstr ""
+"この値は、送信元もしくは発信元の IP アドレス、または CIDR 表記のサブネットのいずれかです。"
+"パケットキャプチャはいずれかのフィールドで、このアドレスを検索します"
 
 #: usr/local/www/diag_packet_capture.php:160
 #: usr/local/www/diag_packet_capture.php:180
@@ -13181,7 +13197,8 @@ msgstr "表記"この値は、CIDRでのソースまたは宛先IPアドレス�
 #: usr/local/www/diag_packet_capture.php:243
 msgid ""
 "This value can be a domain name or IP address, or subnet in CIDR notation."
-msgstr "「この値は、 CIDR表記のドメイン名またはIPアドレス、またはサブネットすることができます。"
+msgstr ""
+"この値は、ドメイン名、IP アドレス、または CIDR 表記のサブネットです"
 
 #: usr/local/www/diag_packet_capture.php:161
 #: usr/local/www/diag_packet_capture.php:181
@@ -13191,7 +13208,9 @@ msgstr "「この値は、 CIDR表記のドメイン名またはIPアドレス�
 msgid ""
 "If you leave this field blank, all packets on the specified interface will "
 "be captured."
-msgstr ""あなたは、このフィールドを空白のままにしておくと、指定したインターフェイス上のすべてのパケットがします」捕獲すること。"
+msgstr ""
+"このフィールドが空白の時は、指定されたインタフェースの全パケットを"
+"キャプチャします"
 
 #: usr/local/www/diag_packet_capture.php:168
 #: usr/local/www/diag_packet_capture.php:188
@@ -13201,7 +13220,9 @@ msgstr ""あなたは、このフィールドを空白のままにしておく�
 msgid ""
 "The port can be either the source or destination port. The packet capture "
 "will look for this port in either field."
-msgstr "「ポートは、送信元または宛先ポートのいずれかになります。パケットキャプチャ」はいずれかのフィールドに、このポートを検索します。"
+msgstr ""
+"ポートは、送信元もしくは送信先ポートのいずれかです。"
+"パケットキャプチャはいずれかのフィールドでこのポートを検索します"
 
 #: usr/local/www/diag_packet_capture.php:169
 #: usr/local/www/diag_packet_capture.php:189
@@ -13209,7 +13230,7 @@ msgstr "「ポートは、送信元または宛先ポートのいずれかにな
 #: usr/local/www/diag_packet_capture.php:252
 #: usr/local/www/diag_packet_capture.php:252
 msgid "Leave blank if you do not want to filter by port."
-msgstr "あなたは、ポートでフィルタしたくない場合は空白のままにします。"
+msgstr "ポートによるフィルタをしない場合は空白にします"
 
 #: usr/local/www/diag_packet_capture.php:173
 #: usr/local/www/diag_packet_capture.php:193
@@ -13228,7 +13249,10 @@ msgid ""
 "The Packet length is the number of bytes of each packet that will be "
 "captured. Default value is 0, which will capture the entire frame regardless "
 "of its size."
-msgstr "捕捉「パケット長がされる各パケットのバイト数である」 。デフォルト値は、そのサイズのため"に関係なく、フレーム全体をキャプチャしている、 0です。"
+msgstr ""
+"パケット長は、キャプチャされるパケット毎のバイト数です。"
+"デフォルト値は 0 で、パケットサイズに関係なく、"
+"フレーム全体をキャプチャします。"
 
 #: usr/local/www/diag_packet_capture.php:180 usr/local/www/diag_ping.php:55
 #: usr/local/www/diag_ping.php:108
@@ -13244,7 +13268,7 @@ msgstr "捕捉「パケット長がされる各パケットのバイト数であ
 #: usr/local/www/services_captiveportal_vouchers_edit.php:187
 #: usr/local/www/diag_ping.php:57 usr/local/www/diag_ping.php:129
 msgid "Count"
-msgstr "カウント"
+msgstr "合計"
 
 #: usr/local/www/diag_packet_capture.php:183
 #: usr/local/www/diag_packet_capture.php:203
@@ -13254,7 +13278,9 @@ msgstr "カウント"
 msgid ""
 "This is the number of packets the packet capture will grab. Default value is "
 "100."
-msgstr "「これは、パケットキャプチャがつかむますパケットの数です。デフォルト値は"100 。"
+msgstr ""
+"パケットキャプチャがキャプチャするパケット数です。"
+"デフォルト値は 100 です"
 
 #: usr/local/www/diag_packet_capture.php:183
 #: usr/local/www/diag_packet_capture.php:203
@@ -13262,7 +13288,7 @@ msgstr "「これは、パケットキャプチャがつかむますパケット
 #: usr/local/www/diag_packet_capture.php:266
 #: usr/local/www/diag_packet_capture.php:266
 msgid "Enter 0 (zero) for no count limit."
-msgstr "無カウント制限のために0 （ゼロ）を入力します。"
+msgstr "個数制限をなくすには、0 ( ゼロ ) を入力してください"
 
 #: usr/local/www/diag_packet_capture.php:186
 #: usr/local/www/diag_packet_capture.php:206
@@ -13278,7 +13304,7 @@ msgstr "詳細度"
 #: usr/local/www/diag_packet_capture.php:273
 #: usr/local/www/diag_packet_capture.php:273
 msgid "Normal"
-msgstr "通常の"
+msgstr "標準"
 
 #: usr/local/www/diag_packet_capture.php:190
 #: usr/local/www/diag_packet_capture.php:210
@@ -13286,7 +13312,7 @@ msgstr "通常の"
 #: usr/local/www/diag_packet_capture.php:274
 #: usr/local/www/diag_packet_capture.php:274
 msgid "Medium"
-msgstr "メディア"
+msgstr "中"
 
 #: usr/local/www/diag_packet_capture.php:191
 #: usr/local/www/diag_packet_capture.php:211
@@ -13294,7 +13320,7 @@ msgstr "メディア"
 #: usr/local/www/diag_packet_capture.php:275
 #: usr/local/www/diag_packet_capture.php:275
 msgid "High"
-msgstr "高い"
+msgstr "高"
 
 #: usr/local/www/diag_packet_capture.php:192
 #: usr/local/www/diag_packet_capture.php:212
@@ -13302,7 +13328,7 @@ msgstr "高い"
 #: usr/local/www/diag_packet_capture.php:276
 #: usr/local/www/diag_packet_capture.php:276
 msgid "Full"
-msgstr "フル"
+msgstr "全部"
 
 #: usr/local/www/diag_packet_capture.php:194
 #: usr/local/www/diag_packet_capture.php:214
@@ -13312,7 +13338,9 @@ msgstr "フル"
 msgid ""
 "This is the level of detail that will be displayed after hitting 'Stop' when "
 "the packets have been captured."
-msgstr "パケットがキャプチャされてきた「これがとき' stop'を打った後に表示された詳細レベルである」 。"
+msgstr ""
+"パケットがキャプチャされた場合に、"
+"「停止」入力後に表示される詳細情報のレベルです"
 
 #: usr/local/www/diag_packet_capture.php:196
 #: usr/local/www/diag_packet_capture.php:216
@@ -13322,7 +13350,9 @@ msgstr "パケットがキャプチャされてきた「これがとき' stop'�
 msgid ""
 "This option does not affect the level of detail when downloading the packet "
 "capture."
-msgstr "キャプチャ"パケットをダウンロードするときにこのオプションは、詳細レベルには影響しません」 。"
+msgstr ""
+"このオプションは、パケットキャプチャをダウンロードする時の"
+"詳細度には影響しません"
 
 #: usr/local/www/diag_packet_capture.php:199
 #: usr/local/www/diag_packet_capture.php:219
@@ -13330,7 +13360,7 @@ msgstr "キャプチャ"パケットをダウンロードするときにこの�
 #: usr/local/www/diag_packet_capture.php:284
 #: usr/local/www/diag_packet_capture.php:284
 msgid "Reverse DNS Lookup"
-msgstr "DNSの逆引き"
+msgstr "DNS の逆引き"
 
 #: usr/local/www/diag_packet_capture.php:202
 #: usr/local/www/diag_packet_capture.php:222
@@ -13340,7 +13370,9 @@ msgstr "DNSの逆引き"
 msgid ""
 "This check box will cause the packet capture to perform a reverse DNS lookup "
 "associated with all IP addresses."
-msgstr "すべてのIPアドレスに関連付けられている"このチェックボックスは、パケットキャプチャは、 DNSの逆引きが実行されます」 。"
+msgstr ""
+"このボックスをチェックすると、全ての IP アドレスに関係する DNS の逆引きに対して"
+"パケットキャプチャを実行します"
 
 #: usr/local/www/diag_packet_capture.php:203
 #: usr/local/www/diag_packet_capture.php:223
@@ -13348,7 +13380,7 @@ msgstr "すべてのIPアドレスに関連付けられている"このチェッ
 #: usr/local/www/diag_packet_capture.php:288
 #: usr/local/www/diag_packet_capture.php:288
 msgid "This option can cause delays for large packet captures."
-msgstr "このオプションは、大規模なパケットキャプチャの遅延が発生する可能性があります。"
+msgstr "このオプションは大量のパケットキャプチャによる遅延の原因になります"
 
 #: usr/local/www/diag_packet_capture.php:226
 #: usr/local/www/diag_packet_capture.php:247
@@ -13356,7 +13388,7 @@ msgstr "このオプションは、大規模なパケットキャプチャの遅
 #: usr/local/www/diag_packet_capture.php:312
 #: usr/local/www/diag_packet_capture.php:312
 msgid "The packet capture file was last updated:"
-msgstr "パケットキャプチャファイルが最後に更新されました。"
+msgstr "パケットキャプチャファイルの最新更新: "
 
 #: usr/local/www/diag_packet_capture.php:239
 #: usr/local/www/diag_packet_capture.php:267
@@ -13369,7 +13401,7 @@ msgstr "パケットキャプチャファイルが最後に更新されました
 #: usr/local/www/diag_packet_capture.php:325
 #: usr/local/www/diag_packet_capture.php:361
 msgid "Packet Capture is running."
-msgstr "パケットキャプチャが実行されています。"
+msgstr "パケットキャプチャを実行しています"
 
 #: usr/local/www/diag_packet_capture.php:272
 #: usr/local/www/diag_packet_capture.php:301
@@ -13377,7 +13409,7 @@ msgstr "パケットキャプチャが実行されています。"
 #: usr/local/www/diag_packet_capture.php:365
 #: usr/local/www/diag_packet_capture.php:365
 msgid "Packet Capture stopped."
-msgstr "パケットキャプチャを停止しました。"
+msgstr "パケットキャプチャを停止しました"
 
 #: usr/local/www/diag_packet_capture.php:272
 #: usr/local/www/diag_packet_capture.php:301
@@ -13385,23 +13417,27 @@ msgstr "パケットキャプチャを停止しました。"
 #: usr/local/www/diag_packet_capture.php:365
 #: usr/local/www/diag_packet_capture.php:365
 msgid "Packets Captured:"
-msgstr "パケットは、保存されたビデオ："
+msgstr "キャプチャされたパケット: "
 
 #: usr/local/www/crash_reporter.php:68 usr/local/www/crash_reporter.php:68
 msgid "Unfortunately we have detected a programming bug."
-msgstr "残念ながら、我々は、プログラミングのバグを検出した。"
+msgstr "残念ですが、プログラムのバグを検出しました"
 
 #: usr/local/www/crash_reporter.php:69 usr/local/www/crash_reporter.php:69
 msgid ""
 "Would you like to submit the programming debug logs to the pfSense "
 "developers for inspection?"
-msgstr "検査のために開発者は「あなたはpfSenseにプログラミングデバッグログを送信したい"？"
+msgstr ""
+"pfSense 開発者の調査用として、"
+"プログラミングデバッグログを提出しますか？
 
 #: usr/local/www/crash_reporter.php:71 usr/local/www/crash_reporter.php:71
 msgid ""
 "Please double check the contents to ensure you are comfortable sending this "
 "information before clicking Yes."
-msgstr "[はい]をクリックする前にこの情報を送信することで快適であることを確認するために内容を再確認してください。"
+msgstr ""
+"「はい」をクリックする前に、"
+"送信する情報に問題がないかどうか、内容を再確認して下さい"
 
 #: usr/local/www/crash_reporter.php:73 usr/local/www/crash_reporter.php:73
 msgid "Contents of crash reports"
@@ -13409,25 +13445,25 @@ msgstr "クラッシュレポートの内容"
 
 #: usr/local/www/crash_reporter.php:76 usr/local/www/crash_reporter.php:76
 msgid " - Submit this to the developers for inspection"
-msgstr " - 検査のために、開発者にこれを提出"
+msgstr " - 調査用として開発者に提出します"
 
 #: usr/local/www/crash_reporter.php:77 usr/local/www/crash_reporter.php:77
 msgid " - Just delete the crash report and take me back to the Dashboard"
-msgstr " - ちょうどクラッシュレポートを削除して、ダッシュボードに私を取り戻す"
+msgstr " - クラッシュレポートを削除して、ダッシュボードに戻ります"
 
 #: usr/local/www/crash_reporter.php:82 usr/local/www/crash_reporter.php:82
 msgid "Crash reporter"
-msgstr "クラッシュレポーター"
+msgstr "クラッシュ報告者"
 
 #: usr/local/www/crash_reporter.php:101 usr/local/www/crash_reporter.php:103
 #: usr/local/www/crash_reporter.php:103
 msgid "Processing..."
-msgstr "処理中..."
+msgstr "処理しています..."
 
 #: usr/local/www/crash_reporter.php:108 usr/local/www/crash_reporter.php:110
 #: usr/local/www/crash_reporter.php:112 usr/local/www/crash_reporter.php:112
 msgid "Uploading..."
-msgstr "アップロード..."
+msgstr "アップロードしています..."
 
 #: usr/local/www/crash_reporter.php:116
 #: usr/local/www/services_captiveportal_zones_edit.php:115
@@ -13437,37 +13473,37 @@ msgstr "アップロード..."
 #: usr/local/www/services_captiveportal_zones_edit.php:115
 #: usr/local/www/crash_reporter.php:122
 msgid "Continue"
-msgstr "続ける"
+msgstr "継続"
 
 #: usr/local/www/crash_reporter.php:116 usr/local/www/crash_reporter.php:120
 #: usr/local/www/crash_reporter.php:122 usr/local/www/crash_reporter.php:122
 msgid " and delete crash report files from local disk."
-msgstr "ローカルディスクからのクラッシュレポートファイルを削除します。"
+msgstr "及び、ローカルディスクからクラッシュレポートファイルを削除します"
 
 #: usr/local/www/diag_authentication.php:52
 #: usr/local/www/diag_authentication.php:52
 msgid "is not a valid authentication server"
-msgstr "有効な認証サーバーではありません"
+msgstr "有効な認証サーバではありません"
 
 #: usr/local/www/diag_authentication.php:55
 #: usr/local/www/diag_authentication.php:55
 msgid "A username and password must be specified."
-msgstr "ユーザー名とパスワードを指定する必要があります。"
+msgstr "ユーザ名とパスワードを指定する必要があります"
 
 #: usr/local/www/diag_authentication.php:59
 #: usr/local/www/diag_authentication.php:59
 msgid "authenticated successfully."
-msgstr "認証に成功。"
+msgstr "認証に成功しました"
 
 #: usr/local/www/diag_authentication.php:61
 #: usr/local/www/diag_authentication.php:61
 msgid "This user is a member of these groups"
-msgstr "このユーザーは、これらのグループのメンバーである"
+msgstr "このユーザはこれらのグループのメンバーです"
 
 #: usr/local/www/diag_authentication.php:65
 #: usr/local/www/diag_authentication.php:65
 msgid "Authentication failed."
-msgstr "認証に失敗しました。"
+msgstr "認証に失敗しました"
 
 #: usr/local/www/diag_authentication.php:69 usr/local/www/interfaces.php:2325
 #: usr/local/www/services_captiveportal.php:578
@@ -13501,7 +13537,7 @@ msgstr "認証"
 #: usr/local/www/system_authservers.php:83
 #: usr/local/www/system_usermanager_settings.php:143
 msgid "Authentication Server"
-msgstr "認証サーバー"
+msgstr "認証サーバ"
 
 #: usr/local/www/diag_authentication.php:106
 #: usr/local/www/status_captiveportal.php:162
@@ -13692,14 +13728,14 @@ msgstr "テスト"
 #: usr/local/www/services_dyndns.php:64 usr/local/www/services_dyndns.php:60
 #: usr/local/www/services_dyndns.php:60
 msgid "Dynamic DNS clients"
-msgstr "ダイナミックDNSクライアント"
+msgstr "ダイナミック DNS クライアント"
 
 #: usr/local/www/services_dyndns.php:89 usr/local/www/services_rfc2136.php:68
 #: usr/local/www/services_dyndns.php:98 usr/local/www/services_dyndns.php:78
 #: usr/local/www/services_dyndns.php:74 usr/local/www/services_rfc2136.php:68
 #: usr/local/www/services_dyndns.php:74
 msgid "DynDns"
-msgstr "ダイナミックDNS"
+msgstr "ダイナミック DNS"
 
 #: usr/local/www/services_dyndns.php:90 usr/local/www/services_rfc2136.php:69
 #: usr/local/www/services_dyndns.php:99 usr/local/www/services_dyndns.php:79
@@ -13793,7 +13829,7 @@ msgstr "ホスト名"
 #: usr/local/www/widgets/widgets/dyn_dns_status.widget.php:81
 #: usr/local/www/services_dyndns.php:88
 msgid "Cached IP"
-msgstr "キャッシュされたIPアドレス"
+msgstr "キャッシュされた IP"
 
 #: usr/local/www/services_dyndns.php:151 usr/local/www/services_wol.php:188
 #: usr/local/www/firewall_virtual_ip.php:221
@@ -13811,17 +13847,18 @@ msgstr "キャッシュされたIPアドレス"
 #: usr/local/www/services_dyndns.php:167
 #: usr/local/www/system_advanced_sysctl.php:199
 msgid "Do you really want to delete this entry?"
-msgstr "あなたは本当に、このエントリを削除しますか？"
+msgstr "本当にこのエントリを削除しますか？"
 
 #: usr/local/www/services_dyndns.php:162 usr/local/www/services_dyndns.php:183
 #: usr/local/www/services_dyndns.php:179 usr/local/www/services_dyndns.php:179
 msgid ""
 "IP addresses appearing in green are up to date with Dynamic DNS provider."
-msgstr "「緑の中に現れるIPアドレスは、ダイナミックDNSプロバイダとの最新のものである。"
+msgstr ""
+"緑で表示される IP アドレスは、ダイナミック DNS プロバイダが更新したものです"
 
 #: usr/local/www/graph_cpu.php:83 usr/local/www/graph_cpu.php:83
 msgid "Cannot get CPU load"
-msgstr "CPU負荷を取得できません"
+msgstr "CPU 負荷を取得できません"
 
 #: usr/local/www/graph_cpu.php:84 usr/local/www/graph.php:123
 #: usr/local/www/graph.php:123 usr/local/www/graph_cpu.php:84
@@ -13831,32 +13868,32 @@ msgstr "初期データを収集しています。しばらくお待ちくださ
 #: usr/local/www/graph_cpu.php:96 usr/local/www/graph.php:135
 #: usr/local/www/graph.php:135 usr/local/www/graph_cpu.php:96
 msgid "No URL for getURL"
-msgstr "のgetURLのためのURLがない"
+msgstr "getURL の URL がありません"
 
 #: usr/local/www/graph_cpu.php:103 usr/local/www/graph.php:142
 #: usr/local/www/graph.php:142 usr/local/www/graph_cpu.php:103
 msgid "No callback function for getURL"
-msgstr "のgetURLのためのコールバック関数ません"
+msgstr "getURL のコールバック関数がありません"
 
 #: usr/local/www/graph_cpu.php:119 usr/local/www/graph.php:158
 #: usr/local/www/graph.php:158 usr/local/www/graph_cpu.php:119
 msgid "Both getURL and XMLHttpRequest are undefined"
-msgstr "のgetURLとXMLHttpRequestの両方が定義されていません"
+msgstr "getURL と XMLHttpRequest がどちらも定義されていません"
 
 #: usr/local/www/services_snmp.php:87 usr/local/www/services_snmp.php:91
 #: usr/local/www/services_snmp.php:91
 msgid "Invalid character '#' in system location"
-msgstr "無効な文字'"
+msgstr "システムの位置情報に無効な文字 '#' があります"
 
 #: usr/local/www/services_snmp.php:88 usr/local/www/services_snmp.php:92
 #: usr/local/www/services_snmp.php:92
 msgid "Invalid character '#' in system contact"
-msgstr "無効な文字'"
+msgstr "システムの連絡先に無効な文字 '#' があります"
 
 #: usr/local/www/services_snmp.php:89 usr/local/www/services_snmp.php:93
 #: usr/local/www/services_snmp.php:93
 msgid "Invalid character '#' in read community string"
-msgstr "無効な文字'"
+msgstr "コミュニティ文字列の読込みで無効な文字 '#' があります"
 
 #: usr/local/www/services_snmp.php:92 usr/local/www/services_snmp.php:96
 #: usr/local/www/services_snmp.php:96
@@ -13871,7 +13908,7 @@ msgstr "ポーリングポート"
 #: usr/local/www/services_snmp.php:103 usr/local/www/services_snmp.php:107
 #: usr/local/www/services_snmp.php:107
 msgid "Invalid character '#' in SNMP trap string"
-msgstr "無効な文字'"
+msgstr "SNMP トラップ文字列に無効な文字 '#' があります"
 
 #: usr/local/www/services_snmp.php:106 usr/local/www/services_snmp.php:342
 #: usr/local/www/services_snmp.php:340 usr/local/www/services_snmp.php:341
@@ -13903,7 +13940,7 @@ msgstr "SNMP"
 #: usr/local/www/services_snmp.php:274 usr/local/www/services_snmp.php:284
 #: usr/local/www/services_snmp.php:284
 msgid "SNMP Daemon"
-msgstr "SNMPデーモン"
+msgstr "SNMP デーモン"
 
 #: usr/local/www/services_snmp.php:281 usr/local/www/services_snmp.php:279
 #: usr/local/www/services_snmp.php:280 usr/local/www/services_snmp.php:290
@@ -13915,13 +13952,13 @@ msgstr "ポーリングポート"
 #: usr/local/www/services_snmp.php:283 usr/local/www/services_snmp.php:293
 #: usr/local/www/services_snmp.php:293
 msgid "Enter the port to accept polling events on (default 161)"
-msgstr "（デフォルト161 ）上でのポーリングイベントを受け入れるためにポートを入力します"
+msgstr "ポーリングイベントを受信するポートを入力してください ( デフォルト 161 )"
 
 #: usr/local/www/services_snmp.php:289 usr/local/www/services_snmp.php:287
 #: usr/local/www/services_snmp.php:288 usr/local/www/services_snmp.php:298
 #: usr/local/www/services_snmp.php:298
 msgid "System location"
-msgstr "システムの場所"
+msgstr "システムの位置情報"
 
 #: usr/local/www/services_snmp.php:296 usr/local/www/services_snmp.php:294
 #: usr/local/www/services_snmp.php:295 usr/local/www/services_snmp.php:305
@@ -13933,7 +13970,7 @@ msgstr "システムの連絡先"
 #: usr/local/www/services_snmp.php:302 usr/local/www/services_snmp.php:312
 #: usr/local/www/services_snmp.php:312
 msgid "Read Community String"
-msgstr "コミュニティストリングを読む"
+msgstr "コミュニティ文字列の読込み"
 
 #: usr/local/www/services_snmp.php:306 usr/local/www/services_snmp.php:304
 #: usr/local/www/services_snmp.php:305 usr/local/www/services_snmp.php:315
@@ -13942,13 +13979,16 @@ msgid ""
 "The community string is like a password, restricting access to querying SNMP "
 "to hosts knowing the community string. Use a strong value here to protect "
 "from unauthorized information disclosure."
-msgstr "コミュニティストリングを知っているホストに「コミュニティ文字列は、SNMPを照会へのアクセスを制限する、パスワードのようなものです」 。不正な情報開示から「保護するためにここに強力な値を使用します。"
+msgstr ""
+"コミュニティ文字列はパスワードのように、SNMP クエリーによるアクセスを"
+"コミュニティ文字列を知っているホストに限定します。"
+"不正な情報開示からの防御のため、強度の高い値を使用してください"
 
 #: usr/local/www/services_snmp.php:335 usr/local/www/services_snmp.php:333
 #: usr/local/www/services_snmp.php:334 usr/local/www/services_snmp.php:344
 #: usr/local/www/services_snmp.php:344
 msgid "SNMP Traps"
-msgstr "SNMPトラップ"
+msgstr "SNMP トラップ"
 
 #: usr/local/www/services_snmp.php:345 usr/local/www/services_snmp.php:343
 #: usr/local/www/services_snmp.php:344 usr/local/www/services_snmp.php:354
@@ -13966,13 +14006,13 @@ msgstr "トラップサーバポート"
 #: usr/local/www/services_snmp.php:352 usr/local/www/services_snmp.php:362
 #: usr/local/www/services_snmp.php:362
 msgid "Enter the port to send the traps to (default 162)"
-msgstr "（デフォルト162 ）にトラップを送信するようにポートを入力します"
+msgstr "トラップを送信するポートを入力してください ( デフォルト 162 )"
 
 #: usr/local/www/services_snmp.php:358 usr/local/www/services_snmp.php:356
 #: usr/local/www/services_snmp.php:357 usr/local/www/services_snmp.php:367
 #: usr/local/www/services_snmp.php:367
 msgid "Enter the SNMP trap string"
-msgstr "SNMPトラップの文字列を入力してください"
+msgstr "SNMP トラップの文字列を入力してください"
 
 #: usr/local/www/services_snmp.php:370 usr/local/www/services_snmp.php:368
 #: usr/local/www/services_snmp.php:369 usr/local/www/services_snmp.php:379
@@ -13984,19 +14024,19 @@ msgstr "モジュール"
 #: usr/local/www/services_snmp.php:375 usr/local/www/services_snmp.php:385
 #: usr/local/www/services_snmp.php:385
 msgid "SNMP Modules"
-msgstr "SNMPモジュール"
+msgstr "SNMP モジュール"
 
 #: usr/local/www/services_snmp.php:378 usr/local/www/services_snmp.php:376
 #: usr/local/www/services_snmp.php:377 usr/local/www/services_snmp.php:387
 #: usr/local/www/services_snmp.php:387
 msgid "MibII"
-msgstr "MIBII"
+msgstr "MibII"
 
 #: usr/local/www/services_snmp.php:380 usr/local/www/services_snmp.php:378
 #: usr/local/www/services_snmp.php:379 usr/local/www/services_snmp.php:389
 #: usr/local/www/services_snmp.php:389
 msgid "Netgraph"
-msgstr "NETGRAPH"
+msgstr "Netgraph"
 
 #: usr/local/www/services_snmp.php:382 usr/local/www/license.php:171
 #: usr/local/www/services_snmp.php:380 usr/local/www/services_snmp.php:381
@@ -14009,17 +14049,19 @@ msgstr "PF"
 #: usr/local/www/services_snmp.php:383 usr/local/www/services_snmp.php:393
 #: usr/local/www/services_snmp.php:393
 msgid "Host Resources (Requires MibII)"
-msgstr "ホストリソース（ MIBIIが必要です）"
+msgstr "ホストリソース ( 要 MibII )"
 
 #: usr/local/www/services_snmp.php:391
 msgid "Bind to LAN interface only"
-msgstr "LANインターフェイスにバインドするだけ"
+msgstr "LAN インタフェースのみにバインド"
 
 #: usr/local/www/services_snmp.php:393
 msgid ""
 "This option can be useful when trying to access the SNMP agent by the LAN "
 "interface's IP address through a VPN tunnel terminated on the WAN interface."
-msgstr "WANインターフェイス上で終端VPNトンネル経由でインターフェイスのIPアドレス「LANによってSNMPエージェントにアクセスしようとすると、このオプションが役立ちます」 。"
+msgstr ""
+"このオプションは、WAN インタフェースに終端のある VPN トンネルを経由して、"
+"LAN インタフェースの IP アドレスで SNMP エージェントにアクセスを試みる際に便利です"
 
 #: usr/local/www/headjs.php:143 usr/local/www/firewall_rules.php:315
 #: usr/local/www/firewall_rules.php:319 usr/local/www/guiconfig.inc:302
@@ -14034,14 +14076,16 @@ msgstr "変更を適用"
 #: usr/local/www/services_wol.php:63 usr/local/www/services_wol.php:63
 #, php-format
 msgid "Sent magic packet to %1$s (%2$s)%3$s"
-msgstr "は%1$s （ %2$s ） %3$sにマジックパケットを送信した"
+msgstr "マジックパケットを送信:  %1$s (%2$s)%3$s"
 
 #: usr/local/www/services_wol.php:65 usr/local/www/services_wol.php:65
 #, php-format
 msgid ""
 "Please check the %1$ssystem log%2$s, the wol command for %3$s (%4$s) did not "
 "complete successfully%5$s"
-msgstr "「 （ $ S ％ 4 ） %3$sため、 WOLコマンドを%1$ssystemのlog%2$sを確認してくださいませんでした"5 $ sの％正常に完了"
+msgstr ""
+"%1$s システムログ %2$s を確認して下さい。"
+"%3$s (%4$s) に対する wol コマンドが正常に終了しませんでした %5$s"
 
 #: usr/local/www/services_wol.php:86 usr/local/www/services_wol_edit.php:90
 #: usr/local/www/interfaces.php:541 usr/local/www/services_dhcp_edit.php:129
@@ -14052,27 +14096,29 @@ msgstr "「 （ $ S ％ 4 ） %3$sため、 WOLコマンドを%1$ssystemのlog%2
 #: usr/local/www/services_dhcp_edit.php:165
 #: usr/local/www/services_wol_edit.php:90 usr/local/www/interfaces.php:630
 msgid "A valid MAC address must be specified."
-msgstr "有効なMACアドレスを指定する必要があります。"
+msgstr "有効な MAC アドレスを指定してください"
 
 #: usr/local/www/services_wol.php:88 usr/local/www/services_wol.php:88
 msgid "A valid interface must be specified."
-msgstr "有効なインターフェイスを指定する必要があります。"
+msgstr "有効なインタフェースを指定してください"
 
 #: usr/local/www/services_wol.php:94 usr/local/www/services_wol.php:94
 msgid "A valid ip could not be found!"
-msgstr "有効なIPが見つかりませんでした ！"
+msgstr "有効な IP がありません！"
 
 #: usr/local/www/services_wol.php:99 usr/local/www/services_wol.php:99
 #, php-format
 msgid "Sent magic packet to %s."
-msgstr "%s.に送信されたマジックパケット"
+msgstr "%s にマジックパケットを送信"
 
 #: usr/local/www/services_wol.php:101 usr/local/www/services_wol.php:101
 #, php-format
 msgid ""
 "Please check the %1$ssystem log%2$s, the wol command for %3$s did not "
 "complete successfully%4$s"
-msgstr "「 %1$ssystemのlog%2$sを確認してください、 %3$s用WOLコマンドはしませんでした"4 $ sの％正常に完了"
+msgstr ""
+"%1$s システムログ %2$s を確認して下さい。"
+"%3$s に対する wol コマンドが正常に終了しませんでした %4$s"
 
 #: usr/local/www/services_wol.php:115 usr/local/www/services_wol.php:127
 #: usr/local/www/services_wol_edit.php:112 usr/local/www/diag_backup.php:123
@@ -14082,7 +14128,7 @@ msgstr "「 %1$ssystemのlog%2$sを確認してください、 %3$s用WOLコマ�
 #: usr/local/www/services_wol.php:127 usr/local/www/services_wol_edit.php:112
 #: usr/local/www/diag_backup.php:201 usr/local/www/fbegin.inc:158
 msgid "Wake on LAN"
-msgstr "Wake On LANの"
+msgstr "Wake-on-LAN"
 
 #: usr/local/www/services_wol.php:141 usr/local/www/services_wol.php:141
 msgid "Choose which interface the host to be woken up is connected to."
