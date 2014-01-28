@@ -13371,8 +13371,8 @@ msgid ""
 "This check box will cause the packet capture to perform a reverse DNS lookup "
 "associated with all IP addresses."
 msgstr ""
-"このボックスをチェックすると、全ての IP アドレスに関係する DNS の逆引きに対して"
-"パケットキャプチャを実行します"
+"このボックスをチェックすると、パケットキャプチャは全ての IP アドレスに対して"
+"DNS の逆引きによる関連付けを行います"
 
 #: usr/local/www/diag_packet_capture.php:203
 #: usr/local/www/diag_packet_capture.php:223
@@ -13380,7 +13380,7 @@ msgstr ""
 #: usr/local/www/diag_packet_capture.php:288
 #: usr/local/www/diag_packet_capture.php:288
 msgid "This option can cause delays for large packet captures."
-msgstr "このオプションは大量のパケットキャプチャによる遅延の原因になります"
+msgstr "このオプションは大量のパケットキャプチャに対する遅延の原因になります"
 
 #: usr/local/www/diag_packet_capture.php:226
 #: usr/local/www/diag_packet_capture.php:247
@@ -14132,7 +14132,7 @@ msgstr "Wake-on-LAN"
 
 #: usr/local/www/services_wol.php:141 usr/local/www/services_wol.php:141
 msgid "Choose which interface the host to be woken up is connected to."
-msgstr "に接続されているウェイクアップするホストとのインターフェースかを選択。"
+msgstr "接続されるとホストが起動するインタフェースを選択してください"
 
 #: usr/local/www/services_wol.php:144 usr/local/www/services_wol.php:162
 #: usr/local/www/services_wol_edit.php:82
@@ -14182,15 +14182,15 @@ msgstr "に接続されているウェイクアップするホストとのイン
 #: usr/local/www/services_captiveportal_mac.php:175
 #: usr/local/www/interfaces.php:1425
 msgid "MAC address"
-msgstr "MACアドレス"
+msgstr "MAC アドレス"
 
 #: usr/local/www/services_wol.php:148 usr/local/www/services_wol.php:148
 msgid "Enter a MAC address "
-msgstr "MACアドレスを入力してください"
+msgstr "MAC アドレスを次の形式で入力してください: "
 
 #: usr/local/www/services_wol.php:148 usr/local/www/services_wol.php:148
 msgid "in the following format: xx:xx:xx:xx:xx:xx"
-msgstr "次の形式で： XX ： XX ： XX ： XX ： XX ： XX"
+msgstr "xx:xx:xx:xx:xx:xx"
 
 #: usr/local/www/services_wol.php:152 usr/local/www/diag_smart.php:244
 #: usr/local/www/diag_smart.php:265 usr/local/www/services_wol.php:152
@@ -14200,16 +14200,17 @@ msgstr "送信"
 
 #: usr/local/www/services_wol.php:157 usr/local/www/services_wol.php:157
 msgid "Wake all clients at once: "
-msgstr "一度にすべてのクライアントを覚ます。"
+msgstr "一度に全てのクライアントを起動: "
 
 #: usr/local/www/services_wol.php:158 usr/local/www/services_wol.php:158
 msgid "Or Click the MAC address to wake up an individual device:"
-msgstr "または個々のデバイスを起動するのにMACアドレスをクリックしてください。"
+msgstr "もしくは起動する個々のデバイスの MAC アドレスをクリックしてください"
 
 #: usr/local/www/services_wol.php:212 usr/local/www/services_wol.php:212
 msgid ""
 "This service can be used to wake up (power on) computers by sending special"
-msgstr "「このサービスは、特別なを送信することにより、 （電源ON ）コンピュータを起動するのに使用することができます"
+msgstr ""
+"このサービスは特殊なパケットを送信することでコンピュータを起動 ( 電源オン ) できます"
 
 #: usr/local/www/services_wol.php:212 usr/local/www/services_wol.php:212
 msgid "Magic Packets"
@@ -14219,27 +14220,29 @@ msgstr "マジックパケット"
 msgid ""
 "The NIC in the computer that is to be woken up must support Wake on LAN and "
 "has to be configured properly (WOL cable, BIOS settings). "
-msgstr "「ウェイクアップするコンピュータ内のNICがWake on LANのをサポートしている必要があり、 「 （ WOLケーブル、 BIOS設定）を正しく設定する必要があります。"
+msgstr ""
+"起動するには、コンピュータの NIC が Wake-on-LAN 対応で、"
+"かつ正しく構成( WOL ケーブル、BIOS 設定 )されている必要があります"
 
 #: usr/local/www/services_wol_edit.php:123
 #: usr/local/www/services_wol_edit.php:123
 msgid "Edit WOL entry"
-msgstr "編集WOLエントリ"
+msgstr "WOL エントリの編集"
 
 #: usr/local/www/services_wol_edit.php:137
 #: usr/local/www/services_wol_edit.php:137
 msgid "Choose which interface this host is connected to."
-msgstr "選択したどのインターフェイスこのホストがに接続されている。"
+msgstr "このホストに接続されているインタフェースを選択してください"
 
 #: usr/local/www/services_wol_edit.php:144
 #: usr/local/www/services_wol_edit.php:144
 msgid "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx"
-msgstr "次の形式でMACアドレスを入力してください： XX ： XX ： XX ： XX ： XX ： XX"
+msgstr "次の形式で MAC アドレスを入力してください: xx:xx:xx:xx:xx:xx"
 
 #: usr/local/www/status_captiveportal.php:58
 #: usr/local/www/status_captiveportal.php:58
 msgid "Status: Captive portal"
-msgstr "ステータス：キャプティブポータル"
+msgstr "ステータス: キャプティブポータル"
 
 #: usr/local/www/status_captiveportal.php:121
 #: usr/local/www/status_captiveportal_test.php:70
@@ -14258,7 +14261,7 @@ msgstr "ステータス：キャプティブポータル"
 #: usr/local/www/status_captiveportal_test.php:71
 #: usr/local/www/status_captiveportal_voucher_rolls.php:75
 msgid "Active Users"
-msgstr "アクティブユーザー"
+msgstr "アクティブユーザ"
 
 #: usr/local/www/status_captiveportal.php:122
 #: usr/local/www/status_captiveportal_test.php:71
@@ -14303,7 +14306,7 @@ msgstr "アクティブバウチャー"
 #: usr/local/www/status_captiveportal_voucher_rolls.php:57
 #: usr/local/www/status_captiveportal_voucher_rolls.php:77
 msgid "Voucher Rolls"
-msgstr "バウチャーロールスロイス"
+msgstr "バウチャーロール"
 
 #: usr/local/www/status_captiveportal.php:124
 #: usr/local/www/status_captiveportal_test.php:58
@@ -14336,7 +14339,7 @@ msgstr "キャプティブポータルゾーン"
 #: usr/local/www/status_captiveportal.php:143
 #: usr/local/www/status_captiveportal.php:143
 msgid "Captiveportal status"
-msgstr "Captiveportal状況"
+msgstr "キャプティブポータルステータス"
 
 #: usr/local/www/status_captiveportal.php:164
 #: usr/local/www/status_captiveportal.php:167
@@ -14357,13 +14360,13 @@ msgstr "セッション開始"
 #: usr/local/www/status_captiveportal.php:151
 #: usr/local/www/widgets/widgets/captive_portal_status.widget.php:98
 msgid "Last activity"
-msgstr "最後の活動"
+msgstr "最新アクティビティ"
 
 #: usr/local/www/status_captiveportal.php:181
 #: usr/local/www/status_captiveportal.php:168
 #: usr/local/www/status_captiveportal.php:168
 msgid "Do you really want to disconnect this client?"
-msgstr "あなたは本当に、このクライアントを切断しますか？"
+msgstr "本当にこのクライアントを切断しますか？"
 
 #: usr/local/www/status_captiveportal.php:181
 #: usr/local/www/status_interfaces.php:114
@@ -14391,25 +14394,25 @@ msgstr "切断"
 #: usr/local/www/status_captiveportal.php:185
 #: usr/local/www/status_captiveportal.php:185
 msgid "Don't show last activity"
-msgstr "最後のアクティビティを表示しない"
+msgstr "最新アクティビティを表示しない"
 
 #: usr/local/www/status_captiveportal.php:201
 #: usr/local/www/status_captiveportal.php:188
 #: usr/local/www/status_captiveportal.php:188
 msgid "Show last activity"
-msgstr "最後のアクティビティを表示する"
+msgstr "最新アクティビティを表示"
 
 #: usr/local/www/installer/installer.php:186
 #: usr/local/www/installer/installer.php:186
 msgid "Could not open /tmp/installer.sh for writing"
-msgstr "書き込み用にオープンできませんでした/ tmpに/ installer.sh"
+msgstr "/tmp/installer.sh を書込み用に開けません"
 
 #: usr/local/www/installer/installer.php:360
 #: usr/local/www/installer/installer.php:361
 #: usr/local/www/installer/installer.php:361
 #, php-format
 msgid "Beginning installation on disk %s."
-msgstr "ディスク%s.上のインストールの開始"
+msgstr "ディスク %s でインストールを開始しています"
 
 #: usr/local/www/installer/installer.php:409
 #: usr/local/www/installer/installer.php:410
@@ -14424,13 +14427,13 @@ msgstr "インストーラ"
 #: usr/local/www/installer/installer.php:917
 #: usr/local/www/installer/installer.php:1105
 msgid "ERROR: Could not find any suitable disks for installation."
-msgstr "エラー：インストールするための任意の適切なディスクが見つかりませんでした。"
+msgstr "エラー: インストールに適したディスクが見つかりません"
 
 #: usr/local/www/interfaces_bridge.php:64
 #: usr/local/www/interfaces_bridge.php:68
 #: usr/local/www/interfaces_bridge.php:68
 msgid "This bridge cannot be deleted because it is assigned as an interface."
-msgstr "それはインターフェイスとして割り当てられているため、この橋は削除できません。"
+msgstr "このブリッジは削除できません。インタフェースとして割当てされています"
 
 #: usr/local/www/interfaces_bridge.php:77
 #: usr/local/www/interfaces_bridge_edit.php:226
@@ -14504,7 +14507,7 @@ msgstr "それはインターフェイスとして割り当てられているた
 #: usr/local/www/diag_logs_filter_summary.php:47
 #: usr/local/www/interfaces.php:1152
 msgid "Interfaces"
-msgstr "インターフェース"
+msgstr "インタフェース"
 
 #: usr/local/www/interfaces_bridge.php:77
 #: usr/local/www/interfaces_bridge_edit.php:226
@@ -14539,7 +14542,7 @@ msgstr "ブリッジ"
 #: usr/local/www/interfaces_gre.php:94 usr/local/www/interfaces_gif.php:93
 #: usr/local/www/interfaces_assign.php:402
 msgid "Interface assignments"
-msgstr "インターフェイスの割り当て"
+msgstr "インタフェースの割当て"
 
 #: usr/local/www/interfaces_bridge.php:90 usr/local/www/interfaces_gif.php:89
 #: usr/local/www/interfaces_gre.php:90 usr/local/www/interfaces_groups.php:76
@@ -14593,7 +14596,7 @@ msgstr "インタフェースグループ"
 #: usr/local/www/interfaces_gre.php:97 usr/local/www/interfaces_gif.php:96
 #: usr/local/www/interfaces_assign.php:405
 msgid "VLANs"
-msgstr "VLANは"
+msgstr "VLAN"
 
 #: usr/local/www/interfaces_bridge.php:93 usr/local/www/interfaces_gif.php:92
 #: usr/local/www/interfaces_gre.php:93 usr/local/www/interfaces_groups.php:79
@@ -14621,7 +14624,7 @@ msgstr "VLANは"
 #: usr/local/www/interfaces_gre.php:98 usr/local/www/interfaces_gif.php:97
 #: usr/local/www/interfaces_assign.php:406
 msgid "QinQs"
-msgstr "QinQs"
+msgstr "QinQ"
 
 #: usr/local/www/interfaces_bridge.php:94 usr/local/www/interfaces_gif.php:93
 #: usr/local/www/interfaces_gre.php:94 usr/local/www/interfaces_groups.php:80
@@ -14653,7 +14656,7 @@ msgstr "QinQs"
 #: usr/local/www/interfaces_gre.php:99 usr/local/www/interfaces_gif.php:98
 #: usr/local/www/interfaces_assign.php:407
 msgid "PPPs"
-msgstr "購買力平価"
+msgstr "PPP"
 
 #: usr/local/www/interfaces_bridge.php:95 usr/local/www/interfaces_gif.php:94
 #: usr/local/www/interfaces_gre.php:77 usr/local/www/interfaces_gre.php:95
@@ -14746,7 +14749,7 @@ msgstr "GIF"
 #: usr/local/www/interfaces_gre.php:102 usr/local/www/interfaces_gif.php:101
 #: usr/local/www/interfaces_assign.php:410
 msgid "Bridges"
-msgstr "橋"
+msgstr "ブリッジ"
 
 #: usr/local/www/interfaces_bridge.php:98 usr/local/www/interfaces_gif.php:97
 #: usr/local/www/interfaces_gre.php:98 usr/local/www/interfaces_groups.php:84
@@ -14801,95 +14804,96 @@ msgstr "LAGG"
 #: usr/local/www/interfaces_groups.php:96
 #: usr/local/www/load_balancer_pool_edit.php:272
 msgid "Members"
-msgstr "メンバー"
+msgstr "メンバ"
 
 #: usr/local/www/interfaces_bridge.php:135
 #: usr/local/www/interfaces_bridge.php:136
 #: usr/local/www/interfaces_bridge.php:142
 #: usr/local/www/interfaces_bridge.php:142
 msgid "Do you really want to delete this bridge?"
-msgstr "あなたは本当にこの橋を削除しますか？"
+msgstr "本当にこのブリッジを削除しますか？"
 
 #: usr/local/www/interfaces_bridge.php:146
 #: usr/local/www/interfaces_bridge.php:147
 #: usr/local/www/interfaces_bridge.php:153
 #: usr/local/www/interfaces_bridge.php:153
 msgid "Here you can configure bridging of interfaces."
-msgstr "ここでは、インターフェイスのブリッジングを設定することができます。"
+msgstr "ここではインタフェースのブリッジを構成できます"
 
 #: usr/local/www/interfaces_bridge_edit.php:111
 #: usr/local/www/interfaces_bridge_edit.php:119
 #: usr/local/www/interfaces_bridge_edit.php:119
 msgid "Member Interfaces"
-msgstr "メンバーインターフェイス"
+msgstr "メンバインターフェイス"
 
 #: usr/local/www/interfaces_bridge_edit.php:116
 #: usr/local/www/interfaces_bridge_edit.php:124
 #: usr/local/www/interfaces_bridge_edit.php:124
 msgid "Maxage needs to be an integer between 6 and 40."
-msgstr "MAXAGEは6と40の間の整数である必要があります。"
+msgstr "最大経過時間は 6 〜 40 の整数です"
 
 #: usr/local/www/interfaces_bridge_edit.php:118
 #: usr/local/www/interfaces_bridge_edit.php:126
 #: usr/local/www/interfaces_bridge_edit.php:126
 msgid "Maxaddr needs to be an integer."
-msgstr "Maxaddrは、整数である必要があります。"
+msgstr "最大アドレスは整数です"
 
 #: usr/local/www/interfaces_bridge_edit.php:120
 #: usr/local/www/interfaces_bridge_edit.php:128
 #: usr/local/www/interfaces_bridge_edit.php:128
 msgid "Timeout needs to be an integer."
-msgstr "タイムアウトは整数である必要があります。"
+msgstr "タイムアウトは整数です"
 
 #: usr/local/www/interfaces_bridge_edit.php:122
 #: usr/local/www/interfaces_bridge_edit.php:130
 #: usr/local/www/interfaces_bridge_edit.php:130
 msgid "Forward Delay needs to be an integer between 4 and 30."
-msgstr "転送遅延は4と30の間の整数である必要があります。"
+msgstr "転送遅延は 4 〜 30 の整数です"
 
 #: usr/local/www/interfaces_bridge_edit.php:124
 #: usr/local/www/interfaces_bridge_edit.php:132
 #: usr/local/www/interfaces_bridge_edit.php:132
 msgid "Hello time for STP needs to be an integer between 1 and 2."
-msgstr "ハローSTPのための時間は1と2の間の整数である必要がある。"
+msgstr "STP のハロータイムは 1 か 2 です"
 
 #: usr/local/www/interfaces_bridge_edit.php:126
 #: usr/local/www/interfaces_bridge_edit.php:134
 #: usr/local/www/interfaces_bridge_edit.php:134
 msgid "Priority for STP needs to be an integer between 0 and 61440."
-msgstr "STPの優先順位は0と61440の間の整数である必要があります。"
+msgstr "STP の優先度は 0 〜 61440 の整数です"
 
 #: usr/local/www/interfaces_bridge_edit.php:128
 #: usr/local/www/interfaces_bridge_edit.php:136
 #: usr/local/www/interfaces_bridge_edit.php:136
 msgid "Transmit Hold Count for STP needs to be an integer between 1 and 10."
-msgstr "STPは1 〜10の整数である必要があるため保留カウントを送信します。"
+msgstr "STP の転送保留カウント値は 1 〜 10 の整数です"
 
 #: usr/local/www/interfaces_bridge_edit.php:131
 #: usr/local/www/interfaces_bridge_edit.php:139
 #: usr/local/www/interfaces_bridge_edit.php:139
 msgid "interface priority for STP needs to be an integer between 0 and 240."
-msgstr "STPのためのインターフェイスの優先順位は0から240の間の整数である必要があります。"
+msgstr "STP のインタフェース優先度は 0 〜 240 の整数です"
 
 #: usr/local/www/interfaces_bridge_edit.php:136
 #: usr/local/www/interfaces_bridge_edit.php:144
 #: usr/local/www/interfaces_bridge_edit.php:144
 msgid ""
 "interface path cost for STP needs to be an integer between 1 and 200000000."
-msgstr "「STPのためのインターフェイスのパスコストは1と200000000の間の整数である必要があります。"
+msgstr ""
+"STP のインタフェースパスコストは 1 〜 200000000 の整数です"
 
 #: usr/local/www/interfaces_bridge_edit.php:141
 #: usr/local/www/interfaces_bridge_edit.php:149
 #: usr/local/www/interfaces_bridge_edit.php:149
 msgid "You must select at least 2 member interfaces for a bridge."
-msgstr "あなたは橋のために少なくとも2メンバーインターフェイスを選択する必要があります。"
+msgstr "ブリッジには最低でも 2 つのメンバインタフェースを選択してください"
 
 #: usr/local/www/interfaces_bridge_edit.php:147
 #: usr/local/www/interfaces_bridge_edit.php:155
 #: usr/local/www/interfaces_bridge_edit.php:157
 #: usr/local/www/interfaces_bridge_edit.php:157
 msgid "Bridging a wireless interface is only possible in hostap mode."
-msgstr "無線インタフェースをブリッジングのhostapモードでのみ可能です。"
+msgstr "無線インタフェースのブリッジは hostap モードでのみ可能です"
 
 #: usr/local/www/interfaces_bridge_edit.php:149
 #: usr/local/www/interfaces_bridge_edit.php:157
@@ -14898,7 +14902,9 @@ msgstr "無線インタフェースをブリッジングのhostapモードでの
 msgid ""
 "Span interface cannot be part of the bridge. Remove the span interface from "
 "bridge members to continue."
-msgstr "「スパンのインターフェイスは、ブリッジの一部にすることはできません。からスパンインターフェイスを削除し、「継続してブリッジ部材。"
+msgstr "'
+"SPAN インタフェースはブリッジの一部にできません。"
+"続行するには、ブリッジのメンバから SPAN インタフェースを削除してください"
 
 #: usr/local/www/interfaces_bridge_edit.php:206
 #: usr/local/www/interfaces_gif_edit.php:106
@@ -14916,7 +14922,7 @@ msgstr "「スパンのインターフェイスは、ブリッジの一部にす
 #: usr/local/www/interfaces_gif_edit.php:114
 #: usr/local/www/interfaces_bridge_edit.php:217
 msgid "Error occurred creating interface, please retry."
-msgstr "エラーが発生したインターフェイスを作成、再試行してください。"
+msgstr "インタフェースの作成中にエラーが発生しました。再試行してください"
 
 #: usr/local/www/interfaces_bridge_edit.php:253
 #: usr/local/www/interfaces_bridge_edit.php:262
@@ -14937,7 +14943,7 @@ msgstr "ブリッジ構成"
 #: usr/local/www/interfaces_lagg_edit.php:88
 #: usr/local/www/interfaces_bridge_edit.php:269
 msgid "Member interfaces"
-msgstr "メンバーインターフェイス"
+msgstr "メンバインタフェース"
 
 #: usr/local/www/interfaces_bridge_edit.php:269
 #: usr/local/www/interfaces_bridge_edit.php:278
@@ -14946,7 +14952,7 @@ msgstr "メンバーインターフェイス"
 #: usr/local/www/interfaces_bridge_edit.php:282
 #: usr/local/www/interfaces_bridge_edit.php:282
 msgid "Interfaces participating in the bridge."
-msgstr "ブリッジに参加するインターフェイス。"
+msgstr "ブリッジに参加しているインタフェース"
 
 #: usr/local/www/interfaces_bridge_edit.php:285
 #: usr/local/www/interfaces_bridge_edit.php:294
@@ -14964,7 +14970,7 @@ msgstr "RSTP / STP"
 #: usr/local/www/interfaces_bridge_edit.php:301
 #: usr/local/www/interfaces_bridge_edit.php:301
 msgid "Enable spanning tree options for this bridge."
-msgstr "このブリッジのツリーオプションにまたがる有効にします。"
+msgstr "このブリッジにスパニングツリーオプションを有効"
 
 #: usr/local/www/interfaces_bridge_edit.php:304
 #: usr/local/www/interfaces_bridge_edit.php:313
@@ -14973,7 +14979,7 @@ msgstr "このブリッジのツリーオプションにまたがる有効にし
 #: usr/local/www/interfaces_bridge_edit.php:317
 #: usr/local/www/interfaces_bridge_edit.php:317
 msgid "Protocol used for spanning tree."
-msgstr "プロトコルは、スパニングツリーに使用されます。"
+msgstr "スパニングツリーに使用されるプロトコル"
 
 #: usr/local/www/interfaces_bridge_edit.php:306
 #: usr/local/www/interfaces_bridge_edit.php:315
@@ -14982,7 +14988,7 @@ msgstr "プロトコルは、スパニングツリーに使用されます。"
 #: usr/local/www/interfaces_bridge_edit.php:319
 #: usr/local/www/interfaces_bridge_edit.php:319
 msgid "STP interfaces"
-msgstr "STPインターフェイス"
+msgstr "STP インタフェース"
 
 #: usr/local/www/interfaces_bridge_edit.php:320
 #: usr/local/www/interfaces_bridge_edit.php:329
@@ -14994,7 +15000,10 @@ msgid ""
 "Enable Spanning Tree Protocol on interface. The if_bridge(4) driver has "
 "support for the IEEE 802.1D Spanning Tree Protocol (STP). STP is used to "
 "detect and remove loops in a network topology."
-msgstr "「インターフェイス上でスパニングツリープロトコルを有効にします。 if_bridgeを（ 4 ）ドライバが持っている「IEEE 802.1Dスパニングツリープロトコル（STP ）をサポート。 STPは、 「ネットワークトポロジー内のループを検出し、除去するために使用される。"
+msgstr ""
+"インタフェースのスパニングツリープロトコルを有効にします。if_bridge(4) ドライバは "
+"IEEE 802.1D スパニングツリープロトコル (STP) をサポートしています。"
+"STP を使用するとネットワークトポロジにあるループを検出して削除します"
 
 #: usr/local/www/interfaces_bridge_edit.php:326
 #: usr/local/www/interfaces_bridge_edit.php:335
@@ -15003,7 +15012,7 @@ msgstr "「インターフェイス上でスパニングツリープロトコル
 #: usr/local/www/interfaces_bridge_edit.php:339
 #: usr/local/www/interfaces_bridge_edit.php:339
 msgid "Valid time"
-msgstr "適用時間"
+msgstr "有効期間"
 
 #: usr/local/www/interfaces_bridge_edit.php:328
 #: usr/local/www/interfaces_bridge_edit.php:338
@@ -15078,7 +15087,10 @@ msgid ""
 "Set the time that a Spanning Tree Protocol configuration is valid. The "
 "default is 20 seconds. The minimum is 6 seconds and the maximum is 40 "
 "seconds."
-msgstr "「スパニングツリープロトコルの設定が有効である時間を設定します。 「デフォルトは20秒です。最小値は6秒で、最大値は40 」秒です。"
+msgstr ""
+"スパニングツリープロトコルの構成が有効になる時間を設定してください。"
+"デフォルトは 20 秒です。"
+"最小値は 6 秒で最大値は 40 秒です"
 
 #: usr/local/www/interfaces_bridge_edit.php:336
 #: usr/local/www/interfaces_bridge_edit.php:345
@@ -15099,7 +15111,10 @@ msgid ""
 "Set the time that must pass before an interface begins forwarding packets "
 "when Spanning Tree is enabled. The default is 15 seconds. The minimum is 4 "
 "seconds and the maximum is 30 seconds."
-msgstr "スパニングツリーが有効になっているときに「インターフェイスがパケットの転送を開始する前に通過しなければならない時間を設定します」 。デフォルトは15秒です。最小値は4秒」で、最大値は30秒です。"
+msgstr ""
+"スパニングツリーが有効な場合、インタフェースがパケット転送を開始する前に、"
+"必ず待機する時間を設定します。デフォルトは 15 秒です。"
+"最小値は 4 秒、最大値は 30 秒です"
 
 #: usr/local/www/interfaces_bridge_edit.php:345
 #: usr/local/www/interfaces_bridge_edit.php:354
@@ -15121,7 +15136,10 @@ msgid ""
 "messages. The hello time may only be changed when operating in legacy STP "
 "mode. The default is 2 seconds. The minimum is 1 second and the maximum is "
 "2 seconds."
-msgstr "メッセージ「スパニングツリープロトコルの設定の放送までの時間を設定してください」 。レガシーSTPに動作している場合、helloタイムは変更されることがあります」モード。デフォルトは2秒です。最小値は1秒で、最大値は「 2秒。"
+msgstr ""
+"スパニングツリープロトコル構成メッセージのブロードキャスト間隔を設定してください。"
+"ハロータイムはレガシー STP モードで動作している時のみ変更されます。"
+"デフォルトは 2 秒です。最小値は 1 秒、最大値は 2 秒です"
 
 #: usr/local/www/interfaces_bridge_edit.php:359
 #: usr/local/www/interfaces_bridge_edit.php:368
@@ -15132,7 +15150,9 @@ msgstr "メッセージ「スパニングツリープロトコルの設定の放
 msgid ""
 "Set the bridge priority for Spanning Tree. The default is 32768. The "
 "minimum is 0 and the maximum is 61440."
-msgstr "「スパニングツリーのブリッジプライオリティを設定します。デフォルトは32768です。 "最小値は0で、最大値は61440です。"
+msgstr ""
+"スパニングツリーのブリッジ優先度を設定してください。デフォルトは 32768 です。"
+"最小値は 0、最大値は 61440 です"
 
 #: usr/local/www/interfaces_bridge_edit.php:363
 #: usr/local/www/interfaces_bridge_edit.php:372
@@ -15141,7 +15161,7 @@ msgstr "「スパニングツリーのブリッジプライオリティを設定
 #: usr/local/www/interfaces_bridge_edit.php:376
 #: usr/local/www/interfaces_bridge_edit.php:376
 msgid "Hold count"
-msgstr "カウントを保持"
+msgstr "保留カウント"
 
 #: usr/local/www/interfaces_bridge_edit.php:368
 #: usr/local/www/interfaces_bridge_edit.php:377
@@ -15151,7 +15171,10 @@ msgid ""
 "Set the transmit hold count for Spanning Tree. This is the num- ber of "
 "packets transmitted before being rate limited. The default is 6. The "
 "minimum is 1 and the maximum is 10."
-msgstr "レート制限される前に送信されたパケット」スパニングツリーの送信ホールドカウントを設定します。これは·ナンバーである"。デフォルトは6です。 「最小値は1で、最大値は10です。"
+msgstr ""
+"スパニングツリーの転送保留カウント値を設定してください。"
+"これはレートが制限される前に送信されるパケットの数です。"
+"デフォルトは 6 です。最小値は 1、最大値は 10 です"
 
 #: usr/local/www/interfaces_bridge_edit.php:382
 msgid ""
