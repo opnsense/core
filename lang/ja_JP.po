@@ -14132,7 +14132,7 @@ msgstr "Wake-on-LAN"
 
 #: usr/local/www/services_wol.php:141 usr/local/www/services_wol.php:141
 msgid "Choose which interface the host to be woken up is connected to."
-msgstr "接続されるとホストが起動するインタフェースを選択してください"
+msgstr "接続で起動するホストのインタフェースを選択してください"
 
 #: usr/local/www/services_wol.php:144 usr/local/www/services_wol.php:162
 #: usr/local/www/services_wol_edit.php:82
@@ -15180,7 +15180,9 @@ msgstr ""
 msgid ""
 "Set the Spanning Tree priority of interface to value. The default is 128. "
 "The minimum is 0 and the maximum is 240."
-msgstr "「値へのインターフェイスのスパニングツリー優先度を設定します。デフォルトは128です。 「最小値は0で、最大値は240です。"
+msgstr ""
+"インタフェースのスパニングツリー優先度を設定してください。デフォルトは 128 です。"
+"最小値は 0、最大値は 240 です。"
 
 #: usr/local/www/interfaces_bridge_edit.php:386
 #: usr/local/www/interfaces_bridge_edit.php:395
@@ -15202,7 +15204,11 @@ msgid ""
 "calculated from the link speed. To change a previously selected path cost "
 "back to automatic, set the cost to 0. The minimum is 1 and the maximum is "
 "200000000."
-msgstr "「値へのインターフェイスのスパニングツリーパスコストを設定します。デフォルトはされている「リンク速度から算出した。以前に選択したパスコストを変更するには」 、戻って自動にコストを0に設定する。最小値は1で、最大値は「 200000000 。"
+msgstr ""
+"インタフェースのスパニングツリーパスコストを設定してください。"
+"デフォルトはリンク速度から算出されます。"
+"前回選択したパスコストを自動設定に戻すには、コストを 0 に設定してください。"
+"最小値は 1、最大値は 200000000 です"
 
 #: usr/local/www/interfaces_bridge_edit.php:404
 #: usr/local/www/interfaces_bridge_edit.php:413
@@ -15220,7 +15226,7 @@ msgstr "キャッシュサイズ"
 #: usr/local/www/interfaces_bridge_edit.php:421
 #: usr/local/www/interfaces_bridge_edit.php:421
 msgid "entries"
-msgstr "エントリー"
+msgstr "エントリ"
 
 #: usr/local/www/interfaces_bridge_edit.php:408
 #: usr/local/www/interfaces_bridge_edit.php:417
@@ -15229,9 +15235,11 @@ msgstr "エントリー"
 #: usr/local/www/interfaces_bridge_edit.php:423
 #: usr/local/www/interfaces_bridge_edit.php:423
 msgid ""
-"Set the size of the bridge address cache to size.tThe default is .100 "
+"Set the size of the bridge address cache to size.\tThe default is .100 "
 "entries."
-msgstr "エントリ「 size.tTheのデフォルトにブリッジ·アドレス·キャッシュのサイズを設定.100です」 。"
+msgstr ""
+"ブリッジアドレスキャッシュサイズを設定してください\t" 
+"デフォルトは .100 エントリです"
 
 #: usr/local/www/interfaces_bridge_edit.php:414
 #: usr/local/www/interfaces_bridge_edit.php:423
@@ -15240,7 +15248,7 @@ msgstr "エントリ「 size.tTheのデフォルトにブリッジ·アドレス
 #: usr/local/www/interfaces_bridge_edit.php:429
 #: usr/local/www/interfaces_bridge_edit.php:429
 msgid "Cache entry expire time"
-msgstr "キャッシュエントリは有効期限を"
+msgstr "キャッシュエントリの有効期限"
 
 #: usr/local/www/interfaces_bridge_edit.php:418
 #: usr/local/www/interfaces_bridge_edit.php:427
@@ -15252,7 +15260,10 @@ msgid ""
 "Set the timeout of address cache entries to this number of seconds. If "
 "seconds is zero, then address cache entries will not be expired. The default "
 "is 240 seconds."
-msgstr "「この秒数にアドレスキャッシュエントリのタイムアウトを設定します。場合は、 "秒がゼロの場合、キャッシュエントリが期限切れにされることはありません取り組む。デフォルトは "240秒です。"
+msgstr ""
+"アドレスキャッシュエントリのタイムアウトを秒単位で設定してください。"
+"0 秒を設定すると、アドレスキャッシュエントリは期限切れになりません。"
+"デフォルトは 240 秒です"
 
 #: usr/local/www/interfaces_bridge_edit.php:425
 #: usr/local/www/interfaces_bridge_edit.php:434
@@ -15261,7 +15272,7 @@ msgstr "「この秒数にアドレスキャッシュエントリのタイムア
 #: usr/local/www/interfaces_bridge_edit.php:440
 #: usr/local/www/interfaces_bridge_edit.php:440
 msgid "Span port"
-msgstr "SPANポート"
+msgstr "SPAN ポート"
 
 #: usr/local/www/interfaces_bridge_edit.php:439
 #: usr/local/www/interfaces_bridge_edit.php:448
@@ -15274,7 +15285,11 @@ msgid ""
 "ports transmit a copy of every frame received by the bridge. This is most "
 "useful for snooping a bridged network passively on another host connected to "
 "one of the span ports of the bridge."
-msgstr "「ブリッジのSPANポートなどのインターフェイスによって指定されたインタフェースを追加します。スパン」ポートは、ブリッジが受信したすべてのフレームのコピーを送信する。これはブリッジのスパンポートの1ほとんどの "に接続された別のホスト上で受動的にブリッジネットワークをスヌーピングに便利」である。"
+msgstr ""
+"ブリッジの SPAN ポートインタフェースとして指定するインタフェースを追加してください。"
+"SPAN ポートはブリッジで受信したフレーム毎のコピーを送信します。"
+"これは、他のホストをブリッジの SPAN ポートの一つに接続して、"
+"ブリッジネットワークを受動的にスヌーピングする際に非常に便利です"
 
 #: usr/local/www/interfaces_bridge_edit.php:448
 #: usr/local/www/interfaces_bridge_edit.php:457
@@ -15283,7 +15298,7 @@ msgstr "「ブリッジのSPANポートなどのインターフェイスによ�
 #: usr/local/www/interfaces_bridge_edit.php:463
 #: usr/local/www/interfaces_bridge_edit.php:463
 msgid "The span interface cannot be part of the bridge member interfaces."
-msgstr "スパンのインターフェイスは、ブリッジメンバーインターフェイスの一部にすることはできません。"
+msgstr "SPAN インタフェースは、ブリッジメンバインタフェースにはできません"
 
 #: usr/local/www/interfaces_bridge_edit.php:453
 #: usr/local/www/interfaces_bridge_edit.php:462
@@ -15304,7 +15319,10 @@ msgid ""
 "Set interface as an edge port. An edge port connects directly to end "
 "stations and cannot create bridging loops in the network; this allows it to "
 "transition straight to forwarding."
-msgstr "「エッジポートとしてインターフェイスを設定し、エッジポートは、エンドに直接接続されています」のステーションを、ネットワーク内のブリッジングループは作成できませんが、これはそれがまっすぐフォワーディングを「移行することができます。"
+msgstr ""
+"エッジポートのインタフェースを設定してください。エッジポートはエンドステーションに"
+"直接接続しており、ネットワークにブリッジングループを作成できません。"
+"これはエッジポートに直接転送が許可されているためです"
 
 #: usr/local/www/interfaces_bridge_edit.php:473
 #: usr/local/www/interfaces_bridge_edit.php:482
@@ -15313,7 +15331,7 @@ msgstr "「エッジポートとしてインターフェイスを設定し、エ
 #: usr/local/www/interfaces_bridge_edit.php:488
 #: usr/local/www/interfaces_bridge_edit.php:488
 msgid "Auto Edge ports"
-msgstr "自動エッジポート"
+msgstr "エッジポート自動検出"
 
 #: usr/local/www/interfaces_bridge_edit.php:487
 #: usr/local/www/interfaces_bridge_edit.php:496
@@ -15324,7 +15342,9 @@ msgstr "自動エッジポート"
 msgid ""
 "Allow interface to automatically detect edge status. This is the default "
 "for all interfaces added to a bridge."
-msgstr "ブリッジに追加されたすべてのインターフェイスの"インタフェースが自動的にエッジの状態を検出することを可能にする。これがデフォルトです」 。"
+msgstr ""
+"インタフェースにエッジステータスの自動検出を許可します。"
+"これはブリッジに追加された全てのインタフェースのデフォルトです"
 
 #: usr/local/www/interfaces_bridge_edit.php:492
 #: usr/local/www/interfaces_bridge_edit.php:501
@@ -15333,7 +15353,7 @@ msgstr "ブリッジに追加されたすべてのインターフェイスの"�
 #: usr/local/www/interfaces_bridge_edit.php:507
 #: usr/local/www/interfaces_bridge_edit.php:507
 msgid "This will disable the autoedge status of interfaces."
-msgstr "これはインタフェースのautoedge状態が無効になります。"
+msgstr "これはインタフェースのエッジポート自動検出ステータスを無効にします"
 
 #: usr/local/www/interfaces_bridge_edit.php:496
 #: usr/local/www/interfaces_bridge_edit.php:505
@@ -15342,7 +15362,7 @@ msgstr "これはインタフェースのautoedge状態が無効になります�
 #: usr/local/www/interfaces_bridge_edit.php:511
 #: usr/local/www/interfaces_bridge_edit.php:511
 msgid "PTP ports"
-msgstr "PTPポート"
+msgstr "PTP ポート"
 
 #: usr/local/www/interfaces_bridge_edit.php:510
 #: usr/local/www/interfaces_bridge_edit.php:519
@@ -15354,7 +15374,10 @@ msgid ""
 "Set the interface as a point-to-point link. This is required for straight "
 "transitions to forwarding and should be enabled on a direct link to another "
 "RSTP-capable switch."
-msgstr "「インターフェースの設定ポイントツーポイントリンクとして。これは真っ直ぐに必要とされる「転送に遷移し、別の「 RSTP対応スイッチへの直接のリンクを有効にする必要があります。"
+msgstr ""
+"インタフェースをポイントツーポイントリンクとして設定します。
+"これは転送の直接送信、及び、他の RSTP 対応スイッチとの直接リンクが"
+"有効になっている必要があります"
 
 #: usr/local/www/interfaces_bridge_edit.php:516
 #: usr/local/www/interfaces_bridge_edit.php:525
@@ -15363,7 +15386,7 @@ msgstr "「インターフェースの設定ポイントツーポイントリン
 #: usr/local/www/interfaces_bridge_edit.php:531
 #: usr/local/www/interfaces_bridge_edit.php:531
 msgid "Auto PTP ports"
-msgstr "オートPTPポート"
+msgstr "PTP ポート自動検出"
 
 #: usr/local/www/interfaces_bridge_edit.php:530
 #: usr/local/www/interfaces_bridge_edit.php:539
@@ -15375,7 +15398,10 @@ msgid ""
 "Automatically detect the point-to-point status on interface by checking the "
 "full duplex link status. This is the default for interfaces added to the "
 "bridge."
-msgstr "全二重リンク状態」を自動的にチェックすることにより、インターフェイス上のポイントツーポイント状態を検出」 。これは、 "ブリッジに追加のインタフェースのデフォルトです。"
+msgstr ""
+"全二重リンクステータスを確認することで、インタフェースの
+ポイントツーポイントステータスを自動的に検知します。"
+"これはブリッジに追加されたインタフェースのデフォルトです"
 
 #: usr/local/www/interfaces_bridge_edit.php:536
 #: usr/local/www/interfaces_bridge_edit.php:545
@@ -15385,7 +15411,8 @@ msgstr "全二重リンク状態」を自動的にチェックすることによ
 #: usr/local/www/interfaces_bridge_edit.php:551
 msgid ""
 "The interfaces selected here will be removed from default autoedge status."
-msgstr "「ここで選択したインターフェイスでは、デフォルトのautoedge状態から削除されます。"
+msgstr ""
+"ここで選択されたインタフェースはデフォルトのエッジポート自動検出ステータスから削除されます"
 
 #: usr/local/www/interfaces_bridge_edit.php:540
 #: usr/local/www/interfaces_bridge_edit.php:549
@@ -15407,7 +15434,11 @@ msgid ""
 "entries are treated as static once entered into the cache. Sticky entries "
 "are never aged out of the cache or replaced, even if the address is seen on "
 "a different interface."
-msgstr "「マークとしてインターフェイス「スティッキー」インタフェースが動的に学習されたアドレス "のエントリはスタティックとして扱われ、一度キャッシュに入った。スティッキエントリには異なるインターフェース「アドレスがで見ていても、キャッシュから老化しない、または交換決してあり」 。"
+msgstr ""
+"インタフェースを「スティッキー」インタフェースとして登録します。"
+"動的に学習されたアドレスエントリは、一旦キャッシュに入ると、静的なエントリとして扱われます。"
+"スティッキーエントリは、キャッシュから消えたり、置き換えられたりしても、"
+"異なるインタフェースのアドレスにみえる場合でも、期限切れになることはありません"
 
 #: usr/local/www/interfaces_bridge_edit.php:561
 #: usr/local/www/interfaces_bridge_edit.php:570
@@ -15427,31 +15458,36 @@ msgstr "プライベートポート"
 msgid ""
 "Mark an interface as a "private" interface. A private interface does not "
 "forward any traffic to any other port that is also a private interface."
-msgstr "プライベート "としてインターフェイスマーク」 」のインターフェイスを。プライベート·インタフェースがありません」また、プライベート·インタフェースである他のポートにトラフィックを転送します。"
+msgstr ""
+"インタフェースを「プライベート」インタフェースとして登録します。"
+"プライベートインタフェースはどんなトラフィックも他のポートへ転送しません。"
+"それがプライベートインタフェースだとしても同様です"
 
 #: usr/local/www/interfaces_gif.php:64 usr/local/www/interfaces_gif.php:68
 #: usr/local/www/interfaces_gif.php:68
 msgid ""
 "This gif TUNNEL cannot be deleted because it is still being used as an "
 "interface."
-msgstr "インターフェイス「それはまだとして使用されているため、このGIFトンネルは削除できません」 。"
+msgstr ""
+"この GIF トンネルは削除できません。"
+"インタフェースとして使用されています"
 
 #: usr/local/www/interfaces_gif.php:107 usr/local/www/interfaces_gre.php:108
 #: usr/local/www/interfaces_gre.php:109 usr/local/www/interfaces_gif.php:108
 #: usr/local/www/interfaces_gre.php:113 usr/local/www/interfaces_gif.php:112
 #: usr/local/www/interfaces_gre.php:113 usr/local/www/interfaces_gif.php:112
 msgid "Tunnel to..."
-msgstr "トンネルに..."
+msgstr "トンネル接続しています..."
 
 #: usr/local/www/interfaces_gif.php:123 usr/local/www/interfaces_gif.php:124
 #: usr/local/www/interfaces_gif.php:128 usr/local/www/interfaces_gif.php:128
 msgid "Do you really want to delete this gif tunnel?"
-msgstr "あなたは本当にこのGIFトンネルを削除しますか？"
+msgstr "本当にこの GIF トンネルを削除しますか？"
 
 #: usr/local/www/interfaces_gif.php:134 usr/local/www/interfaces_gif.php:135
 #: usr/local/www/interfaces_gif.php:139 usr/local/www/interfaces_gif.php:139
 msgid "GIF tunnels are configured here."
-msgstr "GIFトンネルはここで設定されています。"
+msgstr "GIF トンネルはここで構成します"
 
 #: usr/local/www/interfaces_gif_edit.php:72
 #: usr/local/www/interfaces_gif_edit.php:75
@@ -15459,7 +15495,9 @@ msgstr "GIFトンネルはここで設定されています。"
 msgid ""
 "Parent interface,Local address, Remote tunnel address, Remote tunnel "
 "network, Local tunnel address"
-msgstr "「親のインタフェース、ローカルアドレス、リモートトンネルアドレス、リモートトンネル」ネットワーク、ローカルトンネルアドレス"
+msgstr ""
+"親インタフェース、ローカルアドレス、リモートトンネルアドレス、"
+"リモートトンネルネットワーク、ローカルトンネルアドレス"
 
 #: usr/local/www/interfaces_gif_edit.php:78
 #: usr/local/www/interfaces_gre_edit.php:80
@@ -15467,14 +15505,14 @@ msgstr "「親のインタフェース、ローカルアドレス、リモート
 #: usr/local/www/interfaces_gre_edit.php:80
 #: usr/local/www/interfaces_gif_edit.php:81
 msgid "The tunnel local and tunnel remote fields must have valid IP addresses."
-msgstr "トンネルのローカルおよびリモートのトンネルのフィールドは、有効なIPアドレスを持っている必要があります。"
+msgstr "トンネルローカル及びトンネルリモートフィールドには有効な IP アドレスが必要です"
 
 #: usr/local/www/interfaces_gif_edit.php:87
 #: usr/local/www/interfaces_gif_edit.php:95
 #: usr/local/www/interfaces_gif_edit.php:95
 #, php-format
 msgid "A gif with the network %s is already defined."
-msgstr "ネットワーク%sとGIFがすでに定義されています。"
+msgstr "ネットワーク %s の GIF は定義済みです"
 
 #: usr/local/www/interfaces_gif_edit.php:136
 #: usr/local/www/interfaces_gif_edit.php:137
@@ -15482,7 +15520,7 @@ msgstr "ネットワーク%sとGIFがすでに定義されています。"
 #: usr/local/www/interfaces_gif_edit.php:146
 #: usr/local/www/interfaces_gif_edit.php:146
 msgid "GIF configuration"
-msgstr "GIFの設定"
+msgstr "GIF 構成"
 
 #: usr/local/www/interfaces_gif_edit.php:139
 #: usr/local/www/interfaces_gre_edit.php:74
@@ -15515,7 +15553,7 @@ msgstr "GIFの設定"
 #: usr/local/www/interfaces_gif_edit.php:149
 #: usr/local/www/interfaces_qinq_edit.php:292
 msgid "Parent interface"
-msgstr "親インターフェース"
+msgstr "親インタフェース"
 
 #: usr/local/www/interfaces_gif_edit.php:156
 #: usr/local/www/interfaces_gif_edit.php:157
@@ -15524,7 +15562,9 @@ msgstr "親インターフェース"
 msgid ""
 "The interface here servers as the local address to be used for the gif "
 "tunnel."
-msgstr "トンネル"GIFに使用するローカルアドレスとして、ここでインターフェースのサーバー」 。"
+msgstr ""
+"このインタフェースは GIF トンネルに使用される"
+"ローカルアドレスとして機能します"
 
 #: usr/local/www/interfaces_gif_edit.php:159
 #: usr/local/www/interfaces_gif_edit.php:160
@@ -15532,7 +15572,7 @@ msgstr "トンネル"GIFに使用するローカルアドレスとして、こ�
 #: usr/local/www/interfaces_gif_edit.php:172
 #: usr/local/www/interfaces_gif_edit.php:172
 msgid "gif remote address"
-msgstr "GIFリモートアドレス"
+msgstr "GIF リモートアドレス"
 
 #: usr/local/www/interfaces_gif_edit.php:163
 #: usr/local/www/interfaces_gif_edit.php:164
@@ -15540,7 +15580,7 @@ msgstr "GIFリモートアドレス"
 #: usr/local/www/interfaces_gif_edit.php:176
 #: usr/local/www/interfaces_gif_edit.php:176
 msgid "Peer address where encapsulated gif packets will be sent. "
-msgstr "カプセル化されたGIFパケットが送信されるピアアドレス。"
+msgstr "カプセル化した GIF パケットが送信されるピアアドレス"
 
 #: usr/local/www/interfaces_gif_edit.php:166
 #: usr/local/www/interfaces_gif_edit.php:167
@@ -15548,7 +15588,7 @@ msgstr "カプセル化されたGIFパケットが送信されるピアアドレ
 #: usr/local/www/interfaces_gif_edit.php:179
 #: usr/local/www/interfaces_gif_edit.php:179
 msgid "gif tunnel local address"
-msgstr "GIFトンネルのローカルアドレス"
+msgstr "GIF トンネルローカルアドレス"
 
 #: usr/local/www/interfaces_gif_edit.php:170
 #: usr/local/www/interfaces_gif_edit.php:171
@@ -15556,7 +15596,7 @@ msgstr "GIFトンネルのローカルアドレス"
 #: usr/local/www/interfaces_gif_edit.php:183
 #: usr/local/www/interfaces_gif_edit.php:183
 msgid "Local gif tunnel endpoint"
-msgstr "ローカルGIFトンネルエンドポイント"
+msgstr "ローカル GIF トンネルエンドポイント"
 
 #: usr/local/www/interfaces_gif_edit.php:173
 #: usr/local/www/interfaces_gif_edit.php:174
@@ -15564,7 +15604,7 @@ msgstr "ローカルGIFトンネルエンドポイント"
 #: usr/local/www/interfaces_gif_edit.php:186
 #: usr/local/www/interfaces_gif_edit.php:186
 msgid "gif tunnel remote address "
-msgstr "GIFトンネルのリモートアドレス"
+msgstr "GIF トンネルリモートアドレス"
 
 #: usr/local/www/interfaces_gif_edit.php:188
 #: usr/local/www/interfaces_gif_edit.php:189
@@ -15573,14 +15613,16 @@ msgstr "GIFトンネルのリモートアドレス"
 msgid ""
 "Remote gif address endpoint. The subnet part is used for determining the "
 "network that is tunnelled."
-msgstr "「リモートgif注アドレス·エンドポイント。サブネット部を決定するために使用される「トンネリングされているネットワーク。"
+msgstr ""
+"リモート GIF アドレスエンドポイント。"
+"サブネット部分はトンネルになるネットワークの決定に使用されます"
 
 #: usr/local/www/interfaces_gif_edit.php:191
 #: usr/local/www/interfaces_gif_edit.php:192
 #: usr/local/www/interfaces_gif_edit.php:203
 #: usr/local/www/interfaces_gif_edit.php:203
 msgid "Route caching "
-msgstr "ルート·キャッシング"
+msgstr "ルートキャッシング"
 
 #: usr/local/www/interfaces_gif_edit.php:195
 #: usr/local/www/interfaces_gif_edit.php:196
@@ -15589,13 +15631,15 @@ msgstr "ルート·キャッシング"
 msgid ""
 "Specify if route caching can be enabled. Be careful with these settings on "
 "dynamic networks. "
-msgstr "「ルートキャッシュを有効にできるかどうかを指定します。これらの設定には注意してください"ダイナミックなネットワーク。"
+msgstr ""
+"ルートキャッシングが有効の場合に指定をします。"
+"これらの設定を動的ネットワークに適用する場合は注意してください"
 
 #: usr/local/www/interfaces_gif_edit.php:198
 #: usr/local/www/interfaces_gif_edit.php:199
 #: usr/local/www/interfaces_gif_edit.php:210
 msgid "ECN friendly behaviour"
-msgstr "電子証券取引ネットワークにやさしい行動"
+msgstr " ECN フレンドリ動作"
 
 #: usr/local/www/interfaces_gif_edit.php:203
 #: usr/local/www/interfaces_gif_edit.php:204
@@ -15604,26 +15648,32 @@ msgstr "電子証券取引ネットワークにやさしい行動"
 msgid ""
 "Note that the ECN friendly behavior violates RFC2893. This should be used "
 "in mutual agreement with the peer."
-msgstr "ピアとの合意で「電子証券取引ネットワークに優しい行動がRFC2893に違反していることに注意してください。これを使用する必要があります」 。"
+msgstr ""
+"ECN フレンドリ動作は RFC2893 違反ですので、注意してください。"
+"この機能は、ピア相互の合意の下で使用する必要があります"
 
 #: usr/local/www/interfaces_gre.php:65 usr/local/www/interfaces_gre.php:69
 #: usr/local/www/interfaces_gre.php:69
 msgid ""
 "This GRE tunnel cannot be deleted because it is still being used as an "
 "interface."
-msgstr "インターフェイス「それはまだとして使用されているため、このGREトンネルを削除することはできません」 。"
+msgstr ""
+"この GRE トンネルは削除できません。"
+"インタフェースとして使用されています"
 
 #: usr/local/www/interfaces_gre.php:124 usr/local/www/interfaces_gre.php:125
 #: usr/local/www/interfaces_gre.php:129 usr/local/www/interfaces_gre.php:129
 msgid "Do you really want to delete this GRE tunnel?"
-msgstr "あなたは本当に、このGREトンネルを削除しますか？"
+msgstr "本当にこの GRE トンネルを削除しますか？"
 
 #: usr/local/www/interfaces_gre.php:133 usr/local/www/interfaces_gre.php:134
 #: usr/local/www/interfaces_gre.php:138 usr/local/www/interfaces_gre.php:138
 msgid ""
 "Here you can configure Generic Routing Encapsulation (GRE - RFC 2784) "
 "tunnels."
-msgstr "トンネル - "ここでは総称ルーティングカプセル化（ RFC 2784 GRE ）を設定することができます」 。"
+msgstr ""
+"ここでは、総称ルーティングカプセル化 ( GRE - RFC 2784 ) トンネルを"
+"構成できます"
 
 #: usr/local/www/interfaces_gre_edit.php:74
 #: usr/local/www/interfaces_gre_edit.php:74
@@ -15649,50 +15699,51 @@ msgstr "ローカルトンネルアドレス"
 #: usr/local/www/interfaces_gre_edit.php:88
 #, php-format
 msgid "A GRE tunnel with the network %s is already defined."
-msgstr "ネットワーク%sとGREトンネルはすでに定義されています。"
+msgstr "ネットワーク %s の GRE トンネルは定義済です"
 
 #: usr/local/www/interfaces_gre_edit.php:138
 #: usr/local/www/interfaces_gre_edit.php:139
 #: usr/local/www/interfaces_gre_edit.php:139
 msgid "GRE configuration"
-msgstr "GREの設定"
+msgstr "GRE 構成"
 
 #: usr/local/www/interfaces_gre_edit.php:158
 #: usr/local/www/interfaces_gre_edit.php:159
 #: usr/local/www/interfaces_gre_edit.php:159
 msgid ""
 "The interface here serves as the local address to be used for the GRE tunnel."
-msgstr "「ここのインタフェースは、 GREトンネルに使用するローカルアドレスとして機能します。"
+msgstr ""
+"このインタフェースは GRE トンネルに使用されるローカルアドレスとして機能します"
 
 #: usr/local/www/interfaces_gre_edit.php:161
 #: usr/local/www/interfaces_gre_edit.php:162
 #: usr/local/www/interfaces_gre_edit.php:162
 msgid "GRE remote address"
-msgstr "GREのリモートアドレス"
+msgstr "GRE リモートアドレス"
 
 #: usr/local/www/interfaces_gre_edit.php:165
 #: usr/local/www/interfaces_gre_edit.php:166
 #: usr/local/www/interfaces_gre_edit.php:166
 msgid "Peer address where encapsulated GRE packets will be sent "
-msgstr "カプセル化されたGREパケットの送信先となるピアアドレス"
+msgstr "カプセル化した GRE パケットが送信されるピアアドレス"
 
 #: usr/local/www/interfaces_gre_edit.php:168
 #: usr/local/www/interfaces_gre_edit.php:169
 #: usr/local/www/interfaces_gre_edit.php:169
 msgid "GRE tunnel local address "
-msgstr "GREトンネルのローカルアドレス"
+msgstr "GRE トンネルローカルアドレス"
 
 #: usr/local/www/interfaces_gre_edit.php:172
 #: usr/local/www/interfaces_gre_edit.php:173
 #: usr/local/www/interfaces_gre_edit.php:173
 msgid "Local GRE tunnel endpoint"
-msgstr "ローカルのGREトンネルのエンドポイント"
+msgstr "ローカル GRE トンネルエンドポイント"
 
 #: usr/local/www/interfaces_gre_edit.php:175
 #: usr/local/www/interfaces_gre_edit.php:176
 #: usr/local/www/interfaces_gre_edit.php:176
 msgid "GRE tunnel remote address "
-msgstr "GREトンネルのリモートアドレス"
+msgstr "GRE トンネルリモートアドレス"
 
 #: usr/local/www/interfaces_gre_edit.php:190
 #: usr/local/www/interfaces_gre_edit.php:189
@@ -15700,7 +15751,9 @@ msgstr "GREトンネルのリモートアドレス"
 msgid ""
 "Remote GRE address endpoint. The subnet part is used for the determining the "
 "network that is tunneled."
-msgstr "ネットワークにトンネリングされる「リモートGREアドレスエンドポイントは。サブネット部を決定するために使用される"。"
+msgstr ""
+"リモート GRE アドレスエンドポイント。"
+"サブネット部分はトンネルになるネットワークの決定に使用されます"
 
 #: usr/local/www/interfaces_gre_edit.php:193
 #: usr/local/www/interfaces_gre_edit.php:192
@@ -15712,13 +15765,13 @@ msgstr "モバイルトンネル"
 #: usr/local/www/interfaces_gre_edit.php:196
 #: usr/local/www/interfaces_gre_edit.php:197
 msgid "Specify which encapsulation method the tunnel should use. "
-msgstr "トンネルが使用する必要があるカプセル化方法を指定します。"
+msgstr "トンネルが使用するカプセル化方法を指定します"
 
 #: usr/local/www/interfaces_gre_edit.php:200
 #: usr/local/www/interfaces_gre_edit.php:199
 #: usr/local/www/interfaces_gre_edit.php:200
 msgid "Route search type"
-msgstr "経路探索タイプ"
+msgstr "経路検索タイプ"
 
 #: usr/local/www/interfaces_gre_edit.php:205
 #: usr/local/www/interfaces_gre_edit.php:204
@@ -15728,20 +15781,25 @@ msgid ""
 "is less specific than the one over the tunnel. (Basically, there needs to "
 "be a route to the decapsulating host that does not run over the tunnel, as "
 "this would be a loop."
-msgstr "トンネル上の1よりも小さい固有である「正常な動作のためには、 GREのデバイスは、その目的地へのルートを必要とします」 。 （基本的に、これがループになる」と、トンネル上で実行されないカプセル化解除ホストへの経路であること」にある必要がある。"
+msgstr ""
+"正しく動作するためには、GRE デバイスは送信先へのルートが必要ですが、"
+"それはトンネルの向こうの経路を明確に示すものではありません。"
+" ( 基本的に必要とされる経路はカプセル化を解除するホストへのもので、"
+"トンネル上には流れません。ループしているようなものです)"
 
 #: usr/local/www/interfaces_gre_edit.php:212
 #: usr/local/www/interfaces_gre_edit.php:211
 #: usr/local/www/interfaces_gre_edit.php:212
 msgid "WCCP version"
-msgstr "WCCPバージョン"
+msgstr "WCCP バージョン"
 
 #: usr/local/www/interfaces_gre_edit.php:216
 #: usr/local/www/interfaces_gre_edit.php:215
 #: usr/local/www/interfaces_gre_edit.php:216
 msgid ""
 "Specify which WCCP encapsulation(version 1 or 2) method the tunnel should use"
-msgstr "「これWCCPカプセル化（バージョン1または2 ）の方法トンネルが使用する必要がありますを指定"
+msgstr ""
+"トンネルで使用する WCCP カプセル化方法として、バージョン 1 もしくは 2 を指定してください"
 
 #: usr/local/www/interfaces_groups.php:63
 #: usr/local/www/interfaces_groups_edit.php:44
@@ -15789,7 +15847,7 @@ msgstr "グループ"
 #: usr/local/www/system_groupmanager.php:464
 #: usr/local/www/interfaces_groups.php:128
 msgid "edit group"
-msgstr "編集グループ"
+msgstr "グループの編集"
 
 #: usr/local/www/interfaces_groups.php:128
 #: usr/local/www/interfaces_groups.php:129
