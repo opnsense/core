@@ -16870,7 +16870,7 @@ msgstr "このルールを適用するインタフェースを選択してくだ
 #: usr/local/www/firewall_nat_npt_edit.php:206
 #: usr/local/www/firewall_nat_1to1_edit.php:322
 msgid "Hint: in most cases, you'll want to use WAN here"
-msgstr "ヒント: 大抵は、ここで WAN を使用します"
+msgstr "ヒント: 通常はここで WAN を使用します"
 
 #: usr/local/www/firewall_nat_1to1_edit.php:319
 #: usr/local/www/firewall_nat_1to1_edit.php:326
@@ -17688,7 +17688,7 @@ msgstr "このルールを適用するインタフェースを選択してくだ
 #: usr/local/www/firewall_nat_edit.php:529
 #: usr/local/www/firewall_nat_out_edit.php:482
 msgid "Hint: in most cases, you'll want to use WAN here."
-msgstr "ヒント: 大抵は、ここで使用するのは WAN です"
+msgstr "ヒント: 通常は、ここで使用するのは WAN です"
 
 #: usr/local/www/firewall_nat_edit.php:524
 #: usr/local/www/firewall_rules_edit.php:818
@@ -17714,7 +17714,7 @@ msgstr "このルールに一致するプロトコルを選択してください
 #: usr/local/www/firewall_nat_edit.php:540
 #: usr/local/www/firewall_nat_edit.php:540
 msgid "Hint: in most cases, you should specify"
-msgstr "ヒント: 大抵は、指定が必要です"
+msgstr "ヒント: 通常は、指定が必要です"
 
 #: usr/local/www/firewall_nat_edit.php:526
 #: usr/local/www/load_balancer_monitor_edit.php:199
@@ -17949,7 +17949,7 @@ msgid ""
 "'any')"
 msgstr ""
 "及び、送信先ポート範囲と等しくなることはまずありません"
-" ( そして、通常は「任意」になります )"
+" ( 通常は「任意」です )"
 
 #: usr/local/www/firewall_nat_edit.php:620
 #: usr/local/www/firewall_nat_edit.php:735
@@ -18016,7 +18016,9 @@ msgstr "送信先ポート範囲"
 msgid ""
 "Specify the port or port range for the destination of the packet for this "
 "mapping."
-msgstr "マッピング"このため、パケットの送信先のポートまたはポート範囲を指定してください」 。"
+msgstr ""
+"このマッピングでパケットの送信先になる、"
+"ポートもしくはポート範囲を指定してください"
 
 #: usr/local/www/firewall_nat_edit.php:735
 #: usr/local/www/firewall_nat_edit.php:742
@@ -18026,7 +18028,7 @@ msgstr "マッピング"このため、パケットの送信先のポートま�
 #: usr/local/www/firewall_nat_edit.php:749
 #: usr/local/www/firewall_nat_edit.php:749
 msgid "field empty if you only want to map a single port"
-msgstr "フィールドの空のあなたは、単一のポートをマップする場合"
+msgstr "単一ポートのマッピングの場合はフィールドを空にしてください"
 
 #: usr/local/www/firewall_nat_edit.php:743
 #: usr/local/www/firewall_nat_edit.php:750
@@ -18038,7 +18040,9 @@ msgstr "フィールドの空のあなたは、単一のポートをマップす
 msgid ""
 "Enter the internal IP address of the server on which you want to map the "
 "ports."
-msgstr "ポート」を、マップにしたいサーバーの内部IPアドレスを入力してください "。"
+msgstr ""
+"ポートにマッピングするサーバの内部 IP アドレスを"
+"入力してください"
 
 #: usr/local/www/firewall_nat_edit.php:748
 #: usr/local/www/firewall_nat_edit.php:755
@@ -18048,7 +18052,7 @@ msgstr "ポート」を、マップにしたいサーバーの内部IPアドレ�
 #: usr/local/www/firewall_nat_edit.php:762
 #: usr/local/www/firewall_nat_edit.php:762
 msgid "Redirect target port"
-msgstr "ターゲットポートをリダイレクト"
+msgstr "リダイレクトターゲットポート"
 
 #: usr/local/www/firewall_nat_edit.php:762
 #: usr/local/www/firewall_nat_edit.php:769
@@ -18061,7 +18065,10 @@ msgid ""
 "Specify the port on the machine with the IP address entered above. In case "
 "of a port range, specify the beginning port of the range (the end port will "
 "be calculated automatically)."
-msgstr ""上で入力したIPアドレスを持つマシンのポートを指定します。場合は、「ポート範囲の、 （エンド·ポートが「自動的に計算されます）範囲の開始ポートを指定します。"
+msgstr ""
+"上記で入力した IP アドレスのマシンのポートを指定してください。
+"ポート範囲の場合は、範囲の開始ポートを指定してください"
+" ( 最終ポートは自動的に計算されます )"
 
 #: usr/local/www/firewall_nat_edit.php:766
 #: usr/local/www/firewall_nat_edit.php:773
@@ -18071,7 +18078,7 @@ msgstr ""上で入力したIPアドレスを持つマシンのポートを指定
 #: usr/local/www/firewall_nat_edit.php:780
 #: usr/local/www/firewall_nat_edit.php:780
 msgid "Hint: this is usually identical to the 'from' port above"
-msgstr "ヒント：これは、ポート'から'上、通常と同じです"
+msgstr "ヒント: これは通常上記の「内向き」ポートと同じです"
 
 #: usr/local/www/firewall_nat_edit.php:776
 #: usr/local/www/firewall_nat_out_edit.php:629
@@ -18092,14 +18099,15 @@ msgstr "ヒント：これは、ポート'から'上、通常と同じです"
 #: usr/local/www/firewall_nat_edit.php:790
 #: usr/local/www/firewall_nat_out_edit.php:656
 msgid "No XMLRPC Sync"
-msgstr "いいえXMLRPC同期しない"
+msgstr "XMLRPC 同期を禁止"
 
 #: usr/local/www/firewall_nat_edit.php:779
 #: usr/local/www/firewall_nat_edit.php:786
 #: usr/local/www/firewall_nat_edit.php:785
 msgid ""
 "HINT: This prevents the rule from automatically syncing to other CARP members"
-msgstr ""ヒント：これは自動的に他のCARPのメンバーと同期からルールを防ぎ"
+msgstr ""
+"ヒント: これはルールを、他の CARP メンバと自動同期されないようにします"
 
 #: usr/local/www/firewall_nat_edit.php:794
 #: usr/local/www/firewall_nat_edit.php:825
@@ -18116,7 +18124,7 @@ msgstr ""ヒント：これは自動的に他のCARPのメンバーと同期か�
 #: usr/local/www/firewall_nat_edit.php:809
 #: usr/local/www/firewall_nat_edit.php:840
 msgid "Filter rule association"
-msgstr "フィルタ·ルールの関連付け"
+msgstr "フィルタルールの関連付け"
 
 #: usr/local/www/firewall_nat_edit.php:798
 #: usr/local/www/firewall_nat_edit.php:831
@@ -18133,7 +18141,7 @@ msgstr "フィルタ·ルールの関連付け"
 #: usr/local/www/firewall_nat_edit.php:813
 #: usr/local/www/firewall_nat_edit.php:846
 msgid "Pass"
-msgstr "パス"
+msgstr "許可"
 
 #: usr/local/www/firewall_nat_edit.php:808
 #: usr/local/www/firewall_nat_edit.php:816
@@ -18143,7 +18151,7 @@ msgstr "パス"
 #: usr/local/www/firewall_nat_edit.php:823
 #: usr/local/www/firewall_nat_edit.php:823
 msgid "View the filter rule"
-msgstr "フィルタルールを表示する"
+msgstr "フィルタルールの表示"
 
 #: usr/local/www/firewall_nat_edit.php:816
 #: usr/local/www/firewall_nat_edit.php:824
@@ -18153,7 +18161,7 @@ msgstr "フィルタルールを表示する"
 #: usr/local/www/firewall_nat_edit.php:831
 #: usr/local/www/firewall_nat_edit.php:831
 msgid "Create new associated filter rule"
-msgstr "新しい関連するフィルタルールを作成する"
+msgstr "新規関連フィルタルールの作成"
 
 #: usr/local/www/firewall_nat_edit.php:829
 #: usr/local/www/firewall_nat_edit.php:837
@@ -18163,7 +18171,7 @@ msgstr "新しい関連するフィルタルールを作成する"
 #: usr/local/www/firewall_nat_edit.php:844
 #: usr/local/www/firewall_nat_edit.php:844
 msgid "Add associated filter rule"
-msgstr "関連するフィルタルールを追加"
+msgstr "関連フィルタルールを追加"
 
 #: usr/local/www/firewall_nat_edit.php:830
 #: usr/local/www/firewall_nat_edit.php:838
@@ -18173,63 +18181,63 @@ msgstr "関連するフィルタルールを追加"
 #: usr/local/www/firewall_nat_edit.php:845
 #: usr/local/www/firewall_nat_edit.php:845
 msgid "Add unassociated filter rule"
-msgstr "関連付けられていないフィルタルールを追加します。"
+msgstr "非関連フィルタルールの追加"
 
 #: usr/local/www/firewall_nat_out.php:111
 #: usr/local/www/firewall_nat_out.php:112
 #: usr/local/www/firewall_nat_out.php:112
 #, php-format
 msgid "Auto created rule for ISAKMP - %1$s to %2$s"
-msgstr "%2$sには%1$s - 自動ISAKMPのためのルールを作成した"
+msgstr "ISAKMP のルールを自動作成 - %1$s to %2$s"
 
 #: usr/local/www/firewall_nat_out.php:121
 #: usr/local/www/firewall_nat_out.php:123
 #: usr/local/www/firewall_nat_out.php:123
 #, php-format
 msgid "Auto created rule for %1$s to %2$s"
-msgstr "自動%2$sには%1$sのルールを作成しました"
+msgstr "%1$s のルールを %2$s に自動作成しました"
 
 #: usr/local/www/firewall_nat_out.php:131
 #: usr/local/www/firewall_nat_out.php:135
 #: usr/local/www/firewall_nat_out.php:135
 #, php-format
 msgid "Auto created rule for localhost to %1$s"
-msgstr "オートは%1$sにlocalhostのルールを作成した"
+msgstr "ローカルホストのルールを %1$s に自動作成しました"
 
 #: usr/local/www/firewall_nat_out.php:147
 #: usr/local/www/firewall_nat_out.php:148
 #: usr/local/www/firewall_nat_out.php:152
 #: usr/local/www/firewall_nat_out.php:152
 msgid "Auto created rule for PPTP server"
-msgstr "オートは、PPTPサーバー用のルールを作成した"
+msgstr "PPTP サーバのルールを自動作成しました"
 
 #: usr/local/www/firewall_nat_out.php:167
 #: usr/local/www/firewall_nat_out.php:168
 #: usr/local/www/firewall_nat_out.php:173
 #: usr/local/www/firewall_nat_out.php:173
 msgid "Auto created rule for PPPoE server"
-msgstr "自動PPPoEサーバのルールを作成しました"
+msgstr "PPPoE サーバのルールを自動作成しました"
 
 #: usr/local/www/firewall_nat_out.php:187
 #: usr/local/www/firewall_nat_out.php:188
 #: usr/local/www/firewall_nat_out.php:194
 #: usr/local/www/firewall_nat_out.php:194
 msgid "Auto created rule for L2TP server"
-msgstr "オートは、L2TPサーバのルールを作成しました"
+msgstr "L2TP サーバのルールを自動作成しました"
 
 #: usr/local/www/firewall_nat_out.php:201
 #: usr/local/www/firewall_nat_out.php:202
 #: usr/local/www/firewall_nat_out.php:209
 #: usr/local/www/firewall_nat_out.php:209
 msgid "Auto created rule for OpenVPN server"
-msgstr "自動OpenVPNのサーバー用のルールを作成した"
+msgstr "OpenVPN サーバのルールを自動作成しました"
 
 #: usr/local/www/firewall_nat_out.php:212
 #: usr/local/www/firewall_nat_out.php:213
 #: usr/local/www/firewall_nat_out.php:220
 #: usr/local/www/firewall_nat_out.php:220
 msgid "Default rules for each interface have been created."
-msgstr "各インタフェースのデフォルトルールが作成されている。"
+msgstr "インタフェース毎のデフォルトルールを作成しました"
 
 #: usr/local/www/firewall_nat_out.php:294
 #: usr/local/www/firewall_nat_out.php:304
@@ -18238,7 +18246,7 @@ msgstr "各インタフェースのデフォルトルールが作成されてい
 #: usr/local/www/firewall_nat_out.php:311
 #: usr/local/www/firewall_nat_out.php:311
 msgid "The NAT configuration has been changed."
-msgstr "NAT設定が変更されました。"
+msgstr "NAT 構成が変更されました"
 
 #: usr/local/www/firewall_nat_out.php:310
 #: usr/local/www/firewall_nat_out.php:320
@@ -18247,7 +18255,7 @@ msgstr "NAT設定が変更されました。"
 #: usr/local/www/firewall_nat_out.php:327
 #: usr/local/www/firewall_nat_out.php:327
 msgid "Mode:"
-msgstr "モード："
+msgstr "モード: "
 
 #: usr/local/www/firewall_nat_out.php:313
 #: usr/local/www/firewall_nat_out.php:323
@@ -18256,7 +18264,7 @@ msgstr "モード："
 #: usr/local/www/firewall_nat_out.php:330
 #: usr/local/www/firewall_nat_out.php:330
 msgid "Automatic outbound NAT rule generation"
-msgstr "自動アウトバウンドNATルールの生成"
+msgstr "外向き NAT ルールの自動生成"
 
 #: usr/local/www/firewall_nat_out.php:313
 #: usr/local/www/firewall_nat_out.php:323
@@ -18265,7 +18273,7 @@ msgstr "自動アウトバウンドNATルールの生成"
 #: usr/local/www/firewall_nat_out.php:330
 #: usr/local/www/firewall_nat_out.php:330
 msgid "(IPsec passthrough included)"
-msgstr "（ IPsecのパススルーは含まれています）"
+msgstr "( IPsec パススルーを含みます )"
 
 #: usr/local/www/firewall_nat_out.php:318
 #: usr/local/www/firewall_nat_out.php:328
@@ -18274,7 +18282,7 @@ msgstr "（ IPsecのパススルーは含まれています）"
 #: usr/local/www/firewall_nat_out.php:335
 #: usr/local/www/firewall_nat_out.php:335
 msgid "Manual Outbound NAT rule generation"
-msgstr "手動のアウトバウンドNATルールの生成"
+msgstr "外向き NAT ルールの手動生成"
 
 #: usr/local/www/firewall_nat_out.php:318
 #: usr/local/www/firewall_nat_out.php:328
@@ -18283,7 +18291,7 @@ msgstr "手動のアウトバウンドNATルールの生成"
 #: usr/local/www/firewall_nat_out.php:335
 #: usr/local/www/firewall_nat_out.php:335
 msgid "(AON - Advanced Outbound NAT)"
-msgstr "（ AON - 高度なアウトバウンドNAT）"
+msgstr "( AON - 高度な外向き NAT ）"
 
 #: usr/local/www/firewall_nat_out.php:336
 #: usr/local/www/firewall_nat_out.php:346
@@ -18292,7 +18300,7 @@ msgstr "（ AON - 高度なアウトバウンドNAT）"
 #: usr/local/www/firewall_nat_out.php:353
 #: usr/local/www/firewall_nat_out.php:353
 msgid "Mappings:"
-msgstr "マッピング："
+msgstr "マッピング: "
 
 #: usr/local/www/firewall_nat_out.php:343
 #: usr/local/www/firewall_nat_out.php:353
@@ -18305,7 +18313,7 @@ msgstr "マッピング："
 #: usr/local/www/diag_system_pftop.php:160
 #: usr/local/www/firewall_nat_out.php:360
 msgid "Source Port"
-msgstr "ソースポート"
+msgstr "送信元ポート"
 
 #: usr/local/www/firewall_nat_out.php:345
 #: usr/local/www/firewall_nat_out.php:355
@@ -18318,7 +18326,7 @@ msgstr "ソースポート"
 #: usr/local/www/diag_system_pftop.php:153
 #: usr/local/www/firewall_nat_out.php:362
 msgid "Destination Port"
-msgstr "宛先ポート"
+msgstr "送信先ポート"
 
 #: usr/local/www/firewall_nat_out.php:346
 #: usr/local/www/firewall_nat_out.php:356
@@ -18327,7 +18335,7 @@ msgstr "宛先ポート"
 #: usr/local/www/firewall_nat_out.php:363
 #: usr/local/www/firewall_nat_out.php:363
 msgid "NAT Address"
-msgstr "NATアドレス"
+msgstr "NAT アドレス"
 
 #: usr/local/www/firewall_nat_out.php:347
 #: usr/local/www/firewall_nat_out.php:357
@@ -18336,7 +18344,7 @@ msgstr "NATアドレス"
 #: usr/local/www/firewall_nat_out.php:364
 #: usr/local/www/firewall_nat_out.php:364
 msgid "NAT Port"
-msgstr "NATのポート"
+msgstr "NAT ポート"
 
 #: usr/local/www/firewall_nat_out.php:348
 #: usr/local/www/firewall_nat_out.php:358
@@ -18361,7 +18369,7 @@ msgstr "静的ポート"
 #: usr/local/www/firewall_nat_out.php:371
 #: usr/local/www/firewall_nat_out.php:465
 msgid "add new mapping"
-msgstr "新しいマッピングを追加する"
+msgstr "新規マッピングの追加"
 
 #: usr/local/www/firewall_nat_out.php:425
 #: usr/local/www/firewall_nat_out.php:435
@@ -18371,7 +18379,7 @@ msgstr "新しいマッピングを追加する"
 #: usr/local/www/firewall_nat_out.php:439
 #: usr/local/www/firewall_nat_out.php:439
 msgid "YES"
-msgstr "YES"
+msgstr "はい"
 
 #: usr/local/www/firewall_nat_out.php:427
 #: usr/local/www/firewall_nat_out.php:437
@@ -18381,7 +18389,7 @@ msgstr "YES"
 #: usr/local/www/firewall_nat_out.php:441
 #: usr/local/www/firewall_nat_out.php:441
 msgid "NO"
-msgstr "NO"
+msgstr "いいえ"
 
 #: usr/local/www/firewall_nat_out.php:436
 #: usr/local/www/firewall_nat_out.php:447
@@ -18391,7 +18399,7 @@ msgstr "NO"
 #: usr/local/www/firewall_nat_out.php:451
 #: usr/local/www/firewall_nat_out.php:451
 msgid "edit mapping"
-msgstr "編集マッピング"
+msgstr "マッピングの編集"
 
 #: usr/local/www/firewall_nat_out.php:439 usr/local/www/firewall_rules.php:435
 #: usr/local/www/firewall_rules.php:464 usr/local/www/firewall_rules.php:492
@@ -18409,7 +18417,7 @@ msgstr "編集マッピング"
 #: usr/local/www/firewall_rules.php:421 usr/local/www/firewall_rules.php:450
 #: usr/local/www/firewall_rules.php:478 usr/local/www/firewall_rules.php:765
 msgid "move selected rules before this rule"
-msgstr "このルールの前に、選択したルールを移動"
+msgstr "選択したルールをこのルールの前に移動"
 
 #: usr/local/www/firewall_nat_out.php:440 usr/local/www/firewall_nat.php:314
 #: usr/local/www/firewall_nat_out.php:451
@@ -18419,7 +18427,7 @@ msgstr "このルールの前に、選択したルールを移動"
 #: usr/local/www/firewall_nat_out.php:455 usr/local/www/firewall_nat.php:330
 #: usr/local/www/firewall_nat_out.php:455
 msgid "add a new NAT based on this one"
-msgstr "この1に基づいて、新しいNATを追加"
+msgstr "これに基づいた新規 NAT の追加"
 
 #: usr/local/www/firewall_nat_out.php:449
 #: usr/local/www/firewall_nat_out.php:460
@@ -18429,7 +18437,7 @@ msgstr "この1に基づいて、新しいNATを追加"
 #: usr/local/www/firewall_nat_out.php:464
 #: usr/local/www/firewall_nat_out.php:464
 msgid "move selected mappings to end"
-msgstr "終了するには、選択したマッピングを移動"
+msgstr "選択したマッピングを末尾に移動"
 
 #: usr/local/www/firewall_nat_out.php:453 usr/local/www/firewall_rules.php:391
 #: usr/local/www/firewall_rules.php:392 usr/local/www/firewall_rules.php:823
@@ -18474,7 +18482,7 @@ msgstr "選択したマッピングを削除"
 #: usr/local/www/firewall_nat_out.php:468
 #: usr/local/www/firewall_nat_out.php:468
 msgid "Do you really want to delete the selected mappings?"
-msgstr "あなたは本当に選択したマッピングを削除しますか？"
+msgstr "本当に選択したマッピングを削除しますか？"
 
 #: usr/local/www/firewall_nat_out.php:461
 #: usr/local/www/firewall_nat_out.php:472
@@ -18491,7 +18499,14 @@ msgid ""
 "on this page will be used. <br/><br/> If a target address other than a WAN-"
 "type interface's IP address is used, then depending on the way the WAN "
 "connection is setup, a "
-msgstr "「自動アウトバウンドでのNATは、有効なマッピングが自動的にのために作成されている「 （WAN型の接続を除く）各インターフェイスのサブネットとこれに関するルールはルール」ページには、手動のアウトバウンドNATが有効になっている場合、アウトバウンドNAT ignored.<br/><br/>です」自動的に生成されることはありませんし、指定したマッピングのみ」このページでは。 <br/><br/>を使用する場合は、WAN以外のターゲットアドレス」タイプのインタフェースのIPアドレスは、次にように、WANに応じて、使用されている「接続セットアップ、 aは"
+msgstr ""
+"自動外向き NAT が有効な場合は、インタフェースのサブネット毎にマッピングが自動的に"
+"作成され ( WAN 型の接続を除く)、このページのルールは無視されます。<br/><br/>"
+"手動外向き NAT が有効な場合は、外向き NAT ルールは自動生成されず、このページで"
+"指定したマッピングだけが使用されます。<br/><br/>"
+"ターゲットアドレスに WAN 型インタフェースの IP アドレス以外が使用されていて、"
+"WAN 接続のセットアップ方法に"
+"依存している場合は、"
 
 #: usr/local/www/firewall_nat_out.php:469
 #: usr/local/www/firewall_nat_out_edit.php:588
@@ -18512,7 +18527,7 @@ msgstr "「自動アウトバウンドでのNATは、有効なマッピングが
 #: usr/local/www/firewall_nat_out_edit.php:616
 #: usr/local/www/carp_status.php:132
 msgid "Virtual IP"
-msgstr "仮想IP"
+msgstr "仮想 IP"
 
 #: usr/local/www/firewall_nat_out.php:470
 #: usr/local/www/firewall_nat_out.php:481
@@ -18522,7 +18537,7 @@ msgstr "仮想IP"
 #: usr/local/www/firewall_nat_out.php:485
 #: usr/local/www/firewall_nat_out.php:485
 msgid " may also be required."
-msgstr "また必要とされ得る。"
+msgstr " も必要になります。"
 
 #: usr/local/www/firewall_nat_out.php:472
 #: usr/local/www/firewall_nat_out.php:483
@@ -18534,14 +18549,16 @@ msgstr "また必要とされ得る。"
 msgid ""
 "To completely disable outbound NAT, switch to Manual Outbound NAT then "
 "delete any NAT rules that appear in the list."
-msgstr "「完全に無効にするアウトバウンドNAT、手動アウトバウンドNATへの切り替えが、その後には「リストに表示されるすべてのNATルールを削除。"
+msgstr ""
+"外向き NAT を完全に無効にするには、手動外向き NAT に切り替えて、"
+"リストにある全ての NAT ルールを削除してください。"
 
 #: usr/local/www/firewall_nat_out_edit.php:130
 #: usr/local/www/firewall_nat_out_edit.php:134
 #: usr/local/www/firewall_nat_out_edit.php:140
 #: usr/local/www/firewall_nat_out_edit.php:140
 msgid "Source bit count"
-msgstr "ソースビット数"
+msgstr "送信元ビット数"
 
 #: usr/local/www/firewall_nat_out_edit.php:130
 #: usr/local/www/firewall_rules_edit.php:310
@@ -18554,7 +18571,7 @@ msgstr "ソースビット数"
 #: usr/local/www/firewall_rules_edit.php:342
 #: usr/local/www/firewall_nat_out_edit.php:140
 msgid "Destination bit count"
-msgstr "先のビット数"
+msgstr "送信先ビット数"
 
 #: usr/local/www/firewall_nat_out_edit.php:137
 #: usr/local/www/firewall_nat_out_edit.php:150
@@ -18563,7 +18580,8 @@ msgstr "先のビット数"
 #: usr/local/www/firewall_nat_out_edit.php:160
 msgid ""
 "You must supply either a valid port or port alias for the source port entry."
-msgstr ""あなたは、ソースポートのエントリの有効なポートまたはポートの別名のいずれかを指定する必要があります。"
+msgstr ""
+"送信元ポートエントリに、有効なポートもしくはポートエイリアスを指定してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:140
 #: usr/local/www/firewall_nat_out_edit.php:153
@@ -18573,7 +18591,9 @@ msgstr ""あなたは、ソースポートのエントリの有効なポート�
 msgid ""
 "You must supply either a valid port or port alias for the destination port "
 "entry."
-msgstr "エントリ"あなたは、宛先ポートの有効なポートまたはポートの別名のいずれかを指定する必要があります」 。"
+msgstr "
+"送信先ポートエントリに、"
+"有効なポートもしくはポートエイリアスを指定してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:143
 #: usr/local/www/firewall_nat_out_edit.php:156
@@ -18581,7 +18601,7 @@ msgstr "エントリ"あなたは、宛先ポートの有効なポートまた�
 #: usr/local/www/firewall_nat_out_edit.php:166
 #: usr/local/www/firewall_nat_out_edit.php:166
 msgid "You must supply a valid port for the NAT port entry."
-msgstr "あなたは、NATのポートエントリの有効なポートを指定する必要があります。"
+msgstr "NAT ポートエントリに、有効なポートを指定してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:147
 #: usr/local/www/firewall_nat_out_edit.php:160
@@ -18589,7 +18609,7 @@ msgstr "あなたは、NATのポートエントリの有効なポートを指定
 #: usr/local/www/firewall_nat_out_edit.php:170
 #: usr/local/www/firewall_nat_out_edit.php:170
 msgid "A valid source must be specified."
-msgstr "有効なソースを指定する必要があります。"
+msgstr "有効な送信元を指定してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:155
 #: usr/local/www/firewall_nat_out_edit.php:168
@@ -18597,7 +18617,7 @@ msgstr "有効なソースを指定する必要があります。"
 #: usr/local/www/firewall_nat_out_edit.php:178
 #: usr/local/www/firewall_nat_out_edit.php:178
 msgid "A valid destination must be specified."
-msgstr "有効な宛先を指定する必要があります。"
+msgstr "有効な送信先を指定してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:163
 #: usr/local/www/firewall_nat_out_edit.php:176
@@ -18605,7 +18625,7 @@ msgstr "有効な宛先を指定する必要があります。"
 #: usr/local/www/firewall_nat_out_edit.php:186
 #: usr/local/www/firewall_nat_out_edit.php:186
 msgid "Negating destination address of "any" is invalid."
-msgstr "の否定宛先アドレス「any」は、無効です。"
+msgstr "「任意」の送信先アドレスの否定は、無効です"
 
 #: usr/local/www/firewall_nat_out_edit.php:168
 #: usr/local/www/firewall_nat_out_edit.php:181
@@ -18613,7 +18633,7 @@ msgstr "の否定宛先アドレス「any」は、無効です。"
 #: usr/local/www/firewall_nat_out_edit.php:191
 #: usr/local/www/firewall_nat_out_edit.php:191
 msgid "A valid target IP address must be specified."
-msgstr "有効なターゲットIPアドレスを指定する必要があります。"
+msgstr "有効なターゲット IP アドレスを指定してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:173
 #: usr/local/www/firewall_nat_out_edit.php:186
@@ -18621,7 +18641,7 @@ msgstr "有効なターゲットIPアドレスを指定する必要がありま�
 #: usr/local/www/firewall_nat_out_edit.php:196
 #: usr/local/www/firewall_nat_out_edit.php:196
 msgid "A valid target IP must be specified when using the 'Other Subnet' type."
-msgstr "「その他サブネット」タイプを使用している場合、有効なターゲットIPを指定する必要があります。"
+msgstr "「その他のサブネット」タイプを使用する場合は、有効なターゲット IP を指定してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:176
 #: usr/local/www/firewall_nat_out_edit.php:189
@@ -18631,7 +18651,9 @@ msgstr "「その他サブネット」タイプを使用している場合、有
 msgid ""
 "A valid target bit count must be specified when using the 'Other Subnet' "
 "type."
-msgstr "タイプ ""その他のサブネットを「使用している場合、有効なターゲットビット数を指定する必要があります」 。"
+msgstr ""
+"「その他のサブネット」タイプを使用する場合は、"
+"有効なターゲットビット数を指定してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:189
 #: usr/local/www/firewall_nat_out_edit.php:202
@@ -18639,7 +18661,7 @@ msgstr "タイプ ""その他のサブネットを「使用している場合、
 #: usr/local/www/firewall_nat_out_edit.php:212
 #: usr/local/www/firewall_nat_out_edit.php:212
 msgid "Only Round Robin pool options may be chosen when selecting an alias."
-msgstr "エイリアスを選択するときにのみラウンドロビン·プール·オプションを選択することができる。"
+msgstr "エイリアスを選択した場合のみ、ラウンドロビンプールオプションを選択できます"
 
 #: usr/local/www/firewall_nat_out_edit.php:403
 #: usr/local/www/firewall_nat_out_edit.php:416
@@ -18647,7 +18669,7 @@ msgstr "エイリアスを選択するときにのみラウンドロビン·プ�
 #: usr/local/www/firewall_nat_out_edit.php:432
 #: usr/local/www/firewall_nat_out_edit.php:432
 msgid "Edit Advanced Outbound NAT entry"
-msgstr "編集高度なアウトバウンドのNATエントリ"
+msgstr "高度な外向き NAT エントリを編集"
 
 #: usr/local/www/firewall_nat_out_edit.php:410
 #: usr/local/www/firewall_nat_out_edit.php:423
@@ -18655,7 +18677,7 @@ msgstr "編集高度なアウトバウンドのNATエントリ"
 #: usr/local/www/firewall_nat_out_edit.php:439
 #: usr/local/www/firewall_nat_out_edit.php:439
 msgid "Do not NAT"
-msgstr "しないで、NAT"
+msgstr "NAT 禁止"
 
 #: usr/local/www/firewall_nat_out_edit.php:413
 #: usr/local/www/firewall_nat_out_edit.php:426
@@ -18665,7 +18687,9 @@ msgstr "しないで、NAT"
 msgid ""
 "Enabling this option will disable NAT for traffic matching this rule and "
 "stop processing Outbound NAT rules."
-msgstr ""このオプションを有効にすると、このルールに一致するトラフィックのNATを無効にします「アウトバウンドNATルールの処理を停止する。"
+msgstr ""
+"このオプションを有効にすると、このルールに一致するトラフィックに対する NAT を無効にし、"
+"外向き NAT ルールの実行を停止します"
 
 #: usr/local/www/firewall_nat_out_edit.php:414
 #: usr/local/www/firewall_nat_out_edit.php:427
@@ -18673,7 +18697,7 @@ msgstr ""このオプションを有効にすると、このルールに一致�
 #: usr/local/www/firewall_nat_out_edit.php:443
 #: usr/local/www/firewall_nat_out_edit.php:443
 msgid "Hint: in most cases, you won't use this option."
-msgstr "ヒント：ほとんどの場合、このオプションを使用することはありません。"
+msgstr "ヒント: 通常は、このオプションは使用しません"
 
 #: usr/local/www/firewall_nat_out_edit.php:463
 #: usr/local/www/firewall_nat_out_edit.php:476
@@ -18681,7 +18705,7 @@ msgstr "ヒント：ほとんどの場合、このオプションを使用する
 #: usr/local/www/firewall_nat_out_edit.php:492
 #: usr/local/www/firewall_nat_out_edit.php:492
 msgid "Choose which protocol this rule should match."
-msgstr "選択したどのプロトコルこのルールが一致している必要があります。"
+msgstr "このルールに一致させるプロトコルを選択してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:464
 #: usr/local/www/firewall_nat_out_edit.php:477
@@ -18690,7 +18714,7 @@ msgstr "選択したどのプロトコルこのルールが一致している必
 #: usr/local/www/firewall_nat_out_edit.php:493
 #, php-format
 msgid "Hint: in most cases, you should specify %s any %s here."
-msgstr "ヒント：ほとんどの場合、あなたはここでどんな%s %s指定する必要があります。"
+msgstr "ヒント: 通常は、ここで %s 任意 %s を指定します"
 
 #: usr/local/www/firewall_nat_out_edit.php:488
 #: usr/local/www/firewall_nat_out_edit.php:501
@@ -18699,7 +18723,7 @@ msgstr "ヒント：ほとんどの場合、あなたはここでどんな%s %s�
 #: usr/local/www/firewall_nat_out_edit.php:519
 #: usr/local/www/firewall_nat_out_edit.php:519
 msgid "Enter the source network for the outbound NAT mapping."
-msgstr "アウトバウンドのNATマッピングのソース·ネットワークを入力してください。"
+msgstr "外向き NAT マッピングの送信元ネットワークを入力してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:491
 #: usr/local/www/firewall_nat_out_edit.php:504
@@ -18708,7 +18732,7 @@ msgstr "アウトバウンドのNATマッピングのソース·ネットワー�
 #: usr/local/www/firewall_nat_out_edit.php:522
 #: usr/local/www/firewall_nat_out_edit.php:522
 msgid "Source port:"
-msgstr "送信元ポート："
+msgstr "送信元ポート: "
 
 #: usr/local/www/firewall_nat_out_edit.php:492
 #: usr/local/www/firewall_nat_out_edit.php:505
@@ -18717,7 +18741,9 @@ msgstr "送信元ポート："
 msgid ""
 "(leave \n"
 "blank for any)"
-msgstr "「 （任意の空白の\nのままに」 ）"
+msgstr ""
+"( 任意の場合は \n"
+"空白にしてください )"
 
 #: usr/local/www/firewall_nat_out_edit.php:526
 #: usr/local/www/firewall_nat_out_edit.php:539
@@ -18726,7 +18752,7 @@ msgstr "「 （任意の空白の\nのままに」 ）"
 #: usr/local/www/firewall_nat_out_edit.php:556
 #: usr/local/www/firewall_nat_out_edit.php:556
 msgid "Enter the destination network for the outbound NAT mapping."
-msgstr "アウトバウンドのNATマッピングのために宛先ネットワークを入力します。"
+msgstr "外向き NAT マッピングの送信先ネットワークを入力してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:530
 #: usr/local/www/firewall_nat_out_edit.php:543
@@ -18735,7 +18761,7 @@ msgstr "アウトバウンドのNATマッピングのために宛先ネットワ
 #: usr/local/www/firewall_nat_out_edit.php:560
 #: usr/local/www/firewall_nat_out_edit.php:560
 msgid "Destination port:"
-msgstr "宛先ポート："
+msgstr "送信先ポート: "
 
 #: usr/local/www/firewall_nat_out_edit.php:531
 #: usr/local/www/firewall_nat_out_edit.php:544
@@ -18744,7 +18770,9 @@ msgstr "宛先ポート："
 msgid ""
 "(leave blank for \n"
 "any)"
-msgstr "「 （いずれかを\nは空白のままに」 ）"
+msgstr "
+"( 任意の場合は \n"
+"空白にしてください )"
 
 #: usr/local/www/firewall_nat_out_edit.php:538
 #: usr/local/www/firewall_nat_out_edit.php:551
@@ -18752,7 +18780,7 @@ msgstr "「 （いずれかを\nは空白のままに」 ）"
 #: usr/local/www/firewall_nat_out_edit.php:567
 #: usr/local/www/firewall_nat_out_edit.php:567
 msgid "Translation"
-msgstr "翻訳"
+msgstr "変換"
 
 #: usr/local/www/firewall_nat_out_edit.php:544
 #: usr/local/www/firewall_nat_out_edit.php:557
@@ -18760,7 +18788,7 @@ msgstr "翻訳"
 #: usr/local/www/firewall_nat_out_edit.php:573
 #: usr/local/www/firewall_nat_out_edit.php:573
 msgid "Interface address"
-msgstr "インターフェース·アドレス"
+msgstr "インタフェースアドレス"
 
 #: usr/local/www/firewall_nat_out_edit.php:568
 #: usr/local/www/firewall_nat_out_edit.php:581
@@ -18768,7 +18796,7 @@ msgstr "インターフェース·アドレス"
 #: usr/local/www/firewall_nat_out_edit.php:597
 #: usr/local/www/firewall_nat_out_edit.php:597
 msgid "Other Subnet (Enter Below)"
-msgstr "他のサブネット（下記に入力）"
+msgstr "その他のサブネット ( 下記に入力 )"
 
 #: usr/local/www/firewall_nat_out_edit.php:575
 #: usr/local/www/firewall_nat_out_edit.php:588
@@ -18776,7 +18804,7 @@ msgstr "他のサブネット（下記に入力）"
 #: usr/local/www/firewall_nat_out_edit.php:603
 #: usr/local/www/firewall_nat_out_edit.php:603
 msgid "Other Subnet:"
-msgstr "その他サブネット："
+msgstr "その他のサブネット: "
 
 #: usr/local/www/firewall_nat_out_edit.php:586
 #: usr/local/www/firewall_nat_out_edit.php:599
@@ -18784,7 +18812,7 @@ msgstr "その他サブネット："
 #: usr/local/www/firewall_nat_out_edit.php:614
 #: usr/local/www/firewall_nat_out_edit.php:614
 msgid "Packets matching this rule will be mapped to the IP address given here."
-msgstr "このルールに一致するパケットは、ここで指定したIPアドレスにマッピングされます。"
+msgstr "このルールに一致するパケットは、ここで指定した IP アドレスにマッピングされます"
 
 #: usr/local/www/firewall_nat_out_edit.php:587
 #: usr/local/www/firewall_nat_out_edit.php:600
@@ -18795,7 +18823,10 @@ msgid ""
 "If you want this rule to apply to another IP address rather than the IP "
 "address of the interface chosen above, select it here (you will need to "
 "define "
-msgstr "上記選択したインターフェイスのアドレスが「このルールはIPではなく別のIPアドレスに適用する場合は、「 （あなたは「定義する必要があります、ここでそれを選択"
+msgstr ""
+"このルールを、上記で選択したインタフェースの IP アドレスではなく、"
+"その他の IP アドレスに適用したい場合は、ここで選択します "
+"( "
 
 #: usr/local/www/firewall_nat_out_edit.php:588
 #: usr/local/www/firewall_nat_out_edit.php:601
@@ -18803,14 +18834,16 @@ msgstr "上記選択したインターフェイスのアドレスが「このル
 #: usr/local/www/firewall_nat_out_edit.php:616
 #: usr/local/www/firewall_nat_out_edit.php:616
 msgid "addresses on the interface first)."
-msgstr "インターフェイス上のアドレスが最初） 。"
+msgstr "最初にそのインタフェースのアドレスを定義する必要があります )"
 
 #: usr/local/www/firewall_nat_out_edit.php:589
 #: usr/local/www/firewall_nat_out_edit.php:602
 msgid ""
 "Also note that if you are trying to redirect connections on the LAN select "
 "the "any" option."
-msgstr ""すべての"オプション"また、あなたは、LAN上の接続をリダイレクトしようとする場合に選択していることに注意してください」 。"
+msgstr ""
+"また、「任意」オプションを選択した LAN にリダイレクト接続する場合も、"
+"注意が必要です。"
 
 #: usr/local/www/firewall_nat_out_edit.php:605
 #: usr/local/www/firewall_nat_out_edit.php:618
@@ -18820,7 +18853,9 @@ msgstr ""すべての"オプション"また、あなたは、LAN上の接続を
 msgid ""
 "Only Round Robin types work with Host Aliases. Any type can be used with a "
 "Subnet."
-msgstr ""唯一のラウンドロビン·タイプは、ホスト別名で動作します。任意のタイプで使用できる「サブネット。"
+msgstr ""
+"ラウンドロビンタイプは、ホストエイリアスでのみ機能します。"
+"任意タイプはサブネットで使用します。"
 
 #: usr/local/www/firewall_nat_out_edit.php:606
 #: usr/local/www/firewall_nat_out_edit.php:619
@@ -18828,7 +18863,7 @@ msgstr ""唯一のラウンドロビン·タイプは、ホスト別名で動作
 #: usr/local/www/firewall_nat_out_edit.php:633
 #: usr/local/www/firewall_nat_out_edit.php:633
 msgid "Round Robin: Loops through the translation addresses."
-msgstr "ラウンドロビン：翻訳·アドレスをループします。"
+msgstr "ラウンドロビン: 変換されたアドレスにループスルーします"
 
 #: usr/local/www/firewall_nat_out_edit.php:607
 #: usr/local/www/firewall_nat_out_edit.php:620
@@ -18836,7 +18871,7 @@ msgstr "ラウンドロビン：翻訳·アドレスをループします。"
 #: usr/local/www/firewall_nat_out_edit.php:634
 #: usr/local/www/firewall_nat_out_edit.php:634
 msgid "Random: Selects an address from the translation address pool at random."
-msgstr "ランダム：ランダムに変換アドレスプールからアドレスを選択する。"
+msgstr "ランダム: 変換アドレスプールから、ランダムにアドレスを選択します"
 
 #: usr/local/www/firewall_nat_out_edit.php:608
 #: usr/local/www/firewall_nat_out_edit.php:621
@@ -18847,7 +18882,10 @@ msgid ""
 "Source Hash: Uses a hash of the source address to determine the translation "
 "address, ensuring that the redirection address is always the same for a "
 "given source."
-msgstr "リダイレクションアドレスが「与えられたソースのために、常に同じであることを保証し、アドレス： 「ソースハッシュは翻訳を決定するために、送信元アドレスのハッシュを使用します」 。"
+msgstr ""
+"送信元ハッシュ: 変換アドレスを決定するのに送信元アドレスのハッシュを使用します。"
+"与えられる送信元に対して、"
+"リダイレクトするアドレスが常に同じであることを保証します。"
 
 #: usr/local/www/firewall_nat_out_edit.php:609
 #: usr/local/www/firewall_nat_out_edit.php:622
@@ -18857,7 +18895,9 @@ msgstr "リダイレクションアドレスが「与えられたソースのた
 msgid ""
 "Bitmask: Applies the subnet mask and keeps the last portion identical; "
 "10.0.1.50 -&gt; x.x.x.50."
-msgstr "「ビットマスク：サブネットマスクを適用し、同一の最後の部分を保持し、 「 10.0.1.50は - u003e xxx50 。"
+msgstr ""
+"ビットマスク: サブネットマスクに適用され、末尾部分と同一の値を保持します: "
+"10.0.1.50 -&gt; x.x.x.50"
 
 #: usr/local/www/firewall_nat_out_edit.php:610
 #: usr/local/www/firewall_nat_out_edit.php:623
@@ -18868,7 +18908,10 @@ msgid ""
 "Sticky Address: The Sticky Address option can be used with the Random and "
 "Round Robin pool types to ensure that a particular source address is always "
 "mapped to the same translation address."
-msgstr "「スティッキー住所：スティッキーアドレスオプションがランダムで一緒に使用することができる」とは、特定の送信元アドレスは、常に「同じ変換アドレスにマップされていることを保証するためにラウンドロビンプールタイプ。"
+msgstr ""
+"スティッキーアドレス: スティッキーアドレスオプションは、"
+"ランダム及びラウンドロビンプールタイプで使用できます。"
+"特定の送信元アドレスが、常に同じ変換アドレスにマッピングされることを保証します。
 
 #: usr/local/www/firewall_nat_out_edit.php:615
 #: usr/local/www/firewall_nat_out_edit.php:628
@@ -18876,7 +18919,7 @@ msgstr "「スティッキー住所：スティッキーアドレスオプショ
 #: usr/local/www/firewall_nat_out_edit.php:642
 #: usr/local/www/firewall_nat_out_edit.php:642
 msgid "Port:"
-msgstr "ポート："
+msgstr "ポート: "
 
 #: usr/local/www/firewall_nat_out_edit.php:619
 #: usr/local/www/firewall_nat_out_edit.php:632
@@ -18884,7 +18927,7 @@ msgstr "ポート："
 #: usr/local/www/firewall_nat_out_edit.php:646
 #: usr/local/www/firewall_nat_out_edit.php:646
 msgid "Enter the source port for the outbound NAT mapping."
-msgstr "アウトバウンドのNATマッピングのために送信元ポートを入力します。"
+msgstr "外向き NAT マッピングの送信元ポートを入力してください"
 
 #: usr/local/www/firewall_nat_out_edit.php:622
 #: usr/local/www/firewall_nat_out_edit.php:635
@@ -18892,14 +18935,15 @@ msgstr "アウトバウンドのNATマッピングのために送信元ポート
 #: usr/local/www/firewall_nat_out_edit.php:649
 #: usr/local/www/firewall_nat_out_edit.php:649
 msgid "Static-port:"
-msgstr "静的ポート："
+msgstr "静的ポート: "
 
 #: usr/local/www/firewall_nat_out_edit.php:632
 #: usr/local/www/firewall_nat_out_edit.php:645
 msgid ""
 "HINT: This prevents the rule from automatically syncing to other CARP "
 "members."
-msgstr ""ヒント：これは、自動的に他のCARPと同期からルールを防ぐ」のメンバー。"
+msgstr ""
+"ヒント: 他の CARP メンバとの自動同期からルールを保護します"
 
 #: usr/local/www/firewall_rules.php:52
 #: usr/local/www/firewall_rules_edit.php:628 usr/local/www/fbegin.inc:112
@@ -18949,7 +18993,7 @@ msgstr "エコー応答"
 #: usr/local/www/firewall_rules_edit.php:879
 #: usr/local/www/firewall_rules.php:129
 msgid "Destination unreachable"
-msgstr "宛先到達不能"
+msgstr "送信先に到達できません"
 
 #: usr/local/www/firewall_rules.php:132
 #: usr/local/www/firewall_rules_edit.php:831
@@ -18985,7 +19029,7 @@ msgstr "リダイレクト"
 #: usr/local/www/firewall_rules_edit.php:882
 #: usr/local/www/firewall_rules.php:132
 msgid "Alternate Host"
-msgstr "中間宿主"
+msgstr "代替ホスト"
 
 #: usr/local/www/firewall_rules.php:135
 #: usr/local/www/firewall_rules_edit.php:834
@@ -18997,7 +19041,7 @@ msgstr "中間宿主"
 #: usr/local/www/firewall_rules_edit.php:883
 #: usr/local/www/firewall_rules.php:133
 msgid "Router advertisement"
-msgstr "ルーター通知"
+msgstr "ルータ広告"
 
 #: usr/local/www/firewall_rules.php:136
 #: usr/local/www/firewall_rules_edit.php:835
@@ -19033,7 +19077,7 @@ msgstr "時間超過"
 #: usr/local/www/firewall_rules_edit.php:886
 #: usr/local/www/firewall_rules.php:136
 msgid "Invalid IP header"
-msgstr "無効なIPヘッダー"
+msgstr "無効な IP ヘッダです"
 
 #: usr/local/www/firewall_rules.php:139
 #: usr/local/www/firewall_rules_edit.php:838
@@ -19113,7 +19157,9 @@ msgstr "アドレスマスク応答"
 msgid ""
 "The settings have been applied. The firewall rules are now reloading in the "
 "background.<br/>You can also %s monitor %s the reload progress"
-msgstr "「設定が適用されています。ファイアウォールのルールは今にリロードされる「 background.<br/>Youこともモニターがリロードの進行状況を%s %sでき"
+msgstr ""
+"設定が適用されました。ファイアウォールのルールはバックグラウンドで現在再読込み中です。<br/>"
+"再読込みの進行状況を %s モニタ %s することができます"
 
 #: usr/local/www/firewall_rules.php:315 usr/local/www/firewall_rules.php:317
 #: usr/local/www/firewall_rules.php:319 usr/local/www/firewall_rules.php:321
@@ -19121,7 +19167,9 @@ msgstr "「設定が適用されています。ファイアウォールのルー
 msgid ""
 "The firewall rule configuration has been changed.<br>You must apply the "
 "changes in order for them to take effect."
-msgstr "「ファイアウォールルールの設定が変更されています。あなたが適用する必要がありますポスター「それらを有効にするために変更を。"
+msgstr ""
+"ファイアウォールのルール構成が変更されました。<br>"
+"変更を有効にするには、変更の適用が必要です"
 
 #: usr/local/www/firewall_rules.php:338 usr/local/www/firewall_rules.php:342
 #: usr/local/www/firewall_rules.php:335 usr/local/www/firewall_rules.php:334
@@ -19224,7 +19272,7 @@ msgstr "スケジュール"
 #: usr/local/www/firewall_nat.php:219 usr/local/www/firewall_nat.php:350
 #: usr/local/www/firewall_rules.php:387 usr/local/www/firewall_rules.php:820
 msgid "Do you really want to delete the selected rules?"
-msgstr "あなたは本当に、選択したルールを削除しますか？"
+msgstr "本当に選択したルールを削除しますか？"
 
 #: usr/local/www/firewall_rules.php:394 usr/local/www/firewall_rules.php:794
 #: usr/local/www/firewall_rules.php:826 usr/local/www/firewall_rules.php:398
@@ -19235,7 +19283,7 @@ msgstr "あなたは本当に、選択したルールを削除しますか？"
 #: usr/local/www/firewall_rules.php:390 usr/local/www/firewall_rules.php:789
 #: usr/local/www/firewall_rules.php:823
 msgid "add new rule"
-msgstr "新しいルールを追加"
+msgstr "新規ルールの追加"
 
 #: usr/local/www/firewall_rules.php:431 usr/local/www/firewall_rules.php:425
 #: usr/local/www/firewall_rules.php:418 usr/local/www/firewall_rules.php:417
@@ -19254,13 +19302,13 @@ msgstr "アンチロックアウトルール"
 #: usr/local/www/firewall_rules.php:455 usr/local/www/firewall_rules.php:483
 #: usr/local/www/firewall_rules.php:770
 msgid "add a new rule based on this one"
-msgstr "この1に基づいて、新しいルールを追加"
+msgstr "これに基づいた新規ルールの追加"
 
 #: usr/local/www/firewall_rules.php:453 usr/local/www/firewall_rules.php:447
 #: usr/local/www/firewall_rules.php:440 usr/local/www/firewall_rules.php:439
 #: usr/local/www/firewall_rules.php:439
 msgid "RFC 1918 networks"
-msgstr "RFC 1918ネットワーク"
+msgstr "RFC 1918 ネットワーク"
 
 #: usr/local/www/firewall_rules.php:460 usr/local/www/interfaces.php:2414
 #: usr/local/www/firewall_rules.php:454 usr/local/www/interfaces.php:2615
@@ -19269,13 +19317,13 @@ msgstr "RFC 1918ネットワーク"
 #: usr/local/www/interfaces.php:2679 usr/local/www/interfaces.php:2668
 #: usr/local/www/firewall_rules.php:446 usr/local/www/interfaces.php:2668
 msgid "Block private networks"
-msgstr "プライベートネットワークをブロックする"
+msgstr "プライベートネットワークを拒否"
 
 #: usr/local/www/firewall_rules.php:481 usr/local/www/firewall_rules.php:475
 #: usr/local/www/firewall_rules.php:468 usr/local/www/firewall_rules.php:467
 #: usr/local/www/firewall_rules.php:467
 msgid "Reserved/not assigned by IANA"
-msgstr "予約済み/ IANAによって割り当てられていない"
+msgstr "IANA: 予約済 / 未割当"
 
 #: usr/local/www/firewall_rules.php:488 usr/local/www/interfaces.php:2426
 #: usr/local/www/firewall_rules.php:482 usr/local/www/interfaces.php:2627
@@ -19284,18 +19332,18 @@ msgstr "予約済み/ IANAによって割り当てられていない"
 #: usr/local/www/interfaces.php:2691 usr/local/www/interfaces.php:2680
 #: usr/local/www/firewall_rules.php:474 usr/local/www/interfaces.php:2680
 msgid "Block bogon networks"
-msgstr "ブロックbogonネットワーク"
+msgstr "bogon ネットワークを拒否"
 
 #: usr/local/www/firewall_rules.php:513 usr/local/www/firewall_rules.php:507
 #: usr/local/www/firewall_rules.php:500 usr/local/www/firewall_rules.php:499
 #: usr/local/www/firewall_rules.php:499
 msgid "advanced settings set"
-msgstr "高度な設定は、設定"
+msgstr "高度な設定を設定する"
 
 #: usr/local/www/firewall_rules.php:537 usr/local/www/firewall_rules.php:531
 #: usr/local/www/firewall_rules.php:524 usr/local/www/firewall_rules.php:524
 msgid "click to toggle enabled/disabled status"
-msgstr "有効/無効状態を切り替えるをクリックします"
+msgstr "クリックで有効 / 無効ステータスが切り替わります"
 
 #: usr/local/www/firewall_rules.php:573 usr/local/www/firewall_schedule.php:43
 #: usr/local/www/firewall_schedule_edit.php:69
@@ -19308,7 +19356,7 @@ msgstr "有効/無効状態を切り替えるをクリックします"
 #: usr/local/www/firewall_schedule_edit.php:845
 #: usr/local/www/firewall_rules.php:561
 msgid "Mon"
-msgstr "モン"
+msgstr "月"
 
 #: usr/local/www/firewall_rules.php:573 usr/local/www/firewall_schedule.php:43
 #: usr/local/www/firewall_schedule_edit.php:69
@@ -19317,7 +19365,7 @@ msgstr "モン"
 #: usr/local/www/firewall_schedule_edit.php:69
 #: usr/local/www/firewall_rules.php:561
 msgid "Tues"
-msgstr "火曜"
+msgstr "火"
 
 #: usr/local/www/firewall_rules.php:573 usr/local/www/firewall_schedule.php:43
 #: usr/local/www/firewall_schedule_edit.php:69
@@ -19330,7 +19378,7 @@ msgstr "火曜"
 #: usr/local/www/firewall_schedule_edit.php:847
 #: usr/local/www/firewall_rules.php:561
 msgid "Wed"
-msgstr "結婚"
+msgstr "水"
 
 #: usr/local/www/firewall_rules.php:573 usr/local/www/firewall_schedule.php:43
 #: usr/local/www/firewall_schedule_edit.php:69
@@ -19378,7 +19426,7 @@ msgstr "土"
 #: usr/local/www/firewall_schedule_edit.php:851
 #: usr/local/www/firewall_rules.php:561
 msgid "Sun"
-msgstr "太陽"
+msgstr "日"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19387,7 +19435,7 @@ msgstr "太陽"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "January"
-msgstr "1月"
+msgstr "1 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19396,7 +19444,7 @@ msgstr "1月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "February"
-msgstr "2月"
+msgstr "2 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19405,7 +19453,7 @@ msgstr "2月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "March"
-msgstr "3月"
+msgstr "3 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19414,7 +19462,7 @@ msgstr "3月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "April"
-msgstr "4月"
+msgstr "4 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19423,7 +19471,7 @@ msgstr "4月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "May"
-msgstr "5月"
+msgstr "5 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19432,7 +19480,7 @@ msgstr "5月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "June"
-msgstr "6月"
+msgstr "6 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19441,7 +19489,7 @@ msgstr "6月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "July"
-msgstr "7月"
+msgstr "7 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19450,7 +19498,7 @@ msgstr "7月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "August"
-msgstr "8月"
+msgstr "8 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19459,7 +19507,7 @@ msgstr "8月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "September"
-msgstr "9月"
+msgstr "9 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19468,7 +19516,7 @@ msgstr "9月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "October"
-msgstr "10月"
+msgstr "10 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19477,7 +19525,7 @@ msgstr "10月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "November"
-msgstr "11月"
+msgstr "11 月"
 
 #: usr/local/www/firewall_rules.php:574 usr/local/www/firewall_schedule.php:44
 #: usr/local/www/firewall_schedule_edit.php:70
@@ -19486,13 +19534,13 @@ msgstr "11月"
 #: usr/local/www/firewall_schedule_edit.php:70
 #: usr/local/www/firewall_rules.php:562
 msgid "December"
-msgstr "12月"
+msgstr "12 月"
 
 #: usr/local/www/firewall_rules.php:685 usr/local/www/firewall_rules.php:679
 #: usr/local/www/firewall_rules.php:672 usr/local/www/firewall_rules.php:671
 #: usr/local/www/firewall_rules.php:671
 msgid "Traffic matching this rule is currently being denied"
-msgstr "このルールに一致するトラフィックは現在、拒否されている"
+msgstr "このルールに一致するトラフィックは、現在拒否されています"
 
 #: usr/local/www/firewall_rules.php:690 usr/local/www/firewall_rules.php:684
 #: usr/local/www/firewall_rules.php:677 usr/local/www/firewall_rules.php:674
@@ -19504,31 +19552,33 @@ msgstr "このルールに一致するトラフィックは、現在許可され
 #: usr/local/www/firewall_rules.php:687 usr/local/www/firewall_rules.php:682
 #: usr/local/www/firewall_rules.php:682
 msgid "This rule is not currently active because its period has expired"
-msgstr "その期間が満了したため、このルールは、現在アクティブではありません"
+msgstr "有効期間が過ぎたため、このルールは現在アクティブではありません"
 
 #: usr/local/www/firewall_rules.php:792 usr/local/www/firewall_rules.php:785
 #: usr/local/www/firewall_rules.php:786 usr/local/www/firewall_rules.php:786
 msgid "No rules are currently defined for this interface"
-msgstr "何のルールは現在このインターフェイスのために定義されていません"
+msgstr "このインタフェースには、現在ルールは定義されていません"
 
 #: usr/local/www/firewall_rules.php:793 usr/local/www/firewall_rules.php:786
 #: usr/local/www/firewall_rules.php:787 usr/local/www/firewall_rules.php:787
 msgid ""
 "All incoming connections on this interface will be blocked until you add "
 "pass rules."
-msgstr "パスルール」を追加するまで、このインターフェイスのすべての着信接続がブロックされます」 。"
+msgstr ""
+"このインタフェースへの全ての着信接続は、"
+"許可ルールが追加されるまで、ブロックされます。"
 
 #: usr/local/www/firewall_rules.php:794 usr/local/www/firewall_rules.php:795
 #: usr/local/www/firewall_rules.php:788 usr/local/www/firewall_rules.php:789
 #: usr/local/www/firewall_rules.php:789
 msgid "Click the"
-msgstr "クリック"
+msgstr "クリック: "
 
 #: usr/local/www/firewall_rules.php:794 usr/local/www/firewall_rules.php:795
 #: usr/local/www/firewall_rules.php:788 usr/local/www/firewall_rules.php:789
 #: usr/local/www/firewall_rules.php:789
 msgid " button to add a new rule."
-msgstr "新しいルールを追加するためのボタン。"
+msgstr "新規ルール追加ボタン"
 
 #: usr/local/www/firewall_rules.php:817 usr/local/www/firewall_nat.php:327
 #: usr/local/www/firewall_rules.php:818 usr/local/www/firewall_nat.php:340
@@ -19536,7 +19586,7 @@ msgstr "新しいルールを追加するためのボタン。"
 #: usr/local/www/firewall_nat.php:343 usr/local/www/firewall_nat.php:343
 #: usr/local/www/firewall_rules.php:813
 msgid "move selected rules to end"
-msgstr "終了するには、選択したルールを移動"
+msgstr "選択したルールを末尾に移動"
 
 #: usr/local/www/firewall_rules.php:835 usr/local/www/firewall_nat.php:345
 #: usr/local/www/firewall_rules.php:836 usr/local/www/firewall_nat.php:358
@@ -19544,20 +19594,20 @@ msgstr "終了するには、選択したルールを移動"
 #: usr/local/www/firewall_nat.php:361 usr/local/www/firewall_nat.php:361
 #: usr/local/www/firewall_rules.php:832
 msgid "pass"
-msgstr "合格"
+msgstr "許可"
 
 #: usr/local/www/firewall_rules.php:838 usr/local/www/firewall_rules.php:839
 #: usr/local/www/firewall_rules.php:832 usr/local/www/firewall_rules.php:835
 #: usr/local/www/firewall_rules.php:835
 msgid "block"
-msgstr "ブロック"
+msgstr "拒否"
 
 #: usr/local/www/firewall_rules.php:841 usr/local/www/license.php:125
 #: usr/local/www/firewall_rules.php:842 usr/local/www/firewall_rules.php:835
 #: usr/local/www/firewall_rules.php:838 usr/local/www/license.php:125
 #: usr/local/www/firewall_rules.php:838
 msgid "reject"
-msgstr "拒絶する"
+msgstr "拒絶"
 
 #: usr/local/www/firewall_rules.php:844 usr/local/www/firewall_rules.php:845
 #: usr/local/www/firewall_rules.php:838 usr/local/www/firewall_rules.php:841
@@ -19569,25 +19619,25 @@ msgstr "ログ"
 #: usr/local/www/firewall_rules.php:842 usr/local/www/firewall_rules.php:845
 #: usr/local/www/firewall_rules.php:845
 msgid "pass (disabled)"
-msgstr "合格（無効）"
+msgstr "許可 ( 無効 )"
 
 #: usr/local/www/firewall_rules.php:851 usr/local/www/firewall_rules.php:852
 #: usr/local/www/firewall_rules.php:845 usr/local/www/firewall_rules.php:848
 #: usr/local/www/firewall_rules.php:848
 msgid "block (disabled)"
-msgstr "ブロック（無効）"
+msgstr "拒否 ( 無効 )"
 
 #: usr/local/www/firewall_rules.php:854 usr/local/www/firewall_rules.php:855
 #: usr/local/www/firewall_rules.php:848 usr/local/www/firewall_rules.php:851
 #: usr/local/www/firewall_rules.php:851
 msgid "reject (disabled)"
-msgstr "拒否（無効）"
+msgstr "拒絶 ( 無効 )"
 
 #: usr/local/www/firewall_rules.php:857 usr/local/www/firewall_rules.php:858
 #: usr/local/www/firewall_rules.php:851 usr/local/www/firewall_rules.php:854
 #: usr/local/www/firewall_rules.php:854
 msgid "log (disabled)"
-msgstr "LOG（使用不可）"
+msgstr "ログ ( 無効 )"
 
 #: usr/local/www/firewall_rules.php:863
 #: usr/local/www/load_balancer_pool.php:148 usr/local/www/vpn_l2tp.php:354
@@ -19600,7 +19650,7 @@ msgstr "LOG（使用不可）"
 #: usr/local/www/vpn_l2tp.php:375 usr/local/www/load_balancer_pool.php:147
 #: usr/local/www/firewall_rules.php:860
 msgid "Hint:"
-msgstr "ヒント："
+msgstr "ヒント: "
 
 #: usr/local/www/firewall_rules.php:867 usr/local/www/firewall_rules.php:868
 #: usr/local/www/firewall_rules.php:861 usr/local/www/firewall_rules.php:864
@@ -19610,7 +19660,11 @@ msgid ""
 "rule to match a packet will be executed). This means that if you use block "
 "rules, you'll have to pay attention to the rule order. Everything that isn't "
 "explicitly passed is blocked by default. "
-msgstr "「 （パケットと一致するルールが実行されますルール、すなわち最初のアクションは）最初のマッチに基づいて評価されている」 。これは、ブロックを使用した場合、明示的に渡されたがデフォルトでブロックされている「ルールには、ルールの順序ではありません。すべてに注意を払う必要があるでしょう」ということです。"
+msgstr ""
+"ルールは一番最初に一致するものが評価されます"
+" ( パケットに一致する一番最初のルールの動作が実行されます )。"
+"拒否ルールを使用する場合、ルールの順番に注意する必要があります。"
+"デフォルトでは、明確に許可されていないパケットは、全て拒否されます。"
 
 #: usr/local/www/firewall_rules.php:874 usr/local/www/firewall_rules.php:875
 #: usr/local/www/firewall_rules.php:868 usr/local/www/firewall_rules.php:871
@@ -19621,18 +19675,23 @@ msgid ""
 "checked on a rule. Otherwise they will only apply if no other rules match. "
 "Pay close attention to the rule order and options chosen. If no rule here "
 "matches, the per-interface or default rules are used. "
-msgstr "そうでなければ、彼らはのみ適用されます。 「クイック」オプションは、「ルールにチェックされている場合にのみ、 「 （パケットと一致する最初のルールが実行されます浮動ルール、すなわちの作用が）最初のマッチに基づいて評価されている「なしの場合ルールの一致は「ルールの順序や選択したオプションに細心の注意を払ってください。ここにはルールが「一致しない場合は、インターフェイス単位またはデフォルトのルールが使用されている。"
+msgstr ""
+"フローティングルールは、「クイック」オプションがルールにチェックされている場合のみ、"
+"一番最初に一致するものが評価されます ( パケットに一致する一番最初のルールの動作が実行されます )。"
+"そうでなければ、他に一致するルールがない場合のみ適用されます。"
+"ルールの順番と選択するオプションには、くれぐれもよく注意してください。"
+"ここで一致するルールがなければ、インタフェース毎のルール、もしくはデフォルトルールが使用されます。"
 
 #: usr/local/www/firewall_rules_edit.php:201
 #: usr/local/www/firewall_rules_edit.php:210
 msgid "Reject type rules only works when the protocol is set to TCP."
-msgstr "プロトコルがTCPに設定されている場合にのみ機能タイプのルールを拒否します。"
+msgstr "拒絶タイプのルールが機能するのは、プロトコルが TCP に設定されている場合のみです"
 
 #: usr/local/www/firewall_rules_edit.php:204
 #: usr/local/www/firewall_rules_edit.php:213
 #: usr/local/www/firewall_rules_edit.php:210
 msgid "Queue type rules only work with queues."
-msgstr "キュータイプのルールは、キューだけで動作します。"
+msgstr "キュータイプのルールは、キューに対してのみ機能します"
 
 #: usr/local/www/firewall_rules_edit.php:212
 #: usr/local/www/firewall_rules_edit.php:227
@@ -19641,7 +19700,7 @@ msgstr "キュータイプのルールは、キューだけで動作します。
 #: usr/local/www/firewall_rules_edit.php:228
 #: usr/local/www/firewall_rules_edit.php:228
 msgid "You can not assign a IPv4 gateway group on IPv6 Address Family rule"
-msgstr "あなたは、IPv6アドレスファミリルールにIPv4ゲートウェイ·グループを割り当てることはできません"
+msgstr "IPv6 アドレスファミリルールに IPv4 ゲートウェイグループを割当てられません"
 
 #: usr/local/www/firewall_rules_edit.php:215
 #: usr/local/www/firewall_rules_edit.php:230
@@ -19650,7 +19709,7 @@ msgstr "あなたは、IPv6アドレスファミリルールにIPv4ゲートウ�
 #: usr/local/www/firewall_rules_edit.php:231
 #: usr/local/www/firewall_rules_edit.php:231
 msgid "You can not assign a IPv6 gateway group on IPv4 Address Family rule"
-msgstr "あなたは、 IPv4アドレスファミリルールにIPv6ゲートウェイ·グループを割り当てることはできません"
+msgstr "IPv4 アドレスファミリルールに IPv6 ゲートウェイグループを割当てられません"
 
 #: usr/local/www/firewall_rules_edit.php:222
 #: usr/local/www/firewall_rules_edit.php:240
@@ -19659,7 +19718,7 @@ msgstr "あなたは、 IPv4アドレスファミリルールにIPv6ゲートウ
 #: usr/local/www/firewall_rules_edit.php:242
 #: usr/local/www/firewall_rules_edit.php:242
 msgid "You can not assign the IPv4 Gateway to a IPv6 Filter rule"
-msgstr "あなたは、IPv6フィルタルールにはIPv4ゲートウェイを割り当てることはできません"
+msgstr "IPv6 フィルタルールに IPv4 ゲートウェイを割当てられません"
 
 #: usr/local/www/firewall_rules_edit.php:225
 #: usr/local/www/firewall_rules_edit.php:243
@@ -19668,7 +19727,7 @@ msgstr "あなたは、IPv6フィルタルールにはIPv4ゲートウェイを�
 #: usr/local/www/firewall_rules_edit.php:245
 #: usr/local/www/firewall_rules_edit.php:245
 msgid "You can not assign the IPv6 Gateway to a IPv4 Filter rule"
-msgstr "あなたは、IPv4フィルタルールにIPv6ゲートウェイを割り当てることはできません"
+msgstr "IPv4 フィルタルールに IPv6 ゲートウェイを割当てられません"
 
 #: usr/local/www/firewall_rules_edit.php:297
 #: usr/local/www/firewall_rules_edit.php:321
@@ -19678,7 +19737,7 @@ msgstr "あなたは、IPv4フィルタルールにIPv6ゲートウェイを割�
 #: usr/local/www/firewall_rules_edit.php:329
 #, php-format
 msgid "%s is only valid with protocol tcp."
-msgstr "%sはプロトコルTCPでのみ有効です。"
+msgstr "%s は TCP プロトコルでのみ有効です"
 
 #: usr/local/www/firewall_rules_edit.php:299
 #: usr/local/www/firewall_rules_edit.php:323
@@ -19688,7 +19747,7 @@ msgstr "%sはプロトコルTCPでのみ有効です。"
 #: usr/local/www/firewall_rules_edit.php:331
 #, php-format
 msgid "%s is only valid if the gateway is set to 'default'."
-msgstr "ゲートウェイが「デフォルト」に設定されている場合%sにのみ有効です。"
+msgstr "ゲートウェイが「デフォルト」に設定されている場合、%s のみ有効です"
 
 #: usr/local/www/firewall_rules_edit.php:327
 #: usr/local/www/firewall_rules_edit.php:351
@@ -19700,7 +19759,9 @@ msgstr "ゲートウェイが「デフォルト」に設定されている場合
 msgid ""
 "%s is not a valid end source port. It must be a port alias or integer "
 "between 1 and 65535."
-msgstr "「 %sは有効な終了の送信元ポートではありません。これは、ポートエイリアスまたは整数でなければなりません "1 〜65535の間。"
+msgstr ""
+"%s は有効エンド送信元ポートではありません。"
+"有効な値は、ポートエイリアス、もしくは 1 〜 65535 の整数です"
 
 #: usr/local/www/firewall_rules_edit.php:381
 #: usr/local/www/firewall_rules_edit.php:410
@@ -19711,7 +19772,8 @@ msgstr "「 %sは有効な終了の送信元ポートではありません。こ
 #, php-format
 msgid ""
 "The Source IP address %s Address Family differs from the destination %s."
-msgstr "「送信元IPアドレス%sアドレスファミリは、先の%s.とは異なります"
+msgstr ""
+"送信元 IP アドレス %s は、送信先 %s とはアドレスファミリが異なります"
 
 #: usr/local/www/firewall_rules_edit.php:383
 #: usr/local/www/firewall_rules_edit.php:412
@@ -19720,7 +19782,7 @@ msgstr "「送信元IPアドレス%sアドレスファミリは、先の%s.と�
 #: usr/local/www/firewall_rules_edit.php:420
 #: usr/local/www/firewall_rules_edit.php:420
 msgid "You can not use IPv6 addresses in IPv4 rules."
-msgstr "あなたは、IPv4ルールでIPv6アドレスを使用することはできません。"
+msgstr "IPv4 ルールで IPv6 アドレスを使用できません"
 
 #: usr/local/www/firewall_rules_edit.php:385
 #: usr/local/www/firewall_rules_edit.php:414
@@ -19729,7 +19791,7 @@ msgstr "あなたは、IPv4ルールでIPv6アドレスを使用することは�
 #: usr/local/www/firewall_rules_edit.php:422
 #: usr/local/www/firewall_rules_edit.php:422
 msgid "You can not use IPv4 addresses in IPv6 rules."
-msgstr "あなたは、IPv6ルールでIPv4アドレスを使用することはできません。"
+msgstr "IPv6 ルールで IPv4 アドレスを使用できません"
 
 #: usr/local/www/firewall_rules_edit.php:402
 #: usr/local/www/firewall_rules_edit.php:434
@@ -19738,7 +19800,7 @@ msgstr "あなたは、IPv6ルールでIPv4アドレスを使用することは�
 #: usr/local/www/firewall_rules_edit.php:442
 #: usr/local/www/firewall_rules_edit.php:442
 msgid "OS detection is only valid with protocol tcp."
-msgstr "OS検出、プロトコルはTCPでのみ有効です。"
+msgstr "OS 検出は TCP プロトコルでのみ有効です"
 
 #: usr/local/www/firewall_rules_edit.php:406
 #: usr/local/www/firewall_rules_edit.php:438
@@ -19747,7 +19809,7 @@ msgstr "OS検出、プロトコルはTCPでのみ有効です。"
 #: usr/local/www/firewall_rules_edit.php:446
 #: usr/local/www/firewall_rules_edit.php:446
 msgid "You have to select a queue when you select an acknowledge queue too."
-msgstr "あなたはあなたも認めるキューを選択したときに、キューを選択する必要があります。"
+msgstr "承認キューを選択した場合も、キューを選択する必要があります。"
 
 #: usr/local/www/firewall_rules_edit.php:408
 #: usr/local/www/firewall_rules_edit.php:440
@@ -19756,7 +19818,7 @@ msgstr "あなたはあなたも認めるキューを選択したときに、キ
 #: usr/local/www/firewall_rules_edit.php:448
 #: usr/local/www/firewall_rules_edit.php:448
 msgid "Acknowledge queue and Queue cannot be the same."
-msgstr "キューを確認し、キューは同じにすることはできません。"
+msgstr "承認キューとキューは同じものに設定できません"
 
 #: usr/local/www/firewall_rules_edit.php:411
 #: usr/local/www/firewall_rules_edit.php:443
@@ -19766,7 +19828,7 @@ msgstr "キューを確認し、キューは同じにすることはできませ
 #: usr/local/www/firewall_rules_edit.php:451
 msgid ""
 "You can not use limiters in Floating rules without choosing a direction."
-msgstr "「あなたが方向を選ばずフローティングルールの中でリミッターを使用することはできません。"
+msgstr "方向が選択されていないフローティングルールでは、リミッタを使用できません"
 
 #: usr/local/www/firewall_rules_edit.php:413
 #: usr/local/www/firewall_rules_edit.php:445
@@ -19776,7 +19838,8 @@ msgstr "「あなたが方向を選ばずフローティングルールの中で
 #: usr/local/www/firewall_rules_edit.php:453
 msgid ""
 "You can not use gateways in Floating rules without choosing a direction."
-msgstr "「あなたが方向を選ばずフローティングルール内のゲートウェイを使用することはできません。"
+msgstr ""
+"方向が選択されていないフローティングルールでは、ゲートウェイを使用できません"
 
 #: usr/local/www/firewall_rules_edit.php:416
 #: usr/local/www/firewall_rules_edit.php:448
@@ -19787,7 +19850,9 @@ msgstr "「あなたが方向を選ばずフローティングルール内のゲ
 msgid ""
 "You must select a queue for the In direction before selecting one for Out "
 "too."
-msgstr "あまりにも"あなたはアウトのための1つを選択する前に方向のキューを選択する必要があります」 。"
+msgstr ""
+"外向き方向のキューを選択する前に、"
+"内向き方向のキューも選択する必要があります"
 
 #: usr/local/www/firewall_rules_edit.php:418
 #: usr/local/www/firewall_rules_edit.php:450
@@ -19796,7 +19861,7 @@ msgstr "あまりにも"あなたはアウトのための1つを選択する前�
 #: usr/local/www/firewall_rules_edit.php:458
 #: usr/local/www/firewall_rules_edit.php:458
 msgid "In and Out Queue cannot be the same."
-msgstr "INとOUTキューが同じにすることはできません。"
+msgstr "内向きキューと外向きキューは同じものに設定できません"
 
 #: usr/local/www/firewall_rules_edit.php:420
 #: usr/local/www/firewall_rules_edit.php:422
@@ -19812,7 +19877,9 @@ msgstr "INとOUTキューが同じにすることはできません。"
 msgid ""
 "You cannot select one queue and one virtual interface for IN and Out. both "
 "must be from the same type."
-msgstr "「あなたは、 1キューとINとOUTのための1つの仮想インターフェイスを選択することはできません。どちらも「同じタイプのものである必要があります。"
+msgstr ""
+"内向き・外向き用として、キューと仮想インタフェースを一つづつ選択することはできません。"
+"どちらも同じ種類である必要があります。"
 
 #: usr/local/www/firewall_rules_edit.php:425
 #: usr/local/www/firewall_rules_edit.php:457
@@ -19821,7 +19888,7 @@ msgstr "「あなたは、 1キューとINとOUTのための1つの仮想イン�
 #: usr/local/www/firewall_rules_edit.php:467
 #: usr/local/www/firewall_rules_edit.php:467
 msgid "ID must be an integer"
-msgstr "IDは整数でなければなりません"
+msgstr "ID は整数です"
 
 #: usr/local/www/firewall_rules_edit.php:428
 #: usr/local/www/firewall_rules_edit.php:460
@@ -19830,7 +19897,7 @@ msgstr "IDは整数でなければなりません"
 #: usr/local/www/firewall_rules_edit.php:470
 #: usr/local/www/firewall_rules_edit.php:470
 msgid "You can only select a layer7 container for TCP and/or UDP protocols"
-msgstr "あなただけのTCPおよび/またはUDPプロトコルのためのレイヤ7コンテナを選択することができます"
+msgstr "レイヤ 7 コンテナを選択できるのは、TCP と UDP、もしくは TCP または UDP プロトコルのみです"
 
 #: usr/local/www/firewall_rules_edit.php:430
 #: usr/local/www/firewall_rules_edit.php:462
@@ -19839,7 +19906,7 @@ msgstr "あなただけのTCPおよび/またはUDPプロトコルのための�
 #: usr/local/www/firewall_rules_edit.php:472
 #: usr/local/www/firewall_rules_edit.php:472
 msgid "You can only select a layer7 container for Pass type rules."
-msgstr "あなただけの通過型ルールのレイヤ7のコンテナを選択することができます。"
+msgstr "レイヤ 7 コンテナを選択できるのは、許可タイプルールのみです"
 
 #: usr/local/www/firewall_rules_edit.php:443
 #: usr/local/www/firewall_rules_edit.php:475
@@ -19850,7 +19917,9 @@ msgstr "あなただけの通過型ルールのレイヤ7のコンテナを選�
 msgid ""
 "If you specify TCP flags that should be set you should specify out of which "
 "flags as well."
-msgstr "同様にフラグ"あなたが設定する必要がTCPフラグを指定した場合には、そのうち指定する必要があります」 。"
+msgstr ""
+"TCP フラグを指定する場合は、セットするフラグとセットしないフラグを"
+"どちらも指定する必要があります"
 
 #: usr/local/www/firewall_rules_edit.php:652
 #: usr/local/www/firewall_rules_edit.php:685
@@ -19858,7 +19927,7 @@ msgstr "同様にフラグ"あなたが設定する必要がTCPフラグを指�
 #: usr/local/www/firewall_rules_edit.php:700
 #: usr/local/www/firewall_rules_edit.php:700
 msgid "Edit Firewall rule"
-msgstr "編集ファイアウォールルール"
+msgstr "ファイアウォールルールの編集"
 
 #: usr/local/www/firewall_rules_edit.php:673
 #: usr/local/www/firewall_rules_edit.php:706
@@ -19866,7 +19935,7 @@ msgstr "編集ファイアウォールルール"
 #: usr/local/www/firewall_rules_edit.php:721
 #: usr/local/www/firewall_rules_edit.php:721
 msgid "Choose what to do with packets that match the criteria specified below."
-msgstr "下の指定された条件に一致するパケットをどうするかを選択します。"
+msgstr "下記で指定された条件に一致するパケットに対して、実行する内容を選択します"
 
 #: usr/local/www/firewall_rules_edit.php:674
 #: usr/local/www/firewall_rules_edit.php:707
@@ -19878,7 +19947,11 @@ msgid ""
 "(TCP RST or ICMP port unreachable for UDP) is returned to the sender, "
 "whereas with block the packet is dropped silently. In either case, the "
 "original packet is discarded."
-msgstr ""ヒント：ブロックと拒否の違いである拒否して、そのパケット"オリジナル "のブロックと、パケットがいずれの場合も、黙って廃棄され、一方、 「 （ TCP RSTまたはUDPの到達不能ICMPポート）は、送信者に返送されるパケットは破棄される。"
+msgstr ""
+"ヒント: 拒否と拒絶の違いですが、拒絶の場合は、"
+"パケット ( TCP: RST、UDP: ICMP ポートに到達できません ) が送信者に返されます。"
+"それに対して、拒否の場合は、黙ってパケットを落とします。"
+"いずれの場合でも、元のパケットは廃棄されます。"
 
 #: usr/local/www/firewall_rules_edit.php:689
 #: usr/local/www/firewall_rules_edit.php:722
@@ -19894,7 +19967,7 @@ msgstr "クイック"
 #: usr/local/www/firewall_rules_edit.php:741
 #: usr/local/www/firewall_rules_edit.php:741
 msgid "Apply the action immediately on match."
-msgstr "一致にすぐにアクションを適用します。"
+msgstr "一致したら、すぐに動作を適用します。"
 
 #: usr/local/www/firewall_rules_edit.php:694
 #: usr/local/www/firewall_rules_edit.php:727
@@ -19904,7 +19977,9 @@ msgstr "一致にすぐにアクションを適用します。"
 msgid ""
 "Set this option if you need to apply this action to traffic that matches "
 "this rule immediately."
-msgstr "すぐにこのルールを"あなたは一致するトラフィックにこのアクションを適用する必要がある場合は、このオプションを設定する」 。"
+msgstr ""
+"このルールに一致するトラフィックに、動作をすぐに適用する必要がある場合に、"
+"オプション設定してください。"
 
 #: usr/local/www/firewall_rules_edit.php:701
 #: usr/local/www/firewall_rules_edit.php:734
@@ -19912,7 +19987,7 @@ msgstr "すぐにこのルールを"あなたは一致するトラフィック�
 #: usr/local/www/firewall_rules_edit.php:749
 #: usr/local/www/firewall_rules_edit.php:749
 msgid "Associated filter rule"
-msgstr "関連するフィルタルール"
+msgstr "関連フィルタルール"
 
 #: usr/local/www/firewall_rules_edit.php:703
 #: usr/local/www/diag_traceroute.php:117 usr/local/www/diag_traceroute.php:137
@@ -19924,7 +19999,7 @@ msgstr "関連するフィルタルール"
 #: usr/local/www/firewall_rules_edit.php:751
 #: usr/local/www/diag_traceroute.php:161
 msgid "Note: "
-msgstr "注意："
+msgstr "注意: "
 
 #: usr/local/www/firewall_rules_edit.php:703
 #: usr/local/www/firewall_rules_edit.php:736
@@ -19932,7 +20007,7 @@ msgstr "注意："
 #: usr/local/www/firewall_rules_edit.php:751
 #: usr/local/www/firewall_rules_edit.php:751
 msgid "This is associated to a NAT rule."
-msgstr "これは、NATルールに関連付けられています。"
+msgstr "これは、NAT ルールに関連付けられています。"
 
 #: usr/local/www/firewall_rules_edit.php:704
 #: usr/local/www/firewall_rules_edit.php:737
@@ -19942,7 +20017,9 @@ msgstr "これは、NATルールに関連付けられています。"
 msgid ""
 "You cannot edit the interface, protocol, source, or destination of "
 "associated filter rules."
-msgstr "関連するフィルタルール"あなたは、インターフェイス、プロトコル、送信元、または宛先を編集することはできません」 。"
+msgstr ""
+"関連フィルタルールのインタフェース、プロトコル、送信元、送信先は"
+"編集できません"
 
 #: usr/local/www/firewall_rules_edit.php:711
 #: usr/local/www/firewall_rules_edit.php:744
@@ -19950,7 +20027,7 @@ msgstr "関連するフィルタルール"あなたは、インターフェイ�
 #: usr/local/www/firewall_rules_edit.php:759
 #: usr/local/www/firewall_rules_edit.php:759
 msgid "View the NAT rule"
-msgstr "NATルールを表示する"
+msgstr "NAT ルールを表示"
 
 #: usr/local/www/firewall_rules_edit.php:768
 #: usr/local/www/firewall_rules_edit.php:803
@@ -19959,7 +20036,7 @@ msgstr "NATルールを表示する"
 #: usr/local/www/firewall_rules_edit.php:817
 #: usr/local/www/firewall_rules_edit.php:817
 msgid "Choose on which interface packets must come in to match this rule."
-msgstr "たインターフェイスパケットがこのルールに一致するには来なければなりません]を選択します。"
+msgstr "このルールに一致するパケットが入ってくるインタフェースを選択してください"
 
 #: usr/local/www/firewall_rules_edit.php:774
 #: usr/local/www/services_captiveportal_ip_edit.php:178
@@ -19991,7 +20068,7 @@ msgstr "方向"
 #: usr/local/www/firewall_rules_edit.php:841
 #: usr/local/www/firewall_rules_edit.php:841
 msgid "TCP/IP Version"
-msgstr "TCP / IPのバージョン"
+msgstr "TCP/IP バージョン"
 
 #: usr/local/www/firewall_rules_edit.php:804
 #: usr/local/www/firewall_rules_edit.php:839
@@ -20000,7 +20077,7 @@ msgstr "TCP / IPのバージョン"
 #: usr/local/www/firewall_rules_edit.php:853
 #: usr/local/www/firewall_rules_edit.php:853
 msgid "Select the Internet Protocol version this rule applies to"
-msgstr "このルールが適用されるインターネット·プロトコル·バージョンを選択"
+msgstr "このルールが適用されるインターネットプロトコルバージョンを選択してください"
 
 #: usr/local/www/firewall_rules_edit.php:818
 #: usr/local/www/firewall_rules_edit.php:853
@@ -20009,7 +20086,7 @@ msgstr "このルールが適用されるインターネット·プロトコル�
 #: usr/local/www/firewall_rules_edit.php:867
 #: usr/local/www/firewall_rules_edit.php:867
 msgid "Hint: in most cases, you should specify "
-msgstr "ヒント：ほとんどの場合、次のように指定する必要があり"
+msgstr "ヒント: 通常、指定するのは次の通りです: "
 
 #: usr/local/www/firewall_rules_edit.php:822
 #: usr/local/www/firewall_rules_edit.php:857
@@ -20018,7 +20095,7 @@ msgstr "ヒント：ほとんどの場合、次のように指定する必要が
 #: usr/local/www/firewall_rules_edit.php:871
 #: usr/local/www/firewall_rules_edit.php:871
 msgid "ICMP type"
-msgstr "ICMPタイプ"
+msgstr "ICMP タイプ"
 
 #: usr/local/www/firewall_rules_edit.php:851
 #: usr/local/www/firewall_rules_edit.php:886
@@ -20029,7 +20106,9 @@ msgstr "ICMPタイプ"
 msgid ""
 "If you selected ICMP for the protocol above, you may specify an ICMP type "
 "here."
-msgstr "ここで"あなたは上記のプロトコルのためにICMPを選択した場合は、 ICMPタイプを指定することも」 。"
+msgstr ""
+"上記でプロトコルとして ICMP を選択した場合、"
+"ここで ICMP タイプを指定します"
 
 #: usr/local/www/firewall_rules_edit.php:885
 #: usr/local/www/firewall_rules_edit.php:920
@@ -20038,7 +20117,7 @@ msgstr "ここで"あなたは上記のプロトコルのためにICMPを選択�
 #: usr/local/www/firewall_rules_edit.php:940
 #: usr/local/www/firewall_rules_edit.php:940
 msgid " subnet"
-msgstr "サブネット"
+msgstr " サブネット"
 
 #: usr/local/www/firewall_rules_edit.php:908
 #: usr/local/www/firewall_rules_edit.php:943
@@ -20047,7 +20126,7 @@ msgstr "サブネット"
 #: usr/local/www/firewall_rules_edit.php:963
 #: usr/local/www/firewall_rules_edit.php:963
 msgid "Show source port range"
-msgstr "送信元ポート範囲を表示する"
+msgstr "送信元ポート範囲を表示"
 
 #: usr/local/www/firewall_rules_edit.php:944
 #: usr/local/www/firewall_rules_edit.php:979
@@ -20066,7 +20145,8 @@ msgstr "このルールの送信元ポートまたはポート範囲を指定し
 #: usr/local/www/firewall_rules_edit.php:1000
 msgid ""
 "and almost never equal to the destination port range (and should usually be"
-msgstr "「宛先ポート範囲とほぼ等しくなることは（通常はあるべき"
+msgstr ""
+"そして、送信先ポート範囲と等しくなることはまずありません ( 通常 "
 
 #: usr/local/www/firewall_rules_edit.php:944
 #: usr/local/www/firewall_rules_edit.php:1039
@@ -20081,7 +20161,7 @@ msgstr "「宛先ポート範囲とほぼ等しくなることは（通常はあ
 #: usr/local/www/firewall_rules_edit.php:1000
 #: usr/local/www/firewall_rules_edit.php:1101
 msgid "'to'"
-msgstr "'から'"
+msgstr "「外向き」"
 
 #: usr/local/www/firewall_rules_edit.php:1005
 #: usr/local/www/firewall_rules_edit.php:1040
@@ -20090,7 +20170,7 @@ msgstr "'から'"
 #: usr/local/www/firewall_rules_edit.php:1067
 #: usr/local/www/firewall_rules_edit.php:1067
 msgid "Destination port range "
-msgstr "宛先ポート範囲"
+msgstr "送信先ポート範囲 "
 
 #: usr/local/www/firewall_rules_edit.php:1037
 #: usr/local/www/firewall_rules_edit.php:1072
@@ -20101,7 +20181,9 @@ msgstr "宛先ポート範囲"
 msgid ""
 "Specify the port or port range for the destination of the packet for this "
 "rule."
-msgstr "ルール"このため、パケットの送信先のポートまたはポート範囲を指定する」 。"
+msgstr ""
+"このルールで、パケットの送信先に対するポートもしくはポート範囲"
+"を指定してください。"
 
 #: usr/local/www/firewall_rules_edit.php:1039
 #: usr/local/www/firewall_rules_edit.php:1074
@@ -20110,7 +20192,7 @@ msgstr "ルール"このため、パケットの送信先のポートまたは�
 #: usr/local/www/firewall_rules_edit.php:1101
 #: usr/local/www/firewall_rules_edit.php:1101
 msgid "field empty if you only want to filter a single port"
-msgstr "フィールドの空のあなたは、単一のポートをフィルタリングしたい場合に"
+msgstr "単一ポートをフィルタリングする場合はフィールドを空白"
 
 #: usr/local/www/firewall_rules_edit.php:1044
 #: usr/local/www/firewall_rules_edit.php:1079
@@ -20128,7 +20210,7 @@ msgstr "ログ"
 #: usr/local/www/firewall_rules_edit.php:1109
 #: usr/local/www/firewall_rules_edit.php:1109
 msgid "Log packets that are handled by this rule"
-msgstr "この規則によって処理されたパケットをログに記録する"
+msgstr "この規則で処理されたパケットをログに記録します"
 
 #: usr/local/www/firewall_rules_edit.php:1049
 #: usr/local/www/firewall_rules_edit.php:1084
@@ -20140,7 +20222,10 @@ msgid ""
 "Hint: the firewall has limited local log space. Don't turn on logging for "
 "everything. If you want to do a lot of logging, consider using a remote "
 "syslog server"
-msgstr ""ヒント：ファイアウォールがローカルのログ·スペースが限られているため、ロギングをオンにしないでください。 」すべてのもの。ロギングをたくさんしたい場合は、リモート「 syslogサーバを使用することを検討"
+msgstr ""
+"ヒント: ファイアウォールのローカルログスペースは限られています。"
+"ログの取得を、全てオンにしないでください。多くのログを取得したい場合は、リモート syslog サーバ"
+"の使用を検討してください。"
 
 #: usr/local/www/firewall_rules_edit.php:1049
 #: usr/local/www/firewall_rules_edit.php:1084
@@ -20149,7 +20234,7 @@ msgstr ""ヒント：ファイアウォールがローカルのログ·スペー
 #: usr/local/www/firewall_rules_edit.php:1111
 #: usr/local/www/firewall_rules_edit.php:1111
 msgid "see the"
-msgstr "見る"
+msgstr "以下を参照 "
 
 #: usr/local/www/firewall_rules_edit.php:1049
 #: usr/local/www/firewall_rules_edit.php:1084
@@ -20158,7 +20243,7 @@ msgstr "見る"
 #: usr/local/www/firewall_rules_edit.php:1111
 #: usr/local/www/firewall_rules_edit.php:1111
 msgid "Diagnostics: System logs: Settings"
-msgstr "診断：システムログ：セッティング"
+msgstr "診断: システムログ: 設定"
 
 #: usr/local/www/firewall_rules_edit.php:1049
 #: usr/local/www/services_captiveportal.php:908
@@ -20188,7 +20273,7 @@ msgstr "ページ"
 #: usr/local/www/firewall_rules_edit.php:1119
 #: usr/local/www/firewall_rules_edit.php:1119
 msgid "You may enter a description here for your reference."
-msgstr "ここに参照用の説明文を入力することもできます。"
+msgstr "自分用のメモを入力できます"
 
 #: usr/local/www/firewall_rules_edit.php:1080
 #: usr/local/www/firewall_rules_edit.php:1115
@@ -20197,7 +20282,7 @@ msgstr "ここに参照用の説明文を入力することもできます。"
 #: usr/local/www/firewall_rules_edit.php:1142
 #: usr/local/www/firewall_rules_edit.php:1142
 msgid "Source OS"
-msgstr "ソースのOS"
+msgstr "送信元 OS"
 
 #: usr/local/www/firewall_rules_edit.php:1086
 #: usr/local/www/firewall_rules_edit.php:1121
@@ -20206,7 +20291,7 @@ msgstr "ソースのOS"
 #: usr/local/www/firewall_rules_edit.php:1148
 #: usr/local/www/firewall_rules_edit.php:1148
 msgid "OS Type:"
-msgstr "OSの種類："
+msgstr "OS タイプ: "
 
 #: usr/local/www/firewall_rules_edit.php:1109
 #: usr/local/www/firewall_rules_edit.php:1144
@@ -20215,7 +20300,7 @@ msgstr "OSの種類："
 #: usr/local/www/firewall_rules_edit.php:1171
 #: usr/local/www/firewall_rules_edit.php:1171
 msgid "Note: this only works for TCP rules"
-msgstr "注：TCPの規則については、この唯一の作品"
+msgstr "注意: TCP ルールでのみ機能します"
 
 #: usr/local/www/firewall_rules_edit.php:1114
 #: usr/local/www/firewall_rules_edit.php:1149
