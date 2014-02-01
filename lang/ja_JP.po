@@ -12276,7 +12276,7 @@ msgstr "無効な入力です"
 #: usr/local/www/diag_dump_states.php:65 usr/local/www/diag_dump_states.php:75
 #: usr/local/www/diag_dump_states.php:67 usr/local/www/diag_dump_states.php:67
 msgid "Show States"
-msgstr "ステータス表示"
+msgstr "状態表示"
 
 #: usr/local/www/diag_dump_states.php:95 usr/local/www/status_openvpn.php:130
 #: usr/local/www/widgets/widgets/openvpn.widget.php:84
@@ -12317,7 +12317,7 @@ msgstr "エラーが発生しました"
 #: usr/local/www/system_advanced_misc.php:549
 #: usr/local/www/diag_resetstate.php:77 usr/local/www/fbegin.inc:225
 msgid "States"
-msgstr "ステータス"
+msgstr "状態"
 
 #: usr/local/www/diag_dump_states.php:112 usr/local/www/diag_resetstate.php:79
 #: usr/local/www/diag_dump_states_sources.php:111
@@ -12341,11 +12341,11 @@ msgstr "送信元の追跡"
 #: usr/local/www/diag_dump_states_sources.php:111
 #: usr/local/www/diag_resetstate.php:80
 msgid "Reset States"
-msgstr "ステータスのリセット"
+msgstr "状態をリセット"
 
 #: usr/local/www/diag_dump_states.php:134
 msgid "Current state count:"
-msgstr "現在のステータスの合計: "
+msgstr "現在の状態の合計: "
 
 #: usr/local/www/diag_dump_states.php:136
 #: usr/local/www/diag_dump_states_sources.php:131
@@ -12378,7 +12378,7 @@ msgstr "発信元 -> ルータ -> 発信先"
 #: usr/local/www/diag_dump_states.php:158
 #: usr/local/www/diag_system_pftop.php:142
 msgid "State"
-msgstr "ステータス"
+msgstr "状態"
 
 #: usr/local/www/diag_dump_states.php:185
 #: usr/local/www/diag_dump_states.php:203
@@ -12386,7 +12386,7 @@ msgstr "ステータス"
 #: usr/local/www/diag_dump_states.php:194
 #: usr/local/www/diag_dump_states.php:194
 msgid "Remove all state entries from"
-msgstr "全てのステータスエントリを削除: "
+msgstr "全ての状態エントリを削除: "
 
 #: usr/local/www/diag_dump_states.php:185
 #: usr/local/www/firewall_nat_edit.php:620
@@ -20309,7 +20309,7 @@ msgstr "注意: TCP ルールでのみ機能します"
 #: usr/local/www/firewall_rules_edit.php:1176
 #: usr/local/www/firewall_rules_edit.php:1176
 msgid "Diffserv Code Point"
-msgstr "DiffServのコードポイント"
+msgstr "DiffServ コードポイント"
 
 #: usr/local/www/firewall_rules_edit.php:1130
 #: usr/local/www/interfaces_ppps_edit.php:675
@@ -20333,7 +20333,7 @@ msgstr "DiffServのコードポイント"
 #: usr/local/www/vpn_ipsec_phase1.php:837
 #: usr/local/www/vpn_ipsec_phase2.php:772
 msgid "Advanced Options"
-msgstr "詳細オプション"
+msgstr "高度なオプション"
 
 #: usr/local/www/firewall_rules_edit.php:1137
 #: usr/local/www/firewall_rules_edit.php:1172
@@ -20344,7 +20344,9 @@ msgstr "詳細オプション"
 msgid ""
 "This allows packets with IP options to pass. Otherwise they are blocked by "
 "default. This is usually only seen with multicast traffic."
-msgstr "「これは、IPオプションを持つパケットを通過させることができます。そうでなければ彼らはによってブロックされている「デフォルト。これは通常、マルチキャストトラフィックで見られる。"
+msgstr ""
+"IP オプションが「許可」であるパケットを有効にします。"
+"デフォルトでは拒否されます。通常マルチキャストトラフィックでのみ使用されます。"
 
 #: usr/local/www/firewall_rules_edit.php:1140
 #: usr/local/www/firewall_rules_edit.php:1175
@@ -20353,7 +20355,7 @@ msgstr "「これは、IPオプションを持つパケットを通過させる�
 #: usr/local/www/firewall_rules_edit.php:1202
 #: usr/local/www/firewall_rules_edit.php:1202
 msgid "This will disable auto generated reply-to for this rule."
-msgstr "これは自動返信にこのルールのために生成が無効になります。"
+msgstr "このルールに対する reply-to の自動生成を無効にします。"
 
 #: usr/local/www/firewall_rules_edit.php:1143
 #: usr/local/www/firewall_rules_edit.php:1178
@@ -20364,7 +20366,9 @@ msgstr "これは自動返信にこのルールのために生成が無効にな
 msgid ""
 "You can mark a packet matching this rule and use this mark to match on other "
 "NAT/filter rules. It is called"
-msgstr ""あなたは、このルールに一致するパケットをマークし、他に一致するように、このマークを使用することができます「NAT /フィルタルール。それが呼び出されます"
+msgstr ""
+"このルールに一致するパケットをマークすると、他の NAT やフィルタのルールで一致するものを"
+"マークできます。これは次のように呼ばれます: " 
 
 #: usr/local/www/firewall_rules_edit.php:1143
 #: usr/local/www/firewall_rules_edit.php:1178
@@ -20373,7 +20377,7 @@ msgstr ""あなたは、このルールに一致するパケットをマーク�
 #: usr/local/www/firewall_rules_edit.php:1205
 #: usr/local/www/firewall_rules_edit.php:1205
 msgid "Policy filtering"
-msgstr "ポリシーのフィルター"
+msgstr "ポリシフィルタリング"
 
 #: usr/local/www/firewall_rules_edit.php:1146
 #: usr/local/www/firewall_rules_edit.php:1181
@@ -20382,7 +20386,7 @@ msgstr "ポリシーのフィルター"
 #: usr/local/www/firewall_rules_edit.php:1208
 #: usr/local/www/firewall_rules_edit.php:1208
 msgid "You can match packet on a mark placed before on another rule."
-msgstr "あなたが別のルール上の前に置かマークでパケットを一致させることができます。"
+msgstr "パケットに、他のルールよりも、マークを優先して一致させることができます。"
 
 #: usr/local/www/firewall_rules_edit.php:1148
 #: usr/local/www/firewall_rules_edit.php:1183
@@ -20391,7 +20395,7 @@ msgstr "あなたが別のルール上の前に置かマークでパケットを
 #: usr/local/www/firewall_rules_edit.php:1210
 #: usr/local/www/firewall_rules_edit.php:1210
 msgid " Maximum state entries this rule can create"
-msgstr "最大ステートエントリは、このルールを作成することができます"
+msgstr " このルールは最大状態エントリを作成できます"
 
 #: usr/local/www/firewall_rules_edit.php:1149
 #: usr/local/www/firewall_rules_edit.php:1184
@@ -20400,7 +20404,7 @@ msgstr "最大ステートエントリは、このルールを作成すること
 #: usr/local/www/firewall_rules_edit.php:1211
 #: usr/local/www/firewall_rules_edit.php:1211
 msgid " Maximum number of unique source hosts"
-msgstr "一意の送信元ホストの最大数"
+msgstr " 固有の送信元ホストの最大数"
 
 #: usr/local/www/firewall_rules_edit.php:1150
 #: usr/local/www/firewall_rules_edit.php:1185
@@ -20409,7 +20413,7 @@ msgstr "一意の送信元ホストの最大数"
 #: usr/local/www/firewall_rules_edit.php:1212
 #: usr/local/www/firewall_rules_edit.php:1212
 msgid " Maximum number of established connections per host"
-msgstr "ホストあたりの確立された接続の最大数"
+msgstr "ホスト毎の確立した接続の最大数"
 
 #: usr/local/www/firewall_rules_edit.php:1151
 #: usr/local/www/firewall_rules_edit.php:1186
@@ -20418,7 +20422,7 @@ msgstr "ホストあたりの確立された接続の最大数"
 #: usr/local/www/firewall_rules_edit.php:1213
 #: usr/local/www/firewall_rules_edit.php:1213
 msgid " Maximum state entries per host"
-msgstr "ホストごとの最大ステートエントリ"
+msgstr "ホスト毎の最大状態エントリ"
 
 #: usr/local/www/firewall_rules_edit.php:1160
 #: usr/local/www/firewall_rules_edit.php:1195
@@ -20427,7 +20431,7 @@ msgstr "ホストごとの最大ステートエントリ"
 #: usr/local/www/firewall_rules_edit.php:1222
 #: usr/local/www/firewall_rules_edit.php:1222
 msgid "Maximum new connections / per second(s)"
-msgstr "最大の新規接続/秒（S ）"
+msgstr "最大新規接続 / 秒"
 
 #: usr/local/www/firewall_rules_edit.php:1164
 #: usr/local/www/firewall_rules_edit.php:1199
@@ -20436,7 +20440,7 @@ msgstr "最大の新規接続/秒（S ）"
 #: usr/local/www/firewall_rules_edit.php:1225
 #: usr/local/www/firewall_rules_edit.php:1225
 msgid "State Timeout in seconds"
-msgstr "秒単位の状態のタイムアウト"
+msgstr "数秒で状態タイムアウトします"
 
 #: usr/local/www/firewall_rules_edit.php:1167
 #: usr/local/www/firewall_rules_edit.php:1202
@@ -20445,7 +20449,7 @@ msgstr "秒単位の状態のタイムアウト"
 #: usr/local/www/firewall_rules_edit.php:1227
 #: usr/local/www/firewall_rules_edit.php:1227
 msgid "Note: Leave fields blank to disable that feature."
-msgstr "注：この機能を無効に空欄のままにしておきます。"
+msgstr "注意: この機能を無効にするときは、フィールドを空にします"
 
 #: usr/local/www/firewall_rules_edit.php:1172
 #: usr/local/www/firewall_rules_edit.php:1207
@@ -20454,7 +20458,7 @@ msgstr "注：この機能を無効に空欄のままにしておきます。"
 #: usr/local/www/firewall_rules_edit.php:1232
 #: usr/local/www/firewall_rules_edit.php:1232
 msgid "TCP flags"
-msgstr "TCPフラグ"
+msgstr "TCP フラグ"
 
 #: usr/local/www/firewall_rules_edit.php:1206
 #: usr/local/www/firewall_rules_edit.php:1241
@@ -20463,7 +20467,7 @@ msgstr "TCPフラグ"
 #: usr/local/www/firewall_rules_edit.php:1264
 #: usr/local/www/firewall_rules_edit.php:1264
 msgid "Any flags."
-msgstr "任意のフラグ。"
+msgstr "任意 フラグ"
 
 #: usr/local/www/firewall_rules_edit.php:1208
 #: usr/local/www/firewall_rules_edit.php:1243
@@ -20474,7 +20478,9 @@ msgstr "任意のフラグ。"
 msgid ""
 "Use this to choose TCP flags that must be set or cleared for this rule to "
 "match."
-msgstr "マッチ」には、このルールに設定またはクリアする必要がTCPフラグを選択して、これを使用してください」 。"
+msgstr ""
+"このルールに一致するように設定する、もしくは削除する TCP フラグを選択するには、"
+"これを使用してください。"
 
 #: usr/local/www/firewall_rules_edit.php:1214
 #: usr/local/www/firewall_rules_edit.php:1249
@@ -20483,7 +20489,7 @@ msgstr "マッチ」には、このルールに設定またはクリアする必
 #: usr/local/www/firewall_rules_edit.php:1272
 #: usr/local/www/firewall_rules_edit.php:1272
 msgid "State Type"
-msgstr "ステートタイプ"
+msgstr "状態タイプ"
 
 #: usr/local/www/firewall_rules_edit.php:1221
 #: usr/local/www/firewall_rules_edit.php:1228
@@ -20498,7 +20504,7 @@ msgstr "ステートタイプ"
 #: usr/local/www/firewall_rules_edit.php:1279
 #: usr/local/www/firewall_rules_edit.php:1285
 msgid "keep state"
-msgstr "状態を維持する"
+msgstr "keep state"
 
 #: usr/local/www/firewall_rules_edit.php:1222
 #: usr/local/www/firewall_rules_edit.php:1229
@@ -20513,7 +20519,7 @@ msgstr "状態を維持する"
 #: usr/local/www/firewall_rules_edit.php:1280
 #: usr/local/www/firewall_rules_edit.php:1286
 msgid "sloppy state"
-msgstr "ずさんな状態"
+msgstr "sloppy state"
 
 #: usr/local/www/firewall_rules_edit.php:1223
 #: usr/local/www/firewall_rules_edit.php:1230
@@ -20528,7 +20534,7 @@ msgstr "ずさんな状態"
 #: usr/local/www/firewall_rules_edit.php:1281
 #: usr/local/www/firewall_rules_edit.php:1287
 msgid "synproxy state"
-msgstr "synproxy状態"
+msgstr "synproxy state"
 
 #: usr/local/www/firewall_rules_edit.php:1225
 #: usr/local/www/firewall_rules_edit.php:1260
@@ -20539,7 +20545,9 @@ msgstr "synproxy状態"
 msgid ""
 "Hint: Select which type of state tracking mechanism you would like to use. "
 "If in doubt, use keep state."
-msgstr ""ヒント：あなたが使用したい種類を状態追跡機構の選択」疑わしい場合は、状態を維持し使用している場合。"
+msgstr ""
+"ヒント: 使用したい状態追跡メカニズムのタイプを選択してください。"
+"よくわからない場合は、keep state を使用してください。"
 
 #: usr/local/www/firewall_rules_edit.php:1228
 #: usr/local/www/firewall_rules_edit.php:1229
@@ -20553,7 +20561,7 @@ msgstr ""ヒント：あなたが使用したい種類を状態追跡機構の�
 #: usr/local/www/firewall_rules_edit.php:1285
 #: usr/local/www/firewall_rules_edit.php:1286
 msgid "Works with all IP protocols."
-msgstr "すべてのIPプロトコルで動作します。"
+msgstr "全ての IP プロトコルで動作します。"
 
 #: usr/local/www/firewall_rules_edit.php:1230
 #: usr/local/www/firewall_rules_edit.php:1265
