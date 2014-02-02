@@ -20345,7 +20345,7 @@ msgid ""
 "This allows packets with IP options to pass. Otherwise they are blocked by "
 "default. This is usually only seen with multicast traffic."
 msgstr ""
-"IP オプションが「許可」であるパケットを有効にします。"
+"IP オプションがあるパケットが通過できるようにします。"
 "デフォルトでは拒否されます。通常マルチキャストトラフィックでのみ使用されます。"
 
 #: usr/local/www/firewall_rules_edit.php:1140
@@ -20479,7 +20479,7 @@ msgid ""
 "Use this to choose TCP flags that must be set or cleared for this rule to "
 "match."
 msgstr ""
-"このルールに一致するように設定する、もしくは削除する TCP フラグを選択するには、"
+"このルールに一致するように、設定もしくは削除する、TCP フラグを選択するには"
 "これを使用してください。"
 
 #: usr/local/www/firewall_rules_edit.php:1214
@@ -20573,7 +20573,10 @@ msgid ""
 "Proxies incoming TCP connections to help protect servers from spoofed TCP "
 "SYN floods. This option includes the functionality of keep state and "
 "modulate state combined."
-msgstr "SYNフラッド」スプーフィングされたTCPからサーバーを保護するためにTCP接続を着信プロキシ」 。このオプションは、組み合わせてキープ状態の機能と「調節状態を含む。"
+msgstr ""
+"TCP 接続を着信するプロキシは、IP スプーフィングや SYN flood 攻撃からサーバを"
+"防御するのに役立ちます。このオプションには keep state と modulate state を"
+"組み合わせた機能を含んでいます。"
 
 #: usr/local/www/firewall_rules_edit.php:1231
 #: usr/local/www/firewall_rules_edit.php:1266
@@ -20585,14 +20588,19 @@ msgid ""
 "Do not use state mechanisms to keep track. This is only useful if you're "
 "doing advanced queueing in certain situations. Please check the "
 "documentation."
-msgstr "特定の状況でアドバンスト·キューイングを行って"あなたがしている場合を追跡するために状態のメカニズムを使用しないでください。これは便利です」 。 「マニュアルを確認してください。"
+msgstr ""
+"記録目的で状態メカニズムを使用しないでください。"
+"これは、高度なキュー操作を行うような場合にのみ、便利なものです。"
+"ドキュメントを確認してください。"
 
 #: usr/local/www/firewall_rules_edit.php:1245
 #: usr/local/www/firewall_rules_edit.php:1280
 msgid ""
 "Hint: This prevents the rule from automatically syncing to other CARP "
 "members."
-msgstr ""ヒント：これは、自動的に他のCARPと同期からルールを防ぐ」のメンバー。"
+msgstr ""
+"ヒント: 他の CARP メンバとの自動同期から"
+"ルールを保護します"
 
 #: usr/local/www/firewall_rules_edit.php:1283
 #: usr/local/www/firewall_rules_edit.php:1350
@@ -20601,7 +20609,7 @@ msgstr ""ヒント：これは、自動的に他のCARPと同期からルール�
 #: usr/local/www/firewall_rules_edit.php:1383
 #: usr/local/www/firewall_rules_edit.php:1383
 msgid "Leave as 'none' to leave the rule enabled all the time."
-msgstr "すべての時間を有効にするルールを残して「該当なし」としておきます。"
+msgstr "「なし」の場合は、ルールはいつも有効になります"
 
 #: usr/local/www/firewall_rules_edit.php:1295
 #: usr/local/www/services_captiveportal.php:779
@@ -20633,7 +20641,9 @@ msgstr "デフォルト"
 msgid ""
 "Leave as 'default' to use the system routing table. Or choose a gateway to "
 "utilize policy based routing."
-msgstr "ポリシーベースのルーティングを使用する」には、システムのルーティングテーブルを使用するように「デフォルト」のままにします。またはゲートウェイを選択する」 。"
+msgstr ""
+"「デフォルト」の場合はシステムルーティングテーブルを使用します。"
+"もしくは、ポリシーベースルーティングを利用するゲートウェイを選択してください。"
 
 #: usr/local/www/firewall_rules_edit.php:1339
 #: usr/local/www/firewall_rules_edit.php:1410
@@ -20642,7 +20652,7 @@ msgstr "ポリシーベースのルーティングを使用する」には、シ
 #: usr/local/www/firewall_rules_edit.php:1443
 #: usr/local/www/firewall_rules_edit.php:1443
 msgid "In/Out"
-msgstr "イン/アウト"
+msgstr "内 / 外"
 
 #: usr/local/www/firewall_rules_edit.php:1383
 #: usr/local/www/firewall_rules_edit.php:1454
@@ -20652,7 +20662,8 @@ msgstr "イン/アウト"
 #: usr/local/www/firewall_rules_edit.php:1487
 msgid ""
 "Choose the Out queue/Virtual interface only if you have also selected In."
-msgstr "「あなたも、選択された場合にのみ出力待ち行列/仮想インターフェイスを選択します。"
+msgstr ""
+"内のキューや仮想インタフェースを選択した場合のみ、外のキューや仮想インタフェースを選択してください"
 
 #: usr/local/www/firewall_rules_edit.php:1383
 #: usr/local/www/firewall_rules_edit.php:1454
@@ -20663,7 +20674,9 @@ msgstr "「あなたも、選択された場合にのみ出力待ち行列/仮�
 msgid ""
 "The Out selection is applied to traffic leaving the interface where the rule "
 "is created, In is applied to traffic coming into the chosen interface."
-msgstr "作成された「アウト選択はルールがインターフェイスから送信されるトラフィックに適用されている」では、トラフィックが選ばれたインターフェイスに着信に適用されます。"
+msgstr ""
+"「外」で選択した内容は、ルールが作成されたインタフェースからトラフィックが出て行く際に適用されます。"
+"「内」は選択したインタフェースにトラフィックが到着した際に適用されます。"
 
 #: usr/local/www/firewall_rules_edit.php:1383
 #: usr/local/www/firewall_rules_edit.php:1454
@@ -20675,7 +20688,9 @@ msgid ""
 "If you are creating a floating rule, if the direction is In then the same "
 "rules apply, if the direction is out the selections are reverted Out is for "
 "incoming and In is for outgoing."
-msgstr "「フローティングルールを作成する場合は方向が同じで、その後にある場合は、 「方向は選択がアウト戻され外の場合のルールが適用「着信およびInは、発信用です用です。"
+msgstr ""
+"フローティングルールを作成する場合は、方向が「内」の場合は同じルールが適用され、"
+"方向が「外」の場合は選択が逆になり、「外」は着信、「内」は発信になります。"
 
 #: usr/local/www/firewall_rules_edit.php:1389
 #: usr/local/www/firewall_rules_edit.php:1460
@@ -20684,7 +20699,7 @@ msgstr "「フローティングルールを作成する場合は方向が同じ
 #: usr/local/www/firewall_rules_edit.php:1493
 #: usr/local/www/firewall_rules_edit.php:1493
 msgid "Ackqueue/Queue"
-msgstr "Ackqueue /キュー"
+msgstr "肯定応答キュー / キュー"
 
 #: usr/local/www/firewall_rules_edit.php:1439
 #: usr/local/www/firewall_rules_edit.php:1510
@@ -20693,7 +20708,7 @@ msgstr "Ackqueue /キュー"
 #: usr/local/www/firewall_rules_edit.php:1543
 #: usr/local/www/firewall_rules_edit.php:1543
 msgid "Choose the Acknowledge Queue only if you have selected Queue."
-msgstr "キューを選択した場合にのみ肯定応答キューを選択してください。"
+msgstr "キューを選択している場合のみ、肯定応答キューを選択してください。"
 
 #: usr/local/www/firewall_rules_edit.php:1466
 #: usr/local/www/firewall_rules_edit.php:1537
@@ -20704,7 +20719,9 @@ msgstr "キューを選択した場合にのみ肯定応答キューを選択し
 msgid ""
 "Choose a Layer7 container to apply application protocol inspection rules. "
 "These are valid for TCP and UDP protocols only."
-msgstr "「アプリケーションプロトコルインスペクションルールを適用するレイヤ7のコンテナを選択します。 「これらはTCPおよびUDPのみのプロトコルに有効です。"
+msgstr ""
+"アプリケーションプロトコル検査ルールを適用するレイヤ 7 コンテナを選択してください。"
+"TCP 及び UDP プロトコルのみ有効です。"
 
 #: usr/local/www/firewall_schedule.php:50
 #: usr/local/www/firewall_schedule_edit.php:61 usr/local/www/fbegin.inc:113
@@ -20723,70 +20740,71 @@ msgstr "スケジュール"
 #: usr/local/www/firewall_schedule.php:77
 #, php-format
 msgid "Cannot delete Schedule. Currently in use by %s"
-msgstr "スケジュールを削除することはできません。現在%sで使用されている"
+msgstr "スケジュールを削除できません。現在 %s で使用されています"
 
 #: usr/local/www/firewall_schedule.php:97
 #: usr/local/www/firewall_schedule.php:97
 msgid "Time Range(s)"
-msgstr "時間範囲（ S ）"
+msgstr "時間範囲"
 
 #: usr/local/www/firewall_schedule.php:103
 #: usr/local/www/firewall_schedule.php:233
 #: usr/local/www/firewall_schedule.php:103
 #: usr/local/www/firewall_schedule.php:233
 msgid "add a new schedule"
-msgstr "新しいスケジュールを追加"
+msgstr "新規スケジュールの追加"
 
 #: usr/local/www/firewall_schedule.php:115
 #: usr/local/www/firewall_schedule.php:115
 msgid "Schedule is currently active"
-msgstr "スケジュールが現在アクティブになっている"
+msgstr "スケジュールは現在アクティブです"
 
 #: usr/local/www/firewall_schedule.php:221
 #: usr/local/www/firewall_schedule.php:221
 msgid "Do you really want to delete this schedule?"
-msgstr "あなたは本当にこのスケジュールを削除しますか？"
+msgstr "本当にこのスケジュールを削除しますか？"
 
 #: usr/local/www/firewall_schedule.php:240
 #: usr/local/www/firewall_schedule.php:240
 msgid ""
 "Schedules act as placeholders for time ranges to be used in Firewall Rules."
-msgstr "時間のプレースホルダは、ファイアウォールルールで使用する範囲として「スケジュールは行動。"
+msgstr ""
+"スケジュールは、ファイアウォールルールで使用されている時間範囲のプレースホルダとして動作します。"
 
 #: usr/local/www/firewall_schedule_edit.php:93
 #: usr/local/www/firewall_schedule_edit.php:93
 msgid "Schedule may not be named LAN."
-msgstr "スケジュールは、LAN命名されない場合があります。"
+msgstr "スケジュール名に LAN は使用できません"
 
 #: usr/local/www/firewall_schedule_edit.php:95
 #: usr/local/www/firewall_schedule_edit.php:95
 msgid "Schedule may not be named WAN."
-msgstr "スケジュールは、WAN命名されない場合があります。"
+msgstr "スケジュール名に WAN は使用できません"
 
 #: usr/local/www/firewall_schedule_edit.php:97
 #: usr/local/www/firewall_schedule_edit.php:97
 msgid "Schedule name cannot be blank."
-msgstr "スケジュール名を空白にすることはできません。"
+msgstr "スケジュール名を空白にできません"
 
 #: usr/local/www/firewall_schedule_edit.php:101
 #: usr/local/www/firewall_schedule_edit.php:101
 msgid "Reserved word used for schedule name."
-msgstr "スケジュール名に使用する予約語。"
+msgstr "スケジュール名に使用する予約語"
 
 #: usr/local/www/firewall_schedule_edit.php:104
 #: usr/local/www/firewall_schedule_edit.php:104
 msgid "The schedule name may only consist of the characters a-z, A-Z, 0-9"
-msgstr "スケジュール名は文字だけAZ 、 AZ 、から構成されてもよい0-9"
+msgstr "スケジュール名に使用できる文字は、a-z、A-Z、0-9 のみです"
 
 #: usr/local/www/firewall_schedule_edit.php:113
 #: usr/local/www/firewall_schedule_edit.php:113
 msgid "A Schedule with this name already exists."
-msgstr "この名前のスケジュールがすでに存在しています。"
+msgstr "この名前のスケジュールは既に存在しています"
 
 #: usr/local/www/firewall_schedule_edit.php:170
 #: usr/local/www/firewall_schedule_edit.php:170
 msgid "The schedule must have at least one time range configured."
-msgstr "スケジュールは、少なくとも1時間範囲が設定されている必要があります。"
+msgstr "スケジュールには、1 つ以上の時間範囲を設定してください"
 
 #: usr/local/www/firewall_schedule_edit.php:770
 #: usr/local/www/firewall_schedule_edit.php:769
@@ -20804,14 +20822,15 @@ msgstr "スケジュール名"
 #: usr/local/www/firewall_schedule_edit.php:781
 #: usr/local/www/firewall_schedule_edit.php:781
 msgid "NOTE: This schedule is in use so the name may not be modified!"
-msgstr "注意：名前は変更されない場合がありますので、このスケジュールは使用中です ！"
+msgstr "注意: スケジュールは使用中です。名前を変更できません！"
 
 #: usr/local/www/firewall_schedule_edit.php:787
 #: usr/local/www/firewall_schedule_edit.php:786
 #: usr/local/www/firewall_schedule_edit.php:786
 msgid ""
 "The name of the alias may only consist of the characters a-z, A-Z and 0-9"
-msgstr "「エイリアスの名前は、文字だけAZ 、 AZと0-9で構成することができる"
+msgstr ""
+"エイリアス名に使用できる文字は、a-z、A-Z、0-9 のみです"
 
 #: usr/local/www/firewall_schedule_edit.php:804
 #: usr/local/www/firewall_schedule_edit.php:803
@@ -20823,7 +20842,7 @@ msgstr "月"
 #: usr/local/www/firewall_schedule_edit.php:846
 #: usr/local/www/firewall_schedule_edit.php:846
 msgid "Tue"
-msgstr "火曜"
+msgstr "火"
 
 #: usr/local/www/firewall_schedule_edit.php:849
 #: usr/local/www/firewall_schedule_edit.php:848
@@ -20837,7 +20856,9 @@ msgstr "木"
 msgid ""
 "Click individual date to select that date only. Click the appropriate "
 "weekday Header to select all occurences of that weekday."
-msgstr "「それだけで日付を選択し、個々の日付をクリックします。適切なクリックして "その曜日のすべての出現箇所を選択するには、平日のヘッダー。"
+msgstr ""
+"特定の日付を選択する場合は、個々の日付をクリックしてください。"
+"平日に発生するもの全てを選択するには、適当な平日ヘッダをクリックしてください。"
 
 #: usr/local/www/firewall_schedule_edit.php:914
 #: usr/local/www/firewall_schedule_edit.php:996
@@ -20846,7 +20867,7 @@ msgstr "「それだけで日付を選択し、個々の日付をクリックし
 #: usr/local/www/firewall_schedule_edit.php:913
 #: usr/local/www/firewall_schedule_edit.php:995
 msgid "Start Time"
-msgstr "時間を開始"
+msgstr "時間開始"
 
 #: usr/local/www/firewall_schedule_edit.php:914
 #: usr/local/www/firewall_schedule_edit.php:997
@@ -20855,7 +20876,7 @@ msgstr "時間を開始"
 #: usr/local/www/firewall_schedule_edit.php:913
 #: usr/local/www/firewall_schedule_edit.php:996
 msgid "Stop Time"
-msgstr "停止時間"
+msgstr "時間停止"
 
 #: usr/local/www/firewall_schedule_edit.php:927
 #: usr/local/www/firewall_schedule_edit.php:952
@@ -20864,7 +20885,7 @@ msgstr "停止時間"
 #: usr/local/www/firewall_schedule_edit.php:926
 #: usr/local/www/firewall_schedule_edit.php:951
 msgid "Hr"
-msgstr "時間"
+msgstr "時"
 
 #: usr/local/www/firewall_schedule_edit.php:934
 #: usr/local/www/firewall_schedule_edit.php:959
@@ -20873,7 +20894,7 @@ msgstr "時間"
 #: usr/local/www/firewall_schedule_edit.php:933
 #: usr/local/www/firewall_schedule_edit.php:958
 msgid "Min"
-msgstr "ミン"
+msgstr "分"
 
 #: usr/local/www/firewall_schedule_edit.php:963
 #: usr/local/www/firewall_schedule_edit.php:962
@@ -20881,58 +20902,60 @@ msgstr "ミン"
 msgid ""
 "Select the time range for the day(s) selected on the Month(s) above. A full "
 "day is 0:00-23:59."
-msgstr "「上記の月（ S ）上で選択した日の（S ）の時間範囲を選択します。完全な "日は0:00-23:59です。"
+msgstr ""
+"上記の「月」で選択した「日」に対する時間範囲を選択してください。"
+"1 日全て選択する場合は 0:00-23:59 です。"
 
 #: usr/local/www/firewall_schedule_edit.php:967
 #: usr/local/www/firewall_schedule_edit.php:966
 #: usr/local/www/firewall_schedule_edit.php:966
 msgid "Time Range Description"
-msgstr "時間範囲説明"
+msgstr "時間範囲の説明"
 
 #: usr/local/www/firewall_schedule_edit.php:977
 #: usr/local/www/firewall_schedule_edit.php:976
 #: usr/local/www/firewall_schedule_edit.php:976
 msgid "Add Time"
-msgstr "時間を加え"
+msgstr "時間の追加"
 
 #: usr/local/www/firewall_schedule_edit.php:978
 #: usr/local/www/firewall_schedule_edit.php:977
 #: usr/local/www/firewall_schedule_edit.php:977
 msgid "Clear Selection"
-msgstr "選択をクリア"
+msgstr "選択を消去"
 
 #: usr/local/www/firewall_schedule_edit.php:987
 #: usr/local/www/firewall_schedule_edit.php:986
 #: usr/local/www/firewall_schedule_edit.php:986
 msgid "Schedule repeat"
-msgstr "スケジュールの繰り返し"
+msgstr "スケジュールの繰返し"
 
 #: usr/local/www/firewall_schedule_edit.php:990
 #: usr/local/www/firewall_schedule_edit.php:989
 #: usr/local/www/firewall_schedule_edit.php:989
 msgid "Configured Ranges"
-msgstr "構成された範囲"
+msgstr "範囲の構成"
 
 #: usr/local/www/firewall_schedule_edit.php:995
 #: usr/local/www/firewall_schedule_edit.php:994
 #: usr/local/www/firewall_schedule_edit.php:994
 msgid "Day(s)"
-msgstr "日（ S ）"
+msgstr "日"
 
 #: usr/local/www/firewall_shaper.php:369 usr/local/www/firewall_shaper.php:370
 #: usr/local/www/firewall_shaper.php:370
 msgid "Disable shaper on interface"
-msgstr "インターフェイス上でシェーパーを無効"
+msgstr "インタフェースでシェイパを無効"
 
 #: usr/local/www/firewall_shaper.php:424 usr/local/www/firewall_shaper.php:425
 #: usr/local/www/firewall_shaper.php:426 usr/local/www/firewall_shaper.php:426
 msgid "Remove Shaper"
-msgstr "シェイパーを削除する"
+msgstr "シェイパを削除"
 
 #: usr/local/www/diag_backup.php:84 usr/local/www/diag_backup.php:161
 #: usr/local/www/diag_backup.php:161
 msgid "Restored base_package menus after configuration restore."
-msgstr "コンフィギュレーション後に復元base_packageメニューが復元します。"
+msgstr "構成の復元後に、base_package メニューが復元されます"
 
 #: usr/local/www/diag_backup.php:104 usr/local/www/fbegin.inc:120
 #: usr/local/www/fbegin.inc:156 usr/local/www/status_rrd_graph_settings.php:58
@@ -20966,14 +20989,14 @@ msgstr "キャプティブポータルバウチャー"
 #: etc/inc/service-utils.inc:257 usr/local/www/diag_backup.php:183
 #: usr/local/www/fbegin.inc:139 etc/inc/service-utils.inc:257
 msgid "DNS Forwarder"
-msgstr "DNSフォワーダ"
+msgstr "DNS フォワーダ"
 
 #: usr/local/www/diag_backup.php:107 usr/local/www/fbegin.inc:125
 #: usr/local/www/fbegin.inc:142 usr/local/www/diag_backup.php:184
 #: usr/local/www/fbegin.inc:151 usr/local/www/fbegin.inc:143
 #: usr/local/www/diag_backup.php:184 usr/local/www/fbegin.inc:143
 msgid "DHCP Server"
-msgstr "DHCPサーバ"
+msgstr "DHCP サーバ"
 
 #: usr/local/www/diag_backup.php:108 usr/local/www/diag_backup.php:185
 #: usr/local/www/diag_backup.php:185
@@ -20983,27 +21006,27 @@ msgstr "ファイアウォールルール"
 #: usr/local/www/diag_backup.php:110 usr/local/www/diag_backup.php:187
 #: usr/local/www/diag_backup.php:187
 msgid "IPSEC"
-msgstr "IPSEC"
+msgstr "IPsec"
 
 #: usr/local/www/diag_backup.php:114 usr/local/www/diag_backup.php:191
 #: usr/local/www/diag_backup.php:191
 msgid "PPTP Server"
-msgstr "PPTPサーバー"
+msgstr "PPTP サーバ"
 
 #: usr/local/www/diag_backup.php:115 usr/local/www/diag_backup.php:193
 #: usr/local/www/diag_backup.php:193
 msgid "Scheduled Tasks"
-msgstr "予定されたタスク"
+msgstr "スケジュール済みのタスク"
 
 #: usr/local/www/diag_backup.php:116 usr/local/www/diag_backup.php:194
 #: usr/local/www/diag_backup.php:194
 msgid "Syslog"
-msgstr "Syslogの"
+msgstr "Syslog"
 
 #: usr/local/www/diag_backup.php:118 usr/local/www/diag_backup.php:196
 #: usr/local/www/diag_backup.php:196
 msgid "Static routes"
-msgstr "スタティックルート"
+msgstr "静的ルート"
 
 #: usr/local/www/diag_backup.php:119 usr/local/www/diag_backup.php:197
 #: usr/local/www/diag_backup.php:197
@@ -21013,17 +21036,17 @@ msgstr "システム調整パラメータ"
 #: usr/local/www/diag_backup.php:120 usr/local/www/diag_backup.php:198
 #: usr/local/www/diag_backup.php:198
 msgid "SNMP Server"
-msgstr "SNMPサーバ"
+msgstr "SNMP サーバ"
 
 #: usr/local/www/diag_backup.php:122 usr/local/www/diag_backup.php:200
 #: usr/local/www/diag_backup.php:200
 msgid "VLANS"
-msgstr "のVLAN"
+msgstr "VLAN"
 
 #: usr/local/www/diag_backup.php:130 usr/local/www/diag_backup.php:205
 #: usr/local/www/diag_backup.php:205
 msgid "ALL"
-msgstr "ALL"
+msgstr "全て"
 
 #: usr/local/www/diag_backup.php:157 usr/local/www/diag_backup.php:619
 #: usr/local/www/diag_backup.php:654 usr/local/www/diag_backup.php:244
@@ -21032,46 +21055,46 @@ msgstr "ALL"
 #: usr/local/www/diag_backup.php:244 usr/local/www/diag_backup.php:703
 #: usr/local/www/diag_backup.php:740
 msgid "Restore configuration"
-msgstr "設定を復元する"
+msgstr "構成の復元"
 
 #: usr/local/www/diag_backup.php:159 usr/local/www/diag_backup.php:246
 #: usr/local/www/diag_backup.php:246
 msgid "Reinstall"
-msgstr "再インストールする"
+msgstr "再インストール"
 
 #: usr/local/www/diag_backup.php:161 usr/local/www/diag_backup.php:673
 #: usr/local/www/diag_backup.php:248 usr/local/www/diag_backup.php:754
 #: usr/local/www/diag_backup.php:762 usr/local/www/diag_backup.php:248
 #: usr/local/www/diag_backup.php:762
 msgid "Clear Package Lock"
-msgstr "クリアパッケージ·ロック"
+msgstr "パッケージロックを消去"
 
 #: usr/local/www/diag_backup.php:165 usr/local/www/diag_backup.php:252
 #: usr/local/www/diag_backup.php:252
 msgid "Restore version"
-msgstr "バージョンを復元"
+msgstr "バージョンの復元"
 
 #: usr/local/www/diag_backup.php:180 usr/local/www/diag_backup.php:267
 #: usr/local/www/diag_backup.php:267
 msgid "You must supply and confirm the password for encryption."
-msgstr "あなたは、暗号化のパスワードを入力して確認する必要があります。"
+msgstr "暗号化パスワードの入力と確認が必要です"
 
 #: usr/local/www/diag_backup.php:182 usr/local/www/diag_backup.php:268
 #: usr/local/www/diag_backup.php:269 usr/local/www/diag_backup.php:346
 #: usr/local/www/diag_backup.php:269 usr/local/www/diag_backup.php:346
 msgid "The supplied 'Password' and 'Confirm' field values must match."
-msgstr "供給'パスワード'と' CONFIRM」フィールドの値が一致している必要があります。"
+msgstr "入力された「パスワード」及び「確認」フィールドの値は一致する必要があります。"
 
 #: usr/local/www/diag_backup.php:266 usr/local/www/diag_backup.php:344
 #: usr/local/www/diag_backup.php:344
 msgid "You must supply and confirm the password for decryption."
-msgstr "あなたは、復号化にパスワードを入力して確認する必要があります。"
+msgstr "復号化パスワードの入力と確認が必要です"
 
 #: usr/local/www/diag_backup.php:278 usr/local/www/diag_backup.php:356
 #: usr/local/www/diag_backup.php:356
 #, php-format
 msgid "Warning, could not read file %s"
-msgstr "、警告ファイル%sを読み取ることができませんでした"
+msgstr "警告: ファイル %s を読み込めません"
 
 #: usr/local/www/diag_backup.php:284 usr/local/www/diag_backup.php:362
 #: usr/local/www/diag_backup.php:362
