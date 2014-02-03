@@ -21101,12 +21101,13 @@ msgstr "警告: ファイル %s を読み込めません"
 msgid ""
 "The uploaded file does not appear to contain an encrypted pfsense "
 "configuration."
-msgstr "コンフィグレーション"アップロードされたファイルは暗号化されたpfsenseを含むように表示されません」 。"
+msgstr "アップロードされたファイルには、暗号化された pfsense 構成が"
+"含まれていないようです"
 
 #: usr/local/www/diag_backup.php:291 usr/local/www/diag_backup.php:369
 #: usr/local/www/diag_backup.php:369
 msgid "Upgrading m0n0wall configuration to pfsense."
-msgstr "pfsenseするm0n0wallの構成をアップグレードする。"
+msgstr "m0n0wall 構成を pfsense にアップグレードしています"
 
 #: usr/local/www/diag_backup.php:299 usr/local/www/diag_backup.php:377
 #: usr/local/www/diag_backup.php:380 usr/local/www/diag_backup.php:377
@@ -21114,14 +21115,18 @@ msgstr "pfsenseするm0n0wallの構成をアップグレードする。"
 msgid ""
 "You have selected to restore an area but we could not locate the correct xml "
 "tag."
-msgstr "「あなたは、エリアを回復するために選択したが、我々は正しいXML見つけることができませんでした"タグを。"
+msgstr ""
+"復元する領域が選択されましたが、"
+"正しい XML タグを見つけられませんでした。"
 
 #: usr/local/www/diag_backup.php:303 usr/local/www/diag_backup.php:392
 #: usr/local/www/diag_backup.php:392
 msgid ""
 "The configuration area has been restored. You may need to reboot the "
 "firewall."
-msgstr "「設定領域が復元されました。再起動する必要があるかもしれません」のファイアウォールを。"
+msgstr ""
+"構成領域が復元されました。"
+"ファイアウォールを再起動してください。"
 
 #: usr/local/www/diag_backup.php:307 usr/local/www/diag_backup.php:397
 #: usr/local/www/diag_backup.php:397
@@ -21129,40 +21134,43 @@ msgstr "「設定領域が復元されました。再起動する必要がある
 msgid ""
 "You have selected to restore the full configuration but we could not locate "
 "a %s tag."
-msgstr "「あなたは、完全な構成を復元することを選択したが、我々は見つけることができませんでした」 %sタグを。"
+msgstr ""
+"全ての構成の復元を選択されましたが、"
+"%s タグを見つけられませんでした。"
 
 #: usr/local/www/diag_backup.php:438 usr/local/www/diag_backup.php:515
 #: usr/local/www/diag_backup.php:515
 msgid "The m0n0wall configuration has been restored and upgraded to pfSense."
-msgstr "m0n0wallの構成はpfSenseに復元してアップグレードされました。"
+msgstr "m0n0wall 構成は復元され、pfSense にアップグレードされました。"
 
 #: usr/local/www/diag_backup.php:461 usr/local/www/diag_backup.php:485
 #: usr/local/www/diag_backup.php:538 usr/local/www/diag_backup.php:562
 #: usr/local/www/diag_backup.php:543 usr/local/www/diag_backup.php:567
 #: usr/local/www/diag_backup.php:543 usr/local/www/diag_backup.php:567
 msgid "The configuration could not be restored."
-msgstr "設定は復元できませんでした。"
+msgstr "構成は復元できませんでした"
 
 #: usr/local/www/diag_backup.php:466 usr/local/www/diag_backup.php:543
 #: usr/local/www/diag_backup.php:548 usr/local/www/diag_backup.php:548
 msgid "The configuration could not be restored (file upload error)."
-msgstr "構成は、 （ファイルのアップロードエラー）復元できませんでした。"
+msgstr "構成は復元できませんでした ( ファイルアップロードエラー )"
 
 #: usr/local/www/diag_backup.php:479 usr/local/www/diag_backup.php:556
 #: usr/local/www/diag_backup.php:561 usr/local/www/diag_backup.php:561
 msgid ""
 "XXX - this feature may hose your config (do NOT backrev configs!) - billm"
-msgstr "「XXX - この機能は、あなたの設定をホースも（ backrevないコンフィグを行う ！ ） - billm"
+msgstr ""
+"XXX - この機能は構成を騙っている可能性があります ( 構成を戻してはいけません！) - billm"
 
 #: usr/local/www/diag_backup.php:488 usr/local/www/diag_backup.php:565
 #: usr/local/www/diag_backup.php:570 usr/local/www/diag_backup.php:570
 msgid "No version selected."
-msgstr "noバージョンが選択されていません。"
+msgstr "バージョンが選択されていません"
 
 #: usr/local/www/diag_backup.php:499 usr/local/www/diag_backup.php:576
 #: usr/local/www/diag_backup.php:581 usr/local/www/diag_backup.php:581
 msgid "Backup/restore"
-msgstr "バックアップ/リストア"
+msgstr "バックアップ / 復元"
 
 #: usr/local/www/diag_backup.php:540
 #: usr/local/www/system_firmware_restorefullbackup.php:116
@@ -21170,7 +21178,7 @@ msgstr "バックアップ/リストア"
 #: usr/local/www/diag_backup.php:624
 #: usr/local/www/system_firmware_restorefullbackup.php:116
 msgid "The firewall configuration has been changed."
-msgstr "ファイアウォールの設定が変更されました。"
+msgstr "ファイアウォールの構成が変更されました"
 
 #: usr/local/www/diag_backup.php:540
 #: usr/local/www/system_firmware_restorefullbackup.php:116
@@ -21178,13 +21186,13 @@ msgstr "ファイアウォールの設定が変更されました。"
 #: usr/local/www/diag_backup.php:624
 #: usr/local/www/system_firmware_restorefullbackup.php:116
 msgid "The firewall is now rebooting."
-msgstr "ファイアウォールは、今、再起動されます。"
+msgstr "ファイアウォールは再起動しています"
 
 #: usr/local/www/diag_backup.php:549 usr/local/www/diag_confbak.php:139
 #: usr/local/www/diag_backup.php:628 usr/local/www/diag_backup.php:633
 #: usr/local/www/diag_backup.php:633 usr/local/www/diag_confbak.php:139
 msgid "Config History"
-msgstr "設定変更の歴史"
+msgstr "構成履歴"
 
 #: usr/local/www/diag_backup.php:550 usr/local/www/diag_confbak.php:140
 #: usr/local/www/fbegin.inc:190 usr/local/www/fbegin.inc:208
@@ -21193,119 +21201,125 @@ msgstr "設定変更の歴史"
 #: usr/local/www/diag_backup.php:634 usr/local/www/fbegin.inc:207
 #: usr/local/www/diag_confbak.php:140
 msgid "Backup/Restore"
-msgstr "バックアップ/復元"
+msgstr "バックアップ / 復元"
 
 #: usr/local/www/diag_backup.php:560 usr/local/www/diag_backup.php:639
 #: usr/local/www/diag_backup.php:644 usr/local/www/diag_backup.php:644
 msgid "Backup configuration"
-msgstr "バックアップの構成"
+msgstr "バックアップ構成"
 
 #: usr/local/www/diag_backup.php:565 usr/local/www/diag_backup.php:644
 #: usr/local/www/diag_backup.php:649 usr/local/www/diag_backup.php:649
 msgid "Click this button to download the system configuration in XML format."
-msgstr "XML形式でシステム構成をダウンロードするにはこのボタンをクリックします。"
+msgstr "このボタンをクリックすると、XML 形式でシステム構成をダウンロードします"
 
 #: usr/local/www/diag_backup.php:565 usr/local/www/diag_backup.php:644
 #: usr/local/www/diag_backup.php:649 usr/local/www/diag_backup.php:649
 msgid "Backup area:"
-msgstr "バックアップ領域："
+msgstr "バックアップ領域: "
 
 #: usr/local/www/diag_backup.php:572 usr/local/www/diag_backup.php:651
 #: usr/local/www/diag_backup.php:656 usr/local/www/diag_backup.php:656
 msgid "Do not backup package information."
-msgstr "バックアップされないパッケージ情報を行います。"
+msgstr "パッケージ情報をバックアップしないでください。"
 
 #: usr/local/www/diag_backup.php:582 usr/local/www/diag_backup.php:661
 #: usr/local/www/diag_backup.php:666 usr/local/www/diag_backup.php:666
 msgid "Encrypt this configuration file."
-msgstr "この構成ファイルを暗号化する。"
+msgstr "この構成ファイルを暗号化します"
 
 #: usr/local/www/diag_backup.php:590 usr/local/www/diag_backup.php:669
 #: usr/local/www/diag_backup.php:674 usr/local/www/diag_backup.php:674
 msgid ""
 "Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of config."
 "xml space!)"
-msgstr "「 （ ！バックアップしないRRDデータDO注： RRDデータ設定の4メガバイトを消費する可能性が「XML空間 ）"
+msgstr ""
+"RRD データをバックアップしないでください ( 注意: RRD データは config.xml の"
+"4メガバイト以上を使用します！)"
 
 #: usr/local/www/diag_backup.php:605 usr/local/www/diag_backup.php:684
 #: usr/local/www/diag_backup.php:689 usr/local/www/diag_backup.php:689
 msgid "confirm:"
-msgstr "確認してください。"
+msgstr "確認: "
 
 #: usr/local/www/diag_backup.php:612 usr/local/www/diag_backup.php:691
 #: usr/local/www/diag_backup.php:696 usr/local/www/diag_backup.php:696
 msgid "Download configuration"
-msgstr "ダウンロードの設定"
+msgstr "ダウンロード構成"
 
 #: usr/local/www/diag_backup.php:624 usr/local/www/diag_backup.php:703
 #: usr/local/www/diag_backup.php:708 usr/local/www/diag_backup.php:708
 msgid "Open a"
-msgstr "オープンA"
+msgstr ""
 
 #: usr/local/www/diag_backup.php:624 usr/local/www/diag_backup.php:703
 #: usr/local/www/diag_backup.php:708 usr/local/www/diag_backup.php:708
 msgid ""
 "configuration XML file and click the button below to restore the "
 "configuration."
-msgstr "「構成XMLファイルおよび復元するには、以下のボタンをクリックして「設定を。"
+msgstr " の構成 XML ファイルを開きます。構成を復元するには、"
+"下のボタンをクリックしてください。"
 
 #: usr/local/www/diag_backup.php:624 usr/local/www/diag_backup.php:705
 #: usr/local/www/diag_backup.php:710 usr/local/www/diag_backup.php:710
 msgid "Restore area:"
-msgstr "エリアを復元します。"
+msgstr "復元領域: "
 
 #: usr/local/www/diag_backup.php:632 usr/local/www/diag_backup.php:713
 #: usr/local/www/diag_backup.php:718 usr/local/www/diag_backup.php:718
 msgid "Configuration file is encrypted."
-msgstr "設定ファイルが暗号化されています。"
+msgstr "構成ファイルが暗号化されました"
 
 #: usr/local/www/diag_backup.php:639 usr/local/www/diag_backup.php:720
 #: usr/local/www/diag_backup.php:725 usr/local/www/diag_backup.php:725
 msgid "Password :"
-msgstr "パスワード："
+msgstr "パスワード : "
 
 #: usr/local/www/diag_backup.php:647 usr/local/www/diag_backup.php:728
 #: usr/local/www/diag_backup.php:733 usr/local/www/diag_backup.php:733
 msgid "confirm :"
-msgstr "確認してください。"
+msgstr "確認 : "
 
 #: usr/local/www/diag_backup.php:655 usr/local/www/diag_backup.php:736
 #: usr/local/www/diag_backup.php:741 usr/local/www/diag_backup.php:741
 msgid "The firewall will reboot after restoring the configuration."
-msgstr "ファイアウォールは、設定を復元した後に再起動します。"
+msgstr "ファイアウォールは構成の復元後に再起動します"
 
 #: usr/local/www/diag_backup.php:663 usr/local/www/diag_backup.php:744
 #: usr/local/www/diag_backup.php:749 usr/local/www/diag_backup.php:749
 msgid "Package Functions"
-msgstr "パッケージ·ファンクション"
+msgstr "パッケージ機能"
 
 #: usr/local/www/diag_backup.php:668 usr/local/www/diag_backup.php:749
 #: usr/local/www/diag_backup.php:755 usr/local/www/diag_backup.php:755
 msgid ""
 "Click this button to reinstall all system packages. This may take a while."
-msgstr "「すべてのシステムパッケージを再インストールするには、このボタンをクリックしてください。これは時間がかかることがあります。"
+msgstr ""
+"このボタンをクリックすると全てのシステムパッケージを再インストールします。しばらく時間がかかります"
 
 #: usr/local/www/diag_backup.php:669 usr/local/www/diag_backup.php:750
 #: usr/local/www/diag_backup.php:756 usr/local/www/diag_backup.php:756
 msgid "Reinstall packages"
-msgstr "パッケージを再インストール"
+msgstr "パッケージの再インストール"
 
 #: usr/local/www/diag_backup.php:672 usr/local/www/diag_backup.php:753
 #: usr/local/www/diag_backup.php:761 usr/local/www/diag_backup.php:761
 msgid ""
 "Click this button to clear the package lock if a package fails to reinstall "
 "properly after an upgrade."
-msgstr "適切にアップグレード後、「パッケージが再インストールに失敗した場合、パッケージのロックをクリアするには、このボタンをクリックしてください"。"
+msgstr ""
+"このボタンをクリックすると、パッケージがアップグレード後に適切に再インストールされなかった場合に、"
+"パッケージロックを消去します。"
 
 #: usr/local/www/firewall_shaper_queues.php:172
 #: usr/local/www/firewall_shaper_queues.php:172
 msgid "Firewall: Shaper: By Queues View"
-msgstr "ファイアウォール：シェイパー：キューを見ることにより、"
+msgstr "ファイアウォール: シェイパー: キュー表示"
 
 #: usr/local/www/diag_confbak.php:49 usr/local/www/diag_confbak.php:49
 #, php-format
 msgid "Successfully reverted to timestamp %1$s with description "%2$s"."
-msgstr "首尾よく説明「 %2$s 」とタイムスタンプは%1$sに戻った。"
+msgstr "タイムスタンプ: %1$s 説明: %2$s に正常に戻りました"
 
 #: usr/local/www/diag_confbak.php:49 usr/local/www/diag_confbak.php:59
 #: usr/local/www/diag_confbak.php:111 usr/local/www/diag_confbak.php:161
@@ -21330,16 +21344,16 @@ msgstr "首尾よく説明「 %2$s 」とタイムスタンプは%1$sに戻っ�
 #: usr/local/www/firewall_nat_out_edit.php:684
 #: usr/local/www/firewall_nat_out_edit.php:692
 msgid "n/j/y H:i:s"
-msgstr "N / J / YのH ： I： S"
+msgstr "n/j/y H:i:s"
 
 #: usr/local/www/diag_confbak.php:51 usr/local/www/diag_confbak.php:51
 msgid "Unable to revert to the selected configuration."
-msgstr "選択された構成に戻すことができません。"
+msgstr "選択した構成に戻せませんでした"
 
 #: usr/local/www/diag_confbak.php:59 usr/local/www/diag_confbak.php:59
 #, php-format
 msgid "Deleted backup with timestamp %1$s and description "%2$s"."
-msgstr "タイムスタンプは%1$sと説明「 %2$s 」で削除されたバックアップ。"
+msgstr "タイムスタンプ: %1$s 説明: %2$s のバックアップを削除しました"
 
 #: usr/local/www/diag_confbak.php:98 usr/local/www/diag_confbak.php:98
 msgid "Configuration History"
@@ -21347,13 +21361,13 @@ msgstr "構成履歴"
 
 #: usr/local/www/diag_confbak.php:111 usr/local/www/diag_confbak.php:111
 msgid "Configuration diff from"
-msgstr "から設定デフ"
+msgstr "次からの構成差分: "
 
 #: usr/local/www/diag_confbak.php:152 usr/local/www/diag_confbak.php:206
 #: usr/local/www/diag_confbak.php:208 usr/local/www/diag_confbak.php:152
 #: usr/local/www/diag_confbak.php:208
 msgid "Diff"
-msgstr "デフ"
+msgstr "差分"
 
 #: usr/local/www/diag_confbak.php:153
 #: usr/local/www/system_firmware_restorefullbackup.php:140
@@ -21370,7 +21384,7 @@ msgstr "構成変更"
 #: usr/local/www/diag_confbak.php:163 usr/local/www/diag_confbak.php:165
 #: usr/local/www/diag_confbak.php:165
 msgid "Current"
-msgstr "現在の"
+msgstr "現在"
 
 #: usr/local/www/diag_confbak.php:171 usr/local/www/diag_confbak.php:173
 #: usr/local/www/widgets/widgets/gateways.widget.php:105
@@ -21384,7 +21398,7 @@ msgstr "不明"
 #: usr/local/www/diag_confbak.php:189 usr/local/www/diag_confbak.php:191
 #: usr/local/www/diag_confbak.php:191
 msgid "Revert to this configuration?"
-msgstr "この構成に戻す？"
+msgstr "この構成に戻しますか？"
 
 #: usr/local/www/diag_confbak.php:190 usr/local/www/diag_confbak.php:192
 #: usr/local/www/diag_confbak.php:192
@@ -21404,12 +21418,12 @@ msgstr "このバックアップを削除"
 #: usr/local/www/diag_confbak.php:200 usr/local/www/diag_confbak.php:202
 #: usr/local/www/diag_confbak.php:202
 msgid "Download this backup"
-msgstr "このバックアップをダウンロードする"
+msgstr "このバックアップをダウンロード"
 
 #: usr/local/www/diag_confbak.php:212 usr/local/www/diag_confbak.php:214
 #: usr/local/www/diag_confbak.php:214
 msgid "No backups found."
-msgstr "見つかりませバックアップはありません。"
+msgstr "バックアップがありません"
 
 #: usr/local/www/firewall_virtual_ip.php:106
 #: usr/local/www/firewall_virtual_ip.php:103
@@ -21417,16 +21431,19 @@ msgstr "見つかりませバックアップはありません。"
 msgid ""
 "This entry cannot be deleted because it is still referenced by at least one "
 "NAT mapping."
-msgstr "NATのマッピングは「それはまだ少なくとも1によって参照されているため、このエントリは削除できません」 。"
+msgstr ""
+"このエントリは削除できません。"
+"1 つ以上の NAT マッピングから参照されています。"
 
 #: usr/local/www/firewall_virtual_ip.php:118
 msgid "This entry cannot be deleted because it is still referenced by CARP"
-msgstr "それはまだCARPによって参照されているため、このエントリは削除できません"
+msgstr "このエントリは削除できません。CARP から参照されています。"
 
 #: usr/local/www/firewall_virtual_ip.php:124
 msgid ""
 "This entry cannot be deleted because it is still referenced by ip alias entry"
-msgstr "それはまだIPエイリアスエントリによって参照されているため、 「このエントリは削除できません"
+msgstr ""
+"このエントリは削除できません。IP エイリアスエントリから参照されています。"
 
 #: usr/local/www/firewall_virtual_ip.php:149
 #: usr/local/www/firewall_virtual_ip.php:152
@@ -21434,7 +21451,7 @@ msgstr "それはまだIPエイリアスエントリによって参照されて�
 #: usr/local/www/firewall_virtual_ip.php:189
 #: usr/local/www/firewall_virtual_ip.php:189
 msgid "Virtual IP Addresses"
-msgstr "仮想IPアドレス"
+msgstr "仮想 IP アドレス"
 
 #: usr/local/www/firewall_virtual_ip.php:164
 #: usr/local/www/firewall_virtual_ip.php:167
@@ -21442,7 +21459,7 @@ msgstr "仮想IPアドレス"
 #: usr/local/www/firewall_virtual_ip.php:204
 #: usr/local/www/firewall_virtual_ip.php:204
 msgid "The VIP configuration has been changed."
-msgstr "VIPの構成が変更されています。"
+msgstr "VIP 構成が変更されました"
 
 #: usr/local/www/firewall_virtual_ip.php:172 usr/local/www/fbegin.inc:115
 #: usr/local/www/fbegin.inc:132 usr/local/www/fbegin.inc:141
@@ -21451,7 +21468,7 @@ msgstr "VIPの構成が変更されています。"
 #: usr/local/www/firewall_virtual_ip.php:212
 #: usr/local/www/firewall_virtual_ip.php:212 usr/local/www/fbegin.inc:133
 msgid "Virtual IPs"
-msgstr "仮想IP"
+msgstr "仮想 IP"
 
 #: usr/local/www/firewall_virtual_ip.php:173
 #: usr/local/www/firewall_virtual_ip.php:176
@@ -21459,7 +21476,7 @@ msgstr "仮想IP"
 #: usr/local/www/firewall_virtual_ip.php:213
 #: usr/local/www/firewall_virtual_ip.php:213
 msgid "CARP Settings"
-msgstr "CARPの設定"
+msgstr "CARP 設定"
 
 #: usr/local/www/firewall_virtual_ip.php:185
 #: usr/local/www/firewall_virtual_ip.php:188
@@ -21467,7 +21484,7 @@ msgstr "CARPの設定"
 #: usr/local/www/firewall_virtual_ip.php:225
 #: usr/local/www/firewall_virtual_ip.php:225
 msgid "Virtual IP address"
-msgstr "仮想IPアドレス"
+msgstr "仮想 IP アドレス"
 
 #: usr/local/www/firewall_virtual_ip.php:242
 #: usr/local/www/firewall_virtual_ip.php:248
@@ -21475,7 +21492,7 @@ msgstr "仮想IPアドレス"
 #: usr/local/www/firewall_virtual_ip.php:291
 #: usr/local/www/firewall_virtual_ip.php:291
 msgid "The virtual IP addresses defined on this page may be used in"
-msgstr "このページで定義された仮想IPアドレスに使用することができる"
+msgstr "このページで定義された仮想 IP アドレスは、"
 
 #: usr/local/www/firewall_virtual_ip.php:242
 #: usr/local/www/firewall_virtual_ip.php:248
@@ -21483,7 +21500,7 @@ msgstr "このページで定義された仮想IPアドレスに使用するこ�
 #: usr/local/www/firewall_virtual_ip.php:291
 #: usr/local/www/firewall_virtual_ip.php:291
 msgid "mappings."
-msgstr "マッピング。"
+msgstr " マッピングに使用されます。"
 
 #: usr/local/www/firewall_virtual_ip.php:243
 #: usr/local/www/firewall_virtual_ip.php:249
@@ -21491,13 +21508,13 @@ msgstr "マッピング。"
 #: usr/local/www/firewall_virtual_ip.php:292
 #: usr/local/www/firewall_virtual_ip.php:292
 msgid "You can check the status of your CARP Virtual IPs and interfaces "
-msgstr "あなたは、CARPの仮想IPとインターフェイスのステータスを確認することができます"
+msgstr "CARP 仮想 IP 及びインタフェースのステータスを次のリンク先で確認できます: "
 
 #: usr/local/www/guiconfig.inc:295 usr/local/www/guiconfig.inc:309
 #: usr/local/www/guiconfig.inc:298 usr/local/www/guiconfig.inc:297
 #: usr/local/www/guiconfig.inc:294 usr/local/www/guiconfig.inc:294
 msgid "apply"
-msgstr "適用する"
+msgstr "適用"
 
 #: usr/local/www/guiconfig.inc:295 usr/local/www/guiconfig.inc:309
 #: usr/local/www/guiconfig.inc:298 usr/local/www/guiconfig.inc:297
@@ -21514,56 +21531,58 @@ msgstr "保存"
 #: usr/local/www/system_certmanager.php:650
 #: usr/local/www/vpn_ipsec_mobile.php:335 usr/local/www/guiconfig.inc:294
 msgid "create"
-msgstr "作る"
+msgstr "作成"
 
 #: usr/local/www/halt.php:52 usr/local/www/halt.php:61
 #: usr/local/www/halt.php:61
 msgid "The system is halting now. This may take one minute."
-msgstr "システムが停止される。これは1分かかる場合があります。"
+msgstr "システムは停止中です。1 分程かかります"
 
 #: usr/local/www/halt.php:59 usr/local/www/halt.php:54
 #: usr/local/www/halt.php:54
 msgid "Halt system"
-msgstr "停止システム"
+msgstr "システム停止"
 
 #: usr/local/www/halt.php:67 usr/local/www/halt.php:67
 msgid "Are you sure you want to halt the system?"
-msgstr "あなたはシステムを停止してもよろしいですか？"
+msgstr "本当にシステムを停止してもよろしいですか？"
 
 #: usr/local/www/index.php:115 usr/local/www/index.php:126
 #: usr/local/www/index.php:129 usr/local/www/index.php:126
 msgid "Widget configuration has been changed."
-msgstr "ウィジェットの構成が変更されました。"
+msgstr "ウィジェット構成が変更されました"
 
 #: usr/local/www/index.php:172 usr/local/www/index.php:183
 #: usr/local/www/index.php:186 usr/local/www/index.php:183
 #, php-format
 msgid "Welcome to %s!\n"
-msgstr "%sへようこそ ！ \n"
+msgstr "%s へようこそ！\n"
 
 #: usr/local/www/index.php:173 usr/local/www/index.php:184
 #: usr/local/www/index.php:187 usr/local/www/index.php:184
 msgid "One moment while we start the initial setup wizard."
-msgstr "一瞬、我々は最初のセットアップウィザードを開始している。"
+msgstr "初期設定ウィザードの開始まで少々お待ちください"
 
 #: usr/local/www/index.php:174 usr/local/www/index.php:185
 #: usr/local/www/index.php:188 usr/local/www/index.php:185
 msgid ""
 "Embedded platform users: Please be patient, the wizard takes a little longer "
 "to run than the normal GUI."
-msgstr "通常のGUIよりも実行するには、次のように「組込みプラットフォームのユーザーは、しばらくお待ちください、ウィザードは少し時間がかかります」 。"
+msgstr ""
+"組込みプラットフォームユーザ: しばらくお待ち下さい。"
+"通常の GUI よりも、ウィザードの実行に少し時間がかかります。"
 
 #: usr/local/www/index.php:175 usr/local/www/index.php:186
 #: usr/local/www/index.php:189 usr/local/www/index.php:186
 #, php-format
 msgid "To bypass the wizard, click on the %s logo on the initial page."
-msgstr "ウィザードをバイパスするには、最初のページにある%sのロゴをクリックしてください。"
+msgstr "ウィザードを回避するには、最初のページにある %s ロゴをクリックしてください。"
 
 #: usr/local/www/index.php:454 usr/local/www/index.php:446
 #: usr/local/www/index.php:463 usr/local/www/index.php:468
 #: usr/local/www/index.php:465 usr/local/www/index.php:465
 msgid "Status: Dashboard"
-msgstr "ステータス：ダッシュボード"
+msgstr "ステータス: ダッシュボード"
 
 #: usr/local/www/index.php:486 usr/local/www/index.php:478
 #: usr/local/www/index.php:490 usr/local/www/index.php:494
@@ -21582,68 +21601,69 @@ msgstr "ダッシュボードページへようこそ"
 #: usr/local/www/index.php:535 usr/local/www/index.php:535
 msgid ""
 "This page allows you to customize the information you want to be displayed!"
-msgstr ""このページでは、表示したい情報をカスタマイズすることができます ！"
+msgstr ""
+"このページでは、表示したい情報をカスタマイズすることができます！"
 
 #: usr/local/www/index.php:533 usr/local/www/index.php:525
 #: usr/local/www/index.php:537 usr/local/www/index.php:539
 #: usr/local/www/index.php:536 usr/local/www/index.php:536
 msgid "To get started click the"
-msgstr "クリック開始するには"
+msgstr "開始するには "
 
 #: usr/local/www/index.php:533 usr/local/www/index.php:525
 #: usr/local/www/index.php:537 usr/local/www/index.php:539
 #: usr/local/www/index.php:536 usr/local/www/index.php:536
 msgid "icon to add widgets."
-msgstr "ウィジェットを追加するには、アイコンが表示されます。"
+msgstr " アイコンをクリックしてウィジェットに追加してください。"
 
 #: usr/local/www/index.php:535 usr/local/www/index.php:527
 #: usr/local/www/index.php:539 usr/local/www/index.php:541
 #: usr/local/www/index.php:538 usr/local/www/index.php:538
 msgid "You can move any widget around by clicking and dragging the title."
-msgstr "あなたはタイトルをクリックしてドラッグすることで周りの任意のウィジェットを移動することができます。"
+msgstr "クリックしてタイトルにドラッグすれば、ウィジェットを移動できます。"
 
 #: usr/local/www/index.php:541 usr/local/www/index.php:534
 #: usr/local/www/index.php:546 usr/local/www/index.php:548
 #: usr/local/www/index.php:545 usr/local/www/index.php:545
 msgid "Click here to add widgets"
-msgstr "ウィジェットを追加するには、ここをクリックしてください"
+msgstr "ウィジェットを追加"
 
 #: usr/local/www/index.php:543 usr/local/www/index.php:536
 #: usr/local/www/index.php:548 usr/local/www/index.php:550
 #: usr/local/www/index.php:547 usr/local/www/index.php:547
 msgid "Click here for help"
-msgstr "ヘルプはこちらから"
+msgstr "ヘルプを参照"
 
 #: usr/local/www/index.php:547 usr/local/www/index.php:540
 #: usr/local/www/index.php:552 usr/local/www/index.php:554
 #: usr/local/www/index.php:551 usr/local/www/index.php:551
 msgid "Save Settings"
-msgstr "設定を保存する"
+msgstr "設定を保存"
 
 #: usr/local/www/index.php:699 usr/local/www/index.php:692
 #: usr/local/www/index.php:704 usr/local/www/index.php:701
 #: usr/local/www/index.php:701
 msgid "Loading selected widget"
-msgstr "選択したウィジェットのロード"
+msgstr "選択したウィジェットを読み込んでいます"
 
 #: usr/local/www/interfaces.php:186 usr/local/www/interfaces.php:184
 #: usr/local/www/interfaces.php:185 usr/local/www/interfaces.php:185
 #, php-format
 msgid "Sorry, an alias with the name %s already exists."
-msgstr "申し訳ありませんが、名前%sとの別名がすでに存在しています。"
+msgstr "エイリアス名 %s は存在しています"
 
 #: usr/local/www/interfaces.php:327 usr/local/www/interfaces.php:355
 #: usr/local/www/interfaces.php:352 usr/local/www/interfaces.php:350
 #: usr/local/www/interfaces.php:351 usr/local/www/interfaces.php:350
 msgid "You have already applied your settings!"
-msgstr "あなたはすでにあなたの設定を適用した ！"
+msgstr "設定は適用済みです！"
 
 #: usr/local/www/interfaces.php:407 usr/local/www/interfaces.php:443
 #: usr/local/www/interfaces.php:440 usr/local/www/interfaces.php:428
 #: usr/local/www/interfaces.php:433 usr/local/www/interfaces.php:429
 #: usr/local/www/interfaces.php:429
 msgid "An interface with the specified description already exists."
-msgstr "指定された説明とのインタフェースがすでに存在しています。"
+msgstr "指定された説明のインタフェースが存在しています"
 
 #: usr/local/www/interfaces.php:413 usr/local/www/interfaces.php:449
 #: usr/local/www/interfaces.php:446 usr/local/www/interfaces.php:434
@@ -21653,7 +21673,10 @@ msgid ""
 "The DHCP Server is active on this interface and it can be used only with a "
 "static IP configuration. Please disable the DHCP Server service on this "
 "interface first, then change the interface configuration."
-msgstr "「DHCPサーバは、このインターフェイスでアクティブになっていると、それだけで使用できる「静的IP設定。この「インターフェイス上でDHCPサーバーサービスを無効にしてくださいまず、そのインターフェイスの設定を変更してください。"
+msgstr ""
+"このインタフェースでは DHCP サーバがアクティブですが、これは静的 IP 構成でのみ使用できます。"
+"最初にこのインタフェースの DHCP サーバサービスを無効にしてから、"
+"インタフェースの構成を変更してください。"
 
 #: usr/local/www/interfaces.php:415 usr/local/www/interfaces.php:451
 #: usr/local/www/interfaces.php:448 usr/local/www/interfaces.php:436
@@ -21663,7 +21686,10 @@ msgid ""
 "The DHCP6 Server is active on this interface and it can be used only with a "
 "static IPv6 configuration. Please disable the DHCPv6 Server service on this "
 "interface first, then change the interface configuration."
-msgstr "「 DHCP6 Serverはこのインターフェイスでアクティブになっていると、それだけで使用できる「静的IPv6設定。この「インターフェイスでDHCPv6サーバサービスを無効にしてくださいまず、そのインターフェイスの設定を変更してください。"
+msgstr ""
+"このインタフェースでは DHCPv6 サーバがアクティブですが、これは静的 IPv6 構成でのみ使用できます。"
+"最初にこのインタフェースの DHCPv6 サーバサービスを無効にしてから、"
+"インタフェースの構成を変更してください。"
 
 #: usr/local/www/interfaces.php:420 usr/local/www/interfaces.php:1364
 #: usr/local/www/status_interfaces.php:192
@@ -21676,7 +21702,7 @@ msgstr "「 DHCP6 Serverはこのインターフェイスでアクティブに�
 #: usr/local/www/status_interfaces.php:269 usr/local/www/interfaces.php:442
 #: usr/local/www/interfaces.php:1508
 msgid "IPv4 address"
-msgstr "IPv4アドレス"
+msgstr "IPv4 アドレス"
 
 #: usr/local/www/interfaces.php:420 usr/local/www/interfaces.php:473
 #: usr/local/www/interfaces.php:456 usr/local/www/interfaces.php:509
@@ -21692,7 +21718,9 @@ msgstr "サブネットビット数"
 msgid ""
 "This interface is referenced by VIPs please delete those before setting the "
 "interface to 'none' configuration."
-msgstr "'none'に設定にインターフェイス「このインタフェースは、設定する前に、それらを削除してください要人によって参照されている」 。"
+msgstr ""
+"このインタフェースは VIP から参照されています。"
+"インタフェース構成を「なし」に設定する前に、参照を削除してください。"
 
 #: usr/local/www/interfaces.php:432 usr/local/www/interfaces.php:485
 #: usr/local/www/interfaces.php:468 usr/local/www/interfaces.php:521
@@ -21711,7 +21739,7 @@ msgstr "'none'に設定にインターフェイス「このインタフェース
 #: usr/local/www/interfaces.php:529 usr/local/www/interfaces.php:534
 #, php-format
 msgid "You have to reassign the interface to be able to configure as %s."
-msgstr "あなたは%s.として設定することができるように、インターフェイスを再割り当てする必要があります"
+msgstr "インタフェースを再割当てしてください。%s として構成可能になります。"
 
 #: usr/local/www/interfaces.php:436 usr/local/www/interfaces.php:1748
 #: usr/local/www/interfaces.php:472 usr/local/www/interfaces.php:1926
@@ -21749,7 +21777,7 @@ msgstr "電話番号"
 #: usr/local/www/interfaces.php:467 usr/local/www/interfaces.php:464
 #: usr/local/www/interfaces.php:467
 msgid "PPPoE username"
-msgstr "PPPoEのユーザ名"
+msgstr "PPPoE ユーザ名"
 
 #: usr/local/www/interfaces.php:442 usr/local/www/interfaces.php:445
 #: usr/local/www/interfaces.php:478 usr/local/www/interfaces.php:481
@@ -21759,7 +21787,7 @@ msgstr "PPPoEのユーザ名"
 #: usr/local/www/interfaces.php:467 usr/local/www/interfaces.php:464
 #: usr/local/www/interfaces.php:467
 msgid "PPPoE password"
-msgstr "PPPoEのパスワード"
+msgstr "PPPoE パスワード"
 
 #: usr/local/www/interfaces.php:442 usr/local/www/interfaces.php:452
 #: usr/local/www/interfaces.php:462 usr/local/www/interfaces.php:1807
@@ -21810,7 +21838,7 @@ msgstr "アイドルタイムアウト値"
 #: usr/local/www/interfaces.php:477 usr/local/www/interfaces.php:474
 #: usr/local/www/interfaces.php:477
 msgid "PPTP username"
-msgstr "PPTPユーザ名"
+msgstr "PPTP ユーザ名"
 
 #: usr/local/www/interfaces.php:452 usr/local/www/interfaces.php:455
 #: usr/local/www/interfaces.php:488 usr/local/www/interfaces.php:491
@@ -21820,7 +21848,7 @@ msgstr "PPTPユーザ名"
 #: usr/local/www/interfaces.php:477 usr/local/www/interfaces.php:474
 #: usr/local/www/interfaces.php:477
 msgid "PPTP password"
-msgstr "PPTPのパスワード"
+msgstr "PPTP パスワード"
 
 #: usr/local/www/interfaces.php:452 usr/local/www/interfaces.php:455
 #: usr/local/www/interfaces.php:488 usr/local/www/interfaces.php:491
@@ -21830,7 +21858,7 @@ msgstr "PPTPのパスワード"
 #: usr/local/www/interfaces.php:477 usr/local/www/interfaces.php:474
 #: usr/local/www/interfaces.php:477
 msgid "PPTP local IP address"
-msgstr "PPTPローカルIPアドレス"
+msgstr "PPTP ローカル IP アドレス"
 
 #: usr/local/www/interfaces.php:452 usr/local/www/interfaces.php:455
 #: usr/local/www/interfaces.php:488 usr/local/www/interfaces.php:491
@@ -21840,7 +21868,7 @@ msgstr "PPTPローカルIPアドレス"
 #: usr/local/www/interfaces.php:477 usr/local/www/interfaces.php:474
 #: usr/local/www/interfaces.php:477
 msgid "PPTP subnet"
-msgstr "PPTPサブネット"
+msgstr "PPTP サブネット"
 
 #: usr/local/www/interfaces.php:452 usr/local/www/interfaces.php:455
 #: usr/local/www/interfaces.php:488 usr/local/www/interfaces.php:491
@@ -21850,7 +21878,7 @@ msgstr "PPTPサブネット"
 #: usr/local/www/interfaces.php:477 usr/local/www/interfaces.php:474
 #: usr/local/www/interfaces.php:477
 msgid "PPTP remote IP address"
-msgstr "PPTPリモートIPアドレス"
+msgstr "PPTP リモート IP アドレス"
 
 #: usr/local/www/interfaces.php:462 usr/local/www/interfaces.php:465
 #: usr/local/www/interfaces.php:498 usr/local/www/interfaces.php:501
@@ -21860,7 +21888,7 @@ msgstr "PPTPリモートIPアドレス"
 #: usr/local/www/interfaces.php:487 usr/local/www/interfaces.php:484
 #: usr/local/www/interfaces.php:487
 msgid "L2TP username"
-msgstr "L2TPのユーザ名"
+msgstr "L2TP ユーザ名"
 
 #: usr/local/www/interfaces.php:462 usr/local/www/interfaces.php:465
 #: usr/local/www/interfaces.php:498 usr/local/www/interfaces.php:501
@@ -21870,7 +21898,7 @@ msgstr "L2TPのユーザ名"
 #: usr/local/www/interfaces.php:487 usr/local/www/interfaces.php:484
 #: usr/local/www/interfaces.php:487
 msgid "L2TP password"
-msgstr "L2TPパスワード"
+msgstr "L2TP パスワード"
 
 #: usr/local/www/interfaces.php:462 usr/local/www/interfaces.php:465
 #: usr/local/www/interfaces.php:498 usr/local/www/interfaces.php:501
@@ -21880,7 +21908,7 @@ msgstr "L2TPパスワード"
 #: usr/local/www/interfaces.php:487 usr/local/www/interfaces.php:484
 #: usr/local/www/interfaces.php:487
 msgid "L2TP remote IP address"
-msgstr "L2TPリモートIPアドレス"
+msgstr "L2TP リモート IP アドレス"
 
 #: usr/local/www/interfaces.php:473 usr/local/www/interfaces.php:1470
 #: usr/local/www/status_interfaces.php:216 usr/local/www/diag_ndp.php:129
@@ -21907,14 +21935,14 @@ msgstr "L2TPリモートIPアドレス"
 #: usr/local/www/services_dhcpv6.php:851 usr/local/www/interfaces.php:495
 #: usr/local/www/interfaces.php:1613
 msgid "IPv6 address"
-msgstr "IPv6アドレス"
+msgstr "IPv6 アドレス"
 
 #: usr/local/www/interfaces.php:493 usr/local/www/interfaces.php:563
 #: usr/local/www/interfaces.php:560 usr/local/www/interfaces.php:550
 #: usr/local/www/interfaces.php:557 usr/local/www/interfaces.php:553
 #: usr/local/www/interfaces.php:553
 msgid "A valid IPv4 address must be specified."
-msgstr "有効なIPv4アドレスを指定する必要があります。"
+msgstr "有効な IPv4 アドレスを指定してください"
 
 #: usr/local/www/interfaces.php:495 usr/local/www/services_dhcpv6_edit.php:123
 #: usr/local/www/services_dhcpv6_edit.php:125 usr/local/www/interfaces.php:565
@@ -21922,7 +21950,7 @@ msgstr "有効なIPv4アドレスを指定する必要があります。"
 #: usr/local/www/interfaces.php:574 usr/local/www/interfaces.php:570
 #: usr/local/www/services_dhcpv6_edit.php:128 usr/local/www/interfaces.php:570
 msgid "A valid IPv6 address must be specified."
-msgstr "有効なIPv6アドレスを指定する必要があります。"
+msgstr "有効な IPv6 アドレスを指定してください"
 
 #: usr/local/www/interfaces.php:497 usr/local/www/interfaces.php:499
 #: usr/local/www/interfaces.php:567 usr/local/www/interfaces.php:569
@@ -21932,21 +21960,21 @@ msgstr "有効なIPv6アドレスを指定する必要があります。"
 #: usr/local/www/interfaces.php:586 usr/local/www/interfaces.php:588
 #: usr/local/www/interfaces.php:586 usr/local/www/interfaces.php:588
 msgid "A valid subnet bit count must be specified."
-msgstr "有効なサブネットビット数を指定する必要があります。"
+msgstr "有効なサブネットビット数を指定してください"
 
 #: usr/local/www/interfaces.php:501 usr/local/www/interfaces.php:571
 #: usr/local/www/interfaces.php:568 usr/local/www/interfaces.php:583
 #: usr/local/www/interfaces.php:594 usr/local/www/interfaces.php:590
 #: usr/local/www/interfaces.php:590
 msgid "A valid alias IP address must be specified."
-msgstr "有効なエイリアスIPアドレスを指定する必要があります。"
+msgstr "有効なエイリアス IP アドレスを指定してください"
 
 #: usr/local/www/interfaces.php:503 usr/local/www/interfaces.php:573
 #: usr/local/www/interfaces.php:570 usr/local/www/interfaces.php:585
 #: usr/local/www/interfaces.php:596 usr/local/www/interfaces.php:592
 #: usr/local/www/interfaces.php:592
 msgid "A valid alias subnet bit count must be specified."
-msgstr "有効なエイリアスサブネットビット数を指定する必要があります。"
+msgstr "有効なエイリアスサブネットビット数を指定してください"
 
 #: usr/local/www/interfaces.php:517 usr/local/www/system_routes_edit.php:103
 #: usr/local/www/system_routes_edit.php:104 usr/local/www/interfaces.php:587
@@ -21955,14 +21983,14 @@ msgstr "有効なエイリアスサブネットビット数を指定する必要
 #: usr/local/www/interfaces.php:606 usr/local/www/system_routes_edit.php:109
 #: usr/local/www/interfaces.php:606
 msgid "A valid gateway must be specified."
-msgstr "有効なゲートウェイを指定する必要があります。"
+msgstr "有効なゲートウェイを指定してください"
 
 #: usr/local/www/interfaces.php:521 usr/local/www/interfaces.php:591
 #: usr/local/www/interfaces.php:588 usr/local/www/interfaces.php:603
 #: usr/local/www/interfaces.php:614 usr/local/www/interfaces.php:610
 #: usr/local/www/interfaces.php:610
 msgid "The service name contains invalid characters."
-msgstr "サービス名に無効な文字が含まれています。"
+msgstr "サービス名に無効な文字が含まれています"
 
 #: usr/local/www/interfaces.php:523 usr/local/www/interfaces.php:539
 #: usr/local/www/interfaces_ppps_edit.php:217 usr/local/www/interfaces.php:593
@@ -21974,7 +22002,7 @@ msgstr "サービス名に無効な文字が含まれています。"
 #: usr/local/www/interfaces_ppps_edit.php:223 usr/local/www/interfaces.php:612
 #: usr/local/www/interfaces.php:628
 msgid "The idle timeout value must be an integer."
-msgstr "アイドルタイムアウト値は整数でなければなりません。"
+msgstr "アイドルタイムアウト値は整数です"
 
 #: usr/local/www/interfaces.php:526 usr/local/www/interfaces_ppps_edit.php:220
 #: usr/local/www/interfaces.php:596 usr/local/www/interfaces.php:593
@@ -21982,7 +22010,7 @@ msgstr "アイドルタイムアウト値は整数でなければなりません
 #: usr/local/www/interfaces.php:619 usr/local/www/interfaces.php:615
 #: usr/local/www/interfaces_ppps_edit.php:226 usr/local/www/interfaces.php:615
 msgid "A valid PPPoE reset hour must be specified (0-23)."
-msgstr "有効なPPPoEのリセット時には、 （ 0-23 ）を指定する必要があります。"
+msgstr "有効な PPPoE リセット時を指定してください ( 0-23 )"
 
 #: usr/local/www/interfaces.php:529 usr/local/www/interfaces_ppps_edit.php:223
 #: usr/local/www/interfaces.php:599 usr/local/www/interfaces.php:596
@@ -21990,7 +22018,7 @@ msgstr "有効なPPPoEのリセット時には、 （ 0-23 ）を指定する必
 #: usr/local/www/interfaces.php:622 usr/local/www/interfaces.php:618
 #: usr/local/www/interfaces_ppps_edit.php:229 usr/local/www/interfaces.php:618
 msgid "A valid PPPoE reset minute must be specified (0-59)."
-msgstr "有効なPPPoEのリセット分（ 0〜59）を指定する必要があります。"
+msgstr "有効な PPPoE リセット分を指定してください ( 0-59 )"
 
 #: usr/local/www/interfaces.php:531 usr/local/www/interfaces_ppps_edit.php:225
 #: usr/local/www/interfaces.php:601 usr/local/www/interfaces.php:598
@@ -21998,42 +22026,42 @@ msgstr "有効なPPPoEのリセット分（ 0〜59）を指定する必要があ
 #: usr/local/www/interfaces.php:624 usr/local/www/interfaces.php:620
 #: usr/local/www/interfaces_ppps_edit.php:231 usr/local/www/interfaces.php:620
 msgid "A valid PPPoE reset date must be specified (mm/dd/yyyy)."
-msgstr "有効なのPPPoEリセット日は（ YYYY / MM / DD ）を指定する必要があります。"
+msgstr "有効な PPPoE リセット日を指定してください ( mm/dd/yyyy )"
 
 #: usr/local/www/interfaces.php:533 usr/local/www/interfaces.php:603
 #: usr/local/www/interfaces.php:600 usr/local/www/interfaces.php:615
 #: usr/local/www/interfaces.php:626 usr/local/www/interfaces.php:622
 #: usr/local/www/interfaces.php:622
 msgid "A valid PPTP local IP address must be specified."
-msgstr "有効なPPTPローカルIPアドレスを指定する必要があります。"
+msgstr "有効な PPTP ローカル IP アドレスを指定してください"
 
 #: usr/local/www/interfaces.php:535 usr/local/www/interfaces.php:605
 #: usr/local/www/interfaces.php:602 usr/local/www/interfaces.php:617
 #: usr/local/www/interfaces.php:628 usr/local/www/interfaces.php:624
 #: usr/local/www/interfaces.php:624
 msgid "A valid PPTP subnet bit count must be specified."
-msgstr "有効なPPTPサブネットビット数を指定する必要があります。"
+msgstr "有効な PPTP サブネットビット数を指定してください"
 
 #: usr/local/www/interfaces.php:537 usr/local/www/interfaces.php:607
 #: usr/local/www/interfaces.php:604 usr/local/www/interfaces.php:619
 #: usr/local/www/interfaces.php:630 usr/local/www/interfaces.php:626
 #: usr/local/www/interfaces.php:626
 msgid "A valid PPTP remote IP address must be specified."
-msgstr "有効なPPTPリモートIPアドレスを指定する必要があります。"
+msgstr "有効な PPTP リモート IP アドレスを指定してください"
 
 #: usr/local/www/interfaces.php:543 usr/local/www/interfaces.php:613
 #: usr/local/www/interfaces.php:610 usr/local/www/interfaces.php:625
 #: usr/local/www/interfaces.php:637 usr/local/www/interfaces.php:633
 #: usr/local/www/interfaces.php:633
 msgid "The MTU must be greater than 576 bytes."
-msgstr "MTUは、より大きく576バイトでなければなりません。"
+msgstr "MTU は、576 バイト以上です"
 
 #: usr/local/www/interfaces.php:545 usr/local/www/interfaces.php:615
 #: usr/local/www/interfaces.php:612 usr/local/www/interfaces.php:627
 #: usr/local/www/interfaces.php:668 usr/local/www/interfaces.php:664
 #: usr/local/www/interfaces.php:664
 msgid "The MSS must be greater than 576 bytes."
-msgstr "MSSは、より大きく576バイトでなければなりません。"
+msgstr "MSS は、576 バイト以上です"
 
 #: usr/local/www/interfaces.php:549 usr/local/www/interfaces.php:2164
 #: usr/local/www/load_balancer_pool.php:132 usr/local/www/vpn_ipsec.php:283
@@ -22097,19 +22125,20 @@ msgstr "SSID"
 #: usr/local/www/interfaces.php:706
 msgid ""
 "Invalid WEP key size. Sizes should be 40 (64) bit keys or 104 (128) bit."
-msgstr ""無効なWEPキーのサイズ。サイズは40 （ 64 ）ビットキー、または104 （ 128 ）ビットでなければなりません。"
+msgstr ""
+"WEP 鍵サイズが無効です。有効なサイズは 40 (64) ビット鍵、もしくは 104 (128) ビット鍵です"
 
 #: usr/local/www/interfaces.php:591 usr/local/www/interfaces.php:665
 #: usr/local/www/interfaces.php:662 usr/local/www/interfaces.php:677
 #: usr/local/www/interfaces.php:718 usr/local/www/interfaces.php:714
 #: usr/local/www/interfaces.php:714
 msgid "The length of the passphrase should be between 8 and 63 characters."
-msgstr "パスフレーズの長さは8 〜63文字にする必要があります。"
+msgstr "パスフレーズの長さは 8 〜 63 文字です"
 
 #: usr/local/www/interfaces.php:659
 #, php-format
 msgid "Interface %s dynamic gateway"
-msgstr "インタフェースは、動的ゲートウェイを%s"
+msgstr "インタフェース %s 動的ゲートウェイ"
 
 #: usr/local/www/interfaces.php:1004 usr/local/www/interfaces.php:1090
 #: usr/local/www/interfaces.php:1078 usr/local/www/interfaces.php:1092
@@ -22119,14 +22148,16 @@ msgstr "インタフェースは、動的ゲートウェイを%s"
 msgid ""
 "Unable to change mode to %s. You may already have the maximum number of "
 "wireless clones supported in this mode."
-msgstr "このモードではサポートされた無線クローン"すでに最大数を持っていることがあり%s.するモードを変更することができません」 。"
+msgstr ""
+"モードを %s に変更できません。"
+"既にこのモードでサポートされている無線クローンの最大数を使用しています。"
 
 #: usr/local/www/interfaces.php:1032 usr/local/www/interfaces.php:1118
 #: usr/local/www/interfaces.php:1106 usr/local/www/interfaces.php:1120
 #: usr/local/www/interfaces.php:1162 usr/local/www/interfaces.php:1157
 #: usr/local/www/interfaces.php:1157
 msgid "Static IPv4"
-msgstr "静的IPv4"
+msgstr "静的 IPv4"
 
 #: usr/local/www/interfaces.php:1032 usr/local/www/vpn_pppoe.php:86
 #: usr/local/www/status_interfaces.php:109
@@ -22137,7 +22168,7 @@ msgstr "静的IPv4"
 #: usr/local/www/vpn_pppoe.php:87 usr/local/www/status_interfaces.php:130
 #: usr/local/www/interfaces.php:1157
 msgid "PPPoE"
-msgstr "PPPoEの"
+msgstr "PPPoE"
 
 #: usr/local/www/interfaces.php:1032 usr/local/www/status_interfaces.php:124
 #: usr/local/www/fbegin.inc:149 usr/local/www/fbegin.inc:166
@@ -22170,7 +22201,7 @@ msgstr "L2TP"
 #: usr/local/www/interfaces.php:1163 usr/local/www/interfaces.php:1158
 #: usr/local/www/interfaces.php:1158
 msgid "Static IPv6"
-msgstr "静的IPv6"
+msgstr "静的 IPv6"
 
 #: usr/local/www/interfaces.php:1033 usr/local/www/interfaces.php:1119
 #: usr/local/www/interfaces.php:1107 usr/local/www/interfaces.php:1121
@@ -22185,56 +22216,56 @@ msgstr "DHCP6"
 #: usr/local/www/interfaces.php:1364
 #, php-format
 msgid "The %s configuration has been changed."
-msgstr "%s構成が変更されています。"
+msgstr "%s 構成が変更されました"
 
 #: usr/local/www/interfaces.php:1222 usr/local/www/interfaces.php:1326
 #: usr/local/www/interfaces.php:1314 usr/local/www/interfaces.php:1327
 #: usr/local/www/interfaces.php:1369 usr/local/www/interfaces.php:1364
 #: usr/local/www/interfaces.php:1364
 msgid "Don't forget to adjust the DHCP Server range if needed after applying."
-msgstr "適用した後、必要に応じて、 DHCPサーバーの範囲を調整することを忘れないでください。"
+msgstr "適用後に、必要であれば DHCP サーバの範囲を調整してください。"
 
 #: usr/local/www/interfaces.php:1231 usr/local/www/interfaces.php:1335
 #: usr/local/www/interfaces.php:1323 usr/local/www/interfaces.php:1336
 #: usr/local/www/interfaces.php:1378 usr/local/www/interfaces.php:1373
 #: usr/local/www/interfaces.php:1373
 msgid "General configuration"
-msgstr "一般的な構成"
+msgstr "全般構成"
 
 #: usr/local/www/interfaces.php:1237 usr/local/www/interfaces.php:1341
 #: usr/local/www/interfaces.php:1329 usr/local/www/interfaces.php:1342
 #: usr/local/www/interfaces.php:1384 usr/local/www/interfaces.php:1379
 #: usr/local/www/interfaces.php:1379
 msgid "Enable Interface"
-msgstr "インターフェイスをイネーブルにします"
+msgstr "インタフェースを有効"
 
 #: usr/local/www/interfaces.php:1247 usr/local/www/interfaces.php:1351
 #: usr/local/www/interfaces.php:1339 usr/local/www/interfaces.php:1352
 #: usr/local/www/interfaces.php:1394 usr/local/www/interfaces.php:1389
 #: usr/local/www/interfaces.php:1389
 msgid "Enter a description (name) for the interface here."
-msgstr "ここにインターフェイスの説明（名前）を入力します。"
+msgstr "ここにインタフェースの説明 ( 名前 ) を入力します。"
 
 #: usr/local/www/interfaces.php:1251 usr/local/www/interfaces.php:1355
 #: usr/local/www/interfaces.php:1343 usr/local/www/interfaces.php:1356
 #: usr/local/www/interfaces.php:1398 usr/local/www/interfaces.php:1393
 #: usr/local/www/interfaces.php:1393
 msgid "IPv4 Configuration Type"
-msgstr "IPv4の構成タイプ"
+msgstr "IPv4 構成タイプ"
 
 #: usr/local/www/interfaces.php:1267 usr/local/www/interfaces.php:1371
 #: usr/local/www/interfaces.php:1359 usr/local/www/interfaces.php:1372
 #: usr/local/www/interfaces.php:1414 usr/local/www/interfaces.php:1409
 #: usr/local/www/interfaces.php:1409
 msgid "IPv6 Configuration Type"
-msgstr "IPv6の構成タイプ"
+msgstr "IPv6 構成タイプ"
 
 #: usr/local/www/interfaces.php:1292 usr/local/www/interfaces.php:1396
 #: usr/local/www/interfaces.php:1384 usr/local/www/interfaces.php:1397
 #: usr/local/www/interfaces.php:1439 usr/local/www/interfaces.php:1434
 #: usr/local/www/interfaces.php:1434
 msgid "Insert my local MAC address"
-msgstr "私の地元のMACアドレスを挿入"
+msgstr "ローカル MAC アドレスの挿入"
 
 #: usr/local/www/interfaces.php:1295 usr/local/www/interfaces.php:1399
 #: usr/local/www/interfaces.php:1387 usr/local/www/interfaces.php:1400
@@ -22243,14 +22274,16 @@ msgstr "私の地元のMACアドレスを挿入"
 msgid ""
 "This field can be used to modify ("spoof") the MAC address of this "
 "interface"
-msgstr "「これのMACアドレス "（なりすまし） 」インターフェースをこのフィールドに変更するために使用することができる""
+msgstr ""
+"このフィールドはこのインタフェースの MAC アドレス変更 ( なりすまし ) "
+"に使用できます" 
 
 #: usr/local/www/interfaces.php:1297 usr/local/www/interfaces.php:1401
 #: usr/local/www/interfaces.php:1389 usr/local/www/interfaces.php:1402
 #: usr/local/www/interfaces.php:1444 usr/local/www/interfaces.php:1439
 #: usr/local/www/interfaces.php:1439
 msgid "(may be required with some cable connections)"
-msgstr "（一部のケーブル接続で必要となる場合があります）"
+msgstr " ( ケーブル接続の一部で必要となる場合があります )"
 
 #: usr/local/www/interfaces.php:1298 usr/local/www/interfaces.php:1402
 #: usr/local/www/interfaces.php:1390 usr/local/www/interfaces.php:1403
@@ -22258,7 +22291,7 @@ msgstr "（一部のケーブル接続で必要となる場合があります）
 #: usr/local/www/interfaces.php:1440
 msgid ""
 "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank"
-msgstr "XX： XX ： XX ： XX ： XX ： XXまたは空白のままに"次の形式でMACアドレスを入力してください"
+msgstr "次の形式で MAC アドレスを入力するか、空白にしてください: xx:xx:xx:xx:xx:xx"
 
 #: usr/local/www/interfaces.php:1303
 #: usr/local/www/interfaces_ppps_edit.php:757
@@ -22278,7 +22311,9 @@ msgstr "MTU"
 msgid ""
 "If you leave this field blank, the adapter's default MTU will be used. This "
 "is typically 1500 bytes but can vary on some hardware."
-msgstr "「このフィールドを空白のままにすると、アダプタのデフォルトのMTUが使用されます。これは、「通常、 1500バイトですが、いくつかのハードウェア上で異なる場合があります。"
+msgstr ""
+"このフィールドを空白のままにすると、アダプタのデフォルト MTU が使用されます。"
+"これは通常 1500 バイトですが、一部のハードウェアでは異なる場合があります。"
 
 #: usr/local/www/interfaces.php:1312 usr/local/www/interfaces.php:1416
 #: usr/local/www/interfaces.php:1404 usr/local/www/interfaces.php:1417
@@ -22294,14 +22329,16 @@ msgstr "MSS"
 msgid ""
 "If you enter a value in this field, then MSS clamping for TCP connections to "
 "the value entered above minus 40 (TCP/IP header size) will be in effect."
-msgstr "マイナス40 （ TCP / IPヘッダのサイズ）の上に入力された値が有効になります"あなたは、このフィールドに値を入力すると、 MSSは、へのTCP接続するためのクランプ」 。"
+msgstr ""
+"このフィールドに値を入力した場合、TCP 接続に対する MSS クランプにより、"
+"実際には、上記で入力した値 - 40 ( TCP/IP ヘッダサイズ ) になります。"
 
 #: usr/local/www/interfaces.php:1325 usr/local/www/interfaces.php:1429
 #: usr/local/www/interfaces.php:1417 usr/local/www/interfaces.php:1430
 #: usr/local/www/interfaces.php:1474 usr/local/www/interfaces.php:1469
 #: usr/local/www/interfaces.php:1469
 msgid "Speed and duplex"
-msgstr "速度と二重"
+msgstr "速度と双方向通信"
 
 #: usr/local/www/interfaces.php:1346 usr/local/www/interfaces.php:1450
 #: usr/local/www/interfaces.php:1438 usr/local/www/interfaces.php:1451
@@ -22312,14 +22349,18 @@ msgid ""
 "WARNING: You MUST leave this set to autoselect (automatically negotiate "
 "speed) unless the port this interface connects to has its speed and duplex "
 "forced."
-msgstr "「ここでは、明示的にこのインターフェイスの速度と二重モードを設定することができます。 "警告：強制"このインタフェースが、その速度とデュプレックスが持っているに接続するポートがない限り（速度を自動的交渉） 」オートセレクトためにこのセットを残しておく必要があります。"
+msgstr ""
+"ここでは、このインタフェースに大使て速度と双方向通信モードを明示的に設定できます。"
+"警告: ここでは「必ず」自動選択を設定してください ( 速度を自動的にネゴシエートします )"
+"但し、このインタフェースが速度と通信モードを強制されたポート"
+"に接続する場合を除きます。"
 
 #: usr/local/www/interfaces.php:1361 usr/local/www/interfaces.php:1465
 #: usr/local/www/interfaces.php:1453 usr/local/www/interfaces.php:1466
 #: usr/local/www/interfaces.php:1511 usr/local/www/interfaces.php:1505
 #: usr/local/www/interfaces.php:1505
 msgid "Static IPv4 configuration"
-msgstr "静的IPv4の設定"
+msgstr "静的 IPv4 構成"
 
 #: usr/local/www/interfaces.php:1400 usr/local/www/interfaces.php:1506
 #: usr/local/www/system_routes_edit.php:212
@@ -22333,7 +22374,7 @@ msgstr "静的IPv4の設定"
 #: usr/local/www/system_routes_edit.php:268 usr/local/www/interfaces.php:1544
 #: usr/local/www/interfaces.php:1649
 msgid "add a new one."
-msgstr "新しいものを追加してください。"
+msgstr "新規で追加"
 
 #: usr/local/www/interfaces.php:1403 usr/local/www/interfaces.php:1507
 #: usr/local/www/interfaces.php:1495 usr/local/www/interfaces.php:1508
@@ -22342,7 +22383,9 @@ msgstr "新しいものを追加してください。"
 msgid ""
 "If this interface is an Internet connection, select an existing Gateway from "
 "the list or add one using the link above"
-msgstr "リスト「このインタフェースは、インターネット接続の場合は、既存のゲートウェイを選択する」または上記のリンクを使用して1を追加"
+msgstr ""
+"このインタフェースがインターネット接続する場合、"
+"リストから既存のゲートウェイを選択するか、上記のリンクを使用して新規で追加してください。"
 
 #: usr/local/www/interfaces.php:1417 usr/local/www/system_routes_edit.php:224
 #: usr/local/www/system_routes_edit.php:256 usr/local/www/interfaces.php:1521
@@ -22352,14 +22395,14 @@ msgstr "リスト「このインタフェースは、インターネット接続
 #: usr/local/www/interfaces.php:1561 usr/local/www/system_routes_edit.php:281
 #: usr/local/www/interfaces.php:1561
 msgid "Add new gateway:"
-msgstr "新しいゲートウェイを追加します。"
+msgstr "新規ゲートウェイを追加: "
 
 #: usr/local/www/interfaces.php:1425 usr/local/www/interfaces.php:1529
 #: usr/local/www/interfaces.php:1517 usr/local/www/interfaces.php:1530
 #: usr/local/www/interfaces.php:1575 usr/local/www/interfaces.php:1569
 #: usr/local/www/interfaces.php:1569
 msgid "Default gateway:"
-msgstr "デフォルトゲートウェイ："
+msgstr "デフォルトゲートウェイ: "
 
 #: usr/local/www/interfaces.php:1428 usr/local/www/system_routes_edit.php:240
 #: usr/local/www/system_routes_edit.php:272 usr/local/www/interfaces.php:1532
@@ -22369,14 +22412,14 @@ msgstr "デフォルトゲートウェイ："
 #: usr/local/www/interfaces.php:1572 usr/local/www/system_routes_edit.php:299
 #: usr/local/www/interfaces.php:1572
 msgid "Gateway Name:"
-msgstr "ゲートウェイ名："
+msgstr "ゲートウェイ名: "
 
 #: usr/local/www/interfaces.php:1431 usr/local/www/interfaces.php:1535
 #: usr/local/www/interfaces.php:1523 usr/local/www/interfaces.php:1536
 #: usr/local/www/interfaces.php:1581 usr/local/www/interfaces.php:1575
 #: usr/local/www/interfaces.php:1575
 msgid "Gateway IPv4:"
-msgstr "ゲートウェイのIPv4 ："
+msgstr "IPv4 ゲートウェイ: "
 
 #: usr/local/www/interfaces.php:1434 usr/local/www/interfaces.php:1540
 #: usr/local/www/system_routes_edit.php:246
@@ -22390,7 +22433,7 @@ msgstr "ゲートウェイのIPv4 ："
 #: usr/local/www/system_routes_edit.php:305 usr/local/www/interfaces.php:1578
 #: usr/local/www/interfaces.php:1683
 msgid "Description:"
-msgstr "説明："
+msgstr "説明: "
 
 #: usr/local/www/interfaces.php:1442 usr/local/www/interfaces.php:1548
 #: usr/local/www/system_routes_edit.php:254
@@ -22403,14 +22446,14 @@ msgstr "説明："
 #: usr/local/www/interfaces.php:1690 usr/local/www/system_routes_edit.php:312
 #: usr/local/www/interfaces.php:1585 usr/local/www/interfaces.php:1690
 msgid "Save Gateway"
-msgstr "ゲートウェイに保存"
+msgstr "ゲートウェイを保存"
 
 #: usr/local/www/interfaces.php:1467 usr/local/www/interfaces.php:1573
 #: usr/local/www/interfaces.php:1561 usr/local/www/interfaces.php:1571
 #: usr/local/www/interfaces.php:1617 usr/local/www/interfaces.php:1610
 #: usr/local/www/interfaces.php:1610
 msgid "Static IPv6 configuration"
-msgstr "静的IPv6構成"
+msgstr "静的 IPv6 構成"
 
 #: usr/local/www/interfaces.php:1488 usr/local/www/status_interfaces.php:231
 #: usr/local/www/status_interfaces.php:312 usr/local/www/interfaces.php:1594
@@ -22419,7 +22462,7 @@ msgstr "静的IPv6構成"
 #: usr/local/www/interfaces.php:1631 usr/local/www/status_interfaces.php:315
 #: usr/local/www/interfaces.php:1631
 msgid "Gateway IPv6"
-msgstr "ゲートウェイのIPv6"
+msgstr "IPv6 ゲートウェイ"
 
 #: usr/local/www/interfaces.php:1509 usr/local/www/interfaces.php:1615
 #: usr/local/www/interfaces.php:1603 usr/local/www/interfaces.php:1613
@@ -22428,63 +22471,67 @@ msgstr "ゲートウェイのIPv6"
 msgid ""
 "If this interface is an Internet connection, select an existing Gateway from "
 "the list or add a new one using the link above"
-msgstr "リスト「このインタフェースは、インターネット接続の場合は、既存のゲートウェイを選択する」または上記のリンクを使用して、新しい1を追加"
+msgstr ""
+"このインタフェースがインターネット接続する場合、"
+"リストから既存のゲートウェイを選択するか、上記のリンクを使用して新規で追加してください。"
 
 #: usr/local/www/interfaces.php:1523 usr/local/www/interfaces.php:1629
 #: usr/local/www/interfaces.php:1617 usr/local/www/interfaces.php:1627
 #: usr/local/www/interfaces.php:1673 usr/local/www/interfaces.php:1666
 #: usr/local/www/interfaces.php:1666
 msgid "Add new v6 gateway:"
-msgstr "新しいV6ゲートウェイを追加します。"
+msgstr "新規 IPv6 ゲートウェイを追加: "
 
 #: usr/local/www/interfaces.php:1531 usr/local/www/interfaces.php:1637
 #: usr/local/www/interfaces.php:1625 usr/local/www/interfaces.php:1635
 #: usr/local/www/interfaces.php:1681 usr/local/www/interfaces.php:1674
 #: usr/local/www/interfaces.php:1674
 msgid "Default v6 gateway:"
-msgstr "デフォルトV6ゲートウェイ："
+msgstr "デフォルト IPv6 ゲートウェイ: "
 
 #: usr/local/www/interfaces.php:1534 usr/local/www/interfaces.php:1640
 #: usr/local/www/interfaces.php:1628 usr/local/www/interfaces.php:1638
 #: usr/local/www/interfaces.php:1684 usr/local/www/interfaces.php:1677
 #: usr/local/www/interfaces.php:1677
 msgid "Gateway Name IPv6:"
-msgstr "ゲートウェイ名のIPv6 ："
+msgstr "IPv6 ゲートウェイ名: "
 
 #: usr/local/www/interfaces.php:1537 usr/local/www/interfaces.php:1643
 #: usr/local/www/interfaces.php:1631 usr/local/www/interfaces.php:1641
 #: usr/local/www/interfaces.php:1687 usr/local/www/interfaces.php:1680
 #: usr/local/www/interfaces.php:1680
 msgid "Gateway IPv6:"
-msgstr "ゲートウェイのIPv6 ："
+msgstr "IPv6 ゲートウェイ: "
 
 #: usr/local/www/interfaces.php:1564
 msgid "DHCPv6 Prefix Delegation ID"
-msgstr "DHCPv6のプレフィックス委任ID"
+msgstr "DHCPv6 Prefix Delegation ID"
 
 #: usr/local/www/interfaces.php:1588
 msgid ""
 "This ID sets the delegated DHCP-PD prefix number which will be used to setup "
 "the interface."
-msgstr "インターフェース「このIDは、セットアップするために使用される委任DHCP -PDプレフィックス数を設定します」 。"
+msgstr ""
+"この ID は、インタフェースがセットアップする際に使用される DHCP-PD プレフィックス情報に委譲して"
+"設定されます。"
 
 #: usr/local/www/interfaces.php:1598 usr/local/www/interfaces.php:1676
 #: usr/local/www/interfaces.php:1664 usr/local/www/interfaces.php:1722
 #: usr/local/www/interfaces.php:1714 usr/local/www/interfaces.php:1714
 msgid "DHCP client configuration"
-msgstr "DHCPクライアントの構成"
+msgstr "DHCP クライアント構成"
 
 #: usr/local/www/interfaces.php:1602 usr/local/www/interfaces.php:1680
 #: usr/local/www/interfaces.php:1668 usr/local/www/interfaces.php:1726
 #: usr/local/www/interfaces.php:1718 usr/local/www/interfaces.php:1718
 msgid "Enable DHCP+"
-msgstr "DHCPを有効にする"
+msgstr "次を有効: DHCP+"
 
 #: usr/local/www/interfaces.php:1605 usr/local/www/interfaces.php:1683
 #: usr/local/www/interfaces.php:1671 usr/local/www/interfaces.php:1729
 #: usr/local/www/interfaces.php:1721 usr/local/www/interfaces.php:1721
 msgid "Enable DHCP+L2TP or DHCP+PPTP."
-msgstr "DHCP L2TPまたはDHCP PPTPを有効にします。"
+msgstr "DHCP+L2TP もしくは DHCP+PPTP を有効"
 
 #: usr/local/www/interfaces.php:1607 usr/local/www/interfaces.php:1685
 #: usr/local/www/interfaces.php:1673 usr/local/www/interfaces.php:1731
@@ -22492,7 +22539,9 @@ msgstr "DHCP L2TPまたはDHCP PPTPを有効にします。"
 msgid ""
 "Status changes on this interface will trigger reconfiguration (if necessary) "
 "of the associated PPTP/L2TP link."
-msgstr "関連するPPTP/L2TPリンクの「 （必要ならば）このインターフェイスのステータスの変更は、再設定をトリガーします」 。"
+msgstr ""
+"このインタフェースのステータス変更は、関連付けられた PPTP/L2TP リンクを ( 必要であれば ) "
+"再構成をするトリガになります。"
 
 #: usr/local/www/interfaces.php:1616 usr/local/www/interfaces.php:1694
 #: usr/local/www/interfaces.php:1682 usr/local/www/interfaces.php:1740
@@ -22501,13 +22550,16 @@ msgid ""
 "The value in this field is sent as the DHCP client identifier and hostname "
 "when requesting a DHCP lease. Some ISPs may require this (for client "
 "identification)."
-msgstr "DHCPリースを要求するときに「このフィールドの値は、DHCPクライアント識別子とホスト名として送信されます」 。 ISPによっては、この（クライアントの「識別）を必要とする場合があります。"
+msgstr ""
+"このフィールドの値は、DHCP リースのリクエスト時に、DHCP クライアント識別子とホスト名として"
+"送信されます。"
+"一部の ISP はこの値を ( クライアント識別子として ) 要求します。"
 
 #: usr/local/www/interfaces.php:1622 usr/local/www/interfaces.php:1700
 #: usr/local/www/interfaces.php:1688 usr/local/www/interfaces.php:1746
 #: usr/local/www/interfaces.php:1738 usr/local/www/interfaces.php:1738
 msgid "Alias IPv4 address"
-msgstr "別名IPv4アドレス"
+msgstr "エイリアス IPv4 アドレス"
 
 #: usr/local/www/interfaces.php:1636 usr/local/www/interfaces.php:1714
 #: usr/local/www/interfaces.php:1702 usr/local/www/interfaces.php:1760
@@ -22515,21 +22567,23 @@ msgstr "別名IPv4アドレス"
 msgid ""
 "The value in this field is used as a fixed alias IPv4 address by the DHCP "
 "client."
-msgstr "クライアント「このフィールドの値は、DHCPが固定エイリアスIPv4アドレスとして使用されます」 。"
+msgstr ""
+"このフィールドの値は、DHCP クライアントが、エイリアスの固定 IPv4 アドレスとして"
+"使用します"
 
 #: usr/local/www/interfaces.php:1647 usr/local/www/interfaces.php:1725
 #: usr/local/www/interfaces.php:1713 usr/local/www/interfaces.php:1728
 #: usr/local/www/interfaces.php:1774 usr/local/www/interfaces.php:1766
 #: usr/local/www/interfaces.php:1766
 msgid "DHCP6 client configuration"
-msgstr "DHCP6クライアント設定"
+msgstr "DHCPv6 クライアント構成"
 
 #: usr/local/www/interfaces.php:1650 usr/local/www/interfaces.php:1729
 #: usr/local/www/interfaces.php:1717 usr/local/www/interfaces.php:1732
 #: usr/local/www/interfaces.php:1778 usr/local/www/interfaces.php:1770
 #: usr/local/www/interfaces.php:1770
 msgid "DHCPv6 Unique Identifier (DUID)"
-msgstr "DHCPv6の一意識別子（ DUID ）"
+msgstr "DHCPv6 固有識別子 ( DUID )"
 
 #: usr/local/www/interfaces.php:1654 usr/local/www/interfaces.php:1733
 #: usr/local/www/interfaces.php:1721 usr/local/www/interfaces.php:1736
@@ -22538,7 +22592,9 @@ msgstr "DHCPv6の一意識別子（ DUID ）"
 msgid ""
 "The value in this field is sent as the DHCPv6 client identifier when "
 "requesting a DHCPv6 lease."
-msgstr "DHCPv6のリースを要求する」と、このフィールドの値は、 DHCPv6クライアント識別子として送信されます」 。"
+msgstr ""
+"このフィールドの値は、DHCPv6 リースのリクエスト時に、DHCPv6 クライアント識別子として"
+"送信されます。"
 
 #: usr/local/www/interfaces.php:1659 usr/local/www/interfaces.php:1738
 #: usr/local/www/interfaces.php:1726 usr/local/www/interfaces.php:1741
@@ -22546,14 +22602,14 @@ msgstr "DHCPv6のリースを要求する」と、このフィールドの値は
 #: usr/local/www/interfaces.php:1779
 #, php-format
 msgid "The current DUID is: '%s'"
-msgstr "現在のDUIDは、次のとおりです。 「 %s'"
+msgstr "現在の DUID: %s"
 
 #: usr/local/www/interfaces.php:1665 usr/local/www/interfaces.php:1745
 #: usr/local/www/interfaces.php:1733 usr/local/www/interfaces.php:1748
 #: usr/local/www/interfaces.php:1794 usr/local/www/interfaces.php:1786
 #: usr/local/www/interfaces.php:1786
 msgid "DHCPv6 Prefix Delegation size"
-msgstr "DHCPv6のプレフィックス委任サイズ"
+msgstr "DHCPv6 Prefix Delegation サイズ"
 
 #: usr/local/www/interfaces.php:1678 usr/local/www/interfaces.php:1758
 #: usr/local/www/interfaces.php:1746 usr/local/www/interfaces.php:1761
@@ -22562,14 +22618,16 @@ msgstr "DHCPv6のプレフィックス委任サイズ"
 msgid ""
 "The value in this field is the delegated prefix length provided by the "
 "DHCPv6 server. Normally specified by the ISP."
-msgstr "DHCPv6サーバ「このフィールドの値はが提供する委任プレフィックス長」です。通常、 ISPによって指定された。"
+msgstr ""
+"このフィールドの値は、DHCPv6 サーバが提供する delegated prefix の長さです。"
+"通常は ISP が指定します。"
 
 #: usr/local/www/interfaces.php:1689 usr/local/www/interfaces.php:1867
 #: usr/local/www/interfaces.php:1855 usr/local/www/interfaces.php:1879
 #: usr/local/www/interfaces.php:1925 usr/local/www/interfaces.php:1913
 #: usr/local/www/interfaces.php:1913
 msgid "PPP configuration"
-msgstr "PPP設定"
+msgstr "PPP 構成"
 
 #: usr/local/www/interfaces.php:1692
 #: usr/local/www/interfaces_ppps_edit.php:478
@@ -22583,7 +22641,7 @@ msgstr "PPP設定"
 #: usr/local/www/interfaces_ppps_edit.php:483
 #: usr/local/www/interfaces.php:1916
 msgid "Service Provider"
-msgstr "サービスプロバイダー"
+msgstr "サービスプロバイダ"
 
 #: usr/local/www/interfaces.php:1696
 #: usr/local/www/interfaces_ppps_edit.php:482
@@ -22597,7 +22655,7 @@ msgstr "サービスプロバイダー"
 #: usr/local/www/interfaces_ppps_edit.php:487
 #: usr/local/www/interfaces.php:1920
 msgid "Country:"
-msgstr "国："
+msgstr "国: "
 
 #: usr/local/www/interfaces.php:1704
 #: usr/local/www/interfaces_ppps_edit.php:490
@@ -22611,7 +22669,7 @@ msgstr "国："
 #: usr/local/www/interfaces_ppps_edit.php:495
 #: usr/local/www/interfaces.php:1928
 msgid "Provider:"
-msgstr "プロバイダー："
+msgstr "プロバイダ: "
 
 #: usr/local/www/interfaces.php:1712
 #: usr/local/www/interfaces_ppps_edit.php:498
@@ -22625,7 +22683,7 @@ msgstr "プロバイダー："
 #: usr/local/www/interfaces_ppps_edit.php:503
 #: usr/local/www/interfaces.php:1936
 msgid "Plan:"
-msgstr "プラン："
+msgstr "プラン: "
 
 #: usr/local/www/interfaces.php:1720
 #: usr/local/www/interfaces_ppps_edit.php:506
@@ -22639,7 +22697,7 @@ msgstr "プラン："
 #: usr/local/www/interfaces_ppps_edit.php:511
 #: usr/local/www/interfaces.php:1944
 msgid "Select to fill in data for your service provider."
-msgstr "サービスプロバイダのためのデータを埋めるために選択します。"
+msgstr "選択して、サービスプロバイダのデータを埋めてください。"
 
 #: usr/local/www/interfaces.php:1742
 #: usr/local/www/interfaces_ppps_edit.php:530
@@ -22653,14 +22711,14 @@ msgstr "サービスプロバイダのためのデータを埋めるために選
 #: usr/local/www/interfaces_ppps_edit.php:535
 #: usr/local/www/interfaces.php:1966
 msgid "Access Point Name (APN)"
-msgstr "アクセスポイント名（ APN ）"
+msgstr "アクセスポイント名 ( APN )"
 
 #: usr/local/www/interfaces.php:1766 usr/local/www/interfaces.php:1944
 #: usr/local/www/interfaces.php:1932 usr/local/www/interfaces.php:1956
 #: usr/local/www/interfaces.php:2002 usr/local/www/interfaces.php:1991
 #: usr/local/www/interfaces.php:1991
 msgid "Advanced PPP"
-msgstr "先進的なPPPの"
+msgstr "高度な PPP"
 
 #: usr/local/www/interfaces.php:1769 usr/local/www/interfaces.php:1774
 #: usr/local/www/interfaces.php:1875 usr/local/www/interfaces.php:1880
@@ -22684,28 +22742,28 @@ msgstr "先進的なPPPの"
 #: usr/local/www/interfaces.php:2108 usr/local/www/interfaces.php:2174
 #: usr/local/www/interfaces.php:2179
 msgid "Click here"
-msgstr "こちらをクリックして"
+msgstr "ここをクリックして"
 
 #: usr/local/www/interfaces.php:1770 usr/local/www/interfaces.php:1948
 #: usr/local/www/interfaces.php:1936 usr/local/www/interfaces.php:1960
 #: usr/local/www/interfaces.php:2006 usr/local/www/interfaces.php:1995
 #: usr/local/www/interfaces.php:1995
 msgid "to edit PPP configuration."
-msgstr "PPP設定を編集できます。"
+msgstr "PPP 構成を編集してください。"
 
 #: usr/local/www/interfaces.php:1775 usr/local/www/interfaces.php:1953
 #: usr/local/www/interfaces.php:1941 usr/local/www/interfaces.php:1965
 #: usr/local/www/interfaces.php:2011 usr/local/www/interfaces.php:2000
 #: usr/local/www/interfaces.php:2000
 msgid "to create a PPP configuration."
-msgstr "PPPの構成を作成するには。"
+msgstr "PPP 構成を作成してください。"
 
 #: usr/local/www/interfaces.php:1786 usr/local/www/interfaces.php:1964
 #: usr/local/www/interfaces.php:1952 usr/local/www/interfaces.php:1979
 #: usr/local/www/interfaces.php:2025 usr/local/www/interfaces.php:2014
 #: usr/local/www/interfaces.php:2014
 msgid "PPPoE configuration"
-msgstr "PPPoEの設定"
+msgstr "PPPoE 構成"
 
 #: usr/local/www/interfaces.php:1801
 #: usr/local/www/interfaces_ppps_edit.php:589
@@ -22726,7 +22784,7 @@ msgstr "サービス名"
 #: usr/local/www/interfaces.php:2042 usr/local/www/interfaces.php:2031
 #: usr/local/www/interfaces.php:2031
 msgid "Hint: this field can usually be left empty"
-msgstr "ヒント：このフィールドは通常、空のままにすることができます"
+msgstr "ヒント: このフィールドは通常、空白で構いません"
 
 #: usr/local/www/interfaces.php:1810 usr/local/www/interfaces.php:1929
 #: usr/local/www/interfaces.php:1988 usr/local/www/interfaces.php:2107
@@ -22736,7 +22794,7 @@ msgstr "ヒント：このフィールドは通常、空のままにすること
 #: usr/local/www/interfaces.php:2038 usr/local/www/interfaces.php:2160
 #: usr/local/www/interfaces.php:2038 usr/local/www/interfaces.php:2160
 msgid "Enable Dial-On-Demand mode"
-msgstr "有効ダイヤルオンデマンドモード"
+msgstr "ダイヤルオンデマンドモードを有効"
 
 #: usr/local/www/interfaces.php:1811 usr/local/www/interfaces.php:1989
 #: usr/local/www/interfaces.php:1977 usr/local/www/interfaces.php:2004
@@ -22745,7 +22803,8 @@ msgstr "有効ダイヤルオンデマンドモード"
 msgid ""
 "This option causes the interface to operate in dial-on-demand mode, allowing "
 "you to have a "
-msgstr "あなたが持っている"このオプションは可能ダイヤルオンデマンドモードで動作するようにインターフェイスを引き起こす""
+msgstr ""
+"このオプションは、インタフェースをダイヤルオンデマンドモードで動作させ、"
 
 #: usr/local/www/interfaces.php:1811 usr/local/www/interfaces.php:1930
 #: usr/local/www/interfaces.php:1989 usr/local/www/interfaces.php:2108
@@ -22767,7 +22826,9 @@ msgstr "仮想フルタイム"
 msgid ""
 "connection. The interface is configured, but the actual connection of the "
 "link is delayed until qualifying outgoing traffic is detected."
-msgstr "「接続。インタフェースが設定されていますが、実際の接続」のリンクは、送信トラフィックが検出された予選まで遅延される。"
+msgstr ""
+"接続することが可能になります。インタフェースが構成されても、実際の接続リンクは、"
+"対象となる発信トラフィックが検出されるまで遅延します。"
 
 #: usr/local/www/interfaces.php:1815 usr/local/www/interfaces.php:1934
 #: usr/local/www/services_captiveportal.php:465
@@ -22795,7 +22856,9 @@ msgid ""
 "If no qualifying outgoing packets are transmitted for the specified number "
 "of seconds, the connection is brought down. An idle timeout of zero disables "
 "this feature."
-msgstr "秒数」は予選発信パケットが指定した数のために送信されていない場合は、「接続がダウンしている。ゼロのアイドルタイムアウトは、「この機能は無効になります。"
+msgstr ""
+"対象となる発信パケットが指定された秒数で送信されなかった場合、接続はダウンします。"
+"この機能では、アイドルタイムアウトの 0 指定は、無効です。"
 
 #: usr/local/www/interfaces.php:1821
 #: usr/local/www/interfaces_ppps_edit.php:596
@@ -22809,7 +22872,7 @@ msgstr "秒数」は予選発信パケットが指定した数のために送信
 #: usr/local/www/interfaces_ppps_edit.php:601
 #: usr/local/www/interfaces.php:2049
 msgid "Periodic reset"
-msgstr "定期的なリセット"
+msgstr "定期リセット"
 
 #: usr/local/www/interfaces.php:1829
 #: usr/local/www/interfaces_ppps_edit.php:604
@@ -22843,7 +22906,7 @@ msgstr "カスタム"
 #: usr/local/www/interfaces_ppps_edit.php:610
 #: usr/local/www/interfaces.php:2058
 msgid "Pre-Set"
-msgstr "事前に設定"
+msgstr "事前設定"
 
 #: usr/local/www/interfaces.php:1831
 #: usr/local/www/interfaces_ppps_edit.php:606
@@ -22857,7 +22920,7 @@ msgstr "事前に設定"
 #: usr/local/www/interfaces_ppps_edit.php:611
 #: usr/local/www/interfaces.php:2059
 msgid "Select a reset timing type"
-msgstr "リセットタイミングの種類を選択します"
+msgstr "リセットタイミングタイプを選択してください"
 
 #: usr/local/www/interfaces.php:1839
 #: usr/local/www/interfaces_ppps_edit.php:614
@@ -22871,7 +22934,7 @@ msgstr "リセットタイミングの種類を選択します"
 #: usr/local/www/interfaces_ppps_edit.php:619
 #: usr/local/www/interfaces.php:2067
 msgid "hour (0-23)"
-msgstr "時間（ 0-23 ）"
+msgstr "時 ( 0-23 )"
 
 #: usr/local/www/interfaces.php:1841
 #: usr/local/www/interfaces_ppps_edit.php:616
@@ -22885,7 +22948,7 @@ msgstr "時間（ 0-23 ）"
 #: usr/local/www/interfaces_ppps_edit.php:621
 #: usr/local/www/interfaces.php:2069
 msgid "minute (0-59)"
-msgstr "分（0〜59 ）"
+msgstr "分 ( 0〜59 )"
 
 #: usr/local/www/interfaces.php:1843
 #: usr/local/www/interfaces_ppps_edit.php:618
@@ -22899,7 +22962,7 @@ msgstr "分（0〜59 ）"
 #: usr/local/www/interfaces_ppps_edit.php:623
 #: usr/local/www/interfaces.php:2071
 msgid "reset at a specific date (mm/dd/yyyy)"
-msgstr "特定の日付にリセット（ YYYY / MM / DD ）"
+msgstr "特定の日付にリセット (mm/dd/yyyy)"
 
 #: usr/local/www/interfaces.php:1846
 #: usr/local/www/interfaces_ppps_edit.php:621
@@ -22915,7 +22978,9 @@ msgstr "特定の日付にリセット（ YYYY / MM / DD ）"
 msgid ""
 "If you leave the date field empty, the reset will be executed each day at "
 "the time you did specify using the minutes and hour field."
-msgstr "あなたは数分と時間のフィールドを使用して指定した時間が「空の日付フィールドのままにすると、リセットがで毎日実行されます」 。"
+msgstr ""
+"日付フィールドを空白にした場合、時と分のフィールドで指定した時間に、"
+"毎日リセットが実行されます。"
 
 #: usr/local/www/interfaces.php:1854
 #: usr/local/www/interfaces_ppps_edit.php:629
@@ -22929,7 +22994,7 @@ msgstr "あなたは数分と時間のフィールドを使用して指定した
 #: usr/local/www/interfaces_ppps_edit.php:634
 #: usr/local/www/interfaces.php:2082
 msgid "reset at each month ('0 0 1 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
-msgstr "各月で（'0 0 1 README.txtを_NotesブートCF conf.defaultなどmisc.translateルートsbinにのTMPのUSR *' ）をリセット"
+msgstr "毎月リセット('0 0 1 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
 
 #: usr/local/www/interfaces.php:1857
 #: usr/local/www/interfaces_ppps_edit.php:632
@@ -22943,7 +23008,7 @@ msgstr "各月で（'0 0 1 README.txtを_NotesブートCF conf.defaultなどmisc
 #: usr/local/www/interfaces_ppps_edit.php:637
 #: usr/local/www/interfaces.php:2085
 msgid "reset at each week ('0 0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr 0')"
-msgstr "毎週にリセット（ 0 0のREADME.txt _NotesブートCF conf.defaultなどmisc.translateルートsbinにTMP USRのREADME.txt _NotesブートCF conf.defaultなどmisc.translateルートsbinにするのtmp USR 0'）"
+msgstr "毎週リセット ('0 0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr 0')"
 
 #: usr/local/www/interfaces.php:1860
 #: usr/local/www/interfaces_ppps_edit.php:635
@@ -22957,7 +23022,7 @@ msgstr "毎週にリセット（ 0 0のREADME.txt _NotesブートCF conf.default
 #: usr/local/www/interfaces_ppps_edit.php:640
 #: usr/local/www/interfaces.php:2088
 msgid "reset at each day ('0 0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
-msgstr "毎日で（'0 0のREADME.txt _NotesブートCF conf.defaultなどmisc.translateルートsbinにTMP USRのREADME.txt _NotesブートCF conf.defaultなどmisc.translateルートsbinにのTMPのUSR *' ）をリセット"
+msgstr "毎日リセット ('0 0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
 
 #: usr/local/www/interfaces.php:1863
 #: usr/local/www/interfaces_ppps_edit.php:638
@@ -22971,14 +23036,14 @@ msgstr "毎日で（'0 0のREADME.txt _NotesブートCF conf.defaultなどmisc.t
 #: usr/local/www/interfaces_ppps_edit.php:643
 #: usr/local/www/interfaces.php:2091
 msgid "reset at each hour ('0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
-msgstr "時間ごとにリセット（'0のREADME.txt _NotesブートCF conf.defaultなどmisc.translateルートsbinにTMP USRのREADME.txt _NotesブートCF conf.defaultなどmisc.translateルートsbinにTMP USRのREADME.txt _NotesブートCF conf.defaultなどmisc.translateルートsbinにのTMPのUSR *'）"
+msgstr "毎時間リセット ('0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
 
 #: usr/local/www/interfaces.php:1872 usr/local/www/interfaces.php:2050
 #: usr/local/www/interfaces.php:2038 usr/local/www/interfaces.php:2065
 #: usr/local/www/interfaces.php:2111 usr/local/www/interfaces.php:2100
 #: usr/local/www/interfaces.php:2100
 msgid "Advanced and MLPPP"
-msgstr "AdvancedおよびMLPPP"
+msgstr "高度な構成・MLPPP"
 
 #: usr/local/www/interfaces.php:1876 usr/local/www/interfaces.php:2054
 #: usr/local/www/interfaces.php:2042 usr/local/www/interfaces.php:2069
@@ -22986,21 +23051,21 @@ msgstr "AdvancedおよびMLPPP"
 #: usr/local/www/interfaces.php:2104
 msgid ""
 "for additional PPPoE configuration options. Save first if you made changes."
-msgstr "あなたが変更を加えた場合は、「追加のPPPoEの設定オプションのために最初に保存します。"
+msgstr "PPPoE 構成追加オプション。変更した場合は、最初に保存してください"
 
 #: usr/local/www/interfaces.php:1881 usr/local/www/interfaces.php:2059
 #: usr/local/www/interfaces.php:2047 usr/local/www/interfaces.php:2074
 #: usr/local/www/interfaces.php:2120 usr/local/www/interfaces.php:2109
 #: usr/local/www/interfaces.php:2109
 msgid "for advanced PPPoE configuration options and MLPPP configuration."
-msgstr "先進的なPPPoEの設定オプションおよびMLPPPの設定のために。"
+msgstr "高度な PPPoE 構成オプション、及び MLPPP 構成。"
 
 #: usr/local/www/interfaces.php:1892 usr/local/www/interfaces.php:2070
 #: usr/local/www/interfaces.php:2058 usr/local/www/interfaces.php:2088
 #: usr/local/www/interfaces.php:2134 usr/local/www/interfaces.php:2123
 #: usr/local/www/interfaces.php:2123
 msgid "PPTP/L2TP configuration"
-msgstr "PPTP/L2TP構成"
+msgstr "PPTP/L2TP 構成"
 
 #: usr/local/www/interfaces.php:1907
 #: usr/local/www/interfaces_ppps_edit.php:199
@@ -23014,7 +23079,7 @@ msgstr "PPTP/L2TP構成"
 #: usr/local/www/interfaces_ppps_edit.php:208
 #: usr/local/www/interfaces.php:2138
 msgid "Local IP address"
-msgstr "ローカルIPアドレス"
+msgstr "ローカル IP アドレス"
 
 #: usr/local/www/interfaces.php:1920
 #: usr/local/www/interfaces_ppps_edit.php:199
@@ -23028,7 +23093,7 @@ msgstr "ローカルIPアドレス"
 #: usr/local/www/interfaces_ppps_edit.php:208
 #: usr/local/www/interfaces.php:2151
 msgid "Remote IP address"
-msgstr "リモートIPアドレス"
+msgstr "リモート IP アドレス"
 
 #: usr/local/www/interfaces.php:1930 usr/local/www/interfaces.php:2108
 #: usr/local/www/interfaces.php:2096 usr/local/www/interfaces.php:2126
