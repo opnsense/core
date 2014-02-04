@@ -9598,7 +9598,7 @@ msgstr "ファイルをアップロードするだけで、新規レイヤ 7 プ
 #: usr/local/www/status_queues.php:165 usr/local/www/interfaces.php:2806
 #: usr/local/www/interfaces.php:2815 usr/local/www/carp_status.php:189
 msgid "here"
-msgstr "ここ"
+msgstr "こちらです"
 
 #: usr/local/www/firewall_shaper_layer7.php:111
 #: usr/local/www/firewall_shaper_layer7.php:111
@@ -21608,7 +21608,7 @@ msgstr ""
 #: usr/local/www/index.php:537 usr/local/www/index.php:539
 #: usr/local/www/index.php:536 usr/local/www/index.php:536
 msgid "To get started click the"
-msgstr "開始するには "
+msgstr "開始するには、"
 
 #: usr/local/www/index.php:533 usr/local/www/index.php:525
 #: usr/local/www/index.php:537 usr/local/www/index.php:539
@@ -21675,7 +21675,7 @@ msgid ""
 "interface first, then change the interface configuration."
 msgstr ""
 "このインタフェースでは DHCP サーバがアクティブですが、これは静的 IP 構成でのみ使用できます。"
-"最初にこのインタフェースの DHCP サーバサービスを無効にしてから、"
+"最初に DHCP サーバサービスを無効にしてから、"
 "インタフェースの構成を変更してください。"
 
 #: usr/local/www/interfaces.php:415 usr/local/www/interfaces.php:451
@@ -21688,7 +21688,7 @@ msgid ""
 "interface first, then change the interface configuration."
 msgstr ""
 "このインタフェースでは DHCPv6 サーバがアクティブですが、これは静的 IPv6 構成でのみ使用できます。"
-"最初にこのインタフェースの DHCPv6 サーバサービスを無効にしてから、"
+"最初に DHCPv6 サーバサービスを無効にしてから、"
 "インタフェースの構成を変更してください。"
 
 #: usr/local/www/interfaces.php:420 usr/local/www/interfaces.php:1364
@@ -22275,8 +22275,8 @@ msgid ""
 "This field can be used to modify ("spoof") the MAC address of this "
 "interface"
 msgstr ""
-"このフィールドはこのインタフェースの MAC アドレス変更 ( なりすまし ) "
-"に使用できます" 
+"このフィールドはインタフェースの MAC アドレス変更 ( なりすまし ) "
+"に使用します" 
 
 #: usr/local/www/interfaces.php:1297 usr/local/www/interfaces.php:1401
 #: usr/local/www/interfaces.php:1389 usr/local/www/interfaces.php:1402
@@ -22350,7 +22350,7 @@ msgid ""
 "speed) unless the port this interface connects to has its speed and duplex "
 "forced."
 msgstr ""
-"ここでは、このインタフェースに大使て速度と双方向通信モードを明示的に設定できます。"
+"このインタフェースに対して速度と双方向通信モードを明示的に設定できます。"
 "警告: ここでは「必ず」自動選択を設定してください ( 速度を自動的にネゴシエートします )"
 "但し、このインタフェースが速度と通信モードを強制されたポート"
 "に接続する場合を除きます。"
@@ -22804,7 +22804,8 @@ msgid ""
 "This option causes the interface to operate in dial-on-demand mode, allowing "
 "you to have a "
 msgstr ""
-"このオプションは、インタフェースをダイヤルオンデマンドモードで動作させ、"
+"このオプションは、インタフェースを"
+"ダイヤルオンデマンドモードで動作させ、"
 
 #: usr/local/www/interfaces.php:1811 usr/local/www/interfaces.php:1930
 #: usr/local/www/interfaces.php:1989 usr/local/www/interfaces.php:2108
@@ -23102,7 +23103,9 @@ msgstr "リモート IP アドレス"
 msgid ""
 "This option causes the interface to operate in dial-on-demand mode, allowing "
 "you to have a"
-msgstr "あなたが持っている"このオプションは可能ダイヤルオンデマンドモードで動作するようにインターフェイスを引き起こす""
+msgstr ""
+"このオプションは、インタフェースを"
+"ダイヤルオンデマンドモードで動作させ、"
 
 #: usr/local/www/interfaces.php:1944 usr/local/www/interfaces.php:2122
 #: usr/local/www/interfaces.php:2110 usr/local/www/interfaces.php:2140
@@ -23111,14 +23114,16 @@ msgstr "あなたが持っている"このオプションは可能ダイヤル�
 msgid ""
 "for additional PPTP and L2TP configuration options. Save first if you made "
 "changes."
-msgstr "変更を"あなたが行った場合、追加のPPTPとL2TPの設定オプションについて。まず保存」 。"
+msgstr ""
+"PPTP・L2TP 構成追加オプション。"
+"変更した場合は、最初に保存してください"
 
 #: usr/local/www/interfaces.php:1949 usr/local/www/interfaces.php:2127
 #: usr/local/www/interfaces.php:2115 usr/local/www/interfaces.php:2145
 #: usr/local/www/interfaces.php:2191 usr/local/www/interfaces.php:2180
 #: usr/local/www/interfaces.php:2180
 msgid "for advanced PPTP and L2TP configuration options"
-msgstr "高度なPPTPとL2TPの設定オプション用"
+msgstr "高度な PPTP・L2TP 構成オプション"
 
 #: usr/local/www/interfaces.php:1964 usr/local/www/interfaces.php:2142
 #: usr/local/www/interfaces.php:2130 usr/local/www/interfaces.php:2160
@@ -23126,14 +23131,15 @@ msgstr "高度なPPTPとL2TPの設定オプション用"
 #: usr/local/www/interfaces.php:2195
 msgid ""
 "Common wireless configuration - Settings apply to all wireless networks on"
-msgstr "「一般的なワイヤレス設定 - 設定上のすべてのワイヤレスネットワークに適用"
+msgstr ""
+"共通の無線構成 - 全ての無線ネットワークに適用されます"
 
 #: usr/local/www/interfaces.php:1967 usr/local/www/interfaces.php:2145
 #: usr/local/www/interfaces.php:2133 usr/local/www/interfaces.php:2163
 #: usr/local/www/interfaces.php:2209 usr/local/www/interfaces.php:2198
 #: usr/local/www/interfaces.php:2198
 msgid "Persist common settings"
-msgstr "共通の設定を永続化"
+msgstr "共通設定を保持"
 
 #: usr/local/www/interfaces.php:1970 usr/local/www/interfaces.php:2148
 #: usr/local/www/interfaces.php:2136 usr/local/www/interfaces.php:2166
@@ -23142,7 +23148,9 @@ msgstr "共通の設定を永続化"
 msgid ""
 "Enabling this preserves the common wireless configuration through interface "
 "deletions and reassignments."
-msgstr "欠失および再割り当て"これを有効にすると、インターフェースを介して共通のワイヤレス設定を保存します」 。"
+msgstr ""
+"これを有効にすると、インタフェースが削除、再割当てされても、"
+"共通の無線構成を保持します。"
 
 #: usr/local/www/interfaces.php:1974 usr/local/www/interfaces.php:2152
 #: usr/local/www/interfaces.php:2140 usr/local/www/interfaces.php:2170
@@ -23163,21 +23171,21 @@ msgstr "保護モード"
 #: usr/local/www/interfaces.php:2235 usr/local/www/interfaces.php:2224
 #: usr/local/www/interfaces.php:2224
 msgid "Protection mode off"
-msgstr "保護モードをオフ"
+msgstr "保護モード: オフ"
 
 #: usr/local/www/interfaces.php:1994 usr/local/www/interfaces.php:2172
 #: usr/local/www/interfaces.php:2160 usr/local/www/interfaces.php:2190
 #: usr/local/www/interfaces.php:2236 usr/local/www/interfaces.php:2225
 #: usr/local/www/interfaces.php:2225
 msgid "Protection mode CTS to self"
-msgstr "自己への保護モードのCTS"
+msgstr "保護モード: CTS-to-self"
 
 #: usr/local/www/interfaces.php:1995 usr/local/www/interfaces.php:2173
 #: usr/local/www/interfaces.php:2161 usr/local/www/interfaces.php:2191
 #: usr/local/www/interfaces.php:2237 usr/local/www/interfaces.php:2226
 #: usr/local/www/interfaces.php:2226
 msgid "Protection mode RTS and CTS"
-msgstr "保護モードのRTSとCTS"
+msgstr "保護モード: RTS/CTS"
 
 #: usr/local/www/interfaces.php:1998 usr/local/www/interfaces.php:2176
 #: usr/local/www/interfaces.php:2164 usr/local/www/interfaces.php:2194
@@ -23186,14 +23194,16 @@ msgstr "保護モードのRTSとCTS"
 msgid ""
 "For IEEE 802.11g, use the specified technique for protecting OFDM frames in "
 "a mixed 11b/11g network."
-msgstr "混合た11b/11gネットワーク「IEEEの802.11グラムのために、内のOFDMフレームを保護するための指定されたテクニックを使用」 。"
+msgstr ""
+"IEEE 802.11g では、11b/11g が混在するネットワークで OFDM フレームを保護する"
+"特定の技術を使用します。"
 
 #: usr/local/www/interfaces.php:2006 usr/local/www/interfaces.php:2184
 #: usr/local/www/interfaces.php:2172 usr/local/www/interfaces.php:2202
 #: usr/local/www/interfaces.php:2248 usr/local/www/interfaces.php:2237
 #: usr/local/www/interfaces.php:2237
 msgid "Transmit power"
-msgstr "動力を伝達"
+msgstr "電波出力"
 
 #: usr/local/www/interfaces.php:2019 usr/local/www/interfaces.php:2197
 #: usr/local/www/interfaces.php:2185 usr/local/www/interfaces.php:2215
@@ -23203,7 +23213,10 @@ msgid ""
 "Note: Typically only a few discreet power settings are available and the "
 "driver will use the setting closest to the specified value. Not all "
 "adapters support changing the transmit power setting."
-msgstr ""注：通常わずか数控えめな電源設定が利用可能であり、 「ドライバーが指定された値に設定し、最も近い使用されます。すべてではない」のアダプタは、送信電力設定の変更をサポート。"
+msgstr ""
+"注意: よく使用される 2、3 の控えめな出力設定のみが利用可能です。"
+"ドライバは指定された値に最も近い設定を使用します。"
+"全てのアダプタが電波出力設定の変更をサポートしているわけではありません。"
 
 #: usr/local/www/interfaces.php:2023 usr/local/www/status_interfaces.php:258
 #: usr/local/www/status_interfaces.php:355 usr/local/www/interfaces.php:2201
@@ -23225,7 +23238,7 @@ msgstr "チャンネル"
 #: usr/local/www/interfaces.php:2316 usr/local/www/interfaces.php:2257
 #: usr/local/www/interfaces.php:2304 usr/local/www/interfaces.php:2316
 msgid "Auto"
-msgstr "オート"
+msgstr "自動"
 
 #: usr/local/www/interfaces.php:2046 usr/local/www/interfaces.php:2224
 #: usr/local/www/interfaces.php:2212 usr/local/www/interfaces.php:2242
@@ -23234,7 +23247,9 @@ msgstr "オート"
 msgid ""
 "Legend: wireless standards - channel # (frequency @ max TX power / TX power "
 "allowed in reg. domain)"
-msgstr ""伝説：ワイヤレス規格 - チャンネル"
+msgstr ""
+"凡例: 無線規格 - チャンネル # ( 周波数 @ max TX power / TX power は"
+"規制ドメインで許可 )"
 
 #: usr/local/www/interfaces.php:2048 usr/local/www/interfaces.php:2226
 #: usr/local/www/interfaces.php:2214 usr/local/www/interfaces.php:2244
@@ -23243,21 +23258,23 @@ msgstr ""伝説：ワイヤレス規格 - チャンネル"
 msgid ""
 "Note: Not all channels may be supported by your card. Auto may override the "
 "wireless standard selected above."
-msgstr ""注：すべてのチャンネルがあなたのカードでサポートされる場合があり自動上書きすることができます。 "上で選択した無線規格を。"
+msgstr ""
+"注意: 全てのチャンネルが、無線カードでサポートされているわけではありません。"
+"「自動」を選択すると、上記で選択した無線規格を上書きします。"
 
 #: usr/local/www/interfaces.php:2053 usr/local/www/interfaces.php:2231
 #: usr/local/www/interfaces.php:2219 usr/local/www/interfaces.php:2249
 #: usr/local/www/interfaces.php:2295 usr/local/www/interfaces.php:2284
 #: usr/local/www/interfaces.php:2284
 msgid "Antenna settings"
-msgstr "アンテナの設定"
+msgstr "アンテナ設定"
 
 #: usr/local/www/interfaces.php:2059 usr/local/www/interfaces.php:2237
 #: usr/local/www/interfaces.php:2225 usr/local/www/interfaces.php:2255
 #: usr/local/www/interfaces.php:2301 usr/local/www/interfaces.php:2290
 #: usr/local/www/interfaces.php:2290
 msgid "Diversity"
-msgstr "多様性"
+msgstr "ダイバーシティ"
 
 #: usr/local/www/interfaces.php:2061 usr/local/www/interfaces.php:2072
 #: usr/local/www/interfaces.php:2084 usr/local/www/interfaces.php:2114
@@ -23300,14 +23317,14 @@ msgstr "オフ"
 #: usr/local/www/interfaces.php:2305 usr/local/www/interfaces.php:2294
 #: usr/local/www/interfaces.php:2294
 msgid "On"
-msgstr "上の"
+msgstr "オン"
 
 #: usr/local/www/interfaces.php:2070 usr/local/www/interfaces.php:2248
 #: usr/local/www/interfaces.php:2236 usr/local/www/interfaces.php:2266
 #: usr/local/www/interfaces.php:2312 usr/local/www/interfaces.php:2301
 #: usr/local/www/interfaces.php:2301
 msgid "Transmit antenna"
-msgstr "アンテナを送信"
+msgstr "送信アンテナ"
 
 #: usr/local/www/interfaces.php:2074 usr/local/www/interfaces.php:2086
 #: usr/local/www/interfaces.php:2252 usr/local/www/interfaces.php:2264
@@ -23317,7 +23334,7 @@ msgstr "アンテナを送信"
 #: usr/local/www/interfaces.php:2317 usr/local/www/interfaces.php:2305
 #: usr/local/www/interfaces.php:2317
 msgid "#1"
-msgstr ""
+msgstr "#1"
 
 #: usr/local/www/interfaces.php:2075 usr/local/www/interfaces.php:2087
 #: usr/local/www/interfaces.php:2253 usr/local/www/interfaces.php:2265
@@ -23327,7 +23344,7 @@ msgstr ""
 #: usr/local/www/interfaces.php:2318 usr/local/www/interfaces.php:2306
 #: usr/local/www/interfaces.php:2318
 msgid "#2"
-msgstr ""
+msgstr "#2"
 
 #: usr/local/www/interfaces.php:2082 usr/local/www/interfaces.php:2260
 #: usr/local/www/interfaces.php:2248 usr/local/www/interfaces.php:2278
@@ -23342,7 +23359,8 @@ msgstr "受信アンテナ"
 #: usr/local/www/interfaces.php:2325
 msgid ""
 "Note: The antenna numbers do not always match up with the labels on the card."
-msgstr ""注：アンテナ番号は常にカード上のラベルと一致しません。"
+msgstr ""
+"注意: アンテナ番号は、カードのラベルと常に一致するわけではありません。"
 
 #: usr/local/www/interfaces.php:2100 usr/local/www/interfaces.php:2278
 #: usr/local/www/interfaces.php:2266 usr/local/www/interfaces.php:2296
@@ -23358,28 +23376,30 @@ msgstr "距離設定"
 msgid ""
 "Note: This field can be used to tune ACK/CTS timers to fit the distance "
 "between AP and Client"
-msgstr "APとクライアント間の「注意このフィールドには、距離に合わせて調整されたACK / CTSタイマーを使用することができます」"
+msgstr ""
+"注意: このフィールドは、AP とクライアント間の距離に合わせて、"
+"ACK/CTS タイマを調整するために使用されます。"
 
 #: usr/local/www/interfaces.php:2105 usr/local/www/interfaces.php:2283
 #: usr/local/www/interfaces.php:2271 usr/local/www/interfaces.php:2301
 #: usr/local/www/interfaces.php:2347 usr/local/www/interfaces.php:2336
 #: usr/local/www/interfaces.php:2336
 msgid "(measured in Meters and works only for Atheros based cards !)"
-msgstr "（メートルで測定し、唯一のAtherosベースのカードのために働く ！ ）"
+msgstr "( 単位はメートルで、Atheros 準拠のカードでのみ機能します！)"
 
 #: usr/local/www/interfaces.php:2110 usr/local/www/interfaces.php:2288
 #: usr/local/www/interfaces.php:2276 usr/local/www/interfaces.php:2306
 #: usr/local/www/interfaces.php:2352 usr/local/www/interfaces.php:2341
 #: usr/local/www/interfaces.php:2341
 msgid "Regulatory settings"
-msgstr "規制の設定"
+msgstr "規制設定"
 
 #: usr/local/www/interfaces.php:2112 usr/local/www/interfaces.php:2290
 #: usr/local/www/interfaces.php:2278 usr/local/www/interfaces.php:2308
 #: usr/local/www/interfaces.php:2354 usr/local/www/interfaces.php:2343
 #: usr/local/www/interfaces.php:2343
 msgid "Regulatory domain"
-msgstr "調節領域"
+msgstr "規制ドメイン"
 
 #: usr/local/www/interfaces.php:2126 usr/local/www/interfaces.php:2304
 #: usr/local/www/interfaces.php:2292 usr/local/www/interfaces.php:2322
@@ -23389,14 +23409,17 @@ msgid ""
 "Note: Some cards have a default that is not recognized and require changing "
 "the regulatory domain to one in this list for the changes to other "
 "regulatory settings to work."
-msgstr ""注：一部のカードが認識され、変更する必要がされていないデフォルトの持っている"動作するように、他の「調節の設定を変更するために、このリストに1への規制区域を。"
+msgstr ""
+"注意: 一部のカードには、認識されないデフォルト設定が存在します。"
+"他の規制設定での動作に変更するためには、"
+"デフォルト設定の規制ドメインから、このリストの規制ドメインに変更する必要があります。"
 
 #: usr/local/www/interfaces.php:2128 usr/local/www/interfaces.php:2306
 #: usr/local/www/interfaces.php:2294 usr/local/www/interfaces.php:2324
 #: usr/local/www/interfaces.php:2370 usr/local/www/interfaces.php:2359
 #: usr/local/www/interfaces.php:2359
 msgid "Country (listed with country code and regulatory domain)"
-msgstr "国（国コードと調節ドメインと記載されている）"
+msgstr "国 ( 国コードと規制ドメインを記載 )"
 
 #: usr/local/www/interfaces.php:2142 usr/local/www/interfaces.php:2320
 #: usr/local/www/interfaces.php:2308 usr/local/www/interfaces.php:2338
@@ -23405,7 +23428,9 @@ msgstr "国（国コードと調節ドメインと記載されている）"
 msgid ""
 "Note: Any country setting other than "Default" will override the "
 "regulatory domain setting"
-msgstr ""注：以外の設定すべての国"デフォルトは規制区域の設定」より優先されます」"
+msgstr ""
+"注意: 「デフォルト」ではない国が設定されると、"
+"規制ドメイン設定は上書きされます。"
 
 #: usr/local/www/interfaces.php:2144 usr/local/www/interfaces.php:2322
 #: usr/local/www/interfaces.php:2310 usr/local/www/interfaces.php:2340
@@ -23426,7 +23451,7 @@ msgstr "屋内"
 #: usr/local/www/interfaces.php:2390 usr/local/www/interfaces.php:2379
 #: usr/local/www/interfaces.php:2379
 msgid "Outdoor"
-msgstr "アウトドア"
+msgstr "屋外"
 
 #: usr/local/www/interfaces.php:2149 usr/local/www/interfaces.php:2327
 #: usr/local/www/interfaces.php:2315 usr/local/www/interfaces.php:2345
@@ -23443,7 +23468,11 @@ msgid ""
 "These settings may affect which channels are available and the maximum "
 "transmit power allowed on those channels. Using the correct settings to "
 "comply with local regulatory requirements is recommended."
-msgstr "送信電力それらのチャネル上で許可"これらの設定は、チャネルが利用可能であり、最大値はどの影響を与える可能性があり」 。 「現地の規制要件に準拠して、正しい設定を使用することはお勧めします。"
+msgstr ""
+""
+"これらの設定は、利用可能なチャンネル、及び、"
+"チャンネルに許可される最大電波出力に影響します。"
+"地域の規制要件に適合する、正しい設定での使用を推奨します。"
 
 #: usr/local/www/interfaces.php:2154 usr/local/www/interfaces.php:2332
 #: usr/local/www/interfaces.php:2320 usr/local/www/interfaces.php:2350
@@ -23454,14 +23483,18 @@ msgid ""
 "down when changing regulatory settings. Some of the regulatory domains or "
 "country codes may not be allowed by some cards. These settings may not be "
 "able to add additional channels that are not already supported."
-msgstr ""注：このインタフェースのすべてのワイヤレスネットワークが一時的に提起される「制御の設定を変更するときにダウン。規制区域または一部の「国コードは、一部のカードで許可されないことがあります。これらの設定はないかもしれない」が既にサポートされていない追加のチャネルを追加することができ。"
+msgstr ""
+"注意: このインタフェースの全ての無線ネットワークは、規制設定の変更時に、"
+"一時的にダウンします。"
+"一部の規制ドメイン、もしくは国コードを使用できないカードがあります。"
+"これらの設定で、現在サポートされていない、追加チャンネルの追加はできません。"
 
 #: usr/local/www/interfaces.php:2161 usr/local/www/interfaces.php:2339
 #: usr/local/www/interfaces.php:2327 usr/local/www/interfaces.php:2357
 #: usr/local/www/interfaces.php:2403 usr/local/www/interfaces.php:2392
 #: usr/local/www/interfaces.php:2392
 msgid "Network-specific wireless configuration"
-msgstr "ネットワーク固有のワイヤレス設定"
+msgstr "ネットワーク固有の無線設定"
 
 #: usr/local/www/interfaces.php:2167
 #: usr/local/www/interfaces_wireless_edit.php:179
@@ -23472,7 +23505,7 @@ msgstr "ネットワーク固有のワイヤレス設定"
 #: usr/local/www/interfaces_wireless_edit.php:181
 #: usr/local/www/interfaces.php:2398
 msgid "Infrastructure (BSS)"
-msgstr "インフラストラクチャ（ BSS）"
+msgstr "インフラストラクチャ ( BSS )"
 
 #: usr/local/www/interfaces.php:2168
 #: usr/local/www/interfaces_wireless_edit.php:180
@@ -23483,7 +23516,7 @@ msgstr "インフラストラクチャ（ BSS）"
 #: usr/local/www/interfaces_wireless_edit.php:182
 #: usr/local/www/interfaces.php:2399
 msgid "Ad-hoc (IBSS)"
-msgstr "アドホック（ IBSS ）"
+msgstr "アドホック ( IBSS )"
 
 #: usr/local/www/interfaces.php:2169
 #: usr/local/www/interfaces_wireless_edit.php:181
@@ -23508,21 +23541,21 @@ msgstr "最小無線規格"
 #: usr/local/www/interfaces.php:2428 usr/local/www/interfaces.php:2417
 #: usr/local/www/interfaces.php:2417
 msgid "Any"
-msgstr "任意の"
+msgstr "任意"
 
 #: usr/local/www/interfaces.php:2186 usr/local/www/interfaces.php:2366
 #: usr/local/www/interfaces.php:2354 usr/local/www/interfaces.php:2384
 #: usr/local/www/interfaces.php:2430 usr/local/www/interfaces.php:2419
 #: usr/local/www/interfaces.php:2419
 msgid "802.11g"
-msgstr "802.11グラム"
+msgstr "802.11g"
 
 #: usr/local/www/interfaces.php:2188 usr/local/www/interfaces.php:2368
 #: usr/local/www/interfaces.php:2356 usr/local/www/interfaces.php:2386
 #: usr/local/www/interfaces.php:2432 usr/local/www/interfaces.php:2421
 #: usr/local/www/interfaces.php:2421
 msgid "802.11n"
-msgstr "802.11nの"
+msgstr "802.11n"
 
 #: usr/local/www/interfaces.php:2191 usr/local/www/interfaces.php:2371
 #: usr/local/www/interfaces.php:2359 usr/local/www/interfaces.php:2389
@@ -23532,14 +23565,17 @@ msgid ""
 "When operating as an access point, allow only stations capable of the "
 "selected wireless standard to associate (stations not capable are not "
 "permitted to associate)."
-msgstr "選択された無線規格（対応していない局は「関連付けることは許可されていません）に関連付けるために、「アクセスポイントとして動作するとき、することができる唯一の局が許可する」 。"
+msgstr ""
+"アクセスポイントとして動作している場合は、選択した無線規格に対応したステーションのみが"
+"アソシエーションを許可されます"
+" ( 対応していないステーションにはアソシエーションは許可されません )。
 
 #: usr/local/www/interfaces.php:2196 usr/local/www/interfaces.php:2376
 #: usr/local/www/interfaces.php:2364 usr/local/www/interfaces.php:2394
 #: usr/local/www/interfaces.php:2440 usr/local/www/interfaces.php:2429
 #: usr/local/www/interfaces.php:2429
 msgid "802.11g only"
-msgstr "802.11グラムのみ"
+msgstr "802.11g のみ"
 
 #: usr/local/www/interfaces.php:2199 usr/local/www/interfaces.php:2379
 #: usr/local/www/interfaces.php:2367 usr/local/www/interfaces.php:2397
@@ -23548,14 +23584,16 @@ msgstr "802.11グラムのみ"
 msgid ""
 "When operating as an access point in 802.11g mode, allow only 11g-capable "
 "stations to associate (11b-only stations are not permitted to associate)."
-msgstr "ステーション（11B専用のステーションを関連付けることが許可されていない）に関連付けるために」の802.11gモードでアクセスポイントとして動作する場合、唯一の11グラム対応ができるように」 。"
+msgstr ""
+"アクセスポイントとして 802.11g モードで動作している場合は、11g に対応したステーションのみが"
+"アソシエーションを許可されます ( 11b のみのステーションにはアソシエーションは許可されません )。
 
 #: usr/local/www/interfaces.php:2204 usr/local/www/interfaces.php:2384
 #: usr/local/www/interfaces.php:2372 usr/local/www/interfaces.php:2402
 #: usr/local/www/interfaces.php:2448 usr/local/www/interfaces.php:2437
 #: usr/local/www/interfaces.php:2437
 msgid "Allow intra-BSS communication"
-msgstr "内のBSS通信を許可する"
+msgstr "イントラ BSS 通信を許可"
 
 #: usr/local/www/interfaces.php:2208 usr/local/www/interfaces.php:2388
 #: usr/local/www/interfaces.php:2376 usr/local/www/interfaces.php:2406
@@ -23564,7 +23602,9 @@ msgstr "内のBSS通信を許可する"
 msgid ""
 "When operating as an access point, enable this if you want to pass packets "
 "between wireless clients directly."
-msgstr "直接無線クライアントの間に「あなたは、パケットを渡したい場合は、アクセスポイントとして動作している場合、これを可能にする」 。"
+msgstr ""
+"アクセスポイントとして動作している場合で、無線クライアント間で直接パケットを"
+"やりとりさせたい時に、これを有効にします。
 
 #: usr/local/www/interfaces.php:2210 usr/local/www/interfaces.php:2390
 #: usr/local/www/interfaces.php:2378 usr/local/www/interfaces.php:2408
@@ -23573,42 +23613,44 @@ msgstr "直接無線クライアントの間に「あなたは、パケットを
 msgid ""
 "Disabling the internal bridging is useful when traffic is to be processed "
 "with packet filtering."
-msgstr "パケットフィルタリングで「トラフィックが処理されるときに、内部のブリッジを無効にすると便利です」 。"
+msgstr ""
+"トラフィックにパケットフィルタリングを行う場合、"
+"内部ブリッジを無効にすると便利です。"
 
 #: usr/local/www/interfaces.php:2214 usr/local/www/interfaces.php:2394
 #: usr/local/www/interfaces.php:2382 usr/local/www/interfaces.php:2412
 #: usr/local/www/interfaces.php:2458 usr/local/www/interfaces.php:2447
 #: usr/local/www/interfaces.php:2447
 msgid "Enable WME"
-msgstr "WMEを有効にします"
+msgstr "WME を有効"
 
 #: usr/local/www/interfaces.php:2217 usr/local/www/interfaces.php:2397
 #: usr/local/www/interfaces.php:2385 usr/local/www/interfaces.php:2415
 #: usr/local/www/interfaces.php:2461 usr/local/www/interfaces.php:2450
 #: usr/local/www/interfaces.php:2450
 msgid "Setting this option will force the card to use WME (wireless QoS)."
-msgstr "このオプションを設定すると、 WME （無線QoS）を使用するようにカードを強制します。"
+msgstr "このオプション設定で、WME ( 無線 QoS ) を使用するようカードに強制します。"
 
 #: usr/local/www/interfaces.php:2221 usr/local/www/interfaces.php:2401
 #: usr/local/www/interfaces.php:2389 usr/local/www/interfaces.php:2419
 #: usr/local/www/interfaces.php:2465 usr/local/www/interfaces.php:2454
 #: usr/local/www/interfaces.php:2454
 msgid "Enable Hide SSID"
-msgstr "非表示のSSIDを有効にする"
+msgstr "SSID の非表示を有効"
 
 #: usr/local/www/interfaces.php:2225 usr/local/www/interfaces.php:2405
 #: usr/local/www/interfaces.php:2393 usr/local/www/interfaces.php:2423
 #: usr/local/www/interfaces.php:2469 usr/local/www/interfaces.php:2458
 #: usr/local/www/interfaces.php:2458
 msgid "Setting this option will force the card to NOT broadcast its SSID"
-msgstr "このオプションを設定すると、そのSSIDをブロードキャストしないように、カードを強制的に"
+msgstr "このオプション設定で、SSID をブロードキャストしないようカードに強制します。"
 
 #: usr/local/www/interfaces.php:2227 usr/local/www/interfaces.php:2407
 #: usr/local/www/interfaces.php:2395 usr/local/www/interfaces.php:2425
 #: usr/local/www/interfaces.php:2471 usr/local/www/interfaces.php:2460
 #: usr/local/www/interfaces.php:2460
 msgid "(this might create problems for some clients)."
-msgstr "（これはいくつかのクライアントのための問題を作成することができます） 。"
+msgstr "( 一部のクライアントで問題が発生する場合があります )"
 
 #: usr/local/www/interfaces.php:2231 usr/local/www/interfaces.php:2411
 #: usr/local/www/interfaces.php:2399 usr/local/www/interfaces.php:2429
@@ -23622,42 +23664,42 @@ msgstr "WEP"
 #: usr/local/www/interfaces.php:2478 usr/local/www/interfaces.php:2467
 #: usr/local/www/interfaces.php:2467
 msgid "Enable WEP"
-msgstr "WEPを有効に"
+msgstr "WEP を有効"
 
 #: usr/local/www/interfaces.php:2239 usr/local/www/interfaces.php:2419
 #: usr/local/www/interfaces.php:2407 usr/local/www/interfaces.php:2437
 #: usr/local/www/interfaces.php:2483 usr/local/www/interfaces.php:2472
 #: usr/local/www/interfaces.php:2472
 msgid "TX key"
-msgstr "TXキー"
+msgstr "TX キー"
 
 #: usr/local/www/interfaces.php:2242 usr/local/www/interfaces.php:2422
 #: usr/local/www/interfaces.php:2410 usr/local/www/interfaces.php:2440
 #: usr/local/www/interfaces.php:2486 usr/local/www/interfaces.php:2475
 #: usr/local/www/interfaces.php:2475
 msgid "Key 1:"
-msgstr "キー1 ："
+msgstr "キー 1: "
 
 #: usr/local/www/interfaces.php:2251 usr/local/www/interfaces.php:2431
 #: usr/local/www/interfaces.php:2419 usr/local/www/interfaces.php:2449
 #: usr/local/www/interfaces.php:2495 usr/local/www/interfaces.php:2484
 #: usr/local/www/interfaces.php:2484
 msgid "Key 2:"
-msgstr "キー2 ："
+msgstr "キー 2: "
 
 #: usr/local/www/interfaces.php:2260 usr/local/www/interfaces.php:2440
 #: usr/local/www/interfaces.php:2428 usr/local/www/interfaces.php:2458
 #: usr/local/www/interfaces.php:2504 usr/local/www/interfaces.php:2493
 #: usr/local/www/interfaces.php:2493
 msgid "Key 3:"
-msgstr "キー3 ："
+msgstr "キー 3: "
 
 #: usr/local/www/interfaces.php:2269 usr/local/www/interfaces.php:2449
 #: usr/local/www/interfaces.php:2437 usr/local/www/interfaces.php:2467
 #: usr/local/www/interfaces.php:2513 usr/local/www/interfaces.php:2502
 #: usr/local/www/interfaces.php:2502
 msgid "Key 4:"
-msgstr "キー4 ："
+msgstr "キー 4: "
 
 #: usr/local/www/interfaces.php:2279 usr/local/www/interfaces.php:2459
 #: usr/local/www/interfaces.php:2447 usr/local/www/interfaces.php:2477
@@ -23666,7 +23708,9 @@ msgstr "キー4 ："
 msgid ""
 "40 (64) bit keys may be entered as 5 ASCII characters or 10 hex digits "
 "preceded by '0x'."
-msgstr "'0 Xが前に」」 40 （ 64 ）ビットのキーは、 5文字のASCII文字または10桁の16進数で入力してもよい」 。"
+msgstr ""
+"40 (64) ビットのキーを入力してください。"
+"ASCII で 5 文字、もしくは、'0x' で始まる 10 桁の 16 進数です。" 
 
 #: usr/local/www/interfaces.php:2280 usr/local/www/interfaces.php:2460
 #: usr/local/www/interfaces.php:2448 usr/local/www/interfaces.php:2478
@@ -23675,7 +23719,9 @@ msgstr "'0 Xが前に」」 40 （ 64 ）ビットのキーは、 5文字のASCI
 msgid ""
 "104 (128) bit keys may be entered as 13 ASCII characters or 26 hex digits "
 "preceded by '0x'."
-msgstr "'0 X'の前」 104 （ 128 ）ビットのキーは13文字のASCII文字または26桁の16進数で入力してもよい」 。"
+msgstr ""
+"104 (128) ビットのキーを入力してください。"
+"ASCII で 13 文字 、もしくは、'0x' で始まる 26 桁の 16 進数です。" 
 
 #: usr/local/www/interfaces.php:2284 usr/local/www/interfaces.php:2308
 #: usr/local/www/interfaces.php:2464 usr/local/www/interfaces.php:2488
@@ -23692,32 +23738,32 @@ msgstr "WPA"
 #: usr/local/www/interfaces.php:2531 usr/local/www/interfaces.php:2520
 #: usr/local/www/interfaces.php:2520
 msgid "Enable WPA"
-msgstr "WPAを有効にします"
+msgstr "WPA を有効"
 
 #: usr/local/www/interfaces.php:2292 usr/local/www/interfaces.php:2472
 msgid "WPA Pre Shared Key"
-msgstr "WPA事前共有キー"
+msgstr "WPA 事前共有キー"
 
 #: usr/local/www/interfaces.php:2295 usr/local/www/interfaces.php:2475
 #: usr/local/www/interfaces.php:2463 usr/local/www/interfaces.php:2493
 #: usr/local/www/interfaces.php:2539 usr/local/www/interfaces.php:2528
 #: usr/local/www/interfaces.php:2528
 msgid "PSK:"
-msgstr "PSK ："
+msgstr "PSK: "
 
 #: usr/local/www/interfaces.php:2301 usr/local/www/interfaces.php:2481
 #: usr/local/www/interfaces.php:2469 usr/local/www/interfaces.php:2499
 #: usr/local/www/interfaces.php:2545 usr/local/www/interfaces.php:2534
 #: usr/local/www/interfaces.php:2534
 msgid "Passphrase must be from 8 to 63 characters."
-msgstr "パスフレーズは、8〜 63文字でなければなりません。"
+msgstr "パスフレーズは、8 〜 63 文字です。"
 
 #: usr/local/www/interfaces.php:2305 usr/local/www/interfaces.php:2485
 #: usr/local/www/interfaces.php:2473 usr/local/www/interfaces.php:2503
 #: usr/local/www/interfaces.php:2549 usr/local/www/interfaces.php:2538
 #: usr/local/www/interfaces.php:2538
 msgid "WPA Mode"
-msgstr "WPAモード"
+msgstr "WPA モード"
 
 #: usr/local/www/interfaces.php:2309 usr/local/www/interfaces.php:2489
 #: usr/local/www/interfaces.php:2477 usr/local/www/interfaces.php:2507
@@ -23753,7 +23799,7 @@ msgstr "両方"
 #: usr/local/www/interfaces.php:2559 usr/local/www/interfaces.php:2548
 #: usr/local/www/interfaces.php:2548
 msgid "WPA Key Management Mode"
-msgstr "WPAキー管理モード"
+msgstr "WPA キー管理モード"
 
 #: usr/local/www/interfaces.php:2318 usr/local/www/interfaces.php:2498
 msgid "Pre Shared Key"
@@ -23778,28 +23824,28 @@ msgstr "オープンシステム認証"
 #: usr/local/www/interfaces.php:2573 usr/local/www/interfaces.php:2562
 #: usr/local/www/interfaces.php:2562
 msgid "Shared Key Authentication"
-msgstr "共有鍵認証"
+msgstr "共有キー認証"
 
 #: usr/local/www/interfaces.php:2332 usr/local/www/interfaces.php:2512
 #: usr/local/www/interfaces.php:2500 usr/local/www/interfaces.php:2530
 #: usr/local/www/interfaces.php:2576 usr/local/www/interfaces.php:2565
 #: usr/local/www/interfaces.php:2565
 msgid "Note: Shared Key Authentication requires WEP."
-msgstr "注意：共有キー認証がWEPを必要とします。"
+msgstr "注意: 共有キー認証では WEP が必要です。"
 
 #: usr/local/www/interfaces.php:2336 usr/local/www/interfaces.php:2516
 #: usr/local/www/interfaces.php:2504 usr/local/www/interfaces.php:2534
 #: usr/local/www/interfaces.php:2580 usr/local/www/interfaces.php:2569
 #: usr/local/www/interfaces.php:2569
 msgid "WPA Pairwise"
-msgstr "WPAペアワイズ"
+msgstr "WPA ペアワイズ"
 
 #: usr/local/www/interfaces.php:2340 usr/local/www/interfaces.php:2520
 #: usr/local/www/interfaces.php:2508 usr/local/www/interfaces.php:2538
 #: usr/local/www/interfaces.php:2584 usr/local/www/interfaces.php:2573
 #: usr/local/www/interfaces.php:2573
 msgid "AES (recommended)"
-msgstr "AES （推奨）"
+msgstr "AES ( 推奨 )"
 
 #: usr/local/www/interfaces.php:2341 usr/local/www/interfaces.php:2521
 #: usr/local/www/interfaces.php:2509 usr/local/www/interfaces.php:2539
@@ -23822,14 +23868,15 @@ msgstr "キーローテーション"
 msgid ""
 "Allowed values are 1-9999 but should not be longer than Master Key "
 "Regeneration time."
-msgstr ""指定できる値は1から9999ですが、マスターキーよりも長くすべきではない」再生時間。"
+msgstr ""
+"指定できる値は 1 〜 9999 ですが、マスタキー再生成時間よりも短くしてください"
 
 #: usr/local/www/interfaces.php:2353 usr/local/www/interfaces.php:2533
 #: usr/local/www/interfaces.php:2521 usr/local/www/interfaces.php:2551
 #: usr/local/www/interfaces.php:2597 usr/local/www/interfaces.php:2586
 #: usr/local/www/interfaces.php:2586
 msgid "Master Key Regeneration"
-msgstr "マスターキーの再生成"
+msgstr "マスタキー再生成"
 
 #: usr/local/www/interfaces.php:2356 usr/local/www/interfaces.php:2536
 #: usr/local/www/interfaces.php:2524 usr/local/www/interfaces.php:2554
@@ -23837,14 +23884,15 @@ msgstr "マスターキーの再生成"
 #: usr/local/www/interfaces.php:2589
 msgid ""
 "Allowed values are 1-9999 but should not be shorter than Key Rotation time."
-msgstr ""指定できる値は1から9999ですが、キーローテーション時間より短くすべきではない。"
+msgstr ""
+"指定できる値は 1 〜 9999 ですが、キーローテーション時間よりも長くしてください"
 
 #: usr/local/www/interfaces.php:2360 usr/local/www/interfaces.php:2540
 #: usr/local/www/interfaces.php:2528 usr/local/www/interfaces.php:2558
 #: usr/local/www/interfaces.php:2604 usr/local/www/interfaces.php:2593
 #: usr/local/www/interfaces.php:2593
 msgid "Strict Key Regeneration"
-msgstr "厳密なキーの再生成"
+msgstr "厳密なキー再生成"
 
 #: usr/local/www/interfaces.php:2363 usr/local/www/interfaces.php:2543
 #: usr/local/www/interfaces.php:2531 usr/local/www/interfaces.php:2561
@@ -23853,21 +23901,23 @@ msgstr "厳密なキーの再生成"
 msgid ""
 "Setting this option will force the AP to rekey whenever a client "
 "disassociates."
-msgstr "関連付けを解除し、 "このオプションを設定すると、クライアントはいつでも再生成するためにAPを強制します」 。"
+msgstr ""
+"このオプション設定で、AP が、アソシエーション解除されたクライアントに、"
+"いつでもキーを再生成するよう強制します。"
 
 #: usr/local/www/interfaces.php:2367 usr/local/www/interfaces.php:2547
 #: usr/local/www/interfaces.php:2535 usr/local/www/interfaces.php:2565
 #: usr/local/www/interfaces.php:2611 usr/local/www/interfaces.php:2600
 #: usr/local/www/interfaces.php:2600
 msgid "Enable IEEE802.1X Authentication"
-msgstr "IEEE802.1X認証を有効にします"
+msgstr "IEEE802.1X 認証を有効"
 
 #: usr/local/www/interfaces.php:2370 usr/local/www/interfaces.php:2550
 #: usr/local/www/interfaces.php:2538 usr/local/www/interfaces.php:2568
 #: usr/local/www/interfaces.php:2614 usr/local/www/interfaces.php:2603
 #: usr/local/www/interfaces.php:2603
 msgid "Setting this option will enable 802.1x authentication."
-msgstr "このオプションを設定すると、 802.1x認証を有効にします。"
+msgstr "このオプション設定で、802.1x 認証を有効にします。"
 
 #: usr/local/www/interfaces.php:2371
 #: usr/local/www/load_balancer_pool_edit.php:238
@@ -23881,21 +23931,21 @@ msgstr "このオプションを設定すると、 802.1x認証を有効にし�
 #: usr/local/www/load_balancer_pool_edit.php:253
 #: usr/local/www/interfaces.php:2604
 msgid "NOTE"
-msgstr "注"
+msgstr "注意"
 
 #: usr/local/www/interfaces.php:2371 usr/local/www/interfaces.php:2551
 #: usr/local/www/interfaces.php:2539 usr/local/www/interfaces.php:2569
 #: usr/local/www/interfaces.php:2615 usr/local/www/interfaces.php:2604
 #: usr/local/www/interfaces.php:2604
 msgid "this option requires checking the "Enable WPA box"."
-msgstr "このオプションでは、 「有効WPAボックス」をチェックする必要があります。"
+msgstr "このオプションは「WPA 装置を有効」をチェックする必要があります。"
 
 #: usr/local/www/interfaces.php:2375 usr/local/www/interfaces.php:2555
 #: usr/local/www/interfaces.php:2543 usr/local/www/interfaces.php:2573
 #: usr/local/www/interfaces.php:2619 usr/local/www/interfaces.php:2608
 #: usr/local/www/interfaces.php:2608
 msgid "802.1X Authentication Server IP Address"
-msgstr "802.1X認証サーバーのIPアドレス"
+msgstr "802.1X 認証サーバ IP アドレス"
 
 #: usr/local/www/interfaces.php:2378 usr/local/www/interfaces.php:2558
 #: usr/local/www/interfaces.php:2579 usr/local/www/interfaces.php:2546
@@ -23907,14 +23957,16 @@ msgstr "802.1X認証サーバーのIPアドレス"
 msgid ""
 "Enter the IP address of the 802.1X Authentication Server. This is commonly "
 "a Radius server (FreeRadius, Internet Authentication Services, etc.)"
-msgstr "「802.1X認証サーバのIPアドレスを入力します。これは、一般的には「 Radiusサーバ（にFreeRadius 、インターネット認証サービスなど）"
+msgstr ""
+"802.1X 認証サーバの IP アドレスを入力します。"
+"これは通常 Radius サーバです ( FreeRadius、インターネット認証サービス等 )"
 
 #: usr/local/www/interfaces.php:2382 usr/local/www/interfaces.php:2562
 #: usr/local/www/interfaces.php:2550 usr/local/www/interfaces.php:2580
 #: usr/local/www/interfaces.php:2626 usr/local/www/interfaces.php:2615
 #: usr/local/www/interfaces.php:2615
 msgid "802.1X Authentication Server Port"
-msgstr "802.1X認証サーバーポート"
+msgstr "802.1X 認証サーバポート"
 
 #: usr/local/www/interfaces.php:2385 usr/local/www/interfaces.php:2565
 #: usr/local/www/interfaces.php:2586 usr/local/www/interfaces.php:2553
@@ -23924,21 +23976,21 @@ msgstr "802.1X認証サーバーポート"
 #: usr/local/www/interfaces.php:2639 usr/local/www/interfaces.php:2618
 #: usr/local/www/interfaces.php:2639
 msgid "Leave blank for the default 1812 port."
-msgstr "デフォルト1812ポートに対しては空白のままにします。"
+msgstr "デフォルトの 1812 ポートの場合は空白にします。"
 
 #: usr/local/www/interfaces.php:2389 usr/local/www/interfaces.php:2569
 #: usr/local/www/interfaces.php:2557 usr/local/www/interfaces.php:2587
 #: usr/local/www/interfaces.php:2633 usr/local/www/interfaces.php:2622
 #: usr/local/www/interfaces.php:2622
 msgid "802.1X Authentication Server Shared Secret"
-msgstr "802.1X認証サーバー共有シークレット"
+msgstr "802.1X 認証サーバ共有秘密"
 
 #: usr/local/www/interfaces.php:2396 usr/local/www/interfaces.php:2597
 #: usr/local/www/interfaces.php:2585 usr/local/www/interfaces.php:2615
 #: usr/local/www/interfaces.php:2661 usr/local/www/interfaces.php:2650
 #: usr/local/www/interfaces.php:2650
 msgid "Authentication Roaming Preauth"
-msgstr "認証ローミングPREAUTH"
+msgstr "認証ローミング事前認証"
 
 #: usr/local/www/interfaces.php:2407 usr/local/www/interfaces.php:2608
 #: usr/local/www/interfaces.php:2596 usr/local/www/interfaces.php:2626
@@ -23954,14 +24006,16 @@ msgstr "プライベートネットワーク"
 msgid ""
 "When set, this option blocks traffic from IP addresses that are reserved for "
 "private networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as"
-msgstr "「設定した場合、このオプションをブロックトラフィックはのために予約されているIPアドレスからの「 RFC 1918 （ 10月8日、 172.16/12 、 192.168/16 ）に従ってプライベートネットワークとして"
+msgstr ""
+"このオプションが設定されると、RFC 1918 (10/8, 172.16/12, 192.168/16) として予約されている"
+"プライベートネットワークの IP アドレスからのトラフィック、"
 
 #: usr/local/www/interfaces.php:2417 usr/local/www/interfaces.php:2618
 #: usr/local/www/interfaces.php:2606 usr/local/www/interfaces.php:2636
 #: usr/local/www/interfaces.php:2682 usr/local/www/interfaces.php:2671
 #: usr/local/www/interfaces.php:2671
 msgid "well as loopback addresses (127/8)."
-msgstr "だけでなく、ループバックアドレス（ 8分の127 ） 。"
+msgstr "同様に、ループバックアドレス (127/8) をブロックします。"
 
 #: usr/local/www/interfaces.php:2417 usr/local/www/interfaces.php:2618
 #: usr/local/www/interfaces.php:2606 usr/local/www/interfaces.php:2636
@@ -23970,7 +24024,9 @@ msgstr "だけでなく、ループバックアドレス（ 8分の127 ） 。"
 msgid ""
 "You should generally leave this option turned on, unless your WAN network "
 "lies in such a private address space, too."
-msgstr "このようなプライベートアドレス空間にありすぎて、 「あなたのWANネットワークがない限り、一般的には、オンになって、このオプションを残してください」 。"
+msgstr ""
+"通常は、このオプションもオンにすべきです。"
+"但し、WAN ネットワークが、このようなプライベートアドレス空間に存在する場合は除きます。"
 
 #: usr/local/www/interfaces.php:2427 usr/local/www/interfaces.php:2628
 #: usr/local/www/interfaces.php:2616 usr/local/www/interfaces.php:2646
@@ -23979,7 +24035,9 @@ msgstr "このようなプライベートアドレス空間にありすぎて、
 msgid ""
 "When set, this option blocks traffic from IP addresses that are reserved "
 "(but not RFC 1918) or not yet assigned by IANA."
-msgstr "「設定した場合、このオプションはトラフィックをブロックし、IPアドレスから予約されていること」 （ただし、RFC 1918 ）か、まだIANAによって割り当てられていない。"
+msgstr ""
+"このオプションが設定されると、予約されているIP アドレス ( RFC 1918 以外 )、"
+"もしくは、IANA が未割当ての IP アドレスからのトラフィックをブロックします。"
 
 #: usr/local/www/interfaces.php:2429 usr/local/www/interfaces.php:2630
 #: usr/local/www/interfaces.php:2618 usr/local/www/interfaces.php:2648
@@ -23989,7 +24047,10 @@ msgid ""
 "Bogons are prefixes that should never appear in the Internet routing table, "
 "and obviously should not appear as the source address in any packets you "
 "receive."
-msgstr "「 Bogonsは、インターネットルーティングテーブルに表示されないようにしてください接頭辞である」と明らかにあなたは、 「受信したすべてのパケットの送信元アドレスとして表示されません。"
+msgstr ""
+"Bogon という接頭語は、インターネットルーティングテーブルに表示させてはいけません。"
+"当然のことながら、受信したどのようなパケットの送信元アドレスとしても、"
+"表示させてはいけません。
 
 #: usr/local/www/interfaces.php:2550 usr/local/www/interfaces.php:2559
 #: usr/local/www/interfaces.php:2752 usr/local/www/interfaces.php:2761
@@ -23999,25 +24060,26 @@ msgstr "「 Bogonsは、インターネットルーティングテーブルに�
 #: usr/local/www/interfaces.php:2806 usr/local/www/interfaces.php:2815
 #: usr/local/www/interfaces.php:2806 usr/local/www/interfaces.php:2815
 msgid "You can manage Gateways"
-msgstr "あなたは、ゲートウェイを管理できる"
+msgstr "ゲートウェイ管理は"
 
 #: usr/local/www/interfaces_assign.php:43
 #: usr/local/www/interfaces_assign.php:43
 msgid "Assign network ports"
-msgstr "ネットワークポートの割り当て"
+msgstr "ネットワークポートの割当て"
 
 #: usr/local/www/interfaces_assign.php:194
 #: usr/local/www/interfaces_assign.php:194
 #, php-format
 msgid "Port %1$s was assigned to %2$s interfaces:"
-msgstr "ポートは%1$sは%2$sインタフェースに割り当てられた。"
+msgstr "ポート %1$s は %2$s インタフェースに割り当てられました"
 
 #: usr/local/www/interfaces_assign.php:262
 #: usr/local/www/interfaces_assign.php:274
 #: usr/local/www/interfaces_assign.php:274
 msgid ""
 "The interface is part of a group. Please remove it from the group to continue"
-msgstr "「インターフェースはグループの一部である。継続してグループから削除してください"
+msgstr ""
+"インタフェースはグループの一部です。継続するにはグループから削除してください"
 
 #: usr/local/www/interfaces_assign.php:264
 #: usr/local/www/interfaces_assign.php:276
@@ -24025,27 +24087,31 @@ msgstr "「インターフェースはグループの一部である。継続し
 msgid ""
 "The interface is part of a bridge. Please remove it from the bridge to "
 "continue"
-msgstr "「インターフェイスは、ブリッジの一部である。ブリッジからそれを削除してください」継続"
+msgstr ""
+"インタフェースはブリッジの一部です。継続するにはブリッジから"
+"削除してください"
 
 #: usr/local/www/interfaces_assign.php:266
 #: usr/local/www/interfaces_assign.php:278
 #: usr/local/www/interfaces_assign.php:278
 msgid ""
 "The interface is part of a gre tunnel. Please delete the tunnel to continue"
-msgstr "「インターフェースはGREトンネルの一部である。継続してトンネルを削除してください"
+msgstr ""
+"インタフェースは GRE トンネルの一部です。継続するにはトンネルから削除してください"
 
 #: usr/local/www/interfaces_assign.php:268
 #: usr/local/www/interfaces_assign.php:280
 #: usr/local/www/interfaces_assign.php:280
 msgid ""
 "The interface is part of a gif tunnel. Please delete the tunnel to continue"
-msgstr "「インターフェースは、GIFトンネルの一部である。継続してトンネルを削除してください"
+msgstr ""
+"インタフェースは GIF トンネルの一部です。継続するにはトンネルから削除してください"
 
 #: usr/local/www/interfaces_assign.php:318
 #: usr/local/www/interfaces_assign.php:312
 #: usr/local/www/interfaces_assign.php:318
 msgid "Interface has been deleted."
-msgstr "インターフェイスは削除されました。"
+msgstr "インタフェースは削除されました"
 
 #: usr/local/www/interfaces_assign.php:325
 #: usr/local/www/interfaces_assign.php:319
@@ -24063,19 +24129,19 @@ msgstr "LAN"
 #: usr/local/www/interfaces_assign.php:360
 #: usr/local/www/interfaces_assign.php:366
 msgid "Interface has been added."
-msgstr "インタフェースが追加されました。"
+msgstr "インタフェースが追加されました"
 
 #: usr/local/www/interfaces_assign.php:376
 #: usr/local/www/interfaces_assign.php:370
 #: usr/local/www/interfaces_assign.php:376
 msgid "The system is now rebooting. Please wait."
-msgstr "システムがリブートされます。しばらくお待ちください。"
+msgstr "システムを再起動しています。しばらくお待ちください。"
 
 #: usr/local/www/interfaces_assign.php:378
 #: usr/local/www/interfaces_assign.php:372
 #: usr/local/www/interfaces_assign.php:378
 msgid "Reboot is needed. Please apply the settings in order to reboot."
-msgstr "再起動が必要になる。再起動するために設定を適用してください。"
+msgstr "再起動が必要です。再起動するには、設定を適用してください。"
 
 #: usr/local/www/interfaces_assign.php:380
 #: usr/local/www/interfaces_assign.php:374
@@ -24083,7 +24149,7 @@ msgstr "再起動が必要になる。再起動するために設定を適用し
 msgid ""
 "Interface mismatch detected. Please resolve the mismatch and click Save. "
 "The firewall will reboot afterwards."
-msgstr "ファイアウォールは、その後再起動します。"
+msgstr "その後、ファイアウォールは再起動します。"
 
 #: usr/local/www/interfaces_assign.php:390
 #: usr/local/www/interfaces_assign.php:384
@@ -24091,7 +24157,9 @@ msgstr "ファイアウォールは、その後再起動します。"
 msgid ""
 "The interface configuration has been changed.<br>You must apply the changes "
 "in order for them to take effect."
-msgstr "それらを有効にするために、「インターフェイスの設定が変更されています。検索して、変更を適用する必要があります」 。"
+msgstr ""
+"インタフェース構成は変更されました。<br>"
+"変更を有効にするには、変更を適用してください。"
 
 #: usr/local/www/interfaces_assign.php:421
 #: usr/local/www/interfaces_assign.php:415
@@ -24104,25 +24172,25 @@ msgstr "ネットワークポート"
 #: usr/local/www/interfaces_assign.php:437
 #, php-format
 msgid "VLAN %1$s on %2$s"
-msgstr "%2$sのVLANは%1$s"
+msgstr "%2$s の VLAN %1$s"
 
 #: usr/local/www/interfaces_assign.php:480
 #: usr/local/www/interfaces_assign.php:474
 #: usr/local/www/interfaces_assign.php:480
 msgid "Do you really want to delete this interface?"
-msgstr "あなたは本当に、このインターフェイスを削除しますか？"
+msgstr "本当にこのインタフェースを削除しますか？"
 
 #: usr/local/www/interfaces_assign.php:480
 #: usr/local/www/interfaces_assign.php:474
 #: usr/local/www/interfaces_assign.php:480
 msgid "delete interface"
-msgstr "インターフェイスを削除する"
+msgstr "インタフェースの削除"
 
 #: usr/local/www/interfaces_assign.php:489
 #: usr/local/www/interfaces_assign.php:483
 #: usr/local/www/interfaces_assign.php:489
 msgid "add interface"
-msgstr "インタフェースを追加"
+msgstr "インタフェースの追加"
 
 #: usr/local/www/interfaces_assign.php:506
 #: usr/local/www/interfaces_assign.php:500
@@ -24131,29 +24199,31 @@ msgstr "インタフェースを追加"
 msgid ""
 "Interfaces that are configured as members of a lagg(4) interface will not be "
 "shown."
-msgstr "示されている「 laggのメンバーとして構成されたインタフェースは、 （ 4 ）インタフェースはなりません」 。"
+msgstr ""
+"lagg(4) インタフェースのメンバとして構成されているインタフェースは、"
+"表示されません。"
 
 #: usr/local/www/diag_pf_info.php:46 usr/local/www/diag_pf_info.php:46
 msgid "Diagnostics: pfInfo"
-msgstr "診断： PFINFO"
+msgstr "診断: PF 情報"
 
 #: usr/local/www/diag_pf_info.php:106 usr/local/www/diag_pf_info.php:103
 msgid "Gathering PF information, please wait..."
-msgstr "PF情報を収集しています。しばらくお待ちください..."
+msgstr "PF 情報を収集しています。しばらくお待ちください..."
 
 #: usr/local/www/diag_smart.php:14 usr/local/www/diag_smart.php:14
 msgid "S.M.A.R.T. Monitor Tools"
-msgstr "S.M.A.R.T.ツールを監視"
+msgstr "S.M.A.R.T. モニタツール"
 
 #: usr/local/www/diag_smart.php:68 usr/local/www/diag_smart.php:73
 #: usr/local/www/diag_smart.php:73
 msgid "PASSED"
-msgstr "PASSED"
+msgstr "成功"
 
 #: usr/local/www/diag_smart.php:69 usr/local/www/diag_smart.php:74
 #: usr/local/www/diag_smart.php:74
 msgid "FAILED"
-msgstr "FAILED"
+msgstr "失敗"
 
 #: usr/local/www/diag_smart.php:70 usr/local/www/diag_smart.php:75
 #: usr/local/www/diag_smart.php:75
@@ -24170,19 +24240,19 @@ msgstr "中止"
 #: usr/local/www/diag_smart.php:175
 #, php-format
 msgid "Email sent to %s"
-msgstr "メール%sに送ら"
+msgstr "%s に電子メールを送信"
 
 #: usr/local/www/diag_smart.php:194 usr/local/www/diag_smart.php:266
 #: usr/local/www/diag_smart.php:215 usr/local/www/diag_smart.php:287
 #: usr/local/www/diag_smart.php:215 usr/local/www/diag_smart.php:287
 msgid "Information/Tests"
-msgstr "情報/テスト"
+msgstr "情報 / テスト"
 
 #: usr/local/www/diag_smart.php:195 usr/local/www/diag_smart.php:206
 #: usr/local/www/diag_smart.php:216 usr/local/www/diag_smart.php:227
 #: usr/local/www/diag_smart.php:216 usr/local/www/diag_smart.php:227
 msgid "Config"
-msgstr "設定"
+msgstr "構成"
 
 #: usr/local/www/diag_smart.php:209 usr/local/www/system_camanager.php:524
 #: usr/local/www/system_certmanager.php:617
@@ -24210,13 +24280,13 @@ msgstr "テストメール"
 #: usr/local/www/diag_smart.php:257
 #, php-format
 msgid "Send test email to %s"
-msgstr "%sにテストメールを送信"
+msgstr "%s にテストメールを送信"
 
 #: usr/local/www/diag_smart.php:278 usr/local/www/diag_smart.php:283
 #: usr/local/www/diag_smart.php:299 usr/local/www/diag_smart.php:304
 #: usr/local/www/diag_smart.php:299 usr/local/www/diag_smart.php:304
 msgid "Info"
-msgstr "インフォメーション"
+msgstr "情報"
 
 #: usr/local/www/diag_smart.php:281 usr/local/www/diag_smart.php:302
 #: usr/local/www/diag_smart.php:302
@@ -24226,12 +24296,12 @@ msgstr "情報の種類"
 #: usr/local/www/diag_smart.php:284 usr/local/www/diag_smart.php:305
 #: usr/local/www/diag_smart.php:305
 msgid "Health"
-msgstr "健康"
+msgstr "健全性"
 
 #: usr/local/www/diag_smart.php:285 usr/local/www/diag_smart.php:306
 #: usr/local/www/diag_smart.php:306
 msgid "SMART Capabilities"
-msgstr "SMART機能"
+msgstr "SMART 機能"
 
 #: usr/local/www/diag_smart.php:286 usr/local/www/diag_smart.php:307
 #: usr/local/www/diag_smart.php:307
@@ -24242,7 +24312,7 @@ msgstr "属性"
 #: usr/local/www/diag_smart.php:308 usr/local/www/firewall_aliases.php:177
 #: usr/local/www/firewall_aliases.php:177 usr/local/www/diag_smart.php:308
 msgid "All"
-msgstr "すべて"
+msgstr "全て"
 
 #: usr/local/www/diag_smart.php:291 usr/local/www/diag_smart.php:330
 #: usr/local/www/diag_smart.php:367 usr/local/www/diag_smart.php:397
@@ -24251,22 +24321,22 @@ msgstr "すべて"
 #: usr/local/www/diag_smart.php:312 usr/local/www/diag_smart.php:351
 #: usr/local/www/diag_smart.php:388 usr/local/www/diag_smart.php:418
 msgid "Device: /dev/"
-msgstr "デバイス：は/ dev /"
+msgstr "デバイス: /dev/"
 
 #: usr/local/www/diag_smart.php:307 usr/local/www/diag_smart.php:383
 #: usr/local/www/diag_smart.php:328 usr/local/www/diag_smart.php:404
 #: usr/local/www/diag_smart.php:328 usr/local/www/diag_smart.php:404
 msgid "View"
-msgstr "ビュー"
+msgstr "表示"
 
 #: usr/local/www/diag_smart.php:318
 msgid "Perform Self Tests"
-msgstr "セルフ·テストを実行"
+msgstr "セルフテストを実行"
 
 #: usr/local/www/diag_smart.php:321 usr/local/www/diag_smart.php:342
 #: usr/local/www/diag_smart.php:342
 msgid "Test type"
-msgstr "視力検査表"
+msgstr "テストの種類"
 
 #: usr/local/www/diag_smart.php:323
 #: usr/local/www/status_gateway_groups.php:123
@@ -24279,7 +24349,7 @@ msgstr "視力検査表"
 #: usr/local/www/widgets/widgets/wake_on_lan.widget.php:60
 #: usr/local/www/status_gateways.php:119
 msgid "Offline"
-msgstr "オフラインで"
+msgstr "オフライン"
 
 #: usr/local/www/diag_smart.php:324 usr/local/www/diag_smart.php:345
 #: usr/local/www/diag_smart.php:345
@@ -24295,17 +24365,17 @@ msgstr "ロング"
 #: usr/local/www/diag_smart.php:326 usr/local/www/diag_smart.php:347
 #: usr/local/www/diag_smart.php:347
 msgid "Conveyance (ATA Disks Only)"
-msgstr "搬送（ ATAディスクのみ）"
+msgstr "搬送時エラーチェック ( ATA ディスクのみ )"
 
 #: usr/local/www/diag_smart.php:357 usr/local/www/diag_smart.php:378
 #: usr/local/www/diag_smart.php:378
 msgid "View Logs"
-msgstr "ログを見る"
+msgstr "ログを表示"
 
 #: usr/local/www/diag_smart.php:360 usr/local/www/diag_smart.php:381
 #: usr/local/www/diag_smart.php:381
 msgid "Log type"
-msgstr "タイプをログに記録する"
+msgstr "ログの種類"
 
 #: usr/local/www/diag_smart.php:362 usr/local/www/diag_smart.php:383
 #: usr/local/www/diag_smart.php:383
@@ -24324,66 +24394,66 @@ msgstr "テストを中止"
 #: usr/local/www/diag_smart.php:413 usr/local/www/diag_smart.php:434
 #: usr/local/www/diag_smart.php:434
 msgid "Do you really want to abort the test?"
-msgstr "あなたは本当に、テストを中止しますか？"
+msgstr "本当にテストを中止しますか？"
 
 #: usr/local/www/diag_smart.php:428 usr/local/www/diag_smart.php:449
 #: usr/local/www/diag_smart.php:449
 msgid "Back"
-msgstr "バック"
+msgstr "戻る"
 
 #: usr/local/www/diag_states_summary.php:154
 #: usr/local/www/diag_states_summary.php:143
 #: usr/local/www/diag_states_summary.php:145
 #: usr/local/www/diag_states_summary.php:145
 msgid "Src Ports"
-msgstr "SRCポート"
+msgstr "送信元ポート"
 
 #: usr/local/www/diag_states_summary.php:155
 #: usr/local/www/diag_states_summary.php:144
 #: usr/local/www/diag_states_summary.php:146
 #: usr/local/www/diag_states_summary.php:146
 msgid "Dst Ports"
-msgstr "DSTポート"
+msgstr "送信先ポート"
 
 #: usr/local/www/diag_states_summary.php:185
 #: usr/local/www/diag_states_summary.php:174
 #: usr/local/www/diag_states_summary.php:176
 #: usr/local/www/diag_states_summary.php:176
 msgid "State Table Summary"
-msgstr "状態表の概要"
+msgstr "状態表テーブル概要"
 
 #: usr/local/www/diag_states_summary.php:191
 #: usr/local/www/diag_states_summary.php:180
 #: usr/local/www/diag_states_summary.php:182
 #: usr/local/www/diag_states_summary.php:182
 msgid "By Source IP"
-msgstr "送信元IPによる"
+msgstr "送信元 IP で"
 
 #: usr/local/www/diag_states_summary.php:192
 #: usr/local/www/diag_states_summary.php:181
 #: usr/local/www/diag_states_summary.php:183
 #: usr/local/www/diag_states_summary.php:183
 msgid "By Destination IP"
-msgstr "宛先IPによる"
+msgstr "送信先 IP で"
 
 #: usr/local/www/diag_states_summary.php:193
 #: usr/local/www/diag_states_summary.php:182
 #: usr/local/www/diag_states_summary.php:184
 #: usr/local/www/diag_states_summary.php:184
 msgid "Total per IP"
-msgstr "IPアドレスごとの合計"
+msgstr "IP アドレス毎の合計"
 
 #: usr/local/www/diag_states_summary.php:194
 #: usr/local/www/diag_states_summary.php:183
 #: usr/local/www/diag_states_summary.php:185
 #: usr/local/www/diag_states_summary.php:185
 msgid "By IP Pair"
-msgstr "IPペアで"
+msgstr "IP ペアで"
 
 #: usr/local/www/diag_system_activity.php:46
 #: usr/local/www/diag_system_activity.php:46
 msgid "Diagnostics: System Activity"
-msgstr "診断：システムアクティビティ"
+msgstr "診断: システムアクティビティ"
 
 #: usr/local/www/diag_system_activity.php:101
 #: usr/local/www/diag_system_activity.php:101
@@ -26319,7 +26389,7 @@ msgstr "モバイルクライアント"
 #: usr/local/www/vpn_ipsec_phase2.php:383
 #: usr/local/www/vpn_ipsec_phase2.php:409
 msgid "Pre-shared keys"
-msgstr "事前共有鍵"
+msgstr "事前共有キー"
 
 #: usr/local/www/vpn_ipsec.php:160 usr/local/www/vpn_ipsec.php:159
 #: usr/local/www/vpn_ipsec.php:165 usr/local/www/vpn_ipsec.php:165
@@ -26636,7 +26706,7 @@ msgstr "識別子"
 #: usr/local/www/vpn_ipsec_keys_edit.php:69
 #: usr/local/www/vpn_ipsec_keys_edit.php:136
 msgid "Pre-shared key"
-msgstr "事前共有鍵"
+msgstr "事前共有キー"
 
 #: usr/local/www/vpn_ipsec_keys.php:110 usr/local/www/vpn_ipsec_keys.php:146
 #: usr/local/www/vpn_ipsec_keys.php:109 usr/local/www/vpn_ipsec_keys.php:145
