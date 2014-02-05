@@ -16260,7 +16260,7 @@ msgstr ""
 "エントリ毎に関連する CIDR マスクを選択してください。"
 "/32 で IPv4 ホスト単体を指定、/128 で IPv6 ホスト単体を指定、"
 "/24 で 255.255.255.0 を指定、/64 で通常の IPv6 ネットワークを指定、等です。"
-"IPv4 で /32 、IPv6 で /128 を指定する場合は、ホスト名 ( FQDN ) も指定してください。"
+"IPv4 で /32 マスク、IPv6 で /128 を指定する場合は、ホスト名 ( FQDN ) でも指定できます。"
 "また、192.168.1.1-192.168.1.254 のように IP 範囲を入力することで、”
 "その範囲にある CIDR ネットワークのリストを得ることができます"
 
@@ -20395,7 +20395,7 @@ msgstr "パケットに、他のルールよりも、マークを優先して一
 #: usr/local/www/firewall_rules_edit.php:1210
 #: usr/local/www/firewall_rules_edit.php:1210
 msgid " Maximum state entries this rule can create"
-msgstr " このルールは最大状態エントリを作成できます"
+msgstr " このルールが作成できる状態エントリの最大数"
 
 #: usr/local/www/firewall_rules_edit.php:1149
 #: usr/local/www/firewall_rules_edit.php:1184
@@ -24420,7 +24420,7 @@ msgstr "送信先ポート"
 #: usr/local/www/diag_states_summary.php:176
 #: usr/local/www/diag_states_summary.php:176
 msgid "State Table Summary"
-msgstr "状態表テーブル概要"
+msgstr "状態テーブル概要"
 
 #: usr/local/www/diag_states_summary.php:191
 #: usr/local/www/diag_states_summary.php:180
@@ -24458,12 +24458,12 @@ msgstr "診断: システムアクティビティ"
 #: usr/local/www/diag_system_activity.php:101
 #: usr/local/www/diag_system_activity.php:101
 msgid "Gathering CPU activity, please wait..."
-msgstr "CPUアクティビティを収集しています。しばらくお待ちください..."
+msgstr "CPU アクティビティを収集しています。しばらくお待ちください..."
 
 #: usr/local/www/diag_system_pftop.php:45
 #: usr/local/www/diag_system_pftop.php:45
 msgid "Diagnostics: pfTop"
-msgstr "診断： pfTop"
+msgstr "診断: pfTop"
 
 #: usr/local/www/diag_system_pftop.php:51
 #: usr/local/www/diag_system_pftop.php:62
@@ -24475,31 +24475,31 @@ msgstr "バイト"
 #: usr/local/www/diag_system_pftop.php:148
 #: usr/local/www/diag_system_pftop.php:148
 msgid "Sort type:"
-msgstr "ソートの種類："
+msgstr "ソート種類: "
 
 #: usr/local/www/diag_system_pftop.php:102
 msgid "age"
-msgstr "時代"
+msgstr "経過時間"
 
 #: usr/local/www/diag_system_pftop.php:104
 msgid "dest"
-msgstr "DEST"
+msgstr "送信先"
 
 #: usr/local/www/diag_system_pftop.php:105
 msgid "dport"
-msgstr "DPORT"
+msgstr "送信先ポート"
 
 #: usr/local/www/diag_system_pftop.php:106
 msgid "exp"
-msgstr "EXP"
+msgstr "有効時間"
 
 #: usr/local/www/diag_system_pftop.php:108
 msgid "peak"
-msgstr "ピーク"
+msgstr "最大速度"
 
 #: usr/local/www/diag_system_pftop.php:109
 msgid "pkt"
-msgstr "PKT"
+msgstr "パケット数"
 
 #: usr/local/www/diag_system_pftop.php:110
 #: usr/local/www/status_interfaces.php:365
@@ -24507,7 +24507,7 @@ msgstr "PKT"
 #: usr/local/www/status_interfaces.php:465
 #: usr/local/www/status_interfaces.php:465
 msgid "rate"
-msgstr "率"
+msgstr "速度"
 
 #: usr/local/www/diag_system_pftop.php:111
 msgid "size"
@@ -24515,17 +24515,17 @@ msgstr "サイズ"
 
 #: usr/local/www/diag_system_pftop.php:112
 msgid "sport"
-msgstr "スポーツ"
+msgstr "送信元ポート"
 
 #: usr/local/www/diag_system_pftop.php:113
 msgid "src"
-msgstr "SRC"
+msgstr "送信元"
 
 #: usr/local/www/diag_system_pftop.php:126
 #: usr/local/www/diag_system_pftop.php:187
 #: usr/local/www/diag_system_pftop.php:187
 msgid "Gathering pfTOP activity, please wait..."
-msgstr "pfTOPアクティビティを収集しています。しばらくお待ちください..."
+msgstr "pfTOP アクティビティを収集しています。しばらくお待ちください..."
 
 #: usr/local/www/license.php:45 usr/local/www/license.php:45
 msgid "License"
@@ -24533,7 +24533,7 @@ msgstr "ライセンス"
 
 #: usr/local/www/license.php:47 usr/local/www/license.php:47
 msgid "is Copyright"
-msgstr "著作権は、"
+msgstr "Copyright(C)"
 
 #: usr/local/www/license.php:47 usr/local/www/firewall_rules_edit.php:1585
 #: usr/local/www/firewall_rules_edit.php:1593
@@ -24552,139 +24552,150 @@ msgstr "著作権は、"
 #: usr/local/www/firewall_nat_out_edit.php:684
 #: usr/local/www/firewall_nat_out_edit.php:692
 msgid "by"
-msgstr "バイ"
+msgstr " "
 
 #: usr/local/www/license.php:48 usr/local/www/license.php:52
 #: usr/local/www/license.php:48 usr/local/www/license.php:52
 msgid "All rights reserved"
-msgstr "無断複写·転載を禁じます"
+msgstr "All rights reserved"
 
 #: usr/local/www/license.php:50 usr/local/www/license.php:50
 msgid "m0n0wall is Copyright "
-msgstr "m0n0wallの著作権です"
+msgstr "m0n0wall : Copyright(C) "
 
 #: usr/local/www/license.php:50 usr/local/www/license.php:50
 msgid "2002-2007 by Manuel Kasper"
-msgstr "マヌエル·カスパーによる2002-2007"
+msgstr "2002-2007　Manuel Kasper"
 
 #: usr/local/www/license.php:53 usr/local/www/license.php:53
 msgid "Redistribution and use in source and binary forms, with or without"
-msgstr "再配布の有無にかかわらず、ソースおよびバイナリ形式での使用"
+msgstr "Redistribution and use in source and binary forms, with or without"
 
 #: usr/local/www/license.php:54 usr/local/www/license.php:54
 msgid ""
 "modification, are permitted provided that the following conditions are met"
-msgstr "「修正は、次の条件を満たす場合に許可され"
+msgstr ""
+"modification, are permitted provided that the following conditions are met"
 
 #: usr/local/www/license.php:57 usr/local/www/license.php:57
 msgid ""
 "1. Redistributions of source code must retain the above copyright notice,"
-msgstr "「 1 。ソースコードの再配布には、上記の著作権表示を保持しなければならない、"
+msgstr ""
+"1. Redistributions of source code must retain the above copyright notice,"
 
 #: usr/local/www/license.php:59 usr/local/www/license.php:59
 msgid "this list of conditions and the following disclaimer"
-msgstr "この条件リスト、および以下の免責"
+msgstr "this list of conditions and the following disclaimer"
 
 #: usr/local/www/license.php:61 usr/local/www/license.php:61
 msgid "2. Redistributions in binary form must reproduce the above copyright"
-msgstr "2 。バイナリ形式で再配布する場合は、上記の著作権を複写しなければなりません"
+msgstr "2. Redistributions in binary form must reproduce the above copyright"
 
 #: usr/local/www/license.php:62 usr/local/www/license.php:62
 msgid "notice, this list of conditions and the following disclaimer in the"
-msgstr "、この条件リスト、および下記の免責事項に気付く"
+msgstr "notice, this list of conditions and the following disclaimer in the"
 
 #: usr/local/www/license.php:64 usr/local/www/license.php:64
 msgid "documentation and/or other materials provided with the distribution."
-msgstr "ドキュメントおよび/または配布で提供される他の物質。"
+msgstr "documentation and/or other materials provided with the distribution."
 
 #: usr/local/www/license.php:66 usr/local/www/license.php:66
 msgid "THIS SOFTWARE IS PROVIDED "
-msgstr "本ソフトウェアが提供され"
+msgstr "THIS SOFTWARE IS PROVIDED "
 
 #: usr/local/www/license.php:66 usr/local/www/license.php:66
 msgid "AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,"
-msgstr "現状のまま'' 、いかなる明示または黙示の保証、"
+msgstr "AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,"
 
 #: usr/local/www/license.php:68 usr/local/www/license.php:68
 msgid ""
 "INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY"
-msgstr "「一切の明示、を含むが、これらに限定されない"
+msgstr ""
+"INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY"
 
 #: usr/local/www/license.php:69 usr/local/www/license.php:69
 msgid ""
 "AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE"
-msgstr "特定の目的に対する"および適合は、いかなる場合も。放棄されSHALL"
+msgstr ""
+"AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE"
 
 #: usr/local/www/license.php:71 usr/local/www/license.php:71
 msgid ""
 "AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,"
-msgstr "「著者はいかなる直接的、間接的、偶発的に対して、一切責任を負わ、特殊、懲戒的、"
+msgstr ""
+"AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,"
 
 #: usr/local/www/license.php:73 usr/local/www/license.php:73
 msgid "OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF"
-msgstr "またはその他を含むではなく、必然的な損害は（TO 、調達の限られた"
+msgstr "OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF"
 
 #: usr/local/www/license.php:75 usr/local/www/license.php:75
 msgid ""
 "SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS"
-msgstr "「代替商品またはサービス;の喪失、データや利益または事業"
+msgstr ""
+"SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS"
 
 #: usr/local/www/license.php:77 usr/local/www/license.php:77
 msgid "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN"
-msgstr "中断は）いかなる責任、不法INの上の任意の理論"
+msgstr "INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN"
 
 #: usr/local/www/license.php:79 usr/local/www/license.php:79
 msgid "CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)"
-msgstr "契約、 （過失を含むまたはその他）厳格責任、または不法行為"
+msgstr "CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)"
 
 #: usr/local/www/license.php:80 usr/local/www/license.php:80
 msgid ""
 "ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE"
-msgstr ""についての通告があった場合でも、本ソフトウェアの使用にどのような方法で起因"
+msgstr ""
+"ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE"
 
 #: usr/local/www/license.php:82 usr/local/www/license.php:82
 msgid "POSSIBILITY OF SUCH DAMAGE"
-msgstr "そのような損害の可能性について"
+msgstr "POSSIBILITY OF SUCH DAMAGE"
 
 #: usr/local/www/license.php:84 usr/local/www/license.php:84
 msgid "The following persons have contributed code to m0n0wall"
-msgstr "次の人はm0n0wallのにコードを貢献している"
+msgstr "m0n0wall のコードに貢献している人々: "
 
 #: usr/local/www/license.php:86 usr/local/www/license.php:86
 msgid "Diagnostics: Ping function; WLAN channel auto-select; DNS forwarder"
-msgstr "診断： Pingの機能、無線LANチャネルを自動選択、 DNSフォワーダ"
+msgstr "診断: Ping 機能・無線 LAN チャンネル自動選択・DNS フォワーダ"
 
 #: usr/local/www/license.php:90 usr/local/www/license.php:90
 msgid "Timezone and NTP client support"
-msgstr "タイムゾーンとNTPクライアントのサポート"
+msgstr "タイムゾーン及び NTP クライアントサポート"
 
 #: usr/local/www/license.php:94 usr/local/www/license.php:94
 msgid ""
 "Remote syslog'ing; some code bits for DHCP server on optional interfaces"
-msgstr "「リモートsyslog'ing 、オプションのインターフェイス上のDHCPサーバのためのいくつかのコードビット"
+msgstr ""
+"リモート syslog・オプションインタフェースの DHCP サーバに対する一部のコードビット"
 
 #: usr/local/www/license.php:98 usr/local/www/license.php:98
 msgid ""
 "Idea/code bits for encrypted webConfigurator passwords; minimalized SNMP "
 "agent"
-msgstr "「暗号化webConfiguratorパスワードのアイデア/コードビット、 minimalized SNMP 」エージェント"
+msgstr ""
+"Web設定管理画面のパスワード暗号化のアイディアとコードビット・"
+"SNMP エージェントの最小化"
 
 #: usr/local/www/license.php:102 usr/local/www/license.php:102
 msgid "Advanced outbound NAT: destination selection"
-msgstr "高度なアウトバウンドNAT ：送信先の選択"
+msgstr "高度な外向き NAT: 送信先の選択"
 
 #: usr/local/www/license.php:106 usr/local/www/license.php:106
 msgid "Filtering bridge patches "
-msgstr "フィルタリングブリッジパッチ"
+msgstr "フィルタリングブリッジのパッチ"
 
 #: usr/local/www/license.php:110 usr/local/www/license.php:110
 msgid ""
 "Filter rule patches (ordering, block/pass, disabled); better status page;"
-msgstr "「フィルタルールのパッチ（オーダリング、ブロック/パス、無効） 、優れたステータスページ;"
+msgstr ""
+"フィルタルールのパッチ ( 並び順、拒否 / 許可、無効 )・ステータスページの改善・"
 
 #: usr/local/www/license.php:112 usr/local/www/license.php:112
 msgid "webConfigurator assign network ports page "
-msgstr "ネットワークポートのページを割り当てwebConfigurator"
+msgstr "Web設定管理画面のネットワークポート割当てページ"
 
 #: usr/local/www/license.php:115 usr/local/www/license.php:115
 msgid "enhanced "
@@ -24692,7 +24703,7 @@ msgstr "強化された"
 
 #: usr/local/www/license.php:115 usr/local/www/license.php:115
 msgid "execute command"
-msgstr "コマンドを実行する"
+msgstr "コマンド実行"
 
 #: usr/local/www/license.php:116 usr/local/www/license.php:116
 msgid " page"
@@ -24700,70 +24711,72 @@ msgstr "ページ"
 
 #: usr/local/www/license.php:119 usr/local/www/license.php:119
 msgid "DHCP client: send hostname patch"
-msgstr "DHCPクライアント：ホスト名パッチを送る"
+msgstr "DHCP クライアント: ホスト名送信のパッチ"
 
 #: usr/local/www/license.php:122 usr/local/www/license.php:122
 msgid "DHCP lease list page"
-msgstr "DHCPリースリストページ"
+msgstr "DHCP リースリストページ"
 
 #: usr/local/www/license.php:125 usr/local/www/license.php:125
 msgid "type filter rules; dial-on-demand"
-msgstr "フィルタルールを入力し、ダイヤルオンデマンド"
+msgstr "タイプのフィルタルール・ダイヤルオンデマンド"
 
 #: usr/local/www/license.php:128 usr/local/www/license.php:128
 msgid "SVG-based traffic grapher"
-msgstr "SVGベースのトラフィックグラファ"
+msgstr "SVG ベースのトラフィックグラファ"
 
 #: usr/local/www/license.php:131 usr/local/www/license.php:131
 msgid "per-user IP address assignments for PPTP VPN"
-msgstr "PPTP VPN用のユーザごとのIPアドレスの割り当て"
+msgstr "PPTP VPN でのユーザ毎の IP アドレス割当て"
 
 #: usr/local/www/license.php:134 usr/local/www/license.php:134
 msgid "NAT on optional interfaces"
-msgstr "オプションのインターフェイス上のNAT"
+msgstr "オプションインタフェースの NAT"
 
 #: usr/local/www/license.php:137 usr/local/www/license.php:137
 msgid "captive portal: pass-through MAC/IP addresses, RADIUS authentication"
-msgstr "キャプティブポータル：パススルーのMAC / IPアドレス、 RADIUS認証"
+msgstr "キャプティブポータル: MAC/IP アドレスのパススルー・RADIUS "
 
 #: usr/local/www/license.php:137 usr/local/www/license.php:137
 msgid "accounting;"
-msgstr "会計;"
+msgstr "アカウント認証・"
 
 #: usr/local/www/license.php:138 usr/local/www/license.php:138
 msgid "HTTP server concurrency limit"
-msgstr "HTTPサーバーの同時実行の制限"
+msgstr "HTTP サーバ同時実行制限"
 
 #: usr/local/www/license.php:141 usr/local/www/license.php:141
 msgid "traffic shaper TOS matching; magic shaper; DHCP deny unknown clients;"
-msgstr "トラフィックシェーパのToSマッチング、マジックシェイパー、 DHCPが未知のクライアントを否定;"
+msgstr "トラフィックシェーパ ToS マッチング・マジックシェイパ・DHCP の不明なクライアントを拒否・"
 
 #: usr/local/www/license.php:142 usr/local/www/license.php:142
 msgid "IPsec user FQDNs; DHCP relay"
-msgstr "IPsecのユーザーのFQDN 、 DHCPリレー"
+msgstr "IPsec ユーザ FQDN・DHCP リレー"
 
 #: usr/local/www/license.php:145 usr/local/www/license.php:145
 msgid "IDE hard disk standby"
-msgstr "IDEハードディスクのスタンバイ"
+msgstr "IDE ハードディスクスタンバイ"
 
 #: usr/local/www/license.php:148 usr/local/www/license.php:148
 msgid "CPU/memory usage display"
-msgstr "CPU /メモリ使用量表示"
+msgstr "CPU / メモリ使用量表示"
 
 #: usr/local/www/license.php:151 usr/local/www/license.php:151
 msgid "OpenVPN support"
-msgstr "OpenVPNのサポート"
+msgstr "OpenVPN サポート"
 
 #: usr/local/www/license.php:153 usr/local/www/license.php:153
 msgid "is based upon/includes various free software packages, listed below."
-msgstr "/下記の様々な無料のソフトウェアパッケージが含まれて基づいている。"
+msgstr "は、下記の様々なフリーソフトウェアパッケージに基づいている、もしくは含んでいます。"
 
 #: usr/local/www/license.php:155 usr/local/www/license.php:155
 #, php-format
 msgid ""
 "The author of %s would like to thank the authors of these software packages "
 "for their efforts"
-msgstr "彼らの努力は、「 %sの著者はこれらのソフトウェアパッケージの作者に感謝したいと思います」"
+msgstr ""
+"%s の著作者は、これらのソフトウェアパッケージの著作者の努力に対し、"
+"感謝の意を表します。"
 
 #: usr/local/www/license.php:158 usr/local/www/license.php:161
 #: usr/local/www/license.php:164 usr/local/www/license.php:168
@@ -24783,60 +24796,60 @@ msgstr "彼らの努力は、「 %sの著者はこれらのソフトウェアパ
 #: usr/local/www/license.php:200 usr/local/www/license.php:201
 #: usr/local/www/license.php:204 usr/local/www/license.php:211
 msgid "Copyright"
-msgstr "著作権"
+msgstr "Copyright(C)"
 
 #: usr/local/www/license.php:158
 msgid " 1994-2003 FreeBSD, Inc. All rights reserved"
-msgstr "1994-2003のFreeBSD 、株式会社すべての権利を保有"
+msgstr " 1994-2003 FreeBSD, Inc. All rights reserved"
 
 #: usr/local/www/license.php:160 usr/local/www/license.php:160
 msgid "This product includes PHP, freely available from"
-msgstr "本製品は、から無料で入手PHPを含み"
+msgstr "この製品には PHP が含まれています。以下から無料で入手可能です: "
 
 #: usr/local/www/license.php:161
 msgid "1999 - 2003 The PHP Group. All rights reserved"
-msgstr "1999 - 2003ザ· PHPのグループ。無断複写·転載を禁じます"
+msgstr "1999 - 2003 The PHP Group. All rights reserved"
 
 #: usr/local/www/license.php:163 usr/local/www/license.php:163
 msgid "LightTPD"
-msgstr "lighttpdの"
+msgstr "LightTPD"
 
 #: usr/local/www/license.php:164
 msgid " 2004 by Jan Kneschke "
-msgstr "2004ヤンKneschkeによる"
+msgstr " 2004 Jan Kneschke "
 
 #: usr/local/www/license.php:165 usr/local/www/license.php:175
 #: usr/local/www/license.php:165 usr/local/www/license.php:175
 msgid "All rights reserved."
-msgstr "無断複写·転載を禁じます。"
+msgstr "All rights reserved."
 
 #: usr/local/www/license.php:167 usr/local/www/license.php:167
 msgid "ISC DHCP server "
-msgstr "ISC DHCPサーバー"
+msgstr "ISC DHCP サーバ"
 
 #: usr/local/www/license.php:168
 msgid "1996-2003 Internet Software Consortium. All rights reserved."
-msgstr "1996-2003 Internet Software Consortiumの。無断複写·転載を禁じます。"
+msgstr "1996-2003 Internet Software Consortium. All rights reserved."
 
 #: usr/local/www/license.php:173 usr/local/www/license.php:173
 msgid "MPD - Multi-link PPP daemon for FreeBSD"
-msgstr "MPD - FreeBSD用のマルチリンクPPPデーモン"
+msgstr "MPD - FreeBSD のマルチリンク PPP デーモン"
 
 #: usr/local/www/license.php:177 usr/local/www/license.php:177
 msgid "Circular log support for FreeBSD syslogd "
-msgstr "FreeBSDのsyslogdのための循環ログのサポート"
+msgstr "FreeBSD syslogd への循環ログサポート"
 
 #: usr/local/www/license.php:180 usr/local/www/license.php:180
 msgid "Dnsmasq - a DNS forwarder for NAT firewalls"
-msgstr "DNSMASQ - NATファイアウォールのDNSフォワーダ"
+msgstr "Dnsmasq - NAT ファイアウォールの DNS フォワーダ"
 
 #: usr/local/www/license.php:183 usr/local/www/license.php:183
 msgid "Racoon"
-msgstr "ラクーン"
+msgstr "Racoon"
 
 #: usr/local/www/license.php:184 usr/local/www/license.php:184
 msgid "1995-2002 WIDE Project. All rights reserved."
-msgstr "1995-2002 WIDEプロジェクト。無断複写·転載を禁じます。"
+msgstr "1995-2002 WIDE Project. All rights reserved."
 
 #: usr/local/www/license.php:186 usr/local/www/license.php:186
 msgid "msntp"
@@ -24846,33 +24859,37 @@ msgstr "msntp"
 msgid ""
 " 1996, 1997, 2000 N.M. Maclaren, University of Cambridge. All rights "
 "reserved."
-msgstr "「 1996年、 1997年、 2000年メキシコマクラーレン、ケンブリッジ大学。すべての著作権は、 「予約。"
+msgstr ""
+" 1996, 1997, 2000 N.M. Maclaren, University of Cambridge. All rights "
+"reserved."
 
 #: usr/local/www/license.php:190 usr/local/www/license.php:190
 msgid "UCD-SNMP"
-msgstr "UCD -SNMP"
+msgstr "UCD-SNMP"
 
 #: usr/local/www/license.php:191 usr/local/www/license.php:191
 msgid "1989, 1991, 1992 by Carnegie Mellon University."
-msgstr "1989 、 1991 、 1992カーネギーメロン大学による。"
+msgstr "1989, 1991, 1992 Carnegie Mellon University."
 
 #: usr/local/www/license.php:192 usr/local/www/license.php:192
 msgid ""
 "1996, 1998-2000 The Regents of the University of California. All rights "
 "reserved"
-msgstr "「 1996年、カリフォルニア大学の1998年から2000年ジェンツ。すべての権利を「予約"
+msgstr ""
+"1996, 1998-2000 The Regents of the University of California. All rights "
+"reserved"
 
 #: usr/local/www/license.php:194 usr/local/www/license.php:194
 msgid "2001-2002, Network Associates Technology, Inc. All rights reserved."
-msgstr "2001-2002 、ネットワークアソシエイツテクノロジー株式会社すべての版権を保有します。"
+msgstr "2001-2002, Network Associates Technology, Inc. All rights reserved."
 
 #: usr/local/www/license.php:196 usr/local/www/license.php:196
 msgid "Portions of this code are copyright"
-msgstr "このコードの一部は、著作権である"
+msgstr "このコードの一部に対する著作権"
 
 #: usr/local/www/license.php:196 usr/local/www/license.php:196
 msgid "2001-2002, Cambridge Broadband Ltd. All rights reserved."
-msgstr "2001-2002 、ケンブリッジ·ブロードバンド（株）すべての版権を保有します。"
+msgstr "2001-2002 Cambridge Broadband Ltd. All rights reserved."
 
 #: usr/local/www/license.php:199 usr/local/www/license.php:199
 msgid "choparp"
@@ -24884,31 +24901,31 @@ msgstr "BPALogin"
 
 #: usr/local/www/license.php:203 usr/local/www/license.php:203
 msgid "lightweight portable BIDS2 login client"
-msgstr "軽量のポータブルBIDS2のログインクライアント"
+msgstr "軽量のポータブル BIDS2 ログインクライアント"
 
 #: usr/local/www/license.php:204 usr/local/www/license.php:204
 msgid " 2001-3 Shane Hyde, and others."
-msgstr "2001-3シェーンハイドなどがあります。"
+msgstr " 2001-3 Shane Hyde, and others."
 
 #: usr/local/www/license.php:206 usr/local/www/license.php:206
 msgid "php-radius"
-msgstr "PHP半径"
+msgstr "php-radius"
 
 #: usr/local/www/license.php:207 usr/local/www/license.php:207
 msgid "Copyright 2000, 2001, 2002 by Edwin Groothuis. All rights reserved."
-msgstr "エドウィンGroothuis著作権2000 、 2001 、 2002 。無断複写·転載を禁じます。"
+msgstr "Copyright 2000, 2001, 2002 Edwin Groothuis. All rights reserved."
 
 #: usr/local/www/license.php:208 usr/local/www/license.php:208
 msgid "This product includes software developed by Edwin Groothuis."
-msgstr "この製品は、エドウィンGroothuisが開発したソフトウェアが含まれています。"
+msgstr "この製品には Edwin Groothuis 氏が開発したソフトウェアが含まれています。"
 
 #: usr/local/www/license.php:210 usr/local/www/license.php:210
 msgid "wol"
-msgstr "WOL"
+msgstr "wol
 
 #: usr/local/www/license.php:214 usr/local/www/license.php:214
 msgid "Copyright (C) 2002-2005 OpenVPN Solutions LLC "
-msgstr "COPYRIGHT（C ） 2002から2005 OpenVPNのソリューションLLC"
+msgstr "Copyright (C) 2002-2005 OpenVPN Solutions LLC "
 
 #: usr/local/www/load_balancer_pool.php:72
 #: usr/local/www/load_balancer_relay_protocol.php:71
@@ -24917,7 +24934,9 @@ msgstr "COPYRIGHT（C ） 2002から2005 OpenVPNのソリューションLLC"
 msgid ""
 "This entry cannot be deleted because it is still referenced by at least one "
 "virtual server."
-msgstr "仮想サーバー」とは、まだ少なくとも1によって参照されているため、このエントリは削除できません」 。"
+msgstr ""
+"このエントリは削除できませんでした。"
+"1 つ以上の仮想サーバから参照されています。"
 
 #: usr/local/www/load_balancer_pool.php:111
 #: usr/local/www/status_lb_pool.php:113
@@ -24928,7 +24947,9 @@ msgstr "仮想サーバー」とは、まだ少なくとも1によって参照�
 msgid ""
 "The load balancer configuration has been changed%sYou must apply the changes "
 "in order for them to take effect."
-msgstr "それらを有効にするために「ロードバランサの設定はchanged%sYouが変更を適用する必要がありました」 。"
+msgstr ""
+"ロードバランサの構成は変更されました%s"
+"変更を有効にするには、変更を適用してください。"
 
 #: usr/local/www/load_balancer_pool.php:133
 #: usr/local/www/status_lb_pool.php:132 usr/local/www/status_lb_vs.php:79
@@ -24975,7 +24996,7 @@ msgstr "サーバ"
 #: usr/local/www/load_balancer_pool_edit.php:238
 #: usr/local/www/status_gateways.php:75
 msgid "Monitor"
-msgstr "モニター"
+msgstr "モニタ"
 
 #: usr/local/www/load_balancer_pool.php:149
 #: usr/local/www/load_balancer_pool.php:150
@@ -24985,7 +25006,9 @@ msgstr "モニター"
 msgid ""
 "The Load Balancer in %s 2.0 is for server load balancing, not Multi-WAN. For "
 "load balancing or failover for multiple WANs, use "
-msgstr "「 %s 2.0のロードバランサは、サーバーの負荷分散のためであり、ではない複数WAN 。は、「ロード·バランシングやフェイルオーバー、複数のWANため、使用"
+msgstr ""
+"%s 2.0 のロードバランサはサーバの負荷分散向けで、マルチ WAN 向けではありません。"
+"マルチ WAN の負荷分散やフェールオーバには、以下を使用してください: "
 
 #: usr/local/www/load_balancer_pool.php:150
 #: usr/local/www/status_gateway_groups.php:48
@@ -25014,43 +25037,45 @@ msgstr "ゲートウェイグループ"
 #: usr/local/www/pkg.php:358 usr/local/www/pkg.php:456
 #: usr/local/www/pkg.php:456
 msgid "Do you really want to delete this item?"
-msgstr "あなたは本当に、このアイテムを削除しますか？"
+msgstr "本当にこの項目を削除しますか？"
 
 #: usr/local/www/status_wireless.php:83 usr/local/www/status_wireless.php:84
 #: usr/local/www/status_wireless.php:84
 msgid ""
 "Rescan has been initiated in the background. Refresh this page in 10 seconds "
 "to see the results."
-msgstr "「再スキャンはバックグラウンドで開始された。 10秒でこのページを更新し、「結果を確認する。"
+msgstr ""
+"バックグラウンドで、再スキャンが開始されました。"
+"10 秒でこのページを更新して、結果を表示します。"
 
 #: usr/local/www/status_wireless.php:97 usr/local/www/status_wireless.php:93
 #: usr/local/www/status_wireless.php:94 usr/local/www/status_wireless.php:94
 msgid "Nearby access points or ad-hoc peers"
-msgstr "近くのアクセスポイントやアドホックピア"
+msgstr "近くのアクセスポイント、またはアドホックピア"
 
 #: usr/local/www/status_wireless.php:143 usr/local/www/status_wireless.php:140
 #: usr/local/www/status_wireless.php:141 usr/local/www/status_wireless.php:141
 msgid "Associated or ad-hoc peers"
-msgstr "関連するか、またはアドホックピア"
+msgstr "アソシエーション済、またはアドホックピア"
 
 #: usr/local/www/system.php:118 usr/local/www/system.php:119
 #: usr/local/www/system.php:112 usr/local/www/system.php:112
 msgid "The hostname may only contain the characters a-z, 0-9 and '-'."
-msgstr "' -'ホスト名は0-9と、 AZの文字を含めることができます。"
+msgstr "ホスト名には、a〜z、0〜9、- のみが使用できます。"
 
 #: usr/local/www/system.php:121 usr/local/www/system.php:122
 #: usr/local/www/system.php:115 usr/local/www/system.php:115
 msgid "The domain may only contain the characters a-z, 0-9, '-' and '.'."
-msgstr "と' -'ドメインは、 0〜9、A〜Zの文字を含むことができる'。' 。"
+msgstr "ドメインには、a〜z、0〜9、-、. のみが使用できます。"
 
 #: usr/local/www/system.php:131
 msgid "'."
-msgstr "' 。"
+msgstr "'."
 
 #: usr/local/www/system.php:137 usr/local/www/system.php:143
 #: usr/local/www/system.php:136 usr/local/www/system.php:136
 msgid "A valid TCP/IP port must be specified for the webConfigurator port."
-msgstr "有効なTCP / IPポートはwebConfiguratorポートを指定する必要があります。"
+msgstr "有効な TCP/IP ポートを Web 設定管理画面ポートとして指定してください。"
 
 #: usr/local/www/system.php:148 usr/local/www/system.php:154
 #: usr/local/www/system.php:147 usr/local/www/system.php:147
@@ -25058,19 +25083,24 @@ msgstr "有効なTCP / IPポートはwebConfiguratorポートを指定する必�
 msgid ""
 "You can not assign a gateway to DNS '%s' server which is on a directly "
 "connected network."
-msgstr "接続されたネットワーク」は、直接上にあり、DNS' %s'サーバーへのゲートウェイを割り当てることはできません」 。"
+msgstr ""
+"DNS %s サーバにゲートウェイが割当てられません。"
+"ネットワークに直接接続されています。"
 
 #: usr/local/www/system.php:157 usr/local/www/system.php:163
 #: usr/local/www/system.php:156 usr/local/www/system.php:156
 msgid ""
 "The time update interval must be either 0 (disabled) or between 6 and 1440."
-msgstr "「時間の更新間隔は、 0 （無効）または6と1440の間でなければなりません。"
+msgstr ""
+"時間更新間隔は 0 ( 無効 )、もしくは 6〜1440です。"
 
 #: usr/local/www/system.php:161 usr/local/www/system.php:167
 #: usr/local/www/system.php:160 usr/local/www/system.php:160
 msgid ""
 "A NTP Time Server name may only contain the characters a-z, 0-9, '-' and '.'."
-msgstr "と' -' "NTPタイムサーバ名は、 0〜9、A〜Zの文字を含むことができる'。' 。"
+msgstr ""
+"NTP 時間サーバ名には、"
+"a〜z、0〜9、-、. のみが使用できます。"
 
 #: usr/local/www/system.php:231 usr/local/www/fbegin.inc:85
 #: usr/local/www/fbegin.inc:101 usr/local/www/system.php:242
@@ -25078,24 +25108,26 @@ msgstr "と' -' "NTPタイムサーバ名は、 0〜9、A〜Zの文字を含む�
 #: usr/local/www/fbegin.inc:102 usr/local/www/system.php:235
 #: usr/local/www/fbegin.inc:102
 msgid "General Setup"
-msgstr "一般的なセットアップ"
+msgstr "全般セットアップ"
 
 #: usr/local/www/system.php:258 usr/local/www/system.php:269
 #: usr/local/www/system.php:262 usr/local/www/system.php:262
 msgid "Name of the firewall host, without domain part"
-msgstr "ドメイン部分なしで、ファイアウォールのホストの名前"
+msgstr "ファイアウォールホスト名、ドメイン部分は含まない"
 
 #: usr/local/www/system.php:269 usr/local/www/system.php:280
 #: usr/local/www/system.php:273 usr/local/www/system.php:273
 msgid ""
 "Do not use 'local' as a domain name. It will cause local hosts running mDNS "
 "(avahi, bonjour, etc.) to be unable to resolve local hosts not running mDNS."
-msgstr "「ドメイン名として「ローカル」は使用しないでください。これは、 mDNSのを実行しているローカルホストの原因となります」のmDNSを実行していないローカルホストを解決することができないように（など、ボンジュール、 avahiの） 。"
+msgstr ""
+"「local」をドメイン名として使用しないでください。mDNS が動作しているローカルホスト"
+" ( avahi、bonjour 等 ) が mDNS が動作していないローカルホストを解決できなくなります。"
 
 #: usr/local/www/system.php:271 usr/local/www/system.php:282
 #: usr/local/www/system.php:275 usr/local/www/system.php:275
 msgid "mycorp.com, home, office, private, etc."
-msgstr "mycorp.com 、家庭、オフィス、プライベートなど"
+msgstr "mycorp.com、home、office、private 等"
 
 #: usr/local/www/system.php:276 usr/local/www/services_dhcp.php:647
 #: usr/local/www/vpn_pppoe_edit.php:451 usr/local/www/services_dhcpv6.php:590
@@ -25114,12 +25146,12 @@ msgstr "mycorp.com 、家庭、オフィス、プライベートなど"
 #: usr/local/www/vpn_pppoe_edit.php:455 usr/local/www/services_dhcp.php:870
 #: usr/local/www/services_dhcpv6.php:615
 msgid "DNS servers"
-msgstr "DNSサーバ"
+msgstr "DNS サーバ"
 
 #: usr/local/www/system.php:281 usr/local/www/system.php:292
 #: usr/local/www/system.php:285 usr/local/www/system.php:285
 msgid "DNS Server"
-msgstr "DNSサーバ"
+msgstr "DNS サーバ"
 
 #: usr/local/www/system.php:283 usr/local/www/system.php:294
 #: usr/local/www/system.php:287 usr/local/www/system.php:287
@@ -25132,7 +25164,9 @@ msgstr "ゲートウェイを使用"
 msgid ""
 "Enter IP addresses to by used by the system for DNS resolution.These are "
 "also used for the DHCP service, DNS forwarder and for PPTP VPN clients."
-msgstr "「DNS resolution.Theseためのシステムが使用することで、IPアドレスを入力してはしている」また、 DHCPサービス、 DNSフォワーダのためにとPPTPのVPNクライアントで使用する。"
+msgstr ""
+"DNS 名前解決システムで使用される IP アドレスを入力してください。"
+"DHCP サービス、DNS フォワーダ、PPTP VPN クライアントでも使用されます。"
 
 #: usr/local/www/system.php:336 usr/local/www/system.php:347
 #: usr/local/www/system.php:340 usr/local/www/system.php:339
@@ -25141,13 +25175,16 @@ msgid ""
 "In addition, optionally select the gateway for each DNS server. When using "
 "multiple WAN connections there should be at least one unique DNS server per "
 "gateway."
-msgstr "「さらに、必要に応じて、各DNSサーバのゲートウェイを選択します。使用する場合は、「ゲートウェイ」ごとに少なくとも1つの固有のDNSサーバがあるべき複数のWAN接続を。"
+msgstr ""
+"さらに、オプションで、DNS サーバごとにゲートウェイを選択してください。"
+"マルチ WAN 接続を使用する場合に、ゲートウェイ毎に最低 1 つの固有の DNS サーバが"
+"必要になります。"
 
 #: usr/local/www/system.php:343 usr/local/www/system.php:354
 #: usr/local/www/system.php:347 usr/local/www/system.php:346
 #: usr/local/www/system.php:346
 msgid "Allow DNS server list to be overridden by DHCP/PPP on WAN"
-msgstr "DNSサーバーのリストは、WAN上でDHCP / PPPによって無効にできるようにする"
+msgstr "WAN の DHCP/PPP による DNS サーバリストの無効化、を許可"
 
 #: usr/local/www/system.php:346 usr/local/www/system.php:357
 #: usr/local/www/system.php:350 usr/local/www/system.php:349
@@ -25157,13 +25194,16 @@ msgid ""
 "If this option is set, %s will use DNS servers assigned by a DHCP/PPP server "
 "on WAN for its own purposes (including the DNS forwarder). However, they "
 "will not be assigned to DHCP and PPTP VPN clients."
-msgstr "（ DNSフォワーダを含む）独自の目的のために、WAN上の「このオプションが設定されている場合は、 %sは、DHCP / PPPサーバによって割り当てられたDNSサーバーを使用します」 。しかし、彼らは "DHCPおよびPPTP VPNクライアントに割り当てることはできません。"
+msgstr ""
+"このオプションが設定されると、%s は、WAN の DHCP/PPP サーバが、"
+"自分たちの目的 ( DNS フォワーダを含む ) で割り当てた DNS サーバを使用します。"
+"しかし、DHCP と PPTP VPN クライアントは割り当てられません。"
 
 #: usr/local/www/system.php:355 usr/local/www/system.php:366
 #: usr/local/www/system.php:359 usr/local/www/system.php:358
 #: usr/local/www/system.php:358
 msgid "Do not use the DNS Forwarder as a DNS server for the firewall"
-msgstr "ファイアウォールのDNSサーバーとしてのDNSフォワーダを使用しないでください"
+msgstr "ファイアウォールの DNS サーバとして、DNS フォワーダを使用できません"
 
 #: usr/local/www/system.php:358 usr/local/www/system.php:369
 #: usr/local/www/system.php:362 usr/local/www/system.php:361
@@ -25172,25 +25212,28 @@ msgid ""
 "By default localhost (127.0.0.1) will be used as the first DNS server where "
 "the DNS forwarder is enabled, so system can use the DNS forwarder to perform "
 "lookups. Checking this box omits localhost from the list of DNS servers."
-msgstr "DNSフォワーダが有効になっている「既定のローカルホストでは（ 127.0.0.1 ）最初のDNSサーバーとして使用される"ため、システムは、このボックスは、DNSサーバーのリストから、ローカルホストを省略して確認する。 「ルックアップを実行するためにDNSフォワーダを使用することができます。"
+msgstr ""
+"DNS フォワーダが有効の場合、デフォルトでは、localhost (127.0.0.1) が最初の DNS サーバ"
+"として使用されます。そのため、システムはルックアップの実行に DNS フォワーダを使用できます。"
+"このボックスをチェックしている時は DNS サーバのリストから localhost を削除してください。"
 
 #: usr/local/www/system.php:365 usr/local/www/system.php:376
 #: usr/local/www/system.php:369 usr/local/www/system.php:367
 #: usr/local/www/system.php:367
 msgid "Time zone"
-msgstr "時間帯"
+msgstr "タイムゾーン"
 
 #: usr/local/www/system.php:377 usr/local/www/system.php:388
 #: usr/local/www/system.php:381 usr/local/www/system.php:379
 #: usr/local/www/system.php:379
 msgid "Select the location closest to you"
-msgstr "あなたに最も近い場所を選択します"
+msgstr "最も近い場所を選択してください"
 
 #: usr/local/www/system.php:395 usr/local/www/system.php:406
 #: usr/local/www/system.php:399 usr/local/www/system.php:397
 #: usr/local/www/system.php:397
 msgid "NTP time server"
-msgstr "NTPタイムサーバ"
+msgstr "NTP タイムサーバ"
 
 #: usr/local/www/system.php:400 usr/local/www/system.php:411
 #: usr/local/www/system.php:404 usr/local/www/system.php:402
@@ -25198,7 +25241,9 @@ msgstr "NTPタイムサーバ"
 msgid ""
 "Use a space to separate multiple hosts (only one required). Remember to set "
 "up at least one DNS server if you enter a host name here!"
-msgstr "「複数のホスト（必須のみ1 ）をスペースで区切ります。設定することを忘れないでください"あなたはここにホスト名を入力すると、少なくとも1つのDNSサーバーをバックアップ ！"
+msgstr ""
+"複数のホスト( 1 つは必須です )はスペースで区切ってください。"
+"ホスト名を入力する場合は、最低 1 つの DNS サーバを設定するようにしてください。"
 
 #: usr/local/www/system.php:411 usr/local/www/system.php:440
 #: usr/local/www/system.php:433 usr/local/www/system.php:431
@@ -25210,13 +25255,13 @@ msgstr "テーマ"
 #: usr/local/www/system.php:457 usr/local/www/system.php:455
 #: usr/local/www/system.php:455
 msgid "This will change the look and feel of"
-msgstr "これはデザインを変更するなどの感じになります"
+msgstr "次のルック・アンド・フィールを変更します: "
 
 #: usr/local/www/interfaces_vlan.php:65 usr/local/www/interfaces_vlan.php:69
 #: usr/local/www/interfaces_vlan.php:69
 msgid ""
 "This VLAN cannot be deleted because it is still being used as an interface."
-msgstr "それでもインターフェイスとして使用されているため、 「このVLANは削除できません。"
+msgstr "この VLAN は削除できません。インタフェースとして使用されています"
 
 #: usr/local/www/interfaces_vlan.php:78
 #: usr/local/www/interfaces_vlan_edit.php:139
@@ -25233,12 +25278,12 @@ msgstr "VLAN"
 #: usr/local/www/interfaces_vlan_edit.php:75
 #: usr/local/www/interfaces_vlan.php:116
 msgid "VLAN tag"
-msgstr "VLANタグ"
+msgstr "VLAN タグ"
 
 #: usr/local/www/interfaces_vlan.php:125 usr/local/www/interfaces_vlan.php:126
 #: usr/local/www/interfaces_vlan.php:132 usr/local/www/interfaces_vlan.php:132
 msgid "Do you really want to delete this VLAN?"
-msgstr "あなたは本当にこのVLANを削除しますか？"
+msgstr "本当にこの VLAN を削除しますか？"
 
 #: usr/local/www/interfaces_vlan.php:136 usr/local/www/interfaces_vlan.php:137
 #: usr/local/www/interfaces_vlan.php:143 usr/local/www/interfaces_vlan.php:143
@@ -25247,65 +25292,70 @@ msgid ""
 "Not all drivers/NICs support 802.1Q VLAN tagging properly. On cards that do "
 "not explicitly support it, VLAN tagging will still work, but the reduced MTU "
 "may cause problems. See the %s handbook for information on supported cards."
-msgstr "明示的にサポートしていない"すべてのドライバ/ NICが802.1Q VLANがないカードでは。適切にタグ付けをサポートしない」 、 VLANタギングはまだ動作しますが、縮小MTUは「問題が発生することがあります。サポートされているカードについては、 %sハンドブックを参照してください。"
+msgstr ""
+"全てのドライバや NIC が 802.1Q VLAN タギングを適切に対応しているわけではありません。" 
+"明示的に対応していないカードでは、VLAN タギングが動作しても、MTU の減少が問題を引き起こす"
+"可能性があります。対応カードの情報に関しては、%s ハンドブックを参照してください。"
 
 #: usr/local/www/interfaces_vlan_edit.php:80
 #: usr/local/www/interfaces_vlan_edit.php:80
 msgid "The VLAN tag must be an integer between 1 and 4094."
-msgstr "VLANタグは、 1 〜4094の整数でなければなりません。"
+msgstr "VLAN タグは 1 〜 4094 の整数です"
 
 #: usr/local/www/interfaces_vlan_edit.php:88
 #: usr/local/www/interfaces_vlan_edit.php:91
 #: usr/local/www/interfaces_vlan_edit.php:91
 #, php-format
 msgid "A VLAN with the tag %s is already defined on this interface."
-msgstr "タグ%sでVLANがすでにこのインターフェイスで定義されています。"
+msgstr "タグ %s の VLAN は、このインタフェースで既に定義されています"
 
 #: usr/local/www/interfaces_vlan_edit.php:95
 #: usr/local/www/interfaces_vlan_edit.php:98
 #: usr/local/www/interfaces_vlan_edit.php:98
 msgid "A QinQ VLAN exists with this tag please remove it to use this tag with."
-msgstr "QinQのVLANは、このタグに存在し、それがこのタグを使用することを削除してください。"
+msgstr "このタグの QinQ VLAN は存在しています。それを削除してから、使用してください。"
 
 #: usr/local/www/interfaces_vlan_edit.php:150
 #: usr/local/www/interfaces_vlan_edit.php:151
 #: usr/local/www/interfaces_vlan_edit.php:154
 #: usr/local/www/interfaces_vlan_edit.php:154
 msgid "VLAN configuration"
-msgstr "VLANの設定"
+msgstr "VLAN 構成"
 
 #: usr/local/www/interfaces_vlan_edit.php:169
 #: usr/local/www/interfaces_vlan_edit.php:170
 #: usr/local/www/interfaces_vlan_edit.php:173
 #: usr/local/www/interfaces_vlan_edit.php:173
 msgid "Only VLAN capable interfaces will be shown."
-msgstr "VLANのみが可能なインターフェースが表示されます。"
+msgstr "VLAN 対応インタフェースのみが表示されます。"
 
 #: usr/local/www/interfaces_vlan_edit.php:172
 #: usr/local/www/interfaces_vlan_edit.php:173
 #: usr/local/www/interfaces_vlan_edit.php:176
 #: usr/local/www/interfaces_vlan_edit.php:176
 msgid "VLAN tag "
-msgstr "VLANタグ"
+msgstr "VLAN タグ"
 
 #: usr/local/www/interfaces_vlan_edit.php:176
 #: usr/local/www/interfaces_vlan_edit.php:177
 #: usr/local/www/interfaces_vlan_edit.php:180
 #: usr/local/www/interfaces_vlan_edit.php:180
 msgid "802.1Q VLAN tag (between 1 and 4094) "
-msgstr "（ 1と4094の間） 802.1Q VLANタグ"
+msgstr "802.1Q VLAN タグ ( 1 〜 4094 )"
 
 #: usr/local/www/system_firmware.php:82 usr/local/www/system_firmware.php:89
 #: usr/local/www/system_firmware.php:88 usr/local/www/system_firmware.php:88
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
-msgstr "アップロードされたファイルは、php.iniのupload_max_filesizeディレクティブの値を超えて"
+msgstr "アップロードファイルは php.ini: upload_max_filesize ディレクティブを超過しています。"
 
 #: usr/local/www/system_firmware.php:84 usr/local/www/system_firmware.php:91
 #: usr/local/www/system_firmware.php:90 usr/local/www/system_firmware.php:90
 msgid ""
 "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in "
 "the HTML form"
-msgstr "HTMLフォーム"アップロードされたファイルで指定されたMAX_FILE_SIZEディレクティブの値を超えて」"
+msgstr ""
+"アップロードされたファイルは、HTML フォームで指定された MAX_FILE_SIZE ディレクティブを"
+"超過しています。"
 
 #: usr/local/www/system_firmware.php:86 usr/local/www/system_firmware.php:93
 #: usr/local/www/system_firmware.php:92 usr/local/www/system_firmware.php:92
@@ -25330,12 +25380,12 @@ msgstr "ディスクへのファイルの書き込みに失敗しました"
 #: usr/local/www/system_firmware.php:94 usr/local/www/system_firmware.php:101
 #: usr/local/www/system_firmware.php:100 usr/local/www/system_firmware.php:100
 msgid "File upload stopped by extension"
-msgstr "ファイルのアップロードは、拡張子によって停止"
+msgstr "拡張子でファイルのアップロードが停止されました"
 
 #: usr/local/www/system_firmware.php:96 usr/local/www/system_firmware.php:103
 #: usr/local/www/system_firmware.php:102 usr/local/www/system_firmware.php:102
 msgid "Unknown upload error"
-msgstr "不明のアップロードエラー"
+msgstr "アップロードエラーは不明です"
 
 #: usr/local/www/system_firmware.php:102 usr/local/www/system_firmware.php:203
 #: usr/local/www/system_firmware_auto.php:60
@@ -25377,7 +25427,9 @@ msgstr "手動更新"
 msgid ""
 "An upgrade is currently in progress.<p>The firewall will reboot when the "
 "operation is complete."
-msgstr "「アップグレードは現在進行中である。ときu003cPu003eファイアウォールが再起動します」操作が完了した。"
+msgstr ""
+"現在アップグレード中です。"
+"<p>処理が終了すると、ファイアウォールは再起動します。"
 
 #: usr/local/www/system_firmware.php:135 usr/local/www/system_firmware.php:142
 #: usr/local/www/system_firmware.php:137 usr/local/www/system_firmware.php:137
@@ -25387,12 +25439,12 @@ msgstr "アップグレード"
 #: usr/local/www/system_firmware.php:154 usr/local/www/system_firmware.php:161
 #: usr/local/www/system_firmware.php:156 usr/local/www/system_firmware.php:156
 msgid "The uploaded image file is not for this platform."
-msgstr "アップロードされた画像ファイルは、このプラットフォーム用ではありません。"
+msgstr "アップロードされたイメージファイルは、このプラットフォーム用ではありません。"
 
 #: usr/local/www/system_firmware.php:157 usr/local/www/system_firmware.php:164
 #: usr/local/www/system_firmware.php:159 usr/local/www/system_firmware.php:159
 msgid "Image upload failed (out of memory?)"
-msgstr "画像のアップロードは、 （メモリが不足？ ）が失敗しました"
+msgstr "イメージのアップロードに失敗しました ( メモリが不足していませんか？)"
 
 #: usr/local/www/system_firmware.php:168
 #: usr/local/www/system_firmware_auto.php:201
@@ -25402,7 +25454,7 @@ msgstr "画像のアップロードは、 （メモリが不足？ ）が失敗�
 #: usr/local/www/system_firmware.php:170
 #: usr/local/www/system_firmware_auto.php:199
 msgid "The digital signature on this image is invalid."
-msgstr "この画像のデジタル署名が無効です。"
+msgstr "このイメージのデジタル署名は無効です"
 
 #: usr/local/www/system_firmware.php:170
 #: usr/local/www/system_firmware_auto.php:204
@@ -25412,7 +25464,7 @@ msgstr "この画像のデジタル署名が無効です。"
 #: usr/local/www/system_firmware.php:172
 #: usr/local/www/system_firmware_auto.php:202
 msgid "This image is not digitally signed."
-msgstr "この画像は、デジタル署名されていません。"
+msgstr "このイメージはデジタル署名されていません"
 
 #: usr/local/www/system_firmware.php:172
 #: usr/local/www/system_firmware_auto.php:208
@@ -25422,7 +25474,7 @@ msgstr "この画像は、デジタル署名されていません。"
 #: usr/local/www/system_firmware.php:174
 #: usr/local/www/system_firmware_auto.php:206
 msgid "There has been an error verifying the signature on this image."
-msgstr "この画像に署名を検証エラーが発生しました。"
+msgstr "このイメージの署名を検証中にエラーが発生しました"
 
 #: usr/local/www/system_firmware.php:175
 #: usr/local/www/system_firmware_auto.php:223
@@ -25432,19 +25484,20 @@ msgstr "この画像に署名を検証エラーが発生しました。"
 #: usr/local/www/system_firmware.php:177
 #: usr/local/www/system_firmware_auto.php:221
 msgid "The image file is corrupt."
-msgstr "画像ファイルが壊れています。"
+msgstr "イメージファイルが壊れています"
 
 #: usr/local/www/system_firmware.php:188 usr/local/www/system_firmware.php:195
 #: usr/local/www/system_firmware.php:190 usr/local/www/system_firmware.php:190
 msgid ""
 "The firmware is now being updated. The firewall will reboot automatically."
-msgstr "「ファームウェアは現在更新中です。ファイアウォールは自動的に再起動します。"
+msgstr ""
+"ファームウェアを更新しています。ファイアウォールは自動的に再起動します。"
 
 #: usr/local/www/system_firmware.php:196 usr/local/www/system_firmware.php:203
 #: usr/local/www/system_firmware.php:204 usr/local/www/system_firmware.php:204
 #, php-format
 msgid "Firmware image missing or other error, please try again %s."
-msgstr "ファームウェアイメージ欠落またはその他のエラー、もう一度試してください%s."
+msgstr "ファームウェアイメージが見つからないか、その他のエラーです。%s を再試行してください。"
 
 #: usr/local/www/system_firmware.php:220 usr/local/www/system_firmware.php:227
 #: usr/local/www/system_firmware.php:230 usr/local/www/system_firmware.php:230
@@ -25453,12 +25506,16 @@ msgid ""
 "and may lead to unexpected behavior or security compromises. Only install "
 "images that come from sources that you trust, and make sure that the image "
 "has not been tampered with."
-msgstr "予期しない動作やセキュリティ侵害につながる可能性があり、「これは、アップロードされた画像は、公式/サポートされている画像ではないことを意味します」 。唯一の "あなたが信頼ソースからの画像を、画像があることを確認して「インストール改ざんされていない。"
+msgstr ""
+"これは、アップロードしたイメージが、公式もしくは、サポートされているイメージではなく、"
+"予期せぬ動作や、セキュリティ問題の原因となりうる、という意味です。"
+"インストールするイメージは、信頼できる送信元からのものだけにしてください。"
+"そして、イメージが改変されていないか確認して下さい。"
 
 #: usr/local/www/system_firmware.php:224 usr/local/www/system_firmware.php:231
 #: usr/local/www/system_firmware.php:234 usr/local/www/system_firmware.php:234
 msgid "Do you want to install this image anyway (on your own risk)?"
-msgstr "あなたが（ご自身の責任で）とにかくこのイメージをインストールしますか？を"
+msgstr "本当に、このイメージを ( 自分自身の責任で ) インストールしますか？"
 
 #: usr/local/www/system_firmware.php:239
 #: usr/local/www/system_firmware_auto.php:60
@@ -25501,7 +25558,7 @@ msgstr "自動更新"
 #: usr/local/www/system_firmware_auto.php:82
 #: usr/local/www/system_firmware_restorefullbackup.php:127
 msgid "Updater Settings"
-msgstr "アップデータの設定"
+msgstr "更新ツールの設定"
 
 #: usr/local/www/system_firmware.php:242
 #: usr/local/www/system_firmware_auto.php:83
@@ -25525,7 +25582,7 @@ msgstr "フルバックアップを復元"
 #: usr/local/www/system_firmware.php:252 usr/local/www/system_firmware.php:259
 #: usr/local/www/system_firmware.php:262 usr/local/www/system_firmware.php:262
 msgid "Invoke"
-msgstr "呼び出す"
+msgstr "起動"
 
 #: usr/local/www/system_firmware.php:252 usr/local/www/system_firmware.php:259
 #: usr/local/www/system_firmware.php:262 usr/local/www/system_firmware.php:262
@@ -25535,18 +25592,18 @@ msgstr "手動アップグレード"
 #: usr/local/www/system_firmware.php:259 usr/local/www/system_firmware.php:266
 #: usr/local/www/system_firmware.php:269 usr/local/www/system_firmware.php:269
 msgid "Enable firmware upload"
-msgstr "ファームウェアのアップロードを有効にする"
+msgstr "ファームウェアのアップロードを有効"
 
 #: usr/local/www/system_firmware.php:261 usr/local/www/system_firmware.php:268
 #: usr/local/www/system_firmware.php:271 usr/local/www/system_firmware.php:271
 #, php-format
 msgid "Click "Enable firmware upload" to begin."
-msgstr "開始する「ファームウェアのアップロードを有効にする」をクリックします。"
+msgstr "開始するには「ファームウェアのアップロードを有効」をクリックしてください。"
 
 #: usr/local/www/system_firmware.php:264 usr/local/www/system_firmware.php:271
 #: usr/local/www/system_firmware.php:274 usr/local/www/system_firmware.php:274
 msgid "Disable firmware upload"
-msgstr "ファームウェアのアップロードを無効にする"
+msgstr "ファームウェアのアップロードを無効"
 
 #: usr/local/www/system_firmware.php:282 usr/local/www/system_firmware.php:289
 #: usr/local/www/system_firmware.php:292 usr/local/www/system_firmware.php:292
@@ -25559,15 +25616,15 @@ msgstr "マルチプロセッサカーネル"
 
 #: usr/local/www/system_firmware.php:285 usr/local/www/system_firmware.php:56
 msgid "Uniprocessor kernel"
-msgstr "ユニプロセッサカーネル"
+msgstr "シングルプロセッサカーネル"
 
 #: usr/local/www/system_firmware.php:286 usr/local/www/system_firmware.php:57
 msgid "Embedded kernel"
-msgstr "埋め込まれたカーネル"
+msgstr "組込み用カーネル"
 
 #: usr/local/www/system_firmware.php:287 usr/local/www/system_firmware.php:58
 msgid "Developers kernel"
-msgstr "開発者はカーネル"
+msgstr "開発者用カーネル"
 
 #: usr/local/www/system_firmware.php:298
 #: usr/local/www/system_firmware_check.php:103
@@ -25577,27 +25634,27 @@ msgstr "開発者はカーネル"
 #: usr/local/www/system_firmware.php:303
 #: usr/local/www/system_firmware_check.php:98
 msgid "Perform full backup prior to upgrade"
-msgstr "前のアップグレードにフルバックアップを実行"
+msgstr "アップグレードの前にフルバックアップを実行"
 
 #: usr/local/www/system_firmware.php:300 usr/local/www/system_firmware.php:306
 #: usr/local/www/system_firmware.php:306
 msgid "Upgrade firmware"
-msgstr "ファームウェアをアップグレード"
+msgstr "ファームウェアのアップグレード"
 
 #: usr/local/www/system_firmware.php:301 usr/local/www/system_firmware.php:307
 #: usr/local/www/system_firmware.php:307
 msgid "Click "Upgrade firmware" to start the upgrade process."
-msgstr "アップグレードプロセスを開始するために「ファームウェアのアップグレード」をクリックしてください。"
+msgstr "アップグレードプロセス開始には「ファームウェアのアップグレード」をクリックしてください。"
 
 #: usr/local/www/system_firmware.php:303 usr/local/www/system_firmware.php:309
 #: usr/local/www/system_firmware.php:309
 msgid "You must reboot the system before you can upgrade the firmware."
-msgstr "ファームウェアをアップグレードする前に、システムを再起動する必要があります。"
+msgstr "ファームウェアをアップグレードする前に、システムを再起動してください。"
 
 #: usr/local/www/system_firmware.php:316 usr/local/www/system_firmware.php:322
 #: usr/local/www/system_firmware.php:320 usr/local/www/system_firmware.php:320
 msgid "Warning:"
-msgstr "警告："
+msgstr "警告: "
 
 #: usr/local/www/system_firmware.php:319 usr/local/www/system_firmware.php:325
 #: usr/local/www/system_firmware.php:323 usr/local/www/system_firmware.php:323
@@ -25605,20 +25662,23 @@ msgid ""
 "DO NOT abort the firmware upgrade once it has started. The firewall will "
 "reboot automatically after storing the new firmware. The configuration will "
 "be maintained."
-msgstr "「それが起動した後は、ファームウェアのアップグレードを中断しないでください。ファイアウォールがします"新しいファームウェアを保存した後、自動的に再起動します。構成は、 「維持される。"
+msgstr ""
+"一旦ファームウェアのアップグレードが始まったら、中断しないでください。"
+"ファイアウォールは新しいファームウェアの保存後に自動的に再起動します。"
+"ファイアウォールの構成は維持されます。"
 
 #: usr/local/www/system_firmware_auto.php:115
 #: usr/local/www/system_firmware_auto.php:113
 #: usr/local/www/system_firmware_auto.php:113
 msgid "Beginning firmware upgrade"
-msgstr "ファームウェアのアップグレードを開始"
+msgstr "ファームウェアのアップグレードを開始しています"
 
 #: usr/local/www/system_firmware_auto.php:133
 #: usr/local/www/system_firmware_auto.php:135
 #: usr/local/www/system_firmware_auto.php:131
 #: usr/local/www/system_firmware_auto.php:131
 msgid "Downloading current version information"
-msgstr "現在のバージョン情報をダウンロードする"
+msgstr "現在のバージョン情報をダウンロードしています"
 
 #: usr/local/www/system_firmware_auto.php:148
 #: usr/local/www/system_firmware_auto.php:157
@@ -25633,21 +25693,21 @@ msgstr "現在のバージョン情報をダウンロードする"
 #: usr/local/www/system_firmware_auto.php:146
 #: usr/local/www/system_firmware_auto.php:155
 msgid "Unable to check for updates."
-msgstr "更新を確認することができません。"
+msgstr "更新を確認できません"
 
 #: usr/local/www/system_firmware_auto.php:162
 #: usr/local/www/system_firmware_auto.php:164
 #: usr/local/www/system_firmware_auto.php:160
 #: usr/local/www/system_firmware_auto.php:160
 msgid "Downloading updates"
-msgstr "更新をダウンロードする"
+msgstr "更新をダウンロードしています"
 
 #: usr/local/www/system_firmware_auto.php:172
 #: usr/local/www/system_firmware_auto.php:174
 #: usr/local/www/system_firmware_auto.php:170
 #: usr/local/www/system_firmware_auto.php:170
 msgid "download complete."
-msgstr "完全なダウンロードします。"
+msgstr "ダウンロードが完了しました"
 
 #: usr/local/www/system_firmware_auto.php:174
 #: usr/local/www/system_firmware_check.php:159
@@ -25658,7 +25718,7 @@ msgstr "完全なダウンロードします。"
 #: usr/local/www/system_firmware_check.php:153
 #: usr/local/www/system_firmware_auto.php:172
 msgid "You are on the latest version."
-msgstr "最新のバージョンにあります。"
+msgstr "最新バージョンを使用しています"
 
 #: usr/local/www/system_firmware_auto.php:214
 #: usr/local/www/system_firmware_auto.php:216
