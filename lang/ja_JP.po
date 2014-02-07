@@ -27010,7 +27010,7 @@ msgstr "仮想アドレスプール"
 #: usr/local/www/vpn_ipsec_mobile.php:426
 #: usr/local/www/vpn_ipsec_mobile.php:426
 msgid "Provide a virtual IP address to clients"
-msgstr "クライアントに仮想IPアドレスを提供"
+msgstr "クライアントに仮想 IP アドレスを提供"
 
 #: usr/local/www/vpn_ipsec_mobile.php:424
 #: usr/local/www/vpn_ipsec_mobile.php:449
@@ -27128,7 +27128,7 @@ msgstr "WINS サーバ"
 #: usr/local/www/vpn_ipsec_mobile.php:580
 #: usr/local/www/vpn_openvpn_server.php:1613
 msgid "Provide a WINS server list to clients"
-msgstr "クライアントに WINSサーバリストを提供"
+msgstr "クライアントに WINS サーバリストを提供"
 
 #: usr/local/www/vpn_ipsec_mobile.php:552
 #: usr/local/www/vpn_ipsec_mobile.php:601
@@ -27213,7 +27213,7 @@ msgstr "Lag プロトコル"
 #: usr/local/www/interfaces_lagg_edit.php:181
 #: usr/local/www/interfaces_lagg_edit.php:181
 msgid "failover"
-msgstr "フェイルオーバー"
+msgstr "フェイルオーバ"
 
 #: usr/local/www/interfaces_lagg_edit.php:169
 #: usr/local/www/interfaces_lagg_edit.php:170
@@ -27228,7 +27228,7 @@ msgid ""
 msgstr ""
 "トラフィックは、マスタポートを経由してのみ、受信及び送信します。マスタポートが利用できない場合は、"
 "次のアクティブなポートが使用されます。一番最初に追加されたインタフェースはマスタポートになります。"
-"その後に追加されたインタフェースはフェイルオーバーデバイスとして使用されます。"
+"その後に追加されたインタフェースはフェイルオーバデバイスとして使用されます。"
 
 #: usr/local/www/interfaces_lagg_edit.php:174
 #: usr/local/www/interfaces_lagg_edit.php:175
@@ -27629,7 +27629,9 @@ msgstr "接続タイムアウト"
 msgid ""
 "Note: Enter timeout in seconds for connection to be established (sec.) "
 "Default is 45 sec."
-msgstr ""注：確立する接続のタイムアウトを秒単位で入力します（秒） 」のデフォルトは45秒です。"
+msgstr ""
+"接続確立のタイムアウト ( 秒 ) を入力してください。"
+"デフォルトは 45 秒です。"
 
 #: usr/local/www/interfaces_ppps_edit.php:576
 #: usr/local/www/interfaces_ppps_edit.php:577
@@ -27637,7 +27639,7 @@ msgstr ""注：確立する接続のタイムアウトを秒単位で入力し�
 #: usr/local/www/interfaces_ppps_edit.php:581
 #: usr/local/www/interfaces_ppps_edit.php:581
 msgid "Uptime Logging"
-msgstr "稼働時間のログ"
+msgstr "アップタイムログ"
 
 #: usr/local/www/interfaces_ppps_edit.php:578
 #: usr/local/www/interfaces_ppps_edit.php:579
@@ -27645,7 +27647,7 @@ msgstr "稼働時間のログ"
 #: usr/local/www/interfaces_ppps_edit.php:583
 #: usr/local/www/interfaces_ppps_edit.php:583
 msgid "Enable persistent logging of connection uptime."
-msgstr "接続のアップタイムの永続的なログを有効にします。"
+msgstr "接続アップタイムのパーシステントログを有効"
 
 #: usr/local/www/interfaces_ppps_edit.php:579
 #: usr/local/www/interfaces_ppps_edit.php:580
@@ -27655,7 +27657,9 @@ msgstr "接続のアップタイムの永続的なログを有効にします。
 msgid ""
 "This option causes cumulative uptime to be recorded and displayed on the "
 "Status Interfaces page."
-msgstr "ステータスInterfacesページ"このオプションを記録しに表示される累積稼働時間の原因となる」 。"
+msgstr ""
+"このオプションは、アップタイムを累積して記録し、ステータス: インタフェースページに"
+"表示します。"
 
 #: usr/local/www/interfaces_ppps_edit.php:591
 #: usr/local/www/interfaces_ppps_edit.php:592
@@ -27663,7 +27667,7 @@ msgstr "ステータスInterfacesページ"このオプションを記録しに�
 #: usr/local/www/interfaces_ppps_edit.php:596
 #: usr/local/www/interfaces_ppps_edit.php:596
 msgid "Configure a NULL Service name"
-msgstr "NULLのサービス名を設定する"
+msgstr "NULL サービス名の構成"
 
 #: usr/local/www/interfaces_ppps_edit.php:592
 #: usr/local/www/interfaces_ppps_edit.php:593
@@ -27674,7 +27678,10 @@ msgid ""
 "Hint: this field can usually be left empty. Service name will not be "
 "configured if this field is empty. Check the "Configure NULL" box to "
 "configure a blank Service name."
-msgstr ""ヒント：このフィールドは通常、空のままにすることができるサービス名はされません。 「このフィールドが空の場合は設定されています。 「ブランクサービス名を設定するには、 「設定NULL」チェックボックスをオンにします。"
+msgstr ""
+"ヒント: このフィールドは通常空白にします。このフィールドが空白の場合、サービス名は"
+"構成されません。空白のサービス名を構成するには「NULL の構成」チェックボックスを"
+"チェックしてください。"
 
 #: usr/local/www/interfaces_ppps_edit.php:652 usr/local/www/vpn_pppoe.php:102
 #: usr/local/www/diag_ipsec.php:91 usr/local/www/diag_ipsec.php:102
@@ -27684,7 +27691,7 @@ msgstr ""ヒント：このフィールドは通常、空のままにするこ�
 #: usr/local/www/interfaces_ppps_edit.php:657 usr/local/www/vpn_pppoe.php:104
 #: usr/local/www/interfaces_ppps_edit.php:657 usr/local/www/diag_ipsec.php:105
 msgid "Local IP"
-msgstr "ローカルIP"
+msgstr "ローカル IP"
 
 #: usr/local/www/interfaces_ppps_edit.php:667
 #: usr/local/www/interfaces_ppps_edit.php:668
@@ -27692,7 +27699,7 @@ msgstr "ローカルIP"
 #: usr/local/www/interfaces_ppps_edit.php:672
 #: usr/local/www/interfaces_ppps_edit.php:672
 msgid "IP Address OR Hostname"
-msgstr "IPアドレスまたはホスト名"
+msgstr "IP アドレス、またはホスト名"
 
 #: usr/local/www/interfaces_ppps_edit.php:678
 #: usr/local/www/interfaces_ppps_edit.php:679
@@ -27708,7 +27715,7 @@ msgstr "ダイヤルオンデマンド"
 #: usr/local/www/interfaces_ppps_edit.php:685
 #: usr/local/www/interfaces_ppps_edit.php:685
 msgid "Enable Dial-on-Demand mode"
-msgstr "ダイヤルオンデマンドモードを有効にする"
+msgstr "ダイヤルオンデマンドモードを有効"
 
 #: usr/local/www/interfaces_ppps_edit.php:681
 #: usr/local/www/interfaces_ppps_edit.php:682
@@ -27720,7 +27727,11 @@ msgid ""
 "enable if you want your link to be always up. The interface is configured, "
 "but the actual connection of the link is delayed until qualifying outgoing "
 "traffic is detected."
-msgstr ""このオプションは、インターフェイスがダイヤルオンデマンドモードで動作するようになります。ない」あなたのリンクは常に最新にしたい場合は、有効にします。インターフェイスは、設定されている」が、リンクの実際の接続は、発信予選まで遅延される「トラフィックが検出された。"
+msgstr ""
+"このオプションは、インタフェースをダイヤルオンデマンドモードで動作させます。"
+"リンクを常にアップにしたい場合は、有効に「しない」でください。"
+"インタフェースは構成されますが、条件を満たす着信トラフィックを検出するまで、"
+"実際のリンク接続は行われません。"
 
 #: usr/local/www/interfaces_ppps_edit.php:686
 #: usr/local/www/interfaces_ppps_edit.php:687
@@ -27736,7 +27747,7 @@ msgstr "アイドルタイムアウト"
 #: usr/local/www/interfaces_ppps_edit.php:693
 #: usr/local/www/interfaces_ppps_edit.php:693
 msgid "(seconds) Default is 0, which disables the timeout feature."
-msgstr "（秒）デフォルトは、タイムアウト機能を無効にし、 0である。"
+msgstr "( 秒 ) デフォルトは 0 で、タイムアウト機能は無効になります。"
 
 #: usr/local/www/interfaces_ppps_edit.php:689
 #: usr/local/www/interfaces_ppps_edit.php:690
@@ -27746,7 +27757,9 @@ msgstr "（秒）デフォルトは、タイムアウト機能を無効にし、
 msgid ""
 "If no incoming or outgoing packets are transmitted for the entered number of "
 "seconds the connection is brought down."
-msgstr "秒」着信または発信パケットが入力した数値のために送信されていない場合は「接続がダウンしている。"
+msgstr ""
+"入力された秒数の間、着信もしくは発信パケットが送信されない場合は、"
+"接続はダウンします。"
 
 #: usr/local/www/interfaces_ppps_edit.php:690
 #: usr/local/www/interfaces_ppps_edit.php:691
@@ -27757,7 +27770,10 @@ msgid ""
 "When the idle timeout occurs, if the dial-on-demand option is enabled, mpd "
 "goes back into dial-on-demand mode. Otherwise, the interface is brought down "
 "and all associated routes removed."
-msgstr "「アイドルタイムアウトが発生するとダイヤルオンデマンドオプションが有効になっている場合、 MPDは「バックダイヤルオンデマンドモードになります。それ以外の場合は、インターフェイスがダウンし、 "および関連するすべてのルートが削除されます。"
+msgstr ""
+"アイドルタイムアウトが発生した場合、ダイヤルオンデマンドオプションが有効なら、"
+"MPD はダイヤルオンデマンドモードに戻ります。さもなくば、インタフェースはダウンし、"
+"アソシエーションした全てのルートは削除されます。"
 
 #: usr/local/www/interfaces_ppps_edit.php:694
 #: usr/local/www/vpn_openvpn_client.php:787
@@ -27783,7 +27799,7 @@ msgstr "圧縮"
 #: usr/local/www/interfaces_ppps_edit.php:701
 #: usr/local/www/interfaces_ppps_edit.php:701
 msgid "Disable vjcomp(compression) (auto-negotiated by default)."
-msgstr "VJCOMP （圧縮） （デフォルトではオートネゴシエーション）を無効にします。"
+msgstr "vjcomp( 圧縮 ) を無効 ( デフォルトはオートネゴシエーション )"
 
 #: usr/local/www/interfaces_ppps_edit.php:697
 #: usr/local/www/interfaces_ppps_edit.php:698
@@ -27796,7 +27812,12 @@ msgid ""
 "compression ineffective for TCP connections with enabled modern extensions "
 "like time stamping or SACK, which modify TCP options between sequential "
 "packets."
-msgstr "バイトあたりのTCPデータパケット」このオプションは、いくつかが保存されますヴァンヤコブソンTCPヘッダー圧縮を可能に」 。あなたは、ほとんどの場合、このオプションが欲しい。シーケンシャル「パケット間のTCPオプションを変更し、タイムスタンプやSACKのように、この「有効現代の拡張子を持つTCP接続の非効率圧縮」 、 。"
+msgstr ""
+"このオプションは、バン・ジェイコブソン TCP ヘッダ圧縮を有効にします。"
+"これは、TCP データパケット毎にサイズを数バイト圧縮することができます。"
+"通常は、いつもこのオプションが必要になるでしょう。"
+"この圧縮は、TCP タイムスタンプや、SACK のように、シーケンシャルパケット間の TCP オプションを変更する、"
+"モダンな拡張を有効にした TCP 接続には効果がありません。"
 
 #: usr/local/www/interfaces_ppps_edit.php:703
 #: usr/local/www/interfaces_ppps_edit.php:704
@@ -27812,7 +27833,7 @@ msgstr "TCPmssFix"
 #: usr/local/www/interfaces_ppps_edit.php:710
 #: usr/local/www/interfaces_ppps_edit.php:710
 msgid "Disable tcpmssfix (enabled by default)."
-msgstr "（デフォルトで有効）を無効tcpmssfix 。"
+msgstr "tcpmssfix を無効 ( デフォルトは有効 )"
 
 #: usr/local/www/interfaces_ppps_edit.php:706
 #: usr/local/www/interfaces_ppps_edit.php:707
@@ -27831,7 +27852,18 @@ msgid ""
 "The rogue router drops the ICMP message and the originator never gets to "
 "discover that it must reduce the fragment size or drop the IP Don't Fragment "
 "option from its outgoing data."
-msgstr "「これは避けるために、多くのセットアップで必要となるインターフェイスのMTUで許可されている「要求された最大セグメントサイズは、量よりも大きくないと、ICMPをドロップし、ルータによる問題を"このオプションはとても着信および発信TCP SYNセグメントを調整するためにMPDを起こす」データグラムToo Bigメッセージ。せずに、IPフラグメントオプションが設定されていないため、ルータし、「データのための十分な大きさではありませんMTUを持つマシンを打つ」これらのメッセージは、発信機がデータを送信し、それが不正に合格」 、このマシンは送信します「ICMPデータグラム過大バック発信へのメッセージとはパケットをドロップします。 「不正なルータは、 ICMPメッセージを削除し、発信者はことを得ることはありません"それはフラグメントサイズを減らすか、またはIPがその発信データから"オプションを断片化しないでください削除する必要があることを発見。"
+msgstr ""
+"このオプションは、MPD が着信及び発信 TCP SYN セグメントを調整し、"
+"要求される最大セグメントサイズを、インタフェースの MTU が許可する量よりも小さくなるようにします。"
+"これは、ICMP Datagram Too Big メッセージが落ちる問題をルータが引き起こすことを回避するために、"
+"多くのセットアップで必要になります。このメッセージがない場合はこんなことが起こります。"
+"発信元の機器が送信したデータが、いい加減なルータを通過し、データに対して小さすぎる MTU を持つ機器に"
+"ぶつかります。
+"IP Don't Fragment オプションが設定されていたので、この機器は ICMP Datagram Too Big メッセージを"
+"発信元の機器に返して、パケットを落としました。"
+"ところが、いい加減なルータが ICMP メッセージを落としてしまったので、"
+"発信元の機器には、発信データのフラグメントサイズを小さくするか、IP Don't Fragment オプションを"
+"外す必要があることが、決してわからなくなってしまうのです。"
 
 #: usr/local/www/interfaces_ppps_edit.php:714
 #: usr/local/www/interfaces_ppps_edit.php:715
@@ -27847,7 +27879,7 @@ msgstr "ShortSeq"
 #: usr/local/www/interfaces_ppps_edit.php:721
 #: usr/local/www/interfaces_ppps_edit.php:721
 msgid "Disable shortseq (auto-negotiated by default)."
-msgstr "shortseqを（デフォルトではオートネゴシエーション）無効にします。"
+msgstr "shortseq を無効 ( デフォルトはオートネゴシエーション )"
 
 #: usr/local/www/interfaces_ppps_edit.php:717
 #: usr/local/www/interfaces_ppps_edit.php:718
@@ -27859,7 +27891,11 @@ msgid ""
 "proscribes shorter multi-link fragment headers, saving two bytes on every "
 "frame. It is not necessary to disable this for connections that are not "
 "multi-link."
-msgstr "「マルチリンクPPPがネゴシエートされている場合、このオプションは意味があります。それは "すべての上の2バイト節約短いマルチリンクフラグメントヘッダをも禁止」のフレームを。それはない接続のためにこれを無効にする必要はありません"マルチリンク。"
+msgstr ""
+"このオプションは、マルチリンク PPP がネゴシエートされている場合のみ意味があります。"
+"全てのフレームで 2 バイト圧縮する、短縮マルチリンクフラグメントヘッダを禁止します。"
+"マルチリンクではない接続に対しては、"
+"無効にする必要はありません。"
 
 #: usr/local/www/interfaces_ppps_edit.php:722
 #: usr/local/www/interfaces_ppps_edit.php:723
@@ -27875,7 +27911,7 @@ msgstr "ACFComp"
 #: usr/local/www/interfaces_ppps_edit.php:729
 #: usr/local/www/interfaces_ppps_edit.php:729
 msgid "Disable acfcomp (compression) (auto-negotiated by default)."
-msgstr "acfcomp （圧縮） （デフォルトではオートネゴシエーション）を無効にします。"
+msgstr "acfcomp ( 圧縮 ) を無効 ( デフォルトはオートネゴシエーション )"
 
 #: usr/local/www/interfaces_ppps_edit.php:725
 #: usr/local/www/interfaces_ppps_edit.php:726
@@ -27885,7 +27921,9 @@ msgstr "acfcomp （圧縮） （デフォルトではオートネゴシエーシ
 msgid ""
 "Address and control field compression. This option only applies to "
 "asynchronous link types. It saves two bytes per frame."
-msgstr "「アドレスおよび制御フィールドの圧縮。このオプションは、に適用され、「非同期リンクタイプ。これは、フレームあたり2バイトを保存します。"
+msgstr ""
+"アドレスと制御フィールドの圧縮。このオプションは、非同期リンクタイプの時のみ適用されます。
+"フレーム毎に 2 バイト圧縮します。"
 
 #: usr/local/www/interfaces_ppps_edit.php:729
 #: usr/local/www/interfaces_ppps_edit.php:730
@@ -27901,7 +27939,7 @@ msgstr "ProtoComp"
 #: usr/local/www/interfaces_ppps_edit.php:736
 #: usr/local/www/interfaces_ppps_edit.php:736
 msgid "Disable protocomp (compression) (auto-negotiated by default)."
-msgstr "protocomp （圧縮） （デフォルトではオートネゴシエーション）を無効にします。"
+msgstr "protocomp ( 圧縮 ) を無効 ( デフォルトはオートネゴシエーション )"
 
 #: usr/local/www/interfaces_ppps_edit.php:732
 #: usr/local/www/interfaces_ppps_edit.php:733
@@ -27911,7 +27949,9 @@ msgstr "protocomp （圧縮） （デフォルトではオートネゴシエー�
 msgid ""
 "Protocol field compression. This option saves one byte per frame for most "
 "frames."
-msgstr "フレーム「プロトコルフィールド圧縮。このオプションは、ほとんどのフレームあたり1バイトを節約できます」 。"
+msgstr ""
+"プロトコルフィールドを圧縮します。"
+"このオプションは、ほとんどのフレームで、フレーム毎に 1 バイト圧縮します。"
 
 #: usr/local/www/interfaces_ppps_edit.php:746
 #: usr/local/www/interfaces_ppps_edit.php:747
@@ -27919,7 +27959,7 @@ msgstr "フレーム「プロトコルフィールド圧縮。このオプショ
 #: usr/local/www/interfaces_ppps_edit.php:750
 #: usr/local/www/interfaces_ppps_edit.php:750
 msgid "Link Parameters"
-msgstr "リンク·パラメータ"
+msgstr "リンクパラメータ"
 
 #: usr/local/www/interfaces_ppps_edit.php:753
 #: usr/local/www/interfaces_ppps_edit.php:754
@@ -27928,7 +27968,8 @@ msgstr "リンク·パラメータ"
 #: usr/local/www/interfaces_ppps_edit.php:757
 msgid ""
 "Set ONLY for MLPPP connections and ONLY when links have different bandwidths."
-msgstr "「 MLPPP接続にのみ設定し、リンクは異なる帯域幅を持っている場合のみです。"
+msgstr ""
+"MLPPP 接続で、かつ、異なる帯域幅を持つリンクである場合「のみ」設定してください。
 
 #: usr/local/www/interfaces_ppps_edit.php:760
 #: usr/local/www/interfaces_ppps_edit.php:761
@@ -27936,7 +27977,7 @@ msgstr "「 MLPPP接続にのみ設定し、リンクは異なる帯域幅を持
 #: usr/local/www/interfaces_ppps_edit.php:764
 #: usr/local/www/interfaces_ppps_edit.php:764
 msgid "MTU will default to 1492."
-msgstr "MTUは1492にデフォルト設定されます。"
+msgstr "MTU の デフォルト設定は 1492 です。"
 
 #: usr/local/www/interfaces_ppps_edit.php:764
 #: usr/local/www/interfaces_ppps_edit.php:765
@@ -27956,7 +27997,7 @@ msgstr "MRU"
 #: usr/local/www/interfaces_ppps_edit.php:771
 #: usr/local/www/interfaces_ppps_edit.php:778
 msgid "will be auto-negotiated by default."
-msgstr "オートネゴシエーションはデフォルトでとなります。"
+msgstr "は、デフォルトでオートネゴシエーションになります。"
 
 #: usr/local/www/interfaces_ppps_edit.php:771
 #: usr/local/www/interfaces_ppps_edit.php:772
@@ -27972,20 +28013,21 @@ msgstr "MRRU"
 #: usr/local/www/interfaces_ppps_edit.php:778
 #: usr/local/www/interfaces_ppps_edit.php:778
 msgid "Set ONLY for MLPPP connections."
-msgstr "ONLY MLPPP接続に設定します。"
+msgstr "MLPPP 接続に「のみ」設定します。"
 
 #: usr/local/www/interfaces_qinq.php:64 usr/local/www/interfaces_qinq.php:66
 #: usr/local/www/interfaces_qinq.php:66
 msgid ""
 "This QinQ cannot be deleted because it is still being used as an interface."
-msgstr "それはまだインターフェイスとして使用されているため、 「これのQinQを削除することはできません。"
+msgstr ""
+"この QinQ は削除できません。インタフェースとして使用されています。"
 
 #: usr/local/www/interfaces_qinq.php:86
 #: usr/local/www/interfaces_qinq_edit.php:39
 #: usr/local/www/interfaces_qinq.php:89 usr/local/www/interfaces_qinq.php:89
 #: usr/local/www/interfaces_qinq_edit.php:39
 msgid "QinQ"
-msgstr "のQinQ"
+msgstr "QinQ"
 
 #: usr/local/www/interfaces_qinq.php:117
 #: usr/local/www/interfaces_qinq_edit.php:356
@@ -28000,12 +28042,12 @@ msgstr "タグ"
 #: usr/local/www/interfaces_qinq.php:118 usr/local/www/interfaces_qinq.php:119
 #: usr/local/www/interfaces_qinq.php:122 usr/local/www/interfaces_qinq.php:122
 msgid "QinQ members"
-msgstr "QinQのメンバー"
+msgstr "QinQ　メンバ"
 
 #: usr/local/www/interfaces_qinq.php:142 usr/local/www/interfaces_qinq.php:143
 #: usr/local/www/interfaces_qinq.php:146 usr/local/www/interfaces_qinq.php:146
 msgid "Do you really want to delete this QinQ?"
-msgstr "あなたは本当にこのQinQのを削除しますか？"
+msgstr "本当にこの QinQ を削除しますか？"
 
 #: usr/local/www/interfaces_qinq.php:153 usr/local/www/interfaces_qinq.php:154
 #: usr/local/www/interfaces_qinq.php:157 usr/local/www/interfaces_qinq.php:157
@@ -28014,13 +28056,16 @@ msgid ""
 "Not all drivers/NICs support 802.1Q QinQ tagging properly. On cards that do "
 "not explicitly support it, QinQ tagging will still work, but the reduced MTU "
 "may cause problems. See the %s handbook for information on supported cards."
-msgstr "明示的にサポートしていない"すべてのドライバ/ NICが802.1Q QinQのがないカードでは。適切にタグ付けをサポートしない」 、のQinQタギングはまだ動作しますが、縮小MTUは「問題が発生することがあります。サポートされているカードについては、 %sハンドブックを参照してください。"
+msgstr "
+"全てのドライバや NIC が 802.1Q QinQ タギングを適切に対応しているわけではありません。" 
+"明示的に対応していないカードでは、QinQ タギングが動作しても、MTU の減少が問題を引き起こす"
+"可能性があります。対応カードの情報に関しては、%s ハンドブックを参照してください。"
 
 #: usr/local/www/interfaces_qinq_edit.php:84
 #: usr/local/www/interfaces_qinq_edit.php:85
 #: usr/local/www/interfaces_qinq_edit.php:85
 msgid "First level tag cannot be empty."
-msgstr "最初のレベルのタグは空にすることはできません。"
+msgstr "第 1 階層タグは空にできません"
 
 #: usr/local/www/interfaces_qinq_edit.php:86
 #: usr/local/www/interfaces_qinq_edit.php:87
@@ -28028,20 +28073,23 @@ msgstr "最初のレベルのタグは空にすることはできません。"
 msgid ""
 "You are editing an existing entry and modifying the first level tag is not "
 "allowed."
-msgstr "「既存のエントリを編集し、最初のレベルのタグがされていない変更している」ことができました。"
+msgstr ""
+"既存のエントリを編集して、"
+"第 1 階層タグを不許可に修正しています。"
 
 #: usr/local/www/interfaces_qinq_edit.php:88
 #: usr/local/www/interfaces_qinq_edit.php:89
 #: usr/local/www/interfaces_qinq_edit.php:89
 msgid ""
 "You are editing an existing entry and modifying the interface is not allowed."
-msgstr "「あなたは、既存のエントリを編集して、インターフェイスが許可されていない変更している。"
+msgstr ""
+"既存のエントリを編集して、インタフェースを不許可に修正しています。"
 
 #: usr/local/www/interfaces_qinq_edit.php:92
 #: usr/local/www/interfaces_qinq_edit.php:93
 #: usr/local/www/interfaces_qinq_edit.php:93
 msgid "QinQ level already exists for this interface, edit it!"
-msgstr "このインターフェイスは、それを編集するためにQinQのレベルがすでに存在しています！"
+msgstr "このインタフェースには QinQ 階層が存在しています。編集してください！"
 
 #: usr/local/www/interfaces_qinq_edit.php:96
 #: usr/local/www/interfaces_qinq_edit.php:97
@@ -28049,7 +28097,9 @@ msgstr "このインターフェイスは、それを編集するためにQinQ�
 msgid ""
 "A normal VLAN exists with this tag please remove it to use this tag for QinQ "
 "first level."
-msgstr "最初のレベル「正常なVLANは、このタグに存在し、それがQinQのために、このタグを使用するために削除してください」 。"
+msgstr ""
+"このタグには、通常の VLAN が存在しています。"
+"このタグを QinQ 第 1 階層として使用するには、それを削除してください。"
 
 #: usr/local/www/interfaces_qinq_edit.php:123
 #: usr/local/www/interfaces_qinq_edit.php:133
@@ -28058,14 +28108,14 @@ msgstr "最初のレベル「正常なVLANは、このタグに存在し、そ�
 #: usr/local/www/interfaces_qinq_edit.php:124
 #: usr/local/www/interfaces_qinq_edit.php:134
 msgid "Tags can contain only numbers or a range in format #-#."
-msgstr "タグは、数字や形式の範囲を含めることができます"
+msgstr "タグに使用できるのは、数字、もしくは #-# 形式の範囲のみです"
 
 #: usr/local/www/interfaces_qinq_edit.php:193
 #: usr/local/www/interfaces_qinq_edit.php:194
 #: usr/local/www/interfaces_qinq_edit.php:197
 #: usr/local/www/interfaces_qinq_edit.php:197
 msgid "QinQ VLANs group"
-msgstr "QinQのVLANのグループ"
+msgstr "QinQ VLAN グループ"
 
 #: usr/local/www/interfaces_qinq_edit.php:269
 #: usr/local/www/interfaces_qinq_edit.php:270
@@ -28073,7 +28123,7 @@ msgstr "QinQのVLANのグループ"
 #: usr/local/www/interfaces_qinq_edit.php:272
 #: usr/local/www/interfaces_qinq_edit.php:272
 msgid "members"
-msgstr "メンバー"
+msgstr "メンバ"
 
 #: usr/local/www/interfaces_qinq_edit.php:273
 #: usr/local/www/interfaces_qinq_edit.php:274
@@ -28088,21 +28138,21 @@ msgstr "詳細"
 #: usr/local/www/interfaces_qinq_edit.php:289
 #: usr/local/www/interfaces_qinq_edit.php:289
 msgid "Interface QinQ Edit"
-msgstr "インタフェースのQinQ編集"
+msgstr "インタフェース QinQ 編集"
 
 #: usr/local/www/interfaces_qinq_edit.php:305
 #: usr/local/www/interfaces_qinq_edit.php:306
 #: usr/local/www/interfaces_qinq_edit.php:309
 #: usr/local/www/interfaces_qinq_edit.php:309
 msgid "Only QinQ capable interfaces will be shown."
-msgstr "唯一のQinQが可能なインターフェースが表示されます。"
+msgstr "QinQ 対応インタフェースのみが表示されます"
 
 #: usr/local/www/interfaces_qinq_edit.php:308
 #: usr/local/www/interfaces_qinq_edit.php:309
 #: usr/local/www/interfaces_qinq_edit.php:312
 #: usr/local/www/interfaces_qinq_edit.php:312
 msgid "First level tag"
-msgstr "最初のレベルのタグ"
+msgstr "第 1 階層タグ"
 
 #: usr/local/www/interfaces_qinq_edit.php:313
 #: usr/local/www/interfaces_qinq_edit.php:314
@@ -28111,7 +28161,9 @@ msgstr "最初のレベルのタグ"
 msgid ""
 "This is the first level VLAN tag. On top of this are stacked the member "
 "VLANs defined below."
-msgstr "「これは最初のレベルのVLANタグです。その上に積層されたメンバーで「 VLANが以下に定義。"
+msgstr ""
+"これは、第 1 階層 VLAN タグです。"
+"下記で定義されるメンバ VLAN の積層の一番上になります。"
 
 #: usr/local/www/interfaces_qinq_edit.php:333
 #: usr/local/www/interfaces_qinq_edit.php:334
@@ -28119,7 +28171,8 @@ msgstr "「これは最初のレベルのVLANタグです。その上に積層�
 #: usr/local/www/interfaces_qinq_edit.php:337
 msgid ""
 "Adds interface to QinQ interface groups so you can write filter rules easily."
-msgstr "あなたが簡単にフィルタルールを作成することができますので、 「 QinQサブインターフェイスグループにインターフェイスを追加します。"
+msgstr ""
+"QinQ インタフェースグループにインタフェースを追加すると、フィルタルールを書くのが楽になります。"
 
 #: usr/local/www/interfaces_qinq_edit.php:350
 #: usr/local/www/interfaces_qinq_edit.php:351
@@ -28128,21 +28181,23 @@ msgstr "あなたが簡単にフィルタルールを作成することができ
 msgid ""
 "You can specify ranges in the input below. The format is pretty simple i.e "
 "9-100 or 10.20..."
-msgstr "「あなたは、以下の入力で範囲を指定することができます。形式、すなわち非常に簡単です」 9から100または10.20を..."
+msgstr ""
+"下記の入力で範囲を指定できます。形式は非常にシンプルです。"
+"例としては、9-100 もしくは、10.20... です。
 
 #: usr/local/www/interfaces_wireless.php:63
 #: usr/local/www/interfaces_wireless.php:65
 #: usr/local/www/interfaces_wireless.php:65
 msgid ""
 "This wireless clone cannot be deleted because it is assigned as an interface."
-msgstr "それはインターフェイスとして割り当てられているので、「このワイヤレスクローンは削除できません。"
+msgstr "この無線クローンは削除できません。インタフェースとして割当てられています"
 
 #: usr/local/www/interfaces_wireless.php:124
 #: usr/local/www/interfaces_wireless.php:125
 #: usr/local/www/interfaces_wireless.php:127
 #: usr/local/www/interfaces_wireless.php:127
 msgid "Do you really want to delete this wireless clone?"
-msgstr "あなたは本当にこのワイヤレスクローンを削除しますか？"
+msgstr "本当にこの無線クローンを削除しますか？"
 
 #: usr/local/www/interfaces_wireless.php:135
 #: usr/local/www/interfaces_wireless.php:136
@@ -28153,7 +28208,11 @@ msgid ""
 "as separate independent interfaces. Only available on wireless chipsets that "
 "support this, with limitations on the number that can be created in each "
 "mode."
-msgstr "別々の独立したインターフェイスとして「ここでは、割り当て可能な無線インタフェースのクローンを、設定することができます」 。モード」それぞれに作成できる数には制限付きで、これをサポートする」と無線チップセットでのみ使用できます。"
+msgstr ""
+"ここでは、無線インタフェースのクローンを構成できます。"
+"これは、個々の独立したインタフェースとして割当することができます。"
+"この機能に対応している無線チップセットのみで利用可能です。"
+"いずれのモードでも、作成できる数に制限があります。"
 
 #: usr/local/www/interfaces_wireless_edit.php:116
 #: usr/local/www/interfaces_wireless_edit.php:118
@@ -28161,14 +28220,17 @@ msgstr "別々の独立したインターフェイスとして「ここでは、
 msgid ""
 "This wireless clone cannot be modified because it is still assigned as an "
 "interface."
-msgstr "インターフェース「それはまだとして割り当てられているため、この無線クローンは変更できません」 。"
+msgstr ""
+"この無線クローンは変更できません。インタフェースとして"
+"割当てられています。"
 
 #: usr/local/www/interfaces_wireless_edit.php:118
 #: usr/local/www/interfaces_wireless_edit.php:120
 #: usr/local/www/interfaces_wireless_edit.php:120
 msgid ""
 "Use the configuration page for the assigned interface to change the mode."
-msgstr "」モードを変更するには、割り当てられたインターフェイスの設定ページを使用します。"
+msgstr ""
+"割当てられているインタフェースのモードを変更するには、構成ページを使用してください"
 
 #: usr/local/www/interfaces_wireless_edit.php:123
 #: usr/local/www/interfaces_wireless_edit.php:125
@@ -28177,20 +28239,22 @@ msgstr "」モードを変更するには、割り当てられたインターフ
 msgid ""
 "Error creating interface with mode %1$s. The %2$s interface may not support "
 "creating more clones with the selected mode."
-msgstr "選択したモードでより多くのクローンを作成する」モードは%1$sとのインタフェースを作成するにエラーが発生しました。 %2$sインタフェースはサポートしていない可能性が」 。"
+msgstr ""
+"%1$s モードでインタフェース作成エラーが発生しました。%2$s インタフェースは、"
+"選択したモードでは、これ以上クローンを作成できません。"
 
 #: usr/local/www/interfaces_wireless_edit.php:128
 #: usr/local/www/interfaces_wireless_edit.php:130
 #: usr/local/www/interfaces_wireless_edit.php:130
 #, php-format
 msgid "Created with id %s"
-msgstr "IDの%sを使用して作成"
+msgstr "ID %s で作成しました"
 
 #: usr/local/www/interfaces_wireless_edit.php:131
 #: usr/local/www/interfaces_wireless_edit.php:133
 #: usr/local/www/interfaces_wireless_edit.php:133
 msgid "Created without id"
-msgstr "IDなしで作成"
+msgstr "ID なしで作成しました"
 
 #: usr/local/www/interfaces_wireless_edit.php:156
 #: usr/local/www/interfaces_wireless_edit.php:158
@@ -28203,7 +28267,9 @@ msgstr "無線クローン構成"
 msgid ""
 "This entry cannot be deleted because it is still referenced by at least one "
 "pool."
-msgstr "プール「それはまだ少なくとも1によって参照されているため、このエントリは削除できません」 。"
+msgstr ""
+"このエントリは削除できません。"
+"1 つ以上のプールから参照されています"
 
 #: usr/local/www/load_balancer_monitor.php:102
 #: usr/local/www/load_balancer_relay_protocol.php:114
@@ -28215,12 +28281,12 @@ msgstr "プール「それはまだ少なくとも1によって参照されて�
 #: usr/local/www/load_balancer_setting.php:110
 #: usr/local/www/load_balancer_monitor.php:100
 msgid "The load balancer configuration has been changed"
-msgstr "ロードバランサ設定が変更されました"
+msgstr "ロードバランサ構成が変更されました"
 
 #: usr/local/www/vpn_pppoe.php:96 usr/local/www/vpn_pppoe.php:97
 #: usr/local/www/vpn_pppoe.php:98 usr/local/www/vpn_pppoe.php:98
 msgid "The PPPoE entry list has been changed"
-msgstr "PPPoEのエントリーリストが変更されました"
+msgstr "PPPoE エントリリストが変更されました"
 
 #: usr/local/www/vpn_pppoe.php:103
 #: usr/local/www/services_captiveportal_zones.php:54
@@ -28229,41 +28295,43 @@ msgstr "PPPoEのエントリーリストが変更されました"
 #: usr/local/www/vpn_pppoe.php:105 usr/local/www/vpn_pppoe.php:105
 #: usr/local/www/services_captiveportal_zones.php:55
 msgid "Number of users"
-msgstr "ユーザー数"
+msgstr "ユーザ数"
 
 #: usr/local/www/vpn_pppoe.php:109 usr/local/www/vpn_pppoe.php:144
 #: usr/local/www/vpn_pppoe.php:110 usr/local/www/vpn_pppoe.php:145
 #: usr/local/www/vpn_pppoe.php:111 usr/local/www/vpn_pppoe.php:146
 #: usr/local/www/vpn_pppoe.php:111 usr/local/www/vpn_pppoe.php:146
 msgid "add a new pppoe instance"
-msgstr "新しいのPPPoEインスタンスを追加"
+msgstr "新規 PPPoE インスタンスを追加"
 
 #: usr/local/www/vpn_pppoe.php:131 usr/local/www/vpn_pppoe.php:132
 #: usr/local/www/vpn_pppoe.php:133 usr/local/www/vpn_pppoe.php:133
 msgid "edit pppoe instance"
-msgstr "編集のPPPoEインスタンス"
+msgstr "PPPoE インスタンスの編集"
 
 #: usr/local/www/vpn_pppoe.php:132 usr/local/www/vpn_pppoe.php:133
 #: usr/local/www/vpn_pppoe.php:134 usr/local/www/vpn_pppoe.php:134
 msgid ""
 "Do you really want to delete this entry? All elements that still use it will "
 "become invalid (e.g. filter rules)!"
-msgstr " （例えばフィルタルール）が無効になる「本当に？まだそれを使用するすべての要素がします、このエントリを削除しますか"！"
+msgstr ""
+"本当にこのエントリを削除しますか？"
+"全ての要素は、まだ使用中であっても無効になります ( 例: フィルタルール ) ！"
 
 #: usr/local/www/vpn_pppoe.php:132 usr/local/www/vpn_pppoe.php:133
 #: usr/local/www/vpn_pppoe.php:134 usr/local/www/vpn_pppoe.php:134
 msgid "delete pppoe instance"
-msgstr "のPPPoEインスタンスを削除"
+msgstr "PPPoE インスタンスの削除"
 
 #: usr/local/www/load_balancer_monitor_edit.php:66
 #: usr/local/www/load_balancer_monitor_edit.php:66
 msgid "Load Balancer: Monitor:"
-msgstr "ロード·バランサ：モニタ："
+msgstr "ロードバランサ: モニタ: "
 
 #: usr/local/www/load_balancer_monitor_edit.php:95
 #: usr/local/www/load_balancer_monitor_edit.php:95
 msgid "This monitor name has already been used. Monitor names must be unique."
-msgstr "このモニタ名が既に使用されています。モニター名は一意でなければなりません。"
+msgstr "このモニタ名は既に使用されています。モニタ名は固有です。"
 
 #: usr/local/www/load_balancer_monitor_edit.php:98
 #: usr/local/www/load_balancer_pool_edit.php:86
@@ -28275,7 +28343,7 @@ msgstr "このモニタ名が既に使用されています。モニター名は
 #: usr/local/www/load_balancer_monitor_edit.php:98
 #: usr/local/www/load_balancer_pool_edit.php:86
 msgid "You cannot use spaces in the 'name' field."
-msgstr "あなたは、 「名前」欄にスペースを使用することはできません。"
+msgstr "「名前」フィールドにスペースを使用できません"
 
 #: usr/local/www/load_balancer_monitor_edit.php:112
 #: usr/local/www/services_dhcp_edit.php:118
@@ -28291,23 +28359,23 @@ msgstr "あなたは、 「名前」欄にスペースを使用することは�
 #: usr/local/www/load_balancer_monitor_edit.php:112
 #: usr/local/www/services_dnsmasq_edit.php:86
 msgid "The hostname can only contain the characters A-Z, 0-9 and '-'."
-msgstr "' -'ホスト名は文字だけ、A〜Z、0〜9とを含むことができます。"
+msgstr "ホスト名には、A〜Z、0〜9、- のみが使用できます。"
 
 #: usr/local/www/load_balancer_monitor_edit.php:118
 #: usr/local/www/load_balancer_monitor_edit.php:118
 msgid "HTTP(s) codes must be from RFC2616."
-msgstr "HTTP（S ）コードはRFC2616からのものでなければなりません。"
+msgstr "HTTP(S) のコードは RFC2616 に従ってください"
 
 #: usr/local/www/load_balancer_monitor_edit.php:122
 #: usr/local/www/load_balancer_monitor_edit.php:122
 msgid "The path to monitor must be set."
-msgstr "監視するためのパスを設定する必要があります。"
+msgstr "モニタするパスを設定してください"
 
 #: usr/local/www/load_balancer_monitor_edit.php:145
 #: usr/local/www/load_balancer_monitor_edit.php:145
 #, php-format
 msgid "modified '%s' monitor:"
-msgstr "修正された「 %s'モニター："
+msgstr "%s モニタが変更されました: "
 
 #: usr/local/www/load_balancer_monitor_edit.php:199
 #: usr/local/www/load_balancer_monitor_edit.php:197
@@ -28350,13 +28418,13 @@ msgstr "HTTPS"
 #: usr/local/www/load_balancer_monitor_edit.php:197
 #: usr/local/www/load_balancer_monitor_edit.php:333
 msgid "Send/Expect"
-msgstr "センド/期待"
+msgstr "送信 / 期待"
 
 #: usr/local/www/load_balancer_monitor_edit.php:232
 #: usr/local/www/load_balancer_monitor_edit.php:230
 #: usr/local/www/load_balancer_monitor_edit.php:230
 msgid "Edit Load Balancer - Monitor entry"
-msgstr "編集ロードバランサ - エントリを監視"
+msgstr "ロードバランサの編集 - モニタエントリ"
 
 #: usr/local/www/load_balancer_monitor_edit.php:272
 #: usr/local/www/load_balancer_monitor_edit.php:305
@@ -28407,7 +28475,7 @@ msgstr "ホスト"
 #: usr/local/www/load_balancer_monitor_edit.php:278
 #: usr/local/www/load_balancer_monitor_edit.php:311
 msgid "Hostname for Host: header if needed."
-msgstr "ホストのホスト名：ヘッダを必要に応じて。"
+msgstr "ホストのホスト名: ヘッダに必要な場合"
 
 #: usr/local/www/load_balancer_monitor_edit.php:284
 #: usr/local/www/load_balancer_monitor_edit.php:317
@@ -28416,74 +28484,74 @@ msgstr "ホストのホスト名：ヘッダを必要に応じて。"
 #: usr/local/www/load_balancer_monitor_edit.php:282
 #: usr/local/www/load_balancer_monitor_edit.php:315
 msgid "HTTP Code"
-msgstr "HTTPコード"
+msgstr "HTTP コード"
 
 #: usr/local/www/load_balancer_monitor_edit.php:339
 #: usr/local/www/load_balancer_monitor_edit.php:337
 #: usr/local/www/load_balancer_monitor_edit.php:337
 msgid "Send string"
-msgstr "文字列を送信"
+msgstr "送信する文字列"
 
 #: usr/local/www/load_balancer_monitor_edit.php:345
 #: usr/local/www/load_balancer_monitor_edit.php:343
 #: usr/local/www/load_balancer_monitor_edit.php:343
 msgid "Expect string"
-msgstr "文字列を期待する"
+msgstr "期待する文字列"
 
 #: usr/local/www/load_balancer_pool_edit.php:65
 #: usr/local/www/load_balancer_pool_edit.php:65
 msgid "Load Balancer: Pool:"
-msgstr "ロード·バランサ：プール："
+msgstr "ロードバランサ: プール: "
 
 #: usr/local/www/load_balancer_pool_edit.php:76
 #: usr/local/www/load_balancer_pool_edit.php:76
 msgid "Server List"
-msgstr "サーバーリスト"
+msgstr "サーバリスト"
 
 #: usr/local/www/load_balancer_pool_edit.php:83
 #: usr/local/www/load_balancer_pool_edit.php:83
 msgid "This pool name has already been used. Pool names must be unique."
-msgstr "このプール名が既に使用されています。プール名は一意でなければなりません。"
+msgstr "このプール名は既に使用されています。プール名は固有です。"
 
 #: usr/local/www/load_balancer_pool_edit.php:89
 #: usr/local/www/load_balancer_virtual_server_edit.php:92
 msgid "The port must be an integer between 1 and 65535."
-msgstr "ポートは1 〜65535の間の整数でなければなりません。"
+msgstr "ポートは、1 〜 65535 の整数です"
 
 #: usr/local/www/load_balancer_pool_edit.php:93
 #: usr/local/www/load_balancer_pool_edit.php:93
 msgid "The retry value must be an integer between 1 and 65535."
-msgstr "再試行値は1 〜65535の間の整数でなければなりません。"
+msgstr "再試行値は、1 〜 65535 の整数です"
 
 #: usr/local/www/load_balancer_pool_edit.php:98
 #, php-format
 msgid "%s is not a valid IP address (in "enabled" list)."
-msgstr "%sは（ 「有効」リスト中の）有効なIPアドレスではありません。"
+msgstr "「有効」リストの %s は有効な  IP アドレスではありません"
 
 #: usr/local/www/load_balancer_pool_edit.php:105
 #, php-format
 msgid "%s is not a valid IP address (in "disabled" list)."
-msgstr "%sは（ 「無効」リスト中の）有効なIPアドレスではありません。"
+msgstr "「無効」リストの %s は有効な  IP アドレスではありません"
 
 #: usr/local/www/load_balancer_pool_edit.php:114
 #: usr/local/www/load_balancer_pool_edit.php:120
 #: usr/local/www/load_balancer_pool_edit.php:120
 msgid "Invalid monitor chosen."
-msgstr "無効なモニタが選択した。"
+msgstr "無効なモニタが選択されました"
 
 #: usr/local/www/load_balancer_pool_edit.php:121
 #: usr/local/www/load_balancer_pool_edit.php:127
 #: usr/local/www/load_balancer_pool_edit.php:127
 #, php-format
 msgid " modified '%s' pool:"
-msgstr "修正された「 %s'プール："
+msgstr "%s プールが修正されました: "
 
 #: usr/local/www/load_balancer_pool_edit.php:178
 #: usr/local/www/load_balancer_pool_edit.php:186
 #: usr/local/www/load_balancer_pool_edit.php:184
 #: usr/local/www/load_balancer_pool_edit.php:184
 msgid "Add/edit Load Balancer - Pool entry"
-msgstr "追加/編集ロードバランサ - プールエントリ"
+msgstr "ロードバランサの追加 / 編集 - プールエントリ"
 
 #: usr/local/www/load_balancer_pool_edit.php:190
 #: usr/local/www/load_balancer_pool_edit.php:198
@@ -28497,21 +28565,21 @@ msgstr "負荷平衡"
 #: usr/local/www/load_balancer_pool_edit.php:197
 #: usr/local/www/load_balancer_pool_edit.php:197
 msgid "Manual Failover"
-msgstr "手動フェイルオーバー"
+msgstr "手動フェイルオーバ"
 
 #: usr/local/www/load_balancer_pool_edit.php:206
 #: usr/local/www/load_balancer_pool_edit.php:215
 #: usr/local/www/load_balancer_pool_edit.php:213
 #: usr/local/www/load_balancer_pool_edit.php:213
 msgid "This is the port your servers are listening on."
-msgstr "これは、サーバーがリッスンしているポートです。"
+msgstr "これはサーバがリスンしているポートです。"
 
 #: usr/local/www/load_balancer_pool_edit.php:210
 #: usr/local/www/load_balancer_pool_edit.php:227
 #: usr/local/www/load_balancer_pool_edit.php:225
 #: usr/local/www/load_balancer_pool_edit.php:225
 msgid "Retry"
-msgstr "リトライ"
+msgstr "再試行"
 
 #: usr/local/www/load_balancer_pool_edit.php:213
 #: usr/local/www/load_balancer_pool_edit.php:230
@@ -28520,14 +28588,16 @@ msgstr "リトライ"
 msgid ""
 "Optionally specify how many times to retry checking a server before "
 "declaring it down."
-msgstr "それを宣言する"オプションで前にサーバーをチェックし再試行する回数を指定」 。"
+msgstr ""
+"オプションで、サーバのダウンを宣言する前に、"
+"サーバに確認を試みる回数を指定します。"
 
 #: usr/local/www/load_balancer_pool_edit.php:220
 #: usr/local/www/load_balancer_pool_edit.php:237
 #: usr/local/www/load_balancer_pool_edit.php:235
 #: usr/local/www/load_balancer_pool_edit.php:235
 msgid "Add item to pool"
-msgstr "プールに項目を追加する"
+msgstr "プールに項目を追加"
 
 #: usr/local/www/load_balancer_pool_edit.php:238
 #: usr/local/www/load_balancer_pool_edit.php:255
@@ -28536,14 +28606,16 @@ msgstr "プールに項目を追加する"
 msgid ""
 "Please add a monitor IP address on the monitors tab if you wish to use this "
 "feature."
-msgstr "この機能を使用する場合のモニタ]タブで監視IPアドレスを追加してください。"
+msgstr ""
+"この機能を使用したい場合は、"
+"モニタタブで、モニタの IP アドレスを追加してください。
 
 #: usr/local/www/load_balancer_pool_edit.php:244
 #: usr/local/www/load_balancer_pool_edit.php:261
 #: usr/local/www/load_balancer_pool_edit.php:259
 #: usr/local/www/load_balancer_pool_edit.php:259
 msgid "Server IP Address"
-msgstr "サーバのIPアドレス"
+msgstr "サーバ IP アドレス"
 
 #: usr/local/www/load_balancer_pool_edit.php:247
 #: usr/local/www/load_balancer_pool_edit.php:264
@@ -28557,14 +28629,14 @@ msgstr "プールに追加"
 #: usr/local/www/load_balancer_pool_edit.php:269
 #: usr/local/www/load_balancer_pool_edit.php:269
 msgid "Current Pool Members"
-msgstr "現在のプールメンバー"
+msgstr "現在のプールメンバ"
 
 #: usr/local/www/load_balancer_pool_edit.php:264
 #: usr/local/www/load_balancer_pool_edit.php:281
 #: usr/local/www/load_balancer_pool_edit.php:279
 #: usr/local/www/load_balancer_pool_edit.php:279
 msgid "Pool Disabled"
-msgstr "プールバリアフリー"
+msgstr "プールを無効にしました"
 
 #: usr/local/www/load_balancer_pool_edit.php:277
 #: usr/local/www/load_balancer_pool_edit.php:300
@@ -28578,19 +28650,19 @@ msgstr "プールバリアフリー"
 #: usr/local/www/load_balancer_pool_edit.php:292
 #: usr/local/www/load_balancer_pool_edit.php:315
 msgid "Remove"
-msgstr "削除する"
+msgstr "削除"
 
 #: usr/local/www/load_balancer_pool_edit.php:287
 #: usr/local/www/load_balancer_pool_edit.php:304
 #: usr/local/www/load_balancer_pool_edit.php:302
 #: usr/local/www/load_balancer_pool_edit.php:302
 msgid "Enabled (default)"
-msgstr "有効（デフォルト）"
+msgstr "有効 ( デフォルト )"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:61
 #: usr/local/www/load_balancer_virtual_server_edit.php:61
 msgid "Load Balancer: Virtual Server:"
-msgstr "ロード·バランサ：仮想サーバー："
+msgstr "ロードバランサ: 仮想サーバ: "
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:77
 #: usr/local/www/load_balancer_virtual_server_edit.php:261
@@ -28603,33 +28675,33 @@ msgstr "ロード·バランサ：仮想サーバー："
 #: usr/local/www/load_balancer_virtual_server_edit.php:248
 #: usr/local/www/load_balancer_relay_protocol.php:100
 msgid "Relay Protocol"
-msgstr "リレー·プロトコル"
+msgstr "リレープロトコル"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:86
 #: usr/local/www/load_balancer_virtual_server_edit.php:86
 msgid ""
 "This virtual server name has already been used. Virtual server names must "
 "be unique."
-msgstr "「この仮想サーバー名はすでに使用されています。仮想サーバー名がなければなりません」で一意である。"
+msgstr "この仮想サーバ名は既に使用されています。仮想サーバ名は固有です。"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:95
 #, php-format
 msgid "%s is not a valid IP address."
-msgstr "%sは有効なIPアドレスではありません。"
+msgstr "%s は有効な IP アドレスではありません"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:102
 #: usr/local/www/load_balancer_virtual_server_edit.php:104
 #: usr/local/www/load_balancer_virtual_server_edit.php:104
 #, php-format
 msgid "modified '%s' vs:"
-msgstr "： VS修正' %s'"
+msgstr "%s 仮想サーバを変更しました: "
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:104
 #: usr/local/www/load_balancer_virtual_server_edit.php:106
 #: usr/local/www/load_balancer_virtual_server_edit.php:106
 #, php-format
 msgid "created '%s' vs:"
-msgstr "VS作成' %s 」 ："
+msgstr "%s 仮想サーバを作成しました: "
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:134
 #: usr/local/www/status_lb_vs.php:56
@@ -28644,7 +28716,7 @@ msgstr "仮想サーバ"
 #: usr/local/www/load_balancer_virtual_server_edit.php:152
 #: usr/local/www/load_balancer_virtual_server_edit.php:152
 msgid "Edit Load Balancer - Virtual Server entry"
-msgstr "編集ロードバランサ - 仮想サーバーのエントリ"
+msgstr "ロードバランサの編集 - 仮想サーバエントリ"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:198
 #: usr/local/www/load_balancer_virtual_server_edit.php:172
@@ -28654,7 +28726,9 @@ msgid ""
 "This is normally the WAN IP address that you would like the server to listen "
 "on. All connections to this IP and port will be forwarded to the pool "
 "cluster."
-msgstr "の「これは通常、サーバーが待機するようにしたいWAN IPアドレス」です。このIPとポートへのすべての接続プール」クラスタに転送されます。"
+msgstr ""
+"これは通常 リスンしたいサーバの WAN IP アドレスです。"
+"この IP とポートに対する全ての接続は、プールクラスタに転送されます。"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:205
 #: usr/local/www/load_balancer_virtual_server_edit.php:186
@@ -28663,14 +28737,16 @@ msgstr "の「これは通常、サーバーが待機するようにしたいWAN
 msgid ""
 "This is the port that the clients will connect to. All connections to this "
 "port will be forwarded to the pool cluster."
-msgstr "「これは、クライアントが接続するポートです。このへのすべての接続」ポートは、プールのクラスタに転送されます。"
+msgstr ""
+"これはクライアントが接続するポートです。"
+"このポートに対する全ての接続は、プールクラスタに転送されます。"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:209
 #: usr/local/www/load_balancer_virtual_server_edit.php:198
 #: usr/local/www/load_balancer_virtual_server_edit.php:196
 #: usr/local/www/load_balancer_virtual_server_edit.php:196
 msgid "Virtual Server Pool"
-msgstr "仮想サーバー·プール"
+msgstr "仮想サーバプール"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:212
 #: usr/local/www/load_balancer_virtual_server_edit.php:231
@@ -28681,7 +28757,7 @@ msgstr "仮想サーバー·プール"
 #: usr/local/www/load_balancer_virtual_server_edit.php:199
 #: usr/local/www/load_balancer_virtual_server_edit.php:218
 msgid "Please add a pool on the Pools tab to use this feature."
-msgstr "この機能を使用するには、プール]タブの[プールを追加してください。"
+msgstr "この機能を使用するには、プールタブで、プールを追加してください"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:244
 #: usr/local/www/load_balancer_virtual_server_edit.php:233
@@ -28690,7 +28766,9 @@ msgstr "この機能を使用するには、プール]タブの[プールを追�
 msgid ""
 "This is the server that clients will be redirected to if *ALL* servers in "
 "the pool are offline."
-msgstr "プールオフラインになっている"これは、クライアントが*での* ALLのサーバーがあればにリダイレクトされ、サーバーである「 。"
+msgstr ""
+"プールにある「全ての」サーバがオフラインの場合は、"
+"クライアントはこのサーバにリダイレクトされます。
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:279
 #: usr/local/www/status_captiveportal_test.php:92
@@ -28703,7 +28781,7 @@ msgstr "プールオフラインになっている"これは、クライアン�
 #: usr/local/www/status_captiveportal_expire.php:92
 #: usr/local/www/status_captiveportal_test.php:94
 msgid "Submit"
-msgstr "提出する"
+msgstr "提出"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:289
 #: usr/local/www/load_balancer_virtual_server_edit.php:278
@@ -28712,13 +28790,15 @@ msgstr "提出する"
 msgid ""
 "Don't forget to add a firewall rule for the virtual server/pool after you're "
 "finished setting it up."
-msgstr "それを設定終え「あなたがしているの後に、仮想サーバー/プールのファイアウォールルールを追加することを忘れないでください」 。"
+msgstr ""
+"設定を終了したら、その仮想サーバやプールに対して、"
+"ファイアウォールのルールを追加するのを忘れないで下さい。"
 
 #: usr/local/www/pkg_mgr.php:70 usr/local/www/pkg_mgr.php:82
 #: usr/local/www/pkg_mgr.php:89
 #, php-format
 msgid "Unable to retrieve package info from %s. Cached data will be used."
-msgstr "%s.からパッケージ情報を取得できませんキャッシュされたデータが使用される。"
+msgstr "%s からパッケージ情報を取得できません。キャッシュデータが使用されています"
 
 #: usr/local/www/pkg_mgr.php:73 usr/local/www/pkg_mgr.php:85
 #: usr/local/www/pkg_mgr.php:92
@@ -28726,7 +28806,9 @@ msgstr "%s.からパッケージ情報を取得できませんキャッシュさ
 msgid ""
 "Unable to communicate with %1$s. Please verify DNS and interface "
 "configuration, and that %2$s has functional Internet connectivity."
-msgstr "設定」は%1$sと通信できません。 DNSとのインタフェースを確認してください」 、およびその%2$s 、機能、インターネット接続を持っています。"
+msgstr ""
+"%1$s と通信できません。"
+"DNS、インタフェースの構成、及び、%2$s にインターネット接続機能があることを確認して下さい。"
 
 #: usr/local/www/pkg_mgr.php:122 usr/local/www/pkg_mgr.php:216
 #: usr/local/www/pkg_mgr.php:137 usr/local/www/pkg_mgr.php:243
@@ -28734,7 +28816,7 @@ msgstr "設定」は%1$sと通信できません。 DNSとのインタフェー�
 #: usr/local/www/pkg_mgr.php:249 usr/local/www/pkg_mgr.php:187
 #: usr/local/www/pkg_mgr.php:253
 msgid "There are currently no packages available for installation."
-msgstr "インストールのために利用可能なパッケージがありません。"
+msgstr "現在インストール可能なパッケージがありません"
 
 #: usr/local/www/pkg_mgr.php:192 usr/local/www/pkg_mgr.php:228
 #: usr/local/www/pkg_mgr.php:231 usr/local/www/pkg_mgr.php:235
@@ -28743,7 +28825,7 @@ msgstr "プラットフォーム"
 
 #: usr/local/www/pkg_mgr.php:210
 msgid "Do you really want to install this package?"
-msgstr "あなたは本当にこのパッケージをインストールしますか？"
+msgstr "本当にこのパッケージをインストールしますか？"
 
 #: usr/local/www/pkg_mgr_install.php:57 usr/local/www/pkg_mgr_install.php:55
 #: usr/local/www/pkg_mgr_install.php:55
@@ -28758,7 +28840,7 @@ msgstr "利用可能なパッケージ"
 #: usr/local/www/pkg_mgr_install.php:75 usr/local/www/pkg_mgr_install.php:73
 #: usr/local/www/pkg_mgr_install.php:73
 msgid "Installed packages"
-msgstr "インストールされたパッケージ"
+msgstr "インストール済パッケージ"
 
 #: usr/local/www/pkg_mgr_install.php:76 usr/local/www/pkg_mgr_install.php:74
 #: usr/local/www/pkg_mgr_install.php:74
@@ -28769,7 +28851,7 @@ msgstr "パッケージインストーラ"
 #: usr/local/www/pkg_mgr_install.php:132 usr/local/www/pkg_mgr_install.php:128
 #: usr/local/www/pkg_mgr_install.php:128
 msgid "Creating restore point before package installation."
-msgstr "パッケージのインストール前に復元ポイントを作成する。"
+msgstr "パッケージのインストール前に復元ポイントを作成しています"
 
 #: usr/local/www/pkg_mgr_install.php:132 usr/local/www/pkg_mgr_install.php:133
 #: usr/local/www/pkg_mgr_install.php:141 usr/local/www/pkg_mgr_install.php:142
@@ -28777,7 +28859,7 @@ msgstr "パッケージのインストール前に復元ポイントを作成す
 #: usr/local/www/pkg_mgr_install.php:135 usr/local/www/pkg_mgr_install.php:136
 #: usr/local/www/pkg_mgr_install.php:135 usr/local/www/pkg_mgr_install.php:136
 msgid "Package deleted."
-msgstr "パッケージが削除された。"
+msgstr "パッケージが削除されました"
 
 #: usr/local/www/pkg_mgr_install.php:147 usr/local/www/pkg_mgr_install.php:148
 #: usr/local/www/pkg_mgr_install.php:156 usr/local/www/pkg_mgr_install.php:157
@@ -28785,7 +28867,7 @@ msgstr "パッケージが削除された。"
 #: usr/local/www/pkg_mgr_install.php:150 usr/local/www/pkg_mgr_install.php:151
 #: usr/local/www/pkg_mgr_install.php:150 usr/local/www/pkg_mgr_install.php:151
 msgid "Package reinstallation failed."
-msgstr "パッケージの再インストールに失敗しました。"
+msgstr "パッケージの再インストールに失敗しました"
 
 #: usr/local/www/pkg_mgr_install.php:151 usr/local/www/pkg_mgr_install.php:152
 #: usr/local/www/pkg_mgr_install.php:160 usr/local/www/pkg_mgr_install.php:161
@@ -28793,20 +28875,20 @@ msgstr "パッケージの再インストールに失敗しました。"
 #: usr/local/www/pkg_mgr_install.php:154 usr/local/www/pkg_mgr_install.php:155
 #: usr/local/www/pkg_mgr_install.php:154 usr/local/www/pkg_mgr_install.php:155
 msgid "Package reinstalled."
-msgstr "パッケージには、再インストールしました。"
+msgstr "パッケージを再インストールしました"
 
 #: usr/local/www/pkg_mgr_install.php:163 usr/local/www/pkg_mgr_install.php:172
 #: usr/local/www/pkg_mgr_install.php:170 usr/local/www/pkg_mgr_install.php:166
 #: usr/local/www/pkg_mgr_install.php:166
 msgid "installation completed."
-msgstr "インストールが完了しました。"
+msgstr "インストールが完了しました"
 
 #: usr/local/www/pkg_mgr_install.php:166 usr/local/www/pkg_mgr_install.php:175
 #: usr/local/www/pkg_mgr_install.php:173 usr/local/www/pkg_mgr_install.php:169
 #: usr/local/www/pkg_mgr_install.php:169
 #, php-format
 msgid "Could not find %s."
-msgstr "%s.が見つかりませんでした"
+msgstr "%s がありません"
 
 #: usr/local/www/pkg_mgr_install.php:182 usr/local/www/pkg_mgr_install.php:183
 #: usr/local/www/pkg_mgr_install.php:191 usr/local/www/pkg_mgr_install.php:192
@@ -28814,7 +28896,7 @@ msgstr "%s.が見つかりませんでした"
 #: usr/local/www/pkg_mgr_install.php:184 usr/local/www/pkg_mgr_install.php:185
 #: usr/local/www/pkg_mgr_install.php:184 usr/local/www/pkg_mgr_install.php:185
 msgid "All packages reinstalled."
-msgstr "すべてのパッケージは、再インストールしました。"
+msgstr "全てのパッケージを再インストールしました"
 
 #: usr/local/www/pkg_mgr_install.php:190 usr/local/www/pkg_mgr_install.php:194
 #: usr/local/www/pkg_mgr_install.php:200 usr/local/www/pkg_mgr_install.php:204
@@ -28822,31 +28904,31 @@ msgstr "すべてのパッケージは、再インストールしました。"
 #: usr/local/www/pkg_mgr_install.php:195 usr/local/www/pkg_mgr_install.php:195
 #: usr/local/www/pkg_mgr_install.php:199
 msgid "Installation of"
-msgstr "の設置"
+msgstr "インストール: "
 
 #: usr/local/www/pkg_mgr_install.php:190 usr/local/www/pkg_mgr_install.php:200
 #: usr/local/www/pkg_mgr_install.php:199 usr/local/www/pkg_mgr_install.php:195
 #: usr/local/www/pkg_mgr_install.php:195
 msgid "FAILED!"
-msgstr "FAILED ！"
+msgstr "失敗しました！"
 
 #: usr/local/www/pkg_mgr_install.php:191 usr/local/www/pkg_mgr_install.php:201
 #: usr/local/www/pkg_mgr_install.php:200 usr/local/www/pkg_mgr_install.php:196
 #: usr/local/www/pkg_mgr_install.php:196
 msgid "Installation halted."
-msgstr "インストールが停止した。"
+msgstr "インストールが停止しました"
 
 #: usr/local/www/pkg_mgr_install.php:194 usr/local/www/pkg_mgr_install.php:204
 #: usr/local/www/pkg_mgr_install.php:203 usr/local/www/pkg_mgr_install.php:199
 #: usr/local/www/pkg_mgr_install.php:199
 msgid "completed."
-msgstr "完了しました。"
+msgstr "完了しました"
 
 #: usr/local/www/pkg_mgr_install.php:198 usr/local/www/pkg_mgr_install.php:208
 #: usr/local/www/pkg_mgr_install.php:207 usr/local/www/pkg_mgr_install.php:203
 #: usr/local/www/pkg_mgr_install.php:203
 msgid "Installation completed."
-msgstr "インストールが完了しました。"
+msgstr "インストールが完了しました"
 
 #: usr/local/www/pkg_mgr_install.php:198 usr/local/www/pkg_mgr_install.php:208
 #: usr/local/www/pkg_mgr_install.php:207 usr/local/www/pkg_mgr_install.php:203
@@ -28860,51 +28942,53 @@ msgstr "セットアップ手順"
 msgid ""
 "Installation completed. Please check to make sure that the package is "
 "configured from the respective menu then start the package."
-msgstr "それぞれのメニューから構成された「インストール完了しました。パッケージがされていることを確認するためにチェックしてください」 、パッケージを起動します。"
+msgstr ""
+"インストールが完了しました。個別のメニューからパッケージが構成されていることを確認した上で、"
+"パッケージを起動してください。"
 
 #: usr/local/www/preload.php:6
 msgid "You are not allowed to access this page."
-msgstr "あなたは、このページにアクセスすることはできません。"
+msgstr "このページにはアクセスできません"
 
 #: usr/local/www/progress.php:25 usr/local/www/progress.php:22
 msgid "Invalid Meter ID"
-msgstr "無効なメーター番号"
+msgstr "Meter ID は無効です"
 
 #: usr/local/www/progress.php:46 usr/local/www/progress.php:43
 msgid "UPLOAD completed"
-msgstr "アップロード完了"
+msgstr "アップロードが完了しました"
 
 #: usr/local/www/progress.php:58 usr/local/www/progress.php:55
 msgid "Uploading Files... Please wait..."
-msgstr "ファイルのアップロード...しばらくお待ちください..."
+msgstr "ファイルをアップロードしています...しばらくお待ちください..."
 
 #: usr/local/www/progress.php:68 usr/local/www/progress.php:65
 msgid "Uploading files..."
-msgstr "ファイルのアップロード..."
+msgstr "ファイルをアップロードしています..."
 
 #: usr/local/www/progress.php:87 usr/local/www/progress.php:84
 msgid "Time Remaining:"
-msgstr "残り時間："
+msgstr "残り時間: "
 
 #: usr/local/www/progress.php:88 usr/local/www/progress.php:85
 msgid "Speed:"
-msgstr "スピード："
+msgstr "速度: "
 
 #: usr/local/www/progress.php:88 usr/local/www/progress.php:85
 msgid "KB/sec"
-msgstr "KB /秒"
+msgstr "KB/sec"
 
 #: usr/local/www/progress.php:92 usr/local/www/progress.php:89
 msgid "Uploaded:"
-msgstr "アップした人："
+msgstr "アップロードしました: "
 
 #: usr/local/www/progress.php:93 usr/local/www/progress.php:90
 msgid "File Size:"
-msgstr "ファイルサイズ："
+msgstr "ファイルサイズ: "
 
 #: usr/local/www/progress.php:97 usr/local/www/progress.php:94
 msgid "Completed:"
-msgstr "完成："
+msgstr "完了しました: "
 
 #: usr/local/www/diag_dns.php:34 usr/local/www/diag_dns.php:250
 #: usr/local/www/fbegin.inc:192 usr/local/www/fbegin.inc:210
@@ -28913,11 +28997,11 @@ msgstr "完成："
 #: usr/local/www/diag_dns.php:34 usr/local/www/diag_dns.php:266
 #: usr/local/www/fbegin.inc:209
 msgid "DNS Lookup"
-msgstr "DNSルックアップ"
+msgstr "DNS ルックアップ"
 
 #: usr/local/www/diag_dns.php:100 usr/local/www/diag_dns.php:100
 msgid "Host must be a valid hostname or IP address."
-msgstr "ホストは、有効なホスト名またはIPアドレスでなければなりません。"
+msgstr "ホストには、有効なホスト名または IP アドレスが必要です"
 
 #: usr/local/www/diag_dns.php:110 usr/local/www/diag_dns.php:109
 #: usr/local/www/diag_dns.php:109
@@ -28927,12 +29011,12 @@ msgstr "応答なし"
 #: usr/local/www/diag_dns.php:143 usr/local/www/diag_dns.php:142
 #: usr/local/www/diag_dns.php:142
 msgid "No record found"
-msgstr "見つからレコードません"
+msgstr "レコードがありません"
 
 #: usr/local/www/diag_dns.php:158 usr/local/www/diag_dns.php:157
 #: usr/local/www/diag_dns.php:174 usr/local/www/diag_dns.php:174
 msgid "Resolve DNS hostname or IP"
-msgstr "DNSホスト名またはIPアドレスを解決する"
+msgstr "DNS ホスト名または IP アドレスを名前解決"
 
 #: usr/local/www/diag_dns.php:161 usr/local/www/system_authservers.php:162
 #: usr/local/www/system_authservers.php:185 usr/local/www/diag_dns.php:160
@@ -28943,12 +29027,12 @@ msgstr "DNSホスト名またはIPアドレスを解決する"
 #: usr/local/www/system_authservers.php:164
 #: usr/local/www/system_authservers.php:187 usr/local/www/diag_dns.php:177
 msgid "Hostname or IP"
-msgstr "ホスト名またはIP"
+msgstr "ホスト名または IP"
 
 #: usr/local/www/diag_dns.php:203 usr/local/www/diag_dns.php:202
 #: usr/local/www/diag_dns.php:219 usr/local/www/diag_dns.php:219
 msgid "Resolution time per server"
-msgstr "サーバあたりの解決時間"
+msgstr "サーバあたりの名前解決時間"
 
 #: usr/local/www/diag_dns.php:211 usr/local/www/diag_dns.php:210
 #: usr/local/www/diag_dns.php:227 usr/local/www/diag_dns.php:227
@@ -28958,7 +29042,7 @@ msgstr "クエリ時間"
 #: usr/local/www/diag_dns.php:235 usr/local/www/diag_dns.php:234
 #: usr/local/www/diag_dns.php:251 usr/local/www/diag_dns.php:251
 msgid "More Information:"
-msgstr "その他の情報："
+msgstr "その他の情報: "
 
 #: usr/local/www/diag_dns.php:237 usr/local/www/diag_ping.php:43
 #: usr/local/www/diag_ping.php:87 usr/local/www/diag_ping.php:119
@@ -28970,7 +29054,7 @@ msgstr "その他の情報："
 #: usr/local/www/diag_ping.php:94 usr/local/www/diag_ping.php:141
 #: usr/local/www/diag_dns.php:253 usr/local/www/fbegin.inc:217
 msgid "Ping"
-msgstr "ピン"
+msgstr "Ping"
 
 #: usr/local/www/diag_dns.php:238 usr/local/www/diag_traceroute.php:45
 #: usr/local/www/diag_traceroute.php:86 usr/local/www/diag_traceroute.php:112
@@ -28983,24 +29067,26 @@ msgstr "ピン"
 #: usr/local/www/diag_traceroute.php:96 usr/local/www/diag_traceroute.php:155
 #: usr/local/www/diag_dns.php:254 usr/local/www/fbegin.inc:228
 msgid "Traceroute"
-msgstr "トレースルート"
+msgstr "Traceroute"
 
 #: usr/local/www/diag_dns.php:240 usr/local/www/diag_dns.php:239
 #: usr/local/www/diag_dns.php:256 usr/local/www/diag_dns.php:256
 msgid ""
 "NOTE: The following links are to external services, so their reliability "
 "cannot be guaranteed."
-msgstr ""注：以下のリンクは外部のサービスにあるため、その信頼性」は保証できません。"
+msgstr ""
+"注意: 以下は、外部サービスへのリンクです。"
+"そのため、信頼性を保証できません"
 
 #: usr/local/www/diag_dns.php:241 usr/local/www/diag_dns.php:240
 #: usr/local/www/diag_dns.php:257 usr/local/www/diag_dns.php:257
 msgid "IP WHOIS @ DNS Stuff"
-msgstr "DNSのスタッフ@のIP WHOIS"
+msgstr "IP WHOIS @ DNS Stuff"
 
 #: usr/local/www/diag_dns.php:242 usr/local/www/diag_dns.php:241
 #: usr/local/www/diag_dns.php:258 usr/local/www/diag_dns.php:258
 msgid "IP Info @ DNS Stuff"
-msgstr "IP情報@ DNSのスタッフ"
+msgstr "IP Info @ DNS Stuff"
 
 #: usr/local/www/reboot.php:44
 msgid " Yes "
@@ -29009,49 +29095,49 @@ msgstr "はい"
 #: usr/local/www/reboot.php:45 usr/local/www/reboot.php:76
 #: usr/local/www/reboot.php:56 usr/local/www/reboot.php:56
 msgid "The system is rebooting now. This may take one minute."
-msgstr "システムがリブートされます。これは1分かかる場合があります。"
+msgstr "システムを再起動しています。1 分程かかります"
 
 #: usr/local/www/reboot.php:51 usr/local/www/reboot.php:48
 #: usr/local/www/reboot.php:48
 msgid "Reboot System"
-msgstr "システムを再起動"
+msgstr "システムの再起動"
 
 #: usr/local/www/reboot.php:59 usr/local/www/reboot.php:62
 #: usr/local/www/reboot.php:62
 msgid "Are you sure you want to reboot the system?"
-msgstr "あなたは、システムを再起動してもよろしいですか？"
+msgstr "システムを再起動してもよろしいですか？"
 
 #: usr/local/www/restart_httpd.php:42 usr/local/www/restart_httpd.php:42
 msgid "Restarting httpd"
-msgstr "httpdのを再起動する"
+msgstr "httpd を再起動しています"
 
 #: usr/local/www/restart_httpd.php:50 usr/local/www/restart_httpd.php:50
 msgid "Mounting file systems read/write"
-msgstr "ファイルシステムのマウントは読み取り/書き込み"
+msgstr "ファイルシステムを読み込み / 書き込みでマウントしています"
 
 #: usr/local/www/restart_httpd.php:53 usr/local/www/restart_httpd.php:53
 msgid "Forcing all PHP file permissions to 0755"
-msgstr "0755へのすべてのPHPファイルのパーミッションを強制的に"
+msgstr "全ての PHP ファイルのパーミッションを 0755 に強制しています"
 
 #: usr/local/www/restart_httpd.php:56 usr/local/www/restart_httpd.php:56
 msgid "Mounting file systems read only"
-msgstr "ファイルシステムのマウントは読み取り専用"
+msgstr "ファイルシステムを読み込み専用でマウントしています"
 
 #: usr/local/www/restart_httpd.php:59 usr/local/www/restart_httpd.php:59
 msgid "Restarting mini_httpd"
-msgstr "mini_httpdを再起動する"
+msgstr "mini_httpd を再起動しています"
 
 #: usr/local/www/edit.php:39 usr/local/www/edit.php:42
 #: usr/local/www/edit.php:41 usr/local/www/edit.php:41
 msgid "Edit file"
-msgstr "編集ファイル"
+msgstr "ファイルの編集"
 
 #: usr/local/www/edit.php:46 usr/local/www/edit.php:62
 #: usr/local/www/edit.php:49 usr/local/www/edit.php:65
 #: usr/local/www/edit.php:48 usr/local/www/edit.php:48
 #: usr/local/www/edit.php:65
 msgid "No file name specified"
-msgstr "指定したファイル名ない"
+msgstr "ファイル名が指定されていません"
 
 #: usr/local/www/edit.php:48 usr/local/www/edit.php:51
 #: usr/local/www/edit.php:50 usr/local/www/edit.php:50
@@ -29061,7 +29147,7 @@ msgstr "ディレクトリの読み込みはサポートされていません"
 #: usr/local/www/edit.php:50 usr/local/www/edit.php:53
 #: usr/local/www/edit.php:52 usr/local/www/edit.php:52
 msgid "File does not exist or is not a regular file"
-msgstr "ファイルが存在しないか、定期的なファイルではない。"
+msgstr "ファイルが存在しないか、標準のファイルではありません"
 
 #: usr/local/www/edit.php:54 usr/local/www/edit.php:57
 #: usr/local/www/edit.php:56 usr/local/www/edit.php:56
@@ -29076,42 +29162,42 @@ msgstr "ファイルの書き込みに失敗しました"
 #: usr/local/www/edit.php:76 usr/local/www/edit.php:79
 #: usr/local/www/edit.php:79
 msgid "Error while writing file"
-msgstr "エラーファイルの書き込み中に"
+msgstr "ファイルの書き込み中にエラーが発生しました"
 
 #: usr/local/www/edit.php:78 usr/local/www/edit.php:81
 #: usr/local/www/edit.php:81
 msgid "File successfully saved"
-msgstr "保存されたファイルを正常"
+msgstr "ファイルは正常に保存されました"
 
 #: usr/local/www/edit.php:98 usr/local/www/edit.php:101
 #: usr/local/www/edit.php:101
 msgid "Loading file"
-msgstr "ロードファイル"
+msgstr "ファイルを読み込んでいます"
 
 #: usr/local/www/edit.php:117 usr/local/www/edit.php:120
 #: usr/local/www/edit.php:121 usr/local/www/edit.php:121
 msgid "File successfully loaded"
-msgstr "ロードファイルを正常"
+msgstr "ファイルは正常に読み込まれました"
 
 #: usr/local/www/edit.php:140 usr/local/www/edit.php:143
 #: usr/local/www/edit.php:144 usr/local/www/edit.php:144
 msgid "Saving file"
-msgstr "ファイルの保存"
+msgstr "ファイルを保存しています"
 
 #: usr/local/www/edit.php:177 usr/local/www/edit.php:180
 #: usr/local/www/edit.php:181 usr/local/www/edit.php:181
 msgid "Save / Load from path"
-msgstr "パスからセーブ/ロード"
+msgstr "パスから保存 / 読み込み"
 
 #: usr/local/www/edit.php:179 usr/local/www/edit.php:182
 #: usr/local/www/edit.php:183 usr/local/www/edit.php:183
 msgid "Load"
-msgstr "ロード"
+msgstr "読み込み"
 
 #: usr/local/www/edit.php:180 usr/local/www/edit.php:183
 #: usr/local/www/edit.php:184 usr/local/www/edit.php:184
 msgid "Browse"
-msgstr "ブラウズ"
+msgstr "参照"
 
 #: usr/local/www/services_captiveportal.php:63
 #: usr/local/www/services_captiveportal_filemanager.php:75
@@ -29200,7 +29286,9 @@ msgstr "ゾーン名"
 msgid ""
 "The captive portal cannot be used on interface %s since it is part of a "
 "bridge."
-msgstr "橋"それはの一部であるためキャプティブポータルは、インタフェース%sで使用することはできません」 。"
+msgstr ""
+"%s インタフェースでキャプティブポータルは使用できません。"
+"ブリッジの一部になっています"
 
 #: usr/local/www/services_captiveportal.php:158
 #: usr/local/www/services_captiveportal.php:159
@@ -29211,12 +29299,14 @@ msgstr "橋"それはの一部であるためキャプティブポータルは�
 msgid ""
 "The captive portal cannot be used on interface %s since it is used already "
 "on %s instance."
-msgstr "%sインスタンス上で「それが既に使用されているので、キャプティブポータルは、インターフェイス%sで使用することはできません」 。"
+msgstr ""
+"%s インタフェースでキャプティブポータルは使用できません。"
+"%s インスタンスで既に使用されています"
 
 #: usr/local/www/services_captiveportal.php:166
 #: usr/local/www/services_captiveportal.php:167
 msgid "Certificate and key must be specified for HTTPS login."
-msgstr "証明書とキーは、HTTPSのログインを指定する必要があります。"
+msgstr "HTTPS ログインでは、証明書と鍵を指定してください"
 
 #: usr/local/www/services_captiveportal.php:169
 #: usr/local/www/system_camanager.php:168
@@ -29228,24 +29318,24 @@ msgstr "証明書とキーは、HTTPSのログインを指定する必要があ�
 #: usr/local/www/system_camanager.php:170
 #: usr/local/www/system_certmanager.php:199
 msgid "This certificate does not appear to be valid."
-msgstr "この証明書は有効であると表示されません。"
+msgstr "この証明書は有効ではありません"
 
 #: usr/local/www/services_captiveportal.php:171
 #: usr/local/www/services_captiveportal.php:172
 msgid "This intermmediate certificate does not appear to be valid."
-msgstr "このintermmediate証明書が有効であると表示されません。"
+msgstr "この中間証明書は有効ではありません"
 
 #: usr/local/www/services_captiveportal.php:173
 #: usr/local/www/services_captiveportal.php:174
 msgid "This key does not appear to be valid."
-msgstr "このキーは有効であると表示されません。"
+msgstr "この鍵は有効ではありません"
 
 #: usr/local/www/services_captiveportal.php:177
 #: usr/local/www/services_captiveportal.php:178
 #: usr/local/www/services_captiveportal.php:176
 #: usr/local/www/services_captiveportal.php:178
 msgid "The HTTPS server name must be specified for HTTPS login."
-msgstr "HTTPSサーバ名は、HTTPSのログインを指定する必要があります。"
+msgstr "HTTPS ログインでは、HTTPS サーバ名を指定してください"
 
 #: usr/local/www/services_captiveportal.php:183
 #: usr/local/www/services_captiveportal.php:184
@@ -29253,7 +29343,7 @@ msgstr "HTTPSサーバ名は、HTTPSのログインを指定する必要があ�
 #: usr/local/www/services_captiveportal.php:185
 #: usr/local/www/services_captiveportal.php:185
 msgid "The timeout must be at least 1 minute."
-msgstr "タイムアウトは1分以上にする必要があります。"
+msgstr "タイムアウトは 1 分以上に設定してください"
 
 #: usr/local/www/services_captiveportal.php:186
 #: usr/local/www/services_captiveportal.php:187
@@ -29261,7 +29351,7 @@ msgstr "タイムアウトは1分以上にする必要があります。"
 #: usr/local/www/services_captiveportal.php:203
 #: usr/local/www/services_captiveportal.php:203
 msgid "The idle timeout must be at least 1 minute."
-msgstr "アイドルタイムアウトは1分以上にする必要があります。"
+msgstr "アイドルタイムアウトは 1 分以上に設定してください"
 
 #: usr/local/www/services_captiveportal.php:189
 #: usr/local/www/services_captiveportal.php:190
@@ -29269,7 +29359,7 @@ msgstr "アイドルタイムアウトは1分以上にする必要がありま�
 #: usr/local/www/services_captiveportal.php:206
 #: usr/local/www/services_captiveportal.php:206
 msgid "The pass-through credit count must be a number or left blank."
-msgstr "パススルークレジット数は、番号または左空白にする必要があります。"
+msgstr "パススルークレジット数は、数字もしくは空白です"
 
 #: usr/local/www/services_captiveportal.php:192
 #: usr/local/www/services_captiveportal.php:193
@@ -29278,7 +29368,8 @@ msgstr "パススルークレジット数は、番号または左空白にする
 #: usr/local/www/services_captiveportal.php:209
 msgid ""
 "The waiting period to restore pass-through credits must be above 0 hours."
-msgstr "「パススルークレジットを復元するために待機期間が0時間以上でなければなりません。"
+msgstr ""
+"パススルークレジットの復元待機時間は、0 時間以上です"
 
 #: usr/local/www/services_captiveportal.php:196
 #: usr/local/www/services_captiveportal.php:199
@@ -29306,7 +29397,7 @@ msgstr "「パススルークレジットを復元するために待機期間が
 #: usr/local/www/services_captiveportal.php:222
 #, php-format
 msgid "A valid IP address must be specified. [%s]"
-msgstr "有効なIPアドレスを指定する必要があります。 （ （ %s ） ）"
+msgstr "有効なIPアドレスを指定してください: [%s]"
 
 #: usr/local/www/services_captiveportal.php:208
 #: usr/local/www/services_captiveportal.php:211
@@ -29335,7 +29426,7 @@ msgstr "有効なIPアドレスを指定する必要があります。 （ （ %
 #: usr/local/www/services_captiveportal.php:237
 #, php-format
 msgid "A valid port number must be specified. [%s]"
-msgstr "有効なポート番号を指定する必要があります。 （ （ %s ） ）"
+msgstr "有効なポート番号を指定してください: [%s]"
 
 #: usr/local/www/services_captiveportal.php:223
 #: usr/local/www/services_captiveportal.php:224
@@ -29345,7 +29436,9 @@ msgstr "有効なポート番号を指定する必要があります。 （ （ 
 msgid ""
 "The maximum number of concurrent connections per client IP address may not "
 "be larger than the global maximum."
-msgstr "「クライアントIPアドレスごとの同時接続の最大数がないことが、「世界的な最大値よりも大きくなる。"
+msgstr ""
+"クライアント IP アドレス毎の同時接続の最大数は、"
+"全体の最大数よりも小さくする必要があります"
 
 #: usr/local/www/services_captiveportal.php:421
 #: usr/local/www/services_captiveportal.php:425
@@ -29353,7 +29446,7 @@ msgstr "「クライアントIPアドレスごとの同時接続の最大数が�
 #: usr/local/www/services_captiveportal.php:441
 #: usr/local/www/services_captiveportal.php:441
 msgid "Captive portal(s)"
-msgstr "キャプティブポータル（ S ）"
+msgstr "キャプティブポータル"
 
 #: usr/local/www/services_captiveportal.php:422
 #: usr/local/www/services_captiveportal_filemanager.php:151
@@ -29379,7 +29472,7 @@ msgstr "キャプティブポータル（ S ）"
 #: usr/local/www/services_captiveportal.php:442
 #: usr/local/www/services_captiveportal_mac.php:163
 msgid "Pass-through MAC"
-msgstr "パススルーMAC"
+msgstr "パススルー MAC"
 
 #: usr/local/www/services_captiveportal.php:423
 #: usr/local/www/services_captiveportal_filemanager.php:152
@@ -29402,7 +29495,7 @@ msgstr "パススルーMAC"
 #: usr/local/www/services_captiveportal.php:443
 #: usr/local/www/services_captiveportal_mac.php:164
 msgid "Allowed IP addresses"
-msgstr "許可するIPアドレス"
+msgstr "許可された IP アドレス"
 
 #: usr/local/www/services_captiveportal.php:424
 #: usr/local/www/services_captiveportal_filemanager.php:153
@@ -29492,7 +29585,7 @@ msgstr "バウチャー"
 #: usr/local/www/services_captiveportal.php:446
 #: usr/local/www/services_captiveportal_mac.php:167
 msgid "File Manager"
-msgstr "ファイルマネージャー"
+msgstr "ファイルマネージャ"
 
 #: usr/local/www/services_captiveportal.php:436
 #: usr/local/www/services_captiveportal.php:440
@@ -29500,7 +29593,7 @@ msgstr "ファイルマネージャー"
 #: usr/local/www/services_captiveportal.php:456
 #: usr/local/www/services_captiveportal.php:456
 msgid "Enable captive portal"
-msgstr "キャプティブポータルを有効にする"
+msgstr "キャプティブポータルを有効"
 
 #: usr/local/www/services_captiveportal.php:450
 #: usr/local/www/services_captiveportal.php:455
@@ -29508,7 +29601,7 @@ msgstr "キャプティブポータルを有効にする"
 #: usr/local/www/services_captiveportal.php:471
 #: usr/local/www/services_captiveportal.php:471
 msgid "Select the interface(s) to enable for captive portal."
-msgstr "キャプティブポータルのために有効にインターフェイスを選択します。"
+msgstr "キャプティブポータルを有効にするインタフェースを選択してください"
 
 #: usr/local/www/services_captiveportal.php:453
 #: usr/local/www/services_captiveportal.php:458
@@ -29516,7 +29609,7 @@ msgstr "キャプティブポータルのために有効にインターフェイ
 #: usr/local/www/services_captiveportal.php:474
 #: usr/local/www/services_captiveportal.php:474
 msgid "Maximum concurrent connections"
-msgstr "最大同時接続"
+msgstr "同時接続の最大数"
 
 #: usr/local/www/services_captiveportal.php:457
 #: usr/local/www/services_captiveportal.php:462
@@ -29524,7 +29617,7 @@ msgstr "最大同時接続"
 #: usr/local/www/services_captiveportal.php:478
 #: usr/local/www/services_captiveportal.php:478
 msgid "per client IP address (0 = no limit)"
-msgstr "クライアントのIPアドレスごとに（ 0 =制限なし）"
+msgstr "クライアント IP アドレス毎（ 0 = 制限なし )"
 
 #: usr/local/www/services_captiveportal.php:460
 msgid ""
@@ -29533,7 +29626,11 @@ msgid ""
 "the captive portal, but rather how many users can load the portal page or "
 "authenticate at the same time! Default is 4 connections per client IP "
 "address, with a total maximum of 16 connections."
-msgstr "ポータルHTTP（S ）サーバ「この設定では、キャプティブへの同時接続数を制限します」 。これはにログインできるユーザー数は設定しません」キャプティブポータルのではなく、どのように多くのユーザーがポータル·ページをロードしたりすることができ、「同じ時間に で認証！デフォルトは16接続の合計、最大、クライアントのIP "アドレスあたり4接続です。"
+msgstr ""
+"この設定は、キャプティブポータル HTTP(S) サーバに対する同時接続数を制限します。"
+"キャプティブポータルにログインできるユーザ数の設定ではありません。"
+"どちらかと言えば、ポータルページの読み込みや認証を、ユーザが同時に実行できる数です。"
+"デフォルトでは、クライアント IP アドレス毎に 4 接続、合計で最大 16 接続までです。"
 
 #: usr/local/www/services_captiveportal.php:468
 #: usr/local/www/services_captiveportal.php:475
@@ -29565,7 +29662,9 @@ msgstr "分"
 msgid ""
 "Clients will be disconnected after this amount of inactivity. They may log "
 "in again immediately, though. Leave this field blank for no idle timeout."
-msgstr "「クライアントが非アクティブな状態がこの量の後に切断されます。彼らが記録されることがあり、「しかし、すぐに再度。なしアイドルタイムアウトのために、このフィールドは空白のままにします。"
+msgstr ""
+"クライアントがこの時間非アクティブ状態であれば切断されます。しかし、すぐに再度ログインします。"
+"このフィールドを空白にすれば、アイドルタイムアウトは設定されません"
 
 #: usr/local/www/services_captiveportal.php:472
 #: usr/local/www/services_captiveportal.php:477
@@ -29584,7 +29683,10 @@ msgid ""
 "Clients will be disconnected after this amount of time, regardless of "
 "activity. They may log in again immediately, though. Leave this field blank "
 "for no hard timeout (not recommended unless an idle timeout is set)."
-msgstr "活性」クライアントは関係なく、この時間後に切断されます」 。彼らは、しかし、すぐに再度ログインすることができる。なしハードタイムアウトのため、このフィールドを空白にして」のままに（アイドルタイムアウトが設定されていない限りお勧めしません） 。"
+msgstr ""
+"クライアントは、アクティブ状態にかかわらず、この時間が経てば切断されます。しかし、すぐに再度ログインします。"
+"このフィールドを空白にすれば、ハードタイムアウトは設定されません。"
+"( アイドルタイムアウトが設定されているのでなければ、非推奨です )"
 
 #: usr/local/www/services_captiveportal.php:479
 #: usr/local/www/services_captiveportal.php:484
@@ -29592,7 +29694,7 @@ msgstr "活性」クライアントは関係なく、この時間後に切断さ
 #: usr/local/www/services_captiveportal.php:500
 #: usr/local/www/services_captiveportal.php:500
 msgid "Pass-through credits allowed per MAC address"
-msgstr "MACアドレスごとに許可されるパススルークレジット"
+msgstr "MAC アドレス毎に許可されるパススルークレジット"
 
 #: usr/local/www/services_captiveportal.php:482
 #: usr/local/www/services_captiveportal.php:487
@@ -29600,7 +29702,7 @@ msgstr "MACアドレスごとに許可されるパススルークレジット"
 #: usr/local/www/services_captiveportal.php:503
 #: usr/local/www/services_captiveportal.php:503
 msgid "per client MAC address (0 or blank = none)"
-msgstr "クライアントのMACアドレスごと（ 0または空白=なし）"
+msgstr "クライアントの MAC アドレス毎 ( 0 または空白 = なし )"
 
 #: usr/local/www/services_captiveportal.php:483
 #: usr/local/www/services_captiveportal.php:488
@@ -29613,7 +29715,12 @@ msgid ""
 "client can only log in with valid credentials until the waiting period "
 "specified below has expired. Recommended to set a hard timeout and/or idle "
 "timeout when using this for it to be effective."
-msgstr "認証、MACアドレスごとに限られた回数を"この設定はせずにキャプティブポータルを通過することができます」 。以下に指定の有効期限が切れた後は使い切って、 「待機期間がするまで、クライアントは、有効な資格情報を使ってログインすることができます」 。それを有効にするには、これを使用する際にハードタイムアウトおよび/またはアイドル"タイムアウトを設定することをお勧めします。"
+msgstr ""
+"この設定は、MAC アドレス毎で回数を制限した、認証なしでのキャプティブポータルへの"
+"パススルーを許可します。回数制限を使い切ると、クライアントは、下記で指定する待ち時間の"
+"期限が切れるまで、有効な資格情報でしかログインできません。"
+"これを効果的に使用するには、ハードタイムアウトとアイドルタイムアウトの両方、もしくはどちらかを"
+"設定することを推奨します。"
 
 #: usr/local/www/services_captiveportal.php:486
 #: usr/local/www/services_captiveportal.php:491
@@ -29621,7 +29728,7 @@ msgstr "認証、MACアドレスごとに限られた回数を"この設定は�
 #: usr/local/www/services_captiveportal.php:507
 #: usr/local/www/services_captiveportal.php:507
 msgid "Waiting period to restore pass-through credits"
-msgstr "パススルークレジットを復元するために時間を待っている"
+msgstr "パススルークレジットを復元する待ち時間"
 
 #: usr/local/www/services_captiveportal.php:489
 #: usr/local/www/services_captiveportal.php:494
@@ -29629,7 +29736,7 @@ msgstr "パススルークレジットを復元するために時間を待って
 #: usr/local/www/services_captiveportal.php:510
 #: usr/local/www/services_captiveportal.php:510
 msgid "hours"
-msgstr "営業時間"
+msgstr "時間"
 
 #: usr/local/www/services_captiveportal.php:490
 #: usr/local/www/services_captiveportal.php:495
@@ -29640,7 +29747,10 @@ msgid ""
 "Clients will have their available pass-through credits restored to the "
 "original count after this amount of time since using the first one. This "
 "must be above 0 hours if pass-through credits are enabled."
-msgstr "最初のものを使用しているので、この時間後に元の数」クライアントは、利用可能なパススルークレジットに復元されます」 。パススルークレジットが有効になっている場合、これは「 0時間以上でなければなりません。"
+msgstr ""
+"クライアントは自分自身が利用可能なパススルークレジットを持っています。"
+"最初のクレジットが使用されてから、この時間が経過すると、元々持っていた数に復元されます。"
+"パススルークレジットが有効な場合は、0 時間以上に設定してください。"
 
 #: usr/local/www/services_captiveportal.php:493
 #: usr/local/www/services_captiveportal.php:498
@@ -29648,7 +29758,7 @@ msgstr "最初のものを使用しているので、この時間後に元の数
 #: usr/local/www/services_captiveportal.php:514
 #: usr/local/www/services_captiveportal.php:514
 msgid "Reset waiting period on attempted access"
-msgstr "試みられたアクセスに時間を待ってリセット"
+msgstr "アクセス試行による待ち時間リセット"
 
 #: usr/local/www/services_captiveportal.php:496
 #: usr/local/www/services_captiveportal.php:501
@@ -29656,7 +29766,7 @@ msgstr "試みられたアクセスに時間を待ってリセット"
 #: usr/local/www/services_captiveportal.php:517
 #: usr/local/www/services_captiveportal.php:517
 msgid "Enable waiting period reset on attempted access"
-msgstr "試みられたアクセスに期間のリセットを待って有効にします"
+msgstr "アクセス試行による待ち時間リセットを有効"
 
 #: usr/local/www/services_captiveportal.php:497
 #: usr/local/www/services_captiveportal.php:502
@@ -29666,7 +29776,9 @@ msgstr "試みられたアクセスに期間のリセットを待って有効に
 msgid ""
 "If enabled, the waiting period is reset to the original duration if access "
 "is attempted when all pass-through credits have already been exhausted."
-msgstr "すべてのパススルークレジットが既に尽きた時に試行されている「アクセスがあれば有効にした場合、待機期間は、元の継続時間にリセットされます」 。"
+msgstr ""
+"有効な場合は、全てのパススルークレジットを使い切っている状態でアクセスが試みられると、"
+"待ち時間は、元の時間にリセットされます。"
 
 #: usr/local/www/services_captiveportal.php:500
 #: usr/local/www/services_captiveportal.php:505
@@ -29682,7 +29794,7 @@ msgstr "ログアウトポップアップウィンドウ"
 #: usr/local/www/services_captiveportal.php:524
 #: usr/local/www/services_captiveportal.php:524
 msgid "Enable logout popup window"
-msgstr "ログアウトポップアップウィンドウを有効にする"
+msgstr "ログアウトポップアップウィンドウを有効"
 
 #: usr/local/www/services_captiveportal.php:504
 #: usr/local/www/services_captiveportal.php:509
@@ -29693,7 +29805,10 @@ msgid ""
 "If enabled, a popup window will appear when clients are allowed through the "
 "captive portal. This allows clients to explicitly disconnect themselves "
 "before the idle or hard timeout occurs."
-msgstr "キャプティブポータル「クライアントが通過を許可している場合に有効にした場合、ポップアップウィンドウが表示されます」 。これはアイドル状態またはハードタイムアウトが発生する前に、クライアントが明示的に「自分自身を切断することができます。"
+msgstr ""
+"有効な場合は、クライアントがキャプティブポータルの通過を許可された場合に"
+"ポップアップウィンドウが表示されます。アイドルタイムアウトやハードタイムアウトが"
+"発生する前に、クライアントが明示的に切断することができます。"
 
 #: usr/local/www/services_captiveportal.php:507
 #: usr/local/www/services_captiveportal.php:512
@@ -29701,7 +29816,7 @@ msgstr "キャプティブポータル「クライアントが通過を許可し
 #: usr/local/www/services_captiveportal.php:528
 #: usr/local/www/services_captiveportal.php:528
 msgid "Pre-authentication redirect URL"
-msgstr "事前認証のリダイレクトURL"
+msgstr "事前認証リダイレクト URL"
 
 #: usr/local/www/services_captiveportal.php:510
 #: usr/local/www/services_captiveportal.php:515
