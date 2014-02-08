@@ -1612,7 +1612,7 @@ msgstr "リクエスト送信エラー: "
 
 #: etc/inc/radius.inc:410 etc/inc/radius.inc:412 etc/inc/radius.inc:412
 msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting"
-msgstr "RADIUS_ACCESS_ACCEPT: アカウント認証で予期せぬエラーが発生しました"
+msgstr "RADIUS_ACCESS_ACCEPT: アカウンティングで予期せぬエラーが発生しました"
 
 #: etc/inc/radius.inc:419 etc/inc/radius.inc:421 etc/inc/radius.inc:421
 msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
@@ -20867,7 +20867,7 @@ msgstr ""
 #: usr/local/www/firewall_schedule_edit.php:913
 #: usr/local/www/firewall_schedule_edit.php:995
 msgid "Start Time"
-msgstr "時間開始"
+msgstr "開始時間"
 
 #: usr/local/www/firewall_schedule_edit.php:914
 #: usr/local/www/firewall_schedule_edit.php:997
@@ -20876,7 +20876,7 @@ msgstr "時間開始"
 #: usr/local/www/firewall_schedule_edit.php:913
 #: usr/local/www/firewall_schedule_edit.php:996
 msgid "Stop Time"
-msgstr "時間停止"
+msgstr "停止時間"
 
 #: usr/local/www/firewall_schedule_edit.php:927
 #: usr/local/www/firewall_schedule_edit.php:952
@@ -24739,7 +24739,7 @@ msgstr "キャプティブポータル: MAC/IP アドレスのパススルー・
 
 #: usr/local/www/license.php:137 usr/local/www/license.php:137
 msgid "accounting;"
-msgstr "アカウント認証・"
+msgstr "アカウントティング・"
 
 #: usr/local/www/license.php:138 usr/local/www/license.php:138
 msgid "HTTP server concurrency limit"
@@ -25099,7 +25099,7 @@ msgstr ""
 msgid ""
 "A NTP Time Server name may only contain the characters a-z, 0-9, '-' and '.'."
 msgstr ""
-"NTP 時間サーバ名には、"
+"NTP 時刻サーバ名には、"
 "a 〜 z、0 〜 9、-、. のみが使用できます。"
 
 #: usr/local/www/system.php:231 usr/local/www/fbegin.inc:85
@@ -25196,7 +25196,7 @@ msgid ""
 "will not be assigned to DHCP and PPTP VPN clients."
 msgstr ""
 "このオプションが設定されると、%s は、WAN の DHCP/PPP サーバが、"
-"自分たちの目的 ( DNS フォワーダを含む ) で割り当てた DNS サーバを使用します。"
+"自分の用途 ( DNS フォワーダを含む ) で割り当てた DNS サーバを使用します。"
 "しかし、DHCP と PPTP VPN クライアントは割り当てられません。"
 
 #: usr/local/www/system.php:355 usr/local/www/system.php:366
@@ -25233,7 +25233,7 @@ msgstr "最も近い場所を選択してください"
 #: usr/local/www/system.php:399 usr/local/www/system.php:397
 #: usr/local/www/system.php:397
 msgid "NTP time server"
-msgstr "NTP タイムサーバ"
+msgstr "NTP 時刻サーバ"
 
 #: usr/local/www/system.php:400 usr/local/www/system.php:411
 #: usr/local/www/system.php:404 usr/local/www/system.php:402
@@ -27773,7 +27773,7 @@ msgid ""
 msgstr ""
 "アイドルタイムアウトが発生した場合、ダイヤルオンデマンドオプションが有効なら、"
 "MPD はダイヤルオンデマンドモードに戻ります。さもなくば、インタフェースはダウンし、"
-"アソシエーションした全てのルートは削除されます。"
+"関係する全てのルートは削除されます。"
 
 #: usr/local/www/interfaces_ppps_edit.php:694
 #: usr/local/www/vpn_openvpn_client.php:787
@@ -28042,7 +28042,7 @@ msgstr "タグ"
 #: usr/local/www/interfaces_qinq.php:118 usr/local/www/interfaces_qinq.php:119
 #: usr/local/www/interfaces_qinq.php:122 usr/local/www/interfaces_qinq.php:122
 msgid "QinQ members"
-msgstr "QinQ　メンバ"
+msgstr "QinQ メンバ"
 
 #: usr/local/www/interfaces_qinq.php:142 usr/local/www/interfaces_qinq.php:143
 #: usr/local/www/interfaces_qinq.php:146 usr/local/www/interfaces_qinq.php:146
@@ -28074,8 +28074,8 @@ msgid ""
 "You are editing an existing entry and modifying the first level tag is not "
 "allowed."
 msgstr ""
-"既存のエントリを編集して、"
-"第 1 階層タグを不許可に修正しています。"
+"既存のエントリを編集していますが、"
+"第 1 階層タグの修正は許可されていません。"
 
 #: usr/local/www/interfaces_qinq_edit.php:88
 #: usr/local/www/interfaces_qinq_edit.php:89
@@ -28083,7 +28083,7 @@ msgstr ""
 msgid ""
 "You are editing an existing entry and modifying the interface is not allowed."
 msgstr ""
-"既存のエントリを編集して、インタフェースを不許可に修正しています。"
+"既存のエントリを編集してますが、インタフェースの修正は許可されていません。"
 
 #: usr/local/www/interfaces_qinq_edit.php:92
 #: usr/local/www/interfaces_qinq_edit.php:93
@@ -29397,7 +29397,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal.php:222
 #, php-format
 msgid "A valid IP address must be specified. [%s]"
-msgstr "有効なIPアドレスを指定してください: [%s]"
+msgstr "有効な IP アドレスを指定してください: [%s]"
 
 #: usr/local/www/services_captiveportal.php:208
 #: usr/local/www/services_captiveportal.php:211
@@ -29827,7 +29827,9 @@ msgstr "事前認証リダイレクト URL"
 msgid ""
 "Use this field to set $PORTAL_REDIRURL$ variable which can be accessed using "
 "your custom captive portal index.php page or error pages."
-msgstr "カスタムキャプティブポータルindex.phpページまたはエラーページ」を使用してアクセスすることができます $ PORTAL_REDIRURL $変数セットこのフィールドを使用する」 。"
+msgstr ""
+"このフィールドは、$PORTAL_REDIRURL$ 変数に設定されます。"
+"カスタムキャピタルポータルの index.php ページやエラーページを使用して、アクセスできるようになります。"
 
 #: usr/local/www/services_captiveportal.php:514
 #: usr/local/www/services_captiveportal.php:519
@@ -29835,7 +29837,7 @@ msgstr "カスタムキャプティブポータルindex.phpページまたはエ
 #: usr/local/www/services_captiveportal.php:535
 #: usr/local/www/services_captiveportal.php:535
 msgid "After authentication Redirection URL"
-msgstr "後に認証リダイレクトURL"
+msgstr "認証後リダイレクト URL"
 
 #: usr/local/www/services_captiveportal.php:518
 #: usr/local/www/services_captiveportal.php:523
@@ -29845,7 +29847,9 @@ msgstr "後に認証リダイレクトURL"
 msgid ""
 "If you provide a URL here, clients will be redirected to that URL instead of "
 "the one they initially tried to access after they've authenticated."
-msgstr "彼らが認証された後にアクセスするために、彼らが最初に試した1 "あなたはここにURLを指定した場合、クライアントは代わりにそのURLにリダイレクトされます」 。"
+msgstr ""
+"ここに URL を入力すると、クライアントの認証後に、"
+"最初にアクセスを試みた URL ではなく、入力された URL にリダイレクトされます。"
 
 #: usr/local/www/services_captiveportal.php:522
 #: usr/local/www/services_captiveportal.php:527
@@ -29861,7 +29865,7 @@ msgstr "同時ユーザログイン"
 #: usr/local/www/services_captiveportal.php:546
 #: usr/local/www/services_captiveportal.php:546
 msgid "Disable concurrent logins"
-msgstr "同時ログインを無効にする"
+msgstr "同時ログインを無効"
 
 #: usr/local/www/services_captiveportal.php:526
 #: usr/local/www/services_captiveportal.php:531
@@ -29872,7 +29876,10 @@ msgid ""
 "If this option is set, only the most recent login per username will be "
 "active. Subsequent logins will cause machines previously logged in with the "
 "same username to be disconnected."
-msgstr "アクティブ"このオプションが設定されている場合は、ユーザー名ごとに最終ログインはなります」 。以降のログインではマシンが以前に切断される「同じユーザ名でログインが発生します。"
+msgstr ""
+"このオプションが設定されると、ユーザ名毎に直近のログインのみが"
+"アクティブになります。"
+"同じユーザ名で再度ログインすると、前回のログインは切断されます。"
 
 #: usr/local/www/services_captiveportal.php:529
 #: usr/local/www/services_captiveportal.php:534
@@ -29880,7 +29887,7 @@ msgstr "アクティブ"このオプションが設定されている場合は�
 #: usr/local/www/services_captiveportal.php:550
 #: usr/local/www/services_captiveportal.php:550
 msgid "MAC filtering"
-msgstr "MACフィルタリング"
+msgstr "MAC フィルタリング"
 
 #: usr/local/www/services_captiveportal.php:532
 #: usr/local/www/services_captiveportal.php:537
@@ -29888,7 +29895,7 @@ msgstr "MACフィルタリング"
 #: usr/local/www/services_captiveportal.php:553
 #: usr/local/www/services_captiveportal.php:553
 msgid "Disable MAC filtering"
-msgstr "無効にするMACフィルタリング"
+msgstr "MAC フィルタリングを無効"
 
 #: usr/local/www/services_captiveportal.php:533
 #: usr/local/www/services_captiveportal.php:538
@@ -29900,7 +29907,11 @@ msgid ""
 "address of clients stays the same while they're logged in.This is required "
 "when the MAC address of the client cannot be determined (usually because "
 "there are routers between"
-msgstr "彼らはin.Thisが必要とされるログに記録している間にクライアントのアドレス同じまま"このオプションが設定されている場合、試みはMACがあることを確認するために行われることはありません""クライアントのMACアドレスを決定することができない場合（通常のため」が間のルータがあります"
+msgstr ""
+"このオプションが設定されると、ログイン中のクライアントの MAC アドレスに変更がないかどうかの"
+"確認を行いません。"
+"これは、クライアントの MAC アドレスが決定できない場合に必要となります。"
+"(通常は、"
 
 #: usr/local/www/services_captiveportal.php:534
 #: usr/local/www/services_captiveportal.php:539
@@ -29908,7 +29919,7 @@ msgstr "彼らはin.Thisが必要とされるログに記録している間に�
 #: usr/local/www/services_captiveportal.php:555
 #: usr/local/www/services_captiveportal.php:555
 msgid "and the clients)."
-msgstr "およびクライアント） 。"
+msgstr "とクライアントの間に、ルータがあるためです )"
 
 #: usr/local/www/services_captiveportal.php:535
 #: usr/local/www/services_captiveportal.php:540
@@ -29916,7 +29927,7 @@ msgstr "およびクライアント） 。"
 #: usr/local/www/services_captiveportal.php:556
 #: usr/local/www/services_captiveportal.php:556
 msgid "If this is enabled, RADIUS MAC authentication cannot be used."
-msgstr "これが有効になっている場合、 RADIUS MAC認証が使用できない。"
+msgstr "これが有効な場合、RADIUS MAC 認証は使用できません。"
 
 #: usr/local/www/services_captiveportal.php:538
 #: usr/local/www/services_captiveportal.php:543
@@ -29924,7 +29935,7 @@ msgstr "これが有効になっている場合、 RADIUS MAC認証が使用で�
 #: usr/local/www/services_captiveportal.php:559
 #: usr/local/www/services_captiveportal.php:559
 msgid "Pass-through MAC Auto Entry"
-msgstr "パススルーMAC自動エントリー"
+msgstr "パススルー MAC 自動エントリ"
 
 #: usr/local/www/services_captiveportal.php:541
 #: usr/local/www/services_captiveportal.php:546
@@ -29932,7 +29943,7 @@ msgstr "パススルーMAC自動エントリー"
 #: usr/local/www/services_captiveportal.php:562
 #: usr/local/www/services_captiveportal.php:562
 msgid "Enable Pass-through MAC automatic additions"
-msgstr "パススルーMAC自動追加を有効にする"
+msgstr "パススルー MAC 自動追加を有効"
 
 #: usr/local/www/services_captiveportal.php:542
 #: usr/local/www/services_captiveportal.php:547
@@ -29943,7 +29954,10 @@ msgid ""
 "If this option is set, a MAC passthrough entry is automatically added after "
 "the user has successfully authenticated. Users of that MAC address will "
 "never have to authenticate again."
-msgstr "ユーザーが正常に認証された」には、このオプションが設定されている場合、 MACパススルーエントリが後に自動的に追加されます」 。そのMACアドレスのユーザーは、 「再度認証する必要はありません。"
+msgstr ""
+"このオプションが設定されると、ユーザが正常に認証された後に、"
+"MAC パススルーエントリは自動的に追加されます。"
+"その MAC アドレスのユーザは、再度認証が必要になることはありません。"
 
 #: usr/local/www/services_captiveportal.php:543
 #: usr/local/www/services_captiveportal.php:549
@@ -29958,7 +29972,8 @@ msgstr "ユーザーが正常に認証された」には、このオプション
 msgid ""
 "To remove the passthrough MAC entry you either have to log in and remove it "
 "manually from the"
-msgstr "から手動で「パススルーMACエントリを削除するには、ログインして、それを削除する必要がいずれか""
+msgstr ""
+"パススルー MAC エントリを削除するには、ログインして、
 
 #: usr/local/www/services_captiveportal.php:543
 #: usr/local/www/services_captiveportal.php:549
@@ -29971,7 +29986,7 @@ msgstr "から手動で「パススルーMACエントリを削除するには、
 #: usr/local/www/services_captiveportal.php:564
 #: usr/local/www/services_captiveportal.php:570
 msgid "Pass-through MAC tab"
-msgstr "パススルーのMACタブ"
+msgstr "パススルー MAC タブ"
 
 #: usr/local/www/services_captiveportal.php:543
 #: usr/local/www/services_captiveportal.php:549
@@ -29984,7 +29999,7 @@ msgstr "パススルーのMACタブ"
 #: usr/local/www/services_captiveportal.php:564
 #: usr/local/www/services_captiveportal.php:570
 msgid "or send a POST from another system to remove it."
-msgstr "またはそれを削除するには、別のシステムからのPOSTを送信します。"
+msgstr "から手動で削除します。もしくは、別のシステムから削除するなら、POST を送信します。"
 
 #: usr/local/www/services_captiveportal.php:544
 #: usr/local/www/services_captiveportal.php:549
@@ -29994,7 +30009,9 @@ msgstr "またはそれを削除するには、別のシステムからのPOST�
 msgid ""
 "If this is enabled, RADIUS MAC authentication cannot be used. Also, the "
 "logout window will not be shown."
-msgstr "「これが有効になっている場合は、 RADIUS MAC認証を使用することはできません。また、「ログアウトウィンドウが表示されません。"
+msgstr ""
+"これが有効な場合は、RADIUS MAC 認証は使用できません。"
+"また、ログアウトウィンドウは表示されません。"
 
 #: usr/local/www/services_captiveportal.php:547
 #: usr/local/www/services_captiveportal.php:552
@@ -30002,7 +30019,7 @@ msgstr "「これが有効になっている場合は、 RADIUS MAC認証を使�
 #: usr/local/www/services_captiveportal.php:568
 #: usr/local/www/services_captiveportal.php:568
 msgid "Enable Pass-through MAC automatic addition with username"
-msgstr "パススルーMACのユーザー名で自動追加を有効にする"
+msgstr "ユーザ名でのパススルー MAC 自動追加を有効"
 
 #: usr/local/www/services_captiveportal.php:548
 #: usr/local/www/services_captiveportal.php:553
@@ -30012,7 +30029,9 @@ msgstr "パススルーMACのユーザー名で自動追加を有効にする"
 msgid ""
 "If this option is set, with the automatically MAC passthrough entry created "
 "the username, used during authentication, will be saved."
-msgstr "認証時に使用するユーザー名、 「このオプションは自動的に作成されたMACパススルーエントリと、設定されている場合は、「保存されます。"
+msgstr ""
+"このオプションが設定されると、MAC パススルーエントリが、"
+"認証時に使用されるユーザ名で自動的に作成され、保存されます。"
 
 #: usr/local/www/services_captiveportal.php:553
 #: usr/local/www/services_captiveportal.php:558
@@ -30020,7 +30039,7 @@ msgstr "認証時に使用するユーザー名、 「このオプションは�
 #: usr/local/www/services_captiveportal.php:574
 #: usr/local/www/services_captiveportal.php:574
 msgid "Per-user bandwidth restriction"
-msgstr "ユーザごとの帯域幅の制限"
+msgstr "ユーザ毎の帯域幅制限"
 
 #: usr/local/www/services_captiveportal.php:556
 #: usr/local/www/services_captiveportal.php:561
@@ -30028,7 +30047,7 @@ msgstr "ユーザごとの帯域幅の制限"
 #: usr/local/www/services_captiveportal.php:577
 #: usr/local/www/services_captiveportal.php:577
 msgid "Enable per-user bandwidth restriction"
-msgstr "ユーザごとの帯域幅の制限を有効にする"
+msgstr "ユーザ毎の帯域幅制限を有効"
 
 #: usr/local/www/services_captiveportal.php:559
 #: usr/local/www/services_captiveportal.php:564
@@ -30036,7 +30055,7 @@ msgstr "ユーザごとの帯域幅の制限を有効にする"
 #: usr/local/www/services_captiveportal.php:580
 #: usr/local/www/services_captiveportal.php:580
 msgid "Default download"
-msgstr "デフォルトのダウンロード"
+msgstr "デフォルトダウンロード"
 
 #: usr/local/www/services_captiveportal.php:563
 #: usr/local/www/services_captiveportal.php:568
@@ -30044,7 +30063,7 @@ msgstr "デフォルトのダウンロード"
 #: usr/local/www/services_captiveportal.php:584
 #: usr/local/www/services_captiveportal.php:584
 msgid "Default upload"
-msgstr "デフォルトのアップロード"
+msgstr "デフォルトアップロード"
 
 #: usr/local/www/services_captiveportal.php:567
 #: usr/local/www/services_captiveportal.php:572
@@ -30055,19 +30074,22 @@ msgid ""
 "If this option is set, the captive portal will restrict each user who logs "
 "in to the specified default bandwidth. RADIUS can override the default "
 "settings. Leave empty or set to 0 for no limit."
-msgstr "指定されたデフォルトの帯域幅には「このオプションが設定されている場合は、キャプティブポータルはログオンするユーザーごとに制限します」 。 RADIUSはデフォルトの "設定を上書きすることができます。制限なしに空または0のままにしておいてください。"
+msgstr ""
+"このオプションが設定されると、キャプティブポータルはログインするユーザ毎に、"
+"デフォルトで指定された帯域幅を制限します。RADIUS はデフォルト設定を上書きできます。"
+"空白にするか、0 を設定すると、制限は行いません。"
 
 #: usr/local/www/services_captiveportal.php:570
 #: usr/local/www/services_captiveportal.php:575
 #: usr/local/www/services_captiveportal.php:573
 msgid "PMS authentication"
-msgstr "PMS認証"
+msgstr "PMS 認証"
 
 #: usr/local/www/services_captiveportal.php:573
 #: usr/local/www/services_captiveportal.php:578
 #: usr/local/www/services_captiveportal.php:576
 msgid "Enable PMS authentication"
-msgstr "PMS認証を有効にする"
+msgstr "PMS 認証を有効"
 
 #: usr/local/www/services_captiveportal.php:574
 #: usr/local/www/services_captiveportal.php:579
@@ -30075,7 +30097,9 @@ msgstr "PMS認証を有効にする"
 msgid ""
 "If this option is set, users will be authenticated through the PMS backend "
 "if they fill the necessary information in the login page."
-msgstr "彼らは、ログインページに必要事項を記入した場合」には、このオプションが設定されている場合、ユーザーは、PMSのバックエンドを使用して認証されます」 。"
+msgstr ""
+"このオプションを設定すると、ログインページで必要事項を全て入力すれば、"
+"ユーザは PMS バックエンドを使用して認証されます。
 
 #: usr/local/www/services_captiveportal.php:583
 #: usr/local/www/services_captiveportal.php:588
@@ -30109,7 +30133,7 @@ msgstr "ローカル"
 #: usr/local/www/services_captiveportal.php:600 usr/local/www/fbegin.inc:111
 #: usr/local/www/fbegin.inc:113 usr/local/www/system_usermanager.php:54
 msgid "User Manager"
-msgstr "ユーザーマネージャ"
+msgstr "ユーザマネージャ"
 
 #: usr/local/www/services_captiveportal.php:591
 #: usr/local/www/services_captiveportal.php:596
@@ -30117,7 +30141,7 @@ msgstr "ユーザーマネージャ"
 #: usr/local/www/services_captiveportal.php:612
 #: usr/local/www/services_captiveportal.php:612
 msgid "RADIUS Authentication"
-msgstr "RADIUS認証"
+msgstr "RADIUS 認証"
 
 #: usr/local/www/services_captiveportal.php:599
 #: usr/local/www/services_captiveportal.php:635
@@ -30131,7 +30155,7 @@ msgstr "RADIUS認証"
 #: usr/local/www/services_captiveportal.php:650
 #: usr/local/www/services_captiveportal.php:693
 msgid "Primary RADIUS server"
-msgstr "プライマリRADIUSサーバー"
+msgstr "プライマリ RADIUS サーバ"
 
 #: usr/local/www/services_captiveportal.php:604
 #: usr/local/www/services_captiveportal.php:640
@@ -30142,7 +30166,9 @@ msgstr "プライマリRADIUSサーバー"
 msgid ""
 "Enter the IP address of the RADIUS server which users of the captive portal "
 "have to authenticate against."
-msgstr "に対して認証する必要がある」キャプティブポータルのユーザーは、 RADIUSサーバのIPアドレスを入力してください "。"
+msgstr ""
+"キャプティブポータルのユーザに対して認証を行う"
+" RADIUS サーバの IP アドレスを入力してください。"
 
 #: usr/local/www/services_captiveportal.php:609
 #: usr/local/www/services_captiveportal.php:645
@@ -30151,7 +30177,7 @@ msgstr "に対して認証する必要がある」キャプティブポータル
 #: usr/local/www/services_captiveportal.php:660
 #: usr/local/www/services_captiveportal.php:660
 msgid "Leave this field blank to use the default port (1812)."
-msgstr "デフォルトポート（ 1812 ）を使用するには、このフィールドを空白のままにしておきます。"
+msgstr "このフィールドが空白であれば、デフォルトポート (1812) を使用します。"
 
 #: usr/local/www/services_captiveportal.php:612
 #: usr/local/www/services_captiveportal.php:632
@@ -30191,7 +30217,7 @@ msgstr "共有秘密鍵"
 #: usr/local/www/services_captiveportal.php:665
 msgid ""
 "Leave this field blank to not use a RADIUS shared secret (not recommended)."
-msgstr "「RADIUS共有シークレットを使用しないように、このフィールドを空白のままにします（推奨されません） 。"
+msgstr "このフィールドが空白であれば RADIUS 共有秘密鍵を使用しません ( 非推奨 )"
 
 #: usr/local/www/services_captiveportal.php:620 usr/local/www/vpn_pptp.php:440
 #: usr/local/www/services_captiveportal.php:656
@@ -30205,7 +30231,7 @@ msgstr "「RADIUS共有シークレットを使用しないように、このフ
 #: usr/local/www/services_captiveportal.php:671
 #: usr/local/www/services_captiveportal.php:712 usr/local/www/vpn_pptp.php:445
 msgid "Secondary RADIUS server"
-msgstr "セカンダリRADIUSサーバ"
+msgstr "セカンダリ RADIUS サーバ"
 
 #: usr/local/www/services_captiveportal.php:625
 #: usr/local/www/services_captiveportal.php:661
@@ -30216,11 +30242,13 @@ msgstr "セカンダリRADIUSサーバ"
 msgid ""
 "If you have a second RADIUS server, you can activate it by entering its IP "
 "address here."
-msgstr "ここでアドレス "2台目のRADIUSサーバがある場合は、そのIPアドレスを入力してアクティブにすることができます」 。"
+msgstr ""
+"2 台目の RADIUS サーバがある場合は、"
+"ここで IP アドレスを入力することで有効化できます。"
 
 #: usr/local/www/services_captiveportal.php:639
 msgid "Tertiary RADIUS server"
-msgstr "三次RADIUSサーバー"
+msgstr "第 3 RADIUS サーバ"
 
 #: usr/local/www/services_captiveportal.php:644
 #: usr/local/www/services_captiveportal.php:683
@@ -30231,11 +30259,13 @@ msgstr "三次RADIUSサーバー"
 msgid ""
 "If you have a third RADIUS server, you can activate it by entering its IP "
 "address here."
-msgstr "ここでアドレス "サードRADIUSサーバがある場合は、そのIPアドレスを入力してアクティブにすることができます」 。"
+msgstr ""
+"3 台目の RADIUS サーバがある場合は、"
+"ここで IP アドレスを入力することで有効化できます。"
 
 #: usr/local/www/services_captiveportal.php:658
 msgid "Quaternary RADIUS server"
-msgstr "第四紀のRADIUSサーバ"
+msgstr "第 4 RADIUS サーバ"
 
 #: usr/local/www/services_captiveportal.php:663
 #: usr/local/www/services_captiveportal.php:702
@@ -30246,7 +30276,9 @@ msgstr "第四紀のRADIUSサーバ"
 msgid ""
 "If you have a fourth RADIUS server, you can activate it by entering its IP "
 "address here."
-msgstr "ここでアドレス "4番目のRADIUSサーバがある場合は、そのIPアドレスを入力してアクティブにすることができます」 。"
+msgstr ""
+"4 台目の RADIUS サーバがある場合は、"
+"ここで IP アドレスを入力することで有効化できます。"
 
 #: usr/local/www/services_captiveportal.php:677
 #: usr/local/www/services_captiveportal.php:719
@@ -30255,7 +30287,7 @@ msgstr "ここでアドレス "4番目のRADIUSサーバがある場合は、そ
 #: usr/local/www/services_captiveportal.php:731
 #: usr/local/www/services_captiveportal.php:731
 msgid "Accounting"
-msgstr "会計"
+msgstr "アカウンティング"
 
 #: usr/local/www/services_captiveportal.php:682
 #: usr/local/www/services_captiveportal.php:724
@@ -30264,7 +30296,7 @@ msgstr "会計"
 #: usr/local/www/services_captiveportal.php:736
 #: usr/local/www/services_captiveportal.php:736
 msgid "send RADIUS accounting packets"
-msgstr "RADIUSアカウンティングパケットを送信"
+msgstr "RADIUS アカウンティングパケットを送信"
 
 #: usr/local/www/services_captiveportal.php:683
 #: usr/local/www/services_captiveportal.php:725
@@ -30275,7 +30307,9 @@ msgstr "RADIUSアカウンティングパケットを送信"
 msgid ""
 "If this is enabled, RADIUS accounting packets will be sent to the primary "
 "RADIUS server."
-msgstr "RADIUSサーバは「これが有効になっている場合は、 RADIUSアカウンティングパケットがプライマリーに送信されます」 。"
+msgstr ""
+"これが有効な場合は、RADIUS アカウンティングパケットが"
+"プライマリ RADIUS サーバに送信されます。"
 
 #: usr/local/www/services_captiveportal.php:686
 #: usr/local/www/services_captiveportal.php:728
@@ -30293,7 +30327,7 @@ msgstr "アカウンティングポート"
 #: usr/local/www/services_captiveportal.php:742
 #: usr/local/www/services_captiveportal.php:742
 msgid "Leave blank to use the default port (1813)."
-msgstr "デフォルトのポート（ 1813 ）を使用するように空白のままにします。"
+msgstr "このフィールドが空白であればデフォルトポート (1813) を使用します。"
 
 #: usr/local/www/services_captiveportal.php:694
 #: usr/local/www/services_captiveportal.php:736
@@ -30311,7 +30345,7 @@ msgstr "再認証"
 #: usr/local/www/services_captiveportal.php:764
 #: usr/local/www/services_captiveportal.php:764
 msgid "Reauthenticate connected users every minute"
-msgstr "接続中のユーザ毎分再認証"
+msgstr "接続中のユーザを 1 分毎に再認証"
 
 #: usr/local/www/services_captiveportal.php:700
 #: usr/local/www/services_captiveportal.php:742
@@ -30324,7 +30358,11 @@ msgid ""
 "server for each user that is logged in every minute. If an Access-Reject is "
 "received for a user, that user is disconnected from the captive portal "
 "immediately."
-msgstr "毎分ログインしているユーザーごとにサーバー"再認証が有効になっている場合は、Access -要求は、RADIUSに送信されます」 。アクセス拒否された場合、すぐに「利用者のために受信すると、そのユーザーは、キャプティブポータルから切断されている」 。"
+msgstr ""
+""
+"再認証が有効な場合、1 分毎にログインしているユーザ毎に、Access-Requests が RADIUS サーバに
+送信されます。あるユーザに対して Access-Reject を受信したら、そのユーザは即座に"
+"キャプティブポータルから切断されます。
 
 #: usr/local/www/services_captiveportal.php:704
 #: usr/local/www/services_captiveportal.php:746
@@ -30333,7 +30371,7 @@ msgstr "毎分ログインしているユーザーごとにサーバー"再認�
 #: usr/local/www/services_captiveportal.php:748
 #: usr/local/www/services_captiveportal.php:748
 msgid "Accounting updates"
-msgstr "会計のアップデート"
+msgstr "アカウンティング更新"
 
 #: usr/local/www/services_captiveportal.php:706
 #: usr/local/www/services_captiveportal.php:748
@@ -30342,7 +30380,7 @@ msgstr "会計のアップデート"
 #: usr/local/www/services_captiveportal.php:750
 #: usr/local/www/services_captiveportal.php:750
 msgid "no accounting updates"
-msgstr "アカウンティングアップデートません"
+msgstr "アカウンティング更新しない"
 
 #: usr/local/www/services_captiveportal.php:707
 #: usr/local/www/services_captiveportal.php:749
@@ -30351,7 +30389,7 @@ msgstr "アカウンティングアップデートません"
 #: usr/local/www/services_captiveportal.php:751
 #: usr/local/www/services_captiveportal.php:751
 msgid "stop/start accounting"
-msgstr "停止/アカウンティング開始"
+msgstr "アカウンティング停止 / 開始"
 
 #: usr/local/www/services_captiveportal.php:708
 #: usr/local/www/services_captiveportal.php:750
@@ -30369,7 +30407,7 @@ msgstr "中間更新"
 #: usr/local/www/services_captiveportal.php:769
 #: usr/local/www/services_captiveportal.php:769
 msgid "RADIUS MAC authentication"
-msgstr "RADIUS MAC認証"
+msgstr "RADIUS MAC 認証"
 
 #: usr/local/www/services_captiveportal.php:720
 #: usr/local/www/services_captiveportal.php:762
@@ -30378,7 +30416,7 @@ msgstr "RADIUS MAC認証"
 #: usr/local/www/services_captiveportal.php:771
 #: usr/local/www/services_captiveportal.php:771
 msgid "Enable RADIUS MAC authentication"
-msgstr "RADIUS MAC認証を有効にする"
+msgstr "RADIUS MAC 認証を有効"
 
 #: usr/local/www/services_captiveportal.php:721
 #: usr/local/www/services_captiveportal.php:763
@@ -30390,7 +30428,10 @@ msgid ""
 "If this option is enabled, the captive portal will try to authenticate users "
 "by sending their MAC address as the username and the password entered below "
 "to the RADIUS server."
-msgstr "ユーザ名とRADIUSサーバに「下の入力されたパスワードなどのMACアドレスを送信することで、 "このオプションを有効にすると、キャプティブポータルはユーザーを認証しようとします」 。"
+msgstr ""
+"このオプションが有効な場合、キャプティブポータルは RADIUS サーバに対して、"
+"下記で入力されたユーザ名とパスワードとして、ユーザの MAC アドレスを送信することで、
+"ユーザを認証しようとします。"
 
 #: usr/local/www/services_captiveportal.php:732
 #: usr/local/www/services_captiveportal.php:774
@@ -30399,7 +30440,7 @@ msgstr "ユーザ名とRADIUSサーバに「下の入力されたパスワード
 #: usr/local/www/services_captiveportal.php:759
 #: usr/local/www/services_captiveportal.php:759
 msgid "RADIUS options"
-msgstr "RADIUSのオプション"
+msgstr "RADIUS オプション"
 
 #: usr/local/www/services_captiveportal.php:736
 #: usr/local/www/services_captiveportal.php:778
@@ -30408,7 +30449,7 @@ msgstr "RADIUSのオプション"
 #: usr/local/www/services_captiveportal.php:780
 #: usr/local/www/services_captiveportal.php:780
 msgid "RADIUS NAS IP attribute"
-msgstr "RADIUSのNAS IPアトリビュート"
+msgstr "RADIUS NAS IP アトリビュート"
 
 #: usr/local/www/services_captiveportal.php:766
 #: usr/local/www/services_captiveportal.php:808
@@ -30417,7 +30458,7 @@ msgstr "RADIUSのNAS IPアトリビュート"
 #: usr/local/www/services_captiveportal.php:810
 #: usr/local/www/services_captiveportal.php:810
 msgid "Choose the IP to use for calling station attribute."
-msgstr "駅属性を呼び出すために使用するIPを選択します。"
+msgstr "機器属性を呼び出すために使用する IP を選択してください"
 
 #: usr/local/www/services_captiveportal.php:771
 #: usr/local/www/services_captiveportal.php:813
@@ -30435,7 +30476,7 @@ msgstr "セッションタイムアウト"
 #: usr/local/www/services_captiveportal.php:816
 #: usr/local/www/services_captiveportal.php:816
 msgid "Use RADIUS Session-Timeout attributes"
-msgstr "RADIUSを使用セッションタイムアウト属性"
+msgstr "RADIUS セッションタイムアウト属性を使用"
 
 #: usr/local/www/services_captiveportal.php:773
 #: usr/local/www/services_captiveportal.php:815
@@ -30446,7 +30487,9 @@ msgstr "RADIUSを使用セッションタイムアウト属性"
 msgid ""
 "When this is enabled, clients will be disconnected after the amount of time "
 "retrieved from the RADIUS Session-Timeout attribute."
-msgstr "RADIUSセッションタイムアウト属性から取得した「これを有効にすると、クライアントは、時間の経過後に切断されます」 。"
+msgstr ""
+"これが有効な場合は、RADIUS セッションタイムアウト属性から取得した時間が経過すると、"
+"クライアントは切断されます。"
 
 #: usr/local/www/services_captiveportal.php:789
 #: usr/local/www/services_captiveportal.php:831
@@ -30460,7 +30503,11 @@ msgid ""
 "Station-Id will be set to the client's IP address and the Called-Station-Id "
 "to the client's MAC address. Default behavior is Calling-Station-Id = "
 "client's MAC address and Called-Station-Id = %s's WAN IP address."
-msgstr "「RADIUSタイプはアクセス·リクエストの値に、シスコに設定されている場合は呼び出し - 「ステーションIDは、クライアントのIPアドレスと呼ばれ駅のイド」は、クライアントのMACアドレスに設定されます。デフォルトの動作は、発呼局であり、 -ID = "クライアントのMACアドレスと呼ばれ駅のイド= %sのWAN IPアドレス。"
+msgstr ""
+"RADIUS タイプに Cisco が設定されると、Access-Requests で Calling-Station-Id の値に"
+"クライアントの IP アドレス、Called-Station-Id の値にクライアントの MAC アドレス、が設定されます。"
+"デフォルトの動作は、Calling-Station-Id = クライアント MAC address、"
+"Called-Station-Id = %s WAN IP アドレス、です。"
 
 #: usr/local/www/services_captiveportal.php:796
 #: usr/local/www/services_captiveportal.php:838
@@ -30469,7 +30516,7 @@ msgstr "「RADIUSタイプはアクセス·リクエストの値に、シスコ�
 #: usr/local/www/services_captiveportal.php:850
 #: usr/local/www/services_captiveportal.php:850
 msgid "MAC address format"
-msgstr "MACアドレス形式"
+msgstr "MAC アドレス形式"
 
 #: usr/local/www/services_captiveportal.php:801
 #: usr/local/www/services_captiveportal.php:843
@@ -30479,17 +30526,17 @@ msgstr "singledash"
 #: usr/local/www/services_captiveportal.php:801
 #: usr/local/www/services_captiveportal.php:843
 msgid "ietf"
-msgstr "IETF"
+msgstr "ietf"
 
 #: usr/local/www/services_captiveportal.php:801
 #: usr/local/www/services_captiveportal.php:843
 msgid "cisco"
-msgstr "シスコ"
+msgstr "cisco"
 
 #: usr/local/www/services_captiveportal.php:801
 #: usr/local/www/services_captiveportal.php:843
 msgid "unformatted"
-msgstr "未フォーマットの"
+msgstr "形式なし"
 
 #: usr/local/www/services_captiveportal.php:810
 #: usr/local/www/services_captiveportal.php:852
@@ -30500,7 +30547,11 @@ msgstr "未フォーマットの"
 msgid ""
 "This option changes the MAC address format used in the whole RADIUS system. "
 "Change this if you also"
-msgstr ""このオプションは、全体のRADIUSシステムで使用されるMACアドレス形式が変更されます。 「あなたもあれば、これを変更する"
+msgstr ""
+"このオプションは、RADIUS システム全体で使用される MAC アドレス形式を変更します。"
+"もし、
+
+このオプションは、全体のRADIUSシステムで使用されるMACアドレス形式が変更されます。 「あなたもあれば、これを変更する"
 
 #: usr/local/www/services_captiveportal.php:811
 #: usr/local/www/services_captiveportal.php:853
@@ -30509,7 +30560,7 @@ msgstr ""このオプションは、全体のRADIUSシステムで使用され�
 #: usr/local/www/services_captiveportal.php:866
 #: usr/local/www/services_captiveportal.php:866
 msgid "need to change the username format for RADIUS MAC authentication."
-msgstr "RADIUS MAC認証用のユーザー名の形式を変更する必要があります。"
+msgstr "RADIUS MAC 認証でユーザ名の形式を変更する必要がある場合も、これを変更してください。"
 
 #: usr/local/www/services_captiveportal.php:812
 #: usr/local/www/services_captiveportal.php:854
@@ -30518,7 +30569,7 @@ msgstr "RADIUS MAC認証用のユーザー名の形式を変更する必要が�
 #: usr/local/www/services_captiveportal.php:867
 #: usr/local/www/services_captiveportal.php:867
 msgid "default:"
-msgstr "デフォルト："
+msgstr "デフォルト: "
 
 #: usr/local/www/services_captiveportal.php:813
 #: usr/local/www/services_captiveportal.php:855
@@ -30527,7 +30578,7 @@ msgstr "デフォルト："
 #: usr/local/www/services_captiveportal.php:868
 #: usr/local/www/services_captiveportal.php:868
 msgid "singledash:"
-msgstr "singledash ："
+msgstr "singledash: "
 
 #: usr/local/www/services_captiveportal.php:814
 #: usr/local/www/services_captiveportal.php:856
@@ -30536,7 +30587,7 @@ msgstr "singledash ："
 #: usr/local/www/services_captiveportal.php:869
 #: usr/local/www/services_captiveportal.php:869
 msgid "ietf:"
-msgstr "IETF ："
+msgstr "ietf: "
 
 #: usr/local/www/services_captiveportal.php:815
 #: usr/local/www/services_captiveportal.php:857
@@ -30545,7 +30596,7 @@ msgstr "IETF ："
 #: usr/local/www/services_captiveportal.php:870
 #: usr/local/www/services_captiveportal.php:870
 msgid "cisco:"
-msgstr "シスコ："
+msgstr "cisco: "
 
 #: usr/local/www/services_captiveportal.php:816
 #: usr/local/www/services_captiveportal.php:858
@@ -30554,7 +30605,7 @@ msgstr "シスコ："
 #: usr/local/www/services_captiveportal.php:871
 #: usr/local/www/services_captiveportal.php:871
 msgid "unformatted:"
-msgstr "フォーマットされていない："
+msgstr "形式なし: "
 
 #: usr/local/www/services_captiveportal.php:819
 #: usr/local/www/services_captiveportal.php:861
@@ -30562,7 +30613,7 @@ msgstr "フォーマットされていない："
 #: usr/local/www/services_captiveportal.php:877
 #: usr/local/www/services_captiveportal.php:877
 msgid "HTTPS login"
-msgstr "HTTPSのログイン"
+msgstr "HTTPS ログイン"
 
 #: usr/local/www/services_captiveportal.php:822
 #: usr/local/www/services_captiveportal.php:864
@@ -30570,7 +30621,7 @@ msgstr "HTTPSのログイン"
 #: usr/local/www/services_captiveportal.php:880
 #: usr/local/www/services_captiveportal.php:880
 msgid "Enable HTTPS login"
-msgstr "HTTPSのログインを可能にする"
+msgstr "HTTPS ログインを有効"
 
 #: usr/local/www/services_captiveportal.php:823
 #: usr/local/www/services_captiveportal.php:865
@@ -30578,7 +30629,9 @@ msgid ""
 "If enabled, the username and password will be transmitted over an HTTPS "
 "connection to protect against eavesdroppers. A server name, certificate and "
 "matching private key must also be specified below."
-msgstr "盗聴者から保護するための接続」を有効にすると、ユーザー名とパスワードは、HTTPSを介して送信されます」 。サーバー名、証明書と「一致する秘密鍵は、以下に指定する必要があります。"
+msgstr ""
+"有効な場合は、ユーザ名とパスワードは、盗聴から保護するために HTTPS 接続上を送信されます。"
+"サーバ名、証明書、及び、照合する秘密鍵は、下記で指定する必要があります。"
 
 #: usr/local/www/services_captiveportal.php:826
 #: usr/local/www/services_captiveportal.php:868
@@ -30586,7 +30639,7 @@ msgstr "盗聴者から保護するための接続」を有効にすると、ユ
 #: usr/local/www/services_captiveportal.php:884
 #: usr/local/www/services_captiveportal.php:884
 msgid "HTTPS server name"
-msgstr "HTTPSサーバ名"
+msgstr "HTTPS サーバ名"
 
 #: usr/local/www/services_captiveportal.php:829
 #: usr/local/www/services_captiveportal.php:871
@@ -30600,32 +30653,37 @@ msgid ""
 "browser will most likely display a security warning). Make sure captive "
 "portal clients can resolve this name in DNS and verify on the client that "
 "the IP resolves to the correct interface IP on %s."
-msgstr "「この名前は、HTTPS POSTのフォームアクションで使用され、必要があります"あなたの証明書の共通名（CN ）と一致する（そうでなければ、クライアントの「ブラウザ最も可能性の高いセキュリティ警告が表示されます） 。必ず虜」ポータルのクライアントをすることができDNSにこの名前を解決し、 IPが%s.上の正しいインターフェイスIPに解決される」ことをクライアントに確認してください"
+msgstr ""
+"この名前は、HTTPS POST をするフォームの action で使用されるもので、証明書のコモンネーム(CN)と"
+"一致する必要があります。"
+"( そうでなければ、クライアントのブラウザは通常セキュリティ警告を表示します )"
+"キャプティブポータルクライアントが DNS でこの名前を解決でき、その IP が %s の"
+"インタフェース IP に正しく名前解決されているかを、クライアントで確認して下さい。"
 
 #: usr/local/www/services_captiveportal.php:832
 #: usr/local/www/services_captiveportal.php:874
 msgid "HTTPS certificate"
-msgstr "HTTPS証明書"
+msgstr "HTTPS 証明書"
 
 #: usr/local/www/services_captiveportal.php:836
 #: usr/local/www/services_captiveportal.php:878
 msgid "Paste a signed certificate in X.509 PEM format here."
-msgstr "ここで、X.509 PEM形式の署名付き証明書を貼り付けます。"
+msgstr "ここに X.509 PEM 形式の署名付き証明書を貼り付けてください。"
 
 #: usr/local/www/services_captiveportal.php:839
 #: usr/local/www/services_captiveportal.php:881
 msgid "HTTPS private key"
-msgstr "HTTPSの秘密鍵"
+msgstr "HTTPS 秘密鍵"
 
 #: usr/local/www/services_captiveportal.php:843
 #: usr/local/www/services_captiveportal.php:885
 msgid "Paste an RSA private key in PEM format here."
-msgstr "ここにPEM形式のRSA秘密鍵を貼り付けます。"
+msgstr "ここに PEM 形式の RSA 秘密鍵を貼り付けてください。"
 
 #: usr/local/www/services_captiveportal.php:846
 #: usr/local/www/services_captiveportal.php:888
 msgid "HTTPS intermediate certificate"
-msgstr "HTTPSの中間証明書"
+msgstr "HTTPS 中間証明書"
 
 #: usr/local/www/services_captiveportal.php:850
 #: usr/local/www/system_camanager.php:406
@@ -30638,7 +30696,7 @@ msgstr "HTTPSの中間証明書"
 #: usr/local/www/system_camanager.php:413
 #: usr/local/www/system_certmanager.php:624
 msgid "Paste a certificate in X.509 PEM format here."
-msgstr "ここで、X.509 PEM形式の証明書を貼り付けます。"
+msgstr "ここに X.509 PEM 形式の証明書を貼り付けてください。"
 
 #: usr/local/www/services_captiveportal.php:853
 #: usr/local/www/services_captiveportal.php:895
@@ -30647,7 +30705,7 @@ msgstr "ここで、X.509 PEM形式の証明書を貼り付けます。"
 #: usr/local/www/services_captiveportal.php:909
 #: usr/local/www/services_captiveportal.php:909
 msgid "Portal page contents"
-msgstr "ポータルページの内容"
+msgstr "ポータルページコンテンツ"
 
 #: usr/local/www/services_captiveportal.php:865
 #: usr/local/www/services_captiveportal.php:899
@@ -30682,7 +30740,12 @@ msgid ""
 "button (%2$s) and a hidden field with %3$s and %4$s. Include the %5$s and "
 "%6$s and/or %7$s input fields if authentication is enabled, otherwise it "
 "will always fail."
-msgstr "「 （現在の1に保つために、空白のままに）ここで、ポータル·ページのHTML / PHPファイルのアップロード」 。送信」ボタン（ %2$s ）を持つフォーム（は%1$sに対してPOST ）と $ S %3$sおよび％ 4で隠しフィールドが含まれていることを確認しますが。 $ S ％ 5が含まれており、 "認証が有効になっている場合は、％ 6 $ sおよび/または％ 7 $ sの入力フィールド 、それ以外の場合は、「常に失敗します。"
+msgstr ""
+"ポータルページの HTML/PHP ファイルをここにアップロードしてください ( 空白にすると現状のままになります)。"
+"送信ボタン ( %2$s ) と、%3$s 及び %4$s の非表示フィールドがあるフォーム ( POST 先は %1$s ) が"
+"含まれていることを確認して下さい。" 
+"認証が有効な場合は、%5$s 及び、%6$s と %7$s の両方もしくはどちらかの入力フィールドを含めてください。"
+"そうしないと、認証は、通常失敗します。"
 
 #: usr/local/www/services_captiveportal.php:882
 #: usr/local/www/services_captiveportal.php:927
@@ -30691,7 +30754,7 @@ msgstr "「 （現在の1に保つために、空白のままに）ここで、�
 #: usr/local/www/services_captiveportal.php:941
 #: usr/local/www/services_captiveportal.php:941
 msgid "Example code for the form:"
-msgstr "フォームのサンプルコード："
+msgstr "フォームのサンプルコード: "
 
 #: usr/local/www/services_captiveportal.php:894
 #: usr/local/www/services_captiveportal.php:939
@@ -30714,7 +30777,7 @@ msgstr "エラーページ"
 #: usr/local/www/services_captiveportal.php:954
 #: usr/local/www/services_captiveportal.php:968
 msgid "contents"
-msgstr "中身"
+msgstr "コンテンツ"
 
 #: usr/local/www/services_captiveportal.php:903
 #: usr/local/www/services_captiveportal.php:948
@@ -30725,7 +30788,9 @@ msgstr "中身"
 msgid ""
 "The contents of the HTML/PHP file that you upload here are displayed when an "
 "authentication error occurs. You may include"
-msgstr "認証エラーが発生」したときに、ここでアップロードしたHTML / PHPファイルの内容が表示されます」 。あなたが含まれる"
+msgstr ""
+"認証エラーが発生した場合は、"
+"ここにアップロードした HTML/PHP ファイルの内容を表示します。"
 
 #: usr/local/www/services_captiveportal.php:904
 #: usr/local/www/services_captiveportal.php:949
@@ -30736,7 +30801,9 @@ msgstr "認証エラーが発生」したときに、ここでアップロード
 msgid ""
 "which will be replaced by the error or reply messages from the RADIUS "
 "server, if any."
-msgstr ""どのエラーに置き換えられますかRADIUSからのメッセージの返信」があれば、サーバ。"
+msgstr ""
+"RADIUS サーバからのエラーや応答メッセージの代わりに表示するものがあれば、"
+"入れておくとよいでしょう。"
 
 #: usr/local/www/services_captiveportal.php:907 usr/local/www/fbegin.inc:86
 #: usr/local/www/fbegin.inc:103 usr/local/www/services_captiveportal.php:952
@@ -30756,7 +30823,9 @@ msgstr "ログアウト"
 msgid ""
 "The contents of the HTML/PHP file that you upload here are displayed on "
 "authentication success when the logout popup is enabled."
-msgstr "ログアウトポップアップが有効な場合に認証成功」は、ここでアップロードしたHTML / PHPファイルの内容が上に表示される"。"
+msgstr ""
+"ログアウトポップアップが有効な場合は、認証に成功すると、"
+"ここにアップロードした HTML/PHP ファイルの内容を表示します。"
 
 #: usr/local/www/services_captiveportal.php:930
 #: usr/local/www/services_captiveportal.php:975
@@ -30770,20 +30839,25 @@ msgid ""
 "the default/maximum DHCP lease time is higher than the timeout entered on "
 "this page. Also, the DNS forwarder needs to be enabled for DNS lookups by "
 "unauthenticated clients to work."
-msgstr "「このページの設定を変更すると、すべてのクライアントが切断されます。 ！忘れてはいけない"あなたのキャプティブポータルインタフェース 上のDHCPサーバを有効にするために！このページの「デフォルト/最大DHCPリース時間がで入力されたタイムアウトよりも高くなっている」ことを確認してください。また、 DNSフォワーダが動作するように認証されていないクライアント」でDNSルックアップを有効にする必要があります。"
+msgstr ""
+"このページの設定を変更すると、全てのクライアントが切断します！"
+"キャプティブポータルインタフェースの DHCP サーバを有効にするのを忘れないで下さい！"
+"DHCP リース時間のデフォルト及び最大値が、このページで入力されたタイムアウト値よりも大きいことを"
+"確認して下さい。また、未認証クライアントが動作するために、DNS ルックアップを有効にする"
+"には、DNS フォワーダが必要です。" 
 
 #: usr/local/www/services_captiveportal_filemanager.php:101
 #: usr/local/www/services_captiveportal_filemanager.php:98
 #: usr/local/www/services_captiveportal_filemanager.php:98
 #, php-format
 msgid "A file with the name '%s' already exists."
-msgstr "名' %s'を持つファイルがすでに存在しています。"
+msgstr "%s という名前のファイルは既に存在しています"
 
 #: usr/local/www/services_captiveportal_filemanager.php:108
 #: usr/local/www/services_captiveportal_filemanager.php:105
 #: usr/local/www/services_captiveportal_filemanager.php:105
 msgid "The total size of all files uploaded may not exceed "
-msgstr "アップロードされたすべてのファイルの合計サイズが超えてはならない"
+msgstr "アップロードした全ファイルの合計サイズが、次の値を超えてはいけません: "
 
 #: usr/local/www/services_captiveportal_filemanager.php:163
 #: usr/local/www/system_firmware_restorefullbackup.php:141
@@ -30810,13 +30884,13 @@ msgstr "ファイルを追加"
 #: usr/local/www/services_captiveportal_filemanager.php:176
 #: usr/local/www/services_captiveportal_filemanager.php:176
 msgid "Do you really want to delete this file?"
-msgstr "あなたは本当にこのファイルを削除しますか？"
+msgstr "本当にこのファイルを削除しますか？"
 
 #: usr/local/www/services_captiveportal_filemanager.php:179
 #: usr/local/www/services_captiveportal_filemanager.php:176
 #: usr/local/www/services_captiveportal_filemanager.php:176
 msgid "delete file"
-msgstr "ファイルを削除する"
+msgstr "ファイルを削除"
 
 #: usr/local/www/services_captiveportal_filemanager.php:186
 #: usr/local/www/services_captiveportal_filemanager.php:183
@@ -30840,7 +30914,13 @@ msgid ""
 "using relative paths. Example: you've uploaded an image with the name "
 "'captiveportal-test.jpg' using the file manager. Then you can include it in "
 "your portal page like this:"
-msgstr "「あなたがファイル名の接頭辞で、ここでアップロードしたすべてのファイルcaptiveportal -」は「 。サーバーは、ポータルページのHTMLコードから直接参照することができる「キャプティブポータルHTTP（S）のルートディレクトリに使用できるようになります相対パスを使用した。例：名前の画像アップロードしたこのようなポータル·ページ「ファイルマネージャを使って' captiveportal - test.jpgというの'次に、それを含めることができます。 」 ："
+msgstr ""
+"ここにアップロードされた、captiveportal- から始まるファイル名のファイルは、"
+"キャピタルポータル HTTP(S) サーバのルートディレクトリで利用可能になります。" 
+"ポータルページの HTML コードで、相対パスを使用して、ファイルを直接参照できます。"
+"例: 'captiveportal-test.jpg' という画像を、ファイルマネージャを使用して"
+"アップロードします。"
+"それから、ポータルページでこんな感じにインクルードできます: "
 
 #: usr/local/www/services_captiveportal_filemanager.php:224
 #: usr/local/www/services_captiveportal_filemanager.php:221
@@ -30848,51 +30928,53 @@ msgstr "「あなたがファイル名の接頭辞で、ここでアップロー
 msgid ""
 "In addition, you can also upload .php files for execution. You can pass the "
 "filename to your custom page from the initial page by using text similar to:"
-msgstr "「加えて、またアップロードできるPHPファイルを実行するためにあなたが渡すことができます。 」のようなテキストを使って、最初のページからカスタムページにファイル名を。"
+msgstr ""
+"さらに .php ファイルを実行用にアップロードすることもできます。"
+"ファイル名を、初期ページからカスタムページへ渡すには、このようなテキストを使用します: "
 
 #: usr/local/www/services_captiveportal_filemanager.php:227
 #: usr/local/www/services_captiveportal_filemanager.php:224
 #: usr/local/www/services_captiveportal_filemanager.php:224
 msgid "Acceptable usage policy"
-msgstr "許容可能な使用ポリシー"
+msgstr "利用規程 (AUP)"
 
 #: usr/local/www/services_captiveportal_filemanager.php:229
 #: usr/local/www/services_captiveportal_filemanager.php:226
 #: usr/local/www/services_captiveportal_filemanager.php:226
 #, php-format
 msgid "The total size limit for all files is %s."
-msgstr "すべてのファイルの合計サイズの制限は%s.です"
+msgstr "全ファイルの合計サイズの上限は %s です"
 
 #: usr/local/www/diag_limiter_info.php:46
 #: usr/local/www/diag_limiter_info.php:46
 msgid "Diagnostics: Limiter Info"
-msgstr "診断：リミッター情報"
+msgstr "診断: リミッタ情報"
 
 #: usr/local/www/diag_limiter_info.php:108
 #: usr/local/www/diag_limiter_info.php:109
 #: usr/local/www/diag_limiter_info.php:109
 msgid "Gathering Limiter information, please wait..."
-msgstr "リミッター情報を収集しています。しばらくお待ちください..."
+msgstr "リミッタ情報を収集しています。しばらくお待ちください..."
 
 #: usr/local/www/firewall_nat.php:197 usr/local/www/firewall_nat.php:202
 #: usr/local/www/firewall_nat.php:205 usr/local/www/firewall_nat.php:205
 msgid "Src. addr"
-msgstr "SRC 。 ADDR"
+msgstr "送信元アドレス"
 
 #: usr/local/www/firewall_nat.php:198 usr/local/www/firewall_nat.php:203
 #: usr/local/www/firewall_nat.php:206 usr/local/www/firewall_nat.php:206
 msgid "Src. ports"
-msgstr "SRC 。ポート"
+msgstr "送信元ポート"
 
 #: usr/local/www/firewall_nat.php:199 usr/local/www/firewall_nat.php:204
 #: usr/local/www/firewall_nat.php:207 usr/local/www/firewall_nat.php:207
 msgid "Dest. addr"
-msgstr "DEST 。 ADDR"
+msgstr "送信先アドレス"
 
 #: usr/local/www/firewall_nat.php:200 usr/local/www/firewall_nat.php:205
 #: usr/local/www/firewall_nat.php:208 usr/local/www/firewall_nat.php:208
 msgid "Dest. ports"
-msgstr "DEST 。ポート"
+msgstr "送信先ポート"
 
 #: usr/local/www/firewall_nat.php:201 usr/local/www/firewall_nat.php:206
 #: usr/local/www/firewall_nat.php:209 usr/local/www/firewall_nat.php:209
@@ -30902,22 +30984,22 @@ msgstr "NAT IP"
 #: usr/local/www/firewall_nat.php:202 usr/local/www/firewall_nat.php:207
 #: usr/local/www/firewall_nat.php:210 usr/local/www/firewall_nat.php:210
 msgid "NAT Ports"
-msgstr "NATのポート"
+msgstr "NAT ポート"
 
 #: usr/local/www/firewall_nat.php:252 usr/local/www/firewall_nat.php:265
 #: usr/local/www/firewall_nat.php:268 usr/local/www/firewall_nat.php:268
 msgid "All traffic matching this NAT entry is passed"
-msgstr "このNATエントリに一致するすべてのトラフィックが渡されます"
+msgstr "この NAT エントリに一致する全てのトラフィックが許可されます"
 
 #: usr/local/www/firewall_nat.php:254 usr/local/www/firewall_nat.php:267
 #: usr/local/www/firewall_nat.php:270 usr/local/www/firewall_nat.php:270
 msgid "Firewall rule ID"
-msgstr "ファイアウォールのルールID"
+msgstr "ファイアウォールルール ID"
 
 #: usr/local/www/firewall_nat.php:254 usr/local/www/firewall_nat.php:267
 #: usr/local/www/firewall_nat.php:270 usr/local/www/firewall_nat.php:270
 msgid "is managed with this rule"
-msgstr "このルールで管理されている"
+msgstr "はこのルールで管理されています"
 
 #: usr/local/www/firewall_nat.php:313 usr/local/www/firewall_nat_out.php:450
 #: usr/local/www/firewall_nat_out.php:451 usr/local/www/firewall_nat.php:326
@@ -30926,12 +31008,12 @@ msgstr "このルールで管理されている"
 #: usr/local/www/firewall_nat_out.php:454 usr/local/www/firewall_nat.php:329
 #: usr/local/www/firewall_nat_out.php:454
 msgid "Do you really want to delete this rule?"
-msgstr "あなたは本当に、このルールを削除しますか？"
+msgstr "本当にこのルールを削除しますか？"
 
 #: usr/local/www/firewall_nat.php:349 usr/local/www/firewall_nat.php:362
 #: usr/local/www/firewall_nat.php:365 usr/local/www/firewall_nat.php:365
 msgid "linked rule"
-msgstr "リンクされたルール"
+msgstr "リンクしたルール"
 
 #: usr/local/www/diag_ipsec.php:78 usr/local/www/diag_ipsec_sad.php:73
 #: usr/local/www/diag_ipsec_spd.php:72 usr/local/www/diag_ipsec.php:88
@@ -30975,7 +31057,7 @@ msgstr "ログ"
 #: usr/local/www/diag_ipsec.php:104 usr/local/www/diag_ipsec.php:106
 #: usr/local/www/diag_ipsec.php:106
 msgid "Remote IP"
-msgstr "リモートIP"
+msgstr "リモート IP"
 
 #: usr/local/www/diag_ipsec.php:93 usr/local/www/vpn_ipsec_phase2.php:419
 #: usr/local/www/diag_ipsec.php:104 usr/local/www/vpn_ipsec_phase2.php:445
@@ -30995,14 +31077,14 @@ msgstr "ローカルネットワーク"
 #: usr/local/www/vpn_ipsec_phase2.php:610 usr/local/www/diag_ipsec.php:108
 #: usr/local/www/vpn_ipsec_phase2.php:610
 msgid "Remote Network"
-msgstr "遠隔ネットワーク"
+msgstr "リモートネットワーク"
 
 #: usr/local/www/diag_ipsec.php:165 usr/local/www/diag_ipsec_sad.php:135
 #: usr/local/www/diag_ipsec_spd.php:144 usr/local/www/diag_ipsec_sad.php:136
 #: usr/local/www/diag_ipsec_spd.php:145 usr/local/www/diag_ipsec_spd.php:145
 #: usr/local/www/diag_ipsec_sad.php:136
 msgid "You can configure your IPsec"
-msgstr "あなたのIPsecを設定することができます"
+msgstr "IPsec を構成できます"
 
 #: usr/local/www/diag_ipsec_sad.php:90 usr/local/www/diag_ipsec_sad.php:91
 #: usr/local/www/diag_ipsec_sad.php:91
@@ -31012,12 +31094,12 @@ msgstr "SPI"
 #: usr/local/www/diag_ipsec_sad.php:91 usr/local/www/diag_ipsec_sad.php:92
 #: usr/local/www/diag_ipsec_sad.php:92
 msgid "Enc. alg."
-msgstr "ENC 。 ALG 。"
+msgstr "暗号化アルゴリズム"
 
 #: usr/local/www/diag_ipsec_sad.php:92 usr/local/www/diag_ipsec_sad.php:93
 #: usr/local/www/diag_ipsec_sad.php:93
 msgid "Auth. alg."
-msgstr "認証。 ALG 。"
+msgstr "認証アルゴリズム"
 
 #: usr/local/www/diag_ipsec_sad.php:93 usr/local/www/diag_ipsec_sad.php:94
 #: usr/local/www/diag_ipsec_sad.php:94
@@ -31027,12 +31109,12 @@ msgstr "データ"
 #: usr/local/www/diag_ipsec_sad.php:112 usr/local/www/diag_ipsec_sad.php:113
 #: usr/local/www/diag_ipsec_sad.php:113
 msgid "Do you really want to delete this security association?"
-msgstr "あなたは本当に、このセキュリティアソシエーションを削除しますか？"
+msgstr "本当にこのセキュリティアソシエーションを削除しますか？"
 
 #: usr/local/www/diag_ipsec_sad.php:121 usr/local/www/diag_ipsec_sad.php:122
 #: usr/local/www/diag_ipsec_sad.php:122
 msgid "No IPsec security associations."
-msgstr "いいえIPsecセキュリティアソシエーションはありません。"
+msgstr "IPsec セキュリティアソシエーションはありません"
 
 #: usr/local/www/services_captiveportal_ip.php:123
 #: usr/local/www/services_captiveportal_ip.php:163
@@ -31056,7 +31138,7 @@ msgstr "アドレスを追加"
 #: usr/local/www/services_captiveportal_ip.php:151
 #: usr/local/www/services_captiveportal_hostname.php:152
 msgid "edit address"
-msgstr "編集アドレス"
+msgstr "アドレスを編集"
 
 #: usr/local/www/services_captiveportal_ip.php:154
 #: usr/local/www/services_captiveportal_hostname.php:155
@@ -31065,7 +31147,7 @@ msgstr "編集アドレス"
 #: usr/local/www/services_captiveportal_ip.php:152
 #: usr/local/www/services_captiveportal_hostname.php:153
 msgid "Do you really want to delete this address?"
-msgstr "あなたは本当にこのアドレスを削除しますか？"
+msgstr "本当にこのアドレスを削除しますか？"
 
 #: usr/local/www/services_captiveportal_ip.php:154
 #: usr/local/www/services_captiveportal_hostname.php:155
@@ -31086,7 +31168,13 @@ msgid ""
 "on another network, for example. By specifying <em>from</em> addresses, it "
 "may be used to always allow pass-through access from a client behind the "
 "captive portal."
-msgstr "ポータルページに連れて行かれることなく、キャプティブポータルを介して「許可するIPアドレスを追加すると、する/これらのアドレスからのIPアクセスを許可します」 。これは、例えば、別のネットワーク上の「 WebサーバーがポータルページまたはDNSサーバー用の画像を提供するために使用する"ことができます。 u003c/ emu003eのアドレスからのu003cemu003e指定することで、キャプティブポータル」は、常に背後にあるクライアントからのパススルーのアクセスを許可するために用いることができる」 。"
+msgstr ""
+"許可された IP アドレスを追加すると、そのアドレスから、もしくはそのアドレスへの"
+"キャプティブポータルを経由した IP アクセスが、ポータルページに行くことなく、許可されます。"
+"この機能は、例えば、ポータルページヘ画像を送信する Web サーバや、他のネットワークの DNS サーバ"
+"に使用できます。"
+"<em>from</em> アドレスを指定することで、キャプティブポータルの背後にあるクライアントからの"
+"アクセスを、常にパススルーするのに、使用できます。"
 
 #: usr/local/www/services_captiveportal_ip.php:176
 #: usr/local/www/services_captiveportal_ip.php:183
@@ -31101,7 +31189,7 @@ msgstr "ポータルページに連れて行かれることなく、キャプテ
 #: usr/local/www/services_captiveportal_hostname.php:175
 #: usr/local/www/services_captiveportal_hostname.php:182
 msgid "All connections"
-msgstr "すべての接続"
+msgstr "全ての接続"
 
 #: usr/local/www/services_captiveportal_ip.php:176
 #: usr/local/www/services_captiveportal_ip.php:183
@@ -31110,7 +31198,7 @@ msgstr "すべての接続"
 #: usr/local/www/services_captiveportal_ip.php:174
 #: usr/local/www/services_captiveportal_ip.php:181
 msgid "the IP address are allowed"
-msgstr "IPアドレスは許可されてい"
+msgstr "その IP アドレスは許可されています"
 
 #: usr/local/www/services_captiveportal_ip.php:183
 #: usr/local/www/services_captiveportal_hostname.php:184
@@ -31125,14 +31213,14 @@ msgstr "から"
 #: usr/local/www/services_captiveportal_ip_edit.php:60
 #: usr/local/www/services_captiveportal_ip_edit.php:60
 msgid "Edit allowed IP address"
-msgstr "編集は許可されたIPアドレス"
+msgstr "許可された IP アドレスを編集"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:102
 #: usr/local/www/services_captiveportal_ip_edit.php:100
 #: usr/local/www/services_captiveportal_ip_edit.php:99
 #: usr/local/www/services_captiveportal_ip_edit.php:99
 msgid "Allowed IP address"
-msgstr "許可されたIPアドレス"
+msgstr "許可された IP アドレス"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:110
 #: usr/local/www/services_captiveportal_mac_edit.php:108
