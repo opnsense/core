@@ -29829,7 +29829,7 @@ msgid ""
 "your custom captive portal index.php page or error pages."
 msgstr ""
 "このフィールドは、$PORTAL_REDIRURL$ 変数に設定されます。"
-"カスタムキャピタルポータルの index.php ページやエラーページを使用して、アクセスできるようになります。"
+"アクセスするのに、カスタムキャピタルポータルの index.php ページやエラーページを使用できるようになります。"
 
 #: usr/local/www/services_captiveportal.php:514
 #: usr/local/www/services_captiveportal.php:519
@@ -30458,7 +30458,7 @@ msgstr "RADIUS NAS IP アトリビュート"
 #: usr/local/www/services_captiveportal.php:810
 #: usr/local/www/services_captiveportal.php:810
 msgid "Choose the IP to use for calling station attribute."
-msgstr "機器属性を呼び出すために使用する IP を選択してください"
+msgstr "calling station 属性に使用する IP を選択してください"
 
 #: usr/local/www/services_captiveportal.php:771
 #: usr/local/www/services_captiveportal.php:813
@@ -30549,9 +30549,7 @@ msgid ""
 "Change this if you also"
 msgstr ""
 "このオプションは、RADIUS システム全体で使用される MAC アドレス形式を変更します。"
-"もし、
-
-このオプションは、全体のRADIUSシステムで使用されるMACアドレス形式が変更されます。 「あなたもあれば、これを変更する"
+"もし、"
 
 #: usr/local/www/services_captiveportal.php:811
 #: usr/local/www/services_captiveportal.php:853
@@ -31169,8 +31167,8 @@ msgid ""
 "may be used to always allow pass-through access from a client behind the "
 "captive portal."
 msgstr ""
-"許可された IP アドレスを追加すると、そのアドレスから、もしくはそのアドレスへの"
-"キャプティブポータルを経由した IP アクセスが、ポータルページに行くことなく、許可されます。"
+"許可された IP アドレスとして追加されると、ポータルページに行かなくても、"
+"そのアドレスから、もしくはそのアドレスへのキャプティブポータルを経由した IP アクセスが許可されます。"
 "この機能は、例えば、ポータルページヘ画像を送信する Web サーバや、他のネットワークの DNS サーバ"
 "に使用できます。"
 "<em>from</em> アドレスを指定することで、キャプティブポータルの背後にあるクライアントからの"
@@ -31232,7 +31230,7 @@ msgstr "許可された IP アドレス"
 #: usr/local/www/services_captiveportal_hostname_edit.php:108
 #: usr/local/www/services_captiveportal_mac_edit.php:106
 msgid "Upload speed needs to be an integer"
-msgstr "アップロード速度は、整数である必要がある"
+msgstr "アップロード速度は整数です"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:113
 #: usr/local/www/services_captiveportal_mac_edit.php:110
@@ -31244,7 +31242,7 @@ msgstr "アップロード速度は、整数である必要がある"
 #: usr/local/www/services_captiveportal_hostname_edit.php:110
 #: usr/local/www/services_captiveportal_mac_edit.php:108
 msgid "Download speed needs to be an integer"
-msgstr "ダウンロード速度は、整数である必要がある"
+msgstr "ダウンロード速度は整数です"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:120
 #: usr/local/www/services_captiveportal_mac_edit.php:117
@@ -31256,14 +31254,14 @@ msgstr "ダウンロード速度は、整数である必要がある"
 #: usr/local/www/services_captiveportal_hostname_edit.php:117
 #: usr/local/www/services_captiveportal_mac_edit.php:115
 msgid "already allowed"
-msgstr "既に許可された"
+msgstr "既に許可されています"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:175
 #: usr/local/www/services_captiveportal_ip_edit.php:173
 #: usr/local/www/services_captiveportal_ip_edit.php:184
 #: usr/local/www/services_captiveportal_ip_edit.php:184
 msgid "Edit allowed ip rule"
-msgstr "編集は、IPルールを許可"
+msgstr "許可された IP ルールを編集"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:182
 #: usr/local/www/services_captiveportal_ip_edit.php:191
@@ -31337,21 +31335,25 @@ msgstr "使用"
 msgid ""
 "to always allow an IP address through the captive portal (without "
 "authentication)"
-msgstr "「 （認証常時ずに）キャプティブポータルを使用して、IPアドレスを許可するには、「"
+msgstr ""
+"目的: ( 認証せずに ) キャプティブポータルを通過する IP アドレスを"
+"常に許可"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:192
 #: usr/local/www/services_captiveportal_ip_edit.php:190
 msgid ""
 "to allow access from all clients (even non-authenticated ones) behind the "
 "portal to this IP address"
-msgstr "このIPアドレスにポータル」の背後にあるすべてのクライアント（たとえ非認証のもの）からのアクセスを許可するように」"
+msgstr ""
+"目的: ポータルの背後にある全てのクライアント ( 非認証のクライアントも含む ) から"
+"この IP アドレスへのアクセスを許可"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:204
 #: usr/local/www/services_captiveportal_ip_edit.php:202
 #: usr/local/www/services_captiveportal_ip_edit.php:196
 #: usr/local/www/services_captiveportal_ip_edit.php:196
 msgid "IP address and subnet mask. Use /32 for a single IP"
-msgstr "IPアドレスとサブネットマスク。単一のIPのために/ 32を使用してください"
+msgstr "IP アドレスとサブネットマスク。単一 IP には /32 を使用してください"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:215
 #: usr/local/www/services_captiveportal_mac_edit.php:189
@@ -31365,14 +31367,14 @@ msgstr "IPアドレスとサブネットマスク。単一のIPのために/ 32�
 #: usr/local/www/services_captiveportal_hostname_edit.php:189
 #: usr/local/www/services_captiveportal_mac_edit.php:200
 msgid "Bandwidth up"
-msgstr "最大帯域幅"
+msgstr "上り帯域幅"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:218
 #: usr/local/www/services_captiveportal_ip_edit.php:216
 #: usr/local/www/services_captiveportal_ip_edit.php:210
 #: usr/local/www/services_captiveportal_ip_edit.php:210
 msgid "Enter a upload limit to be enforced on this IP address in Kbit/s"
-msgstr "キロビット/秒で、このIPアドレスに適用されるアップロード制限を入力してください"
+msgstr "この IP アドレスに適用する上り帯域幅制限を Kbit/s で入力してください"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:222
 #: usr/local/www/services_captiveportal_mac_edit.php:195
@@ -31386,46 +31388,46 @@ msgstr "キロビット/秒で、このIPアドレスに適用されるアップ
 #: usr/local/www/services_captiveportal_hostname_edit.php:195
 #: usr/local/www/services_captiveportal_mac_edit.php:206
 msgid "Bandwidth down"
-msgstr "ダウン帯域幅"
+msgstr "下り帯域幅"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:225
 #: usr/local/www/services_captiveportal_ip_edit.php:223
 #: usr/local/www/services_captiveportal_ip_edit.php:217
 #: usr/local/www/services_captiveportal_ip_edit.php:217
 msgid "Enter a download limit to be enforced on this IP address in Kbit/s"
-msgstr "キロビット/秒でのこのIPアドレスに施行されるようにダウンロード制限を入力してください"
+msgstr "この IP アドレスに適用する下り帯域幅制限を Kbit/s で入力してください"
 
 #: usr/local/www/services_captiveportal_mac.php:80
 #: usr/local/www/services_captiveportal_mac.php:78
 #: usr/local/www/services_captiveportal_mac.php:78
 msgid "No entry exists yet!"
-msgstr "エントリがまだ存在しません ！"
+msgstr "エントリはまだありません！"
 
 #: usr/local/www/services_captiveportal_mac.php:84
 #: usr/local/www/services_captiveportal_mac.php:82
 #: usr/local/www/services_captiveportal_mac.php:82
 msgid "Please set the zone on which the operation should be allowed"
-msgstr "操作が許可されるべきかにゾーンを設定してください"
+msgstr "操作を許可するゾーンを設定してください"
 
 #: usr/local/www/services_captiveportal_mac.php:96
 #: usr/local/www/services_captiveportal_mac.php:94
 #: usr/local/www/services_captiveportal_mac.php:94
 msgid "No entry exists for this username:"
-msgstr "エントリがこのユーザ名は存在しません。"
+msgstr "このユーザ名のエントリはありません: "
 
 #: usr/local/www/services_captiveportal_mac.php:115
 #: usr/local/www/services_captiveportal_mac.php:113
 #: usr/local/www/services_captiveportal_mac.php:118
 #: usr/local/www/services_captiveportal_mac.php:118
 msgid "The entry was sucessfully deleted"
-msgstr "エントリはsucessfully削除された"
+msgstr "エントリは正常に削除されました"
 
 #: usr/local/www/services_captiveportal_mac.php:117
 #: usr/local/www/services_captiveportal_mac.php:115
 #: usr/local/www/services_captiveportal_mac.php:120
 #: usr/local/www/services_captiveportal_mac.php:120
 msgid "No entry exists for this mac address:"
-msgstr "エントリがこのMACアドレスは存在しません。"
+msgstr "この MAC アドレスのエントリはありません: "
 
 #: usr/local/www/services_captiveportal_mac.php:148
 #: usr/local/www/services_captiveportal_mac.php:146
@@ -31434,14 +31436,16 @@ msgstr "エントリがこのMACアドレスは存在しません。"
 msgid ""
 "The captive portal MAC address configuration has been changed.<br>You must "
 "apply the changes in order for them to take effect."
-msgstr "「キャプティブポータルのMACアドレスの設定が変更されています。あなたがしなければならないポスター「それらを有効にするために変更を適用します。"
+msgstr ""
+"キャプティブポータル MAC アドレス構成は変更されました。<br>"
+"変更を有効にするには、変更を適用してください。"
 
 #: usr/local/www/services_captiveportal_mac.php:180
 #: usr/local/www/services_captiveportal_mac.php:178
 #: usr/local/www/services_captiveportal_mac.php:188
 #: usr/local/www/services_captiveportal_mac.php:188
 msgid "edit host"
-msgstr "編集ホスト"
+msgstr "ホストの編集"
 
 #: usr/local/www/services_captiveportal_mac.php:181
 #: usr/local/www/services_dnsmasq.php:276
@@ -31455,21 +31459,21 @@ msgstr "編集ホスト"
 #: usr/local/www/services_dnsmasq.php:379
 #: usr/local/www/services_captiveportal_mac.php:189
 msgid "Do you really want to delete this host?"
-msgstr "あなたは本当にこのホストを削除しますか？"
+msgstr "本当にこのホストを削除しますか？"
 
 #: usr/local/www/services_captiveportal_mac.php:181
 #: usr/local/www/services_captiveportal_mac.php:179
 #: usr/local/www/services_captiveportal_mac.php:189
 #: usr/local/www/services_captiveportal_mac.php:189
 msgid "delete host"
-msgstr "ホストを削除する"
+msgstr "ホストの削除"
 
 #: usr/local/www/services_captiveportal_mac.php:186
 #: usr/local/www/services_captiveportal_mac.php:184
 #: usr/local/www/services_captiveportal_mac.php:194
 #: usr/local/www/services_captiveportal_mac.php:194
 msgid "add host"
-msgstr "ホストを追加"
+msgstr "ホストの追加"
 
 #: usr/local/www/services_captiveportal_mac.php:192
 #: usr/local/www/services_captiveportal_mac.php:190
@@ -31478,57 +31482,59 @@ msgstr "ホストを追加"
 msgid ""
 "Adding MAC addresses as pass-through MACs allows them access through the "
 "captive portal automatically without being taken to the portal page."
-msgstr "ポータルページに連れて行かれることなく、自動的にキャプティブポータル「通過のMACはを通して彼らにアクセスすることができますようにMACアドレスを追加」を参照してください。"
+msgstr ""
+"パススルー MAC として追加された MAC アドレスは、ポータルページに行かなくても、"
+"キャプティブポータルを経由したアクセスが、自動的に許可されます。"
 
 #: usr/local/www/services_captiveportal_mac_edit.php:60
 #: usr/local/www/services_captiveportal_mac_edit.php:57
 #: usr/local/www/services_captiveportal_mac_edit.php:57
 msgid "Edit pass-through MAC address"
-msgstr "パススルーのMACアドレスを編集"
+msgstr "パススルー MAC アドレスの編集"
 
 #: usr/local/www/services_captiveportal_mac_edit.php:105
 #: usr/local/www/services_captiveportal_mac_edit.php:103
 #: usr/local/www/services_captiveportal_mac_edit.php:103
 msgid "A valid MAC address must be specified"
-msgstr "有効なMACアドレスを指定する必要があります"
+msgstr "有効な MAC アドレスを指定してください"
 
 #: usr/local/www/services_captiveportal_mac_edit.php:172
 #: usr/local/www/services_captiveportal_mac_edit.php:170
 #: usr/local/www/services_captiveportal_mac_edit.php:177
 #: usr/local/www/services_captiveportal_mac_edit.php:177
 msgid "Edit Pass-through MAC address"
-msgstr "編集パススルーMACアドレス"
+msgstr "パススルー MAC アドレスの編集"
 
 #: usr/local/www/services_captiveportal_mac_edit.php:179
 #: usr/local/www/services_captiveportal_mac_edit.php:177
 #: usr/local/www/services_captiveportal_mac_edit.php:190
 #: usr/local/www/services_captiveportal_mac_edit.php:190
 msgid "MAC address (6 hex octets separated by colons)"
-msgstr "MACアドレス（ 6進オクテットコロンで区切られた）"
+msgstr "MAC アドレス（ 16 進数 6 桁でコロンで区切ってください ）"
 
 #: usr/local/www/services_captiveportal_mac_edit.php:192
 #: usr/local/www/services_captiveportal_mac_edit.php:190
 #: usr/local/www/services_captiveportal_mac_edit.php:203
 #: usr/local/www/services_captiveportal_mac_edit.php:203
 msgid "Enter a upload limit to be enforced on this MAC address in Kbit/s"
-msgstr "キロビット/秒で、このMACアドレスに施行されるようにアップロード制限を入力してください"
+msgstr "この MAC アドレスに適用する上り帯域幅制限を Kbit/s で入力してください"
 
 #: usr/local/www/services_captiveportal_mac_edit.php:198
 #: usr/local/www/services_captiveportal_mac_edit.php:196
 #: usr/local/www/services_captiveportal_mac_edit.php:209
 #: usr/local/www/services_captiveportal_mac_edit.php:209
 msgid "Enter a download limit to be enforced on this MAC address in Kbit/s"
-msgstr "キロビット/秒で、このMACアドレスに施行されるようにダウンロード制限を入力してください"
+msgstr "この MAC アドレスに適用する下り帯域幅制限を Kbit/s で入力してください"
 
 #: usr/local/www/diag_ipsec_spd.php:90 usr/local/www/diag_ipsec_spd.php:91
 #: usr/local/www/diag_ipsec_spd.php:91
 msgid "Tunnel endpoints"
-msgstr "トンネルのエンドポイント"
+msgstr "トンネルエンドポイント"
 
 #: usr/local/www/diag_ipsec_spd.php:108 usr/local/www/diag_ipsec_spd.php:109
 #: usr/local/www/diag_ipsec_spd.php:109
 msgid "Do you really want to delete this security policy?"
-msgstr "あなたは本当に、このセキュリティポリシーを削除しますか？"
+msgstr "本当にこのセキュリティポリシを削除しますか？"
 
 #: usr/local/www/diag_ipsec_spd.php:119 usr/local/www/diag_ipsec_spd.php:120
 #: usr/local/www/diag_ipsec_spd.php:120
