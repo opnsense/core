@@ -31510,7 +31510,7 @@ msgstr "パススルー MAC アドレスの編集"
 #: usr/local/www/services_captiveportal_mac_edit.php:190
 #: usr/local/www/services_captiveportal_mac_edit.php:190
 msgid "MAC address (6 hex octets separated by colons)"
-msgstr "MAC アドレス（ 16 進数 6 桁でコロンで区切ってください ）"
+msgstr "MAC アドレス（ 16 進数 6 オクテット、コロン区切り ）"
 
 #: usr/local/www/services_captiveportal_mac_edit.php:192
 #: usr/local/www/services_captiveportal_mac_edit.php:190
@@ -31539,28 +31539,28 @@ msgstr "本当にこのセキュリティポリシを削除しますか？"
 #: usr/local/www/diag_ipsec_spd.php:119 usr/local/www/diag_ipsec_spd.php:120
 #: usr/local/www/diag_ipsec_spd.php:120
 msgid "incoming (as seen by firewall)"
-msgstr "入ってくる（ファイアウォールで見られるように）"
+msgstr "着信 ( ファイアウォール視点 )"
 
 #: usr/local/www/diag_ipsec_spd.php:126 usr/local/www/diag_ipsec_spd.php:127
 #: usr/local/www/diag_ipsec_spd.php:127
 msgid "outgoing (as seen by firewall)"
-msgstr "発信（ファイアウォールで見られるように）"
+msgstr "発信 ( ファイアウォール視点 )"
 
 #: usr/local/www/diag_ipsec_spd.php:131 usr/local/www/diag_ipsec_spd.php:132
 #: usr/local/www/diag_ipsec_spd.php:132
 msgid "No IPsec security policies."
-msgstr "いいえIPsecセキュリティポリシーん。"
+msgstr "IPsec セキュリティポリシはありません"
 
 #: usr/local/www/diag_ping.php:59 usr/local/www/diag_ping.php:61
 #: usr/local/www/diag_ping.php:61
 #, php-format
 msgid "Count must be between 1 and %s"
-msgstr "カウントは1と%sの間でなければなりません"
+msgstr "カウントは 1 〜 %s です"
 
 #: usr/local/www/diag_ping.php:126 usr/local/www/diag_ping.php:148
 #: usr/local/www/diag_ping.php:148
 msgid "Ping output"
-msgstr "pingの出力"
+msgstr "ping 出力"
 
 #: usr/local/www/services_dhcp.php:111 usr/local/www/services_dhcp.php:111
 msgid ""
@@ -31574,7 +31574,7 @@ msgstr "アドレス「DHCPサーバーは、静的IPアドレスで設定され
 #: usr/local/www/services_router_advertisements.php:75
 #: usr/local/www/services_dhcp.php:111 usr/local/www/services_dhcpv6.php:75
 msgid "Only interfaces configured with a static IP will be shown"
-msgstr "静的IPで設定インターフェイスだけが表示されます"
+msgstr "静的 IP で構成されたインタフェースのみが表示されます"
 
 #: usr/local/www/services_dhcp.php:207 usr/local/www/services_dhcpv6.php:177
 #: usr/local/www/services_dhcp.php:208 usr/local/www/services_dhcpv6.php:189
@@ -31582,7 +31582,7 @@ msgstr "静的IPで設定インターフェイスだけが表示されます"
 #: usr/local/www/services_dhcp.php:235 usr/local/www/services_dhcpv6.php:168
 #: usr/local/www/services_dhcp.php:235 usr/local/www/services_dhcpv6.php:168
 msgid "Range begin"
-msgstr "範囲の開始"
+msgstr "範囲開始"
 
 #: usr/local/www/services_dhcp.php:207 usr/local/www/services_dhcpv6.php:177
 #: usr/local/www/services_dhcp.php:208 usr/local/www/services_dhcpv6.php:189
@@ -31605,7 +31605,7 @@ msgstr "範囲終了"
 #: usr/local/www/services_dhcp.php:242 usr/local/www/services_dhcpv6.php:173
 #: usr/local/www/services_dhcpv6.php:177 usr/local/www/services_dhcpv6.php:179
 msgid "A valid range must be specified."
-msgstr "有効な範囲を指定する必要があります。"
+msgstr "有効な範囲を指定してください"
 
 #: usr/local/www/services_dhcp.php:216 usr/local/www/services_dhcp.php:217
 #: usr/local/www/services_dhcp.php:263
@@ -31614,7 +31614,7 @@ msgstr "有効な範囲を指定する必要があります。"
 #: usr/local/www/services_dhcp_edit.php:207
 #: usr/local/www/services_dhcp.php:244
 msgid "A valid IP address must be specified for the gateway."
-msgstr "有効なIPアドレスは、ゲートウェイを指定する必要があります。"
+msgstr "ゲートウェイに有効な IP アドレスを指定してください"
 
 #: usr/local/www/services_dhcp.php:218 usr/local/www/services_dhcp.php:219
 #: usr/local/www/services_dhcp.php:265
@@ -31624,7 +31624,8 @@ msgstr "有効なIPアドレスは、ゲートウェイを指定する必要が�
 #: usr/local/www/services_dhcp.php:246
 msgid ""
 "A valid IP address must be specified for the primary/secondary WINS servers."
-msgstr "「有効なIPアドレスは、プライマリ/セカンダリWINSサーバを指定する必要があります。"
+msgstr ""
+"プライマリ / セカンダリ WINS サーバに有効な IP アドレスを指定してください"
 
 #: usr/local/www/services_dhcp.php:223 usr/local/www/services_dhcp.php:224
 #: usr/local/www/services_dhcp.php:270
@@ -31635,7 +31636,8 @@ msgstr "「有効なIPアドレスは、プライマリ/セカンダリWINSサ�
 #, php-format
 msgid ""
 "The gateway address %s does not lie within the chosen interface's subnet."
-msgstr "「ゲートウェイアドレス%sは、選択されたインターフェイスのサブネット内にない。"
+msgstr ""
+"ゲートウェイアドレス %s は、選択されたインタフェースのサブネット外です"
 
 #: usr/local/www/services_dhcp.php:226 usr/local/www/services_dhcp.php:227
 #: usr/local/www/services_dhcp.php:273
@@ -31645,7 +31647,8 @@ msgstr "「ゲートウェイアドレス%sは、選択されたインターフ�
 #: usr/local/www/services_dhcp.php:254
 msgid ""
 "A valid IP address must be specified for the primary/secondary DNS servers."
-msgstr "「有効なIPアドレスは、プライマリ/セカンダリDNSサーバを指定する必要があります。"
+msgstr ""
+"プライマリ / セカンダリ DNS サーバに有効な IP アドレスを指定してください"
 
 #: usr/local/www/services_dhcp.php:229 usr/local/www/services_dhcpv6.php:195
 #: usr/local/www/services_dhcp.php:230 usr/local/www/services_dhcpv6.php:207
@@ -31655,7 +31658,7 @@ msgstr "「有効なIPアドレスは、プライマリ/セカンダリDNSサー
 #: usr/local/www/services_dhcp_edit.php:221
 #: usr/local/www/services_dhcp.php:257 usr/local/www/services_dhcpv6.php:186
 msgid "The default lease time must be at least 60 seconds."
-msgstr "デフォルトのリース時間は60秒以上でなければなりません。"
+msgstr "デフォルトリース時間は 60 秒以上です"
 
 #: usr/local/www/services_dhcp.php:231 usr/local/www/services_dhcpv6.php:197
 #: usr/local/www/services_dhcp.php:232 usr/local/www/services_dhcpv6.php:209
@@ -31668,7 +31671,9 @@ msgstr "デフォルトのリース時間は60秒以上でなければなりま�
 msgid ""
 "The maximum lease time must be at least 60 seconds and higher than the "
 "default lease time."
-msgstr "デフォルトのリース時間"最大リース時間は少なくとも60秒よりも高くなければならない」 。"
+msgstr ""
+"最大リース時間は 60 秒以上で、"
+"かつ、デフォルトリース時間よりも大きい値を設定してください"
 
 #: usr/local/www/services_dhcp.php:233 usr/local/www/services_dhcpv6.php:199
 #: usr/local/www/services_dhcp.php:234 usr/local/www/services_dhcpv6.php:211
@@ -31679,7 +31684,7 @@ msgstr "デフォルトのリース時間"最大リース時間は少なくと�
 #: usr/local/www/services_dhcp_edit.php:225
 #: usr/local/www/services_dhcp.php:281 usr/local/www/services_dhcpv6.php:190
 msgid "A valid domain name must be specified for the dynamic DNS registration."
-msgstr "有効なドメイン名は、動的DNS登録を指定する必要があります。"
+msgstr "ダイナミック DNS 登録に有効なドメイン名を指定してください"
 
 #: usr/local/www/services_dhcp.php:235 usr/local/www/services_dhcp.php:246
 #: usr/local/www/services_dhcp.php:298
@@ -31689,7 +31694,8 @@ msgstr "有効なドメイン名は、動的DNS登録を指定する必要があ
 #: usr/local/www/services_dhcp.php:299
 msgid ""
 "A valid IP address must be specified for the primary/secondary NTP servers."
-msgstr "「有効なIPアドレスは、プライマリ/セカンダリのNTPサーバーを指定する必要があります。"
+msgstr ""
+"プライマリ / セカンダリ NTP サーバに有効な IP アドレスを指定してください"
 
 #: usr/local/www/services_dhcp.php:237 usr/local/www/services_dhcpv6.php:203
 #: usr/local/www/services_dhcp.php:248 usr/local/www/services_dhcpv6.php:225
@@ -31698,7 +31704,7 @@ msgstr "「有効なIPアドレスは、プライマリ/セカンダリのNTPサ
 #: usr/local/www/services_dhcp.php:301 usr/local/www/services_dhcp.php:301
 #: usr/local/www/services_dhcpv6.php:204
 msgid "A valid domain name must be specified for the DNS domain."
-msgstr "有効なドメイン名は、 DNSドメインを指定する必要があります。"
+msgstr "DNS ドメインに有効なドメイン名を指定してください"
 
 #: usr/local/www/services_dhcp.php:239 usr/local/www/services_dhcp.php:250
 #: usr/local/www/services_dhcp.php:302
@@ -31707,7 +31713,7 @@ msgstr "有効なドメイン名は、 DNSドメインを指定する必要が�
 #: usr/local/www/services_dhcp_edit.php:239
 #: usr/local/www/services_dhcp.php:303
 msgid "A valid IP address or hostname must be specified for the TFTP server."
-msgstr "有効なIPアドレスまたはホスト名は、TFTPサーバを指定する必要があります。"
+msgstr "TFTP サーバに有効な IP アドレスまたはホスト名を指定してください"
 
 #: usr/local/www/services_dhcp.php:241 usr/local/www/services_dhcp.php:252
 #: usr/local/www/services_dhcp.php:304
@@ -31716,32 +31722,32 @@ msgstr "有効なIPアドレスまたはホスト名は、TFTPサーバを指定
 #: usr/local/www/services_dhcp_edit.php:241
 #: usr/local/www/services_dhcp.php:305
 msgid "A valid IP address must be specified for the network boot server."
-msgstr "有効なIPアドレスは、ネットワークブートサーバーを指定する必要があります。"
+msgstr "ネットワーク起動サーバに有効な IP アドレスを指定してください"
 
 #: usr/local/www/services_dhcp.php:244 usr/local/www/services_dhcp.php:255
 #: usr/local/www/services_dhcp.php:307 usr/local/www/services_dhcp.php:288
 #: usr/local/www/services_dhcp.php:308 usr/local/www/services_dhcp.php:308
 msgid "You cannot use the network address in the starting subnet range."
-msgstr "あなたが始まるサブネット範囲内のネットワークアドレスを使用することはできません。"
+msgstr "サブネット範囲の一番最初はネットワークアドレスで、使用できません"
 
 #: usr/local/www/services_dhcp.php:246 usr/local/www/services_dhcp.php:257
 #: usr/local/www/services_dhcp.php:309 usr/local/www/services_dhcp.php:290
 #: usr/local/www/services_dhcp.php:310 usr/local/www/services_dhcp.php:310
 msgid "You cannot use the broadcast address in the ending subnet range."
-msgstr "あなたが終わるサブネット範囲内のブロードキャストアドレスを使用することはできません。"
+msgstr "サブネット範囲の一番最後はブロードキャストアドレスで、使用できません"
 
 #: usr/local/www/services_dhcp.php:253 usr/local/www/services_dhcp.php:264
 #: usr/local/www/services_dhcp.php:316 usr/local/www/services_dhcp.php:297
 #: usr/local/www/services_dhcp.php:317 usr/local/www/services_dhcp.php:317
 #, php-format
 msgid "The subnet range cannot overlap with virtual IP address %s."
-msgstr "サブネット範囲は、仮想IPアドレスと重複しない%s.ができ"
+msgstr "サブネット範囲は、仮想 IP アドレス %s と重複できません"
 
 #: usr/local/www/services_dhcp.php:268 usr/local/www/services_dhcp.php:279
 #: usr/local/www/services_dhcp.php:331 usr/local/www/services_dhcp.php:312
 #: usr/local/www/services_dhcp.php:332 usr/local/www/services_dhcp.php:332
 msgid "Text type cannot include quotation marks."
-msgstr "テキストタイプは、引用符を含めることはできません。"
+msgstr "text 型には、クォーテーションマークは使用できません"
 
 #: usr/local/www/services_dhcp.php:270 usr/local/www/services_dhcp.php:281
 #: usr/local/www/services_dhcp.php:333 usr/local/www/services_dhcp.php:314
@@ -31750,45 +31756,50 @@ msgid ""
 "String type must be enclosed in quotes like "this" or must be a series of "
 "octets specified in hexadecimal, separated by colons, like 01:23:45:67:89:ab:"
 "cd:ef"
-msgstr "この「文字列型のように引用符で囲む必要があります」 」や、一連のでなければなりません "01:23:45:67:89のようなコロンで区切られた16進数で指定オクテット、 、 ： AB ： "CD： EF"
+msgstr ""
+"string 型は "この" ようなダブルクォーテーションマークで囲ってください。"
+"16 進数で指定する一連のオクテットは、以下の通りにコロンで区切ってください。"
+"01:23:45:67:89:ab:cd:ef"
 
 #: usr/local/www/services_dhcp.php:272 usr/local/www/services_dhcp.php:283
 #: usr/local/www/services_dhcp.php:335 usr/local/www/services_dhcp.php:316
 #: usr/local/www/services_dhcp.php:336 usr/local/www/services_dhcp.php:336
 msgid "Boolean type must be true, false, on, or off."
-msgstr "boolean型は、オン、またはオフ偽、真でなければなりません。"
+msgstr "boolean 型は、true, false, on, off です"
 
 #: usr/local/www/services_dhcp.php:274 usr/local/www/services_dhcp.php:285
 #: usr/local/www/services_dhcp.php:337 usr/local/www/services_dhcp.php:318
 #: usr/local/www/services_dhcp.php:338 usr/local/www/services_dhcp.php:338
 msgid "Unsigned 8-bit integer type must be a number in the range 0 to 255."
-msgstr "符号なし8ビット整数型は、 255の範囲は0の数字でなければなりません。"
+msgstr "符号なし 8 ビット整数型は 0 〜 255 の数字です"
 
 #: usr/local/www/services_dhcp.php:276 usr/local/www/services_dhcp.php:287
 #: usr/local/www/services_dhcp.php:339 usr/local/www/services_dhcp.php:320
 #: usr/local/www/services_dhcp.php:340 usr/local/www/services_dhcp.php:340
 msgid "Unsigned 16-bit integer type must be a number in the range 0 to 65535."
-msgstr "符号なしの16ビット整数型65535の範囲は0の数字でなければなりません。"
+msgstr "符号なし 16 ビット整数型は 0 〜 65535 の数字です"
 
 #: usr/local/www/services_dhcp.php:278 usr/local/www/services_dhcp.php:289
 #: usr/local/www/services_dhcp.php:341 usr/local/www/services_dhcp.php:322
 #: usr/local/www/services_dhcp.php:342 usr/local/www/services_dhcp.php:342
 msgid ""
 "Unsigned 32-bit integer type must be a number in the range 0 to 4294967295."
-msgstr "「符号なし32ビット整数型が4294967295の範囲は0の数字でなければなりません。"
+msgstr ""
+"符号なし 32 ビット整数型は 0 〜 4294967295 の数字です"
 
 #: usr/local/www/services_dhcp.php:280 usr/local/www/services_dhcp.php:291
 #: usr/local/www/services_dhcp.php:343 usr/local/www/services_dhcp.php:324
 #: usr/local/www/services_dhcp.php:344 usr/local/www/services_dhcp.php:344
 msgid "Signed 8-bit integer type must be a number in the range -128 to 127."
-msgstr "符号付き8ビット整数型は範囲-128〜127の数値でなければなりません。"
+msgstr "符号付 8 ビット整数型は -128 〜 127 の数字です"
 
 #: usr/local/www/services_dhcp.php:282 usr/local/www/services_dhcp.php:293
 #: usr/local/www/services_dhcp.php:345 usr/local/www/services_dhcp.php:326
 #: usr/local/www/services_dhcp.php:346 usr/local/www/services_dhcp.php:346
 msgid ""
 "Signed 16-bit integer type must be a number in the range -32768 to 32767."
-msgstr "「符号付き16ビット整数型の範囲-32768〜32767の数字でなければなりません。"
+msgstr ""
+"符号付 16 ビット整数型は -32768 〜 32767 の数字です"
 
 #: usr/local/www/services_dhcp.php:284 usr/local/www/services_dhcp.php:295
 #: usr/local/www/services_dhcp.php:347 usr/local/www/services_dhcp.php:328
@@ -31796,13 +31807,15 @@ msgstr "「符号付き16ビット整数型の範囲-32768〜32767の数字で�
 msgid ""
 "Signed 32-bit integer type must be a number in the range -2147483648 to "
 "2147483647."
-msgstr "2147483647 「符号付き32ビット整数型は-2147483648に内数でなければなりません」 。"
+msgstr ""
+"符号付 32 ビット整数型は"
+" -2147483648 〜 2147483647 の数字です"
 
 #: usr/local/www/services_dhcp.php:286 usr/local/www/services_dhcp.php:297
 #: usr/local/www/services_dhcp.php:349 usr/local/www/services_dhcp.php:330
 #: usr/local/www/services_dhcp.php:350 usr/local/www/services_dhcp.php:350
 msgid "IP address or host type must be an IP address or host name."
-msgstr "IPアドレスまたはホストタイプは、IPアドレスまたはホスト名でなければなりません。"
+msgstr "IP アドレスまたはホスト型は、IP アドレスまたはホスト名です"
 
 #: usr/local/www/services_dhcp.php:297 usr/local/www/services_dhcpv6.php:230
 #: usr/local/www/services_dhcp.php:308 usr/local/www/services_dhcpv6.php:252
