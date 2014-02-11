@@ -31566,7 +31566,9 @@ msgstr "ping 出力"
 msgid ""
 "The DHCP Server can only be enabled on interfaces configured with static IP "
 "addresses"
-msgstr "アドレス「DHCPサーバーは、静的IPアドレスで設定されたインターフェイス上で有効にすることができます」"
+msgstr ""
+"DHCP サーバは静的 IP アドレスで構成されたインタフェースでのみ"
+"有効にできます"
 
 #: usr/local/www/services_dhcp.php:111 usr/local/www/services_dhcpv6.php:74
 #: usr/local/www/services_router_advertisements.php:75
@@ -31728,13 +31730,13 @@ msgstr "ネットワーク起動サーバに有効な IP アドレスを指定�
 #: usr/local/www/services_dhcp.php:307 usr/local/www/services_dhcp.php:288
 #: usr/local/www/services_dhcp.php:308 usr/local/www/services_dhcp.php:308
 msgid "You cannot use the network address in the starting subnet range."
-msgstr "サブネット範囲の一番最初はネットワークアドレスで、使用できません"
+msgstr "サブネット範囲の一番最初はネットワークアドレスのため、使用できません"
 
 #: usr/local/www/services_dhcp.php:246 usr/local/www/services_dhcp.php:257
 #: usr/local/www/services_dhcp.php:309 usr/local/www/services_dhcp.php:290
 #: usr/local/www/services_dhcp.php:310 usr/local/www/services_dhcp.php:310
 msgid "You cannot use the broadcast address in the ending subnet range."
-msgstr "サブネット範囲の一番最後はブロードキャストアドレスで、使用できません"
+msgstr "サブネット範囲の一番最後はブロードキャストアドレスのため、使用できません"
 
 #: usr/local/www/services_dhcp.php:253 usr/local/www/services_dhcp.php:264
 #: usr/local/www/services_dhcp.php:316 usr/local/www/services_dhcp.php:297
@@ -31815,7 +31817,7 @@ msgstr ""
 #: usr/local/www/services_dhcp.php:349 usr/local/www/services_dhcp.php:330
 #: usr/local/www/services_dhcp.php:350 usr/local/www/services_dhcp.php:350
 msgid "IP address or host type must be an IP address or host name."
-msgstr "IP アドレスまたはホスト型は、IP アドレスまたはホスト名です"
+msgstr "IP アドレス / ホスト型は、IP アドレスまたはホスト名です"
 
 #: usr/local/www/services_dhcp.php:297 usr/local/www/services_dhcpv6.php:230
 #: usr/local/www/services_dhcp.php:308 usr/local/www/services_dhcpv6.php:252
@@ -31824,7 +31826,7 @@ msgstr "IP アドレスまたはホスト型は、IP アドレスまたはホス
 #: usr/local/www/services_dhcp.php:361 usr/local/www/services_dhcp.php:361
 #: usr/local/www/services_dhcpv6.php:232
 msgid "The specified range lies outside of the current subnet."
-msgstr "指定された範囲は、現在のサブネットの外側にある。"
+msgstr "指定された範囲は、現在のサブネットの範囲外です"
 
 #: usr/local/www/services_dhcp.php:301 usr/local/www/services_dhcp.php:312
 #: usr/local/www/services_dhcpv6.php:257 usr/local/www/services_dhcp.php:364
@@ -31832,7 +31834,7 @@ msgstr "指定された範囲は、現在のサブネットの外側にある。
 #: usr/local/www/services_dhcpv6.php:237 usr/local/www/services_dhcp.php:365
 #: usr/local/www/services_dhcp.php:365 usr/local/www/services_dhcpv6.php:237
 msgid "The range is invalid (first element higher than second element)."
-msgstr "範囲は、 （第2要素よりも、最初の要素が高い）が無効です。"
+msgstr "無効な範囲です ( 第 1 要素の方が第 2 要素よりも大きい )"
 
 #: usr/local/www/services_dhcp.php:305 usr/local/www/services_dhcpv6.php:240
 #: usr/local/www/services_dhcp.php:316 usr/local/www/services_dhcpv6.php:261
@@ -31844,7 +31846,9 @@ msgstr "範囲は、 （第2要素よりも、最初の要素が高い）が無�
 msgid ""
 "You must disable the DHCP relay on the %s interface before enabling the DHCP "
 "server."
-msgstr "サーバ」は、DHCPを有効にする前に%sインターフェイス上でDHCPリレーを無効にする必要があります」 。"
+msgstr ""
+"DHCP サーバを有効にする前に、"
+"%s インタフェースの DHCP リレーを無効にしてください。"
 
 #: usr/local/www/services_dhcp.php:315 usr/local/www/services_dhcp.php:326
 #: usr/local/www/services_dhcpv6.php:276 usr/local/www/services_dhcp.php:382
@@ -31853,73 +31857,73 @@ msgstr "サーバ」は、DHCPを有効にする前に%sインターフェイス
 #: usr/local/www/services_dhcp.php:398 usr/local/www/services_dhcpv6.php:256
 #, php-format
 msgid "The DHCP range cannot overlap any static DHCP mappings."
-msgstr "DHCP範囲は、静的DHCPマッピングをオーバーラップすることはできません。"
+msgstr "DHCP 範囲は、静的 DHCP マッピングと重複できません。"
 
 #: usr/local/www/services_dhcp.php:421 usr/local/www/services_dhcp.php:433
 #: usr/local/www/services_dhcp.php:527 usr/local/www/services_dhcp.php:526
 #: usr/local/www/services_dhcp.php:546 usr/local/www/services_dhcp.php:546
 msgid "DHCP server"
-msgstr "DHCPサーバ"
+msgstr "DHCP サーバ"
 
 #: usr/local/www/services_dhcp.php:435 usr/local/www/services_dhcp.php:447
 #: usr/local/www/services_dhcp.php:540 usr/local/www/services_dhcp.php:539
 #: usr/local/www/services_dhcp.php:559 usr/local/www/services_dhcp.php:559
 msgid "Text"
-msgstr "テキスト"
+msgstr "text"
 
 #: usr/local/www/services_dhcp.php:435 usr/local/www/services_dhcp.php:447
 #: usr/local/www/services_dhcp.php:540 usr/local/www/services_dhcp.php:539
 #: usr/local/www/services_dhcp.php:559 usr/local/www/services_dhcp.php:559
 msgid "String"
-msgstr "文字列"
+msgstr "string"
 
 #: usr/local/www/services_dhcp.php:435 usr/local/www/services_dhcp.php:447
 #: usr/local/www/services_dhcp.php:540 usr/local/www/services_dhcp.php:539
 #: usr/local/www/services_dhcp.php:559 usr/local/www/services_dhcp.php:559
 msgid "Boolean"
-msgstr "ブーリアン"
+msgstr "boolean"
 
 #: usr/local/www/services_dhcp.php:436 usr/local/www/services_dhcp.php:448
 #: usr/local/www/services_dhcp.php:541 usr/local/www/services_dhcp.php:540
 #: usr/local/www/services_dhcp.php:560 usr/local/www/services_dhcp.php:560
 msgid "Unsigned 8-bit integer"
-msgstr "符号なし8ビット整数"
+msgstr "符号なし 8 ビット整数"
 
 #: usr/local/www/services_dhcp.php:436 usr/local/www/services_dhcp.php:448
 #: usr/local/www/services_dhcp.php:541 usr/local/www/services_dhcp.php:540
 #: usr/local/www/services_dhcp.php:560 usr/local/www/services_dhcp.php:560
 msgid "Unsigned 16-bit integer"
-msgstr "符号なしの16ビット整数"
+msgstr "符号なし 16 ビット整数"
 
 #: usr/local/www/services_dhcp.php:436 usr/local/www/services_dhcp.php:448
 #: usr/local/www/services_dhcp.php:541 usr/local/www/services_dhcp.php:540
 #: usr/local/www/services_dhcp.php:560 usr/local/www/services_dhcp.php:560
 msgid "Unsigned 32-bit integer"
-msgstr "符号なしの32ビット整数"
+msgstr "符号なし 32 ビット整数"
 
 #: usr/local/www/services_dhcp.php:437 usr/local/www/services_dhcp.php:449
 #: usr/local/www/services_dhcp.php:542 usr/local/www/services_dhcp.php:541
 #: usr/local/www/services_dhcp.php:561 usr/local/www/services_dhcp.php:561
 msgid "Signed 8-bit integer"
-msgstr "符号付き8ビット整数"
+msgstr "符号付 8 ビット整数"
 
 #: usr/local/www/services_dhcp.php:437 usr/local/www/services_dhcp.php:449
 #: usr/local/www/services_dhcp.php:542 usr/local/www/services_dhcp.php:541
 #: usr/local/www/services_dhcp.php:561 usr/local/www/services_dhcp.php:561
 msgid "Signed 16-bit integer"
-msgstr "符号付き16ビット整数"
+msgstr "符号付 16 ビット整数"
 
 #: usr/local/www/services_dhcp.php:437 usr/local/www/services_dhcp.php:449
 #: usr/local/www/services_dhcp.php:542 usr/local/www/services_dhcp.php:541
 #: usr/local/www/services_dhcp.php:561 usr/local/www/services_dhcp.php:561
 msgid "Signed 32-bit integer"
-msgstr "符号付き32ビット整数"
+msgstr "符号付 32 ビット整数"
 
 #: usr/local/www/services_dhcp.php:437 usr/local/www/services_dhcp.php:449
 #: usr/local/www/services_dhcp.php:542 usr/local/www/services_dhcp.php:541
 #: usr/local/www/services_dhcp.php:561 usr/local/www/services_dhcp.php:561
 msgid "IP address or host"
-msgstr "IPアドレスまたはホスト"
+msgstr "IP アドレス / ホスト"
 
 #: usr/local/www/services_dhcp.php:528 usr/local/www/services_dhcpv6.php:453
 #: usr/local/www/services_dhcp.php:541 usr/local/www/services_dhcpv6.php:480
@@ -31930,7 +31934,9 @@ msgstr "IPアドレスまたはホスト"
 msgid ""
 "DHCP Relay is currently enabled. Cannot enable the DHCP Server service while "
 "the DHCP Relay is enabled on any interface."
-msgstr "「 DHCPリレーは、現在有効になっています。ながら、 DHCPサーバーサービスを有効にできません」 DHCPリレーは、どのインターフェイスで有効になっています。"
+msgstr ""
+"DHCP リレーは現在有効です。"
+"DHCP リレーが有効になっているインタフェースでは、DHCP サーバサービスを有効にできません。"
 
 #: usr/local/www/services_dhcp.php:536 usr/local/www/services_dhcpv6.php:461
 #: usr/local/www/services_dhcp.php:549 usr/local/www/services_dhcpv6.php:488
@@ -31939,14 +31945,14 @@ msgstr "「 DHCPリレーは、現在有効になっています。ながら、 
 #: usr/local/www/services_dhcp.php:675 usr/local/www/services_dhcp.php:675
 #: usr/local/www/services_dhcpv6.php:463
 msgid "The static mapping configuration has been changed"
-msgstr "静的なマッピング構成が変更された"
+msgstr "静的マッピング構成が変更されました"
 
 #: usr/local/www/services_dhcp.php:575 usr/local/www/services_dhcp.php:588
 #: usr/local/www/services_dhcp.php:693 usr/local/www/services_dhcp.php:695
 #: usr/local/www/services_dhcp.php:715 usr/local/www/services_dhcp.php:715
 #, php-format
 msgid "Enable DHCP server on %s interface"
-msgstr "%sインターフェイス上でDHCPサーバを有効にする"
+msgstr "%s インタフェースで DHCP サーバを有効"
 
 #: usr/local/www/services_dhcp.php:583 usr/local/www/services_dhcpv6.php:518
 #: usr/local/www/services_dhcp.php:596 usr/local/www/services_dhcpv6.php:592
@@ -31955,7 +31961,7 @@ msgstr "%sインターフェイス上でDHCPサーバを有効にする"
 #: usr/local/www/services_dhcp.php:728 usr/local/www/services_dhcp.php:728
 #: usr/local/www/services_dhcpv6.php:534
 msgid "Deny unknown clients"
-msgstr "不明なクライアントを否定"
+msgstr "不明なクライアントを拒否"
 
 #: usr/local/www/services_dhcp.php:584 usr/local/www/services_dhcpv6.php:519
 #: usr/local/www/services_dhcp.php:597 usr/local/www/services_dhcpv6.php:593
@@ -31966,7 +31972,9 @@ msgstr "不明なクライアントを否定"
 msgid ""
 "If this is checked, only the clients defined below will get DHCP leases from "
 "this server. "
-msgstr "このサーバー"チェックすると、以下に定義されている唯一のクライアントからのDHCPリースを取得します」 。"
+msgstr ""
+"これをチェックすると、下記で定義されるクライアントが"
+"このサーバから DHCP リースを取得します"
 
 #: usr/local/www/services_dhcp.php:593 usr/local/www/services_dhcpv6.php:528
 #: usr/local/www/services_dhcp.php:606 usr/local/www/services_dhcpv6.php:602
@@ -32005,7 +32013,7 @@ msgstr "サブネットマスク"
 #: usr/local/www/services_dhcp.php:797 usr/local/www/services_dhcp.php:797
 #: usr/local/www/services_dhcpv6.php:590
 msgid "Range"
-msgstr "レンジ"
+msgstr 範囲"
 
 #: usr/local/www/services_dhcp.php:640 usr/local/www/services_dhcp.php:653
 #: usr/local/www/services_dhcp.php:829
@@ -32014,7 +32022,7 @@ msgstr "レンジ"
 #: usr/local/www/services_dhcp_edit.php:395
 #: usr/local/www/services_dhcp.php:863
 msgid "WINS servers"
-msgstr "WINSサーバー"
+msgstr "WINS サーバ"
 
 #: usr/local/www/services_dhcp.php:651 usr/local/www/services_dhcpv6.php:594
 #: usr/local/www/services_dhcp.php:664 usr/local/www/services_dhcpv6.php:671
