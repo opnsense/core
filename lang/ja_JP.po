@@ -30840,8 +30840,8 @@ msgid ""
 msgstr ""
 "このページの設定を変更すると、全てのクライアントが切断します！"
 "キャプティブポータルインタフェースの DHCP サーバを有効にするのを忘れないで下さい！"
-"DHCP リース時間のデフォルト及び最大値が、このページで入力されたタイムアウト値よりも大きいことを"
-"確認して下さい。また、未認証クライアントが動作するために、DNS ルックアップを有効にする"
+"DHCP リース期間のデフォルト及び最大値が、このページで入力されたタイムアウト値よりも大きいことを"
+"確認して下さい。また、未認証クライアントを動作させるのに DNS ルックアップを有効にする"
 "には、DNS フォワーダが必要です。" 
 
 #: usr/local/www/services_captiveportal_filemanager.php:101
@@ -31660,7 +31660,7 @@ msgstr ""
 #: usr/local/www/services_dhcp_edit.php:221
 #: usr/local/www/services_dhcp.php:257 usr/local/www/services_dhcpv6.php:186
 msgid "The default lease time must be at least 60 seconds."
-msgstr "デフォルトリース時間は 60 秒以上です"
+msgstr "デフォルトリース期間は 60 秒以上です"
 
 #: usr/local/www/services_dhcp.php:231 usr/local/www/services_dhcpv6.php:197
 #: usr/local/www/services_dhcp.php:232 usr/local/www/services_dhcpv6.php:209
@@ -31674,7 +31674,7 @@ msgid ""
 "The maximum lease time must be at least 60 seconds and higher than the "
 "default lease time."
 msgstr ""
-"最大リース時間は 60 秒以上で、"
+"最大リース期間は 60 秒以上で、"
 "かつ、デフォルトリース時間よりも大きい値を設定してください"
 
 #: usr/local/www/services_dhcp.php:233 usr/local/www/services_dhcpv6.php:199
@@ -32039,7 +32039,10 @@ msgid ""
 "NOTE: leave blank to use the system default DNS servers - this interface's "
 "IP if DNS forwarder is enabled, otherwise the servers configured on the "
 "General page."
-msgstr ""注：システムのデフォルトのDNSサーバーを使用する場合は、空白のままに - このインタフェースの「 DNSフォワーダが有効になっている場合は、IP 、そうでないサーバは「一般的なページで設定。"
+msgstr ""
+"注意: システムデフォルトの DNS サーバを使用する場合は空白にしてください - "
+"DNS フォワーダが有効な場合は、このインタフェースの IP を、"
+"それ以外の場合は、全般ページでサーバを構成してください。"
 
 #: usr/local/www/services_dhcp.php:658 usr/local/www/services_dhcpv6.php:602
 #: usr/local/www/services_dhcp.php:671 usr/local/www/services_dhcp.php:847
@@ -32051,7 +32054,10 @@ msgid ""
 "The default is to use the IP on this interface of the firewall as the "
 "gateway. Specify an alternate gateway here if this is not the correct "
 "gateway for your network."
-msgstr "ゲートウェイは「デフォルトでは、ファイアウォールのこのインターフェイスでIPを使用することです」 。これがネットワークに適して「ゲートウェイでない場合は、ここで別のゲートウェイを指定します。"
+msgstr ""
+"デフォルトでは、このファイアウォールインタフェースの IP をゲートウェイとして使用します。"
+"これがネットワークの正しいゲートウェイでない場合は、"
+"ここで、別のゲートウェイを指定してください。"
 
 #: usr/local/www/services_dhcp.php:662 usr/local/www/services_dhcpv6.php:607
 #: usr/local/www/services_dhcp.php:675 usr/local/www/services_dhcpv6.php:675
@@ -32075,7 +32081,9 @@ msgstr "ドメイン名"
 msgid ""
 "The default is to use the domain name of this system as the default domain "
 "name provided by DHCP. You may specify an alternate domain name here."
-msgstr "DHCPによって提供された名前「デフォルトでは、デフォルトのドメインとして、このシステムのドメイン名を使用することです」 。あなたがここに代替ドメイン名を指定することもできます。"
+msgstr ""
+"デフォルトでは、DHCP が提供するデフォルトドメイン名として、このシステムのドメイン名を"
+"使用します。別のドメイン名を使用する場合は、ここで指定してください。"
 
 #: usr/local/www/services_dhcp.php:669 usr/local/www/services_dhcpv6.php:614
 #: usr/local/www/services_dhcp.php:682 usr/local/www/services_dhcpv6.php:682
@@ -32093,7 +32101,7 @@ msgstr "ドメインサーチリスト"
 
 #: usr/local/www/services_dhcp.php:672 usr/local/www/services_dhcpv6.php:617
 msgid "The DHCP server can optionally provide a domain search list."
-msgstr "DHCPサーバは、必要に応じて、ドメイン検索リストを提供することができる。"
+msgstr "DHCP サーバは、オプションで、ドメインサーチリストを提供できます。"
 
 #: usr/local/www/services_dhcp.php:676 usr/local/www/services_dhcpv6.php:621
 #: usr/local/www/services_dhcp.php:689 usr/local/www/services_dhcpv6.php:689
@@ -32104,7 +32112,7 @@ msgstr "DHCPサーバは、必要に応じて、ドメイン検索リストを�
 #: usr/local/www/services_dhcp_edit.php:431
 #: usr/local/www/services_dhcp.php:899 usr/local/www/services_dhcpv6.php:637
 msgid "Default lease time"
-msgstr "デフォルトのリース時間"
+msgstr "デフォルトリース期間"
 
 #: usr/local/www/services_dhcp.php:680 usr/local/www/services_dhcpv6.php:625
 #: usr/local/www/services_dhcp.php:693 usr/local/www/services_dhcpv6.php:693
@@ -32116,7 +32124,8 @@ msgstr "デフォルトのリース時間"
 #: usr/local/www/services_dhcp.php:903 usr/local/www/services_dhcpv6.php:641
 msgid ""
 "This is used for clients that do not ask for a specific expiration time."
-msgstr "「これは、特定の有効期限は求めないクライアントのために使用されます。"
+msgstr ""
+"これは、特定の有効期間を要求しないクライアントに対して使用されます。"
 
 #: usr/local/www/services_dhcp.php:682 usr/local/www/services_dhcpv6.php:627
 #: usr/local/www/services_dhcp.php:695 usr/local/www/services_dhcpv6.php:695
@@ -32127,7 +32136,7 @@ msgstr "「これは、特定の有効期限は求めないクライアントの
 #: usr/local/www/services_dhcp_edit.php:437
 #: usr/local/www/services_dhcp.php:905 usr/local/www/services_dhcpv6.php:643
 msgid "The default is 7200 seconds."
-msgstr "デフォルトは7200秒です。"
+msgstr "デフォルトは 7200 秒です。"
 
 #: usr/local/www/services_dhcp.php:686 usr/local/www/services_dhcpv6.php:631
 #: usr/local/www/services_dhcp.php:699 usr/local/www/services_dhcpv6.php:699
@@ -32138,7 +32147,7 @@ msgstr "デフォルトは7200秒です。"
 #: usr/local/www/services_dhcp_edit.php:441
 #: usr/local/www/services_dhcp.php:909 usr/local/www/services_dhcpv6.php:647
 msgid "Maximum lease time"
-msgstr "最大リース時間"
+msgstr "最大リース期間"
 
 #: usr/local/www/services_dhcp.php:690 usr/local/www/services_dhcpv6.php:635
 #: usr/local/www/services_dhcp.php:703 usr/local/www/services_dhcpv6.php:703
@@ -32151,7 +32160,9 @@ msgstr "最大リース時間"
 msgid ""
 "This is the maximum lease time for clients that ask for a specific "
 "expiration time."
-msgstr "有効期限は「これは、特定を求めるクライアントの最大リース時間です」 。"
+msgstr ""
+"これは、特定の有効期間を要求しないクライアントに対して使用される、"
+"最大リース期間です。"
 
 #: usr/local/www/services_dhcp.php:692 usr/local/www/services_dhcpv6.php:637
 #: usr/local/www/services_dhcp.php:705 usr/local/www/services_dhcpv6.php:705
@@ -32162,7 +32173,7 @@ msgstr "有効期限は「これは、特定を求めるクライアントの最
 #: usr/local/www/services_dhcp_edit.php:447
 #: usr/local/www/services_dhcp.php:915 usr/local/www/services_dhcpv6.php:653
 msgid "The default is 86400 seconds."
-msgstr "デフォルトは86400秒です。"
+msgstr "デフォルトは 86400 秒です。"
 
 #: usr/local/www/services_dhcp.php:696 usr/local/www/services_dhcpv6.php:641
 #: usr/local/www/services_dhcp.php:709 usr/local/www/services_dhcpv6.php:709
@@ -32171,7 +32182,7 @@ msgstr "デフォルトは86400秒です。"
 #: usr/local/www/services_dhcp.php:920 usr/local/www/services_dhcp.php:920
 #: usr/local/www/services_dhcpv6.php:657
 msgid "Failover peer IP:"
-msgstr "フェールオーバーピアのIPアドレス："
+msgstr "フェールオーバピア IP: "
 
 #: usr/local/www/services_dhcp.php:699 usr/local/www/services_dhcpv6.php:644
 #: usr/local/www/services_dhcp.php:712 usr/local/www/services_dhcpv6.php:712
@@ -32180,7 +32191,9 @@ msgstr "フェールオーバーピアのIPアドレス："
 msgid ""
 "Leave blank to disable. Enter the interface IP address of the other "
 "machine. Machines must be using CARP."
-msgstr "「無効にする場合は空白のままにしておきます。他のインターフェイスIPアドレスを入力し、 "マシンを。マシンは、CARPを使用する必要があります。"
+msgstr ""
+"無効にする場合は空白にしてください。他の機器のインタフェース IP アドレスを入力してください。" 
+"CARP を使用している機器に限られます。"
 
 #: usr/local/www/services_dhcp.php:703 usr/local/www/services_dhcp.php:716
 #: usr/local/www/services_dhcp.php:895 usr/local/www/services_dhcp.php:909
@@ -32188,13 +32201,13 @@ msgstr "「無効にする場合は空白のままにしておきます。他の
 #: usr/local/www/services_dhcp.php:1170 usr/local/www/services_dhcp.php:929
 #: usr/local/www/services_dhcp.php:1170
 msgid "Static ARP"
-msgstr "スタティックARP"
+msgstr "静的 ARP"
 
 #: usr/local/www/services_dhcp.php:710 usr/local/www/services_dhcp.php:723
 #: usr/local/www/services_dhcp.php:902 usr/local/www/services_dhcp.php:916
 #: usr/local/www/services_dhcp.php:936 usr/local/www/services_dhcp.php:936
 msgid "Enable Static ARP entries"
-msgstr "スタティックARPエントリを有効にする"
+msgstr "静的 ARP エントリを有効"
 
 #: usr/local/www/services_dhcp.php:715 usr/local/www/services_dhcp.php:728
 #: usr/local/www/services_dhcp.php:907 usr/local/www/services_dhcp.php:921
@@ -32202,7 +32215,9 @@ msgstr "スタティックARPエントリを有効にする"
 msgid ""
 "Only the machines listed below will be able to communicate with the firewall "
 "on this NIC."
-msgstr "このNICは、「以下に示すだけのマシンがファイアウォールと通信できるようになります」 。"
+msgstr ""
+"下記のリストにある機器だけが、"
+"この NIC でファイアウォールと通信できます。"
 
 #: usr/local/www/services_dhcp.php:725 usr/local/www/services_dhcpv6.php:651
 #: usr/local/www/services_dhcp.php:763 usr/local/www/services_dhcpv6.php:744
@@ -32213,7 +32228,7 @@ msgstr "このNICは、「以下に示すだけのマシンがファイアウォ
 #: usr/local/www/services_dhcp_edit.php:454
 #: usr/local/www/services_dhcp.php:978 usr/local/www/services_dhcpv6.php:692
 msgid "Show Dynamic DNS"
-msgstr "ダイナミックDNSを表示"
+msgstr "ダイナミック DNS を表示"
 
 #: usr/local/www/services_dhcp.php:729 usr/local/www/services_dhcpv6.php:655
 #: usr/local/www/services_dhcp.php:767 usr/local/www/services_dhcpv6.php:748
@@ -32224,7 +32239,7 @@ msgstr "ダイナミックDNSを表示"
 #: usr/local/www/services_dhcp_edit.php:458
 #: usr/local/www/services_dhcp.php:982 usr/local/www/services_dhcpv6.php:696
 msgid "Enable registration of DHCP client names in DNS."
-msgstr "DNSにDHCPクライアント名の登録を有効にします。"
+msgstr "DNS に DHCP クライアント名の登録を有効"
 
 #: usr/local/www/services_dhcp.php:732 usr/local/www/services_dhcpv6.php:658
 #: usr/local/www/services_dhcp.php:770 usr/local/www/services_dhcpv6.php:751
@@ -32235,7 +32250,7 @@ msgstr "DNSにDHCPクライアント名の登録を有効にします。"
 #: usr/local/www/services_dhcp_edit.php:461
 #: usr/local/www/services_dhcp.php:985 usr/local/www/services_dhcpv6.php:699
 msgid "Note: Leave blank to disable dynamic DNS registration."
-msgstr "注：動的DNS登録を無効にするには空白のままにします。"
+msgstr "注意: ダイナミック DNS 登録を無効にする場合は空白にしてください。"
 
 #: usr/local/www/services_dhcp.php:733 usr/local/www/services_dhcpv6.php:659
 #: usr/local/www/services_dhcp.php:771 usr/local/www/services_dhcpv6.php:752
@@ -32248,7 +32263,9 @@ msgstr "注：動的DNS登録を無効にするには空白のままにします
 msgid ""
 "Enter the dynamic DNS domain which will be used to register client names in "
 "the DNS server."
-msgstr "DNSサーバ」で、クライアント名を登録するために使用されるダイナミックDNSドメインを入力してください "。"
+msgstr ""
+"DNS サーバで、クライアント名の登録に使用される、"
+"ダイナミック DNS ドメインを入力してください。"
 
 #: usr/local/www/services_dhcp.php:738 usr/local/www/services_dhcpv6.php:664
 #: usr/local/www/services_dhcp.php:776 usr/local/www/services_dhcpv6.php:757
@@ -32259,7 +32276,7 @@ msgstr "DNSサーバ」で、クライアント名を登録するために使用
 #: usr/local/www/services_dhcp_edit.php:467
 #: usr/local/www/services_dhcp.php:1005 usr/local/www/services_dhcpv6.php:705
 msgid "NTP servers"
-msgstr "NTPサーバー"
+msgstr "NTP サーバ"
 
 #: usr/local/www/services_dhcp.php:741 usr/local/www/services_dhcpv6.php:667
 #: usr/local/www/services_dhcp.php:779 usr/local/www/services_dhcpv6.php:760
@@ -32270,7 +32287,7 @@ msgstr "NTPサーバー"
 #: usr/local/www/services_dhcp_edit.php:470
 #: usr/local/www/services_dhcp.php:1008 usr/local/www/services_dhcpv6.php:708
 msgid "Show NTP configuration"
-msgstr "表示NTP設定"
+msgstr "NTP 構成を表示"
 
 #: usr/local/www/services_dhcp.php:750 usr/local/www/services_dhcpv6.php:676
 #: usr/local/www/services_dhcp.php:788 usr/local/www/services_dhcpv6.php:770
@@ -32281,7 +32298,7 @@ msgstr "表示NTP設定"
 #: usr/local/www/services_dhcp_edit.php:479
 #: usr/local/www/services_dhcp.php:1017 usr/local/www/services_dhcpv6.php:718
 msgid "TFTP server"
-msgstr "TFTPサーバ"
+msgstr "TFTP サーバ"
 
 #: usr/local/www/services_dhcp.php:753 usr/local/www/services_dhcpv6.php:679
 #: usr/local/www/services_dhcp.php:791 usr/local/www/services_dhcpv6.php:773
@@ -32292,7 +32309,7 @@ msgstr "TFTPサーバ"
 #: usr/local/www/services_dhcp_edit.php:482
 #: usr/local/www/services_dhcp.php:1020 usr/local/www/services_dhcpv6.php:721
 msgid "Show TFTP configuration"
-msgstr "TFTP設定を表示します"
+msgstr "TFTP 構成を表示"
 
 #: usr/local/www/services_dhcp.php:757 usr/local/www/services_dhcpv6.php:683
 #: usr/local/www/services_dhcp.php:795 usr/local/www/services_dhcpv6.php:777
@@ -32304,7 +32321,8 @@ msgstr "TFTP設定を表示します"
 #: usr/local/www/services_dhcp.php:1024 usr/local/www/services_dhcpv6.php:725
 msgid ""
 "Leave blank to disable. Enter a full hostname or IP for the TFTP server."
-msgstr "「無効にする場合は空白のままに。 TFTPサーバの完全なホスト名またはIPアドレスを入力してください。"
+msgstr ""
+"無効にする場合は空白にしてください。TFTP サーバのフルホスト名、もしくは IP を入力してください。"
 
 #: usr/local/www/services_dhcp.php:762 usr/local/www/services_dhcpv6.php:688
 #: usr/local/www/services_dhcp.php:800 usr/local/www/services_dhcpv6.php:783
@@ -32313,7 +32331,7 @@ msgstr "「無効にする場合は空白のままに。 TFTPサーバの完全�
 #: usr/local/www/services_dhcp.php:1029 usr/local/www/services_dhcp.php:1029
 #: usr/local/www/services_dhcpv6.php:731
 msgid "LDAP URI"
-msgstr "LDAPのURI"
+msgstr "LDAP URI"
 
 #: usr/local/www/services_dhcp.php:765 usr/local/www/services_dhcpv6.php:691
 #: usr/local/www/services_dhcp.php:803 usr/local/www/services_dhcpv6.php:786
@@ -32322,7 +32340,7 @@ msgstr "LDAPのURI"
 #: usr/local/www/services_dhcp.php:1032 usr/local/www/services_dhcp.php:1032
 #: usr/local/www/services_dhcpv6.php:734
 msgid "Show LDAP configuration"
-msgstr "LDAP設定を表示する"
+msgstr "LDAP 構成を表示"
 
 #: usr/local/www/services_dhcp.php:769 usr/local/www/services_dhcpv6.php:695
 #: usr/local/www/services_dhcp.php:807 usr/local/www/services_dhcpv6.php:790
@@ -32333,7 +32351,9 @@ msgstr "LDAP設定を表示する"
 msgid ""
 "Leave blank to disable. Enter a full URI for the LDAP server in the form "
 "ldap://ldap.example.com/dc=example,dc=com"
-msgstr "「無効にする場合は空白のままに。形式でLDAPサーバの完全なURIを入力してください "LDAP:/ / ldap.example.com / dc = example、dc = comの"
+msgstr ""
+"無効にする場合は空白にしてください。ldap://ldap.example.com/dc=example,dc=com の形式で、"
+"LDAP サーバのフル URI を入力してください。"
 
 #: usr/local/www/services_dhcp.php:774 usr/local/www/services_dhcpv6.php:700
 #: usr/local/www/services_dhcp.php:812 usr/local/www/services_dhcpv6.php:795
@@ -32342,7 +32362,7 @@ msgstr "「無効にする場合は空白のままに。形式でLDAPサーバ�
 #: usr/local/www/services_dhcp.php:1041 usr/local/www/services_dhcp.php:1041
 #: usr/local/www/services_dhcpv6.php:743
 msgid "Enable network booting"
-msgstr "ネットワークブートを有効にする"
+msgstr "ネットワーク起動を有効"
 
 #: usr/local/www/services_dhcp.php:777 usr/local/www/services_dhcpv6.php:703
 #: usr/local/www/services_dhcp.php:815 usr/local/www/services_dhcpv6.php:798
@@ -32351,7 +32371,7 @@ msgstr "ネットワークブートを有効にする"
 #: usr/local/www/services_dhcp.php:1044 usr/local/www/services_dhcp.php:1044
 #: usr/local/www/services_dhcpv6.php:746
 msgid "Show Network booting"
-msgstr "表示ネットワーク起動"
+msgstr "ネットワーク起動の表示"
 
 #: usr/local/www/services_dhcp.php:781 usr/local/www/services_dhcpv6.php:707
 #: usr/local/www/services_dhcp.php:819 usr/local/www/services_dhcpv6.php:802
@@ -32360,7 +32380,7 @@ msgstr "表示ネットワーク起動"
 #: usr/local/www/services_dhcp.php:1048 usr/local/www/services_dhcp.php:1048
 #: usr/local/www/services_dhcpv6.php:750
 msgid "Enables network booting."
-msgstr "ネットワークブートを有効にします。"
+msgstr "ネットワーク起動を有効にします。"
 
 #: usr/local/www/services_dhcp.php:783 usr/local/www/services_dhcpv6.php:709
 #: usr/local/www/services_dhcp.php:821 usr/local/www/services_dhcpv6.php:804
@@ -32369,7 +32389,7 @@ msgstr "ネットワークブートを有効にします。"
 #: usr/local/www/services_dhcp.php:1050 usr/local/www/services_dhcp.php:1050
 #: usr/local/www/services_dhcpv6.php:752
 msgid "Enter the IP of the"
-msgstr "のIPアドレスを入力してください"
+msgstr "次の IP アドレス及びファイル名を入力してください: "
 
 #: usr/local/www/services_dhcp.php:783 usr/local/www/services_dhcpv6.php:709
 #: usr/local/www/services_dhcp.php:821 usr/local/www/services_dhcpv6.php:804
@@ -32378,7 +32398,7 @@ msgstr "のIPアドレスを入力してください"
 #: usr/local/www/services_dhcp.php:1050 usr/local/www/services_dhcp.php:1050
 #: usr/local/www/services_dhcpv6.php:752
 msgid "next-server"
-msgstr "次世代サーバー"
+msgstr "next-server"
 
 #: usr/local/www/services_dhcp.php:785 usr/local/www/services_dhcpv6.php:711
 #: usr/local/www/services_dhcp.php:823 usr/local/www/services_dhcpv6.php:806
@@ -32387,7 +32407,7 @@ msgstr "次世代サーバー"
 #: usr/local/www/services_dhcp.php:1052 usr/local/www/services_dhcp.php:1052
 #: usr/local/www/services_dhcpv6.php:754
 msgid "and the filename"
-msgstr "とファイル名"
+msgstr " "
 
 #: usr/local/www/services_dhcp.php:787 usr/local/www/services_dhcpv6.php:713
 #: usr/local/www/services_dhcp.php:825 usr/local/www/services_dhcpv6.php:808
@@ -32397,7 +32417,8 @@ msgstr "とファイル名"
 #: usr/local/www/services_dhcpv6.php:756
 msgid ""
 "Note: You need both a filename and a boot server configured for this to work!"
-msgstr ""注意：あなたは仕事にファイル名と、このために設定されているブート·サーバの両方が必要 ！"
+msgstr ""
+"注意: これが機能するように設定するには、ファイル名と起動サーバの構成の両方が必要です！"
 
 #: usr/local/www/services_dhcp.php:789 usr/local/www/services_dhcpv6.php:715
 #: usr/local/www/services_dhcpv6_edit.php:224
@@ -32416,7 +32437,7 @@ msgstr ""注意：あなたは仕事にファイル名と、このために設�
 #: usr/local/www/services_dhcp_edit.php:377
 #: usr/local/www/services_dhcp.php:1056 usr/local/www/services_dhcpv6.php:758
 msgid "Enter the"
-msgstr "入力する"
+msgstr "以下を入力してください: "
 
 #: usr/local/www/services_dhcp.php:789 usr/local/www/services_dhcpv6.php:715
 #: usr/local/www/services_dhcpv6_edit.php:224
@@ -32435,7 +32456,7 @@ msgstr "入力する"
 #: usr/local/www/services_dhcp_edit.php:377
 #: usr/local/www/services_dhcp.php:1056 usr/local/www/services_dhcpv6.php:758
 msgid "root-path"
-msgstr "ルート·パス"
+msgstr "root-path"
 
 #: usr/local/www/services_dhcp.php:789 usr/local/www/services_dhcpv6.php:715
 #: usr/local/www/services_dhcpv6_edit.php:224
@@ -32454,7 +32475,7 @@ msgstr "ルート·パス"
 #: usr/local/www/services_dhcp_edit.php:377
 #: usr/local/www/services_dhcp.php:1056 usr/local/www/services_dhcpv6.php:758
 msgid "string"
-msgstr "文字列"
+msgstr "string"
 
 #: usr/local/www/services_dhcp.php:791 usr/local/www/services_dhcpv6.php:717
 #: usr/local/www/services_dhcp.php:829 usr/local/www/services_dhcpv6.php:812
@@ -32464,7 +32485,8 @@ msgstr "文字列"
 #: usr/local/www/services_dhcpv6.php:760
 msgid ""
 "Note: string-format: iscsi:(servername):(protocol):(port):(LUN):targetname"
-msgstr ""注：文字列形式： iSCSIイニシエータ： （サーバー名） ： （プロトコル） ： （ポート） ： （ LUN ） ：ターゲット名"
+msgstr ""
+"注意: string 形式: iscsi:(servername):(protocol):(port):(LUN):targetname"
 
 #: usr/local/www/services_dhcp.php:796 usr/local/www/services_dhcpv6.php:722
 #: usr/local/www/services_dhcp.php:834 usr/local/www/services_dhcpv6.php:817
@@ -32473,7 +32495,7 @@ msgstr ""注：文字列形式： iSCSIイニシエータ： （サーバー名�
 #: usr/local/www/services_dhcp.php:1064 usr/local/www/services_dhcp.php:1064
 #: usr/local/www/services_dhcpv6.php:765
 msgid "Additional BOOTP/DHCP Options"
-msgstr "追加のBOOTP / DHCPオプション"
+msgstr "BOOTP/DHCP 追加オプション"
 
 #: usr/local/www/services_dhcp.php:799 usr/local/www/services_dhcpv6.php:725
 #: usr/local/www/services_dhcp.php:837 usr/local/www/services_dhcpv6.php:820
@@ -32482,7 +32504,7 @@ msgstr "追加のBOOTP / DHCPオプション"
 #: usr/local/www/services_dhcp.php:1067 usr/local/www/services_dhcp.php:1067
 #: usr/local/www/services_dhcpv6.php:768
 msgid "Show Additional BOOTP/DHCP Options"
-msgstr "追加のBOOTP / DHCPオプションを表示する"
+msgstr "BOOTP/DHCP 追加オプションを表示"
 
 #: usr/local/www/services_dhcp.php:807 usr/local/www/services_dhcpv6.php:733
 #: usr/local/www/services_dhcp.php:845 usr/local/www/services_dhcpv6.php:828
@@ -32494,7 +32516,10 @@ msgid ""
 "Enter the DHCP option number and the value for each item you would like to "
 "include in the DHCP lease information. For a list of available options "
 "please visit this"
-msgstr "DHCPリース情報に含まれる「 DHCPオプション番号、あなたがしたい項目ごとに値を入力してください」 。使用可能なオプションのリストについては、 「これをご覧ください。"
+msgstr ""
+"DHCP リース情報に含める DHCP オプション番号と、"
+"その項目の値を入力してください。"
+"利用可能なオプションのリストは、以下のリンクを参照してください。 "
 
 #: usr/local/www/services_dhcp.php:812
 #: usr/local/www/services_captiveportal_vouchers_edit.php:94
@@ -32539,7 +32564,7 @@ msgstr "値"
 #: usr/local/www/services_dhcp.php:1152 usr/local/www/services_dhcp.php:1152
 #: usr/local/www/services_dhcpv6.php:833
 msgid "The DNS servers entered in"
-msgstr "に入力されたDNSサーバ"
+msgstr "「"
 
 #: usr/local/www/services_dhcp.php:877 usr/local/www/services_dhcpv6.php:790
 #: usr/local/www/services_dhcp.php:915 usr/local/www/services_dhcpv6.php:885
@@ -32548,7 +32573,7 @@ msgstr "に入力されたDNSサーバ"
 #: usr/local/www/services_dhcp.php:1152 usr/local/www/services_dhcp.php:1152
 #: usr/local/www/services_dhcpv6.php:833
 msgid "System: General setup"
-msgstr "システム：一般的なセットアップ"
+msgstr "システム: 全般設定"
 
 #: usr/local/www/services_dhcp.php:878 usr/local/www/services_dhcpv6.php:791
 #: usr/local/www/services_dhcp.php:916 usr/local/www/services_dhcpv6.php:886
@@ -32557,7 +32582,7 @@ msgstr "システム：一般的なセットアップ"
 #: usr/local/www/services_dhcp.php:1153 usr/local/www/services_dhcp.php:1153
 #: usr/local/www/services_dhcpv6.php:834
 msgid "(or the"
-msgstr "（または"
+msgstr "」で入力された DNS サーバ ( もしくは有効な場合は「"
 
 #: usr/local/www/services_dhcp.php:879 usr/local/www/services_dhcpv6.php:792
 #: usr/local/www/services_dhcp.php:917 usr/local/www/services_dhcpv6.php:887
@@ -32566,7 +32591,7 @@ msgstr "（または"
 #: usr/local/www/services_dhcp.php:1154 usr/local/www/services_dhcp.php:1154
 #: usr/local/www/services_dhcpv6.php:835
 msgid "if enabled)"
-msgstr "有効な場合）"
+msgstr "」) は、"
 
 #: usr/local/www/services_dhcp.php:879 usr/local/www/services_dhcpv6.php:792
 #: usr/local/www/services_dhcp.php:917 usr/local/www/services_dhcpv6.php:887
@@ -32575,7 +32600,7 @@ msgstr "有効な場合）"
 #: usr/local/www/services_dhcp.php:1154 usr/local/www/services_dhcp.php:1154
 #: usr/local/www/services_dhcpv6.php:835
 msgid "will be assigned to clients by the DHCP server."
-msgstr "DHCPサーバによってクライアントに割り当てられる。"
+msgstr "DHCP サーバによってクライアントに割り当てられます。"
 
 #: usr/local/www/services_dhcp.php:882 usr/local/www/services_dhcpv6.php:795
 #: usr/local/www/services_dhcp.php:920 usr/local/www/services_dhcpv6.php:890
@@ -32584,14 +32609,14 @@ msgstr "DHCPサーバによってクライアントに割り当てられる。"
 #: usr/local/www/services_dhcp.php:1157 usr/local/www/services_dhcp.php:1157
 #: usr/local/www/services_dhcpv6.php:838
 msgid "The DHCP lease table can be viewed on the"
-msgstr "DHCPリーステーブルには、上で閲覧することができます"
+msgstr "DHCP リーステーブルは「"
 
 #: usr/local/www/services_dhcp.php:882 usr/local/www/services_dhcpv6.php:795
 #: usr/local/www/services_dhcp.php:920 usr/local/www/services_dhcpv6.php:890
 #: usr/local/www/services_dhcp.php:1124 usr/local/www/services_dhcp.php:1137
 #: usr/local/www/services_dhcp.php:1157 usr/local/www/services_dhcp.php:1157
 msgid "Status: DHCP leases"
-msgstr "ステータス： DHCPリース"
+msgstr "ステータス: DHCP リース"
 
 #: usr/local/www/services_dhcp.php:883 usr/local/www/services_dhcpv6.php:796
 #: usr/local/www/services_dhcp.php:921 usr/local/www/services_dhcpv6.php:891
@@ -32600,7 +32625,7 @@ msgstr "ステータス： DHCPリース"
 #: usr/local/www/services_dhcp.php:1158 usr/local/www/services_dhcp.php:1158
 #: usr/local/www/services_dhcpv6.php:839
 msgid "page."
-msgstr "ページ。"
+msgstr "」ページで表示できます。"
 
 #: usr/local/www/services_dhcp_edit.php:116
 #: usr/local/www/services_dhcpv6_edit.php:113
@@ -32611,7 +32636,7 @@ msgstr "ページ。"
 #: usr/local/www/services_dhcpv6_edit.php:118
 #: usr/local/www/services_dhcp_edit.php:152
 msgid "The hostname cannot end with a hyphen according to RFC952"
-msgstr "ホスト名は、 RFC952に従ってハイフンで終了することはできません"
+msgstr "ホスト名は RFC952 により、末尾をハイフンにできません"
 
 #: usr/local/www/services_dhcp_edit.php:121
 #: usr/local/www/services_dhcpv6_edit.php:118
@@ -32623,21 +32648,22 @@ msgstr "ホスト名は、 RFC952に従ってハイフンで終了すること�
 #: usr/local/www/services_dhcp_edit.php:157
 msgid ""
 "A valid hostname is specified, but the domain name part should be omitted"
-msgstr "「有効なホスト名が指定されているが、ドメイン名の部分は省略されるべき"
+msgstr ""
+"有効なホスト名が指定されていますが、ドメイン名部分は削除してください"
 
 #: usr/local/www/services_dhcp_edit.php:132
 #: usr/local/www/services_dhcp_edit.php:134
 #: usr/local/www/services_dhcp_edit.php:168
 #: usr/local/www/services_dhcp_edit.php:168
 msgid "Static ARP is enabled. You must specify an IP address."
-msgstr "スタティックARPが有効になっています。あなたは、 IPアドレスを指定する必要があります。"
+msgstr "静的 ARP が有効です。IP アドレスを指定してください"
 
 #: usr/local/www/services_dhcp_edit.php:141
 #: usr/local/www/services_dhcp_edit.php:143
 #: usr/local/www/services_dhcp_edit.php:177
 #: usr/local/www/services_dhcp_edit.php:177
 msgid "This Hostname, IP or MAC address already exists."
-msgstr "このホスト名、 IPアドレスまたはMACアドレスがすでに存在しています。"
+msgstr "このホスト名、IP アドレス、または MAC アドレスは、既に存在しています"
 
 #: usr/local/www/services_dhcp_edit.php:152
 #: usr/local/www/services_dhcp_edit.php:154
@@ -32645,7 +32671,7 @@ msgstr "このホスト名、 IPアドレスまたはMACアドレスがすでに
 #: usr/local/www/services_dhcp_edit.php:188
 #, php-format
 msgid "The IP address must not be within the DHCP range for this interface."
-msgstr "IPアドレスは、このインターフェイスのDHCP範囲内にあってはならない。"
+msgstr "このインタフェースの DHCP 範囲内ではない IP アドレスを設定してください"
 
 #: usr/local/www/services_dhcp_edit.php:159
 #: usr/local/www/services_dhcp_edit.php:161
@@ -32653,7 +32679,7 @@ msgstr "IPアドレスは、このインターフェイスのDHCP範囲内にあ
 #: usr/local/www/services_dhcp_edit.php:202
 #, php-format
 msgid "The IP address must lie in the %s subnet."
-msgstr "IPアドレスは、 %sサブネット内になければなりません。"
+msgstr "%s サブネット内の IP アドレスを指定してください"
 
 #: usr/local/www/services_dhcp_edit.php:190
 #: usr/local/www/services_dhcpv6_edit.php:172
@@ -32672,7 +32698,7 @@ msgstr "静的マッピングを編集"
 #: usr/local/www/services_dhcp_edit.php:334
 #: usr/local/www/services_dhcp_edit.php:334
 msgid "Static DHCP Mapping"
-msgstr "静的DHCPマッピング"
+msgstr "静的 DHCP マッピング"
 
 #: usr/local/www/services_dhcp_edit.php:215
 #: usr/local/www/services_dhcp_edit.php:218
@@ -32682,7 +32708,7 @@ msgstr "静的DHCPマッピング"
 #: usr/local/www/services_dhcp_edit.php:345
 #: usr/local/www/services_captiveportal_mac_edit.php:188
 msgid "Copy my MAC address"
-msgstr "私のMACアドレスをコピーします。"
+msgstr "自分の MAC アドレスを複写"
 
 #: usr/local/www/services_dhcp_edit.php:217
 #: usr/local/www/services_dhcp_edit.php:220
@@ -32690,13 +32716,14 @@ msgstr "私のMACアドレスをコピーします。"
 #: usr/local/www/services_dhcp_edit.php:347
 #: usr/local/www/services_dhcp_edit.php:347
 msgid "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx"
-msgstr "次の形式でMACアドレスを入力してください： XX ： XX ： XX ： XX ： XX ： XX"
+msgstr "次の形式で MAC アドレスを入力してください: xx:xx:xx:xx:xx:xx"
 
 #: usr/local/www/services_dhcp_edit.php:225
 #: usr/local/www/services_dhcp_edit.php:228
 msgid ""
 "If no IP address is given, one will be dynamically allocated from the pool."
-msgstr "IPアドレスが指定されていない場合」 、 1は、動的にプールから割り当てられます。"
+msgstr ""
+"IP アドレスが指定されていない場合、IP はプールから動的に割り当てられます。"
 
 #: usr/local/www/services_dhcp_edit.php:231
 #: usr/local/www/services_dhcpv6_edit.php:208
@@ -32709,18 +32736,18 @@ msgstr "IPアドレスが指定されていない場合」 、 1は、動的に�
 #: usr/local/www/services_dhcpv6_edit.php:216
 #: usr/local/www/services_dhcp_edit.php:364
 msgid "Name of the host, without domain part."
-msgstr "ドメイン部分なしで、ホストの名前。"
+msgstr "ドメイン部分のないホスト名です。"
 
 #: usr/local/www/services_dhcp_relay.php:72
 #: usr/local/www/services_dhcpv6_relay.php:73
 #: usr/local/www/services_dhcpv6_relay.php:73
 #: usr/local/www/services_dhcp_relay.php:72
 msgid "Destination Server"
-msgstr "先サーバ"
+msgstr "送信先サーバ"
 
 #: usr/local/www/services_dhcp_relay.php:80
 msgid "A valid Destination Server IP address must be specified."
-msgstr "有効な宛先サーバのIPアドレスを指定する必要があります。"
+msgstr "有効な送信先サーバの IP アドレスを指定してください。"
 
 #: usr/local/www/services_dhcp_relay.php:100 usr/local/www/fbegin.inc:122
 #: usr/local/www/status_services.php:295
@@ -32731,20 +32758,20 @@ msgstr "有効な宛先サーバのIPアドレスを指定する必要があり�
 #: usr/local/www/fbegin.inc:140 usr/local/www/services_dhcp_relay.php:100
 #: etc/inc/service-utils.inc:294
 msgid "DHCP Relay"
-msgstr "DHCPリレー"
+msgstr "DHCP リレー"
 
 #: usr/local/www/services_dhcp_relay.php:144
 #: usr/local/www/services_dhcp_relay.php:145
 #: usr/local/www/services_dhcp_relay.php:145
 msgid "DHCP Relay configuration"
-msgstr "DHCPリレーの設定"
+msgstr "DHCP リレー構成"
 
 #: usr/local/www/services_dhcp_relay.php:150
 #: usr/local/www/services_dhcp_relay.php:151
 #: usr/local/www/services_dhcp_relay.php:151
 #, php-format
 msgid "Enable DHCP relay on interface"
-msgstr "インターフェイス上でDHCPリレーを有効にする"
+msgstr "インタフェースで DHCP リレーを有効"
 
 #: usr/local/www/services_dhcp_relay.php:175
 #: usr/local/www/services_dhcpv6_relay.php:176
@@ -32753,7 +32780,7 @@ msgstr "インターフェイス上でDHCPリレーを有効にする"
 #: usr/local/www/services_dhcpv6_relay.php:177
 #: usr/local/www/services_dhcp_relay.php:176
 msgid "Append circuit ID and agent ID to requests"
-msgstr "要求に回線IDおよびエージェントIDを追加"
+msgstr "リクエストに回線 ID およびエージェント ID を追加"
 
 #: usr/local/www/services_dhcp_relay.php:176
 #: usr/local/www/services_dhcp_relay.php:177
@@ -32762,7 +32789,9 @@ msgstr "要求に回線IDおよびエージェントIDを追加"
 msgid ""
 "If this is checked, the DHCP relay will append the circuit ID (%s interface "
 "number) and the agent ID to the DHCP request."
-msgstr "DHCP要求に"（番号とエージェントIDチェックすると、 DHCPリレーは、回線ID %sインターフェース）を追加します」 。"
+msgstr ""
+"これをチェックすると、DHCP リレーは回線 ID ( %s インタフェース番号 ) 及びエージェント ID を"
+"DHCP リクエストに追加します。"
 
 #: usr/local/www/services_dhcp_relay.php:179
 #: usr/local/www/services_dhcpv6_relay.php:180
@@ -32771,7 +32800,7 @@ msgstr "DHCP要求に"（番号とエージェントIDチェックすると、 D
 #: usr/local/www/services_dhcpv6_relay.php:181
 #: usr/local/www/services_dhcp_relay.php:180
 msgid "Destination server"
-msgstr "送信先サーバー"
+msgstr "送信先サーバ"
 
 #: usr/local/www/services_dhcp_relay.php:183
 #: usr/local/www/services_dhcp_relay.php:184
@@ -32781,7 +32810,11 @@ msgid ""
 "can enter multiple server IP addresses, separated by commas. Select "Proxy "
 "requests to DHCP server on WAN subnet" to relay DHCP packets to the server "
 "that was used on the WAN interface."
-msgstr "「これはDHCP要求を中継先のサーバーのIPアドレスです。あなたは "カンマで区切って複数のサーバーのIPアドレスを、入力することができます。 WANインターフェイス上で使用された「サーバにDHCPパケットを中継する「WANサブネット上のDHCPサーバーを「プロキシ」の要求を選択します。"
+msgstr ""
+"これは、DHCP リクエストをリレーされるサーバの IP アドレスです。"
+"コンマ区切りで複数サーバの IP アドレスを入力できます。"
+"「WAN サブネットでプロキシが DHCP サーバにリクエスト」を選択すると、"
+"WAN インタフェースで使用されているサーバに対して DHCP パケットをリレーします。"
 
 #: usr/local/www/services_dnsmasq.php:80 usr/local/www/services_dnsmasq.php:84
 #: usr/local/www/services_dnsmasq.php:86
@@ -32797,7 +32830,7 @@ msgstr "無効なカスタムオプション"
 #: usr/local/www/services_dnsmasq.php:175
 #: usr/local/www/services_dnsmasq.php:175
 msgid "The DNS forwarder configuration has been changed"
-msgstr "DNSフォワーダの設定が変更されました"
+msgstr "DNS フォワーダ構成が変更されました"
 
 #: usr/local/www/services_dnsmasq.php:151
 #: usr/local/www/services_dnsmasq.php:152
@@ -32806,7 +32839,7 @@ msgstr "DNSフォワーダの設定が変更されました"
 #: usr/local/www/services_dnsmasq.php:179
 #: usr/local/www/services_dnsmasq.php:179
 msgid "General DNS Forwarder Options"
-msgstr "一般的なDNSのフォワーダオプション"
+msgstr "DNS フォワーダ全般オプション"
 
 #: usr/local/www/services_dnsmasq.php:157
 #: usr/local/www/services_dnsmasq.php:158
@@ -32815,7 +32848,7 @@ msgstr "一般的なDNSのフォワーダオプション"
 #: usr/local/www/services_dnsmasq.php:185
 #: usr/local/www/services_dnsmasq.php:185
 msgid "Enable DNS forwarder"
-msgstr "DNSフォワーダを有効にする"
+msgstr "DNS フォワーダを有効"
 
 #: usr/local/www/services_dnsmasq.php:161
 #: usr/local/www/services_unbound.php:211
@@ -32825,7 +32858,7 @@ msgstr "DNSフォワーダを有効にする"
 #: usr/local/www/services_dnsmasq.php:189
 #: usr/local/www/services_dnsmasq.php:189
 msgid "DHCP Registration"
-msgstr "DHCP登録"
+msgstr "DHCP 登録"
 
 #: usr/local/www/services_dnsmasq.php:164
 #: usr/local/www/services_dnsmasq.php:165
@@ -32834,7 +32867,7 @@ msgstr "DHCP登録"
 #: usr/local/www/services_dnsmasq.php:192
 #: usr/local/www/services_dnsmasq.php:192
 msgid "Register DHCP leases in DNS forwarder"
-msgstr "レジスタDHCPはDNSフォワーダ内のリース"
+msgstr "DNS フォワーダの DHCP リースを登録"
 
 #: usr/local/www/services_dnsmasq.php:165
 #: usr/local/www/services_dnsmasq.php:166
@@ -32848,7 +32881,11 @@ msgid ""
 "requesting a DHCP lease will be registered in the DNS forwarder, so that "
 "their name can be resolved. You should also set the domain in %sSystem: "
 "General setup%s to the proper value."
-msgstr "「このオプションが設定されている場合は、とき彼らのホスト名を指定してマシン""自分の名前を入手し%sSystemドメインを設定する必要が解決することができます。 ： "ようにDHCPリースを要求するには、 DNSフォワーダに登録されます一般setup%sを。適切な値にね。"
+msgstr ""
+"このオプションが設定されている場合、ホスト名を指定された機器は、"
+"DHCP リースのリクエスト時に DNS フォワーダに登録されるため、"
+"名前解決が可能になります。"
+"%sシステム: 全般設定%sで、ドメインにも適切な値を設定してください。"
 
 #: usr/local/www/services_dnsmasq.php:173
 #: usr/local/www/services_unbound.php:223
@@ -32858,7 +32895,7 @@ msgstr "「このオプションが設定されている場合は、とき彼ら
 #: usr/local/www/services_dnsmasq.php:201
 #: usr/local/www/services_dnsmasq.php:201
 msgid "Static DHCP"
-msgstr "静的DHCP"
+msgstr "静的 DHCP"
 
 #: usr/local/www/services_dnsmasq.php:176
 #: usr/local/www/services_dnsmasq.php:177
@@ -32867,7 +32904,7 @@ msgstr "静的DHCP"
 #: usr/local/www/services_dnsmasq.php:204
 #: usr/local/www/services_dnsmasq.php:204
 msgid "Register DHCP static mappings in DNS forwarder"
-msgstr "DNSフォワーダでDHCPの静的マッピングを登録"
+msgstr "DNS フォワーダに DHCP 静的マッピングを登録"
 
 #: usr/local/www/services_dnsmasq.php:177
 #: usr/local/www/services_dnsmasq.php:178
@@ -32880,7 +32917,10 @@ msgid ""
 "If this option is set, then DHCP static mappings will be registered in the "
 "DNS forwarder, so that their name can be resolved. You should also set the "
 "domain in %sSystem: General setup%s to the proper value."
-msgstr "その名前が解決できるように、 DNSフォワーダ」このオプションが設定されている場合、 DHCPの静的マッピングラーニング登録される」 。一般setup%s適正値に：また%sSystemの「ドメインを設定する必要があります。"
+msgstr ""
+"このオプションが設定されると、DNS フォワーダに DHCP 静的マッピングが登録され、"
+"名前解決ができるようになります。"
+"%sシステム: 全般設定%sで、ドメインにも適切な値を設定してください。"
 
 #: usr/local/www/services_dnsmasq.php:184
 #: usr/local/www/services_unbound.php:234
@@ -32890,7 +32930,7 @@ msgstr "その名前が解決できるように、 DNSフォワーダ」この�
 #: usr/local/www/services_dnsmasq.php:212
 #: usr/local/www/services_dnsmasq.php:212
 msgid "Prefer DHCP"
-msgstr "DHCPを好む"
+msgstr "DHCP ではなく"
 
 #: usr/local/www/services_dnsmasq.php:187
 #: usr/local/www/services_unbound.php:237
@@ -32900,7 +32940,7 @@ msgstr "DHCPを好む"
 #: usr/local/www/services_dnsmasq.php:215
 #: usr/local/www/services_dnsmasq.php:215
 msgid "Resolve DHCP mappings first"
-msgstr "最初のDHCPマッピングを解決する"
+msgstr "DHCP マッピングを最初に名前解決"
 
 #: usr/local/www/services_dnsmasq.php:188
 #: usr/local/www/services_unbound.php:238
@@ -32914,7 +32954,10 @@ msgid ""
 "If this option is set, then DHCP mappings will be resolved before the manual "
 "list of names below. This only affects the name given for a reverse lookup "
 "(PTR)."
-msgstr "下の名前のリスト」には、このオプションが設定されている場合は、 DHCPのマッピングは、マニュアルの前に解決されます」 。これは、逆引き」 （ PTR ）に指定された名前に影響を与えます。"
+msgstr ""
+"このオプションが設定されている場合、下記の手動設定リストの名前より前に、"
+"DHCP マッピングが名前解決されます。"
+"DNS 逆引き (PTR) で得られる名前にのみ影響します。"
 
 #: usr/local/www/services_dnsmasq.php:202
 #: usr/local/www/services_dnsmasq.php:203
@@ -32925,7 +32968,9 @@ msgstr "下の名前のリスト」には、このオプションが設定され
 msgid ""
 "Enter any additional options you would like to add to the dnsmasq "
 "configuration here, separated by a space or newline"
-msgstr "以下に設定、空白や改行で区切られた「あなたがDNSMASQに追加する追加オプションを入力してください ""
+msgstr ""
+"Dnsmasq 構成に追加する、追加オプションはここで入力します。"
+"空白、もしくは、改行で区切ります。"
 
 #: usr/local/www/services_dnsmasq.php:215
 #: usr/local/www/services_dnsmasq.php:216
@@ -32943,7 +32988,16 @@ msgid ""
 "WAN&quot; is checked. If you don't use that option (or if you use a static "
 "IP address on WAN), you must manually specify at least one DNS server on the "
 "%sSystem:General setup%s page."
-msgstr "「 DNSフォワーダが有効になっている場合は、 DHCPサービス（有効な場合）がします」が自動的ので、「彼らはフォワーダを使用します。 DNSフォワーダは、 DNSサーバーを使用します"DHCPクライアントにDNSサーバーとしてLAN IPアドレスを提供するの%sに入力された。 ■システム：一般setup%sまたは許可されているDNSサーバリスト「WAN」でのDHCP / PPPによって無効にされるように「IF WAN 」がチェックされている上でのDHCPやPPPを介して得られたもの。あなたはそのオプションを使用しない（または静的使用する場合%sSystem 「WAN上のIPアドレス）は、手動で少なくとも1つのDNSサーバを指定する必要があります」とします。全般setup%sページ。"
+msgstr ""
+"DNS フォワーダが有効な場合は、"
+"DHCP サービス ( 有効であれば ) が DNS サーバとして、"
+"DHCP クライアントに自動的に LAN IP アドレスを提供する際にフォワーダを使用します。"
+"DNS フォワーダが使用する DNS サーバは、"
+"%sシステム: 全般設定%s で入力されたものか、"
+"もしくは、&quot;WAN の DHCP/PPP による DNS サーバリストの上書きを許可&quot; "
+"がチェックされている場合に、WAN の DHCP か PPP 経由で得られるものです。"
+"そのオプションを使用しない ( もしくは WAN で 静的 IP アドレスを使用する ) 場合は、"
+"%sシステム: 全般設定%s ページで 1 つ以上の DNS サーバを手動で指定する必要があります。"
 
 #: usr/local/www/services_dnsmasq.php:231
 #: usr/local/www/services_unbound.php:267
@@ -32953,7 +33007,8 @@ msgstr "「 DNSフォワーダが有効になっている場合は、 DHCPサー
 #: usr/local/www/services_dnsmasq.php:334
 #: usr/local/www/services_dnsmasq.php:334
 msgid "Host Overrides"
-msgstr "オーバーライドをホストする"
+msgstr "ホストオーバーライド
+"
 
 #: usr/local/www/services_dnsmasq.php:235
 #: usr/local/www/services_unbound.php:271
@@ -32964,7 +33019,8 @@ msgstr "オーバーライドをホストする"
 #: usr/local/www/services_dnsmasq.php:338
 msgid ""
 "Entries in this section override individual results from the forwarders."
-msgstr "「このセクションのエントリは、フォワーダーからの個々の結果を上書きします。"
+msgstr ""
+"このセクションのエントリは、フォワーダからの結果を個別に上書きします"
 
 #: usr/local/www/services_dnsmasq.php:236
 #: usr/local/www/services_unbound.php:272
@@ -32974,7 +33030,7 @@ msgstr "「このセクションのエントリは、フォワーダーからの
 #: usr/local/www/services_dnsmasq.php:339
 #: usr/local/www/services_dnsmasq.php:339
 msgid "Use these for changing DNS results or for adding custom DNS records."
-msgstr "DNSの結果を​​変更するため、またはカスタムDNSレコードを追加するためにこれらを使用してください。"
+msgstr "DNS 検索結果の変更、もしくは、カスタム DNS レコードの追加には、これらを使用してください。"
 
 #: usr/local/www/services_dnsmasq.php:299
 #: usr/local/www/services_dnsmasq.php:320
@@ -32998,7 +33054,9 @@ msgstr "ドメインオーバーライド"
 msgid ""
 "Entries in this area override an entire domain by specifying an "
 "authoritative DNS server to be queried for that domain."
-msgstr "そのドメインを照会する権限を持つDNSサーバー」 、このエリア内のエントリは、指定することで、ドメイン全体を上書きする」 。"
+msgstr ""
+"このエリアのエントリは、そのドメインに対する問い合わせに使用される、"
+"権威 DNS サーバが指定するドメイン全体を上書きします。"
 
 #: usr/local/www/services_dnsmasq.php:337
 #: usr/local/www/services_dnsmasq.php:358
@@ -33009,40 +33067,40 @@ msgstr "そのドメインを照会する権限を持つDNSサーバー」 、�
 #: usr/local/www/services_dnsmasq.php:461
 #: usr/local/www/services_dnsmasq.php:461
 msgid "Do you really want to delete this domain override?"
-msgstr "あなたは本当に、このドメインのオーバーライドを削除しますか？"
+msgstr "本当にこのドメインオーバーライドを削除しますか？"
 
 #: usr/local/www/services_dnsmasq_edit.php:100
 #: usr/local/www/services_dnsmasq_edit.php:138
 #: usr/local/www/services_dnsmasq_edit.php:138
 msgid "This host/domain already exists."
-msgstr "このホスト/ドメインがすでに存在しています。"
+msgstr "このホスト / ドメインは既に存在しています"
 
 #: usr/local/www/services_dnsmasq_edit.php:127
 #: usr/local/www/services_dnsmasq_edit.php:166
 #: usr/local/www/services_dnsmasq_edit.php:166
 msgid "Edit host"
-msgstr "編集ホスト"
+msgstr "ホストの編集"
 
 #: usr/local/www/services_dnsmasq_edit.php:138
 #: usr/local/www/services_dnsmasq_edit.php:193
 #: usr/local/www/services_dnsmasq_edit.php:194
 #: usr/local/www/services_dnsmasq_edit.php:194
 msgid "Edit DNS Forwarder entry"
-msgstr "編集のDNSフォワーダエントリ"
+msgstr "DNS フォワーダエントリの編集"
 
 #: usr/local/www/services_dnsmasq_edit.php:144
 #: usr/local/www/services_dnsmasq_edit.php:199
 #: usr/local/www/services_dnsmasq_edit.php:200
 #: usr/local/www/services_dnsmasq_edit.php:200
 msgid "Name of the host, without domain part"
-msgstr "ドメイン部分なしで、ホストの名前"
+msgstr "ドメイン部分のないホスト名"
 
 #: usr/local/www/services_dnsmasq_edit.php:146
 #: usr/local/www/services_dnsmasq_edit.php:201
 #: usr/local/www/services_dnsmasq_edit.php:202
 #: usr/local/www/services_dnsmasq_edit.php:202
 msgid "myhost"
-msgstr "myhostに"
+msgstr "myhost"
 
 #: usr/local/www/services_dnsmasq_edit.php:152
 #: usr/local/www/services_dnsmasq_edit.php:207
@@ -33063,7 +33121,7 @@ msgstr "example.com"
 #: usr/local/www/services_dnsmasq_edit.php:215
 #: usr/local/www/services_dnsmasq_edit.php:215
 msgid "IP address of the host"
-msgstr "ホストのIPアドレス"
+msgstr "ホストの IP アドレス"
 
 #: usr/local/www/diag_pkglogs.php:81 usr/local/www/diag_pkglogs.php:81
 msgid "Package logs"
@@ -33071,7 +33129,7 @@ msgstr "パッケージログ"
 
 #: usr/local/www/diag_pkglogs.php:92 usr/local/www/diag_pkglogs.php:92
 msgid "No packages with logging facilities are currently installed."
-msgstr "ロギング機能とのパッケージは現在インストールされていません。"
+msgstr "ロギング機能のあるパッケージは現在インストールされていません"
 
 #: usr/local/www/diag_pkglogs.php:103 usr/local/www/diag_pkglogs.php:105
 #: usr/local/www/diag_pkglogs.php:103 usr/local/www/diag_pkglogs.php:105
@@ -33082,12 +33140,12 @@ msgstr "%s"
 #: usr/local/www/diag_pkglogs.php:118 usr/local/www/diag_pkglogs.php:118
 #, php-format
 msgid "Last %1$s %2$s log entries"
-msgstr "最後は%1$s %2$sログエントリ"
+msgstr "最新 %1$s %2$s ログエントリ"
 
 #: usr/local/www/status.php:110 usr/local/www/status.php:111
 #: usr/local/www/status.php:111
 msgid "This status page includes the following information"
-msgstr "このステータス·ページには、以下の情報が含まれています"
+msgstr "このステータスページには、以下の情報が含まれています"
 
 #: usr/local/www/status.php:225 usr/local/www/status.php:226
 #: usr/local/www/status.php:230 usr/local/www/status.php:230
@@ -33095,12 +33153,15 @@ msgid ""
 "Note: make sure to remove any sensitive information (passwords, maybe also "
 "IP addresses) before posting information from this page in public places "
 "(like mailing lists)"
-msgstr "（メーリングリストのような） 「公共の場で、このページからの情報を投稿する前に「 （ IPアドレス注機密情報、パスワード、多分も）を除去することを確認してください」"
+msgstr ""
+"注意: このページの情報を ( メーリングリストのような ) 公共の場に投稿する前に、"
+"機密情報の類は全て削除するようにしてください"
+" ( パスワードや、IP アドレスなど )"
 
 #: usr/local/www/status.php:228 usr/local/www/status.php:229
 #: usr/local/www/status.php:233 usr/local/www/status.php:233
 msgid "Passwords in config.xml have been automatically removed"
-msgstr "config.xml内のパスワードは自動的に削除されました"
+msgstr "config.xml のパスワードは自動的に削除されました"
 
 #: usr/local/www/bandwidth_by_ip.php:54 usr/local/www/bandwidth_by_ip.php:67
 #: usr/local/www/bandwidth_by_ip.php:61 usr/local/www/bandwidth_by_ip.php:103
@@ -33117,21 +33178,21 @@ msgstr "情報なし"
 #: usr/local/www/vpn_pppoe_edit.php:112 usr/local/www/vpn_pppoe_edit.php:428
 #: usr/local/www/vpn_pptp.php:82 usr/local/www/vpn_pptp.php:358
 msgid "Server address"
-msgstr "サーバーのアドレス"
+msgstr "サーバアドレス"
 
 #: usr/local/www/vpn_pptp.php:82 usr/local/www/vpn_l2tp.php:73
 #: usr/local/www/vpn_pppoe_edit.php:112 usr/local/www/vpn_l2tp.php:74
 #: usr/local/www/vpn_l2tp.php:74 usr/local/www/vpn_pppoe_edit.php:112
 #: usr/local/www/vpn_pptp.php:82
 msgid "Remote start address"
-msgstr "リモートスタートアドレス"
+msgstr "リモート開始アドレス"
 
 #: usr/local/www/vpn_pptp.php:87 usr/local/www/vpn_l2tp.php:78
 #: usr/local/www/vpn_pppoe_edit.php:117 usr/local/www/vpn_l2tp.php:79
 #: usr/local/www/vpn_l2tp.php:79 usr/local/www/vpn_pppoe_edit.php:117
 #: usr/local/www/vpn_pptp.php:87
 msgid "RADIUS server address"
-msgstr "RADIUSサーバのIPアドレス"
+msgstr "RADIUS サーバアドレス"
 
 #: usr/local/www/vpn_pptp.php:87 usr/local/www/vpn_pptp.php:432
 #: usr/local/www/vpn_l2tp.php:78 usr/local/www/vpn_l2tp.php:428
@@ -33140,14 +33201,14 @@ msgstr "RADIUSサーバのIPアドレス"
 #: usr/local/www/vpn_l2tp.php:79 usr/local/www/vpn_pppoe_edit.php:117
 #: usr/local/www/vpn_pptp.php:87 usr/local/www/vpn_pptp.php:437
 msgid "RADIUS shared secret"
-msgstr "RADIUSの共有シークレット"
+msgstr "RADIUS 共有秘密鍵"
 
 #: usr/local/www/vpn_pptp.php:93 usr/local/www/vpn_l2tp.php:84
 #: usr/local/www/vpn_pppoe_edit.php:123 usr/local/www/vpn_l2tp.php:85
 #: usr/local/www/vpn_l2tp.php:85 usr/local/www/vpn_pppoe_edit.php:123
 #: usr/local/www/vpn_pptp.php:93
 msgid "A valid server address must be specified."
-msgstr "有効なサーバーアドレスを指定する必要があります。"
+msgstr "有効なサーバアドレスを指定してください"
 
 #: usr/local/www/vpn_pptp.php:96 usr/local/www/vpn_l2tp.php:87
 #: usr/local/www/vpn_pppoe_edit.php:125 usr/local/www/vpn_l2tp.php:88
@@ -33155,7 +33216,7 @@ msgstr "有効なサーバーアドレスを指定する必要があります。
 #: usr/local/www/vpn_l2tp.php:91 usr/local/www/vpn_pppoe_edit.php:125
 #: usr/local/www/vpn_pptp.php:99
 msgid "A valid remote start address must be specified."
-msgstr "有効なリモートスタートアドレスを指定する必要があります。"
+msgstr "有効なリモート開始アドレスを指定する必要があります"
 
 #: usr/local/www/vpn_pptp.php:99 usr/local/www/vpn_l2tp.php:90
 #: usr/local/www/vpn_pppoe_edit.php:127 usr/local/www/vpn_l2tp.php:91
@@ -33163,7 +33224,7 @@ msgstr "有効なリモートスタートアドレスを指定する必要があ
 #: usr/local/www/vpn_l2tp.php:94 usr/local/www/vpn_pppoe_edit.php:127
 #: usr/local/www/vpn_pptp.php:102
 msgid "A valid RADIUS server address must be specified."
-msgstr "有効なRADIUSサーバのIPアドレスを指定する必要があります。"
+msgstr "有効な RADIUS サーバのアドレスを指定する必要があります"
 
 #: usr/local/www/vpn_pptp.php:108 usr/local/www/vpn_l2tp.php:106
 #: usr/local/www/vpn_pppoe_edit.php:134 usr/local/www/vpn_l2tp.php:107
@@ -33171,31 +33232,31 @@ msgstr "有効なRADIUSサーバのIPアドレスを指定する必要があり�
 #: usr/local/www/vpn_l2tp.php:110 usr/local/www/vpn_pppoe_edit.php:134
 #: usr/local/www/vpn_pptp.php:111
 msgid "The specified server address lies in the remote subnet."
-msgstr "指定されたサーバーアドレスは、リモートサブネットにある。"
+msgstr "指定されたサーバアドレスはリモートサブネットにあります"
 
 #: usr/local/www/vpn_pptp.php:112 usr/local/www/vpn_l2tp.php:109
 #: usr/local/www/vpn_l2tp.php:110 usr/local/www/vpn_l2tp.php:113
 #: usr/local/www/vpn_pptp.php:115 usr/local/www/vpn_l2tp.php:113
 #: usr/local/www/vpn_pptp.php:115
 msgid "The specified server address is equal to the LAN interface address."
-msgstr "指定されたサーバのアドレスは、LANインターフェイスのアドレスと同じである。"
+msgstr "指定されたサーバアドレスは LAN インタフェースのアドレスと同じです"
 
 #: usr/local/www/vpn_pptp.php:117 usr/local/www/vpn_pptp.php:120
 #: usr/local/www/vpn_pptp.php:120
 msgid "PPTP redirection target address"
-msgstr "PPTPリダイレクト先のアドレス"
+msgstr "PPTP リダイレクトターゲットアドレス"
 
 #: usr/local/www/vpn_pptp.php:122 usr/local/www/vpn_pptp.php:125
 #: usr/local/www/vpn_pptp.php:125
 msgid "A valid target address must be specified."
-msgstr "有効なターゲットアドレスを指定する必要があります。"
+msgstr "有効なターゲットアドレスを指定してください"
 
 #: usr/local/www/vpn_pptp.php:193 usr/local/www/vpn_pptp_users.php:71
 #: usr/local/www/vpn_pptp_users_edit.php:135 usr/local/www/vpn_pptp.php:196
 #: usr/local/www/vpn_pptp_users.php:71 usr/local/www/vpn_pptp.php:196
 #: usr/local/www/vpn_pptp_users_edit.php:135
 msgid "VPN PPTP"
-msgstr "のVPN 、PPTP"
+msgstr "VPN PPTP"
 
 #: usr/local/www/vpn_pptp.php:300 usr/local/www/vpn_pptp_users.php:89
 #: usr/local/www/vpn_l2tp.php:280 usr/local/www/vpn_l2tp_users.php:92
@@ -33205,7 +33266,7 @@ msgstr "のVPN 、PPTP"
 #: usr/local/www/vpn_l2tp.php:284 usr/local/www/vpn_pptp_users.php:90
 #: usr/local/www/vpn_l2tp_users.php:93 usr/local/www/vpn_pptp.php:305
 msgid "Configuration"
-msgstr "設定"
+msgstr "構成"
 
 #: usr/local/www/vpn_pptp.php:301 usr/local/www/vpn_pptp_users.php:71
 #: usr/local/www/vpn_pptp_users.php:90
@@ -33234,45 +33295,47 @@ msgstr "設定"
 #: usr/local/www/system_usermanager_settings.php:115
 #: usr/local/www/system_usermanager.php:438
 msgid "Users"
-msgstr "ユーザー"
+msgstr "ユーザ"
 
 #: usr/local/www/vpn_pptp.php:320 usr/local/www/vpn_pptp.php:322
 #: usr/local/www/vpn_pptp.php:325 usr/local/www/vpn_pptp.php:325
 msgid "Redirect incoming PPTP connections to"
-msgstr "への着信PPTP接続をリダイレクト"
+msgstr "次への着信 PPTP 接続をリダイレクト: "
 
 #: usr/local/www/vpn_pptp.php:322 usr/local/www/vpn_pptp.php:324
 #: usr/local/www/vpn_pptp.php:327 usr/local/www/vpn_pptp.php:327
 msgid "PPTP redirection"
-msgstr "PPTPのリダイレクト"
+msgstr "PPTP リダイレクト"
 
 #: usr/local/www/vpn_pptp.php:326 usr/local/www/vpn_pptp.php:328
 #: usr/local/www/vpn_pptp.php:331 usr/local/www/vpn_pptp.php:331
 msgid ""
 "Enter the IP address of a host which will accept incoming PPTP connections"
-msgstr "「着信PPTP接続を受け入れるホストのIPアドレスを入力してください"
+msgstr "着信 PPTP 接続を受信するホストの IP アドレスを入力してください"
 
 #: usr/local/www/vpn_pptp.php:332 usr/local/www/vpn_pptp.php:334
 #: usr/local/www/vpn_pptp.php:337 usr/local/www/vpn_pptp.php:337
 msgid "Enable PPTP server"
-msgstr "PPTPサーバーを有効にする"
+msgstr "PPTP サーバを有効"
 
 #: usr/local/www/vpn_pptp.php:335 usr/local/www/vpn_pptp.php:337
 #: usr/local/www/vpn_pptp.php:340 usr/local/www/vpn_pptp.php:340
 msgid "No. PPTP users"
-msgstr "番号PPTPユーザー"
+msgstr "PPTP ユーザ番号"
 
 #: usr/local/www/vpn_pptp.php:349 usr/local/www/vpn_pptp.php:351
 #: usr/local/www/vpn_pptp.php:354 usr/local/www/vpn_pptp.php:354
 msgid "Hint: 10 is ten PPTP clients"
-msgstr "ヒント：10 10 PPTPクライアントである"
+msgstr "ヒント: 10 は PPTP クライアント数が 10 のことです"
 
 #: usr/local/www/vpn_pptp.php:357 usr/local/www/vpn_pptp.php:359
 #: usr/local/www/vpn_pptp.php:362 usr/local/www/vpn_pptp.php:362
 msgid ""
 "Enter the IP address the PPTP server should give to clients for use as their "
 ""gateway""
-msgstr "「 「ゲートウェイ」のIPアドレスを入力してPPTPサーバーは、そのとして使用するためにクライアントに与える必要があります」"
+msgstr ""
+"クライアントが使用する「ゲートウェイ」として与えられる、"
+"PPTP サーバの IP アドレスを入力してください。"
 
 #: usr/local/www/vpn_pptp.php:359 usr/local/www/vpn_l2tp.php:327
 #: usr/local/www/vpn_pppoe_edit.php:430 usr/local/www/vpn_pppoe_edit.php:431
@@ -33281,7 +33344,7 @@ msgstr "「 「ゲートウェイ」のIPアドレスを入力してPPTPサー�
 #: usr/local/www/vpn_pptp.php:364 usr/local/www/vpn_l2tp.php:331
 #: usr/local/www/vpn_pppoe_edit.php:434 usr/local/www/vpn_pptp.php:364
 msgid "Typically this is set to an unused IP just outside of the client range"
-msgstr "一般的に、これは単なるクライアント範囲外の未使用のIPに設定されています"
+msgstr "通常、これはクライアントの範囲外にある、未使用の IP が設定されます"
 
 #: usr/local/www/vpn_pptp.php:362 usr/local/www/vpn_l2tp.php:330
 #: usr/local/www/vpn_pppoe_edit.php:433 usr/local/www/vpn_pppoe_edit.php:434
@@ -33292,7 +33355,9 @@ msgstr "一般的に、これは単なるクライアント範囲外の未使用
 msgid ""
 "NOTE: This should NOT be set to any IP address currently in use on this "
 "firewall"
-msgstr ""注：これは、この上で現在使用中の任意のIPアドレスに設定しないでください」ファイアウォール"
+msgstr ""
+"注意: これは、現在ファイアウォールで使用されている"
+" IP アドレスは設定「しないで」ください"
 
 #: usr/local/www/vpn_pptp.php:365 usr/local/www/vpn_l2tp.php:333
 #: usr/local/www/vpn_pppoe_edit.php:436 usr/local/www/vpn_pppoe_edit.php:437
@@ -33305,24 +33370,24 @@ msgstr "リモートアドレス範囲"
 #: usr/local/www/vpn_pptp.php:370 usr/local/www/vpn_pptp.php:372
 #: usr/local/www/vpn_pptp.php:375 usr/local/www/vpn_pptp.php:375
 msgid "Specify the starting address for the client IP subnet"
-msgstr "クライアントIPサブネットの開始アドレスを指定する"
+msgstr "クライアント IP サブネットの開始アドレスを指定してください"
 
 #: usr/local/www/vpn_pptp.php:373 usr/local/www/vpn_pptp.php:375
 #: usr/local/www/vpn_pptp.php:378 usr/local/www/vpn_pptp.php:378
 msgid "PPTP DNS Servers"
-msgstr "PPTP DNSサーバ"
+msgstr "PPTP DNS サーバ"
 
 #: usr/local/www/vpn_pptp.php:379 usr/local/www/vpn_pptp.php:381
 #: usr/local/www/vpn_pptp.php:384 usr/local/www/vpn_pptp.php:384
 msgid "primary and secondary DNS servers assigned to PPTP clients"
-msgstr "PPTPクライアントに割り当てられたプライマリおよびセカンダリDNSサーバ"
+msgstr "PPTP クライアントに割り当てられた、プライマリ、及び、セカンダリ DNS サーバ"
 
 #: usr/local/www/vpn_pptp.php:382 usr/local/www/vpn_l2tp.php:404
 #: usr/local/www/vpn_pptp.php:384 usr/local/www/vpn_l2tp.php:405
 #: usr/local/www/vpn_l2tp.php:408 usr/local/www/vpn_pptp.php:387
 #: usr/local/www/vpn_l2tp.php:408 usr/local/www/vpn_pptp.php:387
 msgid "WINS Server"
-msgstr "WINSサーバー"
+msgstr "WINS サーバ"
 
 #: usr/local/www/vpn_pptp.php:388 usr/local/www/vpn_l2tp.php:410
 #: usr/local/www/vpn_pppoe_edit.php:461 usr/local/www/vpn_pppoe_edit.php:462
@@ -33340,7 +33405,7 @@ msgstr "RADIUS"
 #: usr/local/www/vpn_pptp.php:396 usr/local/www/vpn_l2tp.php:417
 #: usr/local/www/vpn_pppoe_edit.php:468 usr/local/www/vpn_pptp.php:396
 msgid "Use a RADIUS server for authentication"
-msgstr "認証用のRADIUSサーバを使用"
+msgstr "認証に RADIUS サーバを使用"
 
 #: usr/local/www/vpn_pptp.php:392 usr/local/www/vpn_pppoe_edit.php:465
 #: usr/local/www/vpn_pppoe_edit.php:466 usr/local/www/vpn_pptp.php:394
