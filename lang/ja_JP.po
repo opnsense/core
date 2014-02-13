@@ -33414,7 +33414,9 @@ msgstr "認証に RADIUS サーバを使用"
 msgid ""
 "When set, all users will be authenticated using the RADIUS server specified "
 "below. The local user database will not be used"
-msgstr "下の「設定すると、すべてのユーザーが指定されたRADIUSサーバを使用して認証されます」 。ローカルユーザデータベースが使用されることはありません"
+msgstr ""
+"設定すると、全てのユーザを下記で指定する RADIUS サーバを使用して認証します。"
+"ローカルユーザデータベースは使用されません。"
 
 #: usr/local/www/vpn_pptp.php:397 usr/local/www/vpn_l2tp.php:417
 #: usr/local/www/vpn_pppoe_edit.php:470 usr/local/www/vpn_pppoe_edit.php:471
@@ -33423,56 +33425,57 @@ msgstr "下の「設定すると、すべてのユーザーが指定されたRAD
 #: usr/local/www/vpn_pptp.php:402 usr/local/www/vpn_l2tp.php:421
 #: usr/local/www/vpn_pppoe_edit.php:474 usr/local/www/vpn_pptp.php:402
 msgid "Enable RADIUS accounting"
-msgstr "RADIUSアカウンティングを有効にする"
+msgstr "RADIUS アカウンティングを有効"
 
 #: usr/local/www/vpn_pptp.php:398 usr/local/www/vpn_pppoe_edit.php:472
 #: usr/local/www/vpn_pppoe_edit.php:473 usr/local/www/vpn_pptp.php:400
 #: usr/local/www/vpn_pppoe_edit.php:476 usr/local/www/vpn_pptp.php:403
 #: usr/local/www/vpn_pppoe_edit.php:476 usr/local/www/vpn_pptp.php:403
 msgid "Sends accounting packets to the RADIUS server"
-msgstr "RADIUSサーバにアカウンティングパケットを送信します"
+msgstr "RADIUS サーバにアカウンティングパケットを送信"
 
 #: usr/local/www/vpn_pptp.php:401 usr/local/www/vpn_pptp.php:403
 #: usr/local/www/vpn_pptp.php:406 usr/local/www/vpn_pptp.php:406
 msgid "Secondary RADIUS server for failover authentication"
-msgstr "フェイルオーバー認証のためのセカンダリRADIUSサーバ"
+msgstr "フェイルオーバ認証用セカンダリ RADIUS サーバ"
 
 #: usr/local/www/vpn_pptp.php:402 usr/local/www/vpn_pptp.php:404
 #: usr/local/www/vpn_pptp.php:407 usr/local/www/vpn_pptp.php:407
 msgid ""
 "When set, all requests will go to the secondary server when primary fails"
-msgstr "設定すると、プライマリに障害が発生した場合」 、すべてのリクエストはセカンダリサーバに移動します"
+msgstr ""
+"設定すると、プライマリに障害が発生した場合、全てのリクエストはセカンダリサーバに送信されます"
 
 #: usr/local/www/vpn_pptp.php:405 usr/local/www/vpn_pppoe_edit.php:492
 #: usr/local/www/vpn_pppoe_edit.php:493 usr/local/www/vpn_pptp.php:407
 #: usr/local/www/vpn_pppoe_edit.php:496 usr/local/www/vpn_pptp.php:410
 #: usr/local/www/vpn_pppoe_edit.php:496 usr/local/www/vpn_pptp.php:410
 msgid "RADIUS issued IPs"
-msgstr "RADIUSは、 IPを発行"
+msgstr "RADIUS IP 割当"
 
 #: usr/local/www/vpn_pptp.php:406 usr/local/www/vpn_pptp.php:408
 #: usr/local/www/vpn_pptp.php:411 usr/local/www/vpn_pptp.php:411
 msgid "Issue IP addresses via RADIUS server"
-msgstr "RADIUSサーバーを経由して発行するIPアドレス"
+msgstr "RADIUS サーバに割当てられる IP アドレス"
 
 #: usr/local/www/vpn_pptp.php:411 usr/local/www/vpn_pptp.php:413
 #: usr/local/www/vpn_pptp.php:416 usr/local/www/vpn_pptp.php:416
 msgid "RADIUS NAS IP"
-msgstr "RADIUSのNAS IP"
+msgstr "RADIUS NAS IP"
 
 #: usr/local/www/vpn_pptp.php:417 usr/local/www/vpn_pppoe_edit.php:485
 #: usr/local/www/vpn_pppoe_edit.php:486 usr/local/www/vpn_pptp.php:419
 #: usr/local/www/vpn_pppoe_edit.php:489 usr/local/www/vpn_pptp.php:422
 #: usr/local/www/vpn_pppoe_edit.php:489 usr/local/www/vpn_pptp.php:422
 msgid "RADIUS Accounting Update"
-msgstr "RADIUSアカウンティングアップデート"
+msgstr "RADIUS アカウンティング更新"
 
 #: usr/local/www/vpn_pptp.php:423 usr/local/www/vpn_pptp.php:425
 #: usr/local/www/vpn_l2tp.php:422 usr/local/www/vpn_l2tp.php:425
 #: usr/local/www/vpn_pptp.php:428 usr/local/www/vpn_l2tp.php:425
 #: usr/local/www/vpn_pptp.php:428
 msgid "RADIUS Server"
-msgstr "RADIUSサーバ"
+msgstr "RADIUS サーバ"
 
 #: usr/local/www/vpn_pptp.php:429 usr/local/www/vpn_pptp.php:446
 #: usr/local/www/vpn_pptp.php:431 usr/local/www/vpn_pptp.php:448
@@ -33481,7 +33484,9 @@ msgstr "RADIUSサーバ"
 msgid ""
 "Enter the IP address, RADIUS port, and RADIUS accounting port of the RADIUS "
 "server"
-msgstr "サーバー「RADIUSのアカウンティングポート、IPアドレス、 RADIUSポート、およびRADIUSを入力してください ""
+msgstr ""
+"RADIUS サーバの IP アドレス、RADIUS ポート、RADIUS アカウンティングポートを"
+"入力してください。"
 
 #: usr/local/www/vpn_pptp.php:436 usr/local/www/vpn_pppoe_edit.php:510
 #: usr/local/www/vpn_pppoe_edit.php:527 usr/local/www/vpn_pppoe_edit.php:511
@@ -33492,24 +33497,28 @@ msgstr "サーバー「RADIUSのアカウンティングポート、IPアドレ�
 msgid ""
 "Enter the shared secret that will be used to authenticate to the RADIUS "
 "server"
-msgstr "サーバー「RADIUSへの認証に使用される共有秘密を入力してください ""
+msgstr ""
+"RADIUS サーバへの認証に使用される共有秘密鍵を"
+"入力してください。"
 
 #: usr/local/www/vpn_pptp.php:449 usr/local/www/vpn_pptp.php:451
 #: usr/local/www/vpn_pptp.php:454 usr/local/www/vpn_pptp.php:454
 msgid "Secondary RADIUS shared secret"
-msgstr "セカンダリRADIUS共有シークレット"
+msgstr "セカンダリ RADIUS 共有秘密鍵"
 
 #: usr/local/www/vpn_pptp.php:453 usr/local/www/vpn_pptp.php:455
 #: usr/local/www/vpn_pptp.php:458 usr/local/www/vpn_pptp.php:458
 msgid ""
 "Enter the shared secret that will be used to authenticate to the secondary "
 "RADIUS server"
-msgstr "RADIUSサーバ「二次への認証に使用される共有秘密を入力してください ""
+msgstr ""
+"セカンダリ RADIUS サーバへの認証に使用される共有秘密鍵を"
+"入力してください。"
 
 #: usr/local/www/vpn_pptp.php:463 usr/local/www/vpn_pptp.php:465
 #: usr/local/www/vpn_pptp.php:468 usr/local/www/vpn_pptp.php:468
 msgid "Require 128-bit encryption"
-msgstr "128ビット暗号化を要求"
+msgstr "128 ビット暗号化を要求"
 
 #: usr/local/www/vpn_pptp.php:464 usr/local/www/vpn_pptp.php:466
 #: usr/local/www/vpn_pptp.php:469 usr/local/www/vpn_pptp.php:469
@@ -33518,12 +33527,15 @@ msgid ""
 "bit encryption will be accepted as well. Note that encryption will always be "
 "forced on PPTP connections (i.e. unencrypted connections will not be "
 "accepted)"
-msgstr "「設定した場合、唯一の128ビット暗号化を受け入れられるそうでない場合は40ビットおよび56 - 。 "ビットの暗号化が同様に受け入れられます。暗号化は、常に「 （受け入れすなわち暗号化されていない接続はされません） PPTP接続に強制"されることに注意してください"
+msgstr ""
+"設定すると、128 ビット暗号化のみを受け入れます。設定されていなければ、40 ビットと 56 ビットの"
+"暗号化も同様に受け入れます。暗号化は PPTP 接続に常に強制されますので、注意してください。"
+" ( 非暗号化接続は受け入れなくなります )"
 
 #: usr/local/www/vpn_pptp.php:478 usr/local/www/vpn_pptp.php:480
 #: usr/local/www/vpn_pptp.php:483 usr/local/www/vpn_pptp.php:483
 msgid "don't forget to "
-msgstr "ことを忘れないでください"
+msgstr "PPTP クライアントからのトラフィックを許可する、"
 
 #: usr/local/www/vpn_pptp.php:478 usr/local/www/vpn_pptp.php:480
 #: usr/local/www/vpn_pptp.php:483 usr/local/www/vpn_pptp.php:483
@@ -33533,29 +33545,29 @@ msgstr "ファイアウォールルールを追加"
 #: usr/local/www/vpn_pptp.php:478 usr/local/www/vpn_pptp.php:480
 #: usr/local/www/vpn_pptp.php:483 usr/local/www/vpn_pptp.php:483
 msgid "to permit traffic from PPTP clients"
-msgstr "PPTPクライアントからのトラフィックを許可する"
+msgstr "するのを忘れないで下さい。"
 
 #: usr/local/www/vpn_pptp_users.php:81 usr/local/www/vpn_l2tp_users.php:84
 #: usr/local/www/vpn_l2tp_users.php:85 usr/local/www/vpn_pptp_users.php:82
 #: usr/local/www/vpn_pptp_users.php:82 usr/local/www/vpn_l2tp_users.php:85
 msgid "Warning: RADIUS is enabled. The local user database will not be used."
-msgstr "警告： RADIUSが有効になっている。ローカルユーザデータベースは使用されません。"
+msgstr "警告: RADIUS が有効になっています。ローカルユーザデータベースは使用されません。"
 
 #: usr/local/www/vpn_pptp_users.php:83 usr/local/www/vpn_pptp_users.php:84
 #: usr/local/www/vpn_pptp_users.php:84
 msgid "The PPTP user list has been modified"
-msgstr "PPTPユーザリストが変更されている"
+msgstr "PPTP ユーザリストが変更されました"
 
 #: usr/local/www/vpn_pptp_users.php:83 usr/local/www/vpn_l2tp_users.php:86
 #: usr/local/www/vpn_l2tp_users.php:87 usr/local/www/vpn_pptp_users.php:84
 #: usr/local/www/vpn_pptp_users.php:84 usr/local/www/vpn_l2tp_users.php:87
 msgid "You must apply the changes in order for them to take effect"
-msgstr "それらを有効にするには、順序の変更を適用する必要があります"
+msgstr "変更を有効にするには、変更を適用してください"
 
 #: usr/local/www/vpn_pptp_users.php:83 usr/local/www/vpn_pptp_users.php:84
 #: usr/local/www/vpn_pptp_users.php:84
 msgid "Warning: this will terminate all current PPTP sessions"
-msgstr "警告：これは現在のすべてのPPTPセッションを終了します"
+msgstr "警告: 全ての PPTP セッションが終了します"
 
 #: usr/local/www/vpn_pptp_users.php:104 usr/local/www/vpn_pptp_users.php:127
 #: usr/local/www/system_usermanager.php:842
@@ -33569,7 +33581,7 @@ msgstr "警告：これは現在のすべてのPPTPセッションを終了し�
 #: usr/local/www/vpn_l2tp_users.php:121
 #: usr/local/www/system_usermanager.php:798
 msgid "add user"
-msgstr "ユーザーを追加"
+msgstr "ユーザの追加"
 
 #: usr/local/www/vpn_pptp_users.php:117
 #: usr/local/www/system_usermanager.php:824
@@ -33580,13 +33592,13 @@ msgstr "ユーザーを追加"
 #: usr/local/www/vpn_pptp_users.php:118
 #: usr/local/www/system_usermanager.php:848
 msgid "edit user"
-msgstr "ユーザーの編集"
+msgstr "ユーザの編集"
 
 #: usr/local/www/vpn_pptp_users.php:118 usr/local/www/vpn_l2tp_users.php:115
 #: usr/local/www/vpn_l2tp_users.php:116 usr/local/www/vpn_pptp_users.php:119
 #: usr/local/www/vpn_pptp_users.php:119 usr/local/www/vpn_l2tp_users.php:116
 msgid "Do you really want to delete this user?"
-msgstr "あなたは本当にこのユーザを削除しますか？"
+msgstr "本当にこのユーザを削除しますか？"
 
 #: usr/local/www/vpn_pptp_users.php:118
 #: usr/local/www/system_usermanager.php:829
@@ -33598,7 +33610,7 @@ msgstr "あなたは本当にこのユーザを削除しますか？"
 #: usr/local/www/vpn_pptp_users.php:119 usr/local/www/vpn_l2tp_users.php:116
 #: usr/local/www/system_usermanager.php:853
 msgid "delete user"
-msgstr "ユーザーを削除する"
+msgstr "ユーザの削除"
 
 #: usr/local/www/vpn_pptp_users_edit.php:85
 #: usr/local/www/services_dyndns_edit.php:94
@@ -33612,12 +33624,12 @@ msgstr "ユーザーを削除する"
 #: usr/local/www/vpn_pptp_users_edit.php:85
 #: usr/local/www/system_usermanager.php:199
 msgid "The username contains invalid characters."
-msgstr "ユーザー名に無効な文字が含まれています。"
+msgstr "ユーザ名に無効な文字が含まれています"
 
 #: usr/local/www/vpn_pptp_users_edit.php:88
 #: usr/local/www/vpn_pptp_users_edit.php:88
 msgid "The password cannot start with '!'."
-msgstr "パスワードは' ！'で始めることはできません。"
+msgstr "「!」から始まるパスワードは使用できません"
 
 #: usr/local/www/vpn_pptp_users_edit.php:91
 #: usr/local/www/vpn_l2tp_users_edit.php:90
@@ -33625,7 +33637,7 @@ msgstr "パスワードは' ！'で始めることはできません。"
 #: usr/local/www/vpn_l2tp_users_edit.php:91
 #: usr/local/www/vpn_pptp_users_edit.php:91
 msgid "The password contains invalid characters."
-msgstr "パスワードに無効な文字が含まれています。"
+msgstr "パスワードに無効な文字が含まれています"
 
 #: usr/local/www/vpn_pptp_users_edit.php:94
 #: usr/local/www/system_usermanager.php:205
@@ -33637,7 +33649,7 @@ msgstr "パスワードに無効な文字が含まれています。"
 #: usr/local/www/vpn_pptp_users_edit.php:94
 #: usr/local/www/system_usermanager.php:205
 msgid "The passwords do not match."
-msgstr "パスワードが一致しません。"
+msgstr "パスワードが一致しません"
 
 #: usr/local/www/vpn_pptp_users_edit.php:97
 #: usr/local/www/vpn_l2tp_users_edit.php:96
@@ -33645,7 +33657,7 @@ msgstr "パスワードが一致しません。"
 #: usr/local/www/vpn_l2tp_users_edit.php:97
 #: usr/local/www/vpn_pptp_users_edit.php:97
 msgid "The IP address entered is not valid."
-msgstr "入力したIPアドレスが有効ではありません。"
+msgstr "入力した IP アドレスは無効です"
 
 #: usr/local/www/vpn_pptp_users_edit.php:104
 #: usr/local/www/system_usermanager.php:215
@@ -33655,7 +33667,7 @@ msgstr "入力したIPアドレスが有効ではありません。"
 #: usr/local/www/vpn_pptp_users_edit.php:104
 #: usr/local/www/system_usermanager.php:215
 msgid "Another entry with the same username already exists."
-msgstr "同じユーザ名の別のエントリがすでに存在しています。"
+msgstr "同じユーザ名のエントリは既に存在しています"
 
 #: usr/local/www/vpn_pptp_users_edit.php:155
 #: usr/local/www/vpn_l2tp_users_edit.php:163
@@ -33670,7 +33682,7 @@ msgstr "確認"
 #: usr/local/www/vpn_pptp_users_edit.php:157
 #: usr/local/www/vpn_pptp_users_edit.php:157
 msgid "If you want to change the users' password, enter it here twice."
-msgstr "あなたは、ユーザーのパスワードを変更したい場合は、二度ここに入力します。"
+msgstr "ユーザのパスワードを変更する場合は、ここに 2 回入力してください"
 
 #: usr/local/www/vpn_pptp_users_edit.php:163
 #: usr/local/www/vpn_l2tp_users_edit.php:171
@@ -33680,34 +33692,35 @@ msgstr "あなたは、ユーザーのパスワードを変更したい場合は
 #: usr/local/www/vpn_pptp_users_edit.php:164
 msgid ""
 "If you want the user to be assigned a specific IP address, enter it here."
-msgstr "あなたは、ユーザーが特定のIPアドレスを割り当てることがしたい場合は"、ここに入力します。"
+msgstr ""
+"ユーザに特定の IP アドレスを割り当てる場合は、ここに入力してください"
 
 #: usr/local/www/wizard.php:65 usr/local/www/wizard.php:71
 #: usr/local/www/wizard.php:65 usr/local/www/wizard.php:71
 #, php-format
 msgid "ERROR: Could not open %s."
-msgstr "ERROR ： %s.を開けませんでした"
+msgstr "エラー: %s を開けません"
 
 #: usr/local/www/wizard.php:77 usr/local/www/wizard.php:77
 #, php-format
 msgid "ERROR: Could not parse %s/wizards/%s file."
-msgstr "ERROR ： %s /ウィザード/ %sファイルを解析できませんでした。"
+msgstr "エラー: %s/wizards/%s ファイルを解析できません"
 
 #: usr/local/www/load_balancer_relay_action_edit.php:65
 #: usr/local/www/load_balancer_relay_action_edit.php:65
 msgid "Load Balancer: Relay Action:"
-msgstr "ロード·バランサ：リレー動作："
+msgstr "ロードバランサ: リレー動作: "
 
 #: usr/local/www/load_balancer_relay_action_edit.php:124
 #: usr/local/www/load_balancer_relay_action_edit.php:124
 msgid "This action name has already been used. Action names must be unique."
-msgstr "このアクション名は既に使用されている。アクション名は一意でなければなりません。"
+msgstr "この動作名は既に使用されています。固有の動作名を指定してください。"
 
 #: usr/local/www/load_balancer_relay_action_edit.php:134
 #: usr/local/www/load_balancer_relay_action_edit.php:134
 #, php-format
 msgid "modified '%s' action:"
-msgstr "修正された「 %s'アクション："
+msgstr "変更された %s 動作: "
 
 #: usr/local/www/load_balancer_relay_action_edit.php:186
 #: usr/local/www/load_balancer_relay_protocol_edit.php:144
@@ -33723,7 +33736,7 @@ msgstr "DNS"
 #: usr/local/www/load_balancer_relay_action_edit.php:405
 #: usr/local/www/load_balancer_relay_action_edit.php:405
 msgid "Edit Load Balancer - Relay Action entry"
-msgstr "編集ロードバランサ - リレーactionエントリ"
+msgstr "ロードバランサの編集 - リレー動作エントリ"
 
 #: usr/local/www/load_balancer_relay_action_edit.php:508
 #: usr/local/www/services_rfc2136_edit.php:71
@@ -33734,7 +33747,7 @@ msgstr "編集ロードバランサ - リレーactionエントリ"
 #: usr/local/www/services_rfc2136_edit.php:71
 #: usr/local/www/services_rfc2136_edit.php:173
 msgid "Key"
-msgstr "キー"
+msgstr "鍵"
 
 #: usr/local/www/load_balancer_relay_action_edit.php:517
 #: usr/local/www/load_balancer_relay_action_edit.php:537
@@ -33749,7 +33762,7 @@ msgstr "TODO"
 
 #: usr/local/www/xmlrpc.php:58 usr/local/www/xmlrpc.php:54
 msgid "Disallowing CARP sync loop."
-msgstr "CARP同期ループを許可しない。"
+msgstr "CARP 同期ループを不許可"
 
 #: usr/local/www/xmlrpc.php:67 usr/local/www/xmlrpc.php:63
 #: usr/local/www/xmlrpc.php:67
@@ -33762,7 +33775,10 @@ msgid ""
 "XMLRPC wrapper for eval(). This method must be called with two parameters: a "
 "string containing the local system's password followed by the PHP code to "
 "evaluate."
-msgstr "「評価するために、PHPコードが続くローカルシステム'sのパスワードを含む文字列： "eval.().ためのXMLRPCラッパーはこのメソッドは、2つのパラメータで呼び出さなければなりません」 。"
+msgstr ""
+"eval() の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
+"パラメータの 1 つは、ローカルシステムのパスワードを含む文字列で、"
+"PHP コードで評価されます。"
 
 #: usr/local/www/xmlrpc.php:109 usr/local/www/xmlrpc.php:105
 #: usr/local/www/xmlrpc.php:109
@@ -33770,7 +33786,10 @@ msgid ""
 "XMLRPC wrapper for mwexec(). This method must be called with two parameters: "
 "a string containing the local system's password followed by an shell "
 "command to execute."
-msgstr "」 。 mwexec.()ためのXMLRPCラッパーはこのメソッドは、2つのパラメータで呼び出されなければなりません。「ローカルシステム'sのパスワードを含む文字列を実行するためのシェル」コマンドが続く。"
+msgstr ""
+"mwexec() の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
+"パラメータの 1 つは、ローカルシステムのパスワードを含む文字列で、"
+"シェルコマンドに実行されます。"
 
 #: usr/local/www/xmlrpc.php:133 usr/local/www/xmlrpc.php:129
 #: usr/local/www/xmlrpc.php:133
@@ -33778,7 +33797,10 @@ msgid ""
 "XMLRPC wrapper for backup_config_section. This method must be called with "
 "two parameters: a string containing the local system's password followed "
 "by an array containing the keys to be backed up."
-msgstr "バックアップ対象のキーを含む配列によって"に続く、ローカルシステム'sのパスワードを含む文字列： 2パラメータ」を参照してください。 backup_config_sectionのためのXMLRPCラッパーはこのメソッドでは、使用して呼び出されなければならない」 。"
+msgstr ""
+"backup_config_section の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
+"パラメータの 1 つは、ローカルシステムのパスワードを含む文字列で、"
+"鍵も併せて配列にバックアップされます。"
 
 #: usr/local/www/xmlrpc.php:156 usr/local/www/xmlrpc.php:152
 #: usr/local/www/xmlrpc.php:159 usr/local/www/xmlrpc.php:159
@@ -33787,7 +33809,11 @@ msgid ""
 "two parameters: a string containing the local system's password and an "
 "array to merge into the system's config. This function returns true upon "
 "completion."
-msgstr "「 restore_config_section用XMLRPCラッパーこのメソッドは、呼び出す必要があります。 「 2パラメータ：ローカルシステム'sのパスワードと「 SYSTEM にマージする配列」を含む文字列を完成。の設定をこの関数は、上にtrueを返します」 。"
+msgstr ""
+"restore_config_section の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
+"パラメータの 1 つは、ローカルシステムのパスワードと配列を含む文字列で、"
+"システムの構成にマージされます。"
+"この関数は完了すると true を返します。"
 
 #: usr/local/www/xmlrpc.php:203 usr/local/www/xmlrpc.php:282
 #: usr/local/www/xmlrpc.php:307 usr/local/www/xmlrpc.php:212
@@ -33798,7 +33824,7 @@ msgstr "「 restore_config_section用XMLRPCラッパーこのメソッドは、�
 #: usr/local/www/xmlrpc.php:308 usr/local/www/xmlrpc.php:337
 #, php-format
 msgid "Merged in config (%s sections) from XMLRPC client."
-msgstr "XMLRPCクライアントから（セクション%s ）設定に合併しました。"
+msgstr "XMLRPC クライアントから構成をマージしました ( %s セクション )"
 
 #: usr/local/www/xmlrpc.php:263 usr/local/www/xmlrpc.php:272
 #: usr/local/www/xmlrpc.php:269 usr/local/www/xmlrpc.php:286
@@ -33808,7 +33834,11 @@ msgid ""
 "two parameters: a string containing the local system's password and an "
 "array to merge into the system's config. This function returns true upon "
 "completion."
-msgstr "「パッケージのセクションをマージするためのXMLRPCラッパーこのメソッドは、呼び出す必要があります。 「 2パラメータ：ローカルシステム'sのパスワードと「 SYSTEM にマージする配列」を含む文字列を完成。の設定をこの関数は、上にtrueを返します」 。"
+msgstr ""
+"merging package sections の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
+"パラメータの 1 つは、ローカルシステムのパスワードと配列を含む文字列で、"
+"システムの構成にマージされます。"
+"この関数は完了すると true を返します。"
 
 #: usr/local/www/xmlrpc.php:288 usr/local/www/xmlrpc.php:297
 #: usr/local/www/xmlrpc.php:294 usr/local/www/xmlrpc.php:314
@@ -33818,7 +33848,11 @@ msgid ""
 "parameters: a string containing the local system's password and an array "
 "to merge into the system's config. This function returns true upon "
 "completion."
-msgstr "パラメータ"merge_config_sectionためXMLRPCラッパーはこのメソッドは、 2と呼ばれなければなりません。 」 ：ローカルシステム'sのパスワードとアレイ」 SYSTEM にマージする」を含む文字列を完成。の設定をこの関数は、上にtrueを返します」 。"
+msgstr ""
+"merge_config_section の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
+"パラメータの 1 つは、ローカルシステムのパスワードと配列を含む文字列で、"
+"システムの構成にマージされます。"
+"この関数は完了すると true を返します。"
 
 #: usr/local/www/xmlrpc.php:312 usr/local/www/xmlrpc.php:321
 #: usr/local/www/xmlrpc.php:318 usr/local/www/xmlrpc.php:342
@@ -33827,13 +33861,16 @@ msgid ""
 "Basic XMLRPC wrapper for filter_configure. This method must be called with "
 "one paramater: a string containing the local system's password. This "
 "function returns true upon completion."
-msgstr "ローカルシステム'sのパスワードを含む文字列： 1のparamater "。 filter_configureのための基本的なXMLRPCラッパーはこのメソッドでは、使用して呼び出されなければならない」 。この「機能が完了した時点でtrueを返します。"
+msgstr ""
+"filter_configure の基本 XMLRPC ラッパです。このメソッドは 1 つのパラメータで呼び出します。"
+"パラメータは、ローカルシステムのパスワードを含む文字列です。"
+"この関数は完了すると true を返します。"
 
 #: usr/local/www/xmlrpc.php:342 usr/local/www/xmlrpc.php:351
 #: usr/local/www/xmlrpc.php:348 usr/local/www/xmlrpc.php:372
 #: usr/local/www/xmlrpc.php:372
 msgid "Basic XMLRPC wrapper for configuring CARP interfaces."
-msgstr "CARPインタフェースを設定するための基本的なXMLRPCラッパー。"
+msgstr "CARP インタフェース構成の基本 XMLRPC ラッパ"
 
 #: usr/local/www/xmlrpc.php:364 usr/local/www/xmlrpc.php:385
 #: usr/local/www/xmlrpc.php:373 usr/local/www/xmlrpc.php:394
@@ -33843,30 +33880,32 @@ msgstr "CARPインタフェースを設定するための基本的なXMLRPCラ�
 msgid ""
 "Basic XMLRPC wrapper for check_firmware_version. This function will return "
 "the output of check_firmware_version upon completion."
-msgstr "完了時にcheck_firmware_versionの出力を"check_firmware_versionための基本XMLRPCラッパー。この関数は戻ります」 。"
+msgstr ""
+"check_firmware_version の基本 XMLRPC ラッパです。"
+"この関数は完了すると check_firmware_version の出力を返します。"
 
 #: usr/local/www/xmlrpc.php:406 usr/local/www/xmlrpc.php:415
 #: usr/local/www/xmlrpc.php:412 usr/local/www/xmlrpc.php:439
 #: usr/local/www/xmlrpc.php:439
 msgid "Basic XMLRPC wrapper for rc.reboot."
-msgstr "rc.rebootための基本的なXMLRPCラッパー。"
+msgstr "rc.reboot の基本 XMLRPC ラッパ"
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:65
 #: usr/local/www/load_balancer_relay_protocol_edit.php:65
 msgid "Load Balancer: Relay Protocol:"
-msgstr "ロード·バランサ：リレープロトコル："
+msgstr "ロードバランサ: リレープロトコル: "
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:86
 #: usr/local/www/load_balancer_relay_protocol_edit.php:86
 msgid ""
 "This protocol name has already been used. Protocol names must be unique."
-msgstr "「このプロトコル名が既に使用されています。プロトコル名は一意でなければなりません。"
+msgstr "このプロトコル名は既に使用されています。固有のプロトコル名を指定してください。"
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:105
 #: usr/local/www/load_balancer_relay_protocol_edit.php:105
 #, php-format
 msgid "modified '%s' load balancing protocol:"
-msgstr "修正された「 %s 「ロード·バランシング·プロトコル："
+msgstr "変更された %s ロードバランシングプロトコル: "
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:107
 #: usr/local/www/load_balancer_relay_protocol_edit.php:107
@@ -33888,25 +33927,25 @@ msgstr "説明"
 #: usr/local/www/load_balancer_relay_protocol_edit.php:111
 #: usr/local/www/load_balancer_relay_protocol_edit.php:111
 msgid "action"
-msgstr "アクション"
+msgstr "動作"
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:192
 #: usr/local/www/load_balancer_relay_protocol_edit.php:190
 #: usr/local/www/load_balancer_relay_protocol_edit.php:190
 msgid "Edit Load Balancer - Relay Protocol entry"
-msgstr "編集ロードバランサ - リレープロトコルエントリ"
+msgstr "ロードバランサの編集 - リレープロトコルエントリ"
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:227
 #: usr/local/www/load_balancer_relay_protocol_edit.php:225
 #: usr/local/www/load_balancer_relay_protocol_edit.php:225
 msgid "Add / remove available actions"
-msgstr "追加/使用可能なアクションを削除"
+msgstr "使用可能な動作の追加 / 削除"
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:237
 #: usr/local/www/load_balancer_relay_protocol_edit.php:235
 #: usr/local/www/load_balancer_relay_protocol_edit.php:235
 msgid "Available Actions"
-msgstr "使用可能なアクション"
+msgstr "使用可能な動作"
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:252
 #: usr/local/www/system_crlmanager.php:474
@@ -33915,13 +33954,13 @@ msgstr "使用可能なアクション"
 #: usr/local/www/load_balancer_relay_protocol_edit.php:250
 #: usr/local/www/system_crlmanager.php:507
 msgid "Add"
-msgstr "加える"
+msgstr "追加"
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:259
 #: usr/local/www/load_balancer_relay_protocol_edit.php:257
 #: usr/local/www/load_balancer_relay_protocol_edit.php:257
 msgid "Enabled Actions"
-msgstr "有効にアクション"
+msgstr "動作を有効"
 
 #: usr/local/www/pkg_mgr_settings.php:62 usr/local/www/pkg_mgr_settings.php:94
 #: usr/local/www/pkg_mgr_settings.php:93 usr/local/www/pkg_mgr_settings.php:62
@@ -33933,7 +33972,7 @@ msgstr "パッケージ設定"
 #: usr/local/www/pkg_mgr_settings.php:91
 #, php-format
 msgid "%s packages"
-msgstr "%sパッケージ"
+msgstr "%s パッケージ"
 
 #: usr/local/www/pkg_mgr_settings.php:102
 #: usr/local/www/pkg_mgr_settings.php:105
@@ -33942,32 +33981,32 @@ msgstr "%sパッケージ"
 #: usr/local/www/pkg_mgr_settings.php:101
 #: usr/local/www/pkg_mgr_settings.php:104
 msgid "Package Repository URL"
-msgstr "パッケージリポジトリのURL"
+msgstr "パッケージリポジトリ URL"
 
 #: usr/local/www/pkg_mgr_settings.php:107
 #: usr/local/www/pkg_mgr_settings.php:106
 #: usr/local/www/pkg_mgr_settings.php:106
 msgid "Use a different URL server for packages other than"
-msgstr "以外のパッケージに別のURLサーバを使用して、"
+msgstr "パッケージ用に次のサイトとは異なる URL のサーバを使用: "
 
 #: usr/local/www/pkg_mgr_settings.php:112
 #: usr/local/www/pkg_mgr_settings.php:111
 #: usr/local/www/pkg_mgr_settings.php:111
 #, php-format
 msgid "This is where %s will check for packages when the"
-msgstr "%sパッケージをチェックする場所ですとき"
+msgstr "これは、次の場合に %s がパッケージを確認する場所です: "
 
 #: usr/local/www/pkg_mgr_settings.php:112
 #: usr/local/www/pkg_mgr_settings.php:111
 #: usr/local/www/pkg_mgr_settings.php:111
 msgid "System: Packages"
-msgstr "システム：パッケージ"
+msgstr "システム: パッケージ"
 
 #: usr/local/www/services_captiveportal_hostname.php:111
 #: usr/local/www/services_captiveportal_hostname.php:109
 #: usr/local/www/services_captiveportal_hostname.php:109
 msgid "Allowed IP Addresses"
-msgstr "許可するIPアドレス"
+msgstr "許可済 IP アドレス"
 
 #: usr/local/www/services_captiveportal_hostname.php:173
 #: usr/local/www/services_captiveportal_hostname.php:171
@@ -33979,7 +34018,13 @@ msgid ""
 "on another network, for example. By specifying <em>from</em> addresses, it "
 "may be used to always allow pass-through access from a client behind the "
 "captive portal."
-msgstr "ポータルページに連れて行かれることなく、キャプティブポータルを介して「許可されたホスト名を追加すると、アクセスへの/からのDNSホスト名へのアクセスを許可します」 。これは、例えば、別のネットワーク上の「 WebサーバーがポータルページまたはDNSサーバー用の画像を提供するために使用する"ことができます。 u003c/ emu003eのアドレスからのu003cemu003e指定することで、キャプティブポータル」は、常に背後にあるクライアントからのパススルーのアクセスを許可するために用いることができる」 。"
+msgstr ""
+"許可済ホスト名として追加されると、ポータルページに行かなくても、"
+"その DNS ホスト名から、もしくはその DNS ホスト名へのキャプティブポータルを経由したアクセスが許可されます。"
+"この機能は、例えば、ポータルページヘ画像を送信する Web サーバや、他のネットワークの DNS サーバ"
+"に使用できます。"
+"<em>from</em> アドレスを指定することで、キャプティブポータルの背後にあるクライアントからの"
+"アクセスを、常にパススルーするのに、使用できます。"
 
 #: usr/local/www/services_captiveportal_hostname.php:177
 #: usr/local/www/services_captiveportal_hostname.php:184
@@ -33988,26 +34033,26 @@ msgstr "ポータルページに連れて行かれることなく、キャプテ
 #: usr/local/www/services_captiveportal_hostname.php:175
 #: usr/local/www/services_captiveportal_hostname.php:182
 msgid "the Hostname are allowed"
-msgstr "ホスト名が許可されてい"
+msgstr "ホスト名は許可されています"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:62
 #: usr/local/www/services_captiveportal_hostname_edit.php:59
 #: usr/local/www/services_captiveportal_hostname_edit.php:59
 msgid "Edit allowed Hostname"
-msgstr "編集許可ホスト名"
+msgstr "許可済ホスト名の編集"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:102
 #: usr/local/www/services_captiveportal_hostname_edit.php:100
 #: usr/local/www/services_captiveportal_hostname_edit.php:100
 msgid "Allowed Hostname"
-msgstr "許可されたホスト名"
+msgstr "許可済ホスト名"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:107
 #: usr/local/www/services_captiveportal_hostname_edit.php:105
 #: usr/local/www/services_captiveportal_hostname_edit.php:105
 #, php-format
 msgid "A valid Hostname must be specified. [%s]"
-msgstr "有効なホスト名を指定する必要があります。 （ （ %s ） ）"
+msgstr "有効なホスト名を指定してください: [%s]"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:172
 #: usr/local/www/services_captiveportal_hostname_edit.php:170
@@ -34015,7 +34060,9 @@ msgstr "有効なホスト名を指定する必要があります。 （ （ %s 
 msgid ""
 "to always allow an Hostname through the captive portal (without "
 "authentication)"
-msgstr "「 （認証常時ずに）キャプティブポータルを介してホスト名を許可するには、「"
+msgstr ""
+"常にキャプティブポータル経由を許可する"
+"ホスト名 ( 認証なし )"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:173
 #: usr/local/www/services_captiveportal_hostname_edit.php:171
@@ -34023,19 +34070,21 @@ msgstr "「 （認証常時ずに）キャプティブポータルを介して�
 msgid ""
 "to allow access from all clients (even non-authenticated ones) behind the "
 "portal to this Hostname"
-msgstr "このホスト名へのポータル」の後ろに（も含めて非認証） 、すべてのクライアントからのアクセスを許可するには、「"
+msgstr ""
+"常にキャプティブポータルの背後にある全クライアント ( 未認証クライアントも含む ) からの"
+"アクセスを許可するホスト名
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:192
 #: usr/local/www/services_captiveportal_hostname_edit.php:190
 #: usr/local/www/services_captiveportal_hostname_edit.php:192
 msgid "Enter a upload limit to be enforced on this Hostname in Kbit/s"
-msgstr "キロビット/秒で、このホスト名に施行されるようにアップロード制限を入力してください"
+msgstr "このホスト名に適用される上り帯域幅制限を Kbit/s で入力してください"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:198
 #: usr/local/www/services_captiveportal_hostname_edit.php:196
 #: usr/local/www/services_captiveportal_hostname_edit.php:198
 msgid "Enter a download limit to be enforced on this Hostname in Kbit/s"
-msgstr "キロビット/秒で、このホスト名に施行されるようにダウンロード制限を入力してください"
+msgstr "このホスト名に適用される下り帯域幅制限を Kbit/s で入力してください"
 
 #: usr/local/www/services_captiveportal_vouchers.php:67
 #: usr/local/www/services_captiveportal_vouchers.php:64
@@ -34044,7 +34093,9 @@ msgid ""
 "You will need to recreate any existing Voucher Rolls due to the public and "
 "private key changes. Click cancel if you do not wish to recreate the "
 "vouchers."
-msgstr "あなたは、公開鍵と秘密鍵の変更による既存のバウチャーロールを再作成する必要があります。あなたが伝票を再作成したくない場合は、[キャンセル]をクリックします。"
+msgstr ""
+"公開鍵と秘密鍵を変更したため、既存のバウチャーロールを再作成する必要があります。"
+"バウチャーを再作成を希望しない場合は、キャンセルをクリックしてください。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:114
 #: usr/local/www/services_captiveportal_vouchers.php:123
@@ -34058,21 +34109,21 @@ msgstr "バウチャー無効"
 #: usr/local/www/services_captiveportal_vouchers.php:132
 #: usr/local/www/services_captiveportal_vouchers.php:132
 msgid "Voucher expired"
-msgstr "バウチャーの有効期限が切れ"
+msgstr "バウチャーの有効期限が切れました"
 
 #: usr/local/www/services_captiveportal_vouchers.php:139
 #: usr/local/www/services_captiveportal_vouchers.php:148
 #: usr/local/www/services_captiveportal_vouchers.php:155
 #: usr/local/www/services_captiveportal_vouchers.php:155
 msgid "Cannot write private key file"
-msgstr "秘密鍵ファイルを書き込むことができません"
+msgstr "秘密鍵ファイルを書き込めません"
 
 #: usr/local/www/services_captiveportal_vouchers.php:157
 #: usr/local/www/services_captiveportal_vouchers.php:166
 #: usr/local/www/services_captiveportal_vouchers.php:175
 #: usr/local/www/services_captiveportal_vouchers.php:175
 msgid "Need private RSA key to print vouchers"
-msgstr "バウチャーを印刷するRSA秘密鍵を必要とする"
+msgstr "バウチャーを発行する RSA 秘密鍵が必要です"
 
 #: usr/local/www/services_captiveportal_vouchers.php:191
 #: usr/local/www/services_captiveportal_vouchers.php:201
@@ -34114,7 +34165,7 @@ msgstr "公開鍵"
 #: usr/local/www/services_captiveportal_vouchers.php:210
 #: usr/local/www/services_captiveportal_vouchers.php:210
 msgid "magic"
-msgstr "マジック"
+msgstr "magic"
 
 #: usr/local/www/services_captiveportal_vouchers.php:194
 #: usr/local/www/services_captiveportal_vouchers.php:565
@@ -34126,91 +34177,91 @@ msgstr "マジック"
 #: usr/local/www/services_captiveportal_vouchers.php:213
 #: usr/local/www/services_captiveportal_vouchers.php:599
 msgid "Synchronize Voucher Database IP"
-msgstr "バウチャーデータベースのIPアドレスを同期させる"
+msgstr "バウチャーデータベース IP を同期"
 
 #: usr/local/www/services_captiveportal_vouchers.php:194
 #: usr/local/www/services_captiveportal_vouchers.php:204
 #: usr/local/www/services_captiveportal_vouchers.php:213
 #: usr/local/www/services_captiveportal_vouchers.php:213
 msgid "Sync port"
-msgstr "同期ポート"
+msgstr "ポートの同期"
 
 #: usr/local/www/services_captiveportal_vouchers.php:194
 #: usr/local/www/services_captiveportal_vouchers.php:204
 #: usr/local/www/services_captiveportal_vouchers.php:213
 #: usr/local/www/services_captiveportal_vouchers.php:213
 msgid "Sync password"
-msgstr "同期パスワード"
+msgstr "パスワードの同期"
 
 #: usr/local/www/services_captiveportal_vouchers.php:194
 #: usr/local/www/services_captiveportal_vouchers.php:204
 #: usr/local/www/services_captiveportal_vouchers.php:213
 #: usr/local/www/services_captiveportal_vouchers.php:213
 msgid "Sync username"
-msgstr "同期ユーザ名"
+msgstr "ユーザ名の同期"
 
 #: usr/local/www/services_captiveportal_vouchers.php:203
 #: usr/local/www/services_captiveportal_vouchers.php:213
 #: usr/local/www/services_captiveportal_vouchers.php:222
 #: usr/local/www/services_captiveportal_vouchers.php:222
 msgid "Need at least 2 characters to create vouchers."
-msgstr "伝票を作成するには、少なくとも2文字を必要としています。"
+msgstr "バウチャーを作成するには、2 文字以上必要です"
 
 #: usr/local/www/services_captiveportal_vouchers.php:205
 #: usr/local/www/services_captiveportal_vouchers.php:215
 #: usr/local/www/services_captiveportal_vouchers.php:224
 #: usr/local/www/services_captiveportal_vouchers.php:224
 msgid "Double quotes aren't allowed."
-msgstr "二重引用符は使用できません。"
+msgstr "ダブルクォートは使用できません"
 
 #: usr/local/www/services_captiveportal_vouchers.php:207
 #: usr/local/www/services_captiveportal_vouchers.php:217
 #: usr/local/www/services_captiveportal_vouchers.php:226
 #: usr/local/www/services_captiveportal_vouchers.php:226
 msgid "aren't allowed."
-msgstr "許可されていません。"
+msgstr "は使用できません"
 
 #: usr/local/www/services_captiveportal_vouchers.php:209
 #: usr/local/www/services_captiveportal_vouchers.php:219
 #: usr/local/www/services_captiveportal_vouchers.php:228
 #: usr/local/www/services_captiveportal_vouchers.php:228
 msgid "# of Bits to store Roll Id needs to be between 1..31."
-msgstr ""
+msgstr "ビットの # が保存されるロール ID となり、必要な値は 1 〜 31 です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:211
 #: usr/local/www/services_captiveportal_vouchers.php:221
 #: usr/local/www/services_captiveportal_vouchers.php:230
 #: usr/local/www/services_captiveportal_vouchers.php:230
 msgid "# of Bits to store Ticket Id needs to be between 1..16."
-msgstr ""
+msgstr "ビットの # が保存されるチケット ID となり、必要な値は 1 〜 16 です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:213
 #: usr/local/www/services_captiveportal_vouchers.php:223
 #: usr/local/www/services_captiveportal_vouchers.php:232
 #: usr/local/www/services_captiveportal_vouchers.php:232
 msgid "# of Bits to store checksum needs to be between 1..31."
-msgstr ""
+msgstr "ビットの # が保存されるチェックサムとなり、必要な値は 1 〜 31 です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:215
 #: usr/local/www/services_captiveportal_vouchers.php:225
 #: usr/local/www/services_captiveportal_vouchers.php:234
 #: usr/local/www/services_captiveportal_vouchers.php:234
 msgid "This doesn't look like an RSA Public key."
-msgstr "これは、RSA公開鍵のようにしていません。"
+msgstr "これは RSA 公開鍵ではないようです"
 
 #: usr/local/www/services_captiveportal_vouchers.php:217
 #: usr/local/www/services_captiveportal_vouchers.php:227
 #: usr/local/www/services_captiveportal_vouchers.php:236
 #: usr/local/www/services_captiveportal_vouchers.php:236
 msgid "This doesn't look like an RSA Private key."
-msgstr "これはRSA秘密鍵のようにしていません。"
+msgstr "これは RSA 秘密鍵ではないようです"
 
 #: usr/local/www/services_captiveportal_vouchers.php:219
 #: usr/local/www/services_captiveportal_vouchers.php:229
 #: usr/local/www/services_captiveportal_vouchers.php:238
 #: usr/local/www/services_captiveportal_vouchers.php:238
 msgid "You cannot sync the voucher database to this host (itself)."
-msgstr "あなたはこのホスト（自体）にクーポンデータベースを同期できません。"
+msgstr "このホスト ( 自体 ) に、バウチャーデータベースを同期できません"
 
 #: usr/local/www/services_captiveportal_vouchers.php:421
 #: usr/local/www/services_captiveportal_vouchers.php:428
@@ -34218,7 +34269,7 @@ msgstr "あなたはこのホスト（自体）にクーポンデータベース
 #: usr/local/www/services_captiveportal_vouchers.php:450
 #: usr/local/www/services_captiveportal_vouchers.php:455
 msgid "Enable Vouchers"
-msgstr "バウチャーを有効にする"
+msgstr "バウチャーを有効"
 
 #: usr/local/www/services_captiveportal_vouchers.php:435
 #: usr/local/www/services_captiveportal_vouchers_edit.php:173
@@ -34245,7 +34296,7 @@ msgstr "ロール"
 #: usr/local/www/services_captiveportal_vouchers.php:470
 #: usr/local/www/status_captiveportal_voucher_rolls.php:89
 msgid "Minutes/Ticket"
-msgstr "分/チケット"
+msgstr "分 / チケット"
 
 #: usr/local/www/services_captiveportal_vouchers.php:437
 #: usr/local/www/services_captiveportal_vouchers.php:444
@@ -34253,7 +34304,7 @@ msgstr "分/チケット"
 #: usr/local/www/services_captiveportal_vouchers.php:466
 #: usr/local/www/services_captiveportal_vouchers.php:471
 msgid "of Tickets"
-msgstr "チケット"
+msgstr "のチケット"
 
 #: usr/local/www/services_captiveportal_vouchers.php:438
 #: usr/local/www/services_captiveportal_vouchers_edit.php:197
@@ -34276,7 +34327,7 @@ msgstr "コメント"
 #: usr/local/www/services_captiveportal_vouchers.php:487
 #: usr/local/www/services_captiveportal_vouchers.php:492
 msgid "edit voucher"
-msgstr "編集バウチャー"
+msgstr "バウチャーの編集"
 
 #: usr/local/www/services_captiveportal_vouchers.php:459
 #: usr/local/www/services_captiveportal_vouchers.php:466
@@ -34286,7 +34337,9 @@ msgstr "編集バウチャー"
 msgid ""
 "Do you really want to delete this voucher? This makes all vouchers from this "
 "roll invalid"
-msgstr "ロール無効"本当にこのバウチャーを削除しますか？これは、このからのすべてのバウチャーが作る""
+msgstr ""
+"本当にこのバウチャーを削除しますか？"
+"このロールからから作成された全てのバウチャーが無効になります"
 
 #: usr/local/www/services_captiveportal_vouchers.php:459
 #: usr/local/www/services_captiveportal_vouchers.php:466
@@ -34294,7 +34347,7 @@ msgstr "ロール無効"本当にこのバウチャーを削除しますか？�
 #: usr/local/www/services_captiveportal_vouchers.php:488
 #: usr/local/www/services_captiveportal_vouchers.php:493
 msgid "delete vouchers"
-msgstr "バウチャーを削除"
+msgstr "バウチャーの削除"
 
 #: usr/local/www/services_captiveportal_vouchers.php:460
 #: usr/local/www/services_captiveportal_vouchers.php:467
@@ -34302,7 +34355,7 @@ msgstr "バウチャーを削除"
 #: usr/local/www/services_captiveportal_vouchers.php:489
 #: usr/local/www/services_captiveportal_vouchers.php:494
 msgid "generate vouchers for this roll to CSV file"
-msgstr "CSVファイルへのこのロールのためのバウチャーを生成"
+msgstr "このロールのバウチャーを CSV ファイルに生成"
 
 #: usr/local/www/services_captiveportal_vouchers.php:470
 #: usr/local/www/services_captiveportal_vouchers.php:477
@@ -34310,7 +34363,7 @@ msgstr "CSVファイルへのこのロールのためのバウチャーを生成
 #: usr/local/www/services_captiveportal_vouchers.php:499
 #: usr/local/www/services_captiveportal_vouchers.php:504
 msgid "add voucher"
-msgstr "バウチャーを追加"
+msgstr "バウチャーの追加"
 
 #: usr/local/www/services_captiveportal_vouchers.php:475
 #: usr/local/www/services_captiveportal_vouchers.php:482
@@ -34323,7 +34376,12 @@ msgid ""
 "clock is started and runs uninterrupted until it expires. During that time, "
 "the voucher can be re-used from the same or a different computer. If the "
 "voucher is used again from another computer, the previous session is stopped."
-msgstr "「作成生成し、経由でアクセスできるようバウチャーとロールをアクティブに」設定された時間のためのキャプティブポータル。バウチャーが起動されると、その「クロックが開始され、それはその間、期限切れになるまで中断せずに実行「バウチャーは、同一または異なるコンピュータから再使用することができる。 「バウチャーは、別のコンピュータから再度使用される場合、以前のセッションを停止する。"
+msgstr ""
+"作成、生成、有効化したバウチャーのロールは、構成された期間、キャプティブポータルを経由した"
+"アクセスを許可されます。一旦バウチャーが有効化すると、時計が動き出し、有効期間が切れるまで、"
+"実行は中断されません。"
+"その期間は、バウチャーは同じコンピュータからでも、違うコンピュータからでも再利用することができます。"
+"バウチャーが他のコンピュータから再度使用されたら、以前のセッションは停止します。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:481
 #: usr/local/www/services_captiveportal_vouchers.php:488
@@ -34333,7 +34391,9 @@ msgstr "「作成生成し、経由でアクセスできるようバウチャー
 msgid ""
 "Enable Voucher support first using the checkbox above and hit Save at the "
 "bottom."
-msgstr "「最初に、上記のチェックボックスを使用してクーポンのサポートを有効にして、で、保存を打つ「ボトム。"
+msgstr ""
+"「バウチャーサポートを有効」の初回使用時は、上記のチェックボックスをチェックし、"
+"一番下で保存ボタンを押してください。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:486
 #: usr/local/www/services_captiveportal_vouchers.php:493
@@ -34351,7 +34411,9 @@ msgstr "バウチャー公開鍵"
 msgid ""
 "Paste an RSA public key (64 Bit or smaller) in PEM format here. This key is "
 "used to decrypt vouchers."
-msgstr "バウチャーを復号化するために使用される「 RSA公開鍵ここにPEM形式の（ 64ビットまたはそれ以下） 。このキーはされて貼り付け」 。"
+msgstr ""
+"PEM 形式の RSA 公開鍵 ( 64 ビットまたはそれ以下 ) をここに貼り付けてください。"
+"この鍵はバウチャーの復号に使用されます。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:491
 #: usr/local/www/services_captiveportal_vouchers.php:498
@@ -34363,7 +34425,7 @@ msgstr "バウチャーを復号化するために使用される「 RSA公開�
 #: usr/local/www/services_captiveportal_vouchers.php:525
 #: usr/local/www/services_captiveportal_vouchers.php:532
 msgid "Generate"
-msgstr "生成する"
+msgstr "生成"
 
 #: usr/local/www/services_captiveportal_vouchers.php:491
 #: usr/local/www/services_captiveportal_vouchers.php:498
@@ -34375,7 +34437,7 @@ msgstr "生成する"
 #: usr/local/www/services_captiveportal_vouchers.php:525
 #: usr/local/www/services_captiveportal_vouchers.php:532
 msgid "new key"
-msgstr "新しいキー"
+msgstr "新規鍵"
 
 #: usr/local/www/services_captiveportal_vouchers.php:494
 #: usr/local/www/services_captiveportal_vouchers.php:501
@@ -34394,7 +34456,10 @@ msgid ""
 "Paste an RSA private key (64 Bit or smaller) in PEM format here. This key is "
 "only used to generate encrypted vouchers and doesn't need to be available if "
 "the vouchers have been generated offline."
-msgstr "「 RSA秘密鍵ここにPEM形式の（ 64ビットまたはそれ以下） 。このキーが貼り付け」のみ、暗号化された伝票を生成し、伝票をオフラインで生成された」場合に使用可能である必要はありません使用。"
+msgstr ""
+"PEM 形式の RSA 秘密鍵 ( 64 ビットまたはそれ以下 ) をここに貼り付けてください。"
+"この鍵は暗号化されたバウチャーの生成にのみ使用されます。"
+"オフラインでバウチャーを生成する場合は、使用可能である必要はありません。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:502
 #: usr/local/www/services_captiveportal_vouchers.php:509
