@@ -33456,7 +33456,7 @@ msgstr "RADIUS IP 割当"
 #: usr/local/www/vpn_pptp.php:406 usr/local/www/vpn_pptp.php:408
 #: usr/local/www/vpn_pptp.php:411 usr/local/www/vpn_pptp.php:411
 msgid "Issue IP addresses via RADIUS server"
-msgstr "RADIUS サーバに割当てられる IP アドレス"
+msgstr "RADIUS サーバから割当てられる IP アドレス"
 
 #: usr/local/www/vpn_pptp.php:411 usr/local/www/vpn_pptp.php:413
 #: usr/local/www/vpn_pptp.php:416 usr/local/www/vpn_pptp.php:416
@@ -33899,7 +33899,8 @@ msgstr "ロードバランサ: リレープロトコル: "
 #: usr/local/www/load_balancer_relay_protocol_edit.php:86
 msgid ""
 "This protocol name has already been used. Protocol names must be unique."
-msgstr "このプロトコル名は既に使用されています。固有のプロトコル名を指定してください。"
+msgstr ""
+"このプロトコル名は既に使用されています。固有のプロトコル名を指定してください。"
 
 #: usr/local/www/load_balancer_relay_protocol_edit.php:105
 #: usr/local/www/load_balancer_relay_protocol_edit.php:105
@@ -34095,7 +34096,8 @@ msgid ""
 "vouchers."
 msgstr ""
 "公開鍵と秘密鍵を変更したため、既存のバウチャーロールを再作成する必要があります。"
-"バウチャーを再作成を希望しない場合は、キャンセルをクリックしてください。"
+"バウチャーを再作成を希望しない場合は、"
+"キャンセルをクリックしてください。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:114
 #: usr/local/www/services_captiveportal_vouchers.php:123
@@ -34137,21 +34139,21 @@ msgstr "文字セット"
 #: usr/local/www/services_captiveportal_vouchers.php:210
 #: usr/local/www/services_captiveportal_vouchers.php:210
 msgid "rollbits"
-msgstr "rollbits"
+msgstr "ロールビット"
 
 #: usr/local/www/services_captiveportal_vouchers.php:191
 #: usr/local/www/services_captiveportal_vouchers.php:201
 #: usr/local/www/services_captiveportal_vouchers.php:210
 #: usr/local/www/services_captiveportal_vouchers.php:210
 msgid "ticketbits"
-msgstr "ticketbits"
+msgstr "チケットビット"
 
 #: usr/local/www/services_captiveportal_vouchers.php:191
 #: usr/local/www/services_captiveportal_vouchers.php:201
 #: usr/local/www/services_captiveportal_vouchers.php:210
 #: usr/local/www/services_captiveportal_vouchers.php:210
 msgid "checksumbits"
-msgstr "checksumbits"
+msgstr "チェックサムビット"
 
 #: usr/local/www/services_captiveportal_vouchers.php:191
 #: usr/local/www/services_captiveportal_vouchers.php:201
@@ -34165,7 +34167,7 @@ msgstr "公開鍵"
 #: usr/local/www/services_captiveportal_vouchers.php:210
 #: usr/local/www/services_captiveportal_vouchers.php:210
 msgid "magic"
-msgstr "magic"
+msgstr "マジック"
 
 #: usr/local/www/services_captiveportal_vouchers.php:194
 #: usr/local/www/services_captiveportal_vouchers.php:565
@@ -34304,7 +34306,7 @@ msgstr "分 / チケット"
 #: usr/local/www/services_captiveportal_vouchers.php:466
 #: usr/local/www/services_captiveportal_vouchers.php:471
 msgid "of Tickets"
-msgstr "のチケット"
+msgstr ": チケット"
 
 #: usr/local/www/services_captiveportal_vouchers.php:438
 #: usr/local/www/services_captiveportal_vouchers_edit.php:197
@@ -34478,7 +34480,10 @@ msgid ""
 "Tickets are generated with the specified character set. It should contain "
 "printable characters (numbers, lower case and upper case letters) that are "
 "hard to confuse with others. Avoid e.g. 0/O and l/1."
-msgstr "「チケットは指定された文字セットで生成されます。これは、含まれている必要があります」 「他の人と混同しにくい印刷可能な文字（数字、小文字のと大文字を） 。例えば、0 / OとL / 1を避けてください。"
+msgstr ""
+"チケットは指定された文字セットで生成されます。"
+"印刷可能 ( 数字、大文字と小文字のアルファベット ) で、他の文字と混同しにくい文字で"
+"構成されている必要があります。0/O と l/1 等は使用しないでください。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:510
 #: usr/local/www/services_captiveportal_vouchers.php:517
@@ -34486,7 +34491,7 @@ msgstr "「チケットは指定された文字セットで生成されます。
 #: usr/local/www/services_captiveportal_vouchers.php:539
 #: usr/local/www/services_captiveportal_vouchers.php:544
 msgid "of Roll Bits"
-msgstr "ロールビットの"
+msgstr ": ロールビット"
 
 #: usr/local/www/services_captiveportal_vouchers.php:514
 #: usr/local/www/services_captiveportal_vouchers.php:521
@@ -34497,7 +34502,10 @@ msgid ""
 "Reserves a range in each voucher to store the Roll # it belongs to. Allowed "
 "range: 1..31. Sum of Roll+Ticket+Checksum bits must be one Bit less than the "
 "RSA key size."
-msgstr "「ロールを格納するために、各バウチャーに範囲を予約"
+msgstr ""
+"バウチャー毎に属するロール # を格納する範囲を予約してください。"
+"使用可能な範囲は、1 〜 31 です。ロール + チケット + チェックサムビットの合計は、"
+"RSA 鍵サイズよりも 1 ビット以上小さい必要があります。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:518
 #: usr/local/www/services_captiveportal_vouchers.php:525
@@ -34505,7 +34513,7 @@ msgstr "「ロールを格納するために、各バウチャーに範囲を予
 #: usr/local/www/services_captiveportal_vouchers.php:547
 #: usr/local/www/services_captiveportal_vouchers.php:552
 msgid "of Ticket Bits"
-msgstr "チケットのビット数"
+msgstr ": チケットビット"
 
 #: usr/local/www/services_captiveportal_vouchers.php:522
 #: usr/local/www/services_captiveportal_vouchers.php:529
@@ -34517,7 +34525,11 @@ msgid ""
 "range: 1..16. Using 16 bits allows a roll to have up to 65535 vouchers. A "
 "bit array, stored in RAM and in the config, is used to mark if a voucher has "
 "been used. A bit array for 65535 vouchers requires 8 KB of storage."
-msgstr "「チケットを保存するために、各バウチャーに範囲を予約"
+msgstr ""
+"バウチャー毎に属するチケット # を格納する範囲を予約してください。使用可能な範囲は、1 〜 16 です。"
+"16 ビット使用すると、65535 バウチャーまでのロールを持つことができるようになります。"
+"1 ビット配列は、RAM と構成に格納され、バウチャーが使用されているかどうかのマークに使用されます。"
+"65535 バウチャーに対する 1 ビット配列には、8KB のストレージが必要です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:526
 #: usr/local/www/services_captiveportal_vouchers.php:533
@@ -34525,7 +34537,7 @@ msgstr "「チケットを保存するために、各バウチャーに範囲を
 #: usr/local/www/services_captiveportal_vouchers.php:555
 #: usr/local/www/services_captiveportal_vouchers.php:560
 msgid "of Checksum Bits"
-msgstr "チェックサムのビット数"
+msgstr ": チェックサムビット"
 
 #: usr/local/www/services_captiveportal_vouchers.php:530
 #: usr/local/www/services_captiveportal_vouchers.php:537
@@ -34535,7 +34547,9 @@ msgstr "チェックサムのビット数"
 msgid ""
 "Reserves a range in each voucher to store a simple checksum over Roll # and "
 "Ticket#. Allowed range is 0..31."
-msgstr "「ロールに対する単純なチェックサムを保存するために、各バウチャーでの範囲を予約"
+msgstr ""
+"バウチャー毎にロール # 及びチケット # の、単純なチェックサムを格納する範囲を予約してください。"
+"使用可能な範囲は、0 〜 31 です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:534
 #: usr/local/www/services_captiveportal_vouchers.php:541
@@ -34554,7 +34568,10 @@ msgid ""
 "Magic number stored in every voucher. Verified during voucher check. Size "
 "depends on how many bits are left by Roll+Ticket+Checksum bits. If all bits "
 "are used, no magic number will be used and checked."
-msgstr "「バウチャーチェック。広さごとに伝票が検証済みに格納されているマジックナンバーは「ロールチケットチェックサムビットだけ残っているビット数に依存します。すべてのビットが「使用されている場合は、マジックナンバーは使用されず、チェックされます。"
+msgstr ""
+"バウチャー毎にマジックナンバーが格納されます。バウチャーチェック中に検証されます。"
+"サイズは、ロール + チケット + チェックサムビットの合計で何ビット残っているかに依存します。"
+"全てのビットを使用している場合は、マジックナンバーを使用した確認は行われません。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:542
 #: usr/local/www/services_captiveportal_vouchers.php:549
@@ -34562,7 +34579,7 @@ msgstr "「バウチャーチェック。広さごとに伝票が検証済みに
 #: usr/local/www/services_captiveportal_vouchers.php:571
 #: usr/local/www/services_captiveportal_vouchers.php:576
 msgid "Invalid Voucher Message"
-msgstr "無効なバウチャーメッセージ"
+msgstr "バウチャーメッセージは無効です"
 
 #: usr/local/www/services_captiveportal_vouchers.php:545
 #: usr/local/www/services_captiveportal_vouchers.php:552
@@ -34571,7 +34588,8 @@ msgstr "無効なバウチャーメッセージ"
 #: usr/local/www/services_captiveportal_vouchers.php:579
 msgid ""
 "Error message displayed for invalid vouchers on captive portal error page"
-msgstr "キャプティブポータルエラーページで無効なクーポンに表示される"エラーメッセージ"
+msgstr ""
+"キャプティブポータルエラーページに、無効なバウチャーに対するエラーメッセージが表示されました"
 
 #: usr/local/www/services_captiveportal_vouchers.php:549
 #: usr/local/www/services_captiveportal_vouchers.php:556
@@ -34579,7 +34597,7 @@ msgstr "キャプティブポータルエラーページで無効なクーポン
 #: usr/local/www/services_captiveportal_vouchers.php:578
 #: usr/local/www/services_captiveportal_vouchers.php:583
 msgid "Expired Voucher Message"
-msgstr "期限切れのクーポンのメッセージ"
+msgstr "バウチャーメッセージの有効期限が切れました"
 
 #: usr/local/www/services_captiveportal_vouchers.php:552
 #: usr/local/www/services_captiveportal_vouchers.php:559
@@ -34588,7 +34606,8 @@ msgstr "期限切れのクーポンのメッセージ"
 #: usr/local/www/services_captiveportal_vouchers.php:586
 msgid ""
 "Error message displayed for expired vouchers on captive portal error page"
-msgstr "キャプティブポータルエラーページ上の期限切れのクーポンに表示される"エラーメッセージ"
+msgstr ""
+"キャプティブポータルエラーページに、有効期限が切れたバウチャーに対するエラーメッセージが表示されました"
 
 #: usr/local/www/services_captiveportal_vouchers.php:562
 #: usr/local/www/services_captiveportal_vouchers.php:569
@@ -34606,7 +34625,9 @@ msgstr "バウチャーデータベースの同期"
 msgid ""
 "IP address of master nodes webConfigurator to synchronize voucher database "
 "and used vouchers from."
-msgstr "「IPバウチャーデータベースを同期するには、マスターノードwebConfiguratorのアドレス」との使用のバウチャー。"
+msgstr ""
+"Web 設定管理画面マスターノードの IP アドレスを、バウチャーデータベースと同期し、"
+"そこから、バウチャーに使用されます。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:569
 #: usr/local/www/services_captiveportal_vouchers.php:576
@@ -34614,7 +34635,7 @@ msgstr "「IPバウチャーデータベースを同期するには、マスタ�
 #: usr/local/www/services_captiveportal_vouchers.php:598
 #: usr/local/www/services_captiveportal_vouchers.php:603
 msgid "NOTE: this should be setup on the slave nodes and not the primary node!"
-msgstr "注：これは、スレーブノードのセットアップとプライマリノードではないはず！"
+msgstr "注意: これは、スレーブノードやプライマリノードのセットアップではありません！"
 
 #: usr/local/www/services_captiveportal_vouchers.php:573
 #: usr/local/www/services_captiveportal_vouchers.php:580
@@ -34631,7 +34652,8 @@ msgstr "バウチャー同期ポート"
 #: usr/local/www/services_captiveportal_vouchers.php:610
 msgid ""
 "This is the port of the master voucher nodes webConfigurator. Example: 443"
-msgstr "「これは、マスターバウチャーノードwebConfiguratorのポートです例： 443"
+msgstr ""
+"これは Web 設定管理画面マスターバウチャーノードのポートです。例: 443"
 
 #: usr/local/www/services_captiveportal_vouchers.php:580
 #: usr/local/www/services_captiveportal_vouchers.php:587
@@ -34647,7 +34669,7 @@ msgstr "バウチャー同期ユーザ名"
 #: usr/local/www/services_captiveportal_vouchers.php:612
 #: usr/local/www/services_captiveportal_vouchers.php:617
 msgid "This is the username of the master voucher nodes webConfigurator."
-msgstr "これは、マスターバウチャーノードwebConfiguratorのユーザー名です。"
+msgstr "これは Web 設定管理画面マスターバウチャーノードのユーザ名です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:587
 #: usr/local/www/services_captiveportal_vouchers.php:594
@@ -34663,7 +34685,7 @@ msgstr "バウチャー同期パスワード"
 #: usr/local/www/services_captiveportal_vouchers.php:619
 #: usr/local/www/services_captiveportal_vouchers.php:624
 msgid "This is the password of the master voucher nodes webConfigurator."
-msgstr "これは、マスターバウチャーノードwebConfiguratorのパスワードです。"
+msgstr "これは Web 設定管理画面マスターバウチャーノードのパスワードです。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:604
 #: usr/local/www/services_captiveportal_vouchers.php:611
@@ -34674,7 +34696,9 @@ msgid ""
 "Changing any Voucher parameter (apart from managing the list of Rolls) on "
 "this page will render existing vouchers useless if they were generated with "
 "different settings."
-msgstr "彼らは異なる設定」で生成された場合は、このページ"に（離れてロールのリストを管理するから）任意のバウチャーパラメータを変更すると、 「既存の商品券が無駄にレンダリングされます。"
+msgstr ""
+"このページでバウチャーのパラメータを変更をすると ( ロールリストの管理とは別です )、" 
+"異なる設定で生成された、不要な既存のバウチャーを表示します。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:606
 #: usr/local/www/services_captiveportal_vouchers.php:613
@@ -34685,65 +34709,67 @@ msgid ""
 "Specifying the Voucher Database Synchronization options will not record any "
 "other value from the other options. They will be retrieved/synced from the "
 "master."
-msgstr "他のオプションから別の値「クーポンのデータベース同期オプションを指定すると、いずれも記録されません」 。彼らは、 「マスターから同期/取得されます。"
+msgstr ""
+"バウチャーデータベース同期オプションの指定は、他のオプションが設定した他の値を記録しません。"
+"それらの値は、マスタから取得 / 同期されます。"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:48
 #: usr/local/www/services_captiveportal_vouchers_edit.php:45
 #: usr/local/www/services_captiveportal_vouchers_edit.php:45
 msgid "Edit Voucher Rolls"
-msgstr "編集バウチャーロールスロイス"
+msgstr "バウチャーロールの編集"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:101
 #: usr/local/www/services_captiveportal_vouchers_edit.php:99
 #: usr/local/www/services_captiveportal_vouchers_edit.php:99
 #, php-format
 msgid "Roll number %s already exists."
-msgstr "ロール番号の%sはすでに存在します。"
+msgstr "ロール番号 %s は既に存在します"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:107
 #: usr/local/www/services_captiveportal_vouchers_edit.php:105
 #: usr/local/www/services_captiveportal_vouchers_edit.php:105
 #, php-format
 msgid "Roll number must be numeric and less than %s"
-msgstr "ロール番号は、数値や%s未満でなければなりません"
+msgstr "ロール番号は、数値で、かつ %s 未満です"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:110
 #: usr/local/www/services_captiveportal_vouchers_edit.php:108
 #: usr/local/www/services_captiveportal_vouchers_edit.php:108
 #, php-format
 msgid "A roll has at least one voucher and less than %s."
-msgstr "ロールは、少なくとも一つのバウチャーと%s.未満を有する"
+msgstr "ロールは、1 つ以上 %s 未満のバウチャーを持ちます"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:113
 #: usr/local/www/services_captiveportal_vouchers_edit.php:111
 #: usr/local/www/services_captiveportal_vouchers_edit.php:111
 msgid "Each voucher must be good for at least 1 minute."
-msgstr "各バウチャーは1分以上良好でなければならない。"
+msgstr "全てのバウチャーは 1 分以上有効である必要があります"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:134
 #: usr/local/www/services_captiveportal_vouchers_edit.php:132
 #: usr/local/www/services_captiveportal_vouchers_edit.php:132
 #, php-format
 msgid "All %1$s vouchers from Roll %2$s marked unused"
-msgstr "ロール%2$sからすべては%1$s券は未使用とマーク"
+msgstr "ロール %2$s からの全ての %1$s バウチャーは未使用とマークされています"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:177
 #: usr/local/www/services_captiveportal_vouchers_edit.php:175
 #: usr/local/www/services_captiveportal_vouchers_edit.php:175
 msgid "Enter the Roll"
-msgstr "ロールを入力してください"
+msgstr "生成 / 発行されたバウチャーの一番上にあるロールの"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:177
 #: usr/local/www/services_captiveportal_vouchers_edit.php:175
 #: usr/local/www/services_captiveportal_vouchers_edit.php:175
 msgid "found on top of the generated/printed vouchers"
-msgstr "生成された/印刷された伝票の上に発見"
+msgstr "を入力してください"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:181
 #: usr/local/www/services_captiveportal_vouchers_edit.php:179
 #: usr/local/www/services_captiveportal_vouchers_edit.php:179
 msgid "Minutes per Ticket"
-msgstr "チケットごとの分"
+msgstr "分 / チケット"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:185
 #: usr/local/www/services_captiveportal_vouchers_edit.php:183
@@ -34751,13 +34777,15 @@ msgstr "チケットごとの分"
 msgid ""
 "Defines the time in minutes that a user is allowed access. The clock starts "
 "ticking the first time a voucher is used for authentication"
-msgstr "「ユーザーがアクセス許可されている時間を分単位で定義します。クロック開始」バウチャーが認証に使用されている最初に刻む"
+msgstr ""
+"ユーザがアクセス可能な時間を分単位で定義してください。"
+"バウチャーが認証に使用された最初の時間から、時計はカウントを開始します。"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:193
 #: usr/local/www/services_captiveportal_vouchers_edit.php:191
 #: usr/local/www/services_captiveportal_vouchers_edit.php:191
 msgid "Enter the number of vouchers"
-msgstr "伝票の番号を入力してください"
+msgstr "生成 / 発行されたバウチャーの一番上にあるバウチャー番号の"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:193
 #: usr/local/www/services_captiveportal_vouchers_edit.php:191
@@ -34765,29 +34793,31 @@ msgstr "伝票の番号を入力してください"
 msgid ""
 "found on top of the generated/printed vouchers. WARNING: Changing this "
 "number for an existing Roll will mark all vouchers as unused again"
-msgstr "「生成された/印刷された伝票の上に見られる警告：この変更」を、既存のロールの番号が再び使用されていないなど、すべてのバウチャーをマークします"
+msgstr ""
+"を入力してください。警告: この番号を変更すると、"
+"既存のロールは全てのバウチャーを、再度未使用としてマークします。"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:201
 #: usr/local/www/services_captiveportal_vouchers_edit.php:199
 #: usr/local/www/services_captiveportal_vouchers_edit.php:199
 msgid "Can be used to further identify this roll. Ignored by the system"
-msgstr "さらに、このロールを識別するために使用することができます。システムでは無視"
+msgstr "このロールを追加識別子として使用できます。システムには無視されます。"
 
 #: usr/local/www/diag_resetstate.php:54 usr/local/www/diag_resetstate.php:54
 msgid "The state table has been flushed successfully."
-msgstr "状態テーブルは正常にフラッシュされている。"
+msgstr "ステータステーブルは正常に書き込みされました"
 
 #: usr/local/www/diag_resetstate.php:60 usr/local/www/diag_resetstate.php:60
 msgid "The source tracking table has been flushed successfully."
-msgstr "ソース追跡テーブルは正常にフラッシュされている。"
+msgstr "送信元追跡テーブルは正常に書き込みされました"
 
 #: usr/local/www/diag_resetstate.php:64 usr/local/www/diag_resetstate.php:64
 msgid "Reset state"
-msgstr "リセット状態"
+msgstr "リセットステータス"
 
 #: usr/local/www/diag_resetstate.php:91 usr/local/www/diag_resetstate.php:91
 msgid "Firewall state table"
-msgstr "ファイアウォール状態テーブル"
+msgstr "ファイアウォールステータステーブル"
 
 #: usr/local/www/diag_resetstate.php:93 usr/local/www/diag_resetstate.php:93
 msgid ""
@@ -34796,34 +34826,46 @@ msgid ""
 "be re-established. This may be necessary after making substantial changes to "
 "the firewall and/or NAT rules, especially if there are IP protocol mappings "
 "(e.g. for PPTP or IPv6) with open connections."
-msgstr "テーブル"状態テーブルをリセットすると、対応するからすべてのエントリを削除します」 。これは、開いているすべての接続が切断され、しなければならないことを意味します（ PPTP用などまたは「 IPプロトコルマッピングがある場合は特に、ファイアウォールおよび/またはNATのルール「再確立する。これは大幅に変更を加えた後必要な場合があります」オープン接続とIPv6）の。"
+msgstr ""
+"ステータステーブルをリセットすると、対応するテーブルから全てのエントリが削除されます。"
+"要は、全ての開いている接続は切断され、再接続する必要があるということです。"
+"これは、ファイアウォール及び NAT もしくはそのどちらかのルールに実質的な変更を行った後、"
+"特に、開いている接続に対する IP プロトコルマッピング ( 例えば、PPTP や IPv6 に対して )"
+"が含まれている場合に、必要になります。"
 
 #: usr/local/www/diag_resetstate.php:100 usr/local/www/diag_resetstate.php:100
 msgid ""
 "The firewall will normally leave the state tables intact when changing rules."
-msgstr "ルールを変更するときに「ファイアウォールは、通常はそのままの状態テーブルを残す。"
+msgstr ""
+"ルールの変更時に、ファイアウォールは、通常、ステータステーブルには何の変更も加えません。"
 
 #: usr/local/www/diag_resetstate.php:103 usr/local/www/diag_resetstate.php:103
 msgid ""
 "NOTE: If you reset the firewall state table, the browser session may appear "
 "to be hung after clicking &quot;Reset&quot;. Simply refresh the page to "
 "continue."
-msgstr "「リセット」をクリックした後にハングアップしているように、「注ファイアウォール状態テーブルをリセットすると、ブラウザセッションが表示されることがあります」 。単に「継続してページを更新します。"
+msgstr ""
+"注意: ファイアウォールステータステーブルをリセットすると、&quot; リセット &quot; をクリック"
+"した後に、ブラウザセッションはハングアップしたようにみえます。"
+"続行するには、ページを単純に再読み込みしてください。"
 
 #: usr/local/www/diag_resetstate.php:113 usr/local/www/diag_resetstate.php:113
 msgid "Firewall Source Tracking"
-msgstr "ファイアウォールソースの追跡"
+msgstr "ファイアウォール送信元追跡"
 
 #: usr/local/www/diag_resetstate.php:115 usr/local/www/diag_resetstate.php:115
 msgid ""
 "Resetting the source tracking table will remove all source/destination "
 "associations. This means that the "sticky" source/destination association "
 "will be cleared for all clients."
-msgstr "団体「ソース追跡テーブルをリセットすると、すべての送信元/送信先を削除します」 。これは「粘着性」 、送信元/宛先協会は「すべてのクライアントのためにクリアされることを意味します。"
+msgstr ""
+"送信元追跡テーブルをリセットすると、全ての送信元 / 送信先とのアソシエーションが削除されます。"
+"これは、全てのクライアントの「スティッキー」な送信元 / 送信先とのアソシエーションは、"
+"消去されるということです。"
 
 #: usr/local/www/diag_resetstate.php:119 usr/local/www/diag_resetstate.php:119
 msgid "This does not clear active connection states, only source tracking."
-msgstr "これははっきりしないアクティブな接続状態、唯一のソースの追跡を行います。"
+msgstr "これはアクティブ接続ステータスを消去しません。送信元追跡のみを行います。"
 
 #: usr/local/www/diag_resetstate.php:127 usr/local/www/status_lb_pool.php:218
 #: usr/local/www/status_lb_pool.php:218 usr/local/www/diag_resetstate.php:127
@@ -34833,7 +34875,7 @@ msgstr "リセット"
 #: usr/local/www/status_filter_reload.php:44
 #: usr/local/www/status_filter_reload.php:44
 msgid "Filter Reload Status"
-msgstr "フィルタリロードステータス"
+msgstr "フィルタ再読込みステータス"
 
 #: usr/local/www/status_filter_reload.php:88
 #: usr/local/www/status_filter_reload.php:89
@@ -34841,7 +34883,9 @@ msgstr "フィルタリロードステータス"
 msgid ""
 "This page will automatically refresh every 3 seconds until the filter is "
 "done reloading"
-msgstr "リロード完了」フィルタがされるまで、このページは自動的に3秒ごとに更新されます」"
+msgstr ""
+"このページは、フィルタの再読み込みが完了するまで、"
+"自動的に 3 秒毎に更新されます。"
 
 #: usr/local/www/diag_routes.php:45 usr/local/www/diag_routes.php:45
 msgid "Routing tables"
@@ -34850,34 +34894,36 @@ msgstr "ルーティングテーブル"
 #: usr/local/www/diag_routes.php:58 usr/local/www/diag_routes.php:59
 #: usr/local/www/diag_routes.php:59
 msgid "Name resolution"
-msgstr "の名前解決"
+msgstr "名前解決"
 
 #: usr/local/www/diag_routes.php:62 usr/local/www/diag_routes.php:63
 #: usr/local/www/diag_routes.php:63
 msgid "Enable this to attempt to resolve names when displaying the tables."
-msgstr "テーブルを表示するときに名前を解決しようとするために、これを有効にします。"
+msgstr "これを有効にすると、テーブルを表示する際に名前解決を試みます。"
 
 #: usr/local/www/diag_routes.php:69 usr/local/www/diag_routes.php:70
 #: usr/local/www/diag_routes.php:70
 msgid "Show"
-msgstr "ショー"
+msgstr "表示"
 
 #: usr/local/www/diag_routes.php:72
 msgid ""
 "By enabling name resolution, the query should take a bit longer. You can "
 "stop it at any time by clicking the Stop button in your browser"
-msgstr "名前解決を可能にすることにより、クエリは少し時間がかかるはずです。お使いのブラウザで、[停止]ボタンをクリックすると、いつでもそれを停止することができます"
+msgstr ""
+"名前解決を有効にすると、クエリには少し時間がかかるようになります。"
+"ブラウザの停止ボタンをクリックすることで、いつでも名前解決を停止できます。"
 
 #: usr/local/www/diag_traceroute.php:62 usr/local/www/diag_traceroute.php:63
 #: usr/local/www/diag_traceroute.php:63
 msgid "ttl"
-msgstr "ttl"
+msgstr "TTL"
 
 #: usr/local/www/diag_traceroute.php:66 usr/local/www/diag_traceroute.php:67
 #: usr/local/www/diag_traceroute.php:67
 #, php-format
 msgid "Maximum number of hops must be between 1 and %s"
-msgstr "最大ホップ数は1と%sの間でなければなりません"
+msgstr "ホップの最大数は 1 〜 %s です"
 
 #: usr/local/www/diag_traceroute.php:94 usr/local/www/diag_traceroute.php:112
 #: usr/local/www/diag_traceroute.php:131 usr/local/www/diag_traceroute.php:131
@@ -34887,23 +34933,25 @@ msgstr "ホップの最大数"
 #: usr/local/www/diag_traceroute.php:104 usr/local/www/diag_traceroute.php:128
 #: usr/local/www/diag_traceroute.php:147 usr/local/www/diag_traceroute.php:147
 msgid "Use ICMP"
-msgstr "使用ICMP"
+msgstr "ICMP を使用"
 
 #: usr/local/www/diag_traceroute.php:117 usr/local/www/diag_traceroute.php:141
 #: usr/local/www/diag_traceroute.php:162 usr/local/www/diag_traceroute.php:162
 msgid ""
 "Traceroute may take a while to complete. You may hit the Stop button on your "
 "browser at any time to see the progress of failed traceroutes."
-msgstr "tracerouteは、完了に時間がかかる場合があります。あなたが失敗したトレースルートの進行状況を確認するために、いつでもお使いのブラウザの[停止]ボタンを押すことがあります。"
+msgstr ""
+"traceroute は完了までに時間がかかる場合があります。"
+"ブラウザの停止ボタンをクリックすることで、いつでも失敗した traceroute の進行状況を確認できます。"
 
 #: usr/local/www/diag_traceroute.php:120 usr/local/www/diag_traceroute.php:144
 #: usr/local/www/diag_traceroute.php:173 usr/local/www/diag_traceroute.php:173
 msgid "Traceroute output:"
-msgstr "tracerouteの出力："
+msgstr "traceroute の出力: "
 
 #: usr/local/www/diag_traceroute.php:137
 msgid "Multi-wan is not supported from this utility currently."
-msgstr "マルチWANは現在、このユーティリティからはサポートされません。"
+msgstr "マルチ WAN は、現在このユーティリティから対応されていません"
 
 #: usr/local/www/status_graph.php:85 usr/local/www/fbegin.inc:173
 #: usr/local/www/fbegin.inc:191 usr/local/www/fbegin.inc:199
@@ -34917,37 +34965,39 @@ msgstr "トラフィックグラフ"
 msgid ""
 "Your browser does not support the type SVG! You need to either use Firefox "
 "or download the Adobe SVG plugin"
-msgstr "またはAdobeのSVGプラグインをダウンロード"あなたのブラウザはタイプのSVG をサポートしていません ！あなたがFirefoxを使用するか必要がある」"
+msgstr ""
+"ブラウザが SVG に対応していません！"
+"Firefox を使用するか、Adobe SVG プラグインをダウンロードして下さい"
 
 #: usr/local/www/status_graph.php:203 usr/local/www/status_graph.php:198
 #: usr/local/www/status_graph.php:209 usr/local/www/status_graph.php:220
 #: usr/local/www/status_graph.php:242 usr/local/www/status_graph.php:242
 msgid "Host IP"
-msgstr "IPをホストする"
+msgstr "ホスト IP"
 
 #: usr/local/www/status_graph.php:204 usr/local/www/status_graph.php:199
 #: usr/local/www/status_graph.php:210 usr/local/www/status_graph.php:221
 #: usr/local/www/status_graph.php:243 usr/local/www/status_graph.php:243
 msgid "Bandwidth In"
-msgstr "帯域幅"
+msgstr "下り帯域幅"
 
 #: usr/local/www/status_graph.php:205 usr/local/www/status_graph.php:200
 #: usr/local/www/status_graph.php:211 usr/local/www/status_graph.php:222
 #: usr/local/www/status_graph.php:244 usr/local/www/status_graph.php:244
 msgid "Bandwidth Out"
-msgstr "帯域幅アウト"
+msgstr "上り帯域幅"
 
 #: usr/local/www/status_graph.php:291 usr/local/www/status_graph.php:286
 #: usr/local/www/status_graph.php:297 usr/local/www/status_graph.php:308
 #: usr/local/www/status_graph.php:330 usr/local/www/status_graph.php:330
 msgid "the"
-msgstr "ザ·"
+msgstr " "
 
 #: usr/local/www/status_graph.php:291 usr/local/www/status_graph.php:286
 #: usr/local/www/status_graph.php:297 usr/local/www/status_graph.php:308
 #: usr/local/www/status_graph.php:330 usr/local/www/status_graph.php:330
 msgid "Adobe SVG Viewer"
-msgstr "アドビSVGビューアー"
+msgstr "Adobe SVG Viewer"
 
 #: usr/local/www/status_graph.php:291 usr/local/www/status_graph.php:286
 #: usr/local/www/status_graph.php:297 usr/local/www/status_graph.php:308
@@ -34955,7 +35005,8 @@ msgstr "アドビSVGビューアー"
 msgid ""
 "Firefox 1.5 or later or other browser supporting SVG is required to view the "
 "graph"
-msgstr "グラフ"のFirefox 1.5以降、または他のブラウザをサポートするSVGを表示するために必要です」"
+msgstr "グラフの表示には、Firefox 1.5 以降、"
+"もしくは、SVG 対応のブラウザが必要です"
 
 #: usr/local/www/carp_status.php:71 usr/local/www/carp_status.php:67
 #: usr/local/www/carp_status.php:67
@@ -34963,47 +35014,48 @@ msgstr "グラフ"のFirefox 1.5以降、または他のブラウザをサポー
 msgid ""
 "%s IPs have been disabled. Please note that disabling does not survive a "
 "reboot."
-msgstr "再起動"%s IPが無効になっています。その無効化が生存しませんのでご注意ください」 。"
+msgstr ""
+"%s IP は無効になっています。無効の場合、再起動に失敗しますので、注意してください。"
 
 #: usr/local/www/carp_status.php:73 usr/local/www/carp_status.php:69
 #: usr/local/www/carp_status.php:69
 msgid "CARP has been enabled."
-msgstr "CARPは有効になっている。"
+msgstr "CARP は有効です"
 
 #: usr/local/www/carp_status.php:127 usr/local/www/carp_status.php:120
 #: usr/local/www/carp_status.php:120
 msgid "Enable Carp"
-msgstr "カープを有効にします"
+msgstr "CARP を有効"
 
 #: usr/local/www/carp_status.php:130 usr/local/www/carp_status.php:123
 #: usr/local/www/carp_status.php:123
 msgid "Disable Carp"
-msgstr "カープを無効にする"
+msgstr "CARP を無効"
 
 #: usr/local/www/carp_status.php:138 usr/local/www/carp_status.php:131
 #: usr/local/www/carp_status.php:131
 msgid "CARP Interface"
-msgstr "CARPインタフェース"
+msgstr "CARP インタフェース"
 
 #: usr/local/www/carp_status.php:144 usr/local/www/carp_status.php:137
 #: usr/local/www/carp_status.php:137
 msgid "Could not locate any defined CARP interfaces."
-msgstr "定義された任意のCARPインタフェースを見つけることができませんでした。"
+msgstr "定義された CARP インタフェースを見つけられません"
 
 #: usr/local/www/carp_status.php:196
 msgid "You can configure CARP settings"
-msgstr "あなたは、 CARPの設定を行うことができます"
+msgstr "CARP 設定を構成できます"
 
 #: usr/local/www/carp_status.php:202 usr/local/www/carp_status.php:195
 #: usr/local/www/carp_status.php:195
 msgid "pfSync nodes"
-msgstr "PFSYNC節"
+msgstr "pfSync ノード"
 
 #: usr/local/www/status_interfaces.php:81
 #: usr/local/www/status_interfaces.php:84
 #: usr/local/www/status_interfaces.php:84
 msgid "interface"
-msgstr "インターフェース"
+msgstr "インタフェース"
 
 #: usr/local/www/status_interfaces.php:99
 #: usr/local/www/status_interfaces.php:117
@@ -35021,7 +35073,7 @@ msgstr "リリース"
 #: usr/local/www/status_interfaces.php:105
 #: usr/local/www/status_interfaces.php:123
 msgid "Renew"
-msgstr "更新する"
+msgstr "更新"
 
 #: usr/local/www/status_interfaces.php:117
 #: usr/local/www/status_interfaces.php:132
@@ -35040,7 +35092,7 @@ msgstr "更新する"
 #: usr/local/www/status_interfaces.php:168
 #: usr/local/www/status_interfaces.php:184
 msgid "Connect"
-msgstr "接続する"
+msgstr "接続"
 
 #: usr/local/www/status_interfaces.php:171
 #: usr/local/www/status_interfaces.php:189
@@ -35054,28 +35106,28 @@ msgstr "稼働時間"
 #: usr/local/www/status_interfaces.php:277
 #: usr/local/www/status_interfaces.php:277
 msgid "Subnet mask IPv4"
-msgstr "サブネットマスクはIPv4"
+msgstr "IPv4 サブネットマスク"
 
 #: usr/local/www/status_interfaces.php:207
 #: usr/local/www/status_interfaces.php:281
 #: usr/local/www/status_interfaces.php:284
 #: usr/local/www/status_interfaces.php:284
 msgid "Gateway IPv4"
-msgstr "ゲートウェイのIPv4"
+msgstr "IPv4 ゲートウェイ"
 
 #: usr/local/www/status_interfaces.php:224
 #: usr/local/www/status_interfaces.php:305
 #: usr/local/www/status_interfaces.php:308
 #: usr/local/www/status_interfaces.php:308
 msgid "Subnet mask IPv6"
-msgstr "サブネットマスクのIPv6"
+msgstr "IPv6 サブネットマスク"
 
 #: usr/local/www/status_interfaces.php:239
 #: usr/local/www/status_interfaces.php:320
 #: usr/local/www/status_interfaces.php:323
 #: usr/local/www/status_interfaces.php:323
 msgid "ISP DNS servers"
-msgstr "ISPのDNSサーバ"
+msgstr "ISP DNS サーバ"
 
 #: usr/local/www/status_interfaces.php:251
 #: usr/local/www/status_interfaces.php:332
@@ -35115,28 +35167,28 @@ msgstr "RSSI"
 #: usr/local/www/status_interfaces.php:393
 #: usr/local/www/status_interfaces.php:393
 msgid "In/out packets"
-msgstr "IN / OUTパケット"
+msgstr "IN / OUT パケット"
 
 #: usr/local/www/status_interfaces.php:302
 #: usr/local/www/status_interfaces.php:399
 #: usr/local/www/status_interfaces.php:402
 #: usr/local/www/status_interfaces.php:402
 msgid "In/out packets (pass)"
-msgstr "IN / OUTパケット（ PASS）"
+msgstr "IN / OUT パケット ( 許可 )"
 
 #: usr/local/www/status_interfaces.php:311
 #: usr/local/www/status_interfaces.php:408
 #: usr/local/www/status_interfaces.php:411
 #: usr/local/www/status_interfaces.php:411
 msgid "In/out packets (block)"
-msgstr "IN / OUTパケット（ブロック）"
+msgstr "IN / OUT パケット ( 拒否 )"
 
 #: usr/local/www/status_interfaces.php:321
 #: usr/local/www/status_interfaces.php:418
 #: usr/local/www/status_interfaces.php:421
 #: usr/local/www/status_interfaces.php:421
 msgid "In/out errors"
-msgstr "IN / OUTの誤差"
+msgstr "IN / OUT エラー"
 
 #: usr/local/www/status_interfaces.php:329
 #: usr/local/www/status_interfaces.php:426
@@ -35158,7 +35210,7 @@ msgstr "ブリッジ (%s)"
 #: usr/local/www/status_interfaces.php:460
 #: usr/local/www/status_interfaces.php:460
 msgid "Interrupts/Second"
-msgstr "割り込み/秒"
+msgstr "割込み / 秒"
 
 #: usr/local/www/status_interfaces.php:363
 #: usr/local/www/status_interfaces.php:460
@@ -35177,7 +35229,11 @@ msgid ""
 "triggers it. To substantiate this point: disconnecting manually will %snot%s "
 "prevent dial-on-demand from making connections to the outside! Don't use "
 "dial-on-demand if you want to make sure that the line is kept disconnected."
-msgstr "それをトリガー」のいずれかのパケットがあればダイヤルオンデマンド使用すると、再接続が表示されます」 。この点を実証するには、次のように手動で切断すると、ダイヤルオンデマンドますことを確認するかどうかのラインが保たれている「 ！ダイヤルオンデマンド外部への接続を行うと、 は使用しないでください防ぐ」 %snot%sます切断。"
+msgstr ""
+"ダイヤルオンデマンドを使用すると、なんらかのパケットがトリガとなって、接続が再度アップになります。"
+"これを具体的に言うと、手動で切断しても、ダイヤルオンデマンドが外部に対して接続することを、"
+"妨げられ「ません」。"
+"もし、回線を確実に切断状態にしておきたい場合は、ダイヤルオンデマンドを使用しないでください。"
 
 #: usr/local/www/exec.php:91 usr/local/www/exec.php:93
 #: usr/local/www/exec.php:93
@@ -35187,17 +35243,17 @@ msgstr "コマンドを実行"
 #: usr/local/www/exec.php:153 usr/local/www/exec.php:155
 #: usr/local/www/exec.php:155
 msgid "Nothing to recall"
-msgstr "なし"
+msgstr "取り消すものはありません"
 
 #: usr/local/www/exec.php:222 usr/local/www/exec.php:224
 #: usr/local/www/exec.php:224
 msgid "Note: this function is unsupported. Use it on your own risk"
-msgstr "注意： この機能は、サポートされていません。個人の責任でご使用ください。"
+msgstr "注意: この機能は未サポートです。個人の責任でご使用ください。"
 
 #: usr/local/www/exec.php:253 usr/local/www/exec.php:255
 #: usr/local/www/exec.php:255
 msgid "Execute Shell command"
-msgstr "シェルコマンドを実行します。"
+msgstr "シェルコマンドを実行"
 
 #: usr/local/www/exec.php:256 usr/local/www/exec.php:309
 #: usr/local/www/exec.php:258 usr/local/www/exec.php:311
@@ -35215,7 +35271,7 @@ msgstr "実行"
 #: usr/local/www/exec.php:268 usr/local/www/status_upnp.php:78
 #: usr/local/www/exec.php:268 usr/local/www/status_upnp.php:78
 msgid "Clear"
-msgstr "クリアー"
+msgstr "消去"
 
 #: usr/local/www/exec.php:276 usr/local/www/exec.php:278
 #: usr/local/www/exec.php:278
@@ -35230,7 +35286,7 @@ msgstr "アップロードするファイル"
 #: usr/local/www/exec.php:306 usr/local/www/exec.php:308
 #: usr/local/www/exec.php:308
 msgid "PHP Execute"
-msgstr "PHP実行"
+msgstr "PHP 実行"
 
 #: usr/local/www/exec.php:317 usr/local/www/exec.php:319
 #: usr/local/www/exec.php:319
@@ -35239,7 +35295,7 @@ msgstr "例"
 
 #: usr/local/www/exec_raw.php:47
 msgid "Nothing specified. Cannot continue."
-msgstr "指定された何もない。続行できません。"
+msgstr "何も指定されていません。続行できません"
 
 #: usr/local/www/fbegin.inc:88 usr/local/www/fbegin.inc:105
 #: usr/local/www/fbegin.inc:114 usr/local/www/fbegin.inc:106
@@ -35274,7 +35330,7 @@ msgstr "ルーティング"
 #: usr/local/www/fbegin.inc:117 usr/local/www/fbegin.inc:109
 #: usr/local/www/fbegin.inc:109
 msgid "Cert Manager"
-msgstr "サティフィケートマネージャー"
+msgstr "証明書マネージャ"
 
 #: usr/local/www/fbegin.inc:123 usr/local/www/services_dhcpv6_relay.php:101
 #: usr/local/www/fbegin.inc:140 usr/local/www/fbegin.inc:149
@@ -35292,7 +35348,7 @@ msgstr "DHCPv6 リレー"
 #: usr/local/www/services_router_advertisements.php:255
 #: usr/local/www/services_dhcpv6.php:513 usr/local/www/services_dhcpv6.php:523
 msgid "DHCPv6 Server"
-msgstr "DHCPv6 サーバー"
+msgstr "DHCPv6 サーバ"
 
 #: usr/local/www/fbegin.inc:129 usr/local/www/status_services.php:316
 #: usr/local/www/widgets/widgets/services_status.widget.php:121
@@ -35312,7 +35368,7 @@ msgstr "OSLR"
 #: usr/local/www/vpn_pppoe_edit.php:237 usr/local/www/vpn_pppoe_edit.php:237
 #: usr/local/www/fbegin.inc:150
 msgid "PPPoE Server"
-msgstr "PPPoE サーバー"
+msgstr "PPPoE サーバ"
 
 #: usr/local/www/fbegin.inc:133 usr/local/www/fbegin.inc:151
 #: usr/local/www/fbegin.inc:159
@@ -35331,7 +35387,7 @@ msgstr "UPnP &amp; NAT-PMP"
 #: usr/local/www/fbegin.inc:182 usr/local/www/fbegin.inc:173
 #: usr/local/www/fbegin.inc:173
 msgid "CARP (failover)"
-msgstr "CARP (フェイルオーバー)"
+msgstr "CARP ( フェイルオーバ )"
 
 #: usr/local/www/fbegin.inc:158 usr/local/www/fbegin.inc:175
 #: usr/local/www/fbegin.inc:183 usr/local/www/fbegin.inc:174
@@ -35355,7 +35411,7 @@ msgstr "DHCPv6 リース"
 #: usr/local/www/fbegin.inc:187 usr/local/www/fbegin.inc:178
 #: usr/local/www/fbegin.inc:178
 msgid "Filter Reload"
-msgstr "リロードを絞り込む"
+msgstr "フィルタの再読込"
 
 #: usr/local/www/fbegin.inc:168 usr/local/www/fbegin.inc:186
 #: usr/local/www/fbegin.inc:194 usr/local/www/fbegin.inc:185
@@ -35395,7 +35451,7 @@ msgstr "キュー"
 #: usr/local/www/status_rrd_graph_settings.php:172
 #: usr/local/www/fbegin.inc:187
 msgid "RRD Graphs"
-msgstr "RRDグラフ"
+msgstr "RRD グラフ"
 
 #: usr/local/www/fbegin.inc:172 usr/local/www/fbegin.inc:190
 #: usr/local/www/fbegin.inc:198 usr/local/www/fbegin.inc:189
@@ -35405,7 +35461,7 @@ msgstr "システムログ"
 
 #: usr/local/www/fbegin.inc:188
 msgid "ARP Tables"
-msgstr "ARPテーブル"
+msgstr "ARP テーブル"
 
 #: usr/local/www/fbegin.inc:191 usr/local/www/fbegin.inc:209
 #: usr/local/www/fbegin.inc:217 usr/local/www/fbegin.inc:208
@@ -35423,13 +35479,13 @@ msgstr "ファイルの編集"
 #: usr/local/www/fbegin.inc:220 usr/local/www/fbegin.inc:211
 #: usr/local/www/fbegin.inc:211
 msgid "Factory Defaults"
-msgstr "工場出荷時のデフォルト"
+msgstr "出荷時の規定値"
 
 #: usr/local/www/fbegin.inc:195 usr/local/www/fbegin.inc:213
 #: usr/local/www/fbegin.inc:221 usr/local/www/fbegin.inc:212
 #: usr/local/www/fbegin.inc:212
 msgid "Halt System"
-msgstr "停止システム"
+msgstr "システム停止"
 
 #: usr/local/www/fbegin.inc:196 usr/local/www/fbegin.inc:214
 #: usr/local/www/fbegin.inc:222 usr/local/www/fbegin.inc:213
@@ -35442,12 +35498,12 @@ msgstr "リミッタ情報"
 #: usr/local/www/fbegin.inc:214 usr/local/www/diag_ndp.php:103
 #: usr/local/www/fbegin.inc:214
 msgid "NDP Table"
-msgstr "NDP表"
+msgstr "NDP テーブル"
 
 #: usr/local/www/fbegin.inc:201 usr/local/www/fbegin.inc:219
 #: usr/local/www/fbegin.inc:227 usr/local/www/fbegin.inc:219
 msgid "pfInfo"
-msgstr "PFINFO"
+msgstr "pfInfo"
 
 #: usr/local/www/fbegin.inc:202 usr/local/www/fbegin.inc:220
 #: usr/local/www/fbegin.inc:228 usr/local/www/fbegin.inc:220
@@ -35466,25 +35522,25 @@ msgstr "再起動"
 #: usr/local/www/fbegin.inc:223
 #: usr/local/www/widgets/widgets/smart_status.widget.php:39
 msgid "SMART Status"
-msgstr "SMARTステータス"
+msgstr "SMART ステータス"
 
 #: usr/local/www/fbegin.inc:207 usr/local/www/fbegin.inc:225
 #: usr/local/www/fbegin.inc:234 usr/local/www/fbegin.inc:226
 #: usr/local/www/fbegin.inc:226
 msgid "States Summary"
-msgstr "米国のまとめ"
+msgstr "ステータス概要"
 
 #: usr/local/www/fbegin.inc:208 usr/local/www/fbegin.inc:226
 #: usr/local/www/fbegin.inc:235 usr/local/www/fbegin.inc:227
 #: usr/local/www/fbegin.inc:227
 msgid "System Activity"
-msgstr "システム活動"
+msgstr "システムアクティビティ"
 
 #: usr/local/www/fbegin.inc:216 usr/local/www/fbegin.inc:233
 #: usr/local/www/fbegin.inc:242 usr/local/www/fbegin.inc:234
 #: usr/local/www/fbegin.inc:234
 msgid "Restart HTTPD"
-msgstr "リスタートHTTPD"
+msgstr "HTTPD 再起動"
 
 #: usr/local/www/fbegin.inc:222 usr/local/www/fbegin.inc:240
 #: usr/local/www/fbegin.inc:249 usr/local/www/fbegin.inc:241
@@ -35502,19 +35558,19 @@ msgstr "バグデータベース"
 #: usr/local/www/fbegin.inc:252 usr/local/www/fbegin.inc:244
 #: usr/local/www/fbegin.inc:244
 msgid "User Forum"
-msgstr "ユーザーフォーラム"
+msgstr "ユーザフォーラム"
 
 #: usr/local/www/fbegin.inc:226 usr/local/www/fbegin.inc:244
 #: usr/local/www/fbegin.inc:253 usr/local/www/fbegin.inc:245
 #: usr/local/www/fbegin.inc:245
 msgid "Documentation"
-msgstr "ドキュメンテーション"
+msgstr "ドキュメント"
 
 #: usr/local/www/fbegin.inc:227 usr/local/www/fbegin.inc:245
 #: usr/local/www/fbegin.inc:254 usr/local/www/fbegin.inc:246
 #: usr/local/www/fbegin.inc:246
 msgid "Developers Wiki"
-msgstr "開発者はウィキ"
+msgstr "開発者 Wiki"
 
 #: usr/local/www/fbegin.inc:228 usr/local/www/fbegin.inc:246
 #: usr/local/www/fbegin.inc:255 usr/local/www/fbegin.inc:247
@@ -35526,7 +35582,7 @@ msgstr "有償サポート"
 #: usr/local/www/fbegin.inc:256 usr/local/www/fbegin.inc:248
 #: usr/local/www/fbegin.inc:248
 msgid "pfSense Book"
-msgstr "pfSenseブック"
+msgstr "pfSense 関連書籍"
 
 #: usr/local/www/fbegin.inc:230 usr/local/www/fbegin.inc:248
 #: usr/local/www/fbegin.inc:257 usr/local/www/fbegin.inc:249
@@ -35538,25 +35594,25 @@ msgstr "検索ポータル"
 #: usr/local/www/fbegin.inc:258 usr/local/www/fbegin.inc:250
 #: usr/local/www/fbegin.inc:250
 msgid "FreeBSD Handbook"
-msgstr "FreeBSDハンドブック"
+msgstr "FreeBSD ハンドブック"
 
 #: usr/local/www/fbegin.inc:376 usr/local/www/fbegin.inc:394
 #: usr/local/www/fbegin.inc:340 usr/local/www/fbegin.inc:332
 #: usr/local/www/fbegin.inc:332
 msgid "Help"
-msgstr "助け"
+msgstr "ヘルプ"
 
 #: usr/local/www/fbegin.inc:425 usr/local/www/fbegin.inc:443
 msgid "Status of items on this page."
-msgstr "このページの項目のステータス。"
+msgstr "このページの項目に関するステータス"
 
 #: usr/local/www/fbegin.inc:428 usr/local/www/fbegin.inc:446
 msgid "Log entries for items on this page."
-msgstr "このページの項目のエントリをログに記録します。"
+msgstr "このページの項目に対するログエントリ"
 
 #: usr/local/www/fbegin.inc:431 usr/local/www/fbegin.inc:449
 msgid "Help for items on this page."
-msgstr "このページの項目のヘルプを表示します。"
+msgstr "このページの項目に関するヘルプ"
 
 #: usr/local/www/fbegin.inc:441 usr/local/www/fbegin.inc:459
 #: usr/local/www/fbegin.inc:429 usr/local/www/fbegin.inc:421
@@ -35564,18 +35620,20 @@ msgstr "このページの項目のヘルプを表示します。"
 msgid ""
 "Packages are currently being reinstalled in the background.<p>Do not make "
 "changes in the GUI until this is complete."
-msgstr "「パッケージは現在、バックグラウンドで再インストールされている。 u003cPu003eはしないでください」これが完了するまで、GUIの変更を。"
+msgstr ""
+"現在、バックグラウンドで、パッケージを再インストールしています。<p>"
+"これが完了するまで、GUI で変更を行わないでください。"
 
 #: usr/local/www/status_queues.php:98 usr/local/www/status_queues.php:101
 #: usr/local/www/status_queues.php:109 usr/local/www/status_queues.php:109
 msgid "Traffic shaper"
-msgstr "トラフィックシェー"
+msgstr "トラフィックシェーパ"
 
 #: usr/local/www/status_queues.php:107 usr/local/www/status_queues.php:110
 #: usr/local/www/status_queues.php:111 usr/local/www/status_queues.php:117
 #: usr/local/www/status_queues.php:117
 msgid "Traffic shaping is not configured."
-msgstr "トラフィックシェーピングが設定されていません。"
+msgstr "トラフィックシェーピングが構成されていません"
 
 #: usr/local/www/status_queues.php:136 usr/local/www/status_queues.php:143
 #: usr/local/www/status_queues.php:144 usr/local/www/status_queues.php:149
@@ -35587,19 +35645,19 @@ msgstr "統計"
 #: usr/local/www/status_queues.php:166 usr/local/www/status_queues.php:223
 #: usr/local/www/status_queues.php:224 usr/local/www/status_queues.php:224
 msgid "Loading"
-msgstr "荷重"
+msgstr "読み込んでいます"
 
 #: usr/local/www/status_queues.php:173 usr/local/www/status_queues.php:181
 #: usr/local/www/status_queues.php:182 usr/local/www/status_queues.php:164
 #: usr/local/www/status_queues.php:164
 msgid "Queue graphs take 5 seconds to sample data"
-msgstr "キュー·グラフは、データをサンプリングするために5秒を要する"
+msgstr "キューグラフは、サンプルデータの取得に 5 秒必要です"
 
 #: usr/local/www/status_queues.php:174 usr/local/www/status_queues.php:182
 #: usr/local/www/status_queues.php:183 usr/local/www/status_queues.php:165
 #: usr/local/www/status_queues.php:165
 msgid "You can configure the Traffic Shaper"
-msgstr "あなたは、トラフィック·シェイパーを設定することができます"
+msgstr "トラフィックシェイパを構成できます"
 
 #: usr/local/www/status_rrd_graph.php:211
 #: usr/local/www/status_rrd_graph_settings.php:59
@@ -35608,7 +35666,7 @@ msgstr "あなたは、トラフィック·シェイパーを設定すること�
 #: usr/local/www/status_rrd_graph.php:179
 #: usr/local/www/status_rrd_graph_settings.php:59
 msgid "Inverse"
-msgstr "逆数"
+msgstr "逆"
 
 #: usr/local/www/status_rrd_graph.php:212
 #: usr/local/www/status_rrd_graph_settings.php:60
@@ -35617,7 +35675,7 @@ msgstr "逆数"
 #: usr/local/www/status_rrd_graph.php:180
 #: usr/local/www/status_rrd_graph_settings.php:60
 msgid "Absolute"
-msgstr "絶対的な"
+msgstr "絶対"
 
 #: usr/local/www/status_rrd_graph.php:214
 #: usr/local/www/status_rrd_graph_settings.php:61
@@ -35690,7 +35748,7 @@ msgstr "品質"
 #: usr/local/www/status_rrd_graph.php:413
 #: usr/local/www/status_rrd_graph_settings.php:140
 msgid "QueueDrops"
-msgstr "QueueDrops"
+msgstr "キュードロップ"
 
 #: usr/local/www/status_rrd_graph.php:348
 #: usr/local/www/status_rrd_graph_settings.php:147
@@ -35700,7 +35758,7 @@ msgstr "QueueDrops"
 #: usr/local/www/status_rrd_graph.php:421
 #: usr/local/www/status_rrd_graph_settings.php:148
 msgid "Cellular"
-msgstr "細胞の"
+msgstr "セル"
 
 #: usr/local/www/status_rrd_graph.php:371
 #: usr/local/www/status_rrd_graph.php:419
@@ -35708,62 +35766,63 @@ msgstr "細胞の"
 #: usr/local/www/status_rrd_graph.php:451
 msgid ""
 "Note: Change of color and/or style may not take effect until the next refresh"
-msgstr ""注：色および/またはスタイルの変更は、次回の更新までは有効になりません"
+msgstr ""
+"注意: 色とスタイル、もしくはそのどちらかの変更は、次に更新されるまで有効になりません"
 
 #: usr/local/www/status_rrd_graph.php:375
 #: usr/local/www/status_rrd_graph.php:423
 #: usr/local/www/status_rrd_graph.php:455
 #: usr/local/www/status_rrd_graph.php:455
 msgid "Graphs:"
-msgstr "グラフ："
+msgstr "グラフ: "
 
 #: usr/local/www/status_rrd_graph.php:432
 #: usr/local/www/status_rrd_graph.php:480
 #: usr/local/www/status_rrd_graph.php:515
 #: usr/local/www/status_rrd_graph.php:515
 msgid "Style:"
-msgstr "スタイル："
+msgstr "スタイル: "
 
 #: usr/local/www/status_rrd_graph.php:446
 #: usr/local/www/status_rrd_graph.php:494
 #: usr/local/www/status_rrd_graph.php:529
 #: usr/local/www/status_rrd_graph.php:529
 msgid "Period:"
-msgstr "期間："
+msgstr "期間: "
 
 #: usr/local/www/status_rrd_graph.php:461
 #: usr/local/www/status_rrd_graph.php:513
 #: usr/local/www/status_rrd_graph.php:548
 #: usr/local/www/status_rrd_graph.php:548
 msgid "Start:"
-msgstr "起動します。"
+msgstr "開始: "
 
 #: usr/local/www/status_rrd_graph.php:463
 #: usr/local/www/status_rrd_graph.php:515
 #: usr/local/www/status_rrd_graph.php:550
 #: usr/local/www/status_rrd_graph.php:550
 msgid "End:"
-msgstr "終了："
+msgstr "終了: "
 
 #: usr/local/www/status_rrd_graph.php:465
 #: usr/local/www/status_rrd_graph.php:517
 #: usr/local/www/status_rrd_graph.php:552
 #: usr/local/www/status_rrd_graph.php:552
 msgid "Go"
-msgstr "行く"
+msgstr "実行"
 
 #: usr/local/www/status_rrd_graph_img.php:41
 #: usr/local/www/status_rrd_graph_img.php:43
 #: usr/local/www/status_rrd_graph_img.php:43
 msgid "Image viewer"
-msgstr "画像ビューアー"
+msgstr "画像ビューア"
 
 #: usr/local/www/status_rrd_graph_img.php:216
 #: usr/local/www/status_rrd_graph_img.php:221
 #: usr/local/www/status_rrd_graph_img.php:221
 #, php-format
 msgid "rrdcolors.inc.php for theme %s does not exist, using defaults!"
-msgstr "テーマ%s用rrdcolors.inc.phpはデフォルトを使用して、存在しません ！"
+msgstr "テーマ %s の rrdcolors.inc.php がありません。デフォルトを使用します！"
 
 #: usr/local/www/status_rrd_graph_img.php:1095
 #: usr/local/www/status_rrd_graph_img.php:1088
@@ -35771,7 +35830,7 @@ msgstr "テーマ%s用rrdcolors.inc.phpはデフォルトを使用して、存�
 #: usr/local/www/status_rrd_graph_img.php:1093
 #, php-format
 msgid "Sorry we do not have data to graph for %s"
-msgstr "申し訳ありませんが、我々は%sため、グラフにデータを持っていない"
+msgstr "%s グラフのデータがありません"
 
 #: usr/local/www/status_rrd_graph_img.php:1115
 #: usr/local/www/status_rrd_graph_img.php:1108
@@ -35779,7 +35838,7 @@ msgstr "申し訳ありませんが、我々は%sため、グラフにデータ�
 #: usr/local/www/status_rrd_graph_img.php:1113
 #, php-format
 msgid "Failed to create graph with error code %1$s, the error is: %2$s"
-msgstr "エラーコードは%1$sでグラフの作成に失敗しました、エラー: %2$s"
+msgstr "グラフ作成に失敗しました。エラーコード: %1$s エラー: %2$s"
 
 #: usr/local/www/status_rrd_graph_img.php:1117
 #: usr/local/www/status_rrd_graph_img.php:1124
@@ -35790,62 +35849,63 @@ msgstr "エラーコードは%1$sでグラフの作成に失敗しました、�
 #: usr/local/www/status_rrd_graph_img.php:1122
 #, php-format
 msgid "failed to create graph from %s%s, removing database"
-msgstr "データベースを削除、 %s%sからグラフを作成できませんでした"
+msgstr "%s%s からのグラフ作成に失敗しました。データベースを削除しています"
 
 #: usr/local/www/status_rrd_graph_settings.php:174
 #: usr/local/www/status_rrd_graph_settings.php:175
 #: usr/local/www/status_rrd_graph_settings.php:175
 msgid "Enables the RRD graphing backend."
-msgstr "のRRDグラフのバックエンドを有効にします。"
+msgstr "RRD グラフバックエンドを有効"
 
 #: usr/local/www/status_rrd_graph_settings.php:178
 #: usr/local/www/status_rrd_graph_settings.php:179
 #: usr/local/www/status_rrd_graph_settings.php:179
 msgid "Default category"
-msgstr "デフォルトのカテゴリ"
+msgstr "デフォルトカテゴリ"
 
 #: usr/local/www/status_rrd_graph_settings.php:189
 #: usr/local/www/status_rrd_graph_settings.php:190
 #: usr/local/www/status_rrd_graph_settings.php:190
 msgid "This selects default category."
-msgstr "これはデフォルトのカテゴリを選択する。"
+msgstr "これはデフォルトカテゴリを選択します。"
 
 #: usr/local/www/status_rrd_graph_settings.php:193
 #: usr/local/www/status_rrd_graph_settings.php:194
 #: usr/local/www/status_rrd_graph_settings.php:194
 msgid "Default style"
-msgstr "デフォルトのスタイル"
+msgstr "デフォルトスタイル"
 
 #: usr/local/www/status_rrd_graph_settings.php:204
 #: usr/local/www/status_rrd_graph_settings.php:205
 #: usr/local/www/status_rrd_graph_settings.php:205
 msgid "This selects the default style."
-msgstr "これがデフォルトのスタイルを選択します。"
+msgstr "これはデフォルトスタイルを選択します。"
 
 #: usr/local/www/status_rrd_graph_settings.php:208
 #: usr/local/www/status_rrd_graph_settings.php:209
 #: usr/local/www/status_rrd_graph_settings.php:209
 msgid "Default period"
-msgstr "デフォルトの期間"
+msgstr "デフォルト期間"
 
 #: usr/local/www/status_rrd_graph_settings.php:219
 #: usr/local/www/status_rrd_graph_settings.php:220
 #: usr/local/www/status_rrd_graph_settings.php:220
 msgid "This selects the default period."
-msgstr "これはデフォルトの期間を選択します。"
+msgstr "これはデフォルト期間を選択します。"
 
 #: usr/local/www/status_rrd_graph_settings.php:231
 #: usr/local/www/status_rrd_graph_settings.php:232
 #: usr/local/www/status_rrd_graph_settings.php:232
 msgid "Reset RRD Data"
-msgstr "RRDデータをリセットする"
+msgstr "RRD データのリセット"
 
 #: usr/local/www/status_rrd_graph_settings.php:231
 #: usr/local/www/status_rrd_graph_settings.php:232
 #: usr/local/www/status_rrd_graph_settings.php:232
 msgid ""
 "Do you really want to reset the RRD graphs? This will erase all graph data."
-msgstr ""本当にRRDグラフをリセットしますか？これは、すべてのグラフのデータが消去されます。"
+msgstr ""
+"本当に RRD グラフをリセットしますか？全てのグラフデータが消去されます。"
 
 #: usr/local/www/status_rrd_graph_settings.php:237
 #: usr/local/www/status_rrd_graph_settings.php:238
@@ -35853,63 +35913,65 @@ msgstr ""本当にRRDグラフをリセットしますか？これは、すべ�
 msgid ""
 "Graphs will not be allowed to be recreated within a 1 minute interval, "
 "please take this into account after changing the style."
-msgstr "「グラフは1分間隔内で再作成することは許されないだろう」と、スタイルを変更した後、これを考慮に入れてください。"
+msgstr ""
+"グラフは 1 分以内に再作成することはできません。"
+"スタイルの変更後は、この点を忘れないで下さい。"
 
 #: usr/local/www/status_services.php:60
 #: usr/local/www/widgets/widgets/services_status.widget.php:54
 #: etc/inc/service-utils.inc:387 etc/inc/service-utils.inc:386
 #: etc/inc/service-utils.inc:403 etc/inc/service-utils.inc:403
 msgid "Not available."
-msgstr "は利用できません。"
+msgstr "使用できません"
 
 #: usr/local/www/status_services.php:112 usr/local/www/status_services.php:100
 #: usr/local/www/status_services.php:98 etc/inc/service-utils.inc:657
 #: etc/inc/service-utils.inc:660 etc/inc/service-utils.inc:660
 #, php-format
 msgid "%s has been restarted."
-msgstr "%sが再起動されました。"
+msgstr "%s が再起動されました"
 
 #: usr/local/www/status_services.php:159 usr/local/www/status_services.php:151
 #: usr/local/www/status_services.php:149 etc/inc/service-utils.inc:544
 #: etc/inc/service-utils.inc:547 etc/inc/service-utils.inc:547
 #, php-format
 msgid "%s has been started."
-msgstr "%sが開始されている。"
+msgstr "%s が開始されました"
 
 #: usr/local/www/status_services.php:218 usr/local/www/status_services.php:214
 #: usr/local/www/status_services.php:212 etc/inc/service-utils.inc:605
 #: etc/inc/service-utils.inc:608 etc/inc/service-utils.inc:608
 #, php-format
 msgid "%s has been stopped."
-msgstr "%sが停止されました。"
+msgstr "%s が停止されました"
 
 #: usr/local/www/status_services.php:269
 #: usr/local/www/widgets/widgets/services_status.widget.php:74
 #: etc/inc/service-utils.inc:247 etc/inc/service-utils.inc:246
 #: etc/inc/service-utils.inc:263 etc/inc/service-utils.inc:263
 msgid "NTP clock sync"
-msgstr "NTPクロック同期"
+msgstr "NTP 時刻同期"
 
 #: usr/local/www/status_services.php:302
 #: usr/local/www/widgets/widgets/services_status.widget.php:107
 #: etc/inc/service-utils.inc:285 etc/inc/service-utils.inc:284
 #: etc/inc/service-utils.inc:301 etc/inc/service-utils.inc:301
 msgid "DHCP Service"
-msgstr "DHCPサービス"
+msgstr "DHCP サービス"
 
 #: usr/local/www/status_services.php:309
 #: usr/local/www/widgets/widgets/services_status.widget.php:114
 #: etc/inc/service-utils.inc:292 etc/inc/service-utils.inc:291
 #: etc/inc/service-utils.inc:308 etc/inc/service-utils.inc:308
 msgid "SNMP Service"
-msgstr "SNMPサービス"
+msgstr "SNMP サービス"
 
 #: usr/local/www/status_services.php:323
 #: usr/local/www/widgets/widgets/services_status.widget.php:128
 #: etc/inc/service-utils.inc:306 etc/inc/service-utils.inc:305
 #: etc/inc/service-utils.inc:322 etc/inc/service-utils.inc:322
 msgid "UPnP Service"
-msgstr "UPnPのサービス"
+msgstr "UPnP サービス"
 
 #: usr/local/www/status_services.php:353
 #: usr/local/www/widgets/widgets/services_status.widget.php:158
@@ -35924,7 +35986,7 @@ msgstr "サーバ負荷分散デーモン"
 #: etc/inc/service-utils.inc:427 etc/inc/service-utils.inc:430
 #: etc/inc/service-utils.inc:430
 msgid "Running"
-msgstr "ランニング"
+msgstr "実行しています"
 
 #: usr/local/www/status_services.php:383
 #: usr/local/www/widgets/widgets/services_status.widget.php:213
@@ -35932,17 +35994,17 @@ msgstr "ランニング"
 #: etc/inc/service-utils.inc:437 etc/inc/service-utils.inc:440
 #: etc/inc/service-utils.inc:440
 msgid "Stopped"
-msgstr "停止"
+msgstr "停止しました"
 
 #: usr/local/www/status_services.php:392
 #: usr/local/www/widgets/widgets/services_status.widget.php:222
 msgid "Restart Service"
-msgstr "再起動のサービス"
+msgstr "サービスの再起動"
 
 #: usr/local/www/status_services.php:398
 #: usr/local/www/widgets/widgets/services_status.widget.php:228
 msgid "Stop Service"
-msgstr "サービスを停止します"
+msgstr "サービスの停止"
 
 #: usr/local/www/status_services.php:407
 #: usr/local/www/widgets/widgets/services_status.widget.php:237
@@ -35958,36 +36020,36 @@ msgstr "サービスを開始"
 #: usr/local/www/status_services.php:110
 #: usr/local/www/widgets/widgets/services_status.widget.php:84
 msgid "No services found"
-msgstr "見つかりませんサービス"
+msgstr "サービスがありません"
 
 #: usr/local/www/status_upnp.php:48 usr/local/www/status_upnp.php:48
 msgid "Rules have been cleared and the daemon restarted"
-msgstr "ルールがクリアされたとデーモンを再起動"
+msgstr "ルールは消去され、デーモンは再起動しました。"
 
 #: usr/local/www/status_upnp.php:58 usr/local/www/status_upnp.php:58
 msgid "UPnP &amp; NAT-PMP Status"
-msgstr "UPnPの＆ NAT -PMPの状況"
+msgstr "UPnP &amp; NAT-PMP ステータス"
 
 #: usr/local/www/status_upnp.php:67 usr/local/www/status_upnp.php:68
 #: usr/local/www/status_upnp.php:68
 msgid "UPnP is currently disabled."
-msgstr "UPnPのは現在無効になっています。"
+msgstr "UPnP は現在無効です"
 
 #: usr/local/www/status_upnp.php:77 usr/local/www/status_upnp.php:78
 #: usr/local/www/status_upnp.php:78
 msgid "all currently connected sessions"
-msgstr "すべての現在接続しているセッション"
+msgstr "現在接続している全てのセッション"
 
 #: usr/local/www/diag_arp.php:261 usr/local/www/fbegin.inc:206
 #: usr/local/www/fbegin.inc:214 usr/local/www/fbegin.inc:205
 #: usr/local/www/diag_arp.php:261 usr/local/www/fbegin.inc:205
 msgid "ARP Table"
-msgstr "ARPテーブル"
+msgstr "ARP テーブル"
 
 #: usr/local/www/diag_arp.php:271 usr/local/www/diag_ndp.php:113
 #: usr/local/www/diag_ndp.php:113 usr/local/www/diag_arp.php:271
 msgid "Loading, please wait..."
-msgstr "読み込み中、しばらくお待ちください..."
+msgstr "読込みしています。しばらくお待ちください..."
 
 #: usr/local/www/services_dyndns_edit.php:87
 #: usr/local/www/services_dyndns_edit.php:158
@@ -36006,7 +36068,7 @@ msgstr "サービスの種類"
 #: usr/local/www/services_dyndns_edit.php:109
 #: usr/local/www/services_dyndns_edit.php:109
 msgid "The MX contains invalid characters."
-msgstr "MXは無効な文字が含まれています。"
+msgstr "MX には無効な文字が含まれています"
 
 #: usr/local/www/services_dyndns_edit.php:133
 #: usr/local/www/services_dyndns_edit.php:147
@@ -36019,7 +36081,7 @@ msgstr "MXは無効な文字が含まれています。"
 #: usr/local/www/services_dyndns_edit.php:162
 #: usr/local/www/services_dyndns_edit.php:211
 msgid "Dynamic DNS client"
-msgstr "ダイナミックDNSクライアント"
+msgstr "ダイナミック DNS クライアント"
 
 #: usr/local/www/services_dyndns_edit.php:154
 #: usr/local/www/services_rfc2136_edit.php:188
@@ -36039,7 +36101,7 @@ msgstr "はい"
 #: usr/local/www/services_dyndns_edit.php:236
 #: usr/local/www/services_rfc2136_edit.php:134
 msgid "Interface to monitor"
-msgstr "監視するためのインタフェース"
+msgstr "モニタするインタフェース"
 
 #: usr/local/www/services_dyndns_edit.php:191
 #: usr/local/www/services_dyndns_edit.php:274
@@ -36047,7 +36109,7 @@ msgstr "監視するためのインタフェース"
 #: usr/local/www/services_dyndns_edit.php:280
 #: usr/local/www/services_dyndns_edit.php:280
 msgid "Enter the complete host/domain name. example: myhost.dyndns.org"
-msgstr "完全なホスト/ドメイン名を入力します。例： myhost.dyndns.org"
+msgstr "完全なホスト / ドメイン名を入力してください。例: myhost.dyndns.org"
 
 #: usr/local/www/services_dyndns_edit.php:192
 #: usr/local/www/services_dyndns_edit.php:275
@@ -36055,7 +36117,7 @@ msgstr "完全なホスト/ドメイン名を入力します。例： myhost.dyn
 #: usr/local/www/services_dyndns_edit.php:281
 #: usr/local/www/services_dyndns_edit.php:281
 msgid "For he.net tunnelbroker, enter your tunnel ID"
-msgstr "he.netのtunnelbrokerは、お使いのトンネルIDを入力"
+msgstr "HE.net Tunnel Broker に対して、トンネル ID を入力してください"
 
 #: usr/local/www/services_dyndns_edit.php:197
 #: usr/local/www/services_dyndns_edit.php:280
@@ -36072,7 +36134,8 @@ msgstr "MX"
 #: usr/local/www/services_dyndns_edit.php:290
 msgid ""
 "Note: With DynDNS service you can only use a hostname, not an IP address."
-msgstr ""注：ダイナミックDNSサービスを使用すると、ホスト名だけでなく、 IPアドレスを使用することができます。"
+msgstr ""
+"注意: ダイナミック DNS サービスでは、ホスト名だけでなく IP アドレスも使用できます。"
 
 #: usr/local/www/services_dyndns_edit.php:203
 #: usr/local/www/services_dyndns_edit.php:286
@@ -36082,7 +36145,9 @@ msgstr ""注：ダイナミックDNSサービスを使用すると、ホスト�
 msgid ""
 "Set this option only if you need a special MX record. Not all services "
 "support this."
-msgstr ""あなたは特別なMXレコードが必要な場合にのみ、このオプションを設定します。すべてのサービスがない」 、これをサポートしています。"
+msgstr ""
+"特別な MX レコードが必要な場合だけ、このオプションを設定してください。"
+"全てのサービスが、これに対応しているわけではありません。"
 
 #: usr/local/www/services_dyndns_edit.php:207
 #: usr/local/www/services_dyndns_edit.php:290
@@ -36100,7 +36165,7 @@ msgstr "ワイルドカード"
 #: usr/local/www/services_dyndns_edit.php:299
 #: usr/local/www/services_dyndns_edit.php:305
 msgid "Enable "
-msgstr "有効にする"
+msgstr "有効"
 
 #: usr/local/www/services_dyndns_edit.php:210
 #: usr/local/www/services_dyndns_edit.php:293
@@ -36112,7 +36177,7 @@ msgstr "ワイルドカード"
 
 #: usr/local/www/services_dyndns_edit.php:216
 msgid "Username is required for all types except Namecheap and FreeDNS."
-msgstr "ユーザ名はNamecheapとFreeDNSを除くすべてのタイプのために必要とされている。"
+msgstr "ユーザ名は Namecheap と FreeDNS を除いた全ての種類で必要です。"
 
 #: usr/local/www/services_dyndns_edit.php:224
 #: usr/local/www/services_dyndns_edit.php:309
@@ -36122,7 +36187,9 @@ msgstr "ユーザ名はNamecheapとFreeDNSを除くすべてのタイプのた�
 msgid ""
 "FreeDNS (freedns.afraid.org): Enter your "Authentication Token" provided "
 "by FreeDNS."
-msgstr "「 FreeDNS （ freedns.afraid.org ） ：あなたの入力してください "認証トークンはFreeDNSによって「提供」 。"
+msgstr ""
+"FreeDNS ( freedns.afraid.org ): "
+"FreeDNS から提供された「認証トークン」を入力してください。"
 
 #: usr/local/www/services_dyndns_edit.php:246
 #: usr/local/www/services_dyndns_edit.php:377
@@ -36135,43 +36202,49 @@ msgid ""
 " General setup%s or allow the DNS server list to be "
 "overridden\n"
 " by DHCP/PPP on WAN for dynamic DNS updates to work."
-msgstr ""あなたは%sSystemでDNSサーバーを設定する必要があります。 \n 「一般的setup%sまたはDNSサーバのリストが動的DNS更新が機能するために、WAN上のDHCP / PPPによる「 overridden\n 」であることを可能にする。"
+msgstr ""
+"ダイナミック DNS 更新を動作させるには\n"
+"%sシステム: 全般設定%s で DNS サーバの構成をしてください\n"
+"もしくは、WAN の DHCP/PPP による"
+" DNS サーバリストの上書きを許可してください"
 
 #: usr/local/www/services_igmpproxy.php:80
 #: usr/local/www/services_igmpproxy_edit.php:46
 #: usr/local/www/services_igmpproxy_edit.php:46
 #: usr/local/www/services_igmpproxy.php:80
 msgid "IGMP Proxy"
-msgstr "IGMPプロキシ"
+msgstr "IGMP プロキシ"
 
 #: usr/local/www/services_igmpproxy.php:90
 #: usr/local/www/services_igmpproxy.php:90
 msgid "The IGMP entry list has been changed"
-msgstr "IGMPエントリリストが変更されました"
+msgstr "IGMP エントリリストが変更されました"
 
 #: usr/local/www/services_igmpproxy.php:103
 #: usr/local/www/services_igmpproxy.php:146
 #: usr/local/www/services_igmpproxy.php:103
 #: usr/local/www/services_igmpproxy.php:146
 msgid "add a new igmpentry"
-msgstr "新しいigmpentryを追加"
+msgstr "新規 IGMP エントリの追加"
 
 #: usr/local/www/services_igmpproxy.php:133
 #: usr/local/www/services_igmpproxy.php:133
 msgid "edit igmpentry"
-msgstr "編集igmpentry"
+msgstr "IGMP エントリの編集"
 
 #: usr/local/www/services_igmpproxy.php:134
 #: usr/local/www/services_igmpproxy.php:134
 msgid ""
 "Do you really want to delete this igmpentry? All elements that still use it "
 "will become invalid (e.g. filter rules)!"
-msgstr "「本当にこのigmpentryを削除しますか？まだそれが使用するすべての要素が" （例えばフィルタルール）は無効になります！"
+msgstr ""
+"本当にこの IGMP エントリを削除しますか？"
+"それを使用している全ての要素は無効になります ( 例: フィルタルール )！"
 
 #: usr/local/www/services_igmpproxy.php:134
 #: usr/local/www/services_igmpproxy.php:134
 msgid "delete igmpentry"
-msgstr "igmpentryを削除"
+msgstr "IGMP エントリを削除"
 
 #: usr/local/www/services_igmpproxy.php:161
 #: usr/local/www/services_igmpproxy.php:161
