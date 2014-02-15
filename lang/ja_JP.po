@@ -36204,7 +36204,7 @@ msgid ""
 " by DHCP/PPP on WAN for dynamic DNS updates to work."
 msgstr ""
 "ダイナミック DNS 更新を動作させるには\n"
-"%sシステム: 全般設定%s で DNS サーバの構成をしてください\n"
+"%sシステム: 全般設定%s で DNS サーバの構成をするか、\n"
 "もしくは、WAN の DHCP/PPP による"
 " DNS サーバリストの上書きを許可してください"
 
@@ -36252,30 +36252,33 @@ msgid ""
 "Please add the interface for upstream, the allowed subnets, and the "
 "downstream interfaces you would like the proxy to allow. Only one 'upstream' "
 "interface can be configured."
-msgstr "「上流、許可されたサブネットのためのインタフェースを追加し、してください「ダウンストリームインターフェイスは、あなたができるように、プロキシをしたいと思います。一つだけ'上流」 「インタフェースが設定することができます。"
+msgstr ""
+"上流へのインタフェースを、使用可能なサブネットで追加してください。"
+"下流インタフェースは、許可するプロキシでも構いません。"
+"「上流」インタフェースとして構成できるのは 1 つだけです。"
 
 #: usr/local/www/services_igmpproxy_edit.php:79
 #: usr/local/www/services_igmpproxy_edit.php:79
 msgid "Only one 'upstream' interface can be configured."
-msgstr "一つだけ'上流'インタフェースが設定することができます。"
+msgstr "「上流」インタフェースとして構成できるのは 1 つだけです。"
 
 #: usr/local/www/services_igmpproxy_edit.php:158
 #: usr/local/www/services_igmpproxy_edit.php:160
 #: usr/local/www/services_igmpproxy_edit.php:160
 msgid "IGMP Proxy Edit"
-msgstr "IGMPプロキシ編集"
+msgstr "IGMP プロキシの編集"
 
 #: usr/local/www/services_igmpproxy_edit.php:188
 #: usr/local/www/services_igmpproxy_edit.php:190
 #: usr/local/www/services_igmpproxy_edit.php:190
 msgid "Upstream Interface"
-msgstr "アップストリームインターフェイス"
+msgstr "上流インタフェース"
 
 #: usr/local/www/services_igmpproxy_edit.php:189
 #: usr/local/www/services_igmpproxy_edit.php:191
 #: usr/local/www/services_igmpproxy_edit.php:191
 msgid "Downstream Interface"
-msgstr "ダウンストリームインターフェイス"
+msgstr "下流インタフェース"
 
 #: usr/local/www/services_igmpproxy_edit.php:193
 #: usr/local/www/services_igmpproxy_edit.php:195
@@ -36284,7 +36287,10 @@ msgid ""
 "The <b>upstream</b> network interface is the outgoing interface which is "
 "responsible for communicating to available multicast data sources. There can "
 "only be one upstream interface."
-msgstr "利用可能なマルチキャスト·データ·ソースとの通信を担当する「 u003cBu003e上流u003c / B u003eネットワークインタフェースがある発信インターフェイスである」 。 「オンリーワンアップストリームインターフェイスがある場合もあります。"
+msgstr ""
+"<b>上流</b>ネットワークインタフェースは外向きインタフェースで、"
+"使用可能なマルチキャストデータ送信元との通信を担当します。"
+"上流インタフェースは 1 つだけしか存在できません。"
 
 #: usr/local/www/services_igmpproxy_edit.php:199
 #: usr/local/www/services_igmpproxy_edit.php:201
@@ -36299,7 +36305,10 @@ msgid ""
 "network interfaces are the distribution interfaces to the destination "
 "networks, where multicast clients can join groups and receive multicast "
 "data. One or more downstream interfaces must be configured."
-msgstr "マルチキャストクライアントがグループに参加し、マルチキャスト、「データ1つまたは複数のダウンストリームインターフェイスを構成する必要がありますを受け取ることができ、ネットワーク、 「ネットワーク·インタフェースは、目的地への配布インターフェイスです」 。"
+msgstr ""
+"ネットワークインタフェースは送信先ネットワークに配布されるインタフェースです。"
+"マルチキャストクライアントはグループに参加して、マルチキャストデータを受信できます。"
+"1 つ以上の下流インタフェースを構成する必要があります。"
 
 #: usr/local/www/services_igmpproxy_edit.php:206
 #: usr/local/www/services_igmpproxy_edit.php:208
@@ -36314,17 +36323,20 @@ msgid ""
 "Defines the TTL threshold for the network interface. Packets with a "
 "lower TTL than the threshols value will be ignored. This setting is "
 "optional, and by default the threshold is 1."
-msgstr "「ネットワーク·インタフェースのTTLしきい値を定義します。持つパケット」 threshols値よりも低いTTLは無視されます。この設定は、 「オプションで、デフォルトでは、しきい値は1です。"
+msgstr ""
+"ネットワークインタフェースの TTL しきい値を定義してください。"
+"しきい値よりも低い TTL を持つパケットは無視されます。"
+"この設定はオプションで、デフォルトのしきい値は 1 です。"
 
 #: usr/local/www/services_igmpproxy_edit.php:218
 #: usr/local/www/services_igmpproxy_edit.php:220
 #: usr/local/www/services_igmpproxy_edit.php:220
 msgid "Network (s)"
-msgstr "ネットワーク（単数または複数）"
+msgstr "ネットワーク"
 
 #: usr/local/www/services_rfc2136.php:55 usr/local/www/services_rfc2136.php:55
 msgid "RFC 2136 clients"
-msgstr "RFC 2136のクライアント"
+msgstr "RFC 2136 クライアント"
 
 #: usr/local/www/services_rfc2136.php:99
 #: usr/local/www/vpn_openvpn_client.php:894
@@ -36335,7 +36347,7 @@ msgstr "RFC 2136のクライアント"
 #: usr/local/www/services_rfc2136.php:118
 #: usr/local/www/vpn_openvpn_client.php:971
 msgid "Do you really want to delete this client?"
-msgstr "あなたは本当に、このクライアントを削除しますか？"
+msgstr "本当にこのクライアントを削除しますか？"
 
 #: usr/local/www/services_rfc2136_edit.php:71
 #: usr/local/www/services_rfc2136_edit.php:153
@@ -36353,44 +36365,44 @@ msgstr "TTL"
 #: usr/local/www/services_rfc2136_edit.php:71
 #: usr/local/www/services_rfc2136_edit.php:159
 msgid "Key name"
-msgstr "キー名"
+msgstr "鍵名"
 
 #: usr/local/www/services_rfc2136_edit.php:76
 #: usr/local/www/services_rfc2136_edit.php:76
 msgid "The DNS update host name contains invalid characters."
-msgstr "DNS更新のホスト名が無効な文字が含まれています。"
+msgstr "DNS 更新ホスト名に無効な文字が含まれています"
 
 #: usr/local/www/services_rfc2136_edit.php:78
 #: usr/local/www/services_rfc2136_edit.php:78
 msgid "The DNS update TTL must be an integer."
-msgstr "DNS更新TTLは整数でなければなりません。"
+msgstr "DNS 更新 TTL は整数です"
 
 #: usr/local/www/services_rfc2136_edit.php:80
 #: usr/local/www/services_rfc2136_edit.php:80
 msgid "The DNS update key name contains invalid characters."
-msgstr "DNS更新キー名に無効な文字が含まれています。"
+msgstr "DNS 更新鍵名に無効な文字が含まれています"
 
 #: usr/local/www/services_rfc2136_edit.php:100
 #: usr/local/www/services_rfc2136_edit.php:100
 msgid "New/Edited RFC2136 dnsupdate entry was posted."
-msgstr "新規/編集RFC2136のdnsupdateエントリが投稿されました。"
+msgstr "新規 / 編集された RFC2136 DNS 更新エントリが投稿されました"
 
 #: usr/local/www/services_rfc2136_edit.php:109
 #: usr/local/www/services_rfc2136_edit.php:123
 #: usr/local/www/services_rfc2136_edit.php:109
 #: usr/local/www/services_rfc2136_edit.php:123
 msgid "RFC 2136 client"
-msgstr "RFC 2136クライアント"
+msgstr "RFC 2136 クライアント"
 
 #: usr/local/www/services_rfc2136_edit.php:163
 #: usr/local/www/services_rfc2136_edit.php:163
 msgid "This must match the setting on the DNS server."
-msgstr "これは、DNSサーバーの設定と一致する必要があります。"
+msgstr "これは DNS サーバの設定と一致する必要があります"
 
 #: usr/local/www/services_rfc2136_edit.php:166
 #: usr/local/www/services_rfc2136_edit.php:166
 msgid "Key type"
-msgstr "キータイプ"
+msgstr "鍵タイプ"
 
 #: usr/local/www/services_rfc2136_edit.php:168
 #: usr/local/www/services_captiveportal_zones.php:52
@@ -36403,17 +36415,17 @@ msgstr "ゾーン"
 #: usr/local/www/services_rfc2136_edit.php:170
 #: usr/local/www/services_rfc2136_edit.php:170
 msgid " User"
-msgstr "ユーザー"
+msgstr "ユーザ"
 
 #: usr/local/www/services_rfc2136_edit.php:177
 #: usr/local/www/services_rfc2136_edit.php:177
 msgid "Paste an HMAC-MD5 key here."
-msgstr "ここにHMAC- MD5キーを貼り付けます。"
+msgstr "ここに HMAC-MD5 鍵を貼り付けてください"
 
 #: usr/local/www/services_rfc2136_edit.php:189
 #: usr/local/www/services_rfc2136_edit.php:189
 msgid "Use TCP instead of UDP"
-msgstr "UDPではなくTCPを使用する"
+msgstr "UDP ではなく TCP を使用"
 
 #: usr/local/www/services_rfc2136_edit.php:210
 #: usr/local/www/services_rfc2136_edit.php:210
@@ -36422,7 +36434,10 @@ msgid ""
 "You must configure a DNS server in %sSystem: General setup %sor allow the "
 "DNS server list to be overridden by DHCP/PPP on WAN for dynamic DNS updates "
 "to work."
-msgstr ""あなたは%sSystemにDNSサーバを設定する必要があります：一般的なセットアップ%sor許可」のDNSサーバリストを機能させるには、「ダイナミックDNS更新のために、WAN上のDHCP / PPPによって無効にされるように。"
+msgstr ""
+"ダイナミック DNS 更新を動作させるには、"
+"%sシステム: 全般設定%s で DNS サーバの構成をするか、"
+"もしくは、WAN の DHCP/PPP による DNS サーバリストの上書きを許可してください"
 
 #: usr/local/www/status_captiveportal_test.php:82
 #: usr/local/www/status_captiveportal_test.php:83
@@ -36431,7 +36446,7 @@ msgstr ""あなたは%sSystemにDNSサーバを設定する必要があります
 #: usr/local/www/status_captiveportal_expire.php:82
 #: usr/local/www/status_captiveportal_test.php:84
 msgid "Voucher(s)"
-msgstr "バウチャー（ S ）"
+msgstr "バウチャー"
 
 #: usr/local/www/status_captiveportal_test.php:86
 #: usr/local/www/status_captiveportal_test.php:87
@@ -36440,42 +36455,44 @@ msgstr "バウチャー（ S ）"
 msgid ""
 "Enter multiple vouchers separated by space or newline. The remaining time, "
 "if valid, will be shown for each voucher"
-msgstr "「空白や改行で区切られた複数の伝票を入力してください。残り時間を、 「有効であれば、それぞれのクーポンのために表示されます"
+msgstr ""
+"複数のバウチャーを入力する際は、空白か改行で区切ってください。"
+"有効な場合は、バウチャー毎に残り時間が表示されます。"
 
 #: usr/local/www/status_captiveportal_voucher_rolls.php:85
 #: usr/local/www/status_captiveportal_voucher_rolls.php:86
 #: usr/local/www/status_captiveportal_voucher_rolls.php:88
 #: usr/local/www/status_captiveportal_voucher_rolls.php:88
 msgid "Roll#"
-msgstr "ロール"
+msgstr "ロール#"
 
 #: usr/local/www/status_captiveportal_voucher_rolls.php:87
 #: usr/local/www/status_captiveportal_voucher_rolls.php:88
 #: usr/local/www/status_captiveportal_voucher_rolls.php:90
 #: usr/local/www/status_captiveportal_voucher_rolls.php:90
 msgid "# of Tickets"
-msgstr ""
+msgstr "チケット#"
 
 #: usr/local/www/status_captiveportal_voucher_rolls.php:89
 #: usr/local/www/status_captiveportal_voucher_rolls.php:90
 #: usr/local/www/status_captiveportal_voucher_rolls.php:92
 #: usr/local/www/status_captiveportal_voucher_rolls.php:92
 msgid "used"
-msgstr "使用された"
+msgstr "使用済"
 
 #: usr/local/www/status_captiveportal_voucher_rolls.php:90
 #: usr/local/www/status_captiveportal_voucher_rolls.php:91
 #: usr/local/www/status_captiveportal_voucher_rolls.php:93
 #: usr/local/www/status_captiveportal_voucher_rolls.php:93
 msgid "active"
-msgstr "アクティブ"
+msgstr "有効化"
 
 #: usr/local/www/status_captiveportal_voucher_rolls.php:91
 #: usr/local/www/status_captiveportal_voucher_rolls.php:92
 #: usr/local/www/status_captiveportal_voucher_rolls.php:94
 #: usr/local/www/status_captiveportal_voucher_rolls.php:94
 msgid "ready"
-msgstr "レディー"
+msgstr "準備完了"
 
 #: usr/local/www/status_captiveportal_vouchers.php:115
 #: usr/local/www/status_captiveportal_vouchers.php:116
@@ -36489,21 +36506,21 @@ msgstr "バウチャー"
 #: usr/local/www/status_captiveportal_vouchers.php:123
 #: usr/local/www/status_captiveportal_vouchers.php:123
 msgid "Activated at"
-msgstr "で活性化"
+msgstr "有効化: "
 
 #: usr/local/www/status_captiveportal_vouchers.php:118
 #: usr/local/www/status_captiveportal_vouchers.php:119
 #: usr/local/www/status_captiveportal_vouchers.php:124
 #: usr/local/www/status_captiveportal_vouchers.php:124
 msgid "Expires in"
-msgstr "に失効"
+msgstr "有効期限: "
 
 #: usr/local/www/status_captiveportal_vouchers.php:119
 #: usr/local/www/status_captiveportal_vouchers.php:120
 #: usr/local/www/status_captiveportal_vouchers.php:125
 #: usr/local/www/status_captiveportal_vouchers.php:125
 msgid "Expires at"
-msgstr "で有効期限が切れる"
+msgstr "有効期限満了: "
 
 #: usr/local/www/status_captiveportal_vouchers.php:127
 #: usr/local/www/status_captiveportal_vouchers.php:128
@@ -36516,7 +36533,7 @@ msgstr "分"
 #: usr/local/www/status_dhcp_leases.php:49
 #: usr/local/www/status_dhcp_leases.php:49
 msgid "DHCP leases"
-msgstr "DHCPリース"
+msgstr "DHCP リース"
 
 #: usr/local/www/status_dhcp_leases.php:287
 #: usr/local/www/status_dhcpv6_leases.php:328
@@ -36528,7 +36545,7 @@ msgstr "DHCPリース"
 #: usr/local/www/status_dhcpv6_leases.php:376
 #: usr/local/www/status_dhcp_leases.php:310
 msgid "Failover Group"
-msgstr "フェイルオーバーグループ"
+msgstr "フェイルオーバグループ"
 
 #: usr/local/www/status_dhcp_leases.php:288
 #: usr/local/www/status_dhcpv6_leases.php:329
@@ -36540,7 +36557,7 @@ msgstr "フェイルオーバーグループ"
 #: usr/local/www/status_dhcpv6_leases.php:377
 #: usr/local/www/status_dhcp_leases.php:311
 msgid "My State"
-msgstr "私の状態"
+msgstr "自分のステータス"
 
 #: usr/local/www/status_dhcp_leases.php:289
 #: usr/local/www/status_dhcp_leases.php:291
@@ -36560,7 +36577,7 @@ msgstr "私の状態"
 #: usr/local/www/status_dhcp_leases.php:312
 #: usr/local/www/status_dhcp_leases.php:314
 msgid "Since"
-msgstr "から"
+msgstr "期限開始"
 
 #: usr/local/www/status_dhcp_leases.php:290
 #: usr/local/www/status_dhcpv6_leases.php:331
@@ -36572,7 +36589,7 @@ msgstr "から"
 #: usr/local/www/status_dhcpv6_leases.php:379
 #: usr/local/www/status_dhcp_leases.php:313
 msgid "Peer State"
-msgstr "ピア状態"
+msgstr "ピアステータス"
 
 #: usr/local/www/status_dhcp_leases.php:322
 #: usr/local/www/status_dhcpv6_leases.php:364
@@ -36588,7 +36605,7 @@ msgstr "ピア状態"
 #: usr/local/www/status_dhcpv6_leases.php:489
 #: usr/local/www/status_dhcp_leases.php:345
 msgid "End"
-msgstr "終わり"
+msgstr "終了"
 
 #: usr/local/www/status_dhcp_leases.php:323
 #: usr/local/www/status_gateway_groups.php:132
@@ -36620,14 +36637,14 @@ msgstr "オンライン"
 #: usr/local/www/status_dhcpv6_leases.php:414
 #: usr/local/www/status_dhcp_leases.php:347
 msgid "Lease Type"
-msgstr "リースの種類"
+msgstr "リースタイプ"
 
 #: usr/local/www/status_dhcp_leases.php:368
 #: usr/local/www/status_dhcp_leases.php:389
 #: usr/local/www/status_dhcp_leases.php:393
 #: usr/local/www/status_dhcp_leases.php:393
 msgid "send Wake on LAN packet to this MAC address"
-msgstr "このMACアドレスにWake on LANパケットを送信"
+msgstr "この MAC アドレスに Wake-on-LAN パケットを送信"
 
 #: usr/local/www/status_dhcp_leases.php:390
 #: usr/local/www/status_dhcpv6_leases.php:417
@@ -36639,14 +36656,14 @@ msgstr "このMACアドレスにWake on LANパケットを送信"
 #: usr/local/www/status_dhcpv6_leases.php:465
 #: usr/local/www/status_dhcp_leases.php:415
 msgid "add a static mapping for this MAC address"
-msgstr "このMACアドレスの静的マッピングを追加"
+msgstr "この MAC アドレスの静的マッピングを追加"
 
 #: usr/local/www/status_dhcp_leases.php:397
 #: usr/local/www/status_dhcp_leases.php:418
 #: usr/local/www/status_dhcp_leases.php:422
 #: usr/local/www/status_dhcp_leases.php:422
 msgid "add a Wake on LAN mapping for this MAC address"
-msgstr "このMACアドレス用のLANマッピングにコールを追加"
+msgstr "この MAC アドレスの Wake-on-LAN マッピングを追加"
 
 #: usr/local/www/status_dhcp_leases.php:402
 #: usr/local/www/status_dhcpv6_leases.php:426
@@ -36658,7 +36675,7 @@ msgstr "このMACアドレス用のLANマッピングにコールを追加"
 #: usr/local/www/status_dhcpv6_leases.php:474
 #: usr/local/www/status_dhcp_leases.php:427
 msgid "delete this DHCP lease"
-msgstr "このDHCPリースを削除"
+msgstr "この DHCP リースを削除"
 
 #: usr/local/www/status_dhcp_leases.php:415
 #: usr/local/www/status_dhcpv6_leases.php:439
@@ -36670,7 +36687,7 @@ msgstr "このDHCPリースを削除"
 #: usr/local/www/status_dhcpv6_leases.php:544
 #: usr/local/www/status_dhcp_leases.php:440
 msgid "Show active and static leases only"
-msgstr "アクティブおよびスタティックリースを表示するだけ"
+msgstr "アクティブかつ静的リースのみを表示"
 
 #: usr/local/www/status_dhcp_leases.php:418
 #: usr/local/www/status_dhcpv6_leases.php:442
@@ -36682,7 +36699,7 @@ msgstr "アクティブおよびスタティックリースを表示するだけ
 #: usr/local/www/status_dhcpv6_leases.php:547
 #: usr/local/www/status_dhcp_leases.php:443
 msgid "Show all configured leases"
-msgstr "設定されているすべてのリースを表示する"
+msgstr "全ての構成されたリースを表示"
 
 #: usr/local/www/status_dhcp_leases.php:422
 #: usr/local/www/status_dhcpv6_leases.php:446
@@ -36694,14 +36711,14 @@ msgstr "設定されているすべてのリースを表示する"
 #: usr/local/www/status_dhcpv6_leases.php:551
 #: usr/local/www/status_dhcp_leases.php:447
 msgid "No leases file found. Is the DHCP server active"
-msgstr "リースファイルが見つかりませんでした。 DHCPサーバがアクティブになっている"
+msgstr "リースファイルがありません。DHCP サーバはアクティブですか"
 
 #: usr/local/www/status_gateway_groups.php:100
 #: usr/local/www/status_gateway_groups.php:101
 #: usr/local/www/status_gateway_groups.php:101
 #, php-format
 msgid "Tier %s"
-msgstr "ティア%s"
+msgstr "ティア %s"
 
 #: usr/local/www/status_gateway_groups.php:126
 #: usr/local/www/status_gateways.php:121 usr/local/www/status_gateways.php:122
@@ -36709,7 +36726,7 @@ msgstr "ティア%s"
 #: usr/local/www/status_gateway_groups.php:127
 #: usr/local/www/status_gateways.php:122
 msgid "Warning, Packetloss"
-msgstr "警告、パケットロス"
+msgstr "警告: パケットロス"
 
 #: usr/local/www/status_gateway_groups.php:129
 #: usr/local/www/status_gateways.php:124 usr/local/www/status_gateways.php:125
@@ -36717,7 +36734,7 @@ msgstr "警告、パケットロス"
 #: usr/local/www/status_gateway_groups.php:130
 #: usr/local/www/status_gateways.php:125
 msgid "Warning, Latency"
-msgstr "警告、レイテンシー"
+msgstr "警告: 遅延"
 
 #: usr/local/www/status_gateway_groups.php:135
 #: usr/local/www/status_gateways.php:100 usr/local/www/status_gateways.php:108
@@ -36728,7 +36745,7 @@ msgstr "警告、レイテンシー"
 #: usr/local/www/status_gateway_groups.php:136
 #: usr/local/www/status_gateway_groups.php:136
 msgid "Gathering data"
-msgstr "データの収集"
+msgstr "データを収集しています"
 
 #: usr/local/www/status_gateways.php:75 usr/local/www/status_gateways.php:76
 #: usr/local/www/status_gateways.php:76
@@ -36743,23 +36760,23 @@ msgstr "損失"
 #: usr/local/www/status_gateways.php:144
 #, php-format
 msgid "Last check %s"
-msgstr "最後のチェックの%s"
+msgstr "最新チェック %s"
 
 #: usr/local/www/status_graph_cpu.php:41 usr/local/www/status_graph_cpu.php:41
 msgid "CPU load"
-msgstr "CPU負荷"
+msgstr "CPU 負荷"
 
 #: usr/local/www/status_graph_cpu.php:46 usr/local/www/status_graph_cpu.php:46
 msgid "Status: CPU Graph"
-msgstr "ステータス： CPUのグラフ"
+msgstr "ステータス: CPU グラフ"
 
 #: usr/local/www/status_graph_cpu.php:53 usr/local/www/status_graph_cpu.php:53
 msgid "if you can't see the graph, you may have to install the"
-msgstr "グラフを見ることができない場合は、インストールする必要があります"
+msgstr "グラフを表示できない場合は、次のものをインストールしてください: "
 
 #: usr/local/www/status_graph_cpu.php:53 usr/local/www/status_graph_cpu.php:53
 msgid "Adobe SVG viewer"
-msgstr "アドビSVGビューア"
+msgstr "Adobe SVG viewer"
 
 #: usr/local/www/status_lb_vs.php:78 usr/local/www/vpn_ipsec_phase2.php:427
 #: usr/local/www/vpn_ipsec_phase2.php:469
@@ -36828,7 +36845,7 @@ msgstr "仮想アドレス"
 #: usr/local/www/status_openvpn.php:157 usr/local/www/status_openvpn.php:274
 #: usr/local/www/status_openvpn.php:335
 msgid "Connected Since"
-msgstr "以来接続"
+msgstr "接続開始: "
 
 #: usr/local/www/status_openvpn.php:156 usr/local/www/status_openvpn.php:216
 #: usr/local/www/status_openvpn.php:267 usr/local/www/status_openvpn.php:157
@@ -36838,7 +36855,7 @@ msgstr "以来接続"
 #: usr/local/www/status_openvpn.php:158 usr/local/www/status_openvpn.php:277
 #: usr/local/www/status_openvpn.php:338
 msgid "Bytes Sent"
-msgstr "送信されたバイト"
+msgstr "送信バイト"
 
 #: usr/local/www/status_openvpn.php:157 usr/local/www/status_openvpn.php:217
 #: usr/local/www/status_openvpn.php:268 usr/local/www/status_openvpn.php:158
@@ -36851,13 +36868,13 @@ msgstr "受信バイト"
 #: usr/local/www/status_openvpn.php:184 usr/local/www/status_openvpn.php:185
 #: usr/local/www/status_openvpn.php:186 usr/local/www/status_openvpn.php:186
 msgid "Kill client connection from"
-msgstr "からクライアント接続を強制終了"
+msgstr "次からのクライアント接続を強制終了: "
 
 #: usr/local/www/status_openvpn.php:205 usr/local/www/status_openvpn.php:208
 #: usr/local/www/status_openvpn.php:256 usr/local/www/status_openvpn.php:266
 #: usr/local/www/status_openvpn.php:266
 msgid "Peer to Peer Server Instance Statistics"
-msgstr "サーバーインスタンス統計（ピアツーピア）"
+msgstr "ピアツーピアサーバインスタンス統計"
 
 #: usr/local/www/status_openvpn.php:214 usr/local/www/status_openvpn.php:265
 #: usr/local/www/status_openvpn.php:217 usr/local/www/status_openvpn.php:268
@@ -36886,47 +36903,49 @@ msgstr "クライアントインスタンス統計"
 msgid ""
 "You need to bind each OpenVPN client to enable its management daemon: use "
 "'Local port' setting in the OpenVPN client screen"
-msgstr ""あなたは、その管理デーモンを有効にするために、各OpenVPNクライアントをバインドする必要があります。使用"OpenVPNクライアント画面で設定「ローカルポート」を"
+msgstr ""
+"管理用デーモンを有効にするために、全ての OpenVPN クライアントをバインドする必要があります。"
+"OpenVPN クライアント画面の「ローカルポート」設定を使用してください。"
 
 #: usr/local/www/status_openvpn.php:308 usr/local/www/status_openvpn.php:311
 #: usr/local/www/status_openvpn.php:359 usr/local/www/status_openvpn.php:389
 #: usr/local/www/status_openvpn.php:389
 msgid "No OpenVPN instance defined"
-msgstr "定義されたのOpenVPNインスタンスません"
+msgstr "定義済みの OpenVPN インスタンスはありません"
 
 #: usr/local/www/system_advanced_admin.php:87
 #: usr/local/www/system_advanced_admin.php:87
 msgid "You must specify a valid webConfigurator port number"
-msgstr "有効なwebConfiguratorポート番号を指定する必要があります。"
+msgstr "有効な Web 設定管理画面 ポート番号を指定してください"
 
 #: usr/local/www/system_advanced_admin.php:91
 #: usr/local/www/system_advanced_admin.php:91
 msgid "Max Processes must be a number 1 or greater"
-msgstr "最大プロセスは数1以上でなければなりません"
+msgstr "プロセスの最大数は 1 以上の数字です"
 
 #: usr/local/www/system_advanced_admin.php:97
 #: usr/local/www/system_advanced_admin.php:97
 #, php-format
 msgid "Alternate hostname %s is not a valid hostname."
-msgstr "代替ホスト名%sは有効なホスト名ではありません。"
+msgstr "代替ホスト名 %s は有効なホスト名ではありません"
 
 #: usr/local/www/system_advanced_admin.php:102
 #: usr/local/www/services_dnsmasq.php:92
 #: usr/local/www/system_advanced_admin.php:102
 #: usr/local/www/services_dnsmasq.php:92
 msgid "You must specify a valid port number"
-msgstr "有効なポート番号を指定する必要があります"
+msgstr "有効なポート番号を指定してください"
 
 #: usr/local/www/system_advanced_admin.php:232
 #: usr/local/www/system_advanced_admin.php:232
 #, php-format
 msgid "One moment...redirecting to %s in 20 seconds."
-msgstr "一つの瞬間が··· 20秒で%sにリダイレクトする。"
+msgstr "少しお待ちください···20 秒で %s にリダイレクトします"
 
 #: usr/local/www/system_advanced_admin.php:242
 #: usr/local/www/system_advanced_admin.php:242
 msgid "Advanced: Admin Access"
-msgstr "アドバンスト：管理アクセス"
+msgstr "高度な設定: 管理者アクセス"
 
 #: usr/local/www/system_advanced_admin.php:274
 #: usr/local/www/system_advanced_firewall.php:215
@@ -36948,7 +36967,7 @@ msgstr "アドバンスト：管理アクセス"
 #: usr/local/www/system_advanced_network.php:182
 #: usr/local/www/system_advanced_sysctl.php:147
 msgid "Admin Access"
-msgstr "管理者のアクセス"
+msgstr "管理者アクセス"
 
 #: usr/local/www/system_advanced_admin.php:275
 #: usr/local/www/system_advanced_firewall.php:216
@@ -36970,7 +36989,7 @@ msgstr "管理者のアクセス"
 #: usr/local/www/system_advanced_network.php:183
 #: usr/local/www/system_advanced_sysctl.php:148
 msgid "Firewall / NAT"
-msgstr "ファイアウォール/ NAT"
+msgstr "ファイアウォール / NAT"
 
 #: usr/local/www/system_advanced_admin.php:276
 #: usr/local/www/system_advanced_firewall.php:217
@@ -37014,7 +37033,7 @@ msgstr "ネットワーキング"
 #: usr/local/www/system_advanced_network.php:185
 #: usr/local/www/system_advanced_sysctl.php:150
 msgid "Miscellaneous"
-msgstr "雑多"
+msgstr "その他"
 
 #: usr/local/www/system_advanced_admin.php:278
 #: usr/local/www/system_advanced_firewall.php:219
@@ -37036,7 +37055,7 @@ msgstr "雑多"
 #: usr/local/www/system_advanced_network.php:186
 #: usr/local/www/system_advanced_sysctl.php:151
 msgid "System Tunables"
-msgstr "システムのチューニング可能パラメータ"
+msgstr "システムチューニング可能パラメータ"
 
 #: usr/local/www/system_advanced_admin.php:279
 #: usr/local/www/system_advanced_firewall.php:220
@@ -37058,17 +37077,17 @@ msgstr "システムのチューニング可能パラメータ"
 #: usr/local/www/system_advanced_network.php:187
 #: usr/local/www/system_advanced_sysctl.php:152
 msgid "Notifications"
-msgstr "お知らせメール"
+msgstr "お知らせ"
 
 #: usr/local/www/system_advanced_admin.php:297
 #: usr/local/www/system_advanced_admin.php:297
 msgid "webConfigurator"
-msgstr "webConfigurator"
+msgstr "Web 設定管理画面"
 
 #: usr/local/www/system_advanced_admin.php:317
 #: usr/local/www/system_advanced_admin.php:317
 msgid "No Certificates have been defined. You must"
-msgstr "なし証明書は、定義されていません。作業を行う必要があります"
+msgstr "証明書は定義されていません。SSL を有効にする前に、証明書の"
 
 #: usr/local/www/system_advanced_admin.php:318
 #: usr/local/www/system_advanced_admin.php:318
@@ -37078,7 +37097,7 @@ msgstr "作成またはインポート"
 #: usr/local/www/system_advanced_admin.php:319
 #: usr/local/www/system_advanced_admin.php:319
 msgid "a Certificate before SSL can be enabled."
-msgstr "SSL前に証明書を有効にすることができます。"
+msgstr "を実行してください。"
 
 #: usr/local/www/system_advanced_admin.php:324
 #: usr/local/www/services_captiveportal.php:872
@@ -37087,12 +37106,12 @@ msgstr "SSL前に証明書を有効にすることができます。"
 #: usr/local/www/system_advanced_admin.php:324
 #: usr/local/www/services_captiveportal.php:890
 msgid "SSL Certificate"
-msgstr "SSL証明書"
+msgstr "SSL 証明書"
 
 #: usr/local/www/system_advanced_admin.php:339
 #: usr/local/www/system_advanced_admin.php:339
 msgid "TCP port"
-msgstr "TCPポート"
+msgstr "TCP ポート"
 
 #: usr/local/www/system_advanced_admin.php:344
 #: usr/local/www/system_advanced_admin.php:344
@@ -37100,12 +37119,15 @@ msgid ""
 "Enter a custom port number for the webConfigurator above if you want to "
 "override the default (80 for HTTP, 443 for HTTPS). Changes will take effect "
 "immediately after save."
-msgstr "（ 、 HTTPにHTTPSの443を80に）デフォルトを上書き"あなたがしたい場合は、上記のwebConfigurator用のカスタムポート番号を入力してください」 。変更は後に保存、すぐに「有効になります。"
+msgstr ""
+"デフォルト ( HTTP: 80, HTTPS: 443 ) を上書きしたい場合は、"
+"上記で Web 設定管理画面のカスタムポート番号を入力してください。"
+"保存後即座に、変更は有効になります。"
 
 #: usr/local/www/system_advanced_admin.php:351
 #: usr/local/www/system_advanced_admin.php:351
 msgid "Max Processes"
-msgstr "最大プロセス"
+msgstr "プロセスの最大数"
 
 #: usr/local/www/system_advanced_admin.php:356
 #: usr/local/www/system_advanced_admin.php:356
@@ -37113,17 +37135,20 @@ msgid ""
 "Enter the number of webConfigurator processes you want to run. This defaults "
 "to 2. Increasing this will allow more users/browsers to access the GUI "
 "concurrently."
-msgstr "2に「あなたはこのデフォルトを実行したいwebConfiguratorプロセスの数を入力してください」 。これを大きくすると、より多くのユーザー/ブラウザが同時にGUI 」にアクセスできるようになります。"
+msgstr ""
+"Web 設定管理画面のプロセスとして、実行したい数を入力してください。"
+"デフォルトは 2 です。"
+"これを増やすと、より多くのユーザ / ブラウザが GUI に同時にアクセスできます。"
 
 #: usr/local/www/system_advanced_admin.php:363
 #: usr/local/www/system_advanced_admin.php:363
 msgid "WebGUI redirect"
-msgstr "WebGUIのリダイレクト"
+msgstr "WebGUI リダイレクト"
 
 #: usr/local/www/system_advanced_admin.php:366
 #: usr/local/www/system_advanced_admin.php:366
 msgid "Disable webConfigurator redirect rule"
-msgstr "webConfiguratorのリダイレクトルールを無効にする"
+msgstr "Web 設定管理画面のリダイレクトルールを無効"
 
 #: usr/local/www/system_advanced_admin.php:368
 #: usr/local/www/system_advanced_admin.php:368
@@ -37131,17 +37156,20 @@ msgid ""
 "When this is unchecked, access to the webConfigurator is always permitted "
 "even on port 80, regardless of the listening port configured. Check this box "
 "to disable this automatically added redirect rule. "
-msgstr "設定に関係なくリスニングポートの、でも、ポート80上で「これをオフにすると、 webConfiguratorへのアクセスは常に許可されている」 。この自動的に追加されたリダイレクトルールを無効にするには、このボックス」を確認します。"
+msgstr ""
+"これをチェックしないと、Web 設定管理画面へのアクセスは、常に許可されます。"
+"例えポート 80 だとしても、リスニングポートの構成内容は考慮されません。"
+"このボックスをチェックすると、このような自動的なリダイレクトルールの追加を無効にします。"
 
 #: usr/local/www/system_advanced_admin.php:375
 #: usr/local/www/system_advanced_admin.php:375
 msgid "WebGUI Login Autocomplete"
-msgstr "WebGUIのログインオートコンプリート"
+msgstr "WebGUI ログインオートコンプリート"
 
 #: usr/local/www/system_advanced_admin.php:378
 #: usr/local/www/system_advanced_admin.php:378
 msgid "Disable webConfigurator login autocomplete"
-msgstr "webConfiguratorログインオートコンプリートを無効にする"
+msgstr "Web 設定管理画面ログインオートコンプリートを無効"
 
 #: usr/local/www/system_advanced_admin.php:380
 #: usr/local/www/system_advanced_admin.php:380
