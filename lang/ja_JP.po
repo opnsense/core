@@ -37157,7 +37157,7 @@ msgid ""
 "even on port 80, regardless of the listening port configured. Check this box "
 "to disable this automatically added redirect rule. "
 msgstr ""
-"これをチェックしないと、Web 設定管理画面へのアクセスは、常に許可されます。"
+"これをチェックしない場合は、Web 設定管理画面へのアクセスは、常に許可されます。"
 "例えポート 80 だとしても、リスニングポートの構成内容は考慮されません。"
 "このボックスをチェックすると、このような自動的なリダイレクトルールの追加を無効にします。"
 
@@ -37179,24 +37179,31 @@ msgid ""
 "to be disabled. Check this box to disable autocomplete on the login form so "
 "that browsers will not prompt to save credentials (NOTE: Some browsers do "
 "not respect this option). "
-msgstr "「これをオフにすると、 webConfiguratorのログイン認証情報とすることができる「ブラウザによって保存された。便利な一方で、いくつかのセキュリティ標準は「無効にするログインフォームに自動補完を無効にするには、このチェックボックスをオンにしますので、 "これを必要とするブラウザが認証情報保存するよう求められないこと（注：一部のブラウザでは、 "このオプションを尊重しないでください） ​​。"
+msgstr ""
+"これをチェックしない場合は、Web 設定管理画面へのログイン認証情報はブラウザにより保存されます。"
+"便利ではありますが、セキュリティ標準によっては、これを無効にするよう要求されます。"
+"このボックスをチェックすると、ログインフォームでオートコンプリートが無効になり、"
+"ブラウザは認証情報の保存するよう促さなくなります。"
+" ( 注意: このオプションを無視するブラウザが存在します )"
 
 #: usr/local/www/system_advanced_admin.php:387
 #: usr/local/www/system_advanced_admin.php:387
 msgid "WebGUI login messages"
-msgstr "WebGUIのログインメッセージ"
+msgstr "WebGUI ログインメッセージ"
 
 #: usr/local/www/system_advanced_admin.php:390
 #: usr/local/www/system_advanced_admin.php:390
 msgid "Disable logging of webConfigurator successful logins"
-msgstr "webConfigurator成功したログインのログを無効にする"
+msgstr "Web 設定管理画面にログイン成功したもののロギング無効"
 
 #: usr/local/www/system_advanced_admin.php:392
 #: usr/local/www/system_advanced_admin.php:392
 msgid ""
 "When this is checked, successful logins to the webConfigurator will not be "
 "logged."
-msgstr "「これをチェックすると、 webConfiguratorに成功したログインができません」ログイン。"
+msgstr ""
+"これをチェックした場合、Web 設定管理画面に対してログイン成功したものは、"
+"ログに記録しません。"
 
 #: usr/local/www/system_advanced_admin.php:398
 #: usr/local/www/system_advanced_admin.php:398
@@ -37206,7 +37213,7 @@ msgstr "アンチロックアウト"
 #: usr/local/www/system_advanced_admin.php:407
 #: usr/local/www/system_advanced_admin.php:407
 msgid "Disable webConfigurator anti-lockout rule"
-msgstr "webConfiguratorアンチロックアウトルールを無効に"
+msgstr "Web 設定管理画面アンチロックアウトルールを無効"
 
 #: usr/local/www/system_advanced_admin.php:409
 #: usr/local/www/system_advanced_admin.php:409
@@ -37218,24 +37225,32 @@ msgid ""
 "webConfigurator is controlled by the user-defined firewall rules (ensure you "
 "have a firewall rule in place that allows you in, or you will lock yourself "
 "out!)"
-msgstr "「これをオフにすると、 %sインターフェイス上webConfiguratorへのアクセスがされている」に関係なく、常に設定され、ユーザ定義のファイアウォールルールを、許可した。チェック「この本が自動的に追加ルールを無効にするボックスなので、へのアクセスを「 webConfiguratorは（あなたが "あなたの中で可能にする場所にファイアウォールルールを持っている、またはあなた自身をロックします」を確認し外のユーザー定義ファイアウォールルールによって制御されます ！ ）"
+msgstr ""
+"これをチェックしない場合は、%s インタフェースの Web 設定管理画面へのアクセスは、常に許可されます。"
+"ユーザが定義したファイアウォールルールセットは考慮されません。"
+"このボックスをチェックすると、このような自動的なルールの追加を無効にし、"
+"Web 設定管理画面へのアクセスはユーザが定義したファイアウォールルールによってコントロールされます"
+" ( ファイアウォールのルールがきちんと整備されていることを確認して下さい。"
+"自分自身に内向きの通信を許可した場合、外向きの通信についてはロックされています！)"
 
 #: usr/local/www/system_advanced_admin.php:415
 #: usr/local/www/system_advanced_admin.php:415
 msgid ""
 "Hint: the &quot;Set interface(s) IP address&quot; option in the console menu "
 "resets this setting as well."
-msgstr "「ヒント： 」を設定し、インターフェイス（S ）のIPアドレス「コンソールメニューのオプションは、 "だけでなく、この設定をリセットします。"
+msgstr ""
+"ヒント: コンソールメニューの &quot; インタフェースに IP アドレスを設定 &quot; オプションは、"
+"この設定も同様にリセットします。"
 
 #: usr/local/www/system_advanced_admin.php:419
 #: usr/local/www/system_advanced_admin.php:419
 msgid "DNS Rebind Check"
-msgstr "DNSの再バインドを確認"
+msgstr "DNS リバインディング攻撃確認"
 
 #: usr/local/www/system_advanced_admin.php:422
 #: usr/local/www/system_advanced_admin.php:422
 msgid "Disable DNS Rebinding Checks"
-msgstr "DNSリバインディングチェックを無効に"
+msgstr "DNS リバインディング攻撃確認を無効"
 
 #: usr/local/www/system_advanced_admin.php:424
 #: usr/local/www/system_advanced_admin.php:424
@@ -37245,7 +37260,12 @@ msgid ""
 "private IP responses from your configured DNS servers. Check this box to "
 "disable this protection if it interferes with webConfigurator access or name "
 "resolution in your environment. "
-msgstr "「これをオフにすると、お使いのシステムは、もし、 href="http://en."wikipedia.org/wiki/DNS_rebinding"u003e DNSの再バインド攻撃u003c / au003eで保護されています。このブロックは、それがあなたの環境でwebConfiguratorアクセスまたは名前「解像度と干渉する場合は、この保護を無効にする"あなたの設定されたDNSサーバからプライベートIP応答が。するには、このボックスをチェックしてください」 。"
+msgstr ""
+"これをチェックしない場合は、<a href="http://en.wikipedia.org/wiki/DNS_rebinding">"
+"DNS リバインディング攻撃</a>からシステムが保護されます。"
+"これは自分が構成した DNS サーバからのプライベート IP の応答を拒否します。"
+"このボックスをチェックすると、この機能で Web 設定管理画面へのアクセスや、"
+"自環境での名前解決に支障が出る場合に、保護を無効にすることができます。"
 
 #: usr/local/www/system_advanced_admin.php:431
 #: usr/local/www/system_advanced_admin.php:431
@@ -37255,24 +37275,26 @@ msgstr "代替ホスト名"
 #: usr/local/www/system_advanced_admin.php:435
 #: usr/local/www/system_advanced_admin.php:435
 msgid "Alternate Hostnames for DNS Rebinding and HTTP_REFERER Checks"
-msgstr "DNSリバインディングとHTTP_REFERERチェックのための代替ホスト名"
+msgstr "DNS リバインディング・HTTP_REFERER 確認用代替ホスト名"
 
 #: usr/local/www/system_advanced_admin.php:437
 #: usr/local/www/system_advanced_admin.php:437
 msgid ""
 "Here you can specify alternate hostnames by which the router may be queried, "
 "to bypass the DNS Rebinding Attack checks. Separate hostnames with spaces."
-msgstr "DNSの再バインド攻撃チェックを回避するために"ここでは、ルータが照会されるかもしれない別のホスト名を指定することができます」 。スペースで区切りのホスト名。"
+msgstr ""
+"ここでは、ルータが照会する場合に、DNS リバインディング攻撃確認を回避する、"
+"代替ホスト名を指定できます。ホスト名は空白で区切ります。"
 
 #: usr/local/www/system_advanced_admin.php:442
 #: usr/local/www/system_advanced_admin.php:442
 msgid "Browser HTTP_REFERER enforcement"
-msgstr "ブラウザのHTTP_REFERERの施行"
+msgstr "ブラウザ HTTP_REFERER 強制"
 
 #: usr/local/www/system_advanced_admin.php:445
 #: usr/local/www/system_advanced_admin.php:445
 msgid "Disable HTTP_REFERER enforcement check"
-msgstr "HTTP_REFERER執行のチェックを無効にする"
+msgstr "ブラウザ HTTP_REFERER 強制確認を無効"
 
 #: usr/local/www/system_advanced_admin.php:447
 msgid ""
@@ -37282,7 +37304,13 @@ msgid ""
 "cases such as using external scripts to interact with this system. More "
 "information on HTTP_REFERER is available from <a target='_new' href='http://"
 "en.wikipedia.org/wiki/HTTP_referrer'>Wikipedia</a>."
-msgstr "HTTP_REFERERリダイレクトしようと「これをオフにすると、 webConfiguratorへのアクセスがから保護されています」 。このような、このシステムと対話する外部スクリプトを使用するなどのケース"あなたはそれが特定の隅にwebConfiguratorアクセスを妨害することを発見した場合、「この保護を無効にするには、このチェックボックスをオンにします。 HTTP_REFERERの詳細」の情報は、 u003ca target='_new' href='http://"en.wikipedia.org/wiki/HTTP_referrer'u003eウィキペディアu003c/ A u003eから入手できます。"
+msgstr ""
+"これをチェックしない場合は、HTTP_REFERER リダイレクション攻撃の試みから Web 設定管理画面への"
+"アクセスが保護されます。"
+"このボックスをチェックすると、このシステムに影響する外部スクリプトを使用している等、"
+"原因が明確な場合に、Web 設定管理画面へのアクセスに支障が出る場合に、この保護を無効にすることができます。"
+"HTTP_REFERER に関するより詳しい情報は、"
+"<a target='_new' href='http://en.wikipedia.org/wiki/HTTP_referrer'>ウィキペディア</a>を参照してください。"
 
 #: usr/local/www/system_advanced_admin.php:457
 #: usr/local/www/system_advanced_admin.php:457
@@ -37292,12 +37320,12 @@ msgstr "セキュアシェル"
 #: usr/local/www/system_advanced_admin.php:460
 #: usr/local/www/system_advanced_admin.php:460
 msgid "Secure Shell Server"
-msgstr "セキュアシェルサーバー"
+msgstr "セキュアシェルサーバ"
 
 #: usr/local/www/system_advanced_admin.php:463
 #: usr/local/www/system_advanced_admin.php:463
 msgid "Enable Secure Shell"
-msgstr "セキュアシェルを有効にする"
+msgstr "セキュアシェルを有効"
 
 #: usr/local/www/system_advanced_admin.php:467
 #: usr/local/www/system_advanced_admin.php:467
@@ -37306,37 +37334,37 @@ msgstr "認証方法"
 
 #: usr/local/www/system_advanced_admin.php:470
 msgid "Disable password login for Secure Shell (RSA key only)"
-msgstr "セキュアシェルのパスワードログインを無効にする（ RSA鍵のみ）"
+msgstr "セキュアシェルのパスワードログインを無効 ( RSA 鍵認証のみ )"
 
 #: usr/local/www/system_advanced_admin.php:472
 #: usr/local/www/system_advanced_admin.php:472
 msgid "When enabled, authorized keys need to be configured for each"
-msgstr "有効にすると、認証済みのキーは、それぞれのために設定される必要がある"
+msgstr "有効にすると、セキュアシェルアクセスを許可された"
 
 #: usr/local/www/system_advanced_admin.php:473
 #: usr/local/www/system_advanced_admin.php:473
 msgid "user"
-msgstr "ユーザー"
+msgstr "ユーザ"
 
 #: usr/local/www/system_advanced_admin.php:474
 #: usr/local/www/system_advanced_admin.php:474
 msgid "that has been granted secure shell access."
-msgstr "つまり、セキュアシェルアクセスを許可されています。"
+msgstr "毎に、認証鍵を構成する必要があります。"
 
 #: usr/local/www/system_advanced_admin.php:478
 #: usr/local/www/system_advanced_admin.php:478
 msgid "SSH port"
-msgstr "SSHポート"
+msgstr "SSH ポート"
 
 #: usr/local/www/system_advanced_admin.php:482
 #: usr/local/www/system_advanced_admin.php:482
 msgid "Note: Leave this blank for the default of 22."
-msgstr "注： 22のデフォルトは、この空白のままにします。"
+msgstr "注意: 空白にすると、デフォルトの 22 が設定されます。"
 
 #: usr/local/www/system_advanced_admin.php:489
 #: usr/local/www/system_advanced_admin.php:489
 msgid "Serial Communcations"
-msgstr "シリアルCommuncations"
+msgstr "シリアル接続"
 
 #: usr/local/www/system_advanced_admin.php:493
 #: usr/local/www/system_advanced_admin.php:493
@@ -37348,7 +37376,9 @@ msgstr "シリアル端末"
 msgid ""
 "Enables the first serial port with 9600/8/N/1 by default, or another speed "
 "selectable below."
-msgstr "以下の選択可能な「デフォルトで9600/8/N/1で最初のシリアルポート、または別の速度を可能にします」 。"
+msgstr ""
+"有効にすると、デフォルトでは、第 1 シリアルポートは 9600/8/N/1 に設定されます。"
+"それ以外の速度は以下から選択可能です。"
 
 #: usr/local/www/system_advanced_admin.php:497
 #: usr/local/www/system_advanced_admin.php:497
@@ -37357,17 +37387,21 @@ msgid ""
 "port. You can still access the console menu from the internal video card/"
 "keyboard. A <b>null modem</b> serial cable or adapter is required to use the "
 "serial console."
-msgstr ""注：これは、シリアルコンソール出力やメッセージをリダイレクトします」ポート。あなたはまだ、内部ビデオカード/からコンソールメニューにアクセスすることができる「キーボード。 A u003cBu003eヌルモデムu003c / B u003eシリアルケーブルやアダプタが使用するために必要です"シリアルコンソールを。"
+msgstr ""
+"注意: これはコンソール出力及び、メッセージをシリアルポートにリダイレクトします。"
+"リダイレクト後も、コンソールメニューには内部ビデオカード / キーボードからアクセス可能です。"
+"シリアルコンソールを使用するには、<b>ヌルモデム</b>シリアルケーブル、"
+"もしくは、アダプタが必要です。"
 
 #: usr/local/www/system_advanced_admin.php:502
 #: usr/local/www/system_advanced_admin.php:502
 msgid "Serial Speed"
-msgstr "シリアルポートの速度"
+msgstr "シリアル速度"
 
 #: usr/local/www/system_advanced_admin.php:512
 #: usr/local/www/system_advanced_admin.php:512
 msgid "Allows selection of different speeds for the serial console port."
-msgstr "シリアルコンソールポート、異なる速度の選択ができます。"
+msgstr "シリアルコンソールポート毎に異なる速度が選択できます。"
 
 #: usr/local/www/system_advanced_admin.php:519
 #: usr/local/www/system_advanced_admin.php:519
@@ -37377,74 +37411,74 @@ msgstr "コンソールオプション"
 #: usr/local/www/system_advanced_admin.php:522
 #: usr/local/www/system_advanced_admin.php:522
 msgid "Console menu"
-msgstr "[コンソール]メニュー"
+msgstr "コンソールメニュー"
 
 #: usr/local/www/system_advanced_admin.php:525
 #: usr/local/www/system_advanced_admin.php:525
 msgid "Password protect the console menu"
-msgstr "パスワードは、コンソールメニューを保護"
+msgstr "コンソールメニューをパスワードで保護"
 
 #: usr/local/www/system_advanced_admin.php:527
 #: usr/local/www/system_advanced_admin.php:527
 msgid "Changes to this option will take effect after a reboot."
-msgstr "このオプションへの変更は、再起動後に有効になります。"
+msgstr "このオプションの変更は、再起動後に有効になります"
 
 #: usr/local/www/system_advanced_admin.php:564
 #: usr/local/www/system_advanced_admin.php:564
 msgid "secure shell configuration has changed. Stopping sshd."
-msgstr "セキュアシェルの構成が変更されました。 sshdを停止。"
+msgstr "セキュアシェルの構成が変更されました。sshd を停止しています"
 
 #: usr/local/www/system_advanced_admin.php:567
 #: usr/local/www/system_advanced_admin.php:567
 msgid "secure shell configuration has changed. Restarting sshd."
-msgstr "セキュアシェルの構成が変更されました。 sshdを再起動。"
+msgstr "セキュアシェルの構成が変更されました。sshd を再起動しています"
 
 #: usr/local/www/system_advanced_admin.php:574
 #: usr/local/www/system_advanced_admin.php:574
 msgid "webConfigurator configuration has changed. Restarting webConfigurator."
-msgstr "webConfigurator構成が変更されました。 webConfiguratorを再起動する。"
+msgstr "Web 設定管理画面の構成が変更されました。Web 設定管理画面を再起動しています"
 
 #: usr/local/www/system_advanced_firewall.php:78
 #: usr/local/www/system_advanced_firewall.php:77
 #: usr/local/www/system_advanced_firewall.php:88
 #: usr/local/www/system_advanced_firewall.php:88
 msgid "The Firewall Maximum States value must be an integer."
-msgstr "ファイアウォールの最大状態の値は整数でなければなりません。"
+msgstr "ファイアウォールステータスの最大値は整数です"
 
 #: usr/local/www/system_advanced_firewall.php:81
 #: usr/local/www/system_advanced_firewall.php:83
 #: usr/local/www/system_advanced_firewall.php:94
 #: usr/local/www/system_advanced_firewall.php:94
 msgid "The Firewall Maximum Table Entries value must be an integer."
-msgstr "ファイアウォールの最大テーブルエントリの値は整数でなければなりません。"
+msgstr "ファイアウォールテーブルエントリの最大値は整数です"
 
 #: usr/local/www/system_advanced_firewall.php:84
 #: usr/local/www/system_advanced_firewall.php:86
 #: usr/local/www/system_advanced_firewall.php:97
 #: usr/local/www/system_advanced_firewall.php:97
 msgid "The TCP idle timeout must be an integer."
-msgstr "TCPアイドルタイムアウトは整数でなければなりません。"
+msgstr "TCP アイドルタイムアウトは整数です"
 
 #: usr/local/www/system_advanced_firewall.php:87
 #: usr/local/www/system_advanced_firewall.php:89
 #: usr/local/www/system_advanced_firewall.php:100
 #: usr/local/www/system_advanced_firewall.php:100
 msgid "The Reflection timeout must be an integer."
-msgstr "リフレクションタイムアウトは整数でなければなりません。"
+msgstr "リフレクションタイムアウトは整数です"
 
 #: usr/local/www/system_advanced_firewall.php:178
 #: usr/local/www/system_advanced_firewall.php:192
 #: usr/local/www/system_advanced_firewall.php:221
 #: usr/local/www/system_advanced_firewall.php:221
 msgid "Advanced: Firewall and NAT"
-msgstr "アドバンスト：ファイアウォールとNAT"
+msgstr "高度な設定: ファイアウォールと NAT"
 
 #: usr/local/www/system_advanced_firewall.php:190
 #: usr/local/www/system_advanced_firewall.php:204
 #: usr/local/www/system_advanced_firewall.php:233
 #: usr/local/www/system_advanced_firewall.php:233
 msgid "as the name says, it's the normal optimization algorithm"
-msgstr "名前が言うように、それは通常の最適化アルゴリズムです"
+msgstr "名前の通り、一般的な最適化アルゴリズムで、"
 
 #: usr/local/www/system_advanced_firewall.php:191
 #: usr/local/www/system_advanced_firewall.php:205
@@ -37453,21 +37487,27 @@ msgstr "名前が言うように、それは通常の最適化アルゴリズム
 msgid ""
 "used for high latency links, such as satellite links. Expires idle "
 "connections later than default"
-msgstr "後でデフォルト以外の接続」とは、衛星リンクなどの高遅延リンクのために使用される。アイドルのExpires 」"
+msgstr ""
+"サテライトリンクのような、高遅延リンクに対して使用されます。"
+"デフォルトアイドル接続有効期限よりも遅いアイドル接続有効期限は、"
 
 #: usr/local/www/system_advanced_firewall.php:192
 #: usr/local/www/system_advanced_firewall.php:206
 msgid ""
 "expires idle connections quicker. More efficient use of CPU and memory but "
 "can drop legitimate connections"
-msgstr "「迅速アイドル状態の接続を期限切れにします。 CPUとメモリが、より効率的に使用」とは、正当な接続をドロップすることができます"
+msgstr ""
+"より速く設定してください。CPU とメモリをより効率的に使用すると、"
+"正当な接続を落としてしまいます。"
 
 #: usr/local/www/system_advanced_firewall.php:193
 #: usr/local/www/system_advanced_firewall.php:207
 msgid ""
 "tries to avoid dropping any legitimate connections at the expense of "
 "increased memory usage and CPU utilization."
-msgstr "メモリ使用量の増加やCPU使用率」を犠牲にして正当な接続を落とさないようにしようとします」 。"
+msgstr ""
+"正当な接続を落とさないようにするには、"
+"メモリ使用量と CPU 使用率の増加を抑えるようにします。"
 
 #: usr/local/www/system_advanced_firewall.php:239
 #: usr/local/www/system_advanced_firewall.php:253
@@ -37475,7 +37515,7 @@ msgstr "メモリ使用量の増加やCPU使用率」を犠牲にして正当な
 #: usr/local/www/system_advanced_firewall.php:281
 #: usr/local/www/system_advanced_firewall.php:281
 msgid "Firewall Advanced"
-msgstr "ファイアウォールアドバンス"
+msgstr "ファイアウォール高度な設定"
 
 #: usr/local/www/system_advanced_firewall.php:242
 #: usr/local/www/system_advanced_firewall.php:256
@@ -37483,7 +37523,7 @@ msgstr "ファイアウォールアドバンス"
 #: usr/local/www/system_advanced_firewall.php:284
 #: usr/local/www/system_advanced_firewall.php:284
 msgid "IP Do-Not-Fragment compatibility"
-msgstr "IPドゥ-NOT-フラグメントの互換性"
+msgstr "IP Do-Not-Fragment 互換性"
 
 #: usr/local/www/system_advanced_firewall.php:245
 #: usr/local/www/system_advanced_firewall.php:259
@@ -37491,7 +37531,7 @@ msgstr "IPドゥ-NOT-フラグメントの互換性"
 #: usr/local/www/system_advanced_firewall.php:287
 #: usr/local/www/system_advanced_firewall.php:287
 msgid "Clear invalid DF bits instead of dropping the packets"
-msgstr "代わりに、パケットをドロップする明確な無効のDFビット"
+msgstr "パケットを落とす代わりに無効な DF ビットを消去"
 
 #: usr/local/www/system_advanced_firewall.php:246
 #: usr/local/www/system_advanced_firewall.php:260
@@ -37503,7 +37543,11 @@ msgid ""
 "with the don't fragment (DF) bit set. Linux NFS is known to do this. This "
 "will cause the filter to not drop such packets but instead clear the don't "
 "fragment bit."
-msgstr "断片化しない（ DF ）で「これは断片化されたパケットを生成したホストとの通信を可能にし、「設定ビット。 LinuxのNFSは、この操作を行うことが知られている。これは、 "フィルタは、このようなパケットをドロップしないようになりますが、代わりに明確なインクルードしておりませ「フラグメントビット。"
+msgstr ""
+"フラグメント化したパケットを生成するホストと、フラグメント禁止( DF ) ビットで通信することを許可します。"
+"Linux NFS はこれを実行することで知られています。"
+"これは、フィルタがそのようなパケットを落とさないようにすることができますが、"
+"フラグメント禁止ビットを消去することはできません。"
 
 #: usr/local/www/system_advanced_firewall.php:253
 #: usr/local/www/system_advanced_firewall.php:267
@@ -37511,7 +37555,7 @@ msgstr "断片化しない（ DF ）で「これは断片化されたパケッ�
 #: usr/local/www/system_advanced_firewall.php:295
 #: usr/local/www/system_advanced_firewall.php:295
 msgid "IP Random id generation"
-msgstr "IPランダムIDの生成"
+msgstr "IP ランダム ID の生成"
 
 #: usr/local/www/system_advanced_firewall.php:256
 #: usr/local/www/system_advanced_firewall.php:270
@@ -37520,7 +37564,8 @@ msgstr "IPランダムIDの生成"
 #: usr/local/www/system_advanced_firewall.php:298
 msgid ""
 "Insert a stronger id into IP header of packets passing through the filter."
-msgstr "「フィルターを通過するパケットのIPヘッダに強いIDを挿入します。"
+msgstr ""
+"フィルタを通過するパケットの IP ヘッダに強い ID を挿入します。"
 
 #: usr/local/www/system_advanced_firewall.php:257
 #: usr/local/www/system_advanced_firewall.php:271
@@ -37532,7 +37577,10 @@ msgid ""
 "compensate for operating systems that use predictable values. This option "
 "only applies to packets that are not fragmented after the optional packet "
 "reassembly."
-msgstr "予測可能な値を使用するオペレーティングシステムを補う」ためにランダムな値を持つパケットのIP識別フィールドを置き換え」 。このオプションは、再構築」 、オプションのパケットの後に断片化されていないパケットに適用されます」 。"
+msgstr ""
+"オペレーティングシステムが使用する予測可能な値を補うために、パケットのIP識別フィールドを置き換えます。"
+"オプションのパケットの再構築を行った後に、"
+"フラグメント化していないパケットに対してのみ適用されるオプションです。"
 
 #: usr/local/www/system_advanced_firewall.php:264
 #: usr/local/www/system_advanced_firewall.php:278
@@ -37548,7 +37596,7 @@ msgstr "ファイアウォール最適化オプション"
 #: usr/local/www/system_advanced_firewall.php:309
 #: usr/local/www/system_advanced_firewall.php:309
 msgid "normal"
-msgstr "ノーマル"
+msgstr "通常"
 
 #: usr/local/www/system_advanced_firewall.php:268
 #: usr/local/www/system_advanced_firewall.php:282
@@ -37556,7 +37604,7 @@ msgstr "ノーマル"
 #: usr/local/www/system_advanced_firewall.php:310
 #: usr/local/www/system_advanced_firewall.php:310
 msgid "high-latency"
-msgstr "高レイテンシ"
+msgstr "高遅延"
 
 #: usr/local/www/system_advanced_firewall.php:269
 #: usr/local/www/system_advanced_firewall.php:283
@@ -37564,7 +37612,7 @@ msgstr "高レイテンシ"
 #: usr/local/www/system_advanced_firewall.php:311
 #: usr/local/www/system_advanced_firewall.php:311
 msgid "aggressive"
-msgstr "積極的な"
+msgstr "アグレッシブ"
 
 #: usr/local/www/system_advanced_firewall.php:270
 #: usr/local/www/system_advanced_firewall.php:284
@@ -37572,7 +37620,7 @@ msgstr "積極的な"
 #: usr/local/www/system_advanced_firewall.php:312
 #: usr/local/www/system_advanced_firewall.php:312
 msgid "conservative"
-msgstr "保守的"
+msgstr "コンサバティブ"
 
 #: usr/local/www/system_advanced_firewall.php:278
 #: usr/local/www/system_advanced_firewall.php:292
@@ -37580,7 +37628,7 @@ msgstr "保守的"
 #: usr/local/www/system_advanced_firewall.php:322
 #: usr/local/www/system_advanced_firewall.php:322
 msgid "Select the type of state table optimization to use"
-msgstr "使用する状態テーブルの最適化の種類を選択します"
+msgstr "ステータステーブルの最適化に使用する種類を選択してください"
 
 #: usr/local/www/system_advanced_firewall.php:282
 #: usr/local/www/system_advanced_firewall.php:296
@@ -37588,7 +37636,7 @@ msgstr "使用する状態テーブルの最適化の種類を選択します"
 #: usr/local/www/system_advanced_firewall.php:326
 #: usr/local/www/system_advanced_firewall.php:326
 msgid "Disable Firewall"
-msgstr "ファイアウォールを無効にする"
+msgstr "ファイアウォールを無効"
 
 #: usr/local/www/system_advanced_firewall.php:285
 #: usr/local/www/system_advanced_firewall.php:299
@@ -37596,7 +37644,7 @@ msgstr "ファイアウォールを無効にする"
 #: usr/local/www/system_advanced_firewall.php:329
 #: usr/local/www/system_advanced_firewall.php:329
 msgid "Disable all packet filtering."
-msgstr "すべてのパケットフィルタリングを無効にします。"
+msgstr "全てのパケットフィルタリングを無効にします。"
 
 #: usr/local/www/system_advanced_firewall.php:287
 #: usr/local/www/system_advanced_firewall.php:301
@@ -37605,7 +37653,7 @@ msgstr "すべてのパケットフィルタリングを無効にします。"
 #: usr/local/www/system_advanced_firewall.php:331
 #, php-format
 msgid "Note: This converts %s into a routing only platform!"
-msgstr "注意：これは、ルーティングのみ、プラットフォームのに%sに変換！"
+msgstr "注意: これは、%s をプラットフォームのみのルーティングに変換します！"
 
 #: usr/local/www/system_advanced_firewall.php:288
 #: usr/local/www/system_advanced_firewall.php:302
@@ -37613,7 +37661,7 @@ msgstr "注意：これは、ルーティングのみ、プラットフォーム
 #: usr/local/www/system_advanced_firewall.php:332
 #: usr/local/www/system_advanced_firewall.php:332
 msgid "Note: This will also turn off NAT!"
-msgstr "注意：これはまた、NAT をオフにします！"
+msgstr "注意: これは NAT もオフにします！"
 
 #: usr/local/www/system_advanced_firewall.php:289
 #: usr/local/www/system_advanced_firewall.php:303
@@ -37621,7 +37669,7 @@ msgstr "注意：これはまた、NAT をオフにします！"
 #: usr/local/www/system_advanced_firewall.php:333
 #: usr/local/www/system_advanced_firewall.php:333
 msgid "If you only want to disable NAT, and not firewall rules, visit the"
-msgstr "あなただけのNATはなく、ファイアウォールのルールを無効にする場合は、訪問"
+msgstr "ファイアウォールルールではなく、NAT だけを無効にしたい場合は、以下で設定してください: "
 
 #: usr/local/www/system_advanced_firewall.php:289
 #: usr/local/www/system_advanced_firewall.php:303
@@ -37629,7 +37677,7 @@ msgstr "あなただけのNATはなく、ファイアウォールのルールを
 #: usr/local/www/system_advanced_firewall.php:333
 #: usr/local/www/system_advanced_firewall.php:333
 msgid "Outbound NAT"
-msgstr "アウトバウンドのNAT"
+msgstr "外向き NAT"
 
 #: usr/local/www/system_advanced_firewall.php:294
 #: usr/local/www/system_advanced_firewall.php:308
@@ -37637,7 +37685,7 @@ msgstr "アウトバウンドのNAT"
 #: usr/local/www/system_advanced_firewall.php:338
 #: usr/local/www/system_advanced_firewall.php:338
 msgid "Disable Firewall Scrub"
-msgstr "ファイアウォールスクラブを無効にする"
+msgstr "ファイアウォールスクラブを無効"
 
 #: usr/local/www/system_advanced_firewall.php:297
 #: usr/local/www/system_advanced_firewall.php:311
@@ -37647,7 +37695,9 @@ msgstr "ファイアウォールスクラブを無効にする"
 msgid ""
 "Disables the PF scrubbing option which can sometimes interfere with NFS and "
 "PPTP traffic."
-msgstr "PPTPトラフィック」時にはNFSとを妨害する可能性がPFスクラブオプションを無効にします」 。"
+msgstr ""
+"PF スクラブオプションを無効にすると、"
+"NFS と PPTP トラフィックを阻害する場合があります。"
 
 #: usr/local/www/system_advanced_firewall.php:302
 #: usr/local/www/system_advanced_firewall.php:316
@@ -37655,7 +37705,7 @@ msgstr "PPTPトラフィック」時にはNFSとを妨害する可能性がPFス
 #: usr/local/www/system_advanced_firewall.php:361
 #: usr/local/www/system_advanced_firewall.php:361
 msgid "Firewall Maximum States"
-msgstr "ファイアウォールの最大状態"
+msgstr "ファイアウォールステータスの最大値"
 
 #: usr/local/www/system_advanced_firewall.php:306
 #: usr/local/www/system_advanced_firewall.php:320
@@ -37663,7 +37713,7 @@ msgstr "ファイアウォールの最大状態"
 #: usr/local/www/system_advanced_firewall.php:365
 #: usr/local/www/system_advanced_firewall.php:365
 msgid "Maximum number of connections to hold in the firewall state table."
-msgstr "ファイアウォールの状態テーブルに保持する接続の最大数。"
+msgstr "ファイアウォールステータステーブルに保持する接続の最大数。"
 
 #: usr/local/www/system_advanced_firewall.php:308
 #: usr/local/www/system_advanced_firewall.php:322
@@ -37672,7 +37722,8 @@ msgstr "ファイアウォールの状態テーブルに保持する接続の最
 #: usr/local/www/system_advanced_firewall.php:367
 msgid ""
 "Note: Leave this blank for the default. On your system the default size is:"
-msgstr ""注：デフォルトは、この空白のままにしておき、システム上のデフォルトのサイズは、次のとおりです。"
+msgstr ""
+"注意: デフォルトにする場合は、空白にしてください。システムデフォルトサイズ: "
 
 #: usr/local/www/system_advanced_firewall.php:312
 #: usr/local/www/system_advanced_firewall.php:342
@@ -37680,7 +37731,7 @@ msgstr ""注：デフォルトは、この空白のままにしておき、シ�
 #: usr/local/www/system_advanced_firewall.php:387
 #: usr/local/www/system_advanced_firewall.php:387
 msgid "Firewall Maximum Table Entries"
-msgstr "ファイアウォールの最大テーブルエントリ"
+msgstr "ファイアウォールテーブルエントリの最大数"
 
 #: usr/local/www/system_advanced_firewall.php:316
 #: usr/local/www/system_advanced_firewall.php:346
@@ -37690,7 +37741,9 @@ msgstr "ファイアウォールの最大テーブルエントリ"
 msgid ""
 "Maximum number of table entries for systems such as aliases, sshlockout, "
 "snort, etc, combined."
-msgstr "組み合わせなどSnortの、 「このようなエイリアス、 sshlockout 、などのシステム用のテーブルエントリの最大数」 。"
+msgstr ""
+"エイリアス、sshlockout、snort 等、それらの組合せ、のような"
+"システムのテーブルエントリの最大数
 
 #: usr/local/www/system_advanced_firewall.php:319
 #: usr/local/www/system_advanced_firewall.php:334
@@ -37702,7 +37755,7 @@ msgstr "組み合わせなどSnortの、 「このようなエイリアス、 ss
 #: usr/local/www/system_advanced_firewall.php:379
 #: usr/local/www/system_advanced_firewall.php:394
 msgid "Note: Leave this blank for the default."
-msgstr "注：デフォルトは、この空白のままにします。"
+msgstr "注: デフォルトにするには、空白にしてください。"
 
 #: usr/local/www/system_advanced_firewall.php:321
 #: usr/local/www/system_advanced_firewall.php:336
@@ -37714,7 +37767,7 @@ msgstr "注：デフォルトは、この空白のままにします。"
 #: usr/local/www/system_advanced_firewall.php:381
 #: usr/local/www/system_advanced_firewall.php:396
 msgid "On your system the default size is:"
-msgstr "システムのデフォルトのサイズは、次のとおりです。"
+msgstr "システムデフォルトサイズ: "
 
 #: usr/local/www/system_advanced_firewall.php:327
 #: usr/local/www/system_advanced_firewall.php:357
@@ -37722,7 +37775,7 @@ msgstr "システムのデフォルトのサイズは、次のとおりです。
 #: usr/local/www/system_advanced_firewall.php:402
 #: usr/local/www/system_advanced_firewall.php:402
 msgid "Static route filtering"
-msgstr "スタティックルートフィルタリング"
+msgstr "静的ルートフィルタリング"
 
 #: usr/local/www/system_advanced_firewall.php:330
 #: usr/local/www/system_advanced_firewall.php:360
@@ -37730,7 +37783,7 @@ msgstr "スタティックルートフィルタリング"
 #: usr/local/www/system_advanced_firewall.php:405
 #: usr/local/www/system_advanced_firewall.php:405
 msgid "Bypass firewall rules for traffic on the same interface"
-msgstr "同じインターフェイス上のトラフィックのためのバイパスファイアウォールルール"
+msgstr "同じインタフェースのトラフィックは、ファイアウォールルールを無視"
 
 #: usr/local/www/system_advanced_firewall.php:332
 #: usr/local/www/system_advanced_firewall.php:362
@@ -37742,7 +37795,11 @@ msgid ""
 "it is enabled, traffic that enters and leaves through the same interface "
 "will not be checked by the firewall. This may be desirable in some "
 "situations where multiple subnets are connected to the same interface."
-msgstr ""あなたは1つ以上の静的ルートを定義している場合は、このオプションは適用されます。場合」が有効になっている、入って、同じインターフェイスを介して葉のトラフィックが状況複数のサブネット「ファイアウォールによってチェックされません。これは、いくつかの中で望ましいことがある」同じインターフェースに接続されている。"
+msgstr ""
+"このオプションは 1 つ以上の静的ルートを定義している場合にのみ適用されます。"
+"有効な場合は、入りと出に、同じインタフェースを経由するトラフィックは、ファイアウォールに確認されません。"
+"これは、複数のサブネットが同じインタフェースに接続されているようなシチュエーションでは、"
+"非常に有効です。"
 
 #: usr/local/www/system_advanced_firewall.php:342
 #: usr/local/www/system_advanced_firewall.php:372
@@ -37750,7 +37807,7 @@ msgstr ""あなたは1つ以上の静的ルートを定義している場合は�
 #: usr/local/www/system_advanced_firewall.php:417
 #: usr/local/www/system_advanced_firewall.php:417
 msgid "Disable all auto-added VPN rules."
-msgstr "すべての自動追加のVPNルールを無効にします。"
+msgstr "全ての自動追加 VPN ルールを無効"
 
 #: usr/local/www/system_advanced_firewall.php:344
 #: usr/local/www/system_advanced_firewall.php:374
@@ -37758,7 +37815,7 @@ msgstr "すべての自動追加のVPNルールを無効にします。"
 #: usr/local/www/system_advanced_firewall.php:419
 #: usr/local/www/system_advanced_firewall.php:419
 msgid "Note: This disables automatically added rules for IPsec, PPTP."
-msgstr "注：これはIPsecの、 PPTPのために自動的に追加されたルールを無効にします。"
+msgstr "注意: これは IPsec や PPTP に自動的に追加されたルールを無効にします。"
 
 #: usr/local/www/system_advanced_firewall.php:352
 #: usr/local/www/system_advanced_firewall.php:382
@@ -37766,7 +37823,7 @@ msgstr "注：これはIPsecの、 PPTPのために自動的に追加された�
 #: usr/local/www/system_advanced_firewall.php:427
 #: usr/local/www/system_advanced_firewall.php:427
 msgid "Disable reply-to on WAN rules"
-msgstr "WANのルールに返信するを無効にする"
+msgstr "WAN ルールで reply-to を無効"
 
 #: usr/local/www/system_advanced_firewall.php:354
 #: usr/local/www/system_advanced_firewall.php:384
@@ -37778,7 +37835,11 @@ msgid ""
 "interface it arrives on, hence reply-to is added automatically by default. "
 "When using bridging, you must disable this behavior if the WAN gateway IP is "
 "different from the gateway IP of the hosts behind the bridged interface."
-msgstr "「マルチWANを使用すると、一般的には、トラフィックの葉を確認したい、同じ"、それが到着したインタフェースゆえ返信先は、デフォルトで自動的に追加されます。ブリッジドインターフェイスの背後にあるホストのゲートウェイIPアドレスとは別の「ブリッジングを使用する場合はWANゲートウェイIPがある場合は、この動作を無効にする必要があります」 。"
+msgstr ""
+"マルチ WAN では、通常、到着したのと同じインタフェースから出発したトラフィックかどうか確認したいでしょう。"
+"そのため、デフォルトでは自動的に reply-to が追加されます。"
+"ブリッジを使用していて、WAN ゲートウェイ IP が、ブリッジインタフェースの後ろにあるホストの"
+"ゲートウェイ IP と異なる場合は、この振る舞いを無効にする必要があります。"
 
 #: usr/local/www/system_advanced_firewall.php:364
 #: usr/local/www/system_advanced_firewall.php:404
@@ -37790,7 +37851,7 @@ msgstr "ネットワークアドレス変換"
 
 #: usr/local/www/system_advanced_firewall.php:367
 msgid "Disable NAT Reflection for port forwards"
-msgstr "ポートに転送するためのNATリフレクションをディセーブル"
+msgstr "ポートフォワードの NAT リフレクションを無効"
 
 #: usr/local/www/system_advanced_firewall.php:370
 msgid ""
@@ -37798,7 +37859,11 @@ msgid ""
 "to port forwards on your external IP addresses from within your internal "
 "networks. Note: Reflection for port forward entries is skipped for ranges "
 "larger than 500 ports."
-msgstr "内部内から外部IPアドレス上のポートに転送する」のアクセスのための規則をリダイレクトの追加のNATの自動作成を無効にします""ネットワークに注意してください。ポートフォワードエントリの反射は範囲についてはスキップされ、「より大きく500ポート。"
+msgstr ""
+"自分の内部ネットワークから外部 IP アドレスにポートフォワードするアクセスに対する、"
+"追加 NAT リダイレクトルールの自動作成を無効にします。"
+"注意: ポートフォワードエントリへのリフレクションは、"
+"500 ポートよりも大きい範囲ではスキップされます。"
 
 #: usr/local/www/system_advanced_firewall.php:374
 #: usr/local/www/system_advanced_firewall.php:425
@@ -37806,17 +37871,19 @@ msgstr "内部内から外部IPアドレス上のポートに転送する」の�
 #: usr/local/www/system_advanced_firewall.php:488
 #: usr/local/www/system_advanced_firewall.php:488
 msgid "Reflection Timeout"
-msgstr "反射タイムアウト"
+msgstr "リフレクションタイムアウト"
 
 #: usr/local/www/system_advanced_firewall.php:377
 msgid ""
 "Enter value for Reflection timeout in seconds. Note: Only applies to "
 "Reflection on port forwards."
-msgstr "「秒における反射タイムアウトの値を入力します（注） 。にのみ適用され、「ポートに転送上のリフレクション。"
+msgstr ""
+"リフレクションタイムアウトの値を秒で入力してください。"
+"注意: リフレクションが適用されるのは、ポートフォワードのみです。"
 
 #: usr/local/www/system_advanced_firewall.php:381
 msgid "Disable NAT Reflection for 1:1 NAT"
-msgstr "1時01分、NATのNATリフレクションをディセーブル"
+msgstr "1:1 NAT の NAT リフレクションを無効"
 
 #: usr/local/www/system_advanced_firewall.php:384
 msgid ""
@@ -37824,7 +37891,11 @@ msgid ""
 "1:1 mappings of your external IP addresses from within your internal "
 "networks. Note: Reflection for 1:1 NAT might not fully work in certain "
 "complex routing scenarios."
-msgstr "内部内から外部IPアドレスの1:1のマッピング」にアクセスするための他のNAT 1時01分のマッピングを自動的に作成無効に」 ：複雑なルーティングのシナリオ」ネットワークに注意してください。 1時01 NATのリフレクションが完全に特定のでは動作しない可能性があります」 。"
+msgstr ""
+"自分の内部ネットワークから外部 IP アドレスに 1:1 マッピングするアクセスに対する、"
+"追加 NAT 1:1 マッピングの自動作成を無効にします。"
+"注意: 1:1 NAT へのリフレクションは、"
+"かなり複雑なルーティング状況では完全には機能しない可能性があります。"
 
 #: usr/local/www/system_advanced_firewall.php:391
 #: usr/local/www/system_advanced_firewall.php:448
@@ -37834,13 +37905,17 @@ msgstr "内部内から外部IPアドレスの1:1のマッピング」にアク�
 msgid ""
 "Automatically create outbound NAT rules which assist inbound NAT rules that "
 "direct traffic back out to the same subnet it originated from."
-msgstr "直接的なトラフィックが同じサブネットに外にそれが由来する「自動的に着信NATルールを支援アウトバウンドNATルールを作成する」 。"
+msgstr ""
+"発信元と同じサブネットに戻る直接トラフィックの内向き NAT ルールに対応する、"
+"外向き NAT ルールを自動的に作成します。"
 
 #: usr/local/www/system_advanced_firewall.php:393
 msgid ""
 "Currently only applies to 1:1 NAT rules. Required for full functionality of "
 "NAT Reflection for 1:1 NAT."
-msgstr "「現在は、 1時01 NATルールに適用されます。のすべての機能に必要な「1:1 NATのNATリフレクション。"
+msgstr ""
+"現在は 1:1 NAT ルールのみが適用されています。"
+"1:1 NAT に対する NAT リフレクションの全機能が必要です。"
 
 #: usr/local/www/system_advanced_firewall.php:397
 #: usr/local/www/system_advanced_firewall.php:456
@@ -37848,7 +37923,7 @@ msgstr "「現在は、 1時01 NATルールに適用されます。のすべて�
 #: usr/local/www/system_advanced_firewall.php:519
 #: usr/local/www/system_advanced_firewall.php:519
 msgid "TFTP Proxy"
-msgstr "TFTPプロキシ"
+msgstr "TFTP プロキシ"
 
 #: usr/local/www/system_advanced_firewall.php:407
 #: usr/local/www/system_advanced_firewall.php:466
@@ -37856,7 +37931,7 @@ msgstr "TFTPプロキシ"
 #: usr/local/www/system_advanced_firewall.php:529
 #: usr/local/www/system_advanced_firewall.php:529
 msgid "Choose the interfaces where you want TFTP proxy helper to be enabled."
-msgstr "あなたは、TFTPプロキシヘルパーを有効にしたいインターフェースを選択します。"
+msgstr "TFTP プロキシヘルパーを有効にするインタフェースを選択してください。"
 
 #: usr/local/www/system_advanced_misc.php:179
 #: usr/local/www/system_advanced_misc.php:199
@@ -37865,7 +37940,7 @@ msgstr "あなたは、TFTPプロキシヘルパーを有効にしたいイン�
 #: usr/local/www/system_advanced_misc.php:254
 #: usr/local/www/system_advanced_misc.php:254
 msgid "Advanced: Miscellaneous"
-msgstr "アドバンスト：その他"
+msgstr "高度な設定: その他"
 
 #: usr/local/www/system_advanced_misc.php:229
 #: usr/local/www/system_advanced_misc.php:255
@@ -37874,7 +37949,7 @@ msgstr "アドバンスト：その他"
 #: usr/local/www/system_advanced_misc.php:325
 #: usr/local/www/system_advanced_misc.php:325
 msgid "Proxy support"
-msgstr "プロキシのサポート"
+msgstr "プロキシサポート"
 
 #: usr/local/www/system_advanced_misc.php:232
 #: usr/local/www/system_advanced_misc.php:258
@@ -37883,7 +37958,7 @@ msgstr "プロキシのサポート"
 #: usr/local/www/system_advanced_misc.php:328
 #: usr/local/www/system_advanced_misc.php:328
 msgid "Proxy URL"
-msgstr "プロキシのURL"
+msgstr "プロキシ URL"
 
 #: usr/local/www/system_advanced_misc.php:236
 #: usr/local/www/system_advanced_misc.php:262
@@ -37893,7 +37968,7 @@ msgstr "プロキシのURL"
 #: usr/local/www/system_advanced_misc.php:332
 #, php-format
 msgid "Proxy url for allowing %s to use this proxy to connect outside."
-msgstr "%s外接続するには、このプロキシを使用できるようにするためのプロキシURL 。"
+msgstr "%s を許可するプロキシ URL は、このプロキシで外部接続するのに使用されます。"
 
 #: usr/local/www/system_advanced_misc.php:240
 #: usr/local/www/system_advanced_misc.php:266
@@ -37914,7 +37989,9 @@ msgstr "プロキシポート"
 msgid ""
 "Proxy port to use when %s connects to the proxy URL configured above. "
 "Default is 8080 for http protocol or 443 for ssl."
-msgstr "デフォルト "%sプロキシURLに上記のように構成されています。接続するときに使用するプロキシポートは、 「SSLのHTTPプロトコルまたは443のために8080です。"
+msgstr ""
+"上記で構成したプロキシ URL への %s 接続時に使用されるプロキシポート。"
+"デフォルトは、http の場合は 8080、ssl の場合は 443 です。"
 
 #: usr/local/www/system_advanced_misc.php:248
 #: usr/local/www/system_advanced_misc.php:274
@@ -37923,7 +38000,7 @@ msgstr "デフォルト "%sプロキシURLに上記のように構成されて�
 #: usr/local/www/system_advanced_misc.php:344
 #: usr/local/www/system_advanced_misc.php:344
 msgid "Proxy Username"
-msgstr "[プロキシユーザー名"
+msgstr "プロキシユーザ名"
 
 #: usr/local/www/system_advanced_misc.php:252
 #: usr/local/www/system_advanced_misc.php:278
