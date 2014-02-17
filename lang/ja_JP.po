@@ -37968,7 +37968,7 @@ msgstr "プロキシ URL"
 #: usr/local/www/system_advanced_misc.php:332
 #, php-format
 msgid "Proxy url for allowing %s to use this proxy to connect outside."
-msgstr "%s を許可するプロキシ URL は、このプロキシで外部接続するのに使用されます。"
+msgstr "このプロキシでの外部接続に %s を使用可能にするプロキシ URL"
 
 #: usr/local/www/system_advanced_misc.php:240
 #: usr/local/www/system_advanced_misc.php:266
@@ -37991,7 +37991,7 @@ msgid ""
 "Default is 8080 for http protocol or 443 for ssl."
 msgstr ""
 "上記で構成したプロキシ URL への %s 接続時に使用されるプロキシポート。"
-"デフォルトは、http の場合は 8080、ssl の場合は 443 です。"
+"デフォルトは、http なら 8080、ssl なら 443 です。"
 
 #: usr/local/www/system_advanced_misc.php:248
 #: usr/local/www/system_advanced_misc.php:274
@@ -38010,7 +38010,7 @@ msgstr "プロキシユーザ名"
 #: usr/local/www/system_advanced_misc.php:348
 #, php-format
 msgid "Proxy username for allowing %s to use this proxy to connect outside"
-msgstr "%s外接続するには、このプロキシを使用できるようにするためのプロキシのユーザー名"
+msgstr "このプロキシでの外部接続に %s を使用可能にするプロキシユーザ名"
 
 #: usr/local/www/system_advanced_misc.php:256
 #: usr/local/www/system_advanced_misc.php:282
@@ -38019,7 +38019,7 @@ msgstr "%s外接続するには、このプロキシを使用できるように�
 #: usr/local/www/system_advanced_misc.php:352
 #: usr/local/www/system_advanced_misc.php:352
 msgid "Proxy Pass"
-msgstr "プロキシパス"
+msgstr "プロキシパスワード"
 
 #: usr/local/www/system_advanced_misc.php:260
 #: usr/local/www/system_advanced_misc.php:286
@@ -38029,7 +38029,7 @@ msgstr "プロキシパス"
 #: usr/local/www/system_advanced_misc.php:356
 #, php-format
 msgid "Proxy password for allowing %s to use this proxy to connect outside"
-msgstr "%s外接続するには、このプロキシを使用できるようにするためのプロキシパスワード"
+msgstr "このプロキシでの外部接続に %s を使用可能にするプロキシパスワード"
 
 #: usr/local/www/system_advanced_misc.php:264
 #: usr/local/www/system_advanced_misc.php:267
@@ -38069,7 +38069,13 @@ msgid ""
 "refer to this connection. Once the states expire, so will the sticky "
 "connection. Further connections from that host will be redirected to the "
 "next web server in the round robin."
-msgstr "同じWebに送信され、同じ送信元からの接続を持つ方法「連続接続はラウンドロビンのサーバにリダイレクトされ、「この接続を参照して、「サーバ。この「スティッキー接続は、 「限りという状態があるように存在することになる」 。状態は有効期限が切れると、そのスティッキラウンドロビンの次のWebサーバ」接続。そのホストからのさらなる接続はにリダイレクトされます」になります。"
+msgstr ""
+"同じ送信元から同じ Web サーバに送信する接続の場合、"
+"連続した接続は、ラウンドロビン方式でサーバにリダイレクトされます。"
+"この「スティッキー接続」は、この接続を参照するステータスと同じ期間存在します。"
+"ステータスの有効期限が切れると、スティッキー接続の有効期限も切れます。"
+"そのホストからの追加接続はラウンドロビンで、"
+"次の Web サーバにリダイレクトされます。"
 
 #: usr/local/www/system_advanced_misc.php:285
 #: usr/local/www/system_advanced_misc.php:317
@@ -38078,7 +38084,7 @@ msgstr "同じWebに送信され、同じ送信元からの接続を持つ方法
 #: usr/local/www/system_advanced_misc.php:387
 #: usr/local/www/system_advanced_misc.php:387
 msgid "Allow default gateway switching"
-msgstr "デフォルトゲートウェイの切り替えを許可する"
+msgstr "デフォルトゲートウェイの切替えを許可"
 
 #: usr/local/www/system_advanced_misc.php:286
 #: usr/local/www/system_advanced_misc.php:318
@@ -38089,7 +38095,9 @@ msgstr "デフォルトゲートウェイの切り替えを許可する"
 msgid ""
 "If the link where the default gateway resides fails switch the default "
 "gateway to another available one."
-msgstr "別の利用可能な1へのゲートウェイ」 、デフォルトゲートウェイが存在するリンクは、デフォルトを切り替えるに失敗した場合」 。"
+msgstr ""
+"デフォルトゲートウェイとのリンクに障害が発生した場合、"
+"デフォルトゲートウェイを他の使用可能なものと切り替えます。"
 
 #: usr/local/www/system_advanced_misc.php:294
 #: usr/local/www/system_advanced_misc.php:326
@@ -38098,7 +38106,7 @@ msgstr "別の利用可能な1へのゲートウェイ」 、デフォルトゲ�
 #: usr/local/www/system_advanced_misc.php:396
 #: usr/local/www/system_advanced_misc.php:396
 msgid "Power savings"
-msgstr "電力の節約"
+msgstr "省電力"
 
 #: usr/local/www/system_advanced_misc.php:297
 #: usr/local/www/system_advanced_misc.php:329
@@ -38107,7 +38115,7 @@ msgstr "電力の節約"
 #: usr/local/www/system_advanced_misc.php:399
 #: usr/local/www/system_advanced_misc.php:399
 msgid "PowerD"
-msgstr "パワード"
+msgstr "PowerD"
 
 #: usr/local/www/system_advanced_misc.php:300
 #: usr/local/www/system_advanced_misc.php:332
@@ -38116,7 +38124,7 @@ msgstr "パワード"
 #: usr/local/www/system_advanced_misc.php:402
 #: usr/local/www/system_advanced_misc.php:402
 msgid "Use PowerD"
-msgstr "パワードを使う"
+msgstr "PowerD を使用"
 
 #: usr/local/www/system_advanced_misc.php:302
 msgid ""
@@ -38129,7 +38137,16 @@ msgid ""
 "attempts to strike a balance by degrading performance when the system "
 "appears idle and increasing it when the system is busy. It offers a good "
 "balance between a small performance loss for greatly "
-msgstr "「パワードユーティリティは、システムの状態を監視し、様々な電力制御に設定」は、それに応じてオプションを。それは三つのモード（最大値、最小値、および適応）提供しています」個別のAC電源または電池でいる間に選択することができます。モード」 、最大値、最小値、および適応が最大、最小、 ADPを省略することができる。最大」モードは、最高のパフォーマンス値を選択します。最小モードが選択され、「最も節電効果を得るために、最も低いパフォーマンス値を。適応モードでは、アイドル表示され、システムがビジー状態のときにそれを増やす」システムがときのパフォーマンスを低下させることでバランスを取るしようとします」 。それが大幅用の小さなパフォーマンスの低下との間に良好な「バランスを提供しています"
+msgstr ""
+"powerd ユーティリティはシステムの状態を監視して、様々な電源コントロールオプションを"
+"状況に応じて設定します。"
+"3 つのモードが提供されていて ( 最大、最小、適応 )、AC 電源やバッテリで個々に選択可能です。"
+"モードの最大、最小、適応は、max、min、adp、と省略表記されます。"
+"最大モードは、最も高いパフォーマンスとなる値を選択します。"
+"最小モードは、最も低いパフォーマンスの値を選択することで、最大限の省電力を行います。"
+"適応モードは、パフォーマンスと省電力をうまく均衡させようとします。"
+"システムがアイドルに見える場合はパフォーマンスを落とし、システムがビジーの場合はパフォーマンスを上昇させます。"
+"少しパフォーマンスは落ちますが、"
 
 #: usr/local/www/system_advanced_misc.php:318
 #: usr/local/www/system_advanced_misc.php:361
