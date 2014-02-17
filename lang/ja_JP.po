@@ -53,16 +53,16 @@ msgstr "PEAR_ERROR_EXCEPTION は廃止されました。PEAR_ErrorStack クラ�
 #: etc/inc/PEAR.inc:1023
 #, php-format
 msgid ""
-"[%s: message="%s" code=%d mode=callback callback=%s prefix="%s" info="%s"
-""]"
-msgstr""
-"[%s: message="%s" code=%d mode=callback callback=%s prefix="%s" info="%s"
-""]"
+"[%s: message=\"%s\" code=%d mode=callback callback=%s prefix=\"%s\" info=\"%s"
+"\"]"
+msgstr ""
+"[%s: message=\"%s\" code=%d mode=callback callback=%s prefix=\"%s\" info=\"%s"
+"\"]"
 
 #: etc/inc/PEAR.inc:1041
 #, php-format
-msgid "[%s: message="%s" code=%d mode=%s level=%s prefix="%s" info="%s"]"
-msgstr "[%s: message="%s" code=%d mode=%s level=%s prefix="%s" info="%s"]"
+msgid "[%s: message=\"%s\" code=%d mode=%s level=%s prefix=\"%s\" info=\"%s\"]"
+msgstr "[%s: message=\"%s\" code=%d mode=%s level=%s prefix=\"%s\" info=\"%s\"]"
 
 #: etc/inc/array_intersect_key.inc:37 etc/inc/array_intersect_key.inc:37
 msgid "Wrong parameter count for array_intersect_key()"
@@ -111,8 +111,8 @@ msgstr "実行中: %s "
 #: etc/inc/auth.inc:806 etc/inc/auth.inc:1057 etc/inc/auth.inc:665
 #: etc/inc/auth.inc:737 etc/inc/auth.inc:806 etc/inc/auth.inc:1057
 #, php-format
-msgid "ERROR! Could not connect to server %s."
-msgstr "エラー! サーバ %s に接続できませんでした"
+msgid "ERROR!  Could not connect to server %s."
+msgstr "エラー！ %s サーバに接続できません"
 
 #: etc/inc/auth.inc:674 etc/inc/auth.inc:683 etc/inc/auth.inc:683
 #, php-format
@@ -122,9 +122,10 @@ msgstr "LDAP：ホスト %s を参照しましたが、CA を検索できませ�
 #: etc/inc/auth.inc:783 etc/inc/auth.inc:792 etc/inc/auth.inc:793
 #: etc/inc/auth.inc:793
 msgid ""
-"ERROR! ldap_get_user_ous() backed selected with no LDAP authentication "
+"ERROR!  ldap_get_user_ous() backed selected with no LDAP authentication "
 "server defined."
-msgstr "エラー! ldap_get_user_ous() バックエンドが選択されましたが"
+msgstr ""
+"エラー! ldap_get_user_ous() バックエンドが選択されましたが"
 "LDAP 認証サーバが定義されていません"
 
 #: etc/inc/auth.inc:807 etc/inc/auth.inc:816 etc/inc/auth.inc:818
@@ -160,7 +161,7 @@ msgstr "エラー! ldap_get_groups() サーバ %s をバインドできません
 #: etc/inc/auth.inc:1020 etc/inc/auth.inc:1029 etc/inc/auth.inc:1033
 #: etc/inc/auth.inc:1036 etc/inc/auth.inc:1036
 msgid ""
-"ERROR! ldap_backed() called with no LDAP authentication server defined. "
+"ERROR! ldap_backed() called with no LDAP authentication server defined.  "
 "Defaulting to local user database. Visit System -> User Manager."
 msgstr ""
 "エラー! ldap_backed() が LDAP 認証サーバの定義がない状態で呼ばれました"
@@ -278,7 +279,7 @@ msgid "Upgrading m0n0wall configuration to pfSense... "
 msgstr "m0n0wall 構成を pfSense にアップグレードしています... "
 
 #: etc/inc/config.inc:103 etc/inc/config.inc:103
-msgid "ERROR! Could not convert m0n0wall -> pfsense in config.xml"
+msgid "ERROR!  Could not convert m0n0wall -> pfsense in config.xml"
 msgstr "エラー! config.xml で m0n0wall を pfsense に変換できませんでした"
 
 #: etc/inc/config.inc:133 etc/inc/config.inc:133
@@ -360,7 +361,7 @@ msgstr "フィルタルールの読み込み"
 
 #: etc/inc/filter.inc:245 etc/inc/filter.inc:243 etc/inc/filter.inc:242
 #: etc/inc/filter.inc:217 etc/inc/filter.inc:217
-msgid "Filter is disabled. Not loading rules."
+msgid "Filter is disabled.  Not loading rules."
 msgstr "フィルタは無効です。ルールは読み込まれません"
 
 #: etc/inc/filter.inc:247 etc/inc/filter.inc:418 etc/inc/interfaces.inc:217
@@ -548,7 +549,7 @@ msgstr "%1$s とのルートを %2$s に設定します"
 #: etc/inc/filter.inc:694
 #, php-format
 msgid ""
-"An error occurred while trying to find the interface got %s . The rule has "
+"An error occurred while trying to find the interface got %s .  The rule has "
 "not been added."
 msgstr ""
 "%s を持つインタフェースを検索中にエラーが発生しました"
@@ -960,21 +961,21 @@ msgstr ""
 #: etc/inc/interfaces.inc:2149 etc/inc/interfaces.inc:2149
 #, php-format
 msgid "Interface %s changed to hostap mode"
-msgstr "インターフェース %s は hostap モードに変更されました"
+msgstr "インタフェース %s は hostap モードに変更されました"
 
 #: etc/inc/interfaces.inc:2121 etc/inc/interfaces.inc:2189
 #: etc/inc/interfaces.inc:2108 etc/inc/interfaces.inc:2148
 #: etc/inc/interfaces.inc:2153 etc/inc/interfaces.inc:2153
 #, php-format
 msgid "Interface %s changed to adhoc mode"
-msgstr "インターフェース %s はアドホックモードに変更されました"
+msgstr "インタフェース %s はアドホックモードに変更されました"
 
 #: etc/inc/interfaces.inc:2125 etc/inc/interfaces.inc:2193
 #: etc/inc/interfaces.inc:2112 etc/inc/interfaces.inc:2152
 #: etc/inc/interfaces.inc:2157 etc/inc/interfaces.inc:2157
 #, php-format
 msgid "Interface %s changed to infrastructure mode"
-msgstr "インターフェース %s はインフラストラクチャーモードに変更されました"
+msgstr "インタフェース %s はインフラストラクチャーモードに変更されました"
 
 #: etc/inc/interfaces.inc:2137 etc/inc/interfaces.inc:2205
 #: etc/inc/interfaces.inc:2124 etc/inc/interfaces.inc:2164
@@ -1025,8 +1026,8 @@ msgstr ""
 #: etc/inc/interfaces.inc:3593 etc/inc/interfaces.inc:3538
 #: etc/inc/interfaces.inc:3538
 #, php-format
-msgid "Invalid interface "%s" in interface_dhcp_configure()"
-msgstr "interface_dhcp_configure(): インタフェース "%s" は無効です"
+msgid "Invalid interface \"%s\" in interface_dhcp_configure()"
+msgstr "interface_dhcp_configure(): インタフェース %s は無効です"
 
 #: etc/inc/interfaces.inc:3064 etc/inc/interfaces.inc:3548
 #: etc/inc/interfaces.inc:3408 etc/inc/interfaces.inc:3501
@@ -1642,7 +1643,7 @@ msgstr "エラー: dhcpd.conf を services_dhcpdv4_configure() で開けませ�
 
 #: etc/inc/services.inc:353 etc/inc/services.inc:434 etc/inc/services.inc:461
 #: etc/inc/services.inc:463 etc/inc/services.inc:468 etc/inc/services.inc:469
-msgid "Warning! DHCP Failover setup and no CARP virtual IP's defined!"
+msgid "Warning!  DHCP Failover setup and no CARP virtual IP's defined!"
 msgstr "警告！DHCP フェールオーバーがセットアップされていますが、CARP 仮想 IP が定義されていません！"
 
 #: etc/inc/services.inc:949 etc/inc/services.inc:1078
@@ -2067,7 +2068,7 @@ msgstr "キュー名"
 #: etc/inc/shaper.inc:1136 etc/inc/shaper.inc:1137 etc/inc/shaper.inc:1138
 #: etc/inc/shaper.inc:1142 etc/inc/shaper.inc:1185 etc/inc/shaper.inc:1185
 msgid ""
-"Enter the name of the queue here. Do not use spaces and limit the size to "
+"Enter the name of the queue here.  Do not use spaces and limit the size to "
 "15 characters."
 msgstr ""
 "ここにキューの名前を入力してください。"
@@ -2095,7 +2096,7 @@ msgstr "優先度"
 #: etc/inc/shaper.inc:1143 etc/inc/shaper.inc:1144 etc/inc/shaper.inc:1145
 #: etc/inc/shaper.inc:1149 etc/inc/shaper.inc:1192 etc/inc/shaper.inc:1192
 msgid ""
-"For hfsc, the range is 0 to 7. The default is 1. Hfsc queues with a higher "
+"For hfsc, the range is 0 to 7. The default is 1.  Hfsc queues with a higher "
 "priority are preferred in the case of overload."
 msgstr ""
 "HFSC の範囲は 0 〜 7 で、デフォルトは 1 です。"
@@ -2746,9 +2747,9 @@ msgstr "バックログキューの帯域幅を共有 - 優先度が上書きさ
 #: etc/inc/shaper.inc:1941 etc/inc/shaper.inc:1943 etc/inc/shaper.inc:1944
 #: etc/inc/shaper.inc:1949 etc/inc/shaper.inc:2007 etc/inc/shaper.inc:2007
 msgid ""
-"The format for service curve specifications is (m1, d, m2). m2 controls the "
-"bandwidth assigned to the queue. m1 and d are optional and can be used to "
-"control the initial bandwidth assignment. For the first d milliseconds the "
+"The format for service curve specifications is (m1, d, m2).  m2 controls the "
+"bandwidth assigned to the queue.  m1 and d are optional and can be used to "
+"control the initial bandwidth assignment.  For the first d milliseconds the "
 "queue gets the bandwidth given as m1, afterwards the value given in m2."
 msgstr ""
 "サービスカーブの仕様形式は、(m1、d、m2) です。 "
@@ -3414,7 +3415,7 @@ msgstr "PPTP の VPN サービスの構成をしています..."
 
 #: etc/inc/vpn.inc:1062 etc/inc/vpn.inc:1068 etc/inc/vpn.inc:1066
 #: etc/inc/vpn.inc:1075 etc/inc/vpn.inc:1088 etc/inc/vpn.inc:1087
-msgid "Could not kill mpd within 3 seconds. Trying again."
+msgid "Could not kill mpd within 3 seconds.   Trying again."
 msgstr "3 秒以内に MPD を殺せませんでした。再試行しています"
 
 #: etc/inc/vpn.inc:1085 etc/inc/vpn.inc:1091 etc/inc/vpn.inc:1089
@@ -3501,7 +3502,8 @@ msgstr "'%s' の VPN エンドポイントを確立できませんでした"
 msgid ""
 "IPSEC: ERROR: One of the endpoints is not a IP address. Old EP '%1$s' new EP "
 "'%2$s'"
-msgstr "IPSEC: エラー: エンドポイントの 1 つが IP アドレスではありません"
+msgstr ""
+"IPSEC: エラー: エンドポイントの 1 つが IP アドレスではありません"
 "旧 EP '%1$s' 新 EP '%2$s'"
 
 #: etc/inc/vpn.inc:1777 etc/inc/vpn.inc:1787 etc/inc/vpn.inc:1772
@@ -3510,7 +3512,8 @@ msgstr "IPSEC: エラー: エンドポイントの 1 つが IP アドレスで�
 msgid ""
 "IPSEC: ERROR: One of the remote endpoints is not a IP address. Old RG '%1$s' "
 "new RG '%2$s'"
-msgstr "IPSEC: エラー: リモートエンドポイントの 1 つが IP アドレスではありません"
+msgstr ""
+"IPSEC: エラー: リモートエンドポイントの 1 つが IP アドレスではありません"
 " 旧 RG '%1$s' 新 RG '%2$s'"
 
 #: etc/inc/vpn.inc:1833 etc/inc/vpn.inc:1843 etc/inc/vpn.inc:1835
@@ -3596,19 +3599,19 @@ msgstr "send() の %s パラメータは XML_RPC_Message オブジェクトで�
 #, php-format
 msgid ""
 "Connection to proxy server \n"
-" %1$s:%2$s failed. %3$s"
+"                              %1$s:%2$s failed. %3$s"
 msgstr ""
 "プロキシサーバに接続しています\n"
-"%1$s: %2$s 失敗しました。%3$s"
+"                              %1$s: %2$s 失敗しました。%3$s"
 
 #: etc/inc/xmlrpc_client.inc:957 etc/inc/xmlrpc_client.inc:957
 #, php-format
 msgid ""
 "Connection to RPC server \n"
-" %1$s:%2$s failed. %3$s"
+"                              %1$s:%2$s failed. %3$s"
 msgstr ""
 "PRC サーバに接続しています\n"
-"%1$s: %2$s 失敗しました。%3$s"
+"                              %1$s: %2$s 失敗しました。%3$s"
 
 #: etc/inc/xmlrpc_client.inc:1330 etc/inc/xmlrpc_client.inc:1330
 msgid "The submitted request did not contain this parameter"
@@ -3745,11 +3748,11 @@ msgstr "CmdCHAIN ​​を実行しています -> %1$s - %2$s"
 
 #: etc/inc/cmd_chain.inc:109 etc/inc/cmd_chain.inc:111
 #, php-format
-msgid "%1$s failed with return code -> %2$s. The command was %3$s"
+msgid "%1$s failed with return code -> %2$s.  The command was %3$s"
 msgstr "%1$s は失敗しました: 戻りコード: %2$s コマンド: %3$s"
 
 #: etc/inc/config.console.inc:58 etc/inc/config.console.inc:58
-msgid "DANGER! WARNING! ACHTUNG!"
+msgid "DANGER!  WARNING!  ACHTUNG!"
 msgstr "危険！ 警告！ 注意！"
 
 #: etc/inc/config.console.inc:59 etc/inc/config.console.inc:59
@@ -3888,14 +3891,14 @@ msgid "Config.xml unlocked."
 msgstr "config.xml がロック解除されました"
 
 #: etc/inc/config.lib.inc:82 etc/inc/config.lib.inc:82
-msgid "Invalid password entered. Please try again."
+msgid "Invalid password entered.  Please try again."
 msgstr "無効なパスワードが入力されました。再入力してください"
 
 #: etc/inc/config.lib.inc:110 etc/inc/config.lib.inc:140
 #: etc/inc/config.lib.inc:271 etc/inc/config.lib.inc:110
 #: etc/inc/config.lib.inc:140 etc/inc/config.lib.inc:271
 msgid ""
-"Config.xml is corrupted and is 0 bytes. Could not restore a previous backup."
+"Config.xml is corrupted and is 0 bytes.  Could not restore a previous backup."
 msgstr ""
 "config.xml が破損して 0 バイトになっています。前回のバックアップを復元できません"
 
@@ -3931,25 +3934,25 @@ msgstr ""
 
 #: etc/inc/config.lib.inc:249 etc/inc/config.lib.inc:249
 #, php-format
-msgid "XML configuration file not found. %s cannot continue booting."
+msgid "XML configuration file not found.  %s cannot continue booting."
 msgstr "XML 構成ファイルがありません。%s は起動を続行できません"
 
 #: etc/inc/config.lib.inc:255 etc/inc/config.lib.inc:255
 msgid ""
-"Last known config found and restored. Please double check your "
+"Last known config found and restored.  Please double check your "
 "configuration file for accuracy."
 msgstr ""
-"前回の構成を発見して復元しました"
+"前回の構成を発見して復元しました"
 "正確を期すために、構成ファイルを再確認して下さい"
 
 #: etc/inc/config.lib.inc:317 etc/inc/config.lib.inc:320
 #: etc/inc/config.lib.inc:320
-msgid "Disk is dirty. Running fsck -y"
+msgid "Disk is dirty.  Running fsck -y"
 msgstr "ディスクが破損しています。fsck -y を実行しています"
 
 #: etc/inc/config.lib.inc:328 etc/inc/config.lib.inc:331
 #: etc/inc/config.lib.inc:331
-msgid "File system is dirty. Launching FSCK for /"
+msgid "File system is dirty.  Launching FSCK for /"
 msgstr "ファイルシステムが破損しています。/ に対する FSCK を起動しています"
 
 #: etc/inc/config.lib.inc:379 etc/inc/config.lib.inc:382
@@ -4033,7 +4036,7 @@ msgstr "%2$d 行: %1$s"
 #: etc/inc/config.lib.inc:759 etc/inc/config.lib.inc:761
 #: etc/inc/config.lib.inc:759 etc/inc/config.lib.inc:761
 #, php-format
-msgid "The backup cache file %s is corrupted. Unlinking."
+msgid "The backup cache file %s is corrupted.  Unlinking."
 msgstr "バックアップキャッシュファイル %s が破損しています。リンク解除しています"
 
 #: etc/inc/easyrule.inc:116 etc/inc/easyrule.inc:117 etc/inc/easyrule.inc:117
@@ -4141,7 +4144,7 @@ msgstr "不明な許可エラーです"
 #: etc/inc/filter_log.inc:201
 #, php-format
 msgid ""
-"There was a error parsing rule: %s. Please report to mailing list or forum."
+"There was a error parsing rule: %s.   Please report to mailing list or forum."
 msgstr ""
 "解析ルールにエラーが発生しました: %s メーリングリストかフォーラムに報告してください"
 
@@ -4157,7 +4160,8 @@ msgstr "サービス %1$s/%2$s: %3$s"
 #, php-format
 msgid ""
 "Removing static route for monitor %1$s and adding a new route through %2$s"
-msgstr "モニタ %1$s の静的ルートを削除し、%2$s 経由の新規ルートを追加しています"
+msgstr ""
+"モニタ %1$s の静的ルートを削除し、%2$s 経由の新規ルートを追加しています"
 
 #: etc/inc/gwlb.inc:501 etc/inc/gwlb.inc:727 etc/inc/gwlb.inc:750
 #, php-format
@@ -4482,11 +4486,11 @@ msgstr "診断: 出荷時の既定値: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:58 etc/inc/priv.defs.inc:58
 msgid "WebCfg - Diagnostics: Show States page"
-msgstr "Web 設定 - 診断: ステータス表示ページ"
+msgstr "Web 設定 - 診断: ステータス表示ページ"
 
 #: etc/inc/priv.defs.inc:59 etc/inc/priv.defs.inc:59
 msgid "Allow access to the 'Diagnostics: Show States' page."
-msgstr "診断: ステータス表示: ページへのアクセスを許可"
+msgstr "診断: ステータス表示: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:64 etc/inc/priv.defs.inc:70 etc/inc/priv.defs.inc:70
 msgid "WebCfg - Status: IPsec page"
@@ -5134,7 +5138,7 @@ msgstr "Web 設定 - インタフェース: WAN ページ"
 #: etc/inc/priv.defs.inc:455 etc/inc/priv.defs.inc:451
 #: etc/inc/priv.defs.inc:451
 msgid "Allow access to the 'Interfaces' page."
-msgstr "'インタフェース: ページへのアクセスを許可"
+msgstr "インタフェース: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:436 etc/inc/priv.defs.inc:454
 #: etc/inc/priv.defs.inc:460 etc/inc/priv.defs.inc:456
@@ -5467,7 +5471,8 @@ msgstr "Web 設定 - サービス: ロードバランサ: リレープロトコ�
 #: etc/inc/priv.defs.inc:619
 msgid ""
 "Allow access to the 'Services: Load Balancer: Relay Protocol: Edit' page."
-msgstr "サービス: ロードバランサ: リレープロトコル: 編集: ページへのアクセスを許可"
+msgstr ""
+"サービス: ロードバランサ: リレープロトコル: 編集: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:604 etc/inc/priv.defs.inc:622
 #: etc/inc/priv.defs.inc:628 etc/inc/priv.defs.inc:624
@@ -5668,7 +5673,8 @@ msgstr "Web 設定 - サービス: キャプティブポータル: MAC アドレ
 #: etc/inc/priv.defs.inc:727
 msgid ""
 "Allow access to the 'Services: Captive portal: Edit MAC Addresses' page."
-msgstr "サービス: キャプティブポータル: MAC アドレス: 編集: ページへのアクセスを許可"
+msgstr ""
+"サービス: キャプティブポータル: MAC アドレス: 編集: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:712 etc/inc/priv.defs.inc:730
 #: etc/inc/priv.defs.inc:736 etc/inc/priv.defs.inc:744
@@ -5753,7 +5759,8 @@ msgstr "Web 設定 - サービス: DNS フォワーダ: ドメイン上書き編
 #: etc/inc/priv.defs.inc:787
 msgid ""
 "Allow access to the 'Services: DNS Forwarder: Edit Domain Override' page."
-msgstr "サービス: DNS フォワーダ: ドメイン上書き編集: ページへのアクセスを許可"
+msgstr ""
+"サービス: DNS フォワーダ: ドメイン上書き編集: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:760 etc/inc/priv.defs.inc:778
 #: etc/inc/priv.defs.inc:784 etc/inc/priv.defs.inc:792
@@ -6452,7 +6459,8 @@ msgstr "Web 設定 - システム: ファームウェア: 手動更新 ( プロ�
 #: etc/inc/priv.defs.inc:1149
 msgid ""
 "Allow access to the 'System: Firmware: Manual Update: Progress bar' page."
-msgstr "システム: ファームウェア: 手動更新: プログレスバー: ページへのアクセスを許可"
+msgstr ""
+"システム: ファームウェア: 手動更新: プログレスバー: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:1122 etc/inc/priv.defs.inc:1140
 #: etc/inc/priv.defs.inc:1146 etc/inc/priv.defs.inc:1154
@@ -6770,17 +6778,17 @@ msgstr "SSL 接続を確立するには、OpenSSL 拡張を有効にする必要
 
 #: etc/inc/smtp.inc:233 etc/inc/smtp.inc:233
 #, php-format
-msgid "could not resolve host "%s""
+msgid "could not resolve host \"%s\""
 msgstr "ホスト %s を解決できません"
 
 #: etc/inc/smtp.inc:237 etc/inc/smtp.inc:237
 #, php-format
-msgid "domain "%s" resolved to an address excluded to be valid"
-msgstr "domain "%s" が解決されたアドレスは、有効アドレスから除外されています"
+msgid "domain \"%s\" resolved to an address excluded to be valid"
+msgstr "ドメイン %s が解決されたアドレスは、有効アドレスから除外されています"
 
 #: etc/inc/smtp.inc:239 etc/inc/smtp.inc:239
 #, php-format
-msgid "Connecting to host address "%1$s" port %2$s..."
+msgid "Connecting to host address \"%1$s\" port %2$s..."
 msgstr "ホストアドレス: %1$s ポート: %2$s に接続しています..."
 
 #: etc/inc/smtp.inc:246 etc/inc/smtp.inc:246
@@ -6789,8 +6797,8 @@ msgstr "-3 ソケットを作成できません"
 
 #: etc/inc/smtp.inc:248 etc/inc/smtp.inc:248
 #, php-format
-msgid "-4 dns lookup on hostname "%s" failed"
-msgstr "-4 ホスト名 "%s" の DNS ルックアップに失敗しました"
+msgid "-4 dns lookup on hostname \"%s\" failed"
+msgstr "-4 ホスト名 %s の DNS ルックアップに失敗しました"
 
 #: etc/inc/smtp.inc:250 etc/inc/smtp.inc:250
 msgid "-5 connection refused or timed out"
@@ -6806,8 +6814,8 @@ msgstr "-7 setvbuf() 呼び出しに失敗しました"
 
 #: etc/inc/smtp.inc:256 etc/inc/smtp.inc:256
 #, php-format
-msgid "could not connect to the host "%1$s": %2$s"
-msgstr "ホスト "%1$s" に接続できません: %2$s"
+msgid "could not connect to the host \"%1$s\": %2$s"
+msgstr "ホスト %1$s に接続できません: %2$s"
 
 #: etc/inc/smtp.inc:265 etc/inc/smtp.inc:265
 msgid ""
@@ -6857,8 +6865,8 @@ msgstr "POP3 認証パスワードは指定されていません"
 
 #: etc/inc/smtp.inc:413 etc/inc/smtp.inc:413
 #, php-format
-msgid "Resolving POP3 authentication host "%s"..."
-msgstr "POP3 認証ホスト "%s" を名前解決しています..."
+msgid "Resolving POP3 authentication host \"%s\"..."
+msgstr "POP3 認証ホスト %s を名前解決しています..."
 
 #: etc/inc/smtp.inc:420 etc/inc/smtp.inc:420
 msgid "POP3 authentication server greeting was not found"
@@ -6878,13 +6886,13 @@ msgstr "接続する SMTP を決定できません"
 
 #: etc/inc/smtp.inc:451 etc/inc/smtp.inc:451
 #, php-format
-msgid "Resolving SMTP server domain "%s"..."
-msgstr "SMTP サーバドメイン "%s" の名前解決しています...
+msgid "Resolving SMTP server domain \"%s\"..."
+msgstr "SMTP サーバドメイン %s の名前解決しています..."
 
 #: etc/inc/smtp.inc:463 etc/inc/smtp.inc:463
 #, php-format
-msgid "Connected to SMTP server "%s"."
-msgstr "SMTP サーバ "%s" に接続されました"
+msgid "Connected to SMTP server \"%s\"."
+msgstr "SMTP サーバ %s に接続されました"
 
 #: etc/inc/smtp.inc:517 etc/inc/smtp.inc:519 etc/inc/smtp.inc:519
 msgid "server does not require authentication"
@@ -6901,7 +6909,8 @@ msgstr ""
 #: etc/inc/smtp.inc:613 etc/inc/smtp.inc:615 etc/inc/smtp.inc:615
 msgid ""
 "direct delivery connection is already established and sender is already set"
-msgstr "直接配送接続は確立しており、送信者も設定されています"
+msgstr ""
+"直接配送接続は確立しており、送信者も設定されています"
 
 #: etc/inc/smtp.inc:621 etc/inc/smtp.inc:623 etc/inc/smtp.inc:623
 msgid "connection is not in the initial state"
@@ -6914,7 +6923,8 @@ msgstr "有効な直接受信者に指定されていません"
 #: etc/inc/smtp.inc:662 etc/inc/smtp.inc:664 etc/inc/smtp.inc:664
 msgid ""
 "it is not possible to deliver directly to recipients of different domains"
-msgstr "異なるドメインの受信者に直接配送することはできません"
+msgstr ""
+"異なるドメインの受信者に直接配送することはできません"
 
 #: etc/inc/smtp.inc:667 etc/inc/smtp.inc:669 etc/inc/smtp.inc:669
 msgid "connection is already established and the recipient is already set"
@@ -9456,9 +9466,11 @@ msgstr "エイリアス名"
 #: usr/local/www/firewall_aliases_edit.php:585
 #: usr/local/www/firewall_aliases_import.php:137
 msgid ""
-"The name of the alias may only consist of the characters a-z, A-Z and 0-9."
+"The name of the alias may only consist of the characters \"a-z, A-Z and "
+"0-9\"."
 msgstr ""
-"エイリアス名には a-z、A-Z、0-9 の文字のみが使用できます"
+"エイリアス名には a-z、A-Z、0-9 の"
+"文字のみが使用できます"
 
 #: usr/local/www/firewall_aliases_import.php:142
 #: usr/local/www/interfaces_lagg_edit.php:211
@@ -9522,7 +9534,7 @@ msgstr "インポートするエイリアス"
 #: usr/local/www/firewall_aliases_import.php:148
 #: usr/local/www/firewall_aliases_import.php:148
 msgid ""
-"Paste in the aliases to import separated by a carriage return. Common "
+"Paste in the aliases to import separated by a carriage return.  Common "
 "examples are lists of IPs, networks, blacklists, etc."
 msgstr ""
 "インポートするエイリアスを区切るには、改行コードを貼り付けてください。"
@@ -10204,7 +10216,7 @@ msgstr "指定した IP アドレスには仮想 IP エントリが既に存在�
 
 #: usr/local/www/firewall_virtual_ip_edit.php:150
 #, php-format
-msgid "VHID %s is already in use. Pick a unique number."
+msgid "VHID %s is already in use.  Pick a unique number."
 msgstr "VHID %s は既に使用されています。固有の番号を選んでください"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:154
@@ -10235,7 +10247,7 @@ msgstr ""
 #: usr/local/www/firewall_virtual_ip_edit.php:197
 #, php-format
 msgid ""
-"Sorry, we could not locate an interface with a matching subnet for %s. "
+"Sorry, we could not locate an interface with a matching subnet for %s.  "
 "Please add an IP alias in this subnet on this interface."
 msgstr ""
 "%s のサブネットと一致するインタフェースが見つかりません。"
@@ -10809,7 +10821,7 @@ msgstr "広告周期"
 #: usr/local/www/firewall_virtual_ip_edit.php:479
 #: usr/local/www/firewall_virtual_ip_edit.php:479
 msgid ""
-"The frequency that this machine will advertise. 0 means usually master. "
+"The frequency that this machine will advertise.  0 means usually master. "
 "Otherwise the lowest combination of both values in the cluster determines "
 "the master."
 msgstr ""
@@ -10997,7 +11009,7 @@ msgstr "注意: "
 #: usr/local/www/firewall_virtual_ip_edit.php:503
 msgid ""
 "Proxy ARP and Other type Virtual IPs cannot be bound to by anything running "
-"on the firewall, such as IPsec, OpenVPN, etc. Use a CARP or IP Alias type "
+"on the firewall, such as IPsec, OpenVPN, etc.  Use a CARP or IP Alias type "
 "address for these cases."
 msgstr ""
 "プロキシ ARP 及びその他のタイプの仮想 IP は、IPsec、OpenVPN 等のように"
@@ -12241,7 +12253,7 @@ msgstr "IPSec VPN"
 #: usr/local/www/diag_logs_ipsec.php:123 usr/local/www/diag_logs_ipsec.php:122
 #: usr/local/www/diag_logs_ipsec.php:123
 #, php-format
-msgid "Last %s IPsec log entries"
+msgid "Last %s  IPsec log entries"
 msgstr "最新 %s IPsec ログエントリ"
 
 #: usr/local/www/diag_logs_ipsec.php:135 usr/local/www/diag_logs_ppp.php:99
@@ -12797,7 +12809,7 @@ msgstr "ブートスライスに設定: "
 
 #: usr/local/www/diag_nanobsd.php:86 usr/local/www/diag_nanobsd.php:85
 #: usr/local/www/diag_nanobsd.php:85
-msgid "Duplicating slice. Please wait, this will take a moment..."
+msgid "Duplicating slice.  Please wait, this will take a moment..."
 msgstr "スライスを複製しています。少し時間がかかりますので、お待ちください..."
 
 #: usr/local/www/diag_nanobsd.php:95 usr/local/www/diag_nanobsd.php:94
@@ -12816,7 +12828,7 @@ msgstr ""
 
 #: usr/local/www/diag_nanobsd.php:97 usr/local/www/diag_nanobsd.php:96
 #: usr/local/www/diag_nanobsd.php:96
-msgid "There was an error while duplicating the slice. Operation aborted."
+msgid "There was an error while duplicating the slice.  Operation aborted."
 msgstr "スライスを複製中にエラーが発生しました。処理を中断しました"
 
 #: usr/local/www/diag_nanobsd.php:128 usr/local/www/interfaces.php:2550
@@ -12948,7 +12960,7 @@ msgstr "コピー先スライス: "
 #: usr/local/www/diag_nanobsd.php:230 usr/local/www/diag_nanobsd.php:221
 #: usr/local/www/diag_nanobsd.php:221
 msgid ""
-"This will duplicate the bootup slice to the alternate slice. Use this if "
+"This will duplicate the bootup slice to the alternate slice.  Use this if "
 "you would like to duplicate the known good working boot partition to the "
 "alternate."
 msgstr ""
@@ -13027,7 +13039,7 @@ msgid ""
 "This will periodically backup the RRD data so it can be restored "
 "automatically on the next boot. Keep in mind that the more frequent the "
 "backup, the more writes will happen to your media."
-msgstr "'
+msgstr ""
 "これは次の起動時に自動的に復元される RRD データを定期的にバックアップするものです。"
 "バックアップをより頻繁に行えば、"
 "メディアへの書き込みもより多く発生することに注意してください"
@@ -14236,7 +14248,7 @@ msgstr "このホストに接続されているインタフェースを選択し
 
 #: usr/local/www/services_wol_edit.php:144
 #: usr/local/www/services_wol_edit.php:144
-msgid "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx"
+msgid "Enter a MAC address  in the following format: xx:xx:xx:xx:xx:xx"
 msgstr "次の形式で MAC アドレスを入力してください: xx:xx:xx:xx:xx:xx"
 
 #: usr/local/www/status_captiveportal.php:58
@@ -14339,7 +14351,7 @@ msgstr "キャプティブポータルゾーン"
 #: usr/local/www/status_captiveportal.php:143
 #: usr/local/www/status_captiveportal.php:143
 msgid "Captiveportal status"
-msgstr "キャプティブポータルステータス"
+msgstr "キャプティブポータルステータス"
 
 #: usr/local/www/status_captiveportal.php:164
 #: usr/local/www/status_captiveportal.php:167
@@ -14824,7 +14836,7 @@ msgstr "ここではインタフェースのブリッジを構成できます"
 #: usr/local/www/interfaces_bridge_edit.php:119
 #: usr/local/www/interfaces_bridge_edit.php:119
 msgid "Member Interfaces"
-msgstr "メンバインターフェイス"
+msgstr "メンバインタフェース"
 
 #: usr/local/www/interfaces_bridge_edit.php:116
 #: usr/local/www/interfaces_bridge_edit.php:124
@@ -14902,7 +14914,7 @@ msgstr "無線インタフェースのブリッジは hostap モードでのみ�
 msgid ""
 "Span interface cannot be part of the bridge. Remove the span interface from "
 "bridge members to continue."
-msgstr "'
+msgstr ""
 "SPAN インタフェースはブリッジの一部にできません。"
 "続行するには、ブリッジのメンバから SPAN インタフェースを削除してください"
 
@@ -14997,8 +15009,8 @@ msgstr "STP インタフェース"
 #: usr/local/www/interfaces_bridge_edit.php:333
 #: usr/local/www/interfaces_bridge_edit.php:333
 msgid ""
-"Enable Spanning Tree Protocol on interface. The if_bridge(4) driver has "
-"support for the IEEE 802.1D Spanning Tree Protocol (STP). STP is used to "
+"Enable Spanning Tree Protocol on interface.  The if_bridge(4) driver has "
+"support for the IEEE 802.1D Spanning Tree Protocol (STP).  STP is used to "
 "detect and remove loops in a network topology."
 msgstr ""
 "インタフェースのスパニングツリープロトコルを有効にします。if_bridge(4) ドライバは "
@@ -15084,8 +15096,8 @@ msgstr "秒"
 #: usr/local/www/interfaces_bridge_edit.php:344
 #: usr/local/www/interfaces_bridge_edit.php:344
 msgid ""
-"Set the time that a Spanning Tree Protocol configuration is valid. The "
-"default is 20 seconds. The minimum is 6 seconds and the maximum is 40 "
+"Set the time that a Spanning Tree Protocol configuration is valid.  The "
+"default is 20 seconds.  The minimum is 6 seconds and the maximum is 40 "
 "seconds."
 msgstr ""
 "スパニングツリープロトコルの構成が有効になる時間を設定してください。"
@@ -15109,7 +15121,7 @@ msgstr "転送時間"
 #: usr/local/www/interfaces_bridge_edit.php:354
 msgid ""
 "Set the time that must pass before an interface begins forwarding packets "
-"when Spanning Tree is enabled. The default is 15 seconds. The minimum is 4 "
+"when Spanning Tree is enabled.  The default is 15 seconds.  The minimum is 4 "
 "seconds and the maximum is 30 seconds."
 msgstr ""
 "スパニングツリーが有効な場合、インタフェースがパケット転送を開始する前に、"
@@ -15133,13 +15145,14 @@ msgstr "ハロータイム"
 #: usr/local/www/interfaces_bridge_edit.php:363
 msgid ""
 "Set the time between broadcasting of Spanning Tree Protocol configuration "
-"messages. The hello time may only be changed when operating in legacy STP "
-"mode. The default is 2 seconds. The minimum is 1 second and the maximum is "
+"messages.  The hello time may only be changed when operating in legacy STP "
+"mode.  The default is 2 seconds.  The minimum is 1 second and the maximum is "
 "2 seconds."
 msgstr ""
 "スパニングツリープロトコル構成メッセージのブロードキャスト間隔を設定してください。"
 "ハロータイムはレガシー STP モードで動作している時のみ変更されます。"
-"デフォルトは 2 秒です。最小値は 1 秒、最大値は 2 秒です"
+"デフォルトは 2 秒です。"
+"最小値は 1 秒、最大値は 2 秒です"
 
 #: usr/local/www/interfaces_bridge_edit.php:359
 #: usr/local/www/interfaces_bridge_edit.php:368
@@ -15148,7 +15161,7 @@ msgstr ""
 #: usr/local/www/interfaces_bridge_edit.php:372
 #: usr/local/www/interfaces_bridge_edit.php:372
 msgid ""
-"Set the bridge priority for Spanning Tree. The default is 32768. The "
+"Set the bridge priority for Spanning Tree.  The default is 32768. The "
 "minimum is 0 and the maximum is 61440."
 msgstr ""
 "スパニングツリーのブリッジ優先度を設定してください。デフォルトは 32768 です。"
@@ -15168,8 +15181,8 @@ msgstr "保留カウント"
 #: usr/local/www/interfaces_bridge_edit.php:378
 #: usr/local/www/interfaces_bridge_edit.php:379
 msgid ""
-"Set the transmit hold count for Spanning Tree. This is the num- ber of "
-"packets transmitted before being rate limited. The default is 6. The "
+"Set the transmit hold count for Spanning Tree.  This is the num- ber of "
+"packets transmitted before being rate limited.  The default is 6.  The "
 "minimum is 1 and the maximum is 10."
 msgstr ""
 "スパニングツリーの転送保留カウント値を設定してください。"
@@ -15178,7 +15191,7 @@ msgstr ""
 
 #: usr/local/www/interfaces_bridge_edit.php:382
 msgid ""
-"Set the Spanning Tree priority of interface to value. The default is 128. "
+"Set the Spanning Tree priority of interface to value.  The default is 128.  "
 "The minimum is 0 and the maximum is 240."
 msgstr ""
 "インタフェースのスパニングツリー優先度を設定してください。デフォルトは 128 です。"
@@ -15200,8 +15213,8 @@ msgstr "パスコスト"
 #: usr/local/www/interfaces_bridge_edit.php:410
 #: usr/local/www/interfaces_bridge_edit.php:410
 msgid ""
-"Set the Spanning Tree path cost of interface to value. The default is "
-"calculated from the link speed. To change a previously selected path cost "
+"Set the Spanning Tree path cost of interface to value.  The default is "
+"calculated from the link speed.  To change a previously selected path cost "
 "back to automatic, set the cost to 0. The minimum is 1 and the maximum is "
 "200000000."
 msgstr ""
@@ -15257,7 +15270,7 @@ msgstr "キャッシュエントリの有効期限"
 #: usr/local/www/interfaces_bridge_edit.php:433
 #: usr/local/www/interfaces_bridge_edit.php:433
 msgid ""
-"Set the timeout of address cache entries to this number of seconds. If "
+"Set the timeout of address cache entries to this number of seconds.  If "
 "seconds is zero, then address cache entries will not be expired. The default "
 "is 240 seconds."
 msgstr ""
@@ -15281,8 +15294,8 @@ msgstr "SPAN ポート"
 #: usr/local/www/interfaces_bridge_edit.php:454
 #: usr/local/www/interfaces_bridge_edit.php:454
 msgid ""
-"Add the interface named by interface as a span port on the bridge. Span "
-"ports transmit a copy of every frame received by the bridge. This is most "
+"Add the interface named by interface as a span port on the bridge.  Span "
+"ports transmit a copy of every frame received by the bridge.  This is most "
 "useful for snooping a bridged network passively on another host connected to "
 "one of the span ports of the bridge."
 msgstr ""
@@ -15316,7 +15329,7 @@ msgstr "エッジポート"
 #: usr/local/www/interfaces_bridge_edit.php:482
 #: usr/local/www/interfaces_bridge_edit.php:482
 msgid ""
-"Set interface as an edge port. An edge port connects directly to end "
+"Set interface as an edge port.  An edge port connects directly to end "
 "stations and cannot create bridging loops in the network; this allows it to "
 "transition straight to forwarding."
 msgstr ""
@@ -15340,7 +15353,7 @@ msgstr "エッジポート自動検出"
 #: usr/local/www/interfaces_bridge_edit.php:502
 #: usr/local/www/interfaces_bridge_edit.php:502
 msgid ""
-"Allow interface to automatically detect edge status. This is the default "
+"Allow interface to automatically detect edge status.  This is the default "
 "for all interfaces added to a bridge."
 msgstr ""
 "インタフェースにエッジステータスの自動検出を許可します。"
@@ -15371,7 +15384,7 @@ msgstr "PTP ポート"
 #: usr/local/www/interfaces_bridge_edit.php:525
 #: usr/local/www/interfaces_bridge_edit.php:525
 msgid ""
-"Set the interface as a point-to-point link. This is required for straight "
+"Set the interface as a point-to-point link.  This is required for straight "
 "transitions to forwarding and should be enabled on a direct link to another "
 "RSTP-capable switch."
 msgstr ""
@@ -15396,7 +15409,7 @@ msgstr "PTP ポート自動検出"
 #: usr/local/www/interfaces_bridge_edit.php:545
 msgid ""
 "Automatically detect the point-to-point status on interface by checking the "
-"full duplex link status. This is the default for interfaces added to the "
+"full duplex link status.  This is the default for interfaces added to the "
 "bridge."
 msgstr ""
 "全二重リンクステータスを確認することで、インタフェースの
@@ -15430,8 +15443,8 @@ msgstr "スティッキーポート"
 #: usr/local/www/interfaces_bridge_edit.php:569
 #: usr/local/www/interfaces_bridge_edit.php:569
 msgid ""
-"Mark an interface as a "sticky" interface. Dynamically learned address "
-"entries are treated as static once entered into the cache. Sticky entries "
+"Mark an interface as a \"sticky\" interface.  Dynamically learned address "
+"entries are treated as static once entered into the cache.  Sticky entries "
 "are never aged out of the cache or replaced, even if the address is seen on "
 "a different interface."
 msgstr ""
@@ -15456,12 +15469,11 @@ msgstr "プライベートポート"
 #: usr/local/www/interfaces_bridge_edit.php:590
 #: usr/local/www/interfaces_bridge_edit.php:590
 msgid ""
-"Mark an interface as a "private" interface. A private interface does not "
+"Mark an interface as a \"private\" interface.  A private interface does not "
 "forward any traffic to any other port that is also a private interface."
 msgstr ""
-"インタフェースを「プライベート」インタフェースとして登録します。"
-"プライベートインタフェースはどんなトラフィックも他のポートへ転送しません。"
-"それがプライベートインタフェースだとしても同様です"
+"インタフェースを「プライベート」インタフェースとして登録します。プライベートインタフェースは"
+"どんなトラフィックも他のポートへ転送しません。それがプライベートインタフェースだとしても同様です。"
 
 #: usr/local/www/interfaces_gif.php:64 usr/local/www/interfaces_gif.php:68
 #: usr/local/www/interfaces_gif.php:68
@@ -15621,7 +15633,7 @@ msgstr ""
 #: usr/local/www/interfaces_gif_edit.php:192
 #: usr/local/www/interfaces_gif_edit.php:203
 #: usr/local/www/interfaces_gif_edit.php:203
-msgid "Route caching "
+msgid "Route caching  "
 msgstr "ルートキャッシング"
 
 #: usr/local/www/interfaces_gif_edit.php:195
@@ -15646,7 +15658,7 @@ msgstr "ECN フレンドリ動作"
 #: usr/local/www/interfaces_gif_edit.php:215
 #: usr/local/www/interfaces_gif_edit.php:215
 msgid ""
-"Note that the ECN friendly behavior violates RFC2893. This should be used "
+"Note that the ECN friendly behavior violates RFC2893.  This should be used "
 "in mutual agreement with the peer."
 msgstr ""
 "ECN フレンドリ動作は RFC2893 違反ですので、注意してください。"
@@ -15778,7 +15790,7 @@ msgstr "経路検索タイプ"
 #: usr/local/www/interfaces_gre_edit.php:205
 msgid ""
 "For correct operation, the GRE device needs a route to the destination that "
-"is less specific than the one over the tunnel. (Basically, there needs to "
+"is less specific than the one over the tunnel.  (Basically, there needs to "
 "be a route to the decapsulating host that does not run over the tunnel, as "
 "this would be a loop."
 msgstr ""
@@ -15990,7 +16002,7 @@ msgstr "エイリアスの編集"
 msgid ""
 "Do you really want to delete this alias? All elements that still use it will "
 "become invalid (e.g. filter rules)!"
-msgstr "
+msgstr ""
 "本当にこのエイリアスを削除しますか？"
 "全ての要素は、まだ使用中であっても無効になります ( 例: フィルタルール ) ！"
 
@@ -16030,7 +16042,8 @@ msgstr ""
 "最小限にすることができます。背景が赤いフィールドでは、ホスト、ネットワーク、ポート"
 "の代わりに、エイリアス名を入力することができます。エイリアスは上記のリストに従って、"
 "解決されます。エイリアスが解決できない ( 例: エイリアスを削除した等 ) 場合、"
-"一致する要素 ( 例: フィルタ / NAT / シェイパルール ) は無効とみなされ、スキップされます"
+"一致する要素 ( 例: フィルタ / NAT / シェイパルール ) は無効とみなされ、"
+"スキップされます。"
 
 #: usr/local/www/firewall_aliases_edit.php:105
 #: usr/local/www/firewall_aliases_edit.php:107
@@ -16248,7 +16261,7 @@ msgstr "頻度を更新"
 #: usr/local/www/firewall_aliases_edit.php:491
 #: usr/local/www/firewall_aliases_edit.php:477
 msgid ""
-"Networks are specified in CIDR format. Select the CIDR mask that pertains "
+"Networks are specified in CIDR format.  Select the CIDR mask that pertains "
 "to each entry. /32 specifies a single IPv4 host, /128 specifies a single "
 "IPv6 host, /24 specifies 255.255.255.0, /64 specifies a normal IPv6 network, "
 "etc. Hostnames (FQDNs) may also be specified, using a /32 mask for IPv4 "
@@ -16266,7 +16279,7 @@ msgstr ""
 
 #: usr/local/www/firewall_aliases_edit.php:465
 msgid ""
-"Enter as many hosts as you would like. Hosts must be specified by their IP "
+"Enter as many hosts as you would like.  Hosts must be specified by their IP "
 "address."
 msgstr ""
 "対象ホストを全て入力してください。"
@@ -16278,7 +16291,7 @@ msgstr ""
 #: usr/local/www/firewall_aliases_edit.php:493
 #: usr/local/www/firewall_aliases_edit.php:479
 msgid ""
-"Enter as many ports as you wish. Port ranges can be expressed by seperating "
+"Enter as many ports as you wish.  Port ranges can be expressed by seperating "
 "with a colon."
 msgstr ""
 "対象ポートを全て入力してください。"
@@ -16294,7 +16307,7 @@ msgid ""
 "Enter as many URLs as you wish. After saving %s will download the URL and "
 "import the items into the alias. Use only with small sets of IP addresses "
 "(less than 3000)."
-msgstr "
+msgstr ""
 "対象 URL を全て入力してください。"
 "保存後に、%s は URL をダウンロードして、項目をエイリアスにインポートします。"
 "対象になる IP アドレス が少数の URL だけを使用してください ( 3000 未満 )"
@@ -16605,7 +16618,7 @@ msgstr ""
 #: usr/local/www/firewall_nat_out_edit.php:135
 #, php-format
 msgid ""
-"Invalid characters detected (%s). Please remove invalid characters and save "
+"Invalid characters detected (%s).  Please remove invalid characters and save "
 "again."
 msgstr ""
 "無効な文字 ( %s ) を検出しました。"
@@ -16887,7 +16900,7 @@ msgstr "外部サブネット IP"
 #: usr/local/www/firewall_nat_1to1_edit.php:329
 msgid ""
 "Enter the external (usually on a WAN) subnet's starting address for the 1:1 "
-"mapping. The subnet mask from the internal address below will be applied to "
+"mapping.  The subnet mask from the internal address below will be applied to "
 "this IP address."
 msgstr ""
 "1:1 マッピングを開始する、外部 ( 通常は WAN ) サブネットのアドレスを"
@@ -17482,8 +17495,8 @@ msgstr "リダイレクトターゲット IP"
 #: usr/local/www/firewall_nat_edit.php:230
 #: usr/local/www/firewall_nat_edit.php:230
 #, php-format
-msgid ""%s" is not a valid redirect target IP address or host alias."
-msgstr ""%s" は有効なリダイレクトターゲット IP アドレス、またはホストエイリアスではありません"
+msgid "\"%s\" is not a valid redirect target IP address or host alias."
+msgstr "%s は有効なリダイレクトターゲット IP アドレス、またはホストエイリアスではありません"
 
 #: usr/local/www/firewall_nat_edit.php:217
 #: usr/local/www/firewall_rules_edit.php:325
@@ -18066,7 +18079,7 @@ msgid ""
 "of a port range, specify the beginning port of the range (the end port will "
 "be calculated automatically)."
 msgstr ""
-"上記で入力した IP アドレスのマシンのポートを指定してください。
+"上記で入力した IP アドレスのマシンのポートを指定してください。"
 "ポート範囲の場合は、範囲の開始ポートを指定してください"
 " ( 最終ポートは自動的に計算されます )"
 
@@ -18591,7 +18604,7 @@ msgstr ""
 msgid ""
 "You must supply either a valid port or port alias for the destination port "
 "entry."
-msgstr "
+msgstr ""
 "送信先ポートエントリに、"
 "有効なポートもしくはポートエイリアスを指定してください"
 
@@ -18624,7 +18637,7 @@ msgstr "有効な送信先を指定してください"
 #: usr/local/www/firewall_nat_out_edit.php:180
 #: usr/local/www/firewall_nat_out_edit.php:186
 #: usr/local/www/firewall_nat_out_edit.php:186
-msgid "Negating destination address of "any" is invalid."
+msgid "Negating destination address of \"any\" is invalid."
 msgstr "「任意」の送信先アドレスの否定は、無効です"
 
 #: usr/local/www/firewall_nat_out_edit.php:168
@@ -18770,7 +18783,7 @@ msgstr "送信先ポート: "
 msgid ""
 "(leave blank for \n"
 "any)"
-msgstr "
+msgstr ""
 "( 任意の場合は \n"
 "空白にしてください )"
 
@@ -18840,7 +18853,7 @@ msgstr "最初にそのインタフェースのアドレスを定義する必要
 #: usr/local/www/firewall_nat_out_edit.php:602
 msgid ""
 "Also note that if you are trying to redirect connections on the LAN select "
-"the "any" option."
+"the \"any\" option."
 msgstr ""
 "また、「任意」オプションを選択した LAN にリダイレクト接続する場合も、"
 "注意が必要です。"
@@ -19757,7 +19770,7 @@ msgstr "ゲートウェイが「デフォルト」に設定されている場合
 #: usr/local/www/firewall_rules_edit.php:359
 #, php-format
 msgid ""
-"%s is not a valid end source port. It must be a port alias or integer "
+"%s  is not a valid end source port. It must be a port alias or integer "
 "between 1 and 65535."
 msgstr ""
 "%s は有効エンド送信元ポートではありません。"
@@ -20430,8 +20443,8 @@ msgstr "ホスト毎の最大状態エントリ"
 #: usr/local/www/firewall_rules_edit.php:1223
 #: usr/local/www/firewall_rules_edit.php:1222
 #: usr/local/www/firewall_rules_edit.php:1222
-msgid "Maximum new connections / per second(s)"
-msgstr "最大新規接続 / 秒"
+msgid "Maximum new connections per host / per second(s)"
+msgstr "ホスト毎の最大新規接続 / 秒"
 
 #: usr/local/www/firewall_rules_edit.php:1164
 #: usr/local/www/firewall_rules_edit.php:1199
@@ -20543,7 +20556,7 @@ msgstr "synproxy state"
 #: usr/local/www/firewall_rules_edit.php:1283
 #: usr/local/www/firewall_rules_edit.php:1283
 msgid ""
-"Hint: Select which type of state tracking mechanism you would like to use. "
+"Hint: Select which type of state tracking mechanism you would like to use.  "
 "If in doubt, use keep state."
 msgstr ""
 "ヒント: 使用したい状態追跡メカニズムのタイプを選択してください。"
@@ -20585,8 +20598,8 @@ msgstr ""
 #: usr/local/www/firewall_rules_edit.php:1288
 #: usr/local/www/firewall_rules_edit.php:1288
 msgid ""
-"Do not use state mechanisms to keep track. This is only useful if you're "
-"doing advanced queueing in certain situations. Please check the "
+"Do not use state mechanisms to keep track.  This is only useful if you're "
+"doing advanced queueing in certain situations.  Please check the "
 "documentation."
 msgstr ""
 "記録目的で状態メカニズムを使用しないでください。"
@@ -20639,7 +20652,7 @@ msgstr "デフォルト"
 #: usr/local/www/firewall_rules_edit.php:1438
 #: usr/local/www/firewall_rules_edit.php:1438
 msgid ""
-"Leave as 'default' to use the system routing table. Or choose a gateway to "
+"Leave as 'default' to use the system routing table.  Or choose a gateway to "
 "utilize policy based routing."
 msgstr ""
 "「デフォルト」の場合はシステムルーティングテーブルを使用します。"
@@ -20690,7 +20703,8 @@ msgid ""
 "incoming and In is for outgoing."
 msgstr ""
 "フローティングルールを作成する場合は、方向が「内」の場合は同じルールが適用され、"
-"方向が「外」の場合は選択が逆になり、「外」は着信、「内」は発信になります。"
+"方向が「外」の場合は選択が逆になり、"
+"「外」は着信、「内」は発信になります。"
 
 #: usr/local/www/firewall_rules_edit.php:1389
 #: usr/local/www/firewall_rules_edit.php:1460
@@ -20739,7 +20753,7 @@ msgstr "スケジュール"
 #: usr/local/www/firewall_schedule.php:77
 #: usr/local/www/firewall_schedule.php:77
 #, php-format
-msgid "Cannot delete Schedule. Currently in use by %s"
+msgid "Cannot delete Schedule.  Currently in use by %s"
 msgstr "スケジュールを削除できません。現在 %s で使用されています"
 
 #: usr/local/www/firewall_schedule.php:97
@@ -21101,7 +21115,8 @@ msgstr "警告: ファイル %s を読み込めません"
 msgid ""
 "The uploaded file does not appear to contain an encrypted pfsense "
 "configuration."
-msgstr "アップロードされたファイルには、暗号化された pfsense 構成が"
+msgstr ""
+"アップロードされたファイルには、暗号化された pfsense 構成が"
 "含まれていないようです"
 
 #: usr/local/www/diag_backup.php:291 usr/local/www/diag_backup.php:369
@@ -21122,7 +21137,7 @@ msgstr ""
 #: usr/local/www/diag_backup.php:303 usr/local/www/diag_backup.php:392
 #: usr/local/www/diag_backup.php:392
 msgid ""
-"The configuration area has been restored. You may need to reboot the "
+"The configuration area has been restored.  You may need to reboot the "
 "firewall."
 msgstr ""
 "構成領域が復元されました。"
@@ -21257,7 +21272,8 @@ msgstr ""
 msgid ""
 "configuration XML file and click the button below to restore the "
 "configuration."
-msgstr " の構成 XML ファイルを開きます。構成を復元するには、"
+msgstr ""
+" の構成 XML ファイルを開きます。構成を復元するには、"
 "下のボタンをクリックしてください。"
 
 #: usr/local/www/diag_backup.php:624 usr/local/www/diag_backup.php:705
@@ -21293,7 +21309,7 @@ msgstr "パッケージ機能"
 #: usr/local/www/diag_backup.php:668 usr/local/www/diag_backup.php:749
 #: usr/local/www/diag_backup.php:755 usr/local/www/diag_backup.php:755
 msgid ""
-"Click this button to reinstall all system packages. This may take a while."
+"Click this button to reinstall all system packages.  This may take a while."
 msgstr ""
 "このボタンをクリックすると全てのシステムパッケージを再インストールします。しばらく時間がかかります"
 
@@ -21318,7 +21334,7 @@ msgstr "ファイアウォール: シェイパー: キュー表示"
 
 #: usr/local/www/diag_confbak.php:49 usr/local/www/diag_confbak.php:49
 #, php-format
-msgid "Successfully reverted to timestamp %1$s with description "%2$s"."
+msgid "Successfully reverted to timestamp %1$s with description \"%2$s\"."
 msgstr "タイムスタンプ: %1$s 説明: %2$s に正常に戻りました"
 
 #: usr/local/www/diag_confbak.php:49 usr/local/www/diag_confbak.php:59
@@ -21352,7 +21368,7 @@ msgstr "選択した構成に戻せませんでした"
 
 #: usr/local/www/diag_confbak.php:59 usr/local/www/diag_confbak.php:59
 #, php-format
-msgid "Deleted backup with timestamp %1$s and description "%2$s"."
+msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
 msgstr "タイムスタンプ: %1$s 説明: %2$s のバックアップを削除しました"
 
 #: usr/local/www/diag_confbak.php:98 usr/local/www/diag_confbak.php:98
@@ -22124,7 +22140,7 @@ msgstr "SSID"
 #: usr/local/www/interfaces.php:710 usr/local/www/interfaces.php:706
 #: usr/local/www/interfaces.php:706
 msgid ""
-"Invalid WEP key size. Sizes should be 40 (64) bit keys or 104 (128) bit."
+"Invalid WEP key size.   Sizes should be 40 (64) bit keys or 104 (128) bit."
 msgstr ""
 "WEP 鍵サイズが無効です。有効なサイズは 40 (64) ビット鍵、もしくは 104 (128) ビット鍵です"
 
@@ -22146,7 +22162,7 @@ msgstr "インタフェース %s 動的ゲートウェイ"
 #: usr/local/www/interfaces.php:1129
 #, php-format
 msgid ""
-"Unable to change mode to %s. You may already have the maximum number of "
+"Unable to change mode to %s.  You may already have the maximum number of "
 "wireless clones supported in this mode."
 msgstr ""
 "モードを %s に変更できません。"
@@ -22272,7 +22288,7 @@ msgstr "ローカル MAC アドレスの挿入"
 #: usr/local/www/interfaces.php:1442 usr/local/www/interfaces.php:1437
 #: usr/local/www/interfaces.php:1437
 msgid ""
-"This field can be used to modify ("spoof") the MAC address of this "
+"This field can be used to modify (\"spoof\") the MAC address of this "
 "interface"
 msgstr ""
 "このフィールドはインタフェースの MAC アドレス変更 ( なりすまし ) "
@@ -22401,7 +22417,7 @@ msgstr "新規ゲートウェイを追加: "
 #: usr/local/www/interfaces.php:1517 usr/local/www/interfaces.php:1530
 #: usr/local/www/interfaces.php:1575 usr/local/www/interfaces.php:1569
 #: usr/local/www/interfaces.php:1569
-msgid "Default gateway:"
+msgid "Default  gateway:"
 msgstr "デフォルトゲートウェイ: "
 
 #: usr/local/www/interfaces.php:1428 usr/local/www/system_routes_edit.php:240
@@ -22858,7 +22874,8 @@ msgid ""
 "of seconds, the connection is brought down. An idle timeout of zero disables "
 "this feature."
 msgstr ""
-"対象となる発信パケットが指定された秒数で送信されなかった場合、接続はダウンします。"
+"対象となる発信パケットが指定された秒数で送信されなかった場合、"
+"接続はダウンします。"
 "この機能では、アイドルタイムアウトの 0 指定は、無効です。"
 
 #: usr/local/www/interfaces.php:1821
@@ -22994,8 +23011,8 @@ msgstr ""
 #: usr/local/www/interfaces.php:2082
 #: usr/local/www/interfaces_ppps_edit.php:634
 #: usr/local/www/interfaces.php:2082
-msgid "reset at each month ('0 0 1 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
-msgstr "毎月リセット('0 0 1 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
+msgid "reset at each month ('0 0 1 * *')"
+msgstr "毎月リセット('0 0 1 * *')"
 
 #: usr/local/www/interfaces.php:1857
 #: usr/local/www/interfaces_ppps_edit.php:632
@@ -23008,8 +23025,8 @@ msgstr "毎月リセット('0 0 1 README.txt _notes boot cf conf.default etc mis
 #: usr/local/www/interfaces.php:2085
 #: usr/local/www/interfaces_ppps_edit.php:637
 #: usr/local/www/interfaces.php:2085
-msgid "reset at each week ('0 0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr 0')"
-msgstr "毎週リセット ('0 0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr 0')"
+msgid "reset at each week ('0 0 * * 0')"
+msgstr "毎週リセット ('0 0 * * 0')"
 
 #: usr/local/www/interfaces.php:1860
 #: usr/local/www/interfaces_ppps_edit.php:635
@@ -23022,8 +23039,8 @@ msgstr "毎週リセット ('0 0 README.txt _notes boot cf conf.default etc misc
 #: usr/local/www/interfaces.php:2088
 #: usr/local/www/interfaces_ppps_edit.php:640
 #: usr/local/www/interfaces.php:2088
-msgid "reset at each day ('0 0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
-msgstr "毎日リセット ('0 0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
+msgid "reset at each day ('0 0 * * *')"
+msgstr "毎日リセット ('0 0 * * *')"
 
 #: usr/local/www/interfaces.php:1863
 #: usr/local/www/interfaces_ppps_edit.php:638
@@ -23036,8 +23053,8 @@ msgstr "毎日リセット ('0 0 README.txt _notes boot cf conf.default etc misc
 #: usr/local/www/interfaces.php:2091
 #: usr/local/www/interfaces_ppps_edit.php:643
 #: usr/local/www/interfaces.php:2091
-msgid "reset at each hour ('0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
-msgstr "毎時間リセット ('0 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr *')"
+msgid "reset at each hour ('0 * * * *')"
+msgstr "毎時間リセット ('0 * * * *')"
 
 #: usr/local/www/interfaces.php:1872 usr/local/www/interfaces.php:2050
 #: usr/local/www/interfaces.php:2038 usr/local/www/interfaces.php:2065
@@ -23052,7 +23069,8 @@ msgstr "高度な構成・MLPPP"
 #: usr/local/www/interfaces.php:2104
 msgid ""
 "for additional PPPoE configuration options. Save first if you made changes."
-msgstr "PPPoE 構成追加オプション。変更した場合は、最初に保存してください"
+msgstr ""
+"PPPoE 構成追加オプション。変更した場合は、最初に保存してください"
 
 #: usr/local/www/interfaces.php:1881 usr/local/www/interfaces.php:2059
 #: usr/local/www/interfaces.php:2047 usr/local/www/interfaces.php:2074
@@ -23211,7 +23229,7 @@ msgstr "電波出力"
 #: usr/local/www/interfaces.php:2250
 msgid ""
 "Note: Typically only a few discreet power settings are available and the "
-"driver will use the setting closest to the specified value. Not all "
+"driver will use the setting closest to the specified value.  Not all "
 "adapters support changing the transmit power setting."
 msgstr ""
 "注意: よく使用される 2、3 の控えめな出力設定のみが利用可能です。"
@@ -23256,7 +23274,7 @@ msgstr ""
 #: usr/local/www/interfaces.php:2290 usr/local/www/interfaces.php:2279
 #: usr/local/www/interfaces.php:2279
 msgid ""
-"Note: Not all channels may be supported by your card. Auto may override the "
+"Note: Not all channels may be supported by your card.  Auto may override the "
 "wireless standard selected above."
 msgstr ""
 "注意: 全てのチャンネルが、無線カードでサポートされているわけではありません。"
@@ -23426,7 +23444,7 @@ msgstr "国 ( 国コードと規制ドメインを記載 )"
 #: usr/local/www/interfaces.php:2384 usr/local/www/interfaces.php:2373
 #: usr/local/www/interfaces.php:2373
 msgid ""
-"Note: Any country setting other than "Default" will override the "
+"Note: Any country setting other than \"Default\" will override the "
 "regulatory domain setting"
 msgstr ""
 "注意: 「デフォルト」ではない国が設定されると、"
@@ -23466,10 +23484,9 @@ msgstr "どこでも"
 #: usr/local/www/interfaces.php:2383
 msgid ""
 "These settings may affect which channels are available and the maximum "
-"transmit power allowed on those channels. Using the correct settings to "
+"transmit power allowed on those channels.  Using the correct settings to "
 "comply with local regulatory requirements is recommended."
 msgstr ""
-""
 "これらの設定は、利用可能なチャンネル、及び、"
 "チャンネルに許可される最大電波出力に影響します。"
 "地域の規制要件に適合する、正しい設定での使用を推奨します。"
@@ -23480,8 +23497,8 @@ msgstr ""
 #: usr/local/www/interfaces.php:2385
 msgid ""
 "Note: All wireless networks on this interface will be temporarily brought "
-"down when changing regulatory settings. Some of the regulatory domains or "
-"country codes may not be allowed by some cards. These settings may not be "
+"down when changing regulatory settings.  Some of the regulatory domains or "
+"country codes may not be allowed by some cards.  These settings may not be "
 "able to add additional channels that are not already supported."
 msgstr ""
 "注意: このインタフェースの全ての無線ネットワークは、規制設定の変更時に、"
@@ -23869,7 +23886,8 @@ msgid ""
 "Allowed values are 1-9999 but should not be longer than Master Key "
 "Regeneration time."
 msgstr ""
-"指定できる値は 1 〜 9999 ですが、マスタキー再生成時間よりも短くしてください"
+"指定できる値は 1 〜 9999 ですが、"
+"マスタキー再生成時間よりも短くしてください"
 
 #: usr/local/www/interfaces.php:2353 usr/local/www/interfaces.php:2533
 #: usr/local/www/interfaces.php:2521 usr/local/www/interfaces.php:2551
@@ -23937,7 +23955,7 @@ msgstr "注意"
 #: usr/local/www/interfaces.php:2539 usr/local/www/interfaces.php:2569
 #: usr/local/www/interfaces.php:2615 usr/local/www/interfaces.php:2604
 #: usr/local/www/interfaces.php:2604
-msgid "this option requires checking the "Enable WPA box"."
+msgid "this option requires checking the \"Enable WPA box\"."
 msgstr "このオプションは「WPA 装置を有効」をチェックする必要があります。"
 
 #: usr/local/www/interfaces.php:2375 usr/local/www/interfaces.php:2555
@@ -23955,7 +23973,7 @@ msgstr "802.1X 認証サーバ IP アドレス"
 #: usr/local/www/interfaces.php:2632 usr/local/www/interfaces.php:2611
 #: usr/local/www/interfaces.php:2632
 msgid ""
-"Enter the IP address of the 802.1X Authentication Server. This is commonly "
+"Enter the IP address of the 802.1X Authentication Server.  This is commonly "
 "a Radius server (FreeRadius, Internet Authentication Services, etc.)"
 msgstr ""
 "802.1X 認証サーバの IP アドレスを入力します。"
@@ -24005,7 +24023,7 @@ msgstr "プライベートネットワーク"
 #: usr/local/www/interfaces.php:2669
 msgid ""
 "When set, this option blocks traffic from IP addresses that are reserved for "
-"private networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as"
+"private  networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as"
 msgstr ""
 "このオプションが設定されると、RFC 1918 (10/8, 172.16/12, 192.168/16) として予約されている"
 "プライベートネットワークの IP アドレスからのトラフィック、"
@@ -24070,7 +24088,7 @@ msgstr "ネットワークポートの割当て"
 #: usr/local/www/interfaces_assign.php:194
 #: usr/local/www/interfaces_assign.php:194
 #, php-format
-msgid "Port %1$s was assigned to %2$s interfaces:"
+msgid "Port %1$s  was assigned to %2$s interfaces:"
 msgstr "ポート %1$s は %2$s インタフェースに割り当てられました"
 
 #: usr/local/www/interfaces_assign.php:262
@@ -24134,7 +24152,7 @@ msgstr "インタフェースが追加されました"
 #: usr/local/www/interfaces_assign.php:376
 #: usr/local/www/interfaces_assign.php:370
 #: usr/local/www/interfaces_assign.php:376
-msgid "The system is now rebooting. Please wait."
+msgid "The system is now rebooting.  Please wait."
 msgstr "システムを再起動しています。しばらくお待ちください。"
 
 #: usr/local/www/interfaces_assign.php:378
@@ -24147,7 +24165,7 @@ msgstr "再起動が必要です。再起動するには、設定を適用して
 #: usr/local/www/interfaces_assign.php:374
 #: usr/local/www/interfaces_assign.php:380
 msgid ""
-"Interface mismatch detected. Please resolve the mismatch and click Save. "
+"Interface mismatch detected.  Please resolve the mismatch and click Save.  "
 "The firewall will reboot afterwards."
 msgstr "その後、ファイアウォールは再起動します。"
 
@@ -25597,7 +25615,7 @@ msgstr "ファームウェアのアップロードを有効"
 #: usr/local/www/system_firmware.php:261 usr/local/www/system_firmware.php:268
 #: usr/local/www/system_firmware.php:271 usr/local/www/system_firmware.php:271
 #, php-format
-msgid "Click "Enable firmware upload" to begin."
+msgid "Click \"Enable firmware upload\" to begin."
 msgstr "開始するには「ファームウェアのアップロードを有効」をクリックしてください。"
 
 #: usr/local/www/system_firmware.php:264 usr/local/www/system_firmware.php:271
@@ -25643,7 +25661,7 @@ msgstr "ファームウェアのアップグレード"
 
 #: usr/local/www/system_firmware.php:301 usr/local/www/system_firmware.php:307
 #: usr/local/www/system_firmware.php:307
-msgid "Click "Upgrade firmware" to start the upgrade process."
+msgid "Click \"Upgrade firmware\" to start the upgrade process."
 msgstr "アップグレードプロセス開始には「ファームウェアのアップグレード」をクリックしてください。"
 
 #: usr/local/www/system_firmware.php:303 usr/local/www/system_firmware.php:309
@@ -25725,7 +25743,7 @@ msgstr "最新バージョンを使用しています"
 #: usr/local/www/system_firmware_auto.php:212
 #: usr/local/www/system_firmware_auto.php:212
 msgid ""
-"Update cannot continue. You can disable this check on the Updater Settings "
+"Update cannot continue.  You can disable this check on the Updater Settings "
 "tab."
 msgstr ""
 "更新を続行できません。更新ツール設定タブで、"
@@ -26203,7 +26221,7 @@ msgstr "本当にこのルートを削除しますか？"
 #: usr/local/www/system_routes.php:219
 msgid ""
 "Do not enter static routes for networks assigned on any interface of this "
-"firewall. Static routes are only used for networks reachable via a "
+"firewall.  Static routes are only used for networks reachable via a "
 "different router, and not reachable via your default gateway."
 msgstr ""
 "このファイアウォールのインタフェースに割当てられたネットワークに対して、静的ルートを入力しないでください。"
@@ -27221,14 +27239,15 @@ msgstr "フェイルオーバ"
 #: usr/local/www/interfaces_lagg_edit.php:182
 #: usr/local/www/interfaces_lagg_edit.php:182
 msgid ""
-"Sends and receives traffic only through the master port. If the master port "
-"becomes unavailable, the next active port is used. The first interface "
+"Sends and receives traffic only through the master port.  If the master port "
+"becomes unavailable, the next active port is used.  The first interface "
 "added is the master port; any interfaces added after that are used as "
 "failover devices."
 msgstr ""
 "トラフィックは、マスタポートを経由してのみ、受信及び送信します。マスタポートが利用できない場合は、"
 "次のアクティブなポートが使用されます。一番最初に追加されたインタフェースはマスタポートになります。"
-"その後に追加されたインタフェースはフェイルオーバデバイスとして使用されます。"
+"その後に追加されたインタフェースは"
+"フェイルオーバデバイスとして使用されます。"
 
 #: usr/local/www/interfaces_lagg_edit.php:174
 #: usr/local/www/interfaces_lagg_edit.php:175
@@ -27244,7 +27263,7 @@ msgstr "FEC"
 #: usr/local/www/interfaces_lagg_edit.php:187
 #: usr/local/www/interfaces_lagg_edit.php:187
 msgid ""
-"Supports Cisco EtherChannel. This is a static setup and does not negotiate "
+"Supports Cisco EtherChannel.  This is a static setup and does not negotiate "
 "aggregation with the peer or exchange frames to monitor the link."
 msgstr ""
 "Cisco EtherChannel に対応しています。これは、静的にセットアップし、ピアと"
@@ -27265,11 +27284,11 @@ msgstr "LACP"
 #: usr/local/www/interfaces_lagg_edit.php:191
 msgid ""
 "Supports the IEEE 802.3ad Link Aggregation Control Protocol (LACP) and the "
-"Marker Protocol. LACP will negotiate a set of aggregable links with the "
-"peer in to one or more Link Aggregated Groups. Each LAG is composed of "
-"ports of the same speed, set to full-duplex operation. The traffic will be "
+"Marker Protocol.  LACP will negotiate a set of aggregable links with the "
+"peer in to one or more Link Aggregated Groups.  Each LAG is composed of "
+"ports of the same speed, set to full-duplex operation.  The traffic will be "
 "balanced across the ports in the LAG with the greatest total speed, in most "
-"cases there will only be one LAG which contains all ports. In the event of "
+"cases there will only be one LAG which contains all ports.  In the event of "
 "changes in physical connectivity, Link Aggregation will quickly converge to "
 "a new configuration."
 msgstr ""
@@ -27297,9 +27316,9 @@ msgstr "ロードバランス"
 #: usr/local/www/interfaces_lagg_edit.php:202
 msgid ""
 "Balances outgoing traffic across the active ports based on hashed protocol "
-"header information and accepts incoming traffic from any active port. This "
+"header information and accepts incoming traffic from any active port.  This "
 "is a static setup and does not negotiate aggregation with the peer or "
-"exchange frames to monitor the link. The hash includes the Ethernet source "
+"exchange frames to monitor the link.  The hash includes the Ethernet source "
 "and destination address, and, if available, the VLAN tag, and the IP source "
 "and destination address"
 msgstr ""
@@ -27532,7 +27551,7 @@ msgstr "マルチリンク (MLPPP) 接続には 2 つ以上のインタフェー
 #: usr/local/www/interfaces_ppps_edit.php:477
 msgid ""
 "You may enter a description here for your reference. Description will appear "
-"in the "Interfaces Assign" select lists."
+"in the \"Interfaces Assign\" select lists."
 msgstr ""
 "自分用のメモを入力できます。"
 "メモは「インタフェースの割当て」で選択するリストに表示されます。"
@@ -27605,7 +27624,7 @@ msgstr "初期化文字列"
 #: usr/local/www/interfaces_ppps_edit.php:569
 #: usr/local/www/interfaces_ppps_edit.php:569
 msgid ""
-"Note: Enter the modem initialization string here. Do NOT include the "AT" "
+"Note: Enter the modem initialization string here. Do NOT include the \"AT\" "
 "string at the beginning of the command. Many modern USB 3G modems don't need "
 "an initialization string."
 msgstr ""
@@ -27676,7 +27695,7 @@ msgstr "NULL サービス名の構成"
 #: usr/local/www/interfaces_ppps_edit.php:597
 msgid ""
 "Hint: this field can usually be left empty. Service name will not be "
-"configured if this field is empty. Check the "Configure NULL" box to "
+"configured if this field is empty. Check the \"Configure NULL\" box to "
 "configure a blank Service name."
 msgstr ""
 "ヒント: このフィールドは通常空白にします。このフィールドが空白の場合、サービス名は"
@@ -28056,7 +28075,7 @@ msgid ""
 "Not all drivers/NICs support 802.1Q QinQ tagging properly. On cards that do "
 "not explicitly support it, QinQ tagging will still work, but the reduced MTU "
 "may cause problems. See the %s handbook for information on supported cards."
-msgstr "
+msgstr ""
 "全てのドライバや NIC が 802.1Q QinQ タギングを適切に対応しているわけではありません。" 
 "明示的に対応していないカードでは、QinQ タギングが動作しても、MTU の減少が問題を引き起こす"
 "可能性があります。対応カードの情報に関しては、%s ハンドブックを参照してください。"
@@ -28190,7 +28209,8 @@ msgstr ""
 #: usr/local/www/interfaces_wireless.php:65
 msgid ""
 "This wireless clone cannot be deleted because it is assigned as an interface."
-msgstr "この無線クローンは削除できません。インタフェースとして割当てられています"
+msgstr ""
+"この無線クローンは削除できません。インタフェースとして割当てられています"
 
 #: usr/local/www/interfaces_wireless.php:124
 #: usr/local/www/interfaces_wireless.php:125
@@ -28237,7 +28257,7 @@ msgstr ""
 #: usr/local/www/interfaces_wireless_edit.php:125
 #, php-format
 msgid ""
-"Error creating interface with mode %1$s. The %2$s interface may not support "
+"Error creating interface with mode %1$s.  The %2$s interface may not support "
 "creating more clones with the selected mode."
 msgstr ""
 "%1$s モードでインタフェース作成エラーが発生しました。%2$s インタフェースは、"
@@ -28330,7 +28350,7 @@ msgstr "ロードバランサ: モニタ: "
 
 #: usr/local/www/load_balancer_monitor_edit.php:95
 #: usr/local/www/load_balancer_monitor_edit.php:95
-msgid "This monitor name has already been used. Monitor names must be unique."
+msgid "This monitor name has already been used.  Monitor names must be unique."
 msgstr "このモニタ名は既に使用されています。モニタ名は固有です。"
 
 #: usr/local/www/load_balancer_monitor_edit.php:98
@@ -28510,7 +28530,7 @@ msgstr "サーバリスト"
 
 #: usr/local/www/load_balancer_pool_edit.php:83
 #: usr/local/www/load_balancer_pool_edit.php:83
-msgid "This pool name has already been used. Pool names must be unique."
+msgid "This pool name has already been used.  Pool names must be unique."
 msgstr "このプール名は既に使用されています。プール名は固有です。"
 
 #: usr/local/www/load_balancer_pool_edit.php:89
@@ -28525,12 +28545,12 @@ msgstr "再試行値は、1 〜 65535 の整数です"
 
 #: usr/local/www/load_balancer_pool_edit.php:98
 #, php-format
-msgid "%s is not a valid IP address (in "enabled" list)."
+msgid "%s is not a valid IP address (in \"enabled\" list)."
 msgstr "「有効」リストの %s は有効な  IP アドレスではありません"
 
 #: usr/local/www/load_balancer_pool_edit.php:105
 #, php-format
-msgid "%s is not a valid IP address (in "disabled" list)."
+msgid "%s is not a valid IP address (in \"disabled\" list)."
 msgstr "「無効」リストの %s は有効な  IP アドレスではありません"
 
 #: usr/local/www/load_balancer_pool_edit.php:114
@@ -28680,9 +28700,11 @@ msgstr "リレープロトコル"
 #: usr/local/www/load_balancer_virtual_server_edit.php:86
 #: usr/local/www/load_balancer_virtual_server_edit.php:86
 msgid ""
-"This virtual server name has already been used. Virtual server names must "
+"This virtual server name has already been used.  Virtual server names must "
 "be unique."
-msgstr "この仮想サーバ名は既に使用されています。仮想サーバ名は固有です。"
+msgstr ""
+"この仮想サーバ名は既に使用されています。"
+"仮想サーバ名は固有です。"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:95
 #, php-format
@@ -28724,18 +28746,19 @@ msgstr "ロードバランサの編集 - 仮想サーバエントリ"
 #: usr/local/www/load_balancer_virtual_server_edit.php:170
 msgid ""
 "This is normally the WAN IP address that you would like the server to listen "
-"on. All connections to this IP and port will be forwarded to the pool "
+"on.  All connections to this IP and port will be forwarded to the pool "
 "cluster."
 msgstr ""
 "これは通常 リスンしたいサーバの WAN IP アドレスです。"
-"この IP とポートに対する全ての接続は、プールクラスタに転送されます。"
+"この IP とポートに対する全ての接続は、"
+"プールクラスタに転送されます。"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:205
 #: usr/local/www/load_balancer_virtual_server_edit.php:186
 #: usr/local/www/load_balancer_virtual_server_edit.php:184
 #: usr/local/www/load_balancer_virtual_server_edit.php:184
 msgid ""
-"This is the port that the clients will connect to. All connections to this "
+"This is the port that the clients will connect to.  All connections to this "
 "port will be forwarded to the pool cluster."
 msgstr ""
 "これはクライアントが接続するポートです。"
@@ -28940,7 +28963,7 @@ msgstr "セットアップ手順"
 #: usr/local/www/pkg_mgr_install.php:209 usr/local/www/pkg_mgr_install.php:205
 #: usr/local/www/pkg_mgr_install.php:205
 msgid ""
-"Installation completed. Please check to make sure that the package is "
+"Installation completed.   Please check to make sure that the package is "
 "configured from the respective menu then start the package."
 msgstr ""
 "インストールが完了しました。個別のメニューからパッケージが構成されていることを確認した上で、"
@@ -29630,7 +29653,8 @@ msgstr ""
 "この設定は、キャプティブポータル HTTP(S) サーバに対する同時接続数を制限します。"
 "キャプティブポータルにログインできるユーザ数の設定ではありません。"
 "どちらかと言えば、ポータルページの読み込みや認証を、ユーザが同時に実行できる数です。"
-"デフォルトでは、クライアント IP アドレス毎に 4 接続、合計で最大 16 接続までです。"
+"デフォルトでは、クライアント IP アドレス毎に 4 接続、"
+"合計で最大 16 接続までです。"
 
 #: usr/local/www/services_captiveportal.php:468
 #: usr/local/www/services_captiveportal.php:475
@@ -30217,7 +30241,8 @@ msgstr "共有秘密鍵"
 #: usr/local/www/services_captiveportal.php:665
 msgid ""
 "Leave this field blank to not use a RADIUS shared secret (not recommended)."
-msgstr "このフィールドが空白であれば RADIUS 共有秘密鍵を使用しません ( 非推奨 )"
+msgstr ""
+"このフィールドが空白であれば RADIUS 共有秘密鍵を使用しません ( 非推奨 )"
 
 #: usr/local/www/services_captiveportal.php:620 usr/local/www/vpn_pptp.php:440
 #: usr/local/www/services_captiveportal.php:656
@@ -30359,10 +30384,10 @@ msgid ""
 "received for a user, that user is disconnected from the captive portal "
 "immediately."
 msgstr ""
-""
-"再認証が有効な場合、1 分毎にログインしているユーザ毎に、Access-Requests が RADIUS サーバに
-送信されます。あるユーザに対して Access-Reject を受信したら、そのユーザは即座に"
-"キャプティブポータルから切断されます。
+"再認証が有効な場合、1 分毎にログインしているユーザ毎に、"
+"Access-Requests が RADIUS サーバに"
+"送信されます。あるユーザに対して Access-Reject を受信したら、"
+"そのユーザは即座にキャプティブポータルから切断されます。"
 
 #: usr/local/www/services_captiveportal.php:704
 #: usr/local/www/services_captiveportal.php:746
@@ -30628,7 +30653,8 @@ msgid ""
 "connection to protect against eavesdroppers. A server name, certificate and "
 "matching private key must also be specified below."
 msgstr ""
-"有効な場合は、ユーザ名とパスワードは、盗聴から保護するために HTTPS 接続上を送信されます。"
+"有効な場合は、ユーザ名とパスワードは、"
+"盗聴から保護するために HTTPS 接続上を送信されます。"
 "サーバ名、証明書、及び、照合する秘密鍵は、下記で指定する必要があります。"
 
 #: usr/local/www/services_captiveportal.php:826
@@ -30924,7 +30950,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal_filemanager.php:221
 #: usr/local/www/services_captiveportal_filemanager.php:221
 msgid ""
-"In addition, you can also upload .php files for execution. You can pass the "
+"In addition, you can also upload .php files for execution.  You can pass the "
 "filename to your custom page from the initial page by using text similar to:"
 msgstr ""
 "さらに .php ファイルを実行用にアップロードすることもできます。"
@@ -31755,11 +31781,11 @@ msgstr "text 型には、クォーテーションマークは使用できませ�
 #: usr/local/www/services_dhcp.php:333 usr/local/www/services_dhcp.php:314
 #: usr/local/www/services_dhcp.php:334 usr/local/www/services_dhcp.php:334
 msgid ""
-"String type must be enclosed in quotes like "this" or must be a series of "
+"String type must be enclosed in quotes like \"this\" or must be a series of "
 "octets specified in hexadecimal, separated by colons, like 01:23:45:67:89:ab:"
 "cd:ef"
 msgstr ""
-"string 型は "この" ようなダブルクォーテーションマークで囲ってください。"
+"string 型は  \" この \" ようにダブルクォーテーションマークで囲ってください。"
 "16 進数で指定する一連のオクテットは、以下の通りにコロンで区切ってください。"
 "01:23:45:67:89:ab:cd:ef"
 
@@ -32189,8 +32215,8 @@ msgstr "フェールオーバピア IP: "
 #: usr/local/www/services_dhcp.php:889 usr/local/www/services_dhcpv6.php:643
 #: usr/local/www/services_dhcpv6.php:660 usr/local/www/services_dhcpv6.php:660
 msgid ""
-"Leave blank to disable. Enter the interface IP address of the other "
-"machine. Machines must be using CARP."
+"Leave blank to disable.  Enter the interface IP address of the other "
+"machine.  Machines must be using CARP."
 msgstr ""
 "無効にする場合は空白にしてください。他の機器のインタフェース IP アドレスを入力してください。" 
 "CARP を使用している機器に限られます。"
@@ -32320,7 +32346,7 @@ msgstr "TFTP 構成を表示"
 #: usr/local/www/services_dhcp_edit.php:486
 #: usr/local/www/services_dhcp.php:1024 usr/local/www/services_dhcpv6.php:725
 msgid ""
-"Leave blank to disable. Enter a full hostname or IP for the TFTP server."
+"Leave blank to disable.  Enter a full hostname or IP for the TFTP server."
 msgstr ""
 "無効にする場合は空白にしてください。TFTP サーバのフルホスト名、もしくは IP を入力してください。"
 
@@ -32349,7 +32375,7 @@ msgstr "LDAP 構成を表示"
 #: usr/local/www/services_dhcp.php:1036 usr/local/www/services_dhcp.php:1036
 #: usr/local/www/services_dhcpv6.php:738
 msgid ""
-"Leave blank to disable. Enter a full URI for the LDAP server in the form "
+"Leave blank to disable.  Enter a full URI for the LDAP server in the form "
 "ldap://ldap.example.com/dc=example,dc=com"
 msgstr ""
 "無効にする場合は空白にしてください。ldap://ldap.example.com/dc=example,dc=com の形式で、"
@@ -32514,7 +32540,7 @@ msgstr "BOOTP/DHCP 追加オプションを表示"
 #: usr/local/www/services_dhcpv6.php:776
 msgid ""
 "Enter the DHCP option number and the value for each item you would like to "
-"include in the DHCP lease information. For a list of available options "
+"include in the DHCP lease information.  For a list of available options "
 "please visit this"
 msgstr ""
 "DHCP リース情報に含める DHCP オプション番号と、"
@@ -32655,7 +32681,7 @@ msgstr ""
 #: usr/local/www/services_dhcp_edit.php:134
 #: usr/local/www/services_dhcp_edit.php:168
 #: usr/local/www/services_dhcp_edit.php:168
-msgid "Static ARP is enabled. You must specify an IP address."
+msgid "Static ARP is enabled.  You must specify an IP address."
 msgstr "静的 ARP が有効です。IP アドレスを指定してください"
 
 #: usr/local/www/services_dhcp_edit.php:141
@@ -32721,7 +32747,7 @@ msgstr "次の形式で MAC アドレスを入力してください: xx:xx:xx:xx
 #: usr/local/www/services_dhcp_edit.php:225
 #: usr/local/www/services_dhcp_edit.php:228
 msgid ""
-"If no IP address is given, one will be dynamically allocated from the pool."
+"If no IP address is given, one will be dynamically allocated  from the pool."
 msgstr ""
 "IP アドレスが指定されていない場合、IP はプールから動的に割り当てられます。"
 
@@ -32746,7 +32772,7 @@ msgid "Destination Server"
 msgstr "送信先サーバ"
 
 #: usr/local/www/services_dhcp_relay.php:80
-msgid "A valid Destination Server IP address must be specified."
+msgid "A valid Destination Server IP address  must be specified."
 msgstr "有効な送信先サーバの IP アドレスを指定してください。"
 
 #: usr/local/www/services_dhcp_relay.php:100 usr/local/www/fbegin.inc:122
@@ -32807,8 +32833,8 @@ msgstr "送信先サーバ"
 #: usr/local/www/services_dhcp_relay.php:184
 msgid ""
 "This is the IP address of the server to which DHCP requests are relayed. You "
-"can enter multiple server IP addresses, separated by commas. Select "Proxy "
-"requests to DHCP server on WAN subnet" to relay DHCP packets to the server "
+"can enter multiple server IP addresses, separated by commas. Select \"Proxy "
+"requests to DHCP server on WAN subnet\" to relay DHCP packets to the server "
 "that was used on the WAN interface."
 msgstr ""
 "これは、DHCP リクエストをリレーされるサーバの IP アドレスです。"
@@ -33007,8 +33033,7 @@ msgstr ""
 #: usr/local/www/services_dnsmasq.php:334
 #: usr/local/www/services_dnsmasq.php:334
 msgid "Host Overrides"
-msgstr "ホストオーバーライド
-"
+msgstr "ホストオーバーライド"
 
 #: usr/local/www/services_dnsmasq.php:235
 #: usr/local/www/services_unbound.php:271
@@ -33332,7 +33357,7 @@ msgstr "ヒント: 10 は PPTP クライアント数が 10 のことです"
 #: usr/local/www/vpn_pptp.php:362 usr/local/www/vpn_pptp.php:362
 msgid ""
 "Enter the IP address the PPTP server should give to clients for use as their "
-""gateway""
+"\"gateway\""
 msgstr ""
 "クライアントが使用する「ゲートウェイ」として与えられる、"
 "PPTP サーバの IP アドレスを入力してください。"
@@ -33528,8 +33553,9 @@ msgid ""
 "forced on PPTP connections (i.e. unencrypted connections will not be "
 "accepted)"
 msgstr ""
-"設定すると、128 ビット暗号化のみを受け入れます。設定されていなければ、40 ビットと 56 ビットの"
-"暗号化も同様に受け入れます。暗号化は PPTP 接続に常に強制されますので、注意してください。"
+"設定すると、128 ビット暗号化のみを受け入れます。"
+"設定されていなければ、40 ビットと 56 ビットの暗号化も同様に受け入れます。"
+"暗号化は PPTP 接続に常に強制されますので、注意してください。"
 " ( 非暗号化接続は受け入れなくなります )"
 
 #: usr/local/www/vpn_pptp.php:478 usr/local/www/vpn_pptp.php:480
@@ -33698,7 +33724,7 @@ msgstr ""
 #: usr/local/www/wizard.php:65 usr/local/www/wizard.php:71
 #: usr/local/www/wizard.php:65 usr/local/www/wizard.php:71
 #, php-format
-msgid "ERROR: Could not open %s."
+msgid "ERROR:  Could not open %s."
 msgstr "エラー: %s を開けません"
 
 #: usr/local/www/wizard.php:77 usr/local/www/wizard.php:77
@@ -33713,7 +33739,7 @@ msgstr "ロードバランサ: リレー動作: "
 
 #: usr/local/www/load_balancer_relay_action_edit.php:124
 #: usr/local/www/load_balancer_relay_action_edit.php:124
-msgid "This action name has already been used. Action names must be unique."
+msgid "This action name has already been used.  Action names must be unique."
 msgstr "この動作名は既に使用されています。固有の動作名を指定してください。"
 
 #: usr/local/www/load_balancer_relay_action_edit.php:134
@@ -33773,7 +33799,7 @@ msgstr "認証に失敗しました"
 #: usr/local/www/xmlrpc.php:78
 msgid ""
 "XMLRPC wrapper for eval(). This method must be called with two parameters: a "
-"string containing the local system's password followed by the PHP code to "
+"string containing the local system\\'s password followed by the PHP code to "
 "evaluate."
 msgstr ""
 "eval() の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
@@ -33784,7 +33810,7 @@ msgstr ""
 #: usr/local/www/xmlrpc.php:109
 msgid ""
 "XMLRPC wrapper for mwexec(). This method must be called with two parameters: "
-"a string containing the local system's password followed by an shell "
+"a string containing the local system\\'s password followed by an shell "
 "command to execute."
 msgstr ""
 "mwexec() の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
@@ -33795,7 +33821,7 @@ msgstr ""
 #: usr/local/www/xmlrpc.php:133
 msgid ""
 "XMLRPC wrapper for backup_config_section. This method must be called with "
-"two parameters: a string containing the local system's password followed "
+"two parameters: a string containing the local system\\'s password followed "
 "by an array containing the keys to be backed up."
 msgstr ""
 "backup_config_section の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
@@ -33806,8 +33832,8 @@ msgstr ""
 #: usr/local/www/xmlrpc.php:159 usr/local/www/xmlrpc.php:159
 msgid ""
 "XMLRPC wrapper for restore_config_section. This method must be called with "
-"two parameters: a string containing the local system's password and an "
-"array to merge into the system's config. This function returns true upon "
+"two parameters: a string containing the local system\\'s password and an "
+"array to merge into the system\\'s config. This function returns true upon "
 "completion."
 msgstr ""
 "restore_config_section の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
@@ -33831,8 +33857,8 @@ msgstr "XMLRPC クライアントから構成をマージしました ( %s セ�
 #: usr/local/www/xmlrpc.php:286
 msgid ""
 "XMLRPC wrapper for merging package sections. This method must be called with "
-"two parameters: a string containing the local system's password and an "
-"array to merge into the system's config. This function returns true upon "
+"two parameters: a string containing the local system\\'s password and an "
+"array to merge into the system\\'s config. This function returns true upon "
 "completion."
 msgstr ""
 "merging package sections の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
@@ -33845,8 +33871,8 @@ msgstr ""
 #: usr/local/www/xmlrpc.php:314
 msgid ""
 "XMLRPC wrapper for merge_config_section. This method must be called with two "
-"parameters: a string containing the local system's password and an array "
-"to merge into the system's config. This function returns true upon "
+"parameters: a string containing the local system\\'s password and an array "
+"to merge into the system\\'s config. This function returns true upon "
 "completion."
 msgstr ""
 "merge_config_section の XMLRPC ラッパです。このメソッドは 2 つのパラメータで呼び出します。"
@@ -33859,7 +33885,7 @@ msgstr ""
 #: usr/local/www/xmlrpc.php:342
 msgid ""
 "Basic XMLRPC wrapper for filter_configure. This method must be called with "
-"one paramater: a string containing the local system's password. This "
+"one paramater: a string containing the local system\\'s password. This "
 "function returns true upon completion."
 msgstr ""
 "filter_configure の基本 XMLRPC ラッパです。このメソッドは 1 つのパラメータで呼び出します。"
@@ -33898,7 +33924,7 @@ msgstr "ロードバランサ: リレープロトコル: "
 #: usr/local/www/load_balancer_relay_protocol_edit.php:86
 #: usr/local/www/load_balancer_relay_protocol_edit.php:86
 msgid ""
-"This protocol name has already been used. Protocol names must be unique."
+"This protocol name has already been used.  Protocol names must be unique."
 msgstr ""
 "このプロトコル名は既に使用されています。固有のプロトコル名を指定してください。"
 
@@ -34651,7 +34677,7 @@ msgstr "バウチャー同期ポート"
 #: usr/local/www/services_captiveportal_vouchers.php:605
 #: usr/local/www/services_captiveportal_vouchers.php:610
 msgid ""
-"This is the port of the master voucher nodes webConfigurator. Example: 443"
+"This is the port of the master voucher nodes webConfigurator.  Example: 443"
 msgstr ""
 "これは Web 設定管理画面マスターバウチャーノードのポートです。例: 443"
 
@@ -34856,7 +34882,7 @@ msgstr "ファイアウォール送信元追跡"
 #: usr/local/www/diag_resetstate.php:115 usr/local/www/diag_resetstate.php:115
 msgid ""
 "Resetting the source tracking table will remove all source/destination "
-"associations. This means that the "sticky" source/destination association "
+"associations. This means that the \"sticky\" source/destination association "
 "will be cleared for all clients."
 msgstr ""
 "送信元追跡テーブルをリセットすると、全ての送信元 / 送信先とのアソシエーションが削除されます。"
@@ -35294,7 +35320,7 @@ msgid "Example"
 msgstr "例"
 
 #: usr/local/www/exec_raw.php:47
-msgid "Nothing specified. Cannot continue."
+msgid "Nothing specified.  Cannot continue."
 msgstr "何も指定されていません。続行できません"
 
 #: usr/local/www/fbegin.inc:88 usr/local/www/fbegin.inc:105
@@ -36108,7 +36134,7 @@ msgstr "モニタするインタフェース"
 #: usr/local/www/services_dyndns_edit.php:278
 #: usr/local/www/services_dyndns_edit.php:280
 #: usr/local/www/services_dyndns_edit.php:280
-msgid "Enter the complete host/domain name. example: myhost.dyndns.org"
+msgid "Enter the complete host/domain name.  example:  myhost.dyndns.org"
 msgstr "完全なホスト / ドメイン名を入力してください。例: myhost.dyndns.org"
 
 #: usr/local/www/services_dyndns_edit.php:192
@@ -36185,7 +36211,7 @@ msgstr "ユーザ名は Namecheap と FreeDNS を除いた全ての種類で必�
 #: usr/local/www/services_dyndns_edit.php:321
 #: usr/local/www/services_dyndns_edit.php:321
 msgid ""
-"FreeDNS (freedns.afraid.org): Enter your "Authentication Token" provided "
+"FreeDNS (freedns.afraid.org): Enter your \"Authentication Token\" provided "
 "by FreeDNS."
 msgstr ""
 "FreeDNS ( freedns.afraid.org ): "
@@ -36199,13 +36225,13 @@ msgstr ""
 #, php-format
 msgid ""
 "You must configure a DNS server in %sSystem:\n"
-" General setup%s or allow the DNS server list to be "
+"                    General setup%s or allow the DNS server list to be "
 "overridden\n"
-" by DHCP/PPP on WAN for dynamic DNS updates to work."
+"                    by DHCP/PPP on WAN for dynamic DNS updates to work."
 msgstr ""
 "ダイナミック DNS 更新を動作させるには\n"
-"%sシステム: 全般設定%s で DNS サーバの構成をするか、\n"
-"もしくは、WAN の DHCP/PPP による"
+"                    %sシステム: 全般設定%s で DNS サーバの構成をするか、\n"
+"                    もしくは、WAN の DHCP/PPP による"
 " DNS サーバリストの上書きを許可してください"
 
 #: usr/local/www/services_igmpproxy.php:80
@@ -36302,8 +36328,8 @@ msgstr "下流"
 #: usr/local/www/services_igmpproxy_edit.php:201
 #: usr/local/www/services_igmpproxy_edit.php:201
 msgid ""
-"network interfaces are the distribution interfaces to the destination "
-"networks, where multicast clients can join groups and receive multicast "
+"network interfaces are the distribution  interfaces  to  the destination  "
+"networks,  where  multicast  clients  can  join groups and receive multicast "
 "data. One or more downstream interfaces must be configured."
 msgstr ""
 "ネットワークインタフェースは送信先ネットワークに配布されるインタフェースです。"
@@ -36320,7 +36346,7 @@ msgstr "しきい値"
 #: usr/local/www/services_igmpproxy_edit.php:213
 #: usr/local/www/services_igmpproxy_edit.php:213
 msgid ""
-"Defines the TTL threshold for the network interface. Packets with a "
+"Defines the TTL threshold for  the  network  interface.  Packets with  a "
 "lower TTL than the threshols value will be ignored. This setting is "
 "optional, and by default the threshold is 1."
 msgstr ""
@@ -37255,13 +37281,13 @@ msgstr "DNS リバインディング攻撃確認を無効"
 #: usr/local/www/system_advanced_admin.php:424
 #: usr/local/www/system_advanced_admin.php:424
 msgid ""
-"When this is unchecked, your system is protected against <a href="http://en."
-"wikipedia.org/wiki/DNS_rebinding">DNS Rebinding attacks</a>. This blocks "
+"When this is unchecked, your system is protected against <a href=\"http://en."
+"wikipedia.org/wiki/DNS_rebinding\">DNS Rebinding attacks</a>. This blocks "
 "private IP responses from your configured DNS servers. Check this box to "
 "disable this protection if it interferes with webConfigurator access or name "
 "resolution in your environment. "
 msgstr ""
-"これをチェックしない場合は、<a href="http://en.wikipedia.org/wiki/DNS_rebinding">"
+"これをチェックしない場合は、<a href=\"http://en.wikipedia.org/wiki/DNS_rebinding\">"
 "DNS リバインディング攻撃</a>からシステムが保護されます。"
 "これは自分が構成した DNS サーバからのプライベート IP の応答を拒否します。"
 "このボックスをチェックすると、この機能で Web 設定管理画面へのアクセスや、"
@@ -37383,7 +37409,7 @@ msgstr ""
 #: usr/local/www/system_advanced_admin.php:497
 #: usr/local/www/system_advanced_admin.php:497
 msgid ""
-"Note: This will redirect the console output and messages to the serial "
+"Note:  This will redirect the console output and messages to the serial "
 "port. You can still access the console menu from the internal video card/"
 "keyboard. A <b>null modem</b> serial cable or adapter is required to use the "
 "serial console."
@@ -37485,7 +37511,7 @@ msgstr "名前の通り、一般的な最適化アルゴリズムで、"
 #: usr/local/www/system_advanced_firewall.php:234
 #: usr/local/www/system_advanced_firewall.php:234
 msgid ""
-"used for high latency links, such as satellite links. Expires idle "
+"used for high latency links, such as satellite links.  Expires idle "
 "connections later than default"
 msgstr ""
 "サテライトリンクのような、高遅延リンクに対して使用されます。"
@@ -37578,7 +37604,8 @@ msgid ""
 "only applies to packets that are not fragmented after the optional packet "
 "reassembly."
 msgstr ""
-"オペレーティングシステムが使用する予測可能な値を補うために、パケットのIP識別フィールドを置き換えます。"
+"オペレーティングシステムが使用する予測可能な値を補うために、"
+"パケットのIP識別フィールドを置き換えます。"
 "オプションのパケットの再構築を行った後に、"
 "フラグメント化していないパケットに対してのみ適用されるオプションです。"
 
@@ -37652,7 +37679,7 @@ msgstr "全てのパケットフィルタリングを無効にします。"
 #: usr/local/www/system_advanced_firewall.php:331
 #: usr/local/www/system_advanced_firewall.php:331
 #, php-format
-msgid "Note: This converts %s into a routing only platform!"
+msgid "Note:  This converts %s into a routing only platform!"
 msgstr "注意: これは、%s をプラットフォームのみのルーティングに変換します！"
 
 #: usr/local/www/system_advanced_firewall.php:288
@@ -37660,7 +37687,7 @@ msgstr "注意: これは、%s をプラットフォームのみのルーティ�
 #: usr/local/www/system_advanced_firewall.php:331
 #: usr/local/www/system_advanced_firewall.php:332
 #: usr/local/www/system_advanced_firewall.php:332
-msgid "Note: This will also turn off NAT!"
+msgid "Note:  This will also turn off NAT!"
 msgstr "注意: これは NAT もオフにします！"
 
 #: usr/local/www/system_advanced_firewall.php:289
@@ -37721,7 +37748,7 @@ msgstr "ファイアウォールステータステーブルに保持する接続
 #: usr/local/www/system_advanced_firewall.php:367
 #: usr/local/www/system_advanced_firewall.php:367
 msgid ""
-"Note: Leave this blank for the default. On your system the default size is:"
+"Note:  Leave this blank for the default.  On your system the default size is:"
 msgstr ""
 "注意: デフォルトにする場合は、空白にしてください。システムデフォルトサイズ: "
 
@@ -37754,7 +37781,7 @@ msgstr ""
 #: usr/local/www/system_advanced_firewall.php:394
 #: usr/local/www/system_advanced_firewall.php:379
 #: usr/local/www/system_advanced_firewall.php:394
-msgid "Note: Leave this blank for the default."
+msgid "Note:  Leave this blank for the default."
 msgstr "注: デフォルトにするには、空白にしてください。"
 
 #: usr/local/www/system_advanced_firewall.php:321
@@ -37857,7 +37884,7 @@ msgstr "ポートフォワードの NAT リフレクションを無効"
 msgid ""
 "Disables the automatic creation of additional NAT redirect rules for access "
 "to port forwards on your external IP addresses from within your internal "
-"networks. Note: Reflection for port forward entries is skipped for ranges "
+"networks.  Note: Reflection for port forward entries is skipped for ranges "
 "larger than 500 ports."
 msgstr ""
 "自分の内部ネットワークから外部 IP アドレスにポートフォワードするアクセスに対する、"
@@ -37875,7 +37902,7 @@ msgstr "リフレクションタイムアウト"
 
 #: usr/local/www/system_advanced_firewall.php:377
 msgid ""
-"Enter value for Reflection timeout in seconds. Note: Only applies to "
+"Enter value for Reflection timeout in seconds.  Note: Only applies to "
 "Reflection on port forwards."
 msgstr ""
 "リフレクションタイムアウトの値を秒で入力してください。"
@@ -37889,7 +37916,7 @@ msgstr "1:1 NAT の NAT リフレクションを無効"
 msgid ""
 "Disables the automatic creation of additional NAT 1:1 mappings for access to "
 "1:1 mappings of your external IP addresses from within your internal "
-"networks. Note: Reflection for 1:1 NAT might not fully work in certain "
+"networks.  Note: Reflection for 1:1 NAT might not fully work in certain "
 "complex routing scenarios."
 msgstr ""
 "自分の内部ネットワークから外部 IP アドレスに 1:1 マッピングするアクセスに対する、"
@@ -37911,7 +37938,7 @@ msgstr ""
 
 #: usr/local/www/system_advanced_firewall.php:393
 msgid ""
-"Currently only applies to 1:1 NAT rules. Required for full functionality of "
+"Currently only applies to 1:1 NAT rules.  Required for full functionality of "
 "NAT Reflection for 1:1 NAT."
 msgstr ""
 "現在は 1:1 NAT ルールのみが適用されています。"
@@ -38131,11 +38158,11 @@ msgid ""
 "The powerd utility monitors the system state and sets various power control "
 "options accordingly. It offers three modes (maximum, minimum, and adaptive) "
 "that can be individually selected while on AC power or batteries. The modes "
-"maximum, minimum, and adaptive may be abbreviated max, min, adp. Maximum "
-"mode chooses the highest performance values. Minimum mode selects the "
+"maximum, minimum, and adaptive may be abbreviated max, min, adp.   Maximum "
+"mode chooses the highest performance values.  Minimum mode selects the "
 "lowest performance values to get the most power savings. Adaptive mode "
 "attempts to strike a balance by degrading performance when the system "
-"appears idle and increasing it when the system is busy. It offers a good "
+"appears idle and increasing it when the system is busy.  It offers a good "
 "balance between a small performance loss for greatly "
 msgstr ""
 "powerd ユーティリティはシステムの状態を監視して、様々な電源コントロールオプションを"
@@ -38543,8 +38570,8 @@ msgstr "同じブロードキャストドメインに「複数のインターフ
 #: usr/local/www/system_advanced_notifications.php:127
 #: usr/local/www/system_advanced_notifications.php:133
 #, php-format
-msgid "This is a test message from %s. It is safe to ignore this message."
-msgstr "これは%s.からのテスト·メッセージですそれは、このメッセージを無視しても安全です。"
+msgid "This is a test message from %s.  It is safe to ignore this message."
+msgstr ""
 
 #: usr/local/www/system_advanced_notifications.php:131
 #: usr/local/www/system_advanced_notifications.php:140
@@ -38687,7 +38714,7 @@ msgstr "アドバンスト：システムチューニング可能"
 #: usr/local/www/system_advanced_sysctl.php:139
 #: usr/local/www/system_advanced_sysctl.php:139
 msgid ""
-"The firewall tunables have changed. You must apply the configuration to "
+"The firewall tunables have changed.  You must apply the configuration to "
 "take affect."
 msgstr "「ファイアウォールの調整パラメータが変更されています。あなたがに設定を適用しなければならない」有効になります。"
 
@@ -38940,7 +38967,7 @@ msgstr "バインドユーザー名/パスワードを入力してください�
 #: usr/local/www/system_usermanager_settings.php:104
 #: usr/local/www/system_authservers.php:418
 #: usr/local/www/system_usermanager_settings.php:104
-msgid "Popup blocker detected. Action aborted."
+msgid "Popup blocker detected.  Action aborted."
 msgstr "ポップアップブロッカーが検出されました。アクションが中止されました。"
 
 #: usr/local/www/system_authservers.php:475
@@ -40408,7 +40435,8 @@ msgstr "削除ゲートウェイ·グループ"
 msgid ""
 "The gateway configuration has been changed.%sYou must apply the changes in "
 "order for them to take effect."
-msgstr "それらを有効にするため「ゲートウェイ設定はchanged.%sYouがで変更を適用する必要がありました」 。"
+msgstr ""
+"それらを有効にするため「ゲートウェイ設定はchanged.%sYouがで変更を適用する必要がありました」 。"
 
 #: usr/local/www/system_gateway_groups.php:165
 #: usr/local/www/system_gateway_groups.php:166
@@ -40472,8 +40500,8 @@ msgstr "ゲートウェイ名に無効な文字が含まれていなければな
 #: usr/local/www/system_gateway_groups_edit.php:105
 #: usr/local/www/system_gateway_groups_edit.php:105
 #, php-format
-msgid "A gateway group with this name "%s" already exists."
-msgstr "この名前「 %s 」と、ゲートウェイ·グループがすでに存在しています。"
+msgid "A gateway group with this name \"%s\" already exists."
+msgstr ""
 
 #: usr/local/www/system_gateway_groups_edit.php:115
 #: usr/local/www/system_gateway_groups_edit.php:119
@@ -40481,7 +40509,7 @@ msgstr "この名前「 %s 」と、ゲートウェイ·グループがすでに
 #: usr/local/www/system_gateway_groups_edit.php:122
 #, php-format
 msgid ""
-"A gateway group cannot have the same name with a gateway "%s" please "
+"A gateway group cannot have the same name with a gateway \"%s\" please "
 "choose another name."
 msgstr "「ゲートウェイ·グループは、ゲートウェイと同じ名前を持つことはできません""ください」別の名前を選択し%s 。"
 
@@ -40654,7 +40682,8 @@ msgstr "あなたは、IPv4のみインターフェイス上でIPv6ゲートウ�
 msgid ""
 "The gateway address %1$s does not lie within the chosen interface's subnet "
 "'%2$s'."
-msgstr "「 %2$s 」 「ゲートウェイアドレスは%1$sは、選択されたインターフェイスのサブネット内にない」 。"
+msgstr ""
+"「 %2$s 」 「ゲートウェイアドレスは%1$sは、選択されたインターフェイスのサブネット内にない」 。"
 
 #: usr/local/www/system_gateways_edit.php:129
 #: usr/local/www/system_gateways_edit.php:132
@@ -40672,7 +40701,8 @@ msgstr "あなたは、IPv6のみのインターフェイス上でIPv4ゲート�
 msgid ""
 "Dynamic gateway values cannot be specified for interfaces with a static IPv4 "
 "configuration."
-msgstr "構成の「動的ゲートウェイ値は、静的IPv4とのインタフェースを指定することはできません」 。"
+msgstr ""
+"構成の「動的ゲートウェイ値は、静的IPv4とのインタフェースを指定することはできません」 。"
 
 #: usr/local/www/system_gateways_edit.php:143
 #: usr/local/www/system_gateways_edit.php:147
@@ -40706,8 +40736,8 @@ msgstr "ゲートウェイ上の変更名が許可されていません。"
 #: usr/local/www/system_gateways_edit.php:213
 #: usr/local/www/system_gateways_edit.php:213
 #, php-format
-msgid "The gateway name "%s" already exists."
-msgstr "ゲートウェイ名」 %s "はすでに存在しています。"
+msgid "The gateway name \"%s\" already exists."
+msgstr ""
 
 #: usr/local/www/system_gateways_edit.php:171
 #: usr/local/www/system_gateways_edit.php:179
@@ -40715,8 +40745,8 @@ msgstr "ゲートウェイ名」 %s "はすでに存在しています。"
 #: usr/local/www/system_gateways_edit.php:219
 #: usr/local/www/system_gateways_edit.php:219
 #, php-format
-msgid "The gateway IP address "%s" already exists."
-msgstr "ゲートウェイIPアドレス」 %s "はすでに存在しています。"
+msgid "The gateway IP address \"%s\" already exists."
+msgstr ""
 
 #: usr/local/www/system_gateways_edit.php:177
 #: usr/local/www/system_gateways_edit.php:185
@@ -40725,7 +40755,7 @@ msgstr "ゲートウェイIPアドレス」 %s "はすでに存在していま�
 #: usr/local/www/system_gateways_edit.php:225
 #, php-format
 msgid ""
-"The monitor IP address "%s" is already in use. You must choose a different "
+"The monitor IP address \"%s\" is already in use. You must choose a different "
 "monitor IP."
 msgstr "「モニタIPアドレス "%sは「既に使用されている。別の選択しなければなりません"監視IPを。"
 
@@ -41091,11 +41121,11 @@ msgstr "グループを追加"
 #: usr/local/www/system_groupmanager.php:467
 msgid ""
 "Additional webConfigurator groups can be added here. \n"
-"ttttttttGroup permissions can be assigned which are inherited by "
+"\t\t\t\t\t\t\t\tGroup permissions can be assigned which are inherited by "
 "users who are members of the group.\n"
-"ttttttttAn icon that appears grey indicates that it is a system "
+"\t\t\t\t\t\t\t\tAn icon that appears grey indicates that it is a system "
 "defined object.\n"
-"ttttttttSome system object properties can be modified but they "
+"\t\t\t\t\t\t\t\tSome system object properties can be modified but they "
 "cannot be deleted."
 msgstr "「追加webConfiguratorグループは、ここで追加することができます。 \n 」 ttttttttGroup許可が灰色、それがシステム」に定義されたオブジェクトであることを示して表示されttttttttAnアイコン」 group.\nのメンバーであるユーザー」に継承されて割り当てることができます。 \n 「 ttttttttSomeシステムオブジェクトのプロパティを変更できますが、それらは「削除できません。"
 
@@ -41552,8 +41582,8 @@ msgstr "有効なリモートゲートウェイアドレスまたはホスト名
 #: usr/local/www/vpn_ipsec_phase1.php:194
 #: usr/local/www/vpn_ipsec_phase1.php:194
 #, php-format
-msgid "The remote gateway "%1$s" is already used by phase1 "%2$s"."
-msgstr "リモートゲートウェイ」は%1$s "はすでにフェーズ1 」 %2$s 」で使用されます。"
+msgid "The remote gateway \"%1$s\" is already used by phase1 \"%2$s\"."
+msgstr ""
 
 #: usr/local/www/vpn_ipsec_phase1.php:201
 #: usr/local/www/vpn_ipsec_phase1.php:222
@@ -41831,7 +41861,7 @@ msgstr "ピア識別子"
 #: usr/local/www/vpn_ipsec_phase1.php:690
 #: usr/local/www/vpn_ipsec_phase1.php:690
 msgid ""
-"NOTE: This is known as the "group" setting on some VPN client "
+"NOTE: This is known as the \"group\" setting on some VPN client "
 "implementations"
 msgstr ""注：これはとして知られている"の実装、 "一部のVPNクライアントの設定」グループ"
 
@@ -42231,8 +42261,8 @@ msgstr "L2TPサーバを有効にする"
 #: usr/local/www/vpn_l2tp.php:329 usr/local/www/vpn_l2tp.php:329
 msgid ""
 "Enter the IP address the L2TP server should give to clients for use as their "
-""gateway""
-msgstr "「 「ゲートウェイ」 L2TPサーバとして使用するために顧客に彼らのを与える必要があり、IPアドレスを入力してください ""
+"\"gateway\""
+msgstr ""
 
 #: usr/local/www/vpn_l2tp.php:337 usr/local/www/vpn_l2tp.php:338
 #: usr/local/www/vpn_l2tp.php:341 usr/local/www/vpn_l2tp.php:341
@@ -43203,7 +43233,7 @@ msgstr "「可能なオプション：B-ノード（ブロードキャスト） 
 #: usr/local/www/vpn_openvpn_csc.php:594
 #: usr/local/www/vpn_openvpn_server.php:1592
 msgid ""
-"A NetBIOS ScopetID provides an extended naming service fortNetBIOS over "
+"A NetBIOS Scope\tID provides an extended naming service for\tNetBIOS over "
 "TCP/IP. The NetBIOS scope ID isolates NetBIOS traffic on a single network to "
 "only those nodes with the same NetBIOS scope ID"
 msgstr "TCP / IP」のNetBIOS ScopetID過剰拡張ネーミングサービスfortNetBIOSを提供しています」 。 NetBIOSスコープIDは、単一のネットワーク上でNetBIOSトラフィックを分離する」とは、同じNetBIOSスコープIDを持つノードのみ"
@@ -43223,8 +43253,8 @@ msgstr "オーバーライド、セミコロンで区切られた「あなたは
 #: usr/local/www/vpn_openvpn_server.php:1655
 #: usr/local/www/vpn_openvpn_csc.php:648
 #: usr/local/www/vpn_openvpn_server.php:1655
-msgid "EXAMPLE: push "route 10.0.0.0 255.255.255.0""
-msgstr "例：プッシュ」ルート10.0.0.0 255.255.255.0 ""
+msgid "EXAMPLE: push \"route 10.0.0.0 255.255.255.0\""
+msgstr ""
 
 #: usr/local/www/vpn_openvpn_csc.php:696 usr/local/www/vpn_openvpn_csc.php:695
 #: usr/local/www/vpn_openvpn_csc.php:695
@@ -43396,7 +43426,7 @@ msgstr "IPv4のトンネルネットワーク"
 msgid ""
 "This is the IPv4 virtual network used for private communications between "
 "this server and client hosts expressed using CIDR (eg. 10.0.8.0/24). The "
-"first network address will be assigned to thetserver virtual interface. The "
+"first network address will be assigned to the\tserver virtual interface. The "
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
 msgstr "このサーバーとクライアントホスト「これは間のプライベート通信に使用されるIPv4の仮想ネットワークである「 CIDR （例： 10.0.8.0/24 ）を使用して表現。 「最初のネットワークアドレスがthetserver仮想インターフェイスに割り当てられます。 「残りのネットワークアドレスは、必要に応じて「クライアントの接続に割り当てることができます。 （アドレスプールを参照してください）"
@@ -43417,7 +43447,7 @@ msgstr "IPv6トンネルネットワーク"
 msgid ""
 "This is the IPv6 virtual network used for private communications between "
 "this server and client hosts expressed using CIDR (eg. fe80::/64). The first "
-"network address will be assigned to thetserver virtual interface. The "
+"network address will be assigned to the\tserver virtual interface. The "
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
 msgstr "このサーバーとクライアントホスト「これは間のプライベート通信に使用されるIPv6の仮想ネットワークである"（例： FE80:: / 64 ） 、CIDRを使用して表現。最初の「ネットワークアドレスはthetserver仮想インターフェイスに割り当てられます。 「残りのネットワークアドレスは、必要に応じて「クライアントの接続に割り当てることができます。 （アドレスプールを参照してください）"
@@ -43616,8 +43646,8 @@ msgstr "ユーザー名%sに指定したパスワードません"
 
 #: usr/local/www/vpn_pppoe_edit.php:143 usr/local/www/vpn_pppoe_edit.php:143
 #, php-format
-msgid "Incorrect ip address specified for username %s"
-msgstr "ユーザー名%sに指定され、誤ったIPアドレス"
+msgid "Incorrect ip address  specified for username %s"
+msgstr ""
 
 #: usr/local/www/vpn_pppoe_edit.php:355 usr/local/www/vpn_pppoe_edit.php:356
 #: usr/local/www/vpn_pppoe_edit.php:359 usr/local/www/vpn_pppoe_edit.php:359
@@ -43648,8 +43678,8 @@ msgstr "ヒント：10 10 PPPoEクライアントです"
 #: usr/local/www/vpn_pppoe_edit.php:432 usr/local/www/vpn_pppoe_edit.php:432
 msgid ""
 "Enter the IP address the PPPoE server should give to clients for use as "
-"their "gateway""
-msgstr "彼らの「ゲートウェイ」 「 IPアドレスを入力してPPPoEサーバとして使用するためには、クライアントに与える必要があります」"
+"their \"gateway\""
+msgstr ""
 
 #: usr/local/www/vpn_pppoe_edit.php:440 usr/local/www/vpn_pppoe_edit.php:441
 #: usr/local/www/vpn_pppoe_edit.php:444 usr/local/www/vpn_pppoe_edit.php:444
@@ -43796,7 +43826,7 @@ msgstr "あなたは、接続の数よりも少ないインタフェースを持
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:293
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:372
 msgid ""
-"Address must be a valid IP address or Firewall Alias. Please correct this "
+"Address must be a valid IP address or Firewall Alias.  Please correct this "
 "value to continue."
 msgstr "「アドレスが有効なIPアドレスまたはファイアウォールエイリアスでなければなりません。この修正してください」を継続する価値。"
 
@@ -44122,11 +44152,11 @@ msgstr "ルーター通知"
 #: usr/local/www/services_dhcpv6.php:504
 #, php-format
 msgid ""
-"Select the Operating Mode for the router advertisement Daemon. Use "Router "
-"Only" to only advertise the router, "Unmanaged" for Router Advertising "
-"with Stateless Autoconfig, "Managed" for DHCPv6 only with router "
-"advertisements, "Assisted" for DHCPv6 Combined with Stateless Autoconfig"
-msgstr "「ルータ広告デーモンのための動作モードを選択します。使用して「ルータ広告のための「管理対象外」 、ルータを宣伝"のみ"のみへのルータの「ステートレス自動設定で、 「管理」 DHCPv6の場合は、ルータと"広告、 DHCPv6のための「支援」ステートレス自動設定と組み合わせる"
+"Select the Operating Mode for the router advertisement Daemon. Use \"Router "
+"Only\" to only advertise the router, \"Unmanaged\" for Router Advertising "
+"with Stateless Autoconfig, \"Managed\" for DHCPv6 only with router "
+"advertisements, \"Assisted\" for DHCPv6 Combined with Stateless Autoconfig"
+msgstr ""
 
 #: usr/local/www/services_dhcpv6.php:510 usr/local/www/services_dhcpv6.php:584
 #: usr/local/www/services_dhcpv6.php:515 usr/local/www/services_dhcpv6.php:526
@@ -44149,8 +44179,8 @@ msgstr "プレフィックス長"
 msgid ""
 "You can define a Prefix range here for DHCP Prefix Delegation. This allows "
 "for \n"
-"tttttassigning networks to subrouters"
-msgstr "subroutersに\nための「 tttttassigningネットワーク」は、DHCPプレフィックス委任のためにここプレフィックス範囲を定義することができます。これが可能に」"
+"\t\t\t\t\tassigning networks to subrouters"
+msgstr ""
 
 #: usr/local/www/services_dhcpv6.php:803
 #: usr/local/www/status_dhcpv6_leases.php:361
@@ -44221,14 +44251,14 @@ msgstr "次の形式でDUID識別子を入力してください："
 #: usr/local/www/services_dhcpv6_edit.php:202
 #: usr/local/www/services_dhcpv6_edit.php:205
 msgid ""
-"If no IPv6 address is given, one will be dynamically allocated from the "
+"If no IPv6 address is given, one will be dynamically allocated  from the "
 "pool."
 msgstr "プール」は、IPv6アドレスが指定されていない場合、 1が動的に割り当てられます」 。"
 
 #: usr/local/www/services_dhcpv6_relay.php:81
 #: usr/local/www/services_dhcpv6_relay.php:81
-msgid "A valid Destination Server IPv6 address must be specified."
-msgstr "有効な宛先サーバのIPv6アドレスを指定する必要があります。"
+msgid "A valid Destination Server IPv6 address  must be specified."
+msgstr ""
 
 #: usr/local/www/services_dhcpv6_relay.php:145
 #: usr/local/www/services_dhcpv6_relay.php:146
@@ -44264,7 +44294,7 @@ msgstr "DHCPv6の要求に「 （インターフェイス番号とエージェ�
 msgid ""
 "This is the IPv6 address of the server to which DHCPv6 requests are relayed. "
 "You can enter multiple server IPv6 addresses, separated by commas. Select "
-""Proxy requests to DHCPv6 server on WAN subnet" to relay DHCPv6 packets to "
+"\"Proxy requests to DHCPv6 server on WAN subnet\" to relay DHCPv6 packets to "
 "the server that was used on the WAN interface."
 msgstr "「これは、DHCPv6要求が中継されるようにサーバのIPv6アドレスです。 "あなたはカンマで区切って複数のサーバのIPv6アドレスを入力することができます。 「 WANインターフェイス上で使用された「サーバへのDHCPv6パケットを中継する「WANサブネット上のDHCPv6サーバへのプロキシの要求」を選択します。"
 
@@ -45010,16 +45040,16 @@ msgstr "更新成功、返される結果のチェックを無効にするには
 #: usr/local/www/services_dyndns_edit.php:352
 #: usr/local/www/services_dyndns_edit.php:352
 msgid ""
-"If you need to include multiple possible values, sperate them with a |. If "
-"your provider includes a |, escape it with |"
-msgstr "「あなたは、複数の可能な値を含める必要がある場合は、それらをsperate | 。場合は"| でエスケーププロバイダが含まれてい|"
+"If you need to include multiple possible values, sperate them with a |.  If "
+"your provider includes a |, escape it with \\|"
+msgstr ""
 
 #: usr/local/www/services_dyndns_edit.php:342
 #: usr/local/www/services_dyndns_edit.php:346
 #: usr/local/www/services_dyndns_edit.php:354
 #: usr/local/www/services_dyndns_edit.php:354
 msgid ""
-"Tabs (t), newlines (\n) and carriage returns (r) at the beginning or "
+"Tabs (\\t), newlines (\\n) and carriage returns (\\r) at the beginning or "
 "end of the returned results are removed before comparison."
 msgstr "返される結果の末尾「最初かのタブ（ t）は、改行（ \n ）とキャリッジリターン（ r）は「比較の前に削除されます。"
 
@@ -45756,12 +45786,12 @@ msgstr "あなたの「内部ネットワーク内から外部IPアドレスの�
 #: usr/local/www/system_advanced_firewall.php:480
 msgid ""
 "The NAT + proxy mode uses a helper program to send packets to the target of "
-"the port forward. It is useful in setups where the interface and/or gateway "
+"the port forward.  It is useful in setups where the interface and/or gateway "
 "IP used for communication with the target cannot be accurately determined at "
-"the time the rules are loaded. Reflection rules are not created for ranges "
+"the time the rules are loaded.  Reflection rules are not created for ranges "
 "larger than 500 ports and will not be used for more than 1000 ports total "
-"between all port forwards. Only TCP and UDP protocols are supported."
-msgstr "ポートフォワード「NATプロキシモードでは、目標にパケットを送信するためにヘルパープログラムを使用しています」 。それは、インターフェイスおよび/またはゲートウェイのルールがロードされている時間」 、ターゲットとの通信に使用するIPを正確に決定することができない」のセットアップに便利です。反射ルールは範囲のために作成されていない」を超える500ポートと合計1000以上のポートに使用されることはありません"すべてのポートに転送間。だけTCPおよびUDPプロトコルがサポートされています。"
+"between all port forwards.  Only TCP and UDP protocols are supported."
+msgstr ""
 
 #: usr/local/www/system_advanced_firewall.php:419
 #: usr/local/www/system_advanced_firewall.php:481
@@ -45769,10 +45799,10 @@ msgstr "ポートフォワード「NATプロキシモードでは、目標にパ
 #: usr/local/www/system_advanced_firewall.php:482
 msgid ""
 "The pure NAT mode uses a set of NAT rules to direct packets to the target of "
-"the port forward. It has better scalability, but it must be possible to "
+"the port forward.  It has better scalability, but it must be possible to "
 "accurately determine the interface and gateway IP used for communication "
-"with the target at the time the rules are loaded. There are no inherent "
-"limits to the number of ports other than the limits of the protocols. All "
+"with the target at the time the rules are loaded.  There are no inherent "
+"limits to the number of ports other than the limits of the protocols.  All "
 "protocols available for port forwards are supported."
 msgstr "ポートフォワード「純粋なNATモードでは、目標への直接のパケットにNAT規則のセットを使用しています」 。それは、より良いスケーラビリティを持っていますが、それはルールがロードされた時点で、対象との「正確通信に使用するインターフェイスおよびゲートウェイIPを決定」することが可能でなければなりません。は固有の「プロトコルの制限よりも、他のポートの数には限界が。すべて」が存在しないポートに転送に利用可能なプロトコルがサポートされています。"
 
@@ -45826,9 +45856,9 @@ msgstr "内部」ネットワーク内から外部IPアドレスの1:1マッピ�
 #: usr/local/www/system_advanced_firewall.php:502
 msgid ""
 "Note: Reflection on 1:1 mappings is only for the inbound component of the "
-"1:1 mappings. This functions the same as the pure NAT mode for port "
-"forwards. For more details, refer to the pure NAT mode description above."
-msgstr ""注1:1マッピングのリフレクションのみのインバウンドコンポーネントにある「1:1マッピング。これは、ポート"を転送するための純粋なNATモードと同じように機能します。詳細は、上記の純粋なNATモードの説明を参照してください。"
+"1:1 mappings.  This functions the same as the pure NAT mode for port "
+"forwards.  For more details, refer to the pure NAT mode description above."
+msgstr ""
 
 #: usr/local/www/system_advanced_firewall.php:445
 #: usr/local/www/system_advanced_firewall.php:507
@@ -45851,7 +45881,7 @@ msgstr "ポートに転送または1:1 NAT用のNAT反射」のNATリフレク�
 #: usr/local/www/system_advanced_firewall.php:515
 #: usr/local/www/system_advanced_firewall.php:515
 msgid ""
-"Note: This only works for assigned interfaces. Other interfaces require "
+"Note: This only works for assigned interfaces.  Other interfaces require "
 "manually creating the outbound NAT rules that direct the reply packets back "
 "through the router."
 msgstr "手動で応答がルータを介して「連続パケット直接アウトバウンドNATルールの作成：「注意してください。割り当てられたインターフェイス用のみ動作その他のインターフェイスが必要です」 。"
@@ -45867,7 +45897,7 @@ msgstr "最後%sのNTPログエントリ"
 #: usr/local/www/firewall_aliases_edit.php:492
 #: usr/local/www/firewall_aliases_edit.php:478
 msgid ""
-"Enter as many hosts as you would like. Hosts must be specified by their IP "
+"Enter as many hosts as you would like.  Hosts must be specified by their IP "
 "address or fully qualified domain name (FQDN). FQDN hostnames are "
 "periodically re-resolved and updated. If multiple IPs are returned by a DNS "
 "query, all are used."
@@ -45878,9 +45908,9 @@ msgstr "「あなたが望んでいるほど多くのホストを入力します
 #: usr/local/www/firewall_aliases_edit.php:624
 #: usr/local/www/firewall_aliases_edit.php:610
 msgid ""
-"The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and "
-"_"."
-msgstr "AZ 、 AZ,0-9、および"_""エイリアスの名前が文字のみで構成することができる」 。"
+"The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and "
+"_\"."
+msgstr ""
 
 #: usr/local/www/system_advanced_admin.php:470
 #: usr/local/www/system_advanced_admin.php:470
@@ -46074,17 +46104,17 @@ msgstr "最大"
 #: usr/local/www/system_advanced_misc.php:420
 msgid ""
 "The powerd utility monitors the system state and sets various power control "
-"options accordingly. It offers four modes (maximum, minimum, adaptive and "
+"options accordingly.  It offers four modes (maximum, minimum, adaptive and "
 "hiadaptive) that can be individually selected while on AC power or "
 "batteries. The modes maximum, minimum, adaptive and hiadaptive may be "
-"abbreviated max, min, adp, hadp. Maximum mode chooses the highest "
-"performance values. Minimum mode selects the lowest performance values to "
+"abbreviated max, min, adp, hadp.  Maximum mode chooses the highest "
+"performance values.  Minimum mode selects the lowest performance values to "
 "get the most power savings. Adaptive mode attempts to strike a balance by "
 "degrading performance when the system appears idle and increasing it when "
-"the system is busy. It offers a good balance between a small performance "
-"loss for greatly increased power savings. Hiadaptive mode is alike adaptive "
+"the system is busy.  It offers a good balance between a small performance "
+"loss for greatly increased power savings.  Hiadaptive mode is alike adaptive "
 "mode, but tuned for systems where performance and interactivity are more "
-"importantthan power consumption. It rises frequency faster, drops slower "
+"importantthan power consumption.  It rises frequency faster, drops slower "
 "andkeeps twice lower CPU load."
 msgstr "「パワードユーティリティは、システムの状態を監視し、様々な電力制御に設定」は、それに応じてオプションを。これは、バッテリー「個別のAC電源またはオンしながら、選択することができます（ hiadaptive 4つのモード、最大値、最小値、適応と）」を提供しています。モード最大値、最小値、適応とhiadaptiveは「最大、最小、 ADP 、 hadpを短縮。最大モードは最高選ぶ」ことがパフォーマンス値を。最小モードが「最も節電効果が得られます。適応モードがでバランスを取るしようとした」に、最も低いパフォーマンス値を選択して、システムがアイドル状態の表示されたときにパフォーマンスを低下させると、システムがビジー状態のときに「それが大きくなる。これは、小さなパフォーマンスの間の良好なバランスを提供しています大幅に増加し、電力の節約のため」の損失。 Hiadaptiveモードを問わず、適応型」モードが、パフォーマンスとインタラクティブ性をよりアールシステム用に調整された」であるimportantthan消費電力。それは、周波数速く上昇し、遅くなる」 andkeeps倍低いCPU負荷が低下します。"
 
@@ -46364,10 +46394,10 @@ msgstr "UTCから現地時刻に、DHCPの表示リース時間を変更しま�
 
 #: usr/local/www/services_dhcp.php:751 usr/local/www/services_dhcp.php:932
 msgid ""
-"By default DHCP leases are displayed in UTC time. By checking this \n"
-"ttttttbox DHCP lease time will be displayed in local time and set to "
-"time zone selected. This will be used for all DHCP interfaces lease time."
-msgstr "「デフォルトのDHCPでリースはUTC時間で表示されます。この\nをチェックすることで「 ttttttboxのDHCPリース時間は、選択したタイムゾーン」を現地時間で表示され、設定されます。これは、すべてのDHCPインターフェイスのリース時間のために使用されます。"
+"By default DHCP leases are displayed in UTC time.  By checking this \n"
+"\t\t\t\t\t\tbox DHCP lease time will be displayed in local time and set to "
+"time zone selected.  This will be used for all DHCP interfaces lease time."
+msgstr ""
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:92
 #: usr/local/www/load_balancer_virtual_server_edit.php:92
@@ -46426,9 +46456,9 @@ msgstr "NTPサーバの設定"
 #: usr/local/www/interfaces_bridge_edit.php:396
 #: usr/local/www/interfaces_bridge_edit.php:396
 msgid ""
-"Set the Spanning Tree priority of interface to value. The default is 128. "
-"The minimum is 0 and the maximum is 240. Increments of 16."
-msgstr "「値へのインターフェイスのスパニングツリー優先度を設定します。デフォルトは128です。 「最小値は0で、最大値は240です。 16ずつ増加。"
+"Set the Spanning Tree priority of interface to value.  The default is 128.  "
+"The minimum is 0 and the maximum is 240.  Increments of 16."
+msgstr ""
 
 #: usr/local/www/diag_packet_capture.php:172
 #: usr/local/www/diag_packet_capture.php:219
@@ -46697,28 +46727,28 @@ msgstr "ポートは1 〜65535の整数、またはポートエイリアスで�
 #: usr/local/www/load_balancer_pool_edit.php:98
 #: usr/local/www/load_balancer_pool_edit.php:98
 #, php-format
-msgid "%s is not a valid IP address or IPv4 subnet (in "enabled" list)."
-msgstr "%sは（ 「有効」リスト中の）有効なIPアドレスまたはIPv4サブネットではありません。"
+msgid "%s is not a valid IP address or IPv4 subnet (in \"enabled\" list)."
+msgstr ""
 
 #: usr/local/www/load_balancer_pool_edit.php:101
 #: usr/local/www/load_balancer_pool_edit.php:101
 #, php-format
 msgid ""
-"%s is a subnet containing more than 64 IP addresses (in "enabled" list)."
-msgstr ""（許可」リスト%sは中） 64以上のIPアドレスを含むサブネットである」 。"
+"%s is a subnet containing more than 64 IP addresses (in \"enabled\" list)."
+msgstr ""
 
 #: usr/local/www/load_balancer_pool_edit.php:108
 #: usr/local/www/load_balancer_pool_edit.php:108
 #, php-format
-msgid "%s is not a valid IP address or IPv4 subnet (in "disabled" list)."
-msgstr "%sは（ 「無効」リスト中の）有効なIPアドレスまたはIPv4サブネットではありません。"
+msgid "%s is not a valid IP address or IPv4 subnet (in \"disabled\" list)."
+msgstr ""
 
 #: usr/local/www/load_balancer_pool_edit.php:111
 #: usr/local/www/load_balancer_pool_edit.php:111
 #, php-format
 msgid ""
-"%s is a subnet containing more than 64 IP addresses (in "disabled" list)."
-msgstr ""（禁止」リスト%sは中） 64以上のIPアドレスを含むサブネットである」 。"
+"%s is a subnet containing more than 64 IP addresses (in \"disabled\" list)."
+msgstr ""
 
 #: usr/local/www/firewall_virtual_ip_edit.php:153
 #: usr/local/www/firewall_virtual_ip_edit.php:152
@@ -46797,9 +46827,9 @@ msgstr "ルーター通知（RA ）デーモンのための動作モードを選
 #: usr/local/www/services_router_advertisements.php:273
 #, php-format
 msgid ""
-"Use "Router Only" to only advertise this router, "Unmanaged" for Router "
-"Advertising with Stateless Autoconfig, "Managed" for assignment through "
-"(a) DHCPv6 Server, "Assisted" for DHCPv6 Server assignment combined with "
+"Use \"Router Only\" to only advertise this router, \"Unmanaged\" for Router "
+"Advertising with Stateless Autoconfig, \"Managed\" for assignment through "
+"(a) DHCPv6 Server, \"Assisted\" for DHCPv6 Server assignment combined with "
 "Stateless Autoconfig"
 msgstr "を通じて割り当てに「管理」 、ステートレス自動設定と広告「ルータのために」 」 、宣伝だけに、このルータを「ステートレス自動設定」と組み合わせたDHCPv6サーバの割り当てのための「支援」 （ A ） DHCPv6サーバを、 「管理対象外のルータ"を使用」"
 
@@ -46809,7 +46839,7 @@ msgstr "を通じて割り当てに「管理」 、ステートレス自動設�
 #: usr/local/www/services_router_advertisements.php:274
 #, php-format
 msgid ""
-"It is not required to activate this DHCPv6 server when set to "Managed", "
+"It is not required to activate this DHCPv6 server when set to \"Managed\", "
 "this can be another host on the network"
 msgstr "マネージド」に設定すると、このDHCPv6サーバを活性化するために必要とされていない""、 "これは、ネットワーク上の別のホストになることができます"
 
@@ -46852,7 +46882,7 @@ msgstr "接頭語委譲サイズ"
 msgid ""
 "You can define a Prefix range here for DHCP Prefix Delegation. This allows "
 "for \n"
-"tttttassigning networks to subrouters. The start and end of the range "
+"\t\t\t\t\tassigning networks to subrouters. The start and end of the range "
 "must end on boundaries of the prefix delegation size."
 msgstr "\nは、「あなたは、DHCPプレフィックス委任のためにここプレフィックス範囲を定義することができます。これができる「 」 subroutersにtttttassigningネットワーク。範囲​​の始めと終わりは「プレフィックス委任サイズの境界で終わっていなければなりません。"
 
@@ -46871,10 +46901,10 @@ msgstr "UTCから現地時刻にDHCPv6の表示リース時間を変更します
 #: usr/local/www/services_dhcpv6.php:732 usr/local/www/services_dhcpv6.php:663
 #: usr/local/www/services_dhcpv6.php:680 usr/local/www/services_dhcpv6.php:680
 msgid ""
-"By default DHCPv6 leases are displayed in UTC time. By checking this \n"
-"ttttttbox DHCPv6 lease time will be displayed in local time and set to "
-"time zone selected. This will be used for all DHCPv6 interfaces lease time."
-msgstr "「デフォルトでのDHCPv6リースはUTC時間で表示されます。この\nをチェックすることで「 ttttttboxのDHCPv6のリース時間は現地時間で表示され、選択された "タイムゾーンに設定されます。これは、すべてのDHCPv6インターフェイスのリース時間のために使用されます。"
+"By default DHCPv6 leases are displayed in UTC time.  By checking this \n"
+"\t\t\t\t\t\tbox DHCPv6 lease time will be displayed in local time and set to "
+"time zone selected.  This will be used for all DHCPv6 interfaces lease time."
+msgstr ""
 
 #: etc/inc/priv.defs.inc:64 etc/inc/priv.defs.inc:64
 msgid "WebCfg - Diagnostics: Sockets page"
@@ -47016,11 +47046,11 @@ msgstr "このページの項目のヘルプ"
 #: usr/local/www/system_groupmanager.php:422
 msgid ""
 "Additional webConfigurator groups can be added here. \n"
-"tttttttttGroup permissions can be assigned which are inherited by "
+"\t\t\t\t\t\t\t\t\tGroup permissions can be assigned which are inherited by "
 "users who are members of the group.\n"
-"tttttttttAn icon that appears grey indicates that it is a system "
+"\t\t\t\t\t\t\t\t\tAn icon that appears grey indicates that it is a system "
 "defined object.\n"
-"tttttttttSome system object properties can be modified but they "
+"\t\t\t\t\t\t\t\t\tSome system object properties can be modified but they "
 "cannot be deleted."
 msgstr "「追加webConfiguratorグループは、ここで追加することができます。 \n 」 tttttttttGroup許可が灰色、それがシステム」に定義されたオブジェクトであることを示して表示されtttttttttAnアイコン」 group.\nのメンバーであるユーザー」に継承されて割り当てることができます。 \n 「 tttttttttSomeシステムオブジェクトのプロパティを変更できますが、それらは「削除できません。"
 
@@ -47048,9 +47078,9 @@ msgstr "ないIPv6アドレスが指定されていない場合」 、 1は、�
 #: usr/local/www/services_router_advertisements.php:117
 #: usr/local/www/services_router_advertisements.php:117
 msgid ""
-"Subnets are specified in CIDR format. Select the CIDR mask that pertains to "
-"each entry. /128 specifies a single IPv6 host; /64 specifies a normal IPv6 "
-"network; etc. If no subnets are specified here, the Router Advertisement "
+"Subnets are specified in CIDR format.  Select the CIDR mask that pertains to "
+"each entry.  /128 specifies a single IPv6 host; /64 specifies a normal IPv6 "
+"network; etc.  If no subnets are specified here, the Router Advertisement "
 "(RA) Daemon will advertise to the subnet to which the router's interface is "
 "assigned."
 msgstr "「サブネットはCIDR形式で指定されています。に関連するCIDRマスクの選択」の各項目を。 / 128は、単一のIPv6ホストを指定し、 / 64は、通常のIPv6を指定する「ネットワーク;などなくサブネットが、ここで指定されていない場合は、ルーター広告」 （ RA ）デーモンはルータのインタフェースが"割り当てられているサブネットにアドバタイズします。"
@@ -47202,9 +47232,9 @@ msgid ""
 "MS-CHAPv2 which has been compromised. If you continue to use PPTP be aware "
 "that intercepted traffic can be decrypted by a third party, so it should be "
 "considered unencrypted. We advise migrating to another VPN type such as "
-"OpenVPN or IPsec.<br/><br/><a href="https://isc.sans.edu/diary/End+of+Days"
-"+for+MS-CHAPv2/13807">Read More</a>"
-msgstr "侵害されたMS - CHAPv2を「それが依存しているので、PPTPはもはや安全なVPN技術と見なされていない」 。あなたは、PPTPを意識する使用し続ける場合は、「トラフィックは、第三者によって解読することができます傍受することなので、すべきである」 、暗号化されていないと考えた。私たちは、このような詳細MS-CHAPv2/13807"u003e読むための「 OpenVPNのかDays"のIPsec.<br/><br/>もし、ごhref="https://isc.sans.edu/diary/Endとして別のVPNタイプに移行助言するu003c/ A u003e"
+"OpenVPN or IPsec.<br/><br/><a href=\"https://isc.sans.edu/diary/End+of+Days"
+"+for+MS-CHAPv2/13807\">Read More</a>"
+msgstr ""
 
 #: usr/local/www/status_ntpd.php:185 usr/local/www/status_ntpd.php:191
 #: usr/local/www/status_ntpd.php:191
@@ -48244,7 +48274,7 @@ msgstr "ポートテスト結果"
 #: usr/local/www/diag_testport.php:246 usr/local/www/diag_testport.php:248
 #: usr/local/www/diag_testport.php:248
 msgid ""
-"No output received, or connection failed. Try with "Show Remote Text" "
+"No output received, or connection failed. Try with \"Show Remote Text\" "
 "unchecked first."
 msgstr "「何も出力が受信されない、または接続に失敗しました。で試してみてください」の表示リモートテキスト""チェックしない第一。"
 
@@ -48283,7 +48313,7 @@ msgstr "親として付属のインターフェースが無効です"
 #: usr/local/www/system_firmware_settings.php:153
 #, php-format
 msgid ""
-"Entries denoted by "Current architecture" match the architecture of your "
+"Entries denoted by \"Current architecture\" match the architecture of your "
 "current installation, such as %s. Changing architectures during an upgrade "
 "is not recommended, and may require a manual reboot after the update "
 "completes."
@@ -48328,7 +48358,7 @@ msgstr "「空白や改行で区切られた複数の伝票を入力します。
 #: usr/local/www/firewall_nat_edit.php:848
 #: usr/local/www/firewall_nat_edit.php:848
 msgid ""
-"NOTE: The "pass" selection does not work properly with Multi-WAN. It will "
+"NOTE: The \"pass\" selection does not work properly with Multi-WAN. It will "
 "only work on an interface containing the default gateway."
 msgstr ""注： 「合格」の選択は、複数WANで正しく動作しないことがします。 」だけデフォルトゲートウェイを含む、インターフェイス上で動作する。"
 
@@ -48462,8 +48492,8 @@ msgstr "プールの説明"
 #: usr/local/www/services_dhcp.php:903 usr/local/www/services_dhcp.php:923
 #: usr/local/www/services_dhcp.php:923
 msgid ""
-"Leave blank to disable. Enter the interface IP address of the other "
-"machine. Machines must be using CARP. Interface's advskew determines "
+"Leave blank to disable.  Enter the interface IP address of the other "
+"machine.  Machines must be using CARP. Interface's advskew determines "
 "whether the DHCPd process is Primary or Secondary. Ensure one machine's "
 "advskew<20 (and the other is >20)."
 msgstr "「無効にする場合は空白のままにしておきます。他のインターフェイスIPアドレスを入力し、 "マシンを。マシンは、CARPを使用する必要があります。インタフェースのadvskewは「のdhcpdプロセスがプライマリまたはセカンダリであるかどうか。 1マシンの確認」を決定advskew u003c 20 （他方はu003e 20） 。"
@@ -48471,10 +48501,10 @@ msgstr "「無効にする場合は空白のままにしておきます。他の
 #: usr/local/www/services_dhcp.php:946 usr/local/www/services_dhcp.php:966
 #: usr/local/www/services_dhcp.php:966
 msgid ""
-"By default DHCP leases are displayed in UTC time. By checking this\n"
-"ttttttbox DHCP lease time will be displayed in local time and set to "
-"time zone selected. This will be used for all DHCP interfaces lease time."
-msgstr "「デフォルトのDHCPでリースはUTC時間で表示されます。チェックすることでthis\n 「 ttttttbox DHCPリース時間は現地時間で表示され、選択したタイムゾーン」に設定されます。これは、すべてのDHCPインターフェイスのリース時間のために使用されます。"
+"By default DHCP leases are displayed in UTC time.  By checking this\n"
+"\t\t\t\t\t\tbox DHCP lease time will be displayed in local time and set to "
+"time zone selected.  This will be used for all DHCP interfaces lease time."
+msgstr ""
 
 #: usr/local/www/services_dhcp.php:1146 usr/local/www/services_dhcp.php:1166
 #: usr/local/www/services_dhcp.php:1166
@@ -48626,7 +48656,7 @@ msgstr "成長のエントリ"状態のタイムアウトは、状態テーブ�
 #: usr/local/www/system_advanced_firewall.php:351
 msgid ""
 "When the number of state entries exceeds this value, adaptive scaling "
-"begins. All timeout values are scaled linearly with factor (adaptive.end - "
+"begins.  All timeout values are scaled linearly with factor (adaptive.end - "
 "number of states) / (adaptive.end - adaptive.start)."
 msgstr "「状態エントリの数がこの値を超えると、適応スケーリング」は始まる。 / （ adaptive.end - adaptive.start ） - すべてのタイムアウト値は、因子（「状態数adaptive.end ）と直線的にスケールされます。"
 
@@ -48635,7 +48665,7 @@ msgstr "「状態エントリの数がこの値を超えると、適応スケー
 #: usr/local/www/system_advanced_firewall.php:355
 msgid ""
 "When reaching this number of state entries, all timeout values become zero, "
-"effectively purging all state entries immediately. This value is used to "
+"effectively purging all state entries immediately.  This value is used to "
 "define the scale factor, it should not actually be reached (set a lower "
 "state limit, see below)."
 msgstr "事実上、すぐにすべての状態の項目をパージする」状態エントリのこの数に達する場合は、すべてのタイムアウト値は、ゼロになる」 。この値は、するために使用される"（下記参照、状態制限スケールファクタを定義するが、実際にはより低いセット）に到達すべきではない」 。"
@@ -48643,8 +48673,8 @@ msgstr "事実上、すぐにすべての状態の項目をパージする」状
 #: usr/local/www/system_advanced_firewall.php:356
 #: usr/local/www/system_advanced_firewall.php:357
 #: usr/local/www/system_advanced_firewall.php:357
-msgid "Note: Leave this blank for the default(0)."
-msgstr "注：デフォルトは、この空白のままにしておきます（ 0 ） 。"
+msgid "Note:  Leave this blank for the default(0)."
+msgstr ""
 
 #: usr/local/www/system_advanced_firewall.php:447
 #: usr/local/www/system_advanced_firewall.php:448
@@ -48824,9 +48854,9 @@ msgstr "ドメインを必要とする"
 msgid ""
 "If this option is set, %s DNS Forwarder (dnsmasq) will not forward A or AAAA "
 "queries for plain names, without dots or domain parts, to upstream name "
-"servers. If the name is not known from /etc/hosts or DHCP then a "not found"
-"" answer is returned. "
-msgstr "名前「サーバーの上流、ドットまたはドメインの部分なしで、プレーンな名前の照会」このオプションが設定されている場合、DNSフォワーダは転送しませんAまたはAAAA （ DNSMASQ ） %s 」 。名前は/ etc / hostsファイルから知られていない場合またはDHCPはその後、 "見つかりません""答えが返されます。"
+"servers.  If the name is not known from /etc/hosts or DHCP then a \"not found"
+"\" answer is returned. "
+msgstr ""
 
 #: usr/local/www/vpn_ipsec_phase1.php:183
 #: usr/local/www/vpn_ipsec_phase1.php:183
@@ -49619,11 +49649,11 @@ msgstr "プライベートの逆引きを転送しないでください"
 msgid ""
 "If this option is set, %s DNS Forwarder (dnsmasq) will not forward reverse "
 "DNS lookups (PTR) for private addresses (RFC 1918) to upstream name "
-"servers. Any entries in the Domain Overrides section forwarding private "n."
-"n.n.in-addr.arpa" names to a specific server are still forwarded. If the IP "
+"servers.  Any entries in the Domain Overrides section forwarding private \"n."
+"n.n.in-addr.arpa\" names to a specific server are still forwarded. If the IP "
 "to name is not known from /etc/hosts, DHCP or a specific domain override "
-"then a "not found" answer is immediately returned. "
-msgstr "名前上流プライベートアドレス（RFC 1918）のDNSルックアップ（ PTR ）」を、このオプションが設定されている場合、DNSフォワーダは正逆転しません（ DNSMASQ ） %s ""サーバをプライベート転送ドメインをオーバーライドセクションのすべてのエントリ「 nが。特定のサーバーに「 NNIN - addr.arpa 」の名前は、まだ転送されます。 IP」の名前には、 etc / hostsに、 DHCPまたは特定のドメインの上書き/から知られていない」場合には、その答えはすぐに返されます"が見つかりません」 。"
+"then a \"not found\" answer is immediately returned. "
+msgstr ""
 
 #: usr/local/www/system_advanced_network.php:212
 #: usr/local/www/system_advanced_network.php:212
@@ -49746,8 +49776,8 @@ msgstr "下記のこのNICのファイアウォールと通信できるように
 #: usr/local/www/interfaces_bridge_edit.php:381
 #: usr/local/www/interfaces_bridge_edit.php:381
 msgid ""
-"Set the transmit hold count for Spanning Tree. This is the number of "
-"packets transmitted before being rate limited. The default is 6. The "
+"Set the transmit hold count for Spanning Tree.  This is the number of "
+"packets transmitted before being rate limited.  The default is 6.  The "
 "minimum is 1 and the maximum is 10."
 msgstr "レート制限される前に送信されたパケット」スパニングツリーの送信ホールドカウントを設定します。これは数がある」 。デフォルトは6です。 「最小値は1で、最大値は10です。"
 
