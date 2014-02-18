@@ -6188,7 +6188,7 @@ msgstr "システム: 高度: ネットワーク: ページへのアクセスを
 #: etc/inc/priv.defs.inc:1016 etc/inc/priv.defs.inc:1010
 #: etc/inc/priv.defs.inc:1016
 msgid "WebCfg - System: Advanced: Tunables page"
-msgstr "Web 設定 - システム: 高度: チューニングパラメータページ"
+msgstr "Web 設定 - システム: 高度: 調整パラメータページ"
 
 #: etc/inc/priv.defs.inc:979 etc/inc/priv.defs.inc:985
 #: etc/inc/priv.defs.inc:997 etc/inc/priv.defs.inc:1003
@@ -6196,7 +6196,7 @@ msgstr "Web 設定 - システム: 高度: チューニングパラメータペ�
 #: etc/inc/priv.defs.inc:1017 etc/inc/priv.defs.inc:1011
 #: etc/inc/priv.defs.inc:1017
 msgid "Allow access to the 'System: Advanced: Tunables' page."
-msgstr "システム: 高度: チューニングパラメータ: ページへのアクセスを許可"
+msgstr "システム: 高度: 調整パラメータ: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:990 etc/inc/priv.defs.inc:1008
 #: etc/inc/priv.defs.inc:1014 etc/inc/priv.defs.inc:1022
@@ -32956,7 +32956,7 @@ msgstr ""
 #: usr/local/www/services_dnsmasq.php:212
 #: usr/local/www/services_dnsmasq.php:212
 msgid "Prefer DHCP"
-msgstr "DHCP ではなく"
+msgstr "DHCP を優先"
 
 #: usr/local/www/services_dnsmasq.php:187
 #: usr/local/www/services_unbound.php:237
@@ -37081,7 +37081,7 @@ msgstr "その他"
 #: usr/local/www/system_advanced_network.php:186
 #: usr/local/www/system_advanced_sysctl.php:151
 msgid "System Tunables"
-msgstr "システムチューニング可能パラメータ"
+msgstr "システム調整パラメータ"
 
 #: usr/local/www/system_advanced_admin.php:279
 #: usr/local/www/system_advanced_firewall.php:220
@@ -38018,7 +38018,7 @@ msgid ""
 "Default is 8080 for http protocol or 443 for ssl."
 msgstr ""
 "上記で構成したプロキシ URL への %s 接続時に使用されるプロキシポート。"
-"デフォルトは、http なら 8080、ssl なら 443 です。"
+"デフォルトは、http プロトコルなら 8080、ssl なら 443 です。"
 
 #: usr/local/www/system_advanced_misc.php:248
 #: usr/local/www/system_advanced_misc.php:274
@@ -38167,18 +38167,18 @@ msgid ""
 msgstr ""
 "powerd ユーティリティはシステムの状態を監視して、様々な電源コントロールオプションを"
 "状況に応じて設定します。"
-"3 つのモードが提供されていて ( 最大、最小、適応 )、AC 電源やバッテリで個々に選択可能です。"
+"3 つのモードが提供されており ( 最大、最小、適応 )、AC 電源やバッテリで個々に選択可能です。"
 "モードの最大、最小、適応は、max、min、adp、と省略表記されます。"
 "最大モードは、最も高いパフォーマンスとなる値を選択します。"
 "最小モードは、最も低いパフォーマンスの値を選択することで、最大限の省電力を行います。"
 "適応モードは、パフォーマンスと省電力をうまく均衡させようとします。"
 "システムがアイドルに見える場合はパフォーマンスを落とし、システムがビジーの場合はパフォーマンスを上昇させます。"
-"少しパフォーマンスは落ちますが、"
+"少しのパフォーマンスの低下で大きな効果を得られるような、ほど良いバランスを提供します。"
 
 #: usr/local/www/system_advanced_misc.php:318
 #: usr/local/www/system_advanced_misc.php:361
 msgid "glxsb Crypto Acceleration"
-msgstr "glxsb暗号化アクセラレーション"
+msgstr "glxsb 暗号アクセラレーション"
 
 #: usr/local/www/system_advanced_misc.php:321
 #: usr/local/www/system_advanced_misc.php:364
@@ -38188,7 +38188,7 @@ msgstr "glxsb"
 #: usr/local/www/system_advanced_misc.php:324
 #: usr/local/www/system_advanced_misc.php:367
 msgid "Use glxsb"
-msgstr "glxsbを使う"
+msgstr "glxsb を使用"
 
 #: usr/local/www/system_advanced_misc.php:326
 #: usr/local/www/system_advanced_misc.php:369
@@ -38198,14 +38198,21 @@ msgid ""
 "cryptographic acceleration card, as this will take precedence and the Hifn "
 "card will not be used. Acceleration should be automatic for IPsec when using "
 "Rijndael (AES). OpenVPN should be set for AES-128-CBC."
-msgstr "チップを持つシステムでは「AMDのGeode LXセキュリティブロックは、いくつかの暗号機能を加速していきます」 。あなたはHifnのある場合は、「暗号化アクセラレータカードを、これが優先されますし、 Hifnのように、 「カードが使用されない場合は、このオプションを有効にしないでください。 「ラインダール（ AES）を使用した場合、加速がIPSecの自動にする必要があります。 OpenVPNのは、AES - 128 -CBCのために設定する必要があります。"
+msgstr ""
+"AMD Geode LX セキュリティブロックは、該当するチップが載っているシステムで、"
+"一部の暗号機能を高速化します。Hifn 暗号機能アクセラレーションカードを使用している場合は、"
+"このオプションを有効にしてはいけません。オプションが優先されるため、Hifn カードは使用できなくなります。"
+"Rijndael (AES) を使用した IPsec に対しては、自動的に高速化されます。"
+"OpenVPN は AES-128-CBC に設定してください。"
 
 #: usr/local/www/system_advanced_misc.php:332
 #: usr/local/www/system_advanced_misc.php:375
 msgid ""
 "If you do not have a glxsb chip in your system, this option will have no "
 "effect. To unload the module, uncheck this option and then reboot."
-msgstr "効果」を使用しているシステムでglxsbチップを持っていない場合、このオプションはあります」 。モジュールをアンロードするには、このオプションをオフにしてから再起動します。"
+msgstr ""
+"システムで glxsb チップを使用していない場合は、このオプションは何の効果もありません。"
+"モジュールをアンロードするには、このオプションを外してから再起動してください。"
 
 #: usr/local/www/system_advanced_misc.php:340
 #: usr/local/www/system_advanced_misc.php:383
@@ -38214,7 +38221,7 @@ msgstr "効果」を使用しているシステムでglxsbチップを持って�
 #: usr/local/www/system_advanced_misc.php:491
 #: usr/local/www/system_advanced_misc.php:491
 msgid "IP Security"
-msgstr "IPセキュリティ"
+msgstr "IP セキュリティ"
 
 #: usr/local/www/system_advanced_misc.php:343
 #: usr/local/www/system_advanced_misc.php:386
@@ -38232,7 +38239,7 @@ msgstr "セキュリティアソシエーション"
 #: usr/local/www/system_advanced_misc.php:497
 #: usr/local/www/system_advanced_misc.php:497
 msgid "Prefer older IPsec SAs"
-msgstr "古いIPsec SAのを好む"
+msgstr "古い IPsec SA を優先"
 
 #: usr/local/www/system_advanced_misc.php:348
 #: usr/local/www/system_advanced_misc.php:391
@@ -38244,7 +38251,10 @@ msgid ""
 "By default, if several SAs match, the newest one is preferred if it's at "
 "least 30 seconds old. Select this option to always prefer old SAs over new "
 "ones."
-msgstr "30秒以上古い "それはATの場合、デフォルトでは、いくつかのSAが一致する場合、最新の1が好ましい」 。常に新しい「ものより古いSAを好む場合は、このオプションを選択します。"
+msgstr ""
+"デフォルトでは、複数の SA が一致した場合、"
+"30 秒以上経過している SA の中で一番新しいものが優先されます。"
+"このオプションを選択すると、新しいものではなく、常に古い SA を優先します。"
 
 #: usr/local/www/system_advanced_misc.php:354
 #: usr/local/www/system_advanced_misc.php:397
@@ -38253,7 +38263,7 @@ msgstr "30秒以上古い "それはATの場合、デフォルトでは、いく
 #: usr/local/www/system_advanced_misc.php:505
 #: usr/local/www/system_advanced_misc.php:505
 msgid "IPsec Debug"
-msgstr "IPsecのデバッグ"
+msgstr "IPsec デバッグ"
 
 #: usr/local/www/system_advanced_misc.php:357
 #: usr/local/www/system_advanced_misc.php:400
@@ -38262,7 +38272,7 @@ msgstr "IPsecのデバッグ"
 #: usr/local/www/system_advanced_misc.php:508
 #: usr/local/www/system_advanced_misc.php:508
 msgid "Start racoon in debug mode"
-msgstr "デバッグモードでアライグマを起動します。"
+msgstr "racoon をデバッグモードで起動"
 
 #: usr/local/www/system_advanced_misc.php:359
 #: usr/local/www/system_advanced_misc.php:402
@@ -38273,7 +38283,9 @@ msgstr "デバッグモードでアライグマを起動します。"
 msgid ""
 "Launches racoon in debug mode so that more verbose logs will be generated to "
 "aid in troubleshooting."
-msgstr "トラブルシューティングを支援"より冗長なログが生成されたされるように、デバッグモードでアライグマを起動します」 。"
+msgstr ""
+"racoon をデバッグモードで起動し、"
+"トラブルシューティングに役立つ、より詳細なログを生成させます。
 
 #: usr/local/www/system_advanced_misc.php:361
 #: usr/local/www/system_advanced_misc.php:404
@@ -38282,7 +38294,7 @@ msgstr "トラブルシューティングを支援"より冗長なログが生�
 #: usr/local/www/system_advanced_misc.php:512
 #: usr/local/www/system_advanced_misc.php:512
 msgid "NOTE: Changing this setting will restart racoon."
-msgstr "注：この設定を変更すると、アライグマを再起動します。"
+msgstr "注意: この設定を変更すると、racoon は再起動します。"
 
 #: usr/local/www/system_advanced_misc.php:365
 #: usr/local/www/system_advanced_misc.php:408
@@ -38291,7 +38303,7 @@ msgstr "注：この設定を変更すると、アライグマを再起動しま
 #: usr/local/www/system_advanced_misc.php:516
 #: usr/local/www/system_advanced_misc.php:516
 msgid "Maximum MSS"
-msgstr "最大MSS"
+msgstr "最大 MSS"
 
 #: usr/local/www/system_advanced_misc.php:368
 #: usr/local/www/system_advanced_misc.php:411
@@ -38300,7 +38312,7 @@ msgstr "最大MSS"
 #: usr/local/www/system_advanced_misc.php:519
 #: usr/local/www/system_advanced_misc.php:519
 msgid "Enable MSS clamping on VPN traffic"
-msgstr "MSSは、VPNトラフィックにクランプ可能にする"
+msgstr "VPN トラフィックで MSS クランプを有効"
 
 #: usr/local/www/system_advanced_misc.php:372
 #: usr/local/www/system_advanced_misc.php:415
@@ -38311,7 +38323,9 @@ msgstr "MSSは、VPNトラフィックにクランプ可能にする"
 msgid ""
 "Enable MSS clamping on TCP flows over VPN. This helps overcome problems with "
 "PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes. "
-msgstr "IPSec VPNのリンク上でPMTUD 「VPN上を流れるTCP上でクランプするMSSを有効にします。これはの問題を克服するのに役立ちます」 。空白の場合、デフォルト値は1400バイトです。"
+msgstr ""
+"VPN を流れる TCP で MSS クランプを有効にします。"
+"IPsec VPN リンクにおける PMTUD 問題を解決するのに役立ちます。空白の場合、デフォルト値は 1400 バイトです。"
 
 #: usr/local/www/system_advanced_misc.php:383
 #: usr/local/www/system_advanced_misc.php:426
@@ -38320,7 +38334,7 @@ msgstr "IPSec VPNのリンク上でPMTUD 「VPN上を流れるTCP上でクラン
 #: usr/local/www/system_advanced_misc.php:534
 #: usr/local/www/system_advanced_misc.php:534
 msgid "Schedule States"
-msgstr "スケジュール状態"
+msgstr "スケジュールステータス"
 
 #: usr/local/www/system_advanced_misc.php:387
 #: usr/local/www/system_advanced_misc.php:430
@@ -38332,7 +38346,9 @@ msgid ""
 "By default schedules clear the states of existing connections when the "
 "expiration time has come. This option overrides that behavior by not "
 "clearing states for existing connections."
-msgstr "有効期限が到来した」ときに、デフォルトのスケジュールでは既存の接続の状態をオフにします」 。このオプションでは、 「既存の接続のための状態をクリアしていないことで、その動作を無効にします。"
+msgstr ""
+"デフォルトでは、有効期間が切れた時点で、スケジュールは既存の接続ステータスを消去します。"
+"このオプションはその振る舞いを上書きするため、既存の接続ステータスは消去されません。"
 
 #: usr/local/www/system_advanced_misc.php:395
 #: usr/local/www/system_advanced_misc.php:438
@@ -38353,7 +38369,10 @@ msgid ""
 "By default the monitoring process will flush states for a gateway that goes "
 "down. This option overrides that behavior by not clearing states for "
 "existing connections."
-msgstr "ダウン "デフォルトでは、監視プロセスが行くゲートウェイの状態をフラッシュします」 。このオプションでは、既存の接続」の状態をクリアしていないことによって、その動作を無効にします。"
+msgstr ""
+"デフォルトでは、ゲートウェイがダウンする場合は、監視プロセスはステータスをフラッシュします。"
+"このオプションはその振る舞いを上書きするため、"
+"既存の接続ステータスは消去されません。"
 
 #: usr/local/www/system_advanced_misc.php:411
 #: usr/local/www/system_advanced_misc.php:454
@@ -38371,7 +38390,7 @@ msgstr "ハードウェア設定"
 #: usr/local/www/system_advanced_misc.php:639
 #: usr/local/www/system_advanced_misc.php:639
 msgid "Hard disk standby time "
-msgstr "ハードディスク待機時間"
+msgstr "ハードディスクスタンバイ時間"
 
 #: usr/local/www/system_advanced_misc.php:421
 #: usr/local/www/system_advanced_misc.php:464
@@ -38391,7 +38410,9 @@ msgstr "常にオン"
 msgid ""
 "Puts the hard disk into standby mode when the selected amount of time after "
 "the last access has elapsed."
-msgstr "最終アクセス経過した」後の時間の選択された量は、スタンバイモードにハードディスクを置きます」 。"
+msgstr ""
+"最後のアクセスから、選択された時間が経過すると、"
+"ハードディスクをスタンバイモードにします。
 
 #: usr/local/www/system_advanced_misc.php:431
 #: usr/local/www/system_advanced_misc.php:474
@@ -38400,45 +38421,45 @@ msgstr "最終アクセス経過した」後の時間の選択された量は、
 #: usr/local/www/system_advanced_misc.php:656
 #: usr/local/www/system_advanced_misc.php:656
 msgid "Do not set this for CF cards."
-msgstr "CFカードのためにこれを設定しないでください。"
+msgstr "これを CF カードに設定しないでください。"
 
 #: usr/local/www/system_advanced_network.php:68
 #: usr/local/www/system_advanced_network.php:68
 msgid "You must specify an IP address to NAT IPv6 packets."
-msgstr "あなたは、NAT 、IPv6パケットにIPアドレスを指定する必要があります。"
+msgstr "NAT IPv6 パケットに IP アドレスを指定してください"
 
 #: usr/local/www/system_advanced_network.php:148
 #: usr/local/www/system_advanced_network.php:148
 msgid "Advanced: Networking"
-msgstr "アドバンスト：ネットワーキング"
+msgstr "高度な設定: ネットワーキング"
 
 #: usr/local/www/system_advanced_network.php:205
 #: usr/local/www/system_advanced_network.php:205
 msgid "IPv6 Options"
-msgstr "IPv6のオプション"
+msgstr "IPv6 オプション"
 
 #: usr/local/www/system_advanced_network.php:208
 #: usr/local/www/system_advanced_network.php:211
 #: usr/local/www/system_advanced_network.php:208
 #: usr/local/www/system_advanced_network.php:211
 msgid "Allow IPv6"
-msgstr "IPv6のを許容"
+msgstr "IPv6 を許可"
 
 #: usr/local/www/system_advanced_network.php:212
 msgid "All IPv6 will be blocked unless this box is checked."
-msgstr "このボックスがチェックされていない限り、すべてのIPv6がブロックされます。"
+msgstr "このボックスをチェックしないと、全ての IPv6 が拒否されます。"
 
 #: usr/local/www/system_advanced_network.php:217
 #: usr/local/www/system_advanced_network.php:218
 #: usr/local/www/system_advanced_network.php:218
 msgid "IPv6 over IPv4 Tunneling"
-msgstr "IPv4のトンネリング上のIPv6"
+msgstr "IPv6 over IPv4 トンネリング"
 
 #: usr/local/www/system_advanced_network.php:220
 #: usr/local/www/system_advanced_network.php:221
 #: usr/local/www/system_advanced_network.php:221
 msgid "Enable IPv4 NAT encapsulation of IPv6 packets"
-msgstr "IPv6パケットのIPv4のNATのカプセル化を可能にする"
+msgstr "IPv6 パケットの IPv4 NAT カプセル化を有効"
 
 #: usr/local/www/system_advanced_network.php:221
 #: usr/local/www/system_advanced_network.php:222
@@ -38447,25 +38468,28 @@ msgid ""
 "This provides an RFC 2893 compatibility mechanism that can be used to "
 "tunneling IPv6 packets over IPv4 routing infrastructures. If enabled, don't "
 "forget to add a firewall rule to permit IPv6 packets."
-msgstr "IPv4ルーティングインフラ上でIPv6パケットをトンネリング"これはするために使用することができ、RFC 2893互換性のメカニズムを提供します」 。有効にすると、 「 IPv6パケットを許可するファイアウォールルールを追加することを忘れないでください。"
+msgstr ""
+"これは、RFC 2893 互換のメカニズムを提供し、IPv4 ルーティングインフラストラクチャ上で "
+"IPv6 パケットのトンネルングを使用可能にします。"
+"有効にする場合は、ファイアウォールルールに IPv6 パケットの許可を追加してください。"
 
 #: usr/local/www/system_advanced_network.php:234
 #: usr/local/www/system_advanced_network.php:235
 #: usr/local/www/system_advanced_network.php:235
 msgid "Network Interfaces"
-msgstr "ネットワーク·インタフェース"
+msgstr "ネットワークインタフェース"
 
 #: usr/local/www/system_advanced_network.php:237
 #: usr/local/www/system_advanced_network.php:238
 #: usr/local/www/system_advanced_network.php:238
 msgid "Device polling"
-msgstr "デバイスのポーリング"
+msgstr "デバイスポーリング"
 
 #: usr/local/www/system_advanced_network.php:240
 #: usr/local/www/system_advanced_network.php:241
 #: usr/local/www/system_advanced_network.php:241
 msgid "Enable device polling"
-msgstr "デバイスのポーリングを有効にする"
+msgstr "デバイスポーリングを有効"
 
 #: usr/local/www/system_advanced_network.php:241
 #: usr/local/www/system_advanced_network.php:242
@@ -38477,19 +38501,24 @@ msgid ""
 "webConfigurator, SSH, etc. from being inaccessible due to interrupt floods "
 "when under extreme load. Generally this is not recommended. Not all NICs "
 "support polling; see the %s homepage for a list of supported cards."
-msgstr "代わりに、割り込みに依存するので新しいデータのためのデバイスは、「デバイスのポーリングは、システムが定期的にネットワークをポーリングすることができます技術です」 。これは時に極端な負荷の下で"洪水を中断することがアクセス不能のためであることからwebConfigurator 、 SSHなど「あなたのを防ぐことができます。一般に、これはお勧めできません。すべてのNICは「ポーリングをサポートし、サポートされているカードのリストについては、 %sホームページを参照してください。"
+msgstr ""
+"デバイスポーリングは、割り込みに依存せずに、"
+"定期的に、システムがネットワークデバイスへ新規データをポーリングすることを許可する技術です。"
+"極端な負荷が発生した場合、インタラプトフラッドが原因で、Web 設定管理画面や、SSH 等へアクセスできなくなります。"
+"通常は、これは非推奨です。ポーリングに対応しているのは一部のカードのみです。"
+"対応しているカードのリストは、%s ホームページを参照してください。"
 
 #: usr/local/www/system_advanced_network.php:245
 #: usr/local/www/system_advanced_network.php:246
 #: usr/local/www/system_advanced_network.php:246
 msgid "Hardware Checksum Offloading"
-msgstr "ハードウェアのチェックサムオフロード"
+msgstr "ハードウェアチェックサムオフロード"
 
 #: usr/local/www/system_advanced_network.php:248
 #: usr/local/www/system_advanced_network.php:249
 #: usr/local/www/system_advanced_network.php:249
 msgid "Disable hardware checksum offload"
-msgstr "ハードウェアチェックサムオフロードを無効にする"
+msgstr "ハードウェアチェックサムオフロードを無効"
 
 #: usr/local/www/system_advanced_network.php:249
 #: usr/local/www/system_advanced_network.php:250
@@ -38499,19 +38528,23 @@ msgid ""
 "offloading is broken in some hardware, particularly some Realtek cards. "
 "Rarely, drivers may have problems with checksum offloading and some specific "
 "NICs."
-msgstr ""このオプションをチェックすると、ハードウェアチェックサムオフロードを無効にします。チェックサム"オフロードは、一部のハードウェア、特にいくつかのRealtekのカードに分割されます。 NICは「まれに、ドライバがチェックサムオフロードと、いくつかの特定の問題を有していなくてもよい」 。"
+msgstr ""
+"このオプションをチェックすると、ハードウェアチェックサムオフロードを無効にします。"
+"チェックサムオフロードは、一部のハードウェア、特に Realtek のカードの一部で動作しません。"
+"まれに、チェックサムオフロードと一部の特定の NIC で、"
+"ドライバに問題が発生することがあります。"
 
 #: usr/local/www/system_advanced_network.php:253
 #: usr/local/www/system_advanced_network.php:254
 #: usr/local/www/system_advanced_network.php:254
 msgid "Hardware TCP Segmentation Offloading"
-msgstr "ハードウェアのTCPセグメンテーションオフロード"
+msgstr "ハードウェア TCP セグメンテーションオフロード"
 
 #: usr/local/www/system_advanced_network.php:256
 #: usr/local/www/system_advanced_network.php:257
 #: usr/local/www/system_advanced_network.php:257
 msgid "Disable hardware TCP segmentation offload"
-msgstr "ハードウェア、TCPセグメンテーションオフロードを無効に"
+msgstr "ハードウェア TCP セグメンテーションオフロードを無効"
 
 #: usr/local/www/system_advanced_network.php:257
 #: usr/local/www/system_advanced_network.php:258
@@ -38520,19 +38553,22 @@ msgid ""
 "Checking this option will disable hardware TCP segmentation offloading (TSO, "
 "TSO4, TSO6). This offloading is broken in some hardware drivers, and may "
 "impact performance with some specific NICs."
-msgstr "」 （ TSO4 、 TSO6このオプションをオンにすると、ハードウェアTCPセグメンテーションオフロードTSOを）無効になります」 。このオフロードは、一部のハードウェアのドライバに分割され、 「いくつかの特定のNICのパフォーマンスに影響を与える可能性がある。"
+msgstr ""
+"このオプションをチェックすると、ハードウェア TCP セグメンテーションオフロード ( TSO, TSO4, TSO6 ) "
+"を無効にします。このオフロードは一部のハードウェアドライバでは動作しません。"
+"また、一部の特定の NIC とのパフォーマンスに影響を及ぼす可能性があります。"
 
 #: usr/local/www/system_advanced_network.php:261
 #: usr/local/www/system_advanced_network.php:262
 #: usr/local/www/system_advanced_network.php:262
 msgid "Hardware Large Receive Offloading"
-msgstr "ハードウェア大きなオフロードを受信"
+msgstr "ハードウェアラージレシーブオフロード"
 
 #: usr/local/www/system_advanced_network.php:264
 #: usr/local/www/system_advanced_network.php:265
 #: usr/local/www/system_advanced_network.php:265
 msgid "Disable hardware large receive offload"
-msgstr "ハードウェアに大きな受信オフロードを無効にする"
+msgstr "ハードウェアラージレシーブオフロードを無効"
 
 #: usr/local/www/system_advanced_network.php:265
 #: usr/local/www/system_advanced_network.php:266
@@ -38541,19 +38577,22 @@ msgid ""
 "Checking this option will disable hardware large receive offloading (LRO). "
 "This offloading is broken in some hardware drivers, and may impact "
 "performance with some specific NICs."
-msgstr ""このオプションをオンにすると、無効になり、ハードウェアの大。 （ LRO ）のオフロード受信」このオフロードは、一部のハードウェアのドライバに分割され、いくつかの特定のNICを「パフォーマンスに影響する可能性があります。"
+msgstr ""
+"このオプションをチェックすると、ハードウェアラージレシーブオフロード (LRO) を無効にします。"
+"このオフロードは一部のハードウェアドライバでは動作しません。"
+"また、一部の特定の NIC とのパフォーマンスに影響を及ぼす可能性があります。"
 
 #: usr/local/www/system_advanced_network.php:269
 #: usr/local/www/system_advanced_network.php:270
 #: usr/local/www/system_advanced_network.php:270
 msgid "ARP Handling"
-msgstr "ARPの取り扱い"
+msgstr "ARP 処理"
 
 #: usr/local/www/system_advanced_network.php:272
 #: usr/local/www/system_advanced_network.php:273
 #: usr/local/www/system_advanced_network.php:273
 msgid "Suppress ARP messages"
-msgstr "ARPメッセージを抑制する"
+msgstr "ARP メッセージを抑制"
 
 #: usr/local/www/system_advanced_network.php:273
 #: usr/local/www/system_advanced_network.php:274
@@ -38561,7 +38600,9 @@ msgstr "ARPメッセージを抑制する"
 msgid ""
 "This option will suppress ARP log messages when multiple interfaces reside "
 "on the same broadcast domain"
-msgstr "同じブロードキャストドメインに「複数のインターフェイスが存在する場合、このオプションは、ARP 、ログメッセージが表示されなくなります」"
+msgstr ""
+"このオプションは、同じブロードキャストドメインに複数のインタフェースが存在する場合に、"
+"ARP ログメッセージを抑制します。"
 
 #: usr/local/www/system_advanced_notifications.php:118
 #: usr/local/www/system_advanced_notifications.php:124
@@ -38571,19 +38612,19 @@ msgstr "同じブロードキャストドメインに「複数のインターフ
 #: usr/local/www/system_advanced_notifications.php:133
 #, php-format
 msgid "This is a test message from %s.  It is safe to ignore this message."
-msgstr ""
+msgstr "これは %s からのテストメッセージです。このメッセージは無視して構いません。"
 
 #: usr/local/www/system_advanced_notifications.php:131
 #: usr/local/www/system_advanced_notifications.php:140
 #: usr/local/www/system_advanced_notifications.php:140
 msgid "Advanced: Notifications"
-msgstr "アドバンスト：通知"
+msgstr "高度な設定: 通知"
 
 #: usr/local/www/system_advanced_notifications.php:168
 #: usr/local/www/system_advanced_notifications.php:177
 #: usr/local/www/system_advanced_notifications.php:177
 msgid "Growl"
-msgstr "うなり声"
+msgstr "Growl"
 
 #: usr/local/www/system_advanced_notifications.php:171
 #: usr/local/www/system_advanced_notifications.php:180
@@ -38595,7 +38636,7 @@ msgstr "登録名"
 #: usr/local/www/system_advanced_notifications.php:183
 #: usr/local/www/system_advanced_notifications.php:183
 msgid "Enter the name to register with the Growl server (default: PHP-Growl)."
-msgstr "Growlのサーバ（ ： PHP- Growlのデフォルト）に登録する名前を入力します。"
+msgstr "Growl サーバに登録する名前を入力してください ( デフォルト: PHP-Growl )"
 
 #: usr/local/www/system_advanced_notifications.php:178
 #: usr/local/www/system_advanced_notifications.php:187
@@ -38608,32 +38649,33 @@ msgstr "通知名"
 #: usr/local/www/system_advanced_notifications.php:190
 #, php-format
 msgid "Enter a name for the Growl notifications (default: %s growl alert)."
-msgstr "Growl通知（ ： %sうなり声アラートデフォルト）の名前を入力します。"
+msgstr "Growl 通知の名前を入力してください ( デフォルト: %s growl alert )"
 
 #: usr/local/www/system_advanced_notifications.php:188
 #: usr/local/www/system_advanced_notifications.php:197
 #: usr/local/www/system_advanced_notifications.php:197
 msgid ""
 "This is the IP address that you would like to send growl notifications to."
-msgstr ""これはあなたがにGrowl通知を送信したいIPアドレスです。"
+msgstr ""
+"これは Growl 通知を送信する IP アドレスです。"
 
 #: usr/local/www/system_advanced_notifications.php:195
 #: usr/local/www/system_advanced_notifications.php:204
 #: usr/local/www/system_advanced_notifications.php:204
 msgid "Enter the password of the remote growl notification device."
-msgstr "リモートうなり声の通知デバイスのパスワードを入力します。"
+msgstr "リモート Growl 通知デバイスのパスワードを入力してください。"
 
 #: usr/local/www/system_advanced_notifications.php:203
 #: usr/local/www/system_advanced_notifications.php:212
 #: usr/local/www/system_advanced_notifications.php:212
 msgid "SMTP E-Mail"
-msgstr "SMTP電子メール"
+msgstr "SMTP メール"
 
 #: usr/local/www/system_advanced_notifications.php:206
 #: usr/local/www/system_advanced_notifications.php:215
 #: usr/local/www/system_advanced_notifications.php:215
 msgid "E-Mail server"
-msgstr "電子メールサーバー"
+msgstr "メールサーバ"
 
 #: usr/local/www/system_advanced_notifications.php:209
 #: usr/local/www/system_advanced_notifications.php:218
@@ -38641,13 +38683,15 @@ msgstr "電子メールサーバー"
 msgid ""
 "This is the FQDN or IP address of the SMTP E-Mail server to which "
 "notifications will be sent."
-msgstr "通知が送信されます"これはするSMTP電子メールサーバのFQDNまたはIPアドレスです」 。"
+msgstr ""
+"これは通知を送信する SMTP メールサーバの"
+" FQDN もしくは IP アドレスです。"
 
 #: usr/local/www/system_advanced_notifications.php:213
 #: usr/local/www/system_advanced_notifications.php:222
 #: usr/local/www/system_advanced_notifications.php:222
 msgid "SMTP Port of E-Mail server"
-msgstr "電子メールサーバのSMTPポート"
+msgstr "メールサーバの SMTP ポート"
 
 #: usr/local/www/system_advanced_notifications.php:217
 #: usr/local/www/system_advanced_notifications.php:226
@@ -38655,44 +38699,47 @@ msgstr "電子メールサーバのSMTPポート"
 msgid ""
 "This is the port of the SMTP E-Mail server, typically 25, 587 (submission) "
 "or 465 (smtps, tick ssl/tls checkbox)"
-msgstr "または465 （ SMTPS 、ダニSSL / TLSチェックボックス） "これは、SMTP電子メールサーバーのポート、通常は25 、 587 （サブミッション）である""
+msgstr ""
+"これは SMTP メールサーバのポートで、通常は、25、587 ( サブミッション )、"
+"もしくは、465 ( smtps、ssl/tls チェックボックスをチェックしてください ) です。"
 
 #: usr/local/www/system_advanced_notifications.php:221
 #: usr/local/www/system_advanced_notifications.php:230
 #: usr/local/www/system_advanced_notifications.php:230
 msgid "From e-mail address"
-msgstr "Eメールアドレスから"
+msgstr "差出人メールアドレス"
 
 #: usr/local/www/system_advanced_notifications.php:224
 #: usr/local/www/system_advanced_notifications.php:233
 #: usr/local/www/system_advanced_notifications.php:233
 msgid "This is the e-mail address that will appear in the from field."
-msgstr "これはからのフィールドに表示される電子メールアドレスです。"
+msgstr "これは差出人フィールドに表示されるメールアドレスです。"
 
 #: usr/local/www/system_advanced_notifications.php:228
 #: usr/local/www/system_advanced_notifications.php:237
 #: usr/local/www/system_advanced_notifications.php:237
 msgid "Notification E-Mail address"
-msgstr "通知の電子メールアドレス"
+msgstr "通知メールアドレス"
 
 #: usr/local/www/system_advanced_notifications.php:231
 #: usr/local/www/system_advanced_notifications.php:240
 #: usr/local/www/system_advanced_notifications.php:240
 msgid ""
 "Enter the e-mail address that you would like email notifications sent to."
-msgstr "「あなたはに送られた電子メール通知をご希望のメールアドレスを入力してください。"
+msgstr ""
+"通知メールを送信する、メールアドレスを入力してください。"
 
 #: usr/local/www/system_advanced_notifications.php:235
 #: usr/local/www/system_advanced_notifications.php:244
 #: usr/local/www/system_advanced_notifications.php:244
 msgid "Notification E-Mail auth username (optional)"
-msgstr "通知メールの認証のユーザ名（オプション）"
+msgstr "通知メールの認証ユーザ名（オプション）"
 
 #: usr/local/www/system_advanced_notifications.php:238
 #: usr/local/www/system_advanced_notifications.php:247
 #: usr/local/www/system_advanced_notifications.php:247
 msgid "Enter the e-mail address username for SMTP authentication."
-msgstr "SMTP認証用の電子メールアドレスのユーザー名を入力してください。"
+msgstr "SMTP 認証用に、メールアドレスのユーザ名を入力してください。"
 
 #: usr/local/www/system_advanced_notifications.php:242
 #: usr/local/www/system_advanced_notifications.php:251
@@ -38704,45 +38751,47 @@ msgstr "通知メールの認証パスワード"
 #: usr/local/www/system_advanced_notifications.php:254
 #: usr/local/www/system_advanced_notifications.php:254
 msgid "Enter the e-mail address password for SMTP authentication."
-msgstr "SMTP認証用の電子メールアドレスのパスワードを入力します。"
+msgstr "SMTP認証用に、メールアドレスのパスワードを入力してください。"
 
 #: usr/local/www/system_advanced_sysctl.php:125
 #: usr/local/www/system_advanced_sysctl.php:125
 msgid "Advanced: System Tunables"
-msgstr "アドバンスト：システムチューニング可能"
+msgstr "高度な設定: システム調整パラメータ"
 
 #: usr/local/www/system_advanced_sysctl.php:139
 #: usr/local/www/system_advanced_sysctl.php:139
 msgid ""
 "The firewall tunables have changed.  You must apply the configuration to "
 "take affect."
-msgstr "「ファイアウォールの調整パラメータが変更されています。あなたがに設定を適用しなければならない」有効になります。"
+msgstr ""
+"ファイアウォール調整パラメータが変更されました。"
+"構成を有効にするには、構成に適用してください。"
 
 #: usr/local/www/system_advanced_sysctl.php:171
 #: usr/local/www/system_advanced_sysctl.php:171
 msgid "Tunable Name"
-msgstr "調整可能な名前"
+msgstr "調整パラメータ名"
 
 #: usr/local/www/system_advanced_sysctl.php:234
 #: usr/local/www/system_advanced_sysctl.php:234
 msgid "Edit system tunable"
-msgstr "編集システム調整"
+msgstr "システム調整パラメータの編集"
 
 #: usr/local/www/system_advanced_sysctl.php:237
 #: usr/local/www/system_advanced_sysctl.php:237
 msgid "Tunable"
-msgstr "調節可能な"
+msgstr "調整パラメータ"
 
 #: usr/local/www/system_authservers.php:44
 #: usr/local/www/system_authservers.php:44
 msgid "Authentication Servers"
-msgstr "認証サーバー"
+msgstr "認証サーバ"
 
 #: usr/local/www/system_authservers.php:83
 #: usr/local/www/system_authservers.php:84
 #: usr/local/www/system_authservers.php:84
 msgid "deleted"
-msgstr "削除された"
+msgstr "削除済"
 
 #: usr/local/www/system_authservers.php:160
 #: usr/local/www/system_authservers.php:183
@@ -38811,7 +38860,7 @@ msgstr "削除された"
 #: usr/local/www/system_usermanager.php:189
 #: usr/local/www/system_usermanager.php:703
 msgid "Descriptive name"
-msgstr "記述名"
+msgstr "説明名"
 
 #: usr/local/www/system_authservers.php:163
 #: usr/local/www/system_authservers.php:484
@@ -38833,7 +38882,7 @@ msgstr "ポート値"
 #: usr/local/www/system_authservers.php:166
 #: usr/local/www/system_authservers.php:502
 msgid "Transport"
-msgstr "輸送"
+msgstr "配送"
 
 #: usr/local/www/system_authservers.php:165
 #: usr/local/www/system_authservers.php:526
@@ -38858,14 +38907,14 @@ msgstr "検索レベル"
 #: usr/local/www/system_authservers.php:169
 #: usr/local/www/system_authservers.php:169
 msgid "User naming Attribute"
-msgstr "ユーザーネーミング属性"
+msgstr "ユーザネーミング属性"
 
 #: usr/local/www/system_authservers.php:168
 #: usr/local/www/system_authservers.php:169
 #: usr/local/www/system_authservers.php:170
 #: usr/local/www/system_authservers.php:170
 msgid "Group naming Attribute"
-msgstr "グループのネーミング属性"
+msgstr "グループネーミング属性"
 
 #: usr/local/www/system_authservers.php:169
 #: usr/local/www/system_authservers.php:665
@@ -38876,7 +38925,7 @@ msgstr "グループのネーミング属性"
 #: usr/local/www/system_authservers.php:171
 #: usr/local/www/system_authservers.php:677
 msgid "Group member attribute"
-msgstr "グループメンバー属性"
+msgstr "グループメンバ属性"
 
 #: usr/local/www/system_authservers.php:170
 #: usr/local/www/system_authservers.php:171
@@ -38890,7 +38939,7 @@ msgstr "認証コンテナ"
 #: usr/local/www/system_authservers.php:177
 #: usr/local/www/system_authservers.php:177
 msgid "Bind user DN"
-msgstr "バインドユーザーのDN"
+msgstr "ユーザ DN をバインド"
 
 #: usr/local/www/system_authservers.php:176
 #: usr/local/www/system_authservers.php:177
@@ -38908,7 +38957,7 @@ msgstr "バインドパスワード"
 #: usr/local/www/system_authservers.php:193
 #: usr/local/www/system_authservers.php:719
 msgid "Authentication port value"
-msgstr "認証ポートの値"
+msgstr "認証ポート値"
 
 #: usr/local/www/system_authservers.php:197
 #: usr/local/www/system_authservers.php:713
@@ -38919,7 +38968,7 @@ msgstr "認証ポートの値"
 #: usr/local/www/system_authservers.php:199
 #: usr/local/www/system_authservers.php:725
 msgid "Accounting port value"
-msgstr "会計ポート値"
+msgstr "アカウンティングポート値"
 
 #: usr/local/www/system_authservers.php:202
 #: usr/local/www/system_authservers.php:686
@@ -38937,28 +38986,28 @@ msgstr "共有秘密鍵"
 #: usr/local/www/system_authservers.php:211
 #: usr/local/www/system_authservers.php:211
 msgid "The host name contains invalid characters."
-msgstr "ホスト名が無効な文字が含まれています。"
+msgstr "ホスト名に無効な文字が含まれています"
 
 #: usr/local/www/system_authservers.php:212
 #: usr/local/www/system_authservers.php:213
 #: usr/local/www/system_authservers.php:214
 #: usr/local/www/system_authservers.php:214
 msgid "An authentication server with the same name already exists."
-msgstr "同じ名前の認証サーバがすでに存在しています。"
+msgstr "同じ名前の認証サーバが既に存在しています"
 
 #: usr/local/www/system_authservers.php:382
 #: usr/local/www/system_authservers.php:383
 #: usr/local/www/system_authservers.php:390
 #: usr/local/www/system_authservers.php:390
 msgid "Please fill the required values."
-msgstr "必要な値を入力してください。"
+msgstr "必要な値を入力してください"
 
 #: usr/local/www/system_authservers.php:388
 #: usr/local/www/system_authservers.php:389
 #: usr/local/www/system_authservers.php:396
 #: usr/local/www/system_authservers.php:396
 msgid "Please fill the bind username/password."
-msgstr "バインドユーザー名/パスワードを入力してください。"
+msgstr "バインドユーザ名 / パスワードを入力してください"
 
 #: usr/local/www/system_authservers.php:406
 #: usr/local/www/system_usermanager_settings.php:103
@@ -38968,14 +39017,14 @@ msgstr "バインドユーザー名/パスワードを入力してください�
 #: usr/local/www/system_authservers.php:418
 #: usr/local/www/system_usermanager_settings.php:104
 msgid "Popup blocker detected.  Action aborted."
-msgstr "ポップアップブロッカーが検出されました。アクションが中止されました。"
+msgstr "ポップアップブロッカーが検出されました。動作を中止しました。"
 
 #: usr/local/www/system_authservers.php:475
 #: usr/local/www/system_authservers.php:480
 #: usr/local/www/system_authservers.php:487
 #: usr/local/www/system_authservers.php:487
 msgid "LDAP Server Settings"
-msgstr "LDAPサーバーの設定"
+msgstr "LDAP サーバ設定"
 
 #: usr/local/www/system_authservers.php:478
 #: usr/local/www/system_authservers.php:680
@@ -38986,7 +39035,7 @@ msgstr "LDAPサーバーの設定"
 #: usr/local/www/system_authservers.php:490
 #: usr/local/www/system_authservers.php:692
 msgid "Hostname or IP address"
-msgstr "ホスト名またはIPアドレス"
+msgstr "ホスト名または IP アドレス"
 
 #: usr/local/www/system_authservers.php:505
 #: usr/local/www/vpn_openvpn_client.php:629
@@ -39003,21 +39052,21 @@ msgstr "ホスト名またはIPアドレス"
 #: usr/local/www/system_authservers.php:517
 #: usr/local/www/vpn_openvpn_server.php:906
 msgid "Peer Certificate Authority"
-msgstr "認証局のピア"
+msgstr "ピアの認証局"
 
 #: usr/local/www/system_authservers.php:518
 #: usr/local/www/system_authservers.php:523
 #: usr/local/www/system_authservers.php:530
 #: usr/local/www/system_authservers.php:530
 msgid "This option is used if 'SSL Encrypted' option is choosen."
-msgstr "「 SSL暗号化」オプションが選択済みされている場合、このオプションが使用されます。"
+msgstr "「SSL 暗号化」オプションが選択されている場合に、このオプションが使用されます。"
 
 #: usr/local/www/system_authservers.php:519
 #: usr/local/www/system_authservers.php:524
 #: usr/local/www/system_authservers.php:531
 #: usr/local/www/system_authservers.php:531
 msgid "It must match with the CA in the AD otherwise problems will arise."
-msgstr "そうでなければ、問題が発生します、ADにおけるCAと一致している必要があります。"
+msgstr "AD の CA と一致する必要があります。そうでない場合は問題が発生します。"
 
 #: usr/local/www/system_authservers.php:541
 #: usr/local/www/system_authservers.php:546
@@ -39031,14 +39080,14 @@ msgstr "検索範囲"
 #: usr/local/www/system_authservers.php:557
 #: usr/local/www/system_authservers.php:557
 msgid "Level:"
-msgstr "レベル："
+msgstr "レベル: "
 
 #: usr/local/www/system_authservers.php:560
 #: usr/local/www/system_authservers.php:565
 #: usr/local/www/system_authservers.php:572
 #: usr/local/www/system_authservers.php:572
 msgid "Base DN:"
-msgstr "ベースDN ："
+msgstr "ベース DN: "
 
 #: usr/local/www/system_authservers.php:570
 #: usr/local/www/system_authservers.php:575
@@ -39052,7 +39101,7 @@ msgstr "認証コンテナ"
 #: usr/local/www/system_authservers.php:586
 #: usr/local/www/system_authservers.php:586
 msgid "Containers:"
-msgstr "コンテナ："
+msgstr "コンテナ: "
 
 #: usr/local/www/system_authservers.php:578
 #: usr/local/www/system_authservers.php:583
@@ -39061,28 +39110,30 @@ msgstr "コンテナ："
 msgid ""
 "Note: Semi-Colon separated. This will be prepended to the search base dn "
 "above or you can specify full container path."
-msgstr ""注：セミコロン区切りこれは、検索ベースDNの前に追加されます。 「上や、フルコンテナのパスを指定することができます。"
+msgstr ""
+"注意: セミコロンで区切ってください。これは、上記のベース DN 検索の先頭に追加されます。"
+"もしくは、フルコンテナパスを指定できます。"
 
 #: usr/local/www/system_authservers.php:579
 #: usr/local/www/system_authservers.php:584
 #: usr/local/www/system_authservers.php:591
 #: usr/local/www/system_authservers.php:591
 msgid "Example: CN=Users;DC=example"
-msgstr "例： CNは=ユーザー、 DC =例"
+msgstr "例: CN=Users;DC=example"
 
 #: usr/local/www/system_authservers.php:580
 #: usr/local/www/system_authservers.php:585
 #: usr/local/www/system_authservers.php:592
 #: usr/local/www/system_authservers.php:592
 msgid "Example: CN=Users,DC=example,DC=com;OU=OtherUsers,DC=example,DC=com "
-msgstr "例： CN =ユーザー、 DC =例、 DC = comの、 OU = OtherUsers 、 DC =例、 DC = comの"
+msgstr "例: CN=Users,DC=example,DC=com;OU=OtherUsers,DC=example,DC=com "
 
 #: usr/local/www/system_authservers.php:587
 #: usr/local/www/system_authservers.php:592
 #: usr/local/www/system_authservers.php:599
 #: usr/local/www/system_authservers.php:599
 msgid "Extended Query"
-msgstr "拡張問い合わせ"
+msgstr "拡張クエリ"
 
 #: usr/local/www/system_authservers.php:597
 #: usr/local/www/system_authservers.php:602
@@ -39091,28 +39142,30 @@ msgstr "拡張問い合わせ"
 msgid ""
 "Example: CN=Groupname,OU=MyGroups,DC=example,DC=com;OU=OtherUsers,DC=example,"
 "DC=com "
-msgstr "「例： CN =グループ名、 OU = MyGroups 、 DC =例、 DC = comの、 OU = OtherUsers 、 DC =例、 「DC = comの"
+msgstr ""
+"例: CN=Groupname,OU=MyGroups,DC=example,DC=com;OU=OtherUsers,DC=example,"
+"DC=com "
 
 #: usr/local/www/system_authservers.php:604
 #: usr/local/www/system_authservers.php:609
 #: usr/local/www/system_authservers.php:616
 #: usr/local/www/system_authservers.php:616
 msgid "Bind credentials"
-msgstr "資格をバインド"
+msgstr "資格情報をバインド"
 
 #: usr/local/www/system_authservers.php:612
 #: usr/local/www/system_authservers.php:617
 #: usr/local/www/system_authservers.php:624
 #: usr/local/www/system_authservers.php:624
 msgid "Use anonymous binds to resolve distinguished names"
-msgstr "識別名を解決するために匿名バインドを使用して、"
+msgstr "識別名の名前解決に匿名バインドを使用"
 
 #: usr/local/www/system_authservers.php:621
 #: usr/local/www/system_authservers.php:626
 #: usr/local/www/system_authservers.php:633
 #: usr/local/www/system_authservers.php:633
 msgid "User DN:"
-msgstr "ユーザーDN ："
+msgstr "ユーザ DN: "
 
 #: usr/local/www/system_authservers.php:637
 #: usr/local/www/system_authservers.php:642
@@ -39126,21 +39179,21 @@ msgstr "初期テンプレート"
 #: usr/local/www/system_authservers.php:665
 #: usr/local/www/system_authservers.php:665
 msgid "User naming attribute"
-msgstr "ユーザーネーミング属性"
+msgstr "ユーザネーミング属性"
 
 #: usr/local/www/system_authservers.php:659
 #: usr/local/www/system_authservers.php:664
 #: usr/local/www/system_authservers.php:671
 #: usr/local/www/system_authservers.php:671
 msgid "Group naming attribute"
-msgstr "グループのネーミング属性"
+msgstr "グループネーミング属性"
 
 #: usr/local/www/system_authservers.php:677
 #: usr/local/www/system_authservers.php:682
 #: usr/local/www/system_authservers.php:689
 #: usr/local/www/system_authservers.php:689
 msgid "Radius Server Settings"
-msgstr "RADIUSサーバの設定"
+msgstr "RADIUS サーバ設定"
 
 #: usr/local/www/system_authservers.php:692
 #: usr/local/www/system_authservers.php:697
@@ -39154,7 +39207,7 @@ msgstr "提供するサービス"
 #: usr/local/www/system_authservers.php:759
 #: usr/local/www/system_authservers.php:759
 msgid "Server Name"
-msgstr "サーバー名"
+msgstr "サーバ名"
 
 #: usr/local/www/system_authservers.php:739
 #: usr/local/www/system_authservers.php:745
@@ -39174,7 +39227,7 @@ msgstr "ホスト名"
 #: usr/local/www/system_authservers.php:797
 #: usr/local/www/vpn_openvpn_server.php:1714
 msgid "edit server"
-msgstr "サーバーの編集"
+msgstr "サーバの編集"
 
 #: usr/local/www/system_authservers.php:759
 #: usr/local/www/system_authservers.php:767
@@ -39182,7 +39235,7 @@ msgstr "サーバーの編集"
 #: usr/local/www/system_authservers.php:800
 #: usr/local/www/system_authservers.php:800
 msgid "Do you really want to delete this Server?"
-msgstr "あなたは本当に、このサーバを削除しますか？"
+msgstr "本当にこのサーバを削除しますか？"
 
 #: usr/local/www/system_authservers.php:760
 #: usr/local/www/vpn_openvpn_server.php:1483
@@ -39208,7 +39261,7 @@ msgstr "サーバを削除"
 #: usr/local/www/system_authservers.php:770
 #: usr/local/www/vpn_openvpn_server.php:1731
 msgid "add server"
-msgstr "サーバーを追加"
+msgstr "サーバを追加"
 
 #: usr/local/www/system_authservers.php:779
 #: usr/local/www/system_authservers.php:789
@@ -39216,30 +39269,30 @@ msgstr "サーバーを追加"
 #: usr/local/www/system_authservers.php:777
 #: usr/local/www/system_authservers.php:777
 msgid "Additional authentication servers can be added here."
-msgstr "追加の認証サーバは、ここで追加することができる。"
+msgstr "追加の認証サーバは、ここで追加できます。"
 
 #: usr/local/www/system_camanager.php:44 usr/local/www/system_camanager.php:44
 msgid "Import an existing Certificate Authority"
-msgstr "既存の認証局をインポートする"
+msgstr "既存の認証局をインポート"
 
 #: usr/local/www/system_camanager.php:45 usr/local/www/system_camanager.php:45
 msgid "Create an internal Certificate Authority"
-msgstr "内部認証局を作成する"
+msgstr "内部認証局を作成"
 
 #: usr/local/www/system_camanager.php:46 usr/local/www/system_camanager.php:46
 msgid "Create an intermediate Certificate Authority"
-msgstr "中間認証局を作成する"
+msgstr "中間認証局を作成"
 
 #: usr/local/www/system_camanager.php:50 usr/local/www/system_camanager.php:51
 #: usr/local/www/system_camanager.php:51
 msgid "Certificate Authority Manager"
-msgstr "認証局マネージャー"
+msgstr "認証局マネージャ"
 
 #: usr/local/www/system_camanager.php:95 usr/local/www/system_camanager.php:96
 #: usr/local/www/system_camanager.php:96
 #, php-format
 msgid "Certificate Authority %s and its CRLs (if any) successfully deleted"
-msgstr "認証局は%sとそのCRLは、 （もしあれば）正常に削除"
+msgstr "認証局 %s 及び ( もしあれば ) CRL を正常に削除しました"
 
 #: usr/local/www/system_camanager.php:166
 #: usr/local/www/system_camanager.php:402
@@ -39263,7 +39316,7 @@ msgstr "証明書データ"
 #: usr/local/www/system_camanager.php:172
 #: usr/local/www/system_camanager.php:172
 msgid "Encrypted private keys are not yet supported."
-msgstr "暗号化された秘密鍵は、まだサポートされていません。"
+msgstr "暗号化された秘密鍵は、現時点では対応していません"
 
 #: usr/local/www/system_camanager.php:178
 #: usr/local/www/system_camanager.php:194
@@ -39299,7 +39352,7 @@ msgstr "暗号化された秘密鍵は、まだサポートされていません
 #: usr/local/www/system_usermanager.php:191
 #: usr/local/www/system_usermanager.php:723
 msgid "Key length"
-msgstr "キーの長さ"
+msgstr "鍵長"
 
 #: usr/local/www/system_camanager.php:179
 #: usr/local/www/system_camanager.php:195
@@ -39339,7 +39392,7 @@ msgstr "キーの長さ"
 #: usr/local/www/system_usermanager.php:737
 #: usr/local/www/vpn_ipsec_phase2.php:762
 msgid "Lifetime"
-msgstr "一生"
+msgstr "有効期間"
 
 #: usr/local/www/system_camanager.php:180
 #: usr/local/www/system_camanager.php:196
@@ -39356,7 +39409,7 @@ msgstr "一生"
 #: usr/local/www/system_certmanager.php:212
 #: usr/local/www/system_certmanager.php:227
 msgid "Distinguished name Country Code"
-msgstr "識別名の国コード"
+msgstr "識別名国コード"
 
 #: usr/local/www/system_camanager.php:181
 #: usr/local/www/system_camanager.php:197
@@ -39373,7 +39426,7 @@ msgstr "識別名の国コード"
 #: usr/local/www/system_certmanager.php:213
 #: usr/local/www/system_certmanager.php:228
 msgid "Distinguished name State or Province"
-msgstr "識別名の都道府県"
+msgstr "識別名都道府県"
 
 #: usr/local/www/system_camanager.php:182
 #: usr/local/www/system_camanager.php:198
@@ -39424,7 +39477,7 @@ msgstr "識別名組織"
 #: usr/local/www/system_certmanager.php:216
 #: usr/local/www/system_certmanager.php:231
 msgid "Distinguished name Email Address"
-msgstr "識別名のメールアドレス"
+msgstr "識別名メールアドレス"
 
 #: usr/local/www/system_camanager.php:185
 #: usr/local/www/system_camanager.php:201
@@ -39441,7 +39494,7 @@ msgstr "識別名のメールアドレス"
 #: usr/local/www/system_certmanager.php:217
 #: usr/local/www/system_certmanager.php:232
 msgid "Distinguished name Common Name"
-msgstr "識別名共通名"
+msgstr "識別名コモンネーム"
 
 #: usr/local/www/system_camanager.php:193
 #: usr/local/www/system_camanager.php:436
@@ -39465,7 +39518,7 @@ msgstr "認証局の署名"
 #: usr/local/www/system_certmanager.php:567
 #: usr/local/www/system_crlmanager.php:284
 msgid "CAs"
-msgstr "CAは"
+msgstr "CA"
 
 #: usr/local/www/system_camanager.php:349
 #: usr/local/www/system_camanager.php:568
@@ -39532,7 +39585,7 @@ msgstr "証明書の秘密鍵"
 #: usr/local/www/system_camanager.php:417
 #: usr/local/www/system_camanager.php:417
 msgid "(optional)"
-msgstr "（オプション）"
+msgstr "( オプション )"
 
 #: usr/local/www/system_camanager.php:414
 #: usr/local/www/system_camanager.php:421
@@ -39541,7 +39594,10 @@ msgid ""
 "Paste the private key for the above certificate here. This is optional in "
 "most cases, but required if you need to generate a Certificate Revocation "
 "List (CRL)."
-msgstr "ほとんどの場合、「ここに上記の証明書の秘密鍵をペーストします。これは、オプションのある「しかし、あなたが証明書失効」リスト（ CRL）を生成する必要がある場合に必要。"
+msgstr ""
+"上記の証明書の秘密鍵を、ここに貼り付けてください。"
+"通常はオプションですが、証明書執行リスト (CRL) を生成する必要がある場合は、"
+"必須です。"
 
 #: usr/local/www/system_camanager.php:420
 #: usr/local/www/system_crlmanager.php:374
@@ -39604,7 +39660,7 @@ msgstr "国コード"
 #: usr/local/www/system_certmanager.php:741
 #: usr/local/www/system_certmanager.php:902
 msgid "State or Province"
-msgstr "州または県"
+msgstr "都道府県"
 
 #: usr/local/www/system_camanager.php:498
 #: usr/local/www/system_camanager.php:508
@@ -39627,7 +39683,7 @@ msgstr "州または県"
 #: usr/local/www/system_camanager.php:553
 #: usr/local/www/system_camanager.php:563
 msgid "ex:"
-msgstr "例："
+msgstr "例: "
 
 #: usr/local/www/system_camanager.php:500
 #: usr/local/www/system_certmanager.php:696
@@ -39639,7 +39695,7 @@ msgstr "例："
 #: usr/local/www/system_camanager.php:525
 #: usr/local/www/system_certmanager.php:908
 msgid "Texas"
-msgstr "テキサス州"
+msgstr "Texas"
 
 #: usr/local/www/system_camanager.php:504
 #: usr/local/www/system_certmanager.php:605
@@ -39656,7 +39712,7 @@ msgstr "テキサス州"
 #: usr/local/www/system_certmanager.php:747
 #: usr/local/www/system_certmanager.php:912
 msgid "City"
-msgstr "都市"
+msgstr "市"
 
 #: usr/local/www/system_camanager.php:510
 #: usr/local/www/system_certmanager.php:706
@@ -39668,7 +39724,7 @@ msgstr "都市"
 #: usr/local/www/system_camanager.php:535
 #: usr/local/www/system_certmanager.php:918
 msgid "Austin"
-msgstr "オースティン"
+msgstr "Austin"
 
 #: usr/local/www/system_camanager.php:514
 #: usr/local/www/system_certmanager.php:611
@@ -39697,7 +39753,7 @@ msgstr "組織"
 #: usr/local/www/system_camanager.php:545
 #: usr/local/www/system_certmanager.php:928
 msgid "My Company Inc."
-msgstr "私の会社（株）"
+msgstr "My Company Inc."
 
 #: usr/local/www/system_camanager.php:530
 #: usr/local/www/system_camanager.php:531
@@ -39711,7 +39767,7 @@ msgstr "admin@mycompany.com"
 #: usr/local/www/system_camanager.php:565
 #: usr/local/www/system_camanager.php:565
 msgid "internal-ca"
-msgstr "内部CA"
+msgstr "内部 CA"
 
 #: usr/local/www/system_camanager.php:566
 #: usr/local/www/system_crlmanager.php:488
@@ -39776,21 +39832,21 @@ msgstr "外部"
 #: usr/local/www/system_camanager.php:665
 #: usr/local/www/system_camanager.php:665
 msgid "edit CA"
-msgstr "カリフォルニア州の編集"
+msgstr "CA の編集"
 
 #: usr/local/www/system_camanager.php:629
 #: usr/local/www/system_camanager.php:630
 #: usr/local/www/system_camanager.php:668
 #: usr/local/www/system_camanager.php:668
 msgid "export CA cert"
-msgstr "輸出CA証明書"
+msgstr "CA 証明書をエクスポート"
 
 #: usr/local/www/system_camanager.php:633
 #: usr/local/www/system_camanager.php:634
 #: usr/local/www/system_camanager.php:672
 #: usr/local/www/system_camanager.php:672
 msgid "export CA private key"
-msgstr "輸出CA秘密鍵"
+msgstr "CA 秘密鍵をエクスポート"
 
 #: usr/local/www/system_camanager.php:636
 #: usr/local/www/system_camanager.php:637
@@ -39799,14 +39855,16 @@ msgstr "輸出CA秘密鍵"
 msgid ""
 "Do you really want to delete this Certificate Authority and its CRLs, and "
 "unreference any associated certificates?"
-msgstr "「あなたは本当にこの認証局とそのCRLを削除したい、とない "任意の関連の証明書非参照？"
+msgstr ""
+"本当にこの認証局、CRL、及び、"
+"参照されていない関連証明書全てを削除しますか？"
 
 #: usr/local/www/system_camanager.php:637
 #: usr/local/www/system_camanager.php:638
 #: usr/local/www/system_camanager.php:676
 #: usr/local/www/system_camanager.php:676
 msgid "delete ca"
-msgstr "CAを削除"
+msgstr "CA の削除"
 
 #: usr/local/www/system_camanager.php:649
 #: usr/local/www/system_certmanager.php:952
@@ -39819,7 +39877,7 @@ msgstr "CAを削除"
 #: usr/local/www/system_camanager.php:688
 #: usr/local/www/system_certmanager.php:1195
 msgid "add or import ca"
-msgstr "CAを追加またはインポートする"
+msgstr "CA の追加またはインポート"
 
 #: usr/local/www/system_camanager.php:649
 #: usr/local/www/system_certmanager.php:952
@@ -39832,29 +39890,29 @@ msgstr "CAを追加またはインポートする"
 #: usr/local/www/system_camanager.php:688
 #: usr/local/www/system_certmanager.php:1195
 msgid "add ca"
-msgstr "CAを追加"
+msgstr "CA の追加"
 
 #: usr/local/www/system_camanager.php:656
 #: usr/local/www/system_camanager.php:657
 #: usr/local/www/system_camanager.php:695
 #: usr/local/www/system_camanager.php:695
 msgid "Additional trusted Certificate Authorities can be added here."
-msgstr "追加の信頼できる認証局は、ここで追加することができます。"
+msgstr "追加の信頼する認証局は、ここで追加できます。"
 
 #: usr/local/www/system_certmanager.php:44
 #: usr/local/www/system_certmanager.php:44
 msgid "Import an existing Certificate"
-msgstr "既存の証明書をインポートする"
+msgstr "既存の証明書のインポート"
 
 #: usr/local/www/system_certmanager.php:45
 #: usr/local/www/system_certmanager.php:45
 msgid "Create an internal Certificate"
-msgstr "内部証明書を作成します。"
+msgstr "内部証明書の新規作成"
 
 #: usr/local/www/system_certmanager.php:46
 #: usr/local/www/system_certmanager.php:46
 msgid "Create a Certificate Signing Request"
-msgstr "証明書署名要求を作成します。"
+msgstr "証明書署名要求の新規作成"
 
 #: usr/local/www/system_certmanager.php:51
 #: usr/local/www/system_certmanager.php:56
@@ -39876,14 +39934,14 @@ msgstr "既存の証明書を選択してください"
 #: usr/local/www/system_certmanager.php:102
 #, php-format
 msgid "Certificate %s successfully deleted"
-msgstr "正常に削除された証明書%s"
+msgstr "証明書 %s は正常に削除されました"
 
 #: usr/local/www/system_certmanager.php:166
 #: usr/local/www/system_certmanager.php:194
 #: usr/local/www/system_certmanager.php:197
 #: usr/local/www/system_certmanager.php:197
 msgid "Key data"
-msgstr "重要なデータ"
+msgstr "鍵データ"
 
 #: usr/local/www/system_certmanager.php:177
 #: usr/local/www/system_certmanager.php:549
@@ -39924,7 +39982,7 @@ msgstr "既存の証明書の選択"
 #: usr/local/www/system_certmanager.php:1008
 #: usr/local/www/system_certmanager.php:1052
 msgid "Update"
-msgstr "アップデート"
+msgstr "更新"
 
 #: usr/local/www/system_certmanager.php:308
 #: usr/local/www/system_certmanager.php:822
@@ -39942,7 +40000,7 @@ msgstr "最終的な証明書データ"
 #: usr/local/www/system_certmanager.php:424
 #, php-format
 msgid "The certificate modulus does not match the signing request modulus."
-msgstr "証明書の弾性率は、署名要求弾性率と一致しない。"
+msgstr "証明書モジュールは、署名要求モジュールと一致しません"
 
 #: usr/local/www/system_certmanager.php:507
 #: usr/local/www/system_certmanager.php:606
@@ -39966,7 +40024,7 @@ msgstr "秘密鍵データ"
 #: usr/local/www/system_certmanager.php:632
 #: usr/local/www/system_certmanager.php:632
 msgid "Paste a private key in X.509 PEM format here."
-msgstr "ここで、X.509 PEM形式の秘密鍵を貼り付けます。"
+msgstr "X.509 PEM 形式の秘密鍵をここに貼り付けてください"
 
 #: usr/local/www/system_certmanager.php:533
 #: usr/local/www/system_certmanager.php:632
@@ -39974,7 +40032,7 @@ msgstr "ここで、X.509 PEM形式の秘密鍵を貼り付けます。"
 #: usr/local/www/system_certmanager.php:642
 #: usr/local/www/system_certmanager.php:642
 msgid "Internal Certificate"
-msgstr "内部認証"
+msgstr "内部証明書"
 
 #: usr/local/www/system_certmanager.php:540
 #: usr/local/www/system_certmanager.php:639
@@ -39982,7 +40040,7 @@ msgstr "内部認証"
 #: usr/local/www/system_certmanager.php:649
 #: usr/local/www/system_certmanager.php:649
 msgid "No internal Certificate Authorities have been defined. You must"
-msgstr "は内部認証局が定義されていません。作業を行う必要があります"
+msgstr "内部認証局が定義されていません。内部証明書を作成する前に、内部 CA を"
 
 #: usr/local/www/system_certmanager.php:542
 #: usr/local/www/system_certmanager.php:641
@@ -39990,7 +40048,7 @@ msgstr "は内部認証局が定義されていません。作業を行う必要
 #: usr/local/www/system_certmanager.php:651
 #: usr/local/www/system_certmanager.php:651
 msgid "an internal CA before creating an internal certificate."
-msgstr "内部証明書を作成する前に、内部CA 。"
+msgstr "する必要があります。"
 
 #: usr/local/www/system_certmanager.php:623
 #: usr/local/www/system_certmanager.php:726
@@ -40032,7 +40090,7 @@ msgstr "外部署名要求"
 #: usr/local/www/system_certmanager.php:961
 #: usr/local/www/system_certmanager.php:961
 msgid "Choose an Existing Certificate"
-msgstr "既存の証明書を選択する"
+msgstr "既存の証明書を選択"
 
 #: usr/local/www/system_certmanager.php:752
 #: usr/local/www/system_certmanager.php:918
@@ -40048,7 +40106,7 @@ msgstr "既存の証明書"
 #: usr/local/www/system_certmanager.php:1022
 #: usr/local/www/system_certmanager.php:1022
 msgid "Complete Signing Request"
-msgstr "完全な署名リクエスト"
+msgstr "署名要求が完了しました"
 
 #: usr/local/www/system_certmanager.php:814
 #: usr/local/www/system_certmanager.php:980
@@ -40064,7 +40122,9 @@ msgstr "署名要求データ"
 msgid ""
 "Copy the certificate signing data from here and forward it to your "
 "certificate authority for signing."
-msgstr "「ここから証明書署名データをコピーして、それを転送する」に署名するための認証局。"
+msgstr ""
+"証明書署名データをここからコピーし、"
+"署名する認証局に転送してください"
 
 #: usr/local/www/system_certmanager.php:826
 #: usr/local/www/system_certmanager.php:992
@@ -40072,7 +40132,7 @@ msgstr "「ここから証明書署名データをコピーして、それを転
 #: usr/local/www/system_certmanager.php:1038
 #: usr/local/www/system_certmanager.php:1038
 msgid "Paste the certificate received from your certificate authority here."
-msgstr "ここにあなたの認証局から受け取った証明書を貼り付けます。"
+msgstr "自分の認証局から受け取った証明書を、ここに貼り付けてください。"
 
 #: usr/local/www/system_certmanager.php:857
 #: usr/local/www/system_crlmanager.php:490
@@ -40103,7 +40163,7 @@ msgstr "外部 - 署名申請中"
 #: usr/local/www/system_certmanager.php:1166
 #: usr/local/www/system_usermanager.php:656
 msgid "export cert"
-msgstr "輸出証明書"
+msgstr "証明書のエクスポート"
 
 #: usr/local/www/system_certmanager.php:926
 #: usr/local/www/system_certmanager.php:929
@@ -40117,7 +40177,7 @@ msgstr "輸出証明書"
 #: usr/local/www/system_certmanager.php:1166
 #: usr/local/www/system_certmanager.php:1169
 msgid "export ca"
-msgstr "輸出CA"
+msgstr "CA のエクスポート"
 
 #: usr/local/www/system_certmanager.php:929
 #: usr/local/www/system_certmanager.php:1106
@@ -40126,7 +40186,7 @@ msgstr "輸出CA"
 #: usr/local/www/system_certmanager.php:1169
 #: usr/local/www/system_certmanager.php:1169
 msgid "export key"
-msgstr "輸出キー"
+msgstr "鍵のエクスポート"
 
 #: usr/local/www/system_certmanager.php:932
 #: usr/local/www/system_certmanager.php:1112
@@ -40135,7 +40195,7 @@ msgstr "輸出キー"
 #: usr/local/www/system_certmanager.php:1175
 #: usr/local/www/system_certmanager.php:1175
 msgid "Do you really want to delete this Certificate?"
-msgstr "あなたは本当にこの証明書を削除しますか？"
+msgstr "本当にこの証明書を削除しますか？"
 
 #: usr/local/www/system_certmanager.php:933
 #: usr/local/www/system_usermanager.php:661
@@ -40147,7 +40207,7 @@ msgstr "あなたは本当にこの証明書を削除しますか？"
 #: usr/local/www/system_certmanager.php:1176
 #: usr/local/www/system_usermanager.php:659
 msgid "delete cert"
-msgstr "証明書を削除する"
+msgstr "証明書の削除"
 
 #: usr/local/www/system_certmanager.php:939
 #: usr/local/www/system_certmanager.php:1119
@@ -40156,7 +40216,7 @@ msgstr "証明書を削除する"
 #: usr/local/www/system_certmanager.php:1182
 #: usr/local/www/system_certmanager.php:1182
 msgid "update csr"
-msgstr "更新CSR"
+msgstr "CSR 更新"
 
 #: usr/local/www/system_certmanager.php:958
 #: usr/local/www/system_certmanager.php:1138
@@ -40165,7 +40225,7 @@ msgstr "更新CSR"
 #: usr/local/www/system_certmanager.php:1201
 #: usr/local/www/system_certmanager.php:1201
 msgid "Note: You can only delete a certificate if it is not currently in use."
-msgstr "注意：現在使用されていない場合にのみ、証明書を削除することができます。"
+msgstr "注意: 現在使用されていない場合にのみ、証明書を削除することができます。"
 
 #: usr/local/www/system_crlmanager.php:46
 #: usr/local/www/system_crlmanager.php:46
@@ -40175,7 +40235,7 @@ msgstr "証明書失効リストマネージャ"
 #: usr/local/www/system_crlmanager.php:49
 #: usr/local/www/system_crlmanager.php:49
 msgid "Create an internal Certificate Revocation List"
-msgstr "内部証明書失効リストを作成します。"
+msgstr "内部証明書失効リストを新規作成"
 
 #: usr/local/www/system_crlmanager.php:50
 #: usr/local/www/system_crlmanager.php:50
@@ -40185,34 +40245,34 @@ msgstr "既存の証明書失効リストをインポート"
 #: usr/local/www/system_crlmanager.php:86
 #: usr/local/www/system_crlmanager.php:86
 msgid "Invalid CRL reference."
-msgstr "無効なCRLの参照。"
+msgstr "無効な CRL 参照です"
 
 #: usr/local/www/system_crlmanager.php:92
 #: usr/local/www/system_crlmanager.php:92
 #, php-format
 msgid "Certificate Revocation List %s is in use and cannot be deleted"
-msgstr "証明書失効リストの%sが使用され、削除することはできません"
+msgstr "証明書失効リスト %s は使用されています。削除できません"
 
 #: usr/local/www/system_crlmanager.php:98
 #: usr/local/www/system_crlmanager.php:98
 #, php-format
 msgid "Certificate Revocation List %s successfully deleted"
-msgstr "証明書失効リストが正常に削除され%s"
+msgstr "証明書失効リスト %s は正常に削除されました"
 
 #: usr/local/www/system_crlmanager.php:136
 #: usr/local/www/system_crlmanager.php:136
 msgid "Both the Certificate and CRL must be specified."
-msgstr "証明書とCRLの両方を指定する必要があります。"
+msgstr "証明書と CRL を両方とも指定してください"
 
 #: usr/local/www/system_crlmanager.php:140
 #: usr/local/www/system_crlmanager.php:140
 msgid "CA mismatch between the Certificate and CRL. Unable to Revoke."
-msgstr "証明書とCRLの間のCAが一致しません。取り消しすることができません。"
+msgstr "証明書と CRL の CA が一致しません。失効できません。"
 
 #: usr/local/www/system_crlmanager.php:143
 #: usr/local/www/system_crlmanager.php:143
 msgid "Cannot revoke certificates for an imported/external CRL."
-msgstr "インポートされた外部/ CRLの証明書を失効することはできません。"
+msgstr "インポートされた、または外部 CRL の証明書は失効できません"
 
 #: usr/local/www/system_crlmanager.php:175
 #: usr/local/www/system_crlmanager.php:177
@@ -40220,13 +40280,13 @@ msgstr "インポートされた外部/ CRLの証明書を失効することは�
 #: usr/local/www/system_crlmanager.php:177
 #, php-format
 msgid "Deleted Certificate %s from CRL %s"
-msgstr "CRLの%sから削除された証明書の%s"
+msgstr "証明書 %s は CRL %s から削除されました"
 
 #: usr/local/www/system_crlmanager.php:179
 #: usr/local/www/system_crlmanager.php:179
 #, php-format
 msgid "Failed to delete Certificate %s from CRL %s"
-msgstr "CRLの%sから証明書%sの削除に失敗しました"
+msgstr "証明書 %s は CRL %s からの削除に失敗しました"
 
 #: usr/local/www/system_crlmanager.php:194
 #: usr/local/www/system_crlmanager.php:193
@@ -40267,7 +40327,7 @@ msgstr "既存の証明書失効リスト"
 #: usr/local/www/system_crlmanager.php:350
 #: usr/local/www/system_crlmanager.php:410
 msgid "CRL data"
-msgstr "CRLのデータ"
+msgstr "CRL データ"
 
 #: usr/local/www/system_crlmanager.php:353
 #: usr/local/www/system_crlmanager.php:354
@@ -40275,7 +40335,7 @@ msgstr "CRLのデータ"
 #: usr/local/www/system_crlmanager.php:354
 #: usr/local/www/system_crlmanager.php:414
 msgid "Paste a Certificate Revocation List in X.509 CRL format here."
-msgstr "ここで、X.509 CRLの形式で証明書失効リストを貼り付けます。"
+msgstr "X.509 CRL 形式の証明書失効リストを、ここに貼り付けます。"
 
 #: usr/local/www/system_crlmanager.php:363
 #: usr/local/www/system_crlmanager.php:364
@@ -40287,25 +40347,25 @@ msgstr "内部証明書失効リスト"
 #: usr/local/www/system_crlmanager.php:371
 #: usr/local/www/system_crlmanager.php:371
 msgid "Default: 9999"
-msgstr "デフォルト： 9999"
+msgstr "デフォルト: 9999"
 
 #: usr/local/www/system_crlmanager.php:378
 #: usr/local/www/system_crlmanager.php:379
 #: usr/local/www/system_crlmanager.php:379
 msgid "Default: 0"
-msgstr "デフォルト： 0"
+msgstr "デフォルト: 0"
 
 #: usr/local/www/system_crlmanager.php:401
 #: usr/local/www/system_crlmanager.php:434
 #: usr/local/www/system_crlmanager.php:434
 msgid "Currently Revoked Certificates for CRL"
-msgstr "CRLの現在失効した証明書"
+msgstr "CRL の現在失効している証明書"
 
 #: usr/local/www/system_crlmanager.php:405
 #: usr/local/www/system_crlmanager.php:438
 #: usr/local/www/system_crlmanager.php:438
 msgid "Certificate Name"
-msgstr "証明書の名前"
+msgstr "証明書名"
 
 #: usr/local/www/system_crlmanager.php:406
 #: usr/local/www/system_crlmanager.php:439
@@ -40317,37 +40377,37 @@ msgstr "失効理由"
 #: usr/local/www/system_crlmanager.php:440
 #: usr/local/www/system_crlmanager.php:440
 msgid "Revoked At"
-msgstr "でも取り消す"
+msgstr "失効: "
 
 #: usr/local/www/system_crlmanager.php:416
 #: usr/local/www/system_crlmanager.php:449
 #: usr/local/www/system_crlmanager.php:449
 msgid "No Certificates Found for this CRL."
-msgstr "このCRLが見つかりませ証明書はありません。"
+msgstr "この CRL の証明書はありません"
 
 #: usr/local/www/system_crlmanager.php:435
 #: usr/local/www/system_crlmanager.php:468
 #: usr/local/www/system_crlmanager.php:468
 msgid "Do you really want to delete this Certificate from the CRL?"
-msgstr "あなたは本当に、CRLからこの証明書を削除しますか？"
+msgstr "本当に CRL からこの証明書を削除しますか？"
 
 #: usr/local/www/system_crlmanager.php:436
 #: usr/local/www/system_crlmanager.php:469
 #: usr/local/www/system_crlmanager.php:469
 msgid "Delete this certificate from the CRL "
-msgstr "CRLからこの証明書を削除する"
+msgstr "CRL からこの証明書を削除"
 
 #: usr/local/www/system_crlmanager.php:453
 #: usr/local/www/system_crlmanager.php:486
 #: usr/local/www/system_crlmanager.php:486
 msgid "No Certificates Found for this CA."
-msgstr "このCAが見つかりませ証明書はありません。"
+msgstr "この CA の証明書はありません"
 
 #: usr/local/www/system_crlmanager.php:460
 #: usr/local/www/system_crlmanager.php:493
 #: usr/local/www/system_crlmanager.php:493
 msgid "Choose a Certificate to Revoke"
-msgstr "取り消すには、証明書を選択してください"
+msgstr "失効する証明書を選択してください"
 
 #: usr/local/www/system_crlmanager.php:465
 #: usr/local/www/system_crlmanager.php:498
@@ -40361,7 +40421,7 @@ msgstr "理由"
 #: usr/local/www/system_crlmanager.php:568
 #, php-format
 msgid "Add or Import CRL for %s"
-msgstr "%sために追加またはインポート、CRL"
+msgstr "%s に CRL を追加またはインポート"
 
 #: usr/local/www/system_crlmanager.php:527
 #: usr/local/www/system_crlmanager.php:531
@@ -40372,7 +40432,7 @@ msgstr "%sために追加またはインポート、CRL"
 #: usr/local/www/system_crlmanager.php:568
 #: usr/local/www/system_crlmanager.php:572
 msgid "add crl"
-msgstr "CRLを追加"
+msgstr "CRL の追加"
 
 #: usr/local/www/system_crlmanager.php:531
 #: usr/local/www/system_crlmanager.php:564
@@ -40380,14 +40440,14 @@ msgstr "CRLを追加"
 #: usr/local/www/system_crlmanager.php:572
 #, php-format
 msgid "Import CRL for %s"
-msgstr "%sのインポートCRL"
+msgstr "%s の CRL をインポート"
 
 #: usr/local/www/system_crlmanager.php:552
 #: usr/local/www/system_crlmanager.php:585
 #: usr/local/www/system_crlmanager.php:593
 #: usr/local/www/system_crlmanager.php:593
 msgid "Export CRL"
-msgstr "輸出CRL"
+msgstr "CRL のエクスポート"
 
 #: usr/local/www/system_crlmanager.php:557
 #: usr/local/www/system_crlmanager.php:590
@@ -40397,35 +40457,35 @@ msgstr "輸出CRL"
 #: usr/local/www/system_crlmanager.php:598
 #: usr/local/www/system_crlmanager.php:602
 msgid "Edit CRL"
-msgstr "編集CRL"
+msgstr "CRL の編集"
 
 #: usr/local/www/system_crlmanager.php:561
 #: usr/local/www/system_crlmanager.php:598
 #: usr/local/www/system_crlmanager.php:606
 #: usr/local/www/system_crlmanager.php:606
 msgid "Do you really want to delete this Certificate Revocation List?"
-msgstr "あなたは本当にこの証明書失効リストを削除しますか？"
+msgstr "本当にこの証明書失効リストを削除しますか？"
 
 #: usr/local/www/system_crlmanager.php:562
 #: usr/local/www/system_crlmanager.php:599
 #: usr/local/www/system_crlmanager.php:607
 #: usr/local/www/system_crlmanager.php:607
 msgid "Delete CRL"
-msgstr "CRLを削除"
+msgstr "CRL の削除"
 
 #: usr/local/www/system_crlmanager.php:582
 #: usr/local/www/system_crlmanager.php:619
 #: usr/local/www/system_crlmanager.php:531
 #: usr/local/www/system_crlmanager.php:531
 msgid "Additional Certificate Revocation Lists can be added here."
-msgstr "追加の証明書失効リストはここで追加することができます。"
+msgstr "追加の証明書失効リストは、ここで追加できます。"
 
 #: usr/local/www/system_gateway_groups.php:75
 #: usr/local/www/system_gateway_groups.php:76
 #: usr/local/www/system_gateway_groups.php:85
 #: usr/local/www/system_gateway_groups.php:85
 msgid "removed gateway group"
-msgstr "削除ゲートウェイ·グループ"
+msgstr "ゲートウェイグループを削除しました"
 
 #: usr/local/www/system_gateway_groups.php:101
 #: usr/local/www/system_gateway_groups.php:102
@@ -46116,7 +46176,20 @@ msgid ""
 "mode, but tuned for systems where performance and interactivity are more "
 "importantthan power consumption.  It rises frequency faster, drops slower "
 "andkeeps twice lower CPU load."
-msgstr "「パワードユーティリティは、システムの状態を監視し、様々な電力制御に設定」は、それに応じてオプションを。これは、バッテリー「個別のAC電源またはオンしながら、選択することができます（ hiadaptive 4つのモード、最大値、最小値、適応と）」を提供しています。モード最大値、最小値、適応とhiadaptiveは「最大、最小、 ADP 、 hadpを短縮。最大モードは最高選ぶ」ことがパフォーマンス値を。最小モードが「最も節電効果が得られます。適応モードがでバランスを取るしようとした」に、最も低いパフォーマンス値を選択して、システムがアイドル状態の表示されたときにパフォーマンスを低下させると、システムがビジー状態のときに「それが大きくなる。これは、小さなパフォーマンスの間の良好なバランスを提供しています大幅に増加し、電力の節約のため」の損失。 Hiadaptiveモードを問わず、適応型」モードが、パフォーマンスとインタラクティブ性をよりアールシステム用に調整された」であるimportantthan消費電力。それは、周波数速く上昇し、遅くなる」 andkeeps倍低いCPU負荷が低下します。"
+msgstr ""
+"powerd ユーティリティはシステムの状態を監視して、様々な電源コントロールオプションを"
+"状況に応じて設定します。"
+"4 つのモードが提供されていて ( 最大、最小、適応、高適応 )、AC 電源やバッテリで個々に選択可能です。"
+"モードの最大、最小、適応、高適応は、max、min、adp、hadp、と省略表記されます。"
+"最大モードは、最も高いパフォーマンスとなる値を選択します。"
+"最小モードは、最も低いパフォーマンスの値を選択することで、最大限の省電力を行います。"
+"適応モードは、パフォーマンスと省電力をうまく均衡させようとします。"
+"システムがアイドルに見える場合はパフォーマンスを落とし、システムがビジーの場合はパフォーマンスを上昇させます。"
+"ほど良いバランスを提供し、少しのパフォーマンスの低下で、より大きな省電力を可能にします。"
+"高適応モードは、適応モードに似ていますが、システムのパフォーマンスと双方向性が、"
+"電力消費よりも重要であるシステム向けに調整されています。"
+"速度が頻繁に上がる場合は、速度を落とし、"
+"CPU 負荷が 1/2 になる状態を維持します。"
 
 #: usr/local/www/firewall_shaper_vinterface.php:204
 #: usr/local/www/firewall_shaper_vinterface.php:228
