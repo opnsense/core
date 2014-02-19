@@ -12437,7 +12437,7 @@ msgstr "全ての状態エントリを削除: "
 #: usr/local/www/services_dhcpv6.php:593 usr/local/www/services_dhcpv6.php:600
 #: usr/local/www/diag_confbak.php:111
 msgid "to"
-msgstr "->"
+msgstr "(1)to"
 
 #: usr/local/www/diag_dump_states.php:194
 #: usr/local/www/diag_dump_states.php:212
@@ -17821,7 +17821,7 @@ msgstr "送信元ポート範囲"
 #: usr/local/www/firewall_nat_edit.php:607
 #: usr/local/www/firewall_nat_edit.php:719
 msgid "from:"
-msgstr "内向き: "
+msgstr "(1)from: "
 
 #: usr/local/www/firewall_nat_edit.php:596
 #: usr/local/www/firewall_nat_edit.php:609
@@ -17906,7 +17906,7 @@ msgstr "その他"
 #: usr/local/www/firewall_nat_edit.php:620
 #: usr/local/www/firewall_nat_edit.php:732
 msgid "to:"
-msgstr "外向き: "
+msgstr "(2)to: "
 
 #: usr/local/www/firewall_nat_edit.php:620
 #: usr/local/www/firewall_nat_edit.php:627
@@ -31231,7 +31231,7 @@ msgstr "その IP アドレスは許可されています"
 #: usr/local/www/services_captiveportal_ip.php:181
 #: usr/local/www/services_captiveportal_hostname.php:182
 msgid "from"
-msgstr "から"
+msgstr "(2)from"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:63
 #: usr/local/www/services_captiveportal_ip_edit.php:60
@@ -31314,7 +31314,7 @@ msgstr "許可された IP ルールを編集"
 #: usr/local/www/services_captiveportal_hostname_edit.php:164
 #: usr/local/www/services_captiveportal_hostname_edit.php:172
 msgid "From"
-msgstr "から"
+msgstr "(3)From"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:182
 #: usr/local/www/services_captiveportal_ip_edit.php:192
@@ -31341,7 +31341,7 @@ msgstr "から"
 #: usr/local/www/services_captiveportal_hostname_edit.php:164
 #: usr/local/www/services_captiveportal_hostname_edit.php:173
 msgid "To"
-msgstr "へ"
+msgstr "(3)To"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:191
 #: usr/local/www/services_captiveportal_ip_edit.php:192
@@ -34122,7 +34122,7 @@ msgid ""
 "vouchers."
 msgstr ""
 "公開鍵と秘密鍵を変更したため、既存のバウチャーロールを再作成する必要があります。"
-"バウチャーを再作成を希望しない場合は、"
+"バウチャーの再作成を希望しない場合は、"
 "キャンセルをクリックしてください。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:114
@@ -34554,8 +34554,8 @@ msgid ""
 msgstr ""
 "バウチャー毎に属するチケット # を格納する範囲を予約してください。使用可能な範囲は、1 〜 16 です。"
 "16 ビット使用すると、65535 バウチャーまでのロールを持つことができるようになります。"
-"1 ビット配列は、RAM と構成に格納され、バウチャーが使用されているかどうかのマークに使用されます。"
-"65535 バウチャーに対する 1 ビット配列には、8KB のストレージが必要です。"
+"ビット配列は、RAM と構成に格納され、バウチャーが使用されているかどうかのマークに使用されます。"
+"65535 バウチャーに対するビット配列には、8 KB のストレージが必要です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:526
 #: usr/local/www/services_captiveportal_vouchers.php:533
@@ -34723,7 +34723,8 @@ msgid ""
 "this page will render existing vouchers useless if they were generated with "
 "different settings."
 msgstr ""
-"このページでバウチャーのパラメータを変更をすると ( ロールリストの管理とは別です )、" 
+"このページでバウチャーのパラメータを変更をすると"
+" ( ロールリストの管理とは別です )、" 
 "異なる設定で生成された、不要な既存のバウチャーを表示します。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:606
@@ -40496,14 +40497,15 @@ msgid ""
 "The gateway configuration has been changed.%sYou must apply the changes in "
 "order for them to take effect."
 msgstr ""
-"それらを有効にするため「ゲートウェイ設定はchanged.%sYouがで変更を適用する必要がありました」 。"
+"ゲートウェイ構成は変更されました。%s"
+"変更を有効にするには、変更を適用してください。"
 
 #: usr/local/www/system_gateway_groups.php:165
 #: usr/local/www/system_gateway_groups.php:166
 #: usr/local/www/system_gateway_groups.php:187
 #: usr/local/www/system_gateway_groups.php:187
 msgid "Do you really want to delete this gateway group?"
-msgstr "あなたは本当にこのゲートウェイ·グループを削除しますか？"
+msgstr "本当にこのゲートウェイグループを削除しますか？"
 
 #: usr/local/www/system_gateway_groups.php:195
 #: usr/local/www/system_gateway_groups.php:196
@@ -40513,13 +40515,16 @@ msgid ""
 "Remember to use these Gateway Groups in firewall rules in order to enable "
 "load balancing, failover, or policy-based routing. Without rules directing "
 "traffic into the Gateway Groups, they will not be used."
-msgstr "ロードバランシング、フェイルオーバー、またはポリシーベースルーティング」を有効にするために、ファイアウォールのルールでこれらのゲートウェイグループを使用することを忘れないでください」 。ゲートウェイグループに「トラフィックを導くルールがなければ、それらは使用されません。"
+msgstr ""
+"ロードバランシング、フェイルオーバ、ポリシベースルーティングを有効にするには、"
+"ファイアウォールルールで、このゲートウェイグループを忘れずに使用してください。"
+"トラフィックがゲートウェイグループに直接流れるルールがないと、ロードバランシング等を使用できません。"
 
 #: usr/local/www/system_gateway_groups_edit.php:50
 #: usr/local/www/system_gateway_groups_edit.php:53
 #: usr/local/www/system_gateway_groups_edit.php:53
 msgid "Member Down"
-msgstr "メンバーダウン"
+msgstr "メンバダウン"
 
 #: usr/local/www/system_gateway_groups_edit.php:51
 #: usr/local/www/system_gateway_groups_edit.php:54
@@ -40537,13 +40542,13 @@ msgstr "高遅延"
 #: usr/local/www/system_gateway_groups_edit.php:56
 #: usr/local/www/system_gateway_groups_edit.php:56
 msgid "Packet Loss or High Latency"
-msgstr "パケット損失または高いレイテンシ"
+msgstr "パケットロスまたは高遅延"
 
 #: usr/local/www/system_gateway_groups_edit.php:85
 #: usr/local/www/system_gateway_groups_edit.php:88
 #: usr/local/www/system_gateway_groups_edit.php:88
 msgid "A valid gateway group name must be specified."
-msgstr "有効なゲートウェイ·グループ名を指定する必要があります。"
+msgstr "有効なゲートウェイグループ名を指定してください"
 
 #: usr/local/www/system_gateway_groups_edit.php:88
 #: usr/local/www/system_gateways_edit.php:106
@@ -40553,7 +40558,7 @@ msgstr "有効なゲートウェイ·グループ名を指定する必要があ�
 #: usr/local/www/system_gateways_edit.php:108
 #: usr/local/www/system_gateway_groups_edit.php:91
 msgid "The gateway name must not contain invalid characters."
-msgstr "ゲートウェイ名に無効な文字が含まれていなければなりません。"
+msgstr "ゲートウェイ名に無効な文字が含めないでください"
 
 #: usr/local/www/system_gateway_groups_edit.php:99
 #: usr/local/www/system_gateway_groups_edit.php:102
@@ -40561,7 +40566,7 @@ msgstr "ゲートウェイ名に無効な文字が含まれていなければな
 #: usr/local/www/system_gateway_groups_edit.php:105
 #, php-format
 msgid "A gateway group with this name \"%s\" already exists."
-msgstr ""
+msgstr "%s という名前のゲートウェイグループは既に存在しています"
 
 #: usr/local/www/system_gateway_groups_edit.php:115
 #: usr/local/www/system_gateway_groups_edit.php:119
@@ -40571,14 +40576,16 @@ msgstr ""
 msgid ""
 "A gateway group cannot have the same name with a gateway \"%s\" please "
 "choose another name."
-msgstr "「ゲートウェイ·グループは、ゲートウェイと同じ名前を持つことはできません""ください」別の名前を選択し%s 。"
+msgstr ""
+"ゲートウェイグループに、ゲートウェイ %s と同じ名前をつけることはできません。"
+"別の名前を選択してください。"
 
 #: usr/local/www/system_gateway_groups_edit.php:119
 #: usr/local/www/system_gateway_groups_edit.php:123
 #: usr/local/www/system_gateway_groups_edit.php:126
 #: usr/local/www/system_gateway_groups_edit.php:126
 msgid "No gateway(s) have been selected to be used in this group"
-msgstr "まだゲートウェイ（複数可）は、このグループ内で使用するために選択されていない"
+msgstr "このグループで使用するゲートウェイは選択されていません"
 
 #: usr/local/www/system_gateway_groups_edit.php:142
 #: usr/local/www/system_gateways_edit.php:313
@@ -40595,13 +40602,13 @@ msgstr "まだゲートウェイ（複数可）は、このグループ内で使
 #: usr/local/www/system_gateways_edit.php:455
 #: usr/local/www/system_gateways_edit.php:488
 msgid "Edit gateway"
-msgstr "編集ゲートウェイ"
+msgstr "ゲートウェイの編集"
 
 #: usr/local/www/system_gateway_groups_edit.php:155
 #: usr/local/www/system_gateway_groups_edit.php:166
 #: usr/local/www/system_gateway_groups_edit.php:225
 msgid "Edit gateway entry"
-msgstr "編集ゲートウェイエントリ"
+msgstr "ゲートウェイエントリの編集"
 
 #: usr/local/www/system_gateway_groups_edit.php:164
 #: usr/local/www/system_gateway_groups_edit.php:175
@@ -40609,7 +40616,7 @@ msgstr "編集ゲートウェイエントリ"
 #: usr/local/www/system_gateway_groups_edit.php:238
 #: usr/local/www/system_gateway_groups_edit.php:238
 msgid "Gateway Priority"
-msgstr "ゲートウェイの優先順位"
+msgstr "ゲートウェイ優先度"
 
 #: usr/local/www/system_gateway_groups_edit.php:185
 #: usr/local/www/system_gateway_groups_edit.php:208
@@ -40617,7 +40624,7 @@ msgstr "ゲートウェイの優先順位"
 #: usr/local/www/system_gateway_groups_edit.php:272
 #: usr/local/www/system_gateway_groups_edit.php:272
 msgid "Never"
-msgstr "決して"
+msgstr "選択しない"
 
 #: usr/local/www/system_gateway_groups_edit.php:186
 #: usr/local/www/system_gateway_groups_edit.php:209
@@ -40625,7 +40632,7 @@ msgstr "決して"
 #: usr/local/www/system_gateway_groups_edit.php:273
 #: usr/local/www/system_gateway_groups_edit.php:273
 msgid "Tier 1"
-msgstr "ティア1"
+msgstr "ティア 1"
 
 #: usr/local/www/system_gateway_groups_edit.php:187
 #: usr/local/www/system_gateway_groups_edit.php:210
@@ -40633,7 +40640,7 @@ msgstr "ティア1"
 #: usr/local/www/system_gateway_groups_edit.php:274
 #: usr/local/www/system_gateway_groups_edit.php:274
 msgid "Tier 2"
-msgstr "ティア2"
+msgstr "ティア 2"
 
 #: usr/local/www/system_gateway_groups_edit.php:188
 #: usr/local/www/system_gateway_groups_edit.php:211
@@ -40641,7 +40648,7 @@ msgstr "ティア2"
 #: usr/local/www/system_gateway_groups_edit.php:275
 #: usr/local/www/system_gateway_groups_edit.php:275
 msgid "Tier 3"
-msgstr "ティア3"
+msgstr "ティア 3"
 
 #: usr/local/www/system_gateway_groups_edit.php:189
 #: usr/local/www/system_gateway_groups_edit.php:212
@@ -40649,7 +40656,7 @@ msgstr "ティア3"
 #: usr/local/www/system_gateway_groups_edit.php:276
 #: usr/local/www/system_gateway_groups_edit.php:276
 msgid "Tier 4"
-msgstr "ティア4"
+msgstr "ティア 4"
 
 #: usr/local/www/system_gateway_groups_edit.php:190
 #: usr/local/www/system_gateway_groups_edit.php:213
@@ -40657,7 +40664,7 @@ msgstr "ティア4"
 #: usr/local/www/system_gateway_groups_edit.php:277
 #: usr/local/www/system_gateway_groups_edit.php:277
 msgid "Tier 5"
-msgstr "ティア5"
+msgstr "ティア 5"
 
 #: usr/local/www/system_gateway_groups_edit.php:195
 #: usr/local/www/system_gateway_groups_edit.php:247
@@ -40665,7 +40672,7 @@ msgstr "ティア5"
 #: usr/local/www/system_gateway_groups_edit.php:311
 #: usr/local/www/system_gateway_groups_edit.php:311
 msgid "Link Priority"
-msgstr "リンク優先順位"
+msgstr "リンク優先度"
 
 #: usr/local/www/system_gateway_groups_edit.php:196
 #: usr/local/www/system_gateway_groups_edit.php:248
@@ -40678,7 +40685,12 @@ msgid ""
 "connections until all links in the priority will be exhausted. If all links "
 "in a priority level are exhausted we will use the next available link(s) in "
 "the next priority level."
-msgstr "リンクが行われます"ここで選択の優先順位はどのような順序フェイルオーバーとのバランスで定義する「 。 「優先内のすべてのリンクが枯渇するまで、接続を。すべてのリンクが「同じ優先順位の複数のリンクがバランスさ優先レベルのが、我々は次の優先度レベル」内の次に使用可能なリンク（ S ）を使用します排気される。"
+msgstr ""
+"ここで選択する優先度は、フェイルオーバとリンクのバランシングが実行される順番を定義します。"
+"同じ優先度に複数のリンクがある場合は、その優先度の全てのリンクを使い果たすまで、"
+"接続は平衡します。"
+"優先度レベルにある全てのリンクを使い果たした場合は、その次の優先度レベルにある、"
+"次に使用可能なリンクを使用します。"
 
 #: usr/local/www/system_gateway_groups_edit.php:205
 #: usr/local/www/system_gateway_groups_edit.php:260
@@ -40694,7 +40706,7 @@ msgstr "トリガレベル"
 #: usr/local/www/system_gateway_groups_edit.php:333
 #: usr/local/www/system_gateway_groups_edit.php:333
 msgid "When to trigger exclusion of a member"
-msgstr "メンバーの除外をトリガーするタイミング"
+msgstr "メンバ除外のトリガとなるタイミング"
 
 #: usr/local/www/system_gateways.php:134 usr/local/www/system_gateways.php:134
 msgid "The gateway configuration has been changed."
@@ -40710,18 +40722,18 @@ msgstr "ゲートウェイの設定が変更されました。"
 #: usr/local/www/system_gateways_edit.php:561
 #: usr/local/www/system_gateways.php:155
 msgid "Monitor IP"
-msgstr "監視IP"
+msgstr "モニタ IP"
 
 #: usr/local/www/system_gateways.php:205 usr/local/www/system_gateways.php:205
 msgid "Do you really want to delete this gateway?"
-msgstr "あなたは本当にこのゲートウェイを削除しますか？"
+msgstr "本当にこのゲートウェイを削除しますか？"
 
 #: usr/local/www/system_gateways_edit.php:110
 #: usr/local/www/system_gateways_edit.php:111
 #: usr/local/www/system_gateways_edit.php:112
 #: usr/local/www/system_gateways_edit.php:112
 msgid "A valid gateway IP address must be specified."
-msgstr "有効なゲートウェイIPアドレスを指定する必要があります。"
+msgstr "有効なゲートウェイ IP アドレスを指定してください"
 
 #: usr/local/www/system_gateways_edit.php:118
 #: usr/local/www/system_gateways_edit.php:119
@@ -40730,7 +40742,7 @@ msgstr "有効なゲートウェイIPアドレスを指定する必要があり�
 #: usr/local/www/system_gateways_edit.php:148
 #: usr/local/www/system_gateways_edit.php:148
 msgid "You can not use a IPv6 Gateway Address on a IPv4 only interface."
-msgstr "あなたは、IPv4のみインターフェイス上でIPv6ゲートウェイアドレスを使用することはできません。"
+msgstr "IPv4 only インタフェースで、IPv6 ゲートウェイアドレスは使用できません"
 
 #: usr/local/www/system_gateways_edit.php:122
 #: usr/local/www/system_gateways_edit.php:133
@@ -40743,7 +40755,8 @@ msgid ""
 "The gateway address %1$s does not lie within the chosen interface's subnet "
 "'%2$s'."
 msgstr ""
-"「 %2$s 」 「ゲートウェイアドレスは%1$sは、選択されたインターフェイスのサブネット内にない」 。"
+"ゲートウェイアドレス %1$s は、選択されたインタフェースのサブネット %2$s 内"
+"に存在しません"
 
 #: usr/local/www/system_gateways_edit.php:129
 #: usr/local/www/system_gateways_edit.php:132
@@ -40751,7 +40764,7 @@ msgstr ""
 #: usr/local/www/system_gateways_edit.php:120
 #: usr/local/www/system_gateways_edit.php:120
 msgid "You can not use a IPv4 Gateway Address on a IPv6 only interface."
-msgstr "あなたは、IPv6のみのインターフェイス上でIPv4ゲートウェイアドレスを使用することはできません。"
+msgstr "IPv6 only インタフェースで、IPv4 ゲートウェイアドレスは使用できません"
 
 #: usr/local/www/system_gateways_edit.php:139
 #: usr/local/www/system_gateways_edit.php:143
@@ -40762,7 +40775,8 @@ msgid ""
 "Dynamic gateway values cannot be specified for interfaces with a static IPv4 "
 "configuration."
 msgstr ""
-"構成の「動的ゲートウェイ値は、静的IPv4とのインタフェースを指定することはできません」 。"
+"動的ゲートウェイ値は、"
+"静的 IPv4 構成のインタフェースには指定できません"
 
 #: usr/local/www/system_gateways_edit.php:143
 #: usr/local/www/system_gateways_edit.php:147
@@ -40772,7 +40786,9 @@ msgstr ""
 msgid ""
 "Dynamic gateway values cannot be specified for interfaces with a static IPv6 "
 "configuration."
-msgstr "構成の「動的ゲートウェイ値は、静的IPv6とのインタフェースを指定することはできません」 。"
+msgstr ""
+"動的ゲートウェイ値は、"
+"静的 IPv6 構成のインタフェースには指定できません"
 
 #: usr/local/www/system_gateways_edit.php:147
 #: usr/local/www/system_gateways_edit.php:151
@@ -40780,7 +40796,7 @@ msgstr "構成の「動的ゲートウェイ値は、静的IPv6とのインタ�
 #: usr/local/www/system_gateways_edit.php:182
 #: usr/local/www/system_gateways_edit.php:182
 msgid "A valid monitor IP address must be specified."
-msgstr "有効な監視IPアドレスを指定する必要があります。"
+msgstr "有効なモニタ IP アドレスを指定してください"
 
 #: usr/local/www/system_gateways_edit.php:160
 #: usr/local/www/system_gateways_edit.php:168
@@ -40788,7 +40804,7 @@ msgstr "有効な監視IPアドレスを指定する必要があります。"
 #: usr/local/www/system_gateways_edit.php:208
 #: usr/local/www/system_gateways_edit.php:208
 msgid "Changing name on a gateway is not allowed."
-msgstr "ゲートウェイ上の変更名が許可されていません。"
+msgstr "ゲートウェイの名前変更はできません"
 
 #: usr/local/www/system_gateways_edit.php:165
 #: usr/local/www/system_gateways_edit.php:173
@@ -40797,7 +40813,7 @@ msgstr "ゲートウェイ上の変更名が許可されていません。"
 #: usr/local/www/system_gateways_edit.php:213
 #, php-format
 msgid "The gateway name \"%s\" already exists."
-msgstr ""
+msgstr "ゲートウェイ名 %s は既に存在しています"
 
 #: usr/local/www/system_gateways_edit.php:171
 #: usr/local/www/system_gateways_edit.php:179
@@ -40806,7 +40822,7 @@ msgstr ""
 #: usr/local/www/system_gateways_edit.php:219
 #, php-format
 msgid "The gateway IP address \"%s\" already exists."
-msgstr ""
+msgstr "ゲートウェイ IP アドレス %s は既に存在しています"
 
 #: usr/local/www/system_gateways_edit.php:177
 #: usr/local/www/system_gateways_edit.php:185
@@ -40817,42 +40833,46 @@ msgstr ""
 msgid ""
 "The monitor IP address \"%s\" is already in use. You must choose a different "
 "monitor IP."
-msgstr "「モニタIPアドレス "%sは「既に使用されている。別の選択しなければなりません"監視IPを。"
+msgstr ""
+"モニタ IP アドレス %s は既に使用されています。"
+"別のモニタ IP アドレスを選択してください。"
 
 #: usr/local/www/system_gateways_edit.php:187
 #: usr/local/www/system_gateways_edit.php:220
 #: usr/local/www/system_gateways_edit.php:195
 #: usr/local/www/system_gateways_edit.php:228
 msgid "The low latency watermark needs to be a numeric value."
-msgstr "低遅延透かしは数値でなければなりません。"
+msgstr "低遅延ウォーターマークは数値です"
 
 #: usr/local/www/system_gateways_edit.php:193
 #: usr/local/www/system_gateways_edit.php:201
 msgid "The high latency watermark needs to be a numeric value."
-msgstr "高遅延透かしは数値でなければなりません。"
+msgstr "高遅延ウォーターマークは数値です"
 
 #: usr/local/www/system_gateways_edit.php:198
 #: usr/local/www/system_gateways_edit.php:206
 msgid "The low loss watermark needs to be a numeric value."
-msgstr "低損失透かしは数値でなければなりません。"
+msgstr "低パケットロスウォーターマークは数値です"
 
 #: usr/local/www/system_gateways_edit.php:203
 #: usr/local/www/system_gateways_edit.php:211
 msgid "The high loss watermark needs to be a numeric value."
-msgstr "高損失透かしは数値でなければなりません。"
+msgstr "高パケットロスウォーターマークは数値です"
 
 #: usr/local/www/system_gateways_edit.php:209
 #: usr/local/www/system_gateways_edit.php:217
 msgid ""
 "The High latency watermark needs to be higher then the low latency watermark"
-msgstr "「高レイテンシの透かしは、低レイテンシ·ウォーターマークより高いことが必要である"
+msgstr ""
+"高遅延ウォーターマークには、低遅延ウォーターマークよりも高い値を設定してください"
 
 #: usr/local/www/system_gateways_edit.php:215
 #: usr/local/www/system_gateways_edit.php:223
 msgid ""
 "The High packet loss watermark needs to be higher then the low packet loss "
 "watermark"
-msgstr "透かしを​​「高パケット損失の透かしは、低パケット損失より高いことが必要である""
+msgstr ""
+"高パケットロスウォーターマークには、低パケットロスウォーターマークよりも高い値を設定してください"
 
 #: usr/local/www/system_gateways_edit.php:363
 #: usr/local/www/system_gateways_edit.php:369
@@ -40862,7 +40882,7 @@ msgstr "透かしを​​「高パケット損失の透かしは、低パケッ
 #: usr/local/www/system_gateways_edit.php:506
 #: usr/local/www/system_gateways_edit.php:506
 msgid "Use BGPD"
-msgstr "bgpdをを使用してください"
+msgstr "BGPD を使用"
 
 #: usr/local/www/system_gateways_edit.php:367
 #: usr/local/www/system_gateways_edit.php:373
@@ -40872,7 +40892,7 @@ msgstr "bgpdをを使用してください"
 #: usr/local/www/system_gateways_edit.php:510
 #: usr/local/www/system_gateways_edit.php:510
 msgid "Choose which interface this gateway applies to."
-msgstr "選択しているインターフェイスこのゲートウェイが適用される。"
+msgstr "このゲートウェイに適用するインタフェースを選択してください"
 
 #: usr/local/www/system_gateways_edit.php:373
 #: usr/local/www/system_gateways_edit.php:394
@@ -40892,7 +40912,7 @@ msgstr "ゲートウェイ名"
 #: usr/local/www/system_gateways_edit.php:541
 #: usr/local/www/system_gateways_edit.php:541
 msgid "Gateway IP address"
-msgstr "ゲートウェイIPアドレス"
+msgstr "ゲートウェイ IP アドレス"
 
 #: usr/local/www/system_gateways_edit.php:382
 #: usr/local/www/system_gateways_edit.php:385
@@ -40919,7 +40939,7 @@ msgstr "デフォルトゲートウェイ"
 #: usr/local/www/system_gateways_edit.php:549
 #: usr/local/www/system_gateways_edit.php:549
 msgid "This will select the above gateway as the default gateway"
-msgstr "これがデフォルトゲートウェイとして上記のゲートウェイを選択します"
+msgstr "上記のゲートウェイを、デフォルトゲートウェイとして選択します"
 
 #: usr/local/www/system_gateways_edit.php:390
 #: usr/local/www/system_gateways_edit.php:393
@@ -40936,7 +40956,7 @@ msgstr "これがデフォルトゲートウェイとして上記のゲートウ
 #: usr/local/www/system_gateways_edit.php:553
 #: usr/local/www/system_gateways_edit.php:556
 msgid "Disable Gateway Monitoring"
-msgstr "ゲートウェイの監視を無効に"
+msgstr "ゲートウェイ監視を無効"
 
 #: usr/local/www/system_gateways_edit.php:394
 #: usr/local/www/system_gateways_edit.php:415
@@ -40946,7 +40966,7 @@ msgstr "ゲートウェイの監視を無効に"
 #: usr/local/www/system_gateways_edit.php:557
 #: usr/local/www/system_gateways_edit.php:557
 msgid "This will consider this gateway as always being up"
-msgstr "これは、常に、最大であるとしてこのゲートウェイを検討します"
+msgstr "このゲートウェイが常にアップであると見なします"
 
 #: usr/local/www/system_gateways_edit.php:407
 #: usr/local/www/system_gateways_edit.php:428
@@ -40956,7 +40976,7 @@ msgstr "これは、常に、最大であるとしてこのゲートウェイを
 #: usr/local/www/system_gateways_edit.php:570
 #: usr/local/www/system_gateways_edit.php:570
 msgid "Alternative monitor IP"
-msgstr "代替監視IP"
+msgstr "代替モニタ IP"
 
 #: usr/local/www/system_gateways_edit.php:408
 #: usr/local/www/system_gateways_edit.php:429
@@ -40969,7 +40989,10 @@ msgid ""
 "Enter an alternative address here to be used to monitor the link. This is "
 "used for the quality RRD graphs as well as the load balancer entries. Use "
 "this if the gateway does not respond to ICMP echo requests (pings)"
-msgstr "「リンクを監視するために使用するためにここに代替アドレスを入力してください。これがされている「品質のRRDグラフだけでなく、ロードバランサのエントリに使用。ゲートウェイがICMPエコー要求に応答しない場合は、「これを使用（のping ）"
+msgstr ""
+"リンクの監視に使用する代替アドレスを入力してください。"
+"品質 RRD グラフ、及び、ロードバランサエントリに使用されます。"
+"ゲートウェイが ICMP エコー要求 ( ping ) に応答しない場合に、これを使用します。"
 
 #: usr/local/www/system_gateways_edit.php:436
 #: usr/local/www/system_gateways_edit.php:457
@@ -40979,7 +41002,7 @@ msgstr "「リンクを監視するために使用するためにここに代替
 #: usr/local/www/system_gateways_edit.php:599
 #: usr/local/www/system_gateways_edit.php:599
 msgid "Weight for this gateway when used in a Gateway Group."
-msgstr "このゲートウェイの重みゲートウェイ·グループで使用される。"
+msgstr "ゲートウェイグループ使用時に、このゲートウェイの重み付けをします。"
 
 #: usr/local/www/system_gateways_edit.php:440
 #: usr/local/www/system_gateways_edit.php:461
@@ -40989,14 +41012,16 @@ msgstr "このゲートウェイの重みゲートウェイ·グループで使�
 #: usr/local/www/system_gateways_edit.php:603
 #: usr/local/www/system_gateways_edit.php:603
 msgid "Latency thresholds"
-msgstr "待ち時間のしきい値"
+msgstr "遅延しきい値"
 
 #: usr/local/www/system_gateways_edit.php:448
 #: usr/local/www/system_gateways_edit.php:469
 msgid ""
 "These define the low and high water marks for latency in milliseconds. "
 "Default is 100/200."
-msgstr "「これらはミリ秒のレイテンシのためのローとハイウォーターマークを定義します。 「デフォルトは100/200です。"
+msgstr ""
+"これは、遅延に対する低ウォーターマークと高ウォーターマークを、ミリ秒で定義します。"
+"デフォルトは、100/200 です。"
 
 #: usr/local/www/system_gateways_edit.php:452
 #: usr/local/www/system_gateways_edit.php:473
@@ -41006,14 +41031,16 @@ msgstr "「これらはミリ秒のレイテンシのためのローとハイウ
 #: usr/local/www/system_gateways_edit.php:615
 #: usr/local/www/system_gateways_edit.php:615
 msgid "Packet Loss thresholds"
-msgstr "パケット損失のしきい値"
+msgstr "パケットロスしきい値"
 
 #: usr/local/www/system_gateways_edit.php:460
 #: usr/local/www/system_gateways_edit.php:481
 msgid ""
 "These define the low and high water marks for packet loss in %. Default is "
 "10/20."
-msgstr "「これらは％でパケット損失の低域と高ウォーターマークを定義します。デフォルトは "10/20 。"
+msgstr ""
+"これは、パケットロスに対する低ウォーターマークと高ウォーターマークを、% で定義します。"
+"デフォルトは、10/20 です。"
 
 #: usr/local/www/system_gateways_edit.php:464
 #: usr/local/www/system_gateways_edit.php:496
@@ -41028,7 +41055,8 @@ msgstr "ダウン"
 #: usr/local/www/system_gateways_edit.php:468
 msgid ""
 "This defines the down time for the alarm to fire in seconds. Default is 10."
-msgstr "「これは、秒単位で発射するアラームの停止時間を定義します。デフォルトは10です。"
+msgstr ""
+"警報が発せられるまでのダウン時間を、秒で定義します。デフォルトは 10 です。"
 
 #: usr/local/www/system_gateways_edit.php:472
 #: usr/local/www/system_gateways_edit.php:485
@@ -41038,20 +41066,22 @@ msgstr "「これは、秒単位で発射するアラームの停止時間を定
 #: usr/local/www/system_gateways_edit.php:627
 #: usr/local/www/system_gateways_edit.php:627
 msgid "Frequency Probe"
-msgstr "高周波プローブ"
+msgstr "プローブ頻度"
 
 #: usr/local/www/system_gateways_edit.php:476
 msgid ""
 "This defines the frequency that an icmp probe will be sent in seconds. "
 "Default is 1."
-msgstr "「これは、ICMPプローブは数秒で送信される頻度を定義します。 「デフォルトは1です。"
+msgstr ""
+"ICMP プローブが送信される頻度を、秒で定義します。"
+"デフォルトは 1 です。"
 
 #: usr/local/www/system_groupmanager.php:49
 #: usr/local/www/system_groupmanager_addprivs.php:56
 #: usr/local/www/system_groupmanager.php:49
 #: usr/local/www/system_groupmanager_addprivs.php:56
 msgid "Group manager"
-msgstr "グループマネージャー"
+msgstr "グループマネージャ"
 
 #: usr/local/www/system_groupmanager.php:72
 #: usr/local/www/system_groupmanager.php:96
@@ -41062,24 +41092,24 @@ msgstr "グループマネージャー"
 #: usr/local/www/system_usermanager.php:90
 #: usr/local/www/system_usermanager.php:105
 msgid "successfully deleted"
-msgstr "正常に削除"
+msgstr "正常に削除しました"
 
 #: usr/local/www/system_groupmanager.php:95
 #: usr/local/www/system_usermanager.php:104
 #: usr/local/www/system_groupmanager.php:95
 #: usr/local/www/system_usermanager.php:104
 msgid "Privilege"
-msgstr "特権"
+msgstr "権限"
 
 #: usr/local/www/system_groupmanager.php:122
 #: usr/local/www/system_groupmanager.php:122
 msgid "The group name contains invalid characters."
-msgstr "グループ名は無効な文字が含まれています。"
+msgstr "グループ名に無効な文字が含まれています"
 
 #: usr/local/www/system_groupmanager.php:128
 #: usr/local/www/system_groupmanager.php:128
 msgid "Another entry with the same group name already exists."
-msgstr "同じグループ名を持つ別のエントリがすでに存在しています。"
+msgstr "同じグループ名の別のエントリが既に存在しています"
 
 #: usr/local/www/system_groupmanager.php:262
 #: usr/local/www/system_usermanager.php:462
@@ -41087,7 +41117,7 @@ msgstr "同じグループ名を持つ別のエントリがすでに存在して
 #: usr/local/www/system_groupmanager.php:262
 #: usr/local/www/system_usermanager.php:460
 msgid "Defined by"
-msgstr "で定義された"
+msgstr "定義: "
 
 #: usr/local/www/system_groupmanager.php:269
 #: usr/local/www/system_groupmanager.php:404
@@ -41100,7 +41130,7 @@ msgstr "グループ名"
 #: usr/local/www/system_groupmanager.php:279
 #: usr/local/www/system_groupmanager.php:279
 msgid "Group description, for your own information only"
-msgstr "あなた自身の情報のみのグループの説明、"
+msgstr "グループの説明 ( 自分用メモ )"
 
 #: usr/local/www/system_groupmanager.php:286
 #: usr/local/www/system_usermanager.php:511
@@ -41108,22 +41138,22 @@ msgstr "あなた自身の情報のみのグループの説明、"
 #: usr/local/www/system_groupmanager.php:286
 #: usr/local/www/system_usermanager.php:509
 msgid "Group Memberships"
-msgstr "グループメンバーシップ"
+msgstr "グループメンバシップ"
 
 #: usr/local/www/system_groupmanager.php:291
 #: usr/local/www/system_groupmanager.php:291
 msgid "Not Members"
-msgstr "いないメンバー"
+msgstr "メンバではありません"
 
 #: usr/local/www/system_groupmanager.php:309
 #: usr/local/www/system_groupmanager.php:309
 msgid "Add Members"
-msgstr "メンバーを追加"
+msgstr "メンバの追加"
 
 #: usr/local/www/system_groupmanager.php:313
 #: usr/local/www/system_groupmanager.php:313
 msgid "Remove Members"
-msgstr "メンバーを削除"
+msgstr "メンバの削除"
 
 #: usr/local/www/system_groupmanager.php:334
 #: usr/local/www/system_groupmanager_addprivs.php:196
@@ -41136,12 +41166,12 @@ msgstr "メンバーを削除"
 #: usr/local/www/system_groupmanager_addprivs.php:194
 #: usr/local/www/system_usermanager.php:563
 msgid "Hold down CTRL (pc)/COMMAND (mac) key to select multiple items"
-msgstr "複数の項目を選択するには、CTRL （ PC ） / Commandキー（Mac ）キーを押したまま"
+msgstr "CTRL (pc) / Command (Mac) キーを押したままにすると、複数項目が選択できます"
 
 #: usr/local/www/system_groupmanager.php:342
 #: usr/local/www/system_groupmanager.php:342
 msgid "Assigned Privileges"
-msgstr "割り当てられた権限"
+msgstr "権限の割当"
 
 #: usr/local/www/system_groupmanager.php:363
 #: usr/local/www/system_usermanager.php:601
@@ -41149,34 +41179,34 @@ msgstr "割り当てられた権限"
 #: usr/local/www/system_groupmanager.php:363
 #: usr/local/www/system_usermanager.php:599
 msgid "Do you really want to delete this privilege?"
-msgstr "あなたは本当に、この権限を削除しますか？"
+msgstr "本当にこの権限を削除しますか？"
 
 #: usr/local/www/system_groupmanager.php:406
 #: usr/local/www/system_groupmanager.php:407
 #: usr/local/www/system_groupmanager.php:407
 msgid "Member Count"
-msgstr "メンバー数"
+msgstr "メンバ数"
 
 #: usr/local/www/system_groupmanager.php:447
 #: usr/local/www/system_groupmanager.php:450
 #: usr/local/www/system_groupmanager.php:468
 #: usr/local/www/system_groupmanager.php:468
 msgid "Do you really want to delete this group?"
-msgstr "あなたは本当にこのグループを削除しますか？"
+msgstr "本当にこのグループを削除しますか？"
 
 #: usr/local/www/system_groupmanager.php:448
 #: usr/local/www/system_groupmanager.php:451
 #: usr/local/www/system_groupmanager.php:469
 #: usr/local/www/system_groupmanager.php:469
 msgid "delete group"
-msgstr "グループを削除"
+msgstr "グループの削除"
 
 #: usr/local/www/system_groupmanager.php:460
 #: usr/local/www/system_groupmanager.php:465
 #: usr/local/www/system_groupmanager.php:415
 #: usr/local/www/system_groupmanager.php:415
 msgid "add group"
-msgstr "グループを追加"
+msgstr "グループの追加"
 
 #: usr/local/www/system_groupmanager.php:467
 msgid ""
@@ -41187,19 +41217,26 @@ msgid ""
 "defined object.\n"
 "\t\t\t\t\t\t\t\tSome system object properties can be modified but they "
 "cannot be deleted."
-msgstr "「追加webConfiguratorグループは、ここで追加することができます。 \n 」 ttttttttGroup許可が灰色、それがシステム」に定義されたオブジェクトであることを示して表示されttttttttAnアイコン」 group.\nのメンバーであるユーザー」に継承されて割り当てることができます。 \n 「 ttttttttSomeシステムオブジェクトのプロパティを変更できますが、それらは「削除できません。"
+msgstr ""
+"追加の Web 設定管理画面グループはここで追加できます。\n"
+"\t\t\t\t\t\t\t\tグループメンバであるユーザから継承されるパーミッションを、"
+"グループパーミッションに割当てることができます。"
+"\t\t\t\t\t\t\t\tグレー表示されるアイコンは、"
+"システムが定義したオブジェクトです。"
+"\t\t\t\t\t\t\t\t一部のシステムオブジェクトプロパティを変更することはできますが、"
+"削除することはできません。"
 
 #: usr/local/www/system_groupmanager_addprivs.php:56
 #: usr/local/www/system_groupmanager_addprivs.php:56
 msgid "Add privileges"
-msgstr "特権を追加"
+msgstr "権限の追加"
 
 #: usr/local/www/system_groupmanager_addprivs.php:79
 #: usr/local/www/system_usermanager_addprivs.php:84
 #: usr/local/www/system_usermanager_addprivs.php:84
 #: usr/local/www/system_groupmanager_addprivs.php:79
 msgid "Selected priveleges"
-msgstr "選択したpriveleges"
+msgstr "選択した権限"
 
 #: usr/local/www/system_groupmanager_addprivs.php:182
 #: usr/local/www/system_usermanager_addprivs.php:181
@@ -41215,7 +41252,7 @@ msgstr "システム権限"
 #: usr/local/www/system_usermanager_addprivs.php:199
 #: usr/local/www/system_groupmanager_addprivs.php:218
 msgid "Select a privilege from the list above for a description"
-msgstr "説明については、上記のリストから権限を選択"
+msgstr "説明する権限を、上記のリストから選択してください"
 
 #: usr/local/www/system_usermanager.php:157
 #: usr/local/www/system_usermanager.php:692
@@ -41243,29 +41280,29 @@ msgstr "証明書"
 #: usr/local/www/system_usermanager.php:158
 #: usr/local/www/system_usermanager.php:158
 msgid "association removed."
-msgstr "関連付けは削除されます。"
+msgstr "関連付けは削除されました"
 
 #: usr/local/www/system_usermanager.php:202
 #: usr/local/www/system_usermanager.php:202
 msgid "The username is longer than 16 characters."
-msgstr "ユーザー名は16文字を超えている。"
+msgstr "ユーザ名が 16 文字を超えています"
 
 #: usr/local/www/system_usermanager.php:226
 #: usr/local/www/system_usermanager.php:226
 msgid "That username is reserved by the system."
-msgstr "そのユーザー名は、システムによって予約されています。"
+msgstr "そのユーザ名は、システムに予約されています"
 
 #: usr/local/www/system_usermanager.php:250
 #: usr/local/www/system_usermanager.php:246
 #: usr/local/www/system_usermanager.php:246
 msgid "Invalid expiration date format; use MM/DD/YYYY instead."
-msgstr "無効な有効期限の日付フォーマット、代わりに、MM / DD / YYYYを使用しています。"
+msgstr "有効期限の日付形式が無効です。MM/DD/YYYY を使用してください"
 
 #: usr/local/www/system_usermanager.php:257
 #: usr/local/www/system_usermanager.php:253
 #: usr/local/www/system_usermanager.php:253
 msgid "Invalid internal Certificate Authority"
-msgstr "無効な内部認証局"
+msgstr "無効な内部認証局です"
 
 #: usr/local/www/system_usermanager.php:489
 #: usr/local/www/system_usermanager_passwordmg.php:109
@@ -41275,7 +41312,7 @@ msgstr "無効な内部認証局"
 #: usr/local/www/system_usermanager_passwordmg.php:115
 #: usr/local/www/system_usermanager.php:487
 msgid "(confirmation)"
-msgstr "（確認）"
+msgstr "( 確認 )"
 
 #: usr/local/www/system_usermanager.php:493
 #: usr/local/www/system_usermanager.php:788
@@ -41285,13 +41322,13 @@ msgstr "（確認）"
 #: usr/local/www/system_usermanager.php:491
 #: usr/local/www/system_usermanager.php:787
 msgid "Full name"
-msgstr "フルネーム"
+msgstr "氏名"
 
 #: usr/local/www/system_usermanager.php:497
 #: usr/local/www/system_usermanager.php:495
 #: usr/local/www/system_usermanager.php:495
 msgid "User's full name, for your own information only"
-msgstr "あなた自身の情報のみのためにユーザーの氏名、"
+msgstr "ユーザの氏名 ( 自分用メモ )"
 
 #: usr/local/www/system_usermanager.php:501
 #: usr/local/www/system_usermanager.php:499
@@ -41303,7 +41340,7 @@ msgstr "有効期限"
 #: usr/local/www/system_usermanager.php:503
 #: usr/local/www/system_usermanager.php:503
 msgid "Pick a date"
-msgstr "日付を選択する"
+msgstr "日付を選択"
 
 #: usr/local/www/system_usermanager.php:508
 #: usr/local/www/system_usermanager.php:506
@@ -41311,13 +41348,15 @@ msgstr "日付を選択する"
 msgid ""
 "Leave blank if the account shouldn't expire, otherwise enter the expiration "
 "date in the following format: mm/dd/yyyy"
-msgstr "次の形式で日付"アカウントの有効期限が切れていないかどうかそうでない有効期限を入力し、空白のままにします」 ： MM / DD / YYYY"
+msgstr ""
+"アカウントに有効期限を設定しない場合は空白にしてください。"
+"設定する場合は、以下の形式で有効期限を入力してください: mm/dd/yyyy"
 
 #: usr/local/www/system_usermanager.php:516
 #: usr/local/www/system_usermanager.php:514
 #: usr/local/www/system_usermanager.php:514
 msgid "Not Member Of"
-msgstr "のメンバーじゃないの"
+msgstr "非メンバ: "
 
 #: usr/local/www/system_usermanager.php:536
 #: usr/local/www/system_usermanager.php:534
@@ -41329,61 +41368,61 @@ msgstr "グループの追加"
 #: usr/local/www/system_usermanager.php:538
 #: usr/local/www/system_usermanager.php:538
 msgid "Remove Groups"
-msgstr "グループを削除する"
+msgstr "グループの削除"
 
 #: usr/local/www/system_usermanager.php:544
 #: usr/local/www/system_usermanager.php:542
 #: usr/local/www/system_usermanager.php:542
 msgid "Member Of"
-msgstr "メンバーの"
+msgstr "メンバ: "
 
 #: usr/local/www/system_usermanager.php:572
 #: usr/local/www/system_usermanager.php:570
 #: usr/local/www/system_usermanager.php:570
 msgid "Effective Privileges"
-msgstr "効果的な権限"
+msgstr "有効な権限"
 
 #: usr/local/www/system_usermanager.php:576
 #: usr/local/www/system_usermanager.php:574
 #: usr/local/www/system_usermanager.php:574
 msgid "Inherited From"
-msgstr "から継承されています"
+msgstr "次から継承: "
 
 #: usr/local/www/system_usermanager.php:626
 #: usr/local/www/system_usermanager.php:624
 #: usr/local/www/system_usermanager.php:624
 msgid "User Certificates"
-msgstr "ユーザー証明書"
+msgstr "ユーザ証明書"
 
 #: usr/local/www/system_usermanager.php:631
 #: usr/local/www/system_usermanager.php:629
 #: usr/local/www/system_usermanager.php:629
 msgid "CA"
-msgstr "カリフォルニア州"
+msgstr "CA"
 
 #: usr/local/www/system_usermanager.php:655
 #: usr/local/www/system_usermanager.php:653
 #: usr/local/www/system_usermanager.php:653
 msgid "export private key"
-msgstr "[秘密キーのエクスポート"
+msgstr "秘密鍵のエクスポート"
 
 #: usr/local/www/system_usermanager.php:660
 #: usr/local/www/system_usermanager.php:658
 #: usr/local/www/system_usermanager.php:658
 msgid "Do you really want to remove this certificate association?"
-msgstr "あなたは本当にこの証明書の関連付けを削除しますか？"
+msgstr "本当にこの証明書の関連付けを削除しますか？"
 
 #: usr/local/www/system_usermanager.php:660
 #: usr/local/www/system_usermanager.php:658
 #: usr/local/www/system_usermanager.php:658
 msgid "(Certificate will not be deleted)"
-msgstr "（証明書は削除されません）"
+msgstr "( 証明書は削除されません )"
 
 #: usr/local/www/system_usermanager.php:694
 #: usr/local/www/system_usermanager.php:692
 #: usr/local/www/system_usermanager.php:692
 msgid "Click to create a user certificate."
-msgstr "ユーザー証明書を作成する場合にクリックします。"
+msgstr "クリックすると、ユーザ証明書を作成します。"
 
 #: usr/local/www/system_usermanager.php:752
 #: usr/local/www/system_usermanager.php:758
@@ -41392,25 +41431,25 @@ msgstr "ユーザー証明書を作成する場合にクリックします。"
 #: usr/local/www/system_usermanager.php:750
 #: usr/local/www/system_usermanager.php:756
 msgid "Authorized keys"
-msgstr "認証キー"
+msgstr "認証鍵"
 
 #: usr/local/www/system_usermanager.php:754
 #: usr/local/www/system_usermanager.php:752
 #: usr/local/www/system_usermanager.php:752
 msgid "Click to paste an authorized key."
-msgstr "許可されたキーを貼り付け]をクリックします。"
+msgstr "クリックすると、認証鍵を貼り付けます。"
 
 #: usr/local/www/system_usermanager.php:762
 #: usr/local/www/system_usermanager.php:760
 #: usr/local/www/system_usermanager.php:760
 msgid "Paste an authorized keys file here."
-msgstr "認証キーは、ここでファイルを貼り付けます。"
+msgstr "認証鍵ファイルを、ここに貼り付けてください。"
 
 #: usr/local/www/system_usermanager.php:766
 #: usr/local/www/system_usermanager.php:764
 #: usr/local/www/system_usermanager.php:764
 msgid "IPsec Pre-Shared Key"
-msgstr "IPsecの事前共有キー"
+msgstr "IPsec 事前共有鍵"
 
 #: usr/local/www/system_usermanager.php:828
 #: usr/local/www/system_usermanager.php:826
@@ -41418,7 +41457,7 @@ msgstr "IPsecの事前共有キー"
 #: usr/local/www/system_usermanager.php:852
 #: usr/local/www/system_usermanager.php:852
 msgid "Do you really want to delete this User?"
-msgstr "あなたは本当にこのユーザを削除しますか？"
+msgstr "本当にこのユーザを削除しますか？"
 
 #: usr/local/www/system_usermanager.php:849
 #: usr/local/www/system_usermanager.php:847
@@ -41431,7 +41470,12 @@ msgid ""
 "memberships. An icon that appears grey indicates that it is a system defined "
 "object. Some system object properties can be modified but they cannot be "
 "deleted."
-msgstr "「追加ユーザーは、ここで追加することができます。アクセスするためのユーザー権限」 webConfiguratorが直接割り当てたり、グループから継承することができ、「メンバーシップ。グレーに表示されるアイコンは、それが定義されたシステムであることを示している"オブジェクト。いくつかのシステムオブジェクトのプロパティを変更することができますが、 「削除できません。"
+msgstr ""
+"ユーザの追加はここで行うことができます。"
+"Web 管理画面にアクセスするユーザのパーミッションは、直接割り当てるか、"
+"もしくはグループメンバシップから継承させることができます。"
+"グレー表示されるアイコンは、システムが定義したオブジェクトです。"
+"一部のシステムオブジェクトプロパティを変更することはできますが、削除することはできません。"
 
 #: usr/local/www/system_usermanager.php:854
 #: usr/local/www/system_usermanager.php:852
@@ -41441,48 +41485,52 @@ msgstr "「追加ユーザーは、ここで追加することができます。
 msgid ""
 "Accounts created here are also used for other parts of the system such as "
 "OpenVPN, IPsec, and Captive Portal."
-msgstr "OpenVPNは、 IPSec、およびキャプティブポータル「ここで作成したアカウントはまた、などのシステムの他の部分に使用されます」 。"
+msgstr ""
+"OpenVPN、IPsec、キャプティブポータル等の、"
+"システムの他の部分で使用されるアカウントも、ここで作成します。"
 
 #: usr/local/www/system_usermanager_passwordmg.php:43
 #: usr/local/www/system_usermanager_passwordmg.php:43
 msgid "User Password"
-msgstr "利用者パスワード"
+msgstr "ユーザパスワード"
 
 #: usr/local/www/system_usermanager_passwordmg.php:63
 #: usr/local/www/system_usermanager_passwordmg.php:63
 msgid "Password successfully changed"
-msgstr "パスワードは正常に変更された"
+msgstr "パスワードは正常に変更されました"
 
 #: usr/local/www/system_usermanager_passwordmg.php:86
 #: usr/local/www/system_usermanager_passwordmg.php:87
 #: usr/local/www/system_usermanager_passwordmg.php:92
 #: usr/local/www/system_usermanager_passwordmg.php:92
 msgid "Sorry, you cannot change the password for a non-local user."
-msgstr "申し訳ありませんが、あなたが非ローカルユーザーのパスワードを変更することはできません。"
+msgstr "非ローカルユーザのパスワードは変更できません"
 
 #: usr/local/www/system_usermanager_passwordmg.php:112
 #: usr/local/www/system_usermanager_passwordmg.php:113
 #: usr/local/www/system_usermanager_passwordmg.php:118
 #: usr/local/www/system_usermanager_passwordmg.php:118
 msgid "Select a new password"
-msgstr "新しいパスワードを選択する"
+msgstr "新しいパスワードを選択"
 
 #: usr/local/www/system_usermanager_settings.php:51
 #: usr/local/www/system_usermanager_settings.php:51
 msgid "User manager settings"
-msgstr "ユーザーマネージャの設定"
+msgstr "ユーザマネージャ設定"
 
 #: usr/local/www/system_usermanager_settings.php:61
 #: usr/local/www/system_usermanager_settings.php:61
 msgid "Session timeout must be an integer value."
-msgstr "セッションタイムアウトは整数値でなければなりません。"
+msgstr "セッションタイムアウトは整数値です"
 
 #: usr/local/www/system_usermanager_settings.php:71
 #: usr/local/www/system_usermanager_settings.php:71
 msgid ""
 "The test was not performed because it is supported only for ldap based "
 "backends."
-msgstr "バックエンド"それが唯一のLDAPベースではサポートされているため、テストは実行されませんでした」 。"
+msgstr ""
+"テストは実行されませんでした。"
+"対応しているのは、LDAP ベースのバックエンドのみです。"
 
 #: usr/local/www/system_usermanager_settings.php:131
 #: usr/local/www/system_usermanager_settings.php:134
@@ -41496,13 +41544,15 @@ msgstr "セッションタイムアウト"
 msgid ""
 "Time in minutes to expire idle management sessions. The default is 4 hours "
 "(240 minutes)."
-msgstr "「時間は分単位でアイドルの管理セッションを期限切れにする。デフォルトは4時間です」 （ 240分） 。"
+msgstr ""
+"アイドル管理セッションの有効期限を、分単位で設定してください。"
+"デフォルトは 4 時間 ( 240 分 ) です。"
 
 #: usr/local/www/system_usermanager_settings.php:136
 #: usr/local/www/system_usermanager_settings.php:139
 #: usr/local/www/system_usermanager_settings.php:139
 msgid "Enter 0 to never expire sessions. NOTE: This is a security risk!"
-msgstr "セッションを無期限にするには、0を入力してください。注：これは、セキュリティリスクのです！"
+msgstr "セッションを無期限にするには、0 を入力してください。注意: セキュリティリスクになります！"
 
 #: usr/local/www/system_usermanager_settings.php:162
 #: usr/local/www/system_usermanager_settings.php:165
@@ -41514,49 +41564,50 @@ msgstr "保存してテスト"
 #: usr/local/www/system_usermanager_settings_ldapacpicker.php:97
 msgid ""
 "Could not connect to the LDAP server. Please check your LDAP configuration."
-msgstr "「 LDAPサーバーに接続できませんでした。あなたのLDAP設定を確認してください。"
+msgstr ""
+"LDAP サーバに接続できません。LDAP 構成を確認して下さい。"
 
 #: usr/local/www/system_usermanager_settings_ldapacpicker.php:98
 #: usr/local/www/system_usermanager_settings_test.php:119
 #: usr/local/www/system_usermanager_settings_ldapacpicker.php:98
 #: usr/local/www/system_usermanager_settings_test.php:119
 msgid "Close"
-msgstr "クローズ"
+msgstr "閉じる"
 
 #: usr/local/www/system_usermanager_settings_ldapacpicker.php:100
 #: usr/local/www/system_usermanager_settings_ldapacpicker.php:100
 msgid "Please select which containers to Authenticate against:"
-msgstr "に対して認証をどのコンテナを選択してください："
+msgstr "認証するコンテナを選択してください: "
 
 #: usr/local/www/system_usermanager_settings_test.php:76
 #: usr/local/www/system_usermanager_settings_test.php:76
 #, php-format
 msgid "Could not find settings for %s%s"
-msgstr "%s%sの設定を見つけることができませんでした"
+msgstr "%s%s 設定がありません"
 
 #: usr/local/www/system_usermanager_settings_test.php:78
 msgid "Testing pfSense LDAP settings... One moment please..."
-msgstr "テストpfSenseのLDAP設定...しばらくお待ちください..."
+msgstr "pfSense LDAP 設定をテストしています...しばらくお待ちください..."
 
 #: usr/local/www/system_usermanager_settings_test.php:82
 #: usr/local/www/system_usermanager_settings_test.php:82
 msgid "Attempting connection to"
-msgstr "への接続を試みる"
+msgstr "接続を試みています: "
 
 #: usr/local/www/system_usermanager_settings_test.php:86
 #: usr/local/www/system_usermanager_settings_test.php:86
 msgid "Attempting bind to"
-msgstr "にバインドを試みる"
+msgstr "バインドを試みています: "
 
 #: usr/local/www/system_usermanager_settings_test.php:90
 #: usr/local/www/system_usermanager_settings_test.php:90
 msgid "Attempting to fetch Organizational Units from"
-msgstr "から組織単位を取得しようとすると、"
+msgstr "組織単位の取得を試みています: "
 
 #: usr/local/www/system_usermanager_settings_test.php:96
 #: usr/local/www/system_usermanager_settings_test.php:96
 msgid "Organization units found"
-msgstr "見つかった組織単位"
+msgstr "組織単位が見つかりました"
 
 #: usr/local/www/system_usermanager_settings_test.php:103
 #: usr/local/www/system_usermanager_settings_test.php:108
@@ -41565,15 +41616,15 @@ msgstr "見つかった組織単位"
 #: usr/local/www/system_usermanager_settings_test.php:108
 #: usr/local/www/system_usermanager_settings_test.php:112
 msgid "failed"
-msgstr "失敗した"
+msgstr "失敗しました"
 
 #: usr/local/www/upload_progress.php:44
 msgid "Sorry, we could not find an uploadid code."
-msgstr "申し訳ありませんが、我々はuploadidコードを見つけることができませんでした。"
+msgstr "uploadid コードが見つかりません"
 
 #: usr/local/www/upload_progress.php:86
 msgid "Uploading Files"
-msgstr "ファイルのアップロード"
+msgstr "ファイルをアップロードしています"
 
 #: usr/local/www/upload_progress.php:86
 msgid "Please wait"
@@ -41581,11 +41632,11 @@ msgstr "しばらくお待ちください"
 
 #: usr/local/www/upload_progress.php:95
 msgid "Uploading file"
-msgstr "ファイルのアップロード"
+msgstr "ファイルをアップロードしています"
 
 #: usr/local/www/upload_progress.php:123
 msgid "Uploaded"
-msgstr "アップロードされた"
+msgstr "アップロードしました"
 
 #: usr/local/www/upload_progress.php:133
 msgid "File Size"
@@ -41593,7 +41644,7 @@ msgstr "ファイルサイズ"
 
 #: usr/local/www/upload_progress.php:145
 msgid "Completed"
-msgstr "完成した"
+msgstr "完了しました"
 
 #: usr/local/www/upload_progress.php:155
 msgid "Estimated"
@@ -41630,68 +41681,68 @@ msgstr "リモートゲートウェイ"
 #: usr/local/www/vpn_ipsec_phase1.php:177
 #: usr/local/www/vpn_ipsec_phase1.php:177
 msgid "The P1 lifetime must be an integer."
-msgstr "P1は寿命が整数でなければなりません。"
+msgstr "P1 有効期間は整数です"
 
 #: usr/local/www/vpn_ipsec_phase1.php:180
 #: usr/local/www/vpn_ipsec_phase1.php:181
 #: usr/local/www/vpn_ipsec_phase1.php:181
 msgid "A valid remote gateway address or host name must be specified."
-msgstr "有効なリモートゲートウェイアドレスまたはホスト名を指定する必要があります。"
+msgstr "有効なリモートゲートウェイアドレスまたはホスト名を指定してください。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:188
 #: usr/local/www/vpn_ipsec_phase1.php:194
 #: usr/local/www/vpn_ipsec_phase1.php:194
 #, php-format
 msgid "The remote gateway \"%1$s\" is already used by phase1 \"%2$s\"."
-msgstr ""
+msgstr "リモートゲートウェイ %1$s は、フェーズ 1: %2$s で既に使用されています"
 
 #: usr/local/www/vpn_ipsec_phase1.php:201
 #: usr/local/www/vpn_ipsec_phase1.php:222
 #: usr/local/www/vpn_ipsec_phase1.php:222
 msgid "Please enter an address for 'My Identifier'"
-msgstr "「私の識別子'のアドレスを入力してください。"
+msgstr "「自分の識別子」のアドレスを入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:204
 #: usr/local/www/vpn_ipsec_phase1.php:225
 #: usr/local/www/vpn_ipsec_phase1.php:225
 msgid "Please enter a keyid tag for 'My Identifier'"
-msgstr "「私の識別子'のための鍵IDタグを入力してください"
+msgstr "「自分の識別子」の keyid タグを入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:207
 #: usr/local/www/vpn_ipsec_phase1.php:228
 #: usr/local/www/vpn_ipsec_phase1.php:228
 msgid "Please enter a fully qualified domain name for 'My Identifier'"
-msgstr "「私の識別子'の完全修飾ドメイン名を入力してください"
+msgstr "「自分の識別子」の完全修飾ドメイン名を入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:210
 #: usr/local/www/vpn_ipsec_phase1.php:231
 #: usr/local/www/vpn_ipsec_phase1.php:231
 msgid "Please enter a user and fully qualified domain name for 'My Identifier'"
-msgstr "「私の識別子'のユーザーと完全修飾ドメイン名を入力してください"
+msgstr "「自分の識別子」のユーザ FQDN を入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:213
 #: usr/local/www/vpn_ipsec_phase1.php:234
 #: usr/local/www/vpn_ipsec_phase1.php:234
 msgid "Please enter a dynamic domain name for 'My Identifier'"
-msgstr "「私の識別子'の動的なドメイン名を入力してください"
+msgstr "「自分の識別子」のダイナミックドメイン名を入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:216
 #: usr/local/www/vpn_ipsec_phase1.php:237
 #: usr/local/www/vpn_ipsec_phase1.php:237
 msgid "A valid IP address for 'My identifier' must be specified."
-msgstr "「私の識別子'の有効なIPアドレスを指定する必要があります。"
+msgstr "「自分の識別子」には有効な IP アドレスを指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:219
 #: usr/local/www/vpn_ipsec_phase1.php:240
 #: usr/local/www/vpn_ipsec_phase1.php:240
 msgid "A valid domain name for 'My identifier' must be specified."
-msgstr "「私の識別子'のための有効なドメイン名を指定する必要があります。"
+msgstr "「自分の識別子」には有効なドメイン名を指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:223
 #: usr/local/www/vpn_ipsec_phase1.php:244
 #: usr/local/www/vpn_ipsec_phase1.php:244
 msgid "A valid FQDN for 'My identifier' must be specified."
-msgstr "「私の識別子'の有効なFQDNは指定しなければなりません。"
+msgstr "「自分の識別子」には有効な FQDN を指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:228
 #: usr/local/www/vpn_ipsec_phase1.php:249
@@ -41699,56 +41750,58 @@ msgstr "「私の識別子'の有効なFQDNは指定しなければなりませ�
 msgid ""
 "A valid User FQDN in the form of user@my.domain.com for 'My identifier' must "
 "be specified."
-msgstr "「「私の識別子'のuser@my.domain.comの形で有効なユーザFQDNはなりません」指定され。"
+msgstr ""
+"「自分の識別子」の有効なユーザ FQDN は、user@my.domain.com の形式で"
+"指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:233
 #: usr/local/www/vpn_ipsec_phase1.php:254
 #: usr/local/www/vpn_ipsec_phase1.php:254
 msgid "A valid Dynamic DNS address for 'My identifier' must be specified."
-msgstr "「私の識別子'の有効なダイナミックDNSアドレスを指定する必要があります。"
+msgstr "「自分の識別子」には有効なダイナミック DNS アドレスを指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:243
 #: usr/local/www/vpn_ipsec_phase1.php:264
 #: usr/local/www/vpn_ipsec_phase1.php:264
 msgid "Please enter an address for 'Peer Identifier'"
-msgstr "「ピア識別子'のアドレスを入力してください。"
+msgstr "「ピア識別子」のアドレスを入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:246
 #: usr/local/www/vpn_ipsec_phase1.php:267
 #: usr/local/www/vpn_ipsec_phase1.php:267
 msgid "Please enter a keyid tag for 'Peer Identifier'"
-msgstr "「ピア識別子'の鍵IDタグを入力してください"
+msgstr "「ピア識別子」の keyid タグを入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:249
 #: usr/local/www/vpn_ipsec_phase1.php:270
 #: usr/local/www/vpn_ipsec_phase1.php:270
 msgid "Please enter a fully qualified domain name for 'Peer Identifier'"
-msgstr "「ピア識別子'の完全修飾ドメイン名を入力してください"
+msgstr "「ピア識別子」の完全修飾ドメイン名を入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:252
 #: usr/local/www/vpn_ipsec_phase1.php:273
 #: usr/local/www/vpn_ipsec_phase1.php:273
 msgid ""
 "Please enter a user and fully qualified domain name for 'Peer Identifier'"
-msgstr "「「ピア識別子'のユーザーと完全修飾ドメイン名を入力してください"
+msgstr "「ピア識別子」のユーザ FQDN を入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:255
 #: usr/local/www/vpn_ipsec_phase1.php:276
 #: usr/local/www/vpn_ipsec_phase1.php:276
 msgid "A valid IP address for 'Peer identifier' must be specified."
-msgstr "「ピア識別子'の有効なIPアドレスを指定する必要があります。"
+msgstr "「ピア識別子」には有効な IP アドレスを指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:258
 #: usr/local/www/vpn_ipsec_phase1.php:279
 #: usr/local/www/vpn_ipsec_phase1.php:279
 msgid "A valid domain name for 'Peer identifier' must be specified."
-msgstr "「ピア識別子'の有効なドメイン名を指定する必要があります。"
+msgstr "「ピア識別子」には有効なドメイン名を指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:262
 #: usr/local/www/vpn_ipsec_phase1.php:283
 #: usr/local/www/vpn_ipsec_phase1.php:283
 msgid "A valid FQDN for 'Peer identifier' must be specified."
-msgstr "「ピア識別子'の有効なFQDNは指定しなければなりません。"
+msgstr "「ピア識別子」には有効な FQDN を指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:267
 #: usr/local/www/vpn_ipsec_phase1.php:288
@@ -41756,19 +41809,21 @@ msgstr "「ピア識別子'の有効なFQDNは指定しなければなりませ�
 msgid ""
 "A valid User FQDN in the form of user@my.domain.com for 'Peer identifier' "
 "must be specified."
-msgstr "「「ピア識別子'のuser@my.domain.comの形で有効なユーザFQDNは「指定しなければなりません。"
+msgstr ""
+"「ピア識別子」の有効なユーザ FQDN は、user@my.domain.com の形式で"
+"指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:273
 #: usr/local/www/vpn_ipsec_phase1.php:294
 #: usr/local/www/vpn_ipsec_phase1.php:294
 msgid "A numeric value must be specified for DPD delay."
-msgstr "数値は、DPD遅延を指定する必要があります。"
+msgstr "DPD 遅延 には数値を指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:276
 #: usr/local/www/vpn_ipsec_phase1.php:297
 #: usr/local/www/vpn_ipsec_phase1.php:297
 msgid "A numeric value must be specified for DPD retries."
-msgstr "数値は、DPD再試行を指定する必要があります。"
+msgstr "DPD 再試行 には数値を指定してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:358
 #: usr/local/www/vpn_ipsec_phase1.php:360
@@ -41777,7 +41832,7 @@ msgstr "数値は、DPD再試行を指定する必要があります。"
 #: usr/local/www/vpn_ipsec_phase1.php:379
 #: usr/local/www/vpn_ipsec_phase1.php:381
 msgid "Edit Phase 1"
-msgstr "編集フェーズ1"
+msgstr "フェーズ 1 を編集"
 
 #: usr/local/www/vpn_ipsec_phase1.php:509
 #: usr/local/www/vpn_openvpn_client.php:383
@@ -41797,14 +41852,14 @@ msgstr "編集フェーズ1"
 #: usr/local/www/vpn_ipsec_phase1.php:529
 #: usr/local/www/vpn_openvpn_server.php:718
 msgid "General information"
-msgstr "一般的な情報"
+msgstr "全般情報"
 
 #: usr/local/www/vpn_ipsec_phase1.php:515
 #: usr/local/www/vpn_ipsec_phase1.php:514
 #: usr/local/www/vpn_ipsec_phase1.php:535
 #: usr/local/www/vpn_ipsec_phase1.php:535
 msgid "Disable this phase1 entry"
-msgstr "このフェーズ1のエントリを無効化"
+msgstr "このフェーズ 1 エントリを無効"
 
 #: usr/local/www/vpn_ipsec_phase1.php:517
 #: usr/local/www/vpn_ipsec_phase1.php:516
@@ -41812,7 +41867,8 @@ msgstr "このフェーズ1のエントリを無効化"
 #: usr/local/www/vpn_ipsec_phase1.php:537
 msgid ""
 "Set this option to disable this phase1 without removing it from the list"
-msgstr "「リストから削除せずに、このフェーズ1を無効にするには、このオプションを設定"
+msgstr ""
+"このオプションを設定すると、リストから削除せずに、フェーズ 1 でこの項目を無効にします"
 
 #: usr/local/www/vpn_ipsec_phase1.php:523
 #: usr/local/www/vpn_ipsec_phase1.php:522
@@ -41826,7 +41882,7 @@ msgstr "インターネットプロトコル"
 #: usr/local/www/vpn_ipsec_phase1.php:554
 #: usr/local/www/vpn_ipsec_phase1.php:554
 msgid "Select the Internet Protocol family from this dropdown"
-msgstr "このドロップダウンから、インターネットプロトコルファミリを選択"
+msgstr "ドロップダウンから、インターネットプロトコルファミリを選択してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:557
 #: usr/local/www/vpn_ipsec_phase1.php:570
@@ -41834,7 +41890,7 @@ msgstr "このドロップダウンから、インターネットプロトコル
 #: usr/local/www/vpn_ipsec_phase1.php:590
 #: usr/local/www/vpn_ipsec_phase1.php:590
 msgid "Select the interface for the local endpoint of this phase1 entry"
-msgstr "このフェーズ1エントリのローカルエンドポイントのためのインターフェイスを選択し"
+msgstr "フェーズ 1 エントリの、ローカルエンドポイントに対するインタフェースを選択してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:568
 #: usr/local/www/vpn_ipsec_phase1.php:581
@@ -41842,7 +41898,7 @@ msgstr "このフェーズ1エントリのローカルエンドポイントの�
 #: usr/local/www/vpn_ipsec_phase1.php:601
 #: usr/local/www/vpn_ipsec_phase1.php:601
 msgid "Enter the public IP address or host name of the remote gateway"
-msgstr "パブリックIPアドレスまたはリモートゲートウェイのホスト名を入力してください"
+msgstr "パブリック IP アドレス、またはリモートゲートウェイのホスト名を入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:590
 #: usr/local/www/vpn_ipsec_phase1.php:603
@@ -41850,7 +41906,7 @@ msgstr "パブリックIPアドレスまたはリモートゲートウェイの�
 #: usr/local/www/vpn_ipsec_phase1.php:623
 #: usr/local/www/vpn_ipsec_phase1.php:623
 msgid "Phase 1 proposal (Authentication)"
-msgstr "フェーズ1プロポーザル（認証）"
+msgstr "フェーズ 1 プロポーザル ( 認証 )"
 
 #: usr/local/www/vpn_ipsec_phase1.php:594
 #: usr/local/www/vpn_openvpn_client.php:514
@@ -41897,7 +41953,7 @@ msgstr "ネゴシエーションモード"
 #: usr/local/www/vpn_ipsec_phase1.php:658
 #: usr/local/www/vpn_ipsec_phase1.php:658
 msgid "Aggressive is more flexible, but less secure"
-msgstr "攻撃的な、より柔軟な、しかし安全性が低くなります"
+msgstr "アグレッシブは、より柔軟ですが、安全性は低くなります"
 
 #: usr/local/www/vpn_ipsec_phase1.php:629
 #: usr/local/www/vpn_ipsec_phase1.php:642
@@ -41905,7 +41961,7 @@ msgstr "攻撃的な、より柔軟な、しかし安全性が低くなります
 #: usr/local/www/vpn_ipsec_phase1.php:662
 #: usr/local/www/vpn_ipsec_phase1.php:662
 msgid "My identifier"
-msgstr "私の識別子"
+msgstr "自分の識別子"
 
 #: usr/local/www/vpn_ipsec_phase1.php:642
 #: usr/local/www/vpn_ipsec_phase1.php:655
@@ -41923,12 +41979,14 @@ msgstr "ピア識別子"
 msgid ""
 "NOTE: This is known as the \"group\" setting on some VPN client "
 "implementations"
-msgstr ""注：これはとして知られている"の実装、 "一部のVPNクライアントの設定」グループ"
+msgstr ""
+"注意: これは、一部の VPN クライアントの実装では"
+"「グループ」設定になっています。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:668
 #: usr/local/www/vpn_ipsec_phase1.php:681
 msgid "Input your pre-shared key string"
-msgstr "入力あなたの事前共有キーの文字列"
+msgstr "自分の事前共有鍵の文字列を入力してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:673
 #: usr/local/www/vpn_ipsec_phase1.php:686
@@ -41936,7 +41994,7 @@ msgstr "入力あなたの事前共有キーの文字列"
 #: usr/local/www/vpn_ipsec_phase1.php:706
 #: usr/local/www/vpn_ipsec_phase1.php:706
 msgid "Policy Generation"
-msgstr "ポリシー生成"
+msgstr "ポリシ生成"
 
 #: usr/local/www/vpn_ipsec_phase1.php:684
 #: usr/local/www/vpn_ipsec_phase1.php:697
@@ -41946,7 +42004,9 @@ msgstr "ポリシー生成"
 msgid ""
 "When working as a responder (as with mobile clients), this controls how "
 "policies are generated based on SA proposals."
-msgstr "ポリシーは、SAの提案に基づいて生成された」 （モバイルクライアントと同様に）応答者として働いていたときに、これはどのように制御する「 。"
+msgstr ""
+"レスポンダとして動作する場合 ( モバイルクライアントと同様に )、"
+"SA プロポーザルに基いて生成されるポリシをコントロールします"
 
 #: usr/local/www/vpn_ipsec_phase1.php:689
 #: usr/local/www/vpn_ipsec_phase1.php:702
@@ -41954,7 +42014,7 @@ msgstr "ポリシーは、SAの提案に基づいて生成された」 （モバ
 #: usr/local/www/vpn_ipsec_phase1.php:722
 #: usr/local/www/vpn_ipsec_phase1.php:722
 msgid "Proposal Checking"
-msgstr "プロポーザルのチェック"
+msgstr "プロポーザルチェック"
 
 #: usr/local/www/vpn_ipsec_phase1.php:700
 #: usr/local/www/vpn_ipsec_phase1.php:713
@@ -41964,7 +42024,9 @@ msgstr "プロポーザルのチェック"
 msgid ""
 "Specifies the action of lifetime length, key length, and PFS of the phase 2 "
 "selection on the responder side, and the action of lifetime check in phase 1."
-msgstr "「寿命の長さ、キーの長さのアクションを指定し、フェーズ2のPFS 「応答者側の選択、およびフェーズ1での寿命確認の作用。"
+msgstr ""
+"レスポンダ側では、アクションの有効期間の長さ、鍵長、フェーズ 2 における PFS の選択、を指定し、"
+"フェーズ 1 のアクションの有効期限を確認します。" 
 
 #: usr/local/www/vpn_ipsec_phase1.php:705
 #: usr/local/www/vpn_openvpn_client.php:706
@@ -41998,14 +42060,14 @@ msgstr "ハッシュアルゴリズム"
 #: usr/local/www/vpn_ipsec_phase1.php:773
 #: usr/local/www/vpn_ipsec_phase1.php:773
 msgid "DH key group"
-msgstr "DH鍵グループ"
+msgstr "DH 鍵グループ"
 
 #: usr/local/www/vpn_ipsec_phase1.php:751
 #: usr/local/www/vpn_ipsec_phase2.php:603
 #: usr/local/www/vpn_ipsec_phase2.php:629
 #: usr/local/www/vpn_ipsec_phase1.php:764
 msgid "1 = 768 bit, 2 = 1024 bit, 5 = 1536 bit"
-msgstr "1 = 768ビット、 2 = 1024ビット、 5 = 1536ビット"
+msgstr "1 = 768 ビット、2 = 1024 ビット、5 = 1536 ビット"
 
 #: usr/local/www/vpn_ipsec_phase1.php:765
 #: usr/local/www/vpn_ipsec_phase1.php:778
@@ -42013,7 +42075,7 @@ msgstr "1 = 768ビット、 2 = 1024ビット、 5 = 1536ビット"
 #: usr/local/www/vpn_ipsec_phase1.php:796
 #: usr/local/www/vpn_ipsec_phase1.php:796
 msgid "My Certificate"
-msgstr "私の証明書"
+msgstr "自分の証明書"
 
 #: usr/local/www/vpn_ipsec_phase1.php:779
 #: usr/local/www/vpn_ipsec_phase1.php:792
@@ -42021,7 +42083,7 @@ msgstr "私の証明書"
 #: usr/local/www/vpn_ipsec_phase1.php:810
 #: usr/local/www/vpn_ipsec_phase1.php:810
 msgid "Select a certificate previously configured in the Certificate Manager"
-msgstr "以前に証明書マネージャで設定された証明書を選択します"
+msgstr "証明書マネージャで、前回構成した証明書を選択してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:784
 #: usr/local/www/vpn_ipsec_phase1.php:797
@@ -42029,7 +42091,7 @@ msgstr "以前に証明書マネージャで設定された証明書を選択し
 #: usr/local/www/vpn_ipsec_phase1.php:815
 #: usr/local/www/vpn_ipsec_phase1.php:815
 msgid "My Certificate Authority"
-msgstr "私の認証局"
+msgstr "自分の認証局"
 
 #: usr/local/www/vpn_ipsec_phase1.php:798
 #: usr/local/www/vpn_ipsec_phase1.php:811
@@ -42039,7 +42101,9 @@ msgstr "私の認証局"
 msgid ""
 "Select a certificate authority previously configured in the Certificate "
 "Manager"
-msgstr "Manager」の以前の証明書で構成された認証局を選択して""
+msgstr ""
+"証明書マネージャで、"
+"前回構成した認証局を選択してください"
 
 #: usr/local/www/vpn_ipsec_phase1.php:809
 #: usr/local/www/vpn_ipsec_phase1.php:822
@@ -42047,7 +42111,7 @@ msgstr "Manager」の以前の証明書で構成された認証局を選択し�
 #: usr/local/www/vpn_ipsec_phase1.php:840
 #: usr/local/www/vpn_ipsec_phase1.php:840
 msgid "NAT Traversal"
-msgstr "NATトラバーサル"
+msgstr "NAT トラバーサル"
 
 #: usr/local/www/vpn_ipsec_phase1.php:814
 #: usr/local/www/vpn_ipsec_phase1.php:827
@@ -42055,7 +42119,7 @@ msgstr "NATトラバーサル"
 #: usr/local/www/vpn_ipsec_phase1.php:845
 #: usr/local/www/vpn_ipsec_phase1.php:845
 msgid "Force"
-msgstr "力"
+msgstr "強制"
 
 #: usr/local/www/vpn_ipsec_phase1.php:818
 #: usr/local/www/vpn_ipsec_phase1.php:831
@@ -42066,7 +42130,10 @@ msgid ""
 "Set this option to enable the use of NAT-T (i.e. the encapsulation of ESP in "
 "UDP packets) if needed, which can help with clients that are behind "
 "restrictive firewalls"
-msgstr "必要に応じて、 「制限的ファイヤーウォールの内側にあるクライアントを支援することができている」 （ UDPパケット内のESPのカプセルIE） NAT-Tの使用を有効にするには、このオプションを設定する」"
+msgstr ""
+"このオプションを設定すると、必要に応じた NAT-T ( UDP パケットにおける ESP のカプセル化 ) "
+"の使用を有効にします。"
+"制限的ファイアウォールの後ろにあるクライアントに役立ちます。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:824
 #: usr/local/www/vpn_ipsec_phase1.php:837
@@ -42082,7 +42149,7 @@ msgstr "デッドピア検知"
 #: usr/local/www/vpn_ipsec_phase1.php:858
 #: usr/local/www/vpn_ipsec_phase1.php:858
 msgid "Enable DPD"
-msgstr "DPDを有効にします"
+msgstr "DPD を有効"
 
 #: usr/local/www/vpn_ipsec_phase1.php:833
 #: usr/local/www/vpn_ipsec_phase1.php:846
@@ -42090,7 +42157,7 @@ msgstr "DPDを有効にします"
 #: usr/local/www/vpn_ipsec_phase1.php:864
 #: usr/local/www/vpn_ipsec_phase1.php:864
 msgid "Delay between requesting peer acknowledgement"
-msgstr "ピアの確認応答を要求間の遅延"
+msgstr "ピア確認応答要求中の遅延"
 
 #: usr/local/www/vpn_ipsec_phase1.php:837
 #: usr/local/www/vpn_ipsec_phase1.php:850
@@ -42098,7 +42165,7 @@ msgstr "ピアの確認応答を要求間の遅延"
 #: usr/local/www/vpn_ipsec_phase1.php:868
 #: usr/local/www/vpn_ipsec_phase1.php:868
 msgid "retries"
-msgstr "リトライ"
+msgstr "再試行"
 
 #: usr/local/www/vpn_ipsec_phase1.php:839
 #: usr/local/www/vpn_ipsec_phase1.php:852
@@ -42106,13 +42173,13 @@ msgstr "リトライ"
 #: usr/local/www/vpn_ipsec_phase1.php:870
 #: usr/local/www/vpn_ipsec_phase1.php:870
 msgid "Number of consecutive failures allowed before disconnect"
-msgstr "切断する前に許可された連続失敗回数"
+msgstr "切断までに許可する連続失敗回数"
 
 #: usr/local/www/vpn_ipsec_phase2.php:109
 #: usr/local/www/vpn_ipsec_phase2.php:111
 #: usr/local/www/vpn_ipsec_phase2.php:111
 msgid "A valid ikeid must be specified."
-msgstr "有効なikeidを指定する必要があります。"
+msgstr "有効な ikeid を指定してください"
 
 #: usr/local/www/vpn_ipsec_phase2.php:113
 #: usr/local/www/vpn_ipsec_phase2.php:115
@@ -42124,7 +42191,7 @@ msgstr "ローカルネットワークの種類"
 #: usr/local/www/vpn_ipsec_phase2.php:115
 #: usr/local/www/vpn_ipsec_phase2.php:115
 msgid "P2 Hash Algorithms"
-msgstr "P2はハッシュアルゴリズム"
+msgstr "P2 ハッシュアルゴリズム"
 
 #: usr/local/www/vpn_ipsec_phase2.php:116
 #: usr/local/www/vpn_ipsec_phase2.php:118
@@ -42136,13 +42203,13 @@ msgstr "リモートネットワークの種類"
 #: usr/local/www/vpn_ipsec_phase2.php:128
 #: usr/local/www/vpn_ipsec_phase2.php:128
 msgid "A valid local network bit count must be specified."
-msgstr "有効なローカルネットワークビット数を指定する必要があります。"
+msgstr "有効なローカルネットワークビット数を指定してください"
 
 #: usr/local/www/vpn_ipsec_phase2.php:129
 #: usr/local/www/vpn_ipsec_phase2.php:131
 #: usr/local/www/vpn_ipsec_phase2.php:131
 msgid "A valid local network IP address must be specified."
-msgstr "有効なローカルネットワークIPアドレスを指定する必要があります。"
+msgstr "有効なローカルネットワーク IP アドレスを指定してください"
 
 #: usr/local/www/vpn_ipsec_phase2.php:136
 #: usr/local/www/vpn_ipsec_phase2.php:146
@@ -42150,7 +42217,7 @@ msgstr "有効なローカルネットワークIPアドレスを指定する必�
 #: usr/local/www/vpn_ipsec_phase2.php:178
 #: usr/local/www/vpn_ipsec_phase2.php:178
 msgid "A valid remote network bit count must be specified."
-msgstr "有効なリモートネットワークビット数を指定する必要があります。"
+msgstr "有効なリモートネットワークビット数を指定してください"
 
 #: usr/local/www/vpn_ipsec_phase2.php:139
 #: usr/local/www/vpn_ipsec_phase2.php:149
@@ -42158,7 +42225,7 @@ msgstr "有効なリモートネットワークビット数を指定する必要
 #: usr/local/www/vpn_ipsec_phase2.php:181
 #: usr/local/www/vpn_ipsec_phase2.php:181
 msgid "A valid remote network IP address must be specified."
-msgstr "有効なリモートネットワークのIPアドレスを指定する必要があります。"
+msgstr "有効なリモートネットワークの IP アドレスを指定してください"
 
 #: usr/local/www/vpn_ipsec_phase2.php:158
 #: usr/local/www/vpn_ipsec_phase2.php:162
@@ -42171,7 +42238,7 @@ msgstr "有効なリモートネットワークのIPアドレスを指定する�
 #: usr/local/www/vpn_ipsec_phase2.php:206
 #: usr/local/www/vpn_ipsec_phase2.php:210
 msgid "Phase2 with this Local Network is already defined for mobile clients."
-msgstr "このローカルネットワークとのフェーズ2は、すでにモバイルクライアントのために定義されています。"
+msgstr "このローカルネットワークにおけるフェーズ 2 は、モバイルクライアントで既に定義されています。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:189
 #: usr/local/www/vpn_ipsec_phase2.php:193
@@ -42186,7 +42253,9 @@ msgstr "このローカルネットワークとのフェーズ2は、すでに�
 msgid ""
 "Phase2 with this Local/Remote networks combination is already defined for "
 "this Phase1."
-msgstr "このフェーズ1 "このローカル/リモートネットワークの組み合わせでフェーズ2が既にのために定義されている」 。"
+msgstr ""
+"このローカル / リモートネットワークにおけるフェーズ 2 の組み合わせは、"
+"このフェーズ 1 で既に定義されています。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:204
 #: usr/local/www/vpn_ipsec_phase2.php:216
@@ -42194,7 +42263,7 @@ msgstr "このフェーズ1 "このローカル/リモートネットワーク�
 #: usr/local/www/vpn_ipsec_phase2.php:254
 #: usr/local/www/vpn_ipsec_phase2.php:254
 msgid "At least one encryption algorithm must be selected."
-msgstr "少なくとも1暗号化アルゴリズムを選択する必要があります。"
+msgstr "1 つ以上の暗号化アルゴリズムを選択してください"
 
 #: usr/local/www/vpn_ipsec_phase2.php:207
 #: usr/local/www/vpn_ipsec_phase2.php:220
@@ -42202,7 +42271,7 @@ msgstr "少なくとも1暗号化アルゴリズムを選択する必要があ�
 #: usr/local/www/vpn_ipsec_phase2.php:258
 #: usr/local/www/vpn_ipsec_phase2.php:258
 msgid "The P2 lifetime must be an integer."
-msgstr "P2は寿命が整数でなければなりません。"
+msgstr "P2 有効期間は整数です"
 
 #: usr/local/www/vpn_ipsec_phase2.php:255
 #: usr/local/www/vpn_ipsec_phase2.php:257
@@ -42215,7 +42284,7 @@ msgstr "P2は寿命が整数でなければなりません。"
 #: usr/local/www/vpn_ipsec_phase2.php:316
 #: usr/local/www/vpn_ipsec_phase2.php:318
 msgid "Edit Phase 2"
-msgstr "編集フェーズ2"
+msgstr "フェーズ 2 の編集"
 
 #: usr/local/www/vpn_ipsec_phase2.php:396
 #: usr/local/www/vpn_ipsec_phase2.php:422
@@ -42223,7 +42292,7 @@ msgstr "編集フェーズ2"
 #: usr/local/www/vpn_ipsec_phase2.php:510
 #: usr/local/www/vpn_ipsec_phase2.php:510
 msgid "Disable this phase2 entry"
-msgstr "このフェーズ2のエントリを無効化"
+msgstr "このフェーズ 2 エントリを無効"
 
 #: usr/local/www/vpn_ipsec_phase2.php:398
 #: usr/local/www/vpn_ipsec_phase2.php:424
@@ -42233,7 +42302,9 @@ msgstr "このフェーズ2のエントリを無効化"
 msgid ""
 "Set this option to disable this phase2 entry without removing it from the "
 "list"
-msgstr "リスト」から削除せずに、このフェーズ2のエントリを無効にするには、このオプションを設定する」"
+msgstr ""
+"このオプションを設定すると、リストから削除せずに、"
+"フェーズ 2 でこの項目を無効にします"
 
 #: usr/local/www/vpn_ipsec_phase2.php:433
 #: usr/local/www/vpn_ipsec_phase2.php:459
@@ -42245,7 +42316,7 @@ msgstr "リスト」から削除せずに、このフェーズ2のエントリ�
 #: usr/local/www/vpn_ipsec_phase2.php:582
 #, php-format
 msgid "%s subnet"
-msgstr "%sサブネット"
+msgstr "%s サブネット"
 
 #: usr/local/www/vpn_ipsec_phase2.php:512
 #: usr/local/www/vpn_ipsec_phase2.php:538
@@ -42253,7 +42324,7 @@ msgstr "%sサブネット"
 #: usr/local/www/vpn_ipsec_phase2.php:661
 #: usr/local/www/vpn_ipsec_phase2.php:661
 msgid "Phase 2 proposal (SA/Key Exchange)"
-msgstr "フェーズ2の提案（ SA /鍵交換）"
+msgstr "フェーズ 2 プロポーザル ( SA / 鍵交換 )"
 
 #: usr/local/www/vpn_ipsec_phase2.php:527
 #: usr/local/www/vpn_ipsec_phase2.php:553
@@ -42261,7 +42332,7 @@ msgstr "フェーズ2の提案（ SA /鍵交換）"
 #: usr/local/www/vpn_ipsec_phase2.php:676
 #: usr/local/www/vpn_ipsec_phase2.php:676
 msgid "ESP is encryption, AH is authentication only"
-msgstr "ESPは暗号化され、 AHは認証のみです"
+msgstr "ESP は暗号化、AH は認証のみです"
 
 #: usr/local/www/vpn_ipsec_phase2.php:532
 #: usr/local/www/vpn_ipsec_phase2.php:558
@@ -42279,7 +42350,9 @@ msgstr "暗号化アルゴリズム"
 msgid ""
 "Hint: use 3DES for best compatibility or if you have a hardware crypto "
 "accelerator card. Blowfish is usually the fastest in software encryption"
-msgstr ""ヒント：最高の互換性のために、またはあなたがハードウェア暗号がある場合は3DESを使用する「アクセラレータカードを。フグは通常、ソフトウェア暗号化で最速である"
+msgstr ""
+"ヒント: 一番互換性が高いものを選択する場合、もしくは、ハードウェア暗号アクセラレータカードがある場合は、"
+"3DES を使用します。Blowfish は、通常ソフトウェア暗号化では最速です。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:580
 #: usr/local/www/vpn_ipsec_phase2.php:606
@@ -42295,7 +42368,7 @@ msgstr "ハッシュアルゴリズム"
 #: usr/local/www/vpn_ipsec_phase2.php:739
 #: usr/local/www/vpn_ipsec_phase2.php:739
 msgid "PFS key group"
-msgstr "PFSキー群"
+msgstr "PFS 鍵グループ"
 
 #: usr/local/www/vpn_ipsec_phase2.php:614
 #: usr/local/www/vpn_ipsec_phase2.php:640
@@ -42303,7 +42376,7 @@ msgstr "PFSキー群"
 #: usr/local/www/vpn_ipsec_phase2.php:757
 #: usr/local/www/vpn_ipsec_phase2.php:757
 msgid "Set globally in mobile client options"
-msgstr "モバイルクライアントオプションでグローバルに設定"
+msgstr "モバイルクライアントオプションで全般的に設定"
 
 #: usr/local/www/vpn_ipsec_phase2.php:632
 #: usr/local/www/vpn_ipsec_phase2.php:658
@@ -42311,11 +42384,11 @@ msgstr "モバイルクライアントオプションでグローバルに設定
 #: usr/local/www/vpn_ipsec_phase2.php:775
 #: usr/local/www/vpn_ipsec_phase2.php:775
 msgid "Automatically ping host"
-msgstr "自動的にpingをホスト"
+msgstr "自動的に ping をするホスト"
 
 #: usr/local/www/vpn_l2tp.php:300
 msgid "Enable l2tp server"
-msgstr "L2TPサーバを有効にする"
+msgstr "L2TP サーバ を有効"
 
 #: usr/local/www/vpn_l2tp.php:325 usr/local/www/vpn_l2tp.php:326
 #: usr/local/www/vpn_l2tp.php:329 usr/local/www/vpn_l2tp.php:329
