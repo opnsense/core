@@ -32893,7 +32893,7 @@ msgstr "DHCP 登録"
 #: usr/local/www/services_dnsmasq.php:192
 #: usr/local/www/services_dnsmasq.php:192
 msgid "Register DHCP leases in DNS forwarder"
-msgstr "DNS フォワーダの DHCP リースを登録"
+msgstr "DNS フォワーダに DHCP リースを登録"
 
 #: usr/local/www/services_dnsmasq.php:165
 #: usr/local/www/services_dnsmasq.php:166
@@ -33593,7 +33593,7 @@ msgstr "変更を有効にするには、変更を適用してください"
 #: usr/local/www/vpn_pptp_users.php:83 usr/local/www/vpn_pptp_users.php:84
 #: usr/local/www/vpn_pptp_users.php:84
 msgid "Warning: this will terminate all current PPTP sessions"
-msgstr "警告: 全ての PPTP セッションが終了します"
+msgstr "警告: 現在の PPTP セッションは全て終了します"
 
 #: usr/local/www/vpn_pptp_users.php:104 usr/local/www/vpn_pptp_users.php:127
 #: usr/local/www/system_usermanager.php:842
@@ -34737,7 +34737,8 @@ msgid ""
 "other value from the other options. They will be retrieved/synced from the "
 "master."
 msgstr ""
-"バウチャーデータベース同期オプションの指定は、他のオプションが設定した他の値を記録しません。"
+"バウチャーデータベース同期オプションの指定は、"
+"他のオプションが設定した他の値を記録しません。"
 "それらの値は、マスタから取得 / 同期されます。"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:48
@@ -42396,11 +42397,13 @@ msgid ""
 "Enter the IP address the L2TP server should give to clients for use as their "
 "\"gateway\""
 msgstr ""
+"クライアントの使用する「ゲートウェイ」として、L2TP サーバがクライアントに与える、"
+"IP アドレスを入力してください。"
 
 #: usr/local/www/vpn_l2tp.php:337 usr/local/www/vpn_l2tp.php:338
 #: usr/local/www/vpn_l2tp.php:341 usr/local/www/vpn_l2tp.php:341
 msgid "Specify the starting address for the client IP address subnet."
-msgstr "クライアントのIPアドレス、サブネットの開始アドレスを指定します。"
+msgstr "クライアントの IP アドレスサブネットの開始アドレスを指定してください。"
 
 #: usr/local/www/vpn_l2tp.php:341 usr/local/www/vpn_pppoe_edit.php:390
 #: usr/local/www/vpn_pppoe_edit.php:391 usr/local/www/vpn_pppoe_edit.php:394
@@ -42413,29 +42416,31 @@ msgstr "サブネットマスク"
 #: usr/local/www/vpn_l2tp.php:358 usr/local/www/vpn_pppoe_edit.php:407
 #: usr/local/www/vpn_l2tp.php:358 usr/local/www/vpn_pppoe_edit.php:407
 msgid "is"
-msgstr "です"
+msgstr "の場合は"
 
 #: usr/local/www/vpn_l2tp.php:358 usr/local/www/vpn_l2tp.php:359
 #: usr/local/www/vpn_l2tp.php:362 usr/local/www/vpn_l2tp.php:362
 msgid "Number of L2TP users"
-msgstr "L2TPユーザーの数"
+msgstr "L2TP ユーザ数"
 
 #: usr/local/www/vpn_l2tp.php:371 usr/local/www/vpn_l2tp.php:372
 #: usr/local/www/vpn_l2tp.php:375 usr/local/www/vpn_l2tp.php:375
 msgid "is ten L2TP clients"
-msgstr "10 L2TPクライアントである"
+msgstr "は L2TP クライアントが 10 です。"
 
 #: usr/local/www/vpn_l2tp.php:375 usr/local/www/vpn_l2tp.php:376
 #: usr/local/www/vpn_l2tp.php:379 usr/local/www/vpn_l2tp.php:379
 msgid "Secret"
-msgstr "秘密"
+msgstr "秘密鍵"
 
 #: usr/local/www/vpn_l2tp.php:379 usr/local/www/vpn_l2tp.php:380
 #: usr/local/www/vpn_l2tp.php:383 usr/local/www/vpn_l2tp.php:383
 msgid ""
 "Specify optional secret shared between peers. Required on some devices/"
 "setups."
-msgstr "「ピア間で共有され、オプションの秘密を指定します。一部のデバイス/上で必要な"セットアップ。"
+msgstr ""
+"ピア間で共有するオプションの秘密鍵を指定してください。"
+"一部のデバイス / セットアップで必要になります。"
 
 #: usr/local/www/vpn_l2tp.php:383
 msgid "Encryption type"
@@ -42457,76 +42462,81 @@ msgstr "PAP"
 #: usr/local/www/vpn_l2tp.php:390 usr/local/www/vpn_l2tp.php:391
 #: usr/local/www/vpn_l2tp.php:394 usr/local/www/vpn_l2tp.php:394
 msgid "Specifies which protocol to use for authentication."
-msgstr "認証に使用するプロトコルを指定します。"
+msgstr "認証に使用するプロトコルを指定してください。"
 
 #: usr/local/www/vpn_l2tp.php:394 usr/local/www/vpn_l2tp.php:395
 #: usr/local/www/vpn_l2tp.php:398 usr/local/www/vpn_l2tp.php:398
 msgid "L2TP DNS Servers"
-msgstr "L2TP DNSサーバ"
+msgstr "L2TP DNS サーバ"
 
 #: usr/local/www/vpn_l2tp.php:400 usr/local/www/vpn_l2tp.php:401
 #: usr/local/www/vpn_l2tp.php:404 usr/local/www/vpn_l2tp.php:404
 msgid "primary and secondary DNS servers assigned to L2TP clients"
-msgstr "L2TPクライアントに割り当てられたプライマリおよびセカンダリDNSサーバ"
+msgstr "L2TP クライアントに割当てられた、プライマリ及びセカンダリ DNS サーバ"
 
 #: usr/local/www/vpn_l2tp.php:414 usr/local/www/vpn_l2tp.php:415
 #: usr/local/www/vpn_l2tp.php:418 usr/local/www/vpn_l2tp.php:418
 msgid ""
 "When set, all users will be authenticated using the RADIUS server specified "
 "below. The local user database will not be used."
-msgstr "下の「設定すると、すべてのユーザーが指定されたRADIUSサーバを使用して認証されます」 。ローカルユーザデータベースは使用されません。"
+msgstr ""
+"設定すると、全てのユーザは下記で指定された RADIUS サーバを使用して認証されます。"
+"ローカルユーザデータベースは使用されません。"
 
 #: usr/local/www/vpn_l2tp.php:418 usr/local/www/vpn_l2tp.php:419
 #: usr/local/www/vpn_l2tp.php:422 usr/local/www/vpn_l2tp.php:422
 msgid "Sends accounting packets to the RADIUS server."
-msgstr "RADIUSサーバにアカウンティングパケットを送信します。"
+msgstr "RADIUS サーバにアカウンティングパケットを送信します。"
 
 #: usr/local/www/vpn_l2tp.php:421
 msgid "RADIUS server"
-msgstr "RADIUSサーバー"
+msgstr "RADIUS サーバ"
 
 #: usr/local/www/vpn_l2tp.php:425 usr/local/www/vpn_l2tp.php:426
 #: usr/local/www/vpn_l2tp.php:429 usr/local/www/vpn_l2tp.php:429
 msgid "Enter the IP address of the RADIUS server."
-msgstr "RADIUSサーバのIPアドレスを入力します。"
+msgstr "RADIUS サーバの IP アドレスを入力してください。"
 
 #: usr/local/www/vpn_l2tp.php:432 usr/local/www/vpn_l2tp.php:433
 #: usr/local/www/vpn_l2tp.php:436 usr/local/www/vpn_l2tp.php:436
 msgid ""
 "Enter the shared secret that will be used to authenticate to the RADIUS "
 "server."
-msgstr "サーバー「RADIUSへの認証に使用される共有秘密を入力してください "。"
+msgstr ""
+"RADIUS サーバへの認証に使用される、"
+"共有秘密鍵を入力してください。"
 
 #: usr/local/www/vpn_l2tp.php:435
 msgid "RADIUS issued IP's"
-msgstr "RADIUSは、IPのを発行しました"
+msgstr "RADIUS IP 割当"
 
 #: usr/local/www/vpn_l2tp.php:439 usr/local/www/vpn_l2tp.php:440
 #: usr/local/www/vpn_l2tp.php:443 usr/local/www/vpn_l2tp.php:443
 msgid "Issue IP Addresses via RADIUS server."
-msgstr "問題のIPは、RADIUSサーバを経由して解決。"
+msgstr "RADIUS サーバから割当てられる IP アドレス"
 
 #: usr/local/www/vpn_l2tp.php:452 usr/local/www/vpn_l2tp.php:453
 #: usr/local/www/vpn_l2tp.php:456 usr/local/www/vpn_l2tp.php:456
 msgid ""
 "Don't forget to add a firewall rule to permit traffic from L2TP clients!"
-msgstr "「 L2TPクライアントからのトラフィックを許可するファイアウォールルールを追加することを忘れないでください ！"
+msgstr ""
+"L2TP クライアントからのトラフィックを許可する、ファイアウォールルールを必ず追加してください！"
 
 #: usr/local/www/vpn_l2tp_users.php:86 usr/local/www/vpn_l2tp_users.php:87
 #: usr/local/www/vpn_l2tp_users.php:87
 msgid "The l2tp user list has been modified"
-msgstr "L2TPユーザリストが変更されている"
+msgstr "L2TP ユーザリストは変更されました"
 
 #: usr/local/www/vpn_l2tp_users.php:86 usr/local/www/vpn_l2tp_users.php:87
 #: usr/local/www/vpn_l2tp_users.php:87
 msgid "Warning: this will terminate all current l2tp sessions!"
-msgstr "警告：これは現在のすべてのL2TPセッションを終了します ！"
+msgstr "警告: 現在の L2TP セッションは、全て終了します！"
 
 #: usr/local/www/vpn_l2tp_users_edit.php:164
 #: usr/local/www/vpn_l2tp_users_edit.php:165
 #: usr/local/www/vpn_l2tp_users_edit.php:165
 msgid "If you want to change the users password, enter it here twice."
-msgstr "あなたは、ユーザーのパスワードを変更する場合は、二度ここに入力します。"
+msgstr "ユーザパスワードを変更する場合は、ここに 2 回入力してください。"
 
 #: usr/local/www/vpn_openvpn_client.php:40
 #: usr/local/www/vpn_openvpn_client.php:366
@@ -42550,7 +42560,7 @@ msgstr "クライアント"
 #: usr/local/www/vpn_openvpn_client.php:86
 #: usr/local/www/vpn_openvpn_client.php:86
 msgid "Client successfully deleted"
-msgstr "クライアント正常に削除"
+msgstr "クライアントは正常に削除されました"
 
 #: usr/local/www/vpn_openvpn_client.php:164
 #: usr/local/www/vpn_openvpn_server.php:227
@@ -42563,7 +42573,7 @@ msgstr "クライアント正常に削除"
 #: usr/local/www/vpn_openvpn_client.php:182
 #: usr/local/www/vpn_openvpn_server.php:254
 msgid "The specified 'Local port' is in use. Please select another value"
-msgstr "指定された'ローカルポートは「使用中です。別の値を選択してください"
+msgstr "指定された「ローカルポート」は使用されています。別の値を選択してください"
 
 #: usr/local/www/vpn_openvpn_client.php:183
 #: usr/local/www/vpn_openvpn_client.php:184
@@ -42571,7 +42581,7 @@ msgstr "指定された'ローカルポートは「使用中です。別の値�
 #: usr/local/www/vpn_openvpn_client.php:201
 #: usr/local/www/vpn_openvpn_client.php:201
 msgid "User name and password are required for proxy with authentication."
-msgstr "ユーザー名とパスワードは、認証付きプロキシのために必要とされる。"
+msgstr "認証付きプロキシには、ユーザ名とパスワードが必要です。"
 
 #: usr/local/www/vpn_openvpn_client.php:200
 #: usr/local/www/vpn_openvpn_server.php:235
@@ -42584,7 +42594,7 @@ msgstr "ユーザー名とパスワードは、認証付きプロキシのため
 #: usr/local/www/vpn_openvpn_client.php:228
 #: usr/local/www/vpn_openvpn_server.php:262
 msgid "The field 'Shared Key' does not appear to be valid"
-msgstr "フィールド'共有キー'は有効ではないようです"
+msgstr "「共有鍵」フィールドは有効ではないようです"
 
 #: usr/local/www/vpn_openvpn_client.php:205
 #: usr/local/www/vpn_openvpn_server.php:240
@@ -42597,7 +42607,7 @@ msgstr "フィールド'共有キー'は有効ではないようです"
 #: usr/local/www/vpn_openvpn_client.php:233
 #: usr/local/www/vpn_openvpn_server.php:267
 msgid "The field 'TLS Authentication Key' does not appear to be valid"
-msgstr "フィールド' TLS認証キー'は有効ではないようです"
+msgstr "「TLS 認証鍵」フィールドは有効ではないようです"
 
 #: usr/local/www/vpn_openvpn_client.php:214
 #: usr/local/www/vpn_openvpn_server.php:286
@@ -42626,7 +42636,7 @@ msgstr "共有鍵"
 #: usr/local/www/vpn_openvpn_csc.php:294
 #: usr/local/www/vpn_openvpn_server.php:702
 msgid "Client Specific Overrides"
-msgstr "クライアント固有のオーバーライド"
+msgstr "クライアント固有の上書き"
 
 #: usr/local/www/vpn_openvpn_client.php:397
 #: usr/local/www/vpn_openvpn_client.php:402
@@ -42634,7 +42644,7 @@ msgstr "クライアント固有のオーバーライド"
 #: usr/local/www/vpn_openvpn_client.php:428
 #: usr/local/www/vpn_openvpn_client.php:428
 msgid "Disable this client"
-msgstr "このクライアントを無効にする"
+msgstr "このクライアントを無効"
 
 #: usr/local/www/vpn_openvpn_client.php:402
 #: usr/local/www/vpn_openvpn_client.php:407
@@ -42643,7 +42653,8 @@ msgstr "このクライアントを無効にする"
 #: usr/local/www/vpn_openvpn_client.php:433
 msgid ""
 "Set this option to disable this client without removing it from the list"
-msgstr "「リストから削除せずにこのクライアントを無効にするには、このオプションを設定"
+msgstr ""
+"このオプションを設定すると、リストから削除せずに、このクライアントを無効にします"
 
 #: usr/local/www/vpn_openvpn_client.php:406
 #: usr/local/www/vpn_openvpn_server.php:624
@@ -42687,7 +42698,9 @@ msgstr "ローカルポート"
 msgid ""
 "Set this option if you would like to bind to a specific port. Leave this "
 "blank or enter 0 for a random dynamic port."
-msgstr "「あなたは、特定のポートにバインドする場合は、このオプションを設定します。このまま「ブランクまたはランダム動的ポートに0を入力してください。"
+msgstr ""
+"このオプションを設定すると、特定のポートをバインドできます。"
+"空白にするか、0 を入力すると、ランダム動的ポートになります。" 
 
 #: usr/local/www/vpn_openvpn_client.php:484
 #: usr/local/www/vpn_openvpn_client.php:489
@@ -42695,7 +42708,7 @@ msgstr "「あなたは、特定のポートにバインドする場合は、こ
 #: usr/local/www/vpn_openvpn_client.php:526
 #: usr/local/www/vpn_openvpn_client.php:526
 msgid "Server host or address"
-msgstr "Serverホストまたはアドレス"
+msgstr "サーバのホスト名またはアドレス"
 
 #: usr/local/www/vpn_openvpn_client.php:490
 #: usr/local/www/vpn_openvpn_client.php:495
@@ -42711,7 +42724,7 @@ msgstr "サーバポート"
 #: usr/local/www/vpn_openvpn_client.php:538
 #: usr/local/www/vpn_openvpn_client.php:538
 msgid "Proxy host or address"
-msgstr "プロキシのホストまたはアドレス"
+msgstr "プロキシのホスト名またはアドレス"
 
 #: usr/local/www/vpn_openvpn_client.php:502
 #: usr/local/www/vpn_openvpn_client.php:507
@@ -42727,7 +42740,7 @@ msgstr "プロキシポート"
 #: usr/local/www/vpn_openvpn_client.php:550
 #: usr/local/www/vpn_openvpn_client.php:550
 msgid "Proxy authentication extra options"
-msgstr "プロキシ認証の余分なオプション"
+msgstr "プロキシ認証追加オプション"
 
 #: usr/local/www/vpn_openvpn_client.php:520
 #: usr/local/www/vpn_openvpn_client.php:525
@@ -42751,7 +42764,7 @@ msgstr "NTLM"
 #: usr/local/www/vpn_openvpn_client.php:594
 #: usr/local/www/vpn_openvpn_client.php:594
 msgid "Server host name resolution"
-msgstr "サーバーのホスト名解決"
+msgstr "サーバホスト名の名前解決"
 
 #: usr/local/www/vpn_openvpn_client.php:562
 #: usr/local/www/vpn_openvpn_client.php:567
@@ -42759,7 +42772,7 @@ msgstr "サーバーのホスト名解決"
 #: usr/local/www/vpn_openvpn_client.php:604
 #: usr/local/www/vpn_openvpn_client.php:604
 msgid "Infinitely resolve server"
-msgstr "無限に解決サーバ"
+msgstr "無限にサーバを名前解決"
 
 #: usr/local/www/vpn_openvpn_client.php:567
 #: usr/local/www/vpn_openvpn_client.php:572
@@ -42769,7 +42782,9 @@ msgstr "無限に解決サーバ"
 msgid ""
 "Continuously attempt to resolve the server host name. Useful when "
 "communicating with a server that is not permanently connected to the Internet"
-msgstr "「継続的にサーバのホスト名を解決しよう。ときに便利」インターネットに常時接続されていないサーバーとの通信"
+msgstr ""
+"サーバホスト名の名前解決を、継続的に試みます。"
+"インターネットと常時接続されていないサーバとの通信時に便利です。"
 
 #: usr/local/www/vpn_openvpn_client.php:584
 #: usr/local/www/vpn_openvpn_server.php:733
@@ -42795,7 +42810,7 @@ msgstr "暗号化設定"
 #: usr/local/www/vpn_openvpn_client.php:629
 #: usr/local/www/vpn_openvpn_server.php:864
 msgid "TLS Authentication"
-msgstr "TLS認証"
+msgstr "TLS 認証"
 
 #: usr/local/www/vpn_openvpn_client.php:597
 #: usr/local/www/vpn_openvpn_server.php:746
@@ -42808,7 +42823,7 @@ msgstr "TLS認証"
 #: usr/local/www/vpn_openvpn_client.php:639
 #: usr/local/www/vpn_openvpn_server.php:874
 msgid "Enable authentication of TLS packets"
-msgstr "TLSパケットの認証を有効にする"
+msgstr "TLS パケット認証を有効"
 
 #: usr/local/www/vpn_openvpn_client.php:611
 #: usr/local/www/vpn_openvpn_server.php:760
@@ -42821,7 +42836,7 @@ msgstr "TLSパケットの認証を有効にする"
 #: usr/local/www/vpn_openvpn_client.php:653
 #: usr/local/www/vpn_openvpn_server.php:888
 msgid "Automatically generate a shared TLS authentication key"
-msgstr "自動的に共有TLS認証キーを生成"
+msgstr "自動的に共有 TLS 認証鍵を生成"
 
 #: usr/local/www/vpn_openvpn_client.php:622
 #: usr/local/www/vpn_openvpn_client.php:699
@@ -42844,7 +42859,7 @@ msgstr "自動的に共有TLS認証キーを生成"
 #: usr/local/www/vpn_openvpn_server.php:899
 #: usr/local/www/vpn_openvpn_server.php:1019
 msgid "Paste your shared key here"
-msgstr "ここにあなたの共有キーを貼り付ける"
+msgstr "ここに自分の共有鍵を貼り付けてください"
 
 #: usr/local/www/vpn_openvpn_client.php:648
 #: usr/local/www/vpn_openvpn_client.php:653
@@ -42878,7 +42893,7 @@ msgstr "共有鍵"
 #: usr/local/www/vpn_openvpn_client.php:730
 #: usr/local/www/vpn_openvpn_server.php:1008
 msgid "Automatically generate a shared key"
-msgstr "自動的に共有鍵を生成する"
+msgstr "自動的に共有鍵を生成"
 
 #: usr/local/www/vpn_openvpn_client.php:724
 #: usr/local/www/vpn_openvpn_server.php:916
@@ -42935,7 +42950,11 @@ msgid ""
 "client and the server expressed using CIDR (eg. 10.0.8.0/24). The first "
 "network address is assumed to be the server address and the second network "
 "address will be assigned to the client virtual interface"
-msgstr "クライアントとサーバーの「これは、この間のプライベート通信に使用される仮想ネットワークである「 CIDR （例： 10.0.8.0/24 ）を使用して表現。最初の「ネットワークアドレスは、サーバのアドレスであるとみなされ、第二のネットワーク"アドレスは、クライアントの仮想インターフェイスに割り当てられます"
+msgstr ""
+"これは、このクライアントと CIDR ( 例: 10.0.8.0/24 ) を使用して表記される"
+"サーバ間の、プライベート通信に使用される仮想ネットワークです。"
+"最初のネットワークアドレスは、サーバアドレスと見なされ、"
+"2 番目のネットワークアドレスは、クライアントの仮想インタフェースに割当てられます。"
 
 #: usr/local/www/vpn_openvpn_client.php:766
 #: usr/local/www/vpn_openvpn_client.php:771
@@ -42945,7 +42964,12 @@ msgid ""
 "Expressed as a CIDR range. If this is a site-to-site VPN, enter here the "
 "remote LAN here. You may leave this blank to only communicate with other "
 "clients"
-msgstr "「これはトンネルを経由してルーティングされるネットワークである、その結果、サイトツー」サイトVPNを手動でルーティングテーブルを変更せずに設定することができる。 「 CIDRの範囲として表さ。これは、サイト間VPNの場合は、ここで入力した「ここにリモートLAN 。あなただけの他の「クライアントと通信するために、この空白を残すことが"
+msgstr ""
+"これは、トンネル経由でルーティングされるネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイトツーサイト VPN 接続を確立させることができます。"
+"CIDR 範囲として表記されます。"
+"サイトツーサイト VPN の場合は、リモート LAN をここに入力してください。"
+"他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_client.php:776
 #: usr/local/www/vpn_openvpn_client.php:781
@@ -42953,7 +42977,7 @@ msgstr "「これはトンネルを経由してルーティングされるネッ
 #: usr/local/www/vpn_openvpn_client.php:846
 #: usr/local/www/vpn_openvpn_client.php:846
 msgid "Limit outgoing bandwidth"
-msgstr "発信帯域幅を制限"
+msgstr "上り帯域幅制限"
 
 #: usr/local/www/vpn_openvpn_client.php:780
 #: usr/local/www/vpn_openvpn_client.php:785
@@ -42964,7 +42988,10 @@ msgid ""
 "Maximum outgoing bandwidth for this tunnel. Leave empty for no limit. The "
 "input value has to be something between 100 bytes/sec and 100 Mbytes/sec "
 "(entered as bytes per second)"
-msgstr "「このトンネルの最大送信帯域幅は制限なしに空のままにします。 「入力値が100バイト/秒と100Mバイト/秒の間に何かある必要があります」 （バイト/秒で入力）"
+msgstr ""
+"このトンネルの上り帯域幅の最大値です。無制限にする場合は空白にしてください"
+"入力する値は、100 byte/sec 〜 100 Mbyte/sec になるようにしてください。"
+"( 入力する単位: byte/sec )"
 
 #: usr/local/www/vpn_openvpn_client.php:797
 #: usr/local/www/vpn_openvpn_server.php:1087
@@ -42977,7 +43004,7 @@ msgstr "「このトンネルの最大送信帯域幅は制限なしに空のま
 #: usr/local/www/vpn_openvpn_client.php:867
 #: usr/local/www/vpn_openvpn_server.php:1298
 msgid "Compress tunnel packets using the LZO algorithm"
-msgstr "LZOアルゴリズムを使用して、トンネルパケットを圧縮"
+msgstr "LZO アルゴリズムを使用して、トンネルパケットを圧縮"
 
 #: usr/local/www/vpn_openvpn_client.php:805
 #: usr/local/www/vpn_openvpn_server.php:1095
@@ -43005,7 +43032,9 @@ msgstr "サービスタイプ"
 msgid ""
 "Set the TOS IP header value of tunnel packets to match the encapsulated "
 "packet value"
-msgstr "パケット値「カプセル化に合わせて、トンネルパケットのTOS IPヘッダーの値を設定します""
+msgstr ""
+"カプセル化されたパケットの値と一致する、"
+"トンネルパケットの TOS IP ヘッダの値を設定してください。"
 
 #: usr/local/www/vpn_openvpn_client.php:826
 #: usr/local/www/vpn_openvpn_server.php:1409
@@ -43018,7 +43047,7 @@ msgstr "パケット値「カプセル化に合わせて、トンネルパケッ
 #: usr/local/www/vpn_openvpn_client.php:899
 #: usr/local/www/vpn_openvpn_server.php:1645
 msgid "Advanced configuration"
-msgstr "高度な設定"
+msgstr "高度な構成"
 
 #: usr/local/www/vpn_openvpn_client.php:835
 #: usr/local/www/vpn_openvpn_client.php:840
@@ -43028,13 +43057,15 @@ msgstr "高度な設定"
 msgid ""
 "Enter any additional options you would like to add to the OpenVPN client "
 "configuration here, separated by a semicolon"
-msgstr "セミコロンで区切られ、以下に設定」では、 OpenVPNクライアントに追加する追加オプションを入力してください ""
+msgstr ""
+"OpenVPN クライアントに追加する、追加オプションを入力してください。"
+"セミコロン区切りです。"
 
 #: usr/local/www/vpn_openvpn_client.php:836
 #: usr/local/www/vpn_openvpn_client.php:841
 #: usr/local/www/vpn_openvpn_client.php:890
 msgid "EXAMPLE: route 10.0.0.0 255.255.255.0;"
-msgstr "例：ルート10.0.0.0 255.255.255.0;"
+msgstr "例: route 10.0.0.0 255.255.255.0;"
 
 #: usr/local/www/vpn_openvpn_client.php:891
 #: usr/local/www/vpn_openvpn_client.php:896
@@ -43042,7 +43073,7 @@ msgstr "例：ルート10.0.0.0 255.255.255.0;"
 #: usr/local/www/vpn_openvpn_client.php:968
 #: usr/local/www/vpn_openvpn_client.php:968
 msgid "edit client"
-msgstr "編集クライアント"
+msgstr "クライアントの編集"
 
 #: usr/local/www/vpn_openvpn_client.php:895
 #: usr/local/www/vpn_openvpn_client.php:900
@@ -43050,7 +43081,7 @@ msgstr "編集クライアント"
 #: usr/local/www/vpn_openvpn_client.php:972
 #: usr/local/www/vpn_openvpn_client.php:972
 msgid "delete client"
-msgstr "クライアントを削除する"
+msgstr "クライアントの削除"
 
 #: usr/local/www/vpn_openvpn_client.php:908
 #: usr/local/www/vpn_openvpn_client.php:913
@@ -43058,7 +43089,7 @@ msgstr "クライアントを削除する"
 #: usr/local/www/vpn_openvpn_client.php:985
 #: usr/local/www/vpn_openvpn_client.php:985
 msgid "add client"
-msgstr "クライアントを追加"
+msgstr "クライアントの追加"
 
 #: usr/local/www/vpn_openvpn_client.php:915
 #: usr/local/www/vpn_openvpn_client.php:920
@@ -43066,16 +43097,16 @@ msgstr "クライアントを追加"
 #: usr/local/www/vpn_openvpn_client.php:992
 #: usr/local/www/vpn_openvpn_client.php:992
 msgid "Additional OpenVPN clients can be added here."
-msgstr "追加のOpenVPNのクライアントは、ここで追加することができます。"
+msgstr "OpenVPN クライアントは、ここで追加できます。"
 
 #: usr/local/www/vpn_openvpn_csc.php:40 usr/local/www/vpn_openvpn_csc.php:40
 msgid "Client Specific Override"
-msgstr "クライアント固有のオーバーライド"
+msgstr "クライアント固有の上書き"
 
 #: usr/local/www/vpn_openvpn_csc.php:67 usr/local/www/vpn_openvpn_csc.php:66
 #: usr/local/www/vpn_openvpn_csc.php:66
 msgid "Client Specific Override successfully deleted"
-msgstr "クライアント固有のオーバーライドが正常に削除"
+msgstr "クライアント固有の上書きは正常に削除されました"
 
 #: usr/local/www/vpn_openvpn_csc.php:131
 #: usr/local/www/vpn_openvpn_server.php:244
@@ -43086,7 +43117,7 @@ msgstr "クライアント固有のオーバーライドが正常に削除"
 #: usr/local/www/vpn_openvpn_csc.php:130
 #: usr/local/www/vpn_openvpn_server.php:271
 msgid "The field 'DNS Server #1' must contain a valid IP address"
-msgstr "フィールドのDNSサーバー"
+msgstr "「DNS サーバ #1」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:133
 #: usr/local/www/vpn_openvpn_server.php:246
@@ -43097,7 +43128,7 @@ msgstr "フィールドのDNSサーバー"
 #: usr/local/www/vpn_openvpn_csc.php:132
 #: usr/local/www/vpn_openvpn_server.php:273
 msgid "The field 'DNS Server #2' must contain a valid IP address"
-msgstr "フィールドのDNSサーバー"
+msgstr "「DNS サーバ #2」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:135
 #: usr/local/www/vpn_openvpn_server.php:248
@@ -43108,7 +43139,7 @@ msgstr "フィールドのDNSサーバー"
 #: usr/local/www/vpn_openvpn_csc.php:134
 #: usr/local/www/vpn_openvpn_server.php:275
 msgid "The field 'DNS Server #3' must contain a valid IP address"
-msgstr "フィールドのDNSサーバー"
+msgstr "「DNS サーバ #3」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:137
 #: usr/local/www/vpn_openvpn_server.php:250
@@ -43119,7 +43150,7 @@ msgstr "フィールドのDNSサーバー"
 #: usr/local/www/vpn_openvpn_csc.php:136
 #: usr/local/www/vpn_openvpn_server.php:277
 msgid "The field 'DNS Server #4' must contain a valid IP address"
-msgstr "フィールドのDNSサーバー"
+msgstr "「DNS サーバ #4」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:142
 #: usr/local/www/vpn_openvpn_server.php:255
@@ -43130,7 +43161,7 @@ msgstr "フィールドのDNSサーバー"
 #: usr/local/www/vpn_openvpn_csc.php:141
 #: usr/local/www/vpn_openvpn_server.php:282
 msgid "The field 'NTP Server #1' must contain a valid IP address"
-msgstr "フィールド「 NTPサーバ"
+msgstr "「NTP サーバ #1」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:144
 #: usr/local/www/vpn_openvpn_server.php:257
@@ -43141,7 +43172,7 @@ msgstr "フィールド「 NTPサーバ"
 #: usr/local/www/vpn_openvpn_csc.php:143
 #: usr/local/www/vpn_openvpn_server.php:284
 msgid "The field 'NTP Server #2' must contain a valid IP address"
-msgstr "フィールド「 NTPサーバ"
+msgstr "「NTP サーバ #2」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:146
 #: usr/local/www/vpn_openvpn_server.php:259
@@ -43152,7 +43183,7 @@ msgstr "フィールド「 NTPサーバ"
 #: usr/local/www/vpn_openvpn_csc.php:145
 #: usr/local/www/vpn_openvpn_server.php:286
 msgid "The field 'NTP Server #3' must contain a valid IP address"
-msgstr "フィールド「 NTPサーバ"
+msgstr "「NTP サーバ #3」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:148
 #: usr/local/www/vpn_openvpn_server.php:261
@@ -43163,7 +43194,7 @@ msgstr "フィールド「 NTPサーバ"
 #: usr/local/www/vpn_openvpn_csc.php:147
 #: usr/local/www/vpn_openvpn_server.php:288
 msgid "The field 'NTP Server #4' must contain a valid IP address"
-msgstr "フィールド「 NTPサーバ"
+msgstr "「NTP サーバ #4」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:154
 #: usr/local/www/vpn_openvpn_server.php:267
@@ -43174,7 +43205,7 @@ msgstr "フィールド「 NTPサーバ"
 #: usr/local/www/vpn_openvpn_csc.php:153
 #: usr/local/www/vpn_openvpn_server.php:294
 msgid "The field 'WINS Server #1' must contain a valid IP address"
-msgstr "フィールドには、 「 WINSサーバー"
+msgstr "「WINS サーバ #1」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:156
 #: usr/local/www/vpn_openvpn_server.php:269
@@ -43185,7 +43216,7 @@ msgstr "フィールドには、 「 WINSサーバー"
 #: usr/local/www/vpn_openvpn_csc.php:155
 #: usr/local/www/vpn_openvpn_server.php:296
 msgid "The field 'WINS Server #2' must contain a valid IP address"
-msgstr "フィールドには、 「 WINSサーバー"
+msgstr "「WINS サーバ #2」フィールドには、有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:160
 #: usr/local/www/vpn_openvpn_server.php:273
@@ -43198,46 +43229,52 @@ msgstr "フィールドには、 「 WINSサーバー"
 msgid ""
 "The field 'NetBIOS Data Distribution Server #1' must contain a valid IP "
 "address"
-msgstr "「フィールド」のNetBIOSデータ配信サーバ"
+msgstr ""
+"「NetBIOS データ配信サーバ #1」フィールドには、"
+"有効な IP アドレスが必要です"
 
 #: usr/local/www/vpn_openvpn_csc.php:325 usr/local/www/vpn_openvpn_csc.php:324
 #: usr/local/www/vpn_openvpn_csc.php:324
 msgid "Disable this override"
-msgstr "このオーバーライドを無効にする"
+msgstr "この上書きを無効"
 
 #: usr/local/www/vpn_openvpn_csc.php:330 usr/local/www/vpn_openvpn_csc.php:329
 #: usr/local/www/vpn_openvpn_csc.php:329
 msgid ""
 "Set this option to disable this client-specific override without removing it "
 "from the list"
-msgstr "リストから「削除せずに、このクライアント固有のオーバーライドを無効にするには、このオプションを設定する」"
+msgstr ""
+"このオプションを設定すると、リストから削除せずに、"
+"このクライアント固有の上書きを無効にします"
 
 #: usr/local/www/vpn_openvpn_csc.php:334 usr/local/www/vpn_openvpn_csc.php:333
 #: usr/local/www/vpn_openvpn_csc.php:333
 msgid "Common name"
-msgstr "共通名"
+msgstr "コモンネーム"
 
 #: usr/local/www/vpn_openvpn_csc.php:338 usr/local/www/vpn_openvpn_csc.php:337
 #: usr/local/www/vpn_openvpn_csc.php:337
 msgid "Enter the client's X.509 common name here"
-msgstr "ここでクライアントのX.509共通名を入力してください"
+msgstr "クライアントの X.509 コモンネームを、ここに入力してください"
 
 #: usr/local/www/vpn_openvpn_csc.php:350 usr/local/www/vpn_openvpn_csc.php:349
 #: usr/local/www/vpn_openvpn_csc.php:349
 msgid "Connection blocking"
-msgstr "接続ブロック"
+msgstr "接続拒否"
 
 #: usr/local/www/vpn_openvpn_csc.php:360 usr/local/www/vpn_openvpn_csc.php:359
 #: usr/local/www/vpn_openvpn_csc.php:359
 msgid "Block this client connection based on its common name"
-msgstr "その共通の名前に基づいて、このクライアント接続をブロックする"
+msgstr "コモンネームに基づいた、このクライアント接続を拒否"
 
 #: usr/local/www/vpn_openvpn_csc.php:365 usr/local/www/vpn_openvpn_csc.php:364
 #: usr/local/www/vpn_openvpn_csc.php:364
 msgid ""
 "Don't use this option to permanently disable a client due to a compromised "
 "key or password. Use a CRL (certificate revocation list) instead"
-msgstr "キーまたはパスワード「永久に起因する侵害にクライアントを無効にするには、このオプションを使用しないでください」 。代わりに、CRL （証明書失効リスト）を使用"
+msgstr ""
+"セキュリティ侵害を受けた鍵やパスワードを持つクライアントを永続的に無効にする用途で、"
+"このオプションを使用しないでください。その場合は、CRL ( 証明書失効リスト ) を使用します。"
 
 #: usr/local/www/vpn_openvpn_csc.php:391
 #: usr/local/www/vpn_openvpn_server.php:1011
@@ -43248,7 +43285,7 @@ msgstr "キーまたはパスワード「永久に起因する侵害にクライ
 #: usr/local/www/vpn_openvpn_csc.php:390
 #: usr/local/www/vpn_openvpn_server.php:1208
 msgid "Redirect Gateway"
-msgstr "ゲートウェイにリダイレクト"
+msgstr "リダイレクトゲートウェイ"
 
 #: usr/local/www/vpn_openvpn_csc.php:401
 #: usr/local/www/vpn_openvpn_server.php:1021
@@ -43259,7 +43296,7 @@ msgstr "ゲートウェイにリダイレクト"
 #: usr/local/www/vpn_openvpn_csc.php:400
 #: usr/local/www/vpn_openvpn_server.php:1218
 msgid "Force all client generated traffic through the tunnel"
-msgstr "トンネルを介してすべてのクライアント生成されたトラフィックを強制的に"
+msgstr "トンネルを経由するトラフィックを生成する、全てのクライアントに強制"
 
 #: usr/local/www/vpn_openvpn_csc.php:412
 #: usr/local/www/vpn_openvpn_server.php:1155
@@ -43275,12 +43312,12 @@ msgstr "クライアント設定"
 #: usr/local/www/vpn_openvpn_csc.php:415 usr/local/www/vpn_openvpn_csc.php:414
 #: usr/local/www/vpn_openvpn_csc.php:414
 msgid "Server Definitions"
-msgstr "サーバー定義"
+msgstr "サーバ定義"
 
 #: usr/local/www/vpn_openvpn_csc.php:425 usr/local/www/vpn_openvpn_csc.php:424
 #: usr/local/www/vpn_openvpn_csc.php:424
 msgid "Prevent this client from receiving any server-defined client settings"
-msgstr "任意のサーバーに定義されたクライアントの設定を受けてから、このクライアントを防ぐ"
+msgstr "任意のサーバが定義するクライアント設定を、このクライアントが受信することを防ぐ"
 
 #: usr/local/www/vpn_openvpn_csc.php:510
 #: usr/local/www/vpn_openvpn_server.php:1271
@@ -43291,7 +43328,7 @@ msgstr "任意のサーバーに定義されたクライアントの設定を受
 #: usr/local/www/vpn_openvpn_csc.php:509
 #: usr/local/www/vpn_openvpn_server.php:1507
 msgid "NTP Servers"
-msgstr "NTPサーバー"
+msgstr "NTP サーバ"
 
 #: usr/local/www/vpn_openvpn_csc.php:520
 #: usr/local/www/vpn_openvpn_server.php:1281
@@ -43302,7 +43339,7 @@ msgstr "NTPサーバー"
 #: usr/local/www/vpn_openvpn_csc.php:519
 #: usr/local/www/vpn_openvpn_server.php:1517
 msgid "Provide a NTP server list to clients"
-msgstr "クライアントにNTPサーバーのリストを提供"
+msgstr "クライアントに NTP サーバリストを提供"
 
 #: usr/local/www/vpn_openvpn_csc.php:546
 #: usr/local/www/vpn_openvpn_server.php:1307
@@ -43313,7 +43350,7 @@ msgstr "クライアントにNTPサーバーのリストを提供"
 #: usr/local/www/vpn_openvpn_csc.php:545
 #: usr/local/www/vpn_openvpn_server.php:1543
 msgid "NetBIOS Options"
-msgstr "NetBIOSのオプション"
+msgstr "NetBIOS オプション"
 
 #: usr/local/www/vpn_openvpn_csc.php:556
 #: usr/local/www/vpn_openvpn_server.php:1317
@@ -43324,13 +43361,15 @@ msgstr "NetBIOSのオプション"
 #: usr/local/www/vpn_openvpn_csc.php:555
 #: usr/local/www/vpn_openvpn_server.php:1553
 msgid "Enable NetBIOS over TCP/IP"
-msgstr "NetBIOS over TCP / IPを有効にする"
+msgstr "NetBIOS over TCP/IP を有効"
 
 #: usr/local/www/vpn_openvpn_csc.php:561
 msgid ""
 "If this option is not set, all NetBIOS-over-TCP/IP options (includeing WINS) "
 "will be disabled"
-msgstr ""このオプションが設定されていない場合、すべてのNetBIOS-over-TCP/IPオプション（ WINSを内蔵してい） 」は無効になります"
+msgstr ""
+"このオプションが設定されていない場合は、"
+"全ての NetBIOS over TCP/IP オプション ( WINS も含む ) は無効になります。"
 
 #: usr/local/www/vpn_openvpn_csc.php:568
 #: usr/local/www/vpn_openvpn_server.php:1329
@@ -43341,7 +43380,7 @@ msgstr ""このオプションが設定されていない場合、すべてのNe
 #: usr/local/www/vpn_openvpn_csc.php:567
 #: usr/local/www/vpn_openvpn_server.php:1565
 msgid "Node Type"
-msgstr "ノード種別"
+msgstr "ノードの種類"
 
 #: usr/local/www/vpn_openvpn_csc.php:581
 #: usr/local/www/vpn_openvpn_server.php:1342
@@ -43355,7 +43394,10 @@ msgid ""
 "Possible options: b-node (broadcasts), p-node (point-to-point name queries "
 "to a WINS server), m-node (broadcast then query name server), and h-node "
 "(query name server, then broadcast)"
-msgstr "「可能なオプション：B-ノード（ブロードキャスト） 、 Pノード（ポイント·ツー·ポイントの名前照会」 、 WINSサーバーに） 、 Mノード（ネームサーバに照会し、ブロードキャスト） 、およびhノード」 （クエリーネームサーバその後ブロードキャスト）"
+msgstr ""
+"使用可能なオプション: b-node ( ブロードキャスト )、"
+"p-node ( WINS サーバに対するポイントツーポイントの名前照会 )、"
+"m-node ( ブロードキャスト後に DNS サーバを照会 )、h-node ( DNS サーバを照会後にブロードキャスト )"
 
 #: usr/local/www/vpn_openvpn_csc.php:595
 #: usr/local/www/vpn_openvpn_server.php:1356
@@ -43369,14 +43411,19 @@ msgid ""
 "A NetBIOS Scope\tID provides an extended naming service for\tNetBIOS over "
 "TCP/IP. The NetBIOS scope ID isolates NetBIOS traffic on a single network to "
 "only those nodes with the same NetBIOS scope ID"
-msgstr "TCP / IP」のNetBIOS ScopetID過剰拡張ネーミングサービスfortNetBIOSを提供しています」 。 NetBIOSスコープIDは、単一のネットワーク上でNetBIOSトラフィックを分離する」とは、同じNetBIOSスコープIDを持つノードのみ"
+msgstr ""
+"NetBIOS スコープ\tID は NetBIOS over TCP/IP に対する/t拡張ネーミングサービスです。"
+"NetBIOS スコープ ID は、単一ネットワークの NetBIOS トラフィックから、"
+"同じ NetBIOS スコープ ID を持つノードだけを分離します。"
 
 #: usr/local/www/vpn_openvpn_csc.php:648 usr/local/www/vpn_openvpn_csc.php:647
 #: usr/local/www/vpn_openvpn_csc.php:647
 msgid ""
 "Enter any additional options you would like to add for this client specific "
 "override, separated by a semicolon"
-msgstr "オーバーライド、セミコロンで区切られた「あなたはこのクライアントの特定のために追加したい任意の追加のオプションを入力してください ""
+msgstr ""
+"クライアント固有の上書きに追加する、追加オプションを入力してください。"
+"セミコロン区切りです。"
 
 #: usr/local/www/vpn_openvpn_csc.php:649
 #: usr/local/www/vpn_openvpn_server.php:1419
@@ -43387,38 +43434,38 @@ msgstr "オーバーライド、セミコロンで区切られた「あなたは
 #: usr/local/www/vpn_openvpn_csc.php:648
 #: usr/local/www/vpn_openvpn_server.php:1655
 msgid "EXAMPLE: push \"route 10.0.0.0 255.255.255.0\""
-msgstr ""
+msgstr "例: push \"route 10.0.0.0 255.255.255.0\""
 
 #: usr/local/www/vpn_openvpn_csc.php:696 usr/local/www/vpn_openvpn_csc.php:695
 #: usr/local/www/vpn_openvpn_csc.php:695
 msgid "edit csc"
-msgstr "編集CSC"
+msgstr "CSC の編集"
 
 #: usr/local/www/vpn_openvpn_csc.php:699 usr/local/www/vpn_openvpn_csc.php:698
 #: usr/local/www/vpn_openvpn_csc.php:698
 msgid "Do you really want to delete this csc?"
-msgstr "あなたは本当にこのCSCを削除しますか？"
+msgstr "本当にこの CSC を削除しますか？"
 
 #: usr/local/www/vpn_openvpn_csc.php:700 usr/local/www/vpn_openvpn_csc.php:699
 #: usr/local/www/vpn_openvpn_csc.php:699
 msgid "delete csc"
-msgstr "CSCを削除"
+msgstr "CSC の削除"
 
 #: usr/local/www/vpn_openvpn_csc.php:711 usr/local/www/vpn_openvpn_csc.php:710
 #: usr/local/www/vpn_openvpn_csc.php:710
 msgid "add csc"
-msgstr "CSCを追加"
+msgstr "CSC の追加"
 
 #: usr/local/www/vpn_openvpn_csc.php:718 usr/local/www/vpn_openvpn_csc.php:717
 #: usr/local/www/vpn_openvpn_csc.php:717
 msgid "Additional OpenVPN client specific overrides can be added here."
-msgstr "追加のOpenVPNクライアント固有のオーバーライドをここに追加することができます。"
+msgstr "OpenVPN クライアント固有の上書きは、ここで追加できます。"
 
 #: usr/local/www/vpn_openvpn_server.php:86
 #: usr/local/www/vpn_openvpn_server.php:87
 #: usr/local/www/vpn_openvpn_server.php:87
 msgid "Server successfully deleted"
-msgstr "サーバーを正常に削除"
+msgstr "サーバを正常に削除しました"
 
 #: usr/local/www/vpn_openvpn_server.php:210
 #: usr/local/www/vpn_openvpn_server.php:215
@@ -43428,7 +43475,9 @@ msgstr "サーバーを正常に削除"
 msgid ""
 "You must select a Backend for Authentication if the server mode requires "
 "User Auth."
-msgstr "ユーザー認証を「サーバー·モードが必要な場合は、認証のためのバックエンドを選択する必要があります」 。"
+msgstr ""
+"サーバモードでユーザ認証を必要な場合は、"
+"認証用バックエンドを選択する必要があります。"
 
 #: usr/local/www/vpn_openvpn_server.php:277
 #: usr/local/www/vpn_openvpn_server.php:282
@@ -43436,7 +43485,7 @@ msgstr "ユーザー認証を「サーバー·モードが必要な場合は、�
 #: usr/local/www/vpn_openvpn_server.php:304
 #: usr/local/www/vpn_openvpn_server.php:304
 msgid "The field 'Concurrent connections' must be numeric."
-msgstr "フィールド「同時接続」は数値でなければなりません。"
+msgstr "「同時接続」フィールドは数値です"
 
 #: usr/local/www/vpn_openvpn_server.php:290
 #: usr/local/www/vpn_openvpn_server.php:296
@@ -43452,7 +43501,7 @@ msgstr "トンネルネットワーク"
 #: usr/local/www/vpn_openvpn_server.php:732
 #: usr/local/www/vpn_openvpn_server.php:732
 msgid "Disable this server"
-msgstr "このサーバーを使用不可に"
+msgstr "このサーバを無効"
 
 #: usr/local/www/vpn_openvpn_server.php:620
 #: usr/local/www/vpn_openvpn_server.php:693
@@ -43461,7 +43510,9 @@ msgstr "このサーバーを使用不可に"
 #: usr/local/www/vpn_openvpn_server.php:737
 msgid ""
 "Set this option to disable this server without removing it from the list"
-msgstr "「リストから削除せずに、このサーバーを無効にするには、このオプションを設定"
+msgstr ""
+"このオプションを設定すると、リストから削除せずに、"
+"このサーバを無効にします"
 
 #: usr/local/www/vpn_openvpn_server.php:639
 #: usr/local/www/vpn_openvpn_server.php:712
@@ -43469,7 +43520,7 @@ msgstr "「リストから削除せずに、このサーバーを無効にする
 #: usr/local/www/vpn_openvpn_server.php:756
 #: usr/local/www/vpn_openvpn_server.php:756
 msgid "Backend for authentication"
-msgstr "認証のためにバックエンド"
+msgstr "認証用バックエンド"
 
 #: usr/local/www/vpn_openvpn_server.php:671
 #: usr/local/www/vpn_openvpn_server.php:744
@@ -43485,7 +43536,7 @@ msgstr "デバイスモード"
 #: usr/local/www/vpn_openvpn_server.php:925
 #: usr/local/www/vpn_openvpn_server.php:925
 msgid "Peer Certificate Revocation List"
-msgstr "証明書失効リストピア"
+msgstr "ピアの証明書失効リスト"
 
 #: usr/local/www/vpn_openvpn_server.php:822
 #: usr/local/www/vpn_openvpn_server.php:895
@@ -43493,7 +43544,7 @@ msgstr "証明書失効リストピア"
 #: usr/local/www/vpn_openvpn_server.php:950
 #: usr/local/www/vpn_openvpn_server.php:950
 msgid "Server Certificate"
-msgstr "サーバー証明書"
+msgstr "サーバ証明書"
 
 #: usr/local/www/vpn_openvpn_server.php:851
 #: usr/local/www/vpn_openvpn_server.php:924
@@ -43501,7 +43552,7 @@ msgstr "サーバー証明書"
 #: usr/local/www/vpn_openvpn_server.php:979
 #: usr/local/www/vpn_openvpn_server.php:979
 msgid "DH Parameters Length"
-msgstr "DHパラメータ長"
+msgstr "DH パラメータ長"
 
 #: usr/local/www/vpn_openvpn_server.php:934
 #: usr/local/www/vpn_openvpn_server.php:1007
@@ -43520,7 +43571,10 @@ msgid ""
 "When a certificate-based client logs in, do not accept certificates below "
 "this depth. Useful for denying certificates made with intermediate CAs "
 "generated from the same CA as the server."
-msgstr "この深さ」の証明書ベースのクライアントがログインすると、以下の証明書を受け入れない」 。サーバと同じCAから生成された中間CA 」で作られた証明書を否定するのに便利です。"
+msgstr ""
+"証明書ベースのクライアントがログインする時に、この深さ以下の証明書を受け入れません。"
+"サーバと同じ CA から生成された、"
+"中間 CA が作成した証明書を拒否する場合に便利です。"
 
 #: usr/local/www/vpn_openvpn_server.php:959
 #: usr/local/www/vpn_openvpn_server.php:1032
@@ -43528,7 +43582,7 @@ msgstr "この深さ」の証明書ベースのクライアントがログイン
 #: usr/local/www/vpn_openvpn_server.php:1087
 #: usr/local/www/vpn_openvpn_server.php:1087
 msgid "Strict User/CN Matching"
-msgstr "厳格なユーザー/ CNマッチング"
+msgstr "厳格なユーザ / CN マッチング"
 
 #: usr/local/www/vpn_openvpn_server.php:969
 #: usr/local/www/vpn_openvpn_server.php:1042
@@ -43538,7 +43592,9 @@ msgstr "厳格なユーザー/ CNマッチング"
 msgid ""
 "When authenticating users, enforce a match between the common name of the "
 "client certificate and the username given at login."
-msgstr "クライアント証明書と、ログイン時に指定されたユーザー名」ユーザを認証するときの一般的な名前との間の一致を強制する」 。"
+msgstr ""
+"ユーザの認証時に、クライアント証明書のコモンネームと、"
+"ログイン時に与えられるユーザ名が一致することを強制します。"
 
 #: usr/local/www/vpn_openvpn_server.php:983
 #: usr/local/www/vpn_openvpn_server.php:1056
@@ -43549,7 +43605,7 @@ msgstr "クライアント証明書と、ログイン時に指定されたユー
 #: usr/local/www/vpn_openvpn_client.php:790
 #: usr/local/www/vpn_openvpn_server.php:1111
 msgid "IPv4 Tunnel Network"
-msgstr "IPv4のトンネルネットワーク"
+msgstr "IPv4 トンネルネットワーク"
 
 #: usr/local/www/vpn_openvpn_server.php:987
 #: usr/local/www/vpn_openvpn_server.php:1060
@@ -43562,7 +43618,12 @@ msgid ""
 "first network address will be assigned to the\tserver virtual interface. The "
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
-msgstr "このサーバーとクライアントホスト「これは間のプライベート通信に使用されるIPv4の仮想ネットワークである「 CIDR （例： 10.0.8.0/24 ）を使用して表現。 「最初のネットワークアドレスがthetserver仮想インターフェイスに割り当てられます。 「残りのネットワークアドレスは、必要に応じて「クライアントの接続に割り当てることができます。 （アドレスプールを参照してください）"
+msgstr ""
+"これは、このサーバと CIDR ( 例: 10.0.8.0/24 ) を使用して表記される"
+"クライアントホスト間の、プライベート通信に使用される IPv4 仮想ネットワークです。"
+"最初のネットワークアドレスは、\tサーバ仮想インタフェースに割り当てらます。"
+"残りのネットワークアドレスは、オプションで、クライアントの接続に割り当てることができます。"
+"( アドレスプールを参照 )"
 
 #: usr/local/www/vpn_openvpn_server.php:997
 #: usr/local/www/vpn_openvpn_server.php:1070
@@ -43573,7 +43634,7 @@ msgstr "このサーバーとクライアントホスト「これは間のプラ
 #: usr/local/www/vpn_openvpn_client.php:804
 #: usr/local/www/vpn_openvpn_server.php:1125
 msgid "IPv6 Tunnel Network"
-msgstr "IPv6トンネルネットワーク"
+msgstr "IPv6 トンネルネットワーク"
 
 #: usr/local/www/vpn_openvpn_server.php:1001
 #: usr/local/www/vpn_openvpn_server.php:1074
@@ -43583,13 +43644,18 @@ msgid ""
 "network address will be assigned to the\tserver virtual interface. The "
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
-msgstr "このサーバーとクライアントホスト「これは間のプライベート通信に使用されるIPv6の仮想ネットワークである"（例： FE80:: / 64 ） 、CIDRを使用して表現。最初の「ネットワークアドレスはthetserver仮想インターフェイスに割り当てられます。 「残りのネットワークアドレスは、必要に応じて「クライアントの接続に割り当てることができます。 （アドレスプールを参照してください）"
+msgstr ""
+"これは、このサーバと CIDR ( 例: fe80::/64 ) を使用して表記される"
+"クライアントホスト間の、プライベート通信に使用される IPv6 仮想ネットワークです。"
+"最初のネットワークアドレスは、\tサーバ仮想インタフェースに割り当てらます。"
+"残りのネットワークアドレスは、オプションで、クライアントの接続に割り当てることができます。"
+"( アドレスプールを参照 )"
 
 #: usr/local/www/vpn_openvpn_server.php:1029
 #: usr/local/www/vpn_openvpn_server.php:1171
 #: usr/local/www/vpn_openvpn_server.php:1199
 msgid "IPv4 Local Network"
-msgstr "IPv4のローカルネットワーク"
+msgstr "IPv4 ローカルネットワーク"
 
 #: usr/local/www/vpn_openvpn_server.php:1033
 #: usr/local/www/vpn_openvpn_server.php:1175
@@ -43599,13 +43665,17 @@ msgid ""
 "Expressed as a CIDR range. You may leave this blank if you don't want to add "
 "a route to the local network through this tunnel on the remote machine. This "
 "is generally set to your LAN network"
-msgstr ""これは、リモートエンドポイントからアクセスされるネットワークである。 」のCIDR範囲として表さ。あなたが追加したくない場合は、この空白のままにも"リモートマシン上でこのトンネルを介してローカルネットワークへのルートを。これは、 「一般的に、あなたのLANネットワークに設定されている"
+msgstr ""
+"これは、リモートエンドポイントからアクセス可能なネットワークです。"
+"CIDR 範囲で表記されます。"
+"リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
+"空白にしてください。一般的には、自分の LAN ネットワークに対して設定します。"
 
 #: usr/local/www/vpn_openvpn_server.php:1042
 #: usr/local/www/vpn_openvpn_server.php:1184
 #: usr/local/www/vpn_openvpn_server.php:1212
 msgid "IPv6 Local Network"
-msgstr "IPv6ローカルネットワーク"
+msgstr "IPv6 ローカルネットワーク"
 
 #: usr/local/www/vpn_openvpn_server.php:1046
 #: usr/local/www/vpn_openvpn_server.php:1188
@@ -43615,7 +43685,11 @@ msgid ""
 "Expressed as a CIDR range. You may leave this blank if you don't want to add "
 "a route to the local network through this tunnel on the remote machine. This "
 "is generally set to your LAN network"
-msgstr "「これは、リモートエンドポイントからアクセスできるようになり、IPv6ネットワークである。 」のCIDR範囲として表さ。あなたが追加したくない場合は、この空白のままにも"リモートマシン上でこのトンネルを介してローカルネットワークへのルートを。これは、 「一般的に、あなたのLANネットワークに設定されている"
+msgstr ""
+"これは、リモートエンドポイントからアクセス可能な IPv6 ネットワークです。"
+"CIDR 範囲で表記されます。"
+"リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
+"空白にしてください。一般的には、自分の LAN ネットワークに対して設定します。"
 
 #: usr/local/www/vpn_openvpn_server.php:1059
 #: usr/local/www/vpn_openvpn_server.php:1201
@@ -43625,7 +43699,12 @@ msgid ""
 "Expressed as a CIDR range. If this is a site-to-site VPN, enter here the "
 "remote LAN here. You may leave this blank if you don't want a site-to-site "
 "VPN"
-msgstr "「これはトンネルを経由してルーティングされるネットワークである、その結果、サイトツー」サイトVPNを手動でルーティングテーブルを変更せずに設定することができる。 「 CIDRの範囲として表さ。これは、サイト間VPNの場合は、ここで入力した「ここにリモートLAN 。サイトツーサイト「VPNを使用しない場合は、この空白を残すことが"
+msgstr ""
+"これは、トンネル経由でルーティングされるネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイトツーサイト VPN 接続を確立させることができます。"
+"CIDR 範囲として表記されます。"
+"サイトツーサイト VPN の場合は、リモート LAN をここに入力してください。"
+"サイトツーサイト VPN を使用しない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_server.php:1069
 #: usr/local/www/vpn_openvpn_server.php:1211
@@ -43643,7 +43722,9 @@ msgstr "同時接続"
 msgid ""
 "Specify the maximum number of clients allowed to concurrently connect to "
 "this server"
-msgstr "このサーバー「同時にへの接続を許可するクライアントの最大数を指定する」"
+msgstr ""
+"このサーバに同時接続を許可する、"
+"クライアントの最大数を指定してください。"
 
 #: usr/local/www/vpn_openvpn_server.php:1113
 #: usr/local/www/vpn_openvpn_server.php:1255
@@ -43659,7 +43740,7 @@ msgstr "クライアント間通信"
 #: usr/local/www/vpn_openvpn_server.php:1334
 #: usr/local/www/vpn_openvpn_server.php:1334
 msgid "Allow communication between clients connected to this server"
-msgstr "このサーバーに接続しているクライアント間の通信を可能に"
+msgstr "このサーバに接続しているクライアント間の通信を許可"
 
 #: usr/local/www/vpn_openvpn_server.php:1131
 #: usr/local/www/vpn_openvpn_server.php:1273
@@ -43667,7 +43748,7 @@ msgstr "このサーバーに接続しているクライアント間の通信を
 #: usr/local/www/vpn_openvpn_server.php:1342
 #: usr/local/www/vpn_openvpn_server.php:1342
 msgid "Duplicate Connections"
-msgstr "接続を復元"
+msgstr "重複接続"
 
 #: usr/local/www/vpn_openvpn_server.php:1141
 #: usr/local/www/vpn_openvpn_server.php:1283
@@ -43678,7 +43759,10 @@ msgid ""
 "Allow multiple concurrent connections from clients using the same Common "
 "Name.<br/>NOTE: This is not generally recommended, but may be needed for "
 "some scenarios."
-msgstr "Name.<br/>NOTE 「同じ共通使用してクライアントからの複数の同時接続を許可する」 ：これは、一般的にはお勧めしませんが、いくつかのシナリオ」のために必要な場合があります。"
+msgstr ""
+"同じコモンネームを使用しているクライアントからの複数の同時接続を許可します。<br/>"
+"注意: 一般的には推奨されません。"
+"しかし、一部のケースで必要になる場合があります。"
 
 #: usr/local/www/vpn_openvpn_server.php:1158
 #: usr/local/www/vpn_openvpn_server.php:1300
@@ -43686,7 +43770,7 @@ msgstr "Name.<br/>NOTE 「同じ共通使用してクライアントからの複
 #: usr/local/www/vpn_openvpn_server.php:1369
 #: usr/local/www/vpn_openvpn_server.php:1369
 msgid "Dynamic IP"
-msgstr "動的IP"
+msgstr "動的 IP"
 
 #: usr/local/www/vpn_openvpn_server.php:1168
 #: usr/local/www/vpn_openvpn_server.php:1310
@@ -43696,7 +43780,9 @@ msgstr "動的IP"
 msgid ""
 "Allow connected clients to retain their connections if their IP address "
 "changes"
-msgstr "「接続されたクライアントが接続を維持できるようにし、そのIPアドレスがあれば「変化"
+msgstr ""
+"接続されたクライアントの IP アドレスが変更されても、"
+"クライアントが接続を維持することを許可"
 
 #: usr/local/www/vpn_openvpn_server.php:1176
 #: usr/local/www/vpn_openvpn_server.php:1318
@@ -43712,7 +43798,7 @@ msgstr "アドレスプール"
 #: usr/local/www/vpn_openvpn_server.php:1397
 #: usr/local/www/vpn_openvpn_server.php:1397
 msgid "Provide a virtual adapter IP address to clients (see Tunnel Network)"
-msgstr "クライアントに仮想アダプタのIPアドレスを指定します（トンネル·ネットワーク）"
+msgstr "クライアントに仮想アダプタ IP アドレスを提供 ( トンネルネットワークを参照 )"
 
 #: usr/local/www/vpn_openvpn_server.php:1322
 #: usr/local/www/vpn_openvpn_server.php:1464
@@ -43724,7 +43810,9 @@ msgstr "クライアントに仮想アダプタのIPアドレスを指定しま�
 msgid ""
 "If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) "
 "will be disabled"
-msgstr ""このオプションが設定されていない場合、 （ WINSを含む）すべてのNetBIOS-over-TCP/IPオプションが「無効になります"
+msgstr ""
+"このオプションが設定されていない場合は、"
+"全ての NetBIOS over TCP/IP オプション ( WINS も含む ) は無効になります。"
 
 #: usr/local/www/vpn_openvpn_server.php:1352
 #: usr/local/www/vpn_openvpn_server.php:1494
@@ -43732,7 +43820,7 @@ msgstr ""このオプションが設定されていない場合、 （ WINSを�
 #: usr/local/www/vpn_openvpn_server.php:1588
 #: usr/local/www/vpn_openvpn_server.php:1588
 msgid "Scope ID"
-msgstr "スコープID"
+msgstr "スコープ ID"
 
 #: usr/local/www/vpn_openvpn_server.php:1418
 #: usr/local/www/vpn_openvpn_server.php:1560
@@ -43742,7 +43830,9 @@ msgstr "スコープID"
 msgid ""
 "Enter any additional options you would like to add to the OpenVPN server "
 "configuration here, separated by a semicolon"
-msgstr "セミコロンで区切られ、以下に設定」では、 OpenVPNのサーバーに追加する追加オプションを入力してください ""
+msgstr ""
+"OpenVPN サーバ構成に追加する、追加オプションをここに入力してください。"
+"セミコロン区切りです。"
 
 #: usr/local/www/vpn_openvpn_server.php:1449
 #: usr/local/www/vpn_openvpn_server.php:1591
@@ -43750,7 +43840,7 @@ msgstr "セミコロンで区切られ、以下に設定」では、 OpenVPNの�
 #: usr/local/www/vpn_openvpn_server.php:1684
 #: usr/local/www/vpn_openvpn_server.php:1684
 msgid "Protocol / Port"
-msgstr "プロトコル/ポート"
+msgstr "プロトコル / ポート"
 
 #: usr/local/www/vpn_openvpn_server.php:1482
 #: usr/local/www/vpn_openvpn_server.php:1624
@@ -43758,7 +43848,7 @@ msgstr "プロトコル/ポート"
 #: usr/local/www/vpn_openvpn_server.php:1717
 #: usr/local/www/vpn_openvpn_server.php:1717
 msgid "Do you really want to delete this server?"
-msgstr "あなたは本当に、このサーバーを削除しますか？"
+msgstr "本当にこのサーバを削除しますか？"
 
 #: usr/local/www/vpn_openvpn_server.php:1503
 #: usr/local/www/vpn_openvpn_server.php:1645
@@ -43766,31 +43856,31 @@ msgstr "あなたは本当に、このサーバーを削除しますか？"
 #: usr/local/www/vpn_openvpn_server.php:1738
 #: usr/local/www/vpn_openvpn_server.php:1738
 msgid "Additional OpenVPN servers can be added here."
-msgstr "追加のOpenVPNのサーバがここに添加することができる。"
+msgstr "OpenVPN サーバはここで追加できます。"
 
 #: usr/local/www/vpn_pppoe_edit.php:136 usr/local/www/vpn_pppoe_edit.php:136
 msgid "The specified server address is equal to an interface ip address."
-msgstr "指定されたサーバーアドレスは、インターフェイスIPアドレスと同じである。"
+msgstr "指定されたサーバアドレスは、インタフェース IP アドレスと同じです"
 
 #: usr/local/www/vpn_pppoe_edit.php:141 usr/local/www/vpn_pppoe_edit.php:141
 #, php-format
 msgid "No password specified for username %s"
-msgstr "ユーザー名%sに指定したパスワードません"
+msgstr "ユーザー名 %s にパスワードが指定されていません"
 
 #: usr/local/www/vpn_pppoe_edit.php:143 usr/local/www/vpn_pppoe_edit.php:143
 #, php-format
 msgid "Incorrect ip address  specified for username %s"
-msgstr ""
+msgstr "ユーザー名 %s に指定された IP アドレスは不正です"
 
 #: usr/local/www/vpn_pppoe_edit.php:355 usr/local/www/vpn_pppoe_edit.php:356
 #: usr/local/www/vpn_pppoe_edit.php:359 usr/local/www/vpn_pppoe_edit.php:359
 msgid "PPPoE server configuration"
-msgstr "PPPoEサーバの設定"
+msgstr "PPPoE サーバ構成"
 
 #: usr/local/www/vpn_pppoe_edit.php:368 usr/local/www/vpn_pppoe_edit.php:369
 #: usr/local/www/vpn_pppoe_edit.php:372 usr/local/www/vpn_pppoe_edit.php:372
 msgid "Enable PPPoE server"
-msgstr "PPPoEサーバを有効にします"
+msgstr "PPPoE サーバを有効"
 
 #: usr/local/www/vpn_pppoe_edit.php:403 usr/local/www/vpn_pppoe_edit.php:404
 #: usr/local/www/vpn_pppoe_edit.php:407 usr/local/www/vpn_pppoe_edit.php:407
@@ -43800,12 +43890,12 @@ msgstr "ヒント"
 #: usr/local/www/vpn_pppoe_edit.php:407 usr/local/www/vpn_pppoe_edit.php:408
 #: usr/local/www/vpn_pppoe_edit.php:411 usr/local/www/vpn_pppoe_edit.php:411
 msgid "No. PPPoE users"
-msgstr "いいえPPPoEのユーザー"
+msgstr "PPPoE ユーザ数"
 
 #: usr/local/www/vpn_pppoe_edit.php:420 usr/local/www/vpn_pppoe_edit.php:421
 #: usr/local/www/vpn_pppoe_edit.php:424 usr/local/www/vpn_pppoe_edit.php:424
 msgid "Hint: 10 is ten PPPoE clients"
-msgstr "ヒント：10 10 PPPoEクライアントです"
+msgstr "ヒント: 10 の場合は PPPoE クライアントの数が 10 です"
 
 #: usr/local/www/vpn_pppoe_edit.php:428 usr/local/www/vpn_pppoe_edit.php:429
 #: usr/local/www/vpn_pppoe_edit.php:432 usr/local/www/vpn_pppoe_edit.php:432
@@ -43813,101 +43903,111 @@ msgid ""
 "Enter the IP address the PPPoE server should give to clients for use as "
 "their \"gateway\""
 msgstr ""
+"クライアントの使用する「ゲートウェイ」として、PPPoE サーバがクライアントに与える、"
+"IP アドレスを入力してください。"
 
 #: usr/local/www/vpn_pppoe_edit.php:440 usr/local/www/vpn_pppoe_edit.php:441
 #: usr/local/www/vpn_pppoe_edit.php:444 usr/local/www/vpn_pppoe_edit.php:444
 msgid "Specify the starting address for the client IP address subnet"
-msgstr "クライアントのIPアドレス、サブネットの開始アドレスを指定"
+msgstr "クライアント IP アドレスサブネットの開始アドレスを指定してください"
 
 #: usr/local/www/vpn_pppoe_edit.php:457 usr/local/www/vpn_pppoe_edit.php:458
 #: usr/local/www/vpn_pppoe_edit.php:461 usr/local/www/vpn_pppoe_edit.php:461
 msgid ""
 "If entered they will be given to all PPPoE clients, else LAN DNS and one WAN "
 "DNS will go to all clients"
-msgstr "「入力した場合、それらはすべてのPPPoEクライアントに与えられます、他のLAN DNSと1 WAN」 DNSは、すべてのクライアントに行く"
+msgstr ""
+"入力した場合、その内容が、全ての PPPoE クライアントに与えられます。"
+"入力されていない場合は、LAN DNS と WAN DNS が全てのクライアントを動作させます。"
 
 #: usr/local/www/vpn_pppoe_edit.php:474 usr/local/www/vpn_pppoe_edit.php:475
 #: usr/local/www/vpn_pppoe_edit.php:478 usr/local/www/vpn_pppoe_edit.php:478
 msgid "Use Backup RADIUS Server"
-msgstr "バックアップRADIUSサーバを使用"
+msgstr "バックアップ RADIUS サーバを使用"
 
 #: usr/local/www/vpn_pppoe_edit.php:475 usr/local/www/vpn_pppoe_edit.php:476
 #: usr/local/www/vpn_pppoe_edit.php:479 usr/local/www/vpn_pppoe_edit.php:479
 msgid ""
 "When set, if primary server fails all requests will be sent via backup server"
-msgstr "」に設定すると、プライマリサーバがすべての要求を失敗した場合にバックアップサーバを経由して送信されます"
+msgstr ""
+"設定した場合、プライマリサーバに障害が発生すると、全ての要求はバックアップサーバ経由で送信されます。"
 
 #: usr/local/www/vpn_pppoe_edit.php:478 usr/local/www/vpn_pppoe_edit.php:479
 #: usr/local/www/vpn_pppoe_edit.php:482 usr/local/www/vpn_pppoe_edit.php:482
 msgid "NAS IP Address"
-msgstr "NASのIPアドレス"
+msgstr "NAS IP アドレス"
 
 #: usr/local/www/vpn_pppoe_edit.php:481 usr/local/www/vpn_pppoe_edit.php:482
 #: usr/local/www/vpn_pppoe_edit.php:485 usr/local/www/vpn_pppoe_edit.php:485
 msgid "RADIUS server NAS IP Address"
-msgstr "RADIUSサーバのNASのIPアドレス"
+msgstr "RADIUS サーバ NAS IP アドレス"
 
 #: usr/local/www/vpn_pppoe_edit.php:488 usr/local/www/vpn_pppoe_edit.php:489
 #: usr/local/www/vpn_pppoe_edit.php:492 usr/local/www/vpn_pppoe_edit.php:492
 msgid "RADIUS accounting update period in seconds"
-msgstr "秒単位のRADIUSアカウンティング更新期間"
+msgstr "RADIUS アカウンティング更新期間。単位は秒"
 
 #: usr/local/www/vpn_pppoe_edit.php:495 usr/local/www/vpn_pppoe_edit.php:496
 #: usr/local/www/vpn_pppoe_edit.php:499 usr/local/www/vpn_pppoe_edit.php:499
 msgid "Issue IP Addresses via RADIUS server"
-msgstr "RADIUSサーバーを経由して発行するIPアドレス"
+msgstr "RADIUS サーバが割り当てる IP アドレス"
 
 #: usr/local/www/vpn_pppoe_edit.php:498 usr/local/www/vpn_pppoe_edit.php:499
 #: usr/local/www/vpn_pppoe_edit.php:502 usr/local/www/vpn_pppoe_edit.php:502
 msgid "RADIUS server Primary"
-msgstr "RADIUSサーバのプライマリ"
+msgstr "プライマリ RADIUS サーバ"
 
 #: usr/local/www/vpn_pppoe_edit.php:503 usr/local/www/vpn_pppoe_edit.php:504
 #: usr/local/www/vpn_pppoe_edit.php:507 usr/local/www/vpn_pppoe_edit.php:507
 msgid ""
 "Enter the IP address, authentication port and accounting port (optional) of "
 "the RADIUS server."
-msgstr "RADIUSサーバ」のIPアドレス、認証ポートとアカウンティングポートを入力します（オプション） 」 。"
+msgstr ""
+"RADIUS サーバの IP アドレス、認証ポート、"
+"アカウンティングポート ( オプション ) を入力してください。"
 
 #: usr/local/www/vpn_pppoe_edit.php:504 usr/local/www/vpn_pppoe_edit.php:520
 #: usr/local/www/vpn_pppoe_edit.php:505 usr/local/www/vpn_pppoe_edit.php:521
 #: usr/local/www/vpn_pppoe_edit.php:508 usr/local/www/vpn_pppoe_edit.php:524
 #: usr/local/www/vpn_pppoe_edit.php:508 usr/local/www/vpn_pppoe_edit.php:524
 msgid "standard port 1812 and 1813 accounting"
-msgstr "標準のポート1812および1813会計"
+msgstr "標準ポートは、認証用が 1812、アカウンティング用が 1813 です。"
 
 #: usr/local/www/vpn_pppoe_edit.php:507 usr/local/www/vpn_pppoe_edit.php:508
 #: usr/local/www/vpn_pppoe_edit.php:511 usr/local/www/vpn_pppoe_edit.php:511
 msgid "RADIUS primary shared secret"
-msgstr "RADIUSプライマリ共有シークレット"
+msgstr "RADIUS プライマリ共有秘密鍵"
 
 #: usr/local/www/vpn_pppoe_edit.php:514 usr/local/www/vpn_pppoe_edit.php:515
 #: usr/local/www/vpn_pppoe_edit.php:518 usr/local/www/vpn_pppoe_edit.php:518
 msgid "RADIUS server Secondary"
-msgstr "RADIUSサーバのセカンダリ"
+msgstr "セカンダリ RADIUS サーバ"
 
 #: usr/local/www/vpn_pppoe_edit.php:519 usr/local/www/vpn_pppoe_edit.php:520
 #: usr/local/www/vpn_pppoe_edit.php:523 usr/local/www/vpn_pppoe_edit.php:523
 msgid ""
 "Enter the IP address, authentication port and accounting port (optional) of "
 "the backup RADIUS server."
-msgstr "バックアップRADIUSサーバ」のIPアドレス、認証ポートとアカウンティングポートを入力します（オプション） 」 。"
+msgstr ""
+"バックアップ RADIUS サーバの IP アドレス、認証ポート、"
+"アカウンティングポート ( オプション ) を入力してください。"
 
 #: usr/local/www/vpn_pppoe_edit.php:523 usr/local/www/vpn_pppoe_edit.php:524
 #: usr/local/www/vpn_pppoe_edit.php:527 usr/local/www/vpn_pppoe_edit.php:527
 msgid "RADIUS secondary shared secret"
-msgstr "RADIUSセカンダリ共有秘密"
+msgstr "RADIUS セカンダリ共有秘密鍵"
 
 #: usr/local/www/vpn_pppoe_edit.php:531 usr/local/www/vpn_pppoe_edit.php:532
 #: usr/local/www/vpn_pppoe_edit.php:535 usr/local/www/vpn_pppoe_edit.php:535
 msgid "User (s)"
-msgstr "ユーザ（複数可）"
+msgstr "ユーザ"
 
 #: usr/local/www/vpn_pppoe_edit.php:596 usr/local/www/vpn_pppoe_edit.php:597
 #: usr/local/www/vpn_pppoe_edit.php:600 usr/local/www/vpn_pppoe_edit.php:600
 msgid ""
 "don't forget to add a firewall rule to permit traffic from PPPoE clients"
-msgstr "「 PPPoEクライアントからのトラフィックを許可するファイアウォールルールを追加することを忘れないでください"
+msgstr ""
+"PPPoE クライアントからのトラフィックを許可する、ファイアウォールルールを必ず追加してください。"
 
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:37
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:37
@@ -43916,7 +44016,7 @@ msgstr "「 PPPoEクライアントからのトラフィックを許可するフ
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:37
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:37
 msgid "You need to specify the number of connections."
-msgstr "あなたは、接続の数を指定する必要があります。"
+msgstr "接続数を指定してください"
 
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:42
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:42
@@ -43925,7 +44025,7 @@ msgstr "あなたは、接続の数を指定する必要があります。"
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:42
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:42
 msgid "The number of connections should be greater than 1."
-msgstr "接続数は1より大きくなければなりません。"
+msgstr "接続数は 1 より大きい値を設定してください"
 
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:65
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:63
@@ -43937,7 +44037,7 @@ msgstr "接続数は1より大きくなければなりません。"
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:63
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:63
 msgid "You have less interfaces than number of connections!"
-msgstr "あなたは、接続の数よりも少ないインタフェースを持っている ！"
+msgstr "接続数よりも少ないインタフェースしかありません！"
 
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:445
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:518
@@ -43961,7 +44061,9 @@ msgstr "あなたは、接続の数よりも少ないインタフェースを持
 msgid ""
 "Address must be a valid IP address or Firewall Alias.  Please correct this "
 "value to continue."
-msgstr "「アドレスが有効なIPアドレスまたはファイアウォールエイリアスでなければなりません。この修正してください」を継続する価値。"
+msgstr ""
+"アドレスには、有効な IP アドレスか、ファイアウォールエイリアスを設定してください。"
+"続行するには、この値を修正してください。"
 
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:505
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:536
@@ -43984,7 +44086,7 @@ msgstr "「アドレスが有効なIPアドレスまたはファイアウォー�
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:358
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:392
 msgid "Only percentage bandwidth specification is allowed."
-msgstr "唯一の帯域幅の割合（％）の指定が許可されます。"
+msgstr "帯域幅は % で指定してください"
 
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:695
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:1044
@@ -44009,7 +44111,9 @@ msgstr "唯一の帯域幅の割合（％）の指定が許可されます。"
 msgid ""
 "Custom Bandwidths are greater than 30%. Please lower them for the wizard to "
 "continue."
-msgstr "「カスタム帯域幅が30％を超えています。ウィザードのためにそれらを下げてください」継続。"
+msgstr ""
+"カスタム帯域幅が 30% を超えています。"
+"ウィザードを続行するには、値を下げてください。"
 
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:1346
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:1408
@@ -44022,7 +44126,7 @@ msgstr "「カスタム帯域幅が30％を超えています。ウィザード�
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:1344
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:1205
 msgid "Penalty Box"
-msgstr "ペナルティーボックス"
+msgstr "ペナルティボックス"
 
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:1366
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:1427
@@ -44031,7 +44135,7 @@ msgstr "ペナルティーボックス"
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:1484
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:1364
 msgid "VOIP Adapter"
-msgstr "VOIPアダプタ"
+msgstr "VOIP アダプタ"
 
 #: usr/local/www/wizards/openvpn_wizard.inc:602
 #: usr/local/www/wizards/openvpn_wizard.inc:618
@@ -44040,66 +44144,66 @@ msgstr "VOIPアダプタ"
 #: usr/local/www/wizards/openvpn_wizard.inc:619
 #, php-format
 msgid "OpenVPN %s wizard"
-msgstr "OpenVPNの%sウィザード"
+msgstr "OpenVPN %s ウィザード"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:268
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:268
 msgid "You cannot specify bandwidth smaller than 1!"
-msgstr "あなたは1 よりも小さい帯域幅を指定することはできません！"
+msgstr "1 より小さい帯域幅は指定できません！"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:278
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:288
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:288
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:278
 msgid "You cannot select the same interface for local and outside."
-msgstr "あなたが外で、ローカルおよびのための同じインターフェイスを選択することはできません。"
+msgstr "ローカル用と外向き用に、同じインタフェースは選択できません"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:276
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:276
 msgid "You cannot specify 0 bandwidth!"
-msgstr "あなたが0の帯域幅を指定することはできません！"
+msgstr "帯域幅に 0 を指定できません！"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:297
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:297
 msgid "You cannot select the same interface twice on local interfaces."
-msgstr "あなたは、ローカルインターフェイス上で二度同じインターフェイスを選択することはできません。"
+msgstr "ローカルインタフェースで、同じインタフェースを 2 回選択できません"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:37
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:37
 msgid "You need to specify the number of local interfaces connected."
-msgstr "あなたが接続されているローカルインターフェイスの数を指定する必要があります。"
+msgstr "接続するローカルインタフェースの数を指定してください"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:41
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:41
 msgid "The number of local connection needs to be greater than 1."
-msgstr "ローカル接続の数が1より大きくする必要がある。"
+msgstr "ローカル接続数は 1 より大きい値を設定してください"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:240
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:240
 msgid "Upload bandwidth of connection is not valid."
-msgstr "コネクションのアップロード帯域幅が有効ではありません。"
+msgstr "接続の上り帯域幅は無効です"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:245
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:245
 msgid "Download bandwidth of connection is not valid."
-msgstr "接続のダウンロード帯域幅が有効ではありません。"
+msgstr "接続の下り帯域幅は無効です"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:252
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:252
 msgid "You cannot specify bandwidth less than 1!"
-msgstr "あなたは、帯域幅が1未満を指定することはできません！"
+msgstr "帯域幅は 1 以上の値を指定してください"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:257
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:262
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:257
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:262
 msgid "We do not support Bandwidths smaller than 128Kbit/s for CBQ scheduler."
-msgstr "我々は128Kbit / sのCBQスケジューラ用よりも小さい帯域幅をサポートしていません。"
+msgstr "CBQ スケジューラは、128Kbit/s よりも小さい帯域幅には対応していません"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:300
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:300
 msgid "Upload or download bandwidth is not valid."
-msgstr "アップロードまたはダウンロードの帯域幅が有効ではありません。"
+msgstr "上り、または下り帯域幅は無効です"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:317
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:317
@@ -44107,7 +44211,9 @@ msgstr "アップロードまたはダウンロードの帯域幅が有効では
 msgid ""
 "You cannot set the VoIP upload bandwidth on WAN connection higher than "
 "80% of the connection."
-msgstr "接続の80％ 「あなたがより高いWAN接続上でのVoIPのアップロードの帯域幅を設定することはできません」 。"
+msgstr ""
+"WAN 接続における VoIP 上り帯域幅には、"
+"接続の 80% を超える値は設定できません。"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:324
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:334
@@ -44117,7 +44223,9 @@ msgstr "接続の80％ 「あなたがより高いWAN接続上でのVoIPのア�
 msgid ""
 "You cannot set the VoIP download bandwidth on connection higher than 80% of "
 "the connection."
-msgstr "コネクション"あなたは80％よりも高い接続でのVoIPダウンロード帯域幅を設定することはできません」 。"
+msgstr ""
+"接続における VoIP 下り帯域幅には、"
+"接続の 80% を超える値は設定できません。"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:162
 #: usr/local/www/widgets/widgets/system_information.widget.php:153
@@ -44126,22 +44234,22 @@ msgstr "コネクション"あなたは80％よりも高い接続でのVoIPダ�
 #: usr/local/www/widgets/widgets/system_information.widget.php:158
 #: usr/local/www/widgets/widgets/system_information.widget.php:160
 msgid "Current date/time"
-msgstr "現在の日付/時刻"
+msgstr "現在の日付 / 時刻"
 
 #: usr/local/www/widgets/widgets/wake_on_lan.widget.php:41
 #: usr/local/www/widgets/widgets/wake_on_lan.widget.php:41
 msgid "Computer / Device"
-msgstr "コンピュータ/デバイス"
+msgstr "コンピュータ / デバイス"
 
 #: usr/local/www/widgets/widgets/wake_on_lan.widget.php:67
 #: usr/local/www/widgets/widgets/wake_on_lan.widget.php:67
 msgid "Wake Up"
-msgstr "目を覚ます"
+msgstr "起動"
 
 #: usr/local/www/widgets/widgets/wake_on_lan.widget.php:72
 #: usr/local/www/widgets/widgets/wake_on_lan.widget.php:72
 msgid "No saved WoL addresses"
-msgstr "は保存されないのWOLアドレス"
+msgstr "WOL アドレスは保存されていません"
 
 #: usr/local/www/firewall_nat_npt.php:105
 #: usr/local/www/firewall_nat_npt.php:105
@@ -44151,17 +44259,17 @@ msgstr "外部プレフィックス"
 #: usr/local/www/firewall_nat_npt.php:106
 #: usr/local/www/firewall_nat_npt.php:106
 msgid "Internal prefix"
-msgstr "内部接頭"
+msgstr "内部プレフィックス"
 
 #: usr/local/www/firewall_nat_npt_edit.php:106
 #: usr/local/www/firewall_nat_npt_edit.php:106
 msgid "Source prefix"
-msgstr "元プレフィクス"
+msgstr "送信元プレフィクス"
 
 #: usr/local/www/firewall_nat_npt_edit.php:108
 #: usr/local/www/firewall_nat_npt_edit.php:108
 msgid "Destination prefix"
-msgstr "宛先プレフィックス"
+msgstr "送信先プレフィックス"
 
 #: usr/local/www/firewall_nat_npt_edit.php:156
 #: usr/local/www/firewall_nat_npt_edit.php:161
@@ -44169,7 +44277,7 @@ msgstr "宛先プレフィックス"
 #: usr/local/www/firewall_nat_npt_edit.php:158
 #: usr/local/www/firewall_nat_npt_edit.php:158
 msgid "Edit NAT NPt entry"
-msgstr "編集NAT NPTエントリー"
+msgstr "NAT NPt エントリの編集"
 
 #: usr/local/www/firewall_nat_npt_edit.php:206
 #: usr/local/www/firewall_nat_npt_edit.php:211
@@ -44177,7 +44285,7 @@ msgstr "編集NAT NPTエントリー"
 #: usr/local/www/firewall_nat_npt_edit.php:209
 #: usr/local/www/firewall_nat_npt_edit.php:209
 msgid "Internal IPv6 Prefix"
-msgstr "内部のIPv6プレフィックス"
+msgstr "内部 IPv6 プレフィックス"
 
 #: usr/local/www/firewall_nat_npt_edit.php:228
 #: usr/local/www/firewall_nat_npt_edit.php:233
@@ -44189,7 +44297,11 @@ msgid ""
 "The prefix size specified for the internal IPv6 prefix will be applied to "
 "the \n"
 "external prefix."
-msgstr "「ネットワークプレフィックスの翻訳のための内部（ LAN） ULAのIPv6プレフィックスを入力します。 「内部IPv6プレフィックスに指定されたプレフィックスサイズが「 \n 「外部プレフィックスに適用されます。"
+msgstr ""
+"ネットワークプレフィックス変換で使用する、"
+"内部 (LAN) ULA IPv6 プレフィックスを入力してください。"
+"内部 IPv6 プレフィックスで指定されたプレフィックスサイズは、\n"
+"外部プレフィックスに適用されます。"
 
 #: usr/local/www/firewall_nat_npt_edit.php:234
 #: usr/local/www/firewall_nat_npt_edit.php:239
@@ -44197,7 +44309,7 @@ msgstr "「ネットワークプレフィックスの翻訳のための内部（
 #: usr/local/www/firewall_nat_npt_edit.php:237
 #: usr/local/www/firewall_nat_npt_edit.php:237
 msgid "Destination IPv6 Prefix"
-msgstr "先のIPv6プレフィックス"
+msgstr "送信先 IPv6 プレフィックス"
 
 #: usr/local/www/firewall_nat_npt_edit.php:258
 #: usr/local/www/firewall_nat_npt_edit.php:263
@@ -44205,7 +44317,7 @@ msgstr "先のIPv6プレフィックス"
 #: usr/local/www/firewall_nat_npt_edit.php:261
 #: usr/local/www/firewall_nat_npt_edit.php:261
 msgid "Enter the Global Unicast routable IPv6 prefix here"
-msgstr "ここでグローバルユニキャストルーティング可能なIPv6プレフィックスを入力してください"
+msgstr "グローバルユニキャストルーティング可能な IPv6 プレフィックスを、ここに入力してください"
 
 #: usr/local/www/services_dhcpv6.php:74
 #: usr/local/www/services_router_advertisements.php:74
@@ -44214,19 +44326,21 @@ msgstr "ここでグローバルユニキャストルーティング可能なIPv
 msgid ""
 "The DHCPv6 Server can only be enabled on interfaces configured with static "
 "IP addresses"
-msgstr "IPアドレスの「 DHCPv6サーバは、静的に設定されたインターフェイス上で有効にすることができます」"
+msgstr ""
+"DHCPv6 サーバは、"
+"静的 IP アドレスで構成されたインタフェースでのみ有効にできます。"
 
 #: usr/local/www/services_dhcpv6.php:184 usr/local/www/services_dhcpv6.php:196
 #: usr/local/www/services_dhcpv6.php:181 usr/local/www/services_dhcpv6.php:175
 #: usr/local/www/services_dhcpv6.php:175
 msgid "A valid prefix range must be specified."
-msgstr "有効なプレフィックス範囲を指定する必要があります。"
+msgstr "有効なプレフィックス範囲を指定してください"
 
 #: usr/local/www/services_dhcpv6.php:190 usr/local/www/services_dhcpv6.php:202
 #: usr/local/www/services_dhcpv6.php:187 usr/local/www/services_dhcpv6.php:181
 #: usr/local/www/services_dhcpv6.php:181
 msgid "A valid IPv6 address must be specified for the gateway."
-msgstr "有効なIPv6アドレスは、ゲートウェイを指定する必要があります。"
+msgstr "ゲートウェイに、有効な IPv6 アドレスを指定してください"
 
 #: usr/local/www/services_dhcpv6.php:192 usr/local/www/services_dhcpv6.php:204
 #: usr/local/www/services_router_advertisements.php:154
@@ -44236,39 +44350,41 @@ msgstr "有効なIPv6アドレスは、ゲートウェイを指定する必要�
 #: usr/local/www/services_dhcpv6.php:183
 msgid ""
 "A valid IPv6 address must be specified for the primary/secondary DNS servers."
-msgstr "「有効なIPv6アドレスは、プライマリ/セカンダリDNSサーバを指定する必要があります。"
+msgstr ""
+"プライマリ / セカンダリ DNS サーバに、有効な IPv6 アドレスを指定してください"
 
 #: usr/local/www/services_dhcpv6.php:201 usr/local/www/services_dhcpv6.php:223
 #: usr/local/www/services_dhcpv6.php:208 usr/local/www/services_dhcpv6.php:202
 #: usr/local/www/services_dhcpv6.php:202
 msgid ""
 "A valid IPv6 address must be specified for the primary/secondary NTP servers."
-msgstr "「有効なIPv6アドレスは、プライマリ/セカンダリのNTPサーバーを指定する必要があります。"
+msgstr ""
+"プライマリ / セカンダリ NTP サーバに、有効な IPv6 アドレスを指定してください"
 
 #: usr/local/www/services_dhcpv6.php:205 usr/local/www/services_dhcpv6.php:227
 #: usr/local/www/services_dhcpv6.php:212 usr/local/www/services_dhcpv6.php:206
 #: usr/local/www/services_dhcpv6.php:206
 msgid "A valid IPv6 address or hostname must be specified for the TFTP server."
-msgstr "有効なIPv6アドレスまたはホスト名は、TFTPサーバを指定する必要があります。"
+msgstr "TFTP サーバに、有効な IPv6 アドレス、もしくはホスト名を指定してください"
 
 #: usr/local/www/services_dhcpv6.php:207 usr/local/www/services_dhcpv6.php:229
 #: usr/local/www/services_dhcpv6.php:214 usr/local/www/services_dhcpv6.php:208
 #: usr/local/www/services_dhcpv6.php:208
 msgid "A valid IPv6 address must be specified for the network boot server."
-msgstr "有効なIPv6アドレスは、ネットワークブートサーバーを指定する必要があります。"
+msgstr "ネットワーク起動サーバに、有効な IPv6 アドレスを指定してください"
 
 #: usr/local/www/services_dhcpv6.php:214 usr/local/www/services_dhcpv6.php:236
 #: usr/local/www/services_dhcpv6.php:221 usr/local/www/services_dhcpv6.php:215
 #: usr/local/www/services_dhcpv6.php:215
 #, php-format
 msgid "The subnet range cannot overlap with virtual IPv6 address %s."
-msgstr "サブネット範囲は、仮想IPv6アドレス%s.と重複することはできません"
+msgstr "サブネット範囲は、仮想 IPv6 アドレス %s と重複できません"
 
 #: usr/local/www/services_dhcpv6.php:359 usr/local/www/services_dhcpv6.php:386
 #: usr/local/www/services_dhcpv6.php:367 usr/local/www/services_dhcpv6.php:362
 #: usr/local/www/services_dhcpv6.php:362
 msgid "DHCPv6 server"
-msgstr "DHCPv6サーバ"
+msgstr "DHCPv6 サーバ"
 
 #: usr/local/www/services_dhcpv6.php:497 usr/local/www/services_dhcpv6.php:524
 #: usr/local/www/services_router_advertisements.php:261
@@ -44280,7 +44396,7 @@ msgstr "DHCPv6サーバ"
 #: usr/local/www/services_router_advertisements.php:265
 #: usr/local/www/services_dhcpv6.php:514
 msgid "Router Advertisements"
-msgstr "ルーター通知"
+msgstr "ルータ広告"
 
 #: usr/local/www/services_dhcpv6.php:504
 #, php-format
@@ -44290,19 +44406,23 @@ msgid ""
 "with Stateless Autoconfig, \"Managed\" for DHCPv6 only with router "
 "advertisements, \"Assisted\" for DHCPv6 Combined with Stateless Autoconfig"
 msgstr ""
+"ルータ広告デーモンに対するオペレーティングモードを選択してください。"
+"「ルータのみ」を使用すると、ルータにのみ広告します。「非管理」はステートレスな自動構成、"
+"「管理」は DHCPv6 only でのルータ広告、"
+"「支援」はステートレスな自動構成と DHCPv6 を組み合わせたものです。"
 
 #: usr/local/www/services_dhcpv6.php:510 usr/local/www/services_dhcpv6.php:584
 #: usr/local/www/services_dhcpv6.php:515 usr/local/www/services_dhcpv6.php:526
 #: usr/local/www/services_dhcpv6.php:526
 #, php-format
 msgid "Enable DHCPv6 server on %s interface"
-msgstr "%sインターフェイス上のDHCPv6サーバを有効にする"
+msgstr "%s インターフェイスで DHCPv6 サーバを有効"
 
 #: usr/local/www/services_dhcpv6.php:576 usr/local/www/services_dhcpv6.php:649
 #: usr/local/www/services_dhcpv6.php:580 usr/local/www/services_dhcpv6.php:597
 #: usr/local/www/services_dhcpv6.php:597
 msgid "Prefix Delegation Range"
-msgstr "接頭委任範囲"
+msgstr "プレフィックスデリゲーション範囲"
 
 #: usr/local/www/services_dhcpv6.php:580
 msgid "prefix length"
@@ -44314,6 +44434,9 @@ msgid ""
 "for \n"
 "\t\t\t\t\tassigning networks to subrouters"
 msgstr ""
+"DHCP プレフィックスデリゲーションのプレフィックス範囲をここで定義できます。"
+"\n"
+"\t\t\t\t\tこれは、サブルータにネットワーク割当てを許可します。"
 
 #: usr/local/www/services_dhcpv6.php:803
 #: usr/local/www/status_dhcpv6_leases.php:361
@@ -44342,28 +44465,28 @@ msgstr "DUID"
 #: usr/local/www/services_dhcpv6_edit.php:111
 #: usr/local/www/services_dhcpv6_edit.php:194
 msgid "DUID Identifier"
-msgstr "DUID識別子"
+msgstr "DUID 識別子"
 
 #: usr/local/www/services_dhcpv6_edit.php:126
 #: usr/local/www/services_dhcpv6_edit.php:128
 #: usr/local/www/services_dhcpv6_edit.php:131
 #: usr/local/www/services_dhcpv6_edit.php:131
 msgid "A valid DUID Identifier must be specified."
-msgstr "有効なDUID識別子を指定する必要があります。"
+msgstr "有効な DUID 識別子を指定してください"
 
 #: usr/local/www/services_dhcpv6_edit.php:135
 #: usr/local/www/services_dhcpv6_edit.php:137
 #: usr/local/www/services_dhcpv6_edit.php:140
 #: usr/local/www/services_dhcpv6_edit.php:140
 msgid "This Hostname, IP or DUID Identifier already exists."
-msgstr "このホスト名は、 IPまたはDUID識別子はすでに存在しています。"
+msgstr "このホスト名、IP、または、DUID 識別子は既に存在しています"
 
 #: usr/local/www/services_dhcpv6_edit.php:172
 #: usr/local/www/services_dhcpv6_edit.php:175
 #: usr/local/www/services_dhcpv6_edit.php:178
 #: usr/local/www/services_dhcpv6_edit.php:178
 msgid "DHCPv6"
-msgstr "DHCPv6の"
+msgstr "DHCPv6"
 
 #: usr/local/www/services_dhcpv6_edit.php:186
 #: usr/local/www/services_dhcpv6_edit.php:189
@@ -44371,7 +44494,7 @@ msgstr "DHCPv6の"
 #: usr/local/www/services_dhcpv6_edit.php:191
 #: usr/local/www/services_dhcpv6_edit.php:191
 msgid "Static DHCPv6 Mapping"
-msgstr "静的DHCPv6のマッピング"
+msgstr "静的 DHCPv6 マッピング"
 
 #: usr/local/www/services_dhcpv6_edit.php:193
 #: usr/local/www/services_dhcpv6_edit.php:196
@@ -44379,14 +44502,16 @@ msgstr "静的DHCPv6のマッピング"
 #: usr/local/www/services_dhcpv6_edit.php:198
 #: usr/local/www/services_dhcpv6_edit.php:198
 msgid "Enter a DUID Identifier in the following format: "
-msgstr "次の形式でDUID識別子を入力してください："
+msgstr "次の形式で DUID 識別子を入力してください: "
 
 #: usr/local/www/services_dhcpv6_edit.php:202
 #: usr/local/www/services_dhcpv6_edit.php:205
 msgid ""
 "If no IPv6 address is given, one will be dynamically allocated  from the "
 "pool."
-msgstr "プール」は、IPv6アドレスが指定されていない場合、 1が動的に割り当てられます」 。"
+msgstr ""
+"IPv6 アドレスが与えられていない場合、"
+"プールから動的に IPv6 アドレスを割り当てます。"
 
 #: usr/local/www/services_dhcpv6_relay.php:81
 #: usr/local/www/services_dhcpv6_relay.php:81
@@ -44397,20 +44522,20 @@ msgstr ""
 #: usr/local/www/services_dhcpv6_relay.php:146
 #: usr/local/www/services_dhcpv6_relay.php:146
 msgid "DHCPv6 Relay configuration"
-msgstr "DHCPv6リレーの設定"
+msgstr "DHCPv6 リレー構成"
 
 #: usr/local/www/services_dhcpv6_relay.php:151
 #: usr/local/www/services_dhcpv6_relay.php:152
 #: usr/local/www/services_dhcpv6_relay.php:152
 #, php-format
 msgid "Enable DHCPv6 relay on interface"
-msgstr "インターフェイス上のDHCPv6リレーを有効にする"
+msgstr "インタフェースで DHCPv6 リレーを有効"
 
 #: usr/local/www/services_dhcpv6_relay.php:169
 #: usr/local/www/services_dhcpv6_relay.php:170
 #: usr/local/www/services_dhcpv6_relay.php:170
 msgid "Interfaces without an IPv6 address will not be shown."
-msgstr "IPv6アドレスのないインターフェースは表示されません。"
+msgstr "IPv6 アドレスではないインタフェースは表示されません。"
 
 #: usr/local/www/services_dhcpv6_relay.php:177
 #: usr/local/www/services_dhcpv6_relay.php:178
@@ -44419,7 +44544,9 @@ msgstr "IPv6アドレスのないインターフェースは表示されませ�
 msgid ""
 "If this is checked, the DHCPv6 relay will append the circuit ID (%s "
 "interface number) and the agent ID to the DHCPv6 request."
-msgstr "DHCPv6の要求に「 （インターフェイス番号とエージェントIDチェックすると、 DHCPv6リレーは回線ID %s ）を追加します」 。"
+msgstr ""
+"これがチェックされている場合は、DHCPv6 リレーは、回線 ID ( %s インタフェース番号 ) と、"
+"エージェント ID を DHCPv6 リクエストに追加します。"
 
 #: usr/local/www/services_dhcpv6_relay.php:184
 #: usr/local/www/services_dhcpv6_relay.php:185
@@ -44429,13 +44556,17 @@ msgid ""
 "You can enter multiple server IPv6 addresses, separated by commas. Select "
 "\"Proxy requests to DHCPv6 server on WAN subnet\" to relay DHCPv6 packets to "
 "the server that was used on the WAN interface."
-msgstr "「これは、DHCPv6要求が中継されるようにサーバのIPv6アドレスです。 "あなたはカンマで区切って複数のサーバのIPv6アドレスを入力することができます。 「 WANインターフェイス上で使用された「サーバへのDHCPv6パケットを中継する「WANサブネット上のDHCPv6サーバへのプロキシの要求」を選択します。"
+msgstr ""
+"これは、DHCPv6 リクエストをリレーするサーバの IPv6 アドレスです。"
+"コンマ区切りで、複数のサーバの IPv6 アドレスを入力できます。"
+"WAN インタフェースで DHCPv6 パケットをサーバにリレーするには、"
+"「プロキシが WAN サブネットの DHCPv6 サーバにリクエスト」を選択してください。"
 
 #: usr/local/www/status_dhcpv6_leases.php:49
 #: usr/local/www/status_dhcpv6_leases.php:50
 #: usr/local/www/status_dhcpv6_leases.php:50
 msgid "DHCPv6 leases"
-msgstr "DHCPv6のリース"
+msgstr "DHCPv6 リース"
 
 #: usr/local/www/status_dhcpv6_leases.php:360
 #: usr/local/www/status_dhcpv6_leases.php:404
@@ -44455,7 +44586,7 @@ msgstr "IAID"
 #: usr/local/www/status_dhcpv6_leases.php:410
 #: usr/local/www/status_dhcpv6_leases.php:410
 msgid "Hostname/MAC"
-msgstr "ホスト名/ MAC"
+msgstr "ホスト名 / MAC"
 
 #: usr/local/www/diag_logs_wireless.php:88
 #: usr/local/www/diag_logs_wireless.php:99
@@ -46195,7 +46326,7 @@ msgstr "「スティッキー接続の送信元の追跡のタイムアウトを
 #: usr/local/www/system_advanced_misc.php:406
 #: usr/local/www/system_advanced_misc.php:414
 msgid "Hiadaptive"
-msgstr "Hiadaptive"
+msgstr "高適応"
 
 #: usr/local/www/system_advanced_misc.php:337
 #: usr/local/www/system_advanced_misc.php:356
@@ -46206,7 +46337,7 @@ msgstr "Hiadaptive"
 #: usr/local/www/system_advanced_misc.php:407
 #: usr/local/www/system_advanced_misc.php:415
 msgid "Adaptive"
-msgstr "適応型"
+msgstr "適応"
 
 #: usr/local/www/system_advanced_misc.php:338
 #: usr/local/www/system_advanced_misc.php:357
