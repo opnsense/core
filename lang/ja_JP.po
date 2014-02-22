@@ -28127,7 +28127,7 @@ msgstr ""
 #: usr/local/www/interfaces_qinq_edit.php:124
 #: usr/local/www/interfaces_qinq_edit.php:134
 msgid "Tags can contain only numbers or a range in format #-#."
-msgstr "タグに使用できるのは、数字、もしくは #-# 形式の範囲のみです"
+msgstr "タグに使用できるのは、数字、もしくは 数字-数字 形式の範囲のみです"
 
 #: usr/local/www/interfaces_qinq_edit.php:193
 #: usr/local/www/interfaces_qinq_edit.php:194
@@ -34254,21 +34254,21 @@ msgstr "は使用できません"
 #: usr/local/www/services_captiveportal_vouchers.php:228
 #: usr/local/www/services_captiveportal_vouchers.php:228
 msgid "# of Bits to store Roll Id needs to be between 1..31."
-msgstr "ビットの # が保存されるロール ID となり、必要な値は 1 - 31 です。"
+msgstr "ロール ID を保存する番号ビットは 1 - 31 です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:211
 #: usr/local/www/services_captiveportal_vouchers.php:221
 #: usr/local/www/services_captiveportal_vouchers.php:230
 #: usr/local/www/services_captiveportal_vouchers.php:230
 msgid "# of Bits to store Ticket Id needs to be between 1..16."
-msgstr "ビットの # が保存されるチケット ID となり、必要な値は 1 - 16 です。"
+msgstr "チケット ID を保存する番号ビットは 1 - 16 です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:213
 #: usr/local/www/services_captiveportal_vouchers.php:223
 #: usr/local/www/services_captiveportal_vouchers.php:232
 #: usr/local/www/services_captiveportal_vouchers.php:232
 msgid "# of Bits to store checksum needs to be between 1..31."
-msgstr "ビットの # が保存されるチェックサムとなり、必要な値は 1 - 31 です。"
+msgstr "チェックサムを保存する番号ビットは 1 - 31 です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:215
 #: usr/local/www/services_captiveportal_vouchers.php:225
@@ -34529,7 +34529,7 @@ msgid ""
 "range: 1..31. Sum of Roll+Ticket+Checksum bits must be one Bit less than the "
 "RSA key size."
 msgstr ""
-"バウチャー毎に属するロール # を格納する範囲を予約してください。"
+"バウチャー毎に属するロール番号を格納する範囲を予約してください。"
 "使用可能な範囲は、1 - 31 です。ロール + チケット + チェックサムビットの合計は、"
 "RSA 鍵サイズよりも 1 ビット以上小さい必要があります。"
 
@@ -34552,7 +34552,7 @@ msgid ""
 "bit array, stored in RAM and in the config, is used to mark if a voucher has "
 "been used. A bit array for 65535 vouchers requires 8 KB of storage."
 msgstr ""
-"バウチャー毎に属するチケット # を格納する範囲を予約してください。使用可能な範囲は、1 - 16 です。"
+"バウチャー毎に属するチケット番号を格納する範囲を予約してください。使用可能な範囲は、1 - 16 です。"
 "16 ビット使用すると、65535 バウチャーまでのロールを持つことができるようになります。"
 "ビット配列は、RAM と構成に格納され、バウチャーが使用されているかどうかのマークに使用されます。"
 "65535 バウチャーに対するビット配列には、8 KB のストレージが必要です。"
@@ -34574,7 +34574,7 @@ msgid ""
 "Reserves a range in each voucher to store a simple checksum over Roll # and "
 "Ticket#. Allowed range is 0..31."
 msgstr ""
-"バウチャー毎にロール # 及びチケット # の、単純なチェックサムを格納する範囲を予約してください。"
+"バウチャー毎に、ロール番号及びチケット番号の、単純なチェックサムを格納する範囲を予約してください。"
 "使用可能な範囲は、0 - 31 です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:534
@@ -34970,7 +34970,7 @@ msgid ""
 "browser at any time to see the progress of failed traceroutes."
 msgstr ""
 "traceroute は完了までに時間がかかる場合があります。"
-"ブラウザの停止ボタンをクリックすることで、いつでも失敗した traceroute の進行状況を確認できます。"
+"ブラウザの停止ボタンをクリックすると、いつでも traceroute を中断して、進行状況を確認できます。"
 
 #: usr/local/www/diag_traceroute.php:120 usr/local/www/diag_traceroute.php:144
 #: usr/local/www/diag_traceroute.php:173 usr/local/www/diag_traceroute.php:173
@@ -34979,7 +34979,7 @@ msgstr "traceroute の出力: "
 
 #: usr/local/www/diag_traceroute.php:137
 msgid "Multi-wan is not supported from this utility currently."
-msgstr "マルチ WAN は、現在このユーティリティから対応されていません"
+msgstr "このユーティリティは、現在マルチ WAN に対応していません"
 
 #: usr/local/www/status_graph.php:85 usr/local/www/fbegin.inc:173
 #: usr/local/www/fbegin.inc:191 usr/local/www/fbegin.inc:199
@@ -35043,12 +35043,12 @@ msgid ""
 "%s IPs have been disabled. Please note that disabling does not survive a "
 "reboot."
 msgstr ""
-"%s IP は無効になっています。無効の場合、再起動に失敗しますので、注意してください。"
+"%s IP は無効になりました。この無効化は、再起動で効果を失いますので、注意してください。"
 
 #: usr/local/www/carp_status.php:73 usr/local/www/carp_status.php:69
 #: usr/local/www/carp_status.php:69
 msgid "CARP has been enabled."
-msgstr "CARP は有効です"
+msgstr "CARP は有効になりました"
 
 #: usr/local/www/carp_status.php:127 usr/local/www/carp_status.php:120
 #: usr/local/www/carp_status.php:120
@@ -36492,14 +36492,14 @@ msgstr ""
 #: usr/local/www/status_captiveportal_voucher_rolls.php:88
 #: usr/local/www/status_captiveportal_voucher_rolls.php:88
 msgid "Roll#"
-msgstr "ロール#"
+msgstr "ロール番号"
 
 #: usr/local/www/status_captiveportal_voucher_rolls.php:87
 #: usr/local/www/status_captiveportal_voucher_rolls.php:88
 #: usr/local/www/status_captiveportal_voucher_rolls.php:90
 #: usr/local/www/status_captiveportal_voucher_rolls.php:90
 msgid "# of Tickets"
-msgstr "チケット#"
+msgstr "チケット番号"
 
 #: usr/local/www/status_captiveportal_voucher_rolls.php:89
 #: usr/local/www/status_captiveportal_voucher_rolls.php:90
@@ -37222,7 +37222,7 @@ msgstr "WebGUI ログインメッセージ"
 #: usr/local/www/system_advanced_admin.php:390
 #: usr/local/www/system_advanced_admin.php:390
 msgid "Disable logging of webConfigurator successful logins"
-msgstr "Web 設定管理画面にログイン成功したもののロギング無効"
+msgstr "Web 設定管理画面ログイン成功に対するロギング無効"
 
 #: usr/local/www/system_advanced_admin.php:392
 #: usr/local/www/system_advanced_admin.php:392
@@ -37333,27 +37333,27 @@ msgid ""
 "information on HTTP_REFERER is available from <a target='_new' href='http://"
 "en.wikipedia.org/wiki/HTTP_referrer'>Wikipedia</a>."
 msgstr ""
-"これをチェックしない場合は、HTTP_REFERER リダイレクション攻撃の試みから Web 設定管理画面への"
+"これをチェックしない場合、HTTP_REFERER リダイレクション攻撃の試みから Web 設定管理画面への"
 "アクセスが保護されます。"
-"このボックスをチェックすると、このシステムに影響する外部スクリプトを使用している等、"
-"原因が明確な場合に、Web 設定管理画面へのアクセスに支障が出る場合に、この保護を無効にすることができます。"
+"チェックした場合は、このシステムに影響する外部スクリプトを使用している等、"
+"明確な原因で Web 設定管理画面へのアクセスに支障が出ている時に、この保護を無効にすることができます。"
 "HTTP_REFERER に関するより詳しい情報は、"
 "<a target='_new' href='http://en.wikipedia.org/wiki/HTTP_referrer'>ウィキペディア</a>を参照してください。"
 
 #: usr/local/www/system_advanced_admin.php:457
 #: usr/local/www/system_advanced_admin.php:457
 msgid "Secure Shell"
-msgstr "セキュアシェル"
+msgstr "SSH"
 
 #: usr/local/www/system_advanced_admin.php:460
 #: usr/local/www/system_advanced_admin.php:460
 msgid "Secure Shell Server"
-msgstr "セキュアシェルサーバ"
+msgstr "SSH サーバ"
 
 #: usr/local/www/system_advanced_admin.php:463
 #: usr/local/www/system_advanced_admin.php:463
 msgid "Enable Secure Shell"
-msgstr "セキュアシェルを有効"
+msgstr "SSH を有効"
 
 #: usr/local/www/system_advanced_admin.php:467
 #: usr/local/www/system_advanced_admin.php:467
@@ -37362,12 +37362,12 @@ msgstr "認証方法"
 
 #: usr/local/www/system_advanced_admin.php:470
 msgid "Disable password login for Secure Shell (RSA key only)"
-msgstr "セキュアシェルのパスワードログインを無効 ( RSA 鍵認証のみ )"
+msgstr "SSH のパスワードログインを無効 ( RSA 鍵認証のみ )"
 
 #: usr/local/www/system_advanced_admin.php:472
 #: usr/local/www/system_advanced_admin.php:472
 msgid "When enabled, authorized keys need to be configured for each"
-msgstr "有効にすると、セキュアシェルアクセスを許可された"
+msgstr "有効にすると、SSH アクセスを許可された"
 
 #: usr/local/www/system_advanced_admin.php:473
 #: usr/local/www/system_advanced_admin.php:473
@@ -37516,7 +37516,7 @@ msgid ""
 "used for high latency links, such as satellite links.  Expires idle "
 "connections later than default"
 msgstr ""
-"サテライトリンクのような、高遅延リンクに対して使用されます。"
+"衛星通信のような、高遅延通信に対して使用されます。"
 "デフォルトアイドル接続有効期限よりも遅いアイドル接続有効期限は、"
 
 #: usr/local/www/system_advanced_firewall.php:192
@@ -37526,7 +37526,7 @@ msgid ""
 "can drop legitimate connections"
 msgstr ""
 "より速く設定してください。CPU とメモリをより効率的に使用すると、"
-"正当な接続を落としてしまいます。"
+"正規の接続を落としてしまう原因になります。"
 
 #: usr/local/www/system_advanced_firewall.php:193
 #: usr/local/www/system_advanced_firewall.php:207
@@ -37572,10 +37572,10 @@ msgid ""
 "will cause the filter to not drop such packets but instead clear the don't "
 "fragment bit."
 msgstr ""
-"フラグメント化したパケットを生成するホストと、フラグメント禁止( DF ) ビットで通信することを許可します。"
-"Linux NFS はこれを実行することで知られています。"
-"これは、フィルタがそのようなパケットを落とさないようにすることができますが、"
-"フラグメント禁止ビットを消去することはできません。"
+"フラグメント禁止( DF ) ビットを使用して、フラグメント化したパケットを生成するホストと通信することを許可します。"
+"Linux NFS はこのような振る舞いをすることで知られています。"
+"この設定で、フィルタがそのようなパケットを落とさなくすることはできますが、"
+"フラグメント禁止ビットが消去されるわけではありません。"
 
 #: usr/local/www/system_advanced_firewall.php:253
 #: usr/local/www/system_advanced_firewall.php:267
@@ -37593,7 +37593,7 @@ msgstr "IP ランダム ID の生成"
 msgid ""
 "Insert a stronger id into IP header of packets passing through the filter."
 msgstr ""
-"フィルタを通過するパケットの IP ヘッダに強い ID を挿入します。"
+"フィルタを通過するパケットの IP ヘッダに強固な ID を挿入します。"
 
 #: usr/local/www/system_advanced_firewall.php:257
 #: usr/local/www/system_advanced_firewall.php:271
@@ -37607,7 +37607,7 @@ msgid ""
 "reassembly."
 msgstr ""
 "オペレーティングシステムが使用する予測可能な値を補うために、"
-"パケットのIP識別フィールドを置き換えます。"
+"パケットの IP 識別フィールドをランダムな値で置き換えます。"
 "オプションのパケットの再構築を行った後に、"
 "フラグメント化していないパケットに対してのみ適用されるオプションです。"
 
@@ -37826,7 +37826,7 @@ msgid ""
 "situations where multiple subnets are connected to the same interface."
 msgstr ""
 "このオプションは 1 つ以上の静的ルートを定義している場合にのみ適用されます。"
-"有効な場合は、入りと出に、同じインタフェースを経由するトラフィックは、ファイアウォールに確認されません。"
+"有効な場合は、入出力に同じインタフェースを経由するトラフィックは、ファイアウォールに確認されません。"
 "これは、複数のサブネットが同じインタフェースに接続されているようなシチュエーションでは、"
 "非常に有効です。"
 
@@ -37865,9 +37865,9 @@ msgid ""
 "When using bridging, you must disable this behavior if the WAN gateway IP is "
 "different from the gateway IP of the hosts behind the bridged interface."
 msgstr ""
-"マルチ WAN では、通常、到着したのと同じインタフェースから出発したトラフィックかどうか確認したいでしょう。"
+"マルチ WAN では、通常、着信に使用したインタフェースから、トラフィックが発信するようにしたいものです。"
 "そのため、デフォルトでは自動的に reply-to が追加されます。"
-"ブリッジを使用していて、WAN ゲートウェイ IP が、ブリッジインタフェースの後ろにあるホストの"
+"ブリッジを使用していて、WAN ゲートウェイ IP が、ブリッジインタフェースの背後にあるホストの"
 "ゲートウェイ IP と異なる場合は、この振る舞いを無効にする必要があります。"
 
 #: usr/local/www/system_advanced_firewall.php:364
@@ -38099,9 +38099,9 @@ msgid ""
 "connection. Further connections from that host will be redirected to the "
 "next web server in the round robin."
 msgstr ""
-"同じ送信元から同じ Web サーバに送信する接続の場合、"
-"連続した接続は、ラウンドロビン方式でサーバにリダイレクトされます。"
-"この「スティッキー接続」は、この接続を参照するステータスと同じ期間存在します。"
+"連続した接続は、ラウンドロビン方式のサーバにリダイレクトする場合でも、"
+"同じ送信元からは、同じ Web サーバに送信されます。"
+"このような「スティッキー接続」は、接続を参照するステータスと同じ期間存在します。"
 "ステータスの有効期限が切れると、スティッキー接続の有効期限も切れます。"
 "そのホストからの追加接続はラウンドロビンで、"
 "次の Web サーバにリダイレクトされます。"
@@ -39598,7 +39598,7 @@ msgid ""
 "List (CRL)."
 msgstr ""
 "上記の証明書の秘密鍵を、ここに貼り付けてください。"
-"通常はオプションですが、証明書執行リスト (CRL) を生成する必要がある場合は、"
+"通常はオプションですが、証明書失効リスト (CRL) を生成する必要がある場合は、"
 "必須です。"
 
 #: usr/local/www/system_camanager.php:420
@@ -42007,7 +42007,7 @@ msgid ""
 "policies are generated based on SA proposals."
 msgstr ""
 "レスポンダとして動作する場合 ( モバイルクライアントと同様に )、"
-"SA プロポーザルに基いて生成されるポリシをコントロールします"
+"SA プロポーザルに基づき、ポリシがどのように生成されるかをコントロールします。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:689
 #: usr/local/www/vpn_ipsec_phase1.php:702
@@ -44695,13 +44695,13 @@ msgstr "送信元 -> 送信先"
 #: usr/local/www/diag_dump_states_sources.php:145
 #: usr/local/www/diag_dump_states_sources.php:145
 msgid "# States"
-msgstr "# ステータス"
+msgstr "ステータス番号"
 
 #: usr/local/www/diag_dump_states_sources.php:147
 #: usr/local/www/diag_dump_states_sources.php:146
 #: usr/local/www/diag_dump_states_sources.php:146
 msgid "# Connections"
-msgstr "# 接続"
+msgstr "接続番号"
 
 #: usr/local/www/diag_dump_states_sources.php:180
 #: usr/local/www/diag_dump_states_sources.php:179
@@ -45818,39 +45818,40 @@ msgid ""
 "obtained via DHCP or PPP on WAN if the &quot;Allow DNS server list to be "
 "overridden by DHCP/PPP on WAN&quot; is checked."
 msgstr ""
-"DNS リゾルバが有効の場合は、DHCP サービス ( 有効であれば ) が DNSサーバとして "
-"DHCP クライアントに自動的に LAN IP アドレスを提供するのに、DNS リゾルバを使用します。
-
-
-がします」が自動的にDHCPクライアントにDNSサーバーとしてLANのIPアドレスを提供するので、 "彼らは、DNSリゾルバを使用します。転送が、有効になっている場合は、 DNSリゾルバは、 "意志一般setup%sまたはDNSサーバーリスト」とは、WAN上でDHCP / PPPによって無効にする」ことができるようにするチェックされている」場合には、WAN上でのDHCPやPPPを介して取得した「もの： DNSの%sSystemに入力されたサーバを使用しています。"
+"DNS リゾルバが有効な場合、DHCP サービス ( 有効であれば ) は、"
+"DNS サーバとして DHCP クライアントに自動的に LAN IP アドレスを提供する際に、"
+"DNS リゾルバを使用します。"
+"フォワーディングが有効な場合は、DNS リゾルバは %sシステム: 全般設定%s で入力されたものか、"
+"もしくは、&quot;WAN の DHCP/PPP による DNS サーバリストの上書きを許可&quot; がチェックされていれば、"
+"WAN の DHCP または PPP 経由で取得したものを DNS サーバとして使用します。"
 
 #: usr/local/www/services_unbound_advanced.php:116
 msgid "The configuration of the DNS Resolver, has been changed"
-msgstr "DNSリゾルバの設定は、変更された"
+msgstr "DNS リゾルバの構成は、変更されました"
 
 #: usr/local/www/services_unbound_advanced.php:134
 msgid "Advanced Resolver Options"
-msgstr "高度なレゾルバオプション"
+msgstr "高度なリゾルバオプション"
 
 #: usr/local/www/services_unbound_advanced.php:137
 msgid "Hide Identity"
-msgstr "隠すアイデンティティ"
+msgstr "識別子を非表示"
 
 #: usr/local/www/services_unbound_advanced.php:140
 msgid "If enabled, id.server and hostname.bind queries are refused."
-msgstr "有効にすると、 id.serverとhostname.bindクエリが拒否されます。"
+msgstr "有効にすると、id.server 及び hostname.bind 照会が拒否されます。"
 
 #: usr/local/www/services_unbound_advanced.php:144
 msgid "Hide Version"
-msgstr "バージョンを隠す"
+msgstr "バージョンを非表示"
 
 #: usr/local/www/services_unbound_advanced.php:147
 msgid "If enabled, version.server and version.bind queries are refused."
-msgstr "有効にすると、 version.serverとクエリversion.bindが拒否されます。"
+msgstr "有効にすると、version.server 及び version.bind 照会が拒否されます。"
 
 #: usr/local/www/services_unbound_advanced.php:151
 msgid "Prefetch Support"
-msgstr "プリフェッチのサポート"
+msgstr "プリフェッチに対応"
 
 #: usr/local/www/services_unbound_advanced.php:154
 msgid ""
@@ -45858,11 +45859,15 @@ msgid ""
 "cache up to date. When enabled, this option can cause an increase of around "
 "10% more DNS traffic and load on the server, but frequently requested items "
 "will not expire from the cache."
-msgstr "最新でキャッシュ「彼らが保つために有効期限が切れる前に、メッセージキャッシュ要素がプリフェッチされる」 。有効にすると、このオプションは周りの増加原因となります」 10パーセント以上のDNSトラフィックとサーバーの負荷が、しかし頻繁に要求される項目は、 「キャッシュから有効期限はありません。"
+msgstr ""
+"有効期限が切れる前に、"
+"メッセージキャッシュ要素はプリフェッチされ、キャッシュを最新に維持します。"
+"有効な場合は、このオプションはおよそ 10% 以上の DNS トラフィックとサーバ負荷を増加させますが、"
+"頻繁に項目を要求することで、キャッシュから有効期限切れで削除されなくなります。"
 
 #: usr/local/www/services_unbound_advanced.php:158
 msgid "Prefetch DNS Key Support"
-msgstr "プリフェッチDNSキーのサポート"
+msgstr "プリフェッチ DNS 鍵に対応"
 
 #: usr/local/www/services_unbound_advanced.php:161
 #, php-format
@@ -45870,26 +45875,32 @@ msgid ""
 "DNSKEY's are fetched earlier in the validation process when a %sDelegation "
 "signer%s is encountered. This helps lower the latency of requests but does "
 "utilize a little more CPU."
-msgstr "signer%s遭遇した"DNSKEYのは、以前の検証プロセスにおける%sDelegationが時にフェッチされる」 。これはリクエストのレイテンシを下げることができますが、 "もう少しのCPUを利用していない。"
+msgstr ""
+"DNSKEY は、%デリゲーション署名%sに遭遇すると、"
+"検証プロセスの前にフェッチされます。"
+"要求の遅延を少なくすることができますが、CPU 負荷は少し上がります。"
 
 #: usr/local/www/services_unbound_advanced.php:165
 msgid "Harden Glue"
-msgstr "ハーデングルー"
+msgstr "堅牢なグルー"
 
 #: usr/local/www/services_unbound_advanced.php:168
 msgid "Only trust glue if it is within the servers authority."
-msgstr "それはサーバの権限の範囲内である場合にのみ接着剤を信頼しています。"
+msgstr "サーバ権威の範囲内にあるグルーのみを信頼します。"
 
 #: usr/local/www/services_unbound_advanced.php:172
 msgid "Harden DNSSEC data"
-msgstr "ハーデンDNSSECデータ"
+msgstr "堅牢な DNSSEC データ"
 
 #: usr/local/www/services_unbound_advanced.php:175
 msgid ""
 "DNSSEC data is required for trust-anchored zones. If such data is absent, "
 "the zone becomes bogus. If this is disabled and no DNSSEC data is received, "
 "then the zone is made insecure."
-msgstr "「 DNSSECデータが信頼アンカーゾーンに必要とされる。このようなデータが存在しない場合は、「ゾーンが偽となる。これは無効で、 DNSSECデータが受信されない場合、 「次にゾーンが安全で行われる。"
+msgstr ""
+"DNSSEC データはトラストアンカーゾーンで必要になります。"
+"そのデータがなければ、ゾーンは bogus になります。"
+"これが無効で、DNSSEC データが受信されない場合は、ゾーンはセキュアではなくなります。"
 
 #: usr/local/www/services_unbound_advanced.php:179
 msgid "Message Cache Size"
@@ -45901,32 +45912,42 @@ msgid ""
 "validation statuses. The RRSet cache will automatically be set to twice this "
 "amount. The RRSet cache contains the actual RR data. The default is 4 "
 "megabytes."
-msgstr "「メッセージ·キャッシュのサイズ。メッセージキャッシュを格納するDNS rcodesと「検証ステータス。資源レコード集合キャッシュは自動的に2回に設定されます」量。資源レコード集合キャッシュは、実際のRRデータが含まれています。デフォルトは4です」メガバイト。"
+msgstr ""
+"メッセージキャッシュの大きさです。メッセージキャッシュは、DNS rcode と検証ステータスを格納します。"
+"RRSet キャッシュは、自動的にこの量の 2 倍に設定されます。"
+"RRSet キャッシュは実際の RR データを格納します。"
+"デフォルトは 4 Mbyteです。"
 
 #: usr/local/www/services_unbound_advanced.php:194
 msgid "Outgoing TCP Buffers"
-msgstr "発信TCPバッファ"
+msgstr "発信 TCP バッファ"
 
 #: usr/local/www/services_unbound_advanced.php:204
 msgid ""
 "The number of outgoing TCP buffers to allocate per thread. The default value "
 "is 10. If 0 is selected then no TCP queries, to authoritative servers, are "
 "done."
-msgstr "「スレッドごとに割り当てるための発信TCPバッファの数。デフォルト値は「 10です。 0は権威サーバには、何のTCPクエリを選択されていない場合は、 「実行されます。"
+msgstr ""
+"スレッド毎に割当てられる、発信 TCP バッファの数です。"
+"デフォルト値は 10 です。"
+"0 が選択されると、権威サーバに対して TCP 照会を行いません。"
 
 #: usr/local/www/services_unbound_advanced.php:208
 msgid "Incoming TCP Buffers"
-msgstr "着信TCPバッファ"
+msgstr "着信 TCP バッファ"
 
 #: usr/local/www/services_unbound_advanced.php:218
 msgid ""
 "The number of incoming TCP buffers to allocate per thread. The default value "
 "is 10. If 0 is selected then no TCP queries, from clients, are accepted."
-msgstr "「スレッドごとに割り当てるための着信TCPバッファの数。デフォルト値は「 10です。 0はクライアントからのその後のTCPクエリーを、選択されていない場合は、受け入れられています。"
+msgstr ""
+"スレッド毎に割当てられる、着信 TCP バッファの数です。"
+"デフォルト値は 10 です。"
+"0 が選択されると、クライアントからの TCP 照会を受信しません。"
 
 #: usr/local/www/services_unbound_advanced.php:222
 msgid "EDNS Buffer Size"
-msgstr "EDNSバッファサイズ"
+msgstr "EDNS バッファサイズ"
 
 #: usr/local/www/services_unbound_advanced.php:229
 msgid ""
@@ -45936,33 +45957,45 @@ msgid ""
 "problems, usually seen as timeouts, then a value of 1480 should help. The "
 "512 value bypasses most MTU path problems, but it can generate an excessive "
 "amount of TCP fallback."
-msgstr "「 EDNS組立バッファサイズとしてアドバタイズするバイトサイズの数。これは、 "ピアに送信されるUDPデータグラムで使用される値です。 RFC勧告は通常、タイムアウトと見られた問題を、そして1480年の値は役立つはず"あなたは断片化が再構成している場合。 （デフォルト） 4096 」です。 「 512の値は、ほとんどのMTUパスの問題を迂回するが、それは、過剰な生成することができ、「TCPフォールバックの量を。"
+msgstr ""
+"EDNS 再構築バッファサイズとして広告される、サイズのバイト数です。"
+"これは、ピアに送信する UDP データグラムで使用される値です。"
+"RFC は 4096 を推奨しています ( デフォルト値です )。"
+"通常はタイムアウトとして現れますが、フラグメント再構築問題が発生している場合は、"
+"値を 1480 にすると良いでしょう。"
+"512 を設定すると、大抵の MTU 経路問題は回避できますが、かなりの数の TCP フォールバックが発生します。"
 
 #: usr/local/www/services_unbound_advanced.php:233
 msgid "Number of queries per thread"
-msgstr "スレッドあたりのクエリ数"
+msgstr "スレッド毎のクエリ数"
 
 #: usr/local/www/services_unbound_advanced.php:240
 msgid ""
 "The number of queries that every thread will service simultaneously. If more "
 "queries arrive that need to be serviced, and no queries can be jostled, then "
 "these queries are dropped."
-msgstr "クエリサービスを受けるためにその必要性を着けないクエリはもまできない」よりは場合、すべてのスレッドが同時にサービスするクエリの数は。 」 、そして「これらのクエリは削除されます。"
+msgstr ""
+"同時に接続可能な、スレッド毎のクエリ数です。"
+"接続する必要があるクエリを、この数を超えて受信した場合、"
+"競争に参加できないクエリは落とされます。"
 
 #: usr/local/www/services_unbound_advanced.php:244
 msgid "Jostle Timeout"
-msgstr "モーターボータイムアウト"
+msgstr "競争タイムアウト"
 
 #: usr/local/www/services_unbound_advanced.php:252
 msgid ""
 "This timeout is used for when the server is very busy. This protects against "
 "denial of service by slow queries or high query rates. The default value is "
 "200 milliseconds."
-msgstr "「このタイムアウトは、サーバーが非常にビジーであるときに使用されます。これはから保護「スロークエリまたは高いクエリな料金でサービス拒否。デフォルト値は「200ミリ秒である。"
+msgstr ""
+"このタイムアウトは、サーバが非常にビジーな場合に使用され、"
+"遅いクエリや高頻度クエリによる、サービス不能化 ( DOS ) 攻撃を防御します。"
+"デフォルト値は 200 ミリ秒です。"
 
 #: usr/local/www/services_unbound_advanced.php:256
 msgid "Maximum TTL for RRsets and messages"
-msgstr "RRセットおよびメッセージの最大のTTL"
+msgstr "RPset 及びメッセージの TTL 最大値"
 
 #: usr/local/www/services_unbound_advanced.php:259
 msgid ""
@@ -45970,11 +46003,15 @@ msgid ""
 "default is 86400 seconds (1 day). When the internal TTL expires the cache "
 "item is expired. This can be configured to force the resolver to query for "
 "data more often and not trust (very large) TTL values."
-msgstr "「キャッシュ内のRRセットおよびメッセージのために生きるの最大時間を設定します。 「デフォルトは86400秒（ 1日）です。内部のTTLは、キャッシュの有効期限が切れると、データをより頻繁ではなく、信頼（非常に大きい） TTL値」の項目の有効期限が切れている。これは照会するために、リゾルバを強制的に設定することができます」 。"
+msgstr ""
+"キャッシュの RRset とメッセージの生存時間の最大値を構成します。"
+"デフォルトは 86400 秒 ( 1 日 ) です。"
+"内部 TTL の有効期限が切れると、キャッシュ項目も有効期限が切れます。"
+"より多くのデータを照会し、( 非常に大きい ) TTL 値を信頼しないよう、リゾルバに強制する構成が可能です。"
 
 #: usr/local/www/services_unbound_advanced.php:263
 msgid "Minimum TTL for RRsets and messages"
-msgstr "RRセットおよびメッセージの最小のTTL"
+msgstr "RPset 及びメッセージの TTL 最小値"
 
 #: usr/local/www/services_unbound_advanced.php:266
 msgid ""
@@ -45984,17 +46021,25 @@ msgid ""
 "look up the data. The 0 value ensures the data in the cache is as the domain "
 "owner intended. High values can lead to trouble as the data in the cache "
 "might not match up with the actual data anymore."
-msgstr "「キャッシュ内のRRセットおよびメッセージのために生きるの最小時間を設定します。 「デフォルト値は0秒です。最小値は中のキックと、データがキャッシュされ、「意図したドメインオーナーよりも長いため、少ないクエリがするために行われる「データを検索します。 0値は、ドメイン「所有者が意図した。高い値は、キャッシュ内のデータのように、トラブルにつながる可能性」と、キャッシュ内のデータはもう実際のデータと一致しない場合がありますが保証されます。"
+msgstr ""
+"キャッシュの RRset とメッセージの生存時間の最小値を構成します。"
+"デフォルトは 0 秒です。"
+"最小値が有効になると、ドメイン所有者が意図するよりも長くデータがキャッシュされるため、"
+"データ検索に使用される照会の数が少なくなります。"
+"値が 0 なら、キャッシュのデータが、ドメイン所有者の意図したものと同じであることを保証します。"
+"高い値を設定すると、キャッシュのデータが、実際のデータとは一致しなくなるという問題の原因になります。"
 
 #: usr/local/www/services_unbound_advanced.php:270
 msgid "TTL for Host cache entries"
-msgstr "ホストキャッシュエントリのTTL"
+msgstr "ホストキャッシュエントリの TTL"
 
 #: usr/local/www/services_unbound_advanced.php:279
 msgid ""
 "Time to live for entries in the host cache. The host cache contains "
 "roundtrip timing and EDNS support information. The default is 15 minutes."
-msgstr "往復のタイミングとEDNSサポート情報を「ホストキャッシュ内のエントリの存続時間は、ホスト·キャッシュが含まれています」 。デフォルトは15分です。"
+msgstr ""
+"ホストキャッシュにあるエントリの生存時間です。"
+"ホストキャッシュは、ラウンドトリップタイミングと、EDNS 対応情報を格納しています。デフォルトは 15 分です。"
 
 #: usr/local/www/services_unbound_advanced.php:283
 msgid "TTL for lame delegation"
