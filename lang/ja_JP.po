@@ -37572,7 +37572,7 @@ msgid ""
 "will cause the filter to not drop such packets but instead clear the don't "
 "fragment bit."
 msgstr ""
-"フラグメント禁止( DF ) ビットを使用して、フラグメント化したパケットを生成するホストと通信することを許可します。"
+"フラグメント禁止 ( DF ) ビットを使用して、フラグメント化したパケットを生成するホストと通信することを許可します。"
 "Linux NFS はこのような振る舞いをすることで知られています。"
 "この設定で、フィルタがそのようなパケットを落とさなくすることはできますが、"
 "フラグメント禁止ビットが消去されるわけではありません。"
@@ -41074,7 +41074,7 @@ msgid ""
 "This defines the frequency that an icmp probe will be sent in seconds. "
 "Default is 1."
 msgstr ""
-"ICMP プローブが送信される頻度を、秒で定義します。"
+"ICMP プローブが送信される頻度を、秒単位で定義します。"
 "デフォルトは 1 です。"
 
 #: usr/local/www/system_groupmanager.php:49
@@ -42772,7 +42772,7 @@ msgstr "サーバホスト名の名前解決"
 #: usr/local/www/vpn_openvpn_client.php:604
 #: usr/local/www/vpn_openvpn_client.php:604
 msgid "Infinitely resolve server"
-msgstr "無限にサーバを名前解決"
+msgstr "サーバを継続的に名前解決"
 
 #: usr/local/www/vpn_openvpn_client.php:567
 #: usr/local/www/vpn_openvpn_client.php:572
@@ -42951,8 +42951,8 @@ msgid ""
 "network address is assumed to be the server address and the second network "
 "address will be assigned to the client virtual interface"
 msgstr ""
-"これは、このクライアントと CIDR ( 例: 10.0.8.0/24 ) を使用して表記される"
-"サーバ間の、プライベート通信に使用される仮想ネットワークです。"
+"このクライアントとサーバ間の、プライベート通信に使用される仮想ネットワークで、
+"CIDR ( 例: 10.0.8.0/24 ) を使用して表記されます。"
 "最初のネットワークアドレスは、サーバアドレスと見なされ、"
 "2 番目のネットワークアドレスは、クライアントの仮想インタフェースに割当てられます。"
 
@@ -42965,10 +42965,10 @@ msgid ""
 "remote LAN here. You may leave this blank to only communicate with other "
 "clients"
 msgstr ""
-"これは、トンネル経由でルーティングされるネットワークです。"
-"ルーティングテーブルを手動で変更せずに、サイトツーサイト VPN 接続を確立させることができます。"
+"トンネル経由でルーティングされるネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
 "CIDR 範囲として表記されます。"
-"サイトツーサイト VPN の場合は、リモート LAN をここに入力してください。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_client.php:776
@@ -43017,7 +43017,7 @@ msgstr "LZO アルゴリズムを使用して、トンネルパケットを圧�
 #: usr/local/www/vpn_openvpn_client.php:875
 #: usr/local/www/vpn_openvpn_server.php:1306
 msgid "Type-of-Service"
-msgstr "サービスタイプ"
+msgstr "サービスタイプ (TOS)"
 
 #: usr/local/www/vpn_openvpn_client.php:815
 #: usr/local/www/vpn_openvpn_server.php:1105
@@ -43619,8 +43619,8 @@ msgid ""
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
 msgstr ""
-"これは、このサーバと CIDR ( 例: 10.0.8.0/24 ) を使用して表記される"
-"クライアントホスト間の、プライベート通信に使用される IPv4 仮想ネットワークです。"
+"このサーバとクライアントホスト間の、プライベート通信に使用される IPv4 仮想ネットワークで、"
+"CIDR ( 例: 10.0.8.0/24 ) を使用して表記されます。"
 "最初のネットワークアドレスは、\tサーバ仮想インタフェースに割り当てられます。"
 "残りのネットワークアドレスは、オプションで、クライアントの接続に割り当てることができます。"
 "( アドレスプールを参照 )"
@@ -43645,8 +43645,8 @@ msgid ""
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
 msgstr ""
-"これは、このサーバと CIDR ( 例: fe80::/64 ) を使用して表記される"
-"クライアントホスト間の、プライベート通信に使用される IPv6 仮想ネットワークです。"
+"このサーバとクライアントホスト間の、プライベート通信に使用される IPv6 仮想ネットワークで、"
+"CIDR ( 例: fe80::/64 ) を使用して表記されます。"
 "最初のネットワークアドレスは、\tサーバ仮想インタフェースに割り当てられます。"
 "残りのネットワークアドレスは、オプションで、クライアントの接続に割り当てることができます。"
 "( アドレスプールを参照 )"
@@ -43666,7 +43666,7 @@ msgid ""
 "a route to the local network through this tunnel on the remote machine. This "
 "is generally set to your LAN network"
 msgstr ""
-"これは、リモートエンドポイントからアクセス可能なネットワークです。"
+"リモートエンドポイントからアクセス可能なネットワークです。"
 "CIDR 範囲で表記されます。"
 "リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
 "空白にしてください。一般的には、自分の LAN ネットワークに対して設定します。"
@@ -43686,7 +43686,7 @@ msgid ""
 "a route to the local network through this tunnel on the remote machine. This "
 "is generally set to your LAN network"
 msgstr ""
-"これは、リモートエンドポイントからアクセス可能な IPv6 ネットワークです。"
+"リモートエンドポイントからアクセス可能な IPv6 ネットワークです。"
 "CIDR 範囲で表記されます。"
 "リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
 "空白にしてください。一般的には、自分の LAN ネットワークに対して設定します。"
@@ -43700,7 +43700,7 @@ msgid ""
 "remote LAN here. You may leave this blank if you don't want a site-to-site "
 "VPN"
 msgstr ""
-"これは、トンネル経由でルーティングされるネットワークです。"
+"トンネル経由でルーティングされるネットワークです。"
 "ルーティングテーブルを手動で変更せずに、サイトツーサイト VPN 接続を確立させることができます。"
 "CIDR 範囲として表記されます。"
 "サイトツーサイト VPN の場合は、リモート LAN をここに入力してください。"
@@ -46043,25 +46043,27 @@ msgstr ""
 
 #: usr/local/www/services_unbound_advanced.php:283
 msgid "TTL for lame delegation"
-msgstr "不完全な委任のTTL"
+msgstr "lame delegation の TTL"
 
 #: usr/local/www/services_unbound_advanced.php:292
 msgid ""
 "Time to live for when a delegation is considered to be lame. The default is "
 "15 minutes."
-msgstr "15分「委任がラメであるとみなされたときのために生きる時間。デフォルトは「。"
+msgstr ""
+"デリゲーションがレイムとみなされる場合の生存時間です。"
+"デフォルトは 15 分です。"
 
 #: usr/local/www/services_unbound_advanced.php:296
 msgid "Number of Hosts to cache"
-msgstr "キャッシュにホストの数"
+msgstr "キャッシュするホスト数"
 
 #: usr/local/www/services_unbound_advanced.php:305
 msgid "Number of hosts for which information is cached. The default is 10,000."
-msgstr "情報がキャッシュされているホストの数。デフォルトは10,000です。"
+msgstr "情報をキャッシュするホストの数です。デフォルト 10,000 です。"
 
 #: usr/local/www/services_unbound_advanced.php:309
 msgid "Unwanted Reply Threshold"
-msgstr "不要な返信しきい値"
+msgstr "望まない応答のしきい値"
 
 #: usr/local/www/services_unbound_advanced.php:319
 msgid ""
@@ -46070,11 +46072,16 @@ msgid ""
 "warning is printed to the log file. This defensive action is to clear the "
 "RRSet and message caches, hopefully flushing away any poison. The default is "
 "disabled, but if enabled a a value of 10 million is suggested."
-msgstr "スレッド「有効にすると、不必要な回答の合計数は、すべての内のトラックを保たれている」 。それがしきい値に達すると、防御的な行動がとられており、うまくいけばどんな毒を洗い流す、 RRSetに、メッセージキャッシュ」警告がログファイルに出力されます。この防御的なアクションは、オフにしています」 。デフォルトは「無効になっていますが、千万の有効にした場合、AAの値が提案されている。"
+msgstr ""
+"有効な場合、望まない応答の合計数をスレッド毎に記録します。"
+"しきい値に達すると、防御処理が実行され、警告がログファイルに出力されます。"
+"防御処理は、RRSet とメッセージキャッシュを削除するというもので、"
+"ポイズンが全て除去されることが期待されます。"
+"デフォルトは無効ですが、有効にする場合は、値を 1000 万に設定することが推奨されます。"
 
 #: usr/local/www/services_unbound_advanced.php:323
 msgid "Log level verbosity"
-msgstr "レベルの冗長性をログに記録"
+msgstr "ログ詳細度レベル"
 
 #: usr/local/www/services_unbound_advanced.php:333
 msgid "Select the log verbosity."
@@ -46084,14 +46091,14 @@ msgstr "ログの詳細度を選択します。"
 #: usr/local/www/system_advanced_firewall.php:91
 #: usr/local/www/system_advanced_firewall.php:91
 msgid "The Firewall Maximum Tables value must be an integer."
-msgstr "ファイアウォールの最大テーブルの値は整数でなければなりません。"
+msgstr "ファイアウォールテーブルの最大値は整数です。"
 
 #: usr/local/www/system_advanced_firewall.php:326
 #: usr/local/www/system_advanced_firewall.php:370
 #: usr/local/www/system_advanced_firewall.php:371
 #: usr/local/www/system_advanced_firewall.php:371
 msgid "Firewall Maximum Tables"
-msgstr "ファイアウォールの最大表"
+msgstr "ファイアウォールテーブルの最大値"
 
 #: usr/local/www/system_advanced_firewall.php:330
 #: usr/local/www/system_advanced_firewall.php:374
@@ -46100,7 +46107,9 @@ msgstr "ファイアウォールの最大表"
 msgid ""
 "Maximum number of tables for systems such as aliases, sshlockout, snort, "
 "etc, combined."
-msgstr "など、合わせて「このようなエイリアス、 sshlockout 、 Snortのようなシステムのためのテーブルの最大数」 。"
+msgstr ""
+"エイリアス、sshlockout、snort 等を組み合わせた、"
+"システムテーブルの最大値"
 
 #: usr/local/www/system_advanced_firewall.php:331
 #: usr/local/www/system_advanced_firewall.php:375
@@ -46109,14 +46118,16 @@ msgstr "など、合わせて「このようなエイリアス、 sshlockout 、
 msgid ""
 "This is the actual number of tables, not the number of entries inside the "
 "tables (see below)"
-msgstr "テーブル（下記参照） 」これは、テーブルの実際の数ではなく、内部のエントリの数である""
+msgstr ""
+"実際のテーブルの数で、テーブル内部のエントリの数ではありません"
+" ( 下記を参照 )"
 
 #: usr/local/www/system_advanced_firewall.php:393
 #: usr/local/www/system_advanced_firewall.php:437
 #: usr/local/www/system_advanced_firewall.php:438
 #: usr/local/www/system_advanced_firewall.php:438
 msgid "Disable Negate rule on policy routing rules"
-msgstr "ポリシールーティングルールに否定のルールを無効に"
+msgstr "ポリシルーティングルールの「否定」ルールを無効"
 
 #: usr/local/www/system_advanced_firewall.php:395
 #: usr/local/www/system_advanced_firewall.php:439
@@ -46127,14 +46138,18 @@ msgid ""
 "connected networks and VPN networks when using policy routing. You can "
 "disable this for special purposes but it requires manually creating rules "
 "for these networks"
-msgstr "ポリシールーティングを使用する場合は、接続されたネットワークとVPNネットワークを「マルチWANを使用すると、一般的には、トラフィックが直接到達したことを確認したい」 。あなたは "特別な目的のためにこれを無効にするが、それは、手動でルールを作成する必要」ができ、これらのネットワークのために"
+msgstr ""
+"マルチ WAN でポリシルーティングを使用している場合は、"
+"通常、直接接続されているネットワーク及び VPN ネットワークに、トラフィックが直接到着するようにしたいものです。"
+"特殊な用途で、この設定を無効にすることもできますが、"
+"その場合は、対象のネットワークに対するルールを手動で作成する必要があります。"
 
 #: usr/local/www/system_advanced_firewall.php:407
 #: usr/local/www/system_advanced_firewall.php:469
 #: usr/local/www/system_advanced_firewall.php:470
 #: usr/local/www/system_advanced_firewall.php:470
 msgid "NAT Reflection mode for port forwards"
-msgstr "ポートに転送するため、NAT反射モード"
+msgstr "ポートフォワードの NAT リフレクションモード"
 
 #: usr/local/www/system_advanced_firewall.php:411
 #: usr/local/www/firewall_nat_edit.php:794
@@ -46147,7 +46162,7 @@ msgstr "ポートに転送するため、NAT反射モード"
 #: usr/local/www/firewall_nat_edit.php:801
 #: usr/local/www/system_advanced_firewall.php:474
 msgid "Enable (NAT + Proxy)"
-msgstr "イネーブル（ NATプロキシ）"
+msgstr "有効 ( NAT + プロキシ )"
 
 #: usr/local/www/system_advanced_firewall.php:412
 #: usr/local/www/firewall_nat_edit.php:795
@@ -46160,7 +46175,7 @@ msgstr "イネーブル（ NATプロキシ）"
 #: usr/local/www/firewall_nat_edit.php:802
 #: usr/local/www/system_advanced_firewall.php:475
 msgid "Enable (Pure NAT)"
-msgstr "イネーブル（ピュアNAT）"
+msgstr "有効 ( 純粋 NAT )"
 
 #: usr/local/www/system_advanced_firewall.php:415
 #: usr/local/www/system_advanced_firewall.php:477
@@ -46170,7 +46185,10 @@ msgid ""
 "When enabled, this automatically creates additional NAT redirect rules for "
 "access to port forwards on your external IP addresses from within your "
 "internal networks."
-msgstr "あなたの「内部ネットワーク内から外部IPアドレスのポートに転送へのアクセス」を有効にすると、これは自動的に追加のNATがためのルールを作成するリダイレクト」 。"
+msgstr ""
+"有効な場合は、内部ネットワークの中から外部 IP アドレスで"
+"ポートフォワードするアクセスに対して、"
+"追加 NAT リダイレクトルールを自動的に新規作成します。"
 
 #: usr/local/www/system_advanced_firewall.php:417
 #: usr/local/www/system_advanced_firewall.php:479
@@ -46184,6 +46202,12 @@ msgid ""
 "larger than 500 ports and will not be used for more than 1000 ports total "
 "between all port forwards.  Only TCP and UDP protocols are supported."
 msgstr ""
+"NAT + プロキシモードは、ポートフォワードのターゲットに対するパケット送信を行うヘルパープログラムを使用します。"
+"ルールが読み込まれるタイミングが正確に決定できないターゲットとの、"
+"通信に使用するインタフェース及び IP、もしくはそのどちらかのセットアップに便利です。"
+"リフレクションルールは、500 ポートを超える範囲には作成できません。"
+"また、全てのポートフォワードの合計が 1000 ポートを超える場合は、リフレクションルールを使用できません。"
+"TCP 及び UDP プロトコルのみに対応しています。"
 
 #: usr/local/www/system_advanced_firewall.php:419
 #: usr/local/www/system_advanced_firewall.php:481
@@ -46196,7 +46220,13 @@ msgid ""
 "with the target at the time the rules are loaded.  There are no inherent "
 "limits to the number of ports other than the limits of the protocols.  All "
 "protocols available for port forwards are supported."
-msgstr "ポートフォワード「純粋なNATモードでは、目標への直接のパケットにNAT規則のセットを使用しています」 。それは、より良いスケーラビリティを持っていますが、それはルールがロードされた時点で、対象との「正確通信に使用するインターフェイスおよびゲートウェイIPを決定」することが可能でなければなりません。は固有の「プロトコルの制限よりも、他のポートの数には限界が。すべて」が存在しないポートに転送に利用可能なプロトコルがサポートされています。"
+msgstr ""
+"純粋 NAT モードでは、パケットを直接ポートフォワードのターゲットにする NAT ルールセットを使用します。"
+"スケーラビリティは良いですが、ルールが読み込まれるタイミングで、"
+"ターゲットとの通信に使用するインタフェース及び IP を、"
+"正確に決定可能である必要があります。"
+"プロトコルの制限以外に、固有のポート数制限はありません。"
+"ポートフォワードに対応している全てのプロトコルを使用可能です。"
 
 #: usr/local/www/system_advanced_firewall.php:421
 #: usr/local/www/system_advanced_firewall.php:441
@@ -46209,28 +46239,30 @@ msgstr "ポートフォワード「純粋なNATモードでは、目標への直
 msgid ""
 "Individual rules may be configured to override this system setting on a per-"
 "rule basis."
-msgstr "ルールベース」個々のルールごとの上でこのシステム設定を上書きするように構成することができる」 。"
+msgstr ""
+"ルール毎の基本設定で、このシステム設定を上書きするように、"
+"個々のルールを構成できます。"
 
 #: usr/local/www/system_advanced_firewall.php:428
 #: usr/local/www/system_advanced_firewall.php:490
 #: usr/local/www/system_advanced_firewall.php:491
 #: usr/local/www/system_advanced_firewall.php:491
 msgid "Enter value for Reflection timeout in seconds."
-msgstr "秒単位でリフレクションのタイムアウトの値を入力します。"
+msgstr "リフレクションタイムアウトの値を、秒単位で入力してください。"
 
 #: usr/local/www/system_advanced_firewall.php:430
 #: usr/local/www/system_advanced_firewall.php:492
 #: usr/local/www/system_advanced_firewall.php:493
 #: usr/local/www/system_advanced_firewall.php:493
 msgid "Note: Only applies to Reflection on port forwards in NAT + proxy mode."
-msgstr "注：のみ、NATプロキシモードのポートを転送での反射にも適用されます。"
+msgstr "注意: NAT + プロキシモードのポートフォワードで、リフレクションする場合にのみ適用されます。"
 
 #: usr/local/www/system_advanced_firewall.php:434
 #: usr/local/www/system_advanced_firewall.php:496
 #: usr/local/www/system_advanced_firewall.php:497
 #: usr/local/www/system_advanced_firewall.php:497
 msgid "Enable NAT Reflection for 1:1 NAT"
-msgstr "1時01分、NATのNATリフレクションを有効にする"
+msgstr "1:1 NAT の NAT リフレクションを有効"
 
 #: usr/local/www/system_advanced_firewall.php:437
 #: usr/local/www/system_advanced_firewall.php:499
@@ -46240,7 +46272,10 @@ msgid ""
 "Enables the automatic creation of additional NAT redirect rules for access "
 "to 1:1 mappings of your external IP addresses from within your internal "
 "networks."
-msgstr "内部」ネットワーク内から外部IPアドレスの1:1マッピングに「アクセスするためのルールをリダイレクトの追加のNATの自動作成を可能にします」 。"
+msgstr ""
+"有効な場合は、内部ネットワークの中から"
+"外部 IP アドレスの 1:1 マッピングするアクセスに対して、"
+"追加 NAT リダイレクトルールを自動的に新規作成します。"
 
 #: usr/local/www/system_advanced_firewall.php:439
 #: usr/local/www/system_advanced_firewall.php:501
@@ -46251,13 +46286,16 @@ msgid ""
 "1:1 mappings.  This functions the same as the pure NAT mode for port "
 "forwards.  For more details, refer to the pure NAT mode description above."
 msgstr ""
+"注意: 1:1 マッピングのリフレクションは、1:1 マッピングの内向きコンポーネントに対してのみです。
+"この機能は、ポートフォワードの純粋 NAT モードと同じです。"
+"詳細については、上記の純粋 NAT モードの説明を参照してください。"
 
 #: usr/local/www/system_advanced_firewall.php:445
 #: usr/local/www/system_advanced_firewall.php:507
 #: usr/local/www/system_advanced_firewall.php:508
 #: usr/local/www/system_advanced_firewall.php:508
 msgid "Enable automatic outbound NAT for Reflection"
-msgstr "リフレクションの自動発信NATを有効にする"
+msgstr "リフレクションに対して、自動外向き NAT を有効"
 
 #: usr/local/www/system_advanced_firewall.php:450
 #: usr/local/www/system_advanced_firewall.php:512
@@ -46266,7 +46304,9 @@ msgstr "リフレクションの自動発信NATを有効にする"
 msgid ""
 "Required for full functionality of the pure NAT mode of NAT Reflection for "
 "port forwards or NAT Reflection for 1:1 NAT."
-msgstr "ポートに転送または1:1 NAT用のNAT反射」のNATリフレクションの純粋なNATモードの全機能に必要な"。"
+msgstr ""
+"ポートフォワードでの NAT リフレクション、もしくは 1:1 NAT での NAT リフレクションにおける、"
+"純粋 NAT モードの全機能が必要とされます。"
 
 #: usr/local/www/system_advanced_firewall.php:452
 #: usr/local/www/system_advanced_firewall.php:514
@@ -46276,13 +46316,16 @@ msgid ""
 "Note: This only works for assigned interfaces.  Other interfaces require "
 "manually creating the outbound NAT rules that direct the reply packets back "
 "through the router."
-msgstr "手動で応答がルータを介して「連続パケット直接アウトバウンドNATルールの作成：「注意してください。割り当てられたインターフェイス用のみ動作その他のインターフェイスが必要です」 。"
+msgstr ""
+"注意: 割当てられたインタフェースに対してのみ機能します。"
+"その他のインタフェースは、ルータ経由で応答パケットを直接返信する外向き NAT ルールを、"
+"手動で作成する必要があります。"
 
 #: usr/local/www/diag_logs_ntpd.php:85 usr/local/www/diag_logs_ntpd.php:86
 #: usr/local/www/diag_logs_ntpd.php:86
 #, php-format
 msgid "Last %s NTP log entries"
-msgstr "最後%sのNTPログエントリ"
+msgstr "最新 %s NTP ログエントリ"
 
 #: usr/local/www/firewall_aliases_edit.php:468
 #: usr/local/www/firewall_aliases_edit.php:470
@@ -46293,7 +46336,11 @@ msgid ""
 "address or fully qualified domain name (FQDN). FQDN hostnames are "
 "periodically re-resolved and updated. If multiple IPs are returned by a DNS "
 "query, all are used."
-msgstr "「あなたが望んでいるほど多くのホストを入力します。ホストがIPアドレスで指定する必要があります」アドレスまたは完全修飾ドメイン名（FQDN ） 。 FQDNホスト名は、クエリ、すべてが使用されている「定期的に複数のIPアドレスがDNSによって返された場合。再解決され、更新される」 。"
+msgstr ""
+"使用したいホストを全て入力します。"
+"ホストは IP アドレスか、完全修飾ドメイン名 (FQDN) で指定してください。"
+"FQDN ホスト名は、定期的に再名前解決され、更新されます。"
+"複数の IP が DNS 照会で戻ってきた場合は、全て使用されます。"
 
 #: usr/local/www/firewall_aliases_edit.php:590
 #: usr/local/www/firewall_aliases_edit.php:593
@@ -46303,11 +46350,13 @@ msgid ""
 "The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and "
 "_\"."
 msgstr ""
+"エイリアス名に使用できる文字は、"
+"a-z、A-Z、0-9、_ のみです"
 
 #: usr/local/www/system_advanced_admin.php:470
 #: usr/local/www/system_advanced_admin.php:470
 msgid "Disable password login for Secure Shell (RSA/DSA key only)"
-msgstr "セキュアシェルのパスワードログインを無効（RSA / DSA鍵の場合のみ）"
+msgstr "SSH のパスワードログインを無効 ( RSA / DSA 鍵のみ )"
 
 #: usr/local/www/pkg_mgr_installed.php:113 usr/local/www/diag_confbak.php:154
 #: usr/local/www/pkg_mgr_installed.php:115
@@ -46321,14 +46370,14 @@ msgstr "バージョン"
 #: usr/local/www/pkg_mgr_installed.php:199
 #: usr/local/www/pkg_mgr_installed.php:199
 msgid "Click on "
-msgstr "をクリックします"
+msgstr "クリックして、"
 
 #: usr/local/www/pkg_mgr_installed.php:205
 #: usr/local/www/pkg_mgr_installed.php:208
 #: usr/local/www/pkg_mgr_installed.php:210
 #: usr/local/www/pkg_mgr_installed.php:210
 msgid "Remove "
-msgstr "削除する"
+msgstr "削除"
 
 #: usr/local/www/pkg_mgr_installed.php:209
 #: usr/local/www/pkg_mgr_installed.php:212
@@ -46338,85 +46387,85 @@ msgstr "削除する"
 #: usr/local/www/pkg_mgr_installed.php:214
 #: usr/local/www/pkg_mgr_installed.php:217
 msgid "Reinstall "
-msgstr "再インストールする"
+msgstr "再インストール"
 
 #: usr/local/www/system_advanced_notifications.php:262
 #: usr/local/www/system_advanced_notifications.php:262
 msgid "System Sounds"
-msgstr "システムサウンド"
+msgstr "システム音"
 
 #: usr/local/www/system_advanced_notifications.php:265
 #: usr/local/www/system_advanced_notifications.php:265
 msgid "Startup/Shutdown Sound"
-msgstr "起動/停止音"
+msgstr "起動 / シャットダウン音"
 
 #: usr/local/www/system_advanced_notifications.php:268
 #: usr/local/www/system_advanced_notifications.php:268
 msgid "Disable the startup/shutdown beep"
-msgstr "起動/停止ビープ音を無効にする"
+msgstr "起動 / シャットダウンビープ音を無効"
 
 #: usr/local/www/system_advanced_notifications.php:270
 #: usr/local/www/system_advanced_notifications.php:270
 msgid "When this is checked, startup and shutdown sounds will no longer play."
-msgstr "これをチェックすると、起動とシャットダウンの音は、もはや再生されません。"
+msgstr "これをチェックすると、起動とシャットダウンの音が鳴らなくなります。"
 
 #: usr/local/www/status_rrd_graph.php:146
 #: usr/local/www/status_rrd_graph.php:151
 #: usr/local/www/status_rrd_graph.php:151
 msgid "Invalid start date/time:"
-msgstr "無効な開始日/時間："
+msgstr "無効な開始日 / 時間: "
 
 #: usr/local/www/status_rrd_graph.php:159
 #: usr/local/www/status_rrd_graph.php:164
 #: usr/local/www/status_rrd_graph.php:164
 msgid "Invalid end date/time:"
-msgstr "無効な終了日/時間："
+msgstr "無効な終了日 / 時間: "
 
 #: usr/local/www/status_rrd_graph.php:509
 #: usr/local/www/status_rrd_graph.php:544
 #: usr/local/www/status_rrd_graph.php:544
 msgid "Enter date and/or time. Current timezone:"
-msgstr "日付および/または時刻を入力します。現在のタイムゾーン："
+msgstr "日付及び時刻、もしくはどちらかを入力してください。現在のタイムゾーン: "
 
 #: usr/local/www/status_ntpd.php:109 usr/local/www/status_ntpd.php:125
 #: usr/local/www/status_ntpd.php:131 usr/local/www/status_ntpd.php:131
 msgid "Ref ID"
-msgstr "REF ID"
+msgstr "RefID"
 
 #: usr/local/www/status_ntpd.php:110 usr/local/www/status_ntpd.php:126
 #: usr/local/www/status_ntpd.php:132 usr/local/www/status_ntpd.php:132
 msgid "Stratum"
-msgstr "地層"
+msgstr "Stratum"
 
 #: usr/local/www/status_ntpd.php:112 usr/local/www/status_ntpd.php:128
 #: usr/local/www/status_ntpd.php:134 usr/local/www/status_ntpd.php:134
 msgid "When"
-msgstr "時"
+msgstr "When"
 
 #: usr/local/www/status_ntpd.php:113 usr/local/www/status_ntpd.php:129
 #: usr/local/www/status_ntpd.php:135 usr/local/www/status_ntpd.php:135
 msgid "Poll"
-msgstr "世論調査"
+msgstr "Poll"
 
 #: usr/local/www/status_ntpd.php:114 usr/local/www/status_ntpd.php:130
 #: usr/local/www/status_ntpd.php:136 usr/local/www/status_ntpd.php:136
 msgid "Reach"
-msgstr "リーチ"
+msgstr "Reach"
 
 #: usr/local/www/status_ntpd.php:116 usr/local/www/status_ntpd.php:132
 #: usr/local/www/status_ntpd.php:138 usr/local/www/status_ntpd.php:138
 msgid "Offset"
-msgstr "オフセット"
+msgstr "Offset"
 
 #: usr/local/www/status_ntpd.php:117 usr/local/www/status_ntpd.php:133
 #: usr/local/www/status_ntpd.php:139 usr/local/www/status_ntpd.php:139
 msgid "Jitter"
-msgstr "ジッタ"
+msgstr "Jitter"
 
 #: usr/local/www/firewall_rules.php:790 usr/local/www/firewall_rules.php:783
 #: usr/local/www/firewall_rules.php:784 usr/local/www/firewall_rules.php:784
 msgid "No floating rules are currently defined."
-msgstr "いいえ浮動ルールは、現在定義されていません。"
+msgstr "フローティングルールは、現在定義されていません"
 
 #: usr/local/www/system_advanced_misc.php:297
 #: usr/local/www/system_advanced_misc.php:316
@@ -46431,7 +46480,14 @@ msgid ""
 "connection. Further connections from that host will be redirected to the "
 "next web server in the round robin. Changing this option will restart the "
 "Load Balancing service."
-msgstr "同じWebに送信され、同じ送信元からの接続を持つ方法「連続接続はラウンドロビンのサーバにリダイレクトされ、「この接続を参照して、「サーバ。この「スティッキー接続は、 「限りという状態があるように存在することになる」 。状態は有効期限が切れると、そのスティッキラウンドロビンの次のWebサーバ」接続。そのホストからのさらなる接続はにリダイレクトされます」になります。このオプションを変更すると、 「ロードバランシングサービスを再起動します。"
+msgstr "
+"連続した接続は、ラウンドロビン方式のサーバにリダイレクトする場合でも、"
+"同じ送信元からは、同じ Web サーバに送信されます。"
+"このような「スティッキー接続」は、接続を参照するステータスと同じ期間存在します。"
+"ステータスの有効期限が切れると、スティッキー接続の有効期限も切れます。"
+"そのホストからの追加接続はラウンドロビンで、"
+"次の Web サーバにリダイレクトされます。"
+"このオプションを変更すると、ロードバランシングサービスは再起動します。"
 
 #: usr/local/www/system_advanced_misc.php:308
 #: usr/local/www/system_advanced_misc.php:327
@@ -46443,7 +46499,11 @@ msgid ""
 "0, so source tracking is removed as soon as the state expires. Setting this "
 "timeout higher will cause the source/destination relationship to persist for "
 "longer periods of time."
-msgstr "「スティッキー接続の送信元の追跡のタイムアウトを設定します。デフォルトでは、これは「 0ため、ソースの追跡とすぐ状態が期限切れになったとして除去される。この設定は、より長い期間「タイムアウト高くして送信元/送信先の関係が持続することになります」 。"
+msgstr ""
+"スティッキー接続の送信元追跡タイムアウトを設定します。"
+"デフォルトは 0 で、送信元追跡は、状態の有効期限が切れると削除されます。"
+"タイムアウトを高く設定すると、"
+"送信元 / 送信先の関係は、より長期間持続するようになります。"
 
 #: usr/local/www/system_advanced_misc.php:336
 #: usr/local/www/system_advanced_misc.php:355
@@ -46530,21 +46590,23 @@ msgstr ""
 #: usr/local/www/firewall_shaper_vinterface.php:205
 #: usr/local/www/firewall_shaper_vinterface.php:230
 msgid "You cannot name a child queue with the same name as a parent limiter"
-msgstr "あなたは、親リミッタと同じ名前の子キューに名前を付けることはできません"
+msgstr "子キューに、親リミッタと同じ名前を付けられません"
 
 #: usr/local/www/diag_routes.php:72 usr/local/www/diag_routes.php:73
 #: usr/local/www/diag_routes.php:73
 msgid ""
 "By enabling name resolution, the query should take a bit longer. You can "
 "stop it at any time by clicking the Stop button in your browser."
-msgstr "名前解決を可能にすることにより、クエリは少し時間がかかるはずです。お使いのブラウザで、[停止]ボタンをクリックすると、いつでもそれを停止することができます。"
+msgstr ""
+"名前解決を有効にすると、クエリには少し時間がかかるようになります。"
+"ブラウザの「停止」ボタンをクリックすれば、いつでも名前解決を停止できます。"
 
 #: usr/local/www/status_dhcpv6_leases.php:481
 #: usr/local/www/status_dhcpv6_leases.php:482
 #: usr/local/www/status_dhcpv6_leases.php:485
 #: usr/local/www/status_dhcpv6_leases.php:485
 msgid "IPv6 Prefix"
-msgstr "IPv6のプレフィックス"
+msgstr "IPv6 プレフィックス"
 
 #: usr/local/www/services_captiveportal.php:465
 #: usr/local/www/services_captiveportal.php:463
@@ -46556,7 +46618,12 @@ msgid ""
 "the captive portal, but rather how many users can load the portal page or "
 "authenticate at the same time! Possible setting allowed is: minimum 4 "
 "connections per client IP address, with a total maximum of 100 connections."
-msgstr "ポータルHTTP（S ）サーバ「この設定では、キャプティブへの同時接続数を制限します」 。これはにログインできるユーザー数は設定しません」キャプティブポータルのではなく、どのように多くのユーザーがポータル·ページをロードしたりすることができ、「同じ時間に で認証！許可された可能性の設定は、次のとおりです。クライアントのIPアドレスごとに最小4 "の接続、 100接続の合計、最大。"
+msgstr ""
+"この設定は、キャプティブポータル HTTP(S) サーバに対する同時接続数を制限します。"
+"キャプティブポータルにログインできるユーザ数の設定ではありません。"
+"どちらかと言えば、ポータルページの読み込みや認証を、ユーザが同時に実行できる数です！"
+"設定可能な値は、クライアント IP アドレス毎に、最小 4 接続、"
+"合計で最大 100 接続までです。"
 
 #: usr/local/www/services_captiveportal.php:602
 #: usr/local/www/services_captiveportal.php:600
@@ -46564,7 +46631,7 @@ msgstr "ポータルHTTP（S ）サーバ「この設定では、キャプティ
 #: usr/local/www/services_captiveportal.php:617
 #: usr/local/www/services_captiveportal.php:617
 msgid "Radius Protocol"
-msgstr "半径プロトコル"
+msgstr "RADIUS プロトコル"
 
 #: usr/local/www/services_captiveportal.php:611
 #: usr/local/www/services_captiveportal.php:609
@@ -46580,7 +46647,7 @@ msgstr "CHAP_MD5"
 #: usr/local/www/services_captiveportal.php:630
 #: usr/local/www/services_captiveportal.php:630
 msgid "MSCHAPv1"
-msgstr "MSCHAPv1の"
+msgstr "MSCHAPv1"
 
 #: usr/local/www/services_captiveportal.php:619
 #: usr/local/www/services_captiveportal.php:617
@@ -46588,7 +46655,7 @@ msgstr "MSCHAPv1の"
 #: usr/local/www/services_captiveportal.php:634
 #: usr/local/www/services_captiveportal.php:634
 msgid "MSCHAPv2"
-msgstr "MSCHAPv2の"
+msgstr "MSCHAPv2"
 
 #: usr/local/www/system_gateways_edit.php:389
 #: usr/local/www/system_gateways_edit.php:495
@@ -46596,13 +46663,15 @@ msgstr "MSCHAPv2の"
 #: usr/local/www/system_gateways_edit.php:527
 #: usr/local/www/system_gateways_edit.php:527
 msgid "Choose the Internet Protocol this gateway uses."
-msgstr "このゲートウェイが使用するインターネットプロトコルを選択します。"
+msgstr "このゲートウェイが使用するインターネットプロトコルを選択してください。"
 
 #: usr/local/www/system_gateways_edit.php:490
 msgid ""
 "This defines how often that an icmp probe will be sent in seconds. Default "
 "is 1."
-msgstr "1である"これはどのくらいの頻度で、ICMPプローブは数秒で送信されることで、デフォルト定義」 。"
+msgstr ""
+"ICMP プローブが送信される頻度を、秒単位で定義します。"
+"デフォルトは 1 です。"
 
 #: usr/local/www/system_gateways_edit.php:491
 #: usr/local/www/system_gateways_edit.php:597
@@ -46613,19 +46682,25 @@ msgstr "1である"これはどのくらいの頻度で、ICMPプローブは数
 msgid ""
 "NOTE: The quality graph is averaged over seconds, not intervals, so as the "
 "frequency probe is increased the accuracy of the quality graph is decreased."
-msgstr ""注：なるように品質のグラフは、秒ではなく、間隔にわたって平均化され、「高周波プローブ、品質グラフの精度を増加さが減少する。"
+msgstr ""
+"注意: プローブ頻度が増加することで、品質グラフの正確さは低下することがないように、"
+"品質グラフは、間隔単位の平均ではなく、秒単位の平均になっています。"
 
 #: usr/local/www/system_gateways_edit.php:500
 msgid ""
 "This defines the number of bad probes before the alarm will fire. Default is "
 "10."
-msgstr "「アラームが起動される前に、これは悪いプローブの数を定義します。デフォルトは "10 。"
+msgstr ""
+"警報のトリガとなる、失敗したプローブの数を定義します。"
+"デフォルトは 10 です。"
 
 #: usr/local/www/system_gateways_edit.php:505
 msgid ""
 "NOTE: The total time before a gateway is down is the product of the "
 "Frequency Probe and the Down fields. By default this is 1*10=10 seconds."
-msgstr ""注：ゲートウェイの前に合計時間がダウンしているの産物である「高周波プローブと下のフィールド。デフォルトでは、 1 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr 10 = 10秒です。"
+msgstr ""
+"注意: ゲートウェイがダウンとなるまでの合計時間は、プローブ頻度とダウンフィールドから算出されます。"
+"デフォルトでは、1*10=10 秒です。"
 
 #: usr/local/www/status_gateways.php:100 usr/local/www/status_gateways.php:108
 #: usr/local/www/status_gateways.php:134
@@ -46647,7 +46722,7 @@ msgstr "ペンディング"
 #: usr/local/www/status_gateways.php:140 usr/local/www/status_gateways.php:141
 #: usr/local/www/status_gateways.php:141
 msgid "Last check:"
-msgstr "最後のチェック："
+msgstr "最新チェック: "
 
 #: usr/local/www/diag_dump_states.php:145
 #: usr/local/www/diag_dump_states.php:144
@@ -46664,13 +46739,14 @@ msgstr "マッチングフィルタ"
 #: usr/local/www/diag_dump_states.php:143
 #: usr/local/www/diag_dump_states.php:143
 msgid "Kill"
-msgstr "殺す"
+msgstr "Kill"
 
 #: usr/local/www/services_dyndns.php:184 usr/local/www/services_dyndns.php:180
 #: usr/local/www/services_dyndns.php:180
 msgid ""
 "You can force an update for an IP address on the edit page for that service."
-msgstr "「あなたは、そのサービスの編集ページ上のIPアドレスの更新を強制することができます。"
+msgstr ""
+"サービスの編集ページで、IP アドレスの更新を強制することができます。"
 
 #: usr/local/www/vpn_openvpn_server.php:299
 #: usr/local/www/vpn_openvpn_server.php:300
@@ -46678,56 +46754,57 @@ msgstr "「あなたは、そのサービスの編集ページ上のIPアドレ�
 #: usr/local/www/vpn_openvpn_server.php:321
 msgid ""
 "Using a tunnel network and server bridge settings together is not allowed."
-msgstr "「一緒にトンネルのネットワークとサーバのブリッジ設定を使用することは許可されていません。"
+msgstr ""
+"トンネルネットワーク、及び、サーバブリッジ設定を、併せて使用することはできません。"
 
 #: usr/local/www/vpn_openvpn_server.php:302
 #: usr/local/www/vpn_openvpn_server.php:303
 #: usr/local/www/vpn_openvpn_server.php:324
 #: usr/local/www/vpn_openvpn_server.php:324
 msgid "Server Bridge DHCP Start and End must both be empty, or defined."
-msgstr "サーバー橋DHCP開始と終了の両方の空、または定義する必要があります。"
+msgstr "サーバブリッジ DHCP 開始・終了アドレスはどちらも空白にするか、両方定義してくだださい。"
 
 #: usr/local/www/vpn_openvpn_server.php:304
 #: usr/local/www/vpn_openvpn_server.php:305
 #: usr/local/www/vpn_openvpn_server.php:326
 #: usr/local/www/vpn_openvpn_server.php:326
 msgid "Server Bridge DHCP Start must be an IPv4 address."
-msgstr "サーバー·ブリッジのDHCPの開始は、IPv4アドレスである必要があります。"
+msgstr "サーバブリッジ DHCP 開始アドレスは IPv4 アドレスです。"
 
 #: usr/local/www/vpn_openvpn_server.php:306
 #: usr/local/www/vpn_openvpn_server.php:307
 #: usr/local/www/vpn_openvpn_server.php:328
 #: usr/local/www/vpn_openvpn_server.php:328
 msgid "Server Bridge DHCP End must be an IPv4 address."
-msgstr "サーバー·ブリッジのDHCPエンドは、IPv4アドレスである必要があります。"
+msgstr "サーバブリッジ DHCP 終了アドレスは IPv4 アドレスです。"
 
 #: usr/local/www/vpn_openvpn_server.php:308
 #: usr/local/www/vpn_openvpn_server.php:309
 #: usr/local/www/vpn_openvpn_server.php:330
 #: usr/local/www/vpn_openvpn_server.php:330
 msgid "The Server Bridge DHCP range is invalid (start higher than end)."
-msgstr "サーバーブリッジDHCP範囲は（端部よりも高い開始）は無効です。"
+msgstr "サーバーブリッジ DHCP 範囲は無効です ( 開始アドレスが終了アドレスよりも大きい )"
 
 #: usr/local/www/vpn_openvpn_server.php:1084
 #: usr/local/www/vpn_openvpn_server.php:1112
 #: usr/local/www/vpn_openvpn_server.php:1139
 #: usr/local/www/vpn_openvpn_server.php:1139
 msgid "Bridge DHCP"
-msgstr "ブリッジDHCP"
+msgstr "ブリッジ DHCP"
 
 #: usr/local/www/vpn_openvpn_server.php:1094
 #: usr/local/www/vpn_openvpn_server.php:1122
 #: usr/local/www/vpn_openvpn_server.php:1149
 #: usr/local/www/vpn_openvpn_server.php:1149
 msgid "Allow clients on the bridge to obtain DHCP."
-msgstr "橋の上のクライアントがDHCPを取得することができます。"
+msgstr "ブリッジでクライアントに DHCP の取得を許可"
 
 #: usr/local/www/vpn_openvpn_server.php:1102
 #: usr/local/www/vpn_openvpn_server.php:1130
 #: usr/local/www/vpn_openvpn_server.php:1157
 #: usr/local/www/vpn_openvpn_server.php:1157
 msgid "Bridge Interface"
-msgstr "ブリッジインターフェース"
+msgstr "ブリッジインタフェース"
 
 #: usr/local/www/vpn_openvpn_server.php:1124
 msgid ""
@@ -46736,14 +46813,19 @@ msgid ""
 "separately. This setting controls which existing IP address and subnet mask "
 "are used by OpenVPN for the bridge. Setting this to 'none' will cause the "
 "Server Bridge DHCP settings below to be ignored."
-msgstr "自動的に「このタップインスタンスが先となるインタフェースが、これは行われません架橋」 。あなたは、このインターフェイスを割り当て、 「別途既存のIPアドレスとサブネットマスクは、この設定を制御し「ブリッジ用のOpenVPNで使用されているが、ブリッジを作成する必要があります。' none'に、これを設定すると、以下の「サーバー·ブリッジDHCP設定が無視されるようになります。"
+msgstr ""
+"このタップインスタンスがブリッジする、インタフェースです。"
+"これは自動的には実行されません。"
+"インタフェースの割当てと、ブリッジの新規作成は別々に行う必要があります。"
+"この設定は、OpenVPN がブリッジとして使用する、既存の IP アドレスとサブネットマスクをコントロールします。"
+"「なし」を設定すると、下記のサーバブリッジ DHCP 設定は無視されるようになります。"
 
 #: usr/local/www/vpn_openvpn_server.php:1133
 #: usr/local/www/vpn_openvpn_server.php:1161
 #: usr/local/www/vpn_openvpn_server.php:1188
 #: usr/local/www/vpn_openvpn_server.php:1188
 msgid "Server Bridge DHCP Start"
-msgstr "サーバー·ブリッジのDHCPスタート"
+msgstr "サーバブリッジ DHCP 開始アドレス"
 
 #: usr/local/www/vpn_openvpn_server.php:1137
 msgid ""
@@ -46751,14 +46833,18 @@ msgid ""
 "range to use on the interface to which this tap instance is bridged. If "
 "these settings are left blank, DHCP will be passed through to the LAN, and "
 "the interface setting above will be ignored."
-msgstr "このタップインスタンスが架橋されているようにインターフェイス上で使用する範囲「マルチポイントサーバーとしてタップ·モードを使用するときは、必要に応じて、DHCPを供給することができる」 。場合は"これらの設定は空白のままに、 DHCPがLANに通過され、 「上記の設定インターフェイスは無視されます。"
+msgstr ""
+"マルチポイントサーバとしてタップモードを使用すると、"
+"オプションで、このタップインスタンスがブリッジする、"
+"インタフェースで使用する DHCP 範囲を指定できます。"
+"設定を空白にすると、DHCP は LAN を通過し、上記のインタフェース設定は無視されます。"
 
 #: usr/local/www/vpn_openvpn_server.php:1146
 #: usr/local/www/vpn_openvpn_server.php:1174
 #: usr/local/www/vpn_openvpn_server.php:1201
 #: usr/local/www/vpn_openvpn_server.php:1201
 msgid "Server Bridge DHCP End"
-msgstr "サーバー·ブリッジのDHCP終了"
+msgstr "サーバブリッジ DHCP 終了アドレス"
 
 #: usr/local/www/services_dhcp.php:239 usr/local/www/services_dhcpv6.php:216
 #: usr/local/www/services_router_advertisements.php:159
