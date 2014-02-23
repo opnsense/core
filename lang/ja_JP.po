@@ -46857,7 +46857,7 @@ msgstr "サーバブリッジ DHCP 終了アドレス"
 #: usr/local/www/services_dhcp_edit.php:230
 #: usr/local/www/services_dhcp.php:286 usr/local/www/services_dhcpv6.php:195
 msgid "A valid domain search list must be specified."
-msgstr "有効なドメイン検索リストを指定する必要があります。"
+msgstr "有効なドメイン検索リストを指定してください"
 
 #: usr/local/www/services_dhcp.php:685 usr/local/www/services_dhcp.php:861
 #: usr/local/www/services_dhcp_edit.php:427
@@ -46867,7 +46867,9 @@ msgstr "有効なドメイン検索リストを指定する必要があります
 msgid ""
 "The DHCP server can optionally provide a domain search list. Use the "
 "semicolon character as seperator "
-msgstr "「 DHCPサーバは、必要に応じてドメイン検索リストを提供することができます。使用する」 SEPERATORとしてセミコロンを"
+msgstr ""
+"オプションで、DHCP サーバはドメイン検索リストを提供することができます。"
+"区切り文字にはセミコロンを使用してください。"
 
 #: usr/local/www/services_dhcp.php:735 usr/local/www/services_dhcpv6.php:716
 #: usr/local/www/services_dhcp.php:916 usr/local/www/services_dhcpv6.php:647
@@ -46875,13 +46877,13 @@ msgstr "「 DHCPサーバは、必要に応じてドメイン検索リストを�
 #: usr/local/www/services_dhcp.php:950 usr/local/www/services_dhcp.php:950
 #: usr/local/www/services_dhcpv6.php:664
 msgid "Time format change"
-msgstr "時刻形式の変更"
+msgstr "時間形式の変更"
 
 #: usr/local/www/services_dhcp.php:744 usr/local/www/services_dhcp.php:925
 #: usr/local/www/services_dhcp.php:939 usr/local/www/services_dhcp.php:959
 #: usr/local/www/services_dhcp.php:959
 msgid "Change DHCP display lease time from UTC to local time."
-msgstr "UTCから現地時刻に、DHCPの表示リース時間を変更します。"
+msgstr "DHCP リースの時間表示を、UTC　から現地時間に変更します。"
 
 #: usr/local/www/services_dhcp.php:751 usr/local/www/services_dhcp.php:932
 msgid ""
@@ -46889,37 +46891,41 @@ msgid ""
 "\t\t\t\t\t\tbox DHCP lease time will be displayed in local time and set to "
 "time zone selected.  This will be used for all DHCP interfaces lease time."
 msgstr ""
+"デフォルトでは、DHCP リースは UTC 時間で表示されます。このボックスをチェックすると\n"
+"\t\t\t\t\t\tDHCP リースは現地時間表示になり、選択されたタイムゾーンに設定されます。"
+"全ての DHCP インタフェースのリース時間に適用されます。"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:92
 #: usr/local/www/load_balancer_virtual_server_edit.php:92
 msgid ""
 "The port must be an integer between 1 and 65535, a port alias, or left blank."
-msgstr "「ポートは1 〜65535の整数、ポートエイリアス、または左空白にする必要があります。"
+msgstr "ポートは 1-65535 の整数、ポートエイリアス、または空白にしてください"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:95
 #: usr/local/www/load_balancer_virtual_server_edit.php:95
 #, php-format
 msgid "%s is not a valid IP address, IPv4 subnet, or alias."
-msgstr "%sは有効なIPアドレス、 IPv4サブネット、またはエイリアスではありません。"
+msgstr "%s は有効な IP アドレス、IPv4 サブネット、またはエイリアスではありません"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:97
 #: usr/local/www/load_balancer_virtual_server_edit.php:97
 #, php-format
 msgid "%s is a subnet containing more than 64 IP addresses."
-msgstr "%sは64以上のIPアドレスを含むサブネットです。"
+msgstr "%s は IP アドレスが 64 個以上含まれるサブネットです"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:173
 #: usr/local/www/load_balancer_virtual_server_edit.php:171
 #: usr/local/www/load_balancer_virtual_server_edit.php:171
 msgid ""
 "You may also specify a host alias listed in Firewall -&gt; Aliases here."
-msgstr "こちらu003eエイリアス - "あなたは、ファイアウォールに記載されているホストのエイリアスを指定することもできます。"
+msgstr ""
+"ファイアウォール -&gt; エイリアスで、リストに登録した、ホストエイリアスをここに指定することもできます。"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:187
 #: usr/local/www/load_balancer_virtual_server_edit.php:185
 #: usr/local/www/load_balancer_virtual_server_edit.php:185
 msgid "If left blank, listening ports from the pool will be used."
-msgstr "プールからのポートが使用されます聞いて、空白のままにした場合。"
+msgstr "空白の場合は、プールから、リスニングポートが使用されます。"
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:188
 #: usr/local/www/load_balancer_pool_edit.php:216
@@ -46929,7 +46935,8 @@ msgstr "プールからのポートが使用されます聞いて、空白のま
 #: usr/local/www/load_balancer_pool_edit.php:214
 msgid ""
 "You may also specify a port alias listed in Firewall -&gt; Aliases here."
-msgstr "こちらu003eエイリアス - "あなたは、ファイアウォールに記載されているポートエイリアスを指定することもできます。"
+msgstr ""
+"ファイアウォール -&gt; エイリアスで、リストに登録した、ポートエイリアスをここに指定することもできます。"
 
 #: usr/local/www/system_hasync.php:96 usr/local/www/system_hasync.php:97
 #: usr/local/www/system_hasync.php:97
@@ -46939,7 +46946,7 @@ msgstr "高可用性同期"
 #: usr/local/www/services_ntpd.php:86 usr/local/www/services_ntpd.php:92
 #: usr/local/www/services_ntpd.php:92
 msgid "NTP Server Configuration"
-msgstr "NTPサーバの設定"
+msgstr "NTP サーバ構成"
 
 #: usr/local/www/interfaces_bridge_edit.php:391
 #: usr/local/www/interfaces_bridge_edit.php:392
@@ -46950,20 +46957,22 @@ msgid ""
 "Set the Spanning Tree priority of interface to value.  The default is 128.  "
 "The minimum is 0 and the maximum is 240.  Increments of 16."
 msgstr ""
+"インタフェースのスパニングツリー優先度を設定してください。デフォルトは 128 です。"
+"最小値は 0、最大値は 240 です。増加単位は 16 です。"
 
 #: usr/local/www/diag_packet_capture.php:172
 #: usr/local/www/diag_packet_capture.php:219
 #: usr/local/www/diag_packet_capture.php:235
 #: usr/local/www/diag_packet_capture.php:235
 msgid "Select the protocol to capture, or Any."
-msgstr "キャプチャするプロトコル、またはすべてを選択します。"
+msgstr "キャプチャ等の処理をするプロトコルを選択してください。"
 
 #: usr/local/www/diag_packet_capture.php:245
 #: usr/local/www/diag_packet_capture.php:292
 #: usr/local/www/diag_packet_capture.php:310
 #: usr/local/www/diag_packet_capture.php:310
 msgid "View Capture"
-msgstr "ビューキャプチャー"
+msgstr "キャプチャの表示"
 
 #: usr/local/www/system_camanager.php:420
 #: usr/local/www/system_camanager.php:427
@@ -46977,7 +46986,9 @@ msgstr "次の証明書のシリアル"
 msgid ""
 "Enter a decimal number to be used as the serial number for the next "
 "certificate to be created using this CA."
-msgstr "このCAを使用して作成される証明書の「次のシリアル番号として使用される進数を入力してください」 。"
+msgstr ""
+"この CA を使用して作成される、次の証明書のシリアル番号として使用される、"
+"10 進数を入力してください。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:140
 #: usr/local/www/vpn_ipsec_phase2.php:141
@@ -46987,7 +46998,7 @@ msgstr "このCAを使用して作成される証明書の「次のシリアル�
 #: usr/local/www/vpn_ipsec_phase2.php:145
 #: usr/local/www/vpn_ipsec_phase2.php:171
 msgid "Invalid Local Network."
-msgstr "無効なローカルネットワーク。"
+msgstr "無効なローカルネットワークです"
 
 #: usr/local/www/vpn_ipsec_phase2.php:140
 #: usr/local/www/vpn_ipsec_phase2.php:141
@@ -46997,7 +47008,7 @@ msgstr "無効なローカルネットワーク。"
 #: usr/local/www/vpn_ipsec_phase2.php:145
 #: usr/local/www/vpn_ipsec_phase2.php:171
 msgid "has no subnet."
-msgstr "何のサブネットがありません。"
+msgstr "にサブネットがありません"
 
 #: usr/local/www/firewall_nat_edit.php:233
 #: usr/local/www/firewall_nat_edit.php:238
@@ -47007,7 +47018,9 @@ msgstr "何のサブネットがありません。"
 msgid ""
 "A valid local port must be specified. It must be a port alias or integer "
 "between 1 and 65535."
-msgstr "「有効なローカルポートを指定する必要があります。これは、ポートエイリアスまたは整数でなければなりません "1 〜65535の間。"
+msgstr ""
+"有効なローカルポートを指定してください。"
+"ポートエイリアス、もしくは、1-65535 の整数です。"
 
 #: usr/local/www/firewall_nat_edit.php:793
 #: usr/local/www/firewall_nat_edit.php:792
@@ -47016,7 +47029,7 @@ msgstr "「有効なローカルポートを指定する必要があります。
 #: usr/local/www/firewall_nat_edit.php:800
 #: usr/local/www/firewall_nat_edit.php:800
 msgid "Use system default"
-msgstr "システムのデフォルトを使用します。"
+msgstr "システムのデフォルトを使用"
 
 #: usr/local/www/interfaces.php:463 usr/local/www/interfaces.php:460
 #: usr/local/www/interfaces.php:448 usr/local/www/interfaces.php:453
@@ -47024,7 +47037,9 @@ msgstr "システムのデフォルトを使用します。"
 msgid ""
 "This interface is referenced by IPv4 VIPs. Please delete those before "
 "setting the interface to 'none' configuration."
-msgstr "「このインタフェースは、IPv4のVIPから参照されている。前に、これらを削除してください"'none'に設定にインターフェイスを設定する。"
+msgstr ""
+"このインタフェースは IPv4 VIP から参照されています。"
+"インタフェースの設定を「なし」に構成する前に、参照を削除してください。"
 
 #: usr/local/www/interfaces.php:516 usr/local/www/interfaces.php:513
 #: usr/local/www/interfaces.php:501 usr/local/www/interfaces.php:506
@@ -47032,31 +47047,33 @@ msgstr "「このインタフェースは、IPv4のVIPから参照されてい�
 msgid ""
 "This interface is referenced by IPv6 VIPs. Please delete those before "
 "setting the interface to 'none' configuration."
-msgstr "「このインタフェースは、IPv6のVIPから参照されている。前に、これらを削除してください"'none'に設定にインターフェイスを設定する。"
+msgstr ""
+"このインタフェースは IPv6 VIP から参照されています。"
+"インタフェースの設定を「なし」に構成する前に、参照を削除してください。"
 
 #: usr/local/www/interfaces.php:526 usr/local/www/interfaces.php:523
 #: usr/local/www/interfaces.php:511
 #, php-format
 msgid "You can only have one interface configured as %s or 6to4."
-msgstr "あなただけの1インタフェースが%sや6to4のように構成することができます。"
+msgstr "%s または 6to4 として構成可能なインタフェースは 1 つだけです。"
 
 #: usr/local/www/interfaces.php:536 usr/local/www/interfaces.php:533
 #: usr/local/www/interfaces.php:521
 #, php-format
 msgid "You can only have one interface configured as %s or 6rd."
-msgstr "あなただけの1インタフェースが%sまたは6RDとして設定することができます。"
+msgstr "%s または 6rd として構成可能なインタフェースは 1 つだけです。"
 
 #: usr/local/www/interfaces.php:549 usr/local/www/interfaces.php:546
 #: usr/local/www/interfaces.php:534 usr/local/www/interfaces.php:541
 #: usr/local/www/interfaces.php:537 usr/local/www/interfaces.php:537
 msgid "You must enter a valid hexadecimal number for the IPv6 prefix ID."
-msgstr "あなたは、 IPv6プレフィックスIDに対して有効な16進数を入力する必要があります。"
+msgstr "IPv6 プレフィックス ID に、有効な 16 進数を入力してください。"
 
 #: usr/local/www/interfaces.php:553 usr/local/www/interfaces.php:550
 #: usr/local/www/interfaces.php:538 usr/local/www/interfaces.php:545
 #: usr/local/www/interfaces.php:541 usr/local/www/interfaces.php:541
 msgid "You specified an IPv6 prefix ID that is out of range."
-msgstr "あなたが範囲外ですIPv6プレフィックスIDを指定。"
+msgstr "指定した IPv6 プレフィックス ID は範囲外です。"
 
 #: usr/local/www/interfaces.php:1119 usr/local/www/interfaces.php:1107
 #: usr/local/www/interfaces.php:1121 usr/local/www/interfaces.php:1163
@@ -47068,19 +47085,19 @@ msgstr "SLAAC"
 #: usr/local/www/interfaces.php:1121 usr/local/www/interfaces.php:1163
 #: usr/local/www/interfaces.php:1158 usr/local/www/interfaces.php:1158
 msgid "6rd Tunnel"
-msgstr "6RDトンネル"
+msgstr "6rd トンネル"
 
 #: usr/local/www/interfaces.php:1119 usr/local/www/interfaces.php:1107
 #: usr/local/www/interfaces.php:1121 usr/local/www/interfaces.php:1163
 #: usr/local/www/interfaces.php:1158 usr/local/www/interfaces.php:1158
 msgid "6to4 Tunnel"
-msgstr "の6to4トンネル"
+msgstr "6to4 トンネル"
 
 #: usr/local/www/interfaces.php:1119 usr/local/www/interfaces.php:1107
 #: usr/local/www/interfaces.php:1121 usr/local/www/interfaces.php:1163
 #: usr/local/www/interfaces.php:1158 usr/local/www/interfaces.php:1158
 msgid "Track Interface"
-msgstr "トラックインターフェイス"
+msgstr "インタフェースの追跡"
 
 #: usr/local/www/interfaces.php:1411 usr/local/www/interfaces.php:1399
 #: usr/local/www/interfaces.php:1412 usr/local/www/interfaces.php:1455
@@ -47088,19 +47105,21 @@ msgstr "トラックインターフェイス"
 msgid ""
 "If you leave this field blank, the adapter's default MTU will be used. This "
 "is typically 1500 bytes but can vary in some circumstances."
-msgstr "「このフィールドを空白のままにすると、アダプタのデフォルトのMTUが使用されます。これは、「通常、 1500バイトですが、いくつかの状況で変化することができる。"
+msgstr ""
+"このフィールドを空白にすると、アダプタのデフォルト MTU が使用されます。"
+"通常は 1500 バイトですが、一部の環境では変更可能です。"
 
 #: usr/local/www/interfaces.php:1768 usr/local/www/interfaces.php:1756
 #: usr/local/www/interfaces.php:1774 usr/local/www/interfaces.php:1820
 #: usr/local/www/interfaces.php:1812 usr/local/www/interfaces.php:1812
 msgid "6RD Rapid Deployment"
-msgstr "6RDのRapid Deployment"
+msgstr "6RD Rapid Deployment"
 
 #: usr/local/www/interfaces.php:1771 usr/local/www/interfaces.php:1759
 #: usr/local/www/interfaces.php:1777 usr/local/www/interfaces.php:1823
 #: usr/local/www/interfaces.php:1815 usr/local/www/interfaces.php:1815
 msgid "6RD prefix"
-msgstr "6RDプレフィックス"
+msgstr "6RD プレフィックス"
 
 #: usr/local/www/interfaces.php:1775 usr/local/www/interfaces.php:1763
 #: usr/local/www/interfaces.php:1781 usr/local/www/interfaces.php:1827
@@ -47108,26 +47127,29 @@ msgstr "6RDプレフィックス"
 msgid ""
 "The value in this field is the 6RD IPv6 prefix assigned by your ISP. e.g. "
 "'2001:db8::/32'"
-msgstr ""このフィールドの値は、 ISPから割り当てられた6RD IPv6プレフィックスであるなど。 「'2001 ： DB8:: / 32 」"
+msgstr ""
+"このフィールドの値は、ISP から割当てられた 6RD IPv6 プレフィックスです。"
+"例 2001:db8::/32"
 
 #: usr/local/www/interfaces.php:1779 usr/local/www/interfaces.php:1767
 #: usr/local/www/interfaces.php:1785 usr/local/www/interfaces.php:1831
 #: usr/local/www/interfaces.php:1823 usr/local/www/interfaces.php:1823
 msgid "6RD Border Relay"
-msgstr "6RDボーダーリレー"
+msgstr "6RD ボーダーリレー"
 
 #: usr/local/www/interfaces.php:1783 usr/local/www/interfaces.php:1771
 #: usr/local/www/interfaces.php:1789 usr/local/www/interfaces.php:1835
 #: usr/local/www/interfaces.php:1827 usr/local/www/interfaces.php:1827
 msgid ""
 "The value in this field is 6RD IPv4 gateway address assigned by your ISP"
-msgstr ""このフィールドの値は、 ISPから割り当てられた6RD IPv4ゲートウェイアドレスです"
+msgstr ""
+"このフィールドの値は、ISP から割当てられた 6RD IPv4 ゲートウェイアドレスです。"
 
 #: usr/local/www/interfaces.php:1787 usr/local/www/interfaces.php:1775
 #: usr/local/www/interfaces.php:1793 usr/local/www/interfaces.php:1839
 #: usr/local/www/interfaces.php:1831 usr/local/www/interfaces.php:1831
 msgid "6RD IPv4 Prefix length"
-msgstr "6RD IPv4のプレフィックス長"
+msgstr "6RD IPv4 プレフィックス長"
 
 #: usr/local/www/interfaces.php:1799 usr/local/www/interfaces.php:1787
 #: usr/local/www/interfaces.php:1805 usr/local/www/interfaces.php:1851
@@ -47136,31 +47158,34 @@ msgid ""
 "The value in this field is the 6RD IPv4 prefix length. Normally specified by "
 "the ISP. A value of 0 means we embed the entire IPv4 address in the 6RD "
 "prefix."
-msgstr ""このフィールドの値は6RDのIPv4プレフィックス長である。通常で指定された「ISP 。 0の値は、我々が6RD "接頭全体のIPv4アドレスを埋め込むことを意味します。"
+msgstr ""
+"このフィールドの値は、6RD IPv4 プレフィックス長です。"
+"通常は、ISP から指定されます。"
+"値が 0 の場合は、6RD プレフィックスに、完全な IPv4 アドレスを組み込みます。"
 
 #: usr/local/www/interfaces.php:1809 usr/local/www/interfaces.php:1797
 #: usr/local/www/interfaces.php:1818 usr/local/www/interfaces.php:1864
 #: usr/local/www/interfaces.php:1856 usr/local/www/interfaces.php:1856
 msgid "Track IPv6 Interface"
-msgstr "トラックIPv6インタフェース"
+msgstr "IPv6 インタフェースを追跡"
 
 #: usr/local/www/interfaces.php:1812 usr/local/www/interfaces.php:1800
 #: usr/local/www/interfaces.php:1821 usr/local/www/interfaces.php:1867
 #: usr/local/www/interfaces.php:1859 usr/local/www/interfaces.php:1859
 msgid "IPv6 Interface"
-msgstr "IPv6インタフェース"
+msgstr "IPv6 インタフェース"
 
 #: usr/local/www/interfaces.php:1838 usr/local/www/interfaces.php:1826
 #: usr/local/www/interfaces.php:1847 usr/local/www/interfaces.php:1893
 #: usr/local/www/interfaces.php:1885 usr/local/www/interfaces.php:1885
 msgid "This selects the dynamic IPv6 WAN interface to track for configuration"
-msgstr "これは、構成のために追跡するために、動的なIPv6のWANインターフェイスを選択し、"
+msgstr "追跡を構成する、ダイナミック IPv6 WAN インタフェースを選択します。"
 
 #: usr/local/www/interfaces.php:1842 usr/local/www/interfaces.php:1830
 #: usr/local/www/interfaces.php:1851 usr/local/www/interfaces.php:1897
 #: usr/local/www/interfaces.php:1889 usr/local/www/interfaces.php:1889
 msgid "IPv6 Prefix ID"
-msgstr "IPv6のプレフィックス番号"
+msgstr "IPv6 プレフィックス ID"
 
 #: usr/local/www/interfaces.php:1853 usr/local/www/interfaces.php:1841
 #: usr/local/www/interfaces.php:1862 usr/local/www/interfaces.php:1908
@@ -47168,14 +47193,17 @@ msgstr "IPv6のプレフィックス番号"
 msgid ""
 "The value in this field is the (Delegated) IPv6 prefix id. This determines "
 "the configurable network ID based on the dynamic IPv6 connection"
-msgstr ""このフィールドの値は、 （委任） IPv6プレフィックスIDです。これが決定「動的なIPv6接続に基づいて構成可能なネットワークIDを"
+msgstr ""
+"このフィールドの値は、(Delegated) IPv6 プレフィックス IDです。"
+"この値は、ダイナミック IPv6 接続に基づいた、構成可能なネットワーク ID を決定します。"
 
 #: usr/local/www/interfaces.php:1855 usr/local/www/interfaces.php:1843
 #: usr/local/www/interfaces.php:1864 usr/local/www/interfaces.php:1910
 #, php-format
 msgid ""
 "Enter a <b>hexadecimal</b> value between %x and %x here, or leave blank."
-msgstr ""％ xと％ Xここ間u003cBu003e進u003c / bu003eの値を入力するか、空白のままにします。"
+msgstr ""
+"ここに、%x-%x の<b>16 進数</b>値を入力するか、空白にしてください。"
 
 #: usr/local/www/interfaces.php:2356 usr/local/www/interfaces.php:2344
 #: usr/local/www/interfaces.php:2374 usr/local/www/interfaces.php:2420
@@ -47183,43 +47211,45 @@ msgstr ""％ xと％ Xここ間u003cBu003e進u003c / bu003eの値を入力する
 msgid ""
 "Note: Only required in Access Point mode. If left blank in Ad-hoc or "
 "Infrastructure mode, this interface will connect to any available SSID"
-msgstr "「注：専用アクセスポイントモードで必要とアドホックまたはに空白のままにした場合、「インフラストラクチャモードでは、このインタフェースが利用可能な任意のSSIDに接続します"
+msgstr ""
+"注意: アクセスポイントモードでのみ必要です。アドホック、または、インフラストラクチャモードで"
+"この設定を空白にしておくと、このインタフェースが使用可能な SSID 全てと接続できます。"
 
 #: usr/local/www/interfaces.php:2576 usr/local/www/interfaces.php:2564
 #: usr/local/www/interfaces.php:2594 usr/local/www/interfaces.php:2640
 #: usr/local/www/interfaces.php:2629 usr/local/www/interfaces.php:2629
 msgid "Secondary 802.1X Authentication Server IP Address"
-msgstr "二次802.1X認証サーバーのIPアドレス"
+msgstr "セカンダリ 802.1X 認証サーバの IP アドレス"
 
 #: usr/local/www/interfaces.php:2583 usr/local/www/interfaces.php:2571
 #: usr/local/www/interfaces.php:2601 usr/local/www/interfaces.php:2647
 #: usr/local/www/interfaces.php:2636 usr/local/www/interfaces.php:2636
 msgid "Secondary 802.1X Authentication Server Port"
-msgstr "二次802.1X認証サーバーポート"
+msgstr "セカンダリ 802.1X 認証サーバのポート"
 
 #: usr/local/www/interfaces.php:2590 usr/local/www/interfaces.php:2578
 #: usr/local/www/interfaces.php:2608 usr/local/www/interfaces.php:2654
 #: usr/local/www/interfaces.php:2643 usr/local/www/interfaces.php:2643
 msgid "Secondary 802.1X Authentication Server Shared Secret"
-msgstr "二次802.1X認証サーバー共有シークレット"
+msgstr "セカンダリ 802.1X 認証サーバの共有秘密鍵"
 
 #: usr/local/www/vpn_openvpn_client.php:196
 #: usr/local/www/vpn_openvpn_client.php:202
 #: usr/local/www/vpn_openvpn_client.php:220
 #: usr/local/www/vpn_openvpn_client.php:220
 msgid "The bandwidth limit must be a positive numeric value."
-msgstr "帯域幅の制限は、正の数値でなければなりません。"
+msgstr "帯域幅制限は、正の数値です"
 
 #: usr/local/www/load_balancer_pool_edit.php:89
 #: usr/local/www/load_balancer_pool_edit.php:89
 msgid "The port must be an integer between 1 and 65535, or a port alias."
-msgstr "ポートは1 〜65535の整数、またはポートエイリアスでなければなりません。"
+msgstr "ポートは、1-65535 の整数、または、ポートエイリアスです"
 
 #: usr/local/www/load_balancer_pool_edit.php:98
 #: usr/local/www/load_balancer_pool_edit.php:98
 #, php-format
 msgid "%s is not a valid IP address or IPv4 subnet (in \"enabled\" list)."
-msgstr ""
+msgstr "(「有効」リストに登録された ) %s は有効な IP アドレス、もしくは IPv4 サブネットではありません。"
 
 #: usr/local/www/load_balancer_pool_edit.php:101
 #: usr/local/www/load_balancer_pool_edit.php:101
@@ -47227,12 +47257,13 @@ msgstr ""
 msgid ""
 "%s is a subnet containing more than 64 IP addresses (in \"enabled\" list)."
 msgstr ""
+"(「有効」リストに登録された ) %s は 64 個以上の IP アドレスが含まれたサブネットです。"
 
 #: usr/local/www/load_balancer_pool_edit.php:108
 #: usr/local/www/load_balancer_pool_edit.php:108
 #, php-format
 msgid "%s is not a valid IP address or IPv4 subnet (in \"disabled\" list)."
-msgstr ""
+msgstr "(「無効」リストに登録された ) %s は有効な IP アドレス、もしくは IPv4 サブネットではありません。"
 
 #: usr/local/www/load_balancer_pool_edit.php:111
 #: usr/local/www/load_balancer_pool_edit.php:111
@@ -47240,6 +47271,7 @@ msgstr ""
 msgid ""
 "%s is a subnet containing more than 64 IP addresses (in \"disabled\" list)."
 msgstr ""
+"(「無効」リストに登録された ) %s は 64 個以上の IP アドレスが含まれたサブネットです。"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:153
 #: usr/local/www/firewall_virtual_ip_edit.php:152
@@ -47250,17 +47282,19 @@ msgstr ""
 msgid ""
 "VHID %s is already in use on interface %s. Pick a unique number on this "
 "interface."
-msgstr "インターフェース「 VHIDの%sがインターフェイス上ですでに使用中は、この上で一意の番号を選んで%s. 」 。"
+msgstr ""
+"VHID %s はインタフェース %s で既に使用されています。"
+"このインタフェース固有の番号を選択してください。"
 
 #: usr/local/www/services_snmp.php:391 usr/local/www/services_snmp.php:392
 #: usr/local/www/services_snmp.php:407 usr/local/www/services_snmp.php:407
 msgid "Interface Binding"
-msgstr "インターフェイスのバインド"
+msgstr "インタフェースバインティング"
 
 #: usr/local/www/services_snmp.php:396 usr/local/www/services_snmp.php:397
 #: usr/local/www/services_snmp.php:412 usr/local/www/services_snmp.php:412
 msgid "Bind Interface"
-msgstr "バインドインターフェイス"
+msgstr "インタフェースのバインド"
 
 #: usr/local/www/widgets/widgets/smart_status.widget.php:36
 #: usr/local/www/widgets/widgets/smart_status.widget.php:37
@@ -47272,7 +47306,7 @@ msgstr "ドライブ"
 #: usr/local/www/widgets/widgets/smart_status.widget.php:38
 #: usr/local/www/widgets/widgets/smart_status.widget.php:38
 msgid "Ident"
-msgstr "IDENT"
+msgstr "ID"
 
 #: usr/local/www/system.php:418 usr/local/www/system.php:411
 #: usr/local/www/system.php:409 usr/local/www/system.php:409
@@ -47282,7 +47316,7 @@ msgstr "言語"
 #: usr/local/www/system.php:431 usr/local/www/system.php:424
 #: usr/local/www/system.php:422 usr/local/www/system.php:422
 msgid "Choose a language for the webConfigurator"
-msgstr "webConfiguratorの言語を選択"
+msgstr "Web 設定管理画面の言語を選択してください"
 
 #: usr/local/www/firewall_virtual_ip.php:118
 #: usr/local/www/firewall_virtual_ip.php:115
@@ -47292,7 +47326,9 @@ msgstr "webConfiguratorの言語を選択"
 msgid ""
 "This entry cannot be deleted because it is still referenced by a CARP IP "
 "with the description"
-msgstr "説明に「それはまだCARP IPによって参照されているため、このエントリは削除できません」"
+msgstr ""
+"このエントリは削除できません。"
+"説明で CARP IP に参照されています。"
 
 #: usr/local/www/firewall_virtual_ip.php:124
 #: usr/local/www/firewall_virtual_ip.php:121
@@ -47302,7 +47338,9 @@ msgstr "説明に「それはまだCARP IPによって参照されているた�
 msgid ""
 "This entry cannot be deleted because it is still referenced by an IP alias "
 "entry with the description"
-msgstr "記述のエントリ「それはまだIPエイリアスによって参照されているため、このエントリは削除できません」"
+msgstr ""
+"このエントリは削除できません。"
+"説明で IP エイリアスエントリに参照されています。"
 
 #: usr/local/www/services_dhcpv6.php:531
 #: usr/local/www/services_router_advertisements.php:277
