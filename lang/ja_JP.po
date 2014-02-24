@@ -37534,8 +37534,8 @@ msgid ""
 "tries to avoid dropping any legitimate connections at the expense of "
 "increased memory usage and CPU utilization."
 msgstr ""
-"正当な接続を落とさないようにするには、"
-"メモリ使用量と CPU 使用率の増加を抑えるようにします。"
+"メモリ使用量と CPU 使用率の増加を抑えて、"
+"正規の接続を落とさないようにします。"
 
 #: usr/local/www/system_advanced_firewall.php:239
 #: usr/local/www/system_advanced_firewall.php:253
@@ -43701,10 +43701,10 @@ msgid ""
 "VPN"
 msgstr ""
 "トンネル経由でルーティングされるネットワークです。"
-"ルーティングテーブルを手動で変更せずに、サイトツーサイト VPN 接続を確立させることができます。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
 "CIDR 範囲として表記されます。"
-"サイトツーサイト VPN の場合は、リモート LAN をここに入力してください。"
-"サイトツーサイト VPN を使用しない場合は、空白にしてください。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
+"サイト間 VPN を使用しない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_server.php:1069
 #: usr/local/www/vpn_openvpn_server.php:1211
@@ -44406,7 +44406,7 @@ msgid ""
 "with Stateless Autoconfig, \"Managed\" for DHCPv6 only with router "
 "advertisements, \"Assisted\" for DHCPv6 Combined with Stateless Autoconfig"
 msgstr ""
-"ルータ広告デーモンに対するオペレーティングモードを選択してください。"
+"ルータ広告デーモンの動作モードを選択してください。"
 "「ルータのみ」を使用すると、ルータにのみ広告します。「非管理」はステートレスな自動構成、"
 "「管理」は DHCPv6 only でのルータ広告、"
 "「支援」はステートレスな自動構成と DHCPv6 を組み合わせたものです。"
@@ -46837,7 +46837,7 @@ msgstr ""
 "マルチポイントサーバとしてタップモードを使用すると、"
 "オプションで、このタップインスタンスがブリッジする、"
 "インタフェースで使用する DHCP 範囲を指定できます。"
-"設定を空白にすると、DHCP は LAN を通過し、上記のインタフェース設定は無視されます。"
+"設定を空白にすると、DHCP は LAN へ通過され、上記のインタフェース設定は無視されます。"
 
 #: usr/local/www/vpn_openvpn_server.php:1146
 #: usr/local/www/vpn_openvpn_server.php:1174
@@ -46883,7 +46883,7 @@ msgstr "時間形式の変更"
 #: usr/local/www/services_dhcp.php:939 usr/local/www/services_dhcp.php:959
 #: usr/local/www/services_dhcp.php:959
 msgid "Change DHCP display lease time from UTC to local time."
-msgstr "DHCP リースの時間表示を、UTC　から現地時間に変更します。"
+msgstr "DHCP リースの時間表示を、UTC から現地時間に変更します。"
 
 #: usr/local/www/services_dhcp.php:751 usr/local/www/services_dhcp.php:932
 msgid ""
@@ -47348,7 +47348,7 @@ msgstr ""
 #: usr/local/www/services_router_advertisements.php:272
 #, php-format
 msgid "Select the Operating Mode for the Router Advertisement (RA) Daemon."
-msgstr "ルーター通知（RA ）デーモンのための動作モードを選択します。"
+msgstr "ルータ広告 (RA) デーモンの動作モードを選択してください。"
 
 #: usr/local/www/services_dhcpv6.php:532
 #: usr/local/www/services_router_advertisements.php:278
@@ -47360,7 +47360,11 @@ msgid ""
 "Advertising with Stateless Autoconfig, \"Managed\" for assignment through "
 "(a) DHCPv6 Server, \"Assisted\" for DHCPv6 Server assignment combined with "
 "Stateless Autoconfig"
-msgstr "を通じて割り当てに「管理」 、ステートレス自動設定と広告「ルータのために」 」 、宣伝だけに、このルータを「ステートレス自動設定」と組み合わせたDHCPv6サーバの割り当てのための「支援」 （ A ） DHCPv6サーバを、 「管理対象外のルータ"を使用」"
+msgstr ""
+"「ルータのみ」を使用すると、ルータにのみ広告します。"
+"「非管理」はステートレスな自動構成のルータ広告、"
+"「管理」は DHCPv6 サーバ経由の割当て、"
+"「支援」はステートレスな自動構成と DHCPv6 サーバ割当てを組み合わせたものです。"
 
 #: usr/local/www/services_dhcpv6.php:533
 #: usr/local/www/services_router_advertisements.php:279
@@ -47370,14 +47374,16 @@ msgstr "を通じて割り当てに「管理」 、ステートレス自動設�
 msgid ""
 "It is not required to activate this DHCPv6 server when set to \"Managed\", "
 "this can be another host on the network"
-msgstr "マネージド」に設定すると、このDHCPv6サーバを活性化するために必要とされていない""、 "これは、ネットワーク上の別のホストになることができます"
+msgstr ""
+"「管理」に設定した場合は、この DHCPv6 サーバを有効化する必要はありません。"
+"そのため、このサーバを、ネットワークの別のホストにすることができます。"
 
 #: usr/local/www/services_dhcpv6.php:537
 #: usr/local/www/services_router_advertisements.php:283
 #: usr/local/www/services_router_advertisements.php:278
 #: usr/local/www/services_router_advertisements.php:278
 msgid "Router Priority"
-msgstr "ルータプライオリティ"
+msgstr "ルータ優先度"
 
 #: usr/local/www/services_dhcpv6.php:544
 #: usr/local/www/services_router_advertisements.php:290
@@ -47385,14 +47391,14 @@ msgstr "ルータプライオリティ"
 #: usr/local/www/services_router_advertisements.php:285
 #, php-format
 msgid "Select the Priority for the Router Advertisement (RA) Daemon."
-msgstr "ルーター通知（RA ）デーモンのための優先度を選択します。"
+msgstr "ルータ広告 (RA) デーモンの優先度を選択してください。"
 
 #: usr/local/www/services_dhcpv6.php:558
 #: usr/local/www/services_router_advertisements.php:304
 #: usr/local/www/services_router_advertisements.php:299
 #: usr/local/www/services_router_advertisements.php:299
 msgid "RA Interface"
-msgstr "RAインタフェース"
+msgstr "RA インタフェース"
 
 #: usr/local/www/services_dhcpv6.php:566
 #: usr/local/www/services_router_advertisements.php:312
@@ -47400,11 +47406,11 @@ msgstr "RAインタフェース"
 #: usr/local/www/services_router_advertisements.php:307
 #, php-format
 msgid "Select the Interface for the Router Advertisement (RA) Daemon."
-msgstr "ルーター通知（RA ）デーモンのためのインターフェイスを選択します。"
+msgstr "ルータ広告 (RA) デーモンのインタフェースを選択してください。"
 
 #: usr/local/www/services_dhcpv6.php:653 usr/local/www/services_dhcpv6.php:584
 msgid "prefix delegation size"
-msgstr "接頭語委譲サイズ"
+msgstr "プレフィックスデリゲーションサイズ"
 
 #: usr/local/www/services_dhcpv6.php:662 usr/local/www/services_dhcpv6.php:593
 #: usr/local/www/services_dhcpv6.php:610 usr/local/www/services_dhcpv6.php:610
@@ -47413,19 +47419,25 @@ msgid ""
 "for \n"
 "\t\t\t\t\tassigning networks to subrouters. The start and end of the range "
 "must end on boundaries of the prefix delegation size."
-msgstr "\nは、「あなたは、DHCPプレフィックス委任のためにここプレフィックス範囲を定義することができます。これができる「 」 subroutersにtttttassigningネットワーク。範囲​​の始めと終わりは「プレフィックス委任サイズの境界で終わっていなければなりません。"
+msgstr ""
+"DHCP プレフィックスデリゲーションのプレフィックス範囲をここで定義できます。\n"
+"\t\t\t\t\tこれは、サブルータにネットワーク割当てを許可します。"
+"範囲の先頭と末尾は、"
+"プレフィックスデリゲーションサイズの限度内に収まっている必要があります。"
 
 #: usr/local/www/services_dhcpv6.php:685 usr/local/www/services_dhcpv6.php:616
 #: usr/local/www/services_dhcpv6.php:633 usr/local/www/services_dhcpv6.php:633
 msgid ""
 "The DHCP server can optionally provide a domain search list. Use the "
 "semicolon character as seperator"
-msgstr "「 DHCPサーバは、必要に応じてドメイン検索リストを提供することができます。使用する」 SEPERATORとしてセミコロンを"
+msgstr ""
+"オプションで、DHCP サーバはドメイン検索リストを提供することができます。"
+"区切り文字にはセミコロンを使用してください。"
 
 #: usr/local/www/services_dhcpv6.php:725 usr/local/www/services_dhcpv6.php:656
 #: usr/local/www/services_dhcpv6.php:673 usr/local/www/services_dhcpv6.php:673
 msgid "Change DHCPv6 display lease time from UTC to local time."
-msgstr "UTCから現地時刻にDHCPv6の表示リース時間を変更します。"
+msgstr "DHCPv6 リースの時間表示を、UTC から現地時間に変更します。"
 
 #: usr/local/www/services_dhcpv6.php:732 usr/local/www/services_dhcpv6.php:663
 #: usr/local/www/services_dhcpv6.php:680 usr/local/www/services_dhcpv6.php:680
@@ -47434,42 +47446,47 @@ msgid ""
 "\t\t\t\t\t\tbox DHCPv6 lease time will be displayed in local time and set to "
 "time zone selected.  This will be used for all DHCPv6 interfaces lease time."
 msgstr ""
+"デフォルトでは、DHCPv6 リースは UTC 時間で表示されます。このボックスをチェックすると\n"
+"\t\t\t\t\t\tDHCPv6 リースは現地時間表示になり、選択されたタイムゾーンに設定されます。"
+"全ての DHCPv6 インタフェースのリース時間に適用されます。"
 
 #: etc/inc/priv.defs.inc:64 etc/inc/priv.defs.inc:64
 msgid "WebCfg - Diagnostics: Sockets page"
-msgstr "Web 設定 - 診断：ソケットページ"
+msgstr "Web 設定 - 診断: ソケットページ"
 
 #: etc/inc/priv.defs.inc:65 etc/inc/priv.defs.inc:65
 msgid "Allow access to the 'Diagnostics: Sockets' page."
-msgstr "ページ：'ソケットの診断」へのアクセスを許可します。"
+msgstr "診断: ソケット: ページへのアクセスを許可"
 
 #: etc/inc/config.console.inc:263 etc/inc/config.console.inc:263
 #, php-format
 msgid ""
 "%sEnter the Optional %s interface name or 'a' for auto-detection%s(or "
 "nothing if finished):%s"
-msgstr "「 （何も終わっている場合オプション%sインターフェイス名または''自動detection%sまたは） %sEnter "： %s"
+msgstr ""
+"%sオプションの %s インタフェース名を入力してください。「a」を入力すると自動検出します%s "
+"( 何も入力しなければ終了します ): %s"
 
 #: etc/inc/shaper.inc:2909 etc/inc/shaper.inc:2910 etc/inc/shaper.inc:2915
 #: etc/inc/shaper.inc:2983 etc/inc/shaper.inc:3041
 #, php-format
 msgid "Bandwidth for schedule %s must be an integer."
-msgstr "スケジュール%sのための帯域幅は、整数でなければなりません。"
+msgstr "スケジュール %s の帯域幅は、整数です。"
 
 #: etc/inc/shaper.inc:2915 etc/inc/shaper.inc:2916 etc/inc/shaper.inc:2921
 #: etc/inc/shaper.inc:2989 etc/inc/shaper.inc:3047
 msgid "You need to specify a schedule for every additional entry"
-msgstr "あなたはすべての追加のエントリのスケジュールを指定する必要があります"
+msgstr "追加エントリ全てのスケジュールを指定する必要があります"
 
 #: etc/inc/shaper.inc:2917 etc/inc/shaper.inc:2918 etc/inc/shaper.inc:2923
 #: etc/inc/shaper.inc:2991 etc/inc/shaper.inc:3049
 msgid "If more than one bandwidth configured all schedules need to be selected"
-msgstr "複数の帯域幅が設定されている場合、すべてのスケジュールを選択する必要が"
+msgstr "複数の帯域幅を構成した場合は、全てのスケジュールを選択してください"
 
 #: etc/inc/shaper.inc:2919 etc/inc/shaper.inc:2920 etc/inc/shaper.inc:2925
 #: etc/inc/shaper.inc:2993 etc/inc/shaper.inc:3051
 msgid "At least one bw specification is necessary"
-msgstr "少なくとも一つの体重仕様が必要である"
+msgstr "最低 1 つの帯域幅の指定が必要です"
 
 #: etc/inc/shaper.inc:3200 etc/inc/shaper.inc:3201 etc/inc/shaper.inc:3208
 #: etc/inc/shaper.inc:3276 etc/inc/shaper.inc:3332
@@ -47478,11 +47495,11 @@ msgstr "他のスケジュールを追加"
 
 #: etc/inc/functions.inc:94 etc/inc/functions.inc:94
 msgid "Acknowledge All Notices"
-msgstr "すべての通知を認める"
+msgstr "全ての通知を確認"
 
 #: etc/inc/functions.inc:95 etc/inc/functions.inc:95
 msgid "Click to Acknowledge"
-msgstr "確認する]をクリックします"
+msgstr "確認をクリックしてください"
 
 #: etc/inc/functions.inc:113 etc/inc/functions.inc:113
 msgid "unread notice"
@@ -47495,12 +47512,12 @@ msgstr "未読の通知"
 #: etc/inc/service-utils.inc:234 etc/inc/service-utils.inc:233
 #: etc/inc/service-utils.inc:250 etc/inc/service-utils.inc:250
 msgid "Router Advertisement Daemon"
-msgstr "ルータ通知デーモン"
+msgstr "ルータ広告デーモン"
 
 #: etc/inc/service-utils.inc:313 etc/inc/service-utils.inc:312
 #: etc/inc/service-utils.inc:329 etc/inc/service-utils.inc:329
 msgid "RIP Daemon"
-msgstr "RIPデーモン"
+msgstr "RIP デーモン"
 
 #: etc/inc/service-utils.inc:413 etc/inc/service-utils.inc:422
 #: etc/inc/service-utils.inc:412 etc/inc/service-utils.inc:421
@@ -47509,55 +47526,57 @@ msgstr "RIPデーモン"
 #: etc/inc/service-utils.inc:432 etc/inc/service-utils.inc:442
 #, php-format
 msgid "%s Service is"
-msgstr "%sサービスです"
+msgstr "%s サービス"
 
 #: etc/inc/service-utils.inc:447 etc/inc/service-utils.inc:446
 #: etc/inc/service-utils.inc:464 etc/inc/service-utils.inc:467
 #: etc/inc/service-utils.inc:467
 #, php-format
 msgid "Restart %sService"
-msgstr "リスタート%sService"
+msgstr "%sサービスの再起動"
 
 #: etc/inc/service-utils.inc:458 etc/inc/service-utils.inc:457
 #: etc/inc/service-utils.inc:475 etc/inc/service-utils.inc:478
 #: etc/inc/service-utils.inc:478
 #, php-format
 msgid "Stop %sService"
-msgstr "ストップ%sService"
+msgstr "%sサービスの停止"
 
 #: etc/inc/service-utils.inc:471 etc/inc/service-utils.inc:470
 #: etc/inc/service-utils.inc:491 etc/inc/service-utils.inc:494
 #: etc/inc/service-utils.inc:494
 #, php-format
 msgid "Start %sService"
-msgstr "%sServiceを開始"
+msgstr "%sサービスの起動"
 
 #: etc/inc/filter.inc:2993 etc/inc/filter.inc:3079 etc/inc/filter.inc:3103
 #: etc/inc/filter.inc:3108 etc/inc/filter.inc:3103
 msgid "Removed 15 minute filter reload for Time Based Rules"
-msgstr "時間ベースのルールのために取り外さ15分のフィルターリロード"
+msgstr "削除された 15 分フィルタを、時間基準ルールに対して再読み込みします"
 
 #: usr/local/www/pkg_mgr.php:193 usr/local/www/pkg_mgr.php:196
 #: usr/local/www/pkg_mgr.php:212
 msgid "Click on package name to access its website."
-msgstr "同社のウェブサイトにアクセスするには、パッケージ名をクリックします。"
+msgstr "パッケージのウェブサイトにアクセスするには、パッケージ名をクリックしてください。"
 
 #: usr/local/www/diag_logs_settings.php:276
 #: usr/local/www/diag_logs_settings.php:276
 msgid "Show the applied rule description below or in the firewall log rows."
-msgstr "ファイアウォールのログの行の下または中の適用ルールの説明を表示します。"
+msgstr "適用されたルールの説明を、下記に、もしくは、ファイアウォールログ行に表示します。"
 
 #: usr/local/www/diag_logs_settings.php:278
 #: usr/local/www/diag_logs_settings.php:278
 msgid ""
 "Displaying rule descriptions for all lines in the log might affect "
 "performance with large rulessets."
-msgstr "大rulessetsによるパフォーマンスの「ログ内のすべての行のルールの説明を表示すると、影響を与える可能性があります」 。"
+msgstr ""
+"ルールの説明をログの全ての行に表示すると、"
+"大きいルールセットのパフォーマンスに影響する可能性があります。"
 
 #: usr/local/www/fbegin.inc:152 usr/local/www/fbegin.inc:144
 #: usr/local/www/fbegin.inc:144
 msgid "DHCPv6 Server/RA"
-msgstr "DHCPv6サーバ/ RA"
+msgstr "DHCPv6 サーバ / RA"
 
 #: usr/local/www/fbegin.inc:232 usr/local/www/diag_sockets.php:44
 #: usr/local/www/fbegin.inc:224 usr/local/www/fbegin.inc:224
@@ -47568,7 +47587,7 @@ msgstr "ソケット"
 #: usr/local/www/fbegin.inc:419 usr/local/www/fbegin.inc:411
 #: usr/local/www/fbegin.inc:411
 msgid "Help for items on this page"
-msgstr "このページの項目のヘルプ"
+msgstr "このページ項目のヘルプ"
 
 #: usr/local/www/system_groupmanager.php:472
 #: usr/local/www/system_groupmanager.php:422
@@ -47581,27 +47600,35 @@ msgid ""
 "defined object.\n"
 "\t\t\t\t\t\t\t\t\tSome system object properties can be modified but they "
 "cannot be deleted."
-msgstr "「追加webConfiguratorグループは、ここで追加することができます。 \n 」 tttttttttGroup許可が灰色、それがシステム」に定義されたオブジェクトであることを示して表示されtttttttttAnアイコン」 group.\nのメンバーであるユーザー」に継承されて割り当てることができます。 \n 「 tttttttttSomeシステムオブジェクトのプロパティを変更できますが、それらは「削除できません。"
+msgstr ""
+"追加の Web 設定管理画面グループはここで追加できます。\n"
+"\t\t\t\t\t\t\t\t\tグループメンバであるユーザから継承されるパーミッションを、"
+"グループパーミッションに割当てることができます。\n"
+"\t\t\t\t\t\t\t\t\tグレー表示されるアイコンは、"
+"システムが定義したオブジェクトです。\n"
+"\t\t\t\t\t\t\t\t\t一部のシステムオブジェクトプロパティを変更することはできますが、"
+"削除することはできません。"
 
 #: usr/local/www/services_dnsmasq_edit.php:216
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:134
 #: usr/local/www/services_dnsmasq_edit.php:216
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:134
 msgid "or"
-msgstr "または"
+msgstr " または "
 
 #: usr/local/www/services_dhcpv6_edit.php:204
 #: usr/local/www/services_dhcpv6_edit.php:207
 #: usr/local/www/services_dhcpv6_edit.php:207
 msgid "If an IPv6 address is entered, the address must be outside of the pool."
-msgstr "IPv6アドレスを入力すると、アドレスはプールの外にあることが必要です。"
+msgstr "入力される IPv6 アドレスは、プールの範囲外である必要があります。"
 
 #: usr/local/www/services_dhcpv6_edit.php:206
 #: usr/local/www/services_dhcpv6_edit.php:209
 #: usr/local/www/services_dhcpv6_edit.php:209
 msgid ""
 "If no IPv6 address is given, one will be dynamically allocated from the pool."
-msgstr "ないIPv6アドレスが指定されていない場合」 、 1は、動的にプールから割り当てられます。"
+msgstr ""
+"IPv6 アドレスが指定されていない場合は、プールから動的に割り当てられます。"
 
 #: usr/local/www/services_router_advertisements.php:118
 #: usr/local/www/services_router_advertisements.php:117
@@ -47612,26 +47639,31 @@ msgid ""
 "network; etc.  If no subnets are specified here, the Router Advertisement "
 "(RA) Daemon will advertise to the subnet to which the router's interface is "
 "assigned."
-msgstr "「サブネットはCIDR形式で指定されています。に関連するCIDRマスクの選択」の各項目を。 / 128は、単一のIPv6ホストを指定し、 / 64は、通常のIPv6を指定する「ネットワーク;などなくサブネットが、ここで指定されていない場合は、ルーター広告」 （ RA ）デーモンはルータのインタフェースが"割り当てられているサブネットにアドバタイズします。"
+msgstr ""
+"サブネットは CIDR 形式で指定します。"
+"エントリ毎に関連する CIDR マスクを選択してください。"
+"/128 で IPv6 ホスト単体を指定、/64 で通常の IPv6 ネットワークを指定、等です。"
+"サブネットをここで指定しない場合は、ルータ広告 (RA) デーモンは、"
+"ルータのインタフェースに割当てられたサブネットに広告します。"
 
 #: usr/local/www/services_router_advertisements.php:149
 #: usr/local/www/services_router_advertisements.php:144
 #: usr/local/www/services_router_advertisements.php:144
 #, php-format
 msgid "An invalid subnet or alias was specified. [%s/%s]"
-msgstr "無効なサブネットまたは別名が指定されました。 （ （ %s / %s ） ）"
+msgstr "無効なサブネットまたはエイリアスが指定されました。[%s/%s]"
 
 #: usr/local/www/services_router_advertisements.php:194
 #: usr/local/www/services_router_advertisements.php:189
 #: usr/local/www/services_router_advertisements.php:189
 msgid "Router advertisements"
-msgstr "ルータ通知"
+msgstr "ルータ広告"
 
 #: usr/local/www/services_router_advertisements.php:318
 #: usr/local/www/services_router_advertisements.php:313
 #: usr/local/www/services_router_advertisements.php:313
 msgid "RA Subnet(s)"
-msgstr "RAのサブネット（ S ）"
+msgstr "RA サブネット"
 
 #: usr/local/www/services_router_advertisements.php:384
 #: usr/local/www/services_router_advertisements.php:379
@@ -47639,13 +47671,15 @@ msgstr "RAのサブネット（ S ）"
 msgid ""
 "The RA server can optionally provide a domain search list. Use the semicolon "
 "character as seperator"
-msgstr "「 RAサーバは、必要に応じてドメイン検索リストを提供することができます。セミコロンの使用」 SEPERATORなどの文字を"
+msgstr ""
+"オプションで、RA サーバはドメイン検索リストを提供することができます。"
+"区切り文字にはセミコロンを使用してください。"
 
 #: usr/local/www/services_router_advertisements.php:392
 #: usr/local/www/services_router_advertisements.php:387
 #: usr/local/www/services_router_advertisements.php:387
 msgid "Use same settings as DHCPv6 server"
-msgstr "DHCPv6サーバと同じ設定を使用する"
+msgstr "DHCPv6 サーバと同じ設定を使用"
 
 #: usr/local/www/vpn_ipsec.php:142 usr/local/www/vpn_ipsec_keys.php:94
 #: usr/local/www/vpn_ipsec_phase2.php:475
@@ -47655,44 +47689,48 @@ msgstr "DHCPv6サーバと同じ設定を使用する"
 #: usr/local/www/vpn_ipsec_phase1.php:519 usr/local/www/vpn_ipsec_keys.php:94
 #: usr/local/www/vpn_ipsec_phase2.php:497
 msgid "Pre-Shared Keys"
-msgstr "事前共有キー"
+msgstr "事前共有鍵"
 
 #: usr/local/www/system_usermanager_settings_test.php:78
 #: usr/local/www/system_usermanager_settings_test.php:78
 #, php-format
 msgid "Testing %s LDAP settings... One moment please..."
-msgstr "テストでは、 LDAP設定を%s...しばらくお待ちください..."
+msgstr "%S LDAP 設定テストしています... しばらくお待ちください..."
 
 #: usr/local/www/vpn_ipsec_mobile.php:149
 #: usr/local/www/vpn_ipsec_mobile.php:149
 msgid "A valid split DNS domain list must be specified."
-msgstr "有効なスプリットDNSドメインリストを指定する必要があります。"
+msgstr "有効なスプリット DNS ドメインリストを指定してください。"
 
 #: usr/local/www/vpn_ipsec_mobile.php:505
 #: usr/local/www/vpn_ipsec_mobile.php:505
 msgid "Split DNS"
-msgstr "スプリットDNS"
+msgstr "スプリット DNS"
 
 #: usr/local/www/vpn_ipsec_mobile.php:514
 #: usr/local/www/vpn_ipsec_mobile.php:514
 msgid ""
 "Provide a list of split DNS domain names to clients. Enter a comma separated "
 "list."
-msgstr "「クライアントへのスプリットDNSドメイン名のリストを提供します。コンマで区切っ入力」リスト。"
+msgstr ""
+"クライアントに提供する、スプリット DNS ドメイン名リストです。"
+"区切り文字にはセミコロンを使用してください。"
 
 #: usr/local/www/vpn_ipsec_mobile.php:515
 #: usr/local/www/vpn_ipsec_mobile.php:515
 msgid ""
 "NOTE: If left blank, and a default domain is set, it will be used for this "
 "value."
-msgstr ""注：空白のままにし、デフォルトのドメインが設定されている場合、それはこのために使用される"値。"
+msgstr ""
+"注意: 空白にした場合は、デフォルトドメインが設定されていれば、"
+"デフォルトドメインがこの値として使用されます。"
 
 #: usr/local/www/firewall_shaper.php:131
 #: usr/local/www/firewall_shaper_vinterface.php:146
 #: usr/local/www/firewall_shaper.php:131
 #: usr/local/www/firewall_shaper_vinterface.php:146
 msgid "Unable to write config.xml (Access Denied?)"
-msgstr "config.xmlのを書き込むことができません（アクセスが拒否されました？）"
+msgstr "config.xml に書き込めません。( アクセスを拒否していませんか？)"
 
 #: usr/local/www/firewall_rules_edit.php:455
 #: usr/local/www/firewall_rules_edit.php:458
@@ -47701,42 +47739,45 @@ msgstr "config.xmlのを書き込むことができません（アクセスが�
 msgid ""
 "Please select a gateway, normaly the interface selected gateway, so the "
 "limiters work correctly"
-msgstr "「ゲートウェイ、普通は以下のインターフェース選択されたゲートウェイを選択して、そのようにしてください」リミッターが正常に動作"
+msgstr ""
+"ゲートウェイを選択してください。通常は、ゲートウェイに選択されたインタフェースにすると、"
+"リミッタが正常に動作します。"
 
 #: usr/local/www/vpn_ipsec_keys.php:136 usr/local/www/vpn_ipsec_keys.php:136
 msgid "Do you really want to delete this Pre-Shared Key?"
-msgstr "あなたは本当に、この事前共有キーを削除しますか？"
+msgstr "本当にこの事前共有鍵を削除しますか？"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:83
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:83
 msgid "A valid domain must be specified after _msdcs."
-msgstr "有効なドメインは_msdcsの後に指定しなければなりません。"
+msgstr "_msdcs の後に、有効なドメインを指定してください。"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:93
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:93
 msgid "An interface IP address must be specified for the DNS query source."
-msgstr "インターフェイスのIPアドレスは、 DNSクエリのソースを指定する必要があります。"
+msgstr "DNS 照会の送信元となる、インタフェースの IP アドレスを指定してください。"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:144
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:144
 msgid "Source IP"
-msgstr "送信元IP"
+msgstr "送信元 IP"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:147
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:147
 msgid ""
 "Source IP address for queries to the DNS server for the override domain."
-msgstr "オーバーライドドメインのDNSサーバへのクエリのための「送信元IPアドレス。"
+msgstr ""
+"ドメイン上書きで DNS サーバへの照会に使用する、送信元 IP アドレスです。"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:148
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:148
 msgid "Leave blank unless your DNS server is accessed through a VPN tunnel."
-msgstr "DNSサーバは、 VPNトンネルを介してアクセスされていない限り、空白のままにします。"
+msgstr "DNS サーバが VPN トンネルを経由してアクセスされない場合は、空白にしてください。"
 
 #: usr/local/www/system_crlmanager.php:401
 #: usr/local/www/system_crlmanager.php:401
 msgid "Edit Imported Certificate Revocation List"
-msgstr "編集インポートした証明書失効リスト"
+msgstr "インポートした証明書失効リストの編集"
 
 #: usr/local/www/system_advanced_firewall.php:206
 #: usr/local/www/system_advanced_firewall.php:235
@@ -47744,7 +47785,9 @@ msgstr "編集インポートした証明書失効リスト"
 msgid ""
 "expires idle connections quicker. More efficient use of CPU and memory but "
 "can drop legitimate idle connections"
-msgstr "「迅速アイドル状態の接続を期限切れにします。 CPUとメモリが、より効率的に使用「合法的なアイドル接続をドロップすることができます"
+msgstr ""
+"アイドル接続がより速く有効期限切れになります。"
+"CPU とメモリをより効果的に使用できますが、正規のアイドル接続を落としてしまう原因になります。"
 
 #: usr/local/www/system_advanced_firewall.php:207
 #: usr/local/www/system_advanced_firewall.php:236
@@ -47752,7 +47795,9 @@ msgstr "「迅速アイドル状態の接続を期限切れにします。 CPU�
 msgid ""
 "tries to avoid dropping any legitimate idle connections at the expense of "
 "increased memory usage and CPU utilization."
-msgstr "メモリ使用量の増加やCPU使用率」を犠牲にして正当なアイドル状態の接続を落とさないようにしようとします」 。"
+msgstr ""
+"メモリ使用量と CPU 使用率の増加を抑えて、"
+"正規のアイドル接続を落とさないようにします。"
 
 #: usr/local/www/vpn_pptp.php:297 usr/local/www/vpn_pptp.php:300
 #: usr/local/www/vpn_pptp.php:300
@@ -47764,44 +47809,50 @@ msgid ""
 "OpenVPN or IPsec.<br/><br/><a href=\"https://isc.sans.edu/diary/End+of+Days"
 "+for+MS-CHAPv2/13807\">Read More</a>"
 msgstr ""
+"PPTP は、現在はセキュアな VPN 技術とは見なされません。なぜなら、セキュリティ的に問題のある"
+"MS-CHAPv2 に依存しているからです。"
+"PPTP の使用を継続するのであれば、盗聴されたトラフィックの第三者による復号が可能なため、"
+"暗号化とは見なされないことに、注意してください。"
+"そのため、OpenVPN や IPsec 等、他のタイプの VPN に移行することをお勧めします。<br/><br/>"
+"<a href=\"https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807\">詳しくはこちらを参照してください。</a>"
 
 #: usr/local/www/status_ntpd.php:185 usr/local/www/status_ntpd.php:191
 #: usr/local/www/status_ntpd.php:191
 msgid "Clock Latitude"
-msgstr "クロック緯度"
+msgstr "時計の緯度"
 
 #: usr/local/www/status_ntpd.php:186 usr/local/www/status_ntpd.php:192
 #: usr/local/www/status_ntpd.php:192
 msgid "Clock Longitude"
-msgstr "クロック経度"
+msgstr "時計の経度"
 
 #: usr/local/www/system_advanced_misc.php:77
 #: usr/local/www/system_advanced_misc.php:80
 #: usr/local/www/system_advanced_misc.php:84
 #: usr/local/www/system_advanced_misc.php:84
 msgid "AMD Geode LX Security Block"
-msgstr "AMDのGeode LXセキュリティブロック"
+msgstr "AMD Geode LX セキュリティブロック"
 
 #: usr/local/www/system_advanced_misc.php:78
 #: usr/local/www/system_advanced_misc.php:81
 #: usr/local/www/system_advanced_misc.php:85
 #: usr/local/www/system_advanced_misc.php:85
 msgid "AES-NI CPU-based Acceleration"
-msgstr "AES- NIのCPUベースのアクセラレーション"
+msgstr "AES-NI CPU ベースアクセラレーション"
 
 #: usr/local/www/system_advanced_misc.php:80
 #: usr/local/www/system_advanced_misc.php:83
 #: usr/local/www/system_advanced_misc.php:87
 #: usr/local/www/system_advanced_misc.php:87
 msgid "Intel Core* CPU on-die thermal sensor"
-msgstr "インテルCore README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr CPUオンダイ熱センサ"
+msgstr "Intel Core* CPU オンダイ温度センサ"
 
 #: usr/local/www/system_advanced_misc.php:81
 #: usr/local/www/system_advanced_misc.php:84
 #: usr/local/www/system_advanced_misc.php:88
 #: usr/local/www/system_advanced_misc.php:88
 msgid "AMD K8, K10 and K11 CPU on-die thermal sensor"
-msgstr "AMD K8 、 K10およびK11 CPUが熱センサをオンダイ"
+msgstr "AMD K8、K10、K11 CPU オンダイ温度センサ"
 
 #: usr/local/www/system_advanced_misc.php:92
 #: usr/local/www/system_advanced_misc.php:95
@@ -47815,21 +47866,21 @@ msgstr "有効な暗号化アクセラレータを選択してください。"
 #: usr/local/www/system_advanced_misc.php:102
 #: usr/local/www/system_advanced_misc.php:102
 msgid "Please select a valid Thermal Hardware Sensor."
-msgstr "有効な熱ハードウェアセンサーを選択してください。"
+msgstr "有効な温度ハードウェアセンサを選択してください。"
 
 #: usr/local/www/system_advanced_misc.php:380
 #: usr/local/www/system_advanced_misc.php:392
 #: usr/local/www/system_advanced_misc.php:439
 #: usr/local/www/system_advanced_misc.php:439
 msgid "Cryptographic Hardware Acceleration"
-msgstr "暗号ハードウェアアクセラレーション"
+msgstr "暗号化ハードウェアアクセラレーション"
 
 #: usr/local/www/system_advanced_misc.php:383
 #: usr/local/www/system_advanced_misc.php:395
 #: usr/local/www/system_advanced_misc.php:442
 #: usr/local/www/system_advanced_misc.php:442
 msgid "Cryptographic Hardware"
-msgstr "暗号ハードウェア"
+msgstr "暗号化ハードウェア"
 
 #: usr/local/www/system_advanced_misc.php:392
 #: usr/local/www/system_advanced_misc.php:404
@@ -47843,7 +47894,14 @@ msgid ""
 "automatic for IPsec when using a cipher supported by your chip, such as "
 "AES-128. OpenVPN should be set for AES-128-CBC and have cryptodev enabled "
 "for hardware acceleration."
-msgstr "チップを持っているシステムでは、いくつかの暗号機能を「暗号化アクセラレータモジュールは、高速化するハードウェア·サポートを使用します」 。優先され、 hIFNポリカードは使用されません」これはようには、 Hifnの暗号化アクセラレータカードを使用している場合は、このオプションを"有効にしないでください。 AES- 128 」など、お使いのチップでサポートされている暗号を使用する場合は、 IPsecのための自動「加速がなければならない。 OpenVPNのは、AES - 128 -CBCに設定する必要があり、 cryptodevはハードウェアアクセラレーションのための「有効にしている。"
+msgstr ""
+"暗号化アクセラレータモジュールは、該当するチップが載っているシステムで、"
+"ハードウェアサポートを使用して一部の暗号機能を高速化します。"
+"Hifn 暗号機能アクセラレーションカードを使用している場合は、このオプションを有効にしてはいけません。"
+"オプションが優先されるため、Hifn カードは使用できなくなります。"
+"AES-128 等の暗号化対応チップを使用している場合、IPsec に対しては、自動的に高速化されます。"
+"OpenVPN は AES-128-CBC を設定し、"
+"ハードウェアアクセラレーションを有効にする cryptodev を追加してください。"
 
 #: usr/local/www/system_advanced_misc.php:400
 #: usr/local/www/system_advanced_misc.php:412
@@ -47853,7 +47911,10 @@ msgid ""
 "If you do not have a crypto chip in your system, this option will have no "
 "effect. To unload the selected module, set this option to 'none' and then "
 "reboot."
-msgstr "効果」を使用しているシステムで暗号チップを持っていない場合、このオプションはあります」 。選択したモジュールをアンロードするには、 「再起動し、' none'には、このオプションを設定します。"
+msgstr ""
+"システムで暗号化チップを使用していない場合は、このオプションは何の効果もありません。"
+"選択したモジュールをアンロードするには、"
+"このオプションを「なし」に設定してから再起動してください。"
 
 #: usr/local/www/system_advanced_misc.php:408
 #: usr/local/www/system_advanced_misc.php:411
@@ -47871,7 +47932,7 @@ msgstr "温度センサ"
 #: usr/local/www/system_advanced_misc.php:473
 #: usr/local/www/system_advanced_misc.php:473
 msgid "None/ACPI"
-msgstr "なし/ ACPI"
+msgstr "なし / ACPI"
 
 #: usr/local/www/system_advanced_misc.php:420
 #: usr/local/www/system_advanced_misc.php:432
@@ -47882,7 +47943,11 @@ msgid ""
 "appropriate driver to read its temperature. Setting this to 'None' will "
 "attempt to read the temperature from an ACPI-compliant motherboard sensor "
 "instead, if one is present."
-msgstr "その温度を読むために適切なドライバ」は、サポートされているCPUを使用している場合は、 themalセンサーを選択すると、ロードされます」 。 1が存在する場合は「なし」に設定すると、代わりに「 ACPI準拠のマザーボードセンサーからの温度を読み取ろうと」します。"
+msgstr ""
+"対応 CPU を使用している場合は、温度の読み取りに使用する、"
+"適切な温度センサドライバを選択してください。"
+"「なし」に設定された場合で、ACPI 準拠のマザーボードセンサが存在している時は、"
+"そちらから温度を読み取ろうと試みます。
 
 #: usr/local/www/system_advanced_misc.php:424
 #: usr/local/www/system_advanced_misc.php:436
@@ -47892,13 +47957,16 @@ msgid ""
 "If you do not have a supported thermal sensor chip in your system, this "
 "option will have no effect. To unload the selected module, set this option "
 "to 'none' and then reboot."
-msgstr "「お使いのシステムでサポートされている温度センサーチップを持っていない場合は、この"オプションは無効になります。選択したモジュールをアンロードするには、' none'に"このオプションを設定して再起動。"
+msgstr ""
+"システムで対応する温度センサを使用していない場合は、このオプションは何の効果もありません。"
+"選択したモジュールをアンロードするには、"
+"このオプションを「なし」に設定してから再起動してください。"
 
 #: usr/local/www/services_captiveportal.php:173
 #: usr/local/www/services_captiveportal.php:175
 #: usr/local/www/services_captiveportal.php:175
 msgid "Certificate must be specified for HTTPS login."
-msgstr "証明書は、HTTPSのログインを指定する必要があります。"
+msgstr "HTTPS ログインには、証明書を指定する必要があります。"
 
 #: usr/local/www/services_captiveportal.php:863
 #: usr/local/www/services_captiveportal.php:865
@@ -47908,81 +47976,85 @@ msgid ""
 "If enabled, the username and password will be transmitted over an HTTPS "
 "connection to protect against eavesdroppers. A server name and certificate "
 "must also be specified below."
-msgstr "盗聴者から保護するための接続」を有効にすると、ユーザー名とパスワードは、HTTPSを介して送信されます」 。サーバー名と証明書」も、以下に指定する必要があります。"
+msgstr ""
+"有効な場合は、ユーザ名とパスワードは、"
+"盗聴から保護するために HTTPS 接続上を送信されます。"
+"サーバ名と証明書は、下記で指定する必要があります。"
 
 #: usr/local/www/services_captiveportal.php:886
 #: usr/local/www/services_captiveportal.php:888
 #: usr/local/www/services_captiveportal.php:904
 #: usr/local/www/services_captiveportal.php:904
 msgid "No Certificates defined."
-msgstr "定義されない証明書はありません。"
+msgstr "定義された証明書はありません。"
 
 #: usr/local/www/system_gateways_edit.php:205
 #: usr/local/www/system_gateways_edit.php:235
 #: usr/local/www/system_gateways_edit.php:235
 msgid "The low latency threshold needs to be a numeric value."
-msgstr "低レイテンシのしきい値は、数値でなければなりません。"
+msgstr "低遅延しきい値は、数値です。"
 
 #: usr/local/www/system_gateways_edit.php:208
 #: usr/local/www/system_gateways_edit.php:238
 #: usr/local/www/system_gateways_edit.php:238
 msgid "The low latency threshold needs to be positive."
-msgstr "低レイテンシのしきい値は正である必要があります。"
+msgstr "低遅延しきい値は、正の値です。"
 
 #: usr/local/www/system_gateways_edit.php:215
 #: usr/local/www/system_gateways_edit.php:245
 #: usr/local/www/system_gateways_edit.php:245
 msgid "The high latency threshold needs to be a numeric value."
-msgstr "高遅延しきい値は、数値でなければなりません。"
+msgstr "高遅延しきい値は、数値です。"
 
 #: usr/local/www/system_gateways_edit.php:218
 #: usr/local/www/system_gateways_edit.php:248
 #: usr/local/www/system_gateways_edit.php:248
 msgid "The high latency threshold needs to be positive."
-msgstr "高遅延しきい値が陽性であることが必要である。"
+msgstr "高遅延しきい値は、正の値です。"
 
 #: usr/local/www/system_gateways_edit.php:225
 #: usr/local/www/system_gateways_edit.php:255
 #: usr/local/www/system_gateways_edit.php:255
 msgid "The low Packet Loss threshold needs to be a numeric value."
-msgstr "低パケット損失のしきい値は数値でなければなりません。"
+msgstr "低パケットロスしきい値は、数値です。"
 
 #: usr/local/www/system_gateways_edit.php:228
 #: usr/local/www/system_gateways_edit.php:258
 #: usr/local/www/system_gateways_edit.php:258
 msgid "The low Packet Loss threshold needs to be positive."
-msgstr "低パケット損失のしきい値は正である必要があります。"
+msgstr "低パケットロスしきい値は、正の値です。"
 
 #: usr/local/www/system_gateways_edit.php:231
 #: usr/local/www/system_gateways_edit.php:261
 #: usr/local/www/system_gateways_edit.php:261
 msgid "The low Packet Loss threshold needs to be less than 100."
-msgstr "低パケット損失閾値は、 100未満である必要がある。"
+msgstr "低パケットロスしきい値は、100 未満です。"
 
 #: usr/local/www/system_gateways_edit.php:238
 #: usr/local/www/system_gateways_edit.php:268
 #: usr/local/www/system_gateways_edit.php:268
 msgid "The high Packet Loss threshold needs to be a numeric value."
-msgstr "高いパケット損失しきい値は、数値でなければなりません。"
+msgstr "高パケットロスしきい値は、数値です。"
 
 #: usr/local/www/system_gateways_edit.php:241
 #: usr/local/www/system_gateways_edit.php:271
 #: usr/local/www/system_gateways_edit.php:271
 msgid "The high Packet Loss threshold needs to be positive."
-msgstr "高いパケット損失しきい値は正である必要があります。"
+msgstr "高パケットロスしきい値は、正の値です。"
 
 #: usr/local/www/system_gateways_edit.php:244
 #: usr/local/www/system_gateways_edit.php:274
 #: usr/local/www/system_gateways_edit.php:274
 msgid "The high Packet Loss threshold needs to be 100 or less."
-msgstr "高パケット損失閾値は100以下であることが必要である。"
+msgstr "高パケットロスしきい値は、100 以下です。"
 
 #: usr/local/www/system_gateways_edit.php:252
 #: usr/local/www/system_gateways_edit.php:282
 #: usr/local/www/system_gateways_edit.php:282
 msgid ""
 "The high latency threshold needs to be higher than the low latency threshold"
-msgstr "「高遅延しきい値は、低レイテンシー閾値よりも高いことが必要である"
+msgstr ""
+"高遅延しきい値は、低遅延しきい値よりも高い値にしてください。"
 
 #: usr/local/www/system_gateways_edit.php:275
 #: usr/local/www/system_gateways_edit.php:305
@@ -47990,31 +48062,32 @@ msgstr "「高遅延しきい値は、低レイテンシー閾値よりも高い
 msgid ""
 "The high Packet Loss threshold needs to be higher than the low Packet Loss "
 "threshold"
-msgstr "閾値「高パケット損失閾値が低いパケット損失よりも高くする必要がある""
+msgstr ""
+"高パケットロスしきい値は、低パケットロスしきい値よりも高い値にしてください。"
 
 #: usr/local/www/system_gateways_edit.php:297
 #: usr/local/www/system_gateways_edit.php:327
 #: usr/local/www/system_gateways_edit.php:327
 msgid "The frequency probe interval needs to be a numeric value."
-msgstr "高周波プローブ間隔は数値でなければなりません。"
+msgstr "プローブ頻度間隔は、数値です。"
 
 #: usr/local/www/system_gateways_edit.php:300
 #: usr/local/www/system_gateways_edit.php:330
 #: usr/local/www/system_gateways_edit.php:330
 msgid "The frequency probe interval needs to be positive."
-msgstr "高周波プローブ間隔は正である必要がある。"
+msgstr "プローブ頻度間隔は、正の値です。"
 
 #: usr/local/www/system_gateways_edit.php:307
 #: usr/local/www/system_gateways_edit.php:337
 #: usr/local/www/system_gateways_edit.php:337
 msgid "The down time setting needs to be a numeric value."
-msgstr "ダウンタイムの設定は数値でなければなりません。"
+msgstr "停止時間設定は、数値です。"
 
 #: usr/local/www/system_gateways_edit.php:310
 #: usr/local/www/system_gateways_edit.php:340
 #: usr/local/www/system_gateways_edit.php:340
 msgid "The down time setting needs to be positive."
-msgstr "停止時間の設定が正である必要がある。"
+msgstr "停止時間設定は、正の値です。"
 
 #: usr/local/www/system_gateways_edit.php:318
 #: usr/local/www/system_gateways_edit.php:348
@@ -48031,19 +48104,22 @@ msgid ""
 "NOTE: The Frequency Probe interval must be less than the Down time, "
 "otherwise the gateway will seem to go down then come up again at the next "
 "probe."
-msgstr ""注：高周波プローブ間隔はダウンタイムよりも小さくなければなりません、 「そうでないゲートウェイは、次の「プローブで再び出てくるし、下に行くように見えるでしょう。"
+msgstr ""
+"注意: プローブ頻度間隔には、停止時間よりも小さい値を設定してください。"
+"停止時間より大きい値を設定すると、次のプローブで、"
+"ゲートウェイはダウンしてから再度アップしたかのように見えます。"
 
 #: usr/local/www/shortcuts.inc:96 usr/local/www/shortcuts.inc:96
 msgid "Main page for this section"
-msgstr "このセクションのメインページ"
+msgstr "セクションメインページ"
 
 #: usr/local/www/shortcuts.inc:120 usr/local/www/shortcuts.inc:120
 msgid "Status of items on this page"
-msgstr "このページの項目のステータス"
+msgstr "ページ項目のステータス"
 
 #: usr/local/www/shortcuts.inc:127 usr/local/www/shortcuts.inc:127
 msgid "Log entries for items on this page"
-msgstr "このページ上のアイテムのログエントリを"
+msgstr "ページ項目のログエントリ"
 
 #: usr/local/www/vpn_openvpn_server.php:1102
 #: usr/local/www/vpn_openvpn_server.php:1129
@@ -48054,7 +48130,12 @@ msgid ""
 "network address will be assigned to the server virtual interface. The "
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
-msgstr "このサーバーとクライアントホスト「これは間のプライベート通信に使用されるIPv6の仮想ネットワークである"（例： FE80:: / 64 ） 、CIDRを使用して表現。最初の「ネットワークアドレスは、サーバの仮想インターフェイスに割り当てられます。 「残りのネットワークアドレスは、必要に応じて「クライアントの接続に割り当てることができます。 （アドレスプールを参照してください）"
+msgstr ""
+"このサーバとクライアントホスト間の、プライベート通信に使用される IPv6 仮想ネットワークで、"
+"CIDR ( 例: fe80::/64 ) を使用して表記されます。"
+"最初のネットワークアドレスは、サーバ仮想インタフェースに割り当てられます。"
+"残りのネットワークアドレスは、オプションで、クライアントの接続に割り当てることができます。"
+"( アドレスプールを参照 )"
 
 #: usr/local/www/vpn_openvpn_server.php:1152
 #: usr/local/www/vpn_openvpn_server.php:1179
@@ -48065,7 +48146,12 @@ msgid ""
 "separately. This setting controls which existing IP address and subnet mask "
 "are used by OpenVPN for the bridge. Setting this to 'none' will cause the "
 "Server Bridge DHCP settings below to be ignored."
-msgstr "自動的に「このタップインスタンスをブリッジ先となるインタフェースが、これは行われていません」 。あなたは、このインターフェイスを割り当て、 「別途既存のIPアドレスとサブネットマスクは、この設定を制御し「ブリッジ用のOpenVPNで使用されているが、ブリッジを作成する必要があります。' none'に、これを設定すると、以下の「サーバー·ブリッジDHCP設定が無視されるようになります。"
+msgstr ""
+"このタップインスタンスがブリッジする、インタフェースです。"
+"これは自動的には実行されません。"
+"インタフェースの割当てと、ブリッジの新規作成は別々に行う必要があります。"
+"この設定は、OpenVPN がブリッジとして使用する、既存の IP アドレスとサブネットマスクをコントロールします。"
+"「なし」を設定すると、下記のサーバブリッジ DHCP 設定は無視されるようになります。"
 
 #: usr/local/www/vpn_openvpn_server.php:1165
 #: usr/local/www/vpn_openvpn_server.php:1192
@@ -48075,12 +48161,16 @@ msgid ""
 "DHCP range to use on the interface to which this tap instance is bridged. If "
 "these settings are left blank, DHCP will be passed through to the LAN, and "
 "the interface setting above will be ignored."
-msgstr "このタップインスタンスがブリッジされたインターフェイス上で使用するようにDHCP範囲「マルチポイントサーバーとしてタップ·モードを使用するときは、必要に応じて供給することができる」 。場合は"これらの設定は空白のままに、 DHCPがLANに通過され、 「上記の設定インターフェイスは無視されます。"
+msgstr ""
+"マルチポイントサーバとしてタップモードを使用すると、"
+"オプションで、このタップインスタンスがブリッジする、"
+"インタフェースで使用する DHCP 範囲を指定できます。"
+"設定を空白にすると、DHCP は LAN へ通過され、上記のインタフェース設定は無視されます。"
 
 #: usr/local/www/vpn_openvpn_server.php:1225
 #: usr/local/www/vpn_openvpn_client.php:799
 msgid "IPv4 Remote Network"
-msgstr "IPv4のリモートネットワーク"
+msgstr "IPv4 リモートネットワーク"
 
 #: usr/local/www/vpn_openvpn_server.php:1229
 msgid ""
@@ -48088,12 +48178,16 @@ msgid ""
 "site VPN can be established without manually changing the routing tables. "
 "Expressed as a CIDR range. If this is a site-to-site VPN, enter the remote "
 "LAN here. You may leave this blank if you don't want a site-to-site VPN"
-msgstr "「これはトンネルを経由してルーティングされるネットワークである、その結果、サイトツー」サイトVPNを手動でルーティングテーブルを変更せずに設定することができる。 「 CIDRの範囲として表さ。これは、サイト間VPNの場合は、リモート入力し「ここにLANの。あなたはサイト間VPNを使用しない場合は、この空白を残すことが"
+msgstr ""
+"トンネル経由でルーティングされるネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。CIDR 範囲として表記されます。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
+"サイト間 VPN を使用しない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_server.php:1239
 #: usr/local/www/vpn_openvpn_client.php:813
 msgid "IPv6 Remote Network"
-msgstr "IPv6のリモートネットワーク"
+msgstr "IPv6 リモートネットワーク"
 
 #: usr/local/www/vpn_openvpn_server.php:1243
 msgid ""
@@ -48102,45 +48196,58 @@ msgid ""
 "tables. Expressed as an IP/PREFIX. If this is a site-to-site VPN, enter the "
 "remote LAN here. You may leave this blank if you don't want a site-to-site "
 "VPN"
-msgstr ""これは、トンネルを介してルーティングされ、IPv6ネットワークであるように、「サイト間VPNを手動で「ルーティングテーブルを変更せずに確立することができます。 IP /プレフィックスとして表されます。これがあれば、サイトツーサイト間VPNは、ここでは、「リモートLANを入力してください。サイトツーサイト「VPNを使用しない場合は、この空白を残すことが"
+msgstr ""
+"トンネル経由でルーティングされる IPv6 ネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
+"IP/PREFIX で表記されます。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
+"サイト間 VPN を使用しない場合は、空白にしてください。"
 
 #: usr/local/www/services_dhcp.php:293 usr/local/www/services_dhcp.php:274
 #: usr/local/www/services_dhcp.php:294 usr/local/www/services_dhcp.php:294
 msgid ""
 "If you specify a mac allow list, it must contain only valid partial MAC "
 "addresses."
-msgstr "アドレスは「あなたがMacは許可リストを指定すると、それが唯一の有効な部分的なMACが含まれている必要があります」 。"
+msgstr ""
+"MAC 許可リストを指定してください。"
+"有効な MAC アドレスの一部のみで構成してください。"
 
 #: usr/local/www/services_dhcp.php:295 usr/local/www/services_dhcp.php:276
 #: usr/local/www/services_dhcp.php:296 usr/local/www/services_dhcp.php:296
 msgid ""
 "If you specify a mac deny list, it must contain only valid partial MAC "
 "addresses."
-msgstr "アドレスは「あなたはMacが拒否リストを指定すると、それが唯一の有効な部分的なMACが含まれている必要があります」 。"
+msgstr ""
+"MAC 拒否リストを指定してください。"
+"有効な MAC アドレスの一部のみで構成してください。"
 
 #: usr/local/www/services_dhcp.php:699 usr/local/www/services_dhcp.php:701
 #: usr/local/www/services_dhcp.php:721 usr/local/www/services_dhcp.php:721
 msgid ""
 "Editing Pool-Specific Options. To return to the Interface, click its tab "
 "above."
-msgstr "プール固有のオプションを編集。インターフェイスに戻るには、上記のタブをクリックします。"
+msgstr ""
+"プール固有のオプションを編集しています。"
+"インタフェースに戻るには、上記のタブをクリックしてください。"
 
 #: usr/local/www/services_dhcp.php:775 usr/local/www/services_dhcp.php:785
 #: usr/local/www/services_dhcp.php:805 usr/local/www/services_dhcp.php:805
 msgid "Additional Pools"
-msgstr "追加のプール"
+msgstr "追加プール"
 
 #: usr/local/www/services_dhcp.php:777 usr/local/www/services_dhcp.php:787
 #: usr/local/www/services_dhcp.php:807 usr/local/www/services_dhcp.php:807
 msgid ""
 "If you need additional pools of addresses inside of this subnet outside the "
 "above Range, they may be specified here."
-msgstr "範囲を超える、彼らがここで指定することができます"あなたが外でこのサブネット内のアドレスの追加のプールが必要な場合は「 。"
+msgstr ""
+"このサブネットの内に、上記の範囲外のアドレスの追加プールが必要な場合は、"
+"ここで設定可能です。"
 
 #: usr/local/www/services_dhcp.php:780 usr/local/www/services_dhcp.php:790
 #: usr/local/www/services_dhcp.php:810 usr/local/www/services_dhcp.php:810
 msgid "Pool Start"
-msgstr "プールスタート"
+msgstr "プール開始"
 
 #: usr/local/www/services_dhcp.php:781 usr/local/www/services_dhcp.php:791
 #: usr/local/www/services_dhcp.php:811 usr/local/www/services_dhcp.php:811
@@ -48150,41 +48257,45 @@ msgstr "プール終了"
 #: usr/local/www/services_dhcp.php:805 usr/local/www/services_dhcp.php:819
 #: usr/local/www/services_dhcp.php:839 usr/local/www/services_dhcp.php:839
 msgid "Do you really want to delete this pool?"
-msgstr "あなたは本当にこのプールを削除しますか？"
+msgstr "本当にこのプールを削除しますか？"
 
 #: usr/local/www/services_dhcp.php:958 usr/local/www/services_dhcp.php:971
 #: usr/local/www/services_dhcp.php:991 usr/local/www/services_dhcp.php:991
 msgid "MAC Address Control"
-msgstr "MACアドレス管理"
+msgstr "MAC アドレス管理"
 
 #: usr/local/www/services_dhcp.php:961 usr/local/www/services_dhcp.php:974
 #: usr/local/www/services_dhcp.php:994 usr/local/www/services_dhcp.php:994
 msgid "Show MAC Address Control"
-msgstr "ショーのMACアドレス制御"
+msgstr "MAC アドレス管理を表示"
 
 #: usr/local/www/services_dhcp.php:965 usr/local/www/services_dhcp.php:978
 #: usr/local/www/services_dhcp.php:998 usr/local/www/services_dhcp.php:998
 msgid ""
 "Enter a list of partial MAC addresses to allow, comma separated, no spaces, "
 "such as "
-msgstr "のような「部分的MACアドレスのリストを入力すると、カンマ区切り、スペースなしに、許可しないように対処する」"
+msgstr ""
+"許可リストに、部分的な MAC アドレスを入力してください。"
+"カンマ区切りで、空白は使用しないでください。例: "
 
 #: usr/local/www/services_dhcp.php:967 usr/local/www/services_dhcp.php:980
 #: usr/local/www/services_dhcp.php:1000 usr/local/www/services_dhcp.php:1000
 msgid ""
 "Enter a list of partial MAC addresses to deny access, comma separated, no "
 "spaces, such as "
-msgstr "「部分的なMACアドレスのリストを入力すると、アクセスを拒否するアドレス、カンマで区切られ、 NO」のような空間を、"
+msgstr ""
+"アクセス拒否リストに、部分的な MAC アドレスを入力してください。"
+"カンマ区切りで、空白は使用しないでください。例: "
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:89
 #: usr/local/www/load_balancer_virtual_server_edit.php:89
 msgid "You cannot use spaces or slashes in the 'name' field."
-msgstr "あなたは、 「名前」フィールドに、スペースやスラッシュを使用することはできません。"
+msgstr "「名前」フィールドに、空白やスラッシュは使用できません。"
 
 #: usr/local/www/guiconfig.inc:1009 usr/local/www/guiconfig.inc:1024
 #: usr/local/www/guiconfig.inc:1021 usr/local/www/guiconfig.inc:1021
 msgid "move mouse out this alias to hide"
-msgstr "非表示にするには、この別名からマウスを移動"
+msgstr "非表示にするには、マウスをこのエイリアスの外に移動してください"
 
 #: usr/local/www/guiconfig.inc:1066 usr/local/www/guiconfig.inc:1081
 #: usr/local/www/guiconfig.inc:1078 usr/local/www/guiconfig.inc:1078
@@ -48214,42 +48325,49 @@ msgstr "自動ダッシュボードの自動更新チェックを無効にしま
 
 #: usr/local/www/services_ntpd.php:119 usr/local/www/services_ntpd.php:119
 msgid "Interfaces without an IP address will not be shown."
-msgstr "IPアドレスを持たないインタフェースは表示されません。"
+msgstr "IP アドレスが設定されていないインタフェースは表示されません。"
 
 #: usr/local/www/services_ntpd.php:121 usr/local/www/services_ntpd.php:121
 msgid "Selecting no interfaces will listen on all interfaces with a wildcard."
-msgstr "何のインターフェイスを選択しないと、ワイルドカードを持つすべてのインターフェイス上で待機します。"
+msgstr "インタフェースが選択されていない場合は、ワイルドカードを使用して、全てのインタフェースでリスンします。"
 
 #: usr/local/www/services_ntpd.php:122 usr/local/www/services_ntpd.php:122
 msgid ""
 "Selecting all interfaces will explicitly listen on only the interfaces/IPs "
 "specified."
-msgstr "指定された「すべてのインターフェイスを選択すると、明示的にインターフェースのみ/ IPS上で待機します」 。"
+msgstr ""
+"全てのインタフェースが選択されている場合は、"
+"明示的に指定されたインタフェース / IP のみでリスンします。"
 
 #: usr/local/www/services_ntpd.php:140 usr/local/www/services_ntpd.php:140
 msgid "The GPS must provide NMEA format output!"
-msgstr "GPSはNMEA形式の出力を提供しなければならない！"
+msgstr "GPS は NMEA 形式の出力を提供する必要があります！"
 
 #: usr/local/www/services_ntpd.php:142 usr/local/www/services_ntpd.php:142
 msgid ""
 "All serial ports are listed, be sure to pick only the port with the GPS "
 "attached."
-msgstr "添付の「すべてのシリアルポートが、リストされているGPSを専用ポートを選択してください」 。"
+msgstr ""
+"全てのシリアルポートがリスンされている場合は、"
+"GPS を添付するポートのみを選択するようにしてください。"
 
 #: usr/local/www/services_ntpd.php:144 usr/local/www/services_ntpd.php:144
 msgid "It is best to configure at least 2 servers under"
-msgstr "それが下に少なくとも2サーバを設定するのが最適です"
+msgstr "「"
 
 #: usr/local/www/services_ntpd.php:144 usr/local/www/services_ntpd.php:144
 msgid "System > General"
-msgstr "システムu003e一般"
+msgstr "システム > 全般"
 
 #: usr/local/www/services_ntpd.php:144 usr/local/www/services_ntpd.php:144
 msgid ""
 "to avoid loss of sync if the GPS data is not valid over time. Otherwise ntpd "
 "may only use values from the unsynchronized local clock when providing time "
 "to clients."
-msgstr "「 GPSデータが時間をかけて有効でない場合、同期の損失を回避します。そうでない場合はntpdは「クライアントへの時間」を提供する場合にのみ、非同期のローカルクロックの値を使用することができます。"
+msgstr ""
+"」で、最低でも 2 つ以上構成することをお勧めします。GPS データが継続的に不正な場合に、"
+"同期のロスを避けるためです。"
+"さもなくば、ntpd は時刻をクライアントに提供する際に、非同期のローカル時計の値のみを使用します。
 
 #: usr/local/www/firewall_aliases.php:177
 #: usr/local/www/firewall_aliases.php:175
@@ -48261,7 +48379,7 @@ msgstr "ポート"
 #: usr/local/www/firewall_aliases.php:176
 #: usr/local/www/firewall_aliases.php:176
 msgid "Urls"
-msgstr "URLは"
+msgstr "URL"
 
 #: usr/local/www/firewall_aliases.php:195
 #: usr/local/www/firewall_aliases.php:272
@@ -48270,21 +48388,21 @@ msgstr "URLは"
 #: usr/local/www/firewall_aliases.php:195
 #: usr/local/www/firewall_aliases.php:275
 msgid "Add a new alias"
-msgstr "新規エイリアスを追加します。"
+msgstr "新規エイリアスの追加"
 
 #: usr/local/www/firewall_aliases.php:255
 #: usr/local/www/firewall_aliases.php:256
 #: usr/local/www/firewall_aliases.php:257
 #: usr/local/www/firewall_aliases.php:257
 msgid "Edit alias"
-msgstr "編集別名"
+msgstr "エイリアスの編集"
 
 #: usr/local/www/firewall_aliases.php:256
 #: usr/local/www/firewall_aliases.php:257
 #: usr/local/www/firewall_aliases.php:258
 #: usr/local/www/firewall_aliases.php:258
 msgid "Delete alias"
-msgstr "エイリアスを削除"
+msgstr "エイリアスの削除"
 
 #: usr/local/www/services_captiveportal_zones_edit.php:64
 #: usr/local/www/services_captiveportal_zones_edit.php:64
@@ -48295,49 +48413,49 @@ msgstr "ゾーン名には、文字、数字、アンダースコア（ _）を�
 #: usr/local/www/services_captiveportal_zones_edit.php:101
 #: usr/local/www/services_captiveportal_zones_edit.php:101
 msgid "Zone name. Can only contain letters, digits, and underscores (_)."
-msgstr "ゾーン名。文字、数字、アンダースコア（ _）を含めることができます。"
+msgstr "ゾーン名です。文字、数字、アンダーバー ( _ ) のみが使用できます。"
 
 #: usr/local/www/diag_packet_capture.php:81
 #: usr/local/www/diag_packet_capture.php:81
 msgid "Invalid interface."
-msgstr "無効なインタフェース。"
+msgstr "無効なインタフェースです"
 
 #: usr/local/www/diag_packet_capture.php:84
 #: usr/local/www/diag_packet_capture.php:84
 msgid "Invalid address family."
-msgstr "無効なアドレスファミリ。"
+msgstr "無効なアドレスファミリです"
 
 #: usr/local/www/diag_packet_capture.php:87
 #: usr/local/www/diag_packet_capture.php:87
 msgid "Invalid protocol."
-msgstr "無効なプロトコル。"
+msgstr "無効なプロトコルです"
 
 #: usr/local/www/diag_packet_capture.php:92
 #: usr/local/www/diag_packet_capture.php:92
 #, php-format
 msgid "A valid IP address or CIDR block must be specified. [%s]"
-msgstr "有効なIPアドレスまたはCIDRブロックを指定する必要があります。 （ （ %s ） ）"
+msgstr "有効な IP アドレス、または CIDR ブロックを指定してください。[%s]"
 
 #: usr/local/www/diag_packet_capture.php:97
 #: usr/local/www/diag_packet_capture.php:97
 msgid "Invalid value specified for port."
-msgstr "ポートに指定された値が無効です。"
+msgstr "ポートに、無効な値が指定されました"
 
 #: usr/local/www/diag_packet_capture.php:104
 #: usr/local/www/diag_packet_capture.php:104
 msgid "Invalid value specified for packet length."
-msgstr "パケット長に指定された値が無効です。"
+msgstr "パケット長に、無効な値が指定されました"
 
 #: usr/local/www/diag_packet_capture.php:111
 #: usr/local/www/diag_packet_capture.php:111
 msgid "Invalid value specified for packet count."
-msgstr "パケット数に指定された値が無効です。"
+msgstr "パケット数に、無効な値が指定されました"
 
 #: usr/local/www/vpn_ipsec_phase2.php:148
 #: usr/local/www/vpn_ipsec_phase2.php:152
 #: usr/local/www/vpn_ipsec_phase2.php:152
 msgid "A valid NAT local network bit count must be specified."
-msgstr "有効なNATのローカルネットワークビット数を指定する必要があります。"
+msgstr "有効な NAT ローカルネットワークビット数を指定してください。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:150
 #: usr/local/www/vpn_ipsec_phase2.php:154
