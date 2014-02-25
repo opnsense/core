@@ -25638,7 +25638,7 @@ msgstr "シングルプロセッサカーネル"
 
 #: usr/local/www/system_firmware.php:286 usr/local/www/system_firmware.php:57
 msgid "Embedded kernel"
-msgstr "組込み用カーネル"
+msgstr "組込用カーネル"
 
 #: usr/local/www/system_firmware.php:287 usr/local/www/system_firmware.php:58
 msgid "Developers kernel"
@@ -31565,12 +31565,12 @@ msgstr "本当にこのセキュリティポリシを削除しますか？"
 #: usr/local/www/diag_ipsec_spd.php:119 usr/local/www/diag_ipsec_spd.php:120
 #: usr/local/www/diag_ipsec_spd.php:120
 msgid "incoming (as seen by firewall)"
-msgstr "着信 ( ファイアウォール視点 )"
+msgstr "着信 ( ファイアウォール基準 )"
 
 #: usr/local/www/diag_ipsec_spd.php:126 usr/local/www/diag_ipsec_spd.php:127
 #: usr/local/www/diag_ipsec_spd.php:127
 msgid "outgoing (as seen by firewall)"
-msgstr "発信 ( ファイアウォール視点 )"
+msgstr "発信 ( ファイアウォール基準 )"
 
 #: usr/local/www/diag_ipsec_spd.php:131 usr/local/www/diag_ipsec_spd.php:132
 #: usr/local/www/diag_ipsec_spd.php:132
@@ -34137,7 +34137,7 @@ msgstr "バウチャー無効"
 #: usr/local/www/services_captiveportal_vouchers.php:132
 #: usr/local/www/services_captiveportal_vouchers.php:132
 msgid "Voucher expired"
-msgstr "バウチャーの有効期限が切れました"
+msgstr "バウチャーが失効しました"
 
 #: usr/local/www/services_captiveportal_vouchers.php:139
 #: usr/local/www/services_captiveportal_vouchers.php:148
@@ -34633,7 +34633,7 @@ msgstr "バウチャーメッセージの有効期限が切れました"
 msgid ""
 "Error message displayed for expired vouchers on captive portal error page"
 msgstr ""
-"キャプティブポータルエラーページに、有効期限が切れたバウチャーに対するエラーメッセージが表示されました"
+"キャプティブポータルエラーページに、失効したバウチャーに対するエラーメッセージが表示されました"
 
 #: usr/local/www/services_captiveportal_vouchers.php:562
 #: usr/local/www/services_captiveportal_vouchers.php:569
@@ -37525,7 +37525,7 @@ msgid ""
 "expires idle connections quicker. More efficient use of CPU and memory but "
 "can drop legitimate connections"
 msgstr ""
-"より速く設定してください。CPU とメモリをより効率的に使用すると、"
+"より早く設定してください。CPU とメモリをより効率的に使用すると、"
 "正規の接続を落としてしまう原因になります。"
 
 #: usr/local/www/system_advanced_firewall.php:193
@@ -47786,7 +47786,7 @@ msgid ""
 "expires idle connections quicker. More efficient use of CPU and memory but "
 "can drop legitimate idle connections"
 msgstr ""
-"アイドル接続がより速く有効期限切れになります。"
+"アイドル接続がより早く失効します。"
 "CPU とメモリをより効果的に使用できますが、正規のアイドル接続を落としてしまう原因になります。"
 
 #: usr/local/www/system_advanced_firewall.php:207
@@ -48463,13 +48463,15 @@ msgstr "有効な NAT ローカルネットワークビット数を指定して�
 msgid ""
 "You cannot configure a network type address for NAT while only an address "
 "type is selected for local source."
-msgstr "タイプローカルソースを選択した"あなただけのアドレスは、一方NATのためのネットワーク型アドレスを設定することはできません」 。"
+msgstr ""
+"ローカル送信元に対して、アドレス型のみが選択されている場合は、"
+"NAT にネットワーク型アドレスの構成ができません。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:153
 #: usr/local/www/vpn_ipsec_phase2.php:157
 #: usr/local/www/vpn_ipsec_phase2.php:157
 msgid "A valid NAT local network IP address must be specified."
-msgstr "有効なNATのローカルネットワークIPアドレスを指定する必要があります。"
+msgstr "有効な NAT ローカルネットワーク IP アドレスを指定してください。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:548
 #: usr/local/www/vpn_ipsec_phase2.php:569
@@ -48477,31 +48479,34 @@ msgstr "有効なNATのローカルネットワークIPアドレスを指定す�
 msgid ""
 "In case you need NAT/BINAT on this network specify the address to be "
 "translated"
-msgstr "翻訳"ケースでは、対象のアドレスを指定し、このネットワーク上でNAT /のbinatが必要です」"
+msgstr ""
+"このネットワークで NAT/BINAT が必要な場合は、"
+"変換されるアドレスを指定します。"
 
 #: usr/local/www/vpn_ipsec_keys_edit.php:114
 #: usr/local/www/vpn_ipsec_keys_edit.php:114
 msgid "VPN: IPsec: Edit Pre-Shared Key"
-msgstr "VPN ： IPsecの編集：事前共有キー"
+msgstr "VPN: IPsec: 事前共有鍵の編集"
 
 #: usr/local/www/services_dhcp_edit.php:227
 #: usr/local/www/services_dhcp_edit.php:355
 #: usr/local/www/services_dhcp_edit.php:355
 msgid "If an IPv4 address is entered, the address must be outside of the pool."
-msgstr "IPv4アドレスを入力すると、アドレスはプールの外にあることが必要です。"
+msgstr "入力される IPv4 アドレスは、プールの範囲外である必要があります。"
 
 #: usr/local/www/services_dhcp_edit.php:229
 #: usr/local/www/services_dhcp_edit.php:357
 #: usr/local/www/services_dhcp_edit.php:357
 msgid ""
 "If no IPv4 address is given, one will be dynamically allocated from the pool."
-msgstr "ないIPv4アドレスが指定されていない場合」 、 1は、動的にプールから割り当てられます。"
+msgstr ""
+"IPv4 アドレスが指定されていない場合は、プールから動的に割り当てられます。"
 
 #: usr/local/www/interfaces.php:2460 usr/local/www/interfaces.php:2490
 #: usr/local/www/interfaces.php:2536 usr/local/www/interfaces.php:2525
 #: usr/local/www/interfaces.php:2525
 msgid "WPA Pre-Shared Key"
-msgstr "WPA事前共有キー"
+msgstr "WPA 事前共有鍵"
 
 #: usr/local/www/vpn_openvpn_client.php:789
 #: usr/local/www/vpn_openvpn_client.php:808
@@ -48511,7 +48516,11 @@ msgid ""
 "this client and the server expressed using CIDR (eg. fe80::/64). The first "
 "network address is assumed to be the server address and the second network "
 "address will be assigned to the client virtual interface"
-msgstr "このクライアントとサーバーの「これは間のプライベート通信に使用されるIPv6の仮想ネットワークである"（例： FE80:: / 64 ） 、CIDRを使用して表現。最初の「ネットワークアドレスは、サーバのアドレスであるとみなされ、第二のネットワーク"アドレスは、クライアントの仮想インターフェイスに割り当てられます"
+msgstr ""
+"このクライアントとサーバ間の、プライベート通信に使用される IPv6 仮想ネットワークで、"
+"CIDR ( 例: fe80::/64 ) を使用して表記されます。"
+"最初のネットワークアドレスは、サーバアドレスと見なされ、"
+"2 番目のネットワークアドレスは、クライアントの仮想インタフェースに割当てられます。"
 
 #: usr/local/www/vpn_openvpn_client.php:803
 msgid ""
@@ -48519,7 +48528,11 @@ msgid ""
 "site VPN can be established without manually changing the routing tables. "
 "Expressed as a CIDR range. If this is a site-to-site VPN, enter the remote "
 "LAN here. You may leave this blank to only communicate with other clients"
-msgstr "「これはトンネルを経由してルーティングされるネットワークである、その結果、サイトツー」サイトVPNを手動でルーティングテーブルを変更せずに設定することができる。 「 CIDRの範囲として表さ。これは、サイト間VPNの場合は、リモート入力し「ここにLANの。あなただけの他のクライアントと通信するために、この空白を残すことが"
+msgstr ""
+"トンネル経由でルーティングされるネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。CIDR 範囲として表記されます。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
+"他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_client.php:817
 msgid ""
@@ -48528,17 +48541,22 @@ msgid ""
 "tables. Expressed as an IP/PREFIX. If this is a site-to-site VPN, enter the "
 "remote LAN here. You may leave this blank to only communicate with other "
 "clients"
-msgstr ""これは、トンネルを介してルーティングされ、IPv6ネットワークであるように、「サイト間VPNを手動で「ルーティングテーブルを変更せずに確立することができます。 IP /プレフィックスとして表されます。これがあれば、サイトツーサイト間VPNは、ここでは、「リモートLANを入力してください。あなただけの他の「クライアントと通信するために、この空白を残すことが"
+msgstr ""
+"トンネル経由でルーティングされる IPv6 ネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
+"IP/PREFIX で表記されます。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
+"他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_l2tp.php:301 usr/local/www/vpn_l2tp.php:304
 #: usr/local/www/vpn_l2tp.php:304
 msgid "Enable L2TP server"
-msgstr "L2TPサーバを有効にする"
+msgstr "L2TP サーバを有効"
 
 #: usr/local/www/vpn_l2tp.php:322 usr/local/www/vpn_l2tp.php:325
 #: usr/local/www/vpn_l2tp.php:325
 msgid "Server Address"
-msgstr "サーバーのアドレス"
+msgstr "サーバアドレス"
 
 #: usr/local/www/vpn_l2tp.php:334 usr/local/www/vpn_l2tp.php:337
 #: usr/local/www/vpn_l2tp.php:337
@@ -48553,96 +48571,100 @@ msgstr "認証タイプ"
 #: usr/local/www/vpn_l2tp.php:429 usr/local/www/vpn_l2tp.php:432
 #: usr/local/www/vpn_l2tp.php:432
 msgid "RADIUS Shared Secret"
-msgstr "RADIUS共有シークレット"
+msgstr "RADIUS 共有秘密鍵"
 
 #: usr/local/www/vpn_l2tp.php:436 usr/local/www/vpn_l2tp.php:439
 #: usr/local/www/vpn_l2tp.php:439
 msgid "RADIUS Issued IP's"
-msgstr "RADIUSは、IPの発行"
+msgstr "RADIUS が割り当てた IP"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:126
 #: usr/local/www/firewall_virtual_ip_edit.php:128
 #: usr/local/www/firewall_virtual_ip_edit.php:128
 msgid "The /31 and /32 subnet mask are invalid for CARP IPs."
-msgstr "/ 31および/ 32サブネットマスクは、CARPのIPアドレスは無効です。"
+msgstr "CARP の IP に /31 及び /32 のサブネットマスクは無効です。"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:130
 #: usr/local/www/firewall_virtual_ip_edit.php:132
 #: usr/local/www/firewall_virtual_ip_edit.php:132
 msgid "The /127 and /128 subnet mask are invalid for CARP IPs."
-msgstr "/ 127および/ 128サブネットマスクは、CARPのIPアドレスは無効です。"
+msgstr "CARP の IP に /127 及び /128 のサブネットマスクは無効です。"
 
 #: usr/local/www/interfaces_gif.php:137 usr/local/www/interfaces_gif.php:141
 #: usr/local/www/interfaces_gif.php:141
 msgid ""
 "If you are using a GIF tunnel to connect to a Hurricane Electric (he.net) "
 "Tunnel Broker on a WAN with a dynamic IP, you may want to add a"
-msgstr "動的IPとWAN上のトンネルブローカー」では、ハリケーン·エレクトリック（ he.net ）に接続するために、GIFトンネルを使用している場合」には、追加したいこと"
+msgstr ""
+"動的 IP の WAN で Hurricane Electric (he.net) Tunnel Broker への接続に"
+" GIF トンネルを使用する場合は、"
 
 #: usr/local/www/interfaces_gif.php:137 usr/local/www/interfaces_gif.php:141
 #: usr/local/www/interfaces_gif.php:141
 msgid "HE.net Tunnelbroker type DynDNS Entry"
-msgstr "HE.net TunnelbrokerタイプダイナミックDNSエントリー"
+msgstr "HE.net Tunnelbroker タイプダイナミック DNS エントリ"
 
 #: usr/local/www/interfaces_gif.php:137 usr/local/www/interfaces_gif.php:141
 #: usr/local/www/interfaces_gif.php:141
 msgid "to keep your tunnel functional when your IP changes."
-msgstr "あなたのIPの変更時に機能的な、あなたのトンネルを維持する。"
+msgstr "を追加すると、IP に変更があった場合に、トンネル機能が維持できます。"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:102
 #: usr/local/www/widgets/widgets/system_information.widget.php:103
 #: usr/local/www/widgets/widgets/system_information.widget.php:101
 #: usr/local/www/widgets/widgets/system_information.widget.php:103
 msgid "Obtaining update status"
-msgstr "更新ステータスの取得"
+msgstr "更新ステータスを取得しています"
 
 #: usr/local/www/vpn_ipsec_phase1.php:680
 #: usr/local/www/vpn_ipsec_phase1.php:701
 #: usr/local/www/vpn_ipsec_phase1.php:701
 msgid "Input your Pre-Shared Key string"
-msgstr "入力あなたの事前共有鍵の文字列"
+msgstr "事前共有鍵の文字列を入力"
 
 #: usr/local/www/diag_nanobsd.php:179 usr/local/www/diag_nanobsd.php:170
 #: usr/local/www/diag_nanobsd.php:170
 msgid "Media Read/Write Status"
-msgstr "メディア読み取り/書き込みステータス"
+msgstr "メディア読取 / 書込ステータス"
 
 #: usr/local/www/diag_nanobsd.php:192 usr/local/www/diag_nanobsd.php:183
 #: usr/local/www/diag_nanobsd.php:183
 msgid "Read/Write"
-msgstr "読み書き"
+msgstr "読取 / 書込"
 
 #: usr/local/www/diag_nanobsd.php:194 usr/local/www/diag_nanobsd.php:185
 #: usr/local/www/diag_nanobsd.php:185
 msgid "Switch to Read-Only"
-msgstr "読み取り専用に切り替え"
+msgstr "読取専用に切替"
 
 #: usr/local/www/diag_nanobsd.php:196 usr/local/www/diag_nanobsd.php:187
 #: usr/local/www/diag_nanobsd.php:187
 msgid "Read-Only"
-msgstr "リードオンリー"
+msgstr "読取専用"
 
 #: usr/local/www/diag_nanobsd.php:198 usr/local/www/diag_nanobsd.php:189
 #: usr/local/www/diag_nanobsd.php:189
 msgid "Switch to Read/Write"
-msgstr "読み取り/書き込みに切り替え"
+msgstr "読取 / 書込に切替"
 
 #: usr/local/www/diag_nanobsd.php:201 usr/local/www/diag_nanobsd.php:192
 #: usr/local/www/diag_nanobsd.php:192
 msgid ""
 "NOTE: This setting is only temporary, and can be switched dynamically in the "
 "background."
-msgstr ""注：この設定は一時的なものであり、動的に切り替えることができます」背景。"
+msgstr ""
+"注意: この設定は一時的なものです。"
+"バックグラウンドで、動的に切り替え可能です。"
 
 #: usr/local/www/diag_nanobsd.php:208 usr/local/www/diag_nanobsd.php:199
 #: usr/local/www/diag_nanobsd.php:199
 msgid "Keep media mounted read/write at all times."
-msgstr "維持培地は、常に読み取り/書き込み取り付けられている。"
+msgstr "常に読取 / 書込で、メディアのマウントを維持"
 
 #: usr/local/www/services_dhcpv6.php:821 usr/local/www/services_dhcpv6.php:838
 #: usr/local/www/services_dhcpv6.php:838
 msgid "Status: DHCPv6 leases"
-msgstr "ステータス： DHCPv6のリース"
+msgstr "ステータス: DHCPv6 リース"
 
 #: usr/local/www/diag_logs_filter.php:181
 #: usr/local/www/diag_logs_filter.php:307
@@ -48656,14 +48678,16 @@ msgstr "標準カーネル"
 
 #: usr/local/www/system_firmware.php:56 usr/local/www/system_firmware.php:56
 msgid "Embedded Kernel"
-msgstr "埋め込まれたカーネル"
+msgstr "組込用カーネル"
 
 #: usr/local/www/vpn_l2tp.php:88 usr/local/www/vpn_pptp.php:96
 #: usr/local/www/vpn_l2tp.php:88 usr/local/www/vpn_pptp.php:96
 msgid ""
 "'Server address' parameter should NOT be set to any IP address currently in "
 "use on this firewall."
-msgstr "このファイアウォールで使用する「「サーバーアドレス」パラメータは、現在の任意のIPアドレスに設定しないでください」 。"
+msgstr ""
+"「サーバアドレス」パラメータには、"
+"このファイアウォールで現在使用している IP アドレスは設定「できません」。"
 
 #: usr/local/www/system_camanager.php:220
 #: usr/local/www/system_certmanager.php:299
@@ -48672,7 +48696,7 @@ msgstr "このファイアウォールで使用する「「サーバーアドレ
 #: usr/local/www/system_certmanager.php:299
 #: usr/local/www/system_certmanager.php:301
 msgid "Please select a valid Key Length."
-msgstr "有効なキーの長さを選択してください。"
+msgstr "有効な鍵長を選択してください。"
 
 #: usr/local/www/system_camanager.php:222
 #: usr/local/www/system_certmanager.php:303
@@ -48702,7 +48726,8 @@ msgstr "ダイジェストアルゴリズム"
 #: usr/local/www/system_certmanager.php:879
 msgid ""
 "NOTE: It is recommended to use an algorithm stronger than SHA1 when possible."
-msgstr ""注：これは、可能な場合はSHA1より強いアルゴリズムを使用することをお勧めします。"
+msgstr ""
+"注意: 可能であれば、SHA1 よりも強固なアルゴリズムを使用することをお勧めします。"
 
 #: usr/local/www/system_camanager.php:653
 #: usr/local/www/system_certmanager.php:1127
@@ -48710,7 +48735,7 @@ msgstr ""注：これは、可能な場合はSHA1より強いアルゴリズム�
 #: usr/local/www/system_camanager.php:653
 #: usr/local/www/system_certmanager.php:1131
 msgid "Valid From"
-msgstr "から有効"
+msgstr "有効期間開始"
 
 #: usr/local/www/system_camanager.php:658
 #: usr/local/www/system_certmanager.php:1132
@@ -48718,12 +48743,12 @@ msgstr "から有効"
 #: usr/local/www/system_camanager.php:658
 #: usr/local/www/system_certmanager.php:1136
 msgid "Valid Until"
-msgstr "まで有効"
+msgstr "有効期間終了"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:107
 #: usr/local/www/services_captiveportal_ip_edit.php:107
 msgid "A valid subnet mask must be specified"
-msgstr "有効なサブネットマスクを指定する必要があります"
+msgstr "有効なサブネットマスクを指定してください"
 
 #: usr/local/www/vpn_openvpn_client.php:160
 #: usr/local/www/vpn_openvpn_server.php:213
@@ -48732,7 +48757,9 @@ msgstr "有効なサブネットマスクを指定する必要があります"
 msgid ""
 "Protocol and IP address families do not match. You cannot select an IPv6 "
 "protocol and an IPv4 IP address."
-msgstr "プロトコルとIPv4のIPアドレス "プロトコルとIPアドレスファミリーはIPv6を選択することはできません。一致していません」 。"
+msgstr ""
+"プロトコルと IP アドレスファミリが一致しません。"
+"IPv6 プロトコルと IPv4 IP アドレスは選択できません。"
 
 #: usr/local/www/vpn_openvpn_client.php:162
 #: usr/local/www/vpn_openvpn_server.php:215
@@ -48741,7 +48768,9 @@ msgstr "プロトコルとIPv4のIPアドレス "プロトコルとIPアドレ�
 msgid ""
 "Protocol and IP address families do not match. You cannot select an IPv4 "
 "protocol and an IPv6 IP address."
-msgstr "プロトコルとIPv6のIPアドレス "プロトコルとIPアドレスファミリーは、あなたがIPv4を選択することはできません。一致していません」 。"
+msgstr ""
+"プロトコルと IP アドレスファミリが一致しません。"
+"IPv4 プロトコルと IPv6 IP アドレスは選択できません。"
 
 #: usr/local/www/vpn_openvpn_client.php:164
 #: usr/local/www/vpn_openvpn_server.php:217
@@ -48750,7 +48779,9 @@ msgstr "プロトコルとIPv6のIPアドレス "プロトコルとIPアドレ�
 msgid ""
 "An IPv4 protocol was selected, but the selected interface has no IPv4 "
 "address."
-msgstr "「 IPv4のプロトコルが選択されるが、選択したインターフェイスにはIPv4アドレスがありませんでした」アドレスを。"
+msgstr ""
+"IPv4 プロトコルが選択されましたが、"
+"選択したインタフェースは IPv4 アドレスではありません。"
 
 #: usr/local/www/vpn_openvpn_client.php:166
 #: usr/local/www/vpn_openvpn_server.php:219
@@ -48759,14 +48790,16 @@ msgstr "「 IPv4のプロトコルが選択されるが、選択したインタ�
 msgid ""
 "An IPv6 protocol was selected, but the selected interface has no IPv6 "
 "address."
-msgstr "「 IPv6プロトコルを選択しますが、選択されたインタフェースにはIPv6を持っていませんし、「アドレスを。"
+msgstr ""
+"IPv6 プロトコルが選択されましたが、"
+"選択したインタフェースは IPv6 アドレスではありません。"
 
 #: usr/local/www/vpn_openvpn_client.php:818
 #: usr/local/www/vpn_openvpn_server.php:1252
 #: usr/local/www/vpn_openvpn_client.php:818
 #: usr/local/www/vpn_openvpn_server.php:1252
 msgid "IPv4 Remote Network/s"
-msgstr "IPv4のリモートネットワーク/ S"
+msgstr "IPv4 リモートネットワーク"
 
 #: usr/local/www/vpn_openvpn_client.php:822
 #: usr/local/www/vpn_openvpn_client.php:822
@@ -48776,14 +48809,19 @@ msgid ""
 "tables. Expressed as a comma-separated list of one or more CIDR ranges. If "
 "this is a site-to-site VPN, enter the remote LAN/s here. You may leave this "
 "blank to only communicate with other clients"
-msgstr "サイト間VPNを手動でルーティング」のテーブルを変更せずに確立できる」ように、これらは、トンネルを介してルーティングされたIPv4ネットワークである」 。 1つ以上のCIDRのコンマ区切りのリストとして表現します。範囲「このように入力し、サイト間VPNでLANが/ここのリモート。あなただけの他のクライアントと通信するために、この「空白のままに可能性"
+msgstr ""
+"トンネル経由でルーティングされる IPv4 ネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
+"1 つ以上の CIDR 範囲のカンマ区切りリストとして表記されます。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
+"他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_client.php:832
 #: usr/local/www/vpn_openvpn_server.php:1266
 #: usr/local/www/vpn_openvpn_client.php:832
 #: usr/local/www/vpn_openvpn_server.php:1266
 msgid "IPv6 Remote Network/s"
-msgstr "IPv6リモートネットワーク/ S"
+msgstr "IPv6 リモートネットワーク"
 
 #: usr/local/www/vpn_openvpn_client.php:836
 #: usr/local/www/vpn_openvpn_client.php:836
@@ -48793,27 +48831,32 @@ msgid ""
 "tables. Expressed as a comma-separated list of one or more IP/PREFIX. If "
 "this is a site-to-site VPN, enter the remote LAN/s here. You may leave this "
 "blank to only communicate with other clients"
-msgstr "サイト間VPNを手動でルーティング」のテーブルを変更せずに設定することができる。 1または複数のIP /プレフィックスをカンマで区切ったリストとして発現された」これらはように、トンネルを介してルーティングされたIPv6ネットワークである」 。これはサイト間VPNである」場合には、リモートLANに入る/ sこちら。あなただけの他のクライアントと通信するために、この「空白のままに可能性"
+msgstr ""
+"トンネル経由でルーティングされる IPv6 ネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
+"1 つ以上の IP/PREFIX のカンマ区切りリストとして表記されます。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
+"他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_client.php:909
 #: usr/local/www/vpn_openvpn_client.php:909
 msgid "EXAMPLE:"
-msgstr "例："
+msgstr "例: "
 
 #: usr/local/www/status_openvpn.php:201 usr/local/www/status_openvpn.php:211
 #: usr/local/www/status_openvpn.php:211
 msgid "Show Routing Table"
-msgstr "ショールーティングテーブル"
+msgstr "ルーティングテーブルを表示"
 
 #: usr/local/www/status_openvpn.php:201 usr/local/www/status_openvpn.php:211
 #: usr/local/www/status_openvpn.php:211
 msgid "Display OpenVPN's internal routing table for this server."
-msgstr "このサーバーのOpenVPNの内部のルーティングテーブルを表示します。"
+msgstr "このサーバの OpenVPN 内部ルーティングテーブルを表示します。"
 
 #: usr/local/www/status_openvpn.php:207 usr/local/www/status_openvpn.php:217
 #: usr/local/www/status_openvpn.php:217
 msgid "Routing Table"
-msgstr "経路指定テーブル"
+msgstr "ルーティングテーブル"
 
 #: usr/local/www/status_openvpn.php:216 usr/local/www/status_openvpn.php:226
 #: usr/local/www/status_openvpn.php:226
@@ -48823,14 +48866,16 @@ msgstr "ターゲットネットワーク"
 #: usr/local/www/status_openvpn.php:217 usr/local/www/status_openvpn.php:227
 #: usr/local/www/status_openvpn.php:227
 msgid "Last Used"
-msgstr "最後に使用した"
+msgstr "最終使用時間"
 
 #: usr/local/www/status_openvpn.php:239 usr/local/www/status_openvpn.php:249
 #: usr/local/www/status_openvpn.php:249
 msgid ""
 "An IP address followed by C indicates a host currently connected through the "
 "VPN."
-msgstr "VPN "Cに続くIPアドレスは、現在を介して接続されたホストを示す「 。"
+msgstr ""
+"末尾に C がついている IP アドレスは、"
+"現在 VPN 経由で接続しているホストを示しています。"
 
 #: usr/local/www/diag_testport.php:49 usr/local/www/diag_testport.php:114
 #: usr/local/www/fbegin.inc:218 usr/local/www/diag_testport.php:49
@@ -48840,7 +48885,7 @@ msgstr "テストポート"
 
 #: usr/local/www/diag_testport.php:64 usr/local/www/diag_testport.php:64
 msgid "Please enter a valid IP or hostname."
-msgstr "有効なIPまたはホスト名を入力してください。"
+msgstr "有効な IP またはホスト名を入力してください。"
 
 #: usr/local/www/diag_testport.php:68 usr/local/www/diag_testport.php:68
 msgid "Please enter a valid port number."
@@ -48848,15 +48893,15 @@ msgstr "有効なポート番号を入力してください。"
 
 #: usr/local/www/diag_testport.php:72 usr/local/www/diag_testport.php:72
 msgid "Please enter a valid source port number, or leave the field blank."
-msgstr "有効な送信元ポート番号を入力するか、フィールドを空白のままにしてください。"
+msgstr "有効な送信元ポート番号を入力するか、フィールドを空白にしてください。"
 
 #: usr/local/www/diag_testport.php:76 usr/local/www/diag_testport.php:76
 msgid "You cannot connect to an IPv4 address using IPv6."
-msgstr "あなたは、 IPv6を使用して、IPv4アドレスに接続することはできません。"
+msgstr "IPv6 を使用して IPv4 アドレスに接続できません。"
 
 #: usr/local/www/diag_testport.php:79 usr/local/www/diag_testport.php:79
 msgid "You cannot connect to an IPv6 address using IPv4."
-msgstr "あなたはIPv4を使用してIPv6アドレスに接続することはできません。"
+msgstr "IPv4 を使用して IPv6 アドレスに接続できません。"
 
 #: usr/local/www/diag_testport.php:106 usr/local/www/diag_testport.php:106
 msgid ""
@@ -48864,18 +48909,24 @@ msgid ""
 "a host is up and accepting connections on a given port. This test does not "
 "function for UDP since there is no way to reliably determine if a UDP port "
 "accepts connections in this manner."
-msgstr "ホストが起動して指定されたポートで接続を受け入れている」このページでは、かどうかを判断するために、単純なTCP接続テストを実行することができます」 。このテストでは、このように接続を受け付ける「UDPのための機能は、UDPポートがあれば、確実に判別する方法がないので、 「ありません。"
+msgstr ""
+"このページでは、シンプルな TCP 接続テストを実行できます。"
+"ホストがアップしているか、指定したポートで接続を受信できるかを確認できます。"
+"このテストは UDP に対しては機能しません。"
+"UDP ポートが、このやり方で接続を受信したかどうかを、確実に判断できる方法がないためです。"
 
 #: usr/local/www/diag_testport.php:108 usr/local/www/diag_testport.php:108
 msgid ""
 "No data is transmitted to the remote host during this test, it will only "
 "attempt to open a connection and optionally display the data sent back from "
 "the server."
-msgstr "「データは、この試験中にリモートホストに送信されていない、それだけに "接続を開き、必要に応じてサーバ」から返信データを表示しよう。"
+msgstr ""
+"テスト中には、リモートホストにデータは送信されません。"
+"接続を開くことと、オプションでサーバから返信データの表示のみを試すことができます。"
 
 #: usr/local/www/diag_testport.php:132 usr/local/www/diag_testport.php:132
 msgid "This should typically be left blank."
-msgstr "これは通常、空白のままにしてください。"
+msgstr "通常は、ここを空白にしてください。"
 
 #: usr/local/www/diag_testport.php:136 usr/local/www/diag_testport.php:136
 msgid "Show Remote Text"
@@ -48885,24 +48936,26 @@ msgstr "リモートテキストを表示"
 msgid ""
 "Shows the text given by the server when connecting to the port. Will take "
 "10+ seconds to display if checked."
-msgstr "チェックすると表示するように10秒"ポートに接続した場合、サーバーによって指定されたテキストは連れて行ってくれません示しています」 。"
+msgstr ""
+"ポートに接続した時に、サーバから与えられたテキストを表示します。"
+"チェックされた場合、表示に 10 秒以上かかります。"
 
 #: usr/local/www/diag_testport.php:159 usr/local/www/diag_testport.php:161
 #: usr/local/www/diag_traceroute.php:104 usr/local/www/diag_ping.php:102
 #: usr/local/www/diag_testport.php:161 usr/local/www/diag_traceroute.php:104
 #: usr/local/www/diag_ping.php:102
 msgid "IP Protocol"
-msgstr "IPプロトコル"
+msgstr "IP プロトコル"
 
 #: usr/local/www/diag_testport.php:166 usr/local/www/diag_testport.php:168
 #: usr/local/www/diag_testport.php:168
 msgid "IPv4"
-msgstr "IPv4の"
+msgstr "IPv4"
 
 #: usr/local/www/diag_testport.php:169 usr/local/www/diag_testport.php:171
 #: usr/local/www/diag_testport.php:171
 msgid "IPv6"
-msgstr "IPv6の"
+msgstr "IPv6"
 
 #: usr/local/www/diag_testport.php:173 usr/local/www/diag_testport.php:175
 #: usr/local/www/diag_testport.php:175
@@ -48911,7 +48964,11 @@ msgid ""
 "using that protocol, it will result in an error. For example if you force "
 "IPv4 and use a hostname that only returns an AAAA IPv6 IP address, it will "
 "not work."
-msgstr ""あなたはIPv4またはIPv6を強制し、その結果が含まれていないホスト名を使用する場合、「そのプロトコルを使用して、エラーになります。あなたが強制的にたとえば「 IPv4のが唯一AAAA IPv6のIPアドレスを返すホスト名を使用し、それがします」は動作しませ。"
+msgstr ""
+"IPv4 または IPv6 を強制して、ホスト名を使用する場合、"
+"プロトコルを使用した結果が含まれないため、エラーになります。"
+"例えば、IPv4 を強制してホスト名を使用すると、"
+"AAAA IPv6 IP アドレスのみが返されるため、機能しません。"
 
 #: usr/local/www/diag_testport.php:186 usr/local/www/diag_testport.php:188
 #: usr/local/www/diag_testport.php:188
@@ -48923,12 +48980,14 @@ msgstr "ポートテスト結果"
 msgid ""
 "No output received, or connection failed. Try with \"Show Remote Text\" "
 "unchecked first."
-msgstr "「何も出力が受信されない、または接続に失敗しました。で試してみてください」の表示リモートテキスト""チェックしない第一。"
+msgstr ""
+"出力が受信されない、もしくは、接続に失敗しました。"
+"「リモートテキストを表示」のチェックを外してから、再試行してください。"
 
 #: usr/local/www/diag_testport.php:248 usr/local/www/diag_testport.php:250
 #: usr/local/www/diag_testport.php:250
 msgid "Connection failed (Refused/Timeout)"
-msgstr "接続は（拒否/タイムアウト）に失敗しました"
+msgstr "接続は失敗しました ( 拒絶 / タイムアウト )"
 
 #: usr/local/www/firewall_rules_edit.php:1295
 #: usr/local/www/firewall_nat_edit.php:780
@@ -48944,16 +49003,18 @@ msgstr "接続は（拒否/タイムアウト）に失敗しました"
 msgid ""
 "Hint: This prevents the rule on Master from automatically syncing to other "
 "CARP members. This does NOT prevent the rule from being overwritten on Slave."
-msgstr ""ヒント：これは、自動的に他のと同期からマスターにルールを防ぐ「 CARPのメンバー。これはスレーブで上書きされないルールを防ぐことはできません。"
+msgstr ""
+"ヒント: 他の CARP メンバとの自動同期から、マスタのルールを保護します"
+"スレーブのルールが上書きされることは、妨げ「ません」。"
 
 #: usr/local/www/interfaces_qinq.php:68 usr/local/www/interfaces_qinq.php:68
 msgid "QinQ interface does not exist"
-msgstr "QinQのインタフェースは存在しません"
+msgstr "QinQ インタフェースは存在しません"
 
 #: usr/local/www/interfaces_vlan_edit.php:84
 #: usr/local/www/interfaces_vlan_edit.php:84
 msgid "Interface supplied as parent is invalid"
-msgstr "親として付属のインターフェースが無効です"
+msgstr "親として指定されたインタフェースは無効です"
 
 #: usr/local/www/system_firmware_settings.php:151
 #: usr/local/www/system_firmware_settings.php:153
@@ -48964,19 +49025,23 @@ msgid ""
 "current installation, such as %s. Changing architectures during an upgrade "
 "is not recommended, and may require a manual reboot after the update "
 "completes."
-msgstr "現在のアーキテクチャ」で示すエントリは」など%s.などの現在のインストール、 「あなたのアーキテクチャと一致」アップグレード中にアーキテクチャを変更しても、 「推奨されておらず、更新後手動で再起動が必要な場合があり、「完了する。"
+msgstr ""
+"「現在のアーキテクチャ」で示されたエントリは、%s のように、"
+"現在インストールされているアーキテクチャと一致します。"
+"アップグレード中には、アーキテクチャを変更しないようにしてください。"
+"更新が完了したら、手動で再起動する必要があります。"
 
 #: usr/local/www/interfaces_lagg_edit.php:95
 #: usr/local/www/interfaces_lagg_edit.php:98
 #: usr/local/www/interfaces_lagg_edit.php:95
 #: usr/local/www/interfaces_lagg_edit.php:98
 msgid "Interface supplied as member is invalid"
-msgstr "メンバーとして付属のインターフェースが無効です"
+msgstr "メンバとして指定されたインタフェースは無効です"
 
 #: usr/local/www/interfaces_lagg_edit.php:101
 #: usr/local/www/interfaces_lagg_edit.php:101
 msgid "Protocol supplied is invalid"
-msgstr "付属議定書は無効である"
+msgstr "指定されたプロトコルは無効です"
 
 #: usr/local/www/status_captiveportal_expire.php:58
 #: usr/local/www/status_captiveportal_expire.php:73
@@ -48991,14 +49056,16 @@ msgstr "付属議定書は無効である"
 #: usr/local/www/status_captiveportal_test.php:75
 #: usr/local/www/status_captiveportal_voucher_rolls.php:79
 msgid "Expire Vouchers"
-msgstr "バウチャーの有効期限"
+msgstr "バウチャーの失効"
 
 #: usr/local/www/status_captiveportal_expire.php:86
 #: usr/local/www/status_captiveportal_expire.php:86
 msgid ""
 "Enter multiple vouchers separated by space or newline. All valid vouchers "
 "will be marked as expired"
-msgstr "「空白や改行で区切られた複数の伝票を入力します。すべての有効なクーポン」は有効期限が切れとしてマークされます"
+msgstr ""
+"複数のバウチャーを入力できます。区切り文字は、空白、または改行です。"
+"有効なバウチャーは、全て失効とマークされます。"
 
 #: usr/local/www/firewall_nat_edit.php:835
 #: usr/local/www/firewall_nat_edit.php:847
@@ -49007,40 +49074,46 @@ msgstr "「空白や改行で区切られた複数の伝票を入力します。
 msgid ""
 "NOTE: The \"pass\" selection does not work properly with Multi-WAN. It will "
 "only work on an interface containing the default gateway."
-msgstr ""注： 「合格」の選択は、複数WANで正しく動作しないことがします。 」だけデフォルトゲートウェイを含む、インターフェイス上で動作する。"
+msgstr ""
+"注意: 「許可」の選択は、マルチ WAN では正しく機能しません。"
+"デフォルトゲートウェイになっているインタフェースでのみ機能します。"
 
 #: usr/local/www/interfaces_vlan.php:71 usr/local/www/interfaces_vlan.php:71
 msgid "Invalid VLAN interface."
-msgstr "無効なVLANインターフェイス。"
+msgstr "VLAN インタフェースが無効です。"
 
 #: usr/local/www/interfaces_gif_edit.php:87
 #: usr/local/www/interfaces_gif_edit.php:87
 msgid ""
 "The alias IP address family has to match the family of the remote peer "
 "address."
-msgstr "アドレス「エイリアスIPアドレスファミリーは、リモートピアの家族を一致する必要があります」 。"
+msgstr ""
+"エイリアス IP アドレスファミリは、"
+"リモートピアアドレスのファミリと一致する必要があります。"
 
 #: usr/local/www/services_dhcp_edit.php:193
 #: usr/local/www/services_dhcp_edit.php:193
 msgid ""
 "The IP address must not be within the range configured on a DHCP pool for "
 "this interface."
-msgstr "このインターフェースの「IPアドレスが用DHCPプールに設定された範囲内であってはならない」 。"
+msgstr ""
+"このインタフェースの DHCP プールに構成された範囲に含まれる、"
+"IP アドレスは使用できません。"
 
 #: usr/local/www/services_dhcp_edit.php:388
 #: usr/local/www/services_dhcp_edit.php:388
 msgid "ARP Table Static Entry"
-msgstr "ARPテーブルスタティックエントリ"
+msgstr "ARP テーブル静的エントリ"
 
 #: usr/local/www/services_dhcp_edit.php:391
 #: usr/local/www/services_dhcp_edit.php:391
 msgid "Create an ARP Table Static Entry for this MAC & IP Address pair. "
-msgstr "このMAC ＆ IPアドレスのペアのためのARPテーブルのスタティックエントリを作成します。"
+msgstr "この MAC & IP アドレスペアに対して、ARP テーブル静的エントリを作成します。"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:117
 #: usr/local/www/firewall_virtual_ip_edit.php:117
 msgid "This IP address is being used by another interface or VIP."
-msgstr "このIPアドレスは別のインターフェイスまたはVIPで使用されています。"
+msgstr "この IP アドレスは、別のインタフェース、または VIP で使用されています。"
 
 #: usr/local/www/diag_traceroute.php:122 usr/local/www/diag_traceroute.php:141
 #: usr/local/www/diag_traceroute.php:141
@@ -49050,11 +49123,11 @@ msgstr "逆アドレス検索"
 #: usr/local/www/interfaces_bridge.php:70
 #: usr/local/www/interfaces_bridge.php:70
 msgid "Invalid bridge interface."
-msgstr "無効なブリッジ·インターフェース。"
+msgstr "無効なブリッジインタフェースです"
 
 #: usr/local/www/diag_smart.php:339 usr/local/www/diag_smart.php:339
 msgid "Perform Self-tests"
-msgstr "セルフテストを実行する"
+msgstr "セルフテストを実行"
 
 #: usr/local/www/diag_smart.php:384 usr/local/www/diag_smart.php:384
 msgid "Self-test"
@@ -49073,7 +49146,7 @@ msgstr "セルフテスト"
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:1364
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:1225
 msgid "Connections From Upstream SIP Server"
-msgstr "上流のSIPサーバからの接続"
+msgstr "上流 SIP サーバからの接続"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:1497
 #: usr/local/www/wizards/traffic_shaper_wizard_dedicated.inc:1440
@@ -49092,44 +49165,47 @@ msgstr "上流のSIPサーバからの接続"
 #: usr/local/www/wizards/traffic_shaper_wizard.inc:1378
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:1239
 msgid "Connections To Upstream SIP Server"
-msgstr "上流SIPサーバーへの接続"
+msgstr "上流 SIP サーバへの接続"
 
 #: usr/local/www/vpn_pppoe_edit.php:149 usr/local/www/vpn_pppoe_edit.php:149
 msgid "Wrong data submitted"
-msgstr "提出され、誤ったデータ"
+msgstr "不正なデータが提出されました"
 
 #: usr/local/www/license.php:158 usr/local/www/license.php:158
 msgid "1992-2012 The FreeBSD Project. All rights reserved"
-msgstr "1992-2012ザ· FreeBSDプロジェクト。無断複写·転載を禁じます"
+msgstr "1992-2012 The FreeBSD Project. All rights reserved"
 
 #: usr/local/www/license.php:161 usr/local/www/license.php:161
 msgid "1999-2010 The PHP Group. All rights reserved."
-msgstr "1999-2010ザ· PHPグループ。無断複写·転載を禁じます。"
+msgstr "1999-2010 The PHP Group. All rights reserved."
 
 #: usr/local/www/license.php:164 usr/local/www/license.php:164
 msgid "2004, Jan Knescke, incremental"
-msgstr "2004 、ヤンKnescke 、インクリメンタル"
+msgstr "2004, Jan Knescke, incremental"
 
 #: usr/local/www/license.php:168 usr/local/www/license.php:168
 msgid "2004-2012 Internet Software Consortium, Inc."
-msgstr "2004-2012 Internet Software Consortiumの株式会社"
+msgstr "2004-2012 Internet Software Consortium, Inc."
 
 #: usr/local/www/license.php:169 usr/local/www/license.php:169
 msgid "1995-2003 Internet Software Consortium"
-msgstr "1995-2003 Internet Software Consortiumの"
+msgstr "1995-2003 Internet Software Consortium"
 
 #: usr/local/www/services_dhcp.php:352 usr/local/www/services_dhcp.php:372
 #: usr/local/www/services_dhcp.php:372
 msgid ""
 "The specified range must not be within the DHCP range for this interface."
-msgstr "「指定された範囲は、このインターフェイスのDHCP範囲内にあってはならない。"
+msgstr ""
+"このインタフェースの DHCP 範囲に含まれる、範囲は指定できません。"
 
 #: usr/local/www/services_dhcp.php:361 usr/local/www/services_dhcp.php:381
 #: usr/local/www/services_dhcp.php:381
 msgid ""
 "The specified range must not be within the range configured on a DHCP pool "
 "for this interface."
-msgstr "このインタフェースの「指定された範囲は、 DHCPプールに設定された範囲内であってはならない」 。"
+msgstr "
+"このインタフェースの DHCP プールに構成された範囲に含まれる、"
+"範囲は指定できません。"
 
 #: usr/local/www/services_dhcp.php:713 usr/local/www/services_dhcp.php:733
 #: usr/local/www/services_dhcp.php:733
@@ -49143,7 +49219,11 @@ msgid ""
 "machine.  Machines must be using CARP. Interface's advskew determines "
 "whether the DHCPd process is Primary or Secondary. Ensure one machine's "
 "advskew<20 (and the other is >20)."
-msgstr "「無効にする場合は空白のままにしておきます。他のインターフェイスIPアドレスを入力し、 "マシンを。マシンは、CARPを使用する必要があります。インタフェースのadvskewは「のdhcpdプロセスがプライマリまたはセカンダリであるかどうか。 1マシンの確認」を決定advskew u003c 20 （他方はu003e 20） 。"
+msgstr ""
+"無効にする場合は、空白にしてください。"
+"他の機器のインタフェース IP アドレスを入力します。機器では CARP を使用している必要があります。"
+"インタフェースの advskew は DHCPd プロセスがプライマリなのか、セカンダリなのかを決定します。"
+"1 つの機器には、必ず advskew<20 を設定します。( 他の機器は、>20 にします )"
 
 #: usr/local/www/services_dhcp.php:946 usr/local/www/services_dhcp.php:966
 #: usr/local/www/services_dhcp.php:966
@@ -49152,16 +49232,19 @@ msgid ""
 "\t\t\t\t\t\tbox DHCP lease time will be displayed in local time and set to "
 "time zone selected.  This will be used for all DHCP interfaces lease time."
 msgstr ""
+"デフォルトでは、DHCP リースは UTC 時間で表示されます。このボックスをチェックすると\n"
+"\t\t\t\t\t\tDHCP リースは現地時間表示になり、選択されたタイムゾーンに設定されます。"
+"全ての DHCP インタフェースのリース時間に適用されます。"
 
 #: usr/local/www/services_dhcp.php:1146 usr/local/www/services_dhcp.php:1166
 #: usr/local/www/services_dhcp.php:1166
 msgid "DHCP Static Mappings for this interface."
-msgstr "このインターフェイスのDHCP静的マッピング。"
+msgstr "このインタフェースの DHCP 静的マッピング"
 
 #: usr/local/www/diag_system_pftop.php:133
 #: usr/local/www/diag_system_pftop.php:133
 msgid "View type:"
-msgstr "ビューの種類："
+msgstr "表示タイプ: "
 
 #: usr/local/www/diag_system_pftop.php:136
 #: usr/local/www/diag_system_pftop.php:136
@@ -49171,12 +49254,12 @@ msgstr "ラベル"
 #: usr/local/www/diag_system_pftop.php:141
 #: usr/local/www/diag_system_pftop.php:141
 msgid "Speed"
-msgstr "スピード"
+msgstr "速度"
 
 #: usr/local/www/diag_system_pftop.php:150
 #: usr/local/www/diag_system_pftop.php:150
 msgid "Age"
-msgstr "時代"
+msgstr "経過時間"
 
 #: usr/local/www/diag_system_pftop.php:151
 #: usr/local/www/diag_system_pftop.php:151
@@ -49186,22 +49269,22 @@ msgstr "バイト"
 #: usr/local/www/diag_system_pftop.php:152
 #: usr/local/www/diag_system_pftop.php:152
 msgid "Destination Address"
-msgstr "宛先アドレス"
+msgstr "送信先アドレス"
 
 #: usr/local/www/diag_system_pftop.php:154
 #: usr/local/www/diag_system_pftop.php:154
 msgid "Expiry"
-msgstr "満了"
+msgstr "有効時間"
 
 #: usr/local/www/diag_system_pftop.php:156
 #: usr/local/www/diag_system_pftop.php:156
 msgid "Peak"
-msgstr "ピーク"
+msgstr "最大速度"
 
 #: usr/local/www/diag_system_pftop.php:157
 #: usr/local/www/diag_system_pftop.php:157
 msgid "Packet"
-msgstr "パケット"
+msgstr "パケット数"
 
 #: usr/local/www/diag_system_pftop.php:161 usr/local/www/diag_testport.php:143
 #: usr/local/www/diag_traceroute.php:113 usr/local/www/diag_ping.php:111
@@ -49213,36 +49296,36 @@ msgstr "送信元アドレス"
 #: usr/local/www/diag_system_pftop.php:166
 #: usr/local/www/diag_system_pftop.php:166
 msgid "Number of States:"
-msgstr "状態の数："
+msgstr "状態の数: "
 
 #: usr/local/www/system_advanced_misc.php:357
 #: usr/local/www/system_advanced_misc.php:404
 #: usr/local/www/system_advanced_misc.php:404
 msgid "On AC Power Mode"
-msgstr "AC電源モードオン"
+msgstr "AC 電源モードをオン"
 
 #: usr/local/www/system_advanced_misc.php:365
 #: usr/local/www/system_advanced_misc.php:412
 #: usr/local/www/system_advanced_misc.php:412
 msgid "On Battery Power Mode"
-msgstr "バッテリ電源モードオン"
+msgstr "バッテリ電源モードをオン"
 
 #: usr/local/www/bandwidth_by_ip.php:24 usr/local/www/bandwidth_by_ip.php:24
 msgid "Wrong Interface"
-msgstr "誤ったインターフェイス"
+msgstr "不正なインタフェース"
 
 #: usr/local/www/services_dhcpv6.php:601 usr/local/www/services_dhcpv6.php:601
 msgid "Prefix Delegation Size"
-msgstr "接頭委任サイズ"
+msgstr "プレフィックスデリゲーションサイズ"
 
 #: usr/local/www/services_dhcpv6.php:846 usr/local/www/services_dhcpv6.php:846
 msgid "DHCPv6 Static Mappings for this interface."
-msgstr "このインタフェースのDHCPv6の静的マッピング。"
+msgstr "このインタフェースの DHCPv6 静的マッピング"
 
 #: usr/local/www/system_authservers.php:217
 #: usr/local/www/system_authservers.php:217
 msgid "RADIUS Timeout value must be numeric and positive."
-msgstr "RADIUSのタイムアウト値は、数値、正でなければなりません。"
+msgstr "RADIUS タイムアウト値は、正の数値です。"
 
 #: usr/local/www/system_authservers.php:731
 #: usr/local/www/system_authservers.php:731
@@ -49254,12 +49337,14 @@ msgstr "認証タイムアウト"
 msgid ""
 "This value controls how long, in seconds, that the RADIUS server may take to "
 "respond to an authentication request."
-msgstr "認証要求に応答し、「 RADIUSサーバにかかる場合があること秒この値は、コントロールのどのくらい、 、 」 。"
+msgstr ""
+"RADIUS サーバが、認証要求に対する返答に要する時間を、"
+"秒単位で指定します。"
 
 #: usr/local/www/system_authservers.php:735
 #: usr/local/www/system_authservers.php:735
 msgid "If left blank, the default value is 5 seconds."
-msgstr "空白の場合、デフォルト値は5秒です。"
+msgstr "空白の場合、デフォルト値は 5 秒です。"
 
 #: usr/local/www/system_authservers.php:736
 #: usr/local/www/system_authservers.php:736
@@ -49267,28 +49352,31 @@ msgid ""
 "NOTE: If you are using an interactive two-factor authentication system, "
 "increase this timeout to account for how long it will take the user to "
 "receive and enter a token."
-msgstr ""注：対話型の2要素認証システムを使用している場合は、 「それは"受信したトークンを入力するようにユーザにかかる時間を考慮して、このタイムアウトを増やす。"
+msgstr ""
+"注意: 対話型の二要素認証システムを使用している場合は、"
+"ユーザがトークンを受け取って入力するのに必要な時間に合わせて、"
+"タイムアウトの値を増やしてください。"
 
 #: usr/local/www/system_advanced_firewall.php:80
 #: usr/local/www/system_advanced_firewall.php:80
 msgid "The Firewall Adaptive values must be set together."
-msgstr "ファイアウォール適応値を一緒に設定する必要があります。"
+msgstr "ファイアウォール適応値を、併せて設定してください。"
 
 #: usr/local/www/system_advanced_firewall.php:82
 #: usr/local/www/system_advanced_firewall.php:82
 msgid "The Firewall Adaptive Start value must be an integer."
-msgstr "ファイアウォール適応Start値は整数でなければなりません。"
+msgstr "ファイアウォール適応開始値は整数です。"
 
 #: usr/local/www/system_advanced_firewall.php:85
 #: usr/local/www/system_advanced_firewall.php:85
 msgid "The Firewall Adaptive End value must be an integer."
-msgstr "ファイアウォール適応終了値は整数でなければなりません。"
+msgstr "ファイアウォール適応終了値は整数です。"
 
 #: usr/local/www/system_advanced_firewall.php:345
 #: usr/local/www/system_advanced_firewall.php:346
 #: usr/local/www/system_advanced_firewall.php:346
 msgid "Firewall Adaptive Timeouts"
-msgstr "ファイアウォールアダプティブタイムアウト"
+msgstr "ファイアウォール適応タイムアウト"
 
 #: usr/local/www/system_advanced_firewall.php:347
 #: usr/local/www/system_advanced_firewall.php:348
@@ -49296,7 +49384,9 @@ msgstr "ファイアウォールアダプティブタイムアウト"
 msgid ""
 "Timeouts for states can be scaled adaptively as the number of state table "
 "entries grows."
-msgstr "成長のエントリ"状態のタイムアウトは、状態テーブルの数が適応的にスケーリングすることができます」 。"
+msgstr ""
+"状態タイムアウトは、状態テーブルエントリの増加数に応じて"
+"拡大縮小させることができます。"
 
 #: usr/local/www/system_advanced_firewall.php:350
 #: usr/local/www/system_advanced_firewall.php:351
@@ -49305,7 +49395,10 @@ msgid ""
 "When the number of state entries exceeds this value, adaptive scaling "
 "begins.  All timeout values are scaled linearly with factor (adaptive.end - "
 "number of states) / (adaptive.end - adaptive.start)."
-msgstr "「状態エントリの数がこの値を超えると、適応スケーリング」は始まる。 / （ adaptive.end - adaptive.start ） - すべてのタイムアウト値は、因子（「状態数adaptive.end ）と直線的にスケールされます。"
+msgstr ""
+"状態エントリの数がこの値を超えると、適応スケーリングが始まります。"
+"全てのタイムアウト値は要素 ( 適応終了値 - 状態数 / 適応終了値 - 適応開始値 ) "
+"に比例して拡大縮小します。"
 
 #: usr/local/www/system_advanced_firewall.php:354
 #: usr/local/www/system_advanced_firewall.php:355
@@ -49315,19 +49408,23 @@ msgid ""
 "effectively purging all state entries immediately.  This value is used to "
 "define the scale factor, it should not actually be reached (set a lower "
 "state limit, see below)."
-msgstr "事実上、すぐにすべての状態の項目をパージする」状態エントリのこの数に達する場合は、すべてのタイムアウト値は、ゼロになる」 。この値は、するために使用される"（下記参照、状態制限スケールファクタを定義するが、実際にはより低いセット）に到達すべきではない」 。"
+msgstr ""
+"この状態エントリの数に達すると、全てのタイムアウト値は 0 になり、"
+"全ての状態エントリは、事実上、即時にパージされます。"
+"この値はスケール要素の定義として使用され、実際には到達されない値にすべきです。"
+"( 状態制限を低く設定する場合は、下記を参照してください )"
 
 #: usr/local/www/system_advanced_firewall.php:356
 #: usr/local/www/system_advanced_firewall.php:357
 #: usr/local/www/system_advanced_firewall.php:357
 msgid "Note:  Leave this blank for the default(0)."
-msgstr ""
+msgstr "注意: 空白の場合は、デフォルト (0) になります。"
 
 #: usr/local/www/system_advanced_firewall.php:447
 #: usr/local/www/system_advanced_firewall.php:448
 #: usr/local/www/system_advanced_firewall.php:448
 msgid "Bogon Networks"
-msgstr "Bogonネットワーク"
+msgstr "Bogon ネットワーク"
 
 #: usr/local/www/system_advanced_firewall.php:450
 #: usr/local/www/system_advanced_firewall.php:451
@@ -49339,19 +49436,19 @@ msgstr "更新頻度"
 #: usr/local/www/system_advanced_firewall.php:454
 #: usr/local/www/system_advanced_firewall.php:454
 msgid "Monthly"
-msgstr "毎月"
+msgstr "月次"
 
 #: usr/local/www/system_advanced_firewall.php:454
 #: usr/local/www/system_advanced_firewall.php:455
 #: usr/local/www/system_advanced_firewall.php:455
 msgid "Weekly"
-msgstr "毎週"
+msgstr "週次"
 
 #: usr/local/www/system_advanced_firewall.php:455
 #: usr/local/www/system_advanced_firewall.php:456
 #: usr/local/www/system_advanced_firewall.php:456
 msgid "Daily"
-msgstr "日々"
+msgstr "日次"
 
 #: usr/local/www/system_advanced_firewall.php:458
 #: usr/local/www/system_advanced_firewall.php:459
@@ -49359,7 +49456,9 @@ msgstr "日々"
 msgid ""
 "The frequency of updating the lists of IP addresses that are reserved (but "
 "not RFC 1918) or not yet assigned by IANA."
-msgstr "「 （ 1918年のRFCではないか、まだIANAによって割り当てられていない予約済みますが）されているIPアドレスのリストを更新する頻度」 。"
+msgstr ""
+"予約済み ( RFC 1918 以外 )、"
+"または IANA が現在割り当てていない IP アドレスのリストの更新頻度です。"
 
 #: usr/local/www/services_captiveportal.php:227
 #: usr/local/www/services_captiveportal.php:243
@@ -49367,31 +49466,33 @@ msgstr "「 （ 1918年のRFCではないか、まだIANAによって割り当�
 msgid ""
 "The NAS-Identifier must be 3-253 characters long and should only contain "
 "ASCII characters."
-msgstr "ASCII文字を「NAS-識別子は3から253文字の長さでなければならず、唯一の含まれている必要があります」 。"
+msgstr ""
+"NAS 識別子は、3-253 の文字長で、"
+"使用可能な文字は ASCII のみです。"
 
 #: usr/local/www/services_captiveportal.php:593
 #: usr/local/www/services_captiveportal.php:609
 #: usr/local/www/services_captiveportal.php:609
 msgid "Allow only users/groups with 'Captive portal login' privilege set"
-msgstr "「キャプティブポータルのログイン」の権限が設定されている唯一のユーザー/グループを許可"
+msgstr "「キャプティブポータルログイン」権限が設定されたユーザ / グループのみを許可"
 
 #: usr/local/www/services_captiveportal.php:760
 #: usr/local/www/services_captiveportal.php:776
 #: usr/local/www/services_captiveportal.php:776
 msgid "MAC authentication secret"
-msgstr "MAC認証の秘密"
+msgstr "MAC 認証秘密鍵"
 
 #: usr/local/www/services_captiveportal.php:823
 #: usr/local/www/services_captiveportal.php:839
 #: usr/local/www/services_captiveportal.php:839
 msgid "Accounting Style"
-msgstr "会計スタイル"
+msgstr "アカウント形式"
 
 #: usr/local/www/services_captiveportal.php:824
 #: usr/local/www/services_captiveportal.php:840
 #: usr/local/www/services_captiveportal.php:840
 msgid "Invert Acct-Input-Octets and Acct-Output-Octets"
-msgstr "反転ACCT-入力·オクテットおよびacct -出力 - オクテット"
+msgstr "Acct-Input-Octets と Acct-Output-Octets を反転"
 
 #: usr/local/www/services_captiveportal.php:825
 #: usr/local/www/services_captiveportal.php:841
@@ -49400,29 +49501,32 @@ msgid ""
 "When this is enabled, data counts for RADIUS accounting packets will be "
 "taken from the client perspective, not the NAS. Acct-Input-Octets will "
 "represent download, and Acct-Output-Octets will represent upload."
-msgstr "「これを有効にすると、 RADIUSアカウンティングパケットのデータ数がされ、「クライアントの観点ではなく、NASから撮影。 ACCT-入力·オクテットは「ダウンロードを表現し、 ACCT-出力 - オクテットは、アップロードを表します。"
+msgstr ""
+"これを有効にすると、RADIUS アカウンティングパケットのデータ数は、"
+"NAS ではなくクライアント基準で取得されます。"
+"Acct-Input-Octets はダウンロード、Acct-Output-Octets はアップロードを意味します。"
 
 #: usr/local/www/services_captiveportal.php:829
 #: usr/local/www/services_captiveportal.php:845
 #: usr/local/www/services_captiveportal.php:845
 msgid "NAS Identifier"
-msgstr "NASの識別子"
+msgstr "NAS 識別子"
 
 #: usr/local/www/services_captiveportal.php:831
 #: usr/local/www/services_captiveportal.php:847
 #: usr/local/www/services_captiveportal.php:847
 msgid "Specify a NAS identifier to override the default value"
-msgstr "デフォルト値を上書きするために、NAS識別子を指定する"
+msgstr "デフォルト値を上書きする NAS 識別子を指定してください。"
 
 #: usr/local/www/pkg_mgr_install.php:193 usr/local/www/pkg_mgr_install.php:189
 #: usr/local/www/pkg_mgr_install.php:189
 msgid "No packages are installed."
-msgstr "何のパッケージがインストールされていません。"
+msgstr "パッケージはインストールされていません。"
 
 #: usr/local/www/interfaces_bridge_edit.php:154
 #: usr/local/www/interfaces_bridge_edit.php:154
 msgid "A member interface passed does not exist in configuration"
-msgstr "渡されたメンバーインターフェイスは、コンフィギュレーションに存在しない"
+msgstr "許可されたメンバインタフェースは、構成に存在しません。"
 
 #: usr/local/www/status_queues.php:150 usr/local/www/status_queues.php:150
 msgid "PPS"
@@ -49434,11 +49538,11 @@ msgstr "借用"
 
 #: usr/local/www/status_queues.php:153 usr/local/www/status_queues.php:153
 msgid "Suspends"
-msgstr "を中断"
+msgstr "中断"
 
 #: usr/local/www/status_queues.php:154 usr/local/www/status_queues.php:154
 msgid "Drops"
-msgstr "ドロップス"
+msgstr "切断"
 
 #: usr/local/www/status_queues.php:155 usr/local/www/status_queues.php:155
 msgid "Length"
@@ -49448,7 +49552,7 @@ msgstr "長さ"
 #: usr/local/www/widgets/widgets/dyn_dns_status.widget.php:78
 #: usr/local/www/widgets/widgets/dyn_dns_status.widget.php:78
 msgid "Int."
-msgstr "int型。"
+msgstr "Int."
 
 #: usr/local/www/widgets/widgets/log.widget.php:164
 #: usr/local/www/widgets/widgets/log.widget.php:168
@@ -49459,21 +49563,21 @@ msgstr "IF"
 #: usr/local/www/widgets/widgets/log.widget.php:167
 #: usr/local/www/widgets/widgets/log.widget.php:171
 msgid "Prot"
-msgstr "PROT"
+msgstr "Prot"
 
 #: usr/local/www/services_dnsmasq.php:199
 #: usr/local/www/services_dnsmasq.php:201
 #: usr/local/www/services_dnsmasq.php:222
 #: usr/local/www/services_dnsmasq.php:222
 msgid "DNS Query Forwarding"
-msgstr "DNSクエリ転送"
+msgstr "DNS 照会転送"
 
 #: usr/local/www/services_dnsmasq.php:202
 #: usr/local/www/services_dnsmasq.php:204
 #: usr/local/www/services_dnsmasq.php:225
 #: usr/local/www/services_dnsmasq.php:225
 msgid "Query DNS servers sequentially"
-msgstr "クエリのDNSサーバーが順次"
+msgstr "DNS サーバに順次照会"
 
 #: usr/local/www/services_dnsmasq.php:203
 #: usr/local/www/services_dnsmasq.php:205
@@ -49484,14 +49588,17 @@ msgid ""
 "If this option is set, %s DNS Forwarder (dnsmasq) will query the DNS servers "
 "sequentially in the order specified (<i>System - General Setup - DNS "
 "Servers</i>), rather than all at once in parallel. "
-msgstr "むしろ、一度のすべてのより - （ - 一般設定のDNS 「サーバーu003c/ I u003eシステムu003cIu003e ）指定された順に「このオプションが設定されている場合、DNSフォワーダ（ DNSMASQ ）がDNSサーバに問い合わせを行い%s "平行である。"
+msgstr ""
+"このオプションが設定されると、%s DNS フォワーダ (dnsmasq) は一度に全てを平行に照会するのではなく、"
+"指定された順番 ( <i>システム - 全般設定 - DNS サーバ</i> ) で、"
+"DNS サーバに順次照会を行います。"
 
 #: usr/local/www/services_dnsmasq.php:212
 #: usr/local/www/services_dnsmasq.php:214
 #: usr/local/www/services_dnsmasq.php:235
 #: usr/local/www/services_dnsmasq.php:235
 msgid "Require domain"
-msgstr "ドメインを必要とする"
+msgstr "ドメインを要求"
 
 #: usr/local/www/services_dnsmasq.php:213
 #: usr/local/www/services_dnsmasq.php:215
@@ -49504,35 +49611,43 @@ msgid ""
 "servers.  If the name is not known from /etc/hosts or DHCP then a \"not found"
 "\" answer is returned. "
 msgstr ""
+"このオプションが設定されると、%s DNS フォワーダ (dnsmasq) は、ドットやドメイン部分がない"
+"無修飾な名前に対する A または AAAA 照会を、上流 DNS サーバに転送しません。"
+"その名前が /etc/hosts または DHCP に登録されていない場合、"
+"「見つかりません」という返答が返されます。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:183
 #: usr/local/www/vpn_ipsec_phase1.php:183
 msgid ""
 "A valid remote gateway IPv4 address must be specified or you need to change "
 "protocol to IPv6"
-msgstr "「有効なリモートゲートウェイIPv4アドレスを指定する必要があります。または、変更する必要がある」 IPv6へのプロトコルを"
+msgstr ""
+"有効なリモートゲートウェイ IPv4 アドレスを指定するか、"
+"プロトコルを IPv6 に変更してください。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:185
 #: usr/local/www/vpn_ipsec_phase1.php:185
 msgid ""
 "A valid remote gateway IPv6 address must be specified or you need to change "
 "protocol to IPv4"
-msgstr "「有効なリモートゲートウェイのIPv6アドレスを指定する必要があります。または、変更する必要がある」 IPv4にプロトコルを"
+msgstr ""
+"有効なリモートゲートウェイ IPv6 アドレスを指定するか、"
+"プロトコルを IPv4 に変更してください。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:205
 #: usr/local/www/vpn_ipsec_phase1.php:205
 msgid "There is a Phase 2 using IPv6, you cannot use IPv4."
-msgstr "IPv6を使用して、フェーズ2がありますが、あなたは、IPv4を使用することはできません。"
+msgstr "フェーズ 2 では IPv6 を使用しています。IPv4 は使用できません。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:209
 #: usr/local/www/vpn_ipsec_phase1.php:209
 msgid "There is a Phase 2 using IPv4, you cannot use IPv6."
-msgstr "IPv4を使用して、フェーズ2がありますが、あなたは、IPv6を使用することはできません。"
+msgstr "フェーズ 2 では IPv4 を使用しています。IPv6 は使用できません。"
 
 #: usr/local/www/vpn_openvpn_server.php:1226
 #: usr/local/www/vpn_openvpn_server.php:1226
 msgid "IPv4 Local Network/s"
-msgstr "IPv4のローカルネットワーク/ S"
+msgstr "IPv4 ローカルネットワーク"
 
 #: usr/local/www/vpn_openvpn_server.php:1230
 #: usr/local/www/vpn_openvpn_server.php:1230
@@ -49542,12 +49657,17 @@ msgid ""
 "You may leave this blank if you don't want to add a route to the local "
 "network through this tunnel on the remote machine. This is generally set to "
 "your LAN network"
-msgstr "エンドポイントは"これらは、リモートからアクセスできるようになり、IPv4ネットワークである」 。 1つ以上のCIDR範囲をカンマで区切ったリストとして表現。リモートマシン上でこのトンネルを経由してネットワーク」は、ローカルへのルートを追加したくない場合は、この空白を残すこと」 。これは一般に「 LANネットワークに設定されている"
+msgstr ""
+"リモートエンドポイントからアクセス可能な IPv4 ネットワークです。"
+"1 つ以上の CIDR 範囲のカンマ区切りリストとして表記されます。"
+"リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
+"空白にしてください。"
+"一般的には、自分の LAN ネットワークに対して設定します。"
 
 #: usr/local/www/vpn_openvpn_server.php:1239
 #: usr/local/www/vpn_openvpn_server.php:1239
 msgid "IPv6 Local Network/s"
-msgstr "IPv6ローカルネットワーク/ S"
+msgstr "IPv6 ローカルネットワーク"
 
 #: usr/local/www/vpn_openvpn_server.php:1243
 #: usr/local/www/vpn_openvpn_server.php:1243
@@ -49557,7 +49677,12 @@ msgid ""
 "may leave this blank if you don't want to add a route to the local network "
 "through this tunnel on the remote machine. This is generally set to your LAN "
 "network"
-msgstr "エンドポイントは"これらは、リモートからアクセスできるようになり、IPv6ネットワークである」 。 1または複数のIP /プレフィックスをカンマで区切ったリストとして表現。リモートマシン上でこのトンネルを通過して、 「ローカルネットワークへのルートを追加しない場合は空白のままにあり」 。これは、一般にLAN 」のネットワークに設定されている"
+msgstr ""
+"リモートエンドポイントからアクセス可能な IPv6 ネットワークです。"
+"1 つ以上の IP/PREFIX のカンマ区切りリストとして表記されます。"
+"リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
+"空白にしてください。"
+"一般的には、自分の LAN ネットワークに対して設定します。"
 
 #: usr/local/www/vpn_openvpn_server.php:1256
 #: usr/local/www/vpn_openvpn_server.php:1256
@@ -49567,7 +49692,12 @@ msgid ""
 "tables. Expressed as a comma-separated list of one or more CIDR ranges. If "
 "this is a site-to-site VPN, enter the remote LAN/s here. You may leave this "
 "blank if you don't want a site-to-site VPN"
-msgstr "サイト間VPNを手動でルーティング」のテーブルを変更せずに確立できる」ように、これらは、トンネルを介してルーティングされたIPv4ネットワークである」 。 1つ以上のCIDRのコンマ区切りのリストとして表現します。範囲「このように入力し、サイト間VPNでLANが/ここのリモート。あなたはサイト間VPNを使用しない場合は、この「空白のままに可能性"
+msgstr ""
+"トンネル経由でルーティングされる IPv4 ネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
+"1 つ以上の CIDR 範囲のカンマ区切りリストとして表記されます。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
+"サイト間 VPN を使用しない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_server.php:1270
 #: usr/local/www/vpn_openvpn_server.php:1270
@@ -49577,26 +49707,35 @@ msgid ""
 "tables. Expressed as a comma-separated list of one or more IP/PREFIX. If "
 "this is a site-to-site VPN, enter the remote LAN/s here. You may leave this "
 "blank if you don't want a site-to-site VPN"
-msgstr "サイト間VPNを手動でルーティング」のテーブルを変更せずに設定することができる。 1または複数のIP /プレフィックスをカンマで区切ったリストとして発現された」これらはように、トンネルを介してルーティングされたIPv6ネットワークである」 。これはサイト間VPNである」場合には、リモートLANに入る/ sこちら。あなたはサイト間VPNを使用しない場合は、この「空白のままに可能性"
+msgstr ""
+"トンネル経由でルーティングされる IPv6 ネットワークです。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
+"1 つ以上の IP/PREFIX のカンマ区切りリストとして表記されます。"
+"サイト間 VPN の場合は、リモート LAN をここに入力してください。"
+"サイト間 VPN を使用しない場合は、空白にしてください。"
 
 #: usr/local/www/vpn_openvpn_server.php:1405
 #: usr/local/www/vpn_openvpn_server.php:1405
 msgid "Topology"
-msgstr "トポロジー"
+msgstr "トポロジ"
 
 #: usr/local/www/vpn_openvpn_server.php:1415
 #: usr/local/www/vpn_openvpn_server.php:1415
 msgid ""
 "Allocate only one IP per client (topology subnet), rather than an isolated "
 "subnet per client (topology net30)."
-msgstr "クライアントごとにサブネット（トポロジーnet30 ） 」のみ1クライアントごとにIP（トポロジのサブネット）のではなく、孤立を割り当てる」 。"
+msgstr ""
+"クライアント毎に割り当てる IP は 1 つだけです (topology subnet)。"
+"クライアント毎に独立したサブネットを割り当てるのではありません (topology net30)。"
 
 #: usr/local/www/vpn_openvpn_server.php:1422
 #: usr/local/www/vpn_openvpn_server.php:1422
 msgid ""
 "Relevant when supplying a virtual adapter IP address to clients when using "
 "tun mode on IPv4."
-msgstr "「関連する使用時にクライアントに仮想アダプタのIPアドレスを供給する際に、「 IPv4の上TUNモードを。"
+msgstr ""
+"IPv4 で tun モードを使用する場合で、"
+"仮想アダプタ IP アドレスをクライアントに指定する際に関係します。"
 
 #: usr/local/www/vpn_openvpn_server.php:1423
 #: usr/local/www/vpn_openvpn_server.php:1423
@@ -49604,64 +49743,79 @@ msgid ""
 "Some clients may require this even for IPv6, such as OpenVPN Connect (iOS/"
 "Android). Others may break if it is present, such as older versions of "
 "OpenVPN or clients such as Yealink phones."
-msgstr "「 （ Androidの一部のクライアントでも、このようなOpenVPNの接続のiOS / ）などのIPv6のためにこれを必要とすること」 。それはそのような "OpenVPNのかなYealink電話などのクライアントの旧バージョンなど、存在する場合、他に破損する可能性があります。"
+msgstr ""
+"一部のクライアントでは、OpenVPN 接続のような場合で IPv6 を使用する際にも必要となります。(iOS/Android)"
+"現時点では、その他の場合、OpenVPN の古いバージョンや、"
+"Yealink 製携帯電話機のようなクライアントでは動作しません。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:133
 #: usr/local/www/vpn_ipsec_phase2.php:133
 msgid ""
 "A valid local network IPv4 address must be specified or you need to change "
 "Mode to IPv6"
-msgstr "「有効なローカルネットワークのIPv4アドレスを指定する必要があります。または、変更する必要があるの「IPv6モードに"
+msgstr ""
+"有効なローカルネットワーク IPv4 アドレスを指定するか、"
+"IPv6 モードに変更してください。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:135
 #: usr/local/www/vpn_ipsec_phase2.php:135
 msgid ""
 "A valid local network IPv6 address must be specified or you need to change "
 "Mode to IPv4"
-msgstr "「有効なローカルネットワークのIPv6アドレスを指定する必要があります。または、変更する必要がある」はIPv4モードに"
+msgstr ""
+"有効なローカルネットワーク IPv6 アドレスを指定するか、"
+"IPv4 モードに変更してください。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:159
 #: usr/local/www/vpn_ipsec_phase2.php:159
 msgid ""
 "A valid NAT local network IPv4 address must be specified or you need to "
 "change Mode to IPv6"
-msgstr "「有効なNATのローカルネットワークのIPv4アドレスを指定する必要がありますまたは次のことを行う必要があり、「 IPv6への変更モード"
+msgstr ""
+"有効な NAT ローカルネットワーク IPv4 アドレスを指定するか、"
+"IPv6 モードに変更してください。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:161
 #: usr/local/www/vpn_ipsec_phase2.php:161
 msgid ""
 "A valid NAT local network IPv6 address must be specified or you need to "
 "change Mode to IPv4"
-msgstr "「有効なNATのローカルネットワークのIPv6アドレスを指定する必要がありますまたは次のことを行う必要があり、 "IPv4に変更モード"
+msgstr ""
+"有効な NAT ローカルネットワーク IPv6 アドレスを指定するか、"
+"IPv4 モードに変更してください。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:183
 #: usr/local/www/vpn_ipsec_phase2.php:183
 msgid ""
 "A valid remote network IPv4 address must be specified or you need to change "
 "Mode to IPv6"
-msgstr "「有効なリモートネットワークのIPv4アドレスを指定する必要があります。または、変更する必要があるの「IPv6モードに"
+msgstr ""
+"有効なリモートローカルネットワーク IPv4 アドレスを指定するか、"
+"IPv6 モードに変更してください。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:185
 #: usr/local/www/vpn_ipsec_phase2.php:185
 msgid ""
 "A valid remote network IPv6 address must be specified or you need to change "
 "Mode to IPv4"
-msgstr "「有効なリモートネットワークのIPv6アドレスを指定する必要があります。または、変更する必要がある」はIPv4モードに"
+msgstr ""
+"有効なリモートローカルネットワーク IPv6 アドレスを指定するか、"
+"IPv4 モードに変更してください。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:192
 #: usr/local/www/vpn_ipsec_phase2.php:192
 msgid "Mobile IPsec only supports Tunnel mode."
-msgstr "モバイルIPsecはトンネルモードのみをサポートしています。"
+msgstr "モバイル IPsec はトンネルモードのみに対応しています。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:287
 #: usr/local/www/vpn_ipsec_phase2.php:287
 msgid "Phase 1 is using IPv4. You cannot use Tunnel IPv6 on Phase 2."
-msgstr "フェーズ1は、IPv4を使用しています。あなたは、フェーズ2のトンネルにIPv6を使用することはできません。"
+msgstr "フェーズ 1 は IPv4 を使用しています。フェーズ 2 で IPv6 トンネルを使用できません。"
 
 #: usr/local/www/vpn_ipsec_phase2.php:289
 #: usr/local/www/vpn_ipsec_phase2.php:289
 msgid "Phase 1 is using IPv6. You cannot use Tunnel IPv4 on Phase 2."
-msgstr "フェーズ1は、IPv6を使用しています。あなたは、フェーズ2のトンネルはIPv4を使用することはできません。"
+msgstr "フェーズ 1 は IPv6 を使用しています。フェーズ 2 で IPv4 トンネルを使用できません。"
 
 #: usr/local/www/interfaces_assign.php:210
 #: usr/local/www/interfaces_assign.php:210
@@ -49669,7 +49823,9 @@ msgstr "フェーズ1は、IPv6を使用しています。あなたは、フェ�
 msgid ""
 "You cannot set port %s to interface %s because this interface is a member of "
 "%s."
-msgstr "%s. 「このインタフェースがメンバーとなっているためです%sのインタフェースにポート%sを設定することはできません」"
+msgstr ""
+"%s ポートを %s インタフェースに設定できません。"
+"このインタフェースは %s のメンバです。" 
 
 #: usr/local/www/services_snmp.php:395 usr/local/www/services_snmp.php:395
 msgid "UCD"
@@ -49682,120 +49838,125 @@ msgstr "正規表現"
 #: usr/local/www/interfaces.php:553 usr/local/www/interfaces.php:560
 #: usr/local/www/interfaces.php:556 usr/local/www/interfaces.php:556
 msgid "This IPv4 address is being used by another interface or VIP."
-msgstr "このIPv4アドレスは、別のインターフェイスまたはVIPで使用されています。"
+msgstr "この IPv4 アドレスは、別のインタフェース、または VIP で使用されています。"
 
 #: usr/local/www/interfaces.php:557 usr/local/www/interfaces.php:565
 #: usr/local/www/interfaces.php:561 usr/local/www/interfaces.php:561
 msgid "This IPv4 address conflicts with a Static Route."
-msgstr "スタティックルートでこのIPv4アドレスが競合しています。"
+msgstr "静的ルートで、この IPv4 アドレスが競合しています。"
 
 #: usr/local/www/interfaces.php:568 usr/local/www/interfaces.php:577
 #: usr/local/www/interfaces.php:573 usr/local/www/interfaces.php:573
 msgid "This IPv6 address is being used by another interface or VIP."
-msgstr "このIPv6アドレスは、別のインターフェイスまたはVIPで使用されています。"
+msgstr "この IPv6 アドレスは、別のインタフェース、または VIP で使用されています。"
 
 #: usr/local/www/interfaces.php:572 usr/local/www/interfaces.php:582
 #: usr/local/www/interfaces.php:578 usr/local/www/interfaces.php:578
 msgid "This IPv6 address conflicts with a Static Route."
-msgstr "スタティックルートにこのIPv6アドレスは競合しています。"
+msgstr "静的ルートで、この IPv6 アドレスが競合しています。"
 
 #: usr/local/www/interfaces.php:2651 usr/local/www/interfaces.php:2697
 #: usr/local/www/interfaces.php:2686 usr/local/www/interfaces.php:2686
 msgid ""
 "Note: The update frequency can be changed under System->Advanced Firewall/"
 "NAT settings."
-msgstr ""注：更新頻度は、System -u003e高度なファイアウォール/の下に変更することができ、「 NATの設定を行います。"
+msgstr ""
+"更新頻度は、システム - 高度なファイアウォール - NAT 設定、"
+"で変更できます。"
 
 #: etc/inc/priv/user.priv.inc:6 etc/inc/priv/user.priv.inc:6
 msgid "User - Services - Captive portal login"
-msgstr "ユーザー - サービス - キャプティブポータルのログイン"
+msgstr "ユーザ - サービス - キャプティブポータルログイン"
 
 #: etc/inc/priv/user.priv.inc:7 etc/inc/priv/user.priv.inc:7
 msgid "Indicates whether the user is able to login on the captive portal."
-msgstr "利用者がキャプティブポータルにログインできるかどうかを示します。"
+msgstr "ユーザがキャプティブポータルにログイン可能かどうかを示します。"
 
 #: etc/inc/pkg-utils.inc:617 etc/inc/pkg-utils.inc:618
 #: etc/inc/pkg-utils.inc:617 etc/inc/pkg-utils.inc:618
 #, php-format
 msgid "Package %s is not supported on this version."
-msgstr "パッケージ%sは、このバージョンではサポートされません。"
+msgstr "パッケージ %s は、このバージョンでは対応していません。"
 
 #: etc/inc/priv.defs.inc:732 etc/inc/priv.defs.inc:732
 msgid "WebCfg - Services: Captive portal: Allowed Hostnames page"
-msgstr "Web 設定 - サービス：キャプティブポータル：可ホスト名ページ"
+msgstr "Web 設定 - サービス: キャプティブポータル: 許可済ホスト名ページ"
 
 #: etc/inc/priv.defs.inc:733 etc/inc/priv.defs.inc:739
 #: etc/inc/priv.defs.inc:733 etc/inc/priv.defs.inc:739
 msgid "Allow access to the 'Services: Captive portal: Allowed Hostnames' page."
-msgstr "ページ'：キャプティブポータルホスト名可サービス」へのアクセスを許可します。"
+msgstr "サービス: キャプティブポータル: 許可済ホスト名: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:738 etc/inc/priv.defs.inc:738
 msgid "WebCfg - Services: Captive portal: Edit Allowed Hostnames page"
-msgstr "Web 設定 - サービス：キャプティブポータル：編集可ホスト名ページ"
+msgstr "Web 設定 - サービス: キャプティブポータル: 許可済ホスト名の編集ページ"
 
 #: etc/inc/priv.defs.inc:1136 etc/inc/priv.defs.inc:1136
 msgid "WebCfg - System: User Manager: settings page"
-msgstr "Web 設定 - システム：ユーザーマネージャ：設定ページ"
+msgstr "Web 設定 - システム: ユーザマネージャ: 設定ページ"
 
 #: etc/inc/priv.defs.inc:1137 etc/inc/priv.defs.inc:1137
 msgid "Allow access to the 'System: User Manager: settings' page."
-msgstr "ページ'：ユーザーマネージャの設定システム」へのアクセスを許可します。"
+msgstr "システム: ユーザマネージャ: 設定: ページへのアクセスを許可"
 
 #: etc/inc/interfaces.inc:294 etc/inc/interfaces.inc:294
 #, php-format
 msgid "interface_qinq_configure called with invalid if.%s"
-msgstr "interface_qinq_configure無効if.%sと呼ばれる"
+msgstr "interface_qinq_configure: 無効なインタフェースで呼ばれました%s"
 
 #: etc/inc/interfaces.inc:401 etc/inc/interfaces.inc:401
 msgid "Creating wireless clone interfaces..."
-msgstr "ワイヤレスクローン·インターフェースを作成しています..."
+msgstr "無線クローンインタフェースを新規作成しています..."
 
 #: etc/inc/interfaces.inc:1139 etc/inc/interfaces.inc:1141
 #: etc/inc/interfaces.inc:1141
 msgid "Wrong parameters used during interface_bring_down"
-msgstr "interface_bring_down中に使用され、間違ったパラメータ"
+msgstr "interface_bring_down: 処理中に不正なパラメータが使用されました"
 
 #: etc/inc/services.inc:2013 etc/inc/services.inc:2053
 #: etc/inc/services.inc:2084 etc/inc/services.inc:2148
 #, php-format
 msgid "Removed cron job for %s"
-msgstr "%sために取り外さcronジョブ"
+msgstr "%s の cron ジョブが削除されました"
 
 #: etc/inc/openvpn.inc:257 etc/inc/openvpn.inc:257
 #, php-format
 msgid "The field '%s' must contain a single valid %s CIDR range."
-msgstr "フィールド' %s 」は、単一の%s有効なCIDR範囲が含まれている必要があります。"
+msgstr "フィールド %s は、単一の有効な %s CIDR 範囲である必要があります。"
 
 #: etc/inc/openvpn.inc:269 etc/inc/openvpn.inc:269
 #, php-format
 msgid ""
 "The field '%s' must contain only valid %s CIDR range(s) separated by commas."
-msgstr "「フィールド' %sは「唯一の有効なカンマで区切って、CIDR範囲（複数可）を%s含まれている必要があります。"
+msgstr ""
+"フィールド %s は、カンマで区切られた、有効な %s CIDR 範囲である必要があります。"
 
 #: etc/inc/vpn.inc:1780 etc/inc/vpn.inc:1793 etc/inc/vpn.inc:1790
 #, php-format
 msgid ""
 "Removing SPDs from tunnel gw '%1$s'. Local Subnet '%2$s' and Remote Subnet "
 "'%3$s'. Reloading policy"
-msgstr "「トンネルGW 」は%1$s'からのSPDを削除する。ローカルサブネットを「 %2$s 」とリモートサブネット」 「 %3$s 」 。ポリシーの再ロード"
+msgstr ""
+"トンネルゲートウェイ %1$s から SPD を削除しています。"
+"ローカルサブネットは %2$s、リモートサブネットは %3$s です。ポリシを再読み込みしています。"
 
 #: etc/inc/pfsense-utils.inc:938 etc/inc/pfsense-utils.inc:938
 msgid "Disabling auto login was not possible."
-msgstr "自動ログインを無効にすると、可能ではなかった。"
+msgstr "自動ログインを無効にできませんでした。"
 
 #: etc/inc/pfsense-utils.inc:956 etc/inc/pfsense-utils.inc:956
 msgid "Enabled console auto login, console menu is NOT password protected."
-msgstr "有効にコンソールの自動ログインは、コンソールメニューは、パスワードで保護されていません。"
+msgstr "コンソールの自動ログインが有効です。コンソールメニューは、パスワードで保護されて「いません」。"
 
 #: etc/inc/pfsense-utils.inc:958 etc/inc/pfsense-utils.inc:958
 msgid "Disabled console auto login, console menu is password protected."
-msgstr "[無効]コンソールの自動ログイン、コンソールメニューのパスワードは保護されています。"
+msgstr "コンソールの自動ログインが無効です。コンソールメニューは、パスワードで保護されています。"
 
 #: usr/local/www/system_gateways_edit.php:552
 #: usr/local/www/system_gateways_edit.php:582
 #: usr/local/www/system_gateways_edit.php:582
 msgid " - Show advanced option"
-msgstr " - 表示する高度なオプション"
+msgstr " - 高度なオプションを表示"
 
 #: usr/local/www/services_dyndns_edit.php:302
 #: usr/local/www/services_dyndns_edit.php:302
@@ -49810,14 +49971,16 @@ msgstr "詳細ログ"
 #: usr/local/www/status_openvpn.php:278 usr/local/www/status_openvpn.php:339
 #: usr/local/www/status_openvpn.php:278 usr/local/www/status_openvpn.php:339
 msgid "Bytes Rcvd"
-msgstr "バイト受信数"
+msgstr "受信バイト"
 
 #: usr/local/www/status_openvpn.php:385 usr/local/www/status_openvpn.php:385
 msgid ""
 "If you have custom options that override the management features of OpenVPN "
 "on a client or server, they will cause that OpenVPN instance to not work "
 "correctly with this status page."
-msgstr "クライアントまたはサーバー上で「あなたがOpenVPNのの管理機能をオーバーライドするカスタムオプションを使用している場合」 、彼らはOpenVPNのインスタンスがこのステータスページでは正しく「動作しないことが発生します。"
+msgstr ""
+"クライアントまたはサーバに OpenVPN の管理機能の上書きをするカスタムオプションがある場合、"
+"このステータスページで OpenVPN インスタンスが正しく機能しない原因になります。"
 
 #: usr/local/www/firewall_rules_edit.php:1579
 #: usr/local/www/firewall_nat_edit.php:863
@@ -49828,7 +49991,7 @@ msgstr "クライアントまたはサーバー上で「あなたがOpenVPNの�
 #: usr/local/www/firewall_nat_edit.php:864
 #: usr/local/www/firewall_nat_out_edit.php:678
 msgid "Rule Information"
-msgstr "情報ルール"
+msgstr "ルール情報"
 
 #: usr/local/www/firewall_rules_edit.php:1583
 #: usr/local/www/firewall_nat_edit.php:867
@@ -49839,7 +50002,7 @@ msgstr "情報ルール"
 #: usr/local/www/firewall_nat_edit.php:868
 #: usr/local/www/firewall_nat_out_edit.php:682
 msgid "Created"
-msgstr "作成"
+msgstr "新規作成済"
 
 #: usr/local/www/firewall_rules_edit.php:1591
 #: usr/local/www/firewall_nat_edit.php:875
@@ -49850,12 +50013,12 @@ msgstr "作成"
 #: usr/local/www/firewall_nat_edit.php:876
 #: usr/local/www/firewall_nat_out_edit.php:690
 msgid "Updated"
-msgstr "更新した"
+msgstr "更新済"
 
 #: usr/local/www/diag_logs_filter.php:163
 #: usr/local/www/diag_logs_filter.php:163
 msgid "Source IP Address"
-msgstr "送信元IPアドレス"
+msgstr "送信元 IP アドレス"
 
 #: usr/local/www/diag_logs_filter.php:175
 #: usr/local/www/diag_logs_filter.php:255
@@ -49867,7 +50030,7 @@ msgstr "数量"
 #: usr/local/www/diag_logs_filter.php:185
 #: usr/local/www/diag_logs_filter.php:185
 msgid "Destination IP Address"
-msgstr "宛先IPアドレス"
+msgstr "送信先 IP アドレス"
 
 #: usr/local/www/diag_logs_filter.php:193
 #: usr/local/www/diag_logs_filter.php:193
@@ -49880,61 +50043,61 @@ msgstr "プロトコルフラグ"
 #: usr/local/www/diag_logs_filter.php:266
 #, php-format
 msgid "Matches %1$s regular expression%2$s."
-msgstr "試合は、通常のexpression%2$sをは%1$s 。"
+msgstr "正規表現 %2$s に %1$s が一致しました。"
 
 #: usr/local/www/diag_logs_filter.php:204
 #: usr/local/www/diag_logs_filter.php:204
 msgid "Precede with exclamation (!) as first character to exclude match."
-msgstr "マッチを除外した最初の文字として感嘆符（ ！）に先行する。"
+msgstr "感嘆符 (!) を先頭につけると、一致から除外します。"
 
 #: usr/local/www/diag_logs_filter.php:251
 #: usr/local/www/diag_logs_filter.php:251
 msgid "Filter expresion"
-msgstr "フィルタEXPRESION"
+msgstr "フィルタ表現"
 
 #: usr/local/www/diag_dump_states.php:136
 #: usr/local/www/diag_dump_states.php:136
 msgid "Current total state count"
-msgstr "現在の総状態数"
+msgstr "現在の合計ステータス数"
 
 #: usr/local/www/diag_dump_states.php:218
 #: usr/local/www/diag_dump_states.php:218
 msgid "States matching current filter"
-msgstr "現在のフィルタに一致する状態"
+msgstr "現在のフィルタに一致するステータス"
 
 #: usr/local/www/firewall_nat_edit.php:417
 #: usr/local/www/firewall_nat_edit.php:417
 msgid "NAT Port Forward"
-msgstr "NATのポートフォワード"
+msgstr "NAT ポートフォワード"
 
 #: usr/local/www/status_graph.php:242 usr/local/www/status_graph.php:242
 msgid "Host Name or IP"
-msgstr "ホスト名またはIP"
+msgstr "ホスト名または IP"
 
 #: usr/local/www/interfaces_gif_edit.php:210
 #: usr/local/www/interfaces_gif_edit.php:210
 msgid "ECN friendly behavior"
-msgstr "電子証券取引ネットワークにやさしい行動"
+msgstr "ECN フレンドリ動作"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:146
 #: usr/local/www/firewall_virtual_ip_edit.php:146
 msgid "You cannot use the network address for this VIP"
-msgstr "このVIPのためのネットワーク·アドレスを使用することはできません"
+msgstr "この VIP にネットワークアドレスを使用できません"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:148
 #: usr/local/www/firewall_virtual_ip_edit.php:148
 msgid "You cannot use the broadcast address for this VIP"
-msgstr "このVIPのためにブロードキャストアドレスを使用することはできません"
+msgstr "この VIP にブロードキャストアドレスを使用できません"
 
 #: usr/local/www/diag_packet_capture.php:204
 #: usr/local/www/diag_packet_capture.php:204
 msgid "Promiscuous"
-msgstr "無差別"
+msgstr "無作為検出"
 
 #: usr/local/www/diag_packet_capture.php:207
 #: usr/local/www/diag_packet_capture.php:207
 msgid "If checked, the"
-msgstr "チェックすると、"
+msgstr "チェックした場合、"
 
 #: usr/local/www/diag_packet_capture.php:207
 #: usr/local/www/diag_packet_capture.php:207
@@ -49944,28 +50107,30 @@ msgstr "パケットキャプチャ"
 #: usr/local/www/diag_packet_capture.php:207
 #: usr/local/www/diag_packet_capture.php:207
 msgid "will be performed using promiscuous mode."
-msgstr "プロミスキャスモードを使用して実行されます。"
+msgstr "は無作為検出モードを使用して実行されます。"
 
 #: usr/local/www/diag_packet_capture.php:208
 #: usr/local/www/diag_packet_capture.php:208
 msgid "Some network adapters do not support or work well in promiscuous mode."
-msgstr "一部のネットワークアダプタをサポートまたは無差別モードで正常に動作しません。"
+msgstr "一部のネットワークアダプタは、無作為検出モードに対応していないか、または正しく動作しません。"
 
 #: usr/local/www/diag_traceroute.php:72 usr/local/www/diag_ping.php:67
 #: usr/local/www/diag_traceroute.php:72 usr/local/www/diag_ping.php:67
 msgid "When using IPv4, the target host must be an IPv4 address or hostname."
-msgstr "IPv4を使用する場合は、ターゲットホストは、IPv4アドレスまたはホスト名でなければなりません。"
+msgstr "IPv4 を使用する場合は、ターゲットホストには IPv4 アドレス、またはホスト名を指定する必要があります。"
 
 #: usr/local/www/diag_traceroute.php:74 usr/local/www/diag_ping.php:69
 #: usr/local/www/diag_traceroute.php:74 usr/local/www/diag_ping.php:69
 msgid "When using IPv6, the target host must be an IPv6 address or hostname."
-msgstr "IPv6を使用する場合は、ターゲットホストは、IPv6アドレスまたはホスト名でなければなりません。"
+msgstr "IPv6 を使用する場合は、ターゲットホストには IPv6 アドレス、またはホスト名を指定する必要があります。"
 
 #: usr/local/www/diag_traceroute.php:164 usr/local/www/diag_traceroute.php:164
 msgid ""
 "Using a source interface/IP address that does not match selected type (IPv4, "
 "IPv6) will result in an error or empty output."
-msgstr "「 （ IPv6の選択したタイプのIPv4など）と一致しない送信元インターフェイス/ IPアドレスを使用すると、 「エラーまたは空の出力になります。"
+msgstr ""
+"選択したタイプ ( IPv4、IPv6 ) と一致しない送信元インタフェース / IP アドレスを使用すると、"
+"エラーになるか、出力が空になります。"
 
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:1472
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc:1493
@@ -50061,21 +50226,23 @@ msgstr "「 （ IPv6の選択したタイプのIPv4など）と一致しない�
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:1334
 #: usr/local/www/wizards/traffic_shaper_wizard_multi_lan.inc:1387
 msgid "Traffic Shaper Wizard"
-msgstr "トラフィックシェーパーウィザード"
+msgstr "トラフィックシェーパウィザード"
 
 #: usr/local/www/wizards/openvpn_wizard.inc:614
 #: usr/local/www/wizards/openvpn_wizard.inc:629
 #: usr/local/www/wizards/openvpn_wizard.inc:614
 #: usr/local/www/wizards/openvpn_wizard.inc:629
 msgid "OpenVPN Wizard"
-msgstr "OpenVPNのウィザード"
+msgstr "OpenVPN ウィザード"
 
 #: usr/local/www/services_dhcp.php:274 usr/local/www/services_dhcp.php:274
 #, php-format
 msgid ""
 "The Captive Portal zone '%s' has Hard Timeout parameter set to a value "
 "bigger than Default lease time (%s)."
-msgstr "デフォルトのリース時間（ %s ）よりも大きい「キャプティブポータルゾーンの%sは'の値に設定ハードタイムアウトパラメータを持つ」 。"
+msgstr ""
+"キャプティブポータルのゾーン %s のハードタイムアウトパラメータには、"
+"デフォルトリースタイム (%s) よりも大きい値が設定されます。"
 
 #: usr/local/www/system_certmanager.php:1026
 #: usr/local/www/system_certmanager.php:1026
@@ -50096,22 +50263,28 @@ msgid ""
 "cases such as using external scripts to interact with this system. More "
 "information on HTTP_REFERER is available from <a target='_blank' "
 "href='http://en.wikipedia.org/wiki/HTTP_referrer'>Wikipedia</a>."
-msgstr "HTTP_REFERERリダイレクトしようと「これをオフにすると、 webConfiguratorへのアクセスがから保護されています」 。このような、このシステムと対話する外部スクリプトを使用するなどのケース"あなたはそれが特定の隅にwebConfiguratorアクセスを妨害することを発見した場合、「この保護を無効にするには、このチェックボックスをオンにします。 HTTP_REFERERの詳細」の情報は、 u003ca target='_blank' "href='http://en.wikipedia.org/wiki/HTTP_referrer'u003eウィキペディアu003c/ A u003eから入手できます。"
+msgstr ""
+"これをチェックしない場合、HTTP_REFERER リダイレクション攻撃の試みから Web 設定管理画面への"
+"アクセスが保護されます。"
+"チェックした場合は、このシステムに影響する外部スクリプトを使用している等、"
+"明確な原因で Web 設定管理画面へのアクセスに支障が出ている時に、この保護を無効にすることができます。"
+"HTTP_REFERER に関するより詳しい情報は、"
+"<a target='_blank' href='http://en.wikipedia.org/wiki/HTTP_referrer'>ウィキペディア</a>を参照してください。"
 
 #: usr/local/www/system_advanced_misc.php:105
 #: usr/local/www/system_advanced_misc.php:105
 msgid "/tmp Size must be numeric and should not be less than 40MB."
-msgstr "/ tmpのサイズは数値でなければならず、 40MBを下回ってはいけません。"
+msgstr "/tmp のサイズは数値で、40 MB 以上です。"
 
 #: usr/local/www/system_advanced_misc.php:108
 #: usr/local/www/system_advanced_misc.php:108
 msgid "/var Size must be numeric and should not be less than 60MB."
-msgstr "/ VARサイズは数値でなければならず、 60MBを下回ってはいけません。"
+msgstr "/var のサイズは数値で、60 MB 以上です。"
 
 #: usr/local/www/system_advanced_misc.php:558
 #: usr/local/www/system_advanced_misc.php:558
 msgid "Skip rules when gateway is down"
-msgstr "ゲートウェイがダウンしているときのルールをスキップ"
+msgstr "ゲートウェイのダウン時は、ルールをスキップ"
 
 #: usr/local/www/system_advanced_misc.php:562
 #: usr/local/www/system_advanced_misc.php:562
@@ -50119,22 +50292,25 @@ msgid ""
 "By default, when a rule has a specific gateway set, and this gateway is "
 "down, rule is created and traffic is sent to default gateway.This option "
 "overrides that behavior and the rule is not created when gateway is down"
-msgstr "「ルールは特定のゲートウェイが設定されており、このゲートウェイである場合、デフォルトで、 「ダウン、ルールが作成され、トラフィックがgateway.Thisオプションをデフォルトに送信されます」という行動やゲートウェイがダウンしているとき、ルールが作成されていないよりも優先されます"
+msgstr ""
+"デフォルトでは、ルールに特定のゲートウェイが設定されている場合、そのゲートウェイがダウンしていれば、"
+"ルールは新規作成され、トラフィックはデフォルトゲートウェイに送信されます。"
+"このオプションはその振る舞いを上書きし、ゲートウェイがダウンしていても、ルールは新規作成されません。"
 
 #: usr/local/www/system_advanced_misc.php:568
 #: usr/local/www/system_advanced_misc.php:568
 msgid "RAM Disk Settings (Reboot to Apply Changes)"
-msgstr "RAMディスク設定（変更を適用するために再起動します）"
+msgstr "RAM ディスク設定 ( 再起動で、変更を適用します )"
 
 #: usr/local/www/system_advanced_misc.php:572
 #: usr/local/www/system_advanced_misc.php:572
 msgid "Use RAM Disks"
-msgstr "RAMディスクを使用して、"
+msgstr "RAM ディスクを使用"
 
 #: usr/local/www/system_advanced_misc.php:575
 #: usr/local/www/system_advanced_misc.php:575
 msgid "Use memory file system for /tmp and /var"
-msgstr "のために/ tmpと/ varメモリファイルシステムを使用して、"
+msgstr "/tmp と /var にメモリファイルシステムを使用"
 
 #: usr/local/www/system_advanced_misc.php:576
 #: usr/local/www/system_advanced_misc.php:576
@@ -50143,41 +50319,49 @@ msgid ""
 "disks) on a full install rather than use the hard disk. Setting this will "
 "cause the data in /tmp and /var to be lost at reboot, including log data. "
 "RRD and DHCP Leases will be retained."
-msgstr "フルインストールの「 （ディスクではなくハードディスクを使用してRAMディスクメモリファイルシステム）として/ tmpディレクトリと/ varを使用したい場合は、これを設定する」 。これを設定すると、 「 / tmpにログデータを含めて、再起動時に失われることを/ var内のデータが発生します。 」になるRRDとDHCPリースは保持されます。"
+msgstr ""
+"フルインストールにハードディスクを使用しないで、/tmp と /var を RAM ディスク"
+" ( メモリファイルシステムディスク ) として使用したい場合は、これを設定してください。"
+"この設定は、再起動時に /tmp と /var にある、ログデータも含むデータが、失われる原因になります。"
+"RRD 及び DHCP リースは保持されます。"
 
 #: usr/local/www/system_advanced_misc.php:582
 #: usr/local/www/system_advanced_misc.php:582
 msgid "/tmp RAM Disk Size"
-msgstr "/ tmpにRAMディスクサイズ"
+msgstr "/tmp RAM ディスクサイズ"
 
 #: usr/local/www/system_advanced_misc.php:586
 #: usr/local/www/system_advanced_misc.php:586
 msgid ""
 "Set the size, in MB, for the /tmp RAM disk. Leave blank for 40MB. Do not set "
 "lower than 40."
-msgstr ""の/ tmp RAMディスクは。 40MBのために空白のままにするために、 MB単位でサイズを設定します。設定しないでください」 40よりも低い。"
+msgstr ""
+"/tmp RAM ディスクのサイズを MB 単位で設定してください。空白の場合は、40 MB になります。"
+"40 よりも低い値は設定しないでください。"
 
 #: usr/local/www/system_advanced_misc.php:591
 #: usr/local/www/system_advanced_misc.php:591
 msgid "/var RAM Disk Size"
-msgstr "の/ var RAMディスクのサイズ"
+msgstr "/var RAM ディスクサイズ"
 
 #: usr/local/www/system_advanced_misc.php:595
 #: usr/local/www/system_advanced_misc.php:595
 msgid ""
 "Set the size, in MB, for the /var RAM disk. Leave blank for 60MB. Do not set "
 "lower than 60."
-msgstr "「 / varの各RAMディスクは。 60MBのために空白のままにするために、 MB単位でサイズを設定します。設定しないでください」 60よりも低い。"
+msgstr ""
+"/var RAM ディスクのサイズを MB 単位で設定してください。空白の場合は、60 MB になります。"
+"60 よりも低い値は設定しないでください。"
 
 #: usr/local/www/system_advanced_misc.php:600
 #: usr/local/www/system_advanced_misc.php:600
 msgid "Periodic RRD Backup"
-msgstr "定期的なRRDバックアップ"
+msgstr "定期的に RRD をバックアップ"
 
 #: usr/local/www/system_advanced_misc.php:616
 #: usr/local/www/system_advanced_misc.php:616
 msgid "Periodic DHCP Leases Backup"
-msgstr "定期的なDHCPはバックアップのリース"
+msgstr "定期的に DHCP リースをバックアップ"
 
 #: usr/local/www/system_routes_edit.php:132
 #, php-format
