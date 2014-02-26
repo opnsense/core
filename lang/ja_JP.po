@@ -42396,8 +42396,8 @@ msgid ""
 "Enter the IP address the L2TP server should give to clients for use as their "
 "\"gateway\""
 msgstr ""
-"L2TP サーバが、クライアントに与える、"
-"「ゲートウェイ」の IP アドレスを入力してください。"
+"クライアントの使用する「ゲートウェイ」として、L2TP サーバがクライアントに与える、"
+"IP アドレスを入力してください。"
 
 #: usr/local/www/vpn_l2tp.php:337 usr/local/www/vpn_l2tp.php:338
 #: usr/local/www/vpn_l2tp.php:341 usr/local/www/vpn_l2tp.php:341
