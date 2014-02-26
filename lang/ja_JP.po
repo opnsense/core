@@ -2879,11 +2879,11 @@ msgid ""
 "limits per host."
 msgstr ""
 "「送信元」もしくは「送信先」が選択されると\n"
-"上記の情報によって与えられる、動的パイプに付随する帯域幅、遅延、"
-"パケット損失、キューサイズは\n"
-"発生する送信元 / 送信先IPアドレス毎にそれぞれ新規作成されます\n"
+"上記で与えられる、動的パイプの帯域幅、遅延、"
+"パケットロス、キューサイズは\n"
+"発生する送信元 / 送信先 IP アドレス毎にそれぞれ新規作成されます\n"
 "これにより、ホスト単位の帯域幅制限を\n"
-"簡単に指定することができます"
+"簡単に指定することができます。"
 
 #: etc/inc/shaper.inc:3075 etc/inc/shaper.inc:3312 etc/inc/shaper.inc:3507
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:124
@@ -7550,7 +7550,7 @@ msgstr "仮想サーバの構成が変更されました"
 #: usr/local/www/load_balancer_virtual_server.php:106
 #: usr/local/www/vpn_ipsec_keys.php:85 usr/local/www/interfaces.php:1364
 msgid "You must apply the changes in order for them to take effect."
-msgstr "変更を有効にするには、変更の適用が必要です"
+msgstr "有効にするには、変更を適用してください。"
 
 #: usr/local/www/load_balancer_virtual_server.php:115
 #: usr/local/www/load_balancer_relay_action.php:126
@@ -11058,7 +11058,7 @@ msgid ""
 "changes in order for them to take effect."
 msgstr ""
 "ロードバランサの構成が変更されました<br>"
-"変更を有効にするには、変更の適用が必要です"
+"有効にするには、変更を適用してください。"
 
 #: usr/local/www/load_balancer_relay_action.php:128
 #: usr/local/www/load_balancer_relay_action.php:126
@@ -19182,7 +19182,7 @@ msgid ""
 "changes in order for them to take effect."
 msgstr ""
 "ファイアウォールのルール構成が変更されました。<br>"
-"変更を有効にするには、変更の適用が必要です"
+"有効にするには、変更を適用してください。"
 
 #: usr/local/www/firewall_rules.php:338 usr/local/www/firewall_rules.php:342
 #: usr/local/www/firewall_rules.php:335 usr/local/www/firewall_rules.php:334
@@ -24177,7 +24177,7 @@ msgid ""
 "in order for them to take effect."
 msgstr ""
 "インタフェース構成は変更されました。<br>"
-"変更を有効にするには、変更の適用が必要です。"
+"有効にするには、変更を適用してください。"
 
 #: usr/local/www/interfaces_assign.php:421
 #: usr/local/www/interfaces_assign.php:415
@@ -24583,7 +24583,7 @@ msgstr "m0n0wall : Copyright(C) "
 
 #: usr/local/www/license.php:50 usr/local/www/license.php:50
 msgid "2002-2007 by Manuel Kasper"
-msgstr "2002-2007　Manuel Kasper"
+msgstr "2002-2007 Manuel Kasper"
 
 #: usr/local/www/license.php:53 usr/local/www/license.php:53
 msgid "Redistribution and use in source and binary forms, with or without"
@@ -24967,7 +24967,7 @@ msgid ""
 "in order for them to take effect."
 msgstr ""
 "ロードバランサの構成は変更されました%s"
-"変更を有効にするには、変更の適用が必要です"
+"有効にするには、変更を適用してください。"
 
 #: usr/local/www/load_balancer_pool.php:133
 #: usr/local/www/status_lb_pool.php:132 usr/local/www/status_lb_vs.php:79
@@ -26147,7 +26147,7 @@ msgid ""
 "in order for them to take effect."
 msgstr ""
 "静的ルート構成は変更されました。%s"
-"変更を有効にするには、変更の適用が必要です"
+"有効にするには、変更を適用してください。"
 
 #: usr/local/www/system_routes.php:115 usr/local/www/fbegin.inc:159
 #: usr/local/www/status_gateway_groups.php:64
@@ -31464,7 +31464,7 @@ msgid ""
 "apply the changes in order for them to take effect."
 msgstr ""
 "キャプティブポータル MAC アドレス構成は変更されました。<br>"
-"変更を有効にするには、変更を適用してください。"
+"有効にするには、変更を適用してください。"
 
 #: usr/local/www/services_captiveportal_mac.php:180
 #: usr/local/www/services_captiveportal_mac.php:178
@@ -33015,11 +33015,10 @@ msgid ""
 "IP address on WAN), you must manually specify at least one DNS server on the "
 "%sSystem:General setup%s page."
 msgstr ""
-"DNS フォワーダが有効な場合は、"
-"DHCP サービス ( 有効であれば ) が DNS サーバとして、"
-"DHCP クライアントに自動的に LAN IP アドレスを提供する際にフォワーダを使用します。"
-"DNS フォワーダが使用する DNS サーバは、"
-"%sシステム: 全般設定%s で入力されたものか、"
+"DNS フォワーダが有効な場合、DHCP サービス ( 有効であれば ) は自動的に DHCP クライアントに、"
+"DNS サーバの LAN IP アドレスを提供し、"
+"クライアントはそのアドレスを DNS フォワーダとして使用します。"
+"DNS フォワーダが使用する DNS サーバは、%sシステム: 全般設定%s で入力されたものか、"
 "もしくは、&quot;WAN の DHCP/PPP による DNS サーバリストの上書きを許可&quot; "
 "がチェックされている場合に、WAN の DHCP か PPP 経由で得られるものです。"
 "そのオプションを使用しない ( もしくは WAN で 静的 IP アドレスを使用する ) 場合は、"
@@ -33588,7 +33587,7 @@ msgstr "PPTP ユーザリストが変更されました"
 #: usr/local/www/vpn_l2tp_users.php:87 usr/local/www/vpn_pptp_users.php:84
 #: usr/local/www/vpn_pptp_users.php:84 usr/local/www/vpn_l2tp_users.php:87
 msgid "You must apply the changes in order for them to take effect"
-msgstr "変更を有効にするには、変更の適用が必要です"
+msgstr "有効にするには、変更を適用してください。"
 
 #: usr/local/www/vpn_pptp_users.php:83 usr/local/www/vpn_pptp_users.php:84
 #: usr/local/www/vpn_pptp_users.php:84
@@ -40499,7 +40498,7 @@ msgid ""
 "order for them to take effect."
 msgstr ""
 "ゲートウェイ構成は変更されました。%s"
-"変更を有効にするには、変更の適用が必要です。"
+"有効にするには、変更を適用してください。"
 
 #: usr/local/www/system_gateway_groups.php:165
 #: usr/local/www/system_gateway_groups.php:166
@@ -42397,8 +42396,8 @@ msgid ""
 "Enter the IP address the L2TP server should give to clients for use as their "
 "\"gateway\""
 msgstr ""
-"クライアントの使用する「ゲートウェイ」として、L2TP サーバがクライアントに与える、"
-"IP アドレスを入力してください。"
+"L2TP サーバが、クライアントに与える、"
+"「ゲートウェイ」の IP アドレスを入力してください。"
 
 #: usr/local/www/vpn_l2tp.php:337 usr/local/www/vpn_l2tp.php:338
 #: usr/local/www/vpn_l2tp.php:341 usr/local/www/vpn_l2tp.php:341
@@ -43669,7 +43668,7 @@ msgstr ""
 "リモートエンドポイントからアクセス可能なネットワークです。"
 "CIDR 範囲で表記されます。"
 "リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
-"空白にしてください。一般的には、自分の LAN ネットワークに対して設定します。"
+"空白にしてください。一般的には、自分の LAN ネットワークを設定します。"
 
 #: usr/local/www/vpn_openvpn_server.php:1042
 #: usr/local/www/vpn_openvpn_server.php:1184
@@ -43689,7 +43688,7 @@ msgstr ""
 "リモートエンドポイントからアクセス可能な IPv6 ネットワークです。"
 "CIDR 範囲で表記されます。"
 "リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
-"空白にしてください。一般的には、自分の LAN ネットワークに対して設定します。"
+"空白にしてください。一般的には、自分の LAN ネットワークを設定します。"
 
 #: usr/local/www/vpn_openvpn_server.php:1059
 #: usr/local/www/vpn_openvpn_server.php:1201
@@ -43918,7 +43917,7 @@ msgid ""
 "DNS will go to all clients"
 msgstr ""
 "入力した場合、その内容が、全ての PPPoE クライアントに与えられます。"
-"入力されていない場合は、LAN DNS と WAN DNS が全てのクライアントを動作させます。"
+"入力されていない場合は、LAN DNS と WAN DNS が全てのクライアントに配布されます。"
 
 #: usr/local/www/vpn_pppoe_edit.php:474 usr/local/www/vpn_pppoe_edit.php:475
 #: usr/local/www/vpn_pppoe_edit.php:478 usr/local/www/vpn_pppoe_edit.php:478
@@ -44407,7 +44406,7 @@ msgid ""
 "advertisements, \"Assisted\" for DHCPv6 Combined with Stateless Autoconfig"
 msgstr ""
 "ルータ広告デーモンの動作モードを選択してください。"
-"「ルータのみ」を使用すると、ルータにのみ広告します。「非管理」はステートレスな自動構成、"
+"「ルータのみ」を使用すると、ルータ広告のみを行います。「非管理」はステートレスな自動構成、"
 "「管理」は DHCPv6 only でのルータ広告、"
 "「支援」はステートレスな自動構成と DHCPv6 を組み合わせたものです。"
 
@@ -45052,7 +45051,7 @@ msgid ""
 msgstr ""
 "<b>スヌープを許可:</b> "
 "この動作は、下記で定義されたネットブロック内にあるホストからの再帰、及び、非再帰照会を許可します。"
-"DNS キャッシュスヌーピングに使用されるため、理想的には、管理用ホストに対してのみ構成されるべきです。"
+"DNS キャッシュスヌーピングに使用されるため、理想的には、自分の管理下にあるホストにのみ構成されるべきです。"
 
 #: usr/local/www/services_unbound_acls.php:231
 msgid "Networks"
@@ -45756,7 +45755,7 @@ msgid ""
 "send queries to authoritative servers and receive their replies. By default "
 "all interfaces are used."
 msgstr ""
-"DNS リゾルバが、権威 DNS サーバへの照会の送信、及び、その返信の受信に使用するインタフェースとして、"
+"DNS リゾルバが、権威 DNS サーバへの照会の送信、及び、その応答の受信に使用するインタフェースとして、"
 "異なるネットワークインタフェースを利用します。"
 "デフォルトでは、全てのインタフェースを使用します。"
 
@@ -45818,9 +45817,9 @@ msgid ""
 "obtained via DHCP or PPP on WAN if the &quot;Allow DNS server list to be "
 "overridden by DHCP/PPP on WAN&quot; is checked."
 msgstr ""
-"DNS リゾルバが有効な場合、DHCP サービス ( 有効であれば ) は、"
-"DNS サーバとして DHCP クライアントに自動的に LAN IP アドレスを提供する際に、"
-"DNS リゾルバを使用します。"
+"DNS リゾルバが有効な場合、DHCP サービス ( 有効であれば ) は自動的に DHCP クライアントに、"
+"DNS サーバの LAN IP アドレスを提供し、"
+"クライアントはそのアドレスを DNS リゾルバとして使用します。"
 "フォワーディングが有効な場合は、DNS リゾルバは %sシステム: 全般設定%s で入力されたものか、"
 "もしくは、&quot;WAN の DHCP/PPP による DNS サーバリストの上書きを許可&quot; がチェックされていれば、"
 "WAN の DHCP または PPP 経由で取得したものを DNS サーバとして使用します。"
@@ -45958,10 +45957,10 @@ msgid ""
 "512 value bypasses most MTU path problems, but it can generate an excessive "
 "amount of TCP fallback."
 msgstr ""
-"EDNS 再構築バッファサイズとして広告される、サイズのバイト数です。"
+"EDNS 再構築バッファサイズとして広告されるバイト数です。"
 "これは、ピアに送信する UDP データグラムで使用される値です。"
 "RFC は 4096 を推奨しています ( デフォルト値です )。"
-"通常はタイムアウトとして現れますが、フラグメント再構築問題が発生している場合は、"
+"フラグメント再構築問題は、通常タイムアウトとして現れますが、この問題が発生した場合は、"
 "値を 1480 にすると良いでしょう。"
 "512 を設定すると、大抵の MTU 経路問題は回避できますが、かなりの数の TCP フォールバックが発生します。"
 
@@ -45995,7 +45994,7 @@ msgstr ""
 
 #: usr/local/www/services_unbound_advanced.php:256
 msgid "Maximum TTL for RRsets and messages"
-msgstr "RPset 及びメッセージの TTL 最大値"
+msgstr "RRset 及びメッセージの TTL 最大値"
 
 #: usr/local/www/services_unbound_advanced.php:259
 msgid ""
@@ -46050,7 +46049,7 @@ msgid ""
 "Time to live for when a delegation is considered to be lame. The default is "
 "15 minutes."
 msgstr ""
-"デリゲーションがレイムとみなされる場合の生存時間です。"
+"デリゲーションが lame とみなされる生存時間です。"
 "デフォルトは 15 分です。"
 
 #: usr/local/www/services_unbound_advanced.php:296
@@ -46059,7 +46058,7 @@ msgstr "キャッシュするホスト数"
 
 #: usr/local/www/services_unbound_advanced.php:305
 msgid "Number of hosts for which information is cached. The default is 10,000."
-msgstr "情報をキャッシュするホストの数です。デフォルト 10,000 です。"
+msgstr "情報をキャッシュするホストの数です。デフォルトは 10,000 です。"
 
 #: usr/local/www/services_unbound_advanced.php:309
 msgid "Unwanted Reply Threshold"
@@ -47161,7 +47160,7 @@ msgid ""
 msgstr ""
 "このフィールドの値は、6RD IPv4 プレフィックス長です。"
 "通常は、ISP から指定されます。"
-"値が 0 の場合は、6RD プレフィックスに、完全な IPv4 アドレスを組み込みます。"
+"値が 0 の場合は、6RD プレフィックスに、IPv4 アドレスを全部組み込みます。"
 
 #: usr/local/www/interfaces.php:1809 usr/local/www/interfaces.php:1797
 #: usr/local/www/interfaces.php:1818 usr/local/www/interfaces.php:1864
@@ -47361,7 +47360,7 @@ msgid ""
 "(a) DHCPv6 Server, \"Assisted\" for DHCPv6 Server assignment combined with "
 "Stateless Autoconfig"
 msgstr ""
-"「ルータのみ」を使用すると、ルータにのみ広告します。"
+"「ルータのみ」を使用すると、ルータ広告のみを行います。"
 "「非管理」はステートレスな自動構成のルータ広告、"
 "「管理」は DHCPv6 サーバ経由の割当て、"
 "「支援」はステートレスな自動構成と DHCPv6 サーバ割当てを組み合わせたものです。"
@@ -50300,7 +50299,7 @@ msgstr ""
 #: usr/local/www/system_advanced_misc.php:568
 #: usr/local/www/system_advanced_misc.php:568
 msgid "RAM Disk Settings (Reboot to Apply Changes)"
-msgstr "RAM ディスク設定 ( 再起動で、変更を適用します )"
+msgstr "RAM ディスク設定 ( 再起動で変更を適用します )"
 
 #: usr/local/www/system_advanced_misc.php:572
 #: usr/local/www/system_advanced_misc.php:572
@@ -50356,19 +50355,21 @@ msgstr ""
 #: usr/local/www/system_advanced_misc.php:600
 #: usr/local/www/system_advanced_misc.php:600
 msgid "Periodic RRD Backup"
-msgstr "定期的に RRD をバックアップ"
+msgstr "定期 RRD バックアップ"
 
 #: usr/local/www/system_advanced_misc.php:616
 #: usr/local/www/system_advanced_misc.php:616
 msgid "Periodic DHCP Leases Backup"
-msgstr "定期的に DHCP リースをバックアップ"
+msgstr "定期 DHCP リースバックアップ"
 
 #: usr/local/www/system_routes_edit.php:132
 #, php-format
 msgid ""
 "The alias (%s) has one or more FQDNs configured and cannot be used to "
 "configure a static route."
-msgstr "「エイリアス（ %s ）が構成された1つ以上のFQDNがあり、使用することはできません"スタティックルートを設定する。"
+msgstr ""
+"エイリアス (%s) は 1 つ以上の FQDN で構成されています。"
+"静的ルート構成は使用できません。"
 
 #: usr/local/www/system_routes_edit.php:179
 #: usr/local/www/system_routes_edit.php:186
@@ -50378,7 +50379,7 @@ msgstr "「エイリアス（ %s ）が構成された1つ以上のFQDNがあり
 #: usr/local/www/system_routes_edit.php:182
 #, php-format
 msgid "This network conflicts with address configured on interface %s."
-msgstr "アドレスがこのネットワークの競合は、インタフェース%s.上で設定"
+msgstr "このネットワークは、インタフェース %s で構成されたアドレスが競合しています。"
 
 #: usr/local/www/firewall_nat_out.php:117
 #: usr/local/www/firewall_nat_out.php:128
@@ -50395,72 +50396,77 @@ msgstr "アドレスがこのネットワークの競合は、インタフェー
 #: usr/local/www/firewall_nat_out.php:199
 #: usr/local/www/firewall_nat_out.php:214
 msgid "Manual Outbound NAT Switch"
-msgstr "手動アウトバウンドのNATスイッチ"
+msgstr "手動外向き NAT 切替"
 
 #: usr/local/www/firewall_rules.php:311 usr/local/www/firewall_rules.php:313
 #: usr/local/www/firewall_rules.php:311 usr/local/www/firewall_rules.php:313
 msgid ""
 "The firewall rule configuration has been changed.<br/>You must apply the "
 "changes in order for them to take effect."
-msgstr "それらを有効にするための変更」ファイアウォールルールの設定はchanged.<br/>Youが適用しなければなりませんでした」 。"
+msgstr ""
+"ファイアウォールルール構成は変更されました。<br/>"
+"有効にするには、変更を適用してください。"
 
 #: usr/local/www/system_gateway_groups_edit.php:100
 #: usr/local/www/system_gateway_groups_edit.php:100
 msgid "Changing name on a gateway group is not allowed."
-msgstr "ゲートウェイ·グループに変更する場合は使用できません。"
+msgstr "ゲートウェイグループの名前は変更できません。"
 
 #: usr/local/www/system_gateway_groups_edit.php:150
 #: usr/local/www/system_gateway_groups_edit.php:150
 msgid "Edit gateway group"
-msgstr "編集ゲートウェイ·グループ"
+msgstr "ゲートウェイグループの編集"
 
 #: usr/local/www/system_gateway_groups_edit.php:229
 #: usr/local/www/system_gateway_groups_edit.php:229
 msgid "Edit gateway group entry"
-msgstr "編集ゲートウェイグループエントリ"
+msgstr "ゲートウェイグループエントリの編集"
 
 #: usr/local/www/system_gateway_groups_edit.php:317
 #: usr/local/www/system_gateway_groups_edit.php:317
 msgid ""
 "The virtual IP field selects what (virtual) IP should be used when this "
 "group applies to a local Dynamic DNS, IPsec or OpenVPN endpoint"
-msgstr "グループのローカルダイナミックDNS 、 IPsecやOpenVPNのエンドポイントに適用され、「仮想IPフィールドは、これがとき（仮想） IPが使用すべきか選択""
+msgstr ""
+"仮想 IP フィールドは、このグループがローカルダイナミック DNS、IPsec、"
+"OpenVPN エンドポイントに適用される時に、使用される ( 仮想 ) IP を選択します。
 
 #: usr/local/www/services_captiveportal.php:198
 #: usr/local/www/services_captiveportal.php:198
 msgid ""
 "Hard timeout must be less or equal Default lease time set on DHCP Server"
-msgstr "「ハードタイムアウトは以下でなければなりませんか等しいデフォルトのリース時間は、DHCPサーバーに設定"
+msgstr ""
+"ハードタイムアウトは、DHCP サーバに設定するデフォルトリース時間と同じか、それ以下である必要があります。"
 
 #: usr/local/www/firewall_aliases_edit.php:245
 #: usr/local/www/firewall_aliases_edit.php:245
 #, php-format
 msgid "You must provide a valid URL. Could not fetch usable data from '%s'."
-msgstr "有効なURLを指定する必要があります。 「 %s 」から使用可能なデータを取得できませんでした。"
+msgstr "有効な URL を指定してください。%s から使用可能なデータを取得できませんでした。"
 
 #: usr/local/www/firewall_aliases_edit.php:250
 #: usr/local/www/firewall_aliases_edit.php:250
 #, php-format
 msgid "URL '%s' is not valid."
-msgstr "URLは「 %s'は有効ではありません。"
+msgstr "URL %s は無効です。"
 
 #: usr/local/www/firewall_aliases_edit.php:288
 msgid "This alias is used on a static route and cannot contain FQDNs."
-msgstr "このエイリアスは、スタティックルートに使用され、 FQDNを含めることはできません。"
+msgstr "このエイリアスは静的ルートに使用されます。FQDN は含めないでください。"
 
 #: usr/local/www/system_firmware_restorefullbackup.php:174
 #: usr/local/www/system_firmware_restorefullbackup.php:174
 msgid "Could not locate any previous backups."
-msgstr "以前のバックアップを見つけることができませんでした。"
+msgstr "前回のバックアップが見つかりません。"
 
 #: usr/local/www/system_firmware_restorefullbackup.php:182
 #: usr/local/www/system_firmware_restorefullbackup.php:182
 msgid "do not restore config.xml."
-msgstr "config.xmlには復元されません。"
+msgstr "config.xml を復元しないでください。"
 
 #: usr/local/www/diag_dns.php:156 usr/local/www/diag_dns.php:156
 msgid "Query Time"
-msgstr "クエリ時間"
+msgstr "照会時間"
 
 #: usr/local/www/widgets/widgets/dyn_dns_status.widget.php:131
 #: usr/local/www/widgets/widgets/dyn_dns_status.widget.php:131
@@ -50471,7 +50477,7 @@ msgstr "確認しています..."
 #: usr/local/www/services_dnsmasq.php:245
 #: usr/local/www/services_dnsmasq.php:245
 msgid "Do not forward private reverse lookups"
-msgstr "プライベートの逆引きを転送しないでください"
+msgstr "プライベートの逆引きを転送しない"
 
 #: usr/local/www/services_dnsmasq.php:225
 #: usr/local/www/services_dnsmasq.php:246
@@ -50485,83 +50491,96 @@ msgid ""
 "to name is not known from /etc/hosts, DHCP or a specific domain override "
 "then a \"not found\" answer is immediately returned. "
 msgstr ""
+"このオプションが設定されると、%s DNS フォワーダ (dnsmasq) は、プライベートアドレス (RFC 1918) に対する"
+" DNS リバースルックアップ (PTR) を、上流 DNS サーバに転送しません。"
+"ドメイン上書きセクションで、プライベートな \"n.n.n.in-addr.arpa\" 名を"
+"特定のサーバに転送する全てのエントリは、この設定後も転送されます。"
+"IP を名前に変換するエントリが、/etc/hosts、DHCP、特定のドメイン上書きに登録されていない場合、"
+"「見つかりません」という返答が即座に返されます。"
 
 #: usr/local/www/system_advanced_network.php:212
 #: usr/local/www/system_advanced_network.php:212
 msgid ""
 "All IPv6 traffic will be blocked by the firewall unless this box is checked."
-msgstr "このボックスがチェックされていない限り、 「すべてのIPv6トラフィックはファイアウォールによってブロックされます。"
+msgstr ""
+"このボックスをチェックしないと、全ての IPV6 トラフィックはファイアウォールに拒否されます。
 
 #: usr/local/www/system_advanced_network.php:213
 #: usr/local/www/system_advanced_network.php:213
 msgid ""
 "NOTE: This does not disable any IPv6 features on the firewall, it only "
 "blocks traffic."
-msgstr ""注：これは、ファイアウォール上で任意のIPv6機能を無効にしない、それが唯一の"トラフィックをブロックします。"
+msgstr ""
+"注意: ファイアウォールの IPV6 機能を全て無効にするわけではありません。"
+"トラフィックの拒否だけを行います。"
 
 #: usr/local/www/diag_nanobsd.php:234 usr/local/www/diag_nanobsd.php:234
 msgid "RRD/DHCP Backup"
-msgstr "RRD / DHCPのバックアップ"
+msgstr "RRD/DHCP バックアップ"
 
 #: usr/local/www/diag_nanobsd.php:236 usr/local/www/diag_nanobsd.php:236
 msgid "These options have been relocated to"
-msgstr "これらのオプションはに移転してきた"
+msgstr "ここのオプションは次に移転しました: "
 
 #: usr/local/www/diag_nanobsd.php:236 usr/local/www/diag_nanobsd.php:236
 msgid "System > Advanced, Miscellaneous tab"
-msgstr "[システム]> [詳細設定、[その他]タブ"
+msgstr "システム > 高度な設定、その他タブ"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:90
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:90
 msgid ""
 "A valid IP address must be specified, or # for an exclusion or ! to not "
 "forward at all."
-msgstr "「有効なIPアドレスが指定された、またはする必要があります"
+msgstr "有効な IP アドレスを指定してください。"
+"もしくは、除外する場合は # 、全て転送しない場合は ! を指定してください。"
 
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:141
 #: usr/local/www/services_dnsmasq_domainoverride_edit.php:141
 msgid ""
 "Or enter ! for lookups for this host/subdomain to NOT be forwarded anywhere."
-msgstr ""またはEnter ！このホスト/サブドメインの検索に任意の場所に転送されないように。"
+msgstr ""
+"もしくは、このホスト / サブドメインの検索に ! を入力すると、どこにも転送「されません」。"
 
 #: usr/local/www/interfaces.php:517 usr/local/www/interfaces.php:513
 #: usr/local/www/interfaces.php:513
 msgid "You can only have one interface configured in 6rd with same prefix."
-msgstr "あなただけの1インタフェースは同じプレフィックスを持つ6RDで設定することができます。"
+msgstr "6rd で、同じプレフィックスを使用して構成できるインタフェースは 1 つだけです。"
 
 #: usr/local/www/interfaces.php:528 usr/local/www/interfaces.php:524
 #: usr/local/www/interfaces.php:524
 #, php-format
 msgid "You can only have one interface configured as 6to4."
-msgstr "あなただけの1インタフェースは6to4のように設定されていることができます。"
+msgstr "6to4 として構成できるインタフェースは 1 つだけです。"
 
 #: usr/local/www/interfaces.php:648 usr/local/www/interfaces.php:644
 #: usr/local/www/interfaces.php:644
 msgid "MTU of a vlan should not be bigger than parent interface."
-msgstr "VLANのMTUは、親インターフェイスよりも大きくすべきではない。"
+msgstr "VLAN の MTU は、親インタフェースよりも小さい値を設定してください。"
 
 #: usr/local/www/interfaces.php:663 usr/local/www/interfaces.php:659
 #: usr/local/www/interfaces.php:659
 #, php-format
 msgid "Interface %s (VLAN) has MTU set to a bigger value"
-msgstr "インタフェース%s （ VLAN ）は、 MTUは大きな値に設定されています"
+msgstr "インタフェース %s (VLAN) の MTU に大きい値が設定されています"
 
 #: etc/inc/easyrule.inc:118 etc/inc/easyrule.inc:301 etc/inc/easyrule.inc:118
 #: etc/inc/easyrule.inc:301
 msgid "Easy Rule"
-msgstr "簡単なルール"
+msgstr "簡易ルール"
 
 #: etc/inc/vpn.inc:1015 etc/inc/vpn.inc:1014
 #, php-format
 msgid ""
 "Ignoring IPsec racoon daemon reload since there are no tunnels on interface "
 "%s"
-msgstr "%s 「インターフェイスにはトンネルが存在しないため、 IPsecのracoonデーモンの再ロードを無視」"
+msgstr ""
+"IPsec racoon デーモンの再読み込みを無視しています。"
+"インタフェース %s にトンネルがありません。"
 
 #: etc/inc/auth.inc:1127 etc/inc/auth.inc:1127
 #, php-format
 msgid "ERROR! Could not login to server %1$s as user %2$s: %3$s"
-msgstr "エラー ！ユーザー%2$sとしてサーバは%1$sにログインできませんでした： %3$s"
+msgstr "エラー! サーバ %1$s にユーザ %2$s でログインできませんでした: %3$s"
 
 #: usr/local/www/system_gateways_edit.php:139
 #: usr/local/www/system_gateways_edit.php:167
@@ -50571,11 +50590,13 @@ msgstr "エラー ！ユーザー%2$sとしてサーバは%1$sにログインで
 msgid ""
 "The gateway address %1$s does not lie within one of the chosen interface's "
 "subnets."
-msgstr "サブネット「ゲートウェイアドレスは%1$sは、選択されたインタフェースの1の内にない」 。"
+msgstr ""
+"ゲートウェイアドレス %1$s は、選択されたインタフェースの"
+"サブネット内に存在しません"
 
 #: usr/local/www/diag_arp.php:342 usr/local/www/diag_arp.php:342
 msgid "NOTE: Local IPv6 peers use"
-msgstr "注：ローカルIPv6ピアは使用"
+msgstr "注意: ローカル IPv6 ピアは ARP ではなく、"
 
 #: usr/local/www/diag_arp.php:342 usr/local/www/diag_arp.php:342
 msgid "NDP"
@@ -50583,26 +50604,31 @@ msgstr "NDP"
 
 #: usr/local/www/diag_arp.php:342 usr/local/www/diag_arp.php:342
 msgid "instead of ARP"
-msgstr "代わりに、ARPの"
+msgstr " を使用しています"
 
 #: usr/local/www/firewall_virtual_ip.php:128
 #: usr/local/www/firewall_virtual_ip.php:128
 msgid ""
 "This entry cannot be deleted because it is still referenced by at least one "
 "Gateway."
-msgstr "ゲートウェイ」それはまだ少なくとも1によって参照されているため、このエントリは削除できません」 。"
+msgstr ""
+"このエントリは削除できません。"
+"1 つ以上のゲートウェイから参照されています。"
 
 #: usr/local/www/interfaces_gif_edit.php:169
 #: usr/local/www/interfaces_gif_edit.php:169
 msgid ""
 "The interface here serves as the local address to be used for the gif tunnel."
-msgstr "「ここのインタフェースは、GIFトンネルに使用するローカルアドレスとして機能します。"
+msgstr ""
+"ここのインタフェースは、GIF トンネルに使用されるローカルアドレスとして機能します。"
 
 #: usr/local/www/services_dhcp.php:941 usr/local/www/services_dhcp.php:941
 msgid ""
 "This option persists even if DHCP server is disabled. Only the machines "
 "listed below will be able to communicate with the firewall on this NIC."
-msgstr "下記のこのNICのファイアウォールと通信できるようになります」このオプションは、 DHCPサーバーが無効になっている場合も同様です。マシンだけが解決しない」 。"
+msgstr ""
+"このオプションは DHCP サーバが無効な場合でも、機能が継続します。"
+"下記のリストにある機器だけが、この NIC でファイアウォールと通信できます。"
 
 #: usr/local/www/interfaces_bridge_edit.php:381
 #: usr/local/www/interfaces_bridge_edit.php:381
@@ -50610,19 +50636,24 @@ msgid ""
 "Set the transmit hold count for Spanning Tree.  This is the number of "
 "packets transmitted before being rate limited.  The default is 6.  The "
 "minimum is 1 and the maximum is 10."
-msgstr "レート制限される前に送信されたパケット」スパニングツリーの送信ホールドカウントを設定します。これは数がある」 。デフォルトは6です。 「最小値は1で、最大値は10です。"
+msgstr ""
+"スパニングツリーの転送保留カウント値を設定してください。"
+"これはレートが制限される前に送信されるパケットの数です。"
+"デフォルトは 6 です。最小値は 1、最大値は 10 です"
 
 #: usr/local/www/services_dnsmasq.php:254
 #: usr/local/www/services_dnsmasq.php:254
 msgid "Listen Port"
-msgstr "ポートを聞く"
+msgstr "リスンポート"
 
 #: usr/local/www/services_dnsmasq.php:258
 #: usr/local/www/services_dnsmasq.php:258
 msgid ""
 "The port used for responding to DNS queries. It should normally be left "
 "blank unless another service needs to bind to TCP/UDP port 53."
-msgstr "他のサービスは、TCP / UDPポート53にバインドする必要がない限り、空白の「 DNSクエリに応答するために使用されるポートは、それは通常のままにしてください」 。"
+msgstr ""
+"DNS 照会への応答に使用するポートです。他のサービスに TCP/UDP ポート 53 をバインドする必要がない限り、"
+"通常は、空白にしてください。"
 
 #: usr/local/www/services_dnsmasq.php:268
 #: usr/local/www/services_dnsmasq.php:268
@@ -50631,12 +50662,16 @@ msgid ""
 "clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries "
 "to other interface IPs not selected below are discarded. The default "
 "behavior is to respond to queries on every available IPv4 and IPv6 address."
-msgstr "クライアント」からのクエリに応答するため、DNSフォワーダが使用するインターフェイスのIPアドレス」 。インターフェイスはIPv4とIPv6のIPアドレスの両方がある場合、両方が使用される。クエリ動作は、すべての利用可能なIPv4アドレスとIPv6アドレスでの質問に答えることです」下の選択されていない他のインタフェースIPには、デフォルトでは。破棄されます」 。"
+msgstr ""
+"DNS フォワーダがクライアントからの照会に応答するのに使用されるインタフェース IP です。"
+"インタフェースに IPv4 と IPv6 を両方とも設定すれば、どちらからも使用されます。"
+"その他の、下記で選択されていないインタフェース IP への照会は破棄されます。"
+"デフォルトの振る舞いは、全ての使用可能な IPv4 及び IPv6 アドレスへの照会に応答します。"
 
 #: usr/local/www/services_dnsmasq.php:288
 #: usr/local/www/services_dnsmasq.php:288
 msgid "Strict Interface Binding"
-msgstr "厳格なインターフェイスのバインド"
+msgstr "厳格なインタフェースバインド"
 
 #: usr/local/www/services_dnsmasq.php:290
 #: usr/local/www/services_dnsmasq.php:290
@@ -50644,31 +50679,37 @@ msgid ""
 "If this option is set, the DNS forwarder will only bind to the interfaces "
 "containing the IP addresses selected above, rather than binding to all "
 "interfaces and discarding queries to other addresses."
-msgstr "むしろすべての "インターフェイスに結合し、他のアドレスにクエリーを破棄するよりも、上で選択したIPアドレスを含む"このオプションが設定されている場合、 DNSフォワーダは、インターフェイスにバインドされます」 。"
+msgstr ""
+"このオプションが設定されると、DNS フォワーダは上記で選択された IP アドレスを含んでいるインタフェース"
+"とだけバインドします。"
+"全てのインタフェースとバインドして、その他のアドレスへの照会を破棄するのではありません。"
 
 #: usr/local/www/services_dnsmasq.php:292
 #: usr/local/www/services_dnsmasq.php:292
 msgid ""
 "NOTE: This option does NOT work with IPv6. If set, dnsmasq will not bind to "
 "IPv6 addresses."
-msgstr ""注：このオプションは、IPv6で動作しない設定した場合、 DNSMASQがバインドされません。 」のIPv6アドレス。"
+msgstr ""
+"注意: このオプションは IPv6 では動作「しません」。"
+"設定された場合、dnsmasq は IPv6 アドレスをバインドしません。"
 
 #: usr/local/www/firewall_nat_out_edit.php:523
 #: usr/local/www/firewall_nat_out_edit.php:561
 #: usr/local/www/firewall_nat_out_edit.php:523
 #: usr/local/www/firewall_nat_out_edit.php:561
 msgid "(leave blank for any)"
-msgstr "（いずれかの空白のままにします）"
+msgstr " ( 任意の場合は空白にしてください )"
 
 #: usr/local/www/interfaces.php:1900 usr/local/www/interfaces.php:1900
 #, php-format
 msgid ""
 "Enter a <b>hexadecimal</b> value between %x and %x here, default value is 0."
-msgstr ""％ xと％ Xここ間u003cBu003e進u003c / bu003eの値を入力し、デフォルト値は0である。"
+msgstr ""
+"%x-%x の<b> 16 進数</b>値を入力してください。デフォルト値は 0 です。" 
 
 #: etc/inc/shaper.inc:1232 etc/inc/shaper.inc:1232
 msgid "Codel Active Queue"
-msgstr "CODELアクティブキュー"
+msgstr "CoDel アクティブキュー"
 
 #: etc/inc/pfsense-utils.inc:2537 etc/inc/pfsense-utils.inc:2541
 #: etc/inc/pfsense-utils.inc:2598
@@ -50679,21 +50720,25 @@ msgstr "トルコ語"
 msgid ""
 "The Frequency Probe interval must be less than the Down time, otherwise the "
 "gateway will seem to go down then come up again at the next probe."
-msgstr "ゲートウェイ次のプローブで再び出てくるし、下に行くように見えます」高周波プローブ間隔が、それ以外の場合は、ダウンタイムよりも小さくなければなりません」 。"
+msgstr ""
+"プローブ頻度間隔には、停止時間よりも小さい値を設定してください。"
+"停止時間より大きい値を設定すると、次のプローブで、ゲートウェイはダウンしてから再度アップしたかのように見えます。"
 
 #: usr/local/www/system_gateways_edit.php:648
 msgid ""
 "The total time before a gateway is down is the product of the Frequency "
 "Probe and the Down fields. By default this is 1*10=10 seconds."
-msgstr "「ゲートウェイ前の総時間は、ダウンしている周波数に、 「プローブと下のフィールド。デフォルトでは、 1 README.txt _notes boot cf conf.default etc misc.translate root sbin tmp usr 10 = 10秒です。"
+msgstr ""
+"ゲートウェイがダウンとなるまでの合計時間は、プローブ頻度とダウンフィールドから算出されます。"
+"デフォルトでは、1*10=10 秒です。"
 
 #: usr/local/www/pkg_mgr.php:169
 msgid "Other Categories"
-msgstr "その他のカテゴリー"
+msgstr "その他のカテゴリ"
 
 #: usr/local/www/pkg_mgr.php:223
 msgid " version to check its change log."
-msgstr "その変更ログをチェックするバージョン。"
+msgstr "バージョンの変更ログを確認します。"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:109
 msgid "Platform"
@@ -50701,11 +50746,11 @@ msgstr "プラットフォーム"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:127
 msgid "NanoBSD Boot Slice"
-msgstr "NanoBSDのブートスライス"
+msgstr "NanoBSD ブートスライス"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:138
 msgid "CPU Type"
-msgstr "CPUタイプ"
+msgstr "CPU タイプ"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:151
 msgid "Hardware crypto"
@@ -50717,11 +50762,11 @@ msgstr "稼働時間"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:166
 msgid "DNS server(s)"
-msgstr "DNSサーバ（複数可）"
+msgstr "DNS サーバ"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:178
 msgid "Last config change"
-msgstr "最後の設定変更"
+msgstr "最新構成変更"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:183
 msgid "State table size"
@@ -50729,11 +50774,11 @@ msgstr "状態テーブルサイズ"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:187
 msgid "Show states"
-msgstr "状態を表示する"
+msgstr "状態を表示"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:191
 msgid "MBUF Usage"
-msgstr "MBUF使用量"
+msgstr "MBUF 使用量"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:202
 msgid "Temperature"
@@ -50745,7 +50790,7 @@ msgstr "ロードアベレージ"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:218
 msgid "CPU usage"
-msgstr "CPU使用率"
+msgstr "CPU 使用率"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:227
 msgid "Memory usage"
@@ -50753,19 +50798,19 @@ msgstr "メモリ使用量"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:237
 msgid "SWAP usage"
-msgstr "スワップの使用状況"
+msgstr "スワップ使用状況"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:247
 msgid "Disk usage"
-msgstr "ディスクの使用状況"
+msgstr "ディスク使用状況"
 
 #: etc/inc/shaper.inc:2904
 msgid "IPV4 bit mask must be blank or numeric value between 1 and 32."
-msgstr "IPV4のビットマスクは、 1と32の間に空白または数値である必要があります。"
+msgstr "IPV4 ビットマスクは空白、または、1-32 の数値です。"
 
 #: etc/inc/shaper.inc:2907
 msgid "IPV6 bit mask must be blank or numeric value between 1 and 128."
-msgstr "IPV6ビットマスクは1と128の間に空白または数値である必要があります。"
+msgstr "IPV6 ビットマスクは空白、または、1-128 の数値です。"
 
 #: etc/inc/shaper.inc:3352 etc/inc/shaper.inc:3625
 msgid ""
@@ -50775,7 +50820,13 @@ msgid ""
 "be created for each source/destination IP address encountered, \n"
 "respectively. This makes it possible to easily specify bandwidth \n"
 "limits per host."
-msgstr "「「ソース」または「宛先」スロットが選択される場合、 \n 「遭遇各送信元/宛先IPアドレスのために作成することが「上\nを「所与の帯域幅、遅延、パケット損失、およびキュー·サイズが動的パイプ\nホストごとの制限」であった。これにより、容易に帯域幅\nを指定することができます」 。"
+msgstr ""
+"「送信元」もしくは「送信先」スロットが選択されると\n"
+"上記で与えられる、動的パイプの帯域幅、遅延、"
+"パケットロス、キューサイズは\n"
+"発生する送信元 / 送信先 IP アドレス毎にそれぞれ新規作成されます\n"
+"これにより、ホスト単位の帯域幅制限を\n"
+"簡単に指定することができます"
 
 #: etc/inc/shaper.inc:3373
 msgid ""
@@ -50784,7 +50835,12 @@ msgid ""
 "specify \n"
 "the number of 'one' bits in the subnet mask used to group multiple hosts \n"
 "per pipe."
-msgstr "空白のマスクビットを残す」 「ソース」や「目的地」のスロットを選択した場合、 \nは「ホストごとに1つのパイプを作成します。そうでない場合は、パイプごとに「グループ複数のホストに使用するサブネットマスクで「 1 」のビット数を\n 」 \nを指定」 。"
+msgstr ""
+"「送信元」もしくは「送信先」スロットが選択された場合で、\n"
+"ビットマスクを空白にすると、ホスト毎に 1 つのパイプが"
+"新規作成されます。\n"
+"サブネットマスクに「1」ビットの数を指定した場合は、パイプ毎に複数ホストを\n"
+"グループ化するのに使用されます。"
 
 #: etc/inc/shaper.inc:3646
 msgid ""
@@ -50793,11 +50849,16 @@ msgid ""
 "specify \n"
 "the number of 'one' bits in the subnet mask used to group multiple hosts \n"
 "per queue."
-msgstr "空白のマスクビットを残す」 「ソース」や「目的地」のスロットを選択した場合、 \nは「ホストごとに1つのパイプを作成します。そうでない場合は、キューごとに「グループ複数のホストに使用するサブネットマスクで「 1 」のビット数を\n 」 \nを指定」 。"
+msgstr ""
+"「送信元」もしくは「送信先」スロットが選択された場合で、\n"
+"ビットマスクを空白にすると、ホスト毎に 1 つのパイプが"
+"新規作成されます。\n"
+"サブネットマスクに「1」ビットの数を指定した場合は、キュー毎に複数ホストを\n"
+"グループ化するのに使用されます。"
 
 #: etc/inc/pfsense-utils.inc:2575
 msgid "Albanian"
-msgstr "アルバニア人"
+msgstr "アルバニア語"
 
 #: etc/inc/pfsense-utils.inc:2576
 msgid "Bulgarian"
@@ -50805,11 +50866,11 @@ msgstr "ブルガリア語"
 
 #: etc/inc/pfsense-utils.inc:2577
 msgid "Chinese (Simplified)"
-msgstr "中国語（簡体字）"
+msgstr "中国語 ( 簡体字 )"
 
 #: etc/inc/pfsense-utils.inc:2578
 msgid "Chinese (Traditional)"
-msgstr "中国語（繁体字）"
+msgstr "中国語 ( 繁体字 )"
 
 #: etc/inc/pfsense-utils.inc:2579
 msgid "Dutch"
@@ -50857,7 +50918,7 @@ msgstr "ラトビア語"
 
 #: etc/inc/pfsense-utils.inc:2591
 msgid "Norwegian (Bokmal)"
-msgstr "ノルウェー語（ブークモール）"
+msgstr "ノルウェー語 ( ブークモール )"
 
 #: etc/inc/pfsense-utils.inc:2592
 msgid "Polish"
@@ -50865,7 +50926,7 @@ msgstr "ポーランド語"
 
 #: etc/inc/pfsense-utils.inc:2594
 msgid "Portuguese (Portugal)"
-msgstr "ポルトガル語（ポルトガル）"
+msgstr "ポルトガル語 ( ポルトガル )"
 
 #: etc/inc/pfsense-utils.inc:2595
 msgid "Romanian"
