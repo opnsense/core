@@ -506,7 +506,7 @@ msgstr "レイヤ 7 デーモンを起動"
 #: etc/inc/filter.inc:403 etc/inc/filter.inc:405 etc/inc/filter.inc:408
 #: etc/inc/filter.inc:380 etc/inc/filter.inc:384 etc/inc/filter.inc:384
 msgid "Processing down interface states"
-msgstr "インタフェースの状態をダウンにしています"
+msgstr "インタフェースステータスをダウンにしています"
 
 #: etc/inc/filter.inc:407 etc/inc/filter.inc:409 etc/inc/filter.inc:412
 #: etc/inc/filter.inc:384 etc/inc/filter.inc:388 etc/inc/filter.inc:388
@@ -12103,7 +12103,7 @@ msgstr "送信先"
 #: usr/local/www/diag_logs_filter_dynamic.php:133
 #: usr/local/www/firewall_nat.php:204 usr/local/www/firewall_rules.php:358
 msgid "Proto"
-msgstr "Proto"
+msgstr "プロトコル"
 
 #: usr/local/www/diag_logs_filter.php:178
 #: usr/local/www/diag_logs_filter.php:183
@@ -12285,7 +12285,7 @@ msgstr "無効な入力です"
 #: usr/local/www/diag_dump_states.php:65 usr/local/www/diag_dump_states.php:75
 #: usr/local/www/diag_dump_states.php:67 usr/local/www/diag_dump_states.php:67
 msgid "Show States"
-msgstr "状態表示"
+msgstr "ステータス表示"
 
 #: usr/local/www/diag_dump_states.php:95 usr/local/www/status_openvpn.php:130
 #: usr/local/www/widgets/widgets/openvpn.widget.php:84
@@ -12326,7 +12326,7 @@ msgstr "エラーが発生しました"
 #: usr/local/www/system_advanced_misc.php:549
 #: usr/local/www/diag_resetstate.php:77 usr/local/www/fbegin.inc:225
 msgid "States"
-msgstr "状態"
+msgstr "ステータス"
 
 #: usr/local/www/diag_dump_states.php:112 usr/local/www/diag_resetstate.php:79
 #: usr/local/www/diag_dump_states_sources.php:111
@@ -12350,11 +12350,11 @@ msgstr "送信元の追跡"
 #: usr/local/www/diag_dump_states_sources.php:111
 #: usr/local/www/diag_resetstate.php:80
 msgid "Reset States"
-msgstr "状態をリセット"
+msgstr "ステータスをリセット"
 
 #: usr/local/www/diag_dump_states.php:134
 msgid "Current state count:"
-msgstr "現在の状態の合計: "
+msgstr "現在ステータス合計: "
 
 #: usr/local/www/diag_dump_states.php:136
 #: usr/local/www/diag_dump_states_sources.php:131
@@ -12387,7 +12387,7 @@ msgstr "発信元 -> ルータ -> 発信先"
 #: usr/local/www/diag_dump_states.php:158
 #: usr/local/www/diag_system_pftop.php:142
 msgid "State"
-msgstr "状態"
+msgstr "ステータス"
 
 #: usr/local/www/diag_dump_states.php:185
 #: usr/local/www/diag_dump_states.php:203
@@ -12395,7 +12395,7 @@ msgstr "状態"
 #: usr/local/www/diag_dump_states.php:194
 #: usr/local/www/diag_dump_states.php:194
 msgid "Remove all state entries from"
-msgstr "全ての状態エントリを削除: "
+msgstr "全ステータスエントリを削除: "
 
 #: usr/local/www/diag_dump_states.php:185
 #: usr/local/www/firewall_nat_edit.php:620
@@ -20405,7 +20405,7 @@ msgstr "パケットに、他のルールよりも、マークを優先して一
 #: usr/local/www/firewall_rules_edit.php:1210
 #: usr/local/www/firewall_rules_edit.php:1210
 msgid " Maximum state entries this rule can create"
-msgstr " このルールが作成できる状態エントリの最大数"
+msgstr " このルールが作成できるステータスエントリの最大数"
 
 #: usr/local/www/firewall_rules_edit.php:1149
 #: usr/local/www/firewall_rules_edit.php:1184
@@ -20432,7 +20432,7 @@ msgstr "ホスト毎の確立した接続の最大数"
 #: usr/local/www/firewall_rules_edit.php:1213
 #: usr/local/www/firewall_rules_edit.php:1213
 msgid " Maximum state entries per host"
-msgstr "ホスト毎の最大状態エントリ"
+msgstr "ホスト毎の最大ステータスエントリ"
 
 #: usr/local/www/firewall_rules_edit.php:1160
 #: usr/local/www/firewall_rules_edit.php:1195
@@ -20450,7 +20450,7 @@ msgstr "ホスト毎の最大新規接続 / 秒"
 #: usr/local/www/firewall_rules_edit.php:1225
 #: usr/local/www/firewall_rules_edit.php:1225
 msgid "State Timeout in seconds"
-msgstr "数秒で状態タイムアウトします"
+msgstr "数秒でステータスタイムアウトします"
 
 #: usr/local/www/firewall_rules_edit.php:1167
 #: usr/local/www/firewall_rules_edit.php:1202
@@ -20499,7 +20499,7 @@ msgstr ""
 #: usr/local/www/firewall_rules_edit.php:1272
 #: usr/local/www/firewall_rules_edit.php:1272
 msgid "State Type"
-msgstr "状態タイプ"
+msgstr "ステータスタイプ"
 
 #: usr/local/www/firewall_rules_edit.php:1221
 #: usr/local/www/firewall_rules_edit.php:1228
@@ -20556,7 +20556,7 @@ msgid ""
 "Hint: Select which type of state tracking mechanism you would like to use.  "
 "If in doubt, use keep state."
 msgstr ""
-"ヒント: 使用したい状態追跡メカニズムのタイプを選択してください。"
+"ヒント: 使用したいステータス追跡メカニズムのタイプを選択してください。"
 "よくわからない場合は、keep state を使用してください。"
 
 #: usr/local/www/firewall_rules_edit.php:1228
@@ -20599,7 +20599,7 @@ msgid ""
 "doing advanced queueing in certain situations.  Please check the "
 "documentation."
 msgstr ""
-"記録目的で状態メカニズムを使用しないでください。"
+"記録目的でステータスメカニズムを使用しないでください。"
 "この機能が便利なのは、高度なキュー操作を行うような場合にだけです。"
 "ドキュメントを確認してください。"
 
@@ -24435,21 +24435,21 @@ msgstr "送信先ポート"
 #: usr/local/www/diag_states_summary.php:176
 #: usr/local/www/diag_states_summary.php:176
 msgid "State Table Summary"
-msgstr "状態テーブル概要"
+msgstr "ステータステーブル概要"
 
 #: usr/local/www/diag_states_summary.php:191
 #: usr/local/www/diag_states_summary.php:180
 #: usr/local/www/diag_states_summary.php:182
 #: usr/local/www/diag_states_summary.php:182
 msgid "By Source IP"
-msgstr "送信元 IP で"
+msgstr "送信元 IP"
 
 #: usr/local/www/diag_states_summary.php:192
 #: usr/local/www/diag_states_summary.php:181
 #: usr/local/www/diag_states_summary.php:183
 #: usr/local/www/diag_states_summary.php:183
 msgid "By Destination IP"
-msgstr "送信先 IP で"
+msgstr "送信先 IP"
 
 #: usr/local/www/diag_states_summary.php:193
 #: usr/local/www/diag_states_summary.php:182
@@ -24463,7 +24463,7 @@ msgstr "IP アドレス毎の合計"
 #: usr/local/www/diag_states_summary.php:185
 #: usr/local/www/diag_states_summary.php:185
 msgid "By IP Pair"
-msgstr "IP ペアで"
+msgstr "IP ペア"
 
 #: usr/local/www/diag_system_activity.php:46
 #: usr/local/www/diag_system_activity.php:46
@@ -25257,7 +25257,7 @@ msgid ""
 "Use a space to separate multiple hosts (only one required). Remember to set "
 "up at least one DNS server if you enter a host name here!"
 msgstr ""
-"複数のホスト( 1 つは必須です )はスペースで区切ってください。"
+"複数のホスト ( 1 つは必須 ) を使用する場合はスペースで区切ってください。"
 "ホスト名を入力する場合は、最低 1 つの DNS サーバを設定するようにしてください。"
 
 #: usr/local/www/system.php:411 usr/local/www/system.php:440
@@ -32992,8 +32992,8 @@ msgid ""
 "Enter any additional options you would like to add to the dnsmasq "
 "configuration here, separated by a space or newline"
 msgstr ""
-"Dnsmasq 構成に追加する、追加オプションはここで入力します。"
-"空白、もしくは、改行で区切ります。"
+"Dnsmasq 構成の追加オプションを入力します。"
+"空白、または、改行で区切ります。"
 
 #: usr/local/www/services_dnsmasq.php:215
 #: usr/local/www/services_dnsmasq.php:216
@@ -35029,8 +35029,8 @@ msgstr "Adobe SVG Viewer"
 msgid ""
 "Firefox 1.5 or later or other browser supporting SVG is required to view the "
 "graph"
-msgstr "グラフの表示には、Firefox 1.5 以降、"
-"もしくは、SVG 対応のブラウザが必要です"
+msgstr " Firefox 1.5 以降、"
+"または SVG 対応のブラウザでグラフが表示可能です。"
 
 #: usr/local/www/carp_status.php:71 usr/local/www/carp_status.php:67
 #: usr/local/www/carp_status.php:67
@@ -35411,7 +35411,7 @@ msgstr "UPnP &amp; NAT-PMP"
 #: usr/local/www/fbegin.inc:182 usr/local/www/fbegin.inc:173
 #: usr/local/www/fbegin.inc:173
 msgid "CARP (failover)"
-msgstr "CARP ( フェイルオーバ )"
+msgstr "CARP(フェイルオーバ)"
 
 #: usr/local/www/fbegin.inc:158 usr/local/www/fbegin.inc:175
 #: usr/local/www/fbegin.inc:183 usr/local/www/fbegin.inc:174
@@ -35791,7 +35791,7 @@ msgstr "セル"
 msgid ""
 "Note: Change of color and/or style may not take effect until the next refresh"
 msgstr ""
-"注意: 色とスタイル、もしくはそのどちらかの変更は、次に更新されるまで有効になりません"
+"注意: 色やスタイルの変更は、次に更新されるまで有効になりません"
 
 #: usr/local/www/status_rrd_graph.php:375
 #: usr/local/www/status_rrd_graph.php:423
@@ -45431,7 +45431,7 @@ msgstr "セルモード"
 #: usr/local/www/status_interfaces.php:213
 #: usr/local/www/status_interfaces.php:213
 msgid "Cell SIM State"
-msgstr "セル SIM 状態"
+msgstr "セル SIM ステータス"
 
 #: usr/local/www/status_interfaces.php:217
 #: usr/local/www/status_interfaces.php:220
@@ -46495,7 +46495,7 @@ msgid ""
 "longer periods of time."
 msgstr ""
 "スティッキー接続の送信元追跡タイムアウトを設定します。"
-"デフォルトは 0 で、送信元追跡は、状態の有効期限が切れると削除されます。"
+"デフォルトは 0 で、送信元追跡は、ステータスの有効期限が切れると削除されます。"
 "タイムアウトを高く設定すると、"
 "送信元 / 送信先の関係は、より長期間持続するようになります。"
 
@@ -46721,7 +46721,7 @@ msgstr "最新チェック: "
 #: usr/local/www/diag_dump_states.php:145
 #: usr/local/www/diag_dump_states.php:144
 msgid "Current state count"
-msgstr "現在の状態カウント"
+msgstr "現在ステータスカウント"
 
 #: usr/local/www/diag_dump_states.php:147
 #: usr/local/www/diag_dump_states.php:146
@@ -49290,7 +49290,7 @@ msgstr "送信元アドレス"
 #: usr/local/www/diag_system_pftop.php:166
 #: usr/local/www/diag_system_pftop.php:166
 msgid "Number of States:"
-msgstr "状態の数: "
+msgstr "ステータス数: "
 
 #: usr/local/www/system_advanced_misc.php:357
 #: usr/local/www/system_advanced_misc.php:404
@@ -49379,7 +49379,7 @@ msgid ""
 "Timeouts for states can be scaled adaptively as the number of state table "
 "entries grows."
 msgstr ""
-"状態タイムアウトは、状態テーブルエントリの増加数に応じて"
+"ステータスタイムアウトは、ステータステーブルエントリの増加数に応じて"
 "拡大縮小させることができます。"
 
 #: usr/local/www/system_advanced_firewall.php:350
@@ -49390,7 +49390,7 @@ msgid ""
 "begins.  All timeout values are scaled linearly with factor (adaptive.end - "
 "number of states) / (adaptive.end - adaptive.start)."
 msgstr ""
-"状態エントリの数がこの値を超えると、適応スケーリングが始まります。"
+"ステータスエントリの数がこの値を超えると、適応スケーリングが始まります。"
 "全てのタイムアウト値は要素 ( 適応終了値 - 状態数 / 適応終了値 - 適応開始値 ) "
 "に比例して拡大縮小します。"
 
@@ -49403,7 +49403,7 @@ msgid ""
 "define the scale factor, it should not actually be reached (set a lower "
 "state limit, see below)."
 msgstr ""
-"この状態エントリの数に達すると、全てのタイムアウト値は 0 になり、"
+"このステータスエントリの数に達すると、全てのタイムアウト値は 0 になり、"
 "全ての状態エントリは、事実上、即時にパージされます。"
 "この値はスケール要素の定義として使用され、実際には到達されない値にすべきです。"
 "( 状態制限を低く設定する場合は、下記を参照してください )"
@@ -50765,11 +50765,11 @@ msgstr "最新構成変更"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:183
 msgid "State table size"
-msgstr "状態テーブルサイズ"
+msgstr "ステータステーブルサイズ"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:187
 msgid "Show states"
-msgstr "状態を表示"
+msgstr "ステータス表示"
 
 #: usr/local/www/widgets/widgets/system_information.widget.php:191
 msgid "MBUF Usage"
