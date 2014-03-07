@@ -4158,22 +4158,22 @@ msgstr "サービス %1$s/%2$s: %3$s"
 msgid ""
 "Removing static route for monitor %1$s and adding a new route through %2$s"
 msgstr ""
-"モニタ %1$s の静的ルートを削除し、%2$s 経由の新規ルートを追加しています"
+"監視 %1$s の静的ルートを削除し、%2$s 経由の新規ルートを追加しています"
 
 #: etc/inc/gwlb.inc:501 etc/inc/gwlb.inc:727 etc/inc/gwlb.inc:750
 #, php-format
 msgid "MONITOR: %s is down, removing from routing group"
-msgstr "モニタ: %s はダウンです。ルーティンググループから削除しています"
+msgstr "監視: %s はダウンです。ルーティンググループから削除しています"
 
 #: etc/inc/gwlb.inc:505 etc/inc/gwlb.inc:731 etc/inc/gwlb.inc:754
 #, php-format
 msgid "MONITOR: %s has packet loss, removing from routing group"
-msgstr "モニタ: %s にパケットロスがあります。ルーティンググループから削除しています"
+msgstr "監視: %s にパケットロスがあります。ルーティンググループから削除しています"
 
 #: etc/inc/gwlb.inc:509 etc/inc/gwlb.inc:735 etc/inc/gwlb.inc:758
 #, php-format
 msgid "MONITOR: %s has high latency, removing from routing group"
-msgstr "モニタ: %s が高レイテンシです。ルーティンググループから削除しています"
+msgstr "監視: %s が高レイテンシです。ルーティンググループから削除しています"
 
 #: etc/inc/gwlb.inc:526 etc/inc/gwlb.inc:752 etc/inc/gwlb.inc:775
 msgid "Gateways status could not be determined, considering all as up/active."
@@ -5377,25 +5377,25 @@ msgstr "システム: ライセンス: ページへのアクセスを許可"
 #: etc/inc/priv.defs.inc:580 etc/inc/priv.defs.inc:576
 #: etc/inc/priv.defs.inc:576
 msgid "WebCfg - Services: Load Balancer: Monitors page"
-msgstr "Web 設定 - サービス: ロードバランサ: モニタページ"
+msgstr "Web 設定 - サービス: ロードバランサ: 監視ページ"
 
 #: etc/inc/priv.defs.inc:557 etc/inc/priv.defs.inc:575
 #: etc/inc/priv.defs.inc:581 etc/inc/priv.defs.inc:577
 #: etc/inc/priv.defs.inc:577
 msgid "Allow access to the 'Services: Load Balancer: Monitors' page."
-msgstr "サービス: ロードバランサ: モニタ: ページへのアクセスを許可"
+msgstr "サービス: ロードバランサ: 監視: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:562 etc/inc/priv.defs.inc:580
 #: etc/inc/priv.defs.inc:586 etc/inc/priv.defs.inc:582
 #: etc/inc/priv.defs.inc:582
 msgid "WebCfg - Services: Load Balancer: Monitor: Edit page"
-msgstr "Web 設定 - サービス: ロードバランサ: モニタ: 編集ページ"
+msgstr "Web 設定 - サービス: ロードバランサ: 監視: 編集ページ"
 
 #: etc/inc/priv.defs.inc:563 etc/inc/priv.defs.inc:581
 #: etc/inc/priv.defs.inc:587 etc/inc/priv.defs.inc:583
 #: etc/inc/priv.defs.inc:583
 msgid "Allow access to the 'Services: Load Balancer: Monitor: Edit' page."
-msgstr "サービス: ロードバランサ: モニタ: 編集: ページへのアクセスを許可"
+msgstr "サービス: ロードバランサ: 監視: 編集: ページへのアクセスを許可"
 
 #: etc/inc/priv.defs.inc:568 etc/inc/priv.defs.inc:586
 #: etc/inc/priv.defs.inc:592 etc/inc/priv.defs.inc:588
@@ -7592,7 +7592,7 @@ msgstr "プール"
 #: usr/local/www/load_balancer_monitor.php:109
 #: usr/local/www/load_balancer_virtual_server.php:115
 msgid "Monitors"
-msgstr "モニタ"
+msgstr "監視"
 
 #: usr/local/www/load_balancer_virtual_server.php:129
 #: usr/local/www/firewall_shaper_layer7.php:466
@@ -12674,7 +12674,7 @@ msgstr "VPN ( PPTP 、IPsec、OpenVPN ) イベント"
 #: usr/local/www/diag_logs_settings.php:339
 #: usr/local/www/diag_logs_settings.php:339
 msgid "Gateway Monitor events"
-msgstr "ゲートウェイモニタイベント"
+msgstr "ゲートウェイ監視イベント"
 
 #: usr/local/www/diag_logs_settings.php:312
 #: usr/local/www/diag_logs_settings.php:321
@@ -16867,7 +16867,7 @@ msgstr "このオプションを設定すると、このルールをリストか
 #: usr/local/www/firewall_nat_npt_edit.php:205
 #: usr/local/www/firewall_nat_1to1_edit.php:321
 msgid "Choose which interface this rule applies to"
-msgstr "このルールを適用するインタフェースを選択してください"
+msgstr "このルールを適用するインタフェースを選択してください。"
 
 #: usr/local/www/firewall_nat_1to1_edit.php:316
 #: usr/local/www/firewall_nat_npt_edit.php:203
@@ -16880,7 +16880,7 @@ msgstr "このルールを適用するインタフェースを選択してくだ
 #: usr/local/www/firewall_nat_npt_edit.php:206
 #: usr/local/www/firewall_nat_1to1_edit.php:322
 msgid "Hint: in most cases, you'll want to use WAN here"
-msgstr "ヒント: 通常はここで WAN を使用します"
+msgstr "ヒント: 通常はここで WAN を使用します。"
 
 #: usr/local/www/firewall_nat_1to1_edit.php:319
 #: usr/local/www/firewall_nat_1to1_edit.php:326
@@ -16902,7 +16902,7 @@ msgid ""
 msgstr ""
 "1:1 マッピングを開始する、外部 ( 通常は WAN ) サブネットのアドレスを"
 "入力してください。下記の内部アドレスのサブネットマスクは、"
-"この IP アドレスに適用されます"
+"この IP アドレスに適用されます。"
 
 #: usr/local/www/firewall_nat_1to1_edit.php:324
 #: usr/local/www/firewall_nat_1to1_edit.php:331
@@ -16914,7 +16914,7 @@ msgid ""
 "selected interface."
 msgstr ""
 "ヒント: 一般的には、選択したインタフェースに"
-"ルータ自体が割り当てたアドレスです"
+"ルータ自体が割り当てたアドレスです。"
 
 #: usr/local/www/firewall_nat_1to1_edit.php:331
 #: usr/local/www/firewall_nat_1to1_edit.php:386
@@ -17024,7 +17024,7 @@ msgstr "否定"
 #: usr/local/www/firewall_nat_1to1_edit.php:394
 #: usr/local/www/firewall_nat_out_edit.php:532
 msgid "Use this option to invert the sense of the match."
-msgstr "このオプションを使用すると、一致する意味が逆になります"
+msgstr "このオプションを使用すると、一致する意味が逆になります。"
 
 #: usr/local/www/firewall_nat_1to1_edit.php:343
 #: usr/local/www/firewall_nat_1to1_edit.php:398
@@ -17352,7 +17352,7 @@ msgid ""
 "specified for the internal subnet will be applied to the external subnet."
 msgstr ""
 "1:1 マッピングをする内部 ( LAN ) サブネットを入力してください。"
-"内部サブネットで指定されるサブネットサイズは、外部サブネットに適用されます"
+"内部サブネットで指定されるサブネットサイズは、外部サブネットに適用されます。"
 
 #: usr/local/www/firewall_nat_1to1_edit.php:399
 #: usr/local/www/firewall_nat_edit.php:551
@@ -17398,7 +17398,7 @@ msgid ""
 "destination."
 msgstr ""
 "1:1 マッピングは指定した送信先との送受信に対してのみ"
-"使用されます"
+"使用されます。"
 
 #: usr/local/www/firewall_nat_1to1_edit.php:437
 #: usr/local/www/firewall_nat_1to1_edit.php:444
@@ -17406,7 +17406,7 @@ msgstr ""
 #: usr/local/www/firewall_nat_1to1_edit.php:443
 #: usr/local/www/firewall_nat_1to1_edit.php:443
 msgid "Hint: this is usually 'any'."
-msgstr "ヒント: 通常は「任意」です"
+msgstr "ヒント: 通常は「任意」です。"
 
 #: usr/local/www/firewall_nat_1to1_edit.php:447
 #: usr/local/www/firewall_nat_edit.php:783
@@ -17683,7 +17683,7 @@ msgstr ""
 #: usr/local/www/firewall_nat_edit.php:528
 #: usr/local/www/firewall_nat_out_edit.php:481
 msgid "Choose which interface this rule applies to."
-msgstr "このルールを適用するインタフェースを選択してください"
+msgstr "このルールを適用するインタフェースを選択してください。"
 
 #: usr/local/www/firewall_nat_edit.php:515
 #: usr/local/www/firewall_nat_out_edit.php:453
@@ -17698,7 +17698,7 @@ msgstr "このルールを適用するインタフェースを選択してくだ
 #: usr/local/www/firewall_nat_edit.php:529
 #: usr/local/www/firewall_nat_out_edit.php:482
 msgid "Hint: in most cases, you'll want to use WAN here."
-msgstr "ヒント: 通常は、ここで使用するのは WAN です"
+msgstr "ヒント: 通常は、ここで使用するのは WAN です。"
 
 #: usr/local/www/firewall_nat_edit.php:524
 #: usr/local/www/firewall_rules_edit.php:818
@@ -17714,7 +17714,7 @@ msgstr "ヒント: 通常は、ここで使用するのは WAN です"
 #: usr/local/www/firewall_rules_edit.php:867
 #: usr/local/www/firewall_nat_edit.php:538
 msgid "Choose which IP protocol this rule should match."
-msgstr "このルールに一致するプロトコルを選択してください"
+msgstr "このルールに一致するプロトコルを選択してください。"
 
 #: usr/local/www/firewall_nat_edit.php:526
 #: usr/local/www/firewall_nat_edit.php:533
@@ -17724,7 +17724,7 @@ msgstr "このルールに一致するプロトコルを選択してください
 #: usr/local/www/firewall_nat_edit.php:540
 #: usr/local/www/firewall_nat_edit.php:540
 msgid "Hint: in most cases, you should specify"
-msgstr "ヒント: 通常は、指定が必要です"
+msgstr "ヒント: 通常は指定する必要があります。"
 
 #: usr/local/www/firewall_nat_edit.php:526
 #: usr/local/www/load_balancer_monitor_edit.php:199
@@ -19169,7 +19169,7 @@ msgid ""
 "background.<br/>You can also %s monitor %s the reload progress"
 msgstr ""
 "設定が適用されました。ファイアウォールのルールはバックグラウンドで現在再読込み中です。<br/>"
-"再読込みの進行状況を %s モニタ %s することができます"
+"再読込みの進行状況を %s 監視 %s することができます"
 
 #: usr/local/www/firewall_rules.php:315 usr/local/www/firewall_rules.php:317
 #: usr/local/www/firewall_rules.php:319 usr/local/www/firewall_rules.php:321
@@ -24228,7 +24228,7 @@ msgstr "PF 情報を収集しています。しばらくお待ちください...
 
 #: usr/local/www/diag_smart.php:14 usr/local/www/diag_smart.php:14
 msgid "S.M.A.R.T. Monitor Tools"
-msgstr "S.M.A.R.T. モニタツール"
+msgstr "S.M.A.R.T. 監視ツール"
 
 #: usr/local/www/diag_smart.php:68 usr/local/www/diag_smart.php:73
 #: usr/local/www/diag_smart.php:73
@@ -25011,7 +25011,7 @@ msgstr "サーバ"
 #: usr/local/www/load_balancer_pool_edit.php:238
 #: usr/local/www/status_gateways.php:75
 msgid "Monitor"
-msgstr "モニタ"
+msgstr "監視"
 
 #: usr/local/www/load_balancer_pool.php:149
 #: usr/local/www/load_balancer_pool.php:150
@@ -25199,7 +25199,7 @@ msgstr ""
 #: usr/local/www/system.php:347 usr/local/www/system.php:346
 #: usr/local/www/system.php:346
 msgid "Allow DNS server list to be overridden by DHCP/PPP on WAN"
-msgstr "WAN の DHCP/PPP による DNS サーバリストの無効化、を許可"
+msgstr "WAN の DHCP/PPP による DNS サーバリストの無効化を許可"
 
 #: usr/local/www/system.php:346 usr/local/www/system.php:357
 #: usr/local/www/system.php:350 usr/local/www/system.php:349
@@ -25967,7 +25967,7 @@ msgstr "ベース URL: "
 #: usr/local/www/system_firmware_settings.php:165
 #: usr/local/www/system_firmware_settings.php:165
 msgid "This is where"
-msgstr ""
+msgstr " "
 
 #: usr/local/www/system_firmware_settings.php:149
 #: usr/local/www/system_firmware_settings.php:154
@@ -26221,9 +26221,9 @@ msgid ""
 "firewall.  Static routes are only used for networks reachable via a "
 "different router, and not reachable via your default gateway."
 msgstr ""
-"このファイアウォールのインタフェースに割当てられたネットワークに対して、静的ルートを入力しないでください。"
-"静的ルートは、異なるルータ経由でのみ到達でき、このファイアウォールのデフォルトゲートウェイ経由では"
-"到達できない、ネットワークに使用するものです。"
+"このファイアウォールのインタフェースに割当てられたネットワークには、静的ルートを入力しないでください。"
+"静的ルートは、このファイアウォールのデフォルトゲートウェイ経由では到達できず、"
+"異なるルータを経由することで到達可能なネットワークにのみ使用します。"
 
 #: usr/local/www/system_routes_edit.php:89
 #: usr/local/www/system_routes_edit.php:179
@@ -28343,12 +28343,12 @@ msgstr "PPPoE インスタンスの削除"
 #: usr/local/www/load_balancer_monitor_edit.php:66
 #: usr/local/www/load_balancer_monitor_edit.php:66
 msgid "Load Balancer: Monitor:"
-msgstr "ロードバランサ: モニタ: "
+msgstr "ロードバランサ: 監視: "
 
 #: usr/local/www/load_balancer_monitor_edit.php:95
 #: usr/local/www/load_balancer_monitor_edit.php:95
 msgid "This monitor name has already been used.  Monitor names must be unique."
-msgstr "このモニタ名は既に使用されています。モニタ名は固有です。"
+msgstr "この監視名は既に使用されています。監視名は固有です。"
 
 #: usr/local/www/load_balancer_monitor_edit.php:98
 #: usr/local/www/load_balancer_pool_edit.php:86
@@ -28386,13 +28386,13 @@ msgstr "HTTP(S) のコードは RFC2616 に従ってください"
 #: usr/local/www/load_balancer_monitor_edit.php:122
 #: usr/local/www/load_balancer_monitor_edit.php:122
 msgid "The path to monitor must be set."
-msgstr "モニタするパスを設定してください"
+msgstr "監視するパスを設定してください"
 
 #: usr/local/www/load_balancer_monitor_edit.php:145
 #: usr/local/www/load_balancer_monitor_edit.php:145
 #, php-format
 msgid "modified '%s' monitor:"
-msgstr "%s モニタが変更されました: "
+msgstr "%s 監視が変更されました: "
 
 #: usr/local/www/load_balancer_monitor_edit.php:199
 #: usr/local/www/load_balancer_monitor_edit.php:197
@@ -28441,7 +28441,7 @@ msgstr "送信 / 期待"
 #: usr/local/www/load_balancer_monitor_edit.php:230
 #: usr/local/www/load_balancer_monitor_edit.php:230
 msgid "Edit Load Balancer - Monitor entry"
-msgstr "ロードバランサの編集 - モニタエントリ"
+msgstr "ロードバランサの編集 - 監視エントリ"
 
 #: usr/local/www/load_balancer_monitor_edit.php:272
 #: usr/local/www/load_balancer_monitor_edit.php:305
@@ -28554,7 +28554,7 @@ msgstr "「無効」リストの %s は有効な  IP アドレスではありま
 #: usr/local/www/load_balancer_pool_edit.php:120
 #: usr/local/www/load_balancer_pool_edit.php:120
 msgid "Invalid monitor chosen."
-msgstr "無効なモニタが選択されました"
+msgstr "無効な監視が選択されました"
 
 #: usr/local/www/load_balancer_pool_edit.php:121
 #: usr/local/www/load_balancer_pool_edit.php:127
@@ -28625,7 +28625,7 @@ msgid ""
 "feature."
 msgstr ""
 "この機能を使用したい場合は、"
-"モニタタブで、モニタの IP アドレスを追加してください。"
+"監視タブで、監視の IP アドレスを追加してください。"
 
 #: usr/local/www/load_balancer_pool_edit.php:244
 #: usr/local/www/load_balancer_pool_edit.php:261
@@ -36125,7 +36125,7 @@ msgstr "はい"
 #: usr/local/www/services_dyndns_edit.php:236
 #: usr/local/www/services_rfc2136_edit.php:134
 msgid "Interface to monitor"
-msgstr "モニタするインタフェース"
+msgstr "監視するインタフェース"
 
 #: usr/local/www/services_dyndns_edit.php:191
 #: usr/local/www/services_dyndns_edit.php:274
@@ -37502,7 +37502,7 @@ msgstr "高度な設定: ファイアウォールと NAT"
 #: usr/local/www/system_advanced_firewall.php:233
 #: usr/local/www/system_advanced_firewall.php:233
 msgid "as the name says, it's the normal optimization algorithm"
-msgstr "一般的な最適化アルゴリズム"
+msgstr "一般的な最適化アルゴリズムを使用します。"
 
 #: usr/local/www/system_advanced_firewall.php:191
 #: usr/local/www/system_advanced_firewall.php:205
@@ -38355,7 +38355,7 @@ msgstr ""
 #: usr/local/www/system_advanced_misc.php:546
 #: usr/local/www/system_advanced_misc.php:546
 msgid "Gateway Monitoring"
-msgstr "ゲートウェイの監視"
+msgstr "ゲートウェイ監視"
 
 #: usr/local/www/system_advanced_misc.php:402
 #: usr/local/www/system_advanced_misc.php:445
@@ -40514,7 +40514,7 @@ msgid ""
 "traffic into the Gateway Groups, they will not be used."
 msgstr ""
 "ロードバランシング、フェイルオーバ、ポリシベースルーティングを有効にするには、"
-"ファイアウォールルールで、このゲートウェイグループを忘れずに使用してください。"
+"ファイアウォールルールでゲートウェイグループを必ず使用してください。"
 "トラフィックがゲートウェイグループに直接流れるルールがないと、ロードバランシング等を使用できません。"
 
 #: usr/local/www/system_gateway_groups_edit.php:50
@@ -40719,7 +40719,7 @@ msgstr "ゲートウェイの設定が変更されました。"
 #: usr/local/www/system_gateways_edit.php:561
 #: usr/local/www/system_gateways.php:155
 msgid "Monitor IP"
-msgstr "モニタ IP"
+msgstr "監視 IP"
 
 #: usr/local/www/system_gateways.php:205 usr/local/www/system_gateways.php:205
 msgid "Do you really want to delete this gateway?"
@@ -40793,7 +40793,7 @@ msgstr ""
 #: usr/local/www/system_gateways_edit.php:182
 #: usr/local/www/system_gateways_edit.php:182
 msgid "A valid monitor IP address must be specified."
-msgstr "有効なモニタ IP アドレスを指定してください"
+msgstr "有効な監視 IP アドレスを指定してください。"
 
 #: usr/local/www/system_gateways_edit.php:160
 #: usr/local/www/system_gateways_edit.php:168
@@ -40831,8 +40831,8 @@ msgid ""
 "The monitor IP address \"%s\" is already in use. You must choose a different "
 "monitor IP."
 msgstr ""
-"モニタ IP アドレス %s は既に使用されています。"
-"別のモニタ IP アドレスを選択してください。"
+"監視 IP アドレス %s は既に使用されています。"
+"別の監視 IP アドレスを選択してください。"
 
 #: usr/local/www/system_gateways_edit.php:187
 #: usr/local/www/system_gateways_edit.php:220
@@ -40889,7 +40889,7 @@ msgstr "BGPD を使用"
 #: usr/local/www/system_gateways_edit.php:510
 #: usr/local/www/system_gateways_edit.php:510
 msgid "Choose which interface this gateway applies to."
-msgstr "このゲートウェイに適用するインタフェースを選択してください"
+msgstr "このゲートウェイに適用するインタフェースを選択してください。"
 
 #: usr/local/www/system_gateways_edit.php:373
 #: usr/local/www/system_gateways_edit.php:394
@@ -40936,7 +40936,7 @@ msgstr "デフォルトゲートウェイ"
 #: usr/local/www/system_gateways_edit.php:549
 #: usr/local/www/system_gateways_edit.php:549
 msgid "This will select the above gateway as the default gateway"
-msgstr "上記のゲートウェイを、デフォルトゲートウェイとして選択します"
+msgstr "上記のゲートウェイを、デフォルトゲートウェイとして選択します。"
 
 #: usr/local/www/system_gateways_edit.php:390
 #: usr/local/www/system_gateways_edit.php:393
@@ -40973,7 +40973,7 @@ msgstr "このゲートウェイが常にアップであると見なします"
 #: usr/local/www/system_gateways_edit.php:570
 #: usr/local/www/system_gateways_edit.php:570
 msgid "Alternative monitor IP"
-msgstr "代替モニタ IP"
+msgstr "代替監視 IP"
 
 #: usr/local/www/system_gateways_edit.php:408
 #: usr/local/www/system_gateways_edit.php:429
@@ -40989,7 +40989,7 @@ msgid ""
 msgstr ""
 "リンクの監視に使用する代替アドレスを入力してください。"
 "品質 RRD グラフ、及び、ロードバランサエントリに使用されます。"
-"ゲートウェイが ICMP エコー要求 ( ping ) に応答しない場合に、これを使用します。"
+"ゲートウェイが ICMP エコー要求 ( ping ) に応答しない場合に使用してください。"
 
 #: usr/local/www/system_gateways_edit.php:436
 #: usr/local/www/system_gateways_edit.php:457
@@ -41215,7 +41215,7 @@ msgid ""
 "\t\t\t\t\t\t\t\tSome system object properties can be modified but they "
 "cannot be deleted."
 msgstr ""
-"Web 設定管理画面グループはここで追加できます。\n"
+"Web 設定管理画面のグループを追加できます。\n"
 "\t\t\t\t\t\t\t\tグループメンバであるユーザから継承されるパーミッションを、"
 "グループパーミッションに割当てることができます。"
 "\t\t\t\t\t\t\t\tグレー表示されるアイコンは、"
@@ -41468,7 +41468,7 @@ msgid ""
 "object. Some system object properties can be modified but they cannot be "
 "deleted."
 msgstr ""
-"ユーザの追加はここで行うことができます。"
+"ここでユーザを追加できます。"
 "Web 管理画面にアクセスするユーザのパーミッションは、直接割り当てるか、"
 "もしくはグループメンバシップから継承させることができます。"
 "グレー表示されるアイコンは、システムが定義したオブジェクトです。"
@@ -41483,7 +41483,7 @@ msgid ""
 "Accounts created here are also used for other parts of the system such as "
 "OpenVPN, IPsec, and Captive Portal."
 msgstr ""
-"OpenVPN、IPsec、キャプティブポータル等の、"
+"OpenVPN、IPsec、キャプティブポータル等、"
 "システムの他の部分で使用されるアカウントも、ここで作成します。"
 
 #: usr/local/www/system_usermanager_passwordmg.php:43
@@ -45238,7 +45238,7 @@ msgstr "次から更新を送信するインタフェース: "
 #: usr/local/www/services_dyndns_edit.php:268
 #: usr/local/www/services_dyndns_edit.php:268
 msgid "Note: This is almost always the same as the Interface to Monitor."
-msgstr "注意: 通常、モニタするインタフェースと同じです。"
+msgstr "注意: 通常、監視するインタフェースと同じです。"
 
 #: usr/local/www/services_dyndns_edit.php:299
 #: usr/local/www/services_dyndns_edit.php:303
@@ -47595,7 +47595,7 @@ msgid ""
 "\t\t\t\t\t\t\t\t\tSome system object properties can be modified but they "
 "cannot be deleted."
 msgstr ""
-"Web 設定管理画面グループはここで追加できます。\n"
+"Web 設定管理画面のグループを追加できます。\n"
 "\t\t\t\t\t\t\t\t\tグループメンバであるユーザから継承されるパーミッションを、"
 "グループパーミッションに割当てることができます。\n"
 "\t\t\t\t\t\t\t\t\tグレー表示されるアイコンは、"
@@ -49020,7 +49020,7 @@ msgid ""
 "is not recommended, and may require a manual reboot after the update "
 "completes."
 msgstr ""
-"「現在のアーキテクチャ」で示されたエントリは、%s のように、"
+"「現在のアーキテクチャ」で表示される %s のようなエントリは、"
 "現在インストールされているアーキテクチャと一致します。"
 "アップグレード中は、アーキテクチャを変更しないようにしてください。"
 "更新が完了したら、手動で再起動する必要があります。"
@@ -50457,7 +50457,7 @@ msgstr "前回のバックアップが見つかりません。"
 #: usr/local/www/system_firmware_restorefullbackup.php:182
 #: usr/local/www/system_firmware_restorefullbackup.php:182
 msgid "do not restore config.xml."
-msgstr "config.xml を復元しないでください。"
+msgstr "config.xml を復元しない"
 
 #: usr/local/www/diag_dns.php:156 usr/local/www/diag_dns.php:156
 msgid "Query Time"
