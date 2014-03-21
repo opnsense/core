@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: foof@blackskyresearch.net\n"
 "POT-Creation-Date: 2013-12-31 18:00-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: The Foof <foof@blackskyresearch.net>\n"
+"Last-Translator: Chie Taguchi <taguchi.ch@gmail.com>\n"
 "Language-Team: JAPANESE <foof@blackskyresearch.net>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -7911,7 +7911,7 @@ msgstr "全て"
 #: usr/local/www/diag_tables.php:165 usr/local/www/diag_tables.php:162
 #: usr/local/www/diag_tables.php:165
 msgid "entries in this table."
-msgstr "このテーブルのエントリ"
+msgstr "テーブルエントリ"
 
 #: usr/local/www/pkg_edit.php:61 usr/local/www/pkg.php:51
 #: usr/local/www/pkg.php:55 usr/local/www/pkg_edit.php:69
@@ -11156,8 +11156,8 @@ msgid ""
 "WAN interface will be set to obtain an address automatically from a DHCP "
 "server"
 msgstr ""
-"WAN インタフェースは アドレスを DHCP サーバから自動取得するよう"
-"設定されます"
+"WAN インタフェースは DHCP サーバからアドレスを自動取得に"
+"設定"
 
 #: usr/local/www/diag_defaults.php:75 usr/local/www/diag_defaults.php:77
 #: usr/local/www/diag_defaults.php:77
@@ -13196,7 +13196,7 @@ msgid ""
 "This value is either the Source or Destination IP address or subnet in CIDR "
 "notation. The packet capture will look for this address in either field."
 msgstr ""
-"この値は、送信元もしくは発信元の IP アドレス、または CIDR 表記のサブネットのいずれかです。"
+"送信元もしくは発信元の IP アドレス、または CIDR 表記のサブネットを指定してください。"
 "パケットキャプチャはいずれかのフィールドで、このアドレスを検索します。"
 
 #: usr/local/www/diag_packet_capture.php:160
@@ -13207,7 +13207,7 @@ msgstr ""
 msgid ""
 "This value can be a domain name or IP address, or subnet in CIDR notation."
 msgstr ""
-"この値は、ドメイン名、IP アドレス、または CIDR 表記のサブネットです。"
+"指定可能な値は、ドメイン名、IP アドレス、または CIDR 表記のサブネットです。"
 
 #: usr/local/www/diag_packet_capture.php:161
 #: usr/local/www/diag_packet_capture.php:181
@@ -13230,7 +13230,7 @@ msgid ""
 "The port can be either the source or destination port. The packet capture "
 "will look for this port in either field."
 msgstr ""
-"ポートは、送信元もしくは送信先ポートのいずれかです。"
+"送信元ポート、または送信先ポートを指定してください。"
 "パケットキャプチャはいずれかのフィールドでこのポートを検索します。"
 
 #: usr/local/www/diag_packet_capture.php:169
@@ -13381,7 +13381,7 @@ msgid ""
 "associated with all IP addresses."
 msgstr ""
 "このボックスをチェックすると、パケットキャプチャは全ての IP アドレスに対して"
-"DNS の逆引きによる関連付けを行います。"
+" DNS の逆引きによる関連付けを行います。"
 
 #: usr/local/www/diag_packet_capture.php:203
 #: usr/local/www/diag_packet_capture.php:223
@@ -13389,7 +13389,7 @@ msgstr ""
 #: usr/local/www/diag_packet_capture.php:288
 #: usr/local/www/diag_packet_capture.php:288
 msgid "This option can cause delays for large packet captures."
-msgstr "このオプションは大量のパケットキャプチャに対する遅延の原因になります"
+msgstr "このオプションは大量のパケットキャプチャに対する遅延の原因になります。"
 
 #: usr/local/www/diag_packet_capture.php:226
 #: usr/local/www/diag_packet_capture.php:247
@@ -21223,7 +21223,7 @@ msgstr "バックアップ構成"
 #: usr/local/www/diag_backup.php:565 usr/local/www/diag_backup.php:644
 #: usr/local/www/diag_backup.php:649 usr/local/www/diag_backup.php:649
 msgid "Click this button to download the system configuration in XML format."
-msgstr "このボタンをクリックすると、XML 形式でシステム構成をダウンロードします"
+msgstr "このボタンをクリックすると、XML 形式でシステム構成をダウンロードします。"
 
 #: usr/local/www/diag_backup.php:565 usr/local/www/diag_backup.php:644
 #: usr/local/www/diag_backup.php:649 usr/local/www/diag_backup.php:649
@@ -21233,12 +21233,12 @@ msgstr "バックアップ領域: "
 #: usr/local/www/diag_backup.php:572 usr/local/www/diag_backup.php:651
 #: usr/local/www/diag_backup.php:656 usr/local/www/diag_backup.php:656
 msgid "Do not backup package information."
-msgstr "パッケージ情報をバックアップしないでください。"
+msgstr "パッケージ情報をバックアップしない"
 
 #: usr/local/www/diag_backup.php:582 usr/local/www/diag_backup.php:661
 #: usr/local/www/diag_backup.php:666 usr/local/www/diag_backup.php:666
 msgid "Encrypt this configuration file."
-msgstr "この構成ファイルを暗号化します"
+msgstr "この構成ファイルを暗号化する"
 
 #: usr/local/www/diag_backup.php:590 usr/local/www/diag_backup.php:669
 #: usr/local/www/diag_backup.php:674 usr/local/www/diag_backup.php:674
@@ -21246,7 +21246,7 @@ msgid ""
 "Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of config."
 "xml space!)"
 msgstr ""
-"RRD データをバックアップしないでください ( 注意: RRD データは config.xml の"
+"RRD データをバックアップしない ( 注意: RRD データは config.xml の"
 "4メガバイト以上を使用します！)"
 
 #: usr/local/www/diag_backup.php:605 usr/local/www/diag_backup.php:684
@@ -21281,7 +21281,7 @@ msgstr "復元領域: "
 #: usr/local/www/diag_backup.php:632 usr/local/www/diag_backup.php:713
 #: usr/local/www/diag_backup.php:718 usr/local/www/diag_backup.php:718
 msgid "Configuration file is encrypted."
-msgstr "構成ファイルが暗号化されました"
+msgstr "暗号化された構成ファイル"
 
 #: usr/local/www/diag_backup.php:639 usr/local/www/diag_backup.php:720
 #: usr/local/www/diag_backup.php:725 usr/local/www/diag_backup.php:725
@@ -21296,7 +21296,7 @@ msgstr "確認 : "
 #: usr/local/www/diag_backup.php:655 usr/local/www/diag_backup.php:736
 #: usr/local/www/diag_backup.php:741 usr/local/www/diag_backup.php:741
 msgid "The firewall will reboot after restoring the configuration."
-msgstr "ファイアウォールは構成の復元後に再起動します"
+msgstr "ファイアウォールは構成の復元後に再起動します。"
 
 #: usr/local/www/diag_backup.php:663 usr/local/www/diag_backup.php:744
 #: usr/local/www/diag_backup.php:749 usr/local/www/diag_backup.php:749
@@ -21308,7 +21308,7 @@ msgstr "パッケージ機能"
 msgid ""
 "Click this button to reinstall all system packages.  This may take a while."
 msgstr ""
-"このボタンをクリックすると全てのシステムパッケージを再インストールします。しばらく時間がかかります"
+"このボタンをクリックすると全てのシステムパッケージを再インストールします。しばらく時間がかかります。"
 
 #: usr/local/www/diag_backup.php:669 usr/local/www/diag_backup.php:750
 #: usr/local/www/diag_backup.php:756 usr/local/www/diag_backup.php:756
@@ -24220,7 +24220,7 @@ msgstr ""
 
 #: usr/local/www/diag_pf_info.php:46 usr/local/www/diag_pf_info.php:46
 msgid "Diagnostics: pfInfo"
-msgstr "診断: PF 情報"
+msgstr "診断: pfInfo"
 
 #: usr/local/www/diag_pf_info.php:106 usr/local/www/diag_pf_info.php:103
 msgid "Gathering PF information, please wait..."
@@ -31996,7 +31996,7 @@ msgid ""
 "If this is checked, only the clients defined below will get DHCP leases from "
 "this server. "
 msgstr ""
-"これをチェックすると、下記で定義されるクライアントが"
+"これをチェックすると、下記で定義されるクライアントのみが"
 "このサーバから DHCP リースを取得します"
 
 #: usr/local/www/services_dhcp.php:593 usr/local/www/services_dhcpv6.php:528
@@ -32412,7 +32412,7 @@ msgstr "ネットワーク起動を有効にします。"
 #: usr/local/www/services_dhcp.php:1050 usr/local/www/services_dhcp.php:1050
 #: usr/local/www/services_dhcpv6.php:752
 msgid "Enter the IP of the"
-msgstr "次の IP アドレス及びファイル名を入力してください: "
+msgstr "IP アドレスを入力してください: "
 
 #: usr/local/www/services_dhcp.php:783 usr/local/www/services_dhcpv6.php:709
 #: usr/local/www/services_dhcp.php:821 usr/local/www/services_dhcpv6.php:804
@@ -32430,7 +32430,7 @@ msgstr "next-server"
 #: usr/local/www/services_dhcp.php:1052 usr/local/www/services_dhcp.php:1052
 #: usr/local/www/services_dhcpv6.php:754
 msgid "and the filename"
-msgstr " "
+msgstr "ファイル名を入力してください: "
 
 #: usr/local/www/services_dhcp.php:787 usr/local/www/services_dhcpv6.php:713
 #: usr/local/www/services_dhcp.php:825 usr/local/www/services_dhcpv6.php:808
@@ -32905,9 +32905,9 @@ msgid ""
 "their name can be resolved. You should also set the domain in %sSystem: "
 "General setup%s to the proper value."
 msgstr ""
-"このオプションが設定されている場合、ホスト名を指定された機器は、"
-"DHCP リースのリクエスト時に DNS フォワーダに登録されるため、"
-"名前解決が可能になります。"
+"このオプションが設定されている場合、DHCP リースのリクエスト時に"
+"ホスト名が指定されている機器を DNS フォワーダに登録するため、"
+"ホストの名前解決が可能になります。"
 "%sシステム: 全般設定%sで、ドメインにも適切な値を設定してください。"
 
 #: usr/local/www/services_dnsmasq.php:173
@@ -49607,8 +49607,8 @@ msgid ""
 msgstr ""
 "このオプションが設定されると、%s DNS フォワーダ (dnsmasq) は、ドットやドメイン部分がない"
 "無修飾な名前に対する A または AAAA 照会を、上流 DNS サーバに転送しません。"
-"その名前が /etc/hosts または DHCP に登録されていない場合、"
-"「見つかりません」という返答が返されます。"
+"その名前が /etc/hosts または DHCP に登録されていない場合は、"
+"「見つかりません」という応答が返されます。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:183
 #: usr/local/www/vpn_ipsec_phase1.php:183
@@ -50490,8 +50490,8 @@ msgstr ""
 " DNS リバースルックアップ (PTR) を、上流 DNS サーバに転送しません。"
 "ドメイン上書きセクションで、プライベートな \"n.n.n.in-addr.arpa\" 名を"
 "特定のサーバに転送する全てのエントリは、この設定後も転送されます。"
-"IP を名前に変換するエントリが、/etc/hosts、DHCP、特定のドメイン上書きに登録されていない場合、"
-"「見つかりません」という返答が即座に返されます。"
+"IP を名前に変換するエントリが /etc/hosts、DHCP、特定のドメイン上書きに登録されていない場合、"
+"「見つかりません」という応答が即座に返されます。"
 
 #: usr/local/www/system_advanced_network.php:212
 #: usr/local/www/system_advanced_network.php:212
