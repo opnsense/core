@@ -8797,7 +8797,7 @@ msgstr "キャンセル"
 #: usr/local/www/vpn_openvpn_server.php:1648 usr/local/www/interfaces.php:1474
 #: usr/local/www/interfaces.php:2171
 msgid "Advanced"
-msgstr "高度"
+msgstr "高度な設定"
 
 #: usr/local/www/pkg_edit.php:1037 usr/local/www/firewall_rules_edit.php:1083
 #: usr/local/www/firewall_rules_edit.php:1117
@@ -25210,8 +25210,8 @@ msgid ""
 "on WAN for its own purposes (including the DNS forwarder). However, they "
 "will not be assigned to DHCP and PPTP VPN clients."
 msgstr ""
-"このオプションが設定されると、%s は、WAN の DHCP/PPP サーバが、"
-"自分の用途 ( DNS フォワーダを含む ) で割り当てた DNS サーバを使用します。"
+"このオプションが設定されると、%s は WAN の DHCP/PPP サーバが"
+"割り当てた DNS サーバを使用します ( DNS フォワーダを含む )。"
 "しかし、DHCP と PPTP VPN クライアントは割り当てられません。"
 
 #: usr/local/www/system.php:355 usr/local/www/system.php:366
@@ -26250,25 +26250,25 @@ msgstr "送信先ネットワークビット数"
 #: usr/local/www/system_routes_edit.php:100
 #: usr/local/www/system_routes_edit.php:102
 msgid "A valid IPv4 or IPv6 destination network must be specified."
-msgstr "有効な IPv4 または IPv6 送信先ネットワークを指定してください"
+msgstr "有効な IPv4 または IPv6 送信先ネットワークを指定してください。"
 
 #: usr/local/www/system_routes_edit.php:99
 #: usr/local/www/system_routes_edit.php:100
 #: usr/local/www/system_routes_edit.php:103
 #: usr/local/www/system_routes_edit.php:105
 msgid "A valid destination network bit count must be specified."
-msgstr "有効な送信先ネットワークビット数を指定してください"
+msgstr "有効な送信先ネットワークビット数を指定してください。"
 
 #: usr/local/www/system_routes_edit.php:114
 #: usr/local/www/system_routes_edit.php:118
 #: usr/local/www/system_routes_edit.php:121
 #: usr/local/www/system_routes_edit.php:123
 msgid "A IPv4 subnet can not be over 32 bits."
-msgstr "IPv4 サブネットは 32 ビット以下です"
+msgstr "IPv4 サブネットは 32 ビット以下です。"
 
 #: usr/local/www/system_routes_edit.php:123
 msgid "A route to this destination network already exists."
-msgstr "この送信先ネットワークへのルートが既に存在しています"
+msgstr "この送信先ネットワークへのルートが既に存在しています。"
 
 #: usr/local/www/system_routes_edit.php:165
 #: usr/local/www/system_routes_edit.php:198
@@ -29515,7 +29515,7 @@ msgstr "パススルー MAC"
 #: usr/local/www/services_captiveportal.php:443
 #: usr/local/www/services_captiveportal_mac.php:164
 msgid "Allowed IP addresses"
-msgstr "許可された IP アドレス"
+msgstr "許可済 IP アドレス"
 
 #: usr/local/www/services_captiveportal.php:424
 #: usr/local/www/services_captiveportal_filemanager.php:153
@@ -29541,7 +29541,7 @@ msgstr "許可された IP アドレス"
 #: usr/local/www/services_captiveportal.php:444
 #: usr/local/www/services_captiveportal_mac.php:165
 msgid "Allowed Hostnames"
-msgstr "許可されたホスト名"
+msgstr "許可済ホスト名"
 
 #: usr/local/www/services_captiveportal.php:425
 #: usr/local/www/services_captiveportal.php:587
@@ -30939,9 +30939,9 @@ msgstr ""
 "ここにアップロードされた、captiveportal- から始まるファイル名のファイルは、"
 "キャピタルポータル HTTP(S) サーバのルートディレクトリで利用可能になります。" 
 "ポータルページの HTML コードで、相対パスを使用して、ファイルを直接参照できます。"
-"例: 'captiveportal-test.jpg' という画像を、ファイル管理を使用して"
-"アップロードします。"
-"それから、ポータルページでこんな感じにインクルードできます: "
+"例: ファイル管理を使用してアップロードした画像"
+" 'captiveportal-test.jpg' は、"
+"ポータルページで以下のようにインクルードできます: "
 
 #: usr/local/www/services_captiveportal_filemanager.php:224
 #: usr/local/www/services_captiveportal_filemanager.php:221
@@ -30951,7 +30951,7 @@ msgid ""
 "filename to your custom page from the initial page by using text similar to:"
 msgstr ""
 "さらに .php ファイルを実行用にアップロードすることもできます。"
-"ファイル名を、初期ページからカスタムページへ渡すには、このようなテキストを使用します: "
+"ファイル名を初期ページからカスタムページへ渡すには、以下のようなテキストを使用します: "
 
 #: usr/local/www/services_captiveportal_filemanager.php:227
 #: usr/local/www/services_captiveportal_filemanager.php:224
@@ -31210,7 +31210,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal_hostname.php:175
 #: usr/local/www/services_captiveportal_hostname.php:182
 msgid "All connections"
-msgstr "全ての接続"
+msgstr "全接続を許可: "
 
 #: usr/local/www/services_captiveportal_ip.php:176
 #: usr/local/www/services_captiveportal_ip.php:183
@@ -31219,7 +31219,7 @@ msgstr "全ての接続"
 #: usr/local/www/services_captiveportal_ip.php:174
 #: usr/local/www/services_captiveportal_ip.php:181
 msgid "the IP address are allowed"
-msgstr "その IP アドレスは許可されています"
+msgstr "該当 IP アドレス"
 
 #: usr/local/www/services_captiveportal_ip.php:183
 #: usr/local/www/services_captiveportal_hostname.php:184
@@ -31234,14 +31234,14 @@ msgstr "from"
 #: usr/local/www/services_captiveportal_ip_edit.php:60
 #: usr/local/www/services_captiveportal_ip_edit.php:60
 msgid "Edit allowed IP address"
-msgstr "許可された IP アドレスを編集"
+msgstr "許可済 IP アドレスを編集"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:102
 #: usr/local/www/services_captiveportal_ip_edit.php:100
 #: usr/local/www/services_captiveportal_ip_edit.php:99
 #: usr/local/www/services_captiveportal_ip_edit.php:99
 msgid "Allowed IP address"
-msgstr "許可された IP アドレス"
+msgstr "許可済 IP アドレス"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:110
 #: usr/local/www/services_captiveportal_mac_edit.php:108
@@ -31284,7 +31284,7 @@ msgstr "既に許可されています"
 #: usr/local/www/services_captiveportal_ip_edit.php:184
 #: usr/local/www/services_captiveportal_ip_edit.php:184
 msgid "Edit allowed ip rule"
-msgstr "許可された IP ルールを編集"
+msgstr "許可済 IP ルールを編集"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:182
 #: usr/local/www/services_captiveportal_ip_edit.php:191
@@ -34056,7 +34056,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal_hostname.php:175
 #: usr/local/www/services_captiveportal_hostname.php:182
 msgid "the Hostname are allowed"
-msgstr "ホスト名は許可されています"
+msgstr "該当ホスト名"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:62
 #: usr/local/www/services_captiveportal_hostname_edit.php:59
@@ -34285,7 +34285,7 @@ msgstr "これは RSA 秘密鍵ではないようです"
 #: usr/local/www/services_captiveportal_vouchers.php:238
 #: usr/local/www/services_captiveportal_vouchers.php:238
 msgid "You cannot sync the voucher database to this host (itself)."
-msgstr "このホスト ( 自体 ) に、バウチャーデータベースを同期できません"
+msgstr "このホスト自体にバウチャーデータベースを同期できません"
 
 #: usr/local/www/services_captiveportal_vouchers.php:421
 #: usr/local/www/services_captiveportal_vouchers.php:428
@@ -34328,7 +34328,7 @@ msgstr "分 / チケット"
 #: usr/local/www/services_captiveportal_vouchers.php:466
 #: usr/local/www/services_captiveportal_vouchers.php:471
 msgid "of Tickets"
-msgstr ": チケット"
+msgstr "チケット番号"
 
 #: usr/local/www/services_captiveportal_vouchers.php:438
 #: usr/local/www/services_captiveportal_vouchers_edit.php:197
@@ -34416,8 +34416,8 @@ msgid ""
 "Enable Voucher support first using the checkbox above and hit Save at the "
 "bottom."
 msgstr ""
-"「バウチャーサポートを有効」の初回使用時は、上記のチェックボックスをチェックし、"
-"一番下で保存ボタンを押してください。"
+"バウチャーサポートを初めて有効にする場合は、上のチェックボックスをチェックし、"
+"一番下にある保存ボタンを押してください。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:486
 #: usr/local/www/services_captiveportal_vouchers.php:493
@@ -34436,7 +34436,7 @@ msgid ""
 "Paste an RSA public key (64 Bit or smaller) in PEM format here. This key is "
 "used to decrypt vouchers."
 msgstr ""
-"PEM 形式の RSA 公開鍵 ( 64 ビットまたはそれ以下 ) をここに貼り付けてください。"
+"PEM 形式の RSA 公開鍵 ( 64 ビット以下 ) をここに貼り付けてください。"
 "この鍵はバウチャーの復号に使用されます。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:491
@@ -34449,7 +34449,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal_vouchers.php:525
 #: usr/local/www/services_captiveportal_vouchers.php:532
 msgid "Generate"
-msgstr "生成"
+msgstr "新規鍵を生成"
 
 #: usr/local/www/services_captiveportal_vouchers.php:491
 #: usr/local/www/services_captiveportal_vouchers.php:498
@@ -34461,7 +34461,7 @@ msgstr "生成"
 #: usr/local/www/services_captiveportal_vouchers.php:525
 #: usr/local/www/services_captiveportal_vouchers.php:532
 msgid "new key"
-msgstr "新規鍵"
+msgstr " "
 
 #: usr/local/www/services_captiveportal_vouchers.php:494
 #: usr/local/www/services_captiveportal_vouchers.php:501
@@ -34481,7 +34481,7 @@ msgid ""
 "only used to generate encrypted vouchers and doesn't need to be available if "
 "the vouchers have been generated offline."
 msgstr ""
-"PEM 形式の RSA 秘密鍵 ( 64 ビットまたはそれ以下 ) をここに貼り付けてください。"
+"PEM 形式の RSA 秘密鍵 ( 64 ビット以下 ) をここに貼り付けてください。"
 "この鍵は暗号化されたバウチャーの生成にのみ使用されます。"
 "オフラインでバウチャーを生成する場合は、使用可能である必要はありません。"
 
@@ -34513,7 +34513,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal_vouchers.php:539
 #: usr/local/www/services_captiveportal_vouchers.php:544
 msgid "of Roll Bits"
-msgstr ": ロールビット"
+msgstr "ロールビット番号"
 
 #: usr/local/www/services_captiveportal_vouchers.php:514
 #: usr/local/www/services_captiveportal_vouchers.php:521
@@ -34526,7 +34526,7 @@ msgid ""
 "RSA key size."
 msgstr ""
 "バウチャー毎に属するロール番号を格納する範囲を予約してください。"
-"使用可能な範囲は、1 - 31 です。ロール + チケット + チェックサムビットの合計は、"
+"使用可能な範囲は 1 - 31 です。ロール + チケット + チェックサムビットの合計は "
 "RSA 鍵サイズよりも 1 ビット以上小さい必要があります。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:518
@@ -34535,7 +34535,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal_vouchers.php:547
 #: usr/local/www/services_captiveportal_vouchers.php:552
 msgid "of Ticket Bits"
-msgstr ": チケットビット"
+msgstr "チケットビット番号"
 
 #: usr/local/www/services_captiveportal_vouchers.php:522
 #: usr/local/www/services_captiveportal_vouchers.php:529
@@ -34551,7 +34551,7 @@ msgstr ""
 "バウチャー毎に属するチケット番号を格納する範囲を予約してください。使用可能な範囲は、1 - 16 です。"
 "16 ビット使用すると、65535 バウチャーまでのロールを持つことができるようになります。"
 "ビット配列は、RAM と構成に格納され、バウチャーが使用されているかどうかのマークに使用されます。"
-"65535 バウチャーに対するビット配列には、8 KB のストレージが必要です。"
+"65535 バウチャーに対するビット配列には 8 KB のストレージが必要です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:526
 #: usr/local/www/services_captiveportal_vouchers.php:533
@@ -34559,7 +34559,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal_vouchers.php:555
 #: usr/local/www/services_captiveportal_vouchers.php:560
 msgid "of Checksum Bits"
-msgstr ": チェックサムビット"
+msgstr "チェックサムビット番号"
 
 #: usr/local/www/services_captiveportal_vouchers.php:530
 #: usr/local/www/services_captiveportal_vouchers.php:537
@@ -34571,7 +34571,7 @@ msgid ""
 "Ticket#. Allowed range is 0..31."
 msgstr ""
 "バウチャー毎に、ロール番号及びチケット番号の、単純なチェックサムを格納する範囲を予約してください。"
-"使用可能な範囲は、0 - 31 です。"
+"使用可能な範囲は 0 - 31 です。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:534
 #: usr/local/www/services_captiveportal_vouchers.php:541
@@ -34601,7 +34601,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal_vouchers.php:571
 #: usr/local/www/services_captiveportal_vouchers.php:576
 msgid "Invalid Voucher Message"
-msgstr "バウチャーメッセージは無効です"
+msgstr "無効バウチャーメッセージ"
 
 #: usr/local/www/services_captiveportal_vouchers.php:545
 #: usr/local/www/services_captiveportal_vouchers.php:552
@@ -34611,7 +34611,7 @@ msgstr "バウチャーメッセージは無効です"
 msgid ""
 "Error message displayed for invalid vouchers on captive portal error page"
 msgstr ""
-"キャプティブポータルエラーページに、無効なバウチャーに対するエラーメッセージが表示されました"
+"キャプティブポータルエラーページに表示する、無効なバウチャーに対するエラーメッセージ。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:549
 #: usr/local/www/services_captiveportal_vouchers.php:556
@@ -34619,7 +34619,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal_vouchers.php:578
 #: usr/local/www/services_captiveportal_vouchers.php:583
 msgid "Expired Voucher Message"
-msgstr "バウチャーメッセージの有効期限が切れました"
+msgstr "失効バウチャーメッセージ"
 
 #: usr/local/www/services_captiveportal_vouchers.php:552
 #: usr/local/www/services_captiveportal_vouchers.php:559
@@ -34629,7 +34629,7 @@ msgstr "バウチャーメッセージの有効期限が切れました"
 msgid ""
 "Error message displayed for expired vouchers on captive portal error page"
 msgstr ""
-"キャプティブポータルエラーページに、失効したバウチャーに対するエラーメッセージが表示されました"
+"キャプティブポータルエラーページに表示する、失効したバウチャーに対するエラーメッセージ。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:562
 #: usr/local/www/services_captiveportal_vouchers.php:569
@@ -36141,7 +36141,7 @@ msgstr "完全なホスト / ドメイン名を入力してください。例: m
 #: usr/local/www/services_dyndns_edit.php:281
 #: usr/local/www/services_dyndns_edit.php:281
 msgid "For he.net tunnelbroker, enter your tunnel ID"
-msgstr "HE.net Tunnel Broker に対して、トンネル ID を入力してください"
+msgstr "HE.net Tunnel Broker に対するトンネル ID を入力してください。"
 
 #: usr/local/www/services_dyndns_edit.php:197
 #: usr/local/www/services_dyndns_edit.php:280
@@ -36201,7 +36201,7 @@ msgstr "ワイルドカード"
 
 #: usr/local/www/services_dyndns_edit.php:216
 msgid "Username is required for all types except Namecheap and FreeDNS."
-msgstr "ユーザ名は Namecheap と FreeDNS を除いた全てのタイプで必要です。"
+msgstr "ユーザ名は、Namecheap と FreeDNS を除く、全てのタイプで必要です。"
 
 #: usr/local/www/services_dyndns_edit.php:224
 #: usr/local/www/services_dyndns_edit.php:309
@@ -36212,7 +36212,7 @@ msgid ""
 "FreeDNS (freedns.afraid.org): Enter your \"Authentication Token\" provided "
 "by FreeDNS."
 msgstr ""
-"FreeDNS ( freedns.afraid.org ): "
+"FreeDNS(freedns.afraid.org): "
 "FreeDNS から提供された「認証トークン」を入力してください。"
 
 #: usr/local/www/services_dyndns_edit.php:246
@@ -40685,7 +40685,7 @@ msgid ""
 msgstr ""
 "ここで選択する優先度は、フェイルオーバとリンクのバランシングが実行される順番を定義します。"
 "同じ優先度に複数のリンクがある場合は、その優先度の全てのリンクを使い果たすまで、"
-"接続は平衡します。"
+"均等に接続されます。"
 "優先度レベルにある全てのリンクを使い果たした場合は、その次の優先度レベルにある、"
 "次に使用可能なリンクを使用します。"
 
