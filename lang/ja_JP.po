@@ -25022,8 +25022,8 @@ msgid ""
 "The Load Balancer in %s 2.0 is for server load balancing, not Multi-WAN. For "
 "load balancing or failover for multiple WANs, use "
 msgstr ""
-"%s 2.0 のロードバランサはサーバの負荷分散向けで、マルチ WAN 向けではありません。"
-"マルチ WAN の負荷分散やフェールオーバには、以下を使用してください: "
+"%s 2.0 のロードバランサはサーバの負荷分散用で、マルチ WAN 用ではありません。"
+"マルチ WAN の負荷分散やフェールオーバには、次を使用してください: "
 
 #: usr/local/www/load_balancer_pool.php:150
 #: usr/local/www/status_gateway_groups.php:48
@@ -28435,7 +28435,7 @@ msgstr "HTTPS"
 #: usr/local/www/load_balancer_monitor_edit.php:197
 #: usr/local/www/load_balancer_monitor_edit.php:333
 msgid "Send/Expect"
-msgstr "送信 / 期待"
+msgstr "Send/Expect"
 
 #: usr/local/www/load_balancer_monitor_edit.php:232
 #: usr/local/www/load_balancer_monitor_edit.php:230
@@ -28653,7 +28653,7 @@ msgstr "現在のプールメンバ"
 #: usr/local/www/load_balancer_pool_edit.php:279
 #: usr/local/www/load_balancer_pool_edit.php:279
 msgid "Pool Disabled"
-msgstr "プールを無効にしました"
+msgstr "プール: 無効"
 
 #: usr/local/www/load_balancer_pool_edit.php:277
 #: usr/local/www/load_balancer_pool_edit.php:300
@@ -28746,7 +28746,7 @@ msgid ""
 "on.  All connections to this IP and port will be forwarded to the pool "
 "cluster."
 msgstr ""
-"通常は、リスンしたいサーバの WAN IP アドレスです。"
+"通常は、リスンしたいサーバの WAN IP アドレスを指定します。"
 "この IP とポートに対する全ての接続は、"
 "プールクラスタに転送されます。"
 
@@ -29878,7 +29878,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal.php:543
 #: usr/local/www/services_captiveportal.php:543
 msgid "Concurrent user logins"
-msgstr "同時ユーザログイン"
+msgstr "ユーザ同時ログイン"
 
 #: usr/local/www/services_captiveportal.php:525
 #: usr/local/www/services_captiveportal.php:530
@@ -29898,7 +29898,7 @@ msgid ""
 "active. Subsequent logins will cause machines previously logged in with the "
 "same username to be disconnected."
 msgstr ""
-"このオプションが設定されると、ユーザ名毎に直近のログインのみが"
+"このオプションが設定されると、ユーザ名単位で、直近のログインのみが"
 "アクティブになります。"
 "同じユーザ名で再度ログインすると、前回のログインは切断されます。"
 
@@ -30060,7 +30060,7 @@ msgstr ""
 #: usr/local/www/services_captiveportal.php:574
 #: usr/local/www/services_captiveportal.php:574
 msgid "Per-user bandwidth restriction"
-msgstr "ユーザ毎の帯域幅制限"
+msgstr "ユーザ単位の帯域幅制限"
 
 #: usr/local/www/services_captiveportal.php:556
 #: usr/local/www/services_captiveportal.php:561
@@ -30068,7 +30068,7 @@ msgstr "ユーザ毎の帯域幅制限"
 #: usr/local/www/services_captiveportal.php:577
 #: usr/local/www/services_captiveportal.php:577
 msgid "Enable per-user bandwidth restriction"
-msgstr "ユーザ毎の帯域幅制限を有効"
+msgstr "ユーザ単位の帯域幅制限を有効"
 
 #: usr/local/www/services_captiveportal.php:559
 #: usr/local/www/services_captiveportal.php:564
@@ -31311,7 +31311,7 @@ msgstr "許可済 IP ルールを編集"
 #: usr/local/www/services_captiveportal_hostname_edit.php:164
 #: usr/local/www/services_captiveportal_hostname_edit.php:172
 msgid "From"
-msgstr "開始"
+msgstr "From"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:182
 #: usr/local/www/services_captiveportal_ip_edit.php:192
@@ -31338,7 +31338,7 @@ msgstr "開始"
 #: usr/local/www/services_captiveportal_hostname_edit.php:164
 #: usr/local/www/services_captiveportal_hostname_edit.php:173
 msgid "To"
-msgstr "終了"
+msgstr "To"
 
 #: usr/local/www/services_captiveportal_ip_edit.php:191
 #: usr/local/www/services_captiveportal_ip_edit.php:192
@@ -31351,7 +31351,7 @@ msgstr "終了"
 #: usr/local/www/services_captiveportal_hostname_edit.php:172
 #: usr/local/www/services_captiveportal_hostname_edit.php:173
 msgid "Use"
-msgstr "使用"
+msgstr " "
 
 #: usr/local/www/services_captiveportal_ip_edit.php:191
 #: usr/local/www/services_captiveportal_ip_edit.php:189
@@ -33321,7 +33321,7 @@ msgstr "ユーザ"
 #: usr/local/www/vpn_pptp.php:320 usr/local/www/vpn_pptp.php:322
 #: usr/local/www/vpn_pptp.php:325 usr/local/www/vpn_pptp.php:325
 msgid "Redirect incoming PPTP connections to"
-msgstr "次への着信 PPTP 接続をリダイレクト: "
+msgstr "次に対する着信 PPTP 接続をリダイレクト"
 
 #: usr/local/www/vpn_pptp.php:322 usr/local/www/vpn_pptp.php:324
 #: usr/local/www/vpn_pptp.php:327 usr/local/www/vpn_pptp.php:327
@@ -33347,7 +33347,7 @@ msgstr "PPTP ユーザ番号"
 #: usr/local/www/vpn_pptp.php:349 usr/local/www/vpn_pptp.php:351
 #: usr/local/www/vpn_pptp.php:354 usr/local/www/vpn_pptp.php:354
 msgid "Hint: 10 is ten PPTP clients"
-msgstr "ヒント: 10 は PPTP クライアント数が 10 のことです"
+msgstr "ヒント: 10 の場合は PPTP クライアント数が 10 です"
 
 #: usr/local/www/vpn_pptp.php:357 usr/local/www/vpn_pptp.php:359
 #: usr/local/www/vpn_pptp.php:362 usr/local/www/vpn_pptp.php:362
@@ -33355,8 +33355,8 @@ msgid ""
 "Enter the IP address the PPTP server should give to clients for use as their "
 "\"gateway\""
 msgstr ""
-"クライアントが使用する「ゲートウェイ」として与えられる、"
-"PPTP サーバの IP アドレスを入力してください。"
+"PPTP サーバがクライアントに与える、"
+"クライアントの「ゲートウェイ」IP アドレスを入力してください。"
 
 #: usr/local/www/vpn_pptp.php:359 usr/local/www/vpn_l2tp.php:327
 #: usr/local/www/vpn_pppoe_edit.php:430 usr/local/www/vpn_pppoe_edit.php:431
@@ -33365,7 +33365,7 @@ msgstr ""
 #: usr/local/www/vpn_pptp.php:364 usr/local/www/vpn_l2tp.php:331
 #: usr/local/www/vpn_pppoe_edit.php:434 usr/local/www/vpn_pptp.php:364
 msgid "Typically this is set to an unused IP just outside of the client range"
-msgstr "通常、クライアントの範囲外にある、未使用の IP が設定されます"
+msgstr "通常は、クライアントの範囲に含まれない未使用の IP を設定します"
 
 #: usr/local/www/vpn_pptp.php:362 usr/local/www/vpn_l2tp.php:330
 #: usr/local/www/vpn_pppoe_edit.php:433 usr/local/www/vpn_pppoe_edit.php:434
@@ -33507,7 +33507,7 @@ msgid ""
 "server"
 msgstr ""
 "RADIUS サーバの IP アドレス、RADIUS ポート、RADIUS アカウンティングポートを"
-"入力してください。"
+"入力してください"
 
 #: usr/local/www/vpn_pptp.php:436 usr/local/www/vpn_pppoe_edit.php:510
 #: usr/local/www/vpn_pppoe_edit.php:527 usr/local/www/vpn_pppoe_edit.php:511
@@ -33520,7 +33520,7 @@ msgid ""
 "server"
 msgstr ""
 "RADIUS サーバへの認証に使用される共有秘密鍵を"
-"入力してください。"
+"入力してください"
 
 #: usr/local/www/vpn_pptp.php:449 usr/local/www/vpn_pptp.php:451
 #: usr/local/www/vpn_pptp.php:454 usr/local/www/vpn_pptp.php:454
@@ -33534,7 +33534,7 @@ msgid ""
 "RADIUS server"
 msgstr ""
 "セカンダリ RADIUS サーバへの認証に使用される共有秘密鍵を"
-"入力してください。"
+"入力してください"
 
 #: usr/local/www/vpn_pptp.php:463 usr/local/www/vpn_pptp.php:465
 #: usr/local/www/vpn_pptp.php:468 usr/local/www/vpn_pptp.php:468
@@ -33550,8 +33550,8 @@ msgid ""
 "accepted)"
 msgstr ""
 "設定すると、128 ビット暗号化のみを受け入れます。"
-"設定されていなければ、40 ビットと 56 ビットの暗号化も同様に受け入れます。"
-"暗号化は PPTP 接続に常に強制されますので、注意してください。"
+"設定されていなければ、40 ビットと 56 ビットの暗号化も受け入れます。"
+"PPTP 接続に、常に暗号化が強制されるようになりますので注意してください。"
 " ( 非暗号化接続は受け入れなくなります )"
 
 #: usr/local/www/vpn_pptp.php:478 usr/local/www/vpn_pptp.php:480
@@ -33567,7 +33567,7 @@ msgstr "ファイアウォールルールを追加"
 #: usr/local/www/vpn_pptp.php:478 usr/local/www/vpn_pptp.php:480
 #: usr/local/www/vpn_pptp.php:483 usr/local/www/vpn_pptp.php:483
 msgid "to permit traffic from PPTP clients"
-msgstr "するのを忘れないで下さい。"
+msgstr "するのを忘れないで下さい"
 
 #: usr/local/www/vpn_pptp_users.php:81 usr/local/www/vpn_l2tp_users.php:84
 #: usr/local/www/vpn_l2tp_users.php:85 usr/local/www/vpn_pptp_users.php:82
@@ -33715,7 +33715,7 @@ msgstr "ユーザのパスワードを変更する場合は、ここに 2 回入
 msgid ""
 "If you want the user to be assigned a specific IP address, enter it here."
 msgstr ""
-"ユーザに特定の IP アドレスを割り当てる場合は、ここに入力してください"
+"ユーザに特定の IP アドレスを割当てる場合は、ここに入力してください。"
 
 #: usr/local/www/wizard.php:65 usr/local/www/wizard.php:71
 #: usr/local/www/wizard.php:65 usr/local/www/wizard.php:71
@@ -34084,8 +34084,8 @@ msgid ""
 "to always allow an Hostname through the captive portal (without "
 "authentication)"
 msgstr ""
-"常にキャプティブポータル経由を許可する"
-"ホスト名 ( 認証なし )"
+": 常にキャプティブポータル経由を許可する"
+"ホスト名 ( 認証なし )。"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:173
 #: usr/local/www/services_captiveportal_hostname_edit.php:171
@@ -34094,20 +34094,20 @@ msgid ""
 "to allow access from all clients (even non-authenticated ones) behind the "
 "portal to this Hostname"
 msgstr ""
-"常にキャプティブポータルの背後にある全クライアント ( 未認証クライアントも含む ) からの"
-"アクセスを許可するホスト名"
+": 常にキャプティブポータルの背後にある全クライアント ( 未認証クライアントも含む ) からの"
+"アクセスを許可するホスト名。"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:192
 #: usr/local/www/services_captiveportal_hostname_edit.php:190
 #: usr/local/www/services_captiveportal_hostname_edit.php:192
 msgid "Enter a upload limit to be enforced on this Hostname in Kbit/s"
-msgstr "このホスト名に適用される上り帯域幅制限を Kbit/s で入力してください"
+msgstr "このホスト名に適用される上り帯域幅制限を Kbit/s で入力してください。"
 
 #: usr/local/www/services_captiveportal_hostname_edit.php:198
 #: usr/local/www/services_captiveportal_hostname_edit.php:196
 #: usr/local/www/services_captiveportal_hostname_edit.php:198
 msgid "Enter a download limit to be enforced on this Hostname in Kbit/s"
-msgstr "このホスト名に適用される下り帯域幅制限を Kbit/s で入力してください"
+msgstr "このホスト名に適用される下り帯域幅制限を Kbit/s で入力してください。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:67
 #: usr/local/www/services_captiveportal_vouchers.php:64
@@ -34126,14 +34126,14 @@ msgstr ""
 #: usr/local/www/services_captiveportal_vouchers.php:130
 #: usr/local/www/services_captiveportal_vouchers.php:130
 msgid "Voucher invalid"
-msgstr "バウチャー無効"
+msgstr "無効なバウチャーです"
 
 #: usr/local/www/services_captiveportal_vouchers.php:116
 #: usr/local/www/services_captiveportal_vouchers.php:125
 #: usr/local/www/services_captiveportal_vouchers.php:132
 #: usr/local/www/services_captiveportal_vouchers.php:132
 msgid "Voucher expired"
-msgstr "バウチャーが失効しました"
+msgstr "失効したバウチャーです"
 
 #: usr/local/www/services_captiveportal_vouchers.php:139
 #: usr/local/www/services_captiveportal_vouchers.php:148
@@ -34691,7 +34691,7 @@ msgstr "バウチャー同期ユーザ名"
 #: usr/local/www/services_captiveportal_vouchers.php:612
 #: usr/local/www/services_captiveportal_vouchers.php:617
 msgid "This is the username of the master voucher nodes webConfigurator."
-msgstr "Web 設定管理画面マスターバウチャーノードのユーザ名です。"
+msgstr "Web 設定管理画面マスターバウチャーノードのユーザ名。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:587
 #: usr/local/www/services_captiveportal_vouchers.php:594
@@ -34707,7 +34707,7 @@ msgstr "バウチャー同期パスワード"
 #: usr/local/www/services_captiveportal_vouchers.php:619
 #: usr/local/www/services_captiveportal_vouchers.php:624
 msgid "This is the password of the master voucher nodes webConfigurator."
-msgstr "Web 設定管理画面マスターバウチャーノードのパスワードです。"
+msgstr "Web 設定管理画面マスターバウチャーノードのパスワード。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:604
 #: usr/local/www/services_captiveportal_vouchers.php:611
@@ -34720,7 +34720,7 @@ msgid ""
 "different settings."
 msgstr ""
 "このページでバウチャーのパラメータを変更をすると"
-" ( ロールリストの管理とは別です )、" 
+" ( ロールリストの管理を除く )、" 
 "異なる設定で生成された、不要な既存のバウチャーを表示します。"
 
 #: usr/local/www/services_captiveportal_vouchers.php:606
@@ -34733,9 +34733,9 @@ msgid ""
 "other value from the other options. They will be retrieved/synced from the "
 "master."
 msgstr ""
-"バウチャーデータベース同期オプションの指定は、"
-"他のオプションが設定した他の値を記録しません。"
-"それらの値は、マスタから取得 / 同期されます。"
+"バウチャーデータベース同期オプションを指定すると、"
+"他のオプションが設定した他の値は記録しないで、"
+"マスタから取得 / 同期されます。"
 
 #: usr/local/www/services_captiveportal_vouchers_edit.php:48
 #: usr/local/www/services_captiveportal_vouchers_edit.php:45
@@ -36189,7 +36189,7 @@ msgstr "ワイルドカード"
 #: usr/local/www/services_dyndns_edit.php:299
 #: usr/local/www/services_dyndns_edit.php:305
 msgid "Enable "
-msgstr "有効"
+msgstr "有効: "
 
 #: usr/local/www/services_dyndns_edit.php:210
 #: usr/local/www/services_dyndns_edit.php:293
@@ -38166,7 +38166,7 @@ msgstr ""
 "powerd ユーティリティはシステムの状態を監視して、様々な電源コントロールオプションを"
 "状況に応じて設定します。"
 "3 つのモードが提供されており ( 最大、最小、適応 )、AC 電源やバッテリで個々に選択可能です。"
-"モードの最大、最小、適応は、max、min、adp、と省略表記されます。"
+"モードの最大、最小、適応は、max、min、adp、と省略表記します。"
 "最大モードは、最も高いパフォーマンスとなる値を選択します。"
 "最小モードは、最も低いパフォーマンスの値を選択することで、最大限の省電力を行います。"
 "適応モードは、パフォーマンスと省電力をうまく均衡させようとします。"
@@ -42002,8 +42002,8 @@ msgid ""
 "When working as a responder (as with mobile clients), this controls how "
 "policies are generated based on SA proposals."
 msgstr ""
-"レスポンダとして動作する場合 ( モバイルクライアントと同様に )、"
-"SA プロポーザルに基づき、ポリシがどのように生成されるかをコントロールします。"
+"この設定は、( モバイルクライアントと同様に ) レスポンダとして動作する場合に、"
+"SA プロポーザルに基いて、どのようにポリシが生成されるかをコントロールします。"
 
 #: usr/local/www/vpn_ipsec_phase1.php:689
 #: usr/local/www/vpn_ipsec_phase1.php:702
@@ -42393,8 +42393,8 @@ msgid ""
 "Enter the IP address the L2TP server should give to clients for use as their "
 "\"gateway\""
 msgstr ""
-"クライアントの使用する「ゲートウェイ」として、L2TP サーバがクライアントに与える、"
-"IP アドレスを入力してください。"
+"L2TP サーバがクライアントに与える、"
+"クライアントの「ゲートウェイ」IP アドレスを入力してください。"
 
 #: usr/local/www/vpn_l2tp.php:337 usr/local/www/vpn_l2tp.php:338
 #: usr/local/www/vpn_l2tp.php:341 usr/local/www/vpn_l2tp.php:341
@@ -42422,7 +42422,7 @@ msgstr "L2TP ユーザ数"
 #: usr/local/www/vpn_l2tp.php:371 usr/local/www/vpn_l2tp.php:372
 #: usr/local/www/vpn_l2tp.php:375 usr/local/www/vpn_l2tp.php:375
 msgid "is ten L2TP clients"
-msgstr "は L2TP クライアントが 10 です。"
+msgstr "の場合は L2TP クライアントの数が 10 です。"
 
 #: usr/local/www/vpn_l2tp.php:375 usr/local/www/vpn_l2tp.php:376
 #: usr/local/www/vpn_l2tp.php:379 usr/local/www/vpn_l2tp.php:379
@@ -42509,14 +42509,14 @@ msgstr "RADIUS IP 割当"
 #: usr/local/www/vpn_l2tp.php:439 usr/local/www/vpn_l2tp.php:440
 #: usr/local/www/vpn_l2tp.php:443 usr/local/www/vpn_l2tp.php:443
 msgid "Issue IP Addresses via RADIUS server."
-msgstr "RADIUS サーバから割当てられる IP アドレス"
+msgstr "RADIUS サーバ経由で IP アドレスを割り当てます。"
 
 #: usr/local/www/vpn_l2tp.php:452 usr/local/www/vpn_l2tp.php:453
 #: usr/local/www/vpn_l2tp.php:456 usr/local/www/vpn_l2tp.php:456
 msgid ""
 "Don't forget to add a firewall rule to permit traffic from L2TP clients!"
 msgstr ""
-"L2TP クライアントからのトラフィックを許可する、ファイアウォールルールを必ず追加してください！"
+"L2TP クライアントからのトラフィックを許可するファイアウォールルールを必ず追加してください！"
 
 #: usr/local/www/vpn_l2tp_users.php:86 usr/local/www/vpn_l2tp_users.php:87
 #: usr/local/www/vpn_l2tp_users.php:87
@@ -42948,7 +42948,7 @@ msgid ""
 "address will be assigned to the client virtual interface"
 msgstr ""
 "このクライアントとサーバ間の、プライベート通信に使用される仮想ネットワークで、"
-"CIDR ( 例: 10.0.8.0/24 ) を使用して表記されます。"
+"CIDR ( 例: 10.0.8.0/24 ) を使用して表記します。"
 "最初のネットワークアドレスは、サーバアドレスと見なされ、"
 "2 番目のネットワークアドレスは、クライアントの仮想インタフェースに割当てられます。"
 
@@ -42963,7 +42963,7 @@ msgid ""
 msgstr ""
 "トンネル経由でルーティングされるネットワークです。"
 "ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
-"CIDR 範囲として表記されます。"
+"CIDR 範囲で表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
@@ -43261,7 +43261,7 @@ msgstr "接続拒否"
 #: usr/local/www/vpn_openvpn_csc.php:360 usr/local/www/vpn_openvpn_csc.php:359
 #: usr/local/www/vpn_openvpn_csc.php:359
 msgid "Block this client connection based on its common name"
-msgstr "コモンネームに基づいた、このクライアント接続を拒否"
+msgstr "コモンネームに基づいた接続で、このクライアントを拒否"
 
 #: usr/local/www/vpn_openvpn_csc.php:365 usr/local/www/vpn_openvpn_csc.php:364
 #: usr/local/www/vpn_openvpn_csc.php:364
@@ -43292,7 +43292,7 @@ msgstr "リダイレクトゲートウェイ"
 #: usr/local/www/vpn_openvpn_csc.php:400
 #: usr/local/www/vpn_openvpn_server.php:1218
 msgid "Force all client generated traffic through the tunnel"
-msgstr "トンネルを経由するトラフィックを生成する、全てのクライアントに強制"
+msgstr "トンネル経由のトラフィックを生成する、全てのクライアントに強制"
 
 #: usr/local/www/vpn_openvpn_csc.php:412
 #: usr/local/www/vpn_openvpn_server.php:1155
@@ -43313,7 +43313,7 @@ msgstr "サーバ定義"
 #: usr/local/www/vpn_openvpn_csc.php:425 usr/local/www/vpn_openvpn_csc.php:424
 #: usr/local/www/vpn_openvpn_csc.php:424
 msgid "Prevent this client from receiving any server-defined client settings"
-msgstr "任意のサーバが定義するクライアント設定を、このクライアントが受信することを防ぐ"
+msgstr "このクライアントではサーバが定義したクライアント設定を全て受信しない"
 
 #: usr/local/www/vpn_openvpn_csc.php:510
 #: usr/local/www/vpn_openvpn_server.php:1271
@@ -43615,9 +43615,9 @@ msgid ""
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
 msgstr ""
-"このサーバとクライアントホスト間の、プライベート通信に使用される IPv4 仮想ネットワークで、"
-"CIDR ( 例: 10.0.8.0/24 ) を使用して表記されます。"
-"最初のネットワークアドレスは、\tサーバ仮想インタフェースに割り当てられます。"
+"このサーバとクライアントホスト間のプライベート通信に使用される IPv4 仮想ネットワークで "
+"CIDR ( 例: 10.0.8.0/24 ) を使用して表記します。"
+"最初のネットワークアドレスは\tサーバ仮想インタフェースに割り当てられます。"
 "残りのネットワークアドレスは、オプションで、クライアントの接続に割り当てることができます。"
 "( アドレスプールを参照 )"
 
@@ -43641,9 +43641,9 @@ msgid ""
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
 msgstr ""
-"このサーバとクライアントホスト間の、プライベート通信に使用される IPv6 仮想ネットワークで、"
-"CIDR ( 例: fe80::/64 ) を使用して表記されます。"
-"最初のネットワークアドレスは、\tサーバ仮想インタフェースに割り当てられます。"
+"このサーバとクライアントホスト間のプライベート通信に使用される IPv6 仮想ネットワークで "
+"CIDR ( 例: fe80::/64 ) を使用して表記します。"
+"最初のネットワークアドレスは\tサーバ仮想インタフェースに割り当てられます。"
 "残りのネットワークアドレスは、オプションで、クライアントの接続に割り当てることができます。"
 "( アドレスプールを参照 )"
 
@@ -43663,7 +43663,7 @@ msgid ""
 "is generally set to your LAN network"
 msgstr ""
 "リモートエンドポイントからアクセス可能なネットワークです。"
-"CIDR 範囲で表記されます。"
+"CIDR 範囲で表記します。"
 "リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
 "空白にしてください。一般的には、自分の LAN ネットワークを設定します。"
 
@@ -43683,7 +43683,7 @@ msgid ""
 "is generally set to your LAN network"
 msgstr ""
 "リモートエンドポイントからアクセス可能な IPv6 ネットワークです。"
-"CIDR 範囲で表記されます。"
+"CIDR 範囲で表記します。"
 "リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
 "空白にしてください。一般的には、自分の LAN ネットワークを設定します。"
 
@@ -43697,8 +43697,8 @@ msgid ""
 "VPN"
 msgstr ""
 "トンネル経由でルーティングされるネットワークです。"
-"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
-"CIDR 範囲として表記されます。"
+"ルーティングテーブルを手動で変更せずにサイト間 VPN 接続を確立させることができます。"
+"CIDR 範囲として表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "サイト間 VPN を使用しない場合は、空白にしてください。"
 
@@ -43836,7 +43836,7 @@ msgstr ""
 #: usr/local/www/vpn_openvpn_server.php:1684
 #: usr/local/www/vpn_openvpn_server.php:1684
 msgid "Protocol / Port"
-msgstr "プロトコル / ポート"
+msgstr "プロトコル/ポート"
 
 #: usr/local/www/vpn_openvpn_server.php:1482
 #: usr/local/www/vpn_openvpn_server.php:1624
@@ -45256,7 +45256,7 @@ msgstr ""
 #: usr/local/www/services_dyndns_edit.php:312
 #: usr/local/www/services_dyndns_edit.php:312
 msgid "Route 53: Enter your Access Key ID."
-msgstr "ルート 53: 自分のアクセス鍵 ID を入力してください。"
+msgstr "Route 53: 自分のアクセス鍵 ID を入力してください。"
 
 #: usr/local/www/services_dyndns_edit.php:301
 #: usr/local/www/services_dyndns_edit.php:305
@@ -45267,14 +45267,14 @@ msgid ""
 "username and passwords."
 msgstr ""
 "カスタムエントリにおけるユーザ名とパスワードは、"
-"HTTP 認証ユーザ名とパスワードのことです。"
+"HTTP 認証ユーザ名とパスワードです。"
 
 #: usr/local/www/services_dyndns_edit.php:310
 #: usr/local/www/services_dyndns_edit.php:314
 #: usr/local/www/services_dyndns_edit.php:322
 #: usr/local/www/services_dyndns_edit.php:322
 msgid "Route 53: Enter your Secret Access Key."
-msgstr "ルート 53: 自分の秘密アクセス鍵を入力してください。"
+msgstr "Route 53: 自分の秘密アクセス鍵を入力してください。"
 
 #: usr/local/www/services_dyndns_edit.php:315
 #: usr/local/www/services_dyndns_edit.php:319
@@ -45290,7 +45290,7 @@ msgstr "ゾーン ID"
 msgid ""
 "Enter Zone ID that you received when you created your domain in Route 53."
 msgstr ""
-"ルート 53 でドメイン作成時に受け取ったゾーン ID を入力してください。"
+"Route 53 でドメイン作成時に受け取ったゾーン ID を入力してください。"
 
 #: usr/local/www/services_dyndns_edit.php:325
 #: usr/local/www/services_dyndns_edit.php:329
@@ -45535,7 +45535,7 @@ msgid ""
 "default value of 1000 ms "
 msgstr ""
 "チェック用の全般タイムアウトをミリ秒単位で設定してください。"
-"デフォルト値の 1000 ミリ秒を使用する場合は、空白にしてください。"
+"空白の場合は、デフォルト値の 1000 ミリ秒を使用します。"
 
 #: usr/local/www/load_balancer_setting.php:143
 #: usr/local/www/load_balancer_setting.php:142
@@ -45551,7 +45551,7 @@ msgid ""
 "Leave blank to use the default interval of 10 seconds"
 msgstr ""
 "プールのメンバをチェックする間隔を、秒単位で設定してください。"
-"デフォルト間隔の 10 秒を使用する場合は、空白にしてください。"
+"空白の場合は、デフォルト値の 10 秒を使用します。"
 
 #: usr/local/www/load_balancer_setting.php:151
 #: usr/local/www/load_balancer_setting.php:150
@@ -45567,7 +45567,7 @@ msgid ""
 "5 processes"
 msgstr ""
 "relayd が使用するプロセス数です。"
-"デフォルト値の 5 プロセスを使用する場合は、空白にしてください。"
+"空白の場合は、デフォルト値の 5 プロセスを使用します。"
 
 #: usr/local/www/services_dhcp_relay.php:80
 #: usr/local/www/services_dhcp_relay.php:80
@@ -46566,7 +46566,7 @@ msgstr ""
 "powerd ユーティリティはシステムの状態を監視して、様々な電源コントロールオプションを"
 "状況に応じて設定します。"
 "4 つのモードが提供されていて ( 最大、最小、適応、高適応 )、AC 電源やバッテリで個々に選択可能です。"
-"モードの最大、最小、適応、高適応は、max、min、adp、hadp、と省略表記されます。"
+"モードの最大、最小、適応、高適応は、max、min、adp、hadp、と省略表記します。"
 "最大モードは、最も高いパフォーマンスとなる値を選択します。"
 "最小モードは、最も低いパフォーマンスの値を選択することで、最大限の省電力を行います。"
 "適応モードは、パフォーマンスと省電力をうまく均衡させようとします。"
@@ -46930,7 +46930,7 @@ msgstr "空白の場合は、プールから、リスニングポートが使用
 msgid ""
 "You may also specify a port alias listed in Firewall -&gt; Aliases here."
 msgstr ""
-"ファイアウォール -&gt; エイリアスで、リストに登録した、ポートエイリアスをここに指定することもできます。"
+"ファイアウォール -&gt; エイリアスでリストに登録した、ポートエイリアスをここに指定することもできます。"
 
 #: usr/local/www/system_hasync.php:96 usr/local/www/system_hasync.php:97
 #: usr/local/www/system_hasync.php:97
@@ -47716,7 +47716,7 @@ msgid ""
 "NOTE: If left blank, and a default domain is set, it will be used for this "
 "value."
 msgstr ""
-"注意: 空白にした場合は、デフォルトドメインが設定されていれば、"
+"注意: 空白にした場合、デフォルトドメインが設定されていれば、"
 "デフォルトドメインがこの値として使用されます。"
 
 #: usr/local/www/firewall_shaper.php:131
@@ -47734,8 +47734,8 @@ msgid ""
 "Please select a gateway, normaly the interface selected gateway, so the "
 "limiters work correctly"
 msgstr ""
-"ゲートウェイを選択してください。通常は、ゲートウェイに選択されたインタフェースにすると、"
-"リミッタが正常に動作します。"
+"ゲートウェイを選択してください。"
+"通常、ゲートウェイに選択されたインタフェースであれば、リミッタが正常に動作します。"
 
 #: usr/local/www/vpn_ipsec_keys.php:136 usr/local/www/vpn_ipsec_keys.php:136
 msgid "Do you really want to delete this Pre-Shared Key?"
@@ -47803,10 +47803,10 @@ msgid ""
 "OpenVPN or IPsec.<br/><br/><a href=\"https://isc.sans.edu/diary/End+of+Days"
 "+for+MS-CHAPv2/13807\">Read More</a>"
 msgstr ""
-"PPTP は、現在はセキュアな VPN 技術とは見なされません。なぜなら、セキュリティ的に問題のある"
-"MS-CHAPv2 に依存しているからです。"
+"PPTP は、セキュリティ的に問題のある MS-CHAPv2 に依存しているため、"
+"現在はセキュアな VPN 技術とは見なされていません。"
 "PPTP の使用を継続するのであれば、盗聴されたトラフィックの第三者による復号が可能なため、"
-"暗号化とは見なされないことに、注意してください。"
+"暗号化とは見なされませんので注意してください。"
 "そのため、OpenVPN や IPsec 等、他のタイプの VPN に移行することをお勧めします。<br/><br/>"
 "<a href=\"https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807\">詳しくはこちらを参照してください。</a>"
 
@@ -48125,9 +48125,9 @@ msgid ""
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
 msgstr ""
-"このサーバとクライアントホスト間の、プライベート通信に使用される IPv6 仮想ネットワークで、"
-"CIDR ( 例: fe80::/64 ) を使用して表記されます。"
-"最初のネットワークアドレスは、サーバ仮想インタフェースに割り当てられます。"
+"このサーバとクライアントホスト間のプライベート通信に使用される IPv6 仮想ネットワークで "
+"CIDR ( 例: fe80::/64 ) を使用して表記します。"
+"最初のネットワークアドレスはサーバ仮想インタフェースに割り当てられます。"
 "残りのネットワークアドレスは、オプションで、クライアントの接続に割り当てることができます。"
 "( アドレスプールを参照 )"
 
@@ -48141,7 +48141,7 @@ msgid ""
 "are used by OpenVPN for the bridge. Setting this to 'none' will cause the "
 "Server Bridge DHCP settings below to be ignored."
 msgstr ""
-"このタップインスタンスがブリッジする、インタフェースです。"
+"このタップインスタンスがブリッジするインタフェースです。"
 "自動的には実行されません。"
 "インタフェースの割当てと、ブリッジの新規作成は別々に行う必要があります。"
 "この設定は、OpenVPN がブリッジとして使用する、既存の IP アドレスとサブネットマスクをコントロールします。"
@@ -48174,7 +48174,7 @@ msgid ""
 "LAN here. You may leave this blank if you don't want a site-to-site VPN"
 msgstr ""
 "トンネル経由でルーティングされるネットワークです。"
-"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。CIDR 範囲として表記されます。"
+"ルーティングテーブルを手動で変更せずにサイト間 VPN 接続を確立させることができます。CIDR 範囲で表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "サイト間 VPN を使用しない場合は、空白にしてください。"
 
@@ -48192,8 +48192,8 @@ msgid ""
 "VPN"
 msgstr ""
 "トンネル経由でルーティングされる IPv6 ネットワークです。"
-"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
-"IP/PREFIX で表記されます。"
+"ルーティングテーブルを手動で変更せずにサイト間 VPN 接続を確立させることができます。"
+"IP/PREFIX で表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "サイト間 VPN を使用しない場合は、空白にしてください。"
 
@@ -48269,7 +48269,7 @@ msgid ""
 "Enter a list of partial MAC addresses to allow, comma separated, no spaces, "
 "such as "
 msgstr ""
-"許可リストに、部分的な MAC アドレスを入力してください。"
+"許可リストに MAC アドレスの一部を入力してください。"
 "カンマ区切りで、空白は使用しないでください。例: "
 
 #: usr/local/www/services_dhcp.php:967 usr/local/www/services_dhcp.php:980
@@ -48278,7 +48278,7 @@ msgid ""
 "Enter a list of partial MAC addresses to deny access, comma separated, no "
 "spaces, such as "
 msgstr ""
-"アクセス拒否リストに、部分的な MAC アドレスを入力してください。"
+"アクセス拒否リストに MAC アドレスの一部を入力してください。"
 "カンマ区切りで、空白は使用しないでください。例: "
 
 #: usr/local/www/load_balancer_virtual_server_edit.php:89
@@ -48512,7 +48512,7 @@ msgid ""
 "address will be assigned to the client virtual interface"
 msgstr ""
 "このクライアントとサーバ間の、プライベート通信に使用される IPv6 仮想ネットワークで、"
-"CIDR ( 例: fe80::/64 ) を使用して表記されます。"
+"CIDR ( 例: fe80::/64 ) を使用して表記します。"
 "最初のネットワークアドレスは、サーバアドレスと見なされ、"
 "2 番目のネットワークアドレスは、クライアントの仮想インタフェースに割当てられます。"
 
@@ -48524,7 +48524,7 @@ msgid ""
 "LAN here. You may leave this blank to only communicate with other clients"
 msgstr ""
 "トンネル経由でルーティングされるネットワークです。"
-"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。CIDR 範囲として表記されます。"
+"ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。CIDR 範囲で表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
@@ -48538,7 +48538,7 @@ msgid ""
 msgstr ""
 "トンネル経由でルーティングされる IPv6 ネットワークです。"
 "ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
-"IP/PREFIX で表記されます。"
+"IP/PREFIX で表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
@@ -48570,7 +48570,7 @@ msgstr "RADIUS 共有秘密鍵"
 #: usr/local/www/vpn_l2tp.php:436 usr/local/www/vpn_l2tp.php:439
 #: usr/local/www/vpn_l2tp.php:439
 msgid "RADIUS Issued IP's"
-msgstr "RADIUS が割り当てた IP"
+msgstr "RADIUS IP 割当て"
 
 #: usr/local/www/firewall_virtual_ip_edit.php:126
 #: usr/local/www/firewall_virtual_ip_edit.php:128
@@ -48806,7 +48806,7 @@ msgid ""
 msgstr ""
 "トンネル経由でルーティングされる IPv4 ネットワークです。"
 "ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
-"1 つ以上の CIDR 範囲のカンマ区切りリストとして表記されます。"
+"1 つ以上の CIDR 範囲のカンマ区切りリストとして表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
@@ -48828,7 +48828,7 @@ msgid ""
 msgstr ""
 "トンネル経由でルーティングされる IPv6 ネットワークです。"
 "ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
-"1 つ以上の IP/PREFIX のカンマ区切りリストとして表記されます。"
+"1 つ以上の IP/PREFIX のカンマ区切りリストとして表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "他のクライアントとの通信しか行わない場合は、空白にしてください。"
 
@@ -48875,7 +48875,7 @@ msgstr ""
 #: usr/local/www/fbegin.inc:218 usr/local/www/diag_testport.php:49
 #: usr/local/www/diag_testport.php:114 usr/local/www/fbegin.inc:218
 msgid "Test Port"
-msgstr "テストポート"
+msgstr "ポートテスト"
 
 #: usr/local/www/diag_testport.php:64 usr/local/www/diag_testport.php:64
 msgid "Please enter a valid IP or hostname."
@@ -49653,7 +49653,7 @@ msgid ""
 "your LAN network"
 msgstr ""
 "リモートエンドポイントからアクセス可能な IPv4 ネットワークです。"
-"1 つ以上の CIDR 範囲のカンマ区切りリストとして表記されます。"
+"1 つ以上の CIDR 範囲のカンマ区切りリストとして表記します。"
 "リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
 "空白にしてください。"
 "一般的には、自分の LAN ネットワークに対して設定します。"
@@ -49673,7 +49673,7 @@ msgid ""
 "network"
 msgstr ""
 "リモートエンドポイントからアクセス可能な IPv6 ネットワークです。"
-"1 つ以上の IP/PREFIX のカンマ区切りリストとして表記されます。"
+"1 つ以上の IP/PREFIX のカンマ区切りリストとして表記します。"
 "リモート機器に対して、このトンネルを経由したローカルネットワークへのルートを追加したくない場合は、"
 "空白にしてください。"
 "一般的には、自分の LAN ネットワークに対して設定します。"
@@ -49689,7 +49689,7 @@ msgid ""
 msgstr ""
 "トンネル経由でルーティングされる IPv4 ネットワークです。"
 "ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
-"1 つ以上の CIDR 範囲のカンマ区切りリストとして表記されます。"
+"1 つ以上の CIDR 範囲のカンマ区切りリストとして表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "サイト間 VPN を使用しない場合は、空白にしてください。"
 
@@ -49704,7 +49704,7 @@ msgid ""
 msgstr ""
 "トンネル経由でルーティングされる IPv6 ネットワークです。"
 "ルーティングテーブルを手動で変更せずに、サイト間 VPN 接続を確立させることができます。"
-"1 つ以上の IP/PREFIX のカンマ区切りリストとして表記されます。"
+"1 つ以上の IP/PREFIX のカンマ区切りリストとして表記します。"
 "サイト間 VPN の場合は、リモート LAN をここに入力してください。"
 "サイト間 VPN を使用しない場合は、空白にしてください。"
 
