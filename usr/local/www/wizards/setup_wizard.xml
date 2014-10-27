@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pfsensewizard>
+<copyright>
+/* $Id$ */
+/*
+	setup.xml
+        part of pfSense (https://www.pfsense.org/)
+
+	Copyright (C) 2004, 2005 Scott Ullrich
+        All rights reserved.
+
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+
+        1. Redistributions of source code must retain the above copyright notice,
+           this list of conditions and the following disclaimer.
+
+        2. Redistributions in binary form must reproduce the above copyright
+           notice, this list of conditions and the following disclaimer in the
+           documentation and/or other materials provided with the distribution.
+
+        THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+        INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+        AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+        AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+        OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+        SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+        INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+        ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+        POSSIBILITY OF SUCH DAMAGE.
+*/
+</copyright>
+<totalsteps>10</totalsteps>
+<step>
+	<id>1</id>
+	<title>pfSense Setup Wizard</title>
+	<disableheader>true</disableheader>
+	<description>This wizard will guide you through the initial configuration of pfSense.&lt;br/&gt;&lt;br/&gt; The wizard may be stopped at any time by clicking the logo image at the top of the screen.</description>
+	<fields>
+		<field>
+			<name>Next</name>
+			<type>submit</type>
+		</field>
+	</fields>
+	<stepbeforeformdisplay>
+		conf_mount_rw();
+		unlink_if_exists('/conf/trigger_initial_wizard');
+		conf_mount_ro();
+	</stepbeforeformdisplay>
+</step>
+<step>
+	<id>2</id>
+	<title>Bling your pfSense with pfSense Gold</title>
+	<disableheader>true</disableheader>
+	<description>Feel the power of a pfSense Gold subscription. Receive special benefits while supporting ongoing development of the Open Source pfSense project.&lt;br/&gt; &lt;br/&gt; Benefits include access to our AutoConfigBackup secure cloud based backup service for up to 10 hosts, pre-publication access to the updated pfSense: The Definitive Guide book in PDF, fully updated for the pfSense 2.1 release, and a monthly online MeetUp! Video conference to discuss and demonstrate advanced features and architectures using pfSense. &lt;br/&gt; &lt;br/&gt; Go to &lt;a href="https://www.pfsense.org/gold" target="_blank"&gt; pfSense Gold Subscriptions&lt;/a&gt; to sign up now &lt;br/&gt; &lt;br/&gt; </description>
+	<fields>
+		<field>
+			<name>Next</name>
+			<type>submit</type>
+		</field>
+	</fields>
+</step>
+<step>
+	<id>3</id>
+	<title>General Information</title>
+	<description>On this screen you will set the general pfSense parameters.</description>
+	<fields>
+		<field>
+			<name>Hostname</name>
+			<type>input</type>
+			<bindstofield>wizardtemp->system->hostname</bindstofield>
+			<description>EXAMPLE: myserver</description>
+			<validate>^[a-z0-9.|-]+$</validate>
+			<message>Invalid Hostname</message>
+		</field>
+		<field>
+			<name>Domain</name>
+			<type>input</type>
+			<bindstofield>wizardtemp->system->domain</bindstofield>
+			<description>EXAMPLE: mydomain.com</description>
+			<validate>^[a-z0-9.|-]+$</validate>
+			<message>Domain name field is invalid</message>
+		</field>
+		<field>
+			<name>Primary DNS Server</name>
+			<type>input</type>
+			<bindstofield>system->dnsserver</bindstofield>
+			<!-- we must unset the fields because this is an array. -->
+			<unsetfield>yes</unsetfield>
+			<arraynum>0</arraynum>
+			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<message>Primary DNS Server field is invalid</message>
+		</field>
+		<field>
+			<name>Secondary DNS Server</name>
+			<type>input</type>
+			<bindstofield>system->dnsserver</bindstofield>
+			<arraynum>1</arraynum>
+			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<message>Secondary DNS Server field is invalid</message>
+		</field>
+		<field>
+			<name>Override DNS</name>
+			<description>Allow DNS servers to be overridden by DHCP/PPP on WAN</description>
+			<type>checkbox</type>
+			<bindstofield>system->dnsallowoverride</bindstofield>
+		</field>
+		<field>
+			<name>Next</name>
+			<type>submit</type>
+		</field>
+	</fields>
+	<stepbeforeformdisplay>
+		<![CDATA[
+		$config['wizardtemp'] = array();
+		$config['wizardtemp']['system'] = array();
+		$config['wizardtemp']['system']['hostname'] = $config['system']['hostname'];
+		$config['wizardtemp']['system']['domain'] = $config['system']['domain'];
+		]]>
+	</stepbeforeformdisplay>
+	<stepsubmitphpaction>
+		<![CDATA[
+		if(empty($_POST['hostname']) || !is_hostname($_POST['hostname'])) {
+			print_info_box_np("Hostname is invalid. Please press back in your browser window and correct.");
+			die;
+		}
+		if(empty($_POST['domain']) || !is_domain($_POST['domain'])) {
+			print_info_box_np("Domain is invalid. Please press back in your browser window and correct.");
+			die;
+		}
+		if(!empty($_POST['primarydnsserver']) && !is_ipaddr($_POST['primarydnsserver'])) {
+			print_info_box_np("Primary DNS server is invalid. Please press back in your browser window and correct.");
+			die;
+		}
+		if(!empty($_POST['secondarydnsserver']) && !is_ipaddr($_POST['secondarydnsserver'])) {
+			print_info_box_np("Second DNS server is invalid. Please press back in your browser window and correct.");
+			die;
+		}
+		]]>
+	</stepsubmitphpaction>
+</step>
+<step>
+	<id>4</id>
+	<title>Time Server Information</title>
+	<description>Please enter the time, date and time zone.</description>
+	<fields>
+		<field>
+			<name>Time server hostname</name>
+			<description>Enter the hostname (FQDN) of the time server.</description>
+			<type>input</type>
+			<bindstofield>system->timeservers</bindstofield>
+		</field>
+		<field>
+			<name>Timezone</name>
+			<type>timezone_select</type>
+			<bindstofield>system->timezone</bindstofield>
+		</field>
+		<field>
+			<name>Next</name>
+			<type>submit</type>
+		</field>
+	</fields>
+	<stepsubmitphpaction>
+		<![CDATA[
+		foreach (explode(' ', $_POST['timeserverhostname']) as $ts) {
+			if (!is_domain($ts)) {
+				print_info_box_np(gettext("NTP Time Server names may only contain the characters a-z, 0-9, '-' and '.'. Entries may be separated by spaces. Please press back in your browser window and correct."));
+				die;
+			}
+		}
+		]]>
+	</stepsubmitphpaction>
+</step>
+<step>
+	<id>5</id>
+	<disableallfieldsbydefault>true</disableallfieldsbydefault>
+	<title>Configure WAN Interface</title>
+	<description>On this screen we will configure the Wide Area Network information.</description>
+	<javascriptafterformdisplay>
+		var selectedItem = 0;
+		if(document.forms[0].ipaddress.value == 'dhcp') {
+			selectedItem = 1;
+			document.forms[0].ipaddress.value = '';
+		} else if(document.forms[0].ipaddress.value == 'pppoe') {
+			selectedItem = 2;
+			document.forms[0].ipaddress.value = '';
+		} else if(document.forms[0].ipaddress.value == 'pptp') {
+			selectedItem = 3;
+			document.forms[0].ipaddress.value = '';
+		} else if(document.forms[0].ipaddress.value == 'ppp' || document.forms[0].ipaddress.value == 'l2tp') {
+			document.forms[0].ipaddress.value = '';
+		} else {
+			selectedItem = 0;
+		}
+		document.forms[0].selectedtype.selectedIndex = selectedItem;
+		enableitems(selectedItem);
+	</javascriptafterformdisplay>
+	<fields>
+		<field>
+			<name>SelectedType</name>
+			<type>select</type>
+			<donotdisable>true</donotdisable>
+			<options>
+				<option>
+					<name>Static</name>
+					<value>Static</value>
+					<enablefields>ipaddress,subnetmask,upstreamgateway</enablefields>
+				</option>
+				<option>
+					<name>DHCP</name>
+					<value>dhcp</value>
+					<enablefields>dhcphostname</enablefields>
+				</option>
+				<option>
+					<name>PPPoE</name>
+					<value>pppoe</value>
+					<enablefields>pppoeusername,pppoepassword,pppoeservicename,pppoedialondemand,pppoeidletimeout</enablefields>
+				</option>
+				<option>
+					<name>PPTP</name>
+					<value>pptp</value>
+					<enablefields>pptpusername,pptppassword,pptplocalipaddress,pptplocalsubnet,pptpremoteipaddress,pptpdialondemand,pptpidletimeout
+					</enablefields>
+				</option>
+			</options>
+		</field>
+		<field>
+			<name>General configuration</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<donotdisable>true</donotdisable>
+			<name>MAC Address</name>
+			<bindstofield>interfaces->wan->spoofmac</bindstofield>
+			<type>input</type>
+			<description> This field can be used to modify ("spoof") the MAC address of the WAN interface (may be required with some cable connections). Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank.</description>
+			<validate>^([0-9a-f]{2}([:-]||$)){6}$</validate>
+			<message>MAC Address field is invalid</message>
+		</field>
+		<field>
+			<donotdisable>true</donotdisable>
+			<name>MTU</name>
+			<type>input</type>
+			<bindstofield>interfaces->wan->mtu</bindstofield>
+			<description> Set the MTU of the WAN interface. If you leave this field blank, an MTU of 1492 bytes for PPPoE and 1500 bytes for all other connection types will be assumed.</description>
+		</field>
+		<field>
+			<donotdisable>true</donotdisable>
+			<name>MSS</name>
+			<type>input</type>
+			<bindstofield>interfaces->wan->mss</bindstofield>
+			<description> If you enter a value in this field, then MSS clamping for TCP connections to the value entered above minus 40 (TCP/IP header size) will be in effect. If you leave this field blank, an MSS of 1492 bytes for PPPoE and 1500 bytes for all other connection types will be assumed. This should match the above MTU value in most all cases.</description>
+		</field>
+		<field>
+			<name>Static IP Configuration</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<name>IP Address</name>
+			<bindstofield>interfaces->wan->ipaddr</bindstofield>
+			<type>input</type>
+			<typehint> / </typehint>
+			<combinefieldsbegin>true</combinefieldsbegin>
+			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<message>IP Address field is invalid</message>
+		</field>
+		<field>
+			<combinefieldsend>true</combinefieldsend>
+			<dontdisplayname>true</dontdisplayname>
+			<dontcombinecells>true</dontcombinecells>
+			<name>Subnet Mask</name>
+			<bindstofield>interfaces->wan->subnet</bindstofield>
+			<type>subnet_select</type>
+		</field>
+		<field>
+			<name>Upstream Gateway</name>
+			<bindstofield>wizardtemp->wangateway</bindstofield>
+			<type>input</type>
+			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<message>Gateway IP Address field is invalid</message>
+		</field>
+		<field>
+			<name>DHCP client configuration</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<name>DHCP Hostname</name>
+			<type>input</type>
+			<bindstofield>interfaces->wan->dhcphostname</bindstofield>
+			<description> The value in this field is sent as the DHCP client identifier and hostname when requesting a DHCP lease. Some ISPs may require this (for client identification).</description>
+		</field>
+		<field>
+			<name>PPPoE configuration</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<name>PPPoE Username</name>
+			<type>input</type>
+			<bindstofield>wizardtemp->wan->username</bindstofield>
+		</field>
+		<field>
+			<name>PPPoE Password</name>
+			<type>input</type>
+			<bindstofield>wizardtemp->wan->password</bindstofield>
+		</field>
+		<field>
+			<name>PPPoE Service name</name>
+			<type>input</type>
+			<description>Hint: this field can usually be left empty</description>
+			<bindstofield>wizardtemp->wan->provider</bindstofield>
+		</field>
+		<field>
+			<name>PPPoE Dial on demand</name>
+			<typehint>Enable Dial-On-Demand mode</typehint>
+			<type>checkbox</type>
+			<description>This option causes the interface to operate in dial-on-demand mode, allowing you to have a virtual full time connection. The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected.</description>
+			<bindstofield>wizardtemp->wan->ondemand</bindstofield>
+		</field>
+		<field>
+			<name>PPPoE Idle timeout</name>
+			<type>input</type>
+			<description>If no qualifying outgoing packets are transmitted for the specified number of seconds, the connection is brought down. An idle timeout of zero disables this feature.</description>
+			<bindstofield>wizardtemp->wan->idletimeout</bindstofield>
+		</field>
+		<field>
+			<name>PPTP configuration</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<name>PPTP Username</name>
+			<type>input</type>
+			<bindstofield>wizardtemp->wan->pptpusername</bindstofield>
+		</field>
+		<field>
+			<name>PPTP Password</name>
+			<type>input</type>
+			<bindstofield>wizardtemp->wan->pptppassword</bindstofield>
+		</field>
+		<field>
+			<combinefieldsbegin>true</combinefieldsbegin>
+			<name>PPTP Local IP Address</name>
+			<type>input</type>
+			<typehint> / </typehint>
+			<bindstofield>wizardtemp->wan->localip</bindstofield>
+			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<message>PPTP Local IP Address field is invalid</message>
+		</field>
+		<field>
+			<combinefieldsend>true</combinefieldsend>
+			<dontdisplayname>true</dontdisplayname>
+			<dontcombinecells>true</dontcombinecells>
+			<name>pptplocalsubnet</name>
+			<bindstofield>wizardtemp->wan->subnet</bindstofield>
+			<type>subnet_select</type>
+		</field>
+		<field>
+			<name>PPTP Remote IP Address</name>
+			<bindstofield>wizardtemp->wan->gateway</bindstofield>
+			<type>input</type>
+			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<message>PPTP Remote IP Address field is invalid</message>
+		</field>
+		<field>
+			<name>PPTP Dial on demand</name>
+			<typehint>Enable Dial-On-Demand mode</typehint>
+			<type>checkbox</type>
+			<bindstofield>wizardtemp->wan->pptpondemand</bindstofield>			
+			<description>This option causes the interface to operate in dial-on-demand mode, allowing you to have a virtual full time connection. The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected.</description>
+		</field>
+		<field>
+			<name>PPTP Idle timeout</name>
+			<type>input</type>			
+			<bindstofield>wizardtemp->wan->pptpidletimeout</bindstofield>
+			<description>If no qualifying outgoing packets are transmitted for the specified number of seconds, the connection is brought down. An idle timeout of zero disables this feature.</description>
+		</field>
+		<field>
+			<name>RFC1918 Networks</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<donotdisable>true</donotdisable>
+			<name>Block RFC1918 Private Networks</name>
+			<description> When set, this option blocks traffic from IP addresses that are reserved for private networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as well as loopback addresses (127/8). You should generally leave this option turned on, unless your WAN network lies in such a private address space, too.</description>
+			<type>checkbox</type>
+			<bindstofield>interfaces->wan->blockpriv</bindstofield>
+			<typehint>Block private networks from entering via WAN</typehint>
+		</field>
+		<field>
+			<name>Block bogon networks</name>
+			<type>listtopic</type>
+		</field>
+		<field>
+			<donotdisable>true</donotdisable>
+			<name>Block bogon networks</name>
+			<description>When set, this option blocks traffic from IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA. Bogons are prefixes that should never appear in the Internet routing table, and obviously should not appear as the source address in any packets you receive.</description>
+			<type>checkbox</type>
+			<bindstofield>interfaces->wan->blockbogons</bindstofield>
+			<typehint>Block non-Internet routed networks from entering via WAN</typehint>
+		</field>
+		<field>
+			<name>Next</name>
+			<type>submit</type>
+		</field>
+	</fields>
+	<stepbeforeformdisplay>
+		<![CDATA[
+		if (is_array($config['gateways']['gateway_item']))
+			foreach ($config['gateways']['gateway_item'] as $gw)
+				if ($gw['name'] == 'WANGW' || (!empty($config['wizardtemp']['wangateway']) && $gw['gateway'] == $config['wizardtemp']['wangateway']))
+					$config['wizardtemp']['wangateway'] = $gw['gateway'];
+		]]>
+	</stepbeforeformdisplay>
+	<stepsubmitphpaction>
+		<![CDATA[
+		if(!empty($_POST['mtu']) && ($_POST['mtu'] < 576)) {
+			print_info_box_np("MTU Must be at least 576 (Per RFC 791). Please press back in your browser window and correct.");
+			die;
+		}
+		if(!empty($_POST['macaddress']) && !is_macaddr($_POST['macaddress'])) {
+			print_info_box_np("Invalid MAC Address. Please press back in your browser window and correct.");
+			die;
+		}
+		if(!empty($_POST['ipaddress']) && ($_POST['selectedtype'] == "Static")) {
+			if (!is_ipaddr($_POST['ipaddress'])) {
+				print_info_box_np("Invalid WAN IP Address. Please press back in your browser window and correct.");
+				die;
+			}
+			if ($_POST['subnetmask'] < 31 &&
+			    ($_POST['ipaddress'] == gen_subnet($_POST['ipaddress'], $_POST['subnetmask']) ||
+			     $_POST['ipaddress'] == gen_subnet_max($_POST['ipaddress'], $_POST['subnetmask']))) {
+				print_info_box_np("Invalid WAN IP Address. Please press back in your browser window and correct.");
+				die;
+			}
+		}
+		if(!empty($_POST['dhcphostname']) && !is_hostname($_POST['dhcphostname'])) {
+			print_info_box_np("Invalid DHCP Hostname. Please press back in your browser window and correct.");
+			die;
+		}
+		if(!empty($_POST['pptplocalipaddress']) && !is_ipaddr($_POST['pptplocalipaddress'])) {
+			print_info_box_np("Invalid PPTP Local IP Address. Please press back in your browser window and correct.");
+			die;
+		}
+		if(!empty($_POST['pptpremoteipaddress']) && !is_ipaddr($_POST['pptpremoteipaddress'])) {
+			print_info_box_np("Invalid PPTP Remopte IP Address. Please press back in your browser window and correct.");
+			die;
+		}
+		$type = $_POST['selectedtype'];
+
+		if (!is_array($config['ppps']['ppp']))
+			$config['ppps']['ppp'] = array();
+		if (count($config['ppps']['ppp'])) {
+			foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
+				if ($ppp['ptpid'] == "0") {
+					if ((substr($config['interfaces']['wan']['if'],0,5) == "pppoe") || (substr($config['interfaces']['wan']['if'],0,4) == "pptp")) {
+						$oldif = explode(",", $ppp['ports']);
+						$config['interfaces']['wan']['if'] = $oldif[0];
+					}
+					if ($type == "pppoe" || $type == "pptp")
+						unset($config['ppps']['ppp'][$pppid]);
+				}
+			}
+		}
+
+		if ($type == "pppoe" || $type == "pptp") {
+			if ($type == "pptp") {
+				$config['wizardtemp']['wan']['username'] = $config['wizardtemp']['wan']['pptpusername'];
+				$config['wizardtemp']['wan']['password'] = $config['wizardtemp']['wan']['pptppassword'];
+				$config['wizardtemp']['wan']['ondemand'] = $config['wizardtemp']['wan']['pptpondemand'];
+				$config['wizardtemp']['wan']['idletimeout'] = $config['wizardtemp']['wan']['pptpidletimeout'];
+				unset($config['wizardtemp']['wan']['pptpusername']);
+				unset($config['wizardtemp']['wan']['pptppassword']);
+				unset($config['wizardtemp']['wan']['pptpondemand']);
+				unset($config['wizardtemp']['wan']['pptpidletimeout']);
+			}
+			$config['wizardtemp']['wan']['password'] = base64_encode($config['wizardtemp']['wan']['password']);
+			$tmp = array();
+			$tmp['ptpid'] = "0";
+			$tmp['type'] = $type;
+			$tmp['if'] = $type . "0";
+			$tmp['ports'] = $config['interfaces']['wan']['if'];
+			$config['ppps']['ppp'][] = array_merge($tmp, $config['wizardtemp']['wan']);
+			unset($tmp);
+			$config['interfaces']['wan']['if'] = $type."0";
+		}
+		unset($config['wizardtemp']['wan']);
+		]]>
+	</stepsubmitphpaction>
+	<stepsubmitbeforesave>
+		<![CDATA[
+			if($_POST['selectedtype'] == "Static") { 
+			
+			} else {
+				$_POST['ipaddress'] = $_POST['selectedtype'];
+				$config['interfaces']['wan']['ipaddr'] = $_POST['selectedtype'];
+				write_config();
+				if(!$config['interfaces']['lan']) 
+					header("Location: /wizard.php?xml=setup_wizard.xml&stepid=6&next=Next");
+			}
+		]]>
+	</stepsubmitbeforesave>
+</step>
+<step>
+	<id>6</id>
+	<title>Configure LAN Interface</title>
+	<description>On this screen we will configure the Local Area Network information.</description>
+	<fields>
+		<field>
+			<name>LAN IP Address</name>
+			<type>input</type>
+			<bindstofield>interfaces->lan->ipaddr</bindstofield>
+			<description>Type dhcp if this interface uses DHCP to obtain its IP address.</description>
+			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<message>LAN IP Address field is invalid</message>
+		</field>
+				<field>
+			<name>Subnet Mask</name>
+			<type>subnet_select</type>
+			<bindstofield>interfaces->lan->subnet</bindstofield>
+		</field>
+		<field>
+			<name>Next</name>
+			<type>submit</type>
+		</field>
+	</fields>
+	<stepsubmitphpaction>
+		<![CDATA[
+		if(empty($_POST['lanipaddress']) || !is_ipaddr($_POST['lanipaddress'])) {
+			print_info_box_np("Invalid LAN IP Address. Please press back in your browser window and correct.");
+			die;
+		}
+		if ($_POST['subnetmask'] < 31 &&
+		    ($_POST['lanipaddress'] == gen_subnet($_POST['lanipaddress'], $_POST['subnetmask']) ||
+		     $_POST['lanipaddress'] == gen_subnet_max($_POST['lanipaddress'], $_POST['subnetmask']))) {
+			print_info_box_np("Invalid LAN IP Address. Please press back in your browser window and correct.");
+			die;
+		}
+		$ft = explode(".", $_POST['lanipaddress']);
+		$ft_ip = $ft[0] . "." . $ft[1] . "." . $ft[2] . ".";
+		$config['dhcpd']['lan']['range']['from'] = $ft_ip . "10";
+		$highestip = gen_subnet_max($_POST['lanipaddress'], $config['interfaces']['lan']['subnet']);
+		$hi = explode(".", $highestip);
+		$highestip = $hi[3]-10;
+		$config['dhcpd']['lan']['range']['to'] = $ft_ip . $highestip;
+		]]>
+	</stepsubmitphpaction>
+</step>
+<step>
+	<id>7</id>
+	<title>Set Admin WebGUI Password</title>
+	<description>On this screen we will set the admin password, which is used to access the WebGUI and also SSH services if you wish to enable them.</description>
+	<fields>
+		<field>
+			<name>Admin Password</name>
+			<type>password</type>
+		</field>
+		<field>
+			<name>Admin Password AGAIN</name>
+			<type>password</type>
+		</field>
+		<field>
+			<name>Next</name>
+			<type>submit</type>
+		</field>
+	</fields>
+	<stepsubmitphpaction>
+	if($_POST['adminpassword'] != "") {
+		if($_POST['adminpassword'] == $_POST['adminpasswordagain']) {
+			$admin_user =&amp; getUserEntryByUID(0);
+			local_user_set_password($admin_user, $_POST['adminpassword']);
+			local_user_set($admin_user);
+			write_config();
+		} else {
+			print_info_box_np("Passwords do not match!  Please press back in your browser window and correct.");
+			die;
+		}
+	}
+	</stepsubmitphpaction>
+</step>
+<step>
+	<id>8</id>
+	<title>Reload configuration</title>
+	<disableheader>true</disableheader>
+	<description>Click 'Reload' to reload pfSense with new changes.</description>
+	<fields>
+		<field>
+			<name>Reload</name>
+			<type>submit</type>
+		</field>
+	</fields>
+</step>
+<step>
+	<id>9</id>
+	<title>Reload in progress</title>
+	<description>
+		A reload is now in progress.  Please wait. &lt;p&gt; 
+		&lt;meta http-equiv="refresh" content="5; url=wizard.php?xml=setup_wizard.xml&amp;stepid=9" &gt;
+		&lt;p&gt;
+		The wizard will redirect to the next step once the reload is completed.
+	</description>
+	<stepafterformdisplay>
+		<![CDATA[
+		$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
+		$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
+		if (!empty($config['wizardtemp']['wangateway'])) {
+			if (!is_array($config['gateways']['gateway_item']))
+				$config['gateways']['gateway_item'] = array();
+			$found = false;
+			$defaultgw_found = false;
+			foreach ($config['gateways']['gateway_item'] as & $gw) {
+				if ($gw['interface'] != "wan")
+					continue;
+				if (isset($gw['defaultgw']))
+					$defaultgw_found = true;
+				if ($gw['name'] == 'WANGW' || (!empty($config['wizardtemp']['wangateway']) && $gw['gateway'] == $config['wizardtemp']['wangateway'])) {
+					$found = true;
+					$gw['gateway'] = $config['wizardtemp']['wangateway'];
+					$config['interfaces']['wan']['gateway'] = $gw['name'];
+				}
+			}
+			if (!$found) {
+				$newgw = array();
+				$newgw['interface'] = "wan";
+				$newgw['gateway'] = $config['wizardtemp']['wangateway'];
+				$newgw['name'] = "WANGW";
+				$newgw['weight'] = 1;
+				$newgw['descr'] = "WAN Gateway";
+				$newgw['defaultgw'] = !$defaultgw_found;
+				$config['gateways']['gateway_item'][] = $newgw;
+				$config['interfaces']['wan']['gateway'] = "WANGW";
+			}
+		}
+		unset($config['wizardtemp']);
+		write_config();
+		reload_all();
+		mwexec_bg("/etc/rc.update_bogons.sh now");
+		]]>
+	</stepafterformdisplay>
+</step>
+<step>
+	<id>10</id>
+	<title>Wizard completed.</title>
+	<stepbeforeformdisplay>
+	<![CDATA[
+		if($g['product_name'] <> 'pfSense') {
+			header("Location: " . fixup_string("\$myurl"));
+			exit;
+		}	
+	]]>
+	</stepbeforeformdisplay>
+	<description>
+	<![CDATA[
+		Congratulations!  pfSense is now configured.<p/>
+		Please consider donating to the project to help us with our overhead costs.<p/>
+		Click <a target='_new' href='https://www.pfsense.org/j.php?jumpto=donate'>here</a> to donate or purchase services offered by the pfSense team.<p/>
+		Click <a href='$myurl'>here</a> to continue on to pfSense webConfigurator.
+	]]>
+	</description>
+</step>
+</pfsensewizard>

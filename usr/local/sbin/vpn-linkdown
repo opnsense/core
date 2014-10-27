@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# record logout
+/usr/bin/logger -p local3.info "logout,$1,$4,$5"
+/sbin/pfctl -i $1 -Fs
+/sbin/pfctl -K $4/32
