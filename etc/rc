@@ -404,6 +404,7 @@ if [ -f /etc/rc.custom_boot_early ]; then
 fi
 
 export fcgipath=/var/run/php-fpm.socket
+chmod u+rx  /usr/local/opnsense/check_reload_status.py
 /usr/bin/nice -n20 /usr/local/opnsense/check_reload_status.py
 
 # let the PHP-based configuration subsystem set up the system now
