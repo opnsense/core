@@ -3325,7 +3325,7 @@ function filter_rules_spoofcheck_generate($ifname, $ifcfg, $log) {
 		$mt = microtime();
 		echo "filter_rules_spoofcheck_generate() being called $mt\n";
 	}
-	$ipfrules = "antispoof {$log['block']} for \${$ifcfg['descr']} tracker {$tracker}\n";
+	$ipfrules = "antispoof {$log['block']} for \${$ifcfg['descr']} \n";
 	$tracker++;
 
 	return $ipfrules;
