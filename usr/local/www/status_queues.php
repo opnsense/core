@@ -124,69 +124,94 @@ $pgtitle = array(gettext("Status"),gettext("Traffic shaper"),gettext("Queues"));
 $shortcut_section = "trafficshaper";
 include("head.inc");
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-<?php
-if(!is_array($config['shaper']['queue']) || count($config['shaper']['queue']) < 1) {
-	echo gettext("Traffic shaping is not configured.");
-	include("fend.inc");
-	echo "</body></html>";
-	exit;}
-?>
-<?php if (!$error): ?>
-<form action="status_queues.php" method="post">
-<script type="text/javascript">
-//<![CDATA[
-	function getqueueactivity() {
-		var url = "/status_queues.php";
-		var pars = "getactivity=yes&stats=" + jQuery("#selStatistic").val();
-		jQuery.ajax(
-			url,
-			{
-				type: 'post',
-				data: pars,
-				complete: activitycallback
-			});
-	}
-	function activitycallback(transport) {
-		setTimeout('getqueueactivity()', 5100);
-	}
-	jQuery(document).ready(function(){
-		setTimeout('getqueueactivity()', 150);
-	});
-//]]>
-</script>
-<?php endif; ?>
-<table width="100%" border="1" cellpadding="0" cellspacing="0" summary="status queues">
-<?php if ($error): ?>
-	<tr><td><?php echo $error; ?></td></tr>
-<?php else: ?>
-	<tr>
-		<td class="listhdr"><?=gettext("Queue"); ?></td>
-		<td class="listhdr">
-			<?=gettext("Statistics"); ?>
-			<select id="selStatistic">
-				<option value="0">PPS</option>
-				<option value="1">Bandwidth</option>
-			</select>
-		</td>
-		<td class="listhdr" width="1%"><?=gettext("PPS"); ?></td>
-		<td class="listhdr" width="1%"><?=gettext("Bandwidth"); ?></td>
-		<td class="listhdr" width="1%"><?=gettext("Borrows"); ?></td>
-		<td class="listhdr" width="1%"><?=gettext("Suspends"); ?></td>
-		<td class="listhdr" width="1%"><?=gettext("Drops"); ?></td>
-		<td class="listhdr" width="1%"><?=gettext("Length"); ?></td>		
-	</tr>
-	<?php 
-	$if_queue_list = get_configured_interface_list_by_realif(false, true);
-	processQueues($altqstats, 0, "")?>
-<?php endif; ?>
-</table>
-<p>
-	<strong><span class="red"><?=gettext("Note"); ?>:</span></strong><br />
-	<?=gettext("Queue graphs take 5 seconds to sample data"); ?>.<br />
-	<?=gettext("You can configure the Traffic Shaper"); ?> <a href="/firewall_shaper_wizards.php"><?=gettext("here"); ?></a>.
-</p>
+
+
+<section class="page-content-main">
+	<div class="container-fluid">
+        
+        <div class="row">
+            
+            <section class="col-xs-12">
+                <div class="content-box">
+	                
+	                <?php if(!is_array($config['shaper']['queue']) || count($config['shaper']['queue']) < 1): ?>
+	                <header class="content-box-head col-xs-12">
+						 <h3><?php echo gettext("Traffic shaping is not configured."); ?></h3>
+	                </header>
+	                
+	                <? elseif ($error): ?>
+	                <header class="content-box-head col-xs-12">
+				        <h3><?php echo $error; ?></h3>
+				    </header>
+				    
+				    <? else: ?>
+				    <form action="status_queues.php" method="post">
+					<script type="text/javascript">
+					//<![CDATA[
+						function getqueueactivity() {
+							var url = "/status_queues.php";
+							var pars = "getactivity=yes&stats=" + jQuery("#selStatistic").val();
+							jQuery.ajax(
+								url,
+								{
+									type: 'post',
+									data: pars,
+									complete: activitycallback
+								});
+						}
+						function activitycallback(transport) {
+							setTimeout('getqueueactivity()', 5100);
+						}
+						jQuery(document).ready(function(){
+							setTimeout('getqueueactivity()', 150);
+						});
+					//]]>
+					</script>
+				    
+				    <div class="content-box-main col-xs-12">
+					  	<div class="table-responsive">
+                   	    	<table class="table table-striped table-sort sortable">
+				   				<tr>
+									<td class="listhdr"><?=gettext("Queue"); ?></td>
+									<td class="listhdr">
+										<?=gettext("Statistics"); ?>
+										<select id="selStatistic">
+											<option value="0">PPS</option>
+											<option value="1">Bandwidth</option>
+										</select>
+									</td>
+									<td class="listhdr" width="1%"><?=gettext("PPS"); ?></td>
+									<td class="listhdr" width="1%"><?=gettext("Bandwidth"); ?></td>
+									<td class="listhdr" width="1%"><?=gettext("Borrows"); ?></td>
+									<td class="listhdr" width="1%"><?=gettext("Suspends"); ?></td>
+									<td class="listhdr" width="1%"><?=gettext("Drops"); ?></td>
+									<td class="listhdr" width="1%"><?=gettext("Length"); ?></td>		
+								</tr>
+								<?php 
+								$if_queue_list = get_configured_interface_list_by_realif(false, true);
+								processQueues($altqstats, 0, "")?>
+		
+							</table>
+					  	</div>
+					  												  		
+						<p>
+							<strong><span class="red"><?=gettext("Note"); ?>:</span></strong><br />
+							<?=gettext("Queue graphs take 5 seconds to sample data"); ?>.<br />
+							<?=gettext("You can configure the Traffic Shaper"); ?> <a href="/firewall_shaper_wizards.php"><?=gettext("here"); ?></a>.
+						</p>
+				    </div>
+					</form>
+				    
+				    <? endif; ?>
+                </div>
+            </section>
+        </div>
+	</div>
+</section>
+
+
 <script type="text/javascript">
 //<![CDATA[
 	function StatsShowHide(classname) {
@@ -198,10 +223,8 @@ if(!is_array($config['shaper']['queue']) || count($config['shaper']['queue']) < 
 	}
 //]]>
 </script>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>
+
 <?php 
 function processQueues($altqstats, $level, $parent_name){
 	global $g;

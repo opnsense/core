@@ -218,66 +218,46 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
-<?php include("fbegin.inc"); ?>
-<form action="vpn_ipsec.php" method="post">
+<body>
+
 <script type="text/javascript" src="/javascript/row_toggle.js"></script>
-<?php
-	if ($savemsg)
-		print_info_box($savemsg);
-	if ($pconfig['enable'] && is_subsystem_dirty('ipsec'))
-		print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
-?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="vpn ipsec">
-	<tr>
-		<td class="tabnavtbl">
-<?php
-			$tab_array = array();
-			$tab_array[0] = array(gettext("Tunnels"), true, "vpn_ipsec.php");
-			$tab_array[1] = array(gettext("Mobile clients"), false, "vpn_ipsec_mobile.php");
-			$tab_array[2] = array(gettext("Pre-Shared Keys"), false, "vpn_ipsec_keys.php");
-			$tab_array[3] = array(gettext("Advanced Settings"), false, "vpn_ipsec_settings.php");
-			display_top_tabs($tab_array);
-?>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<div id="mainarea">
-				<table class="tabcont" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-					<tr>
-						<td class="vtable">
-							<table border="0" cellspacing="2" cellpadding="0" summary="enable">
-								<tr>
-									<td>
-										<input name="enable" type="checkbox" id="enable" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\"";?> />
-									</td>
-									<td>
-										<strong><?=gettext("Enable IPsec"); ?></strong>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<input name="submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" />
-						</td>
-					</tr>
-				</table>
-				<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="phase-1 entries">
-					<tr id="frheader">
-						<td class="list">&nbsp;</td>
-						<td class="list">&nbsp;</td>
-						<td class="listhdrr"><?=gettext("IKE"); ?></td>
-						<td class="listhdrr"><?=gettext("Remote Gateway"); ?></td>
-						<td class="listhdrr"><?=gettext("Mode"); ?></td>
-						<td class="listhdrr"><?=gettext("P1 Protocol"); ?></td>
-						<td class="listhdrr"><?=gettext("P1 Transforms"); ?></td>
-						<td class="listhdrr"><?=gettext("P1 Description"); ?></td>
-						<td class="list">
-						</td>
-					</tr>
+
+<?php include("fbegin.inc"); ?>
+
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php
+					if ($savemsg)
+						print_info_box($savemsg);
+					if ($pconfig['enable'] && is_subsystem_dirty('ipsec'))
+						print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
+				?>
+				
+			    <section class="col-xs-12">
+    				
+    				<? $active_tab = "/vpn_ipsec.php"; include('vpn_ipsec_tabs.php'); ?>
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	
+
+							 <div class="table-responsive">
+							 	<table class="table table-striped table-sort">
+				
+									<tr id="frheader">
+										<td class="list">&nbsp;</td>
+										<td class="list">&nbsp;</td>
+										<td class="listhdrr"><?=gettext("IKE"); ?></td>
+										<td class="listhdrr"><?=gettext("Remote Gateway"); ?></td>
+										<td class="listhdrr"><?=gettext("Mode"); ?></td>
+										<td class="listhdrr"><?=gettext("P1 Protocol"); ?></td>
+										<td class="listhdrr"><?=gettext("P1 Transforms"); ?></td>
+										<td class="listhdrr"><?=gettext("P1 Description"); ?></td>
+										<td class="list">
+										</td>
+									</tr>
 <?php
 				$i = 0;
 				foreach ($a_phase1 as $ph1ent):
@@ -649,7 +629,29 @@ include("head.inc");
 	</tr>
 </table>
 </form>
-<?php include("fend.inc"); ?>
+
+
+							<form action="vpn_ipsec.php" method="post">
+							<table border="0" cellspacing="2" cellpadding="0" summary="enable">
+								<tr>
+									<td>
+										<input name="enable" type="checkbox" id="enable" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\"";?> />
+									</td>
+									<td>
+										<strong><?=gettext("Enable IPsec"); ?></strong>
+									</td>
+									<td>
+										<input name="submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" />
+									</td>
+								</tr>
+							</table>
+							</form>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+	</section>
 <script type="text/javascript">
 //<![CDATA[
 function show_phase2(id, buttonid) {
@@ -660,5 +662,4 @@ function show_phase2(id, buttonid) {
 }
 //]]>
 </script>
-</body>
-</html>
+<?php include("foot.inc"); ?>

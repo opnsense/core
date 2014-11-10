@@ -50,12 +50,11 @@ unset($carp_interface_count_cache);
 unset($interface_ip_arr_cache);
 
 $status = get_carp_status();
-$status = intval($status);
 if($_POST['carp_maintenancemode'] <> "") {
 	interfaces_carp_set_maintenancemode(!isset($config["virtualip_carp_maintenancemode"]));
 }
 if($_POST['disablecarp'] <> "") {
-	if($status > 0) {
+	if($status == true) {
 		set_single_sysctl('net.inet.carp.allow', '0');
 		if(is_array($config['virtualip']['vip'])) {
 			$viparr = &$config['virtualip']['vip'];
@@ -69,7 +68,6 @@ if($_POST['disablecarp'] <> "") {
 			}
 		}
 		$savemsg = sprintf(gettext("%s IPs have been disabled. Please note that disabling does not survive a reboot."), $carp_counter);
-		$status = 0;
 	} else {
 		$savemsg = gettext("CARP has been enabled.");
 		if(is_array($config['virtualip']['vip'])) {
@@ -85,11 +83,12 @@ if($_POST['disablecarp'] <> "") {
 		}
 		interfaces_carp_setup();
 		set_single_sysctl('net.inet.carp.allow', '1');
-		$status = 1;
 	}
 }
 
-$carp_detected_problems = ((get_single_sysctl("net.inet.carp.demotion")) > 0);
+$status = get_carp_status();
+
+$carp_detected_problems = (array_pop(get_sysctl("net.inet.carp.demotion")) > 0);
 
 $pgtitle = array(gettext("Status"),gettext("CARP"));
 $shortcut_section = "carp";
@@ -97,113 +96,118 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-<form action="carp_status.php" method="post">
-<?php if ($savemsg) print_info_box($savemsg); ?>
+	
+	
+<section class="page-content-main">
+	<div class="container-fluid">	
+		<div class="row">
+			<section class="col-xs-12">
+	
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+				
+				<?PHP	if ($carp_detected_problems) print_info_box(gettext("CARP has detected a problem and this unit has been demoted to BACKUP status.") . "<br />" . gettext("Check link status on all interfaces with configured CARP VIPs.")); ?>
 
-<?PHP	if ($carp_detected_problems) print_info_box(gettext("CARP has detected a problem and this unit has been demoted to BACKUP status.") . "<br />" . gettext("Check link status on all interfaces with configured CARP VIPs.")); ?>
 
-
-<div id="mainlevel">
-	<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="carp status">
-		<tr>
-			<td>
-<?php
-			$carpcount = 0;
-			if(is_array($config['virtualip']['vip'])) {
-				foreach($config['virtualip']['vip'] as $carp) {
-					if ($carp['mode'] == "carp") {
-						$carpcount++;
-						break;
-					}
-				}
-			}
-			if($carpcount > 0) {
-				if($status > 0) {
-					$carp_enabled = true;
-					echo "<input type=\"submit\" name=\"disablecarp\" id=\"disablecarp\" value=\"" . gettext("Temporarily Disable CARP") . "\" />";
-				} else {
-					$carp_enabled = false;
-					echo "<input type=\"submit\" name=\"disablecarp\" id=\"disablecarp\" value=\"" . gettext("Enable CARP") . "\" />";
-				}
-				if(isset($config["virtualip_carp_maintenancemode"])) {
-					echo "<input type=\"submit\" name=\"carp_maintenancemode\" id=\"carp_maintenancemode\" value=\"" . gettext("Leave Persistent CARP Maintenance Mode") . "\" />";
-				} else {
-					echo "<input type=\"submit\" name=\"carp_maintenancemode\" id=\"carp_maintenancemode\" value=\"" . gettext("Enter Persistent CARP Maintenance Mode") . "\" />";
-				}
-			}
-?>
-
-			<br/><br/>
-			<table class="tabcont sortable" width="100%" border="0" cellpadding="6" cellspacing="0" summary="results">
-				<tr>
-					<td class="listhdrr" align="center"><?=gettext("CARP Interface"); ?></td>
-					<td class="listhdrr" align="center"><?=gettext("Virtual IP"); ?></td>
-					<td class="listhdrr" align="center"><?=gettext("Status"); ?></td>
-				</tr>
-<?php
-				if ($carpcount == 0) {
-					echo "</table></td></tr></table></div></form><center><br />" . gettext("Could not locate any defined CARP interfaces.");
-					echo "</center>";
-
-					include("fend.inc");
-					echo "</body></html>";
-					return;
-				}
-				if(is_array($config['virtualip']['vip'])) {
-					foreach($config['virtualip']['vip'] as $carp) {
-						if ($carp['mode'] != "carp")
-							continue;
-						$ipaddress = $carp['subnet'];
-						$password = $carp['password'];
-						$netmask = $carp['subnet_bits'];
-						$vhid = $carp['vhid'];
-						$advskew = $carp['advskew'];
-						$advbase = $carp['advbase'];
-						$status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");
-						echo "<tr>";
-						$align = "style=\"vertical-align:middle\"";
-						if($carp_enabled == false) {
-							$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_block.gif\" alt=\"disabled\" />";
-							$status = "DISABLED";
-						} else {
-							if($status == "MASTER") {
-								$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_pass.gif\" alt=\"master\" />";
-							} else if($status == "BACKUP") {
-								$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_pass_d.gif\" alt=\"backup\" />";
-							} else if($status == "INIT") {
-								$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_log.gif\" alt=\"init\" />";
+				<div class="content-box">              
+                    
+                    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
+                    <?php
+							$carpcount = 0;
+							if(is_array($config['virtualip']['vip'])) {
+								foreach($config['virtualip']['vip'] as $carp) {
+									if ($carp['mode'] == "carp") {
+										$carpcount++;
+										break;
+									}
+								}
 							}
-						}
-						echo "<td class=\"listlr\" align=\"center\">" . convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$vhid} &nbsp;</td>";
-						echo "<td class=\"listlr\" align=\"center\">" . $ipaddress . "&nbsp;</td>";
-						echo "<td class=\"listlr\" align=\"center\">{$icon}&nbsp;&nbsp;" . $status . "&nbsp;</td>";
-						echo "</tr>";
-					}
-				}
-?>
-			</table>
-			</td>
-		</tr>
-	</table>
-</div>
-</form>
+							if($carpcount > 0) {
+								if($status == false) {
+									$carp_enabled = false;
+									echo "<input type=\"submit\" name=\"disablecarp\" id=\"disablecarp\" value=\"" . gettext("Enable CARP") . "\" />";
+								} else {
+									$carp_enabled = true;
+									echo "<input type=\"submit\" name=\"disablecarp\" id=\"disablecarp\" value=\"" . gettext("Temporarily Disable CARP") . "\" />";
+								}
+								if(isset($config["virtualip_carp_maintenancemode"])) {
+									echo "<input type=\"submit\" name=\"carp_maintenancemode\" id=\"carp_maintenancemode\" value=\"" . gettext("Leave Persistent CARP Maintenance Mode") . "\" />";
+								} else {
+									echo "<input type=\"submit\" name=\"carp_maintenancemode\" id=\"carp_maintenancemode\" value=\"" . gettext("Enter Persistent CARP Maintenance Mode") . "\" />";
+								}
+							}
+					?>
+                    
+                    <div class="table-responsive">
+                   
+                        <table class="table table-striped table-sort sortable">						
+							<tr>
+								<td class="listhdrr" align="center"><?=gettext("CARP Interface"); ?></td>
+								<td class="listhdrr" align="center"><?=gettext("Virtual IP"); ?></td>
+								<td class="listhdrr" align="center"><?=gettext("Status"); ?></td>
+							</tr>
+							<?php
+								if ($carpcount == 0) {
+									echo "</table></div></form><center><br />" . gettext("Could not locate any defined CARP interfaces.");
+									
+				
+								}
+								elseif(is_array($config['virtualip']['vip'])) {
+									foreach($config['virtualip']['vip'] as $carp) {
+										if ($carp['mode'] != "carp")
+											continue;
+										$ipaddress = $carp['subnet'];
+										$password = $carp['password'];
+										$netmask = $carp['subnet_bits'];
+										$vhid = $carp['vhid'];
+										$advskew = $carp['advskew'];
+										$advbase = $carp['advbase'];
+										$status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");
+										echo "<tr>";
+										$align = "style=\"vertical-align:middle\"";
+										if($carp_enabled == false) {
+											$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_block.gif\" alt=\"disabled\" />";
+											$status = "DISABLED";
+										} else {
+											if($status == "MASTER") {
+												$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_pass.gif\" alt=\"master\" />";
+											} else if($status == "BACKUP") {
+												$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_pass_d.gif\" alt=\"backup\" />";
+											} else if($status == "INIT") {
+												$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_log.gif\" alt=\"init\" />";
+											}
+										}
+										echo "<td class=\"listlr\" align=\"center\">" . convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$vhid} &nbsp;</td>";
+										echo "<td class=\"listlr\" align=\"center\">" . $ipaddress . "&nbsp;</td>";
+										echo "<td class=\"listlr\" align=\"center\">{$icon}&nbsp;&nbsp;" . $status . "&nbsp;</td>";
+										echo "</tr>";
+									}
+								}
+							?>
+						</table>
+						
+                    </div>
+                    
+                    <div class="col-xs-12">
+						<p class="vexpl">
+							<span class="red"><strong><?=gettext("Note"); ?>:</strong></span>
+							<br />
+							<?=gettext("You can configure high availability sync settings"); ?> <a href="system_hasync.php"><?=gettext("here"); ?></a>.
+						</p>
 
-<p class="vexpl">
-<span class="red"><strong><?=gettext("Note"); ?>:</strong></span>
-<br />
-<?=gettext("You can configure high availability sync settings"); ?> <a href="system_hasync.php"><?=gettext("here"); ?></a>.
-</p>
+						<?php
+							echo "<br />" . gettext("pfSync nodes") . ":<br />";
+							echo "<pre>";
+							system("/sbin/pfctl -vvss | /usr/bin/grep creator | /usr/bin/cut -d\" \" -f7 | /usr/bin/sort -u");
+							echo "</pre>";
+						?>
+                    </div>
+					
+				</div>
+			</section>
+		</div>
+	</div>
+</section>
 
-<?php
-	echo "<br />" . gettext("pfSync nodes") . ":<br />";
-	echo "<pre>";
-	system("/sbin/pfctl -vvss | /usr/bin/grep creator | /usr/bin/cut -d\" \" -f7 | /usr/bin/sort -u");
-	echo "</pre>";
-?>
-
-<?php include("fend.inc"); ?>
-
-</body>
-</html>
+<?php include("foot.inc"); ?>

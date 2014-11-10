@@ -62,59 +62,53 @@ $shortcut_section = "ipsec";
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+
+<body>
 <?php include("fbegin.inc"); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="logs ipsec">
- 	<tr>
-		<td>
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("System"), false, "diag_logs.php");
-	$tab_array[] = array(gettext("Firewall"), false, "diag_logs_filter.php");
-	$tab_array[] = array(gettext("DHCP"), false, "diag_logs_dhcp.php");
-	$tab_array[] = array(gettext("Portal Auth"), false, "diag_logs_auth.php");
-	$tab_array[] = array(gettext("IPsec"), true, "diag_logs_ipsec.php");
-	$tab_array[] = array(gettext("PPP"), false, "diag_logs_ppp.php");
-	$tab_array[] = array(gettext("VPN"), false, "diag_logs_vpn.php");
-	$tab_array[] = array(gettext("Load Balancer"), false, "diag_logs_relayd.php");
-	$tab_array[] = array(gettext("OpenVPN"), false, "diag_logs_openvpn.php");
-	$tab_array[] = array(gettext("NTP"), false, "diag_logs_ntpd.php");
-	$tab_array[] = array(gettext("Settings"), false, "diag_logs_settings.php");
-	display_top_tabs($tab_array);
-?>
-  		</td>
-	</tr>
-	<tr>
-    	<td>
-			<div id="mainarea">
-			<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="0" summary="main area">
-		  		<tr>
-					<td colspan="2" class="listtopic"><?php printf(gettext("Last %s  IPsec log entries"),$nentries);?></td>
-		  		</tr>
-				<?php
-				foreach($ipsec_logarr as $logent){
-					$logent = htmlspecialchars($logent);
-					$logent = preg_split("/\s+/", $logent, 6);
-					echo "<tr valign=\"top\">\n";
-					$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
-					echo "<td class=\"listlr nowrap\">" . $entry_date_time  . "</td>\n";
-					echo "<td class=\"listr\">" . $logent[4] . " " . $logent[5] . "</td>\n";
-					echo "</tr>\n";
-				}
-				?>
-				<tr>
-					<td>
-						<br />
-						<form action="diag_logs_ipsec.php" method="post">
-						<input name="clear" type="submit" class="formbtn" value="<?=gettext("Clear log"); ?>" />
-						</form>
-					</td>
-				</tr>
-			</table>
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    					
+    					<? include('diag_logs_tabs.php'); ?>
+
+					
+						<div class="tab-content content-box col-xs-12">	    					
+	    				    <div class="container-fluid">	    					
+		    						
+	    						<p>  <?php printf(gettext("Last %s  IPsec log entries"),$nentries);?></p>
+								
+								 <div class="table-responsive">
+								 	<table class="table table-striped table-sort">
+									 	<?php
+										foreach($ipsec_logarr as $logent){
+											$logent = htmlspecialchars($logent);
+											$logent = preg_split("/\s+/", $logent, 6);
+											echo "<tr valign=\"top\">\n";
+											$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
+											echo "<td class=\"listlr nowrap\">" . $entry_date_time  . "</td>\n";
+											echo "<td class=\"listr\">" . $logent[4] . " " . $logent[5] . "</td>\n";
+											echo "</tr>\n";
+										}
+										?>
+								 	</table>
+								 </div>
+								
+								<form action="diag_logs_ipsec.php" method="post">
+									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+								</form>
+								
+    						</div>
+    				    </div>
+			    </section>
 			</div>
-		</td>
-	</tr>
-</table>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

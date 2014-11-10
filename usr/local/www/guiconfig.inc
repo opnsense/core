@@ -268,28 +268,15 @@ function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_error
 function print_input_errors($input_errors) {
 	global $g;
 
-	print <<<EOF
-	<div id="inputerrorsdiv">
-	<table border="0" cellspacing="0" cellpadding="4" width="100%" summary="input errors">
-	<tr>
-		<td class="inputerrorsleft">
-			<img src="/themes/{$g['theme']}/images/icons/icon_error.gif" alt="errors" />
-		</td>
-        <td class="inputerrorsright errmsg">
-EOF;
-    echo "<p>" . gettext("The following input errors were detected:") . "</p>\n<ul>";
+	echo '<div class="col-xs-12"><div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	';
+  
+  	echo "<p>" . gettext("The following input errors were detected:") . "</p>\n<ul>";
 	foreach ($input_errors as $ierr) {
 		echo "<li>" . htmlspecialchars($ierr) . "</li>";
 	}
-
-	print <<<EOF2
-				</ul>
-		</td></tr>
-	</table>
-	</div>
-	&nbsp;<br />
-EOF2;
-
+	echo "</ul></div></div>";
 }
 
 function verify_gzip_file($fname) {
@@ -312,11 +299,11 @@ function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 		$nifty_background = "#FFF";
 
 	if(stristr($msg, gettext("apply")) != false || stristr($msg, gettext("save")) != false || stristr($msg, gettext("create")) != false || $showapply) {
-		$savebutton = "<td class=\"infoboxsave\">";
-		$savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"formbtn\" id=\"${name}\" value=\"{$value}\" />";
+		$savebutton = "<td class=\"infoboxsave\"><form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
+		$savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"${name}\" value=\"{$value}\" />";
 		if($_POST['if'])
 			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
-		$savebutton.="</td>";
+		$savebutton.="</form></td>";
 	}
 	$nifty_redbox = "#990000";
 	$nifty_blackbox = "#000000";
@@ -334,39 +321,16 @@ function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 	}
 
 	if(!$savebutton) {
-		$savebutton = "<td class=\"infoboxsave\"><input value=\"" . gettext("Close") . "\" type=\"button\" onclick=\"jQuery(this).parents('table[id=redboxtable]').hide();\" /></td>";
+		$savebutton = '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>';
 	}
 
 	echo <<<EOFnp
-	<table class="infobox" id="redboxtable" summary="red box table">
-		<tr>
-			<td>
-				<div class="infoboxnp" id="redbox">
-					<table class="infoboxnptable2" summary="message">
-						<tr>
-							<td class="infoboxnptd">
-								&nbsp;&nbsp;&nbsp;<img class="infoboxnpimg" src="/themes/{$g['theme']}/images/icons/icon_exclam.gif" alt="exclamation" />
-							</td>
-							<td class="infoboxnptd2">
-								<b>{$msg}</b>
-							</td>
-							{$savebutton}
-						</tr>
-					</table>
-				</div>
-				<div>
-					<p>&nbsp;</p>
-				</div>
-			</td>
-		</tr>
-	</table>
-	<script type="text/javascript">
-	//<![CDATA[
-		NiftyCheck();
-		Rounded("div#redbox","all","{$nifty_background}","{$nifty_redbox}","smooth");
-		Rounded("td#blackbox","all","{$nifty_background}","{$nifty_blackbox}","smooth");
-	//]]>
-	</script>
+	    <div class="col-xs-12">
+		<div class="alert alert-info alert-dismissible" role="alert">
+            <p>{$msg}</p>
+			{$savebutton}
+		</div>
+		</div>
 EOFnp;
 
 }
@@ -1028,21 +992,22 @@ function display_top_tabs(& $tab_array, $no_drop_down = false) {
 		echo "//]]>\n";
 		echo "</script>";
 	}  else {
-		echo "<div class=\"newtabmenu\" style=\"margin:{$tab_array_space}px {$tab_array_indent}px; width:775px;\">\n";
 		echo "<!-- Tabbed bar code-->\n";
-		echo "<ul class=\"newtabmenu\">\n";
+		echo "<ul class=\"nav nav-tabs nav-justified\" role=\"tablist\">\n";
 		$tabscounter = 0;
 		foreach ($tab_array as $ta) {
 			if ($ta[1] == true) {
-				echo "  <li class=\"newtabmenu_active\"><a href=\"{$ta[2]}\"><span>{$ta[0]}</span></a></li>\n";
+				echo "  <li class=\"active\"><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
 			} else {
-				echo "  <li><a href=\"{$ta[2]}\"><span>{$ta[0]}</span></a></li>\n";
+				echo "  <li><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
 			}
 			$tabscounter++;
 		}
-		echo "</ul>\n</div>\n";
+		echo "</ul>\n";
 	}
 }
+
+
 
 function add_package_tabs($tabgroup, & $tab_array) {
 	global $config, $g;

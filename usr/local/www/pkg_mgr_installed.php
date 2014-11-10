@@ -88,7 +88,7 @@ include("head.inc");
 <script type="text/javascript" src="/javascript/row_helper_dynamic.js"></script>
 </head>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 	<?php include("fbegin.inc"); 
 
 	/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
@@ -242,6 +242,4 @@ include("head.inc");
 			</td>
 		</tr>
 	</table>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>   

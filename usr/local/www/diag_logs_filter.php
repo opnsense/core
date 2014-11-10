@@ -124,301 +124,298 @@ $shortcut_section = "firewall";
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
 <script src="/javascript/filter_log.js" type="text/javascript"></script>
+
+
+<body>
+
 <?php include("fbegin.inc"); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="logs filter">
-  <tr><td>
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("System"), false, "diag_logs.php");
-	$tab_array[] = array(gettext("Firewall"), true, "diag_logs_filter.php");
-	$tab_array[] = array(gettext("DHCP"), false, "diag_logs_dhcp.php");
-	$tab_array[] = array(gettext("Portal Auth"), false, "diag_logs_auth.php");
-	$tab_array[] = array(gettext("IPsec"), false, "diag_logs_ipsec.php");
-	$tab_array[] = array(gettext("PPP"), false, "diag_logs_ppp.php");
-	$tab_array[] = array(gettext("VPN"), false, "diag_logs_vpn.php");
-	$tab_array[] = array(gettext("Load Balancer"), false, "diag_logs_relayd.php");
-	$tab_array[] = array(gettext("OpenVPN"), false, "diag_logs_openvpn.php");
-	$tab_array[] = array(gettext("NTP"), false, "diag_logs_ntpd.php");
-	$tab_array[] = array(gettext("Settings"), false, "diag_logs_settings.php");
-	display_top_tabs($tab_array);
-?>
- </td></tr>
-  <tr><td class="tabnavtbl">
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("Normal View"), true, "/diag_logs_filter.php");
-	$tab_array[] = array(gettext("Dynamic View"), false, "/diag_logs_filter_dynamic.php");
-	$tab_array[] = array(gettext("Summary View"), false, "/diag_logs_filter_summary.php");
-	display_top_tabs($tab_array);
-?>
-		</td>
-	</tr>
-  <tr>
-    <td>
-	<div id="mainarea">
-		<table class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0" style="sortableMultirow:<?=$config['syslog']['filterdescriptions'] === "2"?2:1?>" summary="main area">
-			<tr>
-				<td colspan="<?=(!isset($config['syslog']['rawfilter']))?7:2?>" align="left" valign="middle">
-				<div id="filterlogentries_show" class="widgetconfigdiv" style="<?=(!isset($config['syslog']['rawfilter']))?"":"display:none"?>">
-					<form id="filterlogentries" name="filterlogentries" action="diag_logs_filter.php" method="post">
-						<?php 
-							$Include_Act = explode(",", str_replace(" ", ",", $filterfieldsarray['act']));
-							if ($filterfieldsarray['interface'] == "All") $interface = "";
-						?>
-					<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="action">
-					<tr>
-						<td rowspan="2">
-							<div align="center"><?=gettext("Action");?></div>
-							<div align="left">
-							<input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass',   $Include_Act)) echo "checked=\"checked\""; ?> /> Pass<br />
-							<input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block',  $Include_Act)) echo "checked=\"checked\""; ?> /> Block<br />
-							</div>
-						</td>
-						<td>
-							<div align="center"><?=gettext("Time");?></div>
-							<div align="center"><input id="filterlogentries_time" name="filterlogentries_time" class="formfld search" type="text" size="12" value="<?= $filterfieldsarray['time'] ?>" /></div>
-						</td>
-						<td>
-							<div align="center"><?=gettext("Source IP Address");?></div>
-							<div align="center"><input id="filterlogentries_sourceipaddress" name="filterlogentries_sourceipaddress" class="formfld search" type="text" size="35" value="<?= $filterfieldsarray['srcip'] ?>" /></div>
-						</td>
-						<td>
-							<div align="center"><?=gettext("Source Port");?></div>
-							<div align="center"><input id="filterlogentries_sourceport" name="filterlogentries_sourceport" class="formfld search" type="text" size="10" value="<?= $filterfieldsarray['srcport'] ?>" /></div>
-						</td>
-						<td>
-							<div align="center"><?=gettext("Protocol");?></div>
-							<div align="center"><input id="filterlogentries_protocol" name="filterlogentries_protocol" class="formfld search" type="text" size="5" value="<?= $filterfieldsarray['proto'] ?>" /></div>
-						</td>
-						<td>
-							<div align="center" style="vertical-align:top;"><?=gettext("Quantity");?></div>
-							<div align="center" style="vertical-align:top;"><input id="filterlogentries_qty" name="filterlogentries_qty" class="" type="text" size="6" value="<?= $filterlogentries_qty ?>" /></div>
-						</td>
-					</tr>
-					<tr>
-						<td valign="top">
-							<div align="center"><?=gettext("Interface");?></div>
-							<div align="center"><input id="filterlogentries_interfaces" name="filterlogentries_interfaces" class="formfld search" type="text" size="12" value="<?= $filterfieldsarray['interface'] ?>" /></div>
-						</td>
-						<td valign="top">
-							<div align="center"><?=gettext("Destination IP Address");?></div>
-							<div align="center"><input id="filterlogentries_destinationipaddress" name="filterlogentries_destinationipaddress" class="formfld search" type="text" size="35" value="<?= $filterfieldsarray['dstip'] ?>" /></div>
-						</td>
-						<td valign="top">
-							<div align="center"><?=gettext("Destination Port");?></div>
-							<div align="center"><input id="filterlogentries_destinationport" name="filterlogentries_destinationport" class="formfld search" type="text" size="10" value="<?= $filterfieldsarray['dstport'] ?>" /></div>
-						</td>
-						<td valign="top">
-							<div align="center"><?=gettext("Protocol Flags");?></div>
-							<div align="center"><input id="filterlogentries_protocolflags" name="filterlogentries_protocolflags" class="formfld search" type="text" size="5" value="<?= $filterfieldsarray['tcpflags'] ?>" /></div>
-						</td>
-						<td valign="bottom">
-							<div align="center"><input id="filterlogentries_submit" name="filterlogentries_submit" type="submit" class="formbtn" value="<?=gettext("Filter");?>" /></div>
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td colspan="5">
-							<?printf(gettext('Matches %1$s regular expression%2$s.'), '<a target="_blank" href="http://www.php.net/manual/en/book.pcre.php">', '</a>');?>&nbsp;&nbsp;
-							<?=gettext("Precede with exclamation (!) as first character to exclude match.");?>&nbsp;&nbsp;
-						</td>
-					</tr>
-					</table>
-					</form>
-				</div>
-				<div id="filterform_show" class="widgetconfigdiv" style="<?=(!isset($config['syslog']['rawfilter']))?"display:none":""?>">
-					<form id="filterform" name="filterform" action="diag_logs_filter.php" method="post">
-					<table width="0%" border="0" cellpadding="0" cellspacing="0" summary="firewall log">
-					<tr>
-						<td>
-							<div align="center" style="vertical-align:top;"><?=gettext("Interface");?></div>
-							<div align="center" style="vertical-align:top;">
-							<select name="interface" onchange="dst_change(this.value,iface_old,document.iform.dsttype.value);iface_old = document.iform.interface.value;typesel_change();">
-							<option value="" <?=$interfacefilter?"":"selected=\"selected\""?>>*Any interface</option>
-							<?php						
-							$iflist = get_configured_interface_with_descr(false, true);
-							//$iflist = get_interface_list();
-							// Allow extending of the firewall edit interfaces 
-							pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/pre_interfaces_edit");
-							foreach ($iflist as $if => $ifdesc)
-								$interfaces[$if] = $ifdesc;
 
-							if ($config['l2tp']['mode'] == "server")
-								$interfaces['l2tp'] = "L2TP VPN";
-
-							if ($config['pptpd']['mode'] == "server")
-								$interfaces['pptp'] = "PPTP VPN";
-
-							if (is_pppoe_server_enabled() && have_ruleint_access("pppoe"))
-								$interfaces['pppoe'] = "PPPoE VPN";
-
-							/* add ipsec interfaces */
-							if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
-								$interfaces["enc0"] = "IPsec";
-
-							/* add openvpn/tun interfaces */
-							if  ($config['openvpn']["openvpn-server"] || $config['openvpn']["openvpn-client"])
-								$interfaces["openvpn"] = "OpenVPN";
-
-							foreach ($interfaces as $iface => $ifacename): ?>
-							<option value="<?=$iface;?>" <?=($iface==$interfacefilter)?"selected=\"selected\"":"";?>><?=htmlspecialchars($ifacename);?></option>
-							<?php endforeach; ?>
-							</select>
-							</div>
-						</td>
-						<td>
-							<div align="center" style="vertical-align:top;"><?=gettext("Filter expression");?></div>
-							<div align="center" style="vertical-align:top;"><input id="filtertext" name="filtertext" class="formfld search" style="vertical-align:top;" type="text" size="35" value="<?=$filtertext?>" /></div>
-						</td>
-						<td>
-							<div align="center" style="vertical-align:top;"><?=gettext("Quantity");?></div>
-							<div align="center" style="vertical-align:top;"><input id="filterlogentries_qty" name="filterlogentries_qty" class="" style="vertical-align:top;" type="text" size="6" value="<?= $filterlogentries_qty ?>" /></div>
-						</td>
-						<td>
-							<div align="center" style="vertical-align:top;">&nbsp;</div>
-							<div align="center" style="vertical-align:top;"><input id="filtersubmit" name="filtersubmit" type="submit" class="formbtn" style="vertical-align:top;" value="<?=gettext("Filter");?>" /></div>
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td colspan="2">
-							<?printf(gettext('Matches %1$s regular expression%2$s.'), '<a target="_blank" href="http://www.php.net/manual/en/book.pcre.php">', '</a>');?>&nbsp;&nbsp;
-						</td>
-					</tr>
-					</table>
-					</form>
-				</div>
-				<div style="float: right; vertical-align:middle">
-					<br />
-					<?php if (!isset($config['syslog']['rawfilter']) && (isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions'] === "2")):?>
-					<a href="#" onclick="toggleListDescriptions()">Show/hide rule descriptions</a>
-					<?php endif;?>
-				</div>
-				</td>	
-			</tr>
-<?php if (!isset($config['syslog']['rawfilter'])):
-	$iflist = get_configured_interface_with_descr(false, true);
-	if ($iflist[$interfacefilter])
-		$interfacefilter = $iflist[$interfacefilter];
-	if ($filterlogentries_submit) 
-		$filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100, $filterfieldsarray);
-	else
-		$filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100, $filtertext, $interfacefilter);
-?>
-			<tr>
-			  <td colspan="<?=$config['syslog']['filterdescriptions']==="1"?7:6?>" class="listtopic">
-				<?php if ( (!$filtertext) && (!$filterfieldsarray) )
-					printf(gettext("Last %s firewall log entries."),count($filterlog));
-				else
-					echo count($filterlog). ' ' . gettext("matched log entries.");
-			    printf(gettext("Max(%s)"),$nentries);?>
-			  </td>
-			</tr>
-			<tr class="sortableHeaderRowIdentifier">
-			  <td width="10%" class="listhdrr"><?=gettext("Act");?></td>
-			  <td width="10%" class="listhdrr"><?=gettext("Time");?></td>
-			  <td width="15%" class="listhdrr"><?=gettext("If");?></td>
-			  <?php if ($config['syslog']['filterdescriptions'] === "1"):?>
-				<td width="10%" class="listhdrr"><?=gettext("Rule");?></td>
-			  <?php endif;?>
-			  <td width="25%" class="listhdrr"><?=gettext("Source");?></td>
-			  <td width="25%" class="listhdrr"><?=gettext("Destination");?></td>
-			  <td width="15%" class="listhdrr"><?=gettext("Proto");?></td>
-			</tr>
-			<?php
-			if ($config['syslog']['filterdescriptions'])
-				buffer_rules_load();
-			$rowIndex = 0;
-			foreach ($filterlog as $filterent): 
-			$evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
-			$rowIndex++;?>
-			<tr class="<?=$evenRowClass?>">
-			  <td class="listMRlr nowrap" align="center" sorttable_customkey="<?=$filterent['act']?>">
-			  <center>
-			  <a onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['tracker']},{$filterent['act']}"; ?>', outputrule);">
-			  <img border="0" src="<?php echo find_action_image($filterent['act']);?>" width="11" height="11" align="middle" alt="<?php echo $filterent['act'] .'/'. $filterent['tracker'];?>" title="<?php echo $filterent['act'] .'/'. $filterent['tracker'];?>" />
-			  <?php if ($filterent['count']) echo $filterent['count'];?></a></center></td>
-			  <td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['time']);?></td>
-			  <td class="listMRr nowrap">
-				<?php if ($filterent['direction'] == "out"): ?>
-				<img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/out.gif" alt="Direction=OUT" title="Direction=OUT"/>
-				<?php endif; ?>
-				<?php echo htmlspecialchars($filterent['interface']);?></td>
-			  <?php 
-			  if ($config['syslog']['filterdescriptions'] === "1")
-				echo("<td class=\"listMRr nowrap\">".find_rule_by_number_buffer($filterent['rulenum'],$filterent['tracker'],$filterent['act'])."</td>");
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
 				
-			  $int = strtolower($filterent['interface']);
-			  $proto = strtolower($filterent['proto']);
-			  if($filterent['version'] == '6') {
-				$ipproto = "inet6";
-				$filterent['srcip'] = "[{$filterent['srcip']}]";
-				$filterent['dstip'] = "[{$filterent['dstip']}]";
-			  } else {
-			        $ipproto = "inet";
-			  }
-
-			  $srcstr = $filterent['srcip'] . get_port_with_service($filterent['srcport'], $proto);
-			  $src_htmlclass = str_replace(array('.', ':'), '-', $filterent['srcip']);
-			  $dststr = $filterent['dstip'] . get_port_with_service($filterent['dstport'], $proto);
-			  $dst_htmlclass = str_replace(array('.', ':'), '-', $filterent['dstip']);
-			  ?>
-			  <td class="listMRr nowrap">
-				<img onclick="javascript:resolve_with_ajax('<?php echo "{$filterent['srcip']}"; ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $src_htmlclass; ?>" border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_log.gif" alt="Icon Reverse Resolve with DNS"/>
-				<a href="easyrule.php?<?php echo "action=block&amp;int={$int}&amp;src={$filterent['srcip']}&amp;ipproto={$ipproto}"; ?>" title="<?=gettext("Easy Rule: Add to Block List");?>" onclick="return confirm('<?=gettext("Do you really want to add this BLOCK rule?")."\n\n".gettext("Easy Rule is still experimental.")."\n".gettext("Continue at risk of your own peril.")."\n".gettext("Backups are also nice.")?>')">
-				<img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_block_add.gif" alt="Icon Easy Rule: Add to Block List" /></a>
-				<?php echo $srcstr . '<span class="RESOLVE-' . $src_htmlclass . '"></span>';?>
-			  </td>
-			  <td class="listMRr nowrap">
-				<img onclick="javascript:resolve_with_ajax('<?php echo "{$filterent['dstip']}"; ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $dst_htmlclass; ?>" border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_log.gif" alt="Icon Reverse Resolve with DNS"/>
-				<a href="easyrule.php?<?php echo "action=pass&amp;int={$int}&amp;proto={$proto}&amp;src={$filterent['srcip']}&amp;dst={$filterent['dstip']}&amp;dstport={$filterent['dstport']}&amp;ipproto={$ipproto}"; ?>" title="<?=gettext("Easy Rule: Pass this traffic");?>" onclick="return confirm('<?=gettext("Do you really want to add this PASS rule?")."\n\n".gettext("Easy Rule is still experimental.")."\n".gettext("Continue at risk of your own peril.")."\n".gettext("Backups are also nice.");?>')">
-				<img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_pass_add.gif" alt="Icon Easy Rule: Pass this traffic" /></a>
-				<?php echo $dststr . '<span class="RESOLVE-' . $dst_htmlclass . '"></span>';?>
-			  </td>
-			  <?php
-				if ($filterent['proto'] == "TCP")
-					$filterent['proto'] .= ":{$filterent['tcpflags']}";
-			  ?>
-			  <td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['proto']);?></td>
-			</tr>
-			<?php if (isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions'] === "2"):?>
-			<tr class="<?=$evenRowClass?>">
-			  <td colspan="2" class="listMRDescriptionL listMRlr" />
-			  <td colspan="4" class="listMRDescriptionR listMRr nowrap"><?=find_rule_by_number_buffer($filterent['rulenum'],$filterent['tracker'],$filterent['act']);?></td>
-			</tr>
-			<?php endif;
-			endforeach; 
-			buffer_rules_clear(); ?>
-<?php else: ?>
-		  <tr>
-			<td colspan="2" class="listtopic">
-			  <?php printf(gettext("Last %s firewall log entries"),$nentries);?></td>
-		  </tr>
-		  <?php
-			if($filtertext)
-				dump_clog($filter_logfile, $nentries, true, array("$filtertext"));
-			else
-				dump_clog($filter_logfile, $nentries);
-		  ?>
-<?php endif; ?>
-		<tr>
-			<td align="left" valign="top" colspan="3">
-				<form id="clearform" name="clearform" action="diag_logs_filter.php" method="post" style="margin-top: 14px;">
-					<input id="submit" name="clear" type="submit" class="formbtn" value="<?=gettext("Clear log");?>" />
-				</form>
-			</td>
-		</tr>
-		</table>
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.php'); ?>
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	  
+							
+							
+							<? $tab_group = 'firewall'; include('diag_logs_pills.php'); ?>
+							
+							<form id="filterlogentries" name="filterlogentries" action="diag_logs_filter.php" method="post">
+							<?php 
+								$Include_Act = explode(",", str_replace(" ", ",", $filterfieldsarray['act']));
+								if ($filterfieldsarray['interface'] == "All") $interface = "";
+							?>
+							<div class="table-responsive widgetconfigdiv" id="filterlogentries_show"  style="<?=(!isset($config['syslog']['rawfilter']))?"":"display:none"?>">
+                                <table class="table table-striped">
+            				      <thead>
+            				        <tr>
+            				          <th>Action</th>
+            				          <th>Time and interface</th>
+            				          <th>Source and destination IP Address</th>
+            				          <th>Source and destination port</th>
+            				          <th>Protocol</th>
+            				          <th>Protocol</th>
+            				        </tr>
+            				      </thead>
+            				      <tbody>
+            				        <tr>
+            				          <td>
+                				          <label class="__nowrap">
+                                            <input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass',   $Include_Act)) echo "checked=\"checked\""; ?> />&nbsp;&nbsp;Pass
+                                          </label>
+                                      </td>
+            				          <td><input type="text" class="form-control" placeholder="Time" id="filterlogentries_time" name="filterlogentries_time" value="<?= $filterfieldsarray['time'] ?>"></td>
+            				          <td><input type="text" class="form-control" placeholder="Source IP Address" id="filterlogentries_sourceipaddress" name="filterlogentries_sourceipaddress" value="<?= $filterfieldsarray['srcip'] ?>"></td>
+            				          <td><input type="text" class="form-control" placeholder="Source Port" id="filterlogentries_sourceport" name="filterlogentries_sourceport" value="<?= $filterfieldsarray['srcport'] ?>"></td>
+            				          <td><input type="text" class="form-control" placeholder="Protocol" id="filterlogentries_protocol" name="filterlogentries_protocol" value="<?= $filterfieldsarray['proto'] ?>"></td>
+            				          <td><input type="text" class="form-control" placeholder="Quantity" id="filterlogentries_qty" name="filterlogentries_qty" value="<?= $filterlogentries_qty ?>"></td>
+            				        </tr>
+            				        <tr>
+            				          <td>
+                				          <label class="__nowrap">
+                                            <input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block',  $Include_Act)) echo "checked=\"checked\""; ?> /> &nbsp;&nbsp;Block
+                                          </label>
+                                      </td>
+            				          <td><input type="text" class="form-control" placeholder="Interface" id="filterlogentries_interfaces" name="filterlogentries_interfaces" value="<?= $filterfieldsarray['interface'] ?>"></td>
+            				          <td><input type="text" class="form-control" placeholder="Destination IP Address" id="filterlogentries_destinationipaddress" name="filterlogentries_destinationipaddress" value="<?= $filterfieldsarray['dstip'] ?>"></td>
+            				          <td><input type="text" class="form-control" placeholder="Destination Port" id="filterlogentries_destinationport" name="filterlogentries_destinationport" value="<?= $filterfieldsarray['dstport'] ?>"></td>
+            				          <td><input type="text" class="form-control" placeholder="Protocol Flags" id="filterlogentries_protocolflags" name="filterlogentries_protocolflags" value="<?= $filterfieldsarray['tcpflags'] ?>"></td>
+            				          <td><input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" style="vertical-align:top;" value="<?=gettext("Filter");?>" /></td>
+            				        </tr>
+            				      </tbody>
+            				    </table>
+                            </div>
+                            
+							</form>
+    				    </div>
+					</div>
+			    </section>
+			    
+			    <!-- 
+			     <section class="col-xs-12">    				
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">						
+							
+						
+							<div id="filterform_show" class="widgetconfigdiv" style="<?=(!isset($config['syslog']['rawfilter']))?"display:none":""?>">
+								<form id="filterform" name="filterform" action="diag_logs_filter.php" method="post">
+								<table width="0%" border="0" cellpadding="0" cellspacing="0" summary="firewall log">
+								<tr>
+									<td>
+										<div align="center" style="vertical-align:top;"><?=gettext("Interface");?></div>
+										<div align="center" style="vertical-align:top;">
+										<select name="interface" onchange="dst_change(this.value,iface_old,document.iform.dsttype.value);iface_old = document.iform.interface.value;typesel_change();">
+										<option value="" <?=$interfacefilter?"":"selected=\"selected\""?>>*Any interface</option>
+										<?php						
+										$iflist = get_configured_interface_with_descr(false, true);
+										//$iflist = get_interface_list();
+										// Allow extending of the firewall edit interfaces 
+										pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/pre_interfaces_edit");
+										foreach ($iflist as $if => $ifdesc)
+											$interfaces[$if] = $ifdesc;
+			
+										if ($config['l2tp']['mode'] == "server")
+											$interfaces['l2tp'] = "L2TP VPN";
+			
+										if ($config['pptpd']['mode'] == "server")
+											$interfaces['pptp'] = "PPTP VPN";
+			
+										if (is_pppoe_server_enabled() && have_ruleint_access("pppoe"))
+											$interfaces['pppoe'] = "PPPoE VPN";
+			
+										/* add ipsec interfaces */
+										if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
+											$interfaces["enc0"] = "IPsec";
+			
+										/* add openvpn/tun interfaces */
+										if  ($config['openvpn']["openvpn-server"] || $config['openvpn']["openvpn-client"])
+											$interfaces["openvpn"] = "OpenVPN";
+			
+										foreach ($interfaces as $iface => $ifacename): ?>
+										<option value="<?=$iface;?>" <?=($iface==$interfacefilter)?"selected=\"selected\"":"";?>><?=htmlspecialchars($ifacename);?></option>
+										<?php endforeach; ?>
+										</select>
+										</div>
+									</td>
+									<td>
+										<div align="center" style="vertical-align:top;"><?=gettext("Filter expression");?></div>
+										<div align="center" style="vertical-align:top;"><input id="filtertext" name="filtertext" class="formfld search" style="vertical-align:top;" type="text" size="35" value="<?=$filtertext?>" /></div>
+									</td>
+									<td>
+										<div align="center" style="vertical-align:top;"><?=gettext("Quantity");?></div>
+										<div align="center" style="vertical-align:top;"><input id="filterlogentries_qty" name="filterlogentries_qty" class="" style="vertical-align:top;" type="text" size="6" value="<?= $filterlogentries_qty ?>" /></div>
+									</td>
+									<td>
+										<div align="center" style="vertical-align:top;">&nbsp;</div>
+										<div align="center" style="vertical-align:top;"><input id="filtersubmit" name="filtersubmit" type="submit" class="formbtn" style="vertical-align:top;" value="<?=gettext("Filter");?>" /></div>
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td colspan="2">
+										<?printf(gettext('Matches %1$s regular expression%2$s.'), '<a target="_blank" href="http://www.php.net/manual/en/book.pcre.php">', '</a>');?>&nbsp;&nbsp;
+									</td>
+								</tr>
+								</table>
+								</form>
+								
+								<div style="float: right; vertical-align:middle">
+									<br />
+									<?php if (!isset($config['syslog']['rawfilter']) && (isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions'] === "2")):?>
+									<a href="#" onclick="toggleListDescriptions()">Show/hide rule descriptions</a>
+									<?php endif;?>
+								</div>
+										
+							</div>
+    				    </div>
+					</div>
+			     </section>
+			     -->
+			     
+			    
+			     <section class="col-xs-12">    				
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">		 
+										
+							<div class="table-responsive">
+							 	<table class="table table-striped table-sort">			
+										
+						
+						<?php if (!isset($config['syslog']['rawfilter'])):
+							$iflist = get_configured_interface_with_descr(false, true);
+							if ($iflist[$interfacefilter])
+								$interfacefilter = $iflist[$interfacefilter];
+							if ($filterlogentries_submit) 
+								$filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100, $filterfieldsarray);
+							else
+								$filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100, $filtertext, $interfacefilter);
+						?>
+									<tr>
+									  <td colspan="<?=$config['syslog']['filterdescriptions']==="1"?7:6?>" class="listtopic">
+										<?php if ( (!$filtertext) && (!$filterfieldsarray) )
+											printf(gettext("Last %s firewall log entries."),count($filterlog));
+										else
+											echo count($filterlog). ' ' . gettext("matched log entries.");
+									    printf(gettext("Max(%s)"),$nentries);?>
+									  </td>
+									</tr>
+									<tr class="sortableHeaderRowIdentifier">
+									  <td width="50" class="listhdrr"><?=gettext("Act");?></td>
+									  <td class="listhdrr"><?=gettext("Time");?></td>
+									  <td class="listhdrr"><?=gettext("If");?></td>
+									  <?php if ($config['syslog']['filterdescriptions'] === "1"):?>
+										<td width="10%" class="listhdrr"><?=gettext("Rule");?></td>
+									  <?php endif;?>
+									  <td class="listhdrr"><?=gettext("Source");?></td>
+									  <td class="listhdrr"><?=gettext("Destination");?></td>
+									  <td class="listhdrr"><?=gettext("Proto");?></td>
+									</tr>
+									<?php
+									if ($config['syslog']['filterdescriptions'])
+										buffer_rules_load();
+									$rowIndex = 0;
+									foreach ($filterlog as $filterent): 
+									$evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
+									$rowIndex++;?>
+									<tr class="<?=$evenRowClass?>">
+									  <td class="listMRlr nowrap" align="center" sorttable_customkey="<?=$filterent['act']?>">
+									  <a onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['tracker']},{$filterent['act']}"; ?>', outputrule);" title="<?php echo $filterent['act'] .'/'. $filterent['tracker'];?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+									  <?php if ($filterent['count']) echo $filterent['count'];?></a></center></td>
+									  <td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['time']);?></td>
+									  <td class="listMRr nowrap">
+										<?php if ($filterent['direction'] == "out"): ?>
+										<img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/out.gif" alt="Direction=OUT" title="Direction=OUT"/>
+										<?php endif; ?>
+										<?php echo htmlspecialchars($filterent['interface']);?></td>
+									  <?php 
+									  if ($config['syslog']['filterdescriptions'] === "1")
+										echo("<td class=\"listMRr nowrap\">".find_rule_by_number_buffer($filterent['rulenum'],$filterent['tracker'],$filterent['act'])."</td>");
+										
+									  $int = strtolower($filterent['interface']);
+									  $proto = strtolower($filterent['proto']);
+									  if($filterent['version'] == '6') {
+										$ipproto = "inet6";
+										$filterent['srcip'] = "[{$filterent['srcip']}]";
+										$filterent['dstip'] = "[{$filterent['dstip']}]";
+									  } else {
+									        $ipproto = "inet";
+									  }
+						
+									  $srcstr = $filterent['srcip'] . get_port_with_service($filterent['srcport'], $proto);
+									  $src_htmlclass = str_replace(array('.', ':'), '-', $filterent['srcip']);
+									  $dststr = $filterent['dstip'] . get_port_with_service($filterent['dstport'], $proto);
+									  $dst_htmlclass = str_replace(array('.', ':'), '-', $filterent['dstip']);
+									  ?>
+									  <td class="listMRr nowrap">
+										<img onclick="javascript:resolve_with_ajax('<?php echo "{$filterent['srcip']}"; ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $src_htmlclass; ?>" border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_log.gif" alt="Icon Reverse Resolve with DNS"/>
+										<a href="easyrule.php?<?php echo "action=block&amp;int={$int}&amp;src={$filterent['srcip']}&amp;ipproto={$ipproto}"; ?>" title="<?=gettext("Easy Rule: Add to Block List");?>" onclick="return confirm('<?=gettext("Do you really want to add this BLOCK rule?")."\n\n".gettext("Easy Rule is still experimental.")."\n".gettext("Continue at risk of your own peril.")."\n".gettext("Backups are also nice.")?>')">
+										<img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_block_add.gif" alt="Icon Easy Rule: Add to Block List" /></a>
+										<?php echo $srcstr . '<span class="RESOLVE-' . $src_htmlclass . '"></span>';?>
+									  </td>
+									  <td class="listMRr nowrap">
+										<img onclick="javascript:resolve_with_ajax('<?php echo "{$filterent['dstip']}"; ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $dst_htmlclass; ?>" border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_log.gif" alt="Icon Reverse Resolve with DNS"/>
+										<a href="easyrule.php?<?php echo "action=pass&amp;int={$int}&amp;proto={$proto}&amp;src={$filterent['srcip']}&amp;dst={$filterent['dstip']}&amp;dstport={$filterent['dstport']}&amp;ipproto={$ipproto}"; ?>" title="<?=gettext("Easy Rule: Pass this traffic");?>" onclick="return confirm('<?=gettext("Do you really want to add this PASS rule?")."\n\n".gettext("Easy Rule is still experimental.")."\n".gettext("Continue at risk of your own peril.")."\n".gettext("Backups are also nice.");?>')">
+										<img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_pass_add.gif" alt="Icon Easy Rule: Pass this traffic" /></a>
+										<?php echo $dststr . '<span class="RESOLVE-' . $dst_htmlclass . '"></span>';?>
+									  </td>
+									  <?php
+										if ($filterent['proto'] == "TCP")
+											$filterent['proto'] .= ":{$filterent['tcpflags']}";
+									  ?>
+									  <td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['proto']);?></td>
+									</tr>
+									<?php if (isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions'] === "2"):?>
+									<tr class="<?=$evenRowClass?>">
+									  <td colspan="2" class="listMRDescriptionL listMRlr" />
+									  <td colspan="4" class="listMRDescriptionR listMRr nowrap"><?=find_rule_by_number_buffer($filterent['rulenum'],$filterent['tracker'],$filterent['act']);?></td>
+									</tr>
+									<?php endif;
+									endforeach; 
+									buffer_rules_clear(); ?>
+						<?php else: ?>
+								  <tr>
+									<td colspan="2" class="listtopic">
+									  <?php printf(gettext("Last %s firewall log entries"),$nentries);?></td>
+								  </tr>
+								  <?php
+									if($filtertext)
+										dump_clog($filter_logfile, $nentries, true, array("$filtertext"));
+									else
+										dump_clog($filter_logfile, $nentries);
+								  ?>
+						<?php endif; ?>
+								
+								</table>
+								</div>
+							</td>
+						  </tr>
+						</table>
+						
+						
+						<form id="clearform" name="clearform" action="diag_logs_filter.php" method="post" style="margin-top: 14px;">
+							<input id="submit" name="clear" type="submit" class="btn btn-primary" value="<?=gettext("Clear log");?>" />
+						</form>
+										
+						<p><span class="vexpl"><a href="https://doc.pfsense.org/index.php/What_are_TCP_Flags%3F">TCP Flags</a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, W - CWR</span></p>
+						
+						
+						</div>
+				    </div>
+		    	</section>
+			</div>
 		</div>
-	</td>
-  </tr>
-</table>
+	</section>
 
-<p><span class="vexpl"><a href="https://doc.pfsense.org/index.php/What_are_TCP_Flags%3F">TCP Flags</a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, W - CWR</span></p>
-
-<?php include("fend.inc"); ?>
 
 <!-- AJAXY STUFF -->
 <script type="text/javascript">
@@ -458,6 +455,5 @@ function htmlspecialchars(str) {
 }
 //]]>
 </script>
-
-</body>
-</html>
+	
+<?php include("foot.inc"); ?>

@@ -46,7 +46,7 @@ $pgtitle = array(gettext("Diagnostics"),gettext("Sockets"));
 include('head.inc');
 
 ?>
-<body link="#000000" vlink="#000000" alink="#000000">
+<body>
 <?php include("fbegin.inc");
 
 $showAll = isset($_GET['showAll']);
@@ -54,19 +54,21 @@ $showAllText = $showAll ? "Show only listening sockets" : "Show all socket conne
 $showAllOption = $showAll ? "" : "?showAll";
 
 ?>
-<div id="mainarea">
-<table class="tabcont" width="100%" summary="diag sockets">
-<tr>
-<td>Information about listening sockets for both <a href="#IPv4">IPv4</a> and <a href="#IPv6">IPv6</a>.</td>
-</tr>
-<tr>
-<td>For explanation about the meaning of the information listed for each socket click <a href="#about">here</a>.</td>
-</tr>
-<tr>
-<td><input type="button" value="<?=$showAllText?>" onclick="window.location.href='diag_sockets.php<?=$showAllOption?>'"/>To show information about both listening and connected sockets click this.</td>
-</tr>
-</table>
 
+<section class="page-content-main">
+	<div class="container-fluid">	
+		<div class="row">
+		        				
+			<section class="col-xs-12">
+                
+                <p>Information about listening sockets for both <a href="#IPv4">IPv4</a> and <a href="#IPv6">IPv6</a>.</p>
+                <p>For explanation about the meaning of the information listed for each socket click <a href="#about">here</a>.</p>
+                <p><input type="button" value="<?=$showAllText?>" onclick="window.location.href='diag_sockets.php<?=$showAllOption?>'"/>To show information about both listening and connected sockets click this.</p>
+                
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+			</section>
+			
+			
 <?php
 	if (isset($_GET['showAll']))
 	{
@@ -80,61 +82,77 @@ $showAllOption = $showAll ? "" : "?showAll";
 		$elements = ($tabindex == 0 ? 7 : 7);
 		$name = ($tabindex == 0 ? 'IPv4' : 'IPv6');
 ?>
-<a name="<?=$name;?>"></a>
-<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" summary="tab">
-<tr><td class="listtopic" colspan="<?=$elements?>"><strong><?=$name;?></strong></td></tr>
-<tr><td>
-<table class="tabcont sortable" id="sortabletable" width="100%" cellspacing="0" cellpadding="6" border="0" summary="results">
-<?php
-		foreach (explode("\n", $table) as $i => $line) {
-			if ($i == 0)
-				$class = 'listhdrr';
-			else
-				$class = 'listlr';
 
-			if (trim($line) == "")
-				continue;
-			print("<tr id=\"$name$i\">\n");
-			$j = 0;
-			foreach (explode(' ', $line) as $entry) {
-				if ($entry == '' || $entry == "ADDRESS") continue;
-				if ($i == 0)
-					print("<th class=\"$class\">$entry</th>\n");
-				else		
-					print("<td class=\"$class\">$entry</td>\n");
-				if ($i > 0)
-					$class = 'listr';
-				$j++;
-			}
-			print("</tr>\n");			
-		}?>
-</table>
-</td></tr></table>
+			
+			<section class="col-xs-12">                
+
+                <div class="content-box">              
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3><a name="<?=$name;?>"></a><?=$name;?></h3>
+				    </header>
+				    
+				     <table class="table table-striped table-sort sortable" id="IPv4" summary="ipv4 routes">
+						<?php
+							foreach (explode("\n", $table) as $i => $line) {
+								if ($i == 0)
+									$class = 'listhdrr';
+								else
+									$class = 'listlr';
+					
+								if (trim($line) == "")
+									continue;
+								print("<tr id=\"$name$i\">\n");
+								$j = 0;
+								foreach (explode(' ', $line) as $entry) {
+									if ($entry == '' || $entry == "ADDRESS") continue;
+									if ($i == 0)
+										print("<th class=\"$class\">$entry</th>\n");
+									else		
+										print("<td class=\"$class\">$entry</td>\n");
+									if ($i > 0)
+										$class = 'listr';
+									$j++;
+								}
+								print("</tr>\n");			
+							}?>
+					</table>
+                </div>
+			</section>			        
 <?php
 	} 
 ?>
 
-<br />
-<a name="about"></a>
-<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="info">
-	<tr><td colspan="2" class="listtopic" >Socket information explanation</td></tr>
-<tr><td colspan="2" class="listhdrr">
-This page show the output for the commands: "sockstat -4lL" and "sockstat -6lL".<br />
+			<section class="col-xs-12">                
+
+                <div class="content-box">              
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3><a name="about"></a>Socket information explanation</h3>
+				    </header>
+				    
+				    <div class="content-box-main col-xs-12">
+						<p>This page show the output for the commands: "sockstat -4lL" and "sockstat -6lL".<br />
 Or in case of showing all sockets the output for: "sockstat -4" and "sockstat -6".<br />
 <br />
-The information listed for each socket is:</td></tr>
-	<tr><td class="listlr">USER	      </td><td class="listr">The user who owns the socket.</td></tr>
-	<tr><td class="listlr">COMMAND	      </td><td class="listr">The command which holds the socket.</td></tr>
-	<tr><td class="listlr">PID	      </td><td class="listr">The process ID of the command which holds the socket.</td></tr>
-	<tr><td class="listlr">FD 	      </td><td class="listr">The file descriptor number of the socket.</td></tr>
-	<tr><td class="listlr">PROTO	      </td><td class="listr">The transport protocol associated with the socket for Internet sockets, or the type of socket (stream or data-gram) for UNIX sockets.</td></tr>
-	<tr><td class="listlr">ADDRESS	      </td><td class="listr">(UNIX sockets only) For bound sockets, this is the file-name of the socket.  For other sockets, it is the name, PID and file descriptor number of the peer, or ``(none)'' if the socket is neither bound nor connected.</td></tr>
-	<tr><td class="listlr">LOCAL ADDRESS    </td><td class="listr">(Internet sockets only) The address the local end of the socket is bound to (see getsockname(2)).</td></tr>
-	<tr><td class="listlr">FOREIGN ADDRESS  </td><td class="listr">(Internet sockets only) The address the foreign end of the socket is bound to (see getpeername(2)).</td></tr>
-</table>
-</div>
-<?php
-include('fend.inc');
-?>
-</body>
-</html>
+The information listed for each socket is:</p>
+				    </div>
+				         
+					<table class="table table-striped table-sort sortable" id="IPv4" summary="ipv4 routes">
+						<tr><td class="listlr">USER	      </td><td class="listr">The user who owns the socket.</td></tr>
+						<tr><td class="listlr">COMMAND	      </td><td class="listr">The command which holds the socket.</td></tr>
+						<tr><td class="listlr">PID	      </td><td class="listr">The process ID of the command which holds the socket.</td></tr>
+						<tr><td class="listlr">FD 	      </td><td class="listr">The file descriptor number of the socket.</td></tr>
+						<tr><td class="listlr">PROTO	      </td><td class="listr">The transport protocol associated with the socket for Internet sockets, or the type of socket (stream or data-gram) for UNIX sockets.</td></tr>
+						<tr><td class="listlr">ADDRESS	      </td><td class="listr">(UNIX sockets only) For bound sockets, this is the file-name of the socket. <br />For other sockets, it is the name, PID and file descriptor number of the peer, or ``(none)'' if the socket is neither bound nor connected.</td></tr>
+						<tr><td class="listlr">LOCAL ADDRESS    </td><td class="listr">(Internet sockets only) The address the local end of the socket is bound to (see getsockname(2)).</td></tr>
+						<tr><td class="listlr">FOREIGN ADDRESS  </td><td class="listr">(Internet sockets only) The address the foreign end of the socket is bound to (see getpeername(2)).</td></tr>
+					</table>
+
+                </div>
+			</section>
+		</div>
+	</div>
+</section>
+
+<?php include('foot.inc'); ?>

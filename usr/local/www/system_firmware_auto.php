@@ -63,77 +63,77 @@ include("head.inc");
 
 ?>
 
-<meta http-equiv="Content-Type" content="text/html; charset=<?=system_get_language_codeset();?>" />
-<link href="gui.css" rel="stylesheet" type="text/css" />
-</head>
-
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 
 <?php include("fbegin.inc"); ?>
 
-<form action="system_firmware_auto.php" method="post">
-<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="firmware auto-check">
-	<tr>
-		<td>
-		<?php
-			$tab_array = array();
-			$tab_array[] = array(gettext("Manual Update"), false, "system_firmware.php");
-			$tab_array[] = array(gettext("Auto Update"), true, "system_firmware_check.php");
-			$tab_array[] = array(gettext("Updater Settings"), false, "system_firmware_settings.php");
-			if($g['hidedownloadbackup'] == false)
-				$tab_array[] = array(gettext("Restore Full Backup"), false, "system_firmware_restorefullbackup.php");
-			display_top_tabs($tab_array);
-		?>
-		</td>
-	</tr>
-	<tr>
-		<td class="tabcont">
-			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="outer">
-				<tr>
-					<td class="tabcont">
-						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="inner">
-							<tr>
-								<td align="center">
-									<table style="height:15;colspacing:0" width="420" border="0" cellpadding="0" cellspacing="0" summary="images">
+<!-- row -->
+<section class="page-content-main">
+	<div class="container-fluid">
+        
+        <div class="row">
+            <?php
+            	if ($input_errors) print_input_errors($input_errors);
+            	if ($savemsg) print_info_box($savemsg);
+            ?>
+            <section class="col-xs-12">
+                
+                <? include('system_firmware_tabs.php'); ?>                
+                
+                <div class="content-box tab-content">  
 
-										<tr>
-											<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_left.gif')" height="15" width="5">	</td>
-											<td>
-											<table id="progholder" style="height:15;colspacing:0" width="410" border="0" cellpadding="0" cellspacing="0" summary="">
-												<tr><td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_gray.gif')" valign="top" align="left">
-												<img src="./themes/<?=$g['theme'];?>/images/misc/bar_blue.gif" width="0" height="15" name="progressbar" id="progressbar" alt="" />
-												</td></tr>
-											</table>
-											</td>
-											<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_right.gif')" height="15" width="5"></td>
-										</tr>
-									</table>
-									<br />
-									<script type="text/javascript">
-									//<![CDATA[
-									window.onload=function(){
-										document.getElementById("status").wrap='hard';
-										document.getElementById("output").wrap='hard';
-									}
-									//]]>
-									</script>
-									<!-- status box -->
-									<textarea cols="90" rows="1" name="status" id="status"><?=gettext("Beginning firmware upgrade"); ?>.</textarea>
-									<br />
-									<!-- command output box -->
-									<textarea cols="90" rows="25" name="output" id="output"></textarea>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-</form>
+                    <form action="system_firmware_auto.php" method="post">
 
-<?php include("fend.inc"); ?>
+            			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="outer">
+            				<tr>
+            					<td class="tabcont">
+            						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="inner">
+            							<tr>
+            								<td align="center">
+            									<table width="420" border="0" cellpadding="0" cellspacing="0" summary="images">
+            
+            										<tr>
+            											<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_left.gif')" height="15" width="5">	</td>
+            											<td>
+            											<table id="progholder" style="height:15;colspacing:0" width="410" border="0" cellpadding="0" cellspacing="0" summary="">
+            												<tr><td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_gray.gif')" valign="top" align="left">
+            												<img src="./themes/<?=$g['theme'];?>/images/misc/bar_blue.gif" width="0" height="15" name="progressbar" id="progressbar" alt="" />
+            												</td></tr>
+            											</table>
+            											</td>
+            											<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_right.gif')" height="15" width="5"></td>
+            										</tr>
+            									</table>
+            									<br />
+            									<script type="text/javascript">
+            									//<![CDATA[
+            									window.onload=function(){
+            										document.getElementById("status").wrap='hard';
+            										document.getElementById("output").wrap='hard';
+            									}
+            									//]]>
+            									</script>
+            									<!-- status box -->
+            									<textarea cols="90" rows="1" name="status" id="status"><?=gettext("Beginning firmware upgrade"); ?>.</textarea>
+            									<br />
+            									<!-- command output box -->
+            									<textarea cols="90" rows="25" name="output" id="output"></textarea>
+            								</td>
+            							</tr>
+            						</table>
+            					</td>
+            				</tr>
+            			</table>
+                    </form>
+
+                </div>
+            </section>
+        </div>
+	</div>
+</section>
+
+
+<?php include("foot.inc"); ?>
 
 <?php
 
@@ -283,6 +283,3 @@ function read_body_firmware($ch, $string) {
 }
 
 ?>
-
-</body>
-</html>

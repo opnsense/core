@@ -24,44 +24,21 @@ $closehead = false;
 include("head.inc");
 ?>
 
-<style type="text/css">
-/*<![CDATA[*/
-
-input {
-	font-family: courier new, courier;
-	font-weight: normal;
-	font-size: 9pt;
-}
-
-pre {
-	border: 2px solid #435370;
-	background: #F0F0F0;
-	padding: 1em;
-	font-family: courier new, courier;
-	white-space: pre;
-	line-height: 10pt;
-	font-size: 10pt;
-}
-
-.label {
-	font-family: tahoma, verdana, arial, helvetica;
-	font-size: 11px;
-	font-weight: bold;
-}
-
-.button {
-	font-family: tahoma, verdana, arial, helvetica;
-	font-weight: bold;
-	font-size: 11px;
-}
-
-/*]]>*/
-</style>
 </head>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 
 <?php 
 include("fbegin.inc"); 
+
+?>
+
+<section class="page-content-main">
+	<div class="container-fluid">	
+		<div class="row">
+		        				
+			<section class="col-xs-12">
+
+<?
 
 // Highlates the words "PASSED", "FAILED", and "WARNING".
 function add_colors($string)
@@ -276,167 +253,210 @@ switch($action) {
 	// Default page, prints the forms to view info, test, etc...
 	default:
 	{
+		
 		// Get all AD* and DA* (IDE and SCSI) devices currently installed and stores them in the $devs array
 		exec("ls /dev | grep '^\(ad\|da\|ada\)[0-9]\{1,2\}$'", $devs);
 		?>
-		<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="default page">
-			<tr>
-				<td>
-					<?php
-					$tab_array = array();
-					$tab_array[0] = array(gettext("Information/Tests"), true, $_SERVER['PHP_SELF']);
-					//$tab_array[1] = array("Config", false, $_SERVER['PHP_SELF'] . "?action=config");
-					display_top_tabs($tab_array);
-				?>
-				</td>
-			</tr>
-		</table>
-<!--INFO-->
-		<form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="info">
-		<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="info">
-			<tbody>
-				<tr>
-					<td colspan="2" valign="top" class="listtopic"><?=gettext("Info"); ?></td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top" class="vncell"><?=gettext("Info type"); ?></td>
-					<td width="78%" class="vtable">
-						<input type="radio" name="type" value="i" /><?=gettext("Info"); ?><br />
-						<input type="radio" name="type" value="H" checked="checked" /><?=gettext("Health"); ?><br />
-						<input type="radio" name="type" value="c" /><?=gettext("SMART Capabilities"); ?><br />
-						<input type="radio" name="type" value="A" /><?=gettext("Attributes"); ?><br />
-						<input type="radio" name="type" value="a" /><?=gettext("All"); ?><br />
-					</td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top" class="vncell"><?=gettext("Device: /dev/"); ?></td>
-					<td width="78%" class="vtable">
-						<select name="device">
-						<?php
-						foreach($devs as $dev)
-						{
-							echo "<option value=\"" . $dev . "\">" . $dev . "</option>";
-						}
-						?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top">&nbsp;</td>
-					<td width="78%">
-						<input type="hidden" name="action" value="info" />
-						<input type="submit" name="submit" value="<?=gettext("View"); ?>" class="formbtn" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		</form>
-<!--TESTS-->
-		<form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="tests">
-		<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="tests">
-			<tbody>
-				<tr>
-					<td colspan="2" valign="top" class="listtopic"><?=gettext("Perform Self-tests"); ?></td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top" class="vncell"><?=gettext("Test type"); ?></td>
-					<td width="78%" class="vtable">
-						<input type="radio" name="testType" value="offline" /><?=gettext("Offline"); ?><br />
-						<input type="radio" name="testType" value="short" checked="checked" /><?=gettext("Short"); ?><br />
-						<input type="radio" name="testType" value="long" /><?=gettext("Long"); ?><br />
-						<input type="radio" name="testType" value="conveyance" /><?=gettext("Conveyance (ATA Disks Only)"); ?><br />
-					</td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top" class="vncell"><?=gettext("Device: /dev/"); ?></td>
-					<td width="78%" class="vtable">
-						<select name="device">
-						<?php
-						foreach($devs as $dev)
-						{
-							echo "<option value=\"" . $dev . "\">" . $dev . "</option>";
-						}
-						?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top">&nbsp;</td>
-					<td width="78%">
-						<input type="hidden" name="action" value="test" />
-						<input type="submit" name="submit" value="<?=gettext("Test"); ?>" class="formbtn" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		</form>
-<!--LOGS-->
-		<form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="logs">
-		<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="logs">
-			<tbody>
-				<tr>
-					<td colspan="2" valign="top" class="listtopic"><?=gettext("View Logs"); ?></td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top" class="vncell"><?=gettext("Log type"); ?></td>
-					<td width="78%" class="vtable">
-						<input type="radio" name="type" value="error" checked="checked" /><?=gettext("Error"); ?><br />
-						<input type="radio" name="type" value="selftest" /><?=gettext("Self-test"); ?><br />
-					</td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top" class="vncell"><?=gettext("Device: /dev/"); ?></td>
-					<td width="78%" class="vtable">
-						<select name="device">
-						<?php
-						foreach($devs as $dev)
-						{
-							echo "<option value=\"" . $dev . "\">" . $dev . "</option>";
-						}
-						?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top">&nbsp;</td>
-					<td width="78%">
-						<input type="hidden" name="action" value="logs" />
-						<input type="submit" name="submit" value="<?=gettext("View"); ?>" class="formbtn" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		</form>
-<!--ABORT-->
-		<form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="abort">
-		<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="abort">
-			<tbody>
-				<tr>
-					<td colspan="2" valign="top" class="listtopic"><?=gettext("Abort tests"); ?></td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top" class="vncell"><?=gettext("Device: /dev/"); ?></td>
-					<td width="78%" class="vtable">
-						<select name="device">
-						<?php
-						foreach($devs as $dev)
-						{
-							echo "<option value=\"" . $dev . "\">" . $dev . "</option>";
-						}
-						?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td width="22%" valign="top">&nbsp;</td>
-					<td width="78%">
-						<input type="hidden" name="action" value="abort" />
-						<input type="submit" name="submit" value="<?=gettext("Abort"); ?>" class="formbtn" onclick="return confirm('<?=gettext("Do you really want to abort the test?"); ?>')" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		</form>
+
+
+                
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+
+                <div class="content-box">
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3><?=gettext("Info"); ?></h3>
+				    </header>
+				    
+				    <div class="content-box-main col-xs-12">
+					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="iform" id="iform">
+					    <div class="table-responsive">
+	    			        <table class="table table-striped">
+	    				        <tbody>
+	        				        <tr>
+	        				          <td><?=gettext("Info type"); ?></td>
+	        				          <td><div class="radio">
+		        				        	<label><input type="radio" name="type" value="i" /><?=gettext("Info"); ?></label>
+											<label><input type="radio" name="type" value="H" checked="checked" /><?=gettext("Health"); ?></label>
+											<label><input type="radio" name="type" value="c" /><?=gettext("SMART Capabilities"); ?></label>
+											<label><input type="radio" name="type" value="A" /><?=gettext("Attributes"); ?></label>
+											<label><input type="radio" name="type" value="a" /><?=gettext("All"); ?></label>
+	        				          	</div>		        				          
+	        				          </td>
+	        				        </tr>
+									<tr>
+										<td><?=gettext("Device: /dev/"); ?></td>
+										<td >
+											<select name="device" class="form-control">
+											<?php
+											foreach($devs as $dev)
+											{
+												echo "<option value=\"" . $dev . "\">" . $dev . "</option>";
+											}
+											?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input type="hidden" name="action" value="info" />
+											<input type="submit" name="submit" class="btn btn-primary" value="<?=gettext("View"); ?>" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+					    </div>
+					    </form>
+				    </div>
+                </div>
+			</section>
+			
+			
+			<section class="col-xs-12">
+                
+                <div class="content-box">
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3><?=gettext("Perform Self-tests"); ?></h3>
+				    </header>
+				    
+				    <div class="content-box-main col-xs-12">
+					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="test" id="iform">
+					    <div class="table-responsive">
+	    			        <table class="table table-striped">
+	    				        <tbody>
+	        				        <tr>
+	        				          <td><?=gettext("Test type"); ?></td>
+	        				          <td>
+		        				          	<div class="radio">
+		        				          		<label><input type="radio" name="testType" value="offline" /><?=gettext("Offline"); ?></label>
+												<label><input type="radio" name="testType" value="short" checked="checked" /><?=gettext("Short"); ?></label>
+												<label><input type="radio" name="testType" value="long" /><?=gettext("Long"); ?></label>
+												<label><input type="radio" name="testType" value="conveyance" /><?=gettext("Conveyance (ATA Disks Only)"); ?></label>  
+		        				          	</div>      				          
+	        				          </td>
+	        				        </tr>
+									<tr>
+										<td><?=gettext("Device: /dev/"); ?></td>
+										<td >
+											<select name="device" class="form-control">
+											<?php
+											foreach($devs as $dev)
+											{
+												echo "<option value=\"" . $dev . "\">" . $dev . "</option>";
+											}
+											?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input type="hidden" name="action" value="test" />
+											<input type="submit" name="submit" class="btn btn-primary" value="<?=gettext("Test"); ?>" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+					    </div>
+					    </form>
+				    </div>
+                </div>
+			</section>
+
+			
+			<section class="col-xs-12">
+                
+                <div class="content-box">
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3><?=gettext("View Logs"); ?></h3>
+				    </header>
+				    
+				    <div class="content-box-main col-xs-12">
+					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="logs" id="iform">
+					    <div class="table-responsive">
+	    			        <table class="table table-striped">
+	    				        <tbody>
+	        				        <tr>
+	        				          <td><?=gettext("Log type"); ?></td>
+	        				          <td>
+		        				          <div class="radio">
+		        				          	<label><input type="radio" name="type" value="error" checked="checked" /><?=gettext("Error"); ?></label>
+										  	<label><input type="radio" name="type" value="selftest" /><?=gettext("Self-test"); ?></label>
+		        				          </div>        				          
+	        				          </td>
+	        				        </tr>
+									<tr>
+										<td><?=gettext("Device: /dev/"); ?></td>
+										<td >
+											<select name="device" class="form-control">
+											<?php
+											foreach($devs as $dev)
+											{
+												echo "<option value=\"" . $dev . "\">" . $dev . "</option>";
+											}
+											?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input type="hidden" name="action" value="logs" />
+											<input type="submit" name="submit" class="btn btn-primary" value="<?=gettext("View"); ?>" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+					    </div>
+					    </form>
+				    </div>
+                </div>
+			</section>
+			
+			
+			<section class="col-xs-12">
+                
+                <div class="content-box">
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3><?=gettext("Abort tests"); ?></h3>
+				    </header>
+				    
+				    <div class="content-box-main col-xs-12">
+					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="abort" id="iform">
+					    <div class="table-responsive">
+	    			        <table class="table table-striped">
+	    				        <tbody>
+									<tr>
+										<td><?=gettext("Device: /dev/"); ?></td>
+										<td >
+											<select name="device" class="form-control">
+											<?php
+											foreach($devs as $dev)
+											{
+												echo "<option value=\"" . $dev . "\">" . $dev . "</option>";
+											}
+											?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input type="hidden" name="action" value="logs" />
+											<input type="submit" name="submit" value="<?=gettext("Abort"); ?>" class="btn btn-primary" onclick="return confirm('<?=gettext("Do you really want to abort the test?"); ?>')" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+					    </div>
+					    </form>
+				    </div>
+                </div>
+			</section>
 
 		<?php
 		break;
@@ -446,12 +466,16 @@ switch($action) {
 // print back button on pages
 if(isset($_POST['submit']) && $_POST['submit'] != "Save")
 {
-	echo '<br /><a href="' . $_SERVER['PHP_SELF'] . '">' . gettext("Back") . '</a>';
+	echo '<br /><a class="btn btn-primary" href="' . $_SERVER['PHP_SELF'] . '">' . gettext("Back") . '</a>';
 }
 ?>
 <br />
 <?php if ($ulmsg) echo "<p><strong>" . $ulmsg . "</strong></p>\n"; ?>
 
-<?php include("fend.inc"); ?>
-</body>
-</html>
+		</section>
+	</div>
+</div>
+</section>
+
+
+<?php include("foot.inc"); ?>

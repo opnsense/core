@@ -582,12 +582,14 @@ $mth = ini_get('upload_progress_meter.store_method');
 $dir = ini_get('upload_progress_meter.file.filename_template');
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Backup/restore"));
+
 include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
+
 <script type="text/javascript">
 //<![CDATA[
 
@@ -619,7 +621,7 @@ function backuparea_change(obj) {
 //]]>
 </script>
 
-<?php if ($input_errors) print_input_errors($input_errors); ?>
+
 <?php if ($savemsg) print_info_box($savemsg); ?>
 <?php if (is_subsystem_dirty('restore')): ?><br/>
 <form action="reboot.php" method="post">
@@ -627,152 +629,225 @@ function backuparea_change(obj) {
 <?php print_info_box(gettext("The firewall configuration has been changed.") . "<br />" . gettext("The firewall is now rebooting."));?><br />
 </form>
 <?php endif; ?>
+
+
 <form action="diag_backup.php" method="post" name="iform" enctype="multipart/form-data">
-<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="diag backup">
-	<tr>
-		<td>
-<?php
-		$tab_array = array();
-		$tab_array[0] = array(gettext("Config History"), false, "diag_confbak.php");
-		$tab_array[1] = array(gettext("Backup/Restore"), true, "diag_backup.php");
-		display_top_tabs($tab_array);
-?>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<div id="mainarea">
-			<table class="tabcont" align="center" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-				<tr>
-					<td colspan="2" class="listtopic"><?=gettext("Backup configuration"); ?></td>
-				</tr>
-				<tr>
-					<td width="22%" valign="baseline" class="vncell">&nbsp;</td>
-					<td width="78%" class="vtable">
-						<p><?=gettext("Click this button to download the system configuration in XML format."); ?><br /><br /> <?=gettext("Backup area:"); ?> <?php spit_out_select_items("backuparea", false); ?></p>
-						<table>
-							<tr>
-								<td>
-									<input name="nopackages" type="checkbox" class="formcheckbox" id="nopackages" />
-								</td>
-								<td>
-									<span class="vexpl"><?=gettext("Do not backup package information."); ?></span>
-								</td>
-							</tr>
-						</table>
-						<table>
-							<tr>
-								<td>
-									<input name="encrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="encrypt_change()" />
-								</td>
-								<td>
-									<span class="vexpl"><?=gettext("Encrypt this configuration file."); ?></span>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<input name="donotbackuprrd" type="checkbox" class="formcheckbox" id="dotnotbackuprrd" checked="checked" />
-								</td>
-								<td>
-									<span class="vexpl"><?=gettext("Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of config.xml space!)"); ?></span>
-								</td>
-							</tr>
-						</table>
-						<table id="encrypt_opts">
-							<tr>
-								<td>
-									<span class="vexpl"><?=gettext("Password:"); ?> </span>
-								</td>
-								<td>
-									<input name="encrypt_password" type="password" class="formfld pwd" size="20" value="" />
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="vexpl"><?=gettext("confirm:"); ?> </span>
-								</td>
-								<td>
-									<input name="encrypt_passconf" type="password" class="formfld pwd" size="20" value="" />
-								</td>
-							</tr>
-						</table>
-						<p><input name="Submit" type="submit" class="formbtn" id="download" value="<?=gettext("Download configuration"); ?>" /></p>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="list" height="12">&nbsp;</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="listtopic"><?=gettext("Restore configuration"); ?></td>
-				</tr>
-				<tr>
-					<td width="22%" valign="baseline" class="vncell">&nbsp;</td>
-					<td width="78%" class="vtable">
-						<?=gettext("Open a"); ?> <?=$g['[product_name']?> <?=gettext("configuration XML file and click the button below to restore the configuration."); ?>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    					
+    					<?php
+								$tab_array = array();
+								$tab_array[0] = array(gettext("Config History"), false, "diag_confbak.php");
+								$tab_array[1] = array(gettext("Backup/Restore"), true, "diag_backup.php");
+								display_top_tabs($tab_array);
+						?>
+
+					
+						<div class="tab-content content-box col-xs-12">
+	    					
+	    				    <div class="container-fluid tab-content">
+	    					
+	    						<div class="tab-pane active" id="system">
+
+									<section style="margin-bottom:15px;">
+				                        <div class="content-box">              
+				                    
+				                            <header class="content-box-head col-xs-12">
+				        				        <h3>Backup configuration</h3>
+				        				    </header>
+				        				    
+				        				    <div class="content-box-main col-xs-12">
+				            				    <div class="table-responsive">
+					            				    
+				                			        <table class="table table-striped">
+				                				        <tbody>
+				                    				        <tr>
+				                    				          <td><p><?=gettext("Click this button to download the system configuration in XML format."); ?><br /><br /> <?=gettext("Backup area:"); ?> <?php spit_out_select_items("backuparea", false); ?></p></td>
+				                    				        </tr>
+				                    				        <tr>
+				                    				          <td>
+					                    				          <table>
+																		<tr>
+																			<td>
+																				<input name="nopackages" type="checkbox" class="formcheckbox" id="nopackages" />
+																			</td>
+																			<td>
+																				<span class="vexpl"><?=gettext("Do not backup package information."); ?></span>
+																			</td>
+																		</tr>
+																	</table>
+																	<table>
+																		<tr>
+																			<td>
+																				<input name="encrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="encrypt_change()" />
+																			</td>
+																			<td>
+																				<span class="vexpl"><?=gettext("Encrypt this configuration file."); ?></span>
+																			</td>
+																		</tr>
+																		<tr>
+																			<td>
+																				<input name="donotbackuprrd" type="checkbox" class="formcheckbox" id="dotnotbackuprrd" checked="checked" />
+																			</td>
+																			<td>
+																				<span class="vexpl"><?=gettext("Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of config.xml space!)"); ?></span>
+																			</td>
+																		</tr>
+																	</table>
+																	<table id="encrypt_opts">
+																		<tr>
+																			<td>
+																				<span class="vexpl"><?=gettext("Password:"); ?> </span>
+																			</td>
+																			<td>
+																				<input name="encrypt_password" type="password" class="formfld pwd" size="20" value="" />
+																			</td>
+																		</tr>
+																		<tr>
+																			<td>
+																				<span class="vexpl"><?=gettext("confirm:"); ?> </span>
+																			</td>
+																			<td>
+																				<input name="encrypt_passconf" type="password" class="formfld pwd" size="20" value="" />
+																			</td>
+																		</tr>
+																	</table>
+																	<p><input name="Submit" type="submit" class="formbtn" id="download" value="<?=gettext("Download configuration"); ?>" /></p>
+					                    				          
+					                    				          
+				                    				          </td>
+				                    				        </tr>
+				                				        </tbody>
+				                				    </table>
+				            				    </div>
+				            				    
+				        				    </div>
+				                                    
+				        				</div>
+				    				</section>
+				    				
+				    				<section>
+				                        <div class="content-box">              
+				                    
+				                            <header class="content-box-head col-xs-12">
+				        				        <h3><?=gettext("Restore configuration"); ?></h3>
+				        				    </header>
+				        				    
+				        				    <div class="content-box-main col-xs-12">
+				            				    <div class="table-responsive">
+				                			        <table class="table table-striped">
+				                				        <tbody>
+				                    				        <tr>
+				                    				          <td><p><?=gettext("Open a"); ?> <?=$g['[product_name']?> <?=gettext("configuration XML file and click the button below to restore the configuration."); ?>
 						<br /><br />
-						<?=gettext("Restore area:"); ?> <?php spit_out_select_items("restorearea", true); ?>
-						<p><input name="conffile" type="file" class="formbtn" id="conffile" size="40" /></p>
-						<table>
-							<tr>
-								<td>
-									<input name="decrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="decrypt_change()" />
-								</td>
-								<td>
-									<span class="vexpl"><?=gettext("Configuration file is encrypted."); ?></span>
-								</td>
-							</tr>
-						</table>
-						<table id="decrypt_opts">
-							<tr>
-								<td>
-									<span class="vexpl"><?=gettext("Password :"); ?></span>
-								</td>
-								<td>
-									<input name="decrypt_password" type="password" class="formfld pwd" size="20" value="" />
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="vexpl"><?=gettext("confirm :"); ?></span>
-								</td>
-								<td>
-									<input name="decrypt_passconf" type="password" class="formfld pwd" size="20" value="" />
-								</td>
-							</tr>
-						</table>
-						<p><input name="Submit" type="submit" class="formbtn" id="restore" value="<?=gettext("Restore configuration"); ?>" /></p>
-						<p><strong><span class="red"><?=gettext("Note:"); ?></span></strong><br /><?=gettext("The firewall will reboot after restoring the configuration."); ?><br /></p>
-					</td>
-				</tr>
-				<?php if (($config['installedpackages']['package'] != "") || (is_subsystem_dirty("packagelock"))) { ?>
-				<tr>
-					<td colspan="2" class="list" height="12">&nbsp;</td>
-				</tr>
-				<tr>
-					<td colspan="2" class="listtopic"><?=gettext("Package Functions"); ?></td>
-				</tr>
-				<tr>
-					<td width="22%" valign="baseline" class="vncell">&nbsp;</td>
-					<td width="78%" class="vtable">
-						<?php if ($config['installedpackages']['package'] != "") { ?>
-							<p><?=gettext("Click this button to reinstall all system packages.  This may take a while."); ?> <br /><br />
-							<input name="Submit" type="submit" class="formbtn" id="reinstallpackages" value="<?=gettext("Reinstall packages"); ?>" />
-							<br />
-							<br />
-						<?php } ?>
-						<?php if (is_subsystem_dirty("packagelock")) { ?>
-							<p><?=gettext("Click this button to clear the package lock if a package fails to reinstall properly after an upgrade."); ?> <br /><br />
-							<input name="Submit" type="submit" class="formbtn" id="clearpackagelock" value="<?=gettext("Clear Package Lock"); ?>" />
-						<?php } ?>
-							</p>
-					</td>
-				</tr>
-				<?php } ?>
-			</table>
+						<?=gettext("Restore area:"); ?> <?php spit_out_select_items("restorearea", true); ?></p></td>
+				                    				        </tr>
+				                    				        <tr>
+				                    				          <td>
+					                    				          	
+																<p><input name="conffile" type="file" class="formbtn" id="conffile" size="40" /></p>
+																<table>
+																	<tr>
+																		<td>
+																			<input name="decrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="decrypt_change()" />
+																		</td>
+																		<td>
+																			<span class="vexpl"><?=gettext("Configuration file is encrypted."); ?></span>
+																		</td>
+																	</tr>
+																</table>
+																<table id="decrypt_opts">
+																	<tr>
+																		<td>
+																			<span class="vexpl"><?=gettext("Password :"); ?></span>
+																		</td>
+																		<td>
+																			<input name="decrypt_password" type="password" class="formfld pwd" size="20" value="" />
+																		</td>
+																	</tr>
+																	<tr>
+																		<td>
+																			<span class="vexpl"><?=gettext("confirm :"); ?></span>
+																		</td>
+																		<td>
+																			<input name="decrypt_passconf" type="password" class="formfld pwd" size="20" value="" />
+																		</td>
+																	</tr>
+																</table>
+																<p><input name="Submit" type="submit" class="formbtn" id="restore" value="<?=gettext("Restore configuration"); ?>" /></p>
+																<p><strong><span class="red"><?=gettext("Note:"); ?></span></strong><br /><?=gettext("The firewall will reboot after restoring the configuration."); ?><br /></p>
+					                    				          
+					                    				          
+				                    				          </td>
+				                    				        </tr>
+				                				        </tbody>
+				                				    </table>
+				            				    </div>
+				            				    
+				        				    </div>
+				                                    
+				        				</div>
+				    				</section>
+
+<?php if (($config['installedpackages']['package'] != "") || (is_subsystem_dirty("packagelock"))) { ?>
+
+
+									<section>
+				                        <div class="content-box">              
+				                    
+				                            <header class="content-box-head col-xs-12">
+				        				        <h3><?=gettext("Package Functions"); ?></h3>
+				        				    </header>
+				        				    
+				        				    <div class="content-box-main col-xs-12">
+				            				    <div class="table-responsive">
+				                			        <table class="table table-striped">
+				                				        <tbody>
+				                    				        <tr>
+				                    				          <td>
+					                    				          	
+															<?php if ($config['installedpackages']['package'] != "") { ?>
+																<p><?=gettext("Click this button to reinstall all system packages.  This may take a while."); ?> <br /><br />
+																<input name="Submit" type="submit" class="formbtn" id="reinstallpackages" value="<?=gettext("Reinstall packages"); ?>" />
+																<br />
+																<br />
+															<?php } ?>
+															<?php if (is_subsystem_dirty("packagelock")) { ?>
+																<p><?=gettext("Click this button to clear the package lock if a package fails to reinstall properly after an upgrade."); ?> <br /><br />
+																<input name="Submit" type="submit" class="formbtn" id="clearpackagelock" value="<?=gettext("Clear Package Lock"); ?>" />
+															<?php } ?>
+																</p>					                    				          
+					                    				          
+				                    				          </td>
+				                    				        </tr>
+				                				        </tbody>
+				                				    </table>
+				            				    </div>
+				            				    
+				        				    </div>
+				                                    
+				        				</div>
+				    				</section>
+<? } ?>
+				    			
+				               	</div>
+        					</div>
+    					
+    					</div>
+
+					
+				</section>
 			</div>
-		</td>
-	</tr>
-</table>
+		</div>
+	</section>
+
+
 </form>
 
 <script type="text/javascript">
@@ -782,9 +857,8 @@ decrypt_change();
 //]]>
 </script>
 
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>
+
 <?php
 
 if (is_subsystem_dirty('restore'))

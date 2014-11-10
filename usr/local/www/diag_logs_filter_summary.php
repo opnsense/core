@@ -164,7 +164,7 @@ foreach ($filterlog as $fe) {
 }
 
 include("head.inc"); ?>
-<body link="#000000" vlink="#000000" alink="#000000">
+<body>
 <script src="/javascript/filter_log.js" type="text/javascript"></script>
 <script type="text/javascript" src="/protochart/prototype.js"></script>
 <script type="text/javascript" src="/protochart/ProtoChart.js"></script>
@@ -181,56 +181,40 @@ include("head.inc"); ?>
 </script>
 
 <?php include("fbegin.inc"); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="logs filter summary">
-  <tr><td>
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("System"), false, "diag_logs.php");
-	$tab_array[] = array(gettext("Firewall"), true, "diag_logs_filter.php");
-	$tab_array[] = array(gettext("DHCP"), false, "diag_logs_dhcp.php");
-	$tab_array[] = array(gettext("Portal Auth"), false, "diag_logs_auth.php");
-	$tab_array[] = array(gettext("IPsec"), false, "diag_logs_ipsec.php");
-	$tab_array[] = array(gettext("PPP"), false, "diag_logs_ppp.php");
-	$tab_array[] = array(gettext("VPN"), false, "diag_logs_vpn.php");
-	$tab_array[] = array(gettext("Load Balancer"), false, "diag_logs_relayd.php");
-	$tab_array[] = array(gettext("OpenVPN"), false, "diag_logs_openvpn.php");
-	$tab_array[] = array(gettext("NTP"), false, "diag_logs_ntpd.php");
-	$tab_array[] = array(gettext("Settings"), false, "diag_logs_settings.php");
-	display_top_tabs($tab_array);
-?>
- </td></tr>
-  <tr><td class="tabnavtbl">
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("Normal View"), false, "/diag_logs_filter.php");
-	$tab_array[] = array(gettext("Dynamic View"), false, "/diag_logs_filter_dynamic.php");
-	$tab_array[] = array(gettext("Summary View"), true, "/diag_logs_filter_summary.php");
-	display_top_tabs($tab_array);
-?>
-		</td>
-	</tr>
-  <tr>
-    <td>
-	<div id="mainarea">
-		<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" align="center" summary="main area">
-		<tr><td align="center">
 
-<?php printf (gettext('This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s).'), $gotlines, $lines)?><br />
-<?=gettext("NOTE: IE8 users must enable compatibility view.")?>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.php'); ?>
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	  
+							
+							
+							<? $tab_group = 'firewall'; include('diag_logs_pills.php'); ?>
+							
+							<p><?php printf (gettext('This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s).'), $gotlines, $lines)?><br />
+<?=gettext("NOTE: IE8 users must enable compatibility view.")?></p>
 
-<?php
-foreach(array_keys($fields) as $field) {
-	pie_block($summary, $field , $entriesperblock);
-	echo "<br /><br />";
-	stat_block($summary, $field , $entriesperblock);
-	echo "<br /><br />";
-}
-?>
-		</td></tr></table>
+							<pre>
+							<?php
+							foreach(array_keys($fields) as $field) {
+								pie_block($summary, $field , $entriesperblock);
+								echo "<br /><br />";
+								stat_block($summary, $field , $entriesperblock);
+								echo "<br /><br />";
+							}
+							?>
+							</pre>
+    				    </div>
+					</div>
+			    </section>
+			</div>
 		</div>
-	</td>
-  </tr>
-</table>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+	</section>
+<?php include("foot.inc"); ?>	

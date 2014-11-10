@@ -63,7 +63,7 @@ $shortcut_section = "firewall";
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -92,84 +92,75 @@ include("head.inc");
 //]]>
 </script>
 <script src="/javascript/filter_log.js" type="text/javascript"></script>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="logs filter dynamic">
-  <tr><td>
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("System"), false, "diag_logs.php");
-	$tab_array[] = array(gettext("Firewall"), true, "diag_logs_filter.php");
-	$tab_array[] = array(gettext("DHCP"), false, "diag_logs_dhcp.php");
-	$tab_array[] = array(gettext("Portal Auth"), false, "diag_logs_auth.php");
-	$tab_array[] = array(gettext("IPsec"), false, "diag_logs_ipsec.php");
-	$tab_array[] = array(gettext("PPP"), false, "diag_logs_ppp.php");
-	$tab_array[] = array(gettext("VPN"), false, "diag_logs_vpn.php");
-	$tab_array[] = array(gettext("Load Balancer"), false, "diag_logs_relayd.php");
-	$tab_array[] = array(gettext("OpenVPN"), false, "diag_logs_openvpn.php");
-	$tab_array[] = array(gettext("NTP"), false, "diag_logs_ntpd.php");
-	$tab_array[] = array(gettext("Settings"), false, "diag_logs_settings.php");
-	display_top_tabs($tab_array);
-?>
- </td></tr>
-  <tr><td class="tabnavtbl">
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("Normal View"), false, "/diag_logs_filter.php");
-	$tab_array[] = array(gettext("Dynamic View"), true, "/diag_logs_filter_dynamic.php");
-	$tab_array[] = array(gettext("Summary View"), false, "/diag_logs_filter_summary.php");
-	display_top_tabs($tab_array);
-?>
-		</td>
-	</tr>
-  <tr>
-     <td>
-	<div id="mainarea">
-		<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="main area">
-			<thead>
-			<tr>
-				<td colspan="6" class="listtopic">
-				<?php printf(gettext("Last %s records"),$nentries);?>;   <?=gettext("Pause:");?><input style="vertical-align:middle;" type="checkbox" onclick="javascript:toggle_pause();" />
-				</td>
-			</tr>
-			<tr>
-				<td width="10%" class="listhdrr"><?=gettext("Act");?></td>
-				<td width="10%" class="listhdrr"><?=gettext("Time");?></td>
-				<td width="15%" class="listhdrr"><?=gettext("If");?></td>
-				<td width="25%" class="listhdrr"><?=gettext("Source");?></td>
-				<td width="25%" class="listhdrr"><?=gettext("Destination");?></td>
-				<td width="15%" class="listhdrr"><?=gettext("Proto");?></td>
-			</tr>
-			</thead>
-			<tbody id="filter-log-entries">
-			<?php
-			$rowIndex = 0;
-			foreach ($filterlog as $filterent):
-			$evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
-			$rowIndex++;?>
-			<tr class="<?=$evenRowClass?>">
-				<td class="listMRlr nowrap" align="center">
-				<a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);">
-				<img border="0" src="<?php echo find_action_image($filterent['act']);?>" width="11" height="11" alt="<?php echo $filterent['act'];?>" title="<?php echo $filterent['act'];?>" />
-				</a>
-				</td>
-				<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['time']);?></td>
-				<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['interface']);?></td>
-				<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['src']);?></td>
-				<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['dst']);?></td>
-				<?php
-					if ($filterent['proto'] == "TCP")
-						$filterent['proto'] .= ":{$filterent['tcpflags']}";
-				?>
-				<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['proto']);?></td>
-			</tr>
-			<?php endforeach; ?>
-			<tr style="display:none;"><td></td></tr>
-			</tbody>
-		</table>
-	</div>
-     </td>
-  </tr>
-</table>
-<p><span class="vexpl"><a href="https://doc.pfsense.org/index.php/What_are_TCP_Flags%3F"><?=gettext("TCP Flags"); ?></a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, C - CWR</span></p>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.php'); ?>
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	  
+							
+							
+							<? $tab_group = 'firewall'; include('diag_logs_pills.php'); ?>
+
+
+
+							<div class="table-responsive">
+							 	<table class="table table-striped table-sort">
+									<thead>
+									<tr>
+										<td colspan="6" class="listtopic">
+										<?php printf(gettext("Last %s records"),$nentries);?>.   &nbsp;&nbsp;&nbsp;<input type="checkbox" onclick="javascript:toggle_pause();" />&nbsp;<?=gettext("Pause");?>
+										</td>
+									</tr>
+									<tr>
+										<td class="listhdrr" width="60"><?=gettext("Act");?></td>
+										<td class="listhdrr"><?=gettext("Time");?></td>
+										<td class="listhdrr"><?=gettext("If");?></td>
+										<td class="listhdrr"><?=gettext("Source");?></td>
+										<td class="listhdrr"><?=gettext("Destination");?></td>
+										<td class="listhdrr"><?=gettext("Proto");?></td>
+									</tr>
+									</thead>
+									<tbody id="filter-log-entries">
+									<?php
+									$rowIndex = 0;
+									foreach ($filterlog as $filterent):
+									$evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
+									$rowIndex++;?>
+									<tr class="<?=$evenRowClass?>">
+										<td class="listMRlr nowrap" align="center">
+										<a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);"  title="<?php echo $filterent['act'];?>"><span class="glyphicon glyphicon-remove"></span>										
+										</a>
+										</td>
+										<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['time']);?></td>
+										<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['interface']);?></td>
+										<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['src']);?></td>
+										<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['dst']);?></td>
+										<?php
+											if ($filterent['proto'] == "TCP")
+												$filterent['proto'] .= ":{$filterent['tcpflags']}";
+										?>
+										<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['proto']);?></td>
+									</tr>
+									<?php endforeach; ?>
+									<tr style="display:none;"><td></td></tr>
+									</tbody>
+								</table>
+							</div>
+    
+							<p><span class="vexpl"><a href="https://doc.pfsense.org/index.php/What_are_TCP_Flags%3F"><?=gettext("TCP Flags"); ?></a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, C - CWR</span></p></div>
+				    </div>
+		    	</section>
+			</div>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

@@ -61,7 +61,7 @@ if($_REQUEST['getactivity']) {
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -83,36 +83,31 @@ include("head.inc");
 	setTimeout('getlimiteractivity()', 5000);
 //]]>
 </script>
-<div id="maincontent">
-<?php
-	if($savemsg) {
-		echo "<div id=\"savemsg\">";
-		print_info_box($savemsg);
-		echo "</div>";	
-	}
-	if ($input_errors)
-		print_input_errors($input_errors);
-?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="diag limiter info">
-  <tr>
-    <td>
-	<table id="backuptable" class="tabcont" align="center" width="100%" border="0" cellpadding="6" cellspacing="0" summary="tabcont">
-		<tr>
-			<td align="center">
-				<table summary="results">
-					<tr><td>
-						<div id="limiteractivitydiv">
-							<?=gettext("Gathering Limiter information, please wait...");?>
-						</div>
-					</td></tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-    </td>
-  </tr>
-</table>
-</div>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+
+
+<section class="page-content-main">
+	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+		<div class="row">
+		    <section class="col-xs-12">
+
+			<?php
+				if($savemsg) {
+					echo "<div id=\"savemsg\">";
+					print_info_box($savemsg);
+					echo "</div>";	
+				}
+				if ($input_errors)
+					print_input_errors($input_errors);
+			?>
+			
+			<div id="limiteractivitydiv">
+				<?=gettext("Gathering Limiter information, please wait...");?>
+			</div>
+		 </section>
+		</div>
+	</div>
+</section>
+
+
+<?php include("foot.inc"); ?>

@@ -109,14 +109,10 @@ include("head.inc");
 
 ?>
 
-<body link="#000000" vlink="#000000" alink="#000000">
+<body>
 
 <?php include("fbegin.inc"); ?>
 
-<div id="loading">
-	<img src="/themes/<?=$g['theme'];?>/images/misc/loader.gif" alt="loader" /><?= gettext("Loading, please wait..."); ?>
-	<p>&nbsp;</p>
-</div>
 
 <?php
 
@@ -125,54 +121,99 @@ for ($i = 0; $i < ob_get_level(); $i++) { ob_end_flush(); }
 ob_implicit_flush(1);
 
 ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="diag ndp">
-	<tr>
-		<td>
-			<table class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0" summary="tabcont">
-				<tr>
-					<td class="listhdrr"><?= gettext("IPv6 address"); ?></td>
-					<td class="listhdrr"><?= gettext("MAC address"); ?></td>
-					<td class="listhdrr"><?= gettext("Hostname"); ?></td>
-					<td class="listhdr"><?= gettext("Interface"); ?></td>
-					<td class="list"></td>
-				</tr>
-				<?php foreach ($data as $entry): ?>
-					<tr>
-						<td class="listlr"><?=$entry['ipv6'];?></td>
-						<td class="listr">
-							<?php
-							$mac=trim($entry['mac']);
-							$mac_hi = strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]);
-							print $mac;
-							if(isset($mac_man[$mac_hi])){ print "<br /><font size=\"-2\"><i>{$mac_man[$mac_hi]}</i></font>"; }
-							?>
-						</td>
-						<td class="listr">
-							<?php
-							echo "&nbsp;". str_replace("Z_ ", "", $entry['dnsresolve']);
-							?>
-						</td>
-						<td class="listr">
-							<?php 
-							if(isset($hwif[$entry['interface']]))
-								echo $hwif[$entry['interface']];
-							else
-								echo $entry['interface'];
-							?>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			</table>
-		</td>
-	</tr>
-</table>
 
-<?php include("fend.inc"); ?>
+<section class="page-content-main">
+	<div class="container-fluid">
+        
+        <div class="row">
+            
+            <section class="col-xs-12">
+                <div class="content-box">              
+                    
+                    <div class="table-responsive">
+                   
+                        <table class="table table-striped table-sort sortable">
+                            <tr class="content-box-head">
+                                <th>
+                                    <table>
+                                        <tr>
+                                            <td><?= gettext("IPv6 address"); ?></td>
+                                            <td>
+                                                <span class="table-sort-icon glyphicon glyphicon-sort"></span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </th>
+                                <th>
+                                    <table>
+                                        <tr>
+                                            <td><?= gettext("MAC address"); ?></td>
+                                            <td>
+                                                <span class="table-sort-icon glyphicon glyphicon-sort"></span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </th>
+                                <th>
+                                    <table>
+                                        <tr>
+                                            <td><?= gettext("Hostname"); ?></td>
+                                            <td>
+                                                <span class="table-sort-icon glyphicon glyphicon-sort"></span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </th>
+                                <th>
+                                    <table>
+                                        <tr>
+                                            <td><?= gettext("Interface"); ?></td>
+                                            <td>
+                                                <span class="table-sort-icon glyphicon glyphicon-sort"></span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </th>
+                            </tr>
+                            
 
-<script type="text/javascript">
-//<![CDATA[
-	jQuery('#loading').html('');
-//]]>
-</script>
-</body>
-</html>
+
+							<?php foreach ($data as $entry): ?>
+								<tr>
+									<td class="listlr"><?=$entry['ipv6'];?></td>
+									<td class="listr">
+										<?php
+										$mac=trim($entry['mac']);
+										$mac_hi = strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]);
+										print $mac;
+										if(isset($mac_man[$mac_hi])){ print "<br /><font size=\"-2\"><i>{$mac_man[$mac_hi]}</i></font>"; }
+										?>
+									</td>
+									<td class="listr">
+										<?php
+										echo "&nbsp;". str_replace("Z_ ", "", $entry['dnsresolve']);
+										?>
+									</td>
+									<td class="listr">
+										<?php 
+										if(isset($hwif[$entry['interface']]))
+											echo $hwif[$entry['interface']];
+										else
+											echo $entry['interface'];
+										?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</table>
+		     
+                    </div>
+                    
+                </div>
+            </section>
+        
+        </div>
+        
+	</div>
+</section>
+		
+<?php include('foot.inc');?>

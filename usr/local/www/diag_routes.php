@@ -73,7 +73,7 @@ $shortcut_section = "routing";
 include('head.inc');
 
 ?>
-<body link="#000000" vlink="#000000" alink="#000000">
+<body>
 
 <?php include("fbegin.inc"); ?>
 
@@ -89,16 +89,17 @@ include('head.inc');
 			params += "&resolve=true";
 		if (section == "IPv6")
 			params += "&IPv6=true";
-		var myAjax = new Ajax.Request(
-			url,
+		var myAjax =  $.ajax(
+			
 			{
-				method: 'post',
-				parameters: params,
-				onComplete: update_routes_callback
+				url:url,
+				type: 'post',
+				data: params,
+				success: update_routes_callback
 			});
 	}
 
-	function update_routes_callback(transport) {
+	function update_routes_callback(data, textStatus, transport) {
 		// First line contains section
 		var responseTextArr = transport.responseText.split("\n");
 		var section = responseTextArr.shift();
@@ -107,7 +108,7 @@ include('head.inc');
 		var elements = 8;
 		var tr_class = '';
 
-		var thead = '<tr><td class="listtopic" colspan="' + elements + '"><strong>' + section + '<\/strong><\/td><\/tr>' + "\n";
+		var thead = '';
 		for (var i = 0; i < responseTextArr.length; i++) {
 			if (responseTextArr[i] == "")
 				continue;
@@ -144,94 +145,118 @@ include('head.inc');
 		jQuery('#' + section + ' > tbody').html(tbody);
 	}
 
-//]]>
-</script>
-
-<script type="text/javascript">
-//<![CDATA[
-
 	function update_all_routes() {
 		update_routes("IPv4");
 		update_routes("IPv6");
 	}
 
-	jQuery(document).ready(function(){setTimeout('update_all_routes()', 5000);});
+	jQuery(document).ready(function(){setTimeout('update_all_routes()', 3000);});
 
 //]]>
 </script>
 
-<div id="mainarea">
-<form action="diag_routes.php" method="post">
-<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="6" summary="diag routes">
 
-<tr>
-<td class="vncellreq" width="22%"><?=gettext("Name resolution");?></td>
-<td class="vtable" width="78%">
-<input type="checkbox" class="formfld" id="resolve" name="resolve" value="yes" <?php if ($_POST['resolve'] == 'yes') echo "checked=\"checked\""; ?> /><?=gettext("Enable");?>
-<br />
-<span class="expl"><?=gettext("Enable this to attempt to resolve names when displaying the tables.");?></span>
-</td>
-</tr>
 
-<tr>
-<td class="vncellreq" width="22%"><?=gettext("Number of rows");?></td>
-<td class="vtable" width="78%">
-<select id="limit" name="limit">
+
+
+
+<section class="page-content-main">
+	<div class="container-fluid">	
+		<div class="row">
+		        				
+			<section class="col-xs-12">
+                
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+
+                <div class="content-box">              
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3><?=gettext("Routing tables"); ?></h3>
+				    </header>
+				    
+				    <div class="content-box-main col-xs-12">
+
+						<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
+					    <div class="table-responsive">
+	    			        <table class="table table-striped">
+	    				        <tbody>
+	        				        <tr>
+	        				          <td><?=gettext("Name resolution");?></td>
+	        				          <td><input type="checkbox" class="formfld" id="resolve" name="resolve" value="yes" <?php if ($_POST['resolve'] == 'yes') echo "checked=\"checked\""; ?> />&nbsp;<?=gettext("Enable");?>
+									  	<p class="text-muted"><em><small><?=gettext("Enable this to attempt to resolve names when displaying the tables.");?></small></em></p>
+									  </td>
+	        				        </tr>
+	        				        <tr>
+	        				          <td><?=gettext("Number of rows");?></td>
+	        				          <td><select id="limit" name="limit" class="form-control">
+										<?php
+											foreach (array("10", "50", "100", "200", "500", "1000", gettext("all")) as $item) {
+												echo "<option value=\"{$item}\" " . ($item == "100" ? "selected=\"selected\"" : "") . ">{$item}</option>\n";
+											}
+										?>
+										</select>
+										<p class="text-muted"><em><small><?=gettext("Select how many rows to display.");?></small></em></p>
+									 </td>
+	        				        </tr>
+	        				        <tr>
+	        				          <td><?=gettext("Filter expression");?></td>
+	        				          <td>
+		        				          <input type="text" class="form-control search" name="filter" id="filter" />
+										  <p class="text-muted"><em><small><?=gettext("Use a regular expression to filter IP address or hostnames.");?></small></em></p>		        				          
+	        				          </td>
+	        				        </tr>
+	        				        <tr>
+	        				          <td>&nbsp;</td>
+	        				          <td>
+		        				          <input type="button" class="btn btn-primary" name="update" onclick="update_all_routes();" value="<?=gettext("Update"); ?>" />
+										  <p class="text-muted"><em><small><span class="text-danger"><strong><?=gettext("Note:")?></strong></span> <?=gettext("By enabling name resolution, the query should take a bit longer. You can stop it at any time by clicking the Stop button in your browser.");?></small></em></p>
+		        				      </td>
+	        				        </tr>	        				       
+	    				        </tbody>
+	    				    </table>
+					    </div>
+					    </form>
+				    </div>
+                            
+				</div>
+			</section>
+
+			<section class="col-xs-12">                
+
+                <div class="content-box">              
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3>IPv4</h3>
+				    </header>
+				    
+				     <table class="table table-striped table-sort sortable" id="IPv4" summary="ipv4 routes">
+						<tbody>
+							<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>
+						</tbody>
+					</table>
+                </div>
+			</section>
+			
+			<section class="col-xs-12">                
+
+                <div class="content-box">              
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3>IPv6</h3>
+				    </header>
+					<table class="table table-striped table-sort sortable" id="IPv6" summary="IPv6 routes">
+					
+						<tbody>
+							<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>
+						</tbody>
+					</table>
+                </div>
+			</section>
+		</div>
+	</div>
+</section>
+
+
 <?php
-	foreach (array("10", "50", "100", "200", "500", "1000", gettext("all")) as $item) {
-		echo "<option value=\"{$item}\" " . ($item == "100" ? "selected=\"selected\"" : "") . ">{$item}</option>\n";
-	}
+include('foot.inc');
 ?>
-</select>
-<br />
-<span class="expl"><?=gettext("Select how many rows to display.");?></span>
-</td>
-</tr>
-
-<tr>
-<td class="vncellreq" width="22%"><?=gettext("Filter expression");?></td>
-<td class="vtable" width="78%">
-<input type="text" class="formfld search" name="filter" id="filter" />
-<br />
-<span class="expl"><?=gettext("Use a regular expression to filter IP address or hostnames.");?></span>
-</td>
-</tr>
-
-<tr>
-<td class="vncellreq" width="22%">&nbsp;</td>
-<td class="vtable" width="78%">
-<input type="button" class="formbtn" name="update" onclick="update_all_routes();" value="<?=gettext("Update"); ?>" />
-<br />
-<br />
-<span class="vexpl"><span class="red"><strong><?=gettext("Note:")?></strong></span> <?=gettext("By enabling name resolution, the query should take a bit longer. You can stop it at any time by clicking the Stop button in your browser.");?></span>
-</td>
-</tr>
-
-</table>
-</form>
-
-<table class="tabcont sortable" width="100%" cellspacing="0" cellpadding="6" border="0" id="IPv4" summary="ipv4 routes">
-	<thead>
-		<tr><td class="listtopic"><strong>IPv4</strong></td></tr>
-	</thead>
-	<tbody>
-		<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>
-	</tbody>
-</table>
-<table class="tabcont sortable" width="100%" cellspacing="0" cellpadding="6" border="0" id="IPv6" summary="ipv6 routes">
-	<thead>
-		<tr><td class="listtopic"><strong>IPv6</strong></td></tr>
-	</thead>
-	<tbody>
-		<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>
-	</tbody>
-</table>
-
-</div>
-
-<?php
-include('fend.inc');
-?>
-
-</body>
-</html>

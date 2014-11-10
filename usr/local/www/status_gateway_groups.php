@@ -55,111 +55,124 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
+
 <?php include("fbegin.inc"); ?>
-	<table width="100%" border="0" cellpadding="0" cellspacing="0">
-		<tr>
-		  <td>
-<?php
-			$tab_array = array();
-			$tab_array[0] = array(gettext("Gateways"), false, "status_gateways.php");
-			$tab_array[1] = array(gettext("Gateway Groups"), true, "status_gateway_groups.php");
-			display_top_tabs($tab_array);
-?>
-</td></tr>
- <tr>
-   <td>
-	<div id="mainarea">
-             <table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td width="20%" class="listhdrr"><?=gettext("Group Name"); ?></td>
-                  <td width="50%" class="listhdrr"><?=gettext("Gateways"); ?></td>
-                  <td width="30%" class="listhdr"><?=gettext("Description"); ?></td>
-		</tr>
-			  <?php $i = 0; foreach ($a_gateway_groups as $gateway_group): ?>
-                <tr>
-                  <td class="listlr">
-                    <?php
-			echo $gateway_group['name'];
-			?>
-			
-                  </td>
-                  <td class="listr">
-			<table border='0'>
-                <?php
-			/* process which priorities we have */
-			$priorities = array();
-			foreach($gateway_group['item'] as $item) {
-				$itemsplit = explode("|", $item);
-				$priorities[$itemsplit[1]] = true;
-			}
-			$priority_count = count($priorities);
-			ksort($priorities);
+	
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<?php
+					        /* active tabs */
+					        $tab_array = array();
+					        $tab_array[] = array(gettext("Gateways"), false, "status_gateways.php");
+					        $tab_array[] = array(gettext("Gateway Groups"), true, "status_gateway_groups.php");
+					        display_top_tabs($tab_array);
+					?>
+				    
+				    <div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	  
 
-			echo "<tr>";
-			foreach($priorities as $number => $tier) {
-				echo "<td width='120'>" . sprintf(gettext("Tier %s"), $number) . "</td>";
-			}
-			echo "</tr>\n";
-
-			/* inverse gateway group to gateway priority */
-			$priority_arr = array();
-			foreach($gateway_group['item'] as $item) {
-				$itemsplit = explode("|", $item);
-				$priority_arr[$itemsplit[1]][] = $itemsplit[0];
-			}
-			ksort($priority_arr);
-			$p = 1;
-			foreach($priority_arr as $number => $tier) {
-				/* for each priority process the gateways */
-				foreach($tier as $member) {
-					/* we always have $priority_count fields */
-					echo "<tr>";
-					$c = 1;
-					while($c <= $priority_count) {
-						$monitor = lookup_gateway_monitor_ip_by_name($member);
-						if($p == $c) {
-							$status = $gateways_status[$monitor]['status'];
-							if (stristr($status, "down")) {
-                                        			$online = gettext("Offline");
-                                        			$bgcolor = "#F08080";  // lightcoral
-                                			} elseif (stristr($status, "loss")) {
-                                        			$online = gettext("Warning, Packetloss");
-                                        			$bgcolor = "#F0E68C";  // khaki
-                                			} elseif (stristr($status, "delay")) {
-                                        			$online = gettext("Warning, Latency");
-                                        			$bgcolor = "#F0E68C";  // khaki
-                                			} elseif ($status == "none") {
-                                        			$online = gettext("Online");
-                                        			$bgcolor = "#90EE90";  // lightgreen
-                                			} else {
-								$online = gettext("Gathering data");
-								$bgcolor = "#ADD8E6";  // lightblue
+							<div class="responsive-table">
+					    
+	
+				              <table class="table table-striped table-sort">
+				                <tr>
+				                  <td width="20%" class="listhdrr"><?=gettext("Group Name"); ?></td>
+				                  <td width="50%" class="listhdrr"><?=gettext("Gateways"); ?></td>
+				                  <td width="30%" class="listhdr"><?=gettext("Description"); ?></td>
+							  </tr>
+							  <?php $i = 0; foreach ($a_gateway_groups as $gateway_group): ?>
+				                <tr>
+				                  <td class="listlr">
+				                    <?php
+							echo $gateway_group['name'];
+							?>
+							
+				                  </td>
+				                  <td class="listr">
+							<table border='0'>
+				                <?php
+							/* process which priorities we have */
+							$priorities = array();
+							foreach($gateway_group['item'] as $item) {
+								$itemsplit = explode("|", $item);
+								$priorities[$itemsplit[1]] = true;
 							}
-							echo "<td bgcolor='$bgcolor'>&nbsp;". htmlspecialchars($member) .", $online&nbsp;</td>";
-						} else {
-							echo "<td>&nbsp;</td>";
-						}
-						$c++;
-					}
-					echo "</tr>\n";
-				}
-				$p++;
-			}
-		    ?>
-			</table>
-                  </td>
-                  <td class="listbg">
-                    <?=htmlspecialchars($gateway_group['descr']);?>&nbsp;
-                  </td>
-		</tr>
-			  <?php $i++; endforeach; ?>
+							$priority_count = count($priorities);
+							ksort($priorities);
+				
+							echo "<tr>";
+							foreach($priorities as $number => $tier) {
+								echo "<td width='120'>" . sprintf(gettext("Tier %s"), $number) . "</td>";
+							}
+							echo "</tr>\n";
+				
+							/* inverse gateway group to gateway priority */
+							$priority_arr = array();
+							foreach($gateway_group['item'] as $item) {
+								$itemsplit = explode("|", $item);
+								$priority_arr[$itemsplit[1]][] = $itemsplit[0];
+							}
+							ksort($priority_arr);
+							$p = 1;
+							foreach($priority_arr as $number => $tier) {
+								/* for each priority process the gateways */
+								foreach($tier as $member) {
+									/* we always have $priority_count fields */
+									echo "<tr>";
+									$c = 1;
+									while($c <= $priority_count) {
+										$monitor = lookup_gateway_monitor_ip_by_name($member);
+										if($p == $c) {
+											$status = $gateways_status[$monitor]['status'];
+											if (stristr($status, "down")) {
+				                                        			$online = gettext("Offline");
+				                                        			$bgcolor = "#F08080";  // lightcoral
+				                                			} elseif (stristr($status, "loss")) {
+				                                        			$online = gettext("Warning, Packetloss");
+				                                        			$bgcolor = "#F0E68C";  // khaki
+				                                			} elseif (stristr($status, "delay")) {
+				                                        			$online = gettext("Warning, Latency");
+				                                        			$bgcolor = "#F0E68C";  // khaki
+				                                			} elseif ($status == "none") {
+				                                        			$online = gettext("Online");
+				                                        			$bgcolor = "#90EE90";  // lightgreen
+				                                			} else {
+												$online = gettext("Gathering data");
+												$bgcolor = "#ADD8E6";  // lightblue
+											}
+											echo "<td bgcolor='$bgcolor'>&nbsp;". htmlspecialchars($member) .", $online&nbsp;</td>";
+										} else {
+											echo "<td>&nbsp;</td>";
+										}
+										$c++;
+									}
+									echo "</tr>\n";
+								}
+								$p++;
+							}
+						    ?>
+							</table>
+				                  </td>
+				                  <td class="listbg">
+				                    <?=htmlspecialchars($gateway_group['descr']);?>&nbsp;
+				                  </td>
+						</tr>
+							  <?php $i++; endforeach; ?>
+				
+					</table>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</section>
 
-	</table>
-     </div>
-    </td>
-  </tr>
-</table>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>

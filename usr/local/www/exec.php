@@ -186,49 +186,28 @@ if (isBlank( $_POST['txtRecallBuffer'] )) {
    }
 //]]>
 </script>
-<style type="text/css">
-/*<![CDATA[*/
-
-input {
-   font-family: courier new, courier;
-   font-weight: normal;
-   font-size: 9pt;
-}
-
-pre {
-   border: 2px solid #435370;
-   background: #F0F0F0;
-   padding: 1em;
-   font-family: courier new, courier;
-   white-space: pre;
-   line-height: 10pt;
-   font-size: 10pt;
-}
-
-.label {
-   font-family: tahoma, verdana, arial, helvetica;
-   font-size: 11px;
-   font-weight: bold;
-}
-
-.button {
-   font-family: tahoma, verdana, arial, helvetica;
-   font-weight: bold;
-   font-size: 11px;
-}
-
-/*]]>*/
-</style>
 </head>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
-<?php include("fbegin.inc"); ?>
-<?php if (isBlank($_POST['txtCommand'])): ?>
-<p class="red"><strong><?=gettext("Note: this function is unsupported. Use it " .
-"on your own risk"); ?>!</strong></p>
-<?php endif; ?>
-<?php if ($ulmsg) echo "<p><strong>" . $ulmsg . "</strong></p>\n"; ?>
-<?php
+<body>
+	<?php include("fbegin.inc"); ?>
 
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+			    
+			    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" enctype="multipart/form-data" name="frmExecPlus" onsubmit="return frmExecPlus_onSubmit( this );">  
+				      
+				<?php if ($ulmsg) echo "<p><strong>" . $ulmsg . "</strong></p>\n"; ?>
+				     
+				<?php if (!isBlank($_POST['txtCommand']) || !isBlank($_POST['txtPHPCommand'])):?>
+				<section class="col-xs-12">
+	                <div class="content-box">              
+	                
+	                    <header class="content-box-head col-xs-12">
+	    			        <h3><?=gettext("Execute result"); ?></h3>
+	    			    </header>
+						
+						<div class="content-box-main col-xs-12">
+<?php			       
 if (!isBlank($_POST['txtCommand'])) {
    puts("<pre>");
    puts("\$ " . htmlspecialchars($_POST['txtCommand']));
@@ -240,7 +219,6 @@ if (!isBlank($_POST['txtCommand'])) {
    puts("&nbsp;</pre>");
 }
 
-
 if (!isBlank($_POST['txtPHPCommand'])) {
    puts("<pre>");
    require_once("config.inc");
@@ -250,62 +228,150 @@ if (!isBlank($_POST['txtPHPCommand'])) {
 }
 
 ?>
-<div id="niftyOutter">
-<form action="exec.php" method="post" enctype="multipart/form-data" name="frmExecPlus" onsubmit="return frmExecPlus_onSubmit( this );">
-  <table summary="exec">
-	<tr>
-	  <td colspan="2" valign="top" class="vnsepcell"><?=gettext("Execute Shell command"); ?></td>
-	</tr>  
-    <tr>
-      <td class="label" align="right"><?=gettext("Command"); ?>:</td>
-      <td class="type"><input id="txtCommand" name="txtCommand" type="text" class="formfld unknown" size="80" value="<?=htmlspecialchars($_POST['txtCommand']);?>" /></td>
-    </tr>
-    <tr>
-      <td valign="top">&nbsp;&nbsp;&nbsp;</td>
-      <td valign="top" class="label">
-         <input type="hidden" name="txtRecallBuffer" value="<?=htmlspecialchars($_POST['txtRecallBuffer']) ?>" />
-         <input type="button" class="button" name="btnRecallPrev" value="<" onclick="btnRecall_onClick( this.form, -1 );" />
-         <input type="submit" class="button" value="<?=gettext("Execute"); ?>" />
-         <input type="button" class="button" name="btnRecallNext" value=">" onclick="btnRecall_onClick( this.form,  1 );" />
-         <input type="button"  class="button" value="<?=gettext("Clear"); ?>" onclick="return Reset_onClick( this.form );" />
-      </td>
-    </tr>
-	<tr>
-	  <td colspan="2" valign="top" height="16"></td>
-	</tr>
-	<tr>
-	  <td colspan="2" valign="top" class="vnsepcell"><?=gettext("Download"); ?></td>
-	</tr>    
-    <tr>
-      <td align="right"><?=gettext("File to download"); ?>:</td>
-      <td>
-        <input name="dlPath" type="text" class="formfld file" id="dlPath" size="50" />
-	</td></tr>
-    <tr>
-      <td valign="top">&nbsp;&nbsp;&nbsp;</td>
-      <td valign="top" class="label">	
-        <input name="submit" type="submit"  class="button" id="download" value="<?=gettext("Download"); ?>" />
-        </td>
-    </tr>
-	<tr>
-	  <td colspan="2" valign="top" height="16"></td>
-	</tr>
-	<tr>
-	  <td colspan="2" valign="top" class="vnsepcell"><?=gettext("Upload"); ?></td>
-	</tr>    
-    <tr>
-      <td align="right"><?=gettext("File to upload"); ?>:</td>
-      <td valign="top" class="label">
-	<input name="ulfile" type="file" class="formfld file" id="ulfile" />
-	</td></tr>
-    <tr>
-      <td valign="top">&nbsp;&nbsp;&nbsp;</td>
-      <td valign="top" class="label">	
-        <input name="submit" type="submit"  class="button" id="upload" value="<?=gettext("Upload"); ?>" /></td>
-    </tr>
-	<tr>
-	  <td colspan="2" valign="top" height="16"></td>
-	</tr>
+
+						</div>
+	                </div>
+				</section>
+				<? endif; ?>
+		
+				<section class="col-xs-12">
+                    <div class="content-box">              
+                
+                        <header class="content-box-head col-xs-12">
+    				        <h3><?=gettext("Execute Shell command"); ?></h3>
+    				    </header>
+					
+						 <div class="content-box-main col-xs-12">
+							 <?php if (isBlank($_POST['txtCommand'])): ?>
+							<p class="text-danger"><strong><?=gettext("Note: this function is unsupported. Use it " .
+							"on your own risk"); ?>!</strong></p>
+							<?php endif; ?>
+							
+							<table class="table table-striped">
+        				        <tbody>
+            				        <tr>
+            				          <td width="150"><?=gettext("Command"); ?>:</td>
+            				          <td><input id="txtCommand" name="txtCommand" type="text" class="form-control" size="80" value="<?=htmlspecialchars($_POST['txtCommand']);?>" /></td>
+            				        </tr>
+            				         <tr>
+								      <td>&nbsp;&nbsp;&nbsp;</td>
+								      <td>
+								         <input type="hidden" name="txtRecallBuffer" value="<?=htmlspecialchars($_POST['txtRecallBuffer']) ?>" />
+								         <input type="button" class="btn" name="btnRecallPrev" value="<" onclick="btnRecall_onClick( this.form, -1 );" />
+								         <input type="submit" class="btn btn-primary" value="<?=gettext("Execute"); ?>" />
+								         <input type="button" class="btn" name="btnRecallNext" value=">" onclick="btnRecall_onClick( this.form,  1 );" />
+								         <input type="button"  class="btn" value="<?=gettext("Clear"); ?>" onclick="return Reset_onClick( this.form );" />
+								      </td>
+								    </tr>    
+        				        </tbody>
+							</table>
+
+						 </div>
+                    </div>
+				</section>
+			  
+				
+			        				
+				<section class="col-xs-12">
+                    <div class="content-box">              
+                
+                        <header class="content-box-head col-xs-12">
+    				        <h3><?=gettext("Download"); ?></h3>
+    				    </header>
+					
+						 <div class="content-box-main col-xs-12">
+						
+							<table class="table table-striped">
+        				        <tbody> 
+							     	<tr>
+								 		<td width="150"><?=gettext("File to download"); ?>:</td>
+								 		<td><input name="dlPath" type="text" class="form-control file" id="dlPath" size="50" /></td>
+							     	</tr>
+							     	<tr>
+								 		<td valign="top">&nbsp;</td>
+								 		<td valign="top">	
+									 		<input name="submit" type="submit"  class="btn btn-primary" id="download" value="<?=gettext("Download"); ?>" />
+        								</td>
+    								</tr>
+        				        </tbody>
+							</table>
+							 
+						 </div>
+                    </div>
+				</section>
+				
+				
+			        				
+				<section class="col-xs-12">
+                    <div class="content-box">              
+                
+                        <header class="content-box-head col-xs-12">
+    				        <h3><?=gettext("Upload"); ?></h3>
+    				    </header>
+					
+						 <div class="content-box-main col-xs-12">
+							 
+							 <table class="table table-striped">
+        				        <tbody> 
+							     	<tr>
+								 		<td width="150"><?=gettext("File to upload"); ?>:</td>
+								 		<td><input name="ulfile" type="file" class="formfld file" id="ulfile" /></td>
+							     	</tr>
+							     	<tr>
+								 		<td valign="top">&nbsp;</td>
+								 		<td valign="top">	
+									 		<input name="submit" type="submit"  class="btn btn-primary" id="upload" value="<?=gettext("Upload"); ?>" />
+        								</td>
+    								</tr>
+        				        </tbody>
+							</table>
+							 
+						 </div>
+                    </div>
+				</section>
+				
+				
+			        				
+				<section class="col-xs-12">
+                    <div class="content-box">              
+                
+                        <header class="content-box-head col-xs-12">
+    				        <h3><?=gettext("PHP Execute"); ?></h3>
+    				    </header>
+					
+						 <div class="content-box-main col-xs-12">
+							
+							<textarea id="txtPHPCommand" name="txtPHPCommand" rows="9" cols="80"><?=htmlspecialchars($_POST['txtPHPCommand']);?></textarea>
+							<br />
+							
+							<input type="submit" class="btn btn-primary" value="<?=gettext("Execute"); ?>" />
+							<p><strong><?=gettext("Example"); ?>:</strong>   interfaces_carp_setup();</p>
+							 
+						 </div>
+                    </div>
+				</section>
+				 
+				
+				</form>
+				  
+			</div>
+		</div>
+	</section>
+	
+	<?php include("foot.inc"); ?>
+
+				
+				
+<!--
+
+
+<?php
+
+
+
+?>
+
+
 	<tr>
 	  <td colspan="2" valign="top" class="vnsepcell"><?=gettext("PHP Execute"); ?></td>
 	</tr>
@@ -341,3 +407,5 @@ if($_POST)
 	conf_mount_ro();
 
 ?>
+
+-->

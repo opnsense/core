@@ -119,20 +119,13 @@ if ($_POST) {
 			if (isset($id) && isset($a_vip[$id])) {
 				$ignore_if = $a_vip[$id]['interface'];
 				$ignore_mode = $a_vip[$id]['mode'];
-				if (isset($a_vip[$id]['vhid']))
-					$ignore_vhid = $a_vip[$id]['vhid'];
 			} else {
 				$ignore_if = $_POST['interface'];
 				$ignore_mode = $_POST['mode'];
 			}
 
-			if (!isset($ignore_vhid))
-				$ignore_vhid = $_POST['vhid'];
-
 			if ($ignore_mode == 'carp')
-				$ignore_if .= "_vip{$ignore_vhid}";
-			else
-				$ignore_if .= "_virtualip{$id}";
+				$ignore_if .= "_vip{$id}";
 
 			if (is_ipaddr_configured($_POST['subnet'], $ignore_if))
 				$input_errors[] = gettext("This IP address is being used by another interface or VIP.");
@@ -185,6 +178,11 @@ if ($_POST) {
 			$parent_ip = get_interface_ipv6($_POST['interface']);
 			$parent_sn = get_interface_subnetv6($_POST['interface']);
 			$subnet = gen_subnetv6($parent_ip, $parent_sn);
+		}
+
+		if (isset($parent_ip) && !ip_in_subnet($_POST['subnet'], "{$subnet}/{$parent_sn}") && !ip_in_interface_alias_subnet($_POST['interface'], $_POST['subnet'])) {
+			$cannot_find = $_POST['subnet'] . "/" . $_POST['subnet_bits'] ;
+			$input_errors[] = sprintf(gettext("Sorry, we could not locate an interface with a matching subnet for %s.  Please add an IP alias in this subnet on this interface."),$cannot_find);
 		}
 
 		if ($_POST['interface'] == "lo0")

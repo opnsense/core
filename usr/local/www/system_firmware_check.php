@@ -51,67 +51,80 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 
 <?php include("fbegin.inc"); ?>
 
-<form action="system_firmware_auto.php" method="post">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="firmware check">
-	<tr>
-		<td>
-		<?php
-			$tab_array = array();
-			$tab_array[] = array(gettext("Manual Update"), false, "system_firmware.php");
-			$tab_array[] = array(gettext("Auto Update"), true, "system_firmware_check.php");
-			$tab_array[] = array(gettext("Updater Settings"), false, "system_firmware_settings.php");
-			if($g['hidedownloadbackup'] == false)
-				$tab_array[] = array(gettext("Restore Full Backup"), false, "system_firmware_restorefullbackup.php");
-			display_top_tabs($tab_array);
-		?>
-		</td>
-	</tr>
-	<tr>
-		<td class="tabcont">
-			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="">
-				<tr>
-					<td align="center">
-						<!-- progress bar -->
-						<table style="height:15;colspacing:0" width="420" border="0" cellpadding="0" cellspacing="0" summary="images">
+<!-- row -->
+<section class="page-content-main">
+	<div class="container-fluid">
+        
+        <div class="row">
+            <?php
+            	if ($input_errors) print_input_errors($input_errors);
+            	if ($savemsg) print_info_box($savemsg);
+            ?>
+            <section class="col-xs-12">
+                
+                <? include('system_firmware_tabs.php'); ?>                
+                
+                <div class="content-box tab-content"> 
+                    
+                    <form action="system_firmware_auto.php" method="post"> 
+                    
+                        <div class="table-responsive">
+    
+                			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="" class="table table-striped">
+                				<tr>
+                					<td align="center">
+                						<!-- progress bar -->
+                						<table width="420" border="0" cellpadding="0" cellspacing="0" summary="images">
+                
+                							<tr>
+                								<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_left.gif')" height="15" width="5"></td>
+                								<td>
+                									<table id="progholder" style="height:15;colspacing:0" width="410" border="0" cellpadding="0" cellspacing="0" summary="">
+                										<tr><td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_gray.gif')" valign="top" align="left">
+                										<img src="./themes/<?=$g['theme'];?>/images/misc/bar_blue.gif" width="0" height="15" name="progressbar" id="progressbar" alt="" />
+                										</td></tr>
+                									</table>
+                								</td>
+                								<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_right.gif')" height="15" width="5"></td>
+                							</tr>
+                						</table>
+                						<br />
+                						<!-- command output box -->
+                						<script type="text/javascript">
+                						//<![CDATA[
+                						window.onload=function(){
+                							document.getElementById("output").wrap='hard';
+                						}
+                						//]]>
+                						</script>
+                					
+                						<textarea name="output" id="output"></textarea>
+                					
+                						<div id="backupdiv" style="visibility:hidden">
+                							<?php if ($g['hidebackupbeforeupgrade'] === false): ?>
+                							<br /><input type="checkbox" name="backupbeforeupgrade" id="backupbeforeupgrade" />&nbsp;<?=gettext("Perform full backup prior to upgrade");?>
+                							<?php endif; ?>
+                						</div>
+                						<input id='invokeupgrade' style='visibility:hidden' class="btn btn-primary" type="submit" value="<?=gettext("Invoke Auto Upgrade"); ?>" />
+                					</td>
+                				</tr>
+                			</table>
+    		
+    		            </div>
+		            
+                    </form>
 
-							<tr>
-								<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_left.gif')" height="15" width="5"></td>
-								<td>
-									<table id="progholder" style="height:15;colspacing:0" width="410" border="0" cellpadding="0" cellspacing="0" summary="">
-										<tr><td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_gray.gif')" valign="top" align="left">
-										<img src="./themes/<?=$g['theme'];?>/images/misc/bar_blue.gif" width="0" height="15" name="progressbar" id="progressbar" alt="" />
-										</td></tr>
-									</table>
-								</td>
-								<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_right.gif')" height="15" width="5"></td>
-							</tr>
-						</table>
-						<br />
-						<!-- command output box -->
-						<script type="text/javascript">
-						//<![CDATA[
-						window.onload=function(){
-							document.getElementById("output").wrap='hard';
-						}
-						//]]>
-						</script>
-						<textarea style="border:1;bordercolordark:#000000;bordercolorlight:#000000" cols="90" rows="9" name="output" id="output"></textarea>
-						<div id="backupdiv" style="visibility:hidden">
-							<?php if ($g['hidebackupbeforeupgrade'] === false): ?>
-							<br /><input type="checkbox" name="backupbeforeupgrade" id="backupbeforeupgrade" /><?=gettext("Perform full backup prior to upgrade");?>
-							<?php endif; ?>
-						</div>
-						<input id='invokeupgrade' style='visibility:hidden' type="submit" value="<?=gettext("Invoke Auto Upgrade"); ?>" />
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
+                </div>
+            </section>
+        
+        </div>
+        
+	</div>
+</section>
 
 <p>
 
@@ -192,8 +205,7 @@ $txt .= "    " . gettext("New version") .": ".  htmlspecialchars($remote_version
 $txt .= "  " . gettext("Update source") .": ".  $updater_url . "\\n";
 update_output_window($txt);
 ?>
+
 </p>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+<?php include("foot.inc"); ?>

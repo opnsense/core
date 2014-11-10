@@ -169,116 +169,111 @@ function display_host_results ($address,$hostname,$dns_speeds) {
 }
 
 include("head.inc"); ?>
-<body link="#000000" vlink="#000000" alink="#000000">
+<body>
 <?php include("fbegin.inc"); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="diag dns">
-        <tr>
-                <td>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-	<form action="diag_dns.php" method="post" name="iform" id="iform">
-	  <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="tabcont">
-		<tr>
-			<td colspan="2" valign="top" class="listtopic"> <?=gettext("Resolve DNS hostname or IP");?></td>
-		</tr>
-        <tr>
-		  <td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname or IP");?></td>
-		  <td width="78%" class="vtable">
-            <?=$mandfldhtml;?>
-			<table summary="results">
-				<tr><td valign="top">
-			<input name="host" type="text" class="formfld" id="host" size="20" value="<?=htmlspecialchars($host);?>" />
-			</td>
-			<?php if ($resolved && $type) { ?>
-			<td valign="middle">&nbsp;=&nbsp;</td><td>
-			<font size="+1">
-<?php
-				$found = 0;
-				if(is_array($resolved)) { 
-					foreach($resolved as $hostitem) {
-						if($hostitem <> "") {
-							echo $hostitem . "<br />";
-							$found++;
-						}
-					}
-				} else {
-					echo $resolved; 
-				} 
-				if($found > 0) { ?>
-					<br/></font><font size='-2'>
-				<?PHP	if($alias_exists) { ?>
-							An alias already exists for the hostname <?= htmlspecialchars($host) ?>. <br />
-							<input type="hidden" name="override" value="true"/>
-							<input type="submit" name="create_alias" value="Overwrite Alias"/>
-				<?PHP	} else {
-						if(!$createdalias) { ?>
-							<input type="submit" name="create_alias" value="Create Alias from These Entries"/>
-					<?PHP	} else { ?>
-							Alias created with name <?= htmlspecialchars($newalias['name']) ?>
-					<?PHP	}
-					}
-				}
-?>
 
-			<?php } ?>
-			</font></td></tr></table>
-		  </td>
-		</tr>
-<?php		if($_POST): ?>
-		<tr>
-		  <td width="22%" valign="top" class="vncell"><?=gettext("Resolution time per server");?></td>
-		  <td width="78%" class="vtable">
-				<table width="170" border="0" cellpadding="6" cellspacing="0" summary="resolution time">
-					<tr>
-						<td class="listhdrr">
-							<?=gettext("Server");?>
-						</td>
-						<td class="listhdrr">
-							<?=gettext("Query time");?>
-						</td>
-					</tr>
-<?php
-					if(is_array($dns_speeds)) 
-						foreach($dns_speeds as $qt):
-?>
-					<tr>
-						<td class="listlr">
-							<?=$qt['dns_server']?>
-						</td>
-						<td class="listr">
-							<?=$qt['query_time']?>
-						</td>
-					</tr>
-<?php
-					endforeach;
-?>
-				</table>
-		  </td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!$input_errors && $ipaddr) { ?>
-		<tr>
-			<td width="22%" valign="top"  class="vncell"><?=gettext("More Information:");?></td>
-			<td width="78%" class="vtable">
-				<a href ="/diag_ping.php?host=<?=htmlspecialchars($host)?>&amp;interface=wan&amp;count=3"><?=gettext("Ping");?></a> <br />
-				<a href ="/diag_traceroute.php?host=<?=htmlspecialchars($host)?>&amp;ttl=18"><?=gettext("Traceroute");?></a>
-				<p>
-				<?=gettext("NOTE: The following links are to external services, so their reliability cannot be guaranteed.");?><br /><br />
-				<a target="_blank" href="http://private.dnsstuff.com/tools/whois.ch?ip=<?php echo $ipaddr; ?>"><?=gettext("IP WHOIS @ DNS Stuff");?></a><br />
-				<a target="_blank" href="http://private.dnsstuff.com/tools/ipall.ch?ip=<?php echo $ipaddr; ?>"><?=gettext("IP Info @ DNS Stuff");?></a>
-				</p>
-			</td>
-		</tr>
-		<?php } ?>
-		<tr>
-		  <td width="22%" valign="top">&nbsp;</td>
-		  <td width="78%">
-			<br />&nbsp;
-            <input name="Submit" type="submit" class="formbtn" value="<?=gettext("DNS Lookup");?>" />
-		</td>
-		</tr>
-	</table>
-</form>
-</td></tr></table>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<section class="page-content-main">
+	<div class="container-fluid">	
+		<div class="row">
+		      
+		    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform"> 				
+			<section class="col-xs-12">
+                <div class="content-box">              
+					
+					<?php if ($input_errors) print_input_errors($input_errors); ?>
+					
+                    <header class="content-box-head col-xs-12">
+				        <h3><?=gettext("Resolve DNS hostname or IP");?></h3>
+				    </header>
+				    
+				    <div class="content-box-main col-xs-12">
+    				    <div class="table-responsive">
+        			        <table class="table table-striped">
+        				        <tbody>
+            				        <tr>
+            				          <td><?=gettext("Hostname or IP");?></td>
+            				          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" size="20" value="<?=htmlspecialchars($host);?>" /></td>
+            				          <?php if ($resolved && $type): ?>
+            				          <td> 
+	            				      <?php
+										$found = 0;
+										if(is_array($resolved)) { 
+											foreach($resolved as $hostitem) {
+												if($hostitem <> "") {
+													echo $hostitem . "<br />";
+													$found++;
+												}
+											}
+										} else {
+											echo $resolved; 
+										} 
+									  ?>
+            				          </td>
+            				          <td>
+	            				      <? if($found > 0): ?>				
+									  <?PHP	if($alias_exists): ?>
+										An alias already exists for the hostname <?= htmlspecialchars($host) ?>. <br />
+										<input type="hidden" name="override" value="true"/>
+										<input type="submit" class="btn btn-default" name="create_alias" value="Overwrite Alias"/>
+									  <?php else: ?>
+									  <?php if(!$createdalias): ?>
+									  	<input type="submit" class="btn btn-default" name="create_alias" value="Create Alias"/>
+									  <?php else: ?>
+									   Alias created with name <?= htmlspecialchars($newalias['name']) ?>
+									  <? endif; endif; endif; ?>
+									  </td>
+            				          <? else: ?>
+            				          <td></td><td></td>
+            				          <? endif; ?>
+            				        </tr>
+            				        <?php if (!empty($_POST)): ?>
+            				        <tr>
+            				          <td><?=gettext("Resolution time per server");?></td>
+            				          <td colspan="3">
+	            				        	            				          
+            				            <table class="table table-striped">
+                				            <tr>
+                    				            <th><?=gettext("Server");?></th>
+                    				            <th><?=gettext("Query time");?></th>
+                				            </tr>
+                				            <?php if(is_array($dns_speeds)): foreach($dns_speeds as $qt): ?>
+											<tr>
+												<td>
+													<?=$qt['dns_server']?>
+												</td>
+												<td>
+													<?=$qt['query_time']?>
+												</td>
+											</tr>
+											<?php endforeach; endif; ?>
+            				            </table>
+            				          </td>
+            				        </tr>
+            				        <?php endif; ?>
+            				        <?php if (!$input_errors && $ipaddr): ?>
+            				        <tr>
+            				          <td><?=gettext("More Information:");?></td>
+            				          <td colspan="3"><a href ="/diag_ping.php?host=<?=htmlspecialchars($host)?>&amp;interface=wan&amp;count=3"><?=gettext("Ping");?></a> <br />
+											<a href ="/diag_traceroute.php?host=<?=htmlspecialchars($host)?>&amp;ttl=18"><?=gettext("Traceroute");?></a>
+											<p>
+											<?=gettext("NOTE: The following links are to external services, so their reliability cannot be guaranteed.");?><br /><br />
+											<a target="_blank" href="http://private.dnsstuff.com/tools/whois.ch?ip=<?php echo $ipaddr; ?>"><?=gettext("IP WHOIS @ DNS Stuff");?></a><br />
+											<a target="_blank" href="http://private.dnsstuff.com/tools/ipall.ch?ip=<?php echo $ipaddr; ?>"><?=gettext("IP Info @ DNS Stuff");?></a>
+											</p>
+										</td>
+            				        </tr>
+            				        <?php endif; ?>
+        				        </tbody>
+        				    </table>
+    				    </div>
+    				    
+    				    <input type="submit" class="btn btn-primary btn-fixed pull-right" value="<?=gettext("DNS Lookup");?>" />
+				    </div>
+                            
+				</div>
+			</section>
+		
+		</div>
+		
+	</div>
+</section>

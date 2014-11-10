@@ -118,7 +118,7 @@ $shortcut_section = "ipsec";
 include("head.inc");
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
 
 <script type="text/javascript">
@@ -134,120 +134,119 @@ function maxmss_checked(obj) {
 //]]>
 </script>
 
-<form action="vpn_ipsec_settings.php" method="post" name="iform" id="iform">
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				
+				<?php
+					if ($savemsg)
+						print_info_box($savemsg);
+					if ($input_errors)
+						print_input_errors($input_errors);
+				?>
 
-<?php
-	if ($savemsg)
-		print_info_box($savemsg);
-	if ($input_errors)
-		print_input_errors($input_errors);
-?>
+				
+			    <section class="col-xs-12">
+    				
+    				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.php'); ?>
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	
+	    				    
+							<form action="vpn_ipsec_settings.php" method="post" name="iform" id="iform">
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="vpn ipsec settings">
-	<tr>
-		<td class="tabnavtbl">
-			<?php
-				$tab_array = array();
-				$tab_array[0] = array(gettext("Tunnels"), false, "vpn_ipsec.php");
-				$tab_array[1] = array(gettext("Mobile clients"), false, "vpn_ipsec_mobile.php");
-				$tab_array[2] = array(gettext("Pre-Shared Key"), false, "vpn_ipsec_keys.php");
-				$tab_array[3] = array(gettext("Advanced Settings"), true, "vpn_ipsec_settings.php");
-				display_top_tabs($tab_array);
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td id="mainarea">
-			<div class="tabcont">
-				<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-					<tr>
-						<td colspan="2" valign="top" class="listtopic"><?=gettext("IPsec Advanced Settings"); ?></td>
-					</tr>
-					<tr>
-						<td width="22%" valign="top" class="vncell"><?=gettext("LAN security associations"); ?></td>
-						<td width="78%" class="vtable">
-							<input name="noinstalllanspd" type="checkbox" id="noinstalllanspd" value="yes" <?php if ($pconfig['noinstalllanspd']) echo "checked=\"checked\""; ?> />
-							<strong><?=gettext("Do not install LAN SPD"); ?></strong>
-							<br />
-							<?=gettext("By default, if IPsec is enabled negating SPD are inserted to provide protection. " .
-							"This behaviour can be changed by enabling this setting which will prevent installing these SPDs."); ?>
-						</td>
-					</tr>
-					<tr>
-						<td width="22%" valign="top" class="vncell"><?=gettext("Security Associations"); ?></td>
-						<td width="78%" class="vtable">
-							<input name="preferoldsa_enable" type="checkbox" id="preferoldsa_enable" value="yes" <?php if ($pconfig['preferoldsa_enable']) echo "checked=\"checked\""; ?> />
-							<strong><?=gettext("Prefer older IPsec SAs"); ?></strong>
-							<br />
-							<?=gettext("By default, if several SAs match, the newest one is " .
-							"preferred if it's at least 30 seconds old. Select this " .
-							"option to always prefer old SAs over new ones."); ?>
-						</td>
-					</tr>
-					<tr>
-						<td width="22%" valign="top" class="vncell"><?=gettext("IPsec Debug"); ?></td>
-						<td width="78%" class="vtable">
-							<strong><?=gettext("Start IPsec in debug mode based on sections selected"); ?></strong>
-							<br />
-							<table summary="ipsec debug">
-						<?php foreach ($ipsec_loglevels as $lkey => $ldescr): ?>
-							<tr>
-								<td width="22%" valign="top" class="vncell"><?=$ldescr;?></td>
-								<td width="78%" valign="top" class="vncell">
-								<?php	echo "<select name=\"ipsec_{$lkey}\" id=\"ipsec_{$lkey}\">\n";
-									foreach (array("Silent", "Audit", "Control", "Diag", "Raw", "Highest") as $lidx => $lvalue) {
-										echo "<option value=\"{$lidx}\" ";
-										 if ($pconfig["ipsec_{$lkey}"] == $lidx)
-											echo "selected=\"selected\"";
-										echo ">{$lvalue}</option>\n";
-									}
-								?>
-									</select>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-							<tr style="display:none;"><td></td></tr>
-							</table>
-							<br /><?=gettext("Launches IPsec in debug mode so that more verbose logs " .
-							"will be generated to aid in troubleshooting."); ?>
-						</td>
-					</tr>
-					<tr>
-						<td width="22%" valign="top" class="vncell"><?=gettext("IPsec Reload on Failover"); ?></td>
-						<td width="78%" class="vtable">
-							<input name="failoverforcereload" type="checkbox" id="failoverforcereload" value="yes" <?php if ($pconfig['failoverforcereload']) echo "checked=\"checked\""; ?> />
-							<strong><?=gettext("Force IPsec Reload on Failover"); ?></strong>
-							<br />
-							<?=gettext("In some circumstances using a gateway group as the interface for " .
-							"an IPsec tunnel does not function properly, and IPsec must be forcefully reloaded " .
-							"when a failover occurs. Because this will disrupt all IPsec tunnels, this behavior" .
-							" is disabled by default. Check this box to force IPsec to fully reload on failover."); ?>
-						</td>
-					</tr>
-					<tr>
-						<td width="22%" valign="top" class="vncell"><?=gettext("Maximum MSS"); ?></td>
-						<td width="78%" class="vtable">
-							<input name="maxmss_enable" type="checkbox" id="maxmss_enable" value="yes" <?php if ($pconfig['maxmss_enable'] == true) echo "checked=\"checked\""; ?> onclick="maxmss_checked(this)" />
-							<strong><?=gettext("Enable MSS clamping on VPN traffic"); ?></strong>
-							<br />
-							<input name="maxmss" id="maxmss" value="<?php if ($pconfig['maxmss'] <> "") echo $pconfig['maxmss']; else "1400"; ?>" class="formfld unknown" <?php if ($pconfig['maxmss_enable'] == false) echo "disabled=\"disabled\""; ?> />
-							<br />
-							<?=gettext("Enable MSS clamping on TCP flows over VPN. " .
-							"This helps overcome problems with PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes. "); ?>
-						</td>
-					</tr>
-					<tr>
-						<td width="22%" valign="top">&nbsp;</td>
-						<td width="78%">
-							<input name="submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" />
-						</td>
-					</tr>
-				</table>
+								<div class="table-responsive">
+							 		<table class="table table-striped table-sort">
+										<tr>
+											<td colspan="2" valign="top" class="listtopic"><?=gettext("IPSec Advanced Settings"); ?></td>
+										</tr>
+										<tr>
+											<td width="22%" valign="top" class="vncell"><?=gettext("LAN security associsations"); ?></td>
+											<td width="78%" class="vtable">
+												<input name="noinstalllanspd" type="checkbox" id="noinstalllanspd" value="yes" <?php if ($pconfig['noinstalllanspd']) echo "checked=\"checked\""; ?> />
+												<strong><?=gettext("Do not install LAN SPD"); ?></strong>
+												<br />
+												<?=gettext("By default, if IPSec is enabled negating SPD are inserted to provide protection. " .
+												"This behaviour can be changed by enabling this setting which will prevent installing these SPDs."); ?>
+											</td>
+										</tr>
+										<tr>
+											<td width="22%" valign="top" class="vncell"><?=gettext("Security Associations"); ?></td>
+											<td width="78%" class="vtable">
+												<input name="preferoldsa_enable" type="checkbox" id="preferoldsa_enable" value="yes" <?php if ($pconfig['preferoldsa_enable']) echo "checked=\"checked\""; ?> />
+												<strong><?=gettext("Prefer older IPsec SAs"); ?></strong>
+												<br />
+												<?=gettext("By default, if several SAs match, the newest one is " .
+												"preferred if it's at least 30 seconds old. Select this " .
+												"option to always prefer old SAs over new ones."); ?>
+											</td>
+										</tr>
+										<tr>
+											<td width="22%" valign="top" class="vncell"><?=gettext("IPsec Debug"); ?></td>
+											<td width="78%" class="vtable">
+												<strong><?=gettext("Start IPSec in debug mode based on sections selected"); ?></strong>
+												<br />
+												<table summary="ipsec debug">
+											<?php foreach ($ipsec_loglevels as $lkey => $ldescr): ?>
+												<tr>
+													<td width="22%" valign="top" class="vncell"><?=$ldescr;?></td>
+													<td width="78%" valign="top" class="vncell">
+													<?php	echo "<select name=\"ipsec_{$lkey}\" id=\"ipsec_{$lkey}\">\n";
+														foreach (array("Silent", "Audit", "Control", "Diag", "Raw", "Highest") as $lidx => $lvalue) {
+															echo "<option value=\"{$lidx}\" ";
+															 if ($pconfig["ipsec_{$lkey}"] == $lidx)
+																echo "selected=\"selected\"";
+															echo ">{$lvalue}</option>\n";
+														}
+													?>
+														</select>
+													</td>
+												</tr>
+											<?php endforeach; ?>
+												<tr style="display:none;"><td></td></tr>
+												</table>
+												<br /><?=gettext("Launches IPSec in debug mode so that more verbose logs " .
+												"will be generated to aid in troubleshooting."); ?>
+											</td>
+										</tr>
+										<tr>
+											<td width="22%" valign="top" class="vncell"><?=gettext("IPsec Reload on Failover"); ?></td>
+											<td width="78%" class="vtable">
+												<input name="failoverforcereload" type="checkbox" id="failoverforcereload" value="yes" <?php if ($pconfig['failoverforcereload']) echo "checked=\"checked\""; ?> />
+												<strong><?=gettext("Force IPsec Reload on Failover"); ?></strong>
+												<br />
+												<?=gettext("In some circumstances using a gateway group as the interface for " .
+												"an IPsec tunnel does not function properly, and IPsec must be forcefully reloaded " .
+												"when a failover occurs. Because this will disrupt all IPsec tunnels, this behavior" .
+												" is disabled by default. Check this box to force IPsec to fully reload on failover."); ?>
+											</td>
+										</tr>
+										<tr>
+											<td width="22%" valign="top" class="vncell"><?=gettext("Maximum MSS"); ?></td>
+											<td width="78%" class="vtable">
+												<input name="maxmss_enable" type="checkbox" id="maxmss_enable" value="yes" <?php if ($pconfig['maxmss_enable'] == true) echo "checked=\"checked\""; ?> onclick="maxmss_checked(this)" />
+												<strong><?=gettext("Enable MSS clamping on VPN traffic"); ?></strong>
+												<br />
+												<input name="maxmss" id="maxmss" value="<?php if ($pconfig['maxmss'] <> "") echo $pconfig['maxmss']; else "1400"; ?>" class="formfld unknown" <?php if ($pconfig['maxmss_enable'] == false) echo "disabled=\"disabled\""; ?> />
+												<br />
+												<?=gettext("Enable MSS clamping on TCP flows over VPN. " .
+												"This helps overcome problems with PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes. "); ?>
+											</td>
+										</tr>
+										<tr>
+											<td width="22%" valign="top">&nbsp;</td>
+											<td width="78%">
+												<input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+											</td>
+										</tr>
+									</table>
+								</div>
+							</form>
+						</div>
+					</div>
+				</section>
 			</div>
-		</td>
-	</tr>
-</table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+		</div>
+	</section>
+<?php include("foot.inc"); ?>

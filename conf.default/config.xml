@@ -3,7 +3,7 @@
 <pfsense>
 	<version>9.9</version>
 	<lastchange></lastchange>
-	<theme>pfsense_ng</theme>
+	<theme>opnsense</theme>
 	<sysctl>
 		<item>
 			<descr><![CDATA[Disable the pf ftp proxy handler.]]></descr>

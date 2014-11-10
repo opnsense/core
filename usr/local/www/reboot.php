@@ -49,23 +49,34 @@ $pgtitle = array(gettext("Diagnostics"),gettext("Reboot System"));
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-<?php if ($_POST['Submit'] == " " . gettext("Yes") . " "): ?>
-<meta http-equiv=\"refresh\" content=\"70;url=/\">
-<?php	print_info_box(gettext("The system is rebooting now. This may take one minute.")); ?>
-<pre>
-<?php 	system_reboot(); ?>
-</pre>
-<?php else: ?>
-<form action="reboot.php" method="post">
-	<p><strong><?=gettext("Are you sure you want to reboot the system?");?></strong></p>
-	<p>
-	<input name="Submit" type="submit" class="formbtn" value=" <?=gettext("Yes");?> " />
-	<input name="Submit" type="submit" class="formbtn" value=" <?=gettext("No");?> " />
-	</p>
-</form>
-<?php endif; ?>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+
+<section class="page-content-main">
+	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+		<div class="row">
+		    <section class="col-xs-12">
+			    
+			<?php if ($_POST['Submit'] == " " . gettext("Yes") . " "): ?>
+			<meta http-equiv=\"refresh\" content=\"70;url=/\">
+			<?php	print_info_box(gettext("The system is rebooting now. This may take one minute.")); ?>
+			<pre>
+			<?php 	system_reboot(); ?>
+			</pre>
+			<?php else: ?>
+			<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
+				<p><strong><?=gettext("Are you sure you want to reboot the system?");?></strong></p>
+				<div class="btn-group">
+				  <input type="submit" class="btn btn-primary" value="<?=gettext("Yes");?>" />
+				  <input type="submit" class="btn btn-default" value="<?=gettext("No");?>" />
+				</div>
+				<br /><br />
+			</form>
+			<?php endif; ?>
+		    </section>
+		</div>
+	</div>
+</section>
+
+<?php include("foot.inc"); ?>

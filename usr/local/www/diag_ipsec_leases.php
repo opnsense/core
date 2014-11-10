@@ -49,82 +49,77 @@ include("head.inc");
 $mobile = ipsec_dump_mobile();
 
 ?>
+<body>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
-	<?php include("fbegin.inc"); ?>
-	<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="status ipsec sad">
-		<tr>
-			<td>
-				<?php
-					$tab_array = array();
-					$tab_array[0] = array(gettext("Overview"), false, "diag_ipsec.php");
-					$tab_array[1] = array(gettext("Leases"), true, "diag_ipsec_leases.php");
-					$tab_array[2] = array(gettext("SAD"), false, "diag_ipsec_sad.php");
-					$tab_array[3] = array(gettext("SPD"), false, "diag_ipsec_spd.php");
-					$tab_array[4] = array(gettext("Logs"), false, "diag_logs_ipsec.php");
-					display_top_tabs($tab_array);
-				?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div id="mainarea">
-				<?php if (isset($mobile['pool']) && is_array($mobile['pool'])): ?>
-					<?php foreach($mobile['pool'] as $pool): ?>
-						<table class="tabcont sortable" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-							<tr>
-								<td colspan="4" valign="top" class="listtopic">
-								<?php
-									echo gettext("Pool: ") . $pool['name'];
-									echo ' ' . gettext("usage: ") . $pool['usage'];
-									echo ' ' . gettext("online: ") . $pool['online'];
-								?>
-								</td>
-							</tr>
-							<?php if (is_array($pool['lease']) && count($pool['lease']) > 0): ?>
-							<tr>
-								<td class="listhdrr nowrap"><?=gettext("ID");?></td>
-								<td class="listhdrr nowrap"><?=gettext("Host");?></td>
-								<td class="listhdrr nowrap"><?=gettext("Status");?></td>
-								<td class="list nowrap"></td>
-							</tr>
-							<?php foreach ($pool['lease'] as $lease): ?>
-							<tr>
-								<td class="listlr"><?=htmlspecialchars($lease['id']);?></td>
-								<td class="listr"><?=htmlspecialchars($lease['host']);?></td>
-								<td class="listr"><?=htmlspecialchars($lease['status']);?></td>
-								<td class="list nowrap">
-								</td>
-							</tr>
-							<?php endforeach;
-							else: ?>
-							<tr>
-								<td>
-									<p><strong><?=gettext("No leases from this pool yet.");?></strong></p>
-								</td>
-							</tr>
-							<?php endif; ?>
-						</table>
-					<?php endforeach; ?>
-				<?php else: ?>
-					<table class="tabcont sortable" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-						<tr>
-							<td>
+<?php include("fbegin.inc"); ?>
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<? $active_tab = "/diag_ipsec_leases.php"; include('diag_ipsec_tabs.php'); ?>
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	  
+							
+							<div class="table-responsive">
+							 	
+											 	
+							<?php if (isset($mobile['pool']) && is_array($mobile['pool'])): ?>
+								<?php foreach($mobile['pool'] as $pool): ?>
+									<table class="table table-striped table-sort">
+										<tr>
+											<td colspan="4" valign="top" class="listtopic">
+											<?php
+												echo gettext("Pool: ") . $pool['name'];
+												echo ' ' . gettext("usage: ") . $pool['usage'];
+												echo ' ' . gettext("online: ") . $pool['online'];
+											?>
+											</td>
+										</tr>
+										<?php if (is_array($pool['lease']) && count($pool['lease']) > 0): ?>
+										<tr>
+											<td class="listhdrr nowrap"><?=gettext("ID");?></td>
+											<td class="listhdrr nowrap"><?=gettext("Host");?></td>
+											<td class="listhdrr nowrap"><?=gettext("Status");?></td>
+											<td class="list nowrap"></td>
+										</tr>
+										<?php foreach ($pool['lease'] as $lease): ?>
+										<tr>
+											<td class="listlr"><?=htmlspecialchars($lease['id']);?></td>
+											<td class="listr"><?=htmlspecialchars($lease['host']);?></td>
+											<td class="listr"><?=htmlspecialchars($lease['status']);?></td>
+											<td class="list nowrap">
+											</td>
+										</tr>
+										<?php endforeach;
+										else: ?>
+										<tr>
+											<td>
+												<p><strong><?=gettext("No leases from this pool yet.");?></strong></p>
+											</td>
+										</tr>
+										<?php endif; ?>
+									</table>
+								<?php endforeach; ?>
+							<?php else: ?>
 								<p><strong><?=gettext("No IPsec pools.");?></strong></p>
-							</td>
-						</tr>
-					</table>
-				<?php endif; ?>
-				</div>
-			</td>
-		</tr>
-	</table>
+							<?php endif; ?>
+						</div>
+						
+						<p class="vexpl">
+						<span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
+						<?=gettext("You can configure your IPsec");?> <a href="vpn_ipsec.php"><?=gettext("here.");?></a>
+						</p>
+    				    </div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</section>
 
-<p class="vexpl">
-<span class="red"><strong><?=gettext("Note:");?><br /></strong></span>
-<?=gettext("You can configure your IPsec");?> <a href="vpn_ipsec.php"><?=gettext("here.");?></a>
-</p>
-
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>

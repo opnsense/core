@@ -144,41 +144,49 @@ function build_port_info($portarr, $proto) {
 }
 
 function print_summary_table($label, $iparr, $sort = TRUE) { ?>
-
-<h3><?php echo $label; ?></h3>
-<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="0" summary="states summary">
-	<tr>
-		<td class="listhdrr"><?=gettext("IP");?></td>
-		<td class="listhdrr"># <?=gettext("States");?></td>
-		<td class="listhdrr"><?=gettext("Proto");?></td>
-		<td class="listhdrr"># <?=gettext("States");?></td>
-		<td class="listhdrr"><?=gettext("Src Ports");?></td>
-		<td class="listhdrr"><?=gettext("Dst Ports");?></td>
-	</tr>
-<?php   if ($sort)
-		uksort($iparr, "sort_by_ip");
-	foreach($iparr as $ip => $ipinfo) { ?>
-	<tr>
-		<td class="vncell"><?php echo $ip; ?></td>
-		<td class="vncell"><?php echo $ipinfo['seen']; ?></td>
-		<td class="vncell">&nbsp;</td>
-		<td class="vncell">&nbsp;</td>
-		<td class="vncell">&nbsp;</td>
-		<td class="vncell">&nbsp;</td>
-	</tr>
-	<?php foreach($ipinfo['protos'] as $proto => $protoinfo) { ?>
-	<tr>
-		<td class="list">&nbsp;</td>
-		<td class="list">&nbsp;</td>
-		<td class="listlr"><?php echo $proto; ?></td>
-		<td class="listr" align="center"><?php echo $protoinfo['seen']; ?></td>
-		<td class="listr" align="center"><span title="<?php echo build_port_info($protoinfo['srcports'], $proto); ?>"><?php echo count($protoinfo['srcports']); ?></span></td>
-		<td class="listr" align="center"><span title="<?php echo build_port_info($protoinfo['dstports'], $proto); ?>"><?php echo count($protoinfo['dstports']); ?></span></td>
-	</tr>
-	<?php } ?>
-<?php } ?>
-
-</table>
+	<section class="col-xs-12">
+		 <div class="content-box">            
+            <header class="content-box-head col-xs-12">
+		        <h3><?php echo $label; ?></h3>
+		    </header>
+			
+			<div class="table-responsive">
+                   
+            <table class="table table-striped table-sort sortable">
+				<tr>
+					<td class="listhdrr"><?=gettext("IP");?></td>
+					<td class="listhdrr"># <?=gettext("States");?></td>
+					<td class="listhdrr"><?=gettext("Proto");?></td>
+					<td class="listhdrr"># <?=gettext("States");?></td>
+					<td class="listhdrr"><?=gettext("Src Ports");?></td>
+					<td class="listhdrr"><?=gettext("Dst Ports");?></td>
+				</tr>
+			<?php   if ($sort)
+					uksort($iparr, "sort_by_ip");
+				foreach($iparr as $ip => $ipinfo) { ?>
+				<tr>
+					<td class="vncell"><?php echo $ip; ?></td>
+					<td class="vncell"><?php echo $ipinfo['seen']; ?></td>
+					<td class="vncell">&nbsp;</td>
+					<td class="vncell">&nbsp;</td>
+					<td class="vncell">&nbsp;</td>
+					<td class="vncell">&nbsp;</td>
+				</tr>
+				<?php foreach($ipinfo['protos'] as $proto => $protoinfo) { ?>
+				<tr>
+					<td class="list">&nbsp;</td>
+					<td class="list">&nbsp;</td>
+					<td class="listlr"><?php echo $proto; ?></td>
+					<td class="listr" align="center"><?php echo $protoinfo['seen']; ?></td>
+					<td class="listr" align="center"><span title="<?php echo build_port_info($protoinfo['srcports'], $proto); ?>"><?php echo count($protoinfo['srcports']); ?></span></td>
+					<td class="listr" align="center"><span title="<?php echo build_port_info($protoinfo['dstports'], $proto); ?>"><?php echo count($protoinfo['dstports']); ?></span></td>
+				</tr>
+				<?php } ?>
+			<?php } ?>
+			
+			</table>
+		 </div>
+	</section>
 
 <?php
 }
@@ -188,7 +196,14 @@ require_once("guiconfig.inc");
 include("head.inc");
 echo "<body>";
 include("fbegin.inc");
-
+?>
+<section class="page-content-main">
+	<div class="container-fluid">	
+		<div class="row">
+		        				
+			
+				
+<?
 
 print_summary_table(gettext("By Source IP"), $srcipinfo);
 print_summary_table(gettext("By Destination IP"), $dstipinfo);
@@ -196,6 +211,9 @@ print_summary_table(gettext("Total per IP"), $allipinfo);
 print_summary_table(gettext("By IP Pair"), $pairipinfo, FALSE);
 ?>
 
-<?php include("fend.inc"); ?>
-</body>
-</html>
+			</section>
+		</div>
+	</div>
+</section>
+
+<?php include("foot.inc"); ?>

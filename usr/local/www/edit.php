@@ -94,7 +94,7 @@ outputJavaScriptFileInline("javascript/base64.js");
 
 ?>
 </head>
-<body link="#000000" vlink="#000000" alink="#000000">
+<body>
 <?php include("fbegin.inc"); ?>
 
 <script type="text/javascript">	
@@ -164,62 +164,70 @@ outputJavaScriptFileInline("javascript/base64.js");
 //]]>
 </script>
 
-<!-- file status box -->
-<div style="display:none; background:#eeeeee;" id="fileStatusBox">
-	<div class="vexpl" style="padding-left:15px;">
-		<strong id="fileStatus"></strong>
+
+<section class="page-content-main">
+	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+		<div class="row">
+		    <section class="col-xs-12">
+
+				
+				<!-- file status box -->
+				<div style="display:none; background:#eeeeee;" id="fileStatusBox">
+					<div class="vexpl" style="padding-left:15px;">
+						<strong id="fileStatus"></strong>
+					</div>
+				</div>
+				
+				<div class="content-box-main col-xs-12">
+					<div class="table-responsive">
+    			        <table class="table table-striped">
+    				        <tbody>
+        				        <tr>
+        				          <td><?=gettext("Save / Load from path"); ?>:</td>
+        				          <td><input type="text" class="form-control file" id="fbTarget" size="45" /></td>
+        				        </tr>
+        				        <tr>
+        				          <td>&nbsp;</td>
+        				          <td>
+	        				          <div class="btn-group">
+		        				          <input type="button" class="btn btn-primary"      onclick="loadFile();" value="<?=gettext('Load');?>" />
+										  <input type="button" class="btn btn-default"      id="fbOpen"           value="<?=gettext('Browse');?>" />
+										  <input type="button" class="btn btn-default"      onclick="saveFile();" value="<?=gettext('Save');?>" />
+	        				          </div>
+        				          </td>
+        				        </tr>	        				       
+    				        </tbody>
+    				    </table>
+				    </div>
+				    
+				    <div id="fbBrowser" style="display:none; border:1px dashed gray; width:98%;"></div>
+				
+					<!-- file viewer/editor -->
+					<table width="100%" summary="file editor">
+						<tr>
+							<td valign="top">
+								<div style="background:#eeeeee;" id="fileOutput">
+									<script type="text/javascript">
+									//<![CDATA[
+									window.onload=function(){
+										document.getElementById("fileContent").wrap='off';
+									}
+									//]]>
+									</script>
+									<textarea id="fileContent" name="fileContent" style="width:100%;" rows="30" cols=""></textarea>
+								</div>
+							</td>
+						</tr>
+					</table>
+				    
+				</div>
+		    
+		    </section>
+				
+		</div>
 	</div>
-</div>
+</section>
 
-<br />
-
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="file editor">
-	<tr>
-		<td class="tabcont" align="center">
-
-<!-- controls -->
-<table width="100%" cellpadding="9" cellspacing="9" summary="controls">
-	<tr>
-		<td align="center" class="list">
-			<?=gettext("Save / Load from path"); ?>:
-			<input type="text"   class="formfld file" id="fbTarget"         size="45" />
-			<input type="button" class="formbtn"      onclick="loadFile();" value="<?=gettext('Load');?>" />
-			<input type="button" class="formbtn"      id="fbOpen"           value="<?=gettext('Browse');?>" />
-			<input type="button" class="formbtn"      onclick="saveFile();" value="<?=gettext('Save');?>" />
-			<br />
-			<?php
-			/*
-			<input type="checkbox" id="highlight" /><?=gettext("Enable syntax highlighting");
-			*/
-			?>
-		</td>
-	</tr>
-</table>
-
-<!-- filebrowser -->
-<div id="fbBrowser" style="display:none; border:1px dashed gray; width:98%;"></div>
-
-<!-- file viewer/editor -->
-<table width="100%" summary="file editor">
-	<tr>
-		<td valign="top">
-			<div style="background:#eeeeee;" id="fileOutput">
-				<script type="text/javascript">
-				//<![CDATA[
-				window.onload=function(){
-					document.getElementById("fileContent").wrap='off';
-				}
-				//]]>
-				</script>
-				<textarea id="fileContent" name="fileContent" style="width:100%;" rows="30" cols=""></textarea>
-			</div>
-		</td>
-	</tr>
-</table>
-
-		</td>
-	</tr>
-</table>
 
 <script type="text/javascript" src="/code-syntax-highlighter/shCore.js"></script>
 <script type="text/javascript" src="/code-syntax-highlighter/shBrushCss.js"></script>
@@ -232,8 +240,7 @@ outputJavaScriptFileInline("javascript/base64.js");
 		function() {
 			jQuery("#fbTarget").focus();
 
-			NiftyCheck();
-			Rounded("div#fileStatusBox", "all", "#ffffff", "#eeeeee", "smooth");
+			
 		}
 	);
 
@@ -248,6 +255,4 @@ outputJavaScriptFileInline("javascript/base64.js");
 //]]>
 </script>
 
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>

@@ -65,29 +65,46 @@ if($_POST['syncfilter']) {
 include("head.inc");
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 
 <?php include("fbegin.inc"); ?>
-<br />
-<form action="status_filter_reload.php" method="post" name="filter">
-<input type="submit" value="Reload Filter" name="reloadfilter" id="reloadfilter" />
-<?php if ($config['hasync'] && $config['hasync']["synchronizetoip"] != ""): ?>
-&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="submit" value="Force Config Sync" name="syncfilter" id="syncfilter" />
-<?php endif; ?>
-</form>
-<br /><br /><br />
-<div id="status" style="padding:5px; border:1px dashed #990000; background-color: #ffffff; color: #000000;">
-	<?php echo $status; ?>
-</div>
 
-<div id="doneurl">
-</div>
-
-<br/>
-
-<div id="reloadinfo"><?=gettext("This page will automatically refresh every 3 seconds until the filter is done reloading"); ?>.</div>
-
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+				    
+				    <div class="content-box ">
+				    	 <div class="col-xs-12">
+					    	 <br />
+							<form action="status_filter_reload.php" method="post" name="filter">
+							<input type="submit" value="Reload Filter" class="btn btn-primary" name="reloadfilter" id="reloadfilter" />
+							<?php if ($config['hasync'] && $config['hasync']["synchronizetoip"] != ""): ?>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="submit" value="Force Config Sync" class="btn btn-primary" name="syncfilter" id="syncfilter" />
+							<?php endif; ?>
+							</form>
+							<br /><br /><br />
+							
+							<div id="status" class="well">
+								<?php echo $status; ?>
+							</div>
+							
+							<div id="doneurl">
+							</div>
+							
+							<br/>
+							
+							<div id="reloadinfo"><?=gettext("This page will automatically refresh every 3 seconds until the filter is done reloading"); ?>.</div>
+					    </div>
+				    </div>
+			    </section>
+			</div>
+		</div>
+	</section>
 
 
 <script type="text/javascript">
@@ -170,7 +187,4 @@ window.setTimeout('update_status_thread()', 2500);
 //]]>
 </script>
 
-<?php include("fend.inc"); ?>
-
-</body>
-</html>
+<?php include("foot.inc"); ?>

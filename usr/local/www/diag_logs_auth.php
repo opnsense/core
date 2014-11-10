@@ -57,42 +57,37 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+<body>
 <?php include("fbegin.inc"); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="logs captive portal">
-  <tr><td>
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("System"), false, "diag_logs.php");
-	$tab_array[] = array(gettext("Firewall"), false, "diag_logs_filter.php");
-	$tab_array[] = array(gettext("DHCP"), false, "diag_logs_dhcp.php");
-	$tab_array[] = array(gettext("Portal Auth"), true, "diag_logs_auth.php");
-	$tab_array[] = array(gettext("IPsec"), false, "diag_logs_ipsec.php");
-	$tab_array[] = array(gettext("PPP"), false, "diag_logs_ppp.php");
-	$tab_array[] = array(gettext("VPN"), false, "diag_logs_vpn.php");
-	$tab_array[] = array(gettext("Load Balancer"), false, "diag_logs_relayd.php");
-	$tab_array[] = array(gettext("OpenVPN"), false, "diag_logs_openvpn.php");
-	$tab_array[] = array(gettext("NTP"), false, "diag_logs_ntpd.php");
-	$tab_array[] = array(gettext("Settings"), false, "diag_logs_settings.php");
-	display_top_tabs($tab_array);
-?>
-  </td></tr>
-  <tr>
-    <td>
-	<div id="mainarea">
-		<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="0" summary="main area">
-		  <tr>
-			<td colspan="2" class="listtopic">
-			  <?php printf(gettext("Last %s Portal Auth log entries"),$nentries);?></td>
-		  </tr>
-		  <?php dump_clog($portal_logfile, $nentries, true); ?>
-		<tr><td><br /><form action="diag_logs_auth.php" method="post">
-			<input name="clear" type="submit" class="formbtn" value="<?= gettext("Clear log"); ?>"/></form></td></tr>
-		</table>
-	</div>
-	</td>
-  </tr>
-</table>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    					
+    					<? include('diag_logs_tabs.php'); ?>
+
+					
+						<div class="tab-content content-box col-xs-12">	    					
+	    				    <div class="container-fluid">	    					
+		    						
+	    						<p>  <?php printf(gettext("Last %s Portal Auth log entries"),$nentries);?></p>
+								<pre>  <?php dump_clog($portal_logfile, $nentries, true); ?></pre>
+								
+								<form action="diag_logs_auth.php" method="post">
+									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+								</form>
+								
+    						</div>
+    				    </div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

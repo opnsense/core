@@ -84,55 +84,58 @@ $pgtitle = array(gettext("Status"),gettext("Package logs"));
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-	<td>
-    <?php
-	if($pkgwithlogging == false) {
-		print_info_box(gettext("No packages with logging facilities are currently installed."));
-		echo '</ul></td></tr></table>';
-		include("fend.inc");
-		exit;
-	}
-	$tab_array = array();
-	foreach($config['installedpackages']['package'] as $package) {
-		if(is_array($package['logging'])) {
-			if(!($logtab = $package['logging']['logtab'])) $logtab = $package['name'];
-			if($apkg == $package['name']) { 
-				$curtab = $logtab;
-				$tab_array[] = array(sprintf(gettext("%s"),$logtab), true, "diag_pkglogs.php?pkg=".$package['name']);
-			} else {
-				$tab_array[] = array(sprintf(gettext("%s"),$logtab), false, "diag_pkglogs.php?pkg=".$package['name']);
-			}
-		}
-       	 }
-	display_top_tabs($tab_array);
-    ?> 
-  </td></tr>
-  <tr>
-    <td>
-	<div id="mainarea">
-		<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="0">
-		  <tr>
-			<td colspan="2" class="listtopic">
-			  <?php printf(gettext('Last %1$s %2$s log entries'),$nentries,$curtab); ?></td>
-		  </tr>
-		  <?php
-			$package =& $config['installedpackages']['package'][$apkgid];
-			dump_clog($g['varlog_path'] . '/' . $package['logging']['logfilename'], $nentries);
-		?>
-		</table>
-<!--
-<form action="diag_pkglogs.php" method="post">
-<input name="clear" type="submit" class="formbtn" value="Clear log">
-</form>
--->
+
+	
+<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				 <?php
+					if($pkgwithlogging == false) {
+						print_info_box(gettext("No packages with logging facilities are currently installed."));
+					}
+					else {
+				?>
+				
+			    <section class="col-xs-12">
+    				
+    				<?php
+						$tab_array = array();
+						foreach($config['installedpackages']['package'] as $package) {
+							if(is_array($package['logging'])) {
+								if(!($logtab = $package['logging']['logtab'])) $logtab = $package['name'];
+								if($apkg == $package['name']) { 
+									$curtab = $logtab;
+									$tab_array[] = array(sprintf(gettext("%s"),$logtab), true, "diag_pkglogs.php?pkg=".$package['name']);
+								} else {
+									$tab_array[] = array(sprintf(gettext("%s"),$logtab), false, "diag_pkglogs.php?pkg=".$package['name']);
+								}
+							}
+					       	 }
+						display_top_tabs($tab_array);
+					?> 
+					
+					<div class="tab-content content-box col-xs-12">	   
+	                	 <?php printf(gettext('Last %1$s %2$s log entries'),$nentries,$curtab); ?>
+	                	 
+	                	 <div class="table-responsive">
+		                
+						 	<table class="table table-striped table-sort">
+							 	<?php
+									$package =& $config['installedpackages']['package'][$apkgid];
+									dump_clog($g['varlog_path'] . '/' . $package['logging']['logfilename'], $nentries);
+								?>
+						 	</table>
+						 </div>    	
+
+
+					</div>
+			    </section>
+			    <?php } ?>
+			</div>
 		</div>
-	</td>
-  </tr>
-</table>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+</section>
+
+<?php include("foot.inc"); ?>

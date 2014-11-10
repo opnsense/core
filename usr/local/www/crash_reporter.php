@@ -70,8 +70,8 @@ function output_crash_reporter_html($crash_reports) {
 	echo "<p><i>" . gettext("Please double check the contents to ensure you are comfortable sending this information before clicking Yes.") . "</i></p>";
 	echo "<p>" . gettext("Contents of crash reports") . ":<br />";
 	echo "<textarea readonly=\"readonly\" rows=\"40\" cols=\"65\" name=\"crashreports\">{$crash_reports}</textarea></p>";
-	echo "<p><input name=\"Submit\" type=\"submit\" class=\"formbtn\" value=\"" . gettext("Yes") .  "\" />" . gettext(" - Submit this to the developers for inspection") . "</p>";
-	echo "<p><input name=\"Submit\" type=\"submit\" class=\"formbtn\" value=\"" . gettext("No") .  "\" />" . gettext(" - Just delete the crash report and take me back to the Dashboard") . "</p>";
+	echo "<p><input name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"" . gettext("Yes") .  "\" />" . gettext(" - Submit this to the developers for inspection") . "</p>";
+	echo "<p><input name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"" . gettext("No") .  "\" />" . gettext(" - Just delete the crash report and take me back to the Dashboard") . "</p>";
 	echo "</form>";
 }
 
@@ -88,11 +88,18 @@ exec("/usr/bin/grep -vi warning /tmp/PHP_errors.log", $php_errors);
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
-
+<body>
 <?php include("fbegin.inc"); ?>
 
-	<form action="crash_reporter.php" method="post">
+<section class="page-content-main">
+	<div class="container-fluid">	
+		<div class="row">
+		      				
+			<section class="col-xs-12">
+                <div class="content-box">              
+					 <form action="crash_reporter.php" method="post">
+						 <div class="col-xs-12">
+
 
 <?php
 	if (gettext($_POST['Submit']) == "Yes") {
@@ -145,8 +152,12 @@ exec("/usr/bin/grep -vi warning /tmp/PHP_errors.log", $php_errors);
 		output_crash_reporter_html($crash_reports);
 	}
 ?>
-
-<?php include("fend.inc"); ?>
-
-</body>
-</html>
+						 </div>
+					</form>
+                </div>
+			</section>
+		</div>
+	</div>
+</section>
+		   
+<?php include("foot.inc"); ?>

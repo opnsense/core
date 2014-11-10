@@ -99,104 +99,128 @@ if (!isset($do_testport)) {
 }
 
 include("head.inc"); ?>
-<body link="#000000" vlink="#000000" alink="#000000">
+<body>
 <?php include("fbegin.inc"); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="diag test port">
-<tr><td>
-<?php echo gettext("This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function for UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."); ?>
+
+
+
+
+<section class="page-content-main">
+	<div class="container-fluid">	
+		<div class="row">
+		        				
+			<section class="col-xs-12">
+                
+                <?php echo gettext("This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function for UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."); ?>
 <br /><br />
 <?php echo gettext("No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."); ?>
 <br /><br /><br />
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-	<form action="diag_testport.php" method="post" name="iform" id="iform">
-	<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-		<tr>
-			<td colspan="2" valign="top" class="listtopic"><?=gettext("Test Port"); ?></td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Host"); ?></td>
-			<td width="78%" class="vtable">
-			<?=$mandfldhtml;?>
-			<input name="host" type="text" class="formfld" id="host" size="20" value="<?=htmlspecialchars($host);?>" /></td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncellreq"><?= gettext("Port"); ?></td>
-			<td width="78%" class="vtable">
-				<input name="port" type="text" class="formfld" id="port" size="10" value="<?=htmlspecialchars($port);?>" />
-			</td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncell"><?= gettext("Source Port"); ?></td>
-			<td width="78%" class="vtable">
-				<input name="srcport" type="text" class="formfld" id="srcport" size="10" value="<?=htmlspecialchars($srcport);?>" />
-				<br /><br /><?php echo gettext("This should typically be left blank."); ?>
-			</td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncell"><?= gettext("Show Remote Text"); ?></td>
-			<td width="78%" class="vtable">
-				<input name="showtext" type="checkbox" id="showtext" <?php if ($showtext) echo "checked=\"checked\"" ?> />
-				<br /><br /><?php echo gettext("Shows the text given by the server when connecting to the port. Will take 10+ seconds to display if checked."); ?>
-			</td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("Source Address"); ?></td>
-			<td width="78%" class="vtable">
-				<select name="sourceip" class="formselect">
-					<option value="">Any</option>
-				<?php   $sourceips = get_possible_traffic_source_addresses(true);
-					foreach ($sourceips as $sip):
-						$selected = "";
-						if (!link_interface_to_bridge($sip['value']) && ($sip['value'] == $sourceip))
-							$selected = "selected=\"selected\"";
-				?>
-					<option value="<?=$sip['value'];?>" <?=$selected;?>>
-						<?=htmlspecialchars($sip['name']);?>
-					</option>
-					<?php endforeach; ?>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("IP Protocol"); ?></td>
-			<td width="78%" class="vtable">
-			<select name="ipprotocol" class="formfld">
-				<option value="any" <?php if ("any" == $ipprotocol) echo "selected=\"selected\""; ?>>
-					Any
-				</option>
-				<option value="ipv4" <?php if ($ipprotocol == "ipv4") echo "selected=\"selected\""; ?>>
-					<?=gettext("IPv4");?>
-				</option>
-				<option value="ipv6" <?php if ($ipprotocol == "ipv6") echo "selected=\"selected\""; ?>>
-					<?=gettext("IPv6");?>
-				</option>
-			</select>
-			<br /><br />
-			<?php echo gettext("If you force IPv4 or IPv6 and use a hostname that does not contain a result using that protocol, it will result in an error. For example if you force IPv4 and use a hostname that only returns an AAAA IPv6 IP address, it will not work."); ?>
-			</td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top">&nbsp;</td>
-			<td width="78%">
-				<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Test"); ?>" />
-			</td>
-		</tr>
-		<tr>
-		<td valign="top" colspan="2">
-		<?php if ($do_testport) {
-			echo "<font face=\"terminal\" size=\"2\">";
-			echo "<strong>" . gettext("Port Test Results") . ":</strong><br />";
-		?>
-			<script type="text/javascript">
-			//<![CDATA[
-			window.onload=function(){
-				document.getElementById("testportCaptured").wrap='off';
-			}
-			//]]>
-			</script>
-		<?php
-			echo "<textarea id=\"testportCaptured\" style=\"width:98%\" name=\"code\" rows=\"15\" cols=\"66\" readonly=\"readonly\">";
-			$result = "";
+                
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+
+                <div class="content-box">              
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3><?=gettext("Test Port"); ?></h3>
+				    </header>
+  
+				    <div class="content-box-main col-xs-12">
+					    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
+					    <div class="table-responsive">
+	    			        <table class="table table-striped">
+	    				        <tbody>
+	        				        <tr>
+	        				          <td><?=gettext("Host"); ?></td>
+	        				          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" value="<?=htmlspecialchars($host);?>" /></td>
+	        				        </tr>
+	        				        <tr>
+	        				          <td><?= gettext("Port"); ?></td>
+	        				          <td><input name="port" type="text" class="form-control" id="port" size="10" value="<?=htmlspecialchars($port);?>" /></td>
+	        				        </tr>
+	        				        <tr>
+	        				          <td><?= gettext("Source Port"); ?></td>
+	        				          <td><input name="srcport" type="text" class="form-control" id="srcport" size="10" value="<?=htmlspecialchars($srcport);?>" />
+									  	<p class="text-muted"><em><small><?php echo gettext("This should typically be left blank."); ?></small></em></p>
+									  </td>
+	        				        </tr>
+	        				        <tr>
+	        				          <td><?= gettext("Show Remote Text"); ?></td>
+	        				          <td><input name="showtext" type="checkbox" id="showtext" <?php if ($showtext) echo "checked=\"checked\"" ?> />
+									  	<p class="text-muted"><em><small><?php echo gettext("Shows the text given by the server when connecting to the port. Will take 10+ seconds to display if checked."); ?></small></em></p>
+									  </td>
+	        				        </tr>
+	        				        <tr>
+	        				          <td><?=gettext("Source Address"); ?></td>
+	        				          <td><select name="sourceip" class="form-control">
+											<option value="">Any</option>
+										<?php   $sourceips = get_possible_traffic_source_addresses(true);
+											foreach ($sourceips as $sip):
+												$selected = "";
+												if (!link_interface_to_bridge($sip['value']) && ($sip['value'] == $sourceip))
+													$selected = "selected=\"selected\"";
+										?>
+											<option value="<?=$sip['value'];?>" <?=$selected;?>>
+												<?=htmlspecialchars($sip['name']);?>
+											</option>
+											<?php endforeach; ?>
+										</select>
+									  </td>
+	        				        </tr>	        				        
+	        				        <tr>
+	        				          <td><?=gettext("IP Protocol"); ?></td>
+	        				          <td>
+		        				          <select name="ipprotocol" class="form-control">
+											<option value="any" <?php if ("any" == $ipprotocol) echo "selected=\"selected\""; ?>>
+												Any
+											</option>
+											<option value="ipv4" <?php if ($ipprotocol == "ipv4") echo "selected=\"selected\""; ?>>
+												<?=gettext("IPv4");?>
+											</option>
+											<option value="ipv6" <?php if ($ipprotocol == "ipv6") echo "selected=\"selected\""; ?>>
+												<?=gettext("IPv6");?>
+											</option>
+										</select>
+										<p class="text-muted"><em><small><?php echo gettext("If you force IPv4 or IPv6 and use a hostname that does not contain a result using that protocol, <br />it will result in an error. For example if you force IPv4 and use a hostname that only returns an AAAA IPv6 IP address, it will not work."); ?></small></em></p>
+									  </td>
+	        				        </tr>
+	        				        <tr>
+	        				          <td>&nbsp;</td>
+	        				          <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Test"); ?>" /></td>
+	        				        </tr>	        				       
+	    				        </tbody>
+	    				    </table>
+					    </div>
+					    </form>
+				    </div>
+                            
+				</div>
+			</section>
+
+	
+	
+		
+			<?php if ($do_testport): ?>
+			<section class="col-xs-12">
+                <script type="text/javascript">
+					//<![CDATA[
+					window.onload=function(){
+						document.getElementById("testportCaptured").wrap='off';
+					}
+					//]]>
+				</script>
+
+                <div class="content-box">              
+            
+                    <header class="content-box-head col-xs-12">
+				        <h3><?=gettext("Port Test Results"); ?></h3>
+				    </header>
+					
+					<div class="content-box-main col-xs-12">
+					 	<pre>
+		
+<?php
+		
+							$result = "";
 			$nc_base_cmd = "/usr/bin/nc";
 			$nc_args = "-w " . escapeshellarg($timeout);
 			if (!$showtext)
@@ -275,14 +299,15 @@ include("head.inc"); ?>
 					echo htmlspecialchars($result);
 				}
 			}
-			echo '</textarea>&nbsp;</font>' ;
-		}
-		?>
-		</td>
-		</tr>
-	</table>
-</form>
-</td></tr></table>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+?>
+						</pre>
+					</div>
+				</div>
+			</section>
+			<? endif; ?>
+		</div>		
+	</div>
+</section>
+
+<?php include('foot.inc'); ?>

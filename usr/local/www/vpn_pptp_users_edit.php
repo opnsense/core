@@ -138,45 +138,71 @@ $shortcut_section = "pptps";
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+<body>
 <?php include("fbegin.inc"); ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-            <form action="vpn_pptp_users_edit.php" method="post" name="iform" id="iform">
-              <div id="mainarea">
-	      <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="vpn pptp users edit">
-                <tr>
-                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
-                  <td width="78%" class="vtable">
-					<?=$mandfldhtml;?><input name="username" type="text" class="formfld user" id="username" size="20" value="<?=htmlspecialchars($pconfig['username']);?>" />
-                  </td>
-                </tr>
-                <tr>
-                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Password");?></td>
-                  <td width="78%" class="vtable">
-                    <?=$mandfldhtml;?><input name="password" type="password" class="formfld pwd" id="password" size="20" />
-                    <br /><?=$mandfldhtml;?><input name="password2" type="password" class="formfld pwd" id="password2" size="20" />
-                    &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]): ?><br />
-                    <span class="vexpl"><?=gettext("If you want to change the users' password, ".
-                    "enter it here twice.");?></span><?php endif; ?></td>
-                </tr>
-                <tr>
-                  <td width="22%" valign="top" class="vncell"><?=gettext("IP address");?></td>
-                  <td width="78%" class="vtable">
-                    <input name="ip" type="text" class="formfld unknown" id="ip" size="20" value="<?=htmlspecialchars($pconfig['ip']);?>" />
-                    <br /><span class="vexpl"><?=gettext("If you want the user to be assigned a specific IP address, enter it here.");?></span></td>
-                </tr>
-                <tr>
-                  <td class="vncell" width="22%" valign="top">&nbsp;</td>
-                  <td class="vncell" width="78%">
-                    <input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-                    <?php if (isset($id) && $a_secret[$id]): ?>
-                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-                    <?php endif; ?>
-                  </td>
-                </tr>
-              </table>
-	      </div>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+	
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<?php
+						$tab_array = array();
+						$tab_array[0] = array(gettext("Configuration"), false, "vpn_pptp.php");
+						$tab_array[1] = array(gettext("Users"), true, "vpn_pptp_users.php");
+						display_top_tabs($tab_array);
+					?> 
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	
+	    				    
+							<form action="vpn_pptp_users_edit.php" method="post" name="iform" id="iform">
+
+								<div class="table-responsive">
+							 		<table class="table table-striped table-sort">
+								 		<tr>
+						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
+						                  <td width="78%" class="vtable">
+											<?=$mandfldhtml;?><input name="username" type="text" class="form-control user" id="username" size="20" value="<?=htmlspecialchars($pconfig['username']);?>" />
+						                  </td>
+						                </tr>
+						                <tr>
+						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Password");?></td>
+						                  <td width="78%" class="vtable">
+						                    <?=$mandfldhtml;?><input name="password" type="password" class="form-control pwd" id="password" size="20" />
+						                    <br /><?=$mandfldhtml;?><input name="password2" type="password" class="form-control pwd" id="password2" size="20" />
+						                    &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]): ?><br />
+						                    <span class="vexpl"><?=gettext("If you want to change the users' password, ".
+						                    "enter it here twice.");?></span><?php endif; ?></td>
+						                </tr>
+						                <tr>
+						                  <td width="22%" valign="top" class="vncell"><?=gettext("IP address");?></td>
+						                  <td width="78%" class="vtable">
+						                    <input name="ip" type="text" class="form-control unknown" id="ip" size="20" value="<?=htmlspecialchars($pconfig['ip']);?>" />
+						                    <br /><span class="vexpl"><?=gettext("If you want the user to be assigned a specific IP address, enter it here.");?></span></td>
+						                </tr>
+						                <tr>
+						                  <td class="vncell" width="22%" valign="top">&nbsp;</td>
+						                  <td class="vncell" width="78%">
+						                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+						                    <?php if (isset($id) && $a_secret[$id]): ?>
+						                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+						                    <?php endif; ?>
+						                  </td>
+						                </tr>
+						              </table>
+							      </div>
+							</form>
+    				    </div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

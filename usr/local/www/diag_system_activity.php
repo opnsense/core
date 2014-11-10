@@ -52,8 +52,10 @@ if($_REQUEST['getactivity']) {
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
+
 <?php include("fbegin.inc"); ?>
+
 <script type="text/javascript">
 //<![CDATA[
 	function getcpuactivity() {
@@ -69,42 +71,38 @@ include("head.inc");
 			});
 	}
 	function activitycallback(transport) {
-		jQuery('#cpuactivitydiv').html('<font face="Courier" size="2"><pre style="text-align:left;">' + transport.responseText  + '<\/pre><\/font>');
+		jQuery('#cpuactivitydiv').html('<pre>' + transport.responseText  + '<\/pre>');
 		setTimeout('getcpuactivity()', 2500);
 	}
 	setTimeout('getcpuactivity()', 1000);
 //]]>
 </script>
-<div id="maincontent">
-<?php
-	if($savemsg) {
-		echo "<div id=\"savemsg\">";
-		print_info_box($savemsg);
-		echo "</div>";	
-	}
-	if ($input_errors)
-		print_input_errors($input_errors);
-?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="diag system activity">
-  <tr>
-    <td>
-	<table id="backuptable" class="tabcont" align="center" width="100%" border="0" cellpadding="6" cellspacing="0" summary="tabcont">
-		<tr>
-			<td align="center">
-				<table summary="results">
-					<tr><td>
-						<div id="cpuactivitydiv">
-							<?=gettext("Gathering CPU activity, please wait...");?>
-						</div>
-					</td></tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-    </td>
-  </tr>
-</table>
-</div>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+
+<section class="page-content-main">
+	<div class="container-fluid">	
+		<div class="row">
+							
+		    <section class="col-xs-12">
+			    
+			<?php
+				if($savemsg) {
+					echo "<div id=\"savemsg\">";
+					print_info_box($savemsg);
+					echo "</div>";	
+				}
+				if ($input_errors)
+					print_input_errors($input_errors);
+			?>
+
+			<div id="cpuactivitydiv">
+				<?=gettext("Gathering CPU activity, please wait...");?>
+			</div>		    
+		    </section>
+				
+		 </section>
+		</div>
+	</div>
+</section>
+
+<?php include("foot.inc"); ?>
