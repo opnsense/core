@@ -58,12 +58,12 @@ $g = array(
 	"xml_rootobj" => "pfsense",
 	"admin_group" => "admins",
 	"product_name" => "pfSense",
-	"product_copyright" => "Electric Sheep Fencing LLC",
-	"product_copyright_url" => "http://www.electricsheepfencing.com",
-	"product_copyright_years" => "2004 - ".date("Y"),
-	"product_website" => "www.pfsense.org",
-	"product_website_footer" => "https://www.pfsense.org/?gui22",
-	"product_email" => "coreteam@pfsense.org",
+	"product_copyright" => "",
+	"product_copyright_url" => "",
+	"product_copyright_years" => "2014 - ".date("Y"),
+	"product_website" => "www.opnsense.org",
+	"product_website_footer" => "https://www.opnsense.org/?gui22",
+	"product_email" => "coreteam@opnsense.org",
 	"hideplatform" => false,
 	"hidedownloadbackup" => false,
 	"hidebackupbeforeupgrade" => false,
@@ -71,7 +71,7 @@ $g = array(
 	"disablehelpmenu" => false,
 	"disablehelpicon" => false,
 	"disablecrashreporter" => false,
-	"crashreporterurl" => "https://crashreporter.pfsense.org/crash_reporter.php",
+	"crashreporterurl" => "https://crashreporter.opnsense.org/crash_reporter.php",
 	"debug" => false,
 	"latest_config" => "11.1",
 	"nopkg_platforms" => array("cdrom"),
@@ -79,7 +79,7 @@ $g = array(
 	"minimum_ram_warning_text" => "128 MB",
 	"wan_interface_name" => "wan", 
 	"nopccard_platforms" => array("wrap", "net48xx"),
-	"xmlrpcbaseurl" => "https://packages.pfsense.org",
+	"xmlrpcbaseurl" => "https://packages.opnsense.org",
 	"captiveportal_path" => "/usr/local/captiveportal",
 	"captiveportal_element_path" => "/var/db/cpelements",
 	"captiveportal_element_sizelimit" => 1048576,
@@ -102,8 +102,8 @@ if(file_exists("/etc/platform")) {
 	//$arch = ($arch == "i386") ? "" : '/' . $arch;
 
 	/* Full installs and NanoBSD use the same update directory and manifest in 2.x */
-	$g['update_url']="https://snapshots.pfsense.org/FreeBSD_releng/10.1/{$arch}/pfSense_HEAD/.updaters/";
-	$g['update_manifest']="https://updates.pfSense.org/manifest";
+	$g['update_url']="https://snapshots.opnsense.org/FreeBSD_releng/10.1/{$arch}/pfSense_HEAD/.updaters/";
+	$g['update_manifest']="https://updates.opnSense.org/manifest";
 
 	$g['platform'] = trim(file_get_contents("/etc/platform"));
 	if($g['platform'] == "nanobsd") {
