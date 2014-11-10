@@ -995,9 +995,11 @@ server.errorlog-use-syslog="enable"
 EOD;
 	}
 
+        if ($captive_portal !== false)
+                $fast_cgi_path = "{$g['tmp_path']}/php-fastcgi-{$captive_portal}.socket";
+        else
+                $fast_cgi_path = "{$g['tmp_path']}/php-fastcgi.socket";
 
-	if ($captive_portal !== false) {
-		$fast_cgi_path = "{$g['tmp_path']}/php-fastcgi-{$captive_portal}.socket";
 		$fastcgi_config = <<<EOD
 #### fastcgi module
 ## read fastcgi.txt for more info
@@ -1010,28 +1012,12 @@ fastcgi.server = ( ".php" =>
 				"PHP_FCGI_CHILDREN" => "{$max_php_children}",
 				"PHP_FCGI_MAX_REQUESTS" => "500"
 			),
-			"bin-path" => "/usr/local/bin/php"
+			"bin-path" => "/usr/local/bin/php-cgi"
 		)
 	)
 )
 
 EOD;
-	} else {
-		$fast_cgi_path = "{$g['varrun_path']}/php-fpm.socket";
-		$fastcgi_config = <<<EOD
-#### fastcgi module
-## read fastcgi.txt for more info
-fastcgi.server = ( ".php" =>
-	( "localhost" =>
-		(
-			"socket" => "{$fast_cgi_path}",
-			"broken-scriptfilename" => "enable"
-		)
-	)
-)
-
-EOD;
-	}
 
 
 	$lighty_config = <<<EOD
