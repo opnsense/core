@@ -224,8 +224,7 @@ EOD;
 			}
 			
 			if($lanif == "") {
-				fclose($fp);
-				return;
+				break;
 			}
 	
 			if ($lanif === "a")
@@ -302,7 +301,7 @@ EOD;
 	
 		echo <<<EOD
 	
-Do you want to proceed [y|n]?
+Do you want to proceed [y|n]? 
 EOD;
 			$key = chop(fgets($fp));		
 	}
