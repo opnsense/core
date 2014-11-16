@@ -815,9 +815,6 @@ function get_backups() {
 function backup_config() {
 	global $config, $g;
 
-	if($g['platform'] == "cdrom")
-		return;
-
 	conf_mount_rw();
 
 	/* Create backup directory if needed */
