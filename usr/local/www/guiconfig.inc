@@ -35,12 +35,14 @@
 /* Include authentication routines */
 /* THIS MUST BE ABOVE ALL OTHER CODE */
 if(!$nocsrf) {
-	function csrf_startup() {
+	
+function csrf_startup() {
 		csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
 		$timeout_minutes = isset($config['system']['webgui']['session_timeout']) ?  $config['system']['webgui']['session_timeout'] : 240;
 		csrf_conf('expires', $timeout_minutes * 60);
 	}
 	require_once("csrf/csrf-magic.php");
+
 }
 
 /* make sure nothing is cached */
@@ -53,14 +55,15 @@ if (!$omit_nocacheheaders) {
 }
 
 header("X-Frame-Options: SAMEORIGIN");
-require_once("authgui.inc");
+require_once("includes/authgui.inc");
+
 
 /* parse the configuration and include all configuration functions */
 require_once("functions.inc");
 
 /* Pull in all the gui related display classes) */
 foreach (scandir("/usr/local/www/classes/") as $file) {
-	if (substr($file, -4) == ".inc") {
+	if (substr($file, -4) == ".inc" && substr($file,0,2) != '._') {
 		require_once("classes/{$file}");
 	}
 }
@@ -299,11 +302,11 @@ function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 		$nifty_background = "#FFF";
 
 	if(stristr($msg, gettext("apply")) != false || stristr($msg, gettext("save")) != false || stristr($msg, gettext("create")) != false || $showapply) {
-		$savebutton = "<td class=\"infoboxsave\"><form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
+		$savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
 		$savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"${name}\" value=\"{$value}\" />";
 		if($_POST['if'])
 			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
-		$savebutton.="</form></td>";
+		$savebutton.="</form>";
 	}
 	$nifty_redbox = "#990000";
 	$nifty_blackbox = "#000000";
@@ -327,8 +330,8 @@ function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 	echo <<<EOFnp
 	    <div class="col-xs-12">
 		<div class="alert alert-info alert-dismissible" role="alert">
-            <p>{$msg}</p>
 			{$savebutton}
+            <p>{$msg}</p>
 		</div>
 		</div>
 EOFnp;
@@ -385,7 +388,7 @@ function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $und
 					</table>
 				</div>
 				<div>
-					<p>&nbsp;</p>
+					<p>&nbsp;
 				</div>
 			</td>
 		</tr>

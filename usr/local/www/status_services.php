@@ -38,7 +38,7 @@
 ##|-PRIV
 
 require_once("guiconfig.inc");
-require_once("service-utils.inc");
+require_once("includes/service-utils.inc");
 require_once("shortcuts.inc");
 
 $service_name = '';

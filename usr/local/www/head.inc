@@ -31,8 +31,10 @@ $pagetitle = gentitle( $pgtitle );
 		<link href="/themes/opnsense/build/img/icons/touch.png" rel="apple-touch-icon-precomposed">
 		
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
-
-			<script src="/themes/opnsense/build/js/main.min.js" type="text/javascript"></script>
+		
+		<script>var theme = '<?=$g['theme'];?>'; </script>
+		
+		<script src="/themes/opnsense/build/js/main.min.js" type="text/javascript"></script>
 		
 		<script type="text/javascript" src="/javascript/sorttable.js"></script>
 		<!-- <script type="text/javascript" src="/javascript/ticker.js"></script> -->
@@ -44,10 +46,10 @@ $pagetitle = gentitle( $pgtitle );
 			<script type=\"text/javascript\" src=\"/javascript/firebug-lite.js\"></script>
 		<?php endif; ?>
 		
-		<script type="text/javascript\" src="/javascript/scriptaculous/prototype.js"></script>
-		<script type="text/javascript\" src="/javascript/scriptaculous/scriptaculous.js"></script>
-		<script type="text/javascript\" src="/javascript/scriptaculous/effects.js"></script>
-		<script type="text/javascript\" src="/javascript/scriptaculous/dragdrop.js"></script>
+		<script type="text/javascript" src="/javascript/scriptaculous/prototype.js"></script>
+		<script type="text/javascript" src="/javascript/scriptaculous/scriptaculous.js"></script>
+		<script type="text/javascript" src="/javascript/scriptaculous/effects.js"></script>
+		<script type="text/javascript" src="/javascript/scriptaculous/dragdrop.js"></script>
 		
 		<?php if(file_exists("{$g['www_path']}/javascript/global.js")):?>
 		<script type="text/javascript" src="/javascript/global.js"></script>

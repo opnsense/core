@@ -178,52 +178,69 @@ include("head.inc");
 <script type="text/javascript" src="./tree/tree.js"></script>
 </head>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-<div id="inputerrors"></div>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<form action="firewall_shaper_queues.php" method="post" name="iform" id="iform">
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<?php if (is_subsystem_dirty('shaper')): ?><p>
-<?php print_info_box_np(gettext("The traffic shaper configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br /></p>
-<?php endif; ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="traffic shaper queues">
-  <tr><td>
-<?php
-	$tab_array = array();
-	$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
-	$tab_array[1] = array(gettext("By Queue"), true, "firewall_shaper_queues.php");
-	$tab_array[2] = array(gettext("Limiter"), false, "firewall_shaper_vinterface.php");
-	$tab_array[3] = array(gettext("Layer7"), false, "firewall_shaper_layer7.php");
-	$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
-	display_top_tabs($tab_array);
-?>
-  </td></tr>
-  <tr> 
-    <td valign="top">
-	<div id="mainarea">
-		<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="main area">
-		<tr>
-		<td width="30%" valign="top" align="left">
-                <?php      echo $tree; ?>
-		</td>
-		<td width="70%" valign="top" align="center">
-			<?php 
-				if ($qname)
-        				echo "<p class=\"pgtitle\">" . $qname . "</p><br />";
-				echo "<table align=\"center\" class=\"tabcont\" width=\"80%\" border=\"0\" cellpadding=\"4\" cellspacing=\"0\" summary=\"output form\">";
-				echo $output;
-				echo "<tr><td>&nbsp;</td></tr>";
-				echo "</table>";
-			?>	
-			</td></tr>
-			</table><!-- table:main area -->
 
-		</div><!-- div:main area -->
-	  </td>
-	</tr>
-</table>
-            </form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">				
+				
+				<div id="inputerrors"></div>
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (is_subsystem_dirty('shaper')): ?><p>
+				<?php print_info_box_np(gettext("The traffic shaper configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br /></p>
+				<?php endif; ?>
+
+			    <section class="col-xs-12">
+    				
+    					
+    					<?php
+							$tab_array = array();
+							$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
+							$tab_array[1] = array(gettext("By Queue"), true, "firewall_shaper_queues.php");
+							$tab_array[2] = array(gettext("Limiter"), false, "firewall_shaper_vinterface.php");
+							$tab_array[3] = array(gettext("Layer7"), false, "firewall_shaper_layer7.php");
+							$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
+							display_top_tabs($tab_array);
+						?>
+						
+					
+						<div class="tab-content content-box col-xs-12">	
+	    					
+	    				    <div class="container-fluid">	
+	    					
+   
+		                        <form action="firewall_shaper_queues.php" method="post" name="iform" id="iform">
+		                        	
+		                        	
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+				                        <tr>
+											<td width="30%" valign="top" align="left">
+									                <?php      echo $tree; ?>
+											</td>
+											<td width="70%" valign="top" align="center">
+												<?php 
+													if ($qname)
+									        				echo "<p class=\"pgtitle\">" . $qname . "</p><br />";
+													echo "<table align=\"center\" class=\"tabcont\" width=\"80%\" border=\"0\" cellpadding=\"4\" cellspacing=\"0\" summary=\"output form\">";
+													echo $output;
+													echo "<tr><td>&nbsp;</td></tr>";
+													echo "</table>";
+												?>	
+												</td></tr>
+									</table><!-- table:main area -->
+								</div><!-- div:main area -->
+		                        </form>
+	    				    </div>
+						</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+
+<?php include("foot.inc"); ?>

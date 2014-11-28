@@ -363,6 +363,13 @@ EOF;
 }
 $closehead = false;
 include("head.inc");
+
+if ($pconfig['enable']) {
+	$main_buttons = array(
+		array('label'=>gettext("add voucher"), 'href'=>'services_captiveportal_vouchers_edit.php?zone='.$cpzone),
+	);
+}
+
 ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -428,233 +435,241 @@ function enable_change(enable_change) {
 //]]>
 </script>
 </head>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
-<?php include("fbegin.inc"); ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<form action="services_captiveportal_vouchers.php" method="post" enctype="multipart/form-data" name="iform" id="iform">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="tab pane">
-	<tr>
-		<td class="tabnavtbl">
-<?php 
-	$tab_array = array();
-	$tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("MAC"), false, "services_captiveportal_mac.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Allowed IP addresses"), false, "services_captiveportal_ip.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Allowed Hostnames"), false, "services_captiveportal_hostname.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Vouchers"), true, "services_captiveportal_vouchers.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("File Manager"), false, "services_captiveportal_filemanager.php?zone={$cpzone}");
-	display_top_tabs($tab_array, true);
-?> 
-		</td>
-	</tr>
-	<tr>
-		<td class="tabcont">
-			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="checkbox pane">
-				<tr> 
-					<td width="22%" valign="top" class="vtable">&nbsp;</td>
-					<td width="78%" class="vtable">
-						<input name="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> onclick="enable_change(false)" />
-						<strong><?=gettext("Enable Vouchers"); ?></strong>
-					</td>
-				</tr>
-				<tr>
-					<td valign="top" class="vncell">
-						<?=gettext("Voucher Rolls"); ?>
-						<?php 
-							if($pconfig['vouchersyncdbip']) 
-								echo "<br />(Synchronized from {$pconfig['vouchersyncdbip']})";
-						?>
-					</td>
-					<td class="vtable">
-						<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="content pane">
-							<tr>
-								<td width="10%" class="listhdrr"><?=gettext("Roll"); ?> #</td>
-								<td width="20%" class="listhdrr"><?=gettext("Minutes/Ticket"); ?></td>
-								<td width="20%" class="listhdrr"># <?=gettext("of Tickets"); ?></td>
-								<td width="35%" class="listhdr"><?=gettext("Comment"); ?></td>
-								<td width="15%" class="list"></td>
-							</tr>
-							<?php $i = 0; foreach($a_roll as $rollent): ?>
-								<tr>
-									<td class="listlr">
-									<?=htmlspecialchars($rollent['number']); ?>&nbsp;
-								</td>
-								<td class="listr">
-									<?=htmlspecialchars($rollent['minutes']);?>&nbsp;
-								</td>
-								<td class="listr">
-									<?=htmlspecialchars($rollent['count']);?>&nbsp;
-								</td>
-								<td class="listr">
-									<?=htmlspecialchars($rollent['descr']); ?>&nbsp;
-								</td>
-								<td valign="middle" class="list nowrap"> 
-									<div id='addeditdelete<?=$i?>'>
-										<?php if ($pconfig['enable']): ?> 
-											<a href="services_captiveportal_vouchers_edit.php?zone=<?=$cpzone;?>&amp;id=<?=$i; ?>"><img src="/themes/<?=$g['theme']; ?>/images/icons/icon_e.gif" title="<?=gettext("edit voucher"); ?>" width="17" height="17" border="0" alt="<?=gettext("edit voucher"); ?>" /></a>
-											<a href="services_captiveportal_vouchers.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i; ?>" onclick="return confirm('<?=gettext("Do you really want to delete this voucher? This makes all vouchers from this roll invalid"); ?>')"><img src="/themes/<?=$g['theme']; ?>/images/icons/icon_x.gif" title="<?=gettext("delete vouchers"); ?>" width="17" height="17" border="0" alt="<?=gettext("delete vouchers"); ?>" /></a>
-											<a href="services_captiveportal_vouchers.php?zone=<?=$cpzone;?>&amp;act=csv&amp;id=<?=$i; ?>"><img src="/themes/<?=$g['theme']; ?>/images/icons/icon_log_s.gif" title="<?=gettext("generate vouchers for this roll to CSV file"); ?>" width="11" height="15" border="0" alt="<?=gettext("generate vouchers for this roll to CSV file"); ?>" /></a>
-                    					<?php endif;?>
-									</div>
-								</td>
-							</tr>
-							<?php $i++; endforeach; ?>
-							<tr> 
-								<td class="list" colspan="4"></td>
-								<?php
-								if ($pconfig['enable']) 
-									echo "<td class=\"list\"><div id='addnewroll'> <a href=\"services_captiveportal_vouchers_edit.php?zone={$cpzone}\"><img src=\"/themes/{$g['theme']}/images/icons/icon_plus.gif\" title=\"" . gettext("add voucher") . "\" width=\"17\" height=\"17\" border=\"0\" alt=\"" . gettext("add voucher") . "\" /></a></div></td>";
-								?>
-							</tr>
-						</table>     
-						<?php if ($pconfig['enable']): ?> 
-							<?=gettext("Create, generate and activate Rolls with Vouchers that allow access through the " .
-							"captive portal for the configured time. Once a voucher is activated, " .
-								"its clock is started and runs uninterrupted until it expires. During that " .
-								"time, the voucher can be re-used from the same or a different computer. If the voucher " .
-								"is used again from another computer, the previous session is stopped."); ?>
-						<?php else: ?>
-							<?=gettext("Enable Voucher support first using the checkbox above and hit Save at the bottom."); ?>
-						<?php endif;?>
-						</td>
-					</tr>
-					<tr>
-						<td valign="top" class="vncellreq">
-							<?=gettext("Voucher public key"); ?>
-						</td>
-						<td class="vtable">
-							<textarea name="publickey" cols="65" rows="4" id="publickey" class="formpre"><?=htmlspecialchars($pconfig['publickey']);?></textarea>
-							<br />
-								<?=gettext("Paste an RSA public key (64 Bit or smaller) in PEM format here. This key is used to decrypt vouchers."); ?> <a href='#' onclick='generatenewkey();'><?=gettext('Generate');?></a> <?=gettext('new key');?>.</td>
-						</tr>
-						<tr>
-							<td valign="top" class="vncell"><?=gettext("Voucher private key"); ?></td>
-							<td class="vtable">
-								<textarea name="privatekey" cols="65" rows="5" id="privatekey" class="formpre"><?=htmlspecialchars($pconfig['privatekey']);?></textarea>
-								<br />
-								<?=gettext("Paste an RSA private key (64 Bit or smaller) in PEM format here. This key is only used to generate encrypted vouchers and doesn't need to be available if the vouchers have been generated offline."); ?> <a href='#' onclick='generatenewkey();'> <?=gettext('Generate');?></a> <?=gettext('new key');?>.</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Character set"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="charset" type="text" class="formfld" id="charset" size="80" value="<?=htmlspecialchars($pconfig['charset']);?>" />
-								<br />
-								<?=gettext("Tickets are generated with the specified character set. It should contain printable characters (numbers, lower case and upper case letters) that are hard to confuse with others. Avoid e.g. 0/O and l/1."); ?>
-							</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"># <?=gettext("of Roll Bits"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="rollbits" type="text" class="formfld" id="rollbits" size="2" value="<?=htmlspecialchars($pconfig['rollbits']);?>" />
-								<br />
-								<?=gettext("Reserves a range in each voucher to store the Roll # it belongs to. Allowed range: 1..31. Sum of Roll+Ticket+Checksum bits must be one Bit less than the RSA key size."); ?>
-							</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"># <?=gettext("of Ticket Bits"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="ticketbits" type="text" class="formfld" id="ticketbits" size="2" value="<?=htmlspecialchars($pconfig['ticketbits']);?>" />
-								<br />
-								<?=gettext("Reserves a range in each voucher to store the Ticket# it belongs to. Allowed range: 1..16. Using 16 bits allows a roll to have up to 65535 vouchers. A bit array, stored in RAM and in the config, is used to mark if a voucher has been used. A bit array for 65535 vouchers requires 8 KB of storage."); ?>
-							</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"># <?=gettext("of Checksum Bits"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="checksumbits" type="text" class="formfld" id="checksumbits" size="2" value="<?=htmlspecialchars($pconfig['checksumbits']);?>" />
-								<br />
-								<?=gettext("Reserves a range in each voucher to store a simple checksum over Roll # and Ticket#. Allowed range is 0..31."); ?>
-							</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Magic Number"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="magic" type="text" class="formfld" id="magic" size="20" value="<?=htmlspecialchars($pconfig['magic']);?>" />
-								<br />
-								<?=gettext("Magic number stored in every voucher. Verified during voucher check. Size depends on how many bits are left by Roll+Ticket+Checksum bits. If all bits are used, no magic number will be used and checked."); ?>
-							</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Invalid Voucher Message"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="msgnoaccess" type="text" class="formfld" id="msgnoaccess" size="80" value="<?=htmlspecialchars($pconfig['msgnoaccess']);?>" />
-								<br /><?=gettext("Error message displayed for invalid vouchers on captive portal error page"); ?> ($PORTAL_MESSAGE$).
-							</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Expired Voucher Message"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="msgexpired" type="text" class="formfld" id="msgexpired" size="80" value="<?=htmlspecialchars($pconfig['msgexpired']);?>" />
-								<br /><?=gettext("Error message displayed for expired vouchers on captive portal error page"); ?> ($PORTAL_MESSAGE$).
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top">&nbsp;</td>
-							<td width="78%">
-								&nbsp;
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2" valign="top" class="listtopic"><?=gettext("Voucher database synchronization"); ?></td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Synchronize Voucher Database IP"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="vouchersyncdbip" type="text" class="formfld" id="vouchersyncdbip" size="17" value="<?=htmlspecialchars($pconfig['vouchersyncdbip']);?>" />
-								<br /><?=gettext("IP address of master nodes webConfigurator to synchronize voucher database and used vouchers from."); ?>
-								<br /><?=gettext("NOTE: this should be setup on the slave nodes and not the primary node!"); ?>
-							</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Voucher sync port"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="vouchersyncport" type="text" class="formfld" id="vouchersyncport" size="7" value="<?=htmlspecialchars($pconfig['vouchersyncport']);?>" />
-								<br /><?=gettext("This is the port of the master voucher nodes webConfigurator.  Example: 443"); ?>
-							</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Voucher sync username"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="vouchersyncusername" type="text" class="formfld" id="vouchersyncusername" size="25" value="<?=htmlspecialchars($pconfig['vouchersyncusername']);?>" autocomplete="off" />
-								<br /><?=gettext("This is the username of the master voucher nodes webConfigurator."); ?>
-							</td>
-						</tr>
-						<tr> 
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Voucher sync password"); ?></td>
-							<td width="78%" class="vtable">
-								<input name="vouchersyncpass" type="password" class="formfld" id="vouchersyncpass" size="25" value="<?=htmlspecialchars($pconfig['vouchersyncpass']);?>" autocomplete="off" />
-								<br /><?=gettext("This is the password of the master voucher nodes webConfigurator."); ?>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top">&nbsp;</td>
-							<td width="78%">
-								<input type="hidden" name="zone" id="zone" value="<?=htmlspecialchars($cpzone);?>" />
-								<input type="hidden" name="exponent" id="exponent" value="<?=$pconfig['exponent'];?>" />
-								<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" onclick="enable_change(true); before_save();" />
-								<input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2" class="list"><p class="vexpl">
-								<span class="red"><strong> <?=gettext("Note:"); ?><br />   </strong></span>
-							<?=gettext("Changing any Voucher parameter (apart from managing the list of Rolls) on this page will render existing vouchers useless if they were generated with different settings."); ?>
-							<br />
-							<?=gettext("Specifying the Voucher Database Synchronization options will not record any other value from the other options. They will be retrieved/synced from the master."); ?>
-						</p>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-</form>
+
+
+<body>
+	<?php include("fbegin.inc"); ?>
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($savemsg) print_info_box($savemsg); ?>	
+						
+			    <section class="col-xs-12">
+    				
+    				<?php
+						$tab_array = array();
+						$tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("MAC"), false, "services_captiveportal_mac.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Allowed IP addresses"), false, "services_captiveportal_ip.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Allowed Hostnames"), false, "services_captiveportal_hostname.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Vouchers"), true, "services_captiveportal_vouchers.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("File Manager"), false, "services_captiveportal_filemanager.php?zone={$cpzone}");
+						display_top_tabs($tab_array, true);
+					?>
+					
+					<div class="tab-content content-box col-xs-12">	
+	    					
+	    				<div class="container-fluid">	    				
+   
+		                    <form action="services_captiveportal_vouchers.php" method="post" name="iform" id="iform">									
+		                        <input type="hidden" name="zone" id="zone" value="<?=htmlspecialchars($cpzone);?>" />
+		                        	
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort"> 
+										<tr> 
+											<td width="22%" valign="top" class="vtable">&nbsp;</td>
+											<td width="78%" class="vtable">
+												<input name="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> onclick="enable_change(false)" />
+												<strong><?=gettext("Enable Vouchers"); ?></strong>
+											</td>
+										</tr>
+										<tr>
+											<td valign="top" class="vncell">
+												<?=gettext("Voucher Rolls"); ?>
+												<?php 
+													if($pconfig['vouchersyncdbip']) 
+														echo "<br />(Synchronized from {$pconfig['vouchersyncdbip']})";
+												?>
+											</td>
+											<td class="vtable">
+												<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="content pane">
+													<tr>
+														<td width="10%" class="listhdrr"><?=gettext("Roll"); ?> #</td>
+														<td width="20%" class="listhdrr"><?=gettext("Minutes/Ticket"); ?></td>
+														<td width="20%" class="listhdrr"># <?=gettext("of Tickets"); ?></td>
+														<td width="35%" class="listhdr"><?=gettext("Comment"); ?></td>
+														<td width="15%" class="list"></td>
+													</tr>
+													<?php $i = 0; foreach($a_roll as $rollent): ?>
+														<tr>
+															<td class="listlr">
+															<?=htmlspecialchars($rollent['number']); ?>&nbsp;
+														</td>
+														<td class="listr">
+															<?=htmlspecialchars($rollent['minutes']);?>&nbsp;
+														</td>
+														<td class="listr">
+															<?=htmlspecialchars($rollent['count']);?>&nbsp;
+														</td>
+														<td class="listr">
+															<?=htmlspecialchars($rollent['descr']); ?>&nbsp;
+														</td>
+														<td valign="middle" class="list nowrap"> 
+															<div id='addeditdelete<?=$i?>'>
+																<?php if ($pconfig['enable']): ?> 
+																	<a href="services_captiveportal_vouchers_edit.php?zone=<?=$cpzone;?>&amp;id=<?=$i; ?>"><img src="/themes/<?=$g['theme']; ?>/images/icons/icon_e.gif" title="<?=gettext("edit voucher"); ?>" width="17" height="17" border="0" alt="<?=gettext("edit voucher"); ?>" /></a>
+																	<a href="services_captiveportal_vouchers.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i; ?>" onclick="return confirm('<?=gettext("Do you really want to delete this voucher? This makes all vouchers from this roll invalid"); ?>')"><img src="/themes/<?=$g['theme']; ?>/images/icons/icon_x.gif" title="<?=gettext("delete vouchers"); ?>" width="17" height="17" border="0" alt="<?=gettext("delete vouchers"); ?>" /></a>
+																	<a href="services_captiveportal_vouchers.php?zone=<?=$cpzone;?>&amp;act=csv&amp;id=<?=$i; ?>"><img src="/themes/<?=$g['theme']; ?>/images/icons/icon_log_s.gif" title="<?=gettext("generate vouchers for this roll to CSV file"); ?>" width="11" height="15" border="0" alt="<?=gettext("generate vouchers for this roll to CSV file"); ?>" /></a>
+						                    					<?php endif;?>
+															</div>
+														</td>
+													</tr>
+													<?php $i++; endforeach; ?>
+													
+												</table>     
+												<?php if ($pconfig['enable']): ?> 
+													<?=gettext("Create, generate and activate Rolls with Vouchers that allow access through the " .
+													"captive portal for the configured time. Once a voucher is activated, " .
+														"its clock is started and runs uninterrupted until it expires. During that " .
+														"time, the voucher can be re-used from the same or a different computer. If the voucher " .
+														"is used again from another computer, the previous session is stopped."); ?>
+												<?php else: ?>
+													<?=gettext("Enable Voucher support first using the checkbox above and hit Save at the bottom."); ?>
+												<?php endif;?>
+												</td>
+											</tr>
+											<tr>
+												<td valign="top" class="vncellreq">
+													<?=gettext("Voucher public key"); ?>
+												</td>
+												<td class="vtable">
+													<textarea name="publickey" cols="65" rows="4" id="publickey" class="formpre"><?=htmlspecialchars($pconfig['publickey']);?></textarea>
+													<br />
+														<?=gettext("Paste an RSA public key (64 Bit or smaller) in PEM format here. This key is used to decrypt vouchers."); ?> <a href='#' onclick='generatenewkey();'><?=gettext('Generate');?></a> <?=gettext('new key');?>.</td>
+												</tr>
+												<tr>
+													<td valign="top" class="vncell"><?=gettext("Voucher private key"); ?></td>
+													<td class="vtable">
+														<textarea name="privatekey" cols="65" rows="5" id="privatekey" class="formpre"><?=htmlspecialchars($pconfig['privatekey']);?></textarea>
+														<br />
+														<?=gettext("Paste an RSA private key (64 Bit or smaller) in PEM format here. This key is only used to generate encrypted vouchers and doesn't need to be available if the vouchers have been generated offline."); ?> <a href='#' onclick='generatenewkey();'> <?=gettext('Generate');?></a> <?=gettext('new key');?>.</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"><?=gettext("Character set"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="charset" type="text" class="formfld" id="charset" size="80" value="<?=htmlspecialchars($pconfig['charset']);?>" />
+														<br />
+														<?=gettext("Tickets are generated with the specified character set. It should contain printable characters (numbers, lower case and upper case letters) that are hard to confuse with others. Avoid e.g. 0/O and l/1."); ?>
+													</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"># <?=gettext("of Roll Bits"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="rollbits" type="text" class="formfld" id="rollbits" size="2" value="<?=htmlspecialchars($pconfig['rollbits']);?>" />
+														<br />
+														<?=gettext("Reserves a range in each voucher to store the Roll # it belongs to. Allowed range: 1..31. Sum of Roll+Ticket+Checksum bits must be one Bit less than the RSA key size."); ?>
+													</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"># <?=gettext("of Ticket Bits"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="ticketbits" type="text" class="formfld" id="ticketbits" size="2" value="<?=htmlspecialchars($pconfig['ticketbits']);?>" />
+														<br />
+														<?=gettext("Reserves a range in each voucher to store the Ticket# it belongs to. Allowed range: 1..16. Using 16 bits allows a roll to have up to 65535 vouchers. A bit array, stored in RAM and in the config, is used to mark if a voucher has been used. A bit array for 65535 vouchers requires 8 KB of storage."); ?>
+													</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"># <?=gettext("of Checksum Bits"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="checksumbits" type="text" class="formfld" id="checksumbits" size="2" value="<?=htmlspecialchars($pconfig['checksumbits']);?>" />
+														<br />
+														<?=gettext("Reserves a range in each voucher to store a simple checksum over Roll # and Ticket#. Allowed range is 0..31."); ?>
+													</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"><?=gettext("Magic Number"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="magic" type="text" class="formfld" id="magic" size="20" value="<?=htmlspecialchars($pconfig['magic']);?>" />
+														<br />
+														<?=gettext("Magic number stored in every voucher. Verified during voucher check. Size depends on how many bits are left by Roll+Ticket+Checksum bits. If all bits are used, no magic number will be used and checked."); ?>
+													</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"><?=gettext("Invalid Voucher Message"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="msgnoaccess" type="text" class="formfld" id="msgnoaccess" size="80" value="<?=htmlspecialchars($pconfig['msgnoaccess']);?>" />
+														<br /><?=gettext("Error message displayed for invalid vouchers on captive portal error page"); ?> ($PORTAL_MESSAGE$).
+													</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"><?=gettext("Expired Voucher Message"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="msgexpired" type="text" class="formfld" id="msgexpired" size="80" value="<?=htmlspecialchars($pconfig['msgexpired']);?>" />
+														<br /><?=gettext("Error message displayed for expired vouchers on captive portal error page"); ?> ($PORTAL_MESSAGE$).
+													</td>
+												</tr>
+												<tr>
+													<td width="22%" valign="top">&nbsp;</td>
+													<td width="78%">
+														&nbsp;
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" valign="top" class="listtopic"><?=gettext("Voucher database synchronization"); ?></td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"><?=gettext("Synchronize Voucher Database IP"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="vouchersyncdbip" type="text" class="formfld" id="vouchersyncdbip" size="17" value="<?=htmlspecialchars($pconfig['vouchersyncdbip']);?>" />
+														<br /><?=gettext("IP address of master nodes webConfigurator to synchronize voucher database and used vouchers from."); ?>
+														<br /><?=gettext("NOTE: this should be setup on the slave nodes and not the primary node!"); ?>
+													</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"><?=gettext("Voucher sync port"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="vouchersyncport" type="text" class="formfld" id="vouchersyncport" size="7" value="<?=htmlspecialchars($pconfig['vouchersyncport']);?>" />
+														<br /><?=gettext("This is the port of the master voucher nodes webConfigurator.  Example: 443"); ?>
+													</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"><?=gettext("Voucher sync username"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="vouchersyncusername" type="text" class="formfld" id="vouchersyncusername" size="25" value="<?=htmlspecialchars($pconfig['vouchersyncusername']);?>" autocomplete="off" />
+														<br /><?=gettext("This is the username of the master voucher nodes webConfigurator."); ?>
+													</td>
+												</tr>
+												<tr> 
+													<td width="22%" valign="top" class="vncellreq"><?=gettext("Voucher sync password"); ?></td>
+													<td width="78%" class="vtable">
+														<input name="vouchersyncpass" type="password" class="formfld" id="vouchersyncpass" size="25" value="<?=htmlspecialchars($pconfig['vouchersyncpass']);?>" autocomplete="off" />
+														<br /><?=gettext("This is the password of the master voucher nodes webConfigurator."); ?>
+													</td>
+												</tr>
+												<tr>
+													<td width="22%" valign="top">&nbsp;</td>
+													<td width="78%">
+														<input type="hidden" name="zone" id="zone" value="<?=htmlspecialchars($cpzone);?>" />
+														<input type="hidden" name="exponent" id="exponent" value="<?=$pconfig['exponent'];?>" />
+														<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" onclick="enable_change(true); before_save();" />
+														<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+													</td>
+												</tr>
+												<tr>
+													<td colspan="2" class="list"><p class="vexpl">
+														<span class="red"><strong> <?=gettext("Note:"); ?><br />   </strong></span>
+													<?=gettext("Changing any Voucher parameter (apart from managing the list of Rolls) on this page will render existing vouchers useless if they were generated with different settings."); ?>
+													<br />
+													<?=gettext("Specifying the Voucher Database Synchronization options will not record any other value from the other options. They will be retrieved/synced from the master."); ?>
+												</p>
+											</td>
+										</tr>
+									</table>
+		                        </div>
+		                    </form>
+	    				</div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+
 <script type="text/javascript">
 //<![CDATA[
 enable_change(false);
 //]]>
 </script>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>

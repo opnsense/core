@@ -283,6 +283,8 @@ if ($captiveportal && is_array($config['captiveportal'])) {
 include("head.inc");
 ?>
 
+<body>
+
 <?php if ($curcat === "custom") { ?>
 	<link rel="stylesheet" type="text/css" href="/javascript/jquery-ui-timepicker-addon/css/jquery-ui-timepicker-addon.css" />
 	<link rel="stylesheet" type="text/css" href="/javascript/jquery/jquery-ui-1.11.1.css" />
@@ -397,10 +399,6 @@ function get_dates($curperiod, $graph) {
 }
 
 ?>
-</head>
-
-
-<body>
 
 <?php include("fbegin.inc"); ?>
 
@@ -555,11 +553,11 @@ function get_dates($curperiod, $graph) {
 												if(in_array($curdatabase, $custom_databases)) {
 													$id = "{$graph}-{$curoption}-{$curdatabase}";
 													$id = preg_replace('/\./', '_', $id);
-						
-													echo "<tr><td colspan=\"2\" class=\"list\">\n";
-													echo "<img border=\"0\" name=\"{$id}\" ";
+													$img_date = Date("Y.m.d.G.i.s"); /* Add a way to let the browser know we have refreshed the image */
+													echo "<tr><td colspan=\"100%\" class=\"list\">\n";
+													echo "<img border=\"0\" width=\"100%;\" name=\"{$id}\"";
 													echo "id=\"{$id}\" alt=\"$prettydb Graph\" ";
-													echo "src=\"status_rrd_graph_img.php?start={$start}&amp;end={$end}&amp;database={$curdatabase}&amp;style={$curstyle}&amp;graph={$graph}\" />\n";
+													echo "src=\"status_rrd_graph_img.php?start={$start}&amp;end={$end}&amp;database={$curdatabase}&amp;style={$curstyle}&amp;graph={$graph}?refresh_date={$img_date}\" />\n";
 													echo "<br /><hr /><br />\n";
 													echo "</td></tr>\n";
 												}
@@ -621,14 +619,14 @@ function get_dates($curperiod, $graph) {
 														if(in_array($curdatabase, $ui_databases)) {
 															$id = "{$graph}-{$curoption}-{$curdatabase}";
 															$id = preg_replace('/\./', '_', $id);
-						
+															$img_date = Date("Y.m.d.G.i.s"); /* Add a way to let the browser know we have refreshed the image */
 															$dates = get_dates($curperiod, $graph);
 															$start = $dates['start'];
 															$end = $dates['end'];
-															echo "<tr><td colspan=\"2\" class=\"list\">\n";
-															echo "<img border=\"0\" name=\"{$id}\" ";
+															echo "<tr><td colspan=\"100%\" class=\"list\">\n";
+															echo "<img border=\"0\" width=\"100%;\" name=\"{$id}\" ";
 															echo "id=\"{$id}\" alt=\"$prettydb Graph\" ";
-															echo "src=\"status_rrd_graph_img.php?start={$start}&amp;end={$end}&amp;database={$curdatabase}&amp;style={$curstyle}&amp;graph={$graph}\" />\n";
+															echo "src=\"status_rrd_graph_img.php?start={$start}&amp;end={$end}&amp;database={$curdatabase}&amp;style={$curstyle}&amp;graph={$graph}?refresh_date={$img_date}\" />\n";
 															echo "<br /><hr /><br />\n";
 															echo "</td></tr>\n";
 														}

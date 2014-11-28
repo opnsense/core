@@ -302,6 +302,12 @@ if ($_POST) {
 }
 
 include("head.inc");
+
+$main_buttons = array(
+	array('label'=>gettext("add or import ca"), 'href'=>'system_camanager.php?act=new'),
+);
+
+
 ?>
 
 <body onload="<?= $jsevents["body"]["onload"] ?>">
@@ -599,12 +605,12 @@ function method_change() {
     				<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="" class="table table-striped">
     					<thead>
         					<tr>
-        						<th width="20%" class="listhdrr"><?=gettext("Name");?></th>
+        						<th width="18%" class="listhdrr"><?=gettext("Name");?></th>
         						<th width="10%" class="listhdrr"><?=gettext("Internal");?></th>
         						<th width="10%" class="listhdrr"><?=gettext("Issuer");?></th>
         						<th width="10%" class="listhdrr"><?=gettext("Certificates");?></th>
         						<th width="40%" class="listhdrr"><?=gettext("Distinguished Name");?></th>
-        						<th width="10%" class="list"></th>
+        						<th width="12%" class="list"></th>
         					</tr>
     					</thead>
     					
@@ -647,16 +653,7 @@ function method_change() {
     					?>
     					<tr>
     						<td class="listlr">
-    							<table border="0" cellpadding="0" cellspacing="0" summary="icon">
-    								<tr>
-    									<td align="left" valign="middle">
-    										<img src="<?=$caimg;?>" alt="CA" title="CA" border="0" height="16" width="16" />
-    									</td>
-    									<td align="left" valign="middle">
-    										<?=$name;?>
-    									</td>
-    								</tr>
-    							</table>
+    							<?=$name;?>
     						</td>
     						<td class="listr"><?=$internal;?>&nbsp;</td>
     						<td class="listr"><?=$issuer_name;?>&nbsp;</td>
@@ -676,41 +673,20 @@ function method_change() {
     							</table>
     						</td>
     						<td valign="middle" class="list nowrap">
-    							<a href="system_camanager.php?act=edit&amp;id=<?=$i;?>">
-    								<img src="/themes/<?= $g['theme'];?>/images/icons/icon_e.gif" title="<?=gettext("edit CA");?>" alt="<?=gettext("edit CA");?>" width="17" height="17" border="0" />
-    							</a>
-    							<a href="system_camanager.php?act=exp&amp;id=<?=$i;?>">
-    								<img src="/themes/<?= $g['theme'];?>/images/icons/icon_down.gif" title="<?=gettext("export CA cert");?>" alt="<?=gettext("export CA cert");?>" width="17" height="17" border="0" />
-    							</a>
+    							<a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" title="<?=gettext("edit CA");?>" alt="<?=gettext("edit CA");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+    							<a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" title="<?=gettext("export CA cert");?>" alt="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download"></span></a>
     							<?php if ($ca['prv']): ?>
-    							<a href="system_camanager.php?act=expkey&amp;id=<?=$i;?>">
-    								<img src="/themes/<?= $g['theme'];?>/images/icons/icon_down.gif" title="<?=gettext("export CA private key");?>" alt="<?=gettext("export CA private key");?>" width="17" height="17" border="0" />
-    							</a>
+    							<a href="system_camanager.php?act=expkey&amp;id=<?=$i;?>" title="<?=gettext("export CA private key");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download"></span></a>
     							<?php endif; ?>
-    							<a href="system_camanager.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate Authority and its CRLs, and unreference any associated certificates?");?>')">
-    								<img src="/themes/<?= $g['theme'];?>/images/icons/icon_x.gif" title="<?=gettext("delete ca");?>" alt="<?=gettext("delete ca"); ?>" width="17" height="17" border="0" />
-    							</a>
+    							<a href="system_camanager.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate Authority and its CRLs, and unreference any associated certificates?");?>')" title="<?=gettext("delete ca");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
     						</td>
     					</tr>
     					<?php
     							$i++;
     						endforeach;
     					?>
-    					<tr>
-    						<td class="list" colspan="5"></td>
-    						<td class="list">
-    							<a href="system_camanager.php?act=new">
-    								<img src="/themes/<?= $g['theme'];?>/images/icons/icon_plus.gif" title="<?=gettext("add or import ca");?>" alt="<?=gettext("add ca");?>" width="17" height="17" border="0" />
-    							</a>
-    						</td>
-    					</tr>
-    					<tr>
-    						<td colspan="5">
-    							<p>
-    								<?=gettext("Additional trusted Certificate Authorities can be added here.");?>
-    							</p>
-    						</td>
-    					</tr>
+    					
+    				
     					</tbody>
     				</table>
     

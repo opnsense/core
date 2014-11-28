@@ -157,75 +157,87 @@ if($_POST['aliasimport'] <> "") {
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<div id="niftyOutter">
-<form action="firewall_aliases_import.php" method="post" name="iform" id="iform">
-<div id="inputerrors"></div>
-<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="firewall alias import">
-	<tr>
-		<td colspan="2" valign="top" class="listtopic"><?=gettext("Alias Import"); ?></td>
-	</tr>
-	<tr>
-		<td valign="top" class="vncellreq"><?=gettext("Alias Name"); ?></td>
-		<td class="vtable">
-			<input name="name" type="text" class="formfld unknown" id="name" size="40" maxlength="31" value="<?=htmlspecialchars($_POST['name']);?>" />
-			<br />
-			<span class="vexpl">
-				<?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."); ?>
-			</span>
-		</td>
-	</tr>
-	<tr>
-		<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
-		<td width="78%" class="vtable">
-			<input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($_POST['descr']);?>" />
-			<br />
-			<span class="vexpl">
-				<?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
-			</span>
-		</td>
-	</tr>
-	<tr>
-		<td valign="top" class="vncellreq"><?=gettext("Aliases to import"); ?></td>
-		<td class="vtable">
-			<textarea name="aliasimport" rows="15" cols="40"><?php echo $_POST['aliasimport']; ?></textarea>
-			<br />
-			<span class="vexpl">
-				<?=gettext("Paste in the aliases to import separated by a carriage return.  Common examples are lists of IPs, networks, blacklists, etc."); ?>
-				<br />
-				<?=gettext("The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"); ?>
-				<br />172.16.1.2
-				<br />172.16.0.0/24
-				<br />10.11.12.100-10.11.12.200
-				<br />192.168.1.254 Home router
-				<br />10.20.0.0/16 Office network
-				<br />10.40.1.10-10.40.1.19 Managed switches
-			</span>
-		</td>
-	</tr>
-	<tr>
-		<td width="22%" valign="top">&nbsp;</td>
-		<td width="78%">
-			<input id="submit" name="Submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" />
-			<input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-		</td>
-	</tr>
-</table>
 
 
-</form>
-</div>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<div id="inputerrors"></div>
 
-<?php include("fend.inc"); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">
+	    				
+	    				 <header class="content-box-head col-xs-12">
+    				        <h3><?=gettext("Alias Import");?></h3>
+    				    </header>
+    				    
+    				    <div class="content-box-main col-xs-12">
+	    					
+	    					<form action="firewall_aliases_import.php" method="post" name="iform" id="iform">
+		    							                        
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+										<tr>
+											<td valign="top" class="vncellreq"><?=gettext("Alias Name"); ?></td>
+											<td class="vtable">
+												<input name="name" type="text" class="form-control unknown" id="name" size="40" maxlength="31" value="<?=htmlspecialchars($_POST['name']);?>" />
+												<br />
+												<span class="vexpl">
+													<?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."); ?>
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
+											<td width="78%" class="vtable">
+												<input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=htmlspecialchars($_POST['descr']);?>" />
+												<br />
+												<span class="vexpl">
+													<?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td valign="top" class="vncellreq"><?=gettext("Aliases to import"); ?></td>
+											<td class="vtable">
+												<textarea name="aliasimport" rows="15" cols="40"><?php echo $_POST['aliasimport']; ?></textarea>
+												<br />
+												<span class="vexpl">
+													<?=gettext("Paste in the aliases to import separated by a carriage return.  Common examples are lists of IPs, networks, blacklists, etc."); ?>
+													<br />
+													<?=gettext("The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"); ?>
+													<br />172.16.1.2
+													<br />172.16.0.0/24
+													<br />10.11.12.100-10.11.12.200
+													<br />192.168.1.254 Home router
+													<br />10.20.0.0/16 Office network
+													<br />10.40.1.10-10.40.1.19 Managed switches
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td width="22%" valign="top">&nbsp;</td>
+											<td width="78%">
+												<input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+												<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+											</td>
+										</tr>
+									</table>
+		                        </div>
+	    					</form>
+    				    </div>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
 
-<script type="text/javascript">
-//<![CDATA[
-	NiftyCheck();
-	Rounded("div#nifty","top","#FFF","#EEEEEE","smooth");
-//]]>
-</script>
 
-</body>
-</html>
+
+<?php include("foot.inc"); ?>

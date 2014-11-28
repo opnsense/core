@@ -149,142 +149,164 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+<body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript" src="/javascript/autosuggest.js"></script>
-<script type="text/javascript" src="/javascript/suggestions.js"></script>
+	
+	
+	<script type="text/javascript" src="/javascript/autosuggest.js"></script>
+	<script type="text/javascript" src="/javascript/suggestions.js"></script>
 
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-            <form action="load_balancer_virtual_server_edit.php" method="post" name="iform" id="iform">
-              <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="load balancer server entry">
-				<tr>
-					<td colspan="3" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Virtual Server entry"); ?></td>
-				</tr>
-                <tr align="left">
-		  			<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
-                  <td width="78%" class="vtable" colspan="2">
-                    <input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"" . htmlspecialchars($pconfig['name']) . "\"";?> size="32" maxlength="32" />
-                  </td>
-			</tr>
-                <tr align="left">
-		  			<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
-                  <td width="78%" class="vtable" colspan="2">
-                    <input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"" . htmlspecialchars($pconfig['descr']) . "\"";?> size="64" />
-                  </td>
-			</tr>
-                <tr align="left">
-		  			<td width="22%" valign="top" class="vncellreq"><?=gettext("IP Address"); ?></td>
-                  <td width="78%" class="vtable" colspan="2">
-                    <input class="formfldalias" id="ipaddr" name="ipaddr" type="text" <?if(isset($pconfig['ipaddr'])) echo "value=\"" . htmlspecialchars($pconfig['ipaddr']) . "\"";?> size="39" maxlength="39" />
-					<br /><?=gettext("This is normally the WAN IP address that you would like the server to listen on.  All connections to this IP and port will be forwarded to the pool cluster."); ?>
-					<br /><?=gettext("You may also specify a host alias listed in Firewall -&gt; Aliases here."); ?>
-					<script type="text/javascript">
-					//<![CDATA[
-						var host_aliases = <?= json_encode(get_alias_list(array("host", "network", "url", "urltable"))) ?>;
-						var oTextbox1 = new AutoSuggestControl(document.getElementById("ipaddr"), new StateSuggestions(host_aliases));
-					//]]>
-					</script>
-                  </td>
-			</tr>
-                <tr align="left">
-		  			<td width="22%" valign="top" class="vncell"><?=gettext("Port"); ?></td>
-                  <td width="78%" class="vtable" colspan="2">
-                    <input class="formfldalias" name="port" id="port" type="text" <?if(isset($pconfig['port'])) echo "value=\"" . htmlspecialchars($pconfig['port']) . "\"";?> size="16" maxlength="16" />
-					<br /><?=gettext("This is the port that the clients will connect to.  All connections to this port will be forwarded to the pool cluster."); ?>
-					<br /><?=gettext("If left blank, listening ports from the pool will be used."); ?>
-					<br /><?=gettext("You may also specify a port alias listed in Firewall -&gt; Aliases here."); ?>
-					<script type="text/javascript">
-					//<![CDATA[
-						var port_aliases = <?= json_encode(get_alias_list(array("port", "url_ports", "urltable_ports"))) ?>;
-						var oTextbox2 = new AutoSuggestControl(document.getElementById("port"), new StateSuggestions(port_aliases));
-					//]]>
-					</script>
-                  </td>
-			</tr>
-                <tr align="left">
-		  			<td width="22%" valign="top" class="vncellreq"><?=gettext("Virtual Server Pool"); ?></td>
-					<td width="78%" class="vtable" colspan="2">
-			<?php if(count($config['load_balancer']['lbpool']) == 0): ?>
-				<b><?=gettext("NOTE:"); ?></b> <?=gettext("Please add a pool on the Pools tab to use this feature."); ?>
-			<?php else: ?>
-				<select id="poolname" name="poolname">
-			<?php
-				for ($i = 0; isset($config['load_balancer']['lbpool'][$i]); $i++) {
-					$selected = "";
-					if ( $config['load_balancer']['lbpool'][$i]['name'] == $pconfig['poolname'] )
-						$selected = " selected=\"selected\"";
-					echo "<option value=\"" . htmlspecialchars($config['load_balancer']['lbpool'][$i]['name']) . "\"{$selected}>{$config['load_balancer']['lbpool'][$i]['name']}</option>";
-				}
-			?>
-				</select>
-			<?php endif; ?>
-				</td>
-			</tr>
-                <tr align="left">
-		  			<td width="22%" valign="top" class="vncellreq"><?=gettext("Fall Back Pool"); ?></td>
-					<td width="78%" class="vtable" colspan="2">
-					<?php if(count($config['load_balancer']['lbpool']) == 0): ?>
-						<b><?=gettext("NOTE:"); ?></b> <?=gettext("Please add a pool on the Pools tab to use this feature."); ?>
-					<?php else: ?>
-						<select id="sitedown" name="sitedown">
-							<option value=""<?=htmlspecialchars($pconfig['sitedown']) == '' ? ' selected' : ''?>><?=gettext("none"); ?></option>
-            			<?php
-            				for ($i = 0; isset($config['load_balancer']['lbpool'][$i]); $i++) {
-            					$selected = "";
-            					if ( $config['load_balancer']['lbpool'][$i]['name'] == $pconfig['sitedown'] )
-            						$selected = " selected=\"selected\"";
-						echo "<option value=\"" . htmlspecialchars($config['load_balancer']['lbpool'][$i]['name']) . "\"{$selected}>{$config['load_balancer']['lbpool'][$i]['name']}</option>";
-            				}
-            			?>
-            			</select>
-				<br /><?=gettext("The server pool to which clients will be redirected if *ALL* servers in the Virtual Server Pool are offline."); ?>
-				<br /><?=gettext("This option is NOT compatible with the DNS relay protocol."); ?>
-				  <?php endif; ?>
-                  </td>
-				</tr>
-				<tr style="display:none;"><td><input type="hidden" name="mode" value="redirect_mode" /></td></tr>
-<!--
-                <tr align="left">
-		  			<td width="22%" valign="top" class="vncellreq">Mode</td>
-                  <td width="78%" class="vtable" colspan="2">
-                    <input id="redirect_mode" type="radio" name="mode" value="redirect"<?=htmlspecialchars($pconfig['mode']) == 'redirect' ? ' checked="checked"': ''?> /> Redirect
-                    <input id="relay_mode" type="radio" name="mode" value="relay"<?=htmlspecialchars($pconfig['mode']) == 'relay' ? ' checked="checked"': ''?> /> Relay
+	<section class="page-content-main">
 
-                  <br />
-                  </td>
-				</tr>
--->
-		<tr id="relay" align="left">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Relay Protocol"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-			<select id="relay_protocol" name="relay_protocol">
-			<?php
-				$lb_def_protos = array("tcp", "dns");
-				foreach ($lb_def_protos as $lb_proto) {
-					$selected = "";
-					if ( $pconfig['relay_protocol'] == $lb_proto )
-						$selected = " selected=\"selected\"";
-					echo "<option value=\"{$lb_proto}\"{$selected}>{$lb_proto}</option>";
-				}
-			?>
-			</select>
-			<br />
-			</td>
-		</tr>
-                <tr align="left">
-                  <td width="22%" valign="top">&nbsp;</td>
-                  <td align="left" valign="bottom" width="78%">
-					<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Submit"); ?>" />
-					<input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-			<?php if (isset($id) && $a_vs[$id] && $_GET['act'] != 'dup'): ?>
-				<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-			<?php endif; ?>
-		  	</td>
-			</tr>
-		</table>
-	</form>
-	<br />
-	<span class="red"><strong><?=gettext("Note:"); ?></strong></span> <?=gettext("Don't forget to add a firewall rule for the virtual server/pool after you're finished setting it up."); ?>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+		<div class="container-fluid">
+	
+			<div class="row">	
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+                        <form action="load_balancer_virtual_server_edit.php" method="post" name="iform" id="iform">								
+                        	
+                        	<div class="table-responsive">
+	                        	<table class="table table-striped table-sort">	
+									<tr>
+										<td colspan="3" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Virtual Server entry"); ?></td>
+									</tr>
+					                <tr align="left">
+							  			<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
+					                  <td width="78%" class="vtable" colspan="2">
+					                    <input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"" . htmlspecialchars($pconfig['name']) . "\"";?> size="32" maxlength="32" />
+					                  </td>
+								</tr>
+					                <tr align="left">
+							  			<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
+					                  <td width="78%" class="vtable" colspan="2">
+					                    <input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"" . htmlspecialchars($pconfig['descr']) . "\"";?> size="64" />
+					                  </td>
+								</tr>
+					                <tr align="left">
+							  			<td width="22%" valign="top" class="vncellreq"><?=gettext("IP Address"); ?></td>
+					                  <td width="78%" class="vtable" colspan="2">
+					                    <input class="formfldalias" id="ipaddr" name="ipaddr" type="text" <?if(isset($pconfig['ipaddr'])) echo "value=\"" . htmlspecialchars($pconfig['ipaddr']) . "\"";?> size="39" maxlength="39" />
+										<br /><?=gettext("This is normally the WAN IP address that you would like the server to listen on.  All connections to this IP and port will be forwarded to the pool cluster."); ?>
+										<br /><?=gettext("You may also specify a host alias listed in Firewall -&gt; Aliases here."); ?>
+										<script type="text/javascript">
+										//<![CDATA[
+											var host_aliases = <?= json_encode(get_alias_list(array("host", "network", "url", "urltable"))) ?>;
+											var oTextbox1 = new AutoSuggestControl(document.getElementById("ipaddr"), new StateSuggestions(host_aliases));
+										//]]>
+										</script>
+					                  </td>
+								</tr>
+					                <tr align="left">
+							  			<td width="22%" valign="top" class="vncell"><?=gettext("Port"); ?></td>
+					                  <td width="78%" class="vtable" colspan="2">
+					                    <input class="formfldalias" name="port" id="port" type="text" <?if(isset($pconfig['port'])) echo "value=\"" . htmlspecialchars($pconfig['port']) . "\"";?> size="16" maxlength="16" />
+										<br /><?=gettext("This is the port that the clients will connect to.  All connections to this port will be forwarded to the pool cluster."); ?>
+										<br /><?=gettext("If left blank, listening ports from the pool will be used."); ?>
+										<br /><?=gettext("You may also specify a port alias listed in Firewall -&gt; Aliases here."); ?>
+										<script type="text/javascript">
+										//<![CDATA[
+											var port_aliases = <?= json_encode(get_alias_list(array("port", "url_ports", "urltable_ports"))) ?>;
+											var oTextbox2 = new AutoSuggestControl(document.getElementById("port"), new StateSuggestions(port_aliases));
+										//]]>
+										</script>
+					                  </td>
+								</tr>
+					                <tr align="left">
+							  			<td width="22%" valign="top" class="vncellreq"><?=gettext("Virtual Server Pool"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+								<?php if(count($config['load_balancer']['lbpool']) == 0): ?>
+									<b><?=gettext("NOTE:"); ?></b> <?=gettext("Please add a pool on the Pools tab to use this feature."); ?>
+								<?php else: ?>
+									<select id="poolname" name="poolname">
+								<?php
+									for ($i = 0; isset($config['load_balancer']['lbpool'][$i]); $i++) {
+										$selected = "";
+										if ( $config['load_balancer']['lbpool'][$i]['name'] == $pconfig['poolname'] )
+											$selected = " selected=\"selected\"";
+										echo "<option value=\"" . htmlspecialchars($config['load_balancer']['lbpool'][$i]['name']) . "\"{$selected}>{$config['load_balancer']['lbpool'][$i]['name']}</option>";
+									}
+								?>
+									</select>
+								<?php endif; ?>
+									</td>
+								</tr>
+					                <tr align="left">
+							  			<td width="22%" valign="top" class="vncellreq"><?=gettext("Fall Back Pool"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+										<?php if(count($config['load_balancer']['lbpool']) == 0): ?>
+											<b><?=gettext("NOTE:"); ?></b> <?=gettext("Please add a pool on the Pools tab to use this feature."); ?>
+										<?php else: ?>
+											<select id="sitedown" name="sitedown">
+												<option value=""<?=htmlspecialchars($pconfig['sitedown']) == '' ? ' selected' : ''?>><?=gettext("none"); ?></option>
+					            			<?php
+					            				for ($i = 0; isset($config['load_balancer']['lbpool'][$i]); $i++) {
+					            					$selected = "";
+					            					if ( $config['load_balancer']['lbpool'][$i]['name'] == $pconfig['sitedown'] )
+					            						$selected = " selected=\"selected\"";
+											echo "<option value=\"" . htmlspecialchars($config['load_balancer']['lbpool'][$i]['name']) . "\"{$selected}>{$config['load_balancer']['lbpool'][$i]['name']}</option>";
+					            				}
+					            			?>
+					            			</select>
+									<br /><?=gettext("The server pool to which clients will be redirected if *ALL* servers in the Virtual Server Pool are offline."); ?>
+									<br /><?=gettext("This option is NOT compatible with the DNS relay protocol."); ?>
+									  <?php endif; ?>
+					                  </td>
+									</tr>
+									<tr style="display:none;"><td><input type="hidden" name="mode" value="redirect_mode" /></td></tr>
+					<!--
+					                <tr align="left">
+							  			<td width="22%" valign="top" class="vncellreq">Mode</td>
+					                  <td width="78%" class="vtable" colspan="2">
+					                    <input id="redirect_mode" type="radio" name="mode" value="redirect"<?=htmlspecialchars($pconfig['mode']) == 'redirect' ? ' checked="checked"': ''?> /> Redirect
+					                    <input id="relay_mode" type="radio" name="mode" value="relay"<?=htmlspecialchars($pconfig['mode']) == 'relay' ? ' checked="checked"': ''?> /> Relay
+					
+					                  <br />
+					                  </td>
+									</tr>
+					-->
+							<tr id="relay" align="left">
+								<td width="22%" valign="top" class="vncellreq"><?=gettext("Relay Protocol"); ?></td>
+								<td width="78%" class="vtable" colspan="2">
+								<select id="relay_protocol" name="relay_protocol">
+								<?php
+									$lb_def_protos = array("tcp", "dns");
+									foreach ($lb_def_protos as $lb_proto) {
+										$selected = "";
+										if ( $pconfig['relay_protocol'] == $lb_proto )
+											$selected = " selected=\"selected\"";
+										echo "<option value=\"{$lb_proto}\"{$selected}>{$lb_proto}</option>";
+									}
+								?>
+								</select>
+								<br />
+								</td>
+							</tr>
+					                <tr align="left">
+					                  <td width="22%" valign="top">&nbsp;</td>
+					                  <td align="left" valign="bottom" width="78%">
+										<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Submit"); ?>" />
+										<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+								<?php if (isset($id) && $a_vs[$id] && $_GET['act'] != 'dup'): ?>
+									<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+								<?php endif; ?>
+							  	</td>
+								</tr>
+							</table>
+                        	</div>
+                        	<span class="red"><strong><?=gettext("Note:"); ?></strong></span> <?=gettext("Don't forget to add a firewall rule for the virtual server/pool after you're finished setting it up."); ?>
+                        	
+                        </form>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+
+	
+<?php include("foot.inc"); ?>

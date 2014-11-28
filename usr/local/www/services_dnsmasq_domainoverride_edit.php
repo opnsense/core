@@ -124,51 +124,71 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-            <form action="services_dnsmasq_domainoverride_edit.php" method="post" name="iform" id="iform">
-              <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="domain override">
-                               <tr>
-                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Domain");?></td>
-                  <td width="78%" class="vtable">
-                    <?=$mandfldhtml;?><input name="domain" type="text" class="formfld unknown" id="domain" size="40" value="<?=htmlspecialchars($pconfig['domain']);?>" />
-                    <br /> <span class="vexpl"><?=gettext("Domain to override (NOTE: this does not have to be a valid TLD!)"); ?><br />
-                    <?=gettext("e.g."); ?> <em><?=gettext("test"); ?></em> <?=gettext("or"); ?> <em>mycompany.localdomain</em> <?=gettext("or"); ?> <em>1.168.192.in-addr.arpa</em> </span></td>
-                </tr>
-                               <tr>
-                  <td width="22%" valign="top" class="vncellreq"><?=gettext("IP address");?></td>
-                  <td width="78%" class="vtable">
-                    <?=$mandfldhtml;?><input name="ip" type="text" class="formfld unknown" id="ip" size="40" value="<?=htmlspecialchars($pconfig['ip']);?>" />
-                    <br /> <span class="vexpl"><?=gettext("IP address of the authoritative DNS server for this domain"); ?><br />
-                    <?=gettext("e.g."); ?> <em>192.168.100.100</em><br /><?=gettext("Or enter # for an exclusion to pass through this host/subdomain to standard nameservers instead of a previous override."); ?><br /><?=gettext("Or enter ! for lookups for this host/subdomain to NOT be forwarded anywhere."); ?></span></td>
-                </tr>
-                               <tr>
-                  <td width="22%" valign="top" class="vncell"><?=gettext("Source IP");?></td>
-                  <td width="78%" class="vtable">
-                    <?=$mandfldhtml;?><input name="dnssrcip" type="text" class="formfld unknown" id="dnssrcip" size="40" value="<?=htmlspecialchars($pconfig['dnssrcip']);?>" />
-                    <br /> <span class="vexpl"><?=gettext("Source IP address for queries to the DNS server for the override domain."); ?><br />
-                    <?=gettext("Leave blank unless your DNS server is accessed through a VPN tunnel."); ?></span></td>
-                </tr>
-                               <tr>
-                  <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-                  <td width="78%" class="vtable">
-                    <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-                    <br /> <span class="vexpl"><?=gettext("You may enter a description here".
-                    " for your reference (not parsed).");?></span></td>
-                </tr>
-                <tr>
-                  <td width="22%" valign="top">&nbsp;</td>
-                  <td width="78%">
-                    <input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-                    <input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-                    <?php if (isset($id) && $a_domainOverrides[$id]): ?>
-                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-                    <?php endif; ?>
-                  </td>
-                </tr>
-              </table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+	<section class="page-content-main">
+
+		<div class="container-fluid">
+	
+			<div class="row">	
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+                        <form action="services_dnsmasq_domainoverride_edit.php" method="post" name="iform" id="iform">								
+                        	
+                        	<div class="table-responsive">
+	                        	<table class="table table-striped table-sort">
+
+
+				                     <tr>
+					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Domain");?></td>
+					                  <td width="78%" class="vtable">
+					                    <?=$mandfldhtml;?><input name="domain" type="text" class="formfld unknown" id="domain" size="40" value="<?=htmlspecialchars($pconfig['domain']);?>" />
+					                    <br /> <span class="vexpl"><?=gettext("Domain to override (NOTE: this does not have to be a valid TLD!)"); ?><br />
+					                    <?=gettext("e.g."); ?> <em><?=gettext("test"); ?></em> <?=gettext("or"); ?> <em>mycompany.localdomain</em> <?=gettext("or"); ?> <em>1.168.192.in-addr.arpa</em> </span></td>
+					                </tr>
+					                               <tr>
+					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("IP address");?></td>
+					                  <td width="78%" class="vtable">
+					                    <?=$mandfldhtml;?><input name="ip" type="text" class="formfld unknown" id="ip" size="40" value="<?=htmlspecialchars($pconfig['ip']);?>" />
+					                    <br /> <span class="vexpl"><?=gettext("IP address of the authoritative DNS server for this domain"); ?><br />
+					                    <?=gettext("e.g."); ?> <em>192.168.100.100</em><br /><?=gettext("Or enter # for an exclusion to pass through this host/subdomain to standard nameservers instead of a previous override."); ?><br /><?=gettext("Or enter ! for lookups for this host/subdomain to NOT be forwarded anywhere."); ?></span></td>
+					                </tr>
+					                               <tr>
+					                  <td width="22%" valign="top" class="vncell"><?=gettext("Source IP");?></td>
+					                  <td width="78%" class="vtable">
+					                    <?=$mandfldhtml;?><input name="dnssrcip" type="text" class="formfld unknown" id="dnssrcip" size="40" value="<?=htmlspecialchars($pconfig['dnssrcip']);?>" />
+					                    <br /> <span class="vexpl"><?=gettext("Source IP address for queries to the DNS server for the override domain."); ?><br />
+					                    <?=gettext("Leave blank unless your DNS server is accessed through a VPN tunnel."); ?></span></td>
+					                </tr>
+					                               <tr>
+					                  <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
+					                  <td width="78%" class="vtable">
+					                    <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
+					                    <br /> <span class="vexpl"><?=gettext("You may enter a description here".
+					                    " for your reference (not parsed).");?></span></td>
+					                </tr>
+					                <tr>
+					                  <td width="22%" valign="top">&nbsp;</td>
+					                  <td width="78%">
+					                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+					                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+					                    <?php if (isset($id) && $a_domainOverrides[$id]): ?>
+					                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+					                    <?php endif; ?>
+					                  </td>
+					                </tr>
+					              </table>
+                        	</div>
+                        </form>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

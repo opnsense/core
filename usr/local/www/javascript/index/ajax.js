@@ -52,7 +52,7 @@ function updateMemory(x) {
 	if(jQuery('#memusagemeter'))
 		jQuery("#memusagemeter").html(x + '%');
 	if(jQuery('#memUsagePB'))
-		jQuery('#memUsagePB').progressbar( { value: parseInt(x) } );
+		jQuery('#memUsagePB').css( { width: parseInt(x)+'%' } );
 }
 
 function updateMbuf(x) {
@@ -64,14 +64,14 @@ function updateMbufMeter(x) {
 	if(jQuery('#mbufusagemeter'))
 		jQuery("#mbufusagemeter").html(x + '%');
 	if(jQuery('#mbufPB'))
-		jQuery('#mbufPB').progressbar( { value: parseInt(x) } );
+		jQuery('#mbufPB').css( { width: parseInt(x)+'%' } );
 }
 
 function updateCPU(x) {
 	if(jQuery('#cpumeter'))
 		jQuery("#cpumeter").html(x + '%');
 	if(jQuery('#cpuPB'))
-		jQuery('#cpuPB').progressbar( { value: parseInt(x) } );
+		jQuery('#cpuPB').css( { width: parseInt(x)+'%' } );
 	/* Load CPU Graph widget if enabled */
 	if(widgetActive('cpu_graphs')) {
 		GraphValue(graph[0], x);
@@ -82,7 +82,7 @@ function updateTemp(x) {
 	if(jQuery("#tempmeter"))
 		jQuery("#tempmeter").html(x + '\u00B0' + 'C');
         if(jQuery('#tempPB'))
-		jQuery("#tempPB").progressbar( { value: parseInt(x) } );
+		jQuery("#tempPB").css( { width: parseInt(x)+'%' } );
 }
 
 function updateDateTime(x) {
@@ -104,7 +104,7 @@ function updateStateMeter(x) {
 	if(jQuery('#pfstateusagemeter'))
 		jQuery("#pfstateusagemeter").html(x + '%');
 	if(jQuery('#statePB'))
-		jQuery('#statePB').progressbar( { value: parseInt(x) } );
+		jQuery('#statePB').css( { width: parseInt(x)+'%' } );
 }
 
 function updateGatewayStats(x){
@@ -144,27 +144,48 @@ function updateInterfaceStats(x){
 function updateInterfaces(x){
 	if (widgetActive("interfaces")){
 		interfaces_split = x.split("~");
-		interfaces_split.each(function(iface){
+		//interfaces_split.each(function(iface){
+		jQuery.each(interfaces_split, function(id,iface){
 			details = iface.split(",");
 			switch(details[1]) {
 				case "up":
-					jQuery('#' + details[0] + '-up').css("display","inline");
-					jQuery('#' + details[0] + '-down').css("display","none");
-					jQuery('#' + details[0] + '-block').css("display","none");
-					jQuery('#' + details[0] + '-ip').html(details[2]);
-					jQuery('#' + details[0] + '-media').html(details[3]);
+					// Interface Arrow color
+					jQuery('#' + details[0] ).addClass( "text-success" )
+					jQuery('#' + details[0] ).removeClass( "text-danger" )
+
+					// Interface Icon color
+					jQuery('#' + details[0] + 'icon').addClass( "text-success" )
+					jQuery('#' + details[0] + 'icon').removeClass( "text-danger" )
+
+					// Interface Arrow type
+					jQuery('#' + details[0] ).addClass( "glyphicon-arrow-up" )
+					jQuery('#' + details[0] ).removeClass( "glyphicon-arrow-down" )
+					jQuery('#' + details[0] ).removeClass( "glyphicon-arrow-remove" )
+
 					break;
 				case "down":
-					jQuery('#' + details[0] + '-down').css("display","inline");
-					jQuery('#' + details[0] + '-up').css("display","none");
-					jQuery('#' + details[0] + '-block').css("display","none");
-					jQuery('#' + details[0] + '-ip').html(details[2]);
-					jQuery('#' + details[0] + '-media').html(details[3]);
+					jQuery('#' + details[0] ).addClass( "text-danger" )
+					jQuery('#' + details[0] ).removeClass( "text-success" )
+
+					// Interface Icon color
+					jQuery('#' + details[0] + 'icon').addClass( "text-danger" )
+					jQuery('#' + details[0] + 'icon').removeClass( "text-success" )
+
+					// Interface Arrow type
+					jQuery('#' + details[0] ).addClass( "glyphicon-arrow-down" )
+					jQuery('#' + details[0] ).removeClass( "glyphicon-arrow-up" )
+					jQuery('#' + details[0] ).removeClass( "glyphicon-arrow-remove" )
+
 					break;
 				case "block":
-						jQuery('#' + details[0] + '-block').css("display","inline");
-						jQuery('#' + details[0] + '-down').css("display","none");
-						jQuery('#' + details[0] + '-up').css("display","none");
+						// Interface Icon color
+						jQuery('#' + details[0] ).addClass( "text-danger" )
+						jQuery('#' + details[0] ).removeClass( "text-success" )
+
+						// Interface Arrow type
+						jQuery('#' + details[0] ).addClass( "glyphicon-arrow-remove" )
+						jQuery('#' + details[0] ).removeClass( "glyphicon-arrow-up" )
+						jQuery('#' + details[0] ).removeClass( "glyphicon-arrow-down" )
 					break;
 			}
 		});

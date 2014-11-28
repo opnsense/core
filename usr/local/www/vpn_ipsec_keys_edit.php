@@ -120,48 +120,63 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-            <form action="vpn_ipsec_keys_edit.php" method="post" name="iform" id="iform">
-              <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="vpn ipsec keys edit">
-                <tr> 
-                  <td valign="top" class="vncellreq"><?=gettext("Identifier"); ?></td>
-                  <td class="vtable">
-					<?=$mandfldhtml;?><input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=htmlspecialchars($pconfig['ident']);?>" />
-                    <br />
-<?=gettext("This can be either an IP address, fully qualified domain name or an e-mail address"); ?>.       
-                  </td>
-                </tr>
-                <tr> 
-                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Pre-Shared Key"); ?></td>
-                  <td width="78%" class="vtable"> 
-                    <?=$mandfldhtml;?><input name="psk" type="text" class="formfld unknown" id="psk" size="40" value="<?=htmlspecialchars($pconfig['psk']);?>" />
-                  </td>
-                </tr>
-                <tr> 
-                  <td width="22%" valign="top">&nbsp;</td>
-                  <td width="78%"> 
-                    <input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" /> 
-                    <?php if (isset($id) && $a_secret[$id]): ?>
-                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-                    <?php endif; ?>
-                  </td>
-                </tr>
-		<tr>
-			<td colspan="4">
-			<p>
-				<span class="vexpl">
-				<span class="red">
-					<strong><?=gettext("Note"); ?>:<br /></strong>
-				</span>
-				<?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
-				</span>
-			</p>
-			</td>
-		</tr>
-              </table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+	<section class="page-content-main">
+
+		<div class="container-fluid">
+	
+			<div class="row">	
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+                        <form action="vpn_ipsec_keys_edit.php" method="post" name="iform" id="iform">								
+                        	
+                        	<div class="table-responsive">
+	                        	<table class="table table-striped table-sort">				                       
+					                <tr> 
+					                  <td valign="top" class="vncellreq"><?=gettext("Identifier"); ?></td>
+					                  <td class="vtable">
+										<?=$mandfldhtml;?><input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=htmlspecialchars($pconfig['ident']);?>" />
+					                    <br />
+					<?=gettext("This can be either an IP address, fully qualified domain name or an e-mail address"); ?>.       
+					                  </td>
+					                </tr>
+					                <tr> 
+					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Pre-Shared Key"); ?></td>
+					                  <td width="78%" class="vtable"> 
+					                    <?=$mandfldhtml;?><input name="psk" type="text" class="formfld unknown" id="psk" size="40" value="<?=htmlspecialchars($pconfig['psk']);?>" />
+					                  </td>
+					                </tr>
+					                <tr> 
+					                  <td width="22%" valign="top">&nbsp;</td>
+					                  <td width="78%"> 
+					                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" /> 
+					                    <?php if (isset($id) && $a_secret[$id]): ?>
+					                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+					                    <?php endif; ?>
+					                  </td>
+					                </tr>
+					              </table>
+                        	</div>
+                        	
+                        	<div class="col-xs-12">
+								<span class="vexpl">
+								<span class="text-danger">
+									<strong><?=gettext("Note"); ?>:<br /></strong>
+								</span>
+								<?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
+								</span>
+							</div>
+                        </form>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+
+<?php include("foot.inc"); ?>

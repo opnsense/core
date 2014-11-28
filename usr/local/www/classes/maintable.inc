@@ -73,7 +73,7 @@ class MainTable {
 
 	function display() {
 		echo "<!-- begin content table -->\n";
-		echo "<table class=\"tabcont\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" summary=\"display\">\n";
+		echo "<table class=\"table table-striped table-sort\" >\n";
 		echo "  <!-- begin content table header -->\n";
 		echo $this->display_header();
 		echo "  <!-- end content table header -->\n";
@@ -95,12 +95,7 @@ class MainTable {
 		}
 		echo "  <td width=\"{$this->width[$this->columns - 1]}%\" class=\"listhdr\">{$this->headers[$this->columns - 1]}</td>\n";
 		echo "  <td width=\"10%\" class=\"list\">\n";
-		echo "    <table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" summary=\"display header\">\n";
-		echo "      <tr>\n";
-		echo "        <td width=\"17\"></td>\n";
-		echo "         <td valign=\"middle\"><a href=\"{$this->edit_uri}\"><img src=\"/themes/{$g['theme']}/images/icons/icon_plus.gif\" width=\"17\" height=\"17\" border=\"0\" alt=\"plus\" /></a></td>\n";
-		echo "      </tr>\n";
-		echo "    </table>\n";
+		
 		echo "  </td>\n";
 		echo "</tr>\n";
 
@@ -139,56 +134,43 @@ class MainTable {
 	}
 	private function display_footer() {
 		global $g;
-		echo "<tr>\n";
-		echo "  <td class=\"list\" colspan=\"{$this->columns}\"></td>\n";
-		echo "  <td class=\"list\">\n";
-		echo "    <table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" summary=\"display footer\">\n";
-		echo "      <tr>\n";
-		echo "        <td width=\"17\"></td>\n";
-		echo "        <td valign=\"middle\"><a href=\"{$this->edit_uri}\"><img src=\"/themes/{$g['theme']}/images/icons/icon_plus.gif\" width=\"17\" height=\"17\" border=\"0\" alt=\"plus\" /></a></td>\n";
-		echo "      </tr>\n";
-		echo "    </table>\n";
-		echo "  </td>\n";
-		echo "</tr>\n";
+		
 	}
 	private function display_buttons($row) {
-		echo "    <table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" summary=\"display buttons\">\n";
-		echo "      <tr>\n";
+		
 		if ($this->buttons['move'])
 			echo $this->display_button('move', $row);
 		if ($this->buttons['edit'])
 			echo $this->display_button('edit', $row);
-		echo "      </tr>\n";
-		echo "      <tr>\n";
+	
 		if ($this->buttons['del'])
 			echo $this->display_button('del', $row);
 		if ($this->buttons['dup'])
 			echo $this->display_button('dup', $row);
-		echo "      </tr>\n";
-		echo "    </table>\n";
+	
 	}
 	private function display_button($button, $row) {
 		global $g;
-		echo "<td valign=\"middle\">";
+		
 		switch ($button) {
 			case "move": {
-				echo "<input name=\"move_{$row}\" type=\"image\" src=\"./themes/{$g['theme']}/images/icons/icon_left.gif\" width=\"17\" height=\"17\" title=\"Move selected entries before this entry\" onmouseover=\"fr_insline({$row}, true)\" onmouseout=\"fr_insline({$row}, false)\" />";
+				echo "<button name=\"move_{$row}\" type=\"submit\" title=\"Move selected entries before this entry\" onmouseover=\"fr_insline({$row}, true)\" onmouseout=\"fr_insline({$row}, false)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-left\"></span></button>";
 				break;
 			}
 			case "edit": {
-				echo "<a href=\"{$this->edit_uri}?id={$row}\"><img src=\"/themes/{$g['theme']}/images/icons/icon_e.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"Edit entry\" alt=\"edit\" /></a>";
+				echo "<a href=\"{$this->edit_uri}?id={$row}\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-pencil\"></span></a>";
 				break;
 			}
 			case "del": {
-				echo "<a href=\"{$this->my_uri}?act=del&amp;id={$row}\" onclick=\"return confirm('Do you really want to delete this entry?')\"><img src=\"/themes/{$g['theme']}/images/icons/icon_x.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"Delete entry\" alt=\"delete\" /></a>";
+				echo "<a href=\"{$this->my_uri}?act=del&amp;id={$row}\" onclick=\"return confirm('Do you really want to delete this entry?')\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
 				break;
 			}
 			case "dup": {
-				echo "<a href=\"{$this->edit_uri}?act=dup&amp;id={$row}\"><img src=\"/themes/{$g['theme']}/images/icons/icon_plus.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"Duplicate entry\" alt=\"duplicate\" /></a>";
+				echo "<a href=\"{$this->edit_uri}?act=dup&amp;id={$row}\" class=\"btn btn-default btn-xs\" title=\"Duplicate entry\" alt=\"duplicate\" /><span class=\"glyphicon glyphicon-plus\"></span></a>";
 				break;
 			}
 		}
-		echo "</td>";
+		
 	}
 
 }

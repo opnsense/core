@@ -77,21 +77,13 @@ include("head.inc");
                 			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="" class="table table-striped">
                 				<tr>
                 					<td align="center">
-                						<!-- progress bar -->
-                						<table width="420" border="0" cellpadding="0" cellspacing="0" summary="images">
-                
-                							<tr>
-                								<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_left.gif')" height="15" width="5"></td>
-                								<td>
-                									<table id="progholder" style="height:15;colspacing:0" width="410" border="0" cellpadding="0" cellspacing="0" summary="">
-                										<tr><td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_gray.gif')" valign="top" align="left">
-                										<img src="./themes/<?=$g['theme'];?>/images/misc/bar_blue.gif" width="0" height="15" name="progressbar" id="progressbar" alt="" />
-                										</td></tr>
-                									</table>
-                								</td>
-                								<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_right.gif')" height="15" width="5"></td>
-                							</tr>
-                						</table>
+	                					
+	                					<div class="progress">
+										  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 5%;">
+										    <span class="sr-only">5% Complete</span>
+										  </div>
+										</div>
+	                				
                 						<br />
                 						<!-- command output box -->
                 						<script type="text/javascript">
@@ -102,7 +94,7 @@ include("head.inc");
                 						//]]>
                 						</script>
                 					
-                						<textarea name="output" id="output"></textarea>
+                						<textarea name="output" id="output" class="form-control"></textarea>
                 					
                 						<div id="backupdiv" style="visibility:hidden">
                 							<?php if ($g['hidebackupbeforeupgrade'] === false): ?>

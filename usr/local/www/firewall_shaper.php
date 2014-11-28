@@ -347,7 +347,7 @@ $output_form .= "<tr><td width=\"22%\" valign=\"middle\" class=\"vncellreq\">";
 $output_form .= "<br />" . gettext("Queue Actions") . "<br />";
 $output_form .= "</td><td valign=\"middle\" class=\"vncellreq\" width=\"78%\"><br />";
 
-$output_form .= "<input type=\"submit\" name=\"Submit\" value=\"" . gettext("Save") . "\" class=\"formbtn\" />";
+$output_form .= "<input type=\"submit\" name=\"Submit\" value=\"" . gettext("Save") . "\" class=\"btn btn-primary\" />";
 if ($can_add || $addnewaltq) {
 	$output_form .= "<a href=\"firewall_shaper.php?interface=";
 	$output_form .= $interface; 
@@ -355,7 +355,7 @@ if ($can_add || $addnewaltq) {
 		$output_form .= "&amp;queue=" . $queue->GetQname();
 	}
 	$output_form .= "&amp;action=add\">";
-	$output_form .= "<input type=\"button\" class=\"formbtn\" name=\"add\" value=\"" . gettext("Add new queue") . "\" />";
+	$output_form .= "<input type=\"button\" class=\"btn btn-default\" name=\"add\" value=\"" . gettext("Add new queue") . "\" />";
 	$output_form .= "</a>";
 }
 $output_form .= "<a href=\"firewall_shaper.php?interface=";
@@ -364,7 +364,7 @@ if ($queue) {
 	$output_form .= "&amp;queue=" . $queue->GetQname();
 }
 $output_form .= "&amp;action=delete\">";
-$output_form .= "<input type=\"button\" class=\"formbtn\" name=\"delete\"";
+$output_form .= "<input type=\"button\" class=\"btn btn-default\" name=\"delete\"";
 if ($queue)
 	$output_form .= " value=\"" . gettext("Delete this queue") . "\" />";
 else
@@ -383,70 +383,87 @@ $output .= $output_form;
 $closehead = false;
 include("head.inc");
 ?>
+
+<body>
+
 <link rel="stylesheet" type="text/css" media="all" href="./tree/tree.css" />
 <script type="text/javascript" src="./tree/tree.js"></script>
-</head>
-
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC" >
 <?php
 if ($queue)
         echo $queue->build_javascript();
 echo $newjavascript;
 
 include("fbegin.inc"); 
-?>
-<div id="inputerrors"></div>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
 
-<form action="firewall_shaper.php" method="post" id="iform" name="iform">
-
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<?php if (is_subsystem_dirty('shaper')): ?><p>
-<?php print_info_box_np(gettext("The traffic shaper configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));?><br /></p>
-<?php endif; ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="traffic shaper">
-  <tr><td>
-<?php
-	$tab_array = array();
-	$tab_array[0] = array(gettext("By Interface"), true, "firewall_shaper.php");
-	$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
-	$tab_array[2] = array(gettext("Limiter"), false, "firewall_shaper_vinterface.php");
-	$tab_array[3] = array(gettext("Layer7"), false, "firewall_shaper_layer7.php");
-	$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
-	display_top_tabs($tab_array);
 ?>
-  </td></tr>
-  <tr>
-    <td>
-	<div id="mainarea">
-              <table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="main area">
-<?php if (count($altq_list_queues) > 0): ?>
-                        <tr class="tabcont"><td width="25%" align="left">
-                                <a href="firewall_shaper.php?action=resetall" >
-                                        <input type="button" value="<?=gettext("Remove Shaper")?>" class="formbtn" />
-                                </a>
-                        </td><td width="75%"> </td></tr>
-<?php endif; ?>
-			<tr>
-			<td width="25%" valign="top" align="left">
-			<?php
-				echo $tree; 
-			?>
-			</td>
-			<td width="75%" valign="top" align="center">
-			<div id="shaperarea" style="position:relative">
-			<?php
-				echo $output;
-			?>	
+
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">				
+				
+				<div id="inputerrors"></div>
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (is_subsystem_dirty('shaper')): ?>
+				<?php print_info_box_np(gettext("The traffic shaper configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));?><br />
+				<?php endif; ?>
+
+			    <section class="col-xs-12">
+    				
+    					
+    					<?php
+							$tab_array = array();
+							$tab_array[0] = array(gettext("By Interface"), true, "firewall_shaper.php");
+							$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
+							$tab_array[2] = array(gettext("Limiter"), false, "firewall_shaper_vinterface.php");
+							$tab_array[3] = array(gettext("Layer7"), false, "firewall_shaper_layer7.php");
+							$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
+							display_top_tabs($tab_array);
+						?>
+						
+					
+						<div class="tab-content content-box col-xs-12">	
+	    					
+	    				    <div class="container-fluid">	
+	    					
+   
+		                        <form action="firewall_shaper.php" method="post" name="iform" id="iform">
+		                       
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+				                        
+										<?php if (count($altq_list_queues) > 0): ?>
+				                        <tr class="tabcont"><td width="25%" align="left">
+
+				                                <a href="firewall_shaper.php?action=resetall" >
+				                                        <input type="button" value="<?=gettext("Remove Shaper")?>" class="btn btn-primary" />
+				                                </a>
+				                        </td><td width="75%"> </td></tr>
+										<?php endif; ?>
+										<tr>
+										<td width="25%" valign="top" align="left" style="vertical-align:top">
+										<?php
+											echo $tree; 
+										?>
+										</td>
+										<td width="75%" valign="top" align="center">
+										<div id="shaperarea" style="position:relative">
+										<?php
+											echo $output;
+										?>	
+										</div>
+							
+									      </td></tr>
+						            </table>
+		                        </div>
+		                        </form>
+	    				    </div>
+						</div>
+			    </section>
 			</div>
-
-		      </td></tr>
-                    </table>
 		</div>
-	  </td>
-	</tr>
-</table>
-            </form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+	</section>
+	
+<?php include("foot.inc"); ?>

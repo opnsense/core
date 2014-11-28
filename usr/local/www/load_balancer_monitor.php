@@ -90,48 +90,64 @@ $shortcut_section = "relayd";
 
 include("head.inc");
 
+$main_buttons = array(
+	array('label'=>'Add', 'href'=>'load_balancer_monitor_edit.php'),
+);
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+<body>
 <?php include("fbegin.inc"); ?>
-<form action="load_balancer_monitor.php" method="post">
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
-<?php print_info_box_np(gettext("The load balancer configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
-<?php endif; ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="load balancer monitor">
-  <tr><td class="tabnavtbl">
-  <?php
-        /* active tabs */
-        $tab_array = array();
-        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
-        $tab_array[] = array(gettext("Virtual Servers"), false, "load_balancer_virtual_server.php");
-        $tab_array[] = array(gettext("Monitors"), true, "load_balancer_monitor.php");
-        $tab_array[] = array(gettext("Settings"), false, "load_balancer_setting.php");
-        display_top_tabs($tab_array);
-  ?>
-  </td></tr>
-  <tr>
-    <td>
-	<div id="mainarea">
-<?php
-			$t = new MainTable();
-			$t->edit_uri('load_balancer_monitor_edit.php');
-			$t->my_uri('load_balancer_monitor.php');
-			$t->add_column(gettext('Name'),'name',20);
-			$t->add_column(gettext('Type'),'type',10);
-			$t->add_column(gettext('Description'),'descr',30);
-			$t->add_button('edit');
-			$t->add_button('dup');
-			$t->add_button('del');
-			$t->add_content_array($a_monitor);
-			$t->display();
-?>
-	</div>
-    </td>
-  </tr>
-</table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
+				<?php print_info_box_np(gettext("The load balancer configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+				<?php endif; ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<?php
+				        /* active tabs */
+				        $tab_array = array();
+				        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
+				        $tab_array[] = array(gettext("Virtual Servers"), false, "load_balancer_virtual_server.php");
+				        $tab_array[] = array(gettext("Monitors"), true, "load_balancer_monitor.php");
+				        $tab_array[] = array(gettext("Settings"), false, "load_balancer_setting.php");
+				        display_top_tabs($tab_array);
+				  	?>
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	
+	    				    
+	    				  <form action="load_balancer_monitor.php" method="post" name="iform" id="iform">
+
+								<div class="table-responsive">
+
+								<?php
+											$t = new MainTable();
+											$t->edit_uri('load_balancer_monitor_edit.php');
+											$t->my_uri('load_balancer_monitor.php');
+											$t->add_column(gettext('Name'),'name',20);
+											$t->add_column(gettext('Type'),'type',10);
+											$t->add_column(gettext('Description'),'descr',30);
+											$t->add_button('edit');
+											$t->add_button('dup');
+											$t->add_button('del');
+											$t->add_content_array($a_monitor);
+											$t->display();
+								?>
+								</div>
+	    				  </form>
+    				    </div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+	
+<?php include("foot.inc"); ?>

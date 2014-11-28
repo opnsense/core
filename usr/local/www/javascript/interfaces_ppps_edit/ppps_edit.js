@@ -167,6 +167,7 @@ function country_list() {
 	jQuery('#provider option').remove();
 	jQuery('#providerplan option').remove();
 	jQuery('#country').append(new Option('', ''));
+	
 	jQuery.ajax("getserviceproviders.php",{
 		success: function(responseText) {
 			var responseTextArr = responseText.split("\n");
@@ -179,9 +180,13 @@ function country_list() {
 					jQuery('#country').append(new Option(country[0],country[1]));
 				}
 			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.log(errorThrown);
 		}
 	});
 	jQuery('#trcountry').css("display","table-row");
+	
 }
 
 function providers_list() {

@@ -81,64 +81,76 @@ $wizards = array(
 $closehead = false;
 include("head.inc");
 ?>
+
+<body>
 <link rel="stylesheet" type="text/css" media="all" href="./tree/tree.css" />
-</head>
-
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC" >
-
 <?php include("fbegin.inc");  ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
 
-<form action="firewall_shaper_wizards.php" method="post" id="iform" name="iform">
 
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<?php if (is_subsystem_dirty('shaper')): ?><p>
-<?php print_info_box_np(gettext("The traffic shaper configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));?><br /></p>
-<?php endif; ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="traffic shaper wizard">
-	<tr><td>
-<?php
-	$tab_array = array();
-	$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
-	$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
-	$tab_array[2] = array(gettext("Limiter"), false, "firewall_shaper_vinterface.php");
-	$tab_array[3] = array(gettext("Layer7"), false, "firewall_shaper_layer7.php");
-	$tab_array[4] = array(gettext("Wizards"), true, "firewall_shaper_wizards.php");
-	display_top_tabs($tab_array);
-?>
-	</td></tr>
-	<tr>
-		<td>
-			<div id="mainarea">
-				<table  width="100%" border="0" cellpadding="0" cellspacing="0" summary="main area">
-					<tr>
-						<td class="listhdrr" width="25%" align="center" ><?=gettext("Wizard function");?></td>
-						<td class="listhdrr" width="75%" align="center"><?=gettext("Wizard Link");?></td>
-					</tr>
-<?php
-				foreach ($wizards as $key => $wizard):
-?>
-					<tr class="tabcont">
-						<td class="listlr" style="background-color: #e0e0e0" width="25%" align="center">
-<?php
-							echo $key;
-?>
-						</td>
-						<td class="listr" style="background-color: #e0e0e0" width="75%" align="center">
-<?php
-							echo "<a href=\"wizard.php?xml=" . $wizard ."\" >" .$wizard . "</a>";
-?>
-						</td>
-					</tr>
-<?php
-				endforeach;
-?>
-				</table>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">				
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (is_subsystem_dirty('shaper')): ?><p>
+				<?php print_info_box_np(gettext("The traffic shaper configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));?><br /></p>
+				<?php endif; ?>
+
+			    <section class="col-xs-12">
+    				
+    					<?php
+							$tab_array = array();
+							$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
+							$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
+							$tab_array[2] = array(gettext("Limiter"), false, "firewall_shaper_vinterface.php");
+							$tab_array[3] = array(gettext("Layer7"), false, "firewall_shaper_layer7.php");
+							$tab_array[4] = array(gettext("Wizards"), true, "firewall_shaper_wizards.php");
+							display_top_tabs($tab_array);
+						?>
+						
+					
+						<div class="tab-content content-box col-xs-12">	
+	    					
+	    				    <div class="container-fluid">	
+	    					
+   
+		                        <form action="firewall_shaper_wizards.php" method="post" name="iform" id="iform">
+		                        	
+		                        	
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+				                        <tr>
+										<td class="listhdrr" width="25%" align="center" ><?=gettext("Wizard function");?></td>
+										<td class="listhdrr" width="75%" align="center"><?=gettext("Wizard Link");?></td>
+									</tr>
+				<?php
+								foreach ($wizards as $key => $wizard):
+				?>
+									<tr class="tabcont">
+										<td class="listlr" width="25%" align="center">
+				<?php
+											echo $key;
+				?>
+										</td>
+										<td class="listr" width="75%" align="center">
+				<?php
+											echo "<a href=\"wizard.php?xml=" . $wizard ."\" >" .$wizard . "</a>";
+				?>
+										</td>
+									</tr>
+				<?php
+								endforeach;
+				?>
+								</table>
+							</div>
+		                        </form>
+	    				    </div>
+						</div>
+			    </section>
 			</div>
-		</td>
-	</tr>
-</table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

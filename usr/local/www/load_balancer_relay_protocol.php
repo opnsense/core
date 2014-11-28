@@ -103,28 +103,39 @@ $shortcut_section = "relayd";
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+<body>
 <?php include("fbegin.inc"); ?>
-<form action="load_balancer_relay_protocol.php" method="post">
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<?php if (is_subsystem_dirty('loadbalancer')): ?><p>
-<?php print_info_box_np(gettext("The load balancer configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
-<?php endif; ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr><td class="tabnavtbl">
-  <?php
-        /* active tabs */
-        $tab_array = array();
-        $tab_array[] = array(gettext("Monitors"), false, "load_balancer_monitor.php");
-        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
-        $tab_array[] = array(gettext("Virtual Servers"), false, "load_balancer_virtual_server.php");
-        display_top_tabs($tab_array);
-  ?>
-  </td></tr>
-  <tr>
-    <td>
-	<div id="mainarea">
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (is_subsystem_dirty('loadbalancer')): ?><p>
+				<?php print_info_box_np(gettext("The load balancer configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+				<?php endif; ?>
+				
+			    <section class="col-xs-12">
+    				
+    					<?php
+					        /* active tabs */
+					        $tab_array = array();
+					        $tab_array[] = array(gettext("Monitors"), false, "load_balancer_monitor.php");
+					        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
+					        $tab_array[] = array(gettext("Virtual Servers"), false, "load_balancer_virtual_server.php");
+					        $tab_array[] = array(gettext("Relay Actions"), false, "load_balancer_relay_action.php");
+					        $tab_array[] = array(gettext("Relay Protocols"), true, "load_balancer_relay_protocol.php");
+					        display_top_tabs($tab_array);
+					  ?>
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	
+	    				    
+	    				  <form action="load_balancer_relay_protocol.php" method="post" name="iform" id="iform">
+
+								<div class="table-responsive">
 <?
 			$t = new MainTable();
 			$t->edit_uri('load_balancer_relay_protocol_edit.php');
@@ -139,11 +150,13 @@ include("head.inc");
 			$t->add_content_array($a_protocol);
 			$t->display();
 ?>
-	</div>
-    </td>
-  </tr>
-</table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+								</div>
+	    				  </form>
+    				    </div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

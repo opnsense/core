@@ -48,7 +48,7 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC" onload="<?=$jsevents["body"]["onload"];?>">
+<body onload="<?=$jsevents["body"]["onload"];?>">
 
 <?php include("fbegin.inc"); ?>
 
@@ -159,183 +159,195 @@ foreach ($unused_disks as $disk) {
 		$unused_consumers = array_merge($unused_consumers, gmirror_get_all_unused_consumer_sizes_on_disk($disk));
 }
 
-if ($input_errors)
-	print_input_errors($input_errors);
-if ($_GET["error"] && ($_GET["error"] != 0))
-	print_info_box(gettext("There was an error performing the chosen mirror operation. Check the System Log for details."));
-
 ?>
-<form action="diag_gmirror.php" method="POST" id="gmirror_form" name="gmirror_form">
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td id="mainarea">
-			<div class="tabcont">
-				<span class="vexpl">
-					<span class="red">
-						<strong><?=gettext("NOTE:")?>&nbsp;</strong>
-					</span>
-					<?=gettext("The options on this page are intended for use by advanced users only. This page is for managing existing mirrors, not creating new mirrors.")?>
-					<br />&nbsp;
-				</span>
-				<p/>
-				<table width="100%" border="0" cellpadding="6" cellspacing="0">
 
-<?PHP if ($_GET["action"]): ?>
-					<tr>
-						<td colspan="2" valign="top" class="listtopic"><?PHP echo gettext("Confirm Action"); ?></td>
-					</tr>
-					<tr>
-						<td width="22%" valign="top" class="vncell">&nbsp;</td>
-						<td width="78%" class="vtable">
-							<strong><?PHP echo gettext("Please confirm the selected action"); ?></strong>:
-							<br />
-							<br /><strong><?PHP echo gettext("Action"); ?>:</strong> <?PHP echo $action_list[$_GET["action"]]; ?>
-							<input type="hidden" name="action" value="<?PHP echo htmlspecialchars($_GET["action"]); ?>" />
-						<?PHP if (!empty($_GET["mirror"])): ?>
-							<br /><strong><?PHP echo gettext("Mirror"); ?>:</strong> <?PHP echo htmlspecialchars($_GET["mirror"]); ?>
-							<input type="hidden" name="mirror" value="<?PHP echo htmlspecialchars($_GET["mirror"]); ?>" />
-						<?PHP endif; ?>
-						<?PHP if (!empty($_GET["consumer"])): ?>
-							<br /><strong><?PHP echo gettext("Consumer"); ?>:</strong> <?PHP echo htmlspecialchars($_GET["consumer"]); ?>
-							<input type="hidden" name="consumer" value="<?PHP echo htmlspecialchars($_GET["consumer"]); ?>" />
-						<?PHP endif; ?>
-							<br />
-							<br /><input type="submit" name="confirm" value="<?PHP echo gettext("Confirm"); ?>" />
-						</td>
-					</tr>
-<?PHP else: ?>
-					<tr>
-						<td colspan="2" valign="top" class="listtopic"><?PHP echo gettext("GEOM Mirror information"); ?></td>
-					</tr>
 
-					<tr>
-						<td width="22%" valign="top" class="vncell"><?PHP echo gettext("Mirror Status"); ?></td>
-						<td width="78%" class="vtable">
+	<section class="page-content-main">
 
-						<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="gmirror status">
-							<tbody id="gmirror_status_table">
-					<?PHP	if (count($mirror_status) > 0): ?>
-							<tr>
-							<td width="30%" class="vncellt"><?PHP echo gettext("Name"); ?></td>
-							<td width="30%" class="vncellt"><?PHP echo gettext("Status"); ?></td>
-							<td width="40%" class="vncellt"><?PHP echo gettext("Component"); ?></td>
-							</tr>
-						<?PHP	foreach ($mirror_status as $mirror => $name): 
-								$components = count($name["components"]); ?>
-								<tr>
-								<td width="30%" rowspan="<?PHP echo $components; ?>" class="listr">
-									<?PHP echo htmlspecialchars($name['name']); ?>
-									<br />Size: <?PHP echo gmirror_get_mirror_size($name['name']); ?>
-								</td>
-								<td width="30%" rowspan="<?PHP echo $components; ?>" class="listr">
-									<?PHP echo htmlspecialchars($name['status']); ?>
-								<?PHP	if (strtoupper($name['status']) == "DEGRADED"): ?>
-									<br /><a href="diag_gmirror.php?action=forget&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Forget Disconnected Disks"); ?>]</a>
-								<?PHP	endif; ?>
-								</td>
-								<td width="40%" class="listr">
-									<?PHP echo $name['components'][0]; ?>
-									<?PHP list($cname, $cstatus) = explode(" ", $name['components'][0], 2); ?>
+		<div class="container-fluid">
+	
+			<div class="row">	
+				<?
+				
+				if ($input_errors)
+					print_input_errors($input_errors);
+				if ($_GET["error"] && ($_GET["error"] != 0))
+					print_info_box(gettext("There was an error performing the chosen mirror operation. Check the System Log for details."));
+				
+				?>
+
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+                        <form action="diag_gmirror.php" method="post" name="iform" id="iform">								
+                        	
+                        	<div class="col-xs-12">
+	                        	<p class="vexpl">
+									<br/><span class="text-danger">
+										<strong><?=gettext("NOTE:")?>&nbsp;</strong>
+									</span>
+									<?=gettext("The options on this page are intended for use by advanced users only. This page is for managing existing mirrors, not creating new mirrors.")?>
 									<br />
-								<?PHP	if ((strtoupper($name['status']) == "COMPLETE") && (count($name["components"]) > 1)): ?>
-									<a href="diag_gmirror.php?action=rebuild&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Rebuild"); ?>]</a>
-									<a href="diag_gmirror.php?action=deactivate&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Deactivate"); ?>]</a>
-									<a href="diag_gmirror.php?action=remove&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Remove"); ?>]</a>
-								<?PHP	endif; ?>
-								</td>
-								</tr>
-							<?PHP	if (count($name["components"]) > 1):
-									$morecomponents = array_slice($name["components"], 1); ?>
-								<?PHP	foreach ($morecomponents as $component): ?>
-										<tr>
-										<td width="40%" class="listr">
-											<?PHP echo $component; ?>
-											<?PHP list($cname, $cstatus) = explode(" ", $component, 2); ?>
+								</p>
+                        	</div>
+                        	
+                        	<div class="table-responsive">
+	                        	<table class="table table-striped table-sort">
+								<?PHP if ($_GET["action"]): ?>
+									<tr>
+										<td colspan="2" valign="top" class="listtopic"><?PHP echo gettext("Confirm Action"); ?></td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncell">&nbsp;</td>
+										<td width="78%" class="vtable">
+											<strong><?PHP echo gettext("Please confirm the selected action"); ?></strong>:
 											<br />
-										<?PHP	if ((strtoupper($name['status']) == "COMPLETE") && (count($name["components"]) > 1)): ?>
-											<a href="diag_gmirror.php?action=rebuild&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Rebuild"); ?>]</a>
-											<a href="diag_gmirror.php?action=deactivate&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Deactivate"); ?>]</a>
-											<a href="diag_gmirror.php?action=remove&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Remove"); ?>]</a>
-										<?PHP	endif; ?>
+											<br /><strong><?PHP echo gettext("Action"); ?>:</strong> <?PHP echo $action_list[$_GET["action"]]; ?>
+											<input type="hidden" name="action" value="<?PHP echo htmlspecialchars($_GET["action"]); ?>" />
+										<?PHP if (!empty($_GET["mirror"])): ?>
+											<br /><strong><?PHP echo gettext("Mirror"); ?>:</strong> <?PHP echo htmlspecialchars($_GET["mirror"]); ?>
+											<input type="hidden" name="mirror" value="<?PHP echo htmlspecialchars($_GET["mirror"]); ?>" />
+										<?PHP endif; ?>
+										<?PHP if (!empty($_GET["consumer"])): ?>
+											<br /><strong><?PHP echo gettext("Consumer"); ?>:</strong> <?PHP echo htmlspecialchars($_GET["consumer"]); ?>
+											<input type="hidden" name="consumer" value="<?PHP echo htmlspecialchars($_GET["consumer"]); ?>" />
+										<?PHP endif; ?>
+											<br />
+											<br /><input type="submit" name="confirm" value="<?PHP echo gettext("Confirm"); ?>" />
 										</td>
-										</tr>
-								<?PHP	endforeach; ?>
-							<?PHP	endif; ?>
-						<?PHP	endforeach; ?>
-					<?PHP	else: ?>
-							<tr><td colspan="3" class="listr"><?PHP echo gettext("No Mirrors Found"); ?></td></tr>
-					<?PHP	endif; ?>
-							</tbody>
-						</table>
-						<br /><?PHP echo gettext("Some disk operations may only be performed when there are multiple consumers present in a mirror."); ?>
-						</td>
-					</tr>
-
-					<tr>
-						<td colspan="2" valign="top" class="listtopic"><?PHP echo gettext("Consumer information"); ?></td>
-					</tr>
-
-					<tr>
-						<td width="22%" valign="top" class="vncell"><?PHP echo gettext("Available Consumers"); ?></td>
-						<td width="78%" class="vtable">
-
-						<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="consumer list">
-							<tbody id="consumer_list">
-					<?PHP	if (count($unused_consumers) > 0): ?>
-							<tr>
-							<td width="30%" class="vncellt"><?PHP echo gettext("Name"); ?></td>
-							<td width="30%" class="vncellt"><?PHP echo gettext("Size"); ?></td>
-							<td width="40%" class="vncellt"><?PHP echo gettext("Add to Mirror"); ?></td>
-							</tr>
-						<?PHP	foreach ($unused_consumers as $consumer): ?>
-								<tr>
-								<td width="30%" class="listr">
-									<?PHP echo htmlspecialchars($consumer['name']); ?>
-								</td>
-								<td width="30%" class="listr"><?PHP echo htmlspecialchars($consumer['size']); ?> <?PHP echo htmlspecialchars($consumer['humansize']); ?></td>
-								<td width="40%" class="listr">
-							<?PHP	$oldmirror = gmirror_get_consumer_metadata_mirror($consumer['name']);
-								if ($oldmirror): ?>
-									<a href="diag_gmirror.php?action=activate&amp;consumer=<?PHP echo htmlspecialchars($consumer['name']); ?>&amp;mirror=<?PHP echo htmlspecialchars($oldmirror); ?>">[<?PHP echo gettext("Reactivate on:"); ?> <?PHP echo htmlspecialchars($oldmirror); ?>]</a>
-									<br /><a href="diag_gmirror.php?action=clear&amp;consumer=<?PHP echo htmlspecialchars($consumer['name']); ?>">[<?PHP echo gettext("Remove metadata from disk"); ?>]</a>
-							<?PHP	else: ?>
-							<?PHP	foreach ($mirror_list as $mirror):
-									$mirror_size = gmirror_get_mirror_size($mirror);
-									$consumer_size = gmirror_get_unused_consumer_size($consumer['name']);
-								?>
-								<?PHP	if ($consumer_size > $mirror_size): ?>
-									<a href="diag_gmirror.php?action=insert&amp;consumer=<?PHP echo htmlspecialchars($consumer['name']); ?>&amp;mirror=<?PHP echo htmlspecialchars($mirror); ?>"><?PHP echo htmlspecialchars($mirror); ?></a>
-								<?PHP	endif; ?>
-							<?PHP	endforeach; ?>
-							<?PHP	endif; ?>
-								</td>
-								</tr>
-						<?PHP	endforeach; ?>
-					<?PHP	else: ?>
-							<tr><td colspan="3" class="listr"><?PHP echo gettext("No unused consumers found"); ?></td></tr>
-					<?PHP	endif; ?>
-							</tbody>
-						</table>
-						<br /><?PHP echo gettext("Consumers may only be added to a mirror if they are larger than the size of the mirror."); ?>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" valign="top" class="">&nbsp;</td>
-					</tr>
-					<tr>
-						<td colspan="2" valign="top" class=""><?PHP echo gettext("To repair a failed mirror, first perform a 'Forget' command on the mirror, followed by an 'insert' action on the new consumer."); ?></td>
-					</tr>
-<?PHP endif;?>
-				</table>
+									</tr>
+				<?PHP else: ?>
+									<tr>
+										<td colspan="2" valign="top" class="listtopic"><?PHP echo gettext("GEOM Mirror information"); ?></td>
+									</tr>
+				
+									<tr>
+										<td width="22%" valign="top" class="vncell"><?PHP echo gettext("Mirror Status"); ?></td>
+										<td width="78%" class="vtable">
+				
+										<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="gmirror status">
+											<tbody id="gmirror_status_table">
+									<?PHP	if (count($mirror_status) > 0): ?>
+											<tr>
+											<td width="30%" class="vncellt"><?PHP echo gettext("Name"); ?></td>
+											<td width="30%" class="vncellt"><?PHP echo gettext("Status"); ?></td>
+											<td width="40%" class="vncellt"><?PHP echo gettext("Component"); ?></td>
+											</tr>
+										<?PHP	foreach ($mirror_status as $mirror => $name): 
+												$components = count($name["components"]); ?>
+												<tr>
+												<td width="30%" rowspan="<?PHP echo $components; ?>" class="listr">
+													<?PHP echo htmlspecialchars($name['name']); ?>
+													<br />Size: <?PHP echo gmirror_get_mirror_size($name['name']); ?>
+												</td>
+												<td width="30%" rowspan="<?PHP echo $components; ?>" class="listr">
+													<?PHP echo htmlspecialchars($name['status']); ?>
+												<?PHP	if (strtoupper($name['status']) == "DEGRADED"): ?>
+													<br /><a href="diag_gmirror.php?action=forget&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Forget Disconnected Disks"); ?>]</a>
+												<?PHP	endif; ?>
+												</td>
+												<td width="40%" class="listr">
+													<?PHP echo $name['components'][0]; ?>
+													<?PHP list($cname, $cstatus) = explode(" ", $name['components'][0], 2); ?>
+													<br />
+												<?PHP	if ((strtoupper($name['status']) == "COMPLETE") && (count($name["components"]) > 1)): ?>
+													<a href="diag_gmirror.php?action=rebuild&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Rebuild"); ?>]</a>
+													<a href="diag_gmirror.php?action=deactivate&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Deactivate"); ?>]</a>
+													<a href="diag_gmirror.php?action=remove&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Remove"); ?>]</a>
+												<?PHP	endif; ?>
+												</td>
+												</tr>
+											<?PHP	if (count($name["components"]) > 1):
+													$morecomponents = array_slice($name["components"], 1); ?>
+												<?PHP	foreach ($morecomponents as $component): ?>
+														<tr>
+														<td width="40%" class="listr">
+															<?PHP echo $component; ?>
+															<?PHP list($cname, $cstatus) = explode(" ", $component, 2); ?>
+															<br />
+														<?PHP	if ((strtoupper($name['status']) == "COMPLETE") && (count($name["components"]) > 1)): ?>
+															<a href="diag_gmirror.php?action=rebuild&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Rebuild"); ?>]</a>
+															<a href="diag_gmirror.php?action=deactivate&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Deactivate"); ?>]</a>
+															<a href="diag_gmirror.php?action=remove&amp;consumer=<?PHP echo htmlspecialchars($cname); ?>&amp;mirror=<?PHP echo htmlspecialchars($name['name']); ?>">[<?PHP echo gettext("Remove"); ?>]</a>
+														<?PHP	endif; ?>
+														</td>
+														</tr>
+												<?PHP	endforeach; ?>
+											<?PHP	endif; ?>
+										<?PHP	endforeach; ?>
+									<?PHP	else: ?>
+											<tr><td colspan="3" class="listr"><?PHP echo gettext("No Mirrors Found"); ?></td></tr>
+									<?PHP	endif; ?>
+											</tbody>
+										</table>
+										<br /><?PHP echo gettext("Some disk operations may only be performed when there are multiple consumers present in a mirror."); ?>
+										</td>
+									</tr>
+				
+									<tr>
+										<td colspan="2" valign="top" class="listtopic"><?PHP echo gettext("Consumer information"); ?></td>
+									</tr>
+				
+									<tr>
+										<td width="22%" valign="top" class="vncell"><?PHP echo gettext("Available Consumers"); ?></td>
+										<td width="78%" class="vtable">
+				
+										<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="consumer list">
+											<tbody id="consumer_list">
+									<?PHP	if (count($unused_consumers) > 0): ?>
+											<tr>
+											<td width="30%" class="vncellt"><?PHP echo gettext("Name"); ?></td>
+											<td width="30%" class="vncellt"><?PHP echo gettext("Size"); ?></td>
+											<td width="40%" class="vncellt"><?PHP echo gettext("Add to Mirror"); ?></td>
+											</tr>
+										<?PHP	foreach ($unused_consumers as $consumer): ?>
+												<tr>
+												<td width="30%" class="listr">
+													<?PHP echo htmlspecialchars($consumer['name']); ?>
+												</td>
+												<td width="30%" class="listr"><?PHP echo htmlspecialchars($consumer['size']); ?> <?PHP echo htmlspecialchars($consumer['humansize']); ?></td>
+												<td width="40%" class="listr">
+											<?PHP	$oldmirror = gmirror_get_consumer_metadata_mirror($consumer['name']);
+												if ($oldmirror): ?>
+													<a href="diag_gmirror.php?action=activate&amp;consumer=<?PHP echo htmlspecialchars($consumer['name']); ?>&amp;mirror=<?PHP echo htmlspecialchars($oldmirror); ?>">[<?PHP echo gettext("Reactivate on:"); ?> <?PHP echo htmlspecialchars($oldmirror); ?>]</a>
+													<br /><a href="diag_gmirror.php?action=clear&amp;consumer=<?PHP echo htmlspecialchars($consumer['name']); ?>">[<?PHP echo gettext("Remove metadata from disk"); ?>]</a>
+											<?PHP	else: ?>
+											<?PHP	foreach ($mirror_list as $mirror):
+													$mirror_size = gmirror_get_mirror_size($mirror);
+													$consumer_size = gmirror_get_unused_consumer_size($consumer['name']);
+												?>
+												<?PHP	if ($consumer_size > $mirror_size): ?>
+													<a href="diag_gmirror.php?action=insert&amp;consumer=<?PHP echo htmlspecialchars($consumer['name']); ?>&amp;mirror=<?PHP echo htmlspecialchars($mirror); ?>"><?PHP echo htmlspecialchars($mirror); ?></a>
+												<?PHP	endif; ?>
+											<?PHP	endforeach; ?>
+											<?PHP	endif; ?>
+												</td>
+												</tr>
+										<?PHP	endforeach; ?>
+									<?PHP	else: ?>
+											<tr><td colspan="3" class="listr"><?PHP echo gettext("No unused consumers found"); ?></td></tr>
+									<?PHP	endif; ?>
+											</tbody>
+										</table>
+										<br /><?PHP echo gettext("Consumers may only be added to a mirror if they are larger than the size of the mirror."); ?>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" valign="top" class="">&nbsp;</td>
+									</tr>
+									<tr>
+										<td colspan="2" valign="top" class=""><?PHP echo gettext("To repair a failed mirror, first perform a 'Forget' command on the mirror, followed by an 'insert' action on the new consumer."); ?></td>
+									</tr>
+				<?PHP endif;?>
+								</table>
+							</div>
+                        </form>
+    				</div>
+			    </section>
 			</div>
-		</td>
-	</tr>
-</table>
-</form>
-<?php require("fend.inc"); ?>
-</body>
-</html>
-
+		</div>
+	</section>
 <?php
 
 // Clear the loading indicator
@@ -344,3 +356,5 @@ echo "jQuery('#loading').html('');";
 echo "</script>";
 
 ?>
+<?php require("foot.inc"); ?>
+

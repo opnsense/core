@@ -215,10 +215,9 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC" onload="<?= $jsevents["body"]["onload"] ?>">
-<?php include("fbegin.inc"); ?>
 
-<script type="text/javascript">
+<body onload="<?= $jsevents["body"]["onload"] ?>">
+	<script type="text/javascript">
 //<![CDATA[
 // Global Variables
 var rowname = new Array(9999);
@@ -281,127 +280,150 @@ function removeRow(el) {
 </script>
 <input type='hidden' name='members_type' value='textbox' class="formfld unknown" />
 
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<div id="inputerrors"></div>
+<?php include("fbegin.inc"); ?>
 
-<form action="interfaces_qinq_edit.php" method="post" name="iform" id="iform">
-<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="interfaces qinq edit">
-  <tr>
-	<td colspan="2" valign="top" class="listtopic"><?=gettext("Interface QinQ Edit");?></td>
-  </tr>
-  <tr>
-    <td width="22%" valign="top" class="vncellreq"><?=gettext("Parent interface");?></td>
-    <td width="78%" class="vtable">
-    <select name="if" id="if" class="formselect">
-    <?php
-        foreach ($portlist as $ifn => $ifinfo) {
-		if (is_jumbo_capable($ifn)) {
-			echo "<option value=\"{$ifn}\"";
-                        if ($ifn == $pconfig['if'])
-				echo " selected=\"selected\"";
-                        echo ">";
-                        echo htmlspecialchars($ifn . " (" . $ifinfo['mac'] . ")");
-                        echo "</option>";
-                }
-	}
-    ?>
-    </select>
-    <br />
-    <span class="vexpl"><?=gettext("Only QinQ capable interfaces will be shown.");?></span></td>
-  </tr>
-  <tr>
-    <td width="22%" valign="top" class="vncellreq"><?=gettext("First level tag");?></td>
-    <td width="78%" class="vtable">
-      <input name="tag" type="text" class="formfld unknown" id="tag" size="10" value="<?=htmlspecialchars($pconfig['tag']);?>" />
-      <br />
-      <span class="vexpl">
-	<?=gettext("This is the first level VLAN tag. On top of this are stacked the member VLANs defined below.");?>
-      </span>
-    </td>
-  </tr>
-  <tr>
-	<td width="22%" valign="top" class="vncell"><?=gettext("Options");?></td>
-	<td width="78%" class="vtable">
-<?php /* ?>
-		<br />
-		<input type="checkbox" value="yes" name="autoassign" id="autoassign" <?php if ($pconfig['autoassign']) echo "checked=\"checked\""; ?> />
-		<span class="vexpl"> Auto assign interface so it can be configured with ip etc...</span>
-		<br />
-		<input type="checkbox" value="yes" name="autoenable" id="autoenable" <?php if ($pconfig['autoenable']) echo "checked=\"checked\""; ?> />
-		<span class="vexpl"> Auto enable interface so it can be used on filter rules.</span>
-		<br />
-		<input type="checkbox" value="yes" name="autoadjustmtu" id="autoadjustmtu" <?php if ($pconfig['autoadjustmtu']) echo "checked=\"checked\""; ?> />
-		<span class="vexpl"> Allows to keep clients mtu unchanged(1500). <br />NOTE: if you are using jumbo frames this option is not needed and may produce incorrect results!</span>
-<?php */ ?>
-		<br />
-		<input name="autogroup" type="checkbox" value="yes" id="autogroup" <?php if ($pconfig['autogroup']) echo "checked=\"checked\""; ?> />
-		<span class="vexpl"><?=gettext("Adds interface to QinQ interface groups so you can write filter rules easily.");?></span>
-	</td>
-  </tr>
-  <tr>
-    <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-    <td width="78%" class="vtable">
-      <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-      <br />
-      <span class="vexpl">
-        <?=gettext("You may enter a description here for your reference (not parsed).");?>
-      </span>
-    </td>
-  </tr>
-  <tr>
-    <td width="22%" valign="top" class="vncellreq"><div id="membersnetworkport"><?=gettext("Member (s)");?></div></td>
-    <td width="78%" class="vtable">
-	<span class="vexpl">
-		<?=gettext("You can specify ranges in the input below. The format is pretty simple i.e 9-100 or 10.20...");?>
-	</span>
-	<br />
-      <table id="maintable" summary="main table">
-        <tbody>
-          <tr>
-            <td><div id="onecolumn"><?=gettext("Tag");?></div></td>
-          </tr>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<div id="inputerrors"></div>
 
-	<?php
-	$counter = 0;
-	$members = $pconfig['members'];
-	if ($members <> "") {
-		$item = explode(" ", $members);
-		foreach($item as $ww) {
-			$member = $item[$counter];
-	?>
-        <tr>
-	<td class="vtable">
-	        <input name="members<?php echo $counter; ?>" class="formselect" id="members<?php echo $counter; ?>" value="<?php echo $member;?>" />
-	</td>
-        <td>
-	<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="remove" /></a>
-	      </td>
-          </tr>
-<?php
-		$counter++;
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">
+	    				
+	    				 <header class="content-box-head col-xs-12">
+    				        <h3><?=gettext("Interface QinQ Edit");?></h3>
+    				    </header>
+    				    
+    				    <div class="content-box-main col-xs-12">
+	    					
+	    					<form action="interfaces_qinq_edit.php" method="post" name="iform" id="iform">
+		    							                        
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+									  <tr>
+									    <td width="22%" valign="top" class="vncellreq"><?=gettext("Parent interface");?></td>
+									    <td width="78%" class="vtable">
+									    <select name="if" id="if" class="formselect">
+									    <?php
+									        foreach ($portlist as $ifn => $ifinfo) {
+											if (is_jumbo_capable($ifn)) {
+												echo "<option value=\"{$ifn}\"";
+									                        if ($ifn == $pconfig['if'])
+													echo " selected=\"selected\"";
+									                        echo ">";
+									                        echo htmlspecialchars($ifn . " (" . $ifinfo['mac'] . ")");
+									                        echo "</option>";
+									                }
+										}
+									    ?>
+									    </select>
+									    <br />
+									    <span class="vexpl"><?=gettext("Only QinQ capable interfaces will be shown.");?></span></td>
+									  </tr>
+									  <tr>
+									    <td width="22%" valign="top" class="vncellreq"><?=gettext("First level tag");?></td>
+									    <td width="78%" class="vtable">
+									      <input name="tag" type="text" class="formfld unknown" id="tag" size="10" value="<?=htmlspecialchars($pconfig['tag']);?>" />
+									      <br />
+									      <span class="vexpl">
+										<?=gettext("This is the first level VLAN tag. On top of this are stacked the member VLANs defined below.");?>
+									      </span>
+									    </td>
+									  </tr>
+									  <tr>
+										<td width="22%" valign="top" class="vncell"><?=gettext("Options");?></td>
+										<td width="78%" class="vtable">
+									<?php /* ?>
+											<br />
+											<input type="checkbox" value="yes" name="autoassign" id="autoassign" <?php if ($pconfig['autoassign']) echo "checked=\"checked\""; ?> />
+											<span class="vexpl"> Auto assign interface so it can be configured with ip etc...</span>
+											<br />
+											<input type="checkbox" value="yes" name="autoenable" id="autoenable" <?php if ($pconfig['autoenable']) echo "checked=\"checked\""; ?> />
+											<span class="vexpl"> Auto enable interface so it can be used on filter rules.</span>
+											<br />
+											<input type="checkbox" value="yes" name="autoadjustmtu" id="autoadjustmtu" <?php if ($pconfig['autoadjustmtu']) echo "checked=\"checked\""; ?> />
+											<span class="vexpl"> Allows to keep clients mtu unchanged(1500). <br />NOTE: if you are using jumbo frames this option is not needed and may produce incorrect results!</span>
+									<?php */ ?>
+											<br />
+											<input name="autogroup" type="checkbox" value="yes" id="autogroup" <?php if ($pconfig['autogroup']) echo "checked=\"checked\""; ?> />
+											<span class="vexpl"><?=gettext("Adds interface to QinQ interface groups so you can write filter rules easily.");?></span>
+										</td>
+									  </tr>
+									  <tr>
+									    <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
+									    <td width="78%" class="vtable">
+									      <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
+									      <br />
+									      <span class="vexpl">
+									        <?=gettext("You may enter a description here for your reference (not parsed).");?>
+									      </span>
+									    </td>
+									  </tr>
+									  <tr>
+									    <td width="22%" valign="top" class="vncellreq"><div id="membersnetworkport"><?=gettext("Member (s)");?></div></td>
+									    <td width="78%" class="vtable">
+										<span class="vexpl">
+											<?=gettext("You can specify ranges in the input below. The format is pretty simple i.e 9-100 or 10.20...");?>
+										</span>
+										<br />
+									      <table id="maintable" summary="main table">
+									        <tbody>
+									          <tr>
+									            <td><div id="onecolumn"><?=gettext("Tag");?></div></td>
+									          </tr>
+									
+										<?php
+										$counter = 0;
+										$members = $pconfig['members'];
+										if ($members <> "") {
+											$item = explode(" ", $members);
+											foreach($item as $ww) {
+												$member = $item[$counter];
+										?>
+									        <tr>
+										<td class="vtable">
+										        <input name="members<?php echo $counter; ?>" class="formselect" id="members<?php echo $counter; ?>" value="<?php echo $member;?>" />
+										</td>
+									        <td>
+										<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="remove" /></a>
+										      </td>
+									          </tr>
+									<?php
+											$counter++;
+									
+											} // end foreach
+										} // end if
+									?>
+									        </tbody>
+											  </table>
+												<a onclick="javascript:addRowTo('maintable'); return false;" href="#" title="<?=gettext("add another entry");?>" class="btn btn-default btn-xs"/><span class="glyphicon glyphicon-plus"></span>
+									      </a>
+											</td>
+									  </tr>
+									  <tr>
+									    <td width="22%" valign="top">&nbsp;</td>
+									    <td width="78%">
+									      <input id="submit" name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+									      <a href="interfaces_qinq.php"><input id="cancelbutton" name="cancelbutton" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" /></a>
+									      <?php if (isset($id) && $a_qinqs[$id]): ?>
+									      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+									      <?php endif; ?>
+									    </td>
+									  </tr>
+									</table>
+		                        </div>
+	    					</form>
+    				    </div>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
 
-		} // end foreach
-	} // end if
-?>
-        </tbody>
-		  </table>
-			<a onclick="javascript:addRowTo('maintable'); return false;" href="#">
-        <img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="" title="<?=gettext("add another entry");?>" />
-      </a>
-		</td>
-  </tr>
-  <tr>
-    <td width="22%" valign="top">&nbsp;</td>
-    <td width="78%">
-      <input id="submit" name="submit" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-      <a href="interfaces_qinq.php"><input id="cancelbutton" name="cancelbutton" type="button" class="formbtn" value="<?=gettext("Cancel");?>" /></a>
-      <?php if (isset($id) && $a_qinqs[$id]): ?>
-      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-      <?php endif; ?>
-    </td>
-  </tr>
-</table>
-</form>
 
 <script type="text/javascript">
 //<![CDATA[
@@ -412,6 +434,4 @@ function removeRow(el) {
 //]]>
 </script>
 
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>

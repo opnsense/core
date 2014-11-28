@@ -172,14 +172,17 @@ do {
 $closehead = false;
 $pgtitle = array($title);
 include("head.inc");
+/*
 
 if(file_exists("/usr/local/www/themes/{$g['theme']}/wizard.css"))
 	echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"/themes/{$g['theme']}/wizard.css\" media=\"all\" />\n";
 else
 	echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"/themes/{$g['theme']}/all.css\" media=\"all\" />";
+*/
 ?>
 </head>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC" >
+<body>
+<? include("fbegin.inc"); ?>
 
 <?php if($pkg['step'][$stepid]['fields']['field'] <> "") { ?>
 <script type="text/javascript">
@@ -302,47 +305,57 @@ function showchange() {
 </script>
 <?php } ?>
 
-<form action="wizard.php" method="post" name="iform" id="iform">
-<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
-<input type="hidden" name="stepid" value="<?= htmlspecialchars($stepid) ?>" />
-
-<center>
-
-&nbsp;<br />
-
+				    	
 <?php
 	if($title == "Reload in progress") {
 		$ip = fixup_string("\$myurl");
 	} else {
 		$ip = "/";
 	}
-	echo "<a href='$ip'>";
 ?>
-<img border="0" src="./themes/<?= $g['theme']; ?>/images/logo.gif" alt="logo" /></a>
-<p>&nbsp;</p>
-<div style="width:800px;background-color:#ffffff" id="roundme">
-<?php
-	if ($input_errors)
-		print_input_errors($input_errors);
-	if ($savemsg)
-		print_info_box($savemsg);
-	if ($_GET['message'] != "")
-		print_info_box(htmlspecialchars($_GET['message']));
-	if ($_POST['message'] != "")
-		print_info_box(htmlspecialchars($_POST['message']));
-?>
-<table bgcolor="#ffffff" width="95%" border="0" cellspacing="0" cellpadding="2" summary="wizard">
-	<!-- wizard goes here -->
-	<tr><td>&nbsp;</td></tr>
-	<tr>
-		<td class="tabcont">
-			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
 
-				<tr><td colspan="2" align="center"><font size="2"><b><?= fixup_string($description) ?></b></font></td></tr><tr><td>&nbsp;</td></tr>
-<?php
-	if(!$pkg['step'][$stepid]['disableheader'])
-		echo "<tr><td colspan=\"2\" class=\"listtopic\">" . fixup_string($title) . "</td></tr>";
-?>
+
+<section class="page-content-main">
+	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+		<div class="row">
+			
+			<?php
+				if ($input_errors)
+					print_input_errors($input_errors);
+				if ($savemsg)
+					print_info_box($savemsg);
+				if ($_GET['message'] != "")
+					print_info_box(htmlspecialchars($_GET['message']));
+				if ($_POST['message'] != "")
+					print_info_box(htmlspecialchars($_POST['message']));
+			?>
+
+		    <section class="col-xs-12">
+			     <div class="content-box">  
+
+					 <form action="wizard.php" method="post" name="iform" id="iform">
+					 	<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
+					 	<input type="hidden" name="stepid" value="<?= htmlspecialchars($stepid) ?>" />
+					 	
+					 	<?php if(!$pkg['step'][$stepid]['disableheader']): ?>
+					 	<header class="content-box-head col-xs-12">
+				        	<h3><?= fixup_string($title) ?></h3>
+				    	</header>
+				    	<? endif; ?>
+				    	
+
+				    	
+						<!--<a href="<?=$ip;?>"><img border="0" src="./themes/<?= $g['theme']; ?>/images/logo.gif" alt="logo" /></a> -->
+						
+						<div class="content-box-main">
+							<div style="padding:20px !important;">
+								<p><br /><?=fixup_string($description) ?></p>
+								
+							</div>
+							<div class="table-responsive">
+								<table class="table table-striped">
+
+
 
 <?php
 	$inputaliases = array();
@@ -389,7 +402,7 @@ function showchange() {
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">\n";
 
-				echo "<input class='formfld unknown' id='" . $name . "' name='" . $name . "' value=\"" . htmlspecialchars($value) . "\"";
+				echo "<input class='form-control unknown' id='" . $name . "' name='" . $name . "' value=\"" . htmlspecialchars($value) . "\"";
 				if($field['size'])
 					echo " size='" . $field['size'] . "' ";
 				if($field['validate'])
@@ -420,7 +433,7 @@ function showchange() {
 					echo "<td class=\"vtable\">\n";
 
 				$inputaliases[] = $name;
-				echo "<input class='formfldalias' autocomplete='off' id='" . $name . "' name='" . $name . "' value=\"" . htmlspecialchars($value) . "\"";
+				echo "<input class='form-control alias' autocomplete='off' id='" . $name . "' name='" . $name . "' value=\"" . htmlspecialchars($value) . "\"";
 				if($field['size'])
 					echo " size='" . $field['size'] . "' ";
 				if($field['validate'])
@@ -445,7 +458,7 @@ function showchange() {
 					$multiple = "multiple=\"multiple\"";
 					$name .= "[]";
 				}
-				echo "<select class='formselect' id='{$name}' name='{$name}' {$size} {$multiple}>\n";
+				echo "<select class='form-control' id='{$name}' name='{$name}' {$size} {$multiple}>\n";
 				if($field['add_to_interfaces_selection'] <> "") {
 					$SELECTED = "";
 					if($field['add_to_interfaces_selection'] == $value) $SELECTED = " selected=\"selected\"";
@@ -493,7 +506,7 @@ function showchange() {
 				}
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">";
-				echo "<input class='formfld pwd' id='" . $name . "' name='" . $name . "' value=\"" . htmlspecialchars($value) . "\" type='password' ";
+				echo "<input class='form-control pwd' id='" . $name . "' name='" . $name . "' value=\"" . htmlspecialchars($value) . "\" type='password' ";
 				if($field['size'])
 					echo " size='" . $field['size'] . "' ";
 				echo " />\n";
@@ -601,7 +614,7 @@ function showchange() {
 						$onchange = "onchange=\"enableitems(this.selectedIndex);\" ";
 					}
 				}
-				echo "<select class='formselect' " . $onchange . $multiple . $size . "id='" . $name . "' name='" . $name . "'>\n";
+				echo "<select class='form-control' " . $onchange . $multiple . $size . "id='" . $name . "' name='" . $name . "'>\n";
 				foreach ($field['options']['option'] as $opt) {
 					$selected = "";
 					if($value == $opt['value'])
@@ -647,9 +660,9 @@ function showchange() {
 
 				break;
 			case "submit":
-				echo "<td>&nbsp;<br /></td></tr>";
+				echo "<td colspan=\"2\">&nbsp;</td></tr>";
 				echo "<tr><td colspan=\"2\" align=\"center\">";
-				echo "<input type='submit' name='" . $name . "' value=\"" . htmlspecialchars($field['name']) . "\" />\n";
+				echo "<input type='submit' class=\"btn btn-primary\" name='" . $name . "' value=\"" . htmlspecialchars($field['name']) . "\" />\n";
 
 				if($field['description'] <> "") {
 					echo "<br /> " . $field['description'];
@@ -657,7 +670,7 @@ function showchange() {
 
 				break;
 			case "listtopic":
-				echo "<td>&nbsp;</td></tr>";
+				echo "<td colspan=\"2\">&nbsp;</td></tr>";
 				echo "<tr><td colspan=\"2\" class=\"listtopic\">" . $field['name'] . "<br />\n";
 
 				break;
@@ -673,7 +686,7 @@ function showchange() {
 				}
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">";
-				echo "<select class='formselect' name='{$name}'>\n";
+				echo "<select class='form-control' name='{$name}'>\n";
 				for($x=1; $x<33; $x++) {
 					$CHECKED = "";
 					if($value == $x) $CHECKED = " selected=\"selected\"";
@@ -707,7 +720,7 @@ function showchange() {
 				}
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">";
-				echo "<select class='formselect' name='{$name}'>\n";
+				echo "<select class='form-control' name='{$name}'>\n";
 				foreach ($timezonelist as $tz) {
 					if(strstr($tz, "GMT"))
 						continue;
@@ -768,14 +781,19 @@ function showchange() {
 		}
 	}
 ?>
-			</table>
-		</td>
-	</tr>
-</table>
-<br />&nbsp;
-</div>
-</center>
-</form>
+								
+								</table>
+								<br /><br /><br />
+							</div>
+						</div>
+					 </form>
+			     </div>
+		    </section>
+		</div>
+	</div>
+</section>
+
+
 <script type="text/javascript">
 //<![CDATA[
 	if (typeof ext_change != 'undefined') {
@@ -969,5 +987,4 @@ function is_timezone($elt) {
 
 ?>
 
-</body>
-</html>
+<? include('foot.inc'); ?>

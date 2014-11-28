@@ -187,7 +187,7 @@ include("head.inc");
 	$types = array("http" => gettext("HTTP"), "tcp" => gettext("TCP"), "dns" => gettext("DNS"));
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 
 <script type="text/javascript">
 
@@ -401,169 +401,188 @@ jQuery(document).ready(function() {
 </script>
 
 <?php include("fbegin.inc"); ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-	<form action="load_balancer_relay_action_edit.php" method="post" name="iform" id="iform">
-	<table width="100%" border="0" cellpadding="6" cellspacing="0">
-		<tr>
-			<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Relay Action entry"); ?></td>
-		</tr>
-		<tr align="left" id="name">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16">
-			</td>
-		</tr>
-		<tr align="left">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?>size="64">
-			</td>
-		</tr>
-<!-- Protocol -->
-		<tr align="left" id="protocol_row">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Protocol"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<select id="protocol" name="protocol">
-<?
-	foreach ($actions['protocol'] as $key => $val) {
-		if(isset($pconfig['protocol']) && $pconfig['protocol'] == $key) {
-			$selected = " selected";
-		} else {
-			$selected = "";
-		}
-		echo "<option value=\"{$key}\" onclick=\"updateProtocol('{$key}');\"{$selected}>{$val}</option>\n";
-	}
-?>
-				</select>
-			</td>
-		</tr>
 
-<!-- Direction -->
-		<tr align="left" id="direction_row">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Direction"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<select id="direction" name="direction" style="disabled">
-<?
-	foreach ($actions['direction'] as $key => $val) {
-		if(isset($pconfig['direction']) && $pconfig['direction'] == $key) {
-			$selected = " selected";
-		} else {
-			$selected = "";
-		}
-		echo "<option value=\"{$key}\" onclick=\"updateDirection('{$key}');\"{$selected}>{$key}</option>\n";
-	}
-?>
-				</select>
 
-			</td>
-		</tr>
+	<section class="page-content-main">
 
-<!-- Type -->
-    <tr align="left" id="type_row"<?= $pconfig['protocol'] == "http" ? "" : " style=\"display:none;\""?>>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Type"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-<?
-	foreach ($actions['direction'] as $dir => $v) {
-		echo"		<select id=\"type_{$dir}\" name=\"type_{$dir}\" style=\"display:none; disabled;\">";
-		foreach ($actions['direction'][$dir] as $key => $val) {
-			if(isset($pconfig['type']) && $pconfig['type'] == $key) {
-				$selected = " selected";
-			} else {
-				$selected = "";
-			}
-			echo "<option value=\"{$key}\" onclick=\"updateDirection('$key');\"{$selected}>{$key}</option>\n";
-		}
-	}
-?>
-				</select>
-			</td>
-		</tr>
+		<div class="container-fluid">
+	
+			<div class="row">	
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+                        <form action="load_balancer_relay_action_edit.php" method="post" name="iform" id="iform">								
+                        	
+                        	<div class="table-responsive">
+	                        	<table class="table table-striped table-sort">	
+									<tr>
+										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Relay Action entry"); ?></td>
+									</tr>
+									<tr align="left" id="name">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16">
+										</td>
+									</tr>
+									<tr align="left">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?>size="64">
+										</td>
+									</tr>
+							<!-- Protocol -->
+									<tr align="left" id="protocol_row">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Protocol"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<select id="protocol" name="protocol">
+							<?
+								foreach ($actions['protocol'] as $key => $val) {
+									if(isset($pconfig['protocol']) && $pconfig['protocol'] == $key) {
+										$selected = " selected";
+									} else {
+										$selected = "";
+									}
+									echo "<option value=\"{$key}\" onclick=\"updateProtocol('{$key}');\"{$selected}>{$val}</option>\n";
+								}
+							?>
+											</select>
+										</td>
+									</tr>
+							
+							<!-- Direction -->
+									<tr align="left" id="direction_row">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Direction"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<select id="direction" name="direction" style="disabled">
+							<?
+								foreach ($actions['direction'] as $key => $val) {
+									if(isset($pconfig['direction']) && $pconfig['direction'] == $key) {
+										$selected = " selected";
+									} else {
+										$selected = "";
+									}
+									echo "<option value=\"{$key}\" onclick=\"updateDirection('{$key}');\"{$selected}>{$key}</option>\n";
+								}
+							?>
+											</select>
+							
+										</td>
+									</tr>
+							
+							<!-- Type -->
+							    <tr align="left" id="type_row"<?= $pconfig['protocol'] == "http" ? "" : " style=\"display:none;\""?>>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Type"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+							<?
+								foreach ($actions['direction'] as $dir => $v) {
+									echo"		<select id=\"type_{$dir}\" name=\"type_{$dir}\" style=\"display:none; disabled;\">";
+									foreach ($actions['direction'][$dir] as $key => $val) {
+										if(isset($pconfig['type']) && $pconfig['type'] == $key) {
+											$selected = " selected";
+										} else {
+											$selected = "";
+										}
+										echo "<option value=\"{$key}\" onclick=\"updateDirection('$key');\"{$selected}>{$key}</option>\n";
+									}
+								}
+							?>
+											</select>
+										</td>
+									</tr>
+							
+							<!-- Action -->
+							    <tr align="left" id="action_row"<?= $pconfig['protocol'] == "http" ? "" : " style=\"display:none;\""?>>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Action"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<select id="action" name="action" style=\"display: none;\">
+							<?
+								foreach ($actions['direction'] as $dir => $dv) {
+									foreach ($actions['direction'][$dir] as $type => $tv) {
+										foreach ($actions['direction'][$dir][$type] as $action => $av ) {
+											if(isset($pconfig['action']) && $pconfig['action'] == $action) {
+												$selected = " selected";
+											} else if ($action == "change" ){
+							  					$selected = " selected";
+							  				} else {
+							  					$selected = "";
+											}
+											echo "<option id=\"{$dir}_{$type}_{$action}\" value=\"{$dir}_{$type}_{$action}\" onClick=\"updateAction('$action');\" style=\"display: none;\"{$selected}>{$action}</option>\n";
+										}
+									}
+								}
+							?>
+											</select>
+							<br />
+							<table><tr>
+							<td><div id="input_action_value"><?=gettext("Value"); ?>&nbsp;<input id="option_action_value" name="option_action_value" type="text" <?if(isset($pconfig['options']['value'])) echo "value=\"{$pconfig['options']['value']}\"";?>size="20"></div></td>
+							<td><div id="action_action_value"></div></td>
+							<td><div id="input_action_key"><?=gettext("Key"); ?>&nbsp;<input id="option_action_key" name="option_action_key" type="text" <?if(isset($pconfig['options']['akey'])) echo "value=\"{$pconfig['options']['akey']}\"";?>size="20"></div></td>
+							<td><div id="action_action_id"></div></td>
+							<td><div id="input_action_id"><?=gettext("ID"); ?>&nbsp;<input id="option_action_id" name="option_action_id" type="text" <?if(isset($pconfig['options']['id'])) echo "value=\"{$pconfig['options']['id']}\"";?>size="20"></div></td>
+							</tr></table>
+										</td>
+									</tr>
+									<tr align="left" id="tcp_options_row"<?= $pconfig['protocol'] == "tcp" ? "" : " style=\"display:none;\""?>>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Options"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											XXX: <?=gettext("TODO"); ?>
+											<select id="options" name="options">
+							<!-- XXX TODO >
+							<?
+								foreach ($types as $key => $val) {
+									if(isset($pconfig['protocol']) && $pconfig['protocol'] == $key) {
+										$selected = " selected";
+									} else {
+										$selected = "";
+									}
+									echo "<option value=\"{$key}\" onclick=\"updateType('{$key}');\"{$selected}>{$val}</option>\n";
+								}
+							?>
+											</select>
+							< XXX TODO -->
+										</td>
+									</tr>
+									<tr align="left" id="ssl_options_row"<?= $pconfig['protocol'] == "http" ? "" : " style=\"display:none;\""?>>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Options"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											XXX: <?=gettext("TODO"); ?>
+							<!-- XXX TODO >
+											<select id="options" name="options">
+							<?
+								foreach ($types as $key => $val) {
+									if(isset($pconfig['protocol']) && $pconfig['protocol'] == $key) {
+										$selected = " selected";
+									} else {
+										$selected = "";
+									}
+									echo "<option value=\"{$key}\" onclick=\"updateType('{$key}');\"{$selected}>{$val}</option>\n";
+								}
+							?>
+											</select>
+							< XXX TODO -->
+										</td>
+									</tr>
+									<tr align="left">
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>">
+											<input type="button" class="btn btn-cancel" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+											<?php if (isset($id) && $a_action[$id] && $_GET['act'] != 'dup'): ?>
+											<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>">
+											<?php endif; ?>
+										</td>
+									</tr>
+								</table>
+								</div>
+								</form>
+								</div>
+								</div>
+								</section>
+								</div>
+								</div>
+								</section>
 
-<!-- Action -->
-    <tr align="left" id="action_row"<?= $pconfig['protocol'] == "http" ? "" : " style=\"display:none;\""?>>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Action"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<select id="action" name="action" style=\"display: none;\">
-<?
-	foreach ($actions['direction'] as $dir => $dv) {
-		foreach ($actions['direction'][$dir] as $type => $tv) {
-			foreach ($actions['direction'][$dir][$type] as $action => $av ) {
-				if(isset($pconfig['action']) && $pconfig['action'] == $action) {
-					$selected = " selected";
-				} else if ($action == "change" ){
-  					$selected = " selected";
-  				} else {
-  					$selected = "";
-				}
-				echo "<option id=\"{$dir}_{$type}_{$action}\" value=\"{$dir}_{$type}_{$action}\" onClick=\"updateAction('$action');\" style=\"display: none;\"{$selected}>{$action}</option>\n";
-			}
-		}
-	}
-?>
-				</select>
-<br />
-<table><tr>
-<td><div id="input_action_value"><?=gettext("Value"); ?>&nbsp;<input id="option_action_value" name="option_action_value" type="text" <?if(isset($pconfig['options']['value'])) echo "value=\"{$pconfig['options']['value']}\"";?>size="20"></div></td>
-<td><div id="action_action_value"></div></td>
-<td><div id="input_action_key"><?=gettext("Key"); ?>&nbsp;<input id="option_action_key" name="option_action_key" type="text" <?if(isset($pconfig['options']['akey'])) echo "value=\"{$pconfig['options']['akey']}\"";?>size="20"></div></td>
-<td><div id="action_action_id"></div></td>
-<td><div id="input_action_id"><?=gettext("ID"); ?>&nbsp;<input id="option_action_id" name="option_action_id" type="text" <?if(isset($pconfig['options']['id'])) echo "value=\"{$pconfig['options']['id']}\"";?>size="20"></div></td>
-</tr></table>
-			</td>
-		</tr>
-		<tr align="left" id="tcp_options_row"<?= $pconfig['protocol'] == "tcp" ? "" : " style=\"display:none;\""?>>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Options"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				XXX: <?=gettext("TODO"); ?>
-				<select id="options" name="options">
-<!-- XXX TODO >
-<?
-	foreach ($types as $key => $val) {
-		if(isset($pconfig['protocol']) && $pconfig['protocol'] == $key) {
-			$selected = " selected";
-		} else {
-			$selected = "";
-		}
-		echo "<option value=\"{$key}\" onclick=\"updateType('{$key}');\"{$selected}>{$val}</option>\n";
-	}
-?>
-				</select>
-< XXX TODO -->
-			</td>
-		</tr>
-		<tr align="left" id="ssl_options_row"<?= $pconfig['protocol'] == "http" ? "" : " style=\"display:none;\""?>>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Options"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				XXX: <?=gettext("TODO"); ?>
-<!-- XXX TODO >
-				<select id="options" name="options">
-<?
-	foreach ($types as $key => $val) {
-		if(isset($pconfig['protocol']) && $pconfig['protocol'] == $key) {
-			$selected = " selected";
-		} else {
-			$selected = "";
-		}
-		echo "<option value=\"{$key}\" onclick=\"updateType('{$key}');\"{$selected}>{$val}</option>\n";
-	}
-?>
-				</select>
-< XXX TODO -->
-			</td>
-		</tr>
-		<tr align="left">
-			<td width="22%" valign="top">&nbsp;</td>
-			<td width="78%">
-				<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>">
-				<input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-				<?php if (isset($id) && $a_action[$id] && $_GET['act'] != 'dup'): ?>
-				<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>">
-				<?php endif; ?>
-			</td>
-		</tr>
-	</table>
-	</form>
-<br />
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>

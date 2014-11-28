@@ -98,49 +98,62 @@ if ($_GET['order']) {
 
 include("head.inc");
 ?>
+
+
 <body>
 <?php include("fbegin.inc"); ?>
 
-<form action="status_captiveportal_vouchers.php" method="post" enctype="multipart/form-data" name="iform" id="iform">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="tab pane">
-<tr><td class="tabnavtbl">
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Active Vouchers"), true, "status_captiveportal_vouchers.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Voucher Rolls"), false, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
-	display_top_tabs($tab_array);
-?>
-</td></tr>
-<tr>
-<td class="tabcont">
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="content pane">
-  <tr>
-    <td class="listhdrr"><a href="?order=0&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Voucher"); ?></a></td>
-    <td class="listhdrr"><a href="?order=1&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Roll"); ?></a></td>
-    <td class="listhdrr"><a href="?order=2&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Activated at"); ?></a></td>
-    <td class="listhdrr"><a href="?order=3&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Expires in"); ?></a></td>
-    <td class="listhdr"><a href="?order=4&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Expires at"); ?></a></td>
-    <td class="list"></td>
-  </tr>
-<?php foreach ($db as $dbent): ?>
-  <tr>
-    <td class="listlr"><?=$dbent[0];?></td>
-    <td class="listr"><?=$dbent[1];?></td>
-    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $dbent[2]));?></td>
-    <td class="listr"><?=$dbent[3];?> <?=gettext("min"); ?></td>
-    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $dbent[4]));?></td>
-    <td class="list"></td>
-  </tr>
-<?php endforeach; ?>
-</table>
-</td>
-</tr>
-</table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">			
+				
+			    <section class="col-xs-12">
+    				
+					<?php
+						$tab_array = array();
+						$tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Active Vouchers"), true, "status_captiveportal_vouchers.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Voucher Rolls"), false, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
+						display_top_tabs($tab_array);
+					?>
+					
+					<div class="tab-content content-box col-xs-12">	
+    					
+    				    <div class="container-fluid">	
+
+	                        <form action="status_captiveportal_vouchers.php" method="post" enctype="multipart/form-data" name="iform" id="iform">
+								
+	                        	<div class="table-responsive">
+		                        	<table class="table table-striped table-sort">
+									  <tr>
+									    <td class="listhdrr"><a href="?order=0&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Voucher"); ?></a></td>
+									    <td class="listhdrr"><a href="?order=1&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Roll"); ?></a></td>
+									    <td class="listhdrr"><a href="?order=2&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Activated at"); ?></a></td>
+									    <td class="listhdrr"><a href="?order=3&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Expires in"); ?></a></td>
+									    <td class="listhdr"><a href="?order=4&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Expires at"); ?></a></td>
+									    <td class="list"></td>
+									  </tr>
+										<?php foreach ($db as $dbent): ?>
+										  <tr>
+										    <td class="listlr"><?=$dbent[0];?></td>
+										    <td class="listr"><?=$dbent[1];?></td>
+										    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $dbent[2]));?></td>
+										    <td class="listr"><?=$dbent[3];?> <?=gettext("min"); ?></td>
+										    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $dbent[4]));?></td>
+										    <td class="list"></td>
+										  </tr>
+										<?php endforeach; ?>
+										</table>
+	                        	</div>
+	                        </form>
+    				    </div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+
+<?php include("foot.inc"); ?>

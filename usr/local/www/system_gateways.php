@@ -183,11 +183,15 @@ $shortcut_section = "gateways";
 
 include("head.inc");
 
+$main_buttons = array(
+	array('label'=>'Add Gateway', 'href'=>'system_gateways_edit.php'),
+);
+
 ?>
 
 <body>
     <?php include("fbegin.inc"); ?>
-    <script type="text/javascript" src="/javascript/row_toggle.js"></script>
+   
     
 <!-- row -->
 		
@@ -222,16 +226,7 @@ include("head.inc");
                                 		<th width="15%" class="listhdrr"><?=gettext("Monitor IP"); ?></th>
                                 		<th width="31%" class="listhdr"><?=gettext("Description"); ?></th>
                                 		<th width="10%" class="list">
-                                			<table border="0" cellspacing="0" cellpadding="1" summary="add">
-                                				<tr>
-                                					<td width="17"></td>
-                                					<td>
-                                						<a href="system_gateways_edit.php">
-                                							<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" alt="add" />
-                                						</a>
-                                					</td>
-                                				</tr>
-                                			</table>
+                                			
                                 		</th>
                                 	</tr>
                             	</thead>
@@ -242,11 +237,11 @@ include("head.inc");
                                 $i = 0;
                                 foreach ($a_gateways as $gateway):
                                 	if (isset($gateway['disabled']) || isset($gateway['inactive'])) {
-                                		$textss = "<span class=\"gray\">";
-                                		$iconfn = "pass_d";
+                                		$textss = "<span class=\"text-muted\">";
+                                		$iconfn = "glyphicon glyphicon-play text-muted";
                                 	} else {
                                 		$textss = "<span>";
-                                		$iconfn = "pass";
+                                		$iconfn = "glyphicon glyphicon-play text-success";
                                 	}
                                 ?>
                             	<tr valign="top" id="fr<?=$i;?>">
@@ -268,20 +263,19 @@ include("head.inc");
                                     <?php
                             		if (isset($gateway['inactive'])):
                                     ?>
-                            			<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_reject_d.gif" width="11" height="11" border="0"
-                            				title="<?=gettext("This gateway is inactive because interface is missing");?>" alt="icon" />
+                            			<span class="glyphicon glyphicon-remove text-muted" title="<?=gettext("This gateway is inactive because interface is missing");?>"></span>
+                            			
                                     <?php
                             		elseif (is_numeric($gateway['attribute'])):
                                     ?>
-                            			<a href="?act=toggle&amp;id=<?=$i;?>">
-                            				<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_<?=$iconfn;?>.gif" width="11" height="11" border="0"
-                            					title="<?=gettext("click to toggle enabled/disabled status");?>" alt="icon" />
+                            			<a href="?act=toggle&amp;id=<?=$i;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" >
+	                            			<span class="glyphicon <?php echo $iconfn;?>"></span>
+	                            			
                             			</a>
                                     <?php
                             		else:
                                     ?>
-                            			<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_<?=$iconfn;?>.gif" width="11" height="11" border="0"
-                            				title="<?=gettext("click to toggle enabled/disabled status");?>" alt="icon" />
+                                    	<span class="glyphicon <?php echo $iconfn;?>"  title="<?=gettext("click to toggle enabled/disabled status");?>"></span> 
                                     <?php
                             		endif;
                                     ?>
@@ -332,38 +326,26 @@ include("head.inc");
                                     ?>
                             		</td>
                             		<td valign="middle" class="list nowrap">
-                            			<table border="0" cellspacing="0" cellpadding="1" summary="icons">
-                            				<tr>
-                            					<td>
-                            						<a href="system_gateways_edit.php?id=<?=$i;?>">
-                            							<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_e.gif" width="17" height="17" border="0" alt="edit" />
+                            			
+                            						<a href="system_gateways_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs">
+                            							<span class="glyphicon glyphicon-pencil"></span>
                             						</a>
-                            					</td>
+                            					
                                             <?php
                             				if (is_numeric($gateway['attribute'])):
                                             ?>
-                            					<td>
-                            						<a href="system_gateways.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this gateway?"); ?>')">
-                            							<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" alt="delete" />
+                            					
+                            						<a href="system_gateways.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this gateway?"); ?>')" class="btn btn-default btn-xs">
+                            							<span class="glyphicon glyphicon-remove"></span>
                             						</a>
-                            					</td>
+                            					
                                             <?php
-                            				else:
-                                            ?>
-                            					<td width='17'></td>
-                                            <?php
+                            				
                             				endif;
                                             ?>
-                            				</tr>
-                            				<tr>
-                            					<td width="17"></td>
-                            					<td>
-                            						<a href="system_gateways_edit.php?dup=<?=$i;?>">
-                            							<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" alt="add" />
+                            				<a href="system_gateways_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs">
+                            							<span class="glyphicon glyphicon-plus"></span>
                             						</a>
-                            					</td>
-                            				</tr>
-                            			</table>
                             		</td>
                             	</tr>
                                 <?php
@@ -377,23 +359,17 @@ include("head.inc");
                             				<tr>
                             					<td>
                                                 <?php
-                            					if ($i == 0):
+                            					if ($i > 0):
+                                               
                                                 ?>
-                            					<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_x_d.gif" width="17" height="17" title="<?=gettext("delete selected items");?>" border="0" alt="delete" />
-                                                <?php
-                            					else:
-                                                ?>
-                            						<input name="del" type="image" src="/themes/<?= $g['theme']; ?>/images/icons/icon_x.gif"
-                            							style="width:17;height:17" title="<?=gettext("delete selected items");?>"
-                            							onclick="return confirm('<?=gettext("Do you really want to delete the selected gateway items?");?>')" />
+                            						<button type="submit" name="del_x" class="btn btn-default btn-xs"
+                            							 title="<?=gettext("delete selected items");?>"
+                            							onclick="return confirm('<?=gettext("Do you really want to delete the selected gateway items?");?>')">
+                            							<span class="glyphicon glyphicon-remove"></span>
+                            						</button>
                                                 <?php
                             					endif;
                             					?>
-                            					</td>
-                            					<td>
-                            						<a href="system_gateways_edit.php">
-                            							<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" alt="edit" />
-                            						</a>
                             					</td>
                             				</tr>
                             			</table>

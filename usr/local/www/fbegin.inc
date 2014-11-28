@@ -6,7 +6,7 @@
 require_once("globals.inc");
 require_once("functions.inc");
 require_once("shortcuts.inc");
-require_once("service-utils.inc");
+require_once("includes/service-utils.inc");
 
 /* $Id$ */
 
@@ -84,7 +84,9 @@ function output_menu($arrayitem, $target = null) {
 			}
 			$class = "list-group-item";
 			
-			if ($_SERVER['PHP_SELF'] == $item[1]) {
+			
+			$check = substr($item[1],1,-4);
+			if (stripos($_SERVER['PHP_SELF'], $check) !== false) {
 				$class .= " active";
 			}
 			
@@ -104,12 +106,26 @@ function output_menu($arrayitem, $target = null) {
 
 
 function active_menu($arrayitem, $pagename) {
-	$pagename = "/".$pagename;
+	$pagename = "/".ltrim($pagename,"/");
 	
 	foreach ($arrayitem as $item) {
-		if ($item[1] == $pagename) {
+		$check = substr($item[1],1,-4);
+		
+		if (stripos($pagename, $check) !== false) {
 			return true;
 		}	
+	}
+	
+	return false;
+}
+
+function active_main_menu() {
+	$options = func_get_args();
+	
+	foreach ($options as $uri) {
+		if (substr($_SERVER['PHP_SELF'], 0, strlen($uri)) == $uri) {
+			return true;
+		}
 	}
 	
 	return false;
@@ -120,11 +136,10 @@ function active_menu($arrayitem, $pagename) {
 $system_menu = array();
 $system_menu[] = array(gettext("Advanced"), "/system_advanced_admin.php");
 $system_menu[] = array(gettext("Firmware"), "/system_firmware.php");
-$system_menu[] = array(gettext("General Setup"), "/system.php");
+$system_menu[] = array(gettext("General Setup"), "/system_general.php");
 $system_menu[] = array(gettext("High Avail. Sync"), "/system_hasync.php");
-$system_menu[] = array(gettext("Logout"), "/index.php?logout");
 if ($g['platform'] == "pfSense" or $g['platform'] == "nanobsd")
-	$system_menu[] = array(gettext("Packages"), "/pkg_mgr_installed.php");
+	$system_menu[] = array(gettext("Packages"), "/system_pkg_mgr_installed.php");
 $system_menu[] = array(gettext("Setup Wizard"), "/wizard.php?xml=setup_wizard.xml");
 $system_menu[] = array(gettext("Routing"), "/system_gateways.php");
 $system_menu[] = array(gettext("Cert Manager"), "/system_camanager.php");
@@ -169,7 +184,7 @@ $services_menu[] = array(gettext("Dynamic DNS"), "/services_dyndns.php");
 $services_menu[] = array(gettext("IGMP proxy"), "/services_igmpproxy.php");
 $services_menu[] = array(gettext("Load Balancer"), "/load_balancer_pool.php");
 $services_menu[] = array(gettext("NTP"), "/services_ntpd.php");
-$services_menu[] = array(gettext("PPPoE Server"), "/vpn_pppoe.php");
+$services_menu[] = array(gettext("PPPoE Server"), "/services_vpn_pppoe.php");
 $services_menu[] = array(gettext("SNMP"), "/services_snmp.php");
 if(count($config['interfaces']) > 1) {
 	/* no use for UPnP in single-interface deployments
@@ -193,7 +208,7 @@ $status_menu = array();
 if (count($config['captiveportal']) > 0)
 	$status_menu[] = array(gettext("Captive Portal"), "/status_captiveportal.php");
 $status_menu[] = array(gettext("CARP (failover)"), "/carp_status.php");
-$status_menu[] = array(gettext("Dashboard"), "/index.php");
+$status_menu[] = array(gettext("Dashboard"), "/status_dashboard.php");
 $status_menu[] = array(gettext("Gateways"), "/status_gateways.php");
 $status_menu[] = array(gettext("DHCP Leases"), "/status_dhcp_leases.php");
 $status_menu[] = array(gettext("DHCPv6 Leases"), "/status_dhcpv6_leases.php");
@@ -229,17 +244,17 @@ $diagnostics_menu = array();
 $diagnostics_menu[] = array(gettext("ARP Table"), "/diag_arp.php");
 $diagnostics_menu[] = array(gettext("Authentication"), "/diag_authentication.php");
 $diagnostics_menu[] = array(gettext("Backup/Restore"), "/diag_backup.php");
-$diagnostics_menu[] = array(gettext("Command Prompt"), "/exec.php");
+$diagnostics_menu[] = array(gettext("Command Prompt"), "/diag_exec.php");
 $diagnostics_menu[] = array(gettext("DNS Lookup"), "/diag_dns.php");
 $diagnostics_menu[] = array(gettext("NDP Table"), "/diag_ndp.php" );
 $diagnostics_menu[] = array(gettext("Factory Defaults"), "/diag_defaults.php");
-$diagnostics_menu[] = array(gettext("Halt System"), "/halt.php" );
+$diagnostics_menu[] = array(gettext("Halt System"), "/diag_halt.php" );
 $diagnostics_menu[] = array(gettext("Limiter Info"), "/diag_limiter_info.php" );
 $diagnostics_menu[] = array(gettext("pfInfo"), "/diag_pf_info.php");
 $diagnostics_menu[] = array(gettext("pfTop"), "/diag_system_pftop.php");
 $diagnostics_menu[] = array(gettext("Ping"), "/diag_ping.php");
-$diagnostics_menu[] = array(gettext("Reboot"), "/reboot.php");
-$diagnostics_menu[] = array(gettext("Edit File"), "/edit.php");
+$diagnostics_menu[] = array(gettext("Reboot"), "/diag_reboot.php");
+$diagnostics_menu[] = array(gettext("Edit File"), "/diag_edit.php");
 $diagnostics_menu[] = array(gettext("Packet Capture"), "/diag_packet_capture.php");
 $diagnostics_menu[] = array(gettext("Traceroute"), "/diag_traceroute.php");
 $diagnostics_menu[] = array(gettext("SMART Status"), "/diag_smart.php");
@@ -331,7 +346,7 @@ if(is_subsystem_dirty('packagelock')) {
 	
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#">OPNsense</a>
+				<a class="navbar-brand" href="/">OPNsense</a>
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
@@ -356,7 +371,7 @@ if(is_subsystem_dirty('packagelock')) {
 					<?php if(! $g['disablehelpicon']): ?>	
 					<li><a href="<?php echo $helpurl; ?>" title="<?php echo gettext("Help for items on this page"); ?>">Help</a></li>
 					<?php endif; ?>
-					<li class="active"><a href="/logout.php">Logout</a></li>
+					<li class="active"><a href="/index.php?logout">Logout</a></li>
 				</ul>
 				<?php
 					echo get_menu_messages();
@@ -376,7 +391,7 @@ if(is_subsystem_dirty('packagelock')) {
 					
 					<div class="list-group" id="mainmenu">
 						
-						<?php $active = active_menu($system_menu, $pagename); ?>
+						<?php $active = active_main_menu("/system"); ?>
 						<a href="#system" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-dashboard __iconspacer"></span><?php echo gettext("System"); ?></a>
 						
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="system">
@@ -385,7 +400,7 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 						
-						<?php $active = active_menu($interfaces_menu, $pagename); ?>
+						<?php $active = active_main_menu("/interface"); ?>
 						<a href="#interfaces" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-wrench __iconspacer"></span><?php echo gettext("Interfaces"); ?></a>
 						
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="interfaces">
@@ -394,7 +409,7 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 						
-						<?php $active = active_menu($firewall_menu, $pagename); ?>
+						<?php $active = active_main_menu("/firewall"); ?>
 						<a href="#firewall" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-fire __iconspacer"></span><?php echo gettext("Firewall"); ?></a>
 						
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="firewall">
@@ -403,7 +418,7 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 						
-						<?php $active = active_menu($services_menu, $pagename); ?>
+						<?php $active = active_main_menu("/service", "/load_balancer"); ?>
 						<a href="#services" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-cog __iconspacer"></span><?php echo gettext("Services"); ?></a>
 						
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="services">
@@ -412,7 +427,7 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 						
-						<?php $active = active_menu($vpn_menu, $pagename); ?>
+						<?php $active = active_main_menu("/vpn"); ?>
 						<a href="#vpn" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-lock __iconspacer"></span><?php echo gettext("VPN"); ?></a>
 						
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="vpn">
@@ -421,7 +436,7 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 						
-						<?php $active = active_menu($status_menu, $pagename); ?>
+						<?php $active = active_main_menu("/status"); ?>
 						<a href="#statusmenu" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-tasks __iconspacer"></span><?php echo gettext("Status"); ?></a>
 						
 						<div class="collapse <?php if (active_menu($status_menu, $pagename)):?>active-menu in<? endif; ?>" id="statusmenu">
@@ -430,7 +445,7 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 						
-						<?php $active = active_menu($diagnostics_menu, $pagename); ?>
+						<?php $active = active_main_menu("/diag"); ?>
 						<a href="#diagnostics" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-stats __iconspacer"></span><?php echo gettext("Diagnostics"); ?></a>
 						
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="diagnostics">
@@ -440,7 +455,7 @@ if(is_subsystem_dirty('packagelock')) {
 						</div>
 						
 						<?php if(! $g['disablehelpmenu']): ?>
-						<?php $active = active_menu($help_menu, $pagename); ?>
+						<?php $active = active_main_menu("/help"); ?>
 						<a href="#help" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-question-sign __iconspacer"></span><?php echo gettext("Help"); ?></a>
 						
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="help">
@@ -461,7 +476,7 @@ if(is_subsystem_dirty('packagelock')) {
 			
 		<header class="page-content-head">
 			<div class="container-fluid">
-			    
+			    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
 				<ul class="list-inline">
 					<li class="__mb"><h1><?=genhtmltitle($pgtitle);?></h1></li>
 					
@@ -493,10 +508,20 @@ if(is_subsystem_dirty('packagelock')) {
 						<? if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>						
 							<a href="<?=$button['href'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?=$button['label'];?></a>	
 						<? endforeach; endif; ?>
+						
+						<? if (isset($widgetfiles)): ?>
+						  
+			            
+							<input type="hidden" value="" name="sequence" id="sequence" />
+		
+							<input type="submit" id="submit" name="submit" style="display:none" onclick="return updatePref();" class="btn btn-primary" value="<?=gettext("Save Settings");?>" />								
+						
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span>Add widget</button>
+						<? endif; ?>
 							
 						<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span>Add widget</button> -->
 					</li>
 				</ul>
-			    
+			    </form>	
 			</div>
 		</header>

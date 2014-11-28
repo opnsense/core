@@ -153,64 +153,86 @@ if ($_POST) {
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+
+<body>
 <?php include("fbegin.inc"); ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-		<form action="services_captiveportal_hostname_edit.php" method="post" name="iform" id="iform">
-		<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="captiveportal hostname edit">
-		<tr>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Direction"); ?></td>
-			<td width="78%" class="vtable"> 
-			<select name="dir" class="formfld">
-		<?php 
-			$dirs = array(gettext("Both"),gettext("From"),gettext("To")) ;
-			foreach ($dirs as $dir): ?>
-				<option value="<?=strtolower($dir);?>" <?php if (strtolower($dir) == strtolower($pconfig['dir'])) echo "selected=\"selected\"";?> >
-				<?=htmlspecialchars($dir);?>
-				</option>
-		<?php endforeach; ?>
-			</select>
-			<br /> 
-			<span class="vexpl"><?=gettext("Use"); ?> <em><?=gettext("From"); ?></em> <?=gettext("to always allow an Hostname through the captive portal (without authentication)"); ?>. 
-				<?=gettext("Use"); ?> <em><?=gettext("To"); ?></em> <?=gettext("to allow access from all clients (even non-authenticated ones) behind the portal to this Hostname"); ?>.</span></td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname"); ?></td>
-			<td width="78%" class="vtable"> 
-				<?=$mandfldhtml;?><input name="hostname" type="text" class="formfld unknown" id="hostname" size="17" value="<?=htmlspecialchars($pconfig['hostname']);?>" />
-			<br /> 
-			<span class="vexpl"><?=gettext("Hostname");?>.</span></td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
-			<td width="78%" class="vtable"> 
-			<input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-			<br /> <span class="vexpl"><?=gettext("You may enter a description here for your reference (not parsed)"); ?>.</span></td>
-			</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("Bandwidth up"); ?></td>
-			<td width="78%" class="vtable">
-			<input name="bw_up" type="text" class="formfld unknown" id="bw_up" size="10" value="<?=htmlspecialchars($pconfig['bw_up']);?>" />
-			<br /> <span class="vexpl"><?=gettext("Enter a upload limit to be enforced on this Hostname in Kbit/s"); ?></span></td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("Bandwidth down"); ?></td>
-			<td width="78%" class="vtable">
-			<input name="bw_down" type="text" class="formfld unknown" id="bw_down" size="10" value="<?=htmlspecialchars($pconfig['bw_down']);?>" />
-			<br /> <span class="vexpl"><?=gettext("Enter a download limit to be enforced on this Hostname in Kbit/s"); ?></span></td>
-		</tr>
-		<tr>
-			<td width="22%" valign="top">&nbsp;</td>
-			<td width="78%"> 
-				<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" />
-				<input name="zone" type="hidden" value="<?=htmlspecialchars($cpzone);?>" />
-				<?php if (isset($id) && $a_allowedhostnames[$id]): ?>
-					<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-				<?php endif; ?>
-			</td>
-		</tr>
-	</table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+	<section class="page-content-main">
+
+		<div class="container-fluid">
+	
+			<div class="row">	
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+                        <form action="services_captiveportal_hostname_edit.php" method="post" name="iform" id="iform">								
+                        	
+                        	<div class="table-responsive">
+	                        	<table class="table table-striped table-sort">	
+
+									<tr>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Direction"); ?></td>
+										<td width="78%" class="vtable"> 
+										<select name="dir" class="formfld">
+									<?php 
+										$dirs = array(gettext("Both"),gettext("From"),gettext("To")) ;
+										foreach ($dirs as $dir): ?>
+											<option value="<?=strtolower($dir);?>" <?php if (strtolower($dir) == strtolower($pconfig['dir'])) echo "selected=\"selected\"";?> >
+											<?=htmlspecialchars($dir);?>
+											</option>
+									<?php endforeach; ?>
+										</select>
+										<br /> 
+										<span class="vexpl"><?=gettext("Use"); ?> <em><?=gettext("From"); ?></em> <?=gettext("to always allow an Hostname through the captive portal (without authentication)"); ?>. 
+											<?=gettext("Use"); ?> <em><?=gettext("To"); ?></em> <?=gettext("to allow access from all clients (even non-authenticated ones) behind the portal to this Hostname"); ?>.</span></td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname"); ?></td>
+										<td width="78%" class="vtable"> 
+											<?=$mandfldhtml;?><input name="hostname" type="text" class="formfld unknown" id="hostname" size="17" value="<?=htmlspecialchars($pconfig['hostname']);?>" />
+										<br /> 
+										<span class="vexpl"><?=gettext("Hostname");?>.</span></td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
+										<td width="78%" class="vtable"> 
+										<input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
+										<br /> <span class="vexpl"><?=gettext("You may enter a description here for your reference (not parsed)"); ?>.</span></td>
+										</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncell"><?=gettext("Bandwidth up"); ?></td>
+										<td width="78%" class="vtable">
+										<input name="bw_up" type="text" class="formfld unknown" id="bw_up" size="10" value="<?=htmlspecialchars($pconfig['bw_up']);?>" />
+										<br /> <span class="vexpl"><?=gettext("Enter a upload limit to be enforced on this Hostname in Kbit/s"); ?></span></td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncell"><?=gettext("Bandwidth down"); ?></td>
+										<td width="78%" class="vtable">
+										<input name="bw_down" type="text" class="formfld unknown" id="bw_down" size="10" value="<?=htmlspecialchars($pconfig['bw_down']);?>" />
+										<br /> <span class="vexpl"><?=gettext("Enter a download limit to be enforced on this Hostname in Kbit/s"); ?></span></td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%"> 
+											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+											<input name="zone" type="hidden" value="<?=htmlspecialchars($cpzone);?>" />
+											<?php if (isset($id) && $a_allowedhostnames[$id]): ?>
+												<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+											<?php endif; ?>
+										</td>
+									</tr>
+								</table>
+                        	</div>
+                        </form>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

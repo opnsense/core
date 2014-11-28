@@ -91,27 +91,29 @@ $filesystems = get_mounted_filesystems();
 <script type="text/javascript">
 //<![CDATA[
 	jQuery(function() { 
-		jQuery("#statePB").progressbar( { value: <?php echo get_pfstate(true); ?> } );
-		jQuery("#mbufPB").progressbar( { value: <?php echo get_mbuf(true); ?> } );
-		jQuery("#cpuPB").progressbar( { value:false } );
-		jQuery("#memUsagePB").progressbar( { value: <?php echo mem_usage(); ?> } );
+		jQuery("#statePB").css( { width: '<?php echo get_pfstate(true); ?>%' } );
+		jQuery("#mbufPB").css( { width: '<?php echo get_mbuf(true); ?>%' } );
+		jQuery("#cpuPB").css( { width:0 } );
+		jQuery("#memUsagePB").css( { width: '<?php echo mem_usage(); ?>%' } );
 
 <?PHP $d = 0; ?>
 <?PHP foreach ($filesystems as $fs): ?>
-		jQuery("#diskUsagePB<?php echo $d++; ?>").progressbar( { value: <?php echo $fs['percent_used']; ?> } );
+		jQuery("#diskUsagePB<?php echo $d++; ?>").css( { width: '<?php echo $fs['percent_used']; ?>%' } );
 <?PHP endforeach; ?>
 
 		<?php if($showswap == true): ?>
-			jQuery("#swapUsagePB").progressbar( { value: <?php echo swap_usage(); ?> } );
+			jQuery("#swapUsagePB").css( { width: '<?php echo swap_usage(); ?>%' } );
 		<?php endif; ?>
 		<?php if (get_temp() != ""): ?>
-                	jQuery("#tempPB").progressbar( { value: <?php echo get_temp(); ?> } );
+                	jQuery("#tempPB").css( { width: '<?php echo get_temp(); ?>%' } );
 		<?php endif; ?>
 	});
 //]]>
 </script>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="system information">
+
+
+<table class="table table-striped">
 	<tbody>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Name");?></td>
@@ -216,7 +218,12 @@ $filesystems = get_mounted_filesystems();
 				<?php	$pfstatetext = get_pfstate();
 					$pfstateusage = get_pfstate(true);
 				?>
-				<div id="statePB"></div>
+				<div class="progress">
+				  <div id="statePB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+				    <span class="sr-only"></span>
+				  </div>
+				</div>
+						
 				<span id="pfstateusagemeter"><?= $pfstateusage.'%'; ?></span> (<span id="pfstate"><?= htmlspecialchars($pfstatetext); ?></span>)
 		    	<br />
 		    	<a href="diag_dump_states.php"><?=gettext("Show states");?></a>
@@ -229,7 +236,12 @@ $filesystems = get_mounted_filesystems();
 					$mbufstext = get_mbuf();
 					$mbufusage = get_mbuf(true);
 				?>
-				<div id="mbufPB"></div>
+				
+				<div class="progress">
+				  <div id="mbufPB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+				    <span class="sr-only"></span>
+				  </div>
+				</div>
 				<span id="mbufusagemeter"><?= $mbufusage.'%'; ?></span> (<span id="mbuf"><?= $mbufstext ?></span>)
 			</td>
 		</tr>
@@ -238,7 +250,12 @@ $filesystems = get_mounted_filesystems();
                         <td width="25%" class="vncellt"><?=gettext("Temperature");?></td>
 			<td width="75%" class="listr">
 				<?php $TempMeter = $temp = get_temp(); ?>
-				<div id="tempPB"></div>
+				
+				<div class="progress">
+				  <div id="tempPB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+				    <span class="sr-only"></span>
+				  </div>
+				</div>
 				<span id="tempmeter"><?= $temp."&#176;C"; ?></span>
 			</td>
                 </tr>
@@ -252,7 +269,12 @@ $filesystems = get_mounted_filesystems();
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("CPU usage");?></td>
 			<td width="75%" class="listr">
-				<div id="cpuPB"></div>
+				
+				<div class="progress">
+				  <div id="cpuPB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+				    <span class="sr-only"></span>
+				  </div>
+				</div>
 				<span id="cpumeter">(Updating in 10 seconds)</span>
 			</td>
 		</tr>
@@ -260,7 +282,11 @@ $filesystems = get_mounted_filesystems();
 			<td width="25%" class="vncellt"><?=gettext("Memory usage");?></td>
 			<td width="75%" class="listr">
 				<?php $memUsage = mem_usage(); ?>
-				<div id="memUsagePB"></div>
+				<div class="progress">
+				  <div id="memUsagePB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+				    <span class="sr-only"></span>
+				  </div>
+				</div>
 				<span id="memusagemeter"><?= $memUsage.'%'; ?></span> of <?= sprintf("%.0f", get_single_sysctl('hw.physmem') / (1024*1024)) ?> MB
 			</td>
 		</tr>
@@ -269,7 +295,11 @@ $filesystems = get_mounted_filesystems();
 			<td width="25%" class="vncellt"><?=gettext("SWAP usage");?></td>
 			<td width="75%" class="listr">
 				<?php $swapusage = swap_usage(); ?>
-				<div id="swapUsagePB"></div>
+				<div class="progress">
+				  <div id="swapUsagePB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+				    <span class="sr-only"></span>
+				  </div>
+				</div>
 				<span id="swapusagemeter"><?= $swapusage.'%'; ?></span> of <?= sprintf("%.0f", `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $2;}'`) ?> MB
 			</td>
 		</tr>
@@ -279,7 +309,11 @@ $filesystems = get_mounted_filesystems();
 			<td width="75%" class="listr">
 <?PHP $d = 0; ?>
 <?PHP foreach ($filesystems as $fs): ?>
-				<div id="diskUsagePB<?php echo $d; ?>"></div>
+				<div class="progress">
+				  <div id="diskUsagePB<?php echo $d; ?>" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+				    <span class="sr-only"></span>
+				  </div>
+				</div>
 				<?PHP if (substr(basename($fs['device']), 0, 2) == "md") $fs['type'] .= " in RAM"; ?>
 				<?PHP echo "{$fs['mountpoint']} ({$fs['type']})";?>: <span id="diskusagemeter<?php echo $d++ ?>"><?= $fs['percent_used'].'%'; ?></span> of <?PHP echo $fs['total_size'];?>
 				<br />

@@ -167,7 +167,7 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC" onload="<?= $jsevents["body"]["onload"] ?>">
+<body onload="<?= $jsevents["body"]["onload"] ?>">
 <?php include("fbegin.inc"); ?>
 
 <script type="text/javascript">
@@ -238,106 +238,128 @@ function removeRow(el) {
 	rowsize[2] = "50";
 //]]>
 </script>
-<input type='hidden' name='members_type' value='textbox' class="formfld unknown" />
+<input type='hidden' name='members_type' value='textbox' class="form-control unknown" />
 
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<div id="inputerrors"></div>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<div id="inputerrors"></div>
 
-<form action="interfaces_groups_edit.php" method="post" name="iform" id="iform">
-<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="interfaces groups edit">
-  <tr>
-	<td colspan="2" valign="top" class="listtopic"><?=gettext("Interface Groups Edit");?></td>
-  </tr>
-  <tr>
-    <td valign="top" class="vncellreq"><?=gettext("Group Name");?></td>
-    <td class="vtable">
-	<input class="formfld unknown" name="ifname" id="ifname" maxlength="15" value="<?=htmlspecialchars($pconfig['ifname']);?>" />
-	<br />
-	<?=gettext("No numbers or spaces are allowed. Only characters in a-zA-Z");?>
-    </td>
-  </tr>
-  <tr>
-    <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-    <td width="78%" class="vtable">
-      <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-      <br />
-      <span class="vexpl">
-        <?=gettext("You may enter a description here for your reference (not parsed).");?>
-      </span>
-    </td>
-  </tr>
-  <tr>
-    <td width="22%" valign="top" class="vncellreq"><div id="membersnetworkport"><?=gettext("Member (s)");?></div></td>
-    <td width="78%" class="vtable">
-      <table id="maintable" summary="main table">
-        <tbody>
-          <tr>
-            <td><div id="onecolumn"><?=gettext("Interface");?></div></td>
-          </tr>
-
-	<?php
-	$counter = 0;
-	$members = $pconfig['members'];
-	if ($members <> "") {
-		$item = explode(" ", $members);
-		foreach($item as $ww) {
-			$members = $item[$counter];
-			$tracker = $counter;
-	?>
-        <tr>
-	<td class="vtable">
-	        <select name="members<?php echo $tracker; ?>" class="formselect" id="members<?php echo $tracker; ?>">
-			<?php
-				$found = false;
-				foreach ($iflist as $ifnam => $ifdescr) {
-					echo "<option value=\"{$ifnam}\"";
-					if ($ifnam == $members) {
-						$found = true;
-						echo " selected=\"selected\"";
-					}
-					echo ">{$ifdescr}</option>";
-				}
-
-				if ($found === false)
-					foreach ($iflist_disabled as $ifnam => $ifdescr)
-						if ($ifnam == $members)
-							echo "<option value=\"{$ifnam}\" selected=\"selected\">{$ifdescr}</option>";
-			?>
-                        </select>
-	</td>
-        <td>
-	<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="remove" /></a>
-	      </td>
-          </tr>
-<?php
-		$counter++;
-
-		} // end foreach
-	} // end if
-?>
-        </tbody>
-		  </table>
-			<a onclick="javascript:addRowTo('maintable'); return false;" href="#">
-        <img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="" title="<?=gettext("add another entry");?>" />
-      </a>
-		<br /><br />
-		<strong><?PHP echo gettext("NOTE:");?></strong>
-		<?PHP echo gettext("Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.");?>
-		<a href="https://doc.pfsense.org/index.php/Interface_Groups"><?PHP echo gettext("More Information");?></a>
-		</td>
-  </tr>
-  <tr>
-    <td width="22%" valign="top">&nbsp;</td>
-    <td width="78%">
-      <input id="submit" name="submit" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-      <a href="interfaces_groups.php"><input id="cancelbutton" name="cancelbutton" type="button" class="formbtn" value="<?=gettext("Cancel");?>" /></a>
-      <?php if (isset($id) && $a_ifgroups[$id]): ?>
-      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-      <?php endif; ?>
-    </td>
-  </tr>
-</table>
-</form>
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">
+	    				
+	    				 <header class="content-box-head col-xs-12">
+    				        <h3><?=gettext("Interface Groups Edit");?></h3>
+    				    </header>
+    				    
+    				    <div class="content-box-main col-xs-12">
+	    					
+	    					<form action="interfaces_groups_edit.php" method="post" name="iform" id="iform">
+		    							                        
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+									  <tr>
+									    <td valign="top" class="vncellreq"><?=gettext("Group Name");?></td>
+									    <td class="vtable">
+										<input type="text" class="form-control unknown" name="ifname" id="ifname" maxlength="15" value="<?=htmlspecialchars($pconfig['ifname']);?>" />
+										<br />
+										<?=gettext("No numbers or spaces are allowed. Only characters in a-zA-Z");?>
+									    </td>
+									  </tr>
+									  <tr>
+									    <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
+									    <td width="78%" class="vtable">
+									      <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
+									      <br />
+									      <span class="vexpl">
+									        <?=gettext("You may enter a description here for your reference (not parsed).");?>
+									      </span>
+									    </td>
+									  </tr>
+									  <tr>
+									    <td width="22%" valign="top" class="vncellreq"><div id="membersnetworkport"><?=gettext("Member (s)");?></div></td>
+									    <td width="78%" class="vtable">
+									      <table id="maintable" summary="main table">
+									        <tbody>
+									          <tr>
+									            <td><div id="onecolumn"><?=gettext("Interface");?></div></td>
+									          </tr>
+									
+										<?php
+										$counter = 0;
+										$members = $pconfig['members'];
+										if ($members <> "") {
+											$item = explode(" ", $members);
+											foreach($item as $ww) {
+												$members = $item[$counter];
+												$tracker = $counter;
+										?>
+									        <tr>
+										<td class="vtable">
+										        <select name="members<?php echo $tracker; ?>" class="formselect" id="members<?php echo $tracker; ?>">
+												<?php
+													$found = false;
+													foreach ($iflist as $ifnam => $ifdescr) {
+														echo "<option value=\"{$ifnam}\"";
+														if ($ifnam == $members) {
+															$found = true;
+															echo " selected=\"selected\"";
+														}
+														echo ">{$ifdescr}</option>";
+													}
+									
+													if ($found === false)
+														foreach ($iflist_disabled as $ifnam => $ifdescr)
+															if ($ifnam == $members)
+																echo "<option value=\"{$ifnam}\" selected=\"selected\">{$ifdescr}</option>";
+												?>
+									                        </select>
+										</td>
+									        <td>
+										<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="remove" /></a>
+										      </td>
+									          </tr>
+									<?php
+											$counter++;
+									
+											} // end foreach
+										} // end if
+									?>
+									        </tbody>
+											  </table>
+												<a onclick="javascript:addRowTo('maintable'); return false;" href="#">
+									        <img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="" title="<?=gettext("add another entry");?>" />
+									      </a>
+											<br /><br />
+											<strong><?PHP echo gettext("NOTE:");?></strong>
+											<?PHP echo gettext("Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.");?>
+											<a href="https://doc.pfsense.org/index.php/Interface_Groups"><?PHP echo gettext("More Information");?></a>
+											</td>
+									  </tr>
+									  <tr>
+									    <td width="22%" valign="top">&nbsp;</td>
+									    <td width="78%">
+									      <input id="submit" name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+									      <a href="interfaces_groups.php"><input id="cancelbutton" name="cancelbutton" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" /></a>
+									      <?php if (isset($id) && $a_ifgroups[$id]): ?>
+									      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+									      <?php endif; ?>
+									    </td>
+									  </tr>
+									</table>
+		                        </div>
+	    					</form>
+    				    </div>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
 
 <script type="text/javascript">
 //<![CDATA[
@@ -351,7 +373,5 @@ function removeRow(el) {
 <?php
 	unset($iflist);
 	unset($iflist_disabled);
-	include("fend.inc");
+	include("foot.inc");
 ?>
-</body>
-</html>

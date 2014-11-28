@@ -59,45 +59,54 @@ $pgtitle = array(gettext("Status"), gettext("Captive portal"), gettext("Expire V
 
 include("head.inc");
 ?>
+
+
 <body>
 <?php include("fbegin.inc"); ?>
 
-<form action="status_captiveportal_expire.php" method="post" enctype="multipart/form-data" name="iform" id="iform">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="tab pane">
-<tr><td class="tabnavtbl">
-<?php
-	$tab_array = array();
-	$tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Voucher Rolls"), false, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
-	$tab_array[] = array(gettext("Expire Vouchers"), true, "status_captiveportal_expire.php?zone={$cpzone}");
-	display_top_tabs($tab_array);
-?>
-</td></tr>
-<tr>
-<td class="tabcont">
 
-<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="content pane">
-  <tr>
-    <td valign="top" class="vncellreq"><?=gettext("Voucher(s)"); ?></td>
-    <td class="vtable">
-    <textarea name="vouchers" cols="65" rows="3" id="vouchers" class="formpre"><?=htmlspecialchars($_POST['vouchers']);?></textarea>
-    <br />
-<?=gettext("Enter multiple vouchers separated by space or newline. All valid vouchers will be marked as expired"); ?>.</td>
-  </tr>
-  <tr>
-    <td width="22%" valign="top">&nbsp;</td>
-    <td width="78%">
-    <input name="zone" type="hidden" value="<?=htmlspecialchars($cpzone);?>" />
-    <input name="Submit" type="submit" class="formbtn" value="<?=gettext("Submit"); ?>" />
-    </td>
-  </tr>
-</table>
-</td></tr></table>
-</form>
-<br/>
-<?php
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">			
+				
+			    <section class="col-xs-12">
+    				
+					<?php
+						$tab_array = array();
+						$tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Voucher Rolls"), false, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Expire Vouchers"), true, "status_captiveportal_expire.php?zone={$cpzone}");
+						display_top_tabs($tab_array);
+					?>
+					
+					<div class="tab-content content-box col-xs-12">	
+    					
+    				    <div class="container-fluid">	
+
+	                        <form action="status_captiveportal_expire.php" method="post" enctype="multipart/form-data" name="iform" id="iform">
+								
+	                        	<div class="table-responsive">
+		                        	<table class="table table-striped table-sort">
+		                 
+									  <tr>
+									    <td valign="top" class="vncellreq"><?=gettext("Voucher(s)"); ?></td>
+									    <td class="vtable">
+									    <textarea name="vouchers" cols="65" rows="3" id="vouchers" class="formpre"><?=htmlspecialchars($_POST['vouchers']);?></textarea>
+									    <br />
+									<?=gettext("Enter multiple vouchers separated by space or newline. All valid vouchers will be marked as expired"); ?>.</td>
+									  </tr>
+									  <tr>
+									    <td width="22%" valign="top">&nbsp;</td>
+									    <td width="78%">
+									    <input name="zone" type="hidden" value="<?=htmlspecialchars($cpzone);?>" />
+									    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Submit"); ?>" />
+									    </td>
+									  </tr>
+									</table>
+									
+									<?php
 if ($_POST) {
     if ($_POST['vouchers']) {
         $result = voucher_expire($_POST['vouchers']);
@@ -113,7 +122,15 @@ if ($_POST) {
     }
 }
 
-include("fend.inc");
 ?>
-</body>
-</html>
+	                        	</div>
+	                        </form>
+    				    </div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+
+
+<? include("fend.inc"); ?>

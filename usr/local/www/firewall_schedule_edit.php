@@ -633,11 +633,11 @@ function insertElements(tempFriendlyTime, starttimehour, starttimemin, stoptimeh
 		tr.appendChild(td);
 		
 		td = d.createElement("td");
-		td.innerHTML = "<a onclick='editRow(\"" + tempTime + "\",this); return false;' href='#'><img border='0' src='/themes/" + theme + "/images/icons/icon_e.gif' alt='edit' /></\a>";
+		td.innerHTML = "<a onclick='editRow(\"" + tempTime + "\",this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-pencil\"></span></\a>";
 		tr.appendChild(td);
 			
 		td = d.createElement("td");
-		td.innerHTML = "<a onclick='removeRow(this); return false;' href='#'><img border='0' src='/themes/" + theme + "/images/icons/icon_x.gif' alt='remove' /></\a>";
+		td.innerHTML = "<a onclick='removeRow(this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></\a>";
 		tr.appendChild(td);
 		
 		td = d.createElement("td");		
@@ -768,412 +768,430 @@ function removeRow(el) {
 EOD;
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC" onload="<?= $jsevents["body"]["onload"] ?>">
+<body onload="<?= $jsevents["body"]["onload"] ?>">
 
 
 <?php include("fbegin.inc");	echo $jscriptstr; ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<div id="inputerrors"></div>
 
-<form action="firewall_schedule_edit.php" method="post" name="iform" id="iform">
-	<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="firewall schedule">
-		<tr>
-			<td colspan="2" valign="top" class="listtopic"><?=gettext("Schedule information");?></td>
-		</tr>	
-        <tr>
-          <td>
-			  <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-               	<tr>
-				  <td width="15%" valign="top" class="vncellreq"><?=gettext("Schedule Name");?></td>
-				  <td width="85%" class="vtable">
-				  <?php if(is_schedule_inuse($pconfig['name']) == true): ?>
-				  			<input name="name" type="hidden" id="name" size="40"  value="<?=htmlspecialchars($pconfig['name']);?>" />
-						  <?php echo $pconfig['name']; ?>
-						      <p>
-						        <span class="vexpl"><?=gettext("NOTE: This schedule is in use so the name may not be modified!");?></span>
-						      </p>
-				<?php else: ?>
-				  <input name="name" type="text" id="name" size="40" maxlength="40" class="formfld unknown" value="<?=htmlspecialchars($pconfig['name']);?>" /><br />
-				      	<span class="vexpl">
-     					   <?=gettext("The name of the alias may only consist of the characters a-z, A-Z and 0-9");?>
-      					</span>
-      			<?php endif; ?>   					
-				  </td>
-				</tr>
-				<tr>
-					<td width="15%" valign="top" class="vncell"><?=gettext("Description");?></td>
-					<td width="85%" class="vtable"><input name="descr" type="text" id="descr" size="40" maxlength="40" class="formfld unknown" value="<?=htmlspecialchars($pconfig['descr']);?>" /><br />
- 						<span class="vexpl">
-				        	<?=gettext("You may enter a description here for your reference (not parsed).");?>
-				      	</span>
-				  
-					</td>
-				</tr>
-				<!-- tr>
-				</tr -->
-			    <tr>
-				  <td width="15%" valign="top" class="vncellreq"><?=gettext("Month");?></td>
-				  <td width="85%" class="vtable">
-                    <select name="monthsel" class="formselect" id="monthsel" onchange="update_month();">
-                    	<?php 
-                    	$monthcounter = date("n");
-                    	$monthlimit = $monthcounter + 12;
-                    	$yearcounter = date("Y");
-                    	for ($k=0; $k<12; $k++){?>	             
-                    		<option value="<?php echo $monthcounter;?>"><?php echo date("F_y", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?></option>
-                          <?php        	
-                          if ($monthcounter == 12)
-							{
-								$monthcounter = 1;
-								$yearcounter++;
-							}
-							else
-							{
-								$monthcounter++;
-							}	
-						} ?>      	
-                    </select><br /><br />
-            		<?php
-            		$firstmonth = TRUE;
-            		$monthcounter = date("n");
-            		$yearcounter = date("Y");
-            		for ($k=0; $k<12; $k++){
-						$firstdayofmonth = date("w", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));
-						if ($firstdayofmonth == 0)
-							$firstdayofmonth = 7;
-							
-						$daycounter = 1;
-						//number of day in month
-						$numberofdays = date("t", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));
-						$firstdayprinted = FALSE;
-						$lasttr = FALSE;
-						$positioncounter = 1;//7 for Sun, 1 for Mon, 2 for Tues, etc						
-						?>	
-	                        <div id="<?php echo date("F_y",mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?>" style=" position:relative; display:<?php if($firstmonth)echo "block";else echo "none";?>">    	
-		                   	<table border="1" cellspacing="1" cellpadding="1" id="calTable<?=$monthcounter . $yearcounter;?>" class="tabcont" summary="month">
-								<tr><td colspan="7" align="center" class="listbg"><b><?php echo date("F_Y", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?></b></td>
-								</tr>
-								<tr>	
-									<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p1');"><u><b><?=gettext("Mon");?></b></u></td>
-									<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p2');"><u><b><?=gettext("Tue");?></b></u></td>
-									<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p3');"><u><b><?=gettext("Wed");?></b></u></td>
-									<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p4');"><u><b><?=gettext("Thu");?></b></u></td>
-									<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p5');"><u><b><?=gettext("Fri");?></b></u></td>
-									<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p6');"><u><b><?=gettext("Sat");?></b></u></td>
-									<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p7');"><u><b><?=gettext("Sun");?></b></u></td>
-								</tr>
-								<?php			
-								$firstmonth = FALSE;				
-								while ($daycounter<=$numberofdays){
-									$weekcounter =  date("W", mktime(0, 0, 0, date($monthcounter), date($daycounter), date($yearcounter)));
-									$weekcounter = ltrim($weekcounter, "0");
-									if ($positioncounter == 1)
-									{
-										echo "<tr>";
-									}											
-									if ($firstdayofmonth == $positioncounter){?>
-										<td align="center" style="cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
-										<?php echo $daycounter;
-										$daycounter++;
-										$firstdayprinted = TRUE;
-										echo "</td>";
-									}
-									elseif ($firstdayprinted == TRUE && $daycounter <= $numberofdays){?>
-										<td align="center" style="cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
-										<?php echo $daycounter;
-										$daycounter++;
-										echo "</td>";
-									}
-									else
-									{
-										echo "<td align=\"center\" class=\"listr\"></td>";
-									}
-									
-									if ($positioncounter == 7 || $daycounter > $numberofdays){
-										$positioncounter = 1;
-										echo "</tr>";
-									}
-									else{
-										$positioncounter++;
-									}
-								
-								}//end while loop?>	
-							</table>
-							</div>
-					<?php 
-						
-						if ($monthcounter == 12)
-						{
-							$monthcounter = 1;
-							$yearcounter++;
-						}
-						else
-						{
-							$monthcounter++;
-						}					
-					} //end for loop
-					?>
-							<br />
-					<?=gettext("Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday.");?>
-	                 </td>
-				</tr>
-				<tr>
-				  <td width="15%" valign="top" class="vncellreq"><?=gettext("Time");?></td>
-				  <td width="85%" class="vtable">
-				  	<table cellspacing="2" class="tabcont" summary="time">
-				  		<tr>
-				  			<td class="listhdrr" align="center"><?=gettext("Start Time");?></td><td></td><td class="listhdrr" align="center"><?=gettext("Stop Time");?></td>
-				  		</tr>
-				  		<tr>
-				  			<td>
-				  				<select name="starttimehour" class="formselect" id="starttimehour">
-				  					<?php 
-				  						for ($i=0; $i<24; $i++)
-				  						{				  							
-				  							echo "<option value=\"$i\">";
-				  							echo $i;
-				  							echo "</option>";
-				  						}
-				  					?>
-				  				</select>&nbsp;<?=gettext("Hr"); ?>&nbsp;&nbsp;
-				  				<select name="starttimemin" class="formselect" id="starttimemin">
-				  					<option value="00">00</option>
-				  					<option value="15">15</option>
-				  					<option value="30">30</option>
-				  					<option value="45">45</option>
-				  					<option value="59">59</option>
-				  				</select>&nbsp;<?=gettext("Min"); ?>
-				  			</td>
-				  			<td></td>
-				  			<td>
-				  				<select name="stoptimehour" class="formselect" id="stoptimehour">
-				  				<?php 
-				  						for ($i=0; $i<24; $i++)
-				  						{
-				  							if ($i==23)
-				  								$selected = "selected=\"selected\"";
-				  							else
-				  								$selected = "";
-				  								
-				  							echo "<option value=\"$i\" $selected>";
-				  							echo $i;
-				  							echo "</option>";
-				  						}
-				  					?>
-				  				</select>&nbsp;<?=gettext("Hr");?>&nbsp;&nbsp;
-				  				<select name="stoptimemin" class="formselect" id="stoptimemin">
-				  					<option value="00">00</option>
-				  					<option value="15">15</option>
-				  					<option value="30">30</option>
-				  					<option value="45">45</option>
-				  					<option value="59" selected="selected">59</option>
-				  				</select>&nbsp;<?=gettext("Min");?>
-				  			</td>
-				  		</tr>
-				  	</table><br />
-                   <?=gettext("Select the time range for the day(s) selected on the Month(s) above. A full day is 0:00-23:59.")?>
-					</td>
-				</tr>
-				<tr>
-					<td width="15%" valign="top" class="vncell"><?=gettext("Time Range Description")?></td>
-					<td width="85%" class="vtable"><input name="timerangedescr" type="text" class="formfld unknown" id="timerangedescr" size="40" maxlength="40" /><br />
- 						<span class="vexpl">
-				        	<?=gettext("You may enter a description here for your reference (not parsed).")?>
-				      	</span>     
-				      </td>					
-				</tr>
-				<tr>
-				  <td width="22%" valign="top">&nbsp;</td>
-				  <td width="78%">
-				  	<input type="button" value="<?=gettext("Add Time");?>"  class="formbtn"  onclick="javascript:processEntries();" />&nbsp;&nbsp;&nbsp;
-				  	<input type="button" value="<?=gettext("Clear Selection");?>" class="formbtn" onclick="javascript:clearCalendar(); clearTime(); clearDescr();" />
-                    </td>
-				</tr>
-				<tr>
-				  <td width="15%" valign="top" class="vtable"></td>
-				  <td width="85%" class="vtable">
-                    </td>
-				</tr>
-				<tr>
-					<td colspan="2" valign="top" class="listtopic"><?=gettext("Schedule repeat");?></td>
-				</tr>	
-				<tr>
-					<td width="15%" valign="top" class="vncellreq"><?=gettext("Configured Ranges");?></td>
-					<td width="85%">
-						<table id="scheduletable" summary="range">
-							<tbody>
-								<tr>
-									<td align="center" class="listbg" width="35%"><?=gettext("Day(s)");?></td>
-									<td align="center" class="listbg" width="12%"><?=gettext("Start Time");?></td>
-									<td align="center" class="listbg" width="11%"><?=gettext("Stop Time");?></td>
-									<td align="center" class="listbg" width="42%"><?=gettext("Description");?></td>
-								</tr>
-								<?php
-								if ($getSchedule){
-									$counter = 0;
-																		
-									foreach($pconfig['timerange'] as $timerange) {
-										$tempFriendlyTime = "";
-										$tempID = "";
-										if ($timerange){
-											$dayFriendly = "";
-											$tempFriendlyTime = "";
-											$timedescr = $timerange['rangedescr'];			
-												
-											//get hours
-											$temptimerange = $timerange['hour'];
-											$temptimeseparator = strrpos($temptimerange, "-");
-											
-											$starttime = substr ($temptimerange, 0, $temptimeseparator); 
-											$stoptime = substr ($temptimerange, $temptimeseparator+1); 
-											$currentDay = "";
-											$firstDay = "";
-											$nextDay = "";
-											$foundEnd = false;
-											$firstDayFound = false;
-											$firstPrint = false;	
-											$firstprint2 = false;
-											
-											if ($timerange['month']){
-												$tempmontharray = explode(",", $timerange['month']);
-												$tempdayarray = explode(",",$timerange['day']);
-												$arraycounter = 0;
-												foreach ($tempmontharray as $monthtmp){
-													$month = $tempmontharray[$arraycounter];
-													$day = $tempdayarray[$arraycounter];
-													$daypos = date("w", mktime(0, 0, 0, date($month), date($day), date("Y")));
-													//if sunday, set position to 7 to get correct week number. This is due to php limitations on ISO-8601. When we move to php5.1 we can change this.
-													if ($daypos == 0){
-														$daypos = 7;
-													}									
-													$weeknumber = date("W", mktime(0, 0, 0, date($month), date($day), date("Y")));
-													$weeknumber = ltrim($weeknumber, "0");		
-																										
-													if ($firstPrint)
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<div id="inputerrors"></div>
+
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">
+	    				
+	    				 <header class="content-box-head col-xs-12">
+    				        <h3><?=gettext("Schedule information");?></h3>
+    				    </header>
+    				    
+    				    <div class="content-box-main col-xs-12">
+	    					
+	    					<form action="firewall_schedule_edit.php" method="post" name="iform" id="iform">
+		    							                        
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+						               	<tr>
+										  <td width="15%" valign="top" class="vncellreq"><?=gettext("Schedule Name");?></td>
+										  <td width="85%" class="vtable">
+										  <?php if(is_schedule_inuse($pconfig['name']) == true): ?>
+										  			<input name="name" type="hidden" id="name" size="40"  value="<?=htmlspecialchars($pconfig['name']);?>" />
+												  <?php echo $pconfig['name']; ?>
+												      <p>
+												        <span class="vexpl"><?=gettext("NOTE: This schedule is in use so the name may not be modified!");?></span>
+												      </p>
+										<?php else: ?>
+										  <input name="name" type="text" id="name" size="40" maxlength="40" class="form-control unknown" value="<?=htmlspecialchars($pconfig['name']);?>" /><br />
+										      	<span class="vexpl">
+						     					   <?=gettext("The name of the alias may only consist of the characters a-z, A-Z and 0-9");?>
+						      					</span>
+						      			<?php endif; ?>   					
+										  </td>
+										</tr>
+										<tr>
+											<td width="15%" valign="top" class="vncell"><?=gettext("Description");?></td>
+											<td width="85%" class="vtable"><input name="descr" type="text" id="descr" size="40" maxlength="40" class="form-control unknown" value="<?=htmlspecialchars($pconfig['descr']);?>" /><br />
+						 						<span class="vexpl">
+										        	<?=gettext("You may enter a description here for your reference (not parsed).");?>
+										      	</span>
+										  
+											</td>
+										</tr>
+										<!-- tr>
+										</tr -->
+									    <tr>
+										  <td width="15%" valign="top" class="vncellreq"><?=gettext("Month");?></td>
+										  <td width="85%" class="vtable">
+						                    <select name="monthsel" class="form-control" id="monthsel" onchange="update_month();">
+						                    	<?php 
+						                    	$monthcounter = date("n");
+						                    	$monthlimit = $monthcounter + 12;
+						                    	$yearcounter = date("Y");
+						                    	for ($k=0; $k<12; $k++){?>	             
+						                    		<option value="<?php echo $monthcounter;?>"><?php echo date("F_y", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?></option>
+						                          <?php        	
+						                          if ($monthcounter == 12)
 													{
-														$tempID .= ",";
+														$monthcounter = 1;
+														$yearcounter++;
 													}
-													$tempID .= "w" . $weeknumber . "p" . $daypos . "-m" .  $month . "d" . $day;
-													$firstPrint = true;
+													else
+													{
+														$monthcounter++;
+													}	
+												} ?>      	
+						                    </select><br /><br />
+						            		<?php
+						            		$firstmonth = TRUE;
+						            		$monthcounter = date("n");
+						            		$yearcounter = date("Y");
+						            		for ($k=0; $k<12; $k++){
+												$firstdayofmonth = date("w", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));
+												if ($firstdayofmonth == 0)
+													$firstdayofmonth = 7;
 													
-													if (!$firstDayFound)
-													{
-														$firstDay = $day;
-														$firstmonth = $month;
-														$firstDayFound = true;
-													}
-														
-													$currentDay = $day;
-													$nextDay = $tempdayarray[$arraycounter+1];
-													$currentDay++;
-													if (($currentDay != $nextDay) || ($tempmontharray[$arraycounter] != $tempmontharray[$arraycounter+1])){
-														if ($firstprint2)
-															$tempFriendlyTime .= ", ";
-														$currentDay--;
-														if ($currentDay != $firstDay)
-															$tempFriendlyTime .= $monthArray[$firstmonth-1] . " " . $firstDay . " - " . $currentDay ;
-														else
-															$tempFriendlyTime .=  $monthArray[$month-1] . " " . $day;
-														$firstDayFound = false;	
-														$firstprint2 = true;
-													}													
-													$arraycounter++;			
-												}																						
-												
-											}
-											else
-											{
-												$dayFriendly = $timerange['position'];
-												$tempID = $dayFriendly;
-											}											
-											
-											$tempTime = $tempID . "||" . $starttime . "-" . $stoptime . "||" . $timedescr;
-									
-											//following code makes the days friendly appearing, IE instead of Mon, Tues, Wed it will show Mon - Wed
-											$foundEnd = false;
-											$firstDayFound = false;
-											$firstprint = false;
-											$tempFriendlyDayArray = explode(",", $dayFriendly);
-											$currentDay = "";
-											$firstDay = "";
-											$nextDay = "";
-											$i = 0;
-											if (!$timerange['month']){										
-												foreach ($tempFriendlyDayArray as $day){
-													if ($day != ""){
-														if (!$firstDayFound)
-														{
-															$firstDay = $tempFriendlyDayArray[$i];
-															$firstDayFound = true;
-														}
-														$currentDay =$tempFriendlyDayArray[$i];
-														//get next day
-														$nextDay = $tempFriendlyDayArray[$i+1];
-														$currentDay++;					
-														if ($currentDay != $nextDay){
-															if ($firstprint)
-																$tempFriendlyTime .= ", ";
-															$currentDay--;
-															if ($currentDay != $firstDay)
-																$tempFriendlyTime .= $dayArray[$firstDay-1] . " - " . $dayArray[$currentDay-1];
+												$daycounter = 1;
+												//number of day in month
+												$numberofdays = date("t", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));
+												$firstdayprinted = FALSE;
+												$lasttr = FALSE;
+												$positioncounter = 1;//7 for Sun, 1 for Mon, 2 for Tues, etc						
+												?>	
+							                        <div id="<?php echo date("F_y",mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?>" style=" position:relative; display:<?php if($firstmonth)echo "block";else echo "none";?>">    	
+								                   	<table border="1" cellspacing="1" cellpadding="1" id="calTable<?=$monthcounter . $yearcounter;?>" class="tabcont" summary="month">
+														<tr><td colspan="7" align="center" class="listbg"><b><?php echo date("F_Y", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?></b></td>
+														</tr>
+														<tr>	
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p1');"><u><b><?=gettext("Mon");?></b></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p2');"><u><b><?=gettext("Tue");?></b></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p3');"><u><b><?=gettext("Wed");?></b></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p4');"><u><b><?=gettext("Thu");?></b></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p5');"><u><b><?=gettext("Fri");?></b></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p6');"><u><b><?=gettext("Sat");?></b></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p7');"><u><b><?=gettext("Sun");?></b></u></td>
+														</tr>
+														<?php			
+														$firstmonth = FALSE;				
+														while ($daycounter<=$numberofdays){
+															$weekcounter =  date("W", mktime(0, 0, 0, date($monthcounter), date($daycounter), date($yearcounter)));
+															$weekcounter = ltrim($weekcounter, "0");
+															if ($positioncounter == 1)
+															{
+																echo "<tr>";
+															}											
+															if ($firstdayofmonth == $positioncounter){?>
+																<td align="center" style="cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
+																<?php echo $daycounter;
+																$daycounter++;
+																$firstdayprinted = TRUE;
+																echo "</td>";
+															}
+															elseif ($firstdayprinted == TRUE && $daycounter <= $numberofdays){?>
+																<td align="center" style="cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
+																<?php echo $daycounter;
+																$daycounter++;
+																echo "</td>";
+															}
 															else
-																$tempFriendlyTime .= $dayArray[$firstDay-1];
-															$firstDayFound = false;	
-															$firstprint = true;			
-														}
-														$i++;
-													}
-												}		
-											}	
+															{
+																echo "<td align=\"center\" class=\"listr\"></td>";
+															}
+															
+															if ($positioncounter == 7 || $daycounter > $numberofdays){
+																$positioncounter = 1;
+																echo "</tr>";
+															}
+															else{
+																$positioncounter++;
+															}
+														
+														}//end while loop?>	
+													</table>
+													</div>
+											<?php 
 												
-																																													
-									?>
-						          <tr>
-						          	<td>
-						          		<span class="vexpl"><?php echo $tempFriendlyTime; ?></span>
-						          	</td>
-									<td>
-						              <input type='text' readonly='readonly' class='vexpl' name='starttime<?php echo $counter; ?>' id='starttime<?php echo $counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?php echo $starttime; ?>' />
-							        </td>
-						            <td>
-						              <input type='text' readonly='readonly' class='vexpl' name='stoptime<?php echo $counter; ?>' id='stoptime<?php echo $counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?php echo $stoptime; ?>' /> 
-							        </td>
-							        <td>
-							        	<input type='text' readonly='readonly' class='vexpl' name='timedescr<?php echo $counter; ?>' id='timedescr<?php echo $counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?php echo $timedescr; ?>' />
-							        </td>
-							        <td>
-							        	<a onclick='editRow("<?php echo $tempTime; ?>",this); return false;' href='#'><img border='0' src='/themes/<?php echo $g['theme']; ?>/images/icons/icon_e.gif' alt='edit' /></a>
-							        </td>
-							        <td>
-							        	<a onclick='removeRow(this); return false;' href='#'><img border='0' src='/themes/<?php echo $g['theme']; ?>/images/icons/icon_x.gif' alt='remove' /></a>
-							        </td>
-							        <td>
-							        	<input type='hidden' id='schedule<?php echo $counter; ?>' name='schedule<?php echo $counter; ?>' value='<?php echo $tempID; ?>' />
-							        </td>
-						          </tr>
-									<?php
-						        $counter++;
-									}//end if						
-						        } // end foreach	
-								}//end if							
-								?>
-							</tbody>	
-						</table>				
-					</td>
-				</tr>
-			 	<tr>
-				    <td width="15%" valign="top">&nbsp;</td>
-				    <td width="85%">
-				      <input id="submit" name="submit" type="submit" onclick="return checkForRanges();" class="formbtn" value="<?=gettext("Save"); ?>" />
-				      <input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-				      <?php if (isset($id) && $a_schedules[$id]): ?>
-				      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-				      <?php endif; ?>
-				    </td>
-			  	</tr>
-			 </table>
-		
-</td></tr></table></form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+												if ($monthcounter == 12)
+												{
+													$monthcounter = 1;
+													$yearcounter++;
+												}
+												else
+												{
+													$monthcounter++;
+												}					
+											} //end for loop
+											?>
+													<br />
+											<?=gettext("Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday.");?>
+							                 </td>
+										</tr>
+										<tr>
+										  <td width="15%" valign="top" class="vncellreq"><?=gettext("Time");?></td>
+										  <td width="85%" class="vtable">
+										  	<table cellspacing="2" class="tabcont" summary="time">
+										  		<tr>
+										  			<td class="listhdrr" align="center"><?=gettext("Start Time");?></td><td></td><td class="listhdrr" align="center"><?=gettext("Stop Time");?></td>
+										  		</tr>
+										  		<tr>
+										  			<td>
+										  				<select name="starttimehour" class="form-control" id="starttimehour">
+										  					<?php 
+										  						for ($i=0; $i<24; $i++)
+										  						{				  							
+										  							echo "<option value=\"$i\">";
+										  							echo $i;
+										  							echo "</option>";
+										  						}
+										  					?>
+										  				</select>&nbsp;<?=gettext("Hr"); ?>&nbsp;&nbsp;
+										  				<select name="starttimemin" class="form-control" id="starttimemin">
+										  					<option value="00">00</option>
+										  					<option value="15">15</option>
+										  					<option value="30">30</option>
+										  					<option value="45">45</option>
+										  					<option value="59">59</option>
+										  				</select>&nbsp;<?=gettext("Min"); ?>
+										  			</td>
+										  			<td></td>
+										  			<td>
+										  				<select name="stoptimehour" class="form-control" id="stoptimehour">
+										  				<?php 
+										  						for ($i=0; $i<24; $i++)
+										  						{
+										  							if ($i==23)
+										  								$selected = "selected=\"selected\"";
+										  							else
+										  								$selected = "";
+										  								
+										  							echo "<option value=\"$i\" $selected>";
+										  							echo $i;
+										  							echo "</option>";
+										  						}
+										  					?>
+										  				</select>&nbsp;<?=gettext("Hr");?>&nbsp;&nbsp;
+										  				<select name="stoptimemin" class="form-control" id="stoptimemin">
+										  					<option value="00">00</option>
+										  					<option value="15">15</option>
+										  					<option value="30">30</option>
+										  					<option value="45">45</option>
+										  					<option value="59" selected="selected">59</option>
+										  				</select>&nbsp;<?=gettext("Min");?>
+										  			</td>
+										  		</tr>
+										  	</table><br />
+						                   <?=gettext("Select the time range for the day(s) selected on the Month(s) above. A full day is 0:00-23:59.")?>
+											</td>
+										</tr>
+										<tr>
+											<td width="15%" valign="top" class="vncell"><?=gettext("Time Range Description")?></td>
+											<td width="85%" class="vtable"><input name="timerangedescr" type="text" class="form-control unknown" id="timerangedescr" size="40" maxlength="40" /><br />
+						 						<span class="vexpl">
+										        	<?=gettext("You may enter a description here for your reference (not parsed).")?>
+										      	</span>     
+										      </td>					
+										</tr>
+										<tr>
+										  <td width="22%" valign="top">&nbsp;</td>
+										  <td width="78%">
+										  	<input type="button" value="<?=gettext("Add Time");?>"  class="btn btn-default"  onclick="javascript:processEntries();" />&nbsp;&nbsp;&nbsp;
+										  	<input type="button" value="<?=gettext("Clear Selection");?>" class="btn btn-default" onclick="javascript:clearCalendar(); clearTime(); clearDescr();" />
+						                    </td>
+										</tr>
+										<tr>
+										  <td width="15%" valign="top" class="vtable"></td>
+										  <td width="85%" class="vtable">
+						                    </td>
+										</tr>
+										<tr>
+											<td colspan="2" valign="top" class="listtopic"><?=gettext("Schedule repeat");?></td>
+										</tr>	
+										<tr>
+											<td width="15%" valign="top" class="vncellreq"><?=gettext("Configured Ranges");?></td>
+											<td width="85%">
+												<table id="scheduletable" summary="range">
+													<tbody>
+														<tr>
+															<td align="center" class="listbg" width="35%"><?=gettext("Day(s)");?></td>
+															<td align="center" class="listbg" width="12%"><?=gettext("Start Time");?></td>
+															<td align="center" class="listbg" width="11%"><?=gettext("Stop Time");?></td>
+															<td align="center" class="listbg" width="42%"><?=gettext("Description");?></td>
+														</tr>
+														<?php
+														if ($getSchedule){
+															$counter = 0;
+																								
+															foreach($pconfig['timerange'] as $timerange) {
+																$tempFriendlyTime = "";
+																$tempID = "";
+																if ($timerange){
+																	$dayFriendly = "";
+																	$tempFriendlyTime = "";
+																	$timedescr = $timerange['rangedescr'];			
+																		
+																	//get hours
+																	$temptimerange = $timerange['hour'];
+																	$temptimeseparator = strrpos($temptimerange, "-");
+																	
+																	$starttime = substr ($temptimerange, 0, $temptimeseparator); 
+																	$stoptime = substr ($temptimerange, $temptimeseparator+1); 
+																	$currentDay = "";
+																	$firstDay = "";
+																	$nextDay = "";
+																	$foundEnd = false;
+																	$firstDayFound = false;
+																	$firstPrint = false;	
+																	$firstprint2 = false;
+																	
+																	if ($timerange['month']){
+																		$tempmontharray = explode(",", $timerange['month']);
+																		$tempdayarray = explode(",",$timerange['day']);
+																		$arraycounter = 0;
+																		foreach ($tempmontharray as $monthtmp){
+																			$month = $tempmontharray[$arraycounter];
+																			$day = $tempdayarray[$arraycounter];
+																			$daypos = date("w", mktime(0, 0, 0, date($month), date($day), date("Y")));
+																			//if sunday, set position to 7 to get correct week number. This is due to php limitations on ISO-8601. When we move to php5.1 we can change this.
+																			if ($daypos == 0){
+																				$daypos = 7;
+																			}									
+																			$weeknumber = date("W", mktime(0, 0, 0, date($month), date($day), date("Y")));
+																			$weeknumber = ltrim($weeknumber, "0");		
+																																
+																			if ($firstPrint)
+																			{
+																				$tempID .= ",";
+																			}
+																			$tempID .= "w" . $weeknumber . "p" . $daypos . "-m" .  $month . "d" . $day;
+																			$firstPrint = true;
+																			
+																			if (!$firstDayFound)
+																			{
+																				$firstDay = $day;
+																				$firstmonth = $month;
+																				$firstDayFound = true;
+																			}
+																				
+																			$currentDay = $day;
+																			$nextDay = $tempdayarray[$arraycounter+1];
+																			$currentDay++;
+																			if (($currentDay != $nextDay) || ($tempmontharray[$arraycounter] != $tempmontharray[$arraycounter+1])){
+																				if ($firstprint2)
+																					$tempFriendlyTime .= ", ";
+																				$currentDay--;
+																				if ($currentDay != $firstDay)
+																					$tempFriendlyTime .= $monthArray[$firstmonth-1] . " " . $firstDay . " - " . $currentDay ;
+																				else
+																					$tempFriendlyTime .=  $monthArray[$month-1] . " " . $day;
+																				$firstDayFound = false;	
+																				$firstprint2 = true;
+																			}													
+																			$arraycounter++;			
+																		}																						
+																		
+																	}
+																	else
+																	{
+																		$dayFriendly = $timerange['position'];
+																		$tempID = $dayFriendly;
+																	}											
+																	
+																	$tempTime = $tempID . "||" . $starttime . "-" . $stoptime . "||" . $timedescr;
+															
+																	//following code makes the days friendly appearing, IE instead of Mon, Tues, Wed it will show Mon - Wed
+																	$foundEnd = false;
+																	$firstDayFound = false;
+																	$firstprint = false;
+																	$tempFriendlyDayArray = explode(",", $dayFriendly);
+																	$currentDay = "";
+																	$firstDay = "";
+																	$nextDay = "";
+																	$i = 0;
+																	if (!$timerange['month']){										
+																		foreach ($tempFriendlyDayArray as $day){
+																			if ($day != ""){
+																				if (!$firstDayFound)
+																				{
+																					$firstDay = $tempFriendlyDayArray[$i];
+																					$firstDayFound = true;
+																				}
+																				$currentDay =$tempFriendlyDayArray[$i];
+																				//get next day
+																				$nextDay = $tempFriendlyDayArray[$i+1];
+																				$currentDay++;					
+																				if ($currentDay != $nextDay){
+																					if ($firstprint)
+																						$tempFriendlyTime .= ", ";
+																					$currentDay--;
+																					if ($currentDay != $firstDay)
+																						$tempFriendlyTime .= $dayArray[$firstDay-1] . " - " . $dayArray[$currentDay-1];
+																					else
+																						$tempFriendlyTime .= $dayArray[$firstDay-1];
+																					$firstDayFound = false;	
+																					$firstprint = true;			
+																				}
+																				$i++;
+																			}
+																		}		
+																	}	
+																		
+																																																			
+															?>
+												          <tr>
+												          	<td>
+												          		<span class="vexpl"><?php echo $tempFriendlyTime; ?></span>
+												          	</td>
+															<td>
+												              <input type='text' readonly='readonly' class='vexpl' name='starttime<?php echo $counter; ?>' id='starttime<?php echo $counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?php echo $starttime; ?>' />
+													        </td>
+												            <td>
+												              <input type='text' readonly='readonly' class='vexpl' name='stoptime<?php echo $counter; ?>' id='stoptime<?php echo $counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?php echo $stoptime; ?>' /> 
+													        </td>
+													        <td>
+													        	<input type='text' readonly='readonly' class='vexpl' name='timedescr<?php echo $counter; ?>' id='timedescr<?php echo $counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?php echo $timedescr; ?>' />
+													        </td>
+													        													        
+													        <td>
+													        	<a onclick='editRow("<?php echo $tempTime; ?>",this); return false;' href='#' class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a>
+													        </td>
+													        <td>
+													        	<a onclick='removeRow(this); return false;' href='#' class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></a>
+													        </td>
+													        <td>
+													        	<input type='hidden' id='schedule<?php echo $counter; ?>' name='schedule<?php echo $counter; ?>' value='<?php echo $tempID; ?>' />
+													        </td>
+												          </tr>
+															<?php
+												        $counter++;
+															}//end if						
+												        } // end foreach	
+														}//end if							
+														?>
+													</tbody>	
+												</table>				
+											</td>
+										</tr>
+									 	<tr>
+										    <td width="15%" valign="top">&nbsp;</td>
+										    <td width="85%">
+										      <input id="submit" name="submit" type="submit" onclick="return checkForRanges();" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+										      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+										      <?php if (isset($id) && $a_schedules[$id]): ?>
+										      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+										      <?php endif; ?>
+										    </td>
+									  	</tr>
+									  </table>
+									  </div>
+									 </form>
+									 </div>
+									 </div>
+									 </section>
+									 </div>
+									 </div>
+									 </section>
+<?php include("foot.inc"); ?>

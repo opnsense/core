@@ -38,11 +38,19 @@
 require("guiconfig.inc");
 include("head.inc");
 
+$pgtitle = gettext("License");
+
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-<p class="pgtitle"><?=gettext("License");?></p>
+	
+	
+<section class="page-content-main">
+	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+		<div class="row">
+		    <section class="col-xs-12">
+			
 
             <p><strong><?=$g['product_name'];?> <?=gettext("is Copyright");?> &copy; <?=$g['product_copyright_years'];?> <?=gettext("by");?> <?=$g['product_copyright'];?><br />
               <?=gettext("All rights reserved");?>.</strong></p>
@@ -140,6 +148,10 @@ include("head.inc");
 			  <br />
 			  <?=gettext("OpenVPN"); ?> (<a href="http://openvpn.net/" target="_blank">http://openvpn.net/</a>)
 			  <?=gettext("Copyright (C) 2002-2005 OpenVPN Solutions LLC ");?>
-			  <?php include("fend.inc"); ?>
-</body>
-</html>
+             
+            </p>
+		    </section>
+		</div>
+	</div>
+</section>
+			  <?php include("foot.inc"); ?>

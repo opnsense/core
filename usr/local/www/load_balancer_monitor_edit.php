@@ -200,170 +200,188 @@ $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => get
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+<body>
 <?php include("fbegin.inc"); ?>
-<script type="text/javascript">
-//<![CDATA[
-function updateType(t){
-	switch(t) {
-<?php
-	/* OK, so this is sick using php to generate javascript, but it needed to be done */
-	foreach ($types as $key => $val) {
-		echo "		case \"{$key}\": {\n";
-		$t = $types;
-		foreach ($t as $k => $v) {
-			if ($k != $key) {
-				echo "			jQuery('#{$k}').hide();\n";
+	
+	<script type="text/javascript">
+	//<![CDATA[
+	function updateType(t){
+		switch(t) {
+	<?php
+		/* OK, so this is sick using php to generate javascript, but it needed to be done */
+		foreach ($types as $key => $val) {
+			echo "		case \"{$key}\": {\n";
+			$t = $types;
+			foreach ($t as $k => $v) {
+				if ($k != $key) {
+					echo "			jQuery('#{$k}').hide();\n";
+				}
 			}
+			echo "		}\n";
 		}
-		echo "		}\n";
+	?>
+		}
+		jQuery('#' + t).show();
 	}
-?>
-	}
-	jQuery('#' + t).show();
-}
-//]]>
-</script>
+	//]]>
+	</script>
 
-<?php if ($input_errors) print_input_errors($input_errors); ?>
+	<section class="page-content-main">
 
-	<form action="load_balancer_monitor_edit.php" method="post" name="iform" id="iform">
-	<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="monitor entry">
- 		<tr>
-			<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Monitor entry"); ?></td>
-                </tr>
-		<tr align="left">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"" . htmlspecialchars($pconfig['name']) . "\"";?> size="16" maxlength="16" />
-			</td>
-		</tr>
-		<tr align="left">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"" . htmlspecialchars($pconfig['descr']) . "\"";?> size="64" />
-			</td>
-		</tr>
-		<tr align="left">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Type"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<select id="type" name="type">
-<?
-					foreach ($types as $key => $val) {
-						if(isset($pconfig['type']) && $pconfig['type'] == $key) {
-							$selected = " selected=\"selected\"";
-						} else {
-							$selected = "";
-						}
-						echo "<option value=\"{$key}\" onclick=\"updateType('{$key}');\"{$selected}>{$val}</option>\n";
-					}
-?>
-				</select>
-			</td>
-		</tr>
-		<tr align="left" id="icmp"<?= $pconfig['type'] == "icmp" ? "" : " style=\"display:none;\""?>><td></td>
-		</tr>
-		<tr align="left" id="tcp"<?= $pconfig['type'] == "tcp" ? "" : " style=\"display:none;\""?>><td></td>
-		</tr>
-		<tr align="left" id="http"<?= $pconfig['type'] == "http" ? "" : " style=\"display:none;\""?>>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("HTTP"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="http">
-					<tr align="left">
-						<td valign="top" align="right" class="vtable"><?=gettext("Path"); ?></td>
-						<td class="vtable" colspan="2">
-							<input name="http_options_path" type="text" <?if(isset($pconfig['options']['path'])) echo "value=\"" . htmlspecialchars($pconfig['options']['path']) . "\"";?> size="64" />
-						</td>
-					</tr>
-					<tr align="left">
-						<td valign="top"  align="right" class="vtable"><?=gettext("Host"); ?></td>
-						<td class="vtable" colspan="2">
-							<input name="http_options_host" type="text" <?if(isset($pconfig['options']['host'])) echo "value=\"" . htmlspecialchars($pconfig['options']['host']) . "\"";?> size="64" /><br /><?=gettext("Hostname for Host: header if needed."); ?>
-						</td>
-					</tr>
-					<tr align="left">
-						<td valign="top"  align="right" class="vtable"><?=gettext("HTTP Code"); ?></td>
-						<td class="vtable" colspan="2">
-							<?= print_rfc2616_select("http_options_code", $pconfig['options']['code']); ?>
-						</td>
-					</tr>
-<!-- BILLM: XXX not supported digest checking just yet
-					<tr align="left">
-						<td width="22%" valign="top" class="vncell">MD5 Page Digest</td>
-						<td width="78%" class="vtable" colspan="2">
-							<input name="digest" type="text" <?if(isset($pconfig['digest'])) echo "value=\"" . htmlspecialchars($pconfig['digest']) . "\"";?>size="32"><br /><b>TODO: add fetch functionality here</b>
-						</td>
-					</tr>
--->
-				</table>
-			</td>
-		</tr>
-		<tr align="left" id="https"<?= $pconfig['type'] == "https" ? "" : " style=\"display:none;\""?>>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("HTTPS"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="https">
-					<tr align="left">
-						<td valign="top"  align="right" class="vtable"><?=gettext("Path"); ?></td>
-						<td class="vtable" colspan="2">
-							<input name="https_options_path" type="text" <?if(isset($pconfig['options']['path'])) echo "value=\"" . htmlspecialchars($pconfig['options']['path']) ."\"";?> size="64" />
-						</td>
-					</tr>
-					<tr align="left">
-						<td valign="top"  align="right" class="vtable"><?=gettext("Host"); ?></td>
-						<td class="vtable" colspan="2">
-							<input name="https_options_host" type="text" <?if(isset($pconfig['options']['host'])) echo "value=\"" . htmlspecialchars($pconfig['options']['host']) . "\"";?> size="64" /><br /><?=gettext("Hostname for Host: header if needed."); ?>
-						</td>
-					</tr>
-					<tr align="left">
-						<td valign="top"  align="right" class="vtable"><?=gettext("HTTP Code"); ?></td>
-						<td class="vtable" colspan="2">
-							<?= print_rfc2616_select("https_options_code", $pconfig['options']['code']); ?>
-						</td>
-					</tr>
-<!-- BILLM: XXX not supported digest checking just yet
-
-					<tr align="left">
-						<td width="22%" valign="top" class="vncellreq">MD5 Page Digest</td>
-						<td width="78%" class="vtable" colspan="2">
-							<input name="digest" type="text" <?if(isset($pconfig['digest'])) echo "value=\"" . htmlspecialchars($pconfig['digest']) . "\"";?>size="32"><br /><b>TODO: add fetch functionality here</b>
-						</td>
-					</tr>
--->
-				</table>
-			</td>
-		</tr>
-		<tr align="left" id="send"<?= $pconfig['type'] == "send" ? "" : " style=\"display:none;\""?>>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Send/Expect"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="send expect">
-					<tr align="left">
-						<td valign="top"  align="right" class="vtable"><?=gettext("Send string"); ?></td>
-						<td class="vtable" colspan="2">
-							<input name="send_options_send" type="text" <?if(isset($pconfig['options']['send'])) echo "value=\"" . htmlspecialchars($pconfig['options']['send']) . "\"";?> size="64" />
-						</td>
-					</tr>
-					<tr align="left">
-						<td valign="top" align="right"  class="vtable"><?=gettext("Expect string"); ?></td>
-						<td class="vtable" colspan="2">
-							<input name="send_options_expect" type="text" <?if(isset($pconfig['options']['expect'])) echo "value=\"" . htmlspecialchars($pconfig['options']['expect']) . "\"";?> size="64" />
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr align="left">
-			<td width="22%" valign="top">&nbsp;</td>
-			<td width="78%">
-				<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" />
-i				<input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-				<?php if (isset($id) && $a_monitor[$id]): ?>
-				<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-				<?php endif; ?>
-			</td>
-		</tr>
-	</table>
-	</form>
-<br />
-<?php include("fend.inc"); ?>
-</body>
-</html>
+		<div class="container-fluid">
+	
+			<div class="row">	
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+                        <form action="load_balancer_monitor_edit.php" method="post" name="iform" id="iform">								
+                        	
+                        	<div class="table-responsive">
+	                        	<table class="table table-striped table-sort">
+		                        	<tr>
+										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Monitor entry"); ?></td>
+							                </tr>
+									<tr align="left">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"" . htmlspecialchars($pconfig['name']) . "\"";?> size="16" maxlength="16" />
+										</td>
+									</tr>
+									<tr align="left">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"" . htmlspecialchars($pconfig['descr']) . "\"";?> size="64" />
+										</td>
+									</tr>
+									<tr align="left">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Type"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<select id="type" name="type">
+							<?
+												foreach ($types as $key => $val) {
+													if(isset($pconfig['type']) && $pconfig['type'] == $key) {
+														$selected = " selected=\"selected\"";
+													} else {
+														$selected = "";
+													}
+													echo "<option value=\"{$key}\" onclick=\"updateType('{$key}');\"{$selected}>{$val}</option>\n";
+												}
+							?>
+											</select>
+										</td>
+									</tr>
+									<tr align="left" id="icmp"<?= $pconfig['type'] == "icmp" ? "" : " style=\"display:none;\""?>><td></td>
+									</tr>
+									<tr align="left" id="tcp"<?= $pconfig['type'] == "tcp" ? "" : " style=\"display:none;\""?>><td></td>
+									</tr>
+									<tr align="left" id="http"<?= $pconfig['type'] == "http" ? "" : " style=\"display:none;\""?>>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("HTTP"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="http">
+												<tr align="left">
+													<td valign="top" align="right" class="vtable"><?=gettext("Path"); ?></td>
+													<td class="vtable" colspan="2">
+														<input name="http_options_path" type="text" <?if(isset($pconfig['options']['path'])) echo "value=\"" . htmlspecialchars($pconfig['options']['path']) . "\"";?> size="64" />
+													</td>
+												</tr>
+												<tr align="left">
+													<td valign="top"  align="right" class="vtable"><?=gettext("Host"); ?></td>
+													<td class="vtable" colspan="2">
+														<input name="http_options_host" type="text" <?if(isset($pconfig['options']['host'])) echo "value=\"" . htmlspecialchars($pconfig['options']['host']) . "\"";?> size="64" /><br /><?=gettext("Hostname for Host: header if needed."); ?>
+													</td>
+												</tr>
+												<tr align="left">
+													<td valign="top"  align="right" class="vtable"><?=gettext("HTTP Code"); ?></td>
+													<td class="vtable" colspan="2">
+														<?= print_rfc2616_select("http_options_code", $pconfig['options']['code']); ?>
+													</td>
+												</tr>
+							<!-- BILLM: XXX not supported digest checking just yet
+												<tr align="left">
+													<td width="22%" valign="top" class="vncell">MD5 Page Digest</td>
+													<td width="78%" class="vtable" colspan="2">
+														<input name="digest" type="text" <?if(isset($pconfig['digest'])) echo "value=\"" . htmlspecialchars($pconfig['digest']) . "\"";?>size="32"><br /><b>TODO: add fetch functionality here</b>
+													</td>
+												</tr>
+							-->
+											</table>
+										</td>
+									</tr>
+									<tr align="left" id="https"<?= $pconfig['type'] == "https" ? "" : " style=\"display:none;\""?>>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("HTTPS"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="https">
+												<tr align="left">
+													<td valign="top"  align="right" class="vtable"><?=gettext("Path"); ?></td>
+													<td class="vtable" colspan="2">
+														<input name="https_options_path" type="text" <?if(isset($pconfig['options']['path'])) echo "value=\"" . htmlspecialchars($pconfig['options']['path']) ."\"";?> size="64" />
+													</td>
+												</tr>
+												<tr align="left">
+													<td valign="top"  align="right" class="vtable"><?=gettext("Host"); ?></td>
+													<td class="vtable" colspan="2">
+														<input name="https_options_host" type="text" <?if(isset($pconfig['options']['host'])) echo "value=\"" . htmlspecialchars($pconfig['options']['host']) . "\"";?> size="64" /><br /><?=gettext("Hostname for Host: header if needed."); ?>
+													</td>
+												</tr>
+												<tr align="left">
+													<td valign="top"  align="right" class="vtable"><?=gettext("HTTP Code"); ?></td>
+													<td class="vtable" colspan="2">
+														<?= print_rfc2616_select("https_options_code", $pconfig['options']['code']); ?>
+													</td>
+												</tr>
+							<!-- BILLM: XXX not supported digest checking just yet
+							
+												<tr align="left">
+													<td width="22%" valign="top" class="vncellreq">MD5 Page Digest</td>
+													<td width="78%" class="vtable" colspan="2">
+														<input name="digest" type="text" <?if(isset($pconfig['digest'])) echo "value=\"" . htmlspecialchars($pconfig['digest']) . "\"";?>size="32"><br /><b>TODO: add fetch functionality here</b>
+													</td>
+												</tr>
+							-->
+											</table>
+										</td>
+									</tr>
+									<tr align="left" id="send"<?= $pconfig['type'] == "send" ? "" : " style=\"display:none;\""?>>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Send/Expect"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="send expect">
+												<tr align="left">
+													<td valign="top"  align="right" class="vtable"><?=gettext("Send string"); ?></td>
+													<td class="vtable" colspan="2">
+														<input name="send_options_send" type="text" <?if(isset($pconfig['options']['send'])) echo "value=\"" . htmlspecialchars($pconfig['options']['send']) . "\"";?> size="64" />
+													</td>
+												</tr>
+												<tr align="left">
+													<td valign="top" align="right"  class="vtable"><?=gettext("Expect string"); ?></td>
+													<td class="vtable" colspan="2">
+														<input name="send_options_expect" type="text" <?if(isset($pconfig['options']['expect'])) echo "value=\"" . htmlspecialchars($pconfig['options']['expect']) . "\"";?> size="64" />
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr align="left">
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+							<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+											<?php if (isset($id) && $a_monitor[$id]): ?>
+											<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+											<?php endif; ?>
+										</td>
+									</tr>
+								</table>
+                        	</div>
+                        </form>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

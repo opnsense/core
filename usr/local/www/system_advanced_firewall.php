@@ -248,7 +248,7 @@ include("head.inc");
     descs[3]="<?=gettext("tries to avoid dropping any legitimate idle connections at the expense of increased memory usage and CPU utilization.");?>";
     
     function update_description(itemnum) {
-    	document.forms[0].info.value=descs[itemnum];
+    	document.iform.info.value=descs[itemnum];
     
     }
     //]]>
@@ -317,7 +317,7 @@ include("head.inc");
                 							<textarea readonly="readonly" cols="60" rows="2" id="info" name="info" style="padding:5px; border:1px dashed #990000; background-color: #ffffff; color: #000000; font-size: 8pt;"></textarea>
                 							<script type="text/javascript">
                 							//<![CDATA[
-                								update_description(document.forms[0].optimization.selectedIndex);
+                								update_description(document.iform.optimization.selectedIndex);
                 							//]]>
                 							</script>
                 							<br />

@@ -90,10 +90,7 @@ if ($_POST) {
 include("head.inc");
 ?>
 
-<body link="#000000" vlink="#000000" alink="#000000" onload="<?= $jsevents["body"]["onload"] ?>">
-<?php include("fbegin.inc");?>
-<?php if ($input_errors) print_input_errors($input_errors);?>
-<?php if ($savemsg) print_info_box($savemsg);?>
+<body onload="<?= $jsevents["body"]["onload"] ?>">
 
 <?php
 	if($save_and_test) {
@@ -107,70 +104,82 @@ include("head.inc");
 	}
 ?>
 
-	<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="user manager settings">
-		<tr>
-			<td class="tabnavtbl">
-<?php
-				$tab_array = array();
-				$tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
-				$tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
-				$tab_array[] = array(gettext("Settings"), true, "system_usermanager_settings.php");
-				$tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
-				display_top_tabs($tab_array);
+<?php include("fbegin.inc");?>
 
-				/* Default to pfsense backend type if none is defined */
-				if(!$pconfig['backend'])
-					$pconfig['backend'] = "pfsense";
-?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div id="mainarea">
-					<form id="iform" name="iform" action="system_usermanager_settings.php" method="post">
-						<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="6" summary="main area">
-							<tr>
-								<td width="22%" valign="top" class="vncell"><?=gettext("Session Timeout"); ?></td>
-								<td width="78%" class="vtable">
-									<input name="session_timeout" id="session_timeout" type="text" size="8" value="<?=htmlspecialchars($pconfig['session_timeout']);?>" />
-									<br />
-									<?=gettext("Time in minutes to expire idle management sessions. The default is 4 hours (240 minutes).");?><br />
-									<?=gettext("Enter 0 to never expire sessions. NOTE: This is a security risk!");?><br />
-								</td>
-							</tr>
-							<tr>
-								<td width="22%" valign="top" class="vncell"><?=gettext("Authentication Server"); ?></td>
-								<td width="78%" class="vtable">
-									<select name='authmode' id='authmode' class="formselect" >
-<?php
-									$auth_servers = auth_get_authserver_list();
-									foreach ($auth_servers as $auth_server):
-										$selected = "";
-										if ($auth_server['name'] == $pconfig['authmode'])
-											$selected = "selected=\"selected\"";
-										if (!isset($pconfig['authmode']) && $auth_server['name'] == "Local Database")
-											$selected = "selected=\"selected\"";
-?>
-										<option value="<?=$auth_server['name'];?>" <?=$selected;?>><?=$auth_server['name'];?></option>
-<?php
-									endforeach;
-?>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td width="22%" valign="top">&nbsp;</td>
-								<td width="78%">
-									<input id="save" name="save" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-									<input id="savetest" name="savetest" type="submit" class="formbtn" value="<?=gettext("Save and Test");?>" />
-								</td>
-							</tr>
-						</table>
-					</form>
-				</div>
-			</td>
-		</tr>
-	</table>
-<?php include("fend.inc");?>
-</body>
-</html>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors);?>
+				<?php if ($savemsg) print_info_box($savemsg);?>
+				
+			    <section class="col-xs-12">
+    				
+    					
+    					<?php
+							$tab_array = array();
+							$tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
+							$tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
+							$tab_array[] = array(gettext("Settings"), true, "system_usermanager_settings.php");
+							$tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
+							display_top_tabs($tab_array);
+			
+							/* Default to pfsense backend type if none is defined */
+							if(!$pconfig['backend'])
+								$pconfig['backend'] = "pfsense";
+						?>
+					
+						<div class="tab-content content-box col-xs-12">	
+	    					
+	    				    <div class="container-fluid">	
+
+								<form id="iform" name="iform" action="system_usermanager_settings.php" method="post">	
+									<div class="table-responsive">
+							        	<table class="table table-striped table-sort">
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Session Timeout"); ?></td>
+												<td width="78%" class="vtable">
+													<input class="form-control" name="session_timeout" id="session_timeout" type="text" size="8" value="<?=htmlspecialchars($pconfig['session_timeout']);?>" />
+													<br />
+													<?=gettext("Time in minutes to expire idle management sessions. The default is 4 hours (240 minutes).");?><br />
+													<?=gettext("Enter 0 to never expire sessions. NOTE: This is a security risk!");?><br />
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Authentication Server"); ?></td>
+												<td width="78%" class="vtable">
+													<select name='authmode' id='authmode' class="form-control" >
+				<?php
+													$auth_servers = auth_get_authserver_list();
+													foreach ($auth_servers as $auth_server):
+														$selected = "";
+														if ($auth_server['name'] == $pconfig['authmode'])
+															$selected = "selected=\"selected\"";
+														if (!isset($pconfig['authmode']) && $auth_server['name'] == "Local Database")
+															$selected = "selected=\"selected\"";
+				?>
+														<option value="<?=$auth_server['name'];?>" <?=$selected;?>><?=$auth_server['name'];?></option>
+				<?php
+													endforeach;
+				?>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top">&nbsp;</td>
+												<td width="78%">
+													<input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+													<input id="savetest" name="savetest" type="submit" class="btn btn-default" value="<?=gettext("Save and Test");?>" />
+												</td>
+											</tr>
+										</table>
+									</div>
+								</form>
+	    				    </div>
+						</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+<?php include("foot.inc");?>

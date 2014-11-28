@@ -574,26 +574,13 @@ include("head.inc");
     					?>
     					<tr>
     						<td class="listlr" colspan="4">
-    							<table border="0" cellpadding="0" cellspacing="0" summary="icon">
-    								<tr>
-    									<td align="left" valign="middle">
-    										<img src="<?=$caimg;?>" alt="CA" title="CA" border="0" height="16" width="16" />
-    									</td>
-    									<td align="left" valign="middle">
-    										<?=$name;?>
-    									</td>
-    								</tr>
-    							</table>
+    							<?=$name;?>
     						</td>
     						<td class="list">
     						<?php if ($cainternal == "YES"): ?>
-    							<a href="system_crlmanager.php?act=new&amp;caref=<?php echo $ca['refid']; ?>">
-    								<img src="/themes/<?= $g['theme'];?>/images/icons/icon_plus.gif" title="<?php printf(gettext("Add or Import CRL for %s"),$ca['descr']);?>" alt="<?=gettext("add crl");?>" width="17" height="17" border="0" />
-    							</a>
+    							<a href="system_crlmanager.php?act=new&amp;caref=<?php echo $ca['refid']; ?>" title="<?php printf(gettext("Add or Import CRL for %s"),$ca['descr']);?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
     						<?php else: ?>
-    							<a href="system_crlmanager.php?act=new&amp;caref=<?php echo $ca['refid']; ?>&amp;importonly=yes">
-    								<img src="/themes/<?= $g['theme'];?>/images/icons/icon_plus.gif" title="<?php printf(gettext("Import CRL for %s"),$ca['descr']);?>" alt="<?=gettext("add crl");?>" width="17" height="17" border="0" />
-    							</a>
+    							<a href="system_crlmanager.php?act=new&amp;caref=<?php echo $ca['refid']; ?>&amp;importonly=yes" title="<?php printf(gettext("Import CRL for %s"),$ca['descr']);?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
     						<?php endif; ?>
     						</td>
     					</tr>

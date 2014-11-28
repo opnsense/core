@@ -82,60 +82,67 @@ include("head.inc");
 
 ?>
 
-<body link="#000000" vlink="#000000" alink="#000000" onload="<?= $jsevents["body"]["onload"] ?>">
-<?php
-include("fbegin.inc");
+<body onload="<?= $jsevents["body"]["onload"] ?>">
+<?php include("fbegin.inc"); ?>
 
-if ($input_errors)
-	print_input_errors($input_errors);
-if ($savemsg)
-	print_info_box($savemsg);
+	<section class="page-content-main">
 
-if ($islocal == false) {
-	echo gettext("Sorry, you cannot change the password for a non-local user.");
-	include("fend.inc");
-	exit;
-}
-
-?>
-
-<div id="mainarea">
-        <div class="tabcont">
-                <form action="system_usermanager_passwordmg.php" method="post" name="iform" id="iform">
-                        <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-                                <tr>
-<?php if (!session_id())
-		session_start();
-?>
-                                        <td colspan="2" valign="top" class="listtopic"><?=$_SESSION['Username']?>'s <?=gettext("Password"); ?></td>
-<?php session_commit(); ?>
-                                </tr>
-                                <tr>
-                                        <td width="22%" valign="top" class="vncell" rowspan="2"><?=gettext("Password"); ?></td>
-                                        <td width="78%" class="vtable">
-                                                <input name="passwordfld1" type="password" class="formfld pwd" id="passwordfld1" size="20" />
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td width="78%" class="vtable">
-                                                <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" />
-                                                &nbsp;<?=gettext("(confirmation)");?>
-                                                <br />
-                                                <span class="vexpl">
-                                                        <?=gettext("Select a new password");?>
-                                                </span>
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td width="22%" valign="top">&nbsp;</td>
-                                        <td width="78%">
-                                                <input name="save" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-                                        </td>
-                                </tr>
-                        </table>
-                </form>
-        </div>
-</div>
-<?php include("fend.inc");?>
-</body>
-</html>
+		<div class="container-fluid">
+	
+			<div class="row">	
+				<?
+				
+				if ($input_errors)
+					print_input_errors($input_errors);
+				if ($savemsg)
+					print_info_box($savemsg);
+				
+				if ($islocal == false) {
+					echo gettext("Sorry, you cannot change the password for a non-local user.");
+					include("fend.inc");
+					exit;
+				}
+				
+				?>
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+		                        <form action="system_usermanager_passwordmg.php" method="post" name="iform" id="iform">								
+		                        	
+		                        	<div class="table-responsive">
+			                        	<table class="table table-striped table-sort">
+			                                <tr>
+			<?php if (!session_id())
+					session_start();
+			?>
+			                                        <td colspan="2" valign="top" class="listtopic"><?=$_SESSION['Username']?>'s <?=gettext("Password"); ?></td>
+			<?php session_commit(); ?>
+			                                </tr>
+			                                <tr>
+			                                        <td width="22%" valign="top" class="vncell"><?=gettext("Password"); ?></td>
+			                                        <td width="78%" class="vtable">
+			                                                <input name="passwordfld1" type="password" class="formfld pwd" id="passwordfld1" size="20" />
+			                                        </td>
+			                                </tr>
+			                                <tr>
+				                                	<td width="22%" valign="top" class="vncell"><?=gettext("Confirmation");?></td>
+			                                        <td width="78%" class="vtable">
+			                                                <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" />
+			                                        </td>
+			                                </tr>
+			                                <tr>
+			                                        <td width="22%" valign="top">&nbsp;</td>
+			                                        <td width="78%">
+			                                                <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+			                                        </td>
+			                                </tr>
+			                        </table>
+		                        	</div>
+		                        </form>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+<?php include("foot.inc");?>

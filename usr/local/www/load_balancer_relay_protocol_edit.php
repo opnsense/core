@@ -143,7 +143,7 @@ include("head.inc");
 
 $types = array("http" => gettext("HTTP"), "tcp" => gettext("TCP"), "dns" => gettext("DNS"));
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <script type="text/javascript">
 function updateType(t){
 	switch(t) {
@@ -185,108 +185,127 @@ jQuery(document).ready(function(){
 </script>
 
 <?php include("fbegin.inc"); ?>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-	<form action="load_balancer_relay_protocol_edit.php" method="post" name="iform" id="iform">
-	<table width="100%" border="0" cellpadding="6" cellspacing="0">
-		<tr>
-			<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Relay Protocol entry"); ?></td>
-		</tr>
-		<tr align="left">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16">
-			</td>
-		</tr>
-		<tr align="left">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Type"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<select id="type" name="type">
-<?
-	foreach ($types as $key => $val) {
-		if(isset($pconfig['type']) && $pconfig['type'] == $key) {
-			$selected = " selected";
-		} else {
-			$selected = "";
-		}
-		echo "<option value=\"{$key}\" onclick=\"updateType('{$key}');\"{$selected}>{$val}</option>\n";
-	}
-?>
-				</select>
-			</td>
-		</tr>
-		<tr align="left">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?>size="64">
-			</td>
-		</tr>
-		<tr>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td colspan="2" valign="top" class="listtopic"><?=gettext("Add / remove available actions"); ?></td>
-		</tr>
-		<tr align="left" id="actions">
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Actions"); ?></td>
-			<td width="78%" class="vtable" colspan="2">
-				<table>
-					<tbody>
-					<tr>
-						<td>
-							<center>
-							<b><?=gettext("Available Actions"); ?></b>
-							<br />
-							<select id="available_action" name="available_action[]" multiple="true" size="5">
-<?php
-if (is_array($config['load_balancer']['lbaction'])) {
-	foreach($config['load_balancer']['lbaction'] as $actent) {
-		if($actent != '') echo "    <option value=\"{$actent['name']}\">{$actent['name']}</option>\n";
-	}
-}
-echo "</select>";
-?>
-							<br />
-						</td>
-						<td valign="middle">
-							<center>
-								<input class="formbtn" type="button" name="copyToEnabled" value="<?=gettext("Add"); ?>" onclick="copyOption($('available_action'), $('lbaction'));" /><br />
-								<input class="formbtn" type="button" name="removeFromEnabled" value="<?=gettext("Remove"); ?>" onclick="deleteOption($('lbaction'));" />
-							</center>
-						</td>
 
-						<td>
-							<center>
-							<b><?=gettext("Enabled Actions"); ?></b>
-							<br />
-							<select id="lbaction" name="lbaction[]" multiple="true" size="5">
-<?php
-if (is_array($pconfig['lbaction'])) {
-	foreach($pconfig['lbaction'] as $actent) {
-		echo "    <option value=\"{$actent}\">{$actent}</option>\n";
-	}
-}
-echo "</select>";
-?>
-							<br />
-						</td>
-					</tr>
-					</tbody>
-				</table>
-			</td>
-		</tr>
-		<tr align="left">
-			<td width="22%" valign="top">&nbsp;</td>
-			<td width="78%">
-				<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" onClick="AllOptions($('lbaction'), true); AllOptions($('available_action'), false);">
-				<input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-				<?php if (isset($id) && $a_protocol[$id] && $_GET['act'] != 'dup'): ?>
-				<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>">
-				<?php endif; ?>
-			</td>
-		</tr>
-	</table>
-	</form>
-<br />
-<?php include("fend.inc"); ?>
-</body>
-</html>
+	<section class="page-content-main">
+
+		<div class="container-fluid">
+	
+			<div class="row">	
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+                        <form action="load_balancer_relay_protocol_edit.php" method="post" name="iform" id="iform">								
+                        	
+                        	<div class="table-responsive">
+	                        	<table class="table table-striped table-sort">
+
+									<tr>
+										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Relay Protocol entry"); ?></td>
+									</tr>
+									<tr align="left">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16">
+										</td>
+									</tr>
+									<tr align="left">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Type"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<select id="type" name="type">
+							<?
+								foreach ($types as $key => $val) {
+									if(isset($pconfig['type']) && $pconfig['type'] == $key) {
+										$selected = " selected";
+									} else {
+										$selected = "";
+									}
+									echo "<option value=\"{$key}\" onclick=\"updateType('{$key}');\"{$selected}>{$val}</option>\n";
+								}
+							?>
+											</select>
+										</td>
+									</tr>
+									<tr align="left">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?>size="64">
+										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+									</tr>
+									<tr>
+										<td colspan="2" valign="top" class="listtopic"><?=gettext("Add / remove available actions"); ?></td>
+									</tr>
+									<tr align="left" id="actions">
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Actions"); ?></td>
+										<td width="78%" class="vtable" colspan="2">
+											<table>
+												<tbody>
+												<tr>
+													<td>
+														<center>
+														<b><?=gettext("Available Actions"); ?></b>
+														<br />
+														<select id="available_action" name="available_action[]" multiple="true" size="5">
+							<?php
+							if (is_array($config['load_balancer']['lbaction'])) {
+								foreach($config['load_balancer']['lbaction'] as $actent) {
+									if($actent != '') echo "    <option value=\"{$actent['name']}\">{$actent['name']}</option>\n";
+								}
+							}
+							echo "</select>";
+							?>
+														<br />
+													</td>
+													<td valign="middle">
+														<center>
+															<input class="formbtn" type="button" name="copyToEnabled" value="<?=gettext("Add"); ?>" onclick="copyOption($('available_action'), $('lbaction'));" /><br />
+															<input class="formbtn" type="button" name="removeFromEnabled" value="<?=gettext("Remove"); ?>" onclick="deleteOption($('lbaction'));" />
+														</center>
+													</td>
+							
+													<td>
+														<center>
+														<b><?=gettext("Enabled Actions"); ?></b>
+														<br />
+														<select id="lbaction" name="lbaction[]" multiple="true" size="5">
+							<?php
+							if (is_array($pconfig['lbaction'])) {
+								foreach($pconfig['lbaction'] as $actent) {
+									echo "    <option value=\"{$actent}\">{$actent}</option>\n";
+								}
+							}
+							echo "</select>";
+							?>
+														<br />
+													</td>
+												</tr>
+												</tbody>
+											</table>
+										</td>
+									</tr>
+									<tr align="left">
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" onClick="AllOptions($('lbaction'), true); AllOptions($('available_action'), false);">
+											<input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+											<?php if (isset($id) && $a_protocol[$id] && $_GET['act'] != 'dup'): ?>
+											<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>">
+											<?php endif; ?>
+										</td>
+									</tr>
+								</table>
+								</div>
+								</form>
+								</div>
+								</div>
+								</section>
+								</div>
+								</div>
+								</section>
+
+<?php include("foot.inc"); ?>

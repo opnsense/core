@@ -64,74 +64,86 @@ $a_roll = &$config['voucher'][$cpzone]['roll'];
 
 include("head.inc");
 ?>
+
+
 <body>
 <?php include("fbegin.inc"); ?>
 
-<form action="status_captiveportal_voucher_rolls.php" method="post" enctype="multipart/form-data" name="iform" id="iform">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="tab pane">
-	<tr>
-		<td class="tabnavtbl">
-		<?php
-			$tab_array = array();
-			$tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
-			$tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
-			$tab_array[] = array(gettext("Voucher Rolls"), true, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
-			$tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
-			$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
-			display_top_tabs($tab_array);
-		?>
-		</td>
-	</tr>
-	<tr>
-		<td class="tabcont">
-			<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="content pane">
-				<tr>
-					<td class="listhdrr"><?=gettext("Roll#"); ?></td>
-					<td class="listhdrr"><?=gettext("Minutes/Ticket"); ?></td>
-					<td class="listhdrr"><?=gettext("# of Tickets"); ?></td>
-					<td class="listhdrr"><?=gettext("Comment"); ?></td>
-					<td class="listhdrr"><?=gettext("used"); ?></td>
-					<td class="listhdrr"><?=gettext("active"); ?></td>
-					<td class="listhdr"><?=gettext("ready"); ?></td>
-				</tr>
-				<?php
-					$voucherlck = lock("vouche{$cpzone}r");
-					$i = 0; foreach($a_roll as $rollent):
-					$used = voucher_used_count($rollent['number']);
-					$active = count(voucher_read_active_db($rollent['number']),$rollent['minutes']);
-					$ready = $rollent['count'] - $used;
-					/* used also count active vouchers, remove them */
-					$used = $used - $active;
-				?>
-				<tr>
-					<td class="listlr">
-						<?=htmlspecialchars($rollent['number']); ?>&nbsp;
-					</td>
-					<td class="listr">
-						<?=htmlspecialchars($rollent['minutes']);?>&nbsp;
-					</td>
-					<td class="listr">
-						<?=htmlspecialchars($rollent['count']);?>&nbsp;
-					</td>
-					<td class="listr">
-						<?=htmlspecialchars($rollent['comment']); ?>&nbsp;
-					</td>
-					<td class="listr">
-						<?=htmlspecialchars($used); ?>&nbsp;
-					</td>
-					<td class="listr">
-						<?=htmlspecialchars($active); ?>&nbsp;
-					</td>
-					<td class="listr">
-						<?=htmlspecialchars($ready); ?>&nbsp;
-					</td>
-				</tr>
-				<?php $i++; endforeach; unlock($voucherlck); ?>
-			</table>
-		</td>
-	</tr>
-</table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">			
+				
+			    <section class="col-xs-12">
+    				
+					<?php
+						$tab_array = array();
+						$tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Voucher Rolls"), true, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
+						display_top_tabs($tab_array);
+					?>
+					
+					<div class="tab-content content-box col-xs-12">	
+    					
+    				    <div class="container-fluid">	
+
+	                        <form action="status_captiveportal_voucher_rolls.php" method="post" enctype="multipart/form-data" name="iform" id="iform">
+								
+	                        	<div class="table-responsive">
+		                        	<table class="table table-striped table-sort">
+										<tr>
+											<td class="listhdrr"><?=gettext("Roll#"); ?></td>
+											<td class="listhdrr"><?=gettext("Minutes/Ticket"); ?></td>
+											<td class="listhdrr"><?=gettext("# of Tickets"); ?></td>
+											<td class="listhdrr"><?=gettext("Comment"); ?></td>
+											<td class="listhdrr"><?=gettext("used"); ?></td>
+											<td class="listhdrr"><?=gettext("active"); ?></td>
+											<td class="listhdr"><?=gettext("ready"); ?></td>
+										</tr>
+										<?php
+											$voucherlck = lock("vouche{$cpzone}r");
+											$i = 0; foreach($a_roll as $rollent):
+											$used = voucher_used_count($rollent['number']);
+											$active = count(voucher_read_active_db($rollent['number']),$rollent['minutes']);
+											$ready = $rollent['count'] - $used;
+											/* used also count active vouchers, remove them */
+											$used = $used - $active;
+										?>
+										<tr>
+											<td class="listlr">
+												<?=htmlspecialchars($rollent['number']); ?>&nbsp;
+											</td>
+											<td class="listr">
+												<?=htmlspecialchars($rollent['minutes']);?>&nbsp;
+											</td>
+											<td class="listr">
+												<?=htmlspecialchars($rollent['count']);?>&nbsp;
+											</td>
+											<td class="listr">
+												<?=htmlspecialchars($rollent['comment']); ?>&nbsp;
+											</td>
+											<td class="listr">
+												<?=htmlspecialchars($used); ?>&nbsp;
+											</td>
+											<td class="listr">
+												<?=htmlspecialchars($active); ?>&nbsp;
+											</td>
+											<td class="listr">
+												<?=htmlspecialchars($ready); ?>&nbsp;
+											</td>
+										</tr>
+										<?php $i++; endforeach; unlock($voucherlck); ?>
+									</table>
+	                        	</div>
+	                        </form>
+    				    </div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+
+<?php include("foot.inc"); ?>

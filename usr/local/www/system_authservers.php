@@ -309,10 +309,16 @@ if ($_POST) {
 }
 
 include("head.inc");
+
+$main_buttons = array(
+	array('label'=>'Add server', 'href'=>'system_authservers.php?act=new'),
+);
+
 ?>
 
-<body link="#000000" vlink="#000000" alink="#000000" onload="<?= $jsevents["body"]["onload"] ?>">
-<?php include("fbegin.inc"); ?>
+
+<body onload="<?= $jsevents["body"]["onload"] ?>">
+
 <script type="text/javascript">
 //<![CDATA[
 
@@ -433,434 +439,436 @@ function select_clicked() {
 }
 //]]>
 </script>
-<?php
-	if ($input_errors)
-		print_input_errors($input_errors);
-	if ($savemsg)
-		print_info_box($savemsg);
-?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="auth servers">
-	<tr>
-		<td>
-		<?php
-			$tab_array = array();
-			$tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
-			$tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
-			$tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
-			$tab_array[] = array(gettext("Servers"), true, "system_authservers.php");
-			display_top_tabs($tab_array);
-		?>
-		</td>
-	</tr>
-	<tr>
-		<td id="mainarea">
-			<div class="tabcont">
 
-				<?php if ($act == "new" || $act == "edit" || $input_errors): ?>
+<?php include("fbegin.inc");?>
 
-				<form action="system_authservers.php" method="post" name="iform" id="iform">
-					<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Descriptive name");?></td>
-							<td width="78%" class="vtable">
-							<?php if (!isset($id)): ?>
-								<input name="name" type="text" class="formfld unknown" id="name" size="20" value="<?=htmlspecialchars($pconfig['name']);?>"/>
-							<?php else: ?>
-                                                                <strong><?=htmlspecialchars($pconfig['name']);?></strong>
-                                                                <input name='name' type='hidden' id='name' value="<?=htmlspecialchars($pconfig['name']);?>"/>
-                                                                <?php endif; ?>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Type");?></td>
-							<td width="78%" class="vtable">
-								<?php if (!isset($id)): ?>
-								<select name='type' id='type' class="formselect" onchange='server_typechange()'>
-								<?php
-									foreach ($auth_server_types as $typename => $typedesc ):
-										$selected = "";
-										if ($pconfig['type'] == $typename)
-											$selected = "selected=\"selected\"";
-								?>
-									<option value="<?=$typename;?>" <?=$selected;?>><?=$typedesc;?></option>
-								<?php endforeach; ?>
-								</select>
-								<?php else: ?>
-								<strong><?=$auth_server_types[$pconfig['type']];?></strong>
-								<input name='type' type='hidden' id='type' value="<?=htmlspecialchars($pconfig['type']);?>"/>
-								<?php endif; ?>
-							</td>
-						</tr>
-					</table>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php
+					if ($input_errors)
+						print_input_errors($input_errors);
+					if ($savemsg)
+						print_info_box($savemsg);
+				?>
+				
+			    <section class="col-xs-12">
+    					
+    					<?php
+							$tab_array = array();
+							$tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
+							$tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
+							$tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
+							$tab_array[] = array(gettext("Servers"), true, "system_authservers.php");
+							display_top_tabs($tab_array);
+						?>
+					
+						<div class="tab-content content-box col-xs-12">	
+	    					
+	    				    <div class="container-fluid">	
+								
+								<?php if ($act == "new" || $act == "edit" || $input_errors): ?>
+								<form id="iform" name="iform" action="system_authservers.php" method="post">	
+									<div class="table-responsive">
+							        	<table class="table table-striped table-sort">								        	
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Descriptive name");?></td>
+												<td width="78%" class="vtable">
+												<?php if (!isset($id)): ?>
+													<input name="name" type="text" class="formfld unknown" id="name" size="20" value="<?=htmlspecialchars($pconfig['name']);?>"/>
+												<?php else: ?>
+					                                                                <strong><?=htmlspecialchars($pconfig['name']);?></strong>
+					                                                                <input name='name' type='hidden' id='name' value="<?=htmlspecialchars($pconfig['name']);?>"/>
+					                                                                <?php endif; ?>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Type");?></td>
+												<td width="78%" class="vtable">
+													<?php if (!isset($id)): ?>
+													<select name='type' id='type' class="formselect" onchange='server_typechange()'>
+													<?php
+														foreach ($auth_server_types as $typename => $typedesc ):
+															$selected = "";
+															if ($pconfig['type'] == $typename)
+																$selected = "selected=\"selected\"";
+													?>
+														<option value="<?=$typename;?>" <?=$selected;?>><?=$typedesc;?></option>
+													<?php endforeach; ?>
+													</select>
+													<?php else: ?>
+													<strong><?=$auth_server_types[$pconfig['type']];?></strong>
+													<input name='type' type='hidden' id='type' value="<?=htmlspecialchars($pconfig['type']);?>"/>
+													<?php endif; ?>
+												</td>
+											</tr>
+										</table>
+					
+										<table class="table table-striped table-sort" id="ldap" style="display:none" summary="">
+											<tr>
+												<td colspan="2" class="list" height="12"></td>
+											</tr>
+									
+											<tr>
+												<td colspan="2" valign="top" class="listtopic"><?=gettext("LDAP Server Settings");?></td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname or IP address");?></td>
+												<td width="78%" class="vtable">
+													<input name="ldap_host" type="text" class="formfld unknown" id="ldap_host" size="20" value="<?=htmlspecialchars($pconfig['ldap_host']);?>"/>
+													<br /><?= gettext("NOTE: When using SSL, this hostname MUST match the Common Name (CN) of the LDAP server's SSL Certificate."); ?>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Port value");?></td>
+												<td width="78%" class="vtable">
+													<input name="ldap_port" type="text" class="formfld unknown" id="ldap_port" size="5" value="<?=htmlspecialchars($pconfig['ldap_port']);?>"/>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Transport");?></td>
+												<td width="78%" class="vtable">
+													<select name='ldap_urltype' id='ldap_urltype' class="formselect" onchange='ldap_urlchange()'>
+													<?php
+														foreach ($ldap_urltypes as $urltype => $urlport):
+															$selected = "";
+															if ($pconfig['ldap_urltype'] == $urltype)
+																$selected = "selected=\"selected\"";
+													?>
+														<option value="<?=$urltype;?>" <?=$selected;?>><?=$urltype;?></option>
+													<?php endforeach; ?>
+													</select>
+												</td>
+											</tr>
+											<tr id="tls_ca">
+												<td width="22%" valign="top" class="vncell"><?=gettext("Peer Certificate Authority"); ?></td>
+					                                                        <td width="78%" class="vtable">
+					                                                        <?php if (count($a_ca)): ?>
+													<select id='ldap_caref' name='ldap_caref' class="formselect">
+					                                                        <?php
+					                                                                foreach ($a_ca as $ca):
+					                                                                        $selected = "";
+					                                                                        if ($pconfig['ldap_caref'] == $ca['refid'])
+					                                                                                $selected = "selected=\"selected\"";
+					                                                        ?>
+														<option value="<?=$ca['refid'];?>" <?=$selected;?>><?=$ca['descr'];?></option>
+					                                                        <?php	endforeach; ?>
+													</select>
+													<br /><span><?=gettext("This option is used if 'SSL Encrypted' option is choosen.");?> <br />
+													<?=gettext("It must match with the CA in the AD otherwise problems will arise.");?></span>
+					                                                        <?php else: ?>
+					                                                                <b>No Certificate Authorities defined.</b> <br />Create one under <a href="system_camanager.php">System &gt; Cert Manager</a>.
+					                                                        <?php endif; ?>
+					                                                        </td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Protocol version");?></td>
+												<td width="78%" class="vtable">
+													<select name='ldap_protver' id='ldap_protver' class="formselect">
+													<?php
+														foreach ($ldap_protvers as $version):
+															$selected = "";
+															if ($pconfig['ldap_protver'] == $version)
+																$selected = "selected=\"selected\"";
+													?>
+														<option value="<?=$version;?>" <?=$selected;?>><?=$version;?></option>
+													<?php endforeach; ?>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Search scope");?></td>
+												<td width="78%" class="vtable">
+													<table border="0" cellspacing="0" cellpadding="2" summary="search scope">
+														<tr>
+															<td><?=gettext("Level:");?> &nbsp;</td>
+															<td>
+																<select name='ldap_scope' id='ldap_scope' class="formselect">
+																<?php
+																	foreach ($ldap_scopes as $scopename => $scopedesc):
+																		$selected = "";
+																		if ($pconfig['ldap_scope'] == $scopename)
+																			$selected = "selected=\"selected\"";
+																?>
+																	<option value="<?=$scopename;?>" <?=$selected;?>><?=$scopedesc;?></option>
+																<?php endforeach; ?>
+																</select>
+															</td>
+														</tr>
+														<tr>
+															<td><?=gettext("Base DN:");?> &nbsp;</td>
+															<td>
+																<input name="ldap_basedn" type="text" class="formfld unknown" id="ldap_basedn" size="40" value="<?=htmlspecialchars($pconfig['ldap_basedn']);?>"/>
+															</td>
+														</tr>
+													</table>
+					
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Authentication containers");?></td>
+												<td width="78%" class="vtable">
+													<table border="0" cellspacing="0" cellpadding="2" summary="auth containers">
+														<tr>
+															<td><?=gettext("Containers:");?> &nbsp;</td>
+															<td>
+																<input name="ldapauthcontainers" type="text" class="formfld unknown" id="ldapauthcontainers" size="40" value="<?=htmlspecialchars($pconfig['ldap_authcn']);?>"/>
+																<input type="button" onclick="select_clicked();" value="<?=gettext("Select");?>" />
+																<br /><?=gettext("Note: Semi-Colon separated. This will be prepended to the search base dn above or you can specify full container path containing a dc= component.");?>
+																<br /><?=gettext("Example:");?> CN=Users;DC=example,DC=com
+																<br /><?=gettext("Example:");?> OU=Staff;OU=Freelancers
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Extended Query");?></td>
+												<td width="78%" class="vtable">
+													<table border="0" cellspacing="0" cellpadding="2" summary="query">
+														<tr>
+															<td>
+																<input name="ldap_extended_enabled" type="checkbox" id="ldap_extended_enabled" value="no" <?php if ($pconfig['ldap_extended_enabled']) echo "checked=\"checked\""; ?> />
+															</td>
+															<td>
+					
+																<input name="ldap_extended_query" type="text" class="formfld unknown" id="ldap_extended_query" size="40" value="<?=htmlspecialchars($pconfig['ldap_extended_query']);?>"/>
+																<br /><?=gettext("Example:");?> &amp;(objectClass=inetOrgPerson)(mail=*@example.com)
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Bind credentials");?></td>
+												<td width="78%" class="vtable">
+													<table border="0" cellspacing="0" cellpadding="2" summary="bind credentials">
+														<tr>
+															<td>
+																<input name="ldap_anon" type="checkbox" id="ldap_anon" value="yes" <?php if ($pconfig['ldap_anon']) echo "checked=\"checked\""; ?> onclick="ldap_bindchange()" />
+															</td>
+															<td>
+																<?=gettext("Use anonymous binds to resolve distinguished names");?>
+															</td>
+														</tr>
+													</table>
+													<table border="0" cellspacing="0" cellpadding="2" id="ldap_bind" summary="bind">
+														<tr>
+															<td colspan="2"></td>
+														</tr>
+														<tr>
+															<td><?=gettext("User DN:");?> &nbsp;</td>
+															<td>
+																<input name="ldap_binddn" type="text" class="formfld unknown" id="ldap_binddn" size="40" value="<?=htmlspecialchars($pconfig['ldap_binddn']);?>"/><br />
+															</td>
+														</tr>
+														<tr>
+															<td><?=gettext("Password:");?> &nbsp;</td>
+															<td>
+																<input name="ldap_bindpw" type="password" class="formfld pwd" id="ldap_bindpw" size="20" value="<?=htmlspecialchars($pconfig['ldap_bindpw']);?>"/><br />
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<?php if (!isset($id)): ?>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Initial Template");?></td>
+												<td width="78%" class="vtable">
+													<select name='ldap_tmpltype' id='ldap_tmpltype' class="formselect" onchange='ldap_tmplchange()'>
+													<?php
+														foreach ($ldap_templates as $tmplname => $tmpldata):
+															$selected = "";
+															if ($pconfig['ldap_template'] == $tmplname)
+																$selected = "selected=\"selected\"";
+													?>
+														<option value="<?=$tmplname;?>" <?=$selected;?>><?=$tmpldata['desc'];?></option>
+													<?php endforeach; ?>
+													</select>
+												</td>
+											</tr>
+											<?php endif; ?>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("User naming attribute");?></td>
+												<td width="78%" class="vtable">
+													<input name="ldap_attr_user" type="text" class="formfld unknown" id="ldap_attr_user" size="20" value="<?=htmlspecialchars($pconfig['ldap_attr_user']);?>"/>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Group naming attribute");?></td>
+												<td width="78%" class="vtable">
+													<input name="ldap_attr_group" type="text" class="formfld unknown" id="ldap_attr_group" size="20" value="<?=htmlspecialchars($pconfig['ldap_attr_group']);?>"/>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Group member attribute");?></td>
+												<td width="78%" class="vtable">
+													<input name="ldap_attr_member" type="text" class="formfld unknown" id="ldap_attr_member" size="20" value="<?=htmlspecialchars($pconfig['ldap_attr_member']);?>"/>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("UTF8 Encode");?></td>
+												<td width="78%" class="vtable">
+													<table border="0" cellspacing="0" cellpadding="2" summary="utf8 encoding">
+														<tr>
+															<td>
+																<input name="ldap_utf8" type="checkbox" id="ldap_utf8" value="yes" <?php if ($pconfig['ldap_utf8']) echo "checked=\"checked\""; ?> />
+															</td>
+															<td>
+																<?=gettext("UTF8 encode LDAP parameters before sending them to the server. Required to support international characters, but may not be supported by every LDAP server.");?>
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Username Alterations");?></td>
+												<td width="78%" class="vtable">
+													<table border="0" cellspacing="0" cellpadding="2" summary="username alterations">
+														<tr>
+															<td>
+																<input name="ldap_nostrip_at" type="checkbox" id="ldap_nostrip_at" value="yes" <?php if ($pconfig['ldap_nostrip_at']) echo "checked=\"checked\""; ?> />
+															</td>
+															<td>
+																<?=gettext("Do not strip away parts of the username after the @ symbol, e.g. user@host becomes user when unchecked.");?>
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+					
+										<table class="table table-striped table-sort" id="radius" style="display:none" summary="">
+											<tr>
+												<td colspan="2" class="list" height="12"></td>
+											</tr>											
+											<tr>
+												<td colspan="2" valign="top" class="listtopic"><?=gettext("Radius Server Settings");?></td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname or IP address");?></td>
+												<td width="78%" class="vtable">
+													<input name="radius_host" type="text" class="formfld unknown" id="radius_host" size="20" value="<?=htmlspecialchars($pconfig['radius_host']);?>"/>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Shared Secret");?></td>
+												<td width="78%" class="vtable">
+													<input name="radius_secret" type="password" class="formfld pwd" id="radius_secret" size="20" value="<?=htmlspecialchars($pconfig['radius_secret']);?>"/>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Services offered");?></td>
+												<td width="78%" class="vtable">
+													<select name='radius_srvcs' id='radius_srvcs' class="formselect" onchange='radius_srvcschange()'>
+													<?php
+														foreach ($radius_srvcs as $srvcname => $srvcdesc):
+															$selected = "";
+															if ($pconfig['radius_srvcs'] == $srvcname)
+																$selected = "selected=\"selected\"";
+													?>
+														<option value="<?=$srvcname;?>" <?=$selected;?>><?=$srvcdesc;?></option>
+													<?php endforeach; ?>
+													</select>
+												</td>
+											</tr>
+											<tr id="radius_auth">
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Authentication port value");?></td>
+												<td width="78%" class="vtable">
+													<input name="radius_auth_port" type="text" class="formfld unknown" id="radius_auth_port" size="5" value="<?=htmlspecialchars($pconfig['radius_auth_port']);?>"/>
+												</td>
+											</tr>
+											<tr id="radius_acct">
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Accounting port value");?></td>
+												<td width="78%" class="vtable">
+													<input name="radius_acct_port" type="text" class="formfld unknown" id="radius_acct_port" size="5" value="<?=htmlspecialchars($pconfig['radius_acct_port']);?>"/>
+												</td>
+											</tr>
+											<tr>
+												<td width="22%" valign="top" class="vncellreq"><?=gettext("Authentication Timeout");?></td>
+												<td width="78%" class="vtable">
+													<input name="radius_timeout" type="text" class="formfld unknown" id="radius_timeout" size="20" value="<?=htmlspecialchars($pconfig['radius_timeout']);?>"/>
+													<br /><?= gettext("This value controls how long, in seconds, that the RADIUS server may take to respond to an authentication request.") ?>
+													<br /><?= gettext("If left blank, the default value is 5 seconds.") ?>
+													<br /><br /><?= gettext("NOTE: If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token.") ?>
+												</td>
+											</tr>
+										</table>
 
-					<table width="100%" border="0" cellpadding="6" cellspacing="0" id="ldap" style="display:none" summary="">
-						<tr>
-							<td colspan="2" class="list" height="12"></td>
-						</tr>
-						<tr>
-							<td colspan="2" valign="top" class="listtopic"><?=gettext("LDAP Server Settings");?></td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname or IP address");?></td>
-							<td width="78%" class="vtable">
-								<input name="ldap_host" type="text" class="formfld unknown" id="ldap_host" size="20" value="<?=htmlspecialchars($pconfig['ldap_host']);?>"/>
-								<br /><?= gettext("NOTE: When using SSL, this hostname MUST match the Common Name (CN) of the LDAP server's SSL Certificate."); ?>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Port value");?></td>
-							<td width="78%" class="vtable">
-								<input name="ldap_port" type="text" class="formfld unknown" id="ldap_port" size="5" value="<?=htmlspecialchars($pconfig['ldap_port']);?>"/>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Transport");?></td>
-							<td width="78%" class="vtable">
-								<select name='ldap_urltype' id='ldap_urltype' class="formselect" onchange='ldap_urlchange()'>
-								<?php
-									foreach ($ldap_urltypes as $urltype => $urlport):
-										$selected = "";
-										if ($pconfig['ldap_urltype'] == $urltype)
-											$selected = "selected=\"selected\"";
-								?>
-									<option value="<?=$urltype;?>" <?=$selected;?>><?=$urltype;?></option>
-								<?php endforeach; ?>
-								</select>
-							</td>
-						</tr>
-						<tr id="tls_ca">
-							<td width="22%" valign="top" class="vncell"><?=gettext("Peer Certificate Authority"); ?></td>
-                                                        <td width="78%" class="vtable">
-                                                        <?php if (count($a_ca)): ?>
-								<select id='ldap_caref' name='ldap_caref' class="formselect">
-                                                        <?php
-                                                                foreach ($a_ca as $ca):
-                                                                        $selected = "";
-                                                                        if ($pconfig['ldap_caref'] == $ca['refid'])
-                                                                                $selected = "selected=\"selected\"";
-                                                        ?>
-									<option value="<?=$ca['refid'];?>" <?=$selected;?>><?=$ca['descr'];?></option>
-                                                        <?php	endforeach; ?>
-								</select>
-								<br /><span><?=gettext("This option is used if 'SSL Encrypted' option is choosen.");?> <br />
-								<?=gettext("It must match with the CA in the AD otherwise problems will arise.");?></span>
-                                                        <?php else: ?>
-                                                                <b>No Certificate Authorities defined.</b> <br />Create one under <a href="system_camanager.php">System &gt; Cert Manager</a>.
-                                                        <?php endif; ?>
-                                                        </td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Protocol version");?></td>
-							<td width="78%" class="vtable">
-								<select name='ldap_protver' id='ldap_protver' class="formselect">
-								<?php
-									foreach ($ldap_protvers as $version):
-										$selected = "";
-										if ($pconfig['ldap_protver'] == $version)
-											$selected = "selected=\"selected\"";
-								?>
-									<option value="<?=$version;?>" <?=$selected;?>><?=$version;?></option>
-								<?php endforeach; ?>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("Search scope");?></td>
-							<td width="78%" class="vtable">
-								<table border="0" cellspacing="0" cellpadding="2" summary="search scope">
-									<tr>
-										<td><?=gettext("Level:");?> &nbsp;</td>
-										<td>
-											<select name='ldap_scope' id='ldap_scope' class="formselect">
-											<?php
-												foreach ($ldap_scopes as $scopename => $scopedesc):
-													$selected = "";
-													if ($pconfig['ldap_scope'] == $scopename)
-														$selected = "selected=\"selected\"";
-											?>
-												<option value="<?=$scopename;?>" <?=$selected;?>><?=$scopedesc;?></option>
-											<?php endforeach; ?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td><?=gettext("Base DN:");?> &nbsp;</td>
-										<td>
-											<input name="ldap_basedn" type="text" class="formfld unknown" id="ldap_basedn" size="40" value="<?=htmlspecialchars($pconfig['ldap_basedn']);?>"/>
-										</td>
-									</tr>
-								</table>
-
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Authentication containers");?></td>
-							<td width="78%" class="vtable">
-								<table border="0" cellspacing="0" cellpadding="2" summary="auth containers">
-									<tr>
-										<td><?=gettext("Containers:");?> &nbsp;</td>
-										<td>
-											<input name="ldapauthcontainers" type="text" class="formfld unknown" id="ldapauthcontainers" size="40" value="<?=htmlspecialchars($pconfig['ldap_authcn']);?>"/>
-											<input type="button" onclick="select_clicked();" value="<?=gettext("Select");?>" />
-											<br /><?=gettext("Note: Semi-Colon separated. This will be prepended to the search base dn above or you can specify full container path containing a dc= component.");?>
-											<br /><?=gettext("Example:");?> CN=Users;DC=example,DC=com
-											<br /><?=gettext("Example:");?> OU=Staff;OU=Freelancers
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("Extended Query");?></td>
-							<td width="78%" class="vtable">
-								<table border="0" cellspacing="0" cellpadding="2" summary="query">
-									<tr>
-										<td>
-											<input name="ldap_extended_enabled" type="checkbox" id="ldap_extended_enabled" value="no" <?php if ($pconfig['ldap_extended_enabled']) echo "checked=\"checked\""; ?> />
-										</td>
-										<td>
-
-											<input name="ldap_extended_query" type="text" class="formfld unknown" id="ldap_extended_query" size="40" value="<?=htmlspecialchars($pconfig['ldap_extended_query']);?>"/>
-											<br /><?=gettext("Example:");?> &amp;(objectClass=inetOrgPerson)(mail=*@example.com)
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("Bind credentials");?></td>
-							<td width="78%" class="vtable">
-								<table border="0" cellspacing="0" cellpadding="2" summary="bind credentials">
-									<tr>
-										<td>
-											<input name="ldap_anon" type="checkbox" id="ldap_anon" value="yes" <?php if ($pconfig['ldap_anon']) echo "checked=\"checked\""; ?> onclick="ldap_bindchange()" />
-										</td>
-										<td>
-											<?=gettext("Use anonymous binds to resolve distinguished names");?>
-										</td>
-									</tr>
-								</table>
-								<table border="0" cellspacing="0" cellpadding="2" id="ldap_bind" summary="bind">
-									<tr>
-										<td colspan="2"></td>
-									</tr>
-									<tr>
-										<td><?=gettext("User DN:");?> &nbsp;</td>
-										<td>
-											<input name="ldap_binddn" type="text" class="formfld unknown" id="ldap_binddn" size="40" value="<?=htmlspecialchars($pconfig['ldap_binddn']);?>"/><br />
-										</td>
-									</tr>
-									<tr>
-										<td><?=gettext("Password:");?> &nbsp;</td>
-										<td>
-											<input name="ldap_bindpw" type="password" class="formfld pwd" id="ldap_bindpw" size="20" value="<?=htmlspecialchars($pconfig['ldap_bindpw']);?>"/><br />
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<?php if (!isset($id)): ?>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("Initial Template");?></td>
-							<td width="78%" class="vtable">
-								<select name='ldap_tmpltype' id='ldap_tmpltype' class="formselect" onchange='ldap_tmplchange()'>
-								<?php
-									foreach ($ldap_templates as $tmplname => $tmpldata):
-										$selected = "";
-										if ($pconfig['ldap_template'] == $tmplname)
-											$selected = "selected=\"selected\"";
-								?>
-									<option value="<?=$tmplname;?>" <?=$selected;?>><?=$tmpldata['desc'];?></option>
-								<?php endforeach; ?>
-								</select>
-							</td>
-						</tr>
-						<?php endif; ?>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("User naming attribute");?></td>
-							<td width="78%" class="vtable">
-								<input name="ldap_attr_user" type="text" class="formfld unknown" id="ldap_attr_user" size="20" value="<?=htmlspecialchars($pconfig['ldap_attr_user']);?>"/>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("Group naming attribute");?></td>
-							<td width="78%" class="vtable">
-								<input name="ldap_attr_group" type="text" class="formfld unknown" id="ldap_attr_group" size="20" value="<?=htmlspecialchars($pconfig['ldap_attr_group']);?>"/>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("Group member attribute");?></td>
-							<td width="78%" class="vtable">
-								<input name="ldap_attr_member" type="text" class="formfld unknown" id="ldap_attr_member" size="20" value="<?=htmlspecialchars($pconfig['ldap_attr_member']);?>"/>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("UTF8 Encode");?></td>
-							<td width="78%" class="vtable">
-								<table border="0" cellspacing="0" cellpadding="2" summary="utf8 encoding">
-									<tr>
-										<td>
-											<input name="ldap_utf8" type="checkbox" id="ldap_utf8" value="yes" <?php if ($pconfig['ldap_utf8']) echo "checked=\"checked\""; ?> />
-										</td>
-										<td>
-											<?=gettext("UTF8 encode LDAP parameters before sending them to the server. Required to support international characters, but may not be supported by every LDAP server.");?>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("Username Alterations");?></td>
-							<td width="78%" class="vtable">
-								<table border="0" cellspacing="0" cellpadding="2" summary="username alterations">
-									<tr>
-										<td>
-											<input name="ldap_nostrip_at" type="checkbox" id="ldap_nostrip_at" value="yes" <?php if ($pconfig['ldap_nostrip_at']) echo "checked=\"checked\""; ?> />
-										</td>
-										<td>
-											<?=gettext("Do not strip away parts of the username after the @ symbol, e.g. user@host becomes user when unchecked.");?>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-
-					<table width="100%" border="0" cellpadding="6" cellspacing="0" id="radius" style="display:none" summary="">
-						<tr>
-							<td colspan="2" class="list" height="12"></td>
-						</tr>
-						<tr>
-							<td colspan="2" valign="top" class="listtopic"><?=gettext("Radius Server Settings");?></td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname or IP address");?></td>
-							<td width="78%" class="vtable">
-								<input name="radius_host" type="text" class="formfld unknown" id="radius_host" size="20" value="<?=htmlspecialchars($pconfig['radius_host']);?>"/>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Shared Secret");?></td>
-							<td width="78%" class="vtable">
-								<input name="radius_secret" type="password" class="formfld pwd" id="radius_secret" size="20" value="<?=htmlspecialchars($pconfig['radius_secret']);?>"/>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Services offered");?></td>
-							<td width="78%" class="vtable">
-								<select name='radius_srvcs' id='radius_srvcs' class="formselect" onchange='radius_srvcschange()'>
-								<?php
-									foreach ($radius_srvcs as $srvcname => $srvcdesc):
-										$selected = "";
-										if ($pconfig['radius_srvcs'] == $srvcname)
-											$selected = "selected=\"selected\"";
-								?>
-									<option value="<?=$srvcname;?>" <?=$selected;?>><?=$srvcdesc;?></option>
-								<?php endforeach; ?>
-								</select>
-							</td>
-						</tr>
-						<tr id="radius_auth">
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Authentication port value");?></td>
-							<td width="78%" class="vtable">
-								<input name="radius_auth_port" type="text" class="formfld unknown" id="radius_auth_port" size="5" value="<?=htmlspecialchars($pconfig['radius_auth_port']);?>"/>
-							</td>
-						</tr>
-						<tr id="radius_acct">
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Accounting port value");?></td>
-							<td width="78%" class="vtable">
-								<input name="radius_acct_port" type="text" class="formfld unknown" id="radius_acct_port" size="5" value="<?=htmlspecialchars($pconfig['radius_acct_port']);?>"/>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Authentication Timeout");?></td>
-							<td width="78%" class="vtable">
-								<input name="radius_timeout" type="text" class="formfld unknown" id="radius_timeout" size="20" value="<?=htmlspecialchars($pconfig['radius_timeout']);?>"/>
-								<br /><?= gettext("This value controls how long, in seconds, that the RADIUS server may take to respond to an authentication request.") ?>
-								<br /><?= gettext("If left blank, the default value is 5 seconds.") ?>
-								<br /><br /><?= gettext("NOTE: If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token.") ?>
-							</td>
-						</tr>
-					</table>
-
-					<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="">
-						<tr>
-							<td width="22%" valign="top">&nbsp;</td>
-							<td width="78%">
-								<input id="submit" name="save" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-								<?php if (isset($id) && $a_server[$id]): ?>
-								<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-								<?php endif;?>
-							</td>
-						</tr>
-					</table>
-				</form>
+										<table class="table table-striped table-sort">
+											<tr>
+												<td width="22%" valign="top">&nbsp;</td>
+												<td width="78%">
+													<input id="submit" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+													<?php if (isset($id) && $a_server[$id]): ?>
+													<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+													<?php endif;?>
+												</td>
+											</tr>
+										</table>
+									</form>
 
 				<?php else: ?>
-
-				<table class="sortable" width="100%" border="0" cellpadding="0" cellspacing="0" summary="">
-					<thead>
-						<tr>
-							<th width="25%" class="listhdrr"><?=gettext("Server Name");?></th>
-							<th width="25%" class="listhdrr"><?=gettext("Type");?></th>
-							<th width="35%" class="listhdrr"><?=gettext("Host Name");?></th>
-							<th width="10%" class="list"></th>
-						</tr>
-					</thead>
-					<tfoot>
-						<tr>
-							<td class="list" colspan="3"></td>
-							<td class="list">
-								<a href="system_authservers.php?act=new">
-									<img src="/themes/<?= $g['theme'];?>/images/icons/icon_plus.gif" title="<?=gettext("add server");?>" alt="<?=gettext("add server");?>" width="17" height="17" border="0" />
-								</a>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="3">
-								<p>
-									<?=gettext("Additional authentication servers can be added here.");?>
-								</p>
-							</td>
-						</tr>
-					</tfoot>
-					<tbody>
-						<?php
-							$i = 0;
-							foreach($a_server as $server):
-								$name = htmlspecialchars($server['name']);
-								$type = htmlspecialchars($auth_server_types[$server['type']]);
-								$host = htmlspecialchars($server['host']);
-						?>
-						<tr <?php if ($i < (count($a_server) - 1)): ?> ondblclick="document.location='system_authservers.php?act=edit&amp;id=<?=$i;?>'" <?php endif; ?>>
-							<td class="listlr"><?=$name?>&nbsp;</td>
-							<td class="listr"><?=$type;?>&nbsp;</td>
-							<td class="listr"><?=$host;?>&nbsp;</td>
-							<td valign="middle" class="list nowrap">
-							<?php if ($i < (count($a_server) - 1)): ?>
-								<a href="system_authservers.php?act=edit&amp;id=<?=$i;?>">
-									<img src="/themes/<?= $g['theme'];?>/images/icons/icon_e.gif" title="<?=gettext("edit server");?>" alt="<?=gettext("edit server");?>" width="17" height="17" border="0" />
-								</a>
-								&nbsp;
-								<a href="system_authservers.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this Server?");?>')">
-									<img src="/themes/<?= $g['theme'];?>/images/icons/icon_x.gif" title="<?=gettext("delete server");?>" alt="<?=gettext("delete server");?>" width="17" height="17" border="0" />
-								</a>
+									<div class="table-responsive">
+							        	<table class="table table-striped table-sort">	
+							
+											<thead>
+												<tr>
+													<th width="25%" class="listhdrr"><?=gettext("Server Name");?></th>
+													<th width="25%" class="listhdrr"><?=gettext("Type");?></th>
+													<th width="35%" class="listhdrr"><?=gettext("Host Name");?></th>
+													<th width="10%" class="list"></th>
+												</tr>
+											</thead>
+											<tfoot>
+												
+												<tr>
+													<td colspan="3">
+														<p>
+															<?=gettext("Additional authentication servers can be added here.");?>
+														</p>
+													</td>
+												</tr>
+											</tfoot>
+											<tbody>
+												<?php
+													$i = 0;
+													foreach($a_server as $server):
+														$name = htmlspecialchars($server['name']);
+														$type = htmlspecialchars($auth_server_types[$server['type']]);
+														$host = htmlspecialchars($server['host']);
+												?>
+												<tr <?php if ($i < (count($a_server) - 1)): ?> ondblclick="document.location='system_authservers.php?act=edit&amp;id=<?=$i;?>'" <?php endif; ?>>
+													<td class="listlr"><?=$name?>&nbsp;</td>
+													<td class="listr"><?=$type;?>&nbsp;</td>
+													<td class="listr"><?=$host;?>&nbsp;</td>
+													<td valign="middle" class="list nowrap">
+													<?php if ($i < (count($a_server) - 1)): ?>
+														<a href="system_authservers.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
+															<span class="glyphicon glyphicon-pencil"></span>
+														</a>
+														&nbsp;
+														<a href="system_authservers.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this Server?");?>')" class="btn btn-default btn-xs">
+															<span class="glyphicon glyphicon-remove"></span>
+														</a>
+													<?php endif; ?>
+													</td>
+												</tr>
+												<?php
+													$i++; endforeach;
+												?>
+											</tbody>
+										</table>
+									</div>
 							<?php endif; ?>
-							</td>
-						</tr>
-						<?php
-							$i++; endforeach;
-						?>
-					</tbody>
-				</table>
-
-				<?php endif; ?>
-
-			</div>
-		</td>
-	</tr>
-</table>
-<?php include("fend.inc"); ?>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+			</section>
+			
 <script type="text/javascript">
 //<![CDATA[
 server_typechange('<?=htmlspecialchars($pconfig['type']);?>');
@@ -877,5 +885,5 @@ radius_srvcschange();
 <?php endif; ?>
 //]]>
 </script>
-</body>
-</html>
+
+<?php include("foot.inc"); ?>

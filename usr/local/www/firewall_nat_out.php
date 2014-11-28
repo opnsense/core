@@ -214,314 +214,297 @@ $pgtitle = array(gettext("Firewall"),gettext("NAT"),gettext("Outbound"));
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+
+<body>
 <?php include("fbegin.inc"); ?>
-<form action="firewall_nat_out.php" method="post" name="iform">
-<script type="text/javascript" src="/javascript/row_toggle.js"></script>
-<?php
-if ($savemsg)
-	print_info_box($savemsg);
-if (is_subsystem_dirty('natconf'))
-	print_info_box_np(gettext("The NAT configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));
-?>
-<br />
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="firewall nat outbound">
-	<tr><td>
-<?php
-		$tab_array = array();
-		$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
-		$tab_array[] = array(gettext("1:1"), false, "firewall_nat_1to1.php");
-		$tab_array[] = array(gettext("Outbound"), true, "firewall_nat_out.php");
-		$tab_array[] = array(gettext("NPt"), false, "firewall_nat_npt.php");
-		display_top_tabs($tab_array);
-?>
-	</td></tr>
-	<tr>
-		<td>
-			<div id="mainarea">
-			<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="main area">
-				<tr>
-					<td rowspan="3" align="right" valign="middle"><b><?=gettext("Mode:"); ?></b></td>
-					<td>
-						<input name="mode" type="radio" id="automatic" value="automatic" <?php if ($mode == "automatic") echo "checked=\"checked\"";?> />
-					</td>
-					<td>
-						<strong>
-							<?=gettext("Automatic outbound NAT rule generation"); ?><br />
-							<?=gettext("(IPsec passthrough included)");?>
-						</strong>
-					</td>
-					<td>
-						<input name="mode" type="radio" id="hybrid" value="hybrid" <?php if ($mode == "hybrid") echo "checked=\"checked\"";?> />
-					</td>
-					<td>
-						<strong>
-							<?=gettext("Hybrid Outbound NAT rule generation"); ?><br />
-							<?=gettext("(Automatic Outbound NAT + rules below)");?>
-						</strong>
-					</td>
-					<td rowspan="3" valign="middle" align="left">
-						<input name="save" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-					</td>
-				</tr>
-				<tr>
-					<td colspan="4">
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<input name="mode" type="radio" id="advanced" value="advanced" <?php if ($mode == "advanced") echo "checked=\"checked\"";?> />
-					</td>
-					<td>
-						<strong>
-							<?=gettext("Manual Outbound NAT rule generation"); ?><br />
-							<?=gettext("(AON - Advanced Outbound NAT)");?>
-						</strong>
-					</td>
-					<td>
-						<input name="mode" type="radio" id="disabled" value="disabled" <?php if ($mode == "disabled") echo "checked=\"checked\"";?> />
-					</td>
-					<td>
-						<strong>
-							<?=gettext("Disable Outbound NAT rule generation"); ?><br />
-							<?=gettext("(No Outbound NAT rules)");?>
-						</strong>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="6">
-						&nbsp;
-					</td>
-				</tr>
-			</table>
-			<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="mappings">
-				<tr><td colspan="5"><b>&nbsp;<?=gettext("Mappings:"); ?></b></td></tr>
-				<tr><td>&nbsp;</td></tr>
-				<tr id="frheader">
-					<td width="3%" class="list">&nbsp;</td>
-					<td width="3%" class="list">&nbsp;</td>
-					<td width="10%" class="listhdrr"><?=gettext("Interface");?></td>
-					<td width="15%" class="listhdrr"><?=gettext("Source");?></td>
-					<td width="10%" class="listhdrr"><?=gettext("Source Port");?></td>
-					<td width="15%" class="listhdrr"><?=gettext("Destination");?></td>
-					<td width="10%" class="listhdrr"><?=gettext("Destination Port");?></td>
-					<td width="15%" class="listhdrr"><?=gettext("NAT Address");?></td>
-					<td width="10%" class="listhdrr"><?=gettext("NAT Port");?></td>
-					<td width="10%" class="listhdrr"><?=gettext("Static Port");?></td>
-					<td width="25%" class="listhdr"><?=gettext("Description");?></td>
-					<td width="5%" class="list">
-						<table border="0" cellspacing="0" cellpadding="1" summary="add">
-							<tr>
-								<td width="17"></td>
-								<td>
-									<a href="firewall_nat_out_edit.php?after=-1">
-										<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" title="<?=gettext("add new mapping");?>" alt="add" />
-									</a>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-<?php
-			$i = 0;
-			foreach ($a_out as $natent):
-				$iconfn = "pass";
-				$textss = $textse = "";
-				if ($mode == "disabled" || $mode == "automatic" || isset($natent['disabled'])) {
-					$textss = "<span class=\"gray\">";
-					$textse = "</span>";
-					$iconfn .= "_d";
-				}
+	
+	<script type="text/javascript" src="/javascript/row_toggle.js"></script>
 
-				//build Alias popup box
-				$alias_src_span_begin = "";
-				$alias_src_port_span_begin = "";
-				$alias_dst_span_begin = "";
-				$alias_dst_port_span_begin = "";
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">				
+				
+				<?php
+				if ($savemsg)
+					print_info_box($savemsg);
+				if (is_subsystem_dirty('natconf'))
+					print_info_box_np(gettext("The NAT configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));
+				?>
+				
+	            <form action="firewall_nat_out.php" method="post" name="iform" id="iform">
+		                        
+			    <section class="col-xs-12">    				
+    					
+					<?php
+							$tab_array = array();
+							$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
+							$tab_array[] = array(gettext("1:1"), false, "firewall_nat_1to1.php");
+							$tab_array[] = array(gettext("Outbound"), true, "firewall_nat_out.php");
+							$tab_array[] = array(gettext("NPt"), false, "firewall_nat_npt.php");
+							display_top_tabs($tab_array);
+					?>
+				
+					<div class="tab-content content-box col-xs-12">	
+    					
+    				    <div class="container-fluid">	
+	    				    	                        	
+	                        <div class="table-responsive">
+		                        <table class="table table-striped table-sort">
+			                        <tr>
+				                        <td colspan="4"><?=gettext("Mode:"); ?></td>
+			                        </tr>
+									<tr>
+										<td>
+											<input name="mode" type="radio" id="automatic" value="automatic" <?php if ($mode == "automatic") echo "checked=\"checked\"";?> />
+										</td>
+										<td>
+											<strong>
+												<?=gettext("Automatic outbound NAT rule generation"); ?><br />
+												<?=gettext("(IPsec passthrough included)");?>
+											</strong>
+										</td>
+										<td>
+											<input name="mode" type="radio" id="hybrid" value="hybrid" <?php if ($mode == "hybrid") echo "checked=\"checked\"";?> />
+										</td>
+										<td>
+											<strong>
+												<?=gettext("Hybrid Outbound NAT rule generation"); ?><br />
+												<?=gettext("(Automatic Outbound NAT + rules below)");?>
+											</strong>
+										</td>
+									</tr>
+									
+									<tr>
+										<td>
+											<input name="mode" type="radio" id="advanced" value="advanced" <?php if ($mode == "advanced") echo "checked=\"checked\"";?> />
+										</td>
+										<td>
+											<strong>
+												<?=gettext("Manual Outbound NAT rule generation"); ?><br />
+												<?=gettext("(AON - Advanced Outbound NAT)");?>
+											</strong>
+										</td>
+										<td>
+											<input name="mode" type="radio" id="disabled" value="disabled" <?php if ($mode == "disabled") echo "checked=\"checked\"";?> />
+										</td>
+										<td>
+											<strong>
+												<?=gettext("Disable Outbound NAT rule generation"); ?><br />
+												<?=gettext("(No Outbound NAT rules)");?>
+											</strong>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4">
+											
+											<input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+										</td>
+									</tr>
+								</table>
+	                        </div>
+    				    </div>
+					</div>
+				</section>
+				
+	            <section class="col-xs-12">    				
+				
+					<div class="tab-content content-box col-xs-12">	
+    					
+    				    <div class="container-fluid">	
+	    				    	                        	
+	                        <div class="table-responsive">
+		                        <table class="table table-striped table-sort">
+									<tr><td colspan="12"><b>&nbsp;<?=gettext("Mappings:"); ?></b></td></tr>
+									
+									<tr id="frheader">
+										<td width="2%" class="list">&nbsp;</td>
+										<td width="3%" class="list">&nbsp;</td>
+										<td width="10%" class="listhdrr"><?=gettext("Interface");?></td>
+										<td width="10%" class="listhdrr"><?=gettext("Source");?></td>
+										<td width="5%" class="listhdrr"><?=gettext("Source Port");?></td>
+										<td width="10%" class="listhdrr"><?=gettext("Destination");?></td>
+										<td width="10%" class="listhdrr"><?=gettext("Destination Port");?></td>
+										<td width="10%" class="listhdrr"><?=gettext("NAT Address");?></td>
+										<td width="10%" class="listhdrr"><?=gettext("NAT Port");?></td>
+										<td width="10%" class="listhdrr"><?=gettext("Static Port");?></td>
+										<td width="10%" class="listhdr"><?=gettext("Description");?></td>
+										<td width="10%" class="list">
+											
+											<a href="firewall_nat_out_edit.php?after=-1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+										</td>
+									</tr>
+					<?php
+								$i = 0;
+								foreach ($a_out as $natent):
+									$iconfn = "glyphicon glyphicon-play";
+									$textss = "btn-success";
+									if ($mode == "disabled" || $mode == "automatic" || isset($natent['disabled'])) {
+										$textss = "btn-muted";
+									}
+					
+									//build Alias popup box
+									$alias_src_span_begin = "";
+									$alias_src_port_span_begin = "";
+									$alias_dst_span_begin = "";
+									$alias_dst_port_span_begin = "";
+					
+									$alias_popup = rule_popup($natent['source']['network'],pprint_port($natent['sourceport']),$natent['destination']['address'],pprint_port($natent['dstport']));
+					
+									$alias_src_span_begin = $alias_popup["src"];
+									$alias_src_port_span_begin = $alias_popup["srcport"];
+									$alias_dst_span_begin = $alias_popup["dst"];
+									$alias_dst_port_span_begin = $alias_popup["dstport"];
+					
+									$alias_src_span_end = $alias_popup["src_end"];
+									$alias_src_port_span_end = $alias_popup["srcport_end"];
+									$alias_dst_span_end = $alias_popup["dst_end"];
+									$alias_dst_port_span_end = $alias_popup["dstport_end"];
+					?>
+									<tr valign="top" id="fr<?=$i;?>">
+										<td class="listt">
+											<input type="checkbox" id="frc<?=$i;?>" name="rule[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" />
+										</td>
+										<td class="listt" align="center">
+					<?php
+										if ($mode == "disabled" || $mode == "automatic"):
+					?>
+											
+											<span title="<?=gettext("This rule is being ignored");?>" class="btn btn-default btn-xs <?=$textss;?>"><span class="<?=$iconfn;?>"></span></span>
 
-				$alias_popup = rule_popup($natent['source']['network'],pprint_port($natent['sourceport']),$natent['destination']['address'],pprint_port($natent['dstport']));
-
-				$alias_src_span_begin = $alias_popup["src"];
-				$alias_src_port_span_begin = $alias_popup["srcport"];
-				$alias_dst_span_begin = $alias_popup["dst"];
-				$alias_dst_port_span_begin = $alias_popup["dstport"];
-
-				$alias_src_span_end = $alias_popup["src_end"];
-				$alias_src_port_span_end = $alias_popup["srcport_end"];
-				$alias_dst_span_end = $alias_popup["dst_end"];
-				$alias_dst_port_span_end = $alias_popup["dstport_end"];
-?>
-				<tr valign="top" id="fr<?=$i;?>">
-					<td class="listt">
-						<input type="checkbox" id="frc<?=$i;?>" name="rule[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" />
-					</td>
-					<td class="listt" align="center">
-<?php
-					if ($mode == "disabled" || $mode == "automatic"):
-?>
-						<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_<?=$iconfn;?>.gif" width="11" height="11" border="0"
-							title="<?=gettext("This rule is being ignored");?>" alt="icon" />
-<?php
-					else:
-?>
-						<a href="?act=toggle&amp;id=<?=$i;?>">
-							<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_<?=$iconfn;?>.gif" width="11" height="11" border="0"
-								title="<?=gettext("click to toggle enabled/disabled status");?>" alt="icon" />
-						</a>
-<?php
-						endif;
-?>
-					</td>
-					<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
-						<?php echo $textss . htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])) . $textse; ?>
-						&nbsp;
-					</td>
-					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
-						<?PHP $natent['source']['network'] = ($natent['source']['network'] == "(self)") ? "This Firewall" : $natent['source']['network']; ?>
-						<?php echo $textss . $alias_src_span_begin . $natent['source']['network'] . $alias_src_span_end . $textse;?>
-					</td>
-					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
-<?php
-						echo $textss;
-						echo ($natent['protocol']) ? $natent['protocol'] . '/' : "" ;
-						if (!$natent['sourceport'])
-							echo "*";
-						else
-							echo $alias_src_port_span_begin . $natent['sourceport'] . $alias_src_port_span_end;
-						echo $textse;
-?>
-					</td>
-					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
-<?php
-						echo $textss;
-						if (isset($natent['destination']['any']))
-							echo "*";
-						else {
-							if (isset($natent['destination']['not']))
-								echo "!&nbsp;";
-							echo $alias_dst_span_begin . $natent['destination']['address'] . $alias_dst_span_end;
-						}
-						echo $textse;
-?>
-					</td>
-					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
-<?php
-						echo $textss;
-						echo ($natent['protocol']) ? $natent['protocol'] . '/' : "" ;
-						if (!$natent['dstport'])
-							echo "*";
-						else
-							echo $alias_dst_port_span_begin . $natent['dstport'] . $alias_dst_port_span_end;
-						echo $textse;
-?>
-					</td>
-					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
-<?php
-						echo $textss;
-						if (isset($natent['nonat']))
-							echo '<I>NO NAT</I>';
-						elseif (!$natent['target'])
-							echo htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])) . " address";
-						elseif ($natent['target'] == "other-subnet")
-							echo $natent['targetip'] . '/' . $natent['targetip_subnet'];
-						else
-							echo $natent['target'];
-						echo $textse;
-?>
-					</td>
-					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
-<?php
-						echo $textss;
-						if (!$natent['natport'])
-							echo "*";
-						else
-							echo $natent['natport'];
-						echo $textse;
-?>
-					</td>
-					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';" align="center">
-<?php
-						echo $textss;
-						if(isset($natent['staticnatport']))
-							echo gettext("YES");
-						else
-							echo gettext("NO");
-						echo $textse;
-?>
-					</td>
-					<td class="listbg" onclick="fr_toggle(<?=$i;?>)" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
-						<?=htmlspecialchars($natent['descr']);?>&nbsp;
-					</td>
-					<td class="list nowrap" valign="middle">
-						<table border="0" cellspacing="0" cellpadding="1" summary="move">
-							<tr>
-								<td><input onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>" src="/themes/<?= $g['theme']; ?>/images/icons/icon_left.gif" title="<?=gettext("move selected rules before this rule");?>" type="image" style="height:17;width:17;border:0" /></td>
-								<td>
-									<a href="firewall_nat_out_edit.php?id=<?=$i;?>">
-										<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_e.gif" width="17" height="17" border="0" title="<?=gettext("edit mapping");?>" alt="edit" />
-									</a>
-								</td>
-							</tr>
-							<tr>
-								<td align="center" valign="middle">
-									<a href="firewall_nat_out.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')">
-										<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" title="<?=gettext("delete rule");?>" alt="delete" />
-									</a>
-								</td>
-								<td>
-									<a href="firewall_nat_out_edit.php?dup=<?=$i;?>">
-										<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" title="<?=gettext("add a new NAT based on this one");?>" width="17" height="17" border="0" alt="duplicate" />
-									</a>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-<?php
-				$i++;
-			endforeach;
-?>
+					<?php
+										else:
+					?>
+											<a href="?act=toggle&amp;id=<?=$i;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" class="btn btn-default btn-xs <?=$textss;?>"><span class="<?=$iconfn;?>"></span></a>
+					<?php
+											endif;
+					?>
+										</td>
+										<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
+											<?php echo $textss . htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])) . $textse; ?>
+											&nbsp;
+										</td>
+										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
+											<?PHP $natent['source']['network'] = ($natent['source']['network'] == "(self)") ? "This Firewall" : $natent['source']['network']; ?>
+											<?php echo $textss . $alias_src_span_begin . $natent['source']['network'] . $alias_src_span_end . $textse;?>
+										</td>
+										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
+					<?php
+											echo $textss;
+											echo ($natent['protocol']) ? $natent['protocol'] . '/' : "" ;
+											if (!$natent['sourceport'])
+												echo "*";
+											else
+												echo $alias_src_port_span_begin . $natent['sourceport'] . $alias_src_port_span_end;
+											echo $textse;
+					?>
+										</td>
+										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
+					<?php
+											echo $textss;
+											if (isset($natent['destination']['any']))
+												echo "*";
+											else {
+												if (isset($natent['destination']['not']))
+													echo "!&nbsp;";
+												echo $alias_dst_span_begin . $natent['destination']['address'] . $alias_dst_span_end;
+											}
+											echo $textse;
+					?>
+										</td>
+										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
+					<?php
+											echo $textss;
+											echo ($natent['protocol']) ? $natent['protocol'] . '/' : "" ;
+											if (!$natent['dstport'])
+												echo "*";
+											else
+												echo $alias_dst_port_span_begin . $natent['dstport'] . $alias_dst_port_span_end;
+											echo $textse;
+					?>
+										</td>
+										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
+					<?php
+											echo $textss;
+											if (isset($natent['nonat']))
+												echo '<I>NO NAT</I>';
+											elseif (!$natent['target'])
+												echo htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])) . " address";
+											elseif ($natent['target'] == "other-subnet")
+												echo $natent['targetip'] . '/' . $natent['targetip_subnet'];
+											else
+												echo $natent['target'];
+											echo $textse;
+					?>
+										</td>
+										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
+					<?php
+											echo $textss;
+											if (!$natent['natport'])
+												echo "*";
+											else
+												echo $natent['natport'];
+											echo $textse;
+					?>
+										</td>
+										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';" align="center">
+					<?php
+											echo $textss;
+											if(isset($natent['staticnatport']))
+												echo gettext("YES");
+											else
+												echo gettext("NO");
+											echo $textse;
+					?>
+										</td>
+										<td class="listbg" onclick="fr_toggle(<?=$i;?>)" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
+											<?=htmlspecialchars($natent['descr']);?>&nbsp;
+										</td>
+										<td class="list nowrap" valign="middle">
+												<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>" title="<?=gettext("move selected rules before this rule");?>" type="submit" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
+												
+												<a href="firewall_nat_out_edit.php?id=<?=$i;?>" title="<?=gettext("edit mapping");?>" alt="edit"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+												<a href="firewall_nat_out.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')"  title="<?=gettext("delete rule");?>" alt="delete"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+												<a href="firewall_nat_out_edit.php?dup=<?=$i;?>" title="<?=gettext("add a new NAT based on this one");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+										</td>
+									</tr>
+					<?php
+									$i++;
+								endforeach;
+					?>
 				<tr valign="top" id="fr<?=$i;?>">
 					<td class="list" colspan="11"></td>
 					<td class="list nowrap" valign="middle">
-						<table border="0" cellspacing="0" cellpadding="1" summary="edit">
-							<tr>
-								<td>
+						
 <?php
 								if ($i == 0):
 ?>
-									<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_left_d.gif" width="17" height="17" title="<?=gettext("move selected mappings to end");?>" border="0" alt="move" />
+									
+									<span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
+									
+									
 <?php
 								else:
 ?>
-									<input onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>" type="image" src="/themes/<?= $g['theme']; ?>/images/icons/icon_left.gif" style="width:17;height:17;border:0" title="<?=gettext("move selected mappings to end");?>" />
+									<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>" type="submit"  title="<?=gettext("move selected mappings to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
 <?php
 								endif;
 ?>
-								</td>
-								<td>
-									<a href="firewall_nat_out_edit.php">
-										<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" title="<?=gettext("add new mapping");?>" alt="add" />
-									</a>
-								</td>
-							</tr>
-							<tr>
-								<td>
+							
+									<a href="firewall_nat_out_edit.php" title="<?=gettext("add new mapping");?>" alt="add"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+								
 <?php
 								if ($i == 0):
 ?>
-									<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_x_d.gif" width="17" height="17" title="<?=gettext("delete selected rules");?>" border="0" alt="delete" />
+									<span title="<?=gettext("delete selected rules");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></span>
 <?php
 								else:
 ?>
-									<input name="del" type="image" src="/themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" style="width:17;height:17" title="<?=gettext("delete selected mappings");?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected mappings?");?>')" />
+									<button name="del" type="submit" title="<?=gettext("delete selected mappings");?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected mappings?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 <?php
 								endif;
 ?>
-								</td>
-							</tr>
-						</table>
+						
 					</td>
 				</tr>
 <?php
@@ -533,13 +516,13 @@ if (is_subsystem_dirty('natconf'))
 				$automatic_rules = filter_nat_rules_outbound_automatic(implode(" ", filter_nat_rules_automatic_tonathosts()));
 				unset($FilterIflist, $GatewaysList);
 ?>
-				<tr><td colspan="5"><b>&nbsp;<?=gettext("Automatic rules:"); ?></b></td></tr>
-				<tr><td>&nbsp;</td></tr>
+				<tr><td colspan="12"><b>&nbsp;<?=gettext("Automatic rules:"); ?></b></td></tr>
+				<tr><td colspan="12">&nbsp;</td></tr>
 				<tr id="frheader">
 					<td width="3%" class="list">&nbsp;</td>
 					<td width="3%" class="list">&nbsp;</td>
 					<td width="10%" class="listhdrr"><?=gettext("Interface");?></td>
-					<td width="15%" class="listhdrr"><?=gettext("Source");?></td>
+					<td width="10%" class="listhdrr"><?=gettext("Source");?></td>
 					<td width="10%" class="listhdrr"><?=gettext("Source Port");?></td>
 					<td width="15%" class="listhdrr"><?=gettext("Destination");?></td>
 					<td width="10%" class="listhdrr"><?=gettext("Destination Port");?></td>
@@ -555,16 +538,17 @@ if (is_subsystem_dirty('natconf'))
 					<tr valign="top">
 						<td class="list">&nbsp;</td>
 						<td class="listt" align="center">
-							<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_pass.gif" width="11" height="11" border="0" title="<?=gettext("automatic outbound nat");?>" alt="icon" />
+							<span class="glyphicon glyphicon-play text-success" title="<?=gettext("automatic outbound nat");?>"></span>
+
 						</td>
-						<td class="listlr" style="background-color: #E0E0E0">
+						<td class="listlr">
 							<?php echo htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface'])); ?>
 							&nbsp;
 						</td>
-						<td class="listr" style="background-color: #E0E0E0">
+						<td class="listr">
 							<?=$natent['source']['network'];?>
 						</td>
-						<td class="listr" style="background-color: #E0E0E0">
+						<td class="listr">
 <?php
 							echo ($natent['protocol']) ? $natent['protocol'] . '/' : "" ;
 							if (!$natent['sourceport'])
@@ -573,7 +557,7 @@ if (is_subsystem_dirty('natconf'))
 								echo $natent['sourceport'];
 ?>
 						</td>
-						<td class="listr" style="background-color: #E0E0E0">
+						<td class="listr">
 <?php
 							if (isset($natent['destination']['any']))
 								echo "*";
@@ -584,7 +568,7 @@ if (is_subsystem_dirty('natconf'))
 							}
 ?>
 						</td>
-						<td class="listr" style="background-color: #E0E0E0">
+						<td class="listr">
 <?php
 							echo ($natent['protocol']) ? $natent['protocol'] . '/' : "" ;
 							if (!$natent['dstport'])
@@ -593,7 +577,7 @@ if (is_subsystem_dirty('natconf'))
 								echo $natent['dstport'];
 ?>
 						</td>
-						<td class="listr" style="background-color: #E0E0E0">
+						<td class="listr">
 <?php
 							if (isset($natent['nonat']))
 								echo '<I>NO NAT</I>';
@@ -605,7 +589,7 @@ if (is_subsystem_dirty('natconf'))
 								echo $natent['target'];
 ?>
 						</td>
-						<td class="listr" style="background-color: #E0E0E0">
+						<td class="listr">
 <?php
 							if (!$natent['natport'])
 								echo "*";
@@ -613,7 +597,7 @@ if (is_subsystem_dirty('natconf'))
 								echo $natent['natport'];
 ?>
 						</td>
-						<td class="listr" style="background-color: #E0E0E0">
+						<td class="listr">
 <?php
 							if(isset($natent['staticnatport']))
 								echo gettext("YES");
@@ -651,11 +635,13 @@ if (is_subsystem_dirty('natconf'))
 					</td>
 				</tr>
 			</table>
+	                        </div>
+    				    </div>
+					</div>
+	            </section>
+	            </form>
 			</div>
-		</td>
-	</tr>
-</table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+		</div>
+	</section>
+
+<?php include("foot.inc"); ?>

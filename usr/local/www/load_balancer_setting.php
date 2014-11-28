@@ -101,71 +101,81 @@ $shortcut_section = "relayd";
 include("head.inc");
 
 ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+
+<body>
 <?php include("fbegin.inc"); ?>
-<form action="load_balancer_setting.php" method="post">
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
-<?php print_info_box_np(gettext("The load balancer configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
-<?php endif; ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="load balancer settings">
-   <tr>
-      <td class="tabnavtbl">
-       <?php
-        /* active tabs */
-        $tab_array = array();
-        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
-        $tab_array[] = array(gettext("Virtual Servers"), false, "load_balancer_virtual_server.php");
-        $tab_array[] = array(gettext("Monitors"), false, "load_balancer_monitor.php");
-        $tab_array[] = array(gettext("Settings"), true, "load_balancer_setting.php");
-        display_top_tabs($tab_array);
-       ?>
-      </td>
-   </tr>
-   <tr>
-      <td id="mainarea">
-         <div class="tabcont">
-            <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-              <tr>
-                 <td colspan="2" valign="top" class="listtopic"><?=gettext("Relayd global settings"); ?></td>
-              </tr>
-	      <tr>
-	         <td width="22%" valign="top" class="vncell"><?=gettext("timeout") ; ?></td>
-                 <td width="78%" class="vtable">
-                   <input name="timeout" id="timeout" value="<?php if ($lbsetting['timeout'] <> "") echo $lbsetting['timeout']; ?>" class="formfld unknown" />
-                   <br />
-                   <?=gettext("Set the global timeout in milliseconds for checks. Leave blank to use the default value of 1000 ms "); ?>
-                 </td>
-              </tr>
-	      <tr>
-	         <td width="22%" valign="top" class="vncell"><?=gettext("interval") ; ?></td>
-                 <td width="78%" class="vtable">
-                   <input name="interval" id="interval" value="<?php if ($lbsetting['interval'] <> "") echo $lbsetting['interval']; ?>" class="formfld unknown" />
-                   <br />
-                   <?=gettext("Set the interval in seconds at which the member of a pool will be checked. Leave blank to use the default interval of 10 seconds"); ?>
-                </td>
-             </tr>
-              <tr>
-                 <td width="22%" valign="top" class="vncell"><?=gettext("prefork") ; ?></td>
-                 <td width="78%" class="vtable">
-                   <input name="prefork" id="prefork" value="<?php if ($lbsetting['prefork'] <> "") echo $lbsetting['prefork']; ?>" class="formfld unknown" />
-                   <br />
-                   <?=gettext("Number of processes used by relayd for dns protocol. Leave blank to use the default value of 5 processes"); ?>
-                </td>
-             </tr>
-             <tr>
-                 <td width="22%" valign="top">&nbsp;</td>
-                 <td width="78%">
-                    <input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-                 </td>
-            </tr>
-           </table>
-        </div>
-      </td>
-  </tr>
-</table>
-</form>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
+				<?php print_info_box_np(gettext("The load balancer configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+				<?php endif; ?>
+				
+			    <section class="col-xs-12">
+    				
+    				<?php
+			        /* active tabs */
+			        $tab_array = array();
+			        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
+			        $tab_array[] = array(gettext("Virtual Servers"), false, "load_balancer_virtual_server.php");
+			        $tab_array[] = array(gettext("Monitors"), false, "load_balancer_monitor.php");
+			        $tab_array[] = array(gettext("Settings"), true, "load_balancer_setting.php");
+			        display_top_tabs($tab_array);
+			       ?>
+					
+					<div class="tab-content content-box col-xs-12">	    					
+    				    <div class="container-fluid">	
+	    				    
+	    				  <form action="load_balancer_setting.php" method="post" name="iform" id="iform">
+
+								<div class="table-responsive">							
+
+						            <table class="table table-striped table-sort">
+						              <tr>
+						                 <td colspan="2" valign="top" class="listtopic"><?=gettext("Relayd global settings"); ?></td>
+						              </tr>
+							      <tr>
+							         <td width="22%" valign="top" class="vncell"><?=gettext("timeout") ; ?></td>
+						                 <td width="78%" class="vtable">
+						                   <input name="timeout" id="timeout" value="<?php if ($lbsetting['timeout'] <> "") echo $lbsetting['timeout']; ?>" class="formfld unknown" />
+						                   <br />
+						                   <?=gettext("Set the global timeout in milliseconds for checks. Leave blank to use the default value of 1000 ms "); ?>
+						                 </td>
+						              </tr>
+							      <tr>
+							         <td width="22%" valign="top" class="vncell"><?=gettext("interval") ; ?></td>
+						                 <td width="78%" class="vtable">
+						                   <input name="interval" id="interval" value="<?php if ($lbsetting['interval'] <> "") echo $lbsetting['interval']; ?>" class="formfld unknown" />
+						                   <br />
+						                   <?=gettext("Set the interval in seconds at which the member of a pool will be checked. Leave blank to use the default interval of 10 seconds"); ?>
+						                </td>
+						             </tr>
+						              <tr>
+						                 <td width="22%" valign="top" class="vncell"><?=gettext("prefork") ; ?></td>
+						                 <td width="78%" class="vtable">
+						                   <input name="prefork" id="prefork" value="<?php if ($lbsetting['prefork'] <> "") echo $lbsetting['prefork']; ?>" class="formfld unknown" />
+						                   <br />
+						                   <?=gettext("Number of processes used by relayd for dns protocol. Leave blank to use the default value of 5 processes"); ?>
+						                </td>
+						             </tr>
+						             <tr>
+						                 <td width="22%" valign="top">&nbsp;</td>
+						                 <td width="78%">
+						                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+						                 </td>
+						            </tr>
+						           </table>
+								</div>
+	    				  </form>
+    				    </div>
+					</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
+<?php include("foot.inc"); ?>

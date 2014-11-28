@@ -46,7 +46,7 @@ require("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
-require_once("pkg-utils.inc");
+require_once("includes/pkg-utils.inc");
 
 global $static_output;
 
@@ -87,22 +87,41 @@ if ($_POST) {
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
-	<form action="pkg_mgr_install.php" method="post">
-		<div id="mainareapkg">
-			<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="package manager install">
-				<tr>
-					<td>
-						<?php
+
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
+				<?php
+				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
+				if (!verify_all_package_servers())
+					print_info_box(package_server_mismatch_message());
+			
+				/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
+				if (check_package_server_ssl() === false)
+					print_info_box(package_server_ssl_failure_message()); ?>
+				
+			    <section class="col-xs-12">
+    				
+    					
+					<?php
 							$tab_array = array();
 							$tab_array[] = array(gettext("Available packages"), false, "pkg_mgr.php");
 							$tab_array[] = array(gettext("Installed packages"), false, "pkg_mgr_installed.php");
 							$tab_array[] = array(gettext("Package Installer"), true, "");
 							display_top_tabs($tab_array);
-						?>
-					</td>
-				</tr>
+					?>
+				
+					<div class="tab-content content-box col-xs-12">	
+    					
+    				    <div class="container-fluid">	
+	    					<form action="pkg_mgr_install.php" method="post" name="iform">	                        	
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+
+	
 <?php if ((empty($_GET['mode']) && $_GET['id']) || (!empty($_GET['mode']) && (!empty($_GET['pkg']) || $_GET['mode'] == 'reinstallall') && ($_GET['mode'] != 'installedinfo' && $_GET['mode'] != 'showlog'))):
 	if (empty($_GET['mode']) && $_GET['id']) {
 		$pkgname = str_replace(array("<", ">", ";", "&", "'", '"', '.', '/'), "", htmlspecialchars_decode($_GET['id'], ENT_QUOTES | ENT_HTML401));
@@ -130,59 +149,53 @@ if ($_POST) {
 		break;
 	}
 ?>
-				<tr>
-					<td class="tabcont" align="center">
-						<table style="height:15;colspacing:0" width="420" border="0" cellpadding="0" cellspacing="0" summary="images">
-							<tr>
-								<td class="tabcont" align="center">Package: <b><?=$pkgname;?></b> will be <?=$pkgtxt;?>.<br/>
-								Please confirm the action.<br/>
-								</td>
-								<td class="tabcont" align="center">
-									<input type="hidden" name="id" value="<?=$pkgname;?>" />
-									<input type="hidden" name="mode" value="<?=$pkgmode;?>" />
-									<input type="submit" name="pkgconfirm" id="pkgconfirm" value="Confirm"/>
-									<input type="submit" name="pkgcancel" id="pkgcancel" value="Cancel"/>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-<?php endif; if (!empty($_POST['id']) || $_GET['mode'] == 'showlog' || ($_GET['mode'] == 'installedinfo' && !empty($_GET['pkg']))): ?>
-				<tr>
-					<td class="tabcont" align="center">
-						<table style="height:15;colspacing:0" width="420" border="0" cellpadding="0" cellspacing="0" summary="images">
-							<tr>
-								<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_left.gif')" height="15" width="5"></td>
-								<td>
-									<table id="progholder" style="height:15;colspacing:0" width="410" border="0" cellpadding="0" cellspacing="0" summary="progress bar">
-										<tr><td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_gray.gif')" valign="top" align="left">
-											<img src='./themes/<?= $g['theme']; ?>/images/misc/bar_blue.gif' width="0" height="15" name="progressbar" id="progressbar" alt="progress bar" />
-										</td></tr>
-									</table>
-								</td>
-								<td style="background:url('./themes/<?=$g['theme'];?>/images/misc/bar_right.gif')" height="15" width="5">
-								</td>
-							</tr>
-						</table>
-						<br />
-						<!-- status box -->
-						<textarea cols="80" rows="1" name="status" id="status" wrap="hard"><?=gettext("Beginning package installation.");?></textarea>
-						<br />
-						<!-- command output box -->
-						<textarea cols="80" rows="35" name="output" id="output" wrap="hard"></textarea>
-					</td>
-				</tr>
-<?php endif; ?>
-			</table>
+									<tr>
+										<td class="tabcont" align="center">
+											<table style="height:15;colspacing:0" width="420" border="0" cellpadding="0" cellspacing="0" summary="images">
+												<tr>
+													<td class="tabcont" align="center">Package: <b><?=$pkgname;?></b> will be <?=$pkgtxt;?>.<br/>
+													Please confirm the action.<br/>
+													</td>
+													<td class="tabcont" align="center">
+														<input type="hidden" name="id" value="<?=$pkgname;?>" />
+														<input type="hidden" name="mode" value="<?=$pkgmode;?>" />
+														<input type="submit" name="pkgconfirm" id="pkgconfirm" value="Confirm" class="btn btn-primary"/>
+														<input type="submit" name="pkgcancel" id="pkgcancel" value="Cancel" class="btn btn-default"/>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+					<?php endif; if (!empty($_POST['id']) || $_GET['mode'] == 'showlog' || ($_GET['mode'] == 'installedinfo' && !empty($_GET['pkg']))): ?>
+									<tr>
+										<td class="tabcont" align="center">
+											
+											<div class="progress">
+											  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 5%;">
+											    <span class="sr-only">5% Complete</span>
+											  </div>
+											</div>
+											
+										
+											<br />
+											<!-- status box -->
+											<textarea cols="80" rows="1" name="status" id="status" wrap="hard"><?=gettext("Beginning package installation.");?></textarea>
+											<br />
+											<!-- command output box -->
+											<textarea cols="80" rows="35" name="output" id="output" wrap="hard"></textarea>
+										</td>
+									</tr>
+					<?php endif; ?>
+								</table>
+		                        </div>
+	    					</form>
+    				    </div>
+					</div>
+			    </section>
+			</div>
 		</div>
-	</form>
-<?php include("fend.inc"); ?>
-<script type="text/javascript">
-//<![CDATA[
-NiftyCheck();
-Rounded("div#mainareapkg","bl br","#FFF","#eeeeee","smooth");
-//]]>
-</script>
+	</section>
+
 
 <?php
 
@@ -301,5 +314,5 @@ if ($_GET) {
 }
 ?>
 
-</body>
-</html>
+
+<?php include("foot.inc"); ?>

@@ -156,7 +156,7 @@ if (!is_array($config['widgets'])) {
 
 	## If it is the first time webConfigurator has been
 	## accessed since initial install show this stuff.
-	if(file_exists('/conf/trigger_initial_wizard')) {
+	/*if(file_exists('/conf/trigger_initial_wizard')) {
 		echo <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -196,7 +196,7 @@ EOF;
 		exit;
 	}
 
-
+	*/
 	## Find out whether there's hardware encryption or not
 	unset($hwcrypto);
 	$fd = @fopen("{$g['varlog_path']}/dmesg.boot", "r");
@@ -468,7 +468,9 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
+
+
 
 <script type="text/javascript">
 //<![CDATA[
@@ -478,10 +480,57 @@ columns = ['col1','col2','col3','col4', 'col5','col6','col7','col8','col9','col1
 
 <?php
 include("fbegin.inc");
+
+
 echo $jscriptstr;
-	if(!file_exists("/usr/local/www/themes/{$g['theme']}/no_big_logo"))
+/*	if(!file_exists("/usr/local/www/themes/{$g['theme']}/no_big_logo"))
 		echo "<center><img src=\"./themes/".$g['theme']."/images/logobig.jpg\" alt=\"big logo\" /></center><br />";
 
+*/
+?>
+
+
+<?php if(file_exists('/conf/trigger_initial_wizard')) : ?>
+	<header class="page-content-head">
+		<div class="container-fluid">
+			<h1><?=gettext("Starting initial configuration"); ?>!</h1>
+		</div>
+	</header>
+
+	<section class="page-content-main">
+		<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+			<div class="row">
+	        	<section class="col-xs-12">
+		        	<div class="content-box" style="padding: 20px;">                                   						
+							<div class="table-responsive">
+								<?php
+									echo "<img src=\"/themes/{$g['theme']}/images/logo.gif\" border=\"0\" alt=\"logo\" /><p>\n";
+								?>
+								<br />
+								<div class="content-box-main">
+									<?php
+										echo sprintf(gettext("Welcome to %s!\n"),$g['product_name']) . "<p>";
+										echo gettext("One moment while we start the initial setup wizard.") . "<p>\n";
+										echo gettext("Embedded platform users: Please be patient, the wizard takes a little longer to run than the normal GUI.") . "<p>\n";
+										echo sprintf(gettext("To bypass the wizard, click on the %s logo on the initial page."),$g['product_name']) . "\n";
+									?>
+								</div>
+							<div>
+					</div>
+				</section>
+			</div>
+		</div>
+	</section>
+	<meta http-equiv="refresh" content="3;url=wizard.php?xml=setup_wizard.xml">
+	<?php exit; ?>
+<?php endif; ?>
+
+	<section class="page-content-main">
+		<div class="container-fluid">
+            
+            <div class="row">
+	            
+<?php            
 /* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
 if (!verify_all_package_servers())
 	print_info_box(package_server_mismatch_message());
@@ -490,73 +539,34 @@ if ($savemsg)
 	print_info_box($savemsg);
 
 pfSense_handle_custom_code("/usr/local/pkg/dashboard/pre_dashboard");
-
 ?>
-<div id="widgetcontainer" style="display:none">
-		<div id="content1"><h1><?=gettext("Available Widgets"); ?></h1><p><?php
-			$widgetfiles_add = $widgetfiles;
-			sort($widgetfiles_add);
-			foreach($widgetfiles_add as $widget) {
-				if(!stristr($widget, "widget.php"))
-					continue;
 
-				$periodpos = strpos($widget, ".");
-				$widgetname = substr($widget, 0, $periodpos);
-				$nicename = $widgetname;
-				$nicename = str_replace("_", " ", $nicename);
-				//make the title look nice
-				$nicename = ucwords($nicename);
-
-				$widgettitle = $widgetname . "_title";
-				$widgettitlelink = $widgetname . "_title_link";
-					if ($$widgettitle != "")
-					{
-						//echo widget title
-						?>
-						<span style="cursor: pointer;" onclick='return addWidget("<?php echo $widgetname; ?>")'>
-						<u><?php echo $$widgettitle; ?></u></span><br />
-						<?php
-					}
-					else {?>
-						<span style="cursor: pointer;" onclick='return addWidget("<?php echo $widgetname; ?>")'>
-						<u><?php echo $nicename; ?></u></span><br /><?php
-					}
-			}
-		?>
-		</p>
-	</div>
-</div>
-
-<div id="welcomecontainer" style="display:none">
-		<div id="welcome-container">
-			<div style="float:left;width:100%;padding: 2px">
-				<h1><?=gettext("Welcome to the Dashboard page"); ?>!</h1>
-			</div>
-			<div onclick="domTT_close(this);showAllWidgets();" style="width:87%; position: absolute; cursor:pointer; padding: 10px;" >
-				<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_close.gif" alt="close" style="float:right" />
-			</div>
-			<div style="clear:both;"></div>
-			<p>
-			<?=gettext("This page allows you to customize the information you want to be displayed!");?><br />
-			<?=gettext("To get started click the");?> <img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="plus" /> <?=gettext("icon to add widgets.");?><br />
-			<br />
-			<?=gettext("You can move any widget around by clicking and dragging the title.");?>
-			</p>
-	</div>
-</div>
-
-<form action="index.php" method="post">
-<input type="hidden" value="" name="sequence" id="sequence" />
-<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="<?=gettext("Click here to add widgets"); ?>" style="cursor: pointer;" onmouseup="domTT_activate(this, event, 'content', document.getElementById('content1'), 'type', 'velcro', 'delay', 0, 'fade', 'both', 'fadeMax', 100, 'styleClass', 'niceTitle');" />
-
-<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_info_pkg.gif" alt="<?=gettext("Click here for help"); ?>" style="cursor: help;" onmouseup="hideAllWidgets();domTT_activate(this, event, 'content', document.getElementById('welcome-container'), 'type', 'sticky', 'closeLink', '','delay', 0, 'fade', 'both', 'fadeMax', 100, 'styleClass', 'niceTitle');" />
-
-
-&nbsp;&nbsp;&nbsp;
-		<input id="submit" name="submit" type="submit" style="display:none" onclick="return updatePref();" class="formbtn" value="<?=gettext("Save Settings");?>" />
-</form>
+	          
+<?php
+/*
+                
+                <section class="col-xs-12 col-md-6" id="welcomecontainer" style="display:none">
+                    <div class="content-box">                                   				
+					
+						<div style="float:left;width:100%;padding: 2px">
+							<h1><?=gettext("Welcome to the Dashboard page"); ?>!</h1>
+						</div>
+						<div onclick="domTT_close(this);showAllWidgets();" style="width:87%; position: absolute; cursor:pointer; padding: 10px;" >
+							<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_close.gif" alt="close" style="float:right" />
+						</div>
+						<div style="clear:both;"></div>
+						<p>
+						<?=gettext("This page allows you to customize the information you want to be displayed!");?><br />
+						<?=gettext("To get started click the");?> <img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="plus" /> <?=gettext("icon to add widgets.");?><br />
+						<br />
+						<?=gettext("You can move any widget around by clicking and dragging the title.");?>
+						</p>
+                    </div>
+                </section>
+*/
+?>
 <!-- fakeClass contains no CSS but is used as an identifier in theme pfsense_ng_fs - loader.js -->
-<div id="niftyOutter" class="fakeClass">
+
 	<?php
 	$totalwidgets = count($widgetfiles);
 	$halftotal = $totalwidgets / 2 - 2;
@@ -564,10 +574,7 @@ pfSense_handle_custom_code("/usr/local/pkg/dashboard/pre_dashboard");
 	$directory = "/usr/local/www/widgets/widgets/";
 	$printed = false;
 	$firstprint = false;
-	?>
-	<div id="col1" style="float:left;width:49%;padding-bottom:40px" class="ui-sortable">
-	<?php
-
+	
 	foreach($widgetlist as $widget) {
 
 		if(!stristr($widget, "widget.php"))
@@ -642,119 +649,90 @@ pfSense_handle_custom_code("/usr/local/pkg/dashboard/pre_dashboard");
 			}
 		}
 
-		if( substr($g['theme'], -3) != "_fs") {
-			if ($config['widgets'] && $pconfig['sequence'] != ""){
-				if ($colpos[$widgetcounter] == "col2" && $printed == false)
-				{
-					$printed = true;
-					?>
-					</div>
-					<div id="col2" style="float:right;width:49%;padding-bottom:40px" class="ui-sortable">
-					<?php
-				}
-			}
-			else if ($widgetcounter >= $halftotal && $printed == false){
-				$printed = true;
-				?>
-				</div>
-				<div id="col2" style="float:right;width:49%;padding-bottom:40px" class="ui-sortable">
-				<?php
-			}
-		}
-		else {
-			if ($config['widgets'] && $pconfig['sequence'] != "") {
-				if ($colpos[$widgetcounter] == "col2" && $printed == false)
-				{
-					$printed = true;
-					?>
-					</div>
-					<div id="col2" style="float:right;width:49%;padding-bottom:40px" class="ui-sortable">
-					<?php
-				}
-				else { ?>
-					<script type="text/javascript">
-					//<![CDATA[
-					var colpos = "<?=$colpos[$widgetcounter]?>";
-					createColumn(colpos);
-					//]]>
-					</script>
-				<?php }
-			}		
-		}
+		
 
 		?>
-		<div style="clear:both;"></div>
-		<div  id="<?php echo $widgetname;?>-container" class="widgetdiv" style="display:<?php echo $divdisplay; ?>;">
-			<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-container-input" name="<?php echo $widgetname;?>-container-input" />
-			<div id="<?php echo $widgetname;?>-topic" class="widgetheader" style="cursor:move">
-				<div style="float:left;">
-					<?php
+		<section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>-container" style="display:<?php echo $divdisplay; ?>;">
+          	<div class="content-box">	          	
+	          	
+				<header class="content-box-head col-xs-12">
 
-					$widgettitle = $widgetname . "_title";
-					$widgettitlelink = $widgetname . "_title_link";
-					if ($$widgettitle != "")
-					{
-						//only show link if defined
-						if ($$widgettitlelink != "") {?>
-						<u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
-						<?php }
-							//echo widget title
-							echo $$widgettitle;
-						if ($$widgettitlelink != "") { ?>
-						</span></u>
-						<?php }
-					}
-					else{
-						if ($$widgettitlelink != "") {?>
-						<u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
-						<?php }
-						echo $nicename;
-							if ($$widgettitlelink != "") { ?>
-						</span></u>
-						<?php }
-					}
-					?>
-				</div>
-				<div align="right" style="float:right;">
-					<div id="<?php echo $widgetname;?>-configure" onclick='return configureWidget("<?php echo $widgetname;?>")' style="display:none; cursor:pointer" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_configure.gif" alt="configure" /></div>
-					<div id="<?php echo $widgetname;?>-open" onclick='return showWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $showWidget;?>; cursor:pointer" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_open.gif" alt="open" /></div>
-					<div id="<?php echo $widgetname;?>-min" onclick='return minimizeWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv;?>; cursor:pointer" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_minus.gif" alt="minimize" /></div>
-					<div id="<?php echo $widgetname;?>-close" onclick='return closeWidget("<?php echo $widgetname;?>",true)' style="display:inline; cursor:pointer" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_close.gif" alt="close" /></div>
-				</div>
-				<div style="clear:both;"></div>
-			</div>
-			<?php if ($divdisplay != "block") { ?>
-			<div id="<?php echo $widgetname;?>-loader" style="display:<?php echo $display; ?>;" align="center">
-				<br />
-					<img src="./themes/<?= $g['theme']; ?>/images/misc/widget_loader.gif" width="25" height="25" alt="<?=gettext("Loading selected widget"); ?>..." />
-				<br />
-			</div> <?php $display = "none"; } ?>
-			<div id="<?php echo $widgetname;?>" style="display:<?php echo $display; ?>;">
-				<?php
-					if ($divdisplay == "block")
-					{
-						include($directory . $widget);
-					}
-				?>
-			</div>
-			<div style="clear:both;"></div>
-		</div>
-		<?php
-	$widgetcounter++;
+				    <ul class="list-inline __nomb">
+				        <li><h3>
+					    <?php
+							$widgettitle = $widgetname . "_title";
+							$widgettitlelink = $widgetname . "_title_link";
+							if ($$widgettitle != "")
+							{
+								//only show link if defined
+								if ($$widgettitlelink != "") {?>
+								<u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
+								<?php }
+									//echo widget title
+									echo $$widgettitle;
+								if ($$widgettitlelink != "") { ?>
+								</span></u>
+								<?php }
+							}
+							else{
+								if ($$widgettitlelink != "") {?>
+								<u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
+								<?php }
+								echo $nicename;
+									if ($$widgettitlelink != "") { ?>
+								</span></u>
+								<?php }
+							}
+						?>					        
+				        </h3></li>
+				        <li class="pull-right">
+				            <div class="btn-group">
+				                <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?php echo $widgetname;?>-min" onclick='return minimizeWidget("<?php echo $widgetname;?>",true)' ><span class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#<?php echo $widgetname;?>-container"></span></button>
+				                <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?php echo $widgetname;?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
+				               
+				                <button class="btn btn-default btn-xs" id="<?php echo $widgetname;?>-configure" onclick='return configureWidget("<?php echo $widgetname;?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
+								
+								<!-- <div id="<?php echo $widgetname;?>-open" onclick='return showWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $showWidget;?>; cursor:pointer" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_open.gif" alt="open" /></div> -->
+					
+				            </div>
+				        </li>   
+				    </ul>                             
+				</header>
+	          	
+	          	<div class="content-box-main col-xs-12 collapse in" id="<?php echo $widgetname;?>-container">
+	          		<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-container-input" name="<?php echo $widgetname;?>-container-input" />
+			
+					<?php if ($divdisplay != "block") { ?>
+					<div id="<?php echo $widgetname;?>-loader" style="display:<?php echo $display; ?>;" align="center">
+						<br />
+							<img src="./themes/<?= $g['theme']; ?>/images/misc/widget_loader.gif" width="25" height="25" alt="<?=gettext("Loading selected widget"); ?>..." />
+						<br />
+					</div> <?php $display = "none"; } ?>
+					
+						<?php
+							if ($divdisplay == "block")
+							{
+								include($directory . $widget);
+							}
+						?>
+						<?php $widgetcounter++; ?>
+	          			</div>
+                    </div>                   
+                </section>
+				<? } //end foreach ?>
+		
 
-	}//end foreach
-	?>
-		</div>
-	<div style="clear:both;"></div>
-</div>
 
-<?php include("fend.inc"); ?>
+            </div>
+        </div>
+    </section>
+
 
 <script type="text/javascript">
 //<![CDATA[
 	jQuery(document).ready(function(in_event)
 	{
-			jQuery('.ui-sortable').sortable({connectWith: '.ui-sortable', dropOnEmpty: true, handle: '.widgetheader', change: showSave});
+			//jQuery('.ui-sortable').sortable({connectWith: '.ui-sortable', dropOnEmpty: true, handle: '.widgetheader', change: showSave});
 
 	<?php if (!$config['widgets']  && $pconfig['sequence'] != ""){ ?>
 			hideAllWidgets();
@@ -779,5 +757,6 @@ pfSense_handle_custom_code("/usr/local/pkg/dashboard/pre_dashboard");
 	}
 ?>
 
-</body>
-</html>
+
+<?php include("foot.inc"); ?>
+

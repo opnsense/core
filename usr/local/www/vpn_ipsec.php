@@ -223,8 +223,7 @@ include("head.inc");
 <script type="text/javascript" src="/javascript/row_toggle.js"></script>
 
 <?php include("fbegin.inc"); ?>
-
-
+<form action="vpn_ipsec.php" method="post">
 	<section class="page-content-main">
 		<div class="container-fluid">	
 			<div class="row">
@@ -261,12 +260,12 @@ include("head.inc");
 <?php
 				$i = 0;
 				foreach ($a_phase1 as $ph1ent):
-					$iconfn = "pass";
+					$iconfn = "success";
 					$spans = $spane = "";
 					if (isset($ph1ent['disabled'])) {
 						$spans = "<span class=\"gray\">";
 						$spane = "</span>";
-						$iconfn .= "_d";
+						$iconfn = "default";
 					}
 ?>
 					<tr valign="top" id="fr<?=$i;?>" ondblclick="document.location='vpn_ipsec_phase1.php?p1index=<?=$i;?>'">
@@ -274,9 +273,10 @@ include("head.inc");
 							<input type="checkbox" id="frc<?=$i;?>" name="p1entry[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" />
 						</td>
 						<td class="listt" align="center" valign="middle">
-							<input name="toggle_<?=$i;?>" src="/themes/<?= $g['theme']; ?>/images/icons/icon_<?=$iconfn?>.gif"
+							<button name="toggle_<?=$i;?>_x" 
 								title="<?=gettext("click to toggle enabled/disabled status");?>"
-								type="image" style="height:11;width:11;border:0" />
+								type="submit" class="btn btn-<?php echo $iconfn?> btn-xs"><span class="glyphicon glyphicon-play"></span>
+							</button>
 						</td>
 						<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>">
 							<?=$spans;?>
@@ -354,30 +354,37 @@ include("head.inc");
 							<table border="0" cellspacing="0" cellpadding="1" summary="icons">
 								<tr>
 									<td>
-										<input onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)"
-											name="move_<?=$i;?>" src="/themes/<?= $g['theme']; ?>/images/icons/icon_left.gif"
+										<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)"
+											name="move_<?=$i;?>_x"
 											title="<?=gettext("move selected entries before this");?>"
-											type="image" style="height:17;width:17;border:0" />
+											type="submit"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-arrow-left"></span>
+										</button>
 									</td>
 									<td>
-										<a href="vpn_ipsec_phase1.php?p1index=<?=$i;?>">
-											<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_e.gif" title="<?=gettext("edit phase1 entry"); ?>" width="17" height="17" border="0" alt="edit" />
+										<a href="vpn_ipsec_phase1.php?p1index=<?=$i;?>" title="<?=gettext("edit phase1 entry"); ?>" class="btn btn-default btn-xs" alt="edit">
+											<span class="glyphicon glyphicon-pencil"></span>
 										</a>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<input name="del_<?=$i;?>" src="/themes/<?= $g['theme']; ?>/images/icons/icon_x.gif"
+										<button name="del_<?=$i;?>_x"
 											title="<?=gettext("delete phase1 entry");?>"
-											type="image" style="height:17;width:17;border:0"
-											onclick="return confirm('<?=gettext("Do you really want to delete this phase1 and all associated phase2 entries?"); ?>')" />
+											type="submit"
+											onclick="return confirm('<?=gettext("Do you really want to delete this phase1 and all associated phase2 entries?"); ?>')"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-remove"></span>
+										</button>
+
 									</td>
 									<td>
 <?php
 							if (!isset($ph1ent['mobile'])):
 ?>
-										<a href="vpn_ipsec_phase1.php?dup=<?=$i;?>">
-											<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" title="<?=gettext("copy phase1 entry"); ?>" width="17" height="17" border="0" alt="add" />
+										<a href="vpn_ipsec_phase1.php?dup=<?=$i;?>" title="<?=gettext("copy phase1 entry"); ?>" class="btn btn-default btn-xs" alt="add">
+											<span class="glyphicon glyphicon-plus"></span>
 										</a>
 <?php
 							endif;
@@ -433,12 +440,12 @@ include("head.inc");
 									$fr_c = $fr_prefix . "c" . $j;
 									$fr_d = $fr_prefix . "d" . $j;
 
-									$iconfn = "pass";
+									$iconfn = "success";
 									$spans = $spane = "";
 									if (isset($ph2ent['disabled'])) {
 										$spans = "<span class=\"gray\">";
 										$spane = "</span>";
-										$iconfn .= "_d";
+										$iconfn = "default";
 									}
 ?>
 								<tr valign="top" id="<?=$fr_prefix . $j;?>" ondblclick="document.location='vpn_ipsec_phase2.php?p2index=<?=$ph2ent['uniqid'];?>'">
@@ -449,6 +456,12 @@ include("head.inc");
 										<input name="togglep2_<?=$ph2index;?>" src="/themes/<?= $g['theme']; ?>/images/icons/icon_<?=$iconfn?>.gif"
 											title="<?=gettext("click to toggle enabled/disabled status");?>"
 											type="image" style="height:11;width:11;border:0" />
+										<button name="togglep2_<?=$ph2index;?>_x"
+											title="<?=gettext("click to toggle enabled/disabled status");?>"
+											type="submit" 
+											class="btn btn-<?php echo $iconfn?> btn-xs">
+											<span class="glyphicon glyphicon-play"></span>
+										</button>
 									</td>
 									<td class="listlr nowrap" id="<?=$fr_d;?>" onclick="fr_toggle('<?=$j;?>', '<?=$fr_prefix;?>')">
 										<?=$spans;?>
@@ -509,19 +522,25 @@ include("head.inc");
 										<?=$spane;?>
 									</td>
 									<td class="list nowrap" valign="middle">
-										<input onmouseover="fr_insline(<?=$j;?>, true, '<?=$fr_prefix;?>')" onmouseout="fr_insline(<?=$j;?>, false, '<?=$fr_prefix;?>')"
-											name="movep2_<?=$j;?>" src="/themes/<?= $g['theme']; ?>/images/icons/icon_left.gif"
+										<button onmouseover="fr_insline(<?=$j;?>, true, '<?=$fr_prefix;?>')" onmouseout="fr_insline(<?=$j;?>, false, '<?=$fr_prefix;?>')"
+											name="movep2_<?=$j;?>_x"
 											title="<?=gettext("move selected entries before this");?>"
-											type="image" style="height:17;width:17;border:0" />
-										<a href="vpn_ipsec_phase2.php?p2index=<?=$ph2ent['uniqid'];?>">
-											<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_e.gif" title="<?=gettext("edit phase2 entry"); ?>" width="17" height="17" border="0" alt="edit" />
+											type="submit"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-arrow-left"></span>
+										</button>
+										<a href="vpn_ipsec_phase2.php?p2index=<?=$ph2ent['uniqid'];?>" title="<?=gettext("edit phase2 entry"); ?>" alt="edit" class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-pencil"></span>
 										</a>
-										<input name="delp2_<?=$ph2index;?>" src="/themes/<?= $g['theme']; ?>/images/icons/icon_x.gif"
+										<button name="delp2_<?=$ph2index;?>_x" src="/themes/<?= $g['theme']; ?>/images/icons/icon_x.gif"
 											title="<?=gettext("delete phase2 entry");?>"
-											type="image" style="height:17;width:17;border:0"
-											onclick="return confirm('<?=gettext("Do you really want to delete this phase2 entry?"); ?>')" />
-										<a href="vpn_ipsec_phase2.php?dup=<?=$ph2ent['uniqid'];?>">
-											<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" title="<?=gettext("add a new Phase 2 based on this one"); ?>" width="17" height="17" border="0" alt="add" />
+											type="submit"
+											onclick="return confirm('<?=gettext("Do you really want to delete this phase2 entry?"); ?>')" 
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-remove"><span>
+										</button>
+										<a href="vpn_ipsec_phase2.php?dup=<?=$ph2ent['uniqid'];?>" title="<?=gettext("add a new Phase 2 based on this one"); ?>" alt="add" class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-plus"></span>
 										</a>
 									</td>
 								</tr>
@@ -535,25 +554,36 @@ include("head.inc");
 <?php
 									if ($j == 0):
 ?>
-										<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_left_d.gif" width="17" height="17" title="<?=gettext("move selected phase2 entries to end");?>" border="0" alt="move" />
+										<span title="<?=gettext("move selected phase2 entries to end");?>" alt="move" class="btn btn-default btn-xs glyphicon glyphicon-arrow-down hide"></span>
 <?php
-									else:
+									else: 
 ?>
-										<input onmouseover="fr_insline(<?=$j;?>, true, '<?=$fr_prefix;?>')" onmouseout="fr_insline(<?=$j;?>, false, '<?=$fr_prefix;?>')" name="movep2_<?=$j;?>" type="image" src="/themes/<?= $g['theme']; ?>/images/icons/icon_left.gif" style="width:17;height:17;border:0" title="<?=gettext("move selected phase2 entries to end");?>" />
+										<button onmouseover="fr_insline(<?=$j;?>, true, '<?=$fr_prefix;?>')" onmouseout="fr_insline(<?=$j;?>, false, '<?=$fr_prefix;?>')" 
+											name="movep2_<?=$j;?>_x" type="submit" 
+											title="<?=gettext("move selected phase2 entries to end");?>"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-arrow-down"></span>
+										</button>
 <?php
 									endif;
 ?>
-										<a href="vpn_ipsec_phase2.php?ikeid=<?=$ph1ent['ikeid'];?><?php if (isset($ph1ent['mobile'])) echo "&amp;mobile=true";?>">
-											<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" title="<?=gettext("add phase2 entry"); ?>" width="17" height="17" border="0" alt="add" />
+										<a href="vpn_ipsec_phase2.php?ikeid=<?=$ph1ent['ikeid'];?><?php if (isset($ph1ent['mobile'])) echo "&amp;mobile=true";?>" class="btn btn-default btn-xs">
+											<span title="<?=gettext("add phase2 entry"); ?>" alt="add" class="glyphicon glyphicon-plus"></span>
 										</a>
 <?php
 									if ($j == 0):
 ?>
-										<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_x_d.gif" width="17" height="17" title="<?=gettext("delete selected phase2 entries");?>" border="0" alt="delete" />
+										<span title="<?=gettext("delete selected phase2 entries");?>" alt="delete" class="btn btn-default btn-xs glyphicon glyphicon-remove hide"></span>
 <?php
 									else:
-?>
-										<input name="delp2" type="image" src="/themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" style="width:17;height:17" title="<?=gettext("delete selected phase2 entries");?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected phase2 entries?");?>')" />
+?>										
+										<button name="delp2_x" 
+											type="submit" 
+											title="<?=gettext("delete selected phase2 entries");?>" 
+											onclick="return confirm('<?=gettext("Do you really want to delete the selected phase2 entries?");?>')"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-remove"></span>
+										</button>
 <?php
 									endif;
 ?>
@@ -576,18 +606,24 @@ include("head.inc");
 <?php
 									if ($i == 0):
 ?>
-										<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_left_d.gif" width="17" height="17" title="<?=gettext("move selected phase1 entries to end");?>" border="0" alt="move" />
+										<span title="<?=gettext("move selected phase1 entries to end");?>" alt="move" class="btn btn-default btn-xs glyphicon glyphicon-arrow-down hide"></span>
 <?php
 									else:
 ?>
-										<input onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>" type="image" src="/themes/<?= $g['theme']; ?>/images/icons/icon_left.gif" style="width:17;height:17;border:0" title="<?=gettext("move selected phase1 entries to end");?>" />
+										<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" 
+											name="move_<?=$i;?>_x" 
+											type="submit"
+											title="<?=gettext("move selected phase1 entries to end");?>"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-arrow-down"></span>
+										</button>
 <?php
 									endif;
 ?>
 									</td>
 									<td>
-										<a href="vpn_ipsec_phase1.php">
-											<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" title="<?=gettext("add new phase1");?>" alt="add" />
+										<a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase1");?>" alt="add" class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-plus"></span>
 										</a>
 									</td>
 								</tr>
@@ -596,11 +632,18 @@ include("head.inc");
 <?php
 									if ($i == 0):
 ?>
-										<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_x_d.gif" width="17" height="17" title="<?=gettext("delete selected phase1 entries");?>" border="0" alt="delete" />
+										<span title="<?=gettext("delete selected phase1 entries");?>" alt="delete" class="btn btn-default btn-xs glyphicon glyphicon-remove hide"></span>
 <?php
 									else:
 ?>
-										<input name="del" type="image" src="/themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" style="width:17;height:17" title="<?=gettext("delete selected phase1 entries");?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')" />
+										<button 
+											name="del_x" 
+											type="submit"
+											title="<?=gettext("delete selected phase1 entries");?>" 
+											onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-remove"></span>
+										</button>
 <?php
 									endif;
 ?>
@@ -641,7 +684,7 @@ include("head.inc");
 										<strong><?=gettext("Enable IPsec"); ?></strong>
 									</td>
 									<td>
-										<input name="submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" />
+										<input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 									</td>
 								</tr>
 							</table>

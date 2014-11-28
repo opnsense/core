@@ -31,9 +31,13 @@ ul.tree li.closed ul {
 
 ul.tree li {
 	list-style: none;
-	background: url(i-repeater.gif) 0 0 repeat-y;
-	display: block;
-	width: auto;
+}
+
+ul.tree li:before {
+	/*background: url(i-repeater.gif) 0 0 repeat-y;*/
+	/*display: block;
+	width: auto;*/
+	padding: 0px 0px 0px 0px;
 	/* background-color:#FFFFFF; */
 }
 
@@ -48,54 +52,74 @@ ul.tree li.last {
 
 /* Span-A: I/L/I glpyhs */
 ul.tree span.a {
-	background: url(t.gif) 0 50% no-repeat;
+	/*background: url(t.gif) 0 50% no-repeat;*/
 	display: block;
 }
-ul.tree span.a.last {
-	background: url(l.gif) 0 50% no-repeat;
+ul.tree span.a.last:before {
+	/*background: url(l.gif) 0 50% no-repeat;*/
+	padding: 0px 0px 0px 0px;
 }
 
 /* Span-B: Plus/Minus icon */
-ul.tree span.b {
+ul.tree span.b:before {
+	font-family: "Glyphicons Halflings";
+  	content: "\e095";
 }
-ul.tree span.a.children span.b {
-	background: url(minus.gif) 0 50% no-repeat;
+ul.tree span.a.children span.b:before {
+	/*background: url(minus.gif) 0 50% no-repeat;*/
 	cursor: pointer;
+	font-family: "Glyphicons Halflings";
+  	content: "\e082";
 }
-ul.tree li.closed span.a.children span.b {
-	background: url(plus.gif) 0 50% no-repeat;
+
+ul.tree li.closed span.a.children span.b:before {
+	/*background: url(plus.gif) 0 50% no-repeat;*/
 	cursor: pointer;
+	font-family: "Glyphicons Halflings";
+  	content: "\e081";
 }
 
 /* Span-C: Spacing and extending tree line below the icon */
 ul.tree span.c {
-	margin-left: 16px;
+	margin-left: 4px;
 }
 ul.tree span.a.children span.c {
-	background: url(i-bottom.gif) 0 50% no-repeat;
+	/*background: url(i-bottom.gif) 0 50% no-repeat;*/
 }
-ul.tree span.a.spanClosed span.c {
-	background-image: none;
+ul.tree span.a.spanClosed span.c:before {
+	/*background-image: none;*/
+	content: "";
 }
 
 
 /* Anchor tag: Page icon */
-ul.tree a  {
+/*ul.tree a  {
 	white-space: nowrap;
 	overflow: hidden;
 	
-/*	padding: 10px 0px 10px 18px; */
 	padding: 3px 0px 3px 18px;
 	line-height: 16px;
 
-/*	background: url(page-file.png) 0 50% no-repeat; */
 	background: url(page-file.png) 0 0 no-repeat;
+}*/
+ul.tree a:before {
+  white-space: nowrap;
+  overflow: hidden;
+	
+  padding: 3px 6px 3px 3px;
+  line-height: 16px;
+  font-family: "Glyphicons Halflings";
+  content: "\e022";
 }
-ul.tree span.a.children a {
-	background-image: url(page-openfoldericon.png);
+ul.tree span.a.children a:before {
+	/*background-image: url(page-openfoldericon.png);*/
+	font-family: "Glyphicons Halflings";
+  	content: "\e118";
 }
-ul.tree span.a.children.spanClosed a {
-	background-image: url(page-foldericon.png);
+ul.tree span.a.children.spanClosed a:before {
+	/*background-image: url(page-foldericon.png);*/
+	font-family: "Glyphicons Halflings";
+  	content: "\e117";
 }
 
 /* Unformatted tree */

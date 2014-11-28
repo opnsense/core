@@ -40,11 +40,11 @@ if(is_file($path))
 <table width="100%">
 	<tr>
 		<td class="fbHome" width="25px" align="left">
-			<img onClick="jQuery('#fbTarget').val('<?=$realDir?>'); fbBrowse('/');" src="/filebrowser/images/icon_home.gif" alt="Home" title="Home" />
+			<span onClick="jQuery('#fbTarget').val('<?=$realDir?>'); fbBrowse('/');" alt="Home" title="Home" class="glyphicon glyphicon-home"></span>
 		</td>
 		<td><b><?=$path;?></b></td>
 		<td class="fbClose" align="right">
-			<img onClick="jQuery('#fbBrowser').fadeOut();" border="0" src="/filebrowser/images/icon_cancel.gif" alt="Close" title="Close" />
+			<span onClick="jQuery('#fbBrowser').fadeOut();" border="0" class="glyphicon glyphicon-remove" alt="Close" title="Close" ></span>
 		</td>
 	</tr>
 	<tr>
@@ -78,7 +78,7 @@ foreach($dirs as $dir):
 		<td></td>
 		<td class="fbDir vexpl" id="<?=$realDir;?>" align="left">
 			<div onClick="jQuery('#fbTarget').val('<?=$realDir?>'); fbBrowse('<?=$realDir?>');">
-				<img src="/filebrowser/images/folder_generic.gif" />
+				<span class="glyphicon glyphicon-folder-close text-primary"></span>
 				&nbsp;<?=$dir;?>
 			</div>
 		</td>
@@ -95,7 +95,7 @@ foreach($files as $file):
 	   case ".css":
 	   case ".html":
 	   case ".xml":
-		$type = "code";
+		$type = "glyphicon glyphicon-globe";
 		break;
 	   case ".rrd":
 		$type = "database";
@@ -103,31 +103,31 @@ foreach($files as $file):
 	   case ".gif":
 	   case ".jpg":
 	   case ".png":
-		$type = "image";
+		$type = "glyphicon glyphicon-picture";
 		break;
 	   case ".js":
-		 $type = "js";
+		 $type = "glyphicon glyphicon-globe";
 		break;
 	   case ".pdf":
-		$type = "pdf";
+		$type = "glyphicon glyphicon-book";
 		break;
 	   case ".inc":
 	   case ".php":
-		$type = "php";
+		$type = "glyphicon glyphicon-globe";
 		break;
 	   case ".conf":
 	   case ".pid":
 	   case ".sh":
-		$type = "system";
+		$type = "glyphicon glyphicon-wrench";
 		break;
 	   case ".bz2":
 	   case ".gz":
 	   case ".tgz":
 	   case ".zip":
-		$type = "zip";
+		$type = "glyphicon glyphicon-compressed";
 		break;
 	   default:
-		$type = "generic";
+		$type = "glyphicon glyphicon-cog";
 	}
 
 	$fqpn = "{$path}/{$file}";
@@ -145,7 +145,7 @@ foreach($files as $file):
 		<td class="fbFile vexpl" id="<?=$fqpn;?>" align="left">
 			<?php $filename = str_replace("//","/", "{$path}/{$file}"); ?>
 			<div onClick="jQuery('#fbTarget').val('<?=$filename?>'); loadFile(); jQuery('#fbBrowser').fadeOut();">
-				<img src="/filebrowser/images/file_<?=$type;?>.gif" alt="" title="">
+				<span class="<?=$type;?>"></span>
 				&nbsp;<?=$file;?>
 			</div>
 		</td>

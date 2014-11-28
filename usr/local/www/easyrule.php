@@ -64,11 +64,16 @@ if(stristr($retval, "error") == true)
     $message = $retval;
 
 include("head.inc"); ?>
+
+			    
 <body link="#000000" vlink="#000000" alink="#000000">
 <?php include("fbegin.inc"); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td>
+
+<section class="page-content-main">
+	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+		<div class="row">
+		    <section class="col-xs-12">
+
 <?php if ($input_errors) print_input_errors($input_errors); ?>
 
 <?php if ($message) { ?>
@@ -83,5 +88,9 @@ include("head.inc"); ?>
 "Firewall Tab"); ?></a>.
 <br />
 <?php } ?>
-</td></tr></table>
-<?php include("fend.inc"); ?>
+		    </section>
+		</div>
+	</div>
+</section>
+
+<?php include("foot.inc"); ?>

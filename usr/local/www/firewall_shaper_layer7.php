@@ -62,7 +62,7 @@ $shortcut_section = "trafficshaper";
 $output_form = "";
 
 $default_layer7shaper_msg = "<tr><td colspan=\"4\">";
-$default_layer7shaper_msg .= "<span class=\"vexpl\"><span class=\"red\"><strong>" . gettext("Note") . ":<br />";
+$default_layer7shaper_msg .= "<br /><span class=\"vexpl\"><span class=\"text-danger\"><strong>" . gettext("Note") . ":<br />";
 $default_layer7shaper_msg .= "</strong></span>" . gettext("You can add new layer7 protocol patterns by simply uploading the file") . " <a href=\"diag_patterns.php\">" . gettext("here") . ".</a></span><br />";
 $default_layer7shaper_msg .= "</td></tr>";
 
@@ -356,7 +356,7 @@ function addRow(table_id) {
   var tFielsNum =  rows_count - initial_count[table_id];
   if (rows_limit!=0 && tFielsNum >= rows_limit) return false;
 
-  var remove = '<a onclick="removeRow(\''+table_id+'\',this.parentNode.parentNode)" href="#"><img border="0" src="/themes/<?=$g['theme'];?>/images/icons/icon_x.gif" alt="x" /><\/a>';
+  var remove = '<a onclick="removeRow(\''+table_id+'\',this.parentNode.parentNode)" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span><\/a>';
 
   try {
     var newRow = tbl.insertRow(rows_count);
@@ -388,204 +388,217 @@ function removeRow(tbl,row) {
 </script>
 </head>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 
-<?php include("fbegin.inc"); ?>
-<div id="inputerrors"></div>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
+<?
+	
+$main_buttons = array(
+	array('label'=>gettext("Create new l7 rules group"), 'href'=>'firewall_shaper_layer7.php?action=add'),
+);	
 
-<form action="firewall_shaper_layer7.php" method="post" id="iform" name="iform">
-
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<?php if (is_subsystem_dirty('shaper')): ?><p>
-<?php print_info_box_np(gettext("The traffic shaper configuration has been changed")  .  ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br /></p>
-<?php endif; ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="traffic shaper layer7">
-  <tr><td>
-<?php
-	$tab_array = array();
-	$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
-	$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
-	$tab_array[2] = array(gettext("Limiter"), false, "firewall_shaper_vinterface.php");
-	$tab_array[3] = array(gettext("Layer7"), true, "firewall_shaper_layer7.php");
-	$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
-	display_top_tabs($tab_array);
+include("fbegin.inc"); 
 ?>
-  </td></tr>
-  <tr>
-    <td>
-	<div id="mainarea">
-              <table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="main area">
 
-		<?php if (count($layer7_rules_list) > 0): ?>
-                        <tr class="tabcont"><td width="25%" align="left">
-                        </td><td width="75%"> </td></tr>
 
-		<?php endif; ?>
-			<tr>
-			<td width="25%" valign="top" align="left">
-			<?php
-				echo $tree;
-			?>
-			<br /><br />
-			<a href="firewall_shaper_layer7.php?action=add">
-			<img src="./themes/<?=$g['theme']; ?>/images/icons/icon_plus.gif" title="<?=gettext("Create new l7 rules group"); ?>" width="17" height="17" border="0" alt="add" />  <?=gettext("Create new l7 rules group"); ?>
-			</a><br />
-			</td>
-			<td width="75%" valign="top" align="center">
-			<div id="shaperarea" style="position:relative">
-			<?php
-				echo $output;
-			?>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">				
+				
+				<div id="inputerrors"></div>
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (is_subsystem_dirty('shaper')): ?><p>
+				<?php print_info_box_np(gettext("The traffic shaper configuration has been changed")  .  ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br /></p>
+				<?php endif; ?>
 
-			<!-- Layer 7 rules form -->
-			<?php if($show_proto_form): ?>
-			<tr><td width="22%" valign="top" class="vncellreq">
-                                <div id="addressnetworkport">
-                                        <?=gettext("Rule(s)"); ?>
-                                </div>
-                        </td>
-
-                        <td width="78%" class="vtable">
-                                <table width="236" id="maintable" summary="main table">
-					<tbody>
-
-						<tr>
-                                                        <td colspan="4">
-                                                            <div style="font-size: 8pt; padding:5px; margin-top: 16px; margin-bottom: 16px; border:1px dashed #000066;"
-                                                                id="itemhelp">
-                                                                <?=gettext("Add one or more rules"); ?>
-                                                            </div>
-                                                        </td>
-                                                </tr>
-
-                                                <tr>
-                                                        <td>
-                                                            <div style="font-size: 8pt; padding:5px;"
-                                                                id="onecolumn">
-                                                                <?=gettext("Protocol"); ?>
-                                                            </div>
-                                                        </td>
-
-                                                        <td>
-                                                            <div style="font-size: 8pt; padding:5px;"
-                                                                id="twocolumn">
-                                                                <?=gettext("Structure"); ?>
-                                                            </div>
-                                                        </td>
-
-                                                        <td>
-                                                            <div style="font-size: 8pt; padding:5px;"
-                                                                id="threecolumn">
-                                                                <?=gettext("Behaviour"); ?>
-                                                            </div>
-                                                        </td>
-                                                </tr>
-                                                <!-- PHP Code to generate the existing rules -->
-						<?php
-						if($container) {
-							foreach($container->rsets as $l7rule) {
+			    <section class="col-xs-12">
+    				
+    					
+    					<?php
+							$tab_array = array();
+							$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
+							$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
+							$tab_array[2] = array(gettext("Limiter"), false, "firewall_shaper_vinterface.php");
+							$tab_array[3] = array(gettext("Layer7"), true, "firewall_shaper_layer7.php");
+							$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
+							display_top_tabs($tab_array);
 						?>
-						<tr>
-							<td>
-							<select name="protocol[]" class="formselect" style="font-size:8pt">
-							<?php foreach($avail_protos as $proto): ?>
-							<option value="<?=$proto;?>" <?php if ($proto == $l7rule->GetRProtocol()) echo "selected=\"selected\""; ?>><?=$proto;?></option>
-							<?php endforeach; ?>
-							</select>
-						</td>
-						<td>
-							<select name="structure[]" class="formselect" style="font-size:8pt" onchange="changeBehaviourValues(this.parentNode.parentNode);">
-							<?php foreach($avail_structures as $struct) {
-							  if($struct == "queue") {
-							    if(!empty($avail_behaviours_altq)) { ?>
-							      <option value="<?=$struct ?>" <?php if ($struct == $l7rule->GetRStructure()) echo "selected=\"selected\""; ?>><?=$struct;?></option>
-							    <?php }
-							  }
-							  else {
-							    if($struct == "limiter") {
-								if(!empty($avail_behaviours_limiter)) { ?>
-								  <option value="<?=$struct ?>" <?php if ($struct == $l7rule->GetRStructure()) echo "selected=\"selected\""; ?>><?=$struct;?></option>
-								<?php }
-							    }
-							    else {
-							      if($struct == "action") { ?>
-								  <option value="<?=$struct ?>" <?php if ($struct == $l7rule->GetRStructure()) echo "selected=\"selected\""; ?>><?=$struct;?></option>
-							      <?php }
-							    }
-							  }
-							} ?>
-							</select>
-						</td>
-						<td>
-							<select name="behaviour[]" class="formselect" style="width:80px; font-size:8pt">
-							<?php if($l7rule->GetRStructure() == "action"): ?>
-								<?php foreach($avail_behaviours_action as $behaviour): ?>
-								<option value="<?=$behaviour ?>" <?php if ($behaviour == $l7rule->GetRBehaviour()) echo "selected=\"selected\""; ?>><?=$behaviour;?></option>
-								<?php endforeach; ?>
-								</select>
-							<?php endif; ?>
-							<?php if($l7rule->GetRStructure() == "queue"): ?>
-								<?php foreach($avail_behaviours_altq as $behaviour): ?>
-								<option value="<?=$behaviour ?>" <?php if ($behaviour == $l7rule->GetRBehaviour()) echo "selected=\"selected\""; ?>><?=$behaviour;?></option>
-								<?php endforeach; ?>
-								</select>
-							<?php endif; ?>
-							<?php if($l7rule->GetRStructure() == "limiter"): ?>
-								<?php foreach($avail_behaviours_limiter as $behaviour): ?>
-								<option value="<?=$behaviour ?>" <?php if ($behaviour == $l7rule->GetRBehaviour()) echo "selected=\"selected\""; ?>><?=$behaviour;?></option>
-								<?php endforeach; ?>
-								</select>
-							<?php endif; ?>
-						</td>
-						<td>
-							<a onclick="removeRow('maintable',this.parentNode.parentNode); return false;" href="#"><img border="0" src="/themes/<?=$g['theme'];?>/images/icons/icon_x.gif" alt="x" /></a>
-						</td>
-						</tr>
+						
+					
+						<div class="tab-content content-box col-xs-12">	
+	    					
+	    				    <div class="container-fluid">	
+	    					
+   
+		                        <form action="firewall_shaper_layer7.php" method="post" name="iform" id="iform">
+		                        	
+		                        	
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
 
-						<?php
-							} //end foreach
-						} //end if
-						?>
-                                        </tbody>
-                                </table>
+									<?php if (count($layer7_rules_list) > 0): ?>
+							                        <tr class="tabcont"><td width="25%" align="left">
+							                        </td><td width="75%"> </td></tr>
+							
+									<?php endif; ?>
+										<tr>
+										<td width="25%" valign="top" align="left">
+										<?php
+											echo $tree;
+										?>
+							
+										</td>
+										<td width="75%" valign="top" align="center">
+										<div id="shaperarea" style="position:relative">
+										<?php
+											echo $output;
+										?>
+							
+										<!-- Layer 7 rules form -->
+										<?php if($show_proto_form): ?>
+										<tr><td width="22%" valign="top" class="vncellreq">
+							                                <div id="addressnetworkport">
+							                                        <?=gettext("Rule(s)"); ?>
+							                                </div>
+							                        </td>
+							
+							                        <td width="78%" class="vtable">
+							                                <table width="236" id="maintable" summary="main table">
+												<tbody>
+							
+													<tr>
+							                                                        <td colspan="4">
+							                                                            <div style="font-size: 8pt; padding:5px; margin-top: 16px; margin-bottom: 16px; border:1px dashed #000066;"
+							                                                                id="itemhelp">
+							                                                                <?=gettext("Add one or more rules"); ?>
+							                                                            </div>
+							                                                        </td>
+							                                                </tr>
+							
+							                                                <tr>
+							                                                        <td>
+							                                                            <div style="font-size: 8pt; padding:5px;"
+							                                                                id="onecolumn">
+							                                                                <?=gettext("Protocol"); ?>
+							                                                            </div>
+							                                                        </td>
+							
+							                                                        <td>
+							                                                            <div style="font-size: 8pt; padding:5px;"
+							                                                                id="twocolumn">
+							                                                                <?=gettext("Structure"); ?>
+							                                                            </div>
+							                                                        </td>
+							
+							                                                        <td>
+							                                                            <div style="font-size: 8pt; padding:5px;"
+							                                                                id="threecolumn">
+							                                                                <?=gettext("Behaviour"); ?>
+							                                                            </div>
+							                                                        </td>
+							                                                </tr>
+							                                                <!-- PHP Code to generate the existing rules -->
+													<?php
+													if($container) {
+														foreach($container->rsets as $l7rule) {
+													?>
+													<tr>
+														<td>
+														<select name="protocol[]" class="formselect" style="font-size:8pt">
+														<?php foreach($avail_protos as $proto): ?>
+														<option value="<?=$proto;?>" <?php if ($proto == $l7rule->GetRProtocol()) echo "selected=\"selected\""; ?>><?=$proto;?></option>
+														<?php endforeach; ?>
+														</select>
+													</td>
+													<td>
+														<select name="structure[]" class="formselect" style="font-size:8pt" onchange="changeBehaviourValues(this.parentNode.parentNode);">
+														<?php foreach($avail_structures as $struct) {
+														  if($struct == "queue") {
+														    if(!empty($avail_behaviours_altq)) { ?>
+														      <option value="<?=$struct ?>" <?php if ($struct == $l7rule->GetRStructure()) echo "selected=\"selected\""; ?>><?=$struct;?></option>
+														    <?php }
+														  }
+														  else {
+														    if($struct == "limiter") {
+															if(!empty($avail_behaviours_limiter)) { ?>
+															  <option value="<?=$struct ?>" <?php if ($struct == $l7rule->GetRStructure()) echo "selected=\"selected\""; ?>><?=$struct;?></option>
+															<?php }
+														    }
+														    else {
+														      if($struct == "action") { ?>
+															  <option value="<?=$struct ?>" <?php if ($struct == $l7rule->GetRStructure()) echo "selected=\"selected\""; ?>><?=$struct;?></option>
+														      <?php }
+														    }
+														  }
+														} ?>
+														</select>
+													</td>
+													<td>
+														<select name="behaviour[]" class="formselect" style="width:80px; font-size:8pt">
+														<?php if($l7rule->GetRStructure() == "action"): ?>
+															<?php foreach($avail_behaviours_action as $behaviour): ?>
+															<option value="<?=$behaviour ?>" <?php if ($behaviour == $l7rule->GetRBehaviour()) echo "selected=\"selected\""; ?>><?=$behaviour;?></option>
+															<?php endforeach; ?>
+															</select>
+														<?php endif; ?>
+														<?php if($l7rule->GetRStructure() == "queue"): ?>
+															<?php foreach($avail_behaviours_altq as $behaviour): ?>
+															<option value="<?=$behaviour ?>" <?php if ($behaviour == $l7rule->GetRBehaviour()) echo "selected=\"selected\""; ?>><?=$behaviour;?></option>
+															<?php endforeach; ?>
+															</select>
+														<?php endif; ?>
+														<?php if($l7rule->GetRStructure() == "limiter"): ?>
+															<?php foreach($avail_behaviours_limiter as $behaviour): ?>
+															<option value="<?=$behaviour ?>" <?php if ($behaviour == $l7rule->GetRBehaviour()) echo "selected=\"selected\""; ?>><?=$behaviour;?></option>
+															<?php endforeach; ?>
+															</select>
+														<?php endif; ?>
+													</td>
+													<td>
+														<a onclick="removeRow('maintable',this.parentNode.parentNode); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+													</td>
+													</tr>
+							
+													<?php
+														} //end foreach
+													} //end if
+													?>
+							                                        </tbody>
+							                                </table>
+							
+							                                        <a onclick="javascript:addRow('maintable'); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a><br/><br/>
+							                        </td>
+										</tr>
+							
+							                        <tr>
+							                        <td width="22%" valign="top">
+							                                &nbsp;
+							                        </td>
+							
+							                        <td width="78%">
+							                                <input id="submit" name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+							
+											<a href="firewall_shaper_layer7.php">
+							                                <input id="cancelbutton" name="cancelbutton" type="button" class="btn btn-default" value="<?=gettext("Cancel"); ?>" />
+							
+											<?php if($container): ?>
+													<input id="delete" type="submit" class="formbtn" name="delete" value="<?=gettext("Delete"); ?>" />
+											<?php endif ?>
+											</a>
+							                        </td>
+							                        </tr>
+										<?php endif; ?>
+										<!-- End of layer7 rules form -->
+										</table>
+										</div><!-- end of div:shape area -->
+									</form>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+			</section>
 
-                                        <a onclick="javascript:addRow('maintable'); return false;" href="#"> <img border="0"
-                                                src="/themes/<?=$g['theme']; ?>/images/icons/icon_plus.gif"
-                                                alt="" title="<?=gettext("add another entry"); ?>" /> </a>
-                        </td>
-			</tr>
 
-                        <tr>
-                        <td width="22%" valign="top">
-                                &nbsp;
-                        </td>
-
-                        <td width="78%">
-                                <input id="submit" name="submit" type="submit" class="formbtn" value="<?=gettext("Save"); ?>" />
-
-				<a href="firewall_shaper_layer7.php">
-                                <input id="cancelbutton" name="cancelbutton" type="button" class="formbtn" value="<?=gettext("Cancel"); ?>" />
-
-				<?php if($container): ?>
-						<input id="delete" type="submit" class="formbtn" name="delete" value="<?=gettext("Delete"); ?>" />
-				<?php endif ?>
-				</a>
-                        </td>
-                        </tr>
-			<?php endif; ?>
-			<!-- End of layer7 rules form -->
-			</table>
-			</div><!-- end of div:shape area -->
-
-		      </td></tr>
-                    </table>
-		</div>
-	  </td>
-	</tr>
-</table>
-</form>
-
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>

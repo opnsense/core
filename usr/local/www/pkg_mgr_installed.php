@@ -89,157 +89,164 @@ include("head.inc");
 </head>
 
 <body>
-	<?php include("fbegin.inc"); 
+	<?php include("fbegin.inc"); ?>
+	
 
-	/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
-	if (!verify_all_package_servers())
-		print_info_box(package_server_mismatch_message());
-
-	/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
-	if (check_package_server_ssl() === false)
-		print_info_box(package_server_ssl_failure_message()); ?>
-
-	<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="packages installed">
-		<tr>
-			<td>
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">
+				
 				<?php
-					$version = file_get_contents("/etc/version");
-					$tab_array = array();
-					$tab_array[] = array(gettext("Available Packages"), false, "pkg_mgr.php");
-//					$tab_array[] = array("{$version} " . gettext("packages"), false, "pkg_mgr.php");
-//					$tab_array[] = array("Packages for any platform", false, "pkg_mgr.php?ver=none");
-//					$tab_array[] = array("Packages for a different platform", $requested_version == "other" ? true : false, "pkg_mgr.php?ver=other");
-					$tab_array[] = array(gettext("Installed Packages"), true, "pkg_mgr_installed.php");
-					display_top_tabs($tab_array);
-				?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div id="mainarea">
-					<table class="tabcont" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-						<tr>
-							<td width="12%" class="listhdrr"><?=gettext("Name"); ?></td>
-							<td width="16%" class="listhdrr"><?=gettext("Category"); ?></td>
-							<td width="15%" class="listhdrr"><?=gettext("Version"); ?></td>
-							<td width="53%" class="listhdr"><?=gettext("Description"); ?></td>
-							<td width="40">&nbsp;</td>
-						</tr>
-						<?php
-							if(is_array($config['installedpackages']['package'])):
-
-								$instpkgs = array();
-								foreach($config['installedpackages']['package'] as $instpkg) {
-									$instpkgs[] = $instpkg['name'];
-								}
-								natcasesort($instpkgs);
-
-								foreach ($instpkgs as $index => $pkgname):
-
-									$pkg = $config['installedpackages']['package'][$index];
-									if(!$pkg['name'])
-										continue;
-
-									// get history/changelog git dir
-									$commit_dir=explode("/",$pkg['config_file']);
-									$changeloglink ="https://github.com/pfsense/pfsense-packages/commits/master/config/".$commit_dir[(count($commit_dir)-2)]; 
-									#check package version
-									$latest_package = $currentvers[$pkg['name']]['version'];
-									if ($latest_package) {
-										// we're running a newer version of the package
-										if(strcmp($pkg['version'], $latest_package) > 0) {
-											$tdclass = "listbggrey";
-											if ($g['disablepackagehistory'])
-												$pkgver  = "<a>".gettext("Available") .": ". $latest_package . "<br />";
-											else
-												$pkgver  = "<a target='_blank' href='$changeloglink'>".gettext("Available") .": ". $latest_package . "<br />";
-											$pkgver .= gettext("Installed") .": ". $pkg['version']. "</a>";
-										}
-										// we're running an older version of the package
-										if(strcmp($pkg['version'], $latest_package) < 0) {
-											$tdclass = "listbg";
-											if ($g['disablepackagehistory'])
-												$pkgver  = "<a><font color='#ffffff'>" . gettext("Available") .": ". $latest_package . "</font><br />";
-											else
-												$pkgver  = "<a target='_blank' href='$changeloglink'><font color='#ffffff'>" . gettext("Available") .": ". $latest_package . "<br />";
-											$pkgver .= gettext("Installed") .": ". $pkg['version']."</font></a>";
-										}
-										// we're running the current version
-										if(!strcmp($pkg['version'], $latest_package)) {
-											$tdclass = "listr";
-											if ($g['disablepackagehistory'])
-												$pkgver = "<a>{$pkg['version']}</a>";
-											else
-												$pkgver = "<a target='_blank' href='$changeloglink'>{$pkg['version']}</a>";
-										}
-									} else {
-										// unknown available package version
-										$pkgver = "";
-										if(!strcmp($pkg['version'], $latest_package)) {
-											$tdclass = "listr";
-											if ($g['disablepackagehistory'])
-												$pkgver = "<a>{$pkg['version']}</a>";
-											else
-												$pkgver = "<a target='_blank' href='$changeloglink'>{$pkg['version']}</a>";
-											}
-									}
-									/* Check package info link */
-									if($pkg['pkginfolink']){
-										$pkginfolink = $pkg['pkginfolink'];
-										$pkginfo=gettext("Package info");
-										}
-									else{
-										$pkginfolink = "https://forum.pfsense.org/index.php/board,15.0.html";
-										$pkginfo=gettext("No package info, check the forum");
-										}
-									
+				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
+				if (!verify_all_package_servers())
+					print_info_box(package_server_mismatch_message());
+			
+				/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
+				if (check_package_server_ssl() === false)
+					print_info_box(package_server_ssl_failure_message()); ?>
+				
+			    <section class="col-xs-12">
+    				
+    					
+    					<?php
+							$version = file_get_contents("/etc/version");
+							$tab_array = array();
+							$tab_array[] = array(gettext("Available Packages"), false, "pkg_mgr.php");
+		//					$tab_array[] = array("{$version} " . gettext("packages"), false, "pkg_mgr.php");
+		//					$tab_array[] = array("Packages for any platform", false, "pkg_mgr.php?ver=none");
+		//					$tab_array[] = array("Packages for a different platform", $requested_version == "other" ? true : false, "pkg_mgr.php?ver=other");
+							$tab_array[] = array(gettext("Installed Packages"), true, "pkg_mgr_installed.php");
+							display_top_tabs($tab_array);
 						?>
-						<tr valign="top">
-							<td class="listlr">
-								<?=$pkg['name'];?>
-							</td>
-							<td class="listr">
-								<?=$pkg['category'];?>
-							</td>
-							<?php 
-							if (isset($g['disablepackagehistory']))
-									echo "<td class='{$tdclass}'>{$pkgver}</td>";
-							else
-									echo "<td class='{$tdclass}' ".domTT_title(gettext("Click on ".ucfirst($pkg['name'])." version to check its change log."),"return").">{$pkgver}</td>";
-							?>
-							<td class="listbg" style="overflow:hidden; text-align:justify;" <?=domTT_title(gettext("Click package info for more details about ".ucfirst($pkg['name'])." package."))?>>
-									<?=$currentvers[$pkg['name']]['descr'];?>
-							<?php if (! $g['disablepackageinfo']): ?>
-							<br /><br />
-							<a target='_blank' href='<?=$pkginfolink?>' style='align:center;color:#ffffff; filter:Glow(color=#ff0000, strength=12);'><?=$pkginfo?></a>
-							<?php endif; ?>
-							</td>
-							<td valign="middle" class="list nowrap">
-								<a href="pkg_mgr_install.php?mode=delete&amp;pkg=<?= $pkg['name']; ?>">
-									<img <?=domTT_title(gettext("Remove ".ucfirst($pkg['name'])." package."))?> src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" alt="delete" />
-								</a>
-								<br />
-								<a href="pkg_mgr_install.php?mode=reinstallpkg&amp;pkg=<?= $pkg['name']; ?>">
-									<img <?=domTT_title(gettext("Reinstall ".ucfirst($pkg['name'])." package."));?> src="./themes/<?= $g['theme']; ?>/images/icons/icon_reinstall_pkg.gif" width="17" height="17" border="0" alt="reinstall" />
-								</a>
-								<a href="pkg_mgr_install.php?mode=reinstallxml&amp;pkg=<?= $pkg['name']; ?>">
-									<img <?=domTT_title(gettext("Reinstall ".ucfirst($pkg['name'])."'s GUI components."));?> src="./themes/<?= $g['theme']; ?>/images/icons/icon_reinstall_xml.gif" width="17" height="17" border="0" alt="reinstall" />
-								</a>
-							</td>
-						</tr>
-						<?php
-								endforeach;
-							else:
-						 ?>
-						<tr>
-							<td colspan="5" align="center">
-								<?=gettext("There are no packages currently installed."); ?>
-							</td>
-						</tr>
-						<?php endif; ?>
-					</table>
-				</div>
-			</td>
-		</tr>
-	</table>
+					
+						<div class="tab-content content-box col-xs-12">	
+	    					
+	    				    <div class="container-fluid">	
+	    							                        	
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+										<tr>
+											<td class="listhdrr"><?=gettext("Name"); ?></td>
+											<td class="listhdrr"><?=gettext("Category"); ?></td>
+											<td class="listhdrr"><?=gettext("Version"); ?></td>
+											<td class="listhdr"><?=gettext("Description"); ?></td>
+											<td width="120">&nbsp;</td>
+										</tr>
+										<?php
+											if(is_array($config['installedpackages']['package'])):
+				
+												$instpkgs = array();
+												foreach($config['installedpackages']['package'] as $instpkg) {
+													$instpkgs[] = $instpkg['name'];
+												}
+												natcasesort($instpkgs);
+				
+												foreach ($instpkgs as $index => $pkgname):
+				
+													$pkg = $config['installedpackages']['package'][$index];
+													if(!$pkg['name'])
+														continue;
+				
+													// get history/changelog git dir
+													$commit_dir=explode("/",$pkg['config_file']);
+													$changeloglink ="https://github.com/pfsense/pfsense-packages/commits/master/config/".$commit_dir[(count($commit_dir)-2)]; 
+													#check package version
+													$latest_package = $currentvers[$pkg['name']]['version'];
+													if ($latest_package) {
+														// we're running a newer version of the package
+														if(strcmp($pkg['version'], $latest_package) > 0) {
+															$tdclass = "listbggrey";
+															if ($g['disablepackagehistory'])
+																$pkgver  = "<a>".gettext("Available") .": ". $latest_package . "<br />";
+															else
+																$pkgver  = "<a target='_blank' href='$changeloglink'>".gettext("Available") .": ". $latest_package . "<br />";
+															$pkgver .= gettext("Installed") .": ". $pkg['version']. "</a>";
+														}
+														// we're running an older version of the package
+														if(strcmp($pkg['version'], $latest_package) < 0) {
+															$tdclass = "listbg";
+															if ($g['disablepackagehistory'])
+																$pkgver  = "<a><font color='#ffffff'>" . gettext("Available") .": ". $latest_package . "</font><br />";
+															else
+																$pkgver  = "<a target='_blank' href='$changeloglink'><font color='#ffffff'>" . gettext("Available") .": ". $latest_package . "<br />";
+															$pkgver .= gettext("Installed") .": ". $pkg['version']."</font></a>";
+														}
+														// we're running the current version
+														if(!strcmp($pkg['version'], $latest_package)) {
+															$tdclass = "listr";
+															if ($g['disablepackagehistory'])
+																$pkgver = "<a>{$pkg['version']}</a>";
+															else
+																$pkgver = "<a target='_blank' href='$changeloglink'>{$pkg['version']}</a>";
+														}
+													} else {
+														// unknown available package version
+														$pkgver = "";
+														if(!strcmp($pkg['version'], $latest_package)) {
+															$tdclass = "listr";
+															if ($g['disablepackagehistory'])
+																$pkgver = "<a>{$pkg['version']}</a>";
+															else
+																$pkgver = "<a target='_blank' href='$changeloglink'>{$pkg['version']}</a>";
+															}
+													}
+													/* Check package info link */
+													if($pkg['pkginfolink']){
+														$pkginfolink = $pkg['pkginfolink'];
+														$pkginfo=gettext("Package info");
+														}
+													else{
+														$pkginfolink = "https://forum.pfsense.org/index.php/board,15.0.html";
+														$pkginfo=gettext("No package info, check the forum");
+														}
+													
+										?>
+										<tr valign="top">
+											<td class="listlr">
+												<?=$pkg['name'];?>
+											</td>
+											<td class="listr">
+												<?=$pkg['category'];?>
+											</td>
+											<?php 
+											if (isset($g['disablepackagehistory']))
+													echo "<td class='{$tdclass}'>{$pkgver}</td>";
+											else
+													echo "<td class='{$tdclass}' ".domTT_title(gettext("Click on ".ucfirst($pkg['name'])." version to check its change log."),"return").">{$pkgver}</td>";
+											?>
+											<td class="listbg" style="overflow:hidden; text-align:justify;" <?=domTT_title(gettext("Click package info for more details about ".ucfirst($pkg['name'])." package."))?>><?=$currentvers[$pkg['name']]['descr'];?><?php if (! $g['disablepackageinfo']): ?><br /><br />
+											<a target='_blank' href='<?=$pkginfolink?>' style='align:center;color:#ffffff; filter:Glow(color=#ff0000, strength=12);'><?=$pkginfo?></a>
+											<?php endif; ?>
+											</td>
+											<td valign="middle" class="list nowrap" width="120">
+												<a href="pkg_mgr_install.php?mode=delete&amp;pkg=<?= $pkg['name']; ?>" class="btn btn-default btn-xs">
+													<span class="glyphicon glyphicon-remove"></span>
+												</a>
+												<a href="pkg_mgr_install.php?mode=reinstallpkg&amp;pkg=<?= $pkg['name']; ?>" title="<?=gettext("Reinstall ".ucfirst($pkg['name'])." package.");?>" class="btn btn-default btn-xs">
+													<span class="glyphicon glyphicon-repeat"></span>
+												</a>
+												<a href="pkg_mgr_install.php?mode=reinstallxml&amp;pkg=<?= $pkg['name']; ?>" title="<?=gettext("Reinstall ".ucfirst($pkg['name'])."'s GUI components.");?>" class="btn btn-default btn-xs">
+													<span class="glyphicon glyphicon-refresh"></span>
+												</a>
+											</td>
+										</tr>
+										<?php
+												endforeach;
+											else:
+										 ?>
+										<tr>
+											<td colspan="5" align="center">
+												<?=gettext("There are no packages currently installed."); ?>
+											</td>
+										</tr>
+										<?php endif; ?>
+									</table>
+								</div>
+	    				    </div>
+						</div>
+			    </section>
+			</div>
+		</div>
+	</section>
+	
 <?php include("foot.inc"); ?>   

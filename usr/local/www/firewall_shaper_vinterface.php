@@ -43,7 +43,7 @@
 require("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
-require_once("shaper.inc");
+require_once("includes/shaper.inc");
 
 if($_GET['reset'] <> "") {
 	mwexec("/usr/bin/killall -9 pfctl");
@@ -315,7 +315,7 @@ $output_form .= "<tr><td width=\"22%\" valign=\"top\" class=\"vncellreq\">";
 $output_form .= gettext("Queue Actions");
 $output_form .= "</td><td valign=\"top\" class=\"vncellreq\" width=\"78%\">";
 
-$output_form .= "<input type=\"submit\" name=\"Submit\" value=\"" . gettext("Save") . "\" class=\"formbtn\" />";
+$output_form .= "<input type=\"submit\" name=\"Submit\" value=\"" . gettext("Save") . "\" class=\"btn btn-primary\" />";
 if ($can_add || $addnewaltq) {
 	$output_form .= "<a href=\"firewall_shaper_vinterface.php?pipe=";
 	$output_form .= $pipe; 
@@ -323,7 +323,7 @@ if ($can_add || $addnewaltq) {
 		$output_form .= "&amp;queue=" . $queue->GetQname();
 	}
 	$output_form .= "&amp;action=add\">";
-	$output_form .= "<input type=\"button\" class=\"formbtn\" name=\"add\" value=\"" . gettext("Add new queue") ."\" />";
+	$output_form .= "<input type=\"button\" class=\"btn btn-primary\" name=\"add\" value=\"" . gettext("Add new queue") ."\" />";
 	$output_form .= "</a>";
 }
 $output_form .= "<a href=\"firewall_shaper_vinterface.php?pipe=";
@@ -332,7 +332,7 @@ if ($queue) {
 	$output_form .= "&amp;queue=" . $queue->GetQname();
 }
 $output_form .= "&amp;action=delete\">";
-$output_form .= "<input type=\"button\" class=\"formbtn\" name=\"delete\"";
+$output_form .= "<input type=\"button\" class=\"btn btn-default\" name=\"delete\"";
 if ($queue)
 	$output_form .= " value=\"" . gettext("Delete this queue") ."\" />";
 else
@@ -365,69 +365,91 @@ function show_source_port_range() {
 </script>
 </head>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 
 <?php
 if ($queue)
 	echo $queue->build_javascript();
 else
 	echo $newjavascript;
+	
+
+$main_buttons = array(
+	array('label'=>gettext("Create new limiter"), 'href'=>'firewall_shaper_vinterface.php?pipe=new&amp;action=add'),
+);
+	
 
 include("fbegin.inc"); 
 ?>
-<div id="inputerrors"></div>
-<?php if ($input_errors) print_input_errors($input_errors); ?>
 
-<form action="firewall_shaper_vinterface.php" method="post" id="iform" name="iform">
 
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<?php if (is_subsystem_dirty('shaper')): ?><p>
-<?php print_info_box_np(gettext("The traffic shaper configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));?><br /></p>
-<?php endif; ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="traffic shaper limiter">
-  <tr><td>
-<?php
-	$tab_array = array();
-	$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
-	$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
-	$tab_array[2] = array(gettext("Limiter"), true, "firewall_shaper_vinterface.php");
-	$tab_array[3] = array(gettext("Layer7"), false, "firewall_shaper_layer7.php");
-	$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
-	display_top_tabs($tab_array);
-?>
-  </td></tr>
-  <tr>
-    <td>
-	<div id="mainarea">
-              <table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="main area">
-<?php if (count($dummynet_pipe_list) > 0): ?>
-                        <tr class="tabcont"><td width="25%" align="left">
-                        </td><td width="75%"> </td></tr>
-<?php endif; ?>
-			<tr>
-			<td width="25%" valign="top" align="left">
-			<?php
-				echo $tree; 
-			?>
-			<br /><br />
-			<a href="firewall_shaper_vinterface.php?pipe=new&amp;action=add">
-			<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" title="<?=gettext("Create new limiter");?>" width="17" height="17" border="0" alt="add" />&nbsp;<?=gettext("Create new limiter");?>
-			</a><br />
-			</td>
-			<td width="75%" valign="top" align="center">
-			<div id="shaperarea" style="position:relative">
-			<?php
-				echo $output;
-			?>	
+	<section class="page-content-main">
+		<div class="container-fluid">	
+			<div class="row">				
+				
+				<div id="inputerrors"></div>
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (is_subsystem_dirty('shaper')): ?><p>
+				<?php print_info_box_np(gettext("The traffic shaper configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));?><br /></p>
+				<?php endif; ?>
+
+			    <section class="col-xs-12">
+    				
+    					
+    					<?php
+							$tab_array = array();
+							$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
+							$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
+							$tab_array[2] = array(gettext("Limiter"), true, "firewall_shaper_vinterface.php");
+							$tab_array[3] = array(gettext("Layer7"), false, "firewall_shaper_layer7.php");
+							$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
+							display_top_tabs($tab_array);
+						?>
+						
+					
+						<div class="tab-content content-box col-xs-12">	
+	    					
+	    				    <div class="container-fluid">	
+	    					
+   
+		                        <form action="firewall_shaper_vinterface.php" method="post" name="iform" id="iform">
+		                        	
+		                        	
+		                        <div class="table-responsive">
+			                        <table class="table table-striped table-sort">
+									<?php if (count($dummynet_pipe_list) > 0): ?>
+									                        <tr class="tabcont"><td width="25%" align="left">
+									                        </td><td width="75%"> </td></tr>
+									<?php endif; ?>
+												<tr>
+												<td width="25%" valign="top" align="left">
+												<?php
+													echo $tree; 
+												?>
+												
+												</td>
+												<td width="75%" valign="top" align="center">
+												<div id="shaperarea" style="position:relative">
+												<?php
+													echo $output;
+												?>	
+												</div>
+									
+											      </td>
+											 </tr>
+									     </table>
+											</div>
+		                        </form>
+	    				    </div>
+						</div>
+			    </section>
 			</div>
-
-		      </td></tr>
-                    </table>
 		</div>
-	  </td>
-	</tr>
-</table>
-</form>
+	</section>
+	
+	
 <script type='text/javascript'>
 //<![CDATA[
 <?php
@@ -438,6 +460,4 @@ include("fbegin.inc");
 ?>
 //]]>
 </script>
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>

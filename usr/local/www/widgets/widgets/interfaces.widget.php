@@ -42,25 +42,29 @@ require_once("/usr/local/www/widgets/include/interfaces.inc");
 		$ifdescrs = get_configured_interface_with_descr();
 ?>
 
-	         <table bgcolor="#990000" width="100%" border="0" cellspacing="0" cellpadding="0" summary="interfaces">
+	         <table class="table table-striped">
 				<?php
 				foreach ($ifdescrs as $ifdescr => $ifname) {
 					$ifinfo = get_interface_info($ifdescr);
 					$iswireless = is_interface_wireless($ifdescr);
 				?>
 				<tr>
-				<td class="vncellt" rowspan="2">
+				<td class="vncellt" >
 				<?php
 				if($ifinfo['ppplink']) {
-					echo "<img src='./themes/{$g['theme']}/images/icons/icon_3g.gif' alt='3g' />";
+					?> <span alt="3g" class="glyphicon glyphicon-phone text-success"></span> <?php
 				} else if($iswireless) {
 					if($ifinfo['status'] == "associated") { ?>
-						<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_wlan.gif" alt="wlan" />
+						<span alt="wlan" class="glyphicon glyphicon-signal text-success"></span>
 					<?php } else { ?>
-						<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_wlan_d.gif" alt="wlan_d" />
+						<span alt="wlan_d" class="glyphicon glyphicon-signal text-danger"></span>
 					<?php } ?>
 				<?php } else { ?>
-						<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_cablenic.gif" alt="cablenic" />
+						<?php if ($ifinfo['status'] == "up") { ?>
+							<span alt="cablenic" id="<?php echo $ifname . 'icon';?>" class="glyphicon glyphicon-transfer text-success"></span>
+						<?php } else { ?>
+							<span alt="cablenic" id="<?php echo $ifname . 'icon';?>" class="glyphicon glyphicon-transfer text-danger"></span>
+						<?php } ?>
 				<?php } ?>&nbsp;
 				<strong><u>
 				<span onclick="location.href='/interfaces.php?if=<?=$ifdescr; ?>'" style="cursor:pointer">
@@ -71,24 +75,24 @@ require_once("/usr/local/www/widgets/include/interfaces.inc");
 				?>
 				</td>
 				<?php if($ifinfo['status'] == "up" || $ifinfo['status'] == "associated") { ?>
-							<td rowspan="2" class="listr" align="center">
-								<div id="<?php echo $ifname;?>-up" style="display:inline" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_interface_up.gif" title="<?=$ifname;?> is up" alt="up" /></div>
+							<td class="listr" align="center">
+								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-up text-success"></span>
+								
 							</td>
 		                <?php } else if ($ifinfo['status'] == "no carrier") { ?>
-							<td rowspan="2" class="listr" align="center">
-								<div id="<?php echo $ifname;?>-down" style="display:inline" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_interface_down.gif" title="<?=$ifname;?> is down" alt="down" /></div>
+							<td class="listr" align="center">
+								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-down text-danger"></span>
+								
 							</td>
 				<?php }  else if ($ifinfo['status'] == "down") { ?>
-							<td rowspan="2" class="listr" align="center">
-								<div id="<?php echo $ifname;?>-block" style="display:inline" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_block.gif" title="<?=$ifname;?> is disabled" alt="disabled" /></div>
+							<td class="listr" align="center">
+								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-remove text-danger"></span>
 							</td>
 		                <?php } else { ?><?=htmlspecialchars($ifinfo['status']); }?>
 							<td class="listr">
-								<div id="<?php echo $ifname;?>-media" style="display:inline"><?=htmlspecialchars($ifinfo['media']);?></div>
+								<div id="<?php echo $ifname;?>" style="display:inline"><?=htmlspecialchars($ifinfo['media']);?></div>
 							</td>
-						</tr>
-						<tr>
-							<td class="vncellt" style="border-right:1px solid #999999;">
+							<td class="vncellt">
 								<?php if($ifinfo['ipaddr'] != "") { ?>
                                                                 	<div id="<?php echo $ifname;?>-ip" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddr']);?> </div>
                                                                 	<br />

@@ -88,14 +88,16 @@ if($_POST['action']) {
 
 $closehead = false;
 require("head.inc");
-outputCSSFileInline("code-syntax-highlighter/SyntaxHighlighter.css");
-outputJavaScriptFileInline("filebrowser/browser.js");
-outputJavaScriptFileInline("javascript/base64.js");
 
 ?>
-</head>
+
 <body>
-<?php include("fbegin.inc"); ?>
+<?php 
+outputJavaScriptFileInline("filebrowser/browser.js");
+outputJavaScriptFileInline("javascript/base64.js");
+include("fbegin.inc"); 
+?>
+
 
 <script type="text/javascript">	
 //<![CDATA[
@@ -122,18 +124,6 @@ outputJavaScriptFileInline("javascript/base64.js");
 			var fileContent = Base64.decode(values.join("|"));
 			jQuery("#fileStatus").html("<?=gettext("File successfully loaded"); ?>.");
 			jQuery("#fileContent").val(fileContent);
-
-			var lang = "none";
-				 if(file.indexOf(".php") > 0) lang = "php";
-			else if(file.indexOf(".inc") > 0) lang = "php";
-			else if(file.indexOf(".xml") > 0) lang = "xml";
-			else if(file.indexOf(".js" ) > 0) lang = "js";
-			else if(file.indexOf(".css") > 0) lang = "css";
-
-			if(jQuery("#highlight").checked && lang != "none") {
-				jQuery("fileContent").prop("className",lang + ":showcolumns");
-				dp.SyntaxHighlighter.HighlightAll("fileContent", true, false);
-			}
 		}
 		else {
 			jQuery("#fileStatus").html(values[0]);
@@ -164,76 +154,66 @@ outputJavaScriptFileInline("javascript/base64.js");
 //]]>
 </script>
 
-
 <section class="page-content-main">
-	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+	<div class="container-fluid">
 		<div class="row">
-		    <section class="col-xs-12">
 
+		    <section class="col-xs-12">
+		    	<div class="content-box">
+
+		    		<div class="content-box-head col-xs-12">
+						<!-- file status box -->
+						<div style="display:none; background:#eeeeee;" id="fileStatusBox">
+							<div class="vexpl" style="padding-left:15px;">
+								<strong id="fileStatus"></strong>
+							</div>
+						</div>
 				
-				<!-- file status box -->
-				<div style="display:none; background:#eeeeee;" id="fileStatusBox">
-					<div class="vexpl" style="padding-left:15px;">
-						<strong id="fileStatus"></strong>
-					</div>
-				</div>
-				
-				<div class="content-box-main col-xs-12">
-					<div class="table-responsive">
-    			        <table class="table table-striped">
-    				        <tbody>
-        				        <tr>
-        				          <td><?=gettext("Save / Load from path"); ?>:</td>
-        				          <td><input type="text" class="form-control file" id="fbTarget" size="45" /></td>
-        				        </tr>
-        				        <tr>
-        				          <td>&nbsp;</td>
-        				          <td>
-	        				          <div class="btn-group">
-		        				          <input type="button" class="btn btn-primary"      onclick="loadFile();" value="<?=gettext('Load');?>" />
-										  <input type="button" class="btn btn-default"      id="fbOpen"           value="<?=gettext('Browse');?>" />
-										  <input type="button" class="btn btn-default"      onclick="saveFile();" value="<?=gettext('Save');?>" />
-	        				          </div>
-        				          </td>
-        				        </tr>	        				       
-    				        </tbody>
-    				    </table>
-				    </div>
-				    
-				    <div id="fbBrowser" style="display:none; border:1px dashed gray; width:98%;"></div>
-				
-					<!-- file viewer/editor -->
-					<table width="100%" summary="file editor">
-						<tr>
-							<td valign="top">
-								<div style="background:#eeeeee;" id="fileOutput">
-									<script type="text/javascript">
+						<!-- control buttons -->
+						<div class="content-box-main col-xs-12">
+							<div class="table-responsive">
+    			        		<table class="table table-striped">
+    				        		<tbody>
+        				        		<tr>
+        				          			<td><?=gettext("Save / Load from path"); ?>:</td>
+        				          			<td><input type="text" class="form-control file" id="fbTarget" size="45" /></td>
+        				        		</tr>
+        				        		<tr>
+        				          			<td>&nbsp;</td>
+        				          			<td>
+	        				          			<div class="btn-group">
+		        				          			<input type="button" class="btn btn-primary"      onclick="loadFile();" value="<?=gettext('Load');?>" />
+										  			<input type="button" class="btn btn-default"      id="fbOpen"           value="<?=gettext('Browse');?>" />
+										  			<input type="button" class="btn btn-default"      onclick="saveFile();" value="<?=gettext('Save');?>" />
+	        				          			</div>
+        				          			</td>
+        				        		</tr>	        				       
+    				        		</tbody>
+    				    		</table> 
+    				    	</div>   				        	
+
+
+    				        <!-- file browser window, is hidden by default -->
+				    		<div id="fbBrowser" style="display:none; background-color:#ffffff; border: 1px solid #cccccc; padding: 10px;"></div>
+
+				    		<!-- file viewer/editor -->
+				    		<div style="background:#eeeeee;" id="fileOutput">
+								<script type="text/javascript">
 									//<![CDATA[
-									window.onload=function(){
-										document.getElementById("fileContent").wrap='off';
-									}
+										window.onload=function(){
+											document.getElementById("fileContent").wrap='off';
+										}
 									//]]>
-									</script>
-									<textarea id="fileContent" name="fileContent" style="width:100%;" rows="30" cols=""></textarea>
-								</div>
-							</td>
-						</tr>
-					</table>
-				    
+								</script>
+								<textarea id="fileContent" name="fileContent" style="display:none; width: 100%; max-width:100%;" rows="30" cols=""></textarea>
+							</div>
+				    </div>  
 				</div>
-		    
-		    </section>
-				
+		    </section>	
 		</div>
 	</div>
 </section>
 
-
-<script type="text/javascript" src="/code-syntax-highlighter/shCore.js"></script>
-<script type="text/javascript" src="/code-syntax-highlighter/shBrushCss.js"></script>
-<script type="text/javascript" src="/code-syntax-highlighter/shBrushJScript.js"></script>
-<script type="text/javascript" src="/code-syntax-highlighter/shBrushPhp.js"></script>
-<script type="text/javascript" src="/code-syntax-highlighter/shBrushXml.js"></script>
 <script type="text/javascript">
 //<![CDATA[
 	jQuery(window).load(

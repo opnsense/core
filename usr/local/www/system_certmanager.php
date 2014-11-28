@@ -466,6 +466,13 @@ if ($_POST) {
 }
 
 include("head.inc");
+
+$main_buttons = array(
+	array('label'=>gettext("add or import certificate"), 'href'=>'system_certmanager.php?act=new'),
+);
+
+
+
 ?>
 
 <body onload="<?= $jsevents["body"]["onload"] ?>">
@@ -817,7 +824,7 @@ function internalca_change() {
 												<input autocomplete="off" name="altname_value<?php echo $counter; ?>" type="text" class="formfld unknown" id="altname_value<?php echo $counter; ?>" size="20" value="<?=htmlspecialchars($value);?>" />
 												</td>
 												<td>
-												<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="" title="<?=gettext("remove this entry"); ?>" /></a>
+												<a onclick="removeRow(this); return false;" href="#" title="<?=gettext("remove this entry"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 												</td>
 											</tr>
 											<?php
@@ -828,9 +835,7 @@ function internalca_change() {
 											<tr><td>&nbsp;</td></tr>
 											</tbody>
 											</table>
-											<a onclick="javascript:addRowTo('altNametable', 'formfldalias'); return false;" href="#">
-												<img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="" title="<?=gettext("add another entry");?>" />
-											</a>
+											<a onclick="javascript:addRowTo('altNametable', 'formfldalias'); return false;" href="#" title="<?=gettext("add another entry");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 											<script type="text/javascript">
 											//<![CDATA[
 												field_counter_js = 3;
@@ -1182,23 +1187,23 @@ function internalca_change() {
     						<table border="0" cellpadding="0" cellspacing="0">
                                 <tr>
         						<td>
-        							<a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default" title="<?=gettext("export ca");?>">
-            							<span class="glyphicon glyphicon-export"></span>
+        							<a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" title="<?=gettext("export ca");?>">
+            							<span class="glyphicon glyphicon-download"></span>
         							</a>
         						</td>
         						<td>
-        							<a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default" title="<?=gettext("export key");?>">
-            							<span class="glyphicon glyphicon-save"></span>
+        							<a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" title="<?=gettext("export key");?>">
+            							<span class="glyphicon glyphicon-download"></span>
         							</a>
         						</td>
         						<td>
-        							<a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
-        							    <span class="glyphicon glyphicon-save"></span>
+        							<a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
+        							    <span class="glyphicon glyphicon-download"></span>
         							</a>
         						</td>
     							<?php if (!cert_in_use($cert['refid'])): ?>
     							<td>
-        							<a href="system_certmanager.php?act=del&amp;id=<?=$i;?>" class="btn btn-default" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate?");?>')" title="<?=gettext("delete cert");?>">
+        							<a href="system_certmanager.php?act=del&amp;id=<?=$i;?>" class="btn btn-default btn-xs" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate?");?>')" title="<?=gettext("delete cert");?>">
         								<span class="glyphicon glyphicon-remove"></span>
         							</a>
     							</td>
@@ -1215,14 +1220,7 @@ function internalca_change() {
 						</td>
 					</tr>
 					<?php $i++; endforeach; ?>
-					<tr>
-						<td class="list" colspan="4"></td>
-						<td class="list">
-							<a href="system_certmanager.php?act=new" title="<?=gettext("add or import certificate");?>" class="btn btn-primary">
-                                <span class="glyphicon glyphicon-plus"></span>
-							</a>
-						</td>
-					</tr>
+					
 					<tr>
 						<td>&nbsp;</td>
 						<td colspan="3"><?=gettext("Note: You can only delete a certificate if it is not currently in use.");?></td>
