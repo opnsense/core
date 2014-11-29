@@ -289,6 +289,7 @@ $have_cookies = isset($_COOKIE["cookie_test"]);
 	                    <input onclick="clearError();" onchange="clearError();" id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
 	                  </div>
 	                  
+	                  <input type="hidden" name="login" value="1" /><!-- XXX login workaround -->
 	                  
 	                  <button type="submit" name="login" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
 	                  
