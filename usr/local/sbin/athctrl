@@ -1,8 +1,10 @@
-#!/bin/sh
+#! /bin/sh
 #
 # Set the IFS parameters for an interface configured for
 # point-to-point use at a specific distance.  Based on a
 # program by Gunter Burchardt.
+#
+# $FreeBSD$
 #
 DEV=ath0
 d=0
@@ -38,4 +40,3 @@ ATHN=`echo $DEV | sed 's/ath//'`
 sysctl dev.ath.$ATHN.slottime=$slottime
 sysctl dev.ath.$ATHN.acktimeout=$timeout
 sysctl dev.ath.$ATHN.ctstimeout=$timeout
-

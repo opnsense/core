@@ -2645,7 +2645,7 @@ EOD;
 	/* set ack timers according to users preference (if he/she has any) */
 	if($distance) {
 		fwrite($fd_set, "# Enable ATH distance settings\n");
-		fwrite($fd_set, "/sbin/athctrl.sh -i {$baseif} -d {$distance}\n");
+		fwrite($fd_set, "/usr/local/sbin/athctrl -i {$baseif} -d {$distance}\n");
 	}
 
 	if (isset($wlcfg['wpa']['enable'])) {
@@ -3865,7 +3865,7 @@ retry 15;
 select-timeout 0;
 initial-interval 1;
 	{$dhclientconf_hostname}
-	script "/sbin/dhclient-script";
+	script "/usr/local/sbin/dhclient-script.ext";
 EOD;
 
 if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
@@ -3976,7 +3976,7 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif) {
  	$dhclientconf .= "{$required_options}";
  	$dhclientconf .= "{$option_modifiers}";
  	$dhclientconf .= "\n";
- 	$dhclientconf .= "\tscript \"/sbin/dhclient-script\";\n";
+ 	$dhclientconf .= "\tscript \"/usr/local/sbin/dhclient-script.ext\";\n";
  	$dhclientconf .= "}\n";
 
 	$dhclientconf = DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf);
