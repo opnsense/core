@@ -84,10 +84,12 @@ include("head.inc");
     				<? $active_tab = "/diag_logs.php"; include('diag_logs_tabs.php'); ?>
 					
 					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
-							
+    				     
+						 <div class="container-fluid">		
 							
 							<? include('diag_logs_pills.php'); ?>
+							
+						 </div>
 					
 								
 							 <div class="table-responsive">
@@ -100,15 +102,16 @@ include("head.inc");
 									?>
 							 	</table>
 							 </div>
-							
+						
+						 <div class="container-fluid">		
 							<form action="diag_logs_gateways.php" method="post">
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
-							</form>
-							
-							<form id="clearform" name="clearform" action="diag_logs_gateways.php" method="post" style="margin-top: 14px;">
-              				<input id="filtertext" name="filtertext" value="<?=$filtertext;?>" />
-              				<input id="filtersubmit" name="filtersubmit" type="submit" class="formbtn" value="<?=gettext("Filter");?>" />
+							</form>	
+							<form id="clearform" name="clearform" action="diag_logs_gateways.php" method="post" class="__mt">
+              				<input id="filtertext" name="filtertext" value="<?=$filtertext;?>" type="text" class="pull-left __mr"/>
+              				<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
 						</form>
+						 </div>
 							
 						</div>
 				    </div>

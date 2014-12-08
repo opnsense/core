@@ -37,7 +37,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 require_once("ipsec.inc");
@@ -239,8 +239,7 @@ include("head.inc");
     				
     				<? $active_tab = "/vpn_ipsec.php"; include('vpn_ipsec_tabs.php'); ?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">
 
 							 <div class="table-responsive">
 							 	<table class="table table-striped table-sort">
@@ -675,7 +674,7 @@ include("head.inc");
 
 
 							<form action="vpn_ipsec.php" method="post">
-							<table border="0" cellspacing="2" cellpadding="0" summary="enable">
+							<table border="0" cellspacing="2" cellpadding="0" summary="enable" class="table table-striped">
 								<tr>
 									<td>
 										<input name="enable" type="checkbox" id="enable" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\"";?> />
@@ -690,7 +689,6 @@ include("head.inc");
 							</table>
 							</form>
 						</div>
-					</div>
 				</section>
 			</div>
 		</div>

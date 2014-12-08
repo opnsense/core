@@ -35,7 +35,7 @@
 ##|*MATCH=vpn_ipsec_keys.php*
 ##|-PRIV
 
-require("functions.inc");
+require("includes/functions.inc");
 require("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
@@ -100,8 +100,7 @@ include("head.inc");
     				
     				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.php'); ?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	
 	    				    
 							<form action="vpn_ipsec_keys.php" method="post">
 
@@ -116,7 +115,7 @@ include("head.inc");
 											<table border="0" cellspacing="0" cellpadding="1" summary="add key">
 											    <tr>
 											        <td width="20" height="17"></td>
-												<td><a href="vpn_ipsec_keys_edit.php"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" title="<?=gettext("add key"); ?>" width="17" height="17" border="0" alt="add" /></a></td>
+												<td><a href="vpn_ipsec_keys_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
 											    </tr>
 											</table>
 								  </td>
@@ -164,7 +163,7 @@ include("head.inc");
 									<table border="0" cellspacing="0" cellpadding="1" summary="add key">
 									    <tr>
 									        <td width="20" height="17"></td>
-										<td><a href="vpn_ipsec_keys_edit.php"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" title="<?=gettext("add key"); ?>" width="17" height="17" border="0" alt="add" /></a></td>
+										<td><a href="vpn_ipsec_keys_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
 									    </tr>
 									</table>
 								  </td>
@@ -173,6 +172,7 @@ include("head.inc");
 							</div>
 							</form>
 							
+							<div class="container-fluid">
 							<p>
 							<span class="vexpl">
 							<span class="text-danger">
@@ -181,7 +181,7 @@ include("head.inc");
 							<?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
 							</span>
 							</p>
-    				    </div>
+    				        </div>
 					</div>
 			    </section>
 			</div>

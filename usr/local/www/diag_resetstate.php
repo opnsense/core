@@ -90,7 +90,6 @@ include("head.inc");
 	    					
 	    				<div class="tab-pane active" id="system">
 			
-							<section class="col-xs-12">
 									    
 								<?php if ($input_errors) print_input_errors($input_errors); ?>
 								<?php if ($savemsg) print_info_box($savemsg); ?>
@@ -132,7 +131,7 @@ include("head.inc");
 						            			
 										
 								</form>
-							</section>
+								
 						</div>
 					</div>
 				</div>

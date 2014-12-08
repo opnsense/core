@@ -86,7 +86,8 @@ include("head.inc");
 							<div class="table-responsive">
 								
 
-				              <table class="table table-striped table-sort">
+				              <table class="table table-striped table-sort __nomb">
+				                <thead>
 				                <tr>
 				                  <td width="10%" class="listhdrr"><?=gettext("Name"); ?></td>
 						  <td width="20%" class="listhdrr"><?=gettext("Address"); ?></td>
@@ -94,6 +95,8 @@ include("head.inc");
 				                  <td width="25%" class="listhdrr"><?=gettext("Status"); ?></td>
 				                  <td width="25%" class="listhdr"><?=gettext("Description"); ?></td>
 								</tr>
+				                </thead>
+				                <tbody>
 							  <?php $i = 0; foreach ($a_vs as $vsent): ?>
 				                <tr>
 				                  <td class="listlr">
@@ -149,6 +152,7 @@ include("head.inc");
 				                  </td>
 				                </tr>
 						<?php $i++; endforeach; ?>
+				                </tbody>
 				             </table>
 	   						</div>
     				    </div>

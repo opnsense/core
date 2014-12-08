@@ -76,17 +76,21 @@ include("head.inc");
 					?>
 				    
 				    <div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
+    	  
 
 							<div class="responsive-table">
 					    
 	
 				              <table class="table table-striped table-sort">
+    				              <thead>
 				                <tr>
 				                  <td width="20%" class="listhdrr"><?=gettext("Group Name"); ?></td>
 				                  <td width="50%" class="listhdrr"><?=gettext("Gateways"); ?></td>
 				                  <td width="30%" class="listhdr"><?=gettext("Description"); ?></td>
 							  </tr>
+    				              </thead>
+    				              
+    				              <tbody>
 							  <?php $i = 0; foreach ($a_gateway_groups as $gateway_group): ?>
 				                <tr>
 				                  <td class="listlr">
@@ -165,9 +169,8 @@ include("head.inc");
 				                  </td>
 						</tr>
 							  <?php $i++; endforeach; ?>
-				
+    				              </tbody>
 					</table>
-						</div>
 					</div>
 				</div>
 			</section>

@@ -746,8 +746,6 @@ include("head.inc");
 
 					
 						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
 								
 		                        <form action="services_dhcp.php" method="post" name="iform" id="iform">
 								
@@ -1273,7 +1271,7 @@ include("head.inc");
 								</div>
 								<? endif; ?>
 		                        </form>
-	    				    </div>
+		                        
 						</div>
 			    </section>
 			</div>

@@ -161,18 +161,19 @@ include("fbegin.inc");
 		    <section class="col-xs-12">
 		    	<div class="content-box">
 
-		    		<div class="content-box-head col-xs-12">
+		    		<div class="content-box-head container-fluid">
 						<!-- file status box -->
 						<div style="display:none; background:#eeeeee;" id="fileStatusBox">
 							<div class="vexpl" style="padding-left:15px;">
 								<strong id="fileStatus"></strong>
 							</div>
 						</div>
+		    		</div>
 				
 						<!-- control buttons -->
-						<div class="content-box-main col-xs-12">
+						<div class="content-box-main ">
 							<div class="table-responsive">
-    			        		<table class="table table-striped">
+    			        		<table class="table table-striped __nomb">
     				        		<tbody>
         				        		<tr>
         				          			<td><?=gettext("Save / Load from path"); ?>:</td>

@@ -95,8 +95,7 @@ $status = ipsec_smp_dump_status();
     				
     				<? $active_tab = "/diag_ipsec.php"; include('diag_ipsec_tabs.php'); ?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
+					<div class="tab-content content-box col-xs-12">	   
 							
 							<div class="table-responsive">
 							 	<table class="table table-striped table-sort">
@@ -435,6 +434,7 @@ $status = ipsec_smp_dump_status();
 											</tbody>
 											</table>
 											
+											<div class="container-fluid">
 											<p class="vexpl">
 	<span class="text-danger">
 		<strong><?php echo gettext("Note:");?><br /></strong>
@@ -442,8 +442,8 @@ $status = ipsec_smp_dump_status();
 	<?php echo gettext("You can configure IPsec");?>
 	<a href="vpn_ipsec.php">here</a>.
 </p>
-											
-							</div>
+											</div>				
+						
     				    </div>
 					</div>
 			    </section>

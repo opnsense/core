@@ -41,7 +41,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 
 function ppp_inuse($num) {
 	global $config, $g;
@@ -112,21 +112,24 @@ $main_buttons = array(
 						?>
 
 					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
-	    					
+						<div class="tab-content content-box col-xs-12">		    					
    
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
 		                        
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-						                <tr>
-						                	<td width="20%" class="listhdrr"><?=gettext("Interface");?></td>
-						                  <td width="20%" class="listhdrr"><?=gettext("Interface(s)/Port(s)");?></td>
-						                  <td width="40%" class="listhdr"><?=gettext("Description");?></td>
-						                  <td width="10%" class="list"></td>
-										</tr>
+    			                        
+    			                         <thead>
+                                            <tr>
+                                				<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
+                                				<th width="20%" class="listtopic"><?=gettext("Interface(s)/Port(s)");?></th>
+                                				<th width="40%" class="listtopic"><?=gettext("Description");?></th>
+                                				<th width="10%" class="listtopic">&nbsp;</th>
+                                            </tr>
+                                        </thead>
+    									
+        								<tbody>
+        								
 									  <?php $i = 0; foreach ($a_ppps as $id => $ppp): ?>
 						                <tr  ondblclick="document.location='interfaces_ppps_edit.php?id=<?=$i;?>'">
 						                	<td class="listr">
@@ -154,11 +157,11 @@ $main_buttons = array(
 							               </td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-						                
+        								</tbody>
 						              </table>
 							      </div>
 		                        </form>
-	    				    </div>
+		                        
 						</div>
 			    </section>
 			</div>

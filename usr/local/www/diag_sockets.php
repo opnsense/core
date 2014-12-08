@@ -63,7 +63,7 @@ $showAllOption = $showAll ? "" : "?showAll";
                 
                 <p>Information about listening sockets for both <a href="#IPv4">IPv4</a> and <a href="#IPv6">IPv6</a>.</p>
                 <p>For explanation about the meaning of the information listed for each socket click <a href="#about">here</a>.</p>
-                <p><input type="button" value="<?=$showAllText?>" onclick="window.location.href='diag_sockets.php<?=$showAllOption?>'"/>To show information about both listening and connected sockets click this.</p>
+                <p><input type="button" class="btn btn-default" value="<?=$showAllText?>" onclick="window.location.href='diag_sockets.php<?=$showAllOption?>'"/><br/>To show information about both listening and connected sockets click this.</p>
                 
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 			</section>
@@ -88,11 +88,11 @@ $showAllOption = $showAll ? "" : "?showAll";
 
                 <div class="content-box">              
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><a name="<?=$name;?>"></a><?=$name;?></h3>
 				    </header>
 				    
-				     <table class="table table-striped table-sort sortable" id="IPv4" summary="ipv4 routes">
+				     <table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
 						<?php
 							foreach (explode("\n", $table) as $i => $line) {
 								if ($i == 0)
@@ -127,7 +127,7 @@ $showAllOption = $showAll ? "" : "?showAll";
 
                 <div class="content-box">              
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><a name="about"></a>Socket information explanation</h3>
 				    </header>
 				    
@@ -138,7 +138,7 @@ Or in case of showing all sockets the output for: "sockstat -4" and "sockstat -6
 The information listed for each socket is:</p>
 				    </div>
 				         
-					<table class="table table-striped table-sort sortable" id="IPv4" summary="ipv4 routes">
+					<table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
 						<tr><td class="listlr">USER	      </td><td class="listr">The user who owns the socket.</td></tr>
 						<tr><td class="listlr">COMMAND	      </td><td class="listr">The command which holds the socket.</td></tr>
 						<tr><td class="listlr">PID	      </td><td class="listr">The process ID of the command which holds the socket.</td></tr>

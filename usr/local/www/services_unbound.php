@@ -212,10 +212,7 @@ function show_advanced_dns() {
 						display_top_tabs($tab_array, true);
 					?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
-	    				    
-	    				   
+					<div class="tab-content content-box col-xs-12">	 
 
 								<div class="table-responsive">
 							 		<table class="table table-striped">
@@ -360,19 +357,19 @@ function show_advanced_dns() {
 									</table>
 								</div>
 								
-									
-<p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
-</strong></span><?php printf(gettext("If the DNS Resolver is enabled, the DHCP".
-" service (if enabled) will automatically serve the LAN IP".
-" address as a DNS server to DHCP clients so they will use".
-" the DNS Resolver. If Forwarding, is enabled, the DNS Resolver will use the DNS servers".
-" entered in %sSystem: General setup%s".
-" or those obtained via DHCP or PPP on WAN if the &quot;Allow".
-" DNS server list to be overridden by DHCP/PPP on WAN&quot;".
-" is checked."),'<a href="system.php">','</a>');?><br />
-</span></p>
-
-    				    </div>
+					<div class="container-fluid">				
+                        <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
+                        </strong></span><?php printf(gettext("If the DNS Resolver is enabled, the DHCP".
+                        " service (if enabled) will automatically serve the LAN IP".
+                        " address as a DNS server to DHCP clients so they will use".
+                        " the DNS Resolver. If Forwarding, is enabled, the DNS Resolver will use the DNS servers".
+                        " entered in %sSystem: General setup%s".
+                        " or those obtained via DHCP or PPP on WAN if the &quot;Allow".
+                        " DNS server list to be overridden by DHCP/PPP on WAN&quot;".
+                        " is checked."),'<a href="system.php">','</a>');?><br />
+                        </span></p>
+					</div>
+    				   
 					</div>
 			    </section>
 			    
@@ -380,7 +377,7 @@ function show_advanced_dns() {
 				    
 				    <div class="content-box">
 					    
-					    <header class="content-box-head col-xs-12">
+					    <header class="content-box-head container-fluid">
 				        	<h3><?=gettext("Host Overrides");?></h3>
 				    	</header>
 				    	
@@ -445,7 +442,7 @@ function show_advanced_dns() {
 				    
 				    <div class="content-box">
 					    
-					    <header class="content-box-head col-xs-12">
+					    <header class="content-box-head container-fluid">
 				        	<h3><?=gettext("Domain Overrides");?></h3>
 				    	</header>
 				    	

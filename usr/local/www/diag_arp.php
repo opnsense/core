@@ -375,7 +375,7 @@ $mac_man = load_mac_manufacturer_table();
                             <?php endforeach; ?>
                         </table>
                         
-                        <br /><?= gettext("NOTE: Local IPv6 peers use") ?> <a href="diag_ndp.php"><?= gettext("NDP") ?></a> <?= gettext("instead of ARP") ?>.
+                        <div class="container-fluid"><?= gettext("NOTE: Local IPv6 peers use") ?> <a href="diag_ndp.php"><?= gettext("NDP") ?></a> <?= gettext("instead of ARP") ?>.</div>
                         
                     </div>
                     

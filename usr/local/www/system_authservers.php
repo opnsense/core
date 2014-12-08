@@ -464,9 +464,7 @@ function select_clicked() {
 							display_top_tabs($tab_array);
 						?>
 					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
+						<div class="tab-content content-box col-xs-12">
 								
 								<?php if ($act == "new" || $act == "edit" || $input_errors): ?>
 								<form id="iform" name="iform" action="system_authservers.php" method="post">	
@@ -506,13 +504,15 @@ function select_clicked() {
 										</table>
 					
 										<table class="table table-striped table-sort" id="ldap" style="display:none" summary="">
-											<tr>
-												<td colspan="2" class="list" height="12"></td>
-											</tr>
-									
-											<tr>
-												<td colspan="2" valign="top" class="listtopic"><?=gettext("LDAP Server Settings");?></td>
-											</tr>
+			                                    
+		                                    <thead>
+		                                        <tr>
+		                            				<th colspan="2" class="listtopic"><?=gettext("LDAP Server Settings");?></th>
+		                                        </tr>
+		                                    </thead>
+											
+		    								<tbody>
+				
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname or IP address");?></td>
 												<td width="78%" class="vtable">
@@ -611,14 +611,21 @@ function select_clicked() {
 												<td width="78%" class="vtable">
 													<table border="0" cellspacing="0" cellpadding="2" summary="auth containers">
 														<tr>
-															<td><?=gettext("Containers:");?> &nbsp;</td>
+															<td valign="top"><?=gettext("Containers:");?> &nbsp;</td>
 															<td>
-																<input name="ldapauthcontainers" type="text" class="formfld unknown" id="ldapauthcontainers" size="40" value="<?=htmlspecialchars($pconfig['ldap_authcn']);?>"/>
-																<input type="button" onclick="select_clicked();" value="<?=gettext("Select");?>" />
+																<ul class="list-inline">
+    																<li><input name="ldapauthcontainers" type="text" class="formfld unknown" id="ldapauthcontainers" size="40" value="<?=htmlspecialchars($pconfig['ldap_authcn']);?>"/></li>
+    																<li><input type="button" onclick="select_clicked();" class="btn btn-default" value="<?=gettext("Select");?>" /></li>
+																</ul>
+															</td>
+															
+														</tr>
+														<tr>
+    														<td colspan="2">
 																<br /><?=gettext("Note: Semi-Colon separated. This will be prepended to the search base dn above or you can specify full container path containing a dc= component.");?>
 																<br /><?=gettext("Example:");?> CN=Users;DC=example,DC=com
 																<br /><?=gettext("Example:");?> OU=Staff;OU=Freelancers
-															</td>
+    														</td>
 														</tr>
 													</table>
 												</td>
@@ -862,7 +869,6 @@ function select_clicked() {
 										</table>
 									</div>
 							<?php endif; ?>
-								</div>
 							</div>
 						</section>
 					</div>

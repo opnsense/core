@@ -132,7 +132,7 @@ include("head.inc");
     				
     				<div class="content-box">	
 						
-						<header class="content-box-head col-xs-12">
+						<header class="content-box-head container-fluid">
     				        <h3><?=gettext("Edit WOL entry");?></h3>
     				    </header>
         				    

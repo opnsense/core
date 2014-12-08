@@ -4,7 +4,7 @@
 */
 
 require_once("globals.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("shortcuts.inc");
 require_once("includes/service-utils.inc");
 
@@ -208,7 +208,7 @@ $status_menu = array();
 if (count($config['captiveportal']) > 0)
 	$status_menu[] = array(gettext("Captive Portal"), "/status_captiveportal.php");
 $status_menu[] = array(gettext("CARP (failover)"), "/carp_status.php");
-$status_menu[] = array(gettext("Dashboard"), "/status_dashboard.php");
+$status_menu[] = array(gettext("Dashboard"), "/index.php");
 $status_menu[] = array(gettext("Gateways"), "/status_gateways.php");
 $status_menu[] = array(gettext("DHCP Leases"), "/status_dhcp_leases.php");
 $status_menu[] = array(gettext("DHCPv6 Leases"), "/status_dhcpv6_leases.php");
@@ -305,10 +305,6 @@ function add_to_menu($url, $name) {
 }
 
 
-echo "\t<script type=\"text/javascript\" src=\"javascript/domTT/domLib.js\"></script>\n";
-echo "\t<script type=\"text/javascript\" src=\"javascript/domTT/domTT.js\"></script>\n";
-echo "\t<script type=\"text/javascript\" src=\"javascript/domTT/behaviour.js\"></script>\n";
-echo "\t<script type=\"text/javascript\" src=\"javascript/domTT/fadomatic.js\"></script>\n";
 /* display a top alert bar if need be */
 $need_alert_display = false;
 $found_notices = are_notices_pending();
@@ -320,15 +316,7 @@ if($found_notices == true) {
 	}
 }
 if($need_alert_display == true) {
-            echo "<div style=\"background-color:#000000\" id=\"roundalert\">";
-            echo "<table summary=\"round alert\">";
-	echo "<tr><td><font color=\"#ffffff\">";
-	echo "&nbsp;&nbsp;<img align=\"middle\" src=\"/top_notification.gif\" alt=\"notification\" />&nbsp;&nbsp;&nbsp;";
-	echo $display_text;
-	echo "</font></td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
+    echo "<div class=\"col-xs-12\"><div class=\"alert alert-info\"><p>".$display_text."</p></div></div>";
 }
 
 /* if upgrade in progress, alert user */
@@ -346,7 +334,10 @@ if(is_subsystem_dirty('packagelock')) {
 	
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="/">OPNsense</a>
+				<a class="navbar-brand" href="/">
+    				<img class="brand-logo" src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
+    				<img class="brand-icon" src="/themes/<?=$g['theme'];?>/assets/images/icon-logo.png" height="30" width="29"/>
+				</a>
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
@@ -357,6 +348,11 @@ if(is_subsystem_dirty('packagelock')) {
 			
 			<div class="collapse navbar-collapse">						
 				<ul class="nav navbar-nav navbar-right">	
+					<li id="menu_messages">
+					<?php
+						echo get_menu_messages();
+					?>
+					</li>
 					<?php
 						
 						
@@ -369,13 +365,11 @@ if(is_subsystem_dirty('packagelock')) {
 					
 									
 					<?php if(! $g['disablehelpicon']): ?>	
-					<li><a href="<?php echo $helpurl; ?>" title="<?php echo gettext("Help for items on this page"); ?>">Help</a></li>
+					<li><a href="<?php echo $helpurl; ?>" target="_blank" title="<?php echo gettext("Help for items on this page"); ?>">Help</a></li>
 					<?php endif; ?>
 					<li class="active"><a href="/index.php?logout">Logout</a></li>
 				</ul>
-				<?php
-					echo get_menu_messages();
-				?>
+				
 			</div>
 		</div>
 	</nav>
@@ -511,10 +505,8 @@ if(is_subsystem_dirty('packagelock')) {
 						
 						<? if (isset($widgetfiles)): ?>
 						  
-			            
-							<input type="hidden" value="" name="sequence" id="sequence" />
 		
-							<input type="submit" id="submit" name="submit" style="display:none" onclick="return updatePref();" class="btn btn-primary" value="<?=gettext("Save Settings");?>" />								
+							<a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
 						
 							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span>Add widget</button>
 						<? endif; ?>

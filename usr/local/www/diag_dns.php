@@ -182,11 +182,11 @@ include("head.inc"); ?>
 					
 					<?php if ($input_errors) print_input_errors($input_errors); ?>
 					
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Resolve DNS hostname or IP");?></h3>
 				    </header>
 				    
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main">
     				    <div class="table-responsive">
         			        <table class="table table-striped">
         				        <tbody>
@@ -266,8 +266,10 @@ include("head.inc"); ?>
         				        </tbody>
         				    </table>
     				    </div>
+    				    <div class="container-fluid">
     				    
     				    <input type="submit" class="btn btn-primary btn-fixed pull-right" value="<?=gettext("DNS Lookup");?>" />
+    				    </div>
 				    </div>
                             
 				</div>

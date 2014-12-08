@@ -193,8 +193,8 @@ include("head.inc");
 						display_top_tabs($tab_array, true);
 					?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	  
+    					
 	    				    
 	    				    <form action="services_unbound_acls.php" method="post" name="iform" id="iform">
 							<?php if($act=="new" || $act=="edit"): ?>
@@ -385,7 +385,7 @@ include("head.inc");
 								</div>
 								<?php endif; ?>
 	    				    </form>
-    				    </div>
+	    				    
 					</div>
 			    </section>
 			</div>

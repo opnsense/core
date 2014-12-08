@@ -40,7 +40,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -109,24 +109,24 @@ $main_buttons = array(
 						display_top_tabs($tab_array);
 					?>
 				
-					<div class="tab-content content-box col-xs-12">	
-    					
-    				    <div class="container-fluid">	    					
+					<div class="tab-content content-box col-xs-12">				
 
 	                        <form action="firewall_nat_npt.php" method="post" name="iform" id="iform">
 	                        	
 	                        	<div class="table-responsive">
 		                       	 	<table class="table table-striped table-sort">
-			                    
-							   	 		<tr>
-										  <td width="10%" class="listhdrr"><?=gettext("Interface"); ?></td>
-								                  <td width="20%" class="listhdrr"><?=gettext("External Prefix"); ?></td>
-								                  <td width="15%" class="listhdrr"><?=gettext("Internal prefix"); ?></td>
-								                  <td width="30%" class="listhdr"><?=gettext("Description"); ?></td>
-								                  <td width="10%" class="list">
-								                    
-										  </td>
-												</tr>
+                                        
+                                        <thead>
+    							   	 		<tr>
+    										    <th width="10%" class="listhdrr"><?=gettext("Interface"); ?></th>
+    								            <th width="20%" class="listhdrr"><?=gettext("External Prefix"); ?></th>
+    								            <th width="15%" class="listhdrr"><?=gettext("Internal prefix"); ?></th>
+    								            <th width="30%" class="listhdr"><?=gettext("Description"); ?></th>
+    								            <th class="list"></th>
+    										</tr>
+                                        </thead>
+                                        
+                                        <tbody>
 									  <?php 
 											$textse = "</span>";
 								
@@ -169,11 +169,11 @@ $main_buttons = array(
 								                  </td>
 								                </tr>
 										<?php $i++; endforeach; ?>
-								                
-								              </table>
+                                        </tbody>        
+							        </table>
 	                        	</div>
 	                        </form>
-    				    </div>
+	                        
 					</div>
 			    </section>
 			</div>

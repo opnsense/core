@@ -54,7 +54,7 @@ function schedule_sort(){
 }
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -786,16 +786,17 @@ EOD;
     				
     				<div class="content-box">
 	    				
-	    				 <header class="content-box-head col-xs-12">
+	    				 <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Schedule information");?></h3>
     				    </header>
     				    
-    				    <div class="content-box-main col-xs-12">
+    				    <div class="content-box-main">
 	    					
 	    					<form action="firewall_schedule_edit.php" method="post" name="iform" id="iform">
 		    							                        
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
+    			                        <tbody>
 						               	<tr>
 										  <td width="15%" valign="top" class="vncellreq"><?=gettext("Schedule Name");?></td>
 										  <td width="85%" class="vtable">
@@ -863,18 +864,20 @@ EOD;
 												$positioncounter = 1;//7 for Sun, 1 for Mon, 2 for Tues, etc						
 												?>	
 							                        <div id="<?php echo date("F_y",mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?>" style=" position:relative; display:<?php if($firstmonth)echo "block";else echo "none";?>">    	
-								                   	<table border="1" cellspacing="1" cellpadding="1" id="calTable<?=$monthcounter . $yearcounter;?>" class="tabcont" summary="month">
-														<tr><td colspan="7" align="center" class="listbg"><b><?php echo date("F_Y", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?></b></td>
-														</tr>
+								                   	<table border="1" cellspacing="1" cellpadding="1" id="calTable<?=$monthcounter . $yearcounter;?>" class="tabcont " summary="month">
+														<thead>
+														<tr><td colspan="7" align="center" class="listbg"><?php echo date("F_Y", mktime(0, 0, 0, date($monthcounter), 1, date($yearcounter)));?></td></tr>
 														<tr>	
-															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p1');"><u><b><?=gettext("Mon");?></b></u></td>
-															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p2');"><u><b><?=gettext("Tue");?></b></u></td>
-															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p3');"><u><b><?=gettext("Wed");?></b></u></td>
-															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p4');"><u><b><?=gettext("Thu");?></b></u></td>
-															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p5');"><u><b><?=gettext("Fri");?></b></u></td>
-															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p6');"><u><b><?=gettext("Sat");?></b></u></td>
-															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p7');"><u><b><?=gettext("Sun");?></b></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p1');"><u><?=gettext("Mon");?></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p2');"><u><?=gettext("Tue");?></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p3');"><u><?=gettext("Wed");?></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p4');"><u><?=gettext("Thu");?></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p5');"><u><?=gettext("Fri");?></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p6');"><u><?=gettext("Sat");?></u></td>
+															<td align="center" class="listhdrr" style="cursor: pointer;" onclick="daytoggle('w1p7');"><u><?=gettext("Sun");?></u></td>
 														</tr>
+														</thead>
+														<tbody>
 														<?php			
 														$firstmonth = FALSE;				
 														while ($daycounter<=$numberofdays){
@@ -911,6 +914,7 @@ EOD;
 															}
 														
 														}//end while loop?>	
+													</tbody>
 													</table>
 													</div>
 											<?php 
@@ -1004,12 +1008,17 @@ EOD;
 										</tr>
 										<tr>
 										  <td width="15%" valign="top" class="vtable"></td>
-										  <td width="85%" class="vtable">
-						                    </td>
-										</tr>
+										  <td width="85%" class="vtable"></td>
+    										</tr>
+                                        </tbody>
+								</table>
+								<table class="table table-striped">
+										<thead>
 										<tr>
 											<td colspan="2" valign="top" class="listtopic"><?=gettext("Schedule repeat");?></td>
-										</tr>	
+										</tr>
+										</thead>
+										<tbody>	
 										<tr>
 											<td width="15%" valign="top" class="vncellreq"><?=gettext("Configured Ranges");?></td>
 											<td width="85%">
@@ -1185,13 +1194,14 @@ EOD;
 										      <?php endif; ?>
 										    </td>
 									  	</tr>
-									  </table>
-									  </div>
-									 </form>
-									 </div>
-									 </div>
-									 </section>
-									 </div>
-									 </div>
-									 </section>
+									</tbody>
+								    </table>
+								</div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
 <?php include("foot.inc"); ?>

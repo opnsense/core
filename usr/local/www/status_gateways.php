@@ -73,22 +73,24 @@ include("head.inc");
 					        display_top_tabs($tab_array);
 					?>
 				    
-				    <div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
+				    <div class="tab-content content-box col-xs-12">	   
 
 							<div class="responsive-table">
 					    
 	
 				              <table class="table table-striped table-sort">
-				                <tr>
-				                  <td width="10%" class="listhdrr"><?=gettext("Name"); ?></td>
-				                  <td width="10%" class="listhdrr"><?=gettext("Gateway"); ?></td>
-				                  <td width="10%" class="listhdrr"><?=gettext("Monitor"); ?></td>
-				                  <td width="8%" class="listhdrr"><?=gettext("RTT"); ?></td>
-				                  <td width="7%" class="listhdrr"><?=gettext("Loss"); ?></td>
-				                  <td width="35%" class="listhdrr"><?=gettext("Status"); ?></td>
-				                  <td width="20%" class="listhdr"><?=gettext("Description"); ?></td>
-								</tr>
+    				              <thead>
+    				                <tr>
+    				                  <td width="10%" class="listhdrr"><?=gettext("Name"); ?></td>
+    				                  <td width="10%" class="listhdrr"><?=gettext("Gateway"); ?></td>
+    				                  <td width="10%" class="listhdrr"><?=gettext("Monitor"); ?></td>
+    				                  <td width="8%" class="listhdrr"><?=gettext("RTT"); ?></td>
+    				                  <td width="7%" class="listhdrr"><?=gettext("Loss"); ?></td>
+    				                  <td width="35%" class="listhdrr"><?=gettext("Status"); ?></td>
+    				                  <td width="20%" class="listhdr"><?=gettext("Description"); ?></td>
+    								</tr>
+    				              </thead>
+    				              <tbody>
 							  <?php foreach ($a_gateways as $gname => $gateway) {
 								?>
 					                <tr>
@@ -161,8 +163,8 @@ include("head.inc");
 						  <td class="listbg"> <?=$gateway['descr']; ?></td>
 				                </tr>
 						<?php } ?>
+						</tbody>
 				              </table>
-						</div>
 					</div>
 				</div>
 			</section>

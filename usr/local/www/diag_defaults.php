@@ -44,11 +44,6 @@
 
 require("guiconfig.inc");
 
-if ($_POST['Submit'] == " " . gettext("No") . " ") {
-	header("Location: index.php");
-	exit;
-}
-
 $pgtitle = array(gettext("Diagnostics"),gettext("Factory defaults"));
 include("head.inc");
 
@@ -64,7 +59,7 @@ include("head.inc");
 		<div class="row">
 		    <section class="col-xs-12">
 
-			<?php if ($_POST['Submit'] == " " . gettext("Yes") . " "):
+			<?php if ($_POST['Submit'] == gettext("Yes")):
 				print_info_box(gettext("The system has been reset to factory defaults and is now rebooting. This may take a few minutes, depending on your hardware.")); ?>
 			<pre>
 			<?php
@@ -90,8 +85,8 @@ include("head.inc");
 				
 				
 				<div class="btn-group">
-				  <input type="submit" class="btn btn-primary" value="<?=gettext("Yes");?>" />
-				  <input type="submit" class="btn btn-default" value="<?=gettext("No");?>" />
+				   <input type="submit" name="Submit" class="btn btn-primary" value="<?=gettext("Yes");?>" />
+				  <a href="/" class="btn btn-default"><?=gettext("No");?></a>
 				</div>
 				<br /><br />
 				

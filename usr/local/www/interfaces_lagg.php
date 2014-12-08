@@ -123,19 +123,23 @@ $main_buttons = array(
 					
 						<div class="tab-content content-box col-xs-12">	
 	    					
-	    				    <div class="container-fluid">	
-	    					
    
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
 		                        
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-						                <tr>
-						                  <td width="20%" class="listhdrr"><?=gettext("Interface"); ?></td>
-						                  <td width="20%" class="listhdrr"><?=gettext("Members"); ?></td>
-						                  <td width="50%" class="listhdr"><?=gettext("Description"); ?></td>
-						                  <td width="10%" class="list"></td>
-										</tr>
+										
+										 <thead>
+                                            <tr>
+                                				<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
+                                				<th width="20%" class="listtopic"><?=gettext("Members");?></th>
+                                				<th width="50%" class="listtopic"><?=gettext("Description");?></th>
+                                				<th width="10%" class="listtopic">&nbsp;</th>
+                                            </tr>
+                                        </thead>
+    									
+        								<tbody>
+										
 									  <?php $i = 0; foreach ($a_laggs as $lagg): ?>
 						                <tr  ondblclick="document.location='interfaces_lagg_edit.php?id=<?=$i;?>'">
 						                  <td class="listlr">
@@ -156,18 +160,18 @@ $main_buttons = array(
 										</tr>
 									  <?php $i++; endforeach; ?>
 						               
-										
+        								</tbody>
 						              </table>
 							      </div>
 							      
+							      <div class="container-fluid">
 							      <p class="vexpl"><span class="text-danger"><strong>
 										  <?=gettext("Note:"); ?><br />
 										  </strong></span>
 										  <?=gettext("LAGG allows for link aggregation, bonding and fault tolerance. Only unassigned interfaces can be added to LAGG."); ?></p>
-
+							      </div>
 
 		                        </form>
-	    				    </div>
 						</div>
 			    </section>
 			</div>

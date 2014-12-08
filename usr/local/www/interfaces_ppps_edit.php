@@ -42,7 +42,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require("functions.inc");
+require("includes/functions.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_ppps.php');
 
@@ -416,11 +416,11 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
     				
     				<div class="content-box">
 	    				
-	    				 <header class="content-box-head col-xs-12">
+	    				 <header class="content-box-head container-fluid">
     				        <h3><?=gettext("PPPs configuration");?></h3>
     				    </header>
     				    
-    				    <div class="content-box-main col-xs-12">
+    				    <div class="content-box-main">
 	    					
 	    					<form action="interfaces_ppps_edit.php" method="post" name="iform" id="iform">
 		    							                        

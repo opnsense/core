@@ -51,7 +51,7 @@ ini_set('max_input_time', '0');
 $omit_nocacheheaders = true;
 $nocsrf = true;
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -655,17 +655,17 @@ function backuparea_change(obj) {
 	    					
 	    						<div class="tab-pane active" id="system">
 
-									<section style="margin-bottom:15px;">
+									<section class="__mb">
 				                        <div class="content-box">              
 				                    
-				                            <header class="content-box-head col-xs-12">
+				                            <header class="content-box-head container-fluid">
 				        				        <h3>Backup configuration</h3>
 				        				    </header>
 				        				    
-				        				    <div class="content-box-main col-xs-12">
+				        				    <div class="content-box-main ">
 				            				    <div class="table-responsive">
 					            				    
-				                			        <table class="table table-striped">
+				                			        <table class="table table-striped __nomb">
 				                				        <tbody>
 				                    				        <tr>
 				                    				          <td><p><?=gettext("Click this button to download the system configuration in XML format."); ?><br /><br /> <?=gettext("Backup area:"); ?> <?php spit_out_select_items("backuparea", false); ?></p></td>
@@ -674,7 +674,7 @@ function backuparea_change(obj) {
 				                    				          <td>
 					                    				          <table>
 																		<tr>
-																			<td>
+																			<td width="25">
 																				<input name="nopackages" type="checkbox" class="formcheckbox" id="nopackages" />
 																			</td>
 																			<td>
@@ -684,7 +684,7 @@ function backuparea_change(obj) {
 																	</table>
 																	<table>
 																		<tr>
-																			<td>
+																			<td width="25">
 																				<input name="encrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="encrypt_change()" />
 																			</td>
 																			<td>
@@ -692,7 +692,7 @@ function backuparea_change(obj) {
 																			</td>
 																		</tr>
 																		<tr>
-																			<td>
+																			<td width="25">
 																				<input name="donotbackuprrd" type="checkbox" class="formcheckbox" id="dotnotbackuprrd" checked="checked" />
 																			</td>
 																			<td>
@@ -718,7 +718,8 @@ function backuparea_change(obj) {
 																			</td>
 																		</tr>
 																	</table>
-																	<p><input name="Submit" type="submit" class="formbtn" id="download" value="<?=gettext("Download configuration"); ?>" /></p>
+																	
+																	<input name="Submit" type="submit" class="btn btn-default __mt" id="download" value="<?=gettext("Download configuration"); ?>" />
 					                    				          
 					                    				          
 				                    				          </td>
@@ -735,13 +736,13 @@ function backuparea_change(obj) {
 				    				<section>
 				                        <div class="content-box">              
 				                    
-				                            <header class="content-box-head col-xs-12">
+				                            <header class="content-box-head container-fluid">
 				        				        <h3><?=gettext("Restore configuration"); ?></h3>
 				        				    </header>
 				        				    
-				        				    <div class="content-box-main col-xs-12">
+				        				    <div class="content-box-main ">
 				            				    <div class="table-responsive">
-				                			        <table class="table table-striped">
+				                			        <table class="table table-striped __nomb">
 				                				        <tbody>
 				                    				        <tr>
 				                    				          <td><p><?=gettext("Open a"); ?> <?=$g['[product_name']?> <?=gettext("configuration XML file and click the button below to restore the configuration."); ?>
@@ -754,7 +755,7 @@ function backuparea_change(obj) {
 																<p><input name="conffile" type="file" class="formbtn" id="conffile" size="40" /></p>
 																<table>
 																	<tr>
-																		<td>
+																		<td width="25">
 																			<input name="decrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="decrypt_change()" />
 																		</td>
 																		<td>
@@ -780,7 +781,7 @@ function backuparea_change(obj) {
 																		</td>
 																	</tr>
 																</table>
-																<p><input name="Submit" type="submit" class="formbtn" id="restore" value="<?=gettext("Restore configuration"); ?>" /></p>
+																<p><input name="Submit" type="submit" class="btn btn-default" id="restore" value="<?=gettext("Restore configuration"); ?>" /></p>
 																<p><strong><span class="red"><?=gettext("Note:"); ?></span></strong><br /><?=gettext("The firewall will reboot after restoring the configuration."); ?><br /></p>
 					                    				          
 					                    				          
@@ -801,7 +802,7 @@ function backuparea_change(obj) {
 									<section>
 				                        <div class="content-box">              
 				                    
-				                            <header class="content-box-head col-xs-12">
+				                            <header class="content-box-head container-fluid">
 				        				        <h3><?=gettext("Package Functions"); ?></h3>
 				        				    </header>
 				        				    

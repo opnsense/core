@@ -45,7 +45,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -636,11 +636,11 @@ EOD;
     				
     				<div class="content-box">
 	    				
-	    				 <header class="content-box-head col-xs-12">
+	    				 <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Alias Edit");?></h3>
     				    </header>
     				    
-    				    <div class="content-box-main col-xs-12">
+    				    <div class="content-box-main">
 	    					
 	    					<form action="firewall_aliases_edit.php" method="post" name="iform" id="iform">
 		    					<?php

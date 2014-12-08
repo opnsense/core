@@ -44,7 +44,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 require_once("vpn.inc");
@@ -330,9 +330,19 @@ include("head.inc");
     									<?php printf(gettext("Proxy password for allowing %s to use this proxy to connect outside"),$g['product']); ?>
     								</td>
     							</tr>
-    							<tr>
-    								<td colspan="2" valign="top" class="listtopic"><?=gettext("Load Balancing"); ?></td>
-    							</tr>
+    							</tbody>
+						 	</table>
+						 	
+						 	<table class="table table-striped table-sort">
+                                
+                                <thead>
+                                    <tr>
+                        				<th colspan="2" class="listtopic"><?=gettext("Load Balancing"); ?></th>
+                                    </tr>
+                                </thead>
+								
+								<tbody>
+								
     							<tr>
     								<td width="22%" valign="top" class="vncell"><?=gettext("Load Balancing"); ?></td>
     								<td width="78%" class="vtable">

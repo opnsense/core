@@ -137,12 +137,12 @@ include("head.inc");
                 <div class="content-box">
 	                
 	                <?php if(!is_array($config['shaper']['queue']) || count($config['shaper']['queue']) < 1): ?>
-	                <header class="content-box-head col-xs-12">
+	                <header class="content-box-head container-fluid">
 						 <h3><?php echo gettext("Traffic shaping is not configured."); ?></h3>
 	                </header>
 	                
 	                <? elseif ($error): ?>
-	                <header class="content-box-head col-xs-12">
+	                <header class="content-box-head container-fluid">
 				        <h3><?php echo $error; ?></h3>
 				    </header>
 				    

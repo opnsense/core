@@ -45,18 +45,7 @@ function notice_action(action,msgid) {
 	});
 }
 
-function pulsateText(elem) {
-    jQuery(elem).effect("pulsate", { times:12 }, 500);
-    jQuery(elem).effect("pulsate", { times:6 }, 1500);
-    jQuery(elem).effect("pulsate", { times:3 }, 2500);
-}
 
-jQuery(document).ready(function() {
-    pulsateText('#marquee-text');
-    jQuery('#marquee-text a').hover(function () {
-        jQuery(this).css('cursor','pointer');
-    });
-});
 
 function alias_popup(alias_id,theme,loading) {
 	domTT_update('ttalias_'+alias_id,"<a><img src='/themes/"+theme+"/images/misc/loader.gif'>"+loading+"</a>");

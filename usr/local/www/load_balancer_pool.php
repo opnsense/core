@@ -40,7 +40,7 @@
 ##|-PRIV
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -131,8 +131,7 @@ $main_buttons = array(
 				        display_top_tabs($tab_array);
 				  	?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	 
 	    				    
 	    				  <form action="load_balancer_pool.php" method="post" name="iform" id="iform">
 
@@ -156,13 +155,12 @@ $main_buttons = array(
 											$t->display();
 								?>
 								</div>
-								
+								<div class="container-fluid">
 								<br /><span class="red"><strong><?=gettext("Hint:");?></strong></span><br />
 	<?= sprintf(gettext("The Load Balancer in %s 2.0 is for server load balancing, not Multi-WAN. For load balancing or failover for multiple WANs, use "), $g['product_name']);?>
 	<a href="/system_gateway_groups.php"><?= gettext("Gateway Groups"); ?></a>
-	
+								</div>
 	    				  </form>
-    				    </div>
 					</div>
 			    </section>
 			</div>

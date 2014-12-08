@@ -30,7 +30,7 @@ $nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 
 if($_POST['rssfeed']) {
 	$config['widgets']['rssfeed'] = str_replace("\n", ",", htmlspecialchars($_POST['rssfeed'], ENT_QUOTES | ENT_HTML401));

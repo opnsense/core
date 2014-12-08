@@ -115,21 +115,23 @@ $main_buttons = array(
 
 					
 						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
-	    					
-   
+	    					   
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
 		                        
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-				                        
-						                <tr>
-						                  <td width="20%" class="listhdrr"><?=gettext("Interface");?></td>
-						                  <td width="20%" class="listhdrr"><?=gettext("Mode");?></td>
-						                  <td width="50%" class="listhdr"><?=gettext("Description");?></td>
-						                  <td width="10%" class="list"></td>
-										</tr>
+    			                        
+    			                         <thead>
+                                            <tr>
+                                				<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
+                                				<th width="20%" class="listtopic"><?=gettext("Mode");?></th>
+                                				<th width="50%" class="listtopic"><?=gettext("Description");?></th>
+                                				<th width="10%" class="listtopic">&nbsp;</th>
+                                            </tr>
+                                        </thead>
+    									
+        								<tbody>
+        								
 									  <?php $i = 0;
 											foreach ($a_clones as $clone): ?>
 						                <tr ondblclick="document.location='interfaces_wireless_edit.php?id=<?=$i;?>'">
@@ -152,15 +154,18 @@ $main_buttons = array(
 							                </td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-						                
+        								</tbody>
 						              </table>
 							      </div>
-							      <p><span class="text-danger"><strong><?=gettext("Note");?>:<br />
+							      
+							       <div class="container-fluid"> 
+							        <p><span class="text-danger"><strong><?=gettext("Note");?>:<br />
 										  </strong></span>
 										  <?=gettext("Here you can configure clones of wireless interfaces, which can be assigned as separate independent interfaces. Only available on wireless chipsets that support this, with limitations on the number that can be created in each mode.");?></p>
-										  
+							       </div>
+							         
 		                        </form>
-	    				    </div>
+		                        
 						</div>
 			    </section>
 			</div>

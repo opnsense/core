@@ -64,13 +64,7 @@ if(is_subsystem_dirty('packagelock')) {
 	echo "</html>";
 	exit;
 }
-function domTT_title($title_msg) {
-	if (!empty($title_msg)) {
-		$title_msg=preg_replace("/\s+/"," ",$title_msg);
-		$title_msg=preg_replace("/'/","\'",$title_msg);
-		echo "onmouseout=\"this.style.color = ''; domTT_mouseout(this, event);\" onmouseover=\"domTT_activate(this, event, 'content', '{$title_msg}', 'trail', true, 'delay', 0, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle');\"";
-	}
-}
+
 //get_pkg_info only if cache file has more then $g[min_pkg_cache_file_time] seconds
 $pkg_cache_file_time=($g['min_pkg_cache_file_time'] ? $g['min_pkg_cache_file_time'] : 120);
 
@@ -105,18 +99,19 @@ $pgtitle = array(gettext("System"),gettext("Package Manager"));
 include("head.inc");
 
 ?>
-<script type="text/javascript" src="javascript/domTT/domLib.js"></script>
-<script type="text/javascript" src="javascript/domTT/domTT.js"></script>
-<script type="text/javascript" src="javascript/domTT/behaviour.js"></script>
-<script type="text/javascript" src="javascript/domTT/fadomatic.js"></script>
-<script type="text/javascript" src="/javascript/row_helper_dynamic.js"></script>
-</head>
+
 
 <body>
+
+<script type="text/javascript">
+	//<![CDATA[
+		jQuery(document).ready(function(){setTimeout(function(){jQuery('[data-toggle="tooltip"]').tooltip();jQuery('[data-toggle="popover"]').popover({trigger:"hover"});},500);});
+	//]]>
+</script>
+
 <?php
 	include("fbegin.inc");
 ?>
-
 
 	<section class="page-content-main">
 		<div class="container-fluid">	
@@ -201,20 +196,28 @@ include("head.inc");
 									<li role="presentation" <? if ($tab[1]):?>class="active"<? endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
 								<? endforeach; ?></ul><br />
 								<? endif; ?>
-
+	    				    </div>
 	    						               	
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-				                        
+    			                         
+    			                 
+    			                                                             
+                                     <thead>
+                                         <tr>
+                             				<th width="10%"><?=gettext("Name"); ?></th>
+                             				<?php
+                                            if ($show_category)
+											    print '<th width="18%">'.gettext("Category").'</th>'."\n";
+								            ?>
+										<th width="<?php print $show_category ? "15%" : "20%"; ?>" class="listhdr"><?=gettext("Status"); ?></th>
+										<th width="<?php print $show_category ? "58%" : "70%"; ?>" class="listhdr"><?=gettext("Description"); ?></th>
+										<th width="17">&nbsp;</th>
+                                         </tr>
+                                     </thead>
+    									
+     								<tbody>
 
-										<tr><td width="10%" class="listhdrr"><?=gettext("Name"); ?></td>
-								<?php
-										if ($show_category)
-											print '<td width="18%" class="listhdr">'.gettext("Category").'</td>'."\n";
-								?>
-										<td width="<?php print $show_category ? "15%" : "20%"; ?>" class="listhdr"><?=gettext("Status"); ?></td>
-										<td width="<?php print $show_category ? "58%" : "70%"; ?>" class="listhdr"><?=gettext("Description"); ?></td>
-										<td width="17">&nbsp;</td></tr>
 								<?php
 										if(!$pkg_info) {
 											echo "<tr><td colspan=\"5\"><center>" . gettext("There are currently no packages available for installation.") . "</td></tr>";
@@ -248,8 +251,8 @@ include("head.inc");
 													if ($menu_category == "All" || $index['category'] == $menu_category || ($menu_category == "Other" && !in_array($index['category'],$visible_categories)) ):
 								?>
 														<tr valign="top" class="<?= $index['category'] ?>">
-														<td class="listlr" <?=domTT_title(gettext("Click on package name to access its website."))?>>
-															<a target="_blank" href="<?= $index['website'] ?>"><?= $index['name'] ?></a>
+														<td class="listlr">
+															<a target="_blank" href="<?= $index['website'] ?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("Click on package name to access its website.")?>"><?= $index['name'] ?></a>
 														</td>
 								<?php
 														if ($show_category)
@@ -258,8 +261,7 @@ include("head.inc");
 														if ($g['disablepackagehistory']) {
 															print '<td class="listr">'."\n";
 														} else {
-															print '<td class="listr" ';
-															domTT_title(gettext("Click ").ucfirst($index['name']).gettext(" version to check its change log."));
+															print '<td class="listr" data-container="body" data-toggle="tooltip" data-placement="left" title="'.gettext("Click ").ucfirst($index['name']).gettext(" version to check its change log.").'" ';
 															print ">\n";
 														}
 								
@@ -275,13 +277,13 @@ include("head.inc");
 														<br />
 														<?=$index['maximum_version'] ?>
 														</td>
-														<td class="listbg" style="overflow:hidden; text-align:justify;" <?=domTT_title(gettext("Click package info for more details about ".ucfirst($index['name'])." package."))?>>
+														<td class="listbg" style="overflow:hidden; text-align:justify;" data-container="body" data-toggle="tooltip" data-placement="left" title="<?=gettext("Click package info for more details about ".ucfirst($index['name'])." package.")?>">
 														<?= $index['descr'] ?>
 								<?php
 														if (! $g['disablepackageinfo']):
 								?>
 															<br /><br />
-															<a target='_blank' href='<?=$pkginfolink?>' style='align:center;color:#ffffff; filter:Glow(color=#ff0000, strength=12);'><?=$pkginfo?></a>
+															<a target='_blank' href='<?=$pkginfolink?>' style='align:center;'><?=$pkginfo?></a>
 								<?php
 														endif;
 								?>
@@ -297,8 +299,8 @@ include("head.inc");
 											} /* if(is_array($pkg_keys)) */
 										} /* if(!$pkg_info) */
 								?>
+								</tbody>
 								</table>
-							</div>
 						</div>
 					</div>
 				</section>

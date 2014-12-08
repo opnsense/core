@@ -40,7 +40,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 
 if (!is_array($config['snmpd'])) {
 	$config['snmpd'] = array();
@@ -280,7 +280,7 @@ function enable_change(whichone) {
 
 	<section class="page-content-main">
 
-		<div class="container-fluid">
+    		<div class="container-fluid">
 	
 			<div class="row">	
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
@@ -294,11 +294,11 @@ function enable_change(whichone) {
     				<div class="content-box">	
 						
 	                        	
-						<header class="content-box-head col-xs-12">
+						<header class="content-box-head container-fluid">
     				        <h3><?=gettext("SNMP Daemon");?></h3>
     				    </header>
         				    
-        				<div class="content-box-main col-xs-12">
+        				<div class="content-box-main">
 													
                         	
                         		<div class="table-responsive">
@@ -369,11 +369,11 @@ function enable_change(whichone) {
 			    <section class="col-xs-12">
 				    <div class="content-box">
         				
-        				<header class="content-box-head col-xs-12">
+        				<header class="content-box-head container-fluid">
     				        <h3><?=gettext("SNMP Traps");?></h3>
     				    </header>
         				    
-        				<div class="content-box-main col-xs-12">
+        				<div class="content-box-main">
 													
                         	
                         		<div class="table-responsive">
@@ -420,11 +420,11 @@ function enable_change(whichone) {
 			    <section class="col-xs-12">
 				    <div class="content-box">
 					    
-        				<header class="content-box-head col-xs-12">
+        				<header class="content-box-head container-fluid">
     				        <h3><?=gettext("Modules");?></h3>
     				    </header>
         				    
-        				<div class="content-box-main col-xs-12">
+        				<div class="content-box-main">
 													
                         	
                         		<div class="table-responsive">
@@ -458,11 +458,11 @@ function enable_change(whichone) {
 			    <section class="col-xs-12">
 				    <div class="content-box">
 					    
-        				<header class="content-box-head col-xs-12">
+        				<header class="content-box-head container-fluid">
     				        <h3><?=gettext("Interface Binding");?></h3>
     				    </header>
         				    
-        				<div class="content-box-main col-xs-12">
+        				<div class="content-box-main    ">
 													
                         	
                         		<div class="table-responsive">

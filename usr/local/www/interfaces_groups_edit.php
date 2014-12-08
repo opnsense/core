@@ -39,7 +39,7 @@
 
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 
 $pgtitle = array(gettext("Interfaces"),gettext("Groups"),gettext("Edit"));
 $shortcut_section = "interfaces";
@@ -252,11 +252,11 @@ function removeRow(el) {
     				
     				<div class="content-box">
 	    				
-	    				 <header class="content-box-head col-xs-12">
+	    				 <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Interface Groups Edit");?></h3>
     				    </header>
     				    
-    				    <div class="content-box-main col-xs-12">
+    				    <div class="content-box-main">
 	    					
 	    					<form action="interfaces_groups_edit.php" method="post" name="iform" id="iform">
 		    							                        
@@ -331,8 +331,9 @@ function removeRow(el) {
 									?>
 									        </tbody>
 											  </table>
-												<a onclick="javascript:addRowTo('maintable'); return false;" href="#">
-									        <img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="" title="<?=gettext("add another entry");?>" />
+												<a onclick="javascript:addRowTo('maintable'); return false;" class="btn btn-default btn-xs" href="#">
+												    <span class="glyphicon glyphicon-plus"></span>
+												</a>
 									      </a>
 											<br /><br />
 											<strong><?PHP echo gettext("NOTE:");?></strong>

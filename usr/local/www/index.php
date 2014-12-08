@@ -50,7 +50,7 @@ ob_start(null, "1000");
 
 
 ## Load Essential Includes
-require_once('functions.inc');
+require_once('includes/functions.inc');
 require_once('guiconfig.inc');
 require_once('notices.inc');
 require_once("pkg-utils.inc");
@@ -114,89 +114,50 @@ array_unshift($widgetfiles, "system_information.widget.php");
 if (!is_array($config['widgets'])) {
 	$config['widgets'] = array();
 }
+		
+if ($_POST && $_POST['sequence']) {
+	
+	
+	$config['widgets']['sequence'] = $_POST['sequence'];
 
-	if ($_POST && $_POST['submit']) {
-		$config['widgets']['sequence'] = $_POST['sequence'];
-
-		foreach ($widgetnames as $widget){
-			if ($_POST[$widget . '-config']){
-				$config['widgets'][$widget . '-config'] = $_POST[$widget . '-config'];
-			}
-		}
-
-		write_config(gettext("Widget configuration has been changed."));
-		header("Location: index.php");
-		exit;
-	}
-
-	## Load Functions Files
-	require_once('includes/functions.inc.php');
-
-	## Check to see if we have a swap space,
-	## if true, display, if false, hide it ...
-	if(file_exists("/usr/sbin/swapinfo")) {
-		$swapinfo = `/usr/sbin/swapinfo`;
-		if(stristr($swapinfo,'%') == true) $showswap=true;
-	}
-
-	## User recently restored his config.
-	## If packages are installed lets resync
-	if(file_exists('/conf/needs_package_sync')) {
-		if($config['installedpackages'] <> '' && is_array($config['installedpackages']['package'])) {
-			if($g['platform'] == "pfSense" || $g['platform'] == "nanobsd") {
-				header('Location: pkg_mgr_install.php?mode=reinstallall');
-				exit;
-			}
-		} else {
-			conf_mount_rw();
-			@unlink('/conf/needs_package_sync');
-			conf_mount_ro();
+	foreach ($widgetnames as $widget){
+		if ($_POST[$widget . '-config']){
+			$config['widgets'][$widget . '-config'] = $_POST[$widget . '-config'];
 		}
 	}
 
-	## If it is the first time webConfigurator has been
-	## accessed since initial install show this stuff.
-	/*if(file_exists('/conf/trigger_initial_wizard')) {
-		echo <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="<?=system_get_language_code();?>" xml:lang="<?=system_get_language_code();?>">
-<head>
-	<title>{$g['product_name']}.localdomain - {$g['product_name']} first time setup</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=<?=system_get_language_codeset();?>" />
-	<link rel="stylesheet" type="text/css" href="/niftycssprintCode.css" media="print" />
-	<script type="text/javascript">var theme = "{$g['theme']}"</script>
-	<script type="text/javascript" src="/themes/{$g['theme']}/loader.js"></script>
+	write_config(gettext("Widget configuration has been changed."));
+	header("Location: index.php");
+	exit;
+}
 
-EOF;
+## Load Functions Files
+require_once('includes/functions.inc.php');
 
-		echo "<body link=\"#0000CC\" vlink=\"#0000CC\" alink=\"#0000CC\">\n";
+## Check to see if we have a swap space,
+## if true, display, if false, hide it ...
+if(file_exists("/usr/sbin/swapinfo")) {
+	$swapinfo = `/usr/sbin/swapinfo`;
+	if(stristr($swapinfo,'%') == true) $showswap=true;
+}
 
-		if(file_exists("/usr/local/www/themes/{$g['theme']}/wizard.css"))
-			echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"/themes/{$g['theme']}/wizard.css\" media=\"all\" />\n";
-		else
-			echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"/themes/{$g['theme']}/all.css\" media=\"all\" />";
-
-		echo "<form>\n";
-		echo "<center>\n";
-		echo "<img src=\"/themes/{$g['theme']}/images/logo.gif\" border=\"0\" alt=\"logo\" /><p>\n";
-		echo "<div \" style=\"width:700px;background-color:#ffffff\" id=\"nifty\">\n";
-		echo sprintf(gettext("Welcome to %s!\n"),$g['product_name']) . "<p>";
-		echo gettext("One moment while we start the initial setup wizard.") . "<p>\n";
-		echo gettext("Embedded platform users: Please be patient, the wizard takes a little longer to run than the normal GUI.") . "<p>\n";
-		echo sprintf(gettext("To bypass the wizard, click on the %s logo on the initial page."),$g['product_name']) . "\n";
-		echo "</div>\n";
-		echo "<meta http-equiv=\"refresh\" content=\"1;url=wizard.php?xml=setup_wizard.xml\">\n";
-		echo "<script type=\"text/javascript\">\n";
-		echo "//<![CDATA[\n";
-		echo "NiftyCheck();\n";
-		echo "Rounded(\"div#nifty\",\"all\",\"#AAA\",\"#FFFFFF\",\"smooth\");\n";
-		echo "//]]>\n";
-		echo "</script>\n";
-		exit;
+## User recently restored his config.
+## If packages are installed lets resync
+if(file_exists('/conf/needs_package_sync')) {
+	if($config['installedpackages'] <> '' && is_array($config['installedpackages']['package'])) {
+		if($g['platform'] == "pfSense" || $g['platform'] == "nanobsd") {
+			header('Location: pkg_mgr_install.php?mode=reinstallall');
+			exit;
+		}
+	} else {
+		conf_mount_rw();
+		@unlink('/conf/needs_package_sync');
+		conf_mount_ro();
 	}
+}
 
-	*/
+
+
 	## Find out whether there's hardware encryption or not
 	unset($hwcrypto);
 	$fd = @fopen("{$g['varlog_path']}/dmesg.boot", "r");
@@ -258,6 +219,8 @@ if ($config['widgets'] && $config['widgets']['sequence'] != "") {
 	$widgetlist = $widgetfiles;
 }
 
+
+
 ##build list of php include files
 $phpincludefiles = array();
 $directory = "/usr/local/www/widgets/include/";
@@ -306,157 +269,96 @@ function widgetAjax(widget) {
 
 
 function addWidget(selectedDiv){
-	selectedDiv2 = '#' + selectedDiv + "-container";
-	if (jQuery(selectedDiv2).css('display') != "none")
-	{
-		jQuery(selectedDiv2).effect('shake',{times: 2}, 100);
-	}
-	else
-	{
-		jQuery(selectedDiv2).show('blind');
-		widgetAjax(selectedDiv);
-		selectIntLink = selectedDiv2 + "-input";
-		jQuery(selectIntLink).val("show");
-		showSave();
-	}
+	container 	= 	$('#'+selectedDiv);
+	state		=	$('#'+selectedDiv+'-config');
+	
+	container.show();
+	showSave();
+	state.val('show');
+	
 }
 
 function configureWidget(selectedDiv){
 	selectIntLink = '#' + selectedDiv + "-settings";
-	if (jQuery(selectIntLink).css('display') == "none")
-		jQuery(selectIntLink).show();
+	if ($(selectIntLink).css('display') == "none")
+		$(selectIntLink).show();
 	else
-		jQuery(selectIntLink).hide();
+		$(selectIntLink).hide();
 }
 
 function showWidget(selectedDiv,swapButtons){
-	//appear element
-	jQuery('#' + selectedDiv).show('blind');
+	container 	= 	$('#'+selectedDiv+'-container');
+	min_btn		=	$('#'+selectedDiv+'-min');
+	max_btn		=	$('#'+selectedDiv+'-max');
+	state		=	$('#'+selectedDiv+'-config');
+		
+	container.show();
+	min_btn.show();
+	max_btn.hide();
+	
 	showSave();
-	d = document;
-	if (swapButtons){
-		selectIntLink = selectedDiv + "-min";
-		textlink = d.getElementById(selectIntLink);
-		textlink.style.display = "inline";
-
-
-		selectIntLink = selectedDiv + "-open";
-		textlink = d.getElementById(selectIntLink);
-		textlink.style.display = "none";
-
-	}
-	selectIntLink = selectedDiv + "-container-input";
-	textlink = d.getElementById(selectIntLink);
-	textlink.value = "show";
-
+	
+	state.val('show');
 }
 
 function minimizeWidget(selectedDiv,swapButtons){
-	//fade element
-	jQuery('#' + selectedDiv).hide('blind');
+	container 	= 	$('#'+selectedDiv+'-container');
+	min_btn		=	$('#'+selectedDiv+'-min');
+	max_btn		=	$('#'+selectedDiv+'-max');
+	state		=	$('#'+selectedDiv+'-config');
+		
+	container.hide();
+	min_btn.hide();
+	max_btn.show();
+	
 	showSave();
-	d = document;
-	if (swapButtons){
-		selectIntLink = selectedDiv + "-open";
-		textlink = d.getElementById(selectIntLink);
-		textlink.style.display = "inline";
+	
+	state.val('hide');
 
-		selectIntLink = selectedDiv + "-min";
-		textlink = d.getElementById(selectIntLink);
-		textlink.style.display = "none";
-	}
-	selectIntLink = selectedDiv + "-container-input";
-	textlink = d.getElementById(selectIntLink);
-	textlink.value = "hide";
 
 }
 
 function closeWidget(selectedDiv){
+	widget 		= 	$('#'+selectedDiv);	
+	state		=	$('#'+selectedDiv+'-config');
+	
 	showSave();
-	selectedDiv2 = "#" + selectedDiv + "-container";
-	jQuery(selectedDiv2).hide('blind');
-	selectIntLink = "#" + selectedDiv + "-container-input";
-	jQuery(selectIntLink).val("close");
+	
+	widget.hide();
+	state.val('close');
 }
 
 function showSave(){
-	d = document;
-	selectIntLink = "submit";
-	textlink = d.getElementById(selectIntLink);
-	textlink.style.display = "inline";
+	$('#updatepref').show();
 }
 
 function updatePref(){
-	var widgets = document.getElementsByClassName('widgetdiv');
-	var widgetSequence = "";
+	var widgets = $('.widgetdiv');
+	var widgetSequence = '';
 	var firstprint = false;
-	d = document;
-	for (i=0; i<widgets.length; i++){
-		if (firstprint)
-			widgetSequence += ",";
-		var widget = widgets[i].id;
-		widgetSequence += widget + ":" + widgets[i].parentNode.id + ":";
-		widget = widget + "-input";
-		textlink = d.getElementById(widget).value;
-		widgetSequence += textlink;
+	
+	widgets.each(function(key) {
+		obj = $(this);
+		
+		if (firstprint) 
+			widgetSequence += ',';
+		
+		
+		state = $('input[name='+obj.attr('id')+'-config]').val();
+		
+		widgetSequence += obj.attr('id')+'-container:col1:'+state;
+		
 		firstprint = true;
-	}
-	selectLink = "sequence";
-	textlink = d.getElementById(selectLink);
-	textlink.value = widgetSequence;
-	return true;
-}
-
-function hideAllWidgets(){
-		jQuery('#niftyOutter').fadeTo('slow',0.2);
-}
-
-function showAllWidgets(){
-		jQuery('#niftyOutter').fadeTo('slow',1.0);
+	});
+	
+	$("#sequence").val(widgetSequence);
+	
+	$("#iform").submit();
+	
+	return false;
 }
 
 
-function changeTabDIV(selectedDiv){
-	var dashpos = selectedDiv.indexOf("-");
-	var tabclass = selectedDiv.substring(0,dashpos);
-	d = document;
-
-	//get deactive tabs first
-	tabclass = tabclass + "-class-tabdeactive";
-	var tabs = document.getElementsByClassName(tabclass);
-	var incTabSelected = selectedDiv + "-deactive";
-	for (i=0; i<tabs.length; i++){
-		var tab = tabs[i].id;
-		dashpos = tab.lastIndexOf("-");
-		var tab2 = tab.substring(0,dashpos) + "-deactive";
-		if (tab2 == incTabSelected){
-			tablink = d.getElementById(tab2);
-			tablink.style.display = "none";
-			tab2 = tab.substring(0,dashpos) + "-active";
-			tablink = d.getElementById(tab2);
-			tablink.style.display = "table-cell";
-
-			//now show main div associated with link clicked
-			tabmain = d.getElementById(selectedDiv);
-			tabmain.style.display = "block";
-		}
-		else
-		{
-			tab2 = tab.substring(0,dashpos) + "-deactive";
-			tablink = d.getElementById(tab2);
-			tablink.style.display = "table-cell";
-			tab2 = tab.substring(0,dashpos) + "-active";
-			tablink = d.getElementById(tab2);
-			tablink.style.display = "none";
-
-			//hide sections we don't want to see
-			tab2 = tab.substring(0,dashpos);
-			tabmain = d.getElementById(tab2);
-			tabmain.style.display = "none";
-
-		}
-	}
-}
 //]]>
 </script>
 EOD;
@@ -483,14 +385,13 @@ include("fbegin.inc");
 
 
 echo $jscriptstr;
-/*	if(!file_exists("/usr/local/www/themes/{$g['theme']}/no_big_logo"))
-		echo "<center><img src=\"./themes/".$g['theme']."/images/logobig.jpg\" alt=\"big logo\" /></center><br />";
 
-*/
 ?>
 
-
-<?php if(file_exists('/conf/trigger_initial_wizard')) : ?>
+<?php 
+	## If it is the first time webConfigurator has been
+	## accessed since initial install show this stuff. 
+	if(file_exists('/conf/trigger_initial_wizard')) : ?>
 	<header class="page-content-head">
 		<div class="container-fluid">
 			<h1><?=gettext("Starting initial configuration"); ?>!</h1>
@@ -504,7 +405,7 @@ echo $jscriptstr;
 		        	<div class="content-box" style="padding: 20px;">                                   						
 							<div class="table-responsive">
 								<?php
-									echo "<img src=\"/themes/{$g['theme']}/images/logo.gif\" border=\"0\" alt=\"logo\" /><p>\n";
+									echo "<img src=\"/themes/{$g['theme']}/images/default-logo.png\" border=\"0\" alt=\"logo\" /><p>\n";
 								?>
 								<br />
 								<div class="content-box-main">
@@ -529,7 +430,8 @@ echo $jscriptstr;
 		<div class="container-fluid">
             
             <div class="row">
-	            
+	            <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
+		           <input type="hidden" value="" name="sequence" id="sequence" />
 <?php            
 /* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
 if (!verify_all_package_servers())
@@ -538,34 +440,10 @@ if (!verify_all_package_servers())
 if ($savemsg)
 	print_info_box($savemsg);
 
-pfSense_handle_custom_code("/usr/local/pkg/dashboard/pre_dashboard");
+
 ?>
 
 	          
-<?php
-/*
-                
-                <section class="col-xs-12 col-md-6" id="welcomecontainer" style="display:none">
-                    <div class="content-box">                                   				
-					
-						<div style="float:left;width:100%;padding: 2px">
-							<h1><?=gettext("Welcome to the Dashboard page"); ?>!</h1>
-						</div>
-						<div onclick="domTT_close(this);showAllWidgets();" style="width:87%; position: absolute; cursor:pointer; padding: 10px;" >
-							<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_close.gif" alt="close" style="float:right" />
-						</div>
-						<div style="clear:both;"></div>
-						<p>
-						<?=gettext("This page allows you to customize the information you want to be displayed!");?><br />
-						<?=gettext("To get started click the");?> <img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="plus" /> <?=gettext("icon to add widgets.");?><br />
-						<br />
-						<?=gettext("You can move any widget around by clicking and dragging the title.");?>
-						</p>
-                    </div>
-                </section>
-*/
-?>
-<!-- fakeClass contains no CSS but is used as an identifier in theme pfsense_ng_fs - loader.js -->
 
 	<?php
 	$totalwidgets = count($widgetfiles);
@@ -652,10 +530,10 @@ pfSense_handle_custom_code("/usr/local/pkg/dashboard/pre_dashboard");
 		
 
 		?>
-		<section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>-container" style="display:<?php echo $divdisplay; ?>;">
+		<section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>"  style="display:<?php echo $divdisplay; ?>;">
           	<div class="content-box">	          	
 	          	
-				<header class="content-box-head col-xs-12">
+				<header class="content-box-head container-fluid">
 
 				    <ul class="list-inline __nomb">
 				        <li><h3>
@@ -687,25 +565,26 @@ pfSense_handle_custom_code("/usr/local/pkg/dashboard/pre_dashboard");
 				        </h3></li>
 				        <li class="pull-right">
 				            <div class="btn-group">
-				                <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?php echo $widgetname;?>-min" onclick='return minimizeWidget("<?php echo $widgetname;?>",true)' ><span class="glyphicon glyphicon-minus" data-toggle="collapse" data-target="#<?php echo $widgetname;?>-container"></span></button>
+				                <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?php echo $widgetname;?>-min" onclick='return minimizeWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv; ?>;"><span class="glyphicon glyphicon-minus"></span></button>
+				                
+				                  <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?php echo $widgetname;?>-max" onclick='return showWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv == 'none' ? 'inline' : 'none'; ?>;"><span class="glyphicon glyphicon-plus"></span></button>
+				                
 				                <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?php echo $widgetname;?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
 				               
 				                <button class="btn btn-default btn-xs" id="<?php echo $widgetname;?>-configure" onclick='return configureWidget("<?php echo $widgetname;?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
-								
-								<!-- <div id="<?php echo $widgetname;?>-open" onclick='return showWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $showWidget;?>; cursor:pointer" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_open.gif" alt="open" /></div> -->
-					
+													
 				            </div>
 				        </li>   
 				    </ul>                             
 				</header>
 	          	
-	          	<div class="content-box-main col-xs-12 collapse in" id="<?php echo $widgetname;?>-container">
-	          		<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-container-input" name="<?php echo $widgetname;?>-container-input" />
+	          	<div class="content-box-main collapse in" id="<?php echo $widgetname;?>-container" style="display:<?=$mindiv;?>">
+	          		<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-config" name="<?php echo $widgetname;?>-config" />
 			
 					<?php if ($divdisplay != "block") { ?>
 					<div id="<?php echo $widgetname;?>-loader" style="display:<?php echo $display; ?>;" align="center">
 						<br />
-							<img src="./themes/<?= $g['theme']; ?>/images/misc/widget_loader.gif" width="25" height="25" alt="<?=gettext("Loading selected widget"); ?>..." />
+							<span class="glyphicon glyphicon-refresh"></span> <?=gettext("Loading selected widget"); ?>
 						<br />
 					</div> <?php $display = "none"; } ?>
 					
@@ -722,25 +601,13 @@ pfSense_handle_custom_code("/usr/local/pkg/dashboard/pre_dashboard");
 				<? } //end foreach ?>
 		
 
-
+	            </form>
             </div>
         </div>
     </section>
 
 
-<script type="text/javascript">
-//<![CDATA[
-	jQuery(document).ready(function(in_event)
-	{
-			//jQuery('.ui-sortable').sortable({connectWith: '.ui-sortable', dropOnEmpty: true, handle: '.widgetheader', change: showSave});
 
-	<?php if (!$config['widgets']  && $pconfig['sequence'] != ""){ ?>
-			hideAllWidgets();
-			domTT_activate('welcome1', null, 'x', 287, 'y', 107, 'content', document.getElementById('welcome-container'), 'type', 'sticky', 'closeLink', '','delay', 1000, 'fade', 'both', 'fadeMax', 100, 'styleClass', 'niceTitle');
-	<?php } ?>
-	});
-//]]>
-</script>
 <?php
 	//build list of javascript include files
 	$jsincludefiles = array();

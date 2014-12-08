@@ -50,7 +50,7 @@ function cpelements_sort() {
 }
 
 require("guiconfig.inc");
-require("functions.inc");
+require("includes/functions.inc");
 require_once("filter.inc");
 require("shaper.inc");
 require("captiveportal.inc");

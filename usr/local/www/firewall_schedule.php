@@ -107,12 +107,13 @@ $main_buttons = array(
     				<div class="content-box">
 	    				
     				    
-    				    <div class="content-box-main col-xs-12">
+    				    <div class="content-box-main ">
 	    					
 	    					<form action="firewall_schedule.php" method="post" name="iform" id="iform">
 		    							                        
 		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort">              
+			                        <table class="table table-striped table-sort">    
+    			                        <thead>          
 										<tr>
 										  <td width="25%" class="listhdrr"><?=gettext("Name");?></td>
 										  <td width="35%" class="listhdrr"><?=gettext("Time Range(s)");?></td>
@@ -121,6 +122,8 @@ $main_buttons = array(
 										    
 										  </td>
 										</tr>
+    			                        </thead>
+    			                        <tbody>
 										<?php $i = 0; foreach ($a_schedules as $schedule): ?>
 										<tr>
 										   <td class="listlr" ondblclick="document.location='firewall_schedule_edit.php?id=<?=$i;?>';">
@@ -240,9 +243,12 @@ $main_buttons = array(
 									  </td>
 									</tr>
 									<?php $i++; endforeach; ?>
+    			                        </tbody>
 			                        </table>
 		                        </div>
+		                        <div class="container-fluid">
 		                        <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span><?=gettext("Schedules act as placeholders for time ranges to be used in Firewall Rules.");?></span></p>
+		                        </div>
 	    					</form>
     				    </div>
     				</div>

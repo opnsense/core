@@ -88,7 +88,7 @@ include("head.inc");
 							
 							
 							<? include('diag_logs_pills.php'); ?>
-					
+    				    </div>
 								
 							 <div class="table-responsive">
 							 	<table class="table table-striped table-sort">
@@ -100,15 +100,16 @@ include("head.inc");
 									?>
 							 	</table>
 							 </div>
-							
+							 
+						<div class="container-fluid">	
 							<form action="diag_logs_resolver.php" method="post">
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 							</form>
 							
-							<form id="clearform" name="clearform" action="diag_logs_resolver.php" method="post" style="margin-top: 14px;">
-              				<input id="filtertext" name="filtertext" value="<?=$filtertext;?>" />
-              				<input id="filtersubmit" name="filtersubmit" type="submit" class="formbtn" value="<?=gettext("Filter");?>" />
-						</form>
+							<form id="clearform" name="clearform" action="diag_logs_resolver.php" method="post" class="__mt">
+                                <input id="filtertext" name="filtertext" value="<?=$filtertext;?>" type="text" class="pull-left __mr" />
+                                <input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
+						    </form>
 							
 						</div>
 				    </div>

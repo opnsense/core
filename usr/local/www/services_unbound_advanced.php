@@ -156,8 +156,8 @@ include_once("head.inc");
 					?>
 					
 					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">		    				    
-	    				   
+    				    
+        				       
 							<form action="services_unbound_advanced.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
@@ -434,7 +434,7 @@ include_once("head.inc");
 									</table>
 								</div>
 							</form>
-    				    </div>
+							
 					</div>
 			    </section>
 			</div>

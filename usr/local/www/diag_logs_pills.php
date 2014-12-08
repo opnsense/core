@@ -44,6 +44,6 @@ else {
 
 ?>
 
-<ul class="nav nav-pills" role="tablist"><? foreach ($tab_array as $tab): ?>
+<ul class="nav nav-pills __mb" role="tablist"><? foreach ($tab_array as $tab): ?>
 	<li role="presentation" <? if (str_replace('amp;','', $tab[2]) == $_SERVER['REQUEST_URI']):?>class="active"<? endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
-<? endforeach; ?></ul><br />
+<? endforeach; ?></ul>

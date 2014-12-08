@@ -190,12 +190,12 @@ include("head.inc");
                     				<table border="0" cellspacing="0" cellpadding="1" summary="edit delete">
                     					<tr>
                     						<td valign="middle">
-                    							<a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default">
+                    							<a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
                     							    <span class="glyphicon glyphicon-pencil"></span>
                     							</a>
                     						</td>
                     						<td valign="middle">
-                    							<a href="system_advanced_sysctl.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?"); ?>')" class="btn btn-default">
+                    							<a href="system_advanced_sysctl.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?"); ?>')" class="btn btn-default btn-xs">
                     								<span class="glyphicon glyphicon-remove"></span>
                     							</a>
                     						</td>

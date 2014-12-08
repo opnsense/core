@@ -49,7 +49,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -233,14 +233,13 @@ $main_buttons = array(
 					
 						<div class="tab-content content-box col-xs-12">	
 	    					
-	    				    <div class="container-fluid">	
-	    					
    
 		                        <form action="firewall_virtual_ip.php" method="post" name="iform" id="iform">
 		                        	<input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($id); ?>" />
 		                        	
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
+    			                        <thead>
 						                <tr>
 						                  <td width="30%" class="listhdrr"><?=gettext("Virtual IP address");?></td>
 						                  <td width="10%" class="listhdrr"><?=gettext("Interface");?></td>
@@ -248,6 +247,8 @@ $main_buttons = array(
 						                  <td width="40%" class="listhdr"><?=gettext("Description");?></td>
 						                  <td width="10%" class="list"></td>
 										</tr>
+    			                        </thead>
+    			                        <tbody>
 								<?php
 									$interfaces = get_configured_interface_with_descr(false, true);
 									$interfaces['lo0'] = "Localhost";
@@ -288,13 +289,15 @@ $main_buttons = array(
 						                </tr>
 										<?php endif; ?>
 										<?php $i++; endforeach; ?>
+    			                        </tbody>
 									</table>
 		                        </div>
+		                        <div class="container-fluid">
 		                        <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
                       </strong></span><?=gettext("The virtual IP addresses defined on this page may be used in");?><a href="firewall_nat.php"> <?=gettext("NAT"); ?> </a><?=gettext("mappings.");?><br />
                       <?=gettext("You can check the status of your CARP Virtual IPs and interfaces ");?><a href="carp_status.php"><?=gettext("here");?></a>.</span></p>
+		                        </div>
 		                        </form>
-	    				    </div>
 						</div>
 			    </section>
 			</div>

@@ -202,7 +202,7 @@ if (isBlank( $_POST['txtRecallBuffer'] )) {
 				<section class="col-xs-12">
 	                <div class="content-box">              
 	                
-	                    <header class="content-box-head col-xs-12">
+	                    <header class="content-box-head container-fluid">
 	    			        <h3><?=gettext("Execute result"); ?></h3>
 	    			    </header>
 						
@@ -222,7 +222,7 @@ if (!isBlank($_POST['txtCommand'])) {
 if (!isBlank($_POST['txtPHPCommand'])) {
    puts("<pre>");
    require_once("config.inc");
-   require_once("functions.inc");
+   require_once("includes/functions.inc");
    echo eval($_POST['txtPHPCommand']);
    puts("&nbsp;</pre>");
 }
@@ -237,17 +237,17 @@ if (!isBlank($_POST['txtPHPCommand'])) {
 				<section class="col-xs-12">
                     <div class="content-box">              
                 
-                        <header class="content-box-head col-xs-12">
+                        <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Execute Shell command"); ?></h3>
     				    </header>
 					
-						 <div class="content-box-main col-xs-12">
+						 <div class="content-box-main">
 							 <?php if (isBlank($_POST['txtCommand'])): ?>
-							<p class="text-danger"><strong><?=gettext("Note: this function is unsupported. Use it " .
+							<p class="text-danger container-fluid"><strong><?=gettext("Note: this function is unsupported. Use it " .
 							"on your own risk"); ?>!</strong></p>
 							<?php endif; ?>
 							
-							<table class="table table-striped">
+							<table class="table table-striped __nomb">
         				        <tbody>
             				        <tr>
             				          <td width="150"><?=gettext("Command"); ?>:</td>
@@ -275,13 +275,13 @@ if (!isBlank($_POST['txtPHPCommand'])) {
 				<section class="col-xs-12">
                     <div class="content-box">              
                 
-                        <header class="content-box-head col-xs-12">
+                        <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Download"); ?></h3>
     				    </header>
 					
-						 <div class="content-box-main col-xs-12">
+						 <div class="content-box-main ">
 						
-							<table class="table table-striped">
+							<table class="table table-striped __nomb">
         				        <tbody> 
 							     	<tr>
 								 		<td width="150"><?=gettext("File to download"); ?>:</td>
@@ -305,13 +305,13 @@ if (!isBlank($_POST['txtPHPCommand'])) {
 				<section class="col-xs-12">
                     <div class="content-box">              
                 
-                        <header class="content-box-head col-xs-12">
+                        <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Upload"); ?></h3>
     				    </header>
 					
-						 <div class="content-box-main col-xs-12">
+						 <div class="content-box-main">
 							 
-							 <table class="table table-striped">
+							 <table class="table table-striped __nomb">
         				        <tbody> 
 							     	<tr>
 								 		<td width="150"><?=gettext("File to upload"); ?>:</td>
@@ -335,7 +335,7 @@ if (!isBlank($_POST['txtPHPCommand'])) {
 				<section class="col-xs-12">
                     <div class="content-box">              
                 
-                        <header class="content-box-head col-xs-12">
+                        <header class="content-box-head container-fluid">
     				        <h3><?=gettext("PHP Execute"); ?></h3>
     				    </header>
 					

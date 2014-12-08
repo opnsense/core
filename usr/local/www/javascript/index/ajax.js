@@ -72,10 +72,6 @@ function updateCPU(x) {
 		jQuery("#cpumeter").html(x + '%');
 	if(jQuery('#cpuPB'))
 		jQuery('#cpuPB').css( { width: parseInt(x)+'%' } );
-	/* Load CPU Graph widget if enabled */
-	if(widgetActive('cpu_graphs')) {
-		GraphValue(graph[0], x);
-	}
 }
 
 function updateTemp(x) {

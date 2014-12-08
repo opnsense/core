@@ -122,9 +122,8 @@ include("head.inc");
 						display_top_tabs($tab_array);
 					?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
-	    				    
+					<div class="tab-content content-box col-xs-12">	 
+    					
 	    				  <form action="services_ntpd_pps.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
@@ -225,7 +224,7 @@ include("head.inc");
 									</table>
 								</div>
 	    				  </form>
-    				    </div>
+	    				  
 					</div>
 			    </section>
 			</div>

@@ -137,14 +137,14 @@ include("head.inc");
     				<? include("status_rrd_graph_tabs.php"); ?>
 					
 					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+    				    
 
 							<form action="status_rrd_graph_settings.php" method="post" name="iform" id="iform">
 							
 							
 
 							<div class="table-responsive">
-							 	<table class="table table-striped">
+							 	<table class="table table-striped __nomb">
 									<tr>
 										<td width="22%" valign="top" class="vtable"><?=gettext("RRD Graphs");?></td>
 										<td width="78%" class="vtable">
@@ -208,7 +208,7 @@ include("head.inc");
 									</tr>
 								</table>
 							 </div>
-							 
+							 <div class="container-fluid">	
 							 <p><strong><span class="text-danger"><?=gettext("Note:");?></span></strong><br />
 											<?=gettext("Graphs will not be allowed to be recreated within a 1 minute interval, please " .
 											"take this into account after changing the style.");?>

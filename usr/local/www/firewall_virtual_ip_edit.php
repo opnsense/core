@@ -357,11 +357,11 @@ function typesel_change() {
     				
     				<div class="content-box">
 	    				
-	    				 <header class="content-box-head col-xs-12">
+	    				 <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Edit Virtual IP");?></h3>
     				    </header>
     				    
-    				    <div class="content-box-main col-xs-12">
+    				    <div class="content-box-main">
 	    					
 	    					<form action="firewall_virtual_ip_edit.php" method="post" name="iform" id="iform">
 		    							                        
@@ -499,7 +499,7 @@ function typesel_change() {
 						                </tr>
 			                        </table>
 		                        </div>
-		                        
+		                        <div class="container-fluid">
 		                        <p class="vexpl">
 				      		<span class="text-danger">
 							<strong><?=gettext("Note:");?><br /></strong>
@@ -507,6 +507,7 @@ function typesel_change() {
 				      		<?=gettext("Proxy ARP and Other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc.  Use a CARP or IP Alias type address for these cases.");?>
 				      		<br /><br /><?=gettext("For more information on CARP and the above values, visit the OpenBSD ");?><a href='http://www.openbsd.org/faq/pf/carp.html'> <?=gettext("CARP FAQ"); ?></a>.
 						</p>
+		                        </div>
 	    					</form>
     				    </div>
     				</div>

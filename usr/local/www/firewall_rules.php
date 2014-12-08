@@ -42,7 +42,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -74,8 +74,13 @@ if ($_POST['if'])
 
 $ifdescs = get_configured_interface_with_descr();
 
+
 // Drag and drop reordering
 if($_REQUEST['dragdroporder']) {
+	
+	
+
+	
 	// First create a new ruleset array and tmp arrays
 	$a_filter_before = array();
 	$a_filter_order = array();
@@ -251,6 +256,9 @@ if (isset($_POST['del_x'])) {
 			break;
 		}
 	}
+	
+
+	
 	/* move selected rules before this rule */
 	if (isset($movebtn) && is_array($_POST['rule']) && count($_POST['rule'])) {
 		$a_filter_new = array();
@@ -286,15 +294,62 @@ if (isset($_POST['del_x'])) {
 		exit;
 	}
 }
-$closehead = false;
+$closehead = true;
+
+
 
 include("head.inc");
 ?>
-
+	<script type="text/javascript" src="/themes/<?=$g['theme'];?>/assets/javascripts/jquery-sortable.js"></script>
+	<style type="text/css">
+		body.dragging, body.dragging * {
+		  cursor: move !important;
+		}
+		
+		.dragged {
+		  position: absolute;
+		  opacity: 0.5;
+		  z-index: 2000;
+		}
+		
+		ol.example li.placeholder {
+		  position: relative;
+		  /** More li styles **/
+		}
+		ol.example li.placeholder:before {
+		  position: absolute;
+		  /** Define arrowhead **/
+		}	
+	</style>
+</head>
 <body>
-<link type="text/css" rel="stylesheet" href="/javascript/chosen/chosen.css" />
-<script src="/javascript/chosen/chosen.jquery.js" type="text/javascript"></script>
-<script type="text/javascript" src="/javascript/row_toggle.js"></script>
+
+
+<script type='text/javascript'>//<![CDATA[
+	jQuery(window).load(
+		function(){
+			var originalLeave=jQuery.fn.popover.Constructor.prototype.leave;
+			jQuery.fn.popover.Constructor.prototype.leave=function(obj) 
+			{
+				var self=obj instanceof this.constructor?obj:jQuery(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.'+this.type)
+				var container,timeout;originalLeave.call(this,obj);
+				if(obj.currentTarget){container=jQuery(obj.currentTarget).siblings('.popover')
+					timeout=self.timeout;
+					container.one('mouseenter',function()
+					{	
+						clearTimeout(timeout);
+						container.one('mouseleave',function()
+						{	
+							jQuery.fn.popover.Constructor.prototype.leave.call(self,self);
+						});
+					})
+				}
+			};
+			jQuery('body').popover({selector:'[data-popover]',trigger:'click hover',placement:'auto',delay:{show:250,hide:50}
+		});
+	});
+//]]>
+</script>
 
 <?php include("fbegin.inc"); ?>
 
@@ -342,26 +397,25 @@ include("head.inc");
 					
 						<div class="tab-content content-box col-xs-12">	
 	    					
-	    				    <div class="container-fluid">	
-	    					
    
-		                        <form action="firewall_rules.php" method="post" name="iform" id="iform">
+		                        <form action="firewall_rules.php<? if (!empty($if)): ?>?if=<?=$if;?><? endif; ?>" method="post" name="iform" id="iform">
 		                        	
 		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort">
+			                        <table class="table table-striped table-sort dragable">
+				                        <thead>
 										<tr id="frheader">
-										<td width="3%" class="list">&nbsp;</td>
-										<td width="5%" class="list">&nbsp;</td>
-										<td width="6%" class="listhdrr"><?=gettext("Proto");?></td>
-										<td width="12%" class="listhdrr"><?=gettext("Source");?></td>
-										<td width="6%" class="listhdrr"><?=gettext("Port");?></td>
-										<td width="12%" class="listhdrr"><?=gettext("Destination");?></td>
-										<td width="6%" class="listhdrr"><?=gettext("Port");?></td>
-										<td width="5%" class="listhdrr"><?=gettext("Gateway");?></td>
-										<td width="8%" class="listhdrr"><?=gettext("Queue");?></td>
-										<td width="5%" class="listhdrr"><?=gettext("Schedule");?></td>
-										<td width="22%" class="listhdr"><?=gettext("Description");?></td>
-										<td width="10%" class="list">
+										<th class="list">&nbsp;</th>
+										<th class="list">&nbsp;</th>
+										<th class="listhdrr"><?=gettext("Proto");?></th>
+										<th class="listhdrr"><?=gettext("Source");?></th>
+										<th class="listhdrr"><?=gettext("Port");?></th>
+										<th class="listhdrr"><?=gettext("Destination");?></th>
+										<th class="listhdrr"><?=gettext("Port");?></th>
+										<th class="listhdrr"><?=gettext("Gateway");?></th>
+										<th class="listhdrr"><?=gettext("Queue");?></th>
+										<th class="listhdrr"><?=gettext("Schedule");?></th>
+										<th class="listhdr"><?=gettext("Description");?></th>
+										<th class="list">
 											
 												<?php
 													$nrules = 0;
@@ -379,8 +433,10 @@ include("head.inc");
 													<button name="del" type="submit" title="<?=gettext("delete selected rules");?>" onclick="return confirm('<?=gettext('Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 												<?php endif; ?>
 												<a href="firewall_rules_edit.php?if=<?=htmlspecialchars($if);?>&amp;after=-1" title="<?=gettext("add new rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-										</td>
+										</th>
 										</tr>
+				                        </thead>
+				                        <tbody>
 										<?php   // Show the anti-lockout rule if it's enabled, and we are on LAN with an if count > 1, or WAN with an if count of 1.
 											if (!isset($config['system']['webgui']['noantilockout']) &&
 												(((count($config['interfaces']) > 1) && ($if == 'lan'))
@@ -456,6 +512,7 @@ include("head.inc");
 											
 										</td>
 										</tr>
+				                        </tbody>
 							<?php endif; ?>
 										<tbody id="dragtable">
 							<?php $nrules = 0; for ($i = 0; isset($a_filter[$i]); $i++):
@@ -472,7 +529,7 @@ include("head.inc");
 							?>
 										<tr valign="top" id="fr<?=$nrules;?>">
 										<td class="listt">
-											<input type="checkbox" id="frc<?=$nrules;?>" name="rule[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$nrules;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" />
+											<input type="checkbox" id="frc<?=$nrules;?>" name="rule[]" value="<?=$i;?>"  />
 											<?php echo $advanced_set; ?>
 										</td>
 										<td class="listt" align="center">
@@ -508,25 +565,36 @@ include("head.inc");
 							<?php endif; ?>
 										</td>
 										<?php
-							
 											//build Alias popup box
 											$alias_src_span_begin = "";
-											$alias_src_port_span_begin = "";
-											$alias_dst_span_begin = "";
-											$alias_dst_port_span_begin = "";
+											//$alias_src_port_span_begin = "";
+											//$alias_dst_span_begin = "";
+											//$alias_dst_port_span_begin = "";
 							
 											$alias_popup = rule_popup($filterent['source']['address'],pprint_port($filterent['source']['port']),$filterent['destination']['address'],pprint_port($filterent['destination']['port']));
-							
-											$alias_src_span_begin = $alias_popup["src"];
-											$alias_src_port_span_begin = $alias_popup["srcport"];
-											$alias_dst_span_begin = $alias_popup["dst"];
-											$alias_dst_port_span_begin = $alias_popup["dstport"];
-							
-											$alias_src_span_end = $alias_popup["src_end"];
-											$alias_src_port_span_end = $alias_popup["srcport_end"];
-											$alias_dst_span_end = $alias_popup["dst_end"];
-											$alias_dst_port_span_end = $alias_popup["dstport_end"];
-							
+											//var_dump($alias_popup);
+											//$alias_src_span_begin = $alias_popup["src"];
+											//$alias_src_port_span_begin = $alias_popup["srcport"];
+											//$alias_dst_span_begin = $alias_popup["dst"];
+											//$alias_dst_port_span_begin = $alias_popup["dstport"];
+								
+											$alias_src_span_end = ""; //$alias_popup["src_end"];
+											//$alias_src_port_span_end = $alias_popup["srcport_end"];
+											//$alias_dst_span_end = $alias_popup["dst_end"];
+											//$alias_dst_port_span_end = $alias_popup["dstport_end"];
+											if ( count($alias_popup) > 0 ) {
+												$aliases_popup['src']['addrlist']=explode(" ",$alias_popup['src']['address']);
+												$aliases_popup['src']['detlist']=explode("||",$alias_popup['src']['detail']);
+
+												$alias_src_span_begin="<span title=\"\" type=\"button\" data-placement=\"bottom\" data-popover=\"true\" data-html=\"true\" data-content='";
+												foreach ($aliases_popup['src']['addrlist'] as $addrkey => $address) {
+													$alias_src_span_begin=$alias_src_span_begin."<b>".$address."</b> <small>(".$aliases_popup['src']['detlist'][$addrkey].")</small>&nbsp;<br>";
+												}
+												$alias_src_span_begin=$alias_src_span_begin."' data-original-title='<a href=\"/firewall_aliases_edit.php?id=".(string)$alias_popup['src']['aliasid']."\" target=\"_self\" >
+													<span class=\"text-primary\"><b>".htmlspecialchars(pprint_address($filterent['source']))."(".count($aliases_popup['src']['addrlist']).")"."</span></b></a>'>";
+														//<i class="glyphicon glyphicon-list">&nbsp;</i><b>Vergelijk Producten</b>&nbsp;<span class="badge">2</span>
+												$alias_src_span_end="</span>";
+											}
 											//build Schedule popup box
 											$a_schedules = &$config['schedules']['schedule'];
 											$schedule_span_begin = "";
@@ -660,7 +728,7 @@ include("head.inc");
 												}
 											}
 										?>
-										<td class="listr" onclick="fr_toggle(<?=$nrules;?>)" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
 										<span class="<?=$textse;?>">
 										<?php
 											if (isset($filterent['ipprotocol'])) {
@@ -689,22 +757,22 @@ include("head.inc");
 										?>
 										</span>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$nrules;?>)" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
 											<span class="<?=$textse;?>"><?php echo $alias_src_span_begin;?><?php echo htmlspecialchars(pprint_address($filterent['source']));?><?php echo $alias_src_span_end;?></span>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$nrules;?>)" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><?php echo $alias_src_port_span_begin;?><?php echo htmlspecialchars(pprint_port($filterent['source']['port'])); ?><?php echo $alias_src_port_span_end;?></span>
+										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+											<span class="<?=$textse;?>"><!--?php echo $alias_src_port_span_begin;?--><?php echo htmlspecialchars(pprint_port($filterent['source']['port'])); ?><!--?php echo $alias_src_port_span_end;?--></span>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$nrules;?>)" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><?php echo $alias_dst_span_begin;?><?php echo htmlspecialchars(pprint_address($filterent['destination'])); ?><?php echo $alias_dst_span_end;?></span>
+										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+											<span class="<?=$textse;?>"><!--?php echo $alias_dst_span_begin;?--><?php echo htmlspecialchars(pprint_address($filterent['destination'])); ?><!--?php echo $alias_dst_span_end;?--></span>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$nrules;?>)" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><?php echo $alias_dst_port_span_begin;?><?php echo htmlspecialchars(pprint_port($filterent['destination']['port'])); ?><?php echo $alias_dst_port_span_end;?></span>
+										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+											<span class="<?=$textse;?>"><!--?php echo $alias_dst_port_span_begin;?--><?php echo htmlspecialchars(pprint_port($filterent['destination']['port'])); ?><!--?php echo $alias_dst_port_span_end;?--></span>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$nrules;?>)" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
 											<span class="<?=$textse;?>"><?php if (isset($config['interfaces'][$filterent['gateway']]['descr'])) echo htmlspecialchars($config['interfaces'][$filterent['gateway']]['descr']); else  echo htmlspecialchars(pprint_port($filterent['gateway'])); ?></span>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$nrules;?>)" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
 										<span class="<?=$textse;?>">
 										<?php
 											if (isset($filterent['ackqueue']) && isset($filterent['defaultqueue'])) {
@@ -720,15 +788,15 @@ include("head.inc");
 										?>
 										</span>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$nrules;?>)" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';"><font color="black">
+										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';"><font color="black">
 											<?php if ($printicon) { ?><span class="glyphicon <?php echo $image; ?>" title="<?php echo $alttext;?>" <?php } ?><span class="<?=$textse;?>"><?php echo $schedule_span_begin;?><?=htmlspecialchars($filterent['sched']);?>&nbsp;<?php echo $schedule_span_end; ?></span>
 										</font></td>
 
-										<td class="listbg descr" onclick="fr_toggle(<?=$nrules;?>)" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+										<td class="listbg descr" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
 											<span class="<?=$textse;?>"><?=htmlspecialchars($filterent['descr']);?>&nbsp;</span>
 										</td>
 										<td valign="middle" class="list nowrap">
-												<button name="move_<?=$i;?>" type="submit" title="<?=gettext("move selected rules before this rule"); ?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
+												<button name="move_<?=$i;?>_x" type="submit" title="<?=gettext("move selected rules before this rule"); ?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs" value="<?=$i;?>"><span class="glyphicon glyphicon-arrow-left"></span></button>
 												<a href="firewall_rules_edit.php?id=<?=$i;?>" title="<?=gettext("edit rule"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 												
 												<a href="firewall_rules.php?act=del&amp;if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" title="<?=gettext("delete rule"); ?>" onclick="return confirm('Do you really want to delete this rule?')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
@@ -767,7 +835,7 @@ include("head.inc");
 										<td class="list">&nbsp;</td>
 										<td class="list">
 											
-													<?php if ($nrules): ?><button name="move_<?=$i;?>" type="submit"  title="<?=gettext("move selected rules to end");?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button><?php endif; ?></td>
+													<?php if ($nrules): ?><button name="move_<?=$i;?>_x" type="submit" value="<?=$i;?>"  title="<?=gettext("move selected rules to end");?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button><?php endif; ?>
 												
 							<?php if ($nrules): ?>
 													<button name="del" type="submit" title="<?=gettext("delete selected rules");?>" onclick="return confirm('<?=gettext('Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
@@ -775,10 +843,11 @@ include("head.inc");
 												<a href="firewall_rules_edit.php?if=<?=htmlspecialchars($if);?>" title="<?=gettext("add new rule");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 										</td>
 										</tr>
+									</tbody>
 									</table>
 									
 									
-									
+									<div class="container-fluid">
 									<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="0" summary="icons">
 										<tr>
 											<td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
@@ -838,9 +907,9 @@ include("head.inc");
 											 </td>
 										</tr>
 									</table>
+									</div>
 								</div>
 		                    </form>
-	    				</div>
 					</div>
 			    </section>
 			</div>
@@ -848,7 +917,7 @@ include("head.inc");
 	</section>
 							
 <input type="hidden" name="if" value="<?=htmlspecialchars($if);?>" />
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 //<![CDATA[
 	var number_of_rules = <?=$nrules?>;
 	<?php $nrules = 0; for ($i = 0; isset($a_filter[$i]); $i++): ?>
@@ -867,15 +936,47 @@ include("head.inc");
 		});
 	
 	<?php endfor; ?>
-	function updateOrder(order) {
-		if(document.getElementById("redboxtable"))
-			jQuery('#redboxtable').hide();
-		jQuery('#loading').show();
-		document.body.style.cursor = 'wait';
-		document.location = 'firewall_rules.php?if=<?=htmlspecialchars($if);?>&dragdroporder=true&' + Sortable.serialize('dragtable', 'tr');
-		return;
-	}
+	
 	jQuery('#loading').hide();
 //]]>
+</script> -->
+
+<script type="text/javascript">
+	
+	$(function  () {
+	 $('table.dragable').sortable({
+		  containerSelector: 'table',
+		  itemPath: '> tbody#dragtable',
+		  itemSelector: 'tr',
+		  placeholder: '<tr class="placeholder"/>',
+		  onDrop: function(item,container,_super, event) {
+			   item.removeClass("dragged").removeAttr("style");
+			   $("body").removeClass("dragging");
+			   
+			   	
+			  updateOrder(container);
+		  }
+		})
+	});
+	
+	function updateOrder(container) {
+		if(document.getElementById("redboxtable"))
+			//jQuery('#redboxtable').hide();
+		
+		//jQuery('#loading').show();
+			
+		document.body.style.cursor = 'wait';
+	
+		var drag_url = '';
+		$('tbody#dragtable tr').each(function(i, obj) {
+			
+			drag_url += '&dragtable[]='+$(obj).attr('id').replace('fr','');
+		});
+		
+		document.location = 'firewall_rules.php?if=<?=htmlspecialchars($if);?>&dragdroporder=true' + drag_url;
+		return;
+	}
+	
 </script>
+
 <?php include("foot.inc"); ?>

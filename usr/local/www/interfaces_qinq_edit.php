@@ -294,11 +294,11 @@ function removeRow(el) {
     				
     				<div class="content-box">
 	    				
-	    				 <header class="content-box-head col-xs-12">
+	    				 <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Interface QinQ Edit");?></h3>
     				    </header>
     				    
-    				    <div class="content-box-main col-xs-12">
+    				    <div class="content-box-main">
 	    					
 	    					<form action="interfaces_qinq_edit.php" method="post" name="iform" id="iform">
 		    							                        

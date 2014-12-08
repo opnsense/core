@@ -170,15 +170,15 @@ include('head.inc');
 
                 <div class="content-box">              
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Routing tables"); ?></h3>
 				    </header>
 				    
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main">
 
 						<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped">
+	    			        <table class="table table-striped __nomb">
 	    				        <tbody>
 	        				        <tr>
 	        				          <td><?=gettext("Name resolution");?></td>
@@ -225,11 +225,11 @@ include('head.inc');
 
                 <div class="content-box">              
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3>IPv4</h3>
 				    </header>
 				    
-				     <table class="table table-striped table-sort sortable" id="IPv4" summary="ipv4 routes">
+				     <table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
 						<tbody>
 							<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>
 						</tbody>
@@ -241,10 +241,10 @@ include('head.inc');
 
                 <div class="content-box">              
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3>IPv6</h3>
 				    </header>
-					<table class="table table-striped table-sort sortable" id="IPv6" summary="IPv6 routes">
+					<table class="table table-striped table-sort sortable __nomb" id="IPv6" summary="IPv6 routes">
 					
 						<tbody>
 							<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>

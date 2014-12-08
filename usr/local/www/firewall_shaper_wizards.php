@@ -40,7 +40,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 require_once("util.inc");
@@ -111,30 +111,30 @@ include("head.inc");
 						?>
 						
 					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
-	    					
+						<div class="tab-content content-box col-xs-12">	    					
    
 		                        <form action="firewall_shaper_wizards.php" method="post" name="iform" id="iform">
 		                        	
 		                        	
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
+    			                        <thead>
 				                        <tr>
-										<td class="listhdrr" width="25%" align="center" ><?=gettext("Wizard function");?></td>
-										<td class="listhdrr" width="75%" align="center"><?=gettext("Wizard Link");?></td>
-									</tr>
+										<td class="listhdrr" width="25%"><?=gettext("Wizard function");?></td>
+										<td class="listhdrr" width="75%"><?=gettext("Wizard Link");?></td>
+									    </tr>
+    			                        </thead>
+    			                        <tbody>
 				<?php
 								foreach ($wizards as $key => $wizard):
 				?>
 									<tr class="tabcont">
-										<td class="listlr" width="25%" align="center">
+										<td class="listlr" width="25%">
 				<?php
 											echo $key;
 				?>
 										</td>
-										<td class="listr" width="75%" align="center">
+										<td class="listr" width="75%">
 				<?php
 											echo "<a href=\"wizard.php?xml=" . $wizard ."\" >" .$wizard . "</a>";
 				?>
@@ -142,11 +142,10 @@ include("head.inc");
 									</tr>
 				<?php
 								endforeach;
-				?>
+				?></tbody>
 								</table>
 							</div>
 		                        </form>
-	    				    </div>
 						</div>
 			    </section>
 			</div>

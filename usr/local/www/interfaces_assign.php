@@ -44,7 +44,7 @@ $pgtitle = array(gettext("Interfaces"),gettext("Assign network ports"));
 $shortcut_section = "interfaces";
 
 require("guiconfig.inc");
-require("functions.inc");
+require("includes/functions.inc");
 require_once("filter.inc");
 require("shaper.inc");
 require("ipsec.inc");
@@ -443,136 +443,141 @@ if(file_exists("/var/run/interface_mismatch_reboot_needed"))
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">
-				
-				<?php
-				if (file_exists("/tmp/reload_interfaces")) {
-					echo "<p>\n";
-					print_info_box_np(gettext("The interface configuration has been changed.<br />You must apply the changes in order for them to take effect."));
-					echo "<br /></p>\n";
-				} elseif($savemsg)
-					print_info_box($savemsg);
-				
-				pfSense_handle_custom_code("/usr/local/pkg/interfaces_assign/pre_input_errors");
-				if ($input_errors)
-					print_input_errors($input_errors);
-				?>
-				
-			    <section class="col-xs-12">
+    	<div class="container-fluid">
+    		<div class="row">
+    			
+    			<?php
+    			if (file_exists("/tmp/reload_interfaces")) {
+    				echo "<p>\n";
+    				print_info_box_np(gettext("The interface configuration has been changed.<br />You must apply the changes in order for them to take effect."));
+    				echo "<br /></p>\n";
+    			} elseif($savemsg)
+    				print_info_box($savemsg);
+    			
+    			pfSense_handle_custom_code("/usr/local/pkg/interfaces_assign/pre_input_errors");
+    			if ($input_errors)
+    				print_input_errors($input_errors);
+    			?>
+    			
+    		    <section class="col-xs-12">
     				
     					
     					<?php
-							$tab_array = array();
-							$tab_array[0] = array(gettext("Interface assignments"), true, "interfaces_assign.php");
-							$tab_array[1] = array(gettext("Interface Groups"), false, "interfaces_groups.php");
-							$tab_array[2] = array(gettext("Wireless"), false, "interfaces_wireless.php");
-							$tab_array[3] = array(gettext("VLANs"), false, "interfaces_vlan.php");
-							$tab_array[4] = array(gettext("QinQs"), false, "interfaces_qinq.php");
-							$tab_array[5] = array(gettext("PPPs"), false, "interfaces_ppps.php");
-							$tab_array[7] = array(gettext("GRE"), false, "interfaces_gre.php");
-							$tab_array[8] = array(gettext("GIF"), false, "interfaces_gif.php");
-							$tab_array[9] = array(gettext("Bridges"), false, "interfaces_bridge.php");
-							$tab_array[10] = array(gettext("LAGG"), false, "interfaces_lagg.php");
-							display_top_tabs($tab_array);
-						?>
-
-					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
-	    					
-   
-		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
-		                        
-		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort">
-										<tr>
-											<td class="listhdrr"><?=gettext("Interface"); ?></td>
-											<td class="listhdr"><?=gettext("Network port"); ?></td>
-											<td class="list">&nbsp;</td>
-										</tr>
-										<?php
-													foreach ($config['interfaces'] as $ifname => $iface):
-														if ($iface['descr'])
-															$ifdescr = $iface['descr'];
-														else
-															$ifdescr = strtoupper($ifname);
-										?>
-														<tr>
-															<td class="listlr" valign="middle"><strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=$ifdescr;?></span></u></strong></td>
-															<td valign="middle" class="listr">
-																<select onchange="javascript:jQuery('#savediv').show();" name="<?=$ifname;?>" id="<?=$ifname;?>">
-										<?php
-																foreach ($portlist as $portname => $portinfo):
-										?>
-																	<option  value="<?=$portname;?>"  <?php if ($portname == $iface['if']) echo " selected=\"selected\"";?>>
-																		<?=interface_assign_description($portinfo, $portname);?>
-																	</option>
-										<?php
-																endforeach;
-										?>
-																</select>
-															</td>
-															<td valign="middle" class="list">
-										<?php
-															if ($ifname != 'wan'):
-										?>
-																<button name="del_<?=$ifname;?>_x" 
-																	title="<?=gettext("delete interface");?>"
-																	class="btn btn-default"
-																	type="submit"
-																	value="<?=$ifname;?>"
-																	onclick="return confirm('<?=gettext("Do you really want to delete this interface?"); ?>')">
-																	<span class=" glyphicon glyphicon-remove"></span>
-																</button>
-										<?php
-															endif;
-										?>
-															</td>
-														</tr>
-										<?php
-													endforeach;
-													if (count($config['interfaces']) < count($portlist)):
-										?>
-														<tr>
-															<td class="list">
-																<strong><?=gettext("Available network ports:");?></strong>
-															</td>
-															<td class="list">
-																<select name="if_add" id="if_add">
-										<?php
-																foreach ($unused_portlist as $portname => $portinfo):
-										?>
-																	<option  value="<?=$portname;?>"  <?php if ($portname == $iface['if']) echo " selected=\"selected\"";?>>
-																		<?=interface_assign_description($portinfo, $portname);?>
-																	</option>
-										<?php
-																endforeach;
-										?>
-																</select>
-															</td>
-															<td class="list">
-																<button name="add_x" type="submit" class="btn btn-primary" title="<?=gettext("add selected interface");?>"><span class="glyphicon glyphicon-plus"></span></button>
-															</td>
-														</tr>
-										<?php
-													endif;
-										?>
-									</table>
-		                        </div>
-		                        <div id='savediv' style='display:none'>
-									<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" /><br /><br />
-								</div>
-								<ul>
-									<li><span class="vexpl"><?=gettext("Interfaces that are configured as members of a lagg(4) interface will not be shown."); ?></span></li>
-								</ul>
-								
-		                        </form>
-	    				    </div>
-						</div>
-			    </section>
-			</div>
+    						$tab_array = array();
+    						$tab_array[0] = array(gettext("Interface assignments"), true, "interfaces_assign.php");
+    						$tab_array[1] = array(gettext("Interface Groups"), false, "interfaces_groups.php");
+    						$tab_array[2] = array(gettext("Wireless"), false, "interfaces_wireless.php");
+    						$tab_array[3] = array(gettext("VLANs"), false, "interfaces_vlan.php");
+    						$tab_array[4] = array(gettext("QinQs"), false, "interfaces_qinq.php");
+    						$tab_array[5] = array(gettext("PPPs"), false, "interfaces_ppps.php");
+    						$tab_array[7] = array(gettext("GRE"), false, "interfaces_gre.php");
+    						$tab_array[8] = array(gettext("GIF"), false, "interfaces_gif.php");
+    						$tab_array[9] = array(gettext("Bridges"), false, "interfaces_bridge.php");
+    						$tab_array[10] = array(gettext("LAGG"), false, "interfaces_lagg.php");
+    						display_top_tabs($tab_array);
+    					?>
+    
+    				
+    					<div class="tab-content content-box col-xs-12">	
+        					
+    	                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
+    	                        
+    	                        <div class="table-responsive">
+    		                        <table class="table table-striped table-sort">
+        		                        
+                                        <thead>
+                                            <tr>
+                                				<th colspan="2" class="listtopic"><?=gettext("Interface"); ?></th>
+                                				<th colspan="2" class="listtopic"><?=gettext("Network port"); ?></th>
+                                            </tr>
+                                        </thead>
+    									
+        								<tbody>
+    									<?php
+    												foreach ($config['interfaces'] as $ifname => $iface):
+    													if ($iface['descr'])
+    														$ifdescr = $iface['descr'];
+    													else
+    														$ifdescr = strtoupper($ifname);
+    									?>
+    													<tr>
+    														<td class="listlr" valign="middle"><strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=$ifdescr;?></span></u></strong></td>
+    														<td valign="middle" class="listr">
+    															<select onchange="javascript:jQuery('#savediv').show();" name="<?=$ifname;?>" id="<?=$ifname;?>">
+    									<?php
+    															foreach ($portlist as $portname => $portinfo):
+    									?>
+    																<option  value="<?=$portname;?>"  <?php if ($portname == $iface['if']) echo " selected=\"selected\"";?>>
+    																	<?=interface_assign_description($portinfo, $portname);?>
+    																</option>
+    									<?php
+    															endforeach;
+    									?>
+    															</select>
+    														</td>
+    														<td valign="middle" class="list">
+    									<?php
+    														if ($ifname != 'wan'):
+    									?>
+    															<button name="del_<?=$ifname;?>_x" 
+    																title="<?=gettext("delete interface");?>"
+    																class="btn btn-default"
+    																type="submit"
+    																value="<?=$ifname;?>"
+    																onclick="return confirm('<?=gettext("Do you really want to delete this interface?"); ?>')">
+    																<span class=" glyphicon glyphicon-remove"></span>
+    															</button>
+    									<?php
+    														endif;
+    									?>
+    														</td>
+    													</tr>
+    									<?php
+    												endforeach;
+    												if (count($config['interfaces']) < count($portlist)):
+    									?>
+    													<tr>
+    														<td class="list">
+    															<strong><?=gettext("Available network ports:");?></strong>
+    														</td>
+    														<td class="list">
+    															<select name="if_add" id="if_add">
+    									<?php
+    															foreach ($unused_portlist as $portname => $portinfo):
+    									?>
+    																<option  value="<?=$portname;?>"  <?php if ($portname == $iface['if']) echo " selected=\"selected\"";?>>
+    																	<?=interface_assign_description($portinfo, $portname);?>
+    																</option>
+    									<?php
+    															endforeach;
+    									?>
+    															</select>
+    														</td>
+    														<td class="list">
+    															<button name="add_x" type="submit" class="btn btn-primary" title="<?=gettext("add selected interface");?>"><span class="glyphicon glyphicon-plus"></span></button>
+    														</td>
+    													</tr>
+    									<?php
+    												endif;
+    									?>
+        								</tbody>
+    								</table>
+    	                        </div>
+    	                        
+    	                        <div class="container-fluid">
+        	                        <div id='savediv' style='display:none'>
+        								<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" /><br /><br />
+        							</div>
+        							<ul>
+        								<li><span class="vexpl"><?=gettext("Interfaces that are configured as members of a lagg(4) interface will not be shown."); ?></span></li>
+        							</ul>
+    	                        </div>
+                                
+    	                        </form>
+    	                        
+    					</div>
+    		    </section>
+    		</div>
 		</div>
 	</section>
 

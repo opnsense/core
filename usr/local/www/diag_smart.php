@@ -264,14 +264,14 @@ switch($action) {
 
                 <div class="content-box">
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Info"); ?></h3>
 				    </header>
 				    
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main">
 					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="iform" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped">
+	    			        <table class="table table-striped __nomb">
 	    				        <tbody>
 	        				        <tr>
 	        				          <td><?=gettext("Info type"); ?></td>
@@ -317,14 +317,14 @@ switch($action) {
                 
                 <div class="content-box">
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Perform Self-tests"); ?></h3>
 				    </header>
 				    
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main">
 					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="test" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped">
+	    			        <table class="table table-striped __nomb">
 	    				        <tbody>
 	        				        <tr>
 	        				          <td><?=gettext("Test type"); ?></td>
@@ -370,14 +370,14 @@ switch($action) {
                 
                 <div class="content-box">
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("View Logs"); ?></h3>
 				    </header>
 				    
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main">
 					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="logs" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped">
+	    			        <table class="table table-striped __nomb">
 	    				        <tbody>
 	        				        <tr>
 	        				          <td><?=gettext("Log type"); ?></td>
@@ -421,14 +421,14 @@ switch($action) {
                 
                 <div class="content-box">
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Abort tests"); ?></h3>
 				    </header>
 				    
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main">
 					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="abort" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped">
+	    			        <table class="table table-striped __nomb">
 	    				        <tbody>
 									<tr>
 										<td><?=gettext("Device: /dev/"); ?></td>

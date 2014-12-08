@@ -46,7 +46,7 @@
 
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("captiveportal.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
@@ -1581,9 +1581,12 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 							<div class="table-responsive">	
 	
 								<table class="table table-striped">	
+    								<thead>
 									<tr>
-										<td colspan="2"><?=gettext("General configuration"); ?></td>
-									</tr>								
+										<th colspan="2"><?=gettext("General configuration"); ?></th>
+									</tr>
+    								</thead>
+    								<tbody>								
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Enable"); ?></td>
 										<td width="78%" class="vtable">
@@ -1591,6 +1594,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 										<strong><?=gettext("Enable Interface"); ?></strong>
 										</td>
 									</tr>
+    								</tbody>
 								</table>
 							</div>
 							<div class="table-responsive">	
@@ -1687,7 +1691,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 										echo '<div id="showadvmediabox"';
 											if ($mediaopt_from_config != 'autoselect ' && $mediaopt_from_config != ' ') echo " style='display:none'>";
 											else echo '>';
-											echo '<input type="button" onclick="show_advanced_media()" value="' . gettext("Advanced") . '" /> - ' . gettext("Show advanced option");
+											echo '<input type="button" onclick="show_advanced_media()" class="btn btn-default btn-xs" value="' . gettext("Advanced") . '" /> - ' . gettext("Show advanced option");
 										echo "</div>";
 										echo '<div id="showmediaadv" ';
 										if ($mediaopt_from_config == 'autoselect ' || $mediaopt_from_config == ' ') echo "style='display:none'>";
@@ -1709,17 +1713,19 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 									echo '</tr>';
 									}
 									?>
-									<tr>
-										<td colspan="2" valign="top" height="16"></td>
-									</tr>
+									
 									<tr style="display:none;" id="none"><td style="display:none;"></td></tr>
+							
 									<tr style="display:none;" id="staticv4">
 										<td colspan="2" style="padding:0px;">
 											<a name="gatewaysection"></a>
 											<table class="table table-striped" summary="staticv4">
+    											<thead>
 												<tr>
-													<td colspan="2" valign="top" class="listtopic"><?=gettext("Static IPv4 configuration"); ?></td>
+													<th colspan="2" valign="top" class="listtopic"><?=gettext("Static IPv4 configuration"); ?></th>
 												</tr>
+    											</thead>
+    											<tbody>
 												<tr>
 													<td width="22%" valign="top" class="vncellreq"><?=gettext("IPv4 address"); ?></td>
 													<td width="78%" class="vtable">
@@ -1804,19 +1810,21 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 														</div>
 													</td>
 												</tr>
-												<tr>
-													<td colspan="2" valign="top" height="16"></td>
-												</tr>
+    											</tbody>
 											</table>
 										</td>
 									</tr>
 									<tr style="display:none;" id="staticv6">
 										<td colspan="2" style="padding:0px;">
 											<a name="gatewayv6section"></a>
-											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="staticv6">
+											<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="staticv6"  class="table table-striped">
+												
+												<thead>
 												<tr>
-													<td colspan="2" valign="top" class="listtopic"><?=gettext("Static IPv6 configuration"); ?></td>
+													<th colspan="2" valign="top" class="listtopic"><?=gettext("Static IPv6 configuration"); ?></th>
 												</tr>
+												</thead>
+												<tbody>
 												<tr>
 													<td width="22%" valign="top" class="vncellreq"><?=gettext("IPv6 address"); ?></td>
 													<td width="78%" class="vtable">
@@ -1913,15 +1921,16 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 												<tr>
 													<td colspan="2" valign="top" height="16"></td>
 												</tr>
+												</tbody>
 											</table>
 										</td>
 									</tr>
 									<tr style="display:none;" id="dhcp">
 										<td colspan="2" style="padding: 0px;">
-											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="dhcp">
+											<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="dhcp">
 												<tr>
-													<td colspan="2" valign="top" class="listtopic"><?=gettext("DHCP client configuration &nbsp; &nbsp; " .
-													' <input name="adv_dhcp_config_advanced" type="checkbox" id="adv_dhcp_config_advanced" value="" onclick="show_adv_dhcp_config(this)" /> ' .
+    												<td><?=gettext("DHCP client configuration");?></td>
+													<td valign="top" class="listtopic"><?=gettext(' <input name="adv_dhcp_config_advanced" type="checkbox" id="adv_dhcp_config_advanced" value="" onclick="show_adv_dhcp_config(this)" /> ' .
 													" Advanced &nbsp; &nbsp; " .
 													' <input name="adv_dhcp_config_file_override" type="checkbox" id="adv_dhcp_config_file_override" value="" onclick="show_adv_dhcp_config(this)" /> ' .
 													" Config File Override &nbsp; &nbsp; "); ?>
@@ -2130,7 +2139,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 									</tr>
 									<tr style="display:none;" id="dhcp6">
 										<td colspan="2" style="padding: 0px;">
-											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="dhcp6">
+											<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="dhcp6">
 												<tr>
 													<td colspan="2" valign="top" class="listtopic"><?=gettext("DHCP6 client configuration &nbsp; &nbsp; " .
 													' <input name="adv_dhcp6_config_advanced" type="checkbox" id="adv_dhcp6_config_advanced" value="" onclick="show_adv_dhcp6_config(this)" /> ' .
@@ -2402,7 +2411,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 									</tr>
 									<tr style="display:none;" id="_6rd">
 										<td colspan="2" style="padding: 0px;">
-											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="6rd">
+											<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="6rd">
 												<tr>
 													<td colspan="2" valign="top" class="listtopic"><?=gettext("6RD Rapid Deployment"); ?></td>
 												</tr>
@@ -2446,7 +2455,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 									</tr>
 									<tr style="display:none;" id="track6">
 										<td colspan="2" style="padding: 0px;">
-											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="track6">
+											<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="track6">
 												<tr>
 													<td colspan="2" valign="top" class="listtopic"><?=gettext("Track IPv6 Interface"); ?></td>
 												</tr>
@@ -2507,7 +2516,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 									</tr>
 									<tr style="display:none;" id="ppp">
 										<td colspan="2" style="padding: 0px;">
-											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="ppp">
+											<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="ppp">
 												<tr>
 													<td colspan="2" valign="top" class="listtopic"><?=gettext("PPP configuration"); ?></td>
 												</tr>
@@ -2516,7 +2525,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 													<td width="78%" class="vtable">
 														<table border="0" cellpadding="0" cellspacing="0" summary="service provider">
 															<tr id="trcountry">
-																<td><?=gettext("Country:"); ?> &nbsp;&nbsp;</td>
+																<td><?=gettext("Country:"); ?> </td>
 																<td>
 																	<select class="form-control" name="country" id="country" onchange="providers_list()">
 																		<option></option>
@@ -2540,7 +2549,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																</td>
 															</tr>
 														</table>
-														<br /><span class="vexpl"><?=gettext("Select to fill in data for your service provider."); ?></span>
+														<span class="vexpl"><?=gettext("Select to fill in data for your service provider."); ?></span>
 													</td>
 												</tr>
 												<tr>
@@ -2613,7 +2622,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 									</tr>
 									<tr style="display:none;" id="pppoe">
 										<td colspan="2" style="padding:0px;">
-											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="pppoe">
+											<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="pppoe">
 												<tr>
 													<td colspan="2" valign="top" class="listtopic"><?=gettext("PPPoE configuration"); ?></td>
 												</tr>
@@ -2722,7 +2731,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 									</tr>
 									<tr style="display:none;" id="pptp">
 										<td colspan="2" style="padding:0px;">
-											<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="pptp">
+											<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="pptp">
 												<tr>
 													<td colspan="2" valign="top" class="listtopic"><?=gettext("PPTP/L2TP configuration"); ?></td>
 												</tr>
@@ -3297,7 +3306,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 								</table> <!-- End "allcfg" table -->
 								</div> <!-- End "allcfg" div -->
 			
-								<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="buttons">
+								<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="buttons">
 									<tr>
 										<td width="22%" valign="top">
 											&nbsp;

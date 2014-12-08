@@ -562,7 +562,7 @@ include("head.inc");
 							<tr id="showadvancedboxsrc" name="showadvancedboxsrc">
 								<td width="22%" valign="top" class="vncellreq"><?=gettext("Source"); ?></td>
 								<td width="78%" class="vtable">
-									<input type="button" onclick="show_source()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show source address and port range"); ?>
+									<input type="button" onclick="show_source()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show source address and port range"); ?>
 								</td>
 							</tr>
 							<tr style="display: none;" id="srctable" name="srctable">

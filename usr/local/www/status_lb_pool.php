@@ -40,7 +40,7 @@
 ##|-PRIV
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 require_once("vslb.inc");
@@ -130,13 +130,13 @@ if ($_POST) {
 					?>
 					
 					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
+    				   
 							<form action="status_lb_pool.php" method="post">
 							<div class="table-responsive">
 								
-								<table class="table table-striped table-sort">
+								<table class="table table-striped table-sort ">
 									
-									
+								<thead>	
 
 								<tr>
 								<td width="10%" class="listhdrr"><?=gettext("Name");?></td>
@@ -145,6 +145,10 @@ if ($_POST) {
 								<td width="10%" class="listhdrr"><?=gettext("Monitor");?></td>
 								<td width="30%" class="listhdr"><?=gettext("Description");?></td>
 								</tr>
+								
+								</thead>
+								<tbody>
+								
 								<?php foreach ($a_pool as & $pool): ?>
 								<tr>
 								<td class="listlr">
@@ -224,9 +228,9 @@ if ($_POST) {
 								</td>
 								</tr>
 								<?php endforeach; ?>
-								
+								</tbody>
 									</table>
-									
+								   <div class="container-fluid">		
 									<input name="Submit" type="submit" class="btn btn-primary" value="<?= gettext("Save"); ?>" />
 									<input name="Reset"  type="reset"  class="btn btn-default" value="<?= gettext("Reset"); ?>" />
 							

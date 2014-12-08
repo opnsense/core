@@ -309,9 +309,8 @@ function enable_change(enable_over) {
 						display_top_tabs($tab_array);
 					?> 
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
-	    				    
+					<div class="tab-content content-box col-xs-12">	
+    						    				    
 							<form action="vpn_pptp.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
@@ -495,7 +494,7 @@ function enable_change(enable_over) {
 						              </table>
 								</div>
 							</form>
-    				    </div>
+							
 					</div>
 			    </section>
 			</div>

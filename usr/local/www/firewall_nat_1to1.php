@@ -40,7 +40,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -183,80 +183,78 @@ $main_buttons = array(
 				
 					<div class="tab-content content-box col-xs-12">	
     					
-    				    <div class="container-fluid">	
-    					
 
 	                        <form action="firewall_nat_1to1.php" method="post" name="iform" id="iform">
 	                        	<input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($id); ?>" />
 	                        	
 	                        <div class="table-responsive">
 		                        <table class="table table-striped table-sort">
+    		                        <thead>
 									<tr id="frheader">
-										<td width="3%" class="list">&nbsp;</td>
-										<td width="3%" class="list">&nbsp;</td>
-										<td width="10%" class="listhdrr"><?=gettext("Interface"); ?></td>
-										<td width="15%" class="listhdrr"><?=gettext("External IP"); ?></td>
-										<td width="15%" class="listhdrr"><?=gettext("Internal IP"); ?></td>
-										<td width="15%" class="listhdrr"><?=gettext("Destination IP"); ?></td>
-										<td width="29%" class="listhdr"><?=gettext("Description"); ?></td>
-										<td width="10%" class="list">
-											
-										</td>
+										<th width="3%" class="list">&nbsp;</th>
+										<th width="3%" class="list">&nbsp;</th>
+										<th class="listhdrr"><?=gettext("Interface"); ?></th>
+										<th class="listhdrr"><?=gettext("External IP"); ?></th>
+										<th class="listhdrr"><?=gettext("Internal IP"); ?></th>
+										<th class="listhdrr"><?=gettext("Destination IP"); ?></th>
+										<th class="listhdr"><?=gettext("Description"); ?></th>
+										<th class="list"></th>
 									</tr>
+    		                        </thead>
+    		                        <tbody>
 						<?php
-								$textse = "</span>";
+								$textse = "";
 								$i = 0;
 								foreach ($a_1to1 as $natent):
 									if (isset($natent['disabled'])) {
-										$textss = "btn-muted";
+										$textss = "text-muted";
 										$iconfn = "glyphicon glyphicon-play";
 									} else {
-										$textss = "btn-success";
+										$textss = "text-success";
 										$iconfn = "glyphicon glyphicon-play";
 									}
 						?>
 									<tr valign="top" id="fr<?=$i;?>">
 										<td class="listt">
-											<input type="checkbox" id="frc<?=$i;?>" name="rule[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" />
+											<input type="checkbox" id="frc<?=$i;?>" name="rule[]" value="<?=$i;?>" />
 										</td>
 										<td class="listt" align="center">
-											<a href="?act=toggle&amp;id=<?=$i;?>" class="btn btn-default btn-xs <?=$textss;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" ><span class="glyphicon <?=$iconfn;?>"></span>
-											</a>
+											<a href="?act=toggle&amp;id=<?=$i;?>" class="glyphicon <?=$iconfn;?> <?=$textss;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" ></a>
 										</td>
 										<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 						<?php
-											echo $textss;
+											
 											if (!$natent['interface'])
 												echo htmlspecialchars(convert_friendly_interface_to_friendly_descr("wan"));
 											else
 												echo htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface']));
-											echo $textse;
+											
 						?>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
+										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 						<?php
 											$source_net = pprint_address($natent['source']);
 											$source_cidr = strstr($source_net, '/');
 											echo $textss . $natent['external'] . $source_cidr . $textse;
 						?>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
+										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 						<?php
-											echo $textss . $source_net . $textse;
+											echo $source_net . $textse;
 						?>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
+										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 						<?php
-											echo $textss . pprint_address($natent['destination']) . $textse;
+											echo pprint_address($natent['destination']) . $textse;
 						?>
 										</td>
-										<td class="listbg" onclick="fr_toggle(<?=$i;?>)" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
+										<td class="listbg"  ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 						<?php
-											echo $textss . htmlspecialchars($natent['descr']) . '&nbsp;' . $textse;
+											echo htmlspecialchars($natent['descr']) . '&nbsp;' . $textse;
 						?>
 										</td>
 										<td class="list nowrap" valign="middle">
-											<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>"
+											<button  name="move_<?=$i;?>_x"
 												title="<?=gettext("move selected rules before this rule");?>"
 												type="submit" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
 										
@@ -280,7 +278,7 @@ $main_buttons = array(
 						<?php
 													else:
 						?>
-														<button name="move_<?=$i;?>" type="submit"  title="<?=gettext("move selected mappings to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
+														<button name="move_<?=$i;?>_x" type="submit"  title="<?=gettext("move selected mappings to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
 						<?php
 													endif;
 						?>
@@ -314,10 +312,10 @@ $main_buttons = array(
 											</span></p>
 										</td>
 									</tr>
+    		                        </tbody>
 								</table>
 	                        </div>
 	                        </form>
-    				    </div>
 					</div>
 			    </section>
 			</div>

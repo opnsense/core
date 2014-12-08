@@ -59,7 +59,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 	if (count($allowedpages) > 0) {
 		$page = str_replace('*', '', $allowedpages[0]);
 		$_SESSION['Post_Login'] = true;
-		require_once("functions.inc");
+		require_once("includes/functions.inc");
 		pfSenseHeader("/{$page}");
 
 		$username = empty($_SESSION["Username"]) ? "(system)" : $_SESSION['Username'];
@@ -68,95 +68,80 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 		log_error("{$username} attempted to access {$_SERVER['SCRIPT_NAME']} but does not have access to that page. Redirecting to {$page}.");
 
 		exit;
-	} else {
-		display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
-		exit;
-	}
+		} else {
+			display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
+			exit;
+		}
 } else 
 	$_SESSION['Post_Login'] = true;
 
-/*
- * redirect browsers post-login to avoid pages
- * taking action in reponse to a POST request
- */
-if (!$_SESSION['Post_Login']) {
-	$_SESSION['Post_Login'] = true;
-	require_once("functions.inc");
-	pfSenseHeader($_SERVER['REQUEST_URI']);
-	exit;
-}
-
-/* 
- * Close session data to allow other scripts from same host to come in.
- * A session can be reactivated from calling session_start again
- */
-session_commit();
-
-/*
- * determine if the user is allowed access to the requested page
- */
-function display_error_form($http_code, $desc) {
-	global $config, $g;
-	$g['theme'] = get_current_theme();
-	if(isAjax()) {
-		printf(gettext('Error: %1$s Description: %2$s'), $http_code, $desc);
-		return;
+	/*
+	 * redirect browsers post-login to avoid pages
+	 * taking action in reponse to a POST request
+	 */
+	if (!$_SESSION['Post_Login']) {
+		$_SESSION['Post_Login'] = true;
+		require_once("includes/functions.inc");
+		pfSenseHeader($_SERVER['REQUEST_URI']);
+		exit;
 	}
 
-?>
+	/* 
+	 * Close session data to allow other scripts from same host to come in.
+	 * A session can be reactivated from calling session_start again
+	 */
+	session_commit();
 
-<!doctype html>
-<!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-	<head>
+	/*
+	 * determine if the user is allowed access to the requested page
+	 */
+	function display_error_form($http_code, $desc) {
+		global $config, $g;
+		$g['theme'] = get_current_theme();
+		if(isAjax()) {
+			printf(gettext('Error: %1$s Description: %2$s'), $http_code, $desc);
+			return;
+		}
 
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		
-		<meta name="robots" content="index, follow, noodp, noydir" />
-		<meta name="keywords" content="" />
-		<meta name="description" content="" />
-		<meta name="copyright" content="" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-		
-		<title><?=$http_code?></title>
-		
-		<link href="/themes/opnsense/build/css/main.css" media="screen, projection" rel="stylesheet">
-	
-		<link href="/themes/opnsense/img/icons/favicon.ico" rel="shortcut icon">
-		<link href="/themes/opnsense/img/icons/touch.png" rel="apple-touch-icon-precomposed">
-		
-		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
-		<script type="text/javascript">
-		//<![CDATA[
-			function page_load() {}
-			function clearError() {
-				if($('#inputerrors'))
-				$('#inputerrors').html('');
-			}
-			<?php
-				require("headjs.php");
-				echo getHeadJS();
-			?>
-		//]]>
-		</script>
-	</head>
-	<body class="page-login">
-		<div id="errordesc">
-			<h1>&nbsp</h1>
-			<a href="/index.php?logout">
-			<p id="errortext" style="vertical-align: middle; text-align: center;">
-				<span style="color: #000000; font-weight: bold;">
-					<?=$desc;?>
-				</span>
-			</p>
-		</div>
-	</body>
-</html>
-	
+	?>
 
-<?php
+	<!doctype html>
+	<!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
+	<!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
+	<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
+		<head>
+
+			<meta charset="UTF-8" />
+			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+			
+			<meta name="robots" content="index, follow, noodp, noydir" />
+			<meta name="keywords" content="" />
+			<meta name="description" content="" />
+			<meta name="copyright" content="" />
+			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+			
+			<title><?=$http_code?></title>
+			
+			<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+			<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
+			
+			<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
+		</head>
+		<body class="page-login">
+			<div id="errordesc">
+				<h1>&nbsp</h1>
+				<a href="/index.php?logout">
+				<p id="errortext" style="vertical-align: middle; text-align: center;">
+					<span style="color: #000000; font-weight: bold;">
+						<?=$desc;?>
+					</span>
+				</p>
+			</div>
+		</body>
+	</html>
+		
+
+	<?php
 
 } // end function
 
@@ -183,150 +168,150 @@ function display_login_form() {
 		exit;
 	}
 
-/* Check against locally configured IP addresses, which will catch when someone 
-   port forwards WebGUI access from WAN to an internal IP on the router. */
-global $FilterIflist, $nifty_background;
-$local_ip = false;
-if(strstr($_SERVER['HTTP_HOST'], ":")) {
-	$http_host_port = explode(":", $_SERVER['HTTP_HOST']);
-	$http_host = $http_host_port[0];
-} else {
-	$http_host = $_SERVER['HTTP_HOST'];
-}
-if (empty($FilterIflist)) {
-	require_once('filter.inc');
-	require_once('shaper.inc');
-	filter_generate_optcfg_array();
-}
-foreach ($FilterIflist as $iflist) {
-	if($iflist['ip'] == $http_host)
-		$local_ip = true;
-	if($iflist['ipv6'] == $http_host)
-		$local_ip = true;
-}
-unset($FilterIflist);
+	/* Check against locally configured IP addresses, which will catch when someone 
+	   port forwards WebGUI access from WAN to an internal IP on the router. */
+	global $FilterIflist, $nifty_background;
+	$local_ip = false;
+	if(strstr($_SERVER['HTTP_HOST'], ":")) {
+		$http_host_port = explode(":", $_SERVER['HTTP_HOST']);
+		$http_host = $http_host_port[0];
+	} else {
+		$http_host = $_SERVER['HTTP_HOST'];
+	}
+	if (empty($FilterIflist)) {
+		require_once('filter.inc');
+		require_once('shaper.inc');
+		filter_generate_optcfg_array();
+	}
+	foreach ($FilterIflist as $iflist) {
+		if($iflist['ip'] == $http_host)
+			$local_ip = true;
+		if($iflist['ipv6'] == $http_host)
+			$local_ip = true;
+	}
+	unset($FilterIflist);
 
-if($config['virtualip']) {
-	if($config['virtualip']['vip']) {
-		foreach($config['virtualip']['vip'] as $vip) {
-			if($vip['subnet'] == $http_host)
+	if($config['virtualip']) {
+		if($config['virtualip']['vip']) {
+			foreach($config['virtualip']['vip'] as $vip) {
+				if($vip['subnet'] == $http_host)
+					$local_ip = true;
+			}
+		}
+	}
+	if (is_array($config['openvpn']['openvpn-server'])) {
+		foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
+			if (is_ipaddrv4($http_host) && !empty($ovpns['tunnel_network']) && ip_in_subnet($http_host, $ovpns['tunnel_network'])) {
 				$local_ip = true;
+				break;
+			}
+
+			if (is_ipaddrv6($http_host) && !empty($ovpns['tunnel_networkv6']) && ip_in_subnet($http_host, $ovpns['tunnel_networkv6'])) {
+				$local_ip = true;
+				break;
+			}
 		}
 	}
-}
-if (is_array($config['openvpn']['openvpn-server'])) {
-	foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
-		if (is_ipaddrv4($http_host) && !empty($ovpns['tunnel_network']) && ip_in_subnet($http_host, $ovpns['tunnel_network'])) {
-			$local_ip = true;
-			break;
-		}
+	setcookie("cookie_test", time() + 3600);
+	$have_cookies = isset($_COOKIE["cookie_test"]);
 
-		if (is_ipaddrv6($http_host) && !empty($ovpns['tunnel_networkv6']) && ip_in_subnet($http_host, $ovpns['tunnel_networkv6'])) {
-			$local_ip = true;
-			break;
-		}
-	}
-}
-setcookie("cookie_test", time() + 3600);
-$have_cookies = isset($_COOKIE["cookie_test"]);
+	?>
 
-?>
-
-<!doctype html>
-<!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-	<head>
-
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		
-		<meta name="robots" content="index, follow, noodp, noydir" />
-		<meta name="keywords" content="" />
-		<meta name="description" content="" />
-		<meta name="copyright" content="" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-		
-		<title><?=gettext("Login"); ?></title>
-		
-		<link href="/themes/opnsense/build/css/main.css" media="screen, projection" rel="stylesheet">
-	
-		<link href="/themes/opnsense/img/icons/favicon.ico" rel="shortcut icon">
-		<link href="/themes/opnsense/img/icons/touch.png" rel="apple-touch-icon-precomposed">
-		
-		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
-
-	</head>
-	<body class="page-login" onload="page_load()">
-		
-    	<div class="container">
-	    	<?php 
-				if(is_ipaddr($http_host) && !$local_ip && !isset($config['system']['webgui']['nohttpreferercheck'])) {
-					$nifty_background = "#999";
-					print_info_box(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this forwarding, you may be the target of a man-in-the-middle attack.")); 
-				}
-				$loginautocomplete = isset($config['system']['webgui']['loginautocomplete']) ? '' : 'autocomplete="off"';
-			?>
-			
-		
-	    	<main class="login-modal-container">
-			    <header class="login-modal-head">
-	            OPNsense
-			    </header>
-			    
-			    <div class="login-modal-content">
-				    <div id="inputerrors"><?=$_SESSION['Login_Error'];?></div>
-				    
-				    <form class="clearfix" id="iform" name="iform" method="post" <?= $loginautocomplete ?> action="<?=$_SERVER['SCRIPT_NAME'];?>">
-	    		        
-	                  <div class="form-group">
-	                    <label for="usernamefld"><?=gettext("Username:"); ?>*</label>
-	                    <input onclick="clearError();" onchange="clearError();" id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" />
-	                  </div>
-	                  
-	                  <div class="form-group">
-	                    <label for="passwordfld"><?=gettext("Password:"); ?>*</label>
-	                    <input onclick="clearError();" onchange="clearError();" id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
-	                  </div>
-	                  
-	                  <input type="hidden" name="login" value="1" /><!-- XXX login workaround -->
-	                  
-	                  <button type="submit" name="login" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
-	                  
-	                </form>
+	<!doctype html>
+	<!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
+	<!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
+	<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
+		<head>
 	                
-	                <?php if (!$have_cookies && isset($_POST['login'])): ?>
-					<br /><br />
-					<span class="text-danger">
-						<?= gettext("Your browser must support cookies to login."); ?>
-					</span>
-					<?php endif; ?>
-					
-			    </div>
-			    
-			    <footer class="login-modal-foot">
-	    		    <a href="#">Forgot password?</a>
-			    </footer> 
-			</main>   
+			<meta charset="UTF-8" />
+			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 			
-	    	</div>
+			<meta name="robots" content="index, follow, noodp, noydir" />
+			<meta name="keywords" content="" />
+			<meta name="description" content="" />
+			<meta name="copyright" content="" />
+			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 			
-			<footer class="login-foot container-fluid">
-	            <p>&copy; 2014 - OPNsense, All rights reserved</p>
-			</footer>
-	   
-	        <script src="/themes/opnsense/build/js/main.min.js" type="text/javascript"></script>
-	        
-			<script type="text/javascript">
-			//<![CDATA[
-			$(document).ready(function() { jQuery('#usernamefld').focus(); });
-			//]]>
-			</script>	
-		</body>
-	</html>	
-		
+			<title><?=gettext("Login"); ?></title>
+			
+			<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+			<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
 
-<?php
+			<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
+
+		</head>
+		<body class="page-login">
+			
+	    	<div class="container">
+		    	<?php 
+					if(is_ipaddr($http_host) && !$local_ip && !isset($config['system']['webgui']['nohttpreferercheck'])) {
+						$nifty_background = "#999";
+						print_info_box(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this forwarding, you may be the target of a man-in-the-middle attack.")); 
+					}
+					$loginautocomplete = isset($config['system']['webgui']['loginautocomplete']) ? '' : 'autocomplete="off"';
+				?>
+				
+			
+		    	<main class="login-modal-container">
+				    <header class="login-modal-head" style="height:55px;">
+		            	<a class="navbar-brand" href="/">
+	    					<img class="brand-logo" src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
+	    					<img class="brand-icon" src="/themes/<?=$g['theme'];?>/assets/images/icon-logo.png" height="30" width="29"/>
+						</a>
+				    </header>
+				    
+				    <div class="login-modal-content">
+					    <div id="inputerrors"><?=$_SESSION['Login_Error'];?></div>
+					    
+					    <form class="clearfix" id="iform" name="iform" method="post" <?= $loginautocomplete ?> action="<?=$_SERVER['SCRIPT_NAME'];?>">
+		    		        
+		                  <div class="form-group">
+		                    <label for="usernamefld"><?=gettext("Username:"); ?>*</label>
+		                    <input id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" />
+		                  </div>
+		                  
+		                  <div class="form-group">
+		                    <label for="passwordfld"><?=gettext("Password:"); ?>*</label>
+		                    <input id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
+		                  </div>
+		                  
+		                  <input type="hidden" name="login" value="1" /><!-- XXX login workaround -->
+		                  
+		                  <button type="submit" name="login" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
+		                  
+		                </form>
+		                
+		                <?php if (!$have_cookies && isset($_POST['login'])): ?>
+						<br /><br />
+						<span class="text-danger">
+							<?= gettext("Your browser must support cookies to login."); ?>
+						</span>
+						<?php endif; ?>
+						
+				    </div>
+				     
+				</main>   
+				
+		    	</div>
+				
+				<footer class="login-foot container-fluid">
+		                <a target="_blank" href="<?=$g['product_website_footer']?>" class="redlnk"><?=$g['product_name']?></a> is &copy;
+	 					<?=$g['product_copyright_years']?> by <a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright']?></a> All Rights Reserved.
+						[<a href="/license.php" class="tblnk">view license</a>] 
+				</footer>
+		   
+		        <script src="/themes/<?=$g['theme'];?>/build/js/main.min.js" type="text/javascript"></script>
+		        
+				<script type="text/javascript">
+				//<![CDATA[
+				$(document).ready(function() { jQuery('#usernamefld').focus(); });
+				//]]>
+				</script>	
+			</body>
+		</html>	
+			
+
+	<?php
 } // end function
 
 ?>

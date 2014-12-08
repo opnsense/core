@@ -68,8 +68,7 @@ $sad = ipsec_dump_sad();
     				
     				<? $active_tab = "/diag_ipsec_sad.php"; include('diag_ipsec_tabs.php'); ?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
+					<div class="tab-content content-box col-xs-12">	 
 							
 							<div class="table-responsive">
 								
@@ -106,13 +105,16 @@ $sad = ipsec_dump_sad();
 									</tr>
 									<?php endif; ?>
 								</table>
-							</div>
 							
-														
+                            <div class="container-fluid">
+										
 							<p class="vexpl">
 							<span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
 							<?=gettext("You can configure your IPsec");?> <a href="vpn_ipsec.php"><?=gettext("here.");?></a>
 							</p>
+							
+                            </div>
+							
     				    </div>
 					</div>
 			    </section>

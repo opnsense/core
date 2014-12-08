@@ -42,7 +42,7 @@
 
 require_once("globals.inc");
 require_once("xmlrpc.inc");
-require_once("service-utils.inc");
+require_once("includes/service-utils.inc");
 if(file_exists("/cf/conf/use_xmlreader"))
 	require_once("xmlreader.inc");
 else
@@ -1261,7 +1261,7 @@ function pkg_reinstall_all() {
 
 function stop_packages() {
 	require_once("config.inc");
-	require_once("functions.inc");
+	require_once("includes/functions.inc");
 	require_once("filter.inc");
 	require_once("shaper.inc");
 	require_once("captiveportal.inc");

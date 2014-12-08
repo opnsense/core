@@ -413,7 +413,7 @@ function get_dates($curperiod, $graph) {
     				<? include("status_rrd_graph_tabs.php"); ?>
 					
 					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+    				    	
 	    				    
 	    				    
 	    				    <?php if ($curcat == "captiveportal") : ?>
@@ -424,11 +424,12 @@ function get_dates($curperiod, $graph) {
 	    				    
 							<form name="form1" action="status_rrd_graph.php" method="get">
 								<input type="hidden" name="cat" value="<?php echo "$curcat"; ?>" />
-								
+								<div class="container-fluid">
 								<p><b><?=gettext("Note: Change of color and/or style may not take effect until the next refresh");?></b></p>
+								</div>
 								
 								<div id="responsive-table">
-									<table class="table table-striped table-sort">
+									<table class="table table-striped table-sort __nomb">
 		                                
 										<tr>
 						                    <td>
@@ -635,7 +636,6 @@ function get_dates($curperiod, $graph) {
 											}
 											?>
 										</table>
-									</div>
 								</form>
 							</div>
 						</div>

@@ -303,7 +303,7 @@ if(count($pools) > 0) {
 			<section class="col-xs-12">
 			 	<div class="content-box">              
 			        <div class="table-responsive">
-			            <table class="table table-striped table-sort sortable">
+			            <table class="table table-striped table-sort sortable __nomb">
 							  <tr>
 							    <td class="listhdrr"><?=gettext("Failover Group"); ?></a></td>
 							    <td class="listhdrr"><?=gettext("My State"); ?></a></td>
@@ -338,7 +338,7 @@ if(count($pools) > 0) {
 <section class="col-xs-12">
 			 	<div class="content-box">              
 			        <div class="table-responsive">
-			            <table class="table table-striped table-sort sortable">
+			            <table class="table table-striped table-sort sortable __nomb">
 						  	<tr>
 							    <td class="listhdrr"><?=gettext("IP address"); ?></td>
 							    <td class="listhdrr"><?=gettext("MAC address"); ?></td>

@@ -133,15 +133,8 @@ include("head.inc");
 
 					
 						<div class="tab-content content-box col-xs-12">
-	    					
-	    				    <div class="container-fluid tab-content">
-	    					
-	    						<div class="tab-pane active" id="system">
-		    						    			
-		    	
-									<section>					
-						 
-						                <form action="<?=$_SERVER['SCRIPT_NAME'];?>" method="post" name="iform">
+    						
+    						<form action="<?=$_SERVER['SCRIPT_NAME'];?>" method="post" name="iform">
 							                <?php
 												$current_statecount=`pfctl -si | grep "current entries" | awk '{ print $3 }'`;
 											?>
@@ -164,15 +157,16 @@ include("head.inc");
 							               
 							                
 										</form>
-									</section>
-									
-									<section>
-										
+	    					
+	    				    <div class="container-fluid tab-content">
+	    					
+	    						<div class="tab-pane active" id="system">
+		    		
 										<div class="content-box">              
 						                    
 						                    <div class="table-responsive">
 						                   
-						                        <table class="table table-striped table-sort sortable">
+						                        <table class="table table-striped table-sort sortable __nomb">
 						                            <tr class="content-box-head">
 						                                <th>
 						                                    <table>
@@ -277,7 +271,6 @@ include("head.inc");
 												
 						                    </div>
 										</div>
-									</section>
 									
 	    						</div>
 	    				    </div>

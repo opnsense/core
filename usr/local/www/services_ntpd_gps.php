@@ -374,8 +374,7 @@ SureGPS = 		#Sure Electronics SKG16B
 						display_top_tabs($tab_array);
 					?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	
 	    				    
 	    				  <form action="services_ntpd_gps.php" method="post" name="iform" id="iform" accept-charset="utf-8">
 
@@ -587,7 +586,7 @@ SureGPS = 		#Sure Electronics SKG16B
 									</div>
 									
 	    				  </form>
-    				    </div>
+	    				  
 					</div>
 			    </section>
 			</div>

@@ -393,7 +393,7 @@ if(count($pools) > 0) {
 			<section class="col-xs-12">
 			 	<div class="content-box">              
 			        <div class="table-responsive">
-			            <table class="table table-striped table-sort sortable">
+			            <table class="table table-striped table-sort sortable __nomb">
 							<tr>
 								<td class="listhdrr"><?=gettext("Failover Group"); ?></a></td>
 								<td class="listhdrr"><?=gettext("My State"); ?></a></td>
@@ -428,7 +428,7 @@ if(count($pools) > 0) {
 			<section class="col-xs-12">
 			 	<div class="content-box">              
 			        <div class="table-responsive">
-			            <table class="table table-striped table-sort sortable">
+			            <table class="table table-striped table-sort sortable __nomb">
 						  	<tr>
 							    <td class="listhdrr"><?=gettext("IPv6 address"); ?></td>
 							    <td class="listhdrr"><?=gettext("IAID"); ?></td>
@@ -520,12 +520,12 @@ if(count($pools) > 0) {
 			<section class="col-xs-12">
 				<div class="content-box">
 					
-					<header class="content-box-head col-xs-12">
+					<header class="content-box-head container-fluid">
         			   <h3>Delegated Prefixes</h3>
         			</header>
 				    
 				    <div class="table-responsive">
-			            <table class="table table-striped table-sort sortable">
+			            <table class="table table-striped table-sort sortable __nomb">
 							<tr>
 								<td class="listhdrr"><?=gettext("IPv6 Prefix"); ?></td>
 								<td class="listhdrr"><?=gettext("IAID"); ?></td>

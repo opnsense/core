@@ -236,11 +236,11 @@ include("fbegin.inc");
 					
 					<?php if ($input_errors) print_input_errors($input_errors); ?>
 					
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Packet capture");?></h3>
 				    </header>
 				    
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main">
 				    <div class="table-responsive">
 					    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
     			        <table class="table table-striped">
@@ -452,7 +452,7 @@ if (!empty($title)): ?>
 				
 			<section class="col-xs-12">
                 <div class="content-box">  
-	                <header class="content-box-head col-xs-12">
+	                <header class="content-box-head container-fluid">
 				        <h3><?=$title; ?></h3>
 				    </header>
 				    <? if (!empty($show_data)): ?>

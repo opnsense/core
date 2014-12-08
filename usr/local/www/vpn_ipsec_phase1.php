@@ -37,7 +37,7 @@
 ##|*MATCH=vpn_ipsec_phase1.php*
 ##|-PRIV
 
-require("functions.inc");
+require("includes/functions.inc");
 require("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
@@ -538,17 +538,21 @@ function dpdchkbox_change() {
 						display_top_tabs($tab_array);
 					?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	
 							
 							 <form action="vpn_ipsec_phase1.php" method="post" name="iform" id="iform">
 
 							 <div class="table-responsive">
 							 	<table class="table table-striped table-sort">
-
-									<tr>
-										<td colspan="2" valign="top" class="listtopic"><?=gettext("General information"); ?></td>
-									</tr>
+                                    
+                                    <thead>
+                                        <tr>
+                            				<th colspan="2" class="listtopic"><?=gettext("General information"); ?></th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                    
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Disabled"); ?></td>
 										<td width="78%" class="vtable">
@@ -654,11 +658,19 @@ function dpdchkbox_change() {
 									<tr>
 										<td colspan="2" class="list" height="12"></td>
 									</tr>
-									<tr>
-										<td colspan="2" valign="top" class="listtopic">
-											<?=gettext("Phase 1 proposal (Authentication)"); ?>
-										</td>
-									</tr>
+                                    </tbody>
+							 	</table>
+							 	
+							 	<table class="table table-striped table-sort">
+                                    
+                                    <thead>
+                                        <tr>
+                            				<th colspan="2" class="listtopic"><?=gettext("Phase 1 proposal (Authentication)"); ?></th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+                                    
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Authentication method"); ?></td>
 										<td width="78%" class="vtable">
@@ -776,11 +788,19 @@ function dpdchkbox_change() {
 											</span>
 										</td>
 									</tr>
-									<tr>
-										<td colspan="2" valign="top" class="listtopic">
-											<?=gettext("Phase 1 proposal (Algorithms)"); ?>
-										</td>
-									</tr>
+									</tbody>
+							 	</table>
+							 	
+							 	<table class="table table-striped table-sort">
+                                    
+                                    <thead>
+                                        <tr>
+                            				<th colspan="2" class="listtopic"><?=gettext("Phase 1 proposal (Algorithms)"); ?></th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody>
+									
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Encryption algorithm"); ?></td>
 										<td width="78%" class="vtable">
@@ -839,12 +859,18 @@ function dpdchkbox_change() {
 											<?=gettext("seconds"); ?>
 										</td>
 									</tr>
-									<tr>
-										<td colspan="2" class="list" height="12"></td>
-									</tr>
-									<tr>
-										<td colspan="2" valign="top" class="listtopic"><?=gettext("Advanced Options"); ?></td>
-									</tr>
+									</tbody>
+							 	</table>
+							 	
+							 	<table class="table table-striped table-sort">
+                                    
+                                    <thead>
+                                        <tr>
+                            				<th colspan="2" class="listtopic"><?=gettext("Advanced Options"); ?></th>
+                                        </tr>
+                                    </thead>
+									
+    								<tbody>
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Disable Rekey");?></td>
 										<td width="78%" class="vtable">
@@ -909,10 +935,11 @@ function dpdchkbox_change() {
 											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 										</td>
 									</tr>
+                                    </tbody>
 								</table>
 							</div>
 							 </form>
-    				    </div>
+							 
 					</div>
 			    </section>
 			</div>

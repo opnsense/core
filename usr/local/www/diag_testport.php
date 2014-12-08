@@ -120,14 +120,14 @@ include("head.inc"); ?>
 
                 <div class="content-box">              
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Test Port"); ?></h3>
 				    </header>
   
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main ">
 					    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped">
+	    			        <table class="table table-striped __nomb">
 	    				        <tbody>
 	        				        <tr>
 	        				          <td><?=gettext("Host"); ?></td>
@@ -211,7 +211,7 @@ include("head.inc"); ?>
 
                 <div class="content-box">              
             
-                    <header class="content-box-head col-xs-12">
+                    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Port Test Results"); ?></h3>
 				    </header>
 					

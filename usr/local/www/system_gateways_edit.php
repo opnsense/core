@@ -641,7 +641,7 @@ function enable_change() {
     				
     				<div class="content-box">
 	    				
-	    				 <header class="content-box-head col-xs-12">
+	    				 <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Edit gateway");?></h3>
     				    </header>
     				    

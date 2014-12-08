@@ -144,7 +144,7 @@ include("head.inc");
                     
                     <div class="table-responsive">	
 
-						<table class="table table-striped table-sort sortable">
+						<table class="table table-striped table-sort sortable __nomb">
 							<tr>
 								<td class="listhdrr"><?=gettext("IP Address");?></td>
 							</tr>

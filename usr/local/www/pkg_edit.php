@@ -41,7 +41,7 @@
 ini_set('max_execution_time', '0');
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 require_once("pkg-utils.inc");
@@ -273,7 +273,7 @@ else
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 
 <?php include("fbegin.inc"); ?>
 
@@ -376,11 +376,25 @@ else
 <script type="text/javascript" src="javascript/domTT/fadomatic.js"></script>
 <script type="text/javascript" src="/javascript/row_helper_dynamic.js"></script>
 
-<?php if (!empty($input_errors)) print_input_errors($input_errors); ?>
-<form name="iform" action="pkg_edit.php" method="post">
-<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="package edit">
+
+	<section class="page-content-main">
+
+		<div class="container-fluid">
+	
+			<div class="row">	
+				<?php if (!empty($input_errors)) print_input_errors($input_errors); ?>
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+
+			    <section class="col-xs-12">
+    				
+    				<div class="content-box">	
+								
+		                       	<form name="iform" action="pkg_edit.php" method="post">
+							   		<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
+						
+		                        	
+		                        	<div class="table-responsive">
+			                        	<table class="table table-striped table-sort">
 <?php
 if ($pkg['tabs'] <> "") {
 	$tab_array = array();
@@ -420,14 +434,16 @@ if ($pkg['tabs'] <> "") {
 
 	ksort($tab_array);
 	foreach($tab_array as $tabid => $tab) {
-		echo '<tr><td>';
+		/*
+echo '<tr><td>';
 		display_top_tabs($tab, $no_drop_down, $tabid);
 		echo '</td></tr>';
+*/
 	}
 }
 
 ?>
-<tr><td><div id="mainarea"><table id="t" class="tabcont" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
+				                        	
 <?php
 	$cols = 0;
 	$savevalue = gettext("Save");
@@ -945,9 +961,13 @@ if ($pkg['tabs'] <> "") {
   </tr>
 
 </table>
-</div></td></tr>
-</table>
-</form>
+</div>
+		                       	</form>
+    				</div>
+			    </section>
+			</div>
+		</div>
+	</section>
 
 <?php if ($pkg['custom_php_after_form_command']) eval($pkg['custom_php_after_form_command']); ?>
 
@@ -967,9 +987,7 @@ if ($pkg['tabs'] <> "") {
 	}
 ?>
 
-<?php include("fend.inc"); ?>
-</body>
-</html>
+<?php include("foot.inc"); ?>
 
 <?php
 /*

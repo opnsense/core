@@ -338,9 +338,8 @@ if($act!="new" && $act!="edit") {
 						display_top_tabs($tab_array);
 					?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
-							
+					<div class="tab-content content-box col-xs-12">
+    												
 							<?php if($act=="new" || $act=="edit"): ?>
 							<form action="vpn_openvpn_csc.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
 
@@ -802,7 +801,7 @@ if($act!="new" && $act!="edit") {
 								</table>
 							</div>
     				    <?php endif; ?>
-    				    </div>
+    				    
 					</div>
 			    </section>
 			</div>

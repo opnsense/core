@@ -130,8 +130,6 @@ include("head.inc");
 						?>
 					
 						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
 
 								<form id="iform" name="iform" action="system_usermanager_settings.php" method="post">	
 									<div class="table-responsive">
@@ -175,7 +173,6 @@ include("head.inc");
 										</table>
 									</div>
 								</form>
-	    				    </div>
 						</div>
 			    </section>
 			</div>

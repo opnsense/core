@@ -42,7 +42,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -194,8 +194,6 @@ $main_buttons = array(
 					
 						<div class="tab-content content-box col-xs-12">	
 	    					
-	    				    <div class="container-fluid">	
-	    					
    
 		                        <form action="firewall_aliases.php" method="post" name="iform" id="iform">
 		                        	<input type="hidden" name="tab" value="<?=htmlspecialchars($tab);?>" />
@@ -283,10 +281,10 @@ $main_buttons = array(
 										?>					
 									</table>
 								</div>
-								
-								<p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:"); ?><br /></strong></span></span></p><div style="overflow:hidden; text-align:justify;"><p><span class="vexpl"><?=gettext("Aliases act as placeholders for real hosts, networks or ports. They can be used to minimize the number of changes that have to be made if a host, network or port changes. You can enter the name of an alias instead of the host, network or port in all fields that have a red background. The alias will be resolved according to the list above. If an alias cannot be resolved (e.g. because you deleted it), the corresponding element (e.g. filter/NAT/shaper rule) will be considered invalid and skipped."); ?></span></p>
+								<div class="container-fluid">
+								    <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:"); ?><br /></strong></span></span></p><div style="overflow:hidden; text-align:justify;"><p><span class="vexpl"><?=gettext("Aliases act as placeholders for real hosts, networks or ports. They can be used to minimize the number of changes that have to be made if a host, network or port changes. You can enter the name of an alias instead of the host, network or port in all fields that have a red background. The alias will be resolved according to the list above. If an alias cannot be resolved (e.g. because you deleted it), the corresponding element (e.g. filter/NAT/shaper rule) will be considered invalid and skipped."); ?></span></p>
+							    </div>
 		                        </form>
-	    				    </div>
 						</div>
 			    </section>
 			</div>

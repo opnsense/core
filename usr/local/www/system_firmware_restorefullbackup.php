@@ -47,7 +47,7 @@
 ini_set('max_execution_time', '0');
 ini_set('max_input_time', '0');
 
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require("guiconfig.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
@@ -135,7 +135,7 @@ include("head.inc");
     
                     <form action="system_firmware_restorefullbackup.php" method="post">
                 
-            			<table class="table table-striped" align="center" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
+            			<table class="table table-striped __nomb" align="center" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
             				
             				<thead>
                 				<tr>

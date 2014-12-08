@@ -459,8 +459,8 @@ function autotls_change() {
 					?>
 					
 					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
-							
+    				    
+        				    	
 							<?php if($act=="new" || $act=="edit"): ?>
 							<form action="vpn_openvpn_client.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
 
@@ -1157,7 +1157,6 @@ function autotls_change() {
 
 			<?php endif; ?>
 			
-    				    </div>
 					</div>
 			    </section>
 			</div>

@@ -38,7 +38,7 @@
 
 require("globals.inc");
 require("guiconfig.inc");
-require("functions.inc");
+require("includes/functions.inc");
 require_once("filter.inc");
 require("shaper.inc");
 require_once("rrd.inc");
@@ -338,7 +338,7 @@ function showchange() {
 					 	<input type="hidden" name="stepid" value="<?= htmlspecialchars($stepid) ?>" />
 					 	
 					 	<?php if(!$pkg['step'][$stepid]['disableheader']): ?>
-					 	<header class="content-box-head col-xs-12">
+					 	<header class="content-box-head container-fluid">
 				        	<h3><?= fixup_string($title) ?></h3>
 				    	</header>
 				    	<? endif; ?>

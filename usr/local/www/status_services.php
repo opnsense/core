@@ -106,15 +106,15 @@ include("fbegin.inc");
 									continue;
 								if (empty($service['description']))
 									$service['description'] = get_pkg_descr($service['name']);
-								echo "<tr><td class=\"listlr\" width=\"20%\">" . $service['name'] . "</td>\n";
-								echo "<td class=\"listr\" width=\"55%\">" . $service['description'] . "</td>\n";
+								echo "<tr><td class=\"listlr\" >" . $service['name'] . "</td>\n";
+								echo "<td class=\"listr\">" . $service['description'] . "</td>\n";
 								// if service is running then listr else listbg
 								$bgclass = null;
 								if (get_service_status($service))
 									$bgclass = "listr";
 								else
 									$bgclass = "listbg";
-								echo "<td class=\"" . $bgclass . "\" align=\"center\">" . get_service_status_icon($service, true, true) . "</td>\n";
+								echo "<td class=\"" . $bgclass . "\">" . get_service_status_icon($service, true, true) . "</td>\n";
 								echo "<td valign=\"middle\" class=\"list nowrap\">" . get_service_control_links($service);
 								$scut = get_shortcut_by_service_name($service['name']);
 								if (!empty($scut)) {
@@ -125,7 +125,7 @@ include("fbegin.inc");
 								echo "</td></tr>\n";
 							}
 						} else {
-							echo "<tr><td colspan=\"3\" align=\"center\">" . gettext("No services found") . " . </td></tr>\n";
+							echo "<tr><td colspan=\"3\">" . gettext("No services found") . " . </td></tr>\n";
 						}
 						
 						?>

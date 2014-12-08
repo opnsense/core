@@ -10,25 +10,25 @@ $zindex: (
 	header: 2,
 	footer: 2,
 	main: 1,
-	sidebar: 1,
+	sidebar: 3,
 );
 
 @font-face {
   font-family: 'SourceSansProBold';
-  src: url('/interface/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff') format('woff'), 
-       url('/interface/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf') format('truetype'); 
+  src: url('/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff') format('woff'), 
+       url('/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf') format('truetype'); 
 }
 
 @font-face {
   font-family: 'SourceSansProSemibold';
-  src: url('/interface/assets/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff') format('woff'), 
-       url('/interface/assets/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf') format('truetype'); 
+  src: url('/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff') format('woff'), 
+       url('/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf') format('truetype'); 
 }
 
 @font-face {
   font-family: 'SourceSansProRegular';
-  src: url('/interface/assets/fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff') format('woff'), 
-       url('/interface/assets/fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf') format('truetype'); 
+  src: url('/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff') format('woff'), 
+       url('/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf') format('truetype'); 
 }
 
 // Core variables and mixins
@@ -82,6 +82,9 @@ $zindex: (
 @import "bootstrap/utilities";
 @import "bootstrap/responsive-utilities";
 
+*{
+    -webkit-font-smoothing: antialiased;
+}
 
 html, body{
 	height: 100%;
@@ -202,6 +205,22 @@ body{
 
 .page-content-main [class^="col-"] + [class^="col-"]{
 	padding-top: ($grid-gutter-width/2);
+}
+
+.brand-logo{
+    display: none;
+    
+    @media (min-width: $screen-sm-min) {
+        display: inline-block;    
+    }
+}
+
+.brand-icon{
+    display: inline-block;
+    
+    @media (min-width: $screen-sm-min) {
+        display: none;    
+    }
 }
 
 .col-sm-disable-spacer{
@@ -407,7 +426,7 @@ table{
     width: 100%;
 }
 
-.table th{
+.table th, strong, b{
     font-family: 'SourceSansProSemibold';
     font-weight: normal;
 }
@@ -431,6 +450,14 @@ table{
 
 .__mt{
     margin-top: 15px;
+}
+
+.__ml{
+    margin-left: 15px;
+}
+
+.__mr{
+    margin-right: 15px;
 }
 
 .__iconspacer{
@@ -457,6 +484,7 @@ table{
         background: #EA7105;
         content: "";
         height: 42px;
+        min-height: 100%;
         left: 0;
         position: absolute;
         top: 0px;
@@ -483,12 +511,27 @@ table{
     &:before{
         width: 3px;
     }
+    
+    &.active{
+        background-color: #E8E8E8;
+    }
 }
 
 .active-menu a:before{
     background: #ED9A50;
 }
 
+.alert.alert-danger{
+    color: #FFF !important;
+}
+
+.nav-tabs-justified>li>a, .nav-tabs.nav-justified>li>a{
+    border-radius: 0 !important;
+}
+
+.navbar-brand{
+    padding: 10px 20px;
+}
 
 ::-webkit-scrollbar {
 	width: 8px;

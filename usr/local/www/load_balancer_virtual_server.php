@@ -40,7 +40,7 @@
 ##|-PRIV
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 require_once("vslb.inc");
@@ -130,9 +130,7 @@ $main_buttons = array(
 				        display_top_tabs($tab_array);
 				  	?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
-	    				    
+					<div class="tab-content content-box col-xs-12">	 	    				    
 	    				  <form action="load_balancer_virtual_server.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
@@ -156,7 +154,6 @@ $main_buttons = array(
 								?>
 								</div>
 	    				  </form>
-    				    </div>
 					</div>
 			    </section>
 			</div>

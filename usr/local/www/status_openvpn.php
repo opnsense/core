@@ -151,7 +151,7 @@ include("head.inc"); ?>
             
             <section class="col-xs-12">
                 <div class="content-box">
-	                <header class="content-box-head col-xs-12">
+	                <header class="content-box-head container-fluid">
 				        <h3>Network Time Protocol Status</h3>
 				    </header>
 				    
@@ -162,7 +162,7 @@ include("head.inc"); ?>
 							<?php $i = 0; ?>
 							<?php foreach ($servers as $server): ?>
 							<div class="table-responsive">	
-							<table class="table table-striped table-sort sortable">
+							<table class="table table-striped table-sort sortable __nomb">
 								<tr>
 									<td colspan="6" class="listtopic">
 										<?=$server['name'];?> <?=gettext("Client connections"); ?>
@@ -230,7 +230,7 @@ include("head.inc"); ?>
 							<?php if (is_array($server['routes']) && count($server['routes'])): ?>
 							<div id="shroutebut-<?= $i ?>">
 							<input type="button" onClick="show_routes('tabroute-<?= $i ?>','shroutebut-<?= $i ?>')" value="<?php echo gettext("Show Routing Table"); ?>" /> - <?= gettext("Display OpenVPN's internal routing table for this server.") ?>
-							<br /><br />
+							
 							</div>
 							<table style="display: none; padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" id="tabroute-<?= $i ?>" summary="routing table">
 								<tr>
@@ -275,10 +275,10 @@ include("head.inc"); ?>
 								</tr>
 							</table>
 							<?php endif; ?>
-							<br />
+							
 							<?php $i++; ?>
 							<?php endforeach; ?>
-							<br />
+							
 							
 							<?php if (!empty($sk_servers)) { ?>
 							<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" summary="peer to peer stats">
@@ -342,7 +342,7 @@ include("head.inc"); ?>
 							
 							<?php
 							} ?>
-							<br />
+							
 							<?php if (!empty($clients)) { ?>
 							<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" summary="client stats">
 								<tr>

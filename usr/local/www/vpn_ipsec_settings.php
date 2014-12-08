@@ -34,7 +34,7 @@
 ##|*MATCH=vpn_ipsec_settings.php*
 ##|-PRIV
 
-require("functions.inc");
+require("includes/functions.inc");
 require("guiconfig.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
@@ -151,16 +151,21 @@ function maxmss_checked(obj) {
     				
     				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.php'); ?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	 
 	    				    
 							<form action="vpn_ipsec_settings.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
 							 		<table class="table table-striped table-sort">
-										<tr>
-											<td colspan="2" valign="top" class="listtopic"><?=gettext("IPSec Advanced Settings"); ?></td>
-										</tr>
+										
+										<thead>
+		                                    <tr>
+		                            	    	<th colspan="2" class="listtopic"><?=gettext("IPSec Advanced Settings"); ?></th>
+		                                    </tr>
+		                                </thead>
+											
+		    							<tbody>
+		    							
 										<tr>
 											<td width="22%" valign="top" class="vncell"><?=gettext("LAN security associsations"); ?></td>
 											<td width="78%" class="vtable">
@@ -243,7 +248,7 @@ function maxmss_checked(obj) {
 									</table>
 								</div>
 							</form>
-						</div>
+							
 					</div>
 				</section>
 			</div>

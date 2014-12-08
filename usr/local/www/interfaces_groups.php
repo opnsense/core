@@ -38,7 +38,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 
 if (!is_array($config['ifgroups']['ifgroupentry']))
 	$config['ifgroups']['ifgroupentry'] = array();
@@ -100,19 +100,24 @@ $main_buttons = array(
 					
 						<div class="tab-content content-box col-xs-12">	
 	    					
-	    				    <div class="container-fluid">	
 	    					
    
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
 		                        
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-										<tr>
-										  <td width="15%" class="listhdrr"><?=gettext("Name");?></td>
-										  <td width="30%" class="listhdrr"><?=gettext("Members");?></td>
-										  <td width="25%" class="listhdr"><?=gettext("Description");?></td>
-										  <td width="10%" class="list"></td>
-										</tr>
+    			                                               
+                                        <thead>
+                                            <tr>
+                                				<th width="15%" class="listtopic"><?=gettext("Name");?></th>
+                                				<th width="30%" class="listtopic"><?=gettext("Members");?></th>
+                                				<th width="25%" class="listtopic"><?=gettext("Description");?></th>
+                                				<th width="10%" class="listtopic">&nbsp;</th>
+                                            </tr>
+                                        </thead>
+    									
+        								<tbody>
+        								
 										<?php if (count ($a_ifgroups)):
 												$i = 0; foreach ($a_ifgroups as $ifgroupentry): ?>
 										<tr>
@@ -147,14 +152,16 @@ $main_buttons = array(
 										  </td>
 										</tr>
 											  <?php $i++; endforeach; endif;?>
-										
+        								</tbody>
 									</table>
 									
-									<p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span><?=gettext("Interface Groups allow you to create rules that apply to multiple interfaces without duplicating the rules. If you remove members from an interface group, the group rules no longer apply to that interface.");?></span></p>
+									<div class="container-fluid">
+        								<p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span><?=gettext("Interface Groups allow you to create rules that apply to multiple interfaces without duplicating the rules. If you remove members from an interface group, the group rules no longer apply to that interface.");?></span></p>
+									</div>
 									
 		                        </div>
 		                        </form>
-	    				    </div>
+		                        
 						</div>
 			    </section>
 			</div>

@@ -242,8 +242,8 @@ include("head.inc");
 						display_top_tabs($tab_array);
 					?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	 
+    					
 	    				    
 	    				   <form action="services_ntpd.php" method="post" name="iform" id="iform" enctype="multipart/form-data" accept-charset="utf-8">
 
@@ -419,7 +419,7 @@ include("head.inc");
 									</table>
 								</div>
 	    				   </form>
-    				    </div>
+	    				   
 					</div>
 			    </section>
 			</div>

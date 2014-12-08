@@ -132,7 +132,7 @@ ob_implicit_flush(1);
                     
                     <div class="table-responsive">
                    
-                        <table class="table table-striped table-sort sortable">
+                        <table class="table table-striped table-sort sortable __nomb">
                             <tr class="content-box-head">
                                 <th>
                                     <table>

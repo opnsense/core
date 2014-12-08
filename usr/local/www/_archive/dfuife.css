@@ -1,0 +1,88 @@
+* {
+}
+
+body { 
+	margin: 0em;
+	background-color: #FFFFFF;
+	background-image: url("fred-bg.gif");
+	background-repeat: no-repeat;
+	white-space: normal;
+	font-weight: bold;
+	color: navy;
+	font-family: 'Arial', 'Helvetica', 'Verdana', sans-serif;
+}
+
+div.mainness {  
+	margin-top: 0em;
+	padding-top: 0em;
+}
+
+div.maintitle { 
+	background: #DDEEDD;
+	font-style: italic;
+	padding-top: 1.0em;
+	padding-left: 4%;
+	font-size: large;
+	border-bottom: thin solid #000000;
+}
+
+div.title { 
+	background: #EEEEEE;
+	font-weight: bold;
+	padding-top: 0.5em;
+	padding-left: 8%;
+	border-bottom: thin solid #AAAAAA;
+}
+
+div.textbox { 
+	border: thin solid #000000;
+	margin-bottom: 0.5em;
+	margin-top: 1.5em;
+	margin-left: 10%; margin-right: 10%;
+	padding: 0.5em;
+	background: #FFFFFF;
+	text-align: center;
+}
+
+
+div.monospaced { 
+	border: thin solid #000000;
+	margin-bottom: 0.5em;
+	margin-top: 1.5em;
+	margin-left: 10%; margin-right: 10%;
+	padding: 0.5em;
+	background: #FFFFFF;
+	white-space: pre;
+	font-family: monospace;
+	font-weight: normal;
+	font-size: 90%;
+}
+
+
+div.mainform {
+	text-align: center;
+	margin: 0.5em;
+}
+
+table.maintable {
+	text-align: left;
+	margin: 1em auto;
+	width: 50%;
+}
+
+td.colhead {
+	font-weight: bold;
+	text-align: center;
+}
+
+.note {
+	font-style: italic;
+	color: #AAAAAA;
+	font-size: smaller;
+}
+
+input.button {
+	font-weight: bold;
+	color: navy;
+	font-family: 'Arial', 'Helvetica', 'Verdana', sans-serif;
+}

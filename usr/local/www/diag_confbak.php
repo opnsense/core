@@ -140,13 +140,13 @@ include("head.inc");
 
 									
 									<?php if ($diff): ?>
-									<section style="margin-bottom:15px;">
+									<section class="__mb">
 										<div classs="content-box">
-											<header class="content-box-head col-xs-12">
+											<header class="content-box-head container-fluid">
 				        				        <h3><?=gettext("Configuration diff from");?> <?php echo date(gettext("n/j/y H:i:s"), $oldtime); ?> <?=gettext("to");?> <?php echo date(gettext("n/j/y H:i:s"), $newtime); ?></h3>
 				        				    </header>	
 				        				    
-				        				     <div class="content-box-main col-xs-12">
+				        				     <div class="content-box-main">
 				            			
 				            				    <div class="table-responsive">										
 									
@@ -184,7 +184,7 @@ include("head.inc");
 									<section>
 				                        <div class="content-box"> 										
 											
-				                            <header class="content-box-head col-xs-12">
+				                            <header class="content-box-head container-fluid">
 				        				        <h3><?PHP echo gettext("Confirm Action"); ?></h3>
 				        				    </header>
 				        				    
@@ -204,7 +204,7 @@ include("head.inc");
 											<?PHP	} ?>
 												<br /><strong><?PHP echo gettext("Target Configuration"); ?>:</strong>
 												<?PHP echo sprintf(gettext('Timestamp %1$s'), date(gettext("n/j/y H:i:s"), $target_config)); ?>
-												<br /><input type="submit" name="confirm" value="<?PHP echo gettext("Confirm"); ?>" />					        				    
+												<br /><input type="submit" name="confirm" class="btn btn-primary" value="<?PHP echo gettext("Confirm"); ?>" />					        				    
 					        				    
 				        				    </div>
 				                        </div>
@@ -217,11 +217,11 @@ include("head.inc");
 									<section style="margin-bottom:15px;">
 				                        <div class="content-box"> 										
 											
-				                            <header class="content-box-head col-xs-12">
+				                            <header class="content-box-head container-fluid">
 				        				        <h3>Config history</h3>
 				        				    </header>
 				        				    
-				        				    <div class="content-box-main col-xs-12">
+				        				    <div class="content-box-main">
 				            			
 				            				    <div class="table-responsive">
 				                			        <table class="table table-striped">
@@ -230,11 +230,14 @@ include("head.inc");
 				                    				          <td><?=gettext("Backup Count");?></td>
 				                    				          <td><input name="backupcount" type="text" class="formfld unknown" size="5" value="<?=htmlspecialchars($config['system']['backupcount']);?>"/></td>
 				                    				          <td><?= gettext("Enter the number of older configurations to keep in the local backup cache. By default this is 30 for a full install or 5 on NanoBSD."); ?></td>
-				                    				          <td><input name="save" type="submit" class="btn btn-default" value="<?=gettext("Save"); ?>" /></td>
+				                    				          <td><input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" /></td>
 				                    				        </tr>
 				                				        </tbody>
 				                				    </table>
+				                				    
+				                				    <div class="container-fluid">
 				                				    <?= gettext("NOTE: Be aware of how much space is consumed by backups before adjusting this value. Current space used by backups: "); ?> <?= exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'") ?>
+				                				    </div>
 				            				    </div>
 				        				    </div>
 				                        </div>
@@ -246,21 +249,26 @@ include("head.inc");
 									<form action="<?=$_SERVER['REQUEST_URI'];?>" method="get">
 									<section>
 										<div class="content-box">
-											<div class="content-box-main col-xs-12">
+											<div class="content-box-main">
 												
+												<div class="container-fluid __mb">
 												<?= gettext("To view the differences between an older configuration and a newer configuration, select the older configuration using the left column of radio options and select the newer configuration in the right column, then press the Diff button."); ?>
+												</div>
+								
+								
+                                            <table class="table table-striped table-sort" summary="difference">
 											
-												<table class="table table-striped table-sort" summary="difference">
-											
-												
+											<thead>	
 											<tr>
-												<td colspan="2" valign="middle" align="center" class="list nowrap"><?=gettext("Diff");?></td>
+												<td colspan="2" valign="middle" class="list nowrap"><?=gettext("Diff");?></td>
 												<td class="listhdrr"><?=gettext("Date");?></td>
 												<td class="listhdrr"><?=gettext("Version");?></td>
 												<td class="listhdrr"><?=gettext("Size");?></td>
 												<td class="listhdrr"><?=gettext("Configuration Change");?></td>
 												<td class="list">&nbsp;</td>
 											</tr>
+											</thead>
+											<tbody>
 											<tr valign="top">
 												<td valign="middle" class="list nowrap"></td>
 												<td class="list">
@@ -298,17 +306,19 @@ include("head.inc");
 												<td class="listr"> <?= substr($version['description'],0,50) ?></td>
 												
 												 <td class="btn-group-table">
-		                                            <a href="diag_confbak.php?newver=<?=$version['time'];?>" class="btn btn-default" title="<?=gettext("Revert to this configuration");?>"><span class="glyphicon glyphicon-log-in"></span></a>
-		                                            <a href="diag_confbak.php?rmver=<?=$version['time'];?>" class="btn btn-default" title="<?=gettext("Remove this backup");?>" ><span class="glyphicon glyphicon-remove"></span></a>
-		                                            <a href="diag_confbak.php?getcfg=<?=$version['time'];?>" class="btn btn-default" title="<?=gettext("Download this backup");?>"><span class="glyphicon glyphicon-download"></span></a>
+		                                            <a href="diag_confbak.php?newver=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Revert to this configuration");?>"><span class="glyphicon glyphicon-log-in"></span></a>
+		                                            <a href="diag_confbak.php?rmver=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Remove this backup");?>" ><span class="glyphicon glyphicon-remove"></span></a>
+		                                            <a href="diag_confbak.php?getcfg=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Download this backup");?>"><span class="glyphicon glyphicon-download"></span></a>
 		                                        </td>
 												
 											</tr>
 											<?php endforeach; ?>										
-	
+											</tbody>
 										</table>
 										
+										<div class="container-fluid">
 										<input type="submit" name="diff" class="btn btn-primary" value="<?=gettext("Diff"); ?>" />
+										</div>	
 											
 										</div>										
 									</section>									

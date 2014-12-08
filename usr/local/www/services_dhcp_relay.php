@@ -144,11 +144,11 @@ function enable_change(enable_over) {
 								<p>DHCP Server is currently enabled. Cannot enable the DHCP Relay service while the DHCP Server is enabled on any interface.</p>
 							<? else: ?>
 							
-							<header class="content-box-head col-xs-12">
+							<header class="content-box-head container-fluid">
         				        <h3><?=gettext("DHCP Relay configuration"); ?></h3>
         				    </header>
         				    
-        				    <div class="content-box-main col-xs-12">
+        				    <div class="content-box-main">
 	        				  <div class="table-responsive">
 	                        	<table class="table table-striped table-sort">
 									<tr>

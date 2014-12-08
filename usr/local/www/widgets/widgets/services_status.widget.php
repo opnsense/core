@@ -51,7 +51,7 @@ if(isset($_POST['servicestatusfilter'])) {
 	<form action="/widgets/widgets/services_status.widget.php" method="post" name="iformd">
 		Comma separated list of services to NOT display in the widget<br />
 		<input type="text" size="30" name="servicestatusfilter" class="formfld unknown" id="servicestatusfilter" value="<?= $config['widgets']['servicestatusfilter'] ?>" />
-		<input id="submitd" name="submitd" type="submit" class="formbtn" value="Save" />
+		<input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="Save" />
     </form>
 </div>
 
@@ -81,8 +81,8 @@ if (count($services) > 0) {
 			$bgclass = "listr";
 		else
 			$bgclass = "listbg";
-		echo "<td class=\"" . $bgclass . "\" align=\"center\">" . get_service_status_icon($service, false, true) . "</td>\n";
-		echo "<td valign=\"middle\" class=\"list nowrap\">" . get_service_control_links($service) . "</td></tr>\n";
+		echo "<td class=\"" . $bgclass . "\" align=\"center\">" . str_replace('btn ','btn btn-xs ', get_service_status_icon($service, false, true)) . "</td>\n";
+		echo "<td valign=\"middle\" class=\"list nowrap\">" . str_replace('btn ','btn btn-xs ', get_service_control_links($service)) . "</td></tr>\n";
 	}
 } else {
 	echo "<tr><td colspan=\"3\" align=\"center\">" . gettext("No services found") . " . </td></tr>\n";

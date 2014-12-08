@@ -277,7 +277,7 @@ function enable_altfirmwareurl(enable_over) {
                         </table>
                         <?php endif; ?>
                             
-                        <table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">  
+                        <table class="table table-striped __nomb" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">  
                            <tr>
                                 <td width="22%" valign="top">&nbsp;</td>
                                 <td width="78%">

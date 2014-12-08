@@ -119,14 +119,12 @@ if($_REQUEST['sorttype'] && in_array($_REQUEST['sorttype'], $sorttypes)
 	<div class="container-fluid">	
 		<div class="row">
 							
-		    <section class="col-xs-12">
-			    
 			  
 			
 			    <div class="table-responsive">
 				    
 					<form method="post" action="<?=$_SERVER['REQUEST_URI'];?>">
-                    <table class="table table-striped">
+                    <table class="table table-striped __nomb">
 				      <thead>
 				        <tr>
 				          <th><?=gettext("View type:"); ?></th>
@@ -174,8 +172,7 @@ if($_REQUEST['sorttype'] && in_array($_REQUEST['sorttype'], $sorttypes)
                     </table>
                     </form>
 			    </div>
-		    </section>
-		    
+			    
 		    <section class="col-xs-12">
 			    
 			   

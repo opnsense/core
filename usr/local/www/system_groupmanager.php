@@ -268,8 +268,6 @@ function presubmit() {
 						?>
 					
 						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
 
 							<?php
 										if($act == "new" || $act == "edit"):
@@ -474,8 +472,8 @@ function presubmit() {
 													</td>
 												</tr>
 												<tr>
-													<td colspan="3">
-														<p>
+													<td colspan="4">
+														<p class="col-xs-12 col-sm-10">
 															<?=gettext("Additional webConfigurator groups can be added here.
 															Group permissions can be assigned which are inherited by users who are members of the group.
 															An icon that appears grey indicates that it is a system defined object.
@@ -502,7 +500,7 @@ function presubmit() {
 								<td class="listlr">
 									<table border="0" cellpadding="0" cellspacing="0" summary="">
 										<tr>
-											<td align="left">
+											<td align="left" width="30px">
 												<span class="<?=$grpimg;?>"></span>
 											</td>
 											<td align="left">
@@ -552,7 +550,6 @@ function presubmit() {
 			endif;
 ?>
 			
-	    				    </div>
 						</div>
 			    </section>
 			</div>

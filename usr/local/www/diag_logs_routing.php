@@ -76,14 +76,14 @@ include("head.inc");
 							
 							
 							<? include('diag_logs_pills.php'); ?>
-					
+    				    </div>
 								
 							 <div class="table-responsive">
 							 	<table class="table table-striped table-sort">
 								 	<?php dump_clog($routing_logfile, $nentries); ?>
 							 	</table>
 							 </div>
-							
+							<div class="container-fluid">
 							<form action="diag_logs_routing.php" method="post">
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 							</form>

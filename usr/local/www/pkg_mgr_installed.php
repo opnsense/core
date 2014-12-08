@@ -120,8 +120,6 @@ include("head.inc");
 						?>
 					
 						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
 	    							                        	
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
@@ -242,7 +240,7 @@ include("head.inc");
 										<?php endif; ?>
 									</table>
 								</div>
-	    				    </div>
+								
 						</div>
 			    </section>
 			</div>

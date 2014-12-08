@@ -1099,7 +1099,7 @@ include("head.inc");
 											</table>
 											<div id="showadvancedboxspr">
 												<p>
-												<input <?=$edit_disabled;?> type="button" onclick="show_source_port_range()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show source port range");?>
+												<input <?=$edit_disabled;?> type="button" onclick="show_source_port_range()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show source port range");?>
 												</p>
 											</div>
 										</td>
@@ -1284,7 +1284,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("Source OS");?></td>
 										<td width="78%" class="vtable">
 											<div id="showadvsourceosbox" <?php if ($pconfig['os']) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_advanced_sourceos()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+												<input type="button" onclick="show_advanced_sourceos()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 											</div>
 											<div id="showsourceosadv" <?php if (empty($pconfig['os'])) echo "style='display:none'"; ?>>
 												<?=gettext("OS Type:");?>&nbsp;
@@ -1306,7 +1306,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("Diffserv Code Point");?></td>
 										<td width="78%" class="vtable">
 											<div id="dsadv" <?php if ($pconfig['dscp']) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_dsdiv();" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+												<input type="button" onclick="show_dsdiv();" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 											</div>
 											<div id="dsdivmain" <?php if (empty($pconfig['dscp'])) echo "style='display:none'"; ?>>
 												<select name="dscp" id="dscp">
@@ -1322,7 +1322,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("Advanced Options");?></td>
 										<td width="78%" class="vtable">
 										<div id="aoadv" <?php if (is_aoadv_used($pconfig)) echo "style='display:none'"; ?>>
-											<input type="button" onclick="show_aodiv();" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+											<input type="button" onclick="show_aodiv();" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 										</div>
 										<div id="aodivmain" <?php if (!is_aoadv_used($pconfig)) echo "style='display:none'"; ?>>
 											<input type="checkbox" id="allowopts" value="yes" name="allowopts"<?php if($pconfig['allowopts'] == true) echo " checked=\"checked\""; ?> />
@@ -1362,7 +1362,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("TCP flags");?></td>
 										<td width="78%" class="vtable">
 										<div id="showtcpflagsbox" <?php if ($pconfig['tcpflags_any'] || $pconfig['tcpflags1'] || $pconfig['tcpflags2']) echo "style='display:none'"; ?>>
-											<input type="button" onclick="show_advanced_tcpflags()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+											<input type="button" onclick="show_advanced_tcpflags()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 										</div>
 										<div id="showtcpflagsadv" <?php if (empty($pconfig['tcpflags_any']) && empty($pconfig['tcpflags1']) && empty($pconfig['tcpflags2'])) echo "style='display:none'"; ?>>
 										<div id="tcpheader" align="center">
@@ -1402,7 +1402,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("State Type");?></td>
 										<td width="78%" class="vtable">
 											<div id="showadvstatebox" <?php if (!empty($pconfig['nopfsync']) || (!empty($pconfig['statetype']) && $pconfig['statetype'] != "keep state")) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_advanced_state()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+												<input type="button" onclick="show_advanced_state()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 											</div>
 											<div id="showstateadv" <?php if (empty($pconfig['nopfsync']) && (empty($pconfig['statetype']) || $pconfig['statetype'] == "keep state")) echo "style='display:none'"; ?>>
 												<input name="nopfsync" type="checkbox" id="nopfsync" value="yes" <?php if ($pconfig['nopfsync']) echo "checked=\"checked\""; ?> />
@@ -1432,7 +1432,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("No XMLRPC Sync");?></td>
 										<td width="78%" class="vtable">
 											<div id="showadvnoxmlrpcsyncbox" <?php if ($pconfig['nosync']) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_advanced_noxmlrpc()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+												<input type="button" onclick="show_advanced_noxmlrpc()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 											</div>
 											<div id="shownoxmlrpcadv" <?php if (empty($pconfig['nosync'])) echo "style='display:none'"; ?>>
 												<input type="checkbox" name="nosync"<?php if($pconfig['nosync']) echo " checked=\"checked\""; ?> /><br />
@@ -1444,7 +1444,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("802.1p");?></td>
 										<td width="78%" class="vtable">
 											<div id="showadvvlanpriobox" <?php if (!empty($pconfig['vlanprio'])) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_advanced_vlanprio()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+												<input type="button" onclick="show_advanced_vlanprio()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 											</div>
 											<div id="showvlanprioadv" <?php if (empty($pconfig['vlanprio'])) echo "style='display:none'"; ?>>
 												<?php $vlanprio = array("none", "be", "bk", "ee", "ca", "vi", "vo", "ic", "nc"); ?>
@@ -1499,7 +1499,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("Schedule");?></td>
 										<td width="78%" class="vtable">
 											<div id="showadvschedulebox" <?php if (!empty($pconfig['sched'])) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_advanced_schedule()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+												<input type="button" onclick="show_advanced_schedule()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 											</div>
 											<div id="showscheduleadv" <?php if (empty($pconfig['sched'])) echo "style='display:none'"; ?>>
 												<select name='sched'>
@@ -1526,7 +1526,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("Gateway");?></td>
 										<td width="78%" class="vtable">
 											<div id="showadvgatewaybox" <?php if (!empty($pconfig['gateway'])) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_advanced_gateway()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+												<input type="button" onclick="show_advanced_gateway()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 											</div>
 											<div id="showgatewayadv" <?php if (empty($pconfig['gateway'])) echo "style='display:none'"; ?>>
 												<select name='gateway'>
@@ -1575,7 +1575,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("In/Out");?></td>
 										<td width="78%" class="vtable">
 											<div id="showadvinoutbox" <?php if (!empty($pconfig['dnpipe'])) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_advanced_inout()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+												<input type="button" onclick="show_advanced_inout()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 											</div>
 											<div id="showinoutadv" <?php if (empty($pconfig['dnpipe'])) echo "style='display:none'"; ?>>
 												<select name="dnpipe">
@@ -1625,7 +1625,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("Ackqueue/Queue");?></td>
 										<td width="78%" class="vtable">
 										<div id="showadvackqueuebox" <?php if (!empty($pconfig['defaultqueue'])) echo "style='display:none'"; ?>>
-											<input type="button" onclick="show_advanced_ackqueue()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+											<input type="button" onclick="show_advanced_ackqueue()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 										</div>
 										<div id="showackqueueadv" <?php if (empty($pconfig['defaultqueue'])) echo "style='display:none'"; ?>>
 											<select name="ackqueue">
@@ -1680,7 +1680,7 @@ include("head.inc");
 											<td width="22%" valign="top" class="vncell"><?=gettext("Layer7");?></td>
 											<td width="78%" class="vtable">
 												<div id="showadvlayer7box" <?php if (!empty($pconfig['l7container'])) echo "style='display:none'"; ?>>
-													<input type="button" onclick="show_advanced_layer7()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+													<input type="button" onclick="show_advanced_layer7()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 												</div>
 												<div id="showlayer7adv" <?php if (empty($pconfig['l7container'])) echo "style='display:none'"; ?>>
 													<select name="l7container">

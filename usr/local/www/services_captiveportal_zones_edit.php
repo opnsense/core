@@ -37,7 +37,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require("functions.inc");
+require("includes/functions.inc");
 require_once("filter.inc");
 require("shaper.inc");
 require("captiveportal.inc");
@@ -99,11 +99,11 @@ include("head.inc");
             <section class="col-xs-12">
 	            
                 <div class="content-box">   	    					
-				    <header class="content-box-head col-xs-12">
+				    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Edit Captiveportal Zones");?></h3>
 				    </header>
 				        				    
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main">
 
 						<div class="table-responsive">
 							

@@ -45,7 +45,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -575,7 +575,7 @@ include("head.inc");
     							</tbody>
     				        </table>
     						
-    						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
+    						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped __nomb">
     							<thead>
                                     <tr>
         								<th colspan="2" valign="top" class="listtopic"><?=gettext("Console Options"); ?></th>

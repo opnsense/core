@@ -275,11 +275,11 @@ function show_source_port_range() {
     				
     				<div class="content-box">
 	    				
-	    				 <header class="content-box-head col-xs-12">
+	    				 <header class="content-box-head container-fluid">
     				        <h3><?=gettext("Bridge configuration");?></h3>
     				    </header>
     				    
-    				    <div class="content-box-main col-xs-12">
+    				    <div class="content-box-main">
 	    					
 	    					<form action="interfaces_bridge_edit.php" method="post" name="iform" id="iform">
 		    							                        
@@ -317,7 +317,7 @@ function show_source_port_range() {
 						                </td>
 									</tr>
 						                <tr style="display:none" id="sprtable1">
-						                  <td valign="top" class="vncell" align="center"><?=gettext("RSTP/STP"); ?>  </td>
+						                  <td valign="top" class="vncell"><?=gettext("RSTP/STP"); ?>  </td>
 						                  <td class="vtable">
 											<input type="checkbox" name="enablestp" id="enablestp" <?php if ($pconfig['enablestp']) echo "checked=\"checked\"";?> />
 											<span class="vexpl"><strong><?=gettext("Enable spanning tree options for this bridge."); ?> </strong></span>

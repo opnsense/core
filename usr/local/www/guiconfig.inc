@@ -59,14 +59,7 @@ require_once("includes/authgui.inc");
 
 
 /* parse the configuration and include all configuration functions */
-require_once("functions.inc");
-
-/* Pull in all the gui related display classes) */
-foreach (scandir("/usr/local/www/classes/") as $file) {
-	if (substr($file, -4) == ".inc" && substr($file,0,2) != '._') {
-		require_once("classes/{$file}");
-	}
-}
+require_once("includes/functions.inc");
 
 $g['theme'] = get_current_theme();
 
@@ -342,10 +335,10 @@ function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $und
 	global $g;
 
 	if(stristr($msg, "apply") != false || stristr($msg, "save") != false || stristr($msg, "create") != false) {
-		$savebutton = "<td class=\"infoboxsave nowrap\">";
-		$savebutton .= "<input type=\"button\" value=\"". gettext("Undo") . "\" onclick=\"document.location='{$undo}'\" />";
-		$savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"formbtn\" id=\"${name}\" value=\"{$value}\" />";
-		$savebutton .= "</td>";
+		
+		$savebutton .= "<input class=\"btn btn-default\"  type=\"button\" value=\"". gettext("Undo") . "\" onclick=\"document.location='{$undo}'\" />";
+		$savebutton .= "<input class=\"btn btn-default\"  name=\"{$name}\" type=\"submit\" class=\"formbtn\" id=\"${name}\" value=\"{$value}\" />";
+		
 		if($_POST['if'])
 			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
 	}
@@ -366,40 +359,22 @@ function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $und
 
 
 	if(!$savebutton) {
-		$savebutton = "<td class=\"infoboxsave\"><input value=\"" . gettext("Close") . "\" type=\"button\" onclick=\"jQuery(this).parents('table[id=redboxtable]').hide();\" /></td>";
+		$savebutton = "<input class=\"btn btn-default\" value=\"" . gettext("Close") . "\" type=\"button\" onclick=\"$('#redboxtable').hide();\" />";
 	}
+	
+	$url = $_SERVER['REQUEST_URI'];
 
 	echo <<<EOFnp
-	<table class="infobox" id="redboxtable" summary="red box table">
-		<tr>
-			<td>
-				<div class="infoboxnp" id="redbox">
-					<table class="infoboxnptable2" summary="message">
-						<tr>
-							<td class="infoboxnptd">
-								&nbsp;&nbsp;&nbsp;<img class="infoboxnpimg" src="/themes/{$g['theme']}/images/icons/icon_exclam.gif" alt="exclamation" />
-							</td>
-							<td class="infoboxnptd2">
-								<b>{$msg}</b>
-							</td>
-							{$savebutton}
-							{$undobutton}
-						</tr>
-					</table>
-				</div>
-				<div>
-					<p>&nbsp;
-				</div>
-			</td>
-		</tr>
-	</table>
-	<script type="text/javascript">
-	//<![CDATA[
-		NiftyCheck();
-		Rounded("div#redbox","all","#FFF","{$nifty_redbox}","smooth");
-		Rounded("td#blackbox","all","#FFF","{$nifty_blackbox}","smooth");
-	//]]>
-	</script>
+	
+	<div class="col-xs-12" id="redboxtable"><form action="{$url}" method="post">
+		<div class="alert alert-warning"  summary="red box table">
+			<p>{$msg}<br /><br /></p>
+			<div class="btn-group">
+				{$savebutton}
+				{$undobutton}
+			</div>
+		</div>
+	</form></div>	
 EOFnp;
 
 }
@@ -1111,38 +1086,50 @@ function rule_popup($src,$srcport,$dst,$dstport){
 	if ($config['aliases']['alias'] <> "" and is_array($config['aliases']['alias'])) {
 		$descriptions = array ();
 		foreach ($config['aliases']['alias'] as $alias_id=>$alias_name){
-			$loading_image="<a><img src=\'/themes/{$g['theme']}/images/misc/loader.gif\' alt=\'loader\' /> " .gettext("loading...")."</a>";
-			switch ($alias_name['type']){
-			case "port":
-				$width="250";
-				break;
-			case "urltable":
-				$width="500";
-				break;
-			default:
-				$width="350";
-				break;
-			}
-			$span_begin = "<span style=\"cursor: help;\" onmouseover=\"var response_html=domTT_activate(this, event, 'id','ttalias_{$alias_id}','content','{$loading_image}', 'trail', true, 'delay', 300, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle','type','velcro','width',{$width});alias_popup('{$alias_id}','{$g['theme']}','".gettext('loading...')."');\" onmouseout=\"this.style.color = ''; domTT_mouseout(this, event);\"><u>";
-			$span_end = "</u></span>";
+			//$loading_image="<a><img src=\'/themes/{$g['theme']}/images/misc/loader.gif\' alt=\'loader\' /> " .gettext("loading...")."</a>";
+			//switch ($alias_name['type']){
+			//case "port":
+			//	$width="250";
+			//	break;
+			//case "urltable":
+			//	$width="500";
+			//	break;
+			//default:
+			//	$width="350";
+			//	break;
+			//}
+			//$span_begin = "<span style=\"cursor: help;\" onmouseover=\"var response_html=domTT_activate(this, event, 'id','ttalias_{$alias_id}','content','{$loading_image}', 'trail', true, 'delay', 300, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle','type','velcro','width',{$width});alias_popup('{$alias_id}','{$g['theme']}','".gettext('loading...')."');\" onmouseout=\"this.style.color = ''; domTT_mouseout(this, event);\"><u>";
+			//$span_begin ="<span style=\"cursor: help;\"><u>";
+			//$span_end = "</u></span>";
+			//$span_begin=$span_begin.$config['aliases']['alias'][$alias_id]['name'];
+			//var_dump($config['aliases']['alias'][$alias_id]);
 			if ($alias_name['name'] == $src) {
-				$descriptions['src'] = $span_begin;
-				$descriptions['src_end'] = $span_end;
+				//var_dump($config['aliases']['alias'][$alias_id]);
+				$aliases_array['src']=$config['aliases']['alias'][$alias_id];
+				$aliases_array['src']['aliasid']=$alias_id;
+				//$descriptions['src'] = $span_begin;
+				//$descriptions['src_end'] = $span_end;
 			}
 			if ($alias_name['name'] == $srcport) {
-				$descriptions['srcport'] = $span_begin;
-				$descriptions['srcport_end'] = $span_end;
+				$aliases_array['srcport']=$config['aliases']['alias'][$alias_id];
+				$aliases_array['srcport']['aliasid']=$alias_id;
+				//$descriptions['srcport'] = $span_begin;
+				//$descriptions['srcport_end'] = $span_end;
 			}
 			if ($alias_name['name'] == $dst ) {
-				$descriptions['dst'] = $span_begin;
-				$descriptions['dst_end'] = $span_end;
+				$aliases_array['dst']=$config['aliases']['alias'][$alias_id];
+				$aliases_array['dst']['aliasid']=$alias_id;
+				//$descriptions['dst'] = $span_begin;
+				//$descriptions['dst_end'] = $span_end;
 			}
 			if ($alias_name['name'] == $dstport) {
-				$descriptions['dstport'] = $span_begin;
-				$descriptions['dstport_end'] = $span_end;
+				$aliases_array['dstport']=$config['aliases']['alias'][$alias_id];
+				$aliases_array['dstport']['aliasid']=$alias_id;
+				//$descriptions['dstport'] = $span_begin;
+				//$descriptions['dstport_end'] = $span_end;
 			}
 		}
-		return $descriptions;
+		return $aliases_array;//$descriptions;
 	}
 }
 

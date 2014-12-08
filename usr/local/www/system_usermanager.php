@@ -472,8 +472,6 @@ function sshkeyClicked(obj) {
 					
 						<div class="tab-content content-box col-xs-12">	
 	    					
-	    				    <div class="container-fluid">	
-	    					
 	    					<?php
 										if ($_POST['act'] == "new" || $_POST['act'] == "edit" || $input_errors):
 							?>
@@ -541,11 +539,22 @@ function sshkeyClicked(obj) {
 											<td width="22%" valign="top" class="vncell"><?=gettext("Group Memberships");?></td>
 											<td width="78%" class="vtable" align="center">
 												<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="group membership">
+
+    												                                    
+				                                    <thead>
+				                                        <tr>
+				                            				<th class="listtopic"><?=gettext("Not Member Of"); ?></th>
+				                            				<th>&nbsp;</th>
+				                            				<th class="listtopic"><?=gettext("Member Of"); ?></th>
+				                                        </tr>
+				                                    </thead>
+													
+				    								<tbody>
+    				    								
 													<tr>
-														<td align="center" width="50%">
-															<strong><?=gettext("Not Member Of"); ?></strong><br />
-															<br />
-															<select size="10" style="width: 75%" name="notgroups[]" class="formselect" id="notgroups" onchange="clear_selected('groups')" multiple="multiple">
+														<td align="center" width="44%">
+														
+															<select size="10" name="notgroups[]" class="formselect" id="notgroups" onchange="clear_selected('groups')" multiple="multiple">
 				<?php
 																$rowIndex = 0;
 																foreach ($config['system']['group'] as $group):
@@ -566,7 +575,7 @@ function sshkeyClicked(obj) {
 															</select>
 															<br />
 														</td>
-														<td>
+														<td align="center" width="12%">
 															<br />
 															<a href="javascript:move_selected('notgroups','groups')" class="btn btn-default btn-xs" title="<?=gettext("Add Groups"); ?>">
 																<span class="glyphicon glyphicon-arrow-right"></span>																
@@ -576,10 +585,9 @@ function sshkeyClicked(obj) {
 																<span class="glyphicon glyphicon-arrow-left"></span>															
 															</a>
 														</td>
-														<td align="center" width="50%">
-															<strong><?=gettext("Member Of"); ?></strong><br />
-															<br />
-															<select size="10" style="width: 75%" name="groups[]" class="formselect" id="groups" onchange="clear_selected('notgroups')" multiple="multiple">
+														<td align="center" width="44%">
+    														
+															<select size="10" name="groups[]" class="formselect" id="groups" onchange="clear_selected('notgroups')" multiple="multiple">
 				<?php
 																$rowIndex = 0;
 																if (is_array($pconfig['groups'])):
@@ -896,8 +904,8 @@ function sshkeyClicked(obj) {
 								</td>
 							</tr>
 							<tr>
-								<td colspan="4">
-									<p>
+								<td colspan="5">
+									<p class="col-xs-12 col-sm-10">
 										<?=gettext("Additional users can be added here. User permissions for accessing " .
 										"the webConfigurator can be assigned directly or inherited from group memberships. " .
 										"An icon that appears grey indicates that it is a system defined object. " .
@@ -975,7 +983,6 @@ function sshkeyClicked(obj) {
 <?php
 			endif;
 ?>
-	    				    </div>
 						</div>
 			    </section>
 			</div>

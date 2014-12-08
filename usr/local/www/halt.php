@@ -43,13 +43,9 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require("functions.inc");
+require("includes/functions.inc");
 require("captiveportal.inc");
 
-if ($_POST['Submit'] == " " . gettext("No") . " ") {
-	header("Location: index.php");
-	exit;
-}
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Halt system"));
 include('head.inc');
@@ -63,7 +59,7 @@ include('head.inc');
 		<div class="row">
 		    <section class="col-xs-12">
 			    
-			<?php if ($_POST['Submit'] == " " . gettext("Yes") . " "):
+			<?php if ($_POST['Submit'] == gettext("Yes")):
 				print_info_box(gettext("The system is halting now. This may take one minute.")); ?>
 			<pre>
 			<?php 	system_halt(); ?>
@@ -75,8 +71,8 @@ include('head.inc');
 				<p><strong><?=gettext("Are you sure you want to halt the system?");?></strong></p>
 				
 				<div class="btn-group">
-				  <input type="submit" class="btn btn-primary" value="<?=gettext("Yes");?>" />
-				  <input type="submit" class="btn btn-default" value="<?=gettext("No");?>" />
+				   <input type="submit" name="Submit" class="btn btn-primary" value="<?=gettext("Yes");?>" />
+				  <a href="/" class="btn btn-default"><?=gettext("No");?></a>
 				</div>
 				<br /><br />
 			</form>

@@ -101,8 +101,7 @@ $main_buttons = array(
 						display_top_tabs($tab_array);
 					?> 
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	
 	    				    
 							<form action="vpn_pptp_users.php" method="post" name="iform" id="iform">
 
@@ -133,7 +132,7 @@ $main_buttons = array(
 									</table>
 								</div>
 							</form>
-    				    </div>
+							
 					</div>
 			    </section>
 			</div>

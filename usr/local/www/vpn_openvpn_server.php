@@ -757,8 +757,7 @@ function tuntap_change() {
 						display_top_tabs($tab_array);
 					?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	  
 	    				    
 	    				    <?php if($act=="new" || $act=="edit"): ?>
 							<form action="vpn_openvpn_server.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
@@ -1880,7 +1879,7 @@ function tuntap_change() {
 							</div>
 							
 						<?php endif; ?>
-    				    </div>
+						
 					</div>
 			    </section>
 			</div>

@@ -75,7 +75,7 @@ include("head.inc");
                 <div class="content-box">            
 	                
 	                <?php if(!$config['installedpackages'] || !$config['installedpackages']['miniupnpd']['config'][0]['iface_array'] || !$config['installedpackages']['miniupnpd']['config'][0]['enable']): ?>
-	                	<header class="content-box-head col-xs-12">
+	                	<header class="content-box-head container-fluid">
     				        <h3><?php echo gettext("UPnP is currently disabled."); ?></h3>
     				    </header>
 

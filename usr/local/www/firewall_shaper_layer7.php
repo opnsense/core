@@ -39,7 +39,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -427,9 +427,6 @@ include("fbegin.inc");
 						
 					
 						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
-	    					
    
 		                        <form action="firewall_shaper_layer7.php" method="post" name="iform" id="iform">
 		                        	
@@ -593,7 +590,6 @@ include("fbegin.inc");
 										</table>
 										</div><!-- end of div:shape area -->
 									</form>
-								</div>
 							</div>
 						</section>
 					</div>

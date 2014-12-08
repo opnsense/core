@@ -41,7 +41,7 @@
 ##|-PRIV
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 require_once("util.inc");
@@ -127,8 +127,8 @@ include("head.inc");
 			        display_top_tabs($tab_array);
 			       ?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	 
+    					
 	    				    
 	    				  <form action="load_balancer_setting.php" method="post" name="iform" id="iform">
 
@@ -171,7 +171,7 @@ include("head.inc");
 						           </table>
 								</div>
 	    				  </form>
-    				    </div>
+	    				  
 					</div>
 			    </section>
 			</div>

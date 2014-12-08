@@ -34,7 +34,7 @@
 ##|*MATCH=vpn_ipsec_mobile.php*
 ##|-PRIV
 
-require("functions.inc");
+require("includes/functions.inc");
 require("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
@@ -346,8 +346,7 @@ function login_banner_change() {
     				
     				<? $active_tab = "/vpn_ipsec_mobile.php"; include('vpn_ipsec_tabs.php'); ?>
 					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
+					<div class="tab-content content-box col-xs-12">	
 							
 							 <form action="vpn_ipsec_mobile.php" method="post" name="iform" id="iform">
 
@@ -372,11 +371,19 @@ function login_banner_change() {
 											</table>
 										</td>
 									</tr>
-									<tr>
-										<td colspan="2" valign="top" class="listtopic">
-											<?=gettext("Extended Authentication (Xauth)"); ?>
-										</td>
-									</tr>
+									</tbody>
+							 	</table>
+							 	
+							 	<table class="table table-striped table-sort">
+                                    
+                                    <thead>
+                                        <tr>
+                            				<th colspan="2" class="listtopic"><?=gettext("Extended Authentication (Xauth)"); ?></th>
+                                        </tr>
+                                    </thead>
+									
+    								<tbody>
+									
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("User Authentication"); ?></td>
 										<td width="78%" class="vtable">
@@ -405,11 +412,19 @@ function login_banner_change() {
 											</select>
 										</td>
 									</tr>
-									<tr> 
-										<td colspan="2" valign="top" class="listtopic">
-											<?=gettext("Client Configuration (mode-cfg)"); ?>
-										</td>
-									</tr>
+									</tbody>
+							 	</table>
+							 	
+							 	<table class="table table-striped table-sort">
+                                    
+                                    <thead>
+                                        <tr>
+                            				<th colspan="2" class="listtopic"><?=gettext("Client Configuration (mode-cfg)"); ?></th>
+                                        </tr>
+                                    </thead>
+									
+    								<tbody>
+    								
 									<tr> 
 										<td width="22%" valign="top" class="vncell"><?=gettext("Virtual Address Pool"); ?></td>
 										<td width="78%" class="vtable">
@@ -658,7 +673,6 @@ function login_banner_change() {
 								
 							 </div>
 							 </form>
-    				    </div>
 					</div>
 			    </section>
 			</div>

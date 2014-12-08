@@ -174,13 +174,13 @@ include("head.inc");
             
             <section class="col-xs-12">
                 <div class="content-box">
-	                <header class="content-box-head col-xs-12">
+	                <header class="content-box-head container-fluid">
 				        <h3>Network Time Protocol Status</h3>
 				    </header>
 				    
-				    <div class="content-box-main col-xs-12">
+				    <div class="content-box-main">
 					  	<div class="table-responsive">
-                   	    	<table class="table table-striped table-sort sortable">
+                   	    	<table class="table table-striped table-sort sortable __nomb">
 	                        
 
 								<thead>

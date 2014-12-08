@@ -40,7 +40,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("functions.inc");
+require_once("includes/functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
@@ -192,11 +192,11 @@ function show_advanced_dns() {
 								
                         <form action="services_dnsmasq.php" method="post" name="iform" id="iform">							
                         	
-							<header class="content-box-head col-xs-12">
+							<header class="content-box-head container-fluid">
         				        <h3><?=gettext("General DNS Forwarder Options");?></h3>
         				    </header>
         				    
-        				    <div class="content-box-main col-xs-12">
+        				    <div class="content-box-main">
 	        				  <div class="table-responsive">
 	                        	<table class="table table-striped table-sort">
 									<tr>
@@ -338,7 +338,7 @@ function show_advanced_dns() {
 								</table>
 	        				  </div>
                         
-
+                            <div class="container-fluid">
 							<p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
 							</strong></span><?php printf(gettext("If the DNS forwarder is enabled, the DHCP".
 							" service (if enabled) will automatically serve the LAN IP".
@@ -352,7 +352,7 @@ function show_advanced_dns() {
 							" least one DNS server on the %sSystem:".
 							"General setup%s page."),'<a href="system.php">','</a>','<a href="system.php">','</a>');?><br />
 							</span></p>
-							
+                            </div>
 							
 
 							<div class="table-responsive">

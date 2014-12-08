@@ -132,11 +132,11 @@ include("head.inc");
     				
     				<div class="content-box">	
 						
-						<header class="content-box-head col-xs-12">
+						<header class="content-box-head container-fluid">
     				        <h3><?=gettext("Wake on LAN");?></h3>
     				    </header>
         				    
-        				<div class="content-box-main col-xs-12">
+        				<div class="content-box-main ">
 						
                         	<form action="services_wol.php" method="post" name="iform" id="iform">								
                         	
@@ -171,8 +171,9 @@ include("head.inc");
 									</table>
                         		</div>
                         		
+                        		<div class="container-fluid">
                         		<p><?=gettext("Wake all clients at once: ");?><a href="services_wol.php?wakeall=true" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-time"></span></a>	<?=gettext("Or Click the MAC address to wake up an individual device:");?></p>
-                        		
+                        		</div>
                         		
                         		<div class="table-responsive">
 									<table class="table table-striped table-sort">
@@ -213,6 +214,7 @@ include("head.inc");
 						              
 						        </table>
                         		</div>
+                        		<div class="container-fluid">
                         		<p class="vexpl">
 					<span class="text-danger">
 						<strong>
@@ -220,7 +222,7 @@ include("head.inc");
             			</strong>
 					</span><?=gettext("This service can be used to wake up (power on) computers by sending special"); ?> &quot;<?=gettext("Magic Packets"); ?>&quot;. <?=gettext("The NIC in the computer that is to be woken up must support Wake on LAN and has to be configured properly (WOL cable, BIOS settings). ");?>
 			</p>
-			
+                        		</div>
                         	</form>
         				</div>
     				</div>

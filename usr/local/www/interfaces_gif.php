@@ -116,20 +116,23 @@ $main_buttons = array(
 
 					
 						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
-	    					
    
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
 		                        
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-						                <tr>
-						                  <td width="20%" class="listhdrr"><?=gettext("Interface"); ?></td>
-						                  <td width="20%" class="listhdrr"><?=gettext("Tunnel to..."); ?></td>
-						                  <td width="50%" class="listhdr"><?=gettext("Description"); ?></td>
-						                  <td width="10%" class="list"></td>
-										</tr>
+    			                        
+    			                         <thead>
+                                            <tr>
+                                				<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
+                                				<th width="20%" class="listtopic"><?=gettext("Tunnel to...");?></th>
+                                				<th width="50%" class="listtopic"><?=gettext("Description");?></th>
+                                				<th width="10%" class="listtopic">&nbsp;</th>
+                                            </tr>
+                                        </thead>
+    									
+        								<tbody>
+        								
 									  <?php $i = 0; foreach ($a_gifs as $gif): ?>
 						                <tr  ondblclick="document.location='interfaces_gif_edit.php?id=<?=$i;?>'">
 						                  <td class="listlr">
@@ -150,18 +153,20 @@ $main_buttons = array(
 										  </td>
 										</tr>
 									  <?php $i++; endforeach; ?>
+        								</tbody>
 						              </table>
 							      </div>
 	      
+                                <div class="container-fluid">
 							      <p class="vexpl"><span class="red"><strong>
 										  <?=gettext("Note:"); ?><br />
 										  </strong></span>
 										  <?=gettext("GIF tunnels are configured here."); ?>
 										  <br /><br />
 										  <?php echo gettext("If you are using a GIF tunnel to connect to a Hurricane Electric (he.net) Tunnel Broker on a WAN with a dynamic IP, you may want to add a"); ?> <a href="services_dyndns.php"><?php echo gettext("HE.net Tunnelbroker type DynDNS Entry"); ?></a> <?php echo gettext("to keep your tunnel functional when your IP changes."); ?></p>
-				  
+                                </div>
+                            
 		                        </form>
-	    				    </div>
 						</div>
 			    </section>
 			</div>

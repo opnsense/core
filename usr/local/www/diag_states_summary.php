@@ -146,13 +146,13 @@ function build_port_info($portarr, $proto) {
 function print_summary_table($label, $iparr, $sort = TRUE) { ?>
 	<section class="col-xs-12">
 		 <div class="content-box">            
-            <header class="content-box-head col-xs-12">
+            <header class="content-box-head container-fluid">
 		        <h3><?php echo $label; ?></h3>
 		    </header>
 			
 			<div class="table-responsive">
                    
-            <table class="table table-striped table-sort sortable">
+            <table class="table table-striped table-sort sortable __nomb">
 				<tr>
 					<td class="listhdrr"><?=gettext("IP");?></td>
 					<td class="listhdrr"># <?=gettext("States");?></td>

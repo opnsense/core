@@ -68,11 +68,11 @@ $spd = ipsec_dump_spd();
     				<? $active_tab = "/diag_ipsec_spd.php"; include('diag_ipsec_tabs.php'); ?>
 					
 					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
+    				   	  
 							
 							<div class="table-responsive">
 								
-								<table class="table table-striped table-sort">
+								<table class="table table-striped table-sort __nomb">
 								<?php if (count($spd)): ?>
 								<tr>
 									<td class="listhdrr nowrap"><?= gettext("Source"); ?></td>
@@ -124,7 +124,7 @@ $spd = ipsec_dump_spd();
 							</table>
 						</div>
 						
-						
+						 <div class="container-fluid">
 						<p class="vexpl">
 						<span class="text-danger"><strong><?= gettext("Note:"); ?><br /></strong></span>
 						<?= gettext("You can configure your IPsec"); ?> <a href="vpn_ipsec.php"><?= gettext("here."); ?></a>
