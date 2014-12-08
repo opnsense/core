@@ -380,8 +380,8 @@ if [ "$PLATFORM" = "nanobsd" -o "$PLATFORM" = "pfSense" ]; then
 	/usr/local/bin/php -q /usr/local/etc/ecl.php
 fi
 
-chmod u+rx  /usr/local/opnsense/check_reload_status.py
-/usr/bin/nice -n20 /usr/local/opnsense/check_reload_status.py
+chmod u+rx  /usr/local/opnsense/service/check_reload_status.py
+/usr/bin/nice -n20 /usr/local/opnsense/service/check_reload_status.py
 sleep 1 # give check_reload_status some time to load to prevent missing socket
 
 # let the PHP-based configuration subsystem set up the system now
