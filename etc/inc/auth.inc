@@ -308,13 +308,6 @@ function local_backed($username, $passwd) {
 			return true;
 	}
 
-	if ($user['md5-hash'])
-	{
-		$passwd = md5($passwd);
-		if ($passwd == $user['md5-hash'])
-			return true;
-	}
-
 	return false;
 }
 
@@ -519,10 +512,9 @@ function local_user_del($user) {
 	local_group_del_user($user);
 }
 
-function local_user_set_password(& $user, $password) {
-
-	$user['password'] = crypt($password);
-	$user['md5-hash'] = md5($password);
+function local_user_set_password(& $user, $password)
+{
+	$user['password'] = crypt($password, '$6$');
 
 	// Converts ascii to unicode.
 	$astr = (string) $password;

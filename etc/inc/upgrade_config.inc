@@ -2186,10 +2186,6 @@ function upgrade_056_to_057() {
 				$user['expires'] = $user['expirationdate'];
 				unset($user['expirationdate']);
 			}
-			if (isset($user['password'])) {
-				$user['md5-hash'] = $user['password'];
-				unset($user['password']);
-			}
 			$user['uid'] = $config['system']['nextuid']++;
 			$config['system']['user'][] = $user;
 		}
