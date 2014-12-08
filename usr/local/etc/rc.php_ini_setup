@@ -27,6 +27,7 @@
 # Set our operating platform
 PLATFORM=`/bin/cat /usr/local/etc/platform`
 
+
 if [ -d /usr/local/lib/php/20131226 ]; then
 	# PHP 5.6
 	EXTENSIONSDIR="/usr/local/lib/php/20131226/"
@@ -92,14 +93,14 @@ PHPMODULES="$PHPMODULES json"
 PHPMODULES="$PHPMODULES bcmath"
 # filter
 PHPMODULES="$PHPMODULES filter"
+# phalcon
+PHPMODULES="$PHPMODULES phalcon"
 
 # Clear the .ini file to make sure we are clean
-if [ -f /usr/local/etc/php.ini ]; then
-	/bin/rm /usr/local/etc/php.ini
-fi
-if [ -f /usr/local/lib/php.ini ]; then
-	/bin/rm /usr/local/lib/php.ini
-fi
+rm -f /usr/local/etc/php/extensions.ini
+rm -f /usr/local/etc/php.ini
+rm -f /usr/local/lib/php.ini
+
 LOADED_MODULES=`/usr/local/bin/php -m | /usr/bin/grep -v "\["`
 
 # Fetch the timezone from the XML and set it here. We set it later too in the running scripts
