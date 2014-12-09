@@ -42,7 +42,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require("includes/functions.inc");
+require("functions.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_ppps.php');
 

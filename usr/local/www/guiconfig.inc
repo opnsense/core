@@ -55,11 +55,11 @@ if (!$omit_nocacheheaders) {
 }
 
 header("X-Frame-Options: SAMEORIGIN");
-require_once("includes/authgui.inc");
+require_once("authgui.inc");
 
 
 /* parse the configuration and include all configuration functions */
-require_once("includes/functions.inc");
+require_once("functions.inc");
 
 $g['theme'] = get_current_theme();
 

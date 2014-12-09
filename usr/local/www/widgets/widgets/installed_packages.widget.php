@@ -35,7 +35,7 @@ $nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
-require_once("includes/functions.inc");
+require_once("functions.inc");
 require_once("/usr/local/www/widgets/include/installed_packages.inc");
 require_once("pkg-utils.inc");
 

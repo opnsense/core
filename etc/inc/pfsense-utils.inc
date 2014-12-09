@@ -1750,8 +1750,8 @@ function update_output_window($text) {
 	if($pkg_interface != "console") {
 		echo "\n<script type=\"text/javascript\">";
 		echo "\n//<![CDATA[";
-		echo "\nthis.document.forms[0].output.value = \"" . $log . "\";";
-		echo "\nthis.document.forms[0].output.scrollTop = this.document.forms[0].output.scrollHeight;";
+		echo "\nthis.document.iform.output.value = \"" . $log . "\";";
+		echo "\nthis.document.iform.output.scrollTop = this.document.iform.output.scrollHeight;";
 		echo "\n//]]>";
 		echo "\n</script>";
 	}
@@ -1769,7 +1769,7 @@ function update_status($status) {
 	} else {
 		echo "\n<script type=\"text/javascript\">";
 		echo "\n//<![CDATA[";
-		echo "\nthis.document.forms[0].status.value=\"" . $status . "\";";
+		echo "\nthis.document.iform.status.value=\"" . $status . "\";";
 		echo "\n//]]>";
 		echo "\n</script>";
 	}
@@ -1786,7 +1786,7 @@ function update_progress_bar($percent, $first_time) {
 	if($pkg_interface <> "console") {
 		echo "\n<script type=\"text/javascript\">";
 		echo "\n//<![CDATA[";
-		echo "\ndocument.progressbar.style.width='" . $percent . "%';";
+		echo "\n$('.progress-bar').css('width', '" . $percent . "%');";
 		echo "\n//]]>";
 		echo "\n</script>";
 	} else {
@@ -2510,22 +2510,12 @@ function load_mac_manufacturer_table() {
  *   is_ipaddr_configured
  * INPUTS
  *   IP Address to check.
- *   If ignore_if is a VIP (not carp), vip array index is passed after string _virtualip
  * RESULT
  *   returns true if the IP Address is
  *   configured and present on this device.
 */
 function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, $check_subnets = false) {
 	global $config;
-
-	$pos = strpos($ignore_if, '_virtualip');
-	if ($pos !== false) {
-		$ignore_vip_id = substr($ignore_if, $pos+10);
-		$ignore_vip_if = substr($ignore_if, 0, $pos);
-	} else {
-		$ignore_vip_id = -1;
-		$ignore_vip_if = $ignore_if;
-	}
 
 	$isipv6 = is_ipaddrv6($ipaddr);
 
@@ -2553,7 +2543,8 @@ function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, 
 			$interface_list_ips = get_configured_ip_addresses();
 
 		foreach($interface_list_ips as $if => $ilips) {
-			if ($ignore_if == $if)
+			/* Also ignore CARP interfaces, it'll be checked below */
+			if ($ignore_if == $if || strstr($ignore_if, "_vip"))
 				continue;
 			if (strcasecmp($ipaddr, $ilips) == 0)
 				return true;
@@ -2562,8 +2553,7 @@ function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, 
 
 	$interface_list_vips = get_configured_vips_list(true);
 	foreach ($interface_list_vips as $id => $vip) {
-		/* Skip CARP interfaces here since they were already checked above */
-		if ($id == $ignore_vip_id || (strstr($ignore_if, '_vip') && $ignore_vip_if == $vip['if']))
+		if ($ignore_if == $vip['if'])
 			continue;
 		if (strcasecmp($ipaddr, $vip['ipaddr']) == 0)
 			return true;

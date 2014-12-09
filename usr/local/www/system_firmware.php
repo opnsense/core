@@ -46,7 +46,7 @@ $d_isfwfile = 1;
 $nocsrf = true;
 
 require_once("globals.inc");
-require_once("includes/functions.inc");
+require_once("functions.inc");
 require_once("guiconfig.inc");
 require_once("xmlrpc_client.inc");
 

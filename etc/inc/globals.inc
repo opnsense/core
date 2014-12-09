@@ -39,7 +39,7 @@ $g = array(
 	"base_packages" => "siproxd", 
 	"event_address" => "unix:///var/run/check_reload_status",
 	"factory_shipped_username" => "admin",
-	"factory_shipped_password" => "pfsense",
+	"factory_shipped_password" => "opnsense",
 	"upload_path" => "/root",
 	"dhcpd_chroot_path" => "/var/dhcpd",
 	"unbound_chroot_path" => "/var/unbound",
@@ -57,9 +57,9 @@ $g = array(
 	"www_path" => "/usr/local/www",
 	"xml_rootobj" => "pfsense",
 	"admin_group" => "admins",
-	"product_name" => "pfSense",
-	"product_copyright" => "",
-	"product_copyright_url" => "",
+	"product_name" => "OPNsense",
+	"product_copyright" => "Deciso B.V.",
+	"product_copyright_url" => "http://www.deciso.com",
 	"product_copyright_years" => "2014 - ".date("Y"),
 	"product_website" => "www.opnsense.org",
 	"product_website_footer" => "https://www.opnsense.org/?gui22",
@@ -79,7 +79,7 @@ $g = array(
 	"minimum_ram_warning_text" => "128 MB",
 	"wan_interface_name" => "wan", 
 	"nopccard_platforms" => array("wrap", "net48xx"),
-	"xmlrpcbaseurl" => "https://packages.opnsense.org",
+	"xmlrpcbaseurl" => "https://packages.pfsense.org",
 	"captiveportal_path" => "/usr/local/captiveportal",
 	"captiveportal_element_path" => "/var/db/cpelements",
 	"captiveportal_element_sizelimit" => 1048576,
@@ -103,11 +103,11 @@ if(file_exists("/etc/platform")) {
 
 	/* Full installs and NanoBSD use the same update directory and manifest in 2.x */
 	$g['update_url']="https://snapshots.opnsense.org/FreeBSD_releng/10.1/{$arch}/pfSense_HEAD/.updaters/";
-	$g['update_manifest']="https://updates.opnSense.org/manifest";
+	$g['update_manifest']="https://updates.opnsense.org/manifest";
 
 	$g['platform'] = trim(file_get_contents("/etc/platform"));
 	if($g['platform'] == "nanobsd") {
-		$g['firmware_update_text']="pfSense-*.img.gz";
+		$g['firmware_update_text']="OPNsense-*.img.gz";
 		$g['hidedownloadbackup'] = true;
 		$g['hidebackupbeforeupgrade'] = true;
 

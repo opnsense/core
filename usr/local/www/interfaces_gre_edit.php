@@ -39,7 +39,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require_once("includes/functions.inc");
+require_once("functions.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_gre.php');
 

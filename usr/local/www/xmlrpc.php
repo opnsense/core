@@ -37,7 +37,7 @@
 ##|-PRIV
 
 require("config.inc");
-require("includes/functions.inc");
+require("functions.inc");
 require_once("filter.inc");
 require("ipsec.inc");
 require("vpn.inc");

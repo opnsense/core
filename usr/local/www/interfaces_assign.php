@@ -44,7 +44,7 @@ $pgtitle = array(gettext("Interfaces"),gettext("Assign network ports"));
 $shortcut_section = "interfaces";
 
 require("guiconfig.inc");
-require("includes/functions.inc");
+require("functions.inc");
 require_once("filter.inc");
 require("shaper.inc");
 require("ipsec.inc");

@@ -43,7 +43,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require("includes/functions.inc");
+require("functions.inc");
 require("captiveportal.inc");
 
 

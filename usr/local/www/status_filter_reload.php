@@ -39,7 +39,7 @@
 
 require_once("globals.inc");
 require_once("guiconfig.inc");
-require_once("includes/functions.inc");
+require_once("functions.inc");
 
 $pgtitle = array(gettext("Status"),gettext("Filter Reload Status"));
 $shortcut_section = "firewall";

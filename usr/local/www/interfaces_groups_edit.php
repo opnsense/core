@@ -39,7 +39,7 @@
 
 
 require("guiconfig.inc");
-require_once("includes/functions.inc");
+require_once("functions.inc");
 
 $pgtitle = array(gettext("Interfaces"),gettext("Groups"),gettext("Edit"));
 $shortcut_section = "interfaces";

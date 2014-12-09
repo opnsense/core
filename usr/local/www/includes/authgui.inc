@@ -59,7 +59,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 	if (count($allowedpages) > 0) {
 		$page = str_replace('*', '', $allowedpages[0]);
 		$_SESSION['Post_Login'] = true;
-		require_once("includes/functions.inc");
+		require_once("functions.inc");
 		pfSenseHeader("/{$page}");
 
 		$username = empty($_SESSION["Username"]) ? "(system)" : $_SESSION['Username'];
@@ -81,7 +81,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 	 */
 	if (!$_SESSION['Post_Login']) {
 		$_SESSION['Post_Login'] = true;
-		require_once("includes/functions.inc");
+		require_once("functions.inc");
 		pfSenseHeader($_SERVER['REQUEST_URI']);
 		exit;
 	}

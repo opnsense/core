@@ -47,6 +47,7 @@ if(file_exists("/cf/conf/use_xmlreader"))
 	require_once("xmlreader.inc");
 else
 	require_once("xmlparse.inc");
+	
 require_once("pfsense-utils.inc");
 
 if(!function_exists("update_status")) {

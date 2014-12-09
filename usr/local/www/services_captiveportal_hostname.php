@@ -42,7 +42,7 @@
 ##|-PRIV
 
 require("guiconfig.inc");
-require("includes/functions.inc");
+require("functions.inc");
 require_once("filter.inc");
 require("shaper.inc");
 require("captiveportal.inc");

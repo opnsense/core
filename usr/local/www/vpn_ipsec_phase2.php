@@ -36,7 +36,7 @@
 ##|*MATCH=vpn_ipsec_phase2.php*
 ##|-PRIV
 
-require("includes/functions.inc");
+require("functions.inc");
 require("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");

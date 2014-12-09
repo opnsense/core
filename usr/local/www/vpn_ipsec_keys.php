@@ -35,7 +35,7 @@
 ##|*MATCH=vpn_ipsec_keys.php*
 ##|-PRIV
 
-require("includes/functions.inc");
+require("functions.inc");
 require("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");

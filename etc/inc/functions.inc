@@ -89,11 +89,10 @@ if(!function_exists("get_menu_messages")) {
 				$request_string = implode("&", $requests);
 
 				if(is_array($notices)) {
-					$notice_msgs = "<table colspan=\'6\' id=\'notice_table\'>";
-					$alert_style="style=\'color:#ffffff; filter:Glow(color=#ff0000, strength=12);\' ";
-					$notice = "<a href=\'#\' onclick=notice_action(\'acknowledge\',\'all\');domTT_close(this); {$alert_style}>".gettext("Acknowledge All Notices")."</a>";
-					$alert_link="title=\'".gettext("Click to Acknowledge")."\' {$alert_style}";
-					$domtt_width=500;
+					$notice_msgs = "<ul class=\"dropdown-menu\" role=\"menu\">";
+					
+					$notice_msgs .= "<li><a href=\"#\" onclick=\"notice_action('acknowledge','all');\" >".gettext("Acknowledge All Notices")."</a></li><li class=\"divider\"></li>";
+					
 					foreach ($notices as $key => $value) {
 						$date = date("m-d-y H:i:s", $key);
 						$noticemsg = ($value['notice'] != "" ? $value['notice'] : $value['id']);
@@ -102,25 +101,27 @@ if(!function_exists("get_menu_messages")) {
 							$domtt_width=(strlen($noticemsg) *8);
 						if ((strlen($noticemsg)* 8) > 900)
 							$domtt_width= 900;
-						$alert_action ="onclick=notice_action(\'acknowledge\',\'{$key}\');domTT_close(this);jQuery(this).parent().parent().remove();";
-						$notice_msgs .= "<tr><td valign=\'top\' width=\'120\'><a href=\'#\' {$alert_link} {$alert_action}>{$date}</a></td><td valign=\'top\'><a href=\'#\' {$alert_link} {$alert_action}>[ ".htmlspecialchars($noticemsg)."]</a></td></tr>";
+						$alert_action ="onclick=\"notice_action('acknowledge','{$key}'); jQuery(this).parent().parent().remove();\"";
+						$notice_msgs .= "<li><a href=\"#\" {$alert_link} {$alert_action}>{$date} [ ".htmlspecialchars($noticemsg)."]</a></li>";
 						}
-					$notice_msgs .="</table>";
-						
-					$domtt= "onclick=\"domTT_activate(this, event, 'caption', '{$notice}','content', '<br />{$notice_msgs}', 'trail', false, 'delay', 0, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle','width','{$domtt_width}','y',5,'type', 'sticky');\"";					
-                    $menu_messages="<div id='alerts'>\n";
+					$notice_msgs .="</ul>";
+										
+                   
+					$menu_messages = '';
+                   
                     if(count($notices)==1)
                     	$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notice");
                     else
                     	$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notices");
-                    $menu_messages.="<div id='marquee-text' style='z-index:1001;'><a href='#' {$domtt}><b> .:. {$msg} .:. </b></a></div>\n";
-                    $menu_messages.="</div>\n";
+                    	
+                    $menu_messages.="<a href=\"/\" class=\"dropdown-toggle \" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\"><span class=\"text-primary\">{$msg}&nbsp;</span><span class=\"caret text-primary\"></span></a>{$notice_msgs}\n";
+                   
                     }
 			}
 		else {
-			$menu_messages='<div id="hostname">';
-			$menu_messages.=$config['system']['hostname'] . "." . $config['system']['domain']; 
-			$menu_messages.='</div>';
+			$menu_messages='';
+			$menu_messages.= "<a href=\"#\">".$config['system']['hostname'] . "." . $config['system']['domain']."</a>"; 
+			$menu_messages.='';
 			}
 		return ($menu_messages);
 		}

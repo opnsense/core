@@ -34,7 +34,7 @@
 ##|*MATCH=vpn_ipsec_settings.php*
 ##|-PRIV
 
-require("includes/functions.inc");
+require("functions.inc");
 require("guiconfig.inc");
 require_once("filter.inc");
 require_once("shaper.inc");

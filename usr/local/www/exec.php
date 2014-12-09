@@ -222,7 +222,7 @@ if (!isBlank($_POST['txtCommand'])) {
 if (!isBlank($_POST['txtPHPCommand'])) {
    puts("<pre>");
    require_once("config.inc");
-   require_once("includes/functions.inc");
+   require_once("functions.inc");
    echo eval($_POST['txtPHPCommand']);
    puts("&nbsp;</pre>");
 }

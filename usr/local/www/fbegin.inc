@@ -4,9 +4,9 @@
 */
 
 require_once("globals.inc");
-require_once("includes/functions.inc");
+require_once("functions.inc");
 require_once("shortcuts.inc");
-require_once("includes/service-utils.inc");
+require_once("service-utils.inc");
 
 /* $Id$ */
 

@@ -621,11 +621,10 @@ class altq_root_queue {
 		$form .= "<tr><td width=\"20%\" class=\"vncellreq\">";
 		$form .= "<a href=\"firewall_shaper_queues.php?interface=";
 		$form .= $this->GetInterface() . "&amp;queue=";
-		$form .= $this->GetQname() . "&amp;action=delete\">";
-		$form .= "<img src=\"";
-		$form .= "./themes/".$g['theme']."/images/icons/icon_x.gif\"";
-		$form .= " width=\"17\" height=\"17\" border=\"0\" title=\"Disable shaper on interface\" alt=\"disable\" />";
-		$form .= "<span>Disable shaper on interface</span></a></td></tr>";
+		$form .= $this->GetQname() . "&amp;action=delete\" class=\"btn btn-default btn-xs\"";
+		
+		$form .= "  title=\"Disable shaper on interface\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
+		$form .= "</td></tr>";
 
 		return $form;
 
@@ -1268,11 +1267,10 @@ class priq_queue {
 		$form .= "<tr><td width=\"20%\" class=\"vncellreq\">";
 		$form .= "<a href=\"firewall_shaper_queues.php?interface=";
 		$form .= $this->GetInterface() . "&amp;queue=";
-		$form .= $this->GetQname() . "&amp;action=delete\">";
-		$form .= "<img src=\"";
-		$form .= "./themes/".$g['theme']."/images/icons/icon_x.gif\"";
-		$form .= " width=\"17\" height=\"17\" border=\"0\" title=\"" . gettext("Delete queue from interface") . "\" alt=\"delete\" />";
-		$form .= "<span>" . gettext("Delete queue from interface") . "</span></a></td></tr>";
+		$form .= $this->GetQname() . "&amp;action=delete\" class=\"btn btn-default btn-xs\"";
+		
+		$form .= "  title=\"" . gettext("Delete queue from interface") . "\"  >";
+		$form .= "<span class=\"glyphicon glyphicon-remove\"></span></a></td></tr>";
 
 		return $form;
 
@@ -3262,7 +3260,7 @@ var addBwRowTo = (function() {
 	tr.appendChild(td);
 	td = d.createElement("td");
 	td.rowSpan = "1";
-	td.innerHTML = '<a onclick="removeBwRow(this); return false;" href="#"><img border="0" src="/themes/{$g['theme']}/images/icons/icon_x.gif" alt="remove" /></a>';
+	td.innerHTML = '<a onclick="removeBwRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>';
 	tr.appendChild(td);
 	tbody.appendChild(tr);
 	totalrows++;
@@ -3354,13 +3352,13 @@ EOD;
 				}
 				$form .= "</select>";
 				$form .= "</td><td width='5%' >";
-				$form .= "<a onclick=\"removeBwRow(this); return false;\" href='#'><img border='0' src='/themes/{$g['theme']}/images/icons/icon_x.gif' alt='remove' /></a>";
+				$form .= "<a onclick=\"removeBwRow(this); return false;\" href='#' class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
 				$form .= "</td></tr>";
 			}
 		}
 		$form .= "</tbody></table>";
-		$form .= "<a onclick=\"javascript:addBwRowTo('maintable'); return false;\" href='#'>";
-		$form .= "<img border='0' src='/themes/{$g['theme']}/images/icons/icon_plus.gif' alt='add' title='" . gettext("add another schedule") . "' /></a>";
+		$form .= "<a onclick=\"javascript:addBwRowTo('maintable'); return false;\" href='#' class='btn btn-default btn-xs'>";
+		$form .= "<span class='glyphicon glyphicon-plus'></span></a>";
 		$form .= "<br /><span class=\"vexpl\">" . gettext("Bandwidth is a rate (e.g. Mbit/s), burst is a total amount of data that will be transferred at full speed after an idle period.") . "</span><br />";
 		$form .= "</td></tr>";
 		$form .= "<tr><td valign=\"middle\" class=\"vncellreq\">" . gettext("Mask") . "</td>";
@@ -4501,25 +4499,23 @@ function build_iface_without_this_queue($iface, $qname) {
 	$form .= "</td></tr>";
 	$form .= "<tr><td width=\"100%\" class=\"vncellreq\">";
 	$form .= "<a href=\"firewall_shaper_queues.php?interface=";
-	$form .= $iface . "&amp;queue=". $qname . "&amp;action=add\">";
-	$form .= "<img src=\"";
-	$form .= "./themes/".$g['theme']."/images/icons/icon_plus.gif\"";
-	$form .= " width=\"17\" height=\"17\" border=\"0\" title=\"Clone shaper/queue on this interface\" alt=\"clone\" />";
-	$form .= gettext(" Clone shaper/queue on this interface") . "</a></td></tr>";
+	$form .= $iface . "&amp;queue=". $qname . "&amp;action=add\" class='btn btn-default btn-xs'>";
+	$form .= " <span class='glyphicon glyphicon-plus' title=\"Clone shaper/queue on this interface\" ></span></a></td></tr>";
+	//$form .= gettext(" Clone shaper/queue on this interface") . "</a></td></tr>";
 
 	return $form;
 
 }
 
 
-$default_shaper_msg =  "<tr><td align=\"center\" width=\"80%\">";
+$default_shaper_msg =  "<tr><td align=\"left\" width=\"80%\">";
 $default_shaper_msg .= "<span class=\"vexpl\"><strong><b>" . sprintf(gettext("Welcome to the %s Traffic Shaper."), $g['product_name']) . "</b><br />";
 $default_shaper_msg .= gettext("The tree on the left helps you navigate through the queues <br />"
 	.  "buttons at the bottom represent queue actions and are activated accordingly.");
 $default_shaper_msg .= "</strong></span>";
 $default_shaper_msg .= "</td></tr>";
 
-$dn_default_shaper_msg =  "<tr><td align=\"center\" width=\"80%\">";
+$dn_default_shaper_msg =  "<tr><td align=\"left\" width=\"80%\">";
 $dn_default_shaper_msg .= "<span class=\"vexpl\"><strong><b>" . sprintf(gettext("Welcome to the %s Traffic Shaper."), $g['product_name']) . "</b><br />";
 $dn_default_shaper_msg .= gettext("The tree on the left helps you navigate through the queues <br />"
 	.  "buttons at the bottom represent queue actions and are activated accordingly.");
