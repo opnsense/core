@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
+
 /*
-	system_firmware_restorefullbackup.php
 	Copyright (C) 2011 Scott Ullrich
 	All rights reserved.
 
@@ -32,7 +31,7 @@
 */
 
 /*
-	pfSense_BUILDER_BINARIES:	/etc/rc.restore_full_backup
+	pfSense_BUILDER_BINARIES:	/usr/local/etc/rc.restore_full_backup
 	pfSense_MODULE:	backup
 */
 
@@ -96,7 +95,7 @@ if ($_GET['deletefile']) {
 if ($_POST['restorefile']) {
 	$filename = $_POST['restorefile'];
 	if(file_exists("/root/{$filename}")) {
-		mwexec_bg("/etc/rc.restore_full_backup /root/" . escapeshellcmd($filename));
+		mwexec_bg("/usr/local/etc/rc.restore_full_backup /root/" . escapeshellcmd($filename));
 		$savemsg = gettext("The firewall is currently restoring $filename");
 	}
 }

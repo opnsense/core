@@ -1,7 +1,7 @@
 #!/usr/local/bin/php -f
 <?php
+
 /*
-        rc.linkup - devd hotplug actions
         part of pfSense
 
         Copyright (C) 2003-2005 Scott Ullrich <sullrich@gmail.com>.

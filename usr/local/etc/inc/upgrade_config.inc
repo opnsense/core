@@ -2578,7 +2578,7 @@ function upgrade_075_to_076() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 /etc/rc.update_urltables";
+	$cron_item['command'] = "/usr/bin/nice -n20 /usr/local/etc/rc.update_urltables";
 	$config['cron']['item'][] = $cron_item;
 }
 

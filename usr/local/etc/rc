@@ -405,9 +405,6 @@ echo -n "Starting CRON... "
 cd /tmp && /usr/sbin/cron -s 2>/dev/null
 echo "done."
 
-# Start packages
-##/usr/local/bin/php -q /etc/rc.start_packages
-
 /bin/rm -rf /usr/local/pkg/pf/CVS
 
 # Start ping handler every 240 seconds
@@ -417,7 +414,7 @@ echo "done."
 /usr/local/bin/minicron 3600 $varrunpath/expire_accounts.pid /etc/rc.expireaccounts
 
 # Start alias url updater every 24 hours
-/usr/local/bin/minicron 86400 $varrunpath/update_alias_url_data.pid /etc/rc.update_alias_url_data
+/usr/local/bin/minicron 86400 $varrunpath/update_alias_url_data.pid /usr/local/etc/rc.update_alias_url_data
 
 /bin/chmod a+rw /tmp/.
 
