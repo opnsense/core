@@ -15,7 +15,7 @@ for i in tmp varmfs etcmfs; do
 done
 
 # Start PFI
-/bin/sh /scripts/pfi start
+/bin/sh /usr/local/installer/pfi start
 
 # If PFI did not find a config, we should create
 # a tiny mfs under /conf and populate with stock

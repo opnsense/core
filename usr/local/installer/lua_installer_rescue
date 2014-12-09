@@ -1,0 +1,146 @@
+#!/bin/sh
+#
+#   Launch BSD Installer with fake "installer root"
+#   Copyright 2004-2009 Scott Ullrich
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are met:
+#   
+#   1. Redistributions of source code must retain the above copyright notice,
+#      this list of conditions and the following disclaimer.
+#   
+#   2. Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in the
+#      documentation and/or other materials provided with the distribution.
+#   
+#   THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#   INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+#   AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+#   AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+#   OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+
+product=`cat /usr/local/etc/inc/globals.inc | grep product_name | cut -d'"' -f4`
+factory_shipped_password=`cat /usr/local/etc/inc/globals.inc | grep factory_shipped_password | cut -d'"' -f4`
+factory_shipped_username=`cat /usr/local/etc/inc/globals.inc | grep factory_shipped_username | cut -d'"' -f4`
+
+echo
+echo "Launching ${product} Installer config.xml rescue..."
+echo
+echo "One moment please..."
+echo
+
+# Ensure install-session.sh exists where the installtion was recorded to
+touch /tmp/install-session.sh
+
+/sbin/sysctl kern.geom.debugflags=16
+/sbin/sysctl net.link.ether.inet.log_arp_wrong_iface=0 >/dev/null
+
+/sbin/ifconfig lo0 127.0.0.1/24
+/sbin/ifconfig lo0 up
+
+# Check if host is running on VMware
+if [ -f /var/log/dmesg.boot ]; then
+	if [ `cat /var/log/dmesg.boot | /usr/bin/grep VMware | /usr/bin/wc -l` -gt 0 ]; then
+		echo -n "VMware detected.  The installer will make changes to tune this host."
+	        touch /var/IS_VMWARE
+		sleep 1
+		echo -n "."
+		sleep 1
+		echo -n "."
+		sleep 1
+		echo -n "."
+		sleep 1
+		echo "."
+	fi
+
+	# Check if host is running on pfSenseDEV
+	if [ `/sbin/sysctl -n kern.bootfile | /usr/bin/grep pfSense_Dev | /usr/bin/wc -l` -gt 0 ]; then
+		echo -n "${product} developer iso detected."
+        	touch /var/pfSenseDEV
+		sleep 1
+		echo -n "."
+		sleep 1
+		echo -n "."
+		sleep 1
+		echo -n "."
+		sleep 1
+		echo "."
+	fi
+
+	if [ -f /var/run/dmesg.boot ]; then
+		ln -s /var/log/dmesg.boot /var/run/dmesg.boot
+	fi
+fi
+
+echo Launching LUA Installer...
+echo -n "LUA_CPATH='/usr/local/lib/lua/5.0/?.so' exec /usr/local/bin/lua50 -l/usr/local/share/lua/5.0/compat-5.1.lua " > /tmp/lua50c51
+
+echo "/usr/local/share/dfuibe_lua/main.lua \
+/usr/local/share/dfuibe_lua/conf/BSDInstaller.lua \
+/usr/local/share/dfuibe_lua/conf/FreeBSD.lua \
+/usr/local/share/dfuibe_lua/conf/pfSense_rescue.lua " >> /tmp/lua50c51
+
+#/sbin/conscontrol mute on >/dev/null 2>&1
+
+sh /tmp/lua50c51 >/dev/null 2>&1 &
+
+sleep 1
+
+echo Launching Installer NCurses frontend...
+/usr/local/sbin/dfuife_curses
+
+#/sbin/conscontrol mute off >/dev/null 2>&1
+
+if [ ! -f /tmp/install_complete ]; then
+	echo Installation did not finish correctly.
+	exit
+fi
+
+clear
+
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo "${product} is now rebooting"
+echo
+echo "After the reboot is complete, open a web browser and"
+echo "enter http://192.168.1.1 (or the LAN IP Address) in the"
+echo "location bar."
+echo
+echo "*DEFAULT Username*: ${factory_shipped_username}"
+echo "*DEFAULT Password*: ${factory_shipped_password}"
+echo
+
+echo Rebooting in 5 seconds.  CTRL-C to abort.
+sleep 1
+echo Rebooting in 4 seconds.  CTRL-C to abort.
+sleep 1
+echo Rebooting in 3 seconds.  CTRL-C to abort.
+sleep 1
+echo Rebooting in 2 seconds.  CTRL-C to abort.
+sleep 1
+echo Rebooting in 1 second..  CTRL-C to abort.
+sleep 1
+echo
+echo ${product} is now rebooting.
+echo
+
+reboot
+

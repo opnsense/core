@@ -1,0 +1,252 @@
+#!/bin/sh
+
+# $Id$
+# $DragonFly: src/nrelease/installer/etc/rc.d/pfi,v 1.2 2004/07/11 18:55:20 cpressey Exp $
+#
+
+# PROVIDE: pfi
+# REQUIRE: mountoptional
+# KEYWORD: FreeBSD
+
+. /etc/rc.subr
+
+name=pfi
+start_cmd="pfi_start"
+stop_cmd=":"
+thttpd_location="/scripts/thttpd"
+
+touch /etc/rc.conf
+
+get_config_xml()
+{
+	if [ -r $1/conf/config.xml ]; then
+		echo -n "[config.xml on $1]"
+		# Now that we have found config.xml lets mount
+		# the device in nullfs under /cf/conf and /conf
+		mount_nullfs /tmp/mnt/cf /cf
+		mount_nullfs /tmp/mnt/cf/conf /conf
+		if [ ! -r /cf/conf/config.xml ]; then
+			echo
+			echo "Something went wrong.  Launching shell!";
+			/bin/sh
+		fi
+		echo
+		return 0
+	else
+		return 1
+	fi
+}
+
+look_for_config_xml_config_msdos()
+{
+	mkdir -p /tmp/mnt/cf
+	echo -n "Looking for config.xml on "
+	for try_device in da0 da0s1 da1 da1s1 da2 da2s1 da3 da3s1 da4 da4s1 da5 da5s1 fd0 fd1; do
+		if [ ! -e /dev/${try_device} ]; then
+			continue
+		fi
+		echo -n "$try_device "
+		if mount -t msdos /dev/$try_device /tmp/mnt/cf 2>/dev/null ; then
+			echo -n "[found msdos] "
+			# Note for later that this device is capable
+			# of having config.xml on it for perm. storage
+			/bin/mkdir -p /var/db/pfi/
+			/usr/bin/touch /var/db/pfi/capable_${try_device}
+			# look for config.xml, if its found return 0
+			if get_config_xml /tmp/mnt/cf /dev/$try_device; then
+			    return 0
+			fi
+		fi
+	done
+	echo "done."
+	return 1
+}
+
+get_pfi_config()
+{
+	[ -r /etc/pfi.conf ] && return 0
+
+	if [ -r $1/pfi.conf ]; then
+		echo -n "Found pfi.conf on $1"
+		tr -d "\r" < $1/pfi.conf > /etc/pfi.conf
+		echo "pfi_found_on_device='$2'" >> /etc/pfi.conf
+		echo "#@@@@@" >>/etc/rc.conf
+		cat /etc/pfi.conf >>/etc/rc.conf
+		if [ -r /etc/defaults/pfi.conf ]; then
+			. /etc/defaults/pfi.conf
+		fi
+		. /etc/pfi.conf
+		if [ "$pfi_script" != "" -a -x "$1/$pfi_script" ]; then
+			$1/$pfi_script
+		fi
+		return 0
+	else
+		return 1
+	fi
+}
+
+get_authorized_hosts()
+{
+	[ -r /root/authorized_hosts ] && return 0
+	if [ -r $1/authorized_hosts ]; then
+		echo "Authorized_hosts found on $1"
+		mkdir -p ~root/.ssh/
+		tr -d "\r" < $1/authorized_hosts > /root/.ssh/authorized_hosts
+	fi
+}
+
+look_for_pfi_config_msdos()
+{
+	[ -r /etc/pfi.conf ] && return 0
+	echo -n "Looking for pfi.conf on "
+	for try_device in da0 da1 da0s1 da1s1 fd0 fd1; do
+		if [ ! -e /dev/${try_device} ]; then
+			continue
+		fi
+		echo -n "${try_device} "
+		if mount -t msdos -o rdonly /dev/$try_device /tmp/mnt 2>/dev/null ; then
+			echo -n "[found] "
+			get_authorized_hosts
+			if get_pfi_config /tmp/mnt /dev/$try_device; then
+				umount /tmp/mnt
+				echo -n "[found] "
+				return 0
+			fi
+			umount /tmp/mnt
+		fi
+	done
+	echo "done. "
+	return 1
+}
+
+look_for_pfi_config_cd9660()
+{
+	[ -r /etc/pfi.conf ] && return 0
+	echo -n "Looking for pfi.conf on "
+	for try_device in acd0c; do
+		echo -n "${try_device} "
+		if [ ! -e /dev/${try_device} ]; then
+			echo "done. "
+			return 1
+			#( cd /dev && ./MAKEDEV ${try_device} )
+		fi
+		if mount_cd9660 /dev/$try_device /tmp/mnt ; then
+			echo -n "[found] "
+			get_authorized_hosts
+			if get_pfi_config /tmp/mnt /dev/$try_device; then
+				umount /tmp/mnt
+				echo -n "[found]" 
+				return 0
+			fi
+			umount /tmp/mnt
+		fi
+	done
+	return 1
+}
+
+pfi_start()
+{
+
+	# Get the pfi.conf file off the pfi media and into /etc/pfi.conf.
+
+	look_for_pfi_config_cd9660
+	look_for_pfi_config_msdos
+        look_for_config_xml_config_msdos    # look for pfsense config.xml
+
+	if [ ! -r /etc/pfi.conf ]; then
+		echo '' >/etc/pfi.conf
+	fi
+
+	if [ -r /etc/defaults/pfi.conf ]; then
+		. /etc/defaults/pfi.conf
+	fi
+	. /etc/pfi.conf
+
+	# We can perform any pre-install tasks here by
+	# examining the contents of pfi_* variables.
+
+	# Interpret pfi_sshd_* options.  These basically add settings
+	# to /etc/ssh/sshd_config; it is assumed "sshd" will appear
+	# in pfi_rc_actions to restart sshd.
+
+	case ${pfi_sshd_permit_root_login} in
+	YES)
+		echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+		;;
+	without-password)
+		echo "PermitRootLogin without-password" >> /etc/ssh/sshd_config
+		;;
+	forced-commands-only)
+		echo "PermitRootLogin forced-commands-only" >> /etc/ssh/sshd_config
+		;;
+	*)
+		;;
+	esac
+
+	case ${pfi_sshd_permit_empty_passwords} in
+	YES)
+		echo "PermitEmptyPasswords yes" >> /etc/ssh/sshd_config
+		;;
+	*)
+		;;
+	esac
+
+	# Interpret pfi_set_root_password.  If it is not empty, use
+	# it to set root's LiveCD password.
+
+	if [ "X$pfi_set_root_password" != "X" ]; then
+		echo "$pfi_set_root_password" | \
+		    /usr/sbin/pw usermod root -h 0
+	fi
+
+	# The most important pre-install task is to restart
+	# any RCNG scripts listed in pfi_rc_actions with any new
+	# settings that might have been set up by pfi.conf.
+
+	if [ "X$pfi_rc_actions" != "X" ]; then
+		rev_actions=`reverse_list $pfi_rc_actions`
+
+		for _rc_elem in ${rev_actions}; do
+			echo "Stopping ${_rc_elem}..."
+			/etc/rc.d/${_rc_elem} stop
+			#rcstop ${_rc_elem}
+		done
+		for _rc_elem in ${pfi_rc_actions}; do
+			echo "Starting ${_rc_elem}..."
+			/etc/rc.d/${_rc_elem} start
+			#rcstart ${_rc_elem}
+		done
+	fi
+
+	# Now remove the copy of pfi.conf that we tacked onto
+	# the end of rc.conf so the above would work
+
+	awk '$1=="#@@@@@" || cut { cut = 1 } !cut { print $0 }' \
+	    </etc/rc.conf >/etc/rc.conf.new
+	mv /etc/rc.conf.new /etc/rc.conf
+
+	# Set up auto-login if requested.
+
+	if [ "X$pfi_autologin" != "XNONE" ]; then
+		echo 'autologin|al.9600:\' >> /etc/gettytab
+		echo "        :al=${pfi_autologin}:tc=std.9600:" >> /etc/gettytab
+		sed -i '' 's/^ttyv0=.*/ttyv0 "\/usr\/libexec\/getty Al" cons25 on secure/' /etc/ttys
+	fi
+
+	# Finally, start thttpd if the user wants to use
+	# the cgi frontend.
+
+	if [ "X$pfi_frontend" = "Xcgi" ]; then
+		echo "Starting thttpd..."
+		echo dir=/usr/local/www > /tmp/thttpd.conf
+		echo user=root >> /tmp/thttpd.conf
+		echo cgipat=*.cgi >> /tmp/thttpd.conf
+		echo logfile=/var/log/thttpd.log >> /tmp/thttpd.conf
+		echo pidfile=/var/run/thttpd.pid >> /tmp/thttpd.conf
+		$thttpd_location -C /tmp/thttpd.conf
+	fi
+}
+
+load_rc_config $name
+run_rc_command "$1"
+
