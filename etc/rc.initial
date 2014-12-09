@@ -58,8 +58,8 @@ fi
 
 /etc/rc.banner
 
-product=`grep product_name /etc/inc/globals.inc | cut -d'"' -f4`
-hidebanner=`grep hidebanner /etc/inc/globals.inc | cut -d'"' -f4`
+product=`grep product_name /usr/local/etc/inc/globals.inc | cut -d'"' -f4`
+hidebanner=`grep hidebanner /usr/local/etc/inc/globals.inc | cut -d'"' -f4`
 
 # Check to see if SSH is running.
 if pgrep -q -a -F /var/run/sshd.pid sshd >/dev/null 2>&1; then

@@ -41,7 +41,7 @@ fi
 
 # Set upload directory
 if [ "$PLATFORM" = "nanobsd" ]; then
-	UPLOADTMPDIR=`/usr/bin/grep upload_path /etc/inc/globals.inc | /usr/bin/cut -d'"' -f4`
+	UPLOADTMPDIR=`/usr/bin/grep upload_path /usr/local/etc/inc/globals.inc | /usr/bin/cut -d'"' -f4`
 else 
 	UPLOADTMPDIR="/tmp"
 fi
@@ -128,7 +128,7 @@ post_max_size = 200M
 html_errors = Off
 zlib.output_compression = Off
 zlib.output_compression_level = 1
-include_path = ".:/etc/inc:/usr/local/www:/usr/local/captiveportal:/usr/local/pkg"
+include_path = ".:/usr/local/etc/inc:/usr/local/www:/usr/local/captiveportal:/usr/local/pkg"
 display_startup_errors=on
 error_reporting = E_ERROR
 display_errors=on

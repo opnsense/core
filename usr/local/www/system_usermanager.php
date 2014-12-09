@@ -340,8 +340,8 @@ if ($_POST['save']) {
 		local_user_set($userent);
 		write_config();
 
-		if(is_dir("/etc/inc/privhooks"))
-			run_plugins("/etc/inc/privhooks");
+		if(is_dir("/usr/local/etc/inc/privhooks"))
+			run_plugins("/usr/local/etc/inc/privhooks");
 
 		conf_mount_ro();
 

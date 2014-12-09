@@ -85,9 +85,9 @@ echo " done.\n";
 
 echo "Initializing...";
 echo ".";
-require_once("/etc/inc/globals.inc");
+require_once("globals.inc");
 echo ".";
-require_once("/etc/inc/led.inc");
+require_once("led.inc");
 led_normalize();
 echo ".";
 if (led_count() >= 3) {
@@ -99,29 +99,29 @@ $pkg_interface = 'console';
 $g['booting'] = true;
 
 /* parse the configuration and include all functions used below */
-require_once("/etc/inc/config.inc");
+require_once("config.inc");
 echo ".";
-require_once("/etc/inc/config.console.inc");
+require_once("config.console.inc");
 echo ".";
-require_once("/etc/inc/auth.inc");
+require_once("auth.inc");
 echo ".";
-require_once("/etc/inc/functions.inc");
+require_once("functions.inc");
 echo ".";
-require_once("/etc/inc/filter.inc");
+require_once("filter.inc");
 echo ".";
-require_once("/etc/inc/shaper.inc");
+require_once("shaper.inc");
 echo ".";
-require_once("/etc/inc/ipsec.inc");
+require_once("ipsec.inc");
 echo ".";
-require_once("/etc/inc/vpn.inc");
+require_once("vpn.inc");
 echo ".";
-require_once("/etc/inc/openvpn.inc");
+require_once("openvpn.inc");
 echo ".";
-require_once("/etc/inc/captiveportal.inc");
+require_once("captiveportal.inc");
 echo ".";
-require_once("/etc/inc/rrd.inc");
+require_once("rrd.inc");
 echo ".";
-require_once("/etc/inc/pfsense-utils.inc");
+require_once("pfsense-utils.inc");
 echo ".";
 
 /* get system memory amount */
@@ -388,7 +388,7 @@ if($config['system']['afterbootupshellcmd'] <> "") {
 }
 
 if($physmem < $g['minimum_ram_warning']) {
-	require_once("/etc/inc/notices.inc");
+	require_once("notices.inc");
 	file_notice("{$g['product_name']}MemoryRequirements", "{$g['product_name']} requires at least {$g['minimum_ram_warning_text']} of RAM.  Expect unusual performance.  This platform is not supported.", "Memory", "", 1);
 	set_sysctl(array(
 		"net.inet.tcp.recvspace" => "4096",

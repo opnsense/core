@@ -1,12 +1,10 @@
 #!/bin/sh
 
-# $Id$
-
 FMBASEURL=$1
 FMFILENAME=$2
 FETCHFILENAME=$1/$2
 
-product=`cat /etc/inc/globals.inc | grep product_name | cut -d'"' -f4`
+product=`cat /usr/local/etc/inc/globals.inc | grep product_name | cut -d'"' -f4`
 
 # wait 5 seconds before beginning
 sleep 5
