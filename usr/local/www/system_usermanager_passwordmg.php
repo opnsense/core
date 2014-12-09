@@ -57,7 +57,7 @@ if (isset($_POST['save'])) {
 		if (!session_id())
 			session_start();
 		// all values are okay --> saving changes
-		$config['system']['user'][$userindex[$_SESSION['Username']]]['password'] = crypt($_POST['passwordfld1'], '$6$'));
+		$config['system']['user'][$userindex[$_SESSION['Username']]]['password'] = crypt($_POST['passwordfld1'], '$6$');
 		local_user_set($config['system']['user'][$userindex[$_SESSION['Username']]]);
 		session_commit();
 
