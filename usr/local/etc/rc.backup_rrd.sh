@@ -5,13 +5,13 @@
 
 # Save the rrd databases to the config path.
 if [ -d "${RRDDBPATH}" ]; then
-	[ -z "$NO_REMOUNT" ] && /etc/rc.conf_mount_rw
+	[ -z "$NO_REMOUNT" ] && /usr/local/etc/rc.conf_mount_rw
 	for rrdfile in "${RRDDBPATH}"/*.rrd ; do
 		xmlfile="${rrdfile%.rrd}.xml"
 		/usr/bin/nice -n20 /usr/local/bin/rrdtool dump "$rrdfile" "$xmlfile"
 	done
 	cd / && tar -czf "${CF_CONF_PATH}"/rrd.tgz -C / "${RRDDBPATH#/}"/*.xml
 	rm "${RRDDBPATH}"/*.xml
-	[ -z "$NO_REMOUNT" ] && /etc/rc.conf_mount_ro
+	[ -z "$NO_REMOUNT" ] && /usr/local/etc/rc.conf_mount_ro
 fi
 

@@ -96,7 +96,7 @@ ON_DISK_V6_CKSUM=`md5 /tmp/bogonsv6 | awk '{ print $4 }'`
 
 if [ "$BOGON_V4_CKSUM" = "$ON_DISK_V4_CKSUM" ] || [ "$BOGON_V6_CKSUM" = "$ON_DISK_V6_CKSUM" ]; then
 	# At least one of the downloaded checksums matches, so mount RW
-	/etc/rc.conf_mount_rw
+	/usr/local/etc/rc.conf_mount_rw
 	
 	ENTRIES_MAX=`pfctl -s memory | awk '/table-entries/ { print $4 }'`
 	
@@ -145,7 +145,7 @@ if [ "$BOGON_V4_CKSUM" = "$ON_DISK_V4_CKSUM" ] || [ "$BOGON_V6_CKSUM" = "$ON_DIS
 	fi
 	
 	# We mounted RW, so switch back to RO
-	/etc/rc.conf_mount_ro
+	/usr/local/etc/rc.conf_mount_ro
 fi
 
 if [ "$checksum_error" != "" ]; then

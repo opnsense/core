@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/etc/rc.conf_mount_rw
+/usr/local/etc/rc.conf_mount_rw
 
 # Record the previous version
 PRIOR_VERSION=`uname -r | cut -d'.' -f1`

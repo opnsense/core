@@ -1,8 +1,7 @@
 #!/usr/local/bin/php -f
 <?php
-/* $Id$ */
+
 /*
-    rc.conf_mount_rw
     part of pfSense (https://www.pfsense.org)
     Copyright (C) 2004 Scott Ullrich
     All rights reserved.
@@ -32,5 +31,3 @@
 require_once("config.inc");
 
 conf_mount_rw();
-
-?>
