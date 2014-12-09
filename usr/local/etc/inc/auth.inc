@@ -398,7 +398,7 @@ function local_user_set(& $user) {
 	/* configure shell type */
 	/* Cases here should be ordered by most privileged to least privileged. */
 	if (userHasPrivilege($user, "user-shell-access") || userHasPrivilege($user, "page-all")) {
-		$user_shell = "/bin/tcsh";
+		$user_shell = "/bin/csh";
 	} elseif (userHasPrivilege($user, "user-copy-files")) {
 		$user_shell = "/usr/local/bin/scponly";
 	} elseif (userHasPrivilege($user, "user-ssh-tunnel")) {
@@ -418,7 +418,7 @@ function local_user_set(& $user) {
 
 	/* root user special handling */
 	if ($user_uid == 0) {
-		$cmd = "/usr/sbin/pw usermod -q -n root -s /bin/sh -H 0";
+		$cmd = "/usr/sbin/pw usermod -q -n root -s /usr/local/etc/rc.initial -H 0";
 		if($debug)
 			log_error(sprintf(gettext("Running: %s"), $cmd));
 		$fd = popen($cmd, "w");

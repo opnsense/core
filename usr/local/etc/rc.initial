@@ -14,7 +14,7 @@
 
 # If recovery console shell option has been specified
 if [ -f "/tmp/donotbootup" ]; then
-	/usr/bin/env prompt="%B[%n@%m]%b%/(%h)||RecoveryConsoleShell: " /bin/tcsh
+	/usr/bin/env prompt="%B[%n@%m]%b%/(%h)||RecoveryConsoleShell: " /bin/csh
 	rm "/tmp/donotbootup"
 	echo "Rebooting in 5 seconds... CTRL-C to abort..."
 	sleep 5
@@ -110,7 +110,7 @@ case ${opmode} in
         /etc/rc.initial.ping
         ;;
 8)
-        /bin/tcsh
+        /bin/csh
         ;;
 9)
         /usr/local/sbin/pftop
