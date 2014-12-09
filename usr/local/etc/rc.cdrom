@@ -14,12 +14,7 @@ for i in tmp varmfs etcmfs; do
        fi
 done
 
-# Start PFI
-/bin/sh /usr/local/installer/pfi start
-
-# If PFI did not find a config, we should create
-# a tiny mfs under /conf and populate with stock
-# configuration.
+# Add /conf and populate with stock configuration.
 if [ ! -f /conf/config.xml ]; then
        echo -n "Generating a MFS /conf partition... "
        device=$(mdconfig -a -t malloc -s ${partsize})
