@@ -387,7 +387,7 @@ function local_user_set(& $user) {
 	$user_uid = $user['uid'];
 	$user_name = $user['name'];
 	$user_home = "{$home_base}{$user_name}";
-	$user_shell = "/etc/rc.initial";
+	$user_shell = "/usr/local/etc/rc.initial";
 	$user_group = "nobody";
 
 	// Ensure $home_base exists and is writable
@@ -426,7 +426,7 @@ function local_user_set(& $user) {
 		pclose($fd);
 		$user_group = "wheel";
 		$user_home = "/root";
-		$user_shell = "/etc/rc.initial";
+		$user_shell = "/usr/local/etc/rc.initial";
 	}
 
 	/* read from pw db */
