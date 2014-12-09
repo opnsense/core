@@ -1,13 +1,13 @@
 @charset "UTF-8";
 @font-face {
   font-family: 'SourceSansProBold';
-  src: url("/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff") format("woff"), url("/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf") format("truetype"); }
+  src: url("../../build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff") format("woff"), url("../../build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf") format("truetype"); }
 @font-face {
   font-family: 'SourceSansProSemibold';
-  src: url("/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff") format("woff"), url("/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf") format("truetype"); }
+  src: url("../../build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff") format("woff"), url("../../build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf") format("truetype"); }
 @font-face {
   font-family: 'SourceSansProRegular';
-  src: url("/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff") format("woff"), url("/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf") format("truetype"); }
+  src: url("../../build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff") format("woff"), url("../../build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf") format("truetype"); }
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -891,7 +891,7 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.428571429;
-  color: #3C3C3B;
+  color: #3b3b3c;
   background-color: #fff; }
 
 input,
@@ -2688,7 +2688,7 @@ select[multiple].input-lg,
   display: block;
   margin-top: 5px;
   margin-bottom: 10px;
-  color: #7c7c7a; }
+  color: #7a7a7c; }
 
 @media (min-width: 768px) {
   .form-inline .form-group, .navbar-form .form-group {
@@ -3741,7 +3741,7 @@ tbody.collapse.in {
         margin-right: 0; } }
 
 .navbar-default {
-  background-color: #3C3C3B;
+  background-color: #3b3b3c;
   border-color: #2b2b2b; }
   .navbar-default .navbar-brand {
     color: #F7F7F7; }
@@ -4121,7 +4121,7 @@ a.badge:hover, a.badge:focus {
     margin-right: auto; }
   .thumbnail .caption {
     padding: 9px;
-    color: #3C3C3B; }
+    color: #3b3b3c; }
 
 a.thumbnail:hover,
 a.thumbnail:focus,
@@ -4322,7 +4322,7 @@ a.thumbnail.active {
     margin-right: 5px; }
 
 a.list-group-item {
-  color: #3C3C3B;
+  color: #3b3b3c;
   border-radius: 0; }
   a.list-group-item .list-group-item-heading {
     color: #333; }
@@ -5471,7 +5471,7 @@ body {
   min-width: 320px; }
 
 .page-head {
-  background: #3C3C3B;
+  background: #3b3b3c;
   top: 0;
   left: 0;
   position: fixed;
@@ -5595,7 +5595,7 @@ body {
   max-width: 400px;
   margin: 100px auto 15px auto; }
 .login-modal-head {
-  background: #3C3C3B;
+  background: #3b3b3c;
   height: 75px;
   padding: 0 20px; }
 .login-modal-content {
@@ -5670,7 +5670,7 @@ body {
     border-left: 1px solid #E5E5E5;
     border-radius: 0px;
     background: #F7F7F7;
-    color: #3C3C3B;
+    color: #3b3b3c;
     font-family: 'SourceSansProSemibold'; }
     @media (min-width: 768px) {
       .nav-tabs.nav-justified > li > a {
@@ -5792,7 +5792,3 @@ table {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #e5e5e5; }
-
-.widgetdiv {
-  padding-top: 0px !important;
-  padding-bottom: 20px; }

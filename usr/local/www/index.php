@@ -426,185 +426,183 @@ echo $jscriptstr;
 	<?php exit; ?>
 <?php endif; ?>
 
-	<section class="page-content-main">
-		<div class="container-fluid">
-            
-            <div class="row">
-	            <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
-		           <input type="hidden" value="" name="sequence" id="sequence" />
-<?php            
-/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
-if (!verify_all_package_servers())
-	print_info_box(package_server_mismatch_message());
+<section class="page-content-main">
+	<div class="container-fluid">
+        
+        <div class="row">
+            <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
+	           <input type="hidden" value="" name="sequence" id="sequence" />
+				<?php            
+				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
+				if (!verify_all_package_servers())
+					print_info_box(package_server_mismatch_message());
 
-if ($savemsg)
-	print_info_box($savemsg);
+				if ($savemsg)
+					print_info_box($savemsg);
 
 
-?>
+				?>
 
-	          
+          
 
-	<?php
-	$totalwidgets = count($widgetfiles);
-	$halftotal = $totalwidgets / 2 - 2;
-	$widgetcounter = 0;
-	$directory = "/usr/local/www/widgets/widgets/";
-	$printed = false;
-	$firstprint = false;
-	
-	foreach($widgetlist as $widget) {
-
-		if(!stristr($widget, "widget.php"))
-					continue;
-		$periodpos = strpos($widget, ".");
-		$widgetname = substr($widget, 0, $periodpos);
-		if ($widgetname != ""){
-			$nicename = $widgetname;
-			$nicename = str_replace("_", " ", $nicename);
-
-			//make the title look nice
-			$nicename = ucwords($nicename);
-		}
-
-		if ($config['widgets'] && $pconfig['sequence'] != ""){
-			switch($displayarray[$widgetcounter]){
-				case "show":
-					$divdisplay = "block";
-					$display = "block";
-					$inputdisplay = "show";
-					$showWidget = "none";
-					$mindiv = "inline";
-					break;
-				case "hide":
-					$divdisplay = "block";
-					$display = "none";
-					$inputdisplay = "hide";
-					$showWidget = "inline";
-					$mindiv = "none";
-					break;
-				case "close":
-					$divdisplay = "none";
-					$display = "block";
-					$inputdisplay = "close";
-					$showWidget = "none";
-					$mindiv = "inline";
-					break;
-				default:
-					$divdisplay = "none";
-					$display = "block";
-					$inputdisplay = "none";
-					$showWidget = "none";
-					$mindiv = "inline";
-					break;
-			}
-		} else {
-			if ($firstprint == false){
-				$divdisplay = "block";
-				$display = "block";
-				$inputdisplay = "show";
-				$showWidget = "none";
-				$mindiv = "inline";
-				$firstprint = true;
-			} else {
-				switch ($widget) {
-					case "interfaces.widget.php":
-					case "traffic_graphs.widget.php":
-						$divdisplay = "block";
-						$display = "block";
-						$inputdisplay = "show";
-						$showWidget = "none";
-						$mindiv = "inline";
-						break;
-					default:
-						$divdisplay = "none";
-						$display = "block";
-						$inputdisplay = "close";
-						$showWidget = "none";
-						$mindiv = "inline";
-						break;
-				}
-			}
-		}
-
-		
-
-		?>
-		<section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>"  style="display:<?php echo $divdisplay; ?>;">
-          	<div class="content-box">	          	
-	          	
-				<header class="content-box-head container-fluid">
-
-				    <ul class="list-inline __nomb">
-				        <li><h3>
-					    <?php
-							$widgettitle = $widgetname . "_title";
-							$widgettitlelink = $widgetname . "_title_link";
-							if ($$widgettitle != "")
-							{
-								//only show link if defined
-								if ($$widgettitlelink != "") {?>
-								<u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
-								<?php }
-									//echo widget title
-									echo $$widgettitle;
-								if ($$widgettitlelink != "") { ?>
-								</span></u>
-								<?php }
-							}
-							else{
-								if ($$widgettitlelink != "") {?>
-								<u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
-								<?php }
-								echo $nicename;
-									if ($$widgettitlelink != "") { ?>
-								</span></u>
-								<?php }
-							}
-						?>					        
-				        </h3></li>
-				        <li class="pull-right">
-				            <div class="btn-group">
-				                <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?php echo $widgetname;?>-min" onclick='return minimizeWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv; ?>;"><span class="glyphicon glyphicon-minus"></span></button>
-				                
-				                  <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?php echo $widgetname;?>-max" onclick='return showWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv == 'none' ? 'inline' : 'none'; ?>;"><span class="glyphicon glyphicon-plus"></span></button>
-				                
-				                <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?php echo $widgetname;?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
-				               
-				                <button class="btn btn-default btn-xs" id="<?php echo $widgetname;?>-configure" onclick='return configureWidget("<?php echo $widgetname;?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
-													
-				            </div>
-				        </li>   
-				    </ul>                             
-				</header>
-	          	
-	          	<div class="content-box-main collapse in" id="<?php echo $widgetname;?>-container" style="display:<?=$mindiv;?>">
-	          		<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-config" name="<?php echo $widgetname;?>-config" />
-			
-					<?php if ($divdisplay != "block") { ?>
-					<div id="<?php echo $widgetname;?>-loader" style="display:<?php echo $display; ?>;" align="center">
-						<br />
-							<span class="glyphicon glyphicon-refresh"></span> <?=gettext("Loading selected widget"); ?>
-						<br />
-					</div> <?php $display = "none"; } ?>
+				<?php
+					$totalwidgets = count($widgetfiles);
+					$halftotal = $totalwidgets / 2 - 2;
+					$widgetcounter = 0;
+					$directory = "/usr/local/www/widgets/widgets/";
+					$printed = false;
+					$firstprint = false;
 					
-						<?php
-							if ($divdisplay == "block")
-							{
-								include($directory . $widget);
-							}
-						?>
-						<?php $widgetcounter++; ?>
-	          			</div>
-                    </div>                   
-                </section>
-				<? } //end foreach ?>
-		
+					foreach($widgetlist as $widget) {
 
-	            </form>
-            </div>
-        </div>
-    </section>
+						if(!stristr($widget, "widget.php"))
+									continue;
+						$periodpos = strpos($widget, ".");
+						$widgetname = substr($widget, 0, $periodpos);
+						if ($widgetname != ""){
+							$nicename = $widgetname;
+							$nicename = str_replace("_", " ", $nicename);
+
+							//make the title look nice
+							$nicename = ucwords($nicename);
+						}
+
+						if ($config['widgets'] && $pconfig['sequence'] != ""){
+							switch($displayarray[$widgetcounter]){
+								case "show":
+									$divdisplay = "block";
+									$display = "block";
+									$inputdisplay = "show";
+									$showWidget = "none";
+									$mindiv = "inline";
+									break;
+								case "hide":
+									$divdisplay = "block";
+									$display = "none";
+									$inputdisplay = "hide";
+									$showWidget = "inline";
+									$mindiv = "none";
+									break;
+								case "close":
+									$divdisplay = "none";
+									$display = "block";
+									$inputdisplay = "close";
+									$showWidget = "none";
+									$mindiv = "inline";
+									break;
+								default:
+									$divdisplay = "none";
+									$display = "block";
+									$inputdisplay = "none";
+									$showWidget = "none";
+									$mindiv = "inline";
+									break;
+							}
+						} else {
+							if ($firstprint == false){
+								$divdisplay = "block";
+								$display = "block";
+								$inputdisplay = "show";
+								$showWidget = "none";
+								$mindiv = "inline";
+								$firstprint = true;
+							} else {
+								switch ($widget) {
+									case "interfaces.widget.php":
+									case "traffic_graphs.widget.php":
+										$divdisplay = "block";
+										$display = "block";
+										$inputdisplay = "show";
+										$showWidget = "none";
+										$mindiv = "inline";
+										break;
+									default:
+										$divdisplay = "none";
+										$display = "block";
+										$inputdisplay = "close";
+										$showWidget = "none";
+										$mindiv = "inline";
+										break;
+								}
+							}
+						}
+
+	
+
+				?>
+						<section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>"  style="display:<?php echo $divdisplay; ?>;">
+				          	<div class="content-box">	          	
+					          	
+								<header class="content-box-head container-fluid">
+
+								    <ul class="list-inline __nomb">
+								        <li><h3>
+									    <?php
+											$widgettitle = $widgetname . "_title";
+											$widgettitlelink = $widgetname . "_title_link";
+											if ($$widgettitle != "")
+											{
+												//only show link if defined
+												if ($$widgettitlelink != "") {?>
+												<u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
+												<?php }
+													//echo widget title
+													echo $$widgettitle;
+												if ($$widgettitlelink != "") { ?>
+												</span></u>
+												<?php }
+											}
+											else{
+												if ($$widgettitlelink != "") {?>
+												<u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
+												<?php }
+												echo $nicename;
+													if ($$widgettitlelink != "") { ?>
+												</span></u>
+												<?php }
+											}
+										?>					        
+								        </h3></li>
+								        <li class="pull-right">
+								            <div class="btn-group">
+								                <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?php echo $widgetname;?>-min" onclick='return minimizeWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv; ?>;"><span class="glyphicon glyphicon-minus"></span></button>
+								                
+								                  <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?php echo $widgetname;?>-max" onclick='return showWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv == 'none' ? 'inline' : 'none'; ?>;"><span class="glyphicon glyphicon-plus"></span></button>
+								                
+								                <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?php echo $widgetname;?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
+								               
+								                <button class="btn btn-default btn-xs" id="<?php echo $widgetname;?>-configure" onclick='return configureWidget("<?php echo $widgetname;?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
+																	
+								            </div>
+								        </li>   
+								    </ul>                             
+								</header>
+					          	
+					          	<div class="content-box-main collapse in" id="<?php echo $widgetname;?>-container" style="display:<?=$mindiv;?>">
+					          		<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-config" name="<?php echo $widgetname;?>-config" />
+							
+									<?php if ($divdisplay != "block") { ?>
+									<div id="<?php echo $widgetname;?>-loader" style="display:<?php echo $display; ?>;" align="center">
+										<br />
+											<span class="glyphicon glyphicon-refresh"></span> <?=gettext("Loading selected widget"); ?>
+										<br />
+									</div> <?php $display = "none"; } ?>
+									
+									<?php
+										if ($divdisplay == "block")
+										{
+											include($directory . $widget);
+										}
+									?>
+									<?php $widgetcounter++; ?>
+				      			</div>
+				            </div>                   
+				        </section>
+				<? } //end foreach ?>
+			</form>
+	    </div>
+    </div>
+</section>
 
 
 
