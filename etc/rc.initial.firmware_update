@@ -172,11 +172,11 @@ function do_upgrade($path, $type) {
 	mark_subsystem_dirty('firmwarelock');
 	echo "\nOne moment please...\nInvoking firmware upgrade...";
 	if($type == "bdiff")
-		mwexec_bg("/etc/rc.firmware delta_update $path");
+		mwexec_bg("/usr/local/etc/rc.firmware delta_update $path");
 	elseif($type == "nanobsd")
-		mwexec_bg("/etc/rc.firmware pfSenseNanoBSDupgrade $path");
+		mwexec_bg("/usr/local/etc/rc.firmware pfSenseNanoBSDupgrade $path");
 	else
-		mwexec_bg("/etc/rc.firmware pfSenseupgrade $path");
+		mwexec_bg("/usr/local/etc/rc.firmware pfSenseupgrade $path");
 	sleep(10);
 	while(is_subsystem_dirty('firmwarelock')) {
 		sleep(1);

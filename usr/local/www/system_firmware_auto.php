@@ -186,7 +186,7 @@ if(!$latest_version) {
 }
 
 /* launch external upgrade helper */
-$external_upgrade_helper_text = "/etc/rc.firmware ";
+$external_upgrade_helper_text = "/usr/local/etc/rc.firmware ";
 
 if($g['platform'] == "nanobsd")
 	$external_upgrade_helper_text .= "pfSenseNanoBSDupgrade ";

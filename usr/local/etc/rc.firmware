@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# /etc/rc.firmware
 # originally part of m0n0wall (http://neon1.net/m0n0wall)
 # Copyright (C) 2005-2009 Scott Ullrich <sullrich@pfsense.org>.
 # Copyright (C) 2003 Manuel Kasper <mk@neon1.net>.
@@ -130,7 +129,7 @@ auto)
 	touch /var/run/firmwarelock.dirty
 	backup_chflags
 	remove_chflags
-	/etc/rc.firmware_auto
+	/usr/local/etc/rc.firmware_auto
 	restore_chflags
 	/etc/rc.conf_mount_ro
 	;;

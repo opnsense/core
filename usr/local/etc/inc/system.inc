@@ -1673,12 +1673,11 @@ function sync_system_time() {
 	
 }
 
-function system_halt() {
-	global $g;
-
+function system_halt()
+{
 	system_reboot_cleanup();
 
-	mwexec("/usr/bin/nohup /etc/rc.halt > /dev/null 2>&1 &");
+	mwexec("/usr/bin/nohup /usr/local/etc/rc.halt > /dev/null 2>&1 &");
 }
 
 function system_reboot() {
