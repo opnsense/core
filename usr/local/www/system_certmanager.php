@@ -1,7 +1,6 @@
 <?php
-/*
-    system_certmanager.php
 
+/*
     Copyright (C) 2008 Shrew Soft Inc.
     All rights reserved.
 
@@ -47,9 +46,6 @@ $cert_methods = array(
 );
 
 $cert_keylens = array( "512", "1024", "2048", "4096");
-$cert_types = array(	"ca" => "Certificate Authority",
-			"server" => "Server Certificate",
-			"user" => "User Certificate");
 
 $altname_types = array("DNS", "IP", "email", "URI");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
@@ -113,7 +109,6 @@ if ($act == "new") {
 	$pconfig['digest_alg'] = "sha256";
 	$pconfig['csr_keylen'] = "2048";
 	$pconfig['csr_digest_alg'] = "sha256";
-	$pconfig['type'] = "user";
 	$pconfig['lifetime'] = "3650";
 }
 
@@ -211,13 +206,12 @@ if ($_POST) {
 
 		if ($pconfig['method'] == "internal") {
 			$reqdfields = explode(" ",
-					"descr caref keylen type lifetime dn_country dn_state dn_city ".
+					"descr caref keylen lifetime dn_country dn_state dn_city ".
 					"dn_organization dn_email dn_commonname");
 			$reqdfieldsn = array(
 					gettext("Descriptive name"),
 					gettext("Certificate authority"),
 					gettext("Key length"),
-					gettext("Certificate Type"),
 					gettext("Lifetime"),
 					gettext("Distinguished name Country Code"),
 					gettext("Distinguished name State or Province"),
@@ -359,7 +353,7 @@ if ($_POST) {
 						$dn['subjectAltName'] = implode(",", $altnames_tmp);
 					}
 					if (!cert_create($cert, $pconfig['caref'], $pconfig['keylen'],
-						$pconfig['lifetime'], $dn, $pconfig['type'], $pconfig['digest_alg'])){
+						$pconfig['lifetime'], $dn, $pconfig['digest_alg'])){
 						while($ssl_err = openssl_error_string()){
 							$input_errors = array();
 							array_push($input_errors, "openssl library returns: " . $ssl_err);
@@ -720,23 +714,6 @@ function internalca_change() {
 								<?php endforeach; ?>
 								</select>
 								<br /><?= gettext("NOTE: It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Certificate Type");?></td>
-							<td width="78%" class="vtable">
-								<select name='type' class="formselect">
-								<?php
-									foreach( $cert_types as $ct => $ctdesc ):
-									$selected = "";
-									if ($pconfig['type'] == $ct)
-										$selected = " selected=\"selected\"";
-								?>
-									<option value="<?=$ct;?>"<?=$selected;?>><?=$ctdesc;?></option>
-								<?php endforeach; ?>
-								</select>
-								<br />
-								<?=gettext("Type of certificate to generate. Used for placing restrictions on the usage of the generated certificate.");?>
 							</td>
 						</tr>
 						<tr>
@@ -1134,9 +1111,6 @@ function internalca_change() {
 									</td>
 								</tr>
 								<tr><td>&nbsp;</td></tr>
-								<?php if ($cert['type']): ?>
-								<tr><td colspan="2"><em><?php echo $cert_types[$cert['type']]; ?></em></td></tr>
-								<?php endif; ?>
 								<?php if (is_array($purpose)): ?>
 								<tr><td colspan="2">
 									CA: <?php echo $purpose['ca']; ?>,

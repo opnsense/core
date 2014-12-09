@@ -1,5 +1,5 @@
 <?php
-/* $Id$ */
+
 /*
 	Copyright (C) 2008 Shrew Soft Inc
 	Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
@@ -268,7 +268,7 @@ function cert_import(& $cert, $crt_str, $key_str) {
 	return true;
 }
 
-function cert_create(& $cert, $caref, $keylen, $lifetime, $dn, $type="user", $digest_alg = "sha256") {
+function cert_create(& $cert, $caref, $keylen, $lifetime, $dn, $digest_alg = "sha256") {
 
 	$ca =& lookup_ca($caref);
 	if (!$ca)
@@ -281,18 +281,6 @@ function cert_create(& $cert, $caref, $keylen, $lifetime, $dn, $type="user", $di
 	if(!$ca_res_key) return false;
 	$ca_serial = ++$ca['serial'];
 
-	switch ($type) {
-		case "ca":
-			$cert_type = "v3_ca";
-			break;
-		case "server":
-			$cert_type = "server";
-			break;
-		default:
-			$cert_type = "usr_cert";
-			break;
-	}
-
 	// in case of using Subject Alternative Names use other sections (with postfix '_san')
 	// pass subjectAltName over environment variable 'SAN'
 	if ($dn['subjectAltName']) {
@@ -302,7 +290,7 @@ function cert_create(& $cert, $caref, $keylen, $lifetime, $dn, $type="user", $di
 	}
 
 	$args = array(
-		"x509_extensions" => $cert_type,
+		"x509_extensions" => "usr_cert",
 		"digest_alg" => $digest_alg,
 		"private_key_bits" => (int)$keylen,
 		"private_key_type" => OPENSSL_KEYTYPE_RSA,
@@ -330,7 +318,6 @@ function cert_create(& $cert, $caref, $keylen, $lifetime, $dn, $type="user", $di
 	$cert['caref'] = $caref;
 	$cert['crt'] = base64_encode($str_crt);
 	$cert['prv'] = base64_encode($str_key);
-	$cert['type'] = $type;
 
 	return true;
 }

@@ -862,12 +862,17 @@ function system_webgui_start() {
 			$cert = array();
 			$cert['refid'] = uniqid();
 			$cert['descr'] = gettext("webConfigurator default");
-			mwexec("/usr/bin/openssl genrsa 1024 > {$g['tmp_path']}/ssl.key");
-			mwexec("/usr/bin/openssl req -new -x509 -nodes -sha256 -days 2000 -key {$g['tmp_path']}/ssl.key > {$g['tmp_path']}/ssl.crt");
-			$crt = file_get_contents("{$g['tmp_path']}/ssl.crt");
-			$key = file_get_contents("{$g['tmp_path']}/ssl.key");
-			unlink("{$g['tmp_path']}/ssl.key");
-			unlink("{$g['tmp_path']}/ssl.crt");
+			/* mind the gap ->.<- */
+			$openssl_args  = ' req -new -newkey rsa:4096 -sha256';
+			$openssl_args .= ' -days 365 -nodes -x509';
+			$openssl_args .= ' -subj "/C=NL/ST=Zuid-Holland/L=Middelharnis/O=OPNsense"';
+			$openssl_args .= ' -keyout /tmp/ssl.key';
+			$openssl_args .= ' -out /tmp/ssl.crt';
+			mwexec('/usr/bin/openssl' . $openssl_args);
+			$crt = file_get_contents('/tmp/ssl.crt');
+			$key = file_get_contents('/tmp/ssl.key');
+			unlink('/tmp/ssl.key');
+			unlink('/tmp/ssl.crt');
 			cert_import($cert, $crt, $key);
 			$a_cert[] = $cert;
 			$config['system']['webgui']['ssl-certref'] = $cert['refid'];
