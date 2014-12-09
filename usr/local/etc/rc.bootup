@@ -2,7 +2,6 @@
 <?php
 
 /*
-	rc.bootup
 	part of pfSense by Scott Ullrich
 	originally based on m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2004-2009 Scott Ullrich <sullrich@pfsense.org>.

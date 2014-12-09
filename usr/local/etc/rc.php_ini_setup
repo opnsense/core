@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-#	rc.php_ini_setup
 #	Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
 #	All rights reserved.
 #
@@ -111,7 +110,7 @@ TIMEZONE=`cat /conf/config.xml | egrep -E '<timezone>(.*?)</timezone>' | awk -F'
 # the file being clobbered and the firewall
 # not being able to boot back up.
 /bin/cat >/usr/local/lib/php.ini <<EOF
-; File generated from /etc/rc.php_ini_setup
+; File generated via rc.php_ini_setup
 output_buffering = "0"
 expose_php = Off
 implicit_flush = true

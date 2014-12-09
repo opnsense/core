@@ -65,7 +65,7 @@ if [ "$PLATFORM" = "pfSense" ]; then
 fi
 
 if [ "${PLATFORM}" = "cdrom" ]; then
-	/etc/rc.cdrom
+	/usr/local/etc/rc.cdrom
 else
 	# Mount /. If it fails run a fsck.
 	if [ "$PLATFORM" = "nanobsd" ]; then
@@ -379,7 +379,7 @@ echo "done."
 
 # Run the php.ini setup file and populate
 # /usr/local/etc/php.ini and /usr/local/lib/php.ini
-/etc/rc.php_ini_setup 2>/tmp/php_errors.txt
+/usr/local/etc/rc.php_ini_setup 2>/tmp/php_errors.txt
 
 # Launch external configuration loader for supported platforms
 if [ "$PLATFORM" = "nanobsd" ]; then
@@ -406,10 +406,9 @@ echo -n "Launching the init system..."
 /bin/rm -f /cf/conf/backup/backup.cache
 /bin/rm -f /root/lighttpd*
 /usr/bin/touch $varrunpath/booting
-/etc/rc.bootup
+/usr/local/etc/rc.bootup
 
-# /etc/rc.bootup unset $g['booting'], remove file right now to be
-# consistent
+# rc.bootup unset $g['booting'], remove file right now to be consistent
 /bin/rm $varrunpath/booting
 
 # If a shell was selected from recovery 

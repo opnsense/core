@@ -385,9 +385,9 @@ function post_cvssync_commands() {
 	exec("pfctl -f /tmp/rules.debug");
 	echo "\n";
 
-	if(file_exists("/etc/rc.php_ini_setup")) {
-		echo "===> Running /etc/rc.php_ini_setup...";
-		exec("/etc/rc.php_ini_setup");
+	if(file_exists("/usr/local/etc/rc.php_ini_setup")) {
+		echo "===> Running rc.php_ini_setup...";
+		exec("/usr/local/etc/rc.php_ini_setup");
 		echo "\n";
 	}
 
