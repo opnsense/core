@@ -454,9 +454,8 @@ if [ "${GMIRROR_STATUS}" != "" ]; then
 fi
 
 # Log product version to syslog
-BUILDTIME=`cat /etc/version.buildtime`
 ARCH=`uname -m`
-echo "$product ($PLATFORM) $version $ARCH $BUILDTIME"
+echo "$product ($PLATFORM) $version $ARCH"
 
 echo "Bootup complete"
 
