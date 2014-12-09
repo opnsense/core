@@ -375,7 +375,7 @@ function post_cvssync_commands() {
 	convert_config();
 
 	echo "===> Configuring filter...";
-	exec("/etc/rc.filter_configure_sync");
+	exec("/usr/local/etc/rc.filter_configure_sync");
 	exec("pfctl -f /tmp/rules.debug");
 	echo "\n";
 

@@ -130,8 +130,8 @@ fi
 /bin/rm -f /root/TRIM_unset
 
 # Disable APM on ATA drives. Leaving this on will kill drives long-term, especially laptop drives, by generating excessive Load Cycles.
-if [ -f /etc/rc.disable_hdd_apm ]; then
-	/etc/rc.disable_hdd_apm
+if [ -f /usr/local/etc/rc.disable_hdd_apm ]; then
+	/usr/local/etc/rc.disable_hdd_apm
 fi
 
 #Eject CD devices on 3G modems
@@ -411,7 +411,7 @@ echo "done."
 /usr/local/bin/minicron 240 $varrunpath/ping_hosts.pid /usr/local/bin/ping_hosts.sh
 
 # Start account expire handler every hour
-/usr/local/bin/minicron 3600 $varrunpath/expire_accounts.pid /etc/rc.expireaccounts
+/usr/local/bin/minicron 3600 $varrunpath/expire_accounts.pid /usr/local/etc/rc.expireaccounts
 
 # Start alias url updater every 24 hours
 /usr/local/bin/minicron 86400 $varrunpath/update_alias_url_data.pid /usr/local/etc/rc.update_alias_url_data

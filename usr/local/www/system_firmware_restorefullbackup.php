@@ -55,7 +55,7 @@ if($_POST['overwriteconfigxml'])
 	touch("/tmp/do_not_restore_config.xml");
 
 if($_GET['backupnow'])
-	mwexec_bg("/etc/rc.create_full_backup");
+	mwexec_bg("/usr/local/etc/rc.create_full_backup");
 
 if($_GET['downloadbackup']) {
 	$filename = basename($_GET['downloadbackup']);

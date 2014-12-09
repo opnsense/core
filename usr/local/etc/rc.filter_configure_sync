@@ -1,8 +1,7 @@
 #!/usr/local/bin/php -f
 <?php
-/* $Id$ */
+
 /*
-    rc.filter_configure_sync
     part of pfSense (https://www.pfsense.org)
     Copyright (C) 2004 Scott Ullrich
     All rights reserved.
@@ -37,5 +36,3 @@ require_once("ipsec.inc");
 require_once("vpn.inc");
 
 filter_configure_sync();
-
-?>

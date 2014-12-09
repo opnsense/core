@@ -326,7 +326,7 @@ EOD;
 
 		/* start pruning process (interval defaults to 60 seconds) */
 		mwexec("/usr/local/bin/minicron $croninterval {$g['varrun_path']}/cp_prunedb_{$cpzone}.pid " .
-			"/etc/rc.prunecaptiveportal {$cpzone}");
+			"/usr/local/etc/rc.prunecaptiveportal {$cpzone}");
 
 		/* generate radius server database */
 		unlink_if_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db");

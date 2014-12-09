@@ -3377,7 +3377,7 @@ function filter_tdr_install_cron($should_install) {
 				$cron_item['month'] = "*";
 				$cron_item['wday'] = "*";
 				$cron_item['who'] = "root";
-				$cron_item['command'] = "/etc/rc.filter_configure_sync";
+				$cron_item['command'] = "/usr/local/etc/rc.filter_configure_sync";
 				$config['cron']['item'][] = $cron_item;
 				write_config(gettext("Installed 15 minute filter reload for Time Based Rules"));
 				configure_cron();
