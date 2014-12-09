@@ -168,7 +168,7 @@ if($argc < 2) {
 	echo "Written by Scott Ullrich (sullrich@gmail.com)\n";
 	echo "\nType \"help\" to show common usage scenarios.\n";
 	echo "\nAvailable playback commands:\n     ";
-	$files = scandir("/etc/phpshellsessions/");
+	$files = scandir("/usr/local/etc/phpshellsessions/");
 	$tccommands[] = "playback";
 	foreach($files as $file) {
 		if($file <> "." and $file <> "..") {
@@ -187,7 +187,7 @@ $playback_file_split = array();
 $playbackbuffer = "";
 
 if($argv[1]=="playback" or $argv[1]=="run") { 
-	if(!file_exists("/etc/phpshellsessions/{$argv[2]}")) {
+	if(!file_exists("/usr/local/etc/phpshellsessions/{$argv[2]}")) {
 		echo "Could not locate playback file.";
 		exit;
 	}
@@ -215,7 +215,7 @@ while($shell_active == true) {
     $first_command = $command_split[0];	
 	if($first_command == "playback" || $first_command == "run") {
 		$playback_file = $command_split[1];
-		if(!$playback_file || !file_exists("/etc/phpshellsessions/{$playback_file}")) {
+		if(!$playback_file || !file_exists("/usr/local/etc/phpshellsessions/{$playback_file}")) {
 			$command = "";
 			echo "Could not locate playback file.\n";
 		} else {
@@ -266,8 +266,8 @@ while($shell_active == true) {
 		} else {
 			/* time to record */
 			conf_mount_rw();
-			safe_mkdir("/etc/phpshellsessions");
-			$recording_fd = fopen("/etc/phpshellsessions/{$command_split[1]}","w");
+			safe_mkdir("/usr/local/etc/phpshellsessions");
+			$recording_fd = fopen("/usr/local/etc/phpshellsessions/{$command_split[1]}","w");
 			if(!$recording_fd) {
 				echo "Could not start recording session.\n";
 				$command = "";
@@ -283,11 +283,11 @@ while($shell_active == true) {
 
 function show_recordings() {
 	conf_mount_rw();
-	safe_mkdir("/etc/phpshellsessions");
+	safe_mkdir("/usr/local/etc/phpshellsessions");
 	if($recording) 
 		conf_mount_ro();
 	echo "==> Sessions available for playback are:\n";
-	system("cd /etc/phpshellsessions && ls /etc/phpshellsessions");
+	system("cd /usr/local/etc/phpshellsessions && ls /usr/local/etc/phpshellsessions");
 	echo "==> end of list.\n";	
 }
 
@@ -336,7 +336,7 @@ function playback_text($playback_file_contents) {
 }
 
 function playback_file($playback_file) {
-	$playback_file_contents = file_get_contents("/etc/phpshellsessions/{$playback_file}");
+	$playback_file_contents = file_get_contents("/usr/local/etc/phpshellsessions/{$playback_file}");
 	playback_text($playback_file_contents);
 }
 
