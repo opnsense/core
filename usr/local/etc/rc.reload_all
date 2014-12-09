@@ -1,8 +1,7 @@
 #!/usr/local/bin/php -f
 <?php
-/* $Id$ */
+
 /*
-    rc.reload_interfaces
     part of pfSense (https://www.pfsense.org)
     Copyright (C) 2004 Scott Ullrich
     All rights reserved.
@@ -33,13 +32,12 @@ require_once("config.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
-require_once("openvpn.inc");
+require_once("ipsec.inc");
 require_once("vpn.inc");
 require_once("captiveportal.inc");
 
-reload_interfaces_sync();
+log_error("rc.reload_all: Reloading all configuration settings.");
+reload_all_sync();
+sleep(2);
+log_error("rc.reload_all: Reloading filter configuration.");
 filter_configure_sync();
-/* XXX: needs fixing */
-//ovpn_config_server("pfreload");
-
-?>

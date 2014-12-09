@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# /etc/rc - master bootup script, invokes php setup
 # part of pfSense by Scott Ullrich
 # Copyright (C) 2004-2010 Scott Ullrich, All rights reserved.
 # originally based on m0n0wall (http://neon1.net/m0n0wall)
@@ -122,7 +121,7 @@ else
 
 	USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /cf/conf/config.xml`
 	if [ "${PLATFORM}" = "nanobsd" ] || [ ${USE_MFS_TMPVAR} -gt 0 ]; then
-		/etc/rc.embedded
+		/usr/local/etc/rc.embedded
 	fi
 fi
 
@@ -377,19 +376,8 @@ echo "done."
 /usr/local/etc/rc.php_ini_setup 2>/tmp/php_errors.txt
 
 # Launch external configuration loader for supported platforms
-if [ "$PLATFORM" = "nanobsd" ]; then
-	/usr/local/bin/php -q /etc/ecl.php
-fi
-
-# Launch external configuration loader for supported platforms
-if [ "$PLATFORM" = "pfSense" ]; then
-	/usr/local/bin/php -q /etc/ecl.php
-fi
-
-if [ -f /etc/rc.custom_boot_early ]; then
-	/bin/echo -n "Launching /etc/rc.custom_boot_early...";
-	/etc/rc.custom_boot_early
-	echo "Done"
+if [ "$PLATFORM" = "nanobsd" -o "$PLATFORM" = "pfSense" ]; then
+	/usr/local/bin/php -q /usr/local/etc/ecl.php
 fi
 
 chmod u+rx  /usr/local/opnsense/check_reload_status.py

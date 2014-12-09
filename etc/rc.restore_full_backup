@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo -n "Checking..."
-if [ `tar tzPf $1 /etc/rc 2>/dev/null` ]; then
+if [ `tar tzPf $1 /usr/local/etc/rc 2>/dev/null` ]; then
 	echo " Backup file looks OK."
 	echo "One moment, restoring ${1}..."
 	if [ -f /tmp/do_not_restore_config.xml ]; then

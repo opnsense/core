@@ -471,7 +471,7 @@ if (!$dry_run) {
 	}
 	if($restart_webgui) {
 		echo " restarting webConfigurator... ";
-		mwexec("/etc/rc.restart_webgui");
+		mwexec("/usr/local/etc/rc.restart_webgui");
 	}
 }
 	
