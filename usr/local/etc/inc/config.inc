@@ -178,7 +178,7 @@ else if ($g['booting'] and !file_exists($g['cf_conf_path'] . "/config.xml")  ) {
 				restore_backup("/cf/conf/backup/{$last_backup}");
 			} else {
 				log_error(gettext("No config.xml or config backups found, resetting to factory defaults."));
-				restore_backup('/conf.default/config.xml');
+				restore_backup('/usr/local/etc/config.xml');
 			}
 		}
 

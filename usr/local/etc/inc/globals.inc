@@ -51,7 +51,6 @@ $g = array(
 	"tmp_path" => "/tmp",
 	"conf_path" => "/conf",
 	"ftmp_path" => "/ftmp",
-	"conf_default_path" => "/conf.default",
 	"cf_path" => "/cf",
 	"cf_conf_path" => "/cf/conf",
 	"www_path" => "/usr/local/www",

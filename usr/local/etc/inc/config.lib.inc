@@ -593,7 +593,7 @@ function reset_factory_defaults($lock = false) {
 	unlink_if_exists($g['tmp_path'] . "/config.cache");
 
 	/* copy default configuration */
-	copy("{$g['conf_default_path']}/config.xml", "{$g['conf_path']}/config.xml");
+	copy("/usr/local/etc/config.xml", "{$g['conf_path']}/config.xml");
 
 	disable_security_checks();
 

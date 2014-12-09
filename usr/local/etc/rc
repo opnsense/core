@@ -211,13 +211,11 @@ if [ "$PLATFORM" = "cdrom" ] ; then
 	/bin/mkdir /tmp/unionfs/sbin
 	/bin/mkdir /tmp/unionfs/bin
 	/bin/mkdir /tmp/unionfs/boot
-	/bin/mkdir /tmp/unionfs/confdefault
 	/sbin/mount_unionfs /tmp/unionfs/usr /usr/
 	/sbin/mount_unionfs /tmp/unionfs/root /root/
 	/sbin/mount_unionfs /tmp/unionfs/bin /bin/		
 	/sbin/mount_unionfs /tmp/unionfs/sbin /sbin/	
 	/sbin/mount_unionfs /tmp/unionfs/boot /boot/
-	/sbin/mount_unionfs /tmp/unionfs/confdefault /conf.default/
 	echo "done."
 fi
 
