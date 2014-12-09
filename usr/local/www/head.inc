@@ -37,7 +37,7 @@ $pagetitle = gentitle( $pgtitle );
 		<!--<script src="/themes/<?=$g['theme'];?>/assets/javascripts/bootstrap/popover.js" type="text/javascript"></script>-->
 		
 		<!--script type="text/javascript" src="/javascript/sorttable.js"></script-->
-		<!--script type="text/javascript" src="/javascript/ticker.js"></script-->
+		<script type="text/javascript" src="/javascript/ticker.js"></script>
 		
 		<!--<script type=\"text/javascript\" src=\"/themes/<?php echo $g['theme']; ?>/loader.js\"></script> -->
 		
