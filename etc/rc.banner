@@ -36,8 +36,8 @@
 	require_once("gwlb.inc");
 	require_once("interfaces.inc");
 
-	$version  = trim(file_get_contents("{$g['etc_path']}/version"));
-	$platform = trim(file_get_contents("{$g['etc_path']}/platform"));
+	$version  = trim(file_get_contents("/usr/local/etc/version"));
+	$platform = trim(file_get_contents("/usr/local/etc/platform"));
 	$hostname = $config['system']['hostname'];
 	$product = $g['product_name'];
 	$machine = trim(`uname -m`);
