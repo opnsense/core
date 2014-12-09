@@ -333,7 +333,7 @@ function showSave(){
 	$('#updatepref').show();
 }
 
-/*function updatePref(){
+function updatePref(){
 	var widgets = $('.widgetdiv');
 	var widgetSequence = '';
 	var firstprint = false;
@@ -357,7 +357,7 @@ function showSave(){
 	$("#iform").submit();
 	
 	return false;
-}*/
+}
 
 
 //]]>
