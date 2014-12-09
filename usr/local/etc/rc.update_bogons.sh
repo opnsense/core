@@ -85,7 +85,7 @@ process_url /tmp/bogonsv6 "${v6url}"
 
 if [ "$proc_error" != "" ]; then
 	# Relaunch and sleep
-	sh /etc/rc.update_bogons.sh &
+	sh /usr/local/etc/rc.update_bogons.sh &
 	exit
 fi
 
@@ -150,7 +150,7 @@ fi
 
 if [ "$checksum_error" != "" ]; then
 	# Relaunch and sleep
-	sh /etc/rc.update_bogons.sh & 
+	sh /usr/local/etc/rc.update_bogons.sh & 
 	exit
 fi
 

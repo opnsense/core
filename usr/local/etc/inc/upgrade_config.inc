@@ -439,7 +439,7 @@ function upgrade_025_to_026() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 /etc/rc.update_bogons.sh";
+	$cron_item['command'] = "/usr/bin/nice -n20 /usr/local/etc/rc.update_bogons.sh";
 
 	$config['cron']['item'][] = $cron_item;
 

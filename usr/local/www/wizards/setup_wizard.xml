@@ -633,7 +633,7 @@
 		unset($config['wizardtemp']);
 		write_config();
 		reload_all();
-		mwexec_bg("/etc/rc.update_bogons.sh now");
+		mwexec_bg("/usr/local/etc/rc.update_bogons.sh now");
 		]]>
 	</stepafterformdisplay>
 </step>

@@ -71,7 +71,7 @@ if($_REQUEST['deleteall']) {
 }
 
 if((($tablename == "bogons") || ($tablename == "bogonsv6")) && ($_POST['Download'])) {
-	mwexec_bg("/etc/rc.update_bogons.sh now");
+	mwexec_bg("/usr/local/etc/rc.update_bogons.sh now");
 	$maxtimetowait = 0;
 	$loading = true;
 	while($loading == true) {
