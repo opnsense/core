@@ -23,21 +23,6 @@ if [ -f "/tmp/donotbootup" ]; then
 	exit
 fi
 
-if [ -f /etc/rc.local ]; then
-	RCLOCALPWD=`ps awux | grep rc.local | grep -v grep | awk '{ print $2 }'`
-	if [ "$RCLOCALPWD" = "" ]; then
-		echo ">>> Launching rc.local in background..."
-		sh /etc/rc.local &
-		sleep 1
-		sh /etc/rc.local.running &
-	else
-		if [ -f /etc/rc.local.running ]; then
-			echo ">>> Launching rc.local.running in background..."
-			sh /etc/rc.local.running &
-		fi
-	fi
-fi
-
 CONFIG="/cf/conf/config.xml"
 WORD="https"
 

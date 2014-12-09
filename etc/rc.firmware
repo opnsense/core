@@ -356,11 +356,6 @@ pfSenseNanoBSDupgrade)
 	echo "---------------------------------------------------------------" >> /conf/fdisk_upgrade_log.txt
 	echo "" >> /conf/fdisk_upgrade_log.txt
 
-	# Remove extra stuff
-	rm -rf /etc/rc.conf
-	rm -rf /etc/motd
-	rm -rf /usr/savecore/*
-
 	date >> /conf/upgrade_log.txt
 	echo "" >> /conf/upgrade_log.txt
 
@@ -482,11 +477,6 @@ pfSenseupgrade)
 		/tmp/post_upgrade_command >> /conf/upgrade_log.txt 2>&1
 	fi
 
-	# remove unused files
-	rm -rf /etc/rc.conf
-	rm -rf /etc/motd
-	rm -rf /usr/savecore/*
-
 	date >> /conf/upgrade_log.txt
 	echo "" >> /conf/upgrade_log.txt
 
@@ -521,10 +511,7 @@ delta_update)
 	remove_chflags
 	binary_update $IMG
 	restore_chflags
-	rm -rf /etc/rc.conf
-	rm -rf /etc/motd
 	find / -name CVS -type d -exec rm {} \;
-	rm -rf /usr/savecore/*
 	/etc/rc.conf_mount_ro
 	/sbin/umount -f /cf 2>/dev/null
 	/sbin/mount -r /cf 2>/dev/null
@@ -536,4 +523,3 @@ delta_update)
 
 	;;
 esac
-
