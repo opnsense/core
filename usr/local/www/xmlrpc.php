@@ -464,7 +464,7 @@ function reboot_xmlrpc($raw_params) {
 		xmlrpc_authfail();
 		return $xmlrpc_g['return']['authfail'];
 	}
-	mwexec_bg("/etc/rc.reboot");
+	mwexec_bg("/usr/local/etc/rc.reboot");
 
 	return $xmlrpc_g['return']['true'];
 }

@@ -1,8 +1,7 @@
 #!/usr/local/bin/php -f
 <?php
-/* $Id$ */
+
 /*
-    rc.dyndns.update
     part of pfSense (https://www.pfsense.org)
     Copyright (C) 2004 Scott Ullrich
     All rights reserved.
@@ -52,5 +51,3 @@ if(empty($argument) || $argument == "all") {
 	services_dyndns_configure($interface);
 	services_dnsupdate_process($interface);
 }
-
-?>

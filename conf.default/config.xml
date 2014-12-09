@@ -668,7 +668,7 @@
 			<month>*</month>
 			<wday>*</wday>
 			<who>root</who>
-			<command>/usr/bin/nice -n20 /etc/rc.dyndns.update</command>
+			<command>/usr/bin/nice -n20 /usr/local/etc/rc.dyndns.update</command>
 		</item>
 		<item>
 			<minute>*/60</minute>

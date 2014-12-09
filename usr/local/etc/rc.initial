@@ -131,7 +131,7 @@ case ${opmode} in
 	/usr/local/etc/rc.initial.toggle_sshd
 	;;	
 15)
-	/etc/rc.restore_config_backup
+	/usr/local/etc/rc.restore_config_backup
 	;;
 99)
 	if [ -e /dev/ukbd0 ]; then

@@ -1,7 +1,7 @@
 #!/usr/local/bin/php -f
 <?php
+
 /*
-	rc.newwanip
 	Copyright (C) 2006 Scott Ullrich (sullrich@gmail.com)
 	part of pfSense (https://www.pfsense.org)
 

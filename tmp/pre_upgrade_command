@@ -7,7 +7,7 @@ PRIOR_VERSION=`uname -r | cut -d'.' -f1`
 echo $PRIOR_VERSION > /tmp/pre_upgrade_version
 
 # Hack to workaround ticket #3749
-if [ "${PRIOR_VERSION}" = "8" ] && grep -q 'sh /etc/rc.reboot' /usr/local/etc/rc.firmware; then
+if [ "${PRIOR_VERSION}" = "8" ] && grep -q 'sh /usr/local/etc/rc.reboot' /usr/local/etc/rc.firmware; then
 	PROC=$(ps axwww | grep '/usr/local/etc/rc.firmware *pfSenseupgrade')
 	PID=''
 	IMG=''
