@@ -760,7 +760,7 @@ function openvpn_reconfigure($mode, $settings) {
 				openvpn_add_keyfile($cert['prv'], $conf, $mode_id, "key");
 			}
 			if ($mode == 'server')
-				$conf .= "dh {$g['etc_path']}/dh-parameters.{$settings['dh_length']}\n";
+				$conf .= "dh /usr/local/etc/dh-parameters.{$settings['dh_length']}\n";
 			if (!empty($settings['crlref'])) {
 				$crl = lookup_crl($settings['crlref']);
 				crl_update($crl);
@@ -1001,22 +1001,6 @@ function openvpn_resync_all($interface = "") {
 	if (!is_array($config['openvpn']))
 		$config['openvpn'] = array();
 
-/*
-	if (!$config['openvpn']['dh-parameters']) {
-		echo "Configuring OpenVPN Parameters ...\n";
-		$dh_parameters = openvpn_create_dhparams(1024);
-		$dh_parameters = base64_encode($dh_parameters);
-		$config['openvpn']['dh-parameters'] = $dh_parameters;
-		write_config("OpenVPN DH parameters");
-	}
-
-	$path_ovdh = $g['varetc_path']."/openvpn/dh-parameters";
-	if (!file_exists($path_ovdh)) {
-		$dh_parameters = $config['openvpn']['dh-parameters'];
-		$dh_parameters = base64_decode($dh_parameters);
-		file_put_contents($path_ovdh, $dh_parameters);
-	}
-*/
 	if ($interface <> "")
 		log_error("Resyncing OpenVPN instances for interface " . convert_friendly_interface_to_friendly_descr($interface) . ".");
 	else
