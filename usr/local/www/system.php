@@ -75,17 +75,14 @@ if (!$pconfig['timeservers'])
 $changedesc = gettext("System") . ": ";
 $changecount = 0;
 
-function is_timezone($elt) {
-	return !preg_match("/\/$/", $elt);
-}
-
 if($pconfig['timezone'] <> $_POST['timezone']) {
 	filter_pflog_start(true);
 }
 
-exec('/usr/bin/tar -tzf /usr/share/zoneinfo.tgz', $timezonelist);
-$timezonelist = array_filter($timezonelist, 'is_timezone');
-sort($timezonelist);
+$timezonelist = array_map(
+	function ($path) { return str_replace('/usr/share/zoneinfo/', '', $path); },
+	glob('/usr/share/zoneinfo/*/*')
+);
 
 $multiwan = false;
 $interfaces = get_configured_interface_list();

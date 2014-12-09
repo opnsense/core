@@ -1270,7 +1270,8 @@ EOD;
 
 }
 
-function system_timezone_configure() {
+function system_timezone_configure()
+{
 	global $config, $g;
 	if(isset($config['system']['developerspew'])) {
 		$mt = microtime();
@@ -1284,23 +1285,19 @@ function system_timezone_configure() {
 
 	/* extract appropriate timezone file */
 	$timezone = $syscfg['timezone'];
-	if ($timezone) {
-		exec('/usr/bin/tar -tvzf /usr/share/zoneinfo.tgz', $tzs);
-		foreach ($tzs as $tz) {
-			if (preg_match(",{$timezone}$,", $tz))
-				break;
-			if (preg_match(",{$timezone} link to *(.*)$,", $tz, $matches)) {
-				$timezone = $matches[1];
-				break;
-			}
-		}
-	} else
-		$timezone = "Etc/UTC";
+	$timezones = array_map(
+		function ($path) { return str_replace('/usr/share/zoneinfo/', '', $path); },
+		glob('/usr/share/zoneinfo/*/*')
+	);
 
+	// Reset to default if empty or not existend
+	if (empty($timezone) || !in_array($timezone, $timezones)) {
+		$timezone = 'Etc/UTC';
+	}
+
+	// Apply timezone
 	conf_mount_rw();
-
-	exec("LANG=C /usr/bin/tar xzfO /usr/share/zoneinfo.tgz " .
-		escapeshellarg($timezone) . " > /etc/localtime");
+	copy(sprintf('/usr/share/zoneinfo/%s', $timezone), '/etc/localtime');
 
 	mwexec("sync");
 	conf_mount_ro();

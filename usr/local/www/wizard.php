@@ -701,13 +701,12 @@ function showchange() {
 
 				break;
 			case "timezone_select":
-				exec('/usr/bin/tar -tzf /usr/share/zoneinfo.tgz', $timezonelist);
-				$timezonelist = array_filter($timezonelist, 'is_timezone');
-				sort($timezonelist);
-
-				/* kill carriage returns */
-				for($x=0; $x<count($timezonelist); $x++)
-					$timezonelist[$x] = str_replace("\n", "", $timezonelist[$x]);
+				$timezonelist = array_map(
+					function ($path) {
+						return str_replace('/usr/share/zoneinfo/', '', $path);
+					},
+					glob('/usr/share/zoneinfo/*/*')
+				);
 
 				if ($field['displayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
