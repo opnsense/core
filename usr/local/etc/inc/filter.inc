@@ -589,13 +589,13 @@ function filter_generate_aliases() {
 	$aliases .= "#Snort tables\n";
 	$aliases .= "table <snort2c>\n";
 	$aliases .= "table <virusprot>\n";
-	if (!file_exists("/etc/bogons"))
-		@file_put_contents("/etc/bogons", "");
-	if (!file_exists("/etc/bogonsv6"))
-		@file_put_contents("/etc/bogonsv6", "");
-	$aliases .= "table <bogons> persist file \"/etc/bogons\"\n";
+	if (!file_exists("/usr/local/etc/bogons"))
+		@file_put_contents("/usr/local/etc/bogons", "");
+	if (!file_exists("/usr/local/etc/bogonsv6"))
+		@file_put_contents("/usr/local/etc/bogonsv6", "");
+	$aliases .= "table <bogons> persist file \"/usr/local/etc/bogons\"\n";
 	if (is_bogonsv6_used())
-		$aliases .= "table <bogonsv6> persist file \"/etc/bogonsv6\"\n";
+		$aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
 
 	$vpns_list = filter_get_vpns_list();
 	if($vpns_list)
