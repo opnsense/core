@@ -1368,7 +1368,7 @@ function verify_digital_signature($fname) {
 	if(!file_exists("/usr/local/sbin/gzsig"))
 		return 4;
 
-	return mwexec("/usr/local/sbin/gzsig verify {$g['etc_path']}/pubkey.pem < " . escapeshellarg($fname));
+	return mwexec("/usr/local/sbin/gzsig verify /usr/local/pubkey.pem < " . escapeshellarg($fname));
 }
 
 /* obtain MAC address given an IP address by looking at the ARP table */
