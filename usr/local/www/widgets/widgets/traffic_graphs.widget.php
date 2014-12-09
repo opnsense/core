@@ -100,34 +100,55 @@ if (isset($a_config["scale_type"])) {
 
 <div id="traffic_graphs-settings" class="widgetconfigdiv" style="display:none;">
 <form action="/widgets/widgets/traffic_graphs.widget.php" method="post" name="iform" id="iform">
-	<?php foreach ($ifdescrs as $ifname => $ifdescr) { ?>
-		<input type="hidden" name="shown[<?= $ifname ?>]" value="<?= $shown[$ifname] ? "show" : "hide" ?>" />
-	<?php } ?>
-	Default AutoScale:
-		<?php 
-			$scale_type_up="checked=\"checked\"";
-			$scale_type_follow="";
-			if (isset($config["widgets"]["trafficgraphs"]["scale_type"])) {
-				$selected_radio = $config["widgets"]["trafficgraphs"]["scale_type"];
-				if ($selected_radio == "up") {
-					$scale_type_up = "checked=\"checked\"";
-					$scale_type_follow="";
-				}
-				else if ($selected_radio == "follow") {
-					$scale_type_up="";
-					$scale_type_follow = "checked=\"checked\"";
-				}
-			}
-		?>
-	<input name="scale_type" class="radio" type="radio" id="scale_type_up" value="up" <?php echo $scale_type_up; ?> onchange="updateGraphDisplays();" /> <span>up</span>
-	<input name="scale_type" class="radio" type="radio" id="scale_type_follow" value="follow" <?php echo $scale_type_follow; ?> onchange="updateGraphDisplays();" /> <span>follow</span><br /><br />
-	Refresh Interval:
-	<select name="refreshinterval" class="formfld" id="refreshinterval" onchange="updateGraphDisplays();">
-		<?php for ($i = 1; $i <= 10; $i += 1) { ?>
-			<option value="<?= $i ?>" <?php if ($refreshinterval == $i) echo "selected=\"selected\"";?>><?= $i ?></option>
-		<?php } ?>
-	</select>&nbsp; Seconds<br />&nbsp; &nbsp; &nbsp; <b>Note:</b> changing this setting will increase CPU utilization<br /><br />
-	<input id="submit_settings" name="submit_settings" type="submit" onclick="return updatePref();" class="formbtn" value="Save Settings" />
+                        	
+    <table class="table table-striped">
+    	<tbody>
+			<?php foreach ($ifdescrs as $ifname => $ifdescr) { ?>
+						<input type="hidden" name="shown[<?= $ifname ?>]" value="<?= $shown[$ifname] ? "show" : "hide" ?>" />
+						<?php } ?>
+						<tr>
+							<td>
+								Default AutoScale:
+							</td>
+						</tr>
+							<?php 
+								$scale_type_up="checked=\"checked\"";
+								$scale_type_follow="";
+								if (isset($config["widgets"]["trafficgraphs"]["scale_type"])) {
+									$selected_radio = $config["widgets"]["trafficgraphs"]["scale_type"];
+									if ($selected_radio == "up") {
+										$scale_type_up = "checked=\"checked\"";
+										$scale_type_follow="";
+									}
+									else if ($selected_radio == "follow") {
+										$scale_type_up="";
+										$scale_type_follow = "checked=\"checked\"";
+									}
+								}
+							?>
+			<tr>
+				<td>
+					<input name="scale_type"  type="radio" id="scale_type_up" value="up" <?php echo $scale_type_up; ?> /> <?php echo gettext('Scale up')?>
+				</td>
+			</tr>
+			<tr>
+				<td>
+				<input name="scale_type" type="radio" id="scale_type_follow" value="follow" <?php echo $scale_type_follow; ?> /> <?php echo gettext('Scale follow')?><br /><br />
+				Refresh Interval:
+				<select name="refreshinterval" class="formfld" id="refreshinterval" >
+					<?php for ($i = 1; $i <= 10; $i += 1) { ?>
+						<option value="<?= $i ?>" <?php if ($refreshinterval == $i) echo "selected=\"selected\"";?>><?= $i ?></option>
+					<?php } ?>
+				</select>&nbsp; Seconds<br />&nbsp; &nbsp; &nbsp; <b>Note:</b> changing this setting will increase CPU utilization<br /><br />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input id="submit_settings" name="submit_settings" type="submit" class="formbtn btn btn-primary" value="Save Settings" />
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </form>
 </div>
 
@@ -162,9 +183,9 @@ foreach ($ifdescrs as $ifname => $ifdescr) {
 				</div>
 				<div align="right" style="float:right;width:49%">
 					<div id="<?=$ifname;?>graphdiv-min" onclick='return trafficminimizeDiv("<?= $ifname ?>", true);'
-						style="display:<?php echo $mingraphbutton;?>; cursor:pointer" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_minus.gif" alt="Minimize <?=$ifname;?> traffic graph" /></div>
+						style="display:<?php echo $mingraphbutton;?>; cursor:pointer" ><span class="glyphicon glyphicon-minus" alt="Minimize <?=$ifname;?> traffic graph" /></span></div>
 					<div id="<?=$ifname;?>graphdiv-open" onclick='return trafficshowDiv("<?= $ifname ?>", true);'
-						style="display:<?php echo $showgraphbutton;?>; cursor:pointer" ><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_open.gif" alt="Show <?=$ifname;?> traffic graph" /></div>
+						style="display:<?php echo $showgraphbutton;?>; cursor:pointer" ><span class="glyphicon glyphicon-plus" alt="Show <?=$ifname;?> traffic graph" /></span></div>
 				</div>
 				<div style="clear:both;"></div>
 			</div>

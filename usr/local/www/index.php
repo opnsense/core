@@ -181,6 +181,7 @@ if(file_exists('/conf/needs_package_sync')) {
 ##build widget saved list information
 if ($config['widgets'] && $config['widgets']['sequence'] != "") {
 	$pconfig['sequence'] = $config['widgets']['sequence'];
+	
 
 	$widgetlist = $pconfig['sequence'];
 	$colpos = array();
@@ -332,7 +333,7 @@ function showSave(){
 	$('#updatepref').show();
 }
 
-function updatePref(){
+/*function updatePref(){
 	var widgets = $('.widgetdiv');
 	var widgetSequence = '';
 	var firstprint = false;
@@ -356,7 +357,7 @@ function updatePref(){
 	$("#iform").submit();
 	
 	return false;
-}
+}*/
 
 
 //]]>
@@ -374,11 +375,11 @@ include("head.inc");
 
 
 
-<script type="text/javascript">
+<!--script type="text/javascript">
 //<![CDATA[
 columns = ['col1','col2','col3','col4', 'col5','col6','col7','col8','col9','col10'];
 //]]>
-</script>
+</script-->
 
 <?php
 include("fbegin.inc");
@@ -571,7 +572,7 @@ echo $jscriptstr;
 								                
 								                <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?php echo $widgetname;?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
 								               
-								                <button class="btn btn-default btn-xs" id="<?php echo $widgetname;?>-configure" onclick='return configureWidget("<?php echo $widgetname;?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
+								                <button type="button" class="btn btn-default btn-xs" id="<?php echo $widgetname;?>-configure" onclick='return configureWidget("<?php echo $widgetname;?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
 																	
 								            </div>
 								        </li>   
