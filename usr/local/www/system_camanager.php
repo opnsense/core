@@ -1,7 +1,6 @@
 <?php
-/*
-    system_camanager.php
 
+/*
     Copyright (C) 2008 Shrew Soft Inc.
     All rights reserved.
 
@@ -363,8 +362,8 @@ function method_change() {
                 
                 	// Load valid country codes
                 	$dn_cc = array();
-                	if (file_exists("/etc/ca_countries")){
-                		$dn_cc_file=file("/etc/ca_countries");
+                	if (file_exists("/usr/local/etc/ca_countries")){
+                		$dn_cc_file=file("/usr/local/etc/ca_countries");
                 		foreach($dn_cc_file as $line)
                 			if (preg_match('/^(\S*)\s(.*)$/', $line, $matches))
                 				array_push($dn_cc, $matches[1]);

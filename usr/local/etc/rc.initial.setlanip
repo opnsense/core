@@ -1,8 +1,7 @@
 #!/usr/local/bin/php -q
 <?php
-/* $Id$ */
+
 /*
-	rc.initial.setlanip
 	part of m0n0wall (http://m0n0.ch/wall)
 
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -35,7 +34,7 @@
 $options = getopt("hn", array("dry-run", "help"));
 
 if (isset($options["h"]) || isset($options["help"])) {
-	echo "usage: /etc/rc.initial.setlanip [option ...]\n";
+	echo "usage: rc.initial.setlanip [option ...]\n";
 	echo "  -h, --help       show this message\n";
 	echo "  -n, --dry-run    do not make any configuration changes\n";
 	exit(0);
@@ -396,7 +395,7 @@ function console_configure_dhcpd($version = 4) {
 		$config[$dhcpd][$interface]['range']['to'] = $dhcpendip;
 	} else {
 		/* TODO - this line is causing a "Fatal error: Cannot unset
-		   string offsets in /etc/rc.initial.setlanip" on below line
+		   string offsets in rc.initial.setlanip" on below line
 		   number */
 		if($config[$dhcpd][$interface]) 
 			unset($config[$dhcpd][$interface]['enable']);

@@ -1,5 +1,4 @@
 #!/usr/local/bin/php -f
-
 <?php
 //
 // TODO: opnSense, rewrite update procedure
