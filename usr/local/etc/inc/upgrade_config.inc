@@ -2212,7 +2212,7 @@ function upgrade_058_to_059() {
 
 function upgrade_059_to_060() {
 	global $config;
-	require_once("/etc/inc/certs.inc");
+	require_once("certs.inc");
 	if (is_array($config['ca'])) {
 		/* Locate issuer for all CAs */
 		foreach ($config['ca'] as & $ca) {
@@ -3160,7 +3160,7 @@ function upgrade_098_to_099() {
 }
 
 function upgrade_099_to_100() {
-	require_once("/etc/inc/services.inc");
+	require_once("services.inc");
 	install_cron_job("/usr/bin/nice -n20 newsyslog", false);
 }
 

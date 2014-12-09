@@ -410,8 +410,7 @@ function convert_config() {
 	
 	include_once('auth.inc');
 	include_once('upgrade_config.inc');
-	if (file_exists("/etc/inc/upgrade_config_custom.inc"))
-		include_once("upgrade_config_custom.inc");
+
 	/* Loop and run upgrade_VER_to_VER() until we're at current version */
 	while ($config['version'] < $g['latest_config']) {
 		$cur = $config['version'] * 10;

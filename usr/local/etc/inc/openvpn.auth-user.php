@@ -165,8 +165,7 @@ if ($authenticated == false) {
 	}
 }
 
-if (file_exists("/etc/inc/openvpn.attributes.php"))
-        include_once("/etc/inc/openvpn.attributes.php");
+@include_once('openvpn.attributes.php');
         
 $content = "";
 if (is_array($attributes['dns-servers'])) {

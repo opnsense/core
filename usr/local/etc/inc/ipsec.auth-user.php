@@ -152,8 +152,7 @@ if ($authenticated == false) {
 	}
 }
 
-if (file_exists("/etc/inc/ipsec.attributes.php"))
-        include_once("/etc/inc/ipsec.attributes.php");
+@include_once('ipsec.attributes.php');
         
 syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
 closelog();

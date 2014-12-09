@@ -1,6 +1,3 @@
-/etc/rc.parse-isc-dhcpd
-/etc/rc.linkup.sh
-/etc/phpshellsessions/cvssync
 /usr/local/www/diag_showbogons.php
 /usr/local/www/interfaces_wan.php
 /usr/local/www/interfaces_lan.php
@@ -11,7 +8,6 @@
 /usr/local/www/ifstats.cgi
 /usr/local/www/easyrule.inc
 /usr/local/www/exec_raw.php
-/etc/rc.initial_firmware_update
 /usr/local/www/javascript/index/sajax.js
 /usr/local/www/sajax/index.sajax.php
 /usr/local/www/interfaces_wlan_scan.php
@@ -145,4 +141,3 @@
 /usr/local/lib/php/20090626/zlib.so
 /usr/local/lib/php/20090626/zmq.so
 /usr/sbin/clog
-/etc/ttys_wrap

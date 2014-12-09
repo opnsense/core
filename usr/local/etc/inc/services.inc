@@ -1881,7 +1881,7 @@ function services_unbound_configure() {
 		else
 			sleep(1);
 
-		require_once('/etc/inc/unbound.inc');
+		require_once('unbound.inc');
 		sync_unbound_service();
 		if ($g['booting'])
 			echo gettext("done.") . "\n";

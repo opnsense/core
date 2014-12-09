@@ -1729,7 +1729,7 @@ function portal_reply_page($redirurl, $type = null, $message = null, $clientmac 
 
 	// Special handling case for captive portal master page so that it can be ran 
 	// through the PHP interpreter using the include method above.  We convert the
-	// $VARIABLE$ case to #VARIABLE# in /etc/inc/captiveportal.inc before writing out.
+	// $VARIABLE$ case to #VARIABLE# in /usr/local/etc/inc/captiveportal.inc before writing out.
 	$htmltext = str_replace("#PORTAL_ZONE#", htmlspecialchars($cpzone), $htmltext);
 	$htmltext = str_replace("#PORTAL_REDIRURL#", htmlspecialchars($redirurl), $htmltext);
 	$htmltext = str_replace("#PORTAL_MESSAGE#", htmlspecialchars($message), $htmltext);

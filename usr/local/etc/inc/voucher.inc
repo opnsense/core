@@ -54,8 +54,8 @@ function xmlrpc_sync_voucher_expire($vouchers, $syncip, $port, $password, $usern
 	$method = 'pfsense.exec_php';
 	$execcmd  = <<<EOF
 	global \$cpzone;
-	require_once('/etc/inc/captiveportal.inc');
-	require_once('/etc/inc/voucher.inc');
+	require_once('captiveportal.inc');
+	require_once('voucher.inc');
 	\$cpzone = "$cpzone";
 	voucher_expire("$vouchers");
 
@@ -110,8 +110,8 @@ function xmlrpc_sync_voucher_disconnect($dbent, $syncip, $port, $password, $user
 	$method = 'pfsense.exec_php';
 	$execcmd  = <<<EOF
 	global \$cpzone;
-	require_once('/etc/inc/captiveportal.inc');
-	require_once('/etc/inc/voucher.inc');
+	require_once('captiveportal.inc');
+	require_once('voucher.inc');
 	\$cpzone = "$cpzone";
 	\$radiusservers = captiveportal_get_radius_servers();
 	\$dbent = unserialize("$dbent_str");
@@ -166,7 +166,7 @@ function xmlrpc_sync_used_voucher($voucher_received, $syncip, $port, $password, 
 	$method = 'pfsense.exec_php';
 	$execcmd  = <<<EOF
 	global \$cpzone;
-	require_once('/etc/inc/voucher.inc');
+	require_once('voucher.inc');
 	\$cpzone = "$cpzone";
 	\$timeleft = voucher_auth("$voucher_received");
 	\$toreturn = array();
