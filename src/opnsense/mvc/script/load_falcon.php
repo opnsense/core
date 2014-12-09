@@ -19,3 +19,5 @@ $loader->registerDirs(
 )->register();
 
 $di->set('config',$config);
+
+unset($config);

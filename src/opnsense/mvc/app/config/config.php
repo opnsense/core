@@ -18,11 +18,11 @@ return new \Phalcon\Config(array(
         'baseUri'        => '/opnsense_gui/',
     ),
     'globals' => array(
-        'config_path'    => '/conf/',
-        'temp_path'      => '/tmp/',
-        'vardb_path'     => '/var/db/',
+        'config_path'    => __DIR__ . '/../../test/conf/',
+        'temp_path'      => __DIR__ . '/../../test/tmp/',
+        'vardb_path'     => __DIR__ . '/../../test/tmp/',
         'debug'          => true,
-        'simulate_mode'  => false
+        'simulate_mode'  => true
 
     )
 ));

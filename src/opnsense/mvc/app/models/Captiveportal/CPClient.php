@@ -357,7 +357,7 @@ class CPClient {
      * @param string $attributes
      * @param string $radiusctx
      */
-    public function portal_allow($cpzonename,$clientip,$clientmac,$username,$password = null,$bw_up=null,$bw_down=null, $attributes = null, $radiusctx = null){
+    public function portal_allow($cpzonename,$clientip,$clientmac,$username,$password = null,$bw_up=null,$bw_down=null, $radiusctx = null,$session_timeout=null,$idle_timeout=null,$session_terminate_time=null,$interim_interval=null){
         // defines
         $exec_commands = array() ;
         $db = new DB($cpzonename);
@@ -377,7 +377,7 @@ class CPClient {
         $cp_table = $db->listClients(array("mac"=>$clientmac,"ip"=>$clientip),"or");
         if ( sizeof($cp_table) > 0 && ($cp_table[0]->ip == $clientip && $cp_table[0]->mac == $clientmac ) ){
             // nothing (important) changed here... move on
-            return;
+            return $cp_table[0]->sessionid;
         } elseif ( sizeof($cp_table) > 0) {
             // something changed...
             // prevent additional sessions to popup, one MAC should have only one active session, remove the rest (if any)
@@ -402,6 +402,9 @@ class CPClient {
             $pipeno_out = $current_session->pipeno_out;
 
             $db->update_session($current_session->sessionid,array("ip"=>$clientip,"mac"=>$clientmac));
+
+            // preserve session for response
+            $sessionid = $current_session->sessionid;
         } else
         {
             // new session, allocate new dummynet pipes and generate a unique id
@@ -416,10 +419,10 @@ class CPClient {
             $session_data["pipeno_out"] = $pipeno_out;
             $session_data["username"]=\SQLite3::escapeString($username);
             $session_data["bpassword"] =base64_encode($password);
-            $session_data["session_timeout"] = -1;
-            $session_data["idle_timeout"] = -1;
-            $session_data["session_terminate_time"] = -1;
-            $session_data["interim_interval"] = -1;
+            $session_data["session_timeout"] = $session_timeout;
+            $session_data["idle_timeout"] = $idle_timeout;
+            $session_data["session_terminate_time"] = $session_terminate_time;
+            $session_data["interim_interval"] = $interim_interval;
             $session_data["radiusctx"] = $radiusctx;
             $session_data["allow_time"] = time(); // allow time is actual starting time of this session
             $sessionid = uniqid() ;
@@ -439,8 +442,17 @@ class CPClient {
         // add accounting rule
         $this->add_accounting($zoneid,$clientip);
 
+        // set bandwidth restrictions
+        $this->reset_bandwidth($pipeno_in,$bw_up);
+        $this->reset_bandwidth($pipeno_in,$bw_down);
+
+
+        // TODO : Add logging, ( captiveportal_logportalauth($cpentry[4],$cpentry[3],$cpentry[2],"CONCURRENT LOGIN - TERMINATING OLD SESSION"); )
+
         // cleanup
         unset($db);
+
+        return $sessionid;
     }
 
 

@@ -1,5 +1,5 @@
 <?php
-require_once("load_falcon.php");
+require_once("script/load_falcon.php");
 
 $cpc = new Captiveportal\CPClient();
 //$cpc->portal_allow("test","10.211.55.101","00:1C:42:49:B7:B2","Fritsx");
