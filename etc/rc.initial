@@ -42,7 +42,7 @@ CONFIG="/cf/conf/config.xml"
 WORD="https"
 
 # Set our operating platform
-PLATFORM=`cat /etc/platform`
+PLATFORM=`cat /usr/local/etc/platform`
 
 if [ "$PLATFORM" = "jail" ]; then
 	exit

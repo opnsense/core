@@ -153,8 +153,8 @@ if (!$remote_version) {
 	$static_text .= gettext("Obtaining current version information...");
 	update_output_window($static_text);
 
-	$current_installed_buildtime = trim(file_get_contents("/etc/version.buildtime"));
-	$current_installed_version = trim(file_get_contents("/etc/version"));
+	$current_installed_buildtime = '';	/* XXX zap */
+	$current_installed_version = trim(file_get_contents("/usr/local/etc/version"));
 
 	$static_text .= "done\\n";
 	update_output_window($static_text);

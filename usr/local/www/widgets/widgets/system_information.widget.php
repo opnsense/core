@@ -61,8 +61,8 @@ if($_REQUEST['getupdatestatus']) {
 	if(empty($remote_version))
 		echo "<br /><br />Unable to check for updates.";
 	else {
-		$current_installed_buildtime = trim(file_get_contents("/etc/version.buildtime"));
-		$current_installed_version = trim(file_get_contents("/etc/version"));
+		$current_installed_buildtime = '';	/* XXX zap */
+		$current_installed_version = trim(file_get_contents("/usr/local/etc/version"));
 
 		if(!$remote_version) {
 			echo "<br /><br />Unable to check for updates.";
@@ -122,10 +122,10 @@ $filesystems = get_mounted_filesystems();
 		<tr>
 			<td width="25%" valign="top" class="vncellt"><?=gettext("Version");?></td>
 			<td width="75%" class="listr">
-				<strong><?php readfile("/etc/version"); ?></strong>
+				<strong><?php readfile("/usr/local/etc/version"); ?></strong>
 				(<?php echo php_uname("m"); ?>)
 				<br />
-				built on <?php readfile("/etc/version.buildtime"); ?>
+				built on <?php readfile("/usr/local/etc/version.buildtime"); ?>
 		<?php if(!$g['hideuname']): ?>
 		<br />
 		<div id="uname"><a href="#" onclick='swapuname(); return false;'><?php echo php_uname("s") . " " . php_uname("r"); ?></a></div>

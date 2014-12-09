@@ -134,7 +134,7 @@ include("head.inc");
     				
     					
     					<?php
-							$version = rtrim(file_get_contents("/etc/version"));
+							$version = rtrim(file_get_contents("/usr/local/etc/version"));
 						
 							$tab_array = array();
 							$tab_array[] = array(gettext("Available Packages"), $requested_version <> "" ? false : true, "pkg_mgr.php");
@@ -147,7 +147,7 @@ include("head.inc");
 	    				    <div class="container-fluid">	
 	    						
 	    						<?php
-									$version = rtrim(file_get_contents("/etc/version"));
+									$version = rtrim(file_get_contents("/usr/local/etc/version"));
 									if($pkg_info) {
 										$pkg_keys = array_keys($pkg_info);
 										natcasesort($pkg_keys);

@@ -1950,8 +1950,8 @@ trap := "{$config['snmpd']['trapstring']}"
 EOD;
 		}
 
-		$version = trim(file_get_contents('/etc/version'));
-		$platform = trim(file_get_contents('/etc/platform'));
+		$version = trim(file_get_contents('/usr/local/etc/version'));
+		$platform = trim(file_get_contents('/usr/local/etc/platform'));
 		if (($platform == "pfSense") && ($g['product_name'] != "pfSense"))
 			$platform = $g['product_name'];
 		$sysDescr = "{$g['product_name']} " . php_uname("n") .

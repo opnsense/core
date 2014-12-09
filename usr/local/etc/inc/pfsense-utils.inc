@@ -725,10 +725,10 @@ function check_firmware_version($tocheck = "all", $return_php = true) {
 		return false;
 	$version = php_uname('r');
 	$version = explode('-', $version);
-	$rawparams = array("firmware" => array("version" => trim(file_get_contents('/etc/version'))),
+	$rawparams = array("firmware" => array("version" => trim(file_get_contents('/usr/local/etc/version'))),
 		"kernel"   => array("version" => $version[0]),
 		"base"     => array("version" => $version[0]),
-		"platform" => trim(file_get_contents('/etc/platform')),
+		"platform" => trim(file_get_contents('/usr/local/etc/platform')),
 		"config_version" => $config['version']
 		);
 	unset($version);
@@ -763,10 +763,10 @@ function host_firmware_version($tocheck = "") {
 	$os_version = trim(substr(php_uname("r"), 0, strpos(php_uname("r"), '-')));
 
 	return array(
-		"firmware" => array("version" => trim(file_get_contents('/etc/version', " \n"))),
+		"firmware" => array("version" => trim(file_get_contents('/usr/local/etc/version', " \n"))),
 		"kernel"   => array("version" => $os_version),
 		"base"     => array("version" => $os_version),
-		"platform" => trim(file_get_contents('/etc/platform', " \n")),
+		"platform" => trim(file_get_contents('/usr/local/etc/platform', " \n")),
 		"config_version" => $config['version']
 	);
 }
@@ -1617,7 +1617,7 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
 	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 	curl_setopt($ch, CURLOPT_HEADER, false);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/etc/version")));
+	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/etc/version")));
 
 	if (!empty($config['system']['proxyurl'])) {
 		curl_setopt($ch, CURLOPT_PROXY, $config['system']['proxyurl']);
@@ -1659,7 +1659,7 @@ function download_file_with_progress_bar($url_file, $destination_file, $readbody
 	curl_setopt($ch, CURLOPT_NOPROGRESS, '1');
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connect_timeout);
 	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/etc/version")));
+	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/etc/version")));
 
 	if (!empty($config['system']['proxyurl'])) {
 		curl_setopt($ch, CURLOPT_PROXY, $config['system']['proxyurl']);

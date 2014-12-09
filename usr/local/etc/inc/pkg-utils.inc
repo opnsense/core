@@ -79,7 +79,7 @@ if (!function_exists("pkg_debug")) {
 
 $vardb = "/var/db/pkg";
 safe_mkdir($vardb);
-$g['platform'] = trim(file_get_contents("/etc/platform"));
+$g['platform'] = trim(file_get_contents("/usr/local/etc/platform"));
 
 if(!is_dir("/usr/local/pkg") or !is_dir("/usr/local/pkg/pf")) {
 	conf_mount_rw();
@@ -620,7 +620,7 @@ function install_package($package, $pkg_info = "", $force_install = false) {
 	}
 	if (!$force_install) {
 		$compatible = true;
-		$version = rtrim(file_get_contents("/etc/version"));
+		$version = rtrim(file_get_contents("/usr/local/etc/version"));
 		
 		if (isset($pkg_info['required_version']))
 			$compatible = (pfs_version_compare("", $version, $pkg_info['required_version']) >= 0);
@@ -1311,7 +1311,7 @@ function package_skip_tests($index,$requested_version){
 	global $config, $g;
 
 	/* Get pfsense version*/
-	$version = rtrim(file_get_contents("/etc/version"));
+	$version = rtrim(file_get_contents("/usr/local/etc/version"));
 	
 	if($g['platform'] == "nanobsd")
 		if($index['noembedded']) 
@@ -1396,7 +1396,7 @@ function check_package_server_ssl() {
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, '30');
 	curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/etc/version")));
+	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/etc/version")));
 	$result_page = curl_exec($ch);
 	$verifyfail = curl_getinfo($ch, CURLINFO_SSL_VERIFYRESULT);
 	curl_close($ch);

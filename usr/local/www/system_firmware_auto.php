@@ -156,8 +156,8 @@ if(!$latest_version) {
 	require("fend.inc");
 	exit;
 } else {
-	$current_installed_buildtime = trim(file_get_contents("/etc/version.buildtime"));
-	$current_installed_version = trim(file_get_contents("/etc/version"));
+	$current_installed_buildtime = '';	/* XXX zap */
+	$current_installed_version = trim(file_get_contents("/usr/local/etc/version"));
 	$latest_version = trim(@file_get_contents("/tmp/{$g['product_name']}_version"));
 	$latest_version_pfsense = strtotime($latest_version);
 	if(!$latest_version) {

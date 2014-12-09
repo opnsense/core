@@ -206,7 +206,7 @@
 				$config_text .= "serial=".strtoupper(substr(upnp_uuid(),0,8))."\n";
 
 				/* set model number */
-				$config_text .= "model_number=".file_get_contents("/etc/version")."\n";
+				$config_text .= "model_number=".file_get_contents("/usr/local/etc/version")."\n";
 	
 				/* upnp access restrictions */
 				for($i=1; $i<=4; $i++) {

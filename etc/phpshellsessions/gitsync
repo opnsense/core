@@ -328,7 +328,7 @@ exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/etc/fstab 2>/dev/null");
 exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/etc/ttys 2>/dev/null");
 exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/etc/group 2>/dev/null");
 exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/etc/fstab 2>/dev/null");
-exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/etc/platform 2>/dev/null");
+exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/usr/local/etc/platform 2>/dev/null");
 exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/boot/device.hints 2>/dev/null");
 exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/boot/loader.conf 2>/dev/null");
 exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/boot/loader.rc 2>/dev/null");

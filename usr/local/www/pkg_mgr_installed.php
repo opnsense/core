@@ -109,7 +109,7 @@ include("head.inc");
     				
     					
     					<?php
-							$version = file_get_contents("/etc/version");
+							$version = file_get_contents("/usr/local/etc/version");
 							$tab_array = array();
 							$tab_array[] = array(gettext("Available Packages"), false, "pkg_mgr.php");
 		//					$tab_array[] = array("{$version} " . gettext("packages"), false, "pkg_mgr.php");

@@ -18,10 +18,10 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
 export HOME PATH
 
 # Set our operating platform
-PLATFORM=`/bin/cat /etc/platform`
+PLATFORM=`/bin/cat /usr/local/etc/platform`
 
 # Set our current version
-version=`/bin/cat /etc/version`
+version=`/bin/cat /usr/local/etc/version`
 
 # Setup dumpdev/ddb/savecore"
 echo "Configuring crash dumps..."
@@ -160,9 +160,6 @@ else
 	platformbanner=" on the '${PLATFORM}' platform"
 fi
 
-echo
-cat /etc/ascii-art/pfsense-logo-small.txt
-echo
 echo
 echo "Welcome to ${product} ${version} ${platformbanner} ..."
 echo

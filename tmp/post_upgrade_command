@@ -2,7 +2,7 @@
 
 /etc/rc.conf_mount_rw
 
-PFSENSETYPE=`cat /etc/platform`
+PFSENSETYPE=`cat /usr/local/etc/platform`
 
 if [ $PFSENSETYPE = "pfSense" ] || [ $PFSENSETYPE = "nanobsd" ]; then
 	touch /conf/needs_package_sync

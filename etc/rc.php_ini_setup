@@ -26,7 +26,7 @@
 #	POSSIBILITY OF SUCH DAMAGE.
 
 # Set our operating platform
-PLATFORM=`/bin/cat /etc/platform`
+PLATFORM=`/bin/cat /usr/local/etc/platform`
 
 if [ -d /usr/local/lib/php/20131226 ]; then
 	# PHP 5.6

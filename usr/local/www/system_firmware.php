@@ -64,13 +64,13 @@ function file_is_for_platform($filename, $ul_name) {
 		else
 			return false;
 	}
-	$_gb = exec("/usr/bin/tar xzf $filename -C /tmp/ etc/platform");
+	$_gb = exec("/usr/bin/tar xzf $filename -C /tmp/ usr/local/etc/platform");
 	unset($_gb);
-	if(!file_exists("/tmp/etc/platform"))
+	if(!file_exists("/tmp/usr/local/etc/platform"))
 		return false;
-	$upgrade_is_for_platform = trim(file_get_contents("/tmp/etc/platform", " \n\t\r"));
+	$upgrade_is_for_platform = trim(file_get_contents("/tmp/usr/local/etc/platform", " \n\t\r"));
 	if ($g['platform'] == $upgrade_is_for_platform) {
-		@unlink("/tmp/etc/platform");
+		@unlink("/tmp/usr/local/etc/platform");
 		return true;
 	}
 	return false;
