@@ -62,8 +62,8 @@ else
 require_once("crypt.inc");
 
 /* read platform */
-if (file_exists("{$g['etc_path']}/platform")) {
-	$g['platform'] = chop(file_get_contents("{$g['etc_path']}/platform"));
+if (file_exists("/usr/local/etc/platform")) {
+	$g['platform'] = chop(file_get_contents("/usr/local/etc/platform"));
 } else {
 	$g['platform'] = "unknown";
 }
