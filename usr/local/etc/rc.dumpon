@@ -1,8 +1,4 @@
 #!/bin/sh
-# Based on:
-# FreeBSD: src/etc/rc.d/dumpon,v 1.12.2.1.4.1 2010/06/14 02:09:06 kensmith Exp
-
-# dumpon
 
 dumpon_try()
 {
@@ -24,6 +20,7 @@ while read dev mp type more ; do
 	[ -c "${dev}" ] || continue
 	dumpon_try "${dev}" && works=true
 done </etc/fstab
+
 if [ "${works}" != "true" ]; then
 	echo "No suitable dump device was found." 1>&2
 	exit
@@ -31,5 +28,5 @@ fi
 
 # ddb
 if [ ! -z "`sysctl -Nq debug.ddb.scripting.scripts`" ]; then
-	/sbin/ddb /etc/ddb.conf
+	/sbin/ddb /usr/local/etc/ddb.conf
 fi

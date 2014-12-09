@@ -25,7 +25,7 @@ version=`/bin/cat /usr/local/etc/version`
 # Setup dumpdev/ddb/savecore"
 echo "Configuring crash dumps..."
 if [ "$PLATFORM" = "pfSense" ]; then
-	/etc/rc.dumpon
+	/usr/local/etc/rc.dumpon
 fi
 
 if [ -e /root/force_fsck ]; then
@@ -183,8 +183,8 @@ elif [ "$PLATFORM" = "jail" ]; then
 	# do nothing for jail platform
 else
 	SWAPDEVICE=`/bin/cat /etc/fstab | /usr/bin/grep swap | /usr/bin/cut -f1`
-	/sbin/swapon -a 2>/dev/null >/dev/null
-	/etc/rc.savecore
+	/sbin/swapon -a
+	/usr/local/etc/rc.savecore
 
 	if [ -d /root/var/db/pkg ]; then
 		# User must have just disabled RAM disks, move these back into place.
