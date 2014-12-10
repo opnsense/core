@@ -1,9 +1,8 @@
 #!/bin/sh
 
-# part of pfSense by Scott Ullrich
 # Copyright (C) 2004-2010 Scott Ullrich, All rights reserved.
-# originally based on m0n0wall (http://neon1.net/m0n0wall)
 # Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+# Copyright (C) 2014 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 
 stty status '^T' 2> /dev/null
@@ -18,11 +17,7 @@ HOME=/
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
 export HOME PATH
 
-# Set our operating platform
 PLATFORM=`/bin/cat /usr/local/etc/platform`
-
-# Set our current version
-version=`/bin/cat /usr/local/etc/version`
 
 if [ -e /root/force_fsck ]; then
 	echo "Forcing filesystem check..."
@@ -30,6 +25,7 @@ if [ -e /root/force_fsck ]; then
 	if [ "$PLATFORM" = "nanobsd" ]; then
 		/sbin/fsck -y -t ufs /cf
 	fi
+	/bin/rm -f /root/force_fsck
 fi
 
 if [ "${PLATFORM}" = "nanobsd" ]; then
@@ -150,10 +146,6 @@ if [ ! -f /conf/config.xml ]; then
 	echo " done."
 fi
 
-/bin/rm -f /root/force_fsck
-/bin/rm -f /root/TRIM_set
-/bin/rm -f /root/TRIM_unset
-
 # Disable APM on ATA drives. Leaving this on will kill drives long-term, especially laptop drives, by generating excessive Load Cycles.
 if [ -f /usr/local/etc/rc.disable_hdd_apm ]; then
 	/usr/local/etc/rc.disable_hdd_apm
@@ -170,23 +162,9 @@ fi
 rm -f /etc/spwd.db.tmp
 /usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd
 
-product=`/usr/bin/grep product_name /usr/local/etc/inc/globals.inc | /usr/bin/cut -d'"' -f4`
-hideplatform=`/usr/bin/grep hideplatform /usr/local/etc/inc/globals.inc | /usr/bin/wc -l`
-varrunpath=`/usr/bin/grep varrun_path /usr/local/etc/inc/globals.inc | /usr/bin/cut -d'"' -f4`
-
 if [ "$PLATFORM" = "pfSense" ] && [ ${USE_MFS_TMPVAR} -eq 0 ]; then
-	/sbin/mdmfs -S -M -s 4m md $varrunpath
+	/sbin/mdmfs -S -M -s 4m md /var/run
 fi
-
-if [ "$hideplatform" -gt "0" ]; then
-	platformbanner="" # hide the platform
-else
-	platformbanner=" on the '${PLATFORM}' platform"
-fi
-
-echo
-echo "Welcome to ${product} ${version} ${platformbanner} ..."
-echo
 
 if [ ! "$PLATFORM" = "jail" ]; then
 	# Enable console output if its muted.
@@ -207,7 +185,6 @@ elif [ "$PLATFORM" = "nanobsd" ] || [ ${USE_MFS_TMPVAR} -gt 0 ]; then
 elif [ "$PLATFORM" = "jail" ]; then
 	# do nothing for jail platform
 else
-	SWAPDEVICE=`/bin/cat /etc/fstab | /usr/bin/grep swap | /usr/bin/cut -f1`
 	/sbin/swapon -a
 	/usr/local/etc/rc.savecore
 
@@ -220,17 +197,9 @@ else
 	fi
 fi
 
-# Copy PBI keys
-if ls /usr/local/share/pbi-keys/*.ssl >/dev/null 2>&1; then
-	if [ ! -d "/var/db/pbi/keys" ]; then
-		mkdir -p /var/db/pbi/keys
-	fi
-	cp -f /usr/local/share/pbi-keys/*.ssl /var/db/pbi/keys
-fi
-
 # make some directories in /var
-/bin/mkdir -p $varrunpath /var/log /var/etc /var/db/entropy /var/at/jobs/ /var/empty 2>/dev/null
-/bin/rm -rf $varrunpath/*
+/bin/mkdir -p /var/run /var/log /var/etc /var/db/entropy /var/at/jobs/ /var/empty 2>/dev/null
+/bin/rm -rf /var/run/*
 if [ "$PLATFORM" != "pfSense" ]; then
 	/bin/rm /var/log/* 2>/dev/null
 fi
@@ -278,10 +247,7 @@ if [ ! -h /tmp/tmp ]; then
     /bin/ln -hfs / /tmp/tmp
 fi
 
-# Make sure our /tmp is 777 + Sticky
-if [ ! "$PLATFORM" = "cdrom" ] ; then
-	/bin/rm -rf /tmp/*
-fi
+/bin/rm -rf /tmp/*
 /bin/chmod 1777 /tmp
 
 if [ ! "$PLATFORM" = "cdrom" ] ; then
@@ -351,7 +317,7 @@ if [ ! "$PLATFORM" = "jail" ]; then
 fi
 
 # Create an initial utmp file
-cd $varrunpath && /bin/cp /dev/null utmp && /bin/chmod 644 utmp
+cd /var/run && /bin/cp /dev/null utmp && /bin/chmod 644 utmp
 
 echo -n "."
 /sbin/ldconfig -elf /usr/lib /usr/local/lib /lib
@@ -378,14 +344,8 @@ echo "done."
 # Recreate capabilities DB
 /usr/bin/cap_mkdb /etc/login.conf
 
-# Run the php.ini setup file and populate
-# /usr/local/etc/php.ini and /usr/local/lib/php.ini
-/usr/local/etc/rc.php_ini_setup 2>/tmp/php_errors.txt
-
-# Launch external configuration loader for supported platforms
-if [ "$PLATFORM" = "nanobsd" -o "$PLATFORM" = "pfSense" ]; then
-	/usr/local/bin/php -q /usr/local/etc/ecl.php
-fi
+# Run the php.ini setup file
+/usr/local/etc/rc.php_ini_setup
 
 chmod u+rx  /usr/local/opnsense/service/check_reload_status.py
 /usr/bin/nice -n20 /usr/local/opnsense/service/check_reload_status.py
@@ -395,11 +355,11 @@ sleep 1 # give check_reload_status some time to load to prevent missing socket
 echo -n "Launching the init system..."
 /bin/rm -f /cf/conf/backup/backup.cache
 /bin/rm -f /root/lighttpd*
-/usr/bin/touch $varrunpath/booting
+/usr/bin/touch /var/run/booting
 /usr/local/etc/rc.bootup
 
 # rc.bootup unset $g['booting'], remove file right now to be consistent
-/bin/rm $varrunpath/booting
+/bin/rm /var/run/booting
 
 # If a shell was selected from recovery 
 # console then just drop to the shell now.
@@ -412,16 +372,14 @@ echo -n "Starting CRON... "
 cd /tmp && /usr/sbin/cron -s 2>/dev/null
 echo "done."
 
-/bin/rm -rf /usr/local/pkg/pf/CVS
-
 # Start ping handler every 240 seconds
-/usr/local/bin/minicron 240 $varrunpath/ping_hosts.pid /usr/local/bin/ping_hosts.sh
+/usr/local/bin/minicron 240 /var/run/ping_hosts.pid /usr/local/bin/ping_hosts.sh
 
 # Start account expire handler every hour
-/usr/local/bin/minicron 3600 $varrunpath/expire_accounts.pid /usr/local/etc/rc.expireaccounts
+/usr/local/bin/minicron 3600 /var/run/expire_accounts.pid /usr/local/etc/rc.expireaccounts
 
 # Start alias url updater every 24 hours
-/usr/local/bin/minicron 86400 $varrunpath/update_alias_url_data.pid /usr/local/etc/rc.update_alias_url_data
+/usr/local/bin/minicron 86400 /var/run/update_alias_url_data.pid /usr/local/etc/rc.update_alias_url_data
 
 /bin/chmod a+rw /tmp/.
 
@@ -434,15 +392,13 @@ if [ "${GMIRROR_STATUS}" != "" ]; then
 	/usr/local/bin/minicron 60 /var/run/gmirror_status_check.pid /usr/local/sbin/gmirror_status_check.php
 fi
 
-# Log product version to syslog
-ARCH=`uname -m`
-echo "$product ($PLATFORM) $version $ARCH"
-
-echo "Bootup complete"
-
 /usr/local/bin/beep.sh start 2>&1 >/dev/null
 
 # Reset the cache.  read-only requires this.
 /bin/rm -f /tmp/config.cache
+
+echo
+
+/usr/local/etc/rc.initial.banner
 
 exit 0

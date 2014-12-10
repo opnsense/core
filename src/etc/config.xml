@@ -152,7 +152,7 @@
 	</sysctl>
 	<system>
 		<optimization>normal</optimization>
-		<hostname>pfSense</hostname>
+		<hostname>OPNsense</hostname>
 		<domain>localdomain</domain>
 		<dnsserver/>
 		<dnsallowoverride/>

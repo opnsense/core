@@ -63,7 +63,6 @@ $g = array(
 	"product_website" => "www.opnsense.org",
 	"product_website_footer" => "https://www.opnsense.org/?gui22",
 	"product_email" => "coreteam@opnsense.org",
-	"hideplatform" => false,
 	"hidedownloadbackup" => false,
 	"hidebackupbeforeupgrade" => false,
 	"disablethemeselection" => false,
