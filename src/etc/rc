@@ -24,12 +24,6 @@ PLATFORM=`/bin/cat /usr/local/etc/platform`
 # Set our current version
 version=`/bin/cat /usr/local/etc/version`
 
-# Setup dumpdev/ddb/savecore"
-echo "Configuring crash dumps..."
-if [ "$PLATFORM" = "pfSense" ]; then
-	/usr/local/etc/rc.dumpon
-fi
-
 if [ -e /root/force_fsck ]; then
 	echo "Forcing filesystem check..."
 	/sbin/fsck -y -t ufs /
@@ -66,7 +60,16 @@ if [ "$PLATFORM" = "pfSense" ]; then
 fi
 
 if [ "${PLATFORM}" = "cdrom" ]; then
-	/usr/local/etc/rc.cdrom
+	/etc/rc.d/tmp start
+
+	# fake a writeable environment in some subdirs
+	for i in cf etc home root usr var; do
+		/bin/mkdir -p /tmp/.cdrom/${i}
+		/sbin/mount_unionfs /tmp/.cdrom/${i} /${i}
+	done
+
+	# special handling for link
+	/sbin/mount_nullfs /cf/conf /conf
 else
 	# Mount /. If it fails run a fsck.
 	if [ "$PLATFORM" = "nanobsd" ]; then
@@ -130,6 +133,21 @@ else
 	if [ "${PLATFORM}" = "nanobsd" ] || [ ${USE_MFS_TMPVAR} -gt 0 ]; then
 		/usr/local/etc/rc.embedded
 	fi
+fi
+
+# set keyboard map if needed
+/etc/rc.d/syscons onestart
+
+# probe for a persistent core dump device
+/usr/local/etc/rc.dumpon
+
+# Bootstrap config.xml if necessary
+if [ ! -f /conf/config.xml ]; then
+	echo -n "Bootstrapping config.xml..."
+	/bin/mkdir -p /conf/backup
+	/bin/mkdir -p /conf/sshd
+	/bin/cp /usr/local/etc/config.xml /conf/config.xml
+	echo " done."
 fi
 
 /bin/rm -f /root/force_fsck
@@ -208,22 +226,6 @@ if ls /usr/local/share/pbi-keys/*.ssl >/dev/null 2>&1; then
 		mkdir -p /var/db/pbi/keys
 	fi
 	cp -f /usr/local/share/pbi-keys/*.ssl /var/db/pbi/keys
-fi
-
-if [ "$PLATFORM" = "cdrom" ] ; then
-	echo -n "Mounting unionfs directories..."
-	/bin/mkdir /tmp/unionfs
-	/bin/mkdir /tmp/unionfs/usr
-	/bin/mkdir /tmp/unionfs/root
-	/bin/mkdir /tmp/unionfs/sbin
-	/bin/mkdir /tmp/unionfs/bin
-	/bin/mkdir /tmp/unionfs/boot
-	/sbin/mount_unionfs /tmp/unionfs/usr /usr/
-	/sbin/mount_unionfs /tmp/unionfs/root /root/
-	/sbin/mount_unionfs /tmp/unionfs/bin /bin/		
-	/sbin/mount_unionfs /tmp/unionfs/sbin /sbin/	
-	/sbin/mount_unionfs /tmp/unionfs/boot /boot/
-	echo "done."
 fi
 
 # make some directories in /var
