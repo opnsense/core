@@ -6,11 +6,13 @@
 # Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 # All rights reserved.
 
-#/bin/stty status '^T'
-#/bin/stty susp '^-' intr '^-' quit '^-'
+stty status '^T' 2> /dev/null
 
-#trap : 2
-#trap : 3
+# Set shell to ignore SIGINT (2), but not children;
+# shell catches SIGQUIT (3) and returns to single user.
+#
+trap : 2
+trap "echo 'Boot interrupted'; exit 1" 3
 
 HOME=/
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
