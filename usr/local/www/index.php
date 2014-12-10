@@ -276,7 +276,6 @@ function addWidget(selectedDiv){
 	container.show();
 	showSave();
 	state.val('show');
-	
 }
 
 function configureWidget(selectedDiv){
@@ -324,7 +323,6 @@ function closeWidget(selectedDiv){
 	state		=	$('#'+selectedDiv+'-config');
 	
 	showSave();
-	
 	widget.hide();
 	state.val('close');
 }
@@ -431,8 +429,7 @@ echo $jscriptstr;
 	<div class="container-fluid">
         
         <div class="row">
-            <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
-	           <input type="hidden" value="" name="sequence" id="sequence" />
+
 				<?php            
 				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
 				if (!verify_all_package_servers())
@@ -533,7 +530,8 @@ echo $jscriptstr;
 				?>
 						<section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>"  style="display:<?php echo $divdisplay; ?>;">
 				          	<div class="content-box">	          	
-					          	
+					          									                    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
+	           <input type="hidden" value="" name="sequence" id="sequence" />
 								<header class="content-box-head container-fluid">
 
 								    <ul class="list-inline __nomb">
@@ -564,6 +562,7 @@ echo $jscriptstr;
 											}
 										?>					        
 								        </h3></li>
+
 								        <li class="pull-right">
 								            <div class="btn-group">
 								                <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?php echo $widgetname;?>-min" onclick='return minimizeWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv; ?>;"><span class="glyphicon glyphicon-minus"></span></button>
@@ -578,10 +577,11 @@ echo $jscriptstr;
 								        </li>   
 								    </ul>                             
 								</header>
-					          	
+					          	</form>
 					          	<div class="content-box-main collapse in" id="<?php echo $widgetname;?>-container" style="display:<?=$mindiv;?>">
 					          		<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-config" name="<?php echo $widgetname;?>-config" />
-							
+									
+									
 									<?php if ($divdisplay != "block") { ?>
 									<div id="<?php echo $widgetname;?>-loader" style="display:<?php echo $display; ?>;" align="center">
 										<br />
@@ -599,8 +599,9 @@ echo $jscriptstr;
 				      			</div>
 				            </div>                   
 				        </section>
+
 				<? } //end foreach ?>
-			</form>
+			
 	    </div>
     </div>
 </section>
