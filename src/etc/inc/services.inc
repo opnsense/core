@@ -42,19 +42,17 @@ define('DYNDNS_PROVIDER_VALUES', 'dnsomatic dyndns dyndns-static dyndns-custom d
 define('DYNDNS_PROVIDER_DESCRIPTIONS', 'DNS-O-Matic,DynDNS (dynamic),DynDNS (static),DynDNS (custom),DHS,DyNS,easyDNS,No-IP,No-IP (free),ODS.org,ZoneEdit,Loopia,freeDNS,DNSexit,OpenDNS,Namecheap,HE.net,HE.net (v6),HE.net Tunnelbroker,SelfHost,Route 53,CloudFlare,Custom,Custom (v6),Euro Dns,GratisDNS,OVH DynHOST,City Network');
 
 /* implement ipv6 route advertising deamon */
-function services_radvd_configure($blacklist = array()) {
+function services_radvd_configure($blacklist = array())
+{
 	global $config, $g;
 	
-	if ($g['platform'] == 'jail') 
+	if ($g['platform'] == 'jail') {
 		return;
-
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_radvd_configure() being called $mt\n";
 	}
 
-	if (!is_array($config['dhcpdv6']))
+	if (!is_array($config['dhcpdv6'])) {
 		$config['dhcpdv6'] = array();
+	}
 
 	$Iflist = get_configured_interface_list();
 	$Iflist = array_merge($Iflist, get_configured_pppoe_server_interfaces());
@@ -336,17 +334,14 @@ function services_dhcpd_configure($family = "all", $blacklist = array()) {
 	}
 }
 
-function services_dhcpdv4_configure() {
+function services_dhcpdv4_configure()
+{
 	global $config, $g;
 	$need_ddns_updates = false;
 	$ddns_zones = array();
 
-	if($g['services_dhcp_server_enable'] == false)
+	if($g['services_dhcp_server_enable'] == false) {
 		return;
-
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_dhcpdv4_configure($if) being called $mt\n";
 	}
 
 	/* kill any running dhcpd */
@@ -976,15 +971,12 @@ function dhcpdzones($ddns_zones, $dhcpifconf)
 	return $dhcpdconf;
 }
 
-function services_dhcpdv6_configure($blacklist = array()) {
+function services_dhcpdv6_configure($blacklist = array())
+{
 	global $config, $g;
 
-	if($g['services_dhcp_server_enable'] == false)
+	if($g['services_dhcp_server_enable'] == false) {
 		return;
-
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_dhcpd_configure($if) being called $mt\n";
 	}
 
 	/* kill any running dhcpd */
@@ -1382,13 +1374,12 @@ EOD;
         return 0;
 }
 
-function services_dhcrelay_configure() {
+function services_dhcrelay_configure()
+{
 	global $config, $g;
-	if ($g['platform'] == 'jail')
+
+	if ($g['platform'] == 'jail') {
 		return;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_dhcrelay_configure() being called $mt\n";
 	}
 
 	/* kill any running dhcrelay */
@@ -1504,13 +1495,12 @@ function services_dhcrelay_configure() {
 	return 0;
 }
 
-function services_dhcrelay6_configure() {
+function services_dhcrelay6_configure()
+{
 	global $config, $g;
-	if ($g['platform'] == 'jail')
+
+	if ($g['platform'] == 'jail') {
 		return;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_dhcrelay6_configure() being called $mt\n";
 	}
 
 	/* kill any running dhcrelay */
@@ -1653,12 +1643,9 @@ function services_dyndns_configure_client($conf) {
 		$curlSslVerifypeer = $conf['curl_ssl_verifypeer']);
 }
 
-function services_dyndns_configure($int = "") {
+function services_dyndns_configure($int = '')
+{
 	global $config, $g;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_dyndns_configure() being called $mt\n";
-	}
 
 	$dyndnscfg = $config['dyndnses']['dyndns'];
 	$gwgroups = return_gateway_groups_array();
@@ -1709,7 +1696,8 @@ function dyndnsCheckIP($int) {
 	return $ip_address;
 }
 
-function services_dnsmasq_configure() {
+function services_dnsmasq_configure()
+{
 	global $config, $g;
 	$return = 0;
 
@@ -1719,12 +1707,6 @@ function services_dnsmasq_configure() {
 		"cache-size" => "--cache-size=10000",
 		"local-ttl" => "--local-ttl=1"
 	);
-
-
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_dnsmasq_configure() being called $mt\n";
-	}
 
 	/* kill any running dnsmasq */
 	if (file_exists("{$g['varrun_path']}/dnsmasq.pid"))
@@ -1866,11 +1848,6 @@ function services_unbound_configure() {
 	global $config, $g;
 	$return = 0;
 
-	if (isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_unbound_configure() being called $mt\n";
-	}
-
 	// kill any running Unbound instance
 	if (file_exists("{$g['varrun_path']}/unbound.pid"))
 		sigkillbypid("{$g['varrun_path']}/unbound.pid", "TERM");
@@ -1895,12 +1872,9 @@ function services_unbound_configure() {
 	return $return;
 }
 
-function services_snmpd_configure() {
+function services_snmpd_configure()
+{
 	global $config, $g;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_snmpd_configure() being called $mt\n";
-	}
 
 	/* kill any running snmpd */
 	sigkillbypid("{$g['varrun_path']}/snmpd.pid", "TERM");
@@ -2099,12 +2073,9 @@ EOD;
 	return 0;
 }
 
-function services_dnsupdate_process($int = "", $updatehost = "", $forced = false) {
+function services_dnsupdate_process($int = '', $updatehost = '', $forced = false)
+{
 	global $config, $g;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "services_dnsupdate_process() being called $mt\n";
-	}
 
 	/* Dynamic DNS updating active? */
 	if (is_array($config['dnsupdates']['dnsupdate'])) {

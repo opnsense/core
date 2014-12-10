@@ -1925,13 +1925,9 @@ EOD;
 	return 1;
 }
 
-function interfaces_carp_setup() {
+function interfaces_carp_setup()
+{
 	global $g, $config;
-
-	if (isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "interfaces_carp_setup() being called $mt\n";
-	}
 
 	if ($g['booting']) {
 		echo gettext("Configuring CARP settings...");
@@ -1995,12 +1991,9 @@ function interfaces_carp_setup() {
 	}
 }
 
-function interface_proxyarp_configure($interface = "") {
+function interface_proxyarp_configure($interface = '')
+{
 	global $config, $g;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "interface_proxyarp_configure() being called $mt\n";
-	}
 
 	/* kill any running choparp */
 	if (empty($interface))
@@ -2079,12 +2072,10 @@ function interface_ipalias_cleanup($interface, $inet = "inet4") {
 	}
 }
 
-function interfaces_vips_configure($interface = "") {
+function interfaces_vips_configure($interface = '')
+{
 	global $g, $config;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "interfaces_vips_configure() being called $mt\n";
-	}
+
 	$paa = array();
 	if(is_array($config['virtualip']['vip'])) {
 		$carp_setuped = false;
@@ -2166,15 +2157,13 @@ function interface_reload_carps($cif) {
 	}
 }
 
-function interface_carp_configure(&$vip) {
+function interface_carp_configure(&$vip)
+{
 	global $config, $g;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "interface_carp_configure() being called $mt\n";
-	}
 
-	if ($vip['mode'] != "carp")
+	if ($vip['mode'] != 'carp') {
 		return;
+	}
 
 	/* NOTE: Maybe its useless nowdays */
 	$realif = get_real_interface($vip['interface']);
@@ -5264,12 +5253,9 @@ function get_vip_descr($ipaddress) {
 	return "";
 }
 
-function interfaces_staticarp_configure($if) {
+function interfaces_staticarp_configure($if)
+{
 	global $config, $g;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "interfaces_staticarp_configure($if) being called $mt\n";
-	}
 
 	$ifcfg = $config['interfaces'][$if];
 

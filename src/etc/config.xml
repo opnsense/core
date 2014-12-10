@@ -191,8 +191,6 @@
 		<disablenatreflection>yes</disablenatreflection>
 		<!-- <disableconsolemenu/> -->
 		<!-- <disablefirmwarecheck/> -->
-		<!-- <shellcmd></shellcmd> -->
-		<!-- <earlyshellcmd></earlyshellcmd> -->
 		<!-- <harddiskstandby></harddiskstandby> -->
 		<disablesegmentationoffloading/>
 		<disablelargereceiveoffloading/>
