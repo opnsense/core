@@ -530,7 +530,7 @@ echo $jscriptstr;
 				?>
 						<section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>"  style="display:<?php echo $divdisplay; ?>;">
 				          	<div class="content-box">	          	
-					          									                    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
+			   <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
 	           <input type="hidden" value="" name="sequence" id="sequence" />
 								<header class="content-box-head container-fluid">
 

@@ -1,7 +1,7 @@
 function trafficshowDiv(incDiv,swapButtons){
 	//appear element
 	selectedDiv = incDiv + "graphdiv";
-	jQuery('#' + selectedDiv).show();      
+	jQuery('#' + selectedDiv).show();  
 	d = document;	
 	if (swapButtons){
 		selectIntLink = selectedDiv + "-min";
@@ -12,6 +12,7 @@ function trafficshowDiv(incDiv,swapButtons){
 		textlink = d.getElementById(selectIntLink);
 		textlink.style.display = "none";
 	}
+	document.iform["shown[" + incDiv + "]"].value = "show";
 }
 	
 function  trafficminimizeDiv(incDiv,swapButtons){
@@ -28,5 +29,6 @@ function  trafficminimizeDiv(incDiv,swapButtons){
 		textlink = d.getElementById(selectIntLink);
 		textlink.style.display = "none";
 	} 
+	document.iform["shown[" + incDiv + "]"].value = "hide";
 }
 

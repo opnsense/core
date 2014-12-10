@@ -38,6 +38,12 @@ require_once("pfsense-utils.inc");
 require_once("functions.inc");
 
 $first_time = false;
+
+//var_dump($config["widgets"]["trafficgraphs"]);
+//$config["widgets"]["trafficgraphs"]["shown"]["item"][1]="lan";
+//write_config(gettext("Widget configuration has been changed."));
+
+
 if (!is_array($config["widgets"]["trafficgraphs"])) {
 	$first_time = true;
 	$config["widgets"]["trafficgraphs"] = array();
@@ -56,6 +62,7 @@ if (isset($config['ipsec']['enable']))
 	$ifdescrs['enc0'] = "IPsec";
 
 if ($_POST) {
+
 	if (isset($_POST["refreshinterval"])) {
 		$a_config["refreshinterval"] = $_POST["refreshinterval"];
 	}
@@ -100,12 +107,13 @@ if (isset($a_config["scale_type"])) {
 
 <div id="traffic_graphs-settings" class="widgetconfigdiv" style="display:none;">
 <form action="/widgets/widgets/traffic_graphs.widget.php" method="post" name="iform" id="iform">
+				<?php foreach ($ifdescrs as $ifname => $ifdescr) { ?>
+						<input type="hidden" name="shown[<?= $ifname ?>]" value="<?= $shown[$ifname] ? "show" : "hide" ?>" />
+						<?php } ?>
                         	
     <table class="table table-striped">
     	<tbody>
-			<?php foreach ($ifdescrs as $ifname => $ifdescr) { ?>
-						<input type="hidden" name="shown[<?= $ifname ?>]" value="<?= $shown[$ifname] ? "show" : "hide" ?>" />
-						<?php } ?>
+
 						<tr>
 							<td>
 								Default AutoScale:
