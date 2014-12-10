@@ -199,17 +199,21 @@ This block of code is only entered for OPTx interfaces that are configured for P
 	 */
 }
 
-function interfaces_loopback_configure() {
+function interfaces_loopback_configure()
+{
 	global $g;
 
-	if ($g['platform'] == 'jail')
-		return;
-	if($g['booting'])
+	if($g['booting']) {
 		echo gettext("Configuring loopback interface...");
+	}
+
 	pfSense_interface_setaddress("lo0", "127.0.0.1");
 	interfaces_bring_up("lo0");
-	if($g['booting'])
+
+	if($g['booting']) {
 		echo gettext("done.") . "\n";
+	}
+
 	return 0;
 }
 
@@ -1010,11 +1014,9 @@ function interface_gif_configure(&$gif, $gifkey = "") {
 	return $gifif;
 }
 
-function interfaces_configure() {
+function interfaces_configure()
+{
 	global $config, $g;
-
-	if ($g['platform'] == 'jail')
-		return;
 
 	/* Set up our loopback interface */
 	interfaces_loopback_configure();

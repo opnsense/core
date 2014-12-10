@@ -39,12 +39,14 @@
 	pfSense_MODULE:	utils
 */
 
-function activate_powerd() {
+function activate_powerd()
+{
 	global $config, $g;
-	if ($g['platform'] == 'jail')
-		return;
-	if(is_process_running("powerd"))
-		exec("/usr/bin/killall powerd");
+
+	if (is_process_running('powerd')) {
+		exec('/usr/bin/killall powerd');
+	}
+
 	if(isset($config['system']['powerd_enable'])) {
 		if ($g["platform"] == "nanobsd")
 			exec("/sbin/kldload cpufreq");
@@ -72,11 +74,9 @@ function get_default_sysctl_value($id) {
 		return $sysctls[$id];
 }
 
-function activate_sysctls() {
+function activate_sysctls()
+{
 	global $config, $g;
-
-	if ($g['platform'] == 'jail')
-		return;
 
 	$sysctls = array(
 		"net.enc.out.ipsec_bpf_mask" => "0x0001",
@@ -337,11 +337,10 @@ function system_hosts_generate()
 	return 0;
 }
 
-function system_dhcpleases_configure() {
+function system_dhcpleases_configure()
+{
 	global $config, $g;
 	
-	if ($g['platform'] == 'jail')
-		return;
 	/* Start the monitoring process for dynamic dhcpclients. */
 	if ((isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcp'])) 
 		|| (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcp']))) {
@@ -387,10 +386,6 @@ function system_hostname_configure()
 function system_routing_configure($interface = '')
 {
 	global $config, $g;
-
-	if ($g['platform'] == 'jail') {
-		return;
-	}
 
 	$gatewayip = "";
 	$interfacegw = "";
@@ -1358,15 +1353,13 @@ function system_ntp_setup_pps($serialport) {
 }
 
 
-function system_ntp_configure($start_ntpd=true) {
+function system_ntp_configure($start_ntpd = true)
+{
 	global $config, $g;
 
 	$driftfile = "/var/db/ntpd.drift";
 	$statsdir = "/var/log/ntp";
 	$gps_device = '/dev/gps0';
-
-	if ($g['platform'] == 'jail')
-		return;
 
 	safe_mkdir($statsdir);
 

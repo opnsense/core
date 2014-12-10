@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
+
 /*
-	filter.inc
 	Copyright (C) 2004-2006 Scott Ullrich
 	Copyright (C) 2005		Bill Marquette
 	Copyright (C) 2006		Peter Allgeyer
@@ -121,10 +120,6 @@ function flowtable_configure() {
 function filter_pflog_start($kill_first = false)
 {
 	global $config, $g;
-
-	if ($g['platform'] == 'jail') {
-		return;
-	}
 
 	if (!file_exists("{$g['varrun_path']}/filterlog.pid") ||
 	    !isvalidpid("{$g['varrun_path']}/filterlog.pid")) {

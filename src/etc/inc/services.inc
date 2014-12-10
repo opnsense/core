@@ -46,10 +46,6 @@ function services_radvd_configure($blacklist = array())
 {
 	global $config, $g;
 	
-	if ($g['platform'] == 'jail') {
-		return;
-	}
-
 	if (!is_array($config['dhcpdv6'])) {
 		$config['dhcpdv6'] = array();
 	}
@@ -1378,10 +1374,6 @@ function services_dhcrelay_configure()
 {
 	global $config, $g;
 
-	if ($g['platform'] == 'jail') {
-		return;
-	}
-
 	/* kill any running dhcrelay */
 	killbypid("{$g['varrun_path']}/dhcrelay.pid");
 
@@ -1498,10 +1490,6 @@ function services_dhcrelay_configure()
 function services_dhcrelay6_configure()
 {
 	global $config, $g;
-
-	if ($g['platform'] == 'jail') {
-		return;
-	}
 
 	/* kill any running dhcrelay */
 	killbypid("{$g['varrun_path']}/dhcrelay6.pid");
