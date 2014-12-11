@@ -63,9 +63,6 @@ if [ "${PLATFORM}" = "cdrom" ]; then
 		/bin/mkdir -p /tmp/.cdrom/${i}
 		/sbin/mount_unionfs /tmp/.cdrom/${i} /${i}
 	done
-
-	# special handling for link
-	/sbin/mount_nullfs /cf/conf /conf
 else
 	# Mount /. If it fails run a fsck.
 	if [ "$PLATFORM" = "nanobsd" ]; then
