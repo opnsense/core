@@ -301,9 +301,6 @@ echo "done.\n";
 /* start load balancer daemon */
 relayd_configure();
 
-/* configure console menu */
-system_console_configure();
-
 /* start DHCP service */
 services_dhcpd_configure();
 
