@@ -1681,17 +1681,6 @@ function system_reboot_cleanup() {
 	stop_packages();
 }
 
-function system_console_configure()
-{
-	global $config, $g;
-
-	if (isset($config['system']['disableconsolemenu'])) {
-		touch("{$g['varetc_path']}/disableconsole");
-	} else {
-		unlink_if_exists("{$g['varetc_path']}/disableconsole");
-	}
-}
-
 function system_dmesg_save()
 {
 	global $g;

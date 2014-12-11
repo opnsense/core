@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
+
 /*
-	system_advanced_admin.php
 	part of pfSense
 	Copyright (C) 2005-2010 Scott Ullrich
 
@@ -67,6 +66,7 @@ $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
 $pconfig['enablesshd'] = $config['system']['enablesshd'];
 $pconfig['sshport'] = $config['system']['ssh']['port'];
 $pconfig['sshdkeyonly'] = isset($config['system']['ssh']['sshdkeyonly']);
+$pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
 $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
 
 $a_cert =& $config['cert'];
@@ -107,6 +107,11 @@ if ($_POST) {
 		$config['system']['ssh']['sshdkeyonly'] = "enabled";
 	else if (isset($config['system']['ssh']['sshdkeyonly']))
 		unset($config['system']['ssh']['sshdkeyonly']);
+
+	if($_POST['sshdpermitrootlogin'] == "yes")
+		$config['system']['ssh']['permitrootlogin'] = "enabled";
+	else if (isset($config['system']['ssh']['permitrootlogin']))
+		unset($config['system']['ssh']['permitrootlogin']);
 
 	ob_flush();
 	flush();
@@ -191,11 +196,11 @@ if ($_POST) {
 		else
 			unset($config['system']['enablesshd']);
 
-		$sshd_keyonly = isset($config['system']['sshdkeyonly']);
+		$sshd_keyonly = isset($config['system']['ssh']['sshdkeyonly']);
 		if ($_POST['sshdkeyonly'])
-			$config['system']['sshdkeyonly'] = true;
+			$config['system']['ssh']['sshdkeyonly'] = true;
 		else
-			unset($config['system']['sshdkeyonly']);
+			unset($config['system']['ssh']['sshdkeyonly']);
 
 		$sshd_port = $config['system']['ssh']['port'];
 		if ($_POST['sshport'])
@@ -203,10 +208,18 @@ if ($_POST) {
 		else if (isset($config['system']['ssh']['port']))
 			unset($config['system']['ssh']['port']);
 
+		$sshd_permitrootlogin = $config['system']['ssh']['permitrootlogin'];
+		if ($_POST['sshdpermitrootlogin'])
+			$config['system']['ssh']['permitrootlogin'] = $_POST['sshdpermitrootlogin'];
+		else if (isset($config['system']['ssh']['permitrootlogin']))
+			unset($config['system']['ssh']['permitrootlogin']);
+
 		if (($sshd_enabled != $config['system']['enablesshd']) ||
-			($sshd_keyonly != $config['system']['sshdkeyonly']) ||
-			($sshd_port != $config['system']['ssh']['port']))
+			($sshd_keyonly != $config['system']['ssh']['sshdkeyonly']) ||
+			($sshd_port != $config['system']['ssh']['port']) ||
+			($sshd_permitrootlogin != $config['system']['ssh']['permitrootlogin'])) {
 			$restart_sshd = true;
+		}
 
 		if ($restart_webgui) {
 			global $_SERVER;
@@ -501,6 +514,16 @@ include("head.inc");
         								<td width="78%" class="vtable">
         									<input name="enablesshd" type="checkbox" id="enablesshd" value="yes" <?php if (isset($pconfig['enablesshd'])) echo "checked=\"checked\""; ?> />
         									<strong><?=gettext("Enable Secure Shell"); ?></strong>
+        								</td>
+        							</tr>
+        							<tr>
+        								<td width="22%" valign="top" class="vncell"><?=gettext("Root Login"); ?></td>
+        								<td width="78%" class="vtable">
+        									<input name="sshdpermitrootlogin" type="checkbox" id="sshdpermitrootlogin" value="yes" <?php if ($pconfig['sshdpermitrootlogin']) echo "checked=\"checked\""; ?> />
+        									<strong><?=gettext("Enable root user login"); ?></strong>
+        									<br />
+        									<?=gettext("Root login is generally discouraged. It is advised "); ?>
+        									<?=gettext("to log in via another user and switch to root afterwards."); ?>
         								</td>
         							</tr>
         							<tr>

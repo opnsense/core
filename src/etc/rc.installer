@@ -1,0 +1,95 @@
+#!/bin/sh
+#
+#   Launch BSD Installer with fake "installer root"
+#   Copyright 2004-2009 Scott Ullrich
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are met:
+#
+#   1. Redistributions of source code must retain the above copyright notice,
+#      this list of conditions and the following disclaimer.
+#
+#   2. Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in the
+#      documentation and/or other materials provided with the distribution.
+#
+#   THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#   INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+#   AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+#   AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+#   OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+
+PRODUCT=`grep product_name /usr/local/etc/inc/globals.inc | cut -d'"' -f4`
+USERNAME=`grep factory_shipped_username /usr/local/etc/inc/globals.inc | cut -d'"' -f4`
+PASSWORD=`grep factory_shipped_password /usr/local/etc/inc/globals.inc | cut -d'"' -f4`
+
+/sbin/sysctl kern.geom.debugflags=16 >/dev/null
+/sbin/sysctl net.link.ether.inet.log_arp_wrong_iface=0 >/dev/null
+
+/sbin/ifconfig lo0 127.0.0.1/24
+/sbin/ifconfig lo0 up
+
+# Start the backend in the background (must mute all the ouput)
+LUA_CPATH='/usr/local/lib/lua/5.0/?.so' /usr/local/bin/lua50 \
+	-l/usr/local/share/lua/5.0/compat-5.1.lua \
+	/usr/local/share/dfuibe_lua/main.lua \
+	/usr/local/share/dfuibe_lua/conf/BSDInstaller.lua \
+	/usr/local/share/dfuibe_lua/conf/FreeBSD.lua \
+	/usr/local/share/dfuibe_lua/conf/pfSense.lua > /dev/null 2>&1 &
+
+/sbin/conscontrol mute on > /dev/null
+
+# Launch the frontend goo (must include cons25 for first boot)
+TERM=cons25 /usr/local/sbin/dfuife_curses
+
+/sbin/conscontrol mute off > /dev/null
+
+if [ ! -f /tmp/install_complete ]; then
+	echo "The installation was aborted."
+	echo
+	exit
+fi
+
+clear
+
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo "${PRODUCT} is now rebooting"
+echo
+echo "After the reboot is complete, open a web browser and"
+echo "enter https://192.168.1.1 (or the LAN IP Address) in the"
+echo "location bar."
+echo
+echo "You might need to acknowledge the HTTPS certificate if "
+echo "your browser reports it as untrusted.  This is normal"
+echo "as a self-signed certificate is used by default."
+echo
+echo "*DEFAULT Username*: ${USERNAME}"
+echo "*DEFAULT Password*: ${PASSWORD}"
+echo
+
+for n in 5 4 3 2 1; do
+    echo Rebooting in $n seconds.  CTRL-C to abort.
+    sleep 1
+done
+echo
+
+reboot

@@ -189,7 +189,7 @@
 			<protocol>https</protocol>
 		</webgui>
 		<disablenatreflection>yes</disablenatreflection>
-		<!-- <disableconsolemenu/> -->
+		<disableconsolemenu/>
 		<!-- <disablefirmwarecheck/> -->
 		<!-- <harddiskstandby></harddiskstandby> -->
 		<disablesegmentationoffloading/>
@@ -202,6 +202,9 @@
 			<interval>monthly</interval>
 		</bogons>
 		<kill_states/>
+		<ssh>
+			<sshdkeyonly/>
+		</ssh>
 	</system>
 	<interfaces>
 		<wan>
