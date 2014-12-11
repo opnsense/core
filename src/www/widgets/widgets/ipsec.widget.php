@@ -93,16 +93,16 @@ if (isset($config['ipsec']['phase1'])){?>
 
 <div id="ipsec-Overview" style="display:block;background-color:#EEEEEE;">
 	<div>
-	<table class="tabcont" width="100%" border="0" cellpadding="6" cellspacing="0" summary="heading">
+	<table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="heading">
 	<tr>
-		<td class="listhdrr nowrap">Active Tunnels</td>
-		<td class="listhdrr nowrap">Inactive Tunnels</td>
-		<td class="listhdrr nowrap">Mobile Users</td>
+		<td class="nowrap"><?php echo gettext('Active Tunnels');?></td>
+		<td class="nowrap"><?php echo gettext('Inactive Tunnels');?></td>
+		<td class="nowrap"><?php echo gettext('Mobile Users');?></td>
 	</tr>
 	<tr>
-		<td class="listlr"><?php echo $activecounter; ?></td>
-		<td class="listr"><?php echo $inactivecounter; ?></td>
-		<td class="listr"><?php if (is_array($mobile['pool'])) echo htmlspecialchars($mobile['pool'][0]['usage']); else echo 0; ?></td>
+		<td><?php echo $activecounter; ?></td>
+		<td><?php echo $inactivecounter; ?></td>
+		<td><?php if (is_array($mobile['pool'])) echo htmlspecialchars($mobile['pool'][0]['usage']); else echo 0; ?></td>
 	</tr>
 	</table>
 	</div>
@@ -131,18 +131,18 @@ if (isset($config['ipsec']['phase1'])){?>
 		?>
 
 		<div style="display:table-row;">
-			<div class="listlr" style="display:table-cell;width:39px">
+			<div style="display:table-cell;width:39px">
 				<?php echo $spans;?>
 					<?php echo htmlspecialchars($ipsec['src']);?>
 				<?php echo $spane;?>
 			</div>
-			<div class="listr"  style="display:table-cell;width:100px"><?php echo $spans;?>
+			<divstyle="display:table-cell;width:100px"><?php echo $spans;?>
 				<?php echo $ipsec['remote-subnet'];?>
 				<br />
 				(<?php echo htmlspecialchars($ipsec['dest']);?>)<?php echo $spane;?>
 			</div>
-			<div class="listr"  style="display:table-cell;width:90px"><?php echo $spans;?><?php echo htmlspecialchars($ipsec['descr']);?><?php echo $spane;?></div>
-			<div class="listr"  style="display:table-cell;width:37px" align="center"><?php echo $spans;?>
+			<div style="display:table-cell;width:90px"><?php echo $spans;?><?php echo htmlspecialchars($ipsec['descr']);?><?php echo $spane;?></div>
+			<div style="display:table-cell;width:37px" align="center"><?php echo $spans;?>
 			<?php
 
 			if($ipsec['status'] == "true") {
@@ -198,7 +198,7 @@ if (isset($config['ipsec']['phase1'])){?>
 }//end if tunnels are configured, else show code below
 else { ?>
 <div style="display:block">
-	 <table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="note">
+	 <table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="note">
 	  <tr>
 	    <td colspan="4">
 	        <span class="vexpl">
