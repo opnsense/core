@@ -45,7 +45,7 @@ function listtags() {
 		'bridged', 'build_port_path',
 		'ca', 'cacert', 'cert', 'crl', 'clone', 'config', 'container', 'columnitem',
 		'depends_on_package', 'disk', 'dnsserver', 'dnsupdate', 'domainoverrides', 'dyndns',
-		'earlyshellcmd', 'element', 'encryption-algorithm-option',
+		'element', 'encryption-algorithm-option',
 		'field', 'fieldname',
 		'gateway_item', 'gateway_group', 'gif', 'gre', 'group',
 		'hash-algorithm-option', 'hosts', 'member', 'ifgroupentry', 'igmpentry', 'interface_array', 'item', 'key',
@@ -57,7 +57,7 @@ function listtags() {
 		'qinqentry', 'queue',
 		'pages', 'pipe', 'radnsserver', 'roll', 'route', 'row', 'rrddatafile', 'rule',
 		'schedule', 'service', 'servernat', 'servers',
-		'serversdisabled', 'shellcmd', 'staticmap', 'subqueue',
+		'serversdisabled', 'staticmap', 'subqueue',
 		'timerange', 'tunnel', 'user', 'vip', 'virtual_server', 'vlan',
 		'winsserver', 'wolentry', 'widget'
 	);

@@ -991,11 +991,10 @@ function openvpn_resync($mode, $settings) {
 }
 
 // Resync and restart all VPNs
-function openvpn_resync_all($interface = "") {
+function openvpn_resync_all($interface = '')
+{
 	global $g, $config;
 
-	if ($g['platform'] == 'jail')
-		return;
 	openvpn_create_dirs();
 
 	if (!is_array($config['openvpn']))

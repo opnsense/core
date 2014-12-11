@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
+
 /*
-	filter.inc
 	Copyright (C) 2004-2006 Scott Ullrich
 	Copyright (C) 2005		Bill Marquette
 	Copyright (C) 2006		Peter Allgeyer
@@ -118,34 +117,28 @@ function flowtable_configure() {
 	}
 }
 
-function filter_pflog_start($kill_first = false) {
+function filter_pflog_start($kill_first = false)
+{
 	global $config, $g;
-	if ($g['platform'] == 'jail')
-		return;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_pflog_start() being called $mt\n";
-	}
+
 	if (!file_exists("{$g['varrun_path']}/filterlog.pid") ||
-	    !isvalidpid("{$g['varrun_path']}/filterlog.pid"))
+	    !isvalidpid("{$g['varrun_path']}/filterlog.pid")) {
 		mwexec("/usr/local/sbin/filterlog -i pflog0 -p {$g['varrun_path']}/filterlog.pid");
+	}
 }
 
 /* reload filter async */
-function filter_configure() {
+function filter_configure()
+{
 	global $g;
-
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_configure() being called $mt\n";
-	}
 
 	/*
 	 * NOTE: Check here for bootup status since this should not be triggered during bootup.
 	 *	 The reason is that rc.bootup calls filter_configure_sync directly which does this too.
 	 */
-	if (!$g['booting'])
-		send_event("filter reload");
+	if (!$g['booting']) {
+		send_event('filter reload');
+	}
 }
 
 function filter_delete_states_for_down_gateways() {
@@ -178,7 +171,8 @@ function filter_delete_states_for_down_gateways() {
 }
 
 /* reload filter sync */
-function filter_configure_sync($delete_states_if_needed = true) {
+function filter_configure_sync($delete_states_if_needed = true)
+{
 	global $config, $g, $after_filter_configure_run, $FilterIflist;
 	global $time_based_rules, $filterdns, $aliases, $dummynet_name_list;
 
@@ -192,10 +186,6 @@ function filter_configure_sync($delete_states_if_needed = true) {
 	/* invalidate interface cache */
 	get_interface_arr(true);
 
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_configure_sync() being called $mt\n";
-	}
 	/* Get interface list to work with. */
 	filter_generate_optcfg_array();
 	if($g['booting'] == true)
@@ -310,16 +300,9 @@ function filter_configure_sync($delete_states_if_needed = true) {
 	mwexec("/sbin/pfctl -Of {$g['tmp_path']}/rules.limits");
 	unset($rules, $limitrules);
 
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "pfctl being called at $mt\n";
-	}
 	unset($rules_loading, $rules_error);
 	$_grbg = exec("/sbin/pfctl -o basic -f {$g['tmp_path']}/rules.debug 2>&1", $rules_error, $rules_loading);
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "pfctl done at $mt\n";
-	}
+
 	/*
 	 * check for a error while loading the rules file.	if an error has occurred
 	 * then output the contents of the error to the caller
@@ -387,14 +370,6 @@ function filter_configure_sync($delete_states_if_needed = true) {
 				fwrite($fda, $afcr . "\n");
 			unset($after_filter_configure_run);
 		}
-
-		/*
-		 *      we need a way to let a user run a shell cmd after each
-		 *      filter_configure() call.  run this xml command after
-		 *      each change.
-		 */
-		if($config['system']['afterfilterchangeshellcmd'] <> "")
-			fwrite($fda, $config['system']['afterfilterchangeshellcmd'] . "\n");
 
 		fclose($fda);
 	}
@@ -545,13 +520,9 @@ function filter_expand_alias_array($alias_name) {
 	return explode(" ", preg_replace('/\s+/', ' ', trim($expansion)));
 }
 
-function filter_generate_aliases() {
+function filter_generate_aliases()
+{
 	global $config, $FilterIflist, $after_filter_configure_run;
-
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_generate_aliases() being called $mt\n";
-	}
 
 	$alias = "#System aliases\n ";
 	$aliases = "loopback = \"{ lo0 }\"\n";
@@ -885,12 +856,9 @@ function filter_get_direct_networks_list($returnsubnetsonly = true) {
 	}
 }
 
-function filter_generate_optcfg_array() {
+function filter_generate_optcfg_array()
+{
 	global $config, $FilterIflist;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_generate_optcfg_array() being called $mt\n";
-	}
 
 	read_layer7_config();
 	/* if list */
@@ -1029,17 +997,14 @@ function filter_generate_optcfg_array() {
 	}
 }
 
-function filter_flush_nat_table() {
-	global $config, $g;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_flush_nat_table() being called $mt\n";
-	}
-	return mwexec("/sbin/pfctl -F nat");
+function filter_flush_nat_table()
+{
+	return mwexec('/sbin/pfctl -F nat');
 }
 
-function filter_flush_state_table() {
-	return mwexec("/sbin/pfctl -F state");
+function filter_flush_state_table()
+{
+	return mwexec('/sbin/pfctl -F state');
 }
 
 function filter_get_reflection_interfaces($natif = "") {
@@ -2277,14 +2242,11 @@ function filter_generate_address(& $rule, $target = "source", $isnat = false) {
 	return $src;
 }
 
-function filter_generate_user_rule($rule) {
+function filter_generate_user_rule($rule)
+{
 	global $config, $g, $FilterIflist, $GatewaysList;
 	global $layer7_rules_list, $dummynet_name_list;
 
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_generate_user_rule() being called $mt\n";
-	}
 	/* don't include disabled rules */
 	if(isset($rule['disabled'])) {
 		return "# rule " . $rule['descr'] . " disabled \n";
@@ -2660,17 +2622,14 @@ function filter_generate_user_rule($rule) {
 	return $line;
 }
 
-function filter_rules_generate() {
+function filter_rules_generate()
+{
 	global $config, $g, $FilterIflist, $time_based_rules, $GatewaysList, $tracker;
 
 	$fix_rule_label = 'fix_rule_label';
 	$increment_tracker = 'filter_rule_tracker';
 
 	update_filter_reload_status(gettext("Creating default rules"));
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_rules_generate() being called $mt\n";
-	}
 
 	$pptpdcfg = $config['pptpd'];
 
@@ -3319,12 +3278,10 @@ EOD;
 	return $ipfrules;
 }
 
-function filter_rules_spoofcheck_generate($ifname, $ifcfg, $log) {
+function filter_rules_spoofcheck_generate($ifname, $ifcfg, $log)
+{
 	global $g, $config, $tracker;
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_rules_spoofcheck_generate() being called $mt\n";
-	}
+
 	$ipfrules = "antispoof {$log['block']} for \${$ifcfg['descr']} \n";
 	$tracker++;
 
@@ -3526,14 +3483,11 @@ function filter_tdr_month($schedule) {
 	return false;
 }
 
-function filter_setup_logging_interfaces() {
+function filter_setup_logging_interfaces()
+{
 	global $config, $FilterIflist;
 
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_setup_logging_interfaces() being called $mt\n";
-	}
-	$rules = "";
+	$rules = '';
 	if (isset($FilterIflist['lan']))
 		$rules .= "set loginterface {$FilterIflist['lan']['if']}\n";
 	else if (isset($FilterIflist['wan']))
@@ -3542,16 +3496,12 @@ function filter_setup_logging_interfaces() {
 	return $rules;
 }
 
-function filter_process_carp_rules($log) {
+function filter_process_carp_rules($log)
+{
 	global $g, $config, $tracker;
 
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_process_carp_rules() being called $mt\n";
-	}
-
 	$increment_tracker = 'filter_rule_tracker';
-	$lines = "";
+	$lines = '';
 	/* return if there are no carp configured items */
 	if (!empty($config['hasync']) or !empty($config['virtualip']['vip'])) {
 		$lines .= "block in {$log['block']} quick proto carp from (self) to any tracker {$increment_tracker($tracker)}\n";
@@ -3561,16 +3511,13 @@ function filter_process_carp_rules($log) {
 }
 
 /* Generate IPsec Filter Items */
-function filter_generate_ipsec_rules($log = array()) {
+function filter_generate_ipsec_rules($log = array())
+{
 	global $config, $g, $FilterIflist, $tracker;
 
-	if(isset($config['system']['developerspew'])) {
-		$mt = microtime();
-		echo "filter_generate_ipsec_rules() being called $mt\n";
-	}
-
-	if (isset($config['system']['disablevpnrules']))
+	if (isset($config['system']['disablevpnrules'])) {
 		return "\n# VPN Rules not added disabled in System->Advanced.\n";
+	}
 
 	$increment_tracker = 'filter_rule_tracker';
 

@@ -135,7 +135,6 @@ $filesystems = get_mounted_filesystems();
 		<?php endif; ?>
 			</td>
 		</tr>
-		<?php if(!$g['hideplatform']): ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Platform");?></td>
 			<td width="75%" class="listr">
@@ -145,7 +144,6 @@ $filesystems = get_mounted_filesystems();
 				} ?>
 			</td>
 		</tr>
-		<?php endif; ?>
 		<?php if ($g['platform'] == "nanobsd"): ?>
 			<?
 			global $SLICE, $OLDSLICE, $TOFLASH, $COMPLETE_PATH, $COMPLETE_BOOT_PATH;

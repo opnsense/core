@@ -1169,8 +1169,6 @@ function mwexec($command, $mute = false, $clearsigmask = false) {
 		pcntl_sigprocmask(SIG_SETMASK, $oldset);
 	}
 
-	if(isset($config['system']['developerspew']))
-		$mute = false;
 	if(($retval <> 0) && ($mute === false)) {
 		$output = implode(" ", $oarr);
 		log_error(sprintf(gettext("The command '%1\$s' returned exit code '%2\$d', the output was '%3\$s' "), $command, $retval, $output));
@@ -1639,13 +1637,13 @@ function get_memory() {
 	return array(($physmem/1048576),($realmem/1048576));
 }
 
-function mute_kernel_msgs() {
+function mute_kernel_msgs()
+{
 	global $config;
 	// Do not mute serial console.  The kernel gets very very cranky
 	// and will start dishing you cannot control tty errors.
 	switch (trim(file_get_contents("/usr/local/etc/platform"))) {
 		case "nanobsd":
-		case "jail":
 			return;
 	}
 	if($config['system']['enableserial'])
@@ -1659,19 +1657,9 @@ function unmute_kernel_msgs() {
 	// and will start dishing you cannot control tty errors.
 	switch (trim(file_get_contents("/usr/local/etc/platform"))) {
 		case "nanobsd":
-		case "jail":
 			return;
 	}
 	exec("/sbin/conscontrol mute off");
-}
-
-function start_devd() {
-	global $g;
-
-	if ($g['platform'] == 'jail')
-		return;
-	exec("/sbin/devd");
-	sleep(1);
 }
 
 function is_interface_vlan_mismatch() {
