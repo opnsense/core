@@ -14,24 +14,14 @@
 
 # If recovery console shell option has been specified
 if [ -f "/tmp/donotbootup" ]; then
-	/usr/bin/env prompt="%B[%n@%m]%b%/(%h)||RecoveryConsoleShell: " /bin/csh
-	rm "/tmp/donotbootup"
-	echo "Rebooting in 5 seconds... CTRL-C to abort..."
-	sleep 5
+	rm /tmp/donotbootup
+	/bin/csh
 	/usr/local/etc/rc.reboot
-	exit
+	# no coming back from here
 fi
-
-CONFIG="/cf/conf/config.xml"
-WORD="https"
-
-# Set our operating platform
-PLATFORM=`cat /usr/local/etc/platform`
 
 # endless loop
 while : ; do
-
-product=`grep product_name /usr/local/etc/inc/globals.inc | cut -d'"' -f4`
 
 # Check to see if SSH is running.
 if pgrep -q -a -F /var/run/sshd.pid sshd >/dev/null 2>&1; then
@@ -40,21 +30,24 @@ else
 	sshd_option="14) Enable Secure Shell (sshd)";
 fi
 
-if [ "$PLATFORM" = "cdrom" ]; then
-    option99="99) Install ${product} to a hard drive, etc."
+# If we are on the LiveCD advertise the installer
+if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
+	rmdir ${_tmpdir}
+else
+	option99="99) Launch the installer"
 fi
 
-# display a cheap menu
 echo " 0) Logout                             8) Shell"
 echo " 1) Assign Interfaces                  9) pfTop"
 echo " 2) Set interface(s) IP address       10) Filter Logs"
-echo " 3) Reset webConfigurator password    11) Restart webConfigurator"
-echo " 4) Reset to factory defaults         12) ${product} Developer Shell"
+echo " 3) Reset the root password           11) Restart web interface"
+echo " 4) Reset to factory defaults         12) Developer Shell"
 echo " 5) Reboot system                     13) Upgrade from console"
 echo " 6) Halt system                       ${sshd_option}"
-echo " 7) Ping host                         15) Restore recent configuration"
-if [ "${option99}" != "" ]; then
-	/bin/echo "${option99}"
+echo " 7) Ping host                         15) Restore a configuration"
+if [ -n "${option99}" ]; then
+# flat for alignment...
+echo "                                      ${option99}"
 fi
 
 echo
@@ -112,18 +105,13 @@ case ${opmode} in
 	/usr/local/etc/rc.restore_config_backup
 	;;
 99)
-	if [ -e /dev/ukbd0 ]; then
-		env TERM=cons25 /usr/local/installer/lua_installer
-	else
-		/usr/local/installer/lua_installer
-	fi
+	/usr/local/etc/rc.installer
 	;;
 *)
 	;;
 esac
 
 /usr/local/etc/rc.initial.banner
-
 echo
 
 done
