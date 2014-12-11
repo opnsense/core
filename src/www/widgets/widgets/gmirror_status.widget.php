@@ -36,7 +36,7 @@ if ($_GET['textonly'] == "true") {
 	exit;
 }
 ?>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="gmirror status">
+<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="gmirror status">
 	<tbody id="gmirror_status_table">
 		<?php echo gmirror_html_status(); ?>
 	</tbody>
