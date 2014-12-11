@@ -40,7 +40,7 @@ LUA_CPATH='/usr/local/lib/lua/5.0/?.so' /usr/local/bin/lua50 \
 	/usr/local/share/dfuibe_lua/main.lua \
 	/usr/local/share/dfuibe_lua/conf/BSDInstaller.lua \
 	/usr/local/share/dfuibe_lua/conf/FreeBSD.lua \
-	/usr/local/share/dfuibe_lua/conf/pfSense.lua > /dev/null 2>&1 &
+	/usr/local/share/dfuibe_lua/conf/Product.lua > /dev/null 2>&1 &
 
 /sbin/conscontrol mute on > /dev/null
 
