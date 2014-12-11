@@ -42,23 +42,23 @@ $counter = 1;
 
 ?>
 
-<table bgcolor="#990000" width="100%" border="0" cellspacing="0" cellpadding="0" summary="gateway status">
+<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="gateway status">
 	<tr>
-		<td class="listhdrr" id="gatewayname" align="center">Name</td>
-		<td class="listhdrr" align="center">RTT</td>
-		<td class="listhdrr" align="center">Loss</td>
-		<td class="listhdrr" align="center">Status</td>
+		<td id="gatewayname" align="center"><b><?php echo gettext('Name')?></b></td>
+		<td align="center"><b><?php echo gettext('RTT')?></b></td>
+		<td align="center"><b><?php echo gettext('Loss')?></b></td>
+		<td align="center"><b><?php echo gettext('Status')?></b></td>
 	</tr>
 	<?php foreach ($a_gateways as $gname => $gateway) { ?>
 	<tr>
-	<td class="listhdrr" id="gateway<?php echo $counter; ?>" rowspan="2" align="center">
+		<td class="h6" id="gateway<?php echo $counter; ?>" rowspan="2" align="center">
 		<strong>
 		<?php echo htmlspecialchars($gateway['name']); ?>
 		</strong>
 		<?php $counter++; ?>
-	</td>
-	<td colspan="3" class="listr ellipsis" align="center">
-				<div id="gateway<?php echo $counter; ?>" style="display:inline"><b>
+		</td>
+			<td colspan="3"  align="left">
+				<div class="h6" id="gateway<?php echo $counter; ?>" style="display:inline">
 					<?php
 						$if_gw = '';
 						if (is_ipaddr($gateway['gateway']))
@@ -73,11 +73,11 @@ $counter = 1;
 						unset ($if_gw);
 						$counter++;
 					?>
-				</b></div>
+				</div>
 			</td>
 	</tr>
 	<tr>
-			<td class="listr ellipsis" align="center" id="gateway<?php echo $counter; ?>">
+			<td align="center" id="gateway<?php echo $counter; ?>">
 			<?php
 				if ($gateways_status[$gname])
 					echo htmlspecialchars($gateways_status[$gname]['delay']);
@@ -86,7 +86,7 @@ $counter = 1;
 			?>
 			<?php $counter++; ?>
 			</td>
-			<td class="listr ellipsis" align="center" id="gateway<?php echo $counter; ?>">
+			<td align="center" id="gateway<?php echo $counter; ?>">
 			<?php
 				if ($gateways_status[$gname])
 					echo htmlspecialchars($gateways_status[$gname]['loss']);
@@ -99,28 +99,28 @@ $counter = 1;
 				if ($gateways_status[$gname]) {
 					if (stristr($gateways_status[$gname]['status'], "force_down")) {
 						$online = "Offline (forced)";
-						$bgcolor = "#F08080";  // lightcoral
+						$class="danger";
 					} elseif (stristr($gateways_status[$gname]['status'], "down")) {
 						$online = "Offline";
-						$bgcolor = "#F08080";  // lightcoral
+						$class="danger";
 					} elseif (stristr($gateways_status[$gname]['status'], "loss")) {
 						$online = "Packetloss";
-						$bgcolor = "#F0E68C";  // khaki
+						$class="warning";
 					} elseif (stristr($gateways_status[$gname]['status'], "delay")) {
 						$online = "Latency";
-						$bgcolor = "#F0E68C";  // khaki
+						$class="warning";
 					} elseif ($gateways_status[$gname]['status'] == "none") {
 						$online = "Online";
-						$bgcolor = "#90EE90";  // lightgreen
+						$class="success";
 					} elseif ($gateways_status[$gname]['status'] == "") {
 						$online = "Pending";
-						$bgcolor = "#D3D3D3";  // lightgray
+						$class="info";
 					}
 				} else {
 					$online = gettext("Unknown");
-					$bgcolor = "#ADD8E6";  // lightblue
+					$class="info";
 				}
-				echo "<td class=\"ellipsis\" bgcolor=\"$bgcolor\" align=\"center\">$online</td>\n";
+				echo "<td class=\"$class\" align=\"center\">$online</td>\n";
 				$counter++;
 			?>
 	</tr>

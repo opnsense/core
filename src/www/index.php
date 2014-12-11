@@ -404,7 +404,7 @@ echo $jscriptstr;
 		        	<div class="content-box" style="padding: 20px;">                                   						
 							<div class="table-responsive">
 								<?php
-									echo "<img src=\"/themes/{$g['theme']}/images/default-logo.png\" border=\"0\" alt=\"logo\" /><p>\n";
+									echo "<img src=\"/themes/{$g['theme']}/assets/images/default-logo.png\" border=\"0\" alt=\"logo\" /><p>\n";
 								?>
 								<br />
 								<div class="content-box-main">
@@ -530,8 +530,8 @@ echo $jscriptstr;
 				?>
 						<section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>"  style="display:<?php echo $divdisplay; ?>;">
 				          	<div class="content-box">	          	
-			   <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
-	           <input type="hidden" value="" name="sequence" id="sequence" />
+			   				<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
+	           					<input type="hidden" value="" name="sequence" id="sequence" />
 								<header class="content-box-head container-fluid">
 
 								    <ul class="list-inline __nomb">
@@ -577,7 +577,7 @@ echo $jscriptstr;
 								        </li>   
 								    </ul>                             
 								</header>
-					          	</form>
+					        </form>
 					          	<div class="content-box-main collapse in" id="<?php echo $widgetname;?>-container" style="display:<?=$mindiv;?>">
 					          		<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-config" name="<?php echo $widgetname;?>-config" />
 									

@@ -81,34 +81,34 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 
 		?>
               <div id="int_labels" style="float:left;width:32%">
-				<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="interfaces statistics">
+				<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="interfaces statistics">
 					<tr><td class="widgetsubheader" style="height:25px">&nbsp;&nbsp;&nbsp;</td></tr>
 					<tr>
-	                	<td class="vncellt" style="height:25px">Packets In</td>
+	                	<td><b><?php echo gettext('Packets In')?></b></td>
 					</tr>
 		            <tr>
-		                <td class="vncellt" style="height:25px">Packets Out</td>
+		                <td><b><?php echo gettext('Packets Out')?></b></td>
 		           </tr>
 	               <tr>
-	                <td class="vncellt" style="height:25px">Bytes In</td>
+	                <td><b><?php echo gettext('Bytes In')?></b></td>
 				    </tr>
 	              <tr>
-	                <td class="vncellt" style="height:25px">Bytes Out</td>
+	                <td><b><?php echo gettext('Bytes Out')?></b></td>
 				  </tr>
 	              <tr>
-	                <td class="vncellt" style="height:25px">Errors In</td>
+	                <td><b><?php echo gettext('Errors In')?></b></td>
 				 </tr>
 	              <tr>
-	                <td class="vncellt" style="height:25px">Errors Out</td>
+	                <td><b><?php echo gettext('Errors Out')?></b></td>
 				</tr>
 	              <tr>
-	                <td class="vncellt" style="height:25px">Collisions</td>
+	                <td><b><?php echo gettext('Collisions')?></b></td>
 				 </tr>
 	              </table>
 	          </div>
 	          <div id="interfacestats" style="float:right;overflow: auto; width:68%">
 
-	          <table width="100%" border="0" cellspacing="0" cellpadding="0" summary="the stats">
+	          <table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="the stats">
 	              <tr>
 		                <?php
 		               		$interface_names = array();
@@ -116,7 +116,7 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 		                	$ifinfo = get_interface_info($ifdescr);
 		                	if ($ifinfo['status'] != "down"){ ?>
 			                	<td class="widgetsubheader nowrap" style="height:25px">
-			                  		<?=htmlspecialchars($ifname);?>
+			                  		<b><?=htmlspecialchars($ifname);?></b>
 								</td>
 							<?php
 							//build array of interface names

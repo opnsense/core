@@ -73,12 +73,12 @@ if($_REQUEST['getdyndnsstatus']) {
 
 ?>
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<table class="table table-triped" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
-		<td width="5%"  class="listhdrr"><?=gettext("Int.");?></td>
-		<td width="15%" class="listhdrr"><?=gettext("Service");?></td>
-		<td width="20%" class="listhdrr"><?=gettext("Hostname");?></td>
-		<td width="20%" class="listhdrr"><?=gettext("Cached IP");?></td>
+		<td width="5%"  class="listhdrr"><b><?=gettext("Int.");?></b></td>
+		<td width="15%" class="listhdrr"><b><?=gettext("Service");?></b></td>
+		<td width="20%" class="listhdrr"><b><?=gettext("Hostname");?></b></td>
+		<td width="20%" class="listhdrr"><b><?=gettext("Cached IP");?></b></td>
 	</tr>
 	<?php $i = 0; foreach ($a_dyndns as $dyndns): ?>
 	<tr ondblclick="document.location='services_dyndns_edit.php?id=<?=$i;?>'">

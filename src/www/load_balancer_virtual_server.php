@@ -44,6 +44,7 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 require_once("vslb.inc");
+require_once("classes/maintable.inc");
 
 if (!is_array($config['load_balancer']['virtual_server'])) {
 	$config['load_balancer']['virtual_server'] = array();

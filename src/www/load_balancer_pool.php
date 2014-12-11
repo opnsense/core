@@ -43,6 +43,7 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
+require_once("classes/maintable.inc");
 
 if (!is_array($config['load_balancer']['lbpool'])) {
 	$config['load_balancer']['lbpool'] = array();
@@ -157,7 +158,7 @@ $main_buttons = array(
 								</div>
 								<div class="container-fluid">
 								<br /><span class="red"><strong><?=gettext("Hint:");?></strong></span><br />
-	<?= sprintf(gettext("The Load Balancer in %s 2.0 is for server load balancing, not Multi-WAN. For load balancing or failover for multiple WANs, use "), $g['product_name']);?>
+	<?= sprintf(gettext("The Load Balancer in %s is for server load balancing, not Multi-WAN. For load balancing or failover for multiple WANs, use "), $g['product_name']);?>
 	<a href="/system_gateway_groups.php"><?= gettext("Gateway Groups"); ?></a>
 								</div>
 	    				  </form>
