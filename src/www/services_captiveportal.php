@@ -632,30 +632,6 @@ function enable_change(enable_change) {
 										<?=gettext("If this option is set, only the most recent login per username will be active. Subsequent logins will cause machines previously logged in with the same username to be disconnected."); ?></td>
 										</tr>
 										<tr>
-									      <td valign="top" class="vncell"><?=gettext("MAC filtering"); ?> </td>
-									      <td class="vtable">
-									        <input name="nomacfilter" type="checkbox" class="formfld" id="nomacfilter" value="yes" <?php if ($pconfig['nomacfilter']) echo "checked=\"checked\""; ?> />
-									        <strong><?=gettext("Disable MAC filtering"); ?></strong><br />
-									    <?=gettext("If this option is set, no attempts will be made to ensure that the MAC address of clients stays the same while they're logged in." .
-									    "This is required when the MAC address of the client cannot be determined (usually because there are routers between"); ?> <?php echo $g['product_name'] ?> <?=gettext("and the clients)."); ?>
-									    <?=gettext("If this is enabled, RADIUS MAC authentication cannot be used."); ?></td>
-										</tr>
-										<tr>
-									      <td valign="top" class="vncell"><?=gettext("Pass-through MAC Auto Entry"); ?></td>
-									      <td class="vtable">
-									        <input name="passthrumacadd" type="checkbox" class="formfld" id="passthrumacadd" value="yes" <?php if ($pconfig['passthrumacadd']) echo "checked=\"checked\""; ?> />
-									        <strong><?=gettext("Enable Pass-through MAC automatic additions"); ?></strong><br />
-									    <?=gettext("If this option is set, a MAC passthrough entry is automatically added after the user has successfully authenticated. Users of that MAC address will never have to authenticate again."); ?>
-									    <?=gettext("To remove the passthrough MAC entry you either have to log in and remove it manually from the"); ?> <a href="services_captiveportal_mac.php"><?=gettext("MAC tab"); ?></a> <?=gettext("or send a POST from another system to remove it."); ?>
-									    <?=gettext("If this is enabled, RADIUS MAC authentication cannot be used. Also, the logout window will not be shown."); ?>
-										<br /><br />
-									        <input name="passthrumacaddusername" type="checkbox" class="formfld" id="passthrumacaddusername" value="yes" <?php if ($pconfig['passthrumacaddusername']) echo "checked=\"checked\""; ?> />
-									        <strong><?=gettext("Enable Pass-through MAC automatic addition with username"); ?></strong><br />
-									    <?=gettext("If this option is set, with the automatically MAC passthrough entry created the username, used during authentication, will be saved."); ?>
-									    <?=gettext("To remove the passthrough MAC entry you either have to log in and remove it manually from the"); ?> <a href="services_captiveportal_mac.php"><?=gettext("MAC tab"); ?></a> <?=gettext("or send a POST from another system to remove it."); ?>
-										</td>
-										</tr>
-										<tr>
 									      <td valign="top" class="vncell"><?=gettext("Per-user bandwidth restriction"); ?></td>
 									      <td class="vtable">
 									        <input name="peruserbw" type="checkbox" class="formfld" id="peruserbw" value="yes" <?php if ($pconfig['peruserbw']) echo "checked=\"checked\""; ?> />
