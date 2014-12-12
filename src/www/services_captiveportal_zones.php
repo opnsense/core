@@ -93,7 +93,10 @@ $main_buttons = array(
 									    ?>
 									  </td>
 									  <td class="listr" ondblclick="document.location='services_captiveportal.php?zone=<?=$cpzone;?>';">
-									      <?=count(captiveportal_read_db());?>
+									      <?php
+									      $cpdb = new Captiveportal\DB($cpzone) ;
+									      echo $cpdb->countClients() ;
+									      ?>
 									  </td>
 									  <td class="listbg" ondblclick="document.location='services_captiveportal.php?zone=<?=$cpzone;?>';">
 									    <?=htmlspecialchars($cpitem['descr']);?>&nbsp;

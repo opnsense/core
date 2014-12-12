@@ -218,15 +218,15 @@ class DB {
         }
     }
 
-
     /**
      * get captive portal clients
      * @param Array() $args
      */
-    function listClients($qryargs,$operator="and"){
+    function listClients($qryargs,$operator="and",$order_by=null){
         // construct query, only parse fields defined by $this->captiveportal_types
         $qry_tag  = "where " ;
         $query = "select * from captiveportal ";
+        $query_order_by = "" ;
         foreach ( $qryargs as $fieldname => $fieldvalue  ){
             if ( array_key_exists($fieldname,$this->captiveportal_types) ){
                 $query .= $qry_tag . $fieldname." = "." :".$fieldname."  ";
@@ -234,10 +234,39 @@ class DB {
             }
         }
 
+        // apply ordering to result, validate fields
+        if (is_array($order_by)){
+            foreach ( $order_by as $fieldname   ){
+                if ( is_array($order_by) && in_array($fieldname,$order_by) ) {
+                    if ($query_order_by != "") {
+                        $query_order_by .= " , ";
+                    }
+                    $query_order_by .= $fieldname;
+                }
+
+            }
+        }
+        if ( $query_order_by != "" ) $query .= " order by " . $query_order_by;
+
+
         $resultset = $this->handle->query($query, $qryargs, $this->captiveportal_types);
         $resultset->setFetchMode(\Phalcon\Db::FETCH_OBJ);
 
         return $resultset->fetchAll();
+    }
+
+    /**
+     *
+     * @return mixed number of connected users/clients
+     */
+    function countClients(){
+        $query = "select count(*) cnt from captiveportal ";
+
+        $resultset = $this->handle->query($query, array(), $this->captiveportal_types);
+        $resultset->setFetchMode(\Phalcon\Db::FETCH_OBJ);
+
+        return $resultset->fetchAll()[0]->cnt;
+
     }
 
     /**
@@ -279,7 +308,6 @@ class DB {
         $this->handle->execute("delete from  captiveportal_ip where ip =:ip ", array("ip"=>$ip),$this->captiveportal_ip_types);
     }
 
-
     /**
      * list all passthru mac addresses for this zone
      *
@@ -298,7 +326,6 @@ class DB {
 
         return $result;
     }
-
 
     /**
      * insert new passthru mac address

@@ -80,22 +80,26 @@ function clientcmp($a, $b) {
 }
 
 if (!empty($cpzone)) {
-	$cpdb = captiveportal_read_db();
-
+        $cpdb_handle = new Captiveportal\DB("test");//$cpzone);
+        
 	if ($_GET['order']) {
 		if ($_GET['order'] == "ip")
-			$order = 2;
+			$order = "ip";
 		else if ($_GET['order'] == "mac")
-			$order = 3;
+			$order = "mac";
 		else if ($_GET['order'] == "user")
-			$order = 4;
+			$order = "username";
 		else if ($_GET['order'] == "lastact")
-			$order = 5;
-		else
-			$order = 0;
-		usort($cpdb, "clientcmp");
+			$order = "";
 	}
+	
+        $cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
+	
 }
+else {
+    $cpdb = array() ;
+}
+    
 
 // Load MAC-Manufacturer table
 $mac_man = load_mac_manufacturer_table();
@@ -157,12 +161,12 @@ $mac_man = load_mac_manufacturer_table();
 									</form>
 									<?php } else echo $a_cp[$cpzone]['zone']; ?>
 									</td>
-									<td colspan="3" width="50%"></td>
+									<td colspan="6" width="50%"></td>
 								  </tr>
-								  <tr><td colspan="5"><br /></td></tr>
+								  <tr><td colspan="6"><br /></td></tr>
 								<?php if (!empty($cpzone)): ?>
 								  <tr>
-									<td colspan="5" valign="top" class="listtopic"><?=gettext("Captiveportal status");?></td>
+									<td colspan="7" valign="top" class="listtopic"><?=gettext("Captiveportal status");?></td>
 								  </tr>
 								  <tr>
 								    <td class="listhdrr"><a href="?zone=<?=$cpzone?>&amp;order=ip&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("IP address");?></a></td>
@@ -178,10 +182,10 @@ $mac_man = load_mac_manufacturer_table();
 								  </tr>
 								<?php foreach ($cpdb as $cpent): ?>
 								  <tr>
-								    <td class="listlr"><?=$cpent[2];?></td>
+								    <td class="listlr"><?=$cpent->ip;?></td>
 									<td class="listr">
 										<?php
-										$mac=trim($cpent[3]);
+										$mac=trim($cpent->mac);
 										if (!empty($mac)) {
 											$mac_hi = strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]);
 											print htmlentities($mac);
@@ -189,16 +193,18 @@ $mac_man = load_mac_manufacturer_table();
 										}
 										?>&nbsp;
 									</td>
-								    <td class="listr"><?=htmlspecialchars($cpent[4]);?>&nbsp;</td>
-								    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent[0]));?></td>
+								    <td class="listr"><?=htmlspecialchars($cpent->username);?>&nbsp;</td>
+								    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent->allow_time));?></td>
 									<?php if ($_GET['showact']):
-									$last_act = captiveportal_get_last_activity($cpent[2], $cpent[3]); ?>
+									//$last_act = captiveportal_get_last_activity($cpent->ip, $cpent->mac); 
+									$last_act=0;
+									?>
 								    <td class="listr"><?php if ($last_act != 0) echo htmlspecialchars(date("m/d/Y H:i:s", $last_act));?></td>
 									<?php else: ?>
-								    <td class="listr" colspan="2"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent[0]));?></td>
+								    <td class="listr" colspan="2"></td>
 									<?php endif; ?>
 								    <td valign="middle" class="list nowrap">
-								      <a href="?zone=<?=$cpzone;?>&amp;order=<?=$_GET['order'];?>&amp;showact=<?=htmlspecialchars($_GET['showact']);?>&amp;act=del&amp;id=<?=$cpent[5];?>" onclick="return confirm('<?=gettext("Do you really want to disconnect this client?");?>')"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" title="<?=gettext("Disconnect");?>"></a>
+								      <a href="?zone=<?=$cpzone;?>&amp;order=<?=$_GET['order'];?>&amp;showact=<?=htmlspecialchars($_GET['showact']);?>&amp;act=del&amp;id=<?=$cpent->username;?>" onclick="return confirm('<?=gettext("Do you really want to disconnect this client?");?>')"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" title="<?=gettext("Disconnect");?>"></a>
 								    </td>
 								  </tr>
 								<?php endforeach; endif; ?>

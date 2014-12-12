@@ -142,7 +142,7 @@ class CPClient {
         $this->shell->exec("/sbin/ipfw -f ".$ruleset_filename);
 
         // update tables
-        $this->update_config();
+        $this->update();
     }
 
     /**
