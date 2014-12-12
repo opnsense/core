@@ -259,10 +259,17 @@ class DB {
      *
      * @return mixed number of connected users/clients
      */
-    function countClients(){
+    function countClients($qryargs=array(),$operator="and"){
         $query = "select count(*) cnt from captiveportal ";
+        $qry_tag  = "where " ;
+        foreach ( $qryargs as $fieldname => $fieldvalue  ){
+            if ( array_key_exists($fieldname,$this->captiveportal_types) ){
+                $query .= $qry_tag . $fieldname." = "." :".$fieldname."  ";
+                $qry_tag = " ".$operator." ";
+            }
+        }
 
-        $resultset = $this->handle->query($query, array(), $this->captiveportal_types);
+        $resultset = $this->handle->query($query, $qryargs, $this->captiveportal_types);
         $resultset->setFetchMode(\Phalcon\Db::FETCH_OBJ);
 
         return $resultset->fetchAll()[0]->cnt;

@@ -236,15 +236,6 @@ function captiveportal_allowedhostname_configure() {
     return $rules;
 }
 
-/* read captive portal DB into array */
-function captiveportal_read_db($query = "") {
-    $cpdb = array();
-
-    throw Exception("TODO FIX code ");
-
-    return $cpdb;
-}
-
 // Unchanged
 
 
@@ -952,21 +943,26 @@ function captiveportal_radius_stop_all() {
 
 	$radiusservers = captiveportal_get_radius_servers();
 	if (!empty($radiusservers)) {
-		$cpdb = captiveportal_read_db();
-		foreach ($cpdb as $cpentry) {
-			if (empty($cpentry[11]))
-				$cpentry[11] = 'first';
-			if (!empty($radiusservers[$cpentry[11]])) {
-				RADIUS_ACCOUNTING_STOP($cpentry[1], // ruleno
-					$cpentry[4], // username
-					$cpentry[5], // sessionid
-					$cpentry[0], // start time
-					$radiusservers[$cpentry[11]],
-					$cpentry[2], // clientip
-					$cpentry[3], // clientmac
+		$cpdb = new Captiveportal\DB($cpzone);
+
+		$clients  = $cpdb->listClients(array());
+
+		foreach ($clients as $cpentry) {
+			if (empty($cpentry->radiusctx))
+				$cpentry->radiusctx = 'first';
+			if (!empty($radiusservers[$cpentry->radiusctx])) {
+				RADIUS_ACCOUNTING_STOP($cpentry->pipeno_in, // ruleno
+					$cpentry->username, // username
+					$cpentry->sessionid, // sessionid
+					$cpentry->allow_time, // start time
+					$radiusservers[$cpentry->radiusctx],
+					$cpentry->ip, // clientip
+					$cpentry->mac, // clientmac
 					7); // Admin Reboot
 			}
 		}
+
+		unset($cpdb);
 	}
 }
 
