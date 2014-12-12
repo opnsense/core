@@ -63,30 +63,19 @@ $a_cp =& $config['captiveportal'];
 $cpdb_all = array();
 
 foreach ($a_cp as $cpzone => $cp) {
-	$cpdb = captiveportal_read_db();
-	foreach ($cpdb as $cpent) {
-		$cpent[10] = $cpzone;
-		if ($_GET['showact'])
-			$cpent[11] = captiveportal_get_last_activity($cpent[2], $cpentry[3]);
-		$cpdb_all[] = $cpent;
-	}
+	$cpdb_handle = new Captiveportal\DB($cpzone);          
+
+        $order = "";	
+        if ($_GET['order']) {
+            if ($_GET['order'] == "ip") $order = "ip";
+            else if ($_GET['order'] == "mac") $order = "mac";
+            else if ($_GET['order'] == "user") $order = "username";
+        }
+                
+	$cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
+	$cpdb_all[$cpzone] = $cpdb;
 }
 
-if ($_GET['order']) {
-	if ($_GET['order'] == "ip")
-		$order = 2;
-	else if ($_GET['order'] == "mac")
-		$order = 3;
-	else if ($_GET['order'] == "user")
-               	$order = 4;
-	else if ($_GET['order'] == "lastact")
-		$order = 5;
-	else if ($_GET['order'] == "zone")
-		$order = 10;
-	else
-		$order = 0;
-	usort($cpdb_all, "clientcmp");
-}
 ?>
 <table class="table table-striped sortable" id="sortabletable" width="100%" border="0" cellpadding="0" cellspacing="0" summary="captive portal status">
   <tr>
@@ -98,17 +87,19 @@ if ($_GET['order']) {
     <td class="listhdrr"><a href="?order=start&amp;showact=<?=$_GET['showact'];?>"><b><?=gettext("Last activity");?></b></a></td>
 	<?php endif; ?>
   </tr>
-<?php foreach ($cpdb_all as $cpent): ?>
+<?php foreach ($cpdb_all as $cpzone=>$cpdb): ?>
+  <?php foreach ($cpdb as $cpent): ?>
   <tr>
-    <td class="listlr"><?=$cpent[2];?></td>
-    <td class="listr"><?=$cpent[3];?>&nbsp;</td>
-    <td class="listr"><?=$cpent[4];?>&nbsp;</td>
+    <td class="listlr"><?=$cpent->ip;?></td>
+    <td class="listr"><?=$cpent->mac;?>&nbsp;</td>
+    <td class="listr"><?=$cpent->username;?>&nbsp;</td>
 	<?php if ($_GET['showact']): ?>
-    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent[0]));?></td>
-    <td class="listr"><?php if ($cpent[11] && ($cpent[11] > 0)) echo htmlspecialchars(date("m/d/Y H:i:s", $cpent[11]));?></td>
+    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent->allow_time));?></td>
+    <td class="listr">?</td>
 	<?php endif; ?>
 	<td valign="middle" class="list nowrap">
-	<a href="?order=<?=$_GET['order'];?>&amp;showact=<?=$_GET['showact'];?>&amp;act=del&amp;zone=<?=$cpent[10];?>&amp;id=<?=$cpent[5];?>" onclick="return confirm('Do you really want to disconnect this client?')"><span class="glyphicon glyphicon-remove"></span></a></td>
+	<a href="?order=<?=$_GET['order'];?>&amp;showact=<?=$_GET['showact'];?>&amp;act=del&amp;zone=<?=$cpzone;?>&amp;id=<?=$cpent->sessionid;?>" onclick="return confirm('Do you really want to disconnect this client?')"><span class="glyphicon glyphicon-remove"></span></a></td>
   </tr>
+  <?php endforeach; ?>
 <?php endforeach; ?>
 </table>

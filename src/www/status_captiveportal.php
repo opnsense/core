@@ -80,17 +80,13 @@ function clientcmp($a, $b) {
 }
 
 if (!empty($cpzone)) {
-        $cpdb_handle = new Captiveportal\DB("test");//$cpzone);
-        
+        $cpdb_handle = new Captiveportal\DB($cpzone);
+
+        $order = "";        
 	if ($_GET['order']) {
-		if ($_GET['order'] == "ip")
-			$order = "ip";
-		else if ($_GET['order'] == "mac")
-			$order = "mac";
-		else if ($_GET['order'] == "user")
-			$order = "username";
-		else if ($_GET['order'] == "lastact")
-			$order = "";
+		if ($_GET['order'] == "ip") $order = "ip";
+		else if ($_GET['order'] == "mac") $order = "mac";
+		else if ($_GET['order'] == "user") $order = "username";
 	}
 	
         $cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
