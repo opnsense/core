@@ -57,8 +57,8 @@ $keys = array(
 	'ssh_host_rsa_key.pub',
 	'ssh_host_ecdsa_key',
 	'ssh_host_ecdsa_key.pub',
-	'ssh_host_ed25519_key',
-	'ssh_host_ed25519_key.pub'
+	//'ssh_host_ed25519_key',
+	//'ssh_host_ed25519_key.pub'
 );
 
 foreach($keys as $f2c) {
@@ -136,7 +136,7 @@ if ($generate_keys) {
 	mwexec("/usr/bin/ssh-keygen -t rsa -N '' -f {$sshConfigDir}/ssh_host_rsa_key");
 	mwexec("/usr/bin/ssh-keygen -t dsa -N '' -f {$sshConfigDir}/ssh_host_dsa_key");
 	mwexec("/usr/bin/ssh-keygen -t ecdsa -N '' -f {$sshConfigDir}/ssh_host_ecdsa_key");
-	mwexec("/usr/bin/ssh-keygen -t ed25519 -N '' -f {$sshConfigDir}/ssh_host_ed25519_key");
+	//mwexec("/usr/bin/ssh-keygen -t ed25519 -N '' -f {$sshConfigDir}/ssh_host_ed25519_key");
 	clear_subsystem_dirty('sshdkeys');
 	log_error(_('Completed creating your SSH keys. SSH will now be started.'));
 }
