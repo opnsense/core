@@ -998,61 +998,8 @@ function setup_serial_port($when="save", $path="") {
 	}
 	unset($on_off, $console_type, $serial_type);
 	fclose($fd);
-	auto_login();
 	reload_ttys();
 	conf_mount_ro();
-}
-
-function auto_login()
-{
-	global $config;
-
-	/*
-	 * This function appends the autologin extension in /etc/gettytab
-	 * for the main console.  This only works with a vanilla config;
-	 * it is likely that manual editing by the user will make this
-	 * function stop working properly.  In case of no match, throw a
-	 * little error...
-	 */
-
-	$getty_file = "/etc/gettytab";
-	$getty_text = explode("\n", file_get_contents($getty_file));
-
-	$getty_al = isset($config['system']['disableconsolemenu']) ? "" : "al=root:";
-	$getty_base = "\t:ht:np:sp#9600:";
-	$getty_new = $getty_base . $getty_al;
-	$getty_ok = false;
-
-	foreach ($getty_text as $getty_old) {
-		if (!strncmp($getty_old, $getty_base, strlen($getty_base))) {
-			if (!strcmp($getty_old, $getty_new)) {
-				/* already the correct setting */
-				return;
-			}
-			$getty_ok = true;
-		}
-	}
-
-	if (!$getty_ok) {
-		log_error(gettext("Could not toggle auto login setting."));
-		return;
-	}
-
-	$fd = fopen($getty_file, "w");
-	if (!$fd) {
-		log_error(gettext("Could not write auto login setting."));
-		return;
-	}
-
-	foreach ($getty_text as $getty_old) {
-		if (!strncmp($getty_old, $getty_base, strlen($getty_base))) {
-			fprintf($fd, "%s\n", $getty_new);
-		} else {
-			fprintf($fd, "%s\n", $getty_old);
-		}
-	}
-
-	fclose($fd);
 }
 
 function is_serial_enabled()

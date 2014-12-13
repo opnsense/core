@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
+
 /*
-	system.inc
 	part of m0n0wall (http://m0n0.ch/wall)
 
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -1679,6 +1678,11 @@ function system_reboot_cleanup() {
 	voucher_save_db_to_config();
 	require_once("pkg-utils.inc");
 	stop_packages();
+}
+
+function system_console_configure()
+{
+	setup_serial_port();
 }
 
 function system_dmesg_save()
