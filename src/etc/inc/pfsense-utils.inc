@@ -2599,12 +2599,9 @@ function set_language($lang = 'en_US', $encoding = "UTF-8") {
 	bind_textdomain_codeset("pfSense","{$lang}.{$encoding}");
 }
 
-function get_locale_list() {
-	$locales = array(
-		"en_US" => gettext("English"),
-		"pt_BR" => gettext("Portuguese (Brazil)"),
-		"tr" => gettext("Turkish"),
-	);
+function get_locale_list()
+{
+	$locales = array('en_US' => gettext('English'));
 	asort($locales);
 	return $locales;
 }
