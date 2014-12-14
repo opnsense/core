@@ -154,7 +154,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
     else if (!empty($config['captiveportal'][$cpzone]['redirurl']))
         $my_redirurl = $config['captiveportal'][$cpzone]['redirurl'];
 
-    if(isset($config['captiveportal'][$cpzone]['logoutwin_enable']) && !$passthrumac) {
+    if(isset($config['captiveportal'][$cpzone]['logoutwin_enable']) ) {
         $ourhostname = portal_hostname_from_client_ip($clientip);
         $protocol = (isset($config['captiveportal'][$cpzone]['httpslogin'])) ? 'https://' : 'http://';
         $logouturl = "{$protocol}{$ourhostname}/";
@@ -167,6 +167,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
         include("{$g['varetc_path']}/captiveportal-{$cpzone}-logout.html");
 
     } else {
+		// TODO: remove? should be handled by login page
         portal_reply_page($my_redirurl, "redir", "Just redirect the user.");
     }
 

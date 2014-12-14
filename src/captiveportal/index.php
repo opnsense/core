@@ -223,6 +223,7 @@ EOD;
 		if ($loginok){
 			captiveportal_logportalauth($_POST['auth_user'],$clientmac,$clientip,"LOGIN");
 			portal_allow($clientip, $clientmac,$_POST['auth_user']);
+			portal_reply_page($redirurl, "redir", "Just redirect the user.");
 		} else {
 			captiveportal_logportalauth($_POST['auth_user'],$clientmac,$clientip,"FAILURE");
 			portal_reply_page($redirurl, "error", $errormsg);
