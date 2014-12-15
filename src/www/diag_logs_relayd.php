@@ -1,9 +1,7 @@
 <?php
 /* $Id$ */
 /*
-	diag_logs_relayd.php
-	part of pfSense
-
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
 	Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.

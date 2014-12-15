@@ -1,8 +1,7 @@
 <?php
 /* $Id$ */
 /*
-	diag_logs_ntpd.php
-	part of pfSense
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.

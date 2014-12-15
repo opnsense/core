@@ -1,6 +1,6 @@
 <?php
 /*
-    carp_status.php
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2004 Scott Ullrich
     All rights reserved.
 

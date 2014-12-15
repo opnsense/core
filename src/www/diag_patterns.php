@@ -1,6 +1,7 @@
 <?php
 /* $Id$ */
 /*
+	Copyright (C) 2014 Deciso B.V., All rights reserved
 	Exec+ v1.02-000 - Copyright 2001-2003, All rights reserved
 	Created by André Ribeiro and Hélder Pereira
 

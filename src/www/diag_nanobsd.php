@@ -1,6 +1,6 @@
 <?php
 /*
-	diag_nanobsd.php
+	Copyright (C) Deciso B.V.
 	Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
 

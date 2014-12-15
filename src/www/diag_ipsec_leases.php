@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-	diag_ipsec_leases.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2014 Ermal LUÇi
 	All rights reserved.
 

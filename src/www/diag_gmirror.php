@@ -1,7 +1,8 @@
 <?php
 /*
-	diag_gmirror.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2014 Jim Pingle
+	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:

@@ -1,6 +1,6 @@
 <?php
 /*
-	diag_logs_filter_summary.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2009 Jim Pingle (jpingle@gmail.com)
 	All rights reserved.
 

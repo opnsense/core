@@ -1,13 +1,11 @@
 <?php
 /* $Id$ */
 /*
-	diag_ipsec_xml.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2007 pfSense Project
 	Copyright (C) 2010 Seth Mos
-	All rights reserved.
-
-	Parts of this code was originally based on vpn_ipsec_sad.php
 	Copyright (C) 2003-2004 Manuel Kasper
+	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:

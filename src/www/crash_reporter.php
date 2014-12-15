@@ -1,8 +1,7 @@
 <?php
 /* $Id$ */
 /*
-	crash_reporter.php
-	part of pfSense
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2011 Scott Ullrich
 	All rights reserved.
 

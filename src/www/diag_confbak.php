@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-    diag_confbak.php
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2005 Colin Smith
     Copyright (C) 2010 Jim Pingle
     All rights reserved.

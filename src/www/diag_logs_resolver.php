@@ -1,12 +1,9 @@
 <?php
 /* $Id$ */
 /*
-	diag_logs_resolver.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
 	Copyright (C) 2012 Seth Mos
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 

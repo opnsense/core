@@ -1,9 +1,9 @@
 <?php
 /*
-	diag_authentication.php
-	part of the pfSense project	(https://www.pfsense.org)
-	Copyright (C) 2010 Ermal Luçi
+    Copyright (C) 2014 Deciso B.V.
+    All rights reserved.
 
+	Copyright (C) 2010 Ermal Luçi
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

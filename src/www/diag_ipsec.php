@@ -1,13 +1,11 @@
 <?php
 /* $Id$ */
 /*
-	diag_ipsec.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
 	Copyright (C) 2008 Shrew Soft Inc <mgrooms@shrew.net>.
-	All rights reserved.
-
-	Parts of this code was originally based on vpn_ipsec_sad.php
 	Copyright (C) 2003-2004 Manuel Kasper
+	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:

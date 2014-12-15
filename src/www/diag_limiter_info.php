@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-    diag_limiter_info.php
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2010 Scott Ullrich
     All rights reserved.
 

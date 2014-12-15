@@ -1,9 +1,7 @@
 <?php
 /* $Id$ */
 /*
-	diag_logs_wireless.php
-	part of pfSense
-
+	Copyright (C) Deciso B.V.
 	Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
 	Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>.
 	Copyright (C) 2011 Jim Pingle <jimp@pfsense.org>.

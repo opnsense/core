@@ -1,9 +1,7 @@
 <?php
 /* $Id$ */
 /*
-	diag_logs_routing.php
-	part of pfSense
-
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>.
 	All rights reserved.
 

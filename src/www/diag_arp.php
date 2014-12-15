@@ -1,7 +1,8 @@
 <?php
 /*
-	diag_arp.php
-	part of the pfSense project	(https://www.pfsense.org)
+    Copyright (C) 2014 Deciso B.V.
+    All rights reserved.
+
 	Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 
 	originally part of m0n0wall (http://m0n0.ch/wall)
