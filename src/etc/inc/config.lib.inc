@@ -311,7 +311,7 @@ function conf_mount_rw() {
 	global $g, $config;
 
 	/* do not mount on cdrom platform */
-	if($g['platform'] == "cdrom" or $g['platform'] == "pfSense")
+	if($g['platform'] == "cdrom" or $g['platform'] == "OPNsense")
 		return;
 
 	if ((refcount_reference(1000) > 1) && is_writable("/"))
@@ -351,7 +351,7 @@ function conf_mount_ro() {
 	/* Do not trust $g['platform'] since this can be clobbered during factory reset. */
 	$platform = trim(file_get_contents("/usr/local/etc/platform"));
 	/* do not umount on cdrom or pfSense platforms */
-	if($platform == "cdrom" or $platform == "pfSense")
+	if($platform == "cdrom" or $platform == "OPNsense")
 		return;
 
 	if (refcount_unreference(1000) > 0)
