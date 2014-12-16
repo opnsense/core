@@ -2,7 +2,7 @@
 """
     Copyright (c) 2014 Ad Schellevis
 
-    part of opnSense (https://www.opnsense.org/)
+    part of OPNsense (https://www.opnsense.org/)
 
     All rights reserved.
 
