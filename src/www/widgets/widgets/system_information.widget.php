@@ -138,7 +138,7 @@ $filesystems = get_mounted_filesystems();
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Platform");?></td>
 			<td width="75%" class="listr">
-				<?=htmlspecialchars($g['platform'] === 'pfSense' ? 'OPNsense' : $['platform'] /* XXX */);?>
+				<?=htmlspecialchars($g['platform'] == 'pfSense' ? 'OPNsense' : $g['platform']); /* Platform should not be used as product name */?>
 				<?php if (($g['platform'] == "nanobsd") && (file_exists("/etc/nanosize.txt"))) {
 					echo " (" . htmlspecialchars(trim(file_get_contents("/etc/nanosize.txt"))) . ")";
 				} ?>
