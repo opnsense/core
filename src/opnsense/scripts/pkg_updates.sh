@@ -35,6 +35,7 @@
 # /tmp/pkg_upgrades.output        ->  Output of pkg upgrade -n
 # /tmp/pkg_updates.available      ->  File with content the number of upgrades or new installs 
 # /tmp/pkg_core_update.available  ->  File with content the new OPNsense version number 
+# /tmp/pkg_last.check             ->  Write date of last check to file
 
 
 pkg_running=""
@@ -45,7 +46,9 @@ if [ "$pkg_running" == "" ]; then
       pkg update -f > /tmp/pkg_updates.output 2>&1 &
       pid=$!
       # wait for defined number of seconds for connection
-      sleep 5
+      sleep 8
+      # write date time stamp to disk
+      echo `date` > /tmp/pkg_last.check
       # check if pkg is done, if not we have a connection issue
       pkg_running=`ps | grep $pid | grep -v "grep"`
       if [ "$pkg_running" == "" ]; then
