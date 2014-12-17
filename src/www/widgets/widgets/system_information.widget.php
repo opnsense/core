@@ -72,6 +72,8 @@ if($_REQUEST['getupdatestatus']) {
 	} elseif (file_exists($file_last_check)) {
 		$last_check=file_get_contents($file_last_check);
 		$update_text="<div class='text-info'>No updates found (checked once a day) </div><div class='text-info'>last time on: ".$last_check."</div><a href='' onclick='checkupdate()'>Click to check now</a>" ;
+	} else {
+		$update_text="<div class='text-info'>Daily cron has not yet run</div><a href='' onclick='checkupdate()'>Click here to try now</a>";
 	}
 	echo $update_text;
 	exit;
