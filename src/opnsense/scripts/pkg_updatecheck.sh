@@ -26,7 +26,7 @@
 
 
 # USAGE:
-# Add this file to a CRON job to check for pakcage updates regularly
+# Add this file to a CRON job to check for package updates regularly
 #
 # This script generates a json structured file with the following content:
 # connection: error|ok
@@ -80,8 +80,7 @@ if [ "$pkg_running" == "" ]; then
           repository="ok"
           # Now check if there are upgrades
           pkg upgrade -n > $tmp_pkg_output_file
-          updates=`cat $tmp_pkg_output_file | grep 'The following' | awk -F '[ ]' '{print $3}'` # > /tmp/pkg_upgrades.output
-          #updates=`cat /tmp/pkg_upgrades.output | grep 'The following' | awk -F '[ ]' '{print $3}'`
+          updates=`cat $tmp_pkg_output_file | grep 'The following' | awk -F '[ ]' '{print $3}'` 
           if [ "$updates" == "" ]; then
             # There are no updates
             updates="0"
@@ -148,7 +147,7 @@ if [ "$pkg_running" == "" ]; then
                 itemcount=`echo $linecount + 4 | bc`
               fi
             done
-            if [ "$opnsense_core_update" == "" ]; then
+            if [ "$core_version" == "" ]; then
               core_version="current"
             fi
           fi
@@ -158,7 +157,7 @@ if [ "$pkg_running" == "" ]; then
           killall pkg
       fi
       last_check=`date`
-      echo "{\"connection\":\"$connection\"},{\"repository\":\"$repository\"},{\"last_check\":,\"$last_check\"},{\"updates\":\"$updates\"},{\"core_version\":\"$core_version\"},{\"download_size\":\"$download_size\"},{\"extra_space_required\":\"$required_space\"},{\"new_packages\":[$packages_new]},{\"upgrade_packages\":[$packages_upgraded]}" > $package_json_output
+      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"core_version\":\"$core_version\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"upgrade_packages\":[$packages_upgraded]}" > $package_json_output
 else
   # pkg is already running, quitting
 fi
