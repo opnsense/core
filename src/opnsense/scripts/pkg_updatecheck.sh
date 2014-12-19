@@ -62,6 +62,7 @@ timeout=30 # Wait for a maximum number of seconds to determine connection issues
 package_json_output="/tmp/pkg_status.json"
 tmp_pkg_output_file="/tmp/packages.output"
 tmp_pkg_update_file="/tmp/pkg_updates.output"
+version_file="/usr/local/etc/version"
 
 # Check if pkg is already runnig
 pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
@@ -111,6 +112,7 @@ if [ "$pkg_running" == "" ]; then
               updates="0"
             else
               core_version=`pkg info opnsense | grep 'Version' | awk -F '[:]' '{print $2}'` # Changed to reflect current installed core version
+              echo $core_version > $version_file; # Lets save the current version
               required_space=`cat $tmp_pkg_output_file | grep 'The process will require' | awk -F '[ ]' '{print $5$6}'`
               if [ "$required_space" == "" ]; then
                 required_space="none"

@@ -1,11 +1,8 @@
 <?php
 /*
-        $Id$
+		Copyright (C) 2014 Deciso B.V.
         Copyright 2007 Scott Dale
-        Part of pfSense widgets (https://www.pfsense.org)
-        originally based on m0n0wall (http://m0n0.ch/wall)
-
-        Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
+        Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net> 
         and Jonathan Watt <jwatt@jwatt.org>.
         All rights reserved.
 
@@ -47,20 +44,25 @@ if($_POST['action'] == 'pkg_update') {
 	$shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh",false,false,$shell_output);
 } 
 
-
-if($_REQUEST['getupdatestatus']) {
-	if (file_exists($file_pkg_status)) {
+if (file_exists($file_pkg_status)) {
 		
 		$json = file_get_contents($file_pkg_status);
 		$pkg_status = json_decode($json,true);
+}
 
-		if ($pkg_status["updates"]=="0") {
-			echo "Last check at (".$pkg_status["last_check"]."), you were up to date";
+if($_REQUEST['getupdatestatus']) {
+	if (file_exists($file_pkg_status)) {
+		if ($pkg_status["connection"]=="error") {
+			echo "<span class='text-danger'>".gettext("Connection Error")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
+		} elseif ($pkg_status["repository"]=="error") {
+			echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
+		} elseif  ($pkg_status["updates"]=="0") {
+			echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn-link' onclick='checkupdate()'>Click to check now</span>";
 		} else {
-			echo "<span class='text-danger'>A total of ".$pkg_status["updates"]." update(s) are available.</span>";
+			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."</span><br/><a href='/system_firmware.php'>".gettext("Click to update")."</a>";
 		}
 	} else {
-		echo "Unknown<span class='btn-link' onclick='checkupdate()'>Click to check now</span>";
+		echo "<span class='text-danger'>".gettext("Unknown")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
 	}
 	exit;
 } 
@@ -102,7 +104,7 @@ $filesystems = get_mounted_filesystems();
 		<tr>
 			<td width="25%" valign="top" class="vncellt"><?=gettext("Version");?></td>
 			<td width="75%" class="listr">
-				<strong><?php readfile("/usr/local/etc/version"); ?></strong>
+				<strong><?php readfile("/usr/local/etc/version"); ?><span id="version"></span></strong>
 				(<?php echo php_uname("m"); ?>)
 		<?php if(!$g['hideuname']): ?>
 		<br />
@@ -312,7 +314,7 @@ $filesystems = get_mounted_filesystems();
 		jQuery('#uname').html("<?php echo php_uname("a"); ?>");
 	}
 	function checkupdate() {
-		jQuery('#updatestatus').html('<span class="text-info">Updating.... (takes about 10 seconds) </span>');
+		jQuery('#updatestatus').html('<span class="text-info">Updating.... (takes upto 30 seconds) </span>');
 		jQuery.ajax({
 			type: "POST",
 			url: '/widgets/widgets/system_information.widget.php',
