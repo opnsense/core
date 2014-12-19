@@ -209,7 +209,7 @@
 	<interfaces>
 		<wan>
 			<enable/>
-			<if>vr1</if>
+			<if>em0</if>
 			<mtu></mtu>
 			<ipaddr>dhcp</ipaddr>
 			<ipaddrv6>dhcp6</ipaddrv6>
@@ -231,7 +231,7 @@
 		</wan>
 		<lan>
 			<enable/>
-			<if>vr0</if>
+			<if>em1</if>
 			<ipaddr>192.168.1.1</ipaddr>
 			<subnet>24</subnet>
 			<ipaddrv6>track6</ipaddrv6>
