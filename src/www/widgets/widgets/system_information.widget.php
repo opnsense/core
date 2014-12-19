@@ -55,7 +55,7 @@ if($_REQUEST['getupdatestatus']) {
 		$pkg_status = json_decode($json,true);
 
 		if ($pkg_status["updates"]=="0") {
-			echo "Last check at (".$pkg_status["last_check"]."), you where up to date";
+			echo "Last check at (".$pkg_status["last_check"]."), you were up to date";
 		} else {
 			echo "<span class='text-danger'>A total of ".$pkg_status["updates"]." update(s) are available.</span>";
 		}
