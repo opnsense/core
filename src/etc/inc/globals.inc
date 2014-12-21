@@ -1,11 +1,7 @@
 <?php
-/* $Id$ */
-/*
-    globals.inc
-    part of pfSense (https://www.pfsense.org)
-    Copyright (C) 2004-2010 Scott Ullrich
 
-    Originally Part of m0n0wall
+/*
+    Copyright (C) 2004-2010 Scott Ullrich
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -29,12 +25,13 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-	pfSense_MODULE:	utils
-
 */
 
 global $g;
+
+openlog('opnsense', LOG_ODELAY, LOG_USER);
+register_shutdown_function('closelog');
+
 $g = array(
 	"base_packages" => "siproxd", 
 	"event_address" => "unix:///var/run/check_reload_status",
