@@ -1792,7 +1792,8 @@ function filter_nat_rules_generate() {
 	// Open inetd.conf write handle
 	$inetd_fd = fopen("/var/etc/inetd.conf","w");
 	/* add tftp protocol helper */
-	fwrite($inetd_fd, "tftp-proxy\tdgram\tudp\twait\t\troot\t/usr/libexec/tftp-proxy\ttftp-proxy -v\n");
+	// TODO triggers "inetd[28893]: tftp-proxy/udp: unknown service"
+	//fwrite($inetd_fd, "tftp-proxy\tdgram\tudp\twait\t\troot\t/usr/libexec/tftp-proxy\ttftp-proxy -v\n");
 
 	if(isset($config['nat']['rule'])) {
 		/* start reflection redirects on port 19000 of localhost */
