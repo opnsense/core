@@ -1,8 +1,6 @@
 <?php
-/*
-	$Id$
 
-        xmlrpc.php
+/*
         Copyright (C) 2009, 2010 Scott Ullrich
         Copyright (C) 2005 Colin Smith
         All rights reserved.
@@ -84,8 +82,9 @@ $exec_php_sig = array(
 	)
 );
 
-function xmlrpc_authfail() {
-	log_auth("webConfigurator authentication error for 'admin' from {$_SERVER['REMOTE_ADDR']}");
+function xmlrpc_authfail()
+{
+	log_error("webConfigurator authentication error for 'admin' from {$_SERVER['REMOTE_ADDR']}");
 }
 
 function exec_php_xmlrpc($raw_params) {

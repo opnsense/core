@@ -1114,15 +1114,16 @@ function ldap_backed($username, $passwd, $authcfg) {
 	/*  that way we don't have to search twice.                      */
 	/*****************************************************************/
 	if ($debug)
-		log_auth(sprintf(gettext("Now Searching for %s in directory."), $username));
+		log_error(sprintf(gettext("Now Searching for %s in directory."), $username));
 	/* Iterate through the user containers for search */
 	foreach ($ldac_splits as $i => $ldac_split) {
 		$ldac_split = isset($authcfg['ldap_utf8']) ? utf8_encode($ldac_split) : $ldac_split;
 		$ldapfilter = isset($authcfg['ldap_utf8']) ? utf8_encode($ldapfilter) : $ldapfilter;
 		$ldapsearchbasedn = isset($authcfg['ldap_utf8']) ? utf8_encode("{$ldac_split},{$ldapbasedn}") : "{$ldac_split},{$ldapbasedn}";
 		/* Make sure we just use the first user we find */
-		if ($debug)
-			log_auth(sprintf(gettext('Now Searching in server %1$s, container %2$s with filter %3$s.'), $ldapname, utf8_decode($ldac_split), utf8_decode($ldapfilter)));
+		if ($debug) {
+			log_error(sprintf(gettext('Now Searching in server %1$s, container %2$s with filter %3$s.'), $ldapname, utf8_decode($ldac_split), utf8_decode($ldapfilter)));
+		}
 		if ($ldapscope == "one")
 			$ldapfunc = "ldap_list";
 		else
@@ -1163,7 +1164,7 @@ function ldap_backed($username, $passwd, $authcfg) {
 
 	if ($debug) {
 		$userdn = isset($authcfg['ldap_utf8']) ? utf8_decode($userdn) : $userdn;
-		log_auth(sprintf(gettext('Logged in successfully as %1$s via LDAP server %2$s with DN = %3$s.'), $username, $ldapname, $userdn));
+		log_error(sprintf(gettext('Logged in successfully as %1$s via LDAP server %2$s with DN = %3$s.'), $username, $ldapname, $userdn));
 	}
 
 	/* At this point we are bound to LDAP so the user was auth'd okay. Close connection. */
@@ -1366,8 +1367,8 @@ function session_auth() {
 			$_SESSION['Username'] = $_POST['usernamefld'];
 			$_SESSION['last_access'] = time();
 			$_SESSION['protocol'] = $config['system']['webgui']['protocol'];
-			if(! isset($config['system']['webgui']['quietlogin'])) {
-				log_auth(sprintf(gettext("Successful login for user '%1\$s' from: %2\$s"), $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
+			if (!isset($config['system']['webgui']['quietlogin'])) {
+				log_error(sprintf(gettext("Successful login for user '%1\$s' from: %2\$s"), $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
 			}
 			if (isset($_POST['postafterlogin']))
 				return true;
@@ -1380,7 +1381,7 @@ function session_auth() {
 		} else {
 			/* give the user an error message */
 			$_SESSION['Login_Error'] = "Username or Password incorrect";
-			log_auth("webConfigurator authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
+			log_error("webConfigurator authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
 			if(isAjax()) {
 				echo "showajaxmessage('{$_SESSION['Login_Error']}');";
 				return;

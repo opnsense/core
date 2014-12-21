@@ -1103,34 +1103,21 @@ function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "")
 * RESULT
 *   null
 ******/
-function log_error($error) {
+function log_error($error)
+{
 	global $g;
+
 	$page = $_SERVER['SCRIPT_NAME'];
 	if (empty($page)) {
 		$files = get_included_files();
 		$page = basename($files[0]);
 	}
-	syslog(LOG_ERR, "$page: $error");
-	if ($g['debug'])
-		syslog(LOG_WARNING, var_dump(debug_backtrace()));
-	return;
-}
 
-/****f* util/log_auth
-* NAME
-*   log_auth   - Sends a string to syslog as LOG_AUTH facility
-* INPUTS
-*   $error     - string containing the syslog message.
-* RESULT
-*   null
-******/
-function log_auth($error) {
-	global $g;
-	$page = $_SERVER['SCRIPT_NAME'];
-	syslog(LOG_AUTH, "$page: $error");
-	if ($g['debug'])
+	syslog(LOG_ERR, "$page: $error");
+
+	if ($g['debug']) {
 		syslog(LOG_WARNING, var_dump(debug_backtrace()));
-	return;
+	}
 }
 
 /****f* util/exec_command
