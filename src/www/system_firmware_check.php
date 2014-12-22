@@ -77,9 +77,9 @@ if($_REQUEST['getupdatestatus']) {
 		} elseif ($pkg_status["repository"]=="error") {
 			echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
 		} elseif  ($pkg_status["updates"]=="0") {
-			echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn btn-primary' onclick='checkupdate()'>Click to check now</span>";
+			echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
 		} else {
-			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now")."</span>";
+			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now")."</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
 		}
 	} else {
 		echo "<span class='text-danger'>".gettext("Current status is unknown")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
