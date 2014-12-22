@@ -148,6 +148,7 @@ function system_resolvconf_generate($dynupdate = false)
 
 	fwrite($fd, $resolvconf);
 	fclose($fd);
+	chmod("{$g['varetc_path']}/resolv.conf", 0644);
 
 	if (!$g['booting']) {
 		/* restart dhcpd (nameservers may have changed) */
