@@ -129,6 +129,7 @@ if [ "$pkg_running" == "" ]; then
                     if [ "`echo $i | grep ':'`" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
                     else
+                      i=`echo $i | tr -d :`
                       #echo "name:$i"
                       if [ "$packages_new" == "" ]; then 
                         packages_new=$packages_new"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
@@ -155,6 +156,7 @@ if [ "$pkg_running" == "" ]; then
                     if [ "`echo $i | grep ':'`" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
                     else
+                      i=`echo $i | tr -d :`
                       if [ "$packages_upgraded" == "" ]; then 
                         packages_upgraded=$packages_upgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
                       else
