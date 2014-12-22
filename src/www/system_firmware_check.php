@@ -243,7 +243,7 @@ include("head.inc");
 			success:function(data, textStatus, jqXHR) {
 				jQuery('#output').prop('innerHTML',data);
 				document.getElementById("output").scrollTop = document.getElementById("output").scrollHeight ;
-				if ( data.indexOf('done') < 0 )  {
+				if ( data.indexOf('***DONE***') < 0 )  {
 					setTimeout(function() { updatestatus(); }, 500);
 				} else {
 					jQuery('#updatestatus').html('<span class="text-info">Upgrade Done!</span>');
