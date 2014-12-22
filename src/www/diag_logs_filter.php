@@ -69,8 +69,8 @@ function getGETPOSTsettingvalue($settingname, $default)
 
 $rulenum = getGETPOSTsettingvalue('getrulenum', null);
 if($rulenum) {
-	list($rulenum, $tracker, $type) = explode(',', $rulenum);
-	$rule = find_rule_by_number($rulenum, $tracker, $type);
+	list($rulenum, $type) = explode(',', $rulenum);
+	$rule = find_rule_by_number($rulenum,  $type);
 	echo gettext("The rule that triggered this action is") . ":\n\n{$rule}";
 	exit;
 }
@@ -326,7 +326,7 @@ include("head.inc");
 									$rowIndex++;?>
 									<tr class="<?=$evenRowClass?>">
 									  <td class="listMRlr nowrap" align="center" sorttable_customkey="<?=$filterent['act']?>">
-									  <a onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['tracker']},{$filterent['act']}"; ?>', outputrule);" title="<?php echo $filterent['act'] .'/'. $filterent['tracker'];?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+									  <a onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);" title="<?php echo $filterent['act'] .'/';?>"><span class="glyphicon glyphicon-remove"></span></a></td>
 									  <?php if ($filterent['count']) echo $filterent['count'];?></a></center></td>
 									  <td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['time']);?></td>
 									  <td class="listMRr nowrap">
@@ -336,7 +336,7 @@ include("head.inc");
 										<?php echo htmlspecialchars($filterent['interface']);?></td>
 									  <?php 
 									  if ($config['syslog']['filterdescriptions'] === "1")
-										echo("<td class=\"listMRr nowrap\">".find_rule_by_number_buffer($filterent['rulenum'],$filterent['tracker'],$filterent['act'])."</td>");
+										echo("<td class=\"listMRr nowrap\">".find_rule_by_number_buffer($filterent['rulenum'],$filterent['act'])."</td>");
 										
 									  $int = strtolower($filterent['interface']);
 									  $proto = strtolower($filterent['proto']);
@@ -374,7 +374,7 @@ include("head.inc");
 									<?php if (isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions'] === "2"):?>
 									<tr class="<?=$evenRowClass?>">
 									  <td colspan="2" class="listMRDescriptionL listMRlr" />
-									  <td colspan="4" class="listMRDescriptionR listMRr nowrap"><?=find_rule_by_number_buffer($filterent['rulenum'],$filterent['tracker'],$filterent['act']);?></td>
+									  <td colspan="4" class="listMRDescriptionR listMRr nowrap"><?=find_rule_by_number_buffer($filterent['rulenum'],$filterent['act']);?></td>
 									</tr>
 									<?php endif;
 									endforeach; 

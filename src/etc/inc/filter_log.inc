@@ -144,7 +144,6 @@ function parse_filter_line($line) {
 	$flent['rulenum'] = $rule_data[$field++];
 	$flent['subrulenum'] = $rule_data[$field++];
 	$flent['anchor'] = $rule_data[$field++];
-	$flent['tracker'] = $rule_data[$field++];
 	$flent['realint'] = $rule_data[$field++];
 	$flent['interface']  = convert_real_interface_to_friendly_descr($flent['realint']);
 	$flent['reason'] = $rule_data[$field++];
@@ -277,17 +276,14 @@ function get_port_with_service($port, $proto) {
 	return ':' . $portstr;
 }
 
-function find_rule_by_number($rulenum, $trackernum, $type="block") {
+function find_rule_by_number($rulenum, $type="block") {
 	global $g;
 
 	/* Passing arbitrary input to grep could be a Very Bad Thing(tm) */
-	if (!is_numeric($rulenum) || !is_numeric($trackernum) || !in_array($type, array('pass', 'block', 'match', 'rdr')))
+	if (!is_numeric($rulenum) || !in_array($type, array('pass', 'block', 'match', 'rdr')))
 		return;
 
-	if ($trackernum == "0")
-		$lookup_pattern = "^@{$rulenum}\([0-9]+\)[[:space:]]{$type}[[:space:]].*[[:space:]]log[[:space:]]";
-	else
-		$lookup_pattern = "^@[0-9]+\({$trackernum}\)[[:space:]]{$type}[[:space:]].*[[:space:]]log[[:space:]]";
+	$lookup_pattern = "^@{$rulenum}\([0-9]+\)[[:space:]]{$type}[[:space:]].*[[:space:]]log[[:space:]]";
 
 	/* At the moment, miniupnpd is the only thing I know of that
 	   generates logging rdr rules */
@@ -330,13 +326,9 @@ function buffer_rules_load() {
 	if (is_array($buffer)) {
 		foreach ($buffer as $line) {
 			list($key, $value) = explode (" ", $line, 2);
-			# pfctl rule number output with tracker number: @dd(dddddddddd)
 			$matches = array();
-			if (preg_match('/\@(?P<rulenum>\d+)\((?<trackernum>\d+)\)/', $key, $matches) == 1) {
-				if ($matches['trackernum'] > 0)
-					$key = $matches['trackernum'];
-				else
-					$key = "@{$matches['rulenum']}";
+			if (preg_match('/\@(?P<rulenum>\d+)\)/', $key, $matches) == 1) {
+				$key = "@{$matches['rulenum']}";
 			}
 			$buffer_rules_normal[$key] = $value;
 		}
@@ -349,13 +341,10 @@ function buffer_rules_clear() {
 	unset($GLOBALS['buffer_rules_rdr']);
 }
 
-function find_rule_by_number_buffer($rulenum, $trackernum, $type){
+function find_rule_by_number_buffer($rulenum,  $type){
 	global $g, $buffer_rules_rdr, $buffer_rules_normal;
 
-	if ($trackernum == "0")
-		$lookup_key = "@{$rulenum}";
-	else
-		$lookup_key = $trackernum;
+	$lookup_key = "@{$rulenum}";
 
 	if ($type == "rdr")	{
 		$ruleString = $buffer_rules_rdr[$lookup_key];
