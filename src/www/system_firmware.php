@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	system_firmware.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
 
@@ -30,17 +29,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/tar
-	pfSense_MODULE:	firmware
-*/
-
-##|+PRIV
-##|*IDENT=page-system-firmware-manualupdate
-##|*NAME=System: Firmware: Manual Update page
-##|*DESCR=Allow access to the 'System: Firmware: Manual Update' page.
-##|*MATCH=system_firmware.php*
-##|-PRIV
 
 $d_isfwfile = 1;
 $nocsrf = true;

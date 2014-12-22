@@ -72,6 +72,9 @@ if [ "$pkg_running" == "" ]; then
       pkg_running="started" # Set running state to arbitrary value
       timer=$timeout # Reset our timer
 
+      # Lets get coreversion first
+      core_version=`pkg info opnsense | grep 'Version' | awk -F '[:]' '{print $2}'` # Changed to reflect current installed core version
+      
       # Timeout loop for pkg update -f
       while [ "$pkg_running" != "" ] && [ $timer -ne 0 ]; 
       do
@@ -111,8 +114,6 @@ if [ "$pkg_running" == "" ]; then
               # There are no updates
               updates="0"
             else
-              core_version=`pkg info opnsense | grep 'Version' | awk -F '[:]' '{print $2}'` # Changed to reflect current installed core version
-              echo $core_version > $version_file; # Lets save the current version
               required_space=`cat $tmp_pkg_output_file | grep 'The process will require' | awk -F '[ ]' '{print $5$6}'`
               if [ "$required_space" == "" ]; then
                 required_space="none"

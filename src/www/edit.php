@@ -1,6 +1,6 @@
 <?php
 /*
-	edit.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004, 2005 Scott Ullrich
 	All rights reserved.
 
@@ -25,21 +25,15 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	shell
-*/
 
-##|+PRIV
-##|*IDENT=page-diagnostics-edit
-##|*NAME=Diagnostics: Edit FIle
-##|*DESCR=Allow access to the 'Diagnostics: Edit File' page.
-##|*MATCH=edit.php*
-##|*MATCH=browser.php*
-##|*MATCH=filebrowser/browser.php*
-##|-PRIV
+$unsecure=true; // disabel editor for security purpose, need to be removed later
+if ($unsecure) {
+	exit;
+}
 
 $pgtitle = array(gettext("Diagnostics"), gettext("Edit file"));
 require("guiconfig.inc");
+
 
 if($_POST['action']) {
 	switch($_POST['action']) {

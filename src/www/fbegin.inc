@@ -1,6 +1,29 @@
 <?php
 /*
-	pfSense_MODULE:	header
+	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	   this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("globals.inc");
@@ -135,11 +158,11 @@ function active_main_menu() {
 // System
 $system_menu = array();
 $system_menu[] = array(gettext("Advanced"), "/system_advanced_admin.php");
-$system_menu[] = array(gettext("Firmware"), "/system_firmware.php");
+$system_menu[] = array(gettext("Firmware"), "/system_firmware_check.php");
 $system_menu[] = array(gettext("General Setup"), "/system_general.php");
 $system_menu[] = array(gettext("High Avail. Sync"), "/system_hasync.php");
-if ($g['platform'] == "pfSense" or $g['platform'] == "nanobsd")
-	$system_menu[] = array(gettext("Packages"), "/system_pkg_mgr_installed.php");
+//if ($g['platform'] == "pfSense" or $g['platform'] == "nanobsd")
+//	$system_menu[] = array(gettext("Packages"), "/system_pkg_mgr_installed.php");
 $system_menu[] = array(gettext("Setup Wizard"), "/wizard.php?xml=setup_wizard.xml");
 $system_menu[] = array(gettext("Routing"), "/system_gateways.php");
 $system_menu[] = array(gettext("Cert Manager"), "/system_camanager.php");
@@ -244,7 +267,7 @@ $diagnostics_menu = array();
 $diagnostics_menu[] = array(gettext("ARP Table"), "/diag_arp.php");
 $diagnostics_menu[] = array(gettext("Authentication"), "/diag_authentication.php");
 $diagnostics_menu[] = array(gettext("Backup/Restore"), "/diag_backup.php");
-$diagnostics_menu[] = array(gettext("Command Prompt"), "/diag_exec.php");
+//$diagnostics_menu[] = array(gettext("Command Prompt"), "/diag_exec.php"); // Removed file editor for security reasons
 $diagnostics_menu[] = array(gettext("DNS Lookup"), "/diag_dns.php");
 $diagnostics_menu[] = array(gettext("NDP Table"), "/diag_ndp.php" );
 $diagnostics_menu[] = array(gettext("Factory Defaults"), "/diag_defaults.php");
@@ -254,7 +277,7 @@ $diagnostics_menu[] = array(gettext("pfInfo"), "/diag_pf_info.php");
 $diagnostics_menu[] = array(gettext("pfTop"), "/diag_system_pftop.php");
 $diagnostics_menu[] = array(gettext("Ping"), "/diag_ping.php");
 $diagnostics_menu[] = array(gettext("Reboot"), "/diag_reboot.php");
-$diagnostics_menu[] = array(gettext("Edit File"), "/diag_edit.php");
+//$diagnostics_menu[] = array(gettext("Edit File"), "/diag_edit.php"); // Removed file editor for security reasons
 $diagnostics_menu[] = array(gettext("Packet Capture"), "/diag_packet_capture.php");
 $diagnostics_menu[] = array(gettext("Traceroute"), "/diag_traceroute.php");
 $diagnostics_menu[] = array(gettext("SMART Status"), "/diag_smart.php");

@@ -1,10 +1,9 @@
 <?php
-/* $Id$ */
 /*
-	system_firmware_settings.php
-       	part of pfSense
+        Copyright (C) 2014 Deciso B.V.
 		Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
         Copyright (C) 2005 Colin Smith
+        All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
@@ -27,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/fetch
-	pfSense_MODULE:	firmware
-*/
-
-##|+PRIV
-##|*IDENT=page-system-firmware-settings
-##|*NAME=System: Firmware: Settings page
-##|*DESCR=Allow access to the 'System: Firmware: Settings' page.
-##|*MATCH=system_firmware_settings.php*
-##|-PRIV
 
 require("guiconfig.inc");
 
@@ -124,7 +112,7 @@ function enable_altfirmwareurl(enable_over) {
                         
                         <div class="table-responsive">
                         
-                        <table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
+                        <table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" style="display:none"> <!--Unsupported Feuature, hide it-->
                     	    <thead>
                         	    <tr>
                             		<th colspan="2" valign="top" class="listtopic"><?=gettext("Firmware Branch"); ?></th>
@@ -184,7 +172,7 @@ function enable_altfirmwareurl(enable_over) {
                             </thead>
                             
                             <tbody>
-                            	<tr>
+                            	<tr style="display:none"> <!--Unsupported Feuature, hide it-->
                             		<td width="22%" valign="top" class="vncell"><?=gettext("Unsigned images"); ?></td>
                             		<td width="78%" class="vtable">
                             			<input name="allowinvalidsig" type="checkbox" id="allowinvalidsig" value="yes" <?php if (isset($curcfg['allowinvalidsig'])) echo "checked=\"checked\""; ?> />
@@ -205,7 +193,7 @@ function enable_altfirmwareurl(enable_over) {
                         </table>
                                 	
                         <?php if(file_exists("/usr/local/bin/git") && $g['platform'] == "pfSense"): ?>  
-                        <table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
+                        <table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" style="display:none"> <!--Unsupported Feuature, hide it-->
                         	
                             <thead>
                         	    <tr>

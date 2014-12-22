@@ -1,10 +1,10 @@
 <?php
 /* $Id$ */
 /*
-	Exec+ v1.02-000 - Copyright 2001-2003, All rights reserved
-	Created by technologEase (http://www.technologEase.com).
-
-	(modified for m0n0wall by Manuel Kasper <mk@neon1.net>)
+	Copyright (C) 2014 - Deciso B.V.
+	Exec+ v1.02-000 - Copyright 2001-2003 
+	Created by technologEase (http://www.technologEase.com)
+	All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -27,17 +27,11 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	shell
-*/
 
-##|+PRIV
-##|*IDENT=page-diagnostics-command
-##|*NAME=Diagnostics: Command page
-##|*DESCR=Allow access to the 'Diagnostics: Command' page.
-##|*MATCH=exec.php*
-##|-PRIV
-
+$unsecure=true; // disabel editor for security purpose, need to be removed later
+if ($unsecure) {
+	exit;
+}
 $allowautocomplete = true;
 
 require("guiconfig.inc");

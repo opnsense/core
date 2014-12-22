@@ -209,7 +209,7 @@
 	<interfaces>
 		<wan>
 			<enable/>
-			<if>em0</if>
+			<if>em1</if>
 			<mtu></mtu>
 			<ipaddr>dhcp</ipaddr>
 			<ipaddrv6>dhcp6</ipaddrv6>
@@ -231,7 +231,7 @@
 		</wan>
 		<lan>
 			<enable/>
-			<if>em1</if>
+			<if>em0</if>
 			<ipaddr>192.168.1.1</ipaddr>
 			<subnet>24</subnet>
 			<ipaddrv6>track6</ipaddrv6>
@@ -746,6 +746,6 @@
 		</monitor_type>
 	</load_balancer>
 	<widgets>
-		<sequence>system_information-container:col1:show,captive_portal_status-container:col1:close,carp_status-container:col1:close,cpu_graphs-container:col1:close,gateways-container:col1:close,gmirror_status-container:col1:close,installed_packages-container:col1:close,interface_statistics-container:col1:close,interfaces-container:col2:show,ipsec-container:col2:close,load_balancer_status-container:col2:close,log-container:col2:close,picture-container:col2:close,rss-container:col2:close,services_status-container:col2:close,traffic_graphs-container:col2:close</sequence>
+		<sequence>system_information-container:col1:show,captive_portal_status-container:col1:close,carp_status-container:col1:close,cpu_graphs-container:col1:close,gateways-container:col1:close,gmirror_status-container:col1:close,installed_packages-container:col1:close,interface_statistics-container:col1:close,interface_list-container:col2:show,ipsec-container:col2:close,load_balancer_status-container:col2:close,log-container:col2:close,picture-container:col2:close,rss-container:col2:close,services_status-container:col2:close,traffic_graphs-container:col2:close</sequence>
 	</widgets>
 </pfsense>
