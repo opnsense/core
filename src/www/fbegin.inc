@@ -241,8 +241,8 @@ $status_menu[] = array(gettext("IPsec"), "/diag_ipsec.php");
 $status_menu[] = array(gettext("Load Balancer"), "/status_lb_pool.php");
 $status_menu[] = array(gettext("NTP"), "/status_ntpd.php");
 $status_menu[] = array(gettext("OpenVPN"), "/status_openvpn.php");
-if ($g['platform'] == "pfSense")
-	$status_menu[] = array(gettext("Package Logs"), "/diag_pkglogs.php");
+//if ($g['platform'] == "pfSense")
+//	$status_menu[] = array(gettext("Package Logs"), "/diag_pkglogs.php"); // Remove currently unused feature
 $status_menu[] = array(gettext("Queues"), "/status_queues.php");
 $status_menu[] = array(gettext("RRD Graphs"), "/status_rrd_graph.php");
 $status_menu[] = array(gettext("Services"), "/status_services.php");
