@@ -7,7 +7,7 @@ if [ "$pkg_running" == "" ]; then
 		rm /tmp/pkg_upgrade.progress
 	fi
       # start pkg upgrade
-	pkg upgrade -y > /tmp/pkg_upgrade.progress &
+	pkg upgrade -y > /tmp/pkg_upgrade.progress
 	echo '***DONE***' >> /tmp/pkg_upgrade.progress
 else
 	echo 'Upgrade already in progress'
