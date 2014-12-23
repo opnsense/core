@@ -7,8 +7,10 @@ umount:
 	umount -f "<above>:${.CURDIR}/src"
 
 install:
-	mkdir -p ${DESTDIR}/usr/local
-	cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
+	@mkdir -p ${DESTDIR}/usr/local
+	@cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
+	@(cd ${.CURDIR}/src; find * -type f) | \
+	    xargs -n1 printf "/usr/local/%s\n"
 
 lint:
 	find ${.CURDIR}/src -name "*.class" -print0 | xargs -0 -n1 php -l
