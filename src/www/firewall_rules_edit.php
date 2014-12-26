@@ -232,7 +232,6 @@ if (isset($id) && $a_filter[$id]) {
 	if (!isset($_GET['dup']) || !is_numericint($_GET['dup']))
 		$pconfig['associated-rule-id'] = $a_filter[$id]['associated-rule-id'];
 
-	$pconfig['tracker'] = $a_filter[$id]['tracker'];
 
 } else {
 	/* defaults */
@@ -608,7 +607,6 @@ if ($_POST) {
 		$filterent = array();
 		$filterent['id'] = $_POST['ruleid']>0?$_POST['ruleid']:'';
 
-		$filterent['tracker'] = empty($_POST['tracker']) ? (int)microtime(true) : $_POST['tracker'];
 
 		$filterent['type'] = $_POST['type'];
 		if (isset($_POST['interface'] ))
@@ -1747,7 +1745,6 @@ include("head.inc");
 											<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
 							<?php			if (isset($id) && $a_filter[$id]): ?>
 												<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-												<input name="tracker" type="hidden" value="<?=htmlspecialchars($pconfig['tracker']);?>">
 							<?php 			endif; ?>
 											<input name="after" type="hidden" value="<?=htmlspecialchars($after);?>" />
 										</td>

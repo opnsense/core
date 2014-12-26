@@ -99,7 +99,7 @@ class CPClient {
 
         $ipfw_tables = $this->rules->getAuthUsersTables($zoneid);
         if ( sizeof($db_clients) > 0 ){
-            if ($db_clients->ip != null ) {
+            if ($db_clients[0]->ip != null ) {
                 // only handle disconnect if we can find a client in our database
                 $exec_commands[] = "/sbin/ipfw table " . $ipfw_tables["in"] . " delete " . $db_clients[0]->ip;
                 $exec_commands[] = "/sbin/ipfw table " . $ipfw_tables["out"] . " delete " . $db_clients[0]->ip;
@@ -151,6 +151,36 @@ class CPClient {
             // execute all ipfw actions
             $this->shell->exec($exec_commands, false, false);
         }
+    }
+
+    /**
+     * list (ipfw) accounting information
+     * @return array (key = hosts ip)
+     */
+    public function list_accounting($ipaddr=null){
+        $filter_cmd = "";
+        $result = array();
+        $shell_output = array();
+        if ( $ipaddr != null ) $filter_cmd =" | /usr/bin/grep ' " . $ipaddr ." '" ;
+
+        if ( $this->shell->exec("/sbin/ipfw -aT list ".$filter_cmd,false,false,$shell_output) == 0 ){
+            foreach( $shell_output as $line) {
+                if (strpos($line, ' count ip from') !== false) {
+                    $parts = preg_split('/\s+/', $line);
+                    if (count($parts) > 8 && $parts[7] != 'any' and strlen($parts[7]) > 5) {
+                        $result[$parts[7]] = array(
+                            "last_accessed" => (int)$parts[3],
+                            "idle_time" => time() - (int)$parts[3],
+                            "out_packets" => (int)$parts[1],
+                            "in_packets" => (int)$parts[2]
+                        );
+                    }
+                }
+            }
+        }
+
+        return $result;
+
     }
 
     /**
@@ -383,6 +413,8 @@ class CPClient {
     }
 
     /**
+     * unlock host for captiveportal use
+     *
      * @param string $cpzonename
      * @param string $clientip
      * @param string $clientmac
@@ -541,6 +573,46 @@ class CPClient {
         }
     }
 
+    /**
+     * cleanup portal sessions
+     */
+    function portal_cleanup_sessions(){
+        $acc_list = $this->list_accounting();
+        foreach($this->config->object()->captiveportal->children() as $cpzonename => $zoneobj){
+            $db = new DB($cpzonename);
+
+            $clients  = $db->listClients(array(),null, null);
+
+            foreach($clients as $client ){
+                $idle_time = 0;
+                if ( array_key_exists (  $client->ip ,$acc_list ) ){
+                    $idle_time = $acc_list[$client->ip];
+                }
+
+                // if session timeout is reached, disconnect
+                if ( $client->session_timeout  != ""  ){
+                    if ( ((time() - $client->allow_time)/60) > $client->session_timeout  ){
+                        $this->disconnect($cpzonename,$client->sessionid);
+                        continue;
+                    }
+                }
+
+                // disconnect session if idle timeout is reached
+                if ( $client->idle_timeout  != "" && $idle_time > 0 ){
+                    if ( $idle_time > $client->idle_timeout   ){
+                        $this->disconnect($cpzonename,$client->sessionid);
+                        continue;
+                    }
+                }
+            }
+
+            unset($db);
+
+        }
+
+        unset ($acc_list);
+
+    }
 
 
 }
