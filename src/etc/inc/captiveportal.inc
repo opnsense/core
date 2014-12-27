@@ -645,292 +645,189 @@ function captiveportal_init_webgui_zone($cpcfg) {
  * (password is in Base64 and only saved when reauthentication is enabled)
  */
 function captiveportal_prune_old() {
+
 	global $g, $config, $cpzone, $cpzoneid;
 
 	if (empty($cpzone))
 		return;
 
+	$cpc = new Captiveportal\CPClient();
+
 	$cpcfg = $config['captiveportal'][$cpzone];
-	$vcpcfg = $config['voucher'][$cpzone];
+	if ( !isset($cpcfg['radacct_enable'])) {
+		// cleanup session (default)
+		$cpc->portal_cleanup_sessions($cpzone);
+	}else{
+		// cleanup sessions if radius accounting is enable
+		// TODO: this code needs a rewrite, probably the easiest thing todo is update the zone administration and run
+		// 		 the normal cleanup (portal_cleanup_sessions) to detach both processes
+		//
+		$vcpcfg = $config['voucher'][$cpzone];
 
-	/* check for expired entries */
-	$idletimeout = 0;
-	$timeout = 0;
-	if (!empty($cpcfg['timeout']) && is_numeric($cpcfg['timeout']))
-		$timeout = $cpcfg['timeout'] * 60;
+		/* check for expired entries */
+		$idletimeout = 0;
+		$timeout = 0;
+		if (!empty($cpcfg['timeout']) && is_numeric($cpcfg['timeout']))
+			$timeout = $cpcfg['timeout'] * 60;
 
-	if (!empty($cpcfg['idletimeout']) && is_numeric($cpcfg['idletimeout']))
-		$idletimeout = $cpcfg['idletimeout'] * 60;
+		if (!empty($cpcfg['idletimeout']) && is_numeric($cpcfg['idletimeout']))
+			$idletimeout = $cpcfg['idletimeout'] * 60;
 
-	/* Is there any job to do? */
-	if (!$timeout && !$idletimeout && !isset($cpcfg['reauthenticate']) &&
-	    !isset($cpcfg['radiussession_timeout']) && !isset($vcpcfg['enable']))
-		return;
+		/* Is there any job to do? */
+		if (!$timeout && !$idletimeout && !isset($cpcfg['reauthenticate']) &&
+			!isset($cpcfg['radiussession_timeout']) && !isset($vcpcfg['enable']))
+			return;
 
-	$radiussrvs = captiveportal_get_radius_servers();
+		$radiussrvs = captiveportal_get_radius_servers();
 
-	/* Read database */
-	/* NOTE: while this can be simplified in non radius case keep as is for now */
-	$cpdb = captiveportal_read_db();
+		/* Read database */
+		/* NOTE: while this can be simplified in non radius case keep as is for now */
+		$cpdb = captiveportal_read_db();
 
-	$unsetindexes = array();
-	$voucher_needs_sync = false;
-	/* 
-	 * Snapshot the time here to use for calculation to speed up the process.
-	 * If something is missed next run will catch it!
-	 */
-	$pruning_time = time();
-	$stop_time = $pruning_time;
-	foreach ($cpdb as $cpentry) {
+		$unsetindexes = array();
 
-		$timedout = false;
-		$term_cause = 1;
-		if (empty($cpentry[11]))
-			$cpentry[11] = 'first';
-		$radiusservers = $radiussrvs[$cpentry[11]];
+		/*
+         * Snapshot the time here to use for calculation to speed up the process.
+         * If something is missed next run will catch it!
+         */
+		$pruning_time = time();
+		$stop_time = $pruning_time;
+		foreach ($cpdb as $cpentry) {
 
-		/* hard timeout? */
-		if ($timeout) {
-			if (($pruning_time - $cpentry[0]) >= $timeout) {
-				$timedout = true;
-				$term_cause = 5; // Session-Timeout
-			}
-		}
+			$timedout = false;
+			$term_cause = 1;
+			if (empty($cpentry[11]))
+				$cpentry[11] = 'first';
+			$radiusservers = $radiussrvs[$cpentry[11]];
 
-		/* Session-Terminate-Time */
-		if (!$timedout && !empty($cpentry[9])) {
-			if ($pruning_time >= $cpentry[9]) {
-				$timedout = true;
-				$term_cause = 5; // Session-Timeout
-			}
-		}
-
-		/* check if the radius idle_timeout attribute has been set and if its set change the idletimeout to this value */
-		$uidletimeout = (is_numeric($cpentry[8])) ? $cpentry[8] : $idletimeout;
-		/* if an idle timeout is specified, get last activity timestamp from ipfw */
-		if (!$timedout && $uidletimeout > 0) {
-			$lastact = captiveportal_get_last_activity($cpentry[2], $cpentry[3]);
-			/*	If the user has logged on but not sent any traffic they will never be logged out.
-			 *	We "fix" this by setting lastact to the login timestamp. 
-			 */
-			$lastact = $lastact ? $lastact : $cpentry[0];
-			if ($lastact && (($pruning_time - $lastact) >= $uidletimeout)) {
-				$timedout = true;
-				$term_cause = 4; // Idle-Timeout
-				$stop_time = $lastact; // Entry added to comply with WISPr
-			}
-		}
-
-		/* if vouchers are configured, activate session timeouts */
-		if (!$timedout && isset($vcpcfg['enable']) && !empty($cpentry[7])) {
-			if ($pruning_time >= ($cpentry[0] + $cpentry[7])) {
-				$timedout = true;
-				$term_cause = 5; // Session-Timeout
-				$voucher_needs_sync = true;
-			}
-		}
-
-		/* if radius session_timeout is enabled and the session_timeout is not null, then check if the user should be logged out */
-		if (!$timedout && isset($cpcfg['radiussession_timeout']) && !empty($cpentry[7])) {
-			if ($pruning_time >= ($cpentry[0] + $cpentry[7])) {
-				$timedout = true;
-				$term_cause = 5; // Session-Timeout
-			}
-		}
-
-		if ($timedout) {
-			captiveportal_disconnect($cpentry, $radiusservers,$term_cause,$stop_time);
-			captiveportal_logportalauth($cpentry[4], $cpentry[3], $cpentry[2], "TIMEOUT");
-			$unsetindexes[] = $cpentry[5];
-		}
-
-		/* do periodic RADIUS reauthentication? */
-		if (!$timedout && !empty($radiusservers)) {
-			if (isset($cpcfg['radacct_enable'])) {
-				if ($cpcfg['reauthenticateacct'] == "stopstart") {
-					/* stop and restart accounting */
-					RADIUS_ACCOUNTING_STOP($cpentry[1], // ruleno
-						$cpentry[4], // username
-						$cpentry[5], // sessionid
-						$cpentry[0], // start time
-						$radiusservers,
-						$cpentry[2], // clientip
-						$cpentry[3], // clientmac
-						10); // NAS Request
-					$_gb = @pfSense_ipfw_Tableaction($cpzoneid, IP_FW_TABLE_XZEROENTRY, 1, $cpentry[2], $cpentry[3]);
-					$_gb = @pfSense_ipfw_Tableaction($cpzoneid, IP_FW_TABLE_XZEROENTRY, 2, $cpentry[2], $cpentry[3]);
-					RADIUS_ACCOUNTING_START($cpentry[1], // ruleno
-						$cpentry[4], // username
-						$cpentry[5], // sessionid
-						$radiusservers,
-						$cpentry[2], // clientip
-						$cpentry[3]); // clientmac
-				} else if ($cpcfg['reauthenticateacct'] == "interimupdate") {
-					$session_time = $pruning_time - $cpentry[0];
-					if (!empty($cpentry[10]) && $cpentry[10] > 60)
-						$interval = $cpentry[10];
-					else
-						$interval = 0;
-					$past_interval_min = ($session_time > $interval);
-					if ($interval != 0)
-						$within_interval = ($session_time % $interval >= 0 && $session_time % $interval <= 59);
-					if ($interval === 0 || ($interval > 0 && $past_interval_min && $within_interval)) {
-						RADIUS_ACCOUNTING_STOP($cpentry[1], // ruleno
-							$cpentry[4], // username
-							$cpentry[5], // sessionid
-							$cpentry[0], // start time
-							$radiusservers,
-							$cpentry[2], // clientip
-							$cpentry[3], // clientmac
-							10, // NAS Request
-							true); // Interim Updates
-					}
+			/* hard timeout? */
+			if ($timeout) {
+				if (($pruning_time - $cpentry[0]) >= $timeout) {
+					$timedout = true;
+					$term_cause = 5; // Session-Timeout
 				}
 			}
 
-			/* check this user against RADIUS again */
-			if (isset($cpcfg['reauthenticate'])) {
-				$auth_list = RADIUS_AUTHENTICATION($cpentry[4], // username
-					base64_decode($cpentry[6]), // password
-					$radiusservers,
-					$cpentry[2], // clientip
-					$cpentry[3], // clientmac
-					$cpentry[1]); // ruleno
-				if ($auth_list['auth_val'] == 3) {
-					captiveportal_disconnect($cpentry, $radiusservers, 17);
-					captiveportal_logportalauth($cpentry[4], $cpentry[3], $cpentry[2], "RADIUS_DISCONNECT", $auth_list['reply_message']);
-					$unsetindexes[] = $cpentry[5];
-				} else if ($auth_list['auth_val'] == 2)
-					captiveportal_reapply_attributes($cpentry, $auth_list);
+			/* Session-Terminate-Time */
+			if (!$timedout && !empty($cpentry[9])) {
+				if ($pruning_time >= $cpentry[9]) {
+					$timedout = true;
+					$term_cause = 5; // Session-Timeout
+				}
+			}
+
+			/* check if the radius idle_timeout attribute has been set and if its set change the idletimeout to this value */
+			$uidletimeout = (is_numeric($cpentry[8])) ? $cpentry[8] : $idletimeout;
+			/* if an idle timeout is specified, get last activity timestamp from ipfw */
+			if (!$timedout && $uidletimeout > 0) {
+				$lastact = captiveportal_get_last_activity($cpentry[2], $cpentry[3]);
+				/*	If the user has logged on but not sent any traffic they will never be logged out.
+                 *	We "fix" this by setting lastact to the login timestamp.
+                 */
+				$lastact = $lastact ? $lastact : $cpentry[0];
+				if ($lastact && (($pruning_time - $lastact) >= $uidletimeout)) {
+					$timedout = true;
+					$term_cause = 4; // Idle-Timeout
+					$stop_time = $lastact; // Entry added to comply with WISPr
+				}
+			}
+
+			/* if vouchers are configured, activate session timeouts */
+			if (!$timedout && isset($vcpcfg['enable']) && !empty($cpentry[7])) {
+				if ($pruning_time >= ($cpentry[0] + $cpentry[7])) {
+					$timedout = true;
+					$term_cause = 5; // Session-Timeout
+					$voucher_needs_sync = true;
+				}
+			}
+
+			/* if radius session_timeout is enabled and the session_timeout is not null, then check if the user should be logged out */
+			if (!$timedout && isset($cpcfg['radiussession_timeout']) && !empty($cpentry[7])) {
+				if ($pruning_time >= ($cpentry[0] + $cpentry[7])) {
+					$timedout = true;
+					$term_cause = 5; // Session-Timeout
+				}
+			}
+
+			if ($timedout) {
+				captiveportal_disconnect($cpentry, $radiusservers,$term_cause,$stop_time);
+				captiveportal_logportalauth($cpentry[4], $cpentry[3], $cpentry[2], "TIMEOUT");
+				$unsetindexes[] = $cpentry[5];
+			}
+
+			/* do periodic RADIUS reauthentication? */
+			if (!$timedout && !empty($radiusservers)) {
+				if (isset($cpcfg['radacct_enable'])) {
+					if ($cpcfg['reauthenticateacct'] == "stopstart") {
+						/* stop and restart accounting */
+						RADIUS_ACCOUNTING_STOP($cpentry->pipeno_in, // ruleno
+							$cpentry->username, // username
+							$cpentry->sessionid, // sessionid
+							$cpentry->allow_time, // start time
+							$radiusservers,
+							$cpentry->ip, // clientip
+							$cpentry->mac, // clientmac
+							10); // NAS Request
+
+						// todo, zero counters
+
+						RADIUS_ACCOUNTING_START($cpentry->pipeno_in, // ruleno
+							$cpentry->username, // username
+							$cpentry->sessionid, // sessionid
+							$radiusservers,
+							$cpentry->ip, // clientip
+							$cpentry->mac); // clientmac
+					} else if ($cpcfg['reauthenticateacct'] == "interimupdate") {
+						$session_time = $pruning_time - $cpentry[0];
+						if (!empty($cpentry[10]) && $cpentry[10] > 60)
+							$interval = $cpentry[10];
+						else
+							$interval = 0;
+						$past_interval_min = ($session_time > $interval);
+						if ($interval != 0)
+							$within_interval = ($session_time % $interval >= 0 && $session_time % $interval <= 59);
+						if ($interval === 0 || ($interval > 0 && $past_interval_min && $within_interval)) {
+							RADIUS_ACCOUNTING_STOP($cpentry->pipeno_in, // ruleno
+								$cpentry->username, // username
+								$cpentry->sessionid, // sessionid
+								$cpentry->allow_time, // start time
+								$radiusservers,
+								$cpentry->ip, // clientip
+								$cpentry->mac, // clientmac
+								10, // NAS Request
+								true); // Interim Updates
+						}
+					}
+				}
+
+				/* check this user against RADIUS again */
+				if (isset($cpcfg['reauthenticate'])) {
+					$auth_list = RADIUS_AUTHENTICATION($cpentry[4], // username
+						base64_decode($cpentry->bpassword), // password
+						$radiusservers,
+						$cpentry->ip, // clientip
+						$cpentry->mac, // clientmac
+						$cpentry->pipeno_in); // ruleno
+					if ($auth_list['auth_val'] == 3) {
+						$cpc->disconnect($cpzone, $cpentry->sessionid);
+						captiveportal_logportalauth($cpentry[4], $cpentry[3], $cpentry[2], "RADIUS_DISCONNECT", $auth_list['reply_message']);
+						$unsetindexes[] = $cpentry[5];
+					} else if ($auth_list['auth_val'] == 2)
+						//captiveportal_reapply_attributes($cpentry, $auth_list);
+						null;
+				}
 			}
 		}
+
 	}
+
+
+
+
+
 	unset($cpdb);
 
-	captiveportal_prune_old_automac();
 
-	if ($voucher_needs_sync == true)
-		/* Triger a sync of the vouchers on config */
-		send_event("service sync vouchers");
-
-	/* write database */
-	if (!empty($unsetindexes))
-		captiveportal_remove_entries($unsetindexes);
-}
-
-function captiveportal_prune_old_automac() {
-	global $g, $config, $cpzone, $cpzoneid;
-
-	if (is_array($config['captiveportal'][$cpzone]['passthrumac']) && isset($config['captiveportal'][$cpzone]['passthrumacaddusername'])) {
-		$tmpvoucherdb = array();
-		$macrules = "";
-		$writecfg = false;
-		foreach ($config['captiveportal'][$cpzone]['passthrumac'] as $eid => $emac) {
-			if ($emac['logintype'] == "voucher") {
-				if (isset($config['captiveportal'][$cpzone]['noconcurrentlogins'])) {
-					if (isset($tmpvoucherdb[$emac['username']])) {
-						$temac = $config['captiveportal'][$cpzone]['passthrumac'][$tmpvoucherdb[$emac['username']]];
-						$ruleno = captiveportal_get_ipfw_passthru_ruleno($temac['mac']);
-						$pipeno = captiveportal_get_dn_passthru_ruleno($temac['mac']);
-						if ($ruleno) {
-							captiveportal_free_ipfw_ruleno($ruleno);
-							$macrules .= "delete {$ruleno}";
-							++$ruleno;
-							$macrules .= "delete {$ruleno}";
-						}
-						if ($pipeno) {
-							captiveportal_free_dn_ruleno($pipeno);
-							$macrules .= "pipe delete {$pipeno}\n";
-							++$pipeno;
-							$macrules .= "pipe delete {$pipeno}\n";
-						}
-						$writecfg = true;
-						captiveportal_logportalauth($temac['username'], $temac['mac'], $temac['ip'], "DUPLICATE {$temac['username']} LOGIN - TERMINATING OLD SESSION");
-						unset($config['captiveportal'][$cpzone]['passthrumac'][$tmpvoucherdb[$emac['username']]]);
-					}
-					$tmpvoucherdb[$emac['username']] = $eid;
-				}
-				if (voucher_auth($emac['username']) <= 0) {
-					$ruleno = captiveportal_get_ipfw_passthru_ruleno($emac['mac']);
-					$pipeno = captiveportal_get_dn_passthru_ruleno($emac['mac']);
-					if ($ruleno) {
-						captiveportal_free_ipfw_ruleno($ruleno);
-						$macrules .= "delete {$ruleno}";
-						++$ruleno;
-						$macrules .= "delete {$ruleno}";
-					}
-					if ($pipeno) {
-						captiveportal_free_dn_ruleno($pipeno);
-						$macrules .= "pipe delete {$pipeno}\n";
-						++$pipeno;
-						$macrules .= "pipe delete {$pipeno}\n";
-					}
-					$writecfg = true;
-					captiveportal_logportalauth($emac['username'], $emac['mac'], $emac['ip'], "EXPIRED {$emac['username']} LOGIN - TERMINATING SESSION");
-					unset($config['captiveportal'][$cpzone]['passthrumac'][$eid]);
-				}
-			}
-		}
-		unset($tmpvoucherdb);
-		if (!empty($macrules)) {
-			@file_put_contents("{$g['tmp_path']}/macentry.prunerules.tmp", $macrules);
-			unset($macrules);
-			mwexec("/sbin/ipfw -x {$cpzoneid} -q {$g['tmp_path']}/macentry.prunerules.tmp");
-		}
-		if ($writecfg === true)
-			write_config("Prune session for auto-added macs");
-	}
-}
-
-/* remove a single client according to the DB entry */
-function captiveportal_disconnect($dbent, $radiusservers,$term_cause = 1,$stop_time = null) {
-	global $g, $config, $cpzone, $cpzoneid;
-
-	$stop_time = (empty($stop_time)) ? time() : $stop_time;
-
-	/* this client needs to be deleted - remove ipfw rules */
-	if (isset($config['captiveportal'][$cpzone]['radacct_enable']) && !empty($radiusservers)) {
-		RADIUS_ACCOUNTING_STOP($dbent[1], // ruleno
-			$dbent[4], // username
-			$dbent[5], // sessionid
-			$dbent[0], // start time
-			$radiusservers,
-			$dbent[2], // clientip
-			$dbent[3], // clientmac
-			$term_cause, // Acct-Terminate-Cause
-			false,
-			$stop_time);
-	}
-	
-	if (is_ipaddr($dbent[2])) {
-		/* Delete client's ip entry from tables 1 and 2. */
-		$_gb = @pfSense_ipfw_Tableaction($cpzoneid, IP_FW_TABLE_XDEL, 1, $dbent[2], $dbent[3]);
-		$_gb = @pfSense_ipfw_Tableaction($cpzoneid, IP_FW_TABLE_XDEL, 2, $dbent[2], $dbent[3]);
-		/* XXX: Redundant?! Ensure all pf(4) states are killed. */
-		$_gb = @pfSense_kill_states($dbent[2]);
-		$_gb = @pfSense_kill_srcstates($dbent[2]);
-	}
-
-	/* 
-	* These are the pipe numbers we use to control traffic shaping for each logged in user via captive portal
-	* We could get an error if the pipe doesn't exist but everything should still be fine
-	*/
-	if (!empty($dbent[1])) {
-		$_gb = @pfSense_pipe_action("pipe delete {$dbent[1]}");
-		$_gb = @pfSense_pipe_action("pipe delete " . ($dbent[1]+1));
-
-		/* Release the ruleno so it can be reallocated to new clients. */
-		captiveportal_free_dn_ruleno($dbent[1]);
-	}
-
-	// XMLRPC Call over to the master Voucher node
-	if(!empty($config['voucher'][$cpzone]['vouchersyncdbip'])) {
-		$syncip   = $config['voucher'][$cpzone]['vouchersyncdbip'];
-		$syncport = $config['voucher'][$cpzone]['vouchersyncport'];
-		$syncpass = $config['voucher'][$cpzone]['vouchersyncpass'];
-		$vouchersyncusername = $config['voucher'][$cpzone]['vouchersyncusername'];
-		$remote_status = xmlrpc_sync_voucher_disconnect($dbent, $syncip, $syncport, $syncpass, $vouchersyncusername, $term_cause, $stop_time);
-	}
 
 }
 
@@ -1548,23 +1445,6 @@ function portal_mac_radius($clientmac,$clientip) {
 		portal_reply_page($auth_list['url_redirection'], "redir");
 
 	return FALSE;
-}
-
-function captiveportal_reapply_attributes($cpentry, $attributes) {
-	global $config, $cpzone, $g;
-
-	$dwfaultbw_up = isset($config['captiveportal'][$cpzone]['bwdefaultup']) ? $config['captiveportal'][$cpzone]['bwdefaultup'] : 0;
-	$dwfaultbw_down = isset($config['captiveportal'][$cpzone]['bwdefaultdn']) ? $config['captiveportal'][$cpzone]['bwdefaultdn'] : 0;
-	$bw_up = isset($attributes['bw_up']) ? round(intval($attributes['bw_up'])/1000, 2) : $dwfaultbw_up;
-	$bw_down = isset($attributes['bw_down']) ? round(intval($attributes['bw_down'])/1000, 2) : $dwfaultbw_down;
-	$bw_up_pipeno = $cpentry[1];
-	$bw_down_pipeno = $cpentry[1]+1;
-
-	$_gb = @pfSense_pipe_action("pipe {$bw_up_pipeno} config bw {$bw_up}Kbit/s queue 100 buckets 16");
-	$_gb = @pfSense_pipe_action("pipe {$bw_down_pipeno} config bw {$bw_down}Kbit/s queue 100 buckets 16");
-	//captiveportal_logportalauth($cpentry[4], $cpentry[3], $cpentry[2], "RADIUS_BANDWIDTH_REAPPLY", "{$bw_up}/{$bw_down}");
-
-	unset($bw_up_pipeno, $bw_down_pipeno, $bw_up, $bw_down);
 }
 
 

@@ -61,6 +61,27 @@ class CPClient {
     private $shell = null;
 
     /**
+     * send message to syslog
+     *
+     * @param $status
+     * @param $user
+     * @param $mac
+     * @param $ip
+     * @param string $message
+     */
+    private function logportalauth($user,$mac,$ip,$status,$message=""){
+
+        $message = trim($message);
+        $message = "{$status}: {$user}, {$mac}, {$ip}, {$message}";
+
+        $logger = new \Phalcon\Logger\Adapter\Syslog("logportalauth", array(
+            'option' => LOG_PID,
+            'facility' => LOG_LOCAL4
+        ));
+        $logger->info($message);
+
+    }
+    /**
      * Request new pipeno
      * @return int
      */
@@ -169,6 +190,7 @@ class CPClient {
                     $parts = preg_split('/\s+/', $line);
                     if (count($parts) > 8 && $parts[7] != 'any' and strlen($parts[7]) > 5) {
                         $result[$parts[7]] = array(
+                            "rulenum" => $parts[0],
                             "last_accessed" => (int)$parts[3],
                             "idle_time" => time() - (int)$parts[3],
                             "out_packets" => (int)$parts[1],
@@ -180,6 +202,21 @@ class CPClient {
         }
 
         return $result;
+
+    }
+
+    /**
+     * reset traffic counters
+     *
+     * @param null $rulenum
+     */
+    public function zero_counters($rulenum=null){
+        if ( $rulenum != null and is_numeric($rulenum) ){
+            $this->shell->exec("/sbin/ipfw zero " . $rulenum );
+        }
+        elseif ( $rulenum == null ){
+            $this->shell->exec("/sbin/ipfw zero " );
+        }
 
     }
 
@@ -512,15 +549,14 @@ class CPClient {
         $this->reset_bandwidth($pipeno_in,$bw_up);
         $this->reset_bandwidth($pipeno_in,$bw_down);
 
-
-        // TODO : Add logging, ( captiveportal_logportalauth($cpentry[4],$cpentry[3],$cpentry[2],"CONCURRENT LOGIN - TERMINATING OLD SESSION"); )
+        // log
+        $this->logportalauth($username,$clientmac,$clientip,$status="LOGIN");
 
         // cleanup
         unset($db);
 
         return $sessionid;
     }
-
 
     /**
      * disconnect a session or a list of sessions depending on the parameter
@@ -537,6 +573,7 @@ class CPClient {
             $this->_disconnect($cpzonename,$sessionid);
         }
     }
+
 
     /**
      * flush zone (null flushes all zones)
@@ -576,38 +613,48 @@ class CPClient {
     /**
      * cleanup portal sessions
      */
-    function portal_cleanup_sessions(){
+    function portal_cleanup_sessions($cpzone=null){
         $acc_list = $this->list_accounting();
         foreach($this->config->object()->captiveportal->children() as $cpzonename => $zoneobj){
-            $db = new DB($cpzonename);
+            if ( $cpzone == null || $cpzone == $cpzonename ) {
+                $db = new DB($cpzonename);
 
-            $clients  = $db->listClients(array(),null, null);
+                $clients = $db->listClients(array(), null, null);
 
-            foreach($clients as $client ){
-                $idle_time = 0;
-                if ( array_key_exists (  $client->ip ,$acc_list ) ){
-                    $idle_time = $acc_list[$client->ip];
-                }
+                foreach ($clients as $client) {
+                    $idle_time = 0;
+                    if (array_key_exists($client->ip, $acc_list)) {
+                        $idle_time = $acc_list[$client->ip];
+                    }
 
-                // if session timeout is reached, disconnect
-                if ( $client->session_timeout  != ""  ){
-                    if ( ((time() - $client->allow_time)/60) > $client->session_timeout  ){
-                        $this->disconnect($cpzonename,$client->sessionid);
+                    // if session timeout is reached, disconnect
+                    if (is_numeric($client->session_timeout) && $client->session_timeout > 0 ) {
+                        if (((time() - $client->allow_time) / 60) > $client->session_timeout) {
+                            $this->disconnect($cpzonename, $client->sessionid);
+                            $this->logportalauth($client->username,$client->mac,$client->ip,$status="SESSION TIMEOUT");
+                            continue;
+                        }
+                    }
+
+                    // disconnect session if idle timeout is reached
+                    if (is_numeric($client->idle_timeout) && $client->idle_timeout > 0  && $idle_time > 0) {
+                        if ($idle_time > $client->idle_timeout) {
+                            $this->disconnect($cpzonename, $client->sessionid);
+                            $this->logportalauth($client->username,$client->mac,$client->ip,$status="IDLE TIMEOUT");
+                            continue;
+                        }
+                    }
+
+                    // disconnect on session terminate time
+                    if ($client->session_terminate_time != "" && $client->session_terminate_time < time()) {
+                        $this->disconnect($cpzonename, $client->sessionid);
+                        $this->logportalauth($client->username,$client->mac,$client->ip,$status="TERMINATE TIME REACHED");
                         continue;
                     }
                 }
 
-                // disconnect session if idle timeout is reached
-                if ( $client->idle_timeout  != "" && $idle_time > 0 ){
-                    if ( $idle_time > $client->idle_timeout   ){
-                        $this->disconnect($cpzonename,$client->sessionid);
-                        continue;
-                    }
-                }
+                unset($db);
             }
-
-            unset($db);
-
         }
 
         unset ($acc_list);

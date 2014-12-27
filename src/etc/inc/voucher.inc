@@ -218,6 +218,9 @@ EOF;
 function voucher_expire($voucher_received) {
 	global $g, $config, $cpzone;
 
+	$cpdb = new Captiveportal\DB($cpzone);
+	$cpc = new Captiveportal\CPClient();
+
 	// XMLRPC Call over to the master Voucher node
 	if(!empty($config['voucher'][$cpzone]['vouchersyncdbip'])) {
 		$syncip   = $config['voucher'][$cpzone]['vouchersyncdbip'];
@@ -275,13 +278,11 @@ function voucher_expire($voucher_received) {
 				captiveportal_syslog("{$voucher} ({$roll}/{$nr}) forced to expire");
 
 				/* Check if this voucher has any active sessions */
-				$cpdb = new Captiveportal\DB($cpzone);
-				if ($db->countClients(array("username"=>$voucher)) > 0 ) {
-					captiveportal_disconnect(array("username"=>$voucher),null,13);
-					//TODO: fix logging (in disconnect?) captiveportal_logportalauth($cpentry[4],$cpentry[3],$cpentry[2],"FORCLY TERMINATING VOUCHER {$voucher} SESSION");
+				$clients  = $cpdb->listClients(array("username"=>$voucher),null, null);
+				foreach($clients as $client ){
+					$cpc->disconnect($cpzone,$client->sessionid);
 				}
 
-				unset($cpdb);
 			} else
 				captiveportal_syslog("$voucher ($roll/$nr): not found on any registererd Roll");
 		} else
@@ -311,6 +312,9 @@ function voucher_expire($voucher_received) {
 		}
 		unset($bitstring);
 	}
+
+	unset($cpdb);
+	unset($cpc);
 
 	unlock($voucherlck);
 
