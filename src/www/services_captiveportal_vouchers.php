@@ -608,6 +608,7 @@ function enable_change(enable_change) {
 														&nbsp;
 													</td>
 												</tr>
+<!-- voucher xmlrpc, disabled 												
 												<tr>
 													<td colspan="2" valign="top" class="listtopic"><?=gettext("Voucher database synchronization"); ?></td>
 												</tr>
@@ -640,6 +641,7 @@ function enable_change(enable_change) {
 														<br /><?=gettext("This is the password of the master voucher nodes webConfigurator."); ?>
 													</td>
 												</tr>
+-->												
 												<tr>
 													<td width="22%" valign="top">&nbsp;</td>
 													<td width="78%">
@@ -657,7 +659,7 @@ function enable_change(enable_change) {
 													<?=gettext("Specifying the Voucher Database Synchronization options will not record any other value from the other options. They will be retrieved/synced from the master."); ?>
 												</p>
 											</td>
-										</tr>
+										</tr>										
 									</table>
 		                        </div>
 		                    </form>
