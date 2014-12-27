@@ -48,7 +48,7 @@ if(strtoupper($command) == "Y" || strtoupper($command) == "YES") {
 	echo "\n\nStarting package wipe... One moment please... ";
 	exec("cd /var/db/pkg/ && find . -exec 'pkg_delete {}' \; ");
 	exec("rm -rf /var/db/pkg/*");
-	
+
 	if(strtoupper($rmconfig) == "Y" || strtoupper($rmconfig) == "YES") {
 		echo "\nRemoving pfSense package configuration information...";
 		if($config['installedpackages']['package']) {
@@ -57,7 +57,7 @@ if(strtoupper($command) == "Y" || strtoupper($command) == "YES") {
 		}
 		echo "\n";
 	}
-	
+
 	echo "\npfSense package wipe procedure has completed.\n\n";
 }
 

@@ -42,7 +42,7 @@
 			<fieldname>enable</fieldname>
 			<type>checkbox</type>
 			<enablefields>enable_upnp,enable_natpmp,iface_array,overridewanip,upnpqueue,logpackets,sysuptime,permdefault,permuser1,permuser2,permuser3,permuser4</enablefields>
-		</field>			
+		</field>
 		<field>
 			<fielddescr>Allow UPnP Port Mapping</fielddescr>
 			<fieldname>enable_upnp</fieldname>
@@ -143,7 +143,7 @@
 			<description>Format: [allow or deny] [ext port or range] [int ipaddr or ipaddr/cdir] [int port or range]</description>
 			<type>input</type>
 			<size>60</size>
-		</field>	
+		</field>
 	</fields>
 	<custom_php_command_before_form>
 		before_form_miniupnpd($pkg);

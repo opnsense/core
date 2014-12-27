@@ -10,7 +10,7 @@ require_once("filter.inc");
 require_once("shaper.inc");
 require_once("rrd.inc");
 require_once("pfsense-utils.inc");
-	
+
 $GIT_PKG = "git"; // Either "git" or the full package URL
 $GIT_BIN= "/usr/pbi/bin/git";
 $GIT_REPO = "git://github.com/pfsense/pfsense.git";
@@ -106,15 +106,15 @@ if(!file_exists($GIT_BIN)) {
 }
 
 # Remove mainline if exists (older)
-if(is_dir("/root/pfsense/mainline")) 
+if(is_dir("/root/pfsense/mainline"))
 	exec("rm -rf /root/pfsense/mainline");
 
 # Remove RELENG_1_2 if exists (older)
-if(is_dir("/root/pfsense/RELENG_1_2")) 
+if(is_dir("/root/pfsense/RELENG_1_2"))
 	exec("rm -rf /root/pfsense/RELENG_1_2");
 
 # Remove HEAD if exists (older)
-if(is_dir("/root/pfsense/HEAD")) 
+if(is_dir("/root/pfsense/HEAD"))
 	exec("rm -rf /root/pfsense/HEAD");
 
 if(file_exists("/root/cvssync_backup.tgz")) {
@@ -143,9 +143,9 @@ if(!$args[0] && !$upgrading) {
 	$branch = $args[0];
 }
 
-if($args[1] == "NOBACKUP") 
+if($args[1] == "NOBACKUP")
 	$nobackup = true;
-else 
+else
 	$nobackup = false;
 
 // If the repository has been fetched before, build a list of its branches.
@@ -162,7 +162,7 @@ if(is_dir("$CODIR/pfSenseGITREPO/pfSenseGITREPO")) {
 
 $found = false;
 foreach($branches as $branchname => $branchdesc) {
-	if($branchname == $branch) 
+	if($branchname == $branch)
 		$found = true;
 }
 if(!$found) {
@@ -181,7 +181,7 @@ if(!$found) {
 				$command = readline("Checkout which branch [${DEFAULT_BRANCH}]? ");
 				if($command == "")
 					$branch = $DEFAULT_BRANCH;
-				if($command) 
+				if($command)
 					$branch = $command;
 				$found = true;
 			}
@@ -283,9 +283,9 @@ if(is_dir("$CODIR/pfSenseGITREPO/pfSenseGITREPO")) {
     exec("mkdir -p $CODIR/pfSenseGITREPO");
     echo "Executing cd $CODIR/pfSenseGITREPO && {$GIT_BIN} clone $GIT_REPO pfSenseGITREPO\n";
 	exec("cd $CODIR/pfSenseGITREPO && {$GIT_BIN} clone " . escapeshellarg($GIT_REPO) . " pfSenseGITREPO");
-	if(is_dir("$CODIR/pfSenseGITREPO/pfSense")) 
+	if(is_dir("$CODIR/pfSenseGITREPO/pfSense"))
 		exec("mv $CODIR/pfSenseGITREPO/pfSense $CODIR/pfSenseGITREPO/pfSenseGITREPO");
-	if(is_dir("$CODIR/pfSenseGITREPO/mainline")) 
+	if(is_dir("$CODIR/pfSenseGITREPO/mainline"))
 		exec("mv $CODIR/pfSenseGITREPO/mainline $CODIR/pfSenseGITREPO/pfSenseGITREPO");
 	run_cmds($git_cmd);
 }
@@ -320,7 +320,7 @@ exec("mkdir -p /tmp/lighttpd/cache/compress/");
 exec("cd ${CODIR}/pfSenseGITREPO/pfSenseGITREPO && find . -name CVS -exec rm -rf {} \; 2>/dev/null");
 exec("cd ${CODIR}/pfSenseGITREPO/pfSenseGITREPO && find . -name pfSense.tgz -exec rm {} \; 2>/dev/null");
 
-// Remove files that we do not want to overwrite the system with 
+// Remove files that we do not want to overwrite the system with
 exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/etc/crontab 2>/dev/null");
 exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/etc/master.passwd 2>/dev/null");
 exec("rm ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/etc/passwd 2>/dev/null");
@@ -340,9 +340,9 @@ exec("rm -f ${CODIR}/pfSenseGITREPO/pfSenseGITREPO/etc/syslog.conf 2>/dev/null")
 
 echo "===> Installing new files...\n";
 
-if($g['platform'] == "pfSense") 
+if($g['platform'] == "pfSense")
 	$command = "cd $CODIR/pfSenseGITREPO/pfSenseGITREPO ; tar -cpf - {$files_to_copy} | (cd / ; tar -Uxpf -)";
-else 
+else
 	$command = "cd $CODIR/pfSenseGITREPO/pfSenseGITREPO ; tar -cpf - {$files_to_copy} | (cd / ; tar -xpf -) 2>/dev/null";
 if(!empty($files_to_copy))
 	exec($command);
@@ -388,7 +388,7 @@ function post_cvssync_commands() {
 	/* lock down console if necessary */
 	echo "===> Locking down the console if needed...\n";
 	reload_ttys();
-	
+
 	echo "===> Signaling PHP and Lighty restart...";
 	$fd = fopen("/tmp/restart_lighty", "w");
 	fwrite($fd, "#!/bin/sh\n");
@@ -403,9 +403,9 @@ function post_cvssync_commands() {
 }
 
 function isUrl($url = "") {
-	if($url) 
-		if(strstr($url, "rcs.pfsense.org") or 
-			strstr($url, "mainline") or 
+	if($url)
+		if(strstr($url, "rcs.pfsense.org") or
+			strstr($url, "mainline") or
 				strstr($url, ".git") or strstr($url, "git://"))
 					return true;
 	return false;

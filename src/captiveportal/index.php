@@ -206,7 +206,7 @@ EOD;
 			$user = $_POST['auth_user'];
 		else if (!empty($_POST['auth_user2']))
 			$user = $_POST['auth_user2'];
-		else 
+		else
 			$user = 'unknown';
 		captiveportal_logportalauth($user ,$clientmac,$clientip,"ERROR");
 		portal_reply_page($redirurl, "error", $errormsg);

@@ -17,7 +17,7 @@ if [ -f /var/log/dmesg.boot ]; then
 	fi
 fi
 
-# Check for different HZ 
+# Check for different HZ
 if [ -f /boot/loader.conf ]; then
 	HZ=`/usr/bin/grep -c kern.hz /boot/loader.conf`
 	if [ "$HZ" = "1" ]; then
@@ -25,7 +25,7 @@ if [ -f /boot/loader.conf ]; then
 	fi
 fi
 
-if [ -c "/dev/speaker" ]; then	
+if [ -c "/dev/speaker" ]; then
 		if [ "$1" = "start" ]; then
 			/usr/local/bin/beep -p 500 $NOTELENGTH
 			/usr/local/bin/beep -p 400 $NOTELENGTH

@@ -233,7 +233,7 @@ add_new_routes() {
 			else
 				$ROUTE add default $router
 				echo $ROUTE add default $router | $LOGGER
-                       		echo $router > /tmp/${interface}_router
+				echo $router > /tmp/${interface}_router
 			fi
 			ADDED_ROUTE=yes
 			# 2nd and subsequent default routers error out, so explicitly
@@ -248,7 +248,7 @@ add_new_routes() {
 		while [ $# -gt 1 ]; do
 			$ROUTE add $1 $2
 			if [ "$ADDED_ROUTE" = "no" ]; then
-                        	echo $2 > /tmp/${interface}_router
+				echo $2 > /tmp/${interface}_router
 			fi
 			shift; shift
 		done
@@ -263,7 +263,7 @@ add_new_resolv_conf() {
 			$ROUTE delete $nameserver >/dev/null 2>&1
 		done
 	fi
-	if [ -n "$new_domain_name_servers" ]; then 
+	if [ -n "$new_domain_name_servers" ]; then
 		/bin/rm -f /var/etc/nameserver_$interface
 		ALLOWOVERRIDE=`/usr/bin/grep dnsallowoverride /conf/config.xml | /usr/bin/wc -l`
 		for nameserver in $new_domain_name_servers; do
