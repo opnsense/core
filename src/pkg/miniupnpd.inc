@@ -45,7 +45,7 @@
 	}
 
 	function upnp_validate_ip($ip, $check_cdir) {
-		/* validate cidr */	
+		/* validate cidr */
 		$ip_array = array();
 		if($check_cdir)	{
 			$ip_array = explode('/', $ip);
@@ -68,7 +68,7 @@
 		foreach(explode('-', $port) as $sub)
 			if($sub < 0 || $sub > 65535)
 				return false;
-		return true;	
+		return true;
 	}
 
 	function before_form_miniupnpd(&$pkg) {
@@ -117,7 +117,7 @@
 						$input_errors[] = "You must specify a valid ip address in the 'User specified permissions {$i}' field";
 				}
 			}
-		}		
+		}
 	}
 
 	function sync_package_miniupnpd() {
@@ -184,11 +184,11 @@
 					$config_text .= "bitrate_down={$download}\n";
 					$config_text .= "bitrate_up={$upload}\n";
 				}
-				
+
 				/* enable logging of packets handled by miniupnpd rules */
 				if($upnp_config['logpackets'])
 					$config_text .= "packet_log=yes\n";
-				
+
 				/* enable system uptime instead of miniupnpd uptime */
 				if($upnp_config['sysuptime'])
 					$config_text .= "system_uptime=yes\n";
@@ -207,7 +207,7 @@
 
 				/* set model number */
 				$config_text .= "model_number=".file_get_contents("/usr/local/etc/version")."\n";
-	
+
 				/* upnp access restrictions */
 				for($i=1; $i<=4; $i++) {
 					if($upnp_config["permuser{$i}"])
@@ -231,11 +231,11 @@
 
 				/* write out the configuration */
 				upnp_write_config($config_file, $config_text);
-				
+
 				/* if miniupnpd not running start it */
 				if(!upnp_running()) {
 					upnp_notice("Starting service on interface: {$ifaces_active}");
-					upnp_action('start');	
+					upnp_action('start');
 				}
 				/* or restart miniupnpd if settings were changed */
 				else {
@@ -251,7 +251,7 @@
 				if(!$upnp_config['enable'])
 					upnp_notice('Stopping service: miniupnpd disabled');
 				else
-					upnp_notice('Stopping service: no interfaces selected');				
+					upnp_notice('Stopping service: no interfaces selected');
 
 				upnp_action('stop');
 				@unlink($config_file);

@@ -1,5 +1,4 @@
 #!/usr/local/bin/php -f
- 
 <?php
 
 require_once("globals.inc");
@@ -13,7 +12,7 @@ require_once("util.inc");
 echo ".";
 $g['booting'] = false;
 
-$shell_cmds = array("alias", "alloc", "bg", "bind", "bindkey", "break", 
+$shell_cmds = array("alias", "alloc", "bg", "bind", "bindkey", "break",
      "breaksw", "builtins", "case", "cd", "chdir", "command", "complete", "continue", "default",
      "dirs", "do", "done", "echo", "echotc", "elif", "else", "end", "endif", "endsw", "esac", "eval",
      "exec", "exit", "export", "false", "fc", "fg", "filetest", "fi", "for", "foreach", "getopts",
@@ -30,7 +29,7 @@ function pipe_cmd($command, $text_to_pipe) {
 	    0 => array("pipe", "r"),  // stdin
 	    1 => array("pipe", "w"),  // stdout
 	    2 => array("pipe", "w")); // stderr ?? instead of a file
-	
+
 	$fd = proc_open("$command", $descriptorspec, $pipes);
 	if (is_resource($fd)) {
 	        fwrite($pipes[0], "{$text_to_pipe}");
@@ -62,8 +61,8 @@ function more($text, $count=24) {
                         echo "Press RETURN to continue ...";
                         $fp = fopen('php://stdin', 'r');
                         $pressreturn = chop(fgets($fp));
-                        if($pressreturn == "q" || $pressreturn == "quit") 
-                        	return; 
+                        if($pressreturn == "q" || $pressreturn == "quit")
+				return;
                         fclose($fp);
                         $counter = 0;
                 }
@@ -77,7 +76,7 @@ function show_help() {
 $show_help_text = <<<EOF
 
 	Enter a series of commands and then execute the set with "exec".
-	
+
 	For example:
 	echo "foo"; // php command
 	echo "foo2"; // php command
@@ -97,54 +96,54 @@ $show_help_text = <<<EOF
 
 	/* to output a configuration array */
 	print_r(\$config);
-	
+
 	/* to output the interfaces configuration portion of config.xml */
 	print_r(\$config['interfaces']);
-	
+
 	/* to output the dhcp server configuration */
 	print_r(\$config['dhcpd']);
 
 	/* to exit the php {$g['product_name']} shell */
 	exit
-	
+
 	/* to output supported wireless modes for an interface */
 	print_r(get_wireless_modes(\"ath0\"));
-	
+
 	/* to enable SSH */
 	\$config['system']['enablesshd'] = true;
-	
+
 	/* change OPTX to the OPT interface name such as BACKHAUL */
 	\$config['interfaces']['optx']['wireless']['standard'] = "11a";
 	\$config['interfaces']['optx']['wireless']['mode'] = "hostap";
 	\$config['interfaces']['optx']['wireless']['channel'] = "6";
-	
+
 	/* to enable dhcp server for an optx interface */
 	\$config['dhcpd']['optx']['enable'] = true;
 	\$config['dhcpd']['optx']['range']['from'] = "192.168.31.100";
 	\$config['dhcpd']['optx']['range']['to'] = "192.168.31.150";
-	
+
 	/* to disable the firewall filter */
 	\$config['system']['disablefilter'] = true;
-	
+
 	/* to enable an interface and set it for dhcp */
 	\$config['interfaces']['optx']['disabled'] = false;
 	\$config['interfaces']['optx']['ipaddr'] = "dhcp";
-	
+
 	/* to enable an interface and set a static ip address */
 	\$config['interfaces']['wan']['disabled'] = false;
 	\$config['interfaces']['wan']['ipaddr'] = "192.168.100.1";
 	\$config['interfaces']['wan']['subnet'] = "24";
-	
+
 	/* to save out the new configuration (config.xml) */
 	write_config();
-	
+
 	/* to reboot the system after saving */
 	system_reboot_sync();
-	
+
 EOF;
 
 	more($show_help_text);
- 	
+
 }
 
 $fp = fopen('php://stdin', 'r');
@@ -186,7 +185,7 @@ $recording = false;
 $playback_file_split = array();
 $playbackbuffer = "";
 
-if($argv[1]=="playback" or $argv[1]=="run") { 
+if($argv[1]=="playback" or $argv[1]=="run") {
 	if(!file_exists("/usr/local/etc/phpshellsessions/{$argv[2]}")) {
 		echo "Could not locate playback file.";
 		exit;
@@ -212,7 +211,7 @@ while($shell_active == true) {
 	$command = readline("{$g['product_name']} shell: ");
 	readline_add_history($command);
     $command_split = explode(" ", $command);
-    $first_command = $command_split[0];	
+    $first_command = $command_split[0];
 	if($first_command == "playback" || $first_command == "run") {
 		$playback_file = $command_split[1];
 		if(!$playback_file || !file_exists("/usr/local/etc/phpshellsessions/{$playback_file}")) {
@@ -225,7 +224,7 @@ while($shell_active == true) {
 			continue;
 		}
 	}
-	if($first_command == "exit" or $first_command == "quit") 
+	if($first_command == "exit" or $first_command == "quit")
 		die;
 	if($first_command == "help" or $first_command == "?") {
 		show_help();
@@ -244,7 +243,7 @@ while($shell_active == true) {
 			$command = "";
 			conf_mount_ro();
 			echo "Recording stopped.\n";
-			$recording = false; 
+			$recording = false;
 		} else {
 			echo "No recording session in progress.\n";
 			$command = "";
@@ -252,7 +251,7 @@ while($shell_active == true) {
 	}
 	if($first_command == "showrecordings") {
 		show_recordings();
-		$command = "";		
+		$command = "";
 	}
 	if($first_command == "reset") {
 		$playbackbuffer = "";
@@ -271,7 +270,7 @@ while($shell_active == true) {
 			if(!$recording_fd) {
 				echo "Could not start recording session.\n";
 				$command = "";
-			} else { 
+			} else {
 				$recording = true;
 				echo "Recording of {$command_split[1]} started.\n";
 				$command = "";
@@ -284,27 +283,27 @@ while($shell_active == true) {
 function show_recordings() {
 	conf_mount_rw();
 	safe_mkdir("/usr/local/etc/phpshellsessions");
-	if($recording) 
+	if($recording)
 		conf_mount_ro();
 	echo "==> Sessions available for playback are:\n";
 	system("cd /usr/local/etc/phpshellsessions && ls /usr/local/etc/phpshellsessions");
-	echo "==> end of list.\n";	
+	echo "==> end of list.\n";
 }
 
 function returnlastchar($command) {
 	$commandlen = strlen($command);
 	$endofstring = substr($command, ($commandlen-1));
-	return $endofstring; 
+	return $endofstring;
 }
 
 function returnfirstchar($command) {
 	$commandlen = strlen($command);
 	$endofstring = substr($command, 0, 1);
-	return $endofstring; 
+	return $endofstring;
 }
 
 function str_replace_all($search,$replace,$subject) {
-	while(strpos($subject,$search)!==false) 
+	while(strpos($subject,$search)!==false)
 		$subject = str_replace($search,$replace,$subject);
 	return $subject;
 }
@@ -315,7 +314,7 @@ function playback_text($playback_file_contents) {
 	$playback_text .= "require_once('globals.inc');\n";
 	$playback_text .= "require_once('config.inc');\n";
 	$toquote = '"';
-	$toquotereplace = '\\"';	
+	$toquotereplace = '\\"';
 	foreach($playback_file_split as $pfs) {
 		$firstchar = returnfirstchar($pfs);
 		$currentline = $pfs;
@@ -339,5 +338,3 @@ function playback_file($playback_file) {
 	$playback_file_contents = file_get_contents("/usr/local/etc/phpshellsessions/{$playback_file}");
 	playback_text($playback_file_contents);
 }
-
-?>
