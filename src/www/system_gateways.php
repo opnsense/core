@@ -191,197 +191,197 @@ $main_buttons = array(
 
 <body>
     <?php include("fbegin.inc"); ?>
-   
-    
+
+
 <!-- row -->
-		
+
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
-            
+
             <?php
-            	if ($input_errors) print_input_errors($input_errors);
-            	if ($savemsg) print_info_box($savemsg);
-            	if (is_subsystem_dirty('staticroutes')) print_info_box_np(gettext("The gateway configuration has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect.")); 
+		if ($input_errors) print_input_errors($input_errors);
+		if ($savemsg) print_info_box($savemsg);
+		if (is_subsystem_dirty('staticroutes')) print_info_box_np(gettext("The gateway configuration has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));
             ?>
-            
+
             <section class="col-xs-12">
-                
+
                 <? include('system_gateways_tabs.php'); ?>
-                
-                <div class="content-box">              
-                    
+
+                <div class="content-box">
+
                     <div class="table-responsive">
-                               
-                        <form action="system_gateways.php" method="post">	
+
+                        <form action="system_gateways.php" method="post">
 
                             <table class="table table-striped table-sort sortable" width="100%" border="0" cellpadding="0" cellspacing="0" summary="main area">
-                            	<thead>
-                                	<tr id="frheader">
-                                		<th width="4%" colspan="2" class="list">&nbsp;</th>
-                                		<th width="15%" class="listhdrr"><?=gettext("Name"); ?></th>
-                                		<th width="10%" class="listhdrr"><?=gettext("Interface"); ?></th>
-                                		<th width="15%" class="listhdrr"><?=gettext("Gateway"); ?></th>
-                                		<th width="15%" class="listhdrr"><?=gettext("Monitor IP"); ?></th>
-                                		<th width="31%" class="listhdr"><?=gettext("Description"); ?></th>
-                                		<th width="10%" class="list">
-                                			
-                                		</th>
-                                	</tr>
-                            	</thead>
-                            	
+				<thead>
+					<tr id="frheader">
+						<th width="4%" colspan="2" class="list">&nbsp;</th>
+						<th width="15%" class="listhdrr"><?=gettext("Name"); ?></th>
+						<th width="10%" class="listhdrr"><?=gettext("Interface"); ?></th>
+						<th width="15%" class="listhdrr"><?=gettext("Gateway"); ?></th>
+						<th width="15%" class="listhdrr"><?=gettext("Monitor IP"); ?></th>
+						<th width="31%" class="listhdr"><?=gettext("Description"); ?></th>
+						<th width="10%" class="list">
+
+						</th>
+					</tr>
+				</thead>
+
                                 <tbody>
                                 <?php
                                 $textse = "</span>";
                                 $i = 0;
                                 foreach ($a_gateways as $gateway):
-                                	if (isset($gateway['disabled']) || isset($gateway['inactive'])) {
-                                		$textss = "<span class=\"text-muted\">";
-                                		$iconfn = "glyphicon glyphicon-play text-muted";
-                                	} else {
-                                		$textss = "<span>";
-                                		$iconfn = "glyphicon glyphicon-play text-success";
-                                	}
+					if (isset($gateway['disabled']) || isset($gateway['inactive'])) {
+						$textss = "<span class=\"text-muted\">";
+						$iconfn = "glyphicon glyphicon-play text-muted";
+					} else {
+						$textss = "<span>";
+						$iconfn = "glyphicon glyphicon-play text-success";
+					}
                                 ?>
-                            	<tr valign="top" id="fr<?=$i;?>">
-                            		<td class="listt">
-                                    
+				<tr valign="top" id="fr<?=$i;?>">
+					<td class="listt">
+
                                     <?php
-                            		if (is_numeric($gateway['attribute'])):
+					if (is_numeric($gateway['attribute'])):
                                     ?>
-                            			<input type="checkbox" id="frc<?=$i;?>" name="rule[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" />
+						<input type="checkbox" id="frc<?=$i;?>" name="rule[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" />
                                     <?php
-                            		else:
+					else:
                                     ?>
-                            			&nbsp;
+						&nbsp;
                                     <?php
-                            		endif;
+					endif;
                                     ?>
-                            		</td>
-                            		<td class="listt" align="center">
+					</td>
+					<td class="listt" align="center">
                                     <?php
-                            		if (isset($gateway['inactive'])):
+					if (isset($gateway['inactive'])):
                                     ?>
-                            			<span class="glyphicon glyphicon-remove text-muted" title="<?=gettext("This gateway is inactive because interface is missing");?>"></span>
-                            			
+						<span class="glyphicon glyphicon-remove text-muted" title="<?=gettext("This gateway is inactive because interface is missing");?>"></span>
+
                                     <?php
-                            		elseif (is_numeric($gateway['attribute'])):
+					elseif (is_numeric($gateway['attribute'])):
                                     ?>
-                            			<a href="?act=toggle&amp;id=<?=$i;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" >
-	                            			<span class="glyphicon <?php echo $iconfn;?>"></span>
-	                            			
-                            			</a>
+						<a href="?act=toggle&amp;id=<?=$i;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" >
+							<span class="glyphicon <?php echo $iconfn;?>"></span>
+
+						</a>
                                     <?php
-                            		else:
+					else:
                                     ?>
-                                    	<span class="glyphicon <?php echo $iconfn;?>"  title="<?=gettext("click to toggle enabled/disabled status");?>"></span> 
+					<span class="glyphicon <?php echo $iconfn;?>"  title="<?=gettext("click to toggle enabled/disabled status");?>"></span>
                                     <?php
-                            		endif;
+					endif;
                                     ?>
-                            		</td>
-                            		<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
+					</td>
+					<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
                                     <?php
-                            			echo $textss;
-                            			echo $gateway['name'];
-                            			if(isset($gateway['defaultgw']))
-                            				echo " <strong>(default)</strong>";
-                            			echo $textse;
+						echo $textss;
+						echo $gateway['name'];
+						if(isset($gateway['defaultgw']))
+							echo " <strong>(default)</strong>";
+						echo $textse;
                                     ?>
-                            		</td>
-                            		<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
+					</td>
+					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
                                     <?php
-                            			echo $textss;
-                            			echo htmlspecialchars(convert_friendly_interface_to_friendly_descr($gateway['friendlyiface']));
-                            			echo $textse;
+						echo $textss;
+						echo htmlspecialchars(convert_friendly_interface_to_friendly_descr($gateway['friendlyiface']));
+						echo $textse;
                                     ?>
-                            		</td>
-                            		<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
+					</td>
+					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
                                     <?php
-                            			echo $textss;
-                            			echo $gateway['gateway'] . " ";
-                            			echo $textse;
+						echo $textss;
+						echo $gateway['gateway'] . " ";
+						echo $textse;
                                     ?>
-                            		</td>
-                            		<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
+					</td>
+					<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
                                     <?php
-                            			echo $textss;
-                            			echo htmlspecialchars($gateway['monitor']) . " ";
-                            			echo $textse;
+						echo $textss;
+						echo htmlspecialchars($gateway['monitor']) . " ";
+						echo $textse;
                                     ?>
-                            		</td>
+					</td>
                                     <?php
                                     if (is_numeric($gateway['attribute'])):
                                     ?>
-                            		<td class="listbg" onclick="fr_toggle(<?=$i;?>)" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
+					<td class="listbg" onclick="fr_toggle(<?=$i;?>)" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
                                     <?php
                                     else:
                                     ?>
-                            		<td class="listbgns" onclick="fr_toggle(<?=$i;?>)" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
+					<td class="listbgns" onclick="fr_toggle(<?=$i;?>)" ondblclick="document.location='system_gateways_edit.php?id=<?=$i;?>';">
                                     <?php
                                     endif;
-                            			echo $textss;
-                            			echo htmlspecialchars($gateway['descr']) . "&nbsp;";
-                            			echo $textse;
+						echo $textss;
+						echo htmlspecialchars($gateway['descr']) . "&nbsp;";
+						echo $textse;
                                     ?>
-                            		</td>
-                            		<td valign="middle" class="list nowrap">
-                            			
-                            						<a href="system_gateways_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs">
-                            							<span class="glyphicon glyphicon-pencil"></span>
-                            						</a>
-                            					
+					</td>
+					<td valign="middle" class="list nowrap">
+
+									<a href="system_gateways_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs">
+										<span class="glyphicon glyphicon-pencil"></span>
+									</a>
+
                                             <?php
-                            				if (is_numeric($gateway['attribute'])):
+							if (is_numeric($gateway['attribute'])):
                                             ?>
-                            					
-                            						<a href="system_gateways.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this gateway?"); ?>')" class="btn btn-default btn-xs">
-                            							<span class="glyphicon glyphicon-remove"></span>
-                            						</a>
-                            					
+
+									<a href="system_gateways.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this gateway?"); ?>')" class="btn btn-default btn-xs">
+										<span class="glyphicon glyphicon-remove"></span>
+									</a>
+
                                             <?php
-                            				
-                            				endif;
+
+							endif;
                                             ?>
-                            				<a href="system_gateways_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs">
-                            							<span class="glyphicon glyphicon-plus"></span>
-                            						</a>
-                            		</td>
-                            	</tr>
+							<a href="system_gateways_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs">
+										<span class="glyphicon glyphicon-plus"></span>
+									</a>
+					</td>
+				</tr>
                                 <?php
                                 $i++;
                                 endforeach;
                                 ?>
-                            	<tr>
-                            		<td class="list" colspan="7"></td>
-                            		<td class="list">
-                            			<table border="0" cellspacing="0" cellpadding="1" summary="edit">
-                            				<tr>
-                            					<td>
+				<tr>
+					<td class="list" colspan="7"></td>
+					<td class="list">
+						<table border="0" cellspacing="0" cellpadding="1" summary="edit">
+							<tr>
+								<td>
                                                 <?php
-                            					if ($i > 0):
-                                               
+								if ($i > 0):
+
                                                 ?>
-                            						<button type="submit" name="del_x" class="btn btn-default btn-xs"
-                            							 title="<?=gettext("delete selected items");?>"
-                            							onclick="return confirm('<?=gettext("Do you really want to delete the selected gateway items?");?>')">
-                            							<span class="glyphicon glyphicon-remove"></span>
-                            						</button>
+									<button type="submit" name="del_x" class="btn btn-default btn-xs"
+										 title="<?=gettext("delete selected items");?>"
+										onclick="return confirm('<?=gettext("Do you really want to delete the selected gateway items?");?>')">
+										<span class="glyphicon glyphicon-remove"></span>
+									</button>
                                                 <?php
-                            					endif;
-                            					?>
-                            					</td>
-                            				</tr>
-                            			</table>
-                            		</td>
-                            	</tr>
-                            	
-                            	</tbody>
+								endif;
+								?>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+
+				</tbody>
                             </table>
-                        
+
                         </form>
 
-                    </div>                    
+                    </div>
                 </div>
             </section>
         </div>

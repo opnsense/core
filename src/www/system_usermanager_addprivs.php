@@ -94,9 +94,9 @@ if ($_POST) {
 		$retval = write_config();
 		$savemsg = get_std_save_message($retval);
 		conf_mount_ro();
-		
+
 		post_redirect("system_usermanager.php", array('act' => 'edit', 'userid' => $userid));
-		
+
 		exit;
 	}
 	conf_mount_ro();

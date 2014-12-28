@@ -448,20 +448,20 @@ function sshkeyClicked(obj) {
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 					if ($input_errors)
 						print_input_errors($input_errors);
 					if ($savemsg)
 						print_info_box($savemsg);
 				?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 									$tab_array = array();
 									$tab_array[] = array(gettext("Users"), true, "system_usermanager.php");
 									$tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
@@ -469,19 +469,19 @@ function sshkeyClicked(obj) {
 									$tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
 									display_top_tabs($tab_array);
 						?>
-					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-	    					<?php
+
+						<div class="tab-content content-box col-xs-12">
+
+						<?php
 										if ($_POST['act'] == "new" || $_POST['act'] == "edit" || $input_errors):
 							?>
-   
+
 		                        <form action="system_usermanager.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
 									<input type="hidden" id="act" name="act" value="" />
 									<input type="hidden" id="userid" name="userid" value="<?=(isset($id) ? $id : '');?>" />
 									<input type="hidden" id="privid" name="privid" value="" />
 									<input type="hidden" id="certid" name="certid" value="" />
-		                        	
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 									<?php
@@ -540,20 +540,20 @@ function sshkeyClicked(obj) {
 											<td width="78%" class="vtable" align="center">
 												<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="group membership">
 
-    												                                    
+
 				                                    <thead>
 				                                        <tr>
-				                            				<th class="listtopic"><?=gettext("Not Member Of"); ?></th>
-				                            				<th>&nbsp;</th>
-				                            				<th class="listtopic"><?=gettext("Member Of"); ?></th>
+											<th class="listtopic"><?=gettext("Not Member Of"); ?></th>
+											<th>&nbsp;</th>
+											<th class="listtopic"><?=gettext("Member Of"); ?></th>
 				                                        </tr>
 				                                    </thead>
-													
-				    								<tbody>
-    				    								
+
+												<tbody>
+
 													<tr>
 														<td align="center" width="44%">
-														
+
 															<select size="10" name="notgroups[]" class="formselect" id="notgroups" onchange="clear_selected('groups')" multiple="multiple">
 				<?php
 																$rowIndex = 0;
@@ -578,15 +578,15 @@ function sshkeyClicked(obj) {
 														<td align="center" width="12%">
 															<br />
 															<a href="javascript:move_selected('notgroups','groups')" class="btn btn-default btn-xs" title="<?=gettext("Add Groups"); ?>">
-																<span class="glyphicon glyphicon-arrow-right"></span>																
+																<span class="glyphicon glyphicon-arrow-right"></span>
 															</a>
 															<br /><br />
 															<a href="javascript:move_selected('groups','notgroups')" class="btn btn-default btn-xs" title="<?=gettext("Remove Groups"); ?>">
-																<span class="glyphicon glyphicon-arrow-left"></span>															
+																<span class="glyphicon glyphicon-arrow-left"></span>
 															</a>
 														</td>
 														<td align="center" width="44%">
-    														
+
 															<select size="10" name="groups[]" class="formselect" id="groups" onchange="clear_selected('notgroups')" multiple="multiple">
 				<?php
 																$rowIndex = 0;
@@ -748,7 +748,7 @@ function sshkeyClicked(obj) {
 												</table>
 											</td>
 										</tr>
-				
+
 				<?php
 									else:
 										if (is_array($config['ca']) && count($config['ca']) > 0):
@@ -759,14 +759,14 @@ function sshkeyClicked(obj) {
 												$i++;
 											}
 				?>
-				
+
 										<tr id="usercertchck">
 											<td width="22%" valign="top" class="vncell"><?=gettext("Certificate");?></td>
 											<td width="78%" class="vtable">
 											<input type="checkbox" onclick="javascript:usercertClicked(this)" /> <?=gettext("Click to create a user certificate."); ?>
 											</td>
 										</tr>
-				
+
 				<?php
 											if ($i > 0):
 				?>
@@ -896,7 +896,7 @@ function sshkeyClicked(obj) {
 							<tr>
 								<td class="list" colspan="4"></td>
 								<td class="list">
-									<button type="submit" name="addcert" 
+									<button type="submit" name="addcert"
 										class="btn btn-default btn-xs"
 										onclick="document.getElementById('act').value='<?php echo "new";?>';"
 										title="<?=gettext("add user");?>"><span class="glyphicon glyphicon-plus"></span>
@@ -935,7 +935,7 @@ function sshkeyClicked(obj) {
 												else
 													$usrimg = "glyphicon glyphicon-user";
 ?>
-												
+
 
 												<span class="<?=$usrimg;?>"></span>
 											</td>
@@ -952,15 +952,15 @@ function sshkeyClicked(obj) {
 									&nbsp;
 								</td>
 								<td valign="middle" class="list nowrap" width="120">
-									<button type="submit" name="edituser[]" class="btn btn-default btn-xs"				
+									<button type="submit" name="edituser[]" class="btn btn-default btn-xs"
 										onclick="document.getElementById('userid').value='<?=$i;?>';
 											document.getElementById('act').value='<?php echo "edit";?>';"
 										title="<?=gettext("edit user");?>" ><span class="glyphicon glyphicon-pencil"></span></button>
 <?php
 								if($userent['scope'] != "system"):
 ?>
-							
-									<button type="submit" name="deluser[]" 
+
+									<button type="submit" name="deluser[]"
 										 class="btn btn-default btn-xs"
 										onclick="document.getElementById('userid').value='<?=$i;?>';
 											document.getElementById('username').value='<?=$userent['name'];?>';

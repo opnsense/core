@@ -212,17 +212,17 @@ $main_buttons = array(
 	<script type="text/javascript" src="/javascript/row_toggle.js"></script>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-							
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('staticroutes')): ?><p>
 				<?php print_info_box_np(sprintf(gettext("The static route configuration has been changed.%sYou must apply the changes in order for them to take effect."), "<br />"));?><br /></p>
 				<?php endif; ?>
-				
+
 			    <section class="col-xs-12">
-    				
-					
+
+
 					<?php
 						$tab_array = array();
 						$tab_array[0] = array(gettext("Gateways"), false, "system_gateways.php");
@@ -230,17 +230,17 @@ $main_buttons = array(
 						$tab_array[2] = array(gettext("Groups"), false, "system_gateway_groups.php");
 						display_top_tabs($tab_array);
 					?>
-				
-					<div class="tab-content content-box col-xs-12">	
-    					
-    				    <div class="container-fluid">	
+
+					<div class="tab-content content-box col-xs-12">
+
+				    <div class="container-fluid">
 
 	                        <form action="system_routes.php" method="post" name="iform" id="iform">
-								
-	                        	
+
+
 	                        <div class="table-responsive">
 		                        <table class="table table-striped table-sort">
-			      
+
 									<tr id="frheader">
 										<td width="2%" class="list">&nbsp;</td>
 										<td width="2%" class="list">&nbsp;</td>
@@ -249,7 +249,7 @@ $main_buttons = array(
 										<td width="15%" class="listhdrr"><?=gettext("Interface");?></td>
 										<td width="29%" class="listhdr"><?=gettext("Description");?></td>
 										<td width="10%" class="list">
-											
+
 										</td>
 									</tr>
 									<?php $i = 0; foreach ($a_routes as $route): ?>
@@ -355,7 +355,7 @@ $main_buttons = array(
 														<span class="btn btn-default btn-xs">
 															<span class="glyphicon glyphicon-remove text-muted"></span>
 														</span>
-														
+
 				<?php
 													else:
 				?>
@@ -372,14 +372,14 @@ $main_buttons = array(
 								</table>
 	                        </div>
 	                        <p><b><?=gettext("Note:");?></b>  <?=gettext("Do not enter static routes for networks assigned on any interface of this firewall.  Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.");?></p>
-	                        
+
 	                        </form>
-    				    </div>
+				    </div>
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 
 <?php include("foot.inc"); ?>

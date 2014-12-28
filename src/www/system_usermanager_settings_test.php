@@ -49,15 +49,15 @@ $authcfg = auth_get_authserver($authserver);
 <html>
   <HEAD>
     <STYLE type="text/css">
-		TABLE { 
+		TABLE {
 			border-width: 1px 1px 1px 1px;
 			border-spacing: 0px;
 			border-style: solid solid solid solid;
 			border-color: gray gray gray gray;
 			border-collapse: separate;
 			background-color: collapse;
- 		}
-		TD { 
+		}
+		TD {
 			border-width: 1px 1px 1px 1px;
 			border-spacing: 0px;
 			border-style: solid solid solid solid;
@@ -66,10 +66,10 @@ $authcfg = auth_get_authserver($authserver);
 			background-color: white;
 		}
     </STYLE>
-  </HEAD>	
+  </HEAD>
 	<body>
 		<form method="post" name="iform" id="iform">
-			
+
 <?php
 
 if (!$authcfg) {

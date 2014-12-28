@@ -197,124 +197,124 @@ include("head.inc");
 <!-- row -->
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
              <?php if ($input_errors) print_input_errors($input_errors); ?>
              <?php if ($savemsg) print_info_box($savemsg); ?>
              <?php if ($fwinfo <> "") print_info_box($fwinfo); ?>
-             
+
             <section class="col-xs-12">
-                
-                <? include('system_firmware_tabs.php'); ?>                
-                
+
+                <? include('system_firmware_tabs.php'); ?>
+
                 <div class="content-box tab-content">
 
                     <form action="system_firmware.php" method="post" enctype="multipart/form-data">
-                       
+
                         <?php
-                        	/* Construct an upload_id for this session */
-                        	if (!session_id()) $upload_id = uniqid();
-                        	else $upload_id = session_id();
+				/* Construct an upload_id for this session */
+				if (!session_id()) $upload_id = uniqid();
+				else $upload_id = session_id();
                         ?>
                         <input type="hidden" name="UPLOAD_IDENTIFIER" value="<?php echo $upload_id;?>" />
-   
+
                         <?php if ($sig_warning && !$input_errors): ?>
 
                             <?php
-                        	$sig_warning = "<strong>" . $sig_warning . "</strong><br />" . gettext("This means that the image you uploaded " .
-                        		"is not an official/supported image and may lead to unexpected behavior or security " .
-                        		"compromises. Only install images that come from sources that you trust, and make sure ".
-                        		"that the image has not been tampered with.") . "<br /><br />".
-                        		gettext("Do you want to install this image anyway (on your own risk)?");
-                                
+				$sig_warning = "<strong>" . $sig_warning . "</strong><br />" . gettext("This means that the image you uploaded " .
+					"is not an official/supported image and may lead to unexpected behavior or security " .
+					"compromises. Only install images that come from sources that you trust, and make sure ".
+					"that the image has not been tampered with.") . "<br /><br />".
+					gettext("Do you want to install this image anyway (on your own risk)?");
+
                                 print_info_box($sig_warning);
-                                
+
                                 if(stristr($_FILES['ulfile']['name'],"nanobsd"))
-                                	echo "<input type='hidden' name='isnano' id='isnano' value='yes' />\n";
+					echo "<input type='hidden' name='isnano' id='isnano' value='yes' />\n";
                             ?>
-        
+
                         <input name="sig_override" type="submit" class="btn btn-primary" id="sig_override" value=" <?=gettext("Yes");?> " />
                         <input name="sig_no" type="submit" class="btn btn-default" id="sig_no" value=" <?=gettext("No"); ?> " />
 
                         <?php else: ?>
-    
+
                             <?php if (!is_subsystem_dirty('firmwarelock')): ?>
-                            
+
                                 <table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-                                    
+
                                     <thead>
                                         <tr>
-                            				<th colspan="2" class="listtopic"><?=gettext("Invoke") ." ". $g['product_name'] ." ".  gettext("Manual Upgrade"); ?></th>
+							<th colspan="2" class="listtopic"><?=gettext("Invoke") ." ". $g['product_name'] ." ".  gettext("Manual Upgrade"); ?></th>
                                         </tr>
                                     </thead>
-                                    
+
                                     <tbody>
-                            			<tr>
-                            				<td width="22%" valign="baseline" class="vncell">&nbsp;</td>
-                            				<td width="78%" class="vtable">
-                            				<?php if (!is_subsystem_dirty('rebootreq')): ?>
-                            				<?php if (!is_subsystem_dirty('firmware')): ?>
-                            				<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Enable firmware upload");?>" />
-                            				<br />
-                            					<?php printf(gettext('Click "Enable firmware upload" to begin.'),$g['firmware_update_text']);?>
-                            				<br />
-                            				<?php else: ?>
-                            					<input name="Submit" type="submit" class="btn btn-default" value="<?=gettext("Disable firmware upload");?>" />
-                            			    </td>
-                            			</tr>
-                            			<tr>
-                            				<td width="22%" valign="baseline" class="vncell">&nbsp;</td>
-                            				<td width="78%" class="vtable">
-                            					<?php
-                            						if ($g['platform'] == "nanobsd")
-                            							$type = "*.img.gz";
-                            						else
-                            							$type = "*.tgz";
-                            					?>
-                            					<strong><?=gettext("Firmware image file ($type):");?> </strong>
-                            					<input name="ulfile" type="file" class="formfld" />
-                            					<br />
-                            					<?php if ($g['hidebackupbeforeupgrade'] === false): ?>
-                            					<input type="checkbox" name='backupbeforeupgrade' id='backupbeforeupgrade' /> <?=gettext("Perform full backup prior to upgrade");?>
-                            					<br />
-                            					<?php endif; ?>
-                            					<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Upgrade firmware");?>" />
-                            					<?=gettext('Click "Upgrade firmware" to start the upgrade process.');?>
-                            				<?php endif; else: ?>
-                            					<strong><?=gettext("You must reboot the system before you can upgrade the firmware.");?></strong>
-                            				<?php endif; ?>
-                            		        </td>
-                        			    </tr>
+						<tr>
+							<td width="22%" valign="baseline" class="vncell">&nbsp;</td>
+							<td width="78%" class="vtable">
+							<?php if (!is_subsystem_dirty('rebootreq')): ?>
+							<?php if (!is_subsystem_dirty('firmware')): ?>
+							<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Enable firmware upload");?>" />
+							<br />
+								<?php printf(gettext('Click "Enable firmware upload" to begin.'),$g['firmware_update_text']);?>
+							<br />
+							<?php else: ?>
+								<input name="Submit" type="submit" class="btn btn-default" value="<?=gettext("Disable firmware upload");?>" />
+						    </td>
+						</tr>
+						<tr>
+							<td width="22%" valign="baseline" class="vncell">&nbsp;</td>
+							<td width="78%" class="vtable">
+								<?php
+									if ($g['platform'] == "nanobsd")
+										$type = "*.img.gz";
+									else
+										$type = "*.tgz";
+								?>
+								<strong><?=gettext("Firmware image file ($type):");?> </strong>
+								<input name="ulfile" type="file" class="formfld" />
+								<br />
+								<?php if ($g['hidebackupbeforeupgrade'] === false): ?>
+								<input type="checkbox" name='backupbeforeupgrade' id='backupbeforeupgrade' /> <?=gettext("Perform full backup prior to upgrade");?>
+								<br />
+								<?php endif; ?>
+								<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Upgrade firmware");?>" />
+								<?=gettext('Click "Upgrade firmware" to start the upgrade process.');?>
+							<?php endif; else: ?>
+								<strong><?=gettext("You must reboot the system before you can upgrade the firmware.");?></strong>
+							<?php endif; ?>
+					        </td>
+						    </tr>
                                         <tr>
-                        				    <td width="22%" valign="top">&nbsp;</td>
+							    <td width="22%" valign="top">&nbsp;</td>
                                             <td width="78%">
-                        						<?php if (is_subsystem_dirty('firmware')): ?>
-                                                
+									<?php if (is_subsystem_dirty('firmware')): ?>
+
                                                 <span class="vexpl">
-                            						<span class="red">
-                            							<strong>
-                            								<?=gettext("Warning:");?><br />
-                            							</strong>
-                            						</span>
+									<span class="red">
+										<strong>
+											<?=gettext("Warning:");?><br />
+										</strong>
+									</span>
                                                     <?=gettext("DO NOT abort the firmware upgrade once it " .
-                        								"has started. The firewall will reboot automatically after " .
-                        								"storing the new firmware. The configuration will be maintained.");?>
+											"has started. The firewall will reboot automatically after " .
+											"storing the new firmware. The configuration will be maintained.");?>
                                                 </span>
-                                                
-                        						<?php endif; ?>
-                        				    </td>
-                        				</tr>
+
+									<?php endif; ?>
+							    </td>
+							</tr>
                                     </tbody>
                                 </table>
                             <?php endif;?>
-                        
+
                         <?php endif;?>
-                    
+
                     </form>
-                
+
                 </div>
             </section>
-        </div>  
+        </div>
 	</div>
 </section>
 <?php include("foot.inc"); ?>

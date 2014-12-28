@@ -556,7 +556,7 @@ function calculated_change(calculated_obj, samples_obj) {
 	switch (samples_obj.name) {
 
 	case 'avg_delay_samples':
-		// How many replies should be used to compute average delay 
+		// How many replies should be used to compute average delay
 		// for controlling "delay" alarms.
 		// Calculate a reasonable value based on gateway probe interval and RRD 1 minute average graph step size (60).
 		if (calculated_obj.checked && (document.iform.interval.value > 0))
@@ -630,32 +630,32 @@ function enable_change() {
 </script>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">
-	    				
-	    				 <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Edit gateway");?></h3>
-    				    </header>
-    				    
-    				    <div class="content-box-main col-xs-12">
-	    					
-	    					<form action="system_gateways_edit.php" method="post" name="iform" id="iform">
-		    					<?php
+
+				<div class="content-box">
+
+					 <header class="content-box-head container-fluid">
+				        <h3><?=gettext("Edit gateway");?></h3>
+				    </header>
+
+				    <div class="content-box-main col-xs-12">
+
+						<form action="system_gateways_edit.php" method="post" name="iform" id="iform">
+							<?php
 								/* If this is a system gateway we need this var */
 								if(($pconfig['attribute'] == "system") || is_numeric($pconfig['attribute'])) {
 									echo "<input type='hidden' name='attribute' id='attribute' value=\"" . htmlspecialchars($pconfig['attribute']) . "\" />\n";
 								}
 								echo "<input type='hidden' name='friendlyiface' id='friendlyiface' value=\"" . htmlspecialchars($pconfig['friendlyiface']) . "\" />\n";
-								?>	
-									                        
+								?>
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
@@ -827,7 +827,7 @@ function enable_change() {
 															<td width="22%" valign="top" class="vncellreq"><?=gettext("Average Delay Replies Qty");?></td>
 															<td width="78%" class="vtable">
 																<input name="avg_delay_samples" type="text" class="formfld unknown" id="avg_delay_samples" size="2"
-																	value="<?=htmlspecialchars($pconfig['avg_delay_samples']);?>" onchange="samples_change(document.iform.avg_delay_samples_calculated, this)" /> 
+																	value="<?=htmlspecialchars($pconfig['avg_delay_samples']);?>" onchange="samples_change(document.iform.avg_delay_samples_calculated, this)" />
 																<input name="avg_delay_samples_calculated" type="checkbox" id="avg_delay_samples_calculated" value="yes" <?php if ($pconfig['avg_delay_samples_calculated'] == true) echo "checked=\"checked\""; ?> onclick="calculated_change(this, document.iform.avg_delay_samples)" />
 																	<?=gettext("Use calculated value."); ?>
 																<br /><span class="vexpl"><?=gettext(sprintf("How many replies should be used to compute average delay for controlling \"delay\" alarms?  Default is %d.", $apinger_default['avg_delay_samples']));?><br /><br /></span>
@@ -882,9 +882,9 @@ function enable_change() {
 										</tr>
 									</table>
 		                        </div>
-	    					</form>
-    				    </div>
-    				</div>
+						</form>
+				    </div>
+				</div>
 			    </section>
 			</div>
 		</div>

@@ -111,17 +111,17 @@ $main_buttons = array(
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('staticroutes')): ?><br/>
 				<?php print_info_box_np(sprintf(gettext("The gateway configuration has been changed.%sYou must apply the changes in order for them to take effect."), "<br />"));?><br /><br />
 				<?php endif; ?>
-				
+
 			    <section class="col-xs-12">
-    				
-					
+
+
 					<?php
 								$tab_array = array();
 								$tab_array[0] = array(gettext("Gateways"), false, "system_gateways.php");
@@ -129,14 +129,14 @@ $main_buttons = array(
 								$tab_array[2] = array(gettext("Groups"), true, "system_gateway_groups.php");
 								display_top_tabs($tab_array);
 					?>
-				
-					<div class="tab-content content-box col-xs-12">	
-    					
-    				    <div class="container-fluid">	
+
+					<div class="tab-content content-box col-xs-12">
+
+				    <div class="container-fluid">
 
 	                        <form action="system_gateway_groups.php" method="post" name="iform" id="iform">
 								<input type="hidden" name="y1" value="1" />
-	                        	
+
 	                        <div class="table-responsive">
 		                        <table class="table table-striped table-sort">
 									<thead>
@@ -146,8 +146,8 @@ $main_buttons = array(
 						                  <td width="20%" class="listhdrr"><?=gettext("Priority");?></td>
 						                  <td width="30%" class="listhdr"><?=gettext("Description");?></td>
 						                  <td width="10%" class="list">
-									
-								  			</td>
+
+											</td>
 								</tr>
 								</thead>
 								<tbody>
@@ -197,13 +197,13 @@ $main_buttons = array(
 									</div>
 									<p><b><?=gettext("Note:");?></b>  <?=gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.");?></p>
 							</form>
-							
+
 							</div>
 							</div>
 							</section>
 							</div>
 							</div>
 							</section>
-							
-	
+
+
 <?php include("foot.inc"); ?>

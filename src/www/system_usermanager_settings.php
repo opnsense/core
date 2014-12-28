@@ -107,33 +107,33 @@ include("head.inc");
 <?php include("fbegin.inc");?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors);?>
 				<?php if ($savemsg) print_info_box($savemsg);?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
 							$tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
 							$tab_array[] = array(gettext("Settings"), true, "system_usermanager_settings.php");
 							$tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
 							display_top_tabs($tab_array);
-			
+
 							/* Default to pfsense backend type if none is defined */
 							if(!$pconfig['backend'])
 								$pconfig['backend'] = "pfsense";
 						?>
-					
-						<div class="tab-content content-box col-xs-12">	
 
-								<form id="iform" name="iform" action="system_usermanager_settings.php" method="post">	
+						<div class="tab-content content-box col-xs-12">
+
+								<form id="iform" name="iform" action="system_usermanager_settings.php" method="post">
 									<div class="table-responsive">
-							        	<table class="table table-striped table-sort">
+									<table class="table table-striped table-sort">
 											<tr>
 												<td width="22%" valign="top" class="vncell"><?=gettext("Session Timeout"); ?></td>
 												<td width="78%" class="vtable">
@@ -178,5 +178,5 @@ include("head.inc");
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc");?>

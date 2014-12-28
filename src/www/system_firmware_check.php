@@ -45,7 +45,7 @@ if($_POST['action'] == 'pkg_update') {
 	$shell = new Core\Shell();
 	// execute shell command and collect (only valid) info into named array
 	$shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh",false,false,$shell_output);
-} 
+}
 
 if($_POST['action'] == 'pkg_upgrade') {
 	/* Setup Shell variables */
@@ -53,19 +53,19 @@ if($_POST['action'] == 'pkg_upgrade') {
 	$shell = new Core\Shell();
 	// execute shell command and collect (only valid) info into named array
 	$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh&",false,false,$shell_output);
-} 
+}
 
 if($_POST['action'] == 'update_status' ) {
 	if (file_exists($file_upgrade_progress)) {
 		$content = file_get_contents($file_upgrade_progress);
-		echo $content;		
+		echo $content;
 	}
 	exit;
 
-} 
+}
 
 if (file_exists($file_pkg_status)) {
-		
+
 		$json = file_get_contents($file_pkg_status);
 		$pkg_status = json_decode($json,true);
 }
@@ -85,7 +85,7 @@ if($_REQUEST['getupdatestatus']) {
 		echo "<span class='text-danger'>".gettext("Current status is unknown")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
 	}
 	exit;
-} 
+}
 
 //$curcfg = $config['system']['firmware'];
 $pgtitle=array(gettext("System"), gettext("Firmware"), gettext("Auto Update"));
@@ -100,107 +100,107 @@ include("head.inc");
 <!-- row -->
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
             <section class="col-xs-12">
-                
-                <? include('system_firmware_tabs.php'); ?>                
-                
-                <div class="content-box tab-content"> 
-                    
-                    <form action="system_firmware_auto.php" method="post"> 
-                    
+
+                <? include('system_firmware_tabs.php'); ?>
+
+                <div class="content-box tab-content">
+
+                    <form action="system_firmware_auto.php" method="post">
+
                         <div class="table-responsive table-striped">
-    
-                			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="" class="table table-striped">
-                				<tr>
-                					<th colspan="2">Current Firmware Status</th>
-                				</tr>
-                				<tr>
-                					<td align="left" colspan="2">
-                						<div id="updatestatus">
-                						</div>
-                						<div class="progress" style="display:none">
-										  	<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:0%;">
-										   		 <span class="text-info">0% Complete</span>
-										  	</div>
+
+					<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="" class="table table-striped">
+						<tr>
+							<th colspan="2">Current Firmware Status</th>
+						</tr>
+						<tr>
+							<td align="left" colspan="2">
+								<div id="updatestatus">
+								</div>
+								<div class="progress" style="display:none">
+											<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:0%;">
+												 <span class="text-info">0% Complete</span>
+											</div>
 
 
 										</div>
 										<div>
-										  		<textarea name="output" id="output" class="form-control" rows="10" wrap="hard" readonly style="max-width:100%;display:none"></textarea>
+												<textarea name="output" id="output" class="form-control" rows="10" wrap="hard" readonly style="max-width:100%;display:none"></textarea>
 										</div>
-                					</td>
-                				</tr>
-                				<tr>
-                				</tr>
-	                				<tr>
-	                					<th>Available Upgrades</th>
-	                				</tr>
-	                				<tr>
-	                					<td>
-	                						<div id="upgrades">
-	                							<?php
-	                								echo '<table>';
-	                									echo '<tr>';
-	                									echo '<th>Package Name</th>';
-	                									echo '<th>Current Version</th>';
-	                									echo '<th>New Version</th>';
-	                									echo '</tr>';
-	                								foreach ($pkg_status["upgrade_packages"] as $upgrade_new) {
-	                									echo '<tr>';
-	                									echo '<td>';
-	                									echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
-	                									echo '</td>';
-	                									echo '<td>';
+							</td>
+						</tr>
+						<tr>
+						</tr>
+							<tr>
+								<th>Available Upgrades</th>
+							</tr>
+							<tr>
+								<td>
+									<div id="upgrades">
+										<?php
+											echo '<table>';
+												echo '<tr>';
+												echo '<th>Package Name</th>';
+												echo '<th>Current Version</th>';
+												echo '<th>New Version</th>';
+												echo '</tr>';
+											foreach ($pkg_status["upgrade_packages"] as $upgrade_new) {
+												echo '<tr>';
+												echo '<td>';
+												echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
+												echo '</td>';
+												echo '<td>';
 														echo '<span class="text-info"><b>'.$upgrade_new["current_version"].'</b></span><br/>';
-	                									echo '</td>';
+												echo '</td>';
 														echo '<td>';
 														echo '<span class="text-info"><b>'.$upgrade_new["new_version"].'</b></span><br/>';
 														echo '</td>';
-	                									echo '</tr>';
+												echo '</tr>';
 
-	                								}
-	                								echo '</table>';
-	                							?>
-	                						</div>
-	                					</td>
-	                				</tr>
-	                				<tr>
-	                					<th>Required new Installs</th>
-	                				</tr>
-	                				<tr>
-	                					<td>
-	                						<div id="new">
-	                							<?php
-	                								echo '<table>';
-    	                							echo '<tr>';
-                									echo '<th>Package Name</th>';
-                									echo '</tr>';
-                									echo '<tr>';
-	                								foreach ($pkg_status["new_packages"] as $upgrade_new) {
-	                									echo '<td>';
-	                									echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
-	                									echo '</td>';
-	                									echo '</tr>';
-	                								}
-	                								echo '</table>';
-	                							?>
-	                						</div>
+											}
+											echo '</table>';
+										?>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>Required new Installs</th>
+							</tr>
+							<tr>
+								<td>
+									<div id="new">
+										<?php
+											echo '<table>';
+										echo '<tr>';
+											echo '<th>Package Name</th>';
+											echo '</tr>';
+											echo '<tr>';
+											foreach ($pkg_status["new_packages"] as $upgrade_new) {
+												echo '<td>';
+												echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
+												echo '</td>';
+												echo '</tr>';
+											}
+											echo '</table>';
+										?>
+									</div>
 
-	                					</td>
-	                				</tr>
-                			</table>
-    		
-    		            </div>
-		            
+								</td>
+							</tr>
+					</table>
+
+		            </div>
+
                     </form>
 
                 </div>
             </section>
-        
+
         </div>
-        
+
 	</div>
 </section>
 
@@ -215,7 +215,7 @@ include("head.inc");
 			success:function(html) {
 				getstatus();
 				location.reload(); // Reload Page to show update status
-				
+
 			}
 		});
 	}
@@ -235,7 +235,7 @@ include("head.inc");
 	}
 
 	function updatestatus() {
-		
+
 		jQuery.ajax({
 			type: "POST",
 			url: '/system_firmware_check.php',

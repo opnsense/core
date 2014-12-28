@@ -5,7 +5,7 @@
 
 <?php
     $active_tab = isset($active_tab) ? $active_tab : $_SERVER['PHP_SELF'];
-	$tab_array = array();	
+	$tab_array = array();
 	$tab_array[] = array(gettext("Admin Access"), $active_tab == "/system_advanced_admin.php", "system_advanced_admin.php");
 	$tab_array[] = array(gettext("Firewall / NAT"), $active_tab == "/system_advanced_firewall.php", "system_advanced_firewall.php");
 	$tab_array[] = array(gettext("Networking"), $active_tab == "/system_advanced_network.php", "system_advanced_network.php");

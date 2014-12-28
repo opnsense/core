@@ -111,88 +111,88 @@ include("head.inc");
 <!-- row -->
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
             <?php
-            	if ($input_errors) print_input_errors($input_errors);
-            	if ($savemsg) print_info_box($savemsg);
+		if ($input_errors) print_input_errors($input_errors);
+		if ($savemsg) print_info_box($savemsg);
             ?>
             <section class="col-xs-12">
-                
-                <? include('system_firmware_tabs.php'); ?>                
-                
+
+                <? include('system_firmware_tabs.php'); ?>
+
                 <div class="content-box tab-content">
 
                     <?php if (is_subsystem_dirty('restore')): ?><p>
-                    
+
                     <form action="reboot.php" method="post">
                         <input name="Submit" type="hidden" value="Yes" />
                         <?php print_info_box(gettext("The firewall configuration has been changed.") . "<br />" . gettext("The firewall is now rebooting."));?><br />
                     </form>
-                    
+
                     <?php endif; ?>
-    
+
                     <form action="system_firmware_restorefullbackup.php" method="post">
-                
-            			<table class="table table-striped __nomb" align="center" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-            				
-            				<thead>
-                				<tr>
-                					<th colspan="1" class="listtopic"><?=gettext("Filename"); ?></th>
-                					<th colspan="1" class="listtopic"><?=gettext("Date"); ?></th>
-                					<th colspan="2" class="listtopic"><?=gettext("Size"); ?></th>
-                				</tr>
-            				</thead>
-                            
+
+				<table class="table table-striped __nomb" align="center" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
+
+					<thead>
+						<tr>
+							<th colspan="1" class="listtopic"><?=gettext("Filename"); ?></th>
+							<th colspan="1" class="listtopic"><?=gettext("Date"); ?></th>
+							<th colspan="2" class="listtopic"><?=gettext("Size"); ?></th>
+						</tr>
+					</thead>
+
                             <tbody>
-                            
+
                                 <?php
-                    				chdir("/root");
-                    				$available_restore_files = glob("pfSense-full-backup-*");
-                    				$counter = 0;
-                    				foreach($available_restore_files as $arf) {
-                    					$counter++;
-                    					$size = exec("gzip -l /root/$arf | grep -v compressed | awk '{ print $2 }'");
-                    					echo "<tr>";
-                    					echo "<td  class='listlr' width='50%' colspan='1'>";
-                    					echo "<input type='radio' name='restorefile' value='$arf' /> $arf";
-                    					echo "</td>";
-                    					echo "<td  class='listr' width='30%' colspan='1'>";
-                    					echo date ("F d Y H:i:s", filemtime($arf));
-                    					echo "</td>";
-                    					echo "<td  class='listr' width='40%' colspan='1'>";
-                    					echo format_bytes($size);
-                    					echo "</td>";
-                    					echo "<td  class='listr nowrap' width='20%' colspan='1'>";
-                    					echo "<a onclick=\"return confirm('" . gettext("Do you really want to delete this backup?") . "')\" href='system_firmware_restorefullbackup.php?deletefile=" . htmlspecialchars($arf) . "'>";
-                    					echo gettext("Delete");
-                    					echo "</a> | ";
-                    					echo "<a href='system_firmware_restorefullbackup.php?downloadbackup=" . htmlspecialchars($arf) . "'>";
-                    					echo gettext("Download");
-                    					echo "</a>";
-                    					echo "</td>";
-                    					echo "</tr>";
-                    				}
-                    				if($counter == 0) {
-                    					echo "<tr>";
-                    					echo "<td  class='listlr' width='100%' colspan='4' align='center'>";
-                    					echo gettext("Could not locate any previous backups.");
-                    					echo "</td>";
-                    					echo "</tr>";
-                    				}
+						chdir("/root");
+						$available_restore_files = glob("pfSense-full-backup-*");
+						$counter = 0;
+						foreach($available_restore_files as $arf) {
+							$counter++;
+							$size = exec("gzip -l /root/$arf | grep -v compressed | awk '{ print $2 }'");
+							echo "<tr>";
+							echo "<td  class='listlr' width='50%' colspan='1'>";
+							echo "<input type='radio' name='restorefile' value='$arf' /> $arf";
+							echo "</td>";
+							echo "<td  class='listr' width='30%' colspan='1'>";
+							echo date ("F d Y H:i:s", filemtime($arf));
+							echo "</td>";
+							echo "<td  class='listr' width='40%' colspan='1'>";
+							echo format_bytes($size);
+							echo "</td>";
+							echo "<td  class='listr nowrap' width='20%' colspan='1'>";
+							echo "<a onclick=\"return confirm('" . gettext("Do you really want to delete this backup?") . "')\" href='system_firmware_restorefullbackup.php?deletefile=" . htmlspecialchars($arf) . "'>";
+							echo gettext("Delete");
+							echo "</a> | ";
+							echo "<a href='system_firmware_restorefullbackup.php?downloadbackup=" . htmlspecialchars($arf) . "'>";
+							echo gettext("Download");
+							echo "</a>";
+							echo "</td>";
+							echo "</tr>";
+						}
+						if($counter == 0) {
+							echo "<tr>";
+							echo "<td  class='listlr' width='100%' colspan='4' align='center'>";
+							echo gettext("Could not locate any previous backups.");
+							echo "</td>";
+							echo "</tr>";
+						}
                                 ?>
-                				<tr>
-                					<td width="78%" colspan="3">
-                						&nbsp;<br />
-                						<input type="checkbox" name="overwriteconfigxml" id="overwriteconfigxml" checked="checked" /> <?=gettext("do not restore config.xml."); ?>
-                						<br />
-                						<input name="Restore" type="submit" class="btn btn-primary" id="restore" value="<?=gettext("Restore"); ?>" />
-                					</td>
-                				</tr>
-                				
+						<tr>
+							<td width="78%" colspan="3">
+								&nbsp;<br />
+								<input type="checkbox" name="overwriteconfigxml" id="overwriteconfigxml" checked="checked" /> <?=gettext("do not restore config.xml."); ?>
+								<br />
+								<input name="Restore" type="submit" class="btn btn-primary" id="restore" value="<?=gettext("Restore"); ?>" />
+							</td>
+						</tr>
+
                             </tbody>
-                            
-            			</table>
+
+				</table>
                     </form>
 
                 </div>

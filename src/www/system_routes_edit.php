@@ -217,24 +217,24 @@ include("head.inc");
 	<script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js"></script>
 	<script type="text/javascript" src="/javascript/autosuggest.js"></script>
 	<script type="text/javascript" src="/javascript/suggestions.js"></script>
-	
+
 	<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="system_routes_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+                        <form action="system_routes_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit route entry"); ?></td>
 									</tr>
@@ -350,14 +350,14 @@ include("head.inc");
 										</td>
 									</tr>
 								</table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 	<script type="text/javascript">
 	//<![CDATA[
 		var gatewayip;

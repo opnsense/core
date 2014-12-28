@@ -245,20 +245,20 @@ function presubmit() {
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 					if ($input_errors)
 						print_input_errors($input_errors);
 					if ($savemsg)
 						print_info_box($savemsg);
 				?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 									$tab_array = array();
 									$tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
 									$tab_array[] = array(gettext("Groups"), true, "system_groupmanager.php");
@@ -266,8 +266,8 @@ function presubmit() {
 									$tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
 									display_top_tabs($tab_array);
 						?>
-					
-						<div class="tab-content content-box col-xs-12">	
+
+						<div class="tab-content content-box col-xs-12">
 
 							<?php
 										if($act == "new" || $act == "edit"):
@@ -276,9 +276,9 @@ function presubmit() {
 									<input type="hidden" id="act" name="act" value="" />
 									<input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : '');?>" />
 									<input type="hidden" id="privid" name="privid" value="" />
-									
+
 									<div class="table-responsive">
-							        	<table class="table table-striped table-sort">
+									<table class="table table-striped table-sort">
 										<?php
 											$ro = "";
 											if ($pconfig['gtype'] == "system")
@@ -418,10 +418,10 @@ function presubmit() {
 																<a href="system_groupmanager_addprivs.php?groupid=<?=htmlspecialchars($id)?>" class="btn btn-default btn-xs">
 																	<span class="glyphicon glyphicon-add"></span>
 																</a>
-					
+
 															</td>
 														</tr>
-					
+
 													</table>
 												</td>
 											</tr>
@@ -450,9 +450,9 @@ function presubmit() {
 									<input type="hidden" id="act" name="act" value="" />
 									<input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : '');?>" />
 									<input type="hidden" id="groupname" name="groupname" value="" />
-					
+
 									<div class="table-responsive">
-							        	<table class="table table-striped table-sort">					
+									<table class="table table-striped table-sort">
 											<thead>
 												<tr>
 													<th width="25%" class="listhdrr"><?=gettext("Group name");?></th>
@@ -525,7 +525,7 @@ function presubmit() {
 <?php
 								if($group['scope'] != "system"):
 ?>
-									<button type="submit" name="delgroup[]" 
+									<button type="submit" name="delgroup[]"
 										class="btn btn-default btn-xs"
 										onclick="document.getElementById('groupid').value='<?=$i;?>';
 											document.getElementById('groupname').value='<?=$group['name'];?>';
@@ -545,15 +545,15 @@ function presubmit() {
 					</table>
 									</div>
 								</form>
-						
+
 <?php
 			endif;
 ?>
-			
+
 						</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

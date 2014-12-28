@@ -88,30 +88,30 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?
-				
+
 				if ($input_errors)
 					print_input_errors($input_errors);
 				if ($savemsg)
 					print_info_box($savemsg);
-				
+
 				if ($islocal == false) {
 					echo gettext("Sorry, you cannot change the password for a non-local user.");
 					include("fend.inc");
 					exit;
 				}
-				
+
 				?>
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-		                        <form action="system_usermanager_passwordmg.php" method="post" name="iform" id="iform">								
-		                        	
-		                        	<div class="table-responsive">
-			                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+		                        <form action="system_usermanager_passwordmg.php" method="post" name="iform" id="iform">
+
+						<div class="table-responsive">
+							<table class="table table-striped table-sort">
 			                                <tr>
 			<?php if (!session_id())
 					session_start();
@@ -126,7 +126,7 @@ include("head.inc");
 			                                        </td>
 			                                </tr>
 			                                <tr>
-				                                	<td width="22%" valign="top" class="vncell"><?=gettext("Confirmation");?></td>
+									<td width="22%" valign="top" class="vncell"><?=gettext("Confirmation");?></td>
 			                                        <td width="78%" class="vtable">
 			                                                <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" />
 			                                        </td>
@@ -138,9 +138,9 @@ include("head.inc");
 			                                        </td>
 			                                </tr>
 			                        </table>
-		                        	</div>
+						</div>
 		                        </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>

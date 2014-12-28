@@ -330,7 +330,7 @@ function server_typechange(typ) {
 		typ = document.getElementById("type").options[idx].value;
 	}
 
-    	switch (typ) {
+	switch (typ) {
 		case "ldap":
 			document.getElementById("ldap").style.display="";
 			document.getElementById("radius").style.display="none";
@@ -443,19 +443,19 @@ function select_clicked() {
 <?php include("fbegin.inc");?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 					if ($input_errors)
 						print_input_errors($input_errors);
 					if ($savemsg)
 						print_info_box($savemsg);
 				?>
-				
+
 			    <section class="col-xs-12">
-    					
-    					<?php
+
+					<?php
 							$tab_array = array();
 							$tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
 							$tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
@@ -463,13 +463,13 @@ function select_clicked() {
 							$tab_array[] = array(gettext("Servers"), true, "system_authservers.php");
 							display_top_tabs($tab_array);
 						?>
-					
+
 						<div class="tab-content content-box col-xs-12">
-								
+
 								<?php if ($act == "new" || $act == "edit" || $input_errors): ?>
-								<form id="iform" name="iform" action="system_authservers.php" method="post">	
+								<form id="iform" name="iform" action="system_authservers.php" method="post">
 									<div class="table-responsive">
-							        	<table class="table table-striped table-sort">								        	
+									<table class="table table-striped table-sort">
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Descriptive name");?></td>
 												<td width="78%" class="vtable">
@@ -502,17 +502,17 @@ function select_clicked() {
 												</td>
 											</tr>
 										</table>
-					
+
 										<table class="table table-striped table-sort" id="ldap" style="display:none" summary="">
-			                                    
+
 		                                    <thead>
 		                                        <tr>
-		                            				<th colspan="2" class="listtopic"><?=gettext("LDAP Server Settings");?></th>
+									<th colspan="2" class="listtopic"><?=gettext("LDAP Server Settings");?></th>
 		                                        </tr>
 		                                    </thead>
-											
-		    								<tbody>
-				
+
+										<tbody>
+
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname or IP address");?></td>
 												<td width="78%" class="vtable">
@@ -603,7 +603,7 @@ function select_clicked() {
 															</td>
 														</tr>
 													</table>
-					
+
 												</td>
 											</tr>
 											<tr>
@@ -614,18 +614,18 @@ function select_clicked() {
 															<td valign="top"><?=gettext("Containers:");?> &nbsp;</td>
 															<td>
 																<ul class="list-inline">
-    																<li><input name="ldapauthcontainers" type="text" class="formfld unknown" id="ldapauthcontainers" size="40" value="<?=htmlspecialchars($pconfig['ldap_authcn']);?>"/></li>
-    																<li><input type="button" onclick="select_clicked();" class="btn btn-default" value="<?=gettext("Select");?>" /></li>
+																<li><input name="ldapauthcontainers" type="text" class="formfld unknown" id="ldapauthcontainers" size="40" value="<?=htmlspecialchars($pconfig['ldap_authcn']);?>"/></li>
+																<li><input type="button" onclick="select_clicked();" class="btn btn-default" value="<?=gettext("Select");?>" /></li>
 																</ul>
 															</td>
-															
+
 														</tr>
 														<tr>
-    														<td colspan="2">
+														<td colspan="2">
 																<br /><?=gettext("Note: Semi-Colon separated. This will be prepended to the search base dn above or you can specify full container path containing a dc= component.");?>
 																<br /><?=gettext("Example:");?> CN=Users;DC=example,DC=com
 																<br /><?=gettext("Example:");?> OU=Staff;OU=Freelancers
-    														</td>
+														</td>
 														</tr>
 													</table>
 												</td>
@@ -639,7 +639,7 @@ function select_clicked() {
 																<input name="ldap_extended_enabled" type="checkbox" id="ldap_extended_enabled" value="no" <?php if ($pconfig['ldap_extended_enabled']) echo "checked=\"checked\""; ?> />
 															</td>
 															<td>
-					
+
 																<input name="ldap_extended_query" type="text" class="formfld unknown" id="ldap_extended_query" size="40" value="<?=htmlspecialchars($pconfig['ldap_extended_query']);?>"/>
 																<br /><?=gettext("Example:");?> &amp;(objectClass=inetOrgPerson)(mail=*@example.com)
 															</td>
@@ -745,11 +745,11 @@ function select_clicked() {
 												</td>
 											</tr>
 										</table>
-					
+
 										<table class="table table-striped table-sort" id="radius" style="display:none" summary="">
 											<tr>
 												<td colspan="2" class="list" height="12"></td>
-											</tr>											
+											</tr>
 											<tr>
 												<td colspan="2" valign="top" class="listtopic"><?=gettext("Radius Server Settings");?></td>
 											</tr>
@@ -818,8 +818,8 @@ function select_clicked() {
 
 				<?php else: ?>
 									<div class="table-responsive">
-							        	<table class="table table-striped table-sort">	
-							
+									<table class="table table-striped table-sort">
+
 											<thead>
 												<tr>
 													<th width="25%" class="listhdrr"><?=gettext("Server Name");?></th>
@@ -829,7 +829,7 @@ function select_clicked() {
 												</tr>
 											</thead>
 											<tfoot>
-												
+
 												<tr>
 													<td colspan="3">
 														<p>
@@ -874,7 +874,7 @@ function select_clicked() {
 					</div>
 				</div>
 			</section>
-			
+
 <script type="text/javascript">
 //<![CDATA[
 server_typechange('<?=htmlspecialchars($pconfig['type']);?>');

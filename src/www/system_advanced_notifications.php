@@ -42,17 +42,17 @@ require_once("notices.inc");
 
 // Growl
 $pconfig['disable_growl'] = isset($config['notifications']['growl']['disable']);
-if($config['notifications']['growl']['password']) 
+if($config['notifications']['growl']['password'])
 	$pconfig['password'] = $config['notifications']['growl']['password'];
-if($config['notifications']['growl']['ipaddress']) 
+if($config['notifications']['growl']['ipaddress'])
 	$pconfig['ipaddress'] = $config['notifications']['growl']['ipaddress'];
 
-if($config['notifications']['growl']['notification_name']) 
+if($config['notifications']['growl']['notification_name'])
 	$pconfig['notification_name'] = $config['notifications']['growl']['notification_name'];
 else
   $pconfig['notification_name'] = "{$g['product_name']} growl alert";
-  
-if($config['notifications']['growl']['name']) 
+
+if($config['notifications']['growl']['name'])
 	$pconfig['name'] = $config['notifications']['growl']['name'];
 else
   $pconfig['name'] = 'PHP-Growl';
@@ -93,7 +93,7 @@ if ($_POST) {
 
 	if ($_POST['apply']) {
 		$retval = 0;
-		system_setup_sysctl();		
+		system_setup_sysctl();
 		$savemsg = get_std_save_message($retval);
 	}
 
@@ -145,7 +145,7 @@ if ($_POST) {
 	}
 	if ($_POST['test_growl'] == gettext("Test Growl")) {
 		// Send test message via growl
-		if($config['notifications']['growl']['ipaddress'] && 
+		if($config['notifications']['growl']['ipaddress'] &&
 			$config['notifications']['growl']['password'] = $_POST['password']) {
 			unlink_if_exists($g['vardb_path'] . "/growlnotices_lastmsg.txt");
 			register_via_growl();
@@ -167,204 +167,204 @@ include("head.inc");
 
 <body>
     <?php include("fbegin.inc"); ?>
-	
+
 <!-- row -->
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
-            
+
             <form action="system_advanced_notifications.php" method="post">
-        		<?php
-        			if ($input_errors) print_input_errors($input_errors);
-        			if ($savemsg) print_info_box($savemsg);
-        		?>
-        	</form> 
-            
+			<?php
+				if ($input_errors) print_input_errors($input_errors);
+				if ($savemsg) print_info_box($savemsg);
+			?>
+		</form>
+
             <section class="col-xs-12">
-                
-                <? include('system_advanced_tabs.php'); ?>                
-                
-                <div class="content-box tab-content">	
-	
+
+                <? include('system_advanced_tabs.php'); ?>
+
+                <div class="content-box tab-content">
+
                     <form action="system_advanced_notifications.php" method="post" name="iform">
-					
-					    <div class="table-responsive">  
-					
-        					<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
-        						<!-- GROWL -->
-        						
-        						<thead>
-            						<tr>
-            							<th colspan="2" valign="top" class="listtopic"><?=gettext("Growl"); ?></th>
-            						</tr>
-        						</thead>
-        						<tr>
-        							<td width="22%" valign="top" class="vncell"><?=gettext("Disable Growl Notifications"); ?></td>
-        							<td width="78%" class="vtable">
-        								<input type='checkbox' name='disable_growl' value="yes" <?php if ($pconfig['disable_growl']) {?>checked="checked"<?php } ?> /><br />
-        								<?=gettext("Check this option to disable growl notifications but preserve the settings below."); ?>
-        							</td>
-        						</tr>
-        						<tr>
-        							<td width="22%" valign="top" class="vncell"><?=gettext("Registration Name"); ?></td>
-        							<td width="78%" class="vtable">
-        								<input name='name' value='<?php echo $pconfig['name']; ?>' /><br />
-        								<?=gettext("Enter the name to register with the Growl server (default: PHP-Growl)."); ?>
-        							</td>
-        						</tr>
+
+					    <div class="table-responsive">
+
+						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
+							<!-- GROWL -->
+
+							<thead>
+							<tr>
+								<th colspan="2" valign="top" class="listtopic"><?=gettext("Growl"); ?></th>
+							</tr>
+							</thead>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("Disable Growl Notifications"); ?></td>
+								<td width="78%" class="vtable">
+									<input type='checkbox' name='disable_growl' value="yes" <?php if ($pconfig['disable_growl']) {?>checked="checked"<?php } ?> /><br />
+									<?=gettext("Check this option to disable growl notifications but preserve the settings below."); ?>
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("Registration Name"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='name' value='<?php echo $pconfig['name']; ?>' /><br />
+									<?=gettext("Enter the name to register with the Growl server (default: PHP-Growl)."); ?>
+								</td>
+							</tr>
                                 <tr>
-        							<td width="22%" valign="top" class="vncell"><?=gettext("Notification Name"); ?></td>
-        							<td width="78%" class="vtable">
-        								<input name='notification_name' value='<?php echo $pconfig['notification_name']; ?>' /><br />
-        								<?=sprintf(gettext("Enter a name for the Growl notifications (default: %s growl alert)."), $g['product_name']); ?>
-        							</td>
-        						</tr>
-        						<tr>
-        							<td width="22%" valign="top" class="vncell"><?=gettext("IP Address"); ?></td>
-        							<td width="78%" class="vtable">
-        								<input name='ipaddress' value='<?php echo $pconfig['ipaddress']; ?>' /><br />
-        								<?=gettext("This is the IP address that you would like to send growl notifications to."); ?>
-        							</td>
-        						</tr>
-        						<tr>
-        							<td width="22%" valign="top" class="vncell"><?=gettext("Password"); ?></td>
-        							<td width="78%" class="vtable">
-        								<input name='password' type='password' value='<?php echo $pconfig['password']; ?>' /><br />
-        								<?=gettext("Enter the password of the remote growl notification device."); ?>
-        							</td>
-        						</tr>
-        						<tr>
-        							<td valign="top">
-        								&nbsp;
-        							</td>
-        							<td>
-        								<input type='submit' id='test_growl' name='test_growl' value='<?=gettext("Test Growl"); ?>' class="btn btn-default" />
-        								<br /><?= gettext("NOTE: A test notification will be sent even if the service is marked as disabled.") ?>
-        							</td>
-        						</tr>
-        					</table>
-        						
-        					<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">		
-        						<!-- SMTP -->
-        						<thead>
-            						<tr>
-            							<th colspan="2" valign="top" class="listtopic"><?=gettext("SMTP E-Mail"); ?></th>
-            						</tr>
-        						</thead>
-        						<tbody>
-            						<tr>
-            							<td width="22%" valign="top" class="vncell"><?=gettext("Disable SMTP Notifications"); ?></td>
-            							<td width="78%" class="vtable">
-            								<input type='checkbox' name='disable_smtp' value="yes" <?php if ($pconfig['disable_smtp']) {?>checked="checked"<?php } ?> /><br />
-            								<?=gettext("Check this option to disable SMTP notifications but preserve the settings below. Some other mechanisms, such as packages, may need these settings in place to function."); ?>
-            							</td>
-            						</tr>
-            						<tr>
-            							<td width="22%" valign="top" class="vncell"><?=gettext("E-Mail server"); ?></td>
-            							<td width="78%" class="vtable">
-            								<input name='smtpipaddress' value='<?php echo $pconfig['smtpipaddress']; ?>' /><br />
-            								<?=gettext("This is the FQDN or IP address of the SMTP E-Mail server to which notifications will be sent."); ?>
-            							</td>
-            						</tr>
-            						<tr>
-            							<td width="22%" valign="top" class="vncell"><?=gettext("SMTP Port of E-Mail server"); ?></td>
-            							<td width="78%" class="vtable">
-            								<input name='smtpport' value='<?php echo $pconfig['smtpport']; ?>' /><br />
-            								<?=gettext("This is the port of the SMTP E-Mail server, typically 25, 587 (submission) or 465 (smtps)"); ?>
-            							</td>
-            						</tr>
-            						<tr>
-            							<td width="22%" valign="top" class="vncell"><?=gettext("Secure SMTP Connection"); ?></td>
-            							<td width="78%" class="vtable">
-            								<input type='checkbox' id='smtpssl' name='smtpssl' <?php if (isset($pconfig['smtpssl'])) echo "checked=\"checked\""; ?> />Enable SMTP over SSL/TLS<br />
-            								<input type='checkbox' id='smtptls' name='smtptls' <?php if (isset($pconfig['smtptls'])) echo "checked=\"checked\""; ?> />Enable STARTTLS<br />
-            							</td>
-            						</tr>
-            						<tr>
-            							<td width="22%" valign="top" class="vncell"><?=gettext("From e-mail address"); ?></td>
-            							<td width="78%" class="vtable">
-            								<input name='smtpfromaddress' type='text' value='<?php echo $pconfig['smtpfromaddress']; ?>' /><br />
-            								<?=gettext("This is the e-mail address that will appear in the from field."); ?>
-            							</td>
-            						</tr>
-            						<tr>
-            							<td width="22%" valign="top" class="vncell"><?=gettext("Notification E-Mail address"); ?></td>
-            							<td width="78%" class="vtable">
-            								<input name='smtpnotifyemailaddress' type='text' value='<?php echo $pconfig['smtpnotifyemailaddress']; ?>' /><br />
-            								<?=gettext("Enter the e-mail address that you would like email notifications sent to."); ?>
-            							</td>
-            						</tr>
-            						<tr>
-            							<td width="22%" valign="top" class="vncell"><?=gettext("Notification E-Mail auth username (optional)"); ?></td>
-            							<td width="78%" class="vtable">
-            								<input name='smtpusername' type='text' value='<?php echo $pconfig['smtpusername']; ?>' /><br />
-            								<?=gettext("Enter the e-mail address username for SMTP authentication."); ?>
-            							</td>
-            						</tr>
-            						<tr>
-            							<td width="22%" valign="top" class="vncell"><?=gettext("Notification E-Mail auth password"); ?></td>
-            							<td width="78%" class="vtable">
-            								<input name='smtppassword' type='password' value='<?php echo $pconfig['smtppassword']; ?>' /><br />
-            								<?=gettext("Enter the e-mail address password for SMTP authentication."); ?>
-            							</td>
-            						</tr>
-            						<tr>
-            							<td valign="top" class="">
-            								&nbsp;
-            							</td>
-            							<td>
-            								<input type='submit' id='test_smtp' name='test_smtp' value='<?=gettext("Test SMTP"); ?>' class="btn btn-default" />
-            								<br /><?= gettext("NOTE: A test message will be sent even if the service is marked as disabled.") ?>
-            							</td>
-            						</tr>
-            						<tr>
-            							<td colspan="2" class="list" height="12">&nbsp;</td>
-            						</tr>	
+								<td width="22%" valign="top" class="vncell"><?=gettext("Notification Name"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='notification_name' value='<?php echo $pconfig['notification_name']; ?>' /><br />
+									<?=sprintf(gettext("Enter a name for the Growl notifications (default: %s growl alert)."), $g['product_name']); ?>
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("IP Address"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='ipaddress' value='<?php echo $pconfig['ipaddress']; ?>' /><br />
+									<?=gettext("This is the IP address that you would like to send growl notifications to."); ?>
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("Password"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='password' type='password' value='<?php echo $pconfig['password']; ?>' /><br />
+									<?=gettext("Enter the password of the remote growl notification device."); ?>
+								</td>
+							</tr>
+							<tr>
+								<td valign="top">
+									&nbsp;
+								</td>
+								<td>
+									<input type='submit' id='test_growl' name='test_growl' value='<?=gettext("Test Growl"); ?>' class="btn btn-default" />
+									<br /><?= gettext("NOTE: A test notification will be sent even if the service is marked as disabled.") ?>
+								</td>
+							</tr>
+						</table>
+
+						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
+							<!-- SMTP -->
+							<thead>
+							<tr>
+								<th colspan="2" valign="top" class="listtopic"><?=gettext("SMTP E-Mail"); ?></th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("Disable SMTP Notifications"); ?></td>
+								<td width="78%" class="vtable">
+									<input type='checkbox' name='disable_smtp' value="yes" <?php if ($pconfig['disable_smtp']) {?>checked="checked"<?php } ?> /><br />
+									<?=gettext("Check this option to disable SMTP notifications but preserve the settings below. Some other mechanisms, such as packages, may need these settings in place to function."); ?>
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("E-Mail server"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='smtpipaddress' value='<?php echo $pconfig['smtpipaddress']; ?>' /><br />
+									<?=gettext("This is the FQDN or IP address of the SMTP E-Mail server to which notifications will be sent."); ?>
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("SMTP Port of E-Mail server"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='smtpport' value='<?php echo $pconfig['smtpport']; ?>' /><br />
+									<?=gettext("This is the port of the SMTP E-Mail server, typically 25, 587 (submission) or 465 (smtps)"); ?>
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("Secure SMTP Connection"); ?></td>
+								<td width="78%" class="vtable">
+									<input type='checkbox' id='smtpssl' name='smtpssl' <?php if (isset($pconfig['smtpssl'])) echo "checked=\"checked\""; ?> />Enable SMTP over SSL/TLS<br />
+									<input type='checkbox' id='smtptls' name='smtptls' <?php if (isset($pconfig['smtptls'])) echo "checked=\"checked\""; ?> />Enable STARTTLS<br />
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("From e-mail address"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='smtpfromaddress' type='text' value='<?php echo $pconfig['smtpfromaddress']; ?>' /><br />
+									<?=gettext("This is the e-mail address that will appear in the from field."); ?>
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("Notification E-Mail address"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='smtpnotifyemailaddress' type='text' value='<?php echo $pconfig['smtpnotifyemailaddress']; ?>' /><br />
+									<?=gettext("Enter the e-mail address that you would like email notifications sent to."); ?>
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("Notification E-Mail auth username (optional)"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='smtpusername' type='text' value='<?php echo $pconfig['smtpusername']; ?>' /><br />
+									<?=gettext("Enter the e-mail address username for SMTP authentication."); ?>
+								</td>
+							</tr>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("Notification E-Mail auth password"); ?></td>
+								<td width="78%" class="vtable">
+									<input name='smtppassword' type='password' value='<?php echo $pconfig['smtppassword']; ?>' /><br />
+									<?=gettext("Enter the e-mail address password for SMTP authentication."); ?>
+								</td>
+							</tr>
+							<tr>
+								<td valign="top" class="">
+									&nbsp;
+								</td>
+								<td>
+									<input type='submit' id='test_smtp' name='test_smtp' value='<?=gettext("Test SMTP"); ?>' class="btn btn-default" />
+									<br /><?= gettext("NOTE: A test message will be sent even if the service is marked as disabled.") ?>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="list" height="12">&nbsp;</td>
+							</tr>
                                 </tbody>
-        					</table>
-        					
-        					<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
-        						<!-- System Sounds -->
-        						
-        						<thead>
-            						<tr>
-            							<th colspan="2" valign="top" class="listtopic"><?=gettext("System Sounds"); ?></th>
-            						</tr>
-        						</thead>
-        						<tbody>
-            						<tr>
-            							<td width="22%" valign="top" class="vncell"><?=gettext("Startup/Shutdown Sound"); ?></td>
-            							<td width="78%" class="vtable">
-            								<input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?php if ($pconfig['disablebeep']) echo "checked=\"checked\""; ?>  />
-            								<strong><?=gettext("Disable the startup/shutdown beep"); ?></strong>
-            								<br />
-            								<span class="vexpl"><?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?></span>
-            							</td>
-            						</tr>
-            						<tr>
-            							<td colspan="2" class="list" height="12">&nbsp;</td>
-            						</tr>	
-            						<tr>
-            							<td valign="top" class="">
-            								&nbsp;
-            							</td>
-            							<td>
-            								<input type='submit' id='Submit' name='Submit' class="btn btn-primary" value='<?=gettext("Save"); ?>' />
-            							</td>
-            						</tr>
-        						</tbody>
-        					</table>
+						</table>
+
+						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
+							<!-- System Sounds -->
+
+							<thead>
+							<tr>
+								<th colspan="2" valign="top" class="listtopic"><?=gettext("System Sounds"); ?></th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td width="22%" valign="top" class="vncell"><?=gettext("Startup/Shutdown Sound"); ?></td>
+								<td width="78%" class="vtable">
+									<input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?php if ($pconfig['disablebeep']) echo "checked=\"checked\""; ?>  />
+									<strong><?=gettext("Disable the startup/shutdown beep"); ?></strong>
+									<br />
+									<span class="vexpl"><?=gettext("When this is checked, startup and shutdown sounds will no longer play."); ?></span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="list" height="12">&nbsp;</td>
+							</tr>
+							<tr>
+								<td valign="top" class="">
+									&nbsp;
+								</td>
+								<td>
+									<input type='submit' id='Submit' name='Submit' class="btn btn-primary" value='<?=gettext("Save"); ?>' />
+								</td>
+							</tr>
+							</tbody>
+						</table>
 
 					    </div>
-                        
-					</form>	
+
+					</form>
 	            </div>
-            </section>    
+            </section>
         </div>
     </div>
 </section>
-	
+
 <script type="text/javascript">
 //<![CDATA[
 	jQuery(document).ready(function() {
@@ -384,4 +384,3 @@ include("head.inc");
 </script>
 
 <?php include("foot.inc"); ?>
-
