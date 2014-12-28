@@ -39,7 +39,7 @@ function copyOption(theSrc, theDst)
 }
 
 function deleteOption(theSel)
-{ 
+{
   var theIndex = theSel.selectedIndex;
 	var selLength = theSel.length;
 	if(selLength>0)
@@ -53,4 +53,3 @@ function AllOptions(el, selectAll) {
       opt.selected = selectAll;
    });
 }
-
