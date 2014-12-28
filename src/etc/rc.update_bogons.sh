@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# TODO: opnSense, drop/replace? 
+# TODO: opnSense, drop/replace?
 #
 
 sys.exit(0)
@@ -18,14 +18,14 @@ process_url() {
 	local url=$2
 	local filename=${url##*/}
 	local ext=${filename#*.}
-	
+
 	/usr/bin/fetch -a -T 30 -q -o $file "${url}"
-	
+
 	if [ ! -f $file ]; then
 		echo "Could not download ${url}" | logger
 		proc_error="true"
 	fi
-	
+
 	case "$ext" in
 		tar)
 			mv $file $file.tmp
@@ -46,11 +46,11 @@ process_url() {
 		*)
 			;;
 	esac
-	
+
 	if [ -f $file.tmp ]; then
 		rm $file.tmp
 	fi
-	
+
 	if [ ! -f $file ]; then
 		echo "Could not extract ${filename}" | logger
 		proc_error="true"
@@ -61,11 +61,11 @@ echo "rc.update_bogons.sh is starting up." | logger
 
 # Sleep for some time, unless an argument is specified.
 if [ "$1" = "" ]; then
-    # Grab a random value  
+    # Grab a random value
     value=`od -A n -d -N2 /dev/random | awk '{ print $1 }'`
     echo "rc.update_bogons.sh is sleeping for $value" | logger
     sleep $value
-fi    
+fi
 
 echo "rc.update_bogons.sh is beginning the update cycle." | logger
 
@@ -92,9 +92,9 @@ ON_DISK_V6_CKSUM=`md5 /tmp/bogonsv6 | awk '{ print $4 }'`
 if [ "$BOGON_V4_CKSUM" = "$ON_DISK_V4_CKSUM" ] || [ "$BOGON_V6_CKSUM" = "$ON_DISK_V6_CKSUM" ]; then
 	# At least one of the downloaded checksums matches, so mount RW
 	/usr/local/etc/rc.conf_mount_rw
-	
+
 	ENTRIES_MAX=`pfctl -s memory | awk '/table-entries/ { print $4 }'`
-	
+
 	if [ "$BOGON_V4_CKSUM" = "$ON_DISK_V4_CKSUM" ]; then
 		ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
 		ENTRIES_V4=`pfctl -vvsTables | awk '/-\tbogons$/ {getline; print $2}'`
@@ -138,14 +138,14 @@ if [ "$BOGON_V4_CKSUM" = "$ON_DISK_V4_CKSUM" ] || [ "$BOGON_V6_CKSUM" = "$ON_DIS
 		echo "Could not download ${v6url} (checksum mismatch)" | logger
 		checksum_error="true"
 	fi
-	
+
 	# We mounted RW, so switch back to RO
 	/usr/local/etc/rc.conf_mount_ro
 fi
 
 if [ "$checksum_error" != "" ]; then
 	# Relaunch and sleep
-	sh /usr/local/etc/rc.update_bogons.sh & 
+	sh /usr/local/etc/rc.update_bogons.sh &
 	exit
 fi
 

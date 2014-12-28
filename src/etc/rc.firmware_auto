@@ -56,9 +56,9 @@ if [ "$PMD" = "$MD" ]; then
         if [ -r "/tmp/custom.tgz" ]; then
             sh /usr/local/etc/rc.firmware pfSenseupgrade /tmp/latest.tgz /tmp/custom.tgz
         else
-        	if [ "$PLATFORM" = "nanobsd" ]; then
+		if [ "$PLATFORM" = "nanobsd" ]; then
 				sh /usr/local/etc/rc.firmware pfSenseNanoBSDupgrade /tmp/latest.tgz
-			else 
+			else
 				sh /usr/local/etc/rc.firmware pfSenseupgrade /tmp/latest.tgz
 			fi
         fi
@@ -68,7 +68,7 @@ if [ "$PMD" = "$MD" ]; then
             /usr/local/etc/rc.conf_mount_ro
             if [ -e /etc/init_bootloader.sh ]; then
                     sh /etc/init_bootloader.sh
-            fi            
+            fi
         fi
         if [ "$PLATFORM" = "net45xx" ]; then
             /bin/sync
@@ -76,8 +76,8 @@ if [ "$PMD" = "$MD" ]; then
             /usr/local/etc/rc.conf_mount_ro
             if [ -e /etc/init_bootloader.sh ]; then
                     sh /etc/init_bootloader.sh
-            fi            
-        fi        
+            fi
+        fi
         exit 0
 fi
 

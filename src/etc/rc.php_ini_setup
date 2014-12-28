@@ -42,11 +42,11 @@ fi
 # Set upload directory
 if [ "$PLATFORM" = "nanobsd" ]; then
 	UPLOADTMPDIR=`/usr/bin/grep upload_path /usr/local/etc/inc/globals.inc | /usr/bin/cut -d'"' -f4`
-else 
+else
 	UPLOADTMPDIR="/tmp"
 fi
 
-# Define php modules.  Do not add .so, it will  
+# Define php modules.  Do not add .so, it will
 # be done automatically by the script below.
 PHPMODULES="standard"
 # Config read/write
@@ -54,7 +54,7 @@ PHPMODULES="$PHPMODULES xml libxml dom"
 PHPMODULES="$PHPMODULES simplexml xmlreader xmlwriter"
 # Downloading via HTTP/FTP (pkg mgr, etc)
 PHPMODULES="$PHPMODULES curl date"
-# Internationalization 
+# Internationalization
 PHPMODULES="$PHPMODULES gettext"
 # User manager
 PHPMODULES="$PHPMODULES ldap openssl pcntl"
@@ -206,7 +206,7 @@ EOF
 # Remove old log file if it exists.
 if [ -f /var/run/php_modules_load_errors.txt ]; then
 	/bin/rm /var/run/php_modules_load_errors.txt
-fi 
+fi
 
 for EXT in $PHPMODULES; do
 	PHPMODULESLC="$PHPMODULESLC `echo "$EXT" | /usr/bin/tr '[:upper:]' '[:lower:]'`"
@@ -219,7 +219,7 @@ for EXT in $PHPMODULESLC; do
 	for LM in $LOADED_MODULES; do
 		if [ "$EXT" = "$LM" ]; then
 			SHOULDREMOVE="false"
-		fi		
+		fi
 	done
 	if [ "$SHOULDREMOVE" = "true" ]; then
 		if [ -f "${EXTENSIONSDIR}${EXT}.so" ]; then

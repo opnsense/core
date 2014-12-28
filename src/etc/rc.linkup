@@ -32,12 +32,12 @@
 /* parse the configuration and include all functions used below */
 require_once("globals.inc");
 require_once("config.inc");
-require_once("filter.inc");	
-require_once("shaper.inc");	
+require_once("filter.inc");
+require_once("shaper.inc");
 require_once("interfaces.inc");
 
 function handle_argument_group($iface, $argument2) {
-	global $config;	
+	global $config;
 
 	if (!is_array($config['interfaces'][$iface]))
 		return;
@@ -77,7 +77,7 @@ function handle_argument_group($iface, $argument2) {
 			require_once("vpn.inc");
 			require_once("captiveportal.inc");
 			// Do not try to readd to bridge otherwise em(4) has problems
-			interface_configure($iface, true, true); 
+			interface_configure($iface, true, true);
 			break;
 		}
 	}

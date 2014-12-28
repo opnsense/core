@@ -62,7 +62,7 @@ switch ($command) {
 	case "1":
 		echo "\nEnter the URL to the .tgz or .img.gz update file. \nType 'auto' to use {$autoupdateurl}\n> ";
 		$url = chop(fgets($fp));
-		if(!$url) { 
+		if(!$url) {
 			fclose($fp);
 			die;
 		}
@@ -83,7 +83,7 @@ switch ($command) {
 				die;
 			}
 			$status = does_url_exist("$url.sha256");
-			if($status) { 
+			if($status) {
 				echo "\nFetching sha256... ";
 				download_file_with_progress_bar($url . ".sha256", '/root/firmware.tgz.sha256');
 				echo "\n";
@@ -130,7 +130,7 @@ switch ($command) {
 		if(stristr($path,"bdiff"))
 			$type = "bdiff";
 		if(stristr($path,"nanobsd"))
-			$type = "nanobsd";			
+			$type = "nanobsd";
 		if(file_exists($path)) {
 			mark_subsystem_dirty('firmware');
 			do_upgrade($path, $type);
@@ -144,7 +144,7 @@ switch ($command) {
 
 function do_upgrade($path, $type) {
 	global $g, $fp;
-	
+
 	$sigchk = verify_digital_signature($path);
 	if ($sigchk == 1)
 		$sig_warning = "The digital signature on this image is invalid.";

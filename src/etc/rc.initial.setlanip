@@ -72,7 +72,7 @@ function console_get_interface_from_ppp($realif) {
 function prompt_for_enable_dhcp_server($version = 4) {
 	global $config, $fp, $interface;
 	if($interface == "wan") {
-		if($config['interfaces']['lan']) 
+		if($config['interfaces']['lan'])
 			return "n";
 	}
 	/* only allow DHCP server to be enabled when static IP is
@@ -127,7 +127,7 @@ $fp = fopen('php://stdin', 'r');
 /* build an interface collection */
 $ifdescrs = get_configured_interface_with_descr(false, true);
 $count = count($ifdescrs);
-	
+
 /* grab interface that we will operate on, unless there is only one
    interface */
 if ($count > 1) {
@@ -139,16 +139,16 @@ if ($count > 1) {
 		$x++;
 	}
 	echo "\nEnter the number of the interface you wish to configure: ";
-	$intnum = chop(fgets($fp));	
+	$intnum = chop(fgets($fp));
 } else {
 	$intnum = $count;
 }
-	
-if($intnum < 1) 
+
+if($intnum < 1)
 	exit;
 if($intnum > $count)
 	exit;
-		
+
 $index = 1;
 foreach ($ifdescrs as $ifname => $ifdesc) {
 	if ($intnum == $index)  {
@@ -157,7 +157,7 @@ foreach ($ifdescrs as $ifname => $ifdesc) {
 	} else {
 		$index++;
 	}
-}	
+}
 if(!$interface) {
 	echo "Invalid interface!\n";
 	exit;
@@ -248,9 +248,9 @@ function console_configure_ip_address($version) {
 			$intbits = "";
 			$isintdhcp = true;
 			$restart_dhcpd = true;
-		} 
+		}
 	}
-		
+
 	if($isintdhcp == false or $interface <> "wan") {
 		while(true) {
 			do {
@@ -397,7 +397,7 @@ function console_configure_dhcpd($version = 4) {
 		/* TODO - this line is causing a "Fatal error: Cannot unset
 		   string offsets in rc.initial.setlanip" on below line
 		   number */
-		if($config[$dhcpd][$interface]) 
+		if($config[$dhcpd][$interface])
 			unset($config[$dhcpd][$interface]['enable']);
 		echo "Disabling DHCPD...";
 		if (!$dry_run) {
@@ -409,7 +409,7 @@ function console_configure_dhcpd($version = 4) {
 
 console_configure_dhcpd(4);
 console_configure_dhcpd(6);
-	
+
 //*****************************************************************************
 
 if ($config['system']['webgui']['protocol'] == "https") {
@@ -436,7 +436,7 @@ if (isset($config['system']['webgui']['noantilockout'])) {
 if($config['interfaces']['lan']) {
 	if($config['dhcpd'])
 		if($config['dhcpd']['wan'])
-			unset($config['dhcpd']['wan']);		
+			unset($config['dhcpd']['wan']);
 	if($config['dhcpdv6'])
 		if($config['dhcpdv6']['wan'])
 			unset($config['dhcpdv6']['wan']);
@@ -466,7 +466,7 @@ if (!$dry_run) {
 	filter_configure_sync();
 	echo "\n";
 	if($restart_dhcpd) {
-		echo " DHCPD..."; 
+		echo " DHCPD...";
 		services_dhcpd_configure();
 	}
 	if($restart_webgui) {
@@ -474,7 +474,7 @@ if (!$dry_run) {
 		mwexec("/usr/local/etc/rc.restart_webgui");
 	}
 }
-	
+
 if ($intip != '') {
 	if (is_ipaddr($intip)) {
 		echo "\n\n" . sprintf(gettext("The IPv4 %s address has been set to %s"),
@@ -532,5 +532,5 @@ echo "\n" . gettext('Press <ENTER> to continue.');
 
 fgets($fp);
 fclose($fp);
-		
+
 ?>

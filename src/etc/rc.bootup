@@ -132,7 +132,7 @@ system_dmesg_save();
 system_check_reset_button();
 
 /* remove previous firmware upgrade if present */
-if (file_exists("/root/firmware.tgz")) 
+if (file_exists("/root/firmware.tgz"))
 	unlink("/root/firmware.tgz");
 
 /* start devd (dhclient now uses it) */
@@ -357,7 +357,7 @@ if($physmem < $g['minimum_ram_warning']) {
 $kern_hz = get_single_sysctl('kern.clockrate');
 $kern_hz = substr($kern_hz, strpos($kern_hz, "hz = ") + 5);
 $kern_hz = substr($kern_hz, 0, strpos($kern_hz, ","));
-if($kern_hz == "1000") 
+if($kern_hz == "1000")
 	set_single_sysctl("net.inet.tcp.rexmit_min" , "30");
 
 /* start the igmpproxy daemon */

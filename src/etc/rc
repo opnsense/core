@@ -92,8 +92,8 @@ else
 	# If /conf is a directory, convert it to a symlink to /cf/conf
 	if [ -d "/conf" ]; then
 		# If item is not a symlink then rm and recreate
-		CONFPOINTSTO=`readlink /conf` 
-		if ! test "x$CONFPOINTSTO" = "x/cf/conf"; then 
+		CONFPOINTSTO=`readlink /conf`
+		if ! test "x$CONFPOINTSTO" = "x/cf/conf"; then
 			/bin/rm -rf /conf
 			/bin/ln -s /cf/conf /conf
 		fi
@@ -233,7 +233,7 @@ fi
 # have trouble overriding the PREFIX configure
 # argument since we build our packages in a
 # separated PREFIX area
-# Only create if symlink does not exist. 
+# Only create if symlink does not exist.
 if [ ! -h /tmp/tmp ]; then
     /bin/ln -hfs / /tmp/tmp
 fi
@@ -258,7 +258,7 @@ if [ ! -d /var/tmp ]; then
 fi
 
 if [ ! -d /cf/conf/backup/ ]; then
-	/bin/mkdir -p /cf/conf/backup/ 
+	/bin/mkdir -p /cf/conf/backup/
 fi
 
 set -T
@@ -282,18 +282,18 @@ if [ ! ${DEFAULT_LOG_FILE_SIZE} ]; then
 fi
 
 for logfile in $LOG_FILES; do
-	if [ "$DISABLESYSLOGCLOG" -gt "0" ]; then 
+	if [ "$DISABLESYSLOGCLOG" -gt "0" ]; then
 		/usr/bin/touch /var/log/$logfile.log
-	else 
+	else
 		if [ ! -f /var/log/$logfile.log ]; then
 			if [ "$ENABLEFIFOLOG" -gt "0" ]; then
 				# generate fifolog files
 				/usr/sbin/fifolog_create -s ${DEFAULT_LOG_FILE_SIZE} /var/log/$logfile.log
-			else 
+			else
 				/usr/local/sbin/clog -i -s ${DEFAULT_LOG_FILE_SIZE} /var/log/$logfile.log
 			fi
 		fi
-	fi 
+	fi
 done
 
 # change permissions on newly created fifolog files.
@@ -349,7 +349,7 @@ echo -n "Launching the init system..."
 # rc.bootup unset $g['booting'], remove file right now to be consistent
 /bin/rm /var/run/booting
 
-# If a shell was selected from recovery 
+# If a shell was selected from recovery
 # console then just drop to the shell now.
 if [ -f "/tmp/donotbootup" ]; then
 	echo "Dropping to recovery shell."

@@ -379,7 +379,7 @@ if (is_array($config['hasync'])) {
 	if ($hasync['synchronizeusers'] != "") {
 		$sections[] = 'user';
 		$sections[] = 'group';
-	} 
+	}
 	if ($hasync['synchronizeauthservers'] != "") {
 		$sections[] = 'authserver';
 	}

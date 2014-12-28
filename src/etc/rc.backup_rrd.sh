@@ -14,4 +14,3 @@ if [ -d "${RRDDBPATH}" ]; then
 	rm "${RRDDBPATH}"/*.xml
 	[ -z "$NO_REMOUNT" ] && /usr/local/etc/rc.conf_mount_ro
 fi
-
