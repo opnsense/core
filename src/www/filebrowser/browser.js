@@ -23,7 +23,7 @@ function fbBrowse(path) {
 		"/filebrowser/browser.php?path=" + encodeURI(path ? path : "/"),
 		{ type: "get", complete: fbComplete }
 	);
-	
+
 }
 
 function fbComplete(req) {

@@ -305,7 +305,7 @@ function showchange() {
 </script>
 <?php } ?>
 
-				    	
+
 <?php
 	if($title == "Reload in progress") {
 		$ip = fixup_string("\$myurl");
@@ -318,7 +318,7 @@ function showchange() {
 <section class="page-content-main">
 	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
 		<div class="row">
-			
+
 			<?php
 				if ($input_errors)
 					print_input_errors($input_errors);
@@ -331,26 +331,26 @@ function showchange() {
 			?>
 
 		    <section class="col-xs-12">
-			     <div class="content-box">  
+			     <div class="content-box">
 
 					 <form action="wizard.php" method="post" name="iform" id="iform">
-					 	<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
-					 	<input type="hidden" name="stepid" value="<?= htmlspecialchars($stepid) ?>" />
-					 	
-					 	<?php if(!$pkg['step'][$stepid]['disableheader']): ?>
-					 	<header class="content-box-head container-fluid">
-				        	<h3><?= fixup_string($title) ?></h3>
-				    	</header>
-				    	<? endif; ?>
-				    	
+						<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
+						<input type="hidden" name="stepid" value="<?= htmlspecialchars($stepid) ?>" />
 
-				    	
+						<?php if(!$pkg['step'][$stepid]['disableheader']): ?>
+						<header class="content-box-head container-fluid">
+						<h3><?= fixup_string($title) ?></h3>
+					</header>
+					<? endif; ?>
+
+
+
 						<!--<a href="<?=$ip;?>"><img border="0" src="./themes/<?= $g['theme']; ?>/images/logo.gif" alt="logo" /></a> -->
-						
+
 						<div class="content-box-main">
 							<div style="padding:20px !important;">
 								<p><br /><?=fixup_string($description) ?></p>
-								
+
 							</div>
 							<div class="table-responsive">
 								<table class="table table-striped">
@@ -780,7 +780,7 @@ function showchange() {
 		}
 	}
 ?>
-								
+
 								</table>
 								<br /><br /><br />
 							</div>

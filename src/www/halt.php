@@ -58,18 +58,18 @@ include('head.inc');
 	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
 		<div class="row">
 		    <section class="col-xs-12">
-			    
+
 			<?php if ($_POST['Submit'] == gettext("Yes")):
 				print_info_box(gettext("The system is halting now. This may take one minute.")); ?>
 			<pre>
-			<?php 	system_halt(); ?>
+			<?php	system_halt(); ?>
 			</pre>
 			<?php else: ?>
 
-			    
+
 			<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
 				<p><strong><?=gettext("Are you sure you want to halt the system?");?></strong></p>
-				
+
 				<div class="btn-group">
 				   <input type="submit" name="Submit" class="btn btn-primary" value="<?=gettext("Yes");?>" />
 				  <a href="/" class="btn btn-default"><?=gettext("No");?></a>

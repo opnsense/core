@@ -4,7 +4,7 @@
  * Feel free to use this on your websites, but please leave this message in the fies
  * http://www.silverstripe.com/blog
  */
- 
+
 ul.tree{
 	width: auto;
 	padding-left : 0px;
@@ -12,9 +12,9 @@ ul.tree{
 }
 
 ul.tree img{
- 	border : none;
+	border : none;
 }
- 
+
 
 ul.tree, ul.tree ul {
 	padding-left: 0;
@@ -22,7 +22,7 @@ ul.tree, ul.tree ul {
 
 ul.tree ul {
 	margin-left: 16px;
-		
+
 }
 ul.tree li.closed ul {
 	display: none;
@@ -63,20 +63,20 @@ ul.tree span.a.last:before {
 /* Span-B: Plus/Minus icon */
 ul.tree span.b:before {
 	font-family: "Glyphicons Halflings";
-  	content: "\e095";
+	content: "\e095";
 }
 ul.tree span.a.children span.b:before {
 	/*background: url(minus.gif) 0 50% no-repeat;*/
 	cursor: pointer;
 	font-family: "Glyphicons Halflings";
-  	content: "\e082";
+	content: "\e082";
 }
 
 ul.tree li.closed span.a.children span.b:before {
 	/*background: url(plus.gif) 0 50% no-repeat;*/
 	cursor: pointer;
 	font-family: "Glyphicons Halflings";
-  	content: "\e081";
+	content: "\e081";
 }
 
 /* Span-C: Spacing and extending tree line below the icon */
@@ -96,7 +96,7 @@ ul.tree span.a.spanClosed span.c:before {
 /*ul.tree a  {
 	white-space: nowrap;
 	overflow: hidden;
-	
+
 	padding: 3px 0px 3px 18px;
 	line-height: 16px;
 
@@ -105,7 +105,7 @@ ul.tree span.a.spanClosed span.c:before {
 ul.tree a:before {
   white-space: nowrap;
   overflow: hidden;
-	
+
   padding: 3px 6px 3px 3px;
   line-height: 16px;
   font-family: "Glyphicons Halflings";
@@ -114,12 +114,12 @@ ul.tree a:before {
 ul.tree span.a.children a:before {
 	/*background-image: url(page-openfoldericon.png);*/
 	font-family: "Glyphicons Halflings";
-  	content: "\e118";
+	content: "\e118";
 }
 ul.tree span.a.children.spanClosed a:before {
 	/*background-image: url(page-foldericon.png);*/
 	font-family: "Glyphicons Halflings";
-  	content: "\e117";
+	content: "\e117";
 }
 
 /* Unformatted tree */

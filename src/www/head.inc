@@ -16,64 +16,64 @@ $pagetitle = gentitle( $pgtitle );
 
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		
+
 		<meta name="robots" content="index, follow, noodp, noydir" />
 		<meta name="keywords" content="" />
 		<meta name="description" content="" />
 		<meta name="copyright" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-		
+
 		<title><?php echo($config['system']['hostname'] . "." . $config['system']['domain'] . " - " . $pagetitle); ?></title>
-		
+
 		<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
-	
+
 		<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
-		
+
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
-		
+
 		<script>var theme = '<?=$g['theme'];?>'; </script>
-		
+
 		<script src="/themes/<?=$g['theme'];?>/build/js/main.min.js" type="text/javascript"></script>
 		<!--<script src="/themes/<?=$g['theme'];?>/assets/javascripts/bootstrap/popover.js" type="text/javascript"></script>-->
-		
+
 		<!--script type="text/javascript" src="/javascript/sorttable.js"></script-->
 		<script type="text/javascript" src="/javascript/ticker.js"></script>
-		
+
 		<!--<script type=\"text/javascript\" src=\"/themes/<?php echo $g['theme']; ?>/loader.js\"></script> -->
-		
+
 		<?php if($_GET['enablefirebuglite']): ?>
 			<script type=\"text/javascript" src=\"/javascript/pi.js\"></script>
 			<script type=\"text/javascript" src=\"/javascript/firebug-lite.js\"></script>
 		<?php endif; ?>
-		
 
-		
+
+
 		<?php if(file_exists("{$g['www_path']}/javascript/global.js")):?>
 		<script type="text/javascript" src="/javascript/global.js"></script>
 		<?php endif; ?>
-	
+
 		<?php
 		/*
 		 *	Find all javascript files that need to be included
 		 *	for this page ... from the arrays ... :)
 		 *	Coded by: Erik Kristensen
 		 */
-	
+
 		$dir  = trim(basename($_SERVER["SCRIPT_FILENAME"], '.php'));
 		$path = "{$g['www_path']}/javascript/" . $dir . "/";
 		if (is_dir($path)) {
 			if ($dh = opendir($path)) {
 				while (($file = readdir($dh)) !== false) {
-			   		if (is_dir($file)) 
+					if (is_dir($file))
 						continue;
 					echo "\t<script type=\"text/javascript\" src=\"/javascript/{$dir}/{$file}\"></script>\n";
 				}
 				closedir($dh);
 			}
 		}
-				
+
 		?>
-		
+
 		<?php if (basename($_SERVER["SCRIPT_FILENAME"] != "index.php") && !$allowautocomplete): ?>
 		<script type="text/javascript">
 		//<![CDATA[
@@ -86,9 +86,9 @@ $pagetitle = gentitle( $pgtitle );
 
 
 		<?php if (!$closehead):?></head><? endif;?>
-	
+
 <?php
-	
+
 /*  If this page is being remotely managed then do not allow the loading of the contents. */
 if($config['remote_managed_pages']['item']) {
 	foreach($config['remote_managed_pages']['item'] as $rmp) {
@@ -98,6 +98,6 @@ if($config['remote_managed_pages']['item']) {
 			//include("fend.inc");
 			exit;
 		}
-	}	
+	}
 }
 ?>

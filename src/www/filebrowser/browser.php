@@ -55,7 +55,7 @@ if(is_file($path))
 if(is_dir($path)) {
 	list($dirs, $files) = get_content($path);
 ?>
-			
+
 		</td>
 	</tr>
 <?php

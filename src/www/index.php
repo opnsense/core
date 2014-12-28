@@ -114,10 +114,10 @@ array_unshift($widgetfiles, "system_information.widget.php");
 if (!is_array($config['widgets'])) {
 	$config['widgets'] = array();
 }
-		
+
 if ($_POST && $_POST['sequence']) {
-	
-	
+
+
 	$config['widgets']['sequence'] = $_POST['sequence'];
 
 	foreach ($widgetnames as $widget){
@@ -181,7 +181,7 @@ if(file_exists('/conf/needs_package_sync')) {
 ##build widget saved list information
 if ($config['widgets'] && $config['widgets']['sequence'] != "") {
 	$pconfig['sequence'] = $config['widgets']['sequence'];
-	
+
 
 	$widgetlist = $pconfig['sequence'];
 	$colpos = array();
@@ -270,9 +270,9 @@ function widgetAjax(widget) {
 
 
 function addWidget(selectedDiv){
-	container 	= 	$('#'+selectedDiv);
+	container	=	$('#'+selectedDiv);
 	state		=	$('#'+selectedDiv+'-config');
-	
+
 	container.show();
 	showSave();
 	state.val('show');
@@ -287,41 +287,41 @@ function configureWidget(selectedDiv){
 }
 
 function showWidget(selectedDiv,swapButtons){
-	container 	= 	$('#'+selectedDiv+'-container');
+	container	=	$('#'+selectedDiv+'-container');
 	min_btn		=	$('#'+selectedDiv+'-min');
 	max_btn		=	$('#'+selectedDiv+'-max');
 	state		=	$('#'+selectedDiv+'-config');
-		
+
 	container.show();
 	min_btn.show();
 	max_btn.hide();
-	
+
 	showSave();
-	
+
 	state.val('show');
 }
 
 function minimizeWidget(selectedDiv,swapButtons){
-	container 	= 	$('#'+selectedDiv+'-container');
+	container	=	$('#'+selectedDiv+'-container');
 	min_btn		=	$('#'+selectedDiv+'-min');
 	max_btn		=	$('#'+selectedDiv+'-max');
 	state		=	$('#'+selectedDiv+'-config');
-		
+
 	container.hide();
 	min_btn.hide();
 	max_btn.show();
-	
+
 	showSave();
-	
+
 	state.val('hide');
 
 
 }
 
 function closeWidget(selectedDiv){
-	widget 		= 	$('#'+selectedDiv);	
+	widget		=	$('#'+selectedDiv);
 	state		=	$('#'+selectedDiv+'-config');
-	
+
 	showSave();
 	widget.hide();
 	state.val('close');
@@ -335,25 +335,25 @@ function updatePref(){
 	var widgets = $('.widgetdiv');
 	var widgetSequence = '';
 	var firstprint = false;
-	
+
 	widgets.each(function(key) {
 		obj = $(this);
-		
-		if (firstprint) 
+
+		if (firstprint)
 			widgetSequence += ',';
-		
-		
+
+
 		state = $('input[name='+obj.attr('id')+'-config]').val();
-		
+
 		widgetSequence += obj.attr('id')+'-container:col1:'+state;
-		
+
 		firstprint = true;
 	});
-	
+
 	$("#sequence").val(widgetSequence);
-	
+
 	$("#iform").submit();
-	
+
 	return false;
 }
 
@@ -387,9 +387,9 @@ echo $jscriptstr;
 
 ?>
 
-<?php 
+<?php
 	## If it is the first time webConfigurator has been
-	## accessed since initial install show this stuff. 
+	## accessed since initial install show this stuff.
 	if(file_exists('/conf/trigger_initial_wizard')) : ?>
 	<header class="page-content-head">
 		<div class="container-fluid">
@@ -400,8 +400,8 @@ echo $jscriptstr;
 	<section class="page-content-main">
 		<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
 			<div class="row">
-	        	<section class="col-xs-12">
-		        	<div class="content-box" style="padding: 20px;">                                   						
+			<section class="col-xs-12">
+				<div class="content-box" style="padding: 20px;">
 							<div class="table-responsive">
 								<?php
 									echo "<img src=\"/themes/{$g['theme']}/assets/images/default-logo.png\" border=\"0\" alt=\"logo\" /><p>\n";
@@ -427,10 +427,10 @@ echo $jscriptstr;
 
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
 
-				<?php            
+				<?php
 				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
 				if (!verify_all_package_servers())
 					print_info_box(package_server_mismatch_message());
@@ -441,7 +441,7 @@ echo $jscriptstr;
 
 				?>
 
-          
+
 
 				<?php
 					$totalwidgets = count($widgetfiles);
@@ -450,7 +450,7 @@ echo $jscriptstr;
 					$directory = "/usr/local/www/widgets/widgets/";
 					$printed = false;
 					$firstprint = false;
-					
+
 					foreach($widgetlist as $widget) {
 
 						if(!stristr($widget, "widget.php"))
@@ -525,13 +525,13 @@ echo $jscriptstr;
 							}
 						}
 
-	
+
 
 				?>
 						<section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>"  style="display:<?php echo $divdisplay; ?>;">
-				          	<div class="content-box">	          	
-			   				<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
-	           					<input type="hidden" value="" name="sequence" id="sequence" />
+						<div class="content-box">
+							<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
+							<input type="hidden" value="" name="sequence" id="sequence" />
 								<header class="content-box-head container-fluid">
 
 								    <ul class="list-inline __nomb">
@@ -560,35 +560,35 @@ echo $jscriptstr;
 												</span></u>
 												<?php }
 											}
-										?>					        
+										?>
 								        </h3></li>
 
 								        <li class="pull-right">
 								            <div class="btn-group">
 								                <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?php echo $widgetname;?>-min" onclick='return minimizeWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv; ?>;"><span class="glyphicon glyphicon-minus"></span></button>
-								                
+
 								                  <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?php echo $widgetname;?>-max" onclick='return showWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv == 'none' ? 'inline' : 'none'; ?>;"><span class="glyphicon glyphicon-plus"></span></button>
-								                
+
 								                <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?php echo $widgetname;?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
-								               
+
 								                <button type="button" class="btn btn-default btn-xs" id="<?php echo $widgetname;?>-configure" onclick='return configureWidget("<?php echo $widgetname;?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
-																	
+
 								            </div>
-								        </li>   
-								    </ul>                             
+								        </li>
+								    </ul>
 								</header>
 					        </form>
-					          	<div class="content-box-main collapse in" id="<?php echo $widgetname;?>-container" style="display:<?=$mindiv;?>">
-					          		<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-config" name="<?php echo $widgetname;?>-config" />
-									
-									
+							<div class="content-box-main collapse in" id="<?php echo $widgetname;?>-container" style="display:<?=$mindiv;?>">
+								<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-config" name="<?php echo $widgetname;?>-config" />
+
+
 									<?php if ($divdisplay != "block") { ?>
 									<div id="<?php echo $widgetname;?>-loader" style="display:<?php echo $display; ?>;" align="center">
 										<br />
 											<span class="glyphicon glyphicon-refresh"></span> <?=gettext("Loading selected widget"); ?>
 										<br />
 									</div> <?php $display = "none"; } ?>
-									
+
 									<?php
 										if ($divdisplay == "block")
 										{
@@ -596,12 +596,12 @@ echo $jscriptstr;
 										}
 									?>
 									<?php $widgetcounter++; ?>
-				      			</div>
-				            </div>                   
+							</div>
+				            </div>
 				        </section>
 
 				<? } //end foreach ?>
-			
+
 	    </div>
     </div>
 </section>
@@ -626,4 +626,3 @@ echo $jscriptstr;
 
 
 <?php include("foot.inc"); ?>
-

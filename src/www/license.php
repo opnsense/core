@@ -44,13 +44,13 @@ $pgtitle = gettext("License");
 
 <body>
 <?php include("fbegin.inc"); ?>
-	
-	
+
+
 <section class="page-content-main">
 	<div class="container-fluid ">
 		<div class="row">
 		    <section class="col-xs-12 col-sm-10 col-md-9">
-			
+
 
             <p><strong><?=$g['product_name'];?> <?=gettext("is Copyright");?> &copy; <?=$g['product_copyright_years'];?> <?=gettext("by");?> <?=$g['product_copyright'];?><br />
               <?=gettext("All rights reserved");?>.</strong></p>
@@ -148,7 +148,7 @@ $pgtitle = gettext("License");
 			  <br />
 			  <?=gettext("OpenVPN"); ?> (<a href="http://openvpn.net/" target="_blank">http://openvpn.net/</a>)
 			  <?=gettext("Copyright (C) 2002-2005 OpenVPN Solutions LLC ");?>
-             
+
             </p>
 		    </section>
 		</div>

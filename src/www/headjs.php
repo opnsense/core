@@ -60,21 +60,21 @@ function getHeadJS() {
       if(jQuery('#submit') && ! noAjaxOnSubmit) {
         // debugging helper
         //alert('adding observe event for submit button');
-        
+
         jQuery(\"#submit\").click(submit_form);
         jQuery('#submit').click(function() {return false;});
         var to_insert = \"<div style='visibility:hidden' id='loading' name='loading'><img src='{$loader_gif}' alt='loader' \/><\/div>\";
         jQuery('#submit').before(to_insert);
       }
     }
-    
+
     function submit_form(e){
       // debugging helper
       //alert(Form.serialize($('iform')));
 
       if(jQuery('#inputerrors'))
         jQuery('#inputerrors').html('<center><b><i>Loading...<\/i><\/b><\/center>');
-        
+
       /* dsh: Introduced because pkg_edit tries to set some hidden fields
        *      if executing submit's onclick event. The click gets deleted
        *      by Ajax. Hence using onkeydown instead.
@@ -88,22 +88,22 @@ function getHeadJS() {
       jQuery('#loading').css('visibility','visible');
       // submit the form using Ajax
     }
-   
+
     function formSubmitted(resp) {
       var responseText = resp.responseText;
-      
+
       // debugging helper
       // alert(responseText);
-      
+
       if(responseText.indexOf('html') > 0) {
         /* somehow we have been fed an html page! */
         //alert('Somehow we have been fed an html page! Forwarding to /.');
         document.location.href = '/';
       }
-      
+
       eval(responseText);
     }
-    
+
     /* this function will be called if an HTTP error will be triggered */
     function formFailure(resp) {
 	    showajaxmessage(resp.responseText);
@@ -115,7 +115,7 @@ function getHeadJS() {
 		  jQuery('#loading').css('visibility','hidden');
 
     }
-    
+
     function showajaxmessage(message) {
       var message_html;
 
