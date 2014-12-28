@@ -648,7 +648,7 @@ class CPClient {
                     }
 
                     // disconnect on session terminate time
-                    if ($client->session_terminate_time != "" && $client->session_terminate_time < time()) {
+                    if ( is_numeric($client->session_terminate_time) && $client->session_terminate_time > 0 && $client->session_terminate_time < time()) {
                         $this->disconnect($cpzonename, $client->sessionid);
                         $this->logportalauth($client->username,$client->mac,$client->ip,$status="TERMINATE TIME REACHED");
                         continue;
