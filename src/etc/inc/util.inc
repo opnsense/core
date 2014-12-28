@@ -189,7 +189,7 @@ function send_event($cmd) {
 				log_error("send_event: sent {$cmd} got {$resp}");
 			fclose($fd);
 			$try = 3;
-		} 
+		}
 		$try++;
 	}
 }
@@ -214,7 +214,7 @@ function send_multiple_events($cmds) {
 			}
 			fclose($fd);
 			$try = 3;
-		} 
+		}
 		$try++;
 	}
 }
@@ -306,7 +306,7 @@ function is_module_loaded($module_name) {
 
 /* validate non-negative numeric string, or equivalent numeric variable */
 function is_numericint($arg) {
-	return (((is_int($arg) && $arg >= 0) || (is_string($arg) && strlen($arg) > 0 && ctype_digit($arg))) ? true : false);  
+	return (((is_int($arg) && $arg >= 0) || (is_string($arg) && strlen($arg) > 0 && ctype_digit($arg))) ? true : false);
 }
 
 /* return the subnet address given a host address and a subnet bit count */
@@ -594,8 +594,8 @@ function is_ipaddroralias($ipaddr) {
 }
 
 /* returns true if $subnet is a valid IPv4 or IPv6 subnet in CIDR format
-   	false - if not a valid subnet
-   	true (numeric 4 or 6) - if valid, gives type of subnet */
+	false - if not a valid subnet
+	true (numeric 4 or 6) - if valid, gives type of subnet */
 function is_subnet($subnet) {
 	if (is_string($subnet) && preg_match('/^(?:([0-9.]{7,15})|([0-9a-f:]{2,39}))\/(\d{1,3})$/i', $subnet, $parts)) {
 		if (is_ipaddrv4($parts[1]) && $parts[3] <= 32)
@@ -658,9 +658,9 @@ function is_macaddr($macaddr, $partial=false) {
    returns NULL if a reserved word is used
    returns FALSE for bad chars in the name - this allows calling code to determine what the problem was.
    aliases cannot be:
-   	bad chars: anything except a-z 0-9 and underscore
-   	bad names: empty string, pure numeric, pure underscore
-   	reserved words: pre-defined service/protocol/port names which should not be ambiguous, and the words "port" and  "pass" */
+	bad chars: anything except a-z 0-9 and underscore
+	bad names: empty string, pure numeric, pure underscore
+	reserved words: pre-defined service/protocol/port names which should not be ambiguous, and the words "port" and  "pass" */
 
 function is_validaliasname($name) {
 	/* Array of reserved words */

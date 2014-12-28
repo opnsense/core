@@ -52,7 +52,7 @@ $FilterIflist = array();
 $GatewaysList = array();
 
 /* Used for the hostname dns resolver */
-$filterdns = array(); 
+$filterdns = array();
 
 /* Used for aliases and interface macros */
 $aliases = "";
@@ -1477,7 +1477,7 @@ function filter_nat_rules_generate_if($if, $src = "any", $srcport = "", $dst = "
 			$protocol = " proto {$proto}";
 	} else
 		$protocol = "";
-	/* Set tgt for IPv6 */ 
+	/* Set tgt for IPv6 */
 	if ($proto == "ipv6") {
 		$natip = get_interface_ipv6($if);
 		if(is_ipaddrv6($natip))
@@ -2522,17 +2522,17 @@ function filter_generate_user_rule($rule)
 						$aline['flags'] .= "max " . $rule['max'] . " ";
 					if (isset($rule['max-src-nodes']) and $rule['max-src-nodes'] <> "")
 						$aline['flags'] .= "max-src-nodes " . $rule['max-src-nodes'] . " ";
-					if ((in_array($rule['protocol'], array("tcp","tcp/udp"))) 
-							and isset($rule['max-src-conn']) 
+					if ((in_array($rule['protocol'], array("tcp","tcp/udp")))
+							and isset($rule['max-src-conn'])
 							and $rule['max-src-conn'] <> "")
 						$aline['flags'] .= "max-src-conn " . $rule['max-src-conn'] . " ";
 					if (isset($rule['max-src-states']) and $rule['max-src-states'] <> "")
 						$aline['flags'] .= "max-src-states " . $rule['max-src-states'] . " ";
-					if ((in_array($rule['protocol'], array("tcp","tcp/udp"))) 
-							and isset($rule['statetimeout']) 
+					if ((in_array($rule['protocol'], array("tcp","tcp/udp")))
+							and isset($rule['statetimeout'])
 							and $rule['statetimeout'] <> "")
 						$aline['flags'] .= "tcp.established " . $rule['statetimeout'] . " ";
-					if ((in_array($rule['protocol'], array("tcp","tcp/udp"))) 
+					if ((in_array($rule['protocol'], array("tcp","tcp/udp")))
 							and isset($rule['max-src-conn-rate'])
 							and $rule['max-src-conn-rate'] <> ""
 							and isset($rule['max-src-conn-rates'])
@@ -2634,7 +2634,7 @@ function filter_rules_generate()
 	$ipfrules .= "anchor \"ipsec/*\"\n";
 	# BEGIN OF firewall rules
 	/* default block logging? */
-	$log = array(); 
+	$log = array();
 	if(!isset($config['syslog']['nologdefaultblock']))
 		$log['block'] = "log";
 	if(isset($config['syslog']['nologdefaultpass']))
@@ -2677,10 +2677,10 @@ pass in {$log['pass']} quick inet6 proto ipv6-icmp from ff02::/16 to fe80::/10 i
 pass in {$log['pass']} quick inet6 proto ipv6-icmp from fe80::/10 to ff02::/16 icmp6-type {128,133,134,135,136}  keep state
 
 # We use the mighty pf, we cannot be fooled.
-block {$log['block']} quick inet proto { tcp, udp } from any port = 0 to any 
-block {$log['block']} quick inet proto { tcp, udp } from any to any port = 0 
-block {$log['block']} quick inet6 proto { tcp, udp } from any port = 0 to any 
-block {$log['block']} quick inet6 proto { tcp, udp } from any to any port = 0 
+block {$log['block']} quick inet proto { tcp, udp } from any port = 0 to any
+block {$log['block']} quick inet proto { tcp, udp } from any to any port = 0
+block {$log['block']} quick inet6 proto { tcp, udp } from any port = 0 to any
+block {$log['block']} quick inet6 proto { tcp, udp } from any to any port = 0
 
 # Snort package
 block {$log['block']} quick from <snort2c> to any  label "Block snort2c hosts"
@@ -2933,7 +2933,7 @@ EOD;
 		}
 			break;
 		default:
-			if ((is_array($config['dhcpdv6'][$on]) && isset($config['dhcpdv6'][$on]['enable'])) || isset($oc['track6-interface']) 
+			if ((is_array($config['dhcpdv6'][$on]) && isset($config['dhcpdv6'][$on]['enable'])) || isset($oc['track6-interface'])
 				|| (is_array($config['dhcrelay6']) && !empty($config['dhcrelay6']['interface']) && in_array($on, explode(',', $config['dhcrelay6']['interface'])))) {
 				$ipfrules .= <<<EOD
 # allow access to DHCPv6 server on {$oc['descr']}

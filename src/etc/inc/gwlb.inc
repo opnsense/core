@@ -167,8 +167,8 @@ EOD;
 		if(in_array($gateway['monitor'], $monitor_ips))
 			continue;
 
-		/* Interface ip is needed since apinger will bind a socket to it. 
-		 * However the config GUI should already have checked this and when 
+		/* Interface ip is needed since apinger will bind a socket to it.
+		 * However the config GUI should already have checked this and when
 		 * PPoE is used the IP address is set to "dynamic". So using is_ipaddrv4
 		 * or is_ipaddrv6 to identify packet type would be wrong, especially as
 		 * further checks (that can cope with the "dynamic" case) are present inside
@@ -214,7 +214,7 @@ EOD;
 					$gwifip = find_interface_ipv6($gateway['interface'], true);
 				}
 			}
-							
+
 			if (!is_ipaddrv6($gwifip))
 				continue; //Skip this target
 
@@ -245,7 +245,7 @@ EOD;
 				$apingercfg .= "	interval " . $interval . "s\n";
 		}
 
-		## How many replies should be used to compute average delay 
+		## How many replies should be used to compute average delay
 		## for controlling "delay" alarms
 		if (!empty($gateway['avg_delay_samples']) && is_numeric($gateway['avg_delay_samples'])) {
 			$avg_delay_samples = intval($gateway['avg_delay_samples']);	# Restrict to Integer
@@ -329,8 +329,8 @@ EOD;
 		$apingerconfig .= $alarmscfg;
 		$apingerconfig .= $apingercfg;
 
-		# Create gateway quality RRD with settings more suitable for pfSense graph set, 
-		# since apinger uses default step (300; 5 minutes) and other settings that don't 
+		# Create gateway quality RRD with settings more suitable for pfSense graph set,
+		# since apinger uses default step (300; 5 minutes) and other settings that don't
 		# match the pfSense gateway quality graph set.
 		create_gateway_quality_rrd("{$g['vardb_path']}/rrd/{$gateway['name']}-quality.rrd");
 	}
@@ -344,7 +344,7 @@ EOD;
 
 	@chown("{$g['vardb_path']}/rrd", "nobody");
 
- 	/* Restart apinger process */
+	/* Restart apinger process */
 	if (isvalidpid("{$g['varrun_path']}/apinger.pid"))
 		sigkillbypid("{$g['varrun_path']}/apinger.pid", "HUP");
 	else {
@@ -564,7 +564,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 				if (substr($ifcfg['if'], 0, 4) ==  "ovpn") {
 					// if current iface is an ovpn server endpoint then skip it
 					if (substr($ifcfg['if'], 4, 1) == 's')
-						continue 2;							
+						continue 2;
 
 					$ctype = "VPNv4";
 				}
@@ -639,8 +639,8 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 				$tunnelif = substr($ifcfg['if'], 0, 3);
 				if (substr($ifcfg['if'], 0, 4) ==  "ovpn") {
 					// if current iface is an ovpn server endpoint then skip it
-					if (substr($ifcfg['if'], 4, 1) == 's') 
-						continue 2;							
+					if (substr($ifcfg['if'], 4, 1) == 's')
+						continue 2;
 
 					$ctype = "VPNv6";
 				} else if ($tunnelif == "gif" || $tunnelif == "gre")

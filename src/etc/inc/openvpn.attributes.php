@@ -48,7 +48,7 @@ function cisco_to_cidr($addr) {
 }
 
 function cisco_extract_index($prule) {
-	
+
 	$index = explode("#", $prule);
 	if (is_numeric($index[1]))
 		return intval($index[1]);
@@ -80,7 +80,7 @@ function parse_cisco_acl($attribs) {
 					$attributes['routes'] = array();
 				$attributes['routes'][] = $rule[1];
 				continue;
-			}	
+			}
 			$rindex = cisco_extract_index($rule[0]);
 			if ($rindex < 0)
 				continue;
@@ -107,7 +107,7 @@ function parse_cisco_acl($attribs) {
 			case "udp":
 				$tmprule .= "proto {$rule[$index]} ";
 				break;
-				
+
 			}
 
 			$index++;

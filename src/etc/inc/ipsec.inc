@@ -169,7 +169,7 @@ function ipsec_get_phase1_src(& $ph1ent) {
 
 	if ($ph1ent['interface']) {
 		if (!is_ipaddr($ph1ent['interface'])) {
-			if ($ph1ent['protocol'] == "inet6") { 
+			if ($ph1ent['protocol'] == "inet6") {
 				$if = get_failover_interface($ph1ent['interface'], "inet6");
 				$interfaceip = get_interface_ipv6($if);
 			} else {
@@ -631,13 +631,13 @@ function ipsec_mobilekey_sort() {
 
 function ipsec_get_number_of_phase2($ikeid) {
 	global $config;
-    	$a_phase2 = $config['ipsec']['phase2'];
+	$a_phase2 = $config['ipsec']['phase2'];
 
 	$nbph2=0;
 
-    	if (is_array($a_phase2) && count($a_phase2)) {
-        	foreach ($a_phase2 as $ph2tmp) {
-            		if ($ph2tmp['ikeid'] == $ikeid) {
+	if (is_array($a_phase2) && count($a_phase2)) {
+		foreach ($a_phase2 as $ph2tmp) {
+			if ($ph2tmp['ikeid'] == $ikeid) {
 				$nbph2++;
 			}
 		}

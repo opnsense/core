@@ -49,7 +49,7 @@
  * INPUTS
  *   None
  * RESULT
- *   $config 	- rewrites config.xml without encryption
+ *   $config	- rewrites config.xml without encryption
  ******/
 function encrypted_configxml() {
 	global $g, $config;
@@ -60,7 +60,7 @@ function encrypted_configxml() {
 	if (!$g['booting'])
 		return;
 
-	$configtxt = file_get_contents($g['conf_path'] . "/config.xml");			
+	$configtxt = file_get_contents($g['conf_path'] . "/config.xml");
 	if(tagfile_deformat($configtxt, $configtxt, "config.xml")) {
 		$fp = fopen('php://stdin', 'r');
 		$data = "";
@@ -184,7 +184,7 @@ function generate_config_cache($config) {
 	if(file_exists($g['tmp_path'] . '/config.extra.cache') && $config_extra) {
 		$configcacheextra = fopen($g['tmp_path'] . '/config.extra.cache', "w");
 		fwrite($configcacheextra, serialize($config_extra));
-		fclose($configcacheextra);		
+		fclose($configcacheextra);
 		unset($configcacheextra);
 	}
 }
@@ -335,7 +335,7 @@ function conf_mount_rw() {
 		mwexec("/sbin/fsck -y /");
 		$status = mwexec("/sbin/mount -u -w -o sync,noatime /");
 	}
-	
+
 	mark_subsystem_dirty('mount');
 }
 
@@ -398,7 +398,7 @@ function convert_config() {
 				$config['cron']['item'][$x]['hour'] = "3";
 					write_config(gettext("Updated bogon update frequency to 3am"));
 					log_error(gettext("Updated bogon update frequency to 3am"));
-				}       
+				}
 			}
 		}
 	}
@@ -407,7 +407,7 @@ function convert_config() {
 
 	// Save off config version
 	$prev_version = $config['version'];
-	
+
 	include_once('auth.inc');
 	include_once('upgrade_config.inc');
 
@@ -526,7 +526,7 @@ function write_config($desc="Unknown", $backup = true) {
 		file_notice("config.xml", sprintf(gettext("Unable to open %s/config.xml for writing in write_config()%s"), $g['cf_conf_path'], "\n"));
 		return -1;
 	}
-	
+
 	cleanup_backupcache(true);
 
 	/* re-read configuration */
@@ -615,7 +615,7 @@ function config_restore($conffile) {
 	backup_config();
 
 	conf_mount_rw();
-	
+
 	$lockkey = lock('config', LOCK_EX);
 
 	unlink_if_exists("{$g['tmp_path']}/config.cache");
@@ -801,7 +801,7 @@ function get_backups() {
 		$bakvers = array_keys($confvers);
 		$toreturn = array();
 		sort($bakvers);
-		// 	$bakvers = array_reverse($bakvers);
+		//	$bakvers = array_reverse($bakvers);
 		foreach(array_reverse($bakvers) as $bakver)
 			$toreturn[] = array('time' => $bakver, 'description' => $confvers[$bakver]['description'], 'version' => $confvers[$bakver]['version'], 'filesize' => $confvers[$bakver]['filesize']);
 	} else {

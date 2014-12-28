@@ -50,18 +50,18 @@ define("RCFILEPREFIX", "/usr/local/etc/rc.d/");
 if (!function_exists('write_rcfile')) {
 	function write_rcfile($params) {
 		global $g;
-	
+
 		safe_mkdir(RCFILEPREFIX);
 		$rcfile_fullname = RCFILEPREFIX . $params['file'];
 		if (!file_exists($rcfile_fullname) && !is_link($rcfile_fullname) && !touch($rcfile_fullname))
 			return false;
-	
+
 		if (!is_writable($rcfile_fullname) || empty($params['start']))
 			return false;
-	
+
 		$towrite = "#!/bin/sh\n";
 		$towrite .= "# This file was automatically generated\n# by the {$g['product_name']} service handler.\n\n";
-	
+
 		/* write our rc functions */
 		$towrite .= "rc_start() {\n";
 		$towrite .= "\t{$params['start']}\n";
@@ -78,14 +78,14 @@ if (!function_exists('write_rcfile')) {
 		$towrite .= "rc_stop() {\n";
 		$towrite .= "\t{$tokill}\n";
 		$towrite .= "}\n\n";
-	
+
 		/* begin rcfile logic */
 		$towrite .= "case \$1 in\n\tstart)\n\t\trc_start\n\t\t;;\n\tstop)\n\t\trc_stop\n\t\t;;\n\trestart)\n\t\trc_stop\n\t\trc_start\n\t\t;;\nesac\n\n";
-	
+
 		@file_put_contents($rcfile_fullname, $towrite);
 		unset($towrite);
 		@chmod("{$rcfile_fullname}", 0755);
-	
+
 		return;
 	}
 }
@@ -93,10 +93,10 @@ if (!function_exists('write_rcfile')) {
 if (!function_exists('start_service')) {
 	function start_service($name) {
 		global $config;
-	
+
 		if (empty($name))
 			return;
-	
+
 		if (is_array($config['installedpackages']) && is_array($config['installedpackages']['service'])) {
 			foreach($config['installedpackages']['service'] as $service) {
 				if(strtolower($service['name']) == strtolower($name)) {
@@ -118,13 +118,13 @@ if (!function_exists('start_service')) {
 	}
 }
 if (!function_exists('stop_service')) {
-	
+
 	function stop_service($name) {
 		global $config;
-	
+
 		if (empty($name))
 			return;
-	
+
 		if (is_array($config['installedpackages']) && is_array($config['installedpackages']['service'])) {
 			foreach($config['installedpackages']['service'] as $service) {
 				if(strtolower($service['name']) == strtolower($name)) {
@@ -140,7 +140,7 @@ if (!function_exists('stop_service')) {
 					}
 					if (!empty($service['stopcmd']))
 						eval($service['stopcmd']);
-	
+
 					break;
 				}
 			}
@@ -152,13 +152,13 @@ if (!function_exists('restart_service')) {
 
 	function restart_service($name) {
 		global $config;
-	
+
 		if (empty($name))
 			return;
-	
+
 		stop_service($name);
 		start_service($name);
-	
+
 		if (is_array($config['installedpackages']) && is_array($config['installedpackages']['service'])) {
 			foreach($config['installedpackages']['service'] as $service) {
 				if(strtolower($service['name']) == strtolower($name)) {
@@ -170,7 +170,7 @@ if (!function_exists('restart_service')) {
 			}
 		}
 	}
-	
+
 }
 
 if (!function_exists('is_pid_running')) {
@@ -178,13 +178,13 @@ if (!function_exists('is_pid_running')) {
 	function is_pid_running($pidfile) {
 		if (!file_exists($pidfile))
 			return false;
-	
+
 		return (isvalidpid($pidfile));
 	}
 }
 
 if (!function_exists('is_dhcp_running')) {
-	
+
 	function is_dhcp_running($interface) {
 		$status = find_dhclient_process($interface);
 		if($status != 0)
@@ -195,7 +195,7 @@ if (!function_exists('is_dhcp_running')) {
 }
 
 if (!function_exists('restart_service_if_running')) {
-		
+
 	function restart_service_if_running($service) {
 		global $config;
 		if(is_service_running($service))
@@ -206,7 +206,7 @@ if (!function_exists('restart_service_if_running')) {
 }
 
 if (!function_exists('is_service_enabled')) {
-		
+
 	function is_service_enabled($service_name) {
 		global $config;
 		if ($service_name == "")
@@ -224,10 +224,10 @@ if (!function_exists('is_service_enabled')) {
 }
 
 if (!function_exists('is_service_running')) {
-		
+
 	function is_service_running($service, $ps = "") {
 		global $config;
-	
+
 		if(is_array($config['installedpackages']['service'])) {
 			foreach($config['installedpackages']['service'] as $aservice) {
 				if(strtolower($service) == strtolower($aservice['name'])) {
@@ -239,29 +239,29 @@ if (!function_exists('is_service_running')) {
 						return false;
 					if (is_process_running($aservice['executable']))
 						return true;
-	
+
 					return false;
 				}
 			}
 		}
-	
+
 		if (is_process_running($service))
 			return true;
-	
+
 		return false;
 	}
 
 }
 
 if (!function_exists('get_services')) {
-	
+
 	function get_services() {
 		global $config;
 		if (is_array($config['installedpackages']['service']))
 			$services = $config['installedpackages']['service'];
 		else
 			$services = array();
-	
+
 		/*    Add services that are in the base.
 		 *
 		 */
@@ -271,26 +271,26 @@ if (!function_exists('get_services')) {
 			$pconfig['description'] = gettext("Router Advertisement Daemon");
 			$services[] = $pconfig;
 		}
-	
+
 		if (isset($config['dnsmasq']['enable'])) {
 			$pconfig = array();
 			$pconfig['name'] = "dnsmasq";
 			$pconfig['description'] = gettext("DNS Forwarder");
 			$services[] = $pconfig;
 		}
-	
+
 		if (isset($config['unbound']['enable'])) {
 			$pconfig = array();
 			$pconfig['name'] = "unbound";
 			$pconfig['description'] = gettext("Unbound DNS Forwarder");
 			$services[] = $pconfig;
 		}
-	
+
 		$pconfig = array();
 		$pconfig['name'] = "ntpd";
 		$pconfig['description'] = gettext("NTP clock sync");
 		$services[] = $pconfig;
-	
+
 		if (is_array($config['captiveportal'])) {
 			foreach ($config['captiveportal'] as $zone => $setting) {
 				if (isset($setting['enable'])) {
@@ -302,7 +302,7 @@ if (!function_exists('get_services')) {
 				}
 			}
 		}
-	
+
 		$iflist = array();
 		$ifdescrs = get_configured_interface_list();
 		foreach ($ifdescrs as $if) {
@@ -310,28 +310,28 @@ if (!function_exists('get_services')) {
 			if ($oc['if'] && (!link_interface_to_bridge($if)))
 				$iflist[$if] = $if;
 		}
-	
+
 		if (isset($config['dhcrelay']['enable'])) {
 			$pconfig = array();
 			$pconfig['name'] = "dhcrelay";
 			$pconfig['description'] = gettext("DHCP Relay");
 			$services[] = $pconfig;
 		}
-	
+
 		if (isset($config['dhcrelay6']['enable'])) {
 			$pconfig = array();
 			$pconfig['name'] = "dhcrelay6";
 			$pconfig['description'] = gettext("DHCPv6 Relay");
 			$services[] = $pconfig;
 		}
-	
+
 		if (is_dhcp_server_enabled()) {
 			$pconfig = array();
 			$pconfig['name'] = "dhcpd";
 			$pconfig['description'] = gettext("DHCP Service");
 			$services[] = $pconfig;
 		}
-	
+
 		$gateways_arr = return_gateways_array();
 		if (is_array($gateways_arr)) {
 			$pconfig = array();
@@ -339,49 +339,49 @@ if (!function_exists('get_services')) {
 			$pconfig['description'] = gettext("Gateway Monitoring Daemon");
 			$services[] = $pconfig;
 		}
-	
+
 		if (isset($config['snmpd']['enable'])) {
 			$pconfig = array();
 			$pconfig['name'] = "bsnmpd";
 			$pconfig['description'] = gettext("SNMP Service");
 			$services[] = $pconfig;
 		}
-	
+
 		if (is_array($config['igmpproxy']['igmpentry']) && (count($config['igmpproxy']['igmpentry']) > 0)) {
 			$pconfig = array();
 			$pconfig['name'] = "igmpproxy";
 			$pconfig['description'] = gettext("IGMP proxy");
 			$services[] = $pconfig;
 		}
-	
+
 		if (isset($config['installedpackages']['miniupnpd']) && $config['installedpackages']['miniupnpd']['config'][0]['enable']) {
 			$pconfig = array();
 			$pconfig['name'] = "miniupnpd";
 			$pconfig['description'] = gettext("UPnP Service");
 			$services[] = $pconfig;
 		}
-	
+
 		if (isset($config['installedpackages']['routed']) && $config['installedpackages']['routed']['config'][0]['enable']) {
 			$pconfig = array();
 			$pconfig['name'] = "routed";
 			$pconfig['description'] = gettext("RIP Daemon");
 			$services[] = $pconfig;
 		}
-	
+
 		if (isset($config['ipsec']['enable'])) {
 			$pconfig = array();
 			$pconfig['name'] = "ipsec";
 			$pconfig['description'] = gettext("IPsec VPN");
 			$services[] = $pconfig;
 		}
-	
+
 		if (isset($config['system']['enablesshd'])) {
 			$pconfig = array();
 			$pconfig['name'] = "sshd";
 			$pconfig['description'] = gettext("Secure Shell Daemon");
 			$services[] = $pconfig;
 		}
-	
+
 		foreach (array('server', 'client') as $mode) {
 			if (is_array($config['openvpn']["openvpn-{$mode}"])) {
 				foreach ($config['openvpn']["openvpn-{$mode}"] as $id => $setting) {
@@ -397,7 +397,7 @@ if (!function_exists('get_services')) {
 				}
 			}
 		}
-	
+
 		if (count($config['load_balancer']['virtual_server']) && count($config['load_balancer']['lbpool'])) {
 			$pconfig = array();
 			$pconfig['name'] = "relayd";
@@ -410,7 +410,7 @@ if (!function_exists('get_services')) {
 }
 
 if (!function_exists('find_service_by_name')) {
-	
+
 	function find_service_by_name($name) {
 		$services = get_services();
 		foreach ($services as $service)
@@ -422,7 +422,7 @@ if (!function_exists('find_service_by_name')) {
 }
 
 if (!function_exists('find_service_by_openvpn_vpnid')) {
-		
+
 	function find_service_by_openvpn_vpnid($vpnid) {
 		$services = get_services();
 		foreach ($services as $service)
@@ -435,8 +435,8 @@ if (!function_exists('find_service_by_openvpn_vpnid')) {
 }
 
 if (!function_exists('find_service_by_cp_zone')) {
-		
-	
+
+
 	function find_service_by_cp_zone($zone) {
 		$services = get_services();
 		foreach ($services as $service)
@@ -449,8 +449,8 @@ if (!function_exists('find_service_by_cp_zone')) {
 }
 
 if (!function_exists('service_name_compare')) {
-		
-	
+
+
 	function service_name_compare($a, $b) {
 		if (strtolower($a['name']) == strtolower($b['name']))
 			return 0;
@@ -461,8 +461,8 @@ if (!function_exists('service_name_compare')) {
 }
 
 if (!function_exists('get_pkg_descr')) {
-		
-	
+
+
 	function get_pkg_descr($package_name) {
 		global $config;
 		if (is_array($config['installedpackages']['package'])) {
@@ -478,8 +478,8 @@ if (!function_exists('get_pkg_descr')) {
 }
 
 if (!function_exists('get_service_status')) {
-		
-	
+
+
 	function get_service_status($service) {
 		global $g;
 		switch ($service['name']) {
@@ -510,16 +510,16 @@ if (!function_exists('get_service_status')) {
 }
 
 if (!function_exists('get_service_status_icon')) {
-		
-	
+
+
 	function get_service_status_icon($service, $withtext = true, $smallicon = false) {
 		global $g;
 		$output = "";
 		if(get_service_status($service)) {
 			$statustext = gettext("Running");
-			
+
 			$output .= '<span class="btn btn-success"><span class="glyphicon glyphicon-play"></span></span>&nbsp;';
-			
+
 		/*
 		$output .= "<img style=\"vertical-align:middle\" title=\"" . sprintf(gettext("%s Service is"),$service["name"]) . " {$statustext}\" src=\"/themes/" . $g["theme"] . "/images/icons/";
 			$output .= ($smallicon) ? "icon_pass.gif" : "icon_service_running.gif";
@@ -527,23 +527,23 @@ if (!function_exists('get_service_status_icon')) {
 			if ($withtext)
 				$output .= "&nbsp;" . $statustext;
 	*/
-		} 
-		
-		
+		}
+
+
 		else {
 			$service_enabled = is_service_enabled($service['name']);
 			$statustext = ($service_enabled) ? gettext("Stopped") : gettext("Disabled");
-			
+
 			$output .= '<span class="btn btn-danger"><span class="glyphicon glyphicon-stop"></span></span>&nbsp;';
 		/*
-		
+
 			$output .= "<img style=\"vertical-align:middle\" title=\"" . sprintf(gettext("%s Service is"),$service["name"]) . " {$statustext}\" src=\"/themes/" . $g["theme"] . "/images/icons/";
 			$output .= ($smallicon) ? "icon_block.gif" : "icon_service_stopped.gif";
 			$output .= "\" alt=\"status\" />&nbsp;";
 			if ($withtext)
 				$output .= "&nbsp;<font color=\"white\">{$statustext}</font>";
 	*/
-	
+
 		}
 		return $output;
 	}
@@ -552,8 +552,8 @@ if (!function_exists('get_service_status_icon')) {
 }
 
 if (!function_exists('get_service_control_links')) {
-		
-	
+
+
 	function get_service_control_links($service, $addname = false) {
 		global $g;
 		$output = "";
@@ -605,8 +605,8 @@ if (!function_exists('get_service_control_links')) {
 }
 
 if (!function_exists('service_control_start')) {
-		
-	
+
+
 	function service_control_start($name, $extras) {
 		global $g;
 		switch($name) {
@@ -673,7 +673,7 @@ if (!function_exists('service_control_start')) {
 }
 
 if (!function_exists('service_control_stop')) {
-		
+
 
 	function service_control_stop($name, $extras) {
 		global $g;
@@ -750,8 +750,8 @@ if (!function_exists('service_control_stop')) {
 }
 
 if (!function_exists('service_control_restart')) {
-		
-	
+
+
 	function service_control_restart($name, $extras) {
 		global $g;
 		switch($name) {

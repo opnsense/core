@@ -80,7 +80,7 @@ function vpn_ipsec_convert_to_modp($index)
 	case '15':
 		$convertion = "modp3072";
 		break;
-	case '16':      
+	case '16':
 		$convertion = "modp4096";
 		break;
 	case '17':
@@ -152,7 +152,7 @@ function vpn_ipsec_configure($ipchg = false)
 			mkdir("{$g['varetc_path']}/ipsec/ipsec.d/ocspcerts");
 		if (!is_dir("{$g['varetc_path']}/ipsec/ipsec.d/reqs"))
 			mkdir("{$g['varetc_path']}/ipsec/ipsec.d/reqs");
-		
+
 
 		if ($g['booting'])
 			echo gettext("Configuring IPsec VPN... ");
@@ -580,7 +580,7 @@ EOD;
 					$ikelifeline = "ikelifetime = {$ph1ent['lifetime']}s";
 
 				$rightsourceip = NULL;
-				if (!empty($a_client['pool_address'])) 
+				if (!empty($a_client['pool_address']))
 					$rightsourceip = "\trightsourceip = {$a_client['pool_address']}/{$a_client['pool_netbits']}\n";
 
 				$authentication = "";
@@ -830,7 +830,7 @@ EOD;
 		/* Update configuration changes */
 		mwexec("/usr/local/sbin/ipsec reload", false);
 	} else {
-		mwexec("/usr/local/sbin/ipsec start", false); 
+		mwexec("/usr/local/sbin/ipsec start", false);
 	}
 
 	if ($natfilterrules == true)

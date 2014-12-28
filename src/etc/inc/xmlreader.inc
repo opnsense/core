@@ -82,11 +82,11 @@ function add_elements(&$cfgarray, &$parser) {
                 case XMLReader::ELEMENT:
                         if (isset($listtags[strtolower($parser->name)])) {
 				$cfgref =& $cfgarray[$parser->name][count($cfgarray[$parser->name])];
-                        	if (!$parser->isEmptyElement) {
+				if (!$parser->isEmptyElement) {
                                         add_elements($cfgref, $parser);
 				} else
 					$cfgref = array();
-					
+
                         } else {
 				if (isset($cfgarray[$parser->name]) && (!is_array($cfgarray[$parser->name]) || !isset($cfgarray[$parser->name][0]))) {
 					$nodebkp = $cfgarray[$parser->name];
@@ -97,7 +97,7 @@ function add_elements(&$cfgarray, &$parser) {
 				} else
 					$cfgref =& $cfgarray[$parser->name];
 
-                        	if ($parser->isEmptyElement) {
+				if ($parser->isEmptyElement) {
 					if (is_array($cfgref))
 						$cfgref[] = array();
 					else
@@ -173,7 +173,7 @@ function parse_xml_config_raw($cffile, $rootobj, $isstring = "false") {
 		foreach ($rootobj as $rootobj_name)
 			if ($parsedcfg[$rootobj_name])
 				break;
-		
+
 		return $parsedcfg[$rootobj_name];
 	} else {
 		return $parsedcfg;

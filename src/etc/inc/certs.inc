@@ -148,7 +148,7 @@ function ca_import(& $ca, $str, $key="", $serial=0) {
 		$ca['serial'] = $serial;
 	$subject = cert_get_subject($str, false);
 	$issuer = cert_get_issuer($str, false);
-	
+
 	// Find my issuer unless self-signed
 	if($issuer <> $subject) {
 		$issuer_crt =& lookup_ca_by_subject($issuer);
@@ -258,7 +258,7 @@ function cert_import(& $cert, $crt_str, $key_str) {
 
 	$subject = cert_get_subject($crt_str, false);
 	$issuer = cert_get_issuer($crt_str, false);
-	
+
 	// Find my issuer unless self-signed
 	if($issuer <> $subject) {
 		$issuer_crt =& lookup_ca_by_subject($issuer);
@@ -438,7 +438,7 @@ function cert_get_issuer($str_crt, $decode = true) {
 
 	$inf_crt = openssl_x509_parse($str_crt);
 	$components = $inf_crt['issuer'];
-	
+
 	if (empty($components) || !is_array($components))
 		return "unknown";
 

@@ -58,7 +58,7 @@ function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = "", $fil
 		exec("/usr/sbin/fifolog_reader " . escapeshellarg($logfile) . " | /usr/bin/grep 'filterlog:' | /usr/bin/tail -r -n {$tail}", $logarr);
 	else
 		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/grep 'filterlog:' | /usr/bin/tail -r -n {$tail}", $logarr);
-	
+
 	$filterlog = array();
 	$counter = 0;
 
@@ -70,7 +70,7 @@ function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = "", $fil
 		$flent = parse_filter_line($logent);
 		if (!$filterinterface || ($filterinterface == $flent['interface']))
 		{
-			if ( ( ($flent != "") && (!is_array($filtertext)) && (match_filter_line ($flent, $filtertext))) || 
+			if ( ( ($flent != "") && (!is_array($filtertext)) && (match_filter_line ($flent, $filtertext))) ||
 			     ( ($flent != "") && ( is_array($filtertext)) && (match_filter_field($flent, $filtertext)) ) ) {
 				$counter++;
 				$filterlog[] = $flent;
@@ -144,14 +144,14 @@ function parse_filter_line($line) {
 	$flent['rulenum'] = $rule_data[$field++];
 	$flent['subrulenum'] = $rule_data[$field++];
 	$flent['anchor'] = $rule_data[$field++];
-	$field++; // skip field 
+	$field++; // skip field
 	$flent['realint'] = $rule_data[$field++];
 	$flent['interface']  = convert_real_interface_to_friendly_descr($flent['realint']);
 	$flent['reason'] = $rule_data[$field++];
 	$flent['act'] = $rule_data[$field++];
 	$flent['direction'] = $rule_data[$field++];
 	$flent['version'] = $rule_data[$field++];
-	
+
 
 	if ($flent['version'] == '4' || $flent['version'] == '6') {
 		if ($flent['version'] == '4') {

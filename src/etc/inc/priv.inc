@@ -49,14 +49,14 @@ require_once("priv.defs.inc");
 /* Load and process custom privs. */
 function get_priv_files($directory) {
 	$dir_array = array();
-	if(!is_dir($directory)) 
+	if(!is_dir($directory))
 		return;
 	if ($dh = opendir($directory)) {
 		while (($file = readdir($dh)) !== false) {
 			$canadd = 0;
-			if($file == ".") 
+			if($file == ".")
 				$canadd = 1;
-			if($file == "..") 
+			if($file == "..")
 				$canadd = 1;
 			if($canadd == 0)
 				array_push($dir_array, $file);
@@ -70,13 +70,13 @@ function get_priv_files($directory) {
 
 // Load and sort privs
 $dir_array = get_priv_files("/usr/local/etc/inc/priv");
-foreach ($dir_array as $file) 
-	if (!is_dir("/usr/local/etc/inc/priv/{$file}") && stristr($file,".inc")) 
+foreach ($dir_array as $file)
+	if (!is_dir("/usr/local/etc/inc/priv/{$file}") && stristr($file,".inc"))
 		include("priv/{$file}");
 if(is_dir("/usr/local/pkg/priv")) {
 	$dir_array = get_priv_files("/usr/local/pkg/priv");
-	foreach ($dir_array as $file) 
-		if (!is_dir("/usr/local/pkg/priv/{$file}") && stristr($file,".inc")) 
+	foreach ($dir_array as $file)
+		if (!is_dir("/usr/local/pkg/priv/{$file}") && stristr($file,".inc"))
 			include("/usr/local/pkg/priv/{$file}");
 }
 
@@ -121,7 +121,7 @@ function cmp_page_matches($page, & $matches, $fullwc = true) {
 		/* compare exact or wildcard match */
 		$match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $match);
 		$result = preg_match("@^/{$match}$@", "/{$page}");
-		
+
 		if ($result)
 			return true;
 	}
@@ -245,10 +245,10 @@ function getAllowedPages($username) {
 
 	if (!function_exists("ldap_connect"))
 		return;
-	
+
 	$allowed_pages = array();
 	$allowed_groups = array();
-	
+
 	$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
 	// obtain ldap groups if we are in ldap mode
 	if ($authcfg['type'] == "ldap")

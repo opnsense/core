@@ -122,7 +122,7 @@ class SendMonitor extends Monitor {
 
 function echo_lbaction($action) {
 	global $config;
-  
+
 	// Index actions by name
 	$actions_a = array();
 	for ($i=0; isset($config['load_balancer']['lbaction'][$i]); $i++)
@@ -191,8 +191,8 @@ function relayd_configure($kill_first=false) {
 			$check_a[$type['name']] = $mon->p();
 		}
 	}
-	
-  
+
+
 	$fd = fopen("{$g['varetc_path']}/relayd.conf", "w");
 	$conf .= "log updates \n";
 
@@ -200,21 +200,21 @@ function relayd_configure($kill_first=false) {
 	   if not specified by the user:
 	   - use a 1000 ms timeout value as in pfsense 2.0.1 and above
 	   - leave interval and prefork empty, relayd will use its default values */
-	
+
 	if (isset($setting['timeout']) && !empty($setting['timeout'])) {
 		$conf .= "timeout ".$setting['timeout']." \n";
 	} else {
 		$conf .= "timeout 1000 \n";
 	}
-	
+
 	if (isset($setting['interval']) && !empty($setting['interval'])) {
 		$conf .= "interval ".$setting['interval']." \n";
 	}
-	
+
 	if (isset($setting['prefork']) && !empty($setting['prefork'])) {
 		$conf .= "prefork ".$setting['prefork']." \n";
 	}
-	
+
 	/* reindex pools by name as we loop through the pools array */
 	$pools = array();
 	/* Virtual server pools */
@@ -265,7 +265,7 @@ function relayd_configure($kill_first=false) {
 
 	if(is_array($vs_a)) {
 		for ($i = 0; isset($vs_a[$i]); $i++) {
-			
+
 			$append_port_to_name = false;
 			if (is_alias($pools[$vs_a[$i]['poolname']]['port'])) {
 				$dest_port_array = filter_expand_alias_array($pools[$vs_a[$i]['poolname']]['port']);

@@ -57,7 +57,7 @@ if(!function_exists("pfSenseHeader")) {
 	                        $protocol = "https";
 	                else
 	                        $protocol = "http";
-	
+
 	                $port = ":{$_SERVER['SERVER_PORT']}";
 	                if ($_SERVER['SERVER_PORT'] == "80" && $protocol == "http")
 	                        $port = "";
@@ -90,9 +90,9 @@ if(!function_exists("get_menu_messages")) {
 
 				if(is_array($notices)) {
 					$notice_msgs = "<ul class=\"dropdown-menu\" role=\"menu\">";
-					
+
 					$notice_msgs .= "<li><a href=\"#\" onclick=\"notice_action('acknowledge','all');\" >".gettext("Acknowledge All Notices")."</a></li><li class=\"divider\"></li>";
-					
+
 					foreach ($notices as $key => $value) {
 						$date = date("m-d-y H:i:s", $key);
 						$noticemsg = ($value['notice'] != "" ? $value['notice'] : $value['id']);
@@ -105,28 +105,28 @@ if(!function_exists("get_menu_messages")) {
 						$notice_msgs .= "<li><a href=\"#\" {$alert_link} {$alert_action}>{$date} [ ".htmlspecialchars($noticemsg)."]</a></li>";
 						}
 					$notice_msgs .="</ul>";
-										
-                   
+
+
 					$menu_messages = '';
-                   
+
                     if(count($notices)==1)
-                    	$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notice");
+			$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notice");
                     else
-                    	$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notices");
-                    	
+			$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notices");
+
                     $menu_messages.="<a href=\"/\" class=\"dropdown-toggle \" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\"><span class=\"text-primary\">{$msg}&nbsp;</span><span class=\"caret text-primary\"></span></a>{$notice_msgs}\n";
-                   
+
                     }
 			}
 		else {
 			$menu_messages='';
-			$menu_messages.= "<a href=\"#\">".$config['system']['hostname'] . "." . $config['system']['domain']."</a>"; 
+			$menu_messages.= "<a href=\"#\">".$config['system']['hostname'] . "." . $config['system']['domain']."</a>";
 			$menu_messages.='';
 			}
 		return ($menu_messages);
 		}
 }
-				
+
 if(!function_exists("dom_title")) {
 	function dom_title($title_msg,$width=NULL){
 		$width=preg_replace("/\D+/","",$width);
@@ -135,7 +135,7 @@ if(!function_exists("dom_title")) {
 			}
 		if (!empty($title_msg)){
 			$title_msg=preg_replace("/\s+/"," ",$title_msg);
-	   	    $title_msg=preg_replace("/'/","\'",$title_msg);
+		    $title_msg=preg_replace("/'/","\'",$title_msg);
 			return "onmouseout=\"this.style.color = ''; domTT_mouseout(this, event);\" onmouseover=\"domTT_activate(this, event, 'content', '{$title_msg}', 'trail', true, 'delay', 250, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle' $width);\"";
 			}
 		}

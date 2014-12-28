@@ -31,7 +31,7 @@
 	DISABLE_PHP_LINT_CHECKING
 */
 /*
-	pfSense_BUILDER_BINARIES:	
+	pfSense_BUILDER_BINARIES:
 	pfSense_MODULE:	openvpn
 */
 /*

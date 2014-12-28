@@ -25,7 +25,7 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-    
+
     pfSense_BUILDER_BINARIES:   /usr/sbin/unbound  /usr/sbin/unbound-anchor    /usr/sbin/unbound-checkconf
     pfSense_BUILDER_BINARIES:   /usr/sbin/unbound-control    /usr/sbin/unbound-control-setup
     pfSense_MODULE: unbound
@@ -40,8 +40,8 @@ function unbound_optimization() {
     global $config;
 
     $optimization_settings = array();
-    
-    /* 
+
+    /*
      * Set the number of threads equal to number of CPUs.
      * Use 1 to disable threading, if for some reason this sysctl fails.
      */
@@ -50,7 +50,7 @@ function unbound_optimization() {
         $optimization['number_threads'] = "num-threads: {$numprocs}";
     else
         $optimization['number_threads'] = "num-threads: 1";
-    
+
     // Slabs to help reduce lock contention.
     if ($numprocs > 4) {
         $optimization['msg_cache_slabs'] = "msg-cache-slabs: {$numprocs}";
@@ -63,7 +63,7 @@ function unbound_optimization() {
         $optimization['infra_cache_slabs'] = "infra-cache-slabs: 4";
         $optimization['key_cache_slabs'] = "key-cache-slabs: 4";
     }
-    
+
     // Memory usage default of 4MB
     $optimization['msg_cache_size'] = "msg-cache-size: 4m";
     $optimization['rrset_cache_size'] = "rrset-cache-size: 8m";
@@ -431,7 +431,7 @@ function unbound_add_domain_overrides($pvt=false) {
     $domains = $config['unbound']['domainoverrides'];
 
     $sorted_domains = msort($domains, "domain");
-    $result = array();      
+    $result = array();
     foreach($sorted_domains as $domain) {
         $domain_key = current($domain);
         if (!isset($result[$domain_key]))
@@ -453,7 +453,7 @@ function unbound_add_domain_overrides($pvt=false) {
             $domain_entries .= "\tstub-prime: no\n";
         }
     }
-    
+
     if ($pvt == true)
         return $domain_entries;
     else

@@ -72,7 +72,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 			display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
 			exit;
 		}
-} else 
+} else
 	$_SESSION['Post_Login'] = true;
 
 	/*
@@ -86,7 +86,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 		exit;
 	}
 
-	/* 
+	/*
 	 * Close session data to allow other scripts from same host to come in.
 	 * A session can be reactivated from calling session_start again
 	 */
@@ -113,18 +113,18 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 
 			<meta charset="UTF-8" />
 			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-			
+
 			<meta name="robots" content="index, follow, noodp, noydir" />
 			<meta name="keywords" content="" />
 			<meta name="description" content="" />
 			<meta name="copyright" content="" />
 			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-			
+
 			<title><?=$http_code?></title>
-			
+
 			<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
 			<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
-			
+
 			<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 		</head>
 		<body class="page-login">
@@ -139,7 +139,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 			</div>
 		</body>
 	</html>
-		
+
 
 	<?php
 
@@ -168,7 +168,7 @@ function display_login_form() {
 		exit;
 	}
 
-	/* Check against locally configured IP addresses, which will catch when someone 
+	/* Check against locally configured IP addresses, which will catch when someone
 	   port forwards WebGUI access from WAN to an internal IP on the router. */
 	global $FilterIflist, $nifty_background;
 	$local_ip = false;
@@ -222,18 +222,18 @@ function display_login_form() {
 	<!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
 	<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
 		<head>
-	                
+
 			<meta charset="UTF-8" />
 			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-			
+
 			<meta name="robots" content="index, follow, noodp, noydir" />
 			<meta name="keywords" content="" />
 			<meta name="description" content="" />
 			<meta name="copyright" content="" />
 			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-			
+
 			<title><?=gettext("Login"); ?></title>
-			
+
 			<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
 			<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
 
@@ -241,75 +241,75 @@ function display_login_form() {
 
 		</head>
 		<body class="page-login">
-			
-	    	<div class="container">
-		    	<?php 
+
+		<div class="container">
+			<?php
 					if(is_ipaddr($http_host) && !$local_ip && !isset($config['system']['webgui']['nohttpreferercheck'])) {
 						$nifty_background = "#999";
-						print_info_box(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this forwarding, you may be the target of a man-in-the-middle attack.")); 
+						print_info_box(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this forwarding, you may be the target of a man-in-the-middle attack."));
 					}
 					$loginautocomplete = isset($config['system']['webgui']['loginautocomplete']) ? '' : 'autocomplete="off"';
 				?>
-				
-			
-		    	<main class="login-modal-container">
+
+
+			<main class="login-modal-container">
 				    <header class="login-modal-head" style="height:55px;">
-		            	<a class="navbar-brand" href="/">
-	    					<img class="brand-logo" src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
-	    					<img class="brand-icon" src="/themes/<?=$g['theme'];?>/assets/images/icon-logo.png" height="30" width="29"/>
+				<a class="navbar-brand" href="/">
+						<img class="brand-logo" src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
+						<img class="brand-icon" src="/themes/<?=$g['theme'];?>/assets/images/icon-logo.png" height="30" width="29"/>
 						</a>
 				    </header>
-				    
+
 				    <div class="login-modal-content">
 					    <div id="inputerrors"><?=$_SESSION['Login_Error'];?></div>
-					    
+
 					    <form class="clearfix" id="iform" name="iform" method="post" <?= $loginautocomplete ?> action="<?=$_SERVER['SCRIPT_NAME'];?>">
-		    		        
+
 		                  <div class="form-group">
 		                    <label for="usernamefld"><?=gettext("Username:"); ?>*</label>
 		                    <input id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" />
 		                  </div>
-		                  
+
 		                  <div class="form-group">
 		                    <label for="passwordfld"><?=gettext("Password:"); ?>*</label>
 		                    <input id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
 		                  </div>
-		                  
+
 		                  <input type="hidden" name="login" value="1" /><!-- XXX login workaround -->
-		                  
+
 		                  <button type="submit" name="login" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
-		                  
+
 		                </form>
-		                
+
 		                <?php if (!$have_cookies && isset($_POST['login'])): ?>
 						<br /><br />
 						<span class="text-danger">
 							<?= gettext("Your browser must support cookies to login."); ?>
 						</span>
 						<?php endif; ?>
-						
+
 				    </div>
-				     
-				</main>   
-				
-		    	</div>
-				
+
+				</main>
+
+			</div>
+
 				<footer class="login-foot container-fluid">
 		                <a target="_blank" href="<?=$g['product_website_footer']?>" class="redlnk"><?=$g['product_name']?></a> is &copy;
-	 					<?=$g['product_copyright_years']?> by <a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright']?></a> All Rights Reserved.
-						[<a href="/license.php" class="tblnk">view license</a>] 
+						<?=$g['product_copyright_years']?> by <a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright']?></a> All Rights Reserved.
+						[<a href="/license.php" class="tblnk">view license</a>]
 				</footer>
-		   
+
 		        <script src="/themes/<?=$g['theme'];?>/build/js/main.min.js" type="text/javascript"></script>
-		        
+
 				<script type="text/javascript">
 				//<![CDATA[
 				$(document).ready(function() { jQuery('#usernamefld').focus(); });
 				//]]>
-				</script>	
+				</script>
 			</body>
-		</html>	
-			
+		</html>
+
 
 	<?php
 } // end function

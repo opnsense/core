@@ -51,7 +51,7 @@ function gmirror_get_status() {
 			}
 		}
 	}
-	/* Return an hash of mirrors and components */	
+	/* Return an hash of mirrors and components */
 	return $mirrors;
 }
 

@@ -622,7 +622,7 @@ class altq_root_queue {
 		$form .= "<a href=\"firewall_shaper_queues.php?interface=";
 		$form .= $this->GetInterface() . "&amp;queue=";
 		$form .= $this->GetQname() . "&amp;action=delete\" class=\"btn btn-default btn-xs\"";
-		
+
 		$form .= "  title=\"Disable shaper on interface\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
 		$form .= "</td></tr>";
 
@@ -1268,7 +1268,7 @@ class priq_queue {
 		$form .= "<a href=\"firewall_shaper_queues.php?interface=";
 		$form .= $this->GetInterface() . "&amp;queue=";
 		$form .= $this->GetQname() . "&amp;action=delete\" class=\"btn btn-default btn-xs\"";
-		
+
 		$form .= "  title=\"" . gettext("Delete queue from interface") . "\"  >";
 		$form .= "<span class=\"glyphicon glyphicon-remove\"></span></a></td></tr>";
 

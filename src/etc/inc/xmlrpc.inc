@@ -29,7 +29,7 @@
 */
 
 /*
-	pfSense_BUILDER_BINARIES:	
+	pfSense_BUILDER_BINARIES:
 	pfSense_MODULE:	utils
 */
 
@@ -47,7 +47,7 @@ function xmlrpc_params_to_php($params) {
         }
         return $array;
 }
- 
+
 /*
  *   xmlrpc_value_to_php: Convert an XMLRPC value into a PHP scalar/array and return it.
  */

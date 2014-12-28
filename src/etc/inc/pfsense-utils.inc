@@ -529,7 +529,7 @@ function restore_config_section($section_name, $new_contents) {
  *  merge_config_section($section_name, new_contents):   restore a configuration section,
  *                                                  and write the configuration out
  *                                                  to disk/cf.  But preserve the prior
- * 													structure if needed
+ *													structure if needed
  */
 function merge_config_section($section_name, $new_contents) {
 	global $config;
@@ -672,7 +672,7 @@ function call_pfsense_method($method, $params, $timeout = 0) {
 
 	$xmlrpc_base_url = get_active_xml_rpc_base_url();
 	$xmlrpc_path = $g['xmlrpcpath'];
-	
+
 	$xmlrpcfqdn = preg_replace("(https?://)", "", $xmlrpc_base_url);
 	$ip = gethostbyname($xmlrpcfqdn);
 	if($ip == $xmlrpcfqdn)
@@ -717,7 +717,7 @@ function call_pfsense_method($method, $params, $timeout = 0) {
  */
 function check_firmware_version($tocheck = "all", $return_php = true) {
 	global $g, $config;
-	
+
 	$xmlrpc_base_url = get_active_xml_rpc_base_url();
 	$xmlrpcfqdn = preg_replace("(https?://)", "", $xmlrpc_base_url);
 	$ip = gethostbyname($xmlrpcfqdn);

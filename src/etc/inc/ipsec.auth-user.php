@@ -31,7 +31,7 @@
 	DISABLE_PHP_LINT_CHECKING
 */
 /*
-	pfSense_BUILDER_BINARIES:	
+	pfSense_BUILDER_BINARIES:
 	pfSense_MODULE:	openvpn
 */
 /*
@@ -129,7 +129,7 @@ foreach ($authmodes as $authmode) {
 	$authenticated = authenticate_user($username, $password, $authcfg, $attributes);
 	if ($authenticated == true) {
 		if (stristr($authmode, "local")) {
-			$user = getUserEntry($username); 
+			$user = getUserEntry($username);
 			if (!is_array($user) || !userHasPrivilege($user, "user-ipsec-xauth-dialin")) {
 				$authenticated = false;
 				syslog(LOG_WARNING, "user '{$username}' cannot authenticate through IPsec since the required privileges are missing.\n");
@@ -153,7 +153,7 @@ if ($authenticated == false) {
 }
 
 @include_once('ipsec.attributes.php');
-        
+
 syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
 closelog();
 

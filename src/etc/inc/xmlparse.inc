@@ -44,7 +44,7 @@ function listtags() {
                 'element', 'encryption-algorithm-option',
                 'field', 'fieldname',
                 'gateway_item', 'gateway_group', 'gif', 'gre', 'group',
-                'hash-algorithm-option', 'hosts', 'member', 'ifgroupentry', 'igmpentry', 'interface_array', 'item', 'key',        
+                'hash-algorithm-option', 'hosts', 'member', 'ifgroupentry', 'igmpentry', 'interface_array', 'item', 'key',
                 'lagg', 'lbaction', 'lbpool', 'l7rules', 'lbprotocol',
                 'member', 'menu', 'tab', 'mobilekey', 'monitor_type', 'mount',
 		'npt', 'ntpserver',
@@ -162,7 +162,7 @@ function parse_xml_config_pkg($cffile, $rootobj, $isstring = "false") {
 	$cfg =parse_xml_config_raw($cffile, $rootobj, $isstring);
 	if ($cfg == -1)
 		return array();
-	
+
 	return $cfg;
 }
 
@@ -178,7 +178,7 @@ function parse_xml_config_raw($cffile, $rootobj, $isstring = "false") {
 
 	xml_set_element_handler($xml_parser, "startElement", "endElement");
 	xml_set_character_data_handler($xml_parser, "cdata");
-	xml_parser_set_option($xml_parser,XML_OPTION_SKIP_WHITE, 1); 
+	xml_parser_set_option($xml_parser,XML_OPTION_SKIP_WHITE, 1);
 
 	if (!($fp = fopen($cffile, "r"))) {
 		log_error(gettext("Error: could not open XML input") . "\n");
@@ -202,7 +202,7 @@ function parse_xml_config_raw($cffile, $rootobj, $isstring = "false") {
 		foreach ($rootobj as $rootobj_name)
 			if ($parsedcfg[$rootobj_name])
 				break;
-		
+
 		if (!$parsedcfg[$rootobj_name]) {
 			log_error(sprintf(gettext("XML error: no %s object found!") . "\n", implode(" or ", $rootobj)));
 			return -1;

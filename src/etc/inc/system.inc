@@ -31,7 +31,7 @@
 /*
 	pfSense_BUILDER_BINARIES:	/usr/sbin/powerd	/usr/bin/killall	/sbin/route
 	pfSense_BUILDER_BINARIES:	/bin/hostname	/bin/ls	/usr/local/sbin/syslogd
-	pfSense_BUILDER_BINARIES:	/usr/sbin/pccardd	/usr/local/sbin/lighttpd	/bin/chmod 	/bin/mkdir
+	pfSense_BUILDER_BINARIES:	/usr/sbin/pccardd	/usr/local/sbin/lighttpd	/bin/chmod	/bin/mkdir
 	pfSense_BUILDER_BINARIES:	/usr/bin/tar		/usr/local/sbin/ntpd	/usr/local/sbin/ntpdate
 	pfSense_BUILDER_BINARIES:	/usr/bin/nohup	/sbin/dmesg	/usr/local/sbin/atareinit	/sbin/kldload
 	pfSense_BUILDER_BINARIES:	/usr/local/sbin/filterdns
@@ -187,7 +187,7 @@ function get_searchdomains() {
 	global $config, $g;
 
 	$master_list = array();
-	
+
 	// Read in dhclient nameservers
 	$search_list = glob("/var/etc/searchdomain_*");
 	if (is_array($search_list)) {
@@ -196,7 +196,7 @@ function get_searchdomains() {
 			if (!is_array($contents))
 				continue;
 			foreach ($contents as $dns) {
-				if(is_hostname($dns)) 
+				if(is_hostname($dns))
 					$master_list[] = $dns;
 			}
 		}
@@ -208,7 +208,7 @@ function get_searchdomains() {
 function get_nameservers() {
 	global $config, $g;
 	$master_list = array();
-	
+
 	// Read in dhclient nameservers
 	$dns_lists = glob("/var/etc/nameserver_*");
 	if (is_array($dns_lists)) {
@@ -217,7 +217,7 @@ function get_nameservers() {
 			if (!is_array($contents))
 				continue;
 			foreach ($contents as $dns) {
-				if(is_ipaddr($dns)) 
+				if(is_ipaddr($dns))
 					$master_list[] = $dns;
 			}
 		}
@@ -312,7 +312,7 @@ function system_hosts_generate()
 	}
 
 	/*
-	 * Do not remove this because dhcpleases monitors with kqueue it needs to be 
+	 * Do not remove this because dhcpleases monitors with kqueue it needs to be
 	 * killed before writing to hosts files.
 	 */
 	if (file_exists("{$g['varrun_path']}/dhcpleases.pid")) {
@@ -340,9 +340,9 @@ function system_hosts_generate()
 function system_dhcpleases_configure()
 {
 	global $config, $g;
-	
+
 	/* Start the monitoring process for dynamic dhcpclients. */
-	if ((isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcp'])) 
+	if ((isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcp']))
 		|| (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcp']))) {
 		/* Make sure we do not error out */
 		mwexec("/bin/mkdir -p {$g['dhcpd_chroot_path']}/var/db");
@@ -433,7 +433,7 @@ function system_routing_configure($interface = '')
 		$interfacegw = "wan";
 		$gatewayip = get_interface_gateway("wan");
 		@touch("{$g['tmp_path']}/{$defaultif}_defaultgw");
-	}	
+	}
 	if ($foundgwv6 == false) {
 		$defaultifv6 = get_real_interface("wan");
 		$interfacegwv6 = "wan";
@@ -660,33 +660,33 @@ function system_syslogd_start()
 			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/routing.log\n";
 
 		$syslogconf .= "!ntp,ntpd,ntpdate\n";
-		if (!isset($syslogcfg['disablelocallogging'])) 
+		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/ntpd.log\n";
 
 		$syslogconf .= "!ppp\n";
-		if (!isset($syslogcfg['disablelocallogging'])) 
+		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/ppp.log\n";
 
 		$syslogconf .= "!pptps\n";
-		if (!isset($syslogcfg['disablelocallogging'])) 
+		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/pptps.log\n";
 
 		$syslogconf .= "!poes\n";
-		if (!isset($syslogcfg['disablelocallogging'])) 
+		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/poes.log\n";
 
 		$syslogconf .= "!l2tps\n";
-		if (!isset($syslogcfg['disablelocallogging'])) 
+		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/l2tps.log\n";
 
 		$syslogconf .= "!charon\n";
-		if (!isset($syslogcfg['disablelocallogging'])) 
+		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/ipsec.log\n";
 		if (isset($syslogcfg['vpn']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!openvpn\n";
-		if (!isset($syslogcfg['disablelocallogging'])) 
+		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/openvpn.log\n";
 		if (isset($syslogcfg['vpn']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
@@ -709,23 +709,23 @@ function system_syslogd_start()
 
 		$syslogconf .= "!relayd\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.* 								{$log_directive}{$g['varlog_path']}/relayd.log\n";
+			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/relayd.log\n";
 		if (isset($syslogcfg['relayd']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!hostapd\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.* 								{$log_directive}{$g['varlog_path']}/wireless.log\n";
+			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/wireless.log\n";
 		if (isset($syslogcfg['hostapd']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!filterlog\n";
-		$syslogconf .= "*.* 								{$log_directive}{$g['varlog_path']}/filter.log\n";
+		$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/filter.log\n";
 		if (isset($syslogcfg['filter']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!-{$facilitylist}\n";
-		if (!isset($syslogcfg['disablelocallogging'])) 
+		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= <<<EOD
 local3.*							{$log_directive}{$g['varlog_path']}/vpn.log
 local4.*							{$log_directive}{$g['varlog_path']}/portalauth.log
@@ -735,7 +735,7 @@ news.err;local0.none;local3.none;local4.none;			{$log_directive}{$g['varlog_path
 local7.none							{$log_directive}{$g['varlog_path']}/system.log
 security.*							{$log_directive}{$g['varlog_path']}/system.log
 auth.info;authpriv.info;daemon.info				{$log_directive}{$g['varlog_path']}/system.log
-auth.info;authpriv.info 					|exec /usr/local/sbin/sshlockout_pf 15
+auth.info;authpriv.info						|exec /usr/local/sbin/sshlockout_pf 15
 *.emerg								*
 
 EOD;
@@ -764,7 +764,7 @@ EOD;
 
 EOD;
 		}
-		/* write syslog.conf */		
+		/* write syslog.conf */
 		if (!@file_put_contents("{$g['varetc_path']}/syslog.conf", $syslogconf)) {
 			printf(gettext("Error: cannot open syslog.conf in system_syslogd_start().%s"), "\n");
 			unset($syslogconf);
@@ -929,7 +929,7 @@ function system_generate_lighty_config(
 		$server_max_request_size = "server.max-request-size    = 2097152";
 		$cgi_config = "cgi.assign                 = ( \".cgi\" => \"\" )";
 	}
-	
+
 	if (empty($port))
 		$lighty_port = "80";
 	else
@@ -944,7 +944,7 @@ function system_generate_lighty_config(
 	else
 		$max_procs = ($config['system']['webgui']['max_procs']) ? $config['system']['webgui']['max_procs'] : 2;
 
-	// Ramp up captive portal max procs, assuming each PHP process can consume up to 64MB RAM 
+	// Ramp up captive portal max procs, assuming each PHP process can consume up to 64MB RAM
 	if ($captive_portal !== false)  {
 		if ($realmem > 135 and $realmem < 256) {
 			$max_procs += 1; // 2 worker processes
@@ -1007,7 +1007,7 @@ EOD;
 
 ## FreeBSD!
 server.event-handler	= "freebsd-kqueue"
-server.network-backend 	= "writev"
+server.network-backend	= "writev"
 #server.use-ipv6 = "enable"
 
 ## modules to load
@@ -1150,7 +1150,7 @@ compress.filetype  = ("text/plain","text/css", "text/xml", "text/javascript" )
 {$captive_portal_mod_evasive}
 
 expire.url = (
-				"" => "access 50 hours",	
+				"" => "access 50 hours",
         )
 
 EOD;
@@ -1217,9 +1217,9 @@ EOD;
 			$lighty_config .= "ssl.ca-file = \"{$g['varetc_path']}/{$ca_location}\"\n\n";
 	}
 
-	// Add HTTP to HTTPS redirect	
+	// Add HTTP to HTTPS redirect
 	if ($captive_portal === false && $config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
-		if($lighty_port != "443") 
+		if($lighty_port != "443")
 			$redirectport = ":{$lighty_port}";
 		$lighty_config .= <<<EOD
 \$SERVER["socket"] == ":80" {
@@ -1390,7 +1390,7 @@ function system_ntp_configure($start_ntpd = true)
 		$ntpcfg .= 'server 127.127.22.0';
 		$ntpcfg .= ' minpoll 4 maxpoll 4';
 		if (empty($config['ntpd']['pps']['prefer'])) { /*note: this one works backwards */
-			$ntpcfg .= ' prefer'; 
+			$ntpcfg .= ' prefer';
 		}
 		if (!empty($config['ntpd']['pps']['noselect'])) {
 			$ntpcfg .= ' noselect ';
@@ -1443,7 +1443,7 @@ function system_ntp_configure($start_ntpd = true)
 		}
 		$ntpcfg .= ' minpoll 4 maxpoll 4';
 		if (empty($config['ntpd']['gps']['prefer'])) { /*note: this one works backwards */
-			$ntpcfg .= ' prefer'; 
+			$ntpcfg .= ' prefer';
 		}
 		if (!empty($config['ntpd']['gps']['noselect'])) {
 			$ntpcfg .= ' noselect ';
@@ -1491,7 +1491,7 @@ function system_ntp_configure($start_ntpd = true)
 		$ntpcfg .= "fudge 127.127.1.0 stratum 12\n";
 	}
 	/* End GPS configuration */
-	
+
 	$ntpcfg .= "\n\n# Upstream Servers\n";
 	/* foreach through ntp servers and write out to ntpd.conf */
 	foreach (explode(' ', $config['system']['timeservers']) as $ts) {
@@ -1531,41 +1531,41 @@ function system_ntp_configure($start_ntpd = true)
 	/* Access restrictions */
 	$ntpcfg .= 'restrict default';
 	if (empty($config['ntpd']['kod'])) { /*note: this one works backwards */
-		$ntpcfg .= ' kod limited'; 
+		$ntpcfg .= ' kod limited';
 	}
 	if (empty($config['ntpd']['nomodify'])) { /*note: this one works backwards */
-		$ntpcfg .= ' nomodify'; 
+		$ntpcfg .= ' nomodify';
 	}
 	if (!empty($config['ntpd']['noquery'])) {
 		$ntpcfg .= ' noquery';
 	}
 	if (empty($config['ntpd']['nopeer'])) { /*note: this one works backwards */
-		$ntpcfg .= ' nopeer'; 
+		$ntpcfg .= ' nopeer';
 	}
 	if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
-		$ntpcfg .= ' notrap'; 
+		$ntpcfg .= ' notrap';
 	}
 	if (!empty($config['ntpd']['noserve'])) {
 		$ntpcfg .= ' noserve';
 	}
 	$ntpcfg .= "\nrestrict -6 default";
 	if (empty($config['ntpd']['kod'])) { /*note: this one works backwards */
-		$ntpcfg .= ' kod limited'; 
+		$ntpcfg .= ' kod limited';
 	}
 	if (empty($config['ntpd']['nomodify'])) { /*note: this one works backwards */
-		$ntpcfg .= ' nomodify'; 
+		$ntpcfg .= ' nomodify';
 	}
 	if (!empty($config['ntpd']['noquery'])) {
 		$ntpcfg .= ' noquery';
 	}
 	if (empty($config['ntpd']['nopeer'])) { /*note: this one works backwards */
-		$ntpcfg .= ' nopeer'; 
+		$ntpcfg .= ' nopeer';
 	}
 	if (!empty($config['ntpd']['noserve'])) {
 		$ntpcfg .= ' noserve';
 	}
 	if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
-		$ntpcfg .= ' notrap'; 
+		$ntpcfg .= ' notrap';
 	}
 	$ntpcfg .= "\n";
 
@@ -1576,7 +1576,7 @@ function system_ntp_configure($start_ntpd = true)
 		file_put_contents('/var/db/leap-seconds', $leapsec);
 		$ntpcfg .= "leapfile /var/db/leap-seconds\n";
 	}
-	
+
 
 	if (empty($config['ntpd']['interface']))
 		if (is_array($config['installedpackages']['openntpd']) && !empty($config['installedpackages']['openntpd']['config'][0]['interface']))
@@ -1619,7 +1619,7 @@ function system_ntp_configure($start_ntpd = true)
 
 	/* start opentpd, set time now and use /var/etc/ntpd.conf */
 	mwexec("/usr/local/sbin/ntpd -g -c {$g['varetc_path']}/ntpd.conf -p {$g['varrun_path']}/ntpd.pid", false, true);
-	
+
 	// Note that we are starting up
 	log_error("NTPD is starting up.");
 	return;
@@ -1635,10 +1635,10 @@ function sync_system_time() {
 	foreach (explode(' ', $config['system']['timeservers']) as $ts) {
 		mwexec("/usr/local/sbin/ntpdate -s $ts");
 	}
-	
+
 	if ($g['booting'])
 		echo gettext("done.") . "\n";
-	
+
 }
 
 function system_halt()
@@ -1749,7 +1749,7 @@ function system_setup_sysctl()
 {
 	global $config;
 
-	activate_sysctls();	
+	activate_sysctls();
 
 	if (isset($config['system']['sharednet'])) {
 		system_disable_arp_wrong_if();
@@ -1807,7 +1807,7 @@ function system_check_reset_button() {
 	$retval = mwexec("/usr/local/sbin/" . $specplatform['name'] . "resetbtn");
 
 	if ($retval == 99) {
-		/* user has pressed reset button for 2 seconds - 
+		/* user has pressed reset button for 2 seconds -
 		   reset to factory defaults */
 		echo <<<EOD
 
@@ -1818,7 +1818,7 @@ function system_check_reset_button() {
 
 
 EOD;
-		
+
 		reset_factory_defaults();
 		system_reboot_sync();
 		exit(0);
@@ -1834,13 +1834,13 @@ EOD;
 */
 function system_identify_specific_platform() {
 	global $g;
-	
+
 	if ($g['platform'] == 'generic-pc')
 		return array('name' => 'generic-pc', 'descr' => gettext("Generic PC"));
-	
+
 	if ($g['platform'] == 'generic-pc-cdrom')
 		return array('name' => 'generic-pc-cdrom', 'descr' => gettext("Generic PC (CD-ROM)"));
-	
+
 	/* the rest of the code only deals with 'embedded' platforms */
 	if ($g['platform'] != 'nanobsd')
 		return array('name' => $g['platform'], 'descr' => $g['platform']);
@@ -1849,26 +1849,26 @@ function system_identify_specific_platform() {
 
 	if (strpos($dmesg, "PC Engines WRAP") !== false)
 		return array('name' => 'wrap', 'descr' => gettext('PC Engines WRAP'));
-	
+
 	if (strpos($dmesg, "PC Engines ALIX") !== false)
 		return array('name' => 'alix', 'descr' => gettext('PC Engines ALIX'));
 
 	if (preg_match("/Soekris net45../", $dmesg, $matches))
 		return array('name' => 'net45xx', 'descr' => $matches[0]);
-	
+
 	if (preg_match("/Soekris net48../", $dmesg, $matches))
 		return array('name' => 'net48xx', 'descr' => $matches[0]);
-		
+
 	if (preg_match("/Soekris net55../", $dmesg, $matches))
 		return array('name' => 'net55xx', 'descr' => $matches[0]);
-	
+
 	/* unknown embedded platform */
 	return array('name' => 'embedded', 'descr' => gettext('embedded (unknown)'));
 }
 
 function system_get_dmesg_boot() {
 	global $g;
-		
+
 	return file_get_contents("{$g['varlog_path']}/dmesg.boot");
 }
 

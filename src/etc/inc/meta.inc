@@ -155,7 +155,7 @@ function read_file_metadata($fpath, & $metadata, $taglist = false) {
 		$lines = explode("\n",$mdata);
 		foreach ($lines as $line) {
 
-			if (!strlen($line)) 
+			if (!strlen($line))
 				continue;
 
 			$valtag = stripos($line, "##|*");

@@ -2780,7 +2780,7 @@ function upgrade_080_to_081() {
 		foreach($ds_arr as $ds) {
 			$xml = preg_replace("/$value_search/s", "$value{$value_replace}", $xml);
 		}
-		
+
 		file_put_contents("{$g['tmp_path']}/{$xmldumpnew}", $xml);
 		mwexec("$rrdtool restore -f {$g['tmp_path']}/{$xmldumpnew} {$rrddbpath}/{$database} 2>&1");
 		unset($xml);

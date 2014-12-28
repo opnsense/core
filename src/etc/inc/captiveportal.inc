@@ -35,10 +35,10 @@
 	via returned RADIUS attributes. This page has been modified to delete any
 	added rules which may have been created by other per-user code (index.php, etc).
 	These changes are (c) 2004 Keycom PLC.
-	
+
 	pfSense_BUILDER_BINARIES:	/sbin/ipfw	/sbin/route
 	pfSense_BUILDER_BINARIES:	/usr/local/sbin/lighttpd	/usr/local/bin/minicron /sbin/pfctl
-	pfSense_BUILDER_BINARIES:	/bin/hostname	/bin/cp 
+	pfSense_BUILDER_BINARIES:	/bin/hostname	/bin/cp
 	pfSense_MODULE: captiveportal
 */
 
@@ -244,9 +244,9 @@ function get_default_captive_portal_html() {
 	global $config, $g, $cpzone;
 
 	$htmltext = <<<EOD
-<html> 
-<body> 
-<form method="post" action="\$PORTAL_ACTION\$"> 
+<html>
+<body>
+<form method="post" action="\$PORTAL_ACTION\$">
 	<input name="redirurl" type="hidden" value="\$PORTAL_REDIRURL\$">
 	<input name="zone" type="hidden" value="\$PORTAL_ZONE\$">
 	<center>
@@ -327,7 +327,7 @@ EOD;
 	</table>
 	</center>
 </form>
-</body> 
+</body>
 </html>
 
 EOD;
@@ -377,7 +377,7 @@ function captiveportal_configure_zone($cpcfg) {
 	global $config, $g, $cpzone, $cpzoneid;
 
 	$captiveportallck = lock("captiveportal{$cpzone}", LOCK_EX);
-	
+
 	if (isset($cpcfg['enable'])) {
 
 		if ($g['booting']) {
@@ -571,7 +571,7 @@ EOD;
 	}
 
 	unlock($captiveportallck);
-	
+
 	return 0;
 }
 
@@ -588,7 +588,7 @@ function captiveportal_init_webgui() {
 
 function captiveportal_init_webgui_zonename($zone) {
 	global $config, $cpzone;
-	
+
 	if (isset($config['captiveportal'][$zone])) {
 		$cpzone = $zone;
 		captiveportal_init_webgui_zone($config['captiveportal'][$zone]);
@@ -638,7 +638,7 @@ function captiveportal_init_webgui_zone($cpcfg) {
 }
 
 
-/* 
+/*
  * Remove clients that have been around for longer than the specified amount of time
  * db file structure:
  * timestamp,ipfw_rule_no,clientip,clientmac,username,sessionid,password,session_timeout,idle_timeout,session_terminate_time,interim_interval
@@ -660,7 +660,7 @@ function captiveportal_prune_old() {
 	}else{
 		// cleanup sessions if radius accounting is enable
 		// TODO: this code needs a rewrite, probably the easiest thing todo is update the zone administration and run
-		// 		 the normal cleanup (portal_cleanup_sessions) to detach both processes
+		//		 the normal cleanup (portal_cleanup_sessions) to detach both processes
 		//
 		$vcpcfg = $config['voucher'][$cpzone];
 
@@ -931,7 +931,7 @@ function captiveportal_init_radius_servers() {
 			fwrite($fd,"\n" . $radiusip3 . "," . $radiusport3 . "," . $radiusacctport . "," . $radiuskey3 . ",second");
 		if (isset($radiusip4))
 			fwrite($fd,"\n" . $radiusip4 . "," . $radiusport4 . "," . $radiusacctport . "," . $radiuskey4 . ",second");
-		
+
 
 		fclose($fd);
 		unlock($cprdsrvlck);
@@ -945,7 +945,7 @@ function captiveportal_get_radius_servers() {
 	$cprdsrvlck = lock("captiveportalradius{$cpzone}");
 	if (file_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db")) {
 		$radiusservers = array();
-		$cpradiusdb = file("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db", 
+		$cpradiusdb = file("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db",
 		FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 		if ($cpradiusdb) {
 			foreach($cpradiusdb as $cpradiusentry) {
@@ -1042,7 +1042,7 @@ function radius($username,$password,$clientip,$clientmac,$type, $radiusctx = nul
 
 function captiveportal_write_elements() {
 	global $g, $config, $cpzone;
-	
+
 	$cpcfg = $config['captiveportal'][$cpzone];
 
 	if (!is_dir($g['captiveportal_element_path']))
@@ -1060,7 +1060,7 @@ function captiveportal_write_elements() {
 		}
 		conf_mount_ro();
 	}
-	
+
 	return 0;
 }
 
@@ -1182,8 +1182,8 @@ function captiveportal_get_next_ipfw_ruleno($rulenos_start = 2, $rulenos_range_m
 				$rules[$ridx] = $cpzone;
 				break;
 			} else {
-				/* 
-				 * This allows our traffic shaping pipes to be the in pipe the same as ruleno 
+				/*
+				 * This allows our traffic shaping pipes to be the in pipe the same as ruleno
 				 * and the out pipe ruleno + 1.
 				 */
 				$ridx += 2;
@@ -1310,7 +1310,7 @@ function getNasIP()
 		else
 			$nasIp = get_interface_ip($config['captiveportal'][$cpzone]['radiussrcip_attribute']);
 	}
-		
+
 	if(!is_ipaddr($nasIp))
 		$nasIp = "0.0.0.0";
 
@@ -1344,9 +1344,9 @@ function portal_ip_from_client_ip($cliip) {
 	}
 
 	// doesn't match up to any particular interface
-	// so let's set the portal IP to what PHP says 
-	// the server IP issuing the request is. 
-	// allows same behavior as 1.2.x where IP isn't 
+	// so let's set the portal IP to what PHP says
+	// the server IP issuing the request is.
+	// allows same behavior as 1.2.x where IP isn't
 	// in the subnet of any CP interface (static routes, etc.)
 	// rather than forcing to DNS hostname resolution
 	$ip = $_SERVER['SERVER_ADDR'];
@@ -1364,7 +1364,7 @@ function portal_hostname_from_client_ip($cliip) {
 	if (isset($cpcfg['httpslogin'])) {
 		$listenporthttps = $cpcfg['listenporthttps'] ? $cpcfg['listenporthttps'] : ($cpcfg['zoneid'] + 8001);
 		$ourhostname = $cpcfg['httpsname'];
-		
+
 		if ($listenporthttps != 443)
 			$ourhostname .= ":" . $listenporthttps;
 	} else {
@@ -1374,11 +1374,11 @@ function portal_hostname_from_client_ip($cliip) {
 			$ourhostname = "{$config['system']['hostname']}.{$config['system']['domain']}";
 		else
 			$ourhostname = (is_ipaddrv6($ifip)) ? "[{$ifip}]" : "{$ifip}";
-		
+
 		if ($listenporthttp != 80)
 			$ourhostname .= ":" . $listenporthttp;
 	}
-	
+
 	return $ourhostname;
 }
 
@@ -1416,7 +1416,7 @@ function portal_reply_page($redirurl, $type = null, $message = null, $clientmac 
 	$htmltext = str_replace("\$CLIENT_MAC\$", htmlspecialchars($clientmac), $htmltext);
 	$htmltext = str_replace("\$CLIENT_IP\$", htmlspecialchars($clientip), $htmltext);
 
-	// Special handling case for captive portal master page so that it can be ran 
+	// Special handling case for captive portal master page so that it can be ran
 	// through the PHP interpreter using the include method above.  We convert the
 	// $VARIABLE$ case to #VARIABLE# in /usr/local/etc/inc/captiveportal.inc before writing out.
 	$htmltext = str_replace("#PORTAL_ZONE#", htmlspecialchars($cpzone), $htmltext);

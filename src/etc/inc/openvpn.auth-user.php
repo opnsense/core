@@ -32,7 +32,7 @@
 	DISABLE_PHP_LINT_CHECKING
 */
 /*
-	pfSense_BUILDER_BINARIES:	
+	pfSense_BUILDER_BINARIES:
 	pfSense_MODULE:	openvpn
 */
 /*
@@ -166,7 +166,7 @@ if ($authenticated == false) {
 }
 
 @include_once('openvpn.attributes.php');
-        
+
 $content = "";
 if (is_array($attributes['dns-servers'])) {
         foreach ($attributes['dns-servers'] as $dnssrv) {
@@ -190,7 +190,7 @@ if (isset($attributes['framed_ip'])) {
                 $content .= "ifconfig-push {$attributes['framed_ip']} ". long2ip((ip2long($attributes['framed_ip']) + 1));
 //      }
 }
-    
+
 if (!empty($content))
         @file_put_contents("{$g['tmp_path']}/{$username}", $content);
 

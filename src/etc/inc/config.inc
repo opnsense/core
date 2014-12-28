@@ -45,13 +45,13 @@
 if($g['booting']) echo ".";
 
 // Set the memory limit to 128M on i386.  When someone has something like 500+ tunnels
-// the parser needs quite a bit of ram.   Do not remove this line unless you 
+// the parser needs quite a bit of ram.   Do not remove this line unless you
 // know what you are doing.  If in doubt, check with dev@ _/FIRST/_!
-if(!$ARCH) 
+if(!$ARCH)
 	$ARCH = php_uname("m");
 
 // Set memory limit to 256M on amd64.
-if($ARCH == "amd64") 
+if($ARCH == "amd64")
 	ini_set("memory_limit","256M");
 else
 	ini_set("memory_limit","128M");
