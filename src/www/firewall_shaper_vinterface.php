@@ -54,14 +54,14 @@ $pgtitle = array(gettext("Firewall"),gettext("Traffic Shaper"), gettext("Limiter
 $shortcut_section = "trafficshaper-limiters";
 
 read_dummynet_config();
-/* 
+/*
  * The whole logic in these code maybe can be specified.
  * If you find a better way contact me :).
  */
 
 if ($_GET) {
 	if ($_GET['queue'])
-        	$qname = htmlspecialchars(trim($_GET['queue']));
+		$qname = htmlspecialchars(trim($_GET['queue']));
         if ($_GET['pipe'])
                 $pipe = htmlspecialchars(trim($_GET['pipe']));
         if ($_GET['action'])
@@ -69,11 +69,11 @@ if ($_GET) {
 }
 if ($_POST) {
 	if ($_POST['name'])
-        	$qname = htmlspecialchars(trim($_POST['name']));
+		$qname = htmlspecialchars(trim($_POST['name']));
 	else if ($_POST['newname'])
-        	$qname = htmlspecialchars(trim($_POST['newname']));
+		$qname = htmlspecialchars(trim($_POST['newname']));
         if ($_POST['pipe'])
-        	$pipe = htmlspecialchars(trim($_POST['pipe']));
+		$pipe = htmlspecialchars(trim($_POST['pipe']));
 	else
 		$pipe = htmlspecialchars(trim($qname));
 	if ($_POST['parentqueue'])
@@ -155,7 +155,7 @@ if ($_GET) {
 		} else if ($addnewpipe) {
 			$q = new dnpipe_class();
 			$q->SetQname($pipe);
-		} else 
+		} else
 			$input_errors[] = gettext("Could not create new queue/discipline!");
 
 		if ($q) {
@@ -166,7 +166,7 @@ if ($_GET) {
 		}
 		break;
 	case "show":
-		if ($queue)  
+		if ($queue)
                        $output_form .= $queue->build_form();
 		else
 			$input_errors[] = gettext("Queue not found!");
@@ -204,7 +204,7 @@ if ($_GET) {
 			$input_errors[] = gettext("You cannot name a child queue with the same name as a parent limiter");
 		else {
 			$dnpipe =& new dnpipe_class();
-			
+
 			$dnpipe->ReadConfig($_POST);
 			$dnpipe->validate_input($_POST, $input_errors);
 			if (!$input_errors) {
@@ -212,7 +212,7 @@ if ($_GET) {
 				$dnpipe->SetNumber($number);
 				unset($tmppath);
 				$tmppath[] = $dnpipe->GetQname();
-				$dnpipe->SetLink($tmppath);	
+				$dnpipe->SetLink($tmppath);
 				$dnpipe->wconfig();
 				if (write_config())
 					mark_subsystem_dirty('shaper');
@@ -250,17 +250,17 @@ if ($_GET) {
 			$retval = 0;
 			$retval = filter_configure();
 			$savemsg = get_std_save_message($retval);
-			
+
 			if (stristr($retval, "error") <> true)
 					$savemsg = get_std_save_message($retval);
 			else
 					$savemsg = $retval;
 
- 		/* XXX: TODO Make dummynet pretty graphs */ 
+		/* XXX: TODO Make dummynet pretty graphs */
 		//	enable_rrd_graphing();
 
 			clear_subsystem_dirty('shaper');
-			
+
 			if ($queue) {
 				$output_form .= $queue->build_form();
 				$dontshow = false;
@@ -278,7 +278,7 @@ if ($_GET) {
 			if (write_config())
 				mark_subsystem_dirty('shaper');
 			$dontshow = false;
-                } 
+                }
 		read_dummynet_config();
 		$output_form .= $queue->build_form();
 	} else  {
@@ -295,8 +295,8 @@ if ($queue) {
                                 $can_enable = true;
                         else
                                 $can_enable = false;
-                        if ($queue->CanHaveChildren()) { 
-                       		$can_add = true;
+                        if ($queue->CanHaveChildren()) {
+				$can_add = true;
                         } else
                                 $can_add = false;
 }
@@ -318,7 +318,7 @@ $output_form .= "</td><td valign=\"top\" class=\"vncellreq\" width=\"78%\">";
 $output_form .= "<input type=\"submit\" name=\"Submit\" value=\"" . gettext("Save") . "\" class=\"btn btn-primary\" />";
 if ($can_add || $addnewaltq) {
 	$output_form .= "<a href=\"firewall_shaper_vinterface.php?pipe=";
-	$output_form .= $pipe; 
+	$output_form .= $pipe;
 	if ($queue) {
 		$output_form .= "&amp;queue=" . $queue->GetQname();
 	}
@@ -337,11 +337,11 @@ if ($queue)
 	$output_form .= " value=\"" . gettext("Delete this queue") ."\" />";
 else
 	$output_form .= " value=\"" . gettext("Delete Limiter") ."\" />";
-$output_form .= "</a>";  
+$output_form .= "</a>";
 $output_form .= "</td></tr>";
 $output_form .= "</table>";
-} 
-else 
+}
+else
 	$output_form .= "</table>";
 
 $output = "<table summary=\"output form\">";
@@ -372,33 +372,33 @@ if ($queue)
 	echo $queue->build_javascript();
 else
 	echo $newjavascript;
-	
+
 
 $main_buttons = array(
 	array('label'=>gettext("Create new limiter"), 'href'=>'firewall_shaper_vinterface.php?pipe=new&amp;action=add'),
 );
-	
 
-include("fbegin.inc"); 
+
+include("fbegin.inc");
 ?>
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">				
-				
+		<div class="container-fluid">
+			<div class="row">
+
 				<div id="inputerrors"></div>
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('shaper')): ?><p>
 				<?php print_info_box_np(gettext("The traffic shaper configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));?><br /></p>
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
 							$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
@@ -407,13 +407,13 @@ include("fbegin.inc");
 							$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
 							display_top_tabs($tab_array);
 						?>
-						
-					
+
+
 						<div class="tab-content content-box col-xs-12">
-   
+
 		                        <form action="firewall_shaper_vinterface.php" method="post" name="iform" id="iform">
-		                        	
-		                        	
+
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 									<?php if (count($dummynet_pipe_list) > 0): ?>
@@ -423,17 +423,17 @@ include("fbegin.inc");
 												<tr>
 												<td width="25%" valign="top" align="left">
 												<?php
-													echo $tree; 
+													echo $tree;
 												?>
-												
+
 												</td>
 												<td width="75%" valign="top" align="center">
 												<div id="shaperarea" style="position:relative">
 												<?php
 													echo $output;
-												?>	
+												?>
 												</div>
-									
+
 											      </td>
 											 </tr>
 									     </table>
@@ -444,13 +444,13 @@ include("fbegin.inc");
 			</div>
 		</div>
 	</section>
-	
-	
+
+
 <script type='text/javascript'>
 //<![CDATA[
 <?php
 	$totalrows = 0;
-	if (is_array($config['dnshaper']) && is_array($config['dnshaper']['queue'])) 
+	if (is_array($config['dnshaper']) && is_array($config['dnshaper']['queue']))
 		$totalrows = count($config['dnshaper']['queue']);
 	echo "totalrows = {$totalrows}";
 ?>

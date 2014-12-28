@@ -77,10 +77,10 @@ $ifdescs = get_configured_interface_with_descr();
 
 // Drag and drop reordering
 if($_REQUEST['dragdroporder']) {
-	
-	
 
-	
+
+
+
 	// First create a new ruleset array and tmp arrays
 	$a_filter_before = array();
 	$a_filter_order = array();
@@ -256,9 +256,9 @@ if (isset($_POST['del_x'])) {
 			break;
 		}
 	}
-	
 
-	
+
+
 	/* move selected rules before this rule */
 	if (isset($movebtn) && is_array($_POST['rule']) && count($_POST['rule'])) {
 		$a_filter_new = array();
@@ -305,13 +305,13 @@ include("head.inc");
 		body.dragging, body.dragging * {
 		  cursor: move !important;
 		}
-		
+
 		.dragged {
 		  position: absolute;
 		  opacity: 0.5;
 		  z-index: 2000;
 		}
-		
+
 		ol.example li.placeholder {
 		  position: relative;
 		  /** More li styles **/
@@ -319,7 +319,7 @@ include("head.inc");
 		ol.example li.placeholder:before {
 		  position: absolute;
 		  /** Define arrowhead **/
-		}	
+		}
 	</style>
 </head>
 <body>
@@ -329,17 +329,17 @@ include("head.inc");
 	jQuery(window).load(
 		function(){
 			var originalLeave=jQuery.fn.popover.Constructor.prototype.leave;
-			jQuery.fn.popover.Constructor.prototype.leave=function(obj) 
+			jQuery.fn.popover.Constructor.prototype.leave=function(obj)
 			{
 				var self=obj instanceof this.constructor?obj:jQuery(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.'+this.type)
 				var container,timeout;originalLeave.call(this,obj);
 				if(obj.currentTarget){container=jQuery(obj.currentTarget).siblings('.popover')
 					timeout=self.timeout;
 					container.one('mouseenter',function()
-					{	
+					{
 						clearTimeout(timeout);
 						container.one('mouseleave',function()
-						{	
+						{
 							jQuery.fn.popover.Constructor.prototype.leave.call(self,self);
 						});
 					})
@@ -356,9 +356,9 @@ include("head.inc");
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('filter')): ?><p>
 				<?php
@@ -374,9 +374,9 @@ include("head.inc");
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-    				
-    					
-    					 <?php
+
+
+					 <?php
 							/* active tabs */
 							$tab_array = array();
 							if ("FloatingRules" == $if)
@@ -393,13 +393,13 @@ include("head.inc");
 							}
 							display_top_tabs($tab_array);
 						?>
-						
-					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-   
+
+
+						<div class="tab-content content-box col-xs-12">
+
+
 		                        <form action="firewall_rules.php<? if (!empty($if)): ?>?if=<?=$if;?><? endif; ?>" method="post" name="iform" id="iform">
-		                        	
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort dragable">
 				                        <thead>
@@ -416,7 +416,7 @@ include("head.inc");
 										<th class="listhdrr"><?=gettext("Schedule");?></th>
 										<th class="listhdr"><?=gettext("Description");?></th>
 										<th class="list">
-											
+
 												<?php
 													$nrules = 0;
 													for ($i = 0; isset($a_filter[$i]); $i++) {
@@ -428,7 +428,7 @@ include("head.inc");
 														$nrules++;
 													}
 												?>
-												
+
 												<?php if ($nrules): ?>
 													<button name="del" type="submit" title="<?=gettext("delete selected rules");?>" onclick="return confirm('<?=gettext('Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 												<?php endif; ?>
@@ -441,7 +441,7 @@ include("head.inc");
 											if (!isset($config['system']['webgui']['noantilockout']) &&
 												(((count($config['interfaces']) > 1) && ($if == 'lan'))
 												|| ((count($config['interfaces']) == 1) && ($if == 'wan')))):
-							
+
 												$alports = implode('<br />', filter_get_antilockout_ports(true));
 										?>
 										<tr valign="top" id="antilockout">
@@ -460,17 +460,17 @@ include("head.inc");
 										<td valign="middle" class="list nowrap">
 											<span title="<?=gettext("move selected rules before this rule");?>" alt="move" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
 											<a href="system_advanced_admin.php" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-											
+
 											<span title="<?=gettext("add a new rule based on this one");?>" width="17" height="17" border="0" alt="add" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></span>
 										</td>
 										</tr>
 							<?php endif; ?>
-							
+
 							<?php if (isset($config['interfaces'][$if]['blockpriv'])): ?>
 										<tr valign="top" id="frrfc1918">
 										<td class="list">&nbsp;</td>
 										<td class="listt" align="center"><span class="glyphicon glyphicon-remove text-danger"></span></td>
-										
+
 										<td class="listr">*</td>
 										<td class="listr"><?=gettext("RFC 1918 networks");?></td>
 										<td class="listr">*</td>
@@ -482,9 +482,9 @@ include("head.inc");
 										<td class="listbg"><?=gettext("Block private networks");?></td>
 										<td valign="middle" class="list nowrap">
 											<span title="<?=gettext("move selected rules before this rule");?>" alt="move" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
-											
+
 												<a href="interfaces.php?if=<?=htmlspecialchars($if)?>#rfc1918" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-												
+
 												<span title="<?=gettext("add a new rule based on this one");?>" width="17" height="17" border="0" alt="add" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></span>
 										</td>
 										</tr>
@@ -493,7 +493,7 @@ include("head.inc");
 										<tr valign="top" id="frrfc1918">
 										<td class="list">&nbsp;</td>
 										<td class="listt" align="center"><span class="glyphicon glyphicon-remove text-danger"></span></td>
-										
+
 										<td class="listr">*</td>
 										<td class="listr"><?=gettext("Reserved/not assigned by IANA");?></td>
 										<td class="listr">*</td>
@@ -505,11 +505,11 @@ include("head.inc");
 										<td class="listbg"><?=gettext("Block bogon networks");?></td>
 										<td valign="middle" class="list nowrap">
 											<span title="<?=gettext("move selected rules before this rule");?>" alt="move" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
-											
+
 											<a href="interfaces.php?if=<?=htmlspecialchars($if)?>#rfc1918" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-											
+
 											<span title="<?=gettext("add a new rule based on this one");?>" width="17" height="17" border="0" alt="add" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></span>
-											
+
 										</td>
 										</tr>
 				                        </tbody>
@@ -570,14 +570,14 @@ include("head.inc");
 											//$alias_src_port_span_begin = "";
 											//$alias_dst_span_begin = "";
 											//$alias_dst_port_span_begin = "";
-							
+
 											$alias_popup = rule_popup($filterent['source']['address'],pprint_port($filterent['source']['port']),$filterent['destination']['address'],pprint_port($filterent['destination']['port']));
 											//var_dump($alias_popup);
 											//$alias_src_span_begin = $alias_popup["src"];
 											//$alias_src_port_span_begin = $alias_popup["srcport"];
 											//$alias_dst_span_begin = $alias_popup["dst"];
 											//$alias_dst_port_span_begin = $alias_popup["dstport"];
-								
+
 											$alias_src_span_end = ""; //$alias_popup["src_end"];
 											//$alias_src_port_span_end = $alias_popup["srcport_end"];
 											//$alias_dst_span_end = $alias_popup["dst_end"];
@@ -609,7 +609,7 @@ include("head.inc");
 												{
 													if ($schedule['name'] == $filterent['sched'] ){
 														$schedstatus = filter_get_time_based_rule_status($schedule);
-							
+
 														foreach($schedule['timerange'] as $timerange) {
 															$tempFriendlyTime = "";
 															$tempID = "";
@@ -617,14 +617,14 @@ include("head.inc");
 															if ($timerange){
 																$dayFriendly = "";
 																$tempFriendlyTime = "";
-							
+
 																//get hours
 																$temptimerange = $timerange['hour'];
 																$temptimeseparator = strrpos($temptimerange, "-");
-							
+
 																$starttime = substr ($temptimerange, 0, $temptimeseparator);
 																$stoptime = substr ($temptimerange, $temptimeseparator+1);
-							
+
 																if ($timerange['month']){
 																	$tempmontharray = explode(",", $timerange['month']);
 																	$tempdayarray = explode(",",$timerange['day']);
@@ -634,14 +634,14 @@ include("head.inc");
 																	foreach ($tempmontharray as $monthtmp){
 																		$month = $tempmontharray[$arraycounter];
 																		$day = $tempdayarray[$arraycounter];
-							
+
 																		if (!$firstDayFound)
 																		{
 																			$firstDay = $day;
 																			$firstmonth = $month;
 																			$firstDayFound = true;
 																		}
-							
+
 																		$currentDay = $day;
 																		$nextDay = $tempdayarray[$arraycounter+1];
 																		$currentDay++;
@@ -798,7 +798,7 @@ include("head.inc");
 										<td valign="middle" class="list nowrap">
 												<button name="move_<?=$i;?>_x" type="submit" title="<?=gettext("move selected rules before this rule"); ?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs" value="<?=$i;?>"><span class="glyphicon glyphicon-arrow-left"></span></button>
 												<a href="firewall_rules_edit.php?id=<?=$i;?>" title="<?=gettext("edit rule"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-												
+
 												<a href="firewall_rules.php?act=del&amp;if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" title="<?=gettext("delete rule"); ?>" onclick="return confirm('Do you really want to delete this rule?')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 												<a href="firewall_rules_edit.php?dup=<?=$i;?>" title="<?=gettext("add a new rule based on this one"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 										</td>
@@ -834,9 +834,9 @@ include("head.inc");
 										<td class="list">&nbsp;</td>
 										<td class="list">&nbsp;</td>
 										<td class="list">
-											
+
 													<?php if ($nrules): ?><button name="move_<?=$i;?>_x" type="submit" value="<?=$i;?>"  title="<?=gettext("move selected rules to end");?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button><?php endif; ?>
-												
+
 							<?php if ($nrules): ?>
 													<button name="del" type="submit" title="<?=gettext("delete selected rules");?>" onclick="return confirm('<?=gettext('Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 							<?php endif; ?>
@@ -845,8 +845,8 @@ include("head.inc");
 										</tr>
 									</tbody>
 									</table>
-									
-									
+
+
 									<div class="container-fluid">
 									<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="0" summary="icons">
 										<tr>
@@ -915,13 +915,13 @@ include("head.inc");
 			</div>
 		</div>
 	</section>
-							
+
 <input type="hidden" name="if" value="<?=htmlspecialchars($if);?>" />
 <!-- <script type="text/javascript">
 //<![CDATA[
 	var number_of_rules = <?=$nrules?>;
 	<?php $nrules = 0; for ($i = 0; isset($a_filter[$i]); $i++): ?>
-	
+
 		Sortable.create("dragtable", {
 			tag:"tr",
 			format:"fr([0-9999999])",
@@ -934,15 +934,15 @@ include("head.inc");
 				updateOrder(Sortable.serialize('dragtable', 'tr'));
 			}
 		});
-	
+
 	<?php endfor; ?>
-	
+
 	jQuery('#loading').hide();
 //]]>
 </script> -->
 
 <script type="text/javascript">
-	
+
 	$(function  () {
 	 $('table.dragable').sortable({
 		  containerSelector: 'table',
@@ -952,31 +952,31 @@ include("head.inc");
 		  onDrop: function(item,container,_super, event) {
 			   item.removeClass("dragged").removeAttr("style");
 			   $("body").removeClass("dragging");
-			   
-			   	
+
+
 			  updateOrder(container);
 		  }
 		})
 	});
-	
+
 	function updateOrder(container) {
 		if(document.getElementById("redboxtable"))
 			//jQuery('#redboxtable').hide();
-		
+
 		//jQuery('#loading').show();
-			
+
 		document.body.style.cursor = 'wait';
-	
+
 		var drag_url = '';
 		$('tbody#dragtable tr').each(function(i, obj) {
-			
+
 			drag_url += '&dragtable[]='+$(obj).attr('id').replace('fr','');
 		});
-		
+
 		document.location = 'firewall_rules.php?if=<?=htmlspecialchars($if);?>&dragdroporder=true' + drag_url;
 		return;
 	}
-	
+
 </script>
 
 <?php include("foot.inc"); ?>

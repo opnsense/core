@@ -86,20 +86,20 @@ $main_buttons = array(
 
 <body>
 <?php include("fbegin.inc"); ?>
-	
+
 	<script type="text/javascript" src="/javascript/row_toggle.js"></script>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">				
-				
+		<div class="container-fluid">
+			<div class="row">
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('natconf')): ?>
 				<?php print_info_box_np(gettext("The NAT configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
 				<?php endif; ?>
-				
-			    <section class="col-xs-12">    				
-    					
+
+			    <section class="col-xs-12">
+
 					<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
@@ -108,30 +108,30 @@ $main_buttons = array(
 						$tab_array[] = array(gettext("NPt"), true, "firewall_nat_npt.php");
 						display_top_tabs($tab_array);
 					?>
-				
-					<div class="tab-content content-box col-xs-12">				
+
+					<div class="tab-content content-box col-xs-12">
 
 	                        <form action="firewall_nat_npt.php" method="post" name="iform" id="iform">
-	                        	
-	                        	<div class="table-responsive">
-		                       	 	<table class="table table-striped table-sort">
-                                        
+
+					<div class="table-responsive">
+						<table class="table table-striped table-sort">
+
                                         <thead>
-    							   	 		<tr>
-    										    <th width="10%" class="listhdrr"><?=gettext("Interface"); ?></th>
-    								            <th width="20%" class="listhdrr"><?=gettext("External Prefix"); ?></th>
-    								            <th width="15%" class="listhdrr"><?=gettext("Internal prefix"); ?></th>
-    								            <th width="30%" class="listhdr"><?=gettext("Description"); ?></th>
-    								            <th class="list"></th>
-    										</tr>
+										<tr>
+										    <th width="10%" class="listhdrr"><?=gettext("Interface"); ?></th>
+								            <th width="20%" class="listhdrr"><?=gettext("External Prefix"); ?></th>
+								            <th width="15%" class="listhdrr"><?=gettext("Internal prefix"); ?></th>
+								            <th width="30%" class="listhdr"><?=gettext("Description"); ?></th>
+								            <th class="list"></th>
+										</tr>
                                         </thead>
-                                        
+
                                         <tbody>
-									  <?php 
+									  <?php
 											$textse = "</span>";
-								
+
 											$i = 0; foreach ($a_npt as $natent):
-								
+
 											if (isset($natent['disabled']))
 												$textss = "<span class=\"gray\">";
 											else
@@ -147,17 +147,17 @@ $main_buttons = array(
 											echo $textse;
 												  ?>
 								                  </td>
-								                    <?php 
+								                    <?php
 											$source_net = pprint_address($natent['source']);
 											$source_cidr = strstr($source_net, '/');
 											$destination_net = pprint_address($natent['destination']);
 											$destination_cidr = strstr($destination_net, '/');
 								                    ?>
 								                  <td class="listr" ondblclick="document.location='firewall_nat_npt_edit.php?id=<?=$i;?>';">
-								                    <?php 		echo $textss . $destination_net . $textse; ?>
+								                    <?php		echo $textss . $destination_net . $textse; ?>
 								                  </td>
 								                  <td class="listr" ondblclick="document.location='firewall_nat_npt_edit.php?id=<?=$i;?>';">
-								                    <?php 		echo $textss . $source_net . $textse; ?>
+								                    <?php		echo $textss . $source_net . $textse; ?>
 								                  </td>
 								                  <td class="listbg" ondblclick="document.location='firewall_nat_npt_edit.php?id=<?=$i;?>';">
 											<?=$textss;?>
@@ -169,11 +169,11 @@ $main_buttons = array(
 								                  </td>
 								                </tr>
 										<?php $i++; endforeach; ?>
-                                        </tbody>        
+                                        </tbody>
 							        </table>
-	                        	</div>
+					</div>
 	                        </form>
-	                        
+
 					</div>
 			    </section>
 			</div>

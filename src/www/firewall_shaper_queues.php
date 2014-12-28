@@ -54,7 +54,7 @@ $shaperIFlist = get_configured_interface_with_descr();
 read_altq_config();
 $qlist =& get_unique_queue_list();
 
-if (!is_array($qlist)) 
+if (!is_array($qlist))
 	$qlist = array();
 
 $tree = "<ul class=\"tree\" >";
@@ -62,14 +62,14 @@ foreach ($qlist as $queue => $qkey) {
 	$tree .= "<li><a href=\"firewall_shaper_queues.php?queue={$queue}&amp;action=show\" >";
 	if (isset($shaperIFlist[$queue]))
 		$tree .= $shaperIFlist[$queue] . "</a></li>";
-	else	
+	else
 		$tree .= $queue . "</a></li>";
 }
 $tree .= "</ul>";
 
 if ($_GET) {
 	if ($_GET['queue'])
-        	$qname = htmlspecialchars(trim($_GET['queue']));
+		$qname = htmlspecialchars(trim($_GET['queue']));
         if ($_GET['interface'])
                 $interface = htmlspecialchars(trim($_GET['interface']));
         if ($_GET['action'])
@@ -80,7 +80,7 @@ if ($_GET) {
 			$altq =& $altq_list_queues[$interface];
 			$qtmp =& $altq->find_queue("", $qname);
 			if ($qtmp) {
-				$qtmp->delete_queue(); 
+				$qtmp->delete_queue();
 				if (write_config())
 					mark_subsystem_dirty('shaper');
 			}
@@ -88,7 +88,7 @@ if ($_GET) {
 			exit;
 		break;
 	case "add":
-			/* 
+			/*
 			 * XXX: WARNING: This returns the first it finds.
 			 * Maybe the user expects something else?!
 			 */
@@ -102,7 +102,7 @@ if ($_GET) {
                                                 $config['shaper']['queue'][] = $copycfg;
                                         } else if ($aq) {
                                                 $tmp1 =& $qtmp->find_parentqueue($interface, $qname);
-                                                if ($tmp1) 
+                                                if ($tmp1)
                                                         $tmp =& $aq->find_queue($interface, $tmp1->GetQname());
 
                                                 if ($tmp)
@@ -161,7 +161,7 @@ if ($_POST['apply']) {
                         else
                                 $savemsg = $retval;
 
- 		/* reset rrd queues */
+		/* reset rrd queues */
                 system("rm -f /var/db/rrd/*queuedrops.rrd");
                 system("rm -f /var/db/rrd/*queues.rrd");
 			enable_rrd_graphing();
@@ -183,21 +183,21 @@ include("head.inc");
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">				
-				
+		<div class="container-fluid">
+			<div class="row">
+
 				<div id="inputerrors"></div>
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('shaper')): ?><p>
 				<?php print_info_box_np(gettext("The traffic shaper configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br /></p>
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
 							$tab_array[1] = array(gettext("By Queue"), true, "firewall_shaper_queues.php");
@@ -206,13 +206,13 @@ include("head.inc");
 							$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
 							display_top_tabs($tab_array);
 						?>
-						
-					
-						<div class="tab-content content-box col-xs-12">		    					
-   
+
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <form action="firewall_shaper_queues.php" method="post" name="iform" id="iform">
-		                        	
-		                        	
+
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 				                        <tr>
@@ -220,14 +220,14 @@ include("head.inc");
 									                <?php      echo $tree; ?>
 											</td>
 											<td width="70%" valign="top" align="center">
-												<?php 
+												<?php
 													if ($qname)
-									        				echo "<p class=\"pgtitle\">" . $qname . "</p><br />";
+														echo "<p class=\"pgtitle\">" . $qname . "</p><br />";
 													echo "<table align=\"center\" class=\"tabcont\" width=\"80%\" border=\"0\" cellpadding=\"4\" cellspacing=\"0\" summary=\"output form\">";
 													echo $output;
 													echo "<tr><td>&nbsp;</td></tr>";
 													echo "</table>";
-												?>	
+												?>
 												</td></tr>
 									</table><!-- table:main area -->
 								</div><!-- div:main area -->
@@ -237,6 +237,6 @@ include("head.inc");
 			</div>
 		</div>
 	</section>
-	
+
 
 <?php include("foot.inc"); ?>

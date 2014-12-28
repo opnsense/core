@@ -74,7 +74,7 @@ function find_last_used_vhid() {
 	global $config, $g;
 	$vhid = 0;
 	foreach($config['virtualip']['vip'] as $vip) {
-		if($vip['vhid'] > $vhid) 
+		if($vip['vhid'] > $vhid)
 			$vhid = $vip['vhid'];
 	}
 	return $vhid;
@@ -263,7 +263,7 @@ include("head.inc");
 
 <body>
 	<script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js"></script>
-	
+
 <?php include("fbegin.inc"); ?>
 
 	<script type="text/javascript">
@@ -287,15 +287,15 @@ function enable_change() {
 	var carpnote     = document.createTextNode("<?=gettext("This must be the network's subnet mask. It does not specify a CIDR range.");?>");
 	var proxyarpnote = document.createTextNode("<?=gettext("This is a CIDR block of proxy ARP addresses.");?>");
 	var ipaliasnote  = document.createTextNode("<?=gettext("This must be the network's subnet mask. It does not specify a CIDR range.");?>");
-	
+
 	$mode = get_radio_value(document.iform.mode);
-	
+
 	document.iform.password.disabled = $mode != "carp";
 	document.iform.vhid.disabled     = $mode != "carp";
 	document.iform.advskew.disabled  = $mode != "carp";
 	document.iform.advbase.disabled  = $mode != "carp";
 	document.iform.type.disabled     = $mode in {"carp":1,"ipalias":1};
-	
+
 	if ($mode in {"carp":1,"ipalias":1})
 		document.iform.type.selectedIndex = 0;// single-adress
 	switch($mode)
@@ -346,29 +346,29 @@ function typesel_change() {
 </script>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">
-	    				
-	    				 <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Edit Virtual IP");?></h3>
-    				    </header>
-    				    
-    				    <div class="content-box-main">
-	    					
-	    					<form action="firewall_virtual_ip_edit.php" method="post" name="iform" id="iform">
-		    							                        
+
+				<div class="content-box">
+
+					 <header class="content-box-head container-fluid">
+				        <h3><?=gettext("Edit Virtual IP");?></h3>
+				    </header>
+
+				    <div class="content-box-main">
+
+						<form action="firewall_virtual_ip_edit.php" method="post" name="iform" id="iform">
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 						                <tr>
-								  		  <td width="22%" valign="top" class="vncellreq"><?=gettext("Type");?></td>
+										  <td width="22%" valign="top" class="vncellreq"><?=gettext("Type");?></td>
 						                  <td width="78%" class="vtable">
 											<input name="mode" type="radio" onclick="enable_change()" value="ipalias"
 											<?php if ($pconfig['mode'] == "ipalias") echo "checked=\"checked\"";?> /> <?=gettext("IP Alias");?>
@@ -384,7 +384,7 @@ function typesel_change() {
 										  <td width="22%" valign="top" class="vncellreq"><?=gettext("Interface");?></td>
 										  <td width="78%" class="vtable">
 											<select name="interface" class="form-control">
-											<?php 
+											<?php
 											$interfaces = get_configured_interface_with_descr(false, true);
 											$interfaces['lo0'] = "Localhost";
 											foreach ($interfaces as $iface => $ifacename): ?>
@@ -420,13 +420,13 @@ function typesel_change() {
 						                      </option>
 						                            <?php endfor; ?>
 						                      </select> <i id="typenote"></i>
-						 						</td>
+												</td>
 						                      </tr>
 						                      <tr id="noexpandrow">
 						                        <td><?=gettext("Expansion:");?>&nbsp;&nbsp;</td>
 						                        <td><input name="noexpand" type="checkbox" class="form-control unknown" id="noexpand" <?php echo (isset($pconfig['noexpand'])) ? "checked=\"checked\"" : "" ; ?> />
-						                        	Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.)
-						                        	</td>
+										Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.)
+										</td>
 						                      </tr>
 								      <?php
 								      /*
@@ -437,7 +437,7 @@ function typesel_change() {
 						                          <input name="range_to" type="text" class="form-control unknown" id="range_to" size="28" value="<?=htmlspecialchars($pconfig['range']['to']);?>" />
 						                          </td>
 									 </tr>
-						  		       */
+								       */
 									?>
 						                    </table>
 						                  </td>
@@ -465,18 +465,18 @@ function typesel_change() {
 										  <td class="vtable">
 											 Base: <select id='advbase' name='advbase'>
 						                            <?php for ($i = 1; $i <= 254; $i++): ?>
-						                            	<option value="<?=$i;?>" <?php if ($i == $pconfig['advbase']) echo "selected=\"selected\""; ?>>
+										<option value="<?=$i;?>" <?php if ($i == $pconfig['advbase']) echo "selected=\"selected\""; ?>>
 						                            <?=$i;?>
-						                      			</option>
+											</option>
 						                            <?php endfor; ?>
-						                      		</select>
+										</select>
 											Skew: <select id='advskew' name='advskew'>
 						                            <?php for ($i = 0; $i <= 254; $i++): ?>
-						                            	<option value="<?=$i;?>" <?php if ($i == $pconfig['advskew']) echo "selected=\"selected\""; ?>>
+										<option value="<?=$i;?>" <?php if ($i == $pconfig['advskew']) echo "selected=\"selected\""; ?>>
 						                            <?=$i;?>
-						                      			</option>
+											</option>
 						                            <?php endfor; ?>
-						                      		</select>
+										</select>
 										<br /><br />
 										<?=gettext("The frequency that this machine will advertise.  0 means usually master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
 										  </td>
@@ -501,16 +501,16 @@ function typesel_change() {
 		                        </div>
 		                        <div class="container-fluid">
 		                        <p class="vexpl">
-				      		<span class="text-danger">
+						<span class="text-danger">
 							<strong><?=gettext("Note:");?><br /></strong>
-				      		</span>
-				      		<?=gettext("Proxy ARP and Other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc.  Use a CARP or IP Alias type address for these cases.");?>
-				      		<br /><br /><?=gettext("For more information on CARP and the above values, visit the OpenBSD ");?><a href='http://www.openbsd.org/faq/pf/carp.html'> <?=gettext("CARP FAQ"); ?></a>.
+						</span>
+						<?=gettext("Proxy ARP and Other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc.  Use a CARP or IP Alias type address for these cases.");?>
+						<br /><br /><?=gettext("For more information on CARP and the above values, visit the OpenBSD ");?><a href='http://www.openbsd.org/faq/pf/carp.html'> <?=gettext("CARP FAQ"); ?></a>.
 						</p>
 		                        </div>
-	    					</form>
-    				    </div>
-    				</div>
+						</form>
+				    </div>
+				</div>
 			    </section>
 			</div>
 		</div>

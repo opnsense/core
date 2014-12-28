@@ -88,19 +88,19 @@ include("head.inc");
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">				
-				
+		<div class="container-fluid">
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('shaper')): ?><p>
 				<?php print_info_box_np(gettext("The traffic shaper configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));?><br /></p>
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-    				
-    					<?php
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
 							$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
@@ -109,22 +109,22 @@ include("head.inc");
 							$tab_array[4] = array(gettext("Wizards"), true, "firewall_shaper_wizards.php");
 							display_top_tabs($tab_array);
 						?>
-						
-					
-						<div class="tab-content content-box col-xs-12">	    					
-   
+
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <form action="firewall_shaper_wizards.php" method="post" name="iform" id="iform">
-		                        	
-		                        	
+
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                        <thead>
+			                        <thead>
 				                        <tr>
 										<td class="listhdrr" width="25%"><?=gettext("Wizard function");?></td>
 										<td class="listhdrr" width="75%"><?=gettext("Wizard Link");?></td>
 									    </tr>
-    			                        </thead>
-    			                        <tbody>
+			                        </thead>
+			                        <tbody>
 				<?php
 								foreach ($wizards as $key => $wizard):
 				?>
@@ -151,5 +151,5 @@ include("head.inc");
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

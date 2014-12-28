@@ -56,14 +56,14 @@ $shortcut_section = "trafficshaper";
 
 $shaperIFlist = get_configured_interface_with_descr();
 read_altq_config();
-/* 
+/*
  * The whole logic in these code maybe can be specified.
  * If you find a better way contact me :).
  */
 
 if ($_GET) {
 	if ($_GET['queue'])
-        	$qname = trim($_GET['queue']);
+		$qname = trim($_GET['queue']);
         if ($_GET['interface'])
                 $interface = htmlspecialchars(trim($_GET['interface']));
         if ($_GET['action'])
@@ -71,7 +71,7 @@ if ($_GET) {
 }
 if ($_POST) {
 	if ($_POST['name'])
-        	$qname = htmlspecialchars(trim($_POST['name']));
+		$qname = htmlspecialchars(trim($_POST['name']));
         if ($_POST['interface'])
                 $interface = htmlspecialchars(trim($_POST['interface']));
 	if ($_POST['parentqueue'])
@@ -137,26 +137,26 @@ if ($_GET) {
 			/* XXX: Find better way because we shouldn't know about this */
 		if ($altq) {
 	                switch ($altq->GetScheduler()) {
-         	        case "PRIQ":
-                	        $q = new priq_queue();
-                        	break;
+		        case "PRIQ":
+			        $q = new priq_queue();
+				break;
 			case "FAIRQ":
 				$q = new fairq_queue();
 				break;
                         case "HFSC":
-                         	$q = new hfsc_queue();
-                        	break;
+				$q = new hfsc_queue();
+				break;
                         case "CBQ":
                                 $q = new cbq_queue();
-                        	break;
+				break;
                         default:
                                 /* XXX: Happens when sched==NONE?! */
 				$q = new altq_root_queue();
-                        	break;
-        		}
+				break;
+			}
 		} else if ($addnewaltq) {
 			$q = new altq_root_queue();
-		} else 
+		} else
 			$input_errors[] = gettext("Could not create new queue/discipline!");
 
 			if ($q) {
@@ -170,7 +170,7 @@ if ($_GET) {
 			}
 		break;
 		case "show":
-			if ($queue)  
+			if ($queue)
                         $output_form .= $queue->build_form();
 			else
 					$input_errors[] = gettext("Queue not found!");
@@ -204,7 +204,7 @@ if ($_GET) {
 	if ($addnewaltq) {
 		$altq =& new altq_root_queue();
 		$altq->SetInterface($interface);
-		
+
 		switch ($altq->GetBwscale()) {
 				case "Mb":
 					$factor = 1000 * 1000;
@@ -222,14 +222,14 @@ if ($_GET) {
 				default: /* XXX assume Kb by default. */
 					$factor = 1000;
 					break;
-			} 
+			}
 		$altq->SetAvailableBandwidth($altq->GetBandwidth() * $factor);
 		$altq->ReadConfig($_POST);
 		$altq->validate_input($_POST, $input_errors);
 		if (!$input_errors) {
 			unset($tmppath);
 			$tmppath[] = $altq->GetInterface();
-			$altq->SetLink($tmppath);	
+			$altq->SetLink($tmppath);
 			$altq->wconfig();
 			if (write_config())
 				mark_subsystem_dirty('shaper');
@@ -251,9 +251,9 @@ if ($_GET) {
 				$can_enable = true;
 				if ($tmp->CanHaveChildren() && $can_enable) {
 					if ($tmp->GetDefault() <> "")
-                             			$can_add = false;
-                        		else
-                             			$can_add = true;
+						$can_add = false;
+					else
+						$can_add = true;
 				} else
 					$can_add = false;
 				if (write_config())
@@ -266,7 +266,7 @@ if ($_GET) {
                                                 $can_add = true;
 			}
 			read_altq_config();
-			$output_form .= $tmp->build_form();			
+			$output_form .= $tmp->build_form();
 		} else
 			$input_errors[] = gettext("Could not add new queue.");
 	} else if ($_POST['apply']) {
@@ -275,19 +275,19 @@ if ($_GET) {
 			$retval = 0;
 			$retval = filter_configure();
 			$savemsg = get_std_save_message($retval);
-			
+
 			if (stristr($retval, "error") <> true)
 					$savemsg = get_std_save_message($retval);
 			else
 					$savemsg = $retval;
 
- 		/* reset rrd queues */
+		/* reset rrd queues */
 		system("rm -f /var/db/rrd/*queuedrops.rrd");
 		system("rm -f /var/db/rrd/*queues.rrd");
 		enable_rrd_graphing();
 
 		clear_subsystem_dirty('shaper');
-			
+
 			if ($queue) {
 				$output_form .= $queue->build_form();
 				$dontshow = false;
@@ -305,7 +305,7 @@ if ($_GET) {
 				if (write_config())
 					mark_subsystem_dirty('shaper');
 				$dontshow = false;
-                } 
+                }
 		read_altq_config();
 		$output_form .= $queue->build_form();
 	} else  {
@@ -323,7 +323,7 @@ if ($queue) {
                                 $can_enable = true;
                         else
                                 $can_enable = false;
-                        if ($queue->CanHaveChildren() && $can_enable) { 
+                        if ($queue->CanHaveChildren() && $can_enable) {
                                 if ($altq->GetQname() <> $queue->GetQname() && $queue->GetDefault() <> "")
                                         $can_add = false;
                                 else
@@ -350,7 +350,7 @@ $output_form .= "</td><td valign=\"middle\" class=\"vncellreq\" width=\"78%\"><b
 $output_form .= "<input type=\"submit\" name=\"Submit\" value=\"" . gettext("Save") . "\" class=\"btn btn-primary\" />";
 if ($can_add || $addnewaltq) {
 	$output_form .= "<a href=\"firewall_shaper.php?interface=";
-	$output_form .= $interface; 
+	$output_form .= $interface;
 	if ($queue) {
 		$output_form .= "&amp;queue=" . $queue->GetQname();
 	}
@@ -373,7 +373,7 @@ $output_form .= "</a>";
 $output_form .= "<br /></td></tr>";
 $output_form .= "</table>";
 }
-else 
+else
 	$output_form .= "</table>";
 
 $output = "<table  summary=\"output form\">";
@@ -393,27 +393,27 @@ if ($queue)
         echo $queue->build_javascript();
 echo $newjavascript;
 
-include("fbegin.inc"); 
+include("fbegin.inc");
 
 ?>
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">				
-				
+		<div class="container-fluid">
+			<div class="row">
+
 				<div id="inputerrors"></div>
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('shaper')): ?>
 				<?php print_info_box_np(gettext("The traffic shaper configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));?><br />
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("By Interface"), true, "firewall_shaper.php");
 							$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
@@ -422,15 +422,15 @@ include("fbegin.inc");
 							$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
 							display_top_tabs($tab_array);
 						?>
-						
-					
-						<div class="tab-content content-box col-xs-12">		    					
-   
+
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <form action="firewall_shaper.php" method="post" name="iform" id="iform">
-		                       
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-				                        
+
 										<?php if (count($altq_list_queues) > 0): ?>
 				                        <tr class="tabcont"><td width="25%" align="left">
 
@@ -442,16 +442,16 @@ include("fbegin.inc");
 										<tr>
 										<td width="25%" valign="top" align="left" style="vertical-align:top">
 										<?php
-											echo $tree; 
+											echo $tree;
 										?>
 										</td>
 										<td width="75%" valign="top" align="center">
 										<div id="shaperarea" style="position:relative">
 										<?php
 											echo $output;
-										?>	
+										?>
 										</div>
-							
+
 									      </td></tr>
 						            </table>
 		                        </div>
@@ -461,5 +461,5 @@ include("fbegin.inc");
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

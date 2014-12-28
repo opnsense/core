@@ -583,7 +583,7 @@ if ($_POST) {
 	if (($_POST['statetimeout'] != "") && !is_posnumericint($_POST['statetimeout']))
 		$input_errors[] = gettext("State timeout (advanced option) must be a positive integer");
 
-	if ((($_POST['max-src-conn-rate'] <> "" and $_POST['max-src-conn-rates'] == "")) || 
+	if ((($_POST['max-src-conn-rate'] <> "" and $_POST['max-src-conn-rates'] == "")) ||
 	    (($_POST['max-src-conn-rate'] == "" and $_POST['max-src-conn-rates'] <> "")))
 		$input_errors[] = gettext("Both maximum new connections per host and the interval (per second(s)) must be specified");
 
@@ -810,24 +810,24 @@ include("head.inc");
 	<?php include("fbegin.inc"); ?>
 	<script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js"></script>
 	<script src="/javascript/chosen/chosen.jquery.js" type="text/javascript"></script>
-	
+
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php pfSense_handle_custom_code("/usr/local/pkg/firewall_rules/pre_input_errors"); ?>
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="firewall_rules_edit.php" method="post" name="iform" id="iform">								
-                        	<input type='hidden' name="ruleid" value="<?=(isset($pconfig['ruleid'])&&$pconfig['ruleid']>0)?htmlspecialchars($pconfig['ruleid']):''?>" />
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+                        <form action="firewall_rules_edit.php" method="post" name="iform" id="iform">
+				<input type='hidden' name="ruleid" value="<?=(isset($pconfig['ruleid'])&&$pconfig['ruleid']>0)?htmlspecialchars($pconfig['ruleid']):''?>" />
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<tr>
 										<th colspan="2" valign="top" class="listtopic"><?=gettext("Edit Firewall rule");?></th>
 									</tr>
@@ -930,7 +930,7 @@ include("head.inc");
 												if ($config['pptpd']['mode'] == "server")
 													if(have_ruleint_access("pptp"))
 														$interfaces['pptp'] = "PPTP VPN";
-							
+
 												if (is_pppoe_server_enabled() && have_ruleint_access("pppoe"))
 													$interfaces['pppoe'] = "PPPoE VPN";
 												/* add ipsec interfaces */
@@ -945,7 +945,7 @@ include("head.inc");
 												$selected_interfaces = explode(",", $pconfig['interface']);
 												foreach ($interfaces as $iface => $ifacename): ?>
 													<option value="<?=$iface;?>" <?php if ($pconfig['interface'] <> "" && ( strcasecmp($pconfig['interface'], $iface) == 0 || in_array($iface, $selected_interfaces) )) echo "selected=\"selected\""; ?>><?=$ifacename?></option>
-							<?php 				endforeach; ?>
+							<?php				endforeach; ?>
 											</select>
 											<br />
 											<span class="vexpl"><?=gettext("Choose on which interface packets must come in to match this rule.");?></span>
@@ -995,7 +995,7 @@ include("head.inc");
 											$protocols = explode(" ", "TCP UDP TCP/UDP ICMP ESP AH GRE IPV6 IGMP PIM OSPF any carp pfsync");
 											foreach ($protocols as $proto): ?>
 												<option value="<?=strtolower($proto);?>" <?php if (strtolower($proto) == $pconfig['proto']) echo "selected=\"selected\""; ?>><?=htmlspecialchars($proto);?></option>
-							<?php 			endforeach; ?>
+							<?php			endforeach; ?>
 											</select>
 											<br />
 											<span class="vexpl"><?=gettext("Choose which IP protocol this rule should match.");?> <br /> <?=gettext("Hint: in most cases, you should specify ");?><em>TCP</em> &nbsp;<?=gettext("here.");?></span>
@@ -1025,10 +1025,10 @@ include("head.inc");
 											"maskreq" => gettext("Address mask request"),
 											"maskrep" => gettext("Address mask reply")
 											);
-							
+
 											foreach ($icmptypes as $icmptype => $descr): ?>
 												<option value="<?=$icmptype;?>" <?php if ($icmptype == $pconfig['icmptype']) echo "selected=\"selected\""; ?>><?=htmlspecialchars($descr);?></option>
-							<?php 			endforeach; ?>
+							<?php			endforeach; ?>
 										</select>
 										<br />
 										<span class="vexpl"><?=gettext("If you selected ICMP for the protocol above, you may specify an ICMP type here.");?></span>
@@ -1079,7 +1079,7 @@ include("head.inc");
 																	<?=$ifdesc?> <?=gettext("address");?>
 																</option>
 															<?php endif; ?>
-							<?php 							endforeach; ?>
+							<?php							endforeach; ?>
 														</select>
 													</td>
 												</tr>
@@ -1090,7 +1090,7 @@ include("head.inc");
 														<select <?=$edit_disabled;?> name="srcmask" class="formselect ipv4v6" id="srcmask">
 							<?php						for ($i = 127; $i > 0; $i--): ?>
 															<option value="<?=$i;?>" <?php if ($i == $pconfig['srcmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
-							<?php 						endfor; ?>
+							<?php						endfor; ?>
 														</select>
 													</td>
 												</tr>
@@ -1112,9 +1112,9 @@ include("head.inc");
 														<select <?=$edit_disabled;?> name="srcbeginport" class="formselect" onchange="src_rep_change();ext_change()">
 															<option value="">(<?=gettext("other"); ?>)</option>
 															<option value="any" <?php $bfound = 0; if ($pconfig['srcbeginport'] == "any") { echo "selected=\"selected\""; $bfound = 1; } ?>><?=gettext("any");?></option>
-							<?php 							foreach ($wkports as $wkport => $wkportdesc): ?>
+							<?php							foreach ($wkports as $wkport => $wkportdesc): ?>
 																<option value="<?=$wkport;?>" <?php if ($wkport == $pconfig['srcbeginport']) { echo "selected=\"selected\""; $bfound = 1; } ?>><?=htmlspecialchars("{$wkportdesc} ({$wkport})");?></option>
-							<?php 							endforeach; ?>
+							<?php							endforeach; ?>
 														</select>
 														<input <?=$edit_disabled;?> autocomplete='off' class="formfldalias" name="srcbeginport_cust" id="srcbeginport_cust" type="text" size="5" value="<?php if (!$bfound && $pconfig['srcbeginport']) echo htmlspecialchars($pconfig['srcbeginport']); ?>" />
 													</td>
@@ -1172,15 +1172,15 @@ include("head.inc");
 															<?php if(have_ruleint_access("l2tp")): ?>
 															<option value="l2tp" <?php if ($pconfig['dst'] == "l2tp") { echo "selected=\"selected\""; } ?>><?=gettext("L2TP clients");?></option>
 															<?php endif; ?>
-							
-							<?php 							foreach ($ifdisp as $if => $ifdesc): ?>
+
+							<?php							foreach ($ifdisp as $if => $ifdesc): ?>
 															<?php if(have_ruleint_access($if)): ?>
 																<option value="<?=$if;?>" <?php if ($pconfig['dst'] == $if) { echo "selected=\"selected\""; } ?>><?=htmlspecialchars($ifdesc);?> <?=gettext("net");?></option>
 																<option value="<?=$if;?>ip"<?php if ($pconfig['dst'] == $if . "ip") { echo "selected=\"selected\""; } ?>>
 																	<?=$ifdesc;?> <?=gettext("address");?>
 																</option>
 															<?php endif; ?>
-							<?php 							endforeach; ?>
+							<?php							endforeach; ?>
 														</select>
 													</td>
 												</tr>
@@ -1211,9 +1211,9 @@ include("head.inc");
 														<select <?=$edit_disabled;?> name="dstbeginport" class="formselect" onchange="dst_rep_change();ext_change()">
 															<option value="">(<?=gettext("other"); ?>)</option>
 															<option value="any" <?php $bfound = 0; if ($pconfig['dstbeginport'] == "any") { echo "selected=\"selected\""; $bfound = 1; } ?>><?=gettext("any");?></option>
-							<?php 							foreach ($wkports as $wkport => $wkportdesc): ?>
+							<?php							foreach ($wkports as $wkport => $wkportdesc): ?>
 																<option value="<?=$wkport;?>" <?php if ($wkport == $pconfig['dstbeginport']) { echo "selected=\"selected\""; $bfound = 1; }?>><?=htmlspecialchars("{$wkportdesc} ({$wkport})");?></option>
-							<?php 							endforeach; ?>
+							<?php							endforeach; ?>
 														</select>
 														<input <?=$edit_disabled;?> autocomplete='off' class="formfldalias" name="dstbeginport_cust" id="dstbeginport_cust" type="text" size="5" value="<?php if (!$bfound && $pconfig['dstbeginport']) echo htmlspecialchars($pconfig['dstbeginport']); ?>" />
 													</td>
@@ -1226,7 +1226,7 @@ include("head.inc");
 															<option value="any" <?php $bfound = 0; if ($pconfig['dstendport'] == "any") { echo "selected=\"selected\""; $bfound = 1; } ?>><?=gettext("any");?></option>
 							<?php							foreach ($wkports as $wkport => $wkportdesc): ?>
 																<option value="<?=$wkport;?>" <?php if ($wkport == $pconfig['dstendport']) { echo "selected=\"selected\""; $bfound = 1; } ?>><?=htmlspecialchars("{$wkportdesc} ({$wkport})");?></option>
-							<?php 							endforeach; ?>
+							<?php							endforeach; ?>
 														</select>
 															<input <?=$edit_disabled;?> autocomplete='off' class="formfldalias" name="dstendport_cust" id="dstendport_cust" type="text" size="5" value="<?php if (!$bfound && $pconfig['dstendport']) echo htmlspecialchars($pconfig['dstendport']); ?>" />
 													</td>
@@ -1266,7 +1266,7 @@ include("head.inc");
 											<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
 							<?php			if (isset($id) && $a_filter[$id]): ?>
 												<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-							<?php 			endif; ?>
+							<?php			endif; ?>
 											<input name="after" type="hidden" value="<?=htmlspecialchars($after);?>" />
 										</td>
 									</tr>
@@ -1458,7 +1458,7 @@ include("head.inc");
 													else
 														$opts .= "<option value=\"{$vprio}\" {$selected}>" . strtoupper($vprio) . "</option>\n";
 												}
-							
+
 												$optsset = "";
 												foreach($vlanprio as $vprioset) {
 													if ($vprioset == $pconfig['vlanprioset'])
@@ -1618,7 +1618,7 @@ include("head.inc");
 											</div>
 										</td>
 									</tr>
-							
+
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Ackqueue/Queue");?></td>
 										<td width="78%" class="vtable">
@@ -1745,7 +1745,7 @@ include("head.inc");
 											<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
 							<?php			if (isset($id) && $a_filter[$id]): ?>
 												<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-							<?php 			endif; ?>
+							<?php			endif; ?>
 											<input name="after" type="hidden" value="<?=htmlspecialchars($after);?>" />
 										</td>
 									</tr>

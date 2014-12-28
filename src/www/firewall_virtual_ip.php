@@ -68,21 +68,21 @@ if ($_POST) {
 				if (!empty($ovip))
 					interface_vip_bring_down($ovip);
 				if ($a_vip[$vid]) {
-                			switch ($a_vip[$vid]['mode']) {
-                			case "ipalias":
-                        			interface_ipalias_configure($a_vip[$vid]);
-                        			break;
-                			case "proxyarp":
-                        			interface_proxyarp_configure($a_vip[$vid]['interface']);
-                        			break;
-                			case "carp":
-                        			interface_carp_configure($a_vip[$vid]);
+					switch ($a_vip[$vid]['mode']) {
+					case "ipalias":
+						interface_ipalias_configure($a_vip[$vid]);
 						break;
-                			default:
-                        			break;
+					case "proxyarp":
+						interface_proxyarp_configure($a_vip[$vid]['interface']);
+						break;
+					case "carp":
+						interface_carp_configure($a_vip[$vid]);
+						break;
+					default:
+						break;
 					}
-                		}
-        		}
+				}
+			}
 			@unlink("{$g['tmp_path']}/.firewall_virtual_ip.apply");
 		}
 		$retval = 0;
@@ -147,7 +147,7 @@ if ($_GET['act'] == "del") {
 
 			if ($subnet == $if_subnet)
 				$found_if = true;
-			
+
 			$vipiface = $a_vip[$_GET['id']]['interface'];
 			foreach ($a_vip as $vip_id => $vip) {
 				if ($vip_id == $_GET['id'])
@@ -163,7 +163,7 @@ if ($_GET['act'] == "del") {
 			if ($found_carp === true && $found_other_alias === false && $found_if === false)
 				$input_errors[] = gettext("This entry cannot be deleted because it is still referenced by a CARP IP with the description") . " {$vip['descr']}.";
 		}
-		
+
 		if (!$input_errors) {
 			if (!session_id())
 				session_start();
@@ -197,7 +197,7 @@ $pgtitle = array(gettext("Firewall"),gettext("Virtual IP Addresses"));
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'firewall_virtual_ip_edit.php', 'label'=>'Add'),	
+	array('href'=>'firewall_virtual_ip_edit.php', 'label'=>'Add'),
 );
 
 ?>
@@ -205,41 +205,41 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				<?php 
-					if ($input_errors) 
+
+				<?php
+					if ($input_errors)
 						print_input_errors($input_errors);
 					else
-					if ($savemsg) 
-						print_info_box($savemsg); 
+					if ($savemsg)
+						print_info_box($savemsg);
 					else
 					if (is_subsystem_dirty('vip'))
 						print_info_box_np(gettext("The VIP configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));
 				?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					 <?php
+
+
+					 <?php
 						        /* active tabs */
 						        $tab_array = array();
 						        $tab_array[] = array(gettext("Virtual IPs"), true, "firewall_virtual_ip.php");
 						        $tab_array[] = array(gettext("CARP Settings"), false, "system_hasync.php");
 						        display_top_tabs($tab_array);
 						  ?>
-						
-					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-   
+
+
+						<div class="tab-content content-box col-xs-12">
+
+
 		                        <form action="firewall_virtual_ip.php" method="post" name="iform" id="iform">
-		                        	<input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($id); ?>" />
-		                        	
+						<input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($id); ?>" />
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                        <thead>
+			                        <thead>
 						                <tr>
 						                  <td width="30%" class="listhdrr"><?=gettext("Virtual IP address");?></td>
 						                  <td width="10%" class="listhdrr"><?=gettext("Interface");?></td>
@@ -247,8 +247,8 @@ $main_buttons = array(
 						                  <td width="40%" class="listhdr"><?=gettext("Description");?></td>
 						                  <td width="10%" class="list"></td>
 										</tr>
-    			                        </thead>
-    			                        <tbody>
+			                        </thead>
+			                        <tbody>
 								<?php
 									$interfaces = get_configured_interface_with_descr(false, true);
 									$interfaces['lo0'] = "Localhost";
@@ -280,7 +280,7 @@ $main_buttons = array(
 						                      <tr>
 						                        <td valign="middle">
 							                         <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("Edit");?>"></span></a>
-                                       
+
 													<a href="firewall_virtual_ip.php?act=del&amp;tab=<?=$tab;?>&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this entry?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
 												</td>
 						                      </tr>
@@ -289,7 +289,7 @@ $main_buttons = array(
 						                </tr>
 										<?php endif; ?>
 										<?php $i++; endforeach; ?>
-    			                        </tbody>
+			                        </tbody>
 									</table>
 		                        </div>
 		                        <div class="container-fluid">
@@ -303,5 +303,5 @@ $main_buttons = array(
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

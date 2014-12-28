@@ -161,28 +161,28 @@ include("head.inc");
 $main_buttons = array(
 	array('href'=>'firewall_aliases_edit.php?tab='.$tab, 'label'=>gettext("Add a new alias")),
 	array('href'=>'firewall_aliases_import.php', 'label'=>gettext("Bulk import aliases from list")),
-		
+
 );
 
 ?>
-					             
+
 <body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('aliases')): ?><p>
 				<?php print_info_box_np(gettext("The alias list has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?>
 				<?php endif; ?>
 				<?php pfSense_handle_custom_code("/usr/local/pkg/firewall_aliases/pre_table"); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[] = array(gettext("IP"),($tab=="ip" ? true : ($tab=="host" ? true : ($tab == "network" ? true : false))), "/firewall_aliases.php?tab=ip");
 							$tab_array[] = array(gettext("Ports"), ($tab=="port"? true : false), "/firewall_aliases.php?tab=port");
@@ -190,14 +190,14 @@ $main_buttons = array(
 							$tab_array[] = array(gettext("All"), ($tab=="all"? true : false), "/firewall_aliases.php?tab=all");
 							display_top_tabs($tab_array);
 						?>
-						
-					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-   
+
+
+						<div class="tab-content content-box col-xs-12">
+
+
 		                        <form action="firewall_aliases.php" method="post" name="iform" id="iform">
-		                        	<input type="hidden" name="tab" value="<?=htmlspecialchars($tab);?>" />
-		                        	
+						<input type="hidden" name="tab" value="<?=htmlspecialchars($tab);?>" />
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
@@ -205,7 +205,7 @@ $main_buttons = array(
 											<td width="43%" class="listhdrr"><?=gettext("Values"); ?></td>
 											<td width="30%" class="listhdr"><?=gettext("Description"); ?></td>
 											<td width="7%" class="list">
-												
+
 											</td>
 										</tr>
 										<?php
@@ -267,9 +267,9 @@ $main_buttons = array(
 													<tr>
 														<td valign="middle">
 															 <a href="firewall_aliases_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("Edit alias")." ".$alias['name'];?>"></span></a>
-                                       
+
 															 <a href="firewall_aliases.php?act=del&amp;tab=<?=$tab;?>&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this alias? All elements that still use it will become invalid (e.g. filter rules)!");?>')"><span class="glyphicon glyphicon-remove"></span></a>
-											   
+
 															</td>
 													</tr>
 												</table>
@@ -278,7 +278,7 @@ $main_buttons = array(
 										<?php
 											} // if ($show_alias)
 										} // foreach
-										?>					
+										?>
 									</table>
 								</div>
 								<div class="container-fluid">

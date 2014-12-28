@@ -248,7 +248,7 @@ if ($_POST) {
 		}
 	}
 
-	// Allow extending of the firewall edit page and include custom input validation 
+	// Allow extending of the firewall edit page and include custom input validation
 	pfSense_handle_custom_code("/usr/local/pkg/firewall_aon/input_validation");
 
 	if (!$input_errors) {
@@ -268,7 +268,7 @@ if ($_POST) {
 		} else {
 			unset($natent['staticnatport']);
 		}
-		
+
 		if(isset($_POST['disabled'])) {
 			$natent['disabled'] = true;
 		} else {
@@ -293,7 +293,7 @@ if ($_POST) {
 			$natent['destination']['address'] = $ext;
 		}
 		if($_POST['natport'] != "" && $protocol_uses_ports && !isset($_POST['nonat'])) {
-	        	$natent['natport'] = $_POST['natport'];
+			$natent['natport'] = $_POST['natport'];
 		} else {
 			unset($natent['natport']);
 		}
@@ -318,7 +318,7 @@ if ($_POST) {
 
 		$natent['updated'] = make_config_revision_entry();
 
-		// Allow extending of the firewall edit page and include custom input validation 
+		// Allow extending of the firewall edit page and include custom input validation
 		pfSense_handle_custom_code("/usr/local/pkg/firewall_aon/pre_write_config");
 
 		if (isset($id) && $a_out[$id]) {
@@ -443,24 +443,24 @@ function poolopts_change() {
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="firewall_nat_out_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
-				                        	
+
+				<div class="content-box">
+
+                        <form action="firewall_nat_out_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
+
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Advanced Outbound NAT entry");?></td>
 									</tr>
 							<?php
-									// Allow extending of the firewall edit page and include custom input validation 
+									// Allow extending of the firewall edit page and include custom input validation
 									pfSense_handle_custom_code("/usr/local/pkg/firewall_rules/htmlphpearly");
 							?>
 									<tr>
@@ -488,27 +488,27 @@ function poolopts_change() {
 												foreach ($iflist as $if => $ifdesc)
 													if(have_ruleint_access($if))
 														$interfaces[$if] = $ifdesc;
-							
+
 												if ($config['l2tp']['mode'] == "server")
 													if(have_ruleint_access("l2tp"))
 														$interfaces['l2tp'] = "L2TP VPN";
-							
+
 												if ($config['pptpd']['mode'] == "server")
 													if(have_ruleint_access("pptp"))
 														$interfaces['pptp'] = "PPTP VPN";
-							
+
 												if (is_pppoe_server_enabled() && have_ruleint_access("pppoe"))
 													$interfaces['pppoe'] = "PPPoE VPN";
-							
+
 												/* add ipsec interfaces */
 												if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
 													if(have_ruleint_access("enc0"))
 														$interfaces["enc0"] = "IPsec";
-							
+
 												/* add openvpn/tun interfaces */
 												if  ($config['openvpn']["openvpn-server"] || $config['openvpn']["openvpn-client"])
 													$interfaces["openvpn"] = "OpenVPN";
-							
+
 												foreach ($interfaces as $iface => $ifacename):
 							?>
 													<option value="<?=$iface;?>" <?php if ($iface == $pconfig['interface']) echo "selected=\"selected\""; ?>>
@@ -700,7 +700,7 @@ function poolopts_change() {
 														</select>
 													</td>
 												</tr>
-							
+
 												<tr id="target_network">
 													<td><?=gettext("Other Subnet:");?>&nbsp;&nbsp;</td>
 													<td>
@@ -716,7 +716,7 @@ function poolopts_change() {
 														</select>
 													</td>
 												</tr>
-							
+
 												<tr>
 													<td>&nbsp;</td>
 													<td>
@@ -821,7 +821,7 @@ function poolopts_change() {
 									</tr>
 							<?php
 									endif;
-							
+
 									if ($has_updated_time):
 							?>
 									<tr>
@@ -833,7 +833,7 @@ function poolopts_change() {
 							<?php
 									endif;
 								endif;
-								// Allow extending of the firewall edit page and include custom input validation 
+								// Allow extending of the firewall edit page and include custom input validation
 								pfSense_handle_custom_code("/usr/local/pkg/firewall_aon/htmlphplate");
 							?>
 									<tr>
@@ -852,16 +852,16 @@ function poolopts_change() {
 										</td>
 									</tr>
 								</table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
-	
-	
+
+
+
 <script type="text/javascript">
 //<![CDATA[
 	sourcesel_change();

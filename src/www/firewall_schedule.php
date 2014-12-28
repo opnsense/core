@@ -96,34 +96,34 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">
-	    				
-    				    
-    				    <div class="content-box-main ">
-	    					
-	    					<form action="firewall_schedule.php" method="post" name="iform" id="iform">
-		    							                        
+
+				<div class="content-box">
+
+
+				    <div class="content-box-main ">
+
+						<form action="firewall_schedule.php" method="post" name="iform" id="iform">
+
 		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort">    
-    			                        <thead>          
+			                        <table class="table table-striped table-sort">
+			                        <thead>
 										<tr>
 										  <td width="25%" class="listhdrr"><?=gettext("Name");?></td>
 										  <td width="35%" class="listhdrr"><?=gettext("Time Range(s)");?></td>
 										  <td width="35%" class="listhdr"><?=gettext("Description");?></td>
 										  <td width="5%" class="list sort_ignore">
-										    
+
 										  </td>
 										</tr>
-    			                        </thead>
-    			                        <tbody>
+			                        </thead>
+			                        <tbody>
 										<?php $i = 0; foreach ($a_schedules as $schedule): ?>
 										<tr>
 										   <td class="listlr" ondblclick="document.location='firewall_schedule_edit.php?id=<?=$i;?>';">
@@ -131,14 +131,14 @@ $main_buttons = array(
 														<?php
 														$schedstatus = filter_get_time_based_rule_status($schedule);
 														 if ($schedstatus) { ?>
-														 	&nbsp;<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_frmfld_time.png" title="<?=gettext("Schedule is currently active");?>" width="17" height="17" border="0" alt="schedule" />
+															&nbsp;<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_frmfld_time.png" title="<?=gettext("Schedule is currently active");?>" width="17" height="17" border="0" alt="schedule" />
 														 <?php } ?>
-									
-									  		</td>
-									  		<td class="listlr" ondblclick="document.location='firewall_schedule_edit.php?id=<?=$i;?>';">
-									  			<table width="98%" border="0" cellpadding="0" cellspacing="0" summary="schedule">
+
+											</td>
+											<td class="listlr" ondblclick="document.location='firewall_schedule_edit.php?id=<?=$i;?>';">
+												<table width="98%" border="0" cellpadding="0" cellspacing="0" summary="schedule">
 												<?php
-									
+
 													foreach($schedule['timerange'] as $timerange) {
 															$tempFriendlyTime = "";
 															$tempID = "";
@@ -146,14 +146,14 @@ $main_buttons = array(
 															if ($timerange){
 																$dayFriendly = "";
 																$tempFriendlyTime = "";
-									
+
 																//get hours
 																$temptimerange = $timerange['hour'];
 																$temptimeseparator = strrpos($temptimerange, "-");
-									
+
 																$starttime = substr ($temptimerange, 0, $temptimeseparator);
 																$stoptime = substr ($temptimerange, $temptimeseparator+1);
-									
+
 																if ($timerange['month']){
 																	$tempmontharray = explode(",", $timerange['month']);
 																	$tempdayarray = explode(",",$timerange['day']);
@@ -163,14 +163,14 @@ $main_buttons = array(
 																	foreach ($tempmontharray as $monthtmp){
 																		$month = $tempmontharray[$arraycounter];
 																		$day = $tempdayarray[$arraycounter];
-									
+
 																		if (!$firstDayFound)
 																		{
 																			$firstDay = $day;
 																			$firstmonth = $month;
 																			$firstDayFound = true;
 																		}
-									
+
 																		$currentDay = $day;
 																		$nextDay = $tempdayarray[$arraycounter+1];
 																		$currentDay++;
@@ -225,15 +225,15 @@ $main_buttons = array(
 																}
 																$timeFriendly = $starttime . "-" . $stoptime;
 																$description = $timerange['rangedescr'];
-									
+
 																?><tr><td><?=$dayFriendly;?></td><td><?=$timeFriendly;?></td><td><?=$description;?></td></tr><?php
 															}
 														}//end for?></table>
 										  </td>
 										 <td class="listbg" ondblclick="document.location='firewall_schedule_edit.php?id=<?=$i;?>';">
-									    		<?=htmlspecialchars($schedule['descr']);?>&nbsp;
-									  		</td>
-									  		  <td valign="middle" class="list nowrap">
+											<?=htmlspecialchars($schedule['descr']);?>&nbsp;
+											</td>
+											  <td valign="middle" class="list nowrap">
 									    <table border="0" cellspacing="0" cellpadding="1" summary="buttons">
 									      <tr>
 									        <td valign="middle"><a href="firewall_schedule_edit.php?id=<?=$i;?>" title="<?=gettext("edit alias");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></td>
@@ -243,15 +243,15 @@ $main_buttons = array(
 									  </td>
 									</tr>
 									<?php $i++; endforeach; ?>
-    			                        </tbody>
+			                        </tbody>
 			                        </table>
 		                        </div>
 		                        <div class="container-fluid">
 		                        <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span><?=gettext("Schedules act as placeholders for time ranges to be used in Firewall Rules.");?></span></p>
 		                        </div>
-	    					</form>
-    				    </div>
-    				</div>
+						</form>
+				    </div>
+				</div>
 			    </section>
 			</div>
 		</div>

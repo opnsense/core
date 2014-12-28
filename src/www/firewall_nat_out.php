@@ -218,22 +218,22 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-	
+
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">				
-				
+		<div class="container-fluid">
+			<div class="row">
+
 				<?php
 				if ($savemsg)
 					print_info_box($savemsg);
 				if (is_subsystem_dirty('natconf'))
 					print_info_box_np(gettext("The NAT configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));
 				?>
-				
+
 	            <form action="firewall_nat_out.php" method="post" name="iform" id="iform">
-		                        
-			    <section class="col-xs-12">    				
-    					
+
+			    <section class="col-xs-12">
+
 					<?php
 							$tab_array = array();
 							$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
@@ -242,17 +242,17 @@ include("head.inc");
 							$tab_array[] = array(gettext("NPt"), false, "firewall_nat_npt.php");
 							display_top_tabs($tab_array);
 					?>
-				
+
 					<div class="tab-content content-box col-xs-12">
-	    				    	                        	
+
 	                        <div class="table-responsive">
 		                        <table class="table table-striped table-sort">
-    		                        <thead>
+		                        <thead>
 			                        <tr>
 				                        <th colspan="4"><?=gettext("Mode:"); ?></th>
 			                        </tr>
-    		                        </thead>
-    		                        <tbody>
+		                        </thead>
+		                        <tbody>
 									<tr>
 										<td>
 											<input name="mode" type="radio" id="automatic" value="automatic" <?php if ($mode == "automatic") echo "checked=\"checked\"";?> />
@@ -273,7 +273,7 @@ include("head.inc");
 											</strong>
 										</td>
 									</tr>
-									
+
 									<tr>
 										<td>
 											<input name="mode" type="radio" id="advanced" value="advanced" <?php if ($mode == "advanced") echo "checked=\"checked\"";?> />
@@ -296,45 +296,45 @@ include("head.inc");
 									</tr>
 									<tr>
 										<td colspan="4">
-											
+
 											<input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
 										</td>
 									</tr>
-    		                        </tbody>
+		                        </tbody>
 								</table>
 	                        </div>
 					</div>
 				</section>
-				
-	            <section class="col-xs-12">    				
-				
-					<div class=" content-box ">		
-	    				    	                        	
+
+	            <section class="col-xs-12">
+
+					<div class=" content-box ">
+
 	                        <div class="table-responsive">
 		                        <table class="table table-striped table-sort">
-    		                        <thead>
-    									<tr><th colspan="12"><?=gettext("Mappings:"); ?></th></tr>
-    									
-									
-    									<tr id="frheader">
-    										<th width="2%" class="list">&nbsp;</th>
-    										<th width="3%" class="list">&nbsp;</th>
-    										<th width="10%" class="listhdrr"><?=gettext("Interface");?></th>
-    										<th width="10%" class="listhdrr"><?=gettext("Source");?></th>
-    										<th width="5%" class="listhdrr"><?=gettext("Source Port");?></th>
-    										<th width="10%" class="listhdrr"><?=gettext("Destination");?></th>
-    										<th width="10%" class="listhdrr"><?=gettext("Destination Port");?></th>
-    										<th width="10%" class="listhdrr"><?=gettext("NAT Address");?></th>
-    										<th width="10%" class="listhdrr"><?=gettext("NAT Port");?></th>
-    										<th width="10%" class="listhdrr"><?=gettext("Static Port");?></th>
-    										<th width="10%" class="listhdr"><?=gettext("Description");?></th>
-    										<th class="list">
-    											
-    											<a href="firewall_nat_out_edit.php?after=-1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-    										</th>
-    									</tr>
-    		                        </thead>
-    		                        <tbody>
+		                        <thead>
+									<tr><th colspan="12"><?=gettext("Mappings:"); ?></th></tr>
+
+
+									<tr id="frheader">
+										<th width="2%" class="list">&nbsp;</th>
+										<th width="3%" class="list">&nbsp;</th>
+										<th width="10%" class="listhdrr"><?=gettext("Interface");?></th>
+										<th width="10%" class="listhdrr"><?=gettext("Source");?></th>
+										<th width="5%" class="listhdrr"><?=gettext("Source Port");?></th>
+										<th width="10%" class="listhdrr"><?=gettext("Destination");?></th>
+										<th width="10%" class="listhdrr"><?=gettext("Destination Port");?></th>
+										<th width="10%" class="listhdrr"><?=gettext("NAT Address");?></th>
+										<th width="10%" class="listhdrr"><?=gettext("NAT Port");?></th>
+										<th width="10%" class="listhdrr"><?=gettext("Static Port");?></th>
+										<th width="10%" class="listhdr"><?=gettext("Description");?></th>
+										<th class="list">
+
+											<a href="firewall_nat_out_edit.php?after=-1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+										</th>
+									</tr>
+		                        </thead>
+		                        <tbody>
 					<?php
 								$i = 0;
 								foreach ($a_out as $natent):
@@ -343,20 +343,20 @@ include("head.inc");
 									if ($mode == "disabled" || $mode == "automatic" || isset($natent['disabled'])) {
 										$textss = "text-muted";
 									}
-					
+
 									//build Alias popup box
 									$alias_src_span_begin = "";
 									$alias_src_port_span_begin = "";
 									$alias_dst_span_begin = "";
 									$alias_dst_port_span_begin = "";
-					
+
 									$alias_popup = rule_popup($natent['source']['network'],pprint_port($natent['sourceport']),$natent['destination']['address'],pprint_port($natent['dstport']));
-					
+
 									$alias_src_span_begin = $alias_popup["src"];
 									$alias_src_port_span_begin = $alias_popup["srcport"];
 									$alias_dst_span_begin = $alias_popup["dst"];
 									$alias_dst_port_span_begin = $alias_popup["dstport"];
-					
+
 									$alias_src_span_end = $alias_popup["src_end"];
 									$alias_src_port_span_end = $alias_popup["srcport_end"];
 									$alias_dst_span_end = $alias_popup["dst_end"];
@@ -370,7 +370,7 @@ include("head.inc");
 					<?php
 										if ($mode == "disabled" || $mode == "automatic"):
 					?>
-											
+
 											<span title="<?=gettext("This rule is being ignored");?>" class="<?=$iconfn;?> <?=$textss;?>"></span>
 
 					<?php
@@ -391,7 +391,7 @@ include("head.inc");
 										</td>
 										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
 					<?php
-											
+
 											echo ($natent['protocol']) ? $natent['protocol'] . '/' : "" ;
 											if (!$natent['sourceport'])
 												echo "*";
@@ -402,7 +402,7 @@ include("head.inc");
 										</td>
 										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
 					<?php
-											
+
 											if (isset($natent['destination']['any']))
 												echo "*";
 											else {
@@ -415,7 +415,7 @@ include("head.inc");
 										</td>
 										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
 					<?php
-											
+
 											echo ($natent['protocol']) ? $natent['protocol'] . '/' : "" ;
 											if (!$natent['dstport'])
 												echo "*";
@@ -426,7 +426,7 @@ include("head.inc");
 										</td>
 										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
 					<?php
-											
+
 											if (isset($natent['nonat']))
 												echo '<I>NO NAT</I>';
 											elseif (!$natent['target'])
@@ -440,7 +440,7 @@ include("head.inc");
 										</td>
 										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
 					<?php
-											
+
 											if (!$natent['natport'])
 												echo "*";
 											else
@@ -450,7 +450,7 @@ include("head.inc");
 										</td>
 										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';" align="center">
 					<?php
-											
+
 											if(isset($natent['staticnatport']))
 												echo gettext("YES");
 											else
@@ -463,7 +463,7 @@ include("head.inc");
 										</td>
 										<td class="list nowrap" valign="middle">
 												<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>_x" title="<?=gettext("move selected rules before this rule");?>" type="submit" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
-												
+
 												<a href="firewall_nat_out_edit.php?id=<?=$i;?>" title="<?=gettext("edit mapping");?>" alt="edit"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 												<a href="firewall_nat_out.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')"  title="<?=gettext("delete rule");?>" alt="delete"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 												<a href="firewall_nat_out_edit.php?dup=<?=$i;?>" title="<?=gettext("add a new NAT based on this one");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
@@ -476,14 +476,14 @@ include("head.inc");
 				<tr valign="top" id="fr<?=$i;?>">
 					<td class="list" colspan="11"></td>
 					<td class="list nowrap" valign="middle">
-						
+
 <?php
 								if ($i == 0):
 ?>
-									
+
 									<span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
-									
-									
+
+
 <?php
 								else:
 ?>
@@ -491,9 +491,9 @@ include("head.inc");
 <?php
 								endif;
 ?>
-							
+
 									<a href="firewall_nat_out_edit.php" title="<?=gettext("add new mapping");?>" alt="add"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-								
+
 <?php
 								if ($i == 0):
 ?>
@@ -505,7 +505,7 @@ include("head.inc");
 <?php
 								endif;
 ?>
-						
+
 					</td>
 				</tr>
             </tbody>
@@ -640,7 +640,7 @@ include("head.inc");
 				</tr>
             </tbody>
 			</table>
-    				    </div>
+				    </div>
 					</div>
 	            </section>
 	            </form>

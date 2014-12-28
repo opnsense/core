@@ -624,26 +624,26 @@ EOD;
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php pfSense_handle_custom_code("/usr/local/pkg/firewall_aliases_edit/pre_input_errors"); ?>
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">
-	    				
-	    				 <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Alias Edit");?></h3>
-    				    </header>
-    				    
-    				    <div class="content-box-main">
-	    					
-	    					<form action="firewall_aliases_edit.php" method="post" name="iform" id="iform">
-		    					<?php
+
+				<div class="content-box">
+
+					 <header class="content-box-head container-fluid">
+				        <h3><?=gettext("Alias Edit");?></h3>
+				    </header>
+
+				    <div class="content-box-main">
+
+						<form action="firewall_aliases_edit.php" method="post" name="iform" id="iform">
+							<?php
 									if (empty($tab)) {
 										if (preg_match("/url/i", $pconfig['type']))
 											$tab = 'url';
@@ -655,7 +655,7 @@ EOD;
 								?>
 								<input name="tab" type="hidden" id="tab" value="<?=htmlspecialchars($tab);?>" />
 
-		    							                        
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
@@ -713,7 +713,7 @@ EOD;
 															<td><div id="twocolumn">CIDR</div></td>
 															<td><div id="threecolumn"><?=gettext("Description"); ?></div></td>
 														</tr>
-									
+
 														<?php
 														$counter = 0;
 														if ($pconfig['address'] <> ""):
@@ -748,7 +748,7 @@ EOD;
 														</tr>
 														<?php
 															$counter++;
-									
+
 															endwhile;
 														endif;
 														?>
@@ -770,14 +770,14 @@ EOD;
 										</tr>
 									</table>
 		                        </div>
-	    					</form>
-    				    </div>
-    				</div>
+						</form>
+				    </div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 
 <script type="text/javascript">
 //<![CDATA[

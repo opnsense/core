@@ -154,13 +154,13 @@ $main_buttons = array(
 ?>
 <body>
 <?php include("fbegin.inc"); ?>
-	
+
 	<script type="text/javascript" src="/javascript/row_toggle.js"></script>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">				
-				
+		<div class="container-fluid">
+			<div class="row">
+
 				<?php
 				if ($savemsg)
 					print_info_box($savemsg);
@@ -169,9 +169,9 @@ $main_buttons = array(
 						"<br />" .
 						gettext("You must apply the changes in order for them to take effect."));
 				?>
-				
-			    <section class="col-xs-12">    				
-    					
+
+			    <section class="col-xs-12">
+
 					<?php
 							$tab_array = array();
 							$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
@@ -180,16 +180,16 @@ $main_buttons = array(
 							$tab_array[] = array(gettext("NPt"), false, "firewall_nat_npt.php");
 							display_top_tabs($tab_array);
 					?>
-				
-					<div class="tab-content content-box col-xs-12">	
-    					
+
+					<div class="tab-content content-box col-xs-12">
+
 
 	                        <form action="firewall_nat_1to1.php" method="post" name="iform" id="iform">
-	                        	<input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($id); ?>" />
-	                        	
+					<input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($id); ?>" />
+
 	                        <div class="table-responsive">
 		                        <table class="table table-striped table-sort">
-    		                        <thead>
+		                        <thead>
 									<tr id="frheader">
 										<th width="3%" class="list">&nbsp;</th>
 										<th width="3%" class="list">&nbsp;</th>
@@ -200,8 +200,8 @@ $main_buttons = array(
 										<th class="listhdr"><?=gettext("Description"); ?></th>
 										<th class="list"></th>
 									</tr>
-    		                        </thead>
-    		                        <tbody>
+		                        </thead>
+		                        <tbody>
 						<?php
 								$textse = "";
 								$i = 0;
@@ -223,12 +223,12 @@ $main_buttons = array(
 										</td>
 										<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 						<?php
-											
+
 											if (!$natent['interface'])
 												echo htmlspecialchars(convert_friendly_interface_to_friendly_descr("wan"));
 											else
 												echo htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface']));
-											
+
 						?>
 										</td>
 										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
@@ -257,7 +257,7 @@ $main_buttons = array(
 											<button  name="move_<?=$i;?>_x"
 												title="<?=gettext("move selected rules before this rule");?>"
 												type="submit" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
-										
+
 											<a href="firewall_nat_1to1_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 											<a href="firewall_nat_1to1.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 											<a href="firewall_nat_1to1_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
@@ -270,7 +270,7 @@ $main_buttons = array(
 									<tr>
 										<td class="list" colspan="7"></td>
 										<td class="list nowrap" valign="middle">
-											
+
 						<?php
 													if ($i == 0):
 						?>
@@ -282,9 +282,9 @@ $main_buttons = array(
 						<?php
 													endif;
 						?>
-													
+
 														<a href="firewall_nat_1to1_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-													
+
 						<?php
 													if ($i == 0):
 						?>
@@ -312,7 +312,7 @@ $main_buttons = array(
 											</span></p>
 										</td>
 									</tr>
-    		                        </tbody>
+		                        </tbody>
 								</table>
 	                        </div>
 	                        </form>

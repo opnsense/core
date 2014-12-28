@@ -247,7 +247,7 @@ if ($_POST) {
 	}
 
 	/* if user enters an alias and selects "network" then disallow. */
-	if( ($_POST['srctype'] == "network" && is_alias($_POST['src']) ) 
+	if( ($_POST['srctype'] == "network" && is_alias($_POST['src']) )
 	 || ($_POST['dsttype'] == "network" && is_alias($_POST['dst']) ) ) {
 		$input_errors[] = gettext("You must specify single host or alias for alias entries.");
 	}
@@ -310,7 +310,7 @@ if ($_POST) {
 		}
 	}
 
-	// Allow extending of the firewall edit page and include custom input validation 
+	// Allow extending of the firewall edit page and include custom input validation
 	pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/input_validation");
 
 	if (!$input_errors) {
@@ -429,7 +429,7 @@ if ($_POST) {
 
 		$natent['updated'] = make_config_revision_entry();
 
-		// Allow extending of the firewall edit page and include custom input validation 
+		// Allow extending of the firewall edit page and include custom input validation
 		pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/pre_write_config");
 
 		// Update the NAT entry now
@@ -461,25 +461,25 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-	
+
 	<script src="/javascript/chosen/chosen.jquery.js" type="text/javascript"></script>
-	
+
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="firewall_nat_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+                        <form action="firewall_nat_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 
 
 
@@ -487,7 +487,7 @@ include("head.inc");
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Redirect entry"); ?></td>
 									</tr>
 					<?php
-							// Allow extending of the firewall edit page and include custom input validation 
+							// Allow extending of the firewall edit page and include custom input validation
 							pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/htmlphpearly");
 					?>
 							<tr>
@@ -511,34 +511,34 @@ include("head.inc");
 					                  <td width="78%" class="vtable">
 										<select name="interface" class="formselect" onchange="dst_change(this.value,iface_old,document.iform.dsttype.value);iface_old = document.iform.interface.value;typesel_change();">
 											<?php
-					
+
 											$iflist = get_configured_interface_with_descr(false, true);
-											// Allow extending of the firewall edit interfaces 
+											// Allow extending of the firewall edit interfaces
 											pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/pre_interfaces_edit");
 											foreach ($iflist as $if => $ifdesc)
 												if(have_ruleint_access($if))
 													$interfaces[$if] = $ifdesc;
-					
+
 											if ($config['l2tp']['mode'] == "server")
 												if(have_ruleint_access("l2tp"))
 													$interfaces['l2tp'] = "L2TP VPN";
-					
+
 											if ($config['pptpd']['mode'] == "server")
 												if(have_ruleint_access("pptp"))
 													$interfaces['pptp'] = "PPTP VPN";
-					
+
 											if (is_pppoe_server_enabled() && have_ruleint_access("pppoe"))
 												$interfaces['pppoe'] = "PPPoE VPN";
-					
+
 											/* add ipsec interfaces */
 											if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
 												if(have_ruleint_access("enc0"))
 													$interfaces["enc0"] = "IPsec";
-					
+
 											/* add openvpn/tun interfaces */
 											if  ($config['openvpn']["openvpn-server"] || $config['openvpn']["openvpn-client"])
 												$interfaces["openvpn"] = "OpenVPN";
-					
+
 											foreach ($interfaces as $iface => $ifacename): ?>
 											<option value="<?=$iface;?>" <?php if ($iface == $pconfig['interface']) echo "selected=\"selected\""; ?>>
 											<?=htmlspecialchars($ifacename);?>
@@ -601,7 +601,7 @@ include("head.inc");
 															<?=$ifdesc?> <?=gettext("address");?>
 														</option>
 													<?php endif; ?>
-					<?php 							endforeach; ?>
+					<?php							endforeach; ?>
 												</select>
 											</td>
 										</tr>
@@ -612,7 +612,7 @@ include("head.inc");
 												<select name="srcmask" class="formselect" id="srcmask">
 					<?php						for ($i = 31; $i > 0; $i--): ?>
 													<option value="<?=$i;?>" <?php if ($i == $pconfig['srcmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
-					<?php 						endfor; ?>
+					<?php						endfor; ?>
 												</select>
 											</td>
 										</tr>
@@ -629,9 +629,9 @@ include("head.inc");
 												<select name="srcbeginport" class="formselect" onchange="src_rep_change();ext_change()">
 													<option value="">(<?=gettext("other"); ?>)</option>
 													<option value="any" <?php $bfound = 0; if ($pconfig['srcbeginport'] == "any") { echo "selected=\"selected\""; $bfound = 1; } ?>><?=gettext("any"); ?></option>
-					<?php 							foreach ($wkports as $wkport => $wkportdesc): ?>
+					<?php							foreach ($wkports as $wkport => $wkportdesc): ?>
 														<option value="<?=$wkport;?>" <?php if ($wkport == $pconfig['srcbeginport']) { echo "selected=\"selected\""; $bfound = 1; } ?>><?=htmlspecialchars($wkportdesc);?></option>
-					<?php 							endforeach; ?>
+					<?php							endforeach; ?>
 												</select>
 												<input autocomplete='off' class="formfldalias" name="srcbeginport_cust" id="srcbeginport_cust" type="text" size="5" value="<?php if (!$bfound && $pconfig['srcbeginport']) echo htmlspecialchars($pconfig['srcbeginport']); ?>" />
 											</td>
@@ -683,16 +683,16 @@ include("head.inc");
 													<?php if(have_ruleint_access("l2tp")): ?>
 					                                                                <option value="l2tp" <?php if ($pconfig['dst'] == "l2tp") { echo "selected=\"selected\""; } ?>><?=gettext("L2TP clients"); ?></option>
 					                                                                <?php endif; ?>
-					
-					<?php 							foreach ($ifdisp as $if => $ifdesc): ?>
+
+					<?php							foreach ($ifdisp as $if => $ifdesc): ?>
 													<?php if(have_ruleint_access($if)): ?>
 														<option value="<?=$if;?>" <?php if ($pconfig['dst'] == $if) { echo "selected=\"selected\""; } ?>><?=htmlspecialchars($ifdesc);?> <?=gettext("net"); ?></option>
 														<option value="<?=$if;?>ip"<?php if ($pconfig['dst'] == $if . "ip") { echo "selected=\"selected\""; } ?>>
 															<?=$ifdesc;?> <?=gettext("address");?>
 														</option>
 													<?php endif; ?>
-					<?php 							endforeach; ?>
-					
+					<?php							endforeach; ?>
+
 					<?php							if (is_array($config['virtualip']['vip'])):
 														foreach ($config['virtualip']['vip'] as $sn):
 															if (isset($sn['noexpand']))
@@ -741,10 +741,10 @@ include("head.inc");
 											<td>
 												<select name="dstbeginport" id="dstbeginport" class="formselect" onchange="dst_rep_change();ext_change()">
 													<option value="">(<?=gettext("other"); ?>)</option>
-					<?php 							$bfound = 0;
+					<?php							$bfound = 0;
 													foreach ($wkports as $wkport => $wkportdesc): ?>
 														<option value="<?=$wkport;?>" <?php if ($wkport == $pconfig['dstbeginport']) { echo "selected=\"selected\""; $bfound = 1; }?>><?=htmlspecialchars($wkportdesc);?></option>
-					<?php 							endforeach; ?>
+					<?php							endforeach; ?>
 												</select>
 												<input autocomplete='off' class="formfldalias" name="dstbeginport_cust" id="dstbeginport_cust" type="text" size="5" value="<?php if (!$bfound && $pconfig['dstbeginport']) echo htmlspecialchars($pconfig['dstbeginport']); ?>" />
 											</td>
@@ -757,7 +757,7 @@ include("head.inc");
 					<?php							$bfound = 0;
 													foreach ($wkports as $wkport => $wkportdesc): ?>
 														<option value="<?=$wkport;?>" <?php if ($wkport == $pconfig['dstendport']) { echo "selected=\"selected\""; $bfound = 1; } ?>><?=htmlspecialchars($wkportdesc);?></option>
-					<?php 							endforeach; ?>
+					<?php							endforeach; ?>
 												</select>
 												<input autocomplete='off' class="formfldalias" name="dstendport_cust" id="dstendport_cust" type="text" size="5" value="<?php if (!$bfound && $pconfig['dstendport']) echo htmlspecialchars($pconfig['dstendport']); ?>" />
 											</td>
@@ -844,7 +844,7 @@ include("head.inc");
 															$linkedrule = "<br /><a href=\"firewall_rules_edit.php?id={$filter_id}\">" . gettext("View the filter rule") . "</a><br />";
 														}
 														echo ">". htmlspecialchars('Rule ' . $filter_rule['descr']) . "</option>\n";
-					
+
 													}
 												      }
 												}
@@ -870,7 +870,7 @@ include("head.inc");
 									  </td>
 					                </tr><?php endif; ?>
 					<?php
-							// Allow extending of the firewall edit page and include custom input validation 
+							// Allow extending of the firewall edit page and include custom input validation
 							pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/htmlphplate");
 					?>
 					<?php

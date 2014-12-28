@@ -1,22 +1,22 @@
-<?php 
+<?php
 /* $Id$ */
 /*
 	firewall_nat_npt_edit.php
 	part of pfSense (https://www.pfsense.org)
-	
+
 	Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.
-	
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -98,7 +98,7 @@ if (isset($id) && $a_npt[$id]) {
 
 
 if ($_POST) {
-	
+
 	unset($input_errors);
 	$pconfig = $_POST;
 
@@ -109,7 +109,7 @@ if ($_POST) {
         $reqdfieldsn[] = gettext("Source prefix");
         $reqdfields[] = "dst";
         $reqdfieldsn[] = gettext("Destination prefix");
-	
+
 	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
 	if (!$input_errors) {
@@ -157,23 +157,23 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="firewall_nat_npt_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+                        <form action="firewall_nat_npt_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 
 
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit NAT NPt entry"); ?></td>
-									</tr>	
+									</tr>
 							<tr>
 					                        <td width="22%" valign="top" class="vncellreq"><?=gettext("Disabled"); ?></td>
 					                        <td width="78%" class="vtable">
@@ -190,29 +190,29 @@ include("head.inc");
 										foreach ($ifdisp as $if => $ifdesc)
 											if(have_ruleint_access($if))
 												$interfaces[$if] = $ifdesc;
-					
+
 										if ($config['l2tp']['mode'] == "server")
 											if(have_ruleint_access("l2tp"))
 												$interfaces['l2tp'] = "L2TP VPN";
-					
+
 										if ($config['pptpd']['mode'] == "server")
 											if(have_ruleint_access("pptp"))
 												$interfaces['pptp'] = "PPTP VPN";
-					
+
 										if ($config['pppoe']['mode'] == "server")
 											if(have_ruleint_access("pppoe"))
 												$interfaces['pppoe'] = "PPPoE VPN";
-					
+
 										/* add ipsec interfaces */
 										if (isset($config['ipsec']['enable']) || isset($config['ipsec']['mobileclients']['enable']))
 											if(have_ruleint_access("enc0"))
 												$interfaces["enc0"] = "IPsec";
-					
+
 										/* add openvpn/tun interfaces */
 										if  ($config['openvpn']["openvpn-server"] || $config['openvpn']["openvpn-client"])
 											$interfaces["openvpn"] = "OpenVPN";
-					
-										foreach ($interfaces as $iface => $ifacename): 
+
+										foreach ($interfaces as $iface => $ifacename):
 										?>
 										<option value="<?=$iface;?>" <?php if ($iface == $pconfig['interface']) echo "selected=\"selected\""; ?>>
 										<?=htmlspecialchars($ifacename);?>
@@ -245,8 +245,8 @@ include("head.inc");
 					                                        </tr>
 					                                </table>
 								<br />
-					                     <span class="vexpl"><?=gettext("Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix translation. The prefix size specified for the internal IPv6 prefix will be applied to the 
-					external prefix."); 
+					                     <span class="vexpl"><?=gettext("Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix translation. The prefix size specified for the internal IPv6 prefix will be applied to the
+					external prefix.");
 					?></span>
 								</td>
 					                </tr>
@@ -278,16 +278,16 @@ include("head.inc");
 					                     <span class="vexpl"><?=gettext("Enter the Global Unicast routable IPv6 prefix here"); ?><br /></span>
 					                     </td>
 					                </tr>
-					                <tr> 
+					                <tr>
 					                  <td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
-					                  <td width="78%" class="vtable"> 
+					                  <td width="78%" class="vtable">
 					                    <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
 					                    <br /> <span class="vexpl"><?=gettext("You may enter a description here " .
 					                    "for your reference (not parsed)."); ?></span></td>
 					                </tr>
-					                <tr> 
+					                <tr>
 					                  <td width="22%" valign="top">&nbsp;</td>
-					                  <td width="78%"> 
+					                  <td width="78%">
 					                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 					                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
 					                    <?php if (isset($id) && $a_npt[$id]): ?>
@@ -296,12 +296,12 @@ include("head.inc");
 					                  </td>
 					                </tr>
 					              </table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>
