@@ -22,10 +22,20 @@ sweep:
 	    ! -name "*.map" -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 
+style:
+	@(phpcs --tab-width=4 --standard=PSR2 ${.CURDIR}/src/opnsense \
+	    || true) > ${.CURDIR}/.style.out
+	@echo -n "Total number of style warnings: "
+	@grep '| WARNING' ${.CURDIR}/.style.out | wc -l
+	@echo -n "Total number of style errors:   "
+	@grep '| ERROR' ${.CURDIR}/.style.out | wc -l
+	@cat ${.CURDIR}/.style.out
+	@rm ${.CURDIR}/.style.out
+
 setup:
 	${.CURDIR}/src/etc/rc.php_ini_setup
 
 clean:
 	git reset --hard HEAD && git clean -xdqf .
 
-.PHONY: mount umount install lint sweep setup clean
+.PHONY: mount umount install lint sweep style setup clean
