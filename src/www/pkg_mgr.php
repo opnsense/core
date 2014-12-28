@@ -114,44 +114,44 @@ include("head.inc");
 ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
 				if (!verify_all_package_servers())
 					print_info_box(package_server_mismatch_message());
-			
+
 				/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
 				if (check_package_server_ssl() === false)
 					print_info_box(package_server_ssl_failure_message());
-			
+
 				if ($savemsg)
 					print_info_box($savemsg);
 				?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$version = rtrim(file_get_contents("/usr/local/etc/version"));
-						
+
 							$tab_array = array();
 							$tab_array[] = array(gettext("Available Packages"), $requested_version <> "" ? false : true, "pkg_mgr.php");
 							$tab_array[] = array(gettext("Installed Packages"), false, "pkg_mgr_installed.php");
 							display_top_tabs($tab_array);
 						?>
-					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-	    				    <div class="container-fluid">	
-	    						
-	    						<?php
+
+						<div class="tab-content content-box col-xs-12">
+
+					    <div class="container-fluid">
+
+							<?php
 									$version = rtrim(file_get_contents("/usr/local/etc/version"));
 									if($pkg_info) {
 										$pkg_keys = array_keys($pkg_info);
 										natcasesort($pkg_keys);
-								
+
 										//Check categories
 										$categories=array();
 										if(is_array($pkg_keys)) {
@@ -166,7 +166,7 @@ include("head.inc");
 										$visible_categories=array();
 										$categories_min_count=($g['pkg_categories_min_count'] ? $g['pkg_categories_min_count'] : 3);
 										$categories_max_display=($g['pkg_categories_max_display'] ? $g['pkg_categories_max_display'] : 6);
-								
+
 										/* check selected category or define default category to show */
 										if (isset($_REQUEST['category']))
 											$menu_category = $_REQUEST['category'];
@@ -174,10 +174,10 @@ include("head.inc");
 											$menu_category = $g['pkg_default_category'];
 										else
 											$menu_category = "All";
-								
+
 										$menu_category = (isset($_REQUEST['category']) ? $_REQUEST['category'] : "All");
 										$show_category = ($menu_category == "Other" || $menu_category == "All");
-								
+
 										$tab_array[] = array(gettext("All"), $menu_category=="All" ? true : false, "pkg_mgr.php?category=All");
 										foreach ($categories as $category => $c_count) {
 											if ($c_count >= $categories_min_count && $cm_count <= $categories_max_display) {
@@ -187,26 +187,26 @@ include("head.inc");
 											}
 										}
 										$tab_array[] = array(gettext("Other Categories"), $menu_category=="Other" ? true : false, "pkg_mgr.php?category=Other");
-										
+
 									}
 								?>
 
-	    						<? if (count($categories) > 0): ?>
+							<? if (count($categories) > 0): ?>
 								<ul class="nav nav-pills" role="tablist"><? foreach ($tab_array as $tab): ?>
 									<li role="presentation" <? if ($tab[1]):?>class="active"<? endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
 								<? endforeach; ?></ul><br />
 								<? endif; ?>
-	    				    </div>
-	    						               	
+					    </div>
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                         
-    			                 
-    			                                                             
+
+
+
                                      <thead>
                                          <tr>
-                             				<th width="10%"><?=gettext("Name"); ?></th>
-                             				<?php
+							<th width="10%"><?=gettext("Name"); ?></th>
+							<?php
                                             if ($show_category)
 											    print '<th width="18%">'.gettext("Category").'</th>'."\n";
 								            ?>
@@ -215,8 +215,8 @@ include("head.inc");
 										<th width="17">&nbsp;</th>
                                          </tr>
                                      </thead>
-    									
-     								<tbody>
+
+								<tbody>
 
 								<?php
 										if(!$pkg_info) {
@@ -227,10 +227,10 @@ include("head.inc");
 													$index = &$pkg_info[$key];
 													if(get_pkg_id($index['name']) >= 0 )
 														continue;
-								
+
 													if (package_skip_tests($index,$requested_version))
 														continue;
-								
+
 													/* get history/changelog git dir */
 													$commit_dir=explode("/",$index['config_file']);
 													$changeloglink = "https://github.com/pfsense/pfsense-packages/commits/master/config/";
@@ -238,7 +238,7 @@ include("head.inc");
 														$changeloglink .= $commit_dir[(count($commit_dir)-1)];
 													else
 														$changeloglink .= $commit_dir[(count($commit_dir)-2)];
-								
+
 													/* Check package info link */
 													if($index['pkginfolink']) {
 														$pkginfolink = $index['pkginfolink'];
@@ -247,7 +247,7 @@ include("head.inc");
 														$pkginfolink = "https://forum.pfsense.org/index.php/board,15.0.html";
 														$pkginfo=gettext("No package info, check the forum");
 													}
-								
+
 													if ($menu_category == "All" || $index['category'] == $menu_category || ($menu_category == "Other" && !in_array($index['category'],$visible_categories)) ):
 								?>
 														<tr valign="top" class="<?= $index['category'] ?>">
@@ -257,16 +257,16 @@ include("head.inc");
 								<?php
 														if ($show_category)
 															print '<td class="listr">'.gettext($index['category']).'</td>'."\n";
-								
+
 														if ($g['disablepackagehistory']) {
 															print '<td class="listr">'."\n";
 														} else {
 															print '<td class="listr" data-container="body" data-toggle="tooltip" data-placement="left" title="'.gettext("Click ").ucfirst($index['name']).gettext(" version to check its change log.").'" ';
 															print ">\n";
 														}
-								
+
 														print "{$index['status']} <br />\n";
-								
+
 														if ($g['disablepackagehistory'])
 															echo"<a>{$index['version']}</a>";
 														else

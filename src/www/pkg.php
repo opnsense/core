@@ -77,17 +77,17 @@ $section      = $pkg['menu'][0]['section'];
 $config_path  = $pkg['configpath'];
 $title	      = $pkg['title'];
 
-if($_REQUEST['startdisplayingat']) 
+if($_REQUEST['startdisplayingat'])
 	$startdisplayingat = $_REQUEST['startdisplayingat'];
 
-if($_REQUEST['display_maximum_rows']) 
+if($_REQUEST['display_maximum_rows'])
 	if($_REQUEST['display_maximum_rows'])
 		$display_maximum_rows = $_REQUEST['display_maximum_rows'];
 
 $evaledvar = $config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'];
 
 if ($_GET['act'] == "update") {
-		
+
 		if(is_array($config['installedpackages'][$pkg['name']]) && $pkg['name'] != "" && $_REQUEST['ids'] !=""){
 			#get current values
 			$current_values=$config['installedpackages'][$pkg['name']]['config'];
@@ -128,7 +128,7 @@ if ($_GET['act'] == "del") {
 			if($pkg['custom_delete_php_command'] <> "") {
 			    if($pkg['custom_php_command_before_form'] <> "")
 					eval($pkg['custom_php_command_before_form']);
-		    		eval($pkg['custom_delete_php_command']);
+				eval($pkg['custom_delete_php_command']);
 			}
 			header("Location:  pkg.php?xml=" . $xml);
 			exit;
@@ -173,11 +173,11 @@ include("head.inc");
 					cursor: 'move',
 					distance: 10,
 					opacity: 0.8,
-					helper: function(e,ui){  
-						ui.children().each(function(){  
-							jQuery(this).width(jQuery(this).width());  
+					helper: function(e,ui){
+						ui.children().each(function(){
+							jQuery(this).width(jQuery(this).width());
 						});
-					return ui;  
+					return ui;
 					},
 				});
 			});
@@ -194,15 +194,15 @@ include("head.inc");
 						        jQuery('#savemsg').empty().html(strloading);
 							},
 							error: function(data){
-        						jQuery('#savemsg').empty().html('Error:' + data);
-   							 },
+							jQuery('#savemsg').empty().html('Error:' + data);
+							 },
 							success: function(data){
-        						jQuery('#savemsg').empty().html(data);
-   							 }
+							jQuery('#savemsg').empty().html(data);
+							 }
 						});
 					}
 			}
-	<?php 
+	<?php
 		}
 	?>
 //]]>
@@ -263,26 +263,26 @@ if ($pkg['tabs'] <> "") {
 		<td class="tabcont">
 			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="tabs">
 <?php
-				/* Handle filtering bar A-Z */				
+				/* Handle filtering bar A-Z */
 				$include_filtering_inputbox = false;
 				$colspan = 0;
-				if($pkg['adddeleteeditpagefields']['columnitem'] <> "") 
+				if($pkg['adddeleteeditpagefields']['columnitem'] <> "")
 					foreach ($pkg['adddeleteeditpagefields']['columnitem'] as $column)
 						$colspan++;
 				if($pkg['fields']['field']) {
 					// First find the sorting type field if it exists
 					foreach($pkg['fields']['field'] as $field) {
 						if($field['type'] == "sorting") {
-							if(isset($field['include_filtering_inputbox'])) 
+							if(isset($field['include_filtering_inputbox']))
 								$include_filtering_inputbox = true;
-							if($display_maximum_rows < 1) 
-								if($field['display_maximum_rows']) 
+							if($display_maximum_rows < 1)
+								if($field['display_maximum_rows'])
 									$display_maximum_rows = $field['display_maximum_rows'];
 							echo "<tr><td class='listhdrr' colspan='$colspan' align='center'>";
 							echo "Filter by: ";
 							$isfirst = true;
 							for($char = 65; $char < 91; $char++) {
-								if(!$isfirst) 
+								if(!$isfirst)
 									echo " | ";
 								echo "<a href=\"#\" onclick=\"setFilter('" . chr($char) . "');\">" . chr($char) . "</a>";
 								$isfirst = false;
@@ -292,15 +292,15 @@ if ($pkg['tabs'] <> "") {
 							if($field['sortablefields']) {
 								echo "Filter field: <select name='pkg_filter_type'>";
 								foreach($field['sortablefields']['item'] as $si) {
-									if($si['name'] == $_REQUEST['pkg_filter_type']) 
+									if($si['name'] == $_REQUEST['pkg_filter_type'])
 										$SELECTED = "selected=\"selected\"";
-									else 
+									else
 										$SELECTED = "";
 									echo "<option value='{$si['name']}' {$SELECTED}>{$si['name']}</option>";
 								}
 								echo "</select>";
 							}
-							if($include_filtering_inputbox) 
+							if($include_filtering_inputbox)
 								echo "&nbsp;&nbsp;Filter text: <input id='pkg_filter' name='pkg_filter' value='" . $_REQUEST['pkg_filter'] . "' /> <input type='submit' value='Filter' />";
 							echo "</td></tr><tr><td><font size='-3'>&nbsp;</font></td></tr>";
 						}
@@ -321,7 +321,7 @@ if ($pkg['tabs'] <> "") {
 								$tmpcount = 0;
 							}
 							if($tmppp == $startdisplayingat)
-						 		break;
+								break;
 							$tmpcount++;
 							$tmppp++;
 						}
@@ -334,7 +334,7 @@ if ($pkg['tabs'] <> "") {
 					for($x=0; $x<250; $x++) {
 						if($x == $display_maximum_rows)
 							$SELECTED = "selected=\"selected\"";
-						else 
+						else
 							$SELECTED = "";
 						echo "<option value='$x' $SELECTED>$x</option>\n";
 						$x=$x+4;
@@ -419,22 +419,22 @@ if ($pkg['tabs'] <> "") {
 								#Check if columnitem has a type field declared
 							    if($column['type'] == "checkbox") {
 									if($fieldname == "") {
-								    	echo gettext("No");
+									echo gettext("No");
 									} else {
-								    	echo gettext("Yes");
+									echo gettext("Yes");
 									}
 							    } else if ($column['type'] == "interface") {
 									echo  $column['prefix'] . $iflist[$fieldname] . $column['suffix'];
 							    } else {
-							    	#Check if columnitem has an encoding field declared
-							    	if ($column['encoding'] == "base64")
+								#Check if columnitem has an encoding field declared
+								if ($column['encoding'] == "base64")
 										echo  $column['prefix'] . base64_decode($fieldname) . $column['suffix'];
 									#Check if there is a custom info to show when $fieldname is not empty
 									else if($column['listmodeon'] && $fieldname != "")
-								   		echo $column['prefix'] . gettext($column['listmodeon']). $column['suffix'];
-								   	#Check if there is a custom info to show when $fieldname is empty	
-								   	else if($column['listmodeoff'] && $fieldname == "")
-								    	echo $column['prefix'] .gettext($column['listmodeoff']). $column['suffix'];
+										echo $column['prefix'] . gettext($column['listmodeon']). $column['suffix'];
+									#Check if there is a custom info to show when $fieldname is empty
+									else if($column['listmodeoff'] && $fieldname == "")
+									echo $column['prefix'] .gettext($column['listmodeoff']). $column['suffix'];
 									else
 										echo $column['prefix'] . $fieldname ." ". $column['suffix'];
 							    }
@@ -461,7 +461,7 @@ if ($pkg['tabs'] <> "") {
 				echo "</tr>\n";
 				// Handle pagination and display_maximum_rows
 				if($display_maximum_rows) {
-					if($pagination_counter == ($display_maximum_rows-1) or 
+					if($pagination_counter == ($display_maximum_rows-1) or
 					   $i ==  (count($evaledvar)-1)) {
 						$colcount = count($pkg['adddeleteeditpagefields']['columnitem']);
 						$final_footer = "";
@@ -472,13 +472,13 @@ if ($pkg['tabs'] <> "") {
 						if($startingat > -1) {
 							$final_footer .=  "<a href='pkg.php?xml=" . $_REQUEST['xml'] . "&amp;startdisplayingat={$startingat}&amp;display_maximum_rows={$display_maximum_rows}'>";
 						} else {
-							if($startingnat > 1) 
+							if($startingnat > 1)
 								$final_footer .=  "<a href='pkg.php?xml=" . $_REQUEST['xml'] . "&amp;startdisplayingat=0&amp;display_maximum_rows={$display_maximum_rows}'>";
 						}
 						$final_footer .=  "<font size='2'><< Previous page</font></a>";
-						if($tmppp + $display_maximum_rows > count($evaledvar)) 
+						if($tmppp + $display_maximum_rows > count($evaledvar))
 							$endingrecord = count($evaledvar);
-						else 
+						else
 							$endingrecord = $tmppp + $display_maximum_rows;
 						$final_footer .=  "</td><td align='center'>";
 						$tmppp++;
@@ -486,7 +486,7 @@ if ($pkg['tabs'] <> "") {
 						$final_footer .=  "</font></td><td align='right'>&nbsp;";
 						if(($i+1) < count($evaledvar))
 							$final_footer .=  "<a href='pkg.php?xml=" . $_REQUEST['xml'] . "&amp;startdisplayingat=" . ($startdisplayingat + $display_maximum_rows) . "&amp;display_maximum_rows={$display_maximum_rows}'>";
-						$final_footer .=  "<font size='2'>Next page >></font></a>";	
+						$final_footer .=  "<font size='2'>Next page >></font></a>";
 						$final_footer .=  "</td></tr></table></td></tr>";
 						$i = count($evaledvar);
 						break;

@@ -67,7 +67,7 @@ function domTT_title($title_msg, $return="echo"){
         if ($return =="echo")
 		 echo $title;
 		else
-		return $title;	
+		return $title;
 	}
 }
 if(is_array($config['installedpackages']['package'])) {
@@ -90,25 +90,25 @@ include("head.inc");
 
 <body>
 	<?php include("fbegin.inc"); ?>
-	
+
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
 				if (!verify_all_package_servers())
 					print_info_box(package_server_mismatch_message());
-			
+
 				/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
 				if (check_package_server_ssl() === false)
 					print_info_box(package_server_ssl_failure_message()); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$version = file_get_contents("/usr/local/etc/version");
 							$tab_array = array();
 							$tab_array[] = array(gettext("Available Packages"), false, "pkg_mgr.php");
@@ -118,9 +118,9 @@ include("head.inc");
 							$tab_array[] = array(gettext("Installed Packages"), true, "pkg_mgr_installed.php");
 							display_top_tabs($tab_array);
 						?>
-					
-						<div class="tab-content content-box col-xs-12">	
-	    							                        	
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
@@ -132,22 +132,22 @@ include("head.inc");
 										</tr>
 										<?php
 											if(is_array($config['installedpackages']['package'])):
-				
+
 												$instpkgs = array();
 												foreach($config['installedpackages']['package'] as $instpkg) {
 													$instpkgs[] = $instpkg['name'];
 												}
 												natcasesort($instpkgs);
-				
+
 												foreach ($instpkgs as $index => $pkgname):
-				
+
 													$pkg = $config['installedpackages']['package'][$index];
 													if(!$pkg['name'])
 														continue;
-				
+
 													// get history/changelog git dir
 													$commit_dir=explode("/",$pkg['config_file']);
-													$changeloglink ="https://github.com/pfsense/pfsense-packages/commits/master/config/".$commit_dir[(count($commit_dir)-2)]; 
+													$changeloglink ="https://github.com/pfsense/pfsense-packages/commits/master/config/".$commit_dir[(count($commit_dir)-2)];
 													#check package version
 													$latest_package = $currentvers[$pkg['name']]['version'];
 													if ($latest_package) {
@@ -197,7 +197,7 @@ include("head.inc");
 														$pkginfolink = "https://forum.pfsense.org/index.php/board,15.0.html";
 														$pkginfo=gettext("No package info, check the forum");
 														}
-													
+
 										?>
 										<tr valign="top">
 											<td class="listlr">
@@ -206,7 +206,7 @@ include("head.inc");
 											<td class="listr">
 												<?=$pkg['category'];?>
 											</td>
-											<?php 
+											<?php
 											if (isset($g['disablepackagehistory']))
 													echo "<td class='{$tdclass}'>{$pkgver}</td>";
 											else
@@ -240,11 +240,11 @@ include("head.inc");
 										<?php endif; ?>
 									</table>
 								</div>
-								
+
 						</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
-<?php include("foot.inc"); ?>   
+
+<?php include("foot.inc"); ?>

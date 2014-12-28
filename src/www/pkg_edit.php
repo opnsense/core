@@ -113,7 +113,7 @@ if($config['installedpackages'] && !is_array($config['installedpackages'][xml_sa
 	$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'] = array();
 
 // If the first entry in the array is an empty <config/> tag, kill it.
-if ($config['installedpackages'] && (count($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']) > 0) 
+if ($config['installedpackages'] && (count($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']) > 0)
 	&& ($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'][0] == ""))
 	array_shift($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']);
 
@@ -285,21 +285,21 @@ else
 //<![CDATA[
 	//Everything inside it will load as soon as the DOM is loaded and before the page contents are loaded
 	jQuery(document).ready(function() {
-		
+
 		//Sortable function
 		jQuery('#mainarea table tbody').sortable({
 			items: 'tr.sortable',
 			cursor: 'move',
 			distance: 10,
 			opacity: 0.8,
-			helper: function(e,ui){  
-				ui.children().each(function(){  
-					jQuery(this).width(jQuery(this).width());  
+			helper: function(e,ui){
+				ui.children().each(function(){
+					jQuery(this).width(jQuery(this).width());
 				});
-			return ui;  
+			return ui;
 			},
 		});
-		
+
 		//delete current line jQuery function
 		jQuery('#maintable td .delete').live('click', function() {
 			//do not remove first line
@@ -308,7 +308,7 @@ else
 				return false;
 			}
 	    });
-	    
+
 		//add new line jQuery function
 		jQuery('#mainarea table .add').click(function() {
 			//get table size and assign as new id
@@ -380,21 +380,21 @@ else
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if (!empty($input_errors)) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-		                       	<form name="iform" action="pkg_edit.php" method="post">
-							   		<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
-						
-		                        	
-		                        	<div class="table-responsive">
-			                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+					<form name="iform" action="pkg_edit.php" method="post">
+									<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
+
+
+						<div class="table-responsive">
+							<table class="table table-striped table-sort">
 <?php
 if ($pkg['tabs'] <> "") {
 	$tab_array = array();
@@ -414,7 +414,7 @@ if ($pkg['tabs'] <> "") {
 		if($tab['url'] <> "") $urltmp = $tab['url'];
 		if($tab['xml'] <> "") $urltmp = "pkg_edit.php?xml=" . $tab['xml'];
 
- 		$addresswithport = getenv("HTTP_HOST");
+		$addresswithport = getenv("HTTP_HOST");
 		$colonpos = strpos($addresswithport, ":");
 		if ($colonpos !== False) {
 			//my url is actually just the IP address of the pfsense box
@@ -430,7 +430,7 @@ if ($pkg['tabs'] <> "") {
 						$active,
 						$url
 					);
-    	}
+	}
 
 	ksort($tab_array);
 	foreach($tab_array as $tabid => $tab) {
@@ -443,12 +443,12 @@ echo '<tr><td>';
 }
 
 ?>
-				                        	
+
 <?php
 	$cols = 0;
 	$savevalue = gettext("Save");
 	if($pkg['savetext'] <> "") $savevalue = $pkg['savetext'];
-	/* If a package's XML has <advanced_options/> configured, then setup 
+	/* If a package's XML has <advanced_options/> configured, then setup
 	 * the table rows for the fields that have <advancedfield/> set.
 	 * These fields will be placed below other fields in a seprate area titled 'Advanced Features'.
 	 * These advanced fields are not normally configured and generally left to default to 'default settings'.
@@ -458,9 +458,9 @@ echo '<tr><td>';
 		$adv_filed_count = 0;
 		$advanced = "<td>&nbsp;</td>";
 		$advanced .= "<tr><td colspan=\"2\" class=\"listtopic\">". gettext("Advanced features") . "<br /></td></tr>\n";
-		}		
+		}
 	foreach ($pkg['fields']['field'] as $pkga) {
-		if ($pkga['type'] == "sorting") 
+		if ($pkga['type'] == "sorting")
 			continue;
 
 		if ($pkga['type'] == "listtopic") {
@@ -480,7 +480,7 @@ echo '<tr><td>';
 			if(isset($pkga['advancedfield']) && isset($adv_filed_count))
 				$advanced .= $input;
 			else
-			  	echo $input;
+				echo $input;
 			}
 
 		$size = "";
@@ -510,7 +510,7 @@ echo '<tr><td>';
 				$advanced .= $input;
 				$adv_filed_count++;
 				}
-			else 
+			else
 				echo $input;
 		}
 		if($pkga['combinefields']=="begin"){
@@ -518,7 +518,7 @@ echo '<tr><td>';
 			if(isset($pkga['advancedfield']) && isset($adv_filed_count))
 				$advanced .= $input;
 			else
-			  	echo $input;
+				echo $input;
 			}
 
 		$class=(isset($pkga['combinefields']) ? '' : 'class="vtable"');
@@ -688,7 +688,7 @@ echo '<tr><td>';
 					$cols = " cols='{$pkga['cols']}' ";
 				if (($pkga['encoding'] == 'base64') && !$get_from_post && !empty($value))
 					$value = base64_decode($value);
-				$wrap =($pkga['wrap'] == "off" ? 'wrap="off" style="white-space:nowrap;"' : '');		  
+				$wrap =($pkga['wrap'] == "off" ? 'wrap="off" style="white-space:nowrap;"' : '');
 				$input = "<textarea {$rows} {$cols} name='{$pkga['fieldname']}'{$wrap}>{$value}</textarea>\n";
 				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
 				if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
@@ -873,7 +873,7 @@ echo '<tr><td>';
 							$fieldname = $rowhelper['fieldname'];
 							if($type == "option")
 								$options = &$rowhelper['options']['option'];
-							if($rowhelper['size']) 
+							if($rowhelper['size'])
 								$size = $rowhelper['size'];
 							else if ($pkga['size'])
 								$size = $pkga['size'];
@@ -894,7 +894,7 @@ echo '<tr><td>';
 				</tr>
 				<tbody></tbody>
 				</table>
-	
+
 				<!-- <br /><a onclick="javascript:addRowTo('maintable'); return false;" href="#"><img border="0" src="./themes/<?#= $g['theme']; ?>/images/icons/icon_plus.gif" alt="add" /></a>-->
 				<br /><a class="add" href="#"><img border="0" src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="add" /></a>
 				<br /><?php if($pkga['description'] != "") echo $pkga['description']; ?>
@@ -907,36 +907,36 @@ echo '<tr><td>';
 				//typesel_change();
 				//]]>
 				</script>
-		
+
 				<?php
 				break;
 		    }
 		#check typehint value
-	   	if($pkga['typehint'])
-	   		echo " " . $pkga['typehint'];
-	   	#check combinefields options
-     	if (isset($pkga['combinefields'])){
-     		$input="</td>";
+		if($pkga['typehint'])
+			echo " " . $pkga['typehint'];
+		#check combinefields options
+	if (isset($pkga['combinefields'])){
+		$input="</td>";
 			if ($pkga['combinefields']=="end")
-           		$input.="</table></td></tr>";
-      		}
-     	else{
+			$input.="</table></td></tr>";
+		}
+	else{
 			$input= "</td></tr>";
 			if($pkga['usecolspan2'])
 				$input.= "</tr><br />";
-	     	}
-   	 	if(isset($pkga['advancedfield']) && isset($adv_filed_count))
+		}
+		if(isset($pkga['advancedfield']) && isset($adv_filed_count))
 			$advanced .= "{$input}\n";
 		else
 			echo "{$input}\n";
 		#increment counter
 		$i++;
-  		}
+		}
 
-  	#print advanced settings if any after reading all fields
+	#print advanced settings if any after reading all fields
 	if (isset($advanced) && $adv_filed_count > 0)
 		echo $advanced;
-  
+
 	?>
   <tr>
 	<td>&nbsp;</td>
@@ -962,8 +962,8 @@ echo '<tr><td>';
 
 </table>
 </div>
-		                       	</form>
-    				</div>
+					</form>
+				</div>
 			    </section>
 			</div>
 		</div>
@@ -1053,7 +1053,7 @@ function display_row($trc, $value, $fieldname, $type, $rowhelper, $size) {
 				echo "<option value='{$source_value}'".($source_value == $value?" selected=\"selected\"":"").">{$source_name}</option>\n";
 				}
 			echo "</select>\n";
-			break;		
+			break;
 		}
 	echo "</td>\n";
 }
@@ -1113,8 +1113,8 @@ function parse_package_templates() {
 								ereg($rowhelperfield['fieldname'] . "_fieldvalue\[(.*)\]", $template_text, $sep);
 								foreach ($sep as $se) $separator = $se;
 								if($separator <> "") {
-							    	$row_helper_data = ereg_replace("  ", $separator, $row_helper_data);
-							    	$template_text = ereg_replace("\[{$separator}\]", "", $template_text);
+								$row_helper_data = ereg_replace("  ", $separator, $row_helper_data);
+								$template_text = ereg_replace("\[{$separator}\]", "", $template_text);
 									}
 								$template_text = str_replace($rowhelperfield['fieldname'] . "_fieldvalue", $row_helper_data, $template_text);
 								}

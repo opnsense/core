@@ -4,7 +4,7 @@
 	pkg_mgr_install.php
 	part of pfSense (https://www.pfsense.org)
 	Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
- 	Copyright (C) 2005 Colin Smith
+	Copyright (C) 2005 Colin Smith
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -91,21 +91,21 @@ if ($_POST) {
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
 				if (!verify_all_package_servers())
 					print_info_box(package_server_mismatch_message());
-			
+
 				/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
 				if (check_package_server_ssl() === false)
 					print_info_box(package_server_ssl_failure_message()); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
+
+
 					<?php
 							$tab_array = array();
 							$tab_array[] = array(gettext("Available packages"), false, "pkg_mgr.php");
@@ -113,15 +113,15 @@ if ($_POST) {
 							$tab_array[] = array(gettext("Package Installer"), true, "");
 							display_top_tabs($tab_array);
 					?>
-				
-					<div class="tab-content content-box col-xs-12">	
-    					
-    				    <div class="container-fluid">	
-	    					<form action="pkg_mgr_install.php" method="post" name="iform">	                        	
+
+					<div class="tab-content content-box col-xs-12">
+
+				    <div class="container-fluid">
+						<form action="pkg_mgr_install.php" method="post" name="iform">
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 
-	
+
 <?php if ((empty($_GET['mode']) && $_GET['id']) || (!empty($_GET['mode']) && (!empty($_GET['pkg']) || $_GET['mode'] == 'reinstallall') && ($_GET['mode'] != 'installedinfo' && $_GET['mode'] != 'showlog'))):
 	if (empty($_GET['mode']) && $_GET['id']) {
 		$pkgname = str_replace(array("<", ">", ";", "&", "'", '"', '.', '/'), "", htmlspecialchars_decode($_GET['id'], ENT_QUOTES | ENT_HTML401));
@@ -169,14 +169,14 @@ if ($_POST) {
 					<?php endif; if (!empty($_POST['id']) || $_GET['mode'] == 'showlog' || ($_GET['mode'] == 'installedinfo' && !empty($_GET['pkg']))): ?>
 									<tr>
 										<td class="tabcont" align="center">
-											
+
 											<div class="progress">
 											  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 5%;">
 											    <span class="sr-only">5% Complete</span>
 											  </div>
 											</div>
-											
-										
+
+
 											<br />
 											<!-- status box -->
 											<textarea cols="80" rows="1" name="status" id="status" wrap="hard"><?=gettext("Beginning package installation.");?></textarea>
@@ -188,8 +188,8 @@ if ($_POST) {
 					<?php endif; ?>
 								</table>
 		                        </div>
-	    					</form>
-    				    </div>
+						</form>
+				    </div>
 					</div>
 			    </section>
 			</div>
@@ -289,7 +289,7 @@ if ($_GET) {
 				$status_a = gettext(sprintf("Installation of %s completed.", $pkgid));
 				update_status($status_a);
 				$status = get_after_install_info($pkgid);
-				if($status) 
+				if($status)
 					$static_output .= "\n" . gettext("Installation completed.") . "\n{$pkgid} " . gettext("setup instructions") . ":\n{$status}";
 				else
 					$static_output .= "\n" . gettext("Installation completed.   Please check to make sure that the package is configured from the respective menu then start the package.");
