@@ -52,7 +52,7 @@ function gre_inuse($num) {
 
 	$iflist = get_configured_interface_list(false, true);
 	foreach ($iflist as $if) {
-		if ($config['interfaces'][$if]['if'] == $a_gres[$num]['greif']) 
+		if ($config['interfaces'][$if]['if'] == $a_gres[$num]['greif'])
 			return true;
 	}
 
@@ -83,24 +83,24 @@ $shortcut_section = "interfaces";
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_gre_edit.php', 'label'=>'Add'),	
+	array('href'=>'interfaces_gre_edit.php', 'label'=>'Add'),
 );
 
 ?>
-					             
+
 <body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("Interface assignments"), false, "interfaces_assign.php");
 							$tab_array[1] = array(gettext("Interface Groups"), false, "interfaces_groups.php");
@@ -115,25 +115,25 @@ $main_buttons = array(
 							display_top_tabs($tab_array);
 						?>
 
-					
-						<div class="tab-content content-box col-xs-12">		    					
-   
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
-		                        
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                        
-    			                         <thead>
+
+			                         <thead>
                                             <tr>
-                                				<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
-                                				<th width="20%" class="listtopic"><?=gettext("Tunnel to...");?></th>
-                                				<th width="50%" class="listtopic"><?=gettext("Description");?></th>
-                                				<th width="10%" class="listtopic">&nbsp;</th>
+								<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
+								<th width="20%" class="listtopic"><?=gettext("Tunnel to...");?></th>
+								<th width="50%" class="listtopic"><?=gettext("Description");?></th>
+								<th width="10%" class="listtopic">&nbsp;</th>
                                             </tr>
                                         </thead>
-    									
-        								<tbody>
-        								
+
+									<tbody>
+
 									  <?php $i = 0; foreach ($a_gres as $gre): ?>
 						                <tr  ondblclick="document.location='interfaces_gre_edit.php?id=<?=$i;?>'">
 						                  <td class="listlr">
@@ -146,28 +146,28 @@ $main_buttons = array(
 						                    <?=htmlspecialchars($gre['descr']);?>&nbsp;
 						                  </td>
 						                  <td valign="middle" class="list nowrap">
-							                  
-							                  
+
+
 							                   <a href="interfaces_gre_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
-                                       
+
 											   <a href="interfaces_gre.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this GRE tunnel?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
 										</td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-						               
-        								</tbody>
+
+									</tbody>
 						              </table>
 							      </div>
 							      <div class="container-fluid">
 							       <p><span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span><?=gettext("Here you can configure Generic Routing Encapsulation (GRE - RFC 2784) tunnels.");?></p>
 							      </div>
-		                     
+
 		                        </form>
-		                        
+
 						</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

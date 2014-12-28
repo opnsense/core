@@ -91,7 +91,7 @@ $shortcut_section = "interfaces";
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_qinq_edit.php', 'label'=>'Add'),	
+	array('href'=>'interfaces_qinq_edit.php', 'label'=>'Add'),
 );
 
 ?>
@@ -100,15 +100,15 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("Interface assignments"), false, "interfaces_assign.php");
 							$tab_array[1] = array(gettext("Interface Groups"), false, "interfaces_groups.php");
@@ -123,27 +123,27 @@ $main_buttons = array(
 							display_top_tabs($tab_array);
 						?>
 
-					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-   
+
+						<div class="tab-content content-box col-xs-12">
+
+
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
-		                        
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                        
-    			                         <thead>
+
+			                         <thead>
                                             <tr>
-                                				<th width="15%" class="listtopic"><?=gettext("Interface");?></th>
-                                				<th width="10%" class="listtopic"><?=gettext("Tag");?></th>
-                                				<th width="20%" class="listtopic"><?=gettext("QinQ members");?></th>
-                                				<th width="45%" class="listtopic"><?=gettext("Description");?></th>
-                                				<th width="10%" class="listtopic">&nbsp;</th>
+								<th width="15%" class="listtopic"><?=gettext("Interface");?></th>
+								<th width="10%" class="listtopic"><?=gettext("Tag");?></th>
+								<th width="20%" class="listtopic"><?=gettext("QinQ members");?></th>
+								<th width="45%" class="listtopic"><?=gettext("Description");?></th>
+								<th width="10%" class="listtopic">&nbsp;</th>
                                             </tr>
                                         </thead>
-    									
-        								<tbody>
-        								
+
+									<tbody>
+
 									  <?php $i = 0; foreach ($a_qinqs as $qinq): ?>
 						                <tr  ondblclick="document.location='interfaces_qinq_edit.php?id=<?=$i;?>'">
 						                  <td class="listlr">
@@ -163,27 +163,27 @@ $main_buttons = array(
 						                  <td class="listbg">
 						                    <?=htmlspecialchars($qinq['descr']);?>&nbsp;
 						                  </td>
-						                  <td valign="middle" class="list nowrap"> 
-							                  
+						                  <td valign="middle" class="list nowrap">
+
 							                   <a href="interfaces_qinq_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
-                                       
+
 											   <a href="interfaces_qinq_edit.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this QinQ?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
 							               </td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-        								</tbody>
+									</tbody>
 						              </table>
 							      </div>
-							      
+
 							      <div class="container-fluid">
 							      <p class="vexpl"><span class="text-danger"><strong>
 										  <?=gettext("Note:");?><br />
 										  </strong></span>
 										  <?php printf(gettext("Not all drivers/NICs support 802.1Q QinQ tagging properly. On cards that do not explicitly support it, QinQ tagging will still work, but the reduced MTU may cause problems. See the %s handbook for information on supported cards."), $g['product_name']);?></p>
 							      </div>
-		                        
+
 		                        </form>
-		                        
+
 						</div>
 			    </section>
 			</div>

@@ -156,25 +156,25 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">
-	    				
-	    				 <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Wireless clone configuration");?></h3>
-    				    </header>
-    				    
-    				    <div class="content-box-main">
-	    					
-	    					<form action="interfaces_wireless_edit.php" method="post" name="iform" id="iform">
-		    							                        
+
+				<div class="content-box">
+
+					 <header class="content-box-head container-fluid">
+				        <h3><?=gettext("Wireless clone configuration");?></h3>
+				    </header>
+
+				    <div class="content-box-main">
+
+						<form action="interfaces_wireless_edit.php" method="post" name="iform" id="iform">
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 						                <tr>
@@ -223,12 +223,12 @@ include("head.inc");
 						                </tr>
 						              </table>
 		                        </div>
-	    					</form>
-    				    </div>
-    				</div>
+						</form>
+				    </div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

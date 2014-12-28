@@ -75,14 +75,14 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				
+
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("Interface assignments"), false, "interfaces_assign.php");
 							$tab_array[1] = array(gettext("Interface Groups"), true, "interfaces_groups.php");
@@ -97,27 +97,27 @@ $main_buttons = array(
 							display_top_tabs($tab_array);
 						?>
 
-					
-						<div class="tab-content content-box col-xs-12">	
-	    					
-	    					
-   
+
+						<div class="tab-content content-box col-xs-12">
+
+
+
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
-		                        
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                                               
+
                                         <thead>
                                             <tr>
-                                				<th width="15%" class="listtopic"><?=gettext("Name");?></th>
-                                				<th width="30%" class="listtopic"><?=gettext("Members");?></th>
-                                				<th width="25%" class="listtopic"><?=gettext("Description");?></th>
-                                				<th width="10%" class="listtopic">&nbsp;</th>
+								<th width="15%" class="listtopic"><?=gettext("Name");?></th>
+								<th width="30%" class="listtopic"><?=gettext("Members");?></th>
+								<th width="25%" class="listtopic"><?=gettext("Description");?></th>
+								<th width="10%" class="listtopic">&nbsp;</th>
                                             </tr>
                                         </thead>
-    									
-        								<tbody>
-        								
+
+									<tbody>
+
 										<?php if (count ($a_ifgroups)):
 												$i = 0; foreach ($a_ifgroups as $ifgroupentry): ?>
 										<tr>
@@ -146,26 +146,26 @@ $main_buttons = array(
 										  </td>
 										  <td valign="middle" class="list nowrap">
 										    <a href="interfaces_groups_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
-                                       
+
                         <a href="interfaces_groups.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this group? All elements that still use it will become invalid (e.g. filter rules)!");?>')" title="<?=gettext("delete ifgroupentry");?>"><span class="glyphicon glyphicon-remove"></span></a>
-											    
+
 										  </td>
 										</tr>
 											  <?php $i++; endforeach; endif;?>
-        								</tbody>
+									</tbody>
 									</table>
-									
+
 									<div class="container-fluid">
-        								<p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span><?=gettext("Interface Groups allow you to create rules that apply to multiple interfaces without duplicating the rules. If you remove members from an interface group, the group rules no longer apply to that interface.");?></span></p>
+									<p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span><?=gettext("Interface Groups allow you to create rules that apply to multiple interfaces without duplicating the rules. If you remove members from an interface group, the group rules no longer apply to that interface.");?></span></p>
 									</div>
-									
+
 		                        </div>
 		                        </form>
-		                        
+
 						</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

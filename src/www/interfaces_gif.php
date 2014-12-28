@@ -51,7 +51,7 @@ function gif_inuse($num) {
 
 	$iflist = get_configured_interface_list(false, true);
 	foreach ($iflist as $if) {
-		if ($config['interfaces'][$if]['if'] == $a_gifs[$num]['gifif']) 
+		if ($config['interfaces'][$if]['if'] == $a_gifs[$num]['gifif'])
 			return true;
 	}
 
@@ -82,24 +82,24 @@ $shortcut_section = "interfaces";
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_gif_edit.php', 'label'=>'Add'),	
+	array('href'=>'interfaces_gif_edit.php', 'label'=>'Add'),
 );
 
 ?>
-					             
+
 <body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("Interface assignments"), false, "interfaces_assign.php");
 							$tab_array[1] = array(gettext("Interface Groups"), false, "interfaces_groups.php");
@@ -114,25 +114,25 @@ $main_buttons = array(
 							display_top_tabs($tab_array);
 						?>
 
-					
-						<div class="tab-content content-box col-xs-12">	
-   
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
-		                        
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                        
-    			                         <thead>
+
+			                         <thead>
                                             <tr>
-                                				<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
-                                				<th width="20%" class="listtopic"><?=gettext("Tunnel to...");?></th>
-                                				<th width="50%" class="listtopic"><?=gettext("Description");?></th>
-                                				<th width="10%" class="listtopic">&nbsp;</th>
+								<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
+								<th width="20%" class="listtopic"><?=gettext("Tunnel to...");?></th>
+								<th width="50%" class="listtopic"><?=gettext("Description");?></th>
+								<th width="10%" class="listtopic">&nbsp;</th>
                                             </tr>
                                         </thead>
-    									
-        								<tbody>
-        								
+
+									<tbody>
+
 									  <?php $i = 0; foreach ($a_gifs as $gif): ?>
 						                <tr  ondblclick="document.location='interfaces_gif_edit.php?id=<?=$i;?>'">
 						                  <td class="listlr">
@@ -145,18 +145,18 @@ $main_buttons = array(
 						                    <?=htmlspecialchars($gif['descr']);?>&nbsp;
 						                  </td>
 						                  <td valign="middle" class="list nowrap">
-							                  
-							                  
+
+
 							                   <a href="interfaces_gif_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
-                                       
+
 											   <a href="interfaces_gif.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this gif tunnel?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
 										  </td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-        								</tbody>
+									</tbody>
 						              </table>
 							      </div>
-	      
+
                                 <div class="container-fluid">
 							      <p class="vexpl"><span class="red"><strong>
 										  <?=gettext("Note:"); ?><br />
@@ -165,7 +165,7 @@ $main_buttons = array(
 										  <br /><br />
 										  <?php echo gettext("If you are using a GIF tunnel to connect to a Hurricane Electric (he.net) Tunnel Broker on a WAN with a dynamic IP, you may want to add a"); ?> <a href="services_dyndns.php"><?php echo gettext("HE.net Tunnelbroker type DynDNS Entry"); ?></a> <?php echo gettext("to keep your tunnel functional when your IP changes."); ?></p>
                                 </div>
-                            
+
 		                        </form>
 						</div>
 			    </section>

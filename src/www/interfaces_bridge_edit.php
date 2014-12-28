@@ -264,25 +264,25 @@ function show_source_port_range() {
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">
-	    				
-	    				 <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Bridge configuration");?></h3>
-    				    </header>
-    				    
-    				    <div class="content-box-main">
-	    					
-	    					<form action="interfaces_bridge_edit.php" method="post" name="iform" id="iform">
-		    							                        
+
+				<div class="content-box">
+
+					 <header class="content-box-head container-fluid">
+				        <h3><?=gettext("Bridge configuration");?></h3>
+				    </header>
+
+				    <div class="content-box-main">
+
+						<form action="interfaces_bridge_edit.php" method="post" name="iform" id="iform">
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
@@ -434,7 +434,7 @@ function show_source_port_range() {
 							     "The minimum is 1 and the maximum is 200000000."); ?>
 											</span>
 											</td></tr>
-						
+
 									    </table>
 										</td></tr>
 						                <tr style="display:none" id="sprtable2">
@@ -461,7 +461,7 @@ function show_source_port_range() {
 						                <tr style="display:none" id="sprtable4">
 						                  <td valign="top" class="vncell"><?=gettext("Span port"); ?></td>
 											<td class="vtable">
-										  	<select name="span" class="form-control" id="span">
+											<select name="span" class="form-control" id="span">
 												<option value="none" selected="selected"><?=gettext("None"); ?></option>
 												<?php
 													foreach ($ifacelist as $ifn => $ifdescr) {
@@ -626,12 +626,12 @@ function show_source_port_range() {
 						                </tr>
 						              </table>
 		                        </div>
-	    					</form>
-    				    </div>
-    				</div>
+						</form>
+				    </div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

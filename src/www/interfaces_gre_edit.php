@@ -135,29 +135,29 @@ include("head.inc");
 <body>
 
 	<script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js"></script>
-	
+
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">
-	    				
-	    				 <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("GRE configuration");?></h3>
-    				    </header>
-    				    
-    				    <div class="content-box-main">
-	    					
-	    					<form action="interfaces_gre_edit.php" method="post" name="iform" id="iform">
-		    							                        
+
+				<div class="content-box">
+
+					 <header class="content-box-head container-fluid">
+				        <h3><?=gettext("GRE configuration");?></h3>
+				    </header>
+
+				    <div class="content-box-main">
+
+						<form action="interfaces_gre_edit.php" method="post" name="iform" id="iform">
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
@@ -172,13 +172,13 @@ include("head.inc");
 												$aliaslist = get_configured_ip_aliases_list();
 												foreach ($aliaslist as $aliasip => $aliasif)
 													$portlist[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
-											  	foreach ($portlist as $ifn => $ifinfo) {
+												foreach ($portlist as $ifn => $ifinfo) {
 													echo "<option value=\"{$ifn}\"";
 													if ($ifn == $pconfig['if'])
 														echo " selected=\"selected\"";
 													echo ">" . htmlspecialchars($ifinfo) . "</option>\n";
 												}
-								      		?>
+										?>
 						                    </select>
 									<br />
 									<span class="vexpl"><?=gettext("The interface here serves as the local address to be used for the GRE tunnel.");?></span></td>
@@ -260,9 +260,9 @@ include("head.inc");
 						                </tr>
 						              </table>
 		                        </div>
-	    					</form>
-    				    </div>
-    				</div>
+						</form>
+				    </div>
+				</div>
 			    </section>
 			</div>
 		</div>

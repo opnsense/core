@@ -70,7 +70,7 @@ if (is_numericint($_GET['id']))
 	$id = $_GET['id'];
 if (isset($_POST['id']) && is_numericint($_POST['id']))
 	$id = $_POST['id'];
-	
+
 if (isset($id) && $a_ppps[$id]) {
 	$pconfig['ptpid'] = $a_ppps[$id]['ptpid'];
 	$pconfig['type'] = $a_ppps[$id]['type'];
@@ -121,7 +121,7 @@ if (isset($id) && $a_ppps[$id]) {
 			/* ================================================ */
 			/* = force a connection reset at a specific time? = */
 			/* ================================================ */
-			
+
 			if (isset($a_ppps[$id]['pppoe-reset-type'])) {
 				$pconfig['pppoe-reset-type'] = $a_ppps[$id]['pppoe-reset-type'];
 				$itemhash = getMPDCRONSettings($a_ppps[$id]['if']);
@@ -131,7 +131,7 @@ if (isset($id) && $a_ppps[$id]) {
 				} else {
 					$resetTime = NULL;
 				}
-				
+
 				if ($a_ppps[$id]['pppoe-reset-type'] == "custom") {
 					$resetTime_a = explode(" ", $resetTime);
 					$pconfig['pppoe_pr_custom'] = true;
@@ -140,7 +140,7 @@ if (isset($id) && $a_ppps[$id]) {
 					/*  just initialize $pconfig['pppoe_resetdate'] if the
 					 *  coresponding item contains appropriate numeric values.
 					 */
-					if ($resetTime_a[2] <> "*" && $resetTime_a[3] <> "*") 
+					if ($resetTime_a[2] <> "*" && $resetTime_a[3] <> "*")
 						$pconfig['pppoe_resetdate'] = "{$resetTime_a[3]}/{$resetTime_a[2]}/" . date("Y");
 				} else if ($a_ppps[$id]['pppoe-reset-type'] == "preset") {
 					$pconfig['pppoe_pr_preset'] = true;
@@ -162,7 +162,7 @@ if (isset($id) && $a_ppps[$id]) {
 			}
 			break;
 	}
-	
+
 } else
 	$pconfig['ptpid'] = interfaces_ptpid_next();
 
@@ -170,21 +170,21 @@ if ($_POST) {
 
 	unset($input_errors);
 	$pconfig = $_POST;
-	
+
 	/* okay first of all, cause we are just hiding the PPPoE HTML
 	 * fields releated to PPPoE resets, we are going to unset $_POST
 	 * vars, if the reset feature should not be used. Otherwise the
 	 * data validation procedure below, may trigger a false error
 	 * message.
 	 */
-	if (empty($_POST['pppoe-reset-type'])) {               
+	if (empty($_POST['pppoe-reset-type'])) {
 		unset($_POST['pppoe_resethour']);
 		unset($_POST['pppoe_resetminute']);
 		unset($_POST['pppoe_resetdate']);
 		unset($_POST['pppoe_pr_preset_val']);
 	}
 
-	/* input validation */		
+	/* input validation */
 	switch($_POST['type']) {
 		case "ppp":
 			$reqdfields = explode(" ", "interfaces phone");
@@ -222,15 +222,15 @@ if ($_POST) {
 		$input_errors[] = gettext("The Service name contains invalid characters.");
 	if ($_POST['provider'] && $_POST['null_service'])
 		$input_errors[] = gettext("Do not specify both a Service name and a NULL Service name.");
-	if (($_POST['idletimeout'] != "") && !is_numericint($_POST['idletimeout'])) 
+	if (($_POST['idletimeout'] != "") && !is_numericint($_POST['idletimeout']))
 		$input_errors[] = gettext("The idle timeout value must be an integer.");
-	if ($_POST['pppoe-reset-type'] == "custom" && $_POST['pppoe_resethour'] <> "" && !is_numericint($_POST['pppoe_resethour']) && 
-		$_POST['pppoe_resethour'] >= 0 && $_POST['pppoe_resethour'] <=23) 
+	if ($_POST['pppoe-reset-type'] == "custom" && $_POST['pppoe_resethour'] <> "" && !is_numericint($_POST['pppoe_resethour']) &&
+		$_POST['pppoe_resethour'] >= 0 && $_POST['pppoe_resethour'] <=23)
 		$input_errors[] = gettext("A valid PPPoE reset hour must be specified (0-23).");
-	if ($_POST['pppoe-reset-type'] == "custom" && $_POST['pppoe_resetminute'] <> "" && !is_numericint($_POST['pppoe_resetminute']) && 
-		$_POST['pppoe_resetminute'] >= 0 && $_POST['pppoe_resetminute'] <=59) 
+	if ($_POST['pppoe-reset-type'] == "custom" && $_POST['pppoe_resetminute'] <> "" && !is_numericint($_POST['pppoe_resetminute']) &&
+		$_POST['pppoe_resetminute'] >= 0 && $_POST['pppoe_resetminute'] <=59)
 		$input_errors[] = gettext("A valid PPPoE reset minute must be specified (0-59).");
-	if ($_POST['pppoe-reset-type'] == "custom" && $_POST['pppoe_resetdate'] <> "" && !is_numeric(str_replace("/", "", $_POST['pppoe_resetdate']))) 
+	if ($_POST['pppoe-reset-type'] == "custom" && $_POST['pppoe_resetdate'] <> "" && !is_numeric(str_replace("/", "", $_POST['pppoe_resetdate'])))
 		$input_errors[] = gettext("A valid PPPoE reset date must be specified (mm/dd/yyyy).");
 	if ($_POST['pppoe-reset-type'] == "custom" && $_POST['pppoe_resetdate'] <> "" && is_numeric(str_replace("/", "", $_POST['pppoe_resetdate']))){
 		$date_nums = explode("/",$_POST['pppoe_resetdate']);
@@ -241,17 +241,17 @@ if ($_POST) {
 		if ($date_nums[2] < date("Y"))
 			$input_errors[] = gettext("A valid PPPoE reset year must be specified. Don't select a year in the past!");
 	}
-	
+
 	foreach($_POST['interfaces'] as $iface){
 		if ($_POST['localip'][$iface] && !is_ipaddr($_POST['localip'][$iface]))
 			$input_errors[] = sprintf(gettext("A valid local IP address must be specified for %s."),$iface);
-		if ($_POST['gateway'][$iface] && !is_ipaddr($_POST['gateway'][$iface]) && !is_hostname($_POST['gateway'][$iface])) 
+		if ($_POST['gateway'][$iface] && !is_ipaddr($_POST['gateway'][$iface]) && !is_hostname($_POST['gateway'][$iface]))
 			$input_errors[] = sprintf(gettext("A valid gateway IP address OR hostname must be specified for %s."),$iface);
-		if ($_POST['bandwidth'][$iface] && !is_numericint($_POST['bandwidth'][$iface])) 
+		if ($_POST['bandwidth'][$iface] && !is_numericint($_POST['bandwidth'][$iface]))
 			$input_errors[] = sprintf(gettext("The bandwidth value for %s must be an integer."),$iface);
-		if ($_POST['mtu'][$iface] && ($_POST['mtu'][$iface] < 576)) 
+		if ($_POST['mtu'][$iface] && ($_POST['mtu'][$iface] < 576))
 			$input_errors[] = sprintf(gettext("The MTU for %s must be greater than 576 bytes."),$iface);
-		if ($_POST['mru'][$iface] && ($_POST['mru'][$iface] < 576)) 
+		if ($_POST['mru'][$iface] && ($_POST['mru'][$iface] < 576))
 			$input_errors[] = sprintf(gettext("The MRU for %s must be greater than 576 bytes."),$iface);
 	}
 
@@ -265,7 +265,7 @@ if ($_POST) {
 			break;
 		}
 	}
-*/	
+*/
 
 	if (!$input_errors) {
 		$ppp = array();
@@ -293,8 +293,8 @@ if ($_POST) {
 				if (isset($_POST[$field_label][$iface]))
 					$port_data[$field_label][] = $_POST[$field_label][$iface];
 			}
-		}		
-				
+		}
+
 		switch($_POST['type']) {
 			case "ppp":
 				if (!empty($_POST['initstr']))
@@ -308,7 +308,7 @@ if ($_POST) {
 					unset($ppp['simpin']);
 					unset($ppp['pin-wait']);
 				}
-				
+
 				if (!empty($_POST['apn'])){
 					$ppp['apn'] = $_POST['apn'];
 					$ppp['apnum'] = $_POST['apnum'];
@@ -335,7 +335,7 @@ if ($_POST) {
 					$ppp['pppoe-reset-type'] = $_POST['pppoe-reset-type'];
 				else
 					unset($ppp['pppoe-reset-type']);
-				
+
 				break;
 			case "pptp":
 			case "l2tp":
@@ -345,9 +345,9 @@ if ($_POST) {
 				break;
 			default:
 				break;
-			
+
 		}
-		
+
 		$ppp['shortseq'] = $_POST['shortseq'] ? true : false;
 		$ppp['acfcomp'] = $_POST['acfcomp'] ? true : false;
 		$ppp['protocomp'] = $_POST['protocomp'] ? true : false;
@@ -360,8 +360,8 @@ if ($_POST) {
 			$ppp['mru'] = implode(',', $port_data['mru']);
 		if (is_array($port_data['mrru']))
 			$ppp['mrru'] = implode(',', $port_data['mrru']);
-		
-		/* handle_pppoe_reset is called here because if user changes Link Type from PPPoE to another type we 
+
+		/* handle_pppoe_reset is called here because if user changes Link Type from PPPoE to another type we
 		must be able to clear the config data in the <cron> section of config.xml if it exists
 		*/
 		handle_pppoe_reset($_POST);
@@ -388,10 +388,10 @@ $pgtitle = array(gettext("Interfaces"),gettext("PPPs"),gettext("Edit"));
 $shortcut_section = "interfaces";
 include("head.inc");
 
-$types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE", "pptp" => "PPTP",  "l2tp" => "L2TP"/*, "tcp" => "TCP", "udp" => "UDP"*/  ); 
+$types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE", "pptp" => "PPTP",  "l2tp" => "L2TP"/*, "tcp" => "TCP", "udp" => "UDP"*/  );
 
 ?>
-	
+
 <body>
 	<script type="text/javascript" src="/javascript/numericupdown/js/numericupdown.js"></script>
 	<link href="/javascript/numericupdown/css/numericupdown.css" rel="stylesheet" type="text/css" />
@@ -405,40 +405,40 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">
-	    				
-	    				 <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("PPPs configuration");?></h3>
-    				    </header>
-    				    
-    				    <div class="content-box-main">
-	    					
-	    					<form action="interfaces_ppps_edit.php" method="post" name="iform" id="iform">
-		    							                        
+
+				<div class="content-box">
+
+					 <header class="content-box-head container-fluid">
+				        <h3><?=gettext("PPPs configuration");?></h3>
+				    </header>
+
+				    <div class="content-box-main">
+
+						<form action="interfaces_ppps_edit.php" method="post" name="iform" id="iform">
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
 											<td valign="middle" class="vncell"><strong><?= gettext("Link Type"); ?></strong></td>
-											<td class="vtable"> 
+											<td class="vtable">
 												<select name="type" onchange="updateType(this.value);" class="form-control" id="type">
-												<?php 
-													foreach ($types as $key => $opt) { 
+												<?php
+													foreach ($types as $key => $opt) {
 														echo "<option onclick=\"updateType('{$key}');\"";
-														if ($key == $pconfig['type']) 
+														if ($key == $pconfig['type'])
 															echo " selected=\"selected\"";
 														echo " value=\"{$key}\" >" . htmlspecialchars($opt) . "</option>";
-													} 
+													}
 												?>
-												</select> 
+												</select>
 											</td>
 										</tr>
 										<tr name="interface" id="interface" >
@@ -447,7 +447,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 												<select style="vertical-align:top" name="interfaces[]" multiple="multiple" class="form-control" size="4" onchange="show_hide_linkfields(this.options);">
 													<option></option>
 												</select>
-								
+
 												<br /><span class="vexpl"><?= gettext("Select at least two interfaces for Multilink (MLPPP) connections."); ?></span>
 											</td>
 										</tr>
@@ -477,7 +477,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 													if (is_array($ifinfo)) {
 														$string .= $ifn;
 														if ($ifinfo['mac'])
-														$string .= " ({$ifinfo['mac']})";	
+														$string .= " ({$ifinfo['mac']})";
 													} else
 														$string .= $ifinfo;
 													$string .= ",{$ifn}";
@@ -499,7 +499,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 												<input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
 												<br /> <span class="vexpl"><?= gettext("You may enter a description here for your reference. Description will appear in the \"Interfaces Assign\" select lists."); ?></span>
 											</td>
-										</tr>	
+										</tr>
 										<tr style="display:none" name="select" id="select"><td style="display:none"></td></tr>
 										<?php $k=0; ?>
 										<tr style="display:none" name="ppp_provider" id="ppp_provider">
@@ -546,7 +546,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 											<input name="password" type="password" class="form-control pwd" id="password" size="20" value="<?=htmlspecialchars($pconfig['password']);?>" />
 											</td>
 										</tr>
-								
+
 										<tr style="display:none" name="phone_num" id="phone_num">
 											<td width="22%" valign="top" class="vncell"><?= gettext("Phone Number"); ?></td>
 											<td width="78%" class="vtable">
@@ -560,10 +560,10 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 												<input name="apn" type="text" class="form-control unknown" id="apn" size="40" value="<?=htmlspecialchars($pconfig['apn']);?>" />
 											</td>
 										</tr>
-										
+
 										<tr style="display:none" name="ppp" id="ppp">
 											<td colspan="2" style="padding:0px;">
-												<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="advanced">		
+												<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="advanced">
 													<tr style="display:none" id="advanced_<?=$k;?>" name="advanced_<?=$k;$k++;?>">
 														<td width="22%" valign="top" class="vncell"><?= gettext("APN number (optional)"); ?></td>
 														<td width="78%" class="vtable">
@@ -577,7 +577,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 															<input name="simpin" type="text" class="form-control unknown" id="simpin" size="12" value="<?=htmlspecialchars($pconfig['simpin']);?>" />
 														</td>
 													</tr>
-											
+
 													<tr style="display:none" id="advanced_<?=$k;?>" name="advanced_<?=$k;$k++;?>">
 														<td width="22%" valign="top" class="vncell"><?= gettext("SIM PIN wait"); ?></td>
 														<td width="78%" class="vtable">
@@ -589,7 +589,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 														<td width="22%" valign="top" class="vncell"><?= gettext("Init String"); ?></td>
 														<td width="78%" class="vtable">
 															<input type="text" size="40" class="form-control unknown" id="initstr" name="initstr" value="<?=htmlspecialchars($pconfig['initstr']);?>" />
-															<br /><span class="vexpl"><?= gettext("Note: Enter the modem initialization string here. Do NOT include the \"AT\"" . 
+															<br /><span class="vexpl"><?= gettext("Note: Enter the modem initialization string here. Do NOT include the \"AT\"" .
 															" string at the beginning of the command. Many modern USB 3G modems don't need an initialization string."); ?></span>
 														</td>
 													</tr>
@@ -603,7 +603,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 													<tr style="display:none" id="advanced_<?=$k;?>" name="advanced_<?=$k;$k++;?>">
 														<td valign="top" class="vncell"><?= gettext("Uptime Logging"); ?></td>
 														<td class="vtable">
-															<input type="checkbox" value="on" id="uptime" name="uptime" <?php if (isset($pconfig['uptime'])) echo "checked=\"checked\""; ?> /> <?= gettext("Enable persistent logging of connection uptime."); ?> 
+															<input type="checkbox" value="on" id="uptime" name="uptime" <?php if (isset($pconfig['uptime'])) echo "checked=\"checked\""; ?> /> <?= gettext("Enable persistent logging of connection uptime."); ?>
 															<br /> <span class="vexpl"><?= gettext("This option causes cumulative uptime to be recorded and displayed on the Status Interfaces page."); ?></span>
 														</td>
 													</tr>
@@ -616,7 +616,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 													<tr>
 														<td width="22%" valign="top" class="vncell"><?= gettext("Service name"); ?></td>
 														<td width="78%" class="vtable"><input name="provider" type="text" class="form-control unknown" id="provider" size="20" value="<?=htmlspecialchars($pconfig['provider']);?>" />&nbsp;&nbsp;
-														<input type="checkbox" value="on" id="null_service" name="null_service" <?php if (isset($pconfig['null_service'])) echo "checked=\"checked\""; ?> /> <?= gettext("Configure a NULL Service name"); ?> 
+														<input type="checkbox" value="on" id="null_service" name="null_service" <?php if (isset($pconfig['null_service'])) echo "checked=\"checked\""; ?> /> <?= gettext("Configure a NULL Service name"); ?>
 															<br /> <span class="vexpl"><?= gettext("Hint: this field can usually be left empty. Service name will not be configured if this field is empty. Check the \"Configure NULL\" box to configure a blank Service name."); ?></span>
 														</td>
 													</tr>
@@ -638,11 +638,11 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 																		<?php else: ?>
 																			<p style="margin: 2px; padding: 4px; width: 94%; display: none;" id="pppoecustomwrap">
 																		<?php endif; ?>
-																		<input type="text" name="pppoe_resethour" class="fd_incremental_inp_range_0_23 fd_increment_1 fd_classname_dec_buttonDec fd_classname_inc_buttonInc" maxlength="2" id="pppoe_resethour" value="<?= $pconfig['pppoe_resethour']; ?>" size="3" /> 
+																		<input type="text" name="pppoe_resethour" class="fd_incremental_inp_range_0_23 fd_increment_1 fd_classname_dec_buttonDec fd_classname_inc_buttonInc" maxlength="2" id="pppoe_resethour" value="<?= $pconfig['pppoe_resethour']; ?>" size="3" />
 																		<?= gettext("hour (0-23)"); ?><br />
-																		<input type="text" name="pppoe_resetminute" class="fd_incremental_inp_range_0_59 fd_increment_1 fd_classname_dec_buttonDec fd_classname_inc_buttonInc" maxlength="2" id="pppoe_resetminute" value="<?= $pconfig['pppoe_resetminute']; ?>" size="3" /> 
+																		<input type="text" name="pppoe_resetminute" class="fd_incremental_inp_range_0_59 fd_increment_1 fd_classname_dec_buttonDec fd_classname_inc_buttonInc" maxlength="2" id="pppoe_resetminute" value="<?= $pconfig['pppoe_resetminute']; ?>" size="3" />
 																		<?= gettext("minute (0-59)"); ?><br />
-																		<input name="pppoe_resetdate" type="text" class="w8em format-m-d-y highlight-days-67" id="pppoe_resetdate" maxlength="10" size="10" value="<?=htmlspecialchars($pconfig['pppoe_resetdate']);?>" /> 
+																		<input name="pppoe_resetdate" type="text" class="w8em format-m-d-y highlight-days-67" id="pppoe_resetdate" maxlength="10" size="10" value="<?=htmlspecialchars($pconfig['pppoe_resetdate']);?>" />
 																		<?= gettext("reset at a specific date (mm/dd/yyyy)"); ?>
 																		<br />&nbsp;<br />
 																		<span class="red"><strong><?=gettext("Note:");?></strong></span>
@@ -653,16 +653,16 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 																		<?php else: ?>
 																			<p style="margin: 2px; padding: 4px; width: 94%; display: none;" id="pppoepresetwrap">
 																		<?php endif; ?>
-																		<input name="pppoe_pr_preset_val" type="radio" id="pppoe_monthly" value="monthly" <?php if ($pconfig['pppoe_monthly']) echo "checked=\"checked\""; ?> /> 
+																		<input name="pppoe_pr_preset_val" type="radio" id="pppoe_monthly" value="monthly" <?php if ($pconfig['pppoe_monthly']) echo "checked=\"checked\""; ?> />
 																		<?= gettext("reset at each month ('0 0 1 * *')"); ?>
 																		<br />
-																		<input name="pppoe_pr_preset_val" type="radio" id="pppoe_weekly" value="weekly" <?php if ($pconfig['pppoe_weekly']) echo "checked=\"checked\""; ?> /> 
+																		<input name="pppoe_pr_preset_val" type="radio" id="pppoe_weekly" value="weekly" <?php if ($pconfig['pppoe_weekly']) echo "checked=\"checked\""; ?> />
 																		<?= gettext("reset at each week ('0 0 * * 0')"); ?>
 																		<br />
-																		<input name="pppoe_pr_preset_val" type="radio" id="pppoe_daily" value="daily" <?php if ($pconfig['pppoe_daily']) echo "checked=\"checked\""; ?> /> 
+																		<input name="pppoe_pr_preset_val" type="radio" id="pppoe_daily" value="daily" <?php if ($pconfig['pppoe_daily']) echo "checked=\"checked\""; ?> />
 																		<?= gettext("reset at each day ('0 0 * * *')"); ?>
 																		<br />
-																		<input name="pppoe_pr_preset_val" type="radio" id="pppoe_hourly" value="hourly" <?php if ($pconfig['pppoe_hourly']) echo "checked=\"checked\""; ?> /> 
+																		<input name="pppoe_pr_preset_val" type="radio" id="pppoe_hourly" value="hourly" <?php if ($pconfig['pppoe_hourly']) echo "checked=\"checked\""; ?> />
 																		<?= gettext("reset at each hour ('0 * * * *')"); ?>
 																		</p>
 																	</td>
@@ -675,10 +675,10 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 										</tr>
 
 										<?php for($j=0; $j < $port_count; $j++) : ?>
-										
+
 										<tr style="display:none" id="gw_fields<?=$j;?>">
 											<td width="22%" id="localiplabel<?=$j;?>" valign="top" class="vncell"><?= gettext("Local IP"); ?></td>
-											<td width="78%" class="vtable"> 
+											<td width="78%" class="vtable">
 												<input name="localip[]" type="text" class="form-control unknown" id="localip<?=$j;?>" size="20"  value="<?=htmlspecialchars($pconfig['localip'][$j]);?>" />
 												/
 												<select name="subnet[]" class="form-control" id="subnet<?=$j;?>" disabled="disabled">
@@ -686,7 +686,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 													<option value="<?=$i;?>"<?php if ($i == $pconfig['subnet'][$j]) echo " selected=\"selected\""; ?>><?=$i;?></option>
 												<?php endfor; ?>
 												</select> <?= gettext("IP Address"); ?>
-												
+
 											</td>
 										</tr>
 										<tr style="display:none" id="ip_fields<?=$j;?>">
@@ -695,7 +695,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 												<input name="gateway[]" type="text" class="form-control unknown" id="gateway<?=$j;?>" size="20" value="<?=htmlspecialchars($pconfig['gateway'][$j]);?>" /><?= gettext("IP Address OR Hostname"); ?>
 											</td>
 										</tr><?php endfor; ?>
-								
+
 										<tr style="display:none" id="advanced_<?=$k;?>" name="advanced_<?=$k;$k++;?>">
 											<td colspan="2" valign="top" height="16"></td>
 										</tr>
@@ -705,8 +705,8 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 										<tr style="display:none" id="advanced_<?=$k;?>" name="advanced_<?=$k;$k++;?>">
 										<td valign="top" class="vncell"><?= gettext("Dial On Demand"); ?></td>
 											<td class="vtable">
-												<input type="checkbox" value="on" id="ondemand" name="ondemand" <?php if (isset($pconfig['ondemand'])) echo "checked=\"checked\""; ?> /> <?= gettext("Enable Dial-on-Demand mode"); ?> 
-												<br /> <span class="vexpl"><?= gettext("This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. " .  
+												<input type="checkbox" value="on" id="ondemand" name="ondemand" <?php if (isset($pconfig['ondemand'])) echo "checked=\"checked\""; ?> /> <?= gettext("Enable Dial-on-Demand mode"); ?>
+												<br /> <span class="vexpl"><?= gettext("This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. " .
 												"The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?> </span>
 											</td>
 										</tr>
@@ -731,7 +731,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 											<td width="22%" valign="top" class="vncell"><?= gettext("TCPmssFix"); ?></td>
 											<td width="78%" class="vtable">
 												<input type="checkbox" value="on" id="tcpmssfix" name="tcpmssfix" <?php if (isset($pconfig['tcpmssfix'])) echo "checked=\"checked\""; ?> />&nbsp;<?= gettext("Disable tcpmssfix (enabled by default)."); ?>
-												<br /> <span class="vexpl"><?=gettext("This option causes mpd to adjust incoming and outgoing TCP SYN segments so that the requested maximum segment size is not greater than the amount ". 
+												<br /> <span class="vexpl"><?=gettext("This option causes mpd to adjust incoming and outgoing TCP SYN segments so that the requested maximum segment size is not greater than the amount ".
 												"allowed by the interface MTU. This is necessary in many setups to avoid problems caused by routers that drop ICMP Datagram Too Big messages. Without these messages, ".
 												"the originating machine sends data, it passes the rogue router then hits a machine that has an MTU that is not big enough for the data. Because the IP Don't Fragment option is set, ".
 												"this machine sends an ICMP Datagram Too Big message back to the originator and drops the packet. The rogue router drops the ICMP message and the originator never ".
@@ -817,12 +817,12 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 										</tr>
 									</table>
 		                        </div>
-	    					</form>
-    				    </div>
-    				</div>
+						</form>
+				    </div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-		
+
 <?php include("foot.inc"); ?>

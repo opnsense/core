@@ -90,15 +90,15 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("Interface assignments"), false, "interfaces_assign.php");
 							$tab_array[1] = array(gettext("Interface Groups"), false, "interfaces_groups.php");
@@ -113,25 +113,25 @@ $main_buttons = array(
 							display_top_tabs($tab_array);
 						?>
 
-					
-						<div class="tab-content content-box col-xs-12">	
-	    					   
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
-		                        
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                        
-    			                         <thead>
+
+			                         <thead>
                                             <tr>
-                                				<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
-                                				<th width="20%" class="listtopic"><?=gettext("Mode");?></th>
-                                				<th width="50%" class="listtopic"><?=gettext("Description");?></th>
-                                				<th width="10%" class="listtopic">&nbsp;</th>
+								<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
+								<th width="20%" class="listtopic"><?=gettext("Mode");?></th>
+								<th width="50%" class="listtopic"><?=gettext("Description");?></th>
+								<th width="10%" class="listtopic">&nbsp;</th>
                                             </tr>
                                         </thead>
-    									
-        								<tbody>
-        								
+
+									<tbody>
+
 									  <?php $i = 0;
 											foreach ($a_clones as $clone): ?>
 						                <tr ondblclick="document.location='interfaces_wireless_edit.php?id=<?=$i;?>'">
@@ -145,31 +145,31 @@ $main_buttons = array(
 						                    <?=htmlspecialchars($clone['descr']);?>&nbsp;
 						                  </td>
 						                  <td valign="middle" class="list nowrap">
-							                    
+
 							                   <a href="interfaces_wireless_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
-                                       
+
 											   <a href="interfaces_wireless.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this wireless clone?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
-							                  
+
 							                   <a href="interfaces_wireless_edit.php?id=<?=$i;?>"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_e.gif" width="17" height="17" border="0" alt="edit" ></a>
 							                </td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-        								</tbody>
+									</tbody>
 						              </table>
 							      </div>
-							      
-							       <div class="container-fluid"> 
+
+							       <div class="container-fluid">
 							        <p><span class="text-danger"><strong><?=gettext("Note");?>:<br />
 										  </strong></span>
 										  <?=gettext("Here you can configure clones of wireless interfaces, which can be assigned as separate independent interfaces. Only available on wireless chipsets that support this, with limitations on the number that can be created in each mode.");?></p>
 							       </div>
-							         
+
 		                        </form>
-		                        
+
 						</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

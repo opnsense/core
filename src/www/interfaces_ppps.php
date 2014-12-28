@@ -79,7 +79,7 @@ $pgtitle = gettext("Interfaces: PPPs");
 $shortcut_section = "interfaces";
 include("head.inc");
 $main_buttons = array(
-	array('href'=>'interfaces_ppps_edit.php', 'label'=>'Add'),	
+	array('href'=>'interfaces_ppps_edit.php', 'label'=>'Add'),
 );
 
 ?>
@@ -88,15 +88,15 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("Interface assignments"), false, "interfaces_assign.php");
 							$tab_array[1] = array(gettext("Interface Groups"), false, "interfaces_groups.php");
@@ -111,28 +111,28 @@ $main_buttons = array(
 							display_top_tabs($tab_array);
 						?>
 
-					
-						<div class="tab-content content-box col-xs-12">		    					
-   
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
-		                        
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                        
-    			                         <thead>
+
+			                         <thead>
                                             <tr>
-                                				<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
-                                				<th width="20%" class="listtopic"><?=gettext("Interface(s)/Port(s)");?></th>
-                                				<th width="40%" class="listtopic"><?=gettext("Description");?></th>
-                                				<th width="10%" class="listtopic">&nbsp;</th>
+								<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
+								<th width="20%" class="listtopic"><?=gettext("Interface(s)/Port(s)");?></th>
+								<th width="40%" class="listtopic"><?=gettext("Description");?></th>
+								<th width="10%" class="listtopic">&nbsp;</th>
                                             </tr>
                                         </thead>
-    									
-        								<tbody>
-        								
+
+									<tbody>
+
 									  <?php $i = 0; foreach ($a_ppps as $id => $ppp): ?>
 						                <tr  ondblclick="document.location='interfaces_ppps_edit.php?id=<?=$i;?>'">
-						                	<td class="listr">
+									<td class="listr">
 											<?=htmlspecialchars($ppp['if']);?>
 						                  </td>
 						                  <td class="listr">
@@ -149,23 +149,23 @@ $main_buttons = array(
 						                    <?=htmlspecialchars($ppp['descr']);?>&nbsp;
 						                  </td>
 						                  <td valign="middle" class="list nowrap">
-							                  
+
 							                   <a href="interfaces_ppps_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
-                                       
+
 											   <a href="interfaces_ppps.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this PPP interface?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
-											   
+
 							               </td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-        								</tbody>
+									</tbody>
 						              </table>
 							      </div>
 		                        </form>
-		                        
+
 						</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

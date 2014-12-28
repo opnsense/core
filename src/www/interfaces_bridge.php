@@ -72,7 +72,7 @@ if ($_GET['act'] == "del") {
 		} else {
 			mwexec("/sbin/ifconfig " . $a_bridges[$_GET['id']]['bridgeif'] . " destroy");
 		}
-		
+
 		unset($a_bridges[$_GET['id']]);
 
 		write_config();
@@ -88,24 +88,24 @@ $shortcut_section = "interfaces";
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_bridge_edit.php', 'label'=>'Add'),	
+	array('href'=>'interfaces_bridge_edit.php', 'label'=>'Add'),
 );
 
 ?>
-					             
+
 <body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("Interface assignments"), false, "interfaces_assign.php");
 							$tab_array[1] = array(gettext("Interface Groups"), false, "interfaces_groups.php");
@@ -120,24 +120,24 @@ $main_buttons = array(
 							display_top_tabs($tab_array);
 						?>
 
-					
-						<div class="tab-content content-box col-xs-12">	
-   
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <form action="interfaces_bridge.php" method="post" name="iform" id="iform">
-		                        
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
-    			                        
-    			                         <thead>
+
+			                         <thead>
                                             <tr>
-                                				<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
-                                				<th width="20%" class="listtopic"><?=gettext("Members");?></th>
-                                				<th width="50%" class="listtopic"><?=gettext("Description");?></th>
-                                				<th width="10%" class="listtopic">&nbsp;</th>
+								<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
+								<th width="20%" class="listtopic"><?=gettext("Members");?></th>
+								<th width="50%" class="listtopic"><?=gettext("Description");?></th>
+								<th width="10%" class="listtopic">&nbsp;</th>
                                             </tr>
                                         </thead>
-    									
-        								<tbody>
+
+									<tbody>
 
 									  <?php $i = 0; $ifdescrs = get_configured_interface_with_descr();
 											foreach ($a_bridges as $bridge): ?>
@@ -161,20 +161,20 @@ $main_buttons = array(
 						                  <td class="listbg">
 						                    <?=htmlspecialchars($bridge['descr']);?>&nbsp;
 						                  </td>
-						                  <td valign="middle" class="list nowrap"> 
-							                  
+						                  <td valign="middle" class="list nowrap">
+
 							                   <a href="interfaces_bridge_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
-                                       
+
 											   <a href="interfaces_bridge.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this bridge?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
-											   
+
 							               </td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-						            
-        								</tbody>
+
+									</tbody>
 						              </table>
 							      </div>
-							      
+
 							      <div class="container-fluid">
 							      <p class="vexpl"><span class="text-danger"><strong>
 									  <?=gettext("Note:"); ?><br />
@@ -182,9 +182,9 @@ $main_buttons = array(
 									  <?=gettext("Here you can configure bridging of interfaces."); ?>
 								    </p>
 							      </div>
-							      
+
 		                        </form>
-		                        
+
 						</div>
 			    </section>
 			</div>

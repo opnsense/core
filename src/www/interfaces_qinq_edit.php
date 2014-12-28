@@ -25,7 +25,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 /*
-	pfSense_BUILDER_BINARIES:	/usr/sbin/ngctl	
+	pfSense_BUILDER_BINARIES:	/usr/sbin/ngctl
 	pfSense_MODULE:	interfaces
 */
 
@@ -283,25 +283,25 @@ function removeRow(el) {
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">
-	    				
-	    				 <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Interface QinQ Edit");?></h3>
-    				    </header>
-    				    
-    				    <div class="content-box-main">
-	    					
-	    					<form action="interfaces_qinq_edit.php" method="post" name="iform" id="iform">
-		    							                        
+
+				<div class="content-box">
+
+					 <header class="content-box-head container-fluid">
+				        <h3><?=gettext("Interface QinQ Edit");?></h3>
+				    </header>
+
+				    <div class="content-box-main">
+
+						<form action="interfaces_qinq_edit.php" method="post" name="iform" id="iform">
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 									  <tr>
@@ -375,7 +375,7 @@ function removeRow(el) {
 									          <tr>
 									            <td><div id="onecolumn"><?=gettext("Tag");?></div></td>
 									          </tr>
-									
+
 										<?php
 										$counter = 0;
 										$members = $pconfig['members'];
@@ -394,7 +394,7 @@ function removeRow(el) {
 									          </tr>
 									<?php
 											$counter++;
-									
+
 											} // end foreach
 										} // end if
 									?>
@@ -416,9 +416,9 @@ function removeRow(el) {
 									  </tr>
 									</table>
 		                        </div>
-	    					</form>
-    				    </div>
-    				</div>
+						</form>
+				    </div>
+				</div>
 			    </section>
 			</div>
 		</div>
