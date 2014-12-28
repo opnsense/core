@@ -2808,7 +2808,7 @@ conceived.
 				<plan type="postpaid"/>
 				<usage type="internet"/>
 				<name>Bredbånd (standard)</name>
- 			</apn>
+			</apn>
 			<apn value="net.tre.dk">
 				<plan type="prepaid"/>
 				<usage type="internet"/>
@@ -2986,7 +2986,7 @@ conceived.
 			</apn>
 		</gsm>
 	</provider>
-	<!-- Onfone: https://www.onfone.dk/Kundeservice/mobil/saet_din_mobil_op/internet-gprs-3g/ --> 
+	<!-- Onfone: https://www.onfone.dk/Kundeservice/mobil/saet_din_mobil_op/internet-gprs-3g/ -->
 	<provider>
 		<name>Onfone Internet DK</name>
 		<gsm>
@@ -6445,7 +6445,7 @@ conceived.
 			<network-id mcc="457" mnc="01"/>
 			<balance-check>
 				<ussd>*122#</ussd>
-			</balance-check>			
+			</balance-check>
 			<apn value="ltcnet">
 				<plan type="prepaid"/>
 				<usage type="internet"/>
@@ -8456,23 +8456,23 @@ conceived.
 				<plan type="prepaid"/>
 				<usage type="internet"/>
 			</apn>
- 		</gsm>
- 	</provider>
- 	<provider primary="false">
- 		<name>Heyah</name>
- 		<gsm>
- 			<network-id mcc="260" mnc="02"/>
+		</gsm>
+	</provider>
+	<provider primary="false">
+		<name>Heyah</name>
+		<gsm>
+			<network-id mcc="260" mnc="02"/>
 			<balance-check>
 				<ussd>*108#</ussd>
 			</balance-check>
 			<balance-top-up>
 				<ussd replacement="CODE">*109*CODE#</ussd>
 			</balance-top-up>
- 			<apn value="heyah.pl">
- 				<plan type="prepaid"/>
+			<apn value="heyah.pl">
+				<plan type="prepaid"/>
 				<usage type="internet"/>
- 				<username>heyah</username>
- 				<password>heyah</password>
+				<username>heyah</username>
+				<password>heyah</password>
 				<dns>213.158.194.1</dns>
 				<dns>213.158.193.38</dns>
 			</apn>
@@ -8493,17 +8493,17 @@ conceived.
 	</provider>
 	<provider primary="false">
 		<name>Aster</name>
- 		<gsm>
- 			<network-id mcc="260" mnc="03"/>
+		<gsm>
+			<network-id mcc="260" mnc="03"/>
 			<apn value="aster.internet">
 				<plan type="postpaid"/>
 				<usage type="internet"/>
- 				<username>internet</username>
- 				<password>internet</password>
- 			</apn>
- 		</gsm>
- 	</provider>
- 	<provider primary="false">
+				<username>internet</username>
+				<password>internet</password>
+			</apn>
+		</gsm>
+	</provider>
+	<provider primary="false">
 		<name>Netia</name>
 		<gsm>
 			<network-id mcc="260" mnc="06"/>
@@ -8525,8 +8525,8 @@ conceived.
 	</provider>
 	<provider primary="false">
 		<name>mBank mobile</name>
- 		<gsm>
- 			<network-id mcc="260" mnc="01"/>
+		<gsm>
+			<network-id mcc="260" mnc="01"/>
 			<balance-check>
 				<ussd>*100#</ussd>
 			</balance-check>
@@ -8544,10 +8544,10 @@ conceived.
 				<plan type="postpaid"/>
 				<usage type="internet"/>
 				<username>internet</username>
- 			</apn>
- 		</gsm>
- 	</provider>
- 	<provider primary="false">
+			</apn>
+		</gsm>
+	</provider>
+	<provider primary="false">
 		<name>Mobilking</name>
 		<gsm>
 			<network-id mcc="260" mnc="02"/>
@@ -8561,16 +8561,16 @@ conceived.
 	</provider>
 	<provider primary="false">
 		<name>SamiSwoi</name>
- 		<gsm>
- 			<network-id mcc="260" mnc="01"/>
+		<gsm>
+			<network-id mcc="260" mnc="01"/>
 			<apn value="www.plusgsm.pl">
 				<plan type="prepaid"/>
 				<usage type="internet"/>
 				<username>internet</username>
 				<password>internet</password>
 			</apn>
- 		</gsm>
- 	</provider>
+		</gsm>
+	</provider>
 	<provider primary="false">
 		<name>Sferia</name>
 		<cdma>
@@ -9447,7 +9447,7 @@ conceived.
 		<gsm>
 			<network-id mcc="240" mnc="01"/>
 			<network-id mcc="240" mnc="05"/>
-			
+
 			<!-- http://multicomsecurity.se/produkter-tjanster/mobil-datakommunikation/mobiflex/ -->
 			<apn value="mobiflex.telia.se">
 				<plan type="postpaid"/>
@@ -11611,4 +11611,3 @@ conceived.
 </country>
 
 </serviceproviders>
-
