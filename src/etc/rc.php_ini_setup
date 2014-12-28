@@ -94,8 +94,9 @@ PHPMODULES="$PHPMODULES json"
 PHPMODULES="$PHPMODULES bcmath"
 # filter
 PHPMODULES="$PHPMODULES filter"
-# phalcon
+# OPNsense
 PHPMODULES="$PHPMODULES phalcon"
+PHPMODULES="$PHPMODULES tokenizer"
 
 # Clear the .ini file to make sure we are clean
 rm -f /usr/local/etc/php/extensions.ini
