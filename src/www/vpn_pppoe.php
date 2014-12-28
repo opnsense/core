@@ -97,19 +97,19 @@ $main_buttons = array(
 <body>
 	<?php include("fbegin.inc"); ?>
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('vpnpppoe')): ?><br/>
 				<?php print_info_box_np(gettext("The PPPoE entry list has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?>
 				<?php endif; ?>
 
-				
-				
+
+
 			    <section class="col-xs-12">
-    				
-    				<?php 
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
 						$tab_array[] = array(gettext("Client"), true, "vpn_openvpn_client.php");
@@ -118,20 +118,20 @@ $main_buttons = array(
 						add_package_tabs("OpenVPN", $tab_array);
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">							
-							
+
+					<div class="tab-content content-box col-xs-12">
+
 							<form action="vpn_pppoe.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
-								 	<table class="table table-striped table-sort">
+									<table class="table table-striped table-sort">
 										<tr>
 										  <td width="15%" class="listhdrr"><?=gettext("Interface");?></td>
 										  <td width="10%" class="listhdrr"><?=gettext("Local IP");?></td>
 										  <td width="20%" class="listhdrr"><?=gettext("Number of users");?></td>
 										  <td width="25%" class="listhdr"><?=gettext("Description");?></td>
 										  <td width="10%" class="list">
-										   
+
 										  </td>
 										</tr>
 											  <?php $i = 0; foreach ($a_pppoes as $pppoe): ?>
@@ -149,17 +149,17 @@ $main_buttons = array(
 										    <?=htmlspecialchars($pppoe['descr']);?>&nbsp;
 										  </td>
 										  <td valign="middle" class="list nowrap">
-										    	<a href="vpn_pppoe_edit.php?id=<?=$i;?>" title="<?=gettext("edit pppoe instance"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-										    	
-										    	<a href="vpn_pppoe.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry? All elements that still use it will become invalid (e.g. filter rules)!");?>')" title="<?=gettext("delete pppoe instance");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+											<a href="vpn_pppoe_edit.php?id=<?=$i;?>" title="<?=gettext("edit pppoe instance"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+
+											<a href="vpn_pppoe.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry? All elements that still use it will become invalid (e.g. filter rules)!");?>')" title="<?=gettext("delete pppoe instance");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 										  </td>
 										</tr>
 											  <?php $i++; endforeach; ?>
-										
-								 	</table>
+
+									</table>
 								</div>
 							</form>
-							
+
 					</div>
 			    </section>
 			</div>

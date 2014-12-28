@@ -225,25 +225,25 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 <form action="vpn_ipsec.php" method="post">
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 					if ($savemsg)
 						print_info_box($savemsg);
 					if ($pconfig['enable'] && is_subsystem_dirty('ipsec'))
 						print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
 				?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/vpn_ipsec.php"; include('vpn_ipsec_tabs.php'); ?>
-					
+
+				<? $active_tab = "/vpn_ipsec.php"; include('vpn_ipsec_tabs.php'); ?>
+
 					<div class="tab-content content-box col-xs-12">
 
 							 <div class="table-responsive">
-							 	<table class="table table-striped table-sort">
-				
+								<table class="table table-striped table-sort">
+
 									<tr id="frheader">
 										<td class="list">&nbsp;</td>
 										<td class="list">&nbsp;</td>
@@ -272,7 +272,7 @@ include("head.inc");
 							<input type="checkbox" id="frc<?=$i;?>" name="p1entry[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" />
 						</td>
 						<td class="listt" align="center" valign="middle">
-							<button name="toggle_<?=$i;?>_x" 
+							<button name="toggle_<?=$i;?>_x"
 								title="<?=gettext("click to toggle enabled/disabled status");?>"
 								type="submit" class="btn btn-<?php echo $iconfn?> btn-xs"><span class="glyphicon glyphicon-play"></span>
 							</button>
@@ -457,7 +457,7 @@ include("head.inc");
 											type="image" style="height:11;width:11;border:0" />
 										<button name="togglep2_<?=$ph2index;?>_x"
 											title="<?=gettext("click to toggle enabled/disabled status");?>"
-											type="submit" 
+											type="submit"
 											class="btn btn-<?php echo $iconfn?> btn-xs">
 											<span class="glyphicon glyphicon-play"></span>
 										</button>
@@ -534,7 +534,7 @@ include("head.inc");
 										<button name="delp2_<?=$ph2index;?>_x" src="/themes/<?= $g['theme']; ?>/images/icons/icon_x.gif"
 											title="<?=gettext("delete phase2 entry");?>"
 											type="submit"
-											onclick="return confirm('<?=gettext("Do you really want to delete this phase2 entry?"); ?>')" 
+											onclick="return confirm('<?=gettext("Do you really want to delete this phase2 entry?"); ?>')"
 											class="btn btn-default btn-xs">
 											<span class="glyphicon glyphicon-remove"><span>
 										</button>
@@ -555,10 +555,10 @@ include("head.inc");
 ?>
 										<span title="<?=gettext("move selected phase2 entries to end");?>" alt="move" class="btn btn-default btn-xs glyphicon glyphicon-arrow-down hide"></span>
 <?php
-									else: 
+									else:
 ?>
-										<button onmouseover="fr_insline(<?=$j;?>, true, '<?=$fr_prefix;?>')" onmouseout="fr_insline(<?=$j;?>, false, '<?=$fr_prefix;?>')" 
-											name="movep2_<?=$j;?>_x" type="submit" 
+										<button onmouseover="fr_insline(<?=$j;?>, true, '<?=$fr_prefix;?>')" onmouseout="fr_insline(<?=$j;?>, false, '<?=$fr_prefix;?>')"
+											name="movep2_<?=$j;?>_x" type="submit"
 											title="<?=gettext("move selected phase2 entries to end");?>"
 											class="btn btn-default btn-xs">
 											<span class="glyphicon glyphicon-arrow-down"></span>
@@ -575,10 +575,10 @@ include("head.inc");
 										<span title="<?=gettext("delete selected phase2 entries");?>" alt="delete" class="btn btn-default btn-xs glyphicon glyphicon-remove hide"></span>
 <?php
 									else:
-?>										
-										<button name="delp2_x" 
-											type="submit" 
-											title="<?=gettext("delete selected phase2 entries");?>" 
+?>
+										<button name="delp2_x"
+											type="submit"
+											title="<?=gettext("delete selected phase2 entries");?>"
 											onclick="return confirm('<?=gettext("Do you really want to delete the selected phase2 entries?");?>')"
 											class="btn btn-default btn-xs">
 											<span class="glyphicon glyphicon-remove"></span>
@@ -609,8 +609,8 @@ include("head.inc");
 <?php
 									else:
 ?>
-										<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" 
-											name="move_<?=$i;?>_x" 
+										<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)"
+											name="move_<?=$i;?>_x"
 											type="submit"
 											title="<?=gettext("move selected phase1 entries to end");?>"
 											class="btn btn-default btn-xs">
@@ -635,10 +635,10 @@ include("head.inc");
 <?php
 									else:
 ?>
-										<button 
-											name="del_x" 
+										<button
+											name="del_x"
 											type="submit"
-											title="<?=gettext("delete selected phase1 entries");?>" 
+											title="<?=gettext("delete selected phase1 entries");?>"
 											onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')"
 											class="btn btn-default btn-xs">
 											<span class="glyphicon glyphicon-remove"></span>

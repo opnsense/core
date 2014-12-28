@@ -153,7 +153,7 @@ if($_GET['act']=="edit"){
 		// just in case the modes switch
 		$pconfig['autokey_enable'] = "yes";
 		$pconfig['autotls_enable'] = "yes";
-		
+
 		$pconfig['no_tun_ipv6'] = $a_client[$id]['no_tun_ipv6'];
 		$pconfig['route_no_pull'] = $a_client[$id]['route_no_pull'];
 		$pconfig['route_no_exec'] = $a_client[$id]['route_no_exec'];
@@ -342,7 +342,7 @@ include("head.inc");
 
 $main_buttons = array(
 	array('href'=>'vpn_openvpn_client.php?act=new', 'label'=>gettext("add client")),
-		
+
 );
 
 ?>
@@ -432,23 +432,23 @@ function autotls_change() {
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 				if (!$savemsg)
 					$savemsg = "";
-				
+
 				if ($input_errors)
 					print_input_errors($input_errors);
 				if ($savemsg)
 					print_info_box($savemsg);
 				?>
-				
-				
+
+
 			    <section class="col-xs-12">
-    				
-    				<?php 
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
 						$tab_array[] = array(gettext("Client"), true, "vpn_openvpn_client.php");
@@ -457,15 +457,15 @@ function autotls_change() {
 						add_package_tabs("OpenVPN", $tab_array);
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    
-        				    	
+
+					<div class="tab-content content-box col-xs-12">
+
+
 							<?php if($act=="new" || $act=="edit"): ?>
 							<form action="vpn_openvpn_client.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
 
 							 <div class="table-responsive">
-							 	<table class="table table-striped table-sort">
+								<table class="table table-striped table-sort">
 								<tr>
 						<td colspan="2" valign="top" class="listtopic"><?=gettext("General information"); ?></td>
 					</tr>
@@ -1117,7 +1117,7 @@ function autotls_change() {
 					<td width="10%" class="list"></td>
 				</tr>
 				</thead>
-			
+
 				<tbody>
 				<?php
 					$i = 0;
@@ -1142,10 +1142,10 @@ function autotls_change() {
 					</td>
 					<td valign="middle" class="list nowrap">
 						<a href="vpn_openvpn_client.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a>
-                                       
+
                         <a href="vpn_openvpn_client.php?act=del&amp;id=<?=$i;?>" class="btn btn-default" onclick="return confirm('<?=gettext("Do you really want to delete this client?"); ?>')"title="<?=gettext("delete client"); ?>"><span class="glyphicon glyphicon-remove"></span></a>
-                                        
-						
+
+
 					</td>
 				</tr>
 				<?php
@@ -1156,7 +1156,7 @@ function autotls_change() {
 			</table>
 
 			<?php endif; ?>
-			
+
 					</div>
 			    </section>
 			</div>

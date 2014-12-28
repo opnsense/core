@@ -135,10 +135,10 @@ function maxmss_checked(obj) {
 </script>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				
+
+
 				<?php
 					if ($savemsg)
 						print_info_box($savemsg);
@@ -146,26 +146,26 @@ function maxmss_checked(obj) {
 						print_input_errors($input_errors);
 				?>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	 
-	    				    
+
+				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+
 							<form action="vpn_ipsec_settings.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped table-sort">
-										
+									<table class="table table-striped table-sort">
+
 										<thead>
 		                                    <tr>
-		                            	    	<th colspan="2" class="listtopic"><?=gettext("IPSec Advanced Settings"); ?></th>
+							<th colspan="2" class="listtopic"><?=gettext("IPSec Advanced Settings"); ?></th>
 		                                    </tr>
 		                                </thead>
-											
-		    							<tbody>
-		    							
+
+									<tbody>
+
 										<tr>
 											<td width="22%" valign="top" class="vncell"><?=gettext("LAN security associsations"); ?></td>
 											<td width="78%" class="vtable">
@@ -248,7 +248,7 @@ function maxmss_checked(obj) {
 									</table>
 								</div>
 							</form>
-							
+
 					</div>
 				</section>
 			</div>

@@ -278,29 +278,29 @@ function enable_change(enable_over) {
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 <?php if ($savemsg) print_info_box($savemsg); ?>
 <div id="inputerrors"></div>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[0] = array(gettext("Configuration"), true, "vpn_l2tp.php");
 						$tab_array[1] = array(gettext("Users"), false, "vpn_l2tp_users.php");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	
-							
+
+					<div class="tab-content content-box col-xs-12">
+
 							<form action="vpn_l2tp.php" method="post" name="iform" id="iform">
 
 							 <div class="table-responsive">
-							 	<table class="table table-striped table-sort">
+								<table class="table table-striped table-sort">
 					                <tr>
 					                  <td width="22%" valign="top" class="vtable">&nbsp;</td>
 					                  <td width="78%" class="vtable">
@@ -314,11 +314,11 @@ function enable_change(enable_over) {
 							    <input type="radio" name="mode" value="server" onclick="enable_change(false)" <?php if ($pconfig['mode'] == "server") echo "checked=\"checked\""; ?> />
 					                    <?=gettext("Enable L2TP server"); ?></td>
 							</tr>
-					
+
 					                <tr>
 					                  <td width="22%" valign="top" class="vncell"><b><?=gettext("Interface");?></b></td>
 					                  <td width="78%" valign="top" class="vtable">
-					
+
 								<select name="interface" class="form-control" id="interface">
 								  <?php
 									$interfaces = get_configured_interface_with_descr();
@@ -329,7 +329,7 @@ function enable_change(enable_over) {
 								  </option>
 								  <?php endforeach; ?>
 								</select> <br />
-					
+
 							  </td>
 					                </tr>
 					                <tr>
@@ -408,7 +408,7 @@ function enable_change(enable_over) {
 							  <td width="22%" valign="top" class="vncell"><?=gettext("L2TP DNS Servers"); ?></td>
 							  <td width="78%" class="vtable">
 							    <?=$mandfldhtml;?><input name="l2tp_dns1" type="text" class="form-control unknown" id="l2tp_dns1" size="20" value="<?=htmlspecialchars($pconfig['l2tp_dns1']);?>" />
-							   	<br />
+								<br />
 									<input name="l2tp_dns2" type="text" class="form-control unknown" id="l2tp_dns2" size="20" value="<?=htmlspecialchars($pconfig['l2tp_dns2']);?>" />
 								<br />
 							   <p class="text-muted"><em><small><?=gettext("primary and secondary DNS servers assigned to L2TP clients"); ?></small></em></p>
@@ -475,7 +475,7 @@ function enable_change(enable_over) {
 			</div>
 		</div>
 	</section>
-	
+
 
 <script type="text/javascript">
 //<![CDATA[

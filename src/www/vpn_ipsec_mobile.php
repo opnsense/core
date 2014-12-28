@@ -1,20 +1,20 @@
 <?php
 /*
 	vpn_ipsec_mobile.php
-	
+
 	Copyright (C) 2008 Shrew Soft Inc
 	All rights reserved.
-	
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -124,7 +124,7 @@ if ($_POST['submit']) {
 
 	/* input consolidation */
 
-	
+
 
 	/* input validation */
 
@@ -182,7 +182,7 @@ if ($_POST['submit']) {
 
 	if (!$input_errors) {
 		$client = array();
-		
+
 		if ($pconfig['enable'])
 			$client['enable'] = true;
 
@@ -228,10 +228,10 @@ if ($_POST['submit']) {
 //		$echo "login banner = {$pconfig['login_banner']}";
 
 		$a_client = $client;
-		
+
 		write_config();
 		mark_subsystem_dirty('ipsec');
-		
+
 		header("Location: vpn_ipsec_mobile.php");
 		exit;
 	}
@@ -324,9 +324,9 @@ function login_banner_change() {
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 					if ($savemsg)
 						print_info_box($savemsg);
@@ -341,20 +341,20 @@ function login_banner_change() {
 						print_input_errors($input_errors);
 				?>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/vpn_ipsec_mobile.php"; include('vpn_ipsec_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	
-							
+
+				<? $active_tab = "/vpn_ipsec_mobile.php"; include('vpn_ipsec_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+
 							 <form action="vpn_ipsec_mobile.php" method="post" name="iform" id="iform">
 
 							 <div class="table-responsive">
-							 	<table class="table table-striped table-sort">
+								<table class="table table-striped table-sort">
 
 
-	
+
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("IKE Extensions"); ?></td>
 										<td width="78%" class="vtable">
@@ -372,18 +372,18 @@ function login_banner_change() {
 										</td>
 									</tr>
 									</tbody>
-							 	</table>
-							 	
-							 	<table class="table table-striped table-sort">
-                                    
+								</table>
+
+								<table class="table table-striped table-sort">
+
                                     <thead>
                                         <tr>
-                            				<th colspan="2" class="listtopic"><?=gettext("Extended Authentication (Xauth)"); ?></th>
+							<th colspan="2" class="listtopic"><?=gettext("Extended Authentication (Xauth)"); ?></th>
                                         </tr>
                                     </thead>
-									
-    								<tbody>
-									
+
+								<tbody>
+
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("User Authentication"); ?></td>
 										<td width="78%" class="vtable">
@@ -413,19 +413,19 @@ function login_banner_change() {
 										</td>
 									</tr>
 									</tbody>
-							 	</table>
-							 	
-							 	<table class="table table-striped table-sort">
-                                    
+								</table>
+
+								<table class="table table-striped table-sort">
+
                                     <thead>
                                         <tr>
-                            				<th colspan="2" class="listtopic"><?=gettext("Client Configuration (mode-cfg)"); ?></th>
+							<th colspan="2" class="listtopic"><?=gettext("Client Configuration (mode-cfg)"); ?></th>
                                         </tr>
                                     </thead>
-									
-    								<tbody>
-    								
-									<tr> 
+
+								<tbody>
+
+									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Virtual Address Pool"); ?></td>
 										<td width="78%" class="vtable">
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable pool">
@@ -490,7 +490,7 @@ function login_banner_change() {
 											</table>
 										</td>
 									</tr>
-									<tr> 
+									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("DNS Default Domain"); ?></td>
 										<td width="78%" class="vtable">
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable dns default domain">
@@ -537,7 +537,7 @@ function login_banner_change() {
 											</table>
 										</td>
 									</tr>
-									<tr> 
+									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("DNS Servers"); ?></td>
 										<td width="78%" class="vtable">
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable dns servers">
@@ -579,7 +579,7 @@ function login_banner_change() {
 											</table>
 										</td>
 									</tr>
-									<tr> 
+									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("WINS Servers"); ?></td>
 										<td width="78%" class="vtable">
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable wins servers">
@@ -639,7 +639,7 @@ function login_banner_change() {
 											</table>
 										</td>
 									</tr>
-									<tr> 
+									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Login Banner"); ?></td>
 										<td width="78%" class="vtable">
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable login banner">
@@ -670,7 +670,7 @@ function login_banner_change() {
 										</td>
 									</tr>
 								</table>
-								
+
 							 </div>
 							 </form>
 					</div>
@@ -678,7 +678,7 @@ function login_banner_change() {
 			</div>
 		</div>
 	</section>
-	
+
 <script type="text/javascript">
 //<![CDATA[
 pool_change();

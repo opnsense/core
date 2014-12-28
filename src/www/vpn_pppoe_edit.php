@@ -246,8 +246,8 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<script type="text/javascript" src="/javascript/row_helper.js"></script>
-	
-	
+
+
 <script type="text/javascript">
 	//<![CDATA[
 	rowname[0] = "username";
@@ -352,8 +352,8 @@ function enable_change(enable_over) {
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php
 				if ($input_errors)
 					print_input_errors($input_errors);
@@ -362,17 +362,17 @@ function enable_change(enable_over) {
 				?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-		                        <form action="vpn_pppoe_edit.php" method="post" name="iform" id="iform">		
+
+				<div class="content-box">
+
+		                        <form action="vpn_pppoe_edit.php" method="post" name="iform" id="iform">
 									<input type='hidden' name='username' value='textbox' class="formfld unknown" />
 									<input type='hidden' name='password' value='textbox' />
-									<input type='hidden' name='ip' value='textbox' />						
-		                        	
-		                        	<div class="table-responsive">
-			                        	<table class="table table-striped table-sort">
-				                        
+									<input type='hidden' name='ip' value='textbox' />
+
+						<div class="table-responsive">
+							<table class="table table-striped table-sort">
+
 											<tr>
 												<td height="16" colspan="2" class="listtopic" valign="top"><?php echo gettext("PPPoE server configuration"); ?></td>
 											</tr>
@@ -389,11 +389,11 @@ function enable_change(enable_over) {
 													<input type="radio" name="mode" value="server" onclick="enable_change(false)" <?php if ($pconfig['mode'] == "server") echo "checked=\"checked\""; ?> />
 													<?=gettext("Enable PPPoE server"); ?></td>
 											</tr>
-						
+
 											<tr>
 												<td width="22%" valign="top" class="vncell"><b><?=gettext("Interface"); ?></b></td>
 												<td width="78%" valign="top" class="vtable">
-						
+
 													<select name="interface" class="formselect" id="interface">
 						<?php
 													$interfaces = get_configured_interface_with_descr();
@@ -406,7 +406,7 @@ function enable_change(enable_over) {
 													endforeach;
 						?>
 													</select> <br />
-						
+
 												</td>
 											</tr>
 											<tr>
@@ -621,14 +621,14 @@ function enable_change(enable_over) {
 														"traffic from PPPoE clients"); ?>!</span></td>
 											</tr>
 										</table>
-		                        	</div>
+						</div>
 		                        </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <script type="text/javascript">
 	//<![CDATA[
 	enable_change(false);

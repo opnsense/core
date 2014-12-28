@@ -1,20 +1,20 @@
-<?php 
+<?php
 /*
 	vpn_openvpn_csc.php
 
 	Copyright (C) 2008 Shrew Soft Inc.
-	All rights reserved. 
+	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -230,7 +230,7 @@ if ($_POST) {
 			if ($pconfig['dns_server_enable'])
 				$csc['nbdd_server1'] = $pconfig['nbdd_server1'];
 		}
-	
+
 		if (isset($id) && $a_csc[$id]) {
 			$old_csc_cn = $a_csc[$id]['common_name'];
 			$a_csc[$id] = $csc;
@@ -241,7 +241,7 @@ if ($_POST) {
 			openvpn_cleanup_csc($old_csc_cn);
 		openvpn_resync_csc($csc);
 		write_config();
-		
+
 		header("Location: vpn_openvpn_csc.php");
 		exit;
 	}
@@ -304,7 +304,7 @@ function netbios_change() {
 
 <?
 
-if($act!="new" && $act!="edit") { 
+if($act!="new" && $act!="edit") {
 	$main_buttons = array(
 		array('href'=>'vpn_openvpn_csc.php?act=new', 'label'=>gettext("add csc")),
 	);
@@ -315,20 +315,20 @@ if($act!="new" && $act!="edit") {
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 					if ($input_errors)
 						print_input_errors($input_errors);
 					if ($savemsg)
 						print_info_box($savemsg);
 				?>
-				
-				
+
+
 			    <section class="col-xs-12">
-    				
-    				<?php 
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
 						$tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
@@ -337,18 +337,18 @@ if($act!="new" && $act!="edit") {
 						add_package_tabs("OpenVPN", $tab_array);
 						display_top_tabs($tab_array);
 					?>
-					
+
 					<div class="tab-content content-box col-xs-12">
-    												
+
 							<?php if($act=="new" || $act=="edit"): ?>
 							<form action="vpn_openvpn_csc.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
 
 							 <div class="table-responsive">
-							 	<table class="table table-striped table-sort">
+								<table class="table table-striped table-sort">
 
-							 		<tr>
+									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("General information"); ?></td>
-									</tr>	
+									</tr>
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Disabled"); ?></td>
 										<td width="78%" class="vtable">
@@ -369,16 +369,16 @@ if($act!="new" && $act!="edit") {
 											 <p class="text-muted"><em><small><?=gettext("Set this option to disable this client-specific override without removing it from the list"); ?>.</small></em></p>
 										</td>
 									</tr>
-									<tr> 
+									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Common name"); ?></td>
-										<td width="78%" class="vtable"> 
+										<td width="78%" class="vtable">
 											<input name="common_name" type="text" class="formfld unknown" size="30" value="<?=htmlspecialchars($pconfig['common_name']);?>" />
 											 <p class="text-muted"><em><small><?=gettext("Enter the client's X.509 common name here"); ?>.</small></em></p>
 										</td>
 									</tr>
-									<tr> 
+									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
-										<td width="78%" class="vtable"> 
+										<td width="78%" class="vtable">
 											<input name="description" type="text" class="formfld unknown" size="30" value="<?=htmlspecialchars($pconfig['description']);?>" />
 											 <p class="text-muted"><em><small><?=gettext("You may enter a description here for your reference (not parsed)"); ?>.</small></em></p>
 										</td>
@@ -736,8 +736,8 @@ if($act!="new" && $act!="edit") {
 									</tr>
 									<tr>
 										<td width="22%" valign="top">&nbsp;</td>
-										<td width="78%"> 
-											<input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" /> 
+										<td width="78%">
+											<input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 											<input name="act" type="hidden" value="<?=$act;?>" />
 											<?php if (isset($id) && $a_csc[$id]): ?>
 											<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
@@ -747,12 +747,12 @@ if($act!="new" && $act!="edit") {
 								</table>
 							 </div>
 							</form>
-    				    
+
 							<?php else: ?>
-							
+
 							<div class="table-responsive">
-							 	<table class="table table-striped table-sort">
-			
+								<table class="table table-striped table-sort">
+
 									<tr>
 										<td width="10%" class="listhdrr"><?=gettext("Disabled"); ?></td>
 										<td width="40%" class="listhdrr"><?=gettext("Common Name"); ?></td>
@@ -790,7 +790,7 @@ if($act!="new" && $act!="edit") {
 										$i++;
 										endforeach;
 									?>
-									
+
 									<tr>
 										<td colspan="3">
 											<p>
@@ -800,8 +800,8 @@ if($act!="new" && $act!="edit") {
 									</tr>
 								</table>
 							</div>
-    				    <?php endif; ?>
-    				    
+				    <?php endif; ?>
+
 					</div>
 			    </section>
 			</div>

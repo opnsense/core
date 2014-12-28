@@ -143,28 +143,28 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-	
+
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[0] = array(gettext("Configuration"), false, "vpn_pptp.php");
 						$tab_array[1] = array(gettext("Users"), true, "vpn_pptp_users.php");
 						display_top_tabs($tab_array);
-					?> 
-					
+					?>
+
 					<div class="tab-content content-box col-xs-12">
-	    				    
+
 							<form action="vpn_pptp_users_edit.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped table-sort">
-								 		<tr>
+									<table class="table table-striped table-sort">
+										<tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
 						                  <td width="78%" class="vtable">
 											<?=$mandfldhtml;?><input name="username" type="text" class="form-control user" id="username" size="20" value="<?=htmlspecialchars($pconfig['username']);?>" />
@@ -197,11 +197,11 @@ include("head.inc");
 						              </table>
 							      </div>
 							</form>
-							
+
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

@@ -520,16 +520,16 @@ function dpdchkbox_change() {
 </script>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
 				<?php
 					if ($input_errors)
 						print_input_errors($input_errors);
-				?>				
-				
+				?>
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[0] = array(gettext("Tunnels"), true, "vpn_ipsec.php");
 						$tab_array[1] = array(gettext("Mobile clients"), false, "vpn_ipsec_mobile.php");
@@ -537,22 +537,22 @@ function dpdchkbox_change() {
 						$tab_array[3] = array(gettext("Advanced Settings"), false, "vpn_ipsec_settings.php");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	
-							
+
+					<div class="tab-content content-box col-xs-12">
+
 							 <form action="vpn_ipsec_phase1.php" method="post" name="iform" id="iform">
 
 							 <div class="table-responsive">
-							 	<table class="table table-striped table-sort">
-                                    
+								<table class="table table-striped table-sort">
+
                                     <thead>
                                         <tr>
-                            				<th colspan="2" class="listtopic"><?=gettext("General information"); ?></th>
+							<th colspan="2" class="listtopic"><?=gettext("General information"); ?></th>
                                         </tr>
                                     </thead>
-                                    
+
                                     <tbody>
-                                    
+
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Disabled"); ?></td>
 										<td width="78%" class="vtable">
@@ -600,15 +600,15 @@ function dpdchkbox_change() {
 											<select name="interface" class="formselect">
 											<?php
 												$interfaces = get_configured_interface_with_descr();
-				
+
 												$carplist = get_configured_carp_interface_list();
 												foreach ($carplist as $cif => $carpip)
 													$interfaces[$cif] = $carpip." (".get_vip_descr($carpip).")";
-				
+
 												$aliaslist = get_configured_ip_aliases_list();
 												foreach ($aliaslist as $aliasip => $aliasif)
 													$interfaces[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
-				
+
 												$grouplist = return_gateway_groups_array();
 												foreach ($grouplist as $name => $group) {
 													if($group[0]['vip'] <> "")
@@ -617,8 +617,8 @@ function dpdchkbox_change() {
 														$vipif = $group[0]['int'];
 													$interfaces[$name] = "GW Group {$name}";
 												}
-				
-				
+
+
 												foreach ($interfaces as $iface => $ifacename):
 											?>
 												<option value="<?=$iface;?>" <?php if ($iface == $pconfig['interface']) echo "selected=\"selected\""; ?>>
@@ -630,9 +630,9 @@ function dpdchkbox_change() {
 											<span class="vexpl"><?=gettext("Select the interface for the local endpoint of this phase1 entry"); ?>.</span>
 										</td>
 									</tr>
-				
+
 									<?php if (!$pconfig['mobile']): ?>
-				
+
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Remote gateway"); ?></td>
 										<td width="78%" class="vtable">
@@ -641,9 +641,9 @@ function dpdchkbox_change() {
 											<?=gettext("Enter the public IP address or host name of the remote gateway"); ?>
 										</td>
 									</tr>
-				
+
 									<?php endif; ?>
-				
+
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
 										<td width="78%" class="vtable">
@@ -659,18 +659,18 @@ function dpdchkbox_change() {
 										<td colspan="2" class="list" height="12"></td>
 									</tr>
                                     </tbody>
-							 	</table>
-							 	
-							 	<table class="table table-striped table-sort">
-                                    
+								</table>
+
+								<table class="table table-striped table-sort">
+
                                     <thead>
                                         <tr>
-                            				<th colspan="2" class="listtopic"><?=gettext("Phase 1 proposal (Authentication)"); ?></th>
+							<th colspan="2" class="listtopic"><?=gettext("Phase 1 proposal (Authentication)"); ?></th>
                                         </tr>
                                     </thead>
-                                    
+
                                     <tbody>
-                                    
+
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Authentication method"); ?></td>
 										<td width="78%" class="vtable">
@@ -789,18 +789,18 @@ function dpdchkbox_change() {
 										</td>
 									</tr>
 									</tbody>
-							 	</table>
-							 	
-							 	<table class="table table-striped table-sort">
-                                    
+								</table>
+
+								<table class="table table-striped table-sort">
+
                                     <thead>
                                         <tr>
-                            				<th colspan="2" class="listtopic"><?=gettext("Phase 1 proposal (Algorithms)"); ?></th>
+							<th colspan="2" class="listtopic"><?=gettext("Phase 1 proposal (Algorithms)"); ?></th>
                                         </tr>
                                     </thead>
-                                    
+
                                     <tbody>
-									
+
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Encryption algorithm"); ?></td>
 										<td width="78%" class="vtable">
@@ -860,17 +860,17 @@ function dpdchkbox_change() {
 										</td>
 									</tr>
 									</tbody>
-							 	</table>
-							 	
-							 	<table class="table table-striped table-sort">
-                                    
+								</table>
+
+								<table class="table table-striped table-sort">
+
                                     <thead>
                                         <tr>
-                            				<th colspan="2" class="listtopic"><?=gettext("Advanced Options"); ?></th>
+							<th colspan="2" class="listtopic"><?=gettext("Advanced Options"); ?></th>
                                         </tr>
                                     </thead>
-									
-    								<tbody>
+
+								<tbody>
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Disable Rekey");?></td>
 										<td width="78%" class="vtable">
@@ -939,13 +939,13 @@ function dpdchkbox_change() {
 								</table>
 							</div>
 							 </form>
-							 
+
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 
 <script type="text/javascript">
 //<![CDATA[

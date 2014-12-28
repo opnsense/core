@@ -2,20 +2,20 @@
 /*
 	vpn_ipsec_keys.php
 	part of m0n0wall (http://m0n0.ch/wall)
-	
+
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
-	
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -84,31 +84,31 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 <section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				
-				<?php 
+
+
+				<?php
 					if ($savemsg)
 						print_info_box($savemsg);
 					if (is_subsystem_dirty('ipsec'))
 						print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
-					
+
 				?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	
-	    				    
+
+				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+
 							<form action="vpn_ipsec_keys.php" method="post">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped table-sort">
+									<table class="table table-striped table-sort">
 
 
-						                <tr> 
+						                <tr>
 						                  <td class="listhdrr"><?=gettext("Identifier"); ?></td>
 						                  <td class="listhdr"><?=gettext("Pre-Shared Key"); ?></td>
 						                  <td class="list">
@@ -144,9 +144,9 @@ include("head.inc");
 								&nbsp;</td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-						
+
 									  <?php $i = 0; foreach ($a_secret as $secretent): ?>
-						                <tr> 
+						                <tr>
 						                  <td class="listlr">
 						                    <?=htmlspecialchars($secretent['ident']);?>
 						                  </td>
@@ -157,7 +157,7 @@ include("head.inc");
 						                     &nbsp;<a href="vpn_ipsec_keys.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this Pre-Shared Key?"); ?>')"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" title="<?=gettext("delete key"); ?>" width="17" height="17" border="0" alt="delete" /></a></td>
 										</tr>
 									  <?php $i++; endforeach; ?>
-						                <tr> 
+						                <tr>
 						                  <td class="list" colspan="2"></td>
 						                  <td class="list">
 									<table border="0" cellspacing="0" cellpadding="1" summary="add key">
@@ -171,7 +171,7 @@ include("head.inc");
 						              </table>
 							</div>
 							</form>
-							
+
 							<div class="container-fluid">
 							<p>
 							<span class="vexpl">
@@ -181,7 +181,7 @@ include("head.inc");
 							<?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
 							</span>
 							</p>
-    				        </div>
+				        </div>
 					</div>
 			    </section>
 			</div>
