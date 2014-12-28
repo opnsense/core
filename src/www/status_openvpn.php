@@ -143,25 +143,25 @@ include("head.inc"); ?>
 //]]>
 </script>
 
-	
+
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
-            
+
             <section class="col-xs-12">
                 <div class="content-box">
 	                <header class="content-box-head container-fluid">
 				        <h3>Network Time Protocol Status</h3>
 				    </header>
-				    
+
 				    <div class="content-box-main col-xs-12">
 					    <form action="status_openvpn.php" method="get" name="iform">
-						    
-					  							
+
+
 							<?php $i = 0; ?>
 							<?php foreach ($servers as $server): ?>
-							<div class="table-responsive">	
+							<div class="table-responsive">
 							<table class="table table-striped table-sort sortable __nomb">
 								<tr>
 									<td colspan="6" class="listtopic">
@@ -179,7 +179,7 @@ include("head.inc"); ?>
 											<td class="listhdrr"><?=gettext("Bytes Sent"); ?></td>
 											<td class="listhdrr"><?=gettext("Bytes Received"); ?></td>
 										</tr>
-							
+
 										<?php foreach ($server['conns'] as $conn): ?>
 										<tr id="<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>">
 											<td class="listlr">
@@ -207,7 +207,7 @@ include("head.inc"); ?>
 												   title="<?php echo gettext("Kill client connection from") . " " . $conn['remote_host']; ?>" alt="delete" />
 											</td>
 										</tr>
-							
+
 										<?php endforeach; ?>
 										<tfoot>
 										<tr>
@@ -230,7 +230,7 @@ include("head.inc"); ?>
 							<?php if (is_array($server['routes']) && count($server['routes'])): ?>
 							<div id="shroutebut-<?= $i ?>">
 							<input type="button" onClick="show_routes('tabroute-<?= $i ?>','shroutebut-<?= $i ?>')" value="<?php echo gettext("Show Routing Table"); ?>" /> - <?= gettext("Display OpenVPN's internal routing table for this server.") ?>
-							
+
 							</div>
 							<table style="display: none; padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" id="tabroute-<?= $i ?>" summary="routing table">
 								<tr>
@@ -247,7 +247,7 @@ include("head.inc"); ?>
 											<td class="listhdrr"><?=gettext("Target Network"); ?></td>
 											<td class="listhdrr"><?=gettext("Last Used"); ?></td>
 										</tr>
-							
+
 										<?php foreach ($server['routes'] as $conn): ?>
 										<tr id="<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>">
 											<td class="listlr">
@@ -263,7 +263,7 @@ include("head.inc"); ?>
 												<?=$conn['last_time'];?>
 											</td>
 										</tr>
-							
+
 										<?php endforeach; ?>
 										<tfoot>
 										<tr>
@@ -275,11 +275,11 @@ include("head.inc"); ?>
 								</tr>
 							</table>
 							<?php endif; ?>
-							
+
 							<?php $i++; ?>
 							<?php endforeach; ?>
-							
-							
+
+
 							<?php if (!empty($sk_servers)) { ?>
 							<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" summary="peer to peer stats">
 								<tr>
@@ -300,7 +300,7 @@ include("head.inc"); ?>
 											<td class="listhdrr"><?=gettext("Bytes Rcvd"); ?></td>
 											<td class="listhdrr"><?=gettext("Service"); ?></td>
 										</tr>
-							
+
 							<?php foreach ($sk_servers as $sk_server): ?>
 										<tr id="<?php echo "r:{$sk_server['port']}:{$sk_server['vpnid']}"; ?>">
 											<td class="listlr">
@@ -339,10 +339,10 @@ include("head.inc"); ?>
 									</td>
 								</tr>
 							</table>
-							
+
 							<?php
 							} ?>
-							
+
 							<?php if (!empty($clients)) { ?>
 							<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" summary="client stats">
 								<tr>
@@ -363,7 +363,7 @@ include("head.inc"); ?>
 											<td class="listhdrr"><?=gettext("Bytes Rcvd"); ?></td>
 											<td class="listhdrr"><?=gettext("Service"); ?></td>
 										</tr>
-							
+
 							<?php foreach ($clients as $client): ?>
 										<tr id="<?php echo "r:{$client['port']}:{$client['vpnid']}"; ?>">
 											<td class="listlr">
@@ -403,19 +403,19 @@ include("head.inc"); ?>
 								</tr>
 							</table>
 							</div>
-							
-							<?php 
+
+							<?php
 							}
-							
+
 							if ($DisplayNote) {
 								echo "<br /><b>" . gettext("NOTE") . ":</b> " . gettext("If you have custom options that override the management features of OpenVPN on a client or server, they will cause that OpenVPN instance to not work correctly with this status page.");
 							}
-							
+
 							if ((empty($clients)) && (empty($servers)) && (empty($sk_servers))) {
 								echo gettext("No OpenVPN instance defined");
 							}
 							?>
-							
+
 					    </form>
 				    </div>
                 </div>
@@ -424,7 +424,7 @@ include("head.inc"); ?>
 	</div>
 </section>
 
-	
+
 <script type="text/javascript">
 //<![CDATA[
 function show_routes(id, buttonid) {
@@ -433,6 +433,6 @@ function show_routes(id, buttonid) {
 	aodiv.style.display = "block";
 }
 //]]>
-</script>						
+</script>
 
 <?php include("foot.inc"); ?>

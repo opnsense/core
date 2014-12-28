@@ -92,9 +92,9 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-			
+
 
 <?php
 
@@ -103,11 +103,11 @@ function leasecmp($a, $b) {
 }
 
 function adjust_gmt($dt) {
-	global $config; 
+	global $config;
 	$dhcpd = $config['dhcpd'];
 	foreach ($dhcpd as $dhcpditem) {
 		$dhcpleaseinlocaltime = $dhcpditem['dhcpleaseinlocaltime'];
-		if ($dhcpleaseinlocaltime == "yes") 
+		if ($dhcpleaseinlocaltime == "yes")
 			break;
 	}
 	if ($dhcpleaseinlocaltime == "yes") {
@@ -277,7 +277,7 @@ if(count($pools) > 0) {
 }
 
 foreach($config['interfaces'] as $ifname => $ifarr) {
-	if (is_array($config['dhcpd'][$ifname]) && 
+	if (is_array($config['dhcpd'][$ifname]) &&
 		is_array($config['dhcpd'][$ifname]['staticmap'])) {
 		foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
 			$slease = array();
@@ -301,7 +301,7 @@ if ($_GET['order'])
 if(count($pools) > 0) {
 ?>
 			<section class="col-xs-12">
-			 	<div class="content-box">              
+				<div class="content-box">
 			        <div class="table-responsive">
 			            <table class="table table-striped table-sort sortable __nomb">
 							  <tr>
@@ -323,7 +323,7 @@ if(count($pools) > 0) {
 								echo "<td class=\"list\" valign=\"middle\" width=\"17\">&nbsp;</td>\n";
 								echo "</tr>\n";
 							}
-							
+
 							?>
 						</table>
 					</div>
@@ -336,10 +336,10 @@ if(count($pools) > 0) {
 ?>
 
 <section class="col-xs-12">
-			 	<div class="content-box">              
+				<div class="content-box">
 			        <div class="table-responsive">
 			            <table class="table table-striped table-sort sortable __nomb">
-						  	<tr>
+							<tr>
 							    <td class="listhdrr"><?=gettext("IP address"); ?></td>
 							    <td class="listhdrr"><?=gettext("MAC address"); ?></td>
 							    <td class="listhdrr"><?=gettext("Hostname"); ?></td>
@@ -379,27 +379,27 @@ if(count($pools) > 0) {
 										foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
 											if (!is_array($dhcpifconf['range']))
 												continue;
-							                        	if (($lip >= ip2ulong($dhcpifconf['range']['from'])) && ($lip <= ip2ulong($dhcpifconf['range']['to']))) {
-							                                	$data['if'] = $dhcpif;
-							                                	break;
-							                        	}
+											if (($lip >= ip2ulong($dhcpifconf['range']['from'])) && ($lip <= ip2ulong($dhcpifconf['range']['to']))) {
+												$data['if'] = $dhcpif;
+												break;
+											}
 										}
-							                }		
+							                }
 									echo "<tr>\n";
 							                echo "<td class=\"listlr\">{$fspans}{$data['ip']}{$fspane}</td>\n";
-									$mac=$data['mac']; 
+									$mac=$data['mac'];
 									$mac_hi = strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]);
 							                if ($data['online'] != "online") {
 										if(isset($mac_man[$mac_hi])){ // Manufacturer for this MAC is defined
 								                        echo "<td class=\"listr\">{$fspans}<a href=\"services_wol.php?if={$data['if']}&amp;mac=$mac\" title=\"" . gettext("$mac - send Wake on LAN packet to this MAC address") ."\">{$mac}</a><br /><font size=\"-2\"><i>{$mac_man[$mac_hi]}</i></font>{$fspane}</td>\n";
-										}else{	
-							                        	echo "<td class=\"listr\">{$fspans}<a href=\"services_wol.php?if={$data['if']}&amp;mac={$data['mac']}\" title=\"" . gettext("send Wake on LAN packet to this MAC address") ."\">{$data['mac']}</a>{$fspane}</td>\n";
+										}else{
+											echo "<td class=\"listr\">{$fspans}<a href=\"services_wol.php?if={$data['if']}&amp;mac={$data['mac']}\" title=\"" . gettext("send Wake on LAN packet to this MAC address") ."\">{$data['mac']}</a>{$fspane}</td>\n";
 										}
 							                }else{
 										if(isset($mac_man[$mac_hi])){ // Manufacturer for this MAC is defined
 											echo "<td class=\"listr\">{$fspans}{$mac}<br /><font size=\"-2\"><i>{$mac_man[$mac_hi]}</i></font>{$fspane}</td>\n";
 								                }else{
-							                		echo "<td class=\"listr\">{$fspans}{$data['mac']}{$fspane}</td>\n";
+											echo "<td class=\"listr\">{$fspans}{$data['mac']}{$fspane}</td>\n";
 										}
 							                }
 							                echo "<td class=\"listr\">{$fspans}"  . htmlentities($data['hostname']) . "{$fspane}</td>\n";
@@ -419,10 +419,10 @@ if(count($pools) > 0) {
 									} else {
 										echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_plus_mo.gif\" width=\"17\" height=\"17\" border=\"0\" alt=\"add\" />&nbsp;\n";
 									}
-							
+
 							                echo "<a href=\"services_wol_edit.php?if={$data['if']}&amp;mac={$data['mac']}&amp;descr={$data['hostname']}\">";
 									echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_wol_all.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"" . gettext("add a Wake on LAN mapping for this MAC address") ."\" alt=\"add\" /></a>&nbsp;\n";
-							
+
 									/* Only show the button for offline dynamic leases */
 									if (($data['type'] == "dynamic") && ($data['online'] != "online")) {
 										echo "<a href=\"status_dhcp_leases.php?deleteip={$data['ip']}&amp;all=" . htmlspecialchars($_GET['all']) . "\">";
@@ -431,14 +431,14 @@ if(count($pools) > 0) {
 							                echo "</td></tr>\n";
 								}
 							}
-							
+
 							?>
 						</table>
 					</div>
 				</div>
 			</section>
-			
-			
+
+
 			<section class="col-xs-12">
 
 				<form action="status_dhcp_leases.php" method="get">

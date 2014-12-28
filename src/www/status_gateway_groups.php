@@ -28,7 +28,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_MODULE:	routing
 */
 
@@ -58,46 +58,46 @@ include("head.inc");
 <body>
 
 <?php include("fbegin.inc"); ?>
-	
+
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 					        /* active tabs */
 					        $tab_array = array();
 					        $tab_array[] = array(gettext("Gateways"), false, "status_gateways.php");
 					        $tab_array[] = array(gettext("Gateway Groups"), true, "status_gateway_groups.php");
 					        display_top_tabs($tab_array);
 					?>
-				    
-				    <div class="tab-content content-box col-xs-12">	    					
-    	  
+
+				    <div class="tab-content content-box col-xs-12">
+
 
 							<div class="responsive-table">
-					    
-	
+
+
 				              <table class="table table-striped table-sort">
-    				              <thead>
+				              <thead>
 				                <tr>
 				                  <td width="20%" class="listhdrr"><?=gettext("Group Name"); ?></td>
 				                  <td width="50%" class="listhdrr"><?=gettext("Gateways"); ?></td>
 				                  <td width="30%" class="listhdr"><?=gettext("Description"); ?></td>
 							  </tr>
-    				              </thead>
-    				              
-    				              <tbody>
+				              </thead>
+
+				              <tbody>
 							  <?php $i = 0; foreach ($a_gateway_groups as $gateway_group): ?>
 				                <tr>
 				                  <td class="listlr">
 				                    <?php
 							echo $gateway_group['name'];
 							?>
-							
+
 				                  </td>
 				                  <td class="listr">
 							<table border='0'>
@@ -110,13 +110,13 @@ include("head.inc");
 							}
 							$priority_count = count($priorities);
 							ksort($priorities);
-				
+
 							echo "<tr>";
 							foreach($priorities as $number => $tier) {
 								echo "<td width='120'>" . sprintf(gettext("Tier %s"), $number) . "</td>";
 							}
 							echo "</tr>\n";
-				
+
 							/* inverse gateway group to gateway priority */
 							$priority_arr = array();
 							foreach($gateway_group['item'] as $item) {
@@ -136,18 +136,18 @@ include("head.inc");
 										if($p == $c) {
 											$status = $gateways_status[$monitor]['status'];
 											if (stristr($status, "down")) {
-				                                        			$online = gettext("Offline");
-				                                        			$bgcolor = "#F08080";  // lightcoral
-				                                			} elseif (stristr($status, "loss")) {
-				                                        			$online = gettext("Warning, Packetloss");
-				                                        			$bgcolor = "#F0E68C";  // khaki
-				                                			} elseif (stristr($status, "delay")) {
-				                                        			$online = gettext("Warning, Latency");
-				                                        			$bgcolor = "#F0E68C";  // khaki
-				                                			} elseif ($status == "none") {
-				                                        			$online = gettext("Online");
-				                                        			$bgcolor = "#90EE90";  // lightgreen
-				                                			} else {
+												$online = gettext("Offline");
+												$bgcolor = "#F08080";  // lightcoral
+											} elseif (stristr($status, "loss")) {
+												$online = gettext("Warning, Packetloss");
+												$bgcolor = "#F0E68C";  // khaki
+											} elseif (stristr($status, "delay")) {
+												$online = gettext("Warning, Latency");
+												$bgcolor = "#F0E68C";  // khaki
+											} elseif ($status == "none") {
+												$online = gettext("Online");
+												$bgcolor = "#90EE90";  // lightgreen
+											} else {
 												$online = gettext("Gathering data");
 												$bgcolor = "#ADD8E6";  // lightblue
 											}
@@ -169,7 +169,7 @@ include("head.inc");
 				                  </td>
 						</tr>
 							  <?php $i++; endforeach; ?>
-    				              </tbody>
+				              </tbody>
 					</table>
 					</div>
 				</div>

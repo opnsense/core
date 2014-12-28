@@ -31,7 +31,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_MODULE:	routing
 */
 
@@ -190,7 +190,7 @@ function updateBandwidthHosts(data){
             }
         }
     }
-    
+
     setTimeout('updateBandwidth()', 1000);
 }
 //]]>
@@ -199,36 +199,36 @@ function updateBandwidthHosts(data){
 <?php
 
 /* link the ipsec interface magically */
-if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) 
+if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
 	$ifdescrs['enc0'] = "IPsec";
 
 ?>
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-				    
+
 				    <div class="content-box">
-						
+
 						<form name="form1" action="status_graph.php" method="get">
 						<div class="table-responsive" >
                             <table class="table table-striped" style="margin-bottom:0;">
-        				      <thead>
-        				        <tr>
-        				          <th><?=gettext("Interface"); ?></th>
-        				          <th>Sort by</th>
-        				          <th>Filter</th>
-        				          <th>Display</th>
-        				        </tr>
-        				      </thead>
-        				      <tbody>
-        				        <tr>
-        				          <td><select id="if" name="if" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
+					      <thead>
+					        <tr>
+					          <th><?=gettext("Interface"); ?></th>
+					          <th>Sort by</th>
+					          <th>Filter</th>
+					          <th>Display</th>
+					        </tr>
+					      </thead>
+					      <tbody>
+					        <tr>
+					          <td><select id="if" name="if" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
 						<?php
 						foreach ($ifdescrs as $ifn => $ifd) {
 							echo "<option value=\"$ifn\"";
@@ -237,34 +237,34 @@ if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enabl
 						}
 						?>
 						</select></td>
-        				          <td><select id="sort" name="sort" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
+					          <td><select id="sort" name="sort" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
 							<option value="">Bw In</option>
 							<option value="out"<?php if ($cursort == "out") echo " selected=\"selected\"";?>>Bw Out</option>
 						</select></td>
-        				          <td><select id="filter" name="filter" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
+					          <td><select id="filter" name="filter" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
 							<option value="local"<?php if ($curfilter == "local") echo " selected=\"selected\"";?>>Local</option>
 							<option value="remote"<?php if ($curfilter == "remote") echo " selected=\"selected\"";?>>Remote</option>
 							<option value="all"<?php if ($curfilter == "all") echo " selected=\"selected\"";?>>All</option>
 						</select></td>
-        				          <td><select id="hostipformat" name="hostipformat" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
+					          <td><select id="hostipformat" name="hostipformat" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
 							<option value="">IP Address</option>
 							<option value="hostname"<?php if ($curhostipformat == "hostname") echo " selected";?>>Host Name</option>
 							<option value="fqdn"<?php if ($curhostipformat == "fqdn") echo " selected=\"selected\"";?>>FQDN</option>
 						</select></td>
-        				        </tr>
-        				      </tbody>
+					        </tr>
+					      </tbody>
                             </table>
 						</div>
 						</form>
-						
+
 				    </div>
 			    </section>
-			
+
 				 <section class="col-xs-12">
-				    
+
 				    <div class="content-box">
-			
-	
+
+
 						<div id="niftyOutter" class="col-xs-12">
 						    <div id="col1" style="float: left; width: 46%; padding: 5px; position: relative;">
 						        <object	data="graph.php?ifnum=<?=htmlspecialchars($curif);?>&amp;ifname=<?=rawurlencode($ifdescrs[htmlspecialchars($curif)]);?>">

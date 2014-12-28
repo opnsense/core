@@ -27,7 +27,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_MODULE:	system
 */
 
@@ -191,8 +191,8 @@ $styles = array('inverse' => gettext('Inverse'),
 $curstyle = "inverse";
 
 if ($_GET['style']) {
-	foreach($styles as $style) 
-		if(strtoupper($style) == strtoupper($_GET['style'])) 
+	foreach($styles as $style)
+		if(strtoupper($style) == strtoupper($_GET['style']))
 			$curstyle = $_GET['style'];
 } else {
 	if(! empty($config['rrd']['style'])) {
@@ -403,34 +403,34 @@ function get_dates($curperiod, $graph) {
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors && count($input_errors)) print_input_errors($input_errors);  ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? include("status_rrd_graph_tabs.php"); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    	
-	    				    
-	    				    
-	    				    <?php if ($curcat == "captiveportal") : ?>
+
+				<? include("status_rrd_graph_tabs.php"); ?>
+
+					<div class="tab-content content-box col-xs-12">
+
+
+
+					    <?php if ($curcat == "captiveportal") : ?>
 							<?php display_top_tabs($cp_zones_tab_array); ?>
 							<?php endif; ?>
-	
-	    				    
-	    				    
+
+
+
 							<form name="form1" action="status_rrd_graph.php" method="get">
 								<input type="hidden" name="cat" value="<?php echo "$curcat"; ?>" />
 								<div class="container-fluid">
 								<p><b><?=gettext("Note: Change of color and/or style may not take effect until the next refresh");?></b></p>
 								</div>
-								
+
 								<div id="responsive-table">
 									<table class="table table-striped table-sort __nomb">
-		                                
+
 										<tr>
 						                    <td>
 											<?=gettext("Graphs:");?>
@@ -441,7 +441,7 @@ function get_dates($curperiod, $graph) {
 											<?php endif; ?>
 											<select name="option" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
 											<?php
-						
+
 											if($curcat == "custom") {
 												foreach ($custom_databases as $db => $database) {
 													$optionc = explode("-", $database);
@@ -458,14 +458,14 @@ function get_dates($curperiod, $graph) {
 											foreach ($ui_databases as $db => $database) {
 												if(! preg_match("/($curcat)/i", $database))
 													continue;
-						
+
 												if (($curcat == "captiveportal") && !empty($curzone) && !preg_match("/captiveportal-{$curzone}/i", $database))
 													continue;
-						
+
 												$optionc = explode("-", $database);
 												$search = array("-", ".rrd", $optionc);
 												$replace = array(" :: ", "", $friendly);
-						
+
 												switch($curcat) {
 													case "captiveportal":
 														$optionc = str_replace($search, $replace, $optionc[2]);
@@ -494,7 +494,7 @@ function get_dates($curperiod, $graph) {
 												}
 												echo ">" . htmlspecialchars($prettyprint) . "</option>\n";
 											}
-						
+
 											?>
 											</select>
 						                    </td>
@@ -528,7 +528,7 @@ function get_dates($curperiod, $graph) {
 											}
 											?>
 											<?php
-						
+
 											if($curcat == "custom") {
 												$tz = date_default_timezone_get();
 												$tz_msg = gettext("Enter date and/or time. Current timezone:") . " $tz";
@@ -568,10 +568,10 @@ function get_dates($curperiod, $graph) {
 													foreach($ui_databases as $curdatabase) {
 														if(! preg_match("/($curcat)/i", $curdatabase))
 															continue;
-						
+
 														if (($curcat == "captiveportal") && !empty($curzone) && !preg_match("/captiveportal-{$curzone}/i", $curdatabase))
 															continue;
-						
+
 														$optionc = explode("-", $curdatabase);
 														$search = array("-", ".rrd", $optionc);
 														$replace = array(" :: ", "", $friendly);
@@ -640,10 +640,10 @@ function get_dates($curperiod, $graph) {
 							</div>
 						</div>
 					</section>
-					
+
 					<section class="col-xs-12">
-						<div class="content-box">							
-										
+						<div class="content-box">
+
 							<script type="text/javascript">
 							//<![CDATA[
 								function update_graph_images() {
@@ -708,7 +708,7 @@ function get_dates($curperiod, $graph) {
 											/* generate update events utilizing jQuery('') feature */
 											$id = "{$graph}-{$curoption}-{$curdatabase}";
 											$id = preg_replace('/\./', '_', $id);
-		
+
 											echo "\n";
 											echo "\t\tjQuery('#{$id}').attr('src','status_rrd_graph_img.php?start={$start}&graph={$graph}&database={$curdatabase}&style={$curstyle}&tmp=' + randomid);\n";
 											}
@@ -719,11 +719,11 @@ function get_dates($curperiod, $graph) {
 								window.setTimeout('update_graph_images()', 355000);
 							//]]>
 							</script>
-											
+
 					</div>
 				</section>
 			</div>
 		</div>
 	</section>
-						
+
 <?php include("foot.inc"); ?>

@@ -105,11 +105,11 @@ include("head.inc");
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">			
-				
+		<div class="container-fluid">
+			<div class="row">
+
 			    <section class="col-xs-12">
-    				
+
 					<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
@@ -119,15 +119,15 @@ include("head.inc");
 						$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	
-    					
-    				    <div class="container-fluid">	
+
+					<div class="tab-content content-box col-xs-12">
+
+				    <div class="container-fluid">
 
 	                        <form action="status_captiveportal_vouchers.php" method="post" enctype="multipart/form-data" name="iform" id="iform">
-								
-	                        	<div class="table-responsive">
-		                        	<table class="table table-striped table-sort">
+
+					<div class="table-responsive">
+						<table class="table table-striped table-sort">
 									  <tr>
 									    <td class="listhdrr"><a href="?order=0&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Voucher"); ?></a></td>
 									    <td class="listhdrr"><a href="?order=1&amp;showact=<?=htmlspecialchars($_GET['showact']);?>"><?=gettext("Roll"); ?></a></td>
@@ -147,9 +147,9 @@ include("head.inc");
 										  </tr>
 										<?php endforeach; ?>
 										</table>
-	                        	</div>
+					</div>
 	                        </form>
-    				    </div>
+				    </div>
 					</div>
 			    </section>
 			</div>

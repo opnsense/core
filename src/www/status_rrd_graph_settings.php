@@ -27,7 +27,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_BUILDER_BINARIES:	/usr/bin/find
 	pfSense_MODULE:	system
 */
@@ -126,25 +126,25 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? include("status_rrd_graph_tabs.php"); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    
+
+				<? include("status_rrd_graph_tabs.php"); ?>
+
+					<div class="tab-content content-box col-xs-12">
+
 
 							<form action="status_rrd_graph_settings.php" method="post" name="iform" id="iform">
-							
-							
+
+
 
 							<div class="table-responsive">
-							 	<table class="table table-striped __nomb">
+								<table class="table table-striped __nomb">
 									<tr>
 										<td width="22%" valign="top" class="vtable"><?=gettext("RRD Graphs");?></td>
 										<td width="78%" class="vtable">
@@ -155,7 +155,7 @@ include("head.inc");
 										</td>
 									</tr>
 									<tr>
-			                        	<td width="22%" valign="top" class="vtable"><?=gettext("Default category");?></td>
+							<td width="22%" valign="top" class="vtable"><?=gettext("Default category");?></td>
 				                        <td width="78%" class="vtable">
 											<select name="category" id="category" class="form-control" style="z-index: -10;" >
 											<?php
@@ -170,7 +170,7 @@ include("head.inc");
 										</td>
 									</tr>
 									<tr>
-			                        	<td width="22%" valign="top" class="vtable"><?=gettext("Default style");?></td>
+							<td width="22%" valign="top" class="vtable"><?=gettext("Default style");?></td>
 				                        <td width="78%" class="vtable">
 											<select name="style" class="form-control" style="z-index: -10;" >
 											<?php
@@ -208,17 +208,17 @@ include("head.inc");
 									</tr>
 								</table>
 							 </div>
-							 <div class="container-fluid">	
+							 <div class="container-fluid">
 							 <p><strong><span class="text-danger"><?=gettext("Note:");?></span></strong><br />
 											<?=gettext("Graphs will not be allowed to be recreated within a 1 minute interval, please " .
 											"take this into account after changing the style.");?>
-						
+
 							 </p>
 						</div>
 				    </div>
-		    	</section>
+			</section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

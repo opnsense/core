@@ -26,7 +26,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_MODULE:	filter
 */
 
@@ -70,16 +70,16 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-				    
+
 				    <div class="content-box ">
-				    	 <div class="col-xs-12">
-					    	 <br />
+					 <div class="col-xs-12">
+						 <br />
 							<form action="status_filter_reload.php" method="post" name="filter">
 							<input type="submit" value="Reload Filter" class="btn btn-primary" name="reloadfilter" id="reloadfilter" />
 							<?php if ($config['hasync'] && $config['hasync']["synchronizetoip"] != ""): ?>
@@ -88,16 +88,16 @@ include("head.inc");
 							<?php endif; ?>
 							</form>
 							<br /><br /><br />
-							
+
 							<div id="status" class="well">
 								<?php echo $status; ?>
 							</div>
-							
+
 							<div id="doneurl">
 							</div>
-							
+
 							<br/>
-							
+
 							<div id="reloadinfo"><?=gettext("This page will automatically refresh every 3 seconds until the filter is done reloading"); ?>.</div>
 					    </div>
 				    </div>

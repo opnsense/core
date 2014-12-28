@@ -112,31 +112,31 @@ if ($_POST) {
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
 				<?php print_info_box_np(sprintf(gettext("The load balancer configuration has been changed%sYou must apply the changes in order for them to take effect."), "<br />"));?>
 				<? endif; ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						/* active tabs */
 						$tab_array = array();
 						$tab_array[] = array(gettext("Pools"), true, "status_lb_pool.php");
 						$tab_array[] = array(gettext("Virtual Servers"), false, "status_lb_vs.php");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				   
+
+					<div class="tab-content content-box col-xs-12">
+
 							<form action="status_lb_pool.php" method="post">
 							<div class="table-responsive">
-								
+
 								<table class="table table-striped table-sort ">
-									
-								<thead>	
+
+								<thead>
 
 								<tr>
 								<td width="10%" class="listhdrr"><?=gettext("Name");?></td>
@@ -145,10 +145,10 @@ if ($_POST) {
 								<td width="10%" class="listhdrr"><?=gettext("Monitor");?></td>
 								<td width="30%" class="listhdr"><?=gettext("Description");?></td>
 								</tr>
-								
+
 								</thead>
 								<tbody>
-								
+
 								<?php foreach ($a_pool as & $pool): ?>
 								<tr>
 								<td class="listlr">
@@ -185,7 +185,7 @@ if ($_POST) {
 									$pool_hosts[]=$svr;
 								}
 								asort($pool_hosts);
-						
+
 								foreach ((array) $pool_hosts as $server) {
 									if($server['ip']['addr']!="") {
 										switch ($server['ip']['state']) {
@@ -230,13 +230,13 @@ if ($_POST) {
 								<?php endforeach; ?>
 								</tbody>
 									</table>
-								   <div class="container-fluid">		
+								   <div class="container-fluid">
 									<input name="Submit" type="submit" class="btn btn-primary" value="<?= gettext("Save"); ?>" />
 									<input name="Reset"  type="reset"  class="btn btn-default" value="<?= gettext("Reset"); ?>" />
-							
+
 							</div>
 							</form>
-    				    </div>
+				    </div>
 					</div>
 			    </section>
 			</div>

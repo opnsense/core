@@ -29,7 +29,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_BUILDER_BINARIES:	/sbin/pfctl
 	pfSense_MODULE:	shaper
 */
@@ -50,7 +50,7 @@ header("Pragma: no-cache"); // HTTP/1.0
 require("guiconfig.inc");
 class QueueStats {
 	public $queuename;
-	public $queuelength;	
+	public $queuelength;
 	public $pps;
 	public $bandwidth;
 	public $borrows;
@@ -58,7 +58,7 @@ class QueueStats {
 	public $drops;
 }
 if (!file_exists("{$g['varrun_path']}/qstats.pid") || !isvalidpid("{$g['varrun_path']}/qstats.pid")) {
-	/* Start in the background so we don't hang up the GUI */	
+	/* Start in the background so we don't hang up the GUI */
 	mwexec_bg("/usr/local/sbin/qstats -p {$g['varrun_path']}/qstats.pid");
 	/* Give it a moment to start up */
 	sleep(1);
@@ -76,7 +76,7 @@ $fd = @fsockopen("unix://{$g['varrun_path']}/qstats");
 	if ($altqstats == -1)
 		$error = "No queue statistics could be read.";
 }
-if ($_REQUEST['getactivity']) {	
+if ($_REQUEST['getactivity']) {
 	$statistics = array();
 	$bigger_stat = 0;
 	$stat_type = $_REQUEST['stats'];
@@ -98,7 +98,7 @@ if ($_REQUEST['getactivity']) {
 			if ($bigger_stat < $q->bandwidth)
 				$bigger_stat = $q->bandwidth;
 		}
-	}	
+	}
 	$finscript = "";
 	foreach($statistics as $q) {
 		if ($stat_type == "0")
@@ -130,22 +130,22 @@ include("head.inc");
 
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
-            
+
             <section class="col-xs-12">
                 <div class="content-box">
-	                
+
 	                <?php if(!is_array($config['shaper']['queue']) || count($config['shaper']['queue']) < 1): ?>
 	                <header class="content-box-head container-fluid">
 						 <h3><?php echo gettext("Traffic shaping is not configured."); ?></h3>
 	                </header>
-	                
+
 	                <? elseif ($error): ?>
 	                <header class="content-box-head container-fluid">
 				        <h3><?php echo $error; ?></h3>
 				    </header>
-				    
+
 				    <? else: ?>
 				    <form action="status_queues.php" method="post">
 					<script type="text/javascript">
@@ -169,11 +169,11 @@ include("head.inc");
 						});
 					//]]>
 					</script>
-				    
+
 				    <div class="content-box-main col-xs-12">
-					  	<div class="table-responsive">
-                   	    	<table class="table table-striped table-sort sortable">
-				   				<tr>
+						<div class="table-responsive">
+				<table class="table table-striped table-sort sortable">
+								<tr>
 									<td class="listhdr"><?=gettext("Queue"); ?></td>
 									<td class="listhdr">
 										<?=gettext("Statistics"); ?>
@@ -187,15 +187,15 @@ include("head.inc");
 									<td class="listhdr" width="1%"><?=gettext("Borrows"); ?></td>
 									<td class="listhdr" width="1%"><?=gettext("Suspends"); ?></td>
 									<td class="listhdr" width="1%"><?=gettext("Drops"); ?></td>
-									<td class="listhdr" width="1%"><?=gettext("Length"); ?></td>		
+									<td class="listhdr" width="1%"><?=gettext("Length"); ?></td>
 								</tr>
-								<?php 
+								<?php
 								$if_queue_list = get_configured_interface_list_by_realif(false, true);
 								processQueues($altqstats, 0, "")?>
-		
+
 							</table>
-					  	</div>
-					  												  		
+						</div>
+
 						<p>
 							<strong><span class="red"><?=gettext("Note"); ?>:</span></strong><br />
 							<?=gettext("Queue graphs take 5 seconds to sample data"); ?>.<br />
@@ -203,7 +203,7 @@ include("head.inc");
 						</p>
 				    </div>
 					</form>
-				    
+
 				    <? endif; ?>
                 </div>
             </section>
@@ -225,7 +225,7 @@ include("head.inc");
 </script>
 <?php include("foot.inc"); ?>
 
-<?php 
+<?php
 function processQueues($altqstats, $level, $parent_name){
 	global $g;
 	global $if_queue_list;
@@ -274,7 +274,7 @@ function processQueues($altqstats, $level, $parent_name){
 			echo "<td width=\"1%\" bgcolor=\"#{$row_background}\"><input style='border: 0px solid white; background-color:#{$row_background}; color:#000000;width:70px;text-align:right;' size='10' name='queue{$q['name']}{$q['interface']}borrows' id='queue{$q['name']}{$q['interface']}borrows' value='' align='right' /></td>";
 			echo "<td width=\"1%\" bgcolor=\"#{$row_background}\"><input style='border: 0px solid white; background-color:#{$row_background}; color:#000000;width:70px;text-align:right;' size='10' name='queue{$q['name']}{$q['interface']}suspends' id='queue{$q['name']}{$q['interface']}suspends' value='' align='right' /></td>";
 			echo "<td width=\"1%\" bgcolor=\"#{$row_background}\"><input style='border: 0px solid white; background-color:#{$row_background}; color:#000000;width:70px;text-align:right;' size='10' name='queue{$q['name']}{$q['interface']}drops' id='queue{$q['name']}{$q['interface']}drops' value='' align='right' /></td>";
-			echo "<td width=\"1%\" bgcolor=\"#{$row_background}\"><input style='border: 0px solid white; background-color:#{$row_background}; color:#000000;width:70px;text-align:right;' size='10' name='queue{$q['name']}{$q['interface']}length' id='queue{$q['name']}{$q['interface']}length' value='' align='right' /></td>";			
+			echo "<td width=\"1%\" bgcolor=\"#{$row_background}\"><input style='border: 0px solid white; background-color:#{$row_background}; color:#000000;width:70px;text-align:right;' size='10' name='queue{$q['name']}{$q['interface']}length' id='queue{$q['name']}{$q['interface']}length' value='' align='right' /></td>";
 			?>
 		</tr>
 		<?php
@@ -288,7 +288,7 @@ function statsQueues($xml){
 	$current = new QueueStats();
 	$child = new QueueStats();
 	$current->queuename = $xml['name'] . $xml['interface'];
-	$current->queuelength = $xml['qlength'];		
+	$current->queuelength = $xml['qlength'];
 	$current->pps = $xml['measured'];
 	$current->bandwidth = $xml['measuredspeedint'];
 	$current->borrows = intval($xml['borrows']);

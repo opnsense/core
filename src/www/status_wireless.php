@@ -65,8 +65,8 @@ if(empty($if)) {
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php
 					$tab_array = array();
@@ -88,19 +88,19 @@ if(empty($if)) {
 				?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
+
+				<div class="content-box">
+
                         <form action="status_wireless.php" method="post" name="iform" id="iform">
-	                        <input type="hidden" name="if" id="if" value="<?php echo htmlspecialchars($if); ?>">								
-                        	
-                        	<div class="col-xs-12">
-	                        	<input type="submit" name="rescanwifi" id="rescanwifi" value="Rescan" class="btn btn-primary"/>
+	                        <input type="hidden" name="if" id="if" value="<?php echo htmlspecialchars($if); ?>">
+
+				<div class="col-xs-12">
+					<input type="submit" name="rescanwifi" id="rescanwifi" value="Rescan" class="btn btn-primary"/>
 								<p><?php echo gettext("Nearby access points or ad-hoc peers"); ?></p>
-                        	</div>
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">	             
+				</div>
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<thead>
 										<tr>
 											<td>SSID</td>
@@ -117,7 +117,7 @@ if(empty($if)) {
 										exec("/sbin/ifconfig {$rwlif} list scan 2>&1", $states, $ret);
 										/* Skip Header */
 										array_shift($states);
-									
+
 										$counter=0;
 										foreach($states as $state) {
 											/* Split by Mac address for the SSID Field */
@@ -132,7 +132,7 @@ if(empty($if)) {
 											$rssi = $split[3];
 											$int = $split[4];
 											$caps = "$split[5] $split[6] $split[7] $split[8] $split[9] $split[10] $split[11] ";
-									
+
 											print "<tr>";
 											print "<td>{$ssid}</td>";
 											print "<td>{$bssid}</td>";
@@ -146,8 +146,8 @@ if(empty($if)) {
 									?>
 										</tbody>
 									</table>
-                        	</div>
-                        	<div class="table-responsive">
+				</div>
+				<div class="table-responsive">
 								<p><?php echo gettext("Associated or ad-hoc peers"); ?></p>
 								<table class="table table-striped sortable" colspan="3" cellpadding="3" width="100%">
 									<thead>
@@ -165,12 +165,12 @@ if(empty($if)) {
 										</tr>
 									</thead>
 									<tbody>
-								
+
 								<?php
 									$states = array();
 									exec("/sbin/ifconfig {$rwlif} list sta 2>&1", $states, $ret);
 									array_shift($states);
-								
+
 									$counter=0;
 									foreach($states as $state) {
 										$split = preg_split("/[ ]+/i", $state);
@@ -188,23 +188,23 @@ if(empty($if)) {
 										print "<td>{$split[9]}</td>";
 										print "</tr>\n";
 									}
-								
+
 								/* XXX: what stats to we get for adhoc mode? */
-								
+
 								?>
 									</tbody>
 								</table>
-                        	</div>
-                        	
-                        	<b>Flags:</b> A = authorized, E = Extended Rate (802.11g), P = Power save mode<br />
+				</div>
+
+				<b>Flags:</b> A = authorized, E = Extended Rate (802.11g), P = Power save mode<br />
 	<b>Capabilities:</b> E = ESS (infrastructure mode), I = IBSS (ad-hoc mode), P = privacy (WEP/TKIP/AES),
 		S = Short preamble, s = Short slot time
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 
 <?php include("foot.inc"); ?>

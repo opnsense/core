@@ -62,28 +62,28 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 
-		
+
 <section class="page-content-main">
 	<div class="container-fluid">
-        
-        <div class="row">
-            
-			<?php if ($savemsg) print_info_box($savemsg); ?>
-			
-            
-            <section class="col-xs-12">
-                <div class="content-box">            
-	                
-	                <?php if(!$config['installedpackages'] || !$config['installedpackages']['miniupnpd']['config'][0]['iface_array'] || !$config['installedpackages']['miniupnpd']['config'][0]['enable']): ?>
-	                	<header class="content-box-head container-fluid">
-    				        <h3><?php echo gettext("UPnP is currently disabled."); ?></h3>
-    				    </header>
 
-	                <? else: ?>		  
-                    
+        <div class="row">
+
+			<?php if ($savemsg) print_info_box($savemsg); ?>
+
+
+            <section class="col-xs-12">
+                <div class="content-box">
+
+	                <?php if(!$config['installedpackages'] || !$config['installedpackages']['miniupnpd']['config'][0]['iface_array'] || !$config['installedpackages']['miniupnpd']['config'][0]['enable']): ?>
+				<header class="content-box-head container-fluid">
+				        <h3><?php echo gettext("UPnP is currently disabled."); ?></h3>
+				    </header>
+
+	                <? else: ?>
+
                     <div class="table-responsive">
-                   
-                        <table class="table table-striped table-sort sortable">                
+
+                        <table class="table table-striped table-sort sortable">
 							<tr>
 						      <td width="10%" class="listhdrr"><?=gettext("Port");?></td>
 						      <td width="10%" class="listhdrr"><?=gettext("Protocol");?></td>
@@ -119,16 +119,16 @@ include("head.inc");
 						    <?php $i++; }?>
 						  </table>
                     </div>
-                    
+
 					<form action="status_upnp.php" method="post">
 					  <input type="submit" name="clear" id="clear" class="btn btn-primary" value="<?=gettext("Clear");?>" /> <?=gettext("all currently connected sessions");?>.
-				  	</form>
-				  	<? endif; ?>
-				  	
+					</form>
+					<? endif; ?>
+
                 </div>
             </section>
         </div>
 	</div>
 </section>
-	
+
 <?php include("foot.inc"); ?>

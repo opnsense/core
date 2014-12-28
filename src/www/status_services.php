@@ -25,7 +25,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_BUILDER_BINARIES:	/usr/local/sbin/openvpn	/usr/bin/killall	/bin/ps
 	pfSense_MODULE:	services
 */
@@ -75,16 +75,16 @@ include("fbegin.inc");
 ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
-				
+
 			    <section class="col-xs-12">
-					
+
 					<div class="content-box">
 						<form action="status_services.php" method="post">
-						
+
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
 							<thead>
@@ -96,9 +96,9 @@ include("fbegin.inc");
 							</thead>
 							<tbody>
 						<?php
-						
+
 						$services = get_services();
-						
+
 						if (count($services) > 0) {
 							uasort($services, "service_name_compare");
 							foreach($services as $service) {
@@ -127,7 +127,7 @@ include("fbegin.inc");
 						} else {
 							echo "<tr><td colspan=\"3\">" . gettext("No services found") . " . </td></tr>\n";
 						}
-						
+
 						?>
 						</tbody>
 						</table>
@@ -138,5 +138,5 @@ include("fbegin.inc");
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

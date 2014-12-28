@@ -98,7 +98,7 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
 
 
@@ -391,7 +391,7 @@ if(count($pools) > 0) {
 ?>
 
 			<section class="col-xs-12">
-			 	<div class="content-box">              
+				<div class="content-box">
 			        <div class="table-responsive">
 			            <table class="table table-striped table-sort sortable __nomb">
 							<tr>
@@ -413,7 +413,7 @@ if(count($pools) > 0) {
 								echo "<td class=\"list\" valign=\"middle\" width=\"17\">&nbsp;</td>\n";
 								echo "</tr>\n";
 							}
-			
+
 							?>
 						</table>
 					</div>
@@ -426,10 +426,10 @@ if(count($pools) > 0) {
 ?>
 
 			<section class="col-xs-12">
-			 	<div class="content-box">              
+				<div class="content-box">
 			        <div class="table-responsive">
 			            <table class="table table-striped table-sort sortable __nomb">
-						  	<tr>
+							<tr>
 							    <td class="listhdrr"><?=gettext("IPv6 address"); ?></td>
 							    <td class="listhdrr"><?=gettext("IAID"); ?></td>
 							    <td class="listhdrr"><?=gettext("DUID"); ?></td>
@@ -449,7 +449,7 @@ if(count($pools) > 0) {
 										$fspans = "";
 										$fspane = "&nbsp;";
 									}
-							
+
 									if ($data['act'] == "static") {
 										foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
 											if(is_array($dhcpifconf['staticmap'])) {
@@ -475,14 +475,14 @@ if(count($pools) > 0) {
 									if (!empty($data['hostname'])) {
 										echo htmlentities($data['hostname']) . "<br />";
 									}
-							
+
 									$mac=trim($ndpdata[$data['ip']]['mac']);
 									if (!empty($mac)) {
 										$mac_hi = strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]);
 										print htmlentities($mac);
 										if(isset($mac_man[$mac_hi])){ print "<br /><font size=\"-2\"><i>{$mac_man[$mac_hi]}</i></font>"; }
 									}
-							
+
 									echo "{$fspane}&nbsp;</td>\n";
 									if ($data['type'] != "static") {
 										echo "<td class=\"listr\">{$fspans}" . adjust_gmt($data['start']) . "{$fspane}</td>\n";
@@ -493,7 +493,7 @@ if(count($pools) > 0) {
 									}
 									echo "<td class=\"listr\">{$fspans}{$data['online']}{$fspane}</td>\n";
 									echo "<td class=\"listr\">{$fspans}{$data['act']}{$fspane}</td>\n";
-							
+
 									if ($data['type'] == "dynamic") {
 										echo "<td valign=\"middle\"><a href=\"services_dhcpv6_edit.php?if={$data['if']}&amp;duid={$data['duid']}&amp;hostname={$data['hostname']}\">";
 										echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_plus.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"" . gettext("add a static mapping for this MAC address") ."\" alt=\"add\" /></a></td>\n";
@@ -501,7 +501,7 @@ if(count($pools) > 0) {
 										echo "<td class=\"list\" valign=\"middle\">";
 										echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_plus_mo.gif\" width=\"17\" height=\"17\" border=\"0\" alt=\"add\" /></td>\n";
 									}
-							
+
 									/* Only show the button for offline dynamic leases */
 									if (($data['type'] == "dynamic") && ($data['online'] != "online")) {
 										echo "<td class=\"list\" valign=\"middle\"><a href=\"status_dhcpv6_leases.php?deleteip={$data['ip']}&amp;all=" . htmlspecialchars($_GET['all']) . "\">";
@@ -511,19 +511,19 @@ if(count($pools) > 0) {
 								}
 							}
 							?>
-						</table>						
+						</table>
 					</div>
 				</div>
 			</section>
-			
-			
+
+
 			<section class="col-xs-12">
 				<div class="content-box">
-					
+
 					<header class="content-box-head container-fluid">
-        			   <h3>Delegated Prefixes</h3>
-        			</header>
-				    
+				   <h3>Delegated Prefixes</h3>
+				</header>
+
 				    <div class="table-responsive">
 			            <table class="table table-striped table-sort sortable __nomb">
 							<tr>
@@ -544,7 +544,7 @@ if(count($pools) > 0) {
 										$fspans = "";
 										$fspane = "&nbsp;";
 									}
-							
+
 									if ($data['act'] == "static") {
 										foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
 											if(is_array($dhcpifconf['staticmap'])) {
@@ -581,11 +581,11 @@ if(count($pools) > 0) {
 								}
 							}
 							?>
-						</table>						
+						</table>
 					</div>
 				</div>
 			</section>
-			
+
 			<section class="col-xs-12">
 
 					<form action="status_dhcpv6_leases.php" method="get">

@@ -29,7 +29,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 /*
-	pfSense_BUILDER_BINARIES:	/usr/bin/vmstat	/usr/bin/netstat	/sbin/dmesg	/sbin/mount	/sbin/setkey	/usr/local/sbin/pftop	
+	pfSense_BUILDER_BINARIES:	/usr/bin/vmstat	/usr/bin/netstat	/sbin/dmesg	/sbin/mount	/sbin/setkey	/usr/local/sbin/pftop
 	pfSense_BUILDER_BINARIES:	/sbin/pfctl	/sbin/sysctl	/usr/bin/top	/usr/bin/netstat	/sbin/pfctl	/sbin/ifconfig
 	pfSense_MODULE:	support
 */
@@ -190,7 +190,7 @@ if(isset($config['system']['usefifolog']))  {
 	defCmdT("last 200 system log entries","/usr/local/sbin/clog /var/log/system.log 2>&1 | tail -n 200");
 	defCmdT("last 50 filter log entries","/usr/local/sbin/clog /var/log/filter.log 2>&1 | tail -n 50");
 }
-	
+
 defCmd("ls /conf");
 defCmd("ls /var/run");
 

@@ -2,17 +2,17 @@
 /*
     Copyright (C) 2007 Marcel Wiget <mwiget@mac.com>.
     All rights reserved.
-    
+
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
-    
+
     1. Redistributions of source code must retain the above copyright notice,
        this list of conditions and the following disclaimer.
-    
+
     2. Redistributions in binary form must reproduce the above copyright
        notice, this list of conditions and the following disclaimer in the
        documentation and/or other materials provided with the distribution.
-    
+
     THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
     INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
     AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -24,7 +24,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_MODULE:	captiveportal
 */
 
@@ -67,12 +67,12 @@ include("head.inc");
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
-			<div class="row">			
-				
+		<div class="container-fluid">
+			<div class="row">
+
 			    <section class="col-xs-12">
-    				
-					<?php 
+
+					<?php
 							$tab_array = array();
 					        $tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
 					        $tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
@@ -80,23 +80,23 @@ include("head.inc");
 					        $tab_array[] = array(gettext("Test Vouchers"), true, "status_captiveportal_test.php?zone={$cpzone}");
 							$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
 					        display_top_tabs($tab_array);
-					?> 
-					
-					<div class="tab-content content-box col-xs-12">	
-    					
-    				    <div class="container-fluid">	
+					?>
+
+					<div class="tab-content content-box col-xs-12">
+
+				    <div class="container-fluid">
 
 	                        <form action="status_captiveportal_test.php" method="post" enctype="multipart/form-data" name="iform" id="iform">
-								
-	                        	<div class="table-responsive">
-		                        	<table class="table table-striped table-sort">
+
+					<div class="table-responsive">
+						<table class="table table-striped table-sort">
 									  <tr>
 									    <td valign="top" class="vncellreq"><?=gettext("Voucher(s)"); ?></td>
 									    <td class="vtable">
 									    <textarea name="vouchers" cols="65" rows="3" id="vouchers" class="formpre"><?=htmlspecialchars($_POST['vouchers']);?></textarea>
 									    <br />
-									<?=gettext("Enter multiple vouchers separated by space or newline. The remaining time, if valid, will be shown for each voucher"); ?>.</td>      
-									  </tr>      
+									<?=gettext("Enter multiple vouchers separated by space or newline. The remaining time, if valid, will be shown for each voucher"); ?>.</td>
+									  </tr>
 									  <tr>
 									    <td width="22%" valign="top">&nbsp;</td>
 									    <td width="78%">
@@ -105,7 +105,7 @@ include("head.inc");
 									    </td>
 									  </tr>
 									</table>
-									
+
 									<br/>
 <?php
 if ($_POST) {
@@ -125,15 +125,15 @@ if ($_POST) {
     }
 }
 ?>
-	                        	</div>
+					</div>
 	                        </form>
-    				    </div>
+				    </div>
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 
 
 <? include("foot.inc"); ?>

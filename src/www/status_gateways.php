@@ -28,7 +28,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_MODULE:	routing
 */
 
@@ -56,41 +56,41 @@ include("head.inc");
 <body>
 
 <?php include("fbegin.inc"); ?>
-	
+
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 					        /* active tabs */
 					        $tab_array = array();
 					        $tab_array[] = array(gettext("Gateways"), true, "status_gateways.php");
 					        $tab_array[] = array(gettext("Gateway Groups"), false, "status_gateway_groups.php");
 					        display_top_tabs($tab_array);
 					?>
-				    
-				    <div class="tab-content content-box col-xs-12">	   
+
+				    <div class="tab-content content-box col-xs-12">
 
 							<div class="responsive-table">
-					    
-	
+
+
 				              <table class="table table-striped table-sort">
-    				              <thead>
-    				                <tr>
-    				                  <td width="10%" class="listhdrr"><?=gettext("Name"); ?></td>
-    				                  <td width="10%" class="listhdrr"><?=gettext("Gateway"); ?></td>
-    				                  <td width="10%" class="listhdrr"><?=gettext("Monitor"); ?></td>
-    				                  <td width="8%" class="listhdrr"><?=gettext("RTT"); ?></td>
-    				                  <td width="7%" class="listhdrr"><?=gettext("Loss"); ?></td>
-    				                  <td width="35%" class="listhdrr"><?=gettext("Status"); ?></td>
-    				                  <td width="20%" class="listhdr"><?=gettext("Description"); ?></td>
-    								</tr>
-    				              </thead>
-    				              <tbody>
+				              <thead>
+				                <tr>
+				                  <td width="10%" class="listhdrr"><?=gettext("Name"); ?></td>
+				                  <td width="10%" class="listhdrr"><?=gettext("Gateway"); ?></td>
+				                  <td width="10%" class="listhdrr"><?=gettext("Monitor"); ?></td>
+				                  <td width="8%" class="listhdrr"><?=gettext("RTT"); ?></td>
+				                  <td width="7%" class="listhdrr"><?=gettext("Loss"); ?></td>
+				                  <td width="35%" class="listhdrr"><?=gettext("Status"); ?></td>
+				                  <td width="20%" class="listhdr"><?=gettext("Description"); ?></td>
+								</tr>
+				              </thead>
+				              <tbody>
 							  <?php foreach ($a_gateways as $gname => $gateway) {
 								?>
 					                <tr>
@@ -101,7 +101,7 @@ include("head.inc");
 					                                <?php echo lookup_gateway_ip_by_name($gname);?>
 					                  </td>
 					                  <td class="listr" align="center" >
-					                                <?php 	if ($gateways_status[$gname]) 
+					                                <?php	if ($gateways_status[$gname])
 											echo $gateways_status[$gname]['monitorip'];
 										else
 											echo $gateway['monitorip'];
@@ -159,7 +159,7 @@ include("head.inc");
 									echo "</td></tr></table></td></tr>";
 					                        ?>
 								</table>
-	                 
+
 						  <td class="listbg"> <?=$gateway['descr']; ?></td>
 				                </tr>
 						<?php } ?>

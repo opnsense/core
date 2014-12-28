@@ -1,22 +1,22 @@
-<?php 
+<?php
 /* $Id$ */
 /*
 	status_captiveportal.php
 	part of m0n0wall (http://m0n0.ch/wall)
-	
+
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
-	
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -28,7 +28,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*	
+/*
 	pfSense_MODULE:	captiveportal
 */
 
@@ -69,7 +69,7 @@ include("head.inc");
 
 ?>
 
-			                       
+
 <?php
 
 flush();
@@ -82,20 +82,20 @@ function clientcmp($a, $b) {
 if (!empty($cpzone)) {
         $cpdb_handle = new OPNsense\CaptivePortal\DB($cpzone);
 
-        $order = "";        
+        $order = "";
 	if ($_GET['order']) {
 		if ($_GET['order'] == "ip") $order = "ip";
 		else if ($_GET['order'] == "mac") $order = "mac";
 		else if ($_GET['order'] == "user") $order = "username";
 	}
-	
+
         $cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
-	
+
 }
 else {
     $cpdb = array() ;
 }
-    
+
 
 // Load MAC-Manufacturer table
 $mac_man = load_mac_manufacturer_table();
@@ -109,15 +109,15 @@ $mac_man = load_mac_manufacturer_table();
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				
-				
+
+
+
 			    <section class="col-xs-12">
-    				
+
 					<?php if (!empty($cpzone) && isset($config['voucher'][$cpzone]['enable'])): ?>
-					<?php 
+					<?php
 							$tab_array = array();
 					        $tab_array[] = array(gettext("Active Users"), true, "status_captiveportal.php?zone={$cpzone}");
 					        $tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
@@ -125,19 +125,19 @@ $mac_man = load_mac_manufacturer_table();
 					        $tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
 							$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
 					        display_top_tabs($tab_array);
-					?> 
+					?>
 					<?php endif; ?>
-					
-					<div class="tab-content content-box col-xs-12">	
-    					
-    				    <div class="container-fluid">	
+
+					<div class="tab-content content-box col-xs-12">
+
+				    <div class="container-fluid">
 
 	                        <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
-								
+
 	                        <div class="table-responsive">
 		                        <table class="table table-striped table-sort">
 								  <tr>
-									<td width="20%" class="vncell" valign="top"> 
+									<td width="20%" class="vncell" valign="top">
 								               <br /><?=gettext("Captive Portal Zone"); ?><br/><br />
 									</td>
 									<td class="vncell" width="30%" align="center">
@@ -192,7 +192,7 @@ $mac_man = load_mac_manufacturer_table();
 								    <td class="listr"><?=htmlspecialchars($cpent->username);?>&nbsp;</td>
 								    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent->allow_time));?></td>
 									<?php if ($_GET['showact']):
-									//$last_act = captiveportal_get_last_activity($cpent->ip, $cpent->mac); 
+									//$last_act = captiveportal_get_last_activity($cpent->ip, $cpent->mac);
 									$last_act=0;
 									?>
 								    <td class="listr"><?php if ($last_act != 0) echo htmlspecialchars(date("m/d/Y H:i:s", $last_act));?></td>
@@ -205,10 +205,10 @@ $mac_man = load_mac_manufacturer_table();
 								  </tr>
 								<?php endforeach; endif; ?>
 								</table>
-								
+
 	                        </div>
-							
-	                        </form>	                        
+
+	                        </form>
 							<form action="status_captiveportal.php" method="get" style="margin: 14px;">
 							<input type="hidden" name="order" value="<?=htmlspecialchars($_GET['order']);?>" />
 							<?php if (!empty($cpzone)): ?>
@@ -223,12 +223,12 @@ $mac_man = load_mac_manufacturer_table();
 							<?php endif; ?>
 							</form>
 
-    				    </div>
+				    </div>
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 
 <?php include("foot.inc"); ?>

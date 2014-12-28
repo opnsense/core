@@ -63,28 +63,28 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
 				<?php print_info_box_np(sprintf(gettext("The load balancer configuration has been changed%sYou must apply the changes in order for them to take effect."), "<br />"));?>
 				<? endif; ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						/* active tabs */
 						$tab_array = array();
 						$tab_array[] = array(gettext("Pools"), false, "status_lb_pool.php");
 						$tab_array[] = array(gettext("Virtual Servers"), true, "status_lb_vs.php");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
+
+					<div class="tab-content content-box col-xs-12">
+				    <div class="container-fluid">
 							<form action="status_lb_pool.php" method="post">
 							<div class="table-responsive">
-								
+
 
 				              <table class="table table-striped table-sort __nomb">
 				                <thead>
@@ -154,8 +154,8 @@ include("head.inc");
 						<?php $i++; endforeach; ?>
 				                </tbody>
 				             </table>
-	   						</div>
-    				    </div>
+							</div>
+				    </div>
 					</div>
 			    </section>
 			</div>

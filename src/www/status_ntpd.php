@@ -166,22 +166,22 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 
-		
+
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
-            
+
             <section class="col-xs-12">
                 <div class="content-box">
 	                <header class="content-box-head container-fluid">
 				        <h3>Network Time Protocol Status</h3>
 				    </header>
-				    
+
 				    <div class="content-box-main">
-					  	<div class="table-responsive">
-                   	    	<table class="table table-striped table-sort sortable __nomb">
-	                        
+						<div class="table-responsive">
+				<table class="table table-striped table-sort sortable __nomb">
+
 
 								<thead>
 								<tr>
@@ -264,10 +264,10 @@ include("head.inc");
 										<td class="listlr" align="center"><?php echo sprintf("%.5f", $gps_lon); ?> (<?php echo sprintf("%d", $gps_lon_deg); ?>&deg; <?php echo sprintf("%.5f", $gps_lon_min*60); ?><?php echo $gps_vars[6]; ?>)</td>
 										<?php if (isset($gps_alt)) { echo '<td class="listlr" align="center">' . $gps_alt . ' ' . $gps_alt_unit . '</td>';}?>
 										<td class="listr" align="center">
-										<?php 
+										<?php
 										if (isset($gps_satview)) {echo 'in view ' . intval($gps_satview);}
 										if (isset($gps_sat) && isset($gps_satview)) {echo ', ';}
-										if (isset($gps_sat)) {echo 'in use ' . $gps_sat;} 
+										if (isset($gps_sat)) {echo 'in use ' . $gps_sat;}
 										?>
 										</td>
 									</tr>
@@ -277,7 +277,7 @@ include("head.inc");
 								</tbody>
 								</table>
 							<?php endif; ?>
-					  	</div>
+						</div>
 				    </div>
                 </div>
             </section>
