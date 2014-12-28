@@ -15,20 +15,20 @@ $zindex: (
 
 @font-face {
   font-family: 'SourceSansProBold';
-  src: url('../../build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff') format('woff'), 
-       url('../../build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf') format('truetype'); 
+  src: url('../../build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff') format('woff'),
+       url('../../build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'SourceSansProSemibold';
-  src: url('../../build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff') format('woff'), 
-       url('../../build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf') format('truetype'); 
+  src: url('../../build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff') format('woff'),
+       url('../../build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'SourceSansProRegular';
-  src: url('../../build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff') format('woff'), 
-       url('../../build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf') format('truetype'); 
+  src: url('../../build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff') format('woff'),
+       url('../../build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf') format('truetype');
 }
 
 // Core variables and mixins
@@ -104,12 +104,12 @@ body{
 	z-index: map-get($zindex, header);
 }
 
-.page-content{ 
+.page-content{
 	height: calc(100% - 52px);
 	padding-top: 52px;
 	position: relative;
 	z-index: map-get($zindex, main);
-	
+
 	> .row{
 		height: 100%;
 	}
@@ -118,13 +118,13 @@ body{
 .page-content-head{
 	background: map-get($colors, lightergrey);
 	border-bottom: 1px solid rgba(#D9D9D9, .50);
-	padding-bottom: 15px; 
+	padding-bottom: 15px;
 	padding-top: 20px;
-	
+
 	.navbar-nav{
 		width: 100%;
 	}
-	
+
 	h1,h2,h3{
 		line-height: 1;
 		margin: 0;
@@ -148,12 +148,12 @@ body{
 	position: fixed;
 	top: 0;
 	z-index: map-get($zindex, sidebar);
-	
+
 	@extend .hidden-xs;
 }
 
 .page-side-nav {
-	
+
 	&--active{
 		background: map-get($colors, lightgrey);
 		border-left: 3px solid map-get($colors, orange);
@@ -174,17 +174,17 @@ body{
 .content-box{
 	background: #FFF;
 	border: 1px solid map-get($colors, bordergrey);;
-	
+
 	@extend .clearfix;
-	
+
 	&-head{
-    	@extend .page-content-head;
+	@extend .page-content-head;
 	}
-	
+
 	&-main{
-    	//background: map-get($colors, lightgrey);
-    	padding-bottom: 15px;
-    	padding-top: 15px;
+	//background: map-get($colors, lightgrey);
+	padding-bottom: 15px;
+	padding-top: 15px;
 	}
 }
 
@@ -192,14 +192,14 @@ body{
 	border-top: 0px;
 	margin-bottom: 15px;
 	padding: 15px 0;
-	
+
 	> .tab-content{
-    	margin-bottom: 0;
-    	padding: 0 15px;
+	margin-bottom: 0;
+	padding: 0 15px;
 	}
-	
+
 	.tab-content:last-child{
-    	margin-bottom: 0;
+	margin-bottom: 0;
 	}
 }
 
@@ -209,17 +209,17 @@ body{
 
 .brand-logo{
     display: none;
-    
+
     @media (min-width: $screen-sm-min) {
-        display: inline-block;    
+        display: inline-block;
     }
 }
 
 .brand-icon{
     display: inline-block;
-    
+
     @media (min-width: $screen-sm-min) {
-        display: none;    
+        display: none;
     }
 }
 
@@ -243,11 +243,11 @@ body{
 
 .page-login{
     background: map-get($colors, lightgrey);
-    
+
     .container{
         min-height: 100%;
-        margin-bottom: -60px; 
-        
+        margin-bottom: -60px;
+
         &:after{
             height: 60px;
         }
@@ -260,41 +260,41 @@ body{
     color:#9F9F9F;
     font-size: 12px;
     height: 60px;
-    
+
     p{
         padding-top: 21px;
     }
 }
 
 .login-modal{
-    
+
     &-container{
         background: #FFF;
         border: 1px solid map-get($colors, bordergrey);
         max-width: 400px;
         margin: 100px auto 15px auto;
     }
-    
+
     &-head{
         background: map-get($colors, darkgrey);
         height: 75px;
         padding: 0 20px;
     }
-    
+
     &-content{
         padding: 40px 20px 30px 20px;
     }
-        
+
     &-foot{
         background: map-get($colors, lightgrey);
         border-top: 1px solid map-get($colors, bordergrey);
         height: 60px;
         padding: 20px 20px 0 20px;
-        
+
         a{
             color: #7D7D7D;
             text-decoration: none;
-            
+
             &:hover{
                 color: darken(#7D7D7D, 10%);
                 text-decoration: underline;
@@ -315,25 +315,25 @@ body{
 }
 
 .table-sort{
-    
+
     > tbody > tr > th{
         border-top: 0;
         height: 50px;
-        
+
         &:hover{
             background: #F2F2F2;
             cursor: pointer;
         }
     }
-    
+
     > tbody > tr > td,  > tbody > tr > th{
         vertical-align: middle;
     }
-    
+
     &-icon{
         font-size: 10px;
     }
-    
+
     .btn-group-table{
         padding-right: 15px;
     }
@@ -351,7 +351,7 @@ body{
 .list-group-item{
 	border-left: none;
 	border-right: none;
-	
+
 	&.collapsed .caret{
 		border-bottom: 4px solid green;
 		border-top: 0;
@@ -362,14 +362,14 @@ body{
     display: block !important;
 }
 
-.list-group-submenu .list-group-item:last-child, 
+.list-group-submenu .list-group-item:last-child,
 .collapse .list-group-item:last-child {
 	border-bottom: none;
 }
 
 .nav-tabs > li.active > a{
 	background: #FFF !important;
-}		
+}
 
 .nav-tabs > li > a{
 	border-radius: 0px;
@@ -378,7 +378,7 @@ body{
 
 .nav-tabs.nav-justified{
 	border-right:1px solid map-get($colors, bordergrey);
-		
+
 	> li > a{
 	    border-bottom:1px solid map-get($colors, bordergrey);
 		border-top:1px solid map-get($colors, bordergrey);
@@ -387,30 +387,30 @@ body{
 		background: map-get($colors, lightgrey);
 		color: map-get($colors, darkgrey);
 		font-family: 'SourceSansProSemibold';
-		
+
 		@media (min-width:$screen-sm-min){
-    		border-bottom: 1px solid transparent;
-    	}
+		border-bottom: 1px solid transparent;
 	}
-	
+	}
+
 	> li.active a{
-    	@media (max-width:$screen-xs-max){
-        	border-right: 0 !important;
-    	}
+	@media (max-width:$screen-xs-max){
+		border-right: 0 !important;
 	}
-	
+	}
+
 	> li.active + li > a{
-    	@media (min-width:$screen-sm-min){
-    		border-left: 1px solid transparent;
-    	}
+	@media (min-width:$screen-sm-min){
+		border-left: 1px solid transparent;
 	}
-	
+	}
+
 	> li:last-child > a{
 		border-right:1px solid transparent !important;
-		
+
 		@media (max-width:$screen-xs-max){
-        	margin-bottom: 0;
-    	}
+		margin-bottom: 0;
+	}
 	}
 }
 
@@ -471,15 +471,15 @@ table{
 .list-group-item{
     overflow: hidden;
     text-overflow: ellipsis;
-    
+
     + div.collapse{
         margin-bottom: -1px;
     }
-    
+
     + div > a{
         padding-left: 44px;
     }
-    
+
     &:before{
         background: #EA7105;
         content: "";
@@ -489,7 +489,7 @@ table{
         position: absolute;
         top: 0px;
         width: 0;
-        
+
         -webkit-transition: width .2s;
         -moz-transition: width .2s;
         -o-transition: width .2s;
@@ -507,11 +507,11 @@ table{
     text-decoration: none;
     position: relative;
     background-color: #F5F5F5;
-    
+
     &:before{
         width: 3px;
     }
-    
+
     &.active{
         background-color: #E8E8E8;
     }
@@ -552,4 +552,4 @@ table{
 }
 ::-webkit-scrollbar-thumb:hover {
 	background:#e5e5e5;
-}			
+}

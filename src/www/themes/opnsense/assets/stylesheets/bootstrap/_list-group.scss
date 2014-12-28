@@ -51,7 +51,7 @@
 
 a.list-group-item {
   color: $list-group-link-color;
-  border-radius: 0; 
+  border-radius: 0;
 
   .list-group-item-heading {
     color: $list-group-link-heading-color;
@@ -63,16 +63,16 @@ a.list-group-item {
     text-decoration: none;
     color: $list-group-link-hover-color;
     background-color: $list-group-hover-bg;
-    
+
      &:before{
-	  	background: $list-group-active-border;
+		background: $list-group-active-border;
 		  content: "";
 		  height: 42px;
 		  left: 0;
 		  position: absolute;
 		  top:0;
 		  width: 3px;
-	  }	
+	  }
   }
 }
 
@@ -98,17 +98,17 @@ a.list-group-item {
   &.active:hover,
   &.active:focus {
     z-index: 2; // Place active items above their siblings for proper border styling
-    
+
  &:before{
-	  	background: $list-group-active-border;
+		background: $list-group-active-border;
 		  content: "";
 		  height: 42px;
 		  left: 0;
 		  position: absolute;
 		  top:0px;
 		  width: 3px;
-	  }	
-	  
+	  }
+
     // Force color to inherit for custom content
     .list-group-item-heading,
     .list-group-item-heading > small,
@@ -118,17 +118,17 @@ a.list-group-item {
     .list-group-item-text {
       color: $list-group-active-text-color;
     }
-    
+
     +.collapse > .list-group-item{
 	      &:before{
-	  	background: $list-group-active-border;
+		background: $list-group-active-border;
 		  content: "";
 		  height: 42px;
 		  left: 0;
 		  position: absolute;
 		  top:0px;
 		  width: 3px;
-	  }	
+	  }
     }
   }
 }

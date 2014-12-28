@@ -18,7 +18,7 @@
   white-space: nowrap;
   @include button-size($padding-base-vertical, $padding-base-horizontal, $font-size-base, $line-height-base, $border-radius-base);
   @include user-select(none);
-  
+
   @include button-variant($btn-default-color, $btn-default-bg, $btn-default-border);
 
   &,
