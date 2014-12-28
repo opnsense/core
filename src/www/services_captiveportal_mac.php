@@ -148,17 +148,17 @@ $main_buttons = array(
 	<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('passthrumac')): ?><p>
 				<?php print_info_box_np(gettext("The captive portal MAC address configuration has been changed.<br />You must apply the changes in order for them to take effect."));?><br />
-				<?php endif; ?>		
-						
+				<?php endif; ?>
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
 						$tab_array[] = array(gettext("MAC"), true, "services_captiveportal_mac.php?zone={$cpzone}");
@@ -169,16 +169,16 @@ $main_buttons = array(
 						$tab_array[] = array(gettext("File Manager"), false, "services_captiveportal_filemanager.php?zone={$cpzone}");
 						display_top_tabs($tab_array, true);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	
-	    					
-	    				<div class="container-fluid">	    				
-   
-		                    <form action="services_captiveportal_mac.php" method="post" name="iform" id="iform">									
+
+					<div class="tab-content content-box col-xs-12">
+
+					<div class="container-fluid">
+
+		                    <form action="services_captiveportal_mac.php" method="post" name="iform" id="iform">
 		                        <input type="hidden" name="zone" id="zone" value="<?=htmlspecialchars($cpzone);?>" />
-		                        	
+
 		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort"> 
+			                        <table class="table table-striped table-sort">
 										<tr>
 											<td width="3%"  class="list"></td>
 											<td width="37%" class="listhdrr"><?=gettext("MAC address"); ?></td>
@@ -211,7 +211,7 @@ $main_buttons = array(
 										endforeach;
 									endif;
 						?>
-										
+
 										<tr>
 											<td colspan="3" class="list">
 												<span class="vexpl">
@@ -224,12 +224,12 @@ $main_buttons = array(
 									</table>
 		                        </div>
 		                    </form>
-	    				</div>
+					</div>
 					</div>
 			    </section>
-				
+
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

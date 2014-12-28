@@ -1,22 +1,22 @@
-<?php 
+<?php
 /* $Id$ */
 /*
 	services_dnsmasq_edit.php
 	part of m0n0wall (http://m0n0.ch/wall)
-	
+
 	Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
-	
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -56,7 +56,7 @@ require("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dnsmasq.php');
 
-if (!is_array($config['dnsmasq']['hosts'])) 
+if (!is_array($config['dnsmasq']['hosts']))
 	$config['dnsmasq']['hosts'] = array();
 
 $a_hosts = &$config['dnsmasq']['hosts'];
@@ -82,16 +82,16 @@ if ($_POST) {
 	/* input validation */
 	$reqdfields = explode(" ", "domain ip");
 	$reqdfieldsn = array(gettext("Domain"),gettext("IP address"));
-	
+
 	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
-	
-	if (($_POST['host'] && !is_hostname($_POST['host']))) 
+
+	if (($_POST['host'] && !is_hostname($_POST['host'])))
 		$input_errors[] = gettext("The hostname can only contain the characters A-Z, 0-9 and '-'.");
 
-	if (($_POST['domain'] && !is_domain($_POST['domain']))) 
+	if (($_POST['domain'] && !is_domain($_POST['domain'])))
 		$input_errors[] = gettext("A valid domain must be specified.");
-		
-	if (($_POST['ip'] && !is_ipaddr($_POST['ip']))) 
+
+	if (($_POST['ip'] && !is_ipaddr($_POST['ip'])))
 		$input_errors[] = gettext("A valid IP address must be specified.");
 
 	/* collect aliases */
@@ -156,11 +156,11 @@ if ($_POST) {
 		else
 			$a_hosts[] = $hostent;
 		hosts_sort();
-		
+
 		mark_subsystem_dirty('hosts');
-		
+
 		write_config();
-		
+
 		header("Location: services_dnsmasq.php");
 		exit;
 	}
@@ -195,24 +195,24 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="services_dnsmasq_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+                        <form action="services_dnsmasq_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit DNS Forwarder entry");?></td>
-									</tr>	
+									</tr>
 					                <tr>
 					                  <td width="22%" valign="top" class="vncell"><?=gettext("Host");?></td>
-					                  <td width="78%" class="vtable"> 
+					                  <td width="78%" class="vtable">
 					                    <input name="host" type="text" class="formfld" id="host" size="40" value="<?=htmlspecialchars($pconfig['host']);?>" />
 					                    <br /> <span class="vexpl"><?=gettext("Name of the host, without".
 					                   " domain part"); ?><br />
@@ -220,21 +220,21 @@ include("head.inc");
 					                </tr>
 									<tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Domain");?></td>
-					                  <td width="78%" class="vtable"> 
+					                  <td width="78%" class="vtable">
 					                    <input name="domain" type="text" class="formfld" id="domain" size="40" value="<?=htmlspecialchars($pconfig['domain']);?>" />
 					                    <br /> <span class="vexpl"><?=gettext("Domain of the host"); ?><br />
 					                   <?=gettext("e.g."); ?> <em><?=gettext("example.com"); ?></em></span></td>
 					                </tr>
 									<tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("IP address");?></td>
-					                  <td width="78%" class="vtable"> 
+					                  <td width="78%" class="vtable">
 					                    <input name="ip" type="text" class="formfld" id="ip" size="40" value="<?=htmlspecialchars($pconfig['ip']);?>" />
 					                    <br /> <span class="vexpl"><?=gettext("IP address of the host"); ?><br />
 					                   <?=gettext("e.g."); ?> <em>192.168.100.100</em> <?=gettext("or"); ?> <em>fd00:abcd::1</em></span></td>
 					                </tr>
 									<tr>
 					                  <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-					                  <td width="78%" class="vtable"> 
+					                  <td width="78%" class="vtable">
 					                    <input name="descr" type="text" class="formfld" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
 					                    <br /> <span class="vexpl"><?=gettext("You may enter a description here".
 					                   " for your reference (not parsed).");?></span></td>
@@ -298,7 +298,7 @@ include("head.inc");
 					                </tr>
 					                <tr>
 					                  <td width="22%" valign="top">&nbsp;</td>
-					                  <td width="78%"> 
+					                  <td width="78%">
 					                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
 					                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
 					                    <?php if (isset($id) && $a_hosts[$id]): ?>
@@ -307,12 +307,12 @@ include("head.inc");
 					                  </td>
 					                </tr>
 					        </table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

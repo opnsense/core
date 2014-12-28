@@ -361,19 +361,19 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-		                        <form action="services_dhcp_edit.php" method="post" name="iform" id="iform">								
-		                        	
-		                        	<div class="table-responsive">
-			                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+		                        <form action="services_dhcp_edit.php" method="post" name="iform" id="iform">
+
+						<div class="table-responsive">
+							<table class="table table-striped table-sort">
 											<tr>
 												<td colspan="2" valign="top" class="listtopic"><?=gettext("Static DHCP Mapping");?></td>
 											</tr>
@@ -556,12 +556,12 @@ include("head.inc");
 							                  </td>
 							                </tr>
 							              </table>
-		                        	</div>
+						</div>
 		                        </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

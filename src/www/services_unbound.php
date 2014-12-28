@@ -191,31 +191,31 @@ function show_advanced_dns() {
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('unbound')): ?><br/>
 				<?php print_info_box_np(gettext("The configuration for the DNS Resolver, has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
 				<?php endif; ?>
-				
+
 				<form action="services_unbound.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
-								
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("General settings"), true, "services_unbound.php");
 						$tab_array[] = array(gettext("Advanced settings"), false, "services_unbound_advanced.php");
 						$tab_array[] = array(gettext("Access Lists"), false, "/services_unbound_acls.php");
 						display_top_tabs($tab_array, true);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	 
+
+					<div class="tab-content content-box col-xs-12">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped">
+									<table class="table table-striped">
 
 										<tbody>
 											<tr>
@@ -356,8 +356,8 @@ function show_advanced_dns() {
 										</tbody>
 									</table>
 								</div>
-								
-					<div class="container-fluid">				
+
+					<div class="container-fluid">
                         <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
                         </strong></span><?php printf(gettext("If the DNS Resolver is enabled, the DHCP".
                         " service (if enabled) will automatically serve the LAN IP".
@@ -369,22 +369,22 @@ function show_advanced_dns() {
                         " is checked."),'<a href="system.php">','</a>');?><br />
                         </span></p>
 					</div>
-    				   
+
 					</div>
 			    </section>
-			    
+
 			    <section class="col-xs-12">
-				    
+
 				    <div class="content-box">
-					    
+
 					    <header class="content-box-head container-fluid">
-				        	<h3><?=gettext("Host Overrides");?></h3>
-				    	</header>
-				    	
-				    	<div class="content-box-main col-xs-12">
-					    	<?=gettext("Entries in this section override individual results from the forwarders.");?>
-	<?=gettext("Use these for changing DNS results or for adding custom DNS records.");?>	
-				    	</div>
+						<h3><?=gettext("Host Overrides");?></h3>
+					</header>
+
+					<div class="content-box-main col-xs-12">
+						<?=gettext("Entries in this section override individual results from the forwarders.");?>
+	<?=gettext("Use these for changing DNS results or for adding custom DNS records.");?>
+					</div>
 					    <div class="content-box-main col-xs-12">
 					    <div class="table-responsive">
 						    <table class="table table-striped table-sort">
@@ -435,22 +435,22 @@ function show_advanced_dns() {
 					    </div>
 					    </div>
 				    </div>
-				    
+
 			    </section>
-			    
+
 			   <section class="col-xs-12">
-				    
+
 				    <div class="content-box">
-					    
+
 					    <header class="content-box-head container-fluid">
-				        	<h3><?=gettext("Domain Overrides");?></h3>
-				    	</header>
-				    	
-				    	<div class="content-box-main col-xs-12">
-					    	<p><?=gettext("Entries in this area override an entire domain by specifying an".
+						<h3><?=gettext("Domain Overrides");?></h3>
+					</header>
+
+					<div class="content-box-main col-xs-12">
+						<p><?=gettext("Entries in this area override an entire domain by specifying an".
 	" authoritative DNS server to be queried for that domain.");?></p>
-				    	</div>
-					    
+					</div>
+
 					    <div class="content-box-main col-xs-12">
 					    <div class="table-responsive">
 						    <table class="table table-striped table-sort"><thead>
@@ -468,7 +468,7 @@ function show_advanced_dns() {
 									</td>
 								</tr>
 								</thead>
-								
+
 								<tbody>
 								<?php $i = 0; foreach ($a_domainOverrides as $doment): ?>
 								<tr>
@@ -499,7 +499,7 @@ function show_advanced_dns() {
 				    </div>
 			   </section>
 			   </form>
-			    
+
 			</div>
 		</div>
 	</section>

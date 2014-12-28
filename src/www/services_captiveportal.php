@@ -497,16 +497,16 @@ function enable_change(enable_change) {
 	<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				
+
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
+
+
 					<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Captive portal(s)"), true, "services_captiveportal.php?zone={$cpzone}");
@@ -517,14 +517,14 @@ function enable_change(enable_change) {
 						$tab_array[] = array(gettext("Vouchers"), false, "services_captiveportal_vouchers.php?zone={$cpzone}");
 						$tab_array[] = array(gettext("File Manager"), false, "services_captiveportal_filemanager.php?zone={$cpzone}");
 						display_top_tabs($tab_array, true);
-					?> 
-					
-					<div class="tab-content content-box col-xs-12">	
-	    					
-	    				<div class="container-fluid">	    				
-   
-		                    <form action="services_captiveportal.php" method="post" name="iform" id="iform">									
-		                        	
+					?>
+
+					<div class="tab-content content-box col-xs-12">
+
+					<div class="container-fluid">
+
+		                    <form action="services_captiveportal.php" method="post" name="iform" id="iform">
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
@@ -553,7 +553,7 @@ function enable_change(enable_change) {
 										  <td class="vtable">
 											<table cellpadding="0" cellspacing="0" summary="connections">
 									                 <tr>
-									           			<td><input name="maxprocperip" type="text" class="formfld unknown" id="maxprocperip" size="5" value="<?=htmlspecialchars($pconfig['maxprocperip']);?>" /> <?=gettext("per client IP address (0 = no limit)"); ?></td>
+													<td><input name="maxprocperip" type="text" class="formfld unknown" id="maxprocperip" size="5" value="<?=htmlspecialchars($pconfig['maxprocperip']);?>" /> <?=gettext("per client IP address (0 = no limit)"); ?></td>
 									                 </tr>
 									               </table>
 									<?=gettext("This setting limits the number of concurrent connections to the captive portal HTTP(S) server. This does not set how many users can be logged in " .
@@ -859,7 +859,7 @@ function enable_change(enable_change) {
 																	$start = ip2long32(gen_subnet($sn['subnet'], $sn['subnet_bits']));
 																	$end = ip2long32(gen_subnet_max($sn['subnet'], $sn['subnet_bits']));
 																	$len = $end - $start;
-									
+
 																	for ($i = 0; $i <= $len; $i++) {
 																		$snip = long2ip32($start+$i);
 																		echo "<option value='{$snip}' {$selected}>" . htmlspecialchars("{$sn['descr']} - {$snip}") . "></option>\n";
@@ -873,13 +873,13 @@ function enable_change(enable_change) {
 													<?=gettext("Choose the IP to use for calling station attribute."); ?>
 													</td>
 												</tr>
-									
+
 												<tr>
 													<td class="vncell" valign="top"><?=gettext("Session-Timeout"); ?></td>
 													<td class="vtable"><input name="radiussession_timeout" type="checkbox" id="radiussession_timeout" value="yes" <?php if ($pconfig['radiussession_timeout']) echo "checked=\"checked\""; ?> /><strong><?=gettext("Use RADIUS Session-Timeout attributes"); ?></strong><br />
 													<?=gettext("When this is enabled, clients will be disconnected after the amount of time retrieved from the RADIUS Session-Timeout attribute."); ?></td>
 												</tr>
-									
+
 												<tr>
 													<td class="vncell" valign="top"><?=gettext("Type"); ?></td>
 													<td class="vtable"><select name="radiusvendor" id="radiusvendor">
@@ -897,13 +897,13 @@ function enable_change(enable_change) {
 													"the Called-Station-Id to the client's MAC address. Default behavior is Calling-Station-Id = client's MAC address and Called-Station-Id = %s's WAN IP address."),
 														$g['product_name']);?></td>
 												</tr>
-									
+
 												<tr>
 													<td class="vncell" valign="top"><?=gettext("Accounting Style"); ?></td>
 													<td class="vtable"><input name="reverseacct" type="checkbox" id="reverseacct" value="yes" <?php if ($pconfig['reverseacct']) echo "checked=\"checked\""; ?> /><strong><?=gettext("Invert Acct-Input-Octets and Acct-Output-Octets"); ?></strong><br />
 													<?=gettext("When this is enabled, data counts for RADIUS accounting packets will be taken from the client perspective, not the NAS. Acct-Input-Octets will represent download, and Acct-Output-Octets will represent upload."); ?></td>
 												</tr>
-									
+
 												<tr>
 													<td class="vncell" valign="top"><?=gettext("NAS Identifier"); ?></td>
 													<td class="vtable"><input name="radiusnasid" type="text" maxlength="253" class="formfld unknown" id="radiusnasid" value="<?=htmlspecialchars($pconfig['radiusnasid']);?>" /><br />
@@ -1080,7 +1080,7 @@ function enable_change(enable_change) {
 									  </table>
 		                        </div>
 		                    </form>
-	    				</div>
+					</div>
 					</div>
 			    </section>
 			</div>

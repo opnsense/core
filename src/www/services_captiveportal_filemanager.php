@@ -58,7 +58,7 @@ require("captiveportal.inc");
 $cpzone = $_GET['zone'];
 if (isset($_POST['zone']))
         $cpzone = $_POST['zone'];
-                        
+
 if (empty($cpzone)) {
         header("Location: services_captiveportal_zones.php");
         exit;
@@ -86,14 +86,14 @@ if ($_POST) {
 
     if (is_uploaded_file($_FILES['new']['tmp_name'])) {
 
-    	if(!stristr($_FILES['new']['name'], "captiveportal-"))
-    		$name = "captiveportal-" . $_FILES['new']['name'];
-    	else
-    		$name = $_FILES['new']['name'];
-    	$size = filesize($_FILES['new']['tmp_name']);
+	if(!stristr($_FILES['new']['name'], "captiveportal-"))
+		$name = "captiveportal-" . $_FILES['new']['name'];
+	else
+		$name = $_FILES['new']['name'];
+	$size = filesize($_FILES['new']['tmp_name']);
 
-    	// is there already a file with that name?
-    	foreach ($a_element as $element) {
+	// is there already a file with that name?
+	foreach ($a_element as $element) {
 			if ($element['name'] == $name) {
 				$input_errors[] = sprintf(gettext("A file with the name '%s' already exists."), $name);
 				break;
@@ -146,14 +146,14 @@ $main_buttons = array(
 	<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				<?php if ($input_errors) print_input_errors($input_errors); ?>	
-						
+
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
 						$tab_array[] = array(gettext("MAC"), false, "services_captiveportal_mac.php?zone={$cpzone}");
@@ -164,49 +164,49 @@ $main_buttons = array(
 						$tab_array[] = array(gettext("File Manager"), true, "services_captiveportal_filemanager.php?zone={$cpzone}");
 						display_top_tabs($tab_array, true);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	
-	    					
-	    				<div class="container-fluid">	    				
-   
-		                    <form action="services_captiveportal_filemanager.php" method="post" name="iform" id="iform" enctype="multipart/form-data">									
+
+					<div class="tab-content content-box col-xs-12">
+
+					<div class="container-fluid">
+
+		                    <form action="services_captiveportal_filemanager.php" method="post" name="iform" id="iform" enctype="multipart/form-data">
 		                        <input type="hidden" name="zone" id="zone" value="<?=htmlspecialchars($cpzone);?>" />
-		                        
-		                        
+
+
 								  <?php if ($_GET['act'] == 'add'): ?>
 								   <div class="table-responsive">
-			                        <table class="table table-striped table-sort"> 
+			                        <table class="table table-striped table-sort">
 									  <tr>
-										  	<td width="10%">Upload file</td>
+											<td width="10%">Upload file</td>
 											<td class="listlr" colspan="2"><input type="file" name="new" class="formfld file" size="40" id="new" /></td>
 									  </tr>
 									  <tr>
 										  <td></td>
 										  <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Upload"); ?>" />
-										  	<a href="services_captiveportal_filemanager.php?zone=<?=$cpzone;?>" class="btn btn-default">Cancel</a>
-										  	
+											<a href="services_captiveportal_filemanager.php?zone=<?=$cpzone;?>" class="btn btn-default">Cancel</a>
+
 										  </td>
 									  </tr>
 			                        </table>
 								   </div>
 								   <br/>
-								  					
+
 								  <?php endif; ?>
-								  
-								  
-		                        
+
+
+
 		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort"> 										
+			                        <table class="table table-striped table-sort">
 								      <tr>
 								        <td width="70%" class="listhdrr"><?=gettext("Name"); ?></td>
 								        <td width="20%" class="listhdr"><?=gettext("Size"); ?></td>
 								        <td width="10%" class="list">
-										
+
 									</td>
 								      </tr>
 								<?php if (is_array($a_cp[$cpzone]['element'])):
 									$i = 0; foreach ($a_cp[$cpzone]['element'] as $element): ?>
-								  	  <tr>
+									  <tr>
 										<td class="listlr"><?=htmlspecialchars($element['name']);?></td>
 										<td class="listr" align="right"><?=format_bytes($element['size']);?></td>
 										<td valign="middle" class="list nowrap">
@@ -214,18 +214,18 @@ $main_buttons = array(
 										</td>
 									  </tr>
 								  <?php $i++; endforeach; endif; ?>
-								
+
 								  <?php if ($total_size > 0): ?>
-								  	  <tr>
+									  <tr>
 										<td class="listlr" style="background-color: #eee"><strong><?=gettext("TOTAL"); ?></strong></td>
 										<td class="listr" style="background-color: #eee" align="right"><strong><?=format_bytes($total_size);?></strong></td>
 										<td valign="middle" class="list nowrap"></td>
 									  </tr>
 								  <?php endif; ?>
-								
+
 								</table>
 		                        </div>
-		                        
+
 								<span class="vexpl"><span class="text-danger"><strong>
 								<?=gettext("Note:"); ?><br />
 								</strong></span>
@@ -242,9 +242,9 @@ $main_buttons = array(
 								<tt>&lt;a href="/captiveportal-aup.php?zone=$PORTAL_ZONE$&amp;redirurl=$PORTAL_REDIRURL$"&gt;<?=gettext("Acceptable usage policy"); ?>&lt;/a&gt;</tt>
 								<br /><br />
 								<?php printf(gettext("The total size limit for all files is %s."), format_bytes($g['captiveportal_element_sizelimit']));?></span>
-								
+
 		                    </form>
-	    				</div>
+					</div>
 					</div>
 			    </section>
 			</div>

@@ -238,7 +238,7 @@ if ($_POST) {
 
 			if (is_ipaddrv6($ifcfgip)) {
 				if ((! is_inrange_v6($_POST['range_from'], $subnet_start, $subnet_end)) ||
-			   	 (! is_inrange_v6($_POST['range_to'], $subnet_start, $subnet_end))) {
+				 (! is_inrange_v6($_POST['range_to'], $subnet_start, $subnet_end))) {
 					$input_errors[] = gettext("The specified range lies outside of the current subnet.");
 				}
 			}
@@ -504,9 +504,9 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('staticmaps')): ?><p>
@@ -514,33 +514,33 @@ include("head.inc");
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-    				
-    				<? if ($tabscount > 0) display_top_tabs($tab_array); ?>
-    				
-    				<div class="tab-content content-box col-xs-12">		
-								
-                        <form action="services_dhcpv6.php" method="post" name="iform" id="iform">								
-                        	
-                        	<?php if ($dhcrelay_enabled): ?>
+
+				<? if ($tabscount > 0) display_top_tabs($tab_array); ?>
+
+				<div class="tab-content content-box col-xs-12">
+
+                        <form action="services_dhcpv6.php" method="post" name="iform" id="iform">
+
+				<?php if ($dhcrelay_enabled): ?>
 								<p>DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.</p>
 							<? elseif ($tabscounter == 0): ?>
-							
+
 							<? else: ?>
-							
-        				    
-        				    <div class="content-box-main col-xs-12">
-	        				    
-	        				    <?php
+
+
+					    <div class="content-box-main col-xs-12">
+
+						    <?php
 									$tab_array = array();
 									$tab_array[] = array(gettext("DHCPv6 Server"),         true,  "services_dhcpv6.php?if={$if}");
 									$tab_array[] = array(gettext("Router Advertisements"), false, "services_router_advertisements.php?if={$if}");
 								?>
-	        				    <ul class="nav nav-pills" role="tablist"><? foreach ($tab_array as $tab): ?>
+						    <ul class="nav nav-pills" role="tablist"><? foreach ($tab_array as $tab): ?>
 									<li role="presentation" <? if ($tab[1]):?>class="active"<? endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
 								<? endforeach; ?></ul><br />
-	        				    
-	        				    <div class="table-responsive">
-	                        		<table class="table table-striped table-sort">  
+
+						    <div class="table-responsive">
+						<table class="table table-striped table-sort">
 
 										<tr>
 											<td width="22%" valign="top" class="vncellreq"><?=gettext("DHCPv6 Server");?></td>
@@ -573,7 +573,7 @@ include("head.inc");
 												$range_from = gen_subnetv6($ifcfgip, $ifcfgsn);
 												$range_from++;
 												echo $range_from;
-								
+
 											?>
 											-
 											<?php
@@ -583,7 +583,7 @@ include("head.inc");
 											</td>
 											</tr>
 											<?php } ?>
-								
+
 											<?php if($is_olsr_enabled): ?>
 											<tr>
 											<td width="22%" valign="top" class="vncellreq"><?=gettext("Subnet Mask");?></td>
@@ -623,7 +623,7 @@ include("head.inc");
 													<option value="63" <?php if($pconfig['prefixrange_length'] == 63) echo "selected=\"selected\""; ?>>63</option>
 													<option value="64" <?php if($pconfig['prefixrange_length'] == 64) echo "selected=\"selected\""; ?>>64</option>
 												</select> <br />
-												<?php echo gettext("You can define a Prefix range here for DHCP Prefix Delegation. This allows for 
+												<?php echo gettext("You can define a Prefix range here for DHCP Prefix Delegation. This allows for
 													assigning networks to subrouters. The start and end of the range must end on boundaries of the prefix delegation size."); ?>
 											</td>
 											</tr>
@@ -686,9 +686,9 @@ include("head.inc");
 													<tr>
 													<td>&nbsp;</td>
 													<td>
-														<span class="red"><strong><?=gettext("Note:");?></strong></span> <?=gettext("By default DHCPv6 leases are displayed in UTC time.  By checking this 
+														<span class="red"><strong><?=gettext("Note:");?></strong></span> <?=gettext("By default DHCPv6 leases are displayed in UTC time.  By checking this
 														box DHCPv6 lease time will be displayed in local time and set to time zone selected.  This will be used for all DHCPv6 interfaces lease time."); ?>
-													
+
 													</td>
 													</tr>
 												</table>
@@ -826,7 +826,7 @@ include("head.inc");
 												//]]>
 												</script>
 												</div>
-								
+
 												</td>
 											</tr>
 											<tr>
@@ -850,9 +850,9 @@ include("head.inc");
 											</td>
 											</tr>
 										</table>
-	        				    </div>
-	        				    <div class="table-responsive">
-		        				    <table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="static mappings">
+						    </div>
+						    <div class="table-responsive">
+							    <table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="static mappings">
 										<tr>
 											<td colspan="4" valign="top" class="listtopic"><?=gettext("DHCPv6 Static Mappings for this interface.");?></td>
 											<td>&nbsp;</td>
@@ -912,12 +912,12 @@ include("head.inc");
 										</tr>
 										</table>
 									</div>
-        				    </div>
-        				    <? endif; ?>
+					    </div>
+					    <? endif; ?>
                         </form>
-    				</div>
+				</div>
 			    </section>
-			
+
 			</div>
 			</div>
 			</section>

@@ -65,21 +65,21 @@ if ($_GET['act'] == "del") {
 	$a_allowedips =& $config['captiveportal'][$cpzone]['allowedip'];
 	if ($a_allowedips[$_GET['id']]) {
 		$ipent = $a_allowedips[$_GET['id']];
-		
+
 		if (isset($config['captiveportal'][$cpzone]['enable'])) {
 			$mask = (!empty($ipent['sn'])) ? $ipent['sn'] : 32;
-			
+
 			$ipfw = pfSense_ipfw_getTablestats($cpzone, 3, $ipent['ip'], $mask);
 			pfSense_ipfw_Tableaction($cpzone, IP_FW_TABLE_XDEL, 3, $ipent['ip'], $mask);
 			pfSense_ipfw_Tableaction($cpzone, IP_FW_TABLE_XDEL, 4, $ipent['ip'], $mask);
-			
+
 			if (is_array($ipfw)) {
 				captiveportal_free_dn_ruleno($ipfw['dnpipe']);
 				pfSense_pipe_action("pipe delete {$ipfw['dnpipe']}");
 				pfSense_pipe_action("pipe delete " . ($ipfw['dnpipe']+1));
 			}
 		}
-		
+
 		unset($a_allowedips[$_GET['id']]);
 		write_config();
 		header("Location: services_captiveportal_ip.php?zone={$cpzone}");
@@ -102,14 +102,14 @@ $main_buttons = array(
 	<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				<?php if ($savemsg) print_info_box($savemsg); ?>	
-						
+
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
 						$tab_array[] = array(gettext("MAC"), false, "services_captiveportal_mac.php?zone={$cpzone}");
@@ -120,21 +120,21 @@ $main_buttons = array(
 						$tab_array[] = array(gettext("File Manager"), false, "services_captiveportal_filemanager.php?zone={$cpzone}");
 						display_top_tabs($tab_array, true);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	
-	    					
-	    				<div class="container-fluid">	    				
-   
-		                    <form action="services_captiveportal_ip.php" method="post" name="iform" id="iform">									
+
+					<div class="tab-content content-box col-xs-12">
+
+					<div class="container-fluid">
+
+		                    <form action="services_captiveportal_ip.php" method="post" name="iform" id="iform">
 		                        <input type="hidden" name="zone" id="zone" value="<?=htmlspecialchars($cpzone);?>" />
-		                        	
+
 		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort"> 
+			                        <table class="table table-striped table-sort">
 										<tr>
 										  <td width="40%" class="listhdrr"><?=gettext("IP address"); ?></td>
 										  <td width="50%" class="listhdr"><?=gettext("Description"); ?></td>
 										  <td width="10%" class="list">
-											
+
 										  </td>
 										</tr>
 									<?php	if (is_array($a_cp[$cpzone]['allowedip'])):
@@ -151,13 +151,13 @@ $main_buttons = array(
 											echo strtolower($ip['ip']);
 											if($ip['sn'] != "32" && is_numeric($ip['sn'])) {
 												$sn = $ip['sn'];
-												echo "/$sn";	
+												echo "/$sn";
 											}
 											if($ip['dir'] == "from") {
 												echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_in.gif\" width=\"11\" height=\"11\" align=\"middle\" alt=\"any\" /> any";
 											}
-											
-											?>	
+
+											?>
 										  </td>
 										  <td class="listbg">
 											<?=htmlspecialchars($ip['descr']);?>&nbsp;
@@ -166,7 +166,7 @@ $main_buttons = array(
 											<a href="services_captiveportal_ip.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this address?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 										</tr>
 									  <?php $i++; endforeach; endif; ?>
-										
+
 										<tr>
 										<td colspan="2" class="list"><p class="vexpl"><span class="red"><strong>
 										  <?=gettext("Note:"); ?><br />
@@ -178,7 +178,7 @@ $main_buttons = array(
 									  </table>
 		                        </div>
 		                    </form>
-	    				</div>
+					</div>
 					</div>
 			    </section>
 			</div>

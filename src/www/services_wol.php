@@ -29,7 +29,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 /*
-	pfSense_BUILDER_BINARIES:	/usr/local/bin/wol	
+	pfSense_BUILDER_BINARIES:	/usr/local/bin/wol
 	pfSense_MODULE:	wol
 */
 
@@ -70,13 +70,13 @@ if ($_POST || $_GET['mac']) {
 	unset($input_errors);
 
 	if ($_GET['mac']) {
-        	/* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
-        	$_GET['mac'] = strtolower(str_replace("-", ":", $_GET['mac']));
+		/* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
+		$_GET['mac'] = strtolower(str_replace("-", ":", $_GET['mac']));
 		$mac = $_GET['mac'];
 		$if = $_GET['if'];
 	} else {
-        	/* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
-        	$_POST['mac'] = strtolower(str_replace("-", ":", $_POST['mac']));
+		/* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
+		$_POST['mac'] = strtolower(str_replace("-", ":", $_POST['mac']));
 		$mac = $_POST['mac'];
 		$if = $_POST['interface'];
 	}
@@ -123,33 +123,33 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-						
+
+				<div class="content-box">
+
 						<header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Wake on LAN");?></h3>
-    				    </header>
-        				    
-        				<div class="content-box-main ">
-						
-                        	<form action="services_wol.php" method="post" name="iform" id="iform">								
-                        	
-                        		<div class="table-responsive">
-	                        		<table class="table table-striped table-sort">
+				        <h3><?=gettext("Wake on LAN");?></h3>
+				    </header>
+
+					<div class="content-box-main ">
+
+				<form action="services_wol.php" method="post" name="iform" id="iform">
+
+					<div class="table-responsive">
+						<table class="table table-striped table-sort">
 									  <tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Interface");?></td>
 						                  <td width="78%" class="vtable">
-								     		<select name="interface" class="formselect">
-						                      <?php 
+										<select name="interface" class="formselect">
+						                      <?php
 												$interfaces = get_configured_interface_with_descr();
-											  	foreach ($interfaces as $iface => $ifacename): ?>
-						                      	<option value="<?=$iface;?>" <?php if (!link_interface_to_bridge($iface) && $iface == $if) echo "selected=\"selected\""; ?>>
+												foreach ($interfaces as $iface => $ifacename): ?>
+									<option value="<?=$iface;?>" <?php if (!link_interface_to_bridge($iface) && $iface == $if) echo "selected=\"selected\""; ?>>
 						                      <?=htmlspecialchars($ifacename);?>
 						                      </option>
 						                      <?php endforeach; ?>
@@ -169,13 +169,13 @@ include("head.inc");
 										</td>
 										</tr>
 									</table>
-                        		</div>
-                        		
-                        		<div class="container-fluid">
-                        		<p><?=gettext("Wake all clients at once: ");?><a href="services_wol.php?wakeall=true" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-time"></span></a>	<?=gettext("Or Click the MAC address to wake up an individual device:");?></p>
-                        		</div>
-                        		
-                        		<div class="table-responsive">
+					</div>
+
+					<div class="container-fluid">
+					<p><?=gettext("Wake all clients at once: ");?><a href="services_wol.php?wakeall=true" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-time"></span></a>	<?=gettext("Or Click the MAC address to wake up an individual device:");?></p>
+					</div>
+
+					<div class="table-responsive">
 									<table class="table table-striped table-sort">
 						                <tr>
 						                  <td width="15%" class="listhdrr"><?=gettext("Interface");?></td>
@@ -211,21 +211,21 @@ include("head.inc");
 						                  </td>
 									</tr>
 							        <?php $i++; endforeach; ?>
-						              
+
 						        </table>
-                        		</div>
-                        		<div class="container-fluid">
-                        		<p class="vexpl">
+					</div>
+					<div class="container-fluid">
+					<p class="vexpl">
 					<span class="text-danger">
 						<strong>
 							<?=gettext("Note:");?><br />
-            			</strong>
+				</strong>
 					</span><?=gettext("This service can be used to wake up (power on) computers by sending special"); ?> &quot;<?=gettext("Magic Packets"); ?>&quot;. <?=gettext("The NIC in the computer that is to be woken up must support Wake on LAN and has to be configured properly (WOL cable, BIOS settings). ");?>
 			</p>
-                        		</div>
-                        	</form>
-        				</div>
-    				</div>
+					</div>
+				</form>
+					</div>
+				</div>
 			    </section>
 			</div>
 		</div>

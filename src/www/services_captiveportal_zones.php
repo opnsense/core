@@ -43,7 +43,7 @@ $shortcut_section = "captiveportal";
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'services_captiveportal_zones_edit.php', 'label'=>gettext("add a new captiveportal instance")),	
+	array('href'=>'services_captiveportal_zones_edit.php', 'label'=>gettext("add a new captiveportal instance")),
 );
 
 ?>
@@ -52,22 +52,22 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 <section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('captiveportal')): ?><p>
 				<?php print_info_box_np(gettext("The CaptivePortal entry list has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?>
 				<?php endif; ?>
-				
+
 			    <section class="col-xs-12">
-					
-					<div class="content-box">	    					
-    				    
-    				    <form action="services_captiveportal_zones.php" method="post" name="iform" id="iform">
+
+					<div class="content-box">
+
+				    <form action="services_captiveportal_zones.php" method="post" name="iform" id="iform">
 
 							<div class="table-responsive">
-						 		<table class="table table-striped table-sort">
+								<table class="table table-striped table-sort">
 
 									<tr>
 									  <td width="15%" class="listhdrr"><?=gettext("Zone");?></td>
@@ -75,7 +75,7 @@ $main_buttons = array(
 									  <td width="10%" class="listhdrr"><?=gettext("Users");?></td>
 									  <td width="35%" class="listhdrr"><?=gettext("Description");?></td>
 									  <td width="10%" class="list">
-									   
+
 									  </td>
 									</tr>
 										  <?php foreach ($a_cp as $cpzone => $cpitem):
@@ -109,7 +109,7 @@ $main_buttons = array(
 										  <?php endforeach; ?>
 									</table>
 							</div>
-    				    </form>
+				    </form>
 					</div>
 			    </section>
 			</div>

@@ -71,29 +71,29 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
-								
+
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("DynDns"), true, "services_dyndns.php");
 						$tab_array[] = array(gettext("RFC 2136"), false, "services_rfc2136.php");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	  
-    					
-	    				    
-	    				  <form action="services_dyndns.php" method="post" name="iform" id="iform">
+
+					<div class="tab-content content-box col-xs-12">
+
+
+					  <form action="services_dyndns.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped">
-								 		
+									<table class="table table-striped">
+
 
 										<tr>
 										  <td width="5%"  class="listhdrr"><?=gettext("Interface");?></td>
@@ -193,7 +193,7 @@ $main_buttons = array(
 										  </td>
 										</tr>
 										<?php $i++; endforeach; ?>
-										
+
 										<tr>
 										  <td colspan="5" class="list"><p class="vexpl"><span class="text-danger"><strong>
 											<?=gettext("Note:");?><br />
@@ -206,12 +206,12 @@ $main_buttons = array(
 									  </table>
 									  </div>
 									</form>
-    				    
+
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
-	
+
+
 <?php include("foot.inc"); ?>

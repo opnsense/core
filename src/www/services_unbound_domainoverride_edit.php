@@ -4,7 +4,7 @@
     part of the pfSense project (https://www.pfsense.org)
     Copyright (C) 2014 Warren Baker (warren@decoy.co.za)
     All rights reserved.
-	
+
     Copyright (C) 2003-2005 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -125,20 +125,20 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="services_unbound_domainoverride_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">	                     	
-						
+
+				<div class="content-box">
+
+                        <form action="services_unbound_domainoverride_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
+
 						            <tr>
 						                <td width="22%" valign="top" class="vncellreq"><?=gettext("Domain");?></td>
 						                <td width="78%" class="vtable">
@@ -180,12 +180,12 @@ include("head.inc");
 						                </td>
 						            </tr>
 						        </table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

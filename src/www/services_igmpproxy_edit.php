@@ -110,7 +110,7 @@ if ($_POST) {
 
 		mark_subsystem_dirty('igmpproxy');
 		header("Location: services_igmpproxy.php");
-		exit;		
+		exit;
 	}
 	//we received input errors, copy data to prevent retype
 	else
@@ -127,48 +127,48 @@ include("head.inc");
 
 <body>
 	<?php include("fbegin.inc"); ?>
-	
+
 	<script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js">
 	</script>
 	<script type="text/javascript" src="/javascript/row_helper.js">
 	</script>
-	
+
 	<input type="hidden" name="address_type" value="textbox" class="formfld unknown" />
 	<input type="hidden" name="address_subnet_type" value="select" />
-	
+
 	<script type="text/javascript">
 	//<![CDATA[
 		rowname[0] = "address";
 		rowtype[0] = "textbox,ipv4v6";
 		rowsize[0] = "30";
-	
+
 		rowname[1] = "address_subnet";
 		rowtype[1] = "select,ipv4v6";
 		rowsize[1] = "1";
-	
+
 		rowname[2] = "detail";
 		rowtype[2] = "textbox";
 		rowsize[2] = "50";
 	//]]>
 	</script>
-	
+
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="services_igmpproxy_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+                        <form action="services_igmpproxy_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 								  <tr>
 									<td colspan="2" valign="top" class="listtopic"><?=gettext("IGMP Proxy Edit");?></td>
 								  </tr>
@@ -181,7 +181,7 @@ include("head.inc");
 												if ($ifnam == $pconfig['ifname'])
 													echo " selected=\"selected\"";
 												echo ">{$ifdescr}</option>";
-											}		
+											}
 										?>
 											</select>
 								    </td>
@@ -238,7 +238,7 @@ include("head.inc");
 								            <td><div id="onecolumn"><?=gettext("Network");?></div></td>
 								            <td><div id="twocolumn"><?=gettext("CIDR");?></div></td>
 								          </tr>
-								
+
 									<?php
 									$counter = 0;
 									$address = $pconfig['address'];
@@ -270,13 +270,13 @@ include("head.inc");
 											        </select>
 											      </td>
 								            <td>
-								    		<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="delete" /></a>
+										<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="delete" /></a>
 									      </td>
 								          </tr>
 								<?php
-								        	$counter++;
-								
-								       		} // end foreach
+										$counter++;
+
+										} // end foreach
 									} // end if
 								?>
 								        </tbody>
@@ -295,14 +295,14 @@ include("head.inc");
 								    </td>
 								  </tr>
 								</table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <script type="text/javascript">
 //<![CDATA[
 	field_counter_js = 2;

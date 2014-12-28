@@ -236,7 +236,7 @@ U-Blox =	#U-Blox 5, 6 and probably 7
 		$PUBX,40,THS,0,0,0,0,0,0*54	#turn off THS all ports (U-Blox 6)
 		$PUBX,41,1,0007,0003,4800,0*13	# set port 1 to 4800 baud
 
-SureGPS = 		#Sure Electronics SKG16B
+SureGPS =		#Sure Electronics SKG16B
 		$PMTK225,0*2B
 		$PMTK314,1,1,0,1,0,5,0,0,0,0,0,0,0,0,0,0,0,1,0*2D
 		$PMTK301,2*2E
@@ -358,28 +358,28 @@ SureGPS = 		#Sure Electronics SKG16B
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-								
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				<?php if ($savemsg) print_info_box($savemsg); ?>			
-								
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("NTP"), false, "services_ntpd.php");
 						$tab_array[] = array(gettext("Serial GPS"), true, "services_ntpd_gps.php");
 						$tab_array[] = array(gettext("PPS"), false, "services_ntpd_pps.php");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	
-	    				    
-	    				  <form action="services_ntpd_gps.php" method="post" name="iform" id="iform" accept-charset="utf-8">
+
+					<div class="tab-content content-box col-xs-12">
+
+					  <form action="services_ntpd_gps.php" method="post" name="iform" id="iform" accept-charset="utf-8">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped">
+									<table class="table table-striped">
 										<tr>
 											<td colspan="2" valign="top" class="listtopic"><?=gettext("NTP Serial GPS Configuration"); ?></td>
 										</tr>
@@ -412,7 +412,7 @@ SureGPS = 		#Sure Electronics SKG16B
 												<strong><?php echo gettext("Note: ");?></strong><?php echo gettext("The perdefined configurations assume your GPS has already been set to NMEA mode."); ?>
 											</td>
 										</tr>
-								
+
 								<?php
 									/* Probing would be nice, but much more complex. Would need to listen to each port for 1s+ and watch for strings. */
 									$serialports = glob("/dev/cua?[0-9]{,.[0-9]}", GLOB_BRACE);
@@ -584,15 +584,15 @@ SureGPS = 		#Sure Electronics SKG16B
 										</tr>
 									</table>
 									</div>
-									
-	    				  </form>
-	    				  
+
+					  </form>
+
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 
 <script type="text/javascript">
 //<![CDATA[

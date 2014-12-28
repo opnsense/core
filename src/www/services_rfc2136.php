@@ -64,28 +64,28 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				<?php if ($input_errors) print_input_errors($input_errors); ?>				
-								
+
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("DynDns"), false, "services_dyndns.php");
 						$tab_array[] = array(gettext("RFC 2136"), true, "services_rfc2136.php");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	 
-    					
-	    				    
-	    				  <form action="services_rfc2136.php" method="post" name="iform" id="iform">
+
+					<div class="tab-content content-box col-xs-12">
+
+
+					  <form action="services_rfc2136.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped">
-								 		
+									<table class="table table-striped">
+
 
 										<tr>
 										  <td width="5%"  class="listhdrr"><?=gettext("If");?></td>
@@ -178,12 +178,12 @@ $main_buttons = array(
 										  </td>
 										</tr>
 										<?php $i++; endforeach; ?>
-										
-										
+
+
 									  </table>
 									  </div>
-	    				  </form>
-	    				  
+					  </form>
+
 					</div>
 			    </section>
 			</div>

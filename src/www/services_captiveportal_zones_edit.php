@@ -91,24 +91,24 @@ include("head.inc");
 
 <section class="page-content-main">
 	<div class="container-fluid">
-        
-        <div class="row"> 		
-			
+
+        <div class="row">
+
 			<?php if ($input_errors) print_input_errors($input_errors); ?>
 
             <section class="col-xs-12">
-	            
-                <div class="content-box">   	    					
+
+                <div class="content-box">
 				    <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Edit Captiveportal Zones");?></h3>
 				    </header>
-				        				    
+
 				    <div class="content-box-main">
 
 						<div class="table-responsive">
-							
+
 							<form action="services_captiveportal_zones_edit.php" method="post" name="iform" id="iform">
-					 		<table class="table table-striped table-sort">
+							<table class="table table-striped table-sort">
 								<tr>
 									<td width="22%" valign="top" class="vncellreq"><?=gettext("Zone name"); ?></td>
 									<td width="78%" class="vtable">
@@ -132,7 +132,7 @@ include("head.inc");
 									</td>
 								</tr>
 							</table>
-				    		</form>
+						</form>
 						</div>
 				    </div>
 				</div>

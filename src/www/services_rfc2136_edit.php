@@ -74,9 +74,9 @@ if ($_POST) {
 
 	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	if (($_POST['host'] && !is_domain($_POST['host'])))  
+	if (($_POST['host'] && !is_domain($_POST['host'])))
 		$input_errors[] = gettext("The DNS update host name contains invalid characters.");
-	if (($_POST['ttl'] && !is_numericint($_POST['ttl']))) 
+	if (($_POST['ttl'] && !is_numericint($_POST['ttl'])))
 		$input_errors[] = gettext("The DNS update TTL must be an integer.");
 	if (($_POST['keyname'] && !is_domain($_POST['keyname'])))
 		$input_errors[] = gettext("The DNS update key name contains invalid characters.");
@@ -124,24 +124,24 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="services_rfc2136_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">	
-		                        	<tr>
+
+				<div class="content-box">
+
+                        <form action="services_rfc2136_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
+						<tr>
 					                  <td colspan="2" valign="top" class="optsect_t">
 									  <table border="0" cellspacing="0" cellpadding="0" width="100%" summary="title">
-									  	<tr><td class="optsect_s"><strong><?=gettext("RFC 2136 client");?></strong></td></tr>
+										<tr><td class="optsect_s"><strong><?=gettext("RFC 2136 client");?></strong></td></tr>
 									  </table>
 									  </td>
 					                </tr>
@@ -152,16 +152,16 @@ include("head.inc");
 									  </td>
 					                </tr>
 									<tr>
-									   <td width="22%" valign="top" class="vncellreq"><?=gettext("Interface to monitor");?></td>  
+									   <td width="22%" valign="top" class="vncellreq"><?=gettext("Interface to monitor");?></td>
 									   <td width="78%" class="vtable">
 									   <select name="interface" class="formselect" id="interface">
 									   <?php $iflist = get_configured_interface_with_descr();
-									   		foreach ($iflist as $if => $ifdesc):?>
+											foreach ($iflist as $if => $ifdesc):?>
 												<option value="<?=$if;?>" <?php if ($pconfig['interface'] == $if) echo "selected=\"selected\"";?>><?=$ifdesc;?></option>
 										<?php endforeach; ?>
 										</select>
 										</td>
-									</tr>	
+									</tr>
 					                <tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Hostname");?></td>
 					                  <td width="78%" class="vtable">
@@ -241,12 +241,12 @@ include("head.inc");
 					                    "by DHCP/PPP on WAN for dynamic DNS updates to work."),'<a href="system.php">', '</a>');?></span></td>
 					                </tr>
 					              </table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

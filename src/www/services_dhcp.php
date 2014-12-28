@@ -705,9 +705,9 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('staticmaps')): ?><br/>
@@ -715,9 +715,9 @@ include("head.inc");
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 						/* active tabs */
 						$tab_array = array();
 						$tabscounter = 0;
@@ -744,16 +744,16 @@ include("head.inc");
 						display_top_tabs($tab_array);
 						?>
 
-					
-						<div class="tab-content content-box col-xs-12">	
-								
+
+						<div class="tab-content content-box col-xs-12">
+
 		                        <form action="services_dhcp.php" method="post" name="iform" id="iform">
-								
+
 								<?php if (isset($config['dhcrelay']['enable'])): ?>
 									<?php echo gettext("DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface."); ?>
 								<?php else: ?>
-								
-		                        	
+
+
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<?php if (!is_numeric($pool) && !($act == "newpool")): ?>
@@ -893,7 +893,7 @@ include("head.inc");
 											<?php endif; ?>
 											<?php $i++; endforeach; ?>
 											<?php endif; ?>
-											
+
 											</table>
 										</td>
 										</tr>
@@ -1177,7 +1177,7 @@ include("head.inc");
 											//]]>
 											</script>
 											</div>
-							
+
 											</td>
 										</tr>
 										<?php endif; ?>
@@ -1210,7 +1210,7 @@ include("head.inc");
 									</table>
 									<?php if (!is_numeric($pool) && !($act == "newpool")): ?>
 		                        </div>
-		                        
+
 		                        <div class="table-responsive">
 									<table class="table table-striped table-sort">
 									<tr>
@@ -1265,20 +1265,20 @@ include("head.inc");
 									<?php endif; ?>
 									<?php $i++; endforeach; ?>
 									<?php endif; ?>
-									
+
 									</table>
 									<?php endif; ?>
 								</div>
 								<? endif; ?>
 		                        </form>
-		                        
+
 						</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
-	
+
+
 <script type="text/javascript">
 //<![CDATA[
 enable_change(false);

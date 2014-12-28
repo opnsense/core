@@ -1,22 +1,22 @@
-<?php 
+<?php
 /* $Id$ */
 /*
 	services_snmp.php
 	part of m0n0wall (http://m0n0.ch/wall)
-	
+
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
-	
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -89,7 +89,7 @@ if ($_POST) {
 	/* input validation */
 	if ($_POST['enable']) {
 		if (strstr($_POST['syslocation'],"#")) $input_errors[] = gettext("Invalid character '#' in system location");
- 		if (strstr($_POST['syscontact'],"#")) $input_errors[] = gettext("Invalid character '#' in system contact");
+		if (strstr($_POST['syscontact'],"#")) $input_errors[] = gettext("Invalid character '#' in system contact");
 		if (strstr($_POST['rocommunity'],"#")) $input_errors[] = gettext("Invalid character '#' in read community string");
 
 		$reqdfields = explode(" ", "rocommunity");
@@ -99,8 +99,8 @@ if ($_POST) {
 		$reqdfields = explode(" ", "pollport");
 		$reqdfieldsn = array(gettext("Polling Port"));
 		do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
-		
-	
+
+
 	}
 
 	if ($_POST['trapenable']) {
@@ -128,12 +128,12 @@ if ($_POST) {
 	}
 */
 
-	
+
 
 	if (!$input_errors) {
 		$config['snmpd']['enable'] = $_POST['enable'] ? true : false;
 		$config['snmpd']['pollport'] = $_POST['pollport'];
-		$config['snmpd']['syslocation'] = $_POST['syslocation'];	
+		$config['snmpd']['syslocation'] = $_POST['syslocation'];
 		$config['snmpd']['syscontact'] = $_POST['syscontact'];
 		$config['snmpd']['rocommunity'] = $_POST['rocommunity'];
 		/* disabled until some docs show up on what this does.
@@ -144,7 +144,7 @@ if ($_POST) {
 		$config['snmpd']['trapserver'] = $_POST['trapserver'];
 		$config['snmpd']['trapserverport'] = $_POST['trapserverport'];
 		$config['snmpd']['trapstring'] = $_POST['trapstring'];
-		
+
 		$config['snmpd']['modules']['mibii'] = $_POST['mibii'] ? true : false;
 		$config['snmpd']['modules']['netgraph'] = $_POST['netgraph'] ? true : false;
 		$config['snmpd']['modules']['pf'] = $_POST['pf'] ? true : false;
@@ -153,9 +153,9 @@ if ($_POST) {
 		$config['snmpd']['modules']['ucd'] = $_POST['ucd'] ? true : false;
 		$config['snmpd']['modules']['regex'] = $_POST['regex'] ? true : false;
 		$config['snmpd']['bindip'] = $_POST['bindip'];
-			
+
 		write_config();
-		
+
 		$retval = 0;
 		$retval = services_snmpd_configure();
 		$savemsg = get_std_save_message($retval);
@@ -252,7 +252,7 @@ function enable_change(whichone) {
             document.iform.syslocation.disabled = true;
             document.iform.syscontact.disabled = true;
             document.iform.rocommunity.disabled = true;
-	    /* 
+	    /*
             document.iform.rwenable.disabled = true;
 	    document.iform.rwcommunity.disabled = true;
 	    */
@@ -280,37 +280,37 @@ function enable_change(whichone) {
 
 	<section class="page-content-main">
 
-    		<div class="container-fluid">
-	
-			<div class="row">	
+		<div class="container-fluid">
+
+			<div class="row">
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 
 
-                <form action="services_snmp.php" method="post" name="iform" id="iform">	
-	                        
+                <form action="services_snmp.php" method="post" name="iform" id="iform">
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-						
-	                        	
+
+				<div class="content-box">
+
+
 						<header class="content-box-head container-fluid">
-    				        <h3><?=gettext("SNMP Daemon");?></h3>
-    				    </header>
-        				    
-        				<div class="content-box-main">
-													
-                        	
-                        		<div class="table-responsive">
-	                        		<table class="table table-striped table-sort">
-		                        		<tr>
+				        <h3><?=gettext("SNMP Daemon");?></h3>
+				    </header>
+
+					<div class="content-box-main">
+
+
+					<div class="table-responsive">
+						<table class="table table-striped table-sort">
+							<tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Enable");?></td>
 						                  <td width="78%" class="vtable">
 						                   <input name="enable" id="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> onclick="enable_change(this)" />
 										</td>
 						                </tr>
 
-  		 
+
 						                <tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Polling Port ");?></td>
 						                  <td width="78%" class="vtable">
@@ -318,39 +318,39 @@ function enable_change(whichone) {
 						                    <br /><?=gettext("Enter the port to accept polling events on (default 161)");?><br />
 								  </td>
 						                </tr>
-						
-						                <tr> 
+
+						                <tr>
 						                  <td width="22%" valign="top" class="vncell"><?=gettext("System location");?></td>
-						                  <td width="78%" class="vtable"> 
+						                  <td width="78%" class="vtable">
 						                    <input name="syslocation" type="text" class="formfld unknown" id="syslocation" size="40" value="<?=htmlspecialchars($pconfig['syslocation']);?>" />
 						                  </td>
 						                </tr>
-						
-						                <tr> 
+
+						                <tr>
 						                  <td width="22%" valign="top" class="vncell"><?=gettext("System contact");?></td>
-						                  <td width="78%" class="vtable"> 
+						                  <td width="78%" class="vtable">
 						                    <input name="syscontact" type="text" class="formfld unknown" id="syscontact" size="40" value="<?=htmlspecialchars($pconfig['syscontact']);?>" />
 						                  </td>
 						                </tr>
-						
-						                <tr> 
+
+						                <tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Read Community String");?></td>
-						                  <td width="78%" class="vtable"> 
+						                  <td width="78%" class="vtable">
 						                    <input name="rocommunity" type="text" class="formfld unknown" id="rocommunity" size="40" value="<?=htmlspecialchars($pconfig['rocommunity']);?>" />
 								    <br /><?=gettext("The community string is like a password, restricting access to querying SNMP to hosts knowing the community string. Use a strong value here to protect from unauthorized information disclosure.");?><br />
 								  </td>
 						                </tr>
-						
-						<?php 
+
+						<?php
 									/* disabled until some docs show up on what this does.
 						                <tr>
 						                  <td width="22%" valign="top" class="vtable">&nbsp;</td>
 						                  <td width="78%" class="vtable">
-							 	   <input name="rwenable" id="rwenable" type="checkbox" value="yes" <?php if ($pconfig['rwenable']) echo "checked=\"checked\""; ?> onclick="enable_change(this)" />
+								   <input name="rwenable" id="rwenable" type="checkbox" value="yes" <?php if ($pconfig['rwenable']) echo "checked=\"checked\""; ?> onclick="enable_change(this)" />
 						                    <strong>Enable Write Community String</strong>
 								  </td>
 						                </tr>
-						
+
 								<tr>
 								  <td width="22%" valign="top" class="vncellreq">Write community string</td>
 						          <td width="78%" class="vtable">
@@ -358,36 +358,36 @@ function enable_change(whichone) {
 								    <br />Please use something other then &quot;private&quot; here<br />
 								  </td>
 						                </tr>
-								    	*/ 
+									*/
 						?>
-	                        		</table>
-                        		</div>
-        				</div>
-                        
-    				</div>
+						</table>
+					</div>
+					</div>
+
+				</div>
 			    </section>
 			    <section class="col-xs-12">
 				    <div class="content-box">
-        				
-        				<header class="content-box-head container-fluid">
-    				        <h3><?=gettext("SNMP Traps");?></h3>
-    				    </header>
-        				    
-        				<div class="content-box-main">
-													
-                        	
-                        		<div class="table-responsive">
-	                        		<table class="table table-striped table-sort">
-		                        		
+
+					<header class="content-box-head container-fluid">
+				        <h3><?=gettext("SNMP Traps");?></h3>
+				    </header>
+
+					<div class="content-box-main">
+
+
+					<div class="table-responsive">
+						<table class="table table-striped table-sort">
+
 						                <tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Enable");?></td>
 						                  <td width="78%" class="vtable">
 						                    <input name="trapenable" id="trapenable" type="checkbox" value="yes" <?php if ($pconfig['trapenable']) echo "checked=\"checked\""; ?> onclick="enable_change(this)" /> <strong><?=gettext("Enable");?>
 								  </td>
 						                </tr>
-						                
-						
-						
+
+
+
 						                <tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Trap server");?></td>
 						                  <td width="78%" class="vtable">
@@ -395,7 +395,7 @@ function enable_change(whichone) {
 						                    <br /><?=gettext("Enter trap server name");?><br />
 								  </td>
 						                </tr>
-						
+
 						                <tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Trap server port ");?></td>
 						                  <td width="78%" class="vtable">
@@ -403,7 +403,7 @@ function enable_change(whichone) {
 						                    <br /><?=gettext("Enter the port to send the traps to (default 162)");?><br />
 								  </td>
 						                </tr>
-						
+
 						                <tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Enter the SNMP trap string");?></td>
 						                  <td width="78%" class="vtable">
@@ -411,26 +411,26 @@ function enable_change(whichone) {
 						                    <br /><?=gettext("Trap string");?><br />
 								  </td>
 						                </tr>
-	                        		</table>
-                        		</div>
-        				</div>
-        				       
-    				</div>
+						</table>
+					</div>
+					</div>
+
+				</div>
 			    </section>
 			    <section class="col-xs-12">
 				    <div class="content-box">
-					    
-        				<header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Modules");?></h3>
-    				    </header>
-        				    
-        				<div class="content-box-main">
-													
-                        	
-                        		<div class="table-responsive">
-	                        		<table class="table table-striped table-sort">
-						
-						
+
+					<header class="content-box-head container-fluid">
+				        <h3><?=gettext("Modules");?></h3>
+				    </header>
+
+					<div class="content-box-main">
+
+
+					<div class="table-responsive">
+						<table class="table table-striped table-sort">
+
+
 								<tr>
 								  <td width="22%" valign="top" class="vncellreq"><?=gettext("SNMP Modules");?></td>
 								  <td width="78%" class="vtable">
@@ -448,26 +448,26 @@ function enable_change(whichone) {
 								    <br />
 								  </td>
 								</tr>
-						
-	                        		</table>
-                        		</div>
-        				</div>
-        				       
-    				</div>
+
+						</table>
+					</div>
+					</div>
+
+				</div>
 			    </section>
 			    <section class="col-xs-12">
 				    <div class="content-box">
-					    
-        				<header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Interface Binding");?></h3>
-    				    </header>
-        				    
-        				<div class="content-box-main    ">
-													
-                        	
-                        		<div class="table-responsive">
-	                        		<table class="table table-striped table-sort">
-						
+
+					<header class="content-box-head container-fluid">
+				        <h3><?=gettext("Interface Binding");?></h3>
+				    </header>
+
+					<div class="content-box-main    ">
+
+
+					<div class="table-responsive">
+						<table class="table table-striped table-sort">
+
 								<tr>
 									<td width="22%" valign="top" class="vncellreq"><?=gettext("Bind Interface"); ?></td>
 									<td width="78%" class="vtable">
@@ -486,22 +486,22 @@ function enable_change(whichone) {
 										</select>
 									</td>
 								</tr>
-								 <tr> 
+								 <tr>
 								   <td width="22%" valign="top">&nbsp;</td>
-								   <td width="78%"> 
+								   <td width="78%">
 								     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
 								   </td>
 								 </tr>
 								</table>
-                        		</div>
-        				</div>
-    				</div>
+					</div>
+					</div>
+				</div>
 			    </section>
-                        	</form>
+				</form>
 			</div>
 		</div>
 	</section>
-	
+
 <script type="text/javascript">
 //<![CDATA[
 enable_change(this);

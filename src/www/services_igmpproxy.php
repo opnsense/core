@@ -2,7 +2,7 @@
 /* $Id$ */
 /*
 	services_igmpproxy.php
-	
+
 	Copyright (C) 2009 Ermal Luçi
 	Copyright (C) 2004 Scott Ullrich
 	All rights reserved.
@@ -92,28 +92,28 @@ $main_buttons = array(
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('igmpproxy')): ?><br/>
 				<?php print_info_box_np(gettext("The IGMP entry list has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?>
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="services_igmpproxy.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">				                 
+
+				<div class="content-box">
+
+                        <form action="services_igmpproxy.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<tr>
 									  <td width="15%" class="listhdrr"><?=gettext("Name");?></td>
 									  <td width="10%" class="listhdrr"><?=gettext("Type");?></td>
 									  <td width="25%" class="listhdrr"><?=gettext("Values");?></td>
 									  <td width="20%" class="listhdr"><?=gettext("Description");?></td>
 									  <td width="10%" class="list">
-									   
+
 									</tr>
 										  <?php $i = 0; foreach ($a_igmpproxy as $igmpentry): ?>
 									<tr>
@@ -143,7 +143,7 @@ $main_buttons = array(
 									  </td>
 									</tr>
 										  <?php $i++; endforeach; ?>
-							
+
 									  <tr>
 									    <td colspan="5" width="78%">
 										<br />
@@ -157,12 +157,12 @@ $main_buttons = array(
 									  </td>
 									</tr>
 									</table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

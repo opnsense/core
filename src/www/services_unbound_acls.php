@@ -164,46 +164,46 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php
 					if (!$savemsg)
 						$savemsg = "";
-					
+
 					if ($input_errors)
 						print_input_errors($input_errors);
-					
+
 					if ($savemsg)
 						print_info_box($savemsg);
-					
+
 					if (is_subsystem_dirty("unbound"))
 							print_info_box_np(gettext("The settings for the DNS Resolver have changed. You must apply the configuration to take affect."));
 					?>
-				
-			
-								
+
+
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("General Settings"), false, "/services_unbound.php");
 						$tab_array[] = array(gettext("Advanced settings"), false, "services_unbound_advanced.php");
 						$tab_array[] = array(gettext("Access Lists"), true, "/services_unbound_acls.php");
 						display_top_tabs($tab_array, true);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	  
-    					
-	    				    
-	    				    <form action="services_unbound_acls.php" method="post" name="iform" id="iform">
+
+					<div class="tab-content content-box col-xs-12">
+
+
+					    <form action="services_unbound_acls.php" method="post" name="iform" id="iform">
 							<?php if($act=="new" || $act=="edit"): ?>
 								<input name="aclid" type="hidden" value="<?=$id;?>" />
 								<input name="act" type="hidden" value="<?=$act;?>" />
-					
+
 								<div class="table-responsive">
-							 		<table class="table table-striped">
-								 		<tr>
+									<table class="table table-striped">
+										<tr>
 											<td colspan="2" valign="top" class="listtopic"><?=ucwords(sprintf(gettext("%s Access List"),$act));?></td>
 										</tr>
 										<tr>
@@ -291,10 +291,10 @@ include("head.inc");
 												loaded = <?php echo $counter; ?>;
 											//]]>
 											</script>
-				
+
 											</td>
 										</tr>
-				
+
 										<tr>
 											<td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
 											<td width="78%" class="vtable">
@@ -315,13 +315,13 @@ include("head.inc");
 											</td>
 										</tr>
 									</table>
-								
-								</div>							
+
+								</div>
 
 								<?php else: ?>
-								
+
 								<div class="table-responsive">
-							 		<table class="table table-striped sortable">
+									<table class="table table-striped sortable">
 
 										<thead>
 											<tr>
@@ -384,13 +384,13 @@ include("head.inc");
 									</table>
 								</div>
 								<?php endif; ?>
-	    				    </form>
-	    				    
+					    </form>
+
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 
 <?php include("foot.inc"); ?>

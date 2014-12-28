@@ -67,7 +67,7 @@ if ($_GET['act'] == "del" && !empty($cpzone)) {
 	$a_allowedhostnames =& $a_cp[$cpzone]['allowedhostname'];
 	if ($a_allowedhostnames[$_GET['id']]) {
 		$ipent = $a_allowedhostnames[$_GET['id']];
-		
+
 		if (isset($a_cp[$cpzone]['enable'])) {
 			if (!empty($ipent['sn']))
 				$ipent['ip'] .= "/{$ipent['sn']}";
@@ -83,7 +83,7 @@ if ($_GET['act'] == "del" && !empty($cpzone)) {
 				pfSense_ipfw_Tableaction($cpzone, IP_FW_TABLE_XDEL, 4, $ip);
 			}
 		}
-			
+
 		unset($a_allowedhostnames[$_GET['id']]);
 		write_config();
 		captiveportal_allowedhostname_configure();
@@ -105,14 +105,14 @@ $main_buttons = array(
 	<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				<?php if ($savemsg) print_info_box($savemsg); ?>	
-						
+
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
 						$tab_array[] = array(gettext("MAC"), false, "services_captiveportal_mac.php?zone={$cpzone}");
@@ -122,22 +122,22 @@ $main_buttons = array(
 						$tab_array[] = array(gettext("File Manager"), false, "services_captiveportal_filemanager.php?zone={$cpzone}");
 						display_top_tabs($tab_array, true);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	
-	    					
-	    				<div class="container-fluid">	    				
-   
-		                    <form action="services_captiveportal_hostname.php" method="post" name="iform" id="iform">									
+
+					<div class="tab-content content-box col-xs-12">
+
+					<div class="container-fluid">
+
+		                    <form action="services_captiveportal_hostname.php" method="post" name="iform" id="iform">
 		                        <input type="hidden" name="zone" id="zone" value="<?=htmlspecialchars($cpzone);?>" />
-		                        	
+
 		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort"> 
+			                        <table class="table table-striped table-sort">
 
 										<tr>
 										  <td width="60%" class="listhdrr"><?=gettext("Hostname"); ?></td>
 										  <td width="40%" class="listhdr"><?=gettext("Description"); ?></td>
 										  <td width="10%" class="list">
-											
+
 										  </td>
 										</tr>
 									<?php	if (is_array($a_cp[$cpzone]['allowedhostname'])):
@@ -155,8 +155,8 @@ $main_buttons = array(
 											if($ip['dir'] == "from") {
 												echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_in.gif\" width=\"11\" height=\"11\" align=\"middle\" alt=\"in\" /> any";
 											}
-											
-											?>	
+
+											?>
 										  </td>
 										  <td class="listbg">
 											<?=htmlspecialchars($ip['descr']);?>&nbsp;
@@ -165,7 +165,7 @@ $main_buttons = array(
 											 &nbsp;<a href="services_captiveportal_hostname.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this address?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 										</tr>
 									  <?php $i++; endforeach; endif;  ?>
-										
+
 										<tr>
 										<td colspan="2" class="list"><p class="vexpl"><span class="red"><strong>
 										  <?=gettext("Note:"); ?><br />
@@ -193,7 +193,7 @@ $main_buttons = array(
 									  </table>
 		                        </div>
 		                    </form>
-	    				</div>
+					</div>
 					</div>
 			    </section>
 			</div>

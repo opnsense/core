@@ -87,7 +87,7 @@ if ($_POST) {
 			$config['ntpd']['pps']['refid'] = $_POST['ppsrefid'];
 		elseif (isset($config['ntpd']['pps']['refid']))
 			unset($config['ntpd']['pps']['refid']);
-			
+
 		write_config("Updated NTP PPS Settings");
 
 		$retval = 0;
@@ -106,37 +106,37 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-								
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				<?php if ($savemsg) print_info_box($savemsg); ?>				
-								
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("NTP"), false, "services_ntpd.php");
 						$tab_array[] = array(gettext("Serial GPS"), false, "services_ntpd_gps.php");
 						$tab_array[] = array(gettext("PPS"), true, "services_ntpd_pps.php");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	 
-    					
-	    				  <form action="services_ntpd_pps.php" method="post" name="iform" id="iform">
+
+					<div class="tab-content content-box col-xs-12">
+
+					  <form action="services_ntpd_pps.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped">
-								
+									<table class="table table-striped">
+
 										<tr>
 											<td colspan="2" valign="top" class="listtopic"><?=gettext("NTP PPS Configuration"); ?></td>
 										</tr>
 										<tr>
 											<td width="22%" valign="top" class="vncellreq">
 											</td>
-											<td width="78%" class="vtable"><?php echo gettext("Devices with a Pulse Per Second output such as radios that receive a time signal from DCF77 (DE), JJY (JP), MSF (GB) or WWVB (US) may be used as a PPS reference for NTP.");?> 
-											<?php echo gettext("A serial GPS may also be used, but the serial GPS driver would usually be the better option.");?> 
+											<td width="78%" class="vtable"><?php echo gettext("Devices with a Pulse Per Second output such as radios that receive a time signal from DCF77 (DE), JJY (JP), MSF (GB) or WWVB (US) may be used as a PPS reference for NTP.");?>
+											<?php echo gettext("A serial GPS may also be used, but the serial GPS driver would usually be the better option.");?>
 											<?php echo gettext("A PPS signal only provides a reference to the change of a second, so at least one other source to number the seconds is required.");?>
 											<br />
 											<br /><strong><?php echo gettext("Note");?>:</strong> <?php echo gettext("At least 3 additional time sources should be configured under"); ?> <a href="services_ntpd.php"><?php echo gettext("Services > NTP"); ?></a> <?php echo gettext("to reliably supply the time of each PPS pulse."); ?>
@@ -223,12 +223,12 @@ include("head.inc");
 										</tr>
 									</table>
 								</div>
-	    				  </form>
-	    				  
+					  </form>
+
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

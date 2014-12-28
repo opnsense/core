@@ -1,24 +1,24 @@
-<?php 
+<?php
 /* $Id$ */
 /*
 	services_unbound_edit_host.php
 	part of the pfSense project (https://www.pfsense.org)
 	Copyright (C) 2014 Warren Baker (warren@decoy.co.za)
 	All rights reserved.
-	
+
 	Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -58,7 +58,7 @@ function hosts_sort() {
 
 require("guiconfig.inc");
 
-if (!is_array($config['unbound']['hosts'])) 
+if (!is_array($config['unbound']['hosts']))
 	$config['unbound']['hosts'] = array();
 
 $a_hosts = &$config['unbound']['hosts'];
@@ -84,16 +84,16 @@ if ($_POST) {
 	/* input validation */
 	$reqdfields = explode(" ", "domain ip");
 	$reqdfieldsn = array(gettext("Domain"),gettext("IP address"));
-	
+
 	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
-	
-	if (($_POST['host'] && !is_hostname($_POST['host']))) 
+
+	if (($_POST['host'] && !is_hostname($_POST['host'])))
 		$input_errors[] = gettext("The hostname can only contain the characters A-Z, 0-9 and '-'.");
 
-	if (($_POST['domain'] && !is_domain($_POST['domain']))) 
+	if (($_POST['domain'] && !is_domain($_POST['domain'])))
 		$input_errors[] = gettext("A valid domain must be specified.");
-		
-	if (($_POST['ip'] && !is_ipaddr($_POST['ip']))) 
+
+	if (($_POST['ip'] && !is_ipaddr($_POST['ip'])))
 		$input_errors[] = gettext("A valid IP address must be specified.");
 
 	/* collect aliases */
@@ -156,11 +156,11 @@ if ($_POST) {
 		else
 			$a_hosts[] = $hostent;
 		hosts_sort();
-		
+
 		mark_subsystem_dirty('unbound');
-		
+
 		write_config();
-		
+
 		header("Location: services_unbound.php");
 		exit;
 	}
@@ -175,7 +175,7 @@ include("head.inc");
 
 <body onload="<?= $jsevents["body"]["onload"] ?>">
 	<script type="text/javascript" src="/javascript/row_helper.js"></script>
-	
+
 	<script type="text/javascript">
 	//<![CDATA[
 		rowname[0] = "aliashost";
@@ -195,19 +195,19 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="services_unbound_host_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+                        <form action="services_unbound_host_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit DNS Resolver entry");?></td>
 									</tr>
@@ -310,12 +310,12 @@ include("head.inc");
 										</td>
 									</tr>
 								</table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

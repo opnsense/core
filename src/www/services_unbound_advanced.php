@@ -135,33 +135,33 @@ include_once("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('unbound')): ?><br/>
 				<?php print_info_box_np(gettext("The configuration of the DNS Resolver, has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
 				<?php endif; ?>
-				
-								
+
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("General settings"), false, "services_unbound.php");
 						$tab_array[] = array(gettext("Advanced settings"), true, "services_unbound_advanced.php");
 						$tab_array[] = array(gettext("Access Lists"), false, "/services_unbound_acls.php");
 						display_top_tabs($tab_array, true);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    
-        				       
+
+					<div class="tab-content content-box col-xs-12">
+
+
 							<form action="services_unbound_advanced.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped">
+									<table class="table table-striped">
 
 										<tbody>
 											<tr>
@@ -434,7 +434,7 @@ include_once("head.inc");
 									</table>
 								</div>
 							</form>
-							
+
 					</div>
 			    </section>
 			</div>

@@ -3,8 +3,8 @@
 	services_dhcpv6_relay.php
 
 	Copyright (C) 2003-2004 Justin Ellison <justin@techadvise.com>.
-	Copyright (C) 2010 	Ermal Luçi
-	Copyright (C) 2010 	Seth Mos
+	Copyright (C) 2010	Ermal Luçi
+	Copyright (C) 2010	Seth Mos
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -57,8 +57,8 @@ $iflist = get_configured_interface_with_descr();
  */
 $dhcpd_enabled = false;
 if (is_array($config['dhcpdv6'])) {
-	foreach($config['dhcpdv6'] as $dhcp) 
-		if (isset($dhcp['enable'])) 
+	foreach($config['dhcpdv6'] as $dhcp)
+		if (isset($dhcp['enable']))
 			$dhcpd_enabled = true;
 }
 
@@ -129,29 +129,29 @@ function enable_change(enable_over) {
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="services_dhcpv6_relay.php" method="post" name="iform" id="iform">								
-                        	
-                        	<?php if ($dhcpd_enabled): ?>
+
+				<div class="content-box">
+
+                        <form action="services_dhcpv6_relay.php" method="post" name="iform" id="iform">
+
+				<?php if ($dhcpd_enabled): ?>
 								<p>DHCPv6 Server is currently enabled.  Cannot enable the DHCPv6 Relay service while the DHCPv6 Server is enabled on any interface.</p>
 							<? else: ?>
-							
+
 							<header class="content-box-head container-fluid">
-        				        <h3><?=gettext("DHCPv6 Relay configuration"); ?></h3>
-        				    </header>
-        				    
-        				    <div class="content-box-main ">
-	        				  <div class="table-responsive">
-	                        	<table class="table table-striped table-sort">        	
+					        <h3><?=gettext("DHCPv6 Relay configuration"); ?></h3>
+					    </header>
+
+					    <div class="content-box-main ">
+						  <div class="table-responsive">
+					<table class="table table-striped table-sort">
 
 									<tr>
 							                        <td width="22%" valign="top" class="vncellreq">Enable</td>
@@ -201,10 +201,10 @@ function enable_change(enable_over) {
 									</tr>
 								</table>
 								</div>
-        				    </div>
-        				    <? endif; ?>
+					    </div>
+					    <? endif; ?>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>

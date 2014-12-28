@@ -177,9 +177,9 @@ function show_advanced_dns() {
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('hosts')): ?><br/>
@@ -187,18 +187,18 @@ function show_advanced_dns() {
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="services_dnsmasq.php" method="post" name="iform" id="iform">							
-                        	
+
+				<div class="content-box">
+
+                        <form action="services_dnsmasq.php" method="post" name="iform" id="iform">
+
 							<header class="content-box-head container-fluid">
-        				        <h3><?=gettext("General DNS Forwarder Options");?></h3>
-        				    </header>
-        				    
-        				    <div class="content-box-main">
-	        				  <div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+					        <h3><?=gettext("General DNS Forwarder Options");?></h3>
+					    </header>
+
+					    <div class="content-box-main">
+						  <div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("General DNS Forwarder Options");?></td>
 									</tr>
@@ -336,8 +336,8 @@ function show_advanced_dns() {
 										</td>
 									</tr>
 								</table>
-	        				  </div>
-                        
+						  </div>
+
                             <div class="container-fluid">
 							<p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
 							</strong></span><?php printf(gettext("If the DNS forwarder is enabled, the DHCP".
@@ -353,13 +353,13 @@ function show_advanced_dns() {
 							"General setup%s page."),'<a href="system.php">','</a>','<a href="system.php">','</a>');?><br />
 							</span></p>
                             </div>
-							
+
 
 							<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
-		                        	<tr>
-			                        	<td><?=gettext("Host Overrides");?></td>
-		                        	</tr>
+					<table class="table table-striped table-sort">
+						<tr>
+							<td><?=gettext("Host Overrides");?></td>
+						</tr>
 									<tr>
 										<td><br />
 										<?=gettext("Entries in this section override individual results from the forwarders.");?>
@@ -368,9 +368,9 @@ function show_advanced_dns() {
 									</tr>
 									</table>
 							</div>
-							
+
 							<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">	
+					<table class="table table-striped table-sort">
 									<thead>
 									<tr>
 										<td width="20%" class="listhdrr"><?=gettext("Host");?></td>
@@ -436,7 +436,7 @@ function show_advanced_dns() {
 									</tbody>
 								</table>
 							</div>
-							
+
 							<div class="table-responsive">
 								<table class="table table-striped table-sort">
 									<tr>
@@ -447,8 +447,8 @@ function show_advanced_dns() {
 										" authoritative DNS server to be queried for that domain.");?></p></td>
 									</tr>
 								</table>
-								
-								
+
+
 								<table class="table table-striped table-sort">
 									<thead>
 									<tr>
@@ -465,7 +465,7 @@ function show_advanced_dns() {
 										</td>
 									</tr>
 									</thead>
-									
+
 									<tbody>
 									<?php $i = 0; foreach ($a_domainOverrides as $doment): ?>
 									<tr>

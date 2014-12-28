@@ -226,30 +226,30 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-								
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				<?php if ($savemsg) print_info_box($savemsg); ?>				
-								
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						$tab_array[] = array(gettext("NTP"), true, "services_ntpd.php");
 						$tab_array[] = array(gettext("Serial GPS"), false, "services_ntpd_gps.php");
 						$tab_array[] = array(gettext("PPS"), false, "services_ntpd_pps.php");
 						display_top_tabs($tab_array);
 					?>
-					
-					<div class="tab-content content-box col-xs-12">	 
-    					
-	    				    
-	    				   <form action="services_ntpd.php" method="post" name="iform" id="iform" enctype="multipart/form-data" accept-charset="utf-8">
+
+					<div class="tab-content content-box col-xs-12">
+
+
+					   <form action="services_ntpd.php" method="post" name="iform" id="iform" enctype="multipart/form-data" accept-charset="utf-8">
 
 								<div class="table-responsive">
-							 		<table class="table table-striped">
-								 
+									<table class="table table-striped">
+
 										<tr>
 											<td colspan="2" valign="top" class="listtopic"><?=gettext("NTP Server Configuration"); ?></td>
 										</tr>
@@ -267,7 +267,7 @@ include("head.inc");
 								$size = (count($interfaces) < 10) ? count($interfaces) : 10;
 							?>
 										<select id="interface" name="interface[]" multiple="multiple" class="formselect" size="<?php echo $size; ?>">
-							<?php	
+							<?php
 								foreach ($interfaces as $iface => $ifacename) {
 									if (!is_ipaddr(get_interface_ip($iface)) && !is_ipaddr($iface))
 										continue;
@@ -297,7 +297,7 @@ include("head.inc");
 														echo " style=\"display:none\"";
 													}
 													echo ">\n";
-													
+
 													echo "<input name=\"server{$i}\" class=\"formfld unknown\" id=\"server{$i}\" size=\"30\" value=\"{$timeservers[$i]}\" type=\"text\" />&emsp;";
 													echo "\n<input name=\"servprefer{$i}\" class=\"formcheckbox\" id=\"servprefer{$i}\" onclick=\"CheckOffOther('servprefer{$i}', 'servselect{$i}')\" type=\"checkbox\"";
 													if (substr_count($config['ntpd']['prefer'], $timeservers[$i])) echo " checked=\"checked\"";
@@ -418,8 +418,8 @@ include("head.inc");
 										</tr>
 									</table>
 								</div>
-	    				   </form>
-	    				   
+					   </form>
+
 					</div>
 			    </section>
 			</div>
