@@ -74,9 +74,9 @@ if [ "$pkg_running" == "" ]; then
 
       # Lets get coreversion first
       core_version=`pkg info opnsense | grep 'Version' | awk -F '[:]' '{print $2}'` # Changed to reflect current installed core version
-      
+
       # Timeout loop for pkg update -f
-      while [ "$pkg_running" != "" ] && [ $timer -ne 0 ]; 
+      while [ "$pkg_running" != "" ] && [ $timer -ne 0 ];
       do
         sleep 1 # wait for 1 second
         pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
@@ -94,7 +94,7 @@ if [ "$pkg_running" == "" ]; then
         pkg_running="started" # Set running state to arbitrary value
 
         # Timeout loop for pkg upgrade -n
-        while [ "$pkg_running" != "" ] && [ $timer -ne 0 ]; 
+        while [ "$pkg_running" != "" ] && [ $timer -ne 0 ];
         do
           sleep 1 # wait for 1 second
           #pkg_running=`ps | grep 'pkg update -f' | grep -v 'grep' | tail -n 1 | awk -F '[ ]' '{print $1}'`
@@ -109,7 +109,7 @@ if [ "$pkg_running" == "" ]; then
           if [ "$repo_ok" == "" ]; then
             # Repository can be used for updates
             repository="ok"
-            updates=`cat $tmp_pkg_output_file | grep 'The following' | awk -F '[ ]' '{print $3}'` 
+            updates=`cat $tmp_pkg_output_file | grep 'The following' | awk -F '[ ]' '{print $3}'`
             if [ "$updates" == "" ]; then
               # There are no updates
               updates="0"
@@ -131,7 +131,7 @@ if [ "$pkg_running" == "" ]; then
                     else
                       i=`echo $i | tr -d :`
                       #echo "name:$i"
-                      if [ "$packages_new" == "" ]; then 
+                      if [ "$packages_new" == "" ]; then
                         packages_new=$packages_new"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
                       else
                         packages_new=$packages_new", {\"name\":\"$i\","
@@ -157,7 +157,7 @@ if [ "$pkg_running" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
                     else
                       i=`echo $i | tr -d :`
-                      if [ "$packages_upgraded" == "" ]; then 
+                      if [ "$packages_upgraded" == "" ]; then
                         packages_upgraded=$packages_upgraded"{\"name\":\"$i\"," # If it is the first item then we do not want a seperator
                       else
                         packages_upgraded=$packages_upgraded", {\"name\":\"$i\","

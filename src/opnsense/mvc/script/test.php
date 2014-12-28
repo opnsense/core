@@ -36,8 +36,3 @@ print_r($acc_list);
 //print_r($config->xpath('//pfsense/interfaces/*') );
 
 //$rules= new \Core\Captiveportal\Rules();
-
-
-
-
-

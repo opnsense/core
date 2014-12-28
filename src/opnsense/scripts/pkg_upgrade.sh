@@ -13,5 +13,3 @@ else
 	echo 'Upgrade already in progress'
 	echo '***DONE***'
 fi
-
-
