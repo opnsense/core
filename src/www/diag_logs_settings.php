@@ -255,26 +255,26 @@ function check_everything() {
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-					
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
-				
-			    <section class="col-xs-12">    				
-						
-    				<? $active_tab = "/diag_logs_settings.php"; include('diag_logs_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">
-	    				    
-							    				    
-						
+
+			    <section class="col-xs-12">
+
+				<? $active_tab = "/diag_logs_settings.php"; include('diag_logs_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+				    <div class="container-fluid">
+
+
+
 							<form action="diag_logs_settings.php" method="post" name="iform" id="iform">
-						
-						
+
+
 								<div class="table-responsive">
-								 	<table class="table table-striped">
+									<table class="table table-striped">
 										<tr>
 											<td colspan="2" valign="top" class="listtopic"><?=gettext("General Logging Options");?></td>
 										</tr>

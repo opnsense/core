@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*	
+/*
 	pfSense_MODULE:	routing
 */
 
@@ -46,7 +46,7 @@ $nentries = $config['syslog']['nentries'];
 if (!$nentries)
 	$nentries = 50;
 
-if ($_POST['clear']) 
+if ($_POST['clear'])
 	clear_log_file($routing_logfile);
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Routing"));
@@ -60,37 +60,37 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/diag_logs.php"; include('diag_logs_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
-							
-							
+
+				<? $active_tab = "/diag_logs.php"; include('diag_logs_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+				    <div class="container-fluid">
+
+
 							<? include('diag_logs_pills.php'); ?>
-    				    </div>
-								
+				    </div>
+
 							 <div class="table-responsive">
-							 	<table class="table table-striped table-sort">
-								 	<?php dump_clog($routing_logfile, $nentries); ?>
-							 	</table>
+								<table class="table table-striped table-sort">
+									<?php dump_clog($routing_logfile, $nentries); ?>
+								</table>
 							 </div>
 							<div class="container-fluid">
 							<form action="diag_logs_routing.php" method="post">
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 							</form>
-														
+
 						</div>
 				    </div>
-		    	</section>
+			</section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

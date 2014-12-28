@@ -54,21 +54,21 @@ $mobile = ipsec_dump_mobile();
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/diag_ipsec_leases.php"; include('diag_ipsec_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
-							
+
+				<? $active_tab = "/diag_ipsec_leases.php"; include('diag_ipsec_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+				    <div class="container-fluid">
+
 							<div class="table-responsive">
-							 	
-											 	
+
+
 							<?php if (isset($mobile['pool']) && is_array($mobile['pool'])): ?>
 								<?php foreach($mobile['pool'] as $pool): ?>
 									<table class="table table-striped table-sort">
@@ -110,12 +110,12 @@ $mobile = ipsec_dump_mobile();
 								<p><strong><?=gettext("No IPsec pools.");?></strong></p>
 							<?php endif; ?>
 						</div>
-						
+
 						<p class="vexpl">
 						<span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
 						<?=gettext("You can configure your IPsec");?> <a href="vpn_ipsec.php"><?=gettext("here.");?></a>
 						</p>
-    				    </div>
+				    </div>
 					</div>
 			    </section>
 			</div>

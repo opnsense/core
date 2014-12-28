@@ -28,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*	
+/*
 	pfSense_MODULE:	filter
 */
 
@@ -50,7 +50,7 @@ $nentries = 50;
 /* AJAX related routines */
 handle_ajax($nentries, $nentries + 20);
 
-if ($_POST['clear']) 
+if ($_POST['clear'])
 	clear_log_file($filter_logfile);
 
 $filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100);
@@ -92,25 +92,25 @@ include("head.inc");
 
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
-							
-							
+
+				<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+				    <div class="container-fluid">
+
+
 							<? $tab_group = 'firewall'; include('diag_logs_pills.php'); ?>
 
 
 
 							<div class="table-responsive">
-							 	<table class="table table-striped table-sort">
+								<table class="table table-striped table-sort">
 									<thead>
 									<tr>
 										<td colspan="6" class="listtopic">
@@ -134,7 +134,7 @@ include("head.inc");
 									$rowIndex++;?>
 									<tr class="<?=$evenRowClass?>">
 										<td class="listMRlr nowrap" align="center">
-										<a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);"  title="<?php echo $filterent['act'];?>"><span class="glyphicon glyphicon-remove"></span>										
+										<a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);"  title="<?php echo $filterent['act'];?>"><span class="glyphicon glyphicon-remove"></span>
 										</a>
 										</td>
 										<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['time']);?></td>
@@ -152,12 +152,12 @@ include("head.inc");
 									</tbody>
 								</table>
 							</div>
-    
+
 							<p><span class="vexpl"><a href="https://doc.pfsense.org/index.php/What_are_TCP_Flags%3F"><?=gettext("TCP Flags"); ?></a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, C - CWR</span></p></div>
 				    </div>
-		    	</section>
+			</section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

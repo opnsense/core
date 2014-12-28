@@ -95,38 +95,38 @@ if (!isset($do_traceroute)) {
 
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-		        				
+
 			<section class="col-xs-12">
-                
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
-                <div class="content-box">              
-            
+                <div class="content-box">
+
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Traceroute");?></h3>
 				    </header>
-				    
+
 				    <div class="content-box-main ">
 					    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped __nomb">
-	    				        <tbody>
-	        				        <tr>
-	        				          <td><?=gettext("Host"); ?></td>
-	        				          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" value="<?=htmlspecialchars($host);?>" /></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?=gettext("IP Protocol"); ?></td>
-	        				          <td><select name="ipproto" class="form-control">
+				        <table class="table table-striped __nomb">
+					        <tbody>
+						        <tr>
+						          <td><?=gettext("Host"); ?></td>
+						          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" value="<?=htmlspecialchars($host);?>" /></td>
+						        </tr>
+						        <tr>
+						          <td><?=gettext("IP Protocol"); ?></td>
+						          <td><select name="ipproto" class="form-control">
 			<option value="ipv4" <?php if ($ipproto == "ipv4") echo "selected=\"selected\"" ?>>IPv4</option>
 			<option value="ipv6" <?php if ($ipproto == "ipv6") echo "selected=\"selected\"" ?>>IPv6</option>
 		</select></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?=gettext("Source Address"); ?></td>
-	        				          <td><select name="sourceip" class="form-control">
+						        </tr>
+						        <tr>
+						          <td><?=gettext("Source Address"); ?></td>
+						          <td><select name="sourceip" class="form-control">
 											<option value="">Any</option>
 										<?php   $sourceips = get_possible_traffic_source_addresses(true);
 											foreach ($sourceips as $sip):
@@ -139,45 +139,45 @@ if (!isset($do_traceroute)) {
 											</option>
 											<?php endforeach; ?>
 										</select></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?=gettext("Maximum number of hops");?></td>
-	        				          <td><select name="ttl" class="form-control" id="ttl">
+						        </tr>
+						        <tr>
+						          <td><?=gettext("Maximum number of hops");?></td>
+						          <td><select name="ttl" class="form-control" id="ttl">
 										<?php for ($i = 1; $i <= MAX_TTL; $i++): ?>
 											<option value="<?=$i;?>" <?php if ($i == $ttl) echo "selected=\"selected\""; ?>><?=$i;?></option>
 										<?php endfor; ?>
 										</select></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?=gettext("Reverse Address Lookup");?></td>
-	        				          <td><input name="resolve" type="checkbox"<?php echo (!isset($resolve) ? "" : " checked=\"checked\""); ?> /></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?=gettext("Use ICMP");?></td>
-	        				          <td><input name="useicmp" type="checkbox"<?php if($_REQUEST['useicmp']) echo " checked=\"checked\""; ?> /></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td>&nbsp;</td>
-	        				          <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Traceroute"); ?>" /></td>
-	        				        </tr>	        				       
-	    				        </tbody>
-	    				    </table>
-	    				    
-	    				    <div class="container-fluid">
-	    				    <p><span class="text-danger"><b><?=gettext("Note: ");?></b></span>
+						        </tr>
+						        <tr>
+						          <td><?=gettext("Reverse Address Lookup");?></td>
+						          <td><input name="resolve" type="checkbox"<?php echo (!isset($resolve) ? "" : " checked=\"checked\""); ?> /></td>
+						        </tr>
+						        <tr>
+						          <td><?=gettext("Use ICMP");?></td>
+						          <td><input name="useicmp" type="checkbox"<?php if($_REQUEST['useicmp']) echo " checked=\"checked\""; ?> /></td>
+						        </tr>
+						        <tr>
+						          <td>&nbsp;</td>
+						          <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Traceroute"); ?>" /></td>
+						        </tr>
+					        </tbody>
+					    </table>
+
+					    <div class="container-fluid">
+					    <p><span class="text-danger"><b><?=gettext("Note: ");?></b></span>
 							<?=gettext("Traceroute may take a while to complete. You may hit the Stop button on your browser at any time to see the progress of failed traceroutes.");?>
 							<br /><br />
 							<?=gettext("Using a source interface/IP address that does not match selected type (IPv4, IPv6) will result in an error or empty output.");?>
-	    				    </p>
-	    				    </div>
-	    				    
+					    </p>
+					    </div>
+
 					    </div>
 					    </form>
 				    </div>
-                            
+
 				</div>
 			</section>
-			
+
 			<?php if ($do_traceroute): ob_end_flush(); ?>
 			<section class="col-xs-12">
                 <script type="text/javascript">
@@ -188,20 +188,20 @@ if (!isset($do_traceroute)) {
 					//]]>
 				</script>
 
-                <div class="content-box">              
-            
+                <div class="content-box">
+
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Traceroute output"); ?></h3>
 				    </header>
-					
+
 					<div class="content-box-main col-xs-12">
-					 	<pre>
-		
+						<pre>
+
 <?php
-		
+
 							$useicmp = isset($_REQUEST['useicmp']) ? "-I" : "";
 							$n = isset($resolve) ? "" : "-n";
-						
+
 							$command = "/usr/sbin/traceroute";
 							if ($ipproto == "ipv6") {
 								$command .= "6";
@@ -209,12 +209,12 @@ if (!isset($do_traceroute)) {
 							} else {
 								$ifaddr = is_ipaddr($sourceip) ? $sourceip : get_interface_ip($sourceip);
 							}
-						
+
 							if ($ifaddr && (is_ipaddr($host) || is_hostname($host)))
 								$srcip = "-s " . escapeshellarg($ifaddr);
-						
+
 							$cmd = "{$command} {$n} {$srcip} -w 2 {$useicmp} -m " . escapeshellarg($ttl) . " " . escapeshellarg($host);
-						
+
 							//echo "Traceroute command: {$cmd}\n";
 							system($cmd);
 
@@ -224,7 +224,7 @@ if (!isset($do_traceroute)) {
 				</div>
 			</section>
 			<? endif; ?>
-		</div>		
+		</div>
 	</div>
 </section>
 

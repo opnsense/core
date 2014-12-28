@@ -29,7 +29,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*		
+/*
 	pfSense_MODULE:	system
 */
 
@@ -48,7 +48,7 @@ $nentries = $config['syslog']['nentries'];
 if (!$nentries)
 	$nentries = 50;
 
-if ($_POST['clear']) 
+if ($_POST['clear'])
 	clear_log_file($system_logfile);
 
 if ($_GET['filtertext'])
@@ -71,50 +71,50 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/diag_logs.php"; include('diag_logs_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				     
-						 <div class="container-fluid">		
-							
+
+				<? $active_tab = "/diag_logs.php"; include('diag_logs_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+
+						 <div class="container-fluid">
+
 							<? include('diag_logs_pills.php'); ?>
-							
+
 						 </div>
-					
-								
+
+
 							 <div class="table-responsive">
-							 	<table class="table table-striped table-sort">
-								 	<?php
+								<table class="table table-striped table-sort">
+									<?php
 										if($filtertext)
 											dump_clog($system_logfile, $nentries, true, array("$filtertext"));
 										else
 											dump_clog($system_logfile, $nentries, true, array());
 									?>
-							 	</table>
+								</table>
 							 </div>
-						
-						 <div class="container-fluid">		
+
+						 <div class="container-fluid">
 							<form action="diag_logs_gateways.php" method="post">
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
-							</form>	
+							</form>
 							<form id="clearform" name="clearform" action="diag_logs_gateways.php" method="post" class="__mt">
-              				<input id="filtertext" name="filtertext" value="<?=$filtertext;?>" type="text" class="pull-left __mr"/>
-              				<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
+					<input id="filtertext" name="filtertext" value="<?=$filtertext;?>" type="text" class="pull-left __mr"/>
+					<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
 						</form>
 						 </div>
-							
+
 						</div>
 				    </div>
-		    	</section>
+			</section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

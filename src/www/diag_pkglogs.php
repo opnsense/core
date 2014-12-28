@@ -38,7 +38,7 @@
 */
 
 /*
-	pfSense_BUILDER_BINARIES:	/usr/bin/netstat	
+	pfSense_BUILDER_BINARIES:	/usr/bin/netstat
 	pfSense_MODULE:	pkgs
 */
 
@@ -54,7 +54,7 @@ require("pkg-utils.inc");
 
 if(!($nentries = $config['syslog']['nentries'])) $nentries = 50;
 
-//if ($_POST['clear']) 
+//if ($_POST['clear'])
 //	clear_log_file($logfile);
 
 $i = 0;
@@ -87,48 +87,48 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 
-	
+
 <section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				 <?php
 					if($pkgwithlogging == false) {
 						print_info_box(gettext("No packages with logging facilities are currently installed."));
 					}
 					else {
 				?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 						$tab_array = array();
 						foreach($config['installedpackages']['package'] as $package) {
 							if(is_array($package['logging'])) {
 								if(!($logtab = $package['logging']['logtab'])) $logtab = $package['name'];
-								if($apkg == $package['name']) { 
+								if($apkg == $package['name']) {
 									$curtab = $logtab;
 									$tab_array[] = array(sprintf(gettext("%s"),$logtab), true, "diag_pkglogs.php?pkg=".$package['name']);
 								} else {
 									$tab_array[] = array(sprintf(gettext("%s"),$logtab), false, "diag_pkglogs.php?pkg=".$package['name']);
 								}
 							}
-					       	 }
+						 }
 						display_top_tabs($tab_array);
-					?> 
-					
-					<div class="tab-content content-box col-xs-12">	   
-	                	 <?php printf(gettext('Last %1$s %2$s log entries'),$nentries,$curtab); ?>
-	                	 
-	                	 <div class="table-responsive">
-		                
-						 	<table class="table table-striped table-sort">
-							 	<?php
+					?>
+
+					<div class="tab-content content-box col-xs-12">
+				 <?php printf(gettext('Last %1$s %2$s log entries'),$nentries,$curtab); ?>
+
+				 <div class="table-responsive">
+
+							<table class="table table-striped table-sort">
+								<?php
 									$package =& $config['installedpackages']['package'][$apkgid];
 									dump_clog($g['varlog_path'] . '/' . $package['logging']['logfilename'], $nentries);
 								?>
-						 	</table>
-						 </div>    	
+							</table>
+						 </div>
 
 
 					</div>

@@ -56,8 +56,8 @@ foreach ($ifdescrs as $key =>$interface) {
 	$hwif[$config['interfaces'][$key]['if']] = $interface;
 }
 
-/* Array ( [0] => Neighbor [1] => Linklayer [2] => Address 
-[3] => Netif [4] => Expire [5] => S 
+/* Array ( [0] => Neighbor [1] => Linklayer [2] => Address
+[3] => Netif [4] => Expire [5] => S
 [6] => Flags ) */
 $data = array();
 array_shift($rawdata);
@@ -73,7 +73,7 @@ foreach ($rawdata as $line) {
 
 /* FIXME: Not ipv6 compatible dns resolving. PHP needs fixing */
 function _getHostName($mac,$ip)
-{       
+{
 	if(is_ipaddr($ip)) {
 		list($ip, $scope) = explode("%", $ip);
 		if(gethostbyaddr($ip) <> "" and gethostbyaddr($ip) <> $ip)
@@ -93,7 +93,7 @@ foreach ($data as &$entry) {
 	else
 		$entry['dnsresolve'] = "Z_ ";
 }
-                
+
 // Sort the data alpha first
 $data = msort($data, "dnsresolve");
 
@@ -120,14 +120,14 @@ ob_implicit_flush(1);
 
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
-            
+
             <section class="col-xs-12">
-                <div class="content-box">              
-                    
+                <div class="content-box">
+
                     <div class="table-responsive">
-                   
+
                         <table class="table table-striped table-sort sortable __nomb">
                             <tr class="content-box-head">
                                 <th>
@@ -171,7 +171,7 @@ ob_implicit_flush(1);
                                     </table>
                                 </th>
                             </tr>
-                            
+
 
 
 							<?php foreach ($data as $entry): ?>
@@ -191,7 +191,7 @@ ob_implicit_flush(1);
 										?>
 									</td>
 									<td class="listr">
-										<?php 
+										<?php
 										if(isset($hwif[$entry['interface']]))
 											echo $hwif[$entry['interface']];
 										else
@@ -201,15 +201,15 @@ ob_implicit_flush(1);
 								</tr>
 							<?php endforeach; ?>
 						</table>
-		     
+
                     </div>
-                    
+
                 </div>
             </section>
-        
+
         </div>
-        
+
 	</div>
 </section>
-		
+
 <?php include('foot.inc');?>

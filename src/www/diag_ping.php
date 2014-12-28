@@ -85,38 +85,38 @@ include("head.inc"); ?>
 <?php include("fbegin.inc"); ?>
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-		        				
+
 			<section class="col-xs-12">
-                
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
-                <div class="content-box">              
-            
+                <div class="content-box">
+
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Ping"); ?></h3>
 				    </header>
-				    
+
 				    <div class="content-box-main">
 					    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped __nomb">
-	    				        <tbody>
-	        				        <tr>
-	        				          <td><?=gettext("Host"); ?></td>
-	        				          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" value="<?=htmlspecialchars($host);?>" /></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?=gettext("IP Protocol"); ?></td>
-	        				          <td><select name="ipproto" class="form-control">
+				        <table class="table table-striped __nomb">
+					        <tbody>
+						        <tr>
+						          <td><?=gettext("Host"); ?></td>
+						          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" value="<?=htmlspecialchars($host);?>" /></td>
+						        </tr>
+						        <tr>
+						          <td><?=gettext("IP Protocol"); ?></td>
+						          <td><select name="ipproto" class="form-control">
 			<option value="ipv4" <?php if ($ipproto == "ipv4") echo "selected=\"selected\"" ?>>IPv4</option>
 			<option value="ipv6" <?php if ($ipproto == "ipv6") echo "selected=\"selected\"" ?>>IPv6</option>
 		</select></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?=gettext("Source Address"); ?></td>
-	        				          <td><select name="sourceip" class="form-control">
+						        </tr>
+						        <tr>
+						          <td><?=gettext("Source Address"); ?></td>
+						          <td><select name="sourceip" class="form-control">
 			<option value="">Default</option>
 		<?php $sourceips = get_possible_traffic_source_addresses(true);
 			foreach ($sourceips as $sip):
@@ -129,28 +129,28 @@ include("head.inc"); ?>
 			</option>
 			<?php endforeach; ?>
 		</select></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?= gettext("Count"); ?></td>
-	        				          <td><select name="count" class="form-control" id="count">
+						        </tr>
+						        <tr>
+						          <td><?= gettext("Count"); ?></td>
+						          <td><select name="count" class="form-control" id="count">
 		<?php for ($i = 1; $i <= MAX_COUNT; $i++): ?>
 			<option value="<?=$i;?>" <?php if ($i == $count) echo "selected=\"selected\""; ?>><?=$i;?></option>
 		<?php endfor; ?>
 		</select></td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td>&nbsp;</td>
-	        				          <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Ping"); ?>" /></td>
-	        				        </tr>	        				       
-	    				        </tbody>
-	    				    </table>
+						        </tr>
+						        <tr>
+						          <td>&nbsp;</td>
+						          <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Ping"); ?>" /></td>
+						        </tr>
+					        </tbody>
+					    </table>
 					    </div>
 					    </form>
 				    </div>
-                            
+
 				</div>
 			</section>
-			
+
 			<?php if ($do_ping): ?>
 			<section class="col-xs-12">
                 <script type="text/javascript">
@@ -161,17 +161,17 @@ include("head.inc"); ?>
 					//]]>
 				</script>
 
-                <div class="content-box">              
-            
+                <div class="content-box">
+
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Ping output"); ?></h3>
 				    </header>
-					
+
 					<div class="content-box-main col-xs-12">
-					 	<pre>
-		
+						<pre>
+
 <?php
-		
+
 							$ifscope = '';
 							$command = "/sbin/ping";
 							if ($ipproto == "ipv6") {
@@ -187,7 +187,7 @@ include("head.inc"); ?>
 								if (is_linklocal($host) && !strstr($host, "%") && !empty($ifscope))
 									$host .= "%{$ifscope}";
 							}
-					
+
 							$cmd = "{$command} {$srcip} -c" . escapeshellarg($count) . " " . escapeshellarg($host);
 							//echo "Ping command: {$cmd}\n";
 							system($cmd);
@@ -198,7 +198,7 @@ include("head.inc"); ?>
 				</div>
 			</section>
 			<? endif; ?>
-		</div>		
+		</div>
 	</div>
 </section>
 

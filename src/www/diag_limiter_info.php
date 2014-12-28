@@ -46,7 +46,7 @@ $shortcut_section = "trafficshaper-limiters";
 
 if($_REQUEST['getactivity']) {
 	$text = `/sbin/ipfw pipe show`;
-	if($text == "") 
+	if($text == "")
 		$text = "We could not find any limiters on this system.";
 	echo "Limiters:\n";
 	echo $text;
@@ -95,12 +95,12 @@ include("head.inc");
 				if($savemsg) {
 					echo "<div id=\"savemsg\">";
 					print_info_box($savemsg);
-					echo "</div>";	
+					echo "</div>";
 				}
 				if ($input_errors)
 					print_input_errors($input_errors);
 			?>
-			
+
 			<div id="limiteractivitydiv">
 				<?=gettext("Gathering Limiter information, please wait...");?>
 			</div>

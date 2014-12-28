@@ -55,20 +55,20 @@ $spd = ipsec_dump_spd();
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/diag_ipsec_spd.php"; include('diag_ipsec_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				   	  
-							
+
+				<? $active_tab = "/diag_ipsec_spd.php"; include('diag_ipsec_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+
+
 							<div class="table-responsive">
-								
+
 								<table class="table table-striped table-sort __nomb">
 								<?php if (count($spd)): ?>
 								<tr>
@@ -120,13 +120,13 @@ $spd = ipsec_dump_spd();
 								<?php endif; ?>
 							</table>
 						</div>
-						
+
 						 <div class="container-fluid">
 						<p class="vexpl">
 						<span class="text-danger"><strong><?= gettext("Note:"); ?><br /></strong></span>
 						<?= gettext("You can configure your IPsec"); ?> <a href="vpn_ipsec.php"><?= gettext("here."); ?></a>
 						</p>
-    				    </div>
+				    </div>
 					</div>
 			    </section>
 			</div>

@@ -27,15 +27,15 @@ include("head.inc");
 </head>
 <body>
 
-<?php 
-include("fbegin.inc"); 
+<?php
+include("fbegin.inc");
 
 ?>
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-		        				
+
 			<section class="col-xs-12">
 
 <?
@@ -253,37 +253,37 @@ switch($action) {
 	// Default page, prints the forms to view info, test, etc...
 	default:
 	{
-		
+
 		// Get all AD* and DA* (IDE and SCSI) devices currently installed and stores them in the $devs array
 		exec("ls /dev | grep '^\(ad\|da\|ada\)[0-9]\{1,2\}$'", $devs);
 		?>
 
 
-                
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
                 <div class="content-box">
-            
+
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Info"); ?></h3>
 				    </header>
-				    
+
 				    <div class="content-box-main">
 					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="iform" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped __nomb">
-	    				        <tbody>
-	        				        <tr>
-	        				          <td><?=gettext("Info type"); ?></td>
-	        				          <td><div class="radio">
-		        				        	<label><input type="radio" name="type" value="i" /><?=gettext("Info"); ?></label>
+				        <table class="table table-striped __nomb">
+					        <tbody>
+						        <tr>
+						          <td><?=gettext("Info type"); ?></td>
+						          <td><div class="radio">
+									<label><input type="radio" name="type" value="i" /><?=gettext("Info"); ?></label>
 											<label><input type="radio" name="type" value="H" checked="checked" /><?=gettext("Health"); ?></label>
 											<label><input type="radio" name="type" value="c" /><?=gettext("SMART Capabilities"); ?></label>
 											<label><input type="radio" name="type" value="A" /><?=gettext("Attributes"); ?></label>
 											<label><input type="radio" name="type" value="a" /><?=gettext("All"); ?></label>
-	        				          	</div>		        				          
-	        				          </td>
-	        				        </tr>
+								</div>
+						          </td>
+						        </tr>
 									<tr>
 										<td><?=gettext("Device: /dev/"); ?></td>
 										<td >
@@ -311,32 +311,32 @@ switch($action) {
 				    </div>
                 </div>
 			</section>
-			
-			
+
+
 			<section class="col-xs-12">
-                
+
                 <div class="content-box">
-            
+
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Perform Self-tests"); ?></h3>
 				    </header>
-				    
+
 				    <div class="content-box-main">
 					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="test" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped __nomb">
-	    				        <tbody>
-	        				        <tr>
-	        				          <td><?=gettext("Test type"); ?></td>
-	        				          <td>
-		        				          	<div class="radio">
-		        				          		<label><input type="radio" name="testType" value="offline" /><?=gettext("Offline"); ?></label>
+				        <table class="table table-striped __nomb">
+					        <tbody>
+						        <tr>
+						          <td><?=gettext("Test type"); ?></td>
+						          <td>
+									<div class="radio">
+										<label><input type="radio" name="testType" value="offline" /><?=gettext("Offline"); ?></label>
 												<label><input type="radio" name="testType" value="short" checked="checked" /><?=gettext("Short"); ?></label>
 												<label><input type="radio" name="testType" value="long" /><?=gettext("Long"); ?></label>
-												<label><input type="radio" name="testType" value="conveyance" /><?=gettext("Conveyance (ATA Disks Only)"); ?></label>  
-		        				          	</div>      				          
-	        				          </td>
-	        				        </tr>
+												<label><input type="radio" name="testType" value="conveyance" /><?=gettext("Conveyance (ATA Disks Only)"); ?></label>
+									</div>
+						          </td>
+						        </tr>
 									<tr>
 										<td><?=gettext("Device: /dev/"); ?></td>
 										<td >
@@ -365,29 +365,29 @@ switch($action) {
                 </div>
 			</section>
 
-			
+
 			<section class="col-xs-12">
-                
+
                 <div class="content-box">
-            
+
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("View Logs"); ?></h3>
 				    </header>
-				    
+
 				    <div class="content-box-main">
 					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="logs" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped __nomb">
-	    				        <tbody>
-	        				        <tr>
-	        				          <td><?=gettext("Log type"); ?></td>
-	        				          <td>
-		        				          <div class="radio">
-		        				          	<label><input type="radio" name="type" value="error" checked="checked" /><?=gettext("Error"); ?></label>
-										  	<label><input type="radio" name="type" value="selftest" /><?=gettext("Self-test"); ?></label>
-		        				          </div>        				          
-	        				          </td>
-	        				        </tr>
+				        <table class="table table-striped __nomb">
+					        <tbody>
+						        <tr>
+						          <td><?=gettext("Log type"); ?></td>
+						          <td>
+							          <div class="radio">
+									<label><input type="radio" name="type" value="error" checked="checked" /><?=gettext("Error"); ?></label>
+											<label><input type="radio" name="type" value="selftest" /><?=gettext("Self-test"); ?></label>
+							          </div>
+						          </td>
+						        </tr>
 									<tr>
 										<td><?=gettext("Device: /dev/"); ?></td>
 										<td >
@@ -415,21 +415,21 @@ switch($action) {
 				    </div>
                 </div>
 			</section>
-			
-			
+
+
 			<section class="col-xs-12">
-                
+
                 <div class="content-box">
-            
+
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Abort tests"); ?></h3>
 				    </header>
-				    
+
 				    <div class="content-box-main">
 					    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="abort" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped __nomb">
-	    				        <tbody>
+				        <table class="table table-striped __nomb">
+					        <tbody>
 									<tr>
 										<td><?=gettext("Device: /dev/"); ?></td>
 										<td >

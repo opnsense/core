@@ -81,25 +81,25 @@ include("head.inc");
 
 <form id="iform" name="iform" action="<?php echo $_SERVER['REQUEST_URI'];?>" method="post">
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-			
+
 			<?php if ($input_errors) print_input_errors($input_errors);?>
-		        				
+
 			<section class="col-xs-12">
-                <div class="content-box">              
-					
+                <div class="content-box">
+
 					<header class="content-box-head container-fluid">
-        			   <h3>Test a server</h3>
-        			</header>
-				    
+				   <h3>Test a server</h3>
+				</header>
+
 				    <div class="content-box-main">
 				    <div class="table-responsive">
-    			        <table class="table table-striped __nomb">
-    				        <tbody>
-        				        <tr>
-        				          <td><?=gettext("Authentication Server"); ?></td>
-        				          <td><select name="authmode" id="authmode" class="form-control" >
+			        <table class="table table-striped __nomb">
+				        <tbody>
+					        <tr>
+					          <td><?=gettext("Authentication Server"); ?></td>
+					          <td><select name="authmode" id="authmode" class="form-control" >
 									<?php
 										$auth_servers = auth_get_authserver_list();
 										foreach ($auth_servers as $auth_server):
@@ -111,31 +111,31 @@ include("head.inc");
 									<?php   endforeach; ?>
 									</select>
 								</td>
-        				        </tr>
-        				        <tr>
-        				          <td><?=gettext("Username"); ?></td>
-        				          <td><input type="text" class="form-control formfld unknown" size="20" id="username" name="username" value="<?=htmlspecialchars($pconfig['username']);?>"></td>
-        				        </tr>
-        				        <tr>
-        				          <td><?=gettext("Password"); ?></td>
-        				          <td><input type="password" class="form-control formfld pwd" size="20" id="password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
-        				        </tr>
-        				        <tr>
-        				          <td>&nbsp;</td>
-        				          <td><input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Test");?>" /></td>
-        				        </tr>
-    				        </tbody>
-    				    </table>
-    				    
-    				    
+					        </tr>
+					        <tr>
+					          <td><?=gettext("Username"); ?></td>
+					          <td><input type="text" class="form-control formfld unknown" size="20" id="username" name="username" value="<?=htmlspecialchars($pconfig['username']);?>"></td>
+					        </tr>
+					        <tr>
+					          <td><?=gettext("Password"); ?></td>
+					          <td><input type="password" class="form-control formfld pwd" size="20" id="password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
+					        </tr>
+					        <tr>
+					          <td>&nbsp;</td>
+					          <td><input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Test");?>" /></td>
+					        </tr>
+				        </tbody>
+				    </table>
+
+
 				    </div>
 				    </div>
-                            
+
 				</div>
 			</section>
-		
+
 		</div>
-		
+
 	</div>
 </section>
 </form>

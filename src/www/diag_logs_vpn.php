@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*	
+/*
 	pfSense_BUILDER_BINARIES:	/usr/sbin/fifolog_reader	/usr/local/sbin/clog
 	pfSense_MODULE:	vpn
 */
@@ -86,10 +86,10 @@ function dump_clog_vpn($logfile, $tail) {
 	$sor = isset($config['syslog']['reverse']) ? "-r" : "";
 
 	$logarr = "";
-	
-	if(isset($config['system']['usefifolog'])) 
+
+	if(isset($config['system']['usefifolog']))
 		exec("/usr/sbin/fifolog_reader " . escapeshellarg($logfile) . " | tail {$sor} -n " . $tail, $logarr);
-	else 
+	else
 		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | tail {$sor} -n " . $tail, $logarr);
 
 	foreach ($logarr as $logent) {
@@ -122,25 +122,25 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/diag_logs_vpn.php"; include('diag_logs_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
-							
-							
+
+				<? $active_tab = "/diag_logs_vpn.php"; include('diag_logs_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+				    <div class="container-fluid">
+
+
 							<? $tab_group = 'vpn'; include('diag_logs_pills.php'); ?>
-					
-								
+
+
 							 <div class="table-responsive">
-							 	<table class="table table-striped table-sort">
-								 	 <?php if ($mode != "raw"): ?>
+								<table class="table table-striped table-sort">
+									 <?php if ($mode != "raw"): ?>
 										<tr>
 											<td class="listhdrr"><?=gettext("Time");?></td>
 											<td class="listhdrr"><?=gettext("Action");?></td>
@@ -148,24 +148,24 @@ include("head.inc");
 											<td class="listhdrr"><?=gettext("IP address");?></td>
 										</tr>
 											<?php dump_clog_vpn("/var/log/vpn.log", $nentries); ?>
-										<?php else: 
+										<?php else:
 											dump_clog("/var/log/{$logname}.log", $nentries);
 									  endif; ?>
-							 	</table>
+								</table>
 							 </div>
-							
+
 							<form action="diag_logs_vpn.php" method="post">
 								<input type="hidden" name="vpntype" id="vpntype" value="<?=$vpntype;?>" />
 								<input type="hidden" name="mode" id="mode" value="<?=$mode;?>" />
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 							</form>
-							
-							
+
+
 						</div>
 				    </div>
-		    	</section>
+			</section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

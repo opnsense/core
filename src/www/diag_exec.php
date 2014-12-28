@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 	Copyright (C) 2014 Deciso B.V.
 	All rights reserved.

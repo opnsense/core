@@ -26,7 +26,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*	
+/*
 	pfSense_BUILDER_BINARIES:	/sbin/mount	/sbin/glabel	/usr/bin/grep	/usr/bin/cut	/usr/bin/head	/bin/cp
 	pfSense_BUILDER_BINARIES:	/usr/sbin/boot0cfg	/bin/mkdir	/sbin/fsck_ufs	/sbin/mount	/bin/dd	/sbin/tunefs
 	pfSense_MODULE:	nanobsd
@@ -66,10 +66,10 @@ nanobsd_detect_slice_info();
 $NANOBSD_SIZE = nanobsd_get_size();
 
 if($_POST['bootslice']) {
-	$statusmsg = gettext("Setting slice information, please wait..."); 
+	$statusmsg = gettext("Setting slice information, please wait...");
 	echo <<<EOF
-	 	<div id="loading">
-			<img src="/themes/{$g['theme']}/images/misc/loader.gif"> 
+		<div id="loading">
+			<img src="/themes/{$g['theme']}/images/misc/loader.gif">
 			$statusmsg
 			<p/>&nbsp;
 		</div>
@@ -84,7 +84,7 @@ EOF;
 if($_POST['destslice']) {
 	$statusmsg = gettext("Duplicating slice.  Please wait, this will take a moment...");
 echo <<<EOF
- 	<div id="loading">
+	<div id="loading">
 		<img src="/themes/{$g['theme']}/images/misc/loader.gif">
 		$statusmsg
 		<p/>&nbsp;
@@ -143,7 +143,7 @@ if ($savemsg)
 					<tr>
 						<td colspan="2" valign="top" class="listtopic"><?=gettext("Bootup information");?></td>
 					</tr>
-					<tr>						
+					<tr>
 						<td width="22%" valign="top" class="vncell"><?=gettext("NanoBSD Image size");?></td>
 						<td width="78%" class="vtable">
 							<?php echo $NANOBSD_SIZE; ?>
@@ -162,7 +162,7 @@ if ($savemsg)
 					</tr>
 					<tr>
 						<td colspan="2" valign="top" class="">&nbsp;</td>
-					</tr>					
+					</tr>
 					<tr>
 						<td colspan="2" valign="top" class="listtopic"><?=gettext("Media Read/Write Status");?></td>
 					</tr>
@@ -236,7 +236,7 @@ if ($savemsg)
 <?php if(file_exists("/conf/upgrade_log.txt")): ?>
 					<tr>
 						<td colspan="2" valign="top" class="">&nbsp;</td>
-					</tr>					
+					</tr>
 					<tr>
 						<td colspan="2" valign="top" class="listtopic"><?=gettext("View upgrade log");?></td>
 					</tr>
@@ -264,7 +264,7 @@ if ($savemsg)
 <?php endif; ?>
 					<tr>
 						<td colspan="2" valign="top" class="">&nbsp;</td>
-					</tr>					
+					</tr>
 				</table>
 			</div>
 		</td>
@@ -279,6 +279,6 @@ if ($savemsg)
 // Clear the loading indicator
 echo "<script type=\"text/javascript\">";
 echo "jQuery('#loading').html('');";
-echo "</script>";	
+echo "</script>";
 
 ?>

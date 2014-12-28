@@ -28,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*	
+/*
 	pfSense_MODULE:	dhcpserver
 */
 
@@ -63,32 +63,32 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
-			    <section class="col-xs-12">
-    				
-    					
-    					<? include('diag_logs_tabs.php'); ?>
 
-					
-						<div class="tab-content content-box col-xs-12">	    					
-	    				    <div class="container-fluid">	    					
-		    						
-	    						<p> <?php printf(gettext("Last %s DHCP service log entries"), $nentries);?></p>
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+
+			    <section class="col-xs-12">
+
+
+					<? include('diag_logs_tabs.php'); ?>
+
+
+						<div class="tab-content content-box col-xs-12">
+					    <div class="container-fluid">
+
+							<p> <?php printf(gettext("Last %s DHCP service log entries"), $nentries);?></p>
 								<pre> <?php dump_clog($dhcpd_logfile, $nentries); ?></pre>
-								
+
 								<form action="diag_logs_dhcp.php" method="post">
 									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 								</form>
 								<p>NOTE: Clearing the log file will restart the DHCP daemon.</p>
-    						</div>
-    				    </div>
+						</div>
+				    </div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

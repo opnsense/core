@@ -80,16 +80,16 @@ include("head.inc");
 
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-							
+
 		    <section class="col-xs-12">
-			    
+
 			<?php
 				if($savemsg) {
 					echo "<div id=\"savemsg\">";
 					print_info_box($savemsg);
-					echo "</div>";	
+					echo "</div>";
 				}
 				if ($input_errors)
 					print_input_errors($input_errors);
@@ -97,9 +97,9 @@ include("head.inc");
 
 			<div id="cpuactivitydiv">
 				<?=gettext("Gathering CPU activity, please wait...");?>
-			</div>		    
+			</div>
 		    </section>
-				
+
 		 </section>
 		</div>
 	</div>

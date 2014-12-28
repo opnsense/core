@@ -105,7 +105,7 @@ if ($_POST) {
 				$input_errors[] = gettext("Consumer is already present on specified mirror.");
 			if (!gmirror_consumer_has_metadata($_POST['consumer']))
 				$input_errors[] = gettext("Consumer has no metadata and cannot be reactivated.");
-			
+
 			break;
 		case "remove":
 		case "deactivate":
@@ -166,35 +166,35 @@ foreach ($unused_disks as $disk) {
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?
-				
+
 				if ($input_errors)
 					print_input_errors($input_errors);
 				if ($_GET["error"] && ($_GET["error"] != 0))
 					print_info_box(gettext("There was an error performing the chosen mirror operation. Check the System Log for details."));
-				
+
 				?>
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="diag_gmirror.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="col-xs-12">
-	                        	<p class="vexpl">
+
+				<div class="content-box">
+
+                        <form action="diag_gmirror.php" method="post" name="iform" id="iform">
+
+				<div class="col-xs-12">
+					<p class="vexpl">
 									<br/><span class="text-danger">
 										<strong><?=gettext("NOTE:")?>&nbsp;</strong>
 									</span>
 									<?=gettext("The options on this page are intended for use by advanced users only. This page is for managing existing mirrors, not creating new mirrors.")?>
 									<br />
 								</p>
-                        	</div>
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+				</div>
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 								<?PHP if ($_GET["action"]): ?>
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?PHP echo gettext("Confirm Action"); ?></td>
@@ -222,11 +222,11 @@ foreach ($unused_disks as $disk) {
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?PHP echo gettext("GEOM Mirror information"); ?></td>
 									</tr>
-				
+
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?PHP echo gettext("Mirror Status"); ?></td>
 										<td width="78%" class="vtable">
-				
+
 										<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="gmirror status">
 											<tbody id="gmirror_status_table">
 									<?PHP	if (count($mirror_status) > 0): ?>
@@ -235,7 +235,7 @@ foreach ($unused_disks as $disk) {
 											<td width="30%" class="vncellt"><?PHP echo gettext("Status"); ?></td>
 											<td width="40%" class="vncellt"><?PHP echo gettext("Component"); ?></td>
 											</tr>
-										<?PHP	foreach ($mirror_status as $mirror => $name): 
+										<?PHP	foreach ($mirror_status as $mirror => $name):
 												$components = count($name["components"]); ?>
 												<tr>
 												<td width="30%" rowspan="<?PHP echo $components; ?>" class="listr">
@@ -285,15 +285,15 @@ foreach ($unused_disks as $disk) {
 										<br /><?PHP echo gettext("Some disk operations may only be performed when there are multiple consumers present in a mirror."); ?>
 										</td>
 									</tr>
-				
+
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?PHP echo gettext("Consumer information"); ?></td>
 									</tr>
-				
+
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?PHP echo gettext("Available Consumers"); ?></td>
 										<td width="78%" class="vtable">
-				
+
 										<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="consumer list">
 											<tbody id="consumer_list">
 									<?PHP	if (count($unused_consumers) > 0): ?>
@@ -344,7 +344,7 @@ foreach ($unused_disks as $disk) {
 								</table>
 							</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
@@ -358,4 +358,3 @@ echo "</script>";
 
 ?>
 <?php require("foot.inc"); ?>
-

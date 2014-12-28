@@ -253,7 +253,7 @@ function _getHostName($mac,$ip) {
 		exec("host -W 1 " . escapeshellarg($ip), $output);
 		if (preg_match('/.*pointer ([A-Za-z0-9.-]+)\..*/',$output[0],$matches)) {
 			if ($matches[1] <> $ip)
-				return $matches[1]; 
+				return $matches[1];
 		}
 	}
 	return "";
@@ -266,7 +266,7 @@ include("head.inc");
 ?>
 
 <body>
-	
+
 <?php include("fbegin.inc"); ?>
 
 <?php
@@ -279,9 +279,9 @@ ob_implicit_flush(1);
 // is to sort the list by hostnames, alpha and then the non
 // resolvable addresses will appear last in the list.
 $dnsavailable=1;
-$dns = trim(_getHostName("", "8.8.8.8")); 
+$dns = trim(_getHostName("", "8.8.8.8"));
 if ($dns == ""){
-	$dns = trim(_getHostName("", "8.8.4.4")); 
+	$dns = trim(_getHostName("", "8.8.4.4"));
 	if ($dns == "") $dnsavailable =0;
 }
 
@@ -304,17 +304,17 @@ $mac_man = load_mac_manufacturer_table();
 ?>
 
 <!-- row -->
-		
+
 <section class="page-content-main">
 	<div class="container-fluid">
-        
+
         <div class="row">
-            
+
             <section class="col-xs-12">
-                <div class="content-box">              
-                    
+                <div class="content-box">
+
                     <div class="table-responsive">
-                   
+
                         <table class="table table-striped table-sort sortable">
                             <tr class="content-box-head">
                                 <th>
@@ -358,7 +358,7 @@ $mac_man = load_mac_manufacturer_table();
                                     </table>
                                 </th>
                             </tr>
-                            
+
                             <?php foreach ($data as $entry): ?>
                             <tr>
                                 <td><?=$entry['ip'];?></td>
@@ -371,21 +371,21 @@ $mac_man = load_mac_manufacturer_table();
                                 <td><?php
 									echo trim(str_replace("Z_ ", "", $entry['dnsresolve']));
 								?></td>
-                                <td><?=$hwif[$entry['interface']];?></td>                               
+                                <td><?=$hwif[$entry['interface']];?></td>
                             </tr>
                             <?php endforeach; ?>
                         </table>
-                        
+
                         <div class="container-fluid"><?= gettext("NOTE: Local IPv6 peers use") ?> <a href="diag_ndp.php"><?= gettext("NDP") ?></a> <?= gettext("instead of ARP") ?>.</div>
-                        
+
                     </div>
-                    
+
                 </div>
             </section>
-        
+
         </div>
-        
+
 	</div>
 </section>
-		
+
 <?php include('foot.inc');?>

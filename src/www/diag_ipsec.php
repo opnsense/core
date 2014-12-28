@@ -84,19 +84,19 @@ $status = ipsec_smp_dump_status();
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/diag_ipsec.php"; include('diag_ipsec_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	   
-							
+
+				<? $active_tab = "/diag_ipsec.php"; include('diag_ipsec_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+
 							<div class="table-responsive">
-							 	<table class="table table-striped table-sort">
+								<table class="table table-striped table-sort">
 
 									<thead>
 										<tr>
@@ -119,7 +119,7 @@ $status = ipsec_smp_dump_status();
 											foreach ($status['query']['ikesalist']['ikesa'] as $ikeid => $ikesa) {
 												$con_id = substr($ikesa['peerconfig'], 3);
 												$ipsecconnected[$con_id] = $con_id;
-									
+
 												if (ipsec_phase1_status($status['query']['ikesalist']['ikesa'], $ikesa['id'])) {
 													$icon = "pass";
 												} elseif(!isset($config['ipsec']['enable'])) {
@@ -170,7 +170,7 @@ $status = ipsec_smp_dump_status();
 															else
 																$identity = htmlspecialchars($ikesa['remote']['identification']);
 														}
-									
+
 														if (is_array($ikesa['remote']['auth']) && !empty($ikesa['remote']['auth'][0]['identity'])) {
 															echo htmlspecialchars($ikesa['remote']['auth'][0]['identity']);
 															echo "<br/>{$identity}";
@@ -200,7 +200,7 @@ $status = ipsec_smp_dump_status();
 														IKEv<?php echo htmlspecialchars($ikesa['version']);?>
 														<br/>
 														<?php echo htmlspecialchars($ikesa['role']);?>
-														
+
 													</td>
 													<td class="listr">
 														<?php echo htmlspecialchars($ikesa['reauth']);?>
@@ -300,7 +300,7 @@ $status = ipsec_smp_dump_status();
 																	echo "Rekey: " . htmlspecialchars($childsa['rekey']);
 																	echo "<br/>Life: " . htmlspecialchars($childsa['lifetime']);
 																	echo "<br/>Install: " .htmlspecialchars($childsa['installtime']);
-									
+
 																?>
 															</td>
 															<td class="listr nowrap">
@@ -348,12 +348,12 @@ $status = ipsec_smp_dump_status();
 													</table>
 													</td>
 												</tr>
-												<?php endif; 
-									
+												<?php endif;
+
 												unset($con_id);
 											}
 										}
-									
+
 										$rgmap = array();
 										foreach ($a_phase1 as $ph1ent):
 											$rgmap[$ph1ent['remote-gateway']] = $ph1ent['remote-gateway'];
@@ -431,7 +431,7 @@ $status = ipsec_smp_dump_status();
 												<tr style="display:none;"><td></td></tr>
 											</tbody>
 											</table>
-											
+
 											<div class="container-fluid">
 											<p class="vexpl">
 	<span class="text-danger">
@@ -440,16 +440,16 @@ $status = ipsec_smp_dump_status();
 	<?php echo gettext("You can configure IPsec");?>
 	<a href="vpn_ipsec.php">here</a>.
 </p>
-											</div>				
-						
-    				    </div>
+											</div>
+
+				    </div>
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
-											
+
+
 
 
 <script type="text/javascript">

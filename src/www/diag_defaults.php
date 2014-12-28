@@ -47,7 +47,7 @@ include("head.inc");
 ?>
 
 <body>
-	
+
 <?php include("fbegin.inc"); ?>
 
 
@@ -79,16 +79,16 @@ include("head.inc");
 					<li><?=gettext("webConfigurator admin password will be reset to");?> '<?=$g['factory_shipped_password']?>'</li>
 				</ul>
 				<p><strong><?=gettext("Are you sure you want to proceed?");?></strong></p>
-				
-				
+
+
 				<div class="btn-group">
 				   <input type="submit" name="Submit" class="btn btn-primary" value="<?=gettext("Yes");?>" />
 				  <a href="/" class="btn btn-default"><?=gettext("No");?></a>
 				</div>
 				<br /><br />
-				
+
 				</form>
-		    
+
 				<?php endif; ?>
 		    </section>
 		</div>

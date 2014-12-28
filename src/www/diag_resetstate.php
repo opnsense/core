@@ -66,16 +66,16 @@ include("head.inc");
 
 ?>
 <body>
-	
+
 <?php include("fbegin.inc"); ?>
 
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-			
+
 			 <section class="col-xs-12">
-    				
+
 				<?php
 						$tab_array = array();
 						$tab_array[0] = array(gettext("States"), false, "diag_dump_states.php");
@@ -83,27 +83,27 @@ include("head.inc");
 						display_top_tabs($tab_array);
 				?>
 
-					
+
 				<div class="tab-content content-box col-xs-12">
-	    					
-	    			<div class="container-fluid tab-content">
-	    					
-	    				<div class="tab-pane active" id="system">
-			
-									    
+
+				<div class="container-fluid tab-content">
+
+					<div class="tab-pane active" id="system">
+
+
 								<?php if ($input_errors) print_input_errors($input_errors); ?>
 								<?php if ($savemsg) print_info_box($savemsg); ?>
-						
-						
+
+
 								<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
-										
-								
+
+
 			                      <input name="statetable" type="checkbox" id="statetable" value="yes" checked="checked" />
 			                      <strong><?= gettext("Firewall state table"); ?></strong><br />
 			                      <span class="vexpl"><br />
 			                      <?=gettext("Resetting the state tables will remove all entries from " .
 			                      "the corresponding tables. This means that all open connections " .
-			                      "will be broken and will have to be re-established. This " . 
+			                      "will be broken and will have to be re-established. This " .
 			                      "may be necessary after making substantial changes to the " .
 			                      "firewall and/or NAT rules, especially if there are IP protocol " .
 			                      "mappings (e.g. for PPTP or IPv6) with open connections."); ?><br />
@@ -114,7 +114,7 @@ include("head.inc");
 			                      <?=gettext("NOTE: If you reset the firewall state table, the browser " .
 			                      "session may appear to be hung after clicking &quot;Reset&quot;. " .
 			                      "Simply refresh the page to continue."); ?></span></p>
-						          
+
 									<?php if (isset($config['system']['lb_use_sticky'])): ?>
 									<p>
 									<input name="sourcetracking" type="checkbox" id="sourcetracking" value="yes" checked="checked" />
@@ -128,10 +128,10 @@ include("head.inc");
 									</p>
 									<?php endif; ?>
 						            <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Reset"); ?>" />
-						            			
-										
+
+
 								</form>
-								
+
 						</div>
 					</div>
 				</div>

@@ -28,8 +28,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*	
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig	/usr/bin/awk	
+/*
+	pfSense_BUILDER_BINARIES:	/sbin/ifconfig	/usr/bin/awk
 	pfSense_MODULE:	ipsec
 */
 
@@ -49,7 +49,7 @@ $nentries = $config['syslog']['nentries'];
 if (!$nentries)
 	$nentries = 50;
 
-if ($_POST['clear']) 
+if ($_POST['clear'])
 	clear_log_file($ipsec_logfile);
 
 $ipsec_logarr = return_clog($ipsec_logfile, $nentries);
@@ -65,25 +65,25 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
-			    <section class="col-xs-12">
-    				
-    					
-    					<? include('diag_logs_tabs.php'); ?>
 
-					
-						<div class="tab-content content-box col-xs-12">	    					
-	    				    <div class="container-fluid">	    					
-		    						
-	    						<p>  <?php printf(gettext("Last %s  IPsec log entries"),$nentries);?></p>
-								
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+
+			    <section class="col-xs-12">
+
+
+					<? include('diag_logs_tabs.php'); ?>
+
+
+						<div class="tab-content content-box col-xs-12">
+					    <div class="container-fluid">
+
+							<p>  <?php printf(gettext("Last %s  IPsec log entries"),$nentries);?></p>
+
 								 <div class="table-responsive">
-								 	<table class="table table-striped table-sort">
-									 	<?php
+									<table class="table table-striped table-sort">
+										<?php
 										foreach($ipsec_logarr as $logent){
 											$logent = htmlspecialchars($logent);
 											$logent = preg_split("/\s+/", $logent, 6);
@@ -94,18 +94,18 @@ include("head.inc");
 											echo "</tr>\n";
 										}
 										?>
-								 	</table>
+									</table>
 								 </div>
-								
+
 								<form action="diag_logs_ipsec.php" method="post">
 									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 								</form>
-								
-    						</div>
-    				    </div>
+
+						</div>
+				    </div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

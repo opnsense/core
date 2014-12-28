@@ -24,9 +24,9 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-	
-$tab_group 	= 	isset($tab_group) ? $tab_group : 'system';
-$tab_array 	= 	array();
+
+$tab_group	=	isset($tab_group) ? $tab_group : 'system';
+$tab_array	=	array();
 
 if ($tab_group == 'vpn') {
 
@@ -48,15 +48,15 @@ if ($tab_group == 'vpn') {
 	$tab_array[] = array(gettext("L2TP Raw"),
 				(($vpntype == "l2tp") && ($mode == "raw")),
 				"/diag_logs_vpn.php?vpntype=l2tp&amp;mode=raw");
-	
+
 }
 
 else if ($tab_group == 'firewall') {
-	
+
 	$tab_array[] = array(gettext("Normal View"), true, "/diag_logs_filter.php");
 	$tab_array[] = array(gettext("Dynamic View"), false, "/diag_logs_filter_dynamic.php");
 	$tab_array[] = array(gettext("Summary View"), false, "/diag_logs_filter_summary.php");
-	
+
 }
 
 else {

@@ -117,13 +117,13 @@ include("head.inc");
 		if($savemsg)
 			print_info_box($savemsg);
 	?>
-	
+
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 			    <section class="col-xs-12">
-    				
+
 					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("Config History"), true, "diag_confbak.php");
@@ -131,25 +131,25 @@ include("head.inc");
 							display_top_tabs($tab_array);
 					?>
 
-					
-						<div class="tab-content content-box col-xs-12">
-	    					
-	    				    <div class="container-fluid tab-content">
-	    					
-	    						<div class="tab-pane active" id="system">
 
-									
+						<div class="tab-content content-box col-xs-12">
+
+					    <div class="container-fluid tab-content">
+
+							<div class="tab-pane active" id="system">
+
+
 									<?php if ($diff): ?>
 									<section class="__mb">
 										<div classs="content-box">
 											<header class="content-box-head container-fluid">
-				        				        <h3><?=gettext("Configuration diff from");?> <?php echo date(gettext("n/j/y H:i:s"), $oldtime); ?> <?=gettext("to");?> <?php echo date(gettext("n/j/y H:i:s"), $newtime); ?></h3>
-				        				    </header>	
-				        				    
-				        				     <div class="content-box-main">
-				            			
-				            				    <div class="table-responsive">										
-									
+									        <h3><?=gettext("Configuration diff from");?> <?php echo date(gettext("n/j/y H:i:s"), $oldtime); ?> <?=gettext("to");?> <?php echo date(gettext("n/j/y H:i:s"), $newtime); ?></h3>
+									    </header>
+
+									     <div class="content-box-main">
+
+									    <div class="table-responsive">
+
 													<table summary="diag confbak">
 														<tr><td></td></tr>
 														<?php foreach ($diff as $line) {
@@ -172,25 +172,25 @@ include("head.inc");
 														</tr>
 														<?php } ?>
 													</table>
-				            				    </div>
-				        				     </div>
+									    </div>
+									     </div>
 										</div>
 									</section>
 									<?php endif; ?>
-									
-									
-									<?PHP if ($_GET["newver"] || $_GET["rmver"]): ?>									
+
+
+									<?PHP if ($_GET["newver"] || $_GET["rmver"]): ?>
 									<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
 									<section>
-				                        <div class="content-box"> 										
-											
+				                        <div class="content-box">
+
 				                            <header class="content-box-head container-fluid">
-				        				        <h3><?PHP echo gettext("Confirm Action"); ?></h3>
-				        				    </header>
-				        				    
-				        				    <div class="content-box-main col-xs-12">
-					        				    
-					        				    <strong><?PHP echo gettext("Please confirm the selected action"); ?></strong>:
+									        <h3><?PHP echo gettext("Confirm Action"); ?></h3>
+									    </header>
+
+									    <div class="content-box-main col-xs-12">
+
+										    <strong><?PHP echo gettext("Please confirm the selected action"); ?></strong>:
 												<br />
 												<br /><strong><?PHP echo gettext("Action"); ?>:</strong>
 											<?PHP	if (!empty($_GET["newver"])) {
@@ -204,61 +204,61 @@ include("head.inc");
 											<?PHP	} ?>
 												<br /><strong><?PHP echo gettext("Target Configuration"); ?>:</strong>
 												<?PHP echo sprintf(gettext('Timestamp %1$s'), date(gettext("n/j/y H:i:s"), $target_config)); ?>
-												<br /><input type="submit" name="confirm" class="btn btn-primary" value="<?PHP echo gettext("Confirm"); ?>" />					        				    
-					        				    
-				        				    </div>
+												<br /><input type="submit" name="confirm" class="btn btn-primary" value="<?PHP echo gettext("Confirm"); ?>" />
+
+									    </div>
 				                        </div>
 									</section>
 									</form>
-									
+
 									<? else: ?>
-									
+
 									<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
 									<section style="margin-bottom:15px;">
-				                        <div class="content-box"> 										
-											
+				                        <div class="content-box">
+
 				                            <header class="content-box-head container-fluid">
-				        				        <h3>Config history</h3>
-				        				    </header>
-				        				    
-				        				    <div class="content-box-main">
-				            			
-				            				    <div class="table-responsive">
-				                			        <table class="table table-striped">
-				                				        <tbody>
-				                    				        <tr>
-				                    				          <td><?=gettext("Backup Count");?></td>
-				                    				          <td><input name="backupcount" type="text" class="formfld unknown" size="5" value="<?=htmlspecialchars($config['system']['backupcount']);?>"/></td>
-				                    				          <td><?= gettext("Enter the number of older configurations to keep in the local backup cache. By default this is 30 for a full install or 5 on NanoBSD."); ?></td>
-				                    				          <td><input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" /></td>
-				                    				        </tr>
-				                				        </tbody>
-				                				    </table>
-				                				    
-				                				    <div class="container-fluid">
-				                				    <?= gettext("NOTE: Be aware of how much space is consumed by backups before adjusting this value. Current space used by backups: "); ?> <?= exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'") ?>
-				                				    </div>
-				            				    </div>
-				        				    </div>
+									        <h3>Config history</h3>
+									    </header>
+
+									    <div class="content-box-main">
+
+									    <div class="table-responsive">
+									        <table class="table table-striped">
+										        <tbody>
+										        <tr>
+										          <td><?=gettext("Backup Count");?></td>
+										          <td><input name="backupcount" type="text" class="formfld unknown" size="5" value="<?=htmlspecialchars($config['system']['backupcount']);?>"/></td>
+										          <td><?= gettext("Enter the number of older configurations to keep in the local backup cache. By default this is 30 for a full install or 5 on NanoBSD."); ?></td>
+										          <td><input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" /></td>
+										        </tr>
+										        </tbody>
+										    </table>
+
+										    <div class="container-fluid">
+										    <?= gettext("NOTE: Be aware of how much space is consumed by backups before adjusting this value. Current space used by backups: "); ?> <?= exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'") ?>
+										    </div>
+									    </div>
+									    </div>
 				                        </div>
 									</section>
 									</form>
-									
-									
+
+
 									<?php if (is_array($confvers)): ?>
 									<form action="<?=$_SERVER['REQUEST_URI'];?>" method="get">
 									<section>
 										<div class="content-box">
 											<div class="content-box-main">
-												
+
 												<div class="container-fluid __mb">
 												<?= gettext("To view the differences between an older configuration and a newer configuration, select the older configuration using the left column of radio options and select the newer configuration in the right column, then press the Diff button."); ?>
 												</div>
-								
-								
+
+
                                             <table class="table table-striped table-sort" summary="difference">
-											
-											<thead>	
+
+											<thead>
 											<tr>
 												<td colspan="2" valign="middle" class="list nowrap"><?=gettext("Diff");?></td>
 												<td class="listhdrr"><?=gettext("Date");?></td>
@@ -304,36 +304,36 @@ include("head.inc");
 												<td class="listr"> <?= $version['version'] ?></td>
 												<td class="listr"> <?= format_bytes($version['filesize']) ?></td>
 												<td class="listr"> <?= substr($version['description'],0,50) ?></td>
-												
+
 												 <td class="btn-group-table">
 		                                            <a href="diag_confbak.php?newver=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Revert to this configuration");?>"><span class="glyphicon glyphicon-log-in"></span></a>
 		                                            <a href="diag_confbak.php?rmver=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Remove this backup");?>" ><span class="glyphicon glyphicon-remove"></span></a>
 		                                            <a href="diag_confbak.php?getcfg=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Download this backup");?>"><span class="glyphicon glyphicon-download"></span></a>
 		                                        </td>
-												
+
 											</tr>
-											<?php endforeach; ?>										
+											<?php endforeach; ?>
 											</tbody>
 										</table>
-										
+
 										<div class="container-fluid">
 										<input type="submit" name="diff" class="btn btn-primary" value="<?=gettext("Diff"); ?>" />
-										</div>	
-											
-										</div>										
-									</section>									
+										</div>
+
+										</div>
+									</section>
 									</form>
 									<? endif; endif; ?>
-									
-									
-            				    
-        				    </div>
-                                    
-        				</div>
-    				</section>
-    				
-    			
-				  
+
+
+
+					    </div>
+
+					</div>
+				</section>
+
+
+
 			</div>
 		</div>
 	</section>
@@ -341,4 +341,4 @@ include("head.inc");
 
 <?php include("foot.inc"); ?>
 
-					
+

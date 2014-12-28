@@ -28,7 +28,7 @@
 */
 
 /*
-	pfSense_BUILDER_BINARIES:	/sbin/pfctl	
+	pfSense_BUILDER_BINARIES:	/sbin/pfctl
 	pfSense_MODULE:	filter
 */
 

@@ -30,7 +30,7 @@
 */
 
 /*
-	pfSense_BUILDER_BINARIES:	/usr/bin/sockstat	
+	pfSense_BUILDER_BINARIES:	/usr/bin/sockstat
 */
 ##|+PRIV
 ##|*IDENT=page-diagnostics-sockets
@@ -56,19 +56,19 @@ $showAllOption = $showAll ? "" : "?showAll";
 ?>
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-		        				
+
 			<section class="col-xs-12">
-                
+
                 <p>Information about listening sockets for both <a href="#IPv4">IPv4</a> and <a href="#IPv6">IPv6</a>.</p>
                 <p>For explanation about the meaning of the information listed for each socket click <a href="#about">here</a>.</p>
                 <p><input type="button" class="btn btn-default" value="<?=$showAllText?>" onclick="window.location.href='diag_sockets.php<?=$showAllOption?>'"/><br/>To show information about both listening and connected sockets click this.</p>
-                
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 			</section>
-			
-			
+
+
 <?php
 	if (isset($_GET['showAll']))
 	{
@@ -83,15 +83,15 @@ $showAllOption = $showAll ? "" : "?showAll";
 		$name = ($tabindex == 0 ? 'IPv4' : 'IPv6');
 ?>
 
-			
-			<section class="col-xs-12">                
 
-                <div class="content-box">              
-            
+			<section class="col-xs-12">
+
+                <div class="content-box">
+
                     <header class="content-box-head container-fluid">
 				        <h3><a name="<?=$name;?>"></a><?=$name;?></h3>
 				    </header>
-				    
+
 				     <table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
 						<?php
 							foreach (explode("\n", $table) as $i => $line) {
@@ -99,7 +99,7 @@ $showAllOption = $showAll ? "" : "?showAll";
 									$class = 'listhdrr';
 								else
 									$class = 'listlr';
-					
+
 								if (trim($line) == "")
 									continue;
 								print("<tr id=\"$name$i\">\n");
@@ -108,41 +108,41 @@ $showAllOption = $showAll ? "" : "?showAll";
 									if ($entry == '' || $entry == "ADDRESS") continue;
 									if ($i == 0)
 										print("<th class=\"$class\">$entry</th>\n");
-									else		
+									else
 										print("<td class=\"$class\">$entry</td>\n");
 									if ($i > 0)
 										$class = 'listr';
 									$j++;
 								}
-								print("</tr>\n");			
+								print("</tr>\n");
 							}?>
 					</table>
                 </div>
-			</section>			        
+			</section>
 <?php
-	} 
+	}
 ?>
 
-			<section class="col-xs-12">                
+			<section class="col-xs-12">
 
-                <div class="content-box">              
-            
+                <div class="content-box">
+
                     <header class="content-box-head container-fluid">
 				        <h3><a name="about"></a>Socket information explanation</h3>
 				    </header>
-				    
+
 				    <div class="content-box-main col-xs-12">
 						<p>This page show the output for the commands: "sockstat -4lL" and "sockstat -6lL".<br />
 Or in case of showing all sockets the output for: "sockstat -4" and "sockstat -6".<br />
 <br />
 The information listed for each socket is:</p>
 				    </div>
-				         
+
 					<table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
 						<tr><td class="listlr">USER	      </td><td class="listr">The user who owns the socket.</td></tr>
 						<tr><td class="listlr">COMMAND	      </td><td class="listr">The command which holds the socket.</td></tr>
 						<tr><td class="listlr">PID	      </td><td class="listr">The process ID of the command which holds the socket.</td></tr>
-						<tr><td class="listlr">FD 	      </td><td class="listr">The file descriptor number of the socket.</td></tr>
+						<tr><td class="listlr">FD	      </td><td class="listr">The file descriptor number of the socket.</td></tr>
 						<tr><td class="listlr">PROTO	      </td><td class="listr">The transport protocol associated with the socket for Internet sockets, or the type of socket (stream or data-gram) for UNIX sockets.</td></tr>
 						<tr><td class="listlr">ADDRESS	      </td><td class="listr">(UNIX sockets only) For bound sockets, this is the file-name of the socket. <br />For other sockets, it is the name, PID and file descriptor number of the peer, or ``(none)'' if the socket is neither bound nor connected.</td></tr>
 						<tr><td class="listlr">LOCAL ADDRESS    </td><td class="listr">(Internet sockets only) The address the local end of the socket is bound to (see getsockname(2)).</td></tr>

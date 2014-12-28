@@ -30,7 +30,7 @@
 */
 
 /*
-	pfSense_BUILDER_BINARIES:	/usr/bin/netstat	
+	pfSense_BUILDER_BINARIES:	/usr/bin/netstat
 	pfSense_MODULE:	routing
 */
 ##|+PRIV
@@ -90,7 +90,7 @@ include('head.inc');
 		if (section == "IPv6")
 			params += "&IPv6=true";
 		var myAjax =  $.ajax(
-			
+
 			{
 				url:url,
 				type: 'post',
@@ -161,34 +161,34 @@ include('head.inc');
 
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-		        				
+
 			<section class="col-xs-12">
-                
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
-                <div class="content-box">              
-            
+                <div class="content-box">
+
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Routing tables"); ?></h3>
 				    </header>
-				    
+
 				    <div class="content-box-main">
 
 						<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
 					    <div class="table-responsive">
-	    			        <table class="table table-striped __nomb">
-	    				        <tbody>
-	        				        <tr>
-	        				          <td><?=gettext("Name resolution");?></td>
-	        				          <td><input type="checkbox" class="formfld" id="resolve" name="resolve" value="yes" <?php if ($_POST['resolve'] == 'yes') echo "checked=\"checked\""; ?> />&nbsp;<?=gettext("Enable");?>
-									  	<p class="text-muted"><em><small><?=gettext("Enable this to attempt to resolve names when displaying the tables.");?></small></em></p>
+				        <table class="table table-striped __nomb">
+					        <tbody>
+						        <tr>
+						          <td><?=gettext("Name resolution");?></td>
+						          <td><input type="checkbox" class="formfld" id="resolve" name="resolve" value="yes" <?php if ($_POST['resolve'] == 'yes') echo "checked=\"checked\""; ?> />&nbsp;<?=gettext("Enable");?>
+										<p class="text-muted"><em><small><?=gettext("Enable this to attempt to resolve names when displaying the tables.");?></small></em></p>
 									  </td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?=gettext("Number of rows");?></td>
-	        				          <td><select id="limit" name="limit" class="form-control">
+						        </tr>
+						        <tr>
+						          <td><?=gettext("Number of rows");?></td>
+						          <td><select id="limit" name="limit" class="form-control">
 										<?php
 											foreach (array("10", "50", "100", "200", "500", "1000", gettext("all")) as $item) {
 												echo "<option value=\"{$item}\" " . ($item == "100" ? "selected=\"selected\"" : "") . ">{$item}</option>\n";
@@ -197,38 +197,38 @@ include('head.inc');
 										</select>
 										<p class="text-muted"><em><small><?=gettext("Select how many rows to display.");?></small></em></p>
 									 </td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td><?=gettext("Filter expression");?></td>
-	        				          <td>
-		        				          <input type="text" class="form-control search" name="filter" id="filter" />
-										  <p class="text-muted"><em><small><?=gettext("Use a regular expression to filter IP address or hostnames.");?></small></em></p>		        				          
-	        				          </td>
-	        				        </tr>
-	        				        <tr>
-	        				          <td>&nbsp;</td>
-	        				          <td>
-		        				          <input type="button" class="btn btn-primary" name="update" onclick="update_all_routes();" value="<?=gettext("Update"); ?>" />
+						        </tr>
+						        <tr>
+						          <td><?=gettext("Filter expression");?></td>
+						          <td>
+							          <input type="text" class="form-control search" name="filter" id="filter" />
+										  <p class="text-muted"><em><small><?=gettext("Use a regular expression to filter IP address or hostnames.");?></small></em></p>
+						          </td>
+						        </tr>
+						        <tr>
+						          <td>&nbsp;</td>
+						          <td>
+							          <input type="button" class="btn btn-primary" name="update" onclick="update_all_routes();" value="<?=gettext("Update"); ?>" />
 										  <p class="text-muted"><em><small><span class="text-danger"><strong><?=gettext("Note:")?></strong></span> <?=gettext("By enabling name resolution, the query should take a bit longer. You can stop it at any time by clicking the Stop button in your browser.");?></small></em></p>
-		        				      </td>
-	        				        </tr>	        				       
-	    				        </tbody>
-	    				    </table>
+							      </td>
+						        </tr>
+					        </tbody>
+					    </table>
 					    </div>
 					    </form>
 				    </div>
-                            
+
 				</div>
 			</section>
 
-			<section class="col-xs-12">                
+			<section class="col-xs-12">
 
-                <div class="content-box">              
-            
+                <div class="content-box">
+
                     <header class="content-box-head container-fluid">
 				        <h3>IPv4</h3>
 				    </header>
-				    
+
 				     <table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
 						<tbody>
 							<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>
@@ -236,16 +236,16 @@ include('head.inc');
 					</table>
                 </div>
 			</section>
-			
-			<section class="col-xs-12">                
 
-                <div class="content-box">              
-            
+			<section class="col-xs-12">
+
+                <div class="content-box">
+
                     <header class="content-box-head container-fluid">
 				        <h3>IPv6</h3>
 				    </header>
 					<table class="table table-striped table-sort sortable __nomb" id="IPv6" summary="IPv6 routes">
-					
+
 						<tbody>
 							<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>
 						</tbody>

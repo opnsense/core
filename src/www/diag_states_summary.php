@@ -145,13 +145,13 @@ function build_port_info($portarr, $proto) {
 
 function print_summary_table($label, $iparr, $sort = TRUE) { ?>
 	<section class="col-xs-12">
-		 <div class="content-box">            
+		 <div class="content-box">
             <header class="content-box-head container-fluid">
 		        <h3><?php echo $label; ?></h3>
 		    </header>
-			
+
 			<div class="table-responsive">
-                   
+
             <table class="table table-striped table-sort sortable __nomb">
 				<tr>
 					<td class="listhdrr"><?=gettext("IP");?></td>
@@ -183,7 +183,7 @@ function print_summary_table($label, $iparr, $sort = TRUE) { ?>
 				</tr>
 				<?php } ?>
 			<?php } ?>
-			
+
 			</table>
 		 </div>
 	</section>
@@ -198,11 +198,11 @@ echo "<body>";
 include("fbegin.inc");
 ?>
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-		        				
-			
-				
+
+
+
 <?
 
 print_summary_table(gettext("By Source IP"), $srcipinfo);

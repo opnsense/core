@@ -28,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*	
+/*
 	pfSense_MODULE:	openvpn
 */
 
@@ -51,7 +51,7 @@ $nentries = $config['syslog']['nentries'];
 if (!$nentries)
 	$nentries = 50;
 
-if ($_POST['clear']) 
+if ($_POST['clear'])
 	clear_log_file($openvpn_logfile);
 
 include("head.inc");
@@ -63,37 +63,37 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
-			    <section class="col-xs-12">
-    				
-    					
-    					<? include('diag_logs_tabs.php'); ?>
 
-					
-						<div class="tab-content content-box col-xs-12">	    					
-	    				    <div class="container-fluid">	    					
-		    						
-	    						<p><?php printf(gettext("Last %s OpenVPN log entries"),$nentries)?></p>
-								
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+
+			    <section class="col-xs-12">
+
+
+					<? include('diag_logs_tabs.php'); ?>
+
+
+						<div class="tab-content content-box col-xs-12">
+					    <div class="container-fluid">
+
+							<p><?php printf(gettext("Last %s OpenVPN log entries"),$nentries)?></p>
+
 								 <div class="table-responsive">
-								 	<table class="table table-striped table-sort">
-									 	 <?php dump_clog($openvpn_logfile, $nentries); ?>
-								 	</table>
+									<table class="table table-striped table-sort">
+										 <?php dump_clog($openvpn_logfile, $nentries); ?>
+									</table>
 								 </div>
-								
+
 								<form action="diag_logs_openvpn.php" method="post">
 									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 								</form>
-								
-    						</div>
-    				    </div>
+
+						</div>
+				    </div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

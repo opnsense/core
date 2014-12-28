@@ -26,8 +26,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*	
-	pfSense_BUILDER_BINARIES:	
+/*
+	pfSense_BUILDER_BINARIES:
 	pfSense_MODULE:	filter
 */
 
@@ -183,21 +183,21 @@ include("head.inc"); ?>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.php'); ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	  
-							
-							
+
+				<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.php'); ?>
+
+					<div class="tab-content content-box col-xs-12">
+				    <div class="container-fluid">
+
+
 							<? $tab_group = 'firewall'; include('diag_logs_pills.php'); ?>
-							
+
 							<p><?php printf (gettext('This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s).'), $gotlines, $lines)?><br />
 <?=gettext("NOTE: IE8 users must enable compatibility view.")?></p>
 
@@ -211,10 +211,10 @@ include("head.inc"); ?>
 							}
 							?>
 							</pre>
-    				    </div>
+				    </div>
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-<?php include("foot.inc"); ?>	
+<?php include("foot.inc"); ?>

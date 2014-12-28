@@ -117,15 +117,15 @@ include("head.inc");
 </script>
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-		    <form method="post" action="<?=$_SERVER['REQUEST_URI'];?>">			
+		    <form method="post" action="<?=$_SERVER['REQUEST_URI'];?>">
 			<section class="col-xs-12">
 
-				
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
-				
-				
+
+
 				<select id="type" onchange="method_change(jQuery('#type').val());" name="type" class='form-control'>
 					<option value="">Table</option>
 					<?php foreach ($tables as $table) {
@@ -138,11 +138,11 @@ include("head.inc");
 				</select>
 
 			</section>
-			
+
 			<section class="col-xs-12">
-				  <div class="content-box">              
-                    
-                    <div class="table-responsive">	
+				  <div class="content-box">
+
+                    <div class="table-responsive">
 
 						<table class="table table-striped table-sort sortable __nomb">
 							<tr>
@@ -170,7 +170,7 @@ include("head.inc");
 								else
 									echo "<tr><td>" . gettext("No entries exist in this table.");
 						?>
-						
+
 						<?php
 							if($count > 0)
 								if( ($tablename == "bogons") || ($tablename == "bogonsv6") ) {
@@ -184,13 +184,13 @@ include("head.inc");
 						</table>
 					</div>
 				</div>
-			
+
             </section>
-        
+
 			</form>
         </div>
-        
+
 	</div>
 </section>
-		
+
 <?php include('foot.inc');?>

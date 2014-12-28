@@ -116,13 +116,13 @@ if($_REQUEST['sorttype'] && in_array($_REQUEST['sorttype'], $sorttypes)
 
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-							
-			  
-			
+
+
+
 			    <div class="table-responsive">
-				    
+
 					<form method="post" action="<?=$_SERVER['REQUEST_URI'];?>">
                     <table class="table table-striped __nomb">
 				      <thead>
@@ -172,26 +172,26 @@ if($_REQUEST['sorttype'] && in_array($_REQUEST['sorttype'], $sorttypes)
                     </table>
                     </form>
 			    </div>
-			    
+
 		    <section class="col-xs-12">
-			    
-			   
-				 	
-				 	<?php
+
+
+
+					<?php
 						if($savemsg) {
 							echo "<div id=\"savemsg\">";
 							print_info_box($savemsg);
-							echo "</div>";	
+							echo "</div>";
 						}
 						if ($input_errors)
 							print_input_errors($input_errors);
 					?>
-				 		
-				 		<div id="pftopactivitydiv"><?=gettext("Gathering pfTOP activity, please wait...");?></div>
-				   
-				    
+
+						<div id="pftopactivitydiv"><?=gettext("Gathering pfTOP activity, please wait...");?></div>
+
+
 		    </section>
-				
+
 		 </section>
 		</div>
 	</div>

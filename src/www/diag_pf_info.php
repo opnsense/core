@@ -84,13 +84,13 @@ jQuery(document).ready(function() {setTimeout('getpfinfo()', 5000);});
 	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
 		<div class="row">
 		    <section class="col-xs-12">
-	
-				
+
+
 			<?php
 				if($savemsg) {
 					echo "<div id=\"savemsg\">";
 					print_info_box($savemsg);
-					echo "</div>";	
+					echo "</div>";
 				}
 				if ($input_errors)
 					print_input_errors($input_errors);
@@ -99,7 +99,7 @@ jQuery(document).ready(function() {setTimeout('getpfinfo()', 5000);});
 			<div id="pfactivitydiv">
 				<?=gettext("Gathering PF information, please wait...");?>
 			</div>
-			
+
 		 </section>
 		</div>
 	</div>

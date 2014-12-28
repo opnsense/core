@@ -630,46 +630,46 @@ function backuparea_change(obj) {
 
 <form action="diag_backup.php" method="post" name="iform" enctype="multipart/form-data">
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    					
-    					<?php
+
+
+					<?php
 								$tab_array = array();
 								$tab_array[0] = array(gettext("Config History"), false, "diag_confbak.php");
 								$tab_array[1] = array(gettext("Backup/Restore"), true, "diag_backup.php");
 								display_top_tabs($tab_array);
 						?>
 
-					
+
 						<div class="tab-content content-box col-xs-12">
-	    					
-	    				    <div class="container-fluid tab-content">
-	    					
-	    						<div class="tab-pane active" id="system">
+
+					    <div class="container-fluid tab-content">
+
+							<div class="tab-pane active" id="system">
 
 									<section class="__mb">
-				                        <div class="content-box">              
-				                    
+				                        <div class="content-box">
+
 				                            <header class="content-box-head container-fluid">
-				        				        <h3>Backup configuration</h3>
-				        				    </header>
-				        				    
-				        				    <div class="content-box-main ">
-				            				    <div class="table-responsive">
-					            				    
-				                			        <table class="table table-striped __nomb">
-				                				        <tbody>
-				                    				        <tr>
-				                    				          <td><p><?=gettext("Click this button to download the system configuration in XML format."); ?><br /><br /> <?=gettext("Backup area:"); ?> <?php spit_out_select_items("backuparea", false); ?></p></td>
-				                    				        </tr>
-				                    				        <tr>
-				                    				          <td>
-					                    				          <table>
+									        <h3>Backup configuration</h3>
+									    </header>
+
+									    <div class="content-box-main ">
+									    <div class="table-responsive">
+
+									        <table class="table table-striped __nomb">
+										        <tbody>
+										        <tr>
+										          <td><p><?=gettext("Click this button to download the system configuration in XML format."); ?><br /><br /> <?=gettext("Backup area:"); ?> <?php spit_out_select_items("backuparea", false); ?></p></td>
+										        </tr>
+										        <tr>
+										          <td>
+											          <table>
 																		<tr>
 																			<td width="25">
 																				<input name="nopackages" type="checkbox" class="formcheckbox" id="nopackages" />
@@ -715,40 +715,40 @@ function backuparea_change(obj) {
 																			</td>
 																		</tr>
 																	</table>
-																	
+
 																	<input name="Submit" type="submit" class="btn btn-default __mt" id="download" value="<?=gettext("Download configuration"); ?>" />
-					                    				          
-					                    				          
-				                    				          </td>
-				                    				        </tr>
-				                				        </tbody>
-				                				    </table>
-				            				    </div>
-				            				    
-				        				    </div>
-				                                    
-				        				</div>
-				    				</section>
-				    				
-				    				<section>
-				                        <div class="content-box">              
-				                    
+
+
+										          </td>
+										        </tr>
+										        </tbody>
+										    </table>
+									    </div>
+
+									    </div>
+
+									</div>
+								</section>
+
+								<section>
+				                        <div class="content-box">
+
 				                            <header class="content-box-head container-fluid">
-				        				        <h3><?=gettext("Restore configuration"); ?></h3>
-				        				    </header>
-				        				    
-				        				    <div class="content-box-main ">
-				            				    <div class="table-responsive">
-				                			        <table class="table table-striped __nomb">
-				                				        <tbody>
-				                    				        <tr>
-				                    				          <td><p><?=gettext("Open a"); ?> <?=$g['[product_name']?> <?=gettext("configuration XML file and click the button below to restore the configuration."); ?>
+									        <h3><?=gettext("Restore configuration"); ?></h3>
+									    </header>
+
+									    <div class="content-box-main ">
+									    <div class="table-responsive">
+									        <table class="table table-striped __nomb">
+										        <tbody>
+										        <tr>
+										          <td><p><?=gettext("Open a"); ?> <?=$g['[product_name']?> <?=gettext("configuration XML file and click the button below to restore the configuration."); ?>
 						<br /><br />
 						<?=gettext("Restore area:"); ?> <?php spit_out_select_items("restorearea", true); ?></p></td>
-				                    				        </tr>
-				                    				        <tr>
-				                    				          <td>
-					                    				          	
+										        </tr>
+										        <tr>
+										          <td>
+
 																<p><input name="conffile" type="file" class="formbtn" id="conffile" size="40" /></p>
 																<table>
 																	<tr>
@@ -780,36 +780,36 @@ function backuparea_change(obj) {
 																</table>
 																<p><input name="Submit" type="submit" class="btn btn-default" id="restore" value="<?=gettext("Restore configuration"); ?>" /></p>
 																<p><strong><span class="red"><?=gettext("Note:"); ?></span></strong><br /><?=gettext("The firewall will reboot after restoring the configuration."); ?><br /></p>
-					                    				          
-					                    				          
-				                    				          </td>
-				                    				        </tr>
-				                				        </tbody>
-				                				    </table>
-				            				    </div>
-				            				    
-				        				    </div>
-				                                    
-				        				</div>
-				    				</section>
+
+
+										          </td>
+										        </tr>
+										        </tbody>
+										    </table>
+									    </div>
+
+									    </div>
+
+									</div>
+								</section>
 
 <?php if (($config['installedpackages']['package'] != "") || (is_subsystem_dirty("packagelock"))) { ?>
 
 
 									<section>
-				                        <div class="content-box">              
-				                    
+				                        <div class="content-box">
+
 				                            <header class="content-box-head container-fluid">
-				        				        <h3><?=gettext("Package Functions"); ?></h3>
-				        				    </header>
-				        				    
-				        				    <div class="content-box-main col-xs-12">
-				            				    <div class="table-responsive">
-				                			        <table class="table table-striped">
-				                				        <tbody>
-				                    				        <tr>
-				                    				          <td>
-					                    				          	
+									        <h3><?=gettext("Package Functions"); ?></h3>
+									    </header>
+
+									    <div class="content-box-main col-xs-12">
+									    <div class="table-responsive">
+									        <table class="table table-striped">
+										        <tbody>
+										        <tr>
+										          <td>
+
 															<?php if ($config['installedpackages']['package'] != "") { ?>
 																<p><?=gettext("Click this button to reinstall all system packages.  This may take a while."); ?> <br /><br />
 																<input name="Submit" type="submit" class="formbtn" id="reinstallpackages" value="<?=gettext("Reinstall packages"); ?>" />
@@ -820,26 +820,26 @@ function backuparea_change(obj) {
 																<p><?=gettext("Click this button to clear the package lock if a package fails to reinstall properly after an upgrade."); ?> <br /><br />
 																<input name="Submit" type="submit" class="formbtn" id="clearpackagelock" value="<?=gettext("Clear Package Lock"); ?>" />
 															<?php } ?>
-																</p>					                    				          
-					                    				          
-				                    				          </td>
-				                    				        </tr>
-				                				        </tbody>
-				                				    </table>
-				            				    </div>
-				            				    
-				        				    </div>
-				                                    
-				        				</div>
-				    				</section>
-<? } ?>
-				    			
-				               	</div>
-        					</div>
-    					
-    					</div>
+																</p>
 
-					
+										          </td>
+										        </tr>
+										        </tbody>
+										    </table>
+									    </div>
+
+									    </div>
+
+									</div>
+								</section>
+<? } ?>
+
+						</div>
+						</div>
+
+					</div>
+
+
 				</section>
 			</div>
 		</div>

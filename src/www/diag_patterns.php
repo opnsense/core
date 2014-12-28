@@ -71,19 +71,19 @@ include("head.inc");
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="diag_patterns.php" method="post" enctype="multipart/form-data" name="frmPattern">							
-                        	
-                        	<?php if ($ulmsg) echo "<p class=\"text-danger\"><strong>" . $ulmsg . "</strong></p>\n"; ?>
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+                        <form action="diag_patterns.php" method="post" enctype="multipart/form-data" name="frmPattern">
+
+				<?php if ($ulmsg) echo "<p class=\"text-danger\"><strong>" . $ulmsg . "</strong></p>\n"; ?>
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Upload layer7 pattern file");?></td>
 									</tr>
@@ -100,12 +100,12 @@ include("head.inc");
 										</td>
 									</tr>
 								</table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>
