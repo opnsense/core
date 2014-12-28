@@ -65,7 +65,7 @@ if(stristr($retval, "error") == true)
 
 include("head.inc"); ?>
 
-			    
+
 <body link="#000000" vlink="#000000" alink="#000000">
 <?php include("fbegin.inc"); ?>
 

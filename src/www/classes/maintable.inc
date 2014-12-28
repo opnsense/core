@@ -95,7 +95,7 @@ class MainTable {
 		}
 		echo "  <td width=\"{$this->width[$this->columns - 1]}%\" class=\"listhdr\">{$this->headers[$this->columns - 1]}</td>\n";
 		echo "  <td width=\"10%\" class=\"list\">\n";
-		
+
 		echo "  </td>\n";
 		echo "</tr>\n";
 
@@ -134,24 +134,24 @@ class MainTable {
 	}
 	private function display_footer() {
 		global $g;
-		
+
 	}
 	private function display_buttons($row) {
-		
+
 		if ($this->buttons['move'])
 			echo $this->display_button('move', $row);
 		if ($this->buttons['edit'])
 			echo $this->display_button('edit', $row);
-	
+
 		if ($this->buttons['del'])
 			echo $this->display_button('del', $row);
 		if ($this->buttons['dup'])
 			echo $this->display_button('dup', $row);
-	
+
 	}
 	private function display_button($button, $row) {
 		global $g;
-		
+
 		switch ($button) {
 			case "move": {
 				echo "<button name=\"move_{$row}\" type=\"submit\" title=\"Move selected entries before this entry\" onmouseover=\"fr_insline({$row}, true)\" onmouseout=\"fr_insline({$row}, false)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-left\"></span></button>";
@@ -170,7 +170,7 @@ class MainTable {
 				break;
 			}
 		}
-		
+
 	}
 
 }

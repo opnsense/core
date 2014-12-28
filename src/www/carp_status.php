@@ -98,20 +98,20 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-	
-	
+
+
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
 			<section class="col-xs-12">
-	
+
 				<?php if ($savemsg) print_info_box($savemsg); ?>
-				
+
 				<?PHP	if ($carp_detected_problems) print_info_box(gettext("CARP has detected a problem and this unit has been demoted to BACKUP status.") . "<br />" . gettext("Check link status on all interfaces with configured CARP VIPs.")); ?>
 
 
-				<div class="content-box">              
-                    
+				<div class="content-box">
+
                     <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
                     <?php
 							$carpcount = 0;
@@ -138,10 +138,10 @@ include("head.inc");
 								}
 							}
 					?>
-                    
+
                     <div class="table-responsive">
-                   
-                        <table class="table table-striped table-sort sortable">						
+
+                        <table class="table table-striped table-sort sortable">
 							<tr>
 								<td class="listhdrr" align="center"><?=gettext("CARP Interface"); ?></td>
 								<td class="listhdrr" align="center"><?=gettext("Virtual IP"); ?></td>
@@ -150,8 +150,8 @@ include("head.inc");
 							<?php
 								if ($carpcount == 0) {
 									echo "</table></div></form><center><br />" . gettext("Could not locate any defined CARP interfaces.");
-									
-				
+
+
 								}
 								elseif(is_array($config['virtualip']['vip'])) {
 									foreach($config['virtualip']['vip'] as $carp) {
@@ -186,9 +186,9 @@ include("head.inc");
 								}
 							?>
 						</table>
-						
+
                     </div>
-                    
+
                     <div class="col-xs-12">
 						<p class="vexpl">
 							<span class="red"><strong><?=gettext("Note"); ?>:</strong></span>
@@ -203,7 +203,7 @@ include("head.inc");
 							echo "</pre>";
 						?>
                     </div>
-					
+
 				</div>
 			</section>
 		</div>

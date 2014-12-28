@@ -2,7 +2,7 @@
 /* $Id$ */
 /*
 	Copyright (C) 2014 - Deciso B.V.
-	Exec+ v1.02-000 - Copyright 2001-2003 
+	Exec+ v1.02-000 - Copyright 2001-2003
 	Created by technologEase (http://www.technologEase.com)
 	All rights reserved.
 
@@ -185,23 +185,23 @@ if (isBlank( $_POST['txtRecallBuffer'] )) {
 	<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-			    
-			    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" enctype="multipart/form-data" name="frmExecPlus" onsubmit="return frmExecPlus_onSubmit( this );">  
-				      
+
+			    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" enctype="multipart/form-data" name="frmExecPlus" onsubmit="return frmExecPlus_onSubmit( this );">
+
 				<?php if ($ulmsg) echo "<p><strong>" . $ulmsg . "</strong></p>\n"; ?>
-				     
+
 				<?php if (!isBlank($_POST['txtCommand']) || !isBlank($_POST['txtPHPCommand'])):?>
 				<section class="col-xs-12">
-	                <div class="content-box">              
-	                
+	                <div class="content-box">
+
 	                    <header class="content-box-head container-fluid">
-	    			        <h3><?=gettext("Execute result"); ?></h3>
-	    			    </header>
-						
+				        <h3><?=gettext("Execute result"); ?></h3>
+				    </header>
+
 						<div class="content-box-main col-xs-12">
-<?php			       
+<?php
 if (!isBlank($_POST['txtCommand'])) {
    puts("<pre>");
    puts("\$ " . htmlspecialchars($_POST['txtCommand']));
@@ -227,27 +227,27 @@ if (!isBlank($_POST['txtPHPCommand'])) {
 	                </div>
 				</section>
 				<? endif; ?>
-		
+
 				<section class="col-xs-12">
-                    <div class="content-box">              
-                
+                    <div class="content-box">
+
                         <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Execute Shell command"); ?></h3>
-    				    </header>
-					
+				        <h3><?=gettext("Execute Shell command"); ?></h3>
+				    </header>
+
 						 <div class="content-box-main">
 							 <?php if (isBlank($_POST['txtCommand'])): ?>
 							<p class="text-danger container-fluid"><strong><?=gettext("Note: this function is unsupported. Use it " .
 							"on your own risk"); ?>!</strong></p>
 							<?php endif; ?>
-							
+
 							<table class="table table-striped __nomb">
-        				        <tbody>
-            				        <tr>
-            				          <td width="150"><?=gettext("Command"); ?>:</td>
-            				          <td><input id="txtCommand" name="txtCommand" type="text" class="form-control" size="80" value="<?=htmlspecialchars($_POST['txtCommand']);?>" /></td>
-            				        </tr>
-            				         <tr>
+					        <tbody>
+					        <tr>
+					          <td width="150"><?=gettext("Command"); ?>:</td>
+					          <td><input id="txtCommand" name="txtCommand" type="text" class="form-control" size="80" value="<?=htmlspecialchars($_POST['txtCommand']);?>" /></td>
+					        </tr>
+					         <tr>
 								      <td>&nbsp;&nbsp;&nbsp;</td>
 								      <td>
 								         <input type="hidden" name="txtRecallBuffer" value="<?=htmlspecialchars($_POST['txtRecallBuffer']) ?>" />
@@ -256,106 +256,106 @@ if (!isBlank($_POST['txtPHPCommand'])) {
 								         <input type="button" class="btn" name="btnRecallNext" value=">" onclick="btnRecall_onClick( this.form,  1 );" />
 								         <input type="button"  class="btn" value="<?=gettext("Clear"); ?>" onclick="return Reset_onClick( this.form );" />
 								      </td>
-								    </tr>    
-        				        </tbody>
+								    </tr>
+					        </tbody>
 							</table>
 
 						 </div>
                     </div>
 				</section>
-			  
-				
-			        				
+
+
+
 				<section class="col-xs-12">
-                    <div class="content-box">              
-                
+                    <div class="content-box">
+
                         <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Download"); ?></h3>
-    				    </header>
-					
+				        <h3><?=gettext("Download"); ?></h3>
+				    </header>
+
 						 <div class="content-box-main ">
-						
+
 							<table class="table table-striped __nomb">
-        				        <tbody> 
-							     	<tr>
-								 		<td width="150"><?=gettext("File to download"); ?>:</td>
-								 		<td><input name="dlPath" type="text" class="form-control file" id="dlPath" size="50" /></td>
-							     	</tr>
-							     	<tr>
-								 		<td valign="top">&nbsp;</td>
-								 		<td valign="top">	
-									 		<input name="submit" type="submit"  class="btn btn-primary" id="download" value="<?=gettext("Download"); ?>" />
-        								</td>
-    								</tr>
-        				        </tbody>
+					        <tbody>
+								<tr>
+										<td width="150"><?=gettext("File to download"); ?>:</td>
+										<td><input name="dlPath" type="text" class="form-control file" id="dlPath" size="50" /></td>
+								</tr>
+								<tr>
+										<td valign="top">&nbsp;</td>
+										<td valign="top">
+											<input name="submit" type="submit"  class="btn btn-primary" id="download" value="<?=gettext("Download"); ?>" />
+									</td>
+								</tr>
+					        </tbody>
 							</table>
-							 
+
 						 </div>
                     </div>
 				</section>
-				
-				
-			        				
+
+
+
 				<section class="col-xs-12">
-                    <div class="content-box">              
-                
+                    <div class="content-box">
+
                         <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("Upload"); ?></h3>
-    				    </header>
-					
+				        <h3><?=gettext("Upload"); ?></h3>
+				    </header>
+
 						 <div class="content-box-main">
-							 
+
 							 <table class="table table-striped __nomb">
-        				        <tbody> 
-							     	<tr>
-								 		<td width="150"><?=gettext("File to upload"); ?>:</td>
-								 		<td><input name="ulfile" type="file" class="formfld file" id="ulfile" /></td>
-							     	</tr>
-							     	<tr>
-								 		<td valign="top">&nbsp;</td>
-								 		<td valign="top">	
-									 		<input name="submit" type="submit"  class="btn btn-primary" id="upload" value="<?=gettext("Upload"); ?>" />
-        								</td>
-    								</tr>
-        				        </tbody>
+					        <tbody>
+								<tr>
+										<td width="150"><?=gettext("File to upload"); ?>:</td>
+										<td><input name="ulfile" type="file" class="formfld file" id="ulfile" /></td>
+								</tr>
+								<tr>
+										<td valign="top">&nbsp;</td>
+										<td valign="top">
+											<input name="submit" type="submit"  class="btn btn-primary" id="upload" value="<?=gettext("Upload"); ?>" />
+									</td>
+								</tr>
+					        </tbody>
 							</table>
-							 
+
 						 </div>
                     </div>
 				</section>
-				
-				
-			        				
+
+
+
 				<section class="col-xs-12">
-                    <div class="content-box">              
-                
+                    <div class="content-box">
+
                         <header class="content-box-head container-fluid">
-    				        <h3><?=gettext("PHP Execute"); ?></h3>
-    				    </header>
-					
+				        <h3><?=gettext("PHP Execute"); ?></h3>
+				    </header>
+
 						 <div class="content-box-main col-xs-12">
-							
+
 							<textarea id="txtPHPCommand" name="txtPHPCommand" rows="9" cols="80"><?=htmlspecialchars($_POST['txtPHPCommand']);?></textarea>
 							<br />
-							
+
 							<input type="submit" class="btn btn-primary" value="<?=gettext("Execute"); ?>" />
 							<p><strong><?=gettext("Example"); ?>:</strong>   interfaces_carp_setup();</p>
-							 
+
 						 </div>
                     </div>
 				</section>
-				 
-				
+
+
 				</form>
-				  
+
 			</div>
 		</div>
 	</section>
-	
+
 	<?php include("foot.inc"); ?>
 
-				
-				
+
+
 <!--
 
 
@@ -382,7 +382,7 @@ if (!isBlank($_POST['txtPHPCommand'])) {
 	 </p>
       </td>
     </tr>
-    
+
   </table>
 </form>
 </div>

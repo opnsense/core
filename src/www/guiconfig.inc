@@ -35,7 +35,7 @@
 /* Include authentication routines */
 /* THIS MUST BE ABOVE ALL OTHER CODE */
 if(!$nocsrf) {
-	
+
 function csrf_startup() {
 		csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
 		$timeout_minutes = isset($config['system']['webgui']['session_timeout']) ?  $config['system']['webgui']['session_timeout'] : 240;
@@ -267,8 +267,8 @@ function print_input_errors($input_errors) {
 	echo '<div class="col-xs-12"><div class="alert alert-danger alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 	';
-  
-  	echo "<p>" . gettext("The following input errors were detected:") . "</p>\n<ul>";
+
+	echo "<p>" . gettext("The following input errors were detected:") . "</p>\n<ul>";
 	foreach ($input_errors as $ierr) {
 		echo "<li>" . htmlspecialchars($ierr) . "</li>";
 	}
@@ -335,10 +335,10 @@ function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $und
 	global $g;
 
 	if(stristr($msg, "apply") != false || stristr($msg, "save") != false || stristr($msg, "create") != false) {
-		
+
 		$savebutton .= "<input class=\"btn btn-default\"  type=\"button\" value=\"". gettext("Undo") . "\" onclick=\"document.location='{$undo}'\" />";
 		$savebutton .= "<input class=\"btn btn-default\"  name=\"{$name}\" type=\"submit\" class=\"formbtn\" id=\"${name}\" value=\"{$value}\" />";
-		
+
 		if($_POST['if'])
 			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
 	}
@@ -361,11 +361,11 @@ function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $und
 	if(!$savebutton) {
 		$savebutton = "<input class=\"btn btn-default\" value=\"" . gettext("Close") . "\" type=\"button\" onclick=\"$('#redboxtable').hide();\" />";
 	}
-	
+
 	$url = $_SERVER['REQUEST_URI'];
 
 	echo <<<EOFnp
-	
+
 	<div class="col-xs-12" id="redboxtable"><form action="{$url}" method="post">
 		<div class="alert alert-warning"  summary="red box table">
 			<p>{$msg}<br /><br /></p>
@@ -374,7 +374,7 @@ function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $und
 				{$undobutton}
 			</div>
 		</div>
-	</form></div>	
+	</form></div>
 EOFnp;
 
 }

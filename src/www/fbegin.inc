@@ -75,7 +75,7 @@ function return_ext_menu($section) {
 			if($menuitem['section'] != $section) continue;
 			if($menuitem['url'] <> "") {
 				$test_url=$menuitem['url'];
-			 	$addresswithport = getenv("HTTP_HOST");
+				$addresswithport = getenv("HTTP_HOST");
 				$colonpos = strpos($addresswithport, ":");
 				if ($colonpos !== False){
 					//my url is actually just the IP address of the pfsense box
@@ -99,20 +99,20 @@ function return_ext_menu($section) {
 function output_menu($arrayitem, $target = null) {
 	foreach ($arrayitem as $item) {
 		if (isAllowedPage($item[1]) || $item[1]=="/index.php?logout") {
-			
-						
+
+
 			$attr = sprintf("href=\"%s\"", htmlentities($item[1]));
 			if ($target) {
 				$attr .= sprintf(" target=\"%s\"", htmlentities($target));
 			}
 			$class = "list-group-item";
-			
-			
+
+
 			$check = substr($item[1],1,-4);
 			if (stripos($_SERVER['PHP_SELF'], $check) !== false) {
 				$class .= " active";
 			}
-			
+
 			if ($item['class']) {
 				$class .= " {$item['class']}";
 			}
@@ -130,27 +130,27 @@ function output_menu($arrayitem, $target = null) {
 
 function active_menu($arrayitem, $pagename) {
 	$pagename = "/".ltrim($pagename,"/");
-	
+
 	foreach ($arrayitem as $item) {
 		$check = substr($item[1],1,-4);
-		
+
 		if (stripos($pagename, $check) !== false) {
 			return true;
-		}	
+		}
 	}
-	
+
 	return false;
 }
 
 function active_main_menu() {
 	$options = func_get_args();
-	
+
 	foreach ($options as $uri) {
 		if (substr($_SERVER['PHP_SELF'], 0, strlen($uri)) == $uri) {
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -352,14 +352,14 @@ if(is_subsystem_dirty('packagelock')) {
 
 
 <header class="page-head">
-			
+
 	<nav class="navbar navbar-default" role="navigation">
-	
+
 		<div class="container-fluid">
 			<div class="navbar-header">
 				<a class="navbar-brand" href="/">
-    				<img class="brand-logo" src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
-    				<img class="brand-icon" src="/themes/<?=$g['theme'];?>/assets/images/icon-logo.png" height="30" width="29"/>
+				<img class="brand-logo" src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
+				<img class="brand-icon" src="/themes/<?=$g['theme'];?>/assets/images/icon-logo.png" height="30" width="29"/>
 				</a>
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
 					<span class="sr-only">Toggle navigation</span>
@@ -368,113 +368,113 @@ if(is_subsystem_dirty('packagelock')) {
 					<span class="icon-bar"></span>
 				</button>
 			</div>
-			
-			<div class="collapse navbar-collapse">						
-				<ul class="nav navbar-nav navbar-right">	
+
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav navbar-right">
 					<li id="menu_messages">
 					<?php
 						echo get_menu_messages();
 					?>
 					</li>
 					<?php
-						
-						
+
+
 						echo '<li>'.get_shortcut_main_link($shortcut_section, false).'</li>';
 						echo '<li>'.get_shortcut_status_link($shortcut_section, false).'</li>';
 						echo '<li>'.get_shortcut_log_link($shortcut_section, false).'</li>';
-						
+
 						?>
 
-					
-									
-					<?php if(! $g['disablehelpicon']): ?>	
+
+
+					<?php if(! $g['disablehelpicon']): ?>
 					<li><a href="<?php echo $helpurl; ?>" target="_blank" title="<?php echo gettext("Help for items on this page"); ?>">Help</a></li>
 					<?php endif; ?>
 					<li class="active"><a href="/index.php?logout">Logout</a></li>
 				</ul>
-				
+
 			</div>
 		</div>
 	</nav>
-	
+
 </header>
 
 <main class="page-content col-sm-10 col-sm-push-2 ">
 
 	<aside id="navigation" class="page-side col-xs-12 col-sm-2 hidden-xs">
-   
+
 		<div class="row">
 				<nav class="page-side-nav" role="navigation">
-					
+
 					<div class="list-group" id="mainmenu">
-						
+
 						<?php $active = active_main_menu("/system"); ?>
 						<a href="#system" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-dashboard __iconspacer"></span><?php echo gettext("System"); ?></a>
-						
+
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="system">
 							<?php
 								output_menu($system_menu);
 							?>
 						</div>
-						
+
 						<?php $active = active_main_menu("/interface"); ?>
 						<a href="#interfaces" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-wrench __iconspacer"></span><?php echo gettext("Interfaces"); ?></a>
-						
+
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="interfaces">
 							<?php
 								output_menu($interfaces_menu);
 							?>
 						</div>
-						
+
 						<?php $active = active_main_menu("/firewall"); ?>
 						<a href="#firewall" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-fire __iconspacer"></span><?php echo gettext("Firewall"); ?></a>
-						
+
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="firewall">
 							<?php
 								output_menu($firewall_menu);
 							?>
 						</div>
-						
+
 						<?php $active = active_main_menu("/service", "/load_balancer"); ?>
 						<a href="#services" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-cog __iconspacer"></span><?php echo gettext("Services"); ?></a>
-						
+
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="services">
 							<?php
 								output_menu($services_menu);
 							?>
 						</div>
-						
+
 						<?php $active = active_main_menu("/vpn"); ?>
 						<a href="#vpn" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-lock __iconspacer"></span><?php echo gettext("VPN"); ?></a>
-						
+
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="vpn">
 							<?php
 								output_menu($vpn_menu);
 							?>
 						</div>
-						
+
 						<?php $active = active_main_menu("/status"); ?>
 						<a href="#statusmenu" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-tasks __iconspacer"></span><?php echo gettext("Status"); ?></a>
-						
+
 						<div class="collapse <?php if (active_menu($status_menu, $pagename)):?>active-menu in<? endif; ?>" id="statusmenu">
 							<?php
 								output_menu($status_menu);
 							?>
 						</div>
-						
+
 						<?php $active = active_main_menu("/diag"); ?>
 						<a href="#diagnostics" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-stats __iconspacer"></span><?php echo gettext("Diagnostics"); ?></a>
-						
+
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="diagnostics">
 							<?php
 								output_menu($diagnostics_menu);
 							?>
 						</div>
-						
+
 						<?php if(! $g['disablehelpmenu']): ?>
 						<?php $active = active_main_menu("/help"); ?>
 						<a href="#help" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-question-sign __iconspacer"></span><?php echo gettext("Help"); ?></a>
-						
+
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="help">
 							<?php
 								output_menu($help_menu, "_blank");
@@ -482,25 +482,25 @@ if(is_subsystem_dirty('packagelock')) {
 						</div>
 						<?php endif; ?>
 					</div>
-					
+
 			</nav>
-				
+
 		</div>
-	   
+
 	</aside>
-	
+
 	<div class="row">
-			
+
 		<header class="page-content-head">
 			<div class="container-fluid">
 			    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
 				<ul class="list-inline">
 					<li class="__mb"><h1><?=genhtmltitle($pgtitle);?></h1></li>
-					
+
 					<li class="btn-group-container">
-					
+
 						<?php
-							
+
 						if (!$hide_service_status && !empty($shortcuts[$shortcut_section]['service'])) {
 							$ssvc = array();
 							switch ($shortcut_section) {
@@ -512,31 +512,31 @@ if(is_subsystem_dirty('packagelock')) {
 									break;
 								default:
 									$ssvc = find_service_by_name($shortcuts[$shortcut_section]['service']);
-						
+
 							}
 							if (!empty($ssvc)) {
 								echo get_service_status_icon($ssvc, false);
 								echo get_service_control_links($ssvc, false);
 							}
 						}
-						
+
 						?>
-						
-						<? if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>						
-							<a href="<?=$button['href'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?=$button['label'];?></a>	
+
+						<? if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>
+							<a href="<?=$button['href'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?=$button['label'];?></a>
 						<? endforeach; endif; ?>
-						
+
 						<? if (isset($widgetfiles)): ?>
-						  
-		
+
+
 							<a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
-						
+
 							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span>Add widget</button>
 						<? endif; ?>
-							
+
 						<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span>Add widget</button> -->
 					</li>
 				</ul>
-			    </form>	
+			    </form>
 			</div>
 		</header>

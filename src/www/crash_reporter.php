@@ -58,7 +58,7 @@ function upload_crash_report($files) {
     curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible;)");
     curl_setopt($ch, CURLOPT_URL, $g['crashreporterurl']);
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $post); 
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
     $response = curl_exec($ch);
 	return $response;
 }
@@ -91,11 +91,11 @@ exec("/usr/bin/grep -vi warning /tmp/PHP_errors.log", $php_errors);
 <?php include("fbegin.inc"); ?>
 
 <section class="page-content-main">
-	<div class="container-fluid">	
+	<div class="container-fluid">
 		<div class="row">
-		      				
+
 			<section class="col-xs-12">
-                <div class="content-box">              
+                <div class="content-box">
 					 <form action="crash_reporter.php" method="post">
 						 <div class="col-xs-12">
 
@@ -145,7 +145,7 @@ exec("/usr/bin/grep -vi warning /tmp/PHP_errors.log", $php_errors);
 					$crash_reports .= file_get_contents($cf);
 				}
 			}
-		} else { 
+		} else {
 			echo "Could not locate any crash data.";
 		}
 		output_crash_reporter_html($crash_reports);
@@ -158,5 +158,5 @@ exec("/usr/bin/grep -vi warning /tmp/PHP_errors.log", $php_errors);
 		</div>
 	</div>
 </section>
-		   
+
 <?php include("foot.inc"); ?>

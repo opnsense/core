@@ -50,7 +50,7 @@ if($_POST['action']) {
 					echo "|1|" . gettext("Failed to read file") . ".|";
 				} else {
 					$data = base64_encode($data);
-					echo "|0|{$_POST['file']}|{$data}|";	
+					echo "|0|{$_POST['file']}|{$data}|";
 				}
 			}
 			exit;
@@ -86,14 +86,14 @@ require("head.inc");
 ?>
 
 <body>
-<?php 
+<?php
 outputJavaScriptFileInline("filebrowser/browser.js");
 outputJavaScriptFileInline("javascript/base64.js");
-include("fbegin.inc"); 
+include("fbegin.inc");
 ?>
 
 
-<script type="text/javascript">	
+<script type="text/javascript">
 //<![CDATA[
 	function loadFile() {
 		jQuery("#fileStatus").html("<?=gettext("Loading file"); ?> ...");
@@ -129,10 +129,10 @@ include("fbegin.inc");
 	function saveFile(file) {
 		jQuery("#fileStatus").html("<?=gettext("Saving file"); ?> ...");
 		jQuery("#fileStatusBox").show(500);
-		
+
 		var fileContent = Base64.encode(jQuery("#fileContent").val());
 		fileContent = fileContent.replace(/\+/g,"%2B");
-		
+
 		jQuery.ajax(
 			"<?=$_SERVER['SCRIPT_NAME'];?>", {
 				type: "post",
@@ -153,46 +153,46 @@ include("fbegin.inc");
 		<div class="row">
 
 		    <section class="col-xs-12">
-		    	<div class="content-box">
+			<div class="content-box">
 
-		    		<div class="content-box-head container-fluid">
+				<div class="content-box-head container-fluid">
 						<!-- file status box -->
 						<div style="display:none; background:#eeeeee;" id="fileStatusBox">
 							<div class="vexpl" style="padding-left:15px;">
 								<strong id="fileStatus"></strong>
 							</div>
 						</div>
-		    		</div>
-				
+				</div>
+
 						<!-- control buttons -->
 						<div class="content-box-main ">
 							<div class="table-responsive">
-    			        		<table class="table table-striped __nomb">
-    				        		<tbody>
-        				        		<tr>
-        				          			<td><?=gettext("Save / Load from path"); ?>:</td>
-        				          			<td><input type="text" class="form-control file" id="fbTarget" size="45" /></td>
-        				        		</tr>
-        				        		<tr>
-        				          			<td>&nbsp;</td>
-        				          			<td>
-	        				          			<div class="btn-group">
-		        				          			<input type="button" class="btn btn-primary"      onclick="loadFile();" value="<?=gettext('Load');?>" />
-										  			<input type="button" class="btn btn-default"      id="fbOpen"           value="<?=gettext('Browse');?>" />
-										  			<input type="button" class="btn btn-default"      onclick="saveFile();" value="<?=gettext('Save');?>" />
-	        				          			</div>
-        				          			</td>
-        				        		</tr>	        				       
-    				        		</tbody>
-    				    		</table> 
-    				    	</div>   				        	
+						<table class="table table-striped __nomb">
+							<tbody>
+								<tr>
+									<td><?=gettext("Save / Load from path"); ?>:</td>
+									<td><input type="text" class="form-control file" id="fbTarget" size="45" /></td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<div class="btn-group">
+											<input type="button" class="btn btn-primary"      onclick="loadFile();" value="<?=gettext('Load');?>" />
+													<input type="button" class="btn btn-default"      id="fbOpen"           value="<?=gettext('Browse');?>" />
+													<input type="button" class="btn btn-default"      onclick="saveFile();" value="<?=gettext('Save');?>" />
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 
 
-    				        <!-- file browser window, is hidden by default -->
-				    		<div id="fbBrowser" style="display:none; background-color:#ffffff; border: 1px solid #cccccc; padding: 10px;"></div>
+				        <!-- file browser window, is hidden by default -->
+						<div id="fbBrowser" style="display:none; background-color:#ffffff; border: 1px solid #cccccc; padding: 10px;"></div>
 
-				    		<!-- file viewer/editor -->
-				    		<div style="background:#eeeeee;" id="fileOutput">
+						<!-- file viewer/editor -->
+						<div style="background:#eeeeee;" id="fileOutput">
 								<script type="text/javascript">
 									//<![CDATA[
 										window.onload=function(){
@@ -202,9 +202,9 @@ include("fbegin.inc");
 								</script>
 								<textarea id="fileContent" name="fileContent" style="display:none; width: 100%; max-width:100%;" rows="30" cols=""></textarea>
 							</div>
-				    </div>  
+				    </div>
 				</div>
-		    </section>	
+		    </section>
 		</div>
 	</div>
 </section>
@@ -215,7 +215,7 @@ include("fbegin.inc");
 		function() {
 			jQuery("#fbTarget").focus();
 
-			
+
 		}
 	);
 

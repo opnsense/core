@@ -2,21 +2,21 @@
 /*
 	graph.php
 	part of m0n0wall (http://m0n0.ch/wall)
-	
+
 	Copyright (C) 2004-2006 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
 	and Jonathan Watt <jwatt@jwatt.org>.
 	All rights reserved.
-	
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -98,7 +98,7 @@ $fetch_link = "ifstats.php?if=" . htmlspecialchars($ifnum);
 if(file_exists("/usr/local/www/themes/{$g['theme']}/graph.php")) {
 	$themetxt = file_get_contents("/usr/local/www/themes/{$g['theme']}/graph.php");
 	eval($themetxt);
-} 
+}
 
 /********* Graph DATA **************/
 print('<?xml version="1.0" ?>' . "\n");?>
@@ -243,15 +243,15 @@ function plot_data(obj) {
   last_ifout = ifout;
   var graphTimerId = 0;
   switch (plot_in.length) {
-  	case 0:
-  		SVGDoc.getElementById("collect_initial").setAttributeNS(null, 'visibility', 'visible');
+	case 0:
+		SVGDoc.getElementById("collect_initial").setAttributeNS(null, 'visibility', 'visible');
 		plot_in[0] = diff_ifin / diff_ugmt;
 		plot_out[0] = diff_ifout / diff_ugmt;
 		setTimeout('fetch_data()',<?=1000*($time_interval + $init_delay)?>);
 		return;
 	case 1:
-    	SVGDoc.getElementById("collect_initial").setAttributeNS(null, 'visibility', 'hidden');
-    	break;
+	SVGDoc.getElementById("collect_initial").setAttributeNS(null, 'visibility', 'hidden');
+	break;
     case max_num_points:
 		// shift plot to left if the maximum number of plot points has been reached
 		var i = 0;
@@ -314,7 +314,7 @@ function plot_data(obj) {
         rmax *= 1.25;
       else
         rmax *= 2;
-      
+
       if (i == 8)
         rmax *= 1.024;
     }

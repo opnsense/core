@@ -26,7 +26,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  *
@@ -74,7 +74,7 @@ if ($filter == "local") {
 
 //get the sort method
 $sort = $_GET['sort'];
-if ($sort == "out") 
+if ($sort == "out")
 	{$sort_method = "-T";}
 else
 	{$sort_method = "-R";}
