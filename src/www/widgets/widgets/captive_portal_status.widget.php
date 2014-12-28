@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 	captive_portal_status.widget.php
 	Copyright (C) 2007 Sam Wenham
@@ -6,20 +6,20 @@
 
 	status_captiveportal.php
 	part of m0n0wall (http://m0n0.ch/wall)
-	
+
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
-	
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
-	
+
 	1. Redistributions of source code must retain the above copyright notice,
 	   this list of conditions and the following disclaimer.
-	
+
 	2. Redistributions in binary form must reproduce the above copyright
 	   notice, this list of conditions and the following disclaimer in the
 	   documentation and/or other materials provided with the distribution.
-	
+
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -63,15 +63,15 @@ $a_cp =& $config['captiveportal'];
 $cpdb_all = array();
 
 foreach ($a_cp as $cpzone => $cp) {
-	$cpdb_handle = new OPNsense\CaptivePortal\DB($cpzone);          
+	$cpdb_handle = new OPNsense\CaptivePortal\DB($cpzone);
 
-        $order = "";	
+        $order = "";
         if ($_GET['order']) {
             if ($_GET['order'] == "ip") $order = "ip";
             else if ($_GET['order'] == "mac") $order = "mac";
             else if ($_GET['order'] == "user") $order = "username";
         }
-                
+
 	$cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
 	$cpdb_all[$cpzone] = $cpdb;
 }

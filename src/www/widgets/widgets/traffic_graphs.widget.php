@@ -110,16 +110,16 @@ if (isset($a_config["scale_type"])) {
 				<?php foreach ($ifdescrs as $ifname => $ifdescr) { ?>
 						<input type="hidden" name="shown[<?= $ifname ?>]" value="<?= $shown[$ifname] ? "show" : "hide" ?>" />
 						<?php } ?>
-                        	
+
     <table class="table table-striped">
-    	<tbody>
+	<tbody>
 
 						<tr>
 							<td>
 								Default AutoScale:
 							</td>
 						</tr>
-							<?php 
+							<?php
 								$scale_type_up="checked=\"checked\"";
 								$scale_type_follow="";
 								if (isset($config["widgets"]["trafficgraphs"]["scale_type"])) {

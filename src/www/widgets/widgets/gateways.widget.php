@@ -126,5 +126,3 @@ $counter = 1;
 	</tr>
 	<?php } // foreach ?>
 </table>
-
-

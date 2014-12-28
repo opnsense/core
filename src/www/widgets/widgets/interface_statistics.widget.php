@@ -84,7 +84,7 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 				<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="interfaces statistics">
 					<tr><td class="widgetsubheader" style="height:25px">&nbsp;&nbsp;&nbsp;</td></tr>
 					<tr>
-	                	<td><b><?php echo gettext('Packets In')?></b></td>
+				<td><b><?php echo gettext('Packets In')?></b></td>
 					</tr>
 		            <tr>
 		                <td><b><?php echo gettext('Packets Out')?></b></td>
@@ -111,12 +111,12 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 	          <table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="the stats">
 	              <tr>
 		                <?php
-		               		$interface_names = array();
-		                	foreach ($ifdescrs as $ifdescr => $ifname):
-		                	$ifinfo = get_interface_info($ifdescr);
-		                	if ($ifinfo['status'] != "down"){ ?>
-			                	<td class="widgetsubheader nowrap" style="height:25px">
-			                  		<b><?=htmlspecialchars($ifname);?></b>
+					$interface_names = array();
+					foreach ($ifdescrs as $ifdescr => $ifname):
+					$ifinfo = get_interface_info($ifdescr);
+					if ($ifinfo['status'] != "down"){ ?>
+						<td class="widgetsubheader nowrap" style="height:25px">
+							<b><?=htmlspecialchars($ifname);?></b>
 								</td>
 							<?php
 							//build array of interface names
@@ -135,9 +135,9 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 			                <?php
 			                $counter = $counter + 7;
 			                endforeach; ?>
-	              		</tr>
+				</tr>
 
-	              		<tr>
+				<tr>
 			                <?php
 			                $counter = 2;
 			                foreach ($array_out_packets as $data): ?>
@@ -147,10 +147,10 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 			                <?php
 			                $counter = $counter + 7;
 			                endforeach; ?>
-	              		</tr>
+				</tr>
 
 			            <tr>
-			                <?php 
+			                <?php
 			                $counter = 3;
 			                foreach ($array_in_bytes as $data): ?>
 							<td class="listr nowrap" id="stat<?php echo $counter;?>" style="height:25px">
@@ -159,9 +159,9 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 			                <?php
 			                $counter = $counter + 7;
 			                endforeach; ?>
-	          			</tr>
+					</tr>
 
-	          			<tr>
+					<tr>
 			                <?php
 			                $counter = 4;
 			                foreach ($array_out_bytes as $data): ?>
@@ -171,9 +171,9 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 			                <?php
 			                $counter = $counter + 7;
 			                endforeach; ?>
-	            		</tr>
+				</tr>
 
-	            		<tr>
+				<tr>
 			                <?php
 			                $counter = 5;
 				               foreach ($array_in_errors as $data): ?>
@@ -183,11 +183,11 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 				                <?php
 				                $counter = $counter + 7;
 				                endforeach; ?>
-	              		</tr>
+				</tr>
 
 		                <tr>
-		                	<?php
-		                	$counter = 6;
+					<?php
+					$counter = 6;
 			               foreach ($array_out_errors as $data): ?>
 								<td class="listr nowrap" id="stat<?php echo $counter;?>" style="height:25px">
 									<?=htmlspecialchars($data);?>
@@ -195,11 +195,11 @@ require_once("/usr/local/www/widgets/include/interface_statistics.inc");
 			                <?php
 			                $counter = $counter + 7;
 			                endforeach; ?>
-	             		</tr>
+				</tr>
 
 		                <tr>
-		                	<?php
-		                	$counter = 7;
+					<?php
+					$counter = 7;
 				                foreach ($array_collisions as $data): ?>
 								<td class="listr nowrap" id="stat<?php echo $counter;?>" style="height:25px">
 									<?=htmlspecialchars($data);?>

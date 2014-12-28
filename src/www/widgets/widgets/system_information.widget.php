@@ -2,7 +2,7 @@
 /*
 		Copyright (C) 2014 Deciso B.V.
         Copyright 2007 Scott Dale
-        Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net> 
+        Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
         and Jonathan Watt <jwatt@jwatt.org>.
         All rights reserved.
 
@@ -42,10 +42,10 @@ if($_POST['action'] == 'pkg_update') {
 	$shell = new Core\Shell();
 	// execute shell command and collect (only valid) info into named array
 	$shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh",false,false,$shell_output);
-} 
+}
 
 if (file_exists($file_pkg_status)) {
-		
+
 		$json = file_get_contents($file_pkg_status);
 		$pkg_status = json_decode($json,true);
 }
@@ -65,7 +65,7 @@ if($_REQUEST['getupdatestatus']) {
 		echo "<span class='text-danger'>".gettext("Unknown")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
 	}
 	exit;
-} 
+}
 
 $curcfg = $config['system']['firmware'];
 
@@ -74,7 +74,7 @@ $filesystems = get_mounted_filesystems();
 ?>
 <script type="text/javascript">
 //<![CDATA[
-	jQuery(function() { 
+	jQuery(function() {
 		jQuery("#statePB").css( { width: '<?php echo get_pfstate(true); ?>%' } );
 		jQuery("#mbufPB").css( { width: '<?php echo get_mbuf(true); ?>%' } );
 		jQuery("#cpuPB").css( { width:0 } );
@@ -89,7 +89,7 @@ $filesystems = get_mounted_filesystems();
 			jQuery("#swapUsagePB").css( { width: '<?php echo swap_usage(); ?>%' } );
 		<?php endif; ?>
 		<?php if (get_temp() != ""): ?>
-                	jQuery("#tempPB").css( { width: '<?php echo get_temp(); ?>%' } );
+			jQuery("#tempPB").css( { width: '<?php echo get_temp(); ?>%' } );
 		<?php endif; ?>
 	});
 //]]>
@@ -154,7 +154,7 @@ $filesystems = get_mounted_filesystems();
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("CPU Type");?></td>
 			<td width="75%" class="listr">
-			<?php 
+			<?php
 				echo (htmlspecialchars(get_single_sysctl("hw.model")));
 			?>
 			<div id="cpufreq"><?= get_cpufreq(); ?></div>
@@ -191,7 +191,7 @@ $filesystems = get_mounted_filesystems();
 						}
 					?>
 			</td>
-		</tr>	
+		</tr>
 		<?php if ($config['revision']): ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Last config change");?></td>
@@ -209,10 +209,10 @@ $filesystems = get_mounted_filesystems();
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
-						
+
 				<span id="pfstateusagemeter"><?= $pfstateusage.'%'; ?></span> (<span id="pfstate"><?= htmlspecialchars($pfstatetext); ?></span>)
-		    	<br />
-		    	<a href="diag_dump_states.php"><?=gettext("Show states");?></a>
+			<br />
+			<a href="diag_dump_states.php"><?=gettext("Show states");?></a>
 			</td>
 		</tr>
 		<tr>
@@ -222,7 +222,7 @@ $filesystems = get_mounted_filesystems();
 					$mbufstext = get_mbuf();
 					$mbufusage = get_mbuf(true);
 				?>
-				
+
 				<div class="progress">
 				  <div id="mbufPB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
 				    <span class="sr-only"></span>
@@ -236,7 +236,7 @@ $filesystems = get_mounted_filesystems();
                         <td width="25%" class="vncellt"><?=gettext("Temperature");?></td>
 			<td width="75%" class="listr">
 				<?php $TempMeter = $temp = get_temp(); ?>
-				
+
 				<div class="progress">
 				  <div id="tempPB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
 				    <span class="sr-only"></span>
@@ -255,7 +255,7 @@ $filesystems = get_mounted_filesystems();
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("CPU usage");?></td>
 			<td width="75%" class="listr">
-				
+
 				<div class="progress">
 				  <div id="cpuPB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
 				    <span class="sr-only"></span>
@@ -322,7 +322,7 @@ $filesystems = get_mounted_filesystems();
 			success:function(html) {
 				//alert(html);
 				getstatus();
-				
+
 			}
 		});
 	}

@@ -77,12 +77,12 @@ require_once("/usr/local/www/widgets/include/interfaces.inc");
 				<?php if($ifinfo['status'] == "up" || $ifinfo['status'] == "associated") { ?>
 							<td class="listr" align="center">
 								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-up text-success"></span>
-								
+
 							</td>
 		                <?php } else if ($ifinfo['status'] == "no carrier") { ?>
 							<td class="listr" align="center">
 								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-down text-danger"></span>
-								
+
 							</td>
 				<?php }  else if ($ifinfo['status'] == "down") { ?>
 							<td class="listr" align="center">
@@ -94,13 +94,13 @@ require_once("/usr/local/www/widgets/include/interfaces.inc");
 							</td>
 							<td class="vncellt">
 								<?php if($ifinfo['ipaddr'] != "") { ?>
-                                                                	<div id="<?php echo $ifname;?>-ip" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddr']);?> </div>
-                                                                	<br />
+									<div id="<?php echo $ifname;?>-ip" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddr']);?> </div>
+									<br />
 								<?php }
 								if ($ifinfo['ipaddrv6'] != "") { ?>
 									<div id="<?php echo $ifname;?>-ipv6" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddrv6']);?> </div>
 								<?php } ?>
 							</td>
 						</tr>
-				<?php 	}//end for each ?>
+				<?php	}//end for each ?>
 			</table>

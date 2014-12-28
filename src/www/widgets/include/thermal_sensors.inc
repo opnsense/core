@@ -1,7 +1,7 @@
 <?php
 /*
 	$Id: thermal_sensors.inc
-	File location: 
+	File location:
 		\usr\local\www\widgets\include\
 
 	Used by:
@@ -22,6 +22,6 @@ function getThermalSensorsData() {
 	$_gb = exec("/sbin/sysctl -a | grep temperature", $dfout);
 	$thermalSensorsData = join("|", $dfout);
 	return $thermalSensorsData;
-	
+
 }
 ?>

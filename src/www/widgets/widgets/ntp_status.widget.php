@@ -146,7 +146,7 @@ if($_REQUEST['updateme']) {
 				<td width="40%" class="vncellt">Clock location</td>
 				<td width="60%" class="listr">
 					<a target="_gmaps" href="http://maps.google.com/?q=<?php echo $gps_lat; ?>,<?php echo $gps_lon; ?>">
-					<?php 
+					<?php
 					echo sprintf("%.5f", $gps_lat) . " " . $gps_la . ", " . sprintf("%.5f", $gps_lon) . " " . $gps_lo; ?>
 					</a>
 					<?php if (isset($gps_alt)) {echo " (" . $gps_alt . " " . $gps_alt_unit . " alt.)";} ?>
@@ -156,10 +156,10 @@ if($_REQUEST['updateme']) {
 				<tr>
 					<td width="40%" class="vncellt">Satellites</td>
 					<td width="60%" class="listr">
-					<?php 
+					<?php
 					if (isset($gps_satview)) {echo 'in view ' . intval($gps_satview);}
 					if (isset($gps_sat) && isset($gps_satview)) {echo ', ';}
-					if (isset($gps_sat)) {echo 'in use ' . $gps_sat;} 
+					if (isset($gps_sat)) {echo 'in use ' . $gps_sat;}
 					?>
 					</td>
 				</tr>
@@ -167,7 +167,7 @@ if($_REQUEST['updateme']) {
 		<?php endif; ?>
 	</tbody>
 </table>
-<?php	
+<?php
 	exit;
 }
 
@@ -266,7 +266,7 @@ History:  1.0   2000-05-09 GIF-image digits
                          cookies to work around Win IE stale-time bug
 		  2.1   2002-10-12 Noted Mozilla 1.0 compatibility; released PHP version.
 		  2.1.1 2002-10-20 Fixed octal bug in the PHP translation; the number of
-		  				minutes & seconds were misinterpretes when less than 10
+						minutes & seconds were misinterpretes when less than 10
 		  2.1.2 2003-08-07 The previous fix had introduced a bug when the
 		                minutes or seconds were exactly 0. Thanks to Man Bui
 		                for reporting the bug.
@@ -356,7 +356,7 @@ function clockTimeString(inHours, inMinutes, inSeconds) {
 }
 
 function clockDisplayTime(inHours, inMinutes, inSeconds) {
-    
+
     clockWriteToDiv("ClockTime", clockTimeString(inHours, inMinutes, inSeconds));
 }
 
@@ -416,7 +416,7 @@ function clockUpdate()
 {
     var lastLocalTime = localTime;
     localTime = (new Date()).getTime();
-    
+
     /* Sanity-check the diff. in local time between successive calls;
        reload if user has reset system clock */
     if (clockOffset == null) {
@@ -431,11 +431,11 @@ function clockUpdate()
         location.reload();      // will refresh time values in cookies
     }
     else {
-        // Compute what time would be on server 
+        // Compute what time would be on server
         var serverTime = new Date(localTime + clockOffset);
         clockDisplayTime(serverTime.getHours(), serverTime.getMinutes(),
             serverTime.getSeconds());
-        
+
         // Reschedule this func to run on next even clockIncrementMillis boundary
         clockTimerID = setTimeout("clockUpdate()",
             clockIncrementMillis - (serverTime.getTime() % clockIncrementMillis));

@@ -172,7 +172,7 @@ if (isset($config['ipsec']['phase1'])){?>
 <?php
 	if (is_array($mobile['pool'])):
 	foreach ($mobile['pool'] as $pool):
-		if (is_array($pool['lease'])): 
+		if (is_array($pool['lease'])):
 			foreach ($pool['lease'] as $muser) : ?>
 		<div style="display:table-row;">
 			<div class="listlr" style="display:table-cell;width:139px">
