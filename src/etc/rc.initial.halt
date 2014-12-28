@@ -2,10 +2,7 @@
 <?php
 
 /*
-	part of pfSense (www.pfSense.com)
 	Copyright (C)2004 Bachman Kharazmi
-
-	Originally part of m0n0wall as rc.initial.reboot (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -31,30 +28,18 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-	/* parse the configuration and include all functions used below */
-	require_once("config.inc");
-	require_once("functions.inc");
+require_once('config.inc');
+require_once('functions.inc');
 
-	$fp = fopen('php://stdin', 'r');
+$fp = fopen('php://stdin', 'r');
 
-	echo <<<EOD
+echo "\n{$g['product_name']} will shutdown and halt system.\n";
+echo "This may take a minute, depending on your hardware.\n";
+echo "\nDo you want to proceed [y|n]? ";
 
-{$g['product_name']} will shutdown and halt system. This may take a few minutes, depending on your hardware.
+if (strcasecmp(chop(fgets($fp)), 'y') == 0) {
+	echo "\n{$g['product_name']} will shutdown and halt system now.\n";
+	system_halt();
+}
 
-Do you want to proceed [y|n]? 
-EOD;
-
-	if (strcasecmp(chop(fgets($fp)), "y") == 0) {
-
-		echo <<<EOD
-
-{$g['product_name']} will shutdown and halt system now.
-
-EOD;
-
-		system_halt();
-	}
-	
-	fclose($fp);
-	
-?>
+fclose($fp);
