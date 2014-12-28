@@ -54,14 +54,14 @@ require_once("script/load_phalcon.php");
 // TODO : restructure code / gui, for now we try to maintain gui compatibility by not breaking the old callbacks
 //
 function captiveportal_passthrumac_configure_entry($macent) {
-    $cpc = new Captiveportal\CPClient();
+    $cpc = new OPNsense\CaptivePortal\CPClient();
     $cpc->update();
 
     return "" ;
 }
 
 function captiveportal_passthrumac_delete_entry($macent) {
-    $cpc = new Captiveportal\CPClient();
+    $cpc = new OPNsense\CaptivePortal\CPClient();
     $cpc->update();
 
     return "" ;
@@ -72,7 +72,7 @@ function captiveportal_passthrumac_configure($lock = false) {
 }
 
 function captiveportal_allowedip_configure_entry($ipent, $ishostname = false) {
-    $cpc = new Captiveportal\CPClient();
+    $cpc = new OPNsense\CaptivePortal\CPClient();
     $cpc->update();
 
     return "" ;
@@ -86,7 +86,7 @@ function captiveportal_allowedip_configure() {
 function captiveportal_disconnect_client($sessionid, $term_cause = 1, $logoutReason = "LOGOUT") {
     global $cpzone;
 
-    $cpc = new Captiveportal\CPClient();
+    $cpc = new OPNsense\CaptivePortal\CPClient();
     $cpc->disconnect($cpzone,$sessionid);
 }
 
@@ -96,7 +96,7 @@ function captiveportal_remove_entries($remove) {
     if (!is_array($remove) || empty($remove))
         return;
 
-    $cpc = new Captiveportal\CPClient();
+    $cpc = new OPNsense\CaptivePortal\CPClient();
     $cpc->disconnect($cpzone,$remove);
 }
 
@@ -120,7 +120,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
     if (is_null($radiusctx))
         $radiusctx = 'first';
 
-    $cpc = new Captiveportal\CPClient();
+    $cpc = new OPNsense\CaptivePortal\CPClient();
     $sessionid = $cpc->portal_allow($cpzone,$clientip,$clientmac,$username,$password,$bw_up,$bw_down,$radiusctx,$session_timeout,$idle_timeout,$session_terminate_time,$interim_interval);
 
     if (isset($config['captiveportal'][$cpzone]['radacct_enable']) && !empty($radiusservers[$radiusctx])) {
@@ -199,7 +199,7 @@ function captiveportal_init_rules($reinit = false) {
 
     //
     if ( $reinit ) {
-        $cpc = new Captiveportal\CPClient();
+        $cpc = new OPNsense\CaptivePortal\CPClient();
         $cpc->reconfigure();
         unset($cpc);
     }
@@ -651,7 +651,7 @@ function captiveportal_prune_old() {
 	if (empty($cpzone))
 		return;
 
-	$cpc = new Captiveportal\CPClient();
+	$cpc = new OPNsense\CaptivePortal\CPClient();
 
 	$cpcfg = $config['captiveportal'][$cpzone];
 	if ( !isset($cpcfg['radacct_enable'])) {
@@ -841,7 +841,7 @@ function captiveportal_radius_stop_all() {
 
 	$radiusservers = captiveportal_get_radius_servers();
 	if (!empty($radiusservers)) {
-		$cpdb = new Captiveportal\DB($cpzone);
+		$cpdb = new OPNsense\Captiveportal\DB($cpzone);
 
 		$clients  = $cpdb->listClients(array());
 

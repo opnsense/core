@@ -30,12 +30,12 @@
     function: provides access to the systems ARP table
 
 */
+namespace OPNsense\CaptivePortal;
 
+use \OPNsense\Core;
 
-namespace Captiveportal;
-
-
-class ARP {
+class ARP
+{
 
     /**
      * pointer to shell object
@@ -46,9 +46,9 @@ class ARP {
     /**
      * construct new ARP table handlers
      */
-    function __construct()
+    public function __construct()
     {
-        $this->shell = new \Core\Shell();
+        $this->shell = new Core\Shell();
     }
 
     /**
@@ -56,10 +56,13 @@ class ARP {
      * @param $ipaddress hosts ipaddress
      * @param $mac  hosts physical address
      */
-    function setStatic($ipaddress,$mac){
+    public function setStatic($ipaddress, $mac)
+    {
         // validate input, only set static entries for valid addresses
-        if (preg_match('/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/', trim($mac))){
-            if ( filter_var($ipaddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4|FILTER_FLAG_IPV6) ){
+        if (preg_match('/^([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}$/', trim($mac)))
+        {
+            if ( filter_var($ipaddress , FILTER_VALIDATE_IP, FILTER_FLAG_IPV4|FILTER_FLAG_IPV6) )
+            {
                 $this->shell->exec("/usr/sbin/arp -s ".trim($ipaddress)." ".trim($mac));
             }
         }
@@ -106,4 +109,4 @@ class ARP {
     }
 
 
-} 
+}

@@ -32,12 +32,14 @@
 */
 
 
-namespace Captiveportal;
+namespace OPNsense\CaptivePortal;
+
+use \OPNsense\Core;
 
 /**
  * Class CPClient
  * // TODO: CARP interfaces are probably not handled correctly
- * @package Captiveportal
+ * @package CaptivePortal
  */
 class CPClient {
 
@@ -50,7 +52,7 @@ class CPClient {
 
     /**
      * ipfw rule object
-     * @var \Captiveportal\Rules
+     * @var \CaptivePortal\Rules
      */
     private $rules = null;
 
@@ -227,9 +229,9 @@ class CPClient {
         // Request handle to configuration
         $this->config = \Core\Config::getInstance();
         // generate new ruleset
-        $this->rules = new \Captiveportal\Rules();
+        $this->rules = new Rules();
         // keep a link to the shell object
-        $this->shell = new \Core\Shell();
+        $this->shell = new Core\Shell();
     }
 
     /**
@@ -581,7 +583,7 @@ class CPClient {
      */
     function flush($zone=null){
         if ( $zone == null ) {
-            $shell = new \Core\Shell();
+            $shell = new Core\Shell();
             $shell->exec("/sbin/ipfw -f table all flush");
         }
         else{

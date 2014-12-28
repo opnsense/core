@@ -218,8 +218,8 @@ EOF;
 function voucher_expire($voucher_received) {
 	global $g, $config, $cpzone;
 
-	$cpdb = new Captiveportal\DB($cpzone);
-	$cpc = new Captiveportal\CPClient();
+	$cpdb = new OPNsense\CaptivePortal\DB($cpzone);
+	$cpc = new OPNsense\CaptivePortal\CPClient();
 
 	// XMLRPC Call over to the master Voucher node
 	if(!empty($config['voucher'][$cpzone]['vouchersyncdbip'])) {

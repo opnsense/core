@@ -31,12 +31,12 @@
 
 */
 
-namespace Captiveportal;
+namespace OPNsense\CaptivePortal;
 
 
 /**
  * Class Rules
- * @package Captiveportal
+ * @package CaptivePortal
  */
 class Rules {
 

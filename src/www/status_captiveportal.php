@@ -80,7 +80,7 @@ function clientcmp($a, $b) {
 }
 
 if (!empty($cpzone)) {
-        $cpdb_handle = new Captiveportal\DB($cpzone);
+        $cpdb_handle = new OPNsense\CaptivePortal\DB($cpzone);
 
         $order = "";        
 	if ($_GET['order']) {

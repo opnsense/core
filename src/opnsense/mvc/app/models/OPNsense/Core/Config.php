@@ -32,7 +32,7 @@
 */
 
 
-namespace Core;
+namespace OPNsense\Core;
 
 /**
  * Class ConfigException
@@ -44,7 +44,7 @@ class ConfigException extends \Exception { }
  * Class Config
  * @package Core
  */
-class Config extends \Core\Singleton {
+class Config extends Singleton {
 
     /**
      * config file location ( path + name )

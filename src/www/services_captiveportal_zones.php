@@ -94,7 +94,7 @@ $main_buttons = array(
 									  </td>
 									  <td class="listr" ondblclick="document.location='services_captiveportal.php?zone=<?=$cpzone;?>';">
 									      <?php
-									      $cpdb = new Captiveportal\DB($cpzone) ;
+									      $cpdb = new OPNsense\CaptivePortal\DB($cpzone) ;
 									      echo $cpdb->countClients() ;
 									      ?>
 									  </td>

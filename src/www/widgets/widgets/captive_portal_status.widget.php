@@ -63,7 +63,7 @@ $a_cp =& $config['captiveportal'];
 $cpdb_all = array();
 
 foreach ($a_cp as $cpzone => $cp) {
-	$cpdb_handle = new Captiveportal\DB($cpzone);          
+	$cpdb_handle = new OPNsense\CaptivePortal\DB($cpzone);          
 
         $order = "";	
         if ($_GET['order']) {

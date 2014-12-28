@@ -31,11 +31,11 @@
 
 */
 
-namespace Captiveportal;
+namespace OPNsense\CaptivePortal;
 
 /**
  * Class DB, handles captive portal zone's adminstration
- * @package Captiveportal
+ * @package CaptivePortal
  */
 class DB {
 

@@ -31,7 +31,7 @@
 
 */
 
-namespace Core;
+namespace OPNsense\Core;
 
 
 class Shell
