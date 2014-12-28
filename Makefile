@@ -18,7 +18,7 @@ lint:
 	find ${.CURDIR}/src -name "*.php" -print0 | xargs -0 -n1 php -l
 
 sweep:
-	find ${.CURDIR}/src ! -name "*.min.*" \
+	find ${.CURDIR}/src/www ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.map" -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 
