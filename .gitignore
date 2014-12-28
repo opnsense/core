@@ -1,3 +1,5 @@
+/src/etc/php.ini
+/src/lib/**
 *.DS_Store
 *.codekit
 *.sass-cache
