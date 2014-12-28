@@ -35,6 +35,10 @@ style:
 setup:
 	${.CURDIR}/src/etc/rc.php_ini_setup
 
+health:
+	# check test script output and advertise a failure...
+	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
+
 clean:
 	git reset --hard HEAD && git clean -xdqf .
 
