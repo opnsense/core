@@ -61,7 +61,7 @@ if (isset($id) && $a_action[$id]) {
 	/* Some sane page defaults */
 	$pconfig['protocol'] = 'http';
 	$pconfig['direction'] = 'request';
-	$pconfig['type'] = 'cookie';	
+	$pconfig['type'] = 'cookie';
 	$pconfig['action'] = 'change';
 }
 
@@ -135,7 +135,7 @@ if ($_POST) {
 			$actent = $a_action[$id];
 		if($actent['name'] != "")
 			$changedesc .= " " . sprintf(gettext("modified '%s' action:"), $actent['name']);
-		
+
 		update_if_changed("name", $actent['name'], $pconfig['name']);
 		update_if_changed("protocol", $actent['protocol'], $pconfig['protocol']);
 		update_if_changed("type", $actent['type'], $pconfig['type']);
@@ -149,7 +149,7 @@ if ($_POST) {
       case "filter": {
         update_if_changed("value", $actent['options']['value'], $pconfig['option_action_value']);
         update_if_changed("key", $actent['options']['akey'], $pconfig['option_action_key']);
-        break; 
+        break;
       }
       case "hash":
       case "log": {
@@ -157,7 +157,7 @@ if ($_POST) {
         break;
       }
     }
-    
+
 		if (isset($id) && $a_action[$id]) {
 //    XXX - TODO
 			/* modify all virtual servers with this name */
@@ -238,7 +238,7 @@ function updateProtocol(m) {
 		foreach ($actions['direction'][$ddir][$type] as $action => $av ) {
 			if($dtype == $type) {
 				echo "jQuery('#{$ddir}_{$type}_{$action}').show();";
- 			}
+			}
 		}
 	}
 ?>
@@ -392,10 +392,10 @@ function num_options() {
 
 
 jQuery(document).ready(function() {
-  updateProtocol('<?=htmlspecialchars($pconfig['protocol'])?>');  
-  updateDirection('<?=htmlspecialchars($pconfig['direction'])?>');  
-  updateType('<?=htmlspecialchars($pconfig['type'])?>');  
-  updateAction('<?=htmlspecialchars($pconfig['action'])?>');  
+  updateProtocol('<?=htmlspecialchars($pconfig['protocol'])?>');
+  updateDirection('<?=htmlspecialchars($pconfig['direction'])?>');
+  updateType('<?=htmlspecialchars($pconfig['type'])?>');
+  updateAction('<?=htmlspecialchars($pconfig['action'])?>');
 });
 
 </script>
@@ -406,18 +406,18 @@ jQuery(document).ready(function() {
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="load_balancer_relay_action_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">	
+
+				<div class="content-box">
+
+                        <form action="load_balancer_relay_action_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Relay Action entry"); ?></td>
 									</tr>
@@ -451,7 +451,7 @@ jQuery(document).ready(function() {
 											</select>
 										</td>
 									</tr>
-							
+
 							<!-- Direction -->
 									<tr align="left" id="direction_row">
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Direction"); ?></td>
@@ -468,10 +468,10 @@ jQuery(document).ready(function() {
 								}
 							?>
 											</select>
-							
+
 										</td>
 									</tr>
-							
+
 							<!-- Type -->
 							    <tr align="left" id="type_row"<?= $pconfig['protocol'] == "http" ? "" : " style=\"display:none;\""?>>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Type"); ?></td>
@@ -492,7 +492,7 @@ jQuery(document).ready(function() {
 											</select>
 										</td>
 									</tr>
-							
+
 							<!-- Action -->
 							    <tr align="left" id="action_row"<?= $pconfig['protocol'] == "http" ? "" : " style=\"display:none;\""?>>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Action"); ?></td>
@@ -505,9 +505,9 @@ jQuery(document).ready(function() {
 											if(isset($pconfig['action']) && $pconfig['action'] == $action) {
 												$selected = " selected";
 											} else if ($action == "change" ){
-							  					$selected = " selected";
-							  				} else {
-							  					$selected = "";
+												$selected = " selected";
+											} else {
+												$selected = "";
 											}
 											echo "<option id=\"{$dir}_{$type}_{$action}\" value=\"{$dir}_{$type}_{$action}\" onClick=\"updateAction('$action');\" style=\"display: none;\"{$selected}>{$action}</option>\n";
 										}

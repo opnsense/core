@@ -92,7 +92,7 @@ if ($_GET['act'] == "del") {
 /* Index lbpool array for easy hyperlinking */
 /* for ($i = 0; isset($config['load_balancer']['lbprotocol'][$i]); $i++) {
 	for ($o = 0; isset($config['load_balancer']['lbprotocol'][$i]['options'][$o]); o++) {
-		$a_vs[$i]['options'][$o] = "	
+		$a_vs[$i]['options'][$o] = "
 	$a_vs[$i]['poolname'] = "<a href=\"/load_balancer_pool_edit.php?id={$poodex[$a_vs[$i]['poolname']]}\">{$a_vs[$i]['poolname']}</a>";
 	if ($a_vs[$i]['sitedown'] != '') {
 		$a_vs[$i]['sitedown'] = "<a href=\"/load_balancer_pool_edit.php?id={$poodex[$a_vs[$i]['sitedown']]}\">{$a_vs[$i]['sitedown']}</a>";
@@ -114,19 +114,19 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('loadbalancer')): ?><p>
 				<?php print_info_box_np(gettext("The load balancer configuration has been changed.<br />You must apply the changes in order for them to take effect."));?><br />
 				<?php endif; ?>
 
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 					        /* active tabs */
 					        $tab_array = array();
 					        $tab_array[] = array(gettext("Monitors"), false, "load_balancer_monitor.php");
@@ -136,11 +136,11 @@ include("head.inc");
 					        $tab_array[] = array(gettext("Relay Protocols"), false, "load_balancer_relay_protocol.php");
 					        display_top_tabs($tab_array);
 					  ?>
-					
-					<div class="tab-content content-box col-xs-12">	    					
-    				    <div class="container-fluid">	
-	    				    
-	    				  <form action="load_balancer_relay_action.php" method="post" name="iform" id="iform">
+
+					<div class="tab-content content-box col-xs-12">
+				    <div class="container-fluid">
+
+					  <form action="load_balancer_relay_action.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
 <?
@@ -158,13 +158,13 @@ include("head.inc");
 			$t->display();
 ?>
 								</div>
-	    				  </form>
-    				    </div>
+					  </form>
+				    </div>
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 
 <?php include("foot.inc"); ?>

@@ -57,13 +57,13 @@ if ($_POST) {
                 $retval = 0;
                 $retval |= filter_configure();
                 $retval |= relayd_configure();
-  
+
                 $savemsg = get_std_save_message($retval);
                 clear_subsystem_dirty('loadbalancer');
         } else {
 		unset($input_errors);
 		$pconfig = $_POST;
-	
+
 		/* input validation */
 		if ($_POST['timeout'] && !is_numeric($_POST['timeout'])) {
 			$input_errors[] = gettext("Timeout must be a numeric value");
@@ -73,7 +73,7 @@ if ($_POST) {
 			$input_errors[] = gettext("Interval must be a numeric value");
                 }
 
-		if ($_POST['prefork']) { 
+		if ($_POST['prefork']) {
 			if (!is_numeric($_POST['prefork'])) {
 				$input_errors[] = gettext("Prefork must be a numeric value");
 			} else {
@@ -89,8 +89,8 @@ if ($_POST) {
 			$lbsetting['interval'] = $_POST['interval'];
 			$lbsetting['prefork'] = $_POST['prefork'];
 
-        		write_config();
-        		mark_subsystem_dirty('loadbalancer');
+			write_config();
+			mark_subsystem_dirty('loadbalancer');
 		}
 	}
 }
@@ -106,18 +106,18 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
 				<?php print_info_box_np(gettext("The load balancer configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
 				<?php endif; ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 			        /* active tabs */
 			        $tab_array = array();
 			        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
@@ -126,13 +126,13 @@ include("head.inc");
 			        $tab_array[] = array(gettext("Settings"), true, "load_balancer_setting.php");
 			        display_top_tabs($tab_array);
 			       ?>
-					
-					<div class="tab-content content-box col-xs-12">	 
-    					
-	    				    
-	    				  <form action="load_balancer_setting.php" method="post" name="iform" id="iform">
 
-								<div class="table-responsive">							
+					<div class="tab-content content-box col-xs-12">
+
+
+					  <form action="load_balancer_setting.php" method="post" name="iform" id="iform">
+
+								<div class="table-responsive">
 
 						            <table class="table table-striped table-sort">
 						              <tr>
@@ -170,12 +170,12 @@ include("head.inc");
 						            </tr>
 						           </table>
 								</div>
-	    				  </form>
-	    				  
+					  </form>
+
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

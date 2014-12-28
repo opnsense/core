@@ -100,18 +100,18 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
 				<?php print_info_box_np(gettext("The load balancer configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
 				<?php endif; ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 				        /* active tabs */
 				        $tab_array = array();
 				        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
@@ -119,12 +119,12 @@ $main_buttons = array(
 				        $tab_array[] = array(gettext("Monitors"), true, "load_balancer_monitor.php");
 				        $tab_array[] = array(gettext("Settings"), false, "load_balancer_setting.php");
 				        display_top_tabs($tab_array);
-				  	?>
-					
-					<div class="tab-content content-box col-xs-12">	 
-    					
-	    				    
-	    				  <form action="load_balancer_monitor.php" method="post" name="iform" id="iform">
+					?>
+
+					<div class="tab-content content-box col-xs-12">
+
+
+					  <form action="load_balancer_monitor.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
 
@@ -142,12 +142,12 @@ $main_buttons = array(
 											$t->display();
 								?>
 								</div>
-	    				  </form>
+					  </form>
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
-	
+
+
 <?php include("foot.inc"); ?>

@@ -135,7 +135,7 @@ if ($_POST) {
 			$poolent = $a_pool[$id];
 		if($poolent['name'] != "")
 			$changedesc .= sprintf(gettext(" modified '%s' pool:"), $poolent['name']);
-		
+
 		update_if_changed("name", $poolent['name'], $_POST['name']);
 		update_if_changed("mode", $poolent['mode'], $_POST['mode']);
 		update_if_changed("description", $poolent['descr'], $_POST['descr']);
@@ -154,7 +154,7 @@ if ($_POST) {
 			$a_pool[$id] = $poolent;
 		} else
 			$a_pool[] = $poolent;
-		
+
 		if ($changecount > 0) {
 			/* Mark pool dirty */
 			mark_subsystem_dirty('loadbalancer');
@@ -186,26 +186,26 @@ include("head.inc");
 	}
 	//]]>
 	</script>
-	
+
 	<script type="text/javascript" src="/javascript/autosuggest.js"></script>
 	<script type="text/javascript" src="/javascript/suggestions.js"></script>
 
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="load_balancer_pool_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">		                        
+
+				<div class="content-box">
+
+                        <form action="load_balancer_pool_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Add/edit Load Balancer - Pool entry"); ?></td>
 									</tr>
@@ -230,7 +230,7 @@ include("head.inc");
 											<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?> size="64" />
 										</td>
 									</tr>
-							
+
 									<tr align="left">
 										<td width="22%" valign="top" id="monitorport_text" class="vncellreq"><?=gettext("Port"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
@@ -284,7 +284,7 @@ include("head.inc");
 									<tr align="left">
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Server IP Address"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
-											<input name="ipaddr" type="text" size="16" style="float: left;" /> 
+											<input name="ipaddr" type="text" size="16" style="float: left;" />
 											<input class="btn btn-default" type="button" name="button1" value="<?=gettext("Add to pool"); ?>" onclick="AddServerToPool(document.iform); enforceFailover(); checkPoolControls();" /><br />
 										</td>
 									</tr>
@@ -314,12 +314,12 @@ include("head.inc");
 														</select>
 														<input class="btn btn-default" type="button" name="removeDisabled" value="<?=gettext("Remove"); ?>" onclick="RemoveServerFromPool(document.iform, 'serversdisabled[]');" />
 													</td>
-							
+
 													<td valign="middle" align="center">
 														<button class="btn btn-default btn-xs"  id="moveToEnabled" name="moveToEnabled"  onclick="moveOptions(document.iform.serversDisabledSelect, document.iform.serversSelect); checkPoolControls();"><span class="glyphicon glyphicon-arrow-left"></span></button><br />
 														<button class="btn btn-default btn-xs" id="moveToDisabled" name="moveToDisabled"  onclick="moveOptions(document.iform.serversSelect, document.iform.serversDisabledSelect); checkPoolControls();"><span class="glyphicon glyphicon-arrow-right"></span></button>
 													</td>
-							
+
 													<td align="center">
 															<b><?=gettext("Enabled (default)"); ?></b>
 														<br/>
@@ -343,7 +343,7 @@ include("head.inc");
 										<td width="22%" valign="top">&nbsp;</td>
 										<td width="78%">
 											<br />
-											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" onclick="AllServers('serversSelect', true); AllServers('serversDisabledSelect', true);" /> 
+											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" onclick="AllServers('serversSelect', true); AllServers('serversDisabledSelect', true);" />
 											<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
 											<?php if (isset($id) && $a_pool[$id] && $_GET['act'] != 'dup'): ?>
 											<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
@@ -351,9 +351,9 @@ include("head.inc");
 										</td>
 									</tr>
 								</table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>

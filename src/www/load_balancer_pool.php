@@ -110,19 +110,19 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-		<div class="container-fluid">	
+		<div class="container-fluid">
 			<div class="row">
-				
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				<?php if ($savemsg) print_info_box($savemsg); ?>			
-				
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+
 				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
 				<?php print_info_box_np(sprintf(gettext("The load balancer configuration has been changed%sYou must apply the changes in order for them to take effect."), "<br />"));?><br />
 				<?php endif; ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<?php
+
+				<?php
 				        /* active tabs */
 				        $tab_array = array();
 				        $tab_array[] = array(gettext("Pools"), true, "load_balancer_pool.php");
@@ -130,15 +130,15 @@ $main_buttons = array(
 				        $tab_array[] = array(gettext("Monitors"), false, "load_balancer_monitor.php");
 				        $tab_array[] = array(gettext("Settings"), false, "load_balancer_setting.php");
 				        display_top_tabs($tab_array);
-				  	?>
-					
-					<div class="tab-content content-box col-xs-12">	 
-	    				    
-	    				  <form action="load_balancer_pool.php" method="post" name="iform" id="iform">
+					?>
+
+					<div class="tab-content content-box col-xs-12">
+
+					  <form action="load_balancer_pool.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
-							 		
-	
+
+
 								<?php
 											$t = new MainTable();
 											$t->edit_uri('load_balancer_pool_edit.php');
@@ -161,12 +161,12 @@ $main_buttons = array(
 	<?= sprintf(gettext("The Load Balancer in %s is for server load balancing, not Multi-WAN. For load balancing or failover for multiple WANs, use "), $g['product_name']);?>
 	<a href="/system_gateway_groups.php"><?= gettext("Gateway Groups"); ?></a>
 								</div>
-	    				  </form>
+					  </form>
 					</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
-	
+
+
 <?php include("foot.inc"); ?>

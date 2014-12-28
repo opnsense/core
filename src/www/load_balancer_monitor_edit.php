@@ -145,7 +145,7 @@ if ($_POST) {
 			$monent = $a_monitor[$id];
 		if($monent['name'] != "")
 			$changedesc .= " " . sprintf(gettext("modified '%s' monitor:"), $monent['name']);
-		
+
 		update_if_changed("name", $monent['name'], $pconfig['name']);
 		update_if_changed("type", $monent['type'], $pconfig['type']);
 		update_if_changed("description", $monent['descr'], $pconfig['descr']);
@@ -180,7 +180,7 @@ if ($_POST) {
 			$a_monitor[$id] = $monent;
 		} else
 			$a_monitor[] = $monent;
-		
+
 		if ($changecount > 0) {
 			/* Mark config dirty */
 			mark_subsystem_dirty('loadbalancer');
@@ -203,7 +203,7 @@ $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => get
 
 <body>
 <?php include("fbegin.inc"); ?>
-	
+
 	<script type="text/javascript">
 	//<![CDATA[
 	function updateType(t){
@@ -230,20 +230,20 @@ $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => get
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
-				
+
+			<div class="row">
+
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="load_balancer_monitor_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
-		                        	<tr>
+
+				<div class="content-box">
+
+                        <form action="load_balancer_monitor_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
+						<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Monitor entry"); ?></td>
 							                </tr>
 									<tr align="left">
@@ -335,7 +335,7 @@ $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => get
 													</td>
 												</tr>
 							<!-- BILLM: XXX not supported digest checking just yet
-							
+
 												<tr align="left">
 													<td width="22%" valign="top" class="vncellreq">MD5 Page Digest</td>
 													<td width="78%" class="vtable" colspan="2">
@@ -376,12 +376,12 @@ $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => get
 										</td>
 									</tr>
 								</table>
-                        	</div>
+				</div>
                         </form>
-    				</div>
+				</div>
 			    </section>
 			</div>
 		</div>
 	</section>
-	
+
 <?php include("foot.inc"); ?>

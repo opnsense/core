@@ -105,7 +105,7 @@ if ($_POST) {
 			$protent = $a_protocol[$id];
 		if($protent['name'] != "")
 			$changedesc .= " " . sprintf(gettext("modified '%s' load balancing protocol:"), $protent['name']);
-		
+
 		update_if_changed(gettext("name"), $protent['name'], $pconfig['name']);
 		update_if_changed(gettext("type"), $protent['type'], $pconfig['type']);
 		update_if_changed(gettext("description"), $protent['descr'], $pconfig['descr']);
@@ -119,12 +119,12 @@ if ($_POST) {
 				if ($config['load_balancer']['virtual_server'][$i]['protocol'] == $a_protocol[$id]['name'])
 					$config['load_balancer']['virtual_server'][$i]['protocol'] = $protent['name'];
 			}
-*/	
+*/
 			$a_protocol[$id] = $protent;
 		} else {
 			$a_protocol[] = $protent;
-    }	
-    
+    }
+
 		if ($changecount > 0) {
 			/* Mark config dirty */
 			mark_subsystem_dirty('loadbalancer');
@@ -189,18 +189,18 @@ jQuery(document).ready(function(){
 	<section class="page-content-main">
 
 		<div class="container-fluid">
-	
-			<div class="row">	
+
+			<div class="row">
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				
+
 			    <section class="col-xs-12">
-    				
-    				<div class="content-box">	
-								
-                        <form action="load_balancer_relay_protocol_edit.php" method="post" name="iform" id="iform">								
-                        	
-                        	<div class="table-responsive">
-	                        	<table class="table table-striped table-sort">
+
+				<div class="content-box">
+
+                        <form action="load_balancer_relay_protocol_edit.php" method="post" name="iform" id="iform">
+
+				<div class="table-responsive">
+					<table class="table table-striped table-sort">
 
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Load Balancer - Relay Protocol entry"); ?></td>
@@ -267,7 +267,7 @@ jQuery(document).ready(function(){
 															<input class="formbtn" type="button" name="removeFromEnabled" value="<?=gettext("Remove"); ?>" onclick="deleteOption($('lbaction'));" />
 														</center>
 													</td>
-							
+
 													<td>
 														<center>
 														<b><?=gettext("Enabled Actions"); ?></b>
