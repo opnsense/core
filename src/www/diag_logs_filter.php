@@ -357,13 +357,13 @@ include("head.inc");
 									  <td class="listMRr nowrap">
 										<span onclick="javascript:resolve_with_ajax('<?php echo "{$filterent['srcip']}"; ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $src_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs glyphicon glyphicon-info-sign"></span></span>
 										<a class="btn btn-danger btn-xs" href="easyrule.php?<?php echo "action=block&amp;int={$int}&amp;src={$filterent['srcip']}&amp;ipproto={$ipproto}"; ?>" title="<?=gettext("Easy Rule: Add to Block List");?>" onclick="return confirm('<?=gettext("Do you really want to add this BLOCK rule?")."\n\n".gettext("Easy Rule is still experimental.")."\n".gettext("Continue at risk of your own peril.")."\n".gettext("Backups are also nice.")?>')">
-										<span class="glyphicon glyphicon-remove text-danger" alt="Icon Easy Rule: Add to Block List"></span></a>
+										<span class="glyphicon glyphicon-remove" alt="Icon Easy Rule: Add to Block List"></span></a>
 										<?php echo $srcstr . '<span class="RESOLVE-' . $src_htmlclass . '"></span>';?>
 									  </td>
 									  <td class="listMRr nowrap">
 										<span onclick="javascript:resolve_with_ajax('<?php echo "{$filterent['dstip']}"; ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $dst_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs  glyphicon glyphicon-info-sign"></span></span>
 										<a class="btn btn-success btn-xs" href="easyrule.php?<?php echo "action=pass&amp;int={$int}&amp;proto={$proto}&amp;src={$filterent['srcip']}&amp;dst={$filterent['dstip']}&amp;dstport={$filterent['dstport']}&amp;ipproto={$ipproto}"; ?>" title="<?=gettext("Easy Rule: Pass this traffic");?>" onclick="return confirm('<?=gettext("Do you really want to add this PASS rule?")."\n\n".gettext("Easy Rule is still experimental.")."\n".gettext("Continue at risk of your own peril.")."\n".gettext("Backups are also nice.");?>')">
-										<span  class="glyphicon glyphicon-play text-success" alt="Icon Easy Rule: Pass this traffic"></span></a>
+										<span  class="glyphicon glyphicon-play" alt="Icon Easy Rule: Pass this traffic"></span></a>
 										<?php echo $dststr . '<span class="RESOLVE-' . $dst_htmlclass . '"></span>';?>
 									  </td>
 									  <?php
