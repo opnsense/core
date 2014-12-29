@@ -1,5 +1,6 @@
 <?php
 /*
+	Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2007 Marcel Wiget <mwiget@mac.com>.
     All rights reserved.
 
@@ -24,16 +25,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-status-captiveportal-test
-##|*NAME=Status: Captive portal test Vouchers page
-##|*DESCR=Allow access to the 'Status: Captive portal Test Vouchers' page.
-##|*MATCH=status_captiveportal_test.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require("functions.inc");
@@ -114,10 +105,10 @@ if ($_POST) {
         echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\" width=\"100%\" summary=\"results\">\n";
         foreach ($test_results as $result) {
             if (strpos($result, " good ") || strpos($result, " granted ")) {
-                echo "<tr><td bgcolor=\"#D9DEE8\"><img src=\"/themes/{$g['theme']}/images/icons/icon_pass.gif\" alt=\"pass\" /></td>";
+                echo "<tr><td bgcolor=\"#D9DEE8\"><span class=\"glyphicon glyphicon-play text-success\" alt=\"pass\"></span></td>";
                 echo "<td bgcolor=\"#D9DEE8\">$result</td></tr>";
             } else {
-                echo "<tr><td bgcolor=\"#FFD9D1\"><img src=\"/themes/{$g['theme']}/images/icons/icon_block.gif\" alt=\"block\" /></td>";
+                echo "<tr><td bgcolor=\"#FFD9D1\"><span class=\"glyphicon glyphicon-remove text-danger\" alt=\"block\"></span></td>";
                 echo "<td bgcolor=\"#FFD9D1\">$result</td></tr>";
             }
         }
