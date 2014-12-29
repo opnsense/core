@@ -236,6 +236,7 @@ include("head.inc");
 											<span class="vexpl"><?=gettext("You may enter a description here for your reference (not parsed)"); ?>.</span>
 										</td>
 									</tr>
+<!--									
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Bandwidth up"); ?></td>
 										<td width="78%" class="vtable">
@@ -252,6 +253,7 @@ include("head.inc");
 											<span class="vexpl"><?=gettext("Enter a download limit to be enforced on this MAC address in Kbit/s"); ?></span>
 										</td>
 									</tr>
+-->									
 									<tr>
 										<td width="22%" valign="top">&nbsp;</td>
 										<td width="78%">
