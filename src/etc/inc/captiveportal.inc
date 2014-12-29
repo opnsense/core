@@ -218,11 +218,11 @@ function captiveportal_init_rules($reinit = false) {
     captiveportal_load_modules();
 
     //
-    if ( $reinit ) {
+//    if ( $reinit ) {
         $cpc = new OPNsense\CaptivePortal\CPClient();
         $cpc->reconfigure();
         unset($cpc);
-    }
+//    }
 }
 
 
