@@ -39,7 +39,7 @@ $pgtitle = gettext("License");
 		    <section class="col-xs-11">
             <p align="justify">
             <strong>
-              <span class="text-primary">OPNsense&reg;</span> is Copyright &copy; <?=$g['product_copyright_years'];?> by Deciso B.V.<br />All rights reserved.<br />
+              <span class="text-primary"><a href="http://www.opnsense.org" target="_blank">OPNsense&reg;</a></span> is Copyright &copy; <?=$g['product_copyright_years'];?> by Deciso B.V.<br />All rights reserved.<br />
             </strong>
             Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:<br />
             <br />
