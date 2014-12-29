@@ -37,8 +37,10 @@ global $cpzone;
 $cpzone = $argv[1];
 $type = $argv[2];
 
+// TODO: fix this file
+
 /* read in captive portal db */
-$cpdb = captiveportal_read_db();
+$cpdb = array();//  captiveportal_read_db();
 
 /* determine number of logged in users */
 $no_users = count($cpdb);
