@@ -42,7 +42,7 @@ $pkg_status = array();
 if($_POST['action'] == 'pkg_update') {
 	/* Setup Shell variables */
 	$shell_output = array();
-	$shell = new Core\Shell();
+	$shell = new OPNsense\Core\Shell();
 	// execute shell command and collect (only valid) info into named array
 	$shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh",false,false,$shell_output);
 }
@@ -50,7 +50,7 @@ if($_POST['action'] == 'pkg_update') {
 if($_POST['action'] == 'pkg_upgrade') {
 	/* Setup Shell variables */
 	$shell_output = array();
-	$shell = new Core\Shell();
+	$shell = new OPsense\Core\Shell();
 	// execute shell command and collect (only valid) info into named array
 	$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh&",false,false,$shell_output);
 }
