@@ -554,7 +554,7 @@ if(file_exists("/var/run/interface_mismatch_reboot_needed"))
 															</select>
 														</td>
 														<td class="list">
-															<button name="add_x" type="submit" class="btn btn-primary" title="<?=gettext("add selected interface");?>"><span class="glyphicon glyphicon-plus"></span></button>
+															<button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?=gettext("add selected interface");?>"><span class="glyphicon glyphicon-plus"></span></button>
 														</td>
 													</tr>
 									<?php
