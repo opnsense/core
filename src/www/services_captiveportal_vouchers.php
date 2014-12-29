@@ -511,9 +511,9 @@ function enable_change(enable_change) {
 														<td valign="middle" class="list nowrap">
 															<div id='addeditdelete<?=$i?>'>
 																<?php if ($pconfig['enable']): ?>
-																	<a href="services_captiveportal_vouchers_edit.php?zone=<?=$cpzone;?>&amp;id=<?=$i; ?>"><img src="/themes/<?=$g['theme']; ?>/images/icons/icon_e.gif" title="<?=gettext("edit voucher"); ?>" width="17" height="17" border="0" alt="<?=gettext("edit voucher"); ?>" /></a>
-																	<a href="services_captiveportal_vouchers.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i; ?>" onclick="return confirm('<?=gettext("Do you really want to delete this voucher? This makes all vouchers from this roll invalid"); ?>')"><img src="/themes/<?=$g['theme']; ?>/images/icons/icon_x.gif" title="<?=gettext("delete vouchers"); ?>" width="17" height="17" border="0" alt="<?=gettext("delete vouchers"); ?>" /></a>
-																	<a href="services_captiveportal_vouchers.php?zone=<?=$cpzone;?>&amp;act=csv&amp;id=<?=$i; ?>"><img src="/themes/<?=$g['theme']; ?>/images/icons/icon_log_s.gif" title="<?=gettext("generate vouchers for this roll to CSV file"); ?>" width="11" height="15" border="0" alt="<?=gettext("generate vouchers for this roll to CSV file"); ?>" /></a>
+																	<a class="btn btn-default btn-xs" href="services_captiveportal_vouchers_edit.php?zone=<?=$cpzone;?>&amp;id=<?=$i; ?>"><span class="glyphicon glyphicon-pencil" title="<?=gettext("edit voucher"); ?>"  alt="<?=gettext("edit voucher"); ?>" ></span></a>
+																	<a class="btn btn-default btn-xs" href="services_captiveportal_vouchers.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i; ?>" onclick="return confirm('<?=gettext("Do you really want to delete this voucher? This makes all vouchers from this roll invalid"); ?>')"><span class="glyphicon glyphicon-remove" title="<?=gettext("delete vouchers"); ?>" alt="<?=gettext("delete vouchers"); ?>"></span></a>
+																	<a class="btn btn-default btn-xs" href="services_captiveportal_vouchers.php?zone=<?=$cpzone;?>&amp;act=csv&amp;id=<?=$i; ?>"><span class="glyphicon glyphicon-download-alt" title="<?=gettext("generate vouchers for this roll to CSV file"); ?>" alt="<?=gettext("generate vouchers for this roll to CSV file"); ?>"></span></a>
 													<?php endif;?>
 															</div>
 														</td>
