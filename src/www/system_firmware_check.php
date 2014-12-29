@@ -52,7 +52,7 @@ if($_POST['action'] == 'pkg_upgrade') {
 	$shell_output = array();
 	$shell = new OPsense\Core\Shell();
 	// execute shell command and collect (only valid) info into named array
-	$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh&",false,false,$shell_output);
+	$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh > /dev/null 2 > /dev/null < /dev/null &",false,false,$shell_output);
 }
 
 if($_POST['action'] == 'update_status' ) {
