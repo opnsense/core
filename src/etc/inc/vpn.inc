@@ -125,33 +125,31 @@ function vpn_ipsec_configure($ipchg = false)
 
 		return 0;
 	} else {
-		$certpath = "{$g['varetc_path']}/ipsec/ipsec.d/certs";
-		$capath = "{$g['varetc_path']}/ipsec/ipsec.d/cacerts";
-		$keypath = "{$g['varetc_path']}/ipsec/ipsec.d/private";
+		$certpath = "/usr/local/etc/ipsec.d/certs";
+		$capath = "/usr/local/etc/ipsec.d/cacerts";
+		$keypath = "/usr/local/etc/ipsec.d/private";
 
 		mwexec("/sbin/ifconfig enc0 up");
 		set_single_sysctl("net.inet.ip.ipsec_in_use", "1");
 		/* needed for config files */
-		if (!is_dir("{$g['varetc_path']}/ipsec"))
-			mkdir("{$g['varetc_path']}/ipsec");
-		if (!is_dir("{$g['varetc_path']}/ipsec/ipsec.d"))
-			mkdir("{$g['varetc_path']}/ipsec/ipsec.d");
+		if (!is_dir("/usr/local/etc/ipsec.d"))
+			mkdir("/usr/local/etc/ipsec.d");
 		if (!is_dir($capath))
 			mkdir($capath);
 		if (!is_dir($keypath))
 			mkdir($keypath);
-		if (!is_dir("{$g['varetc_path']}/ipsec/ipsec.d/crls"))
-			mkdir("{$g['varetc_path']}/ipsec/ipsec.d/crls");
+		if (!is_dir("/usr/local/etc/ipsec.d/crls"))
+			mkdir("/usr/local/etc/ipsec.d/crls");
 		if (!is_dir($certpath))
 			mkdir($certpath);
-		if (!is_dir("{$g['varetc_path']}/ipsec/ipsec.d/aacerts"))
-			mkdir("{$g['varetc_path']}/ipsec/ipsec.d/aacerts");
-		if (!is_dir("{$g['varetc_path']}/ipsec/ipsec.d/acerts"))
-			mkdir("{$g['varetc_path']}/ipsec/ipsec.d/acerts");
-		if (!is_dir("{$g['varetc_path']}/ipsec/ipsec.d/ocspcerts"))
-			mkdir("{$g['varetc_path']}/ipsec/ipsec.d/ocspcerts");
-		if (!is_dir("{$g['varetc_path']}/ipsec/ipsec.d/reqs"))
-			mkdir("{$g['varetc_path']}/ipsec/ipsec.d/reqs");
+		if (!is_dir("/usr/local/etc/ipsec.d/aacerts"))
+			mkdir("/usr/local/etc/ipsec.d/aacerts");
+		if (!is_dir("/usr/local/etc/ipsec.d/acerts"))
+			mkdir("/usr/local/etc/ipsec.d/acerts");
+		if (!is_dir("/usr/local/etc/ipsec.d/ocspcerts"))
+			mkdir("/usr/local/etc/ipsec.d/ocspcerts");
+		if (!is_dir("/usr/local/etc/ipsec.d/reqs"))
+			mkdir("/usr/local/etc/ipsec.d/reqs");
 
 
 		if ($g['booting'])
@@ -401,7 +399,7 @@ EOD;
 		}
 
 		$strongswan .= "\t}\n}\n";
-		@file_put_contents("{$g['varetc_path']}/ipsec/strongswan.conf", $strongswan);
+		@file_put_contents("/usr/local/etc/strongswan.conf", $strongswan);
 		unset($strongswan);
 
 		/* generate CA certificates files */
@@ -499,8 +497,8 @@ EOD;
 			unset($key);
 		}
 
-		@file_put_contents("{$g['varetc_path']}/ipsec/ipsec.secrets", $pskconf);
-		chmod("{$g['varetc_path']}/ipsec/ipsec.secrets", 0600);
+		@file_put_contents("/usr/local/etc/ipsec.secrets", $pskconf);
+		chmod("/usr/local/etc/ipsec.secrets", 0600);
 		unset($pskconf);
 
 		$natfilterrules = false;
@@ -819,7 +817,7 @@ EOD;
 			}
 		}
 	}
-	@file_put_contents("{$g['varetc_path']}/ipsec/ipsec.conf", $ipsecconf);
+	@file_put_contents("/usr/local/etc/ipsec.conf", $ipsecconf);
 	unset($ipsecconf);
 	/* end ipsec.conf */
 
@@ -845,13 +843,13 @@ EOD;
 		array_unique($filterdns_list);
 		foreach ($filterdns_list as $hostname)
 			$hostnames .= "cmd {$hostname} '/usr/local/sbin/pfSctl -c \"service reload ipsecdns\"'\n";
-		file_put_contents("{$g['varetc_path']}/ipsec/filterdns-ipsec.hosts", $hostnames);
+		file_put_contents("/usr/local/etc/filterdns-ipsec.hosts", $hostnames);
 		unset($hostnames);
 
 		if (isvalidpid("{$g['varrun_path']}/filterdns-ipsec.pid"))
 			sigkillbypid("{$g['varrun_path']}/filterdns-ipsec.pid", "HUP");
 		else {
-			mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-ipsec.pid -i {$interval} -c {$g['varetc_path']}/ipsec/filterdns-ipsec.hosts -d 1");
+			mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-ipsec.pid -i {$interval} -c /usr/local/etc/filterdns-ipsec.hosts -d 1");
 		}
 	} else {
 		killbypid("{$g['varrun_path']}/filterdns-ipsec.pid");
