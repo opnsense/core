@@ -33,6 +33,7 @@
 
 namespace OPNsense\CaptivePortal;
 
+use OPNsense\Core;
 
 /**
  * Class Rules
@@ -59,7 +60,7 @@ class Rules {
     function __construct()
     {
         // Request handle to configuration
-        $this->config = \Core\Config::getInstance();
+        $this->config = Core\Config::getInstance();
     }
 
 
@@ -130,6 +131,8 @@ class Rules {
         $this->rules[] = "#=========================================================================================================";
         foreach( $this->config->object()->interfaces->children()  as $interface => $content ){
             if ( $interface != "wan" && $content->ipaddr != "dhcp" ){
+                // only keep state of dns traffic to prevent dns resolver failures
+                $this->rules[] = "add ".$rulenum++." allow udp from any to ".$content->ipaddr." dst-port 53 keep-state  in";
                 $this->rules[] = "add ".$rulenum++." allow ip from any to { 255.255.255.255 or ".$content->ipaddr." } in";
                 $this->rules[] = "add ".$rulenum++." allow ip from { 255.255.255.255 or ".$content->ipaddr." } to any out";
                 $this->rules[] = "add ".$rulenum++." allow icmp from { 255.255.255.255 or ".$content->ipaddr." } to any out icmptypes 0";

@@ -4,17 +4,17 @@
 	Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2007 Marcel Wiget <mwiget@mac.com>
     All rights reserved.
-
+    
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
-
+    
     1. Redistributions of source code must retain the above copyright notice,
        this list of conditions and the following disclaimer.
-
+    
     2. Redistributions in binary form must reproduce the above copyright
        notice, this list of conditions and the following disclaimer in the
        documentation and/or other materials provided with the distribution.
-
+    
     THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
     INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
     AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
@@ -243,7 +243,7 @@ function voucher_expire($voucher_received) {
 	}
 
 	// split into an array. Useful for multiple vouchers given
-	$a_vouchers_received = preg_split("/[\t\n\r ]+/s", $voucher_received);
+	$a_vouchers_received = preg_split("/[\t\n\r ]+/s", $voucher_received); 
 	$active_dirty = false;
 
 	// go through all received vouchers, check their valid and extract
@@ -257,9 +257,9 @@ function voucher_expire($voucher_received) {
 		$_gb = exec("/usr/local/bin/voucher -c {$g['varetc_path']}/voucher_{$cpzone}.cfg -k {$g['varetc_path']}/voucher_{$cpzone}.public -- $v", $output);
 		list($status, $roll, $nr) = explode(" ", $output[0]);
 		if ($status == "OK") {
-			// check if we have this ticket on a registered roll for this ticket
+			// check if we have this ticket on a registered roll for this ticket 
 			if ($tickets_per_roll[$roll] && ($nr <= $tickets_per_roll[$roll])) {
-				// voucher is from a registered roll.
+				// voucher is from a registered roll. 
 				if (!isset($active_vouchers[$roll]))
 					$active_vouchers[$roll] = voucher_read_active_db($roll);
 				// valid voucher. Store roll# and ticket#
@@ -321,7 +321,7 @@ function voucher_expire($voucher_received) {
 	return true;
 }
 
-/*
+/* 
  * Authenticate a voucher and return the remaining time credit in minutes
  * if $test is set, don't mark the voucher as used nor add it to the list
  * of active vouchers
@@ -356,7 +356,7 @@ function voucher_auth($voucher_received, $test = 0) {
 	}
 
 	// split into an array. Useful for multiple vouchers given
-	$a_vouchers_received = preg_split("/[\t\n\r ]+/s", $voucher_received);
+	$a_vouchers_received = preg_split("/[\t\n\r ]+/s", $voucher_received); 
 	$error = 0;
 	$test_result = array();     // used to display for voucher test option in GUI
 	$total_minutes = 0;
@@ -378,9 +378,9 @@ function voucher_auth($voucher_received, $test = 0) {
 				$first_voucher = $voucher;
 				$first_voucher_roll = $roll;
 			}
-			// check if we have this ticket on a registered roll for this ticket
+			// check if we have this ticket on a registered roll for this ticket 
 			if ($tickets_per_roll[$roll] && ($nr <= $tickets_per_roll[$roll])) {
-				// voucher is from a registered roll.
+				// voucher is from a registered roll. 
 				if (!isset($active_vouchers[$roll]))
 					$active_vouchers[$roll] = voucher_read_active_db($roll);
 				// valid voucher. Store roll# and ticket#
@@ -448,7 +448,7 @@ function voucher_auth($voucher_received, $test = 0) {
 	if (!empty($config['voucher'][$cpzone]['vouchersyncdbip'])) {
 		if (!is_null($remote_time_used))
 			$total_minutes = $remote_time_used;
-		else if ($remote_time_used < $total_minutes)
+		else if ($remote_time_used < $total_minutes) 
 			$total_minutes -= $remote_time_used;
 	}
 
@@ -572,7 +572,7 @@ function voucher_configure_zone($sync = false) {
 	return 0;
 }
 
-/* write bitstring of used vouchers to ramdisk.
+/* write bitstring of used vouchers to ramdisk. 
  * Bitstring must already be base64_encoded!
  */
 function voucher_write_used_db($roll, $vdb) {
@@ -587,7 +587,7 @@ function voucher_write_used_db($roll, $vdb) {
 }
 
 /* return assoc array of active vouchers with activation timestamp
- * voucher is index.
+ * voucher is index. 
  */
 function voucher_read_active_db($roll) {
 	global $g, $cpzone;
@@ -642,7 +642,7 @@ function voucher_used_count($roll) {
     $max = strlen($bitstring) * 8;
     $used = 0;
     for ($i = 1; $i <= $max; $i++) {
-        // check if ticket already used or not.
+        // check if ticket already used or not. 
         $pos = $i >> 3;            // divide by 8 -> octet
         $mask = 1 << ($i % 8);  // mask to test bit in octet
         if (ord($bitstring[$pos]) & $mask)
@@ -701,7 +701,7 @@ function voucher_save_db_to_config() {
 
 function voucher_save_db_to_config_zone() {
     global $config, $g, $cpzone;
-
+    
     if (!isset($config['voucher'][$cpzone]['enable']))
         return;   // no vouchers or don't want to save DB's
 

@@ -58,7 +58,7 @@ class CPClient {
 
     /**
      * link to shell object
-     * @var  \Core\Shell
+     * @var  Core\Shell
      */
     private $shell = null;
 
@@ -71,10 +71,10 @@ class CPClient {
      * @param $ip
      * @param string $message
      */
-    private function logportalauth($user,$mac,$ip,$status,$message=""){
+    private function logportalauth($cpzonename, $user, $mac, $ip, $status, $message=""){
 
         $message = trim($message);
-        $message = "{$status}: {$user}, {$mac}, {$ip}, {$message}";
+        $message = "Zone : {$cpzonename} {$status}: {$user}, {$mac}, {$ip}, {$message}";
 
         $logger = new \Phalcon\Logger\Adapter\Syslog("logportalauth", array(
             'option' => LOG_PID,
@@ -83,6 +83,7 @@ class CPClient {
         $logger->info($message);
 
     }
+
     /**
      * Request new pipeno
      * @return int
@@ -135,12 +136,29 @@ class CPClient {
     }
 
     /**
+     * load accounting rules into ruleset, used for reinitialisation of the ruleset.
+     * triggers add_accounting() for all active clients in all zones
+     */
+    private function loadAccounting()
+    {
+        foreach ($this->config->object()->captiveportal->children() as $cpzonename => $zone)
+        {
+            $db = new DB($cpzonename);
+            foreach ($db->listClients(array()) as $client)
+            {
+                $this->add_accounting($zone->zoneid, $client->ip) ;
+            }
+            unset($db);
+        }
+    }
+
+    /**
      *
      * @param $zoneid
      * @param $ip
      */
     public function add_accounting($zoneid,$ip){
-        // TODO: check speed, this might need some improvement
+        // TODO: check processing speed, this might need some improvement
         // check if our ip is already in the list and collect first free rule number to place it there if necessary
         $shell_output=array();
         $this->shell->exec("/sbin/ipfw show",false,false,$shell_output);
@@ -227,7 +245,7 @@ class CPClient {
      */
     function __construct() {
         // Request handle to configuration
-        $this->config = \Core\Config::getInstance();
+        $this->config = Core\Config::getInstance();
         // generate new ruleset
         $this->rules = new Rules();
         // keep a link to the shell object
@@ -246,6 +264,9 @@ class CPClient {
 
         // update tables
         $this->update();
+
+        // after reinit all accounting rules are vanished, reapply them for active sessions
+        $this->loadAccounting();
     }
 
     /**
@@ -552,7 +573,7 @@ class CPClient {
         $this->reset_bandwidth($pipeno_in,$bw_down);
 
         // log
-        $this->logportalauth($username,$clientmac,$clientip,$status="LOGIN");
+        $this->logportalauth($cpzonename, $username, $clientmac, $clientip, $status="LOGIN");
 
         // cleanup
         unset($db);
@@ -575,7 +596,6 @@ class CPClient {
             $this->_disconnect($cpzonename,$sessionid);
         }
     }
-
 
     /**
      * flush zone (null flushes all zones)
@@ -633,7 +653,7 @@ class CPClient {
                     if (is_numeric($client->session_timeout) && $client->session_timeout > 0 ) {
                         if (((time() - $client->allow_time) / 60) > $client->session_timeout) {
                             $this->disconnect($cpzonename, $client->sessionid);
-                            $this->logportalauth($client->username,$client->mac,$client->ip,$status="SESSION TIMEOUT");
+                            $this->logportalauth($cpzonename, $client->username, $client->mac, $client->ip, $status="SESSION TIMEOUT");
                             continue;
                         }
                     }
@@ -642,7 +662,7 @@ class CPClient {
                     if (is_numeric($client->idle_timeout) && $client->idle_timeout > 0  && $idle_time > 0) {
                         if ($idle_time > $client->idle_timeout) {
                             $this->disconnect($cpzonename, $client->sessionid);
-                            $this->logportalauth($client->username,$client->mac,$client->ip,$status="IDLE TIMEOUT");
+                            $this->logportalauth($cpzonename, $client->username, $client->mac, $client->ip, $status="IDLE TIMEOUT");
                             continue;
                         }
                     }
@@ -650,7 +670,7 @@ class CPClient {
                     // disconnect on session terminate time
                     if ( is_numeric($client->session_terminate_time) && $client->session_terminate_time > 0 && $client->session_terminate_time < time()) {
                         $this->disconnect($cpzonename, $client->sessionid);
-                        $this->logportalauth($client->username,$client->mac,$client->ip,$status="TERMINATE TIME REACHED");
+                        $this->logportalauth($cpzonename, $client->username, $client->mac, $client->ip, $status="TERMINATE TIME REACHED");
                         continue;
                     }
                 }
