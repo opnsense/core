@@ -161,53 +161,55 @@ class Rules {
      */
     private function generate_zones(){
         foreach( $this->config->object()->captiveportal->children()  as $cpzonename => $zone ) {
-            // search interface
-            $interface = $zone->interface->xpath("//" . $zone->interface);
+            if ( isset( $zone->enable) ) {
+                // search interface
+                $interface = $zone->interface->xpath("//" . $zone->interface);
 
-            // allocate tables for captive portal
-            $table_id = (6*($zone->zoneid-1) );
-            $this->rules[] = "#=========================================================================================================";
-            $this->rules[] = "# zone " . $cpzonename . " (".$zone->zoneid.") configuration";
-            $this->rules[] = "#=========================================================================================================";
+                // allocate tables for captive portal
+                $table_id = (6 * ($zone->zoneid - 1));
+                $this->rules[] = "#=========================================================================================================";
+                $this->rules[] = "# zone " . $cpzonename . " (" . $zone->zoneid . ") configuration";
+                $this->rules[] = "#=========================================================================================================";
 
-            if (count($interface) > 0) {
-                $interface = $interface[0];
-                // authenticated users ( table 1 + 2 )
-                $this->rules[] = "add ".(3000+($zone->zoneid*10)+1)." skipto ".((($zone->zoneid*1000)+10000)+1)." ip from table(".$this->getAuthUsersTables($zone->zoneid)["in"].") to any via ".$interface->if ;
-                $this->rules[] = "add ".(3000+($zone->zoneid*10)+2)." skipto ".((($zone->zoneid*1000)+10000)+1)." ip from any to table(".$this->getAuthUsersTables($zone->zoneid)["in"].") via ".$interface->if ;
+                if (count($interface) > 0) {
+                    $interface = $interface[0];
+                    // authenticated users ( table 1 + 2 )
+                    $this->rules[] = "add " . (3000 + ($zone->zoneid * 10) + 1) . " skipto " . ((($zone->zoneid * 1000) + 10000) + 1) . " ip from table(" . $this->getAuthUsersTables($zone->zoneid)["in"] . ") to any via " . $interface->if;
+                    $this->rules[] = "add " . (3000 + ($zone->zoneid * 10) + 2) . " skipto " . ((($zone->zoneid * 1000) + 10000) + 1) . " ip from any to table(" . $this->getAuthUsersTables($zone->zoneid)["in"] . ") via " . $interface->if;
 
-                // authenticated hosts ( table 3 + 4 )
-                $this->rules[] = "add ".(3000+($zone->zoneid*10)+3)." skipto ".((($zone->zoneid*1000)+10000)+1)." ip from table(".$this->getAuthIPTables($zone->zoneid)["in"].") to any via ".$interface->if ;
-                $this->rules[] = "add ".(3000+($zone->zoneid*10)+4)." skipto ".((($zone->zoneid*1000)+10000)+1)." ip from any to table(".$this->getAuthIPTables($zone->zoneid)["in"].") via ".$interface->if ;
+                    // authenticated hosts ( table 3 + 4 )
+                    $this->rules[] = "add " . (3000 + ($zone->zoneid * 10) + 3) . " skipto " . ((($zone->zoneid * 1000) + 10000) + 1) . " ip from table(" . $this->getAuthIPTables($zone->zoneid)["in"] . ") to any via " . $interface->if;
+                    $this->rules[] = "add " . (3000 + ($zone->zoneid * 10) + 4) . " skipto " . ((($zone->zoneid * 1000) + 10000) + 1) . " ip from any to table(" . $this->getAuthIPTables($zone->zoneid)["in"] . ") via " . $interface->if;
 
-                // authenticated mac addresses ( table 5 + 6 )
-                $this->rules[] = "add ".(3000+($zone->zoneid*10)+5)." skipto ".((($zone->zoneid*1000)+10000)+1)." ip from table(".$this->getAuthMACTables($zone->zoneid)["in"].") to any via ".$interface->if ;
-                $this->rules[] = "add ".(3000+($zone->zoneid*10)+6)." skipto ".((($zone->zoneid*1000)+10000)+1)." ip from any to table(".$this->getAuthMACTables($zone->zoneid)["in"].") via ".$interface->if ;
+                    // authenticated mac addresses ( table 5 + 6 )
+                    $this->rules[] = "add " . (3000 + ($zone->zoneid * 10) + 5) . " skipto " . ((($zone->zoneid * 1000) + 10000) + 1) . " ip from table(" . $this->getAuthMACTables($zone->zoneid)["in"] . ") to any via " . $interface->if;
+                    $this->rules[] = "add " . (3000 + ($zone->zoneid * 10) + 6) . " skipto " . ((($zone->zoneid * 1000) + 10000) + 1) . " ip from any to table(" . $this->getAuthMACTables($zone->zoneid)["in"] . ") via " . $interface->if;
 
-//                TODO: solve dummynet kernel issue on outgoing traffic
-//                // dummynet 1,2
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+1)." pipe tablearg ip from table(".($table_id+1).") to any in via ".$interface->if ;
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+2)." pipe tablearg ip from any to table(".($table_id+2).") out via ".$interface->if ;
-//
-//                // dummynet 3,4
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+3)." pipe tablearg ip from table(".($table_id+3).") to any in via ".$interface->if ;
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+4)." pipe tablearg ip from table(".($table_id+3).") to any out via ".$interface->if ;
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+5)." pipe tablearg ip from any to table(".($table_id+4).") in via ".$interface->if ;
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+6)." pipe tablearg ip from any to table(".($table_id+4).") out via ".$interface->if ;
+                    //                TODO: solve dummynet kernel issue on outgoing traffic
+                    //                // dummynet 1,2
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+1)." pipe tablearg ip from table(".($table_id+1).") to any in via ".$interface->if ;
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+2)." pipe tablearg ip from any to table(".($table_id+2).") out via ".$interface->if ;
+                    //
+                    //                // dummynet 3,4
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+3)." pipe tablearg ip from table(".($table_id+3).") to any in via ".$interface->if ;
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+4)." pipe tablearg ip from table(".($table_id+3).") to any out via ".$interface->if ;
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+5)." pipe tablearg ip from any to table(".($table_id+4).") in via ".$interface->if ;
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+6)." pipe tablearg ip from any to table(".($table_id+4).") out via ".$interface->if ;
 
-//                // dummynet 5,6
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+7)." pipe tablearg ip from table(".($table_id+5).") to any in via ".$interface->if ;
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+8)." pipe tablearg ip from table(".($table_id+5).") to any out via ".$interface->if ;
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+9)." pipe tablearg ip from any to table(".($table_id+6).") in via ".$interface->if ;
-//                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+10)." pipe tablearg ip from any to table(".($table_id+6).") out via ".$interface->if ;
+                    //                // dummynet 5,6
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+7)." pipe tablearg ip from table(".($table_id+5).") to any in via ".$interface->if ;
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+8)." pipe tablearg ip from table(".($table_id+5).") to any out via ".$interface->if ;
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+9)." pipe tablearg ip from any to table(".($table_id+6).") in via ".$interface->if ;
+                    //                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+10)." pipe tablearg ip from any to table(".($table_id+6).") out via ".$interface->if ;
 
-                // statistics for this zone, placeholder to jump to
-                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+1)." count ip from any to any via ".$interface->if ;
+                    // statistics for this zone, placeholder to jump to
+                    $this->rules[] = "add " . ((($zone->zoneid * 1000) + 10000) + 1) . " count ip from any to any via " . $interface->if;
 
-                // jump to accounting section
-                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+998)." skipto 30000 all from any to any via ".$interface->if ;
-                $this->rules[] = "add ".((($zone->zoneid*1000)+10000)+999)." deny all from any to any not via ".$interface->if ;
+                    // jump to accounting section
+                    $this->rules[] = "add " . ((($zone->zoneid * 1000) + 10000) + 998) . " skipto 30000 all from any to any via " . $interface->if;
+                    $this->rules[] = "add " . ((($zone->zoneid * 1000) + 10000) + 999) . " deny all from any to any not via " . $interface->if;
 
+                }
             }
         }
 
@@ -223,15 +225,17 @@ class Rules {
         $this->rules[] = "# redirect non-authenticated clients to captive portal @ local port ".$forward_port." + zoneid  ";
         $this->rules[] = "#=========================================================================================================";
         foreach( $this->config->object()->captiveportal->children()  as $cpzonename => $zone ){
-            // search interface
-            $interface = $zone->interface->xpath("//".$zone->interface);
-            if (count($interface) > 0){
-                $interface = $interface[0]  ;
-                if ($interface->ipaddr != null){
-                    // add forward rule to this zone's http instance @ $forward_port + $zone->zoneid
-                    $this->rules[] ="add ".(5000+$zone->zoneid)." fwd 127.0.0.1,".($forward_port + $zone->zoneid )." tcp from any to any dst-port 80 in via ".$interface->if;
-                }
+            if (isset($zone->enable)) {
+                // search interface
+                $interface = $zone->interface->xpath("//".$zone->interface);
+                if (count($interface) > 0){
+                    $interface = $interface[0]  ;
+                    if ($interface->ipaddr != null){
+                        // add forward rule to this zone's http instance @ $forward_port + $zone->zoneid
+                        $this->rules[] ="add ".(5000+$zone->zoneid)." fwd 127.0.0.1,".($forward_port + $zone->zoneid )." tcp from any to any dst-port 80 in via ".$interface->if;
+                    }
 
+                }
             }
         }
     }
@@ -257,11 +261,13 @@ class Rules {
         $cpinterfaces = [];
         # find all cp interfaces
         foreach( $this->config->object()->captiveportal->children()  as $cpzonename => $zone ) {
-            // search interface
-            $interface = $zone->interface->xpath("//" . $zone->interface);
-            if (count($interface) > 0) {
-                $interface = $interface[0];
-                $cpinterfaces[$interface->if->__toString()] = 1;
+            if (isset($zone->enable)) {
+                // search interface
+                $interface = $zone->interface->xpath("//" . $zone->interface);
+                if (count($interface) > 0) {
+                    $interface = $interface[0];
+                    $cpinterfaces[$interface->if->__toString()] = 1;
+                }
             }
 
         }
