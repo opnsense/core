@@ -651,7 +651,7 @@ class CPClient {
 
                     // if session timeout is reached, disconnect
                     if (is_numeric($client->session_timeout) && $client->session_timeout > 0 ) {
-                        if (((time() - $client->allow_time) / 60) > $client->session_timeout) {
+                        if (((time() - $client->allow_time) ) > $client->session_timeout) {
                             $this->disconnect($cpzonename, $client->sessionid);
                             $this->logportalauth($cpzonename, $client->username, $client->mac, $client->ip, $status="SESSION TIMEOUT");
                             continue;

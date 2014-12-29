@@ -221,17 +221,6 @@ function voucher_expire($voucher_received) {
 	$cpdb = new OPNsense\CaptivePortal\DB($cpzone);
 	$cpc = new OPNsense\CaptivePortal\CPClient();
 
-	// XMLRPC Call over to the master Voucher node
-	if(!empty($config['voucher'][$cpzone]['vouchersyncdbip'])) {
-		$syncip   = $config['voucher'][$cpzone]['vouchersyncdbip'];
-		$syncport = $config['voucher'][$cpzone]['vouchersyncport'];
-		$syncpass = $config['voucher'][$cpzone]['vouchersyncpass'];
-		$vouchersyncusername = $config['voucher'][$cpzone]['vouchersyncusername'];
-		xmlrpc_sync_voucher_expire($voucher_received, $syncip, $syncport, $syncpass, $vouchersyncusername);
-	}
-
-	$voucherlck = lock("voucher{$cpzone}", LOCK_EX);
-
 	// read rolls into assoc array with rollid as key and minutes as value
 	$tickets_per_roll = array();
 	$minutes_per_roll = array();
@@ -316,7 +305,6 @@ function voucher_expire($voucher_received) {
 	unset($cpdb);
 	unset($cpc);
 
-	unlock($voucherlck);
 
 	return true;
 }
@@ -333,17 +321,6 @@ function voucher_auth($voucher_received, $test = 0) {
 
 	if (!isset($config['voucher'][$cpzone]['enable']))
 		return 0;
-
-	// XMLRPC Call over to the master Voucher node
-	if(!empty($config['voucher'][$cpzone]['vouchersyncdbip'])) {
-		$syncip   = $config['voucher'][$cpzone]['vouchersyncdbip'];
-		$syncport = $config['voucher'][$cpzone]['vouchersyncport'];
-		$syncpass = $config['voucher'][$cpzone]['vouchersyncpass'];
-		$vouchersyncusername = $config['voucher'][$cpzone]['vouchersyncusername'];
-		$remote_time_used = xmlrpc_sync_used_voucher($voucher_received, $syncip, $syncport, $syncpass, $vouchersyncusername);
-	}
-
-	$voucherlck = lock("voucher{$cpzone}", LOCK_EX);
 
 	// read rolls into assoc array with rollid as key and minutes as value
 	$tickets_per_roll = array();
@@ -429,7 +406,6 @@ function voucher_auth($voucher_received, $test = 0) {
 		} else {
 			$test_result[] = sprintf(gettext("Access granted for %d Minutes in total."),$total_minutes);
 		}
-		unlock($voucherlck);
 
 		return $test_result;
 	}
@@ -438,18 +414,9 @@ function voucher_auth($voucher_received, $test = 0) {
 	// Discussion: we could return the time remaining for good vouchers, but then
 	// the user wouldn't know that he used at least one invalid voucher.
 	if ($error) {
-		unlock($voucherlck);
 		if ($total_minutes > 0)     // probably not needed, but want to make sure
 			$total_minutes = 0;     // we only report -1 (expired) or 0 (no access)
 		return $total_minutes;       // well, at least one voucher had errors. Say NO ACCESS
-	}
-
-	// If we did a XMLRPC sync earlier check the timeleft
-	if (!empty($config['voucher'][$cpzone]['vouchersyncdbip'])) {
-		if (!is_null($remote_time_used))
-			$total_minutes = $remote_time_used;
-		else if ($remote_time_used < $total_minutes)
-			$total_minutes -= $remote_time_used;
 	}
 
 	// All given vouchers were valid and this isn't simply a test.
@@ -482,7 +449,6 @@ function voucher_auth($voucher_received, $test = 0) {
 	/* Triger a sync of the vouchers on config */
 	send_event("service sync vouchers");
 
-	unlock($voucherlck);
 
 	return $total_minutes;
 }

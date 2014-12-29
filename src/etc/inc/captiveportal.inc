@@ -119,7 +119,6 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
     $dwfaultbw_down = isset($config['captiveportal'][$cpzone]['bwdefaultdn']) ? $config['captiveportal'][$cpzone]['bwdefaultdn'] : 0;
     $bw_up = isset($attributes['bw_up']) ? round(intval($attributes['bw_up'])/1000, 2) : $dwfaultbw_up;
     $bw_down = isset($attributes['bw_down']) ? round(intval($attributes['bw_down'])/1000, 2) : $dwfaultbw_down;
-    $session_terminate_time = (!empty($attributes['session_terminate_time'])) ? $attributes['session_terminate_time'] : 'NULL';
     $interim_interval = (!empty($attributes['interim_interval'])) ? $attributes['interim_interval'] : 'NULL';
 
     $session_timeout = 0 ;
@@ -127,7 +126,8 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
         $session_timeout = $attributes['session_timeout'] ;
     }
     elseif ( is_numeric($config['captiveportal'][$cpzone]["timeout"]) ){
-        $session_timeout = $config['captiveportal'][$cpzone]["timeout"];
+        // calculate to seconds for timeout parameters ( config in minutes )
+        $session_timeout = $config['captiveportal'][$cpzone]["timeout"] * 60 ;
     }
 
     $idle_timeout = 0 ;
@@ -135,8 +135,16 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
         $idle_timeout = $attributes['idle_timeout'] ;
     }
     elseif ( is_numeric($config['captiveportal'][$cpzone]["idletimeout"]) ){
-        $idle_timeout = $config['captiveportal'][$cpzone]["idletimeout"];
+        // calculate to seconds for timeout parameters ( config in minutes )
+        $idle_timeout = $config['captiveportal'][$cpzone]["idletimeout"] * 60 ;
     }
+
+
+    $session_terminate_time = 0;
+    if ( array_key_exists("session_timeout",$attributes ) ) {
+        $session_terminate_time = $attributes['session_terminate_time'] ;
+    }
+
 
 
     if ($attributes['voucher']) {
@@ -146,11 +154,11 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
             // user is already connected, disconnect old session
             $cpc->disconnect($cpzone, $client->sessionid);
 
-            // calculate new session end time for this voucher
-            $session_terminate_time = $client->allow_time + $client->session_timeout - time() ;
+            // calculate new session end time for this voucher ( session connection time + timeout - now, correct with 1 second to trap exact cleanup hit)
+            $session_terminate_time = $client->allow_time + $client->session_timeout - time() - 1;
         }
 
-        if ($session_terminate_time <= 0) {
+        if ($session_terminate_time < 0) {
             // no time left for voucher
             return 0;
         }
