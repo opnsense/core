@@ -414,19 +414,19 @@ if(count($pools) > 0) {
 							                echo "<td class=\"listr\">{$fspans}{$data['act']}{$fspane}</td>\n";
 							                echo "<td valign=\"middle\">&nbsp;";
 									if ($data['type'] == "dynamic") {
-										echo "<a href=\"services_dhcp_edit.php?if={$data['if']}&amp;mac={$data['mac']}&amp;hostname={$data['hostname']}\">";
-										echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_plus.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"" . gettext("add a static mapping for this MAC address") ."\" alt=\"add\" /></a>&nbsp;\n";
+										echo "<a class=\"btn btn-default btn-xs\" href=\"services_dhcp_edit.php?if={$data['if']}&amp;mac={$data['mac']}&amp;hostname={$data['hostname']}\">";
+										echo "<span class=\"glyphicon glyphicon-plus\" title=\"" . gettext("add a static mapping for this MAC address") ."\" alt=\"add\" ></span></a>&nbsp;\n";
 									} else {
-										echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_plus_mo.gif\" width=\"17\" height=\"17\" border=\"0\" alt=\"add\" />&nbsp;\n";
+										echo "<span class=\"glyphicon glyphicon-plus\" alt=\"add\"></span>&nbsp;\n";
 									}
 
-							                echo "<a href=\"services_wol_edit.php?if={$data['if']}&amp;mac={$data['mac']}&amp;descr={$data['hostname']}\">";
-									echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_wol_all.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"" . gettext("add a Wake on LAN mapping for this MAC address") ."\" alt=\"add\" /></a>&nbsp;\n";
+							                echo "<a class=\"btn btn-default btn-xs\" href=\"services_wol_edit.php?if={$data['if']}&amp;mac={$data['mac']}&amp;descr={$data['hostname']}\">";
+									echo "<span class=\"glyphicon glyphicon-flash\" title=\"" . gettext("add a Wake on LAN mapping for this MAC address") ."\" alt=\"add\"></span></a>&nbsp;\n";
 
 									/* Only show the button for offline dynamic leases */
 									if (($data['type'] == "dynamic") && ($data['online'] != "online")) {
-										echo "<a href=\"status_dhcp_leases.php?deleteip={$data['ip']}&amp;all=" . htmlspecialchars($_GET['all']) . "\">";
-										echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_x.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"" . gettext("delete this DHCP lease") . "\" alt=\"delete\" /></a>&nbsp;\n";
+										echo "<a class=\"btn btn-default btn-xs\" href=\"status_dhcp_leases.php?deleteip={$data['ip']}&amp;all=" . htmlspecialchars($_GET['all']) . "\">";
+										echo "<span class=\"glyphicon glyphicon-remove\" title=\"" . gettext("delete this DHCP lease") . "\" alt=\"delete\" ></span></a>&nbsp;\n";
 									}
 							                echo "</td></tr>\n";
 								}
