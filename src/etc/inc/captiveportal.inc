@@ -140,7 +140,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
 
 
     if ($attributes['voucher']) {
-        $db = new OPNsense\Captiveportal\DB($cpzone);
+        $db = new OPNsense\CaptivePortal\DB($cpzone);
         $clients  = $db->listClients(array("username"=>$username), null, null);
         foreach ($clients as $client) {
             // user is already connected, disconnect old session
@@ -876,7 +876,7 @@ function captiveportal_radius_stop_all() {
 
     $radiusservers = captiveportal_get_radius_servers();
     if (!empty($radiusservers)) {
-        $cpdb = new OPNsense\Captiveportal\DB($cpzone);
+        $cpdb = new OPNsense\CaptivePortal\DB($cpzone);
 
         $clients  = $cpdb->listClients(array());
 

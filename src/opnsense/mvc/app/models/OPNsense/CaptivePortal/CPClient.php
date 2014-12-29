@@ -544,7 +544,7 @@ class CPClient {
             $session_data["pipeno_in"] = $pipeno_in;
             $session_data["pipeno_out"] = $pipeno_out;
             $session_data["username"]=\SQLite3::escapeString($username);
-            $session_data["bpassword"] =base64_encode($password);
+            $session_data["bpassword"] = base64_encode($password);
             $session_data["session_timeout"] = $session_timeout;
             $session_data["idle_timeout"] = $idle_timeout;
             $session_data["session_terminate_time"] = $session_terminate_time;
