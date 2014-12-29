@@ -91,8 +91,12 @@ if (!empty($cpzone)) {
 	}
 
         $cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
-        
-        $accounting_info =  $cpclient_handle->list_accounting();        
+        if ($_GET['showact']) {
+            $accounting_info =  $cpclient_handle->list_accounting();        
+        }
+        else {
+            $accounting_info = array() ;
+        }
 }
 else {
     $cpdb = array() ;
