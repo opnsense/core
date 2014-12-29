@@ -37,5 +37,5 @@ if [ "$pkg_running" == "" ]; then
 else
 	echo 'Upgrade already in progress'
 	echo '***DONE***'
-	/usr/local/opnsense/scripts/pkg_updatecheck.sh&
+	/usr/local/opnsense/scripts/pkg_updatecheck.sh
 fi
