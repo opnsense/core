@@ -101,7 +101,7 @@ function captiveportal_remove_entries($remove) {
 }
 
 function portal_allow($clientip,$clientmac,$username,$password = null, $attributes = null, $pipeno = null, $radiusctx = null)  {
-    global $cpzone ,$type,$g;
+    global $config, $cpzone ,$type,$g;
 
     $cpc = new OPNsense\CaptivePortal\CPClient();
 
@@ -119,10 +119,25 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
     $dwfaultbw_down = isset($config['captiveportal'][$cpzone]['bwdefaultdn']) ? $config['captiveportal'][$cpzone]['bwdefaultdn'] : 0;
     $bw_up = isset($attributes['bw_up']) ? round(intval($attributes['bw_up'])/1000, 2) : $dwfaultbw_up;
     $bw_down = isset($attributes['bw_down']) ? round(intval($attributes['bw_down'])/1000, 2) : $dwfaultbw_down;
-    $session_timeout = (!empty($attributes['session_timeout'])) ? $attributes['session_timeout'] : 'NULL';
-    $idle_timeout = (!empty($attributes['idle_timeout'])) ? $attributes['idle_timeout'] : 'NULL';
     $session_terminate_time = (!empty($attributes['session_terminate_time'])) ? $attributes['session_terminate_time'] : 'NULL';
     $interim_interval = (!empty($attributes['interim_interval'])) ? $attributes['interim_interval'] : 'NULL';
+
+    $session_timeout = 0 ;
+    if ( array_key_exists("session_timeout",$attributes ) ){
+        $session_timeout = $attributes['session_timeout'] ;
+    }
+    elseif ( is_numeric($config['captiveportal'][$cpzone]["timeout"]) ){
+        $session_timeout = $config['captiveportal'][$cpzone]["timeout"];
+    }
+
+    $idle_timeout = 0 ;
+    if ( array_key_exists("idle_timeout",$attributes ) ){
+        $idle_timeout = $attributes['idle_timeout'] ;
+    }
+    elseif ( is_numeric($config['captiveportal'][$cpzone]["idletimeout"]) ){
+        $idle_timeout = $config['captiveportal'][$cpzone]["idletimeout"];
+    }
+
 
     if ($attributes['voucher']) {
         $db = new OPNsense\Captiveportal\DB($cpzone);
@@ -264,9 +279,9 @@ function get_default_captive_portal_html() {
     global $config, $g, $cpzone;
 
     $htmltext = <<<EOD
-<html>
-<body>
-<form method="post" action="\$PORTAL_ACTION\$">
+<html> 
+<body> 
+<form method="post" action="\$PORTAL_ACTION\$"> 
     <input name="redirurl" type="hidden" value="\$PORTAL_REDIRURL\$">
     <input name="zone" type="hidden" value="\$PORTAL_ZONE\$">
     <center>
@@ -347,7 +362,7 @@ EOD;
     </table>
     </center>
 </form>
-</body>
+</body> 
 </html>
 
 EOD;
@@ -658,7 +673,7 @@ function captiveportal_init_webgui_zone($cpcfg) {
 }
 
 
-/*
+/* 
  * Remove clients that have been around for longer than the specified amount of time
  * db file structure:
  * timestamp,ipfw_rule_no,clientip,clientmac,username,sessionid,password,session_timeout,idle_timeout,session_terminate_time,interim_interval
@@ -680,7 +695,7 @@ function captiveportal_prune_old() {
     }else{
         // cleanup sessions if radius accounting is enable
         // TODO: this code needs a rewrite, probably the easiest thing todo is update the zone administration and run
-        //		 the normal cleanup (portal_cleanup_sessions) to detach both processes
+        // 		 the normal cleanup (portal_cleanup_sessions) to detach both processes
         //
         $vcpcfg = $config['voucher'][$cpzone];
 
