@@ -81,6 +81,7 @@ function clientcmp($a, $b) {
 
 if (!empty($cpzone)) {
         $cpdb_handle = new OPNsense\CaptivePortal\DB($cpzone);
+        $cpclient_handle = new OPNsense\CaptivePortal\CPClient(); 
 
         $order = "";
 	if ($_GET['order']) {
@@ -90,7 +91,8 @@ if (!empty($cpzone)) {
 	}
 
         $cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
-
+        
+        $accounting_info =  $cpclient_handle->list_accounting();        
 }
 else {
     $cpdb = array() ;
@@ -193,7 +195,8 @@ $mac_man = load_mac_manufacturer_table();
 								    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent->allow_time));?></td>
 									<?php if ($_GET['showact']):
 									//$last_act = captiveportal_get_last_activity($cpent->ip, $cpent->mac);
-									$last_act=0;
+									if ( array_key_exists($cpent->ip,$accounting_info) ) $last_act = $accounting_info[$cpent->ip]['last_accessed'] ; 
+									else $last_act=0;
 									?>
 								    <td class="listr"><?php if ($last_act != 0) echo htmlspecialchars(date("m/d/Y H:i:s", $last_act));?></td>
 									<?php else: ?>
