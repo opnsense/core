@@ -1,6 +1,6 @@
 <?php
 /*
-    gmirror_status.widget.php
+    Copyritgh (C) 2014 Deciso B.V.
     Copyright (C) 2009-2010 Jim Pingle
 
     Redistribution and use in source and binary forms, with or without

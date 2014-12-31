@@ -1,9 +1,7 @@
 <?php
 /*
-	guiconfig.inc
-	by Scott Ullrich, Copyright 2004, All rights reserved.
-	originally based on of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014 Deciso B.V. 
+	Copyright (C) 2004 Scott Ullrich
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -27,9 +25,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-*/
-/*
-	pfSense_MODULE:	base
 */
 
 /* Include authentication routines */
@@ -744,14 +739,6 @@ function display_widget_tabs(& $tab_array) {
 		echo "</div>";
 	}
 
-	echo "<script type=\"text/javascript\">";
-	echo "\n//<![CDATA[\n";
-	echo "NiftyCheck();\n";
-	echo "Rounded(\"div.{$tabclass}-tabactive\",\"top\",\"#CCCCCC\",\"#EEEEEE\",\"smooth\");\n";
-	echo "Rounded(\"div.{$tabclass}-tabdeactive\",\"top\",\"#CCCCCC\",\"#777777\",\"smooth\");\n";
-	echo "//]]>\n";
-	echo "</script>";
-	echo "</div>";
 }
 
 

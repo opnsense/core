@@ -1,12 +1,7 @@
 <?php
 /*
-	captive_portal_status.widget.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2007 Sam Wenham
-	All rights reserved.
-
-	status_captiveportal.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 

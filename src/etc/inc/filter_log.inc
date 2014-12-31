@@ -1,10 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	filter_log.inc
-	part of pfSesne by Scott Ullrich
-	originally based on m0n0wall (http://m0n0.ch/wall)
-
+	Copyritgh (C) 2014 Deciso B.V. 
+	Copyright (C) Scott Ullrich
 	Copyright (C) 2009 Jim Pingle <myfirstname>@<mylastname>.org
 	All rights reserved.
 
@@ -28,10 +25,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-*/
-/*
-	pfSense_BUILDER_BINARIES:	/usr/sbin/fifolog_reader	/usr/bin/tail	/usr/local/sbin/clog
-	pfSense_MODULE:	filter
 */
 
 require 'config.inc';
@@ -361,13 +354,14 @@ function find_rule_by_number_buffer($rulenum,  $type){
 }
 
 function find_action_image($action) {
+	// This function will now return a glyphicon class
 	global $g;
 	if ((strstr(strtolower($action), "p")) || (strtolower($action) == "rdr"))
-		return "/themes/{$g['theme']}/images/icons/icon_pass.gif";
+		return "glyphicon glyphicon-play text-success";
 	else if(strstr(strtolower($action), "r"))
-		return "/themes/{$g['theme']}/images/icons/icon_reject.gif";
+		return "glyphicon glyphicon-remove text-warning";
 	else
-		return "/themes/{$g['theme']}/images/icons/icon_block.gif";
+		return "glyphicon glyphicon-remove text-danger";
 }
 
 /* AJAX specific handlers */

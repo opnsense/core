@@ -1,6 +1,4 @@
-/* $Id$ */
 /*
-    ticker.js
     Copyright (C) 2012 Marcello Coutinho
     Copyright (C) 2012 Carlos Cesario - carloscesario@gmail.com
     All rights reserved.
@@ -30,9 +28,8 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 
-	pfSense_MODULE:	utils
-
 */
+
 function notice_action(action,msgid) {
 	jQuery.ajax({
 		type: 'post',

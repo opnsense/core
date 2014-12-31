@@ -1,13 +1,9 @@
 <?php
 /*
-	Copyright 2010 Jim Pingle
-	Portions copied from status_lb_pool.php, status_lb_vs.php, and vslb.inc:
+	Copyritgh (C) 2014 Deciso B.V.
+	Copyright (C) 2010 Jim Pingle
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
 	Copyright (C) 2005-2008 Bill Marquette
-
-	Part of pfSense widgets (https://www.pfsense.org)
-	originally based on m0n0wall (http://m0n0.ch/wall)
-
 	Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
 	and Jonathan Watt <jwatt@jwatt.org>.
 	All rights reserved.
@@ -62,12 +58,12 @@ if (!$nentries)
 
 ?>
 
-<table bgcolor="#990000" width="100%" border="0" cellspacing="0" cellpadding="0" summary="load balancer">
-	<tr>
+<table class="table table-stiped" bgcolor="#990000" width="100%" border="0" cellspacing="0" cellpadding="0" summary="load balancer">
+	<thead>
 		<td width="10%" class="listhdrr">Server</td>
 		<td width="10%" class="listhdrr">Pool</td>
 		<td width="30%" class="listhdr">Description</td>
-	</tr>
+	</thead>
 	<?php $i = 0; foreach ($a_vs as $vsent): ?>
 	<tr>
 		<?php

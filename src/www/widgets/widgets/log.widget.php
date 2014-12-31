@@ -1,10 +1,7 @@
 <?php
 /*
-	$Id$
-	Copyright 2007 Scott Dale
-	Part of pfSense widgets (https://www.pfsense.org)
-	originally based on m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2007 Scott Dale
 	Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
 	and Jonathan Watt <jwatt@jwatt.org>.
 	All rights reserved.
@@ -123,16 +120,16 @@ function format_log_line(row) {
 //]]>
 </script>
 <script src="/javascript/filter_log.js" type="text/javascript"></script>
-<input type="hidden" id="log-config" name="log-config" value="" />
 
+<input type="hidden" id="log-config" name="log-config" value="" />
 <div id="log-settings" class="widgetconfigdiv" style="display:none;">
 	<form action="/widgets/widgets/log.widget.php" method="post" name="iforma">
-		Number of lines to display:
-		<select name="filterlogentries" class="formfld unknown" id="filterlogentries">
-		<?php for ($i = 1; $i <= 20; $i++) { ?>
-			<option value="<?php echo $i;?>" <?php if ($nentries == $i) echo "selected=\"selected\"";?>><?php echo $i;?></option>
-		<?php } ?>
-		</select>
+				Number of lines to display:
+				<select name="filterlogentries" class="formfld unknown" id="filterlogentries">
+				<?php for ($i = 1; $i <= 20; $i++) { ?>
+					<option value="<?php echo $i;?>" <?php if ($nentries == $i) echo "selected=\"selected\"";?>><?php echo $i;?></option>
+				<?php } ?>
+				</select>
 
 <?php
 		$Include_Act = explode(" ", $nentriesacts);
@@ -141,8 +138,7 @@ function format_log_line(row) {
 		<input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass',   $Include_Act)) echo "checked=\"checked\""; ?> /> Pass
 		<input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block',  $Include_Act)) echo "checked=\"checked\""; ?> /> Block
 		<input id="actreject" name="actreject" type="checkbox" value="Reject" <?php if (in_arrayi('Reject', $Include_Act)) echo "checked=\"checked\""; ?> /> Reject
-		<br />
-		Interfaces:
+			Interfaces:
 		<select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="formselect">
 			<option value="All">ALL</option>
 <?php
@@ -158,12 +154,11 @@ function format_log_line(row) {
 		unset($Include_Act);
 ?>
 		</select>
-
-		<input id="submita" name="submita" type="submit" class="formbtn" value="Save" />
+		<input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="Save" />
 	</form>
 </div>
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0" style="table-layout: fixed;" summary="logs">
+<table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" style="table-layout: fixed;" summary="logs">
 	<colgroup>
 		<col style='width:  7%;' />
 		<col style='width: 23%;' />
@@ -190,7 +185,7 @@ function format_log_line(row) {
 		<tr class="<?=$evenRowClass?>">
 			<td class="listMRlr nowrap" align="center">
 			<a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);">
-			<img border="0" src="<?php echo find_action_image($filterent['act']);?>" width="11" height="11" alt="<?php echo $filterent['act'];?>" title="<?php echo $filterent['act'];?>" />
+			<span class="<?php echo find_action_image($filterent['act']);?>" alt="<?php echo $filterent['act'];?>" title="<?php echo $filterent['act'];?>" ></span>
 			</a>
 			</td>
 			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['time']);?>"><?php echo substr(htmlspecialchars($filterent['time']),0,-3);?></td>

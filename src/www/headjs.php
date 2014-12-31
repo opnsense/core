@@ -1,7 +1,6 @@
 <?php
 /*
-    headjs.php
-
+    Copyright (C) 2014 Deciso B.V.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
 
@@ -23,27 +22,19 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	header
-*/
 
-##|+PRIV
-##|*IDENT=page-requiredforjavascript
-##|*NAME=Required for javascript page
-##|*DESCR=Allow access to the 'Required for javascript' page.
-##|*MATCH=headjs.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 
 function getHeadJS() {
   global $g, $use_loader_tab_gif;
 
+  /*
   if(!$use_loader_tab_gif)
     $loader_gif = "/themes/{$g['theme']}/images/misc/loader.gif";
   else
     $loader_gif = "/themes/{$g['theme']}/images/misc/loader_tab.gif";
-
+   */
   $headjs = "
     var input_errors = '';
     jQuery(document).ready(init);
@@ -63,7 +54,7 @@ function getHeadJS() {
 
         jQuery(\"#submit\").click(submit_form);
         jQuery('#submit').click(function() {return false;});
-        var to_insert = \"<div style='visibility:hidden' id='loading' name='loading'><img src='{$loader_gif}' alt='loader' \/><\/div>\";
+        var to_insert = \"<div style='visibility:hidden' id='loading' name='loading'><span class='glyphicon glyphicon-refresh' alt='loader'></span><\/div>\";
         jQuery('#submit').before(to_insert);
       }
     }
@@ -120,9 +111,6 @@ function getHeadJS() {
       var message_html;
 
       if (message == '') {
-        NiftyCheck();
-        Rounded(\"div#redbox\",\"all\",\"#FFF\",\"#990000\",\"smooth\");
-        Rounded(\"td#blackbox\",\"all\",\"#FFF\",\"#000000\",\"smooth\");
 
         if(jQuery('#submit'))
           jQuery('#submit').css('visibility','visible');
@@ -137,7 +125,7 @@ function getHeadJS() {
       message_html = '<table height=\"32\" width=\"100%\" summary=\"redbox\"><tr><td>';
       message_html += '<div style=\"background-color:#990000\" id=\"redbox\">';
       message_html += '<table width=\"100%\" summary=\"message\"><tr><td width=\"8%\">';
-      message_html += '<img style=\"vertical-align:center\" src=\"/themes/{$g['theme']}/images/icons/icon_exclam.gif\" width=\"28\" height=\"32\" alt=\"exclamation\" \/>';
+      message_html += '<span class=\"glyphicon glyphicon-exclamation-sign\" style=\"vertical-align:center\"  alt=\"exclamation\" ></span>';
       message_html += '<\/td><td width=\"70%\"><font color=\"white\">';
       message_html += '<b>' + message + '<\/b><\/font><\/td>';
 
@@ -149,10 +137,6 @@ function getHeadJS() {
 
       message_html += '<\/tr><\/table><\/div><\/td><\/table><br \/>';
       jQuery('#inputerrors').html(message_html);
-
-      NiftyCheck();
-      Rounded(\"div#redbox\",\"all\",\"#FFF\",\"#990000\",\"smooth\");
-      Rounded(\"td#blackbox\",\"all\",\"#FFF\",\"#000000\",\"smooth\");
 
       if(jQuery('#submit'))
         jQuery('#submit').css('visibility','visible');

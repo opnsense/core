@@ -1,8 +1,7 @@
 <?php
 /*
-    Original status page code from: services_dyndns.php
+	Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2008 Ermal Luci
-    Edits to convert it to a widget: dyn_dns_status.widget.php
     Copyright (C) 2013 Stanley P. Miller \ stan-qaz
     All rights reserved.
 
@@ -27,10 +26,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/host
-	pfSense_MODULE:	dyndns
-*/
+
 
 $nocsrf = true;
 
