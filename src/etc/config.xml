@@ -364,8 +364,8 @@
 		<!-- <filteringbridge/> -->
 	</bridge>
 	<syslog>
-		<!--
 		<reverse/>
+		<!--
 		<enable/>
 		<remoteserver>xxx.xxx.xxx.xxx</remoteserver>
 		<filter/>
