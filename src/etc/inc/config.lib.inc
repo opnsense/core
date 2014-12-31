@@ -490,13 +490,15 @@ function safe_write_file($file, $content, $force_binary) {
  *   null
  ******/
 /* save the system configuration */
-function write_config($desc="Unknown", $backup = true) {
+function write_config($desc = 'Unknown', $backup = true)
+{
 	global $config, $g;
 
 	if (!empty($_SERVER['REMOTE_ADDR'])) {
-		if (!session_id())
+		if (!session_id()) {
 			@session_start();
-		if (!empty($_SESSION['Username']) && ($_SESSION['Username'] != "admin")) {
+		}
+		if (!empty($_SESSION['Username']) && ($_SESSION['Username'] != 'root')) {
 			$user = getUserEntry($_SESSION['Username']);
 			if (is_array($user) && userHasPrivilege($user, "user-config-readonly")) {
 				session_commit();
@@ -505,11 +507,13 @@ function write_config($desc="Unknown", $backup = true) {
 		}
 	}
 
-	if (!isset($argc))
+	if (!isset($argc)) {
 		session_commit();
+	}
 
-	if($backup)
+	if ($backup) {
 		backup_config();
+	}
 
 	$config['revision'] = make_config_revision_entry($desc);
 
