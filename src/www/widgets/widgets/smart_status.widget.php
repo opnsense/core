@@ -1,7 +1,7 @@
 <?php
 /*
+	Copyright (C) 2014 Deciso B.V.
 	Copyright 2012 mkirbst @ pfSense Forum
-	Part of pfSense widgets (https://www.pfsense.org)
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@ require_once("functions.inc");
 require_once("/usr/local/www/widgets/include/smart_status.inc");
 ?>
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="smart status">
+<table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="smart status">
 	<tr>
 		<td class="widgetsubheader" align="center"><b><?php echo gettext("Drive") ?></b></td>
 		<td class="widgetsubheader" align="center"><b><?php echo gettext("Ident") ?></b></td>

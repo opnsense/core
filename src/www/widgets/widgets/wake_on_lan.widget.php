@@ -1,6 +1,6 @@
 <?php
 /*
-	wake_on_lan.widget.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2010 Yehuda Katz
 
 	Redistribution and use in source and binary forms, with or without

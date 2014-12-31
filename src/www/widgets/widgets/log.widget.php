@@ -124,21 +124,40 @@ function format_log_line(row) {
 <input type="hidden" id="log-config" name="log-config" value="" />
 <div id="log-settings" class="widgetconfigdiv" style="display:none;">
 	<form action="/widgets/widgets/log.widget.php" method="post" name="iforma">
+		    <table class="table table-striped">
+			<tbody>
+				<tr>
+					<td>
 				Number of lines to display:
+					</td>
+				</tr>
+				<tr>
+					<td>
 				<select name="filterlogentries" class="formfld unknown" id="filterlogentries">
 				<?php for ($i = 1; $i <= 20; $i++) { ?>
 					<option value="<?php echo $i;?>" <?php if ($nentries == $i) echo "selected=\"selected\"";?>><?php echo $i;?></option>
 				<?php } ?>
 				</select>
-
+					</td>
+				</tr>
 <?php
 		$Include_Act = explode(" ", $nentriesacts);
 		if ($nentriesinterfaces == "All") $nentriesinterfaces = "";
 ?>
+		<tr>
+			<td>
 		<input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass',   $Include_Act)) echo "checked=\"checked\""; ?> /> Pass
 		<input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block',  $Include_Act)) echo "checked=\"checked\""; ?> /> Block
 		<input id="actreject" name="actreject" type="checkbox" value="Reject" <?php if (in_arrayi('Reject', $Include_Act)) echo "checked=\"checked\""; ?> /> Reject
+			</td>
+		</tr>
+		<tr>
+			<td>
 			Interfaces:
+			</td>
+		</tr>
+		<tr>
+			<td>
 		<select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="formselect">
 			<option value="All">ALL</option>
 <?php
@@ -154,7 +173,15 @@ function format_log_line(row) {
 		unset($Include_Act);
 ?>
 		</select>
+	</td>
+	</tr>
+	<tr>
+		<td>
 		<input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="Save" />
+		</td>
+	</tr>
+	</tbody>
+	</table>
 	</form>
 </div>
 
