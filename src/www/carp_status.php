@@ -26,17 +26,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-##|+PRIV
-##|*IDENT=page-status-carp
-##|*NAME=Status: CARP page
-##|*DESCR=Allow access to the 'Status: CARP' page.
-##|*MATCH=carp_status.php*
-##|-PRIV
-
-/*
-	pfSense_MODULE:	carp
-*/
-
 require_once("guiconfig.inc");
 require_once("globals.inc");
 
@@ -167,15 +156,15 @@ include("head.inc");
 										echo "<tr>";
 										$align = "style=\"vertical-align:middle\"";
 										if($carp_enabled == false) {
-											$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_block.gif\" alt=\"disabled\" />";
+											$icon = "<span {$align} class=\"glyphicon glyphicon-remove text-danger\" alt=\"disabled\" ></span>";
 											$status = "DISABLED";
 										} else {
 											if($status == "MASTER") {
-												$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_pass.gif\" alt=\"master\" />";
+												$icon = "<span {$align} class=\"glyphicon glyphicon-play text-success\" alt=\"master\" ></span>";
 											} else if($status == "BACKUP") {
-												$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_pass_d.gif\" alt=\"backup\" />";
+												$icon = "<span {$align} class=\"glyphicon glyphicon-play text-muted\" alt=\"backup\" ></span>";
 											} else if($status == "INIT") {
-												$icon = "<img {$align} src=\"/themes/".$g['theme']."/images/icons/icon_log.gif\" alt=\"init\" />";
+												$icon = "<span {$align} class=\"glyphicon glyphicon-info-sign\" alt=\"init\" ></span>";
 											}
 										}
 										echo "<td class=\"listlr\" align=\"center\">" . convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$vhid} &nbsp;</td>";

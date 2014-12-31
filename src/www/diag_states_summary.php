@@ -1,9 +1,7 @@
 <?php
 /*
-	diag_states_summary.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2010-2014 Jim Pingle
-
-	Portions borrowed from diag_dump_states.php:
 	Copyright (C) 2005-2009 Scott Ullrich
 	Copyright (C) 2005 Colin Smith
 	All rights reserved.
@@ -29,18 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/pfctl
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-statessummary
-##|*NAME=Diagnostics: States Summary page
-##|*DESCR=Allow access to the 'Diagnostics: States Summary' page.
-##|*MATCH=diag_states_summary.php*
-##|-PRIV
 
 exec("/sbin/pfctl -s state", $states);
 

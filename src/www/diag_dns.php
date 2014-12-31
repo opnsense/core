@@ -26,10 +26,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_MODULE:	dns
-*/
-
 $pgtitle = array(gettext("Diagnostics"),gettext("DNS Lookup"));
 require("guiconfig.inc");
 

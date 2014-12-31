@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	firewall_nat_1to1.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	nat
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-nat-1-1
-##|*NAME=Firewall: NAT: 1:1 page
-##|*DESCR=Allow access to the 'Firewall: NAT: 1:1' page.
-##|*MATCH=firewall_nat_1to1.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");

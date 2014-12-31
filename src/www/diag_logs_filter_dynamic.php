@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -27,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-hidden-nolongerincluded
-##|*NAME=Hidden: No longer included page
-##|*DESCR=Allow access to the 'Hidden: No longer included' page.
-##|*MATCH=diag_logs_filter_dynamic.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("filter_log.inc");

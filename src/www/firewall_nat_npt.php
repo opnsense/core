@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	firewall_nat_npt.php
-	part of pfSense (https://www.pfsense.org)
-
+	Copyritgh (C) 2014 Deciso B.V.
 	Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	nat
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-nat-npt
-##|*NAME=Firewall: NAT: NPT page
-##|*DESCR=Allow access to the 'Firewall: NAT: NPT' page.
-##|*MATCH=firewall_nat_npt.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");

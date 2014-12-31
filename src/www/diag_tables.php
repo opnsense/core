@@ -1,6 +1,6 @@
 <?php
 /*
-	diag_tables.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2010 Jim Pingle
 
 	Portions borrowed from diag_dump_states.php:
@@ -28,18 +28,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/pfctl
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-tables
-##|*NAME=Diagnostics: PF Table IP addresses
-##|*DESCR=Allow access to the 'Diagnostics: Tables' page.
-##|*MATCH=diag_tables.php*
-##|-PRIV
 
 $pgtitle = array(gettext("Diagnostics"), gettext("Tables"));
 $shortcut_section = "aliases";

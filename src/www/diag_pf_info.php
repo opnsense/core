@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2010 Scott Ullrich
@@ -26,18 +25,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/top
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-pf-info
-##|*NAME=Diagnostics: pfInfo
-##|*DESCR=Allows access to the 'Diagnostics: pfInfo' page
-##|*MATCH=diag_pf_info.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

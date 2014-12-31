@@ -55,17 +55,17 @@ if (count($wolcomputers) > 0) {
 		$is_active = exec("/usr/sbin/arp -an |/usr/bin/grep {$wolent['mac']}| /usr/bin/wc -l|/usr/bin/awk '{print $1;}'");
 		if($is_active == 1) {
 			echo '<td class="listr" align="center">' . "\n";
-			echo "<img src=\"/themes/" . $g["theme"] . "/images/icons/icon_pass.gif\" alt=\"pass\" /> " . gettext("Online") . "</td>\n";
+			echo "<span class=\"glyphicon glyphicon-play text-success\" alt=\"pass\" ></span> " . gettext("Online") . "</td>\n";
 		} else {
 			echo '<td class="listbg" align="center">' . "\n";
-			echo "<img src=\"/themes/" . $g["theme"] . "/images/icons/icon_block.gif\" alt=\"block\" />&nbsp;<font color=\"white\">" . gettext("Offline") . "</font></td>\n";
+			echo "<span class=\"glyphicon glyphicon-remove text-danger\" alt=\"block\" ></span> " . gettext("Offline") . "</td>\n";
 		}
 		echo '<td valign="middle" class="list nowrap">';
 		/*if($is_active) { */
 			/* Will always show wake-up button even if pfsense thinks it is awake */
 		/* } else { */
 			echo "<a href='services_wol.php?mac={$wolent['mac']}&amp;if={$wolent['interface']}'> ";
-			echo "<img title='" . gettext("Wake Up") . "' border='0' src='./themes/".$g['theme']."/images/icons/icon_wol_all.gif' alt='wol' /></a>\n";
+			echo "<span class='glyphicon glyphicon-flash' title='" . gettext("Wake Up") . "' border='0' alt='wol' ></span></a>\n";
 		/* } */
 		echo "</td></tr>\n";
 	}

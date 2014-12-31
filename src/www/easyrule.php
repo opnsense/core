@@ -1,7 +1,6 @@
 <?php
 /*
-	easyrule.php
-
+	Copyritgh (C) 2014 Deciso B.V.
 	Copyright (C) 2009-2010 Jim Pingle (jpingle@gmail.com)
 	Originally Sponsored By Anathematic @ pfSense Forums
 	All rights reserved.
@@ -27,16 +26,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	filter
-*/
 
-##|+PRIV
-##|*IDENT=page-firewall-easyrule
-##|*NAME=Firewall: Easy Rule add/status page
-##|*DESCR=Allow access to the 'Firewall: Easy Rule' add/status page.
-##|*MATCH=easyrule.php*
-##|-PRIV
 
 $pgtitle = gettext("Firewall: EasyRule");
 require_once("guiconfig.inc");

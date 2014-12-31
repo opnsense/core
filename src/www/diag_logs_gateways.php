@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -28,17 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-logs-gateways
-##|*NAME=Diagnostics: Logs: System: Gateways page
-##|*DESCR=Allow access to the 'Diagnostics: Logs: System: Gateways' page.
-##|*MATCH=diag_logs_gateways.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

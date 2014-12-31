@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2007 pfSense Project
@@ -28,13 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-ipsecxml
-##|*NAME=Diag IPsec XML page
-##|*DESCR=Allow access to the 'Diag IPsec XML' page.
-##|*MATCH=diag_ipsec_xml.php
-##|-PRIV
 
 global $g;
 

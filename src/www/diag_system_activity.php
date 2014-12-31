@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-    diag_cpu_activity.php
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2008-2009 Scott Ullrich
     All rights reserved.
 
@@ -26,18 +25,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/top
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-system-activity
-##|*NAME=Diagnostics: System Activity
-##|*DESCR=Allows access to the 'Diagnostics: System Activity' page
-##|*MATCH=diag_system_activity.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

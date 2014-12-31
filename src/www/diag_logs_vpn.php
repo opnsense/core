@@ -27,18 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/usr/sbin/fifolog_reader	/usr/local/sbin/clog
-	pfSense_MODULE:	vpn
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-logs-pptpvpn
-##|*NAME=Diagnostics: Logs: VPN page
-##|*DESCR=Allow access to the 'Diagnostics: Logs: VPN' page.
-##|*MATCH=diag_logs_vpn.php*
-##|-PRIV
-
 $pgtitle = array(gettext("Status"), gettext("System logs"), gettext("VPN"));
 require("guiconfig.inc");
 require_once("vpn.inc");

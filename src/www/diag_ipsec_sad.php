@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -27,18 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/setkey
-	pfSense_MODULE:	ipsec
-*/
-
-##|+PRIV
-##|*IDENT=page-status-ipsec-sad
-##|*NAME=Status: IPsec: SAD page
-##|*DESCR=Allow access to the 'Status: IPsec: SAD' page.
-##|*MATCH=diag_ipsec_sad.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require("ipsec.inc");

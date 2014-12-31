@@ -26,18 +26,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ping /sbin/ping6
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-ping
-##|*NAME=Diagnostics: Ping page
-##|*DESCR=Allow access to the 'Diagnostics: Ping' page.
-##|*MATCH=diag_ping.php*
-##|-PRIV
-
 $allowautocomplete = true;
 $pgtitle = array(gettext("Diagnostics"), gettext("Ping"));
 require_once("guiconfig.inc");

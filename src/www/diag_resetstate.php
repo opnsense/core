@@ -1,11 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	diag_resetstate.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -31,16 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-resetstate
-##|*NAME=Diagnostics: Reset state page
-##|*DESCR=Allow access to the 'Diagnostics: Reset state' page.
-##|*MATCH=diag_resetstate.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("filter.inc");

@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	firewall_nat.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
 	All rights reserved.
 
@@ -30,16 +29,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	nat
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-nat-portforward
-##|*NAME=Firewall: NAT: Port Forward page
-##|*DESCR=Allow access to the 'Firewall: NAT: Port Forward' page.
-##|*MATCH=firewall_nat.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");

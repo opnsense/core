@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 - Deciso B.V.
 	Exec+ v1.02-000 - Copyright 2001-2003

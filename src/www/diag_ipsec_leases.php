@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2014 Ermal LUÇi
@@ -26,18 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/ipsec
-	pfSense_MODULE:	ipsec
-*/
-
-##|+PRIV
-##|*IDENT=page-status-ipsec-leases
-##|*NAME=Status: IPsec: Leases page
-##|*DESCR=Allow access to the 'Status: IPsec: Leases' page.
-##|*MATCH=diag_ipsec_leases.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require("ipsec.inc");

@@ -28,18 +28,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/shutdown
-	pfSense_MODULE:	backup
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-backup/restore
-##|*NAME=Diagnostics: Backup/restore page
-##|*DESCR=Allow access to the 'Diagnostics: Backup/restore' page.
-##|*MATCH=diag_backup.php*
-##|-PRIV
-
 /* Allow additional execution time 0 = no limit. */
 ini_set('max_execution_time', '0');
 ini_set('max_input_time', '0');
@@ -359,14 +347,14 @@ if ($_POST) {
 
 					if ($_POST['decrypt']) {
 						if (!tagfile_deformat($data, $data, "config.xml")) {
-							$input_errors[] = gettext("The uploaded file does not appear to contain an encrypted pfsense configuration.");
+							$input_errors[] = gettext("The uploaded file does not appear to contain an encrypted OPNsense configuration.");
 							return 1;
 						}
 						$data = decrypt_data($data, $_POST['decrypt_password']);
 					}
 
 					if(stristr($data, "<m0n0wall>")) {
-						log_error(gettext("Upgrading m0n0wall configuration to pfsense."));
+						log_error(gettext("Upgrading m0n0wall configuration to OPNsense."));
 						/* m0n0wall was found in config.  convert it. */
 						$data = str_replace("m0n0wall", "pfsense", $data);
 						$m0n0wall_upgrade = true;
@@ -512,7 +500,7 @@ if ($_POST) {
 									add_base_packages_menu_items();
 									convert_config();
 									conf_mount_ro();
-									$savemsg = gettext("The m0n0wall configuration has been restored and upgraded to pfSense.");
+									$savemsg = gettext("The m0n0wall configuration has been restored and upgraded to OPNsense.");
 									mark_subsystem_dirty("restore");
 								}
 								if(is_array($config['captiveportal'])) {

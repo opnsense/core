@@ -1,8 +1,6 @@
 <?php
 /*
     Copyright (C) 2014 Deciso B.V.
-    All rights reserved.
-
 	Copyright (C) 2010 Ermal Luçi
 	All rights reserved.
 
@@ -27,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_MODULE:	auth
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-authentication
-##|*NAME=Diagnostics: Authentication page
-##|*DESCR=Allow access to the 'Diagnostics: Authentication' page.
-##|*MATCH=diag_authentication.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("PEAR.inc");
