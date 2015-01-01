@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	interfaces_bridge.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
 	All rights reserved.
 
@@ -27,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/rm
-	pfSense_MODULE:	interfaces_assign
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces-bridge
-##|*NAME=Interfaces: Bridge page
-##|*DESCR=Allow access to the 'Interfaces: Bridge' page.
-##|*MATCH=interfaces_bridge.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

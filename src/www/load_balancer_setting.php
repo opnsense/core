@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	load_balancer_setting.php
-	part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
 	Copyright (C) 2012 Pierre POMES <pierre.pomes@gmail.com>.
 	All rights reserved.
@@ -29,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-services-loadbalancer-setting
-##|*NAME=Services: Load Balancer: setting page
-##|*DESCR=Allow access to the 'Settings: Load Balancer: Settings' page.
-##|*MATCH=load_balancer_setting.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("functions.inc");

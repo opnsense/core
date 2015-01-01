@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-        load_balancer_protocol_edit.php
-        part of pfSense (https://www.pfsense.org/)
-
+  		Copyright (C) 2014-2015 Deciso B.V.
         Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
         All rights reserved.
 
@@ -28,16 +25,7 @@
         ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
         POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	routing
-*/
 
-##|+PRIV
-##|*IDENT=page-services-loadbalancer-relay-protocol-edit
-##|*NAME=Services: Load Balancer: Relay Protocol: Edit page
-##|*DESCR=Allow access to the 'Services: Load Balancer: Relay Protocol: Edit' page.
-##|*MATCH=load_balancer_relay_protocol_edit.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

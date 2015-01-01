@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	interfaces_wireless_edit.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Erik Fonnesbeck
 	All rights reserved.
 
@@ -27,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces-wireless-edit
-##|*NAME=Interfaces: Wireless edit page
-##|*DESCR=Allow access to the 'Interfaces: Wireless : Edit' page.
-##|*MATCH=interfaces_wireless_edit.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

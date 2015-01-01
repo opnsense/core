@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	load_balancer_protocol.php
-	part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-services-loadbalancer-relay-action
-##|*NAME=Services: Load Balancer: Relay Actions page
-##|*DESCR=Allow access to the 'Services: Load Balancer: Relay Actions' page.
-##|*MATCH=load_balancer_relay_action.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("functions.inc");

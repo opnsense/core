@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	firewall_shaper_layer7.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Helder Pereira, André Ribeiro
 	All rights reserved.
 
@@ -26,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/killall
-	pfSense_MODULE:	shaper
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-trafficshaper-layer7
-##|*NAME=Firewall: Traffic Shaper: Layer7 page
-##|*DESCR=Allow access to the 'Firewall: Traffic Shaper: Layer7' page.
-##|*MATCH=firewall_shaper_layer7.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");

@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	firewall_shaper_queues.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004, 2005 Scott Ullrich
 	Copyright (C) 2008 Ermal Luçi
 	All rights reserved.
@@ -27,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/killall
-	pfSense_MODULE:	shaper
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-trafficshaper-queues
-##|*NAME=Firewall: Traffic Shaper: Queues page
-##|*DESCR=Allow access to the 'Firewall: Traffic Shaper: Queues' page.
-##|*MATCH=firewall_shaper_queues.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");

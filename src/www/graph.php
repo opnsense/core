@@ -1,8 +1,6 @@
 <?php
 /*
-	graph.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+  Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004-2006 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
 	and Jonathan Watt <jwatt@jwatt.org>.
 	All rights reserved.
@@ -28,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	graph
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-interfacetraffic
-##|*NAME=Diagnostics: Interface Traffic page
-##|*DESCR=Allow access to the 'Diagnostics: Interface Traffic' page.
-##|*MATCH=graph.php*
-##|-PRIV
 
 require("globals.inc");
 require("guiconfig.inc");

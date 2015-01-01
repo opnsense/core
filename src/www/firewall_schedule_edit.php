@@ -1,10 +1,7 @@
 <?php
 /*
-	firewall_schedule_edit.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -29,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	schedules
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-schedules-edit
-##|*NAME=Firewall: Schedules: Edit page
-##|*DESCR=Allow access to the 'Firewall: Schedules: Edit' page.
-##|*MATCH=firewall_schedule_edit.php*
-##|-PRIV
 
 function schedulecmp($a, $b) {
 	return strcmp($a['name'], $b['name']);

@@ -1,13 +1,9 @@
 <?php
-/* $Id$ */
 /*
-	interfaces.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004-2008 Scott Ullrich
 	Copyright (C) 2006 Daniel S. Haischt.
 	Copyright (C) 2008-2010 Ermal Luçi
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -32,17 +28,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/sbin/arp
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces
-##|*NAME=Interfaces: WAN page
-##|*DESCR=Allow access to the 'Interfaces' page.
-##|*MATCH=interfaces.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
@@ -2004,7 +1989,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 														Initial Interval: <input name="adv_dhcp_pt_initial_interval" type="text" class="form-control unknown" id="adv_dhcp_pt_initial_interval" size="2" value="<?=htmlspecialchars($pconfig['adv_dhcp_pt_initial_interval']);?>" onchange="customdhcpptcheckradiobuton(document.iform.adv_dhcp_pt_values, '');" />
 
 														&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-														<input name="adv_dhcp_pt_values" type="radio" value="pfSense"	id="customdhcpptpfsensedefaults"	onclick="customdhcpptsetvalues(this, iform);" />pfSense Default &nbsp;
+														<input name="adv_dhcp_pt_values" type="radio" value="pfSense"	id="customdhcpptpfsensedefaults"	onclick="customdhcpptsetvalues(this, iform);" />OPNsense Default &nbsp;
 														<input name="adv_dhcp_pt_values" type="radio" value="SavedCfg" checked="checked"	id="customdhcpptsavedcfg"		onclick="customdhcpptsetvalues(this, iform);" />Saved Cfg
 
 														<br />

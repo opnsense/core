@@ -1,9 +1,7 @@
 <?php
-/* $Id$ */
-/*
-        load_balancer_pool_edit.php
-        part of pfSense (https://www.pfsense.org/)
 
+/*
+		Copyright (C) 2014-2015 Deciso B.V.
         Copyright (C) 2005-2008 Bill Marquette <bill.marquette@gmail.com>.
         All rights reserved.
 
@@ -28,16 +26,6 @@
         ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
         POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-loadbalancer-pool-edit
-##|*NAME=Load Balancer: Pool: Edit page
-##|*DESCR=Allow access to the 'Load Balancer: Pool: Edit' page.
-##|*MATCH=load_balancer_pool_edit.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("filter.inc");

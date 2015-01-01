@@ -1,6 +1,6 @@
 <?php
 /*
-    Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2014-2015 Deciso B.V.
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
 
@@ -29,12 +29,6 @@ require_once("guiconfig.inc");
 function getHeadJS() {
   global $g, $use_loader_tab_gif;
 
-  /*
-  if(!$use_loader_tab_gif)
-    $loader_gif = "/themes/{$g['theme']}/images/misc/loader.gif";
-  else
-    $loader_gif = "/themes/{$g['theme']}/images/misc/loader_tab.gif";
-   */
   $headjs = "
     var input_errors = '';
     jQuery(document).ready(init);
