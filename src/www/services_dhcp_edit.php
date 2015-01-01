@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	services_dhcp_edit.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/sbin/arp
-	pfSense_MODULE:	dhcpserver
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dhcpserver-editstaticmapping
-##|*NAME=Services: DHCP Server : Edit static mapping page
-##|*DESCR=Allow access to the 'Services: DHCP Server : Edit static mapping' page.
-##|*MATCH=services_dhcp_edit.php*
-##|-PRIV
 
 function staticmapcmp($a, $b) {
 	return ipcmp($a['ipaddr'], $b['ipaddr']);

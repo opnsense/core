@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	services_unbound.php
-	part of the pfSense project (https://www.pfsense.org)
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2014	Warren Baker (warren@pfsense.org)
 	All rights reserved.
 
@@ -27,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	dnsresolver
-*/
-
-##|+PRIV
-##|*IDENT=page-services-unbound
-##|*NAME=Services: DNS Resolver page
-##|*DESCR=Allow access to the 'Services: DNS Resolver' page.
-##|*MATCH=services_unbound.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("unbound.inc");

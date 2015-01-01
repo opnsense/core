@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	services_dhcp.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/rm
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dhcpserver
-##|*NAME=Services: DHCP server page
-##|*DESCR=Allow access to the 'Services: DHCP server' page.
-##|*MATCH=services_dhcp.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("filter.inc");

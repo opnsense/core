@@ -1,10 +1,7 @@
 <?php
 /*
-	services_captiveportal_ip_edit.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2011 Scott Ullrich <sullrich@gmail.com>
-	All rights reserved.
-
-	Originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2004 Dinesh Nair <dinesh@alphaque.com>
 	All rights reserved.
 
@@ -29,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ipfw
-	pfSense_MODULE: captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-services-captiveportal-editallowedips
-##|*NAME=Services: Captive portal: Edit Allowed IPs page
-##|*DESCR=Allow access to the 'Services: Captive portal: Edit Allowed IPs' page.
-##|*MATCH=services_captiveportal_ip_edit.php*
-##|-PRIV
 
 function allowedipscmp($a, $b) {
 	return strcmp($a['ip'], $b['ip']);

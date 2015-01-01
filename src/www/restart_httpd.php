@@ -1,6 +1,6 @@
 <?php
-/* $Id$ */
 /*
+        Copyright (C) 2014-2015 Deciso B.V.
         Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>.
         All rights reserved.
 
@@ -25,17 +25,6 @@
         ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
         POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/chmod
-	pfSense_MODULE:	pkgs
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-restart-httpd
-##|*NAME=Diagnostics: Restart HTTPD : System page
-##|*DESCR=Allow access to the 'Diagnostics: Restart HTTPD: System' page.
-##|*MATCH=restart_httpd.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 

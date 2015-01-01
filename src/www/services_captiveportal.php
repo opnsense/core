@@ -1,8 +1,6 @@
 <?php
 /*
-	services_captiveportal.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -27,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-services-captiveportal
-##|*NAME=Services: Captive portal page
-##|*DESCR=Allow access to the 'Services: Captive portal' page.
-##|*MATCH=services_captiveportal.php*
-##|-PRIV
 
 require_once("functions.inc");
 require_once("filter.inc");

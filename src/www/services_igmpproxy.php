@@ -1,13 +1,8 @@
 <?php
-/* $Id$ */
 /*
-	services_igmpproxy.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Ermal Luçi
 	Copyright (C) 2004 Scott Ullrich
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -32,16 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	dyndns
-*/
-
-##|+PRIV
-##|*IDENT=page-services-igmpproxy
-##|*NAME=Services: Igmpproxy page
-##|*DESCR=Allow access to the 'Services: Igmpproxy' page.
-##|*MATCH=services_igmpproxy.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

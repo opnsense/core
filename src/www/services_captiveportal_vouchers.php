@@ -1,5 +1,6 @@
 <?php
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2007 Marcel Wiget <mwiget@mac.com>
 	All rights reserved.
 
@@ -24,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/local/bin/voucher	/usr/bin/openssl
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-services-captiveportal-vouchers
-##|*NAME=Services: Captive portal Vouchers page
-##|*DESCR=Allow access to the 'Services: Captive portal Vouchers' page.
-##|*MATCH=services_captiveportal_vouchers.php*
-##|-PRIV
 
 if ($_POST['postafterlogin'])
 	$nocsrf= true;

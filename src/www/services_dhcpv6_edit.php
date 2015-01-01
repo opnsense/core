@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	services_dhcpv6_edit.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.
@@ -29,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/sbin/arp
-	pfSense_MODULE:	dhcpserver
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dhcpserverv6-editstaticmapping
-##|*NAME=Services: DHCPv6 Server : Edit static mapping page
-##|*DESCR=Allow access to the 'Services: DHCPv6 Server : Edit static mapping' page.
-##|*MATCH=services_dhcpv6_edit.php*
-##|-PRIV
 
 function staticmapcmp($a, $b) {
         return ipcmp($a['ipaddrv6'], $b['ipaddrv6']);

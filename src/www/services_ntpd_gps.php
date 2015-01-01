@@ -1,6 +1,6 @@
 <?php
-/* $Id$ */
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2013	Dagorlad
 	Copyright (C) 2012	Jim Pingle
 	All rights reserved.
@@ -26,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	ntpd_gps
-*/
-
-##|+PRIV
-##|*IDENT=page-services-ntpd-gps
-##|*NAME=Services: NTP Serial GPS page
-##|*DESCR=Allow access to the 'Services: NTP Serial GPS' page..
-##|*MATCH=services_ntpd_gps.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 
