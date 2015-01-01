@@ -1,8 +1,6 @@
 <?php
 /*
-	vpn_l2tp_users_edit.php
-	part of pfSense
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2006 Scott Ullrich (sullrich@gmail.com)
 	All rights reserved.
 
@@ -27,13 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-vpn-vpnl2tp-users-edit
-##|*NAME=VPN: VPN L2TP : Users : Edit page
-##|*DESCR=Allow access to the 'VPN: VPN L2TP : Users : Edit' page.
-##|*MATCH=vpn_l2tp_users_edit.php*
-##|-PRIV
 
 $pgtitle = array(gettext("VPN"),gettext("L2TP"),gettext("User"),gettext("Edit"));
 $shortcut_section = "l2tps";

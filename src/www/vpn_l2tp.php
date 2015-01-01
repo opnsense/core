@@ -1,8 +1,6 @@
 <?php
 /*
-	vpn_l2tp.php
-	part of pfSense
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
 	All rights reserved.
 
@@ -27,13 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-vpn-vpnl2tp
-##|*NAME=VPN: VPN L2TP page
-##|*DESCR=Allow access to the 'VPN: VPN L2TP' page.
-##|*MATCH=vpn_l2tp.php*
-##|-PRIV
 
 $pgtitle = array(gettext("VPN"), gettext("L2TP"), gettext("L2TP"));
 $shortcut_section = "l2tps";

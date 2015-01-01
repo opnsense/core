@@ -1,12 +1,8 @@
 <?php
 /*
-	system_advanced_network.php
-	part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005-2007 Scott Ullrich
-
 	Copyright (C) 2008 Shrew Soft Inc
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -31,16 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-system-advanced-network
-##|*NAME=System: Advanced: Network page
-##|*DESCR=Allow access to the 'System: Advanced: Networking' page.
-##|*MATCH=system_advanced_network.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");

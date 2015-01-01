@@ -1,12 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	status_graph.php
-	Part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
-	All rights reserved.
-
-	Originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -31,19 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-status-trafficgraph
-##|*NAME=Status: Traffic Graph page
-##|*DESCR=Allow access to the 'Status: Traffic Graph' page.
-##|*MATCH=status_graph.php*
-##|*MATCH=bandwidth_by_ip.php*
-##|*MATCH=graph.php*
-##|*MATCH=ifstats.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

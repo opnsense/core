@@ -1,7 +1,6 @@
 <?php
 /*
-	vpn_ipsec_mobile.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc
 	All rights reserved.
 
@@ -26,13 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-vpn-ipsec-mobile
-##|*NAME=VPN: IPsec: Mobile page
-##|*DESCR=Allow access to the 'VPN: IPsec: Mobile' page.
-##|*MATCH=vpn_ipsec_mobile.php*
-##|-PRIV
 
 require("functions.inc");
 require("guiconfig.inc");

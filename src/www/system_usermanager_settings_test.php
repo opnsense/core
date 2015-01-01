@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-    part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
 
@@ -27,16 +25,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	auth
-*/
-
-##|+PRIV
-##|*IDENT=page-system-usermanager-settings-testldap
-##|*NAME=System: User Manager: Settings: Test LDAP page
-##|*DESCR=Allow access to the 'System: User Manager: Settings: Test LDAP' page.
-##|*MATCH=system_usermanager_settings_test.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("auth.inc");

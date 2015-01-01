@@ -1,9 +1,7 @@
 #!/usr/local/bin/php
 <?php
 /*
-	uploadconfig.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,13 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-hidden-uploadconfiguration
-##|*NAME=Hidden: Upload Configuration page
-##|*DESCR=Allow access to the 'Hidden: Upload Configuration' page.
-##|*MATCH=uploadconfig.php*
-##|-PRIV
 
 
 require("guiconfig.inc");

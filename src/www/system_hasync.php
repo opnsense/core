@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	system_hasync.php
-	part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2012 Darren Embry <dse@webonastick.com>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-system-hasync
-##|*NAME=System: High Availability Sync
-##|*DESCR=Allow access to the 'System: High Availability Sync' page.
-##|*MATCH=system_hasync.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

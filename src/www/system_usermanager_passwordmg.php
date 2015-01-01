@@ -1,8 +1,8 @@
 <?php
-/* $Id$ */
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2011 Ermal Luçi
-    system_usermanager.php
+	All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -25,17 +25,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-        pfSense_BUILDER_BINARIES:
-        pfSense_MODULE: auth
-*/
 
-##|+PRIV
-##|*IDENT=page-system-usermanager-passwordmg
-##|*NAME=System: User Password Manager page
-##|*DESCR=Allow access to the 'System: User Password Manager' page.
-##|*MATCH=system_usermanager_passwordmg.php*
-##|-PRIV
 
 require_once("certs.inc");
 require_once("guiconfig.inc");

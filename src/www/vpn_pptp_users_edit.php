@@ -1,8 +1,6 @@
 <?php
 /*
-	vpn_pptp_users_edit.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -27,13 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-vpn-vpnpptp-user-edit
-##|*NAME=VPN: VPN PPTP: User: Edit page
-##|*DESCR=Allow access to the 'VPN: VPN PPTP: User: Edit' page.
-##|*MATCH=vpn_pptp_users_edit.php*
-##|-PRIV
 
 function pptpusercmp($a, $b) {
 	return strcasecmp($a['name'], $b['name']);

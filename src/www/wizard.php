@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	wizard.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
 	Copyright (C) 2010 Ermal Luçi
 	All rights reserved.
@@ -27,14 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-pfsensewizardsubsystem
-##|*NAME=pfSense wizard subsystem page
-##|*DESCR=Allow access to the 'pfSense wizard subsystem' page.
-##|*MATCH=wizard.php*
-##|-PRIV
-
 
 require("globals.inc");
 require("guiconfig.inc");

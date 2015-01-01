@@ -1,8 +1,6 @@
 <?php
 /*
-	vpn_ipsec_keys.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -27,13 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-vpn-ipsec-listkeys
-##|*NAME=VPN: IPsec: Pre-Shared Keys List
-##|*DESCR=Allow access to the 'VPN: IPsec: Pre-Shared Keys List' page.
-##|*MATCH=vpn_ipsec_keys.php*
-##|-PRIV
 
 require("functions.inc");
 require("guiconfig.inc");

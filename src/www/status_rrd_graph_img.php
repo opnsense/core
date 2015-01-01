@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	status_rrd_graph_img.php
-	Part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Seth Mos <seth.mos@dds.nl>
 	All rights reserved.
 
@@ -26,10 +24,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-*/
-/*
-	pfSense_BUILDER_BINARIES:	/bin/rm	/usr/local/bin/rrdtool
-	pfSense_MODULE:	system
 */
 
 require_once("globals.inc");

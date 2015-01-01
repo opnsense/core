@@ -1,5 +1,6 @@
 <?php
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2007 Marcel Wiget <mwiget@mac.com>.
 	All rights reserved.
 
@@ -24,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-status-captiveportal-voucher-rolls
-##|*NAME=Status: Captive portal Voucher Rolls page
-##|*DESCR=Allow access to the 'Status: Captive portal Voucher Rolls' page.
-##|*MATCH=status_captiveportal_voucher_rolls.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require("functions.inc");

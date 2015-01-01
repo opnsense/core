@@ -1,10 +1,7 @@
 <?php
-
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2011 Scott Ullrich
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -29,18 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/local/etc/rc.restore_full_backup
-	pfSense_MODULE:	backup
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-restore-full-backup
-##|*NAME=Diagnostics: Restore full backup
-##|*DESCR=Allow access to the 'Diagnostics: Restore Full Backup' page.
-##|*MATCH=system_firmware_restorefullbackup.php
-##|-PRIV
 
 /* Allow additional execution time 0 = no limit. */
 ini_set('max_execution_time', '0');

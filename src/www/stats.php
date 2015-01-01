@@ -1,8 +1,5 @@
 <?php
 /*
-	$Id$
-	part of pfSense (https://www.pfsense.org)
-
 	Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
 
@@ -27,13 +24,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-diagnostics-cpuutilization
-##|*NAME=Diagnostics: CPU Utilization page
-##|*DESCR=Allow access to the 'Diagnostics: CPU Utilization' page.
-##|*MATCH=stats.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("includes/functions.inc.php");

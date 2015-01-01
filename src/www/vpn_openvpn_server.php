@@ -1,7 +1,6 @@
 <?php
 /*
-	vpn_openvpn_server.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc.
 	All rights reserved.
 
@@ -26,13 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-openvpn-server
-##|*NAME=OpenVPN: Server page
-##|*DESCR=Allow access to the 'OpenVPN: Server' page.
-##|*MATCH=vpn_openvpn_server.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("openvpn.inc");

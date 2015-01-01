@@ -1,8 +1,6 @@
 <?php
 /*
-	system_routes_edit.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	Copyright (C) 2010 Scott Ullrich
 	All rights reserved.
@@ -28,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-system-staticroutes-editroute
-##|*NAME=System: Static Routes: Edit route page
-##|*DESCR=Allow access to the 'System: Static Routes: Edit route' page.
-##|*MATCH=system_routes_edit.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("filter.inc");

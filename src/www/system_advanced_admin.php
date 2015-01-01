@@ -1,12 +1,9 @@
 <?php
 
 /*
-	part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005-2010 Scott Ullrich
-
 	Copyright (C) 2008 Shrew Soft Inc
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -31,17 +28,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/killall
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-system-advanced-admin
-##|*NAME=System: Advanced: Admin Access Page
-##|*DESCR=Allow access to the 'System: Advanced: Admin Access' page.
-##|*MATCH=system_advanced_admin.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");
@@ -591,7 +577,7 @@ include("head.inc");
 											<option value="serial"   <?php if ($pconfig['primaryconsole'] == "serial")   echo "selected=\"selected\"";?>>Serial Console</option>
 											<option value="video"  <?php if ($pconfig['primaryconsole'] == "video")  echo "selected=\"selected\"";?>>VGA Console</option>
 										</select>
-										<br /><?=gettext("Select the preferred console if multiple consoles are present. The preferred console will show pfSense boot script output. All consoles display OS boot messages, console messages, and the console menu."); ?>
+										<br /><?=gettext("Select the preferred console if multiple consoles are present. The preferred console will show OPNsense boot script output. All consoles display OS boot messages, console messages, and the console menu."); ?>
 									</td>
 								</tr>
 								<?php endif; ?>

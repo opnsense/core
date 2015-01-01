@@ -1,13 +1,9 @@
 <?php
 /*
-	status_ovpenvpn.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2010 Jim Pingle
     Copyright (C) 2008 Shrew Soft Inc.
-
-    AJAX bits borrowed from diag_dump_states.php
     Copyright (C) 2005 Scott Ullrich, Colin Smith
-
     All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,16 +28,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 /* DISABLE_PHP_LINT_CHECKING */
-/*
-	pfSense_MODULE:	openvpn
-*/
-
-##|+PRIV
-##|*IDENT=page-status-openvpn
-##|*NAME=Status: OpenVPN page
-##|*DESCR=Allow access to the 'Status: OpenVPN' page.
-##|*MATCH=status_openvpn.php*
-##|-PRIV
 
 $pgtitle = array(gettext("Status"), gettext("OpenVPN"));
 $shortcut_section = "openvpn";

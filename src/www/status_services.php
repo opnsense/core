@@ -1,6 +1,6 @@
 <?php
 /*
-    services_status.php
+    Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2004, 2005 Scott Ullrich
     All rights reserved.
 
@@ -25,17 +25,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/openvpn	/usr/bin/killall	/bin/ps
-	pfSense_MODULE:	services
-*/
-
-##|+PRIV
-##|*IDENT=page-status-services
-##|*NAME=Status: Services page
-##|*DESCR=Allow access to the 'Status: Services' page.
-##|*MATCH=status_services.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("service-utils.inc");

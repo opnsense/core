@@ -1,8 +1,6 @@
 <?php
 /*
-	vpn_ipsec_phase1.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
 	Copyright (C) 2014 Ermal LUÇI
@@ -29,13 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-vpn-ipsec-editphase1
-##|*NAME=VPN: IPsec: Edit Phase 1 page
-##|*DESCR=Allow access to the 'VPN: IPsec: Edit Phase 1' page.
-##|*MATCH=vpn_ipsec_phase1.php*
-##|-PRIV
 
 require("functions.inc");
 require("guiconfig.inc");

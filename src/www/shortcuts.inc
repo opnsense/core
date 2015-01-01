@@ -1,9 +1,7 @@
 <?php
-/* $Id$ */
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2012 Jim Pingle
-	All rights reserved.
-
 	Copyright (C) 2007, 2008 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
 
@@ -28,10 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 
-*/
-
-/*
-	pfSense_MODULE:	system
 */
 
 // On the page, add in like so:

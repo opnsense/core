@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	status_captiveportal.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-status-captiveportal
-##|*NAME=Status: Captive portal page
-##|*DESCR=Allow access to the 'Status: Captive portal' page.
-##|*MATCH=status_captiveportal.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require("functions.inc");
