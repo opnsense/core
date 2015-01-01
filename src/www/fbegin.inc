@@ -31,9 +31,6 @@ require_once("functions.inc");
 require_once("shortcuts.inc");
 require_once("service-utils.inc");
 
-/* $Id$ */
-
-
 /* Determine automated help URL. Should output the page name and
    parameters separately */
 $uri_split = "";
@@ -108,7 +105,7 @@ function output_menu($arrayitem, $target = null) {
 			$class = "list-group-item";
 
 
-			$check = substr($item[1],1,-4);
+			$check = substr($item[1],1,-3);
 			if (stripos($_SERVER['PHP_SELF'], $check) !== false) {
 				$class .= " active";
 			}
@@ -132,7 +129,7 @@ function active_menu($arrayitem, $pagename) {
 	$pagename = "/".ltrim($pagename,"/");
 
 	foreach ($arrayitem as $item) {
-		$check = substr($item[1],1,-4);
+		$check = substr($item[1],1,-3);
 
 		if (stripos($pagename, $check) !== false) {
 			return true;
@@ -228,7 +225,7 @@ $vpn_menu = msort(array_merge($vpn_menu, return_ext_menu("VPN")),0);
 
 // Status
 $status_menu = array();
-if (count($config['captiveportal']) > 0)
+//if (count($config['captiveportal']) > 0)
 	$status_menu[] = array(gettext("Captive Portal"), "/status_captiveportal.php");
 $status_menu[] = array(gettext("CARP (failover)"), "/carp_status.php");
 $status_menu[] = array(gettext("Dashboard"), "/index.php");
