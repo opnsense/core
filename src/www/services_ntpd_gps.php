@@ -151,6 +151,8 @@ $shortcut_section = "ntp";
 include("head.inc");
 ?>
 
+<body>
+
 <script type="text/javascript">
 //<![CDATA[
 	function show_advanced(showboxID, configvalueID) {
@@ -341,10 +343,7 @@ SureGPS =		#Sure Electronics SKG16B
 	}
 //]]>
 </script>
-</head>
 
-
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

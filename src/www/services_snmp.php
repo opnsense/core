@@ -155,6 +155,9 @@ $shortcut_section = "snmp";
 include("head.inc");
 
 ?>
+
+<body>
+	
 <script type="text/javascript">
 //<![CDATA[
 function check_deps() {
@@ -259,10 +262,7 @@ function enable_change(whichone) {
 }
 //]]>
 </script>
-</head>
 
-
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

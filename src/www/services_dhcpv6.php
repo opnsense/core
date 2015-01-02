@@ -361,6 +361,7 @@ include("head.inc");
 
 ?>
 
+<body>
 <script type="text/javascript" src="/javascript/row_helper.js">
 </script>
 
@@ -442,7 +443,6 @@ include("head.inc");
 	}
 //]]>
 </script>
-</head>
 
 <?php
 	/* active tabs */
@@ -479,9 +479,6 @@ include("head.inc");
 	}
 ?>
 
-
-
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

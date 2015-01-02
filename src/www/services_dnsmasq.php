@@ -139,6 +139,8 @@ include("head.inc");
 
 ?>
 
+<body>
+
 <script type="text/javascript">
 //<![CDATA[
 function enable_change(enable_over) {
@@ -155,10 +157,7 @@ function show_advanced_dns() {
 }
 //]]>
 </script>
-</head>
 
-
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

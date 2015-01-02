@@ -1169,8 +1169,7 @@ useproxy_changed();
 //]]>
 </script>
 <?php include("foot.inc"); ?>
-</body>
-</html>
+
 
 <?php
 

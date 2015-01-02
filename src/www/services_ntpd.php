@@ -170,7 +170,8 @@ $shortcut_section = "ntp";
 include("head.inc");
 
 ?>
-
+<body>
+	
 <script type="text/javascript">
 //<![CDATA[
 	//Generic show an advanced option function
@@ -209,9 +210,7 @@ include("head.inc");
 	}
 //]]>
 </script>
-</head>
 
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
