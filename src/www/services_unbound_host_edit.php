@@ -1,11 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	services_unbound_edit_host.php
-	part of the pfSense project (https://www.pfsense.org)
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2014 Warren Baker (warren@decoy.co.za)
-	All rights reserved.
-
 	Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -30,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	dnsforwarder
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dnsresolver-edithost
-##|*NAME=Services: DNS Forwarder: Edit host page
-##|*DESCR=Allow access to the 'Services: DNS Forwarder: Edit host' page.
-##|*MATCH=services_unbound_host_edit.php*
-##|-PRIV
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_unbound.php');
 

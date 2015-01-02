@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -26,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-status-systemlogs-portalauth
-##|*NAME=Status: System logs: Portal Auth page
-##|*DESCR=Allow access to the 'Status: System logs: Portal Auth' page.
-##|*MATCH=diag_logs_auth.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

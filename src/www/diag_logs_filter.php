@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) Jim Pingle jim@pingle.org
@@ -28,17 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-logs-firewall
-##|*NAME=Diagnostics: Logs: Firewall page
-##|*DESCR=Allow access to the 'Diagnostics: Logs: Firewall' page.
-##|*MATCH=diag_logs_filter.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("filter_log.inc");

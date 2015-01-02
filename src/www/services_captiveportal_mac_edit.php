@@ -1,8 +1,6 @@
 <?php
 /*
-	services_captiveportal_mac_edit.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Dinesh Nair <dinesh@alphaque.com>
 	All rights reserved.
 
@@ -27,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-services-captiveportal-editmacaddresses
-##|*NAME=Services: Captive portal: Edit MAC Addresses page
-##|*DESCR=Allow access to the 'Services: Captive portal: Edit MAC Addresses' page.
-##|*MATCH=services_captiveportal_mac_edit.php*
-##|-PRIV
 
 function passthrumacscmp($a, $b) {
 	return strcmp($a['mac'], $b['mac']);
@@ -236,7 +224,7 @@ include("head.inc");
 											<span class="vexpl"><?=gettext("You may enter a description here for your reference (not parsed)"); ?>.</span>
 										</td>
 									</tr>
-<!--									
+<!--
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Bandwidth up"); ?></td>
 										<td width="78%" class="vtable">
@@ -253,7 +241,7 @@ include("head.inc");
 											<span class="vexpl"><?=gettext("Enter a download limit to be enforced on this MAC address in Kbit/s"); ?></span>
 										</td>
 									</tr>
--->									
+-->
 									<tr>
 										<td width="22%" valign="top">&nbsp;</td>
 										<td width="78%">

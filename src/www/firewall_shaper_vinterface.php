@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	firewall_shaper_vinterface.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004, 2005 Scott Ullrich
 	Copyright (C) 2008 Ermal Luçi
 	All rights reserved.
@@ -28,17 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/killall
-	pfSense_MODULE:	shaper
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-trafficshaper-limiter
-##|*NAME=Firewall: Traffic Shaper: Limiter page
-##|*DESCR=Allow access to the 'Firewall: Traffic Shaper: Limiter' page.
-##|*MATCH=firewall_shaper_vinterface.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");
@@ -349,6 +337,9 @@ $output .= $output_form;
 $closehead = false;
 include("head.inc");
 ?>
+
+<body>
+
 <link rel="stylesheet" type="text/css" media="all" href="./tree/tree.css" />
 <script type="text/javascript" src="./tree/tree.js"></script>
 <script type="text/javascript">
@@ -363,9 +354,6 @@ function show_source_port_range() {
 }
 //]]>
 </script>
-</head>
-
-<body>
 
 <?php
 if ($queue)

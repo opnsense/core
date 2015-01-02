@@ -1,5 +1,6 @@
 <?php
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Ermal Luci
 	All rights reserved.
 
@@ -24,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	pppoe
-*/
-
-##|+PRIV
-##|*IDENT=page-services-pppoeserver
-##|*NAME=Services: PPPoE Server page
-##|*DESCR=Allow access to the 'Services: PPPoE Server' page.
-##|*MATCH=vpn_pppoe.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("filter.inc");

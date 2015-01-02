@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	status_ntpd.php
-	part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2013 Dagorlad
 	Copyright (C) 2012 Jim Pingle
 	All rights reserved.
@@ -29,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/ntpd	/usr/local/sbin/ntpq
-	pfSense_MODULE:	ntpd
-*/
-
-##|+PRIV
-##|*IDENT=page-status-ntp
-##|*NAME=Status: NTP page
-##|*DESCR=Allow access to the 'Status: NTP' page.
-##|*MATCH=status_ntpd.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 

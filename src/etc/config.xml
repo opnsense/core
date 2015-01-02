@@ -172,7 +172,7 @@
 			<priv>page-all</priv>
 		</group>
 		<user>
-			<name>admin</name>
+			<name>root</name>
 			<descr><![CDATA[System Administrator]]></descr>
 			<scope>system</scope>
 			<groupname>admins</groupname>
@@ -364,8 +364,8 @@
 		<!-- <filteringbridge/> -->
 	</bridge>
 	<syslog>
-		<!--
 		<reverse/>
+		<!--
 		<enable/>
 		<remoteserver>xxx.xxx.xxx.xxx</remoteserver>
 		<filter/>

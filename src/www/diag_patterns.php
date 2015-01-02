@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V., All rights reserved
 	Exec+ v1.02-000 - Copyright 2001-2003, All rights reserved
@@ -26,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_MODULE:	shaper
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-patters
-##|*NAME=Diagnostics: Patterns page
-##|*DESCR=Allow access to the 'Diagnostics: Patterns' page.
-##|*MATCH=patterns.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

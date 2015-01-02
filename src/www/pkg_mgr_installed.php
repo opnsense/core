@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-    pkg_mgr.php
+    Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2004-2012 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
@@ -26,16 +25,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	pkgs
-*/
-
-##|+PRIV
-##|*IDENT=page-system-packagemanager-installed
-##|*NAME=System: Package Manager: Installed page
-##|*DESCR=Allow access to the 'System: Package Manager: Installed' page.
-##|*MATCH=pkg_mgr_installed.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("pkg-utils.inc");
@@ -98,8 +87,8 @@ include("head.inc");
 
 				<?php
 				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
-				if (!verify_all_package_servers())
-					print_info_box(package_server_mismatch_message());
+				/*if (!verify_all_package_servers())
+					print_info_box(package_server_mismatch_message());*/
 
 				/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
 				if (check_package_server_ssl() === false)
@@ -147,7 +136,7 @@ include("head.inc");
 
 													// get history/changelog git dir
 													$commit_dir=explode("/",$pkg['config_file']);
-													$changeloglink ="https://github.com/pfsense/pfsense-packages/commits/master/config/".$commit_dir[(count($commit_dir)-2)];
+													$changeloglink ="https://github.com/opsense/packages/commits/master/config/".$commit_dir[(count($commit_dir)-2)];
 													#check package version
 													$latest_package = $currentvers[$pkg['name']]['version'];
 													if ($latest_package) {
@@ -194,7 +183,7 @@ include("head.inc");
 														$pkginfo=gettext("Package info");
 														}
 													else{
-														$pkginfolink = "https://forum.pfsense.org/index.php/board,15.0.html";
+														$pkginfolink = "http://forum.opnsense.org/index.php";
 														$pkginfo=gettext("No package info, check the forum");
 														}
 

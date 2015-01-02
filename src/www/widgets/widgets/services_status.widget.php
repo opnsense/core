@@ -1,11 +1,9 @@
 <?php
 /*
-    services_status.widget.php
+    Copyright (C) 2014
     Copyright (C) 2004, 2005 Scott Ullrich
-    All rights reserved.
-
-    services_status.widget.php
     Copyright (C) 2007 Sam Wenham
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -55,7 +53,7 @@ if(isset($_POST['servicestatusfilter'])) {
     </form>
 </div>
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="services">
+<table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="services">
 	<tr>
 	  <td class="widgetsubheader" align="center"><b>Service</b></td>
 	  <td class="widgetsubheader" align="center"><b>Description</b></td>

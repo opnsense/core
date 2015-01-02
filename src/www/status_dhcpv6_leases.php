@@ -1,12 +1,8 @@
 <?php
-/* $Id$ */
 /*
-	status_dhcpv6_leases.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
 	Copyright (C) 2011 Seth Mos
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -31,18 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/awk	/bin/cat	/usr/sbin/ndp	/usr/bin/wc	/usr/bin/grep
-	pfSense_MODULE:	dhcpserver
-*/
-
-##|+PRIV
-##|*IDENT=page-status-dhcpv6leases
-##|*NAME=Status: DHCPv6 leases page
-##|*DESCR=Allow access to the 'Status: DHCPv6 leases' page.
-##|*MATCH=status_dhcpv6_leases.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("config.inc");

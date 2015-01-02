@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	services_wol.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/local/bin/wol
-	pfSense_MODULE:	wol
-*/
-
-##|+PRIV
-##|*IDENT=page-services-wakeonlan
-##|*NAME=Services: Wake on LAN page
-##|*DESCR=Allow access to the 'Services: Wake on LAN' page.
-##|*MATCH=services_wol.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

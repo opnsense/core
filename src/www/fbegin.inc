@@ -31,9 +31,6 @@ require_once("functions.inc");
 require_once("shortcuts.inc");
 require_once("service-utils.inc");
 
-/* $Id$ */
-
-
 /* Determine automated help URL. Should output the page name and
    parameters separately */
 $uri_split = "";
@@ -78,7 +75,7 @@ function return_ext_menu($section) {
 				$addresswithport = getenv("HTTP_HOST");
 				$colonpos = strpos($addresswithport, ":");
 				if ($colonpos !== False){
-					//my url is actually just the IP address of the pfsense box
+					//my url is actually just the IP address of the OPNsense box
 					$myurl = substr($addresswithport, 0, $colonpos);
 				} else {
 					$myurl = $addresswithport;
@@ -108,7 +105,7 @@ function output_menu($arrayitem, $target = null) {
 			$class = "list-group-item";
 
 
-			$check = substr($item[1],1,-4);
+			$check = substr($item[1],1,-3);
 			if (stripos($_SERVER['PHP_SELF'], $check) !== false) {
 				$class .= " active";
 			}
@@ -132,7 +129,7 @@ function active_menu($arrayitem, $pagename) {
 	$pagename = "/".ltrim($pagename,"/");
 
 	foreach ($arrayitem as $item) {
-		$check = substr($item[1],1,-4);
+		$check = substr($item[1],1,-3);
 
 		if (stripos($pagename, $check) !== false) {
 			return true;
@@ -228,7 +225,7 @@ $vpn_menu = msort(array_merge($vpn_menu, return_ext_menu("VPN")),0);
 
 // Status
 $status_menu = array();
-if (count($config['captiveportal']) > 0)
+//if (count($config['captiveportal']) > 0)
 	$status_menu[] = array(gettext("Captive Portal"), "/status_captiveportal.php");
 $status_menu[] = array(gettext("CARP (failover)"), "/carp_status.php");
 $status_menu[] = array(gettext("Dashboard"), "/index.php");
@@ -303,21 +300,21 @@ if (isset($config['system']['developer'])) {
 }
 $diagnostics_menu = msort(array_merge($diagnostics_menu, return_ext_menu("Diagnostics")),0);
 
-$gold_menu = array();
-$gold_menu[] = array(gettext("pfSense Gold"), "https://www.pfsense.org/gold");
-$gold_menu = msort(array_merge($gold_menu, return_ext_menu("Gold")),0);
+//$gold_menu = array();
+//$gold_menu[] = array(gettext("pfSense Gold"), "https://www.pfsense.org/gold");
+//$gold_menu = msort(array_merge($gold_menu, return_ext_menu("Gold")),0);
 
 if(! $g['disablehelpmenu']) {
 	$help_menu = array();
 	$help_menu[] = array(gettext("About this Page"), $helpurl);
 	if($g['product_name'] == "pfSense")
-	$help_menu[] = array(gettext("Bug Database"), "https://www.pfsense.org/j.php?jumpto=redmine");
-	$help_menu[] = array(gettext("User Forum"), "https://www.pfsense.org/j.php?jumpto=forum");
-	$help_menu[] = array(gettext("Documentation"), "https://www.pfsense.org/j.php?jumpto=doc");
-	$help_menu[] = array(gettext("Developers Wiki"), "https://www.pfsense.org/j.php?jumpto=devwiki");
-	$help_menu[] = array(gettext("Paid Support"), "https://www.pfsense.org/j.php?jumpto=portal");
-	$help_menu[] = array(gettext("pfSense Book"), "https://www.pfsense.org/j.php?jumpto=book");
-	$help_menu[] = array(gettext("Search portal"), "https://www.pfsense.org/j.php?jumpto=searchportal");
+	$help_menu[] = array(gettext("Bug Database"), "https://github.com/opnsense/core/issues");
+	$help_menu[] = array(gettext("User Forum"), "http://forum.opnsense.org/");
+	$help_menu[] = array(gettext("Documentation"), "http://wiki.opnsense.org/");
+	$help_menu[] = array(gettext("Developers Wiki"), "http://wiki.opnsense.org/index.php/developers");
+	$help_menu[] = array(gettext("Paid Support"), "http://opnsense.org/support-overview/commercial-support/");
+	//$help_menu[] = array(gettext("pfSense Book"), "https://www.pfsense.org/j.php?jumpto=book");
+	//$help_menu[] = array(gettext("Search portal"), "https://www.pfsense.org/j.php?jumpto=searchportal");
 	$help_menu[] = array(gettext("FreeBSD Handbook"), "https://www.pfsense.org/j.php?jumpto=fbsdhandbook");
 	$help_menu = msort(array_merge($help_menu, return_ext_menu("Help")),0);
 }

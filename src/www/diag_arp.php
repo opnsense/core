@@ -1,11 +1,7 @@
 <?php
 /*
     Copyright (C) 2014 Deciso B.V.
-    All rights reserved.
-
 	Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2005 Paul Taylor (paultaylor@winndixie.com) and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -30,18 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/bin/cat		/usr/sbin/arp
-	pfSense_MODULE:	arp
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-arptable
-##|*NAME=Diagnostics: ARP Table page
-##|*DESCR=Allow access to the 'Diagnostics: ARP Table' page.
-##|*MATCH=diag_arp.php*
-##|-PRIV
 
 @ini_set('zlib.output_compression', 0);
 @ini_set('implicit_flush', 1);

@@ -1,12 +1,7 @@
 <?php
 /*
-	diag_testport.php
-
+	Copyritgh (C) 2014 Deciso B.V.
 	Copyright (C) 2013 Jim P (jimp@pfsense.org)
-	All rights reserved.
-
-	Portions based on diag_ping.php
-	part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2005 Bob Zoller (bob@kludgebox.com) and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -31,18 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/nc
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-testport
-##|*NAME=Diagnostics: Test Port
-##|*DESCR=Allow access to the 'Diagnostics: Test Port' page.
-##|*MATCH=diag_testport.php*
-##|-PRIV
 
 $allowautocomplete = true;
 

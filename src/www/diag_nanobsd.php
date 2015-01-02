@@ -26,19 +26,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/mount	/sbin/glabel	/usr/bin/grep	/usr/bin/cut	/usr/bin/head	/bin/cp
-	pfSense_BUILDER_BINARIES:	/usr/sbin/boot0cfg	/bin/mkdir	/sbin/fsck_ufs	/sbin/mount	/bin/dd	/sbin/tunefs
-	pfSense_MODULE:	nanobsd
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-nanobsd
-##|*NAME=Diagnostics: NanoBSD
-##|*DESCR=Allow access to the 'Diagnostics: NanoBSD' page.
-##|*MATCH=diag_nanobsd.php*
-##|-PRIV
-
 ini_set('zlib.output_compression', 0);
 ini_set('implicit_flush', 1);
 ini_set('max_input_time', '9999');

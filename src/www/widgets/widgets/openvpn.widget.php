@@ -1,4 +1,29 @@
 <?php
+/*
+	Copyright (C) 2014 Deciso B.V.
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	   this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
+*/
 
 $nocsrf = true;
 
@@ -69,7 +94,7 @@ $clients = openvpn_get_active_clients();
 			jQuery(icon).css("cursor","wait");
 		}
 
-		jQuery('img[name="i:' + mport + ":" + remipp + '"]').each(busy);
+		jQuery('span[name="i:' + mport + ":" + remipp + '"]').each(busy);
 
 		jQuery.ajax(
 			"<?=$_SERVER['SCRIPT_NAME'];?>" +
@@ -93,7 +118,7 @@ $clients = openvpn_get_active_clients();
 
 <?php foreach ($servers as $server): ?>
 
-<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
+<table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td colspan="6" class="listtopic">
 			<?=$server['name'];?> Client connections
@@ -119,10 +144,10 @@ $clients = openvpn_get_active_clients();
 					<?=$conn['remote_host'];?>
 				</td>
 				<td class='listMR' rowspan="2">
-					<img src='/themes/<?php echo $g['theme']; ?>/images/icons/icon_x.gif' height='17' width='17' border='0'
+					<span class="glyphicon glyphicon-remove"
 					   onclick="killClient('<?php echo $server['mgmt']; ?>', '<?php echo $conn['remote_host']; ?>');" style='cursor:pointer;'
 					   name='<?php echo "i:{$server['mgmt']}:{$conn['remote_host']}"; ?>'
-					   title='Kill client connection from <?php echo $conn['remote_host']; ?>' alt='' />
+					   title='Kill client connection from <?php echo $conn['remote_host']; ?>' alt='' ></span>
 				</td>
 			</tr>
 			<tr name='<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>' class="<?=$evenRowClass?>">
@@ -147,7 +172,7 @@ $clients = openvpn_get_active_clients();
 
 <?php endforeach; ?>
 <?php if (!empty($sk_servers)) { ?>
-<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
+<table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td colspan="6" class="listtopic">
 			Peer to Peer Server Instance Statistics
@@ -172,12 +197,12 @@ $clients = openvpn_get_active_clients();
 			<?php
 			if ($sk_server['status'] == "up") {
 				/* tunnel is up */
-				$iconfn = "interface_up";
+				$iconfn = "text-success";
 			} else {
 				/* tunnel is down */
-				$iconfn = "interface_down";
+				$iconfn = "text-danger";
 			}
-			echo "<img src ='/themes/{$g['theme']}/images/icons/icon_{$iconfn}.gif'>";
+			echo "<span class='glyphicon glyphicon-transfer ".$iconfn."'></span>";
 			?>
 			</td>
 		</tr>
@@ -197,14 +222,14 @@ $clients = openvpn_get_active_clients();
 <?php
 } ?>
 <?php if (!empty($clients)) { ?>
-<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
+<table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td colspan="6" class="listtopic">
 			Client Instance Statistics
 		</td>
 	</tr>
 	<tr>
-		<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0">
+		<table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td class="listhdrr">Name/Time</td>
 			<td class="listhdrr">Remote/Virtual IP</td>
@@ -222,12 +247,12 @@ $clients = openvpn_get_active_clients();
 			<?php
 			if ($client['status'] == "up") {
 				/* tunnel is up */
-				$iconfn = "interface_up";
+				$iconfn = "text-success";
 			} else {
 				/* tunnel is down */
-				$iconfn = "interface_down";
+				$iconfn = "text-danger";
 			}
-			echo "<img src ='/themes/{$g['theme']}/images/icons/icon_{$iconfn}.gif'>";
+			echo "<span class='glyphicon glyphicon-transfer ".$iconfn."'></span>";
 			?>
 			</td>
 		</tr>

@@ -26,19 +26,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/gmirror	/sbin/geom	/usr/bin/grep	/usr/bin/egrep	/usr/bin/cut	/usr/bin/head
-	pfSense_BUILDER_BINARIES:	/sbin/mount	/usr/bin/awk	/usr/bin/sed
-	pfSense_MODULE:	gmirror
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-gmirror
-##|*NAME=Diagnostics: GEOM Mirrors
-##|*DESCR=Allow access to the 'Diagnostics: GEOM Mirrors' page.
-##|*MATCH=diag_gmirror.php*
-##|-PRIV
-
 require_once("guiconfig.inc");
 require_once("config.inc");
 require_once("gmirror.inc");

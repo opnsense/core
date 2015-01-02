@@ -1,7 +1,6 @@
 <?php
 /*
-	$Id$
-    carp_status.widget.php
+	Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2007 Sam Wenham
     All rights reserved.
 

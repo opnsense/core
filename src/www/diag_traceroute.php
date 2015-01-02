@@ -1,8 +1,6 @@
 <?php
 /*
-	diag_traceroute.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005 Paul Taylor (paultaylor@winndixie.com) and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -27,18 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/sbin/traceroute
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-traceroute
-##|*NAME=Diagnostics: Traceroute page
-##|*DESCR=Allow access to the 'Diagnostics: Traceroute' page.
-##|*MATCH=diag_traceroute.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

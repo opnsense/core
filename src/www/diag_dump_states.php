@@ -27,18 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/pfctl
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-showstates
-##|*NAME=Diagnostics: Show States page
-##|*DESCR=Allow access to the 'Diagnostics: Show States' page.
-##|*MATCH=diag_dump_states.php*
-##|-PRIV
-
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
@@ -85,7 +73,7 @@ include("head.inc");
 			jQuery(icon).css("cursor","wait");
 		}
 
-		jQuery('img[name="i:' + srcip + ":" + dstip + '"]').each(busy);
+		jQuery('span[name="i:' + srcip + ":" + dstip + '"]').each(busy);
 
 		jQuery.ajax(
 			"<?=$_SERVER['SCRIPT_NAME'];?>",

@@ -24,18 +24,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/bin/ps	/usr/bin/grep	/usr/sbin/tcpdump
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-packetcapture
-##|*NAME=Diagnostics: Packet Capture page
-##|*DESCR=Allow access to the 'Diagnostics: Packet Capture' page.
-##|*MATCH=diag_packet_capture.php*
-##|-PRIV
-
 $allowautocomplete = true;
 
 function fixup_host_logic($value) {

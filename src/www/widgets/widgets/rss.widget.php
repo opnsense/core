@@ -1,8 +1,7 @@
 <?php
 /*
-        $Id$
-        Copyright 2009 Scott Ullrich
-        Part of pfSense widgets (https://www.pfsense.org)
+		copyright (C) 2014 Deciso B.V.
+        Copyright (C) 2009 Scott Ullrich
 
         Redistribution and use in source and binary forms, with or without
         modification, are permitted provided that the following conditions are met:
@@ -56,8 +55,8 @@ if(is_numeric($config['widgets']['rsswidgettextlength']))
 
 // Set a default feed if none exists
 if(!$rss_feed_s) {
-	$rss_feed_s = "https://blog.pfsense.org";
-	$config['widgets']['rssfeed'] = "https://blog.pfsense.org";
+	$rss_feed_s = "https://opnsense.org/feed/";
+	$config['widgets']['rssfeed'] = "https://opnsense.org/feed/";
 }
 
 if(!$max_items)
@@ -80,11 +79,14 @@ else
 
 <div id="rss-settings" class="widgetconfigdiv" style="display:none;">
 	<form action="/widgets/widgets/rss.widget.php" method="post" name="iformc">
-		<textarea name="rssfeed" class="formfld unknown textarea_widget" id="rssfeed" cols="40" rows="3"><?=$textarea_txt;?></textarea>
-		<br />
-		<table summary="rss widget">
+		<table class="table table-striped" summary="rss widget">
 			<tr>
-				<td align="right">
+				<td colspan="2">
+					<textarea name="rssfeed" class="formfld unknown textarea_widget" id="rssfeed" cols="40" rows="3" style="max-width:100%;"><?=$textarea_txt;?></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
 					Display number of items:
 				</td>
 				<td>
@@ -98,7 +100,7 @@ else
 				</td>
 			</tr>
 			<tr>
-				<td align="right">
+				<td>
 					Widget height:
 				</td>
 				<td>
@@ -112,7 +114,7 @@ else
 				</td>
 			</tr>
 			<tr>
-				<td align="right">
+				<td>
 					Show how many characters from story:
 				</td>
 				<td>
@@ -126,11 +128,8 @@ else
 				</td>
 			</tr>
 			<tr>
-				<td>
-					&nbsp;
-				</td>
-				<td>
-					<input id="submitc" name="submitc" type="submit" class="formbtn" value="Save" />
+				<td colspan="2">
+					<input id="submitc" name="submitc" type="submit" class="btn btn-primary formbtn" value="Save" />
 				</td>
 			</tr>
 		</table>
@@ -165,7 +164,7 @@ else
 		$content = $item->get_content();
 		$content = strip_tags($content);
 		echo textLimit($content, $rsswidgettextlength) . "<br />";
-		echo "Source: <a target='_blank' href='" . $item->get_permalink() . "'><img src='" . $feed->get_favicon() . "' alt='" . $feed->get_title() . "' title='" . $feed->get_title() . "' border='0' width='16' height='16' /></a><br />";
+		echo "Source: <a target='_blank' href='" . $item->get_permalink() . "'>".$feed->get_title()."</a><br />";
 		$counter++;
 		if($counter > $max_items)
 			break;

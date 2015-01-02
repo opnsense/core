@@ -1,13 +1,8 @@
 <?php
-/* $Id$ */
 /*
-	system_advanced_misc.php
-	part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005-2007 Scott Ullrich
-
 	Copyright (C) 2008 Shrew Soft Inc
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -32,16 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-system-advanced-misc
-##|*NAME=System: Advanced: Miscellaneous page
-##|*DESCR=Allow access to the 'System: Advanced: Miscellaneous' page.
-##|*MATCH=system_advanced_misc.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");
@@ -673,7 +658,7 @@ include("head.inc");
 								<td width="78%" class="vtable">
 									<input name="pkg_nochecksig" type="checkbox" id="pkg_nochecksig" value="yes" <?php if ($pconfig['pkg_nochecksig']) echo "checked=\"checked\""; ?> />
 									<strong><?=gettext("Do NOT check package signature"); ?></strong><br />
-									<?=gettext("Enable this option to allow pfSense to install any package without checking its signature."); ?>
+									<?=gettext("Enable this option to allow OPNsense to install any package without checking its signature."); ?>
 								</td>
 							</tr>
 

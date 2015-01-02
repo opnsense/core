@@ -1,18 +1,11 @@
 <?php
-/* $Id$ */
+
 /*
-	Copyright (C) 2010 Ermal Lu�i
-	All rights reserved.
-
+	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2010 Ermal Luçi
 	Copyright (C) 2007, 2008 Scott Ullrich <sullrich@gmail.com>
-	All rights reserved.
-
         Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
-        All rights reserved.
-
         Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>.
-        All rights reserved.
-
         Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
         All rights reserved.
 
@@ -36,10 +29,6 @@
         CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
         ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
         POSSIBILITY OF SUCH DAMAGE.
-
-		DISABLE_PHP_LINT_CHECKING
-		pfSense_BUILDER_BINARIES:	/usr/sbin/pw	/bin/cp
-		pfSense_MODULE:	auth
 */
 
 /*
@@ -311,25 +300,26 @@ function local_backed($username, $passwd) {
 	return false;
 }
 
-function local_sync_accounts() {
-	global $debug, $config;
+function local_sync_accounts()
+{
+	global $config;
+
 	conf_mount_rw();
 
 	/* remove local users to avoid uid conflicts */
-	$fd = popen("/usr/sbin/pw usershow -a", "r");
+	$fd = popen('/usr/sbin/pw usershow -a', 'r');
 	if ($fd) {
 		while (!feof($fd)) {
-			$line = explode(":",fgets($fd));
-			if (((!strncmp($line[0], "_", 1)) || ($line[2] < 2000) || ($line[2] > 65000)) && ($line[0] != "admin"))
+			$line = explode(':',fgets($fd));
+			if (((!strncmp($line[0], '_', 1)) || ($line[2] < 2000) || ($line[2] > 65000))) {
 				continue;
+			}
 			/*
 			 * If a crontab was created to user, pw userdel will be interactive and
 			 * can cause issues. Just remove crontab before run it when necessary
 			 */
 			unlink_if_exists("/var/cron/tabs/{$line[0]}");
 			$cmd = "/usr/sbin/pw userdel -n '{$line[0]}'";
-			if($debug)
-				log_error(sprintf(gettext("Running: %s"), $cmd));
 			mwexec($cmd);
 		}
 		pclose($fd);
@@ -337,19 +327,20 @@ function local_sync_accounts() {
 
 	/* remove local groups to avoid gid conflicts */
 	$gids = array();
-	$fd = popen("/usr/sbin/pw groupshow -a", "r");
+	$fd = popen('/usr/sbin/pw groupshow -a', 'r');
 	if ($fd) {
 		while (!feof($fd)) {
-			$line = explode(":",fgets($fd));
-			if (!strncmp($line[0], "_", 1))
+			$line = explode(':',fgets($fd));
+			if (!strncmp($line[0], '_', 1)) {
 				continue;
-			if ($line[2] < 2000)
+			}
+			if ($line[2] < 2000) {
 				continue;
-			if ($line[2] > 65000)
+			}
+			if ($line[2] > 65000) {
 				continue;
+			}
 			$cmd = "/usr/sbin/pw groupdel {$line[2]}";
-			if($debug)
-				log_error(sprintf(gettext("Running: %s"), $cmd));
 			mwexec($cmd);
 		}
 		pclose($fd);
@@ -410,7 +401,7 @@ function local_user_set(& $user) {
 		$lock_account = true;
 	}
 
-	/* Lock out disabled or expired users, unless it's root/admin. */
+	/* Lock out disabled or expired users, unless it's root */
 	if ((is_account_disabled($user_name) || is_account_expired($user_name)) && ($user_uid != 0)) {
 		$user_shell = "/sbin/nologin";
 		$lock_account = true;
@@ -480,15 +471,10 @@ function local_user_set(& $user) {
 	conf_mount_ro();
 }
 
-function local_user_del($user) {
-	global $debug;
-
+function local_user_del($user)
+{
 	/* remove all memberships */
 	local_user_set_groups($user);
-
-	/* Don't remove /root */
-	if ($user['uid'] != 0)
-		$rmhome = "-r";
 
 	/* read from pw db */
 	$fd = popen("/usr/sbin/pw usershow -n {$user['name']} 2>&1", "r");
@@ -502,10 +488,8 @@ function local_user_del($user) {
 	}
 
 	/* delete from pw db */
-	$cmd = "/usr/sbin/pw userdel -n {$user['name']} {$rmhome}";
+	$cmd = "/usr/sbin/pw userdel -n {$user['name']} -r";
 
-	if($debug)
-		log_error(sprintf(gettext("Running: %s"), $cmd));
 	mwexec($cmd);
 
 	/* Delete user from groups needs a call to write_config() */

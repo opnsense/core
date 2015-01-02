@@ -1,13 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	services_dhcpv6.php
-	parts of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
-
-	part of pfSense (https://www.pfsense.org)
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.
 
@@ -32,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/rm
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dhcpv6server
-##|*NAME=Services: DHCPv6 server page
-##|*DESCR=Allow access to the 'Services: DHCPv6 server' page.
-##|*MATCH=services_dhcpv6.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("filter.inc");
@@ -378,6 +361,7 @@ include("head.inc");
 
 ?>
 
+<body>
 <script type="text/javascript" src="/javascript/row_helper.js">
 </script>
 
@@ -459,7 +443,6 @@ include("head.inc");
 	}
 //]]>
 </script>
-</head>
 
 <?php
 	/* active tabs */
@@ -496,9 +479,6 @@ include("head.inc");
 	}
 ?>
 
-
-
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

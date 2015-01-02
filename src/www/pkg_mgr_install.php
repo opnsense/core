@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	pkg_mgr_install.php
-	part of pfSense (https://www.pfsense.org)
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
 	Copyright (C) 2005 Colin Smith
 	All rights reserved.
@@ -28,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/rm
-	pfSense_MODULE:	pkgs
-*/
-
-##|+PRIV
-##|*IDENT=page-system-packagemanager-installpackage
-##|*NAME=System: Package Manager: Install Package page
-##|*DESCR=Allow access to the 'System: Package Manager: Install Package' page.
-##|*MATCH=pkg_mgr_install.php*
-##|-PRIV
 
 ini_set('max_execution_time', '0');
 
@@ -96,8 +83,8 @@ if ($_POST) {
 
 				<?php
 				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
-				if (!verify_all_package_servers())
-					print_info_box(package_server_mismatch_message());
+				/*if (!verify_all_package_servers())
+					print_info_box(package_server_mismatch_message());*/
 
 				/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
 				if (check_package_server_ssl() === false)

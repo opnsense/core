@@ -287,9 +287,9 @@ function get_default_captive_portal_html() {
     global $config, $g, $cpzone;
 
     $htmltext = <<<EOD
-<html> 
-<body> 
-<form method="post" action="\$PORTAL_ACTION\$"> 
+<html>
+<body>
+<form method="post" action="\$PORTAL_ACTION\$">
     <input name="redirurl" type="hidden" value="\$PORTAL_REDIRURL\$">
     <input name="zone" type="hidden" value="\$PORTAL_ZONE\$">
     <center>
@@ -370,7 +370,7 @@ EOD;
     </table>
     </center>
 </form>
-</body> 
+</body>
 </html>
 
 EOD;
@@ -681,7 +681,7 @@ function captiveportal_init_webgui_zone($cpcfg) {
 }
 
 
-/* 
+/*
  * Remove clients that have been around for longer than the specified amount of time
  * db file structure:
  * timestamp,ipfw_rule_no,clientip,clientmac,username,sessionid,password,session_timeout,idle_timeout,session_terminate_time,interim_interval
@@ -703,7 +703,7 @@ function captiveportal_prune_old() {
     }else{
         // cleanup sessions if radius accounting is enable
         // TODO: this code needs a rewrite, probably the easiest thing todo is update the zone administration and run
-        // 		 the normal cleanup (portal_cleanup_sessions) to detach both processes
+        //		 the normal cleanup (portal_cleanup_sessions) to detach both processes
         //
         $vcpcfg = $config['voucher'][$cpzone];
 

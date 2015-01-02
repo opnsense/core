@@ -1,6 +1,6 @@
 <?php
-/* $Id$ */
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
 	All rights reserved.
 
@@ -25,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/host
-	pfSense_MODULE:	dyndns
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dynamicdnsclients
-##|*NAME=Services: Dynamic DNS clients page
-##|*DESCR=Allow access to the 'Services: Dynamic DNS clients' page.
-##|*MATCH=services_dyndns.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

@@ -1,10 +1,7 @@
 <?php
 /*
-	firewall_schedule.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -29,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE: schedules
-*/
-##|+PRIV
-##|*IDENT=page-firewall-schedules
-##|*NAME=Firewall: Schedules page
-##|*DESCR=Allow access to the 'Firewall: Schedules' page.
-##|*MATCH=firewall_schedule.php*
-##|-PRIV
-
 
 $dayArray = array (gettext('Mon'),gettext('Tues'),gettext('Wed'),gettext('Thur'),gettext('Fri'),gettext('Sat'),gettext('Sun'));
 $monthArray = array (gettext('January'),gettext('February'),gettext('March'),gettext('April'),gettext('May'),gettext('June'),gettext('July'),gettext('August'),gettext('September'),gettext('October'),gettext('November'),gettext('December'));

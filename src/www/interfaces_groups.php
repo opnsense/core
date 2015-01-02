@@ -1,5 +1,6 @@
 <?php
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Ermal Luçi
 	Copyright (C) 2004 Scott Ullrich
 	All rights reserved.
@@ -25,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces-groups
-##|*NAME=Interfaces: Groups page
-##|*DESCR=Create interface groups
-##|*MATCH=interfaces_groups.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");

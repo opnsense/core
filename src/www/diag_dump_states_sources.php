@@ -27,18 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/pfctl
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-showstates
-##|*NAME=Diagnostics: Show States page
-##|*DESCR=Allow access to the 'Diagnostics: Show States' page.
-##|*MATCH=diag_dump_states.php*
-##|-PRIV
-
 require_once("guiconfig.inc");
 
 /* handle AJAX operations */
@@ -80,7 +68,7 @@ include("head.inc");
 			jQuery(icon).css("cursor","wait");
 		}
 
-		jQuery('img[name="i:' + srcip + ":" + dstip + '"]').each(busy);
+		jQuery('span[name="i:' + srcip + ":" + dstip + '"]').each(busy);
 
 		jQuery.ajax(
 			"<?=$_SERVER['SCRIPT_NAME'];?>" +
@@ -103,7 +91,7 @@ include("head.inc");
 //]]>
 </script>
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td>
 		<?php
@@ -121,17 +109,25 @@ include("head.inc");
 
 <!-- Start of tab content -->
 
-<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="0">
+<table class="table table-striped tabcont" width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td>
 			<form action="<?=$_SERVER['SCRIPT_NAME'];?>" method="get">
 			<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td>&nbsp;</td>
 					<td style="font-weight:bold;" align="right">
 						<?=gettext("Filter expression:");?>
+					</td>
+					<td>
+					</td>
+				</tr>
+
+				<tr>
+					<td style="font-weight:bold;" align="right">
 						<input type="text" name="filter" class="formfld search" value="<?=htmlspecialchars($_GET['filter']);?>" size="30" />
-						<input type="submit" class="formbtn" value="<?=gettext("Filter");?>" />
+					</td>
+					<td>
+						<input type="submit" class="btn btn-primary formbtn" value="<?=gettext("Filter");?>" />
 					</td>
 				</tr>
 			</table>
@@ -140,7 +136,7 @@ include("head.inc");
 	</tr>
 	<tr>
 		<td>
-			<table class="tabcont sortable" width="100%" border="0" cellspacing="0" cellpadding="0">
+			<table class="table table-striped tabcont sortable" width="100%" border="0" cellspacing="0" cellpadding="0">
 				<thead>
 				<tr>
 					<th class="listhdrr" width="40%"><?=gettext("Source -> Destination");?></th>
@@ -175,10 +171,11 @@ if(count($sources) > 0) {
 				<td class='listr'><?php echo $numconnections;?></td>
 				<td class='listr'><?php echo $rate;?></td>
 				<td class='list'>
-				<img src='/themes/<?php echo $g['theme']; ?>/images/icons/icon_x.gif' height='17' width='17' border='0'
+				<span class='glyphicon glyphicon-remove'
 					onclick="removeSource(<?php echo "'{$srcip}', '{$dstip}'"; ?>);" style='cursor:pointer;'
 					name='i:<?php echo "{$srcip}:{$dstip}"; ?>'
-					title='<?php echo gettext("Remove all source tracking entries from") . " {$srcip} " . gettext("to") . " {$dstip}";?>' alt='' />
+					title='<?php echo gettext("Remove all source tracking entries from") . " {$srcip} " . gettext("to") . " {$dstip}";?>' alt='' >
+				</span>
 				</td>
 			  </tr>
 		<?php

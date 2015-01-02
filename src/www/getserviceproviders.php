@@ -1,6 +1,6 @@
 <?php
 /*
-    getserviceproviders.php
+    Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2010 Vinicius Coque <vinicius.coque@bluepex.com>
     All rights reserved.
 
@@ -25,16 +25,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	ajax
-*/
 
-##|+PRIV
-##|*IDENT=page-getserviceproviders
-##|*NAME=AJAX: Get Service Providers
-##|*DESCR=Allow access to the 'AJAX: Service Providers' page.
-##|*MATCH=getserviceproviders.php*
-##|-PRIV
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 

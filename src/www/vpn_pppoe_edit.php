@@ -1,8 +1,6 @@
 <?php
 /*
-	vpn_pppoe_edit.php
-	part of pfSense
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
 	Copyright (C) 2010 Ermal Luçi
 	All rights reserved.
@@ -28,13 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-services-pppoeserver-edit
-##|*NAME=Services: PPPoE Server: Edit page
-##|*DESCR=Allow access to the 'Services: PPPoE Server: Edit' page.
-##|*MATCH=vpn_pppoe_edit.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("vpn.inc");

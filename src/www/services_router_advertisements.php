@@ -1,13 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	services_router_advertisements.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
-
-	part of pfSense (https://www.pfsense.org)
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.
 
@@ -32,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/rm
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-services-router-advertisements
-##|*NAME=Services: Router advertisementspage
-##|*DESCR=Allow access to the 'Services: Router Advertisements' page.
-##|*MATCH=services_router_advertisements.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

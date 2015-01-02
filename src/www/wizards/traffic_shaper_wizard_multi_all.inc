@@ -1,8 +1,6 @@
 <?php
 /*
-	traffic_shaper_wizard_multi_all.inc
-	part of pfSense (https://www.pfsense.org/)
-
+	Copyritgh (C) 2014 Deciso B.V.
 	Copyright (C) 2006 Bill Marquette - bill.marquette@gmail.com.
 	Copyright (C) 2006 Scott Ullrich - sullrich@pfsense.com.
 	Copyright (C) 2008-2010 Ermal Luçi

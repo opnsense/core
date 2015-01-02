@@ -1,11 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	firewall_rules_edit.php
-	part of pfSense (https://www.pfsense.org)
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -30,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-rules-edit
-##|*NAME=Firewall: Rules: Edit page
-##|*DESCR=Allow access to the 'Firewall: Rules: Edit' page.
-##|*MATCH=firewall_rules_edit.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("filter.inc");
@@ -600,9 +586,6 @@ if ($_POST) {
 			$input_errors[] = gettext("If you specify TCP flags that should be set you should specify out of which flags as well.");
 	}
 
-	// Allow extending of the firewall edit page and include custom input validation
-	pfSense_handle_custom_code("/usr/local/pkg/firewall_rules/input_validation");
-
 	if (!$input_errors) {
 		$filterent = array();
 		$filterent['id'] = $_POST['ruleid']>0?$_POST['ruleid']:'';
@@ -768,9 +751,6 @@ if ($_POST) {
 
 		$filterent['updated'] = make_config_revision_entry();
 
-		// Allow extending of the firewall edit page and include custom input validation
-		pfSense_handle_custom_code("/usr/local/pkg/firewall_rules/pre_write_config");
-
 		if (isset($id) && $a_filter[$id])
 			$a_filter[$id] = $filterent;
 		else {
@@ -816,7 +796,6 @@ include("head.inc");
 		<div class="container-fluid">
 
 			<div class="row">
-				<?php pfSense_handle_custom_code("/usr/local/pkg/firewall_rules/pre_input_errors"); ?>
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
@@ -831,10 +810,7 @@ include("head.inc");
 									<tr>
 										<th colspan="2" valign="top" class="listtopic"><?=gettext("Edit Firewall rule");?></th>
 									</tr>
-							<?php
-									// Allow extending of the firewall edit page and include custom input validation
-									pfSense_handle_custom_code("/usr/local/pkg/firewall_rules/htmlphpearly");
-							?>
+
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Action");?></td>
 										<td width="78%" class="vtable">
@@ -919,8 +895,7 @@ include("head.inc");
 													if (have_ruleint_access($ifgen['ifname']))
 														$interfaces[$ifgen['ifname']] = $ifgen['ifname'];
 											$ifdescs = get_configured_interface_with_descr();
-											// Allow extending of the firewall edit page and include custom input validation
-											pfSense_handle_custom_code("/usr/local/pkg/firewall_rules/pre_interfaces_edit");
+
 											foreach ($ifdescs as $ifent => $ifdesc)
 												if(have_ruleint_access($ifent))
 														$interfaces[$ifent] = $ifdesc;
@@ -1704,10 +1679,7 @@ include("head.inc");
 												</div>
 											</td>
 										</tr>
-							<?php
-									// Allow extending of the firewall edit page and include custom input validation
-									pfSense_handle_custom_code("/usr/local/pkg/firewall_rules/htmlphplate");
-							?>
+
 							<?php
 							$has_created_time = (isset($a_filter[$id]['created']) && is_array($a_filter[$id]['created']));
 							$has_updated_time = (isset($a_filter[$id]['updated']) && is_array($a_filter[$id]['updated']));

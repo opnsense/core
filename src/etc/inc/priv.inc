@@ -179,42 +179,51 @@ function get_user_privdesc(& $user) {
 	return $privs;
 }
 
-function isAllowed($username, $page) {
+function isAllowed($username, $page)
+{
 	global $_SESSION;
 
-	if (!isset($username))
+	if (!isset($username)) {
 		return false;
+	}
 
-	/* admin/root access check */
+	/* root access check */
 	$user = getUserEntry($username);
-	if (isset($user))
-		if (isset($user['uid']))
-			if ($user['uid']==0)
+	if (isset($user)) {
+		if (isset($user['uid'])) {
+			if ($user['uid'] == 0) {
 				return true;
+			}
+		}
+	}
 
 	/* user privelege access check */
-	if (cmp_page_matches($page, $_SESSION['page-match']))
+	if (cmp_page_matches($page, $_SESSION['page-match'])) {
 		return true;
+	}
 
 	return false;
 }
 
-
-function isAllowedPage($page) {
+function isAllowedPage($page)
+{
 	global $_SESSION;
-
 
 	$username = $_SESSION['Username'];
 
-	if (!isset($username))
+	if (!isset($username)) {
 		return false;
+	}
 
-	/* admin/root access check */
+	/* root access check */
 	$user = getUserEntry($username);
-	if (isset($user))
-		if (isset($user['uid']))
-			if ($user['uid']==0)
+	if (isset($user)) {
+		if (isset($user['uid'])) {
+			if ($user['uid'] == 0) {
 				return true;
+			}
+		}
+	}
 
 	/* user privelege access check */
 	return cmp_page_matches($page, $_SESSION['page-match']);

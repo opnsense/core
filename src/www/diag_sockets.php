@@ -1,8 +1,6 @@
 <?php
-
-/* $Id$ */
 /*
-	diag_sockets.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2012
 	All rights reserved.
 
@@ -28,16 +26,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/sockstat
-*/
-##|+PRIV
-##|*IDENT=page-diagnostics-sockets
-##|*NAME=Diagnostics: Sockets page
-##|*DESCR=Allow access to the 'Diagnostics: Sockets' page.
-##|*MATCH=diag_sockets.php*
-##|-PRIV
 
 include('guiconfig.inc');
 

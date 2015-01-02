@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-    part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
 
@@ -26,9 +24,6 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-*/
-/*
-	pfSense_MODULE:	auth
 */
 
 require("guiconfig.inc");

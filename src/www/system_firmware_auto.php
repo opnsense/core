@@ -1,11 +1,8 @@
 <?php
-/* $Id$ */
 /*
-	system_firmware_auto.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
 	Copyright (C) 2005 Scott Ullrich
-
-	Based originally on system_firmware.php
 	(C)2003-2004 Manuel Kasper
 	All rights reserved.
 
@@ -30,17 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/tar	/usr/bin/nohup	/bin/cat	/sbin/sha256
-	pfSense_MODULE:	firmware
-*/
-
-##|+PRIV
-##|*IDENT=page-system-firmware-checkforupdate
-##|*NAME=System: Firmware: Check For Update page
-##|*DESCR=Allow access to the 'System: Firmware: Check For Update' page.
-##|*MATCH=system_firmware_auto.php*
-##|-PRIV
 
 $nocsrf = true;
 

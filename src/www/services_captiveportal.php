@@ -1,8 +1,6 @@
 <?php
 /*
-	services_captiveportal.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -27,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-services-captiveportal
-##|*NAME=Services: Captive portal page
-##|*DESCR=Allow access to the 'Services: Captive portal' page.
-##|*MATCH=services_captiveportal.php*
-##|-PRIV
 
 require_once("functions.inc");
 require_once("filter.inc");
@@ -574,7 +562,7 @@ function enable_change(enable_change) {
 											<?=gettext("minutes"); ?><br />
 										  <?=gettext("Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard timeout (not recommended unless an idle timeout is set)."); ?></td>
 										</tr>
-<!--										
+<!--
 										<tr>
 										  <td width="22%" valign="top" class="vncell"><?=gettext("Pass-through credits allowed per MAC address"); ?></td>
 										  <td width="78%" class="vtable">
@@ -596,7 +584,7 @@ function enable_change(enable_change) {
 											<strong><?=gettext("Enable waiting period reset on attempted access"); ?></strong><br />
 											<?=gettext("If enabled, the waiting period is reset to the original duration if access is attempted when all pass-through credits have already been exhausted."); ?></td>
 										</tr>
--->										
+-->
 										<tr>
 										  <td width="22%" valign="top" class="vncell"><?=gettext("Logout popup window"); ?></td>
 										  <td width="78%" class="vtable">
@@ -619,7 +607,7 @@ function enable_change(enable_change) {
 									<?=gettext("If you provide a URL here, clients will be redirected to that URL instead of the one they initially tried " .
 									"to access after they've authenticated."); ?></td>
 										</tr>
-<!--										
+<!--
 										<tr>
 											<td valign="top" class="vncell"><?=gettext("Blocked MAC address redirect URL"); ?> </td>
 											<td class="vtable">
@@ -627,7 +615,7 @@ function enable_change(enable_change) {
 												<?php printf(gettext("If you provide a URL here, MAC addresses set to be blocked will be redirect to that URL when attempt to access anything."));?>
 											</td>
 										</tr>
--->										
+-->
 										<tr>
 									      <td valign="top" class="vncell"><?=gettext("Concurrent user logins"); ?></td>
 									      <td class="vtable">
@@ -635,7 +623,7 @@ function enable_change(enable_change) {
 										<strong><?=gettext("Disable concurrent logins"); ?></strong><br />
 										<?=gettext("If this option is set, only the most recent login per username will be active. Subsequent logins will cause machines previously logged in with the same username to be disconnected."); ?></td>
 										</tr>
-<!--										
+<!--
 										<tr>
 									      <td valign="top" class="vncell"><?=gettext("Per-user bandwidth restriction"); ?></td>
 									      <td class="vtable">
@@ -653,7 +641,7 @@ function enable_change(enable_change) {
 									        <br />
 									        <?=gettext("If this option is set, the captive portal will restrict each user who logs in to the specified default bandwidth. RADIUS can override the default settings. Leave empty or set to 0 for no limit."); ?> </td>
 										</tr>
--->										
+-->
 										<tr>
 										  <td width="22%" valign="top" class="vncell"><?=gettext("Authentication"); ?></td>
 										  <td width="78%" class="vtable">

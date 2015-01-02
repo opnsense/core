@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -27,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_MODULE:	dhcpserver
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-logs-dhcp
-##|*NAME=Diagnostics: Logs: DHCP page
-##|*DESCR=Allow access to the 'Diagnostics: Logs: DHCP' page.
-##|*MATCH=diag_logs_dhcp.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

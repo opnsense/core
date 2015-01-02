@@ -1,14 +1,6 @@
 <?php
 /*
-	$Id: thermal_sensors.widget.php
-	Description: Thermal Sensors Widget.
-		NOTE: depends on proper cofing in System >> Advanced >> Miscellaneous tab >> Thermal Sensors section.
-
-	File location:
-		\usr\local\www\widgets\widgets\
-	Depends on:
-		\usr\local\www\widgets\javascript\thermal_sensors.js
-		\usr\local\www\widgets\include\thermal_sensors.inc
+	Copyright (C) 2014 Deciso B.V.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
@@ -32,6 +24,17 @@
 	POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+Description: Thermal Sensors Widget.
+		NOTE: depends on proper cofing in System >> Advanced >> Miscellaneous tab >> Thermal Sensors section.
+
+	File location:
+		\usr\local\www\widgets\widgets\
+	Depends on:
+		\usr\local\www\widgets\javascript\thermal_sensors.js
+		\usr\local\www\widgets\include\thermal_sensors.inc
+*/
+
 require_once("guiconfig.inc");
 require_once("/usr/local/www/widgets/include/thermal_sensors.inc");
 
@@ -49,8 +52,8 @@ const WIDGETS_CONFIG_SECTION_KEY = "widgets";
 const THERMAL_SENSORS_WIDGET_SUBSECTION_KEY = "thermal_sensors_widget";
 
 //default constants
-const DEFAULT_WARNING_THRESHOLD = 60; //60 C
-const DEFAULT_CRITICAL_THRESHOLD = 70; //70 C
+const DEFAULT_WARNING_THRESHOLD = 70; //60 C
+const DEFAULT_CRITICAL_THRESHOLD = 80; //70 C
 const MIN_THRESHOLD_VALUE = 1; //deg C
 const MAX_THRESHOLD_VALUE = 100; //deg C
 
@@ -168,7 +171,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 <input type="hidden" id="thermal_sensors-config" name="thermal_sensors-config" value="" />
 <div id="thermal_sensors-settings" class="widgetconfigdiv" style="display:none;">
 	<form action="/widgets/widgets/thermal_sensors.widget.php" method="post" id="iform_thermal_sensors_settings" name="iform_thermal_sensors_settings">
-	<table width="100%" border="0" summary="thermal sensors widget">
+	<table class="table table-striped" width="100%" border="0" summary="thermal sensors widget">
 		<tr>
 		<td align="left" colspan="2">
 			<span style="font-weight: bold" >Thresholds in &deg;C (1 to 100):</span>
@@ -178,7 +181,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 		</td>
 		</tr>
 		<tr>
-		<td align="right">
+		<td>
 			Zone Warning:
 		</td>
 		<td>
@@ -187,7 +190,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 			   id="thermal_sensors_widget_zone_warning_threshold"
 			   value="<?= $thermal_sensors_widget_zoneWarningTempThreshold; ?>" />
 		</td>
-		<td align="right">
+		<td>
 			<label for="thermal_sensors_widget_show_raw_output">Show raw output (no graph): </label>
 			<input type="checkbox"
 			   id="thermal_sensors_widget_show_raw_output"
@@ -196,7 +199,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 		</td>
 		</tr>
 		<tr>
-		<td align="right">
+		<td>
 			Zone Critical:
 		</td>
 		<td>
@@ -205,7 +208,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 			   id="thermal_sensors_widget_zone_critical_threshold"
 			   value="<?= $thermal_sensors_widget_zoneCriticalTempThreshold; ?>" />
 		</td>
-		<td align="right">
+		<td>
 			<label for="thermal_sensors_widget_show_full_sensor_name">Show full sensor name: </label>
 			<input type="checkbox"
 			   id="thermal_sensors_widget_show_full_sensor_name"
@@ -214,7 +217,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 		</td>
 		</tr>
 		<tr>
-		<td align="right">
+		<td>
 			Core Warning:
 		</td>
 		<td>
@@ -223,7 +226,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 			   id="thermal_sensors_widget_core_warning_threshold"
 			   value="<?= $thermal_sensors_widget_coreWarningTempThreshold ?>" />
 		</td>
-		<td align="right">
+		<td>
 			<label for="thermal_sensors_widget_pulsate_warning">Pulsate Warning: </label>
 			<input type="checkbox"
 			   id="thermal_sensors_widget_pulsate_warning"
@@ -232,7 +235,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 		</td>
 		</tr>
 		<tr>
-		<td align="right">
+		<td>
 			Core Critical:
 		</td>
 		<td>
@@ -241,7 +244,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 			   id="thermal_sensors_widget_core_critical_threshold"
 			   value="<?= $thermal_sensors_widget_coreCriticalTempThreshold ?>" />
 		</td>
-		<td align="right">
+		<td>
 			<label for="thermal_sensors_widget_pulsate_critical">Pulsate Critical: </label>
 			<input type="checkbox"
 			   id="thermal_sensors_widget_pulsate_critical"
@@ -250,12 +253,12 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 		</td>
 		</tr>
 		<tr>
-		<td align="right" colspan="3">
-			<input type="submit" id="thermal_sensors_widget_submit" name="thermal_sensors_widget_submit" class="formbtn" value="Save" />
+		<td colspan="3">
+			<input type="submit" id="thermal_sensors_widget_submit" name="thermal_sensors_widget_submit" class="btn btn-primary formbtn" value="Save" />
 		</td>
 		</tr>
 		<tr>
-		<td align="left" colspan="3">
+		<td colspan="3">
 			<span>* You can configure a proper Thermal Sensor / Module under <br />
 			&nbsp;&nbsp;&nbsp;<a href="system_advanced_misc.php">System &gt; Advanced &gt; Miscellaneous : Thermal Sensors section</a>.</span>
 		</td>

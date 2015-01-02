@@ -1,7 +1,6 @@
 <?php
 /*
-    system_authservers.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2010 Ermal Luçi
     Copyright (C) 2008 Shrew Soft Inc.
     All rights reserved.
@@ -27,16 +26,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	auth
-*/
-
-##|+PRIV
-##|*IDENT=page-system-authservers
-##|*NAME=System: Authentication Servers
-##|*DESCR=Allow access to the 'System: Authentication Servers' page.
-##|*MATCH=system_authservers.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("auth.inc");

@@ -1,9 +1,7 @@
 #!/usr/local/bin/php
 <?php
-/* $Id$ */
 /*
-	status_queues.php
-        Part of the pfSense project
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004, 2005 Scott Ullrich
 	Copyright (C) 2009 Ermal Luçi
 	All rights reserved.
@@ -29,17 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/pfctl
-	pfSense_MODULE:	shaper
-*/
-
-##|+PRIV
-##|*IDENT=page-status-trafficshaper-queues
-##|*NAME=Status: Traffic shaper: Queues page
-##|*DESCR=Allow access to the 'Status: Traffic shaper: Queues' page.
-##|*MATCH=status_queues.php*
-##|-PRIV
 
 header("Last-Modified: " . gmdate( "D, j M Y H:i:s" ) . " GMT" );
 header("Expires: " . gmdate( "D, j M Y H:i:s", time() ) . " GMT" );

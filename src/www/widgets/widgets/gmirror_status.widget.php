@@ -1,6 +1,6 @@
 <?php
 /*
-    gmirror_status.widget.php
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2009-2010 Jim Pingle
 
     Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,16 @@ if ($_GET['textonly'] == "true") {
 
 <script type="text/javascript">
 //<![CDATA[
-	var gmirrorupdater = new Ajax.PeriodicalUpdater('gmirror_status_table', '/widgets/widgets/gmirror_status.widget.php?textonly=true',
-	  { method: 'get', frequency: 5 } );
+
+var gmirrorupdater = function() {
+    jQuery.ajax({
+        url: '/widgets/widgets/gmirror_status.widget.php?textonly=true',
+        dataType: 'text',
+        success: function(code) {
+            jQuery("#gmirror_status_table").html(code);
+        }
+    });
+};
+setInterval(gmirrorupdater, 5000);
 //]]>
 </script>

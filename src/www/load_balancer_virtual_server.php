@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	load_balancer_virtual_server.php
-	part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005-2008 Bill Marquette <bill.marquette@gmail.com>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-services-loadbalancer-virtualservers
-##|*NAME=Services: Load Balancer: Virtual Servers page
-##|*DESCR=Allow access to the 'Services: Load Balancer: Virtual Servers' page.
-##|*MATCH=load_balancer_virtual_server.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("functions.inc");

@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	firewall_nat_npt_edit.php
-	part of pfSense (https://www.pfsense.org)
-
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	nat
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-nat-npt-edit
-##|*NAME=Firewall: NAT: NPt: Edit page
-##|*DESCR=Allow access to the 'Firewall: NAT: NPt: Edit' page.
-##|*MATCH=firewall_nat_npt_edit.php*
-##|-PRIV
 
 function natnptcmp($a, $b) {
 	return ipcmp($a['external'], $b['external']);

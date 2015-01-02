@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	status_lb_vs.php
-	part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.
 
@@ -28,17 +25,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/relayctl
-	pfSense_MODULE:	routing
-*/
 
-##|+PRIV
-##|*IDENT=page-status-loadbalancer-virtualserver
-##|*NAME=Status: Load Balancer: Virtual Server page
-##|*DESCR=Allow access to the 'Status: Load Balancer: Virtual Server' page.
-##|*MATCH=status_lb_vs.php*
-##|-PRIV
 
 require_once("guiconfig.inc");
 require_once("vslb.inc");

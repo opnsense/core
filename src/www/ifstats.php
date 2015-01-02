@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	ifstats.php
-	part of pfSense (https://www.pfsense.org)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005-2006 Scott Ullrich (sullrich@gmail.com)
 	All rights reserved.
 
@@ -28,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES: /usr/bin/netstat
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-xmlrpcinterfacestats
-##|*NAME=XMLRPC Interface Stats page
-##|*DESCR=Allow access to the 'XMLRPC Interface Stats' page.
-##|*MATCH=ifstats.php*
-##|-PRIV
 
 	require_once('guiconfig.inc');
 	require_once("interfaces.inc");

@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	status_dhcp_leases.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
 	All rights reserved.
 
@@ -30,18 +29,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/awk	/bin/cat	/usr/sbin/arp	/usr/bin/wc	/usr/bin/grep
-	pfSense_MODULE:	dhcpserver
-*/
-
-##|+PRIV
-##|*IDENT=page-status-dhcpleases
-##|*NAME=Status: DHCP leases page
-##|*DESCR=Allow access to the 'Status: DHCP leases' page.
-##|*MATCH=status_dhcp_leases.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("config.inc");

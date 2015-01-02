@@ -1,7 +1,6 @@
 <?php
 /*
-	system_crlmanager.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Jim Pingle
 	All rights reserved.
 
@@ -26,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	certificate_managaer
-*/
-
-##|+PRIV
-##|*IDENT=page-system-crlmanager
-##|*NAME=System: CRL Manager
-##|*DESCR=Allow access to the 'System: CRL Manager' page.
-##|*MATCH=system_crlmanager.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("certs.inc");

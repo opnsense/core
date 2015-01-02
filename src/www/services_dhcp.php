@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	services_dhcp.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/rm
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dhcpserver
-##|*NAME=Services: DHCP server page
-##|*DESCR=Allow access to the 'Services: DHCP server' page.
-##|*MATCH=services_dhcp.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("filter.inc");
@@ -584,6 +570,7 @@ include("head.inc");
 
 ?>
 
+<body>
 <script type="text/javascript" src="/javascript/row_helper.js">
 </script>
 
@@ -699,9 +686,7 @@ include("head.inc");
 	}
 //]]>
 </script>
-</head>
 
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
@@ -735,10 +720,15 @@ include("head.inc");
 							$tabscounter++;
 						}
 						if ($tabscounter == 0) {
-							echo "</td></tr></table></form>";
-							include("fend.inc");
-							echo "</body>";
-							echo "</html>";
+							//echo "</td></tr></table></form>";
+							//include("fend.inc");
+							//echo "</body>";
+							//echo "</html>";
+							echo "</section>";
+							echo "</div>";
+							echo "</div>";
+							echo "</section>";
+							include("foot.inc");
 							exit;
 						}
 						display_top_tabs($tab_array);
@@ -1167,7 +1157,6 @@ include("head.inc");
 											</tbody>
 											</table>
 											<a onclick="javascript:addRowTo('maintable', 'form-controlalias'); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-											</a>
 											<script type="text/javascript">
 											//<![CDATA[
 												field_counter_js = 3;

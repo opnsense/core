@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	interfaces_qinq.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Ermal Luçi
 	All rights reserved.
 
@@ -26,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/sbin/ngctl
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces-qinq
-##|*NAME=Interfaces: QinQ page
-##|*DESCR=Allow access to the 'Interfaces: QinQ' page.
-##|*MATCH=interfaces_qinq.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");

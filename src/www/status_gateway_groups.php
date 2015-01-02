@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	status_gateway_groups.php
-	part of pfSense (https://www.pfsense.org)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	routing
-*/
-
-##|+PRIV
-##|*IDENT=page-status-gatewaygroups
-##|*NAME=Status: Gateway Groups page
-##|*DESCR=Allow access to the 'Status: Gateway Groups' page.
-##|*MATCH=status_gateway_groups.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

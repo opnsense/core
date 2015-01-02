@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	status_filter_reload.php
 	Copyright (C) 2006 Scott Ullrich
@@ -26,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-status-filterreloadstatus
-##|*NAME=Status: Filter Reload Status page
-##|*DESCR=Allow access to the 'Status: Filter Reload Status' page.
-##|*MATCH=status_filter_reload.php*
-##|-PRIV
 
 require_once("globals.inc");
 require_once("guiconfig.inc");

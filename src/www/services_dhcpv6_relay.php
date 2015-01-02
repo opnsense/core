@@ -1,7 +1,6 @@
 <?php
 /*
-	services_dhcpv6_relay.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Justin Ellison <justin@techadvise.com>.
 	Copyright (C) 2010	Ermal Luçi
 	Copyright (C) 2010	Seth Mos
@@ -28,16 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	dhcpv6relay
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dhcpv6relay
-##|*NAME=Services: DHCPv6 Relay page
-##|*DESCR=Allow access to the 'Services: DHCPv6 Relay' page.
-##|*MATCH=services_dhcpv6_relay.php*
-##|-PRIV
 
 require("guiconfig.inc");
 
@@ -105,6 +94,8 @@ include("head.inc");
 
 ?>
 
+<body>
+
 <script type="text/javascript">
 //<![CDATA[
 function enable_change(enable_over) {
@@ -120,10 +111,7 @@ function enable_change(enable_over) {
 }
 //]]>
 </script>
-</head>
 
-
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

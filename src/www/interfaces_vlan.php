@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	interfaces_vlan.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces-vlan
-##|*NAME=Interfaces: VLAN page
-##|*DESCR=Allow access to the 'Interfaces: VLAN' page.
-##|*MATCH=interfaces_vlan.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

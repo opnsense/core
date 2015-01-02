@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	services_dnsmasq.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	dnsforwarder
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dnsforwarder
-##|*NAME=Services: DNS Forwarder page
-##|*DESCR=Allow access to the 'Services: DNS Forwarder' page.
-##|*MATCH=services_dnsmasq.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");
@@ -152,6 +139,8 @@ include("head.inc");
 
 ?>
 
+<body>
+
 <script type="text/javascript">
 //<![CDATA[
 function enable_change(enable_over) {
@@ -168,10 +157,7 @@ function show_advanced_dns() {
 }
 //]]>
 </script>
-</head>
 
-
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

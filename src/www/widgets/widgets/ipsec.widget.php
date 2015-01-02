@@ -1,10 +1,7 @@
 <?php
 /*
-        $Id$
-        Copyright 2007 Scott Dale
-        Part of pfSense widgets (https://www.pfsense.org)
-        originally based on m0n0wall (http://m0n0.ch/wall)
-
+        Copyright (C) 2014 Deciso B.V.
+        Copyright (C) 2007 Scott Dale
         Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
         and Jonathan Watt <jwatt@jwatt.org>.
         All rights reserved.
@@ -136,7 +133,7 @@ if (isset($config['ipsec']['phase1'])){?>
 					<?php echo htmlspecialchars($ipsec['src']);?>
 				<?php echo $spane;?>
 			</div>
-			<divstyle="display:table-cell;width:100px"><?php echo $spans;?>
+			<div style="display:table-cell;width:100px"><?php echo $spans;?>
 				<?php echo $ipsec['remote-subnet'];?>
 				<br />
 				(<?php echo htmlspecialchars($ipsec['dest']);?>)<?php echo $spane;?>
@@ -147,13 +144,13 @@ if (isset($config['ipsec']['phase1'])){?>
 
 			if($ipsec['status'] == "true") {
 				/* tunnel is up */
-				$iconfn = "interface_up";
+				$iconfn = "text-success";
 			} else {
 				/* tunnel is down */
-				$iconfn = "interface_down";
+				$iconfn = "text-danger";
 			}
 
-			echo "<img src ='/themes/{$g['theme']}/images/icons/icon_{$iconfn}.gif' alt='Tunnel status' width='11' height='11' />";
+			echo "<span class='glyphicon glyphicon-transfer ".$iconfn."' alt='Tunnel status'></span>";
 
 			?><?php echo $spane;?></div>
 		</div>

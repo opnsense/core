@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	system_advanced_notifications.php
-	part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
 
 	Redistribution and use in source and binary forms, with or without
@@ -26,16 +24,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-system-advanced-notifications
-##|*NAME=System: Advanced: Notifications page
-##|*DESCR=Allow access to the 'System: Advanced: Notifications' page.
-##|*MATCH=system_advanced_notifications.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("notices.inc");

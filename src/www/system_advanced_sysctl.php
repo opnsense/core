@@ -1,13 +1,8 @@
 <?php
-/* $Id$ */
 /*
-	system_advanced_misc.php
-	part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005-2007 Scott Ullrich
-
 	Copyright (C) 2008 Shrew Soft Inc
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -32,16 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-system-advanced-sysctl
-##|*NAME=System: Advanced: Tunables page
-##|*DESCR=Allow access to the 'System: Advanced: Tunables' page.
-##|*MATCH=system_advanced_sysctl.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

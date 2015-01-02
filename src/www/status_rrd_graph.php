@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	status_rrd_graph.php
-	Part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2007 Seth Mos <seth.mos@dds.nl>
 	All rights reserved.
 
@@ -27,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	system
-*/
-
-##|+PRIV
-##|*IDENT=page-status-rrdgraphs
-##|*NAME=Status: RRD Graphs page
-##|*DESCR=Allow access to the 'Status: RRD Graphs' page.
-##|*MATCH=status_rrd_graph.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("filter.inc");

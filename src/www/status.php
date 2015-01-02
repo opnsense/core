@@ -1,12 +1,8 @@
 <?php
-/* $Id$ */
-/* Run various commands and collect their output into HTML tables.
- * Jim McBeath <jimmc@macrovision.com> Nov 2003
- *
- * (modified for m0n0wall by Manuel Kasper <mk@neon1.net>)
- * (modified for pfSense by Scott Ullrich geekgod@pfsense.com)
- */
 /*
+	Copyright (C) Scott Ullrich geekgod@pfsense.com
+	Copyright (C) Manuel Kasper <mk@neon1.net>
+	Copyright (C) 2003 Jim McBeath <jimmc@macrovision.com>
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
 
@@ -28,18 +24,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/vmstat	/usr/bin/netstat	/sbin/dmesg	/sbin/mount	/sbin/setkey	/usr/local/sbin/pftop
-	pfSense_BUILDER_BINARIES:	/sbin/pfctl	/sbin/sysctl	/usr/bin/top	/usr/bin/netstat	/sbin/pfctl	/sbin/ifconfig
-	pfSense_MODULE:	support
-*/
-
-##|+PRIV
-##|*IDENT=page-hidden-detailedstatus
-##|*NAME=Hidden: Detailed Status page
-##|*DESCR=Allow access to the 'Hidden: Detailed Status' page.
-##|*MATCH=status.php*
-##|-PRIV
 
 /* Execute a command, with a title, and generate an HTML table
  * showing the results.

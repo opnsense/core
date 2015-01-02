@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	services_unbound_acls.php
-	part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2011 Warren Baker <warren@decoy.co.za>
 	All rights reserved.
 

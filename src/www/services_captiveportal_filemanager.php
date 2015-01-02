@@ -1,8 +1,6 @@
 <?php
 /*
-	services_captiveportal_filemanager.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005-2006 Jonathan De Graeve (jonathan.de.graeve@imelda.be)
 	and Paul Taylor (paultaylor@winn-dixie.com).
 	All rights reserved.
@@ -28,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-services-captiveportal-filemanager
-##|*NAME=Services: Captive portal: File Manager page
-##|*DESCR=Allow access to the 'Services: Captive portal: File Manager' page.
-##|*MATCH=services_captiveportal_filemanager.php*
-##|-PRIV
 
 function cpelementscmp($a, $b) {
 	return strcasecmp($a['name'], $b['name']);

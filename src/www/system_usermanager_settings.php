@@ -1,11 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	part of pfSense (https://www.pfsense.org/)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
-	All rights reserved.
-
 	Copyright (C) 2007 Bill Marquette <bill.marquette@gmail.com>
 	All rights reserved.
 
@@ -30,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	auth
-*/
-
-##|+PRIV
-##|*IDENT=page-system-usermanager-settings
-##|*NAME=System: User Manager: settings page
-##|*DESCR=Allow access to the 'System: User Manager: settings' page.
-##|*MATCH=system_usermanager_settings.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

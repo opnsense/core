@@ -1,9 +1,8 @@
 <?php
 /*
-	interfaces_assign.php
-	part of m0n0wall (http://m0n0.ch/wall)
-	Written by Jim McBeath based on existing m0n0wall files
 
+	Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) Jim McBeath
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,17 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/rm
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces-assignnetworkports
-##|*NAME=Interfaces: Assign network ports page
-##|*DESCR=Allow access to the 'Interfaces: Assign network ports' page.
-##|*MATCH=interfaces_assign.php*
-##|-PRIV
 
 $pgtitle = array(gettext("Interfaces"),gettext("Assign network ports"));
 $shortcut_section = "interfaces";
@@ -454,7 +442,6 @@ if(file_exists("/var/run/interface_mismatch_reboot_needed"))
 			} elseif($savemsg)
 				print_info_box($savemsg);
 
-			pfSense_handle_custom_code("/usr/local/pkg/interfaces_assign/pre_input_errors");
 			if ($input_errors)
 				print_input_errors($input_errors);
 			?>
@@ -582,5 +569,3 @@ if(file_exists("/var/run/interface_mismatch_reboot_needed"))
 	</section>
 
 <?php include("foot.inc"); ?>
-</body>
-</html>

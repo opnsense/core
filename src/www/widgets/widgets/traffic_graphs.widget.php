@@ -1,10 +1,7 @@
 <?php
 /*
-	$Id$
+	Copuyright (C) 20124 Deciso B.V.
 	Copyright 2007 Scott Dale
-	Part of pfSense widgets (https://www.pfsense.org)
-	originally based on m0n0wall (http://m0n0.ch/wall)
-
 	Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
 	and Jonathan Watt <jwatt@jwatt.org>.
 	All rights reserved.
@@ -38,11 +35,6 @@ require_once("pfsense-utils.inc");
 require_once("functions.inc");
 
 $first_time = false;
-
-//var_dump($config["widgets"]["trafficgraphs"]);
-//$config["widgets"]["trafficgraphs"]["shown"]["item"][1]="lan";
-//write_config(gettext("Widget configuration has been changed."));
-
 
 if (!is_array($config["widgets"]["trafficgraphs"])) {
 	$first_time = true;

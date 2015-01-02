@@ -1,10 +1,7 @@
 <?php
 /*
-        $Id$
-        Copyright 2007 Scott Dale
-        Part of pfSense widgets (https://www.pfsense.org)
-        originally based on m0n0wall (http://m0n0.ch/wall)
-
+        Copyright (C) 2014 Deciso B.V.
+        Copyright (c) 2007 Scott Dale
         Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
         and Jonathan Watt <jwatt@jwatt.org>.
         All rights reserved.
@@ -129,7 +126,7 @@ if($_REQUEST['updateme']) {
 	}
 ?>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="clock">
+<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="clock">
 	<tbody>
 		<tr>
 			<td width="40%" class="vncellt">Sync Source</td>
@@ -450,7 +447,7 @@ function clockUpdate()
 </script>
 
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="clock">
+<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="clock">
 	<tbody>
 		<tr>
 			<td width="40%" class="vncellt">Server Time</td>

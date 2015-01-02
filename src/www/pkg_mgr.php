@@ -1,10 +1,8 @@
 <?php
-/* $Id$ */
 /*
-	pkg_mgr.php
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004-2012 Scott Ullrich <sullrich@gmail.com>
 	Copyright (C) 2013 Marcello Coutinho
-
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -28,17 +26,8 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig
-	pfSense_MODULE:	pkgs
-*/
 
-##|+PRIV
-##|*IDENT=page-system-packagemanager
-##|*NAME=System: Package Manager page
-##|*DESCR=Allow access to the 'System: Package Manager' page.
-##|*MATCH=pkg_mgr.php*
-##|-PRIV
+/* We will probably remove the current packagemanager entirely, for now it has been updated but its not in use */
 
 ini_set('max_execution_time', '0');
 
@@ -119,8 +108,8 @@ include("head.inc");
 
 				<?php
 				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
-				if (!verify_all_package_servers())
-					print_info_box(package_server_mismatch_message());
+				/*if (!verify_all_package_servers())
+					print_info_box(package_server_mismatch_message());*/
 
 				/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
 				if (check_package_server_ssl() === false)
@@ -233,7 +222,7 @@ include("head.inc");
 
 													/* get history/changelog git dir */
 													$commit_dir=explode("/",$index['config_file']);
-													$changeloglink = "https://github.com/pfsense/pfsense-packages/commits/master/config/";
+													$changeloglink = "https://github.com/opsense/packages/commits/master/config/";
 													if ($commit_dir[(count($commit_dir)-2)] == "config")
 														$changeloglink .= $commit_dir[(count($commit_dir)-1)];
 													else
@@ -244,7 +233,7 @@ include("head.inc");
 														$pkginfolink = $index['pkginfolink'];
 														$pkginfo=gettext("Package info");
 													} else {
-														$pkginfolink = "https://forum.pfsense.org/index.php/board,15.0.html";
+														$pkginfolink = "http://forum.opsense.org/index.php";
 														$pkginfo=gettext("No package info, check the forum");
 													}
 

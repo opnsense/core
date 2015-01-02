@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-    diag_system_pftop.php
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2008-2009 Scott Ullrich
     All rights reserved.
 
@@ -26,17 +25,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_MODULE:	filter
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-system-pftop
-##|*NAME=Diagnostics: pfTop
-##|*DESCR=Allows access to the 'Diagnostics: pfTop' page
-##|*MATCH=diag_system_pftop.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

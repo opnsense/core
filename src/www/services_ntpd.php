@@ -1,7 +1,6 @@
 <?php
 /*
-	services_ntpd.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2013	Dagorlad
 	Copyright (C) 2012	Jim Pingle
 	All rights reserved.
@@ -27,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	ntpd
-*/
-
-##|+PRIV
-##|*IDENT=page-services-ntpd
-##|*NAME=Services: NTP
-##|*DESCR=Allow access to the 'Services: NTP' page.
-##|*MATCH=services_ntpd.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once('rrd.inc');
@@ -181,6 +170,7 @@ $shortcut_section = "ntp";
 include("head.inc");
 
 ?>
+<body>
 
 <script type="text/javascript">
 //<![CDATA[
@@ -220,9 +210,7 @@ include("head.inc");
 	}
 //]]>
 </script>
-</head>
 
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

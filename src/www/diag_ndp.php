@@ -28,18 +28,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/bin/cat		/usr/sbin/arp
-	pfSense_MODULE:	arp
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-ndptable
-##|*NAME=Diagnostics: NDP Table page
-##|*DESCR=Allow access to the 'Diagnostics: NDP Table' page.
-##|*MATCH=diag_ndp.php*
-##|-PRIV
-
 @ini_set('zlib.output_compression', 0);
 @ini_set('implicit_flush', 1);
 

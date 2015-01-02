@@ -1,12 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	halt.php
-	part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
-	All rights reserved.
-
-	part of m0n0wall as reboot.php (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -31,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	header
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-haltsystem
-##|*NAME=Diagnostics: Halt system page
-##|*DESCR=Allow access to the 'Diagnostics: Halt system' page.
-##|*MATCH=halt.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require("functions.inc");

@@ -29,18 +29,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_MODULE:	ipsec
-*/
-
-##|+PRIV
-##|*IDENT=page-status-ipsec
-##|*NAME=Status: IPsec page
-##|*DESCR=Allow access to the 'Status: IPsec' page.
-##|*MATCH=diag_ipsec.php*
-##|-PRIV
-
-
 global $g;
 
 $pgtitle = array(gettext("Status"),gettext("IPsec"));
@@ -121,11 +109,11 @@ $status = ipsec_smp_dump_status();
 												$ipsecconnected[$con_id] = $con_id;
 
 												if (ipsec_phase1_status($status['query']['ikesalist']['ikesa'], $ikesa['id'])) {
-													$icon = "pass";
+													$icon = "glyphicon glyphicon-play text-success";
 												} elseif(!isset($config['ipsec']['enable'])) {
-													$icon = "block";
+													$icon = "glyphicon glyphicon-remove text-danger";
 												} else {
-													$icon = "reject";
+													$icon = "glyphicon glyphicon-remove text-warning";
 												}
 									?>
 												<tr>
@@ -218,25 +206,25 @@ $status = ipsec_smp_dump_status();
 													</td>
 													<td class="listr">
 														<center>
-															<img src ="/themes/<?php echo $g['theme']; ?>/images/icons/icon_<?php echo $icon; ?>.gif" title="<?php echo $ikesa['status']; ?>" alt=""/>
+															<span class="<?php echo $icon; ?>" title="<?php echo $ikesa['status']; ?>" alt=""></span>
 															<br/><?php echo htmlspecialchars($ikesa['status']);?>
 															<br/><?php echo htmlspecialchars($ikesa['established']);?>
 														</center>
 													</td>
 													<td >
-													<?php if ($icon != "pass"): ?>
+													<?php if ($icon != "glyphicon glyphicon-play text-success"): ?>
 														<center>
 															<a href="diag_ipsec.php?act=connect&amp;ikeid=<?php echo $con_id; ?>">
-															<img src ="/themes/<?php echo $g['theme']; ?>/images/icons/icon_service_start.gif" alt="Connect VPN" title="Connect VPN" border="0"/>
+															<span class="glyphicon glyphicon-play text-default" alt="Connect VPN" title="Connect VPN"></span>
 															</a>
 														</center>
 													<?php else: ?>
 														<center>
 															<a href="diag_ipsec.php?act=ikedisconnect&amp;ikeid=<?php echo $con_id; ?>">
-															<img src ="/themes/<?php echo $g['theme']; ?>/images/icons/icon_service_stop.gif" alt="Disconnect VPN" title="Disconnect VPN" border="0"/>
+															<span class="glyphicon glyphicon-stop text-default" alt="Disconnect VPN" title="Disconnect VPN"></span>
 															</a>
 															<a href="diag_ipsec.php?act=ikedisconnect&amp;ikeid=<?php echo $con_id; ?>&amp;ikesaid=<?php echo $ikesa['id']; ?>">
-															<img src ="/themes/<?php echo $g['theme']; ?>/images/icons/icon_x.gif" alt="Disconnect VPN Connection" title="Disconnect VPN Connection" border="0"/>
+															<span class="glyphicon glyphicon-remove text-default" alt="Disconnect VPN Connection" title="Disconnect VPN Connection" border="0"></span>
 															</a>
 														</center>
 													<?php endif; ?>
@@ -334,7 +322,7 @@ $status = ipsec_smp_dump_status();
 															<td>
 																<center>
 																	<a href="diag_ipsec.php?act=childdisconnect&amp;ikeid=<?php echo $con_id; ?>&amp;ikesaid=<?php echo $childsa['reqid']; ?>">
-																	<img src ="/themes/<?php echo $g['theme']; ?>/images/icons/icon_x.gif" alt="Disconnect Child SA" title="Disconnect Child SA" border="0"/>
+																	<span class="glyphicon glyphicon-remove text-default" alt="Disconnect Child SA" title="Disconnect Child SA"></span>
 																	</a>
 																</center>
 															</td>
@@ -408,14 +396,14 @@ $status = ipsec_smp_dump_status();
 												</td>
 												<td class="listr">
 													<center>
-														<img src ="/themes/<?php echo $g['theme']; ?>/images/icons/icon_reject.gif" title="Disconnected" alt=""/>
-														<br/>Disconnected
+														<span class="glyphicon glyphicon-remove text-warning" title="Disconnected" alt=""></span>
+														<small>Disconnected</small>
 													</center>
 												</td>
 												<td >
 													<center>
 														<a href="diag_ipsec.php?act=connect&amp;ikeid=<?php echo $ph1ent['ikeid']; ?>">
-														<img src ="/themes/<?php echo $g['theme']; ?>/images/icons/icon_service_start.gif" alt="Connect VPN" title="Connect VPN" border="0"/>
+														<span class="glyphicon glyphicon-play text-default" alt="Connect VPN" title="Connect VPN"></span>
 														</a>
 													</center>
 												</td>

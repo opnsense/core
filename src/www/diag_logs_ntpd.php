@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>.
@@ -27,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
-	pfSense_MODULE:	ntpd
-*/
-
-##|+PRIV
-##|*IDENT=page-status-systemlogs-ntpd
-##|*NAME=Status: System logs: NTP page
-##|*DESCR=Allow access to the 'Status: System logs: NTP' page.
-##|*MATCH=diag_logs_ntpd.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

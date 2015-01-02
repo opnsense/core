@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	services_snmp.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	snmp
-*/
-
-##|+PRIV
-##|*IDENT=page-services-snmp
-##|*NAME=Services: SNMP page
-##|*DESCR=Allow access to the 'Services: SNMP' page.
-##|*MATCH=services_snmp.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");
@@ -168,6 +155,9 @@ $shortcut_section = "snmp";
 include("head.inc");
 
 ?>
+
+<body>
+
 <script type="text/javascript">
 //<![CDATA[
 function check_deps() {
@@ -272,10 +262,7 @@ function enable_change(whichone) {
 }
 //]]>
 </script>
-</head>
 
-
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	interfaces_gre_edit.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
 	All rights reserved.
 
@@ -27,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces-gre-edit
-##|*NAME=Interfaces: GRE: Edit page
-##|*DESCR=Allow access to the 'Interfaces: GRE: Edit' page.
-##|*MATCH=interfaces_gre_edit.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");

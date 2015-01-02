@@ -1,5 +1,6 @@
 <?php
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Ermal Luçi
 	Copyright (C) 2004 Scott Ullrich
 	All rights reserved.
@@ -25,18 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces-groups-edit
-##|*NAME=Interfaces: Groups: Edit page
-##|*DESCR=Allow access to the 'Interfaces: Groups: Edit' page.
-##|*MATCH=interfaces_groups_edit.php*
-##|-PRIV
-
 
 require("guiconfig.inc");
 require_once("functions.inc");
@@ -338,7 +327,6 @@ function removeRow(el) {
 											<br /><br />
 											<strong><?PHP echo gettext("NOTE:");?></strong>
 											<?PHP echo gettext("Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.");?>
-											<a href="https://doc.pfsense.org/index.php/Interface_Groups"><?PHP echo gettext("More Information");?></a>
 											</td>
 									  </tr>
 									  <tr>

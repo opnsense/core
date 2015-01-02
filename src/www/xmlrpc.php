@@ -1,5 +1,4 @@
 <?php
-
 /*
         Copyright (C) 2009, 2010 Scott Ullrich
         Copyright (C) 2005 Colin Smith
@@ -26,13 +25,6 @@
         ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
         POSSIBILITY OF SUCH DAMAGE.
 */
-
-##|+PRIV
-##|*IDENT=page-xmlrpclibrary
-##|*NAME=XMLRPC Library page
-##|*DESCR=Allow access to the 'XMLRPC Library' page.
-##|*MATCH=xmlrpc.php*
-##|-PRIV
 
 require("config.inc");
 require("functions.inc");

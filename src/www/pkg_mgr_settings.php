@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	pkg_mgr_settings.php
-	part of pfSense
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Jim Pingle <jimp@pfsense.org>
     Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
         Copyright (C) 2005 Colin Smith
@@ -28,16 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	pkgs
-*/
-
-##|+PRIV
-##|*IDENT=page-pkg-mgr-settings
-##|*NAME=Packages: Settings page
-##|*DESCR=Allow access to the 'Packages: Settings' page.
-##|*MATCH=pkg_mgr_settings.php*
-##|-PRIV
 
 ini_set('max_execution_time', '0');
 
@@ -80,8 +68,8 @@ function enable_altpkgrepourl(enable_over) {
 <?php include("fbegin.inc");
 
 	/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
-	if (!verify_all_package_servers())
-		print_info_box(package_server_mismatch_message());
+	/*if (!verify_all_package_servers())
+		print_info_box(package_server_mismatch_message());*/
 
 	/* Print package server SSL warning. See https://redmine.pfsense.org/issues/484 */
 	if (check_package_server_ssl() === false)

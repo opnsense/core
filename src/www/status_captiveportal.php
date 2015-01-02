@@ -1,9 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	status_captiveportal.php
-	part of m0n0wall (http://m0n0.ch/wall)
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -28,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	captiveportal
-*/
-
-##|+PRIV
-##|*IDENT=page-status-captiveportal
-##|*NAME=Status: Captive portal page
-##|*DESCR=Allow access to the 'Status: Captive portal' page.
-##|*MATCH=status_captiveportal.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require("functions.inc");
@@ -81,7 +68,7 @@ function clientcmp($a, $b) {
 
 if (!empty($cpzone)) {
         $cpdb_handle = new OPNsense\CaptivePortal\DB($cpzone);
-        $cpclient_handle = new OPNsense\CaptivePortal\CPClient(); 
+        $cpclient_handle = new OPNsense\CaptivePortal\CPClient();
 
         $order = "";
 	if ($_GET['order']) {
@@ -92,7 +79,7 @@ if (!empty($cpzone)) {
 
         $cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
         if ($_GET['showact']) {
-            $accounting_info =  $cpclient_handle->list_accounting();        
+            $accounting_info =  $cpclient_handle->list_accounting();
         }
         else {
             $accounting_info = array() ;
@@ -199,7 +186,7 @@ $mac_man = load_mac_manufacturer_table();
 								    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent->allow_time));?></td>
 									<?php if ($_GET['showact']):
 									//$last_act = captiveportal_get_last_activity($cpent->ip, $cpent->mac);
-									if ( array_key_exists($cpent->ip,$accounting_info) ) $last_act = $accounting_info[$cpent->ip]['last_accessed'] ; 
+									if ( array_key_exists($cpent->ip,$accounting_info) ) $last_act = $accounting_info[$cpent->ip]['last_accessed'] ;
 									else $last_act=0;
 									?>
 								    <td class="listr"><?php if ($last_act != 0) echo htmlspecialchars(date("m/d/Y H:i:s", $last_act));?></td>

@@ -1,13 +1,9 @@
 <?php
-/* $Id$ */
 /*
-	firewall_aliases_edit.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
 	Copyright (C) 2009 Ermal Luçi
 	Copyright (C) 2010 Jim Pingle
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 

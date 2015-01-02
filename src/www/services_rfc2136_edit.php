@@ -1,6 +1,6 @@
 <?php
-/* $Id$ */
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
 	All rights reserved.
 
@@ -24,9 +24,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-*/
-/*
-	pfSense_MODULE:	dnsupdate
 */
 
 require("guiconfig.inc");

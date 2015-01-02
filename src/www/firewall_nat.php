@@ -1,7 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	firewall_nat.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
 	All rights reserved.
 
@@ -30,16 +29,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	nat
-*/
-
-##|+PRIV
-##|*IDENT=page-firewall-nat-portforward
-##|*NAME=Firewall: NAT: Port Forward page
-##|*DESCR=Allow access to the 'Firewall: NAT: Port Forward' page.
-##|*MATCH=firewall_nat.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("functions.inc");
@@ -174,31 +163,30 @@ $main_buttons = array(
 
 ?>
 
-<script type="text/javascript" src="/themes/<?=$g['theme'];?>/assets/javascripts/jquery-sortable.js"></script>
-	<style type="text/css">
-		body.dragging, body.dragging * {
-		  cursor: move !important;
-		}
-
-		.dragged {
-		  position: absolute;
-		  opacity: 0.5;
-		  z-index: 2000;
-		}
-
-		ol.example li.placeholder {
-		  position: relative;
-		  /** More li styles **/
-		}
-		ol.example li.placeholder:before {
-		  position: absolute;
-		  /** Define arrowhead **/
-		}
-	</style>
-</head>
-
-
 <body>
+
+<script type="text/javascript" src="/themes/<?=$g['theme'];?>/assets/javascripts/jquery-sortable.js"></script>
+<style type="text/css">
+	body.dragging, body.dragging * {
+	  cursor: move !important;
+	}
+
+	.dragged {
+	  position: absolute;
+	  opacity: 0.5;
+	  z-index: 2000;
+	}
+
+	ol.example li.placeholder {
+	  position: relative;
+	  /** More li styles **/
+	}
+	ol.example li.placeholder:before {
+	  position: absolute;
+	  /** Define arrowhead **/
+	}
+</style>
+
 
 <?php include("fbegin.inc"); ?>
 
@@ -356,26 +344,25 @@ $main_buttons = array(
 
 																<a href="firewall_nat_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
 									                      </tr>
-										     <?php $i++; $nnats++; endforeach; ?>
-									                <tr>
+												<?php $i++; $nnats++; endforeach; ?>
+								                <tr>
 									                  <td class="list" colspan="8"></td>
 									                  <td>&nbsp;</td>
 									                  <td>&nbsp;</td>
 									                  <td>&nbsp;</td>
 									                  <td class="list nowrap" valign="middle">
 
-												<?php if ($nnats == 0): ?><span class="btn btn-default btn-xs text-muted"><span class="glyphicon glyphicon-arrow-left"></span></span><?php else: ?><button name="move_<?=$i;?>_x" value="<?=$i;?>" type="submit" title="<?=gettext("move selected rules to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button><?php endif; ?>
+														<?php if ($nnats == 0): ?><span class="btn btn-default btn-xs text-muted"><span class="glyphicon glyphicon-arrow-left"></span></span><?php else: ?><button name="move_<?=$i;?>_x" value="<?=$i;?>" type="submit" title="<?=gettext("move selected rules to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button><?php endif; ?>
 
-												<?php if (count($a_nat) == 0): ?>
+														<?php if (count($a_nat) == 0): ?>
 
-													<span class="btn btn-default btn-xs text-muted"  title="<?=gettext("delete selected rules");?>"><span class="glyphicon glyphicon-remove" ></span></span>
-												<?php else: ?>
-													<button name="del_<?=$i;?>_x" type="submit" title="<?=gettext("delete selected rules"); ?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected rules?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
-												<?php endif; ?>
-												 <a href="firewall_nat_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
-
-											  </td>
-											</tr>
+															<span class="btn btn-default btn-xs text-muted"  title="<?=gettext("delete selected rules");?>"><span class="glyphicon glyphicon-remove" ></span></span>
+														<?php else: ?>
+															<button name="del_<?=$i;?>_x" type="submit" title="<?=gettext("delete selected rules"); ?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected rules?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+														<?php endif; ?>
+														 <a href="firewall_nat_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+													</td>
+												</tr>
 											</tbody>
 											<tfoot>
 											<tr><td colspan="12">&nbsp;</td></tr>

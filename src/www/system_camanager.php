@@ -1,6 +1,6 @@
 <?php
-
 /*
+	Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2008 Shrew Soft Inc.
     All rights reserved.
 
@@ -25,16 +25,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	certificate_managaer
-*/
-
-##|+PRIV
-##|*IDENT=page-system-camanager
-##|*NAME=System: CA Manager
-##|*DESCR=Allow access to the 'System: CA Manager' page.
-##|*MATCH=system_camanager.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require_once("certs.inc");

@@ -1,8 +1,6 @@
 <?php
-/* $Id$ */
 /*
-	interfaces_gif.php
-
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
 	All rights reserved.
 
@@ -27,17 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-interfaces-gif
-##|*NAME=Interfaces: GIF page
-##|*DESCR=Allow access to the 'Interfaces: GIF' page.
-##|*MATCH=interfaces_gif.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

@@ -26,11 +26,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:
-	pfSense_MODULE:	filter
-*/
-
 $pgtitle = gettext("Status").": ".gettext("System logs").": ".gettext("Firewall Log Summary");
 $shortcut_section = "firewall";
 require_once("guiconfig.inc");

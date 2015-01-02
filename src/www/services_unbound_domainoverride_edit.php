@@ -1,10 +1,7 @@
 <?php
 /*
-    services_unbound_domainoverride_edit.php
-    part of the pfSense project (https://www.pfsense.org)
+    Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2014 Warren Baker (warren@decoy.co.za)
-    All rights reserved.
-
     Copyright (C) 2003-2005 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -29,16 +26,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	dnsresolver
-*/
-
-##|+PRIV
-##|*IDENT=page-services-dnsresolver-editdomainoverride
-##|*NAME=Services: DNS Resolver: Edit Domain Override page
-##|*DESCR=Allow access to the 'Services: DNS Resolver: Edit Domain Override' page.
-##|*MATCH=services_unbound_domainoverride_edit.php*
-##|-PRIV
 
 require("guiconfig.inc");
 

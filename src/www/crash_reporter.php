@@ -1,5 +1,4 @@
 <?php
-/* $Id$ */
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2011 Scott Ullrich
@@ -26,16 +25,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_MODULE:	header
-*/
-
-##|+PRIV
-##|*IDENT=page-diagnostics-crash-reporter
-##|*NAME=Crash reporter
-##|*DESCR=Uploads crash reports to pfSense and or deletes crash reports.
-##|*MATCH=crash_reporter.php*
-##|-PRIV
 
 require("guiconfig.inc");
 require("functions.inc");
@@ -65,7 +54,7 @@ function upload_crash_report($files) {
 
 function output_crash_reporter_html($crash_reports) {
 	echo "<p><strong>" . gettext("Unfortunately we have detected a programming bug.") . "</strong></p>";
-	echo "<p>" . gettext("Would you like to submit the programming debug logs to the pfSense developers for inspection?") . "</p>";
+	echo "<p>" . gettext("Would you like to submit the programming debug logs to the OPNsense developers for inspection?") . "</p>";
 	echo "<p><i>" . gettext("Please double check the contents to ensure you are comfortable sending this information before clicking Yes.") . "</i></p>";
 	echo "<p>" . gettext("Contents of crash reports") . ":<br />";
 	echo "<textarea readonly=\"readonly\" rows=\"40\" cols=\"65\" name=\"crashreports\">{$crash_reports}</textarea></p>";

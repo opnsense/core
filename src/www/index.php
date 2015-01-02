@@ -1,11 +1,7 @@
 <?php
-/* $Id$ */
 /*
-	index.php
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2012 Scott Ullrich
-	All rights reserved.
-
-	Originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -30,17 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig
-	pfSense_MODULE:	interfaces
-*/
-
-##|+PRIV
-##|*IDENT=page-system-login/logout
-##|*NAME=System: Login / Logout page / Dashboard
-##|*DESCR=Allow access to the 'System: Login / Logout' page and Dashboard.
-##|*MATCH=index.php*
-##|-PRIV
 
 // Turn on buffering to speed up rendering
 ini_set('output_buffering','true');
@@ -357,7 +342,43 @@ function updatePref(){
 	return false;
 }
 
-
+function changeTabDIV(selectedDiv){
+	var dashpos = selectedDiv.indexOf("-");
+	var tabclass = selectedDiv.substring(0,dashpos);
+	d = document;
+	//get deactive tabs first
+	tabclass = tabclass + "-class-tabdeactive";
+	var tabs = document.getElementsByClassName(tabclass);
+	var incTabSelected = selectedDiv + "-deactive";
+	for (i=0; i<tabs.length; i++){
+		var tab = tabs[i].id;
+		dashpos = tab.lastIndexOf("-");
+		var tab2 = tab.substring(0,dashpos) + "-deactive";
+		if (tab2 == incTabSelected){
+			tablink = d.getElementById(tab2);
+			tablink.style.display = "none";
+			tab2 = tab.substring(0,dashpos) + "-active";
+			tablink = d.getElementById(tab2);
+			tablink.style.display = "table-cell";
+			//now show main div associated with link clicked
+			tabmain = d.getElementById(selectedDiv);
+			tabmain.style.display = "block";
+		}
+		else
+		{
+			tab2 = tab.substring(0,dashpos) + "-deactive";
+			tablink = d.getElementById(tab2);
+			tablink.style.display = "table-cell";
+			tab2 = tab.substring(0,dashpos) + "-active";
+			tablink = d.getElementById(tab2);
+			tablink.style.display = "none";
+			//hide sections we don't want to see
+			tab2 = tab.substring(0,dashpos);
+			tabmain = d.getElementById(tab2);
+			tabmain.style.display = "none";
+		}
+	}
+}
 //]]>
 </script>
 EOD;
@@ -432,8 +453,8 @@ echo $jscriptstr;
 
 				<?php
 				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
-				if (!verify_all_package_servers())
-					print_info_box(package_server_mismatch_message());
+				/*if (!verify_all_package_servers())
+					print_info_box(package_server_mismatch_message());*/
 
 				if ($savemsg)
 					print_info_box($savemsg);
