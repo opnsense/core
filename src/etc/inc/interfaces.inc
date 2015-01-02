@@ -2,14 +2,8 @@
 
 /*
 	Copyright (C) 2004-2008 Scott Ullrich
-	Copyright (C) 2008-2009 Ermal Lu?i
-	All rights reserved.
-
-	function interfaces_wireless_configure is
+	Copyright (C) 2008-2009 Ermal Luçi
 	Copyright (C) 2005 Espen Johansen
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -33,12 +27,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-	pfSense_BUILDER_BINARIES:	/sbin/dhclient	/bin/sh	/usr/bin/grep	/usr/bin/xargs	/usr/bin/awk	/usr/local/sbin/choparp
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig	/sbin/route	/usr/sbin/ngctl	/usr/sbin/arp	/bin/kill	/usr/local/sbin/mpd5
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/dhcp6c
-	pfSense_MODULE:	interfaces
-
 */
 
 /* include all configuration functions */
@@ -1896,7 +1884,7 @@ EOD;
 		else
 			interface_setup_pppoe_reset_file($ppp['if']);
 	}
-	/* wait for upto 10 seconds for the interface to appear (ppp(oe)) */
+	/* wait for up to 10 seconds for the interface to appear (ppp(oe)) */
 	$i = 0;
 	while($i < 10) {
 		exec("/sbin/ifconfig " . escapeshellarg($ppp['if']) . " 2>&1", $out, $ret);

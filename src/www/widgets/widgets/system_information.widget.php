@@ -1,7 +1,8 @@
 <?php
+
 /*
-		Copyright (C) 2014 Deciso B.V.
-        Copyright 2007 Scott Dale
+        Copyright (C) 2014 Deciso B.V.
+        Copyright (C) 2007 Scott Dale
         Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
         and Jonathan Watt <jwatt@jwatt.org>.
         All rights reserved.
@@ -314,7 +315,7 @@ $filesystems = get_mounted_filesystems();
 		jQuery('#uname').html("<?php echo php_uname("a"); ?>");
 	}
 	function checkupdate() {
-		jQuery('#updatestatus').html('<span class="text-info">Updating.... (takes upto 30 seconds) </span>');
+		jQuery('#updatestatus').html('<span class="text-info">Updating.... (may take up to 30 seconds) </span>');
 		jQuery.ajax({
 			type: "POST",
 			url: '/widgets/widgets/system_information.widget.php',

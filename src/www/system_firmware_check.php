@@ -1,5 +1,5 @@
 <?php
-/* $Id$ */
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
@@ -207,7 +207,7 @@ include("head.inc");
 <script type="text/javascript">
 //<![CDATA[
 	function checkupdate() {
-		jQuery('#updatestatus').html('<span class="text-info">Updating.... (takes upto 30 seconds) </span>');
+		jQuery('#updatestatus').html('<span class="text-info">Updating.... (may take up to 30 seconds) </span>');
 		jQuery.ajax({
 			type: "POST",
 			url: '/system_firmware_check.php',
