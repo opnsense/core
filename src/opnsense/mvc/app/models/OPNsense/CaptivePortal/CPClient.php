@@ -153,6 +153,27 @@ class CPClient {
     }
 
     /**
+     * check if captiveportal is enabled (traverse zones, if none active return false )
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        $enabled_zones = 0 ;
+        foreach ($this->config->object()->captiveportal->children() as $cpzonename => $zone) {
+            if (isset($zone->enable)) {
+                $enabled_zones++;
+            }
+        }
+
+        if ($enabled_zones > 0) {
+            return true;
+        } else {
+            return false ;
+        }
+    }
+
+
+    /**
      *
      * @param $zoneid
      * @param $ip
@@ -255,18 +276,24 @@ class CPClient {
     /**
      * Reconfigure zones ( generate and load ruleset )
      */
-    public function reconfigure(){
-        $ruleset_filename = \Phalcon\DI\FactoryDefault::getDefault()->get('config')->globals->temp_path."/ipfw.rules";
-        $this->rules->generate($ruleset_filename);
+    public function reconfigure()
+    {
+        if ( $this->isEnabled() ) {
+            $ruleset_filename = \Phalcon\DI\FactoryDefault::getDefault()->get('config')->globals->temp_path."/ipfw.rules";
+            $this->rules->generate($ruleset_filename);
 
-        // load ruleset
-        $this->shell->exec("/sbin/ipfw -f ".$ruleset_filename);
+            // load ruleset
+            $this->shell->exec("/sbin/ipfw -f ".$ruleset_filename);
 
-        // update tables
-        $this->update();
+            // update tables
+            $this->update();
 
-        // after reinit all accounting rules are vanished, reapply them for active sessions
-        $this->loadAccounting();
+            // after reinit all accounting rules are vanished, reapply them for active sessions
+            $this->loadAccounting();
+        } else {
+            // captiveportal is disabled, flush all rules to be sure
+            $this->shell->exec("/sbin/ipfw -f flush" );
+        }
     }
 
     /**

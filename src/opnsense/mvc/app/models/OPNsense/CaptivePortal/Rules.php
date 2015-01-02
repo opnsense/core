@@ -293,8 +293,7 @@ class Rules {
         $this->rules[] = "add 65534 deny all from any to any";
     }
 
-
-
+    
     /**
      * load ruleset
      */
