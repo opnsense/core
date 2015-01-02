@@ -171,7 +171,7 @@ include("head.inc");
 
 ?>
 <body>
-	
+
 <script type="text/javascript">
 //<![CDATA[
 	//Generic show an advanced option function

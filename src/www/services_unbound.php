@@ -161,7 +161,7 @@ include_once("head.inc");
 ?>
 
 <body>
-	
+
 <script type="text/javascript">
 //<![CDATA[
 function enable_change(enable_over) {

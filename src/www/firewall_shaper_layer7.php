@@ -423,8 +423,8 @@ include("fbegin.inc");
 
 										<?php if (count($layer7_rules_list) > 0): ?>
 				                        <tr class="tabcont">
-				                        	<td width="25%" align="left"></td><td width="75%"> </td>
-				                    	</tr>
+								<td width="25%" align="left"></td><td width="75%"> </td>
+							</tr>
 
 										<?php endif; ?>
 										<tr>
@@ -571,14 +571,14 @@ include("fbegin.inc");
 															<input id="delete" onclick="return confirm('Are you sure you want to delete?')" type="submit" class="btn btn-default formbtn" name="delete" value="<?=gettext("Delete"); ?>" />
 														</a>
 													<?php endif ?>
-												
+
 					                        </td>
 				                        </tr>
 										<?php endif; ?>
 										<!-- End of layer7 rules form -->
 									</table>
 								</div><!-- end of div:shape area -->
-							</form>	
+							</form>
 						</div>
 			</section>
 		</div>

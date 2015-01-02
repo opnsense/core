@@ -157,7 +157,7 @@ include("head.inc");
 ?>
 
 <body>
-	
+
 <script type="text/javascript">
 //<![CDATA[
 function check_deps() {

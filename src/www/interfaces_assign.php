@@ -569,4 +569,3 @@ if(file_exists("/var/run/interface_mismatch_reboot_needed"))
 	</section>
 
 <?php include("foot.inc"); ?>
-

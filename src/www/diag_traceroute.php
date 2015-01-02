@@ -1,5 +1,5 @@
 <?php
-/*	
+/*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005 Paul Taylor (paultaylor@winndixie.com) and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
