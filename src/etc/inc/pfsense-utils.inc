@@ -902,7 +902,8 @@ function reload_all_sync() {
 	send_event("service restart webgui");
 }
 
-function setup_serial_port($when="save", $path="") {
+function setup_serial_port($when = 'save', $path = '')
+{
 	global $g, $config;
 	conf_mount_rw();
 	$prefix = "";
@@ -916,7 +917,7 @@ function setup_serial_port($when="save", $path="") {
 	else
 		$boot_config = "";
 
-	$serialspeed = (is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : "115200";
+	$serialspeed = (is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
 	if ($g['platform'] != "cdrom") {
 		$boot_config_split = explode("\n", $boot_config);
 		$fd = fopen($boot_config_file,"w");
@@ -930,9 +931,9 @@ function setup_serial_port($when="save", $path="") {
 				}
 			}
 			if (($g['platform'] == "nanobsd") && !file_exists("/etc/nano_use_vga.txt"))
-				fwrite($fd, "-S{$serialspeed} -h");
+				fwrite($fd, "-S{$serialspeed} -h\n");
 			else if (is_serial_enabled())
-				fwrite($fd, "-S{$serialspeed} -D");
+				fwrite($fd, "-S{$serialspeed} -D\n");
 			fclose($fd);
 		}
 
