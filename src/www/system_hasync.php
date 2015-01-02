@@ -106,7 +106,7 @@ include("head.inc");
 
                         <form action="system_hasync.php" method="post" name="iform" id="iform">
 
-				<table class="table table-primary" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
+				<table class="table table-primary table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
 				<thead>
 					<tr>
 						<th colspan="2" class="listtopic">State Synchronization Settings (pfsync)</th>
@@ -152,7 +152,7 @@ include("head.inc");
 				</tbody>
 				</table>
 
-				<table class="table table-primary" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
+				<table class="table table-primary table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
 				<thead>
 					<tr>
 						<th colspan="2" class="listtopic">Configuration Synchronization Settings (XMLRPC Sync)</th>
@@ -342,9 +342,6 @@ include("head.inc");
 							<br />
 							When this option is enabled, this system will automatically sync the Captive Portal configuration to the other HA host when changes are made.
 						</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="22%" valign="top">&nbsp;</td>

@@ -179,10 +179,8 @@ $main_buttons = array(
 
 
 						<div class="tab-content content-box col-xs-12">
-
-
-		                        <form action="firewall_aliases.php" method="post" name="iform" id="iform">
-						<input type="hidden" name="tab" value="<?=htmlspecialchars($tab);?>" />
+	                        <form action="firewall_aliases.php" method="post" name="iform" id="iform">
+								<input type="hidden" name="tab" value="<?=htmlspecialchars($tab);?>" />
 
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
@@ -190,9 +188,7 @@ $main_buttons = array(
 											<td width="20%" class="listhdrr"><?=gettext("Name"); ?></td>
 											<td width="43%" class="listhdrr"><?=gettext("Values"); ?></td>
 											<td width="30%" class="listhdr"><?=gettext("Description"); ?></td>
-											<td width="7%" class="list">
-
-											</td>
+											<td width="7%" class="list"></td>
 										</tr>
 										<?php
 										asort($a_aliases);
@@ -268,9 +264,9 @@ $main_buttons = array(
 									</table>
 								</div>
 								<div class="container-fluid">
-								    <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:"); ?><br /></strong></span></span></p><div style="overflow:hidden; text-align:justify;"><p><span class="vexpl"><?=gettext("Aliases act as placeholders for real hosts, networks or ports. They can be used to minimize the number of changes that have to be made if a host, network or port changes. You can enter the name of an alias instead of the host, network or port in all fields that have a red background. The alias will be resolved according to the list above. If an alias cannot be resolved (e.g. because you deleted it), the corresponding element (e.g. filter/NAT/shaper rule) will be considered invalid and skipped."); ?></span></p>
+								    <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:"); ?><br /></strong></span></span></p><div style="overflow:hidden; text-align:justify;"><p><span class="vexpl"><?=gettext("Aliases act as placeholders for real hosts, networks or ports. They can be used to minimize the number of changes that have to be made if a host, network or port changes. You can enter the name of an alias instead of the host, network or port in all fields that have a red background. The alias will be resolved according to the list above. If an alias cannot be resolved (e.g. because you deleted it), the corresponding element (e.g. filter/NAT/shaper rule) will be considered invalid and skipped."); ?></span></p></div>
 							    </div>
-		                        </form>
+	                        </form>
 						</div>
 			    </section>
 			</div>

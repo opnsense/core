@@ -720,10 +720,15 @@ include("head.inc");
 							$tabscounter++;
 						}
 						if ($tabscounter == 0) {
-							echo "</td></tr></table></form>";
-							include("fend.inc");
-							echo "</body>";
-							echo "</html>";
+							//echo "</td></tr></table></form>";
+							//include("fend.inc");
+							//echo "</body>";
+							//echo "</html>";
+							echo "</section>";
+							echo "</div>";
+							echo "</div>";
+							echo "</section>";
+							include("foot.inc");
 							exit;
 						}
 						display_top_tabs($tab_array);
@@ -1152,7 +1157,6 @@ include("head.inc");
 											</tbody>
 											</table>
 											<a onclick="javascript:addRowTo('maintable', 'form-controlalias'); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-											</a>
 											<script type="text/javascript">
 											//<![CDATA[
 												field_counter_js = 3;
