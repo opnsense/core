@@ -335,6 +335,7 @@ $closehead = false;
 include("head.inc");
 ?>
 
+<body onload="<?= $jsevents["body"]["onload"] ?>">
 <link rel="stylesheet" type="text/css" href="/javascript/jquery-ui-timepicker-addon/css/jquery-ui-timepicker-addon.css" />
 <link rel="stylesheet" type="text/css" href="/javascript/jquery/jquery-ui-1.11.1.css" />
 
@@ -345,9 +346,7 @@ include("head.inc");
 	});
 //]]>
 </script>
-</head>
 
-<body onload="<?= $jsevents["body"]["onload"] ?>">
 <?php include("fbegin.inc"); ?>
 
 <script type="text/javascript">

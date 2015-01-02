@@ -171,7 +171,7 @@ else
 	echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"/themes/{$g['theme']}/all.css\" media=\"all\" />";
 */
 ?>
-</head>
+
 <body>
 <? include("fbegin.inc"); ?>
 

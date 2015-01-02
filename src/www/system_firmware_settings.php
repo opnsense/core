@@ -74,6 +74,10 @@ if(file_exists("{$g['tmp_path']}/manifest")) {
 }
 
 ?>
+
+
+<body>
+
 <script type="text/javascript">
 //<![CDATA[
 
@@ -90,7 +94,6 @@ function enable_altfirmwareurl(enable_over) {
 //]]>
 </script>
 
-<body>
 <?php include("fbegin.inc");?>
 
 <!-- row -->
