@@ -33,11 +33,6 @@
 
 namespace OPNsense\Core;
 
-
-/**
- * Class Singleton
- * @package Core
- */
 /**
  * Class Singleton
  * @package Core
@@ -65,7 +60,7 @@ abstract class Singleton
      */
     final private function __clone()
     {
-        throw new \Exception("An instance of ".get_called_class()." cannot be cloned.");
+        throw new \Exception("An instance of " . get_called_class() . " cannot be cloned.");
     }
 
     /**
@@ -76,7 +71,7 @@ abstract class Singleton
     {
         $className = get_called_class();
 
-        if(isset(self::$instances[$className]) == false) {
+        if (isset(self::$instances[$className]) == false) {
             self::$instances[$className] = new static();
         }
         return self::$instances[$className];
@@ -88,6 +83,7 @@ abstract class Singleton
      * so an extended class could simply
      * specify its own init
      */
-    protected function init(){}
-
+    protected function init()
+    {
+    }
 }

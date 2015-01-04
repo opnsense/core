@@ -33,6 +33,7 @@
 
 namespace OPNsense\Core;
 
+use \Phalcon\DI\FactoryDefault;
 
 class Shell
 {
@@ -52,11 +53,31 @@ class Shell
     /**
      * new shell object
      */
-    function __construct()
+    public function __construct()
     {
         // init, set simulation mode / debug autoput
-        $this->simulate = \Phalcon\DI\FactoryDefault::getDefault()->get('config')->globals->simulate_mode;
-        $this->debug = \Phalcon\DI\FactoryDefault::getDefault()->get('config')->globals->debug;
+        $this->simulate = FactoryDefault::getDefault()->get('config')->globals->simulate_mode;
+        $this->debug = FactoryDefault::getDefault()->get('config')->globals->debug;
+
+    }
+
+    /**
+     * execute command or list of commands
+     *
+     * @param string/Array() $command command to execute
+     * @param bool $mute
+     * @param bool $clearsigmask
+     * @param Array() &$output
+     */
+    public function exec($command, $mute = false, $clearsigmask = false, &$output = null)
+    {
+        if (is_array($command)) {
+            foreach ($command as $comm) {
+                $this->execSingle($comm, $mute, $clearsigmask, $output);
+            }
+        } else {
+            $this->execSingle($command, $mute, $clearsigmask, $output);
+        }
 
     }
 
@@ -65,8 +86,11 @@ class Shell
      * @param string $command command to execute
      * @param bool $mute
      * @param bool $clearsigmask
+     * @param Array() &$output
+     * @return int
      */
-    private function _exec($command, $mute = false, $clearsigmask = false,&$output=null){
+    private function execSingle($command, $mute = false, $clearsigmask = false, &$output = null)
+    {
         $oarr = array();
         $retval = 0;
 
@@ -82,10 +106,11 @@ class Shell
                 pcntl_sigprocmask(SIG_SETMASK, array(), $oldset);
             }
 
-            $garbage = exec("$command 2>&1", $output, $retval);
+            exec("$command 2>&1", $output, $retval);
 
             if (($retval <> 0) && ($mute === false)) {
-                //log_error(sprintf(gettext("The command '%1\$s' returned exit code '%2\$d', the output was '%3\$s' "),  implode(" ", $output);
+                //log_error(sprintf(gettext("The command '%1\$s'
+                // returned exit code '%2\$d', the output was '%3\$s' "),  implode(" ", $output);
                 // TODO: log
                 unset($output);
             }
@@ -101,26 +126,4 @@ class Shell
 
         return null;
     }
-
-    /**
-     * execute command or list of commands
-     *
-     * @param string/Array() $command command to execute
-     * @param bool $mute
-     * @param bool $clearsigmask
-     * @param Array() &$output
-     */
-    function exec($command, $mute = false, $clearsigmask = false,&$output=null)
-    {
-        if (is_array($command)){
-            foreach($command as $comm ){
-                $this->_exec($comm,$mute, $clearsigmask ,$output);
-            }
-        }
-        else{
-            $this->_exec($command,$mute, $clearsigmask ,$output);
-        }
-
-    }
-
 }

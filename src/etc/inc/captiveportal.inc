@@ -172,7 +172,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
     }
 
 
-    $sessionid = $cpc->portal_allow($cpzone,$clientip,$clientmac,$username,$password,$bw_up,$bw_down,$radiusctx,$session_timeout,$idle_timeout,$session_terminate_time,$interim_interval);
+    $sessionid = $cpc->portalAllow($cpzone,$clientip,$clientmac,$username,$password,$bw_up,$bw_down,$radiusctx,$session_timeout,$idle_timeout,$session_terminate_time,$interim_interval);
 
     if (isset($config['captiveportal'][$cpzone]['radacct_enable']) && !empty($radiusservers[$radiusctx])) {
         $acct_val = RADIUS_ACCOUNTING_START($pipeno, $username, $sessionid, $radiusservers[$radiusctx], $clientip, $clientmac);
@@ -699,11 +699,11 @@ function captiveportal_prune_old() {
     $cpcfg = $config['captiveportal'][$cpzone];
     if ( !isset($cpcfg['radacct_enable'])) {
         // cleanup session (default)
-        $cpc->portal_cleanup_sessions($cpzone);
+        $cpc->portalCleanupSessions($cpzone);
     }else{
         // cleanup sessions if radius accounting is enable
         // TODO: this code needs a rewrite, probably the easiest thing todo is update the zone administration and run
-        //		 the normal cleanup (portal_cleanup_sessions) to detach both processes
+        //		 the normal cleanup (portalCleanupSessions) to detach both processes
         //
         $vcpcfg = $config['voucher'][$cpzone];
 

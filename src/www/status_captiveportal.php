@@ -79,7 +79,7 @@ if (!empty($cpzone)) {
 
         $cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
         if ($_GET['showact']) {
-            $accounting_info =  $cpclient_handle->list_accounting();
+            $accounting_info =  $cpclient_handle->listAccounting();
         }
         else {
             $accounting_info = array() ;
