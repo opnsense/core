@@ -1,0 +1,34 @@
+This is a very simple example of how to generate configuration files based on templates.
+
+In +TARGETS you can find the mapping between this template and the output it should generate.
+
+Now lets retrieve some configuration data from the OPNsense configuration file:
+
+
+last change date : {{ lastchange|default('unknown') }}
+version according to config.xml : {{ version|default('?') }}
+
+list of configured network interfaces :
+
+{% for key,item in interfaces.iteritems() %}
+    interface {{ key }}
+    --- interface {{ item.if }}
+    --- address  {{ item.ipaddr }}
+    --- subnet  {{ item.subnet }}
+
+{% endfor %}
+
+and a short list of firewall rules created (multiple rule items in filter section):
+
+{% for item in filter.rule%}
+    descr : {{ item.descr }}
+    type : {{ item.type }}
+    interface : {{ item.interface }}  ( which has ip {{ interfaces[item.interface].ipaddr }} )
+
+{% endfor %}
+
+The full documentation for the template engine can be found at : http://jinja.pocoo.org/docs/dev/templates/
+
+A sample with multiple output files ( for example based on interface ) can be found in the example_config.txt template
+
+

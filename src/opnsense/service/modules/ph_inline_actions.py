@@ -1,7 +1,7 @@
 """
     Copyright (c) 2014 Ad Schellevis
 
-    part of opnSense (https://www.opnsense.org/)
+    part of OPNsense (https://www.opnsense.org/)
 
     All rights reserved.
 
@@ -27,7 +27,38 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-
+    package : check_reload_status
+    function: unix domain socket process worker process
 
 
 """
+__author__ = 'Ad Schellevis'
+
+import syslog
+
+
+def execute(action,parameters):
+    """ wrapper for inline functions
+
+    :param action: action object ( processhandler.Action type )
+    :param parameters: parameter string
+    :return: status ( string )
+    """
+    if  action.command == 'template.reload':
+        import template
+        import config
+        tmpl = template.Template()
+        conf = config.Config(action.config)
+        tmpl.setConfig(conf.get())
+        filenames = tmpl.generate(parameters)
+
+        # send generated filenames to syslog
+        for filename in filenames:
+            syslog.syslog(syslog.LOG_DEBUG,' %s generated %s' % ( parameters, filename ) )
+
+        del conf
+        del tmpl
+
+        return 'OK'
+
+    return 'ERR'

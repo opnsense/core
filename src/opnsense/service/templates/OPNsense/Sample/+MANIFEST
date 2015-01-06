@@ -1,0 +1,8 @@
+name: opnsense-sample
+version: 0.1
+origin: opnsense/sample
+comment: OPNsense configuration template example
+desc: creates some files in /tmp/.../ based on reporting definitions found in +TARGETS
+maintainer: ad@opnsense.org
+www: https://opnsense.org
+prefix: /

@@ -2,7 +2,7 @@
 """
     Copyright (c) 2014 Ad Schellevis
 
-    part of opnSense (https://www.opnsense.org/)
+    part of OPNsense (https://www.opnsense.org/)
 
     All rights reserved.
 
@@ -61,7 +61,11 @@ except socket.error, msg:
 
 # send command and await response
 try:
+    print ('send:%s '%exec_command)
     sock.send(exec_command)
     print ('response:%s'% sock.recv(4096))
 finally:
     sock.close()
+
+
+

@@ -1,7 +1,7 @@
 """
     Copyright (c) 2014 Ad Schellevis
 
-    part of opnSense (https://www.opnsense.org/)
+    part of OPNsense (https://www.opnsense.org/)
 
     All rights reserved.
 
@@ -43,6 +43,7 @@ import threading
 import ConfigParser
 import glob
 import time
+import ph_inline_actions
 
 class Handler(object):
     """ Main handler class, opens unix domain socket and starts listening
@@ -52,7 +53,7 @@ class Handler(object):
         processflow:
             Handler ( waits for client )
                 -> new client is send to HandlerClient
-                    -> execute ActionHandler command
+                    -> execute ActionHandler command using Action objects
                     <- send back result string
     """
     def __init__(self,socket_filename,config_path,simulation_mode=False):
@@ -164,77 +165,6 @@ class HandlerClient(threading.Thread):
         finally:
             self.connection.close()
 
-class Action(object):
-    """ Action class,  handles actual system calls. set command, parameters (template) type and log message
-    """
-    def __init__(self):
-        """ setup default properties
-
-        :return:
-        """
-        self.command = None
-        self.parameters = None
-        self.type = None
-        self.message = None
-        self._parameter_start_pos = 0
-
-    def setParameterStartPos(self,pos):
-        """
-
-        :param pos: start position of parameter list
-        :return: position
-        """
-        self._parameter_start_pos = pos
-
-    def getParameterStartPos(self):
-        """ getter for _parameter_start_pos
-        :return: start position of parameter list ( first argument can be part of action to start )
-        """
-        return self._parameter_start_pos
-
-    def execute(self,parameters):
-        """ execute an action
-
-        :param parameters: list of parameters
-        :return:
-        """
-        # validate input
-        if self.type == None:
-            return 'No action type'
-        elif self.type.lower() == 'script':
-            if self.command == None:
-                return 'No command'
-
-            try:
-                script_command = self.command
-                if self.parameters != None and type(self.parameters) == str:
-                    script_command = '%s %s'%(script_command,self.parameters)
-
-                    if script_command.find('%s') > -1 and len(parameters) > 0:
-                        # use command execution parameters in action parameter template
-                        script_command = script_command % tuple(parameters[0:script_command.count('%s')])
-
-                # execute script command
-                if self.message != None:
-                    if self.message.count('%s') > 0 and parameters != None and len(parameters) > 0:
-                        syslog.syslog(syslog.LOG_NOTICE,self.message % tuple(parameters[0:self.message.count('%s')]) )
-                    else:
-                        syslog.syslog(syslog.LOG_NOTICE,self.message)
-
-                exit_status = subprocess.call(script_command, shell=True)
-            except:
-                print traceback.format_exc()
-                # todo log traceback on exception
-                return 'Execute error'
-
-            # send response
-            if exit_status == 0 :
-                return 'OK'
-            else:
-                return 'Error (%d)'%exit_status
-
-        return 'Unknown action type'
-
 class ActionHandler(object):
     """ Start/stop services and functions using configuration data definced in conf/actions_<topic>.conf
     """
@@ -330,3 +260,100 @@ class ActionHandler(object):
         print ('execute %s.%s with parameters : %s '%(command,action,parameters) )
         print ('action object %s (%s)' % (action_obj,action_obj.command) )
         print ('---------------------------------------------------------------------')
+
+class Action(object):
+    """ Action class,  handles actual (system) calls.
+    set command, parameters (template) type and log message
+    """
+    def __init__(self):
+        """ setup default properties
+
+        :return:
+        """
+        self.command = None
+        self.parameters = None
+        self.type = None
+        self.message = None
+        self._parameter_start_pos = 0
+
+    def setParameterStartPos(self,pos):
+        """
+
+        :param pos: start position of parameter list
+        :return: position
+        """
+        self._parameter_start_pos = pos
+
+    def getParameterStartPos(self):
+        """ getter for _parameter_start_pos
+        :return: start position of parameter list ( first argument can be part of action to start )
+        """
+        return self._parameter_start_pos
+
+    def execute(self,parameters):
+        """ execute an action
+
+        :param parameters: list of parameters
+        :return:
+        """
+        # validate input
+        if self.type == None:
+            return 'No action type'
+        elif self.type.lower() == 'script':
+            #
+            # script command, execute a shell script and return (simple) status
+            #
+            if self.command == None:
+                return 'No command'
+            try:
+                script_command = self.command
+                if self.parameters != None and type(self.parameters) == str:
+                    script_command = '%s %s'%(script_command,self.parameters)
+
+                    if script_command.find('%s') > -1 and len(parameters) > 0:
+                        # use command execution parameters in action parameter template
+                        script_command = script_command % tuple(parameters[0:script_command.count('%s')])
+
+                # execute script command
+                if self.message != None:
+                    if self.message.count('%s') > 0 and parameters != None and len(parameters) > 0:
+                        syslog.syslog(syslog.LOG_NOTICE,self.message % tuple(parameters[0:self.message.count('%s')]) )
+                    else:
+                        syslog.syslog(syslog.LOG_NOTICE,self.message)
+
+                exit_status = subprocess.call(script_command, shell=True)
+            except:
+                syslog.syslog(syslog.LOG_ERR, 'Script action failed at %s'%traceback.format_exc())
+                return 'Execute error'
+
+            # send response
+            if exit_status == 0 :
+                return 'OK'
+            else:
+                return 'Error (%d)'%exit_status
+
+        elif self.type.lower() == 'inline':
+            # Handle inline service actions
+            try:
+                # match parameters, serialize to parameter string defined by action template
+                if len(parameters) > 0:
+                    inline_act_parameters = self.parameters % tuple(parameters)
+                else:
+                    inline_act_parameters = ''
+
+                # send message to syslog
+                if self.message != None:
+                    if self.message.count('%s') > 0 and parameters != None and len(parameters) > 0:
+                        syslog.syslog(syslog.LOG_NOTICE,self.message % tuple(parameters[0:self.message.count('%s')]) )
+                    else:
+                        syslog.syslog(syslog.LOG_NOTICE,self.message)
+
+                return ph_inline_actions.execute(self,inline_act_parameters)
+
+            except:
+                syslog.syslog(syslog.LOG_ERR, 'Inline action failed at %s'%traceback.format_exc())
+                return 'Execute error'
+
+
+
+        return 'Unknown action type'
