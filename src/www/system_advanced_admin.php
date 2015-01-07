@@ -185,7 +185,7 @@ if ($_POST) {
 		$sshd_keyonly = isset($config['system']['ssh']['sshdkeyonly']);
 		if ($_POST['sshdkeyonly'])
 			$config['system']['ssh']['sshdkeyonly'] = true;
-		else
+		else if (isset($config['system']['ssh']['sshdkeyonly']))
 			unset($config['system']['ssh']['sshdkeyonly']);
 
 		$sshd_port = $config['system']['ssh']['port'];
