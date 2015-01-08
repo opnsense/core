@@ -456,8 +456,10 @@ function system_routing_configure($interface = '')
 		if (!empty($interface) && $interface != $interfacegw)
 			;
 		else if (is_ipaddrv4($gatewayip)) {
+			log_error("ROUTING: remove current default route to $gatewayip");
+			mwexec("/sbin/route delete default");
 			log_error("ROUTING: setting default route to $gatewayip");
-			mwexec("/sbin/route change -inet default " . escapeshellarg($gatewayip));
+			mwexec("/sbin/route add -inet default " . escapeshellarg($gatewayip));
 		}
 
 		if (!empty($interface) && $interface != $interfacegwv6)
