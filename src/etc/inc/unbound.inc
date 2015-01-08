@@ -412,13 +412,13 @@ function do_as_unbound_user($cmd) {
             mwexec("/usr/sbin/unbound -c {$g['unbound_chroot_path']}/unbound.conf");
             break;
         case "stop":
-            mwexec("echo '/usr/sbin/unbound-control stop' | /usr/bin/su -m unbound", true);
+            mwexec("chroot -u unbound -g unbound / /usr/sbin/unbound-control stop", true);
             break;
         case "unbound-anchor":
-            mwexec("echo '/usr/sbin/unbound-anchor -a {$g['unbound_chroot_path']}/root.key' | /usr/bin/su -m unbound", true);
+            mwexec("chroot -u unbound -g unbound / /usr/sbin/unbound-anchor -a {$g['unbound_chroot_path']}/root.key", true);
             break;
         case "unbound-control-setup":
-            mwexec("echo '/usr/sbin/unbound-control-setup -d {$g['unbound_chroot_path']}' | /usr/bin/su -m unbound", true);
+            mwexec("chroot -u unbound -g unbound / /usr/sbin/unbound-control-setup -d {$g['unbound_chroot_path']}", true);
             break;
         default:
             break;

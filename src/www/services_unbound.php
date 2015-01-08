@@ -386,7 +386,7 @@ function show_advanced_dns() {
 										<table border="0" cellspacing="0" cellpadding="1" summary="add">
 											<tr>
 												<td width="17"></td>
-												<td valign="middle"><a href="services_unbound_host_edit.php" class="btn btn-default btn-xs"><span class="glypicon glyphicon-plus"></span></a></td>
+												<td valign="middle"><a href="services_unbound_host_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
 											</tr>
 										</table>
 									</td>
@@ -410,8 +410,8 @@ function show_advanced_dns() {
 									<td valign="middle" class="list nowrap">
 										<table border="0" cellspacing="0" cellpadding="1" summary="icons">
 											<tr>
-												<td valign="middle"><a href="services_unbound_host_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glypicon glyphicon-pencil"></span></a></td>
-												<td><a href="services_unbound.php?type=host&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this host?");?>')" class="btn btn-default btn-xs"><span class="glypicon glyphicon-remove"></span></a></td>
+												<td valign="middle"><a href="services_unbound_host_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></td>
+												<td><a href="services_unbound.php?type=host&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this host?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 											</tr>
 										</table>
 								</tr>
@@ -450,7 +450,7 @@ function show_advanced_dns() {
 										<table border="0" cellspacing="0" cellpadding="1" summary="add">
 											<tr>
 												<td width="17" height="17"></td>
-												<td><a href="services_unbound_domainoverride_edit.php" class="btn btn-default btn-xs"><span class="glypicon glyphicon-plus"></span></a></td>
+												<td><a href="services_unbound_domainoverride_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
 											</tr>
 										</table>
 									</td>
@@ -472,8 +472,8 @@ function show_advanced_dns() {
 									<td valign="middle" class="list nowrap">
 										<table border="0" cellspacing="0" cellpadding="1" summary="icons">
 											<tr>
-												<td valign="middle"><a href="services_unbound_domainoverride_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glypicon glyphicon-pencil"></span></a></td>
-												<td valign="middle"><a href="services_unbound.php?act=del&amp;type=doverride&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this domain override?");?>')" class="btn btn-default btn-xs"><span class="glypicon glyphicon-remove"></span></a></td>
+												<td valign="middle"><a href="services_unbound_domainoverride_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></td>
+												<td valign="middle"><a href="services_unbound.php?act=del&amp;type=doverride&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this domain override?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 											</tr>
 										</table>
 									</td>
