@@ -550,12 +550,14 @@ function system_staticroutes_configure($interface = "", $update_dns = false) {
 				$cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
 
 				if (is_subnet($ip))
-					if (is_ipaddr($gatewayip))
+					if (is_ipaddr($gatewayip)) {
 						mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip));
 						mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip));
-					else if (!empty($interfacegw))
+					}
+					else if (!empty($interfacegw)) {
 						mwexec("/sbin/route delete".$cmd . "-iface " . escapeshellarg($interfacegw));
 						mwexec("/sbin/route add".$cmd . "-iface " . escapeshellarg($interfacegw));
+					}
 			}
 		}
 		unset($gateways_arr);

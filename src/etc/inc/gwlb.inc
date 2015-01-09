@@ -778,9 +778,10 @@ function fixup_default_gateway($ipprotocol, $gateways_status, $gateways_arr) {
 		} else {
 			$inetfamily = "-inet";
 		}
-		if ($defaultgw != $gateways_arr[$dfltgwname]['gateway'])
+		if ($defaultgw != $gateways_arr[$dfltgwname]['gateway']) {
 			mwexec("/sbin/route delete {$inetfamily} default {$gateways_arr[$dfltgwname]['gateway']}");
 			mwexec("/sbin/route add {$inetfamily} default {$gateways_arr[$dfltgwname]['gateway']}");
+		}
 	}
 }
 
