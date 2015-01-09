@@ -242,21 +242,20 @@ $main_buttons = array(
 									<?php $i = 0; foreach ($a_routes as $route): ?>
 									<tr valign="top" id="fr<?=$i;?>">
 									<?php
-										$iconfn = "pass";
+										$iconfn = "glyphicon glyphicon-play text-success";
 										if (isset($route['disabled'])) {
 											$textss = "<span class=\"gray\">";
 											$textse = "</span>";
-											$iconfn .= "_d";
+											$iconfn .= "glyphicon glyphicon-play text-muted";
 										} else
 											$textss = $textse = "";
 									?>
 										<td class="listt">
-											<input type="checkbox" id="frc<?=$i;?>" name="route[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" />
+											<input type="checkbox" id="frc<?=$i;?>" name="route[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" />
 										</td>
 										<td class="listt" align="center">
 											<a href="?act=toggle&amp;id=<?=$i;?>">
-												<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_<?=$iconfn;?>.gif" width="11" height="11" border="0"
-													title="<?=gettext("click to toggle enabled/disabled status");?>" alt="icon" />
+												<span class="<?=$iconfn;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" alt="icon"></span>
 											</a>
 										</td>
 										<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_routes_edit.php?id=<?=$i;?>';">
@@ -282,27 +281,27 @@ $main_buttons = array(
 										<td class="list nowrap" valign="middle">
 											<table border="0" cellspacing="0" cellpadding="1" summary="move">
 												<tr>
-													<td>
-														<input onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>"
-															src="/themes/<?= $g['theme']; ?>/images/icons/icon_left.gif"
+													<td align="center" valign="middle">
+														<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>"
+															class="btn btn-default btn-xs"
 															title="<?=gettext("move selected rules before this rule");?>"
-															type="image" style="height:17;width:17;border:0" />
+															type="submit"><span class="glyphicon glyphicon-arrow-left"></span></button>
 													</td>
 													<td>
-														<a href="system_routes_edit.php?id=<?=$i;?>">
-															<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_e.gif" width="17" height="17" border="0" title="<?=gettext("edit rule");?>" alt="edit" />
+														<a class="btn btn-default btn-xs" href="system_routes_edit.php?id=<?=$i;?>">
+															<span class="glyphicon glyphicon-pencil" title="<?=gettext("edit rule");?>" alt="edit"></span>
 														</a>
 													</td>
 												</tr>
 												<tr>
 													<td align="center" valign="middle">
-														<a href="system_routes.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')">
-															<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" title="<?=gettext("delete rule");?>" alt="delete" />
+														<a class="btn btn-default btn-xs" href="system_routes.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')">
+															<span class="glyphicon glyphicon-remove" title="<?=gettext("delete rule");?>" alt="delete"></span>
 														</a>
 													</td>
 													<td>
-														<a href="system_routes_edit.php?dup=<?=$i;?>">
-															<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" title="<?=gettext("add a new rule based on this one");?>" width="17" height="17" border="0" alt="duplicate" />
+														<a class="btn btn-default btn-xs" href="system_routes_edit.php?dup=<?=$i;?>">
+															<span class="glyphicon glyphicon-plus" title="<?=gettext("add a new rule based on this one");?>" alt="duplicate"></span>
 														</a>
 													</td>
 												</tr>
@@ -319,13 +318,13 @@ $main_buttons = array(
 				<?php
 													if ($i == 0):
 				?>
-														<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_left_d.gif" width="17" height="17"
-															title="<?=gettext("move selected routes to end");?>" border="0" alt="move" />
+														<span class="glyphicon glyphicon-arrow-left text-muted"
+															title="<?=gettext("move selected routes to end");?>" alt="move" />
 				<?php
 													else:
 				?>
-														<input name="move_<?=$i;?>" type="image" src="/themes/<?= $g['theme']; ?>/images/icons/icon_left.gif"
-															style="width:17;height:17;border:0" title="<?=gettext("move selected routes to end");?>" />
+														<button name="move_<?=$i;?>" type="submit" class="btn btn-default btn-xs"
+															title="<?=gettext("move selected routes to end");?>"><span class="glyphicon glyphicon-arrow-left"></span></button>
 				<?php
 													endif;
 				?>
