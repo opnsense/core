@@ -345,7 +345,7 @@ $main_buttons = array(
 				<?php
 													else:
 				?>
-														<button name="del" type="submit"  title="<?=gettext("delete selected routes");?>"
+														<button name="del_x" type="submit" title="<?=gettext("delete selected routes");?>"
 															onclick="return confirm('<?=gettext("Do you really want to delete the selected routes?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 				<?php
 													endif;

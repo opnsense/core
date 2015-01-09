@@ -244,13 +244,14 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Gateway"); ?></td>
 										<td width="78%" class="vtable">
-											<select name="gateway" id="gateway" class="formselect">
+											<select name="gateway" id="gateway" class="form-control">
 											<?php
 												foreach ($a_gateways as $gateway) {
-													echo "<option value='{$gateway['name']}' ";
-													if ($gateway['name'] == $pconfig['gateway'])
-														echo "selected=\"selected\"";
-													echo ">" . htmlspecialchars($gateway['name']) . " - " . htmlspecialchars($gateway['gateway']) . "</option>\n";
+													?>
+													<option value="<?=$gateway['name'];?>" <?php if ($gateway['name'] == $pconfig['gateway']) echo "selected=\"selected\""; ?>>
+														<?=htmlspecialchars($gateway['name']) . " - " . htmlspecialchars($gateway['gateway']);?>
+													</option>
+													<?php
 												}
 											?>
 											</select> <br />
@@ -262,21 +263,17 @@ include("head.inc");
 											<div style="display:none" id="status">
 											</div>
 											<div style="display:none" id="addgateway">
-												<table border="1" style="background:#990000; border-style: none none none none; width:225px;" summary="add gateway">
-													<tr>
-														<td>
-															<table bgcolor="#990000" cellpadding="1" cellspacing="1" summary="add">
-																<tr><td>&nbsp;</td></tr>
+															<table class="table table-striped"  summary="addgateway">
+																<tbody>
 																<tr>
-																	<td colspan="2" align="center"><b><font color="white"><?=gettext("Add new gateway:"); ?></font></b></td>
-																</tr>
-																<tr><td>&nbsp;</td></tr>
-																<tr>
-																	<td width="45%" align="right"><font color="white"><?=gettext("Default gateway:"); ?></font></td><td><input type="checkbox" id="defaultgw" name="defaultgw" /></td>
+																	<td colspan="2" valign="top" class="listtopic"><b><?=gettext("Add new gateway:"); ?></b></td>
 																</tr>
 																<tr>
-																	<td width="45%" align="right"><font color="white"><?=gettext("Interface:"); ?></font></td>
-																	<td>
+																	<td width="22%"><?=gettext("Default gateway:"); ?></td><td with="78%"><input class="form-control" type="checkbox" id="defaultgw" name="defaultgw" /></td>
+																</tr>
+																<tr>
+																	<td width="22%"><?=gettext("Interface:"); ?></td>
+																	<td with="78%">
 																		<select name="addinterfacegw" id="addinterfacegw">
 																		<?php $gwifs = get_configured_interface_with_descr();
 																			foreach($gwifs as $fif => $dif)
@@ -286,29 +283,26 @@ include("head.inc");
 																	</td>
 																</tr>
 																<tr>
-																	<td align="right"><font color="white"><?=gettext("Gateway Name:"); ?></font></td><td><input id="name" name="name" value="GW" /></td>
+																	<td with="22%"><?=gettext("Gateway Name:"); ?></td><td with="78%"><input class="form-control" id="name" name="name" value="GW" /></td>
 																</tr>
 																<tr>
-																	<td align="right"><font color="white"><?=gettext("Gateway IP:"); ?></font></td><td><input id="gatewayip" name="gatewayip" /></td>
+																	<td with="22%"><?=gettext("Gateway IP:"); ?></td><td with="78%"><input class="form-control" id="gatewayip" name="gatewayip" /></td>
 																</tr>
 																<tr>
-																	<td align="right"><font color="white"><?=gettext("Description:"); ?></font></td><td><input id="gatewaydescr" name="gatewaydescr" /></td>
+																	<td with="22%"><?=gettext("Description:"); ?></td><td with="78%"><input class="form-control" id="gatewaydescr" name="gatewaydescr" /></td>
 																</tr>
-																<tr><td>&nbsp;</td></tr>
 																<tr>
-																	<td colspan="2" align="center">
+																	<td with="22%"></td>
+																	<td with="78%">
 																		<div id='savebuttondiv'>
 																			<input type="hidden" name="addrtype" id="addrtype" value="IPv4" />
-																			<input id="gwsave" type="button" value="<?=gettext("Save Gateway"); ?>" onclick='hide_add_gatewaysave();' />
-																			<input id="gwcancel" type="button" value="<?=gettext("Cancel"); ?>" onclick='hide_add_gateway();' />
+																			<input class="btn btn-primary" id="gwsave" type="button" value="<?=gettext("Save Gateway"); ?>" onclick='hide_add_gatewaysave();' />
+																			<input class="btn btn-default" id="gwcancel" type="button" value="<?=gettext("Cancel"); ?>" onclick='hide_add_gateway();' />
 																		</div>
 																	</td>
 																</tr>
-																<tr><td>&nbsp;</td></tr>
+																</tbody>
 															</table>
-														</td>
-													</tr>
-												</table>
 											</div>
 										</td>
 									</tr>
@@ -331,7 +325,7 @@ include("head.inc");
 										<td width="22%" valign="top">&nbsp;</td>
 										<td width="78%">
 											<input id="save" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-											<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+											<input id="cancel" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
 											<?php if (isset($id) && $a_routes[$id]): ?>
 												<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 											<?php endif; ?>
@@ -371,7 +365,6 @@ include("head.inc");
 		}
 		function hide_add_gatewaysave() {
 			document.getElementById("addgateway").style.display = 'none';
-			jQuery('#status').html('<img src="/themes/<?=$g['theme'];?>/images/misc/loader.gif"> One moment please...');
 			var iface = jQuery('#addinterfacegw').val();
 			name = jQuery('#name').val();
 			var descr = jQuery('#gatewaydescr').val();
@@ -385,10 +378,10 @@ include("head.inc");
 			jQuery.ajax(
 				url,
 			{
-				type: 'post',
+					type: 'post',
 					data: pars,
 					error: report_failure,
-					complete: save_callback
+					success: save_callback
 			});
 		}
 		function addOption(selectbox,text,value)
@@ -404,13 +397,12 @@ include("head.inc");
 			alert("<?=gettext("Sorry, we could not create your gateway at this time."); ?>");
 			hide_add_gateway();
 		}
-		function save_callback(transport) {
-			var response = transport.responseText;
+		function save_callback(response) {
 			if (response) {
 				document.getElementById("addgateway").style.display = 'none';
 				hide_add_gateway();
-				jQuery('#status').html('');
-				addOption(jQuery('#gateway'), name, name);
+				var gwtext = escape(name) + " - " + gatewayip;
+				addOption(jQuery('#gateway'), gwtext, name);
 			} else {
 				report_failure();
 			}
