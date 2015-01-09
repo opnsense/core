@@ -167,12 +167,14 @@ function system_resolvconf_generate($dynupdate = false)
 				if (is_ipaddrv4($gatewayip)) {
 					/* dns server array starts at 0 */
 					$dnscountermo = $dnscounter - 1;
-					mwexec("/sbin/route change -host " . $syscfg['dnsserver'][$dnscountermo] . " {$gatewayip}");
+					mwexec("/sbin/route delete -host " . $syscfg['dnsserver'][$dnscountermo]);
+					mwexec("/sbin/route add -host " . $syscfg['dnsserver'][$dnscountermo] . " {$gatewayip}");
 				}
 				if (is_ipaddrv6($gatewayip)) {
 					/* dns server array starts at 0 */
 					$dnscountermo = $dnscounter - 1;
-					mwexec("/sbin/route change -host -inet6 " . $syscfg['dnsserver'][$dnscountermo] . " {$gatewayip}");
+					mwexec("/sbin/route delete -host -inet6 " . $syscfg['dnsserver'][$dnscountermo]);
+					mwexec("/sbin/route add -host -inet6 " . $syscfg['dnsserver'][$dnscountermo] . " {$gatewayip}");
 				}
 			}
 		}
@@ -469,7 +471,8 @@ function system_routing_configure($interface = '')
 			if (is_linklocal($gatewayipv6))
 				$ifscope = "%{$defaultifv6}";
 			log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}{$ifscope}");
-			mwexec("/sbin/route change -inet6 default " . escapeshellarg("{$gatewayipv6}{$ifscope}"));
+			mwexec("/sbin/route delete -inet6 default " . escapeshellarg("{$gatewayipv6}{$ifscope}"));
+			mwexec("/sbin/route add -inet6 default " . escapeshellarg("{$gatewayipv6}{$ifscope}"));
 		}
 	}
 
@@ -544,13 +547,15 @@ function system_staticroutes_configure($interface = "", $update_dns = false) {
 
 				$inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
 
-				$cmd = "/sbin/route change {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
+				$cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
 
 				if (is_subnet($ip))
 					if (is_ipaddr($gatewayip))
-						mwexec($cmd . escapeshellarg($gatewayip));
+						mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip));
+						mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip));
 					else if (!empty($interfacegw))
-						mwexec($cmd . "-iface " . escapeshellarg($interfacegw));
+						mwexec("/sbin/route delete".$cmd . "-iface " . escapeshellarg($interfacegw));
+						mwexec("/sbin/route add".$cmd . "-iface " . escapeshellarg($interfacegw));
 			}
 		}
 		unset($gateways_arr);

@@ -187,7 +187,8 @@ EOD;
 			 */
 			if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
 				log_error("Removing static route for monitor {$gateway['monitor']} and adding a new route through {$gateway['gateway']}");
-				mwexec("/sbin/route change -host " . escapeshellarg($gateway['monitor']) .
+				mwexec("/sbin/route delete -host " . escapeshellarg($gateway['monitor']), true);
+				mwexec("/sbin/route add -host " . escapeshellarg($gateway['monitor']) .
 					" " . escapeshellarg($gateway['gateway']), true);
 			}
 		} else if ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
@@ -226,7 +227,8 @@ EOD;
 			 */
 			if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
 				log_error("Removing static route for monitor {$gateway['monitor']} and adding a new route through {$gateway['gateway']}");
-				mwexec("/sbin/route change -host -inet6 " . escapeshellarg($gateway['monitor']) .
+				mwexec("/sbin/route delete -host -inet6 " . escapeshellarg($gateway['monitor']), true);
+				mwexec("/sbin/route add -host -inet6 " . escapeshellarg($gateway['monitor']) .
 					" " . escapeshellarg($gateway['gateway']), true);
 			}
 		} else
@@ -766,7 +768,8 @@ function fixup_default_gateway($ipprotocol, $gateways_status, $gateways_arr) {
 			} else {
 				$inetfamily = "-inet";
 			}
-			mwexec("/sbin/route change {$inetfamily} default {$gateways_arr[$upgw]['gateway']}");
+			mwexec("/sbin/route delete {$inetfamily} default {$gateways_arr[$upgw]['gateway']}");
+			mwexec("/sbin/route add {$inetfamily} default {$gateways_arr[$upgw]['gateway']}");
 		}
 	} else {
 		$defaultgw = trim(exec("/sbin/route -n get -{$ipprotocol} default | /usr/bin/awk '/gateway:/ {print $2}'"), " \n");
@@ -776,7 +779,8 @@ function fixup_default_gateway($ipprotocol, $gateways_status, $gateways_arr) {
 			$inetfamily = "-inet";
 		}
 		if ($defaultgw != $gateways_arr[$dfltgwname]['gateway'])
-			mwexec("/sbin/route change {$inetfamily} default {$gateways_arr[$dfltgwname]['gateway']}");
+			mwexec("/sbin/route delete {$inetfamily} default {$gateways_arr[$dfltgwname]['gateway']}");
+			mwexec("/sbin/route add {$inetfamily} default {$gateways_arr[$dfltgwname]['gateway']}");
 	}
 }
 
