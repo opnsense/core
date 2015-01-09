@@ -194,7 +194,13 @@ $main_buttons = array(
             ?>
 
             <section class="col-xs-12">
-
+					<?php
+						$tab_array = array();
+						$tab_array[0] = array(gettext("Gateways"), true, "system_gateways.php");
+						$tab_array[1] = array(gettext("Routes"), false, "system_routes.php");
+						$tab_array[2] = array(gettext("Groups"), false, "system_gateway_groups.php");
+						display_top_tabs($tab_array);
+					?>
                 <? include('system_gateways_tabs.php'); ?>
 
                 <div class="content-box">
