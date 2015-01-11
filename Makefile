@@ -16,6 +16,7 @@ lint:
 	find ${.CURDIR}/src -name "*.class" -print0 | xargs -0 -n1 php -l
 	find ${.CURDIR}/src -name "*.inc" -print0 | xargs -0 -n1 php -l
 	find ${.CURDIR}/src -name "*.php" -print0 | xargs -0 -n1 php -l
+	find ${.CURDIR}/src -name "rc.initial*" -print0 | xargs -0 -n1 php -l
 
 sweep:
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
