@@ -80,4 +80,4 @@ $di->set('session', function () {
 });
 
 
-$di->set('config',$config);
+$di->set('config', $config);

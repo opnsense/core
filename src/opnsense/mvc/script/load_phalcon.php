@@ -18,6 +18,6 @@ $loader->registerDirs(
     )
 )->register();
 
-$di->set('config',$phalcon_config);
+$di->set('config', $phalcon_config);
 
 unset($phalcon_config);

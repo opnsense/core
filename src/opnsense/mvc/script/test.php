@@ -18,7 +18,8 @@ print_r($acc_list);
 
 //$db = new Captiveportal\DB("test");
 //$db->remove_session("XXX");
-//$db->insert_session(100,1,"10.211.55.101","00:1C:42:49:B7:B2","frits","XXX","aksjdhaskjh", null,null, null,null, null);
+//$db->insert_session(100,1,"10.211.55.101","00:1C:42:49:B7:B2","frits","XXX","aksjdhaskjh",
+//	null,null, null,null, null);
 //
 //$clients  = $db->listClients( array("sessionid" => "XXX") );
 //
