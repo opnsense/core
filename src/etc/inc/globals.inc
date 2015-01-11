@@ -34,7 +34,6 @@ register_shutdown_function('closelog');
 
 $g = array(
 	"base_packages" => "siproxd",
-	"event_address" => "unix:///var/run/check_reload_status",
 	"factory_shipped_username" => "root",
 	"factory_shipped_password" => "opnsense",
 	"upload_path" => "/root",

@@ -250,8 +250,9 @@ if ($_POST) {
 		$retval |= system_timezone_configure();
 		$retval |= system_ntp_configure();
 
-		if ($olddnsallowoverride != $config['system']['dnsallowoverride'])
-			$retval |= send_event("service reload dns");
+		if ($olddnsallowoverride != $config['system']['dnsallowoverride']) {
+			send_event("service reload dns");
+		}
 
 		// Reload the filter - plugins might need to be run.
 		$retval |= filter_configure();

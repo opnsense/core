@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
@@ -48,7 +49,10 @@ if ($_POST) {
 		$retval = 0;
 
 		$retval = system_routing_configure();
-		send_multiple_events(array("service reload dyndnsall", "service reload ipsecdns", "filter reload"));
+
+		send_event('service reload dyndnsall');
+		send_event('service reload ipsecdns');
+		send_event('filter reload');
 
 		/* reconfigure our gateway monitor */
 		setup_gateways_monitor();

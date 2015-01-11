@@ -262,7 +262,7 @@ echo "done.\n";
 if($realmem > 0 and $realmem < 65) {
 	echo "System has less than 65 megabytes of ram {$realmem}.  Delaying webConfigurator startup.\n";
 	/* start webConfigurator up on final pass */
-	mwexec("/usr/local/sbin/pfSctl -c 'service restart webgui'");
+	send_event('service restart webgui');
 } else {
 	/* start web server */
 	system_webgui_start();

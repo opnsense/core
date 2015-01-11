@@ -173,50 +173,9 @@ function unlock_force($lock) {
 	@unlink("{$g['tmp_path']}/{$lock}.lock");
 }
 
-function send_event($cmd) {
-	global $g;
-
-	if(!isset($g['event_address']))
-		$g['event_address'] = "unix:///var/run/check_reload_status";
-
-	$try = 0;
-	while ($try < 3) {
-		$fd = @fsockopen($g['event_address']);
-		if ($fd) {
-			fwrite($fd, $cmd);
-			$resp = fread($fd, 4096);
-			if ($resp != "OK\n")
-				log_error("send_event: sent {$cmd} got {$resp}");
-			fclose($fd);
-			$try = 3;
-		}
-		$try++;
-	}
-}
-
-function send_multiple_events($cmds) {
-	global $g;
-
-	if(!isset($g['event_address']))
-		$g['event_address'] = "unix:///var/run/check_reload_status";
-
-	if (!is_array($cmds))
-		return;
-
-	while ($try < 3) {
-		$fd = @fsockopen($g['event_address']);
-		if ($fd) {
-			foreach ($cmds as $cmd) {
-				fwrite($fd, $cmd);
-				$resp = fread($fd, 4096);
-				if ($resp != "OK\n")
-					log_error("send_event: sent {$cmd} got {$resp}");
-			}
-			fclose($fd);
-			$try = 3;
-		}
-		$try++;
-	}
+function send_event($cmd)
+{
+	return mwexec("/usr/local/sbin/pfSctl -c '{$cmd}'");
 }
 
 function refcount_init($reference) {
