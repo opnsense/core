@@ -218,22 +218,22 @@ jQuery(function ($) {
 
 					<div class="content-box">
 						<header class="content-box-head container-fluid">
-				        	<h3><?=gettext("Edit gateway group entry");?></h3>
-				    	</header>
- 						<div class="content-box-main col-xs-12">
+						<h3><?=gettext("Edit gateway group entry");?></h3>
+					</header>
+						<div class="content-box-main col-xs-12">
 
-            				<form action="system_gateway_groups_edit.php" method="post" name="iform" id="iform">
-            					<div class="table-responsive">
-              						<table class="table table-striped" summary="system groups edit">
-				                		<tr>
-				                  		<td width="22%" valign="top" class="vncellreq"><?=gettext("Group Name"); ?></td>
-				                  		<td width="78%" class="vtable">
-				                    		<input name="name" type="text" class="formfld unknown" id="name" size="20" value="<?=htmlspecialchars($pconfig['name']);?>" />
-				                    		<br /> <span class="vexpl"><?=gettext("Group Name"); ?></span></td>
-				                		</tr>
+					<form action="system_gateway_groups_edit.php" method="post" name="iform" id="iform">
+						<div class="table-responsive">
+							<table class="table table-striped" summary="system groups edit">
+								<tr>
+								<td width="22%" valign="top" class="vncellreq"><?=gettext("Group Name"); ?></td>
+								<td width="78%" class="vtable">
+								<input name="name" type="text" class="formfld unknown" id="name" size="20" value="<?=htmlspecialchars($pconfig['name']);?>" />
+								<br /> <span class="vexpl"><?=gettext("Group Name"); ?></span></td>
+								</tr>
 										<tr>
-						            		<td width="22%" valign="top" class="vncellreq"><?=gettext("Gateway Priority"); ?></td>
-						            		<td width="78%" class="vtable">
+									<td width="22%" valign="top" class="vncellreq"><?=gettext("Gateway Priority"); ?></td>
+									<td width="78%" class="vtable">
 												<table border="0" cellpadding="6" cellspacing="0" summary="gateway priority">
 													<tr>
 														<td class="listhdrr">Gateway</td>

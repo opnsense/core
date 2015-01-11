@@ -3527,7 +3527,7 @@ function interface_6to4_configure($interface = "wan", $wancfg){
 		mwexec("/sbin/route delete -host 192.88.99.1");
 		mwexec("/sbin/route add -host 192.88.99.1 {$ip4gateway}");
 	}
-	
+
 	if (!$g['booting'])
 		link_interface_to_track6($interface, "update");
 

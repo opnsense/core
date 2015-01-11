@@ -241,6 +241,3 @@ class Template(object):
 
 
         return result
-
-
-

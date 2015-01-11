@@ -66,6 +66,3 @@ try:
     print ('response:%s'% sock.recv(4096))
 finally:
     sock.close()
-
-
-

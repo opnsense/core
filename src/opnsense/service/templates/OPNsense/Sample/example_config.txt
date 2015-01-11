@@ -16,4 +16,3 @@ For example, only use this interfaces data:
 {% endfor %}
 
 {% endblock %}
-

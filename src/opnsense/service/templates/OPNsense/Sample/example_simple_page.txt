@@ -30,5 +30,3 @@ and a short list of firewall rules created (multiple rule items in filter sectio
 The full documentation for the template engine can be found at : http://jinja.pocoo.org/docs/dev/templates/
 
 A sample with multiple output files ( for example based on interface ) can be found in the example_config.txt template
-
-
