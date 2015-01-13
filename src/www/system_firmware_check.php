@@ -36,8 +36,6 @@ require_once("script/load_phalcon.php");
 
 $file_pkg_status="/tmp/pkg_status.json";
 $file_upgrade_progress="/tmp/pkg_upgrade.progress";
-$pkgonly=false;
-
 $pkg_status = array();
 
 if($_POST['action'] == 'pkg_update') {
@@ -48,16 +46,12 @@ if($_POST['action'] == 'pkg_update') {
 	$shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh",false,false,$shell_output);
 }
 
-if($_POST['action'] == 'pkg_upgrade') {
+if($_POST['action'] == 'pkg_upgrade' ) {
 	/* Setup Shell variables */
 	$shell_output = array();
 	$shell = new OPNsense\Core\Shell();
 	// execute shell command and collect (only valid) info into named array
-	if ( $pkgonly == true ) {
-		$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh pkg > /dev/null 2 > /dev/null < /dev/null &",false,false,$shell_output);
-	} else {
-		$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh all > /dev/null 2 > /dev/null < /dev/null &",false,false,$shell_output);
-	}
+	$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh ".$_POST['packages']." > /dev/null 2 > /dev/null < /dev/null &",false,false,$shell_output);
 }
 
 if($_POST['action'] == 'update_status' ) {
@@ -83,15 +77,14 @@ if($_REQUEST['getupdatestatus']) {
 			echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
 		} elseif  ($pkg_status["updates"]=="0") {
 			echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
-		} elseif ( $pkg_status["updates"] == 1 && $pkg_status["upgrade_packages"][0]["name"] == "pkg" ) {
+		} elseif ( $pkg_status["updates"] == "1" && $pkg_status["upgrade_packages"][0]["name"] == "pkg" ) {
 			echo "<span class='text-danger'>".gettext("There is a mandatory update for the package manager.").
 					"</span><span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span><br />".
 					"<span class='text-danger'>".gettext("Upgrade pkg and recheck, there maybe other updates available.").
-					"</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now").
+					"</span><br/><span class='btn btn-primary' onclick='upgradenow(this)' pkgs='pkg'>".gettext("Upgrade Now").
 					"</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
-			$pkgonly=true;
 		} else {
-			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now")."</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
+			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><span class='btn btn-primary' onclick='upgradenow(this)' pkgs='all'>".gettext("Upgrade Now")."</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
 		}
 	} else {
 		echo "<span class='text-danger'>".gettext("Current status is unknown")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
@@ -232,13 +225,13 @@ include("head.inc");
 		});
 	}
 
-    function upgradenow() {
+    function upgradenow(data) {
 		jQuery('#updatestatus').html('<span class="text-info">Starting Upgrade.. Please do not leave this page while upgrade is in progress.</span>');
 		jQuery('#output').show();
 		jQuery.ajax({
 			type: "POST",
 			url: '/system_firmware_check.php',
-			data:{action:'pkg_upgrade'},
+			data:{action: 'pkg_upgrade', packages: data.getAttribute("pkgs") },
 			success:function(html) {
 				setTimeout(function() { updatestatus(); }, 100);
 			}
