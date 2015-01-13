@@ -36,6 +36,7 @@ require_once("script/load_phalcon.php");
 
 $file_pkg_status="/tmp/pkg_status.json";
 $file_upgrade_progress="/tmp/pkg_upgrade.progress";
+$pkgonly=false;
 
 $pkg_status = array();
 
@@ -52,7 +53,11 @@ if($_POST['action'] == 'pkg_upgrade') {
 	$shell_output = array();
 	$shell = new OPNsense\Core\Shell();
 	// execute shell command and collect (only valid) info into named array
-	$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh > /dev/null 2 > /dev/null < /dev/null &",false,false,$shell_output);
+	if ( $pkgonly == true ) {
+		$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh pkg > /dev/null 2 > /dev/null < /dev/null &",false,false,$shell_output);
+	} else {
+		$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh all > /dev/null 2 > /dev/null < /dev/null &",false,false,$shell_output);
+	}
 }
 
 if($_POST['action'] == 'update_status' ) {
@@ -78,6 +83,13 @@ if($_REQUEST['getupdatestatus']) {
 			echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
 		} elseif  ($pkg_status["updates"]=="0") {
 			echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
+		} elseif ( $pkg_status["updates"] == 1 && $pkg_status["upgrade_packages"][0]["name"] == "pkg" ) {
+			echo "<span class='text-danger'>".gettext("There is a mandatory update for the package manager.").
+					"</span><span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span><br />".
+					"<span class='text-danger'>".gettext("Upgrade pkg and recheck, there maybe other updates available.").
+					"</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now").
+					"</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
+			$pkgonly=true;
 		} else {
 			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now")."</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
 		}
