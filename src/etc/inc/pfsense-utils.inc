@@ -972,6 +972,7 @@ function setup_serial_port($when = 'save', $path = '')
 			}
 			$new_boot_config[] = 'comconsole_speed="' . $serialspeed . '"';
 			$new_boot_config[] = 'hw.usb.no_pf="1"';
+			$new_boot_config[] = 'autoboot_delay="3"';
 
 			file_put_contents($loader_conf_file, implode("\n", $new_boot_config) . "\n");
 		}
