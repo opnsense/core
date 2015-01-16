@@ -32,26 +32,36 @@ require("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("script/load_phalcon.php");
 
-//$d_isfwfile = 1;
-
+/* Setup variables for upgrade procedure */
 $file_pkg_status="/tmp/pkg_status.json";
 $file_upgrade_progress="/tmp/pkg_upgrade.progress";
 $pkg_status = array();
+$package="none";
 
-if($_POST['action'] == 'pkg_update') {
-	/* Setup Shell variables */
-	$shell_output = array();
-	$shell = new OPNsense\Core\Shell();
-	// execute shell command and collect (only valid) info into named array
-	$shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh",false,false,$shell_output);
+/* Setup Shell variables */
+$shell_output = array();
+$shell = new OPNsense\Core\Shell();
+
+if (file_exists($file_pkg_status)) {
+		$json = file_get_contents($file_pkg_status);
+		$pkg_status = json_decode($json,true);
+		if($pkg_status["updates"] == "1" && $pkg_status["upgrade_packages"][0]["name"] == "pkg") {
+			$package="pkg";
+		} else {
+			$package="all";
+		}
 }
 
-if($_POST['action'] == 'pkg_upgrade' ) {
-	/* Setup Shell variables */
-	$shell_output = array();
-	$shell = new OPNsense\Core\Shell();
+if($_POST['action'] == 'pkg_upgrade') {
 	// execute shell command and collect (only valid) info into named array
-	$shell->exec("/usr/local/opnsense/scripts/pkg_upgrade.sh ".$_POST['packages']." > /dev/null 2 > /dev/null < /dev/null &",false,false,$shell_output);
+	$cmd="/usr/local/opnsense/scripts/pkg_upgrade.sh " . $package . " > /dev/null 2 > /dev/null < /dev/null &";
+	$shell->exec($cmd,false,false,$shell_output);
+	exit;
+}
+
+if($_POST['action'] == 'pkg_update') {
+	// execute shell command and collect (only valid) info into named array
+	$shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh",false,false,$shell_output);
 }
 
 if($_POST['action'] == 'update_status' ) {
@@ -60,13 +70,6 @@ if($_POST['action'] == 'update_status' ) {
 		echo $content;
 	}
 	exit;
-
-}
-
-if (file_exists($file_pkg_status)) {
-
-		$json = file_get_contents($file_pkg_status);
-		$pkg_status = json_decode($json,true);
 }
 
 if($_REQUEST['getupdatestatus']) {
@@ -81,10 +84,10 @@ if($_REQUEST['getupdatestatus']) {
 			echo "<span class='text-danger'>".gettext("There is a mandatory update for the package manager.").
 					"</span><span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span><br />".
 					"<span class='text-danger'>".gettext("Upgrade pkg and recheck, there maybe other updates available.").
-					"</span><br/><span class='btn btn-primary' onclick='upgradenow(this)' pkgs='pkg'>".gettext("Upgrade Now").
+					"</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now").
 					"</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
 		} else {
-			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><span class='btn btn-primary' onclick='upgradenow(this)' pkgs='all'>".gettext("Upgrade Now")."</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
+			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now")."</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
 		}
 	} else {
 		echo "<span class='text-danger'>".gettext("Current status is unknown")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
@@ -92,7 +95,6 @@ if($_REQUEST['getupdatestatus']) {
 	exit;
 }
 
-//$curcfg = $config['system']['firmware'];
 $pgtitle=array(gettext("System"), gettext("Firmware"), gettext("Auto Update"));
 include("head.inc");
 
@@ -225,13 +227,13 @@ include("head.inc");
 		});
 	}
 
-    function upgradenow(data) {
+    function upgradenow() {
 		jQuery('#updatestatus').html('<span class="text-info">Starting Upgrade.. Please do not leave this page while upgrade is in progress.</span>');
 		jQuery('#output').show();
 		jQuery.ajax({
 			type: "POST",
 			url: '/system_firmware_check.php',
-			data:{action: 'pkg_upgrade', packages: data.getAttribute("pkgs") },
+			data:{action: 'pkg_upgrade'},
 			success:function(html) {
 				setTimeout(function() { updatestatus(); }, 100);
 			}
@@ -251,7 +253,7 @@ include("head.inc");
 				if ( data.indexOf('***DONE***') < 0 )  {
 					setTimeout(function() { updatestatus(); }, 500);
 				} else {
-					jQuery('#updatestatus').html('<span class="text-info">Upgrade Done!</span>');
+					jQuery('#updatestatus').html('<a href="/system_firmware_check.php"><span class="btn btn-primary btn-xs">Check to refresh</span></a>&nbsp;<span class="text-info">Upgrade Done!</span><br/>');
 				}
 			}
 		});

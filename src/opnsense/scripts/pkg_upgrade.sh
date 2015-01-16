@@ -25,28 +25,34 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 package=$1
-pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
-if [ "$pkg_running" == "" ]; then
-	if [ -f /tmp/pkg_upgrade.progress ]; then
-		# Remove leftovers from previous upgrade first
-		rm /tmp/pkg_upgrade.progress
-	fi
+# Check if another pkg process is already running
+pkg_running=`ps -x | grep "pkg " | grep -v "grep" | grep -v "pkg_upgrade.sh"`
+
+if [ -f /tmp/pkg_upgrade.progress ]; then
+	# Remove leftovers from previous upgrade first
+	rm /tmp/pkg_upgrade.progress
+fi
+
+# Create upgrade progress file first
+touch /tmp/pkg_upgrade.progress
+if [ -z "$pkg_running" ]; then
+	echo "***GOT REQUEST TO UPGRADE: $package***" >> /tmp/pkg_upgrade.progress
 	if [ "$package" == "all" ]; then
 	    # start pkg upgrade
-	    echo '***STARTING UPGRADE***' > /tmp/pkg_upgrade.progress
+	    echo '***STARTING UPGRADE***' >> /tmp/pkg_upgrade.progress
 		pkg upgrade -y >> /tmp/pkg_upgrade.progress
 		echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> /tmp/pkg_upgrade.progress
 		/usr/local/opnsense/scripts/pkg_updatecheck.sh
 		echo '***DONE***' >> /tmp/pkg_upgrade.progress
 	else
 		# start pkg upgrade
-	    echo '***STARTING UPGRADE - ONE PACKAGE***' > /tmp/pkg_upgrade.progress
+	    echo '***STARTING UPGRADE - ONE PACKAGE***' >> /tmp/pkg_upgrade.progress
 		pkg upgrade -y $package >> /tmp/pkg_upgrade.progress
 		echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> /tmp/pkg_upgrade.progress
 		/usr/local/opnsense/scripts/pkg_updatecheck.sh
 		echo '***DONE***' >> /tmp/pkg_upgrade.progress
 	fi
 else
-	echo 'Upgrade already in progress'
-	echo '***DONE***'
+	echo 'Upgrade already in progress' >> /tmp/pkg_upgrade.progress
+	echo '***DONE***' >> /tmp/pkg_upgrade.progress
 fi
