@@ -52,6 +52,8 @@ if [ -z "$pkg_running" ]; then
 		/usr/local/opnsense/scripts/pkg_updatecheck.sh
 		echo '***DONE***' >> /tmp/pkg_upgrade.progress
 	fi
+	# regenerate php.ini after upgrade to avoid spurious output
+	/usr/local/etc/rc.php_ini_setup
 else
 	echo 'Upgrade already in progress' >> /tmp/pkg_upgrade.progress
 	echo '***DONE***' >> /tmp/pkg_upgrade.progress
