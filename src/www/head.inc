@@ -26,7 +26,9 @@ $pagetitle = gentitle( $pgtitle );
 		<title><?php echo($config['system']['hostname'] . "." . $config['system']['domain'] . " - " . $pagetitle); ?></title>
 
 		<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
-
+		<!-- Stylesheet for fancy select/dropdown -->
+		<link rel="stylesheet" type="text/css" href="/themes/<?=$g['theme'];?>/build/css/bootstrap-select.min.css">
+		<!-- Favicon -->
 		<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
 
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
@@ -34,12 +36,10 @@ $pagetitle = gentitle( $pgtitle );
 		<script>var theme = '<?=$g['theme'];?>'; </script>
 
 		<script src="/themes/<?=$g['theme'];?>/build/js/main.min.js" type="text/javascript"></script>
-		<!--<script src="/themes/<?=$g['theme'];?>/assets/javascripts/bootstrap/popover.js" type="text/javascript"></script>-->
-
-		<!--script type="text/javascript" src="/javascript/sorttable.js"></script-->
+		<!-- Fancy select with search options -->
+		<script src="/themes/<?=$g['theme'];?>/build/js/bootstrap-select.min.js" type="text/javascript"></script>
+		<!-- Ticker used for notices-->
 		<script type="text/javascript" src="/javascript/ticker.js"></script>
-
-		<!--<script type=\"text/javascript\" src=\"/themes/<?php echo $g['theme']; ?>/loader.js\"></script> -->
 
 		<?php if($_GET['enablefirebuglite']): ?>
 			<script type=\"text/javascript" src=\"/javascript/pi.js\"></script>
