@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Phalcon PHP Framework</title>
+		<title>{{title|default("OPNsense") }}</title>
 	</head>
 	<body>
-		{{ content() }}
+	{{ content() }}
 	</body>
 </html>
