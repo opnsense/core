@@ -166,7 +166,7 @@ include("head.inc");
 
 ?>
 
-<body link="#000000" vlink="#000000" alink="#000000" onload="<?= $jsevents["body"]["onload"] ?>">
+<body onload="<?= $jsevents["body"]["onload"] ?>">
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -360,13 +360,13 @@ function presubmit() {
 										endif;
 										if ($act != "new"):
 					?>
+											<th colspan="2" valign="top" class="vncell"><?=gettext("Assigned Privileges");?></th>
 											<tr>
-												<td width="22%" valign="top" class="vncell"><?=gettext("Assigned Privileges");?></td>
-												<td width="78%" class="vtable">
-													<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="privileges">
+												<td colspan="2" class="vtable">
+													<table class="tabcont table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="privileges">
 														<tr>
-															<td width="40%" class="listhdrr"><?=gettext("Name");?></td>
-															<td width="60%" class="listhdrr"><?=gettext("Description");?></td>
+															<td width="40%" class="listhdrr"><b><?=gettext("Name");?></b></td>
+															<td width="60%" class="listhdrr"><b><?=gettext("Description");?></b></td>
 															<td class="list"></td>
 														</tr>
 					<?php
@@ -388,7 +388,7 @@ function presubmit() {
 																		document.getElementById('groupid').value='<?=$id;?>';
 																		document.getElementById('act').value='<?php echo "delpriv";?>';
 																		return confirm('<?=gettext("Do you really want to delete this privilege?");?>');"
-																	title="<?=gettext("delete privilege");?>"><span class="glyphicon glyphicon-remove"></span></button>
+																	title="<?=gettext("delete privilege");?>" data-toggle="tooltip" data-placement="left" ><span class="glyphicon glyphicon-remove"></span></button>
 															</td>
 														</tr>
 					<?php
@@ -400,7 +400,7 @@ function presubmit() {
 															<td class="list" colspan="2"></td>
 															<td class="list">
 																<a href="system_groupmanager_addprivs.php?groupid=<?=htmlspecialchars($id)?>" class="btn btn-default btn-xs">
-																	<span class="glyphicon glyphicon-add"></span>
+																	<span class="glyphicon glyphicon-plus"></span>
 																</a>
 
 															</td>

@@ -558,11 +558,11 @@ function sshkeyClicked(obj) {
 														</td>
 														<td align="center" width="12%">
 															<br />
-															<a href="javascript:move_selected('notgroups','groups')" class="btn btn-default btn-xs" title="<?=gettext("Add Groups"); ?>">
+															<a href="javascript:move_selected('notgroups','groups')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("Add Groups"); ?>">
 																<span class="glyphicon glyphicon-arrow-right"></span>
 															</a>
 															<br /><br />
-															<a href="javascript:move_selected('groups','notgroups')" class="btn btn-default btn-xs" title="<?=gettext("Remove Groups"); ?>">
+															<a href="javascript:move_selected('groups','notgroups')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("Remove Groups"); ?>">
 																<span class="glyphicon glyphicon-arrow-left"></span>
 															</a>
 														</td>
@@ -600,13 +600,17 @@ function sshkeyClicked(obj) {
 									if (isset($pconfig['uid'])):
 				?>
 										<tr>
-											<td width="22%" valign="top" class="vncell"><?=gettext("Effective Privileges");?></td>
-											<td width="78%" class="vtable">
-												<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="privileges">
+											<th colspan="2">
+												<?=gettext("Effective Privileges");?>
+											</th>
+										</tr>
+										<tr>
+											<td colspan="2" class="vtable">
+												<table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="privileges">
 													<tr>
-														<td width="20%" class="listhdrr"><?=gettext("Inherited From");?></td>
-														<td width="30%" class="listhdrr"><?=gettext("Name");?></td>
-														<td width="40%" class="listhdrr"><?=gettext("Description");?></td>
+														<td width="20%" class="listhdrr"><b><?=gettext("Inherited From");?></b></td>
+														<td width="30%" class="listhdrr"><b><?=gettext("Name");?></b></td>
+														<td width="40%" class="listhdrr"><b><?=gettext("Description");?></b></td>
 														<td class="list"></td>
 													</tr>
 				<?php
@@ -630,13 +634,13 @@ function sshkeyClicked(obj) {
 				<?php
 														if (!$group):
 				?>
-															<input type="image" name="delpriv[]" width="17" height="17" border="0"
+															<button class="btn btn-default btn-xs" name="delpriv[]_x" width="17" height="17" border="0"
 																src="/themes/<?=$g['theme'];?>/images/icons/icon_x.gif"
 																onclick="document.getElementById('privid').value='<?=$i;?>';
 																	document.getElementById('userid').value='<?=$id;?>';
 																	document.getElementById('act').value='<?php echo "delpriv";?>';
 																	return confirm('<?=gettext("Do you really want to delete this privilege?");?>');"
-																title="<?=gettext("delete privilege");?>" />
+																title="<?=gettext("delete privilege");?>" data-toggle="tooltip" data-placement="left"><span class="glyphicon glyphicon-remove"></span>
 				<?php
 														endif;
 				?>
@@ -652,8 +656,8 @@ function sshkeyClicked(obj) {
 													<tr>
 														<td class="list" colspan="3"></td>
 														<td class="list">
-															<a href="system_usermanager_addprivs.php?userid=<?=$id?>" class="btn btn-default">
-																<span class="glyphicon glyphicon-add"></span>
+															<a href="system_usermanager_addprivs.php?userid=<?=$id?>" class="btn btn-xs btn-default">
+																<span class="glyphicon glyphicon-plus"></span>
 															</a>
 														</td>
 													</tr>
@@ -697,20 +701,20 @@ function sshkeyClicked(obj) {
 																onclick="document.getElementById('certid').value='<?=$i;?>';
 																	document.getElementById('userid').value='<?=$id;?>';
 																	document.getElementById('act').value='<?php echo "expckey";?>';"
-																title="<?=gettext("export private key");?>"><span class="glyphicon glyphicon-arrow-down"></span></button>
+																title="<?=gettext("export private key");?>" data-toggle="tooltip" data-placement="left" ><span class="glyphicon glyphicon-arrow-down"></span></button>
 															<button type="submit" name="expcert[]"
 																class="btn btn-default btn-xs"
 																onclick="document.getElementById('certid').value='<?=$i;?>';
 																	document.getElementById('userid').value='<?=$id;?>';
 																	document.getElementById('act').value='<?php echo "expcert";?>';"
-																title="<?=gettext("export cert");?>"><span class="glyphicon glyphicon-arrow-down"></span></button>
+																title="<?=gettext("export cert");?>" data-toggle="tooltip" data-placement="left" ><span class="glyphicon glyphicon-arrow-down"></span></button>
 															<button type="submit" name="delcert[]"
 																class="btn btn-default btn-xs"
 																onclick="document.getElementById('certid').value='<?=$i;?>';
 																	document.getElementById('userid').value='<?=$id;?>';
 																	document.getElementById('act').value='<?php echo "delcert";?>';
 																	return confirm('<?=gettext("Do you really want to remove this certificate association?") .'\n'. gettext("(Certificate will not be deleted)");?>')"
-																title="<?=gettext("delete cert");?>"><span class="glyphicon glyphicon-remove"></span></button>
+																title="<?=gettext("delete cert");?>" data-toggle="tooltip" data-placement="left" ><span class="glyphicon glyphicon-remove"></span></button>
 														</td>
 													</tr>
 				<?php
@@ -880,7 +884,7 @@ function sshkeyClicked(obj) {
 									<button type="submit" name="addcert"
 										class="btn btn-default btn-xs"
 										onclick="document.getElementById('act').value='<?php echo "new";?>';"
-										title="<?=gettext("add user");?>"><span class="glyphicon glyphicon-plus"></span>
+										title="<?=gettext("add user");?>" data-toggle="tooltip" data-placement="left" ><span class="glyphicon glyphicon-plus"></span>
 									</button>
 								</td>
 							</tr>
@@ -936,7 +940,7 @@ function sshkeyClicked(obj) {
 									<button type="submit" name="edituser[]" class="btn btn-default btn-xs"
 										onclick="document.getElementById('userid').value='<?=$i;?>';
 											document.getElementById('act').value='<?php echo "edit";?>';"
-										title="<?=gettext("edit user");?>" ><span class="glyphicon glyphicon-pencil"></span></button>
+										title="<?=gettext("edit user");?>" data-toggle="tooltip" data-placement="left" ><span class="glyphicon glyphicon-pencil"></span></button>
 <?php
 								if($userent['scope'] != "system"):
 ?>
@@ -947,7 +951,7 @@ function sshkeyClicked(obj) {
 											document.getElementById('username').value='<?=$userent['name'];?>';
 											document.getElementById('act').value='<?php echo "deluser";?>';
 											return confirm('<?=gettext("Do you really want to delete this user?");?>');"
-										title="<?=gettext("delete user");?>"><span class="glyphicon glyphicon-remove"></span></button>
+										title="<?=gettext("delete user");?>" data-toggle="tooltip" data-placement="left" ><span class="glyphicon glyphicon-remove"></span></button>
 <?php
 								endif;
 ?>

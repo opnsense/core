@@ -474,7 +474,7 @@ function select_clicked() {
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Type");?></td>
 												<td width="78%" class="vtable">
 													<?php if (!isset($id)): ?>
-													<select name='type' id='type' class="formselect" onchange='server_typechange()'>
+													<select name='type' id='type' class="formselect selectpicker" data-style="btn-default" onchange='server_typechange()'>
 													<?php
 														foreach ($auth_server_types as $typename => $typedesc ):
 															$selected = "";
@@ -518,7 +518,7 @@ function select_clicked() {
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Transport");?></td>
 												<td width="78%" class="vtable">
-													<select name='ldap_urltype' id='ldap_urltype' class="formselect" onchange='ldap_urlchange()'>
+													<select name='ldap_urltype' id='ldap_urltype' class="formselect selectpicker" data-style="btn-default" onchange='ldap_urlchange()'>
 													<?php
 														foreach ($ldap_urltypes as $urltype => $urlport):
 															$selected = "";
@@ -534,7 +534,7 @@ function select_clicked() {
 												<td width="22%" valign="top" class="vncell"><?=gettext("Peer Certificate Authority"); ?></td>
 					                                                        <td width="78%" class="vtable">
 					                                                        <?php if (count($a_ca)): ?>
-													<select id='ldap_caref' name='ldap_caref' class="formselect">
+													<select id='ldap_caref' name='ldap_caref' class="formselect selectpicker" data-style="btn-default">
 					                                                        <?php
 					                                                                foreach ($a_ca as $ca):
 					                                                                        $selected = "";
@@ -554,7 +554,7 @@ function select_clicked() {
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Protocol version");?></td>
 												<td width="78%" class="vtable">
-													<select name='ldap_protver' id='ldap_protver' class="formselect">
+													<select name='ldap_protver' id='ldap_protver' class="formselect selectpicker" data-style="btn-default">
 													<?php
 														foreach ($ldap_protvers as $version):
 															$selected = "";
@@ -571,9 +571,9 @@ function select_clicked() {
 												<td width="78%" class="vtable">
 													<table border="0" cellspacing="0" cellpadding="2" summary="search scope">
 														<tr>
-															<td><?=gettext("Level:");?> &nbsp;</td>
+															<td><?=gettext("Level:");?></td>
 															<td>
-																<select name='ldap_scope' id='ldap_scope' class="formselect">
+																<select name='ldap_scope' id='ldap_scope' class="formselect selectpicker" data-style="btn-default">
 																<?php
 																	foreach ($ldap_scopes as $scopename => $scopedesc):
 																		$selected = "";
@@ -586,7 +586,7 @@ function select_clicked() {
 															</td>
 														</tr>
 														<tr>
-															<td><?=gettext("Base DN:");?> &nbsp;</td>
+															<td><?=gettext("Base DN:");?></td>
 															<td>
 																<input name="ldap_basedn" type="text" class="formfld unknown" id="ldap_basedn" size="40" value="<?=htmlspecialchars($pconfig['ldap_basedn']);?>"/>
 															</td>
@@ -672,7 +672,7 @@ function select_clicked() {
 											<tr>
 												<td width="22%" valign="top" class="vncell"><?=gettext("Initial Template");?></td>
 												<td width="78%" class="vtable">
-													<select name='ldap_tmpltype' id='ldap_tmpltype' class="formselect" onchange='ldap_tmplchange()'>
+													<select name='ldap_tmpltype' id='ldap_tmpltype' class="formselect selectpicker" data-style="btn-default" onchange='ldap_tmplchange()'>
 													<?php
 														foreach ($ldap_templates as $tmplname => $tmpldata):
 															$selected = "";
@@ -757,7 +757,7 @@ function select_clicked() {
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Services offered");?></td>
 												<td width="78%" class="vtable">
-													<select name='radius_srvcs' id='radius_srvcs' class="formselect" onchange='radius_srvcschange()'>
+													<select name='radius_srvcs' id='radius_srvcs' class="formselect selectpicker" data-style="btn-default" onchange='radius_srvcschange()'>
 													<?php
 														foreach ($radius_srvcs as $srvcname => $srvcdesc):
 															$selected = "";
