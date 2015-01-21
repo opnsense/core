@@ -26,43 +26,20 @@
     # POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+    package : Frontend Model Base
+    function: implements base model to bind config and definition to object
 
 */
-namespace OPNsense\Sample;
 
-use Phalcon\Mvc\Controller;
-use \OPNsense\Base\ControllerBase;
+namespace OPNsense\Base;
 
-class PageController extends ControllerBase
+abstract class BaseModel
 {
-    public function indexAction()
+
+    public function __construct()
     {
-        $this->view->title = "XXX";
-        $this->view->pick('OPNsense/Sample/page');
-    }
-
-    public function showAction($postId)
-    {
-        $sample = new Sample();
-        $this->view->title = $sample->title;
-        $this->view->items = array(array('field_name' =>'test', 'field_content'=>'1234567','field_type'=>"text") );
-
-        // Pass the $postId parameter to the view
-        //$this->view->setVar("postId", $postId);
-//        $robot = new Sample\Sample();
-//        $robot->title = 'hoi';
-//
-//        $this->view->title = $postId. "/". $this->persistent->name;
-//
-        $this->view->pick('OPNsense/Sample/page.show');
-
-//        $this->flash->error("You don't have permission to access this area");
-//
-//        // Forward flow to another action
-//        $this->dispatcher->forward(array(
-//            "controller" => "sample",
-//            "action" => "index"
-//        ));
+        $class_info = new \ReflectionClass($this);
+        $class_info->getFileName();
     }
 
 }
