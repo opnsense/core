@@ -113,8 +113,6 @@ function enable_altfirmwareurl(enable_over) {
 
                     <form action="system_firmware_settings.php" method="post" name="iform" id="iform">
 
-                        <div class="table-responsive">
-
                         <table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" style="display:none"> <!--Unsupported Feuature, hide it-->
 			    <thead>
 				    <tr>
@@ -276,8 +274,6 @@ function enable_altfirmwareurl(enable_over) {
                                 </td>
                             </tr>
                         </table>
-
-                        </div>
 
 			</form>
 

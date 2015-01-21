@@ -117,7 +117,7 @@ include("head.inc");
 
                     <form action="system_firmware_auto.php" method="post">
 
-                        <div class="table-responsive table-striped">
+                        <div class="table table-striped">
 
 					<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="" class="table table-striped">
 						<tr>

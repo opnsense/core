@@ -431,7 +431,7 @@ include("head.inc");
 
 				<?php	$crl = $thiscrl; ?>
 				<form action="system_crlmanager.php" method="post" name="iform" id="iform">
-				<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="revoke">
+				<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="revoke" class="table table-striped">
 					<thead>
 					<tr>
 						<th width="90%" class="listhdrr" colspan="3"><b><?php echo gettext("Currently Revoked Certificates for CRL") . ': ' . $crl['descr']; ?></b></th>
@@ -468,7 +468,7 @@ include("head.inc");
 							<?php echo date("D M j G:i:s T Y", $cert["revoke_time"]); ?>
 						</td>
 						<td class="list">
-							<a href="system_crlmanager.php?act=delcert&amp;id=<?php echo $crl['refid']; ?>&amp;certref=<?php echo $cert['refid']; ?>" title="<?=gettext("Delete this certificate from the CRL ");?>" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate from the CRL?");?>')" class="btn btn-default">
+							<a href="system_crlmanager.php?act=delcert&amp;id=<?php echo $crl['refid']; ?>&amp;certref=<?php echo $cert['refid']; ?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("Delete this certificate from the CRL ");?>" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate from the CRL?");?>')" class="btn btn-default">
 								<span class="glyphicon glyphicon-remove"></span>
 							</a>
 						</td>
@@ -493,7 +493,7 @@ include("head.inc");
                         <?php else: ?>
 					<tr>
 						<td class="listlr" colspan="3" align="center">
-							<b><?php echo gettext("Choose a Certificate to Revoke"); ?></b>: <select name='certref' id='certref' class="formselect">
+							<b><?php echo gettext("Choose a Certificate to Revoke"); ?></b>: <select name='certref' id='certref' class="formselect selectpicker" data-style="btn-default" data-live-search="true">
                                 <?php $rowIndex = 0;
 						foreach($ca_certs as $cert):
 							$rowIndex++; ?>
@@ -503,7 +503,7 @@ include("head.inc");
 							echo "<option></option>"; ?>
 							</select>
 							<b><?php echo gettext("Reason");?></b>:
-							<select name='crlreason' id='crlreason' class="formselect">
+							<select name='crlreason' id='crlreason' class="formselect selectpicker" data-style="btn-default">
 				<?php	$rowIndex = 0;
 						foreach($openssl_crl_status as $code => $reason):
 							$rowIndex++; ?>
@@ -515,7 +515,7 @@ include("head.inc");
 							<input name="act" type="hidden" value="addcert" />
 							<input name="crlref" type="hidden" value="<?=$crl['refid'];?>" />
 							<input name="id" type="hidden" value="<?=$crl['refid'];?>" />
-							<input id="submit" name="add" type="submit" class="formbtn" value="<?=gettext("Add"); ?>" />
+							<input id="submit" name="add" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Add"); ?>" />
 						</td>
 						<td class="list">&nbsp;</td>
 					</tr>

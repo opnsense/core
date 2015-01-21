@@ -1149,37 +1149,32 @@ function internalca_change() {
 						</td>
 						<td valign="middle" class="list nowrap">
 							<table border="0" cellpadding="0" cellspacing="0">
-	                                <tr>
-								<td>
-									<a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca");?>">
-									<span class="glyphicon glyphicon-download"></span>
-									</a>
-								</td>
-								<td>
-									<a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export key");?>">
-									<span class="glyphicon glyphicon-download"></span>
-									</a>
-								</td>
-								<td>
-									<a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
-									    <span class="glyphicon glyphicon-download"></span>
-									</a>
-								</td>
-								<?php if (!cert_in_use($cert['refid'])): ?>
-								<td>
-									<a href="system_certmanager.php?act=del&amp;id=<?=$i;?>" class="btn btn-default btn-xs" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate?");?>')" title="<?=gettext("delete cert");?>">
-										<span class="glyphicon glyphicon-remove"></span>
-									</a>
-								</td>
-								<?php endif; ?>
-								<?php if ($cert['csr']): ?>
-								<td>
-									<a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" title="<?=gettext("update csr");?>">
-									<span class="glyphicon glyphicon-edit"></span>
-									</a>
-								</td>
-								<?php endif; ?>
-	                                </tr>
+	                            <tr>
+										<a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca");?>">
+										<span class="glyphicon glyphicon-download"></span>
+										</a>
+
+										<a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export key");?>">
+										<span class="glyphicon glyphicon-download"></span>
+										</a>
+
+										<a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
+										    <span class="glyphicon glyphicon-download"></span>
+										</a>
+									<?php if (!cert_in_use($cert['refid'])): ?>
+
+										<a href="system_certmanager.php?act=del&amp;id=<?=$i;?>" class="btn btn-default btn-xs" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate?");?>')" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete cert");?>">
+											<span class="glyphicon glyphicon-remove"></span>
+										</a>
+
+									<?php endif; ?>
+									<?php if ($cert['csr']): ?>
+
+										<a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("update csr");?>">
+										<span class="glyphicon glyphicon-edit"></span>
+										</a>
+									<?php endif; ?>
+	                            </tr>
 							</table>
 							</td>
 						</tr>
@@ -1187,7 +1182,7 @@ function internalca_change() {
 
 						<tr>
 							<td>&nbsp;</td>
-							<td colspan="3"><?=gettext("Note: You can only delete a certificate if it is not currently in use.");?></td>
+							<td colspan="4"><?=gettext("Note: You can only delete a certificate if it is not currently in use.");?></td>
 						</tr>
 						</tbody>
 					</table>

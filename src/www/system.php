@@ -285,9 +285,6 @@ include("head.inc");
                 <div class="content-box">
 
 			<form action="system.php" method="post">
-
-			<div class="table-responsive">
-
 				<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
 					<thead>
 						<tr>
@@ -336,12 +333,12 @@ include("head.inc");
 											$fldname="dns{$dnscounter}gw";
 									?>
 									<tr>
-										<td>
+										<td width="348px">
 											<input name="dns<?php echo $dnscounter;?>" type="text" class="formfld unknown" id="dns<?php echo $dnscounter;?>" size="28" value="<?php echo $pconfig['dns'.$dnscounter];?>" />
 										</td>
 										<td>
                                                     <?php if ($multiwan): ?>
-											<select name='<?=$fldname;?>' class='selectpicker' data-style='btn-default'>
+											<select name='<?=$fldname;?>' class='selectpicker' data-style='btn-default' data-width='auto'>
 												<?php
 													$gwname = "none";
 													$dnsgw = "dns{$dnscounter}gw";
@@ -516,7 +513,6 @@ include("head.inc");
 						</tr>
 					</tbody>
 				</table>
-			</div>
                     </form>
 
                 </div>

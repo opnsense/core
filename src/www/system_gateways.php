@@ -256,19 +256,19 @@ $main_buttons = array(
                                     <?php
 					if (isset($gateway['inactive'])):
                                     ?>
-						<span class="glyphicon glyphicon-remove text-muted" title="<?=gettext("This gateway is inactive because interface is missing");?>"></span>
+						<span class="glyphicon glyphicon-remove text-muted" data-toggle="tooltip" data-placement="left" title="<?=gettext("This gateway is inactive because interface is missing");?>"></span>
 
                                     <?php
 					elseif (is_numeric($gateway['attribute'])):
                                     ?>
-						<a href="?act=toggle&amp;id=<?=$i;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" >
+						<a href="?act=toggle&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>" >
 							<span class="glyphicon <?php echo $iconfn;?>"></span>
 
 						</a>
                                     <?php
 					else:
                                     ?>
-					<span class="glyphicon <?php echo $iconfn;?>"  title="<?=gettext("click to toggle enabled/disabled status");?>"></span>
+					<span class="glyphicon <?php echo $iconfn;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>"></span>
                                     <?php
 					endif;
                                     ?>
@@ -320,7 +320,7 @@ $main_buttons = array(
 					</td>
 					<td valign="middle" class="list nowrap">
 
-									<a href="system_gateways_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs">
+									<a href="system_gateways_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("Edit Gateway");?>">
 										<span class="glyphicon glyphicon-pencil"></span>
 									</a>
 
@@ -328,7 +328,7 @@ $main_buttons = array(
 							if (is_numeric($gateway['attribute'])):
                                             ?>
 
-									<a href="system_gateways.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this gateway?"); ?>')" class="btn btn-default btn-xs">
+									<a href="system_gateways.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this gateway?"); ?>')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("Delete Gateway");?>">
 										<span class="glyphicon glyphicon-remove"></span>
 									</a>
 
@@ -336,7 +336,7 @@ $main_buttons = array(
 
 							endif;
                                             ?>
-							<a href="system_gateways_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs">
+							<a href="system_gateways_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("Add Gateway based on this one");?>">
 										<span class="glyphicon glyphicon-plus"></span>
 									</a>
 					</td>
@@ -355,7 +355,7 @@ $main_buttons = array(
 								if ($i > 0):
 
                                                 ?>
-									<button type="submit" name="del_x" class="btn btn-default btn-xs"
+									<button type="submit" name="del_x" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
 										 title="<?=gettext("delete selected items");?>"
 										onclick="return confirm('<?=gettext("Do you really want to delete the selected gateway items?");?>')">
 										<span class="glyphicon glyphicon-remove"></span>

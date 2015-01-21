@@ -518,15 +518,8 @@ if (!function_exists('get_service_status_icon')) {
 		if(get_service_status($service)) {
 			$statustext = gettext("Running");
 
-			$output .= '<span class="btn btn-success"><span class="glyphicon glyphicon-play"></span></span>&nbsp;';
+			$output .= '<span class="btn btn-success"><span class="glyphicon glyphicon-play" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
 
-		/*
-		$output .= "<img style=\"vertical-align:middle\" title=\"" . sprintf(gettext("%s Service is"),$service["name"]) . " {$statustext}\" src=\"/themes/" . $g["theme"] . "/images/icons/";
-			$output .= ($smallicon) ? "icon_pass.gif" : "icon_service_running.gif";
-			$output .= "\" alt=\"status\" />&nbsp;";
-			if ($withtext)
-				$output .= "&nbsp;" . $statustext;
-	*/
 		}
 
 
@@ -534,15 +527,7 @@ if (!function_exists('get_service_status_icon')) {
 			$service_enabled = is_service_enabled($service['name']);
 			$statustext = ($service_enabled) ? gettext("Stopped") : gettext("Disabled");
 
-			$output .= '<span class="btn btn-danger"><span class="glyphicon glyphicon-stop"></span></span>&nbsp;';
-		/*
-
-			$output .= "<img style=\"vertical-align:middle\" title=\"" . sprintf(gettext("%s Service is"),$service["name"]) . " {$statustext}\" src=\"/themes/" . $g["theme"] . "/images/icons/";
-			$output .= ($smallicon) ? "icon_block.gif" : "icon_service_stopped.gif";
-			$output .= "\" alt=\"status\" />&nbsp;";
-			if ($withtext)
-				$output .= "&nbsp;<font color=\"white\">{$statustext}</font>";
-	*/
+			$output .= '<span class="btn btn-danger"><span class="glyphicon glyphicon-stop" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
 
 		}
 		return $output;
@@ -569,7 +554,7 @@ if (!function_exists('get_service_control_links')) {
 				default:
 					$output .= "<a href='status_services.php?mode=restartservice&amp;service={$service['name']}' class=\"btn btn-default\">";
 			}
-			$output .= "<span title='" . sprintf(gettext("Restart %sService"),$stitle) . "' class=\"glyphicon glyphicon-refresh\"/></a>\n";
+			$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Restart %sService"),$stitle) . "' class=\"glyphicon glyphicon-refresh\"/></a>\n";
 			switch ($service['name']) {
 				case "openvpn":
 					$output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}&amp;vpnmode={$service['mode']}&amp;id={$service['vpnid']}' class=\"btn btn-default\">";
@@ -580,7 +565,7 @@ if (!function_exists('get_service_control_links')) {
 				default:
 					$output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}' class=\"btn btn-default\">";
 			}
-			$output .= "<span title='" . sprintf(gettext("Stop %sService"),$stitle) . "' class=\"glyphicon glyphicon-stop\" />";
+			$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Stop %sService"),$stitle) . "' class=\"glyphicon glyphicon-stop\" />";
 			$output .= "</a>";
 		} else {
 			$service_enabled = is_service_enabled($service['name']);
@@ -596,7 +581,7 @@ if (!function_exists('get_service_control_links')) {
 						$output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}' class=\"btn btn-default\">";
 			}
 			if ($service_enabled)
-				$output .= "<span title='" . sprintf(gettext("Start %sService"),$stitle) . "' alt='start' class=\"glyphicon glyphicon-play\"/></a>\n";
+				$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Start %sService"),$stitle) . "' alt='start' class=\"glyphicon glyphicon-play\"/></a>\n";
 		}
 		return $output;
 	}
