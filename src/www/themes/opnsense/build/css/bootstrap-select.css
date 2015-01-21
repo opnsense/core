@@ -1,10 +1,3 @@
-/*!
- * Bootstrap-select v1.6.3 (http://silviomoreto.github.io/bootstrap-select)
- *
- * Copyright 2013-2014 bootstrap-select
- * Licensed under MIT (https://github.com/silviomoreto/bootstrap-select/blob/master/LICENSE)
- */
-
 .bootstrap-select {
   /*width: 220px\9; IE8 and below*/
   width: 220px \0;
@@ -24,7 +17,7 @@
   width: auto !important;
 }
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-  width: 220px;
+  width: 348px;
 }
 .bootstrap-select .btn:focus {
   outline: thin dotted #333333 !important;
@@ -94,9 +87,7 @@
 .bootstrap-select.btn-group .dropdown-menu {
   min-width: 100%;
   z-index: 1035;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 .bootstrap-select.btn-group .dropdown-menu.inner {
   position: static;
@@ -104,8 +95,7 @@
   padding: 0;
   margin: 0;
   border-radius: 0;
-  -webkit-box-shadow: none;
-          box-shadow: none;
+  box-shadow: none;
 }
 .bootstrap-select.btn-group .dropdown-menu li {
   position: relative;
@@ -143,13 +133,10 @@
   padding: 3px 5px;
   background: #f5f5f5;
   border: 1px solid #e3e3e3;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   pointer-events: none;
   opacity: 0.9;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 .bootstrap-select.btn-group .no-results {
   padding: 3px;
@@ -231,9 +218,7 @@
 .bs-actionsbox {
   float: left;
   width: 100%;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 .bs-actionsbox .btn-group button {
   width: 50%;
@@ -254,4 +239,3 @@
   height: 100% !important;
   opacity: 0;
 }
-/*# sourceMappingURL=bootstrap-select.css.map */

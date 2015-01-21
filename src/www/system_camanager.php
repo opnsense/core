@@ -381,7 +381,7 @@ function method_change() {
 						<tr>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Method");?></td>
 							<td width="78%" class="vtable">
-								<select name='method' id='method' class="formselect" onchange='method_change()'>
+								<select name='method' id='method' class="formselect selectpicker" data-style="btn-default" onchange='method_change()'>
 								<?php
 									foreach($ca_methods as $method => $desc):
 									$selected = "";
@@ -662,12 +662,12 @@ function method_change() {
 							</table>
 						</td>
 						<td valign="middle" class="list nowrap">
-							<a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" title="<?=gettext("edit CA");?>" alt="<?=gettext("edit CA");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-							<a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" title="<?=gettext("export CA cert");?>" alt="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download"></span></a>
+							<a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit CA");?>" alt="<?=gettext("edit CA");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+							<a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("export CA cert");?>" alt="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download"></span></a>
 							<?php if ($ca['prv']): ?>
-							<a href="system_camanager.php?act=expkey&amp;id=<?=$i;?>" title="<?=gettext("export CA private key");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download"></span></a>
+							<a href="system_camanager.php?act=expkey&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("export CA private key");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download"></span></a>
 							<?php endif; ?>
-							<a href="system_camanager.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate Authority and its CRLs, and unreference any associated certificates?");?>')" title="<?=gettext("delete ca");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+							<a href="system_camanager.php?act=del&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate Authority and its CRLs, and unreference any associated certificates?");?>')" title="<?=gettext("delete ca");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 						</td>
 					</tr>
 					<?php

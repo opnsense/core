@@ -940,7 +940,7 @@ function display_top_tabs(& $tab_array, $no_drop_down = false) {
 	// then show a select item dropdown menubox.
 	if($tabcharcount > $tab_array_char_limit) {
 		echo "<h2>".gettext("Currently viewing: ")."</h2>";
-		echo "<select class=\"selectpicker\" name=\"TabSelect\" onchange=\"tabs_will_go(this)\" data-live-search=\"true\" data-style=\"btn-primary\">\n";
+		echo "<select class=\"selectpicker\" name=\"TabSelect\" onchange=\"tabs_will_go(this)\" data-live-search=\"true\" data-style=\"btn-default\">\n";
 		foreach ($tab_array as $ta) {
 			if($ta[1]=="true")
 				$selected = " selected=\"selected\"";

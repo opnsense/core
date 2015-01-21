@@ -341,7 +341,7 @@ include("head.inc");
 										</td>
 										<td>
                                                     <?php if ($multiwan): ?>
-											<select name='<?=$fldname;?>'>
+											<select name='<?=$fldname;?>' class='selectpicker' data-style='btn-default'>
 												<?php
 													$gwname = "none";
 													$dnsgw = "dns{$dnscounter}gw";
@@ -412,7 +412,7 @@ include("head.inc");
 						<tr>
 							<td width="22%" valign="top" class="vncell"><?=gettext("Time zone"); ?></td>
 							<td width="78%" class="vtable">
-								<select name="timezone" id="timezone">
+								<select name="timezone" id="timezone" class="selectpicker" data-style="btn-default" data-live-search="true">
 									<?php foreach ($timezonelist as $value): ?>
 									<?php if(strstr($value, "GMT")) continue; ?>
 									<option value="<?=htmlspecialchars($value);?>" <?php if ($value == $pconfig['timezone']) echo "selected=\"selected\""; ?>>
@@ -454,7 +454,7 @@ include("head.inc");
 						<tr>
 							<td width="22%" valign="top" class="vncell"><?php echo gettext("Language");?></td>
 							<td width="78%" class="vtable">
-								<select name="language">
+								<select name="language" class="selectpicker" data-style="btn-default" data-width="auto">
 									<?php
 									foreach(get_locale_list() as $lcode => $ldesc) {
 										$selected = ' selected="selected"';
@@ -483,7 +483,7 @@ include("head.inc");
 						<tr>
 							<td width="22%" valign="top" class="vncell">&nbsp;</td>
 							<td width="78%" class="vtable">
-								<select name="theme">
+								<select name="theme" class="selectpicker" data-style="btn-default" data-width="auto">
 									<?php
 										$files = return_dir_as_array("/usr/local/www/themes/");
 										foreach($files as $f):

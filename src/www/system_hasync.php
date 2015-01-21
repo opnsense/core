@@ -117,31 +117,36 @@ include("head.inc");
 						<td width="22%" class="vncell">Synchronize States</td>
 						<td class="vtable">
 							<input id='pfsyncenabled' type='checkbox' name='pfsyncenabled' value='on' <?php if ($pconfig['pfsyncenabled'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							pfsync transfers state insertion, update, and deletion messages between firewalls. Each firewall sends these messages out via multicast on a specified interface, using the PFSYNC protocol (IP Protocol 240). It also listens on that interface for similar messages from other firewalls, and imports them into the local state table.<p>This setting should be enabled on all members of a failover group.</p><p>NOTE: Clicking save will force a configuration sync if it is enabled! (see Configuration Synchronization Settings below)</p>
+							pfsync transfers state insertion, update, and deletion messages between firewalls.<br/>
+							Each firewall sends these messages out via multicast on a specified interface, using the PFSYNC protocol <a href="http://www.openbsd.org/faq/pf/carp.html" target="_blank">(IP Protocol 240)</a>. 
+							<br/>It also listens on that interface for similar messages from other firewalls, and imports them into the local state table.
+							<br/>This setting should be enabled on all members of a failover group.
+							<div class="well well-sm" ><b>Clicking save will force a configuration sync if it is enabled! (see Configuration Synchronization Settings below)</b></div>
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Interface</td>
 						<td class="vtable">
-							<select id='pfsyncinterface' name="pfsyncinterface">
+							<select id='pfsyncinterface' name="pfsyncinterface" class="selectpicker" data-style="btn-default" data-live-search="true" data-width="auto">
 							<?php foreach ($ifaces as $ifname => $iface) { ?>
 								<?php $selected = ($pconfig['pfsyncinterface'] === $ifname) ? 'selected="selected"' : ''; ?>
 								<option value="<?= htmlentities($ifname); ?>" <?= $selected ?>><?= htmlentities($iface); ?></option>
 							<?php } ?>
 							</select>
-							<br />
-							If Synchronize States is enabled, it will utilize this interface for communication.<br />
-							<b>NOTE:</b>  We recommend setting this to a interface other than LAN!  A dedicated interface works the best.<br />
-							<b>NOTE:</b>  You must define a IP on each machine participating in this failover group.<br />
-							<b>NOTE:</b>  You must have an IP assigned to the interface on any participating sync nodes.
+							If Synchronize States is enabled, it will utilize this interface for communication.<br/><br/>
+							<div class="well">
+								<lu>
+								<li>We recommend setting this to a interface other than LAN!  A dedicated interface works the best.</li>
+								<li>You must define a IP on each machine participating in this failover group.</li>
+								<li>You must have an IP assigned to the interface on any participating sync nodes.</li>
+								</lu>
+							</div>
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">pfsync Synchronize Peer IP</td>
 						<td class="vtable">
-							<input  id='pfsyncpeerip' name='pfsyncpeerip' class='formfld unknown' value='<?= htmlentities($pconfig['pfsyncpeerip']); ?>' />
-							<br />
+							<input  id='pfsyncpeerip' name='pfsyncpeerip' type='text' class='formfld unknown' value='<?= htmlentities($pconfig['pfsyncpeerip']); ?>' />
 							Setting this option will force pfsync to synchronize its state table to this IP address.  The default is directed multicast.
 						</td>
 					</tr>
@@ -162,185 +167,170 @@ include("head.inc");
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Config to IP</td>
 						<td class="vtable">
-							<input  id='synchronizetoip' name='synchronizetoip' class='formfld unknown' value='<?= htmlentities($pconfig['synchronizetoip']); ?>' />
-							<br />
+							<input  id='synchronizetoip' name='synchronizetoip' type='text' class='formfld unknown' value='<?= htmlentities($pconfig['synchronizetoip']); ?>' />
 							Enter the IP address of the firewall to which the selected configuration sections should be synchronized.<br />
-							<br />
-							NOTE: XMLRPC sync is currently only supported over connections using the same protocol and port as this system - make sure the remote system's port and protocol are set accordingly!<br />
-							<br />
-							NOTE: <b>Do not use the Synchronize Config to IP and password option on backup cluster members!</b>
+							<div class="well">
+								<lu>
+									<li>XMLRPC sync is currently only supported over connections using the same protocol and port as this system - make sure the remote system's port and protocol are set accordingly!</li>
+									<li><b>Do not use the Synchronize Config to IP and password option on backup cluster members!</b></li>
+								</lu>
+							</div>
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Remote System Username</td>
 						<td class="vtable">
-							<input  id='username' name='username' class='formfld unknown' value='<?= htmlentities($pconfig['username']); ?>' />
+							<input  id='username' name='username' type='text' class='formfld unknown' value='<?= htmlentities($pconfig['username']); ?>' />
 							<br />
 							Enter the webConfigurator username of the system entered above for synchronizing your configuration.<br />
-							<br />
-							NOTE: <b>Do not use the Synchronize Config to IP and username option on backup cluster members!</b>
+							<div class="well well-sm">
+								<b>Do not use the Synchronize Config to IP and username option on backup cluster members!</b>
+							</div>
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Remote System Password</td>
 						<td class="vtable">
-							<input  id='password' type='password'  name='password' class='formfld pwd' value='<?= htmlentities($pconfig['password']); ?>' />
+							<input  id='password' type='password' name='password' class='formfld pwd' value='<?= htmlentities($pconfig['password']); ?>' />
 							<br />
 							Enter the webConfigurator password of the system entered above for synchronizing your configuration.<br />
-							<br />
-							NOTE: <b>Do not use the Synchronize Config to IP and password option on backup cluster members!</b>
+							<div class="well well-sm">
+								<b>Do not use the Synchronize Config to IP and password option on backup cluster members!</b>
+							</div>
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Users and Groups</td>
 						<td class="vtable">
 							<input id='synchronizeusers' type='checkbox' name='synchronizeusers' value='on' <?php if ($pconfig['synchronizeusers'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the users and groups over to the other HA host when changes are made.
+							Automatically sync the users and groups over to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Auth Servers</td>
 						<td class="vtable">
 							<input id='synchronizeauthservers' type='checkbox' name='synchronizeauthservers' value='on' <?php if ($pconfig['synchronizeauthservers'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the authentication servers (e.g. LDAP, RADIUS) over to the other HA host when changes are made.
+							Automatically sync the authentication servers (e.g. LDAP, RADIUS) over to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Certificates</td>
 						<td class="vtable">
 							<input id='synchronizecerts' type='checkbox' name='synchronizecerts' value='on' <?php if ($pconfig['synchronizecerts'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the Certificate Authorities, Certificates, and Certificate Revocation Lists over to the other HA host when changes are made.
+							Automatically sync the Certificate Authorities, Certificates, and Certificate Revocation Lists over to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize rules</td>
 						<td class="vtable">
 							<input id='synchronizerules' type='checkbox' name='synchronizerules' value='on' <?php if ($pconfig['synchronizerules'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the firewall rules to the other HA host when changes are made.
+							Automatically sync the firewall rules to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Firewall Schedules</td>
 						<td class="vtable">
 							<input id='synchronizeschedules' type='checkbox' name='synchronizeschedules' value='on' <?php if ($pconfig['synchronizeschedules'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the firewall schedules to the other HA host when changes are made.
+							Automatically sync the firewall schedules to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize aliases</td>
 						<td class="vtable">
 							<input id='synchronizealiases' type='checkbox' name='synchronizealiases' value='on' <?php if ($pconfig['synchronizealiases'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the aliases over to the other HA host when changes are made.
+							Automatically sync the aliases over to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize NAT</td>
 						<td class="vtable">
 							<input id='synchronizenat' type='checkbox' name='synchronizenat' value='on' <?php if ($pconfig['synchronizenat'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the NAT rules over to the other HA host when changes are made.
+							Automatically sync the NAT rules over to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize IPsec</td>
 						<td class="vtable">
 							<input id='synchronizeipsec' type='checkbox' name='synchronizeipsec' value='on' <?php if ($pconfig['synchronizeipsec'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the IPsec configuration to the other HA host when changes are made.
+							Automatically sync the IPsec configuration to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize OpenVPN</td>
 						<td class="vtable">
 							<input id='synchronizeopenvpn' type='checkbox' name='synchronizeopenvpn' value='on' <?php if ($pconfig['synchronizeopenvpn'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the OpenVPN configuration to the other HA host when changes are made. Using this option implies "Synchronize Certificates" as they are required for OpenVPN.
+							Automatically sync the OpenVPN configuration to the other HA host when changes are made.
+							<div class="well well-sm"><b>Using this option implies "Synchronize Certificates" as they are required for OpenVPN.</b></div>
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize DHCPD</td>
 						<td class="vtable">
 							<input id='synchronizedhcpd' type='checkbox' name='synchronizedhcpd' value='on' <?php if ($pconfig['synchronizedhcpd'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the DHCP Server settings over to the other HA host when changes are made. This only applies to DHCP for IPv4.
+							Automatically sync the DHCP Server settings over to the other HA host when changes are made. This only applies to DHCP for IPv4.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Wake on LAN</td>
 						<td class="vtable">
 							<input id='synchronizewol' type='checkbox' name='synchronizewol' value='on' <?php if ($pconfig['synchronizewol'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the WoL configuration to the other HA host when changes are made.
+							Automatically sync the WoL configuration to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Static Routes</td>
 						<td class="vtable">
 							<input id='synchronizestaticroutes' type='checkbox' name='synchronizestaticroutes' value='on' <?php if ($pconfig['synchronizestaticroutes'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the Static Route configuration to the other HA host when changes are made.
+							Automatically sync the Static Route configuration to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Load Balancer</td>
 						<td class="vtable">
 							<input id='synchronizelb' type='checkbox' name='synchronizelb' value='on' <?php if ($pconfig['synchronizelb'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the Load Balancer configuration to the other HA host when changes are made.
+							Automatically sync the Load Balancer configuration to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Virtual IPs</td>
 						<td class="vtable">
 							<input id='synchronizevirtualip' type='checkbox' name='synchronizevirtualip' value='on' <?php if ($pconfig['synchronizevirtualip'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the CARP Virtual IPs to the other HA host when changes are made.
+							Automatically sync the CARP Virtual IPs to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize traffic shaper(queues)</td>
 						<td class="vtable">
 							<input id='synchronizetrafficshaper' type='checkbox' name='synchronizetrafficshaper' value='on' <?php if ($pconfig['synchronizetrafficshaper'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the traffic shaper configuration for queues to the other HA host when changes are made.
+							Automatically sync the traffic shaper configuration for queues to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize traffic shaper(limiter)</td>
 						<td class="vtable">
 							<input id='synchronizetrafficshaperlimiter' type='checkbox' name='synchronizetrafficshaperlimiter' value='on' <?php if ($pconfig['synchronizetrafficshaperlimiter'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the traffic shaper configuration for limiters to the other HA host when changes are made.
+							Automatically sync the traffic shaper configuration for limiters to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize traffic shaper(layer7)</td>
 						<td class="vtable">
 							<input id='synchronizetrafficshaperlayer7' type='checkbox' name='synchronizetrafficshaperlayer7' value='on' <?php if ($pconfig['synchronizetrafficshaperlayer7'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the traffic shaper configuration for layer7 to the other HA host when changes are made.
+							Automatically sync the traffic shaper configuration for layer7 to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize DNS Forwarder</td>
 						<td class="vtable">
 							<input id='synchronizednsforwarder' type='checkbox' name='synchronizednsforwarder' value='on' <?php if ($pconfig['synchronizednsforwarder'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the DNS Forwarder configuration to the other HA host when changes are made.
+							Automatically sync the DNS Forwarder configuration to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">
 						<td width="22%" class="vncell">Synchronize Captive Portal</td>
 						<td class="vtable">
 							<input id='synchronizecaptiveportal' type='checkbox' name='synchronizecaptiveportal' value='on' <?php if ($pconfig['synchronizecaptiveportal'] === "on") echo "checked='checked'"; ?> />
-							<br />
-							When this option is enabled, this system will automatically sync the Captive Portal configuration to the other HA host when changes are made.
+							Automatically sync the Captive Portal configuration to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr>

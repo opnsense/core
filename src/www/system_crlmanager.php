@@ -567,9 +567,9 @@ include("head.inc");
 						</td>
 						<td class="list">
 						<?php if ($cainternal == "YES"): ?>
-							<a href="system_crlmanager.php?act=new&amp;caref=<?php echo $ca['refid']; ?>" title="<?php printf(gettext("Add or Import CRL for %s"),$ca['descr']);?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+							<a href="system_crlmanager.php?act=new&amp;caref=<?php echo $ca['refid']; ?>" data-toggle="tooltip" data-placement="left" title="<?php printf(gettext("Add or Import CRL for %s"),$ca['descr']);?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 						<?php else: ?>
-							<a href="system_crlmanager.php?act=new&amp;caref=<?php echo $ca['refid']; ?>&amp;importonly=yes" title="<?php printf(gettext("Import CRL for %s"),$ca['descr']);?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+							<a href="system_crlmanager.php?act=new&amp;caref=<?php echo $ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" data-placement="left" title="<?php printf(gettext("Import CRL for %s"),$ca['descr']);?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 						<?php endif; ?>
 						</td>
 					</tr>
@@ -587,21 +587,21 @@ include("head.inc");
 						<td class="listr"><?php echo ($internal) ? count($tmpcrl['cert']) : "Unknown (imported)"; ?></td>
 						<td class="listr"><?php echo ($inuse) ? "YES" : "NO"; ?></td>
 						<td valign="middle" class="list nowrap">
-							<a href="system_crlmanager.php?act=exp&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default">
-								<span class="glyphicon glyphicon-export" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+							<a href="system_crlmanager.php?act=exp&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-export" data-toggle="tooltip" data-placement="left" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
 							</a>
 							<?php if ($internal): ?>
-							<a href="system_crlmanager.php?act=edit&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default">
-								<span class="glyphicon glyphicon-edit" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+							<a href="system_crlmanager.php?act=edit&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="left" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
 				            </a>
 							<?php else: ?>
-							<a href="system_crlmanager.php?act=editimported&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default">
-								<span class="glyphicon glyphicon-edit" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+							<a href="system_crlmanager.php?act=editimported&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="left" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
                                 </a>
 							<?php endif; ?>
 							<?php if (!$inuse): ?>
-							<a href="system_crlmanager.php?act=del&amp;id=<?=$tmpcrl['refid'];?>" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate Revocation List?") . ' (' . htmlspecialchars($tmpcrl['descr']) . ')';?>')"  class="btn btn-default">
-								<span class="glyphicon glyphicon-remove" title="<?=gettext("Delete CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+							<a href="system_crlmanager.php?act=del&amp;id=<?=$tmpcrl['refid'];?>" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate Revocation List?") . ' (' . htmlspecialchars($tmpcrl['descr']) . ')';?>')"  class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="left" title="<?=gettext("Delete CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
 							</a>
 							<?php endif; ?>
 						</td>

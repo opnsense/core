@@ -291,19 +291,15 @@ include("head.inc");
 
         <div class="row">
             <?php
-		if ($input_errors) print_input_errors($input_errors);
-		if ($savemsg) print_info_box($savemsg);
+				if ($input_errors) print_input_errors($input_errors);
+				if ($savemsg) print_info_box($savemsg);
             ?>
             <section class="col-xs-12">
-
                 <? include('system_advanced_tabs.php'); ?>
 
                 <div class="content-box tab-content">
 
-			<form action="system_advanced_admin.php" method="post" name="iform" id="iform">
-
-			<div class="table-responsive">
-
+					<form action="system_advanced_admin.php" method="post" name="iform" id="iform">
 						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
 							<thead>
 								<tr>
@@ -338,7 +334,7 @@ include("head.inc");
 								<tr id="ssl_opts">
 									<td width="22%" valign="top" class="vncell"><?=gettext("SSL Certificate"); ?></td>
 									<td width="78%" class="vtable">
-										<select name="ssl-certref" id="ssl-certref" class="formselect">
+										<select name="ssl-certref" id="ssl-certref" class="formselect selectpicker" data-style="btn-default">
 											<?php
 												foreach($a_cert as $cert):
 													$selected = "";
@@ -485,16 +481,11 @@ include("head.inc");
 										"More information on BEAST is available from <a target='_blank' href='https://en.wikipedia.org/wiki/Transport_Layer_Security#BEAST_attack'>Wikipedia</a>."); ?>
 									</td>
 								</tr>
-							</tbody>
-						</table>
 
-						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
-							<thead>
 								<tr>
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Secure Shell"); ?></th>
 								</tr>
-							</thead>
-							<tbody>
+
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Secure Shell Server"); ?></td>
 									<td width="78%" class="vtable">
@@ -526,25 +517,18 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("SSH port"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="sshport" type="text" id="sshport" value="<?php echo $pconfig['sshport']; ?>" />
-										<br />
-										<span class="vexpl"><?=gettext("Note: Leave this blank for the default of 22."); ?></span>
+										<input name="sshport" type="text" class="form-control" id="sshport" value="<?php echo $pconfig['sshport']; ?>"/>
+										<?=gettext("Leave this blank for the default of 22."); ?>
 									</td>
 								</tr>
 								<tr>
 									<td colspan="2" class="list" height="12">&nbsp;</td>
 								</tr>
-							</tbody>
-						</table>
 
-						<table border="0" cellpadding="0" cellspacing="0" class="table table-striped">
-							<thead>
 								<tr>
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Serial Communications"); ?></th>
 								</tr>
-							</thead>
 
-							<tbody>
 								<?php if (!$g['enableserial_force'] && ($g['platform'] == "pfSense" || $g['platform'] == "cdrom" || file_exists("/etc/nano_use_vga.txt"))): ?>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Serial Terminal"); ?></td>
@@ -558,7 +542,7 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Serial Speed")?></td>
 									<td width="78%" class="vtable">
-										<select name="serialspeed" id="serialspeed" class="formselect">
+										<select name="serialspeed" id="serialspeed" class="formselect selectpicker">
 											<option value="115200" <?php if ($pconfig['serialspeed'] == "115200") echo "selected=\"selected\"";?>>115200</option>
 											<option value="57600"  <?php if ($pconfig['serialspeed'] == "57600")  echo "selected=\"selected\"";?>>57600</option>
 											<option value="38400"  <?php if ($pconfig['serialspeed'] == "38400")  echo "selected=\"selected\"";?>>38400</option>
@@ -573,7 +557,7 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Primary Console")?></td>
 									<td width="78%" class="vtable">
-										<select name="primaryconsole" id="primaryconsole" class="formselect">
+										<select name="primaryconsole" id="primaryconsole" class="formselect selectpicker">
 											<option value="serial"   <?php if ($pconfig['primaryconsole'] == "serial")   echo "selected=\"selected\"";?>>Serial Console</option>
 											<option value="video"  <?php if ($pconfig['primaryconsole'] == "video")  echo "selected=\"selected\"";?>>VGA Console</option>
 										</select>
@@ -581,17 +565,9 @@ include("head.inc");
 									</td>
 								</tr>
 								<?php endif; ?>
-							</tbody>
-				        </table>
-
-						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped __nomb">
-							<thead>
-                                    <tr>
+                                <tr>
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Console Options"); ?></th>
 								</tr>
-							</thead>
-
-							<tbody>
 
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Console menu"); ?></td>
@@ -611,24 +587,18 @@ include("head.inc");
 								</tr>
 							</tbody>
 						</table>
-
-			</div>
-
-			</form>
-
+					</form>
                 </div>
             </section>
-
         </div>
-
 	</div>
 </section>
 
-	<script type="text/javascript">
-	//<![CDATA[
-		prot_change();
-	//]]>
-	</script>
+<script type="text/javascript">
+//<![CDATA[
+	prot_change();
+//]]>
+</script>
 
 <?php
 	if ($restart_webgui)

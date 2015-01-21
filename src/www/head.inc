@@ -27,7 +27,7 @@ $pagetitle = gentitle( $pgtitle );
 
 		<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
 		<!-- Stylesheet for fancy select/dropdown -->
-		<link rel="stylesheet" type="text/css" href="/themes/<?=$g['theme'];?>/build/css/bootstrap-select.min.css">
+		<link rel="stylesheet" type="text/css" href="/themes/<?=$g['theme'];?>/build/css/bootstrap-select.css">
 		<!-- Favicon -->
 		<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
 
@@ -80,6 +80,11 @@ $pagetitle = gentitle( $pgtitle );
 		(function ($) {
 			$("input").attr("autocomplete","off");
 		})(jQuery);
+
+
+		jQuery(function () {
+  			jQuery('[data-toggle="tooltip"]').tooltip()
+		})
 		//]]>
 		</script>
 		<? endif; ?>

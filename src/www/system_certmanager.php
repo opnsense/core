@@ -1151,17 +1151,17 @@ function internalca_change() {
 							<table border="0" cellpadding="0" cellspacing="0">
 	                                <tr>
 								<td>
-									<a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" title="<?=gettext("export ca");?>">
+									<a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca");?>">
 									<span class="glyphicon glyphicon-download"></span>
 									</a>
 								</td>
 								<td>
-									<a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" title="<?=gettext("export key");?>">
+									<a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export key");?>">
 									<span class="glyphicon glyphicon-download"></span>
 									</a>
 								</td>
 								<td>
-									<a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
+									<a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
 									    <span class="glyphicon glyphicon-download"></span>
 									</a>
 								</td>

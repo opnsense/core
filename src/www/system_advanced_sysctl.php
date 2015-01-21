@@ -122,131 +122,116 @@ include("head.inc");
 <!-- row -->
 <section class="page-content-main">
 	<div class="container-fluid">
-
         <div class="row">
-
             <form action="system_advanced_sysctl.php" method="post">
-			<?php
-				if ($input_errors) print_input_errors($input_errors);
-				if ($savemsg) print_info_box($savemsg);
-				if (is_subsystem_dirty('sysctl') && ($act != "edit" ))
-					print_info_box_np(gettext("The firewall tunables have changed.  You must apply the configuration to take affect."));
-			?>
-		</form>
-
-            <section class="col-xs-12">
-
-                <? include('system_advanced_tabs.php'); ?>
-
-                <div class="content-box tab-content">
-
-			<div class="table-responsive">
-
-                        <?php if ($act != "edit" ): ?>
-
-			<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
-
-				<thead>
-				<tr>
-					<th width="20%"><?=gettext("Tunable Name"); ?></th>
-					<th width="60%"><?=gettext("Description"); ?></th>
-					<th width="20%" colspan="2"><?=gettext("Value"); ?></th>
-				</tr>
-				</thead>
-
-				<tbody>
-				<?php $i = 0; foreach ($config['sysctl']['item'] as $tunable): ?>
-
-				<tr>
-					<td class="listlr" ondblclick="document.location='system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>';">
-						<?php echo $tunable['tunable']; ?>
-					</td>
-					<td class="listr" align="left" ondblclick="document.location='system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>';">
-						<?php echo $tunable['descr']; ?>
-					</td>
-					<td class="listr" align="left" ondblclick="document.location='system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>';">
-						<?php echo $tunable['value']; ?>
-						<?php
-							if($tunable['value'] == "default")
-								echo "(" . get_default_sysctl_value($tunable['tunable']) . ")";
-						?>
-					</td>
-					<td class="list nowrap">
-						<table border="0" cellspacing="0" cellpadding="1" summary="edit delete">
-							<tr>
-								<td valign="middle">
-									<a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
-									    <span class="glyphicon glyphicon-pencil"></span>
-									</a>
-								</td>
-								<td valign="middle">
-									<a href="system_advanced_sysctl.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?"); ?>')" class="btn btn-default btn-xs">
-										<span class="glyphicon glyphicon-remove"></span>
-									</a>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<?php $i++; endforeach; ?>
-				<tr>
-					<td colspan="4">
-						<a href="system_advanced_sysctl.php?act=edit" class="btn btn-primary pull-right">
-								<span class="glyphicon glyphicon-plus"></span>
-								</a>
-					</td>
-				</tr>
-
-				</tbody>
-			</table>
-
-                        <?php else: ?>
-
-			<form action="system_advanced_sysctl.php" method="post" name="iform" id="iform">
-
-				<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="edit system tunable" class="table table-striped">
-					<thead>
-						<tr>
-							<th colspan="2" valign="top" class="listtopic"><?=gettext("Edit system tunable"); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Tunable"); ?></td>
-							<td width="78%" class="vtable">
-								<input size="65" name="tunable" value="<?php echo $pconfig['tunable']; ?>" />
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
-							<td width="78%" class="vtable">
-								<textarea name="descr"><?php echo $pconfig['descr']; ?></textarea>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncellreq"><?=gettext("Value"); ?></td>
-							<td width="78%" class="vtable">
-								<input size="65" name="value" value="<?php echo $pconfig['value']; ?>" />
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top">&nbsp;</td>
-							<td width="78%">
-								<input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-								<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-
-								<?php if (isset($id) && $a_tunable[$id]): ?>
-								<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-								<?php endif; ?>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+				<?php
+					if ($input_errors) print_input_errors($input_errors);
+					if ($savemsg) print_info_box($savemsg);
+					if (is_subsystem_dirty('sysctl') && ($act != "edit" ))
+						print_info_box_np(gettext("The firewall tunables have changed.  You must apply the configuration to take affect."));
+				?>
 			</form>
 
-			<?php endif; ?>
-			</div>
+            <section class="col-xs-12">
+                <? include('system_advanced_tabs.php'); ?>
+                <div class="content-box tab-content">
+                    <?php if ($act != "edit" ): ?>
+						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
+							<thead>
+							<tr>
+								<th width="20%"><?=gettext("Tunable Name"); ?></th>
+								<th width="60%"><?=gettext("Description"); ?></th>
+								<th width="20%" colspan="2"><?=gettext("Value"); ?></th>
+							</tr>
+							</thead>
 
+							<tbody>
+							<?php $i = 0; foreach ($config['sysctl']['item'] as $tunable): ?>
+
+							<tr>
+								<td class="listlr" ondblclick="document.location='system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>';">
+									<?php echo $tunable['tunable']; ?>
+								</td>
+								<td class="listr" align="left" ondblclick="document.location='system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>';">
+									<?php echo $tunable['descr']; ?>
+								</td>
+								<td class="listr" align="left" ondblclick="document.location='system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>';">
+									<?php echo $tunable['value']; ?>
+									<?php
+										if($tunable['value'] == "default")
+											echo "(" . get_default_sysctl_value($tunable['tunable']) . ")";
+									?>
+								</td>
+								<td class="list nowrap">
+									<table border="0" cellspacing="0" cellpadding="1" summary="edit delete">
+										<tr>
+											<td valign="middle">
+												<a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
+												    <span data-toggle="tooltip" data-placement="left" title="<?=gettext("Edit Tunable"); ?>" class="glyphicon glyphicon-pencil"></span>
+												</a>
+											</td>
+											<td valign="middle">
+												<a href="system_advanced_sysctl.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?"); ?>')" class="btn btn-default btn-xs">
+													<span data-toggle="tooltip" data-placement="left" title="<?=gettext("Delete Tunable"); ?>" class="glyphicon glyphicon-remove"></span>
+												</a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<?php $i++; endforeach; ?>
+							<tr>
+								<td colspan="4">
+									<a href="system_advanced_sysctl.php?act=edit" class="btn btn-primary pull-right">
+											<span class="glyphicon glyphicon-plus"></span>
+											</a>
+								</td>
+							</tr>
+
+							</tbody>
+						</table>
+			        <?php else: ?>
+						<form action="system_advanced_sysctl.php" method="post" name="iform" id="iform">
+							<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="edit system tunable" class="table table-striped">
+								<thead>
+									<tr>
+										<th colspan="2" valign="top" class="listtopic"><?=gettext("Edit system tunable"); ?></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Tunable"); ?></td>
+										<td width="78%" class="vtable">
+											<input size="65" name="tunable" type="text" value="<?php echo $pconfig['tunable']; ?>" />
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
+										<td width="78%" class="vtable">
+											<textarea name="descr"><?php echo $pconfig['descr']; ?></textarea>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Value"); ?></td>
+										<td width="78%" class="vtable">
+											<input size="65" name="value" type="text" value="<?php echo $pconfig['value']; ?>" />
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+											<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+
+											<?php if (isset($id) && $a_tunable[$id]): ?>
+											<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+											<?php endif; ?>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</form>
+					<?php endif; ?>
                 </div>
             </section>
         </div>
