@@ -28,33 +28,33 @@ package=$1
 # Check if another pkg process is already running
 pkg_running=`ps -x | grep "pkg " | grep -v "grep" | grep -v "pkg_upgrade.sh"`
 
-if [ -f /tmp/pkg_upgrade.progress ]; then
-	# Remove leftovers from previous upgrade first
-	rm /tmp/pkg_upgrade.progress
-fi
+PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 
-# Create upgrade progress file first
-touch /tmp/pkg_upgrade.progress
+# Truncate upgrade progress file
+: > ${PKG_PROGRESS_FILE}
+
 if [ -z "$pkg_running" ]; then
-	echo "***GOT REQUEST TO UPGRADE: $package***" >> /tmp/pkg_upgrade.progress
+	echo "***GOT REQUEST TO UPGRADE: $package***" >> ${PKG_PROGRESS_FILE}
 	if [ "$package" == "all" ]; then
 	    # start pkg upgrade
-	    echo '***STARTING UPGRADE***' >> /tmp/pkg_upgrade.progress
-		pkg upgrade -y >> /tmp/pkg_upgrade.progress
-		echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> /tmp/pkg_upgrade.progress
+	    echo '***STARTING UPGRADE***' >> ${PKG_PROGRESS_FILE}
+		pkg upgrade -y >> ${PKG_PROGRESS_FILE}
+		echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> ${PKG_PROGRESS_FILE}
 		/usr/local/opnsense/scripts/pkg_updatecheck.sh
-		echo '***DONE***' >> /tmp/pkg_upgrade.progress
+		echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 	else
 		# start pkg upgrade
-	    echo '***STARTING UPGRADE - ONE PACKAGE***' >> /tmp/pkg_upgrade.progress
-		pkg upgrade -y $package >> /tmp/pkg_upgrade.progress
-		echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> /tmp/pkg_upgrade.progress
+	    echo '***STARTING UPGRADE - ONE PACKAGE***' >> ${PKG_PROGRESS_FILE}
+		pkg upgrade -y $package >> ${PKG_PROGRESS_FILE}
+		echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> ${PKG_PROGRESS_FILE}
 		/usr/local/opnsense/scripts/pkg_updatecheck.sh
-		echo '***DONE***' >> /tmp/pkg_upgrade.progress
+		echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 	fi
+	# remove no longer referenced packages
+	pkg autoremove -y >> ${PKG_PROGRESS_FILE}
 	# regenerate php.ini after upgrade to avoid spurious output
-	/usr/local/etc/rc.php_ini_setup
+	/usr/local/etc/rc.php_ini_setup >> ${PKG_PROGRESS_FILE}
 else
-	echo 'Upgrade already in progress' >> /tmp/pkg_upgrade.progress
-	echo '***DONE***' >> /tmp/pkg_upgrade.progress
+	echo 'Upgrade already in progress' >> ${PKG_PROGRESS_FILE}
+	echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 fi
