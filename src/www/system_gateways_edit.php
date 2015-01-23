@@ -643,7 +643,6 @@ function enable_change() {
 								echo "<input type='hidden' name='friendlyiface' id='friendlyiface' value=\"" . htmlspecialchars($pconfig['friendlyiface']) . "\" />\n";
 								?>
 
-		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
 											<td width="22%" valign="top" class="vncellreq"><?=gettext("Disabled");?></td>
@@ -656,7 +655,7 @@ function enable_change() {
 										<tr>
 											<td width="22%" valign="top" class="vncellreq"><?=gettext("Interface"); ?></td>
 											<td width="78%" class="vtable">
-												<select name='interface' class='formselect'>
+												<select name='interface' class="selectpicker" data-style="btn-default" data-live-search="true">
 												<?php
 													$interfaces = get_configured_interface_with_descr(false, true);
 													foreach ($interfaces as $iface => $ifacename) {
@@ -673,7 +672,7 @@ function enable_change() {
 										<tr>
 											<td width="22%" valign="top" class="vncellreq"><?=gettext("Address Family"); ?></td>
 											<td width="78%" class="vtable">
-												<select name='ipprotocol' class='formselect' >
+												<select name='ipprotocol' class="selectpicker" data-style="btn-default" >
 												<?php
 													$options = array("inet" => "IPv4", "inet6" => "IPv6");
 													foreach ($options as $name => $string) {
@@ -868,7 +867,6 @@ function enable_change() {
 											</td>
 										</tr>
 									</table>
-		                        </div>
 						</form>
 				    </div>
 				</div>

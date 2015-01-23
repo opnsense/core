@@ -261,7 +261,6 @@ function presubmit() {
 									<input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : '');?>" />
 									<input type="hidden" id="privid" name="privid" value="" />
 
-									<div class="table-responsive">
 									<table class="table table-striped table-sort">
 										<?php
 											$ro = "";
@@ -424,7 +423,6 @@ function presubmit() {
 												</td>
 											</tr>
 										</table>
-									</div>
 								</form>
 								<?php
 											else:
@@ -435,7 +433,6 @@ function presubmit() {
 									<input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : '');?>" />
 									<input type="hidden" id="groupname" name="groupname" value="" />
 
-									<div class="table-responsive">
 									<table class="table table-striped table-sort">
 											<thead>
 												<tr>
@@ -527,7 +524,6 @@ function presubmit() {
 ?>
 						</tbody>
 					</table>
-									</div>
 								</form>
 
 <?php

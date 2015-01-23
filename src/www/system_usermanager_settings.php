@@ -118,7 +118,6 @@ include("head.inc");
 						<div class="tab-content content-box col-xs-12">
 
 								<form id="iform" name="iform" action="system_usermanager_settings.php" method="post">
-									<div class="table-responsive">
 									<table class="table table-striped table-sort">
 											<tr>
 												<td width="22%" valign="top" class="vncell"><?=gettext("Session Timeout"); ?></td>
@@ -132,7 +131,7 @@ include("head.inc");
 											<tr>
 												<td width="22%" valign="top" class="vncell"><?=gettext("Authentication Server"); ?></td>
 												<td width="78%" class="vtable">
-													<select name='authmode' id='authmode' class="form-control" >
+													<select name='authmode' id='authmode' class="selectpicker" data-style="btn-default" >
 				<?php
 													$auth_servers = auth_get_authserver_list();
 													foreach ($auth_servers as $auth_server):
@@ -157,7 +156,6 @@ include("head.inc");
 												</td>
 											</tr>
 										</table>
-									</div>
 								</form>
 						</div>
 			    </section>

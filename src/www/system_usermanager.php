@@ -322,8 +322,8 @@ if ($_POST['save']) {
 		local_user_set($userent);
 		write_config();
 
-		if(is_dir("/usr/local/etc/inc/privhooks"))
-			run_plugins("/usr/local/etc/inc/privhooks");
+		//if(is_dir("/usr/local/etc/inc/privhooks"))
+		//	run_plugins("/usr/local/etc/inc/privhooks");
 
 		conf_mount_ro();
 
@@ -463,7 +463,6 @@ function sshkeyClicked(obj) {
 									<input type="hidden" id="privid" name="privid" value="" />
 									<input type="hidden" id="certid" name="certid" value="" />
 
-		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 									<?php
 									$ro = "";
@@ -641,6 +640,7 @@ function sshkeyClicked(obj) {
 																	document.getElementById('act').value='<?php echo "delpriv";?>';
 																	return confirm('<?=gettext("Do you really want to delete this privilege?");?>');"
 																title="<?=gettext("delete privilege");?>" data-toggle="tooltip" data-placement="left"><span class="glyphicon glyphicon-remove"></span>
+															</button>
 				<?php
 														endif;
 				?>
@@ -855,7 +855,6 @@ function sshkeyClicked(obj) {
 											</td>
 										</tr>
 									</table>
-								</div>
 							</form>
 <?php
 			else:
@@ -866,20 +865,18 @@ function sshkeyClicked(obj) {
 					<input type="hidden" id="username" name="username" value="" />
 					<input type="hidden" id="privid" name="privid" value="" />
 					<input type="hidden" id="certid" name="certid" value="" />
-					<div class="table-responsive">
 			        <table class="table table-striped table-sort">
 						<thead>
 							<tr>
 								<th width="25%" class="listhdrr"><?=gettext("Username"); ?></th>
 								<th width="25%" class="listhdrr"><?=gettext("Full name"); ?></th>
-								<th width="5%" class="listhdrr"><?=gettext("Disabled"); ?></th>
 								<th width="25%" class="listhdrr"><?=gettext("Groups"); ?></th>
-								<th width="10%" class="list"></th>
+								<th width="15%" class="list"></th>
 							</tr>
 						</thead>
 						<tfoot>
 							<tr>
-								<td class="list" colspan="4"></td>
+								<td class="list" colspan="3"></td>
 								<td class="list">
 									<button type="submit" name="addcert"
 										class="btn btn-default btn-xs"
@@ -889,7 +886,7 @@ function sshkeyClicked(obj) {
 								</td>
 							</tr>
 							<tr>
-								<td colspan="5">
+								<td colspan="4">
 									<p class="col-xs-12 col-sm-10">
 										<?=gettext("Additional users can be added here. User permissions for accessing " .
 										"the webConfigurator can be assigned directly or inherited from group memberships. " .
@@ -913,12 +910,15 @@ function sshkeyClicked(obj) {
 								<td class="listlr">
 									<table border="0" cellpadding="0" cellspacing="0" summary="icons">
 										<tr>
-											<td align="left" valign="middle">
+											<td width="30px" align="left" valign="middle">
 <?php
-												if($userent['scope'] != "user")
-													$usrimg = "glyphicon glyphicon-user text-muted";
-												else
-													$usrimg = "glyphicon glyphicon-user";
+												if($userent['scope'] != "user") {
+													$usrimg = "glyphicon glyphicon-user text-danger";
+												} elseif (isset($userent['disabled'])) {
+														$usrimg = "glyphicon glyphicon-user text-muted";
+												} else {
+														$usrimg = "glyphicon glyphicon-user text-info";
+												}
 ?>
 
 
@@ -931,7 +931,6 @@ function sshkeyClicked(obj) {
 									</table>
 								</td>
 								<td class="listr"><?=htmlspecialchars($userent['descr']);?>&nbsp;</td>
-								<td class="listr"><?php if(isset($userent['disabled'])) echo "*"; ?></td>
 								<td class="listbg">
 									<?=implode(",",local_user_get_groups($userent));?>
 									&nbsp;
@@ -963,7 +962,20 @@ function sshkeyClicked(obj) {
 ?>
 						</tbody>
 					</table>
-					</div>
+							<table width="100%" cellspacing="0" celpadding="0" border="0" summary="icons">
+								<tr>
+									<td></td>
+									<td width="20px"></td>
+									<td width="20px"><span class="glyphicon glyphicon-user text-danger"></span></td>
+									<td width="200px">System Admininistrator</td>
+									<td width="20px"><span class="glyphicon glyphicon-user text-muted"></span></td>
+									<td width="200px">Disabled User</td>
+									<td width="20px"><span class="glyphicon glyphicon-user text-info"></span></td>
+									<td width="200px">Normal User</td>
+									<td></td>
+								</tr>
+							</table>
+
 				</form>
 <?php
 			endif;

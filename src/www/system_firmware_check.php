@@ -148,7 +148,7 @@ include("head.inc");
 								<td>
 									<div id="upgrades">
 										<?php
-											echo '<table>';
+											echo '<table class="table table-striped">';
 												echo '<tr>';
 												echo '<th>Package Name</th>';
 												echo '<th>Current Version</th>';
@@ -168,33 +168,35 @@ include("head.inc");
 												echo '</tr>';
 
 											}
-											echo '</table>';
-										?>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<th>Required new Installs</th>
-							</tr>
-							<tr>
-								<td>
-									<div id="new">
-										<?php
-											echo '<table>';
-										echo '<tr>';
-											echo '<th>Package Name</th>';
-											echo '</tr>';
-											echo '<tr>';
 											foreach ($pkg_status["new_packages"] as $upgrade_new) {
-												echo '<td>';
-												echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
-												echo '</td>';
+												echo '<tr>';
+													echo '<td>';
+														echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
+													echo '</td>';
+													echo '<td>';
+														echo '<span class="text-info"><b>NEW</b></span><br/>';
+													echo '</td>';
+													echo '<td>';
+																echo '<span class="text-info"><b>'.$upgrade_new["version"].'</b></span><br/>';
+													echo '</td>';
+												echo '</tr>';
+											}
+											foreach ($pkg_status["reinstall_packages"] as $upgrade_new) {
+												echo '<tr>';
+													echo '<td>';
+														echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
+													echo '</td>';
+													echo '<td>';
+														echo '<span class="text-info"><b>'.$upgrade_new["version"].'</b></span><br/>';
+													echo '</td>';
+													echo '<td>';
+														echo '<span class="text-info"><b>REINSTALL</b></span><br/>';
+													echo '</td>';
 												echo '</tr>';
 											}
 											echo '</table>';
 										?>
 									</div>
-
 								</td>
 							</tr>
 					</table>

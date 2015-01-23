@@ -223,7 +223,6 @@ jQuery(function ($) {
 						<div class="content-box-main col-xs-12">
 
 					<form action="system_gateway_groups_edit.php" method="post" name="iform" id="iform">
-						<div class="table-responsive">
 							<table class="table table-striped" summary="system groups edit">
 								<tr>
 								<td width="22%" valign="top" class="vncellreq"><?=gettext("Group Name"); ?></td>
@@ -265,7 +264,7 @@ jQuery(function ($) {
 															echo "<td class='listlr'>";
 															echo "<strong>{$gateway['name']} </strong>";
 															echo "</td><td class='listr'>";
-															echo "<select name='{$gwname}' class='gateway_tier_selector formfldselect' id='{$gwname}'>\n";
+															echo "<select name='{$gwname}' class='gateway_tier_selector formfldselect selectpicker' data-style='btn-default' data-width='auto' id='{$gwname}'>\n";
 															echo "<option value='0' $selected[0] >" . gettext("Never") . "</option>\n";
 															echo "<option value='1' $selected[1] >" . gettext("Tier 1") . "</option>\n";
 															echo "<option value='2' $selected[2] >" . gettext("Tier 2") . "</option>\n";
@@ -286,7 +285,7 @@ jQuery(function ($) {
 																}
 															}
 															echo "<td class='listr'>";
-															echo "<select name='{$gwname}_vip' class='gateway_vip_selector formfldselect' id='{$gwname}_vip'>\n";
+															echo "<select name='{$gwname}_vip' class='gateway_vip_selector formfldselect selectpicker' data-style='btn-default' data-width='auto' id='{$gwname}_vip'>\n";
 															echo "<option value='address' {$selected['address']} >" . gettext("Interface Address") . "</option>\n";
 															foreach($carplist as $vip => $address) {
 																echo "<!-- $vip - $address - $interface -->\n";
@@ -318,7 +317,7 @@ jQuery(function ($) {
 									    <tr>
 									        <td width="22%" valign="top" class="vncellreq"><?=gettext("Trigger Level"); ?></td>
 									        <td width="78%" class="vtable">
-												<select name='trigger' class='formfldselect trigger_level_selector' id='trigger'>
+												<select name='trigger' class='formfldselect trigger_level_selector selectpicker' id='trigger' data-style='btn-default'>
 												<?php
 													foreach ($categories as $category => $categoryd) {
 												        echo "<option value=\"$category\"";
@@ -348,7 +347,6 @@ jQuery(function ($) {
 											</td>
 										</tr>
 									</table>
-								</div>
 							</form>
 						</div>
 					</div>

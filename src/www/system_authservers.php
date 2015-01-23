@@ -457,7 +457,6 @@ function select_clicked() {
 
 								<?php if ($act == "new" || $act == "edit" || $input_errors): ?>
 								<form id="iform" name="iform" action="system_authservers.php" method="post">
-									<div class="table-responsive">
 									<table class="table table-striped table-sort">
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Descriptive name");?></td>
@@ -806,7 +805,7 @@ function select_clicked() {
 									</form>
 
 				<?php else: ?>
-									<div class="table-responsive">
+
 									<table class="table table-striped table-sort">
 
 											<thead>
@@ -856,7 +855,7 @@ function select_clicked() {
 												?>
 											</tbody>
 										</table>
-									</div>
+
 							<?php endif; ?>
 							</div>
 						</section>

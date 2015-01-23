@@ -37,6 +37,7 @@
 # download_size: none|<size_of_total_downloads>
 # extra_space_required: none|<size_of_total_extra_space_required>
 # new_packages: array with { name: <package_name>, version: <package_version> }
+# reinstall_packages: array with { name: <package_name>, version: <package_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
 # TODO: Add object with items that will be removed or uninstalled
@@ -149,6 +150,34 @@ if [ "$pkg_running" == "" ]; then
                 fi
               done
 
+              # Check if there are packages that need to be reinstalled
+              for i in $(cat $tmp_pkg_output_file | cut -d '(' -f1); do
+                #echo $i
+                if [ "$itemcount" -gt "$linecount" ]; then
+                  #echo $i
+                  if [  `echo $linecount + 1 | bc` -eq "$itemcount" ]; then
+                    if [ "`echo $i | grep '-'`" == "" ]; then
+                      itemcount=0 # This is not a valid item so reset item count
+                    else
+                      name=`echo $i | cut -d '-' -f1`
+                      version=`echo $i | cut -d '-' -f2`
+                      itemcount=`echo $itemcount + 1 | bc` # Get ready for next item
+                      if [ "$packages_reinstall" == "" ]; then
+                        packages_reinstall=$packages_reinstall"{\"name\":\"$name\"," # If it is the first item then we do not want a seperator
+                        packages_reinstall=$packages_reinstall"\"version\":\"$version\"}"
+                      else
+                        packages_reinstall=$packages_reinstall", {\"name\":\"$name\","
+                        packages_reinstall=$packages_reinstall"\"version\":\"$version\"}"
+                      fi
+                    fi
+                  fi
+                fi
+                linecount=`echo $linecount + 1 | bc`
+                if [ "$i" == "REINSTALLED:" ]; then
+                  itemcount=`echo $linecount + 1 | bc`
+                fi
+              done
+
               # Now check if there are upgrades to install
               for i in $(cat $tmp_pkg_output_file); do
                 if [ "$itemcount" -gt "$linecount" ]; then
@@ -201,7 +230,7 @@ if [ "$pkg_running" == "" ]; then
       # Get date/timestamp
       last_check=`date`
       # Write our json structure to disk
-      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"core_version\":\"$core_version\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"upgrade_packages\":[$packages_upgraded]}" > $package_json_output
+      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"core_version\":\"$core_version\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded]}" > $package_json_output
 else
   # pkg is already running, quitting
 fi
