@@ -1,9 +1,6 @@
 <?php
-/*
-	util.inc
-	part of the pfSense project (https://www.pfsense.org)
 
-	originally part of m0n0wall (http://m0n0.ch/wall)
+/*
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -29,14 +26,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/bin/ps	/bin/kill	/usr/bin/killall	/sbin/ifconfig	/usr/bin/netstat
-	pfSense_BUILDER_BINARIES:	/usr/bin/awk	/sbin/dmesg		/sbin/ping /usr/local/sbin/gzsig	/usr/sbin/arp
-	pfSense_BUILDER_BINARIES:	/sbin/conscontrol	/sbin/devd	/bin/ps
-	pfSense_MODULE:	utils
-*/
-
-/* kill a process by pid file */
 function killbypid($pidfile) {
 	return sigkillbypid($pidfile, "TERM");
 }
@@ -105,13 +94,6 @@ function clear_subsystem_dirty($subsystem = "") {
 	global $g;
 
 	@unlink("{$g['varrun_path']}/{$subsystem}.dirty");
-}
-
-function config_lock() {
-	return;
-}
-function config_unlock() {
-	return;
 }
 
 /* lock configuration file */
