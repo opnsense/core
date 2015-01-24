@@ -416,14 +416,10 @@ function convert_config() {
 		$cur = $config['version'] * 10;
 		$next = $cur + 1;
 		$migration_function = sprintf('upgrade_%03d_to_%03d', $cur, $next);
-		if (function_exists($migration_function))
+		if (function_exists($migration_function)) {
 			$migration_function();
-		$migration_function = "{$migration_function}_custom";
-		if (function_exists($migration_function))
-			$migration_function();
+		}
 		$config['version'] = sprintf('%.1f', $next / 10);
-		if($g['booting'])
-			echo ".";
 	}
 
 	$now = date("H:i:s");

@@ -1,46 +1,40 @@
 <?php
+
 /*
 	Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
 
-1. Redistributions of source code must retain the above copyright notice,
-	this list of conditions and the following disclaimer.
+	1. Redistributions of source code must retain the above copyright notice,
+	   this list of conditions and the following disclaimer.
 
 	2. Redistributions in binary form must reproduce the above copyright
-	notice, this list of conditions and the following disclaimer in the
-	documentation and/or other materials provided with the distribution.
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
 
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
 	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
 	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-	*/
+ */
+
+require_once('rrd.inc');
 
 /*
-	pfSense_BUILDER_BINARIES:	/usr/bin/find	/bin/cd	/usr/local/bin/rrdtool	/usr/bin/nice
-	pfSense_MODULE:	config
-*/
+ * Upgrade functions must be named:
+ *    upgrade_XXX_to_YYY
+ * where XXX == previous version, zero padded, and YYY == next version, zero padded
+ */
 
-if(!function_exists("dump_rrd_to_xml"))
-	require("rrd.inc");
-
-/* Upgrade functions must be named:
-*    upgrade_XXX_to_YYY
-	* where XXX == previous version, zero padded, and YYY == next version, zero padded
-	*/
 function upgrade_010_to_011() {
 	global $config;
 	$opti = 1;
@@ -395,18 +389,11 @@ function upgrade_022_to_023() {
 	}
 }
 
-
-function upgrade_023_to_024() {
-	global $config;
-}
-
-
 function upgrade_024_to_025() {
 	global $config;
 	$config['interfaces']['wan']['use_rrd_gateway'] = $config['system']['use_rrd_gateway'];
 	unset($config['system']['use_rrd_gateway']);
 }
-
 
 function upgrade_025_to_026() {
 	global $config;
@@ -489,16 +476,6 @@ function upgrade_025_to_026() {
 }
 
 
-function upgrade_026_to_027() {
-	global $config;
-}
-
-
-function upgrade_027_to_028() {
-	global $config;
-}
-
-
 function upgrade_028_to_029() {
 	global $config;
 	$rule_item = array();
@@ -518,61 +495,6 @@ function upgrade_029_to_030() {
 	/* enable the rrd config setting by default */
 	$config['rrd']['enable'] = true;
 }
-
-
-function upgrade_030_to_031() {
-	global $config;
-	/* Insert upgrade code here */
-}
-
-
-function upgrade_031_to_032() {
-	global $config;
-	/* Insert upgrade code here */
-}
-
-
-function upgrade_032_to_033() {
-	global $config;
-	/* Insert upgrade code here */
-}
-
-
-function upgrade_033_to_034() {
-	global $config;
-	/* Insert upgrade code here */
-}
-
-
-function upgrade_034_to_035() {
-	global $config;
-	/* Insert upgrade code here */
-}
-
-
-function upgrade_035_to_036() {
-	global $config;
-	/* Insert upgrade code here */
-}
-
-
-function upgrade_036_to_037() {
-	global $config;
-	/* Insert upgrade code here */
-}
-
-
-function upgrade_037_to_038() {
-	global $config;
-	/* Insert upgrade code here */
-}
-
-
-function upgrade_038_to_039() {
-	global $config;
-	/* Insert upgrade code here */
-}
-
 
 function upgrade_039_to_040() {
 	global $config, $g;
@@ -2801,10 +2723,6 @@ function upgrade_080_to_081() {
 	unset($rule);
 }
 
-function upgrade_081_to_082() {
-	/* don't enable the allow IPv6 toggle */
-}
-
 function upgrade_082_to_083() {
 	global $config;
 
@@ -2958,6 +2876,7 @@ function upgrade_086_to_087() {
 		}
 	}
 }
+
 function upgrade_087_to_088() {
 	global $config;
 	if (isset($config['system']['glxsb_enable'])) {
@@ -3352,6 +3271,9 @@ function upgrade_109_to_110() {
 function upgrade_110_to_111() {
 	global $config;
 
+	/* OPNsense modifications on top of this version */
+	$config['theme'] = 'opnsense';
+
 	/* Make sure unbound user exist */
 	mwexec('/usr/sbin/pw groupadd -n unbound -g 59', true);
 	mwexec('/usr/sbin/pw useradd -n unbound -c "Unbound DNS Resolver" -d /var/unbound -s /usr/sbin/nologin -u 59 -g 59', true);
@@ -3473,5 +3395,3 @@ function upgrade_110_to_111() {
 
 	unset($pkg, $new);
 }
-
-?>
