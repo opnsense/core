@@ -180,7 +180,7 @@ function update_description() {
 										<br />
 										<?=gettext("Hold down CTRL (pc)/COMMAND (mac) key to select multiple items");?>
 										</td>
-										
+
 										<script type="text/javascript">
 										//<![CDATA[
 											function selectAll() {

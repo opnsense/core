@@ -35,11 +35,9 @@ namespace OPNsense\Base;
 
 abstract class BaseModel
 {
-
     public function __construct()
     {
         $class_info = new \ReflectionClass($this);
         $class_info->getFileName();
     }
-
 }

@@ -118,7 +118,7 @@ include("head.inc");
 						<td class="vtable">
 							<input id='pfsyncenabled' type='checkbox' name='pfsyncenabled' value='on' <?php if ($pconfig['pfsyncenabled'] === "on") echo "checked='checked'"; ?> />
 							pfsync transfers state insertion, update, and deletion messages between firewalls.<br/>
-							Each firewall sends these messages out via multicast on a specified interface, using the PFSYNC protocol <a href="http://www.openbsd.org/faq/pf/carp.html" target="_blank">(IP Protocol 240)</a>. 
+							Each firewall sends these messages out via multicast on a specified interface, using the PFSYNC protocol <a href="http://www.openbsd.org/faq/pf/carp.html" target="_blank">(IP Protocol 240)</a>.
 							<br/>It also listens on that interface for similar messages from other firewalls, and imports them into the local state table.
 							<br/>This setting should be enabled on all members of a failover group.
 							<div class="well well-sm" ><b>Clicking save will force a configuration sync if it is enabled! (see Configuration Synchronization Settings below)</b></div>

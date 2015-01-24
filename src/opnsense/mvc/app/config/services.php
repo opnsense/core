@@ -86,7 +86,7 @@ $di->set('config', $config);
 /**
  * Setup router
  */
-$di->set('router', function() {
+$di->set('router', function () {
 
     $router = new \Phalcon\Mvc\Router(false);
 
@@ -102,9 +102,11 @@ $di->set('router', function() {
 
     // probe registered modules and create a namespace map
     // for example, OPNsense\Core will be mapped at http(s):\\host\core\..
-    // module names should be unique in the application, unless you want to overwrite functionality (check glob's sorting).
+    // module names should be unique in the application, unless you want to
+    // overwrite functionality (check glob's sorting).
     //
-    // if the glob for probing the directories turns out to be too slow, we should consider some kind of caching here
+    // if the glob for probing the directories turns out to be too slow,
+    // we should consider some kind of caching here
     //
     $registered_modules = array();
     $controller_dir = __DIR__."/../controllers/";

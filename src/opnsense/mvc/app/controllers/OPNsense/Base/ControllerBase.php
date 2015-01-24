@@ -44,5 +44,4 @@ class ControllerBase extends Controller
     {
         $this->view->setTemplateBefore('default');
     }
-
 }

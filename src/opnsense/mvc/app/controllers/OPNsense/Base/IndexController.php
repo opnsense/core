@@ -40,6 +40,4 @@ class IndexController extends \OPNsense\Base\ControllerBase
 //        $this->view->title = $this->request->getURI();
 //        $this->view->pick('OPNsense/Sample/index');
     }
-
 }
-

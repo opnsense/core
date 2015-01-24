@@ -35,5 +35,4 @@ use OPNsense\Base\BaseModel;
 class Sample extends BaseModel
 {
     public $title = "123456";
-
 }

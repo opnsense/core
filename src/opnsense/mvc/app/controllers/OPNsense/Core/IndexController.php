@@ -37,6 +37,4 @@ class IndexController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/Core/index');
     }
-
 }
-

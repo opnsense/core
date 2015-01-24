@@ -83,7 +83,7 @@ $pagetitle = gentitle( $pgtitle );
 
 
 		jQuery(function () {
-  			jQuery('[data-toggle="tooltip"]').tooltip()
+			jQuery('[data-toggle="tooltip"]').tooltip()
 		})
 		//]]>
 		</script>
