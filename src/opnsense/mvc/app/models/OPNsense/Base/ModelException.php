@@ -27,17 +27,16 @@
 
     --------------------------------------------------------------------------------------
     package : Frontend Model Base
-    function: implements base model to bind config and definition to object
+    function: Basic Exception class for Model initialization
 
 */
-
 namespace OPNsense\Base;
 
-abstract class BaseModel
+
+/**
+ * Class BaseModelException
+ * @package Base
+ */
+class ModelException extends \Exception
 {
-    public function __construct()
-    {
-        $class_info = new \ReflectionClass($this);
-        $class_info->getFileName();
-    }
 }

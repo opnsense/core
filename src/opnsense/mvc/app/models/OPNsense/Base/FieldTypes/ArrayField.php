@@ -26,18 +26,47 @@
     # POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+    package : Frontend Model Base
+    function:
 
 */
-namespace OPNsense\Sample;
+namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Base\BaseModel;
-
-class Sample extends BaseModel
+class ArrayField extends BaseField
 {
-//    protected function init()
-//    {
-//        print("\nxXx\n");
-//    }
+    /**
+     * @var bool is this array empty ( only filled with defaults)
+     */
+    private $internalEmptyStatus = false;
 
+    /**
+     * add Childnode (list)
+     * @param $name property name
+     * @param $node content (must be of type BaseField)
+     */
+    public function addChildNode($name, $node)
+    {
+        if ($name == null) {
+            // index item
+            $this->internalChildnodes[] = $node;
+        } else {
+            $this->internalChildnodes[$name] = $node;
+        }
+    }
 
+    /**
+     * @return bool is empty array (only filled for template structure)
+     */
+    public function isEmpty()
+    {
+        return $this->internalEmptyStatus;
+    }
+
+    /**
+     * @param $status|bool set empty (status boolean)
+     */
+    public function setInternalEmptyStatus($status)
+    {
+        $this->internalEmptyStatus = $status ;
+    }
 }

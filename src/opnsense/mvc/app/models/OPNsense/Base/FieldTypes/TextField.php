@@ -26,18 +26,30 @@
     # POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+    package : Frontend Model Base
+    function:
 
 */
-namespace OPNsense\Sample;
+namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Base\BaseModel;
-
-class Sample extends BaseModel
+class TextField extends BaseField
 {
-//    protected function init()
-//    {
-//        print("\nxXx\n");
-//    }
+    /**
+     * @var bool marks if this is a data node or a container
+     */
+    protected $internalIsContainer = false;
 
+    /**
+     * @var null|string validation mask (regex)
+     */
+    protected $internalMask = null;
 
+    /**
+     * set validation mask
+     * @param $value regexp validation mask
+     */
+    public function setMask($value)
+    {
+        $this->internalMask = $value ;
+    }
 }

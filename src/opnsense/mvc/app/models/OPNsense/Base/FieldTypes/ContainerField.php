@@ -26,18 +26,12 @@
     # POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+    package : Frontend Model Base
+    function:
 
 */
-namespace OPNsense\Sample;
+namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Base\BaseModel;
-
-class Sample extends BaseModel
+class ContainerField extends BaseField
 {
-//    protected function init()
-//    {
-//        print("\nxXx\n");
-//    }
-
-
 }

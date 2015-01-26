@@ -1,0 +1,29 @@
+<model>
+    <mount>//test/sample</mount>
+    <description>
+        Sample model
+    </description>
+    <items>
+        <tag1 type="TextField">
+            <Mask>[A-Z]</Mask>
+        </tag1>
+        <tagX>
+            <tag1 type="TextField">
+                <Default>test1234</Default>
+            </tag1>
+            <tag2>
+                <tagZ></tagZ>
+            </tag2>
+        </tagX>
+        <childnodes>
+            <section type="ArrayField">
+                <node1 type="TextField"/>
+                <node2 type="TextField"/>
+            </section>
+            <section1 type="ArrayField">
+                <nodeX type="TextField"></nodeX>
+                <nodeZ type="TextField"></nodeZ>
+            </section1>
+        </childnodes>
+    </items>
+</model>

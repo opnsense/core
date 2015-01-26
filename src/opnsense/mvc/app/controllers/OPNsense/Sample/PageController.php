@@ -46,6 +46,7 @@ class PageController extends ControllerBase
         $sample = new Sample();
         $this->view->title = $sample->title;
         $this->view->items = array(array('field_name' =>'test', 'field_content'=>'1234567','field_type'=>"text") );
+        $this->view->data = $sample ;
 
         // Pass the $postId parameter to the view
         //$this->view->setVar("postId", $postId);
