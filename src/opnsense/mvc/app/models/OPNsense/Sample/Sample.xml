@@ -8,8 +8,9 @@
             <Mask>[A-Z]</Mask>
         </tag1>
         <tagX>
-            <tag1 type="TextField">
+            <tag1 type="EmailField">
                 <Default>test1234</Default>
+                <ValidationMessage>you should input this!</ValidationMessage>
             </tag1>
             <tag2>
                 <tagZ></tagZ>

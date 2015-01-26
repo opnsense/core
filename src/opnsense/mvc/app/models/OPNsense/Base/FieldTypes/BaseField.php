@@ -55,6 +55,10 @@ abstract class BaseField
      */
     protected $internalReference = "";
 
+    /**
+     * @var string validation message string
+     */
+    protected $internalValidationMessage = null;
 
     /**
      * @return bool returns if this a container type object (no data)
@@ -121,15 +125,6 @@ abstract class BaseField
     }
 
     /**
-     * set Default field value
-     * @param $value default value
-     */
-    public function setDefault($value)
-    {
-        $this->internalValue = $value;
-    }
-
-    /**
      * default setter
      * @param $value set field value
      */
@@ -144,6 +139,31 @@ abstract class BaseField
     public function getChildren()
     {
         return $this->internalChildnodes;
+    }
+
+    /**
+     * set Default field value
+     * @param $value default value
+     */
+    public function setDefault($value)
+    {
+        $this->internalValue = $value;
+    }
+
+    /**
+     * @param $msg validation message (on failure)
+     */
+    public function setValidationMessage($msg)
+    {
+        $this->internalValidationMessage = $msg;
+    }
+
+    /**
+     * @return array returns validators for this field type (empty if none)
+     */
+    public function getValidators()
+    {
+        return array();
     }
 
 }
