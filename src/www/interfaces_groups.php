@@ -93,8 +93,6 @@ $main_buttons = array(
 
 
 		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 
                                         <thead>
@@ -135,9 +133,9 @@ $main_buttons = array(
 										    <?=htmlspecialchars($ifgroupentry['descr']);?>&nbsp;
 										  </td>
 										  <td valign="middle" class="list nowrap">
-										    <a href="interfaces_groups_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
+										    <a href="interfaces_groups_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="left"  title="<?=gettext("edit group");?>"></span></a>
 
-                        <a href="interfaces_groups.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this group? All elements that still use it will become invalid (e.g. filter rules)!");?>')" title="<?=gettext("delete ifgroupentry");?>"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a href="interfaces_groups.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this group? All elements that still use it will become invalid (e.g. filter rules)!");?>')" data-toggle="tooltip" data-placement="left"  title="<?=gettext("delete ifgroupentry");?>"><span class="glyphicon glyphicon-remove"></span></a>
 
 										  </td>
 										</tr>
@@ -149,7 +147,6 @@ $main_buttons = array(
 									<p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span><?=gettext("Interface Groups allow you to create rules that apply to multiple interfaces without duplicating the rules. If you remove members from an interface group, the group rules no longer apply to that interface.");?></span></p>
 									</div>
 
-		                        </div>
 		                        </form>
 
 						</div>

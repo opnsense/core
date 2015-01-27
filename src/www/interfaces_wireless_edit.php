@@ -143,80 +143,73 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				<div id="inputerrors"></div>
-
-
-			    <section class="col-xs-12">
-
+<section class="page-content-main">
+	<div class="container-fluid">
+		<div class="row">
+			<?php if ($input_errors) print_input_errors($input_errors); ?>
+			<div id="inputerrors"></div>
+		    <section class="col-xs-12">
 				<div class="content-box">
-
-					 <header class="content-box-head container-fluid">
+					<header class="content-box-head container-fluid">
 				        <h3><?=gettext("Wireless clone configuration");?></h3>
 				    </header>
 
 				    <div class="content-box-main">
-
 						<form action="interfaces_wireless_edit.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort">
-						                <tr>
-						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Parent interface");?></td>
-						                  <td width="78%" class="vtable">
-						                    <select name="if" class="form-control">
-						                      <?php
-						                      foreach ($portlist as $ifn => $ifinfo)
-						                        if (preg_match($g['wireless_regex'], $ifn)) {
-						                            echo "<option value=\"{$ifn}\"";
-						                            if ($ifn == $pconfig['if'])
-						                                echo " selected=\"selected\"";
-						                            echo ">";
-						                            echo htmlspecialchars($ifn . " (" . $ifinfo['mac'] . ")");
-						                            echo "</option>";
-						                        }
-						                      ?>
-						                    </select></td>
-						                </tr>
-						                <tr>
-						                  <td valign="top" class="vncellreq"><?=gettext("Mode");?></td>
-						                  <td class="vtable">
-						                    <select name="mode" class="form-control">
-						                      <option <?php if ($pconfig['mode'] == 'bss') echo "selected=\"selected\"";?> value="bss"><?=gettext("Infrastructure (BSS)");?></option>
-						                      <option <?php if ($pconfig['mode'] == 'adhoc') echo "selected=\"selected\"";?> value="adhoc"><?=gettext("Ad-hoc (IBSS)");?></option>
-						                      <option <?php if ($pconfig['mode'] == 'hostap') echo "selected=\"selected\"";?> value="hostap"><?=gettext("Access Point");?></option>
-						                    </select></td>
-						                </tr>
-						                <tr>
-						                  <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-						                  <td width="78%" class="vtable">
-						                    <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-						                    <br /> <span class="vexpl"><?=gettext("You may enter a description here ".
-						                    "for your reference (not parsed).");?></span></td>
-						                </tr>
-						                <tr>
-						                  <td width="22%" valign="top">&nbsp;</td>
-						                  <td width="78%">
-						                    <input type="hidden" name="cloneif" value="<?=htmlspecialchars($pconfig['cloneif']); ?>" />
-						                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-						                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-						                    <?php if (isset($id) && $a_clones[$id]): ?>
-						                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-						                    <?php endif; ?>
-						                  </td>
-						                </tr>
-						              </table>
-		                        </div>
+			                <table class="table table-striped table-sort">
+				                <tr>
+					                <td width="22%" valign="top" class="vncellreq"><?=gettext("Parent interface");?></td>
+					                <td width="78%" class="vtable">
+					                    <select name="if" class="selectpicker">
+					                      <?php
+					                      foreach ($portlist as $ifn => $ifinfo)
+					                        if (preg_match($g['wireless_regex'], $ifn)) {
+					                            echo "<option value=\"{$ifn}\"";
+					                            if ($ifn == $pconfig['if'])
+					                                echo " selected=\"selected\"";
+					                            echo ">";
+					                            echo htmlspecialchars($ifn . " (" . $ifinfo['mac'] . ")");
+					                            echo "</option>";
+					                        }
+					                      ?>
+					                    </select>
+					                </td>
+				                </tr>
+				                <tr>
+				                  <td valign="top" class="vncellreq"><?=gettext("Mode");?></td>
+				                  <td class="vtable">
+				                    <select name="mode" class="selectpicker">
+				                      <option <?php if ($pconfig['mode'] == 'bss') echo "selected=\"selected\"";?> value="bss"><?=gettext("Infrastructure (BSS)");?></option>
+				                      <option <?php if ($pconfig['mode'] == 'adhoc') echo "selected=\"selected\"";?> value="adhoc"><?=gettext("Ad-hoc (IBSS)");?></option>
+				                      <option <?php if ($pconfig['mode'] == 'hostap') echo "selected=\"selected\"";?> value="hostap"><?=gettext("Access Point");?></option>
+				                    </select></td>
+				                </tr>
+				                <tr>
+					                <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
+					                <td width="78%" class="vtable">
+					                    <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
+					                    <br /> <span class="vexpl"><?=gettext("You may enter a description here ".
+					                    "for your reference (not parsed).");?></span>
+					                </td>
+				                </tr>
+				                <tr>
+				                  <td width="22%" valign="top">&nbsp;</td>
+				                  <td width="78%">
+				                    <input type="hidden" name="cloneif" value="<?=htmlspecialchars($pconfig['cloneif']); ?>" />
+				                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+				                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+				                    <?php if (isset($id) && $a_clones[$id]): ?>
+				                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+				                    <?php endif; ?>
+				                  </td>
+				                </tr>
+				              </table>
 						</form>
 				    </div>
 				</div>
-			    </section>
-			</div>
+		    </section>
 		</div>
-	</section>
+	</div>
+</section>
 
 <?php include("foot.inc"); ?>

@@ -1597,7 +1597,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="middle" class="vncell"><strong><?=gettext("IPv4 Configuration Type"); ?></strong></td>
 												<td class="vtable">
-												<select name="type" onchange="updateType(this.value);" <?php echo $type_disabled; ?> class="form-control" id="type">
+												<select name="type" onchange="updateType(this.value);" <?php echo $type_disabled; ?> class="selectpicker" data-style="btn-default" id="type">
 													<?php
 														foreach ($types4 as $key => $opt) {
 															echo "<option onclick=\"updateType('{$key}');\"";
@@ -1613,7 +1613,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="middle" class="vncell"><strong><?=gettext("IPv6 Configuration Type"); ?></strong></td>
 												<td class="vtable">
-												<select name="type6" onchange="updateTypeSix(this.value);" <?php echo $type_disabled; ?> class="form-control" id="type6">
+												<select name="type6" onchange="updateTypeSix(this.value);" <?php echo $type_disabled; ?> class="selectpicker" data-style="btn-default" id="type6">
 													<?php
 														foreach ($types6 as $key => $opt) {
 															echo "<option onclick=\"updateTypeSix('{$key}');\"";
@@ -1681,7 +1681,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 												echo '<div id="showmediaadv" ';
 												if ($mediaopt_from_config == 'autoselect ' || $mediaopt_from_config == ' ') echo "style='display:none'>";
 												else echo '>';
-													echo '<select name="mediaopt" class="form-control" id="mediaopt">';
+													echo '<select name="mediaopt" class="selectpicker" data-style="btn-default" id="mediaopt">';
 													print "<option value=\"\">Default (no preference, typically autoselect)</option>";
 													print "<option value=\"\">------- Media Supported by this interface -------</option>";
 													foreach($mediaopts_list as $mediaopt){
@@ -1714,25 +1714,35 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 														<tr>
 															<td width="22%" valign="top" class="vncellreq"><?=gettext("IPv4 address"); ?></td>
 															<td width="78%" class="vtable">
-																<input name="ipaddr" type="text" class="form-control unknown" id="ipaddr" size="20" value="<?=htmlspecialchars($pconfig['ipaddr']);?>" />
-																/
-																<select name="subnet" class="form-control" id="subnet">
-																	<?php
-																	for ($i = 32; $i > 0; $i--) {
-																		if($i <> 31) {
-																			echo "<option value=\"{$i}\" ";
-																			if ($i == $pconfig['subnet']) echo "selected=\"selected\"";
-																			echo ">" . $i . "</option>";
-																		}
-																	}
-																	?>
-																</select>
+																<table>
+																	<tr>
+																		<td width="262px">
+																			<input name="ipaddr" type="text" class="form-control unknown" id="ipaddr" size="20" value="<?=htmlspecialchars($pconfig['ipaddr']);?>" />
+																		</td>
+																		<td width="20px" align="middle">
+																			/
+																		</td>
+																		<td>
+																			<select name="subnet" class="selectpicker" data-style="btn-default" data-width="auto" id="subnet">
+																				<?php
+																				for ($i = 32; $i > 0; $i--) {
+																					if($i <> 31) {
+																						echo "<option value=\"{$i}\" ";
+																						if ($i == $pconfig['subnet']) echo "selected=\"selected\"";
+																						echo ">" . $i . "</option>";
+																					}
+																				}
+																				?>
+																			</select>
+																		</td>
+																	</tr>
+																</table>
 															</td>
 														</tr>
 														<tr>
 															<td width="22%" valign="top" class="vncell"><?=gettext("IPv4 Upstream Gateway"); ?></td>
 															<td width="78%" class="vtable">
-																<select name="gateway" class="form-control" id="gateway">
+																<select name="gateway" class="selectpicker" data-style="btn-default" id="gateway">
 																	<option value="none" selected="selected"><?=gettext("None"); ?></option>
 																		<?php
 																		if(count($a_gateways) > 0) {
@@ -1748,7 +1758,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																		}
 																		?>
 																</select>
-																- or  <strong><a onclick="show_add_gateway();" href="#gatewaysection"><?=gettext("add a new one."); ?></a></strong>
+																<span class="text-default">-or</span>  <strong><a onclick="show_add_gateway();" href="#gatewaysection"><?=gettext("add a new one."); ?></a></strong>
 																<br />
 																<div id='addgwbox'>
 																	<?=gettext("If this interface is an Internet connection, select an existing Gateway from the list or add a new one using the link above."); ?><br />
@@ -1773,13 +1783,13 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																				<td width="22%"><?=gettext("Default gateway:"); ?></td><td width="78%" class="vtable"><input class="form-control" type="checkbox" id="defaultgw" name="defaultgw"<?=$checked?> /></td>
 																			</tr>
 																			<tr>
-																				<td width="22%"><?=gettext("Gateway Name:"); ?></td><td width="78%" class="vtable"><input class="form-control" id="name" name="name" value="<?=$wancfg['descr'] . "GW"?>" /></td>
+																				<td width="22%"><?=gettext("Gateway Name:"); ?></td><td width="78%" class="vtable"><input class="form-control" type="text" id="name" name="name" value="<?=$wancfg['descr'] . "GW"?>" /></td>
 																			</tr>
 																			<tr>
-																				<td width="22%"><?=gettext("Gateway IPv4:"); ?></td><td width="78%" class="vtable"><input class="form-control" id="gatewayip" name="gatewayip" /></td>
+																				<td width="22%"><?=gettext("Gateway IPv4:"); ?></td><td width="78%" class="vtable"><input class="form-control" type="text" id="gatewayip" name="gatewayip" /></td>
 																			</tr>
 																			<tr>
-																				<td width="22%"><?=gettext("Description:"); ?></td><td width="78%" class="vtable"><input class="form-control" id="gatewaydescr" name="gatewaydescr" /></td>
+																				<td width="22%"><?=gettext("Description:"); ?></td><td width="78%" class="vtable"><input class="form-control" type="text" id="gatewaydescr" name="gatewaydescr" /></td>
 																			</tr>
 																			<tr>
 																				<td width="22%"></td>
@@ -1813,25 +1823,35 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 														<tr>
 															<td width="22%" valign="top" class="vncellreq"><?=gettext("IPv6 address"); ?></td>
 															<td width="78%" class="vtable">
-																<input name="ipaddrv6" type="text" class="form-control unknown" id="ipaddrv6" size="28" value="<?=htmlspecialchars($pconfig['ipaddrv6']);?>" />
-																/
-																<select name="subnetv6" class="form-control" id="subnetv6">
-																	<?php
-																	for ($i = 128; $i > 0; $i--) {
-																		if($i <> 127) {
-																			echo "<option value=\"{$i}\" ";
-																			if ($i == $pconfig['subnetv6']) echo "selected=\"selected\"";
-																			echo ">" . $i . "</option>";
-																		}
-																	}
-																	?>
-																</select>
+																<table>
+																	<tr>
+																		<td width="257px">
+																			<input name="ipaddrv6" type="text" class="form-control unknown" id="ipaddrv6" size="28" value="<?=htmlspecialchars($pconfig['ipaddrv6']);?>" />
+																		</td>
+																		<td width="20px" align="middle">
+																		/
+																		</td>
+																		<td>
+																			<select name="subnetv6" class="selectpicker" data-style="btn-default" data-width="auto" id="subnetv6">
+																				<?php
+																				for ($i = 128; $i > 0; $i--) {
+																					if($i <> 127) {
+																						echo "<option value=\"{$i}\" ";
+																						if ($i == $pconfig['subnetv6']) echo "selected=\"selected\"";
+																						echo ">" . $i . "</option>";
+																					}
+																				}
+																				?>
+																			</select>
+																		</td>
+																	</tr>
+																</table>
 															</td>
 														</tr>
 														<tr>
 															<td width="22%" valign="top" class="vncell"><?=gettext("IPv6 Upstream Gateway"); ?></td>
 															<td width="78%" class="vtable">
-																<select name="gatewayv6" class="form-control" id="gatewayv6">
+																<select name="gatewayv6" class="selectpicker" data-style="btn-default" id="gatewayv6">
 																	<option value="none" selected="selected"><?=gettext("None"); ?></option>
 																		<?php
 																		if(count($a_gateways) > 0) {
@@ -1873,13 +1893,13 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																				<td width="22%"><?=gettext("Default v6 gateway:"); ?></td><td width="78%"><input type="checkbox" id="defaultgwv6" name="defaultgwv6"<?=$checked?> /></td>
 																			</tr>
 																			<tr>
-																				<td width="22%"><?=gettext("Gateway Name IPv6:"); ?></td><td width="78%"><input id="namev6" name="namev6" value="<?=$wancfg['descr'] . "GWv6"?>" /></td>
+																				<td width="22%"><?=gettext("Gateway Name IPv6:"); ?></td><td width="78%"><input id="namev6" type="text" name="namev6" value="<?=$wancfg['descr'] . "GWv6"?>" /></td>
 																			</tr>
 																			<tr>
-																				<td width="22%"><?=gettext("Gateway IPv6:"); ?></td><td width="78%"><input id="gatewayipv6" name="gatewayipv6" /></td>
+																				<td width="22%"><?=gettext("Gateway IPv6:"); ?></td><td width="78%"><input id="gatewayipv6" type="text" name="gatewayipv6" /></td>
 																			</tr>
 																			<tr>
-																				<td width="22%"><?=gettext("Description:"); ?></td><td width="78%"><input id="gatewaydescrv6" name="gatewaydescrv6" /></td>
+																				<td width="22%"><?=gettext("Description:"); ?></td><td width="78%"><input id="gatewaydescrv6" type="text" name="gatewaydescrv6" /></td>
 																			</tr>
 																			<tr>
 																				<td width="22%"></td>
@@ -1938,7 +1958,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 															<td width="22%" valign="top" class="vncell"><?=gettext("Alias IPv4 address"); ?></td>
 															<td width="78%" class="vtable">
 																<input name="alias-address" type="text" class="form-control unknown" id="alias-address" size="20" value="<?=htmlspecialchars($pconfig['alias-address']);?>" />
-																<select name="alias-subnet" class="form-control" id="alias-subnet">
+																<select name="alias-subnet" class="selectpicker" data-style="btn-default" id="alias-subnet">
 																	<?php
 																	for ($i = 32; $i > 0; $i--) {
 																		if($i <> 31) {
@@ -2159,7 +2179,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 														<tr style='display:none' id="basicdhcp6_show_dhcp6_prefix_delegation_size">
 															<td width="22%" valign="top" class="vncell"><?=gettext("DHCPv6 Prefix Delegation size"); ?></td>
 															<td width="78%" class="vtable">
-																<select name="dhcp6-ia-pd-len" class="form-control" id="dhcp6-ia-pd-len">
+																<select name="dhcp6-ia-pd-len" class="selectpicker" data-style="btn-default" id="dhcp6-ia-pd-len">
 																	<?php
 																	$sizes = array("none" => "None", 16 => "48", 12 => "52", 8 => "56", 4 => "60", 2 => "62", 1 => "63", 0 => "64");
 																	foreach($sizes as $bits => $length) {
@@ -2411,7 +2431,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 														<tr>
 															<td width="22%" valign="top" class="vncell"><?=gettext("6RD IPv4 Prefix length"); ?></td>
 															<td width="78%" class="vtable">
-																<select name="prefix-6rd-v4plen" class="form-control" id="prefix-6rd-v4plen">
+																<select name="prefix-6rd-v4plen" class="selectpicker" data-style="btn-default" id="prefix-6rd-v4plen">
 																	<?php
 																	for ($i = 0; $i < 32; $i++) {
 																		echo "<option value=\"{$i}\" ";
@@ -2439,7 +2459,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 														<tr>
 															<td width="22%" valign="top" class="vncell"><?=gettext("IPv6 Interface"); ?></td>
 															<td width="78%" class="vtable">
-															<select name='track6-interface' class='form-control' >
+															<select name='track6-interface' class='selectpicker' data-style='btn-default' >
 															<?php
 																$interfaces = get_configured_interface_with_descr(false, true);
 																$dynv6ifs = array();
@@ -2504,7 +2524,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																	<tr id="trcountry">
 																		<td><?=gettext("Country:"); ?> </td>
 																		<td>
-																			<select class="form-control" name="country" id="country" onchange="providers_list()">
+																			<select class="selectpicker" data-style="btn-default" name="country" id="country" onchange="providers_list()">
 																				<option></option>
 																			</select>
 																		</td>
@@ -2512,7 +2532,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																	<tr id="trprovider" style="display:none">
 																		<td><?=gettext("Provider:"); ?> &nbsp;&nbsp;</td>
 																		<td>
-																			<select class="form-control" name="provider_list" id="provider_list" onchange="providerplan_list()">
+																			<select class="selectpicker" data-style="btn-default" name="provider_list" id="provider_list" onchange="providerplan_list()">
 																				<option></option>
 																			</select>
 																		</td>
@@ -2520,7 +2540,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																	<tr id="trproviderplan" style="display:none">
 																		<td><?=gettext("Plan:"); ?> &nbsp;&nbsp;</td>
 																		<td>
-																			<select class="form-control" name="providerplan" id="providerplan" onchange="prefill_provider()">
+																			<select class="selectpicker" data-style="btn-default" name="providerplan" id="providerplan" onchange="prefill_provider()">
 																				<option></option>
 																			</select>
 																		</td>
@@ -2556,7 +2576,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 														<tr id="interface" >
 															<td width="22%" valign="top" class="vncellreq"><?=gettext("Modem Port"); ?></td>
 															<td width="78%" class="vtable">
-																<select name="port" id="port" class="form-control">
+																<select name="port" id="port" class="selectpicker" data-style="btn-default">
 																<?php
 																	$portlist = glob("/dev/cua*");
 																	$modems = glob("/dev/modem*");
@@ -2642,7 +2662,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																	<tr>
 																		<td align="left" valign="top">
 																			<p style="margin: 4px; padding: 4px 0 4px 0; width: 94%;">
-																			<select style="vertical-align:top" id="reset_type" name="pppoe-reset-type" class="form-control" onchange="show_reset_settings(this.value);">
+																			<select style="vertical-align:top" id="reset_type" name="pppoe-reset-type" class="selectpicker" data-style="btn-default" onchange="show_reset_settings(this.value);">
 																				<option value=""><?=gettext("Disabled"); ?></option>
 																				<option value="custom" <?php if ($pconfig['pppoe-reset-type'] == "custom") echo "selected=\"selected\""; ?>><?=gettext("Custom"); ?></option>
 																				<option value="preset" <?php if ($pconfig['pppoe-reset-type'] == "preset") echo "selected=\"selected\""; ?>><?=gettext("Pre-Set"); ?></option>
@@ -2729,7 +2749,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 															<td width="78%" class="vtable">
 																<input name="pptp_local" type="text" class="form-control unknown" id="pptp_local" size="20"  value="<?=htmlspecialchars($pconfig['pptp_local'][0]);?>" />
 																/
-																<select name="pptp_subnet" class="form-control" id="pptp_subnet">
+																<select name="pptp_subnet" class="selectpicker" data-style="btn-default" id="pptp_subnet">
 																	<?php for ($i = 31; $i > 0; $i--): ?>
 																		<option value="<?=$i;?>" <?php if ($i == $pconfig['pptp_subnet'][0]) echo "selected=\"selected\""; ?>>
 																			<?=$i;?></option>
@@ -2794,7 +2814,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncellreq"><?=gettext("Standard"); ?></td>
 												<td class="vtable">
-												<select name="standard" class="form-control" id="standard">
+												<select name="standard" class="selectpicker" data-style="btn-default" id="standard">
 													<?php
 													$rowIndex = 0;
 													foreach($wl_modes as $wl_standard => $wl_channels) {
@@ -2814,7 +2834,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncellreq">802.11g OFDM <?=gettext("Protection Mode"); ?></td>
 												<td class="vtable">
-													<select name="protmode" class="form-control" id="protmode">
+													<select name="protmode" class="selectpicker" data-style="btn-default" id="protmode">
 														<option <?php if ($pconfig['protmode'] == 'off') echo "selected=\"selected\"";?> value="off"><?=gettext("Protection mode off"); ?></option>
 														<option <?php if ($pconfig['protmode'] == 'cts') echo "selected=\"selected\"";?> value="cts"><?=gettext("Protection mode CTS to self"); ?></option>
 														<option <?php if ($pconfig['protmode'] == 'rtscts') echo "selected=\"selected\"";?> value="rtscts"><?=gettext("Protection mode RTS and CTS"); ?></option>
@@ -2830,7 +2850,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncellreq"><?=gettext("Transmit power"); ?></td>
 												<td class="vtable">
-													<select name="txpower" class="form-control" id="txpower">
+													<select name="txpower" class="selectpicker" data-style="btn-default" id="txpower">
 														<?
 														for($x = 99; $x > 0; $x--) {
 															if($pconfig["txpower"] == $x)
@@ -2847,7 +2867,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncellreq"><?=gettext("Channel"); ?></td>
 												<td class="vtable">
-													<select name="channel" class="form-control" id="channel">
+													<select name="channel" class="selectpicker" data-style="btn-default" id="channel">
 														<option <?php if ($pconfig['channel'] == 0) echo "selected=\"selected\""; ?> value="0"><?=gettext("Auto"); ?></option>
 														<?php
 														foreach($wl_modes as $wl_standard => $wl_channels) {
@@ -2882,7 +2902,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 															<?php if (isset($wl_sysctl["{$wl_sysctl_prefix}.diversity"])): ?>
 															<td>
 																<?=gettext("Diversity"); ?><br />
-																<select name="diversity" class="form-control" id="diversity">
+																<select name="diversity" class="selectpicker" data-style="btn-default" id="diversity">
 																	<option <?php if (!isset($pconfig['diversity'])) echo "selected=\"selected\""; ?> value=""><?=gettext("Default"); ?></option>
 																	<option <?php if ($pconfig['diversity'] === '0') echo "selected=\"selected\""; ?> value="0"><?=gettext("Off"); ?></option>
 																	<option <?php if ($pconfig['diversity'] === '1') echo "selected=\"selected\""; ?> value="1"><?=gettext("On"); ?></option>
@@ -2893,7 +2913,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 															<?php if (isset($wl_sysctl["{$wl_sysctl_prefix}.txantenna"])): ?>
 															<td>
 																<?=gettext("Transmit antenna"); ?><br />
-																<select name="txantenna" class="form-control" id="txantenna">
+																<select name="txantenna" class="selectpicker" data-style="btn-default" id="txantenna">
 																	<option <?php if (!isset($pconfig['txantenna'])) echo "selected=\"selected\""; ?> value=""><?=gettext("Default"); ?></option>
 																	<option <?php if ($pconfig['txantenna'] === '0') echo "selected=\"selected\""; ?> value="0"><?=gettext("Auto"); ?></option>
 																	<option <?php if ($pconfig['txantenna'] === '1') echo "selected=\"selected\""; ?> value="1"><?=gettext("#1"); ?></option>
@@ -2905,7 +2925,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 															<?php if (isset($wl_sysctl["{$wl_sysctl_prefix}.rxantenna"])): ?>
 															<td>
 																<?=gettext("Receive antenna"); ?><br />
-																<select name="rxantenna" class="form-control" id="rxantenna">
+																<select name="rxantenna" class="selectpicker" data-style="btn-default" id="rxantenna">
 																	<option <?php if (!isset($pconfig['rxantenna'])) echo "selected=\"selected\""; ?> value=""><?=gettext("Default"); ?></option>
 																	<option <?php if ($pconfig['rxantenna'] === '0') echo "selected=\"selected\""; ?> value="0"><?=gettext("Auto"); ?></option>
 																	<option <?php if ($pconfig['rxantenna'] === '1') echo "selected=\"selected\""; ?> value="1"><?=gettext("#1"); ?></option>
@@ -2935,7 +2955,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 												<td valign="top" class="vncell"><?=gettext("Regulatory settings"); ?></td>
 												<td class="vtable">
 													<?=gettext("Regulatory domain"); ?><br />
-													<select name="regdomain" class="form-control" id="regdomain">
+													<select name="regdomain" class="selectpicker" data-style="btn-default" id="regdomain">
 														<option <?php if (empty($pconfig['regdomain'])) echo "selected=\"selected\""; ?> value=""><?=gettext("Default"); ?></option>
 														<?php
 														foreach($wl_regdomains as $wl_regdomain_key => $wl_regdomain) {
@@ -2951,7 +2971,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 													<?=gettext("Note: Some cards have a default that is not recognized and require changing the regulatory domain to one in this list for the changes to other regulatory settings to work."); ?>
 													<br /><br />
 													<?=gettext("Country (listed with country code and regulatory domain)"); ?><br />
-													<select name="regcountry" class="form-control" id="regcountry">
+													<select name="regcountry" class="selectpicker" data-style="btn-default" id="regcountry">
 														<option <?php if (empty($pconfig['regcountry'])) echo "selected=\"selected\""; ?> value=""><?=gettext("Default"); ?></option>
 														<?php
 														foreach($wl_countries as $wl_country_key => $wl_country) {
@@ -2967,7 +2987,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 													<?=gettext("Note: Any country setting other than \"Default\" will override the regulatory domain setting"); ?>.
 													<br /><br />
 													<?=gettext("Location"); ?><br />
-													<select name="reglocation" class="form-control" id="reglocation">
+													<select name="reglocation" class="selectpicker" data-style="btn-default" id="reglocation">
 														<option <?php if (empty($pconfig['reglocation'])) echo "selected=\"selected\""; ?> value=""><?=gettext("Default"); ?></option>
 														<option <?php if ($pconfig['reglocation'] == 'indoor') echo "selected=\"selected\""; ?> value="indoor"><?=gettext("Indoor"); ?></option>
 														<option <?php if ($pconfig['reglocation'] == 'outdoor') echo "selected=\"selected\""; ?> value="outdoor"><?=gettext("Outdoor"); ?></option>
@@ -2988,7 +3008,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncellreq"><?=gettext("Mode"); ?></td>
 												<td class="vtable">
-													<select name="mode" class="form-control" id="mode">
+													<select name="mode" class="selectpicker" data-style="btn-default" id="mode">
 														<option <?php if ($pconfig['mode'] == 'bss') echo "selected=\"selected\"";?> value="bss"><?=gettext("Infrastructure (BSS)"); ?></option>
 														<option <?php if ($pconfig['mode'] == 'adhoc') echo "selected=\"selected\"";?> value="adhoc"><?=gettext("Ad-hoc (IBSS)"); ?></option>
 														<option <?php if ($pconfig['mode'] == 'hostap') echo "selected=\"selected\"";?> value="hostap"><?=gettext("Access Point"); ?></option>
@@ -3007,7 +3027,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncell"><?=gettext("Minimum wireless standard"); ?></td>
 												<td class="vtable">
-													<select name="puremode" class="form-control" id="puremode">
+													<select name="puremode" class="selectpicker" data-style="btn-default" id="puremode">
 														<option <?php if ($pconfig['puremode'] == 'any') echo "selected=\"selected\"";?> value="any"><?=gettext("Any"); ?></option>
 														<?php if (isset($wl_modes['11g'])): ?>
 														<option <?php if ($pconfig['puremode'] == '11g') echo "selected=\"selected\"";?> value="11g"><?=gettext("802.11g"); ?></option>
@@ -3131,7 +3151,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncell"><?=gettext("WPA Mode"); ?></td>
 												<td class="vtable">
-													<select name="wpa_mode" class="form-control" id="wpa_mode">
+													<select name="wpa_mode" class="selectpicker" data-style="btn-default" id="wpa_mode">
 														<option <?php if ($pconfig['wpa_mode'] == '1') echo "selected=\"selected\"";?> value="1"><?=gettext("WPA"); ?></option>
 														<option <?php if ($pconfig['wpa_mode'] == '2') echo "selected=\"selected\"";?> value="2"><?=gettext("WPA2"); ?></option>
 														<option <?php if ($pconfig['wpa_mode'] == '3') echo "selected=\"selected\"";?> value="3"><?=gettext("Both"); ?></option>
@@ -3141,7 +3161,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncell"><?=gettext("WPA Key Management Mode"); ?></td>
 												<td class="vtable">
-													<select name="wpa_key_mgmt" class="form-control" id="wpa_key_mgmt">
+													<select name="wpa_key_mgmt" class="selectpicker" data-style="btn-default" id="wpa_key_mgmt">
 														<option <?php if ($pconfig['wpa_key_mgmt'] == 'WPA-PSK') echo "selected=\"selected\"";?> value="WPA-PSK"><?=gettext("Pre-Shared Key"); ?></option>
 														<option <?php if ($pconfig['wpa_key_mgmt'] == 'WPA-EAP') echo "selected=\"selected\"";?> value="WPA-EAP"><?=gettext("Extensible Authentication Protocol"); ?></option>
 														<option <?php if ($pconfig['wpa_key_mgmt'] == 'WPA-PSK WPA-EAP') echo "selected=\"selected\"";?> value="WPA-PSK WPA-EAP"><?=gettext("Both"); ?></option>
@@ -3151,7 +3171,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncell"><?=gettext("Authentication"); ?></td>
 												<td class="vtable">
-													<select name="auth_algs" class="form-control" id="auth_algs">
+													<select name="auth_algs" class="selectpicker" data-style="btn-default" id="auth_algs">
 														<option <?php if ($pconfig['auth_algs'] == '1') echo "selected=\"selected\"";?> value="1"><?=gettext("Open System Authentication"); ?></option>
 														<option <?php if ($pconfig['auth_algs'] == '2') echo "selected=\"selected\"";?> value="2"><?=gettext("Shared Key Authentication"); ?></option>
 														<option <?php if ($pconfig['auth_algs'] == '3') echo "selected=\"selected\"";?> value="3"><?=gettext("Both"); ?></option>
@@ -3162,7 +3182,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 											<tr>
 												<td valign="top" class="vncell"><?=gettext("WPA Pairwise"); ?></td>
 												<td class="vtable">
-													<select name="wpa_pairwise" class="form-control" id="wpa_pairwise">
+													<select name="wpa_pairwise" class="selectpicker" data-style="btn-default" id="wpa_pairwise">
 														<option <?php if ($pconfig['wpa_pairwise'] == 'CCMP TKIP') echo "selected=\"selected\"";?> value="CCMP TKIP"><?=gettext("Both"); ?></option>
 														<option <?php if ($pconfig['wpa_pairwise'] == 'CCMP') echo "selected=\"selected\"";?> value="CCMP"><?=gettext("AES (recommended)"); ?></option>
 														<option <?php if ($pconfig['wpa_pairwise'] == 'TKIP') echo "selected=\"selected\"";?> value="TKIP"><?=gettext("TKIP"); ?></option>
@@ -3318,7 +3338,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 		function show_add_gateway() {
 			document.getElementById("addgateway").style.display = '';
 			document.getElementById("addgwbox").style.display = 'none';
-			document.getElementById("gateway").style.display = 'none';
+			jQuery('#gateway').selectpicker('hide');
 			document.getElementById("save").style.display = 'none';
 			document.getElementById("cancel").style.display = 'none';
 			document.getElementById("gwsave").style.display = '';
@@ -3328,7 +3348,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 		function show_add_gateway_v6() {
 			document.getElementById("addgatewayv6").style.display = '';
 			document.getElementById("addgwboxv6").style.display = 'none';
-			document.getElementById("gatewayv6").style.display = 'none';
+			jQuery('#gatewayv6').selectpicker('hide');
 			document.getElementById("save").style.display = 'none';
 			document.getElementById("cancel").style.display = 'none';
 			document.getElementById("gwsave").style.display = '';
@@ -3338,7 +3358,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 		function hide_add_gateway() {
 			document.getElementById("addgateway").style.display = 'none';
 			document.getElementById("addgwbox").style.display = '';
-			document.getElementById("gateway").style.display = '';
+			jQuery('#gateway').selectpicker('show');
 			document.getElementById("save").style.display = '';
 			document.getElementById("cancel").style.display = '';
 			document.getElementById("gwsave").style.display = '';
@@ -3348,7 +3368,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 		function hide_add_gateway_v6() {
 			document.getElementById("addgatewayv6").style.display = 'none';
 			document.getElementById("addgwboxv6").style.display = '';
-			document.getElementById("gatewayv6").style.display = '';
+			jQuery('#gatewayv6').selectpicker('show');
 			document.getElementById("save").style.display = '';
 			document.getElementById("cancel").style.display = '';
 			document.getElementById("gwsave").style.display = '';
@@ -3357,7 +3377,6 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 		}
 		function hide_add_gatewaysave() {
 			document.getElementById("addgateway").style.display = 'none';
-			jQuery('#status').html('<img src="/themes/<?=$g['theme'];?>/images/misc/loader.gif" alt="loader" /> One moment please...');
 			var iface = jQuery('#if').val();
 			name = jQuery('#name').val();
 			var descr = jQuery('#gatewaydescr').val();
@@ -3379,7 +3398,6 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 		}
 		function hide_add_gatewaysave_v6() {
 			document.getElementById("addgatewayv6").style.display = 'none';
-			jQuery('#statusv6').html('<img src="/themes/<?=$g['theme'];?>/images/misc/loader.gif" alt="loader" /> One moment please...');
 			var iface = jQuery('#if').val();
 			name = jQuery('#namev6').val();
 			var descr = jQuery('#gatewaydescrv6').val();
@@ -3438,9 +3456,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 				hide_add_gateway();
 				var gwtext = escape(name) + " - " + gatewayip;
 				addOption(jQuery('#gateway'), gwtext, name);
-				// Auto submit form?
-				//document.iform.submit();
-				//jQuery('#status').html('<img src="/themes/<?=$g['theme'];?>/images/misc/loader.gif" alt="loader /">');
+				jQuery('#gateway').selectpicker('refresh');
 			} else {
 				report_failure();
 			}
@@ -3456,9 +3472,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 				hide_add_gateway_v6();
 				var gwtext_v6 = escape(name) + " - " + gatewayip;
 				addOption_v6(jQuery('#gatewayv6'), gwtext_v6, name);
-				// Auto submit form?
-				//document.iform.submit();
-				//jQuery('#statusv6').html('<img src="/themes/<?=$g['theme'];?>/images/misc/loader.gif" alt="loader" />');
+				jQuery('#gateway6').selectpicker('refresh');
 			} else {
 				report_failure_v6();
 			}

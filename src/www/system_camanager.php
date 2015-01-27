@@ -381,7 +381,7 @@ function method_change() {
 						<tr>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Method");?></td>
 							<td width="78%" class="vtable">
-								<select name='method' id='method' class="formselect selectpicker" data-style="btn-default" onchange='method_change()'>
+								<select name='method' id='method' class="selectpicker" data-style="btn-default" onchange='method_change()'>
 								<?php
 									foreach($ca_methods as $method => $desc):
 									$selected = "";
@@ -447,7 +447,7 @@ function method_change() {
 						<tr id='intermediate'>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Signing Certificate Authority");?></td>
 							<td width="78%" class="vtable">
-                                    <select name='caref' id='caref' class="formselect" onchange='internalca_change()'>
+                                    <select name='caref' id='caref' class="selectpicker" onchange='internalca_change()'>
                                     <?php
                                             foreach( $a_ca as $ca):
                                             if (!$ca['prv'])
@@ -464,7 +464,7 @@ function method_change() {
 						<tr>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Key length");?></td>
 							<td width="78%" class="vtable">
-								<select name='keylen' id='keylen' class="formselect">
+								<select name='keylen' id='keylen' class="selectpicker">
 								<?php
 									foreach( $ca_keylens as $len):
 									$selected = "";
@@ -480,7 +480,7 @@ function method_change() {
 						<tr>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Digest Algorithm");?></td>
 							<td width="78%" class="vtable">
-								<select name='digest_alg' id='digest_alg' class="formselect">
+								<select name='digest_alg' id='digest_alg' class="selectpicker">
 								<?php
 									foreach( $openssl_digest_algs as $digest_alg):
 									$selected = "";
@@ -507,7 +507,7 @@ function method_change() {
 									<tr>
 										<td align="right"><?=gettext("Country Code");?> : &nbsp;</td>
 										<td align="left">
-											<select name='dn_country' class="formselect">
+											<select name='dn_country' class="selectpicker">
 											<?php
 											foreach( $dn_cc as $cc){
 												$selected = "";
@@ -526,7 +526,7 @@ function method_change() {
 											&nbsp;
 											<em><?=gettext("ex:");?></em>
 											&nbsp;
-											<?=gettext("Texas");?>
+											<?=gettext("Saksen");?>
 										</td>
 									</tr>
 									<tr>
@@ -536,7 +536,7 @@ function method_change() {
 											&nbsp;
 											<em><?=gettext("ex:");?></em>
 											&nbsp;
-											<?=gettext("Austin");?>
+											<?=gettext("Leipzig");?>
 										</td>
 									</tr>
 									<tr>
@@ -546,7 +546,7 @@ function method_change() {
 											&nbsp;
 											<em><?=gettext("ex:");?></em>
 											&nbsp;
-											<?=gettext("My Company Inc.");?>
+											<?=gettext("My Company Inc");?>
 										</td>
 									</tr>
 									<tr>

@@ -270,13 +270,11 @@ function show_source_port_range() {
 				    <div class="content-box-main">
 
 						<form action="interfaces_bridge_edit.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Member interfaces"); ?></td>
 						                  <td width="78%" class="vtable">
-										  <select name="members[]" multiple="multiple" class="form-control" size="3">
+										  <select name="members[]" multiple="multiple" class="selectpicker" size="3" data-live-search="true">
 						                      <?php
 												$members_array = explode(',', $pconfig['members']);
 												foreach ($ifacelist as $ifn => $ifinfo) {
@@ -310,10 +308,10 @@ function show_source_port_range() {
 											<input type="checkbox" name="enablestp" id="enablestp" <?php if ($pconfig['enablestp']) echo "checked=\"checked\"";?> />
 											<span class="vexpl"><strong><?=gettext("Enable spanning tree options for this bridge."); ?> </strong></span>
 											<br /><br />
-											<table id="stpoptions" border="0" cellpadding="6" cellspacing="0" summary="protocol">
+											<table id="stpoptions" border="0" cellpadding="6" cellspacing="0" summary="protocol" class="table table-striped">
 											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Protocol"); ?></td>
 											<td class="vtable" width="80%">
-											<select name="proto" id="proto">
+											<select name="proto" id="proto" class="selectpicker">
 												<?php
 													foreach (array("rstp", "stp") as $proto) {
 														echo "<option value=\"{$proto}\"";
@@ -328,7 +326,7 @@ function show_source_port_range() {
 											</tr>
 											<tr> <td valign="top" class="vncell" width="20%"><?=gettext("STP interfaces"); ?></td>
 											<td class="vtable" width="80%">
-											<select name="stp[]" class="form-control" multiple="multiple" size="3">
+											<select name="stp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 												<?php
 													foreach ($ifacelist as $ifn => $ifdescr) {
 														echo "<option value=\"{$ifn}\"";
@@ -395,7 +393,7 @@ function show_source_port_range() {
 											</td></tr>
 											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Priority"); ?></td>
 											<td class="vtable" width="80%">
-											<table summary="priority">
+											<table summary="priority" class="table table-striped">
 											<?php foreach ($ifacelist as $ifn => $ifdescr)
 													echo "<tr><td>{$ifdescr}</td><td><input size=\"5\" name=\"{$ifn}\" type=\"text\" class=\"form-control unkown\" id=\"{$ifn}\" value=\"{$ifpriority[$ifn]}\" /></td></tr>";
 											?>
@@ -409,7 +407,7 @@ function show_source_port_range() {
 											</td></tr>
 											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Path cost"); ?></td>
 											<td class="vtable" width="80%">
-											<table summary="path cost">
+											<table summary="path cost" class="table table-striped">
 											<?php $i = 0; foreach ($ifacelist as $ifn => $ifdescr)
 													echo "<tr><td>{$ifdescr}</td><td><input size=\"8\" name=\"{$ifn}{$i}\" type=\"text\" class=\"form-control unkown\" id=\"{$ifn}{$i}\" value=\"{$ifpathcost[$ifn]}\" /></td></tr>";
 											?>
@@ -449,7 +447,7 @@ function show_source_port_range() {
 						                <tr style="display:none" id="sprtable4">
 						                  <td valign="top" class="vncell"><?=gettext("Span port"); ?></td>
 											<td class="vtable">
-											<select name="span" class="form-control" id="span">
+											<select name="span" class="selectpicker" id="span" data-live-search="true">
 												<option value="none" selected="selected"><?=gettext("None"); ?></option>
 												<?php
 													foreach ($ifacelist as $ifn => $ifdescr) {
@@ -477,7 +475,7 @@ function show_source_port_range() {
 						                <tr style="display:none" id="sprtable5">
 						                  <td valign="top" class="vncell"><?=gettext("Edge ports"); ?></td>
 						                  <td class="vtable">
-											<select name="edge[]" class="form-control" multiple="multiple" size="3">
+											<select name="edge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 												<?php
 													foreach ($ifacelist as $ifn => $ifdescr) {
 														echo "<option value=\"{$ifn}\"";
@@ -497,7 +495,7 @@ function show_source_port_range() {
 						                <tr style="display:none" id="sprtable6">
 						                  <td valign="top" class="vncell"><?=gettext("Auto Edge ports"); ?></td>
 						                  <td class="vtable">
-											<select name="autoedge[]" class="form-control" multiple="multiple" size="3">
+											<select name="autoedge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 												<?php
 													foreach ($ifacelist as $ifn => $ifdescr) {
 														echo "<option value=\"{$ifn}\"";
@@ -520,7 +518,7 @@ function show_source_port_range() {
 						                <tr style="display:none" id="sprtable7">
 						                  <td valign="top" class="vncell"><?=gettext("PTP ports"); ?></td>
 						                  <td class="vtable">
-											<select name="ptp[]" class="form-control" multiple="multiple" size="3">
+											<select name="ptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 												<?php
 													foreach ($ifacelist as $ifn => $ifdescr) {
 														echo "<option value=\"{$ifn}\"";
@@ -540,7 +538,7 @@ function show_source_port_range() {
 						                <tr style="display:none" id="sprtable8">
 						                  <td valign="top" class="vncell"><?=gettext("Auto PTP ports"); ?></td>
 						                  <td class="vtable">
-											<select name="autoptp[]" class="form-control" multiple="multiple" size="3">
+											<select name="autoptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 												<?php
 													foreach ($ifacelist as $ifn => $ifdescr) {
 														echo "<option value=\"{$ifn}\"";
@@ -564,7 +562,7 @@ function show_source_port_range() {
 						                <tr style="display:none" id="sprtable9">
 						                  <td valign="top" class="vncell"><?=gettext("Sticky ports"); ?></td>
 						                  <td class="vtable">
-											<select name="static[]" class="form-control" multiple="multiple" size="3">
+											<select name="static[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 												<?php
 													foreach ($ifacelist as $ifn => $ifdescr) {
 														echo "<option value=\"{$ifn}\"";
@@ -585,7 +583,7 @@ function show_source_port_range() {
 						                <tr style="display:none" id="sprtable10">
 						                  <td valign="top" class="vncell"><?=gettext("Private ports"); ?></td>
 						                  <td class="vtable">
-											<select name="private[]" class="form-control" multiple="multiple" size="3">
+											<select name="private[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 												<?php
 													foreach ($ifacelist as $ifn => $ifdescr) {
 														echo "<option value=\"{$ifn}\"";
@@ -613,7 +611,6 @@ function show_source_port_range() {
 						                  </td>
 						                </tr>
 						              </table>
-		                        </div>
 						</form>
 				    </div>
 				</div>

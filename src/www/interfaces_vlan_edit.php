@@ -170,7 +170,7 @@ include("head.inc");
 										<tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Parent interface");?></td>
 						                  <td width="78%" class="vtable">
-						                    <select name="if" class="form-control">
+						                    <select name="if" class="selectpicker">
 						                      <?php
 											  foreach ($portlist as $ifn => $ifinfo)
 												if (is_jumbo_capable($ifn)) {

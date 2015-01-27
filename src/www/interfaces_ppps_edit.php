@@ -409,13 +409,11 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 				    <div class="content-box-main">
 
 						<form action="interfaces_ppps_edit.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
 											<td valign="middle" class="vncell"><strong><?= gettext("Link Type"); ?></strong></td>
 											<td class="vtable">
-												<select name="type" onchange="updateType(this.value);" class="form-control" id="type">
+												<select name="type" onchange="updateType(this.value);" class="selectpicker" id="type">
 												<?php
 													foreach ($types as $key => $opt) {
 														echo "<option onclick=\"updateType('{$key}');\"";
@@ -491,7 +489,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 										<tr style="display:none" name="ppp_provider" id="ppp_provider">
 											<td width="22%" valign="top" class="vncell"><?= gettext("Service Provider"); ?></td>
 											<td width="78%" class="vtable">
-												<table border="0" cellpadding="0" cellspacing="0" summary="service provider">
+												<table border="0" cellpadding="0" cellspacing="0" summary="service provider" class="table table-striped">
 													<tr id="trcountry" style="display:none">
 														<td width="25%"><?= gettext("Country:"); ?> &nbsp;&nbsp;</td>
 														<td>
@@ -549,7 +547,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 
 										<tr style="display:none" name="ppp" id="ppp">
 											<td colspan="2" style="padding:0px;">
-												<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="advanced">
+												<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="advanced" class="table table-striped">
 													<tr style="display:none" id="advanced_<?=$k;?>" name="advanced_<?=$k;$k++;?>">
 														<td width="22%" valign="top" class="vncell"><?= gettext("APN number (optional)"); ?></td>
 														<td width="78%" class="vtable">
@@ -598,7 +596,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 										</tr>
 										<tr style="display:none" name="pppoe" id="pppoe">
 											<td colspan="2" style="padding:0px;">
-												<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="service name">
+												<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="service name" class="table table-striped">
 													<tr>
 														<td width="22%" valign="top" class="vncell"><?= gettext("Service name"); ?></td>
 														<td width="78%" class="vtable"><input name="provider" type="text" class="form-control unknown" id="provider" size="20" value="<?=htmlspecialchars($pconfig['provider']);?>" />&nbsp;&nbsp;
@@ -609,11 +607,11 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 													<tr style="display:none" id="advanced_<?=$k;?>" name="advanced_<?=$k;$k++;?>">
 														<td width="22%" valign="top" class="vncell"><?=gettext("Periodic reset");?></td>
 														<td width="78%" class="vtable">
-															<table id="presetwrap" cellspacing="0" cellpadding="0" width="100%" summary="periodic reset">
+															<table id="presetwrap" cellspacing="0" cellpadding="0" width="100%" summary="periodic reset" class="table table-striped">
 																<tr>
 																	<td align="left" valign="top">
 																		<p style="margin: 4px; padding: 4px 0 4px 0; width: 94%;">
-																		<select style="vertical-align:top" id="reset_type" name="pppoe-reset-type" class="form-control" onchange="show_reset_settings(this.value);">
+																		<select style="vertical-align:top" id="reset_type" name="pppoe-reset-type" class="selectpicker" onchange="show_reset_settings(this.value);">
 																			<option value = ""><?= gettext("Disabled"); ?></option>
 																			<option value="custom" <?php if ($pconfig['pppoe-reset-type'] == "custom") echo "selected=\"selected\""; ?>><?= gettext("Custom"); ?></option>
 																			<option value="preset" <?php if ($pconfig['pppoe-reset-type'] == "preset") echo "selected=\"selected\""; ?>><?= gettext("Pre-Set"); ?></option>
@@ -758,7 +756,7 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 										<tr style="display:none" id="link<?=$i;?>">
 											<td width="22%" valign="top" id="linklabel<?=$i;?>" class="vncell"> <?=gettext("Link Parameters");?></td>
 											<td class="vtable">
-												<table name="link_parameters" border="0" cellpadding="6" cellspacing="0" summary="link parameters">
+												<table name="link_parameters" border="0" cellpadding="6" cellspacing="0" summary="link parameters" class="table table-striped">
 													<tr>
 														<td width="22%" id="bwlabel<?=$i;?>" valign="top"class="vncell"> <?=gettext("Bandwidth");?></td>
 														<td width="78%" class="vtable">
@@ -802,7 +800,6 @@ $types = array("select" => gettext("Select"), "ppp" => "PPP", "pppoe" => "PPPoE"
 											</td>
 										</tr>
 									</table>
-		                        </div>
 						</form>
 				    </div>
 				</div>

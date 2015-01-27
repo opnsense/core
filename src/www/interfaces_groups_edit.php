@@ -200,7 +200,7 @@ var addRowTo = (function() {
         td = d.createElement("td");
         td.rowSpan = "1";
 
-        td.innerHTML = '<a onclick="removeRow(this);return false;" href="#"><img border="0" src="/themes/' + theme + '/images/icons/icon_x.gif" alt="remove" /><\/a>';
+        td.innerHTML = '<a onclick="removeRow(this);return false;" href="#"><span class="glyphicon glyphicon-remove" alt="remove"><\/span><\/a>';
         tr.appendChild(td);
         tbody.appendChild(tr);
         totalrows++;
@@ -248,8 +248,6 @@ function removeRow(el) {
 				    <div class="content-box-main">
 
 						<form action="interfaces_groups_edit.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 									  <tr>
 									    <td valign="top" class="vncellreq"><?=gettext("Group Name");?></td>
@@ -309,7 +307,7 @@ function removeRow(el) {
 									                        </select>
 										</td>
 									        <td>
-										<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="remove" /></a>
+										<a onclick="removeRow(this); return false;" href="#"><span class="glyphicon glyphicon-remove" alt="remove"></span></a>
 										      </td>
 									          </tr>
 									<?php
@@ -340,7 +338,6 @@ function removeRow(el) {
 									    </td>
 									  </tr>
 									</table>
-		                        </div>
 						</form>
 				    </div>
 				</div>

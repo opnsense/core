@@ -121,7 +121,7 @@ if ($_POST) {
 					$isfirst++;
 				}
 			} else {
-				if (preg_match("/([^0-9])+/", $_POST["members{$x}"], $match))
+				if (preg_match("/([^0-9 ])+/", $_POST["members{$x}"], $match))
 					$input_errors[] = gettext("Tags can contain only numbers or a range in format #-#.");
 
 				if ($isfirst > 0)
@@ -241,7 +241,7 @@ var addRowTo = (function() {
         td = d.createElement("td");
         td.rowSpan = "1";
 
-        td.innerHTML = '<a onclick="removeRow(this);return false;" href="#"><img border="0" src="/themes/' + theme + '/images/icons/icon_x.gif" alt="remove" /><\/a>';
+        td.innerHTML = '<a onclick="removeRow(this);return false;" href="#"><span class="glyphicon glyphicon-remove" alt="remove"><\/span><\/a>';
         tr.appendChild(td);
         tbody.appendChild(tr);
         totalrows++;
@@ -291,13 +291,11 @@ function removeRow(el) {
 				    <div class="content-box-main">
 
 						<form action="interfaces_qinq_edit.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort">
+			                <table class="table table-striped table-sort">
 									  <tr>
 									    <td width="22%" valign="top" class="vncellreq"><?=gettext("Parent interface");?></td>
 									    <td width="78%" class="vtable">
-									    <select name="if" id="if" class="formselect">
+									    <select name="if" id="if" class="selectpicker">
 									    <?php
 									        foreach ($portlist as $ifn => $ifinfo) {
 											if (is_jumbo_capable($ifn)) {
@@ -327,18 +325,6 @@ function removeRow(el) {
 									  <tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Options");?></td>
 										<td width="78%" class="vtable">
-									<?php /* ?>
-											<br />
-											<input type="checkbox" value="yes" name="autoassign" id="autoassign" <?php if ($pconfig['autoassign']) echo "checked=\"checked\""; ?> />
-											<span class="vexpl"> Auto assign interface so it can be configured with ip etc...</span>
-											<br />
-											<input type="checkbox" value="yes" name="autoenable" id="autoenable" <?php if ($pconfig['autoenable']) echo "checked=\"checked\""; ?> />
-											<span class="vexpl"> Auto enable interface so it can be used on filter rules.</span>
-											<br />
-											<input type="checkbox" value="yes" name="autoadjustmtu" id="autoadjustmtu" <?php if ($pconfig['autoadjustmtu']) echo "checked=\"checked\""; ?> />
-											<span class="vexpl"> Allows to keep clients mtu unchanged(1500). <br />NOTE: if you are using jumbo frames this option is not needed and may produce incorrect results!</span>
-									<?php */ ?>
-											<br />
 											<input name="autogroup" type="checkbox" value="yes" id="autogroup" <?php if ($pconfig['autogroup']) echo "checked=\"checked\""; ?> />
 											<span class="vexpl"><?=gettext("Adds interface to QinQ interface groups so you can write filter rules easily.");?></span>
 										</td>
@@ -357,7 +343,7 @@ function removeRow(el) {
 									    <td width="22%" valign="top" class="vncellreq"><div id="membersnetworkport"><?=gettext("Member (s)");?></div></td>
 									    <td width="78%" class="vtable">
 										<span class="vexpl">
-											<?=gettext("You can specify ranges in the input below. The format is pretty simple i.e 9-100 or 10.20...");?>
+											<?=gettext("You can specify ranges in the input below. The format is pretty simple i.e 9-100 or 10 20...");?>
 										</span>
 										<br />
 									      <table id="maintable" summary="main table">
@@ -376,10 +362,10 @@ function removeRow(el) {
 										?>
 									        <tr>
 										<td class="vtable">
-										        <input name="members<?php echo $counter; ?>" class="formselect" id="members<?php echo $counter; ?>" value="<?php echo $member;?>" />
+										        <input type="text" name="members<?php echo $counter; ?>" class="formselect" id="members<?php echo $counter; ?>" value="<?php echo $member;?>" />
 										</td>
 									        <td>
-										<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="remove" /></a>
+										<a onclick="removeRow(this); return false;" href="#"><span class="glyphicon glyphicon-remove" alt="remove"></span></a>
 										      </td>
 									          </tr>
 									<?php
@@ -405,7 +391,6 @@ function removeRow(el) {
 									    </td>
 									  </tr>
 									</table>
-		                        </div>
 						</form>
 				    </div>
 				</div>

@@ -150,9 +150,9 @@ $main_buttons = array(
 						                  </td>
 						                  <td valign="middle" class="list nowrap">
 
-							                   <a href="interfaces_bridge_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
+							                   <a href="interfaces_bridge_edit.php?id=<?=$i;?>" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit group");?>"><span class="glyphicon glyphicon-edit"></span></a>
 
-											   <a href="interfaces_bridge.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this bridge?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+											   <a href="interfaces_bridge.php?act=del&amp;id=<?=$i;?>" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete group");?>" onclick="return confirm('<?=gettext("Do you really want to delete this bridge?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
 
 							               </td>
 										</tr>

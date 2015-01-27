@@ -150,13 +150,11 @@ include("head.inc");
 				    <div class="content-box-main">
 
 						<form action="interfaces_lagg_edit.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Parent interface"); ?></td>
 						                  <td width="78%" class="vtable">
-						                    <select name="members[]" multiple="multiple" size="4" class="form-control">
+						                    <select name="members[]" multiple="multiple" size="4" class="selectpicker">
 						                      <?php
 												foreach ($portlist as $ifn => $ifinfo) {
 													if (array_key_exists($ifn, $realifchecklist))
@@ -174,7 +172,7 @@ include("head.inc");
 								<tr>
 						                  <td valign="top" class="vncellreq"><?=gettext("Lag proto"); ?></td>
 						                  <td class="vtable">
-						                    <select name="proto" class="form-control" id="proto">
+						                    <select name="proto" class="selectpicker" id="proto">
 								<?php
 								foreach ($laggprotos as $proto) {
 									echo "<option value=\"{$proto}\"";
@@ -245,7 +243,6 @@ include("head.inc");
 						                  </td>
 						                </tr>
 						              </table>
-		                        </div>
 						</form>
 				    </div>
 				</div>

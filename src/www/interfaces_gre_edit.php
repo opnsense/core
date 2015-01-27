@@ -145,13 +145,11 @@ include("head.inc");
 				    <div class="content-box-main">
 
 						<form action="interfaces_gre_edit.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Parent interface");?></td>
 						                  <td width="78%" class="vtable">
-						                    <select name="if" class="form-control">
+						                    <select name="if" class="selectpicker" data-live-search="true">
 						                      <?php
 												$portlist = get_configured_interface_with_descr();
 												$carplist = get_configured_carp_interface_list();
@@ -188,17 +186,25 @@ include("head.inc");
 										<tr>
 						                  <td valign="top" class="vncellreq"><?=gettext("GRE tunnel remote address ");?></td>
 						                  <td class="vtable">
-						                    <input name="tunnel-remote-addr" type="text" class="form-control unknown ipv4v6" id="tunnel-remote-addr" size="16" value="<?=htmlspecialchars($pconfig['tunnel-remote-addr']);?>" />
-						                    <select name="tunnel-remote-net" class="form-control ipv4v6" id="tunnel-remote-net">
-						                                        <?php
+						                    <table>
+						                    	<tr>
+						                    		<td width="285px">
+						                    			<input name="tunnel-remote-addr" type="text" class="form-control unknown ipv4v6" id="tunnel-remote-addr" size="16" value="<?=htmlspecialchars($pconfig['tunnel-remote-addr']);?>" />
+						                    		</td>
+						                    		<td>
+						                    			<select name="tunnel-remote-net" class="selectpicker ipv4v6" id="tunnel-remote-net" data-width="auto">
+					                                        <?php
 						                                        for ($i = 128; $i > 0; $i--) {
-												echo "<option value=\"{$i}\"";
-												if ($i == $pconfig['tunnel-remote-net'])
-													echo " selected=\"selected\"";
-												echo ">" . $i . "</option>";
-						                                        }
-						                                        ?>
-						                    </select>
+															echo "<option value=\"{$i}\"";
+															if ($i == $pconfig['tunnel-remote-net'])
+																echo " selected=\"selected\"";
+															echo ">" . $i . "</option>";
+									                                        }
+					                                        ?>
+									                    </select>
+									                </td>
+									            </tr>
+									        </table>
 						                    <br />
 						                    <span class="vexpl"><?=gettext("Remote GRE address endpoint. The subnet part is used for the determining the network that is tunneled.");?></span></td>
 									    </tr>
@@ -247,7 +253,6 @@ include("head.inc");
 						                  </td>
 						                </tr>
 						              </table>
-		                        </div>
 						</form>
 				    </div>
 				</div>
