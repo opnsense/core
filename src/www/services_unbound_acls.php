@@ -136,6 +136,8 @@ include("head.inc");
 
 ?>
 
+<body>
+
 <script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js"></script>
 <script type="text/javascript" src="/javascript/row_helper.js"></script>
 
@@ -154,10 +156,6 @@ include("head.inc");
 	rowsize[2] = "40";
 //]]>
 </script>
-</head>
-
-
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
@@ -191,153 +189,134 @@ include("head.inc");
 					?>
 
 					<div class="tab-content content-box col-xs-12">
-
-
 					    <form action="services_unbound_acls.php" method="post" name="iform" id="iform">
 							<?php if($act=="new" || $act=="edit"): ?>
 								<input name="aclid" type="hidden" value="<?=$id;?>" />
 								<input name="act" type="hidden" value="<?=$act;?>" />
-
-								<div class="table-responsive">
-									<table class="table table-striped">
-										<tr>
-											<td colspan="2" valign="top" class="listtopic"><?=ucwords(sprintf(gettext("%s Access List"),$act));?></td>
-										</tr>
-										<tr>
-											<td width="22%" valign="top" class="vncellreq"><?=gettext("Access List name");?></td>
-											<td width="78%" class="vtable">
-												<input name="aclname" type="text" class="formfld" id="aclname" size="30" maxlength="30" value="<?=htmlspecialchars($pconfig['aclname']);?>" />
-												<br />
-												<span class="vexpl"><?=gettext("Provide an Access List name.");?></span>
-											</td>
-										</tr>
-										<tr>
-											<td width="22%" valign="top" class="vncellreq"><?=gettext("Action");?></td>
-											<td width="78%" class="vtable">
-												<select name="aclaction" class="formselect">
-													<?php $types = explode(",", "Allow,Deny,Refuse,Allow Snoop"); foreach ($types as $type): ?>
-													<option value="<?=strtolower($type);?>" <?php if (strtolower($type) == strtolower($pconfig['aclaction'])) echo "selected=\"selected\""; ?>>
-													<?=htmlspecialchars($type);?>
-													</option>
-													<?php endforeach; ?>
-												</select>
-												<br />
-												<span class="vexpl">
+								<table class="table table-striped">
+									<tr>
+										<td colspan="2"><?=ucwords(sprintf(gettext("%s Access List"),$act));?></td>
+									</tr>
+									<tr>
+										<td width="22%"><?=gettext("Access List name");?></td>
+										<td width="78%">
+											<input name="aclname" type="text" class="formfld" id="aclname" size="30" maxlength="30" value="<?=htmlspecialchars($pconfig['aclname']);?>" />
+											<br />
+											<span><?=gettext("Provide an Access List name.");?></span>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%"><?=gettext("Action");?></td>
+										<td width="78%">
+											<select name="aclaction" class="selectpicker">
+												<?php $types = explode(",", "Allow,Deny,Refuse,Allow Snoop"); foreach ($types as $type): ?>
+												<option value="<?=strtolower($type);?>" <?php if (strtolower($type) == strtolower($pconfig['aclaction'])) echo "selected=\"selected\""; ?>>
+												<?=htmlspecialchars($type);?>
+												</option>
+												<?php endforeach; ?>
+											</select>
+											<br />
+											<span class="text-default">
 													<?=gettext("Choose what to do with DNS requests that match the criteria specified below.");?> <br />
 													<?=gettext("<b>Deny:</b> This action stops queries from hosts within the netblock defined below.");?> <br />
 													<?=gettext("<b>Refuse:</b> This action also stops queries from hosts within the netblock defined below, but sends a DNS rcode REFUSED error message back to the client.");?> <br />
 													<?=gettext("<b>Allow:</b> This action allows queries from hosts within the netblock defined below.");?> <br />
 													<?=gettext("<b>Allow Snoop:</b> This action allows recursive and nonrecursive access from hosts within the netblock defined below. Used for cache snooping and ideally should only be configured for your administrative host.");?> <br />
-												</span>
-											</td>
-										</tr>
-										<tr>
-										<td width="22%" valign="top" class="vncellreq"><?=gettext("Networks");?></td>
-										<td width="78%" class="vtable">
-											<table id="maintable" summary="networks">
-												<tbody>
+											</span>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%"><?=gettext("Networks");?></td>
+										<td width="78%">
+											<table id="maintable" summary="networks" class="table table-striped">
 													<tr>
 														<td><div id="onecolumn"><?=gettext("Network");?></div></td>
 														<td><div id="twocolumn"><?=gettext("CIDR");?></div></td>
 														<td><div id="threecolumn"><?=gettext("Description");?></div></td>
+														<td></td>
 													</tr>
-													<?php $counter = 0; ?>
-													<?php
+													<?php $counter = 0;
 														if($networkacl)
 															foreach($networkacl as $item):
-													?>
-															<?php
 																$network = $item['acl_network'];
 																$cidr = $item['mask'];
 																$description = $item['description'];
-															?>
-													<tr>
-														<td>
-															<input name="acl_network<?=$counter;?>" type="text" class="formfld unknown ipv4v6" id="acl_network<?=$counter;?>" size="30" value="<?=htmlspecialchars($network);?>" />
-														</td>
-														<td>
-															<select name="mask<?=$counter;?>" class="formselect ipv4v6" id="mask<?=$counter;?>">
-															<?php
-																for ($i = 128; $i > 0; $i--) {
-																	echo "<option value=\"$i\" ";
-																	if ($i == $cidr) echo "selected=\"selected\"";
-																	echo ">" . $i . "</option>";
-																}
-															?>
-															</select>
-														</td>
-														<td>
-															<input name="description<?=$counter;?>" type="text" class="formfld unknown" id="description<?=$counter;?>" size="40" value="<?=htmlspecialchars($description);?>" />
-														</td>
-														<td>
-															<a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
-														</td>
-													</tr>
+													?>
+														<tr>
+															<td>
+																<input name="acl_network<?=$counter;?>" type="text" class="formfld unknown ipv4v6" id="acl_network<?=$counter;?>" size="30" value="<?=htmlspecialchars($network);?>" />
+															</td>
+															<td>
+																<select name="mask<?=$counter;?>" class="formselect ipv4v6" id="mask<?=$counter;?>">
+																<?php
+																	for ($i = 128; $i > 0; $i--) {
+																		echo "<option value=\"$i\" ";
+																		if ($i == $cidr) echo "selected=\"selected\"";
+																		echo ">" . $i . "</option>";
+																	}
+																?>
+																</select>
+															</td>
+															<td>
+																<input name="description<?=$counter;?>" type="text" class="formfld unknown" id="description<?=$counter;?>" size="40" value="<?=htmlspecialchars($description);?>" />
+															</td>
+															<td>
+																<a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+															</td>
+														</tr>
 													<?php $counter++; ?>
 													<?php endforeach; ?>
-												</tbody>
 											</table>
+												<a onclick="javascript:addRowTo('maintable', 'formfldalias'); return false;" href="#" class="btn btn-default btn-xs">
+													<span class="glyphicon glyphicon-plus"></span>
+												</a>
+												<script type="text/javascript">
+												//<![CDATA[
+													field_counter_js = 3;
+													rows = 1;
+													totalrows = <?php echo $counter; ?>;
+													loaded = <?php echo $counter; ?>;
+												//]]>
+												</script>
+										</td>
+									</tr>
 
-											<a onclick="javascript:addRowTo('maintable', 'formfldalias'); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>
-											</a>
-											<script type="text/javascript">
-											//<![CDATA[
-												field_counter_js = 3;
-												rows = 1;
-												totalrows = <?php echo $counter; ?>;
-												loaded = <?php echo $counter; ?>;
-											//]]>
-											</script>
-
-											</td>
-										</tr>
-
-										<tr>
-											<td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-											<td width="78%" class="vtable">
-												<input name="description" type="text" class="formfld unknown" id="description" size="52" maxlength="52" value="<?=htmlspecialchars($pconfig['description']);?>" />
-												<br />
-												<span class="vexpl"><?=gettext("You may enter a description here for your reference.");?></span>
-											</td>
-										</tr>
-										<tr>
-											<td>&nbsp;</td>
-										</tr>
-										<tr>
-											<td width="22%" valign="top">&nbsp;</td>
-											<td width="78%">
+									<tr>
+										<td width="22%" valign="top"><?=gettext("Description");?></td>
+										<td width="78%">
+											<input name="description" type="text" class="formfld unknown" id="description" size="52" maxlength="52" value="<?=htmlspecialchars($pconfig['description']);?>" />
+											<br />
+											<span><?=gettext("You may enter a description here for your reference.");?></span>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%">&nbsp;</td>
+										<td width="78%">
 												&nbsp;<br />&nbsp;
 												<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 												<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-											</td>
-										</tr>
-									</table>
-
-								</div>
+										</td>
+									</tr>
+								</table>
 
 								<?php else: ?>
 
-								<div class="table-responsive">
-									<table class="table table-striped sortable">
+									<table class="table table-striped">
 
 										<thead>
 											<tr>
 												<td width="25%" class="listhdrr"><?=gettext("Access List Name"); ?></td>
 												<td width="25%" class="listhdrr"><?=gettext("Action"); ?></td>
-												<td width="45%" class="listhdr"><?=gettext("Description"); ?></td>
-												<td width="5%" class="list">&nbsp;</td>
+												<td width="40%" class="listhdr"><?=gettext("Description"); ?></td>
+												<td width="10%" class="list"></td>
 											</tr>
 										</thead>
+
 										<tfoot>
 											<tr>
-												<td class="list" colspan="3">&nbsp;</td>
-												<td class="list">
-													<table border="0" cellspacing="0" cellpadding="1" summary="icons">
-														<tr>
-															<td width="17">&nbsp;</td>
-															<td valign="middle"><a href="services_unbound_acls.php?act=new" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
-														</tr>
-													</table>
+												<td colspan="3"></td>
+												<td>
+													<a href="services_unbound_acls.php?act=new" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 												</td>
 											</tr>
 											<tr>
@@ -348,28 +327,23 @@ include("head.inc");
 												</td>
 											</tr>
 										</tfoot>
-										<tbody>
 										<?php
 											$i = 0;
 											foreach($a_acls as $acl):
 										?>
 											<tr ondblclick="document.location='services_unbound_acls.php?act=edit&amp;id=<?=$i;?>'">
-												<td class="listlr">
+												<td>
 													<?=htmlspecialchars($acl['aclname']);?>
 												</td>
-												<td class="listr">
+												<td>
 													<?=htmlspecialchars($acl['aclaction']);?>
 												</td>
-												<td class="listbg">
+												<td>
 													<?=htmlspecialchars($acl['description']);?>
 												</td>
-												<td valign="middle" class="list nowrap">
-													<table border="0" cellspacing="0" cellpadding="1" summary="icons">
-														<tr>
-															<td valign="middle"><a href="services_unbound_acls.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></td>
-															<td valign="middle"><a href="services_unbound_acls.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this access list?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
-														</tr>
-													</table>
+												<td>
+													<a href="services_unbound_acls.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+													<a href="services_unbound_acls.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this access list?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 												</td>
 											</tr>
 										<?php
@@ -377,12 +351,9 @@ include("head.inc");
 											endforeach;
 										?>
 										<tr style="display:none"><td></td></tr>
-										</tbody>
 									</table>
-								</div>
 								<?php endif; ?>
 					    </form>
-
 					</div>
 			    </section>
 			</div>

@@ -67,17 +67,18 @@ else
 	$pconfig['outgoing_interface'] = explode(",", $config['unbound']['outgoing_interface']);
 
 if ($_POST) {
-	$pconfig = $_POST;
 	unset($input_errors);
 
 	if ($_POST['apply']) {
 		$retval = services_unbound_configure();
 		$savemsg = get_std_save_message($retval);
-		if ($retval == 0)
+		if ($retval == 0) {
 			clear_subsystem_dirty('unbound');
+		}
 		/* Update resolv.conf in case the interface bindings exclude localhost. */
 		system_resolvconf_generate();
 	} else {
+		$pconfig = $_POST;
 		if (isset($_POST['enable']) && isset($config['dnsmasq']['enable']))
 			$input_errors[] = "The system dns-forwarder is still active. Disable it before enabling the DNS Resolver.";
 
@@ -156,6 +157,7 @@ if ($_GET['act'] == "del") {
 
 $closehead = false;
 $pgtitle = array(gettext("Services"),gettext("DNS Resolver"));
+$shortcut_section = "resolver";
 include_once("head.inc");
 
 ?>
@@ -236,7 +238,7 @@ function show_advanced_dns() {
 													?>
 													<?=gettext("Interface IPs used by the DNS Resolver for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
 													<br /><br />
-													<select id="active_interface" name="active_interface[]" multiple="multiple" size="3">
+													<select id="active_interface" name="active_interface[]" multiple="multiple" size="3" class="selectpicker" data-live-search="true">
 														<option value="" <?php if (empty($pconfig['active_interface']) || empty($pconfig['active_interface'][0])) echo 'selected="selected"'; ?>>All</option>
 														<?php
 															foreach ($interface_addresses as $laddr):
@@ -261,7 +263,7 @@ function show_advanced_dns() {
 													?>
 													<?=gettext("Utilize different network interface(s) that the DNS Resolver will use to send queries to authoritative servers and receive their replies. By default all interfaces are used.");?>
 													<br /><br />
-													<select id="outgoing_interface" name="outgoing_interface[]" multiple="multiple" size="3">
+													<select id="outgoing_interface" name="outgoing_interface[]" multiple="multiple" size="3" class="selectpicker" data-live-search="true">
 														<option value="" <?php if (empty($pconfig['outgoing_interface']) || empty($pconfig['outgoing_interface'][0])) echo 'selected="selected"'; ?>>All</option>
 														<?php
 															foreach ($interface_addresses as $laddr):
@@ -327,7 +329,7 @@ function show_advanced_dns() {
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Advanced");?></td>
 												<td width="78%" class="vtable">
 													<div id="showadvbox" <?php if ($pconfig['custom_options']) echo "style='display:none'"; ?>>
-														<input type="button" onclick="show_advanced_dns()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+														<input type="button" class="btn btn-xs btn-default" onclick="show_advanced_dns()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
 													</div>
 													<div id="showadv" <?php if (empty($pconfig['custom_options'])) echo "style='display:none'"; ?>>
 														<strong><?=gettext("Advanced");?><br /></strong>

@@ -223,10 +223,15 @@ $shortcuts['trafficshaper-limiters'] = array();
 $shortcuts['trafficshaper-limiters']['main'] = "firewall_shaper_vinterface.php";
 $shortcuts['trafficshaper-limiters']['status'] = "diag_limiter_info.php";
 
+$shortcuts['forwarder'] = array();
+$shortcuts['forwarder']['main'] = "services_dnsmasq.php";
+$shortcuts['forwarder']['log'] = "diag_logs_resolver.php";
+$shortcuts['forwarder']['service'] = "dnsmasq";
+
 $shortcuts['resolver'] = array();
-$shortcuts['resolver']['main'] = "services_dnsmasq.php";
+$shortcuts['resolver']['main'] = "services_unbound.php";
 $shortcuts['resolver']['log'] = "diag_logs_resolver.php";
-$shortcuts['resolver']['service'] = "dnsmasq";
+$shortcuts['resolver']['service'] = "unbound";
 
 $shortcuts['wireless'] = array();
 $shortcuts['wireless']['main'] = "interfaces_wireless.php";

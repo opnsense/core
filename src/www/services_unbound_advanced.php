@@ -201,7 +201,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("Message Cache Size");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="msgcachesize" name="msgcachesize">
+														<select id="msgcachesize" name="msgcachesize" class="selectpicker">
 				<?php
 														foreach (array("4", "10", "20", "50", "100", "250", "512") as $size) :
 				?>
@@ -220,7 +220,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("Outgoing TCP Buffers");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="outgoing_num_tcp" name="outgoing_num_tcp">
+														<select id="outgoing_num_tcp" name="outgoing_num_tcp" class="selectpicker">
 				<?php
 														for ($num_tcp = 0; $num_tcp <= 50; $num_tcp += 10):
 				?>
@@ -239,7 +239,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("Incoming TCP Buffers");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="incoming_num_tcp" name="incoming_num_tcp">
+														<select id="incoming_num_tcp" name="incoming_num_tcp" class="selectpicker">
 				<?php
 														for ($num_tcp = 0; $num_tcp <= 50; $num_tcp += 10):
 				?>
@@ -258,7 +258,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("EDNS Buffer Size");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="edns_buffer_size" name="edns_buffer_size">
+														<select id="edns_buffer_size" name="edns_buffer_size" class="selectpicker">
 				<?php
 														foreach (array("512", "1480", "4096") as $size) :
 				?>
@@ -277,7 +277,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("Number of queries per thread");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="num_queries_per_thread" name="num_queries_per_thread">
+														<select id="num_queries_per_thread" name="num_queries_per_thread" class="selectpicker">
 				<?php
 														foreach (array("512", "1024", "2048") as $queries) :
 				?>
@@ -296,7 +296,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("Jostle Timeout");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="jostle_timeout" name="jostle_timeout">
+														<select id="jostle_timeout" name="jostle_timeout" class="selectpicker">
 				<?php
 														foreach (array("100", "200", "500", "1000") as $timeout) :
 				?>
@@ -333,7 +333,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("TTL for Host cache entries");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="infra_host_ttl" name="infra_host_ttl">
+														<select id="infra_host_ttl" name="infra_host_ttl" class="selectpicker">
 															<option value="60"  <?php if ($pconfig['infra_host_ttl'] == "60")  echo "selected=\"selected\""; ?>>1 minute</option>
 															<option value="120" <?php if ($pconfig['infra_host_ttl'] == "120") echo "selected=\"selected\""; ?>>2 minutes</option>
 															<option value="300" <?php if ($pconfig['infra_host_ttl'] == "300") echo "selected=\"selected\""; ?>>5 minutes</option>
@@ -348,7 +348,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("TTL for lame delegation");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="infra_lame_ttl" name="infra_lame_ttl">
+														<select id="infra_lame_ttl" name="infra_lame_ttl" class="selectpicker">
 															<option value="60"  <?php if ($pconfig['infra_lame_ttl'] == "60")  echo "selected=\"selected\""; ?>>1 minute</option>
 															<option value="120" <?php if ($pconfig['infra_lame_ttl'] == "120") echo "selected=\"selected\""; ?>>2 minutes</option>
 															<option value="300" <?php if ($pconfig['infra_lame_ttl'] == "300") echo "selected=\"selected\""; ?>>5 minutes</option>
@@ -363,7 +363,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("Number of Hosts to cache");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="infra_cache_numhosts" name="infra_cache_numhosts">
+														<select id="infra_cache_numhosts" name="infra_cache_numhosts" class="selectpicker">
 															<option value="1000"  <?php if ($pconfig['infra_cache_numhosts'] == "1000")  echo "selected=\"selected\""; ?>>1000</option>
 															<option value="5000"  <?php if ($pconfig['infra_cache_numhosts'] == "5000")  echo "selected=\"selected\""; ?>>5000</option>
 															<option value="10000" <?php if ($pconfig['infra_cache_numhosts'] == "10000") echo "selected=\"selected\""; ?>>10 000</option>
@@ -378,7 +378,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("Unwanted Reply Threshold");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="unwanted_reply_threshold" name="unwanted_reply_threshold">
+														<select id="unwanted_reply_threshold" name="unwanted_reply_threshold" class="selectpicker">
 															<option value="disabled" <?php if ($pconfig['unwanted_reply_threshold'] == "disabled") echo "selected=\"selected\""; ?>>disabled</option>
 															<option value="5000000"  <?php if ($pconfig['unwanted_reply_threshold'] == "5000000")  echo "selected=\"selected\""; ?>>5 million</option>
 															<option value="10000000" <?php if ($pconfig['unwanted_reply_threshold'] == "10000000") echo "selected=\"selected\""; ?>>10 million</option>
@@ -394,7 +394,7 @@ include_once("head.inc");
 												<td width="22%" valign="top" class="vncell"><?=gettext("Log level verbosity");?></td>
 												<td width="78%" class="vtable">
 													<p>
-														<select id="log_verbosity" name="log_verbosity">
+														<select id="log_verbosity" name="log_verbosity" class="selectpicker">
 				<?php
 														for ($level = 0; $level <= 5; $level++):
 				?>

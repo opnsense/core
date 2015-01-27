@@ -28,9 +28,9 @@ var addRowTo = (function() {
 		if(typeof(rowtype[i]) == 'function') {
 			td.innerHTML="<input type='hidden' value='" + totalrows +"' name='" + rowname[i] + "_row-" + totalrows + "' />" + rowtype[i](rowname[i], rowsize[i], totalrows) + " ";
 		} else if(rowtype[i] == 'textbox') {
-			td.innerHTML="<input type='hidden' value='" + totalrows +"' name='" + rowname[i] + "_row-" + totalrows + "' /><input size='" + rowsize[i] + "' class='formfld unknown' name='" + rowname[i] + totalrows + "' id='" + rowname[i] + totalrows + "' /> ";
+			td.innerHTML="<input type='hidden' value='" + totalrows +"' name='" + rowname[i] + "_row-" + totalrows + "' /><input size='" + rowsize[i] + "' class='formfld unknown' type='text' name='" + rowname[i] + totalrows + "' id='" + rowname[i] + totalrows + "' /> ";
 		} else if(rowtype[i] == 'textbox,ipv4v6') {
-			td.innerHTML="<input type='hidden' value='" + totalrows +"' name='" + rowname[i] + "_row-" + totalrows + "' /><input size='" + rowsize[i] + "' class='formfld unknown ipv4v6' name='" + rowname[i] + totalrows + "' id='" + rowname[i] + totalrows + "' /> ";
+			td.innerHTML="<input type='hidden' value='" + totalrows +"' name='" + rowname[i] + "_row-" + totalrows + "' /><input size='" + rowsize[i] + "' class='formfld unknown ipv4v6' type='text' name='" + rowname[i] + totalrows + "' id='" + rowname[i] + totalrows + "' /> ";
 		} else if(rowtype[i] == 'password') {
 			td.innerHTML="<input type='hidden' value='" + totalrows +"' name='" + rowname[i] + "_row-" + totalrows + "' /><input type='password' size='" + rowsize[i] + "' class='formfld pwd' name='" + rowname[i] + totalrows + "' id='" + rowname[i] + totalrows + "' /> ";
 		} else if(rowtype[i] == 'select') {
