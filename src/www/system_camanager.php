@@ -1,6 +1,7 @@
 <?php
+
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2008 Shrew Soft Inc.
     All rights reserved.
 
@@ -26,8 +27,8 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
-require_once("certs.inc");
+require_once('guiconfig.inc');
+require_once('certs.inc');
 
 $ca_methods = array(
 	"existing" => gettext("Import an existing Certificate Authority"),
@@ -526,7 +527,7 @@ function method_change() {
 											&nbsp;
 											<em><?=gettext("ex:");?></em>
 											&nbsp;
-											<?=gettext("Saksen");?>
+											<?=gettext("Sachsen");?>
 										</td>
 									</tr>
 									<tr>

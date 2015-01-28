@@ -1,6 +1,7 @@
 <?php
+
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2008 Shrew Soft Inc.
     All rights reserved.
 
@@ -26,8 +27,8 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
-require_once("certs.inc");
+require_once('guiconfig.inc');
+require_once('certs.inc');
 
 $cert_methods = array(
 	"import" => gettext("Import an existing Certificate"),
@@ -890,7 +891,7 @@ function internalca_change() {
 												&nbsp;
 												<em>ex:</em>
 												&nbsp;
-												<?=gettext("Texas");?>
+												<?=gettext("Sachsen");?>
 											</td>
 										</tr>
 										<tr>
@@ -900,7 +901,7 @@ function internalca_change() {
 												&nbsp;
 												<em>ex:</em>
 												&nbsp;
-												<?=gettext("Austin");?>
+												<?=gettext("Leipzig");?>
 											</td>
 										</tr>
 										<tr>
