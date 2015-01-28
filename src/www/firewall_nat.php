@@ -217,8 +217,6 @@ $main_buttons = array(
 		                        <form action="firewall_nat.php" method="post" name="iform" id="iform">
 						<input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($id); ?>" />
 
-		                        <div class="table-responsive">
-
 			                        <table class="table table-striped table-sort">
 			                        <thead>
 										<tr id="frheader">
@@ -276,7 +274,7 @@ $main_buttons = array(
 												continue;
 										?>
 									                <tr valign="top" id="fr<?=$nnats;?>">
-									                  <td class="listt"><input type="checkbox" id="frc<?=$nnats;?>" name="rule[]" value="<?=$i;?>" onClick="fr_bgcolor('<?=$nnats;?>')" style="margin: 0; padding: 0; width: 15px; height: 15px;" /></td>
+									                  <td class="listt"><input type="checkbox" id="frc<?=$nnats;?>" name="rule[]" value="<?=$i;?>" style="margin: 0; padding: 0; width: 15px; height: 15px;" /></td>
 									                  <td class="listt" align="center">
 														<?php if($natent['associated-rule-id'] == "pass"): ?>
 														<span class="glyphicon glyphicon-play text-success"></span>
@@ -338,11 +336,11 @@ $main_buttons = array(
 									                  <td valign="middle" class="list nowrap">
 
 
-																<button type="submit"  onmouseover="fr_insline(<?=$nnats;?>, true)" onmouseout="fr_insline(<?=$nnats;?>, false)" name="move_<?=$i;?>_x" title="<?=gettext("move selected rules before this rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
-																<a href="firewall_nat_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-																<a href="firewall_nat.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+																<button type="submit"  name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules before this rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
+																<a href="firewall_nat_edit.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+																<a href="firewall_nat.php?act=del&amp;id=<?=$i;?>"  data-toggle="tooltip" data-placement="left" title="<?=gettext("delete this rule");?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 
-																<a href="firewall_nat_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
+																<a href="firewall_nat_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule based on this one");?>"><span class="glyphicon glyphicon-plus"></span></a></td>
 									                      </tr>
 												<?php $i++; $nnats++; endforeach; ?>
 								                <tr>
@@ -352,15 +350,15 @@ $main_buttons = array(
 									                  <td>&nbsp;</td>
 									                  <td class="list nowrap" valign="middle">
 
-														<?php if ($nnats == 0): ?><span class="btn btn-default btn-xs text-muted"><span class="glyphicon glyphicon-arrow-left"></span></span><?php else: ?><button name="move_<?=$i;?>_x" value="<?=$i;?>" type="submit" title="<?=gettext("move selected rules to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button><?php endif; ?>
+														<?php if ($nnats == 0): ?><span class="btn btn-default btn-xs text-muted"><span class="glyphicon glyphicon-arrow-left"></span></span><?php else: ?><button name="move_<?=$i;?>_x" value="<?=$i;?>" type="submit" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button><?php endif; ?>
 
 														<?php if (count($a_nat) == 0): ?>
 
-															<span class="btn btn-default btn-xs text-muted"  title="<?=gettext("delete selected rules");?>"><span class="glyphicon glyphicon-remove" ></span></span>
+															<span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules");?>"><span class="glyphicon glyphicon-remove" ></span></span>
 														<?php else: ?>
-															<button name="del_<?=$i;?>_x" type="submit" title="<?=gettext("delete selected rules"); ?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected rules?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+															<button name="del_<?=$i;?>_x" type="submit" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules"); ?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected rules?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 														<?php endif; ?>
-														 <a href="firewall_nat_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+														 <a href="firewall_nat_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>"><span class="glyphicon glyphicon-plus"></span></a>
 													</td>
 												</tr>
 											</tbody>
@@ -378,9 +376,9 @@ $main_buttons = array(
 											</tfoot>
 
 									    </table>
-										</div>
+
 										<div class="container-fluid">
-<input name="del" type="submit" title="<?=gettext("delete selected rules"); ?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected rules?");?>')" class="btn btn-primary" value="Delete selected rules"/>
+<input name="del" type="submit" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules"); ?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected rules?");?>')" class="btn btn-primary" value="Delete selected rules"/>
 										</div>
 									</form>
 

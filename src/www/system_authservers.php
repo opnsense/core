@@ -819,7 +819,7 @@ function select_clicked() {
 											<tfoot>
 
 												<tr>
-													<td colspan="3">
+													<td colspan="4">
 														<p>
 															<?=gettext("Additional authentication servers can be added here.");?>
 														</p>

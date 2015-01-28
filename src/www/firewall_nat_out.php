@@ -231,7 +231,6 @@ include("head.inc");
 
 					<div class="tab-content content-box col-xs-12">
 
-	                        <div class="table-responsive">
 		                        <table class="table table-striped table-sort">
 		                        <thead>
 			                        <tr>
@@ -288,7 +287,7 @@ include("head.inc");
 									</tr>
 		                        </tbody>
 								</table>
-	                        </div>
+
 					</div>
 				</section>
 
@@ -296,7 +295,7 @@ include("head.inc");
 
 					<div class=" content-box ">
 
-	                        <div class="table-responsive">
+
 		                        <table class="table table-striped table-sort">
 		                        <thead>
 									<tr><th colspan="12"><?=gettext("Mappings:"); ?></th></tr>
@@ -626,7 +625,7 @@ include("head.inc");
 				</tr>
             </tbody>
 			</table>
-				    </div>
+
 					</div>
 	            </section>
 	            </form>

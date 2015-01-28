@@ -465,7 +465,6 @@ include("head.inc");
 
                         <form action="firewall_nat_edit.php" method="post" name="iform" id="iform">
 
-				<div class="table-responsive">
 					<table class="table table-striped table-sort">
 
 
@@ -496,7 +495,7 @@ include("head.inc");
 							<tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Interface"); ?></td>
 					                  <td width="78%" class="vtable">
-										<select name="interface" class="formselect" onchange="dst_change(this.value,iface_old,document.iform.dsttype.value);iface_old = document.iform.interface.value;typesel_change();">
+										<select name="interface" class="selectpicker" data-live-search="true" onchange="dst_change(this.value,iface_old,document.iform.dsttype.value);iface_old = document.iform.interface.value;typesel_change();">
 											<?php
 
 											$iflist = get_configured_interface_with_descr(false, true);
@@ -538,7 +537,7 @@ include("head.inc");
 					                <tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Protocol"); ?></td>
 					                  <td width="78%" class="vtable">
-					                    <select name="proto" class="formselect" onchange="proto_change(); check_for_aliases();">
+					                    <select name="proto" class="selectpicker" onchange="proto_change(); check_for_aliases();">
 					                      <?php $protocols = explode(" ", "TCP UDP TCP/UDP ICMP ESP AH GRE IPV6 IGMP PIM OSPF"); foreach ($protocols as $proto): ?>
 					                      <option value="<?=strtolower($proto);?>" <?php if (strtolower($proto) == $pconfig['proto']) echo "selected=\"selected\""; ?>><?=htmlspecialchars($proto);?></option>
 					                      <?php endforeach; ?>
@@ -866,7 +865,7 @@ include("head.inc");
 					?>
 							<?php if ($has_created_time || $has_updated_time): ?>
 							<tr>
-								<td>&nbsp;</td>
+								<td colspan="2">&nbsp;</td>
 							</tr>
 							<tr>
 								<td colspan="2" valign="top" class="listtopic"><?=gettext("Rule Information");?></td>
@@ -904,7 +903,6 @@ include("head.inc");
 					                  </td>
 					                </tr>
 					              </table>
-					              </div>
 					              </form>
 					             </div>
 					             </div>

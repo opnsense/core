@@ -168,8 +168,6 @@ include("head.inc");
 				    <div class="content-box-main">
 
 						<form action="firewall_aliases_import.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 										<tr>
 											<td valign="top" class="vncellreq"><?=gettext("Alias Name"); ?></td>
@@ -217,7 +215,6 @@ include("head.inc");
 											</td>
 										</tr>
 									</table>
-		                        </div>
 						</form>
 				    </div>
 				</div>

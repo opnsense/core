@@ -1048,14 +1048,13 @@ function internalca_change() {
 
 					<?php else:?>
 
-					<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="details"  class="table table-striped">
+					<table summary="details"  class="table table-striped">
 						<thead>
 						<tr>
 							<td width="15%" class="listhdrr"><?=gettext("Name");?></td>
 							<td width="15%" class="listhdrr"><?=gettext("Issuer");?></td>
 							<td width="40%" class="listhdrr"><?=gettext("Distinguished Name");?></td>
 							<td width="10%" class="listhdrr"><?=gettext("In Use");?></td>
-							<td width="10%" class="list"></td>
 						</tr>
 						</thead>
 						<tbody>
@@ -1091,7 +1090,7 @@ function internalca_change() {
 						?>
 						<tr>
 							<td class="listlr">
-								<table border="0" cellpadding="0" cellspacing="0" summary="icon">
+								<table summary="icon">
 									<tr>
 										<td align="left" valign="middle">
 											<?=$certimg;?>
@@ -1111,7 +1110,7 @@ function internalca_change() {
 						</td>
 						<td class="listr"><?=$caname;?>&nbsp;</td>
 						<td class="listr"><?=$subj;?>&nbsp;<br />
-							<table width="100%" summary="valid">
+							<table summary="valid">
 								<tr>
 									<td width="10%">&nbsp;</td>
 									<td width="20%"><?=gettext("Valid From")?>:</td>
@@ -1146,43 +1145,39 @@ function internalca_change() {
 							<?php if (is_captiveportal_cert($cert['refid'])): ?>
 							Captive Portal<br />
 							<?php endif; ?>
+
+
+							<a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca");?>">
+							<span class="glyphicon glyphicon-download"></span>
+							</a>
+
+							<a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export key");?>">
+							<span class="glyphicon glyphicon-download"></span>
+							</a>
+
+							<a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
+							    <span class="glyphicon glyphicon-download"></span>
+							</a>
+						<?php if (!cert_in_use($cert['refid'])): ?>
+
+							<a href="system_certmanager.php?act=del&amp;id=<?=$i;?>" class="btn btn-default btn-xs" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate?");?>')" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete cert");?>">
+								<span class="glyphicon glyphicon-remove"></span>
+							</a>
+
+						<?php endif; ?>
+						<?php if ($cert['csr']): ?>
+
+							<a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("update csr");?>">
+							<span class="glyphicon glyphicon-edit"></span>
+							</a>
+						<?php endif; ?>
 						</td>
-						<td valign="middle" class="list nowrap">
-							<table border="0" cellpadding="0" cellspacing="0">
-	                            <tr>
-										<a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca");?>">
-										<span class="glyphicon glyphicon-download"></span>
-										</a>
-
-										<a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export key");?>">
-										<span class="glyphicon glyphicon-download"></span>
-										</a>
-
-										<a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
-										    <span class="glyphicon glyphicon-download"></span>
-										</a>
-									<?php if (!cert_in_use($cert['refid'])): ?>
-
-										<a href="system_certmanager.php?act=del&amp;id=<?=$i;?>" class="btn btn-default btn-xs" onclick="return confirm('<?=gettext("Do you really want to delete this Certificate?");?>')" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete cert");?>">
-											<span class="glyphicon glyphicon-remove"></span>
-										</a>
-
-									<?php endif; ?>
-									<?php if ($cert['csr']): ?>
-
-										<a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("update csr");?>">
-										<span class="glyphicon glyphicon-edit"></span>
-										</a>
-									<?php endif; ?>
-	                            </tr>
-							</table>
-							</td>
-						</tr>
+					</tr>
 						<?php $i++; endforeach; ?>
 
 						<tr>
 							<td>&nbsp;</td>
-							<td colspan="4"><?=gettext("Note: You can only delete a certificate if it is not currently in use.");?></td>
+							<td colspan="3"><?=gettext("Note: You can only delete a certificate if it is not currently in use.");?></td>
 						</tr>
 						</tbody>
 					</table>

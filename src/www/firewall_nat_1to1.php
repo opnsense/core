@@ -174,7 +174,6 @@ $main_buttons = array(
 	                        <form action="firewall_nat_1to1.php" method="post" name="iform" id="iform">
 					<input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($id); ?>" />
 
-	                        <div class="table-responsive">
 		                        <table class="table table-striped table-sort">
 		                        <thead>
 									<tr id="frheader">
@@ -206,7 +205,7 @@ $main_buttons = array(
 											<input type="checkbox" id="frc<?=$i;?>" name="rule[]" value="<?=$i;?>" />
 										</td>
 										<td class="listt" align="center">
-											<a href="?act=toggle&amp;id=<?=$i;?>" class="glyphicon <?=$iconfn;?> <?=$textss;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" ></a>
+											<a href="?act=toggle&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" class="glyphicon <?=$iconfn;?> <?=$textss;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" ></a>
 										</td>
 										<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 						<?php
@@ -222,7 +221,7 @@ $main_buttons = array(
 						<?php
 											$source_net = pprint_address($natent['source']);
 											$source_cidr = strstr($source_net, '/');
-											echo $textss . $natent['external'] . $source_cidr . $textse;
+											echo $natent['external'] . $source_cidr;
 						?>
 										</td>
 										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
@@ -232,22 +231,22 @@ $main_buttons = array(
 										</td>
 										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 						<?php
-											echo pprint_address($natent['destination']) . $textse;
+											echo pprint_address($natent['destination']);
 						?>
 										</td>
 										<td class="listbg"  ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 						<?php
-											echo htmlspecialchars($natent['descr']) . '&nbsp;' . $textse;
+											echo htmlspecialchars($natent['descr']) . '&nbsp;';
 						?>
 										</td>
 										<td class="list nowrap" valign="middle">
 											<button  name="move_<?=$i;?>_x"
-												title="<?=gettext("move selected rules before this rule");?>"
-												type="submit" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
+												title="<?=gettext("move selected mapping before this rule");?>"
+												type="submit" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"><span class="glyphicon glyphicon-arrow-left"></span></button>
 
-											<a href="firewall_nat_1to1_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-											<a href="firewall_nat_1to1.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
-											<a href="firewall_nat_1to1_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+											<a href="firewall_nat_1to1_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this mapping");?>"><span class="glyphicon glyphicon-pencil"></span></a>
+											<a href="firewall_nat_1to1.php?act=del&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete this mapping");?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+											<a href="firewall_nat_1to1_edit.php?dup=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping based on this one");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 										</td>
 									</tr>
 						<?php
@@ -265,21 +264,21 @@ $main_buttons = array(
 						<?php
 													else:
 						?>
-														<button name="move_<?=$i;?>_x" type="submit"  title="<?=gettext("move selected mappings to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
+														<button name="move_<?=$i;?>_x" type="submit"  data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected mappings to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
 						<?php
 													endif;
 						?>
 
-														<a href="firewall_nat_1to1_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+														<a href="firewall_nat_1to1_edit.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 
 						<?php
 													if ($i == 0):
 						?>
-														<span title="<?=gettext("delete selected rules");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></span>
+														<span title="<?=gettext("delete selected rules");?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete mapping");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></span>
 						<?php
 													else:
 						?>
-														<button name="del" type="submit"  title="<?=gettext("delete selected mappings");?>"
+														<button name="del" type="submit" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected mappings");?>"
 															onclick="return confirm('<?=gettext("Do you really want to delete the selected mappings?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 						<?php
 													endif;
@@ -301,7 +300,6 @@ $main_buttons = array(
 									</tr>
 		                        </tbody>
 								</table>
-	                        </div>
 	                        </form>
 					</div>
 			    </section>

@@ -225,35 +225,51 @@ include("head.inc");
 		switch (document.iform.srctype.selectedIndex) {
 			case 1: /* single */
 				document.iform.src.disabled = 0;
-				document.iform.srcmask.value = "";
-				document.iform.srcmask.disabled = 1;
+				//document.iform.srcmask.value = "";
+				//document.iform.srcmask.disabled = 1;
+				jQuery('#srcmask').selectpicker('val','');
+				jQuery('#srcmask').prop('disabled',true);
+				jQuery('#srcmask').selectpicker('refresh');
 				break;
 			case 2: /* network */
 				document.iform.src.disabled = 0;
-				document.iform.srcmask.disabled = 0;
+				//document.iform.srcmask.disabled = 0;
+				jQuery('#srcmask').prop('disabled',false);
+				jQuery('#srcmask').selectpicker('refresh');
 				break;
 			default:
 				document.iform.src.value = "";
 				document.iform.src.disabled = 1;
-				document.iform.srcmask.value = "";
-				document.iform.srcmask.disabled = 1;
+				//document.iform.srcmask.value = "";
+				//document.iform.srcmask.disabled = 1;
+				jQuery('#srcmask').selectpicker('val','');
+				jQuery('#srcmask').prop('disabled',true);
+				jQuery('#srcmask').selectpicker('refresh');
 				break;
 		}
 		switch (document.iform.dsttype.selectedIndex) {
 			case 1: /* single */
 				document.iform.dst.disabled = 0;
-				document.iform.dstmask.value = "";
-				document.iform.dstmask.disabled = 1;
+				//document.iform.dstmask.value = "";
+				//document.iform.dstmask.disabled = 1;
+				jQuery('#dstmask').selectpicker('val','');
+				jQuery('#dstmask').prop('disabled',true);
+				jQuery('#dstmask').selectpicker('refresh');
 				break;
 			case 2: /* network */
 				document.iform.dst.disabled = 0;
-				document.iform.dstmask.disabled = 0;
+				//document.iform.dstmask.disabled = 0;
+				jQuery('#dstmask').prop('disabled',false);
+				jQuery('#dstmask').selectpicker('refresh');
 				break;
 			default:
 				document.iform.dst.value = "";
 				document.iform.dst.disabled = 1;
-				document.iform.dstmask.value = "";
-				document.iform.dstmask.disabled = 1;
+				//document.iform.dstmask.value = "";
+				//document.iform.dstmask.disabled = 1;
+				jQuery('#dstmask').selectpicker('val','');
+				jQuery('#dstmask').prop('disabled',true);
+				jQuery('#dstmask').selectpicker('refresh');
 				break;
 		}
 	}
@@ -293,7 +309,7 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Interface"); ?></td>
 										<td width="78%" class="vtable">
-											<select name="interface" class="formselect">
+											<select name="interface" class="selectpicker" data-live-search="true">
 							<?php
 												foreach ($ifdisp as $if => $ifdesc)
 													if(have_ruleint_access($if))
@@ -356,7 +372,7 @@ include("head.inc");
 												<tr>
 													<td><?=gettext("Type:"); ?>&nbsp;&nbsp;</td>
 													<td>
-														<select name="srctype" class="formselect" onchange="typesel_change()">
+														<select name="srctype" class="selectpicker" onchange="typesel_change()">
 							<?php
 														$sel = is_specialnet($pconfig['src']);
 							?>
@@ -400,16 +416,24 @@ include("head.inc");
 												<tr>
 													<td><?=gettext("Address:"); ?>&nbsp;&nbsp;</td>
 													<td>
-														<input name="src" type="text" class="formfld" id="src" size="20" value="<?php if (!is_specialnet($pconfig['src'])) echo htmlspecialchars($pconfig['src']);?>" /> /
-														<select name="srcmask" class="formselect" id="srcmask">
-							<?php
-														for ($i = 31; $i > 0; $i--):
-							?>
-														        <option value="<?=$i;?>" <?php if ($i == $pconfig['srcmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
-							<?php
-														endfor;
-							?>
-														</select>
+														<table>
+					                                        <tr>
+							                                    <td width="348px">
+																	<input name="src" type="text" class="formfld" id="src" size="20" value="<?php if (!is_specialnet($pconfig['src'])) echo htmlspecialchars($pconfig['src']);?>" />
+																</td>
+																<td>
+																	<select name="srcmask" class="selectpicker" id="srcmask" data-width="auto">
+																		<?php
+																			for ($i = 31; $i > 0; $i--):
+																		?>
+																		<option value="<?=$i;?>" <?php if ($i == $pconfig['srcmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
+																		<?php
+																			endfor;
+																		?>
+																	</select>
+																</td>
+															</tr>
+														</table>
 													</td>
 												</tr>
 											</table>
@@ -430,7 +454,7 @@ include("head.inc");
 												<tr>
 													<td><?=gettext("Type:"); ?>&nbsp;&nbsp;</td>
 													<td>
-														<select name="dsttype" class="formselect" onchange="typesel_change()">
+														<select name="dsttype" class="selectpicker" onchange="typesel_change()">
 							<?php
 														$sel = is_specialnet($pconfig['dst']); ?>
 															<option value="any" <?php if (empty($pconfig['dst']) || $pconfig['dst'] == "any") { echo "selected=\"selected\""; } ?>><?=gettext("any"); ?></option>
@@ -482,16 +506,23 @@ include("head.inc");
 												<tr>
 													<td><?=gettext("Address:"); ?>&nbsp;&nbsp;</td>
 													<td>
-														<input name="dst" type="text" autocomplete="off" class="formfldalias" id="dst" size="20" value="<?php if (!is_specialnet($pconfig['dst'])) echo htmlspecialchars($pconfig['dst']);?>" />
-														/
-														<select name="dstmask" class="formselect" id="dstmask">
-							<?php
-														for ($i = 31; $i > 0; $i--):
-							?>
-															<option value="<?=$i;?>" <?php if ($i == $pconfig['dstmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
-							<?php
-														endfor;
-							?>
+														<table>
+					                            			<tr>
+							                        			<td width="348px">
+																	<input name="dst" type="text" autocomplete="off" class="formfldalias" id="dst" size="20" value="<?php if (!is_specialnet($pconfig['dst'])) echo htmlspecialchars($pconfig['dst']);?>" />
+																</td>
+																<td>
+																	<select name="dstmask" class="selectpicker" id="dstmask" data-width="auto">
+																	<?php
+																								for ($i = 31; $i > 0; $i--):
+																	?>
+																									<option value="<?=$i;?>" <?php if ($i == $pconfig['dstmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
+																	<?php
+																								endfor;
+																	?>
+																</td>
+															</tr>
+														</table>
 														</select>
 													</td>
 												</tr>
@@ -516,7 +547,7 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("NAT reflection"); ?></td>
 										<td width="78%" class="vtable">
-											<select name="natreflection" class="formselect">
+											<select name="natreflection" class="selectpicker">
 												<option value="default" <?php if ($pconfig['natreflection'] != "enable" && $pconfig['natreflection'] != "disable") echo "selected=\"selected\""; ?>>
 													<?=gettext("use system default"); ?>
 												</option>
