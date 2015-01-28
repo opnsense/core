@@ -349,12 +349,14 @@ function typesel_change() {
 	case 1: // network
 		document.iform.destination.disabled = 0;
 		document.iform.destination_subnet.disabled = 0;
+		jQuery('.selectpicker').selectpicker('refresh');
 		break;
 	default:
 		document.iform.destination.value = "";
 		document.iform.destination.disabled = 1;
 		document.iform.destination_subnet.value = "24";
 		document.iform.destination_subnet.disabled = 1;
+		jQuery('.selectpicker').selectpicker('refresh');
 		break;
 	}
 }
@@ -363,12 +365,14 @@ function sourcesel_change() {
 	case 2: // network
 		document.iform.source.disabled = 0;
 		document.iform.source_subnet.disabled = 0;
+		jQuery('.selectpicker').selectpicker('refresh');
 		break;
 	default:
 		document.iform.source.value = "";
 		document.iform.source.disabled = 1;
 		document.iform.source_subnet.value = "24";
 		document.iform.source_subnet.disabled = 1;
+		jQuery('.selectpicker').selectpicker('refresh');
 		break;
 	}
 }
@@ -439,7 +443,6 @@ function poolopts_change() {
 
                         <form action="firewall_nat_out_edit.php" method="post" name="iform" id="iform">
 
-				<div class="table-responsive">
 					<table class="table table-striped table-sort">
 
 									<tr>
@@ -468,7 +471,7 @@ function poolopts_change() {
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Interface");?></td>
 										<td width="78%" class="vtable">
-											<select name="interface" class="formselect">
+											<select name="interface" class="selectpicker">
 							<?php
 												$iflist = get_configured_interface_with_descr(false, true);
 												foreach ($iflist as $if => $ifdesc)
@@ -512,7 +515,7 @@ function poolopts_change() {
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Protocol");?></td>
 										<td width="78%" class="vtable">
-											<select name="protocol" class="formselect" onchange="proto_change();">
+											<select name="protocol" class="selectpicker" onchange="proto_change();">
 							<?php
 											$protocols = explode(" ", "any TCP UDP TCP/UDP ICMP ESP AH GRE IPV6 IGMP carp pfsync");
 											foreach ($protocols as $proto):
@@ -536,7 +539,7 @@ function poolopts_change() {
 												<tr>
 													<td><?=gettext("Type:");?>&nbsp;&nbsp;</td>
 													<td>
-														<select name="source_type" class="formselect" onchange="sourcesel_change()">
+														<select name="source_type" class="selectpicker" onchange="sourcesel_change()">
 															<option value="any" <?php if ($pconfig['source'] == "any") echo "selected=\"selected\""; ?>><?=gettext("any");?></option>
 															<option value="(self)" <?PHP if ($pconfig['source'] == "(self)") echo "selected=\"selected\""; ?>><?=gettext("This Firewall (self)");?></option>
 															<option value="network" <?php if (($pconfig['source'] != "any") && ($pconfig['source'] != "(self)")) echo "selected=\"selected\""; ?>><?=gettext("Network");?></option>
@@ -546,16 +549,24 @@ function poolopts_change() {
 												<tr>
 													<td><?=gettext("Address:");?>&nbsp;&nbsp;</td>
 													<td>
-														<input name="source" type="text" autocomplete="off" class="formfldalias" id="source" size="20" value="<?=htmlspecialchars($pconfig['source']);?>" />/
-														<select name="source_subnet" class="formfld" id="source_subnet">
-							<?php
-														for ($i = 32; $i >= 0; $i--):
-							?>
-															<option value="<?=$i;?>"<?php if ($i == $pconfig['source_subnet']) echo " selected=\"selected\""; ?>><?=$i;?></option>
-							<?php
-														endfor;
-							?>
-														</select>
+														<table>
+															<tr>
+																<td width="348px">	
+																	<input name="source" type="text" autocomplete="off" class="formfldalias" id="source" size="20" value="<?=htmlspecialchars($pconfig['source']);?>" />
+																</td>
+																<td>
+																	<select name="source_subnet" class="selectpicker" id="source_subnet" data-width="auto">
+																		<?php
+																				for ($i = 32; $i >= 0; $i--):
+																		?>
+																		<option value="<?=$i;?>"<?php if ($i == $pconfig['source_subnet']) echo " selected=\"selected\""; ?>><?=$i;?></option>
+																		<?php
+																				endfor;
+																		?>
+																	</select>
+																</td>
+															</tr>
+														</table>
 													</td>
 												</tr>
 												<tr>
@@ -585,7 +596,7 @@ function poolopts_change() {
 												<tr>
 													<td><?=gettext("Type:");?>&nbsp;&nbsp;</td>
 													<td>
-														<select name="destination_type" class="formselect" onchange="typesel_change()">
+														<select name="destination_type" class="selectpicker" onchange="typesel_change()">
 															<option value="any"<?php if ($pconfig['destination'] == "any") echo " selected=\"selected\""; ?>>
 																<?=gettext("any");?>
 															</option>
@@ -598,16 +609,24 @@ function poolopts_change() {
 												<tr>
 													<td><?=gettext("Address:");?>&nbsp;&nbsp;</td>
 													<td>
-														<input name="destination" type="text" autocomplete="off" class="formfldalias" id="destination" size="20" value="<?=htmlspecialchars($pconfig['destination']);?>" />/
-														<select name="destination_subnet" class="formselect" id="destination_subnet">
-							<?php
-														for ($i = 32; $i >= 0; $i--):
-							?>
-															<option value="<?=$i;?>"<?php if ($i == $pconfig['destination_subnet']) echo " selected=\"selected\""; ?>><?=$i;?></option>
-							<?php
-														endfor;
-							?>
-														</select>
+														<table>
+															<tr>
+																<td width="348px">	
+																	<input name="destination" type="text" autocomplete="off" class="formfldalias" id="destination" size="20" value="<?=htmlspecialchars($pconfig['destination']);?>" />
+																</td>
+																<td>
+																	<select name="destination_subnet" class="selectpicker" id="destination_subnet" data-width="auto">
+																		<?php
+																			for ($i = 32; $i >= 0; $i--):
+																		?>
+																			<option value="<?=$i;?>"<?php if ($i == $pconfig['destination_subnet']) echo " selected=\"selected\""; ?>><?=$i;?></option>
+																		<?php
+																			endfor;
+																		?>
+																	</select>
+																</td>
+															</tr>
+														</table>
 													</td>
 												</tr>
 												<tr>
@@ -633,7 +652,7 @@ function poolopts_change() {
 												<tr>
 													<td><?=gettext("Address:");?>&nbsp;&nbsp;</td>
 													<td>
-														<select name="target" class="formselect" id="target" onchange="poolopts_change();">
+														<select name="target" class="selectpicker" id="target" onchange="poolopts_change();">
 															<option value=""<?php if (!$pconfig['target']) echo " selected=\"selected\""; ?>>
 																<?=gettext("Interface address");?>
 															</option>
@@ -691,7 +710,7 @@ function poolopts_change() {
 													<td><?=gettext("Other Subnet:");?>&nbsp;&nbsp;</td>
 													<td>
 														<input name="targetip" type="text" class="formfld unknown" id="targetip" size="20" value="<?=htmlspecialchars($pconfig['targetip']);?>" />/
-														<select name="targetip_subnet" class="formfld" id="targetip_subnet">
+														<select name="targetip_subnet" class="selectpicker" id="targetip_subnet">
 							<?php
 														for ($i = 32; $i >= 0; $i--):
 							?>
@@ -717,7 +736,7 @@ function poolopts_change() {
 												<tr id="poolopts_tr">
 													<td valign="top">Pool Options</td>
 													<td>
-														<select name="poolopts" id="poolopts">
+														<select name="poolopts" id="poolopts" class="selectpicker">
 															<option value="" <?php if ($pconfig['poolopts'] == "") echo "selected=\"selected\""; ?>>
 																<?=htmlspecialchars("Default");?>
 															</option>
@@ -838,7 +857,6 @@ function poolopts_change() {
 										</td>
 									</tr>
 								</table>
-				</div>
                         </form>
 				</div>
 			    </section>
