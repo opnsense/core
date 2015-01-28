@@ -151,18 +151,26 @@ function typesel_change() {
 	switch (document.iform.srctype.selectedIndex) {
 		case 1:	/* single */
 			document.iform.src.disabled = 0;
-			document.iform.srcmask.value = "";
-			document.iform.srcmask.disabled = 1;
+			//document.iform.srcmask.value = "";
+			//document.iform.srcmask.disabled = 1;
+			jQuery('#srcmask').selectpicker('val','');
+			jQuery('#srcmask').prop('disabled',true);
+			jQuery('#srcmask').selectpicker('refresh');
 			break;
 		case 2:	/* network */
 			document.iform.src.disabled = 0;
-			document.iform.srcmask.disabled = 0;
+			//document.iform.srcmask.disabled = 0;
+			jQuery('#srcmask').prop('disabled',false);
+			jQuery('#srcmask').selectpicker('refresh');
 			break;
 		default:
 			document.iform.src.value = "";
 			document.iform.src.disabled = 1;
-			document.iform.srcmask.value = "";
-			document.iform.srcmask.disabled = 1;
+			//document.iform.srcmask.value = "";
+			//document.iform.srcmask.disabled = 1;
+			jQuery('#srcmask').selectpicker('val','');
+			jQuery('#srcmask').prop('disabled',true);
+			jQuery('#srcmask').selectpicker('refresh');		
 			break;
 	}
 	if( dstenabled )
@@ -172,16 +180,24 @@ function typesel_change() {
 				document.iform.dst.disabled = 0;
 				document.iform.dstmask.value = "";
 				document.iform.dstmask.disabled = 1;
+				jQuery('#dstmask').selectpicker('val','');
+				jQuery('#dstmask').prop('disabled',true);
+				jQuery('#dstmask').selectpicker('refresh');
 				break;
 			case 2:	/* network */
 				document.iform.dst.disabled = 0;
-				document.iform.dstmask.disabled = 0;
+				//document.iform.dstmask.disabled = 0;
+				jQuery('#dstmask').prop('disabled',false);
+				jQuery('#dstmask').selectpicker('refresh');
 				break;
 			default:
 				document.iform.dst.value = "";
 				document.iform.dst.disabled = 1;
-				document.iform.dstmask.value = "";
-				document.iform.dstmask.disabled = 1;
+				//document.iform.dstmask.value = "";
+				//document.iform.dstmask.disabled = 1;
+				jQuery('#dstmask').selectpicker('val','');
+				jQuery('#dstmask').prop('disabled',true);
+				jQuery('#dstmask').selectpicker('refresh');
 				break;
 		}
 	}
@@ -189,10 +205,12 @@ function typesel_change() {
 
 function src_rep_change() {
 	document.iform.srcendport.selectedIndex = document.iform.srcbeginport.selectedIndex;
+	jQuery('.selectpicker').selectpicker('refresh');
 }
 
 function dst_rep_change() {
 	document.iform.dstendport.selectedIndex = document.iform.dstbeginport.selectedIndex;
+	jQuery('.selectpicker').selectpicker('refresh');
 }
 
 function dst_change( iface, old_iface, old_dst ) {

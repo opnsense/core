@@ -564,7 +564,7 @@ include("head.inc");
 										<tr>
 											<td><?=gettext("Type:"); ?>&nbsp;&nbsp;</td>
 											<td>
-												<select name="srctype" class="formselect" onchange="typesel_change()">
+												<select name="srctype" class="selectpicker" onchange="typesel_change()">
 					<?php
 													$sel = is_specialnet($pconfig['src']); ?>
 													<option value="any"     <?php if ($pconfig['src'] == "any") { echo "selected=\"selected\""; } ?>><?=gettext("any"); ?></option>
@@ -594,12 +594,20 @@ include("head.inc");
 										<tr>
 											<td><?=gettext("Address:"); ?>&nbsp;&nbsp;</td>
 											<td>
-												<input autocomplete='off' name="src" type="text" class="formfldalias" id="src" size="20" value="<?php if (!is_specialnet($pconfig['src'])) echo htmlspecialchars($pconfig['src']);?>" /> /
-												<select name="srcmask" class="formselect" id="srcmask">
-					<?php						for ($i = 31; $i > 0; $i--): ?>
-													<option value="<?=$i;?>" <?php if ($i == $pconfig['srcmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
-					<?php						endfor; ?>
-												</select>
+												<table>
+													<tr>
+														<td width="348px">
+															<input autocomplete='off' name="src" type="text" class="formfldalias" id="src" size="20" value="<?php if (!is_specialnet($pconfig['src'])) echo htmlspecialchars($pconfig['src']);?>" />
+														</td>
+														<td>
+															<select name="srcmask" class="selectpicker" id="srcmask" data-width="auto" data-size="auto">
+															<?php for ($i = 31; $i > 0; $i--): ?>
+																<option value="<?=$i;?>" <?php if ($i == $pconfig['srcmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
+															<?php endfor; ?>
+															</select>
+														</td>
+													</tr>
+												</table>
 											</td>
 										</tr>
 									</table>
@@ -612,7 +620,8 @@ include("head.inc");
 										<tr>
 											<td><?=gettext("from:"); ?>&nbsp;&nbsp;</td>
 											<td>
-												<select name="srcbeginport" class="formselect" onchange="src_rep_change();ext_change()">
+
+												<select name="srcbeginport" class="selectpicker" onchange="src_rep_change();ext_change()">
 													<option value="">(<?=gettext("other"); ?>)</option>
 													<option value="any" <?php $bfound = 0; if ($pconfig['srcbeginport'] == "any") { echo "selected=\"selected\""; $bfound = 1; } ?>><?=gettext("any"); ?></option>
 					<?php							foreach ($wkports as $wkport => $wkportdesc): ?>
@@ -625,7 +634,7 @@ include("head.inc");
 										<tr>
 											<td><?=gettext("to:"); ?></td>
 											<td>
-												<select name="srcendport" class="formselect" onchange="ext_change()">
+												<select name="srcendport" class="selectpicker" onchange="ext_change()">
 													<option value="">(<?=gettext("other"); ?>)</option>
 													<option value="any" <?php $bfound = 0; if ($pconfig['srcendport'] == "any") { echo "selected=\"selected\""; $bfound = 1; } ?>><?=gettext("any"); ?></option>
 					<?php							foreach ($wkports as $wkport => $wkportdesc): ?>
@@ -653,7 +662,7 @@ include("head.inc");
 										<tr>
 											<td><?=gettext("Type:"); ?>&nbsp;&nbsp;</td>
 											<td>
-												<select name="dsttype" class="formselect" onchange="typesel_change()">
+												<select name="dsttype" class="selectpicker" onchange="typesel_change()">
 					<?php
 													$sel = is_specialnet($pconfig['dst']); ?>
 													<option value="any" <?php if ($pconfig['dst'] == "any") { echo "selected=\"selected\""; } ?>><?=gettext("any"); ?></option>
@@ -705,14 +714,21 @@ include("head.inc");
 										<tr>
 											<td><?=gettext("Address:"); ?>&nbsp;&nbsp;</td>
 											<td>
-												<input autocomplete='off' name="dst" type="text" class="formfldalias" id="dst" size="20" value="<?php if (!is_specialnet($pconfig['dst'])) echo htmlspecialchars($pconfig['dst']);?>" />
-												/
-												<select name="dstmask" class="formselect" id="dstmask">
-					<?php
-												for ($i = 31; $i > 0; $i--): ?>
-													<option value="<?=$i;?>" <?php if ($i == $pconfig['dstmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
-					<?php						endfor; ?>
-												</select>
+												<table>
+													<tr>
+														<td width="348px">	
+															<input autocomplete='off' name="dst" type="text" class="formfldalias" id="dst" size="20" value="<?php if (!is_specialnet($pconfig['dst'])) echo htmlspecialchars($pconfig['dst']);?>" />
+														</td>
+														<td>
+															<select name="dstmask" class="selectpicker" data-width="auto" id="dstmask">
+																<?php
+																	for ($i = 31; $i > 0; $i--): ?>
+																		<option value="<?=$i;?>" <?php if ($i == $pconfig['dstmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
+																<?php endfor; ?>
+															</select>
+														</td>
+													</tr>
+												</table>
 											</td>
 										</tr>
 									</table>
@@ -725,7 +741,7 @@ include("head.inc");
 										<tr>
 											<td><?=gettext("from:"); ?>&nbsp;&nbsp;</td>
 											<td>
-												<select name="dstbeginport" id="dstbeginport" class="formselect" onchange="dst_rep_change();ext_change()">
+												<select name="dstbeginport" id="dstbeginport" class="selectpicker" onchange="dst_rep_change();ext_change()">
 													<option value="">(<?=gettext("other"); ?>)</option>
 					<?php							$bfound = 0;
 													foreach ($wkports as $wkport => $wkportdesc): ?>
@@ -738,7 +754,7 @@ include("head.inc");
 										<tr>
 											<td><?=gettext("to:"); ?></td>
 											<td>
-												<select name="dstendport" id="dstendport" class="formselect" onchange="ext_change()">
+												<select name="dstendport" id="dstendport" class="selectpicker" onchange="ext_change()">
 													<option value="">(<?=gettext("other"); ?>)</option>
 					<?php							$bfound = 0;
 													foreach ($wkports as $wkport => $wkportdesc): ?>
@@ -768,7 +784,7 @@ include("head.inc");
 					                <tr name="lprtr" id="lprtr">
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Redirect target port"); ?></td>
 					                  <td width="78%" class="vtable">
-					                    <select name="localbeginport" id="localbeginport" class="formselect" onchange="ext_change();check_for_aliases();">
+					                    <select name="localbeginport" id="localbeginport" class="selectpicker" onchange="ext_change();check_for_aliases();">
 					                      <option value="">(<?=gettext("other"); ?>)</option>
 					                      <?php $bfound = 0; foreach ($wkports as $wkport => $wkportdesc): ?>
 					                      <option value="<?=$wkport;?>" <?php if ($wkport == $pconfig['localbeginport']) {
@@ -803,7 +819,7 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("NAT reflection"); ?></td>
 										<td width="78%" class="vtable">
-											<select name="natreflection" class="formselect">
+											<select name="natreflection" class="selectpicker">
 											<option value="default" <?php if ($pconfig['natreflection'] != "enable" && $pconfig['natreflection'] != "purenat" && $pconfig['natreflection'] != "disable") echo "selected=\"selected\""; ?>><?=gettext("Use system default"); ?></option>
 											<option value="enable" <?php if ($pconfig['natreflection'] == "enable") echo "selected=\"selected\""; ?>><?=gettext("Enable (NAT + Proxy)"); ?></option>
 											<option value="purenat" <?php if ($pconfig['natreflection'] == "purenat") echo "selected=\"selected\""; ?>><?=gettext("Enable (Pure NAT)"); ?></option>
@@ -815,7 +831,7 @@ include("head.inc");
 									<tr name="assoctable" id="assoctable">
 										<td width="22%" valign="top" class="vncell"><?=gettext("Filter rule association"); ?></td>
 										<td width="78%" class="vtable">
-											<select name="associated-rule-id">
+											<select name="associated-rule-id" class="selectpicker" >
 												<option value=""><?=gettext("None"); ?></option>
 												<option value="pass" <?php if($pconfig['associated-rule-id'] == "pass") echo " selected=\"selected\""; ?>><?=gettext("Pass"); ?></option>
 												<?php
@@ -846,7 +862,7 @@ include("head.inc");
 					                <tr name="assoctable" id="assoctable">
 					                  <td width="22%" valign="top" class="vncell"><?=gettext("Filter rule association"); ?></td>
 					                  <td width="78%" class="vtable">
-					                    <select name="filter-rule-association" id="filter-rule-association">
+					                    <select name="filter-rule-association" id="filter-rule-association" class="selectpicker" >
 											<option value=""><?=gettext("None"); ?></option>
 											<option value="add-associated" selected="selected"><?=gettext("Add associated filter rule"); ?></option>
 											<option value="add-unassociated"><?=gettext("Add unassociated filter rule"); ?></option>
