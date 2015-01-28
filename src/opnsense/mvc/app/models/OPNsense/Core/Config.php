@@ -1,43 +1,37 @@
 <?php
-/*
-    # Copyright (C) 2014 Deciso B.V.
-    #
-    # All rights reserved.
-    #
-    # Redistribution and use in source and binary forms, with or without
-    # modification, are permitted provided that the following conditions are met:
-    #
-    # 1. Redistributions of source code must retain the above copyright notice,
-    #    this list of conditions and the following disclaimer.
-    #
-    # 2. Redistributions in binary form must reproduce the above copyright
-    #    notice, this list of conditions and the following disclaimer in the
-    #    documentation and/or other materials provided with the distribution.
-    #
-    # THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    # POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-    package : Core
-    function: provides access to systems config xml
-
-*/
-
-
+/**
+ *    Copyright (C) 2015 Deciso B.V.
+ *
+ *    All rights reserved.
+ *
+ *    Redistribution and use in source and binary forms, with or without
+ *    modification, are permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *
+ *    2. Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *
+ *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *    POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
 namespace OPNsense\Core;
 
 use \Phalcon\DI\FactoryDefault;
 
 /**
- * Class Config
+ * Class Config provides access to systems config xml
  * @package Core
  */
 class Config extends Singleton
@@ -51,7 +45,7 @@ class Config extends Singleton
 
     /**
      * XMLDocument type reference to config
-     * @var XMLDocument
+     * @var \DOMDocument
      */
     private $configxml = null ;
 
@@ -113,13 +107,13 @@ class Config extends Singleton
         }
     }
 
-    /*
-     * parse configuration and dump to std output (test)
-     * @param DOMElement $node
-     * @param string $nodename
+
+    /**
+     * Execute a xpath expression on config.xml
+     * @param $query
+     * @return \DOMNodeList
      * @throws ConfigException
      */
-
     public function xpath($query)
     {
         $this->checkvalid();
@@ -127,24 +121,35 @@ class Config extends Singleton
         return  $xpath->query($query);
     }
 
-    /*
-     * init new config object, try to load current configuration
-     * (executed via Singleton)
-     */
 
+    /**
+     * object representation of xml document via simplexml, references the same underlying model
+     * @return SimpleXML
+     * @throws ConfigException
+     */
     public function object()
     {
         $this->checkvalid();
         return $this->simplexml;
     }
 
-    /*
-     * Execute a xpath expression on config.xml
-     * @param $query
-     * @return \DOMNodeList
+    /**
+     * get DOMDocument
+     * @return XMLDocument
      * @throws ConfigException
      */
+    public function getDOM()
+    {
+        $this->checkvalid();
+        return $this->configxml;
 
+    }
+
+
+    /**
+     * init new config object, try to load current configuration
+     * (executed via Singleton)
+     */
     protected function init()
     {
         $this->config_file = FactoryDefault::getDefault()->get('config')->globals->config_path . "config.xml";
@@ -156,11 +161,6 @@ class Config extends Singleton
 
     }
 
-    /*
-     * object representation of xml document via simplexml, references the same underlying model
-     * @return SimpleXML
-     * @throws ConfigException
-     */
 
     /**
      * Load config file
@@ -177,10 +177,25 @@ class Config extends Singleton
             throw new ConfigException('empty file') ;
         }
 
-        $this->configxml = new \DOMDocument;
+        $this->configxml = new \DOMDocument('1.0');
         $this->configxml->loadXML($xml);
         $this->simplexml = simplexml_import_dom($this->configxml);
         $this->isValid = true;
+
+    }
+
+    /**
+     * @return mixed return xml text representation of this config
+     */
+    public function __toString()
+    {
+        // reformat XML (pretty print)
+        $dom = new \DOMDocument;
+        $dom->formatOutput = true;
+        $dom->preserveWhiteSpace = false;
+        $dom->loadXML($this->configxml->saveXML());
+
+        return $dom->saveXML();
 
     }
 }

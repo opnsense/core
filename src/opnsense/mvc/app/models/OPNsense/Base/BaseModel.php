@@ -1,41 +1,47 @@
 <?php
-/*
-    # Copyright (C) 2015 Deciso B.V.
-    #
-    # All rights reserved.
-    #
-    # Redistribution and use in source and binary forms, with or without
-    # modification, are permitted provided that the following conditions are met:
-    #
-    # 1. Redistributions of source code must retain the above copyright notice,
-    #    this list of conditions and the following disclaimer.
-    #
-    # 2. Redistributions in binary form must reproduce the above copyright
-    #    notice, this list of conditions and the following disclaimer in the
-    #    documentation and/or other materials provided with the distribution.
-    #
-    # THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    # POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-    package : Frontend Model Base
-    function: implements base model to bind config and definition to object
-
+/**
+*    Copyright (C) 2015 Deciso B.V.
+*
+*    All rights reserved.
+*
+*    Redistribution and use in source and binary forms, with or without
+*    modification, are permitted provided that the following conditions are met:
+*
+*    1. Redistributions of source code must retain the above copyright notice,
+*       this list of conditions and the following disclaimer.
+*
+*    2. Redistributions in binary form must reproduce the above copyright
+*       notice, this list of conditions and the following disclaimer in the
+*       documentation and/or other materials provided with the distribution.
+*
+*    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+*    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+*    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+*    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+*    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+*    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+*    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+*    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+*    POSSIBILITY OF SUCH DAMAGE.
+*
 */
 
 namespace OPNsense\Base;
 
 use OPNsense\Base\FieldTypes\ArrayField;
+use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 
+/**
+ * Class BaseModel implements base model to bind config and definition to object.
+ * Derive from this class to create usable models.
+ * Every model definition should include a class (derived from this) and a xml model to define the data (model.xml)
+ *
+ * See the Sample model for a full implementation.
+ *
+ * @package OPNsense\Base
+ */
 abstract class BaseModel
 {
     /**
@@ -50,8 +56,6 @@ abstract class BaseModel
     private $internal_mountpoint = '';
 
 
-    private $internalConfigHandle = null;
-
     /**
      * If the model needs a custom initializer, override this init() method
      * Default behaviour is to do nothing in this init.
@@ -62,9 +66,10 @@ abstract class BaseModel
     }
 
     /**
-     * @param $xml|SimpleXMLElement model xml data (from items section)
-     * @param $config_data|SimpleXMLElement (current) config data
-     * @param $internal_data output structure using FieldTypes, rootnode is internalData
+     * parse model and config xml to object model using types in FieldTypes
+     * @param SimpleXMLElement $xml model xml data (from items section)
+     * @param SimpleXMLElement $config_data (current) config data
+     * @param BaseField $internal_data output structure using FieldTypes,rootnode is internalData
      * @throws ModelException parse error
      */
     private function parseXml($xml, &$config_data, &$internal_data)
@@ -93,7 +98,7 @@ abstract class BaseModel
             } else {
                 $new_ref = $internal_data->__reference . "." . $tagName;
             }
-            $fieldObject = $field_rfcls->newInstance($new_ref);
+            $fieldObject = $field_rfcls->newInstance($new_ref, $tagName);
 
             // now add content to this model (recursive)
             if ($fieldObject->isContainer() == false) {
@@ -126,13 +131,13 @@ abstract class BaseModel
                     if ($config_section_data != null) {
                         $counter = 0 ;
                         foreach ($config_section_data as $conf_section) {
-                            $child_node = new ArrayField($fieldObject->__reference . "." . ($counter++));
+                            $child_node = new ContainerField($fieldObject->__reference . "." . ($counter++), $tagName);
                             $this->parseXml($xmlNode, $conf_section, $child_node);
                             $fieldObject->addChildNode(null, $child_node);
                         }
                     } else {
-                        $child_node = new ArrayField($fieldObject->__reference . ".0");
-                        $child_node->setInternalEmptyStatus(true);
+                        $child_node = new ContainerField($fieldObject->__reference . ".0", $tagName);
+                        $child_node->setInternalIsVirtual();
                         $this->parseXml($xmlNode, $config_section_data, $child_node);
                         $fieldObject->addChildNode(null, $child_node);
                     }
@@ -154,7 +159,7 @@ abstract class BaseModel
     public function __construct()
     {
         // setup config handle to singleton config singleton
-        $this->internalConfigHandle = Config::getInstance();
+        $internalConfigHandle = Config::getInstance();
 
         // init new root node, all details are linked to this
         $this->internalData = new FieldTypes\ContainerField();
@@ -173,10 +178,11 @@ abstract class BaseModel
         if ($model_xml->getName() != "model") {
             throw new ModelException('model xml '.$model_filename.' seems to be of wrong type') ;
         }
+        $this->internal_mountpoint = $model_xml->mount;
 
         // use an xpath expression to find the root of our model in the config.xml file
         // if found, convert the data to a simple structure (or create an empty array)
-        $tmp_config_data = $this->internalConfigHandle->xpath($model_xml->mount);
+        $tmp_config_data = $internalConfigHandle->xpath($model_xml->mount);
         if ($tmp_config_data->length > 0) {
             $config_array = simplexml_import_dom($tmp_config_data->item(0)) ;
         } else {
@@ -194,7 +200,7 @@ abstract class BaseModel
 
     /**
      * reflect getter to internalData (ContainerField)
-     * @param $name property name
+     * @param string $name property name
      * @return mixed
      */
     public function __get($name)
@@ -204,12 +210,132 @@ abstract class BaseModel
 
     /**
      * reflect setter to internalData (ContainerField)
-     * @param $name property name
-     * @param $value property value
+     * @param string $name property name
+     * @param string $value property value
      */
     public function __set($name, $value)
     {
         $this->internalData->$name = $value ;
     }
 
+    /**
+     * validate full model using all fields and data in a single (1 deep) array
+     */
+    public function performValidation()
+    {
+        // create a Phalcon validator and collect all model validations
+        $validation = new \Phalcon\Validation();
+        $validation_data = array();
+        $all_nodes = $this->internalData->getFlatNodes();
+
+        foreach ($all_nodes as $key => $node) {
+            $node_validators = $node->getValidators();
+            foreach ($node_validators as $item_validator) {
+                $validation->add($key, $item_validator);
+            }
+            if (count($node_validators) > 0) {
+                $validation_data[$key] = $node->__toString();
+            }
+        }
+
+        if (count($validation_data) > 0) {
+            $messages = $validation->validate($validation_data);
+        } else {
+            $messages = new \Phalcon\Validation\Message\Group();
+        }
+
+        return $messages;
+    }
+
+    /**
+     * render xml document from model including all parent nodes.
+     * (parent nodes are included to ease testing)
+     *
+     * @return \SimpleXMLElement xml representation of the model
+     */
+    public function toXML()
+    {
+        // calculate root node from mountpoint
+        $xml_root_node = "";
+        $str_parts = explode("/", str_replace("//", "/", $this->internal_mountpoint));
+        for ($i=0; $i < count($str_parts); $i++) {
+            if ($str_parts[$i] != "") {
+                $xml_root_node .= "<".$str_parts[$i].">";
+            }
+        }
+        for ($i=count($str_parts)-1; $i >= 0; $i--) {
+            if ($str_parts[$i] != "") {
+                $xml_root_node .= "</".$str_parts[$i].">";
+            }
+        }
+
+        $xml = new \SimpleXMLElement($xml_root_node);
+        $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
+
+        return $xml;
+
+    }
+
+    /**
+     * serialize model singleton to config object
+     */
+    private function internalSerializeToConfig()
+    {
+        // setup config handle to singleton config singleton
+        $internalConfigHandle = Config::getInstance();
+        $config_xml = $internalConfigHandle->object();
+
+        // serialize this model's data to xml
+        $data_xml = $this->toXML();
+
+        // Locate source node (in theory this must return a valid result, delivered by toXML).
+        // Because toXML delivers the actual xml including the full path, we need to find the root of our data.
+        $source_node = $data_xml->xpath($this->internal_mountpoint);
+
+        // find parent of mountpoint (create if it doesn't exists)
+        $target_node = $config_xml;
+        $str_parts = explode("/", str_replace("//", "/", $this->internal_mountpoint));
+        for ($i=0; $i < count($str_parts)-1; $i++) {
+            if ($str_parts[$i] != "") {
+                if (count($target_node->xpath($str_parts[$i])) == 0) {
+                    $target_node = $target_node->addChild($str_parts[$i]);
+                } else {
+                    $target_node = $target_node->xpath($str_parts[$i])[0];
+                }
+
+            }
+        }
+
+        // copy model data into config
+        $toDom = dom_import_simplexml($target_node);
+        $fromDom = dom_import_simplexml($source_node[0]);
+
+        // remove old model data and write new
+        foreach ($toDom->getElementsByTagName($fromDom->nodeName) as $oldNode) {
+            $toDom->removeChild($oldNode);
+        }
+        $toDom->appendChild($toDom->ownerDocument->importNode($fromDom, true));
+    }
+
+    /**
+     * validate model and serialize data to config singleton object.
+     *
+     * @param bool $disable_validation skip validation, be careful to use this!
+     * @throws \Phalcon\Validation\Exception validation errors
+     */
+    public function serializeToConfig($disable_validation = false)
+    {
+        if ($disable_validation == false) {
+            // perform validation, collect all messages and raise exception
+            $messages = $this->performValidation();
+            if ($messages->count() > 0) {
+                $exception_msg = "";
+                foreach ($messages as $msg) {
+                    $exception_msg .= "[".$msg-> getField()."] ".$msg->getMessage()."\n";
+                }
+                throw new \Phalcon\Validation\Exception($exception_msg);
+            }
+        }
+        $this->internalSerializeToConfig();
+    }
 }

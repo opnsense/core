@@ -1,7 +1,10 @@
 <model>
     <mount>//test/sample</mount>
     <description>
-        Sample model
+        Sample model.
+        The mountpoint is a reference to the config.xml file and this part (ROOT/test/sample)
+        should only be used by this model.
+        By defining full sections per model we should avoid clashes and keep serializing data back.
     </description>
     <items>
         <tag1 type="TextField">
@@ -21,10 +24,12 @@
                 <node1 type="TextField"/>
                 <node2 type="TextField"/>
             </section>
+        </childnodes>
+        <childnodes1>
             <section1 type="ArrayField">
                 <nodeX type="TextField"></nodeX>
                 <nodeZ type="TextField"></nodeZ>
             </section1>
-        </childnodes>
+        </childnodes1>
     </items>
 </model>

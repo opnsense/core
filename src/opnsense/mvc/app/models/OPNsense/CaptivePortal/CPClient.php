@@ -1,37 +1,31 @@
 <?php
-/*
-    # Copyright (C) 2014 Deciso B.V.
-    #
-    # All rights reserved.
-    #
-    # Redistribution and use in source and binary forms, with or without
-    # modification, are permitted provided that the following conditions are met:
-    #
-    # 1. Redistributions of source code must retain the above copyright notice,
-    #    this list of conditions and the following disclaimer.
-    #
-    # 2. Redistributions in binary form must reproduce the above copyright
-    #    notice, this list of conditions and the following disclaimer in the
-    #    documentation and/or other materials provided with the distribution.
-    #—
-    # THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    # POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-    package : Captive portal
-    function: main package for captive portal backend functionality
-
-*/
-
-
+/**
+ *    Copyright (C) 2015 Deciso B.V.
+ *
+ *    All rights reserved.
+ *
+ *    Redistribution and use in source and binary forms, with or without
+ *    modification, are permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *
+ *    2. Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *
+ *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *    POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
 namespace OPNsense\CaptivePortal;
 
 use \Phalcon\Logger\Adapter\Syslog;
@@ -39,7 +33,7 @@ use \Phalcon\DI\FactoryDefault;
 use \OPNsense\Core;
 
 /**
- * Class CPClient
+ * Class CPClient main class for captive portal backend functionality
  * // TODO: CARP interfaces are probably not handled correctly
  * @package CaptivePortal
  */
@@ -79,7 +73,7 @@ class CPClient
     /**
      * reset traffic counters
      *
-     * @param null $rulenum
+     * @param string|null $rulenum
      */
     public function zeroCounters($rulenum = null)
     {
@@ -136,7 +130,7 @@ class CPClient
 
     /**
      * update zone(s) with new configuration data
-     * @param string $zone
+     * @param string|null $zone
      */
     public function update($zone = null)
     {
@@ -146,7 +140,7 @@ class CPClient
 
     /**
      * refresh allowed ip's for defined zone ( null for all zones )
-     * @param string $cpzone
+     * @param string|null $cpzone
      */
     public function refreshAllowedIPs($cpzone = null)
     {
@@ -256,7 +250,7 @@ class CPClient
      * To be able to grant access to physical pc's, we need to do some administration.
      * Our captive portal database keeps a list of every used address and last know mac address
      *
-     * @param string $cpzone zone name or number
+     * @param string|null $cpzone zone name or number
      */
     public function refreshAllowedMACs($cpzone = null)
     {
@@ -450,14 +444,14 @@ class CPClient
      * @param string $clientip
      * @param string $clientmac
      * @param string $username
-     * @param string $password
-     * @param string $bw_up
-     * @param string $bw_down
-     * @param string $radiusctx
-     * @param int $session_timeout
-     * @param int $idle_timeout
-     * @param int $session_terminate_time
-     * @param int $interim_interval
+     * @param string|null $password
+     * @param string|null $bw_up
+     * @param string|null $bw_down
+     * @param string|null $radiusctx
+     * @param int|null $session_timeout
+     * @param int|null $idle_timeout
+     * @param int|null $session_terminate_time
+     * @param int|null $interim_interval
      * @return bool|string
      */
     public function portalAllow(
@@ -601,7 +595,7 @@ class CPClient
 
     /**
      * flush zone (null flushes all zones)
-     * @param string $zone zone name or id
+     * @param string|null $zone zone name or id
      */
     public function flush($zone = null)
     {
@@ -638,7 +632,7 @@ class CPClient
 
     /**
      * cleanup portal sessions
-     * @param $cpzone zone name
+     * @param $cpzone|null zone name
      */
     public function portalCleanupSessions($cpzone = null)
     {
@@ -711,7 +705,7 @@ class CPClient
 
     /**
      * list (ipfw) accounting information
-     * @param string $ipaddr  ip address
+     * @param string|null $ipaddr  ip address
      * @return array (key = hosts ip)
      */
     public function listAccounting($ipaddr = null)
@@ -747,7 +741,7 @@ class CPClient
     /**
      * disconnect a session or a list of sessions depending on the parameter
      * @param string $cpzonename zone name or id
-     * @param string $sessionid
+     * @param string $sessionid session id
      */
     public function disconnect($cpzonename, $sessionid)
     {
