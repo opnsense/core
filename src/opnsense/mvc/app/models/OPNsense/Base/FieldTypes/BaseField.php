@@ -54,7 +54,7 @@ abstract class BaseField
     /**
      * @var string direct reference to this field in the model object
      */
-    protected $internalReference = "";
+    protected $internalReference = null;
 
     /**
      * @var string tag name for this object, either the last part of the reference.
@@ -94,6 +94,30 @@ abstract class BaseField
     {
         $this->internalReference = $ref;
         $this->internalXMLTagName = $tagname;
+    }
+
+    /**
+     * reset on clone
+     */
+    public function __clone()
+    {
+        $this->internalIsVirtual = false ;
+        $this->internalValue = "";
+        $this->internalReference = null;
+    }
+
+    /**
+     * change internal reference, if set it can't be changed for safety purposes.
+     * @param $ref internal reference
+     * @throws \Exception change exception
+     */
+    public function setInternalReference($ref)
+    {
+        if ($this->internalReference == null) {
+            $this->internalReference = $ref;
+        } else {
+            throw new \Exception("cannot change internal reference");
+        }
     }
 
     /**
@@ -143,6 +167,8 @@ abstract class BaseField
     {
         if (array_key_exists($name, $this->internalChildnodes)) {
             $this->internalChildnodes[$name]->setValue($value);
+        } else {
+            throw new \InvalidArgumentException($name." not an attribute of ". $this->internalReference);
         }
     }
 
@@ -186,6 +212,14 @@ abstract class BaseField
     public function setInternalIsVirtual()
     {
         $this->internalIsVirtual = true;
+    }
+
+    /**
+     * @return bool is virtual node
+     */
+    public function getInternalIsVirtual()
+    {
+        return $this->internalIsVirtual;
     }
 
     /**

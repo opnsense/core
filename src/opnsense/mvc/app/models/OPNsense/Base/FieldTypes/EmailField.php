@@ -48,7 +48,7 @@ class EmailField extends BaseField
     public function getValidators()
     {
         if ($this->internalValidationMessage == null) {
-            $msg = "email address invalid for " . $this->internalReference;
+            $msg = "email address invalid" ;
         } else {
             $msg = $this->internalValidationMessage;
         }
@@ -58,6 +58,5 @@ class EmailField extends BaseField
             // empty field and not required, skip this validation.
             return array();
         }
-
     }
 }

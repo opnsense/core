@@ -35,12 +35,87 @@ namespace OPNsense\Base\FieldTypes;
 class ArrayField extends BaseField
 {
     /**
+     * @var int item index
+     */
+    private $internalArrayCounter = 0 ;
+
+    /**
+     * @var null|BaseField node to use for copying
+     */
+    private $internalTemplateNode = null;
+
+    /**
      * add Childnode (list), ignore the name of this item
      * @param string $name property name
      * @param BaseField $node content (must be of type BaseField)
      */
     public function addChildNode($name, $node)
     {
-            $this->internalChildnodes[] = $node;
+            $this->internalChildnodes[(string)$this->internalArrayCounter] = $node;
+            $this->internalArrayCounter++;
+    }
+
+    /**
+     *
+     */
+    private function internalCopyStructure()
+    {
+        // always make sure there's a node to copy our structure from
+        if ($this->internalTemplateNode ==null) {
+            $this->internalTemplateNode = $this->internalChildnodes["0"];
+            /**
+             * if first node is empty, remove reference node.
+             */
+            if ($this->internalChildnodes["0"]->getInternalIsVirtual()) {
+                unset($this->internalChildnodes["0"]);
+                $this->internalArrayCounter--;
+            }
+        }
+    }
+
+    /**
+     * add new node containing the types from the first node (copy)
+     * @return ContainerField created node
+     * @throws \Exception
+     */
+    public function add()
+    {
+        $this->internalCopyStructure();
+
+        $new_record = array();
+        foreach ($this->internalTemplateNode->__items as $key => $node) {
+            if ($node->isContainer()) {
+                // validate child nodes, nesting not supported in this version.
+                throw new \Exception("Unsupported copy, Array doesn't support nesting.");
+            }
+            $new_record[$key] = clone $node ;
+        }
+
+        $container_node = new ContainerField(
+            $this->__reference . "." . $this->internalArrayCounter,
+            $this->internalXMLTagName
+        );
+
+        foreach ($new_record as $key => $node) {
+            $node->setInternalReference($container_node->__reference.".".$key);
+            $container_node->addChildNode($key, $node);
+        }
+
+        // add node to this object
+        $this->addChildNode(null, $container_node);
+
+        return $container_node;
+    }
+
+    /**
+     * remove item by id (number)
+     * @param $index index number
+     */
+    public function del($index)
+    {
+        $this->internalCopyStructure();
+        if (array_key_exists((string)$index, $this->internalChildnodes)) {
+            unset($this->internalChildnodes[$index]);
+        }
     }
 }

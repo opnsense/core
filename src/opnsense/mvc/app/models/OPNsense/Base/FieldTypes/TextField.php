@@ -28,6 +28,8 @@
  */
 namespace OPNsense\Base\FieldTypes;
 
+use Phalcon\Validation\Validator\Regex;
+
 /**
  * Class TextField
  * @package OPNsense\Base\FieldTypes
@@ -51,5 +53,23 @@ class TextField extends BaseField
     public function setMask($value)
     {
         $this->internalMask = $value ;
+    }
+
+    /**
+     * @return array returns Text/regex validator
+     */
+    public function getValidators()
+    {
+        if ($this->internalValidationMessage == null) {
+            $msg = "text validation error" ;
+        } else {
+            $msg = $this->internalValidationMessage;
+        }
+        if (($this->internalIsRequired == true || $this->internalValue != null) && $this->internalMask != null) {
+            return array(new Regex(array('message' => $msg,'pattern'=>trim($this->internalMask))));
+        } else {
+            // empty field and not required, skip this validation.
+            return array();
+        }
     }
 }

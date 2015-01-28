@@ -185,7 +185,8 @@ class Config extends Singleton
     }
 
     /**
-     * @return mixed return xml text representation of this config
+     * return xml text representation of this config
+     * @return mixed string interpretation of this object
      */
     public function __toString()
     {
@@ -196,6 +197,57 @@ class Config extends Singleton
         $dom->loadXML($this->configxml->saveXML());
 
         return $dom->saveXML();
+
+    }
+
+    /**
+     * backup current (running) config
+     * @param string|null $message log message
+     */
+    private function backup($message)
+    {
+        $target_dir = dirname($this->config_file)."/backup/";
+        $target_filename = "config-".time().".xml";
+
+        if (file_exists($target_dir)) {
+            copy($this->config_file, $target_dir.$target_filename);
+        }
+
+    }
+
+    /**
+     * save config to filesystem
+     * @param string|null $message log message
+     * @param bool $nobackup do not backup current config
+     * @throws ConfigException
+     */
+    public function save($message = null, $nobackup = false)
+    {
+        $xml_text = $this->__toString();
+        if ($nobackup == false) {
+            $this->backup($message);
+        }
+
+        // save configuration, try to obtain a lock before doing so.
+        $target_filename = $this->config_file;
+        if (file_exists($target_filename)) {
+            $fp = fopen($target_filename, "r+");
+        } else {
+            // apparently we're missing the config, not expected but open a new one.
+            $fp = fopen($target_filename, "w+");
+        }
+
+        if (flock($fp, LOCK_EX)) {
+            // lock aquired, truncate and write new data
+            ftruncate($fp, 0);
+            fwrite($fp, $xml_text);
+            // flush and unlock
+            fflush($fp);
+            flock($fp, LOCK_UN);
+        } else {
+            throw new ConfigException("Unable to lock config");
+        }
+
 
     }
 }
