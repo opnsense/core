@@ -338,4 +338,44 @@ abstract class BaseModel
         }
         $this->internalSerializeToConfig();
     }
+
+    /**
+     * find node by reference starting at the root node
+     * @param BaseField $node source node
+     * @param string $reference node reference (point separated "node.subnode.subsubnode")
+     * @return BaseField|null field node by reference (or null if not found)
+     */
+    public function getNodeByReference($reference)
+    {
+        $parts = explode(".", $reference);
+
+        $node = $this->internalData;
+        while (count($parts)>0) {
+            $childName = array_shift($parts);
+            if (array_key_exists($childName, $node->getChildren())) {
+                $node = $node->getChildren()[$childName];
+            } else {
+                return null;
+            }
+
+        }
+        return $node;
+    }
+
+    /**
+     * set node value by name (if reference exists)
+     * @param string $reference node reference (point separated "node.subnode.subsubnode")
+     * @param string $value
+     * @return bool value saved yes/no
+     */
+    public function setNodeByReference($reference, $value)
+    {
+        $node =$this->getNodeByReference($reference);
+        if ($node != null) {
+            $node->setValue($value);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

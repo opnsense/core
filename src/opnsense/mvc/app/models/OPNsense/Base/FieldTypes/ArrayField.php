@@ -56,7 +56,7 @@ class ArrayField extends BaseField
     }
 
     /**
-     *
+     * copy first node pointer as template node to make sure we always have a template to create new nodes from.
      */
     private function internalCopyStructure()
     {

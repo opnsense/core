@@ -43,4 +43,22 @@ class ControllerBase extends Controller
     {
         $this->view->setTemplateBefore('default');
     }
+
+    /**
+     * @param $dispatcher
+     */
+    public function beforeExecuteRoute($dispatcher)
+    {
+        // Execute before every found action
+        // TODO: implement default behavior
+    }
+
+    /**
+     * @param $dispatcher
+     */
+    public function afterExecuteRoute($dispatcher)
+    {
+        // Executed after every found action
+        // TODO: implement default behavior
+    }
 }

@@ -30,6 +30,7 @@ namespace OPNsense\Sample;
 
 use Phalcon\Mvc\Controller;
 use \OPNsense\Base\ControllerBase;
+use \OPNsense\Core\Config;
 
 /**
  * Class PageController
@@ -37,10 +38,50 @@ use \OPNsense\Base\ControllerBase;
  */
 class PageController extends ControllerBase
 {
+    /**
+     * controller for sample index page, defaults to http://<host>/sample/page
+     */
     public function indexAction()
     {
-        $this->view->title = "XXX";
+        // load model and send to view, this model is automatically filled with data from the config.xml
+        $mdlSample = new Sample();
+        $this->view->sample = $mdlSample;
+
+        // set title and pick a template
+        $this->view->title = "test page";
         $this->view->pick('OPNsense/Sample/page');
+    }
+
+    public function saveAction()
+    {
+        // save action should be a post, redirect to index
+        if ($this->request->isPost() == true) {
+            // create model(s)
+            $mdlSample = new Sample();
+
+            // Access POST data and save parts to model
+            foreach ($this->request->getPost() as $key => $value) {
+                $refparts = explode("_", $key);
+                if (array_shift($refparts) == "sample") {
+                    // this post item belongs to the Sample model (prefixed in view)
+                    $mdlSample->setNodeByReference(implode(".", $refparts), $value);
+                }
+            }
+            $mdlSample->serializeToConfig();
+            $cnf = Config::getInstance();
+            $cnf->save();
+
+            // redirect to index
+            $this->dispatcher->forward(array(
+                "action" => "index"
+            ));
+
+        } else {
+            // Forward flow to the index action
+            $this->dispatcher->forward(array(
+                "action" => "index"
+            ));
+        }
     }
 
     public function showAction($postId)

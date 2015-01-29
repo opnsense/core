@@ -306,4 +306,5 @@ abstract class BaseField
             $this->internalIsRequired = false;
         }
     }
+
 }
