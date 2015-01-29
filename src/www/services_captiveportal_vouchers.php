@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2007 Marcel Wiget <mwiget@mac.com>
@@ -26,15 +27,16 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-if ($_POST['postafterlogin'])
-	$nocsrf= true;
+if ($_POST['postafterlogin']) {
+	$nocsrf = true;
+}
 
-require("guiconfig.inc");
-require("functions.inc");
-require_once("filter.inc");
-require("shaper.inc");
-require("captiveportal.inc");
-require_once("voucher.inc");
+require_once('guiconfig.inc');
+require_once('functions.inc');
+require_once('filter.inc');
+require_once('shaper.inc');
+require_once('captiveportal.inc');
+require_once('voucher.inc');
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_captiveportal_vouchers.php');
 
@@ -47,19 +49,21 @@ if (empty($cpzone)) {
         exit;
 }
 
-if($_REQUEST['generatekey']) {
-	exec("/usr/bin/openssl genrsa 64 > /tmp/key64.private");
-	exec("/usr/bin/openssl rsa -pubout < /tmp/key64.private > /tmp/key64.public");
-	$privatekey = str_replace("\n", "\\n", file_get_contents("/tmp/key64.private"));
-	$publickey = str_replace("\n", "\\n", file_get_contents("/tmp/key64.public"));
-	exec("rm /tmp/key64.private /tmp/key64.public");
-	$alertmessage = gettext("You will need to recreate any existing Voucher Rolls due to the public and private key changes. Click cancel if you do not wish to recreate the vouchers.");
-	echo json_encode(array(
-		'alertmessage' => $alertmessage,
-		'privatekey' => $privatekey,
-		'publickey' => $publickey,
-	));
-	exit;
+function generatekey($exponent)
+{
+	$ret = array();
+
+	/* generate a random 64 bit RSA key pair using the voucher binary */
+	$fd = popen(sprintf('/usr/local/bin/voucher -g 64 -e %s', $exponent), 'r');
+	if ($fd !== false) {
+		$output = fread($fd, 16384);
+		pclose($fd);
+		list($privkey, $pubkey) = explode("\0", $output);
+		$ret['priv'] = $privkey;
+		$ret['pub'] = $pubkey;
+	}
+
+	return $ret;
 }
 
 if (!is_array($config['captiveportal']))
@@ -103,16 +107,28 @@ if (!isset($config['voucher'][$cpzone]['exponent'])) {
 	unset($exponent);
 }
 
+if ($_REQUEST['generatekey']) {
+	$key = generatekey($config['voucher'][$cpzone]['exponent']);
+
+	$alertmessage = _(
+		'You will need to recreate any existing Voucher Rolls due ' .
+		'to the public and private key changes. Click cancel if you ' .
+		'do not wish to recreate the vouchers.'
+	);
+
+	echo json_encode(array(
+		'alertmessage' => $alertmessage,
+		'privatekey' => $key['priv'],
+		'publickey' => $key['pub'],
+	));
+
+	exit;
+}
+
 if (!isset($config['voucher'][$cpzone]['publickey'])) {
-	/* generate a random 64 bit RSA key pair using the voucher binary */
-	$fd = popen("/usr/local/bin/voucher -g 64 -e " . $config['voucher'][$cpzone]['exponent'], "r");
-	if ($fd !== false) {
-		$output = fread($fd, 16384);
-		pclose($fd);
-		list($privkey, $pubkey) = explode("\0", $output);
-		$config['voucher'][$cpzone]['publickey'] = base64_encode($pubkey);
-		$config['voucher'][$cpzone]['privatekey'] = base64_encode($privkey);
-	}
+	$key = generatekey($config['voucher'][$cpzone]['exponent']);
+	$config['voucher'][$cpzone]['publickey'] = base64_encode($key['pub']);
+	$config['voucher'][$cpzone]['privatekey'] = base64_encode($key['priv']);
 }
 
 // Check for invalid or expired vouchers
@@ -407,7 +423,6 @@ function enable_change(enable_change) {
 	for(var x=0; x < <?php echo count($a_roll); ?>; x++)
 		jQuery('#addeditdelete' + x).show();
 	jQuery('#addnewroll').show();
-	//}
 }
 //]]>
 </script>
