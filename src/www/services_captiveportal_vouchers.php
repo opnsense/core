@@ -54,13 +54,11 @@ if($_REQUEST['generatekey']) {
 	$publickey = str_replace("\n", "\\n", file_get_contents("/tmp/key64.public"));
 	exec("rm /tmp/key64.private /tmp/key64.public");
 	$alertmessage = gettext("You will need to recreate any existing Voucher Rolls due to the public and private key changes. Click cancel if you do not wish to recreate the vouchers.");
-	echo <<<EOF
-		jQuery('#publickey').val('{$publickey}');
-		jQuery('#privatekey').val('{$privatekey}');
-		alert('{$alertmessage}');
-		jQuery('#publickey').effect('highlight');
-		jQuery('#privatekey').effect('highlight');
-EOF;
+	echo json_encode(array(
+		'alertmessage' => $alertmessage,
+		'privatekey' => $privatekey,
+		'publickey' => $publickey,
+	));
 	exit;
 }
 
@@ -361,6 +359,9 @@ if ($pconfig['enable']) {
 }
 
 ?>
+
+<body>
+
 <script type="text/javascript">
 //<![CDATA[
 function generatenewkey() {
@@ -368,10 +369,14 @@ function generatenewkey() {
 	jQuery('#privatekey').val('One moment please...');
 	jQuery.ajax("services_captiveportal_vouchers.php?zone=<?php echo($cpzone); ?>&generatekey=true", {
 		type: 'get',
-		success: function(data) {
-			eval(data);
-		}
-	});
+		dataType: 'json',
+		success: function(json) {
+			jQuery('#privatekey').val(json.privatekey);
+			jQuery('#publickey').val(json.publickey);
+			jQuery('#privatekey').addClass('alert-warning');
+			jQuery('#publickey').addClass('alert-warning');
+			alert(json.alertmessage);
+	}});
 }
 function before_save() {
 	document.iform.charset.disabled = false;
@@ -399,35 +404,14 @@ function enable_change(enable_change) {
 	document.iform.privatekey.disabled = endis;
 	document.iform.msgnoaccess.disabled = endis;
 	document.iform.msgexpired.disabled = endis;
-	document.iform.vouchersyncdbip.disabled = endis;
-	document.iform.vouchersyncport.disabled = endis;
-	document.iform.vouchersyncpass.disabled = endis;
-	document.iform.vouchersyncusername.disabled = endis;
-	if(document.iform.vouchersyncusername.value != "") {
-		document.iform.charset.disabled = true;
-		document.iform.rollbits.disabled = true;
-		document.iform.ticketbits.disabled = true;
-		document.iform.checksumbits.disabled = true;
-		document.iform.magic.disabled = true;
-		document.iform.publickey.disabled = true;
-		document.iform.privatekey.disabled = true;
-		document.iform.msgnoaccess.disabled = true;
-		document.iform.msgexpired.disabled = true;
-		for(var x=0; x < <?php echo count($a_roll); ?>; x++)
-			jQuery('#addeditdelete' + x).hide();
-		jQuery('#addnewroll').hide();
-	} else {
-		for(var x=0; x < <?php echo count($a_roll); ?>; x++)
-			jQuery('#addeditdelete' + x).show();
-		jQuery('#addnewroll').show();
-	}
+	for(var x=0; x < <?php echo count($a_roll); ?>; x++)
+		jQuery('#addeditdelete' + x).show();
+	jQuery('#addnewroll').show();
+	//}
 }
 //]]>
 </script>
-</head>
 
-
-<body>
 	<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
@@ -598,40 +582,6 @@ function enable_change(enable_change) {
 														&nbsp;
 													</td>
 												</tr>
-<!-- voucher xmlrpc, disabled
-												<tr>
-													<td colspan="2" valign="top" class="listtopic"><?=gettext("Voucher database synchronization"); ?></td>
-												</tr>
-												<tr>
-													<td width="22%" valign="top" class="vncellreq"><?=gettext("Synchronize Voucher Database IP"); ?></td>
-													<td width="78%" class="vtable">
-														<input name="vouchersyncdbip" type="text" class="formfld" id="vouchersyncdbip" size="17" value="<?=htmlspecialchars($pconfig['vouchersyncdbip']);?>" />
-														<br /><?=gettext("IP address of master nodes webConfigurator to synchronize voucher database and used vouchers from."); ?>
-														<br /><?=gettext("NOTE: this should be setup on the slave nodes and not the primary node!"); ?>
-													</td>
-												</tr>
-												<tr>
-													<td width="22%" valign="top" class="vncellreq"><?=gettext("Voucher sync port"); ?></td>
-													<td width="78%" class="vtable">
-														<input name="vouchersyncport" type="text" class="formfld" id="vouchersyncport" size="7" value="<?=htmlspecialchars($pconfig['vouchersyncport']);?>" />
-														<br /><?=gettext("This is the port of the master voucher nodes webConfigurator.  Example: 443"); ?>
-													</td>
-												</tr>
-												<tr>
-													<td width="22%" valign="top" class="vncellreq"><?=gettext("Voucher sync username"); ?></td>
-													<td width="78%" class="vtable">
-														<input name="vouchersyncusername" type="text" class="formfld" id="vouchersyncusername" size="25" value="<?=htmlspecialchars($pconfig['vouchersyncusername']);?>" autocomplete="off" />
-														<br /><?=gettext("This is the username of the master voucher nodes webConfigurator."); ?>
-													</td>
-												</tr>
-												<tr>
-													<td width="22%" valign="top" class="vncellreq"><?=gettext("Voucher sync password"); ?></td>
-													<td width="78%" class="vtable">
-														<input name="vouchersyncpass" type="password" class="formfld" id="vouchersyncpass" size="25" value="<?=htmlspecialchars($pconfig['vouchersyncpass']);?>" autocomplete="off" />
-														<br /><?=gettext("This is the password of the master voucher nodes webConfigurator."); ?>
-													</td>
-												</tr>
--->
 												<tr>
 													<td width="22%" valign="top">&nbsp;</td>
 													<td width="78%">
