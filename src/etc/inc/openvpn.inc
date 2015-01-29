@@ -1,19 +1,9 @@
 <?php
+
 /*
-	openvpn.inc part of pfSense
-
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
-	All rights reserved.
-
 	Copyright (C) 2006  Fernando Lemos
-	All rights reserved.
-
-	This file was rewritten from scratch by Fernando Lemos but
-	*MIGHT* contain code previously written by:
-
 	Copyright (C) 2005 Peter Allgeyer <allgeyer_AT_web.de>
-	All rights reserved.
-
 	Copyright (C) 2004 Peter Curran (peter@closeconsultants.com).
 	All rights reserved.
 
@@ -37,17 +27,12 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-	DISABLE_PHP_LINT_CHECKING
-
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/openvpn	/usr/bin/openssl	/sbin/ifconfig
-	pfSense_MODULE:	openvpn
-
 */
+
 require_once('config.inc');
-require_once("certs.inc");
+require_once('certs.inc');
 require_once('pfsense-utils.inc');
-require_once("auth.inc");
+require_once('auth.inc');
 
 global $openvpn_prots;
 $openvpn_prots = array("UDP", "UDP6", "TCP", "TCP6");
@@ -120,18 +105,6 @@ $openvpn_compression_modes = array(
 function openvpn_create_key() {
 
 	$fp = popen("/usr/local/sbin/openvpn --genkey --secret /dev/stdout 2>/dev/null", "r");
-	if (!$fp)
-		return false;
-
-	$rslt = stream_get_contents($fp);
-	pclose($fp);
-
-	return $rslt;
-}
-
-function openvpn_create_dhparams($bits) {
-
-	$fp = popen("/usr/bin/openssl dhparam {$bits} 2>/dev/null", "r");
 	if (!$fp)
 		return false;
 
@@ -1425,5 +1398,3 @@ function openvpn_restart_by_vpnid($mode, $vpnid) {
 	$settings = openvpn_get_settings($mode, $vpnid);
 	openvpn_restart($mode, $settings);
 }
-
-?>
