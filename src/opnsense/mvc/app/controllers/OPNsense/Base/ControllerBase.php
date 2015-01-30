@@ -29,6 +29,7 @@
 namespace OPNsense\Base;
 
 use Phalcon\Mvc\Controller;
+use Phalcon\Translate\Adapter\NativeArray;
 
 /**
  * Class ControllerBase implements core controller for OPNsense framework
@@ -37,10 +38,26 @@ use Phalcon\Mvc\Controller;
 class ControllerBase extends Controller
 {
     /**
+     * translate a text
+     * @param string $tag input text
+     * @return string
+     */
+    public function getTranslator()
+    {
+        // TODO: implement language service
+        $messages = array();
+        return new \Phalcon\Translate\Adapter\NativeArray(array(
+            "content" => $messages
+        ));
+
+    }
+
+    /**
      * Default action. Set the standard layout.
      */
     public function initialize()
     {
+        // set base template
         $this->view->setTemplateBefore('default');
     }
 
@@ -50,7 +67,7 @@ class ControllerBase extends Controller
     public function beforeExecuteRoute($dispatcher)
     {
         // Execute before every found action
-        // TODO: implement default behavior
+        $this->view->setVar('lang', $this->getTranslator());
     }
 
     /**

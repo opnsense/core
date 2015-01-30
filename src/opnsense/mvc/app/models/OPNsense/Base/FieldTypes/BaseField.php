@@ -33,6 +33,10 @@ namespace OPNsense\Base\FieldTypes;
 /**
  * Class BaseField
  * @package OPNsense\Base\FieldTypes
+ * @property-read string $__reference this tag absolute reference (node.subnode.subnode)
+ * @property-read string $__type this tag's class Name ( example TextField )
+ * @property-read string $__Ixx get tag by index/name even if the name is a number
+ * @property-read array $__items this node's children
  */
 abstract class BaseField
 {
@@ -151,12 +155,18 @@ abstract class BaseField
             return $result;
         } elseif ($name == '__reference') {
             return $this->internalReference;
+        } elseif ($name == '__type') {
+            return $this->getObjectType();
+        } elseif (strrpos($name, "__I") === 0) {
+            // direct index item assignment
+            return $this->__get(substr($name, 3));
         } else {
             // not found
             return null;
         }
 
     }
+
 
     /**
      * reflect default setter to internal child nodes
@@ -307,4 +317,13 @@ abstract class BaseField
         }
     }
 
+    /**
+     * return object type as string
+     * @return string
+     */
+    public function getObjectType()
+    {
+        $parts = explode("\\", get_class($this));
+        return $parts[count($parts)-1];
+    }
 }

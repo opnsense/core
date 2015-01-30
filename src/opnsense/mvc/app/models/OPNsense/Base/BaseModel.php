@@ -219,6 +219,15 @@ abstract class BaseModel
     }
 
     /**
+     * forward to root node's getFlatNodes
+     * @return array all children
+     */
+    public function getFlatNodes()
+    {
+        return $this->internalData->getFlatNodes();
+    }
+
+    /**
      * validate full model using all fields and data in a single (1 deep) array
      */
     public function performValidation()

@@ -39,19 +39,55 @@ use \OPNsense\Core\Config;
 class PageController extends ControllerBase
 {
     /**
+     * update model with data from our request
+     * @param BaseModel &$mdlSample model to update
+     */
+    private function updateModelWithPost(&$mdlSample)
+    {
+        // Access POST data and save parts to model
+        foreach ($this->request->getPost() as $key => $value) {
+            $refparts = explode("_", $key);
+            if (array_shift($refparts) == "sample") {
+                // this post item belongs to the Sample model (see prefix in view)
+                $node_found = $mdlSample->setNodeByReference(implode(".", $refparts), $value);
+                // new node in the post which is not on disc, create a new child node
+                // we need to create new nodes in memory for Array types
+                if ($node_found == null && strpos($key, 'childnodes_section_') !== false) {
+                    // because all the array items are numbered in order, we know that any item not found
+                    // must be a new one.
+                    $mdlSample->childnodes->section->add();
+                    $mdlSample->setNodeByReference(implode(".", $refparts), $value);
+                }
+            }
+        }
+    }
+
+    /**
      * controller for sample index page, defaults to http://<host>/sample/page
      */
-    public function indexAction()
+    public function indexAction($error_msg = array())
     {
         // load model and send to view, this model is automatically filled with data from the config.xml
         $mdlSample = new Sample();
         $this->view->sample = $mdlSample;
+
+        // got forwarded with errors, load form data from post and update on our model
+        if ($this->request->isPost() == true && count($error_msg) >0) {
+            $this->updateModelWithPost($mdlSample);
+        }
+
+        // send error messages to view
+        $this->view->error_messages = $error_msg;
 
         // set title and pick a template
         $this->view->title = "test page";
         $this->view->pick('OPNsense/Sample/page');
     }
 
+    /**
+     * Example save action
+     * @throws \Phalcon\Validation\Exception
+     */
     public function saveAction()
     {
         // save action should be a post, redirect to index
@@ -59,17 +95,49 @@ class PageController extends ControllerBase
             // create model(s)
             $mdlSample = new Sample();
 
-            // Access POST data and save parts to model
-            foreach ($this->request->getPost() as $key => $value) {
-                $refparts = explode("_", $key);
-                if (array_shift($refparts) == "sample") {
-                    // this post item belongs to the Sample model (prefixed in view)
-                    $mdlSample->setNodeByReference(implode(".", $refparts), $value);
+            // update model with request data
+            $this->updateModelWithPost($mdlSample);
+
+            if ($this->request->getPost("form_action") == "add") {
+                // implement addRow, append new model row and serialize to config
+                $mdlSample->childnodes->section->add();
+                $mdlSample->serializeToConfig();
+            } elseif ($this->request->getPost("form_action") == "save") {
+                // implement save, possible removing
+                if ($this->request->hasPost("delete")) {
+                    // delete selected Rows, cannot combine with add because of the index numbering
+                    foreach ($this->request->getPost("delete") as $node_ref => $option_key) {
+                        $refparts = explode(".", $node_ref);
+                        $delete_key = array_pop($refparts);
+                        $parentNode = $mdlSample->getNodeByReference(implode(".", $refparts));
+                        if ($parentNode != null) {
+                            $parentNode->del($delete_key);
+                        }
+
+                    }
                 }
+
+                // save data to config
+                $validationOutput = $mdlSample->performValidation();
+                if ($validationOutput->count() > 0) {
+                    // forward to index including errors
+                    $error_msgs = array();
+                    foreach ($validationOutput as $msg) {
+                        $error_msgs[] = array("field" => $msg-> getField(), "msg" => $msg->getMessage());
+                    }
+
+                    // redirect to index
+                    $this->dispatcher->forward(array(
+                        "action" => "index",
+                        "params" => array($error_msgs)
+                    ));
+                    return false;
+                }
+
+                $mdlSample->serializeToConfig();
+                $cnf = Config::getInstance();
+                $cnf->save();
             }
-            $mdlSample->serializeToConfig();
-            $cnf = Config::getInstance();
-            $cnf->save();
 
             // redirect to index
             $this->dispatcher->forward(array(
@@ -84,28 +152,4 @@ class PageController extends ControllerBase
         }
     }
 
-    public function showAction($postId)
-    {
-        $sample = new Sample();
-        $this->view->title = $sample->title;
-        $this->view->items = array(array('field_name' =>'test', 'field_content'=>'1234567','field_type'=>"text") );
-        $this->view->data = $sample ;
-
-        // Pass the $postId parameter to the view
-        //$this->view->setVar("postId", $postId);
-//        $robot = new Sample\Sample();
-//        $robot->title = 'hoi';
-//
-//        $this->view->title = $postId. "/". $this->persistent->name;
-//
-        $this->view->pick('OPNsense/Sample/page.show');
-
-//        $this->flash->error("You don't have permission to access this area");
-//
-//        // Forward flow to another action
-//        $this->dispatcher->forward(array(
-//            "controller" => "sample",
-//            "action" => "index"
-//        ));
-    }
 }
