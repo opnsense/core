@@ -1957,20 +1957,28 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 														<tr style='display:none' id="show_basic_dhcpalias-address">
 															<td width="22%" valign="top" class="vncell"><?=gettext("Alias IPv4 address"); ?></td>
 															<td width="78%" class="vtable">
-																<input name="alias-address" type="text" class="form-control unknown" id="alias-address" size="20" value="<?=htmlspecialchars($pconfig['alias-address']);?>" />
-																<select name="alias-subnet" class="selectpicker" data-style="btn-default" id="alias-subnet">
-																	<?php
-																	for ($i = 32; $i > 0; $i--) {
-																		if($i <> 31) {
-																			echo "<option value=\"{$i}\" ";
-																			if ($i == $pconfig['alias-subnet']) echo "selected=\"selected\"";
-																			echo ">" . $i . "</option>";
-																		}
-																	}
-																	?>
-																</select>
-																<?=gettext("The value in this field is used as a fixed alias IPv4 address by the " .
-																"DHCP client."); ?>
+																<table>
+																	<tr>
+																		<td>
+																			<input name="alias-address" type="text" class="form-control unknown" id="alias-address" size="20" value="<?=htmlspecialchars($pconfig['alias-address']);?>" />
+																		</td>
+																		<td>
+																			<select name="alias-subnet" class="selectpicker" data-style="btn-default" id="alias-subnet" data-width="auto">
+																				<?php
+																				for ($i = 32; $i > 0; $i--) {
+																					if($i <> 31) {
+																						echo "<option value=\"{$i}\" ";
+																						if ($i == $pconfig['alias-subnet']) echo "selected=\"selected\"";
+																						echo ">" . $i . "</option>";
+																					}
+																				}
+																				?>
+																			</select>
+																			<?=gettext("The value in this field is used as a fixed alias IPv4 address by the " .
+																			"DHCP client."); ?>
+																		</td>
+																	</tr>
+																</table>
 															</td>
 														</tr>
 														<tr style='display:none' id="show_basic_dhcprejectlease">
