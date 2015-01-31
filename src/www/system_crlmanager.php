@@ -490,12 +490,12 @@ include("head.inc");
                         <?php else: ?>
                     <tr>
                     <th colspan="4">
-                    	<?=gettext("Revoke a Certificate"); ?>
-                   	</th>
-                   	</tr>
+			<?=gettext("Revoke a Certificate"); ?>
+			</th>
+			</tr>
 					<tr>
 						<td>
-							<b><?php echo gettext("Choose a Certificate to Revoke"); ?></b>:  
+							<b><?php echo gettext("Choose a Certificate to Revoke"); ?></b>:
 						</td>
 						<td colspan="3" align="left">
 							<select name='certref' id='certref' class="selectpicker" data-style="btn-default" data-live-search="true">
@@ -510,7 +510,7 @@ include("head.inc");
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo gettext("Reason");?></b>:
 						</td>
 						<td colspan="3" align="left">

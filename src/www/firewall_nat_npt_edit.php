@@ -220,13 +220,13 @@ include("head.inc");
 					                                        <tr>
 					                                                <td><?=gettext("Address:"); ?>&nbsp;&nbsp;</td>
 					                                                <td>
-					                                         			<table>
-					                                                		<tr>
-						                                                		<td width="348px">
+													<table>
+													<tr>
+														<td width="348px">
 							                                                        <input name="src" type="text" class="formfldalias" id="src" size="20" value="<?php if (!is_specialnet($pconfig['src'])) echo htmlspecialchars($pconfig['src']);?>" />
-					                                                        	</td>
-					                                                        	<td>
-					                                                        		<select name="srcmask" class="selectpicker" id="srcmask" data-width="auto">
+													</td>
+													<td>
+														<select name="srcmask" class="selectpicker" id="srcmask" data-width="auto">
 																						<?php for ($i = 128; $i > 0; $i--): ?>
 									                                                        <option value="<?=$i;?>" <?php if ($i == $pconfig['srcmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
 																						<?php endfor; ?>
@@ -256,20 +256,20 @@ include("head.inc");
 					                                        <tr>
 					                                                <td><?=gettext("Address:"); ?>&nbsp;&nbsp;</td>
 					                                                <td>
-					                                                		<table>
-					                                                			<tr>
-					                                                				<td width="348px">
-					                                                        			<input name="dst" type="text" class="formfldalias" id="dst" size="20" value="<?php if (!is_specialnet($pconfig['dst'])) echo htmlspecialchars($pconfig['dst']);?>" />
-					                                                        		</td>
-					                                                        		<td>
-					                                                        			<select name="dstmask" class="selectpicker" id="dstmask" data-width="auto">
+													<table>
+														<tr>
+															<td width="348px">
+															<input name="dst" type="text" class="formfldalias" id="dst" size="20" value="<?php if (!is_specialnet($pconfig['dst'])) echo htmlspecialchars($pconfig['dst']);?>" />
+														</td>
+														<td>
+															<select name="dstmask" class="selectpicker" id="dstmask" data-width="auto">
 																						<?php
 									                                                        for ($i = 128; $i > 0; $i--): ?>
 							                                                                <option value="<?=$i;?>" <?php if ($i == $pconfig['dstmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
 																						<?php endfor; ?>
 								                                                        </select>
-					                                                				</td>
-					                                                        	</tr>
+															</td>
+													</tr>
 					                                                        </table>
 					                                                </td>
 					                                        </tr>

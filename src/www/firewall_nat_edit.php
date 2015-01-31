@@ -716,7 +716,7 @@ include("head.inc");
 											<td>
 												<table>
 													<tr>
-														<td width="348px">	
+														<td width="348px">
 															<input autocomplete='off' name="dst" type="text" class="formfldalias" id="dst" size="20" value="<?php if (!is_specialnet($pconfig['dst'])) echo htmlspecialchars($pconfig['dst']);?>" />
 														</td>
 														<td>

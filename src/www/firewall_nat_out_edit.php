@@ -551,7 +551,7 @@ function poolopts_change() {
 													<td>
 														<table>
 															<tr>
-																<td width="348px">	
+																<td width="348px">
 																	<input name="source" type="text" autocomplete="off" class="formfldalias" id="source" size="20" value="<?=htmlspecialchars($pconfig['source']);?>" />
 																</td>
 																<td>
@@ -611,7 +611,7 @@ function poolopts_change() {
 													<td>
 														<table>
 															<tr>
-																<td width="348px">	
+																<td width="348px">
 																	<input name="destination" type="text" autocomplete="off" class="formfldalias" id="destination" size="20" value="<?=htmlspecialchars($pconfig['destination']);?>" />
 																</td>
 																<td>

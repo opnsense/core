@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Sample;
 
 use Phalcon\Mvc\Controller;
@@ -151,5 +153,4 @@ class PageController extends ControllerBase
             ));
         }
     }
-
 }

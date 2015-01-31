@@ -187,12 +187,12 @@ include("head.inc");
 						                  <td valign="top" class="vncellreq"><?=gettext("GRE tunnel remote address ");?></td>
 						                  <td class="vtable">
 						                    <table>
-						                    	<tr>
-						                    		<td width="285px">
-						                    			<input name="tunnel-remote-addr" type="text" class="form-control unknown ipv4v6" id="tunnel-remote-addr" size="16" value="<?=htmlspecialchars($pconfig['tunnel-remote-addr']);?>" />
-						                    		</td>
-						                    		<td>
-						                    			<select name="tunnel-remote-net" class="selectpicker ipv4v6" id="tunnel-remote-net" data-width="auto">
+									<tr>
+										<td width="285px">
+											<input name="tunnel-remote-addr" type="text" class="form-control unknown ipv4v6" id="tunnel-remote-addr" size="16" value="<?=htmlspecialchars($pconfig['tunnel-remote-addr']);?>" />
+										</td>
+										<td>
+											<select name="tunnel-remote-net" class="selectpicker ipv4v6" id="tunnel-remote-net" data-width="auto">
 					                                        <?php
 						                                        for ($i = 128; $i > 0; $i--) {
 															echo "<option value=\"{$i}\"";

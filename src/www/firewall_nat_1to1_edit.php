@@ -507,8 +507,8 @@ include("head.inc");
 													<td><?=gettext("Address:"); ?>&nbsp;&nbsp;</td>
 													<td>
 														<table>
-					                            			<tr>
-							                        			<td width="348px">
+											<tr>
+													<td width="348px">
 																	<input name="dst" type="text" autocomplete="off" class="formfldalias" id="dst" size="20" value="<?php if (!is_specialnet($pconfig['dst'])) echo htmlspecialchars($pconfig['dst']);?>" />
 																</td>
 																<td>

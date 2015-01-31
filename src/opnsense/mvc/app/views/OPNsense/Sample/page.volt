@@ -19,7 +19,7 @@
     {% endfor %}
 
     <br/><br/>
-    Edit the data 
+    Edit the data
 
 </div>
 

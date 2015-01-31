@@ -170,7 +170,7 @@ function typesel_change() {
 			//document.iform.srcmask.disabled = 1;
 			jQuery('#srcmask').selectpicker('val','');
 			jQuery('#srcmask').prop('disabled',true);
-			jQuery('#srcmask').selectpicker('refresh');		
+			jQuery('#srcmask').selectpicker('refresh');
 			break;
 	}
 	if( dstenabled )
