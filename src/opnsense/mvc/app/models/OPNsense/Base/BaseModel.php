@@ -192,7 +192,8 @@ abstract class BaseModel
         // We've loaded the model template, now let's parse it into this object
         $this->parseXml($model_xml->items, $config_array, $this->internalData) ;
 
-        //print_r($this->internalData);
+        // trigger post loading event
+        $this->internalData->eventPostLoading();
 
         // call Model initializer
         $this->init();

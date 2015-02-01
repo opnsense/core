@@ -54,7 +54,7 @@ class PageController extends ControllerBase
                 $node_found = $mdlSample->setNodeByReference(implode(".", $refparts), $value);
                 // new node in the post which is not on disc, create a new child node
                 // we need to create new nodes in memory for Array types
-                if ($node_found == null && strpos($key, 'childnodes_section_') !== false) {
+                if ($node_found == false && strpos($key, 'childnodes_section_') !== false) {
                     // because all the array items are numbered in order, we know that any item not found
                     // must be a new one.
                     $mdlSample->childnodes->section->add();
@@ -140,17 +140,12 @@ class PageController extends ControllerBase
                 $cnf = Config::getInstance();
                 $cnf->save();
             }
-
-            // redirect to index
-            $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
-
-        } else {
-            // Forward flow to the index action
-            $this->dispatcher->forward(array(
-                "action" => "index"
-            ));
         }
+
+        // redirect to index
+        $this->dispatcher->forward(array(
+            "action" => "index"
+        ));
+
     }
 }

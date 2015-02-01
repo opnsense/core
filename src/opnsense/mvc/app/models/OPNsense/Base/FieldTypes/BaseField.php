@@ -80,6 +80,25 @@ abstract class BaseField
      */
     protected $internalIsVirtual = false ;
 
+    /**
+     * Template action for post loading actions, triggered by eventPostLoadingEvent.
+     * Overwrite this method for custom loading hooks.
+     */
+    protected function actionPostLoadingEvent()
+    {
+        return;
+    }
+
+    /**
+     * trigger post loading event. (executed by BaseModel)
+     */
+    public function eventPostLoading()
+    {
+        foreach ($this->internalChildnodes as $nodeName => $node) {
+            $node->eventPostLoading();
+        }
+        $this->actionPostLoadingEvent();
+    }
 
     /**
      * @return bool returns if this a container type object (no data)
@@ -242,7 +261,7 @@ abstract class BaseField
     }
 
     /**
-     * Recursive method to flatten tree structure for easy validation.
+     * Recursive method to flatten tree structure for easy validation, returns only leaf nodes.
      * @return array named array with field type nodes, using the internal reference.
      */
     public function getFlatNodes()
@@ -326,4 +345,5 @@ abstract class BaseField
         $parts = explode("\\", get_class($this));
         return $parts[count($parts)-1];
     }
+
 }

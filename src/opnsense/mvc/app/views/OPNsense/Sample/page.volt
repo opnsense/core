@@ -12,10 +12,10 @@
     and the actual data from the Sample model, which is a combination of the data presented in the config.xml and the defaults set in the model xml.
 
     <br/><br/>
-    When errors occur while saving this form, they will be shown below:
+    When errors occur while saving this form, they will be shown below: <br/>
 
     {% for error_message in error_messages %}
-        <i style="color:red"> {{ error_message['field'] }} : {{ error_message['msg'] }} </i> <br>
+        <i style="color:red"> {{ error_message['field'] }} : {{ error_message['msg'] }} </i> <br/>
     {% endfor %}
 
     <br/><br/>

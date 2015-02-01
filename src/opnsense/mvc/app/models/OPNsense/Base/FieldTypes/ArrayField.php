@@ -56,9 +56,10 @@ class ArrayField extends BaseField
     }
 
     /**
-     * copy first node pointer as template node to make sure we always have a template to create new nodes from.
+     * Copy first node pointer as template node to make sure we always have a template to create new nodes from.
+     * If the first node is virtual (no source data), remove that from the list.
      */
-    private function internalCopyStructure()
+    protected function actionPostLoadingEvent()
     {
         // always make sure there's a node to copy our structure from
         if ($this->internalTemplateNode ==null) {
@@ -80,8 +81,6 @@ class ArrayField extends BaseField
      */
     public function add()
     {
-        $this->internalCopyStructure();
-
         $new_record = array();
         foreach ($this->internalTemplateNode->__items as $key => $node) {
             if ($node->isContainer()) {
@@ -113,7 +112,6 @@ class ArrayField extends BaseField
      */
     public function del($index)
     {
-        $this->internalCopyStructure();
         if (array_key_exists((string)$index, $this->internalChildnodes)) {
             unset($this->internalChildnodes[$index]);
         }
