@@ -42,7 +42,7 @@ import sys
 import ConfigParser
 import modules.processhandler
 from modules.daemonize import Daemonize
-
+import cProfile, pstats
 
 # find program path
 if len(__file__.split('/')[:-1]) >0 :
@@ -73,7 +73,24 @@ else:
 
 if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
     print('run %s in console mode'%sys.argv[0])
-    proc_handler.run()
+    if 'profile' in sys.argv[1:]:
+        # profile configd
+        # for graphical output use gprof2dot:
+        #   gprof2dot -f pstats /tmp/configd.profile  -o /tmp/callingGraph.dot
+        # (https://code.google.com/p/jrfonseca/wiki/Gprof2Dot)
+        print ("...<ctrl><c> to stop profiling")
+        profile = cProfile.Profile()
+        profile.enable()
+        try:
+            proc_handler.run()
+        except KeyboardInterrupt:
+            pass
+        except:
+            raise
+        profile.disable()
+        profile.dump_stats('/tmp/configd.profile')
+    else:
+        proc_handler.run()
 else:
     # daemonize process
     daemon = Daemonize(app=__file__.split('/')[-1].split('.py')[0], pid=cnf.get('main','pid_filename'), action=proc_handler.run)

@@ -66,6 +66,7 @@ class PageController extends ControllerBase
 
     /**
      * controller for sample index page, defaults to http://<host>/sample/page
+     * @param array $error_msg error messages
      */
     public function indexAction($error_msg = array())
     {
@@ -147,5 +148,6 @@ class PageController extends ControllerBase
             "action" => "index"
         ));
 
+        return true;
     }
 }

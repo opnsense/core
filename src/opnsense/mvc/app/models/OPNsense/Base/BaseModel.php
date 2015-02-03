@@ -131,20 +131,24 @@ abstract class BaseModel
                     if ($config_section_data != null) {
                         $counter = 0 ;
                         foreach ($config_section_data as $conf_section) {
+                            // iterate array items from config data
                             $child_node = new ContainerField($fieldObject->__reference . "." . ($counter++), $tagName);
                             $this->parseXml($xmlNode, $conf_section, $child_node);
                             $fieldObject->addChildNode(null, $child_node);
                         }
                     } else {
+                        // There's no content in config.xml for this array node.
                         $child_node = new ContainerField($fieldObject->__reference . ".0", $tagName);
                         $child_node->setInternalIsVirtual();
                         $this->parseXml($xmlNode, $config_section_data, $child_node);
                         $fieldObject->addChildNode(null, $child_node);
                     }
                 } else {
+                    // All other node types (Text,Email,...)
                     $this->parseXml($xmlNode, $config_section_data, $fieldObject);
                 }
 
+                // add object as child to this node
                 $internal_data->addChildNode($xmlNode->getName(), $fieldObject);
             }
 

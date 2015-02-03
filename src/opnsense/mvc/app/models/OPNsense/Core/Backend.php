@@ -26,56 +26,53 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace OPNsense\Base;
-
-use Phalcon\Mvc\Controller;
-
-use Phalcon\Translate\Adapter\NativeArray;
+namespace OPNsense\Core;
 
 /**
- * Class ControllerBase implements core controller for OPNsense framework
- * @package OPNsense\Base
+ * Class Backend
+ * @package OPNsense\Core
  */
-class ControllerBase extends Controller
+class Backend
 {
-    /**
-     * translate a text
-     * @return NativeArray
-     */
-    public function getTranslator()
-    {
-        // TODO: implement language service
-        $messages = array();
-        return new NativeArray(array(
-            "content" => $messages
-        ));
 
+    /**
+     * @var string location of configd socket
+     */
+    private $configdSocket = "/Users/ad/Develop/deciso/opnsense/testing/check_reload_status";
+    // "/var/run/check_reload_status";
+
+    /**
+     * init Backend component
+     */
+    public function __construct()
+    {
+        $this->stream = null;
     }
 
     /**
-     * Default action. Set the standard layout.
+     * send event to backend
+     * @param $event event string
+     * @param int $timeout timeout in seconds
+     * @return string
+     * @throws \Exception
      */
-    public function initialize()
+    public function sendEvent($event, $timeout = 60)
     {
-        // set base template
-        $this->view->setTemplateBefore('default');
+        $stream = stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $timeout);
+        if ($stream === false) {
+            throw new \Exception("Failed to connect: $errorMessage");
+        }
+
+        stream_set_timeout($stream, $timeout);
+        fwrite($stream, $event);
+        $resp = stream_get_contents($stream);
+        $info = stream_get_meta_data($stream);
+
+        if ($info['timed_out'] == 1) {
+            throw new \Exception("Timeout (".$timeout.") executing :".$event);
+        }
+
+        return $resp;
     }
 
-    /**
-     * @param $dispatcher
-     */
-    public function beforeExecuteRoute($dispatcher)
-    {
-        // Execute before every found action
-        $this->view->setVar('lang', $this->getTranslator());
-    }
-
-    /**
-     * @param $dispatcher
-     */
-    public function afterExecuteRoute($dispatcher)
-    {
-        // Executed after every found action
-        // TODO: implement default behavior
-    }
 }

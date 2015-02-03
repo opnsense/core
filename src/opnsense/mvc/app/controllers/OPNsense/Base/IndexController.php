@@ -32,12 +32,10 @@ namespace OPNsense\Base;
  * Class IndexController
  * @package OPNsense\Base
  */
-class IndexController extends \OPNsense\Base\ControllerBase
+class IndexController extends ControllerBase
 {
 
     public function indexAction()
     {
-//        $this->view->title = $this->request->getURI();
-//        $this->view->pick('OPNsense/Sample/index');
     }
 }
