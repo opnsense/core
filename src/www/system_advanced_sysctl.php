@@ -134,7 +134,7 @@ include("head.inc");
 
             <section class="col-xs-12">
                 <? include('system_advanced_tabs.php'); ?>
-                <div class="content-box tab-content">
+                <div class="table-responsive content-box tab-content">
                     <?php if ($act != "edit" ): ?>
 						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
 							<thead>
