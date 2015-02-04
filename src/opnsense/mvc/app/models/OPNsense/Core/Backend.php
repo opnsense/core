@@ -38,15 +38,13 @@ class Backend
     /**
      * @var string location of configd socket
      */
-    private $configdSocket = "/Users/ad/Develop/deciso/opnsense/testing/check_reload_status";
-    // "/var/run/check_reload_status";
+    private $configdSocket = "/var/run/check_reload_status";
 
     /**
      * init Backend component
      */
     public function __construct()
     {
-        $this->stream = null;
     }
 
     /**
@@ -74,5 +72,4 @@ class Backend
 
         return $resp;
     }
-
 }
