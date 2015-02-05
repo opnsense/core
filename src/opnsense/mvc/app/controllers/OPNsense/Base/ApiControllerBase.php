@@ -47,10 +47,9 @@ class ApiControllerBase extends Controller
 
     /**
      * before routing event
-     * @param Event $event
      * @param Dispatcher $dispatcher
      */
-    public function beforeExecuteRoute(Event $event, Dispatcher $dispatcher)
+    public function beforeExecuteRoute($dispatcher)
     {
 
         //$auth = $this->session->get('auth');
