@@ -26,50 +26,21 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace OPNsense\Core;
+namespace OPNsense\Sample\Api;
+
+use \OPNsense\Base\ApiControllerBase;
 
 /**
- * Class Backend
- * @package OPNsense\Core
+ * Class IndexController
+ * @package OPNsense\Sample
  */
-class Backend
+class IndexController extends ApiControllerBase
 {
-
     /**
-     * @var string location of configd socket
+     * @return array
      */
-    private $configdSocket = "/var/run/check_reload_status";
-
-    /**
-     * init Backend component
-     */
-    public function __construct()
+    public function indexAction()
     {
-    }
-
-    /**
-     * send event to backend
-     * @param string $event event string
-     * @param int $timeout timeout in seconds
-     * @return string
-     * @throws \Exception
-     */
-    public function sendEvent($event, $timeout = 60)
-    {
-        $stream = stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $timeout);
-        if ($stream === false) {
-            throw new \Exception("Failed to connect: $errorMessage");
-        }
-
-        stream_set_timeout($stream, $timeout);
-        fwrite($stream, $event);
-        $resp = stream_get_contents($stream);
-        $info = stream_get_meta_data($stream);
-
-        if ($info['timed_out'] == 1) {
-            throw new \Exception("Timeout (".$timeout.") executing :".$event);
-        }
-
-        return $resp;
+        return array("message" => "test");
     }
 }

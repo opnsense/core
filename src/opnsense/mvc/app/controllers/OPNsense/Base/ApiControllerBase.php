@@ -26,50 +26,55 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace OPNsense\Core;
+namespace OPNsense\Base;
+
+use Phalcon\Mvc\Controller;
 
 /**
- * Class Backend
- * @package OPNsense\Core
+ * Class ApiControllerBase, inherit this class to implement API calls
+ * @package OPNsense\Base
  */
-class Backend
+class ApiControllerBase extends Controller
 {
-
     /**
-     * @var string location of configd socket
+     * Initialize API controller
      */
-    private $configdSocket = "/var/run/check_reload_status";
-
-    /**
-     * init Backend component
-     */
-    public function __construct()
+    public function initialize()
     {
+        // disable view processing
+        $this->view->disable();
     }
 
     /**
-     * send event to backend
-     * @param string $event event string
-     * @param int $timeout timeout in seconds
-     * @return string
-     * @throws \Exception
+     * before routing event
+     * @param Event $event
+     * @param Dispatcher $dispatcher
      */
-    public function sendEvent($event, $timeout = 60)
+    public function beforeExecuteRoute(Event $event, Dispatcher $dispatcher)
     {
-        $stream = stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $timeout);
-        if ($stream === false) {
-            throw new \Exception("Failed to connect: $errorMessage");
+
+        //$auth = $this->session->get('auth');
+    }
+
+        /**
+     * process API results, serialize return data to json.
+     * @param $dispatcher
+     * @return string json data
+     */
+    protected function afterExecuteRoute($dispatcher)
+    {
+        // exit when reponse headers are already set
+        if ($this->response->getHeaders()->get("Status") != null) {
+            return false;
+        } else {
+            // process response, serialize to json object
+            $data = $dispatcher->getReturnedValue();
+            if (is_array($data)) {
+                $this->response->setContentType('application/json', 'UTF-8');
+                echo json_encode($data) ;
+            }
         }
 
-        stream_set_timeout($stream, $timeout);
-        fwrite($stream, $event);
-        $resp = stream_get_contents($stream);
-        $info = stream_get_meta_data($stream);
-
-        if ($info['timed_out'] == 1) {
-            throw new \Exception("Timeout (".$timeout.") executing :".$event);
-        }
-
-        return $resp;
+        return true;
     }
 }

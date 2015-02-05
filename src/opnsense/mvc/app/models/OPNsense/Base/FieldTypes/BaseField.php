@@ -345,5 +345,4 @@ abstract class BaseField
         $parts = explode("\\", get_class($this));
         return $parts[count($parts)-1];
     }
-
 }

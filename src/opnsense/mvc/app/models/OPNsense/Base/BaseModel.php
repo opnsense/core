@@ -355,7 +355,6 @@ abstract class BaseModel
 
     /**
      * find node by reference starting at the root node
-     * @param BaseField $node source node
      * @param string $reference node reference (point separated "node.subnode.subsubnode")
      * @return BaseField|null field node by reference (or null if not found)
      */
