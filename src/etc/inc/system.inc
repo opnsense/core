@@ -1021,7 +1021,7 @@ server.network-backend	= "writev"
 
 ## modules to load
 server.modules              =   ( "mod_access", "mod_expire", "mod_compress", "mod_redirect",
-	{$captiveportal}, "mod_fastcgi"
+	{$captiveportal}, "mod_fastcgi","mod_alias", "mod_rewrite"
 )
 
 server.max-keep-alive-requests = 15
@@ -1030,6 +1030,14 @@ server.max-keep-alive-idle = 30
 ## a static document-root, for virtual-hosting take look at the
 ## server.virtual-* options
 server.document-root        = "{$document_root}"
+
+### todo implement phalcon ui and api routing
+#alias.url += ( "/ui/" => "/usr/local/opnsense/mvc/public/" )
+#alias.url += ( "/api/"  => "/usr/local/opnsense/mvc/public/" )
+#url.rewrite-if-not-file = ( "^/ui/(.*)$" => "/ui/index.php?_url=/$1" ,
+#                            "^/api/(.*)$" => "/api/api.php?_url=/$1"  
+#)
+
 {$captive_portal_rewrite}
 
 # Maximum idle time with nothing being written (php downloading)
