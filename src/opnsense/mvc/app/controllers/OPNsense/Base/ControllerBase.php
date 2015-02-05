@@ -66,6 +66,10 @@ class ControllerBase extends Controller
      */
     public function beforeExecuteRoute($dispatcher)
     {
+        // use authentication of legacy OPNsense.
+        if ($this->session->has("Logged_In") == false) {
+            $this->response->redirect("/", true);
+        }
         // Execute before every found action
         $this->view->setVar('lang', $this->getTranslator());
     }

@@ -51,8 +51,10 @@ class ApiControllerBase extends Controller
      */
     public function beforeExecuteRoute($dispatcher)
     {
-
-        //$auth = $this->session->get('auth');
+        // use authentication of legacy OPNsense.
+        if ($this->session->has("Logged_In") == false) {
+            $this->response->redirect("/", true);
+        }
     }
 
         /**
