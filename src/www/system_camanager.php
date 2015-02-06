@@ -347,7 +347,7 @@ function method_change() {
 
                 <? include('system_tabs.php'); ?>
 
-                <div class="content-box tab-content">
+                <div class="content-box tab-content table-responsive" style="overflow: auto;">
 
                 <?php
 

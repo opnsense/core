@@ -381,12 +381,12 @@ include("head.inc");
 						?>
 
 
-						<div class="tab-content content-box col-xs-12">
+						<div class="tab-content content-box col-xs-12" style="overflow: auto;">
 
 
 		                        <form action="firewall_rules.php<? if (!empty($if)): ?>?if=<?=$if;?><? endif; ?>" method="post" name="iform" id="iform">
 
-		                        <div class="table-responsive">
+		                        <div class="table-responsive" >
 			                        <table class="table table-striped table-sort dragable">
 				                        <thead>
 										<tr id="frheader">
@@ -821,12 +821,12 @@ include("head.inc");
 										<td class="list">&nbsp;</td>
 										<td class="list">
 
-													<?php if ($nrules): ?><button name="move_<?=$i;?>_x" type="submit" value="<?=$i;?>"  title="<?=gettext("move selected rules to end");?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button><?php endif; ?>
-
-							<?php if ($nrules): ?>
-													<button name="del" type="submit" title="<?=gettext("delete selected rules");?>" onclick="return confirm('<?=gettext('Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
-							<?php endif; ?>
-												<a href="firewall_rules_edit.php?if=<?=htmlspecialchars($if);?>" title="<?=gettext("add new rule");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+										<?php if ($nrules): ?>
+											<button name="move_<?=$i;?>_x" type="submit" value="<?=$i;?>"  title="<?=gettext("move selected rules to end");?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
+											<button name="del" type="submit" title="<?=gettext("delete selected rules");?>" onclick="return confirm('<?=gettext('Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+											<a href="firewall_rules_edit.php?if=<?=htmlspecialchars($if);?>" title="<?=gettext("add new rule");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+										<?php endif; ?>
+												
 										</td>
 										</tr>
 									</tbody>

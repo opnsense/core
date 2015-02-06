@@ -115,7 +115,7 @@ include("head.inc");
 								$pconfig['backend'] = "pfsense";
 						?>
 
-						<div class="tab-content content-box col-xs-12">
+						<div class="tab-content content-box col-xs-12 table-responsive">
 
 								<form id="iform" name="iform" action="system_usermanager_settings.php" method="post">
 									<table class="table table-striped table-sort">

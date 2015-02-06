@@ -422,7 +422,7 @@ function select_clicked() {
 		url += '&cert=';
 	<?php endif; ?>
 
-        var oWin = window.open(url,"pfSensePop","width=620,height=400,top=150,left=150");
+        var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150");
         if (oWin==null || typeof(oWin)=="undefined")
 			alert("<?=gettext('Popup blocker detected.  Action aborted.');?>");
 }
@@ -453,7 +453,7 @@ function select_clicked() {
 							display_top_tabs($tab_array);
 						?>
 
-						<div class="tab-content content-box col-xs-12">
+						<div class="tab-content content-box col-xs-12 table-responsive">
 
 								<?php if ($act == "new" || $act == "edit" || $input_errors): ?>
 								<form id="iform" name="iform" action="system_authservers.php" method="post">

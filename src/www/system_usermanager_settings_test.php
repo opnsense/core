@@ -28,84 +28,64 @@
 
 require("guiconfig.inc");
 require_once("auth.inc");
+include('head.inc');
 
+if(isset($config['system']['authserver'][0]['host'])){
+$auth_server = $config['system']['authserver'][0]['host'];
 $authserver = $_GET['authserver'];
 $authcfg = auth_get_authserver($authserver);
+}
 
 ?>
 
-<html>
-  <HEAD>
-    <STYLE type="text/css">
-		TABLE {
-			border-width: 1px 1px 1px 1px;
-			border-spacing: 0px;
-			border-style: solid solid solid solid;
-			border-color: gray gray gray gray;
-			border-collapse: separate;
-			background-color: collapse;
-		}
-		TD {
-			border-width: 1px 1px 1px 1px;
-			border-spacing: 0px;
-			border-style: solid solid solid solid;
-			border-color: gray gray gray gray;
-			border-collapse: collapse;
-			background-color: white;
-		}
-    </STYLE>
-  </HEAD>
-	<body>
-		<form method="post" name="iform" id="iform">
+<body>
+	<form method="post" name="iform" id="iform">
 
 <?php
 
 if (!$authcfg) {
 	printf(gettext("Could not find settings for %s%s"), htmlspecialchars($authserver), "<p/>");
 } else {
-	echo sprintf(gettext("Testing %s LDAP settings... One moment please..."), $g['product_name']) . "<p/>";
 
-	echo "<table width='100%'>";
+	echo "<table class='table table-striped'>";
 
-	echo "<tr><td>" . gettext("Attempting connection to") . " " . $ldapserver . "</td><td>";
+	echo "<tr><th colspan='2'>".sprintf(gettext("Testing %s LDAP settings... One moment please..."), $g['product_name'])."</th></tr>";
+	echo "<tr><td>" . gettext("Attempting connection to") . " " . $authserver . "</td>";
 	if(ldap_test_connection($authcfg)) {
-		echo "<td><font color=green>OK</td></tr>";
+		echo "<td><font color='green'>OK</font></td></tr>";
 
-		echo "<tr><td>" . gettext("Attempting bind to") . " " .  $ldapserver . "</td><td>";
+		echo "<tr><td>" . gettext("Attempting bind to") . " " .  $authserver . "</td>";
 		if(ldap_test_bind($authcfg)) {
-			echo "<td><font color=green>OK</td></tr>";
+			echo "<td><font color='green'>OK</font></td></tr>";
 
-			echo "<tr><td>" . gettext("Attempting to fetch Organizational Units from") . " " . $ldapserver . "</td><td>";
+			echo "<tr><td>" . gettext("Attempting to fetch Organizational Units from") . " " . $authserver . "</td>";
 			$ous = ldap_get_user_ous(true, $authcfg);
 			if(count($ous)>1) {
-				echo "<td><font color=green>OK</td></tr>";
-				echo "</table>";
+				echo "<td><font color=green>OK</font></td></tr>";
 				if(is_array($ous)) {
-					echo gettext("Organization units found") . ":<p/>";
-					echo "<table width='100%'>";
+					echo "<tr><td colspan='2'>".gettext("Organization units found") . "</td></tr>";
 					foreach($ous as $ou) {
-						echo "<tr><td>" . $ou . "</td></tr>";
+						echo "<tr><td colspan='2'>" . $ou . "</td></tr>";
 					}
 				}
 			} else
-				echo "<td><font color=red>" . gettext("failed") . "</td></tr>";
-
-			echo "</table><p/>";
+				echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
 
 		} else {
-			echo "<td><font color=red>" . gettext("failed") . "</td></tr>";
-			echo "</table><p/>";
+			echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
 		}
 	} else {
-		echo "<td><font color=red>" . gettext("failed") . "</td></tr>";
-		echo "</table><p/>";
+		echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
 	}
 }
 
 ?>
-	<p/>
-	<input type="Button" value="<?=gettext("Close"); ?>" onClick='Javascript:window.close();'>
-
+	<tr>
+		<td colspan="2" align="right">
+			<input type="Button" value="<?=gettext("Close"); ?>" class="btn btn-default" onClick='Javascript:window.close();'>
+		</td>
+	</tr>
+	</table>
 	</form>
 </body>
 </html>

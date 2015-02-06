@@ -451,7 +451,7 @@ function sshkeyClicked(obj) {
 									display_top_tabs($tab_array);
 						?>
 
-						<div class="tab-content content-box col-xs-12">
+						<div class="tab-content content-box col-xs-12 table-responsive">
 
 						<?php
 										if ($_POST['act'] == "new" || $_POST['act'] == "edit" || $input_errors):

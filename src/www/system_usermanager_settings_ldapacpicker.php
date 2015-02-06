@@ -28,6 +28,7 @@
 
 require("guiconfig.inc");
 require_once("auth.inc");
+include('head.inc');
 
 $ous = array();
 
@@ -47,76 +48,50 @@ if($_GET) {
 }
 
 ?>
-<html>
-	<head>
-            <STYLE type="text/css">
-                        TABLE {
-                                border-width: 1px 1px 1px 1px;
-                                border-spacing: 0px;
-                                border-style: solid solid solid solid;
-                                border-color: gray gray gray gray;
-                                border-collapse: separate;
-                                background-color: collapse;
-                        }
-                        TD {
-                                border-width: 0px 0px 0px 0px;
-                                border-spacing: 0px;
-                                border-style: solid solid solid solid;
-                                border-color: gray gray gray gray;
-                                border-collapse: collapse;
-                                background-color: white;
-                        }
-            </STYLE>
-        </head>
-<script type="text/javascript">
+
+ <body>
+ 	<script type="text/javascript">
 function post_choices() {
 
 	var ous = <?php echo count($ous); ?>;
 	var i;
-		opener.document.forms[0].ldapauthcontainers.value="";
-	for (i = 0; i < ous; i++) {
-		if (document.forms[0].ou[i].checked) {
-			if (opener.document.forms[0].ldapauthcontainers.value != "")
-				opener.document.forms[0].ldapauthcontainers.value+=";";
-			opener.document.forms[0].ldapauthcontainers.value+=document.forms[0].ou[i].value;
-		}
-	}
+	var values = jQuery("#ou:checked").map(function(){
+      	return jQuery(this).val();
+    }).get().join(';');
+	window.opener.document.getElementById('ldapauthcontainers').value=values;
 	window.close();
--->
 }
 </script>
-
- <body link="#000000" vlink="#000000" alink="#000000" >
  <form method="post" action="system_usermanager_settings_ldapacpicker.php">
 <?php if (empty($ous)): ?>
 	<p><?=gettext("Could not connect to the LDAP server. Please check your LDAP configuration.");?></p>
-	<input type='button' value='<?=gettext("Close"); ?>' onClick="window.close();">
+	<input type='button' class="btn btn-default" value='<?=gettext("Close"); ?>' onClick="window.close();">
 <?php else: ?>
-	<b><?=gettext("Please select which containers to Authenticate against:");?></b>
-	<p/>
-	<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	 <tr>
-	<td class="tabnavtbl">
-			<table width="100%">
-<?php
-	if(is_array($ous)) {
-		foreach($ous as $ou) {
-			if(in_array($ou, $authcfg['ldap_authcn']))
-				$CHECKED=" CHECKED";
-			else
-				$CHECKED="";
-			echo "			<tr><td><input type='checkbox' value='{$ou}' id='ou' name='ou[]'{$CHECKED}> {$ou}<br /></td></tr>\n";
-		}
-	}
-?>
-			</table>
-	</td>
-     </tr>
+	<table class="table table-striped">
+		<tbody>
+			<tr>
+			<th>
+				<?=gettext("Please select which containers to Authenticate against:");?>
+			</th>
+			</tr>
+			<?php
+				if(is_array($ous)) {
+					foreach($ous as $ou) {
+						if(in_array($ou, $authcfg['ldap_authcn']))
+							$CHECKED=" CHECKED";
+						else
+							$CHECKED="";
+						echo "			<tr><td><input type='checkbox' value='{$ou}' id='ou' name='ou[]'{$CHECKED}> {$ou}</td></tr>\n";
+					}
+				}
+			?>
+			<tr>
+				<td align="right">
+					<input type='button' class="btn btn-primary" value='<?=gettext("Save");?>' onClick="post_choices();">
+				</td>
+			</tr>
+		</tbody>
 	</table>
-
-	<p/>
-
-	<input type='button' value='<?=gettext("Save");?>' onClick="post_choices();">
 <?php endif; ?>
  </form>
  </body>

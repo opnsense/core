@@ -282,7 +282,7 @@ include("head.inc");
             ?>
             <section class="col-xs-12">
 
-                <div class="content-box">
+                <div class="content-box table-responsive">
 
 			<form action="system.php" method="post">
 				<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">

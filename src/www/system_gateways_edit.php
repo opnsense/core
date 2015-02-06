@@ -753,7 +753,7 @@ function enable_change() {
 														<tr>
 															<td width="22%" valign="top" class="vncellreq"><?=gettext("Weight");?></td>
 															<td width="78%" class="vtable">
-																<select name='weight' class='formfldselect' id='weight'>
+																<select name='weight' class='formfldselect selectpicker' id='weight' data-width="auto">
 																<?php
 																	for ($i = 1; $i < 6; $i++) {
 																		$selected = "";

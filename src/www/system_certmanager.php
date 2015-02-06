@@ -576,7 +576,7 @@ function internalca_change() {
 
                 <?php include('system_manager_tabs.php'); ?>
 
-                <div class="content-box tab-content">
+                <div class="content-box tab-content table-responsive">
 
 					<?php if ($act == "new" || (($_POST['save'] == gettext("Save")) && $input_errors)): ?>
 

@@ -229,22 +229,29 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Destination network"); ?></td>
 										<td width="78%" class="vtable">
-											<input name="network" type="text" class="formfldalias ipv4v6" id="network" size="20" value="<?=htmlspecialchars($pconfig['network']);?>" />
-											/
-											<select name="network_subnet" class="formselect ipv4v6" id="network_subnet">
-											<?php for ($i = 128; $i >= 1; $i--): ?>
-												<option value="<?=$i;?>" <?php if ($i == $pconfig['network_subnet']) echo "selected=\"selected\""; ?>>
-													<?=$i;?>
-												</option>
-											<?php endfor; ?>
-											</select>
+											<table>
+												<tr>
+													<td width="348px">
+														<input name="network" type="text" class="formfldalias ipv4v6" id="network" size="20" value="<?=htmlspecialchars($pconfig['network']);?>" />
+													</td>
+													<td>
+														<select name="network_subnet" class="selectpicker ipv4v6" id="network_subnet" data-width="auto">
+														<?php for ($i = 128; $i >= 1; $i--): ?>
+															<option value="<?=$i;?>" <?php if ($i == $pconfig['network_subnet']) echo "selected=\"selected\""; ?>>
+																<?=$i;?>
+															</option>
+														<?php endfor; ?>
+														</select>
+													</td>
+												</tr>
+											</table>
 											<br /><span class="vexpl"><?=gettext("Destination network for this static route"); ?></span>
 										</td>
 									</tr>
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Gateway"); ?></td>
 										<td width="78%" class="vtable">
-											<select name="gateway" id="gateway" class="form-control">
+											<select name="gateway" id="gateway" class="selectpicker">
 											<?php
 												foreach ($a_gateways as $gateway) {
 													?>
@@ -274,7 +281,7 @@ include("head.inc");
 																<tr>
 																	<td width="22%"><?=gettext("Interface:"); ?></td>
 																	<td with="78%">
-																		<select name="addinterfacegw" id="addinterfacegw">
+																		<select name="addinterfacegw" id="addinterfacegw" class="selectpicker">
 																		<?php $gwifs = get_configured_interface_with_descr();
 																			foreach($gwifs as $fif => $dif)
 																				echo "<option value=\"{$fif}\">{$dif}</option>\n";
@@ -347,21 +354,25 @@ include("head.inc");
 		function show_add_gateway() {
 			document.getElementById("addgateway").style.display = '';
 			document.getElementById("addgwbox").style.display = 'none';
-			document.getElementById("gateway").style.display = 'none';
+			//document.getElementById("gateway").style.display = 'none';
+			jQuery('#gateway').selectpicker('hide');
 			document.getElementById("save").style.display = 'none';
 			document.getElementById("cancel").style.display = 'none';
 			document.getElementById("gwsave").style.display = '';
 			document.getElementById("gwcancel").style.display = '';
+			//jQuery('.selectpicker').selectpicker('refresh');
 			jQuery('#notebox').html("");
 		}
 		function hide_add_gateway() {
 			document.getElementById("addgateway").style.display = 'none';
 			document.getElementById("addgwbox").style.display = '';
-			document.getElementById("gateway").style.display = '';
+			//document.getElementById("gateway").style.display = '';
+			jQuery('#gateway').selectpicker('show');
 			document.getElementById("save").style.display = '';
 			document.getElementById("cancel").style.display = '';
 			document.getElementById("gwsave").style.display = '';
 			document.getElementById("gwcancel").style.display = '';
+			//jQuery('.selectpicker').selectpicker('refresh');
 		}
 		function hide_add_gatewaysave() {
 			document.getElementById("addgateway").style.display = 'none';
@@ -392,6 +403,7 @@ include("head.inc");
 			selectbox.append(optn);
 			selectbox.prop('selectedIndex',selectbox.children('option').length-1);
 			jQuery('#notebox').html("<p><strong><?=gettext("NOTE:");?><\/strong> <?php printf(gettext("You can manage Gateways %shere%s."), "<a target='_blank' href='system_gateways.php'>", "<\/a>");?> <\/strong><\/p>");
+			jQuery('.selectpicker').selectpicker('refresh');
 		}
 		function report_failure() {
 			alert("<?=gettext("Sorry, we could not create your gateway at this time."); ?>");
@@ -403,6 +415,7 @@ include("head.inc");
 				hide_add_gateway();
 				var gwtext = escape(name) + " - " + gatewayip;
 				addOption(jQuery('#gateway'), gwtext, name);
+				jQuery('.selectpicker').selectpicker('refresh');
 			} else {
 				report_failure();
 			}
