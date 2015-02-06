@@ -65,6 +65,32 @@ class PageController extends ControllerBase
     }
 
     /**
+     * perform validation, forward to index on failure.
+     * @param $mdlSample Sample model
+     * @return bool validation status
+     */
+    private function performFormValidation($mdlSample)
+    {
+        $validationOutput = $mdlSample->performValidation();
+        if ($validationOutput->count() > 0) {
+            // forward to index including errors
+            $error_msgs = array();
+            foreach ($validationOutput as $msg) {
+                $error_msgs[] = array("field" => $msg-> getField(), "msg" => $msg->getMessage());
+            }
+
+            // redirect to index
+            $this->dispatcher->forward(array(
+                "action" => "index",
+                "params" => array($error_msgs)
+            ));
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * controller for sample index page, defaults to http://<host>/sample/page
      * @param array $error_msg error messages
      */
@@ -102,8 +128,11 @@ class PageController extends ControllerBase
             $this->updateModelWithPost($mdlSample);
 
             if ($this->request->getPost("form_action") == "add") {
-                // implement addRow, append new model row and serialize to config
+                // implement addRow, append new model row and serialize to config if form is valid
                 $mdlSample->childnodes->section->add();
+                if ($this->performFormValidation($mdlSample) == false) {
+                    return false;
+                }
                 $mdlSample->serializeToConfig();
             } elseif ($this->request->getPost("form_action") == "save") {
                 // implement save, possible removing
@@ -120,23 +149,12 @@ class PageController extends ControllerBase
                     }
                 }
 
-                // save data to config
-                $validationOutput = $mdlSample->performValidation();
-                if ($validationOutput->count() > 0) {
-                    // forward to index including errors
-                    $error_msgs = array();
-                    foreach ($validationOutput as $msg) {
-                        $error_msgs[] = array("field" => $msg-> getField(), "msg" => $msg->getMessage());
-                    }
-
-                    // redirect to index
-                    $this->dispatcher->forward(array(
-                        "action" => "index",
-                        "params" => array($error_msgs)
-                    ));
+                // form validation
+                if ($this->performFormValidation($mdlSample) == false) {
                     return false;
                 }
 
+                // save data to config
                 $mdlSample->serializeToConfig();
                 $cnf = Config::getInstance();
                 $cnf->save();

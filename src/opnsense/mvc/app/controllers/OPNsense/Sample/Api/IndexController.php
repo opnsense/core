@@ -41,6 +41,12 @@ class IndexController extends ApiControllerBase
      */
     public function indexAction()
     {
-        return array("message" => "test");
+        if ($this->request->hasPut("message")) {
+            $message = $this->request->getPut("message");
+        } else {
+            $message = " " ;
+        }
+
+        return array("message" => "you send : ". $message);
     }
 }
