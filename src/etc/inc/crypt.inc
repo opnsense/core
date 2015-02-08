@@ -30,9 +30,29 @@ function _crypt_data($val, $pass, $opt)
 {
 	$result = '';
 
+	if (file_exists('/usr/local/bin/openssl')) {
+		/* use the ports version */
+		$bin_openssl = '/usr/local/bin/openssl';
+	} elseif (file_exists('/usr/bin/openssl')) {
+		/* use the base version (legacy fallback) */
+		$bin_openssl = '/usr/bin/openssl';
+	} else {
+		/* the infamous "this should never happen" */
+		log_error(_('Could not find an OpenSSL implementation on your system.'));
+		return $result;
+	}
+
 	$file = tempnam('/tmp', 'php-encrypt');
 	file_put_contents("{$file}.dec", $val);
-	exec("/usr/bin/openssl enc {$opt} -aes-256-cbc -in {$file}.dec -out {$file}.enc -k " . escapeshellarg($pass));
+	exec(sprintf(
+		'%s enc %s -aes-256-cbc -in %s.dec -out %s.enc -k %s',
+		$bin_openssl,
+		$opt,
+		$file,
+		$file,
+		escapeshellarg($pass)
+	));
+
 	if (file_exists("{$file}.enc")) {
 		$result = file_get_contents("{$file}.enc");
 	} else {
