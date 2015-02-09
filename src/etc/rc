@@ -127,7 +127,7 @@ else
 fi
 
 # rewrite message of the day
-/etc/tc.d/motd onestart
+/etc/rc.d/motd onestart
 
 # set keyboard map if needed
 /etc/rc.d/syscons onestart
