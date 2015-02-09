@@ -66,7 +66,8 @@ class Handler(object):
         """
         self.socket_filename = socket_filename
         self.config_path = config_path
-        self.simulation_mode =simulation_mode
+        self.simulation_mode = simulation_mode
+        self.single_threaded = False
 
     def run(self):
         """ Run process handler
@@ -97,7 +98,13 @@ class Handler(object):
                                                client_address=client_address,
                                                action_handler=actHandler,
                                                simulation_mode=self.simulation_mode)
-                    cmd_thread.start()
+                    if self.single_threaded :
+                        # run single threaded
+                        cmd_thread.run()
+                    else:
+                        # rnu threaded
+                        cmd_thread.start()
+
             except KeyboardInterrupt:
                 # exit on <ctrl><c>
                 raise

@@ -80,8 +80,9 @@ if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
         # (https://code.google.com/p/jrfonseca/wiki/Gprof2Dot)
         print ("...<ctrl><c> to stop profiling")
         profile = cProfile.Profile()
-        profile.enable()
+        profile.enable(subcalls=True)
         try:
+            proc_handler.single_threaded = True
             proc_handler.run()
         except KeyboardInterrupt:
             pass
