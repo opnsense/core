@@ -50,13 +50,13 @@ if($_GET) {
 ?>
 
  <body>
- 	<script type="text/javascript">
+	<script type="text/javascript">
 function post_choices() {
 
 	var ous = <?php echo count($ous); ?>;
 	var i;
 	var values = jQuery("#ou:checked").map(function(){
-      	return jQuery(this).val();
+	return jQuery(this).val();
     }).get().join(';');
 	window.opener.document.getElementById('ldapauthcontainers').value=values;
 	window.close();

@@ -1035,7 +1035,7 @@ server.document-root        = "{$document_root}"
 #alias.url += ( "/ui/" => "/usr/local/opnsense/mvc/public/" )
 #alias.url += ( "/api/"  => "/usr/local/opnsense/mvc/public/" )
 #url.rewrite-if-not-file = ( "^/ui/(.*)$" => "/ui/index.php?_url=/$1" ,
-#                            "^/api/(.*)$" => "/api/api.php?_url=/$1"  
+#                            "^/api/(.*)$" => "/api/api.php?_url=/$1"
 #)
 
 {$captive_portal_rewrite}

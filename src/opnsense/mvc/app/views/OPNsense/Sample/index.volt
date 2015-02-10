@@ -33,4 +33,3 @@ API call result : <div id="msgid"></div>
     });
 
 </script>
-
