@@ -56,7 +56,7 @@
 			<type>input</type>
 			<bindstofield>wizardtemp->system->hostname</bindstofield>
 			<description>EXAMPLE: myserver</description>
-			<validate>^[a-z0-9.|-]+$</validate>
+			<validate>^[A-Za-z0-9.|-]+$</validate>
 			<message>Invalid Hostname</message>
 		</field>
 		<field>
@@ -164,21 +164,21 @@
 	<description>On this screen we will configure the Wide Area Network information.</description>
 	<javascriptafterformdisplay>
 		var selectedItem = 0;
-		if(document.forms[0].ipaddress.value == 'dhcp') {
+		if(jQuery('#ipaddress').val() == 'dhcp') {
 			selectedItem = 1;
-			document.forms[0].ipaddress.value = '';
-		} else if(document.forms[0].ipaddress.value == 'pppoe') {
+			jQuery('#ipaddress').val('');
+		} else if(jQuery('#ipaddress').val() == 'pppoe') {
 			selectedItem = 2;
-			document.forms[0].ipaddress.value = '';
-		} else if(document.forms[0].ipaddress.value == 'pptp') {
+			jQuery('#ipaddress').val('');
+		} else if(jQuery('#ipaddress').val() == 'pptp') {
 			selectedItem = 3;
-			document.forms[0].ipaddress.value = '';
-		} else if(document.forms[0].ipaddress.value == 'ppp' || document.forms[0].ipaddress.value == 'l2tp') {
-			document.forms[0].ipaddress.value = '';
+			jQuery('#ipaddress').val('');
+		} else if(jQuery('#ipaddress').val() == 'ppp' || jQuery('#ipaddress').val() == 'l2tp') {
+			jQuery('#ipaddress').val('');
 		} else {
 			selectedItem = 0;
 		}
-		document.forms[0].selectedtype.selectedIndex = selectedItem;
+		jQuery('#selectedtype').prop('selectedIndex',selectedItem);
 		enableitems(selectedItem);
 	</javascriptafterformdisplay>
 	<fields>
@@ -579,7 +579,7 @@
 	<title>Reload in progress</title>
 	<description>
 		A reload is now in progress.  Please wait. &lt;p&gt;
-		&lt;meta http-equiv="refresh" content="5; url=wizard.php?xml=setup_wizard.xml&amp;stepid=9" &gt;
+		&lt;meta http-equiv="refresh" content="5; url=wizard.php?xml=setup_wizard.xml&amp;stepid=8" &gt;
 		&lt;p&gt;
 		The wizard will redirect to the next step once the reload is completed.
 	</description>
@@ -625,19 +625,11 @@
 <step>
 	<id>9</id>
 	<title>Wizard completed.</title>
-	<stepbeforeformdisplay>
-	<![CDATA[
-		if($g['product_name'] <> 'pfSense') {
-			header("Location: " . fixup_string("\$myurl"));
-			exit;
-		}
-	]]>
-	</stepbeforeformdisplay>
 	<description>
 	<![CDATA[
 		Congratulations!  OPNsense is now configured.<p/>
 		Please consider donating to the project to help us with our overhead costs.<p/>
-		See <a target='_new' href='https://www.opnsense.org/j.php?jumpto=donate'>OPNsense.org</a> to donate or purchase services offered by the OPNsense team.<p/>
+		See <a target='_new' href='https://opnsense.org/'>OPNsense.org</a> to donate or purchase services offered by the OPNsense team.<p/>
 		Click <a href='$myurl'>here</a> to continue on to OPNsense webConfigurator.
 	]]>
 	</description>

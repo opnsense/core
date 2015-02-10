@@ -393,7 +393,7 @@ function showchange() {
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">\n";
 
-				echo "<input class='form-control unknown' id='" . $name . "' name='" . $name . "' value=\"" . htmlspecialchars($value) . "\"";
+				echo "<input class='form-control unknown' type='text' id='" . $name . "' name='" . $name . "' value=\"" . htmlspecialchars($value) . "\"";
 				if($field['size'])
 					echo " size='" . $field['size'] . "' ";
 				if($field['validate'])
@@ -677,7 +677,7 @@ function showchange() {
 				}
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">";
-				echo "<select class='form-control' name='{$name}'>\n";
+				echo "<select class='form-control' name='{$name}' style='max-width:5em;'>\n";
 				for($x=1; $x<33; $x++) {
 					$CHECKED = "";
 					if($value == $x) $CHECKED = " selected=\"selected\"";
@@ -842,7 +842,8 @@ if($pkg['step'][$stepid]['disableallfieldsbydefault'] <> "") {
 				array_push($fieldnames_array, $field['name']);
 				$fieldname = preg_replace("/\s+/", "", $field['name']);
 				$fieldname = strtolower($fieldname);
-				echo "\tdocument.forms[0]." . $fieldname . ".disabled = 1;\n";
+				//echo "\tdocument.forms[0]." . $fieldname . ".disabled = 1;\n";
+				echo "\tjQuery('#". $fieldname . "').prop('disabled', true);\n";
 			}
 		}
 	}
@@ -862,7 +863,8 @@ if($pkg['step'][$stepid]['disableallfieldsbydefault'] <> "") {
 							$fieldname = preg_replace("/\s+/", "", $efs);
 							$fieldname = strtolower($fieldname);
 							if($fieldname <> "") {
-								$onchange = "\t\t\tdocument.forms[0]." . $fieldname . ".disabled = 0; \n";
+								//$onchange = "\t\t\tdocument.forms[0]." . $fieldname . ".disabled = 0; \n";
+								$onchange = "\t\t\tjQuery('#" . $fieldname . "').prop('disabled',false)\n";
 								echo $onchange;
 							}
 						}
@@ -882,12 +884,13 @@ if($pkg['step'][$stepid]['disableallfieldsbydefault'] <> "") {
 
 <script type="text/javascript">
 //<![CDATA[
-NiftyCheck();
-var bgcolor = document.getElementsByTagName("body")[0].style.backgroundColor;
-Rounded("div#roundme","all",bgcolor,"#FFFFFF","smooth");
-enablechange();
-disablechange();
-showchange();
+
+// After reload/redirect functions are not loaded, so check first.
+if (typeof enablechange == 'function') {
+	enablechange();
+	disablechange();
+	showchange();
+}
 //]]>
 </script>
 
