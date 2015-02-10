@@ -278,7 +278,7 @@ $main_buttons = array(
 						<?php
 													else:
 						?>
-														<button name="del" type="submit" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected mappings");?>"
+														<button name="del_x" type="submit" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected mappings");?>"
 															onclick="return confirm('<?=gettext("Do you really want to delete the selected mappings?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 						<?php
 													endif;
