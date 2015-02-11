@@ -26,66 +26,58 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace OPNsense\Base;
+namespace OPNsense\Base\Menu;
 
-use Phalcon\Mvc\Controller;
-
-use Phalcon\Translate\Adapter\NativeArray;
-
-/**
- * Class ControllerBase implements core controller for OPNsense framework
- * @package OPNsense\Base
- */
-class ControllerBase extends Controller
+class MenuSystem
 {
-    /**
-     * translate a text
-     * @return NativeArray
-     */
-    public function getTranslator()
-    {
-        // TODO: implement language service
-        $messages = array();
-        return new NativeArray(array(
-            "content" => $messages
-        ));
-    }
+    private $root = null ;
 
     /**
-     * Default action. Set the standard layout.
+     * add menu structure to root
+     * @param string $filename menu xml filename
+     * @throws MenuInitException unloadable menu xml
      */
-    public function initialize()
+    private function addXML($filename)
     {
-        // set base template
-        $this->view->setTemplateBefore('default');
-    }
-
-    /**
-     * @param $dispatcher
-     */
-    public function beforeExecuteRoute($dispatcher)
-    {
-        // use authentication of legacy OPNsense.
-        if ($this->session->has("Username") == false) {
-            $this->response->redirect("/", true);
+        // load and validate menu xml
+        if (!file_exists($filename)) {
+            throw new MenuInitException('Menu xml '.$filename.' missing') ;
         }
-        // Execute before every found action
-        $this->view->setVar('lang', $this->getTranslator());
+        $menuXml = simplexml_load_file($filename);
+        if ($menuXml === false) {
+            throw new MenuInitException('Menu xml '.$filename.' not valid') ;
+        }
+        if ($menuXml->getName() != "menu") {
+            throw new MenuInitException('Menu xml '.$filename.' seems to be of wrong type') ;
+        }
 
-        // link menu system to view, append /ui in uri because of rewrite
-        $menu = new Menu\MenuSystem();
-        $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
-
-        // prevent session lock
-        session_write_close();
+        // traverse items
+        foreach ($menuXml as $key => $node) {
+            $this->root->addXmlNode($node);
+        }
     }
 
     /**
-     * @param $dispatcher
+     * construct a new menu
+     * @throws MenuInitException
      */
-    public function afterExecuteRoute($dispatcher)
+    public function __construct()
     {
-        // Executed after every found action
-        // TODO: implement default behavior
+        $this->root = new MenuItem("root");
+        $this->addXML(__DIR__."/Menu.xml");
+
+    }
+
+    /**
+     * return full menu system including selected items
+     * @param string $url current location
+     * @return array
+     */
+    public function getItems($url)
+    {
+        $this->root->toggleSelected($url);
+        $menu = $this->root->getChildren();
+
+        return $menu;
     }
 }

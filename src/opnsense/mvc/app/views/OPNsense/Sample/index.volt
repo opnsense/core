@@ -9,10 +9,7 @@ A simple input form for the "sample" model can be found  <a href="page/">here </
 To perform a call to the api, press this button : <br/>
 
 fill in a message : <input type="text" value="" id="msg"> </br>
-<input type="button" id="restcall" value="do REST call!"/>
-
-
-
+<button class="btn btn-default"  id="restcall" type="button">do REST call!</button>
 <br/>
 
 API call result : <div id="msgid"></div>

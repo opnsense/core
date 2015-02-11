@@ -1,0 +1,17 @@
+<menu>
+    <!-- Core menu system including legacy stuff -->
+    <System order="0" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
+        <Advanced url="/ui/test.php"/>
+        <CertManager/>
+        <Firmware/>
+        <GeneralSetup/>
+        <HighAvailSync/>
+        <Routing/>
+        <SetupWizard/>
+        <UserManager/>
+    </System>
+    <Interfaces order="1" cssClass="glyphicon glyphicon-wrench">
+        <WAN/>
+        <new/>
+    </Interfaces>
+</menu>
