@@ -61,6 +61,7 @@ class ControllerBase extends Controller
     }
 
     /**
+     * shared functionality
      * @param $dispatcher
      */
     public function beforeExecuteRoute($dispatcher)
@@ -75,6 +76,9 @@ class ControllerBase extends Controller
         // link menu system to view, append /ui in uri because of rewrite
         $menu = new Menu\MenuSystem();
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
+
+        $acl = new \OPNsense\Core\ACL();
+        $this->view->acl = $acl;
 
         // prevent session lock
         session_write_close();

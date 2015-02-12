@@ -181,7 +181,6 @@ class Config extends Singleton
         $this->configxml->loadXML($xml);
         $this->simplexml = simplexml_import_dom($this->configxml);
         $this->isValid = true;
-
     }
 
     /**

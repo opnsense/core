@@ -3,11 +3,6 @@
 error_reporting(E_ALL);
 
 try {
-    // Fix authentication for local testing
-//    session_start();
-//    $_SESSION["Username"]="admin";
-//    session_write_close();
-
     /**
      * Read the configuration
      */
