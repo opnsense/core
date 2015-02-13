@@ -1,10 +1,11 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2010 Jim Pingle
-    Copyright (C) 2008 Shrew Soft Inc.
-    Copyright (C) 2005 Scott Ullrich, Colin Smith
-    All rights reserved.
+	Copyright (C) 2010 Jim Pingle
+	Copyright (C) 2008 Shrew Soft Inc.
+	Copyright (C) 2005 Scott Ullrich, Colin Smith
+	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
@@ -27,7 +28,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/* DISABLE_PHP_LINT_CHECKING */
 
 $pgtitle = array(gettext("Status"), gettext("OpenVPN"));
 $shortcut_section = "openvpn";
@@ -138,7 +138,7 @@ include("head.inc"); ?>
             <section class="col-xs-12">
                 <div class="content-box">
 	                <header class="content-box-head container-fluid">
-				        <h3>Network Time Protocol Status</h3>
+				        <h3>OpenVPN Status</h3>
 				    </header>
 
 				    <div class="content-box-main col-xs-12">
