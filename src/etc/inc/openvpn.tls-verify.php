@@ -1,9 +1,7 @@
 #!/usr/local/bin/php -f
 <?php
-/* $Id$ */
-/*
-	openvpn.tls-verify.php
 
+/*
 	Copyright (C) 2011 Jim Pingle
 	All rights reserved.
 
@@ -27,13 +25,8 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
+*/
 
-	DISABLE_PHP_LINT_CHECKING
-*/
-/*
-	pfSense_BUILDER_BINARIES:
-	pfSense_MODULE:	openvpn
-*/
 /*
  * OpenVPN calls this script to validate a certificate
  *  This script is called ONCE per DEPTH of the certificate chain

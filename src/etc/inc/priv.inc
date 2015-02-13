@@ -1,19 +1,11 @@
 <?php
-/* $Id$ */
+
 /*
-		Copyright (C) 2008 Shrew Soft Inc
-		All rights reserved.
-
-		Copyright (C) 2007, 2008 Scott Ullrich <sullrich@gmail.com>
-		All rights reserved.
-
+	Copyright (C) 2008 Shrew Soft Inc
+	Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
         Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
-        All rights reserved.
-
-        Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>.
-        All rights reserved.
-
-        Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
+        Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>
+        Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>
         All rights reserved.
 
         Redistribution and use in source and binary forms, with or without
@@ -36,12 +28,6 @@
         CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
         ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
         POSSIBILITY OF SUCH DAMAGE.
-
-		DISABLE_PHP_LINT_CHECKING
-*/
-
-/*
-	pfSense_MODULE:	auth
 */
 
 require_once("priv.defs.inc");

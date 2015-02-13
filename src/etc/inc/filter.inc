@@ -2,13 +2,10 @@
 
 /*
 	Copyright (C) 2004-2006 Scott Ullrich
-	Copyright (C) 2005		Bill Marquette
-	Copyright (C) 2006		Peter Allgeyer
-	Copyright (C) 2008-2010		Ermal Luci
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+	Copyright (C) 2005 Bill Marquette
+	Copyright (C) 2006 Peter Allgeyer
+	Copyright (C) 2008-2010	Ermal Luci
+	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -31,13 +28,7 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-	pfSense_BUILDER_BINARIES:	/sbin/kldload	/usr/sbin/tcpdump	/sbin/pfctl	/bin/rm
-	pfSense_BUILDER_BINARIES:	/usr/sbin/inetd
-	pfSense_MODULE:	filter
 */
-
-/* DISABLE_PHP_LINT_CHECKING */
 
 /* holds the items that will be executed *AFTER* the filter is fully loaded */
 $after_filter_configure_run = array();
