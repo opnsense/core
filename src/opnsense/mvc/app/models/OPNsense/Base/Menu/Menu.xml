@@ -2,16 +2,16 @@
     <!-- Core menu system including legacy stuff -->
     <System order="0" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
         <Advanced url="/ui/test.php"/>
-        <CertManager/>
-        <Firmware/>
-        <GeneralSetup/>
-        <HighAvailSync/>
-        <Routing/>
-        <SetupWizard/>
-        <UserManager/>
+        <CertManager url="/ui/test1.php"/>
+        <Firmware url="/ui/test2.php"/>
+        <GeneralSetup url="/ui/test3.php"/>
+        <HighAvailSync url="/ui/test4.php"/>
+        <Routing url="/ui/test5.php"/>
+        <SetupWizard url="/ui/test6.php"/>
+        <UserManager url="/ui/test7.php"/>
     </System>
     <Interfaces order="1" cssClass="glyphicon glyphicon-wrench">
-        <WAN/>
-        <new/>
+        <WAN url="/ui/test8.php"/>
+        <new url="/ui/test9.php"/>
     </Interfaces>
 </menu>

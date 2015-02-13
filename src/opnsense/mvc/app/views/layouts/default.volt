@@ -62,7 +62,6 @@
 		<div class="row">
 			<header class="page-content-head">
 				<div class="container-fluid">
-					<form action="/interfaces.php?if=wan" method="post"><input type='hidden' name='__csrf_magic' value="sid:5ae8a3730c849aff9d3f900337057450b27dd04d,1423522784" />
 						<ul class="list-inline">
 							<li class="__mb"><h1>Interfaces: WAN</h1></li>
 
@@ -70,7 +69,6 @@
 								<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span>Add widget</button> -->
 							</li>
 						</ul>
-					</form>
 				</div>
 			</header>
 

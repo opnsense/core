@@ -61,15 +61,28 @@ class ControllerBase extends Controller
     }
 
     /**
-     * shared functionality
+     * shared functionality for all components
      * @param $dispatcher
+     * @return bool
      */
     public function beforeExecuteRoute($dispatcher)
     {
-        // use authentication of legacy OPNsense.
+        // Authentication / validation
+        // - use authentication of legacy OPNsense.
+        // - check for valid csrf and include csrf for GET requests.
         if ($this->session->has("Username") == false) {
             $this->response->redirect("/", true);
+        } elseif ($this->request->isPost() && !$this->security->checkToken()) {
+            // post without csrf, exit.
+            return false;
+        } elseif ($this->request->isGet()) {
+            // inject csrf information
+            $this->view->setVars([
+                'csrf_tokenKey' => $this->security->getTokenKey(),
+                'csrf_token' => $this->security->getToken()
+            ]);
         }
+
         // Execute before every found action
         $this->view->setVar('lang', $this->getTranslator());
 
@@ -77,11 +90,8 @@ class ControllerBase extends Controller
         $menu = new Menu\MenuSystem();
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
-        $acl = new \OPNsense\Core\ACL();
-        $this->view->acl = $acl;
-
-        // prevent session lock
-        session_write_close();
+        // append ACL object to view
+        $this->view->acl = new \OPNsense\Core\ACL();
     }
 
     /**

@@ -25,6 +25,9 @@
 
 
 <form action="save" method="post">
+
+    <input type="hidden" name="{{ security.getTokenKey() }}"  value="{{ security.getToken() }}"/>
+
     <table class="tg">
         <tr>
             <td>{{ lang._('item') }} </td>

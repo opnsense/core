@@ -119,7 +119,7 @@ class PageController extends ControllerBase
      */
     public function saveAction()
     {
-        // save action should be a post, redirect to index
+        // save action should be a post
         if ($this->request->isPost() == true) {
             // create model(s)
             $mdlSample = new Sample();

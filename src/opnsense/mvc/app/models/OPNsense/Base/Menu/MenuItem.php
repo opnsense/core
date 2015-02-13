@@ -319,4 +319,19 @@ class MenuItem
 
         return $result;
     }
+
+    /**
+     * find node by id/tag name, ignore case.
+     * @param $id id / tagname
+     * @return null|MenuItem
+     */
+    public function findNodeById($id)
+    {
+        foreach ($this->children as $key => $node) {
+            if (strtolower($node->getId()) == strtolower($id)) {
+                return $node ;
+            }
+        }
+        return null;
+    }
 }
