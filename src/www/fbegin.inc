@@ -229,7 +229,6 @@ $status_menu = array();
 //if (count($config['captiveportal']) > 0)
 	$status_menu[] = array(gettext("Captive Portal"), "/status_captiveportal.php");
 $status_menu[] = array(gettext("CARP (failover)"), "/carp_status.php");
-$status_menu[] = array(gettext("Dashboard"), "/index.php");
 $status_menu[] = array(gettext("Gateways"), "/status_gateways.php");
 $status_menu[] = array(gettext("DHCP Leases"), "/status_dhcp_leases.php");
 $status_menu[] = array(gettext("DHCPv6 Leases"), "/status_dhcpv6_leases.php");
@@ -451,10 +450,10 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 
-						<?php $active = active_main_menu("/status"); ?>
+						<?php $active = active_main_menu("/status", "/carp_status", "/diag_ipsec", "/diag_logs"); ?>
 						<a href="#statusmenu" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-tasks __iconspacer"></span><?php echo gettext("Status"); ?></a>
 
-						<div class="collapse <?php if (active_menu($status_menu, $pagename)):?>active-menu in<? endif; ?>" id="statusmenu">
+						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="statusmenu">
 							<?php
 								output_menu($status_menu);
 							?>
