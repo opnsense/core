@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Seth Mos <seth.mos@dds.nl>
@@ -252,14 +253,6 @@ $colorntpd		= array('0080FF','00E344','FF0000','000000');
 /* Captive Portal Total Users	Total Users */
 /* Captive Portal Concurrent	Concurrent Users */
 $colorcaptiveportalusers = array('990000');
-
-/* select theme colors if the inclusion file exists */
-$rrdcolors = "{$g['www_path']}/themes/{$g['theme']}/rrdcolors.inc.php";
-if(file_exists($rrdcolors)) {
-	include($rrdcolors);
-} else {
-	log_error(sprintf(gettext("rrdcolors.inc.php for theme %s does not exist, using defaults!"),$g['theme']));
-}
 
 switch ($curstyle) {
 case "absolute":
