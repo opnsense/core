@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
@@ -432,7 +433,7 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 
-						<?php $active = active_main_menu("/service", "/load_balancer"); ?>
+						<?php $active = active_main_menu("/service", "/load_balancer", "/pkg_edit"); ?>
 						<a href="#services" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-cog __iconspacer"></span><?php echo gettext("Services"); ?></a>
 
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="services">
