@@ -57,7 +57,7 @@ if (!is_array($config['dnsmasq']['domainoverrides']))
 $a_hosts = &$config['dnsmasq']['hosts'];
 $a_domainOverrides = &$config['dnsmasq']['domainoverrides'];
 
-if ($_POST) {
+if ($_POST && isset($_POST['submit'])) {
 
 	$pconfig = $_POST;
 	unset($input_errors);
@@ -96,19 +96,20 @@ if ($_POST) {
 
 	if (!$input_errors) {
 		write_config();
-
-		$retval = 0;
 		$retval = services_dnsmasq_configure();
 		$savemsg = get_std_save_message($retval);
+	}
+} elseif ($_POST && isset($_POST['apply']) ) {
 
-		// Relaod filter (we might need to sync to CARP hosts)
+		// Reload filter (we might need to sync to CARP hosts)
 		filter_configure();
 		/* Update resolv.conf in case the interface bindings exclude localhost. */
 		system_resolvconf_generate();
-
+		$retval = services_dnsmasq_configure();
+		$savemsg = get_std_save_message($retval);
 		if ($retval == 0)
 			clear_subsystem_dirty('hosts');
-	}
+
 }
 
 if ($_GET['act'] == "del") {
