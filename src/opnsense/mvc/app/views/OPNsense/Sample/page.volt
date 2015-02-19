@@ -26,7 +26,7 @@
 
 <form action="save" method="post">
 
-    <input type="hidden" name="{{ security.getTokenKey() }}"  value="{{ security.getToken() }}"/>
+    <input type="hidden" name="{{ csrf_tokenKey }}"  value="{{ csrf_token }}"/>
 
     <table class="tg">
         <tr>

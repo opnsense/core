@@ -48,13 +48,33 @@ class ApiControllerBase extends Controller
     /**
      * before routing event
      * @param Dispatcher $dispatcher
+     * @return null|bool
      */
     public function beforeExecuteRoute($dispatcher)
     {
-        // use authentication of legacy OPNsense.
-        if ($this->session->has("Logged_In") == false) {
+        // TODO: implement authentication for api calls, at this moment you need a valid session on the web interface
+
+        // use authentication of legacy OPNsense to validate user.
+        if ($this->session->has("Username") == false) {
             $this->response->redirect("/", true);
         }
+
+        // check for valid csrf on post requests
+        $csrf_tokenkey = $this->request->getHeader('X_CSRFTOKENKEY');
+        $csrf_token =   $this->request->getHeader('X_CSRFTOKEN');
+        $csrf_valid = $this->security->checkToken($csrf_tokenkey, $csrf_token);
+
+        if (($this->request->isPost() ||
+                $this->request->isPut() ||
+                $this->request->isDelete()
+            ) && !$csrf_valid
+        ) {
+            // missing csrf, exit.
+            return false;
+        }
+
+        // TODO: implement ACL
+
     }
 
         /**

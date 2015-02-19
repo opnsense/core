@@ -22,6 +22,16 @@
 		<link href="/ui/themes/opnsense/assets/images/favicon.png" rel="shortcut icon">
 		<!-- JQuery -->
 		<script type="text/javascript" src="/ui/js/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript">
+			// hook into jquery ajax requests to ensure csrf handling.
+			$.ajaxSetup({
+				'beforeSend': function(xhr) {
+					xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}" );
+					xhr.setRequestHeader("X-CSRFTokenKey", "{{ csrf_tokenKey }}" );
+				}
+			});
+
+		</script>
 	</head>
 	<body>
 	<header class="page-head">

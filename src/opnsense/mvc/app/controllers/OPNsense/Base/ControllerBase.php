@@ -64,6 +64,7 @@ class ControllerBase extends Controller
      * shared functionality for all components
      * @param $dispatcher
      * @return bool
+     * @throws \Exception
      */
     public function beforeExecuteRoute($dispatcher)
     {
@@ -72,10 +73,20 @@ class ControllerBase extends Controller
         if ($this->session->has("Username") == false) {
             $this->response->redirect("/", true);
         }
-        // check for valid csrf
+        // check for valid csrf on post requests
         if ($this->request->isPost() && !$this->security->checkToken()) {
             // post without csrf, exit.
             return false;
+        }
+
+        // REST type calls should be implemented by inheriting ApiControllerBase.
+        // because we don't check for csrf on these methods, we want to make sure these aren't used.
+        if ($this->request->isHead() ||
+            $this->request->isPut() ||
+            $this->request->isDelete() ||
+            $this->request->isPatch() ||
+            $this->request->isOptions()) {
+            throw new \Exception('request type not supported');
         }
 
         // include csrf for GET requests.
@@ -97,7 +108,8 @@ class ControllerBase extends Controller
         $cnf = Config::getInstance();
         $ordid = 0;
         foreach ($cnf->object()->interfaces->children() as $key => $node) {
-            $menu->appendItem("Interfaces", $key, array("url"=>"/interfaces.php?if=".$key,"order"=>($ordid++), "visiblename"=>$node->descr?$node->descr:strtoupper($key)));
+            $menu->appendItem("Interfaces", $key, array("url"=>"/interfaces.php?if=".$key,"order"=>($ordid++),
+                "visiblename"=>$node->descr?$node->descr:strtoupper($key)));
         }
 
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
