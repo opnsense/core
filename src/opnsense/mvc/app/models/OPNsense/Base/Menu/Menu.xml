@@ -11,7 +11,6 @@
         <UserManager url="/ui/test7.php"/>
     </System>
     <Interfaces order="1" cssClass="glyphicon glyphicon-wrench">
-        <WAN url="/ui/test8.php"/>
-        <new url="/ui/test9.php"/>
+        <new order="99" url="/ui/test9.php"/>
     </Interfaces>
 </menu>

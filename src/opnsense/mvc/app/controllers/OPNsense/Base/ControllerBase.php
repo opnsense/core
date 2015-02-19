@@ -28,8 +28,8 @@
  */
 namespace OPNsense\Base;
 
+use OPNsense\Core\Config;
 use Phalcon\Mvc\Controller;
-
 use Phalcon\Translate\Adapter\NativeArray;
 
 /**
@@ -67,15 +67,19 @@ class ControllerBase extends Controller
      */
     public function beforeExecuteRoute($dispatcher)
     {
-        // Authentication / validation
+        // Authentication
         // - use authentication of legacy OPNsense.
-        // - check for valid csrf and include csrf for GET requests.
         if ($this->session->has("Username") == false) {
             $this->response->redirect("/", true);
-        } elseif ($this->request->isPost() && !$this->security->checkToken()) {
+        }
+        // check for valid csrf
+        if ($this->request->isPost() && !$this->security->checkToken()) {
             // post without csrf, exit.
             return false;
-        } elseif ($this->request->isGet()) {
+        }
+
+        // include csrf for GET requests.
+        if ($this->request->isGet()) {
             // inject csrf information
             $this->view->setVars([
                 'csrf_tokenKey' => $this->security->getTokenKey(),
@@ -88,6 +92,14 @@ class ControllerBase extends Controller
 
         // link menu system to view, append /ui in uri because of rewrite
         $menu = new Menu\MenuSystem();
+
+        // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
+        $cnf = Config::getInstance();
+        $ordid = 0;
+        foreach ($cnf->object()->interfaces->children() as $key => $node) {
+            $menu->appendItem("Interfaces", $key, array("url"=>"/interfaces.php?if=".$key,"order"=>($ordid++), "visiblename"=>$node->descr));
+        }
+
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
         // append ACL object to view
