@@ -20,6 +20,8 @@
 		<link rel="stylesheet" type="text/css" href="/ui/themes/opnsense/build/css/bootstrap-select.css">
 		<!-- Favicon -->
 		<link href="/ui/themes/opnsense/assets/images/favicon.png" rel="shortcut icon">
+		<!-- JQuery -->
+		<script type="text/javascript" src="/ui/js/jquery-1.11.2.min.js"></script>
 	</head>
 	<body>
 	<header class="page-head">
@@ -93,8 +95,7 @@
 
 	</main>
 
-	<script type="text/javascript" src="/ui/js/jquery-1.11.2.min.js"></script>
 	<script type="text/javascript" src="/ui/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/ui/themes/opnsense/build/js/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
 	</body>
 </html>
