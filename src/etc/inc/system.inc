@@ -1075,6 +1075,7 @@ mimetype.assign             = (
   ".jpg"          =>      "image/jpeg",
   ".jpeg"         =>      "image/jpeg",
   ".png"          =>      "image/png",
+  ".svg"          =>      "image/svg+xml",
   ".xbm"          =>      "image/x-xbitmap",
   ".xpm"          =>      "image/x-xpixmap",
   ".xwd"          =>      "image/x-xwindowdump",
