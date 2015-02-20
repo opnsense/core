@@ -405,6 +405,8 @@ if ($_POST) {
 $closehead = false;
 include("head.inc");
 ?>
+
+<body>
 <script type="text/javascript">
 //<![CDATA[
 function enable_change(enable_change) {
@@ -418,12 +420,12 @@ function enable_change(enable_change) {
 	//document.iform.maxproc.disabled = endis;
 	document.iform.maxprocperip.disabled = endis;
 	document.iform.idletimeout.disabled = endis;
-	document.iform.freelogins_count.disabled = endis;
-	document.iform.freelogins_resettimeout.disabled = endis;
-	document.iform.freelogins_updatetimeouts.disabled = endis;
+	//document.iform.freelogins_count.disabled = endis;
+	//document.iform.freelogins_resettimeout.disabled = endis;
+	//document.iform.freelogins_updatetimeouts.disabled = endis;
 	document.iform.timeout.disabled = endis;
 	document.iform.preauthurl.disabled = endis;
-	document.iform.blockedmacsurl.disabled = endis;
+	//document.iform.blockedmacsurl.disabled = endis;
 	document.iform.redirurl.disabled = endis;
 	document.iform.localauth_priv.disabled = localauth_endis;
 	document.iform.radiusip.disabled = radius_endis;
@@ -439,9 +441,9 @@ function enable_change(enable_change) {
 	document.iform.radiuskey3.disabled = radius_endis;
 	document.iform.radiuskey4.disabled = radius_endis;
 	document.iform.radacct_enable.disabled = radius_endis;
-	document.iform.peruserbw.disabled = endis;
-	document.iform.bwdefaultdn.disabled = endis;
-	document.iform.bwdefaultup.disabled = endis;
+	//document.iform.peruserbw.disabled = endis;
+	//document.iform.bwdefaultdn.disabled = endis;
+	//document.iform.bwdefaultup.disabled = endis;
 	document.iform.reauthenticate.disabled = radius_endis;
 	document.iform.auth_method[0].disabled = endis;
 	document.iform.auth_method[1].disabled = endis;
@@ -457,7 +459,7 @@ function enable_change(enable_change) {
 	document.iform.certref.disabled = https_endis;
 	document.iform.nohttpsforwards.disabled = https_endis;
 	document.iform.logoutwin_enable.disabled = endis;
-	document.iform.nomacfilter.disabled = endis;
+	//document.iform.nomacfilter.disabled = endis;
 	document.iform.noconcurrentlogins.disabled = endis;
 	document.iform.radiusvendor.disabled = radius_endis;
 	document.iform.radiussession_timeout.disabled = radius_endis;
@@ -479,9 +481,7 @@ function enable_change(enable_change) {
 }
 //]]>
 </script>
-</head>
 
-<body>
 	<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
@@ -511,7 +511,7 @@ function enable_change(enable_change) {
 
 					<div class="container-fluid">
 
-		                    <form action="services_captiveportal.php" method="post" name="iform" id="iform">
+		                    <form action="services_captiveportal.php" method="post" name="iform" id="iform" enctype="multipart/form-data">
 
 		                        <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
@@ -973,10 +973,10 @@ function enable_change(enable_change) {
 										<tr>
 											<td width="22%" valign="top" class="vncell"><?=gettext("Portal page contents"); ?></td>
 											<td width="78%" class="vtable">
-											<?=$mandfldhtml;?><input type="file" name="htmlfile" class="formfld file" id="htmlfile" /><br />
+											<?=$mandfldhtml;?><input type="file" name="htmlfile" class="formfld file btn btn-default" id="htmlfile" /><br />
 											<?php
 												list($host) = explode(":", $_SERVER['HTTP_HOST']);
-												$zoneid = $pconfig['zoneid'] ? $pconfig['zoneid'] : 8000;
+												$zoneid = $pconfig['zoneid'] ? ( $pconfig['zoneid'] + 8000 ) : 8000;
 												if ($pconfig['httpslogin_enable']) {
 													$port = $pconfig['listenporthttps'] ? $pconfig['listenporthttps'] : ($zoneid + 1);
 													$href = "https://{$host}:{$port}";
@@ -990,7 +990,7 @@ function enable_change(enable_change) {
 											<br />
 											<a href="?zone=<?=$cpzone?>&amp;act=gethtmlhtml" target="_blank"><?=gettext("Download current page"); ?></a>
 											<br />
-											<a href="?zone=<?=$cpzone?>&amp;act=delhtmlhtml" onclick="return confirm('Do you really want to restore default page?')" target="_blank">
+											<a href="?zone=<?=$cpzone?>&amp;act=delhtmlhtml" onclick="return confirm('Do you really want to restore default page?')">
 												<?=gettext("Restore default portal page"); ?>
 											</a>
 											  <br />
@@ -1024,13 +1024,13 @@ function enable_change(enable_change) {
 											<?=gettext("error page"); ?><br />
 											<?=gettext("contents"); ?></td>
 										  <td class="vtable">
-											<input name="errfile" type="file" class="formfld file" id="errfile" /><br />
+											<input name="errfile" type="file" class="formfld file btn btn-default" id="errfile" /><br />
 											<?php if ($pconfig['page']['errtext']): ?>
 											<a href="?zone=<?=$cpzone?>&amp;act=viewerrhtml" target="_blank"><?=gettext("View current page"); ?></a>
 											<br />
 											<a href="?zone=<?=$cpzone?>&amp;act=geterrhtml" target="_blank"><?=gettext("Download current page"); ?></a>
 											<br />
-											<a href="?zone=<?=$cpzone?>&amp;act=delerrhtml" onclick="return confirm('Do you really want to restore default page?')" target="_blank">
+											<a href="?zone=<?=$cpzone?>&amp;act=delerrhtml" onclick="return confirm('Do you really want to restore default page?')">
 												<?=gettext("Restore default error page"); ?>
 											</a>
 											  <br />
@@ -1044,13 +1044,13 @@ function enable_change(enable_change) {
 											<?=gettext("page"); ?><br />
 											<?=gettext("contents"); ?></td>
 										  <td class="vtable">
-											<input name="logoutfile" type="file" class="formfld file" id="logoutfile" /><br />
+											<input name="logoutfile" type="file" class="formfld file btn btn-default" id="logoutfile" /><br />
 											<?php if ($pconfig['page']['logouttext']): ?>
 											<a href="?zone=<?=$cpzone?>&amp;act=viewlogouthtml" target="_blank"><?=gettext("View current page"); ?></a>
 											<br />
 											<a href="?zone=<?=$cpzone?>&amp;act=getlogouthtml" target="_blank"><?=gettext("Download current page"); ?></a>
 											<br />
-											<a href="?zone=<?=$cpzone?>&amp;act=dellogouthtml" onclick="return confirm('Do you really want to restore default page?')" target="_blank">
+											<a href="?zone=<?=$cpzone?>&amp;act=dellogouthtml" onclick="return confirm('Do you really want to restore default page?')">
 												<?=gettext("Restore default logout page"); ?>
 											</a>
 											  <br />

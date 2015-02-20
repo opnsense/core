@@ -198,7 +198,8 @@ $main_buttons = array(
 										<td class="listlr"><?=htmlspecialchars($element['name']);?></td>
 										<td class="listr" align="right"><?=format_bytes($element['size']);?></td>
 										<td valign="middle" class="list nowrap">
-										<a href="services_captiveportal_filemanager.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this file?"); ?>')"><img src="/themes/<?php echo $g['theme']; ?>/images/icons/icon_x.gif" title="<?=gettext("delete file"); ?>" width="17" height="17" border="0" alt="delete" /></a>
+										<a href="services_captiveportal_filemanager.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this file?"); ?>')">
+											<span class="glyphicon glyphicon-remove" title="<?=gettext("delete file"); ?>"></span></a>
 										</td>
 									  </tr>
 								  <?php $i++; endforeach; endif; ?>
@@ -207,7 +208,7 @@ $main_buttons = array(
 									  <tr>
 										<td class="listlr" style="background-color: #eee"><strong><?=gettext("TOTAL"); ?></strong></td>
 										<td class="listr" style="background-color: #eee" align="right"><strong><?=format_bytes($total_size);?></strong></td>
-										<td valign="middle" class="list nowrap"></td>
+										<td valign="middle" style="background-color: #eee" class="list nowrap"></td>
 									  </tr>
 								  <?php endif; ?>
 
