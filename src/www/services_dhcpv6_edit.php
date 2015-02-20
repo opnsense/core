@@ -246,8 +246,8 @@ include("head.inc");
 					                <tr>
 					                  <td width="22%" valign="top">&nbsp;</td>
 					                  <td width="78%">
-					                    <input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-					                    <input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+					                    <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" />
+					                    <input type="button" class="formbtn btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
 					                    <?php if (isset($id) && $a_maps[$id]): ?>
 					                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 					                    <?php endif; ?>
