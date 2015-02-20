@@ -193,7 +193,7 @@ class ActionHandler(object):
         """
 
         self.action_map = {}
-        for config_filename in glob.glob('%s/actions_*.conf'%(self.config_path)):
+        for config_filename in glob.glob('%s/actions_*.conf'%(self.config_path)) + glob.glob('%s/actions.d/actions_*.conf'%(self.config_path)):
             # traverse config directory and open all filenames starting with actions_
             cnf=ConfigParser.RawConfigParser()
             cnf.read(config_filename)
