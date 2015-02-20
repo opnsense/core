@@ -100,17 +100,9 @@ $main_buttons = array(
 
 			    <section class="col-xs-12">
 
-				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
-						$tab_array[] = array(gettext("Client"), true, "vpn_openvpn_client.php");
-						$tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
-						$tab_array[] = array(gettext("Wizards"), false, "wizard.php?xml=openvpn_wizard.xml");
-						add_package_tabs("OpenVPN", $tab_array);
-						display_top_tabs($tab_array);
-					?>
 
-					<div class="tab-content content-box col-xs-12">
+
+					<div class="content-box col-xs-12">
 
 							<form action="vpn_pppoe.php" method="post" name="iform" id="iform">
 
@@ -122,7 +114,6 @@ $main_buttons = array(
 										  <td width="20%" class="listhdrr"><?=gettext("Number of users");?></td>
 										  <td width="25%" class="listhdr"><?=gettext("Description");?></td>
 										  <td width="10%" class="list">
-
 										  </td>
 										</tr>
 											  <?php $i = 0; foreach ($a_pppoes as $pppoe): ?>
