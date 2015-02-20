@@ -3606,9 +3606,7 @@ function interface_dhcpv6_configure($interface = "wan", $wancfg) {
 
 	$dhcp6cscript = "#!/bin/sh\n";
 	$dhcp6cscript .= "# This shell script launches /usr/local/etc/rc.newwanipv6 with a interface argument.\n";
-	$dhcp6cscript .= "dmips=\${new_domain_name_servers}\n";
-	$dhcp6cscript .= "dmnames=\${new_domain_name}\n";
-	$dhcp6cscript .= "/usr/local/sbin/fcgicli -f /usr/local/etc/rc.newwanipv6 -d \"interface={$wanif}&dmnames=\${dmnames}&dmips=\${dmips}\"\n";
+	$dhcp6cscript .= "/etc/rc.newwanipv6 {$wanif} \n";
 	/* Add wide-dhcp6c shell script here. Because we can not pass a argument to it. */
 	if (!@file_put_contents("{$g['varetc_path']}/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
 		printf("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");

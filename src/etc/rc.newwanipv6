@@ -55,10 +55,7 @@ function restart_packages() {
 }
 
 /* Interface IP address has changed */
-if (isset($_GET))
-	$argument = $_GET['interface'];
-else
-	$argument = trim($argv[1], " \n\t");
+$argument = trim($argv[1], " \n\t");
 
 log_error("rc.newwanipv6: Informational is starting {$argument}.");
 
@@ -94,10 +91,7 @@ if ((empty($curwanipv6) || !is_ipaddrv6($curwanipv6)) && substr($interface_real,
         return;
 }
 
-if (isset($_GET))
-	$new_domain_name_servers = $_GET['dmips'];
-else
-	$new_domain_name_servers = getenv("new_domain_name_servers");
+$new_domain_name_servers = getenv("new_domain_name_servers");
 if (!empty($new_domain_name_servers)) {
 	$name_servers = explode(" ", $new_domain_name_servers);
 	$valid_ns = array();
@@ -109,10 +103,7 @@ if (!empty($new_domain_name_servers)) {
 	if (count($valid_ns > 0))
 		file_put_contents("{$g['varetc_path']}/nameserver_v6{$interface}", implode("\n", $valid_ns));
 }
-if (isset($_GET))
-	$new_domain_name = $_GET['dmnames'];
-else
-	$new_domain_name = getenv("new_domain_name");
+$new_domain_name = getenv("new_domain_name");
 if (!empty($new_domain_name))
 	file_put_contents("{$g['varetc_path']}/searchdomain_v6{$interface}", $new_domain_name);
 
