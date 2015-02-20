@@ -748,6 +748,7 @@ if (!function_exists('service_control_restart')) {
 				killbypid("{$g['varrun_path']}/lighty-{$zone}-CaptivePortal.pid");
 				killbypid("{$g['varrun_path']}/lighty-{$zone}-CaptivePortal-SSL.pid");
 				captiveportal_init_webgui_zonename($zone);
+				captiveportal_configure();
 				break;
 			case 'ntpd':
 			case 'openntpd':
