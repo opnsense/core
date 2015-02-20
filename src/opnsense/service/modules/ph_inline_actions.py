@@ -47,7 +47,7 @@ def execute(action,parameters):
     if  action.command == 'template.reload':
         import template
         import config
-        tmpl = template.Template()
+        tmpl = template.Template(action.root_dir)
         conf = config.Config(action.config)
         tmpl.setConfig(conf.get())
         filenames = tmpl.generate(parameters)

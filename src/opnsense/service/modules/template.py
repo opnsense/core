@@ -42,11 +42,16 @@ import jinja2
 
 class Template(object):
 
-    def __init__(self):
+    def __init__(self,target_root_directory="/"):
         """ constructor
         :return:
         """
+        # init config (config.xml) data
         self._config = {}
+
+        # set target root
+        self._target_root_directory = target_root_directory
+
         # setup jinja2 environment
         self._template_dir = os.path.dirname(os.path.abspath(__file__))+'/../templates/'
         self._j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(self._template_dir),trim_blocks=True)
@@ -229,6 +234,8 @@ class Template(object):
                         # render page and write to disc
                         content = j2_page.render(cnf_data)
 
+                        # prefix filename with defined root directory
+                        filename = ('%s/%s'%(self._target_root_directory, filename)).replace('//','/')
                         if create_directory:
                             # make sure the target directory exists
                             self._create_directory(filename)
