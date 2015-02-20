@@ -372,7 +372,7 @@ include("head.inc");
 										$mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
 										$mac = str_replace("\n","",$mac);
 									    ?>
-									    <a onclick="document.forms[0].mac.value='<?=$mac?>';" href="#"><?=gettext("Copy my MAC address");?></a>
+									    <a onclick="jQuery('#mac').val('<?=$mac?>');" href="#"><?=gettext("Copy my MAC address");?></a>
 							                    <br />
 							                    <span class="vexpl"><?=gettext("Enter a MAC address in the following format: ".
 							                    "xx:xx:xx:xx:xx:xx");?></span></td>
@@ -487,7 +487,7 @@ include("head.inc");
 									<td width="22%" valign="top" class="vncell"><?=gettext("Dynamic DNS");?></td>
 									<td width="78%" class="vtable">
 										<div id="showddnsbox">
-											<input type="button" onclick="show_ddns_config()" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Dynamic DNS");?>
+											<input type="button" onclick="show_ddns_config()" class="btn btn-xs btn-default" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Dynamic DNS");?>
 										</div>
 										<div id="showddns" style="display:none">
 											<input style="vertical-align:middle" type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if($pconfig['ddnsupdate']) echo "checked=\"checked\""; ?> />&nbsp;
@@ -510,7 +510,7 @@ include("head.inc");
 									<td width="22%" valign="top" class="vncell"><?=gettext("NTP servers");?></td>
 									<td width="78%" class="vtable">
 										<div id="showntpbox">
-											<input type="button" onclick="show_ntp_config()" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show NTP configuration");?>
+											<input type="button" onclick="show_ntp_config()" class="btn btn-xs btn-default" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show NTP configuration");?>
 										</div>
 										<div id="showntp" style="display:none">
 											<input name="ntp1" type="text" class="formfld unknown" id="ntp1" size="20" value="<?=htmlspecialchars($pconfig['ntp1']);?>" /><br />
@@ -522,7 +522,7 @@ include("head.inc");
 									<td width="22%" valign="top" class="vncell"><?=gettext("TFTP server");?></td>
 									<td width="78%" class="vtable">
 									<div id="showtftpbox">
-										<input type="button" onclick="show_tftp_config()" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show TFTP configuration");?>
+										<input type="button" onclick="show_tftp_config()" class="btn btn-xs btn-default" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show TFTP configuration");?>
 									</div>
 									<div id="showtftp" style="display:none">
 										<input name="tftp" type="text" class="formfld unknown" id="tftp" size="50" value="<?=htmlspecialchars($pconfig['tftp']);?>" /><br />
@@ -533,8 +533,8 @@ include("head.inc");
 							                <tr>
 							                  <td width="22%" valign="top">&nbsp;</td>
 							                  <td width="78%">
-							                    <input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-							                    <input type="button" class="formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+							                    <input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" />
+							                    <input type="button" class="formbtn btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
 							                    <?php if (isset($id) && $a_maps[$id]): ?>
 							                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 							                    <?php endif; ?>
