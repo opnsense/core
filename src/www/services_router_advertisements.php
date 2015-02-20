@@ -175,7 +175,7 @@ include("head.inc");
 
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
+<body>
 <?php include("fbegin.inc"); ?>
 
 <script type="text/javascript" src="/javascript/row_helper.js">
@@ -202,193 +202,197 @@ include("head.inc");
 //]]>
 </script>
 
-<form action="services_router_advertisements.php" method="post" name="iform" id="iform">
-<?php if ($input_errors) print_input_errors($input_errors); ?>
-<?php if ($savemsg) print_info_box($savemsg); ?>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" summary="router advert">
-<tr><td>
-<?php
-	/* active tabs */
-	$tab_array = array();
-	$tabscounter = 0;
-	$i = 0;
-	foreach ($iflist as $ifent => $ifname) {
-		$oc = $config['interfaces'][$ifent];
-		if ((is_array($config['dhcpdv6'][$ifent]) && !isset($config['dhcpdv6'][$ifent]['enable']) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))) ||
-			(!is_array($config['dhcpdv6'][$ifent]) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))))
-			continue;
-		if ($ifent == $if)
-			$active = true;
-		else
-			$active = false;
-		$tab_array[] = array($ifname, $active, "services_dhcpv6.php?if={$ifent}");
-		$tabscounter++;
-	}
-	if ($tabscounter == 0) {
-		echo "</td></tr></table></form>";
-		include("fend.inc");
-		echo "</body>";
-		echo "</html>";
-		exit;
-	}
-	display_top_tabs($tab_array);
-?>
-</td></tr>
-<tr><td class="tabnavtbl">
-<?php
-$tab_array = array();
-$tab_array[] = array(gettext("DHCPv6 Server"),         false, "services_dhcpv6.php?if={$if}");
-$tab_array[] = array(gettext("Router Advertisements"), true,  "services_router_advertisements.php?if={$if}");
-display_top_tabs($tab_array);
-?>
-</td></tr>
-<tr>
-<td>
-	<div id="mainarea">
-		<table class="tabcont" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
-			<tr>
-			<td width="22%" valign="top" class="vncellreq"><?=gettext("Router Advertisements");?></td>
-			<td width="78%" class="vtable">
-				<select name="ramode" id="ramode">
-					<?php foreach($advertise_modes as $name => $value) { ?>
-					<option value="<?=$name ?>" <?php if ($pconfig['ramode'] == $name) echo "selected=\"selected\""; ?> > <?=$value ?></option>
-					<?php } ?>
-				</select><br />
-			<strong><?php printf(gettext("Select the Operating Mode for the Router Advertisement (RA) Daemon."))?></strong>
-			<?php printf(gettext("Use \"Router Only\" to only advertise this router, \"Unmanaged\" for Router Advertising with Stateless Autoconfig, \"Managed\" for assignment through (a) DHCPv6 Server, \"Assisted\" for DHCPv6 Server assignment combined with Stateless Autoconfig"));?>
-			<?php printf(gettext("It is not required to activate this DHCPv6 server when set to \"Managed\", this can be another host on the network")); ?>
-			</td>
-			</tr>
-			<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("Router Priority");?></td>
-			<td width="78%" class="vtable">
-				<select name="rapriority" id="rapriority">
-					<?php foreach($priority_modes as $name => $value) { ?>
-					<option value="<?=$name ?>" <?php if ($pconfig['rapriority'] == $name) echo "selected=\"selected\""; ?> > <?=$value ?></option>
-					<?php } ?>
-				</select><br />
-			<strong><?php printf(gettext("Select the Priority for the Router Advertisement (RA) Daemon."))?></strong>
-			</td>
-			</tr>
-			<?php
-				$carplistif = array();
-				if(count($carplist) > 0) {
-					foreach($carplist as $ifname => $vip) {
-						if((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
-							$carplistif[$ifname] = $vip;
-					}
-				}
-				if(count($carplistif) > 0) {
-			?>
-			<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("RA Interface");?></td>
-			<td width="78%" class="vtable">
-				<select name="rainterface" id="rainterface">
-					<?php foreach($carplistif as $ifname => $vip) { ?>
-					<option value="interface" <?php if ($pconfig['rainterface'] == "interface") echo "selected=\"selected\""; ?> > <?=strtoupper($if); ?></option>
-					<option value="<?=$ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo "selected=\"selected\""; ?> > <?="$ifname - $vip"; ?></option>
-					<?php } ?>
-				</select><br />
-			<strong><?php printf(gettext("Select the Interface for the Router Advertisement (RA) Daemon."))?></strong>
-			</td>
-			</tr>
-			<?php } ?>
+	<section class="page-content-main">
+		<div class="container-fluid">
+			<div class="row">
 
-			<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("RA Subnet(s)");?></td>
-			<td width="78%" class="vtable">
-				<div><?= htmlentities($subnets_help) ?></div>
-				<table id="maintable" summary="subnets">
-				<tbody>
-<?php
-				$counter = 0;
-				foreach ($pconfig['subnets'] as $subnet) {
-					$address_name = "subnet_address" . $counter;
-					$bits_name = "subnet_bits" . $counter;
-					list($address, $subnet) = explode("/", $subnet);
-?>
-					<tr>
-						<td>
-							<input autocomplete="off" name="<?= $address_name ?>" type="text" class="formfldalias" id="<?= $address_name ?>" size="30" value="<?= htmlentities($address) ?>" />
-						</td>
-						<td>
-							<select name="<?= $bits_name ?>" class="formselect" id="<?= $bits_name ?>">
-							<option value="">
-							<?php for ($i = 128; $i >= 0; $i -= 1) { ?>
-								<option value="<?= $i ?>" <?= ("$subnet" === "$i") ? "selected='selected'" : "" ?>><?= $i ?></option>
-							<?php } ?>
-							</select>
-						</td>
-						<td>
-							<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="" title="<?=gettext("remove this entry"); ?>" /></a>
-						</td>
-					</tr>
-<?php
-					$counter += 1;
-				}
-?>
-				<tr style="display:none"><td></td></tr>
-				</tbody>
-				</table>
-				<script type="text/javascript">
-				//<![CDATA[
-					field_counter_js = 2;
-					totalrows = <?= $counter ?>;
-				//]]>
-				</script>
-				<div id="addrowbutton">
-					<a onclick="javascript:addRowTo('maintable'); add_alias_control(); return false;" href="#"><!--
-					--><img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="" title="<?=gettext("add another entry"); ?>" /></a>
-				</div>
-			</td>
-			</tr>
+				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($savemsg) print_info_box($savemsg); ?>
+			    
+			    <section class="col-xs-12">
 
-			<tr>
-			<td colspan="2" class="list" height="12">&nbsp;</td>
-			</tr>
+					<?php
+						/* active tabs */
+						$tab_array = array();
+						$tabscounter = 0;
+						$i = 0;
+						foreach ($iflist as $ifent => $ifname) {
+							$oc = $config['interfaces'][$ifent];
+							if ((is_array($config['dhcpdv6'][$ifent]) && !isset($config['dhcpdv6'][$ifent]['enable']) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))) ||
+								(!is_array($config['dhcpdv6'][$ifent]) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))))
+								continue;
+							if ($ifent == $if)
+								$active = true;
+							else
+								$active = false;
+							$tab_array[] = array($ifname, $active, "services_dhcpv6.php?if={$ifent}");
+							$tabscounter++;
+						}
+						if ($tabscounter == 0) {
+							echo "</td></tr></table></form>";
+							include("fend.inc");
+							echo "</body>";
+							echo "</html>";
+							exit;
+						}
+						display_top_tabs($tab_array);
+					?>
+					<?php
+					$tab_array = array();
+					$tab_array[] = array(gettext("DHCPv6 Server"),         false, "services_dhcpv6.php?if={$if}");
+					$tab_array[] = array(gettext("Router Advertisements"), true,  "services_router_advertisements.php?if={$if}");
+					display_top_tabs($tab_array);
+					?>
+					<div class="tab-content content-box col-xs-12">
+						<form action="services_router_advertisements.php" method="post" name="iform" id="iform">
+							<div class="table-responsive">
+								<table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area">
+									<tr>
+									<td width="22%" valign="top" class="vncellreq"><?=gettext("Router Advertisements");?></td>
+									<td width="78%" class="vtable">
+										<select name="ramode" id="ramode">
+											<?php foreach($advertise_modes as $name => $value) { ?>
+											<option value="<?=$name ?>" <?php if ($pconfig['ramode'] == $name) echo "selected=\"selected\""; ?> > <?=$value ?></option>
+											<?php } ?>
+										</select><br />
+									<strong><?php printf(gettext("Select the Operating Mode for the Router Advertisement (RA) Daemon."))?></strong>
+									<?php printf(gettext("Use \"Router Only\" to only advertise this router, \"Unmanaged\" for Router Advertising with Stateless Autoconfig, \"Managed\" for assignment through (a) DHCPv6 Server, \"Assisted\" for DHCPv6 Server assignment combined with Stateless Autoconfig"));?>
+									<?php printf(gettext("It is not required to activate this DHCPv6 server when set to \"Managed\", this can be another host on the network")); ?>
+									</td>
+									</tr>
+									<tr>
+									<td width="22%" valign="top" class="vncell"><?=gettext("Router Priority");?></td>
+									<td width="78%" class="vtable">
+										<select name="rapriority" id="rapriority">
+											<?php foreach($priority_modes as $name => $value) { ?>
+											<option value="<?=$name ?>" <?php if ($pconfig['rapriority'] == $name) echo "selected=\"selected\""; ?> > <?=$value ?></option>
+											<?php } ?>
+										</select><br />
+									<strong><?php printf(gettext("Select the Priority for the Router Advertisement (RA) Daemon."))?></strong>
+									</td>
+									</tr>
+									<?php
+										$carplistif = array();
+										if(count($carplist) > 0) {
+											foreach($carplist as $ifname => $vip) {
+												if((preg_match("/^{$if}_/", $ifname)) && (is_ipaddrv6($vip)))
+													$carplistif[$ifname] = $vip;
+											}
+										}
+										if(count($carplistif) > 0) {
+									?>
+									<tr>
+									<td width="22%" valign="top" class="vncell"><?=gettext("RA Interface");?></td>
+									<td width="78%" class="vtable">
+										<select name="rainterface" id="rainterface">
+											<?php foreach($carplistif as $ifname => $vip) { ?>
+											<option value="interface" <?php if ($pconfig['rainterface'] == "interface") echo "selected=\"selected\""; ?> > <?=strtoupper($if); ?></option>
+											<option value="<?=$ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo "selected=\"selected\""; ?> > <?="$ifname - $vip"; ?></option>
+											<?php } ?>
+										</select><br />
+									<strong><?php printf(gettext("Select the Interface for the Router Advertisement (RA) Daemon."))?></strong>
+									</td>
+									</tr>
+									<?php } ?>
 
-			<tr>
-			<td colspan="2" valign="top" class="listtopic">DNS</td>
-			</tr>
+									<tr>
+									<td width="22%" valign="top" class="vncell"><?=gettext("RA Subnet(s)");?></td>
+									<td width="78%" class="vtable">
+										<div><?= htmlentities($subnets_help) ?></div>
+										<table id="maintable" summary="subnets">
+										<tbody>
+						<?php
+										$counter = 0;
+										foreach ($pconfig['subnets'] as $subnet) {
+											$address_name = "subnet_address" . $counter;
+											$bits_name = "subnet_bits" . $counter;
+											list($address, $subnet) = explode("/", $subnet);
+						?>
+											<tr>
+												<td>
+													<input autocomplete="off" name="<?= $address_name ?>" type="text" class="formfldalias" id="<?= $address_name ?>" size="30" value="<?= htmlentities($address) ?>" />
+												</td>
+												<td>
+													<select name="<?= $bits_name ?>" class="formselect" id="<?= $bits_name ?>">
+													<option value="">
+													<?php for ($i = 128; $i >= 0; $i -= 1) { ?>
+														<option value="<?= $i ?>" <?= ("$subnet" === "$i") ? "selected='selected'" : "" ?>><?= $i ?></option>
+													<?php } ?>
+													</select>
+												</td>
+												<td>
+													<a onclick="removeRow(this); return false;" href="#" alt="" title="<?=gettext("remove this entry"); ?>"><span class="glyphicon glyphicon-remove"></span></a>
+												</td>
+											</tr>
+						<?php
+											$counter += 1;
+										}
+						?>
+										<tr style="display:none"><td></td></tr>
+										</tbody>
+										</table>
+										<script type="text/javascript">
+										//<![CDATA[
+											field_counter_js = 2;
+											totalrows = <?= $counter ?>;
+										//]]>
+										</script>
+										<div id="addrowbutton">
+											<a onclick="javascript:addRowTo('maintable'); add_alias_control(); return false;" href="#" alt="" title="<?=gettext("add another entry"); ?>" ><!--
+											--><span class="glyphicon glyphicon-plus"></span></a>
+										</div>
+									</td>
+									</tr>
 
-			<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("DNS servers");?></td>
-			<td width="78%" class="vtable">
-				<input name="radns1" type="text" class="formfld unknown" id="radns1" size="28" value="<?=htmlspecialchars($pconfig['radns1']);?>" /><br />
-				<input name="radns2" type="text" class="formfld unknown" id="radns2" size="28" value="<?=htmlspecialchars($pconfig['radns2']);?>" /><br />
-				<?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
-			</td>
-			</tr>
+									<tr>
+									<td colspan="2" class="list" height="12">&nbsp;</td>
+									</tr>
 
-			<tr>
-			<td width="22%" valign="top" class="vncell"><?=gettext("Domain search list");?></td>
-			<td width="78%" class="vtable">
-				<input name="radomainsearchlist" type="text" class="formfld unknown" id="radomainsearchlist" size="28" value="<?=htmlspecialchars($pconfig['radomainsearchlist']);?>" /><br />
-				<?=gettext("The RA server can optionally provide a domain search list. Use the semicolon character as separator");?>
-			</td>
-			</tr>
+									<tr>
+									<td colspan="2" valign="top" class="listtopic">DNS</td>
+									</tr>
 
-			<tr>
-			<td width="22%" valign="top" class="vncell">&nbsp;</td>
-			<td width="78%" class="vtable">
-				<input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?php if ($pconfig['rasamednsasdhcp6']) { echo "checked='checked'"; } ?> />
-				<strong><?= gettext("Use same settings as DHCPv6 server"); ?></strong>
-			</td>
-			</tr>
+									<tr>
+									<td width="22%" valign="top" class="vncell"><?=gettext("DNS servers");?></td>
+									<td width="78%" class="vtable">
+										<input name="radns1" type="text" class="formfld unknown" id="radns1" size="28" value="<?=htmlspecialchars($pconfig['radns1']);?>" /><br />
+										<input name="radns2" type="text" class="formfld unknown" id="radns2" size="28" value="<?=htmlspecialchars($pconfig['radns2']);?>" /><br />
+										<?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
+									</td>
+									</tr>
 
-			<tr>
-			<td width="22%" valign="top">&nbsp;</td>
-			<td width="78%">
-				<input name="if" type="hidden" value="<?=$if;?>" />
-				<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save");?>" />
-			</td>
-			</tr>
-		</table>
-	</div>
-</td>
-</tr>
-</table>
-</form>
+									<tr>
+									<td width="22%" valign="top" class="vncell"><?=gettext("Domain search list");?></td>
+									<td width="78%" class="vtable">
+										<input name="radomainsearchlist" type="text" class="formfld unknown" id="radomainsearchlist" size="28" value="<?=htmlspecialchars($pconfig['radomainsearchlist']);?>" /><br />
+										<?=gettext("The RA server can optionally provide a domain search list. Use the semicolon character as separator");?>
+									</td>
+									</tr>
+
+									<tr>
+									<td width="22%" valign="top" class="vncell">&nbsp;</td>
+									<td width="78%" class="vtable">
+										<input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?php if ($pconfig['rasamednsasdhcp6']) { echo "checked='checked'"; } ?> />
+										<strong><?= gettext("Use same settings as DHCPv6 server"); ?></strong>
+									</td>
+									</tr>
+
+									<tr>
+									<td width="22%" valign="top">&nbsp;</td>
+									<td width="78%">
+										<input name="if" type="hidden" value="<?=$if;?>" />
+										<input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" />
+									</td>
+									</tr>
+								</table>
+							</div>
+						</form>
+					</div>
+				</section>
+			</div>
+		</div>
+	</section>
+
 
 <script type="text/javascript">
 //<![CDATA[

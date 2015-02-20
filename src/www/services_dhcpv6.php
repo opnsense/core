@@ -444,40 +444,6 @@ include("head.inc");
 //]]>
 </script>
 
-<?php
-	/* active tabs */
-	$tab_array = array();
-	$tabscounter = 0;
-	$i = 0;
-	foreach ($iflist as $ifent => $ifname) {
-		$oc = $config['interfaces'][$ifent];
-		if ((is_array($config['dhcpdv6'][$ifent]) && !isset($config['dhcpdv6'][$ifent]['enable']) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))) ||
-			(!is_array($config['dhcpdv6'][$ifent]) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))))
-			continue;
-		if ($ifent == $if)
-			$active = true;
-		else
-			$active = false;
-		$tab_array[] = array($ifname, $active, "services_dhcpv6.php?if={$ifent}");
-		$tabscounter++;
-	}
-	/* tack on PPPoE or PPtP servers here */
-	/* pppoe server */
-	if (is_array($config['pppoes']['pppoe'])) {
-		foreach($config['pppoes']['pppoe'] as $pppoe) {
-			if ($pppoe['mode'] == "server") {
-				$ifent = "poes". $pppoe['pppoeid'];
-				$ifname = strtoupper($ifent);
-				if ($ifent == $if)
-					$active = true;
-				else
-					$active = false;
-				$tab_array[] = array($ifname, $active, "services_dhcpv6.php?if={$ifent}");
-				$tabscounter++;
-			}
-		}
-	}
-?>
 
 <?php include("fbegin.inc"); ?>
 
@@ -494,34 +460,75 @@ include("head.inc");
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
+			    	<?php
+						/* active tabs */
+						$tab_array = array();
+						$tabscounter = 0;
+						$i = 0;
+						foreach ($iflist as $ifent => $ifname) {
+							$oc = $config['interfaces'][$ifent];
+							if ((is_array($config['dhcpdv6'][$ifent]) && !isset($config['dhcpdv6'][$ifent]['enable']) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))) ||
+								(!is_array($config['dhcpdv6'][$ifent]) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))))
+								continue;
+							if ($ifent == $if)
+								$active = true;
+							else
+								$active = false;
+							$tab_array[] = array($ifname, $active, "services_dhcpv6.php?if={$ifent}");
+							$tabscounter++;
+						}
+						/* tack on PPPoE or PPtP servers here */
+						/* pppoe server */
+						if (is_array($config['pppoes']['pppoe'])) {
+							foreach($config['pppoes']['pppoe'] as $pppoe) {
+								if ($pppoe['mode'] == "server") {
+									$ifent = "poes". $pppoe['pppoeid'];
+									$ifname = strtoupper($ifent);
+									if ($ifent == $if)
+										$active = true;
+									else
+										$active = false;
+									$tab_array[] = array($ifname, $active, "services_dhcpv6.php?if={$ifent}");
+									$tabscounter++;
+								}
+							}
+						}
+						if ($tabscounter == 0) {
+							//echo "</td></tr></table></form>";
+							//include("fend.inc");
+							//echo "</body>";
+							//echo "</html>";
+							echo "</section>";
+							echo "</div>";
+							echo "</div>";
+							echo "</section>";
+							include("foot.inc");
+							exit;
+						}
+						display_top_tabs($tab_array);
+					?>
 
-				<? if ($tabscount > 0) display_top_tabs($tab_array); ?>
+				    <?php
+							$tab_array = array();
+							$tab_array[] = array(gettext("DHCPv6 Server"),         true,  "services_dhcpv6.php?if={$if}");
+							$tab_array[] = array(gettext("Router Advertisements"), false, "services_router_advertisements.php?if={$if}");
+							display_top_tabs($tab_array);
+					?>
 
 				<div class="tab-content content-box col-xs-12">
 
                         <form action="services_dhcpv6.php" method="post" name="iform" id="iform">
 
-				<?php if ($dhcrelay_enabled): ?>
+							<?php if ($dhcrelay_enabled): ?>
 								<p>DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.</p>
-							<? elseif ($tabscounter == 0): ?>
-
 							<? else: ?>
 
-
-					    <div class="content-box-main col-xs-12">
-
-						    <?php
-									$tab_array = array();
-									$tab_array[] = array(gettext("DHCPv6 Server"),         true,  "services_dhcpv6.php?if={$if}");
-									$tab_array[] = array(gettext("Router Advertisements"), false, "services_router_advertisements.php?if={$if}");
-								?>
-						    <ul class="nav nav-pills" role="tablist"><? foreach ($tab_array as $tab): ?>
+						    <!--<ul class="nav nav-pills" role="tablist"><? foreach ($tab_array as $tab): ?>
 									<li role="presentation" <? if ($tab[1]):?>class="active"<? endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
-								<? endforeach; ?></ul><br />
+								<? endforeach; ?></ul><br />-->
 
 						    <div class="table-responsive">
-						<table class="table table-striped table-sort">
-
+									<table class="table table-striped table-sort">
 										<tr>
 											<td width="22%" valign="top" class="vncellreq"><?=gettext("DHCPv6 Server");?></td>
 											<td width="78%" class="vtable">
@@ -652,7 +659,7 @@ include("head.inc");
 											<tr>
 												<td width="22%" valign="top" class="vncell"><?=gettext("Time format change"); ?></td>
 												<td width="78%" class="vtable">
-												<table summary="time format change">
+												<table class="table table-striped" summary="time format change">
 													<tr>
 													<td>
 														<input name="dhcpv6leaseinlocaltime" type="checkbox" id="dhcpv6leaseinlocaltime" value="yes" <?php if ($pconfig['dhcpv6leaseinlocaltime']) echo "checked=\"checked\""; ?> />
@@ -678,7 +685,7 @@ include("head.inc");
 											<td width="22%" valign="top" class="vncell"><?=gettext("Dynamic DNS");?></td>
 											<td width="78%" class="vtable">
 												<div id="showddnsbox">
-													<input type="button" onclick="show_ddns_config()" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Dynamic DNS");?>
+													<input type="button" onclick="show_ddns_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Dynamic DNS");?>
 												</div>
 												<div id="showddns" style="display:none">
 													<input style="vertical-align:middle" type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />&nbsp;
@@ -701,7 +708,7 @@ include("head.inc");
 											<td width="22%" valign="top" class="vncell"><?=gettext("NTP servers");?></td>
 											<td width="78%" class="vtable">
 												<div id="showntpbox">
-													<input type="button" onclick="show_ntp_config()" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show NTP configuration");?>
+													<input type="button" onclick="show_ntp_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show NTP configuration");?>
 												</div>
 												<div id="showntp" style="display:none">
 													<input name="ntp1" type="text" class="formfld unknown" id="ntp1" size="28" value="<?=htmlspecialchars($pconfig['ntp1']);?>" /><br />
@@ -727,7 +734,7 @@ include("head.inc");
 											<td width="22%" valign="top" class="vncell"><?=gettext("LDAP URI");?></td>
 											<td width="78%" class="vtable">
 												<div id="showldapbox">
-													<input type="button" onclick="show_ldap_config()" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show LDAP configuration");?>
+													<input type="button" onclick="show_ldap_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show LDAP configuration");?>
 												</div>
 												<div id="showldap" style="display:none">
 													<input name="ldap" type="text" class="formfld unknown" id="ldap" size="80" value="<?=htmlspecialchars($pconfig['ldap']);?>" /><br />
@@ -739,7 +746,7 @@ include("head.inc");
 											<td width="22%" valign="top" class="vncell"><?=gettext("Enable network booting");?></td>
 											<td width="78%" class="vtable">
 												<div id="shownetbootbox">
-													<input type="button" onclick="show_netboot_config()" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Network booting");?>
+													<input type="button" onclick="show_netboot_config()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Network booting");?>
 												</div>
 												<div id="shownetboot" style="display:none">
 													<input style="vertical-align:middle" type="checkbox" value="yes" name="netboot" id="netboot" <?php if($pconfig['netboot']) echo " checked=\"checked\""; ?> />&nbsp;
@@ -754,10 +761,10 @@ include("head.inc");
 											<td width="22%" valign="top" class="vncell"><?=gettext("Additional BOOTP/DHCP Options");?></td>
 											<td width="78%" class="vtable">
 												<div id="shownumbervaluebox">
-													<input type="button" onclick="show_shownumbervalue()" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Additional BOOTP/DHCP Options");?>
+													<input type="button" onclick="show_shownumbervalue()" value="<?=gettext("Advanced");?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Additional BOOTP/DHCP Options");?>
 												</div>
 												<div id="shownumbervalue" style="display:none">
-												<table id="maintable" summary="bootp-dhcp options">
+												<table class="table table-striped" id="maintable" summary="bootp-dhcp options">
 												<tbody>
 												<tr>
 												<td colspan="3">
@@ -787,15 +794,15 @@ include("head.inc");
 													<input autocomplete="off" name="value<?php echo $counter; ?>" type="text" class="formfld" id="value<?php echo $counter; ?>" size="55" value="<?=htmlspecialchars($value);?>" />
 												</td>
 												<td>
-													<input type="image" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" onclick="removeRow(this); return false;" value="<?=gettext("Delete");?>" />
+													<butto onclick="removeRow(this); return false;" value="<?=gettext("Delete");?>" ><span class="glyphicon glyphicon-remove"></span></button>
 												</td>
 												</tr>
 												<?php $counter++; ?>
 												<?php endforeach; ?>
 												</tbody>
 												</table>
-												<a onclick="javascript:addRowTo('maintable', 'formfldalias'); return false;" href="#">
-													<img border="0" src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="" title="<?=gettext("add another entry");?>" />
+												<a onclick="javascript:addRowTo('maintable', 'formfldalias'); return false;" href="#" alt="" title="<?=gettext("add another entry");?>">
+													<span class="glyphicon glyphicon-plus" ></span>
 												</a>
 												<script type="text/javascript">
 												//<![CDATA[
@@ -813,7 +820,7 @@ include("head.inc");
 											<td width="22%" valign="top">&nbsp;</td>
 											<td width="78%">
 												<input name="if" type="hidden" value="<?=$if;?>" />
-												<input name="Submit" type="submit" class="formbtn" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
+												<input name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
 											</td>
 											</tr>
 											<tr>
@@ -832,7 +839,7 @@ include("head.inc");
 										</table>
 						    </div>
 						    <div class="table-responsive">
-							    <table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="static mappings">
+							    <table class="tabcont table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="static mappings">
 										<tr>
 											<td colspan="4" valign="top" class="listtopic"><?=gettext("DHCPv6 Static Mappings for this interface.");?></td>
 											<td>&nbsp;</td>
@@ -846,7 +853,7 @@ include("head.inc");
 											<table border="0" cellspacing="0" cellpadding="1" summary="add">
 											<tr>
 											<td valign="middle" width="17"></td>
-											<td valign="middle"><a href="services_dhcpv6_edit.php?if=<?=$if;?>"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" alt="add" /></a></td>
+											<td valign="middle"><a href="services_dhcpv6_edit.php?if=<?=$if;?>" alt="add"><span class="glyphicon glyphicon-plus" ></span></a></td>
 											</tr>
 											</table>
 											</td>
@@ -870,8 +877,8 @@ include("head.inc");
 										<td valign="middle" class="list nowrap">
 											<table border="0" cellspacing="0" cellpadding="1" summary="icons">
 											<tr>
-											<td valign="middle"><a href="services_dhcpv6_edit.php?if=<?=$if;?>&amp;id=<?=$i;?>"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_e.gif" width="17" height="17" border="0" alt="edit" /></a></td>
-											<td valign="middle"><a href="services_dhcpv6.php?if=<?=$if;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this mapping?");?>')"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" alt="delete" /></a></td>
+											<td valign="middle"><a href="services_dhcpv6_edit.php?if=<?=$if;?>&amp;id=<?=$i;?>" alt="edit"><span class="glyphicon glyphicon-pencil"></span></a></td>
+											<td valign="middle"><a href="services_dhcpv6.php?if=<?=$if;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this mapping?");?>')" alt="delete"><span class="glyphicon glyphicon-remove"></span></a></td>
 											</tr>
 											</table>
 										</td>
@@ -885,14 +892,13 @@ include("head.inc");
 											<table border="0" cellspacing="0" cellpadding="1" summary="add">
 											<tr>
 											<td valign="middle" width="17"></td>
-											<td valign="middle"><a href="services_dhcpv6_edit.php?if=<?=$if;?>"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" alt="add" /></a></td>
+											<td valign="middle"><a href="services_dhcpv6_edit.php?if=<?=$if;?>" alt="add"><span class="glyphicon glyphicon-plus" ></span></a></td>
 											</tr>
 											</table>
 										</td>
 										</tr>
 										</table>
 									</div>
-					    </div>
 					    <? endif; ?>
                         </form>
 				</div>
