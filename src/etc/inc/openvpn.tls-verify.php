@@ -42,15 +42,8 @@ require_once("interfaces.inc");
 openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
 /* read data from command line */
-if (isset($_GET)) {
-	$cert_depth = $_GET['certdepth'];
-	$cert_subject = urldecode($_GET['certsubject']);
-	$allowed_depth = $_GET['depth'];
-	$server_cn = $_GET['servercn'];
-} else {
-	$cert_depth = intval($argv[1]);
-	$cert_subject = $argv[2];
-}
+$cert_depth = intval($argv[1]);
+$cert_subject = $argv[2];
 
 /* Reserved for future use in case we decide to verify CNs and such as well
 $subj = explode("/", $cert_subject);

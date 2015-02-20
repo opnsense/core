@@ -75,13 +75,13 @@ function getNasIP()
 /* setup syslog logging */
 openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
-if (isset($_GET)) {
-	$authmodes = explode(",", $_GET['authcfg']);
-	$username = $_GET['username'];
-	$password = urldecode($_GET['password']);
-	$common_name = $_GET['cn'];
-	$modeid = $_GET['modeid'];
-	$strictusercn = $_GET['strictcn'] == "false" ? false : true;
+if (count($argv) > 3) {
+	$authmodes = explode(",", $5);
+	$username = $1;
+	$password = urldecode($2);
+	$common_name = $3;
+	$modeid = $6;
+	$strictusercn = $4 == "false" ? false : true;
 } else {
 	/* read data from environment */
 	$username = getenv("username");

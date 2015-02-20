@@ -1,11 +1,13 @@
 #!/bin/sh
 
 if [ "$1" = "tls" ]; then
-	RESULT=$(/usr/local/sbin/fcgicli -f /usr/local/etc/inc/openvpn.tls-verify.php -d "servercn=$2&depth=$3&certdepth=$4&certsubject=$5")
+	RESULT=$(/usr/local/bin/php /usr/local/etc/inc/openvpn.tls-verify.php -d $2 $3)
 else
 	# Single quoting $password breaks getting the value from the variable.
-	password=$(echo ${password} | /usr/bin/sed 's/&/%26/g')
-	RESULT=$(/usr/local/sbin/fcgicli -f /usr/local/etc/inc/openvpn.auth-user.php -d "username=$username&password=$password&cn=$common_name&strictcn=$3&authcfg=$2&modeid=$4")
+	password=$(echo -n "${password}" | openssl enc -base64 | sed -e 's/=/%3D/g')
+	username=$(echo -n "${username}" | openssl enc -base64 | sed -e 's/=/%3D/g')
+		
+	RESULT=$(/usr/local/bin/php /etc/inc/openvpn.auth-user.php $username $password $common_name $3 $2 $4)	
 fi
 
 if [ "${RESULT}" = "OK" ]; then
