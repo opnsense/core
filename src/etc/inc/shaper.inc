@@ -4466,6 +4466,8 @@ function dnpipe_find_nextnumber() {
 }
 
 function filter_generate_dummynet_rules() {
+// TODO: re-enable after kernel fix for dummynet
+return;
 	global $g, $dummynet_pipe_list;
 
 	read_dummynet_config();
