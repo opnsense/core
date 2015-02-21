@@ -140,6 +140,8 @@ class HandlerClient(threading.Thread):
         """
         result = ''
         exec_command = ''
+        exec_action = ''
+        exec_params = ''
         try:
             # receive command, maximum data length is 4k... longer messages will be truncated
             data = self.connection.recv(4096)
@@ -170,7 +172,12 @@ class HandlerClient(threading.Thread):
                 self.connection.sendall('%s\n'%result)
         except:
             print (traceback.format_exc())
-            syslog.syslog(syslog.LOG_ERR,'unable to sendback response [%s] for [%s], message was %s'%(result,exec_command ,traceback.format_exc()))
+            syslog.syslog(syslog.LOG_ERR,
+                          'unable to sendback response [%s] for [%s][%s][%s], message was %s'%(result,
+                                                                                               exec_command,
+                                                                                               exec_action,
+                                                                                               exec_params ,
+                                                                                               traceback.format_exc()))
         finally:
             self.connection.close()
 
