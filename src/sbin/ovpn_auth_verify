@@ -6,8 +6,8 @@ else
 	# Single quoting $password breaks getting the value from the variable.
 	password=$(echo -n "${password}" | openssl enc -base64 | sed -e 's/=/%3D/g')
 	username=$(echo -n "${username}" | openssl enc -base64 | sed -e 's/=/%3D/g')
-		
-	RESULT=$(/usr/local/bin/php /etc/inc/openvpn.auth-user.php $username $password $common_name $3 $2 $4)	
+
+	RESULT=$(/usr/local/bin/php /etc/inc/openvpn.auth-user.php $username $password $common_name $3 $2 $4)
 fi
 
 if [ "${RESULT}" = "OK" ]; then

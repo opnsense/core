@@ -208,7 +208,7 @@ include("head.inc");
 
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 				<?php if ($savemsg) print_info_box($savemsg); ?>
-			    
+
 			    <section class="col-xs-12">
 
 					<?php

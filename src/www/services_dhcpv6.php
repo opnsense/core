@@ -460,7 +460,7 @@ include("head.inc");
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-			    	<?php
+				<?php
 						/* active tabs */
 						$tab_array = array();
 						$tabscounter = 0;
