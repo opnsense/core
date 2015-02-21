@@ -286,10 +286,8 @@ class MenuItem
         foreach ($this->children as $nodeId => $node) {
             $node->toggleSelected($url);
             if ($node->getUrl() != "") {
-                if (
-                    strlen($url) >= strlen($node->getUrl()) &&
-                    $node->getUrl() == substr($url, strlen($url)-strlen($node->getUrl()))
-                ) {
+                if (strlen($url) >= strlen($node->getUrl()) &&
+                    $node->getUrl() == substr($url, strlen($url)-strlen($node->getUrl()))) {
                     $node->select();
                 }
             }
