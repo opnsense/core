@@ -138,6 +138,8 @@ class HandlerClient(threading.Thread):
 
         :return: None
         """
+        result = ''
+        exec_command = ''
         try:
             # receive command, maximum data length is 4k... longer messages will be truncated
             data = self.connection.recv(4096)
@@ -168,7 +170,7 @@ class HandlerClient(threading.Thread):
                 self.connection.sendall('%s\n'%result)
         except:
             print (traceback.format_exc())
-            syslog.syslog(syslog.LOG_ERR,'unable to sendback response, message was %s'%traceback.format_exc())
+            syslog.syslog(syslog.LOG_ERR,'unable to sendback response [%s] for [%s], message was %s'%(result,exec_command ,traceback.format_exc()))
         finally:
             self.connection.close()
 
@@ -199,7 +201,7 @@ class ActionHandler(object):
             topic_name = config_filename.split('actions_')[-1].split('.')[0]
             if self.action_map.has_key(topic_name) == False:
                 self.action_map[topic_name] = {}
-                
+
             # traverse config directory and open all filenames starting with actions_
             cnf=ConfigParser.RawConfigParser()
             cnf.read(config_filename)
