@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Core;
 
 /**
@@ -133,10 +135,8 @@ class ACL
         return false;
     }
 
-
     public function __construct()
     {
         $this->initLegacy();
     }
-
 }

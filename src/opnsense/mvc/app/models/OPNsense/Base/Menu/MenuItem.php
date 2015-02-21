@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Base\Menu;
 
 /**
@@ -284,7 +286,10 @@ class MenuItem
         foreach ($this->children as $nodeId => $node) {
             $node->toggleSelected($url);
             if ($node->getUrl() != "") {
-                if (strlen($url) >= strlen($node->getUrl()) && $node->getUrl() == substr($url, strlen($url)-strlen($node->getUrl()))) {
+                if (
+                    strlen($url) >= strlen($node->getUrl()) &&
+                    $node->getUrl() == substr($url, strlen($url)-strlen($node->getUrl()))
+                ) {
                     $node->select();
                 }
             }
