@@ -237,15 +237,14 @@ function captiveportal_get_last_activity($ip, $mac = NULL) {
 
 /* reinit will disconnect all users, be careful! */
 function captiveportal_init_rules($reinit = false) {
-    // load modules
-    captiveportal_load_modules();
 
-    //
-//    if ( $reinit ) {
         $cpc = new OPNsense\CaptivePortal\CPClient();
+	if ($cpc->isEnabled()) {
+	    // load modules ( only if CP is enabled )
+	    captiveportal_load_modules();	
+	}
         $cpc->reconfigure();
         unset($cpc);
-//    }
 }
 
 
@@ -395,8 +394,9 @@ function captiveportal_load_modules() {
 
     /* Always load dummynet now that even allowed ip and mac passthrough use it. */
     if (!is_module_loaded("dummynet.ko")) {
-        mwexec("/sbin/kldload dummynet");
-        set_sysctl(array("net.inet.ip.dummynet.io_fast" => "1", "net.inet.ip.dummynet.hash_size" => "256"));
+        // TODO : enable dummynet when kernel issues are solved, dummynet currently disabled in the gui
+	//mwexec("/sbin/kldload dummynet");
+	//set_sysctl(array("net.inet.ip.dummynet.io_fast" => "1", "net.inet.ip.dummynet.hash_size" => "256"));
     }
     unmute_kernel_msgs();
 }
