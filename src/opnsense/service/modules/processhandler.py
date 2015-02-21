@@ -194,10 +194,15 @@ class ActionHandler(object):
 
         self.action_map = {}
         for config_filename in glob.glob('%s/actions_*.conf'%(self.config_path)) + glob.glob('%s/actions.d/actions_*.conf'%(self.config_path)):
+            # this topic's name (service, filter, template, etc)
+            # make sure there's an action map index for this topic
+            topic_name = config_filename.split('actions_')[-1].split('.')[0]
+            if self.action_map.has_key(topic_name) == False:
+                self.action_map[topic_name] = {}
+                
             # traverse config directory and open all filenames starting with actions_
             cnf=ConfigParser.RawConfigParser()
             cnf.read(config_filename)
-            topic_map = {}
             for section in cnf.sections():
                 # map configuration data on object
                 action_obj = Action()
@@ -207,14 +212,12 @@ class ActionHandler(object):
                 if section.find('.') > -1:
                     # at this moment we only support 2 levels of actions ( 3 if you count topic as well )
                     for alias in section.split('.')[0].split('|'):
-                        if topic_map.has_key(alias) == False:
-                            topic_map[alias] = {}
-                        topic_map[alias][section.split('.')[1]] = action_obj
+                        if self.action_map[topic_name].has_key(alias) == False:
+                            self.action_map[topic_name][alias] = {}
+                        self.action_map[topic_name][alias][section.split('.')[1]] = action_obj
                 else:
                     for alias in section.split('|'):
-                        topic_map[alias] = action_obj
-
-            self.action_map[config_filename.split('actions_')[-1].split('.')[0]] = topic_map
+                        self.action_map[topic_name][alias] = action_obj
 
     def findAction(self,command,action,parameters):
         """ find action object
