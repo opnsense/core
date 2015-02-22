@@ -61,7 +61,6 @@ $g = array(
 	"product_email" => "coreteam@opnsense.org",
 	"hidedownloadbackup" => false,
 	"hidebackupbeforeupgrade" => false,
-	"disablethemeselection" => false,
 	"disablehelpmenu" => false,
 	"disablehelpicon" => false,
 	"disablecrashreporter" => false,

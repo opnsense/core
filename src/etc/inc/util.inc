@@ -1901,18 +1901,16 @@ function array_exclude($needle, $haystack) {
 	return $result;
 }
 
-function get_current_theme() {
+function get_current_theme()
+{
 	global $config, $g;
-	/*
-	 *   if user has selected a custom template, use it.
-	 *   otherwise default to pfsense tempalte
-	 */
-	if (($g["disablethemeselection"] === true) && !empty($g["default_theme"]) && (is_dir($g["www_path"].'/themes/'.$g["default_theme"])))
-		$theme = $g["default_theme"];
-	elseif($config['theme'] <> "" && (is_dir($g["www_path"].'/themes/'.$config['theme'])))
+
+	$theme = 'opnsense';
+
+	if (isset($config['theme']) && is_dir('/usr/local/www/themes/' . $config['theme'])) {
 		$theme = $config['theme'];
-	else
-		$theme = "opnsense";
+	}
+
 	return $theme;
 }
 

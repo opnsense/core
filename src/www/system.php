@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -26,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
@@ -164,10 +165,7 @@ if ($_POST) {
 			set_language($config['system']['language']);
 		}
 
-		/* pfSense themes */
-		if (! $g['disablethemeselection']) {
-			update_if_changed("System Theme", $config['theme'], $_POST['theme']);
-		}
+		update_if_changed("System Theme", $config['theme'], $_POST['theme']);
 
 		/* XXX - billm: these still need updating after figuring out how to check if they actually changed */
 		$olddnsservers = $config['system']['dnsserver'];
@@ -466,19 +464,8 @@ include("head.inc");
 								</strong>
 							</td>
 						</tr>
-					</tbody>
-                            </table>
-						<?php if (! $g['disablethemeselection']): ?>
-						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
-							<thead>
-                                    <tr>
-									<th colspan="2" valign="top" class="listtopic"><?=gettext("Theme"); ?></th>
-								</tr>
-							</thead>
-
-							<tbody>
 						<tr>
-							<td width="22%" valign="top" class="vncell">&nbsp;</td>
+							<td width="22%" valign="top" class="vncell"><?=gettext("Theme"); ?></td>
 							<td width="78%" class="vtable">
 								<select name="theme" class="selectpicker" data-style="btn-default" data-width="auto">
 									<?php
@@ -504,7 +491,6 @@ include("head.inc");
 								</strong>
 							</td>
 						</tr>
-						<?php endif; ?>
 						<tr>
 							<td width="22%" valign="top">&nbsp;</td>
 							<td width="78%">
