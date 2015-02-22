@@ -1,41 +1,35 @@
 <?php
-/* $Id$ */
-/*
-  Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
-  All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice,
-  this list of conditions and the following disclaimer.
-
-  2. Redistributions in binary form must reproduce the above copyright
-  notice, this list of conditions and the following disclaimer in the
-  documentation and/or other materials provided with the distribution.
-
-  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-  POSSIBILITY OF SUCH DAMAGE.
-
-  */
 
 /*
-	pfSense_BUILDER_BINARIES:	/bin/rm	/usr/bin/nice	/usr/local/bin/rrdtool	/bin/cd
-	pfSense_MODULE:	rrd
+	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	   this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* include all configuration functions */
+function dump_rrd_to_xml($rrddatabase, $xmldumpfile)
+{
+	$rrdtool = '/usr/local/bin/rrdtool';
 
-function dump_rrd_to_xml($rrddatabase, $xmldumpfile) {
-	$rrdtool = "/usr/bin/nice -n20 /usr/local/bin/rrdtool";
 	unlink_if_exists($xmldumpfile);
 
 	exec("$rrdtool dump " . escapeshellarg($rrddatabase) . " {$xmldumpfile} 2>&1", $dumpout, $dumpret);
@@ -43,22 +37,24 @@ function dump_rrd_to_xml($rrddatabase, $xmldumpfile) {
 		$dumpout = implode(" ", $dumpout);
 		log_error(sprintf(gettext('RRD dump failed exited with %1$s, the error is: %2$s'), $dumpret, $dumpout));
 	}
+
 	return($dumpret);
 }
 
-function restore_rrd() {
+function restore_rrd()
+{
 	global $g, $config;
 
-	$rrddbpath = "/var/db/rrd/";
-	$rrdtool = "/usr/bin/nice -n20 /usr/local/bin/rrdtool";
+	$rrddbpath = '/var/db/rrd/';
+	$rrdtool = '/usr/local/bin/rrdtool';
 
 	$rrdrestore = "";
 	$rrdreturn = "";
-	if (file_exists("{$g['cf_conf_path']}/rrd.tgz")) {
+	if (file_exists('/cf/conf/rrd.tgz')) {
 		foreach (glob("{$rrddbpath}/*.xml") as $xml_file) {
 			@unlink($xml_file);
 		}
-		$_gb = exec("cd /;LANG=C /usr/bin/tar -xzf {$g['cf_conf_path']}/rrd.tgz 2>&1", $rrdrestore, $rrdreturn);
+		$_gb = exec('cd /;LANG=C /usr/bin/tar -xzf /cf/conf/rrd.tgz 2>&1', $rrdrestore, $rrdreturn);
 		$rrdrestore = implode(" ", $rrdrestore);
 		if($rrdreturn != 0) {
 			log_error("RRD restore failed exited with $rrdreturn, the error is: $rrdrestore\n");
@@ -81,7 +77,7 @@ function restore_rrd() {
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
 		if (($g['platform'] == "pfSense") && !isset($config['system']['use_mfs_tmpvar'])) {
-			unlink_if_exists("{$g['cf_conf_path']}/rrd.tgz");
+			unlink_if_exists('/cf/conf/rrd.tgz');
 		}
 		return true;
 	}

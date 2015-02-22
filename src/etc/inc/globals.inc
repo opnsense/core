@@ -46,7 +46,6 @@ $g = array(
 	"tmp_path" => "/tmp",
 	"conf_path" => "/conf",
 	"cf_path" => "/cf",
-	"cf_conf_path" => "/cf/conf",
 	"xml_rootobj" => "pfsense",
 	"admin_group" => "admins",
 	"product_name" => "OPNsense",

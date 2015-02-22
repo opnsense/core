@@ -91,7 +91,7 @@ if($g['booting'] && file_exists("/cf/conf/config.xml")) {
 }
 
 /* if our config file exists bail out, we're already set. */
-else if ($g['booting'] and !file_exists($g['cf_conf_path'] . "/config.xml")  ) {
+else if ($g['booting'] && !file_exists('/cf/conf/config.xml')) {
 	if($g['booting']) echo ".";
 	/* find the device where config.xml resides and write out an fstab */
 	unset($cfgdevice);
@@ -124,7 +124,7 @@ else if ($g['booting'] and !file_exists($g['cf_conf_path'] . "/config.xml")  ) {
 				if (strstr($mountdisk, "md"))
 					continue;
 				if (mwexec("/sbin/mount -r /dev/{$mountdisk}a {$g['cf_path']}") == 0) {
-					if (file_exists("{$g['cf_conf_path']}/config.xml")) {
+					if (file_exists('cf/conf/config.xml')) {
 						/* found it */
 						$cfgdevice = $mountdisk;
 						$cfgpartition = $cfgdevice . "a";
@@ -139,7 +139,7 @@ else if ($g['booting'] and !file_exists($g['cf_conf_path'] . "/config.xml")  ) {
 				}
 				if (mwexec("/sbin/mount -r /dev/{$mountdisk}d {$g['cf_path']}") == 0) {
 					if($g['booting']) echo ".";
-					if (file_exists("{$g['cf_conf_path']}/config.xml")) {
+					if (file_exists('/cf/conf/config.xml')) {
 						/* found it */
 						$cfgdevice = $mountdisk;
 						$cfgpartition = $cfgdevice . "d";

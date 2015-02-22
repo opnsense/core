@@ -1,11 +1,8 @@
 <?php
-/*
-	services.inc
-	part of the pfSense project (https://www.pfsense.org)
 
-	originally part of m0n0wall (http://m0n0.ch/wall)
+/*
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	Copyright (C) 2010	Ermal Luci
+	Copyright (C) 2010 Ermal Luci
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -28,14 +25,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/killall	/bin/pgrep	/bin/sh	/usr/local/sbin/dhcpd	/usr/local/sbin/igmpproxy
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig		/usr/local/sbin/dnsmasq
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/miniupnpd	/usr/sbin/radvd
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/dhcleases6	/usr/sbin/bsnmpd
-	pfSense_MODULE:	utils
 */
 
 define('DYNDNS_PROVIDER_VALUES', 'dnsomatic dyndns dyndns-static dyndns-custom dhs dyns easydns noip noip-free ods zoneedit loopia freedns dnsexit opendns namecheap he-net he-net-v6 he-net-tunnelbroker selfhost route53 cloudflare custom custom-v6 eurodns gratisdns ovh-dynhost citynetwork');
@@ -360,18 +349,18 @@ function services_dhcpdv4_configure()
 
 	if ($g['booting']) {
 		/* restore the leases, if we have them */
-		if (file_exists("{$g['cf_conf_path']}/dhcpleases.tgz")) {
-			$dhcprestore = "";
-			$dhcpreturn = "";
-			exec("cd /;LANG=C /usr/bin/tar -xzf {$g['cf_conf_path']}/dhcpleases.tgz 2>&1", $dhcprestore, $dhcpreturn);
-			$dhcprestore = implode(" ", $dhcprestore);
+		if (file_exists('/cf/conf/dhcpleases.tgz')) {
+			$dhcprestore = '';
+			$dhcpreturn = '';
+			exec('cd /;LANG=C /usr/bin/tar -xzf /cf/conf/dhcpleases.tgz 2>&1', $dhcprestore, $dhcpreturn);
+			$dhcprestore = implode(' ', $dhcprestore);
 			if($dhcpreturn <> 0) {
 				log_error(sprintf(gettext('DHCP leases restore failed exited with %1$s, the error is: %2$s%3$s'), $dhcpreturn, $dhcprestore, "\n"));
 			}
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
 		if (($g['platform'] == "pfSense") && !isset($config['system']['use_mfs_tmpvar'])) {
-			unlink_if_exists("{$g['cf_conf_path']}/dhcpleases.tgz");
+			unlink_if_exists('/cf/conf/dhcpleases.tgz');
 		}
 	}
 
@@ -988,15 +977,20 @@ function services_dhcpdv6_configure($blacklist = array())
 	if ($g['booting']) {
 		if ($g['platform'] != "pfSense") {
 			/* restore the leases, if we have them */
-			if (file_exists("{$g['cf_conf_path']}/dhcp6leases.tgz")) {
-				$dhcprestore = "";
-				$dhcpreturn = "";
-				exec("cd /;LANG=C /usr/bin/tar -xzf {$g['cf_conf_path']}/dhcp6leases.tgz 2>&1", $dhcprestore, $dhcpreturn);
-				$dhcprestore = implode(" ", $dhcprestore);
+			if (file_exists('/cf/conf/dhcp6leases.tgz')) {
+				$dhcprestore = '';
+				$dhcpreturn = '';
+				exec('cd /;LANG=C /usr/bin/tar -xzf /cf/conf/dhcp6leases.tgz 2>&1', $dhcprestore, $dhcpreturn);
+				$dhcprestore = implode(' ', $dhcprestore);
 				if($dhcpreturn <> 0) {
 					log_error("DHCP leases v6 restore failed exited with $dhcpreturn, the error is: $dhcprestore\n");
 				}
+
 			}
+		}
+		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
+		if (($g['platform'] == "pfSense") && !isset($config['system']['use_mfs_tmpvar'])) {
+			unlink_if_exists('/cf/conf/dhcp6leases.tgz');
 		}
 	}
 

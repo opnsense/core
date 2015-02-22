@@ -1,19 +1,8 @@
 <?php
-/****h* pfSense/config
- * NAME
- *   config.lib.inc - Functions to manipulate config.xml
- * DESCRIPTION
- *   This include contains various config.xml specific functions.
- * HISTORY
- * $Id$
- ******
 
-	config.lib.inc
+/*
 	Ported from config.inc by Erik Kristensen
 	Copyright (C) 2004-2010 Scott Ullrich
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -37,10 +26,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-
-	pfSense_BUILDER_BINARIES:	/sbin/mount	/sbin/umount	/sbin/halt	/sbin/fsck
-	pfSense_MODULE:	config
 */
 
 /****f* config/encrypted_configxml
@@ -520,10 +505,10 @@ function write_config($desc = 'Unknown', $backup = true)
 	$xmlconfig = dump_xml_config($config, $g['xml_rootobj']);
 
 	/* write new configuration */
-	if (!safe_write_file("{$g['cf_conf_path']}/config.xml", $xmlconfig, false)) {
+	if (!safe_write_file('/cf/conf/config.xml', $xmlconfig, false)) {
 		log_error(gettext("WARNING: Config contents could not be save. Could not open file!"));
 		unlock($lockkey);
-		file_notice("config.xml", sprintf(gettext("Unable to open %s/config.xml for writing in write_config()%s"), $g['cf_conf_path'], "\n"));
+		file_notice('config.xml', sprintf("%s\n", gettext('Unable to open /cf/conf/config.xml for writing in write_config()')));
 		return -1;
 	}
 
@@ -580,7 +565,7 @@ function reset_factory_defaults($lock = false) {
 		$lockkey = lock('config', LOCK_EX);
 
 	/* create conf directory, if necessary */
-	safe_mkdir("{$g['cf_conf_path']}");
+	safe_mkdir('/cf/conf');
 
 	/* clear out /conf */
 	$dh = opendir($g['conf_path']);
@@ -619,7 +604,7 @@ function config_restore($conffile) {
 	$lockkey = lock('config', LOCK_EX);
 
 	unlink_if_exists("{$g['tmp_path']}/config.cache");
-	copy($conffile, "{$g['cf_conf_path']}/config.xml");
+	copy($conffile, '/cf/conf/config.xml');
 
 	disable_security_checks();
 
@@ -736,7 +721,7 @@ function cleanup_backupcache($lock = false) {
 		$baktimes = array();
 	}
 	$newbaks = array();
-	$bakfiles = glob($g['cf_conf_path'] . "/backup/config-*");
+	$bakfiles = glob('/cf/conf/backup/config-*');
 	$tocache = array();
 
 	foreach($bakfiles as $backup) { // Check for backups in the directory not represented in the cache.
@@ -785,7 +770,7 @@ function cleanup_backupcache($lock = false) {
 		}
 		$tocache = $newcache;
 	}
-	$bakout = fopen($g['cf_conf_path'] . '/backup/backup.cache', "w");
+	$bakout = fopen('/cf/conf/backup/backup.cache', 'w');
 	fwrite($bakout, serialize($tocache));
 	fclose($bakout);
 	conf_mount_ro();
@@ -794,10 +779,10 @@ function cleanup_backupcache($lock = false) {
 		unlock($lockkey);
 }
 
-function get_backups() {
-	global $g;
-	if(file_exists("{$g['cf_conf_path']}/backup/backup.cache")) {
-		$confvers = unserialize(file_get_contents("{$g['cf_conf_path']}/backup/backup.cache"));
+function get_backups()
+{
+	if (file_exists('/cf/conf/backup/backup.cache')) {
+		$confvers = unserialize(file_get_contents('/cf/conf/backup/backup.cache'));
 		$bakvers = array_keys($confvers);
 		$toreturn = array();
 		sort($bakvers);
@@ -811,37 +796,39 @@ function get_backups() {
 	return $toreturn;
 }
 
-function backup_config() {
-	global $config, $g;
-
+function backup_config()
+{
 	conf_mount_rw();
 
 	/* Create backup directory if needed */
-	safe_mkdir("{$g['cf_conf_path']}/backup");
+	safe_mkdir('/cf/conf/backup');
 
-    if($config['revision']['time'] == "") {
-            $baktime = 0;
-    } else {
-            $baktime = $config['revision']['time'];
-    }
-    if($config['revision']['description'] == "") {
-            $bakdesc = "Unknown";
-    } else {
-            $bakdesc = $config['revision']['description'];
-    }
+	if ($config['revision']['time'] == '') {
+		$baktime = 0;
+	} else {
+		$baktime = $config['revision']['time'];
+	}
 
-	$bakver = ($config['version'] == "") ? "?" : $config['version'];
-	$bakfilename = $g['cf_conf_path'] . '/backup/config-' . $baktime . '.xml';
-	copy($g['cf_conf_path'] . '/config.xml', $bakfilename);
-    if(file_exists($g['cf_conf_path'] . '/backup/backup.cache')) {
-            $backupcache = unserialize(file_get_contents($g['cf_conf_path'] . '/backup/backup.cache'));
-    } else {
-            $backupcache = array();
-    }
+	if ($config['revision']['description'] == '') {
+		$bakdesc = 'Unknown';
+	} else {
+		$bakdesc = $config['revision']['description'];
+	}
+
+	$bakver = ($config['version'] == '') ? '?' : $config['version'];
+	$bakfilename = '/cf/conf/backup/config-' . $baktime . '.xml';
+	copy('/cf/conf/config.xml', $bakfilename);
+
+	if (file_exists('/cf/conf/backup/backup.cache')) {
+		$backupcache = unserialize(file_get_contents('/cf/conf/backup/backup.cache'));
+	} else {
+		$backupcache = array();
+	}
+
 	$backupcache[$baktime] = array('description' => $bakdesc, 'version' => $bakver, 'filesize' => filesize($bakfilename));
-    $bakout = fopen($g['cf_conf_path'] . '/backup/backup.cache', "w");
-    fwrite($bakout, serialize($backupcache));
-    fclose($bakout);
+	$bakout = fopen('/cf/conf/backup/backup.cache', 'w');
+	fwrite($bakout, serialize($backupcache));
+	fclose($bakout);
 
 	conf_mount_ro();
 

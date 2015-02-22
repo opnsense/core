@@ -1913,7 +1913,7 @@ function upgrade_054_to_055() {
 		/* restore the databases, if we have one */
 		if (restore_rrd()) {
 			/* Make sure to move the rrd backup out of the way. We will make a new one after converting. */
-			rename("{$g['cf_conf_path']}/rrd.tgz", "{$g['cf_conf_path']}/backup");
+			rename('/cf/conf/rrd.tgz', '/cf/conf/backup');
 		}
 	}
 
@@ -2031,7 +2031,7 @@ function upgrade_054_to_055() {
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
-	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='{$g['cf_conf_path']}' /usr/local/etc/rc.backup_rrd.sh");
+	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/cf/conf' /usr/local/etc/rc.backup_rrd.sh");
 	unlink_if_exists("{$g['vardb_path']}/rrd/*.xml");
 	if ($g['booting'])
 		echo "Updating configuration...";
@@ -2576,7 +2576,7 @@ function upgrade_080_to_081() {
 		/* restore the databases, if we have one */
 		if (restore_rrd()) {
 			/* Make sure to move the rrd backup out of the way. We will make a new one after converting. */
-			@rename("{$g['cf_conf_path']}/rrd.tgz", "{$g['cf_conf_path']}/backup/rrd.tgz");
+			@rename('/cf/conf/rrd.tgz', '/cf/conf/backup/rrd.tgz');
 		}
 	}
 
@@ -2713,7 +2713,7 @@ function upgrade_080_to_081() {
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
-	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='{$g['cf_conf_path']}' /usr/local/etc/rc.backup_rrd.sh");
+	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/cf/conf' /usr/local/etc/rc.backup_rrd.sh");
 	if ($g['booting'])
 		echo "Updating configuration...";
 	foreach($config['filter']['rule'] as & $rule) {
@@ -3023,7 +3023,7 @@ function upgrade_095_to_096() {
 		/* restore the databases, if we have one */
 		if (restore_rrd()) {
 			/* Make sure to move the rrd backup out of the way. We will make a new one after converting. */
-			rename("{$g['cf_conf_path']}/rrd.tgz", "{$g['cf_conf_path']}/backup");
+			rename('/cf/conf/rrd.tgz', '/cf/conf/backup');
 		}
 	}
 
@@ -3046,7 +3046,7 @@ function upgrade_095_to_096() {
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
-	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='{$g['cf_conf_path']}' /usr/local/etc/rc.backup_rrd.sh");
+	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/cf/conf' /usr/local/etc/rc.backup_rrd.sh");
 }
 
 function upgrade_096_to_097() {

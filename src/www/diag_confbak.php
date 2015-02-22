@@ -1,5 +1,5 @@
 <?php
-/* $Id$ */
+
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2005 Colin Smith
@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 if (isset($_POST['backupcount'])) {
 	if (is_numeric($_POST['backupcount']) && ($_POST['backupcount'] >= 0)) {
@@ -46,7 +46,7 @@ if (isset($_POST['backupcount'])) {
 	}
 
 	conf_mount_rw();
-	$confvers = unserialize(file_get_contents($g['cf_conf_path'] . '/backup/backup.cache'));
+	$confvers = unserialize(file_get_contents('/cf/conf/backup/backup.cache'));
 	if($_POST['newver'] != "") {
 		if(config_restore($g['conf_path'] . '/backup/config-' . $_POST['newver'] . '.xml') == 0)
 		$savemsg = sprintf(gettext('Successfully reverted to timestamp %1$s with description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['newver']), $confvers[$_POST['newver']]['description']);
