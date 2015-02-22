@@ -124,7 +124,7 @@ else if ($g['booting'] && !file_exists('/cf/conf/config.xml')) {
 				if (strstr($mountdisk, "md"))
 					continue;
 				if (mwexec("/sbin/mount -r /dev/{$mountdisk}a {$g['cf_path']}") == 0) {
-					if (file_exists('cf/conf/config.xml')) {
+					if (file_exists('/cf/conf/config.xml')) {
 						/* found it */
 						$cfgdevice = $mountdisk;
 						$cfgpartition = $cfgdevice . "a";
