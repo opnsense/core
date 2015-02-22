@@ -75,7 +75,7 @@ function getNasIP()
 /* setup syslog logging */
 openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
-if (count($argv) >= 6) {
+if (count($argv) > 6) {
 	$authmodes = explode(',', $argv[5]);
         $username = base64_decode(str_replace('%3D', '=', $argv[1]));
         $password = base64_decode(str_replace('%3D', '=', $argv[2]));        
