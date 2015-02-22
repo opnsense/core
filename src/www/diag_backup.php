@@ -35,13 +35,14 @@ ini_set('max_input_time', '0');
 /* omit no-cache headers because it confuses IE with file downloads */
 $omit_nocacheheaders = true;
 $nocsrf = true;
-require("guiconfig.inc");
+
+require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
-$rrddbpath = "/var/db/rrd";
-$rrdtool = "/usr/bin/nice -n20 /usr/local/bin/rrdtool";
+$rrddbpath = '/var/db/rrd';
+$rrdtool = '/usr/local/bin/rrdtool';
 
 function rrd_data_xml() {
 	global $rrddbpath;

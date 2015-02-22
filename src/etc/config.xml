@@ -640,7 +640,7 @@
 			<month>*</month>
 			<wday>*</wday>
 			<who>root</who>
-			<command>/usr/bin/nice -n20 adjkerntz -a</command>
+			<command>adjkerntz -a</command>
 		</item>
 		<item>
 			<minute>1</minute>
@@ -649,7 +649,7 @@
 			<month>*</month>
 			<wday>*</wday>
 			<who>root</who>
-			<command>/usr/bin/nice -n20 /usr/local/etc/rc.update_bogons.sh</command>
+			<command>/usr/local/etc/rc.update_bogons.sh</command>
 		</item>
 		<item>
 			<minute>*/60</minute>
@@ -658,7 +658,7 @@
 			<month>*</month>
 			<wday>*</wday>
 			<who>root</who>
-			<command>/usr/bin/nice -n20 /usr/local/sbin/expiretable -v -t 3600 sshlockout</command>
+			<command>/usr/local/sbin/expiretable -v -t 3600 sshlockout</command>
 		</item>
 		<item>
 			<minute>1</minute>
@@ -667,7 +667,7 @@
 			<month>*</month>
 			<wday>*</wday>
 			<who>root</who>
-			<command>/usr/bin/nice -n20 /usr/local/etc/rc.dyndns.update</command>
+			<command>/usr/local/etc/rc.dyndns.update</command>
 		</item>
 		<item>
 			<minute>*/60</minute>
@@ -676,7 +676,7 @@
 			<month>*</month>
 			<wday>*</wday>
 			<who>root</who>
-			<command>/usr/bin/nice -n20 /usr/local/sbin/expiretable -v -t 3600 virusprot</command>
+			<command>/usr/local/sbin/expiretable -v -t 3600 virusprot</command>
 		</item>
 		<item>
 			<minute>30</minute>
@@ -685,7 +685,7 @@
 			<month>*</month>
 			<wday>*</wday>
 			<who>root</who>
-			<command>/usr/bin/nice -n20 /usr/local/etc/rc.update_urltables</command>
+			<command>/usr/local/etc/rc.update_urltables</command>
 		</item>
 	</cron>
 	<wol>

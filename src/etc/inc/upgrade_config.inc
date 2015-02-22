@@ -404,7 +404,7 @@ function upgrade_025_to_026() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 newsyslog";
+	$cron_item['command'] = "newsyslog";
 
 	$config['cron']['item'][] = $cron_item;
 
@@ -415,7 +415,7 @@ function upgrade_025_to_026() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 adjkerntz -a";
+	$cron_item['command'] = "adjkerntz -a";
 
 	$config['cron']['item'][] = $cron_item;
 
@@ -426,7 +426,7 @@ function upgrade_025_to_026() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 /usr/local/etc/rc.update_bogons.sh";
+	$cron_item['command'] = "/usr/local/etc/rc.update_bogons.sh";
 
 	$config['cron']['item'][] = $cron_item;
 
@@ -437,7 +437,7 @@ function upgrade_025_to_026() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 /usr/local/sbin/expiretable -v -t 3600 sshlockout";
+	$cron_item['command'] = "/usr/local/sbin/expiretable -v -t 3600 sshlockout";
 
 	$config['cron']['item'][] = $cron_item;
 
@@ -448,7 +448,7 @@ function upgrade_025_to_026() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 /usr/local/etc/rc.dyndns.update";
+	$cron_item['command'] = "/usr/local/etc/rc.dyndns.update";
 
 	$config['cron']['item'][] = $cron_item;
 
@@ -459,7 +459,7 @@ function upgrade_025_to_026() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 /usr/local/sbin/expiretable -v -t 3600 virusprot";
+	$cron_item['command'] = "/usr/local/sbin/expiretable -v -t 3600 virusprot";
 
 	$config['cron']['item'][] = $cron_item;
 
@@ -470,7 +470,7 @@ function upgrade_025_to_026() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 /usr/local/sbin/expiretable -t 1800 snort2c";
+	$cron_item['command'] = "/usr/local/sbin/expiretable -t 1800 snort2c";
 
 	$config['cron']['item'][] = $cron_item;
 }
@@ -1908,7 +1908,7 @@ function upgrade_054_to_055() {
 	$listtags = array("ds", "v", "rra", "row");
 
 	$rrddbpath = "/var/db/rrd/";
-	$rrdtool = "/usr/bin/nice -n20 /usr/local/bin/rrdtool";
+	$rrdtool = "/usr/local/bin/rrdtool";
 	if ($g['platform'] != "pfSense") {
 		/* restore the databases, if we have one */
 		if (restore_rrd()) {
@@ -2500,7 +2500,7 @@ function upgrade_075_to_076() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/bin/nice -n20 /usr/local/etc/rc.update_urltables";
+	$cron_item['command'] = "/usr/local/etc/rc.update_urltables";
 	$config['cron']['item'][] = $cron_item;
 }
 
@@ -2570,7 +2570,7 @@ function upgrade_080_to_081() {
 	$listtags = array("ds", "v", "rra", "row");
 
 	$rrddbpath = "/var/db/rrd/";
-	$rrdtool = "/usr/bin/nice -n20 /usr/local/bin/rrdtool";
+	$rrdtool = "/usr/local/bin/rrdtool";
 
 	if ($g['platform'] != "pfSense") {
 		/* restore the databases, if we have one */
@@ -3080,7 +3080,7 @@ function upgrade_098_to_099() {
 
 function upgrade_099_to_100() {
 	require_once("services.inc");
-	install_cron_job("/usr/bin/nice -n20 newsyslog", false);
+	install_cron_job("newsyslog", false);
 }
 
 function upgrade_100_to_101() {

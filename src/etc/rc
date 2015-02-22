@@ -2,7 +2,7 @@
 
 # Copyright (C) 2004-2010 Scott Ullrich, All rights reserved.
 # Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-# Copyright (C) 2014 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2014-2015 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 
 stty status '^T' 2> /dev/null
@@ -346,7 +346,7 @@ echo "done."
 /usr/local/etc/rc.php_ini_setup
 
 chmod u+rx  /usr/local/opnsense/service/check_reload_status.py
-/usr/bin/nice -n20 /usr/local/opnsense/service/check_reload_status.py
+/usr/local/opnsense/service/check_reload_status.py
 sleep 1 # give check_reload_status some time to load to prevent missing socket
 
 # let the PHP-based configuration subsystem set up the system now

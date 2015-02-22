@@ -218,7 +218,7 @@ function enable_rrd_graphing() {
 	$captiveportalloggedin = "-loggedin.rrd";
 	$ntpd = "ntpd.rrd";
 
-	$rrdtool = "/usr/bin/nice -n20 /usr/local/bin/rrdtool";
+	$rrdtool = "/usr/local/bin/rrdtool";
 	$netstat = "/usr/bin/netstat";
 	$awk = "/usr/bin/awk";
 	$tar = "/usr/bin/tar";
@@ -906,7 +906,7 @@ function enable_rrd_graphing() {
 		kill_traffic_collector();
 
 		/* start traffic collector */
-		mwexec_bg("/usr/bin/nice -n20 /bin/sh $updaterrdscript");
+		mwexec_bg("/bin/sh $updaterrdscript");
 
 	} else {
 		/* kill off traffic collectors */
@@ -928,7 +928,7 @@ function create_gateway_quality_rrd($rrd_file) {
 	global $g;
 	$rrdinterval = 60;
 	$valid = $rrdinterval * 2;
-	$rrdtool = "/usr/bin/nice -n20 /usr/local/bin/rrdtool";
+	$rrdtool = "/usr/local/bin/rrdtool";
 
 	/* GATEWAY QUALITY, set up the rrd file */
 	if (!file_exists("$rrd_file")) {
