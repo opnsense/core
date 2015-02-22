@@ -75,10 +75,10 @@ function getNasIP()
 /* setup syslog logging */
 openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
-if (count($argv) > 6) {
+if (count($argv) >= 6) {
 	$authmodes = explode(',', $argv[5]);
-	$username = $argv[1];
-	$password = urldecode($argv[2]);
+        $username = base64_decode(str_replace('%3D', '=', $argv[1]));
+        $password = base64_decode(str_replace('%3D', '=', $argv[2]));        
 	$common_name = $argv[3];
 	$modeid = $argv[6];
 	$strictusercn = $argv[4] == 'false' ? false : true;
@@ -91,14 +91,8 @@ if (count($argv) > 6) {
 
 if (!$username || !$password) {
 	syslog(LOG_ERR, "invalid user authentication environment");
-	if (isset($_GET)) {
-		echo "FAILED";
-		closelog();
-		return;
-	} else {
-		closelog();
-		exit(-1);
-	}
+	closelog();
+	exit(-1);
 }
 
 /* Replaced by a sed with propper variables used below(ldap parameters). */
@@ -113,26 +107,14 @@ $authenticated = false;
 
 if (($strictusercn === true) && ($common_name != $username)) {
 	syslog(LOG_WARNING, "Username does not match certificate common name ({$username} != {$common_name}), access denied.\n");
-	if (isset($_GET)) {
-		echo "FAILED";
-		closelog();
-		return;
-	} else {
-		closelog();
-		exit(1);
-	}
+	closelog();
+	exit(1);
 }
 
 if (!is_array($authmodes)) {
 	syslog(LOG_WARNING, "No authentication server has been selected to authenticate against. Denying authentication for user {$username}");
-	if (isset($_GET)) {
-		echo "FAILED";
-		closelog();
-		return;
-	} else {
-		closelog();
-		exit(1);
-	}
+	closelog();
+	exit(1);
 }
 
 $attributes = array();
@@ -148,14 +130,8 @@ foreach ($authmodes as $authmode) {
 
 if ($authenticated == false) {
 	syslog(LOG_WARNING, "user '{$username}' could not authenticate.\n");
-	if (isset($_GET)) {
-		echo "FAILED";
-		closelog();
-		return;
-	} else {
-		closelog();
-		exit(-1);
-	}
+	closelog();
+	exit(-1);
 }
 
 @include_once('openvpn.attributes.php');
@@ -190,7 +166,4 @@ if (!empty($content))
 syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
 closelog();
 
-if (isset($_GET))
-	echo "OK";
-else
-	exit(0);
+exit(0);

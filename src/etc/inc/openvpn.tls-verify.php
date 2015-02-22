@@ -59,23 +59,14 @@ foreach ($subj at $s) {
 
 if (isset($allowed_depth) && ($cert_depth > $allowed_depth)) {
 	syslog(LOG_WARNING, "Certificate depth {$cert_depth} exceeded max allowed depth of {$allowed_depth}.\n");
-	if (isset($_GET)) {
-		echo "FAILED";
-		closelog();
-		return;
-	} else {
-		closelog();
-		exit(1);
-	}
+	closelog();
+	exit(1);
 }
 
 // Debug
 //syslog(LOG_WARNING, "Found certificate {$argv[2]} with depth {$cert_depth}\n");
 
 closelog();
-if (isset($_GET))
-	echo "OK";
-else
-	exit(0);
+exit(0);
 
 ?>
