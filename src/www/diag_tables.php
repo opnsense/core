@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2010 Jim Pingle
@@ -59,7 +60,7 @@ if($_REQUEST['deleteall']) {
 }
 
 if((($tablename == "bogons") || ($tablename == "bogonsv6")) && ($_POST['Download'])) {
-	mwexec_bg("/usr/local/etc/rc.update_bogons.sh now");
+	mwexec_bg('/usr/local/etc/rc.update_bogons now');
 	$maxtimetowait = 0;
 	$loading = true;
 	while($loading == true) {

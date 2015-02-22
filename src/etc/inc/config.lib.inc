@@ -378,7 +378,7 @@ function convert_config() {
 	if (is_array($config['cron'])) {
 		$cron_item_count = count($config['cron']['item']);
 		for($x=0; $x<$cron_item_count; $x++) {
-			if(stristr($config['cron']['item'][$x]['command'], "rc.update_bogons.sh")) {
+			if(stristr($config['cron']['item'][$x]['command'], 'rc.update_bogons')) {
 				if($config['cron']['item'][$x]['hour'] == "*" ) {
 				$config['cron']['item'][$x]['hour'] = "3";
 					write_config(gettext("Updated bogon update frequency to 3am"));

@@ -426,7 +426,7 @@ function upgrade_025_to_026() {
 	$cron_item['month'] = "*";
 	$cron_item['wday'] = "*";
 	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/local/etc/rc.update_bogons.sh";
+	$cron_item['command'] = "/usr/local/etc/rc.update_bogons";
 
 	$config['cron']['item'][] = $cron_item;
 
@@ -2031,7 +2031,7 @@ function upgrade_054_to_055() {
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
-	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/cf/conf' /usr/local/etc/rc.backup_rrd.sh");
+	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/cf/conf' /usr/local/etc/rc.backup_rrd");
 	unlink_if_exists("{$g['vardb_path']}/rrd/*.xml");
 	if ($g['booting'])
 		echo "Updating configuration...";
@@ -2713,7 +2713,7 @@ function upgrade_080_to_081() {
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
-	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/cf/conf' /usr/local/etc/rc.backup_rrd.sh");
+	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/cf/conf' /usr/local/etc/rc.backup_rrd");
 	if ($g['booting'])
 		echo "Updating configuration...";
 	foreach($config['filter']['rule'] as & $rule) {
@@ -3046,7 +3046,7 @@ function upgrade_095_to_096() {
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
-	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/cf/conf' /usr/local/etc/rc.backup_rrd.sh");
+	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/cf/conf' /usr/local/etc/rc.backup_rrd");
 }
 
 function upgrade_096_to_097() {

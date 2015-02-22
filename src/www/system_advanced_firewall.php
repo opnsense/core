@@ -187,15 +187,15 @@ if ($_POST) {
 		if ($_POST['bogonsinterval'] != $config['system']['bogons']['interval']) {
 			switch ($_POST['bogonsinterval']) {
 				case 'daily':
-					install_cron_job("/usr/local/etc/rc.update_bogons.sh", true, "1", "3", "*", "*", "*");
+					install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "*");
 					break;
 				case 'weekly':
-					install_cron_job("/usr/local/etc/rc.update_bogons.sh", true, "1", "3", "*", "*", "0");
+					install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "0");
 					break;
 				case 'monthly':
 					// fall through
 				default:
-					install_cron_job("/usr/local/etc/rc.update_bogons.sh", true, "1", "3", "1", "*", "*");
+					install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "1", "*", "*");
 			}
 			$config['system']['bogons']['interval'] = $_POST['bogonsinterval'];
 		}

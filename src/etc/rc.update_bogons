@@ -57,17 +57,17 @@ process_url() {
 	fi
 }
 
-echo "rc.update_bogons.sh is starting up." | logger
+echo "rc.update_bogons is starting up." | logger
 
 # Sleep for some time, unless an argument is specified.
 if [ "$1" = "" ]; then
     # Grab a random value
     value=`od -A n -d -N2 /dev/random | awk '{ print $1 }'`
-    echo "rc.update_bogons.sh is sleeping for $value" | logger
+    echo "rc.update_bogons is sleeping for $value" | logger
     sleep $value
 fi
 
-echo "rc.update_bogons.sh is beginning the update cycle." | logger
+echo "rc.update_bogons is beginning the update cycle." | logger
 
 # Set default values if not overriden
 v4url=${v4url:-"https://files.pfsense.org/lists/fullbogons-ipv4.txt"}
@@ -80,7 +80,7 @@ process_url /tmp/bogonsv6 "${v6url}"
 
 if [ "$proc_error" != "" ]; then
 	# Relaunch and sleep
-	sh /usr/local/etc/rc.update_bogons.sh &
+	sh /usr/local/etc/rc.update_bogons &
 	exit
 fi
 
@@ -145,8 +145,8 @@ fi
 
 if [ "$checksum_error" != "" ]; then
 	# Relaunch and sleep
-	sh /usr/local/etc/rc.update_bogons.sh &
+	sh /usr/local/etc/rc.update_bogons &
 	exit
 fi
 
-echo "rc.update_bogons.sh is ending the update cycle." | logger
+echo "rc.update_bogons is ending the update cycle." | logger
