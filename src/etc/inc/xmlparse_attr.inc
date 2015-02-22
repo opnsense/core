@@ -127,11 +127,14 @@ function cData_attr($parser, $data) {
 	}
 }
 
-function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulatory-data') {
+function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulatory-data')
+{
 	global $g, $listtags;
 
-	if (empty($rdfile))
-		$rdfile = $g['etc_path'] . '/regdomain.xml';
+	if (empty($rdfile)) {
+		$rdfile = '/etc/regdomain.xml';
+	}
+
 	$listtags = listtags_rd();
 	$parsed_xml = array();
 
@@ -142,7 +145,7 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
 			$rdattributes = $parsed_xml['attributes'];
 		}
 	}
-	if (empty($parsed_xml) && file_exists($g['etc_path'] . '/regdomain.xml')) {
+	if (empty($parsed_xml) && file_exists('/etc/regdomain.xml')) {
 		$rdmain = parse_xml_config_raw_attr($rdfile, $rootobj, $rdattributes);
 
 		// unset parts that aren't used before making cache

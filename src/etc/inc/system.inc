@@ -1,8 +1,6 @@
 <?php
 
 /*
-	part of m0n0wall (http://m0n0.ch/wall)
-
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -26,16 +24,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/sbin/powerd	/usr/bin/killall	/sbin/route
-	pfSense_BUILDER_BINARIES:	/bin/hostname	/bin/ls	/usr/local/sbin/syslogd
-	pfSense_BUILDER_BINARIES:	/usr/sbin/pccardd	/usr/local/sbin/lighttpd	/bin/chmod	/bin/mkdir
-	pfSense_BUILDER_BINARIES:	/usr/bin/tar		/usr/local/sbin/ntpd	/usr/local/sbin/ntpdate
-	pfSense_BUILDER_BINARIES:	/usr/bin/nohup	/sbin/dmesg	/usr/local/sbin/atareinit	/sbin/kldload
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/filterdns
-	pfSense_MODULE:	utils
 */
 
 function activate_powerd()
@@ -821,7 +809,7 @@ function system_webgui_start() {
 	if ($g['booting'])
 		echo gettext("Starting webConfigurator...");
 
-	chdir($g['www_path']);
+	chdir('/usr/local/www');
 
 	/* defaults */
 	$portarg = "80";

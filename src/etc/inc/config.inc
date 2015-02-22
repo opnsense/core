@@ -1,18 +1,7 @@
 <?php
-/****h* pfSense/config
- * NAME
- *   config.inc - Functions to manipulate config.xml
- * DESCRIPTION
- *   This include contains various config.xml specific functions.
- * HISTORY
- * $Id$
- ******
 
-	config.inc
+/*
 	Copyright (C) 2004-2010 Scott Ullrich
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -36,10 +25,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-
-	pfSense_BUILDER_BINARIES:	/sbin/mount	/sbin/umount	/sbin/halt	/sbin/fsck
-	pfSense_MODULE:	config
 */
 
 if($g['booting']) echo ".";
@@ -112,7 +97,7 @@ else if ($g['booting'] and !file_exists($g['cf_conf_path'] . "/config.xml")  ) {
 	unset($cfgdevice);
 	if($g['booting']) echo ".";
 	/* check if there's already an fstab (NFS booting?) */
-	if (!file_exists("{$g['etc_path']}/fstab")) {
+	if (!file_exists('/etc/fstab')) {
 		if($g['booting']) echo ".";
 		if (strstr($g['platform'], "cdrom")) {
 			/* config is on floppy disk for CD-ROM version */
@@ -188,7 +173,7 @@ else if ($g['booting'] and !file_exists($g['cf_conf_path'] . "/config.xml")  ) {
 		fclose($fd);
 
 		/* write out an fstab */
-		$fd = fopen("{$g['etc_path']}/fstab", "w");
+		$fd = fopen('/etc/fstab', 'w');
 
 		$fstab = "/dev/{$cfgpartition} {$g['cf_path']} {$cfgfstype} ro,noatime 1 1\n";
 		$fstab .= "proc /proc procfs rw 0 0\n";

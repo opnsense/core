@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
@@ -27,11 +28,11 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("globals.inc");
-require("guiconfig.inc");
-require("functions.inc");
+require_once("globals.inc");
+require_once("guiconfig.inc");
+require_once("functions.inc");
 require_once("filter.inc");
-require("shaper.inc");
+require_once("shaper.inc");
 require_once("rrd.inc");
 
 function gentitle_pkg($pgname) {
@@ -56,8 +57,8 @@ if(empty($xml)) {
 	print_info_box_np(sprintf(gettext("ERROR:  Could not open %s."), $xml));
 	die;
 } else {
-	if (file_exists("{$g['www_path']}/wizards/{$xml}"))
-		$pkg = parse_xml_config_pkg("{$g['www_path']}/wizards/" . $xml, "pfsensewizard");
+	if (file_exists("/usr/local/www/wizards/{$xml}"))
+		$pkg = parse_xml_config_pkg('/usr/local/www/wizards/' . $xml, 'pfsensewizard');
 	else {
 		print_info_box_np(sprintf(gettext("ERROR:  Could not open %s."), $xml));
 		die;
@@ -65,7 +66,7 @@ if(empty($xml)) {
 }
 
 if (!is_array($pkg)) {
-	print_info_box_np(sprintf(gettext("ERROR: Could not parse %s/wizards/%s file."),$g['www_path'],$xml));
+	print_info_box_np(sprintf(gettext("ERROR: Could not parse /usr/local/www/wizards/%s file."), $xml));
 	die;
 }
 

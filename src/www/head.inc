@@ -1,14 +1,10 @@
 <?php
-/*
-	pfSense_MODULE:	header
-*/
 
 $g['theme'] = get_current_theme();
 
 $pagetitle = gentitle( $pgtitle );
 
-?>
-<!doctype html>
+?><!doctype html>
 <!--[if IE 8 ]><html lang="<?=system_get_language_code();?>" class="ie ie8 lte9 lte8 no-js"><![endif]-->
 <!--[if IE 9 ]><html lang="<?=system_get_language_code();?>" class="ie ie9 lte9 no-js"><![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--><html lang="<?=system_get_language_code();?>" class="no-js"><!--<![endif]-->
@@ -48,7 +44,7 @@ $pagetitle = gentitle( $pgtitle );
 
 
 
-		<?php if(file_exists("{$g['www_path']}/javascript/global.js")):?>
+		<?php if (file_exists('/usr/local/www/javascript/global.js')):?>
 		<script type="text/javascript" src="/javascript/global.js"></script>
 		<?php endif; ?>
 
@@ -59,8 +55,8 @@ $pagetitle = gentitle( $pgtitle );
 		 *	Coded by: Erik Kristensen
 		 */
 
-		$dir  = trim(basename($_SERVER["SCRIPT_FILENAME"], '.php'));
-		$path = "{$g['www_path']}/javascript/" . $dir . "/";
+		$dir  = trim(basename($_SERVER['SCRIPT_FILENAME'], '.php'));
+		$path = '/usr/local/www/javascript/' . $dir . '/';
 		if (is_dir($path)) {
 			if ($dh = opendir($path)) {
 				while (($file = readdir($dh)) !== false) {
