@@ -182,7 +182,7 @@ class HandlerClient(threading.Thread):
             self.connection.close()
 
 class ActionHandler(object):
-    """ Start/stop services and functions using configuration data definced in conf/actions_<topic>.conf
+    """ Start/stop services and functions using configuration data defined in conf/actions_<topic>.conf
     """
     def __init__(self,config_path):
         """ Initialize action handler to start system functions
@@ -319,9 +319,7 @@ class Action(object):
         if self.type == None:
             return 'No action type'
         elif self.type.lower() == 'script':
-            #
             # script command, execute a shell script and return (simple) status
-            #
             if self.command == None:
                 return 'No command'
             try:
@@ -331,7 +329,9 @@ class Action(object):
 
                     if script_command.find('%s') > -1 and len(parameters) > 0:
                         # use command execution parameters in action parameter template
-                        script_command = script_command % tuple(parameters[0:script_command.count('%s')])
+                        # use quotes to prevent code injection
+                        script_command = script_command % tuple(map(lambda x:'"'+x+'"',
+                                                                    parameters[0:script_command.count('%s')]))
 
                 # execute script command
                 if self.message != None:
@@ -350,7 +350,33 @@ class Action(object):
                 return 'OK'
             else:
                 return 'Error (%d)'%exit_status
+        elif self.type.lower() == 'script_output':
+            # script command returning output, execute a shell script and return stdout
+            if self.command == None:
+                return 'No command'
+            try:
+                script_command = self.command
+                if self.parameters != None and type(self.parameters) == str:
+                    script_command = '%s %s'%(script_command,self.parameters)
 
+                    if script_command.find('%s') > -1 and len(parameters) > 0:
+                        # use command execution parameters in action parameter template
+                        # use quotes to prevent code injection
+                        script_command = script_command % tuple(map(lambda x:'"'+x+'"',
+                                                                    parameters[0:script_command.count('%s')]))
+
+                # execute script command
+                if self.message != None:
+                    if self.message.count('%s') > 0 and parameters != None and len(parameters) > 0:
+                        syslog.syslog(syslog.LOG_NOTICE,self.message % tuple(parameters[0:self.message.count('%s')]) )
+                    else:
+                        syslog.syslog(syslog.LOG_NOTICE,self.message)
+
+                script_output = subprocess.check_output(script_command, shell=True)
+                return script_output
+            except:
+                syslog.syslog(syslog.LOG_ERR, 'Script action failed at %s'%traceback.format_exc())
+                return 'Execute error'
         elif self.type.lower() == 'inline':
             # Handle inline service actions
             try:
