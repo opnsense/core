@@ -14,7 +14,8 @@ $loader = new Loader();
 $loader->registerDirs(
     array(
         $phalcon_config->application->controllersDir,
-        $phalcon_config->application->modelsDir
+        $phalcon_config->application->modelsDir,
+        $phalcon_config->application->libraryDir
     )
 )->register();
 
