@@ -803,11 +803,25 @@ EOD;
 	return $retval;
 }
 
-function system_webgui_start() {
+function system_webgui_start()
+{
 	global $config, $g;
 
-	if ($g['booting'])
+	if (file_exists('/usr/local/bin/openssl')) {
+		/* use the ports version */
+		$bin_openssl = '/usr/local/bin/openssl';
+	} elseif (file_exists('/usr/bin/openssl')) {
+		/* use the base version (legacy fallback) */
+		$bin_openssl = '/usr/bin/openssl';
+	} else {
+		/* the infamous "this should never happen" */
+		log_error(_('Could not find an OpenSSL implementation on your system.'));
+	}
+
+	if ($g['booting']) {
+		/* XXX no no no no no no no no  */
 		echo gettext("Starting webConfigurator...");
+	}
 
 	chdir('/usr/local/www');
 
@@ -841,7 +855,7 @@ function system_webgui_start() {
 			$openssl_args .= ' -subj "/C=NL/ST=Zuid-Holland/L=Middelharnis/O=OPNsense"';
 			$openssl_args .= ' -keyout /tmp/ssl.key';
 			$openssl_args .= ' -out /tmp/ssl.crt';
-			mwexec('/usr/bin/openssl' . $openssl_args);
+			mwexec($bin_openssl . $openssl_args);
 			$crt = file_get_contents('/tmp/ssl.crt');
 			$key = file_get_contents('/tmp/ssl.key');
 			unlink('/tmp/ssl.key');
