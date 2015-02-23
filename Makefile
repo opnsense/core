@@ -24,7 +24,7 @@ sweep:
 	    xargs -0 -n1 scripts/cleanfile
 
 style:
-	@(phpcs --tab-width=4 --standard=PSR2 ${.CURDIR}/src/opnsense \
+	@(phpcs --tab-width=4 --standard=PSR2 ${.CURDIR}/src/opnsense/mvc \
 	    || true) > ${.CURDIR}/.style.out
 	@echo -n "Total number of style warnings: "
 	@grep '| WARNING' ${.CURDIR}/.style.out | wc -l
