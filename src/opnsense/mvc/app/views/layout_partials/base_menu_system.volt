@@ -3,7 +3,7 @@
         <nav class="page-side-nav" role="navigation">
             <div class="list-group" id="mainmenu">
                 {% for topMenuItem in menuSystem %}
-                <a href="#{{ topMenuItem.Id }}" class="list-group-item " data-toggle="collapse" data-parent="#mainmenu"><span class="{{ topMenuItem.CssClass }} __iconspacer"></span>{{ topMenuItem.VisibleName }} </a>
+                <a href="#{{ topMenuItem.Id }}" class="list-group-item {% if topMenuItem.Selected %}  active-menu-title {% endif  %}" data-toggle="collapse" data-parent="#mainmenu"><span class="{{ topMenuItem.CssClass }} __iconspacer"></span>{{ topMenuItem.VisibleName }} </a>
                 <div class="collapse  {% if topMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}">
                     {% for subMenuItem in topMenuItem.Children %}
                         {% if acl.isPageAccessible(session.get('Username'),subMenuItem.Url)  %}
