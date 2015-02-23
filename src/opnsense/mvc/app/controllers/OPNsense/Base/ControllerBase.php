@@ -98,7 +98,7 @@ class ControllerBase extends Controller
             'csrf_token' => $this->security->getToken()
         ]);
 
-        // Execute before every found action
+        // set translator
         $this->view->setVar('lang', $this->getTranslator());
 
         // link menu system to view, append /ui in uri because of rewrite
