@@ -1034,8 +1034,8 @@ server.max-keep-alive-idle = 30
 server.document-root        = "{$document_root}"
 
 ### todo implement phalcon ui and api routing
-#alias.url += ( "/ui/" => "/usr/local/opnsense/mvc/public/" )
-#alias.url += ( "/api/"  => "/usr/local/opnsense/mvc/public/" )
+#alias.url += ( "/ui/" => "/usr/local/opnsense/www/" )
+#alias.url += ( "/api/"  => "/usr/local/opnsense/www/" )
 #url.rewrite-if-not-file = ( "^/ui/(.*)$" => "/ui/index.php?_url=/$1" ,
 #                            "^/api/(.*)$" => "/api/api.php?_url=/$1"
 #)
