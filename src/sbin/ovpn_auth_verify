@@ -1,14 +1,14 @@
 #!/bin/sh
+
 if [ "$1" = "tls" ]; then
-	(/usr/local/bin/php /usr/local/etc/inc/openvpn.tls-verify.php -d "$2" "$3")
-	exit $?
+	/usr/local/bin/php /usr/local/etc/inc/openvpn.tls-verify.php -d "$2" "$3"
 else
 	# Single quoting $password breaks getting the value from the variable.
-	password=$(echo -n "${password}" | openssl enc -base64 | sed -e 's/=/%3D/g')
-	username=$(echo -n "${username}" | openssl enc -base64 | sed -e 's/=/%3D/g')
+	# XXX I really don't like going through openssl for this...
+	password=$(echo -n "${password}" | /usr/local/bin/openssl enc -base64 | sed -e 's/=/%3D/g')
+	username=$(echo -n "${username}" | /usr/local/bin/openssl enc -base64 | sed -e 's/=/%3D/g')
 
-	(/usr/local/bin/php /usr/local/etc/inc/openvpn.auth-user.php "$username" "$password" "$common_name" "$3" "$2" "$4")
-	exit $?
+	/usr/local/bin/php /usr/local/etc/inc/openvpn.auth-user.php "$username" "$password" "$common_name" "$3" "$2" "$4"
 fi
 
-exit 1
+exit $?
