@@ -457,19 +457,44 @@ function cert_get_issuer($str_crt, $decode = true) {
 }
 
 /* this function works on x509 (crt), rsa key (prv), and req(csr) */
-function cert_get_modulus($str_crt, $decode = true, $type = "crt"){
-	if ($decode)
-		$str_crt = base64_decode($str_crt);
+function cert_get_modulus($str_crt, $decode = true, $type = 'crt')
+{
+	$type_list = array('crt', 'prv', 'csr');
+	$type_cmd = array('x509', 'rsa', 'req');
+	$modulus = '';
 
-	$modulus = "";
-	if ( in_array($type, array("crt", "prv", "csr")) ) {
-			$type = str_replace( array("crt","prv","csr"), array("x509","rsa","req"), $type);
-			$modulus = exec("echo \"{$str_crt}\" | openssl {$type} -noout -modulus");
+	if (file_exists('/usr/local/bin/openssl')) {
+		/* use the ports version */
+		$bin_openssl = '/usr/local/bin/openssl';
+	} elseif (file_exists('/usr/bin/openssl')) {
+		/* use the base version (legacy fallback) */
+		$bin_openssl = '/usr/bin/openssl';
+	} else {
+		/* the infamous "this should never happen" */
+		log_error(_('Could not find an OpenSSL implementation on your system.'));
+		return $modulus;
 	}
+
+	if ($decode) {
+		$str_crt = base64_decode($str_crt);
+	}
+
+	if (in_array($type, $type_list)) {
+		$type = str_replace($type_list, $type_cmd, $type);
+		$modulus = exec(sprintf(
+			'echo %s | %s %s -noout -modulus',
+			escapeshellarg($str_crt),
+			$bin_openssl,
+			escapeshellarg($type)
+		));
+	}
+
 	return $modulus;
 }
-function csr_get_modulus($str_crt, $decode = true){
-	return cert_get_modulus($str_crt, $decode, "csr");
+
+function csr_get_modulus($str_crt, $decode = true)
+{
+	return cert_get_modulus($str_crt, $decode, 'csr');
 }
 
 function cert_get_purpose($str_crt, $decode = true) {
