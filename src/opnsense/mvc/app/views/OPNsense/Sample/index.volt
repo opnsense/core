@@ -19,14 +19,13 @@ API call result : <div id="msgid"></div>
 
     $( "#restcall" ).click( function() {
         $.ajax({
-            type: "PUT",
+            type: "POST",
             url: "/api/sample/",
             success: function(data){
                 $("#msgid").html( data.message );
             },
             data:{message:$("#msg").val()}
         });
-
     });
 
 </script>

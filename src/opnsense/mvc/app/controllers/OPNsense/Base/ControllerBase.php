@@ -68,35 +68,35 @@ class ControllerBase extends Controller
      */
     public function beforeExecuteRoute($dispatcher)
     {
-        // Authentication
-        // - use authentication of legacy OPNsense.
-        if ($this->session->has("Username") == false) {
-            $this->response->redirect("/", true);
-        }
-        // check for valid csrf on post requests
-        if ($this->request->isPost() && !$this->security->checkToken()) {
-            // post without csrf, exit.
-            return false;
+        // only handle input validation on first request.
+        if (!$dispatcher->wasForwarded()) {
+            // Authentication
+            // - use authentication of legacy OPNsense.
+            if ($this->session->has("Username") == false) {
+                $this->response->redirect("/", true);
+            }
+            // check for valid csrf on post requests
+            if ($this->request->isPost() && !$this->security->checkToken()) {
+                // post without csrf, exit.
+                return false;
+            }
+
+            // REST type calls should be implemented by inheriting ApiControllerBase.
+            // because we don't check for csrf on these methods, we want to make sure these aren't used.
+            if ($this->request->isHead() ||
+                $this->request->isPut() ||
+                $this->request->isDelete() ||
+                $this->request->isPatch() ||
+                $this->request->isOptions()) {
+                throw new \Exception('request type not supported');
+            }
         }
 
-        // REST type calls should be implemented by inheriting ApiControllerBase.
-        // because we don't check for csrf on these methods, we want to make sure these aren't used.
-        if ($this->request->isHead() ||
-            $this->request->isPut() ||
-            $this->request->isDelete() ||
-            $this->request->isPatch() ||
-            $this->request->isOptions()) {
-            throw new \Exception('request type not supported');
-        }
-
-        // include csrf for GET requests.
-        if ($this->request->isGet()) {
-            // inject csrf information
-            $this->view->setVars([
-                'csrf_tokenKey' => $this->security->getTokenKey(),
-                'csrf_token' => $this->security->getToken()
-            ]);
-        }
+        // include csrf for volt view rendering.
+        $this->view->setVars([
+            'csrf_tokenKey' => $this->security->getTokenKey(),
+            'csrf_token' => $this->security->getToken()
+        ]);
 
         // Execute before every found action
         $this->view->setVar('lang', $this->getTranslator());
