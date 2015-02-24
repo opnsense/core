@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    package : check_reload_status
+    package : configd
     function: delivers a process coordinator to handle frontend functions
 
 
@@ -56,12 +56,12 @@ os.chdir(program_path)
 
 # open configuration
 cnf = ConfigParser.ConfigParser()
-cnf.read('conf/check_reload_status.conf')
+cnf.read('conf/configd.conf')
 
 # validate configuration, exit on missing item
 for config_item in  ['socket_filename','pid_filename']:
     if cnf.has_section('main') == False or cnf.has_option('main',config_item) == False:
-        print('configuration item main/%s not found in %s/conf/check_reload_status.conf'%(config_item,program_path))
+        print('configuration item main/%s not found in %s/conf/configd.conf'%(config_item,program_path))
         sys.exit(0)
 
 # run process coordinator ( on console or as daemon )

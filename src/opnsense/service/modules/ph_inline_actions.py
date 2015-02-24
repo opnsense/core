@@ -27,7 +27,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    package : check_reload_status
+    package : configd
     function: unix domain socket process worker process
 
 

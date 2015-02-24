@@ -27,7 +27,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    package : check_reload_status
+    package : configd
     function: config handler
 
 

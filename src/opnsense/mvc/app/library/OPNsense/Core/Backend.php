@@ -38,7 +38,7 @@ class Backend
     /**
      * @var string location of configd socket
      */
-    private $configdSocket = "/var/run/check_reload_status";
+    private $configdSocket = "/var/run/configd.socket";
 
     /**
      * init Backend component

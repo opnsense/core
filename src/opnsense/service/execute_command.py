@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    package : check_reload_status
+    package : configd
     function: commandline execute commands to check_reload_status daemon
 
 
@@ -63,6 +63,16 @@ except socket.error, msg:
 try:
     print ('send:%s '%exec_command)
     sock.send(exec_command)
-    print ('response:%s'% sock.recv(4096))
+    data = []
+    while True:
+        line = sock.recv(4096)
+        if line:
+            data.append(line)
+        else:
+            break
+    print ('response:%s'% ''.join(data) )
 finally:
     sock.close()
+
+
+
