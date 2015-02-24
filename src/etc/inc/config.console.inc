@@ -300,7 +300,7 @@ EOD;
 				$config['interfaces']['lan'] = array();
 			$config['interfaces']['lan']['if'] = $lanif;
 			$config['interfaces']['lan']['enable'] = true;
-		} elseif (!$g['booting'] && !$auto_assign) {
+		} elseif (!file_exists("/var/run/booting") && !$auto_assign) {
 
 echo <<<EODD
 
@@ -398,12 +398,10 @@ EODD;
 
 		fclose($fp);
 
-		if($g['booting'])
+		if(file_exists("/var/run/booting"))
 			return;
 
 		echo gettext("One moment while we reload the settings...");
-
-		$g['booting'] = false;
 
 		echo gettext(" done!") . "\n";
 

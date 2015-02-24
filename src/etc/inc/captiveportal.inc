@@ -423,7 +423,7 @@ function captiveportal_configure_zone($cpcfg) {
 
     if (isset($cpcfg['enable'])) {
 
-        if ($g['booting']) {
+        if (file_exists("/var/run/booting")) {
             echo "Starting captive portal({$cpcfg['zone']})... ";
 
             /* remove old information */
@@ -565,7 +565,7 @@ EOD;
         unlink_if_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db");
         captiveportal_init_radius_servers();
 
-        if ($g['booting']) {
+        if (file_exists("/var/run/booting")) {
             /* send Accounting-On to server */
             captiveportal_send_server_accounting();
             echo "done\n";
@@ -582,7 +582,7 @@ EOD;
         captiveportal_radius_stop_all();
 
         /* send Accounting-Off to server */
-        if (!$g['booting']) {
+        if (!file_exists("/var/run/booting")) {
             captiveportal_send_server_accounting(true);
         }
 

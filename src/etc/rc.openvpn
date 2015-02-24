@@ -67,8 +67,9 @@ function openvpn_resync_if_needed ($mode, $ovpn_settings, $interface) {
 }
 
 /* make sure to wait until the boot scripts have finished */
-if (file_exists("{$g['varrun_path']}/booting"))
-	return;
+if(file_exists("/var/run/booting") {
+        return;
+}
 
 /* Input argument is a comma-separated list of gateway names, blank or "all". */
 if (isset($_GET))

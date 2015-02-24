@@ -89,7 +89,6 @@ if (led_count() >= 3) {
 
 /* let the other functions know we're booting */
 $pkg_interface = 'console';
-$g['booting'] = true;
 
 /* parse the configuration and include all functions used below */
 require_once("config.inc");
@@ -393,8 +392,6 @@ if(file_exists('/conf/needs_package_sync')) {
    fail to route syslog messages properly on both IPv4 and IPv6 */
 system_syslogd_start();
 
-/* done */
-unset($g['booting']);
 
 /* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
 if ($ipsec_dynamic_hosts) {

@@ -138,7 +138,7 @@ function system_resolvconf_generate($dynupdate = false)
 	fclose($fd);
 	chmod("{$g['varetc_path']}/resolv.conf", 0644);
 
-	if (!$g['booting']) {
+	if (!file_exists("/var/run/booting")) {
 		/* restart dhcpd (nameservers may have changed) */
 		if (!$dynupdate)
 			services_dhcpd_configure();
@@ -558,7 +558,7 @@ function system_staticroutes_configure($interface = "", $update_dns = false) {
 			$hostnames = "";
 			array_unique($filterdns_list);
 			foreach ($filterdns_list as $hostname)
-				$hostnames .= "cmd {$hostname} '/usr/local/sbin/pfSctl -c \"service reload routedns\"'\n";
+				$hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py \"service reload routedns\"'\n";
 			file_put_contents("{$g['varetc_path']}/filterdns-route.hosts", $hostnames);
 			unset($hostnames);
 
@@ -617,7 +617,7 @@ function system_syslogd_start()
 
 	$syslogcfg = $config['syslog'];
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo gettext("Starting syslog...");
 
 	if (is_process_running("fifolog_writer"))
@@ -797,7 +797,7 @@ EOD;
 	else
 		$retval = mwexec_bg("/usr/local/sbin/syslogd -s -c -c -l {$g['dhcpd_chroot_path']}/var/run/log -P {$g['varrun_path']}/syslog.pid {$syslogd_extra}");
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
 
 	return $retval;
@@ -818,7 +818,7 @@ function system_webgui_start()
 		log_error(_('Could not find an OpenSSL implementation on your system.'));
 	}
 
-	if ($g['booting']) {
+	if (file_exists("/var/run/booting")) {
 		/* XXX no no no no no no no no  */
 		echo gettext("Starting webConfigurator...");
 	}
@@ -891,7 +891,7 @@ function system_webgui_start()
 	/* attempt to start lighthttpd */
 	$res = mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-webConfigurator.conf");
 
-	if ($g['booting']) {
+	if (file_exists("/var/run/booting")) {
 		if ($res == 0)
 			echo gettext("done.") . "\n";
 		else
@@ -1273,7 +1273,7 @@ function system_timezone_configure()
 
 	$syscfg = $config['system'];
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo gettext("Setting timezone...");
 
 	/* extract appropriate timezone file */
@@ -1295,7 +1295,7 @@ function system_timezone_configure()
 	mwexec("sync");
 	conf_mount_ro();
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
 }
 
@@ -1648,7 +1648,7 @@ function system_ntp_configure($start_ntpd = true)
 function sync_system_time() {
 	global $config, $g;
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo gettext("Syncing system time before startup...");
 
 	/* foreach through servers and write out to ntpd.conf */
@@ -1656,7 +1656,7 @@ function sync_system_time() {
 		mwexec("/usr/local/sbin/ntpdate -s $ts");
 	}
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
 
 }
@@ -1741,7 +1741,7 @@ function system_set_harddisk_standby()
 	global $g, $config;
 
 	if (isset($config['system']['harddiskstandby'])) {
-		if ($g['booting']) {
+		if (file_exists("/var/run/booting")) {
 			echo gettext('Setting hard disk standby... ');
 		}
 
@@ -1753,13 +1753,13 @@ function system_set_harddisk_standby()
 			if (set_single_sysctl('hw.ata.standby', (int)$standby)) {
 				// Reinitialize ATA-drives
 				mwexec('/usr/local/sbin/atareinit');
-				if ($g['booting']) {
+				if (file_exists("/var/run/booting")) {
 					echo gettext("done.") . "\n";
 				}
-			} else if ($g['booting']) {
+			} else if (file_exists("/var/run/booting")) {
 				echo gettext("failed!") . "\n";
 			}
-		} else if ($g['booting']) {
+		} else if (file_exists("/var/run/booting")) {
 			echo gettext("failed!") . "\n";
 		}
 	}

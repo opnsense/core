@@ -359,7 +359,7 @@ echo -n "Launching the init system..."
 /usr/bin/touch /var/run/booting
 /usr/local/etc/rc.bootup
 
-# rc.bootup unset $g['booting'], remove file right now to be consistent
+# end of boot process, remove status file
 /bin/rm /var/run/booting
 
 # If a shell was selected from recovery

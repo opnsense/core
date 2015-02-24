@@ -28,4 +28,4 @@ fi
 /bin/rm -f /tmp/${IF}_router
 /bin/rm -f /tmp/${IF}up
 /bin/rm -f /tmp/${IF}_ip
-/usr/local/sbin/pfSctl -c 'service reload dns'
+/usr/local/opnsense/service/configd_ctl.py 'service reload dns'

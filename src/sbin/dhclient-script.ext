@@ -283,7 +283,7 @@ add_new_resolv_conf() {
 
 # Notify rc.newwanip of changes to an interface
 notify_rc_newwanip() {
-	/usr/local/sbin/pfSctl -c "interface newip $interface"
+	/usr/local/etc/rc.newwanip $interface
 }
 
 #

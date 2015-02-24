@@ -157,7 +157,9 @@ function unlock_force($lock) {
 
 function send_event($cmd)
 {
-	return mwexec("/usr/local/sbin/pfSctl -c '{$cmd}'");
+	require_once("script/load_phalcon.php");
+	$backend = new OPNsense\Core\Backend();
+	return $backend->sendEvent("{$cmd}");
 }
 
 function refcount_init($reference) {

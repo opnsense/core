@@ -152,7 +152,7 @@ function vpn_ipsec_configure($ipchg = false)
 			mkdir("/usr/local/etc/ipsec.d/reqs");
 
 
-		if ($g['booting'])
+		if (file_exists("/var/run/booting"))
 			echo gettext("Configuring IPsec VPN... ");
 
 		/* fastforwarding is not compatible with ipsec tunnels */
@@ -193,7 +193,7 @@ function vpn_ipsec_configure($ipchg = false)
 				if (!is_ipaddr($rg)) {
 					$filterdns_list[] = "{$rg}";
 					add_hostname_to_watch($rg);
-					if(! $g['booting'])
+					if(! file_exists("/var/run/booting"))
 						$rg = resolve_retry($rg);
 					if (!is_ipaddr($rg))
 						continue;
@@ -842,7 +842,7 @@ EOD;
 		$hostnames = "";
 		array_unique($filterdns_list);
 		foreach ($filterdns_list as $hostname)
-			$hostnames .= "cmd {$hostname} '/usr/local/sbin/pfSctl -c \"service reload ipsecdns\"'\n";
+			$hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py \"service reload ipsecdns\"'\n";
 		file_put_contents("/usr/local/etc/filterdns-ipsec.hosts", $hostnames);
 		unset($hostnames);
 
@@ -856,7 +856,7 @@ EOD;
 		@unlink("{$g['varrun_path']}/filterdns-ipsec.pid");
 	}
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo "done\n";
 
 	return count($filterdns_list);
@@ -926,7 +926,7 @@ function vpn_pptpd_configure() {
 	$syscfg = $config['system'];
 	$pptpdcfg = $config['pptpd'];
 
-	if ($g['booting']) {
+	if (file_exists("/var/run/booting")) {
 		if (!$pptpdcfg['mode'] || ($pptpdcfg['mode'] == "off"))
 			return 0;
 
@@ -1137,7 +1137,7 @@ EOD;
 			break;
 	}
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo "done\n";
 
 	return 0;
@@ -1161,7 +1161,7 @@ function vpn_pppoe_configure(&$pppoecfg) {
 	if (!is_dir("{$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn"))
 		mkdir("{$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn");
 
-	if ($g['booting']) {
+	if (file_exists("/var/run/booting")) {
 		if (!$pppoecfg['mode'] || ($pppoecfg['mode'] == "off"))
 			return 0;
 
@@ -1357,7 +1357,7 @@ EOD;
 			break;
 	}
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo gettext("done") . "\n";
 
 	return 0;
@@ -1373,7 +1373,7 @@ function vpn_l2tp_configure() {
 	if (!is_dir("{$g['varetc_path']}/l2tp-vpn"))
 		mkdir("{$g['varetc_path']}/l2tp-vpn");
 
-	if ($g['booting']) {
+	if (file_exists("/var/run/booting")) {
 		if (!$l2tpcfg['mode'] || ($l2tpcfg['mode'] == "off"))
 			return 0;
 
@@ -1554,7 +1554,7 @@ EOD;
 			break;
 	}
 
-	if ($g['booting'])
+	if (file_exists("/var/run/booting"))
 		echo "done\n";
 
 	return 0;

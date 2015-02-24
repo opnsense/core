@@ -100,8 +100,8 @@ rrd interval 60s;
 
 ## These parameters can be overridden in a specific alarm configuration
 alarm default {
-	command on "/usr/local/sbin/pfSctl -c 'service reload dyndns %T' -c 'service reload ipsecdns' -c 'service reload openvpn %T' -c 'filter reload' "
-	command off "/usr/local/sbin/pfSctl -c 'service reload dyndns %T' -c 'service reload ipsecdns' -c 'service reload openvpn %T' -c 'filter reload' "
+	command on "/usr/local/opnsense/service/configd_ctl.py 'service reload dyndns %T' 'service reload ipsecdns' 'service reload openvpn %T'  'filter reload' "
+	command off "/usr/local/opnsense/service/configd_ctl.py 'service reload dyndns %T' 'service reload ipsecdns' 'service reload openvpn %T' 'filter reload' "
 	combine 10s
 }
 
@@ -854,7 +854,7 @@ function return_gateway_groups_array() {
 			$tiers_count = count($tiers);
 			if ($tiers_count == 0) {
 				/* Oh dear, we have no members! Engage Plan B */
-				if (!$g['booting']) {
+				if (!file_exists("/var/run/booting")) {
 					$msg = gettext("Gateways status could not be determined, considering all as up/active. (Group: {$group['name']})");
 					log_error($msg);
 					notify_via_growl($msg);

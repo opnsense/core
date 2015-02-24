@@ -191,14 +191,14 @@ function interfaces_loopback_configure()
 {
 	global $g;
 
-	if($g['booting']) {
+	if(file_exists("/var/run/booting")) {
 		echo gettext("Configuring loopback interface...");
 	}
 
 	pfSense_interface_setaddress("lo0", "127.0.0.1");
 	interfaces_bring_up("lo0");
 
-	if($g['booting']) {
+	if(file_exists("/var/run/booting")) {
 		echo gettext("done.") . "\n";
 	}
 
@@ -207,7 +207,7 @@ function interfaces_loopback_configure()
 
 function interfaces_vlan_configure($realif = "") {
 	global $config, $g;
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext("Configuring VLAN interfaces...");
 	if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
 		foreach ($config['vlans']['vlan'] as $vlan) {
@@ -220,7 +220,7 @@ function interfaces_vlan_configure($realif = "") {
 			interface_vlan_configure($vlan);
 		}
 	}
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
 }
 
@@ -344,7 +344,7 @@ function interface_qinq_configure(&$vlan, $fd = NULL) {
 
 function interfaces_qinq_configure() {
 	global $config, $g;
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext("Configuring QinQ interfaces...");
 	if (is_array($config['qinqs']['qinqentry']) && count($config['qinqs']['qinqentry'])) {
 		foreach ($config['qinqs']['qinqentry'] as $qinq) {
@@ -352,7 +352,7 @@ function interfaces_qinq_configure() {
 			interface_qinq_configure($qinq);
 		}
 	}
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext( "done.") . "\n";
 }
 
@@ -388,7 +388,7 @@ function interface_qinq2_configure(&$qinq, $fd, $macaddr) {
 function interfaces_create_wireless_clones() {
 	global $config, $g;
 
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext("Creating wireless clone interfaces...");
 
 	$iflist = get_configured_interface_list();
@@ -409,7 +409,7 @@ function interfaces_create_wireless_clones() {
 			interface_wireless_clone($clone['cloneif'], $clone);
 		}
 	}
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
 
 }
@@ -526,7 +526,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0) {
 	else
 		$flags_on |= IFCAP_LRO;
 
-	if ($g['booting'] || !empty($bridge['bridgeif'])) {
+	if (file_exists("/var/run/booting") || !empty($bridge['bridgeif'])) {
 		pfSense_interface_destroy($bridge['bridgeif']);
 		pfSense_interface_create($bridge['bridgeif']);
 		$bridgeif = escapeshellarg($bridge['bridgeif']);
@@ -704,7 +704,7 @@ function interface_bridge_add_member($bridgeif, $interface) {
 
 function interfaces_lagg_configure($realif = "") {
 	global $config, $g;
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext("Configuring LAGG interfaces...");
 	$i = 0;
 	if (is_array($config['laggs']['lagg']) && count($config['laggs']['lagg'])) {
@@ -718,7 +718,7 @@ function interfaces_lagg_configure($realif = "") {
 			$i++;
 		}
 	}
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
 }
 
@@ -732,7 +732,7 @@ function interface_lagg_configure(&$lagg) {
 	if (!count($members))
 		return -1;
 
-	if ($g['booting'] || !(empty($lagg['laggif']))) {
+	if (file_exists("/var/run/booting") || !(empty($lagg['laggif']))) {
 		pfSense_interface_destroy($lagg['laggif']);
 		pfSense_interface_create($lagg['laggif']);
 		$laggif = $lagg['laggif'];
@@ -848,7 +848,7 @@ function interface_gre_configure(&$gre, $grekey = "") {
 	/* make sure the parent interface is up */
 	interfaces_bring_up($realif);
 
-	if ($g['booting'] || !(empty($gre['greif']))) {
+	if (file_exists("/var/run/booting") || !(empty($gre['greif']))) {
 		pfSense_interface_destroy($gre['greif']);
 		pfSense_interface_create($gre['greif']);
 		$greif = $gre['greif'];
@@ -945,7 +945,7 @@ function interface_gif_configure(&$gif, $gifkey = "") {
 	else
 		log_error(gettext("could not bring realif up -- variable not defined -- interface_gif_configure()"));
 
-	if ($g['booting'] || !(empty($gif['gifif']))) {
+	if (file_exists("/var/run/booting") || !(empty($gif['gifif']))) {
 		pfSense_interface_destroy($gif['gifif']);
 		pfSense_interface_create($gif['gifif']);
 		$gifif = $gif['gifif'];
@@ -1029,7 +1029,7 @@ function interfaces_configure()
 
 	/* This is needed to speedup interfaces on bootup. */
 	$reload = false;
-	if (!$g['booting'])
+	if (!file_exists("/var/run/booting"))
 		$reload = true;
 
 	foreach($iflist as $if => $ifname) {
@@ -1046,13 +1046,13 @@ function interfaces_configure()
 		} else if (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == "track6") {
 			$track6_list[$if] = $ifname;
 		} else {
-			if ($g['booting'])
+			if (file_exists("/var/run/booting"))
 				printf(gettext("Configuring %s interface..."), $ifname);
 
 			if($g['debug'])
 				log_error(sprintf(gettext("Configuring %s"), $ifname));
 			interface_configure($if, $reload);
-			if ($g['booting'])
+			if (file_exists("/var/run/booting"))
 				echo gettext( "done.") . "\n";
 		}
 	}
@@ -1073,14 +1073,14 @@ function interfaces_configure()
 	interfaces_bridge_configure(1);
 
 	foreach ($track6_list as $if => $ifname) {
-		if ($g['booting'])
+		if (file_exists("/var/run/booting"))
 			printf(gettext("Configuring %s interface..."), $ifname);
 		if ($g['debug'])
 			log_error(sprintf(gettext("Configuring %s"), $ifname));
 
 		interface_configure($if, $reload);
 
-		if ($g['booting'])
+		if (file_exists("/var/run/booting"))
 			echo gettext("done.") . "\n";
 	}
 
@@ -1094,14 +1094,14 @@ function interfaces_configure()
 	interfaces_gif_configure(2);
 
 	foreach ($delayed_list as $if => $ifname) {
-		if ($g['booting'])
+		if (file_exists("/var/run/booting"))
 			printf(gettext("Configuring %s interface..."), $ifname);
 		if ($g['debug'])
 			log_error(sprintf(gettext("Configuring %s"), $ifname));
 
 		interface_configure($if, $reload);
 
-		if ($g['booting'])
+		if (file_exists("/var/run/booting"))
 			echo gettext("done.") . "\n";
 	}
 
@@ -1109,21 +1109,21 @@ function interfaces_configure()
 	interfaces_bridge_configure(2);
 
 	foreach ($bridge_list as $if => $ifname) {
-		if ($g['booting'])
+		if (file_exists("/var/run/booting"))
 			printf(gettext("Configuring %s interface..."), $ifname);
 		if($g['debug'])
 			log_error(sprintf(gettext("Configuring %s"), $ifname));
 
 		interface_configure($if, $reload);
 
-		if ($g['booting'])
+		if (file_exists("/var/run/booting"))
 			echo gettext("done.") . "\n";
 	}
 
 	/* configure interface groups */
 	interfaces_group_setup();
 
-	if (!$g['booting']) {
+	if (!file_exists("/var/run/booting")) {
 		/* reconfigure static routes (kernel may have deleted them) */
 		system_routing_configure();
 
@@ -1514,7 +1514,7 @@ function interface_ppps_configure($interface) {
 		$type = $ppp['type'];
 	$upper_type = strtoupper($ppp['type']);
 
-	if($g['booting']) {
+	if(file_exists("/var/run/booting")) {
 		$descr = isset($ifcfg['descr']) ? $ifcfg['descr'] : strtoupper($interface);
 		echo "starting {$pppif} link...";
 		// Do not re-configure the interface if we are booting and it's already been started
@@ -1921,7 +1921,7 @@ function interfaces_carp_setup()
 {
 	global $g, $config;
 
-	if ($g['booting']) {
+	if (file_exists("/var/run/booting")) {
 		echo gettext("Configuring CARP settings...");
 		mute_kernel_msgs();
 	}
@@ -1977,7 +1977,7 @@ function interfaces_carp_setup()
 	else
 		set_single_sysctl("net.inet.carp.allow", "0");
 
-	if ($g['booting']) {
+	if (file_exists("/var/run/booting")) {
 		unmute_kernel_msgs();
 		echo gettext("done.") . "\n";
 	}
@@ -2903,7 +2903,7 @@ function interface_configure($interface = "wan", $reloadall = false, $linkupeven
 	// Need code to handle MLPPP if we ever use $realhwif for MLPPP handling
 	$realhwif = $realhwif_array[0];
 
-	if (!$g['booting'] && !(substr($realif, 0, 4) == "ovpn")) {
+	if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
 		/* remove all IPv4 and IPv6 addresses */
 		$tmpifaces = pfSense_getall_interface_addresses($realif);
 		if (is_array($tmpifaces)) {
@@ -3119,7 +3119,7 @@ function interface_configure($interface = "wan", $reloadall = false, $linkupeven
 
 	interface_netgraph_needed($interface);
 
-	if (!$g['booting']) {
+	if (!file_exists("/var/run/booting")) {
 		link_interface_to_vips($interface, "update");
 
 		unset($gre);
@@ -3229,7 +3229,7 @@ function interface_track6_configure($interface = "lan", $wancfg, $linkupevent = 
 		break;
 	}
 
-	if (!$g['booting'] && $linkupevent == false) {
+	if (!file_exists("/var/run/booting") && $linkupevent == false) {
 		if (!function_exists('services_dhcpd_configure'))
 			require_once("services.inc");
 
@@ -3430,7 +3430,7 @@ function interface_6rd_configure($interface = "wan", $wancfg) {
 		mwexec("/sbin/route add -host " . escapeshellarg($wancfg['gateway-6rd']) . " {$ip4gateway}");
 	}
 	/* configure dependent interfaces */
-	if (!$g['booting'])
+	if (!file_exists("/var/run/booting"))
 		link_interface_to_track6($interface, "update");
 
 	return 0;
@@ -3528,7 +3528,7 @@ function interface_6to4_configure($interface = "wan", $wancfg){
 		mwexec("/sbin/route add -host 192.88.99.1 {$ip4gateway}");
 	}
 
-	if (!$g['booting'])
+	if (!file_exists("/var/run/booting"))
 		link_interface_to_track6($interface, "update");
 
 	return 0;
@@ -5202,7 +5202,7 @@ function interface_setup_pppoe_reset_file($pppif, $iface="") {
 	if(!empty($iface) && !empty($pppif)){
 		$cron_cmd = <<<EOD
 #!/bin/sh
-/usr/local/sbin/pfSctl -c 'interface reload {$iface}'
+/usr/local/opnsense/service/configd_ctl.py  'interface reload {$iface}'
 /usr/bin/logger -t {$pppif} "PPPoE periodic reset executed on {$iface}"
 
 EOD;

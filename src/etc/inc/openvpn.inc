@@ -851,7 +851,7 @@ function openvpn_restart($mode, $settings) {
 	openvpn_clear_route($mode, $settings);
 	mwexec_bg("/usr/local/sbin/openvpn --config " . escapeshellarg($fpath));
 
-	if (!$g['booting'])
+	if (!file_exists("/var/run/booting"))
 		send_event("filter reload");
 }
 

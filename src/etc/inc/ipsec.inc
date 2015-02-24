@@ -200,7 +200,7 @@ function ipsec_get_phase1_dst(& $ph1ent) {
 		return false;
 	$rg = $ph1ent['remote-gateway'];
 	if (!is_ipaddr($rg)) {
-		if(! $g['booting'])
+		if(! file_exists("/var/run/booting"))
 			return resolve_retry($rg);
 	}
 	if(!is_ipaddr($rg))

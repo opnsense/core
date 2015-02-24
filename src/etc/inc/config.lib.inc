@@ -42,7 +42,7 @@ function encrypted_configxml() {
 	if (!file_exists($g['conf_path'] . "/config.xml"))
 		return;
 
-	if (!$g['booting'])
+	if (!file_exists("/var/run/booting"))
 		return;
 
 	$configtxt = file_get_contents($g['conf_path'] . "/config.xml");
@@ -96,8 +96,6 @@ function parse_config($parse = false) {
 		}
 	}
 
-	if($g['booting'])
-		echo ".";
 
 	// Check for encrypted config.xml
 	encrypted_configxml();
@@ -112,8 +110,6 @@ function parse_config($parse = false) {
 	}
 	if ($parse == true) {
 		if(!file_exists($g['conf_path'] . "/config.xml")) {
-			if($g['booting'])
-				echo ".";
 			log_error("No config.xml found, attempting last known config restore.");
 			file_notice("config.xml", "No config.xml found, attempting last known config restore.", "pfSenseConfigurator", "");
 			$last_backup = discover_last_backup();
@@ -139,8 +135,6 @@ function parse_config($parse = false) {
 		generate_config_cache($config);
 	}
 
-	if($g['booting'])
-		echo ".";
 
 	$config_parsed = true;
 	unlock($lockkey);
@@ -211,12 +205,9 @@ function restore_backup($file) {
 function parse_config_bootup() {
 	global $config, $g;
 
-	if($g['booting'])
-		echo ".";
-
 	$lockkey = lock('config');
 	if (!file_exists("{$g['conf_path']}/config.xml")) {
-		if ($g['booting']) {
+		if (file_exists("/var/run/booting")) {
 			if (strstr($g['platform'], "cdrom")) {
 				/* try copying the default config. to the floppy */
 				echo gettext("Resetting factory defaults...") . "\n";
@@ -304,7 +295,7 @@ function conf_mount_rw() {
 
 	$status = mwexec("/sbin/mount -u -w -o sync,noatime {$g['cf_path']}");
 	if($status <> 0) {
-		if($g['booting'])
+		if(file_exists("/var/run/booting"))
 			echo gettext("Disk is dirty.  Running fsck -y") . "\n";
 		mwexec("/sbin/fsck -y {$g['cf_path']}");
 		$status = mwexec("/sbin/mount -u -w -o sync,noatime {$g['cf_path']}");
@@ -345,7 +336,7 @@ function conf_mount_ro() {
 	if(isset($config['system']['nanobsd_force_rw']))
 		return;
 
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		return;
 
 	clear_subsystem_dirty('mount');
@@ -523,7 +514,7 @@ function write_config($desc = 'Unknown', $backup = true)
 		if ($last_backup) {
 			restore_backup("/cf/conf/backup/{$last_backup}");
 			$config = parse_xml_config("{$g['conf_path']}/config.xml", $g['xml_rootobj']);
-			if ($g['booting']) {
+			if (file_exists("/var/run/booting")) {
 				echo "\n\n ************** WARNING **************";
 				echo "\n\n Configuration could not be validated. A previous configuration was restored. \n";
 				echo "\n The failed configuration file has been saved as {$g['conf_path']}/config.xml.bad \n\n";
@@ -628,7 +619,7 @@ function config_install($conffile) {
 	if (!config_validate("{$conffile}"))
 		return 1;
 
-	if($g['booting'] == true)
+	if(file_exists("/var/run/booting"))
 		echo gettext("Installing configuration...") . "\n";
 	else
 		log_error(gettext("Installing configuration ...."));
@@ -733,8 +724,6 @@ function cleanup_backupcache($lock = false) {
 		$tocheck = array_shift(explode('.', array_pop(explode('-', $backup))));
 		if(!in_array($tocheck, $baktimes)) {
 			$i = true;
-			if($g['booting'])
-				echo ".";
 			$newxml = parse_xml_config($backup, array($g['xml_rootobj'], 'pfsense'));
 			if($newxml == "-1") {
 				log_error(sprintf(gettext("The backup cache file %s is corrupted.  Unlinking."), $backup));
@@ -754,7 +743,7 @@ function cleanup_backupcache($lock = false) {
 			$newbaks[] = $checkbak;
 		} else {
 			$i = true;
-			if($g['booting']) print " " . $tocheck . "r";
+			if(file_exists("/var/run/booting")) print " " . $tocheck . "r";
 		}
 	}
 	foreach($newbaks as $todo) $tocache[$todo['time']] = array('description' => $todo['description'], 'version' => $todo['version'], 'filesize' => $todo['filesize']);
@@ -765,7 +754,6 @@ function cleanup_backupcache($lock = false) {
 		foreach($tocache as $version => $versioninfo) {
 			if(!in_array($version, array_keys($newcache))) {
 				unlink_if_exists($g['conf_path'] . '/backup/config-' . $version . '.xml');
-				//if($g['booting']) print " " . $tocheck . "d";
 			}
 		}
 		$tocache = $newcache;

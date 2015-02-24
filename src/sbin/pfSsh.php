@@ -3,14 +3,12 @@
 
 require_once("globals.inc");
 echo "Starting the {$g['product_name']} shell system";
-$g['booting'] = true;
 require_once("functions.inc");
 echo ".";
 require_once("config.inc");
 echo ".";
 require_once("util.inc");
 echo ".";
-$g['booting'] = false;
 
 $shell_cmds = array("alias", "alloc", "bg", "bind", "bindkey", "break",
      "breaksw", "builtins", "case", "cd", "chdir", "command", "complete", "continue", "default",

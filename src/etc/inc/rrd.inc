@@ -196,7 +196,7 @@ function migrate_rrd_format($rrdoldxml, $rrdnewxml) {
 function enable_rrd_graphing() {
 	global $config, $g, $altq_list_queues;
 
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext("Generating RRD graphs...");
 
 	$rrddbpath = "/var/db/rrd/";
@@ -278,7 +278,7 @@ function enable_rrd_graphing() {
 		}
 		chown($rrddbpath, "nobody");
 
-		if ($g['booting']) {
+		if (file_exists("/var/run/booting")) {
 			restore_rrd();
 		}
 
@@ -334,7 +334,7 @@ function enable_rrd_graphing() {
 			}
 
 			/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-			if($g['booting']) {
+			if(file_exists("/var/run/booting")) {
 				mwexec("$rrdtool update $rrddbpath$ifname$traffic N:U:U:U:U:U:U:U:U");
 			}
 
@@ -367,7 +367,7 @@ function enable_rrd_graphing() {
 			}
 
 			/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-			if($g['booting']) {
+			if(file_exists("/var/run/booting")) {
 				mwexec("$rrdtool update $rrddbpath$ifname$packets N:U:U:U:U:U:U:U:U");
 			}
 
@@ -396,7 +396,7 @@ function enable_rrd_graphing() {
 				}
 
 				/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-				if($g['booting']) {
+				if(file_exists("/var/run/booting")) {
 					mwexec("$rrdtool update $rrddbpath$ifname$wireless N:U:U:U");
 				}
 
@@ -421,7 +421,7 @@ function enable_rrd_graphing() {
 				}
 
 				/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-				if($g['booting']) {
+				if(file_exists("/var/run/booting")) {
 					mwexec("$rrdtool update $rrddbpath$ifname$vpnusers N:U");
 				}
 
@@ -503,7 +503,7 @@ function enable_rrd_graphing() {
 					unset($rrdcreate);
 				}
 
-				if($g['booting']) {
+				if(file_exists("/var/run/booting")) {
 					$rrdqcommand = "-t ";
 					$rrducommand = "N";
 					$qi = 0;
@@ -571,7 +571,7 @@ function enable_rrd_graphing() {
 				}
 
 				/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-				if($g['booting']) {
+				if(file_exists("/var/run/booting")) {
 					mwexec("$rrdtool update $rrddbpath$ifname$cellular N:U:U:U");
 				}
 
@@ -605,7 +605,7 @@ function enable_rrd_graphing() {
 		}
 
 		/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-		if($g['booting']) {
+		if(file_exists("/var/run/booting")) {
 			mwexec("$rrdtool update $rrddbpath$ifname$states N:U:U:U:U:U");
 		}
 
@@ -640,7 +640,7 @@ function enable_rrd_graphing() {
 		}
 
 		/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-		if($g['booting']) {
+		if(file_exists("/var/run/booting")) {
 			mwexec("$rrdtool update $rrddbpath$ifname$proc N:U:U:U:U:U");
 		}
 
@@ -678,7 +678,7 @@ function enable_rrd_graphing() {
 		}
 
 		/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-		if($g['booting']) {
+		if(file_exists("/var/run/booting")) {
 			mwexec("$rrdtool update $rrddbpath$ifname$mem N:U:U:U:U:U");
 		}
 
@@ -715,7 +715,7 @@ function enable_rrd_graphing() {
 		}
 
 		/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-		if($g['booting']) {
+		if(file_exists("/var/run/booting")) {
 			mwexec("$rrdtool update $rrddbpath$ifname$mbuf N:U:U:U:U");
 		}
 
@@ -792,7 +792,7 @@ function enable_rrd_graphing() {
 				}
 
 				/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-				if($g['booting']) {
+				if(file_exists("/var/run/booting")) {
 					mwexec("$rrdtool update $concurrent_filename N:U");
 				}
 
@@ -828,7 +828,7 @@ function enable_rrd_graphing() {
 				}
 
 				/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-				if($g['booting']) {
+				if(file_exists("/var/run/booting")) {
 					mwexec("$rrdtool update $loggedin_filename N:U");
 				}
 
@@ -871,7 +871,7 @@ function enable_rrd_graphing() {
 			}
 
 			/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-			if($g['booting']) {
+			if(file_exists("/var/run/booting")) {
 			mwexec("$rrdtool update $rrddbpath$ntpd N:U:U:U:U:U:U");
 			}
 
@@ -918,7 +918,7 @@ function enable_rrd_graphing() {
 		chown($database, "nobody");
 	}
 
-	if($g['booting'])
+	if(file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
 
 }
@@ -945,7 +945,7 @@ function create_gateway_quality_rrd($rrd_file) {
 	}
 
 	/* enter UNKNOWN values in the RRD so it knows we rebooted. */
-	if($g['booting']) {
+	if(file_exists("/var/run/booting")) {
 		mwexec("$rrdtool update $rrd_file N:U:U");
 	}
 	unset($rrdtool, $rrdinterval, $valid, $rrd_file);
