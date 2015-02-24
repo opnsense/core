@@ -949,7 +949,8 @@ function setup_serial_port($when = 'save', $path = '')
 					&& (stripos($bcs, "console") === false)
 					&& (stripos($bcs, "boot_multicons") === false)
 					&& (stripos($bcs, "boot_serial") === false)
-					&& (stripos($bcs, "hw.usb.no_pf") === false))
+					&& (stripos($bcs, "hw.usb.no_pf") === false)
+					&& (stripos($bcs, "autoboot_delay") === false))
 					$new_boot_config[] = $bcs;
 
 			if (($g['platform'] == "nanobsd") && !file_exists("/etc/nano_use_vga.txt")) {
