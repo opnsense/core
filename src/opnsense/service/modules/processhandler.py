@@ -43,6 +43,7 @@ import threading
 import ConfigParser
 import glob
 import time
+import shlex
 import ph_inline_actions
 
 class Handler(object):
@@ -146,7 +147,7 @@ class HandlerClient(threading.Thread):
             # receive command, maximum data length is 4k... longer messages will be truncated
             data = self.connection.recv(4096)
             # map command to action
-            data_parts = data.strip().split(' ')
+            data_parts = shlex.split(data)
             if len(data_parts) == 0 or len(data_parts[0]) == 0:
                 # no data found
                 self.connection.sendall('no data\n')
@@ -315,68 +316,55 @@ class Action(object):
         :param parameters: list of parameters
         :return:
         """
+        # send-out syslog message
+        if self.message != None:
+            if self.message.count('%s') > 0 and parameters != None and len(parameters) > 0:
+                syslog.syslog(syslog.LOG_NOTICE,self.message % tuple(parameters[0:self.message.count('%s')]) )
+            else:
+                syslog.syslog(syslog.LOG_NOTICE,self.message)
+
         # validate input
         if self.type == None:
+            # no action type, nothing to do here
             return 'No action type'
-        elif self.type.lower() == 'script':
-            # script command, execute a shell script and return (simple) status
+        elif self.type.lower() in ('script','script_output'):
+            # script type commands, basic script type only uses exit statuses, script_output sends back stdout data.
             if self.command == None:
+                # no command supplied, exit
                 return 'No command'
-            try:
-                script_command = self.command
-                if self.parameters != None and type(self.parameters) == str:
-                    script_command = '%s %s'%(script_command,self.parameters)
 
-                    if script_command.find('%s') > -1 and len(parameters) > 0:
-                        # use command execution parameters in action parameter template
-                        # use quotes to prevent code injection
-                        script_command = script_command % tuple(map(lambda x:'"'+x+'"',
-                                                                    parameters[0:script_command.count('%s')]))
+            # build script command to execute, shared for both types
+            script_command = self.command
+            if self.parameters is not None and type(self.parameters) == str:
+                script_command = '%s %s'%(script_command,self.parameters)
+                if script_command.find('%s') > -1 and len(parameters) > 0:
+                    # use command execution parameters in action parameter template
+                    # use quotes on parameters to prevent code injection
+                    script_command = script_command % tuple(map(lambda x:'"'+x.replace('"','\\"')+'"',
+                                                                parameters[0:script_command.count('%s')]))
 
-                # execute script command
-                if self.message != None:
-                    if self.message.count('%s') > 0 and parameters != None and len(parameters) > 0:
-                        syslog.syslog(syslog.LOG_NOTICE,self.message % tuple(parameters[0:self.message.count('%s')]) )
+            if self.type.lower() == 'script':
+                # execute script type command
+                try:
+                    exit_status = subprocess.call(script_command, shell=True)
+                    # send response
+                    if exit_status == 0 :
+                        return 'OK'
                     else:
-                        syslog.syslog(syslog.LOG_NOTICE,self.message)
+                        return 'Error (%d)'%exit_status
+                except:
+                    syslog.syslog(syslog.LOG_ERR, 'Script action failed at %s'%traceback.format_exc())
+                    return 'Execute error'
+            elif self.type.lower() == 'script_output':
+                try:
+                    script_output = subprocess.check_output(script_command, shell=True)
+                    return script_output
+                except:
+                    syslog.syslog(syslog.LOG_ERR, 'Script action failed at %s'%traceback.format_exc())
+                    return 'Execute error'
 
-                exit_status = subprocess.call(script_command, shell=True)
-            except:
-                syslog.syslog(syslog.LOG_ERR, 'Script action failed at %s'%traceback.format_exc())
-                return 'Execute error'
-
-            # send response
-            if exit_status == 0 :
-                return 'OK'
-            else:
-                return 'Error (%d)'%exit_status
-        elif self.type.lower() == 'script_output':
-            # script command returning output, execute a shell script and return stdout
-            if self.command == None:
-                return 'No command'
-            try:
-                script_command = self.command
-                if self.parameters != None and type(self.parameters) == str:
-                    script_command = '%s %s'%(script_command,self.parameters)
-
-                    if script_command.find('%s') > -1 and len(parameters) > 0:
-                        # use command execution parameters in action parameter template
-                        # use quotes to prevent code injection
-                        script_command = script_command % tuple(map(lambda x:'"'+x+'"',
-                                                                    parameters[0:script_command.count('%s')]))
-
-                # execute script command
-                if self.message != None:
-                    if self.message.count('%s') > 0 and parameters != None and len(parameters) > 0:
-                        syslog.syslog(syslog.LOG_NOTICE,self.message % tuple(parameters[0:self.message.count('%s')]) )
-                    else:
-                        syslog.syslog(syslog.LOG_NOTICE,self.message)
-
-                script_output = subprocess.check_output(script_command, shell=True)
-                return script_output
-            except:
-                syslog.syslog(syslog.LOG_ERR, 'Script action failed at %s'%traceback.format_exc())
-                return 'Execute error'
+            # fallback should never get here
+            return "type error"
         elif self.type.lower() == 'inline':
             # Handle inline service actions
             try:
@@ -386,12 +374,6 @@ class Action(object):
                 else:
                     inline_act_parameters = ''
 
-                # send message to syslog
-                if self.message != None:
-                    if self.message.count('%s') > 0 and parameters != None and len(parameters) > 0:
-                        syslog.syslog(syslog.LOG_NOTICE,self.message % tuple(parameters[0:self.message.count('%s')]) )
-                    else:
-                        syslog.syslog(syslog.LOG_NOTICE,self.message)
 
                 return ph_inline_actions.execute(self,inline_act_parameters)
 
