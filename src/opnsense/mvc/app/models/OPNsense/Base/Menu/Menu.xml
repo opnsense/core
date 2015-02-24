@@ -202,12 +202,12 @@
     </Diagnostics>
 
     <Help order="7" cssClass="glyphicon glyphicon-question-sign">
-        <AboutThisPage VisibleName="About this Page" url="/help.php"/>
-        <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers"/>
-        <Documentation url="https://wiki.opnsense.org/"/>
-        <FreeBSDHandbook VisibleName="FreeBSD Handbook" url="https://www.freebsd.org/doc/en/books/handbook/"/>
-        <PaidSupport VisibleName="Paid Support" url="https://opnsense.org/support-overview/commercial-support/"/>
-        <UserForum VisibleName="UserForum" url="https://forum.opnsense.org/"/>
+        <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
+        <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers" IsExternal="Y"/>
+        <Documentation url="https://wiki.opnsense.org/" IsExternal="Y"/>
+        <FreeBSDHandbook VisibleName="FreeBSD Handbook" url="https://www.freebsd.org/doc/en/books/handbook/" IsExternal="Y"/>
+        <PaidSupport VisibleName="Paid Support" url="https://opnsense.org/support-overview/commercial-support/" IsExternal="Y"/>
+        <UserForum VisibleName="UserForum" url="https://forum.opnsense.org/" IsExternal="Y"/>
     </Help>
 
 </menu>

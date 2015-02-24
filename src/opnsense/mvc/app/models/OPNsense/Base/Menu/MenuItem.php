@@ -73,6 +73,12 @@ class MenuItem
     private $Url = "";
 
     /**
+     * link to external page
+     * @var string
+     */
+    private $isExternal = "N";
+
+    /**
      * parent node, used to mark active nodes
      * @var null|MenuItem
      */
@@ -193,6 +199,24 @@ class MenuItem
     public function getUrl()
     {
         return $this->Url;
+    }
+
+    /**
+     * setter for isExternal
+     * @param $value
+     */
+    public function setIsExternal($value)
+    {
+        $this->isExternal = $value;
+    }
+
+    /**
+     * getter for isExternal
+     * @return string
+     */
+    public function getIsExternal()
+    {
+        return $this->isExternal;
     }
 
     /**
