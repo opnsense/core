@@ -192,13 +192,13 @@ function get_temp() {
 function get_mounted_filesystems() {
 	$mout = "";
 	$filesystems = array();
-	exec("/bin/df -Tht ufs,zfs,cd9660 | /usr/bin/awk '{print $1, $2, $3, $6, $7;}'", $mout);
+	exec("/bin/df -Tht ufs,zfs,cd9660 | /usr/bin/awk '{print $1, $2, $3, $4, $6, $7;}'", $mout);
 
 	/* Get rid of the header */
 	array_shift($mout);
 	foreach ($mout as $fs) {
 		$f = array();
-		list($f['device'], $f['type'], $f['total_size'], $f['percent_used'], $f['mountpoint']) = explode(' ', $fs);
+		list($f['device'], $f['type'], $f['total_size'], $f['used_size'], $f['percent_used'], $f['mountpoint']) = explode(' ', $fs);
 
 		/* We dont' want the trailing % sign. */
 		$f['percent_used'] = trim($f['percent_used'], '%');
@@ -241,6 +241,7 @@ function mem_usage() {
 
 	return $memUsage;
 }
+
 
 function update_date_time() {
 	$datetime = date("D M j G:i:s T Y");

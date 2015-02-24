@@ -274,7 +274,7 @@ $filesystems = get_mounted_filesystems();
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
-				<span id="memusagemeter"><?= $memUsage.'%'; ?></span> of <?= sprintf("%.0f", get_single_sysctl('hw.physmem') / (1024*1024)) ?> MB
+				<span id="memusagemeter"><?= $memUsage.'%'; ?></span> used <?= sprintf("%.0f/%.0f", $memUsage/100.0 * get_single_sysctl('hw.physmem') / (1024*1024)  ,get_single_sysctl('hw.physmem') / (1024*1024)) ?> MB
 			</td>
 		</tr>
 		<?php if($showswap == true): ?>
@@ -287,7 +287,7 @@ $filesystems = get_mounted_filesystems();
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
-				<span id="swapusagemeter"><?= $swapusage.'%'; ?></span> of <?= sprintf("%.0f", `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $2;}'`) ?> MB
+				<span id="swapusagemeter"><?= $swapusage.'%'; ?></span> used <?= sprintf("%.0f/%.0f",`/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $3;}'`, `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $2;}'`) ?> MB
 			</td>
 		</tr>
 		<?php endif; ?>
@@ -302,7 +302,7 @@ $filesystems = get_mounted_filesystems();
 				  </div>
 				</div>
 				<?PHP if (substr(basename($fs['device']), 0, 2) == "md") $fs['type'] .= " in RAM"; ?>
-				<?PHP echo "{$fs['mountpoint']} ({$fs['type']})";?>: <span id="diskusagemeter<?php echo $d++ ?>"><?= $fs['percent_used'].'%'; ?></span> of <?PHP echo $fs['total_size'];?>
+				<?PHP echo "{$fs['mountpoint']} ({$fs['type']})";?>: <span id="diskusagemeter<?php echo $d++ ?>"><?= $fs['percent_used'].'%'; ?></span> used <?PHP echo $fs['used_size'] ."/". $fs['total_size'];?>
 				<br />
 <?PHP endforeach; ?>
 			</td>
