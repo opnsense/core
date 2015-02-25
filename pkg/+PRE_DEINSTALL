@@ -1,0 +1,19 @@
+echo "Resetting root shell"
+pw usermod -n root -s /bin/csh
+
+echo "Updating /etc/shells"
+cp /etc/shells /etc/shells.bak
+(grep -v /usr/local/etc/rc.initial /etc/shells.bak) > /etc/shells
+rm -f /etc/shells.bak
+
+echo "Unhooking from /etc/rc"
+cp /etc/rc /etc/rc.bak
+LINES=\$(cat /etc/rc | wc -l)
+tail -n \$(expr \${LINES} - 3) /etc/rc.bak > /etc/rc
+rm -f /etc/rc.bak
+
+echo "Enabling FreeBSD mirror"
+sed -i "" -e "s/^  enabled: no$/  enabled: yes/" /etc/pkg/FreeBSD.conf
+
+echo "Removing OPNsense version"
+rm -f /usr/local/etc/version
