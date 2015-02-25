@@ -8,6 +8,8 @@ umount:
 
 install:
 	@mkdir -p ${DESTDIR}/usr/local
+	@cp ${.CURDIR}/pkg/+POST_INSTALL ${DESTDIR}
+	@cp ${.CURDIR}/pkg/+PRE_DEINSTALL ${DESTDIR}
 	@cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
 	@(cd ${.CURDIR}/src; find * -type f) | \
 	    xargs -n1 printf "/usr/local/%s\n"

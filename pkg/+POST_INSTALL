@@ -19,6 +19,3 @@ if [ -f /usr/local/etc/rc ]; then /usr/local/etc/rc; exit 0; fi
 EOG
 cat /etc/rc.bak >> /etc/rc
 rm -f /etc/rc.bak
-
-echo "Writing OPNsense version"
-echo "${REPO_VERSION}-${REPO_COMMENT}" > /usr/local/etc/version
