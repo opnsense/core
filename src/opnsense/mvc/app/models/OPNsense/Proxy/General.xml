@@ -1,0 +1,18 @@
+<model>
+    <mount>//OPNsense/proxy/general</mount>
+    <description>
+        (squid) proxy general settings
+    </description>
+    <items>
+        <enabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+        </enabled>
+        <port type="IntegerField">
+            <default>3128</default>
+            <MinimumValue>1</MinimumValue>
+            <MaximumValue>65535</MaximumValue>
+            <Required>Y</Required>
+        </port>
+    </items>
+</model>
