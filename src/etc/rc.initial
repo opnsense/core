@@ -18,6 +18,13 @@ if [ -f "/tmp/donotbootup" ]; then
 	# no coming back from here
 fi
 
+# shell started with parameters, passthrough to real shell
+if [ -n "${*}" ]; then
+	/bin/csh "${@}"
+	exit ${?}
+fi
+		
+
 # endless loop
 while : ; do
 
