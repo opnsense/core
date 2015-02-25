@@ -1,10 +1,10 @@
 all:
 
 mount:
-	mount_unionfs ${.CURDIR}/src /usr/local
+	/sbin/mount_unionfs ${.CURDIR}/src /usr/local
 
 umount:
-	umount -f "<above>:${.CURDIR}/src"
+	/sbin/umount -f "<above>:${.CURDIR}/src"
 
 install:
 	# hardcode package meta files to catch mishaps
