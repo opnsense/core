@@ -14,3 +14,6 @@ rm -f /etc/rc.bak
 
 echo "Enabling FreeBSD mirror"
 sed -i "" -e "s/^  enabled: no$/  enabled: yes/" /etc/pkg/FreeBSD.conf
+
+echo "Removing OPNsense version"
+rm -f /usr/local/etc/version

@@ -7,10 +7,14 @@ umount:
 	umount -f "<above>:${.CURDIR}/src"
 
 install:
-	@mkdir -p ${DESTDIR}/usr/local
-	@cp ${.CURDIR}/pkg/+POST_INSTALL ${DESTDIR}
+	# hardcode package meta files to catch mishaps
 	@cp ${.CURDIR}/pkg/+PRE_DEINSTALL ${DESTDIR}
+	@cp ${.CURDIR}/pkg/+POST_INSTALL ${DESTDIR}
+	@cp ${.CURDIR}/pkg/+MANIFEST ${DESTDIR}
+	# move all sources to their destination and...
+	@mkdir -p ${DESTDIR}/usr/local
 	@cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
+	# ... pretty-print a list of files present
 	@(cd ${.CURDIR}/src; find * -type f) | \
 	    xargs -n1 printf "/usr/local/%s\n"
 
