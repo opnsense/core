@@ -29,7 +29,7 @@
 
     --------------------------------------------------------------------------------------
     package : configd
-    function: commandline execute commands to check_reload_status daemon
+    function: commandline execute commands to configd daemon
 
 
 """

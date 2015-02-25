@@ -342,9 +342,6 @@ echo "done."
 
 chmod u+rx  /usr/local/opnsense/service/configd.py
 /usr/local/opnsense/service/configd.py
-# check_reload_status renamed, for legacy stuff symlink old socket
-/bin/rm -f /var/run/check_reload_status
-ln -s /var/run/configd.socket /var/run/check_reload_status
 sleep 1 # give configd some time to load to prevent missing socket
 
 # let the PHP-based configuration subsystem set up the system now
