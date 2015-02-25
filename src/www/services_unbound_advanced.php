@@ -224,7 +224,7 @@ include_once("head.inc");
 				<?php
 														for ($num_tcp = 0; $num_tcp <= 50; $num_tcp += 10):
 				?>
-															<option value="<?php echo $num_tcp; ?>" <?php if ($pconfig['outgoing_num_tcp'] == "{$num_tcp}") echo "selected=\"selected\""; ?>>
+															<option value="<?php echo $num_tcp; ?>" <?php if( isset($pconfig['outgoing_num_tcp'])==false && $num_tcp==10 ) echo "selected=\"selected\""; ?> <?php if ($pconfig['outgoing_num_tcp'] == "{$num_tcp}") echo "selected=\"selected\""; ?>>
 																<?php echo $num_tcp; ?>
 															</option>
 				<?php
@@ -243,7 +243,7 @@ include_once("head.inc");
 				<?php
 														for ($num_tcp = 0; $num_tcp <= 50; $num_tcp += 10):
 				?>
-															<option value="<?php echo $num_tcp; ?>" <?php if ($pconfig['incoming_num_tcp'] == "{$num_tcp}") echo "selected=\"selected\""; ?>>
+															<option value="<?php echo $num_tcp; ?>" <?php if( isset($pconfig['incoming_num_tcp'])==false && $num_tcp==10 ) echo "selected=\"selected\""; ?>  <?php if ($pconfig['incoming_num_tcp'] == "{$num_tcp}") echo "selected=\"selected\""; ?>>
 																<?php echo $num_tcp; ?>
 															</option>
 				<?php
