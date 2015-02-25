@@ -82,7 +82,7 @@ class ServiceController extends ApiControllerBase
 
         if (strpos($response, "not running") > 0) {
             $status = "stopped";
-        } elseif (strpos($response, "not running") > 0) {
+        } elseif (strpos($response, "is running") > 0) {
             $status = "running";
         } else {
             $status = "unkown";
