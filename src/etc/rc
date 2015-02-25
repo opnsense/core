@@ -99,11 +99,6 @@ else
 		fi
 	fi
 
-	# mount repo if available
-	if [ -d /root/core ]; then
-		/usr/bin/make -C /root/core mount
-	fi
-
 	# Check to see if a compact flash mountpoint exists
 	# If it fails to mount then run a fsck -y
 	if grep -q cf /etc/fstab; then

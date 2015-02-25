@@ -12,10 +12,11 @@ sed -i "" -e "s/^  enabled: yes$/  enabled: no/" /etc/pkg/FreeBSD.conf
 
 echo "Hooking into /etc/rc"
 cp /etc/rc /etc/rc.bak
-cat > /etc/rc <<EOG
+cat > /etc/rc <<EOF
 #!/bin/sh
 # OPNsense rc(8) hook was automatically installed:
+if [ -d /root/core ]; then /usr/bin/make -C /root/core mount; fi
 if [ -f /usr/local/etc/rc ]; then /usr/local/etc/rc; exit 0; fi
-EOG
+EOF
 cat /etc/rc.bak >> /etc/rc
 rm -f /etc/rc.bak

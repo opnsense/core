@@ -9,7 +9,7 @@ rm -f /etc/shells.bak
 echo "Unhooking from /etc/rc"
 cp /etc/rc /etc/rc.bak
 LINES=\$(cat /etc/rc | wc -l)
-tail -n \$(expr \${LINES} - 3) /etc/rc.bak > /etc/rc
+tail -n \$(expr \${LINES} - 4) /etc/rc.bak > /etc/rc
 rm -f /etc/rc.bak
 
 echo "Enabling FreeBSD mirror"
