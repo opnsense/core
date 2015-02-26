@@ -15,8 +15,8 @@ cp /etc/rc /etc/rc.bak
 cat > /etc/rc <<EOF
 #!/bin/sh
 # OPNsense rc(8) hook was automatically installed:
-if [ -d /root/core ]; then /usr/bin/make -C /root/core mount; fi
-if [ -f /usr/local/etc/rc ]; then /usr/local/etc/rc; exit 0; fi
+if [ -f /root/core/src/etc/rc ]; then /root/core/src/etc/rc; exit 0;
+elif [ -f /usr/local/etc/rc ]; then /usr/local/etc/rc; exit 0; fi
 EOF
 cat /etc/rc.bak >> /etc/rc
 rm -f /etc/rc.bak
