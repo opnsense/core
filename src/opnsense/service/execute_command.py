@@ -73,6 +73,3 @@ try:
     print ('response:%s'% ''.join(data) )
 finally:
     sock.close()
-
-
-

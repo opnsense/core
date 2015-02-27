@@ -241,7 +241,7 @@ function captiveportal_init_rules($reinit = false) {
         $cpc = new OPNsense\CaptivePortal\CPClient();
 	if ($cpc->isEnabled()) {
 	    // load modules ( only if CP is enabled )
-	    captiveportal_load_modules();	
+	    captiveportal_load_modules();
 	}
         $cpc->reconfigure();
         unset($cpc);

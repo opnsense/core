@@ -62,9 +62,3 @@ else:
             print (''.join(data))
         finally:
             sock.close()
-
-
-
-
-
-

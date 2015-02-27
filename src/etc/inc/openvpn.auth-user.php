@@ -78,7 +78,7 @@ openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 if (count($argv) > 6) {
 	$authmodes = explode(',', $argv[5]);
         $username = base64_decode(str_replace('%3D', '=', $argv[1]));
-        $password = base64_decode(str_replace('%3D', '=', $argv[2]));        
+        $password = base64_decode(str_replace('%3D', '=', $argv[2]));
 	$common_name = $argv[3];
 	$modeid = $argv[6];
 	$strictusercn = $argv[4] == 'false' ? false : true;

@@ -23,7 +23,7 @@ if [ -n "${*}" ]; then
 	/bin/csh "${@}"
 	exit ${?}
 fi
-		
+
 
 # endless loop
 while : ; do

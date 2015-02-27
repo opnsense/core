@@ -91,7 +91,7 @@ function carp_check_version($url, $username, $password, $port = 80, $method = 'p
 	global $config, $g;
 
 	if(file_exists("/var/run/booting") {
-        	return;
+		return;
 	}
 
 	$params = array(
@@ -142,7 +142,7 @@ function carp_sync_xml($url, $username, $password, $sections, $port = 80, $metho
 	global $config, $g;
 
 	if(file_exists("/var/run/booting") {
-        	return;
+		return;
 	}
 
 	update_filter_reload_status("Syncing CARP data to {$url}");

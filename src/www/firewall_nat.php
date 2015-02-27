@@ -244,7 +244,7 @@ $main_buttons = array(
 
 											$alias_popup = rule_popup($natent['source']['address'], pprint_port($natent['source']['port']), $natent['destination']['address'], pprint_port($natent['destination']['port']));
                                                                                         $alias_popup = rule_popup($natent['source']['address'], pprint_port($natent['source']['port']), $natent['destination']['address'], pprint_port($natent['destination']['port']));
-											  
+
 
 											$alias_src_span_begin      = $alias_popup["src"];
 											$alias_src_port_span_begin = $alias_popup["srcport"];
@@ -303,7 +303,7 @@ $main_buttons = array(
 
 									                  <td class="listr"  id="frd<?=$nnats;?>" ondblclick="document.location='firewall_nat_edit.php?id=<?=$nnats;?>';">
 													    <?=$textss;?>
-													    <?php 
+													    <?php
 													    if ($alias_src_span_begin) echo htmlspecialchars(pprint_address($alias_src_span_begin));
 													    else echo htmlspecialchars(pprint_address($natent['source']));
 													    if ($alias_src_span_end) echo htmlspecialchars(pprint_address($alias_src_span_end));
@@ -312,7 +312,7 @@ $main_buttons = array(
 									                  </td>
 									                  <td class="listr"  id="frd<?=$nnats;?>" ondblclick="document.location='firewall_nat_edit.php?id=<?=$nnats;?>';">
 													    <?=$textss;?>
-													    <?php 
+													    <?php
 													    if ($alias_src_port_span_begin) echo htmlspecialchars(pprint_port($alias_src_port_span_begin));
 													    else echo htmlspecialchars(pprint_port($natent['source']['port']));
 													    if($alias_src_port_span_end) echo htmlspecialchars(pprint_port($alias_src_port_span_end));
@@ -321,7 +321,7 @@ $main_buttons = array(
 
 									                  <td class="listr"  id="frd<?=$nnats;?>" ondblclick="document.location='firewall_nat_edit.php?id=<?=$nnats;?>';">
 													    <?=$textss;?>
-													    <?php 
+													    <?php
 													    if ($alias_dst_span_begin) echo htmlspecialchars(pprint_address($alias_dst_span_begin));
 													    else echo htmlspecialchars(pprint_address($natent['destination']));
 													    if ($alias_dst_span_end)  echo htmlspecialchars(pprint_address($alias_dst_span_end));
@@ -338,7 +338,7 @@ $main_buttons = array(
 
 									                  <td class="listr" id="frd<?=$nnats;?>" ondblclick="document.location='firewall_nat_edit.php?id=<?=$nnats;?>';">
 													    <?=$textss;?>
-													    <?php 
+													    <?php
 													    if ($alias_target_span_begin) echo htmlspecialchars(pprint_address($alias_target_span_begin));
 													    else  echo htmlspecialchars($natent['target']);
 													    if ($alias_target_span_end) echo htmlspecialchars(pprint_address($alias_target_span_end));
@@ -355,7 +355,7 @@ $main_buttons = array(
 																$localport   .= '-' . $localendport;
 															}
 														?>
-													    <?=$textss;?><?php 
+													    <?=$textss;?><?php
 													    if ($alias_local_port_span_begin) echo htmlspecialchars(pprint_port($alias_local_port_span_begin['address']));
 													    else  echo htmlspecialchars(pprint_port($localport));
 													    if ($alias_local_port_span_end) echo htmlspecialchars(pprint_port($alias_local_port_span_end['address']));
