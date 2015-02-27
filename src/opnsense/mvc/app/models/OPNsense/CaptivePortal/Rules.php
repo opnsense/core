@@ -133,7 +133,7 @@ class Rules
             if ($interface != "wan" && $content->ipaddr != "dhcp") {
                 // only keep state of dns traffic to prevent dns resolver failures
                 $this->rules[] = "add ".$rulenum++." allow udp from any to ".
-                    $content->ipaddr." dst-port 53 keep-state  in";
+                    $content->ipaddr." dst-port 53 keep-state";
                 $this->rules[] = "add ".$rulenum++." allow ip from any to { 255.255.255.255 or ".
                     $content->ipaddr." } in";
                 $this->rules[] = "add ".$rulenum++." allow ip from { 255.255.255.255 or ".
