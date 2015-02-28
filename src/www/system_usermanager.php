@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc.
@@ -152,7 +153,7 @@ else if ($_POST['act'] == "new") {
 	 * setting.
 	 */
 	$pconfig['utype'] = "user";
-	$pconfig['lifetime'] = 3650;
+	$pconfig['lifetime'] = 365;
 }
 
 if ($_POST['save']) {

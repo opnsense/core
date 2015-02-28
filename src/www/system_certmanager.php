@@ -100,7 +100,7 @@ if ($act == "new") {
 	$pconfig['digest_alg'] = "sha256";
 	$pconfig['csr_keylen'] = "2048";
 	$pconfig['csr_digest_alg'] = "sha256";
-	$pconfig['lifetime'] = "3650";
+	$pconfig['lifetime'] = "365";
 }
 
 if ($act == "exp") {
