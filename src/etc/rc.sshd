@@ -54,23 +54,9 @@ $keys = array(
 	'ed25519' => 'ssh_host_ed25519_key',
 );
 
-if (file_exists('/usr/local/sbin/sshd')) {
-	/* use the ports version */
-	$bin_ssh_keygen = '/usr/local/bin/ssh-keygen';
-	$sbin_sshd = '/usr/local/sbin/sshd';
-	$etc_ssh = '/usr/local/etc/ssh';
-} elseif (file_exists('/usr/sbin/sshd')) {
-	/* use the base version (legacy fallback) */
-	$bin_ssh_keygen = '/usr/bin/ssh-keygen';
-	$sbin_sshd = '/usr/sbin/sshd';
-	$etc_ssh = '/etc/ssh';
-	/* mode is not supported */
-	unset($keys['ed25519']);
-} else {
-	/* the infamous "this should never happen" */
-	log_error(_('Could not find an SSH implementation on your system.'));
-	return;
-}
+$bin_ssh_keygen = '/usr/local/bin/ssh-keygen';
+$sbin_sshd = '/usr/local/sbin/sshd';
+$etc_ssh = '/usr/local/etc/ssh';
 
 /* reinstall the backup if it is available */
 if (file_exists('/conf/sshd/ssh_host_key') && !file_exists("{$etc_ssh}/ssh_host_key")) {
