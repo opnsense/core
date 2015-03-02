@@ -1,9 +1,8 @@
 #!/bin/sh
 
-# part of pfSense by Scott Ullrich
-# Copyright (C) 2004-2011 Scott Ullrich, All rights reserved.
-# originally based on m0n0wall (http://neon1.net/m0n0wall)
-# Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+# Copyright (c) 2014-2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2004-2011 Scott Ullrich <sullrich@gmail.com>
+# Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 # All rights reserved.
 
 # make sure the user can't kill us
@@ -24,11 +23,12 @@ if [ -n "${*}" ]; then
 	exit ${?}
 fi
 
-
 # endless loop
 while : ; do
 
-# If we are on the LiveCD advertise the installer
+echo
+
+# If we are on the install media advertise that fact
 if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	rmdir ${_tmpdir}
 else
@@ -103,6 +103,5 @@ case ${opmode} in
 esac
 
 /usr/local/etc/rc.initial.banner
-echo
 
 done
