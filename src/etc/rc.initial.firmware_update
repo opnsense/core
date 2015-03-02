@@ -39,18 +39,19 @@ case ${YN} in
 	;;
 esac
 
-trap : 2
-trap : 3
+echo
 
 # upgrade all packages if possible
 pkg upgrade -y
 
+echo
+
 # refresh the php.ini files now rather than later
 /usr/local/etc/rc.php_ini_setup
 
+echo
+
 # if we can update base, we'll do that as well
 if opnsense-update -c; then
-	opnsense-update && reboot
+	opnsense-update && /usr/local/etc/rc.reboot
 fi
-
-echo

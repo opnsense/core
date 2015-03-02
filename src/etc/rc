@@ -386,8 +386,6 @@ fi
 # Reset the cache.  read-only requires this.
 /bin/rm -f /tmp/config.cache
 
-echo
-
 /usr/local/etc/rc.initial.banner
 
 exit 0
