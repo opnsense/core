@@ -43,9 +43,6 @@ echo
 
 # upgrade all packages if possible
 pkg upgrade -y
-
-echo
-
 # refresh the php.ini files now rather than later
 /usr/local/etc/rc.php_ini_setup
 
