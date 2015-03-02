@@ -51,7 +51,7 @@ fi
 PHPMODULES="standard"
 # Config read/write
 PHPMODULES="$PHPMODULES xml libxml dom"
-PHPMODULES="$PHPMODULES simplexml xmlreader xmlwriter"
+PHPMODULES="$PHPMODULES simplexml"
 # Downloading via HTTP/FTP (pkg mgr, etc)
 PHPMODULES="$PHPMODULES curl date"
 # Internationalization

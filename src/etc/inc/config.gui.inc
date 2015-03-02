@@ -1,18 +1,7 @@
 <?php
-/****h* pfSense/config
- * NAME
- *   config.gui.inc - Functions to manipulate config.xml
- * DESCRIPTION
- *   This include contains various config.xml specific functions.
- * HISTORY
- * $Id$
- ******
 
-	config.gui.inc
+/*
 	Copyright (C) 2004-2010 Scott Ullrich
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -36,10 +25,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-
-	pfSense_BUILDER_BINARIES:	/sbin/mount	/sbin/umount	/sbin/halt	/sbin/fsck
-	pfSense_MODULE:	config
 */
 
 require_once("globals.inc");
@@ -55,10 +40,7 @@ require_once('config.lib.inc');
 require_once("notices.inc");
 require_once("util.inc");
 require_once("IPv6.inc");
-if(file_exists("/cf/conf/use_xmlreader"))
-	require_once("xmlreader.inc");
-else
-	require_once("xmlparse.inc");
+require_once("xmlparse.inc");
 require_once("crypt.inc");
 
 /* read platform */

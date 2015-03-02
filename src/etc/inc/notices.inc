@@ -1,16 +1,10 @@
 <?php
-/****h* pfSense/notices
- * NAME
- *   notices.inc - pfSense notice utilities
- * DESCRIPTION
- *   This include contains the pfSense notice facilities.
- * HISTORY
- *   $Id$
- ******
- *
+
+/*
  * Copyright (C) 2009 Scott Ullrich (sullrich@gmail.com)
  * Copyright (C) 2005 Colin Smith (ethethlay@gmail.com)
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -33,11 +27,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
-/*
-	pfSense_BUILDER_BINARIES:	/bin/echo
-	pfSense_MODULE:	notifications
-*/
 
 require_once("globals.inc");
 require_once("led.inc");
@@ -175,10 +164,7 @@ function close_notice($id) {
  *   Outputs notices in XML formatted text
  ******/
 function dump_xml_notices() {
-	if(file_exists("/cf/conf/use_xmlreader"))
-		require_once("xmlreader.inc");
-	else
-		require_once("xmlparse.inc");
+	require_once("xmlparse.inc");
 	global $notice_path, $listtags;
 	$listtags[] = 'notice';
 	if(!$notices = get_notices()) return;
