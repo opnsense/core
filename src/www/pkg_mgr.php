@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004-2012 Scott Ullrich <sullrich@gmail.com>
@@ -123,7 +124,7 @@ include("head.inc");
 
 
 					<?php
-							$version = rtrim(file_get_contents("/usr/local/etc/version"));
+							$version = rtrim(file_get_contents("/usr/local/opnsense/version/opnsense"));
 
 							$tab_array = array();
 							$tab_array[] = array(gettext("Available Packages"), $requested_version <> "" ? false : true, "pkg_mgr.php");
@@ -136,7 +137,7 @@ include("head.inc");
 					    <div class="container-fluid">
 
 							<?php
-									$version = rtrim(file_get_contents("/usr/local/etc/version"));
+									$version = rtrim(file_get_contents("/usr/local/opnsense/version/opnsense"));
 									if($pkg_info) {
 										$pkg_keys = array_keys($pkg_info);
 										natcasesort($pkg_keys);

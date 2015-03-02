@@ -63,7 +63,6 @@ timeout=30 # Wait for a maximum number of seconds to determine connection issues
 package_json_output="/tmp/pkg_status.json"
 tmp_pkg_output_file="/tmp/packages.output"
 tmp_pkg_update_file="/tmp/pkg_updates.output"
-version_file="/usr/local/etc/version"
 
 # Check if pkg is already runnig
 pkg_running=`ps -x | grep "pkg " | grep -v "grep"`

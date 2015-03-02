@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
@@ -143,7 +144,7 @@ if(!$latest_version) {
 	exit;
 } else {
 	$current_installed_buildtime = '';	/* XXX zap */
-	$current_installed_version = trim(file_get_contents("/usr/local/etc/version"));
+	$current_installed_version = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
 	$latest_version = trim(@file_get_contents("/tmp/{$g['product_name']}_version"));
 	$latest_version_pfsense = strtotime($latest_version);
 	if(!$latest_version) {

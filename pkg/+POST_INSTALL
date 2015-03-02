@@ -22,4 +22,5 @@ cat /etc/rc.bak >> /etc/rc
 rm -f /etc/rc.bak
 
 echo "Writing OPNsense version"
-echo "%%REPO_VERSION%%-%%REPO_COMMENT%%" > /usr/local/etc/version
+mkdir -p /usr/local/opnsense/version
+echo "%%REPO_VERSION%%-%%REPO_COMMENT%%" > /usr/local/opnsense/version/opnsense

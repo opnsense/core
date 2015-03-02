@@ -105,7 +105,7 @@ $filesystems = get_mounted_filesystems();
 		<tr>
 			<td width="25%" valign="top" class="vncellt"><?=gettext("Version");?></td>
 			<td width="75%" class="listr">
-				<strong><?php readfile("/usr/local/etc/version"); ?><span id="version"></span></strong>
+				<strong><?php readfile('/usr/local/opnsense/version/opnsense'); ?><span id="version"></span></strong>
 				(<?php echo php_uname("m"); ?>)
 		<?php if(!$g['hideuname']): ?>
 		<br />

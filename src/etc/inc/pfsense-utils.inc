@@ -1,15 +1,9 @@
 <?php
-/****h* pfSense/pfsense-utils
- * NAME
- *   pfsense-utils.inc - Utilities specific to pfSense
- * DESCRIPTION
- *   This include contains various pfSense specific functions.
- * HISTORY
- *   $Id$
- ******
- *
+
+/*
  * Copyright (C) 2004-2007 Scott Ullrich (sullrich@gmail.com)
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -32,13 +26,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig	/sbin/pfctl	/usr/local/bin/php /usr/bin/netstat
-	pfSense_BUILDER_BINARIES:	/bin/df	/usr/bin/grep	/usr/bin/awk	/bin/rm	/usr/sbin/pwd_mkdb	/usr/bin/host
-	pfSense_BUILDER_BINARIES:	/sbin/kldload
-	pfSense_MODULE:	utils
-*/
 
 /****f* pfsense-utils/have_natpfruleint_access
  * NAME
@@ -725,7 +712,7 @@ function check_firmware_version($tocheck = "all", $return_php = true) {
 		return false;
 	$version = php_uname('r');
 	$version = explode('-', $version);
-	$rawparams = array("firmware" => array("version" => trim(file_get_contents('/usr/local/etc/version'))),
+	$rawparams = array("firmware" => array("version" => trim(file_get_contents('/usr/local/opnsense/version/opnsense'))),
 		"kernel"   => array("version" => $version[0]),
 		"base"     => array("version" => $version[0]),
 		"platform" => trim(file_get_contents('/usr/local/etc/platform')),
@@ -763,7 +750,7 @@ function host_firmware_version($tocheck = "") {
 	$os_version = trim(substr(php_uname("r"), 0, strpos(php_uname("r"), '-')));
 
 	return array(
-		"firmware" => array("version" => trim(file_get_contents('/usr/local/etc/version', " \n"))),
+		"firmware" => array("version" => trim(file_get_contents('/usr/local/opnsense/version/opnsense', " \n"))),
 		"kernel"   => array("version" => $os_version),
 		"base"     => array("version" => $os_version),
 		"platform" => trim(file_get_contents('/usr/local/etc/platform', " \n")),
@@ -1618,7 +1605,7 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
 	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 	curl_setopt($ch, CURLOPT_HEADER, false);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/etc/version")));
+	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/opnsense/version/opnsense")));
 
 	if (!empty($config['system']['proxyurl'])) {
 		curl_setopt($ch, CURLOPT_PROXY, $config['system']['proxyurl']);
@@ -1660,7 +1647,7 @@ function download_file_with_progress_bar($url_file, $destination_file, $readbody
 	curl_setopt($ch, CURLOPT_NOPROGRESS, '1');
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connect_timeout);
 	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/etc/version")));
+	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/opnsense/version/opnsense")));
 
 	if (!empty($config['system']['proxyurl'])) {
 		curl_setopt($ch, CURLOPT_PROXY, $config['system']['proxyurl']);

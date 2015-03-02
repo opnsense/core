@@ -1,16 +1,10 @@
 <?php
-/****h* pfSense/pkg-utils
- * NAME
- *   pkg-utils.inc - Package subsystem
- * DESCRIPTION
- *   This file contains various functions used by the pfSense package system.
- * HISTORY
- *   $Id$
- ******
- *
+
+/*
  * Copyright (C) 2010 Ermal Luci
  * Copyright (C) 2005-2006 Colin Smith (ethethlay@gmail.com)
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -33,12 +27,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
-/*
-	pfSense_BUILDER_BINARIES:	/usr/bin/cd	/usr/bin/tar	/usr/sbin/fifolog_create	/bin/chmod
-	pfSense_BUILDER_BINARIES:	/usr/sbin/pkg_add	/usr/sbin/pkg_info	/usr/sbin/pkg_delete	/bin/rm
-	pfSense_MODULE:	pkg
-*/
 
 require_once("globals.inc");
 require_once("xmlrpc.inc");
@@ -620,7 +608,7 @@ function install_package($package, $pkg_info = "", $force_install = false) {
 	}
 	if (!$force_install) {
 		$compatible = true;
-		$version = rtrim(file_get_contents("/usr/local/etc/version"));
+		$version = rtrim(file_get_contents("/usr/local/opnsense/version/opnsense"));
 
 		if (isset($pkg_info['required_version']))
 			$compatible = (pfs_version_compare("", $version, $pkg_info['required_version']) >= 0);
@@ -1311,7 +1299,7 @@ function package_skip_tests($index,$requested_version){
 	global $config, $g;
 
 	/* Get pfsense version*/
-	$version = rtrim(file_get_contents("/usr/local/etc/version"));
+	$version = rtrim(file_get_contents("/usr/local/opnsense/version/opnsense"));
 
 	if($g['platform'] == "nanobsd")
 		if($index['noembedded'])
@@ -1396,7 +1384,7 @@ function check_package_server_ssl() {
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, '30');
 	curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/etc/version")));
+	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/opnsense/version/opnsense")));
 	$result_page = curl_exec($ch);
 	$verifyfail = curl_getinfo($ch, CURLINFO_SSL_VERIFYRESULT);
 	curl_close($ch);

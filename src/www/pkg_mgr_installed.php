@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2004-2012 Scott Ullrich <sullrich@gmail.com>
@@ -98,7 +99,7 @@ include("head.inc");
 
 
 					<?php
-							$version = file_get_contents("/usr/local/etc/version");
+							$version = file_get_contents("/usr/local/opnsense/version/opnsense");
 							$tab_array = array();
 							$tab_array[] = array(gettext("Available Packages"), false, "pkg_mgr.php");
 		//					$tab_array[] = array("{$version} " . gettext("packages"), false, "pkg_mgr.php");

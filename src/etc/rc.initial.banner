@@ -33,7 +33,7 @@ require_once("config.inc");
 require_once("gwlb.inc");
 require_once("interfaces.inc");
 
-$version  = trim(file_get_contents("/usr/local/etc/version"));
+$version = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
 $hostname = $config['system']['hostname'];
 $product = $g['product_name'];
 $machine = trim(`uname -m`);

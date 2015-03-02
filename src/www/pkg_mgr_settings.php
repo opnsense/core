@@ -1,8 +1,9 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Jim Pingle <jimp@pfsense.org>
-    Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
+	Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
         Copyright (C) 2005 Colin Smith
 
 	Redistribution and use in source and binary forms, with or without
@@ -83,7 +84,7 @@ function enable_altpkgrepourl(enable_over) {
 	<tr>
 		<td>
 <?php
-	$version = file_get_contents("/usr/local/etc/version");
+	$version = file_get_contents("/usr/local/opnsense/version/opnsense");
 	$tab_array = array();
 	$tab_array[] = array(sprintf(gettext("%s packages"), $version), false, "pkg_mgr.php");
 	$tab_array[] = array(gettext("Installed Packages"), false, "pkg_mgr_installed.php");
