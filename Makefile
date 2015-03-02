@@ -14,6 +14,12 @@ install:
 	# move all sources to their destination and...
 	@mkdir -p ${DESTDIR}/usr/local
 	@cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
+	# bootstrap pkg(8) files that are not in sources
+	@mkdir -p ${DESTDIR}/usr/local/etc/pkg/repos
+	@cp ${.CURDIR}/pkg/OPNsense.conf ${DESTDIR}/usr/local/etc/pkg/repos
+	@echo /usr/local/etc/pkg/repos/OPNsense.conf
+	@cp ${.CURDIR}/pkg/pkg.conf ${DESTDIR}/usr/local/etc
+	@echo /usr/local/etc/pkg.conf
 	# ... pretty-print a list of files present
 	@(cd ${.CURDIR}/src; find * -type f) | \
 	    xargs -n1 printf "/usr/local/%s\n"
