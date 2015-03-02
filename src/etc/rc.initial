@@ -23,10 +23,10 @@ if [ -n "${*}" ]; then
 	exit ${?}
 fi
 
-echo
-
 # endless loop
 while : ; do
+
+echo
 
 # If we are on the install media advertise that fact
 if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
