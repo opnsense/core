@@ -266,6 +266,8 @@ class Rules
                         // add forward rule to this zone's http instance @ $forward_port + $zone->zoneid
                         $this->rules[] ="add ".(5000+$zone->zoneid)." fwd 127.0.0.1,".($forward_port + $zone->zoneid ).
                             " tcp from any to any dst-port 80 in via ".$interface->if;
+                        $this->rules[] = "add ".(5000+$zone->zoneid)." allow ip from any to any dst-port ".
+                            "80 via ".$interface->if;
                     }
 
                 }
