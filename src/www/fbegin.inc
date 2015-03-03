@@ -458,7 +458,7 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 
-						<?php $active = active_main_menu("/diag"); ?>
+						<?php $active = active_main_menu("/diag", "/crash_reporter"); ?>
 						<a href="#diagnostics" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-stats __iconspacer"></span><?php echo gettext("Diagnostics"); ?></a>
 
 						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="diagnostics">
