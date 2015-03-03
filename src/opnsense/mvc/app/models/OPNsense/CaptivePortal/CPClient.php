@@ -115,9 +115,12 @@ class CPClient
     public function isEnabled()
     {
         $enabled_zones = 0 ;
-        foreach ($this->config->object()->captiveportal->children() as $cpzonename => $zone) {
-            if (isset($zone->enable)) {
-                $enabled_zones++;
+        $conf = $this->config->object();
+        if (isset($conf->captiveportal)) {
+            foreach ($conf->captiveportal->children() as $cpzonename => $zone) {
+                if (isset($zone->enable)) {
+                    $enabled_zones++;
+                }
             }
         }
 
