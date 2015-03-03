@@ -1,15 +1,9 @@
 <?php
-/* $Id$ */
+
 /*
 	Copyright (C) 2007, 2008 Scott Ullrich <sullrich@gmail.com>
-	All rights reserved.
-
         Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
-        All rights reserved.
-
         Copyright (C) 2006 Paul Taylor <paultaylor@winn-dixie.com>.
-        All rights reserved.
-
         Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
         All rights reserved.
 
@@ -33,9 +27,8 @@
         CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
         ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
         POSSIBILITY OF SUCH DAMAGE.
-
-		pfSense_MODULE: authgui
 */
+
 include_once("auth.inc");
 include_once("priv.inc");
 
@@ -199,7 +192,7 @@ function display_login_form() {
 			}
 		}
 	}
-	if (is_array($config['openvpn']['openvpn-server'])) {
+	if (isset($config['openvpn']['openvpn-server'])) {
 		foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
 			if (is_ipaddrv4($http_host) && !empty($ovpns['tunnel_network']) && ip_in_subnet($http_host, $ovpns['tunnel_network'])) {
 				$local_ip = true;

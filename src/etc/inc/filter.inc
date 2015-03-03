@@ -960,7 +960,7 @@ function filter_generate_optcfg_array()
 		$FilterIflist['enc0'] = $oic;
 	}
 	/* add openvpn interfaces */
-	if($config['openvpn']['openvpn-server'] || $config['openvpn']['openvpn-client']) {
+	if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
 		$oic = array();
 		$oic['if'] = "openvpn";
 		$oic['descr'] = 'OpenVPN';

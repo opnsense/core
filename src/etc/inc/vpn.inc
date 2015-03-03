@@ -1,13 +1,9 @@
 <?php
 
 /*
-	vpn.inc
 	Copyright (C) 2004 Scott Ullrich
 	Copyright (C) 2008 Shrew Soft Inc
-	Copyright (C) 2008 Ermal Lu�i
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
+	Copyright (C) 2008 Ermal Luçi
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -31,13 +27,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/ifconfig
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/ipsec	/usr/local/libexec/ipsec/charon /usr/local/libexec/ipsec/starter
-	pfSense_BUILDER_BINARIES:	/usr/local/sbin/filterdns	/usr/local/sbin/mpd4
-	pfSense_MODULE:	vpn
 */
 
 require_once("ipsec.inc");
@@ -106,9 +95,9 @@ function vpn_ipsec_configure($ipchg = false)
 
 	$syscfg = $config['system'];
 	$ipseccfg = $config['ipsec'];
-	$a_phase1 = $config['ipsec']['phase1'];
-	$a_phase2 = $config['ipsec']['phase2'];
-	$a_client = $config['ipsec']['client'];
+	$a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : array();
+	$a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
+	$a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : array();
 
 	if (!isset($ipseccfg['enable'])) {
 		/* try to stop charon */
