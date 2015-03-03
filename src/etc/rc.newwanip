@@ -3,9 +3,6 @@
 
 /*
 	Copyright (C) 2006 Scott Ullrich (sullrich@gmail.com)
-	part of pfSense (https://www.pfsense.org)
-
-	Originally part of m0n0wall (http://m0n0.ch)
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -44,7 +41,7 @@ require_once("IPv6.inc");
 require_once("rrd.inc");
 
 // Do not process while booting
-if(file_exists("/var/run/booting") {
+if (file_exists('/var/run/booting')) {
 	return;
 }
 

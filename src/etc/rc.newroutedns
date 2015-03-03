@@ -1,5 +1,6 @@
 #!/usr/local/bin/php -f
 <?php
+
 /*
 	Copyright (C) 2013 Renato Botelho <garga@pfsense.org>.
 	All rights reserved.
@@ -33,7 +34,7 @@ require_once("functions.inc");
 require_once("system.inc");
 
 /* make sure to wait until the boot scripts have finished */
-if(file_exists("/var/run/booting") {
+if (file_exists('/var/run/booting')) {
         return;
 }
 

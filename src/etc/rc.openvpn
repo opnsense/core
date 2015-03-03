@@ -1,8 +1,7 @@
 #!/usr/local/bin/php -f
 <?php
+
 /*
-	$Id$
-	part of m0n0wall (http://m0n0.ch/wall)
 
 	Copyright (C) 2007 Manuel Kasper <mk@neon1.net>.
 	Copyright (C) 2009 Seth Mos <seth.mos@dds.nl>.
@@ -67,7 +66,7 @@ function openvpn_resync_if_needed ($mode, $ovpn_settings, $interface) {
 }
 
 /* make sure to wait until the boot scripts have finished */
-if(file_exists("/var/run/booting") {
+if (file_exists('/var/run/booting')) {
         return;
 }
 
