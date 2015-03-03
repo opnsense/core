@@ -272,7 +272,6 @@ $diagnostics_menu[] = array(gettext("pfInfo"), "/diag_pf_info.php");
 $diagnostics_menu[] = array(gettext("pfTop"), "/diag_system_pftop.php");
 $diagnostics_menu[] = array(gettext("Ping"), "/diag_ping.php");
 $diagnostics_menu[] = array(gettext("Reboot"), "/diag_reboot.php");
-//$diagnostics_menu[] = array(gettext("Edit File"), "/diag_edit.php"); // Removed file editor for security reasons
 $diagnostics_menu[] = array(gettext("Packet Capture"), "/diag_packet_capture.php");
 $diagnostics_menu[] = array(gettext("Traceroute"), "/diag_traceroute.php");
 $diagnostics_menu[] = array(gettext("SMART Status"), "/diag_smart.php");

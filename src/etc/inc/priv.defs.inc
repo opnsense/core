@@ -296,14 +296,6 @@ $priv_list['page-diagnostics-traceroute']['descr'] = gettext("Allow access to th
 $priv_list['page-diagnostics-traceroute']['match'] = array();
 $priv_list['page-diagnostics-traceroute']['match'][] = "diag_traceroute.php*";
 
-$priv_list['page-diagnostics-edit'] = array();
-$priv_list['page-diagnostics-edit']['name'] = gettext("WebCfg - Diagnostics: Edit FIle");
-$priv_list['page-diagnostics-edit']['descr'] = gettext("Allow access to the 'Diagnostics: Edit File' page.");
-$priv_list['page-diagnostics-edit']['match'] = array();
-$priv_list['page-diagnostics-edit']['match'][] = "edit.php*";
-$priv_list['page-diagnostics-edit']['match'][] = "browser.php*";
-$priv_list['page-diagnostics-edit']['match'][] = "filebrowser/browser.php*";
-
 $priv_list['page-firewall-aliases'] = array();
 $priv_list['page-firewall-aliases']['name'] = gettext("WebCfg - Firewall: Aliases page");
 $priv_list['page-firewall-aliases']['descr'] = gettext("Allow access to the 'Firewall: Aliases' page.");
