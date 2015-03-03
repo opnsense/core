@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2011 Scott Ullrich
@@ -72,7 +73,7 @@ $crash_report_header .= php_uname("r") . "\n";
 $crash_report_header .= php_uname("v") . "\n";
 $crash_report_header .= "\nCrash report details:\n";
 
-exec("/usr/bin/grep -vi warning /tmp/PHP_errors.log", $php_errors);
+$php_errors = @file_get_contents('/tmp/PHP_errors.log');
 
 ?>
 
@@ -123,9 +124,9 @@ exec("/usr/bin/grep -vi warning /tmp/PHP_errors.log", $php_errors);
 	} else {
 		$crash_files = glob("/var/crash/*");
 		$crash_reports = $crash_report_header;
-		if (count($php_errors) > 0) {
+		if (!empty($php_errors)) {
 			$crash_reports .= "\nPHP Errors:\n";
-			$crash_reports .= implode("\n", $php_errors) . "\n\n";
+			$crash_reports .= $php_errors;
 		}
 		if(is_array($crash_files))	{
 			foreach($crash_files as $cf) {

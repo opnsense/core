@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2012 Scott Ullrich
@@ -50,25 +51,33 @@ if ($_REQUEST['act'] == 'alias_info_popup' && !preg_match("/\D/",$_REQUEST['alia
 	exit;
 }
 
-if($g['disablecrashreporter'] != true) {
-	// Check to see if we have a crash report
-	$x = 0;
-	if(file_exists("/tmp/PHP_errors.log")) {
-		$total = `/usr/bin/grep -vi warning /tmp/PHP_errors.log | /usr/bin/wc -l | /usr/bin/awk '{ print $1 }'`;
-		if($total > 0)
-			$x++;
-	}
-	$crash = glob("/var/crash/*");
-	$skip_files = array(".", "..", "minfree", "");
-	if(is_array($crash)) {
-		foreach($crash as $c) {
-			if (!in_array(basename($c), $skip_files))
-				$x++;
-		}
-		if($x > 0)
-			$savemsg = "{$g['product_name']} has detected a crash report or programming bug.  Click <a href='crash_reporter.php'>here</a> for more information.";
+/* CRASH REPORT BEGIN */
+
+$x = 0;
+
+if (file_exists('/tmp/PHP_errors.log')) {
+	/* don't notify about crash report when there's only errors */
+	$total = `/usr/bin/grep -v 'PHP Warning:' /tmp/PHP_errors.log | /usr/bin/wc -l | /usr/bin/awk '{ print $1 }'`;
+	if($total > 0) {
+		$x++;
 	}
 }
+
+$crash = glob('/var/crash/*');
+if (is_array($crash)) {
+	$skip_files = array('.', '..', 'minfree', '');
+	foreach($crash as $c) {
+		if (!in_array(basename($c), $skip_files)) {
+			$x++;
+		}
+	}
+}
+
+if($x > 0) {
+	$savemsg = "{$g['product_name']} has detected a crash report or programming bug.  Click <a href='crash_reporter.php'>here</a> for more information.";
+}
+
+/* CRASH REPORT END */
 
 ##build list of widgets
 $directory = "/usr/local/www/widgets/widgets/";
