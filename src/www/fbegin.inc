@@ -263,7 +263,6 @@ $diagnostics_menu[] = array(gettext("ARP Table"), "/diag_arp.php");
 $diagnostics_menu[] = array(gettext("Authentication"), "/diag_authentication.php");
 $diagnostics_menu[] = array(gettext("Backup/Restore"), "/diag_backup.php");
 $diagnostics_menu[] = array(gettext("Crash Reporter"), "/crash_reporter.php");
-//$diagnostics_menu[] = array(gettext("Command Prompt"), "/diag_exec.php"); // Removed file editor for security reasons
 $diagnostics_menu[] = array(gettext("DNS Lookup"), "/diag_dns.php");
 $diagnostics_menu[] = array(gettext("NDP Table"), "/diag_ndp.php" );
 $diagnostics_menu[] = array(gettext("Factory Defaults"), "/diag_defaults.php");

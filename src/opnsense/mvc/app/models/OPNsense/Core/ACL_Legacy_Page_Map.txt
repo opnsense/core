@@ -50,7 +50,6 @@ page-diagnostics-traceroute=diag_traceroute.php*
 page-diagnostics-edit=edit.php*
 page-diagnostics-edit=browser.php*
 page-diagnostics-edit=filebrowser/browser.php*
-page-diagnostics-command=exec.php*
 page-firewall-aliases=firewall_aliases.php*
 page-firewall-alias-edit=firewall_aliases_edit.php*
 page-firewall-alias-import=firewall_aliases_import.php*
