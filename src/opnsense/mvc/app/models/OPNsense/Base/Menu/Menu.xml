@@ -180,6 +180,7 @@
         <BackupRestore VisibleName="Backup &amp; Restore" url="/diag_backup.php">
             <History url="/diag_confbak.php"/>
         </BackupRestore>
+        <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php"/>
         <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
         <FactoryDefaults VisibleName="Factory Defaults" url="/diag_defaults.php"/>
         <HaltSystem VisibleName="Halt System" url="/diag_halt.php"/>
