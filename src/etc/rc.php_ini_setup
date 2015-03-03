@@ -31,9 +31,6 @@ PLATFORM=`/bin/cat /usr/local/etc/platform`
 if [ -d /usr/local/lib/php/20131226 ]; then
 	# PHP 5.6
 	EXTENSIONSDIR="/usr/local/lib/php/20131226/"
-elif [ -d /usr/local/lib/php/20121212 ]; then
-	# PHP 5.5
-	EXTENSIONSDIR="/usr/local/lib/php/20121212/"
 else
 	echo "No supported PHP version was found."
 	exit 1
@@ -135,7 +132,7 @@ zlib.output_compression = Off
 zlib.output_compression_level = 1
 include_path = ".:/usr/local/etc/inc:/usr/local/www:/usr/local/captiveportal:/usr/local/pkg:/usr/local/opnsense/mvc:/usr/local/share/pear"
 display_startup_errors=on
-error_reporting = E_ERROR
+error_reporting = E_ERROR | E_PARSE
 display_errors=on
 log_errors=on
 error_log=/tmp/PHP_errors.log

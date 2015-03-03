@@ -57,8 +57,8 @@ function output_crash_reporter_html($crash_reports) {
 	echo "<p>" . gettext("Would you like to submit the programming debug logs to the OPNsense developers for inspection?") . "</p>";
 	echo "<p><i>" . gettext("Please double check the contents to ensure you are comfortable sending this information before clicking Yes.") . "</i></p>";
 	echo "<p>" . gettext("Contents of crash reports") . ":<br />";
-	echo "<textarea readonly=\"readonly\" rows=\"40\" cols=\"65\" name=\"crashreports\">{$crash_reports}</textarea></p>";
-	echo "<p><input name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"" . gettext("Yes") .  "\" />" . gettext(" - Submit this to the developers for inspection") . "</p>";
+	echo "<textarea readonly=\"readonly\" style=\"max-width: none;\" rows=\"24\" cols=\"80\" name=\"crashreports\">{$crash_reports}</textarea></p>";
+	echo "<p><input disabled=\"disabled\" name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"" . gettext("Yes") .  "\" />" . gettext(" - Submit this to the developers for inspection") . "</p>";
 	echo "<p><input name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"" . gettext("No") .  "\" />" . gettext(" - Just delete the crash report and take me back to the Dashboard") . "</p>";
 	echo "</form>";
 }
