@@ -54,7 +54,7 @@ class Backend
      * @return string
      * @throws \Exception
      */
-    public function sendEvent($event, $timeout = 60)
+    public function sendEvent($event, $timeout = 120)
     {
         $stream = stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $timeout);
         if ($stream === false) {
