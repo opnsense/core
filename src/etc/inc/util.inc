@@ -1138,13 +1138,15 @@ function unlink_if_exists($fn) {
 		@unlink($fn);
 	}
 }
+
 /* make a global alias table (for faster lookups) */
-function alias_make_table($config) {
+function alias_make_table($config)
+{
 	global $aliastable;
 
 	$aliastable = array();
 
-	if (is_array($config['aliases']['alias'])) {
+	if (isset($config['aliases']['alias'])) {
 		foreach ($config['aliases']['alias'] as $alias) {
 			if ($alias['name'])
 				$aliastable[$alias['name']] = $alias['address'];
@@ -1817,12 +1819,14 @@ function explode_assoc($delimiter, $string) {
 	return $result;
 }
 
-function get_staticroutes($returnsubnetsonly = false, $returnhostnames = false) {
+function get_staticroutes($returnsubnetsonly = false, $returnhostnames = false)
+{
 	global $config, $aliastable;
 
 	/* Bail if there are no routes, but return an array always so callers don't have to check. */
-	if (!is_array($config['staticroutes']['route']))
+	if (!isset($config['staticroutes']['route'])) {
 		return array();
+	}
 
 	$allstaticroutes = array();
 	$allsubnets = array();
