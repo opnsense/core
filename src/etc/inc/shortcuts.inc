@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2012 Jim Pingle
@@ -34,11 +35,11 @@
 $shortcuts = array();
 
 /* Load and process custom shortcuts. */
-function get_shortcut_files($directory) {
+function get_shortcut_files($directory)
+{
 	$dir_array = array();
-	if(!is_dir($directory))
-		return;
-	if ($dh = opendir($directory)) {
+
+	if ($dh = @opendir($directory)) {
 		while (($file = readdir($dh)) !== false) {
 			$canadd = 0;
 			if($file == ".")
@@ -50,8 +51,7 @@ function get_shortcut_files($directory) {
 		}
 		closedir($dh);
 	}
-	if(!is_array($dir_array))
-		return;
+
 	return $dir_array;
 }
 
@@ -132,15 +132,11 @@ function get_shortcut_log_link($shortcut_section, $addspace = true) {
 }
 
 // Load shortcuts
-$dir_array = get_shortcut_files("/usr/local/www/shortcuts");
-foreach ($dir_array as $file)
-	if (!is_dir("/usr/local/www/shortcuts/{$file}") && stristr($file,".inc"))
-		include("/usr/local/www/shortcuts/{$file}");
-if(is_dir("/usr/local/pkg/shortcuts")) {
-	$dir_array = get_shortcut_files("/usr/local/pkg/shortcuts");
-	foreach ($dir_array as $file)
-		if (!is_dir("/usr/local/pkg/shortcuts/{$file}") && stristr($file,".inc"))
-			include("/usr/local/pkg/shortcuts/{$file}");
+$dir_array = get_shortcut_files("/usr/local/pkg/shortcuts");
+foreach ($dir_array as $file) {
+	if (!is_dir("/usr/local/pkg/shortcuts/{$file}") && stristr($file,".inc")) {
+		include("/usr/local/pkg/shortcuts/{$file}");
+	}
 }
 
 $shortcuts['relayd'] = array();
@@ -271,4 +267,3 @@ $shortcuts['authentication']['status'] = "diag_authentication.php";
 $shortcuts['aliases'] = array();
 $shortcuts['aliases']['main'] = "firewall_aliases.php";
 $shortcuts['aliases']['status'] = "diag_tables.php";
-?>
