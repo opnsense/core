@@ -255,12 +255,12 @@ function display_login_form()
 				    <form class="clearfix" id="iform" name="iform" method="post" <?= $loginautocomplete ?> action="<?=$_SERVER['REQUEST_URI'];?>">
 
 			  <div class="form-group">
-			    <label for="usernamefld"><?=gettext("Username:"); ?>*</label>
+			    <label for="usernamefld"><?=gettext("Username:"); ?></label>
 			    <input id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" />
 			  </div>
 
 			  <div class="form-group">
-			    <label for="passwordfld"><?=gettext("Password:"); ?>*</label>
+			    <label for="passwordfld"><?=gettext("Password:"); ?></label>
 			    <input id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
 			  </div>
 
