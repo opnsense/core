@@ -282,6 +282,64 @@ abstract class BaseField
 
 
     /**
+     * get nodes as array structure
+     * @return array
+     */
+    public function getNodes()
+    {
+        $result = array ();
+        foreach ($this->__items as $key => $node) {
+            if ($node->isContainer()) {
+                $result[$key] = $node->getNodes();
+            } else {
+                $result[$key] = $node->__toString();
+            }
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * update model with data returning missing repeating tag types.
+     * @param $data named array structure containing new model content
+     * @return array missing array keys in data
+     */
+    public function setNodes($data)
+    {
+        $delItems = array();
+
+        // update structure with new content
+        foreach ($this->__items as $key => $node) {
+            if ($data != null && array_key_exists($key, $data)) {
+                if ($node->isContainer()) {
+                    $delItems += $node->setNodes($data[$key]);
+                } else {
+                    $node->setValue($data[$key]);
+                }
+            } elseif (get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
+                // mark item as missing in input, remove later
+                $delItems[] = array("node" => $this, "key" => $key );
+            } else {
+                $delItems += $node->setNodes(array());
+            }
+        }
+
+        // add new items to array type objects
+        if (get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
+            foreach ($data as $dataKey => $dataValue) {
+                if (!array_key_exists($dataKey, $this->__items)) {
+                    $node = $this->add();
+                    $delItems += $node->setNodes($dataValue);
+                }
+            }
+        }
+
+        return $delItems;
+    }
+
+
+    /**
      * Add this node and it's children to the supplied simplexml node pointer.
      * @param \SimpleXMLElement $node target node
      */

@@ -233,6 +233,24 @@ abstract class BaseModel
     }
 
     /**
+     * get nodes as array structure
+     * @return array
+     */
+    public function getNodes()
+    {
+        return $this->internalData->getNodes();
+    }
+
+    /**
+     * structured setter for model
+     * @param array|$data named array
+     */
+    public function setNodes($data)
+    {
+        return $this->internalData->setNodes($data);
+    }
+
+    /**
      * validate full model using all fields and data in a single (1 deep) array
      */
     public function performValidation()
