@@ -1321,7 +1321,7 @@ function authenticate_user($username, $password, $authcfg = NULL, &$attributes =
 }
 
 function session_auth() {
-	global $config, $_SESSION, $page;
+	global $config, $_SESSION;
 
 	// Handle HTTPS httponly and secure flags
 	$currentCookieParams = session_get_cookie_params();
@@ -1357,9 +1357,7 @@ function session_auth() {
 			if (isset($_POST['postafterlogin']))
 				return true;
 			else {
-				if (empty($page))
-					$page = "/";
-				header("Location: {$page}");
+				header("Location: {$_SERVER['REQUEST_URI']}");
 			}
 			exit;
 		} else {

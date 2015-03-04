@@ -59,7 +59,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 		if (!empty($_SERVER['REMOTE_ADDR'])) {
 			$username .= '@' . $_SERVER['REMOTE_ADDR'];
 		}
-		log_error("{$username} attempted to access {$_SERVER['SCRIPT_NAME']} but does not have access to that page. Redirecting to {$page}.");
+		log_error("{$username} attempted to access {$_SERVER['REQUEST_URI']} but does not have access to that page. Redirecting to {$page}.");
 
 		exit;
 	} else {
@@ -252,7 +252,7 @@ function display_login_form()
 			    <div class="login-modal-content">
 				    <div id="inputerrors"><?=$_SESSION['Login_Error'];?></div>
 
-				    <form class="clearfix" id="iform" name="iform" method="post" <?= $loginautocomplete ?> action="<?=$_SERVER['SCRIPT_NAME'];?>">
+				    <form class="clearfix" id="iform" name="iform" method="post" <?= $loginautocomplete ?> action="<?=$_SERVER['REQUEST_URI'];?>">
 
 			  <div class="form-group">
 			    <label for="usernamefld"><?=gettext("Username:"); ?>*</label>
