@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
@@ -30,7 +31,7 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
-require_once("classes/maintable.inc");
+require_once("maintable.inc");
 
 if (!is_array($config['load_balancer']['lbaction'])) {
 	$config['load_balancer']['lbaction'] = array();
