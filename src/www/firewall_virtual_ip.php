@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>.
@@ -28,7 +29,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
@@ -152,7 +153,7 @@ if ($_GET['act'] == "del") {
 				header("Location: firewall_virtual_ip.php");
 				exit;
 			}
-			session_commit();
+			session_write_close();
 
 			// Special case since every proxyarp vip is handled by the same daemon.
 			if ($a_vip[$_GET['id']]['mode'] == "proxyarp") {

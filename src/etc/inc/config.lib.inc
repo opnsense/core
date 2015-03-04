@@ -473,14 +473,14 @@ function write_config($desc = 'Unknown', $backup = true)
 		if (!empty($_SESSION['Username']) && ($_SESSION['Username'] != 'root')) {
 			$user = getUserEntry($_SESSION['Username']);
 			if (is_array($user) && userHasPrivilege($user, "user-config-readonly")) {
-				session_commit();
+				session_write_close();
 				return false;
 			}
 		}
 	}
 
 	if (!isset($argc)) {
-		session_commit();
+		session_write_close();
 	}
 
 	if ($backup) {

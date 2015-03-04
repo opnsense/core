@@ -1,6 +1,8 @@
 <?php
+
 /*
     Copyright (C) 2014-2015 Deciso B.V.
+
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
 
@@ -36,7 +38,7 @@ function getHeadJS() {
   if (!session_id())
 	session_start();
   $_SESSION['NO_AJAX'] == "True" ? $noajax = "var noAjaxOnSubmit = true;" : $noajax = "var noAjaxOnSubmit = false;";
-  session_commit();
+  session_write_close();
 
   $headjs .= "
     {$noajax}

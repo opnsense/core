@@ -1,8 +1,9 @@
 <?php
+
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2011 Ermal Luçi
-	All rights reserved.
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -26,7 +27,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 require_once("certs.inc");
 require_once("guiconfig.inc");
 
@@ -49,7 +49,7 @@ if (isset($_POST['save'])) {
 		// all values are okay --> saving changes
 		$config['system']['user'][$userindex[$_SESSION['Username']]]['password'] = crypt($_POST['passwordfld1'], '$6$');
 		local_user_set($config['system']['user'][$userindex[$_SESSION['Username']]]);
-		session_commit();
+		session_write_close();
 
 		write_config();
 
@@ -66,7 +66,7 @@ foreach($config['system']['user'] as $user)
 	if($user['name'] == $_SESSION['Username'])
 		$islocal = true;
 
-session_commit();
+session_write_close();
 
 include("head.inc");
 
@@ -107,7 +107,7 @@ include("head.inc");
 					session_start();
 			?>
 			                                        <td colspan="2" valign="top" class="listtopic"><?=$_SESSION['Username']?>'s <?=gettext("Password"); ?></td>
-			<?php session_commit(); ?>
+			<?php session_write_close(); ?>
 			                                </tr>
 			                                <tr>
 			                                        <td width="22%" valign="top" class="vncell"><?=gettext("Password"); ?></td>
