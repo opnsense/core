@@ -1,6 +1,7 @@
 <?php
+
 /*
-	Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2008 Ermal Luci
     Copyright (C) 2013 Stanley P. Miller \ stan-qaz
     All rights reserved.
@@ -26,7 +27,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-
 
 $nocsrf = true;
 
@@ -103,16 +103,14 @@ if($_REQUEST['getdyndnsstatus']) {
 		</td>
 		<td class="listr">
 		<?php
-		$types = explode(",", DYNDNS_PROVIDER_DESCRIPTIONS);
-		$vals = explode(" ", DYNDNS_PROVIDER_VALUES);
-		for ($j = 0; $j < count($vals); $j++)
-			if ($vals[$j] == $dyndns['type']) {
-				if (!isset($dyndns['enable']))
-					echo "<span class=\"gray\">".htmlspecialchars($types[$j])."</span>";
-				else
-					echo htmlspecialchars($types[$j]);
-				break;
+		$types = services_dyndns_list();
+		if (isset($types[$dyndns['type']])) {
+			if (!isset($dyndns['enable'])) {
+				echo '<span class="gray">' . htmlspecialchars($types[$dyndns['type']]) . '</span>';
+			} else {
+				echo htmlspecialchars($types[$dyndns['type']]);
 			}
+		}
 		?>
 		</td>
 		<td class="listr">

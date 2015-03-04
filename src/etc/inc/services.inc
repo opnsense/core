@@ -27,9 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('DYNDNS_PROVIDER_VALUES', 'dnsomatic dyndns dyndns-static dyndns-custom dhs dyns easydns noip noip-free ods zoneedit loopia freedns dnsexit opendns namecheap he-net he-net-v6 he-net-tunnelbroker selfhost route53 cloudflare custom custom-v6 eurodns gratisdns ovh-dynhost citynetwork');
-define('DYNDNS_PROVIDER_DESCRIPTIONS', 'DNS-O-Matic,DynDNS (dynamic),DynDNS (static),DynDNS (custom),DHS,DyNS,easyDNS,No-IP,No-IP (free),ODS.org,ZoneEdit,Loopia,freeDNS,DNSexit,OpenDNS,Namecheap,HE.net,HE.net (v6),HE.net Tunnelbroker,SelfHost,Route 53,CloudFlare,Custom,Custom (v6),Euro Dns,GratisDNS,OVH DynHOST,City Network');
-
 /* implement ipv6 route advertising deamon */
 function services_radvd_configure($blacklist = array())
 {
@@ -1593,6 +1590,40 @@ function services_dhcrelay6_configure()
 	unset($cmd);
 
 	return 0;
+}
+
+function services_dyndns_list()
+{
+	return array(
+		'dnsomatic' => 'DNS-O-Matic',
+		'dyndns' => 'DynDNS (dynamic)',
+		'dyndns-static' => 'DynDNS (static)',
+		'dyndns-custom' => 'DynDNS (custom)',
+		'dhs' => 'DHS',
+		'dyns' => 'DyNS',
+		'easydns' => 'easyDNS',
+		'noip' => 'No-IP',
+		'noip-free' => 'No-IP (free)',
+		'ods' => 'ODS.org',
+		'zoneedit' => 'ZoneEdit',
+		'loopia' => 'Loopia',
+		'freedns' => 'freeDNS',
+		'dnsexit' => 'DNSexit',
+		'opendns' => 'OpenDNS',
+		'namecheap' => 'Namecheap',
+		'he-net' => 'HE.net',
+		'he-net-v6' => 'HE.net (v6)',
+		'he-net-tunnelbroker' => 'HE.net Tunnelbroker',
+		'selfhost' => 'SelfHost',
+		'route53' => 'Route 53',
+		'cloudflare' => 'CloudFlare',
+		'custom' => 'Custom',
+		'custom-v6' => 'Custom (v6)',
+		'eurodns' => 'EuroDNS',
+		'gratisdns' => 'GratisDNS',
+		'ovh-dynhost' => 'OVH DynHOST',
+		'citynetwork' => 'City Network'
+	);
 }
 
 function services_dyndns_configure_client($conf) {

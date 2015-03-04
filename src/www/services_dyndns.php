@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
@@ -119,16 +120,14 @@ $main_buttons = array(
 										  </td>
 										  <td class="listr">
 										  <?php
-											$types = explode(",", DYNDNS_PROVIDER_DESCRIPTIONS);
-											$vals = explode(" ", DYNDNS_PROVIDER_VALUES);
-											for ($j = 0; $j < count($vals); $j++)
-												if ($vals[$j] == $dyndns['type']) {
-													if (!isset($dyndns['enable']))
-														echo "<span class=\"gray\">" . htmlspecialchars($types[$j]) . "</span>";
-													else
-														echo htmlspecialchars($types[$j]);
-													break;
+											$types = services_dyndns_list();
+											if (isset($types[$dyndns['type']])) {
+												if (!isset($dyndns['enable'])) {
+													echo '<span class="gray">' . htmlspecialchars($types[$dyndns['type']]) . '</span>';
+												} else {
+													echo htmlspecialchars($types[$dyndns['type']]);
 												}
+											}
 										  ?>
 										  </td>
 										  <td class="listr">

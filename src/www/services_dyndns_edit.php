@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
@@ -83,7 +84,7 @@ if ($_POST) {
 	$reqdfieldsn = array();
 	$reqdfields = array("type");
 	$reqdfieldsn = array(gettext("Service type"));
-	if ($pconfig['type'] != "custom" && $pconfig['type'] != "custom-v6") {
+	if ($pconfig['type'] != 'custom' && $pconfig['type'] != 'custom-v6') {
 		$reqdfields[] = "host";
 		$reqdfieldsn[] = gettext("Hostname");
 		$reqdfields[] = "password";
@@ -97,7 +98,7 @@ if ($_POST) {
 
 	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	if (isset($_POST['host'])) {
+	if (isset($_POST['host']) && in_array('host', $reqdfields)) {
 		/* Namecheap can have a @. in hostname */
 		if ($pconfig['type'] == "namecheap" && substr($_POST['host'], 0, 2) == '@.')
 			$host_to_check = substr($_POST['host'], 2);
@@ -109,6 +110,7 @@ if ($_POST) {
 
 		unset($host_to_check);
 	}
+
 	if (($_POST['mx'] && !is_domain($_POST['mx'])))
 		$input_errors[] = gettext("The MX contains invalid characters.");
 	if ((in_array("username", $reqdfields) && $_POST['username'] && !is_dyndns_username($_POST['username'])) || ((in_array("username", $reqdfields)) && ($_POST['username'] == "")))
@@ -250,14 +252,14 @@ include("head.inc");
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Service type");?></td>
 					                  <td width="78%" class="vtable">
 								<select name="type" class="formselect" id="type" onchange="_onTypeChange(this.options[this.selectedIndex].value);">
-					                      <?php
-											$types = explode(",", DYNDNS_PROVIDER_DESCRIPTIONS);
-											$vals = explode(" ", DYNDNS_PROVIDER_VALUES);
-											$j = 0; for ($j = 0; $j < count($vals); $j++): ?>
-					                      <option value="<?=$vals[$j];?>" <?php if ($vals[$j] == $pconfig['type']) echo "selected=\"selected\"";?>>
-					                      <?=htmlspecialchars($types[$j]);?>
-					                      </option>
-					                      <?php endfor; ?>
+								<?php
+									$types = services_dyndns_list();
+									foreach ($types as $value => $type) {
+								?>
+					                      <option value="<?=$value;?>" <?php if ($value == $pconfig['type']) echo 'selected="selected"';?>><?=htmlspecialchars($type);?></option>
+								<?php
+									}
+								?>
 					                    </select></td>
 									</tr>
 									<tr>
