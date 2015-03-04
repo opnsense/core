@@ -82,18 +82,20 @@ if ($_POST) {
 	/* input validation */
 	$reqdfields = array();
 	$reqdfieldsn = array();
-	$reqdfields = array("type");
-	$reqdfieldsn = array(gettext("Service type"));
+	$reqdfields = array('type');
+	$reqdfieldsn = array(gettext('Service type'));
 	if ($pconfig['type'] != 'custom' && $pconfig['type'] != 'custom-v6') {
-		$reqdfields[] = "host";
-		$reqdfieldsn[] = gettext("Hostname");
-		$reqdfields[] = "password";
-		$reqdfieldsn[] = gettext("Password");
-		$reqdfields[] = "username";
-		$reqdfieldsn[] = gettext("Username");
-	}else{
-		$reqdfields[] = "updateurl";
-		$reqdfieldsn[] = gettext("Update URL");
+		$reqdfields[] = 'host';
+		$reqdfieldsn[] = gettext('Hostname');
+		$reqdfields[] = 'username';
+		$reqdfieldsn[] = gettext('Username');
+		if ($pconfig['type'] != 'duckdns') {
+			$reqdfields[] = 'password';
+			$reqdfieldsn[] = gettext('Password');
+		}
+	} else {
+		$reqdfields[] = 'updateurl';
+		$reqdfieldsn[] = gettext('Update URL');
 	}
 
 	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
@@ -363,6 +365,7 @@ include("head.inc");
 					                    <input name="username" type="text" class="formfld user" id="username" size="20" value="<?=htmlspecialchars($pconfig['username']);?>" />
 					                    <br /><?= gettext("Username is required for all types except Namecheap, FreeDNS and Custom Entries.");?>
 							    <br /><?= gettext("Route 53: Enter your Access Key ID.");?>
+							    <br /><?= gettext("Duck DNS: Enter your Token.");?>
 							    <br /><?= gettext("For Custom Entries, Username and Password represent HTTP Authentication username and passwords.");?>
 					                  </td>
 					                </tr>
@@ -373,6 +376,7 @@ include("head.inc");
 					                    <br />
 					                    <?=gettext("FreeDNS (freedns.afraid.org): Enter your \"Authentication Token\" provided by FreeDNS.");?>
 							    <br /><?= gettext("Route 53: Enter your Secret Access Key.");?>
+							    <br /><?= gettext("Duck DNS: Leave blank.");?>
 					                  </td>
 					                </tr>
 

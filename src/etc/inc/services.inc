@@ -1602,6 +1602,7 @@ function services_dyndns_list()
 		'dhs' => 'DHS',
 		'dnsexit' => 'DNSexit',
 		'dnsomatic' => 'DNS-O-Matic',
+		'duckdns' => 'Duck DNS',
 		'dyndns' => 'DynDNS (dynamic)',
 		'dyndns-static' => 'DynDNS (static)',
 		'dyndns-custom' => 'DynDNS (custom)',
