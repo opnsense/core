@@ -52,7 +52,7 @@ class IntegerField extends BaseField
      * minimum value for this field
      * @var integer
      */
-    private $minimum_value = PHP_INT_MIN;
+    private $minimum_value = PHP_INT_MAX*-1;
 
 
     /**

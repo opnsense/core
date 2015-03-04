@@ -244,6 +244,7 @@ abstract class BaseModel
     /**
      * structured setter for model
      * @param array|$data named array
+     * @return array
      */
     public function setNodes($data)
     {
