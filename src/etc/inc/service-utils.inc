@@ -1,15 +1,9 @@
 <?php
-/****h* pfSense/service-utils
- * NAME
- *   service-utils.inc - Service facility
- * DESCRIPTION
- *   This file contains various functions used by the pfSense service facility.
- * HISTORY
- *   $Id$
- ******
- *
+
+/*
  * Copyright (C) 2005-2006 Colin Smith (ethethlay@gmail.com)
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -30,13 +24,8 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * RISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
-/*
-	pfSense_BUILDER_BINARIES:	/bin/pgrep /bin/sh /usr/bin/killall
-	pfSense_MODULE:	utils
-*/
 require_once("globals.inc");
 require_once("captiveportal.inc");
 require_once("openvpn.inc");
@@ -383,7 +372,7 @@ if (!function_exists('get_services')) {
 		}
 
 		foreach (array('server', 'client') as $mode) {
-			if (is_array($config['openvpn']["openvpn-{$mode}"])) {
+			if (isset($config['openvpn']["openvpn-{$mode}"])) {
 				foreach ($config['openvpn']["openvpn-{$mode}"] as $id => $setting) {
 					if (!isset($setting['disable'])) {
 						$pconfig = array();
