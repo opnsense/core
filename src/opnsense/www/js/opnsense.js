@@ -18,7 +18,11 @@ function getFormData(parent) {
                     node = node[keyparts[i]];
                 } else {
                     if ($(this).prop("type") == "checkbox") {
-                        node[keyparts[i]] = $(this).prop("checked");
+                        if ($(this).prop("checked")) {
+                            node[keyparts[i]] = 1 ;
+                        } else {
+                            node[keyparts[i]] = 0 ;
+                        }
                     } else {
                         node[keyparts[i]] = $(this).val();
                     }
@@ -53,7 +57,12 @@ function setFormData(parent,data) {
                 node = node[keyparts[i]];
             } else {
                 if ($(this).prop("type") == "checkbox") {
-                    $(this).prop("checked",node[keyparts[i]]) ;
+                    if (node[keyparts[i]] != 0) {
+                        $(this).prop("checked",true) ;
+                    } else {
+                        $(this).prop("checked",false) ;
+                    }
+
                 } else {
                     $(this).val(node[keyparts[i]]);
                 }
@@ -61,3 +70,71 @@ function setFormData(parent,data) {
         }
     });
 }
+
+
+/**
+ * handle form validations
+ * @param parent
+ * @param validationErrors
+ */
+function handleFormValidation(parent,validationErrors) {
+    $( "#"+parent+"  input" ).each(function( index ) {
+        if (validationErrors != undefined && $(this).attr('id') in validationErrors) {
+            $(this).parent().addClass("has-error");
+            $("span[for='" + $(this).attr('id') + "']").text(validationErrors[$(this).attr('id')]);
+        } else {
+            $(this).parent().removeClass("has-error");
+            $("span[for='" + $(this).attr('id') + "']").text("");
+        }
+    });
+}
+
+/**
+ * call remote function (post request), wrapper around standard jQuery lib.
+ * @param url endpoint url
+ * @param sendData input structure
+ * @param callback callback function
+ */
+function ajaxCall(url,sendData,callback) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        dataType:"json",
+        complete: function(data,status) {
+            if ( callback == null ) {
+                null;
+            } else if ( "responseJSON" in data ) {
+                callback(data['responseJSON'],status);
+            } else {
+                callback({},status);
+            }
+        },
+        data:sendData
+    });
+}
+
+/**
+ * retrieve json type data (GET request) from remote url
+ * @param url endpoint url
+ * @param sendData input structure
+ * @param callback callback function
+ */
+function ajaxGet(url,sendData,callback) {
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType:"json",
+        complete: function(data,status) {
+            if ( callback == null ) {
+                null;
+            } else if ( "responseJSON" in data ) {
+                callback(data['responseJSON'],status);
+            } else {
+                callback({},status);
+            }
+        },
+        data:sendData
+    });
+}
+
+

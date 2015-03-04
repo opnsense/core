@@ -30,8 +30,10 @@
 					xhr.setRequestHeader("X-CSRFTokenKey", "{{ csrf_tokenKey }}" );
 				}
 			});
-
 		</script>
+        <!-- OPNsense standard toolkit -->
+        <script type="text/javascript" src="/ui/js/opnsense.js"></script>
+
 	</head>
 	<body>
 	<header class="page-head">
