@@ -299,7 +299,7 @@ function enable_rrd_graphing() {
 		/* IPsec counters */
 		$ifdescrs['ipsec'] = "IPsec";
 		/* OpenVPN server counters */
-		if(is_array($config['openvpn']['openvpn-server'])) {
+		if(isset($config['openvpn']['openvpn-server'])) {
 			foreach($config['openvpn']['openvpn-server'] as $server) {
 				$serverid = "ovpns" . $server['vpnid'];
 				$ifdescrs[$serverid] = "{$server['description']}";
