@@ -1,12 +1,10 @@
 <?php
+
 /*
-	ipsec.inc
 	Copyright (C) 2007 Scott Ullrich
 	Copyright (C) 2008 Shrew Soft Inc
-	All rights reserved.
-
-	Parts of this code was originally based on vpn_ipsec_sad.php
 	Copyright (C) 2003-2004 Manuel Kasper
+	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
@@ -28,10 +26,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-	pfSense_BUILDER_BINARIES:	/sbin/setkey
-	pfSense_MODULE:	ipsec
-
 */
 
 /* IPsec defines */
@@ -483,12 +477,13 @@ function ipsec_smp_dump_status() {
 	}
 	fclose($fd);
 
-	@file_put_contents("{$g['tmp_path']}/smp_status.xml", $response);
+	$smp_status_xml = '/tmp/smp_status.xml';
+	@file_put_contents($smp_status_xml, $response);
 	unset($response, $sread);
 
 	$custom_listtags = array('ikesa', 'childsa', 'network', 'auth');
-	$response = parse_xml_config("{$g['tmp_path']}/smp_status.xml", "message");
-	@unlink("{$g['tmp_path']}/smp_status.xml");
+	$response = parse_xml_config($smp_status_xml, 'message');
+	@unlink($smp_status_xml);
 	unset($custom_listtags);
 
 	return $response;
@@ -601,19 +596,22 @@ function ipsec_dump_sad()
 /*
  * Return dump of mobile user list
  */
-function ipsec_dump_mobile() {
+function ipsec_dump_mobile()
+{
 	global $g, $custom_listtags;
 
-	$_gb = exec("/usr/local/sbin/ipsec stroke leases > {$g['tmp_path']}/strongswan_leases.xml");
+	$strongswan_leases_xml = '/tmp/strongswan_leases.xml';
 
-	if (!file_exists("{$g['tmp_path']}/strongswan_leases.xml")) {
+	$_gb = exec(sprintf('/usr/local/sbin/ipsec stroke leases > %s', $strongswan_leases_xml));
+
+	if (!file_exists($strongswan_leases_xml)) {
 		log_error(gettext("IPsec daemon seems to have issues or not running! Could not display mobile user stats!"));
 		return array();
 	}
 
 	$custom_listtags = array('lease', 'pool');
-	$response = parse_xml_config("{$g['tmp_path']}/strongswan_leases.xml", "leases");
-	@unlink("{$g['tmp_path']}/strongswan_leases.xml");
+	$response = parse_xml_config($strongswan_leases_xml, 'leases');
+	@unlink($strongswan_leases_xml);
 	unset($custom_listtags, $_gb);
 
 	return $response;
