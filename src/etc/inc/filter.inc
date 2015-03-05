@@ -208,7 +208,7 @@ function filter_configure_sync($delete_states_if_needed = true)
 		mwexec("/sbin/pfctl -e", true);
 	} else {
 		mwexec("/sbin/pfctl -d", true);
-		unlink_if_exists("{$g['tmp_path']}/filter_loading");
+		@unlink('/tmp/filter_loading');
 		update_filter_reload_status(gettext("Filter is disabled.  Not loading rules."));
 		if(file_exists("/var/run/booting"))
 			echo gettext("done.") . "\n";
@@ -270,21 +270,22 @@ function filter_configure_sync($delete_states_if_needed = true)
 	unset($aliases, $gateways, $altq_queues, $natrules, $pfrules);
 
 	// Copy rules.debug to rules.debug.old
-	if(file_exists("{$g['tmp_path']}/rules.debug"))
-		@copy("{$g['tmp_path']}/rules.debug", "{$g['tmp_path']}/rules.debug.old");
+	if (file_exists('/tmp/rules.debug')) {
+		@copy('/tmp/rules.debug', '/tmp/rules.debug.old');
+	}
 
-	if (!@file_put_contents("{$g['tmp_path']}/rules.debug", $rules, LOCK_EX)) {
+	if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
 		log_error("WARNING: Could not write new rules!");
 		unlock($filterlck);
 		return;
 	}
 
-	@file_put_contents("{$g['tmp_path']}/rules.limits", $limitrules);
-	mwexec("/sbin/pfctl -Of {$g['tmp_path']}/rules.limits");
+	@file_put_contents('/tmp/rules.limits', $limitrules);
+	mwexec('/sbin/pfctl -Of /tmp/rules.limits');
 	unset($rules, $limitrules);
 
 	unset($rules_loading, $rules_error);
-	$_grbg = exec("/sbin/pfctl -o basic -f {$g['tmp_path']}/rules.debug 2>&1", $rules_error, $rules_loading);
+	$_grbg = exec('/sbin/pfctl -o basic -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
 
 	/*
 	 * check for a error while loading the rules file.	if an error has occurred
@@ -294,18 +295,18 @@ function filter_configure_sync($delete_states_if_needed = true)
 		$saved_line_error = $rules_error[0];
 		$line_error = explode(":", $rules_error[0]);
 		$line_number = $line_error[1];
-		$line_split = file("{$g['tmp_path']}/rules.debug");
+		$line_split = file('/tmp/rules.debug');
 		if(is_array($line_split))
 			$line_error = sprintf(gettext('The line in question reads [%1$d]: %2$s'), $line_number, $line_split[$line_number-1]);
 		unset($line_split);
 
 		/* Brutal ugly hack but required -- PF is stuck, unwedge */
 		if (strstr("$rules_error[0]", "busy")) {
-			exec("/sbin/pfctl -d; /sbin/pfctl -e; /sbin/pfctl -f {$g['tmp_path']}/rules.debug");
+			exec('/sbin/pfctl -d; /sbin/pfctl -e; /sbin/pfctl -f /tmp/rules.debug');
 			$error_msg = gettext("PF was wedged/busy and has been reset.");
 			file_notice("pf_busy", $error_msg, "pf_busy", "");
 		} else {
-			$_grbg = exec("/sbin/pfctl -o basic -f {$g['tmp_path']}/rules.debug.old 2>&1");
+			$_grbg = exec('/sbin/pfctl -o basic -f /tmp/rules.debug.old 2>&1');
 		}
 		unset($rules_loading, $rules_error);
 
@@ -346,7 +347,7 @@ function filter_configure_sync($delete_states_if_needed = true)
 	}
 
 	/* run items scheduled for after filter configure run */
-	$fda = fopen("{$g['tmp_path']}/commands.txt", "w");
+	$fda = fopen('/tmp/commands.txt', 'w');
 	if($fda) {
 		if($after_filter_configure_run) {
 			foreach($after_filter_configure_run as $afcr)
@@ -357,9 +358,10 @@ function filter_configure_sync($delete_states_if_needed = true)
 		fclose($fda);
 	}
 
-	if(file_exists("{$g['tmp_path']}/commands.txt")) {
-		mwexec("sh {$g['tmp_path']}/commands.txt &");
-		unlink("{$g['tmp_path']}/commands.txt");
+	if (file_exists('/tmp/commands.txt')) {
+		/* XXX eh, sorry, what are you doing? */
+		mwexec('sh /tmp/commands.txt &');
+		unlink('/tmp/commands.txt');
 	}
 
 	/* if time based rules are enabled then swap in the set */
@@ -3584,12 +3586,12 @@ function discover_pkg_rules($ruletype) {
 		if(function_exists($pkg_generate_rules)) {
 			update_filter_reload_status(sprintf(gettext('Processing early %1$s rules for package %2$s'), $ruletype, $pkg_inc));
 			$tmprules = $pkg_generate_rules("$ruletype");
-			file_put_contents("{$g['tmp_path']}/rules.test.packages", $aliases . $tmprules);
-			$status = mwexec("/sbin/pfctl -nf {$g['tmp_path']}/rules.test.packages");
+			file_put_contents('/tmp/rules.test.packages', $aliases . $tmprules);
+			$status = mwexec('/sbin/pfctl -nf /tmp/rules.test.packages');
 			if ($status <> 0) {
 				$errorrules = sprintf(gettext("There was an error while parsing the package filter rules for %s."), $pkg_inc) . "\n";
 				log_error($errorrules);
-				file_put_contents("{$g['tmp_path']}/rules.packages.{$pkg}", "#{$errorrules}\n{$tmprules}\n");
+				file_put_contents("/tmp/rules.packages.{$pkg}", "#{$errorrules}\n{$tmprules}\n");
 				continue;
 			}
 			$rules .= $tmprules;
