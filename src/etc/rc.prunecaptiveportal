@@ -2,8 +2,6 @@
 <?php
 
 /*
-	part of m0n0wall (http://m0n0.ch/wall)
-
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -29,8 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* parse the configuration and include all functions used below */
-/* config.inc retrives the util.inc and globals.inc */
 require_once("config.inc");
 require_once("functions.inc");
 require_once("filter.inc");
@@ -42,21 +38,26 @@ global $cpzone;
 global $cpzoneid;
 
 $cpzone = str_replace("\n", "", $argv[1]);
+
 if (!is_array($config['captiveportal'][$cpzone])) {
 	log_error("{$cpzone} is not a valid zone in the configuration!");
 	return;
 }
+
 $cpzoneid = $config['captiveportal'][$cpzone]['zoneid'];
-if (file_exists("{$g['tmp_path']}/.rc.prunecaptiveportal.running")) {
-	$stat = stat("{$g['tmp_path']}/.rc.prunecaptiveportal.running");
-	if (time() - $stat['mtime'] >= 120)
-		@unlink("{$g['tmp_path']}/.rc.prunecaptiveportal.running");
-	else {
+
+if (file_exists('/tmp/.rc.prunecaptiveportal.running')) {
+	$stat = stat('/tmp/.rc.prunecaptiveportal.running');
+	if (time() - $stat['mtime'] >= 120) {
+		@unlink('/tmp/.rc.prunecaptiveportal.running');
+	} else {
 		log_error("Skipping CP prunning process because previous/another instance is already running");
 		return;
 	}
 }
-@file_put_contents("{$g['tmp_path']}/.rc.prunecaptiveportal.running", "");
+
+@file_put_contents('/tmp/.rc.prunecaptiveportal.running', '');
+
 captiveportal_prune_old();
-@unlink("{$g['tmp_path']}/.rc.prunecaptiveportal.running");
-?>
+
+@unlink('/tmp/.rc.prunecaptiveportal.running');

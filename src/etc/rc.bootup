@@ -158,8 +158,9 @@ echo "done.\n";
 while(is_interface_mismatch() == true) {
 	led_assigninterfaces();
 	if (isset($config['revision'])) {
-		if (file_exists("{$g['tmp_path']}/missing_interfaces"))
-			echo "Warning: Configuration references interfaces that do not exist: " . file_get_contents("{$g['tmp_path']}/missing_interfaces") . "\n";
+		if (file_exists('/tmp/missing_interfaces')) {
+			echo "Warning: Configuration references interfaces that do not exist: " . file_get_contents('/tmp/missing_interfaces') . "\n";
+		}
 		echo "\nNetwork interface mismatch -- Running interface assignment option.\n";
 	} else
 		echo "\nDefault interfaces not found -- Running interface assignment option.\n";
