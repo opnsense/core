@@ -46,14 +46,23 @@ class IntegerField extends BaseField
      * maximum value for this field
      * @var integer
      */
-    private $maximum_value = PHP_INT_MAX;
+    private $maximum_value ;
 
     /**
      * minimum value for this field
      * @var integer
      */
-    private $minimum_value = PHP_INT_MAX*-1;
+    private $minimum_value ;
 
+    /**
+     * constructor, set absolute min and max values
+     */
+    public function __construct()
+    {
+        parent:: __construct();
+        $this->minimum_value = PHP_INT_MAX*-1;
+        $this->maximum_value = PHP_INT_MAX ;
+    }
 
     /**
      * setter for maximum value
