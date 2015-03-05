@@ -290,9 +290,11 @@ function interface_qinq_configure(&$vlan, $fd = NULL) {
 
 	if ($fd == NULL) {
 		$exec = true;
-		$fd = fopen("{$g['tmp_path']}/netgraphcmd", "w");
-	} else
+		$fd = fopen('/tmp/netgraphcmd', 'w');
+	} else {
 		$exec = false;
+	}
+
 	/* make sure the parent is converted to ng_vlan(4) and is up */
 	interfaces_bring_up($qinqif);
 
@@ -329,7 +331,7 @@ function interface_qinq_configure(&$vlan, $fd = NULL) {
 	}
 	if ($exec == true) {
 		fclose($fd);
-		mwexec("/usr/sbin/ngctl -f {$g['tmp_path']}/netgraphcmd");
+		mwexec('/usr/sbin/ngctl -f /tmp/netgraphcmd');
 	}
 
 	interfaces_bring_up($qinqif);
@@ -878,10 +880,12 @@ function interface_gre_configure(&$gre, $grekey = "") {
 
 	if (isset($gre['link1']) && $gre['link1'])
 		mwexec("/sbin/route add " . escapeshellarg($gre['tunnel-remote-addr']) . "/" . escapeshellarg($gre['tunnel-remote-net']) . " " . escapeshellarg($gre['tunnel-local-addr']));
-	if(is_ipaddrv4($gre['tunnel-remote-addr']))
-		file_put_contents("{$g['tmp_path']}/{$greif}_router", $gre['tunnel-remote-addr']);
-	if(is_ipaddrv6($gre['tunnel-remote-addr']))
-		file_put_contents("{$g['tmp_path']}/{$greif}_routerv6", $gre['tunnel-remote-addr']);
+	if (is_ipaddrv4($gre['tunnel-remote-addr'])) {
+		file_put_contents("/tmp/{$greif}_router", $gre['tunnel-remote-addr']);
+	}
+	if (is_ipaddrv6($gre['tunnel-remote-addr'])) {
+		file_put_contents("/tmp/{$greif}_routerv6", $gre['tunnel-remote-addr']);
+	}
 
 	interfaces_bring_up($greif);
 
@@ -985,10 +989,12 @@ function interface_gif_configure(&$gif, $gifkey = "") {
 	}
 
 
-	if(is_ipaddrv4($gif['tunnel-remote-addr']))
-		file_put_contents("{$g['tmp_path']}/{$gifif}_router", $gif['tunnel-remote-addr']);
-	if(is_ipaddrv6($gif['tunnel-remote-addr']))
-		file_put_contents("{$g['tmp_path']}/{$gifif}_routerv6", $gif['tunnel-remote-addr']);
+	if (is_ipaddrv4($gif['tunnel-remote-addr'])) {
+		file_put_contents("/tmp/{$gifif}_router", $gif['tunnel-remote-addr']);
+	}
+	if (is_ipaddrv6($gif['tunnel-remote-addr'])) {
+		file_put_contents("/tmp/{$gifif}_routerv6", $gif['tunnel-remote-addr']);
+	}
 
 	if (is_ipaddrv4($realifgw)) {
 		mwexec("/sbin/route delete -host " . escapeshellarg($gif['remote-addr']));
@@ -1312,20 +1318,21 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 	}
 
 	$old_router = '';
-	if (file_exists("{$g['tmp_path']}/{$realif}_router"))
-		$old_router = trim(file_get_contents("{$g['tmp_path']}/{$realif}_router"));
-//	log_error("Checking for old router states: {$g['tmp_path']}/{$realif}_router = {$old_router}");
+	if (file_exists("/tmp/{$realif}_router")) {
+		$old_router = trim(file_get_contents("/tmp/{$realif}_router"));
+	}
+
 	if (!empty($old_router)) {
 		log_error("Clearing states to old gateway {$old_router}.");
 		mwexec("/sbin/pfctl -i " . escapeshellarg($realif) . " -Fs");
 	}
 
 	/* remove interface up file if it exists */
-	unlink_if_exists("{$g['tmp_path']}/{$realif}up");
+	unlink_if_exists("/tmp/{$realif}up");
 	unlink_if_exists("{$g['vardb_path']}/{$interface}ip");
 	unlink_if_exists("{$g['vardb_path']}/{$interface}ipv6");
-	unlink_if_exists("{$g['tmp_path']}/{$realif}_router");
-	unlink_if_exists("{$g['tmp_path']}/{$realif}_routerv6");
+	unlink_if_exists("/tmp/{$realif}_router");
+	unlink_if_exists("/tmp/{$realif}_routerv6");
 	unlink_if_exists("{$g['varetc_path']}/nameserver_{$realif}");
 	unlink_if_exists("{$g['varetc_path']}/searchdomain_{$realif}");
 
@@ -2264,7 +2271,7 @@ function interface_wireless_clone($realif, $wlcfg) {
 		pfSense_interface_rename($newif, $realif);
 		// FIXME: not sure what ngctl is for. Doesn't work.
 		// mwexec("/usr/sbin/ngctl name {$newif}: {$realif}", false);
-		file_put_contents("{$g['tmp_path']}/{$realif}_oldmac", get_interface_mac($realif));
+		file_put_contents("/tmp/{$realif}_oldmac", get_interface_mac($realif));
 	}
 	return true;
 }
@@ -2349,7 +2356,7 @@ function interface_wireless_configure($if, &$wl, &$wlcfg) {
 	 */
 
 	// Remove script file
-	unlink_if_exists("{$g['tmp_path']}/{$if}_setup.sh");
+	unlink_if_exists("/tmp/{$if}_setup.sh");
 
 	// Clone wireless nic if needed.
 	interface_wireless_clone($if, $wl);
@@ -2357,7 +2364,7 @@ function interface_wireless_configure($if, &$wl, &$wlcfg) {
 	// Reject inadvertent changes to shared settings in case the interface hasn't been configured.
 	interface_sync_wireless_clones($wl, false);
 
-	$fd_set = fopen("{$g['tmp_path']}/{$if}_setup.sh","w");
+	$fd_set = fopen("/tmp/{$if}_setup.sh","w");
 	fwrite($fd_set, "#!/bin/sh\n");
 	fwrite($fd_set, "# {$g['product_name']} wireless configuration script.\n\n");
 
@@ -2545,11 +2552,11 @@ logger_syslog=-1
 logger_syslog_level=0
 logger_stdout=-1
 logger_stdout_level=0
-dump_file={$g['tmp_path']}/hostapd_{$if}.dump
+dump_file=/tmp/hostapd_{$if}.dump
 ctrl_interface={$g['varrun_path']}/hostapd
 ctrl_interface_group=wheel
-#accept_mac_file={$g['tmp_path']}/hostapd_{$if}.accept
-#deny_mac_file={$g['tmp_path']}/hostapd_{$if}.deny
+#accept_mac_file=/tmp/hostapd_{$if}.accept
+#deny_mac_file=/tmp/hostapd_{$if}.deny
 #macaddr_acl={$wlcfg['wpa']['macaddr_acl']}
 ssid={$wlcfg['ssid']}
 debug={$wlcfg['wpa']['debug_mode']}
@@ -2635,8 +2642,8 @@ EOD;
 		}
 		if ($wlcfg['mode'] == "hostap") {
 			/* add line to script to restore old mac to make hostapd happy */
-			if (file_exists("{$g['tmp_path']}/{$if}_oldmac")) {
-				$if_oldmac = file_get_contents("{$g['tmp_path']}/{$if}_oldmac");
+			if (file_exists("/tmp/{$if}_oldmac")) {
+				$if_oldmac = file_get_contents("/tmp/{$if}_oldmac");
 				if (is_macaddr($if_oldmac))
 					fwrite($fd_set, "{$ifconfig} " . escapeshellarg($if) .
 						" link " . escapeshellarg($if_oldmac) . "\n");
@@ -2645,7 +2652,7 @@ EOD;
 			fwrite($fd_set, "{$hostapd} -B -P {$g['varrun_path']}/hostapd_{$if}.pid {$g['varetc_path']}/hostapd_{$if}.conf\n");
 
 			/* add line to script to restore spoofed mac after running hostapd */
-			if (file_exists("{$g['tmp_path']}/{$if}_oldmac")) {
+			if (file_exists("/tmp/{$if}_oldmac")) {
 				if ($wl['spoofmac'])
 					$if_curmac = $wl['spoofmac'];
 				else
@@ -2733,7 +2740,7 @@ EOD;
 				if ( !empty($friendly_if)
 				    && $config['interfaces'][$friendly_if]['wireless']['mode'] == "bss"
 				    && isset($config['interfaces'][$friendly_if]['wireless']['wpa']['enable']) ) {
-					mwexec("/bin/sh {$g['tmp_path']}/" . escapeshellarg($clone_if) . "_setup.sh");
+					mwexec('/bin/sh /tmp/' . escapeshellarg($clone_if) . '_setup.sh');
 				}
 			}
 		}
@@ -2751,10 +2758,9 @@ EOD;
 
 	sleep(1);
 	/* execute hostapd and wpa_supplicant if required in shell */
-	mwexec("/bin/sh {$g['tmp_path']}/" . escapeshellarg($if) . "_setup.sh");
+	mwexec('/bin/sh /tmp/' . escapeshellarg($if) . '_setup.sh');
 
 	return 0;
-
 }
 
 function kill_hostapd($interface) {
@@ -3421,8 +3427,8 @@ function interface_6rd_configure($interface = "wan", $wancfg) {
 		log_error("Created 6rd interface {$stfiface} {$rd6prefix}/{$rd6prefixlen}");
 
 	/* write out a default router file */
-	file_put_contents("{$g['tmp_path']}/{$wanif}_routerv6", "{$rd6brgw}\n");
-	file_put_contents("{$g['tmp_path']}/{$wanif}_defaultgwv6", "{$rd6brgw}\n");
+	file_put_contents("/tmp/{$wanif}_routerv6", "{$rd6brgw}\n");
+	file_put_contents("/tmp/{$wanif}_defaultgwv6", "{$rd6brgw}\n");
 
 	$ip4gateway = get_interface_gateway($interface);
 	if (is_ipaddrv4($ip4gateway)) {
@@ -3519,8 +3525,8 @@ function interface_6to4_configure($interface = "wan", $wancfg){
 		log_error("Set IPv6 address inet6 {$stflanpr} prefixlen 16 for {$stfiface}, route {$stfbrgw}");
 
 	/* write out a default router file */
-	file_put_contents("{$g['tmp_path']}/{$wanif}_routerv6", "{$stfbrgw}");
-	file_put_contents("{$g['tmp_path']}/{$wanif}_defaultgwv6", "{$stfbrgw}");
+	file_put_contents("/tmp/{$wanif}_routerv6", "{$stfbrgw}");
+	file_put_contents("/tmp/{$wanif}_defaultgwv6", "{$stfbrgw}");
 
 	$ip4gateway = get_interface_gateway($interface);
 	if (is_ipaddrv4($ip4gateway)) {
@@ -3618,8 +3624,8 @@ function interface_dhcpv6_configure($interface = "wan", $wancfg) {
 
 	$rtsoldscript = "#!/bin/sh\n";
 	$rtsoldscript .= "# This shell script launches dhcp6c and configured gateways for this interface.\n";
-	$rtsoldscript .= "echo $2 > {$g['tmp_path']}/{$wanif}_routerv6\n";
-	$rtsoldscript .= "echo $2 > {$g['tmp_path']}/{$wanif}_defaultgwv6\n";
+	$rtsoldscript .= "echo $2 > /tmp/{$wanif}_routerv6\n";
+	$rtsoldscript .= "echo $2 > /tmp/{$wanif}_defaultgwv6\n";
 	$rtsoldscript .= "if [ -f {$g['varrun_path']}/dhcp6c_{$wanif}.pid ]; then\n";
 	$rtsoldscript .= "\t/bin/pkill -F {$g['varrun_path']}/dhcp6c_{$wanif}.pid\n";
 	$rtsoldscript .= "\t/bin/sleep 1\n";
@@ -3884,16 +3890,17 @@ EOD;
 	fclose($fd);
 
 	/* bring wan interface up before starting dhclient */
-	if($wanif)
+	if ($wanif) {
 		interfaces_bring_up($wanif);
-	else
+	} else {
 		log_error(printf(gettext("Could not bring up %s interface in interface_dhcp_configure()"), $wanif));
+	}
 
 	/* Make sure dhclient is not running */
 	kill_dhclient_process($wanif);
 
 	/* fire up dhclient */
-	mwexec("/sbin/dhclient -c {$g['varetc_path']}/dhclient_{$interface}.conf {$wanif} > {$g['tmp_path']}/{$wanif}_output 2> {$g['tmp_path']}/{$wanif}_error_output");
+	mwexec("/sbin/dhclient -c {$g['varetc_path']}/dhclient_{$interface}.conf {$wanif} > /tmp/{$wanif}_output 2> /tmp/{$wanif}_error_output");
 
 	return 0;
 }
