@@ -107,7 +107,7 @@ else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
 				/* skip mfs mounted filesystems */
 				if (strstr($mountdisk, "md"))
 					continue;
-				if (mwexec("/sbin/mount -r /dev/{$mountdisk}a {$g['cf_path']}") == 0) {
+				if (mwexec("/sbin/mount -r /dev/{$mountdisk}a /cf") == 0) {
 					if (file_exists('/conf/config.xml')) {
 						/* found it */
 						$cfgdevice = $mountdisk;
@@ -116,12 +116,12 @@ else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
 						printf(gettext("Found configuration on %s.%s"), $cfgdevice, "\n");
 					}
 
-					mwexec("/sbin/umount -f {$g['cf_path']}");
+					mwexec("/sbin/umount -f /cf");
 
 					if ($cfgdevice)
 						break;
 				}
-				if (mwexec("/sbin/mount -r /dev/{$mountdisk}d {$g['cf_path']}") == 0) {
+				if (mwexec("/sbin/mount -r /dev/{$mountdisk}d /cf") == 0) {
 					if (file_exists('/conf/config.xml')) {
 						/* found it */
 						$cfgdevice = $mountdisk;
@@ -130,7 +130,7 @@ else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
 						printf(gettext("Found configuration on %s.%s"), $cfgdevice, "\n");
 					}
 
-					mwexec("/sbin/umount -f {$g['cf_path']}");
+					mwexec("/sbin/umount -f /cf");
 
 					if ($cfgdevice)
 						break;
@@ -157,7 +157,7 @@ else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
 		/* write out an fstab */
 		$fd = fopen('/etc/fstab', 'w');
 
-		$fstab = "/dev/{$cfgpartition} {$g['cf_path']} {$cfgfstype} ro,noatime 1 1\n";
+		$fstab = "/dev/{$cfgpartition} /cf {$cfgfstype} ro,noatime 1 1\n";
 		$fstab .= "proc /proc procfs rw 0 0\n";
 
 		fwrite($fd, $fstab);

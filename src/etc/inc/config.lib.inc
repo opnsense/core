@@ -290,12 +290,12 @@ function conf_mount_rw() {
 	if ((refcount_reference(1000) > 1) && is_writable("/"))
 		return;
 
-	$status = mwexec("/sbin/mount -u -w -o sync,noatime {$g['cf_path']}");
+	$status = mwexec("/sbin/mount -u -w -o sync,noatime /cf");
 	if($status <> 0) {
 		if(file_exists("/var/run/booting"))
 			echo gettext("Disk is dirty.  Running fsck -y") . "\n";
-		mwexec("/sbin/fsck -y {$g['cf_path']}");
-		$status = mwexec("/sbin/mount -u -w -o sync,noatime {$g['cf_path']}");
+		mwexec("/sbin/fsck -y /cf");
+		$status = mwexec("/sbin/mount -u -w -o sync,noatime /cf");
 	}
 
 	/*    if the platform is soekris or wrap or pfSense, lets mount the
@@ -339,7 +339,7 @@ function conf_mount_ro() {
 	clear_subsystem_dirty('mount');
 	/* sync data, then force a remount of /cf */
 	pfSense_sync();
-	mwexec("/sbin/mount -u -r -f -o sync,noatime {$g['cf_path']}");
+	mwexec("/sbin/mount -u -r -f -o sync,noatime /cf");
 	mwexec("/sbin/mount -u -r -f -o sync,noatime /");
 }
 
