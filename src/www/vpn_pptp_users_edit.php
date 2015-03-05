@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
@@ -39,8 +40,8 @@ function pptpd_users_sort() {
         usort($config['pptpd']['user'], "pptpusercmp");
 }
 
-require("guiconfig.inc");
-require_once("vpn.inc");
+require_once('guiconfig.inc');
+require_once('vpn.inc');
 
 if (!is_array($config['pptpd']['user'])) {
 	$config['pptpd']['user'] = array();
