@@ -52,8 +52,9 @@ if [ -z "$pkg_running" ]; then
 	fi
 	# remove no longer referenced packages
 	pkg autoremove -y >> ${PKG_PROGRESS_FILE}
-	# regenerate php.ini after upgrade to avoid spurious output
+	# regenerate php.ini and restart the web server
 	/usr/local/etc/rc.php_ini_setup >> ${PKG_PROGRESS_FILE}
+	/usr/local/opnsense/service/configd_ctl.py 'service restart webgui' >> ${PKG_PROGRESS_FILE}
 else
 	echo 'Upgrade already in progress' >> ${PKG_PROGRESS_FILE}
 	echo '***DONE***' >> ${PKG_PROGRESS_FILE}
