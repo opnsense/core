@@ -80,10 +80,13 @@ function setFormData(parent,data) {
 function handleFormValidation(parent,validationErrors) {
     $( "#"+parent+"  input" ).each(function( index ) {
         if (validationErrors != undefined && $(this).attr('id') in validationErrors) {
-            $(this).parent().addClass("has-error");
+            //$(this).parent().addClass("has-error");
+            $("*[for='" + $(this).attr('id') + "']").addClass("has-error");
+            //$(this).addClass("has-error");
             $("span[for='" + $(this).attr('id') + "']").text(validationErrors[$(this).attr('id')]);
         } else {
-            $(this).parent().removeClass("has-error");
+            $("*[for='" + $(this).attr('id') + "']").removeClass("has-error");
+            //$(this).removeClass("has-error");
             $("span[for='" + $(this).attr('id') + "']").text("");
         }
     });
