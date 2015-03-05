@@ -50,7 +50,7 @@ if [ "${PLATFORM}" = "cdrom" ]; then
 	/etc/rc.d/tmp start
 
 	# fake a writeable environment in some subdirs
-	for i in cf etc home root usr var; do
+	for i in conf etc home root usr var; do
 		/bin/mkdir -p /tmp/.cdrom/${i}
 		/sbin/mount_unionfs /tmp/.cdrom/${i} /${i}
 	done
