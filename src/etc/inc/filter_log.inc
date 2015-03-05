@@ -350,7 +350,7 @@ function find_rule_by_number_buffer($rulenum,  $type){
 	} else {
 		$ruleString = $buffer_rules_normal[$lookup_key];
 		list(,$rulename,) = explode("\"",$ruleString);
-		$rulename = str_replace("USER_RULE: ",'<img src="/themes/'.$g['theme'].'/images/icons/icon_frmfld_user.png" width="11" height="12" title="USER_RULE" alt="USER_RULE"/> ',$rulename);
+		$rulename = str_replace("USER_RULE: ",'<span class="glyphicon glyphicon-user" title="USER_RULE" alt="USER_RULE"></span>',$rulename);
 	}
 	return "{$rulename} ({$lookup_key})";
 }
@@ -385,7 +385,14 @@ function handle_ajax($nentries, $tail = 50) {
 		$filterlog = isset($config['syslog']['reverse']) ? array_reverse($filterlog) : $filterlog;
 		foreach($filterlog as $log_row) {
 			$row_time = strtotime($log_row['time']);
-			$img = "<img border='0' src='" . find_action_image($log_row['act']) . "' alt={$log_row['act']} title={$log_row['act']} />";
+			//$img = "<img border='0' src='" . find_action_image($log_row['act']) . "' alt={$log_row['act']} title={$log_row['act']} />";
+			if ($log_row['act']=="pass") {
+				$img="<span class='glyphicon glyphicon-play text-success' alt={$log_row['act']}></span>";				
+			} elseif ($log_row['act']=="block") {
+				$img="<span class='glyphicon glyphicon-remove text-danger' alt={$log_row['act']}></span>";
+			} elseif ($log_row['act']=="reject") {
+				$img="<span class='glyphicon glyphicon-remove text-warning' alt={$log_row['act']}></span>";
+			}			
 			if($row_time > $lastsawtime) {
 				if ($log_row['proto'] == "TCP")
 					$log_row['proto'] .= ":{$log_row['tcpflags']}";
