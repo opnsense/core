@@ -72,7 +72,6 @@ include("head.inc");
 							<form action="status_filter_reload.php" method="post" name="filter">
 							<input type="submit" value="Reload Filter" class="btn btn-primary" name="reloadfilter" id="reloadfilter" />
 							<?php if ($config['hasync'] && $config['hasync']["synchronizetoip"] != ""): ?>
-							&nbsp;&nbsp;&nbsp;&nbsp;
 							<input type="submit" value="Force Config Sync" class="btn btn-primary" name="syncfilter" id="syncfilter" />
 							<?php endif; ?>
 							</form>
@@ -109,15 +108,14 @@ function update_data(obj) {
 	result_text = result_text.replace("\n","");
 	result_text = result_text.replace("\r","");
 	if (result_text) {
-		jQuery('#status').html('<img src="/themes/<?=$g['theme'];?>/images/misc/loader.gif" alt="loader" /> ' + result_text + '...');
+		jQuery('#status').html('<span class="glyphicon glyphicon-refresh"></span> ' + result_text + '...');
 	} else {
-		jQuery('#status').html('<img src="/themes/<?=$g['theme'];?>/images/misc/loader.gif" alt="loader" /> Obtaining filter status...');
+		jQuery('#status').html('<span class="glyphicon glyphicon-refresh"></span> Obtaining filter status...');
 	}
 	if(result_text == "Initializing") {
-		jQuery('#status').html('<img src="/themes/<?=$g['theme'];?>/images/misc/loader.gif" alt="loader" /> Initializing...');
+		jQuery('#status').html('<span class="glyphicon glyphicon-refresh"></span> Initializing...');
 	} else if(result_text == "Done") {
-		jQuery('#status').effect('highlight');
-		jQuery('#status').html('Done.  The filter rules have been reloaded.');
+		jQuery('#status').html('Done. The filter rules have been reloaded.');
 		jQuery('#reloadinfo').css("visibility","hidden");
 		jQuery('#doneurl').css("visibility","visible");
 		jQuery('#doneurl').html("<p><a href='status_queues.php'>Queue Status<\/a><\/p>");
