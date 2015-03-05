@@ -1,67 +1,72 @@
-
-<div>
-    <ul class="nav nav-tabs" id="myTab">
-        <li><a data-toggle="tab" href="#sectionA">Section A</a></li>
-        <li><a data-toggle="tab" href="#sectionB">Section B</a></li>
-        <li class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Dropdown <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a data-toggle="tab" href="#dropdown1">Dropdown1</a></li>
-                <li><a data-toggle="tab" href="#dropdown2">Dropdown2</a></li>
-            </ul>
-        </li>
-    </ul>
-    <div class="tab-content">
-        <div id="sectionA" class="tab-pane fade in active">
-            <form id="frm_general">
-                {{ partial("layout_partials/form_input", ['id': 'general.port','label':'test']) }}
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" id="general.enabled"> check
-                    </label>
-                </div>
-
-            </form>
-        </div>
-        <div id="sectionB" class="tab-pane fade">
-
-        </div>
-        <div id="dropdown1" class="tab-pane fade">
-
-        </div>
-        <div id="dropdown2" class="tab-pane fade">
-
-        </div>
-    </div>
-</div>
-
-
-<br/>
-<button class="btn btn-default"  id="save" type="button">save</button>
-
 <script type="text/javascript">
 
     $( document ).ready(function() {
+        // load initial data
         ajaxGet(url="/api/proxy/settings/get",sendData={},callback=function(data,status) {
             if (status == "success") {
                 setFormData('frm_general',data);
             }
         });
-    });
 
-    $("#save").click(function(){
-        data = getFormData("frm_general");
-        ajaxCall(url="/api/proxy/settings/set",sendData=data,callback=function(data,status){
-            if ( status == "success") {
-                handleFormValidation("frm_general",data['validations']);
-            }
-            // TODO: implement error handling
-            //alert(status);
+        // form event handlers
+        $("#save").click(function(){
+            data = getFormData("frm_general");
+            ajaxCall(url="/api/proxy/settings/set",sendData=data,callback=function(data,status){
+                if ( status == "success") {
+                    handleFormValidation("frm_general",data['validations']);
+                    if (data['validations'] != undefined) {
+                        BootstrapDialog.show({
+                            type:BootstrapDialog.TYPE_WARNING,
+                            title: 'Input validation',
+                            message: 'Please correct validation errors in form'
+                        });
+                    }
+                }
+                // TODO: implement error handling
+                //alert(status);
+
+            });
+
 
         });
-
 
     });
 
 
 </script>
+
+<ul class="nav nav-tabs nav-justified" role="tablist"  id="maintabs">
+    <li class="active"><a data-toggle="tab" href="#tabGeneral">General</a></li>
+    <li><a data-toggle="tab" href="#sectionB">Section B</a></li>
+</ul>
+<div class="content-box tab-content">
+    <div id="tabGeneral" class="tab-pane fade in active">
+        <form id="frm_general" class="form-inline">
+            <table class="table table-striped">
+                <colgroup>
+                    <col class="col-md-3">
+                    <col class="col-md-4">
+                    <col class="col-md-5">
+                </colgroup>
+                <tbody>
+                    {{ partial("layout_partials/form_input_tr",
+                        ['id': 'general.enabled',
+                         'label':'enabled',
+                         'type':'checkbox',
+                         'help':'gfvjhgghfh'
+                        ])
+                    }}
+                    {{ partial("layout_partials/form_input_tr", ['id': 'general.port','label':'test','type':'text']) }}
+
+                    <tr>
+                        <td colspan="3"><button class="btn btn-primary"  id="save" type="button">Save</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <div id="sectionB" class="tab-pane fade">
+
+    </div>
+</div>
+
