@@ -875,7 +875,7 @@ function echo_array($array,$return_me=false){
 	}
 }
 
-/****f* pfsense-utils/display_top_tabs
+/****f* guiconfig/display_top_tabs
  * NAME
  *   display_top_tabs - display tabs with rounded edges
  * INPUTS

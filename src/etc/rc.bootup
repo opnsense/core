@@ -2,8 +2,6 @@
 <?php
 
 /*
-	part of pfSense by Scott Ullrich
-	originally based on m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2004-2009 Scott Ullrich <sullrich@pfsense.org>.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	Copyright (C) 2009 Erik Kristensen
@@ -113,7 +111,7 @@ require_once("captiveportal.inc");
 echo ".";
 require_once("rrd.inc");
 echo ".";
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 echo ".";
 
 /* get system memory amount */

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2007 Scott Dale
@@ -31,10 +32,8 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
-
-/* In an effort to reduce duplicate code, many shared functions have been moved here. */
 require_once("filter_log.inc");
 
 if(is_numeric($_POST['filterlogentries'])) {

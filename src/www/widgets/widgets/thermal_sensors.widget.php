@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 
@@ -36,7 +37,7 @@ Description: Thermal Sensors Widget.
 */
 
 require_once("guiconfig.inc");
-require_once("/usr/local/www/widgets/include/thermal_sensors.inc");
+require_once("widgets/include/thermal_sensors.inc");
 
 //=========================================================================
 //called by showThermalSensorsData() (jQuery Ajax call) in thermal_sensors.js

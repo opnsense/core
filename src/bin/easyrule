@@ -28,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("easyrule.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
@@ -43,7 +43,7 @@ foreach ($ifdisp as $kif => $kdescr) {
 
 /* Borrow this function from guiconfig.inc since we can't include it for use at the CLI
 
- - Maybe these need to be moved to util.inc or pfsense-utils.inc?
+ - Maybe these need to be moved to util.inc or legacy.inc?
 
 */
 function pconfig_to_address(&$adr, $padr, $pmask, $pnot=false, $pbeginport=0, $pendport=0) {

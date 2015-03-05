@@ -1,6 +1,7 @@
 <?php
+
 /*
-    Copyright (C) 2014
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2004, 2005 Scott Ullrich
     Copyright (C) 2007 Sam Wenham
     All rights reserved.
@@ -34,7 +35,7 @@ require_once("captiveportal.inc");
 require_once("service-utils.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
-require_once("/usr/local/www/widgets/include/services_status.inc");
+require_once("widgets/include/services_status.inc");
 
 $services = get_services();
 

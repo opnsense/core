@@ -31,9 +31,9 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
-require_once("/usr/local/www/widgets/include/dyn_dns_status.inc");
+require_once("widgets/include/dyn_dns_status.inc");
 
 if (!is_array($config['dyndnses']['dyndns']))
 	$config['dyndnses']['dyndns'] = array();

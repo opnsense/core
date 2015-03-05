@@ -2,7 +2,6 @@
 <?php
 
 /*
-    part of pfSense (https://www.pfsense.org)
     Copyright (C) 2004 Scott Ullrich
     All rights reserved.
 
@@ -34,7 +33,7 @@ require_once("filter.inc");
 require_once("shaper.inc");
 require_once("captiveportal.inc");
 require_once("pkg-utils.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("service-utils.inc");
 
 log_error("Restarting/Starting all packages.");

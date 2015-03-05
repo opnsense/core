@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2004-2007 Scott Ullrich (sullrich@gmail.com)
+ * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
  *
  */
 
-/****f* pfsense-utils/have_natpfruleint_access
+/****f* legacy/have_natpfruleint_access
  * NAME
  *   have_natpfruleint_access
  * INPUTS
@@ -42,7 +42,7 @@ function have_natpfruleint_access($if) {
 	return false;
 }
 
-/****f* pfsense-utils/have_ruleint_access
+/****f* legacy/have_ruleint_access
  * NAME
  *   have_ruleint_access
  * INPUTS
@@ -57,7 +57,7 @@ function have_ruleint_access($if) {
 	return false;
 }
 
-/****f* pfsense-utils/does_url_exist
+/****f* legacy/does_url_exist
  * NAME
  *   does_url_exist
  * INPUTS
@@ -75,7 +75,7 @@ function does_url_exist($url) {
 	}
 }
 
-/****f* pfsense-utils/is_private_ip
+/****f* legacy/is_private_ip
  * NAME
  *   is_private_ip
  * INPUTS
@@ -98,20 +98,7 @@ function is_private_ip($iptocheck) {
 	return $isprivate;
 }
 
-/****f* pfsense-utils/get_tmp_file
- * NAME
- *   get_tmp_file
- * INPUTS
- *	none
- * RESULT
- *   returns a temporary filename
- ******/
-function get_tmp_file() {
-	global $g;
-	return "{$g['tmp_path']}/tmp-" . time();
-}
-
-/****f* pfsense-utils/get_dns_servers
+/****f* legacy/get_dns_servers
  * NAME
  *   get_dns_servres - get system dns servers
  * INPUTS
@@ -130,7 +117,7 @@ function get_dns_servers() {
 	return array_unique($dns_servers);
 }
 
-/****f* pfsense-utils/enable_hardware_offloading
+/****f* legacy/enable_hardware_offloading
  * NAME
  *   enable_hardware_offloading - Enable a NIC's supported hardware features.
  * INPUTS
@@ -160,7 +147,7 @@ function enable_hardware_offloading($interface) {
 	return;
 }
 
-/****f* pfsense-utils/interface_supports_polling
+/****f* legacy/interface_supports_polling
  * NAME
  *   checks to see if an interface supports polling according to man polling
  * INPUTS
@@ -178,7 +165,7 @@ function interface_supports_polling($iface) {
 	return false;
 }
 
-/****f* pfsense-utils/is_alias_inuse
+/****f* legacy/is_alias_inuse
  * NAME
  *   checks to see if an alias is currently in use by a rule
  * INPUTS
@@ -215,7 +202,7 @@ function is_alias_inuse($alias) {
 	return false;
 }
 
-/****f* pfsense-utils/is_schedule_inuse
+/****f* legacy/is_schedule_inuse
  * NAME
  *   checks to see if a schedule is currently in use by a rule
  * INPUTS
@@ -238,7 +225,7 @@ function is_schedule_inuse($schedule) {
 	return false;
 }
 
-/****f* pfsense-utils/setup_polling
+/****f* legacy/setup_polling
  * NAME
  *   sets up polling
  * INPUTS
@@ -264,7 +251,7 @@ function setup_polling() {
 		set_single_sysctl("kern.polling.user_frac", $config['system']['polling_user_frac']);
 }
 
-/****f* pfsense-utils/setup_microcode
+/****f* legacy/setup_microcode
  * NAME
  *   enumerates all interfaces and calls enable_hardware_offloading which
  *   enables a NIC's supported hardware features.
@@ -284,7 +271,7 @@ function setup_microcode() {
 		enable_hardware_offloading($if);
 }
 
-/****f* pfsense-utils/get_carp_status
+/****f* legacy/get_carp_status
  * NAME
  *   get_carp_status - Return whether CARP is enabled or disabled.
  * RESULT
@@ -413,7 +400,7 @@ function get_dir($dir) {
 	return $dir_array;
 }
 
-/****f* pfsense-utils/WakeOnLan
+/****f* legacy/WakeOnLan
  * NAME
  *   WakeOnLan - Wake a machine up using the wake on lan format/protocol
  * RESULT
@@ -479,18 +466,22 @@ function backup_config_section($section_name) {
  *                                                  and write the configuration out
  *                                                  to disk/cf.
  */
-function restore_config_section($section_name, $new_contents) {
-	global $config, $g;
+function restore_config_section($section_name, $new_contents)
+{
+	global $config;
+
+	$tmpxml = '/tmp/tmpxml';
+
 	conf_mount_rw();
-	$fout = fopen("{$g['tmp_path']}/tmpxml","w");
+
+	$fout = fopen($tmpxml, 'w');
 	fwrite($fout, $new_contents);
 	fclose($fout);
 
-	$xml = parse_xml_config($g['tmp_path'] . "/tmpxml", null);
+	$xml = parse_xml_config($tmpxml, null);
 	if ($xml['pfsense']) {
 		$xml = $xml['pfsense'];
-	}
-	else if ($xml['m0n0wall']) {
+	} elseif ($xml['m0n0wall']) {
 		$xml = $xml['m0n0wall'];
 	}
 	if ($xml[$section_name]) {
@@ -499,15 +490,18 @@ function restore_config_section($section_name, $new_contents) {
 		$section_xml = -1;
 	}
 
-	@unlink($g['tmp_path'] . "/tmpxml");
+	@unlink($tmpxml);
+
 	if ($section_xml === -1) {
+		conf_mount_ro();
 		return false;
 	}
+
 	$config[$section_name] = &$section_xml;
-	if(file_exists("{$g['tmp_path']}/config.cache"))
-		unlink("{$g['tmp_path']}/config.cache");
+	@unlink('/tmp/config.cache');
 	write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
 	disable_security_checks();
+
 	conf_mount_ro();
 	return true;
 }
@@ -518,10 +512,11 @@ function restore_config_section($section_name, $new_contents) {
  *                                                  to disk/cf.  But preserve the prior
  *													structure if needed
  */
-function merge_config_section($section_name, $new_contents) {
+function merge_config_section($section_name, $new_contents)
+{
 	global $config;
 	conf_mount_rw();
-	$fname = get_tmp_filename();
+	$fname = '/tmp/tmp-' . time();
 	$fout = fopen($fname, "w");
 	fwrite($fout, $new_contents);
 	fclose($fout);
@@ -574,53 +569,6 @@ Content-Length: $content_length
 	fclose($fp);
 
 	return $ret;
-}
-
-/*
- *  php_check_syntax($code_tocheck, $errormessage): checks $code_to_check for errors
- */
-if (!function_exists('php_check_syntax')){
-	global $g;
-	function php_check_syntax($code_to_check, &$errormessage){
-		return false;
-		$fout = fopen("{$g['tmp_path']}/codetocheck.php","w");
-		$code = $_POST['content'];
-		$code = str_replace("<?php", "", $code);
-		$code = str_replace("?>", "", $code);
-		fwrite($fout, "<?php\n\n");
-		fwrite($fout, $code_to_check);
-		fwrite($fout, "\n\n?>\n");
-		fclose($fout);
-		$command = "/usr/local/bin/php -l {$g['tmp_path']}/codetocheck.php";
-		$output = exec_command($command);
-		if (stristr($output, "Errors parsing") == false) {
-			echo "false\n";
-			$errormessage = '';
-			return(false);
-		} else {
-			$errormessage = $output;
-			return(true);
-		}
-	}
-}
-
-/*
- *  php_check_filename_syntax($filename, $errormessage): checks the file $filename for errors
- */
-if (!function_exists('php_check_syntax')){
-	function php_check_syntax($code_to_check, &$errormessage){
-		return false;
-		$command = "/usr/local/bin/php -l " . escapeshellarg($code_to_check);
-		$output = exec_command($command);
-		if (stristr($output, "Errors parsing") == false) {
-			echo "false\n";
-			$errormessage = '';
-			return(false);
-		} else {
-			$errormessage = $output;
-			return(true);
-		}
-	}
 }
 
 /*
@@ -764,7 +712,7 @@ function get_disk_info() {
 	return explode(' ', $diskout[0]);
 }
 
-/****f* pfsense-utils/strncpy
+/****f* legacy/strncpy
  * NAME
  *   strncpy - copy strings
  * INPUTS
@@ -780,7 +728,7 @@ function strncpy(&$dst, $src, $length) {
 	}
 }
 
-/****f* pfsense-utils/reload_interfaces_sync
+/****f* legacy/reload_interfaces_sync
  * NAME
  *   reload_interfaces - reload all interfaces
  * INPUTS
@@ -809,7 +757,7 @@ function reload_interfaces_sync() {
 	interfaces_configure();
 }
 
-/****f* pfsense-utils/reload_all
+/****f* legacy/reload_all
  * NAME
  *   reload_all - triggers a reload of all settings
  *   * INPUTS
@@ -821,7 +769,7 @@ function reload_all() {
 	send_event("service reload all");
 }
 
-/****f* pfsense-utils/reload_interfaces
+/****f* legacy/reload_interfaces
  * NAME
  *   reload_interfaces - triggers a reload of all interfaces
  * INPUTS
@@ -833,7 +781,7 @@ function reload_interfaces() {
 	send_event("interface all reload");
 }
 
-/****f* pfsense-utils/reload_all_sync
+/****f* legacy/reload_all_sync
  * NAME
  *   reload_all - reload all settings
  *   * INPUTS
@@ -1566,7 +1514,7 @@ function load_thermal_hardware() {
 	}
 }
 
-/****f* pfsense-utils/isvm
+/****f* legacy/isvm
  * NAME
  *   isvm
  * INPUTS
@@ -2467,7 +2415,7 @@ function generate_ipv6_from_mac($mac) {
 	return $ipv6;
 }
 
-/****f* pfsense-utils/load_mac_manufacturer_table
+/****f* legacy/load_mac_manufacturer_table
  * NAME
  *   load_mac_manufacturer_table
  * INPUTS
@@ -2493,7 +2441,7 @@ function load_mac_manufacturer_table() {
 
 }
 
-/****f* pfsense-utils/is_ipaddr_configured
+/****f* legacy/is_ipaddr_configured
  * NAME
  *   is_ipaddr_configured
  * INPUTS
@@ -2558,7 +2506,7 @@ function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, 
 	return false;
 }
 
-/****f* pfsense-utils/pfSense_handle_custom_code
+/****f* legacy/pfSense_handle_custom_code
  * NAME
  *   pfSense_handle_custom_code
  * INPUTS
@@ -2846,7 +2794,7 @@ function get_pppoes_child_interfaces($ifpattern) {
 
 }
 
-/****f* pfsense-utils/pkg_call_plugins
+/****f* legacy/pkg_call_plugins
  * NAME
  *   pkg_call_plugins
  * INPUTS

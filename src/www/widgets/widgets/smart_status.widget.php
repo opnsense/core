@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright 2012 mkirbst @ pfSense Forum
@@ -27,9 +28,10 @@
 */
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
-require_once("/usr/local/www/widgets/include/smart_status.inc");
+require_once("widgets/include/smart_status.inc");
+
 ?>
 
 <table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="smart status">

@@ -5168,7 +5168,7 @@ function get_interface_mac($interface) {
 	return $macinfo["macaddr"];
 }
 
-/****f* pfsense-utils/generate_random_mac_address
+/****f* legacy/generate_random_mac_address
  * NAME
  *   generate_random_mac - generates a random mac address
  * INPUTS

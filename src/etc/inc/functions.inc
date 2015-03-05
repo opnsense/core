@@ -1,11 +1,7 @@
 <?php
-/* $Id$ */
-/*
-    functions.inc
-    Copyright (C) 2004-2006 Scott Ullrich
-    All rights reserved.
 
-    originally part of m0n0wall (http://m0n0.ch/wall)
+/*
+    Copyright (C) 2004-2006 Scott Ullrich
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -29,9 +25,6 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-	pfSense_MODULE:	utils
-
 */
 
 /* BEGIN compatibility goo with HEAD */
@@ -42,7 +35,7 @@ if(!function_exists("gettext")) {
 }
 
 if(!function_exists("pfSenseHeader")) {
-	/****f* pfsense-utils/pfSenseHeader
+	/****f* functions/pfSenseHeader
 	 * NAME
 	 *   pfSenseHeader
 	 * INPUTS
@@ -140,13 +133,12 @@ if(!function_exists("dom_title")) {
 			}
 		}
 	}
+
 /* include all configuration functions */
 require_once("interfaces.inc");
 require_once("gwlb.inc");
 require_once("services.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("certs.inc");
 require_once("system.inc");
 require_once("vslb.inc");
-
-?>

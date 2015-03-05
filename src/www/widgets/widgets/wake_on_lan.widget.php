@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2010 Yehuda Katz
@@ -28,7 +29,7 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("/usr/local/www/widgets/include/wake_on_lan.inc");
+require_once("widgets/include/wake_on_lan.inc");
 
 if (is_array($config['wol']['wolentry']))
 	$wolcomputers = $config['wol']['wolentry'];

@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright © 2014 Deciso B.V.
     Copyright © 2004 - 2014 by Electric Sheep Fencing LLC
@@ -34,7 +35,7 @@
 
 require_once('guiconfig.inc');
 require_once('interfaces.inc');
-require_once('pfsense-utils.inc');
+require_once('legacy.inc');
 require_once('util.inc');
 
 $listedIPs = "";

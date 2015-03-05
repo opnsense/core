@@ -1,6 +1,7 @@
 <?php
+
 /*
-		copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2014 Deciso B.V.
         Copyright (C) 2009 Scott Ullrich
 
         Redistribution and use in source and binary forms, with or without
@@ -28,7 +29,7 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
 
 if($_POST['rssfeed']) {

@@ -1,8 +1,8 @@
 <?php
+
 /*
         Copyright (C) 2014 Deciso B.V.
         Copyright (C) 2009 Scott Ullrich
-        Part of pfSense widgets (https://www.pfsense.org)
 
         Redistribution and use in source and binary forms, with or without
         modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
 
 if($_GET['getpic']=="true") {

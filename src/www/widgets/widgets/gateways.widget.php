@@ -1,4 +1,5 @@
 <?php
+
 /*
         Copyright (C) 2014 Deciso B.V.
         Copyright (C) 2008 Seth Mos
@@ -28,9 +29,9 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
-require_once("/usr/local/www/widgets/include/gateways.inc");
+require_once("widgets/include/gateways.inc");
 
 $a_gateways = return_gateways_array();
 $gateways_status = array();

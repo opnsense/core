@@ -2,9 +2,8 @@
 
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
-	Copyright (C) 2005 Scott Ullrich
-	(C)2003-2004 Manuel Kasper
+	Copyright (C) 2005, 2008 Scott Ullrich <sullrich@gmail.com>
+	Copyright (C) 2003-2004 Manuel Kasper
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -31,8 +30,8 @@
 
 $nocsrf = true;
 
-require("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once('guiconfig.inc');
+require_once('legacy.inc');
 
 $curcfg = $config['system']['firmware'];
 

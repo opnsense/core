@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2010 Vinicius Coque <vinicius.coque@bluepex.com>
@@ -27,7 +28,7 @@
 */
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 
 $serviceproviders_xml = "/usr/local/share/mobile-broadband-provider-info/serviceproviders.xml";
 $serviceproviders_contents = file_get_contents($serviceproviders_xml);

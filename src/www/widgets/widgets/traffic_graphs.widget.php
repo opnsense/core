@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copuyright (C) 20124 Deciso B.V.
 	Copyright 2007 Scott Dale
@@ -31,7 +32,7 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
 
 $first_time = false;

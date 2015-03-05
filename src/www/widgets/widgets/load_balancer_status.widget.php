@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyritgh (C) 2014 Deciso B.V.
 	Copyright (C) 2010 Jim Pingle
@@ -33,7 +34,7 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
 require_once("vslb.inc");
 

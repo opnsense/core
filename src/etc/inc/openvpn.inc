@@ -2,9 +2,9 @@
 
 /*
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
-	Copyright (C) 2006  Fernando Lemos
+	Copyright (C) 2006 Fernando Lemos
 	Copyright (C) 2005 Peter Allgeyer <allgeyer_AT_web.de>
-	Copyright (C) 2004 Peter Curran (peter@closeconsultants.com).
+	Copyright (C) 2004 Peter Curran <peter@closeconsultants.com>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@
 
 require_once('config.inc');
 require_once('certs.inc');
-require_once('pfsense-utils.inc');
+require_once('legacy.inc');
 require_once('auth.inc');
 
 global $openvpn_prots;

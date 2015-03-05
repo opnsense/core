@@ -1,14 +1,11 @@
-<?
-/*
-	pfSense_MODULE:	ajax
-*/
+<?php
 
 if(Connection_Aborted()) {
 	exit;
 }
 
 require_once("config.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 
 function get_stats() {
 	$stats['cpu'] = cpu_usage();
@@ -346,5 +343,3 @@ function get_interfacestatus() {
 	}
 	return $data;
 }
-
-?>

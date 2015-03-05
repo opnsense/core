@@ -1,4 +1,5 @@
 <?php
+
 /*
         Copyright (C) 2014 Deciso B.V.
         Copyright (C) 2007 Scott Dale
@@ -31,52 +32,49 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
-require_once("/usr/local/www/widgets/include/interface_statistics.inc");
+require_once("widgets/include/interface_statistics.inc");
 
-		$ifdescrs = get_configured_interface_with_descr();
+$ifdescrs = get_configured_interface_with_descr();
 
-		$array_in_packets = array();
-		$array_out_packets = array();
-		$array_in_bytes = array();
-		$array_out_bytes = array();
-		$array_in_errors = array();
-		$array_out_errors = array();
-		$array_collisions = array();
-		$array_interrupt = array();
-		$interfacecounter = 0;
+$array_in_packets = array();
+$array_out_packets = array();
+$array_in_bytes = array();
+$array_out_bytes = array();
+$array_in_errors = array();
+$array_out_errors = array();
+$array_collisions = array();
+$array_interrupt = array();
+$interfacecounter = 0;
 
-		//build data arrays
-		foreach ($ifdescrs as $ifdescr => $ifname){
-			$ifinfo = get_interface_info($ifdescr);
-			$interfacecounter++;
-			if ($ifinfo['status'] != "down"){
-				$array_in_packets[] = $ifinfo['inpkts'];
-				$array_out_packets[] = $ifinfo['outpkts'];
-				$array_in_bytes[] = format_bytes($ifinfo['inbytes']);
-				$array_out_bytes[] = format_bytes($ifinfo['outbytes']);
-				if (isset($ifinfo['inerrs'])){
-					$array_in_errors[] = $ifinfo['inerrs'];
-					$array_out_errors[] = $ifinfo['outerrs'];
-				}
-				else{
-					$array_in_errors[] = "n/a";
-					$array_out_errors[] = "n/a";
-				}
-				if (isset($ifinfo['collisions']))
-					$array_collisions[] = htmlspecialchars($ifinfo['collisions']);
-				else
-					$array_collisions[] = "n/a";
-			}
-
-
-		}//end for
+//build data arrays
+foreach ($ifdescrs as $ifdescr => $ifname){
+	$ifinfo = get_interface_info($ifdescr);
+	$interfacecounter++;
+	if ($ifinfo['status'] != "down"){
+		$array_in_packets[] = $ifinfo['inpkts'];
+		$array_out_packets[] = $ifinfo['outpkts'];
+		$array_in_bytes[] = format_bytes($ifinfo['inbytes']);
+		$array_out_bytes[] = format_bytes($ifinfo['outbytes']);
+		if (isset($ifinfo['inerrs'])){
+			$array_in_errors[] = $ifinfo['inerrs'];
+			$array_out_errors[] = $ifinfo['outerrs'];
+		}
+		else{
+			$array_in_errors[] = "n/a";
+			$array_out_errors[] = "n/a";
+		}
+		if (isset($ifinfo['collisions']))
+			$array_collisions[] = htmlspecialchars($ifinfo['collisions']);
+		else
+			$array_collisions[] = "n/a";
+	}
 
 
+}//end for
 
-
-		?>
+?>
               <div id="int_labels" style="float:left;width:32%">
 				<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="interfaces statistics">
 					<tr><td class="widgetsubheader" style="height:25px">&nbsp;&nbsp;&nbsp;</td></tr>

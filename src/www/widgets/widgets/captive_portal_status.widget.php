@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2007 Sam Wenham
@@ -31,13 +32,9 @@ $nocsrf = true;
 
 require_once("globals.inc");
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
 require_once("captiveportal.inc");
-
-?>
-
-<?php
 
 if (($_GET['act'] == "del") && (!empty($_GET['zone']))) {
 	$cpzone = $_GET['zone'];

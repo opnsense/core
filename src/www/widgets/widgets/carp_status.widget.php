@@ -1,6 +1,7 @@
 <?php
+
 /*
-	Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2007 Sam Wenham
     All rights reserved.
 
@@ -29,9 +30,9 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("legacy.inc");
 require_once("functions.inc");
-require_once("/usr/local/www/widgets/include/carp_status.inc");
+require_once("widgets/include/carp_status.inc");
 
 $carp_enabled = get_carp_status();
 
