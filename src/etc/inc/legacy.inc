@@ -1229,7 +1229,7 @@ function get_interface_info($ifdescr) {
 
 		$usbmodemoutput = array();
 		exec("usbconfig", $usbmodemoutput);
-		$mondev = "{$g['tmp_path']}/3gstats.{$ifdescr}";
+		$mondev = "/tmp/3gstats.{$ifdescr}";
 		if(file_exists($mondev)) {
 			$cellstats = file($mondev);
 			/* skip header */
@@ -1753,7 +1753,7 @@ function update_alias_names_upon_change($section, $field, $new_alias_name, $orig
 			return;
 	}
 
-	if($debug) $fd = fopen("{$g['tmp_path']}/print_r", "a");
+	if($debug) $fd = fopen('/tmp/print_r', 'a');
 	if($debug) fwrite($fd, print_r($pconfig, true));
 
 	if(is_array($sectionref)) {
@@ -1797,7 +1797,7 @@ function update_alias_url_data() {
 			$isfirst = 0;
 			foreach ($alias['aliasurl'] as $alias_url) {
 				/* fetch down and add in */
-				$temp_filename = tempnam("{$g['tmp_path']}/", "alias_import");
+				$temp_filename = tempnam('/tmp/', 'alias_import');
 				unlink($temp_filename);
 				$verify_ssl = isset($config['system']['checkaliasesurlcert']);
 				mkdir($temp_filename);

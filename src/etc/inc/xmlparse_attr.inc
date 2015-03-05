@@ -1,12 +1,7 @@
 <?php
-/* $Id$ */
-/*
-	xmlparse_attr.inc
-	functions to parse configuration files in XML format with attributes
-	Copyright (C) 2010 Erik Fonnesbeck
-	All rights reserved.
 
-	Based on xmlparse.inc, originally part of m0n0wall (http://m0n0.ch/wall)
+/*
+	Copyright (C) 2010 Erik Fonnesbeck
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -129,7 +124,7 @@ function cData_attr($parser, $data) {
 
 function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulatory-data')
 {
-	global $g, $listtags;
+	global $listtags;
 
 	if (empty($rdfile)) {
 		$rdfile = '/etc/regdomain.xml';
@@ -138,8 +133,8 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
 	$listtags = listtags_rd();
 	$parsed_xml = array();
 
-	if (file_exists($g['tmp_path'] . '/regdomain.cache')) {
-		$parsed_xml = unserialize(file_get_contents($g['tmp_path'] . '/regdomain.cache'));
+	if (file_exists('/tmp/regdomain.cache')) {
+		$parsed_xml = unserialize(file_get_contents('/tmp/regdomain.cache'));
 		if (!empty($parsed_xml)) {
 			$rdmain = $parsed_xml['main'];
 			$rdattributes = $parsed_xml['attributes'];
@@ -161,7 +156,7 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
 			unset($rdattributes['shared-frequency-bands']);
 
 		$parsed_xml = array('main' => $rdmain, 'attributes' => $rdattributes);
-		$rdcache = fopen($g['tmp_path'] . '/regdomain.cache', "w");
+		$rdcache = fopen('/tmp/regdomain.cache', 'w');
 		fwrite($rdcache, serialize($parsed_xml));
 		fclose($rdcache);
 	}

@@ -499,41 +499,52 @@ function cleanup_lb_anchor($anchorname = "*") {
 }
 
 /* Mark an anchor for later cleanup. This will allow us to remove an old VS name */
-function cleanup_lb_mark_anchor($name) {
-	global $g;
+function cleanup_lb_mark_anchor($name)
+{
 	/* Nothing to do! */
-	if (empty($name))
+	if (empty($name)) {
 		return;
-	$filename = "{$g['tmp_path']}/relayd_anchors_remove";
+	}
+
+	$filename = '/tmp/relayd_anchors_remove';
 	$cleanup_anchors = array();
+
 	/* Read in any currently unapplied name changes */
-	if (file_exists($filename))
+	if (file_exists($filename)) {
 		$cleanup_anchors = explode("\n", file_get_contents($filename));
+	}
+
 	/* Only add the anchor to the list if it's not already there. */
-	if (!in_array($name, $cleanup_anchors))
+	if (!in_array($name, $cleanup_anchors)) {
 		$cleanup_anchors[] = $name;
+	}
+
 	file_put_contents($filename, implode("\n", $cleanup_anchors));
 }
 
 /* Cleanup relayd anchors that have been marked for cleanup. */
-function cleanup_lb_marked() {
-	global $g, $config;
-	$filename = "{$g['tmp_path']}/relayd_anchors_remove";
+function cleanup_lb_marked()
+{
+	global $config;
+
+	$filename = '/tmp/relayd_anchors_remove';
 	$cleanup_anchors = array();
+
 	/* Nothing to do! */
 	if (!file_exists($filename)) {
 		return;
 	} else {
 		$cleanup_anchors = explode("\n", file_get_contents($filename));
 		/* Nothing to do! */
-		if (empty($cleanup_anchors))
+		if (empty($cleanup_anchors)) {
 			return;
+		}
 	}
 
 	/* Load current names so we can make sure we don't remove an anchor that is still in use. */
 	$vs_a = $config['load_balancer']['virtual_server'];
 	$active_vsnames = array();
-	if(is_array($vs_a)) {
+	if (isset($vs_a)) {
 		foreach ($vs_a as $vs) {
 			$active_vsnames[] = $vs['name'];
 		}
@@ -545,7 +556,6 @@ function cleanup_lb_marked() {
 			cleanup_lb_anchor($anchor);
 		}
 	}
+
 	unlink_if_exists($filename);
 }
-
-?>

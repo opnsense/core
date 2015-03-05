@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2008 Ermal Luçi
 	All rights reserved.
@@ -23,13 +24,8 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-	pfSense_BUILDER_BINARIES:	/bin/kill	/sbin/kldload	/bin/rm	/bin/ps
-	pfSense_MODULE:	shaper
 */
 
-/* XXX: needs some reducing on include. */
-/* include all configuration functions. */
 require_once("globals.inc");
 require_once("functions.inc");
 require_once("util.inc");
@@ -4106,7 +4102,7 @@ function generate_layer7_files() {
 		if (!is_module_loaded("ipdivert.ko"))
 			mwexec("/sbin/kldload ipdivert.ko");
 
-		array_map('unlink', glob("{$g['tmp_path']}/*.l7"));
+		array_map('unlink', glob('/tmp/*.l7'));
 	}
 
 	update_layer7_custom_patterns();
@@ -4114,7 +4110,7 @@ function generate_layer7_files() {
 	foreach($layer7_rules_list as $l7rules) {
 		if($l7rules->GetREnabled()) {
 			$filename = $l7rules->GetRName() . ".l7";
-			$path = "{$g['tmp_path']}/" . $filename;
+			$path = '/tmp/' . $filename;
 
 			$rules = $l7rules->build_l7_rules();
 
@@ -4136,7 +4132,7 @@ function layer7_start_l7daemon() {
 	foreach($layer7_rules_list as $l7rules) {
 		if($l7rules->GetREnabled()) {
 			$filename = $l7rules->GetRName() . ".l7";
-			$path = "{$g['tmp_path']}/" . $filename;
+			$path = '/tmp/' . $filename;
 
 			unset($l7pid);
 			/* Only reread the configuration rather than restart to avoid losing information. */
@@ -4484,8 +4480,8 @@ return;
 				"net.inet.ip.dummynet.hash_size" => "256"
 			));
 		}
-		file_put_contents("{$g['tmp_path']}/rules.limiter", $dn_rules);
-		mwexec("/sbin/ipfw {$g['tmp_path']}/rules.limiter");
+		file_put_contents('/tmp/rules.limiter', $dn_rules);
+		mwexec('/sbin/ipfw /tmp/rules.limiter');
 	}
 }
 
