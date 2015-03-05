@@ -145,8 +145,8 @@ include("head.inc");
 								</td>
 								<td>
 									<?php if ( ($tablename != "bogons") && ($tablename != "bogonsv6") ) { ?>
-									<a onclick="del_entry('<?=htmlspecialchars($entry)?>');">
-										<img src="/themes/<?=$g['theme'];?>/images/icons/icon_x.gif" alt="delete" />
+									<a onclick="del_entry('<?=htmlspecialchars($entry)?>');" alt="delete">
+										<span class="glyphicon glyphicon-remove"></span>
 									</a>
 									<?php } ?>
 								</td>
