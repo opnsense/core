@@ -101,12 +101,12 @@ function lock($lock, $op = LOCK_SH) {
 	global $g, $cfglckkeyconsumers;
 	if (!$lock)
 		die(gettext("WARNING: You must give a name as parameter to lock() function."));
-	if (!file_exists("{$g['tmp_path']}/{$lock}.lock")) {
-		@touch("{$g['tmp_path']}/{$lock}.lock");
-		@chmod("{$g['tmp_path']}/{$lock}.lock", 0666);
+	if (!file_exists("{/tmp/{$lock}.lock")) {
+		@touch("/tmp/{$lock}.lock");
+		@chmod("/tmp/{$lock}.lock", 0666);
 	}
 	$cfglckkeyconsumers++;
-	if ($fp = fopen("{$g['tmp_path']}/{$lock}.lock", "w")) {
+	if ($fp = fopen("/tmp/{$lock}.lock", "w")) {
 		if (flock($fp, $op))
 			return $fp;
 		else
@@ -118,12 +118,12 @@ function try_lock($lock, $timeout = 5) {
 	global $g, $cfglckkeyconsumers;
 	if (!$lock)
 		die(gettext("WARNING: You must give a name as parameter to try_lock() function."));
-	if (!file_exists("{$g['tmp_path']}/{$lock}.lock")) {
-		@touch("{$g['tmp_path']}/{$lock}.lock");
-		@chmod("{$g['tmp_path']}/{$lock}.lock", 0666);
+	if (!file_exists("/tmp/{$lock}.lock")) {
+		@touch("/tmp/{$lock}.lock");
+		@chmod("/tmp/{$lock}.lock", 0666);
 	}
 	$cfglckkeyconsumers++;
-	if ($fp = fopen("{$g['tmp_path']}/{$lock}.lock", "w")) {
+	if ($fp = fopen("/tmp/{$lock}.lock", "w")) {
 		$trycounter = 0;
 		while(!flock($fp, LOCK_EX | LOCK_NB)) {
 			if ($trycounter >= $timeout) {
@@ -152,7 +152,7 @@ function unlock($cfglckkey = 0) {
 function unlock_force($lock) {
 	global $g;
 
-	@unlink("{$g['tmp_path']}/{$lock}.lock");
+	@unlink("/tmp/{$lock}.lock");
 }
 
 function send_event($cmd)
@@ -1628,13 +1628,15 @@ function is_interface_mismatch() {
 		}
 	}
 
-	if (file_exists("{$g['tmp_path']}/assign_complete"))
+	if (file_exists('/tmp/assign_complete')) {
 		$do_assign = false;
+	}
 
-	if (!empty($missing_interfaces) && $do_assign)
-		file_put_contents("{$g['tmp_path']}/missing_interfaces", implode(' ', $missing_interfaces));
-	else
-		@unlink("{$g['tmp_path']}/missing_interfaces");
+	if (!empty($missing_interfaces) && $do_assign) {
+		file_put_contents('/tmp/missing_interfaces', implode(' ', $missing_interfaces));
+	} else {
+		@unlink('/tmp/missing_interfaces');
+	}
 
 	return $do_assign;
 }
