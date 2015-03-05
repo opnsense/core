@@ -20,6 +20,7 @@
 		<link rel="stylesheet" type="text/css" href="/ui/themes/opnsense/build/css/bootstrap-select.css">
 		<!-- Favicon -->
 		<link href="/ui/themes/opnsense/assets/images/favicon.png" rel="shortcut icon">
+
 		<!-- JQuery -->
 		<script type="text/javascript" src="/ui/js/jquery-1.11.2.min.js"></script>
 		<script type="text/javascript">
@@ -31,6 +32,10 @@
 				}
 			});
 		</script>
+
+        <!-- bootstrap dialog -->
+        <link href="/ui/themes/opnsense/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
+
         <!-- OPNsense standard toolkit -->
         <script type="text/javascript" src="/ui/js/opnsense.js"></script>
 
@@ -77,7 +82,7 @@
 			<header class="page-content-head">
 				<div class="container-fluid">
 						<ul class="list-inline">
-							<li class="__mb"><h1>Interfaces: WAN</h1></li>
+							<li class="__mb"><h1>title</h1></li>
 
 							<li class="btn-group-container">
 								<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span>Add widget</button> -->
@@ -85,14 +90,15 @@
 						</ul>
 				</div>
 			</header>
-
+            <!-- row -->
 			<section class="page-content-main">
 				<div class="container-fluid">
-					<section class="col-xs-12">
-						<div class="content-box">
-							{{ content() }}
-						</div>
-					</section>
+                    <div class="row">
+                        <section class="col-xs-12">
+                            <div id="messageregion"></div>
+                                {{ content() }}
+                        </section>
+                    </div>
 				</div>
 			</section>
 
@@ -109,5 +115,8 @@
 
 	<script type="text/javascript" src="/ui/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
+    <!-- bootstrap dialog -->
+    <script src="/ui/js/bootstrap-dialog.js"></script>
+
 	</body>
 </html>
