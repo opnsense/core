@@ -63,7 +63,6 @@ else
 		attempts=0
 		while [ ${mount_rc} != 0 -a ${attempts} -lt 3 ]; do
 			/sbin/fsck -y /
-			/sbin/fsck -y /cf
 			/sbin/mount -uw / 2>/dev/null
 			mount_rc=$?
 			attempts=$((attempts+1))
@@ -80,31 +79,13 @@ else
 		done
 	fi
 
-	# If /conf is a directory, convert it to a symlink to /cf/conf
-	if [ -d "/conf" ]; then
-		# If item is not a symlink then rm and recreate
-		CONFPOINTSTO=`readlink /conf`
-		if ! test "x$CONFPOINTSTO" = "x/cf/conf"; then
-			/bin/rm -rf /conf
-			/bin/ln -s /cf/conf /conf
-		fi
+	# !!! migration code for OPNsense <= 15.1.7, do not remove !!!
+	if [ -d "/cf/conf" ]; then
+		/bin/rm -f /conf
+		/bin/mv /cf/conf /conf
+		/bin/rm -rf /cf
 	fi
-
-	# Check to see if a compact flash mountpoint exists
-	# If it fails to mount then run a fsck -y
-	if grep -q cf /etc/fstab; then
-		/sbin/mount -w /cf 2>/dev/null
-		/sbin/mount -uw /cf 2>/dev/null
-		mount_rc=$?
-		attempts=0
-		while [ ${mount_rc} != 0 -a ${attempts} -lt 3 ]; do
-			/sbin/umount /cf
-			/sbin/fsck -y /cf
-			/sbin/mount -w /cf 2>/dev/null
-			mount_rc=$?
-			attempts=$((attempts+1))
-		done
-	fi
+	# !!! migration code for OPNsense <= 15.1.7, do not remove !!!
 
 	USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
 	if [ "${PLATFORM}" = "nanobsd" ] || [ ${USE_MFS_TMPVAR} -gt 0 ]; then
@@ -126,11 +107,13 @@ fi
 # probe for a persistent core dump device
 /usr/local/etc/rc.dumpon
 
+# set up config directory structure
+/bin/mkdir -p /conf/backup
+/bin/mkdir -p /conf/sshd
+
 # Bootstrap config.xml if necessary
 if [ ! -f /conf/config.xml ]; then
 	echo -n "Bootstrapping config.xml..."
-	/bin/mkdir -p /conf/backup
-	/bin/mkdir -p /conf/sshd
 	/bin/cp /usr/local/etc/config.xml /conf/config.xml
 	echo "done."
 fi
@@ -201,11 +184,6 @@ fi
 /bin/rm -rf /var/tmp/*
 
 echo -n "Creating symlinks..."
-# Make sure symlink is correct on nanobsd
-if [ "$PLATFORM" = "nanobsd" ] ; then
-	/bin/rm /conf
-	/bin/ln -s /cf/conf/ /conf
-fi
 
 # Repair symlinks if they are broken
 if [ -f /etc/newsyslog.conf ]; then
@@ -256,10 +234,6 @@ fi
 
 if [ ! -d /var/tmp ]; then
 	/bin/mkdir -p /var/tmp
-fi
-
-if [ ! -d /conf/backup/ ]; then
-	/bin/mkdir -p /conf/backup/
 fi
 
 set -T
