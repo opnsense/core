@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2010 Ermal Luci
- * Copyright (C) 2005-2006 Colin Smith (ethethlay@gmail.com)
+ * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ if (!function_exists("pkg_debug")) {
 			return;
 
 		if (!$fd_log) {
-			if (!$fd_log = fopen("{$g['tmp_path']}/pkg_mgr_{$package}.log", "w"))
+			if (!$fd_log = fopen("/tmp/pkg_mgr_{$package}.log", "w"))
 				update_output_window("Warning, could not open log for writing.");
 		}
 		@fwrite($fd_log, $msg);
@@ -473,7 +473,7 @@ function pkg_fetch_recursive($pkgname, $filename, $dependlevel = 0, $base_url = 
 			$pkgstaging = "-o {$pkgstagingdir}/instmp.XXXXXX";
 			$fetchdir = $pkgstagingdir;
 		} else {
-			$fetchdir = $g['tmp_path'];
+			$fetchdir = '/tmp';
 		}
 
 		/* FreeBSD has no PBI's hosted, so fall back to our own URL for now. (Maybe fail to PC-BSD?) */

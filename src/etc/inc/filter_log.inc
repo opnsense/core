@@ -1,8 +1,9 @@
 <?php
+
 /*
 	Copyritgh (C) 2014 Deciso B.V.
 	Copyright (C) Scott Ullrich
-	Copyright (C) 2009 Jim Pingle <myfirstname>@<mylastname>.org
+	Copyright (C) 2009 Jim Pingle
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -286,10 +287,11 @@ function find_rule_by_number($rulenum, $type="block") {
 	if ($type == "rdr")
 		$_gb = exec("/sbin/pfctl -vvPsn -a \"miniupnpd\" | /usr/bin/egrep " . escapeshellarg("^@{$rulenum}"), $buffer);
 	else {
-		if (file_exists("{$g['tmp_path']}/rules.debug"))
-			$_gb = exec("/sbin/pfctl -vvPnf {$g['tmp_path']}/rules.debug 2>/dev/null | /usr/bin/egrep " . escapeshellarg($lookup_pattern), $buffer);
-		else
-			$_gb = exec("/sbin/pfctl -vvPsr | /usr/bin/egrep " . escapeshellarg($lookup_pattern), $buffer);
+		if (file_exists('/tmp/rules.debug')) {
+			$_gb = exec('/sbin/pfctl -vvPnf /tmp/rules.debug 2>/dev/null | /usr/bin/egrep ' . escapeshellarg($lookup_pattern), $buffer);
+		} else {
+			$_gb = exec('/sbin/pfctl -vvPsr | /usr/bin/egrep ' . escapeshellarg($lookup_pattern), $buffer);
+		}
 	}
 	if (is_array($buffer))
 		return $buffer[0];
@@ -313,10 +315,11 @@ function buffer_rules_load() {
 		}
 	}
 	unset($buffer, $_gb);
-	if (file_exists("{$g['tmp_path']}/rules.debug"))
-		$_gb = exec("/sbin/pfctl -vvPnf {$g['tmp_path']}/rules.debug 2>/dev/null | /usr/bin/egrep '^@[0-9]+\([0-9]+\)[[:space:]].*[[:space:]]log[[:space:]]' | /usr/bin/egrep -v '^@[0-9]+\([0-9]+\)[[:space:]](nat|rdr|binat|no|scrub)'", $buffer);
-	else
+	if (file_exists('/tmp/rules.debug')) {
+		$_gb = exec("/sbin/pfctl -vvPnf /tmp/rules.debug 2>/dev/null | /usr/bin/egrep '^@[0-9]+\([0-9]+\)[[:space:]].*[[:space:]]log[[:space:]]' | /usr/bin/egrep -v '^@[0-9]+\([0-9]+\)[[:space:]](nat|rdr|binat|no|scrub)'", $buffer);
+	} else {
 		$_gb = exec("/sbin/pfctl -vvPsr | /usr/bin/egrep '^@[0-9]+\([0-9]+\)[[:space:]].*[[:space:]]log[[:space:]]'", $buffer);
+	}
 
 	if (is_array($buffer)) {
 		foreach ($buffer as $line) {

@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2009 Scott Ullrich (sullrich@gmail.com)
- * Copyright (C) 2005 Colin Smith (ethethlay@gmail.com)
+ * Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,6 @@
 require_once("globals.inc");
 require_once("led.inc");
 
-$notice_path = $g['tmp_path'] . '/notices';
-
 /****f* notices/file_notice
  * NAME
  *   file_notice
@@ -49,7 +47,6 @@ function file_notice($id, $notice, $category = "General", $url = "", $priority =
 	 * $priority - A notice's priority. Higher numbers indicate greater severity.
 	 *	       0 = informational, 1 = warning, 2 = error, etc. This may also be arbitrary,
 	 */
-	global $notice_path;
 	if(!$queue = get_notices()) $queue = array();
 	$queuekey = time();
 	$toqueue = array(
@@ -60,9 +57,9 @@ function file_notice($id, $notice, $category = "General", $url = "", $priority =
 				'priority'	=> $priority,
 			);
 	$queue[$queuekey] = $toqueue;
-	$queueout = fopen($notice_path, "w");
+	$queueout = fopen('/tmp/notices', 'w');
 	if(!$queueout) {
-		log_error(printf(gettext("Could not open %s for writing"), $notice_path));
+		log_error(printf(gettext("Could not open %s for writing"), '/tmp/notices'));
 		return;
 	}
 	fwrite($queueout, serialize($queue));
@@ -87,11 +84,12 @@ function file_notice($id, $notice, $category = "General", $url = "", $priority =
  * RESULT
  *   Returns a specific notices text
  ******/
-function get_notices($category = "all") {
+function get_notices($category = 'all')
+{
 	global $g;
 
-	if(file_exists("{$g['tmp_path']}/notices")) {
-		$queue = unserialize(file_get_contents("{$g['tmp_path']}/notices"));
+	if (file_exists('/tmp/notices')) {
+		$queue = unserialize(file_get_contents('/tmp/notices'));
 		if(!$queue) return false;
 		if($category != 'all') {
 			foreach($queue as $time => $notice) {
@@ -115,9 +113,10 @@ function get_notices($category = "all") {
  * RESULT
  *   Removes a notice from the list
  ******/
-function close_notice($id) {
-	global $notice_path;
+function close_notice($id)
+{
 	require_once("util.inc");
+
 	/* soekris */
 	if(file_exists("/dev/led/error"))
 		exec("/bin/echo 0 > /dev/led/error");
@@ -126,7 +125,7 @@ function close_notice($id) {
 	$ids = array();
 	if(!$notices = get_notices()) return;
 	if($id == "all") {
-		unlink_if_exists($notice_path);
+		unlink_if_exists('/tmp/notices');
 		return;
 	}
 	foreach(array_keys($notices) as $time) {
@@ -145,11 +144,11 @@ function close_notice($id) {
 		}
 	}
 	if(count($notices) != 0) {
-		$queueout = fopen($notice_path, "w");
+		$queueout = fopen('/tmp/notices', 'w');
 		fwrite($queueout, serialize($notices));
 		fclose($queueout);
 	} else {
-		unlink_if_exists($notice_path);
+		unlink_if_exists('/tmp/notices');
 	}
 
 	return;
@@ -165,7 +164,7 @@ function close_notice($id) {
  ******/
 function dump_xml_notices() {
 	require_once("xmlparse.inc");
-	global $notice_path, $listtags;
+	global $listtags;
 	$listtags[] = 'notice';
 	if(!$notices = get_notices()) return;
 	foreach($notices as $time => $notice) {
@@ -235,11 +234,12 @@ function print_notice_box($category = "all") {
  * RESULT
  *   returns true if notices are pending, false if they are not
  ******/
-function are_notices_pending($category = "all") {
-	global $notice_path;
-	if(file_exists($notice_path)) {
+function are_notices_pending($category = 'all')
+{
+	if (file_exists('/tmp/notices')) {
 		return true;
 	}
+
 	return false;
 }
 

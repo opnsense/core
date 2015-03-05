@@ -405,7 +405,7 @@ EODD;
 
 		echo gettext(" done!") . "\n";
 
-		touch("{$g['tmp_path']}/assign_complete");
+		touch('/tmp/assign_complete');
 
 	}
 }

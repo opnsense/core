@@ -287,7 +287,7 @@ function services_dhcpd_configure($family = "all", $blacklist = array()) {
 	global $config, $g;
 
 	/* configure DHCPD chroot once */
-	$fd = fopen("{$g['tmp_path']}/dhcpd.sh","w");
+	$fd = fopen('/tmp/dhcpd.sh', 'w');
 	fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}\n");
 	fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/dev\n");
 	fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/etc\n");
@@ -306,7 +306,7 @@ function services_dhcpd_configure($family = "all", $blacklist = array()) {
 	if (!trim($status))
 		fwrite($fd, "/sbin/mount -t devfs devfs {$g['dhcpd_chroot_path']}/dev\n");
 	fclose($fd);
-	mwexec("/bin/sh {$g['tmp_path']}/dhcpd.sh");
+	mwexec('/bin/sh /tmp/dhcpd.sh');
 
 	if ($family == "all" || $family == "inet")
 		services_dhcpdv4_configure();
@@ -1345,7 +1345,7 @@ EOD;
         }
 	$igmpconf .= "\n";
 
-        $igmpfl = fopen($g['tmp_path'] . "/igmpproxy.conf", "w");
+        $igmpfl = fopen('/tmp/igmpproxy.conf', 'w');
         if (!$igmpfl) {
                 log_error(gettext("Could not write Igmpproxy configuration file!"));
                 return;
@@ -1355,7 +1355,7 @@ EOD;
 	unset($igmpconf);
 
 	/* NOTE: -d4 means everything LOG_WARNING and smaller */
-        mwexec("/usr/local/sbin/igmpproxy -d4 -c {$g['tmp_path']}/igmpproxy.conf");
+        mwexec('/usr/local/sbin/igmpproxy -d4 -c /tmp/igmpproxy.conf');
         log_error(gettext("Started IGMP proxy service."));
 
         return 0;

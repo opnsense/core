@@ -160,8 +160,9 @@ if (isset($attributes['framed_ip'])) {
 //      }
 }
 
-if (!empty($content))
-        @file_put_contents("{$g['tmp_path']}/{$username}", $content);
+if (!empty($content)) {
+        @file_put_contents("/tmp/{$username}", $content);
+}
 
 syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
 closelog();

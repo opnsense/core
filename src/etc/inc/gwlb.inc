@@ -1,4 +1,5 @@
 <?php
+
 /*
   Copyright (C) 2008 Bill Marquette, Seth Mos
   Copyright (C) 2010 Ermal Luçi
@@ -24,11 +25,8 @@
   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE.
+*/
 
-	pfSense_BUILDER_BINARIES:	/sbin/route	/usr/local/sbin/apinger
-	pfSense_MODULE:	routing
-
- */
 require_once("config.inc");
 require_once("rrd.inc");
 
@@ -339,11 +337,8 @@ EOD;
 	@file_put_contents("{$g['varetc_path']}/apinger.conf", $apingerconfig);
 	unset($apingerconfig);
 
-	if (is_dir("{$g['tmp_path']}"))
-		chmod("{$g['tmp_path']}", 01777);
-	if (!is_dir("{$g['vardb_path']}/rrd"))
-		mkdir("{$g['vardb_path']}/rrd", 0775);
-
+	@chmod('/tmp', 01777);
+	@mkdir("{$g['vardb_path']}/rrd", 0775);
 	@chown("{$g['vardb_path']}/rrd", "nobody");
 
 	/* Restart apinger process */
@@ -698,13 +693,13 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 	if ($found_defaultv4 == 0 || $found_defaultv6 == 0) {
 		foreach ($gateways_arr as &$gateway) {
 			if (($gateway['friendlyiface'] == "wan") && ($found_defaultv4 == 0) && (!isset($gateway['ipprotocol']) || ($gateway['ipprotocol'] == "inet"))) {
-				if (file_exists("{$g['tmp_path']}/{$gateway['interface']}_defaultgw")) {
+				if (file_exists("/tmp/{$gateway['interface']}_defaultgw")) {
 					$gateway['defaultgw'] = true;
 					$found_defaultv4 = 1;
 				}
 			}
 			if (($gateway['friendlyiface'] == "wan") && ($found_defaultv6 == 0) && ($gateway['ipprotocol'] == "inet6")) {
-				if (file_exists("{$g['tmp_path']}/{$gateway['interface']}_defaultgwv6")) {
+				if (file_exists("/tmp/{$gateway['interface']}_defaultgwv6")) {
 					$gateway['defaultgw'] = true;
 					$found_defaultv6 = 1;
 				}
@@ -975,11 +970,11 @@ function get_interface_gateway($interface, &$dynamic = false) {
 	// for dynamic interfaces we handle them through the $interface_router file.
 	if (!is_ipaddrv4($gw) && !is_ipaddrv4($gwcfg['ipaddr'])) {
 		$realif = get_real_interface($interface);
-		if (file_exists("{$g['tmp_path']}/{$realif}_router")) {
-				$gw = trim(file_get_contents("{$g['tmp_path']}/{$realif}_router"), " \n");
+		if (file_exists("/tmp/{$realif}_router")) {
+				$gw = trim(file_get_contents("/tmp/{$realif}_router"), " \n");
 			$dynamic = true;
 		}
-		if (file_exists("{$g['tmp_path']}/{$realif}_defaultgw"))
+		if (file_exists("/tmp/{$realif}_defaultgw"))
 			$dynamic = "default";
 
 	}
@@ -1005,11 +1000,11 @@ function get_interface_gateway_v6($interface, &$dynamic = false) {
 	// for dynamic interfaces we handle them through the $interface_router file.
 	if (!is_ipaddrv6($gw) && !is_ipaddrv6($gwcfg['ipaddrv6'])) {
 			$realif = get_real_interface($interface);
-			if (file_exists("{$g['tmp_path']}/{$realif}_routerv6")) {
-				$gw = trim(file_get_contents("{$g['tmp_path']}/{$realif}_routerv6"), " \n");
+			if (file_exists("/tmp/{$realif}_routerv6")) {
+				$gw = trim(file_get_contents("/tmp/{$realif}_routerv6"), " \n");
 				$dynamic = true;
 			}
-			if (file_exists("{$g['tmp_path']}/{$realif}_defaultgwv6"))
+			if (file_exists("/tmp/{$realif}_defaultgwv6"))
 				$dynamic = "default";
 
 	}

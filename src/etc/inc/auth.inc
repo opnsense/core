@@ -103,9 +103,9 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
 // If the HTTP_REFERER is something other than ourselves then disallow.
 if(function_exists("display_error_form") && !isset($config['system']['webgui']['nohttpreferercheck'])) {
 	if($_SERVER['HTTP_REFERER']) {
-		if(file_exists("{$g['tmp_path']}/setupwizard_lastreferrer")) {
-			if($_SERVER['HTTP_REFERER'] == file_get_contents("{$g['tmp_path']}/setupwizard_lastreferrer")) {
-				unlink("{$g['tmp_path']}/setupwizard_lastreferrer");
+		if(file_exists('/tmp/setupwizard_lastreferrer')) {
+			if($_SERVER['HTTP_REFERER'] == file_get_contents('/tmp/setupwizard_lastreferrer')) {
+				unlink('/tmp/setupwizard_lastreferrer');
 				header("Refresh: 1; url=index.php");
 				echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 				echo "<html><head><title>" . gettext("Redirecting...") . "</title></head><body>" . gettext("Redirecting to the dashboard...") . "</body></html>";
