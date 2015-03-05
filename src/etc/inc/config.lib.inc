@@ -1,6 +1,7 @@
 <?php
 
 /*
+	Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
 	Ported from config.inc by Erik Kristensen
 	Copyright (C) 2004-2010 Scott Ullrich
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -86,7 +87,7 @@ function encrypted_configxml()
  ******/
 function parse_config($parse = false)
 {
-	global $g, $config_parsed, $config_extra;
+	global $g, $config_parsed;
 
 	$config_xml = '/conf/config.xml';
 	$lockkey = lock('config');
@@ -108,9 +109,9 @@ function parse_config($parse = false)
 	// Check for encrypted config.xml
 	encrypted_configxml();
 
-	if(!$parse) {
-		if (file_exists($g['tmp_path'] . '/config.cache')) {
-			$config = unserialize(file_get_contents($g['tmp_path'] . '/config.cache'));
+	if (!$parse) {
+		if (file_exists('/tmp/config.cache')) {
+			$config = unserialize(file_get_contents('/tmp/config.cache'));
 			if (is_null($config))
 				$parse = true;
 		} else
@@ -150,36 +151,22 @@ function parse_config($parse = false)
 	return $config;
 }
 
-/****f* config/generate_config_cache
- * NAME
- *   generate_config_cache - Write serialized configuration to cache.
- * INPUTS
- *   $config	- array containing current firewall configuration
- * RESULT
- *   boolean	- true on completion
- ******/
-function generate_config_cache($config) {
-	global $g, $config_extra;
-
-	$configcache = fopen($g['tmp_path'] . '/config.cache', "w");
+function generate_config_cache($config)
+{
+	$configcache = fopen('/tmp/config.cache', 'w');
 	fwrite($configcache, serialize($config));
 	fclose($configcache);
 	unset($configcache);
-	/* Used for config.extra.xml */
-	if(file_exists($g['tmp_path'] . '/config.extra.cache') && $config_extra) {
-		$configcacheextra = fopen($g['tmp_path'] . '/config.extra.cache', "w");
-		fwrite($configcacheextra, serialize($config_extra));
-		fclose($configcacheextra);
-		unset($configcacheextra);
-	}
 }
 
-function discover_last_backup() {
+function discover_last_backup()
+{
 	$backups = glob('/conf/backup/*.xml');
-	$last_backup = "";
+	$last_backup = '';
 	$last_mtime = 0;
+
 	foreach($backups as $backup) {
-		if(filemtime($backup) > $last_mtime) {
+		if (filemtime($backup) > $last_mtime) {
 			$last_mtime = filemtime($backup);
 			$last_backup = $backup;
 		}
@@ -188,13 +175,14 @@ function discover_last_backup() {
 	return basename($last_backup);
 }
 
-function restore_backup($file) {
+function restore_backup($file)
+{
 	global $g;
 
 	if (file_exists($file)) {
 		conf_mount_rw();
-		unlink_if_exists("{$g['tmp_path']}/config.cache");
-		copy("$file","/conf/config.xml");
+		@unlink('/tmp/config.cache');
+		copy($file, '/conf/config.xml');
 		disable_security_checks();
 		log_error(sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file));
 		file_notice("config.xml", sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file), "pfSenseConfigurator", "");
@@ -578,7 +566,7 @@ function reset_factory_defaults($lock = false)
 		}
 	}
 	closedir($dh);
-	unlink_if_exists($g['tmp_path'] . "/config.cache");
+	unlink_if_exists('/tmp/config.cache');
 
 	/* copy default configuration */
 	copy('/usr/local/etc/config.xml', '/conf/config.xml');
@@ -606,7 +594,7 @@ function config_restore($conffile) {
 
 	$lockkey = lock('config', LOCK_EX);
 
-	unlink_if_exists("{$g['tmp_path']}/config.cache");
+	unlink_if_exists('/tmp/config.cache');
 	copy($conffile, '/conf/config.xml');
 
 	disable_security_checks();
@@ -622,35 +610,33 @@ function config_restore($conffile) {
 	return 0;
 }
 
-function config_install($conffile) {
-	global $config, $g;
-
-	if (!file_exists($conffile))
+function config_install($conffile)
+{
+	if (!file_exists($conffile)) {
 		return 1;
+	}
 
-	if (!config_validate("{$conffile}"))
+	if (!config_validate($conffile)) {
 		return 1;
+	}
 
-	if(file_exists("/var/run/booting"))
+	if (file_exists('/var/run/booting')) {
 		echo gettext("Installing configuration...") . "\n";
-	else
+	} else {
 		log_error(gettext("Installing configuration ...."));
+	}
 
 	conf_mount_rw();
 	$lockkey = lock('config', LOCK_EX);
 
 	copy($conffile, '/conf/config.xml');
-
 	disable_security_checks();
-
-	/* unlink cache file if it exists */
-	if(file_exists("{$g['tmp_path']}/config.cache"))
-		unlink("{$g['tmp_path']}/config.cache");
+	@unlink('/tmp/config.cache');
 
 	unlock($lockkey);
 	conf_mount_ro();
 
-    return 0;
+	return 0;
 }
 
 /*
@@ -661,21 +647,21 @@ function config_install($conffile) {
  * Intended for use when restoring a configuration or directly
  * modifying config.xml without an unconditional reboot.
  */
-function disable_security_checks() {
-	global $g;
-	touch("{$g['tmp_path']}/disable_security_checks");
+function disable_security_checks()
+{
+	touch('/tmp/disable_security_checks');
 }
 
 /* Restores security checks.  Should be called after all succeed. */
-function restore_security_checks() {
-	global $g;
-	unlink_if_exists("{$g['tmp_path']}/disable_security_checks");
+function restore_security_checks()
+{
+	@unlink('/tmp/disable_security_checks');
 }
 
 /* Returns status of security check temporary disable. */
-function security_checks_disabled() {
-	global $g;
-	return file_exists("{$g['tmp_path']}/disable_security_checks");
+function security_checks_disabled()
+{
+	return file_exists('/tmp/disable_security_checks');
 }
 
 function config_validate($conffile) {
