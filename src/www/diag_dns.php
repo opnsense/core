@@ -48,6 +48,11 @@ foreach($a_aliases as $a) {
 	$counter++;
 }
 
+if( ($_GET['host']) && ($_GET['dialog_output']) ) {
+	display_host_results($host,$resolved,$dns_speeds);
+	exit;
+}
+
 if(isset($_POST['create_alias']) && (is_hostname($host) || is_ipaddr($host))) {
 	if($_POST['override'])
 		$override = true;
@@ -139,11 +144,6 @@ if ($_POST) {
 	}
 }
 
-if( ($_POST['host']) && ($_POST['dialog_output']) ) {
-	display_host_results ($host,$resolved,$dns_speeds);
-	exit;
-}
-
 function display_host_results ($address,$hostname,$dns_speeds) {
 	$map_lengths = function($element) { return strlen($element[0]); };
 
@@ -172,105 +172,102 @@ include("head.inc"); ?>
 		<div class="row">
 
 		    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" name="iform" id="iform">
-			<section class="col-xs-12">
-                <div class="content-box">
+				<section class="col-xs-12">
+	                <div class="content-box">
 
-					<?php if ($input_errors) print_input_errors($input_errors); ?>
+						<?php if ($input_errors) print_input_errors($input_errors); ?>
 
-                    <header class="content-box-head container-fluid">
-				        <h3><?=gettext("Resolve DNS hostname or IP");?></h3>
-				    </header>
+	                    <header class="content-box-head container-fluid">
+					        <h3><?=gettext("Resolve DNS hostname or IP");?></h3>
+					    </header>
 
-				    <div class="content-box-main">
-				    <div class="table-responsive">
-				        <table class="table table-striped">
-					        <tbody>
-					        <tr>
-					          <td><?=gettext("Hostname or IP");?></td>
-					          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" size="20" value="<?=htmlspecialchars($host);?>" /></td>
-					          <?php if ($resolved && $type): ?>
-					          <td>
-						      <?php
-										$found = 0;
-										if(is_array($resolved)) {
-											foreach($resolved as $hostitem) {
-												if($hostitem <> "") {
-													echo $hostitem . "<br />";
-													$found++;
+					    <div class="content-box-main">
+					    	<div class="table-responsive">
+						        <table class="table table-striped">
+							        <tbody>
+							        <tr>
+							          <td><?=gettext("Hostname or IP");?></td>
+							          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" size="20" value="<?=htmlspecialchars($host);?>" /></td>
+							          <?php if ($resolved && $type): ?>
+							          <td>
+								      <?php
+												$found = 0;
+												if(is_array($resolved)) {
+													foreach($resolved as $hostitem) {
+														if($hostitem <> "") {
+															echo $hostitem . "<br />";
+															$found++;
+														}
+													}
+												} else {
+													echo $resolved;
 												}
-											}
-										} else {
-											echo $resolved;
-										}
-									  ?>
-					          </td>
-					          <td>
-						      <? if($found > 0): ?>
-									  <?PHP	if($alias_exists): ?>
-										An alias already exists for the hostname <?= htmlspecialchars($host) ?>. <br />
-										<input type="hidden" name="override" value="true"/>
-										<input type="submit" class="btn btn-default" name="create_alias" value="Overwrite Alias"/>
-									  <?php else: ?>
-									  <?php if(!$createdalias): ?>
-										<input type="submit" class="btn btn-default" name="create_alias" value="Create Alias"/>
-									  <?php else: ?>
-									   Alias created with name <?= htmlspecialchars($newalias['name']) ?>
-									  <? endif; endif; endif; ?>
-									  </td>
-					          <? else: ?>
-					          <td></td><td></td>
-					          <? endif; ?>
-					        </tr>
-					        <?php if (!empty($_POST)): ?>
-					        <tr>
-					          <td><?=gettext("Resolution time per server");?></td>
-					          <td colspan="3">
+											  ?>
+							          </td>
+							          <td>
+								      <? if($found > 0): ?>
+											  <?PHP	if($alias_exists): ?>
+												An alias already exists for the hostname <?= htmlspecialchars($host) ?>. <br />
+												<input type="hidden" name="override" value="true"/>
+												<input type="submit" class="btn btn-default" name="create_alias" value="Overwrite Alias"/>
+											  <?php else: ?>
+											  <?php if(!$createdalias): ?>
+												<input type="submit" class="btn btn-default" name="create_alias" value="Create Alias"/>
+											  <?php else: ?>
+											   Alias created with name <?= htmlspecialchars($newalias['name']) ?>
+											  <? endif; endif; endif; ?>
+											  </td>
+							          <? else: ?>
+							          <td></td><td></td>
+							          <? endif; ?>
+							        </tr>
+							        <?php if (!empty($_POST)): ?>
+							        <tr>
+							          <td><?=gettext("Resolution time per server");?></td>
+							          <td colspan="3">
 
-					            <table class="table table-striped">
-						            <tr>
-						            <th><?=gettext("Server");?></th>
-						            <th><?=gettext("Query time");?></th>
-						            </tr>
-						            <?php if(is_array($dns_speeds)): foreach($dns_speeds as $qt): ?>
-											<tr>
-												<td>
-													<?=$qt['dns_server']?>
+							            <table class="table table-striped">
+								            <tr>
+								            <th><?=gettext("Server");?></th>
+								            <th><?=gettext("Query time");?></th>
+								            </tr>
+								            <?php if(is_array($dns_speeds)): foreach($dns_speeds as $qt): ?>
+													<tr>
+														<td>
+															<?=$qt['dns_server']?>
+														</td>
+														<td>
+															<?=$qt['query_time']?>
+														</td>
+													</tr>
+													<?php endforeach; endif; ?>
+							            </table>
+							          </td>
+							        </tr>
+							        <?php endif; ?>
+							        <?php if (!$input_errors && $ipaddr): ?>
+							        <tr>
+							          <td><?=gettext("More Information:");?></td>
+							          <td colspan="3"><a href ="/diag_ping.php?host=<?=htmlspecialchars($host)?>&amp;interface=wan&amp;count=3"><?=gettext("Ping");?></a> <br />
+													<a href ="/diag_traceroute.php?host=<?=htmlspecialchars($host)?>&amp;ttl=18"><?=gettext("Traceroute");?></a>
+													<p>
+													<?=gettext("NOTE: The following links are to external services, so their reliability cannot be guaranteed.");?><br /><br />
+													<a target="_blank" href="http://private.dnsstuff.com/tools/whois.ch?ip=<?php echo $ipaddr; ?>"><?=gettext("IP WHOIS @ DNS Stuff");?></a><br />
+													<a target="_blank" href="http://private.dnsstuff.com/tools/ipall.ch?ip=<?php echo $ipaddr; ?>"><?=gettext("IP Info @ DNS Stuff");?></a>
+													</p>
 												</td>
-												<td>
-													<?=$qt['query_time']?>
-												</td>
-											</tr>
-											<?php endforeach; endif; ?>
-					            </table>
-					          </td>
-					        </tr>
-					        <?php endif; ?>
-					        <?php if (!$input_errors && $ipaddr): ?>
-					        <tr>
-					          <td><?=gettext("More Information:");?></td>
-					          <td colspan="3"><a href ="/diag_ping.php?host=<?=htmlspecialchars($host)?>&amp;interface=wan&amp;count=3"><?=gettext("Ping");?></a> <br />
-											<a href ="/diag_traceroute.php?host=<?=htmlspecialchars($host)?>&amp;ttl=18"><?=gettext("Traceroute");?></a>
-											<p>
-											<?=gettext("NOTE: The following links are to external services, so their reliability cannot be guaranteed.");?><br /><br />
-											<a target="_blank" href="http://private.dnsstuff.com/tools/whois.ch?ip=<?php echo $ipaddr; ?>"><?=gettext("IP WHOIS @ DNS Stuff");?></a><br />
-											<a target="_blank" href="http://private.dnsstuff.com/tools/ipall.ch?ip=<?php echo $ipaddr; ?>"><?=gettext("IP Info @ DNS Stuff");?></a>
-											</p>
-										</td>
-					        </tr>
-					        <?php endif; ?>
-					        </tbody>
-					    </table>
-				    </div>
-				    <div class="container-fluid">
-
-				    <input type="submit" class="btn btn-primary btn-fixed pull-right" value="<?=gettext("DNS Lookup");?>" />
-				    </div>
-				    </div>
-
-				</div>
-			</section>
-
+							        </tr>
+							        <?php endif; ?>
+							        </tbody>
+							    </table>
+					    	</div>
+					    	<div class="container-fluid">
+					    		<input type="submit" class="btn btn-primary btn-fixed pull-right" value="<?=gettext("DNS Lookup");?>" />
+					    	</div>
+					    </div>
+					</div>
+				</section>
+			</form>
 		</div>
-
 	</div>
 </section>
