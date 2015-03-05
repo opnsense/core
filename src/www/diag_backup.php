@@ -275,7 +275,7 @@ if ($_POST) {
 						$data = backup_config_section($_POST['backuparea']);
 						$name = "{$_POST['backuparea']}-{$name}";
 					}
-					$sfn = "{$g['tmp_path']}/config.xml.nopkg";
+					$sfn = '/tmp/config.xml.nopkg';
 					file_put_contents($sfn, $data);
 					exec("sed '/<installedpackages>/,/<\/installedpackages>/d' {$sfn} > {$sfn}-new");
 					$data = file_get_contents($sfn . "-new");
@@ -371,7 +371,7 @@ if ($_POST) {
 								if ($config['rrddata']) {
 									restore_rrddata();
 									unset($config['rrddata']);
-									unlink_if_exists("{$g['tmp_path']}/config.cache");
+									@unlink('/tmp/config.cache');
 									write_config();
 									add_base_packages_menu_items();
 									convert_config();
@@ -393,14 +393,13 @@ if ($_POST) {
 								mark_subsystem_dirty("restore");
 								touch("/conf/needs_package_sync");
 								/* remove cache, we will force a config reboot */
-								if(file_exists("{$g['tmp_path']}/config.cache"))
-									unlink("{$g['tmp_path']}/config.cache");
+								@unlink('/tmp/config.cache');
 								$config = parse_config(true);
 								/* extract out rrd items, unset from $config when done */
 								if($config['rrddata']) {
 									restore_rrddata();
 									unset($config['rrddata']);
-									unlink_if_exists("{$g['tmp_path']}/config.cache");
+									@unlink('/tmp/config.cache');
 									write_config();
 									add_base_packages_menu_items();
 									convert_config();
@@ -434,7 +433,7 @@ if ($_POST) {
 											}
 										}
 									}
-									unlink_if_exists("{$g['tmp_path']}/config.cache");
+									@unlink('/tmp/config.cache');
 									// Reset configuration version to something low
 									// in order to force the config upgrade code to
 									// run through with all steps that are required.
