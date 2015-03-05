@@ -279,8 +279,7 @@ function find_rule_by_number($rulenum, $type="block") {
 	if (!is_numeric($rulenum) || !in_array($type, array('pass', 'block', 'match', 'rdr')))
 		return;
 
-	$lookup_pattern = "^@{$rulenum}\([0-9]+\)[[:space:]]{$type}[[:space:]].*[[:space:]]log[[:space:]]";
-
+	$lookup_pattern = "^@{$rulenum}[[:space:]]{$type}[[:space:]].*[[:space:]]log[[:space:]]";
 	/* At the moment, miniupnpd is the only thing I know of that
 	   generates logging rdr rules */
 	unset($buffer);
