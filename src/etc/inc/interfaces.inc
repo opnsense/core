@@ -1840,8 +1840,8 @@ EOD;
 
 
 	/* Generate mpd.conf. If mpd_[interface].conf exists in the conf path, then link to it instead of generating a fresh conf file. */
-	if (file_exists("{$g['conf_path']}/mpd_{$interface}.conf"))
-		@symlink("{$g['conf_path']}/mpd_{$interface}.conf", "{$g['varetc_path']}/mpd_{$interface}.conf");
+	if (file_exists("/conf/mpd_{$interface}.conf"))
+		@symlink("/conf/mpd_{$interface}.conf", "{$g['varetc_path']}/mpd_{$interface}.conf");
 	else {
 		$fd = fopen("{$g['varetc_path']}/mpd_{$interface}.conf", "w");
 		if (!$fd) {

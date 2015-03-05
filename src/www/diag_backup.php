@@ -269,7 +269,7 @@ if ($_POST) {
 				if($options == "nopackages") {
 					if(!$_POST['backuparea']) {
 						/* backup entire configuration */
-						$data = file_get_contents("{$g['conf_path']}/config.xml");
+						$data = file_get_contents('/conf/config.xml');
 					} else {
 						/* backup specific area of configuration */
 						$data = backup_config_section($_POST['backuparea']);
@@ -282,7 +282,7 @@ if ($_POST) {
 				} else {
 					if(!$_POST['backuparea']) {
 						/* backup entire configuration */
-						$data = file_get_contents("{$g['conf_path']}/config.xml");
+						$data = file_get_contents('/conf/config.xml');
 					} else if ($_POST['backuparea'] === "rrddata") {
 						$data = rrd_data_xml();
 						$name = "{$_POST['backuparea']}-{$name}";

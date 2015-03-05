@@ -49,7 +49,7 @@ if($_REQUEST['getdyndnsstatus']) {
 			// Put a vertical bar delimiter between the echoed HTML for each entry processed.
 			echo "|";
 
-		$filename = "{$g['conf_path']}/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
+		$filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
 		if (file_exists($filename)) {
 			$ipaddr = dyndnsCheckIP($dyndns['interface']);
 			$cached_ip_s = split(":", file_get_contents($filename));

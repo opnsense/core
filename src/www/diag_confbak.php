@@ -48,20 +48,20 @@ if (isset($_POST['backupcount'])) {
 	conf_mount_rw();
 	$confvers = unserialize(file_get_contents('/cf/conf/backup/backup.cache'));
 	if($_POST['newver'] != "") {
-		if(config_restore($g['conf_path'] . '/backup/config-' . $_POST['newver'] . '.xml') == 0)
+		if(config_restore('/conf/backup/config-' . $_POST['newver'] . '.xml') == 0)
 		$savemsg = sprintf(gettext('Successfully reverted to timestamp %1$s with description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['newver']), $confvers[$_POST['newver']]['description']);
 		else
 			$savemsg = gettext("Unable to revert to the selected configuration.");
 	}
 	if($_POST['rmver'] != "") {
-		unlink_if_exists($g['conf_path'] . '/backup/config-' . $_POST['rmver'] . '.xml');
+		unlink_if_exists('/conf/backup/config-' . $_POST['rmver'] . '.xml');
 		$savemsg = sprintf(gettext('Deleted backup with timestamp %1$s and description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['rmver']),$confvers[$_POST['rmver']]['description']);
 	}
 	conf_mount_ro();
 }
 
 if($_GET['getcfg'] != "") {
-	$file = $g['conf_path'] . '/backup/config-' . $_GET['getcfg'] . '.xml';
+	$file = '/conf/backup/config-' . $_GET['getcfg'] . '.xml';
 
 	$exp_name = urlencode("config-{$config['system']['hostname']}.{$config['system']['domain']}-{$_GET['getcfg']}.xml");
 	$exp_data = file_get_contents($file);
@@ -77,13 +77,13 @@ if($_GET['getcfg'] != "") {
 if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime'])
       && is_numeric($_GET['oldtime']) && (is_numeric($_GET['newtime']) || ($_GET['newtime'] == 'current'))) {
 	$diff = "";
-	$oldfile = $g['conf_path'] . '/backup/config-' . $_GET['oldtime'] . '.xml';
+	$oldfile = '/conf/backup/config-' . $_GET['oldtime'] . '.xml';
 	$oldtime = $_GET['oldtime'];
 	if ($_GET['newtime'] == 'current') {
-		$newfile = $g['conf_path'] . '/config.xml';
+		$newfile = '/conf/config.xml';
 		$newtime = $config['revision']['time'];
 	} else {
-		$newfile = $g['conf_path'] . '/backup/config-' . $_GET['newtime'] . '.xml';
+		$newfile = '/conf/backup/config-' . $_GET['newtime'] . '.xml';
 		$newtime = $_GET['newtime'];
 	}
 	if (file_exists($oldfile) && file_exists($newfile)) {

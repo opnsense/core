@@ -44,7 +44,6 @@ $g = array(
 	"vardb_path" => "/var/db",
 	"varlog_path" => "/var/log",
 	"tmp_path" => "/tmp",
-	"conf_path" => "/conf",
 	"cf_path" => "/cf",
 	"xml_rootobj" => "pfsense",
 	"admin_group" => "admins",

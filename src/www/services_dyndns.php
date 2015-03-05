@@ -37,7 +37,7 @@ $a_dyndns = &$config['dyndnses']['dyndns'];
 if ($_GET['act'] == "del") {
 
 	$conf = $a_dyndns[$_GET['id']];
-	@unlink("{$g['conf_path']}/dyndns_{$conf['interface']}{$conf['type']}" . escapeshellarg($conf['host']) . "{$conf['id']}.cache");
+	@unlink("/conf/dyndns_{$conf['interface']}{$conf['type']}" . escapeshellarg($conf['host']) . "{$conf['id']}.cache");
 	unset($a_dyndns[$_GET['id']]);
 
 	write_config();
@@ -140,8 +140,8 @@ $main_buttons = array(
 										  </td>
 										  <td class="listr">
 										  <?php
-											$filename = "{$g['conf_path']}/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
-											$filename_v6 = "{$g['conf_path']}/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
+											$filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
+											$filename_v6 = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
 											if (file_exists($filename)) {
 												$ipaddr = dyndnsCheckIP($dyndns['interface']);
 												$cached_ip_s = explode(":", file_get_contents($filename));

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
@@ -119,7 +120,7 @@ $main_buttons = array(
 										  </td>
 										  <td class="listr">
 										  <?php
-											$filename = "{$g['conf_path']}/dyndns_{$rfc2136['interface']}_rfc2136_" . escapeshellarg($rfc2136['host']) . "_{$rfc2136['server']}.cache";
+											$filename = "/conf/dyndns_{$rfc2136['interface']}_rfc2136_" . escapeshellarg($rfc2136['host']) . "_{$rfc2136['server']}.cache";
 											if (file_exists($filename)) {
 												echo "IPv4: ";
 												if (isset($rfc2136['usepublicip']))
