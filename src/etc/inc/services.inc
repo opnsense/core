@@ -346,10 +346,10 @@ function services_dhcpdv4_configure()
 
 	if (file_exists("/var/run/booting")) {
 		/* restore the leases, if we have them */
-		if (file_exists('/cf/conf/dhcpleases.tgz')) {
+		if (file_exists('/conf/dhcpleases.tgz')) {
 			$dhcprestore = '';
 			$dhcpreturn = '';
-			exec('cd /;LANG=C /usr/bin/tar -xzf /cf/conf/dhcpleases.tgz 2>&1', $dhcprestore, $dhcpreturn);
+			exec('cd /;LANG=C /usr/bin/tar -xzf /conf/dhcpleases.tgz 2>&1', $dhcprestore, $dhcpreturn);
 			$dhcprestore = implode(' ', $dhcprestore);
 			if($dhcpreturn <> 0) {
 				log_error(sprintf(gettext('DHCP leases restore failed exited with %1$s, the error is: %2$s%3$s'), $dhcpreturn, $dhcprestore, "\n"));
@@ -357,7 +357,7 @@ function services_dhcpdv4_configure()
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
 		if (($g['platform'] == "pfSense") && !isset($config['system']['use_mfs_tmpvar'])) {
-			unlink_if_exists('/cf/conf/dhcpleases.tgz');
+			unlink_if_exists('/conf/dhcpleases.tgz');
 		}
 	}
 
@@ -974,10 +974,10 @@ function services_dhcpdv6_configure($blacklist = array())
 	if (file_exists("/var/run/booting")) {
 		if ($g['platform'] != "pfSense") {
 			/* restore the leases, if we have them */
-			if (file_exists('/cf/conf/dhcp6leases.tgz')) {
+			if (file_exists('/conf/dhcp6leases.tgz')) {
 				$dhcprestore = '';
 				$dhcpreturn = '';
-				exec('cd /;LANG=C /usr/bin/tar -xzf /cf/conf/dhcp6leases.tgz 2>&1', $dhcprestore, $dhcpreturn);
+				exec('cd /;LANG=C /usr/bin/tar -xzf /conf/dhcp6leases.tgz 2>&1', $dhcprestore, $dhcpreturn);
 				$dhcprestore = implode(' ', $dhcprestore);
 				if($dhcpreturn <> 0) {
 					log_error("DHCP leases v6 restore failed exited with $dhcpreturn, the error is: $dhcprestore\n");
@@ -987,7 +987,7 @@ function services_dhcpdv6_configure($blacklist = array())
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
 		if (($g['platform'] == "pfSense") && !isset($config['system']['use_mfs_tmpvar'])) {
-			unlink_if_exists('/cf/conf/dhcp6leases.tgz');
+			unlink_if_exists('/conf/dhcp6leases.tgz');
 		}
 	}
 

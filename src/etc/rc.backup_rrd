@@ -1,7 +1,7 @@
 #!/bin/sh
 
 : ${RRDDBPATH:=/var/db/rrd}
-: ${CF_CONF_PATH:=/cf/conf}
+: ${CF_CONF_PATH:=/conf}
 
 # Save the rrd databases to the config path.
 if [ -d "${RRDDBPATH}" ]; then

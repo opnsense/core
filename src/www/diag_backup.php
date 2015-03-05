@@ -549,7 +549,7 @@ if ($_POST) {
 		} else if ($mode == "restore_ver") {
 			$input_errors[] = gettext("XXX - this feature may hose your config (do NOT backrev configs!) - billm");
 			if ($ver2restore <> "") {
-				$conf_file = '/cf/conf/backup/config-' . strtotime($ver2restore) . ".xml";
+				$conf_file = '/conf/backup/config-' . strtotime($ver2restore) . '.xml';
 				if (config_install($conf_file) == 0) {
 					mark_subsystem_dirty("restore");
 				} else {

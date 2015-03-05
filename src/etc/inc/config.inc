@@ -62,8 +62,8 @@ if(file_exists("/debugging")) {
 	$g['debug'] = true;
 }
 
-if(file_exists("/var/run/booting") && file_exists("/cf/conf/config.xml")) {
-	$config_contents = file_get_contents("/cf/conf/config.xml");
+if(file_exists("/var/run/booting") && file_exists("/conf/config.xml")) {
+	$config_contents = file_get_contents("/conf/config.xml");
 	if(stristr($config_contents, "<m0n0wall>") == true) {
 		/* user has just upgraded to m0n0wall, replace root xml tags */
 		log_error(gettext("Upgrading m0n0wall configuration to pfSense... "));
@@ -71,7 +71,7 @@ if(file_exists("/var/run/booting") && file_exists("/cf/conf/config.xml")) {
 		if (!config_validate('/conf/config.xml'))
 			log_error(gettext("ERROR!  Could not convert m0n0wall -> pfsense in config.xml"));
 		conf_mount_rw();
-		$fd = fopen("/cf/conf/config.xml", "w");
+		$fd = fopen("/conf/config.xml", "w");
 		fwrite($fd, $config_contents);
 		fclose($fd);
 		conf_mount_ro();
@@ -79,7 +79,7 @@ if(file_exists("/var/run/booting") && file_exists("/cf/conf/config.xml")) {
 }
 
 /* if our config file exists bail out, we're already set. */
-else if (file_exists("/var/run/booting") && !file_exists('/cf/conf/config.xml')) {
+else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
 	/* find the device where config.xml resides and write out an fstab */
 	unset($cfgdevice);
 	/* check if there's already an fstab (NFS booting?) */
@@ -108,7 +108,7 @@ else if (file_exists("/var/run/booting") && !file_exists('/cf/conf/config.xml'))
 				if (strstr($mountdisk, "md"))
 					continue;
 				if (mwexec("/sbin/mount -r /dev/{$mountdisk}a {$g['cf_path']}") == 0) {
-					if (file_exists('/cf/conf/config.xml')) {
+					if (file_exists('/conf/config.xml')) {
 						/* found it */
 						$cfgdevice = $mountdisk;
 						$cfgpartition = $cfgdevice . "a";
@@ -122,7 +122,7 @@ else if (file_exists("/var/run/booting") && !file_exists('/cf/conf/config.xml'))
 						break;
 				}
 				if (mwexec("/sbin/mount -r /dev/{$mountdisk}d {$g['cf_path']}") == 0) {
-					if (file_exists('/cf/conf/config.xml')) {
+					if (file_exists('/conf/config.xml')) {
 						/* found it */
 						$cfgdevice = $mountdisk;
 						$cfgpartition = $cfgdevice . "d";
@@ -142,7 +142,7 @@ else if (file_exists("/var/run/booting") && !file_exists('/cf/conf/config.xml'))
 			if($last_backup) {
 				log_error(gettext("No config.xml found, attempting last known config restore."));
 				file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-				restore_backup("/cf/conf/backup/{$last_backup}");
+				restore_backup("/conf/backup/{$last_backup}");
 			} else {
 				log_error(gettext("No config.xml or config backups found, resetting to factory defaults."));
 				restore_backup('/usr/local/etc/config.xml');

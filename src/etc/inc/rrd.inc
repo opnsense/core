@@ -50,11 +50,11 @@ function restore_rrd()
 
 	$rrdrestore = "";
 	$rrdreturn = "";
-	if (file_exists('/cf/conf/rrd.tgz')) {
+	if (file_exists('/conf/rrd.tgz')) {
 		foreach (glob("{$rrddbpath}/*.xml") as $xml_file) {
 			@unlink($xml_file);
 		}
-		$_gb = exec('cd /;LANG=C /usr/bin/tar -xzf /cf/conf/rrd.tgz 2>&1', $rrdrestore, $rrdreturn);
+		$_gb = exec('cd /;LANG=C /usr/bin/tar -xzf /conf/rrd.tgz 2>&1', $rrdrestore, $rrdreturn);
 		$rrdrestore = implode(" ", $rrdrestore);
 		if($rrdreturn != 0) {
 			log_error("RRD restore failed exited with $rrdreturn, the error is: $rrdrestore\n");
@@ -77,7 +77,7 @@ function restore_rrd()
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
 		if (($g['platform'] == "pfSense") && !isset($config['system']['use_mfs_tmpvar'])) {
-			unlink_if_exists('/cf/conf/rrd.tgz');
+			unlink_if_exists('/conf/rrd.tgz');
 		}
 		return true;
 	}

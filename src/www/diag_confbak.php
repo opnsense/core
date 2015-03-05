@@ -46,7 +46,7 @@ if (isset($_POST['backupcount'])) {
 	}
 
 	conf_mount_rw();
-	$confvers = unserialize(file_get_contents('/cf/conf/backup/backup.cache'));
+	$confvers = unserialize(file_get_contents('/conf/backup/backup.cache'));
 	if($_POST['newver'] != "") {
 		if(config_restore('/conf/backup/config-' . $_POST['newver'] . '.xml') == 0)
 		$savemsg = sprintf(gettext('Successfully reverted to timestamp %1$s with description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['newver']), $confvers[$_POST['newver']]['description']);

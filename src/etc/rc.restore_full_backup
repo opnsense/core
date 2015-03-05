@@ -5,7 +5,7 @@ if [ `tar tzPf $1 /usr/local/etc/rc 2>/dev/null` ]; then
 	echo " Backup file looks OK."
 	echo "One moment, restoring ${1}..."
 	if [ -f /tmp/do_not_restore_config.xml ]; then
-		EXCLUDE="--exclude /cf/conf/config.xml"
+		EXCLUDE="--exclude /conf/config.xml"
 		rm /tmp/do_not_restore_config.xml
 	else
 		EXCLUDE=""

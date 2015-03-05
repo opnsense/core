@@ -2,7 +2,7 @@
 
 NOTSYNCED="true"
 MAX_ATTEMPTS=3
-SERVER=`/bin/cat /cf/conf/config.xml | /usr/bin/grep timeservers | /usr/bin/cut -d">" -f2 | /usr/bin/cut -d"<" -f1`
+SERVER=`/bin/cat /conf/config.xml | /usr/bin/grep timeservers | /usr/bin/cut -d">" -f2 | /usr/bin/cut -d"<" -f1`
 if [ "${SERVER}" = "" ]; then
 	exit
 fi

@@ -106,7 +106,7 @@ else
 		done
 	fi
 
-	USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /cf/conf/config.xml`
+	USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
 	if [ "${PLATFORM}" = "nanobsd" ] || [ ${USE_MFS_TMPVAR} -gt 0 ]; then
 		/usr/local/etc/rc.embedded
 	fi
@@ -258,8 +258,8 @@ if [ ! -d /var/tmp ]; then
 	/bin/mkdir -p /var/tmp
 fi
 
-if [ ! -d /cf/conf/backup/ ]; then
-	/bin/mkdir -p /cf/conf/backup/
+if [ ! -d /conf/backup/ ]; then
+	/bin/mkdir -p /conf/backup/
 fi
 
 set -T
@@ -273,8 +273,8 @@ trap "echo 'Reboot interrupted'; exit 1" 3
 /bin/chmod 0777 /tmp/uploadbar
 
 echo -n "."
-DISABLESYSLOGCLOG=`/usr/bin/grep -c disablesyslogclog /cf/conf/config.xml`
-ENABLEFIFOLOG=`/usr/bin/grep -c usefifolog /cf/conf/config.xml`
+DISABLESYSLOGCLOG=`/usr/bin/grep -c disablesyslogclog /conf/config.xml`
+ENABLEFIFOLOG=`/usr/bin/grep -c usefifolog /conf/config.xml`
 LOG_FILES="system filter dhcpd vpn pptps poes l2tps openvpn portalauth ipsec ppp relayd wireless lighttpd ntpd gateways resolver routing"
 
 DEFAULT_LOG_FILE_SIZE=`/usr/local/bin/xmllint --xpath 'string(//pfsense/syslog/logfilesize)' /conf/config.xml`
@@ -342,7 +342,7 @@ sleep 1 # give configd some time to load to prevent missing socket
 
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
-/bin/rm -f /cf/conf/backup/backup.cache
+/bin/rm -f /conf/backup/backup.cache
 /bin/rm -f /root/lighttpd*
 /usr/bin/touch /var/run/booting
 /usr/local/etc/rc.bootup
