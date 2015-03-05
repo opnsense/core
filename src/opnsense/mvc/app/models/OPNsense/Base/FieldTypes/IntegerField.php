@@ -57,9 +57,9 @@ class IntegerField extends BaseField
     /**
      * constructor, set absolute min and max values
      */
-    public function __construct()
+    public function __construct($ref = null, $tagname = null)
     {
-        parent:: __construct();
+        parent:: __construct($ref, $tagname);
         $this->minimum_value = PHP_INT_MAX*-1;
         $this->maximum_value = PHP_INT_MAX ;
     }
