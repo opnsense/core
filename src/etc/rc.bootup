@@ -111,7 +111,7 @@ require_once("captiveportal.inc");
 echo ".";
 require_once("rrd.inc");
 echo ".";
-require_once("legacy.inc");
+require_once("pfsense-utils.inc");
 echo ".";
 
 /* get system memory amount */

@@ -3,7 +3,7 @@
 
 require_once("config.inc");
 require_once("util.inc");
-require_once("legacy.inc");
+require_once("pfsense-utils.inc");
 
 if (!is_array($config['aliases']['alias'])) {
 	// No aliases

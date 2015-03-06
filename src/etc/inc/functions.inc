@@ -138,7 +138,7 @@ if(!function_exists("dom_title")) {
 require_once("interfaces.inc");
 require_once("gwlb.inc");
 require_once("services.inc");
-require_once("legacy.inc");
+require_once("pfsense-utils.inc");
 require_once("certs.inc");
 require_once("system.inc");
 require_once("vslb.inc");

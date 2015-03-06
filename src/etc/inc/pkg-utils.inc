@@ -32,7 +32,7 @@ require_once("globals.inc");
 require_once("xmlrpc.inc");
 require_once("service-utils.inc");
 require_once("xmlparse.inc");
-require_once("legacy.inc");
+require_once("pfsense-utils.inc");
 
 if(!function_exists("update_status")) {
 	function update_status($status) {
@@ -1251,7 +1251,7 @@ function stop_packages()
 	require_once("shaper.inc");
 	require_once("captiveportal.inc");
 	require_once("pkg-utils.inc");
-	require_once("legacy.inc");
+	require_once("pfsense-utils.inc");
 	require_once("service-utils.inc");
 
 	global $config, $g;

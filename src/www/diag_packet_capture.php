@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 
@@ -73,7 +74,7 @@ if ($_POST['downloadbtn'] == gettext("Download Capture"))
 
 $pgtitle = array(gettext("Diagnostics"), gettext("Packet Capture"));
 require_once("guiconfig.inc");
-require_once("legacy.inc");
+require_once("pfsense-utils.inc");
 
 $fp = "/root/";
 $fn = "packetcapture.cap";
