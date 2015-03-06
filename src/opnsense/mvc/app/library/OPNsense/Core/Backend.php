@@ -57,6 +57,7 @@ class Backend
     public function sendEvent($event, $timeout = 120)
     {
         $endOfStream = chr(0).chr(0).chr(0);
+        $poll_timeout = 2 ; // poll timeout interval
 
         $resp = "";
         $stream = stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
@@ -69,8 +70,7 @@ class Backend
         fwrite($stream, $event);
 
         // read response data
-        $pollcount = 0 ;
-        $poll_timeout = 2 ; // poll timeout interval
+        $starttime = time() ;
         while (true) {
             $resp = $resp . stream_get_contents($stream);
 
@@ -80,8 +80,7 @@ class Backend
             }
 
             // handle timeouts
-            $pollcount += 1;
-            if (($poll_timeout * $pollcount) > $timeout) {
+            if ((time() - $starttime) > $timeout) {
                 throw new \Exception("Timeout (".$timeout.") executing :".$event);
             }
 
