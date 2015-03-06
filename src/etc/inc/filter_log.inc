@@ -387,12 +387,12 @@ function handle_ajax($nentries, $tail = 50) {
 			$row_time = strtotime($log_row['time']);
 			//$img = "<img border='0' src='" . find_action_image($log_row['act']) . "' alt={$log_row['act']} title={$log_row['act']} />";
 			if ($log_row['act']=="pass") {
-				$img="<span class='glyphicon glyphicon-play text-success' alt={$log_row['act']}></span>";				
+				$img="<span class='glyphicon glyphicon-play text-success' alt={$log_row['act']}></span>";
 			} elseif ($log_row['act']=="block") {
 				$img="<span class='glyphicon glyphicon-remove text-danger' alt={$log_row['act']}></span>";
 			} elseif ($log_row['act']=="reject") {
 				$img="<span class='glyphicon glyphicon-remove text-warning' alt={$log_row['act']}></span>";
-			}			
+			}
 			if($row_time > $lastsawtime) {
 				if ($log_row['proto'] == "TCP")
 					$log_row['proto'] .= ":{$log_row['tcpflags']}";

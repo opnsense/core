@@ -182,7 +182,7 @@ include("head.inc"); ?>
 					    </header>
 
 					    <div class="content-box-main">
-					    	<div class="table-responsive">
+						<div class="table-responsive">
 						        <table class="table table-striped">
 							        <tbody>
 							        <tr>
@@ -260,10 +260,10 @@ include("head.inc"); ?>
 							        <?php endif; ?>
 							        </tbody>
 							    </table>
-					    	</div>
-					    	<div class="container-fluid">
-					    		<input type="submit" class="btn btn-primary btn-fixed pull-right" value="<?=gettext("DNS Lookup");?>" />
-					    	</div>
+						</div>
+						<div class="container-fluid">
+							<input type="submit" class="btn btn-primary btn-fixed pull-right" value="<?=gettext("DNS Lookup");?>" />
+						</div>
 					    </div>
 					</div>
 				</section>

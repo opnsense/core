@@ -98,7 +98,7 @@
     BootstrapDialogModal.METHODS_TO_OVERRIDE['v3.3'] = {
         /**
          * Overrided.
-         * 
+         *
          * @returns {undefined}
          */
         setScrollbar: function() {
@@ -109,7 +109,7 @@
         },
         /**
          * Overrided.
-         * 
+         *
          * @returns {undefined}
          */
         resetScrollbar: function() {
@@ -120,7 +120,7 @@
         },
         /**
          * Overrided.
-         * 
+         *
          * @returns {undefined}
          */
         hideModal: function() {
@@ -140,7 +140,7 @@
         constructor: BootstrapDialogModal,
         /**
          * New function, to get the dialogs that opened by BootstrapDialog.
-         * 
+         *
          * @returns {undefined}
          */
         getGlobalOpenedDialogs: function() {
@@ -287,7 +287,7 @@
         },
         /**
          * To make multiple opened dialogs look better.
-         * 
+         *
          * Will be removed in later version, after Bootstrap Modal >= 3.3.0, updating z-index is unnecessary.
          */
         updateZIndex: function() {
