@@ -76,6 +76,3 @@ try:
     print ('response:%s'% data[:-3] )
 finally:
     sock.close()
-
-
-

@@ -1,5 +1,5 @@
-#!/usr/local/bin/php
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004, 2005 Scott Ullrich
@@ -34,7 +34,8 @@ header("Cache-Control: no-store, no-cache, must-revalidate" ); // HTTP/1.1
 header("Cache-Control: post-check=0, pre-check=0", FALSE );
 header("Pragma: no-cache"); // HTTP/1.0
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
+
 class QueueStats {
 	public $queuename;
 	public $queuelength;
@@ -306,4 +307,3 @@ function format_bits($bits) {
 		return sprintf("%d bps", $bits);
 	}
 }
-?>

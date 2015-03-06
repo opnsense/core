@@ -1,5 +1,6 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
+
 /*
         Copyright (C) 2010 Ermal Luçi
         All rights reserved.
@@ -31,5 +32,3 @@ require_once("config.inc");
 require_once("functions.inc");
 
 system_resolvconf_generate(true);
-
-?>

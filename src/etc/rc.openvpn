@@ -1,8 +1,7 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
-
 	Copyright (C) 2007 Manuel Kasper <mk@neon1.net>.
 	Copyright (C) 2009 Seth Mos <seth.mos@dds.nl>.
 	All rights reserved.
@@ -125,4 +124,3 @@ foreach ($arg_array as $arg_element) {
 }
 
 unlock($openvpnlck);
-?>

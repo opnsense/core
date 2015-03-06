@@ -1,10 +1,7 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
-/* $Id$ */
-/*
-	rc.update_alias_url-data.sh
-	part of pfSense (https://www.pfsense.org)
 
+/*
 	Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
 
@@ -30,9 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* parse the configuration and include all functions used below */
-/* config.inc retrives the util.inc and globals.inc */
-
 require_once("config.inc");
 require_once("functions.inc");
 
@@ -40,4 +34,3 @@ if (update_alias_url_data()) {
 	write_config();
 	send_event("filter reload");
 }
-?>

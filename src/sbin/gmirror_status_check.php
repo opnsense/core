@@ -1,7 +1,7 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
+
 /*
-	gmirror_status_check.php
 	Copyright (C) 2014 Jim Pingle
 
 	Redistribution and use in source and binary forms, with or without
@@ -24,12 +24,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/*
-	pfSense_BUILDER_BINARIES:	/sbin/gmirror	/sbin/geom	/usr/bin/grep	/usr/bin/egrep	/usr/bin/cut	/usr/bin/head
-	pfSense_BUILDER_BINARIES:	/sbin/mount	/usr/bin/awk	/usr/bin/sed
-	pfSense_MODULE:	gmirror
 */
 
 require_once("config.inc");
@@ -88,5 +82,3 @@ if (count($notices)) {
 // Write out current status if changed
 if ($mirror_status != $previous_mirror_status)
 	file_put_contents($status_file, serialize($mirror_status));
-
-?>

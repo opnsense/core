@@ -1,9 +1,7 @@
-#!/usr/local/bin/php -q
+#!/usr/local/bin/php
 <?php
 
 /*
-	part of m0n0wall (http://m0n0.ch/wall)
-
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -29,8 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-
-
 $options = getopt("hn", array("dry-run", "help"));
 
 if (isset($options["h"]) || isset($options["help"])) {
@@ -44,8 +40,6 @@ $dry_run = isset($options["n"]) || isset($options["dry-run"]);
 if ($dry_run) {
 	echo "DRY RUN MODE IS ON\n";
 }
-
-
 
 /* parse the configuration and include all functions used below */
 require_once("config.inc");
@@ -528,5 +522,3 @@ echo "\n" . gettext('Press <ENTER> to continue.');
 
 fgets($fp);
 fclose($fp);
-
-?>

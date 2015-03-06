@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -q
+#!/usr/local/bin/php
 <?php
 
 require_once("config.inc");
@@ -56,4 +56,3 @@ if (count($todo) > 0) {
 	if ($filter_reload)
 		send_event("filter reload");
 }
-?>

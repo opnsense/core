@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
@@ -57,4 +57,3 @@ if (isset($config['ipsec']['failoverforcereload']))
 	vpn_ipsec_force_reload();
 
 unlock($ipseclck);
-?>

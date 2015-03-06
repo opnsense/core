@@ -1,8 +1,7 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
-    part of pfSense (https://www.pfsense.org)
     Copyright (C) 2004 Scott Ullrich
     All rights reserved.
 

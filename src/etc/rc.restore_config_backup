@@ -1,5 +1,6 @@
-#!/usr/local/bin/php -q
+#!/usr/local/bin/php
 <?php
+
 require_once('config.inc');
 
 cleanup_backupcache();
@@ -122,5 +123,3 @@ while (true) {
 }
 
 fclose($fp);
-die;
-?>

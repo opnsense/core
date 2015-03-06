@@ -1,5 +1,5 @@
-#!/usr/local/bin/php
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.

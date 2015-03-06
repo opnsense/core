@@ -66,9 +66,3 @@ else:
             print (data[:-3])
         finally:
             sock.close()
-
-
-
-
-
-

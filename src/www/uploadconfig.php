@@ -1,5 +1,5 @@
-#!/usr/local/bin/php
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
@@ -27,8 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 header("Content-Type: text/plain");
 
@@ -52,4 +51,3 @@ if ($_POST['config']) {
 }
 
 exit(0);
-?>

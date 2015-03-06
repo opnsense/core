@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
@@ -55,4 +55,3 @@ $routelck = lock('routedns', LOCK_EX);
 system_staticroutes_configure();
 
 unlock($routelck);
-?>

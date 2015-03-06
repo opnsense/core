@@ -1,9 +1,7 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
-	part of m0n0wall (http://m0n0.ch/wall)
-
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -29,26 +27,25 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-	/* parse the configuration and include all functions used below */
-	require_once("config.inc");
-	require_once("functions.inc");
+/* parse the configuration and include all functions used below */
+require_once("config.inc");
+require_once("functions.inc");
 
-	$fp = fopen('php://stdin', 'r');
+$fp = fopen('php://stdin', 'r');
 
-	echo "\nEnter a host name or IP address: ";
+echo "\nEnter a host name or IP address: ";
 
-	$pinghost = chop(fgets($fp));
-	if (is_ipaddrv4($pinghost) || is_hostname($pinghost)) {
-		$command = "ping";
-	} elseif (is_ipaddrv6($pinghost)) {
-		$command = "ping6";
-	}
-	if ($command) {
-		echo "\n";
-		passthru("/sbin/{$command} -c 3 -n " . escapeshellarg($pinghost));
-		echo "\nPress ENTER to continue.\n";
-		fgets($fp);
-	}
+$pinghost = chop(fgets($fp));
+if (is_ipaddrv4($pinghost) || is_hostname($pinghost)) {
+	$command = "ping";
+} elseif (is_ipaddrv6($pinghost)) {
+	$command = "ping6";
+}
+if ($command) {
+	echo "\n";
+	passthru("/sbin/{$command} -c 3 -n " . escapeshellarg($pinghost));
+	echo "\nPress ENTER to continue.\n";
+	fgets($fp);
+}
 
-	fclose($fp);
-?>
+fclose($fp);

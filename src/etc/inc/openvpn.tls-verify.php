@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
@@ -68,5 +68,3 @@ if (isset($allowed_depth) && ($cert_depth > $allowed_depth)) {
 
 closelog();
 exit(0);
-
-?>

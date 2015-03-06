@@ -1,9 +1,7 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
-        part of pfSense
-
         Copyright (C) 2003-2005 Scott Ullrich <sullrich@gmail.com>.
         All rights reserved.
 
@@ -83,7 +81,6 @@ function handle_argument_group($iface, $argument2) {
 	}
 }
 
-global $g;
 if (!file_exists("/var/run/booting")) {
 	if (isset($_GET)) {
 		if (!empty($_GET['interface']))
@@ -92,22 +89,21 @@ if (!file_exists("/var/run/booting")) {
 		if ($argc < 3) {
 			log_error("HOTPLUG event: The number of required parameters not passed!");
 			exit;
+		}
+		$action = $argv[1];
+		switch($action) {
+		case "start":
+		case "stop":
+			break;
+		default:
+			log_error("HOTPLUG event: The action parameter passed is wrong($action) only start/stop/up/down are allowed!");
+			exit;
+			/* NOTREACHED */
+			break;
+		}
+		$interface = convert_real_interface_to_friendly_interface_name($argv[2]);
+		if (!empty($interface)) {
+			handle_argument_group($interface, $action);
+		}
 	}
-	$action = $argv[1];
-	switch($action) {
-	case "start":
-	case "stop":
-		break;
-	default:
-		log_error("HOTPLUG event: The action parameter passed is wrong($action) only start/stop/up/down are allowed!");
-		exit;
-		/* NOTREACHED */
-		break;
-	}
-	$interface = convert_real_interface_to_friendly_interface_name($argv[2]);
-	if (!empty($interface))
-		handle_argument_group($interface, $action);
 }
-}
-
-?>

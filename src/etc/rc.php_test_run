@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
@@ -36,5 +36,5 @@ if ($passed_tests) {
 	exit(0);
 }
 
-// Tests failed.
+echo 'FAILED';
 exit(1);

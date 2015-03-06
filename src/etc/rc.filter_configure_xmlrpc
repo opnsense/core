@@ -1,14 +1,11 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
         Copyright (C) 2004-2006 Scott Ullrich
-        Copyright (C) 2005              Bill Marquette
-        Copyright (C) 2006              Peter Allgeyer
-        Copyright (C) 2008              Ermal Luci
-        All rights reserved.
-
-        originally part of m0n0wall (http://m0n0.ch/wall)
+        Copyright (C) 2005 Bill Marquette
+        Copyright (C) 2006 Peter Allgeyer
+        Copyright (C) 2008 Ermal Luci
         Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
         All rights reserved.
 
@@ -42,12 +39,10 @@ require_once("filter.inc");
 require_once("shaper.inc");
 require_once("xmlrpc.inc");
 require_once("interfaces.inc");
+require_once("openvpn.inc");
 
 system_routing_configure();
 setup_gateways_monitor();
 relayd_configure();
-require_once("openvpn.inc");
 openvpn_resync_all();
 services_dhcpd_configure();
-
-?>

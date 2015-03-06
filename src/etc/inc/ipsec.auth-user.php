@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
@@ -155,5 +155,3 @@ if (isset($_GET['username']))
 	echo "OK";
 else
 	exit(0);
-
-?>

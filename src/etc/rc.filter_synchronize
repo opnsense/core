@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
@@ -432,5 +432,3 @@ if (is_array($config['hasync'])) {
 		$numberofruns = 3;
 	}
 }
-
-?>

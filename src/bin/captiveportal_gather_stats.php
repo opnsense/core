@@ -1,8 +1,7 @@
-#!/usr/local/bin/php -q
+#!/usr/local/bin/php
 <?php
-/* $Id$ */
+
 /*
-        captiveportal_gather_stats.php
         Copyright (C) 2011 Warren Baker
         All rights reserved.
 
@@ -108,5 +107,3 @@ if ($type == "loggedin") {
 	$result = $no_users;
 
 echo "$result";
-
-?>

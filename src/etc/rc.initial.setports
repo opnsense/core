@@ -1,9 +1,7 @@
-#!/usr/local/bin/php -f
+#!/usr/local/bin/php
 <?php
 
 /*
-	part of m0n0wall (http://m0n0.ch/wall)
-
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -29,22 +27,17 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-	/* parse the configuration and include all functions used below */
-	require_once("config.inc");
-	require_once("config.console.inc");
-	require_once("functions.inc");
-	require_once("filter.inc");
-	require_once("shaper.inc");
-	require_once("ipsec.inc");
-	require_once("vpn.inc");
-	require_once("captiveportal.inc");
-	require_once("rrd.inc");
+/* parse the configuration and include all functions used below */
+require_once("config.inc");
+require_once("config.console.inc");
+require_once("functions.inc");
+require_once("filter.inc");
+require_once("shaper.inc");
+require_once("ipsec.inc");
+require_once("vpn.inc");
+require_once("captiveportal.inc");
+require_once("rrd.inc");
 
-	set_networking_interfaces_ports();
-
-	reload_interfaces_sync();
-
-	/* reload graphing functions */
-    enable_rrd_graphing();
-
-?>
+set_networking_interfaces_ports();
+reload_interfaces_sync();
+enable_rrd_graphing();
