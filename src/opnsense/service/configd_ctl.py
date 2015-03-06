@@ -38,7 +38,7 @@ import sys
 
 __author__ = 'Ad Schellevis'
 
-configd_socket_name = 'testing/configd.socket'
+configd_socket_name = '/var/run/configd.socket'
 
 # set a timeout to the socket
 socket.setdefaulttimeout(120)
