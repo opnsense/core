@@ -38,9 +38,10 @@ import sys
 
 __author__ = 'Ad Schellevis'
 
-configd_socket_name = '/var/run/configd.socket'
+configd_socket_name = 'testing/configd.socket'
 
-
+# set a timeout to the socket
+socket.setdefaulttimeout(120)
 
 if len(sys.argv) <= 1:
     print 'usage : %s <command>'%sys.argv[0]
@@ -52,13 +53,21 @@ else:
         sock.connect(configd_socket_name)
         try:
             sock.send(exec_command)
-            data = []
+            data = ""
             while True:
                 line = sock.recv(4096)
                 if line:
-                    data.append(line)
-                else:
+                    data = data + line
+
+                if data.find("%c%c%c"%(chr(0),chr(0),chr(0))) > -1:
                     break
-            print (''.join(data))
+
+            print (data[:-3])
         finally:
             sock.close()
+
+
+
+
+
+

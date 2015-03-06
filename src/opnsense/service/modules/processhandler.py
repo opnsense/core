@@ -103,7 +103,7 @@ class Handler(object):
                         # run single threaded
                         cmd_thread.run()
                     else:
-                        # rnu threaded
+                        # run threaded
                         cmd_thread.start()
 
             except KeyboardInterrupt:
@@ -171,6 +171,9 @@ class HandlerClient(threading.Thread):
 
                 # send response back to client( including trailing enter )
                 self.connection.sendall('%s\n'%result)
+
+            # send end of stream characters
+            self.connection.sendall("%c%c%c"%(chr(0),chr(0),chr(0)))
         except:
             print (traceback.format_exc())
             syslog.syslog(syslog.LOG_ERR,
