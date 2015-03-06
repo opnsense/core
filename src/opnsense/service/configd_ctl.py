@@ -59,6 +59,7 @@ else:
                 if line:
                     data = data + line
 
+                # end of stream marker found, exit
                 if data.find("%c%c%c"%(chr(0),chr(0),chr(0))) > -1:
                     break
 

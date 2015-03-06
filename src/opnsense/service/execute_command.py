@@ -63,13 +63,19 @@ except socket.error, msg:
 try:
     print ('send:%s '%exec_command)
     sock.send(exec_command)
-    data = []
+    data = ""
     while True:
         line = sock.recv(4096)
         if line:
-            data.append(line)
-        else:
+            data = data + line
+
+        # end of stream marker found, exit
+        if data.find("%c%c%c"%(chr(0),chr(0),chr(0))) > -1:
             break
-    print ('response:%s'% ''.join(data) )
+
+    print ('response:%s'% data[:-3] )
 finally:
     sock.close()
+
+
+
