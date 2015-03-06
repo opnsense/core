@@ -90,7 +90,7 @@ case ${opmode} in
 	/usr/local/etc/rc.restart_webgui
 	;;
 12)
-	/usr/local/etc/rc.initial.firmware_update
+	/usr/local/etc/rc.initial.firmware
 	;;
 13)
 	/usr/local/etc/rc.restore_config_backup
