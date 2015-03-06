@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004, 2005 Scott Ullrich
@@ -34,7 +35,7 @@ require_once("shaper.inc");
 require_once("util.inc");
 
 if($_GET['reset'] <> "") {
-	sigkillbyname('pfctl', SIGKILL);
+	killbyname('pfctl');
 	exit;
 }
 

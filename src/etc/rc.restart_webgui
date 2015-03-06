@@ -9,7 +9,7 @@ require_once("rrd.inc");
 
 echo "Restarting webConfigurator...";
 
-sigkillbyname("lighttpd", "KILL");
+killbyname("lighttpd");
 
 while (is_process_running("lighttpd")) {
         echo '.';

@@ -60,15 +60,11 @@ function sigkillbypid($pidfile, $sig) {
 }
 
 /* kill a process by name */
-function sigkillbyname($procname, $sig) {
-	if(isvalidproc($procname))
-		return mwexec("/usr/bin/killall " . escapeshellarg("-{$sig}") . " " . escapeshellarg($procname), true);
-}
-
-/* kill a process by name */
-function killbyname($procname) {
-	if(isvalidproc($procname))
-		mwexec("/usr/bin/killall " . escapeshellarg($procname));
+function killbyname($procname)
+{
+	if (isvalidproc($procname)) {
+		mwexec('/usr/bin/killall ' . escapeshellarg($procname));
+	}
 }
 
 function is_subsystem_dirty($subsystem = "") {
