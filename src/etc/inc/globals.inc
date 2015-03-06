@@ -103,7 +103,8 @@ if(file_exists("/usr/local/etc/platform")) {
 }
 
 /* Default sysctls */
-$sysctls = array("net.inet.ip.portrange.first" => "1024",
+$sysctls = array(
+	"net.inet.ip.portrange.first" => "1024",
 	"net.inet.tcp.blackhole" => "2",
 	"net.inet.udp.blackhole" => "1",
 	"net.inet.ip.random_id" => "1",
@@ -138,7 +139,8 @@ $sysctls = array("net.inet.ip.portrange.first" => "1024",
 	"net.route.netisr_maxqlen" => 1024,
 	"net.inet.udp.checksum" => 1,
 	"net.bpf.zerocopy_enable" => 1,
-	"net.inet.icmp.reply_from_interface" => 1
+	"net.inet.icmp.reply_from_interface" => 1,
+	"net.inet6.ip6.rfc6204w3" => 1,
 );
 
 $config_parsed = false;
