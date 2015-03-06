@@ -385,7 +385,7 @@ function system_routing_configure($interface = '')
 	$foundgwv6 = false;
 	/* tack on all the hard defined gateways as well */
 	if (is_array($config['gateways']['gateway_item'])) {
-		array_map('unlink', glob("{$g['tmp_path']}/*_defaultgw{,v6}", GLOB_BRACE));
+		array_map('unlink', glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE));
 		foreach	($config['gateways']['gateway_item'] as $gateway) {
 			if (isset($gateway['defaultgw'])) {
 				if ($gateway['ipprotocol'] != "inet6" && (is_ipaddrv4($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
@@ -398,7 +398,7 @@ function system_routing_configure($interface = '')
 					if (!empty($gateway['interface'])) {
 						$defaultif = get_real_interface($gateway['interface']);
 						if ($defaultif)
-							@file_put_contents("{$g['tmp_path']}/{$defaultif}_defaultgw", $gateway['gateway']);
+							@file_put_contents("/tmp/{$defaultif}_defaultgw", $gateway['gateway']);
 					}
 					$foundgw = true;
 				} else if ($gateway['ipprotocol'] == "inet6" && (is_ipaddrv6($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
@@ -409,7 +409,7 @@ function system_routing_configure($interface = '')
 					if (!empty($gateway['interface'])) {
 						$defaultifv6 = get_real_interface($gateway['interface']);
 						if ($defaultifv6)
-							@file_put_contents("{$g['tmp_path']}/{$defaultifv6}_defaultgwv6", $gateway['gateway']);
+							@file_put_contents("/tmp/{$defaultifv6}_defaultgwv6", $gateway['gateway']);
 					}
 					$foundgwv6 = true;
 				}
@@ -422,13 +422,13 @@ function system_routing_configure($interface = '')
 		$defaultif = get_real_interface("wan");
 		$interfacegw = "wan";
 		$gatewayip = get_interface_gateway("wan");
-		@touch("{$g['tmp_path']}/{$defaultif}_defaultgw");
+		@touch("/tmp/{$defaultif}_defaultgw");
 	}
 	if ($foundgwv6 == false) {
 		$defaultifv6 = get_real_interface("wan");
 		$interfacegwv6 = "wan";
 		$gatewayipv6 = get_interface_gateway_v6("wan");
-		@touch("{$g['tmp_path']}/{$defaultif}_defaultgwv6");
+		@touch("/tmp/{$defaultif}_defaultgwv6");
 	}
 	$dont_add_route = false;
 	/* if OLSRD is enabled, allow WAN to house DHCP. */
@@ -915,8 +915,7 @@ function system_generate_lighty_config(
 {
 	global $config, $g;
 
-	if(!is_dir("{$g['tmp_path']}/lighttpdcompress"))
-		mkdir("{$g['tmp_path']}/lighttpdcompress");
+	@mkdir('/tmp/lighttpdcompress');
 
 	if ($captive_portal !== false)  {
 		$captiveportal = ",\"mod_rewrite\",\"mod_evasive\"";
@@ -927,16 +926,15 @@ function system_generate_lighty_config(
 			$maxprocperip = 10;
 		$captive_portal_mod_evasive = "evasive.max-conns-per-ip = {$maxprocperip}";
 
-		$server_upload_dirs = "server.upload-dirs = ( \"{$g['tmp_path']}/captiveportal/\" )\n";
-		if(!is_dir("{$g['tmp_path']}/captiveportal"))
-			@mkdir("{$g['tmp_path']}/captiveportal", 0555);
+		$server_upload_dirs = "server.upload-dirs = ( \"/tmp/captiveportal/\" )\n";
+		@mkdir('/tmp/captiveportal', 0555);
 		$server_max_request_size = "server.max-request-size    = 384";
 		$cgi_config = "";
 	} else {
 		$captiveportal = ",\"mod_cgi\"";
 		$captive_portal_rewrite = "";
 		$captive_portal_mod_evasive = "";
-		$server_upload_dirs = "server.upload-dirs = ( \"{$g['upload_path']}/\", \"{$g['tmp_path']}/\", \"/var/\" )\n";
+		$server_upload_dirs = "server.upload-dirs = ( \"{$g['upload_path']}/\", \"/tmp/\", \"/var/\" )\n";
 		$server_max_request_size = "server.max-request-size    = 2097152";
 		$cgi_config = "cgi.assign                 = ( \".cgi\" => \"\" )";
 	}
@@ -983,12 +981,13 @@ server.errorlog-use-syslog="enable"
 EOD;
 	}
 
-        if ($captive_portal !== false)
-                $fast_cgi_path = "{$g['tmp_path']}/php-fastcgi-{$captive_portal}.socket";
-        else
-                $fast_cgi_path = "{$g['tmp_path']}/php-fastcgi.socket";
+        if ($captive_portal !== false) {
+                $fast_cgi_path = "/tmp/php-fastcgi-{$captive_portal}.socket";
+        } else {
+                $fast_cgi_path = "/tmp/php-fastcgi.socket";
+	}
 
-		$fastcgi_config = <<<EOD
+	$fastcgi_config = <<<EOD
 #### fastcgi module
 ## read fastcgi.txt for more info
 fastcgi.server = ( ".php" =>
@@ -1006,7 +1005,6 @@ fastcgi.server = ( ".php" =>
 )
 
 EOD;
-
 
 	$lighty_config = <<<EOD
 #
@@ -1156,7 +1154,7 @@ debug.log-request-handling = "disable"
 debug.log-file-not-found   = "disable"
 
 # gzip compression
-compress.cache-dir = "{$g['tmp_path']}/lighttpdcompress/"
+compress.cache-dir = "/tmp/lighttpdcompress/"
 compress.filetype  = ("text/plain","text/css", "text/xml", "text/javascript" )
 
 {$server_upload_dirs}
