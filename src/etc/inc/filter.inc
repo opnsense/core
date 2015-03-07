@@ -1406,21 +1406,26 @@ function filter_nat_rules_automatic_tonathosts($with_descr = false) {
 		return $tonathosts;
 }
 
-function filter_nat_rules_outbound_automatic($src) {
+function filter_nat_rules_outbound_automatic($src)
+{
 	global $config, $FilterIflist;
 
 	$rules = array();
+
 	foreach ($FilterIflist as $if => $ifcfg) {
-		if (substr($ifcfg['if'], 0, 4) == "ovpn")
+		if (substr($ifcfg['if'], 0, 4) == 'ovpn') {
 			continue;
-		if (!interface_has_gateway($if))
+		}
+
+		if (!interface_has_gateway($if)) {
 			continue;
+		}
 
 		$natent = array();
 		$natent['interface'] = $if;
 		$natent['source']['network'] = $src;
-		$natent['dstport'] = "500";
-		$natent['target'] = $ifcfg['ip'];
+		$natent['dstport'] = '500';
+		$natent['target'] = '';
 		$natent['destination']['any'] = true;
 		$natent['staticnatport'] = true;
 		$natent['descr'] = gettext('Auto created rule for ISAKMP');
@@ -1429,13 +1434,14 @@ function filter_nat_rules_outbound_automatic($src) {
 		$natent = array();
 		$natent['interface'] = $if;
 		$natent['source']['network'] = $src;
-		$natent['sourceport'] = "";
-		$natent['target'] = $ifcfg['ip'];
+		$natent['sourceport'] = '';
+		$natent['target'] = '';
 		$natent['destination']['any'] = true;
-		$natent['natport'] = "";
+		$natent['natport'] = '';
 		$natent['descr'] = gettext('Auto created rule');
-		if (isset($ifcfg['nonat']))
+		if (isset($ifcfg['nonat'])) {
 			$natent['nonat'] = true;
+		}
 		$rules[] = $natent;
 	}
 
