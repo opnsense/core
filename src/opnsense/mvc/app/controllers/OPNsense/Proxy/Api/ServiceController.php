@@ -30,6 +30,7 @@ namespace OPNsense\Proxy\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
+use \OPNsense\Proxy\General;
 
 /**
  * Class ServiceController
@@ -97,14 +98,20 @@ class ServiceController extends ApiControllerBase
      */
     public function reconfigureAction()
     {
+        $mdlGeneral = new General();
         $backend = new Backend();
         $backend->sendEvent("template reload OPNsense.Proxy");
 
         $runStatus = $this->statusAction();
 
         if ($runStatus['status'] == "running") {
-            $backend->sendEvent("service reconfigure proxy");
-        } else {
+            if ($mdlGeneral->enabled->__toString() == 1) {
+                $backend->sendEvent("service reconfigure proxy");
+            } else {
+                $this->stopAction();
+            }
+
+        } elseif ($mdlGeneral->enabled->__toString() == 1) {
             $this->startAction();
         }
 
