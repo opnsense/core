@@ -53,6 +53,7 @@
 
         <!-- OPNsense standard toolkit -->
         <script type="text/javascript" src="/ui/js/opnsense.js"></script>
+        <script type="text/javascript" src="/ui/js/opnsense_ui.js"></script>
 
 	</head>
 	<body>
@@ -98,7 +99,7 @@
 			<header class="page-content-head">
 				<div class="container-fluid">
 						<ul class="list-inline">
-							<li class="__mb"><h1>title</h1></li>
+							<li class="__mb"><h1>{{title | default("")}}</h1></li>
 
 							<li class="btn-group-container">
 								<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span>Add widget</button> -->
