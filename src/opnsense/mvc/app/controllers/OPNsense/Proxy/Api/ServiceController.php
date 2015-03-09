@@ -102,7 +102,7 @@ class ServiceController extends ApiControllerBase
 
         $runStatus = $this->statusAction();
 
-        if ($runStatus == "running") {
+        if ($runStatus['status'] == "running") {
             $backend->sendEvent("service reconfigure proxy");
         } else {
             $this->startAction();
