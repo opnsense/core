@@ -36,25 +36,20 @@ PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 if [ -z "$pkg_running" ]; then
 	echo "***GOT REQUEST TO UPGRADE: $package***" >> ${PKG_PROGRESS_FILE}
 	if [ "$package" == "all" ]; then
-	    # start pkg upgrade
-	    echo '***STARTING UPGRADE***' >> ${PKG_PROGRESS_FILE}
+		echo '***STARTING UPGRADE***' >> ${PKG_PROGRESS_FILE}
 		pkg upgrade -y >> ${PKG_PROGRESS_FILE}
-		echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> ${PKG_PROGRESS_FILE}
-		/usr/local/opnsense/scripts/pkg_updatecheck.sh
-		echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 	else
-		# start pkg upgrade
-	    echo '***STARTING UPGRADE - ONE PACKAGE***' >> ${PKG_PROGRESS_FILE}
+		# XXX this is dangerous and not recommended by pkgng devs
+		echo '***STARTING UPGRADE - ONE PACKAGE***' >> ${PKG_PROGRESS_FILE}
 		pkg upgrade -y $package >> ${PKG_PROGRESS_FILE}
-		echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> ${PKG_PROGRESS_FILE}
-		/usr/local/opnsense/scripts/pkg_updatecheck.sh
-		echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 	fi
+	echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> ${PKG_PROGRESS_FILE}
+	/usr/local/opnsense/scripts/pkg_updatecheck.sh
 	# remove no longer referenced packages
 	pkg autoremove -y >> ${PKG_PROGRESS_FILE}
-	# regenerate php.ini and restart the web server
-	/usr/local/etc/rc.php_ini_setup >> ${PKG_PROGRESS_FILE}
+	# restart the web server
 	/usr/local/opnsense/service/configd_ctl.py 'service restart webgui' >> ${PKG_PROGRESS_FILE}
+	echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 else
 	echo 'Upgrade already in progress' >> ${PKG_PROGRESS_FILE}
 	echo '***DONE***' >> ${PKG_PROGRESS_FILE}

@@ -888,6 +888,9 @@ function system_webgui_start()
 
 	@unlink("{$g['varrun_path']}/lighty-webConfigurator.pid");
 
+	/* regenerate the php.ini files in case the setup has changed */
+	mwexec('/usr/local/etc/rc.php_ini_setup');
+
 	/* attempt to start lighthttpd */
 	$res = mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-webConfigurator.conf");
 
