@@ -155,10 +155,6 @@ elif [ "$PLATFORM" = "nanobsd" ] || [ ${USE_MFS_TMPVAR} -gt 0 ]; then
 	/bin/mkdir -p /root/var/db/pkg
 	/bin/rm -rf /var/db/pkg
 	/bin/ln -s /root/var/db/pkg/ /var/db/pkg
-	# Ensure that PBI packages can be persistent across reboots
-	/bin/mkdir -p /root/var/db/pbi
-	/bin/rm -rf /var/db/pbi
-	/bin/ln -s /root/var/db/pbi/ /var/db/pbi
 else
 	/sbin/swapon -a
 	/usr/local/etc/rc.savecore
@@ -167,8 +163,6 @@ else
 		# User must have just disabled RAM disks, move these back into place.
 		/bin/mkdir -p /var/db/pkg
 		/bin/mv /root/var/db/pkg /var/db/pkg
-		/bin/mkdir -p /var/db/pbi
-		/bin/mv /root/var/db/pbi /var/db/pbi
 	fi
 fi
 
