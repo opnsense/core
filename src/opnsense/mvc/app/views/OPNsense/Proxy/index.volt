@@ -10,24 +10,26 @@
 
         // form event handlers
         $("#save").click(function(){
-            data = getFormData("frm_general");
-            ajaxCall(url="/api/proxy/settings/set",sendData=data,callback=function(data,status){
-                if ( status == "success") {
-                    handleFormValidation("frm_general",data['validations']);
-                    if (data['validations'] != undefined) {
+            saveFormToEndpoint(url="/api/proxy/settings/set",formid="frm_general",callback_ok=function(){
+                // on correct save, perform reconfigure. set progress animation when reloading
+                $("#frm_general_progress").addClass("fa fa-spinner fa-pulse");
+
+                //
+                ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status){
+                    // when done, disable progress animation.
+                    $("#frm_general_progress").removeClass("fa fa-spinner fa-pulse");
+
+                    if (status != "success" || data['status'] != 'ok' ) {
+                        // fix error handling
                         BootstrapDialog.show({
                             type:BootstrapDialog.TYPE_WARNING,
-                            title: 'Input validation',
-                            message: 'Please correct validation errors in form'
+                            title: 'Proxy',
+                            message: JSON.stringify(data)
                         });
                     }
-                }
-                // TODO: implement error handling
-                //alert(status);
+                });
 
             });
-
-
         });
 
     });
@@ -42,24 +44,29 @@
 <div class="content-box tab-content">
     <div id="tabGeneral" class="tab-pane fade in active">
         <form id="frm_general" class="form-inline">
-            <table class="table table-striped">
+            <table class="table table-striped table-condensed table-responsive">
                 <colgroup>
-                    <col class="col-md-3">
-                    <col class="col-md-4">
-                    <col class="col-md-5">
+                    <col class="col-md-3"/>
+                    <col class="col-md-4"/>
+                    <col class="col-md-5"/>
                 </colgroup>
                 <tbody>
                     {{ partial("layout_partials/form_input_tr",
                         ['id': 'general.enabled',
                          'label':'enabled',
                          'type':'checkbox',
-                         'help':'gfvjhgghfh'
+                         'help':'test'
                         ])
                     }}
-                    {{ partial("layout_partials/form_input_tr", ['id': 'general.port','label':'test','type':'text']) }}
+                    {{ partial("layout_partials/form_input_tr",
+                        ['id': 'general.port',
+                         'label':'port',
+                         'type':'text'
+                        ])
+                    }}
 
                     <tr>
-                        <td colspan="3"><button class="btn btn-primary"  id="save" type="button">Save</button></td>
+                        <td colspan="3"><button class="btn btn-primary"  id="save" type="button">Apply <i id="frm_general_progress" class=""></i></button></td>
                     </tr>
                 </tbody>
             </table>

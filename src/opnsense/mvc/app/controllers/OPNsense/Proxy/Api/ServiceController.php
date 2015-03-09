@@ -91,4 +91,23 @@ class ServiceController extends ApiControllerBase
 
         return array("status" => $status);
     }
+
+    /**
+     * reconfigure squid, generate config and reload
+     */
+    public function reconfigureAction()
+    {
+        $backend = new Backend();
+        $backend->sendEvent("template reload OPNsense.Proxy");
+
+        $runStatus = $this->statusAction();
+
+        if ($runStatus == "running") {
+            $backend->sendEvent("service reconfigure proxy");
+        } else {
+            $this->startAction();
+        }
+
+        return array("status" => "ok");
+    }
 }
