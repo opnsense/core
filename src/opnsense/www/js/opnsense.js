@@ -106,7 +106,7 @@ function ajaxCall(url,sendData,callback) {
             } else if ( "responseJSON" in data ) {
                 callback(data['responseJSON'],status);
             } else {
-                callback({},status);
+                callback(data,status);
             }
         },
         data:sendData
@@ -136,3 +136,5 @@ function ajaxGet(url,sendData,callback) {
         data:sendData
     });
 }
+
+
