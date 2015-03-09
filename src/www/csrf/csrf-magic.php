@@ -347,7 +347,7 @@ function csrf_conf($key, $val) {
  * Starts a session if we're allowed to.
  */
 function csrf_start() {
-    if ($GLOBALS['csrf']['auto-session'] && !session_id()) {
+    if ($GLOBALS['csrf']['auto-session'] && session_status() == PHP_SESSION_NONE) {
         session_start();
     }
 }

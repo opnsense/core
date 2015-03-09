@@ -146,8 +146,9 @@ if ($_GET['act'] == "del") {
 		}
 
 		if (!$input_errors) {
-			if (!session_id())
+			if (session_status() == PHP_SESSION_NONE) {
 				session_start();
+                        }
 			$user = getUserEntry($_SESSION['Username']);
 			if (is_array($user) && userHasPrivilege($user, "user-config-readonly")) {
 				header("Location: firewall_virtual_ip.php");

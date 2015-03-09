@@ -44,8 +44,9 @@ if (isset($_POST['save'])) {
 		$input_errors[] = gettext("The passwords do not match.");
 
 	if (!$input_errors) {
-		if (!session_id())
+		if (session_status() == PHP_SESSION_NONE) {
 			session_start();
+                }
 		// all values are okay --> saving changes
 		$config['system']['user'][$userindex[$_SESSION['Username']]]['password'] = crypt($_POST['passwordfld1'], '$6$');
 		local_user_set($config['system']['user'][$userindex[$_SESSION['Username']]]);
@@ -57,8 +58,9 @@ if (isset($_POST['save'])) {
 	}
 }
 
-if (!session_id())
+if (session_status() == PHP_SESSION_NONE) {
 	session_start();
+}
 
 /* determine if user is not local to system */
 $islocal = false;
@@ -103,8 +105,9 @@ include("head.inc");
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
 			                                <tr>
-			<?php if (!session_id())
+			<?php if (session_status() == PHP_SESSION_NONE) {
 					session_start();
+                        }
 			?>
 			                                        <td colspan="2" valign="top" class="listtopic"><?=$_SESSION['Username']?>'s <?=gettext("Password"); ?></td>
 			<?php session_write_close(); ?>

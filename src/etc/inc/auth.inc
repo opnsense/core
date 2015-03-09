@@ -1333,8 +1333,9 @@ function session_auth() {
 		true
 	);
 
-	if (!session_id())
+	if (session_status() == PHP_SESSION_NONE) {
 		session_start();
+	}
 
 	// Detect protocol change
 	if (!isset($_POST['login']) && !empty($_SESSION['Logged_In']) && $_SESSION['protocol'] != $config['system']['webgui']['protocol'])

@@ -466,8 +466,8 @@ function write_config($desc = 'Unknown', $backup = true)
 	$config_xml = '/conf/config.xml';
 
 	if (!empty($_SERVER['REMOTE_ADDR'])) {
-		if (!session_id()) {
-			@session_start();
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
 		}
 		if (!empty($_SESSION['Username']) && ($_SESSION['Username'] != 'root')) {
 			$user = getUserEntry($_SESSION['Username']);
