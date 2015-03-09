@@ -47,7 +47,6 @@ pkg upgrade -y
 echo
 
 # restart the GUI after PHP changes have been applied
-/usr/local/etc/rc.php_ini_setup
 /usr/local/etc/rc.restart_webgui
 
 echo
