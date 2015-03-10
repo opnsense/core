@@ -98,21 +98,29 @@ class ServiceController extends ApiControllerBase
      */
     public function reconfigureAction()
     {
+        // close session for long running action
+        session_write_close();
+
         $mdlGeneral = new General();
         $backend = new Backend();
-        $backend->sendEvent("template reload OPNsense.Proxy");
 
         $runStatus = $this->statusAction();
 
-        if ($runStatus['status'] == "running") {
-            if ($mdlGeneral->enabled->__toString() == 1) {
+        // stop squid when disabled
+        if ($runStatus['status'] == "running" && $mdlGeneral->enabled->__toString() == 0) {
+            $this->stopAction();
+        }
+
+        // generate template
+        $backend->sendEvent("template reload OPNsense.Proxy");
+
+        // (res)start daemon
+        if ($mdlGeneral->enabled->__toString() == 1) {
+            if ($runStatus['status'] == "running") {
                 $backend->sendEvent("service reconfigure proxy");
             } else {
-                $this->stopAction();
+                $this->startAction();
             }
-
-        } elseif ($mdlGeneral->enabled->__toString() == 1) {
-            $this->startAction();
         }
 
         return array("status" => "ok");
