@@ -8,6 +8,9 @@
             <default>0</default>
             <Required>Y</Required>
         </enabled>
+        <interfaces type="CSVListField">
+            <Required>N</Required>
+        </interfaces>
         <port type="IntegerField">
             <default>3128</default>
             <MinimumValue>1</MinimumValue>

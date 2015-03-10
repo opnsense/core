@@ -59,6 +59,12 @@
                         ])
                     }}
                     {{ partial("layout_partials/form_input_tr",
+                        ['id': 'general.interfaces',
+                        'label':'interfaces',
+                        'type':'select_multiple'
+                        ])
+                    }}
+                    {{ partial("layout_partials/form_input_tr",
                         ['id': 'general.port',
                          'label':'port',
                          'type':'text'

@@ -47,6 +47,10 @@ class SettingsController extends ApiControllerBase
         $result = array();
         if ($this->request->isGet()) {
             $mdlGeneral = new General();
+
+            $selopt=array("lan"=>"LAN","wan"=>"WAN");
+            $mdlGeneral->interfaces->setSelectOptions($selopt);
+
             $result['general'] = $mdlGeneral->getNodes();
         }
 
