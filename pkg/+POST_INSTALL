@@ -25,8 +25,9 @@ echo "Writing OPNsense version"
 mkdir -p /usr/local/opnsense/version
 echo "%%REPO_VERSION%%-%%REPO_COMMENT%%" > /usr/local/opnsense/version/opnsense
 
-if [ -f /var/run/configd.pid ]; then
-	echo "Restarting configd"
-	pkill -F /var/run/configd.pid
-	/usr/local/opnsense/service/configd.py
+# restart configd if running
+/usr/local/etc/rc.d/configd status > /dev/null
+if [ $? -eq 0 ]; then
+  /usr/local/etc/rc.d/configd restart
 fi
+
