@@ -28,8 +28,8 @@ lint:
 	find ${.CURDIR}/src ! -name "*.xml" ! -name "*.eot" \
 	    ! -name "*.svg" ! -name "*.woff" ! -name "*.woff2" \
 	    ! -name "*.otf" ! -name "*.png" ! -name "*.js" \
-	    ! -name "*.scss" ! -name "*.py" -type f -print0 | \
-	    xargs -0 -n1 php -l
+	    ! -name "*.scss" ! -name "*.py" ! -name "*.ttf" \
+	    -type f -print0 | xargs -0 -n1 php -l
 
 sweep:
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
