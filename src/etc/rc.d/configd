@@ -12,7 +12,9 @@
 
 name=configd
 
-stop_precmd=configd_prestop
+start_precmd=configd_prestart
+start_postcmd=configd_poststart
+stop_cmd=configd_stop
 stop_postcmd=configd_poststop
 
 configd_load_rc_config()
@@ -25,11 +27,47 @@ configd_load_rc_config()
 	command_interpreter=/usr/local/bin/python2.7
 }
 
+# 
+configd_prestart()
+{
+	# reset access rights on configd daemon script 
+	chmod 700 /usr/local/opnsense/service/configd.py
+}
+
+#
+configd_poststart()
+{
+	# give the daemon some time to initilize it's configuration
+	sleep 1 
+}
 
 # kill configd
-configd_prestop() 
+configd_stop() 
 {
+	if [ -z "$rc_pid" ]; then
+		[ -n "$rc_fast" ] && return 0
+		_run_rc_notrunning
+		return 1
+	fi
+	
+	echo -n "Stopping ${name}."
+	# first ask gently to exit
 	kill -15 ${rc_pid}
+	
+	# wait max 2 seconds for gentle exit	
+	for i in $(seq 1 20);
+	do
+        	if [ -z "`/bin/ps -ex | /usr/bin/awk '{print $1;}' | /usr/bin/grep "^${rc_pid}"`" ]; then
+        		break
+		fi
+		sleep 0.1
+	done
+          
+	# kill if it's still running                              
+	if [ ! -z "`/bin/ps -ex | /usr/bin/awk '{print $1;}' | /usr/bin/grep "^${rc_pid}"`" ]; then
+		kill -9 ${rc_pid}
+	fi
+	echo  "..done"
 }
 
 # cleanup after stopping configd
