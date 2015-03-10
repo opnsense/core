@@ -17,7 +17,6 @@ HOME=/
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
 export HOME PATH
 
-USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
 PLATFORM=`/bin/cat /usr/local/etc/platform`
 
 if [ "${PLATFORM}" = "nanobsd" ]; then
@@ -87,37 +86,6 @@ else
 		/bin/rm -rf /cf
 	fi
 	# !!! migration code for OPNsense <= 15.1.7, do not remove !!!
-
-	if [ "${PLATFORM}" = "nanobsd" ] || [ ${USE_MFS_TMPVAR} -gt 0 ]; then
-		USE_MFS_TMP_SIZE=`/usr/bin/grep use_mfs_tmp_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
-		if [ ! -z ${USE_MFS_TMP_SIZE} ] && [ ${USE_MFS_TMP_SIZE} -gt 0 ]; then
-			tmpsize="${USE_MFS_TMP_SIZE}m"
-		else
-			tmpsize="40m"
-		fi
-
-		USE_MFS_VAR_SIZE=`/usr/bin/grep use_mfs_var_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
-		if [ ! -z ${USE_MFS_VAR_SIZE} ] && [ ${USE_MFS_VAR_SIZE} -gt 0 ]; then
-			varsize="${USE_MFS_VAR_SIZE}m"
-		else
-			varsize="60m"
-		fi
-
-		echo -n "Setting up memory disks..."
-
-		if [ ! -d /root/var/db/pkg ]; then
-			/bin/mkdir -p /root/var/db
-			/bin/mv /var/db/pkg /root/var/db/
-		fi
-
-		mdmfs -S -M -s ${tmpsize} md /tmp
-		mdmfs -S -M -s ${varsize} md /var
-
-		/bin/mkdir -p /var/db
-		/bin/ln -s /root/var/db/pkg /var/db/pkg
-
-		echo "done."
-	fi
 fi
 
 # mount repo if available
@@ -168,16 +136,47 @@ fi
 rm -f /etc/spwd.db.tmp
 /usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd
 
-if [ "$PLATFORM" = "pfSense" ] && [ ${USE_MFS_TMPVAR} -eq 0 ]; then
-	/sbin/mdmfs -S -M -s 4m md /var/run
-fi
-
 # Enable console output if its muted.
 /sbin/conscontrol mute off >/dev/null
 
-if [ "$PLATFORM" = "cdrom" -o "$PLATFORM" = "nanobsd" -o ${USE_MFS_TMPVAR} -gt 0 ]; then
-	# do nothing for cdrom and nanobsd platforms
-else
+if [ "$PLATFORM" != "cdrom" ]; then
+	USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
+
+	if [ "$PLATFORM" = "pfSense" ] && [ ${USE_MFS_TMPVAR} -eq 0 ]; then
+		mdmfs -S -M -s 4m md /var/run
+	fi
+
+	if [ "${PLATFORM}" = "nanobsd" ] || [ ${USE_MFS_TMPVAR} -gt 0 ]; then
+		USE_MFS_TMP_SIZE=`/usr/bin/grep use_mfs_tmp_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
+		if [ ! -z ${USE_MFS_TMP_SIZE} ] && [ ${USE_MFS_TMP_SIZE} -gt 0 ]; then
+			tmpsize="${USE_MFS_TMP_SIZE}m"
+		else
+			tmpsize="40m"
+		fi
+
+		USE_MFS_VAR_SIZE=`/usr/bin/grep use_mfs_var_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
+		if [ ! -z ${USE_MFS_VAR_SIZE} ] && [ ${USE_MFS_VAR_SIZE} -gt 0 ]; then
+			varsize="${USE_MFS_VAR_SIZE}m"
+		else
+			varsize="60m"
+		fi
+
+		echo -n "Setting up memory disks..."
+
+		if [ ! -d /root/var/db/pkg ]; then
+			/bin/mkdir -p /root/var/db
+			/bin/mv /var/db/pkg /root/var/db/
+		fi
+
+		mdmfs -S -M -s ${tmpsize} md /tmp
+		mdmfs -S -M -s ${varsize} md /var
+
+		/bin/mkdir -p /var/db
+		/bin/ln -s /root/var/db/pkg /var/db/pkg
+
+		echo "done."
+	fi
+
 	/sbin/swapon -a
 	/usr/local/etc/rc.savecore
 
