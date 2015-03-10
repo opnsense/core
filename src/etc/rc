@@ -175,8 +175,7 @@ fi
 # Enable console output if its muted.
 /sbin/conscontrol mute off >/dev/null
 
-if [ "$PLATFORM" = "cdrom" -o "$PLATFORM" = "nanobsd" -o \
-    ${USE_MFS_TMPVAR} -gt 0 ]; then
+if [ "$PLATFORM" = "cdrom" -o "$PLATFORM" = "nanobsd" -o ${USE_MFS_TMPVAR} -gt 0 ]; then
 	# do nothing for cdrom and nanobsd platforms
 else
 	/sbin/swapon -a
