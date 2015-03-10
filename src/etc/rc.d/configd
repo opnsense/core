@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# $FreeBSD$
+#
+# PROVIDE: configd
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+
+# load standard rc
+. /etc/rc.subr
+
+name=configd
+
+stop_precmd=configd_prestop
+stop_postcmd=configd_poststop
+
+configd_load_rc_config()
+{
+	required_args=""
+	required_dirs="/usr/local/opnsense/service/"
+	required_files=""
+	command_args="${required_args}"
+	command=/usr/local/opnsense/service/configd.py
+	command_interpreter=/usr/local/bin/python2.7
+}
+
+
+# kill configd
+configd_prestop() 
+{
+	kill -15 ${rc_pid}
+}
+
+# cleanup after stopping configd
+configd_poststop()
+{
+	if [ -f /var/run/configd.pid ]; then
+		rm /var/run/configd.pid
+	fi
+	if  [ -f /var/run/configd.socket ]; then
+		rm /var/run/configd.socket
+	fi
+}
+
+
+load_rc_config $name
+configd_load_rc_config
+run_rc_command $1
