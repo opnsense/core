@@ -25,9 +25,6 @@ echo "Writing OPNsense version"
 mkdir -p /usr/local/opnsense/version
 echo "%%REPO_VERSION%%-%%REPO_COMMENT%%" > /usr/local/opnsense/version/opnsense
 
-# restart configd if running
-/usr/local/etc/rc.d/configd status > /dev/null
-if [ $? -eq 0 ]; then
-  /usr/local/etc/rc.d/configd restart
+if /usr/local/etc/rc.d/configd status > /dev/null; then
+	/usr/local/etc/rc.d/configd restart
 fi
-
