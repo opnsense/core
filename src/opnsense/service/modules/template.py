@@ -39,6 +39,7 @@ import os.path
 import collections
 import copy
 import jinja2
+import addons.template_helpers
 
 class Template(object):
 
@@ -199,6 +200,7 @@ class Template(object):
 
 
 
+
     def generate(self,module_name,create_directory=True):
         """ generate configuration files using bound config and template data
 
@@ -228,6 +230,9 @@ class Template(object):
                     # copy config data
                     cnf_data = copy.deepcopy(self._config)
                     cnf_data['TARGET_FILTERS'] = result_filenames[filename]
+
+                    # link template helpers
+                    self._j2_env.globals['helpers'] = addons.template_helpers.Helpers(cnf_data)
 
                     # make sure we're only rendering output once
                     if filename not in result:
