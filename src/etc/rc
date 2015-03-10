@@ -326,9 +326,8 @@ echo "done."
 # Set up the correct php.ini content
 /usr/local/etc/rc.php_ini_setup
 
-chmod u+rx  /usr/local/opnsense/service/configd.py
-/usr/local/opnsense/service/configd.py
-sleep 1 # give configd some time to load to prevent missing socket
+# startup configd
+/usr/local/etc/rc.d/configd start
 
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
