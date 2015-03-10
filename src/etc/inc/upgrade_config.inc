@@ -1947,8 +1947,8 @@ function upgrade_054_to_055() {
 			echo "Migrate RRD database {$database} to new format for IPv6 \n";
 		mwexec("$rrdtool tune {$rrddbpath}{$database} -r roundtrip:delay 2>&1");
 
-		dump_rrd_to_xml("{$rrddbpath}/{$database}", "{$g['tmp_path']}/{$xmldump}");
-		$rrdold = xml2array(file_get_contents("{$g['tmp_path']}/{$xmldump}"), 1, "tag");
+		dump_rrd_to_xml("{$rrddbpath}/{$database}", "/tmp/{$xmldump}");
+		$rrdold = xml2array(file_get_contents("/tmp/{$xmldump}"), 1, "tag");
 		$rrdold = $rrdold['rrd'];
 
 		$i = 0;
@@ -1962,8 +1962,8 @@ function upgrade_054_to_055() {
 			$i++;
 		}
 
-		file_put_contents("{$g['tmp_path']}/{$xmldumpnew}", dump_xml_config_raw($rrdold, "rrd"));
-		mwexec("$rrdtool restore -f {$g['tmp_path']}/{$xmldumpnew} {$rrddbpath}/{$database} 2>&1");
+		file_put_contents("/tmp/{$xmldumpnew}", dump_xml_config_raw($rrdold, "rrd"));
+		mwexec("$rrdtool restore -f /tmp/{$xmldumpnew} {$rrddbpath}/{$database} 2>&1");
 
 		unset($rrdold);
 	}
@@ -1986,10 +1986,10 @@ function upgrade_054_to_055() {
 		mwexec("$rrdtool tune {$rrddbpath}/{$database} -r out:outpass 2>71");
 
 		/* dump contents to xml and move database out of the way */
-		dump_rrd_to_xml("{$rrddbpath}/{$database}", "{$g['tmp_path']}/{$xmldump}");
+		dump_rrd_to_xml("{$rrddbpath}/{$database}", "/tmp/{$xmldump}");
 
 		/* create new rrd database file */
-		$rrdcreate = "$rrdtool create {$g['tmp_path']}/{$databasetmp} --step $rrdinterval ";
+		$rrdcreate = "$rrdtool create /tmp/{$databasetmp} --step $rrdinterval ";
 		$rrdcreate .= "DS:inpass:COUNTER:$valid:0:$downstream ";
 		$rrdcreate .= "DS:outpass:COUNTER:$valid:0:$upstream ";
 		$rrdcreate .= "DS:inblock:COUNTER:$valid:0:$downstream ";
@@ -2001,12 +2001,12 @@ function upgrade_054_to_055() {
 
 		create_new_rrd("$rrdcreate");
 		/* create temporary xml from new RRD */
-		dump_rrd_to_xml("{$g['tmp_path']}/{$databasetmp}", "{$g['tmp_path']}/{$xmldumptmp}");
+		dump_rrd_to_xml("/tmp/{$databasetmp}", "/tmp/{$xmldumptmp}");
 
-		$rrdold = xml2array(file_get_contents("{$g['tmp_path']}/{$xmldump}"), 1, "tag");
+		$rrdold = xml2array(file_get_contents("/tmp/{$xmldump}"), 1, "tag");
 		$rrdold = $rrdold['rrd'];
 
-		$rrdnew = xml2array(file_get_contents("{$g['tmp_path']}/{$xmldumptmp}"), 1, "tag");
+		$rrdnew = xml2array(file_get_contents("/tmp/{$xmldumptmp}"), 1, "tag");
 		$rrdnew = $rrdnew['rrd'];
 
 		/* remove any MAX RRA's. Not needed for traffic. */
@@ -2018,8 +2018,8 @@ function upgrade_054_to_055() {
 			$i++;
 		}
 
-		file_put_contents("{$g['tmp_path']}/{$xmldumpnew}", dump_xml_config_raw(migrate_rrd_format($rrdold, $rrdnew), "rrd"));
-		mwexec("$rrdtool restore -f {$g['tmp_path']}/{$xmldumpnew} {$rrddbpath}/{$database} 2>&1");
+		file_put_contents("/tmp/{$xmldumpnew}", dump_xml_config_raw(migrate_rrd_format($rrdold, $rrdnew), "rrd"));
+		mwexec("$rrdtool restore -f /tmp/{$xmldumpnew} {$rrddbpath}/{$database} 2>&1");
 		/* we now have the rrd with the new fields, adjust the size now. */
 		/* RRA 2 is 60 minutes, RRA 3 is 720 minutes */
 		mwexec("/bin/sync");
@@ -2598,7 +2598,7 @@ function upgrade_080_to_081() {
 			echo "Migrate RRD database {$database} to new format for IPv6.\n";
 
 		/* dump contents to xml and move database out of the way */
-		dump_rrd_to_xml("{$rrddbpath}/{$database}", "{$g['tmp_path']}/{$xmldump}");
+		dump_rrd_to_xml("{$rrddbpath}/{$database}", "/tmp/{$xmldump}");
 
 		/* search and replace tags to add data sources */
 		$ds_search = "<!-- Round Robin Archives -->";
@@ -2692,7 +2692,7 @@ function upgrade_080_to_081() {
 		$value_replace = "</row>";
 		$value = "<v> NaN </v>";
 
-		$xml = file_get_contents("{$g['tmp_path']}/{$xmldump}");
+		$xml = file_get_contents("/tmp/{$xmldump}");
 		foreach($ds_arr as $ds) {
 			$xml = preg_replace("/$ds_search/s", "$ds{$ds_search}", $xml);
 		}
@@ -2703,12 +2703,12 @@ function upgrade_080_to_081() {
 			$xml = preg_replace("/$value_search/s", "$value{$value_replace}", $xml);
 		}
 
-		file_put_contents("{$g['tmp_path']}/{$xmldumpnew}", $xml);
-		mwexec("$rrdtool restore -f {$g['tmp_path']}/{$xmldumpnew} {$rrddbpath}/{$database} 2>&1");
+		file_put_contents("/tmp/{$xmldumpnew}", $xml);
+		mwexec("$rrdtool restore -f /tmp/{$xmldumpnew} {$rrddbpath}/{$database} 2>&1");
 		unset($xml);
 		# Default /tmp tmpfs is ~40mb, do not leave temp files around
-		unlink_if_exists("{$g['tmp_path']}/{$xmldump}");
-		unlink_if_exists("{$g['tmp_path']}/{$xmldumpnew}");
+		unlink_if_exists("/tmp/{$xmldump}");
+		unlink_if_exists("/tmp/{$xmldumpnew}");
 	}
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
