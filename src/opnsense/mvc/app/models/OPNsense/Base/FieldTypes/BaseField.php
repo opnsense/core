@@ -292,11 +292,20 @@ abstract class BaseField
             if ($node->isContainer()) {
                 $result[$key] = $node->getNodes();
             } else {
-                $result[$key] = $node->__toString();
+                $result[$key] = $node->getNodeData();
             }
         }
 
         return $result;
+    }
+
+    /**
+     * companion for getNodes, displays node content. may be overwritten for alternative presentation.
+     * @return null|string
+     */
+    public function getNodeData()
+    {
+        return $this->__toString();
     }
 
 
