@@ -65,19 +65,3 @@ class Helpers(object):
         else:
             return False
 
-    def getIterator(self,*parms):
-        """
-        get iterator for given tags
-        :param parms: list of tags (in dot notation )
-        :return: list containing all collected detail items
-        """
-        result = []
-        for tag in parms:
-            node = self.getNodeByTag(tag)
-            if node is not None:
-                if type(node) == list:
-                    result += node
-                else:
-                    result.append(node)
-
-        return result

@@ -35,6 +35,5 @@ A sample with multiple output files ( for example based on interface ) can be fo
     filter.rule exists
 {% endif %}
 
-{% for item in helpers.getIterator('filter.rule') %}
-    {{ item.type }}
-{% endfor %}
+
+
