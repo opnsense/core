@@ -40,7 +40,7 @@ echo "\nDo you want to proceed [y|n]? ";
 
 if (strcasecmp(chop(fgets($fp)), 'y') == 0) {
 	echo "\n{$g['product_name']} is rebooting now.\n\n";
-	system_reboot_sync();
+	system_reboot(true);
 }
 
 fclose($fp);

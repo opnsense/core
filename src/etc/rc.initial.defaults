@@ -52,7 +52,7 @@ if (strcasecmp(chop(fgets($fp)), "y") == 0) {
 
 EOD;
 
-	system_reboot_sync();
+	system_reboot(true);
 }
 
 fclose($fp);

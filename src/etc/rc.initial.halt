@@ -39,7 +39,7 @@ echo "\nDo you want to proceed [y|n]? ";
 
 if (strcasecmp(chop(fgets($fp)), 'y') == 0) {
 	echo "\n{$g['product_name']} will shutdown and halt system now.\n";
-	system_halt();
+	system_halt(true);
 }
 
 fclose($fp);

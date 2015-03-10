@@ -1662,27 +1662,30 @@ function sync_system_time() {
 
 }
 
-function system_halt()
+function system_halt($sync = false)
 {
 	system_reboot_cleanup();
 
-	mwexec("/usr/bin/nohup /usr/local/etc/rc.halt > /dev/null 2>&1 &");
+	$cmd ='/usr/local/etc/rc.halt > /dev/null 2>&1';
+
+	if (!$sync) {
+		$cmd = sprintf('/usr/bin/nohup %s &', $cmd);
+	}
+
+	mwexec($cmd);
 }
 
-function system_reboot() {
-	global $g;
-
+function system_reboot($sync = false)
+{
 	system_reboot_cleanup();
 
-	mwexec("nohup /usr/local/etc/rc.reboot > /dev/null 2>&1 &");
-}
+	$cmd ='/usr/local/etc/rc.reboot > /dev/null 2>&1';
 
-function system_reboot_sync() {
-	global $g;
+	if (!$sync) {
+		$cmd = sprintf('/usr/bin/nohup %s &', $cmd);
+	}
 
-	system_reboot_cleanup();
-
-	mwexec("/usr/local/etc/rc.reboot > /dev/null 2>&1");
+	mwexec($cmd);
 }
 
 function system_reboot_cleanup() {
@@ -1841,7 +1844,7 @@ function system_check_reset_button() {
 EOD;
 
 		reset_factory_defaults();
-		system_reboot_sync();
+		system_reboot(true);
 		exit(0);
 	}
 
