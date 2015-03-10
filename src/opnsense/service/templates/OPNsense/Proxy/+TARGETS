@@ -1,1 +1,2 @@
 rc.conf.d:/etc/rc.conf.d/squid
+squid.conf:/usr/local/etc/squid/squid.conf
