@@ -10,6 +10,8 @@
             <input type="text" class="form-control" size="{{size|default("50")}}" id="{{ id }}" >
         {% elseif type == "checkbox"  %}
             <input type="checkbox" id="{{ id }}" >
+        {% elseif type == "select_multiple" %}
+            <select multiple="multiple" size="{{size|default(2)}}"  id="{{ id }}"></select>
         {% endif %}
 
         {% if help|default(false) %}

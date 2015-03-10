@@ -7,7 +7,7 @@
 function getFormData(parent) {
 
     data = {};
-    $( "#"+parent+"  input" ).each(function( index ) {
+    $( "#"+parent+"  input,select" ).each(function( index ) {
             node = data ;
             keyparts = $(this).attr('id').split('.');
             for (var i in keyparts) {
@@ -17,13 +17,25 @@ function getFormData(parent) {
                 if (i < keyparts.length - 1 ) {
                     node = node[keyparts[i]];
                 } else {
-                    if ($(this).prop("type") == "checkbox") {
+                    if ($(this).is("select")) {
+                        // selectbox, collect selected items
+                        var tmp_str = "";
+                        $(this).children().each(function(index){
+                            if ($(this).prop("selected")){
+                                if (tmp_str != "") tmp_str = tmp_str + ",";
+                                tmp_str = tmp_str + $(this).val();
+                            }
+                            node[keyparts[i]] = tmp_str;
+                        });
+                    } else if ($(this).prop("type") == "checkbox") {
+                        // checkbox input type
                         if ($(this).prop("checked")) {
                             node[keyparts[i]] = 1 ;
                         } else {
                             node[keyparts[i]] = 0 ;
                         }
                     } else {
+                        // regular input type
                         node[keyparts[i]] = $(this).val();
                     }
                 }
@@ -46,7 +58,9 @@ function getFormData(parent) {
  * @param data named array structure
  */
 function setFormData(parent,data) {
-    $( "#"+parent+"  input" ).each(function( index ) {
+    //alert( JSON.stringify(data['general']['interfaces']) );
+
+    $( "#"+parent+"  input,select" ).each(function( index ) {
         node = data ;
         keyparts = $(this).attr('id').split('.');
         for (var i in keyparts) {
@@ -56,14 +70,26 @@ function setFormData(parent,data) {
             if (i < keyparts.length - 1 ) {
                 node = node[keyparts[i]];
             } else {
-                if ($(this).prop("type") == "checkbox") {
+                // data node found, handle per type
+                if ($(this).is("select")) {
+                    // handle select boxes
+                    $(this).empty(); // flush
+                    for (var key in node[keyparts[i]]) {
+                        if (node[keyparts[i]][key]["selected"] != "0") {
+                            $(this).append("<option value='"+key+"' selected>" + node[keyparts[i]][key]["value"] + " </option>");
+                        } else {
+                            $(this).append("<option value='"+key+"'>" + node[keyparts[i]][key]["value"] + " </option>");
+                        }
+                    }
+                } else if ($(this).prop("type") == "checkbox") {
+                    // checkbox type
                     if (node[keyparts[i]] != 0) {
                         $(this).prop("checked",true) ;
                     } else {
                         $(this).prop("checked",false) ;
                     }
-
                 } else {
+                    // regular input type
                     $(this).val(node[keyparts[i]]);
                 }
             }
