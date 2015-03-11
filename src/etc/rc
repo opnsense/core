@@ -34,13 +34,10 @@ if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	# only remove the directory
 	rmdir ${_tmpdir}
 else
-	# create a writable /tmp partition via mfs
-	/etc/rc.d/tmp start
-
 	# fake a writeable environment in some subdirs
 	for i in conf etc home root usr var; do
-		/bin/mkdir -p /tmp/.install.media/${i}
-		/sbin/mount_unionfs /tmp/.install.media/${i} /${i}
+		mkdir -p /tmp/.cdrom/${i}
+		mount_unionfs /tmp/.cdrom/${i} /${i}
 	done
 fi
 
