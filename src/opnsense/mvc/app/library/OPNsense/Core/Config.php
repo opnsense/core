@@ -230,9 +230,13 @@ class Config extends Singleton
             throw new ConfigException('empty file') ;
         }
 
+        set_error_handler(function(){throw new ConfigException("invalid config xml") ;}) ;
+
         $this->configxml = new \DOMDocument('1.0');
         $this->configxml->loadXML($xml);
         $this->simplexml = simplexml_import_dom($this->configxml);
+
+        restore_error_handler();
         $this->isValid = true;
     }
 
@@ -265,6 +269,57 @@ class Config extends Singleton
             copy($this->config_file, $target_dir.$target_filename);
         }
 
+    }
+
+    /**
+     * return list of config backups
+     * @return array list of backups
+     */
+    public function getBackups()
+    {
+        $target_dir = dirname($this->config_file)."/backup/";
+        if (file_exists($target_dir)) {
+            $backups = glob($target_dir."config*.xml");
+            rsort($backups);
+            return $backups;
+        }
+
+        return array();
+    }
+
+    /**
+     * restore and load backup config
+     * @param $filename
+     * @return bool  restored, valid config loaded
+     * @throws ConfigException no config loaded
+     */
+    public function restoreBackup($filename)
+    {
+
+        if ($this->isValid) {
+            // if current config is valid,
+            $configxml = $this->configxml;
+            $simplexml = $this->simplexml;
+            try {
+                // try to restore config
+                copy($filename, $this->config_file) ;
+                $this->load();
+                return true;
+            } catch (ConfigException $e) {
+                // copy / load failed, restore previous version
+                $this->configxml = $configxml;
+                $this->simplexml = $simplexml;
+                $this->isValid = true;
+                $this->save(null, true);
+            }
+        } else {
+            // we don't have a valid config loaded, just copy and load the requested one
+            copy($filename, $this->config_file) ;
+            $this->load();
+            return true;
+        }
+
+        return false;
     }
 
     /**
