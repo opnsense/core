@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -30,16 +31,14 @@ namespace OPNsense\Base\Validators;
 
 use \Phalcon\Validation\Validator;
 use \Phalcon\Validation\ValidatorInterface;
-use \Phalcon\Validation\Message;;
+use \Phalcon\Validation\Message;
 
 class IntegerValidator extends Validator implements ValidatorInterface
 {
-
     public function validate($validator, $attribute)
     {
         $value = $validator->getValue($attribute);
         $msg = $this->getOption('message');
-
 
         if (ctype_digit(strval(($value))) == false) {
             $validator->appendMessage(new Message($msg, $attribute, 'IntegerValidator'));

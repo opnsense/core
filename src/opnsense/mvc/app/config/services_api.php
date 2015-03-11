@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -88,9 +89,11 @@ $di->set('router', function() {
     //
     // probe registered API modules and create a namespace map
     // for example, OPNsense\Core\Api will be mapped at http(s):\\host\core\..
-    // module names should be unique in the application, unless you want to overwrite functionality (check glob's sorting).
+    // module names should be unique in the application, unless you want to
+    // overwrite functionality (check glob's sorting).
     //
-    // if the glob for probing the directories turns out to be too slow, we should consider some kind of caching here
+    // if the glob for probing the directories turns out to be too slow,
+    // we should consider some kind of caching here
     //
     $registered_modules = array();
     $controller_dir = __DIR__."/../controllers/";

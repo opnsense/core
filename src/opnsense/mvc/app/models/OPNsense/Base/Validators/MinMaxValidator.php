@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -30,11 +31,10 @@ namespace OPNsense\Base\Validators;
 
 use \Phalcon\Validation\Validator;
 use \Phalcon\Validation\ValidatorInterface;
-use \Phalcon\Validation\Message;;
+use \Phalcon\Validation\Message;
 
 class MinMaxValidator extends Validator implements ValidatorInterface
 {
-
     public function validate($validator, $attribute)
     {
         $value = $validator->getValue($attribute);

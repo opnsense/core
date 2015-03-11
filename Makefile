@@ -35,6 +35,8 @@ sweep:
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.map" -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
+	find ${.CURDIR}/pkg -type f -print0 | \
+	    xargs -0 -n1 scripts/cleanfile
 
 style:
 	@(phpcs --tab-width=4 --standard=PSR2 ${.CURDIR}/src/opnsense/mvc \

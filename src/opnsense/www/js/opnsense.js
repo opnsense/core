@@ -162,5 +162,3 @@ function ajaxGet(url,sendData,callback) {
         data:sendData
     });
 }
-
-
