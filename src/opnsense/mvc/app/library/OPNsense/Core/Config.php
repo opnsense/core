@@ -62,38 +62,135 @@ class Config extends Singleton
     private $isValid = false;
 
     /**
-     * print config xml in dot notation
+     * serialize xml to array structure (backwards compatibility mode)
      * @param DOMNode $node
-     * @param string $nodename
+     * @return string|array
      * @throws ConfigException
      */
-    public function dump($node = null, $nodename = "")
+    public function toArray($node = null)
     {
+        $result = array();
         $this->checkvalid();
         // root node
         if ($node == null) {
-            $node = $this->configxml;
+            $node = $this->simplexml;
         }
 
-        $subNodes = $node->childNodes ;
-        foreach ($subNodes as $subNode) {
-            if ($subNode->nodeType == XML_TEXT_NODE &&(strlen(trim($subNode->wholeText))>=1)) {
-                print($nodename.".". $node->tagName." " .$subNode->nodeValue ."\n");
-            }
-
-            if ($subNode->hasChildNodes()) {
-                if ($nodename != "") {
-                    $tmp = $nodename.".".$node->tagName;
-                } elseif ($node != $this->configxml) {
-                    $tmp = $node->tagName;
+        foreach ($node->children() as $xmlNode) {
+            if ($xmlNode->count() > 0) {
+                $tmpNode = $this->toArray($xmlNode);
+                if (array_key_exists($xmlNode->getName(), $result)) {
+                    $old_content = $result[$xmlNode->getName()];
+                    // check if array content is associative, if move items to list
+                    if (array_keys($old_content) !== range(0, count($old_content) - 1)) {
+                        $result[$xmlNode->getName()] = array();
+                        $result[$xmlNode->getName()][] = $old_content;
+                    }
+                    $result[$xmlNode->getName()][] = $tmpNode;
                 } else {
-                    $tmp = "";
+                    $result[$xmlNode->getName()] = $tmpNode;
                 }
+            } else {
+                if (array_key_exists($xmlNode->getName(), $result)) {
+                    // repeating item
+                    if (!is_array($result[$xmlNode->getName()])) {
+                        // move first item into list
+                        $tmp = $result[$xmlNode->getName()];
+                        $result[$xmlNode->getName()] = array();
+                        $result[$xmlNode->getName()][] = $tmp;
+                    }
+                    $result[$xmlNode->getName()][] = $xmlNode->__toString();
+                } else {
+                    // single content item
+                    $result[$xmlNode->getName()] = $xmlNode->__toString();
+                }
+            }
+        }
 
-                $this->dump($subNode, $tmp);
+        return $result;
+    }
+
+    /**
+     * update config with array structure (backwards compatibility mode)
+     * @param $source source array structure
+     * @param null $node simplexml node
+     * @return number of updates
+     * @throws ConfigException
+     */
+    public function fromArray($source, $node = null)
+    {
+        $this->checkvalid();
+        $updatecount = 0;
+        // root node
+        if ($node == null) {
+            $node = $this->simplexml;
+        }
+
+        $activeNodes = array();
+        $useIndex = false ; // tag recurring, use index
+        foreach ($source as $itemKey => $itemValue) {
+            // find / create target node
+            if (is_numeric($itemKey)) {
+                $useIndex = true;
+                // recurring item, select by number
+                $items = $node->xpath("./*");
+                if (count($items) > $itemKey) {
+                    $targetNode = $items[$itemKey];
+                } else {
+                    // new sequence, add item
+                    $targetNode = $node->addChild($node->getName());
+                }
+            } elseif (!isset($node->{$itemKey})) {
+                // new node, add
+                if (is_numeric($itemKey)) {
+                    $targetNode = $node->xpath("..")[0]->addChild($node->getName());
+                } else {
+                    $targetNode = $node->addChild($itemKey);
+                }
+            } else {
+                // if items are a recurring list, skip one level.
+                $targetNode = $node->xpath("//".$itemKey);
+                if (count($targetNode) > 1) {
+                    $targetNode = $node ;
+                } else {
+                    $targetNode = $node->{$itemKey};
+                }
+            }
+
+            // add active node
+            $activeNodes[] = $itemKey;
+
+            // (propagate) update
+            if (is_array($itemValue)) {
+                $updatecount += $this->fromArray($itemValue, $targetNode);
+            } elseif ($itemValue != $targetNode->{$itemKey}->__toString()) {
+                $targetNode->{$itemKey} = $itemValue;
+                $updatecount++;
             }
 
         }
+
+
+        // remove nodes not in source
+        $removeItems = array();
+        $itemId = 0;
+        foreach ($node->children() as $xmlNode) {
+            if ((!in_array($itemId, $activeNodes) && $useIndex) ||
+                !in_array($xmlNode->getName(), $activeNodes)
+            ) {
+                $removeItems[] = $xmlNode;
+            }
+            $itemId++;
+        }
+
+        foreach ($removeItems as $xmlNode) {
+            $dom=dom_import_simplexml($xmlNode);
+            $dom->parentNode->removeChild($dom);
+            $updatecount++;
+        }
+
+        // return number of changes
+        return $updatecount;
 
     }
 
