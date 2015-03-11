@@ -1,9 +1,10 @@
 <?php
+
 /*
-        Copyright (C) 2014 Deciso B.V.
-		Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
-        Copyright (C) 2005 Colin Smith
-        All rights reserved.
+	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
+	Copyright (C) 2005 Colin Smith
+	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
@@ -27,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once('guiconfig.inc');
 
 if ($_POST) {
 	if (!$input_errors) {
@@ -40,10 +41,6 @@ if ($_POST) {
 			unset($config['system']['firmware']['alturl']);
 			unset($config['system']['firmware']);
 		}
-		if($_POST['allowinvalidsig'] == "yes")
-			$config['system']['firmware']['allowinvalidsig'] = true;
-		else
-			unset($config['system']['firmware']['allowinvalidsig']);
 
 		if($_POST['disablecheck'] == "yes")
 			$config['system']['firmware']['disablecheck'] = true;
@@ -173,15 +170,6 @@ function enable_altfirmwareurl(enable_over) {
                             </thead>
 
                             <tbody>
-				<tr style="display:none"> <!--Unsupported Feuature, hide it-->
-					<td width="22%" valign="top" class="vncell"><?=gettext("Unsigned images"); ?></td>
-					<td width="78%" class="vtable">
-						<input name="allowinvalidsig" type="checkbox" id="allowinvalidsig" value="yes" <?php if (isset($curcfg['allowinvalidsig'])) echo "checked=\"checked\""; ?> />
-						<br />
-						<?=gettext("Allow auto-update firmware images with a missing or invalid digital signature to be used."); ?>
-					</td>
-				</tr>
-
 				<tr>
 					<td width="22%" valign="top" class="vncell"><?=gettext("Dashboard check"); ?></td>
 					<td width="78%" class="vtable">

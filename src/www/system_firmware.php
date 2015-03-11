@@ -1,10 +1,8 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
-	All rights reserved.
-
-	originally part of m0n0wall (http://m0n0.ch/wall)
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -141,16 +139,6 @@ if ($_POST && !is_subsystem_dirty('firmwarelock')) {
 				} else {
 					/* move the image so PHP won't delete it */
 					rename($_FILES['ulfile']['tmp_name'], "{$g['upload_path']}/firmware.tgz");
-
-					/* check digital signature */
-					$sigchk = verify_digital_signature("{$g['upload_path']}/firmware.tgz");
-
-					if ($sigchk == 1)
-						$sig_warning = gettext("The digital signature on this image is invalid.");
-					else if ($sigchk == 2 && !isset($config['system']['firmware']['allowinvalidsig']))
-						$sig_warning = gettext("This image is not digitally signed.");
-					else if (($sigchk >= 3))
-						$sig_warning = gettext("There has been an error verifying the signature on this image.");
 
 					if (!verify_gzip_file("{$g['upload_path']}/firmware.tgz")) {
 						$input_errors[] = gettext("The image file is corrupt.");

@@ -1287,16 +1287,6 @@ function ip_in_subnet($addr,$subnet) {
 	}
 }
 
-/* verify (and remove) the digital signature on a file - returns 0 if OK */
-function verify_digital_signature($fname) {
-	global $g;
-
-	if(!file_exists("/usr/local/sbin/gzsig"))
-		return 4;
-
-	return mwexec("/usr/local/sbin/gzsig verify /usr/local/pubkey.pem < " . escapeshellarg($fname));
-}
-
 /* obtain MAC address given an IP address by looking at the ARP table */
 function arp_get_mac_by_ip($ip) {
 	mwexec("/sbin/ping -c 1 -t 1 " . escapeshellarg($ip), true);

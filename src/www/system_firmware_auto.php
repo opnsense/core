@@ -184,32 +184,11 @@ $external_upgrade_helper_text .= "{$g['upload_path']}/latest.tgz";
 $downloaded_latest_tgz_sha256 = str_replace("\n", "", `/sbin/sha256 -q {$g['upload_path']}/latest.tgz`);
 $upgrade_latest_tgz_sha256 = str_replace("\n", "", `/bin/cat {$g['upload_path']}/latest.tgz.sha256 | awk '{ print $4 }'`);
 
-$sigchk = 0;
-
-if(!isset($curcfg['alturl']['enable']))
-	$sigchk = verify_digital_signature("{$g['upload_path']}/latest.tgz");
-
-$exitstatus = 0;
-if ($sigchk == 1) {
-	$sig_warning = gettext("The digital signature on this image is invalid.");
-	$exitstatus = 1;
-} else if ($sigchk == 2) {
-	$sig_warning = gettext("This image is not digitally signed.");
-	if (!isset($config['system']['firmware']['allowinvalidsig']))
-		$exitstatus = 1;
-} else if (($sigchk >= 3)) {
-	$sig_warning = gettext("There has been an error verifying the signature on this image.");
-	$exitstatus = 1;
-}
-
 if ($exitstatus) {
 	update_status($sig_warning);
 	update_output_window(gettext("Update cannot continue.  You can disable this check on the Updater Settings tab."));
 	require("fend.inc");
 	exit;
-} else if ($sigchk == 2) {
-	update_status("Upgrade in progress...");
-	update_output_window("\n" . gettext("Upgrade Image does not contain a signature but the system has been configured to allow unsigned images. One moment please...") . "\n");
 }
 
 if (!verify_gzip_file("{$g['upload_path']}/latest.tgz")) {
