@@ -111,87 +111,43 @@ class Config extends Singleton
     }
 
     /**
-     * update config with array structure (backwards compatibility mode)
+     * update (reset) config with array structure (backwards compatibility mode)
      * @param $source source array structure
      * @param null $node simplexml node
-     * @return number of updates
+     * @param null|string $parentTagName
      * @throws ConfigException
      */
-    public function fromArray($source, $node = null)
+    public function fromArray($source, $node = null, $parentTagName = null)
     {
         $this->checkvalid();
-        $updatecount = 0;
+
         // root node
         if ($node == null) {
-            $node = $this->simplexml;
+            $this->configxml = new \DOMDocument('1.0');
+            $this->configxml->loadXML('<'.$this->simplexml[0]->getName().'/>');
+            $this->simplexml = simplexml_import_dom($this->configxml);
+            $node = $this->simplexml ;
         }
 
-        $activeNodes = array();
-        $useIndex = false ; // tag recurring, use index
         foreach ($source as $itemKey => $itemValue) {
-            // find / create target node
             if (is_numeric($itemKey)) {
-                $useIndex = true;
-                // recurring item, select by number
-                $items = $node->xpath("./*");
-                if (count($items) > $itemKey) {
-                    $targetNode = $items[$itemKey];
-                } else {
-                    // new sequence, add item
-                    $targetNode = $node->addChild($node->getName());
-                }
-            } elseif (!isset($node->{$itemKey})) {
-                // new node, add
-                if (is_numeric($itemKey)) {
-                    $targetNode = $node->xpath("..")[0]->addChild($node->getName());
-                } else {
-                    $targetNode = $node->addChild($itemKey);
-                }
+                // recurring tag (content), use parent tagname.
+                $childNode = $node->addChild($parentTagName);
+            } elseif (is_array($itemValue) && !(array_keys($itemValue) !== range(0, count($itemValue) - 1))) {
+                // recurring tag, skip placeholder.
+                $childNode = $node;
             } else {
-                // if items are a recurring list, skip one level.
-                $targetNode = $node->xpath("//".$itemKey);
-                if (count($targetNode) > 1) {
-                    $targetNode = $node ;
-                } else {
-                    $targetNode = $node->{$itemKey};
-                }
+                // add new child
+                $childNode = $node->addChild($itemKey);
             }
 
-            // add active node
-            $activeNodes[] = $itemKey;
-
-            // (propagate) update
+            // set content, propagate container items.
             if (is_array($itemValue)) {
-                $updatecount += $this->fromArray($itemValue, $targetNode);
-            } elseif ($itemValue != $targetNode->{$itemKey}->__toString()) {
-                $targetNode->{$itemKey} = $itemValue;
-                $updatecount++;
+                $this->fromArray($itemValue, $childNode, $itemKey);
+            } else {
+                $childNode[0] = $itemValue;
             }
-
         }
-
-
-        // remove nodes not in source
-        $removeItems = array();
-        $itemId = 0;
-        foreach ($node->children() as $xmlNode) {
-            if ((!in_array($itemId, $activeNodes) && $useIndex) ||
-                !in_array($xmlNode->getName(), $activeNodes)
-            ) {
-                $removeItems[] = $xmlNode;
-            }
-            $itemId++;
-        }
-
-        foreach ($removeItems as $xmlNode) {
-            $dom=dom_import_simplexml($xmlNode);
-            $dom->parentNode->removeChild($dom);
-            $updatecount++;
-        }
-
-        // return number of changes
-        return $updatecount;
-
     }
 
     /**
