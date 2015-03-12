@@ -89,72 +89,22 @@ function encrypted_configxml()
 function parse_config($parse = false)
 {
 	$cnf = OPNsense\Core\Config::getInstance();
-	$config = $cnf->toArray();
-
-	return $config;
-	
-	global $g, $config_parsed;
-
-	$config_xml = '/conf/config.xml';
-	$lockkey = lock('config');
-	$config_parsed = false;
-
-	if (!file_exists($config_xml) || filesize($config_xml) == 0) {
-		$last_backup = discover_last_backup();
-		if ($last_backup) {
-			log_error(gettext("No config.xml found, attempting last known config restore."));
-			file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-			restore_backup("/conf/backup/{$last_backup}");
+	if (!$cnf->isValid()) {
+		// there was an issue with loading the config, try to restore the last backup
+		$backups = $cnf->getBackups();
+		if (count($backups) > 0) {
+			// load last backup
+			log_error(gettext("No (valid) config.xml found, attempting last known config restore."));
+			file_notice("config.xml", gettext("No (valid) config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
+			$cnf->restoreBackup($backups[0]);
 		} else {
+			// we don't have backups, try to load the default
 			log_error(gettext('No config.xml found, attempting to restore factory config.'));
-			restore_backup('/usr/local/etc/config.xml');
+			$cnf->restoreBackup('/usr/local/etc/config.xml');
 		}
 	}
 
-
-	// Check for encrypted config.xml
-	encrypted_configxml();
-
-	if (!$parse) {
-		if (file_exists('/tmp/config.cache')) {
-			$config = unserialize(file_get_contents('/tmp/config.cache'));
-			if (is_null($config))
-				$parse = true;
-		} else
-			$parse = true;
-	}
-	if ($parse == true) {
-		if (!file_exists($config_xml)) {
-			log_error("No config.xml found, attempting last known config restore.");
-			file_notice("config.xml", "No config.xml found, attempting last known config restore.", "pfSenseConfigurator", "");
-			$last_backup = discover_last_backup();
-			if ($last_backup) {
-				restore_backup("/conf/backup/{$last_backup}");
-			} else {
-				log_error(gettext('No config.xml found, attempting to restore factory config.'));
-				restore_backup('/usr/local/etc/config.xml');
-			}
-		}
-		$config = parse_xml_config($config_xml, array($g['xml_rootobj'], 'pfsense'));
-		if ($config == -1) {
-			$last_backup = discover_last_backup();
-			if ($last_backup)
-				restore_backup("/conf/backup/{$last_backup}");
-			else {
-				log_error(gettext('No config.xml found, attempting to restore factory config.'));
-				restore_backup('/usr/local/etc/config.xml');
-			}
-		}
-		generate_config_cache($config);
-	}
-
-
-	$config_parsed = true;
-	unlock($lockkey);
-
-	alias_make_table($config);
-
-	return $config;
+	return $cnf->toArray();
 }
 
 function generate_config_cache($config)
