@@ -304,7 +304,7 @@ class Config extends Singleton
     /**
      * backup current (running) config
      */
-    private function backup()
+    public function backup()
     {
         $target_dir = dirname($this->config_file)."/backup/";
         $target_filename = "config-".time().".xml";
