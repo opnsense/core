@@ -59,7 +59,16 @@ class Config extends Singleton
      * status field: valid config loaded
      * @var bool
      */
-    private $isValid = false;
+    private $statusIsValid = false;
+
+
+    /**
+     * @return bool return (last known) status of this configuration
+     */
+    public function isValid()
+    {
+        return $this->statusIsValid;
+    }
 
     /**
      * serialize xml to array structure (backwards compatibility mode)
@@ -155,7 +164,7 @@ class Config extends Singleton
      */
     private function checkvalid()
     {
-        if (!$this->isValid) {
+        if (!$this->statusIsValid) {
             throw new ConfigException('no valid config loaded') ;
         }
     }
@@ -241,7 +250,7 @@ class Config extends Singleton
         $this->simplexml = simplexml_import_dom($this->configxml);
 
         restore_error_handler();
-        $this->isValid = true;
+        $this->statusIsValid = true;
     }
 
     /**
@@ -333,7 +342,7 @@ class Config extends Singleton
     public function restoreBackup($filename)
     {
 
-        if ($this->isValid) {
+        if ($this->statusIsValid) {
             // if current config is valid,
             $configxml = $this->configxml;
             $simplexml = $this->simplexml;
@@ -346,7 +355,7 @@ class Config extends Singleton
                 // copy / load failed, restore previous version
                 $this->configxml = $configxml;
                 $this->simplexml = $simplexml;
-                $this->isValid = true;
+                $this->statusIsValid = true;
                 $this->save(null, true);
             }
         } else {
