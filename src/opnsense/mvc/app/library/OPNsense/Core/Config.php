@@ -230,7 +230,11 @@ class Config extends Singleton
             throw new ConfigException('empty file') ;
         }
 
-        set_error_handler(function(){throw new ConfigException("invalid config xml") ;}) ;
+        set_error_handler(
+            function() {
+                throw new ConfigException("invalid config xml") ;
+            }
+        );
 
         $this->configxml = new \DOMDocument('1.0');
         $this->configxml->loadXML($xml);
@@ -265,9 +269,11 @@ class Config extends Singleton
         $target_dir = dirname($this->config_file)."/backup/";
         $target_filename = "config-".time().".xml";
 
-        if (file_exists($target_dir)) {
-            copy($this->config_file, $target_dir.$target_filename);
+        if (!file_exists($target_dir)) {
+            // create backup directory if it's missing
+            mkdir($target_dir);
         }
+        copy($this->config_file, $target_dir.$target_filename);
 
     }
 
