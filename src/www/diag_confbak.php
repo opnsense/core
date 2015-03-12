@@ -45,7 +45,6 @@ if (isset($_POST['backupcount'])) {
 		return;
 	}
 
-	conf_mount_rw();
 	$confvers = unserialize(file_get_contents('/conf/backup/backup.cache'));
 	if($_POST['newver'] != "") {
 		if(config_restore('/conf/backup/config-' . $_POST['newver'] . '.xml') == 0)
@@ -57,7 +56,6 @@ if (isset($_POST['backupcount'])) {
 		unlink_if_exists('/conf/backup/config-' . $_POST['rmver'] . '.xml');
 		$savemsg = sprintf(gettext('Deleted backup with timestamp %1$s and description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['rmver']),$confvers[$_POST['rmver']]['description']);
 	}
-	conf_mount_ro();
 }
 
 if($_GET['getcfg'] != "") {

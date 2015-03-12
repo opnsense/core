@@ -44,15 +44,6 @@ fi
 if [ "$PMD" = "$MD" ]; then
         echo "MD5's match."  | logger -p daemon.info -i -t AutoUpgrade
 		echo "Beginning ${product} upgrade." | wall
-        if [ "$PLATFORM" = "net45xx" ]; then
-            /usr/local/etc/rc.conf_mount_rw
-        fi
-        if [ "$PLATFORM" = "wrap" ]; then
-            /usr/local/etc/rc.conf_mount_rw
-        fi
-        if [ "$PLATFORM" = "nanobsd" ]; then
-            /usr/local/etc/rc.conf_mount_rw
-        fi
         if [ -r "/tmp/custom.tgz" ]; then
             sh /usr/local/etc/rc.firmware pfSenseupgrade /tmp/latest.tgz /tmp/custom.tgz
         else
@@ -65,7 +56,6 @@ if [ "$PMD" = "$MD" ]; then
         if [ "$PLATFORM" = "wrap" ]; then
             /bin/sync
             sleep 5
-            /usr/local/etc/rc.conf_mount_ro
             if [ -e /etc/init_bootloader.sh ]; then
                     sh /etc/init_bootloader.sh
             fi
@@ -73,7 +63,6 @@ if [ "$PMD" = "$MD" ]; then
         if [ "$PLATFORM" = "net45xx" ]; then
             /bin/sync
             sleep 5
-            /usr/local/etc/rc.conf_mount_ro
             if [ -e /etc/init_bootloader.sh ]; then
                     sh /etc/init_bootloader.sh
             fi

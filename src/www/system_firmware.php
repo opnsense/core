@@ -119,10 +119,8 @@ if ($_POST && !is_subsystem_dirty('firmwarelock')) {
 	}
 	if ($mode) {
 		if ($mode == "enable") {
-			conf_mount_rw();
 			mark_subsystem_dirty('firmware');
 		} else if ($mode == "disable") {
-			conf_mount_ro();
 			clear_subsystem_dirty('firmware');
 		} else if ($mode == "upgrade") {
 			if ($_FILES['ulfile']['error'])

@@ -66,10 +66,8 @@ safe_mkdir($vardb);
 $g['platform'] = trim(file_get_contents("/usr/local/etc/platform"));
 
 if(!is_dir("/usr/local/pkg") or !is_dir("/usr/local/pkg/pf")) {
-	conf_mount_rw();
 	safe_mkdir("/usr/local/pkg");
 	safe_mkdir("/usr/local/pkg/pf");
-	conf_mount_ro();
 }
 
 /****f* pkg-utils/remove_package
@@ -209,8 +207,6 @@ function resync_all_package_configs($show_message = false) {
 	if($show_message == true)
 		echo "Syncing packages:";
 
-	conf_mount_rw();
-
 	foreach($config['installedpackages']['package'] as $idx => $package) {
 		if (empty($package['name']))
 			continue;
@@ -228,7 +224,6 @@ function resync_all_package_configs($show_message = false) {
 		echo " done.\n";
 
 	@unlink("/conf/needs_package_sync");
-	conf_mount_ro();
 }
 
 /*
@@ -588,9 +583,6 @@ function get_pbi_binaries($pbi) {
 function install_package($package, $pkg_info = "", $force_install = false) {
 	global $g, $config, $static_output, $pkg_interface;
 
-	/* safe side. Write config below will send to ro again. */
-	conf_mount_rw();
-
 	if($pkg_interface == "console")
 		echo "\n";
 	/* fetch package information if needed */
@@ -598,7 +590,6 @@ function install_package($package, $pkg_info = "", $force_install = false) {
 		$pkg_info = get_pkg_info(array($package));
 		$pkg_info = $pkg_info[$package]; // We're only dealing with one package, so we can strip away the extra array.
 		if (empty($pkg_info)) {
-			conf_mount_ro();
 			return -1;
 		}
 	}
@@ -616,7 +607,6 @@ function install_package($package, $pkg_info = "", $force_install = false) {
 			$static_output .= sprintf(gettext("Package %s is not supported on this version."), $pkg_info['name']);
 			update_status($static_output);
 
-			conf_mount_ro();
 			return -1;
 		}
 	}
@@ -643,7 +633,6 @@ function install_package($package, $pkg_info = "", $force_install = false) {
 	}
 	if(file_exists('/conf/needs_package_sync'))
 		@unlink('/conf/needs_package_sync');
-	conf_mount_ro();
 	write_config("Intermediate config write during package install for {$pkg_info['name']}.");
 	$static_output .= $to_output;
 	update_output_window($static_output);
@@ -937,8 +926,6 @@ function delete_package($pkg) {
 function delete_package_xml($pkg) {
 	global $g, $config, $static_output, $pkg_interface;
 
-	conf_mount_rw();
-
 	$pkgid = get_pkg_id($pkg);
 	if ($pkgid == -1) {
 		$static_output .= sprintf(gettext("The %s package is not installed.%sDeletion aborted."), $pkg, "\n\n");
@@ -949,7 +936,6 @@ function delete_package_xml($pkg) {
 		}
 		ob_flush();
 		sleep(1);
-		conf_mount_ro();
 		return;
 	}
 	pkg_debug(sprintf(gettext("Removing %s package... "),$pkg));
@@ -1119,7 +1105,6 @@ function delete_package_xml($pkg) {
 		update_output_window($static_output);
 	}
 
-	conf_mount_ro();
 	/* remove config.xml entries */
 	$static_output .= gettext("Configuration... ");
 	update_output_window($static_output);
@@ -1421,13 +1406,11 @@ function package_server_mismatch_message() {
 
 function pkg_fetch_config_file($package, $pkg_info = "") {
 	global $g, $config, $static_output, $pkg_interface;
-	conf_mount_rw();
 
 	if(empty($pkg_info) or !is_array($pkg_info[$package])) {
 		$pkg_info = get_pkg_info(array($package));
 		$pkg_info = $pkg_info[$package]; // We're only dealing with one package, so we can strip away the extra array.
 		if (empty($pkg_info)) {
-			conf_mount_ro();
 			return -1;
 		}
 	}
@@ -1448,26 +1431,22 @@ function pkg_fetch_config_file($package, $pkg_info = "") {
 				update_output_window($static_output);
 				echo "<br />Show <a href=\"pkg_mgr_install.php?showlog=true\">install log</a></center>";
 			}
-			conf_mount_ro();
 			return -1;
 		}
 		$static_output .= gettext("done.") . "\n";
 		update_output_window($static_output);
 	}
-	conf_mount_ro();
 	return true;
 }
 
 
 function pkg_fetch_additional_files($package, $pkg_info = "") {
 	global $g, $config, $static_output, $pkg_interface;
-	conf_mount_rw();
 
 	if(empty($pkg_info) or !is_array($pkg_info[$package])) {
 		$pkg_info = get_pkg_info(array($package));
 		$pkg_info = $pkg_info[$package]; // We're only dealing with one package, so we can strip away the extra array.
 		if (empty($pkg_info)) {
-			conf_mount_ro();
 			return -1;
 		}
 	}
@@ -1523,7 +1502,6 @@ function pkg_fetch_additional_files($package, $pkg_info = "") {
 			$static_output .= gettext("done.") . "\n";
 			update_output_window($static_output);
 		}
-		conf_mount_ro();
 		return true;
 	}
 }

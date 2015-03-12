@@ -69,9 +69,7 @@ if ($_POST['act'] == "deluser") {
 		exit;
 	}
 
-	conf_mount_rw();
 	local_user_del($a_user[$id]);
-	conf_mount_ro();
 	$userdeleted = $a_user[$id]['name'];
 	unset($a_user[$id]);
 	write_config();
@@ -249,7 +247,6 @@ if ($_POST['save']) {
 	}
 
 	if (!$input_errors) {
-		conf_mount_rw();
 		$userent = array();
 		if (isset($id) && $a_user[$id])
 			$userent = $a_user[$id];
@@ -326,7 +323,6 @@ if ($_POST['save']) {
 		//if(is_dir("/usr/local/etc/inc/privhooks"))
 		//	run_plugins("/usr/local/etc/inc/privhooks");
 
-		conf_mount_ro();
 
 		pfSenseHeader("system_usermanager.php");
 	}

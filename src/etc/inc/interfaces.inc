@@ -1864,15 +1864,11 @@ EOD;
 	// Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
 	if (isset($ppp['uptime'])) {
 		if (!file_exists("/conf/{$pppif}.log")) {
-			conf_mount_rw();
 			file_put_contents("/conf/{$pppif}.log", '');
-			conf_mount_ro();
 		}
 	} else {
 		if (file_exists("/conf/{$pppif}.log")) {
-			conf_mount_rw();
 			@unlink("/conf/{$pppif}.log");
-			conf_mount_ro();
 		}
 	}
 
@@ -2514,8 +2510,6 @@ function interface_wireless_configure($if, &$wl, &$wlcfg) {
 	mwexec(kill_wpasupplicant("{$if}"));
 
 	/* generate wpa_supplicant/hostap config if wpa is enabled */
-	conf_mount_rw();
-
 	switch ($wlcfg['mode']) {
 	case 'bss':
 		if (isset($wlcfg['wpa']['enable'])) {
@@ -2665,7 +2659,6 @@ EOD;
 	}
 
 	fclose($fd_set);
-	conf_mount_ro();
 
 	/* Making sure regulatory settings have actually changed
 	 * before applying, because changing them requires bringing

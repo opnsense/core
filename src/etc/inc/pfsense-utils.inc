@@ -472,8 +472,6 @@ function restore_config_section($section_name, $new_contents)
 
 	$tmpxml = '/tmp/tmpxml';
 
-	conf_mount_rw();
-
 	$fout = fopen($tmpxml, 'w');
 	fwrite($fout, $new_contents);
 	fclose($fout);
@@ -493,7 +491,6 @@ function restore_config_section($section_name, $new_contents)
 	@unlink($tmpxml);
 
 	if ($section_xml === -1) {
-		conf_mount_ro();
 		return false;
 	}
 
@@ -502,7 +499,6 @@ function restore_config_section($section_name, $new_contents)
 	write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
 	disable_security_checks();
 
-	conf_mount_ro();
 	return true;
 }
 
@@ -515,7 +511,6 @@ function restore_config_section($section_name, $new_contents)
 function merge_config_section($section_name, $new_contents)
 {
 	global $config;
-	conf_mount_rw();
 	$fname = '/tmp/tmp-' . time();
 	$fout = fopen($fname, "w");
 	fwrite($fout, $new_contents);
@@ -525,7 +520,6 @@ function merge_config_section($section_name, $new_contents)
 	unlink($fname);
 	write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
 	disable_security_checks();
-	conf_mount_ro();
 	return;
 }
 
@@ -823,10 +817,8 @@ function reload_all_sync() {
 	system_ntp_configure();
 
 	/* sync pw database */
-	conf_mount_rw();
 	unlink_if_exists("/etc/spwd.db.tmp");
 	mwexec("/usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd");
-	conf_mount_ro();
 
 	/* restart sshd */
 	send_event("service restart sshd");
@@ -838,7 +830,6 @@ function reload_all_sync() {
 function setup_serial_port($when = 'save', $path = '')
 {
 	global $g, $config;
-	conf_mount_rw();
 	$prefix = "";
 	if (($when == "upgrade") && (!empty($path)) && is_dir($path.'/boot/'))
 		$prefix = "/tmp/{$path}";
@@ -935,7 +926,6 @@ function setup_serial_port($when = 'save', $path = '')
 	unset($on_off, $console_type, $serial_type);
 	fclose($fd);
 	reload_ttys();
-	conf_mount_ro();
 }
 
 function is_serial_enabled()
@@ -2022,7 +2012,6 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
 		|| $forceupdate) {
 
 		// Try to fetch the URL supplied
-		conf_mount_rw();
 		unlink_if_exists($urltable_filename . ".tmp");
 		$verify_ssl = isset($config['system']['checkaliasesurlcert']);
 		if (download_file($url, $urltable_filename . ".tmp", $verify_ssl)) {
@@ -2035,7 +2024,6 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
 			unlink_if_exists($urltable_filename . ".tmp");
 		} else
 			touch($urltable_filename);
-		conf_mount_ro();
 		return true;
 	} else {
 		// File exists, and it doesn't need updated.
@@ -2091,7 +2079,6 @@ function nanobsd_switch_boot_slice() {
 	$ATOFLASH="{$BOOT_DRIVE}s{$ASLICE}";
 	$ACOMPLETE_PATH="{$BOOT_DRIVE}s{$ASLICE}a";
 	$ABOOTFLASH="{$BOOT_DRIVE}s{$AOLDSLICE}";
-	conf_mount_rw();
 	set_single_sysctl("kern.geom.debugflags", "16");
 	exec("gpart set -a active -i {$ASLICE} {$BOOT_DRIVE}");
 	exec("/usr/sbin/boot0cfg -s {$ASLICE} -v /dev/{$BOOT_DRIVE}");
@@ -2101,7 +2088,6 @@ function nanobsd_switch_boot_slice() {
 		nanobsd_update_fstab($AGLABEL_SLICE, $ACOMPLETE_PATH, $AOLD_UFS_ID, $AUFS_ID);
 	}
 	set_single_sysctl("kern.geom.debugflags", "0");
-	conf_mount_ro();
 }
 function nanobsd_clone_slice() {
 	global $SLICE, $OLDSLICE, $TOFLASH, $COMPLETE_PATH, $COMPLETE_BOOT_PATH;

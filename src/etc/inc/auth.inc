@@ -304,8 +304,6 @@ function local_sync_accounts()
 {
 	global $config;
 
-	conf_mount_rw();
-
 	/* remove local users to avoid uid conflicts */
 	$fd = popen('/usr/sbin/pw usershow -a', 'r');
 	if ($fd) {
@@ -360,8 +358,6 @@ function local_sync_accounts()
 		foreach ($config['system']['group'] as $group)
 			local_group_set($group);
 
-	conf_mount_ro();
-
 }
 
 function local_user_set(& $user) {
@@ -371,8 +367,6 @@ function local_user_set(& $user) {
 		log_error("There is something wrong in your config because user {$user['name']} password is missing!");
 		return;
 	}
-
-	conf_mount_rw();
 
 	$home_base = "/home/";
 	$user_uid = $user['uid'];
@@ -468,7 +462,6 @@ function local_user_set(& $user) {
 	$un = $lock_account ? "" : "un";
 	exec("/usr/sbin/pw {$un}lock {$user_name} -q");
 
-	conf_mount_ro();
 }
 
 function local_user_del($user)

@@ -156,8 +156,6 @@ if ($_POST) {
 	if (!count($input_errors)) {
 		$do_tcpdump = true;
 
-		conf_mount_rw();
-
 		if ($_POST['promiscuous']) {
 			//if promiscuous mode is checked
 			$disablepromiscuous = "";
@@ -474,7 +472,6 @@ if (!empty($title)): ?>
 						}
 						system("/usr/sbin/tcpdump {$disabledns} {$detail_args} -r {$fp}{$fn}");
 
-						conf_mount_ro();
 		?>
 						</pre>
 

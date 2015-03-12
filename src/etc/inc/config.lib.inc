@@ -87,6 +87,12 @@ function encrypted_configxml()
  ******/
 function parse_config($parse = false)
 {
+	require_once("script/load_phalcon.php");
+	$cnf = OPNsense\Core\Config::getInstance();
+	$config = $cnf->toArray();
+
+	return $config;
+	
 	global $g, $config_parsed;
 
 	$config_xml = '/conf/config.xml';
@@ -180,13 +186,11 @@ function restore_backup($file)
 	global $g;
 
 	if (file_exists($file)) {
-		conf_mount_rw();
 		@unlink('/tmp/config.cache');
 		copy($file, '/conf/config.xml');
 		disable_security_checks();
 		log_error(sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file));
 		file_notice("config.xml", sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file), "pfSenseConfigurator", "");
-		conf_mount_ro();
 	}
 }
 
@@ -273,75 +277,6 @@ EOD;
 	alias_make_table($config);
 }
 
-/****f* config/conf_mount_rw
- * NAME
- *   conf_mount_rw - Mount filesystems read/write.
- * RESULT
- *   null
- ******/
-/* mount flash card read/write */
-function conf_mount_rw() {
-	global $g, $config;
-
-	/* do not mount on cdrom platform */
-	if($g['platform'] == "cdrom" or $g['platform'] == "pfSense")
-		return;
-
-	if ((refcount_reference(1000) > 1) && is_writable("/"))
-		return;
-
-	$status = mwexec("/sbin/mount -u -w -o sync,noatime /cf");
-	if($status <> 0) {
-		if(file_exists("/var/run/booting"))
-			echo gettext("Disk is dirty.  Running fsck -y") . "\n";
-		mwexec("/sbin/fsck -y /cf");
-		$status = mwexec("/sbin/mount -u -w -o sync,noatime /cf");
-	}
-
-	/*    if the platform is soekris or wrap or pfSense, lets mount the
-	 *    compact flash cards root.
-         */
-	$status = mwexec("/sbin/mount -u -w -o sync,noatime /");
-	/* we could not mount this correctly.  kick off fsck */
-	if($status <> 0) {
-		log_error(gettext("File system is dirty.  Launching FSCK for /"));
-		mwexec("/sbin/fsck -y /");
-		$status = mwexec("/sbin/mount -u -w -o sync,noatime /");
-	}
-
-	mark_subsystem_dirty('mount');
-}
-
-/****f* config/conf_mount_ro
- * NAME
- *   conf_mount_ro - Mount filesystems readonly.
- * RESULT
- *   null
- ******/
-function conf_mount_ro() {
-	global $g, $config;
-
-	/* Do not trust $g['platform'] since this can be clobbered during factory reset. */
-	$platform = trim(file_get_contents("/usr/local/etc/platform"));
-	/* do not umount on cdrom or pfSense platforms */
-	if($platform == "cdrom" or $platform == "pfSense")
-		return;
-
-	if (refcount_unreference(1000) > 0)
-		return;
-
-	if(isset($config['system']['nanobsd_force_rw']))
-		return;
-
-	if(file_exists("/var/run/booting"))
-		return;
-
-	clear_subsystem_dirty('mount');
-	/* sync data, then force a remount of /cf */
-	pfSense_sync();
-	mwexec("/sbin/mount -u -r -f -o sync,noatime /cf");
-	mwexec("/sbin/mount -u -r -f -o sync,noatime /");
-}
 
 /****f* config/convert_config
  * NAME
@@ -488,7 +423,6 @@ function write_config($desc = 'Unknown', $backup = true)
 
 	$config['revision'] = make_config_revision_entry($desc);
 
-	conf_mount_rw();
 	$lockkey = lock('config', LOCK_EX);
 
 	/* generate configuration XML */
@@ -527,9 +461,6 @@ function write_config($desc = 'Unknown', $backup = true)
 
 	unlink_if_exists("/usr/local/pkg/pf/carp_sync_client.php");
 
-	/* tell kernel to sync fs data */
-	conf_mount_ro();
-
 	/* sync carp entries to other firewalls */
 	carp_sync_client();
 
@@ -551,7 +482,6 @@ function reset_factory_defaults($lock = false)
 {
 	global $g;
 
-	conf_mount_rw();
 	if (!$lock)
 		$lockkey = lock('config', LOCK_EX);
 
@@ -577,7 +507,6 @@ function reset_factory_defaults($lock = false)
 	touch("/conf/trigger_initial_wizard");
 	if (!$lock)
 		unlock($lockkey);
-	conf_mount_ro();
 	setup_serial_port();
 	return 0;
 }
@@ -590,7 +519,6 @@ function config_restore($conffile) {
 
 	backup_config();
 
-	conf_mount_rw();
 
 	$lockkey = lock('config', LOCK_EX);
 
@@ -603,7 +531,6 @@ function config_restore($conffile) {
 
 	$config = parse_config(true);
 
-	conf_mount_ro();
 
 	write_config(gettext("Reverted to") . " " . array_pop(explode("/", $conffile)) . ".", false);
 
@@ -626,7 +553,6 @@ function config_install($conffile)
 		log_error(gettext("Installing configuration ...."));
 	}
 
-	conf_mount_rw();
 	$lockkey = lock('config', LOCK_EX);
 
 	copy($conffile, '/conf/config.xml');
@@ -699,7 +625,6 @@ function cleanup_backupcache($lock = false) {
 	if (!$lock)
 		$lockkey = lock('config');
 
-	conf_mount_rw();
 
 	$backups = get_backups();
 	if ($backups) {
@@ -759,7 +684,6 @@ function cleanup_backupcache($lock = false) {
 	$bakout = fopen('/conf/backup/backup.cache', 'w');
 	fwrite($bakout, serialize($tocache));
 	fclose($bakout);
-	conf_mount_ro();
 
 	if (!$lock)
 		unlock($lockkey);
@@ -784,7 +708,6 @@ function get_backups()
 
 function backup_config()
 {
-	conf_mount_rw();
 
 	/* Create backup directory if needed */
 	safe_mkdir('/conf/backup');
@@ -816,7 +739,6 @@ function backup_config()
 	fwrite($bakout, serialize($backupcache));
 	fclose($bakout);
 
-	conf_mount_ro();
 
 	return true;
 }

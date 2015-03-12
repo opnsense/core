@@ -5,9 +5,6 @@
 # Copyright (C) 2003 Manuel Kasper <mk@neon1.net>.
 # All rights reserved.
 
-# mount /cf
-/usr/local/etc/rc.conf_mount_rw
-
 # Reset file(s)
 echo "" >/conf/upgrade_log.txt
 echo "" >/conf/firmware_update_misc_log.txt
@@ -123,7 +120,6 @@ enable)
 	echo "" >> /conf/upgrade_log.txt
 	echo "Enable" >> /conf/upgrade_log.txt
 	echo "" >> /conf/upgrade_log.txt
-	/usr/local/etc/rc.conf_mount_ro
 	;;
 auto)
 	touch /var/run/firmwarelock.dirty
@@ -131,14 +127,12 @@ auto)
 	remove_chflags
 	/usr/local/etc/rc.firmware_auto
 	restore_chflags
-	/usr/local/etc/rc.conf_mount_ro
 	;;
 pfSenseNanoBSDupgrade)
 
 	# Sanity check - bail early if there's no firmware file!
 	if [ ! -r $IMG ]; then
 		echo "2nd parameter has not been passed or file does not exist. Exiting." >> /conf/upgrade_log.txt 2>&1
-		/usr/local/etc/rc.conf_mount_ro
 		exit 1
 	fi
 
@@ -147,7 +141,6 @@ pfSenseNanoBSDupgrade)
 		echo "You cannot use a full file for upgrade.  Please use a file labeled nanobsd upgrade."
 		file_notice "NanoBSDUpgradeFailure" "You have attemped to use a full NanoBSD installation file as an upgrade.  Please use a NanoBSD file labeled 'upgrade' instead."
 		rm -f $IMG
-		/usr/local/etc/rc.conf_mount_ro
 		exit 1
 	fi
 
@@ -217,7 +210,6 @@ pfSenseNanoBSDupgrade)
 		rm -f /var/run/firmwarelock.dirty
 		rm -f /var/run/firmware.lock
 		rm -f ${IMG}
-		/usr/local/etc/rc.conf_mount_ro
 		exit 1
 	fi
 
@@ -268,7 +260,6 @@ pfSenseNanoBSDupgrade)
 		rm -f $IMG
 		rm -f /var/run/firmwarelock.dirty
 		rm -f /var/run/firmware.lock
-		/usr/local/etc/rc.conf_mount_ro
 		exit 1
 	fi
 
@@ -314,7 +305,6 @@ pfSenseNanoBSDupgrade)
 		rm -f /var/run/firmwarelock.dirty
 		rm -f /var/run/firmware.lock
 		umount /tmp/$GLABEL_SLICE
-		/usr/local/etc/rc.conf_mount_ro
 		exit 1
 	fi
 	echo "" >> /conf/upgrade_log.txt
@@ -362,7 +352,6 @@ pfSenseNanoBSDupgrade)
 	touch /conf/needs_package_sync
 
 	# remount /cf ro
-	/usr/local/etc/rc.conf_mount_ro
 	/bin/sync
 
 	echo "NanoBSD Firmware upgrade is complete.  Rebooting in 10 seconds."  >> /conf/upgrade_log.txt 2>&1
@@ -381,7 +370,6 @@ pfSenseupgrade)
 	# Sanity check - bail early if there's no firmware file!
 	if [ ! -r $IMG ]; then
 		echo "2nd parameter has not been passed or file does not exist. Exiting." >> /conf/upgrade_log.txt 2>&1
-		/usr/local/etc/rc.conf_mount_ro
 		exit
 	fi
 
@@ -479,9 +467,6 @@ pfSenseupgrade)
 	date >> /conf/upgrade_log.txt
 	echo "" >> /conf/upgrade_log.txt
 
-	# remount /cf ro
-	/usr/local/etc/rc.conf_mount_ro
-
 	# release the firmware lock
 	rm -f /var/run/firmwarelock.dirty
 	rm -f /var/run/firmware.lock
@@ -511,7 +496,6 @@ delta_update)
 	binary_update $IMG
 	restore_chflags
 	find / -name CVS -type d -exec rm {} \;
-	/usr/local/etc/rc.conf_mount_ro
 	/sbin/umount -f /cf 2>/dev/null
 	/sbin/mount -r /cf 2>/dev/null
 	/sbin/umount -f / 2>/dev/null

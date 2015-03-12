@@ -153,7 +153,6 @@ if(!$latest_version) {
 	} else {
 		if (pfs_version_compare($current_installed_buildtime, $current_installed_version, $latest_version) == -1) {
 			update_status(gettext("Downloading updates") . "...");
-			conf_mount_rw();
 			if ($g['platform'] == "nanobsd") {
 				$update_filename = "latest{$nanosize}.img.gz";
 			} else {
@@ -161,7 +160,6 @@ if(!$latest_version) {
 			}
 			$status = download_file_with_progress_bar("{$updater_url}/{$update_filename}", "{$g['upload_path']}/latest.tgz", "read_body_firmware");
 			$status = download_file_with_progress_bar("{$updater_url}/{$update_filename}.sha256", "{$g['upload_path']}/latest.tgz.sha256");
-			conf_mount_ro();
 			update_output_window("{$g['product_name']} " . gettext("download complete."));
 		} else {
 			update_output_window(gettext("You are on the latest version."));
@@ -195,9 +193,7 @@ if (!verify_gzip_file("{$g['upload_path']}/latest.tgz")) {
 	update_status(gettext("The image file is corrupt."));
 	update_output_window(gettext("Update cannot continue"));
 	if (file_exists("{$g['upload_path']}/latest.tgz")) {
-		conf_mount_rw();
 		unlink("{$g['upload_path']}/latest.tgz");
-		conf_mount_ro();
 	}
 	require("fend.inc");
 	exit;

@@ -239,14 +239,12 @@ if ($_POST) {
 		if ($restart_webgui)
 			$savemsg .= sprintf("<br />" . gettext("One moment...redirecting to %s in 20 seconds."),$url);
 
-		conf_mount_rw();
 		setup_serial_port();
 		// Restart DNS in case dns rebinding toggled
 		if (isset($config['dnsmasq']['enable']))
 			services_dnsmasq_configure();
 		elseif (isset($config['unbound']['enable']))
 			services_unbound_configure();
-		conf_mount_ro();
 	}
 }
 

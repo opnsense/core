@@ -1290,11 +1290,9 @@ function system_timezone_configure()
 	}
 
 	// Apply timezone
-	conf_mount_rw();
 	copy(sprintf('/usr/share/zoneinfo/%s', $timezone), '/etc/localtime');
 
 	mwexec("sync");
-	conf_mount_ro();
 
 	if (file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
@@ -1308,7 +1306,6 @@ function system_ntp_setup_gps($serialport) {
 	if (!file_exists($serialport))
 		return false;
 
-	conf_mount_rw();
 	// Create symlink that ntpd requires
 	unlink_if_exists($gps_device);
 	symlink($serialport, $gps_device);
@@ -1349,8 +1346,6 @@ function system_ntp_setup_gps($serialport) {
 		@file_put_contents("/etc/remote", "gps0:dv={$serialport}:br#{$gpsbaud}:pa=none:", FILE_APPEND);
 	}
 
-	conf_mount_ro();
-
 	return true;
 }
 
@@ -1363,12 +1358,9 @@ function system_ntp_setup_pps($serialport) {
 	if (!file_exists($serialport))
 		return false;
 
-	conf_mount_rw();
 	// Create symlink that ntpd requires
 	unlink_if_exists($pps_device);
 	@symlink($serialport, $pps_device);
-
-	conf_mount_ro();
 
 	return true;
 }

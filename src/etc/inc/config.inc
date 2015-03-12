@@ -70,11 +70,9 @@ if(file_exists("/var/run/booting") && file_exists("/conf/config.xml")) {
 		$config_contents = str_replace("m0n0wall","pfsense", $config_contents);
 		if (!config_validate('/conf/config.xml'))
 			log_error(gettext("ERROR!  Could not convert m0n0wall -> pfsense in config.xml"));
-		conf_mount_rw();
 		$fd = fopen("/conf/config.xml", "w");
 		fwrite($fd, $config_contents);
 		fclose($fd);
-		conf_mount_ro();
 	}
 }
 
