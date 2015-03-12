@@ -214,7 +214,6 @@ page-system-usermanager-passwordmg=system_usermanager_passwordmg.php*
 page-system-usermanager-settings=system_usermanager_settings.php*
 page-system-usermanager-settings-testldap=system_usermanager_settings_test.php*
 page-upload_progress=upload_progress*
-page-hidden-uploadconfiguration=uploadconfig.php*
 page-vpn-ipsec=vpn_ipsec.php*
 page-vpn-ipsec-listkeys=vpn_ipsec_keys.php*
 page-vpn-ipsec-editkeys=vpn_ipsec_keys_edit.php*

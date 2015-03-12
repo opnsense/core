@@ -1278,12 +1278,6 @@ $priv_list['page-upload_progress']['descr'] = gettext("Allow access to the 'Syst
 $priv_list['page-upload_progress']['match'] = array();
 $priv_list['page-upload_progress']['match'][] = "upload_progress*";
 
-$priv_list['page-hidden-uploadconfiguration'] = array();
-$priv_list['page-hidden-uploadconfiguration']['name'] = gettext("WebCfg - Hidden: Upload Configuration page");
-$priv_list['page-hidden-uploadconfiguration']['descr'] = gettext("Allow access to the 'Hidden: Upload Configuration' page.");
-$priv_list['page-hidden-uploadconfiguration']['match'] = array();
-$priv_list['page-hidden-uploadconfiguration']['match'][] = "uploadconfig.php*";
-
 $priv_list['page-vpn-ipsec'] = array();
 $priv_list['page-vpn-ipsec']['name'] = gettext("WebCfg - VPN: IPsec page");
 $priv_list['page-vpn-ipsec']['descr'] = gettext("Allow access to the 'VPN: IPsec' page.");

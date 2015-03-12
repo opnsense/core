@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -170,22 +171,24 @@ if ($_POST) {
 		else
 			unset($route['disabled']);
 
-		if (file_exists("{$g['tmp_path']}/.system_routes.apply"))
-			$toapplylist = unserialize(file_get_contents("{$g['tmp_path']}/.system_routes.apply"));
-		else
+		if (file_exists('/tmp/.system_routes.apply')) {
+			$toapplylist = unserialize(file_get_contents('/tmp/.system_routes.apply'));
+		} else {
 			$toapplylist = array();
+		}
 		$a_routes[$id] = $route;
 
 		if (!empty($oroute)) {
 			$delete_targets = array_diff($old_targets, $new_targets);
 			if (count($delete_targets))
 				foreach ($delete_targets as $dts) {
-					if(is_ipaddrv6($dts))
-						$family = "-inet6";
+					if (is_ipaddrv6($dts)) {
+						$family = '-inet6';
+					}
 					$toapplylist[] = "/sbin/route delete {$family} {$dts}";
 				}
 		}
-		file_put_contents("{$g['tmp_path']}/.system_routes.apply", serialize($toapplylist));
+		file_put_contents('/tmp/.system_routes.apply', serialize($toapplylist));
 
 		mark_subsystem_dirty('staticroutes');
 

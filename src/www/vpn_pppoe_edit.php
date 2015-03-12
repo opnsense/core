@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
@@ -27,9 +28,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("vpn.inc");
-
 
 function vpn_pppoe_get_id() {
 	global $config;
@@ -211,17 +211,18 @@ if ($_POST) {
 
 		if (!isset($id))
 			$id = count($a_pppoes);
-		if (file_exists("{$g['tmp_path']}/.vpn_pppoe.apply"))
-			$toapplylist = unserialize(file_get_contents("{$g['tmp_path']}/.vpn_pppoe.apply"));
-		else
+		if (file_exists('/tmp/.vpn_pppoe.apply')) {
+			$toapplylist = unserialize(file_get_contents('/tmp/.vpn_pppoe.apply'));
+		} else {
 			$toapplylist = array();
+		}
 
 		$toapplylist[] = $pppoecfg['pppoeid'];
 		$a_pppoes[$id] = $pppoecfg;
 
 		write_config();
 		mark_subsystem_dirty('vpnpppoe');
-		file_put_contents("{$g['tmp_path']}/.vpn_pppoe.apply", serialize($toapplylist));
+		file_put_contents('/tmp/.vpn_pppoe.apply', serialize($toapplylist));
 		header("Location: vpn_pppoe.php");
 		exit;
 	}
