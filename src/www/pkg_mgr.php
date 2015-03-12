@@ -59,25 +59,25 @@ if(is_subsystem_dirty('packagelock')) {
 $pkg_cache_file_time=($g['min_pkg_cache_file_time'] ? $g['min_pkg_cache_file_time'] : 120);
 
 $xmlrpc_base_url = get_active_xml_rpc_base_url();
-if (!file_exists("{$g['tmp_path']}/pkg_info.cache") || (time() - filemtime("{$g['tmp_path']}/pkg_info.cache")) > $pkg_cache_file_time) {
+if (!file_exists('/tmp/pkg_info.cache') || (time() - filemtime('/tmp/pkg_info.cache')) > $pkg_cache_file_time) {
 	$pkg_info = get_pkg_info('all', array("noembedded", "name", "category", "website", "version", "status", "descr", "maintainer", "required_version", "maximum_version", "pkginfolink", "config_file"));
 	//create cache file after get_pkg_info
 	if($pkg_info) {
-		$fout = fopen("{$g['tmp_path']}/pkg_info.cache", "w");
+		$fout = fopen('/tmp/pkg_info.cache', 'w');
 		fwrite($fout, serialize($pkg_info));
 		fclose($fout);
 		//$pkg_sizes = get_pkg_sizes();
 	} else {
 		$using_cache = true;
-		if(file_exists("{$g['tmp_path']}/pkg_info.cache")) {
+		if (file_exists('/tmp/pkg_info.cache')) {
 			$savemsg = sprintf(gettext("Unable to retrieve package info from %s. Cached data will be used."), $xmlrpc_base_url);
-			$pkg_info = unserialize(@file_get_contents("{$g['tmp_path']}/pkg_info.cache"));
+			$pkg_info = unserialize(@file_get_contents('/tmp/pkg_info.cache'));
 		} else {
 			$savemsg = sprintf(gettext('Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity.'), $xmlrpc_base_url, $g['product_name']);
 		}
 	}
 } else {
-	$pkg_info = unserialize(@file_get_contents("{$g['tmp_path']}/pkg_info.cache"));
+	$pkg_info = unserialize(@file_get_contents('/tmp/pkg_info.cache'));
 }
 
 if (! empty($_GET))

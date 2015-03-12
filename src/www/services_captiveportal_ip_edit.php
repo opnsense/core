@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2011 Scott Ullrich <sullrich@gmail.com>
@@ -37,11 +38,11 @@ function allowedips_sort() {
 	usort($config['captiveportal'][$cpzone]['allowedip'],"allowedipscmp");
 }
 
-require("guiconfig.inc");
-require("functions.inc");
+require_once("guiconfig.inc");
+require_once("functions.inc");
 require_once("filter.inc");
-require("shaper.inc");
-require("captiveportal.inc");
+require_once("shaper.inc");
+require_once("captiveportal.inc");
 
 $pgtitle = array(gettext("Services"),gettext("Captive portal"),gettext("Edit allowed IP address"));
 $shortcut_section = "captiveportal";
@@ -150,9 +151,9 @@ if ($_POST) {
 				captiveportal_free_dn_ruleno($ipfw['dnpipe']);
 			}
 			$uniqid = uniqid("{$cpzone}_allowed");
-			@file_put_contents("{$g['tmp_path']}/{$uniqid}_tmp", $rules);
-			mwexec("/sbin/ipfw -x {$cpzoneid} -q {$g['tmp_path']}/{$uniqid}_tmp");
-			@unlink("{$g['tmp_path']}/{$uniqid}_tmp");
+			@file_put_contents("/tmp/{$uniqid}_tmp", $rules);
+			mwexec("/sbin/ipfw -x {$cpzoneid} -q /tmp/{$uniqid}_tmp");
+			@unlink("/tmp/{$uniqid}_tmp");
 		}
 
 		header("Location: services_captiveportal_ip.php?zone={$cpzone}");

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2011 Scott Ullrich <sullrich@gmail.com>
@@ -126,9 +127,9 @@ if ($_POST) {
 		write_config();
 
 		$rules = captiveportal_allowedhostname_configure();
-		@file_put_contents("{$g['tmp_path']}/hostname_rules", $rules);
+		@file_put_contents('/tmp/hostname_rules', $rules);
 		$cpzoneid = $a_cp[$cpzone]['zoneid'];
-		mwexec("/sbin/ipfw -x {$cpzoneid} {$g['tmp_path']}/hostname_rules");
+		mwexec("/sbin/ipfw -x {$cpzoneid} /tmp/hostname_rules");
 		unset($rules);
 
 		header("Location: services_captiveportal_hostname.php?zone={$cpzone}");

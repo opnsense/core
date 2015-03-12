@@ -1,6 +1,6 @@
 <?php
-/*
 
+/*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) Jim McBeath
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
@@ -213,7 +213,7 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 		uksort($config['interfaces'], "compare_interface_friendly_names");
 
 		/* XXX: Do not remove this. */
-		unlink_if_exists("{$g['tmp_path']}/config.cache");
+		unlink_if_exists('/tmp/config.cache');
 
 		write_config();
 

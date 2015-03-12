@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Dinesh Nair <dinesh@alphaque.com>
@@ -36,11 +37,11 @@ function passthrumacs_sort() {
 	usort($config['captiveportal'][$cpzone]['passthrumac'],"passthrumacscmp");
 }
 
-require("guiconfig.inc");
-require("functions.inc");
+require_once("guiconfig.inc");
+require_once("functions.inc");
 require_once("filter.inc");
-require("shaper.inc");
-require("captiveportal.inc");
+require_once("shaper.inc");
+require_once("captiveportal.inc");
 
 global $cpzone;
 global $cpzoneid;
@@ -149,9 +150,9 @@ if ($_POST) {
 			$rules = captiveportal_passthrumac_delete_entry($oldmac);
 			$rules .= captiveportal_passthrumac_configure_entry($mac);
 			$uniqid = uniqid("{$cpzone}_macedit");
-			file_put_contents("{$g['tmp_path']}/{$uniqid}_tmp", $rules);
-			mwexec("/sbin/ipfw -x {$cpzoneid} -q {$g['tmp_path']}/{$uniqid}_tmp");
-			@unlink("{$g['tmp_path']}/{$uniqid}_tmp");
+			file_put_contents("/tmp/{$uniqid}_tmp", $rules);
+			mwexec("/sbin/ipfw -x {$cpzoneid} -q /tmp/{$uniqid}_tmp");
+			@unlink("/tmp/{$uniqid}_tmp");
 			unset($cpzoneid);
 		}
 

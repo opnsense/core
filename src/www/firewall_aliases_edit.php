@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
@@ -28,19 +29,8 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/rm	/bin/mkdir	/usr/bin/fetch
-	pfSense_MODULE:	aliases
-*/
 
-##|+PRIV
-##|*IDENT=page-firewall-alias-edit
-##|*NAME=Firewall: Alias: Edit page
-##|*DESCR=Allow access to the 'Firewall: Alias: Edit' page.
-##|*MATCH=firewall_aliases_edit.php*
-##|-PRIV
-
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
@@ -70,8 +60,9 @@ if($_POST)
 	$origname = $_POST['origname'];
 
 // Debugging
-if($debug)
-	unlink_if_exists("{$g['tmp_path']}/alias_rename_log.txt");
+if ($debug) {
+	unlink_if_exists('/tmp/alias_rename_log.txt');
+}
 
 function alias_same_type($name, $type) {
 	global $config;
@@ -203,7 +194,7 @@ if ($_POST) {
 			if($_POST['address' . $x]) {
 				/* fetch down and add in */
 				$isfirst = 0;
-				$temp_filename = tempnam("{$g['tmp_path']}/", "alias_import");
+				$temp_filename = tempnam('/tmp/', 'alias_import');
 				unlink_if_exists($temp_filename);
 				$verify_ssl = isset($config['system']['checkaliasesurlcert']);
 				mkdir($temp_filename);
