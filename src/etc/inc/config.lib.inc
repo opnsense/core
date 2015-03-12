@@ -30,53 +30,6 @@ require_once("script/load_phalcon.php");
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/****f* config/encrypted_configxml
- * NAME
- *   encrypted_configxml - Checks to see if config.xml is encrypted and if so, prompts to unlock.
- * INPUTS
- *   None
- * RESULT
- *   $config	- rewrites config.xml without encryption
- ******/
-function encrypted_configxml()
-{
-	global $g, $config;
-
-	$config_xml = '/conf/config.xml';
-
-	if (!file_exists($config_xml)) {
-		return;
-	}
-
-	if (!file_exists('/var/run/booting')) {
-		return;
-	}
-
-	$configtxt = file_get_contents($config_xml);
-	if(tagfile_deformat($configtxt, $configtxt, 'config.xml')) {
-		$fp = fopen('php://stdin', 'r');
-		$data = "";
-		echo "\n\n*** Encrypted config.xml detected ***\n";
-		while($data == "") {
-			echo "\nEnter the password to decrypt config.xml: ";
-			$decrypt_password = chop(fgets($fp));
-			$data = decrypt_data($configtxt, $decrypt_password);
-			if (!strstr($data, '<pfsense>')) {
-				$data = '';
-			}
-			if($data) {
-				$fd = fopen($config_xml . '.tmp', 'w');
-				fwrite($fd, $data);
-				fclose($fd);
-				exec("/bin/mv {$config_xml}.tmp {$config_xml}");
-				echo "\n" . gettext("Config.xml unlocked.") . "\n";
-				fclose($fp);
-			} else {
-				echo "\n" . gettext("Invalid password entered.  Please try again.") . "\n";
-			}
-		}
-	}
-}
 
 /****f* config/parse_config
  * NAME
@@ -107,42 +60,6 @@ function parse_config($parse = false)
 	return $cnf->toArray();
 }
 
-function generate_config_cache($config)
-{
-	$configcache = fopen('/tmp/config.cache', 'w');
-	fwrite($configcache, serialize($config));
-	fclose($configcache);
-	unset($configcache);
-}
-
-function discover_last_backup()
-{
-	$backups = glob('/conf/backup/*.xml');
-	$last_backup = '';
-	$last_mtime = 0;
-
-	foreach($backups as $backup) {
-		if (filemtime($backup) > $last_mtime) {
-			$last_mtime = filemtime($backup);
-			$last_backup = $backup;
-		}
-	}
-
-	return basename($last_backup);
-}
-
-function restore_backup($file)
-{
-	global $g;
-
-	if (file_exists($file)) {
-		@unlink('/tmp/config.cache');
-		copy($file, '/conf/config.xml');
-		disable_security_checks();
-		log_error(sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file));
-		file_notice("config.xml", sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file), "pfSenseConfigurator", "");
-	}
-}
 
 /****f* config/parse_config_bootup
  * NAME
@@ -156,7 +73,6 @@ function parse_config_bootup()
 
 	$config_xml = '/conf/config.xml';
 
-	$lockkey = lock('config');
 	if (!file_exists($config_xml)) {
 		if (file_exists("/var/run/booting")) {
 			if (strstr($g['platform'], "cdrom")) {
@@ -170,15 +86,14 @@ function parse_config_bootup()
 								 "on reboot.\n");
 				}
 			} else {
-				$last_backup = discover_last_backup();
-				if($last_backup) {
-					log_error("No config.xml found, attempting last known config restore.");
-					file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-					restore_backup("/conf/backup/{$last_backup}");
-				}
-				if (!file_exists($config_xml)) {
+				$cnf = OPNsense\Core\Config::getInstance();
+				$backups = $cnf->getBackups();
+				if (count($backups) > 0) {
+                                        log_error("No config.xml found, attempting last known config restore.");
+                                        file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
+					$cnf->restoreBackup($backups[0]);					
+				} else {
 					echo sprintf(gettext("XML configuration file not found.  %s cannot continue booting."), $g['product_name']) . "\n";
-					unlock($lockkey);
 					mwexec("/sbin/halt");
 					exit;
 				}
@@ -186,24 +101,11 @@ function parse_config_bootup()
 				file_notice("config.xml", gettext("Last known config found and restored.  Please double check your configuration file for accuracy."), "pfSenseConfigurator", "");
 			}
 		} else {
-			unlock($lockkey);
 			log_error(gettext("Could not find a usable configuration file! Exiting...."));
 			exit(0);
 		}
 	}
 
-	if (filesize($config_xml) == 0) {
-		$last_backup = discover_last_backup();
-		if ($last_backup) {
-			log_error(gettext("No config.xml found, attempting last known config restore."));
-			file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-			restore_backup("/conf/backup/{$last_backup}");
-		} else {
-			log_error(gettext('No config.xml found, attempting to restore factory config.'));
-			restore_backup('/usr/local/etc/config.xml');
-		}
-	}
-	unlock($lockkey);
 
 	$config = parse_config(true);
 
@@ -287,49 +189,6 @@ function convert_config() {
 		write_config(sprintf(gettext('Upgraded config version level from %1$s to %2$s'), $prev_version, $config['version']));
 }
 
-/****f* config/safe_write_file
- * NAME
- *   safe_write_file - Write a file out atomically
- * DESCRIPTION
- *   safe_write_file() Writes a file out atomically by first writing to a
- *   temporary file of the same name but ending with the pid of the current
- *   process, them renaming the temporary file over the original.
- * INPUTS
- *   $filename  - string containing the filename of the file to write
- *   $content   - string containing the file content to write to file
- *   $force_binary      - boolean denoting whether we should force binary
- *   mode writing.
- * RESULT
- *   boolean - true if successful, false if not
- ******/
-function safe_write_file($file, $content, $force_binary) {
-	$tmp_file = $file . "." . getmypid();
-	$write_mode = $force_binary ? "wb" : "w";
-
-	$fd = fopen($tmp_file, $write_mode);
-	if (!$fd) {
-		// Unable to open temporary file for writing
-		return false;
-        }
-	if (!fwrite($fd, $content)) {
-		// Unable to write to temporary file
-		fclose($fd);
-		return false;
-	}
-	fflush($fd);
-	fclose($fd);
-
-	if (!rename($tmp_file, $file)) {
-		// Unable to move temporary file to original
-		@unlink($tmp_file);
-		return false;
-	}
-
-	// Sync file before returning
-	pfSense_sync();
-
-	return true;
-}
 
 /****f* config/write_config
  * NAME
@@ -436,7 +295,6 @@ function config_restore($conffile) {
 
 	$lockkey = lock('config', LOCK_EX);
 
-	unlink_if_exists('/tmp/config.cache');
 	copy($conffile, '/conf/config.xml');
 
 	disable_security_checks();
