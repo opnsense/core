@@ -59,11 +59,6 @@ $tab = $_REQUEST['tab'];
 if($_POST)
 	$origname = $_POST['origname'];
 
-// Debugging
-if ($debug) {
-	unlink_if_exists('/tmp/alias_rename_log.txt');
-}
-
 function alias_same_type($name, $type) {
 	global $config;
 

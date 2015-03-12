@@ -48,10 +48,7 @@ if(!function_exists("update_output_window")) {
 if (!function_exists("pkg_debug")) {
 	/* set up logging if needed */
 	function pkg_debug($msg) {
-		global $g, $debug, $fd_log;
-
-		if (!$debug)
-			return;
+		global $fd_log;
 
 		if (!$fd_log) {
 			if (!$fd_log = fopen("/tmp/pkg_mgr_{$package}.log", "w"))

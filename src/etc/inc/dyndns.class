@@ -1285,11 +1285,6 @@
 		 *      | work with other systems. pfSense base is FreeBSD.
 		 */
 		function _detectChange() {
-			global $debug;
-
-			if ($debug)
-				log_error("DynDns ({$this->_dnsHost}): _detectChange() starting.");
-
 			$currentTime = time();
 
 			$wan_ip = $this->_checkIP();
@@ -1375,23 +1370,14 @@
 		 *   - status is returned from a DynDNS service provider.
 		 */
 		function _debug($data) {
-			global $debug;
-
-			if ($debug) {
-				$string = date('m-d-y h:i:s').' - ('.$this->_debugID.') - ['.$this->_dnsService.'] - '.$data."\n";
-				conf_mount_rw();
-				$file = fopen($this->_debugFile, 'a');
-				fwrite($file, $string);
-				fclose($file);
-				conf_mount_ro();
-			}
+			$string = date('m-d-y h:i:s').' - ('.$this->_debugID.') - ['.$this->_dnsService.'] - '.$data."\n";
+			conf_mount_rw();
+			$file = fopen($this->_debugFile, 'a');
+			fwrite($file, $string);
+			fclose($file);
+			conf_mount_ro();
 		}
 		function _checkIP() {
-			global $debug;
-
-			if ($debug)
-				log_error("DynDns ({$this->_dnsHost}): _checkIP() starting.");
-
 			if ($this->_useIPv6 == true) {
 				$ip_address = find_interface_ipv6($this->_if);
 				if (!is_ipaddrv6($ip_address))
