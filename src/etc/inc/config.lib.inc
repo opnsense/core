@@ -1,4 +1,5 @@
 <?php
+require_once("script/load_phalcon.php");
 
 /*
 	Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
@@ -87,7 +88,6 @@ function encrypted_configxml()
  ******/
 function parse_config($parse = false)
 {
-	require_once("script/load_phalcon.php");
 	$cnf = OPNsense\Core\Config::getInstance();
 	$config = $cnf->toArray();
 
@@ -398,8 +398,6 @@ function write_config($desc = 'Unknown', $backup = true)
 {
 	global $config, $g;
 
-	$config_xml = '/conf/config.xml';
-
 	if (!empty($_SERVER['REMOTE_ADDR'])) {
 		if (session_status() == PHP_SESSION_NONE) {
 			session_start();
@@ -417,11 +415,25 @@ function write_config($desc = 'Unknown', $backup = true)
 		session_write_close();
 	}
 
-	if ($backup) {
-		backup_config();
+	$cnf = OPNsense\Core\Config::getInstance();
+	$cnf->fromArray($config);
+	$revision_info = make_config_revision_entry($desc);
+	try {
+		$cnf->save($revision_info, $backup);
+	} catch (OPNsense\Core\ConfigException $e) {
+		// write failure
+		log_error(gettext("WARNING: Config contents could not be save. Could not open file!"));
+		file_notice('config.xml', sprintf("%s\n", gettext('Unable to open /conf/config.xml for writing in write_config()')));
+		return -1;
 	}
 
-	$config['revision'] = make_config_revision_entry($desc);
+	unlink_if_exists("/usr/local/pkg/pf/carp_sync_client.php");
+
+	/* sync carp entries to other firewalls */
+	carp_sync_client();
+
+
+	return $config;
 
 	$lockkey = lock('config', LOCK_EX);
 
