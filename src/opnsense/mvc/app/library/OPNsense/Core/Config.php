@@ -357,14 +357,14 @@ class Config extends Singleton
     /**
      * save config to filesystem
      * @param array|null $revision revision tag (associative array)
-     * @param bool $nobackup do not backup current config
+     * @param bool $backup do not backup current config
      * @throws ConfigException
      */
-    public function save($revision = null, $nobackup = false)
+    public function save($revision = null, $backup = true)
     {
         $this->checkvalid();
 
-        if ($nobackup == false) {
+        if ($backup) {
             $this->backup();
         }
 
