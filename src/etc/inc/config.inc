@@ -135,17 +135,6 @@ else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
 				}
 			}
 		}
-		if (!$cfgdevice) {
-			$last_backup = discover_last_backup();
-			if($last_backup) {
-				log_error(gettext("No config.xml found, attempting last known config restore."));
-				file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-				restore_backup("/conf/backup/{$last_backup}");
-			} else {
-				log_error(gettext("No config.xml or config backups found, resetting to factory defaults."));
-				restore_backup('/usr/local/etc/config.xml');
-			}
-		}
 
 		/* write device name to a file for rc.firmware */
 		$fd = fopen("{$g['varetc_path']}/cfdevice", "w");
@@ -173,11 +162,5 @@ if (!$timezone)
 	$timezone = "Etc/UTC";
 date_default_timezone_set("$timezone");
 
-if($config_parsed == true) {
-	/* process packager manager custom rules */
-	if(is_dir("/usr/local/pkg/parse_config")) {
-		run_plugins("/usr/local/pkg/parse_config/");
-	}
-}
 
 ?>
