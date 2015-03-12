@@ -261,10 +261,36 @@ class Config extends Singleton
     }
 
     /**
-     * backup current (running) config
-     * @param string|null $message log message
+     * update config revision information (ROOT.revision tag)
+     * @param array|null $revision revision tag (associative array)
+     * @param \SimpleXMLElement|null pass trough xml node
      */
-    private function backup($message)
+    private function updateRevision($revision, $node = null)
+    {
+        // input must be an array
+        if (is_array($revision)) {
+            if ($node == null) {
+                if (isset($this->simplexml->revision)) {
+                    $node = $this->simplexml->revision;
+                } else {
+                    $node = $this->simplexml->addChild("revision");
+                }
+            }
+            foreach ($revision as $revKey => $revItem) {
+                $childNode = $node->addChild($revKey);
+                if (is_array($revItem)) {
+                    $this->updateRevision($revItem, $childNode);
+                } else {
+                    $childNode[0] = $revItem;
+                }
+            }
+        }
+    }
+
+    /**
+     * backup current (running) config
+     */
+    private function backup()
     {
         $target_dir = dirname($this->config_file)."/backup/";
         $target_filename = "config-".time().".xml";
@@ -330,16 +356,23 @@ class Config extends Singleton
 
     /**
      * save config to filesystem
-     * @param string|null $message log message
+     * @param array|null $revision revision tag (associative array)
      * @param bool $nobackup do not backup current config
      * @throws ConfigException
      */
-    public function save($message = null, $nobackup = false)
+    public function save($revision = null, $nobackup = false)
     {
-        $xml_text = $this->__toString();
+        $this->checkvalid();
+
         if ($nobackup == false) {
-            $this->backup($message);
+            $this->backup();
         }
+
+        // update revision information ROOT.revision tag
+        $this->updateRevision($revision);
+
+        // serialize to text
+        $xml_text = $this->__toString();
 
         // save configuration, try to obtain a lock before doing so.
         $target_filename = $this->config_file;
