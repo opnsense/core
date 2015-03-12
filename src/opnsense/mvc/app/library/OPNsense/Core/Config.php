@@ -277,7 +277,12 @@ class Config extends Singleton
                 }
             }
             foreach ($revision as $revKey => $revItem) {
-                $childNode = $node->addChild($revKey);
+                if (isset($node->{$revKey})) {
+                    // key already in revision object
+                    $childNode = $node->{$revKey};
+                } else {
+                    $childNode = $node->addChild($revKey);
+                }
                 if (is_array($revItem)) {
                     $this->updateRevision($revItem, $childNode);
                 } else {
