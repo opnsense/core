@@ -432,56 +432,8 @@ function write_config($desc = 'Unknown', $backup = true)
 	/* sync carp entries to other firewalls */
 	carp_sync_client();
 
-
 	return $config;
 
-	$lockkey = lock('config', LOCK_EX);
-
-	/* generate configuration XML */
-	$xmlconfig = dump_xml_config($config, $g['xml_rootobj']);
-
-	/* write new configuration */
-	if (!safe_write_file('/conf/config.xml', $xmlconfig, false)) {
-		log_error(gettext("WARNING: Config contents could not be save. Could not open file!"));
-		unlock($lockkey);
-		file_notice('config.xml', sprintf("%s\n", gettext('Unable to open /conf/config.xml for writing in write_config()')));
-		return -1;
-	}
-
-	cleanup_backupcache(true);
-
-	/* re-read configuration */
-	/* NOTE: We assume that the file can be parsed since we wrote it. */
-	$config = parse_xml_config($config_xml, $g['xml_rootobj']);
-	if ($config == -1) {
-		copy($config_xml, $config_xml . '.bad');
-		$last_backup = discover_last_backup();
-		if ($last_backup) {
-			restore_backup("/conf/backup/{$last_backup}");
-			$config = parse_xml_config($config_xml, $g['xml_rootobj']);
-			if (file_exists("/var/run/booting")) {
-				echo "\n\n ************** WARNING **************";
-				echo "\n\n Configuration could not be validated. A previous configuration was restored. \n";
-				echo "\n The failed configuration file has been saved as {$config_xml}.bad \n\n";
-			}
-		} else
-			log_error(gettext("Could not restore config.xml."));
-	} else
-		generate_config_cache($config);
-
-	unlock($lockkey);
-
-	unlink_if_exists("/usr/local/pkg/pf/carp_sync_client.php");
-
-	/* sync carp entries to other firewalls */
-	carp_sync_client();
-
-	if(is_dir("/usr/local/pkg/write_config")) {
-		/* process packager manager custom rules */
-		run_plugins("/usr/local/pkg/write_config/");
-	}
-
-	return $config;
 }
 
 /****f* config/reset_factory_defaults
