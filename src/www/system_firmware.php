@@ -134,7 +134,6 @@ if ($_POST && !is_subsystem_dirty('firmwarelock')) {
 				else if (!file_exists($_FILES['ulfile']['tmp_name'])) {
 					/* probably out of memory for the MFS */
 					$input_errors[] = gettext("Image upload failed (out of memory?)");
-					mwexec("/usr/local/etc/rc.firmware disable");
 					clear_subsystem_dirty('firmware');
 				} else {
 					/* move the image so PHP won't delete it */
@@ -155,20 +154,10 @@ if ($_POST && !is_subsystem_dirty('firmwarelock')) {
 					/* fire up the update script in the background */
 					mark_subsystem_dirty('firmwarelock');
 					$savemsg = gettext("The firmware is now being updated. The firewall will reboot automatically.");
-					if (stristr($_FILES['ulfile']['name'],"nanobsd") or $_POST['isnano'] == "yes")
-						mwexec_bg("/usr/local/etc/rc.firmware pfSenseNanoBSDupgrade {$g['upload_path']}/firmware.tgz");
-					else if(stristr($_FILES['ulfile']['name'],"bdiff"))
-						mwexec_bg("/usr/local/etc/rc.firmware delta_update {$g['upload_path']}/firmware.tgz");
-					else  {
-						if($g['platform'] == "nanobsd")
-							$whichone = "pfSenseNanoBSDupgrade";
-						else
-							$whichone = "pfSenseupgrade";
-						mwexec_bg("/usr/local/etc/rc.firmware {$whichone} {$g['upload_path']}/firmware.tgz");
-						unset($whichone);
-					}
-				} else
+					mwexec_bg("/usr/local/etc/rc.firmware pfSenseupgrade {$g['upload_path']}/firmware.tgz");
+				} else {
 					$savemsg = sprintf(gettext("Firmware image missing or other error, please try again %s."),$errortext);
+				}
 			}
 		}
 	}

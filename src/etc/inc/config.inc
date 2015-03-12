@@ -142,11 +142,6 @@ else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
 			}
 		}
 
-		/* write device name to a file for rc.firmware */
-		$fd = fopen("{$g['varetc_path']}/cfdevice", "w");
-		fwrite($fd, $cfgdevice . "\n");
-		fclose($fd);
-
 		/* write out an fstab */
 		$fd = fopen('/etc/fstab', 'w');
 
