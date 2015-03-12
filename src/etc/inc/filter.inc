@@ -680,8 +680,6 @@ function filter_generate_gateways() {
 					$int = $member['int'];
 					$gatewayip = $member['gwip'];
 					if (($int <> "") && is_ipaddr($gatewayip)) {
-						if ($g['debug'])
-							log_error(sprintf(gettext('Setting up route with %1$s on %2$s'), $gatewayip, $int));
 						if ($member['weight'] > 1) {
 							$routeto .= str_repeat("( {$int} {$gatewayip} ) ", $member['weight']);
 						} else
@@ -2577,8 +2575,7 @@ function filter_generate_user_rule($rule)
 					if(!isset($config['system']['schedule_states']))
 						mwexec("/sbin/pfctl -y {$sched['schedlabel']}");
 					return "# schedule finished - {$rule['descr']}";
-				} else if($g['debug'])
-					log_error("[TDR DEBUG] status true -- rule type '$type'");
+				}
 
 				$aline['schedlabel'] = " schedule \"{$sched['schedlabel']}\" ";
 				break;
@@ -3351,8 +3348,6 @@ function filter_get_time_based_rule_status($schedule) {
 function filter_tdr_day($schedule) {
 	global $g;
 
-	if($g['debug'])
-		log_error("[TDR DEBUG] filter_tdr_day($schedule)");
 
 	/*
 	 * Calculate day of month.
@@ -3374,8 +3369,6 @@ function filter_tdr_hour($schedule) {
 	$starting_time = strtotime($tmp[0]);
 	$ending_time = strtotime($tmp[1]);
 	$now = strtotime("now");
-	if($g['debug'])
-		log_error("[TDR DEBUG] S: $starting_time E: $ending_time N: $now");
 	if($now >= $starting_time and $now < $ending_time)
 		return true;
 	return false;
@@ -3392,8 +3385,6 @@ function filter_tdr_position($schedule) {
 	 * ...
 	 */
 	$weekday = date("w");
-	if($g['debug'])
-		log_error("[TDR DEBUG] filter_tdr_position($schedule) $weekday");
 	if($weekday == 0)
 		$weekday = 7;
 	$schedule_days = explode(",", $schedule);
@@ -3412,8 +3403,6 @@ function filter_tdr_month($schedule) {
 	 */
 	$todays_month = date("n");
 	$months = explode(",", $schedule);
-	if($g['debug'])
-		log_error("[TDR DEBUG] filter_tdr_month($schedule)");
 	foreach($months as $month) {
 		if($month == $todays_month)
 			return true;

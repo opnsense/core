@@ -217,9 +217,6 @@ function services_radvd_configure($blacklist = array())
 
 		$autotype = $config['interfaces'][$trackif]['ipaddrv6'];
 
-		if ($g['debug'])
-			log_error("configuring RA on {$if} for type {$autotype} radvd subnet {$subnetv6}/{$ifcfgsnv6}");
-
 		$radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
 		$radvdconf .= "interface {$realif} {\n";
 		$radvdconf .= "\tAdvSendAdvert on;\n";

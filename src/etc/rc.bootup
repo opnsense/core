@@ -223,11 +223,9 @@ setup_microcode();
 echo "done.\n";
 
 /* set up interfaces */
-if(!$debugging)
-	mute_kernel_msgs();
+mute_kernel_msgs();
 interfaces_configure();
-if(!$debugging)
-	unmute_kernel_msgs();
+unmute_kernel_msgs();
 
 /* re-make hosts file after configuring interfaces */
 system_hosts_generate();

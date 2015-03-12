@@ -55,13 +55,6 @@ if (file_exists("/usr/local/etc/platform")) {
 	$g['platform'] = "unknown";
 }
 
-/* if /debugging exists, lets set $debugging
-   so we can output more information */
-if(file_exists("/debugging")) {
-	$debugging = true;
-	$g['debug'] = true;
-}
-
 if(file_exists("/var/run/booting") && file_exists("/conf/config.xml")) {
 	$config_contents = file_get_contents("/conf/config.xml");
 	if(stristr($config_contents, "<m0n0wall>") == true) {

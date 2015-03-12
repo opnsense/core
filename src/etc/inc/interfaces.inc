@@ -1055,8 +1055,6 @@ function interfaces_configure()
 			if (file_exists("/var/run/booting"))
 				printf(gettext("Configuring %s interface..."), $ifname);
 
-			if($g['debug'])
-				log_error(sprintf(gettext("Configuring %s"), $ifname));
 			interface_configure($if, $reload);
 			if (file_exists("/var/run/booting"))
 				echo gettext( "done.") . "\n";
@@ -1081,8 +1079,6 @@ function interfaces_configure()
 	foreach ($track6_list as $if => $ifname) {
 		if (file_exists("/var/run/booting"))
 			printf(gettext("Configuring %s interface..."), $ifname);
-		if ($g['debug'])
-			log_error(sprintf(gettext("Configuring %s"), $ifname));
 
 		interface_configure($if, $reload);
 
@@ -1102,8 +1098,6 @@ function interfaces_configure()
 	foreach ($delayed_list as $if => $ifname) {
 		if (file_exists("/var/run/booting"))
 			printf(gettext("Configuring %s interface..."), $ifname);
-		if ($g['debug'])
-			log_error(sprintf(gettext("Configuring %s"), $ifname));
 
 		interface_configure($if, $reload);
 
@@ -1117,8 +1111,6 @@ function interfaces_configure()
 	foreach ($bridge_list as $if => $ifname) {
 		if (file_exists("/var/run/booting"))
 			printf(gettext("Configuring %s interface..."), $ifname);
-		if($g['debug'])
-			log_error(sprintf(gettext("Configuring %s"), $ifname));
 
 		interface_configure($if, $reload);
 
@@ -1184,9 +1176,6 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 
 	if (!isset($config['interfaces'][$interface]))
 		return;
-
-	if ($g['debug'])
-		log_error("Calling interface down for interface {$interface}, destroy is " . (($destroy) ? 'true' : 'false'));
 
 	/*
 	 * NOTE: The $realifv6 is needed when WANv4 is type PPP and v6 is DHCP and the option v6 from v4 is used.
@@ -2948,8 +2937,6 @@ function interface_configure($interface = "wan", $reloadall = false, $linkupeven
 		interface_virtual_create($interface_to_check);
 
 	/* Disable Accepting router advertisements unless specifically requested */
-	if ($g['debug'])
-		log_error("Deny router advertisements for interface {$interface}");
 	mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 -accept_rtadv");
 
 	/* wireless configuration? */
@@ -3210,13 +3197,9 @@ function interface_track6_configure($interface = "lan", $wancfg, $linkupevent = 
 
 	switch($trackcfg['ipaddrv6']) {
 	case "6to4":
-		if ($g['debug'])
-			log_error("Interface {$interface} configured via {$wancfg['track6-interface']}  type {$type}");
 		interface_track6_6to4_configure($interface, $wancfg);
 		break;
 	case "6rd":
-		if ($g['debug'])
-			log_error("Interface {$interface} configured via {$wancfg['track6-interface']}  type {$type}");
 		interface_track6_6rd_configure($interface, $wancfg);
 		break;
 	case "dhcp6":
@@ -3423,8 +3406,6 @@ function interface_6rd_configure($interface = "wan", $wancfg) {
 	mwexec("/sbin/ifconfig {$stfiface} stfv4br " . escapeshellarg($wancfg['gateway-6rd']));
 	if ($wancfg['prefix-6rd-v4plen'] > 0 && $wancfg['prefix-6rd-v4plen'] < 32)
 		mwexec("/sbin/ifconfig {$stfiface} stfv4net {$ip4address}/{$wancfg['prefix-6rd-v4plen']}");
-	if ($g['debug'])
-		log_error("Created 6rd interface {$stfiface} {$rd6prefix}/{$rd6prefixlen}");
 
 	/* write out a default router file */
 	file_put_contents("/tmp/{$wanif}_routerv6", "{$rd6brgw}\n");
@@ -3521,9 +3502,6 @@ function interface_6to4_configure($interface = "wan", $wancfg){
 	pfSense_interface_flags($stfiface, IFF_LINK2);
 	mwexec("/sbin/ifconfig {$stfiface} inet6 {$stflanpr} prefixlen 16");
 
-	if ($g['debug'])
-		log_error("Set IPv6 address inet6 {$stflanpr} prefixlen 16 for {$stfiface}, route {$stfbrgw}");
-
 	/* write out a default router file */
 	file_put_contents("/tmp/{$wanif}_routerv6", "{$stfbrgw}");
 	file_put_contents("/tmp/{$wanif}_defaultgwv6", "{$stfbrgw}");
@@ -3582,8 +3560,6 @@ function interface_dhcpv6_configure($interface = "wan", $wancfg) {
 			$iflist = link_interface_to_track6($interface);
 			foreach ($iflist as $friendly => $ifcfg) {
 				if (is_numeric($ifcfg['track6-prefix-id'])) {
-					if ($g['debug'])
-						log_error("setting up $ifdescr - {$ifcfg['track6-prefix-id']}");
 					$realif = get_real_interface($friendly);
 					$dhcp6cconf .= "	prefix-interface {$realif} {\n";
 					$dhcp6cconf .= "		sla-id {$ifcfg['track6-prefix-id']};\n";

@@ -1,7 +1,7 @@
 <?php
 
 /*
-	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
@@ -262,10 +262,8 @@ include("head.inc");
 								<strong><?=gettext("Firmware image file ($type):");?> </strong>
 								<input name="ulfile" type="file" class="formfld" />
 								<br />
-								<?php if ($g['hidebackupbeforeupgrade'] === false): ?>
 								<input type="checkbox" name='backupbeforeupgrade' id='backupbeforeupgrade' /> <?=gettext("Perform full backup prior to upgrade");?>
 								<br />
-								<?php endif; ?>
 								<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Upgrade firmware");?>" />
 								<?=gettext('Click "Upgrade firmware" to start the upgrade process.');?>
 							<?php endif; else: ?>

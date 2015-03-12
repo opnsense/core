@@ -43,29 +43,22 @@ $g = array(
 	"varetc_path" => "/var/etc",
 	"vardb_path" => "/var/db",
 	"varlog_path" => "/var/log",
-	"tmp_path" => "/tmp",
 	"xml_rootobj" => "pfsense",
 	"admin_group" => "admins",
 	"product_name" => "OPNsense",
-	"product_copyright" => "Deciso B.V.",
-	"product_copyright_url" => "http://www.deciso.com",
-	"product_copyright_years" => "2014 - ".date("Y"),
-	"product_website" => "www.opnsense.org",
-	"product_website_footer" => "https://www.opnsense.org/?gui22",
-	"product_email" => "coreteam@opnsense.org",
-	"hidedownloadbackup" => false,
-	"hidebackupbeforeupgrade" => false,
-	"disablehelpmenu" => false,
-	"disablehelpicon" => false,
+	"product_website" => "https://opnsense.org",
+	"product_email" => "project@opnsense.org",
+	"product_copyright_owner" => "Deciso B.V.",
+	"product_copyright_years" => "2014 - 2015",
+	"product_copyright_url" => "https://www.deciso.com/",
 	"crashreporterurl" => "https://crash.opnsense.org/",
-	"debug" => false,
 	"latest_config" => "11.1",
 	"nopkg_platforms" => array("cdrom"),
 	"minimum_ram_warning" => "101",
 	"minimum_ram_warning_text" => "128 MB",
 	"wan_interface_name" => "wan",
 	"nopccard_platforms" => array("wrap", "net48xx"),
-	"xmlrpcbaseurl" => "https://packages.pfsense.org",
+	"xmlrpcbaseurl" => "https://not.supported.opnsense.org",
 	"captiveportal_path" => "/usr/local/captiveportal",
 	"captiveportal_element_path" => "/var/db/cpelements",
 	"captiveportal_element_sizelimit" => 1048576,
@@ -94,11 +87,8 @@ if(file_exists("/usr/local/etc/platform")) {
 	$g['platform'] = trim(file_get_contents("/usr/local/etc/platform"));
 	if($g['platform'] == "nanobsd") {
 		$g['firmware_update_text']="OPNsense-*.img.gz";
-		$g['hidedownloadbackup'] = true;
-		$g['hidebackupbeforeupgrade'] = true;
-
 	} else {
-		$g['firmware_update_text']="pfSense-*.tgz";
+		$g['firmware_update_text']="OPNsense-*.tgz";
 	}
 }
 

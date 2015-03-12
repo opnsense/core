@@ -739,19 +739,11 @@ function strncpy(&$dst, $src, $length) {
 function reload_interfaces_sync() {
 	global $config, $g;
 
-	if($g['debug'])
-		log_error(gettext("reload_interfaces_sync() is starting."));
-
 	/* parse config.xml again */
 	$config = parse_config(true);
 
 	/* enable routing */
 	system_routing_enable();
-	if($g['debug'])
-		log_error(gettext("Enabling system routing"));
-
-	if($g['debug'])
-		log_error(gettext("Cleaning up Interfaces"));
 
 	/* set up interfaces */
 	interfaces_configure();
@@ -1473,9 +1465,7 @@ function compare_hostname_to_dnscache($hostname) {
 	}
 
 	if(trim($oldcontents) != trim($contents)) {
-		if($g['debug']) {
-			log_error(sprintf(gettext('DNSCACHE: Found old IP %1$s and new IP %2$s'), $oldcontents, $contents));
-		}
+		log_error(sprintf(gettext('DNSCACHE: Found old IP %1$s and new IP %2$s'), $oldcontents, $contents));
 		return ($oldcontents);
 	} else {
 		return false;

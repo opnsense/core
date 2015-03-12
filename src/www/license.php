@@ -1,6 +1,8 @@
 <?php
+
 /*
     Copyright (C) 2014-2015 Deciso B.V.
+
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
 
@@ -23,7 +25,8 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
+
 include("head.inc");
 
 $pgtitle = gettext("License");
@@ -62,7 +65,7 @@ $pgtitle = gettext("License");
             OPNsense is a fork of <a href="http://www.pfsense.org" target="_blank">pfSense&reg;</a> <small>(Copyright &copy; 2004-2014 Electric Sheep Fencing, LLC. All rights reserved.)</small> a fork from <a href="http://m0n0.ch/wall" target="_blank">m0n0wall&reg;</a> <small>(Copyright &copy; 2002-2013 Manuel Kasper)</small>.<br />
             <br />
             OPNsense includes various freely availbale software packages and ports.<br />
-            The current ports are listed <a href="https://github.com/opnsense/tools/blob/master/config/current/ports" target="_blank">here</a>.<br />
+            The current ports are listed <a href="https://github.com/opnsense/tools/blob/master/config/current/ports.conf" target="_blank">here</a>.<br />
             <br />
             The authors of OPNsense would like to thank all contributors for their efforts.<br />
           </p>

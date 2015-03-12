@@ -1,8 +1,8 @@
 
                 <footer class="page-foot col-sm-push-2">
 				<div class="container-fluid">
-					<a target="_blank" href="<?=$g['product_website_footer']?>" class="redlnk"><?=$g['product_name']?></a> is &copy;
-	 <?=$g['product_copyright_years']?> by <a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright']?></a> All Rights Reserved.
+					<a target="_blank" href="<?=$g['product_website']?>" class="redlnk"><?=$g['product_name']?></a> is &copy;
+	 <?=$g['product_copyright_years']?> by <a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright_owner']?></a> All Rights Reserved.
 	[<a href="/license.php" class="tblnk">view license</a>]
 				</div>
 			</footer>

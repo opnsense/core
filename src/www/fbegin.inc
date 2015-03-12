@@ -297,24 +297,15 @@ if (isset($config['system']['developer'])) {
 }
 $diagnostics_menu = msort(array_merge($diagnostics_menu, return_ext_menu("Diagnostics")),0);
 
-//$gold_menu = array();
-//$gold_menu[] = array(gettext("pfSense Gold"), "https://www.pfsense.org/gold");
-//$gold_menu = msort(array_merge($gold_menu, return_ext_menu("Gold")),0);
-
-if(! $g['disablehelpmenu']) {
-	$help_menu = array();
-	$help_menu[] = array(gettext("About this Page"), $helpurl);
-	if($g['product_name'] == "pfSense")
-	$help_menu[] = array(gettext("Bug Database"), "https://github.com/opnsense/core/issues");
-	$help_menu[] = array(gettext("User Forum"), "http://forum.opnsense.org/");
-	$help_menu[] = array(gettext("Documentation"), "http://wiki.opnsense.org/");
-	$help_menu[] = array(gettext("Developers Wiki"), "http://wiki.opnsense.org/index.php/developers");
-	$help_menu[] = array(gettext("Paid Support"), "http://opnsense.org/support-overview/commercial-support/");
-	//$help_menu[] = array(gettext("pfSense Book"), "https://www.pfsense.org/j.php?jumpto=book");
-	//$help_menu[] = array(gettext("Search portal"), "https://www.pfsense.org/j.php?jumpto=searchportal");
-	$help_menu[] = array(gettext("FreeBSD Handbook"), "https://www.pfsense.org/j.php?jumpto=fbsdhandbook");
-	$help_menu = msort(array_merge($help_menu, return_ext_menu("Help")),0);
-}
+$help_menu = array();
+$help_menu[] = array(gettext("About this Page"), $helpurl);
+$help_menu[] = array(gettext("Bug Database"), "https://github.com/opnsense/core/issues");
+$help_menu[] = array(gettext("User Forum"), "https://forum.opnsense.org/");
+$help_menu[] = array(gettext("Documentation"), "https://wiki.opnsense.org/");
+$help_menu[] = array(gettext("Developers Wiki"), "https://wiki.opnsense.org/index.php/Develop:Info");
+$help_menu[] = array(gettext("Paid Support"), "https://opnsense.org/support-overview/commercial-support/");
+$help_menu[] = array(gettext("FreeBSD Handbook"), "https://www.freebsd.org/doc/handbook/");
+$help_menu = msort(array_merge($help_menu, return_ext_menu("Help")),0);
 
 function add_to_menu($url, $name) {
 	if (isAllowedPage($url))
@@ -377,13 +368,8 @@ if(is_subsystem_dirty('packagelock')) {
 						echo '<li>'.get_shortcut_status_link($shortcut_section, false).'</li>';
 						echo '<li>'.get_shortcut_log_link($shortcut_section, false).'</li>';
 
-						?>
-
-
-
-					<?php if(! $g['disablehelpicon']): ?>
+					?>
 					<li><a href="<?php echo $helpurl; ?>" target="_blank" title="<?php echo gettext("Help for items on this page"); ?>">Help</a></li>
-					<?php endif; ?>
 					<li class="active"><a href="/index.php?logout">Logout</a></li>
 				</ul>
 
@@ -465,7 +451,6 @@ if(is_subsystem_dirty('packagelock')) {
 							?>
 						</div>
 
-						<?php if(! $g['disablehelpmenu']): ?>
 						<?php $active = active_main_menu("/help"); ?>
 						<a href="#help" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-question-sign __iconspacer"></span><?php echo gettext("Help"); ?></a>
 
@@ -474,7 +459,6 @@ if(is_subsystem_dirty('packagelock')) {
 								output_menu($help_menu, "_blank");
 							?>
 						</div>
-						<?php endif; ?>
 					</div>
 
 			</nav>
