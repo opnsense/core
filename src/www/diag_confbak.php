@@ -218,7 +218,7 @@ include("head.inc");
 										        <tr>
 										          <td><?=gettext("Backup Count");?></td>
 										          <td><input name="backupcount" type="text" class="formfld unknown" size="5" value="<?=htmlspecialchars($config['system']['backupcount']);?>"/></td>
-										          <td><?= gettext("Enter the number of older configurations to keep in the local backup cache. By default this is 30 for a full install or 5 on NanoBSD."); ?></td>
+										          <td><?= gettext("Enter the number of older configurations to keep in the local backup cache. By default this is 30."); ?></td>
 										          <td><input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" /></td>
 										        </tr>
 										        </tbody>

@@ -241,6 +241,9 @@ function write_config($desc = 'Unknown', $backup = true)
 	/* sync carp entries to other firewalls */
 	carp_sync_client();
 
+	/* cleanup backups */
+	cleanup_backups();
+
 	return $config;
 
 }
@@ -388,94 +391,24 @@ function config_validate($conffile) {
 	return true;
 }
 
-function cleanup_backupcache($lock = false) {
+/**
+ * remove old backups
+ */
+function cleanup_backups() {
 	global $g;
 	$i = false;
 
 	$revisions = get_config_backup_count();
-
-	if (!$lock)
-		$lockkey = lock('config');
-
-
-	$backups = get_backups();
-	if ($backups) {
-		$baktimes = $backups['versions'];
-		unset($backups['versions']);
-	} else {
-		$backups = array();
-		$baktimes = array();
-	}
-	$newbaks = array();
-	$bakfiles = glob('/conf/backup/config-*');
-	$tocache = array();
-
-	foreach($bakfiles as $backup) { // Check for backups in the directory not represented in the cache.
-		$backupsize = filesize($backup);
-		if($backupsize == 0) {
-			unlink($backup);
-			continue;
+	
+	$cnf = OPNsense\Core\Config::getInstance();
+	
+	$cnt=1;
+	foreach ($cnf->getBackups() as $filename) {
+		if ($cnt > $revisions ) {
+			unlink($filename);
 		}
-		$tocheck = array_shift(explode('.', array_pop(explode('-', $backup))));
-		if(!in_array($tocheck, $baktimes)) {
-			$i = true;
-			$newxml = parse_xml_config($backup, array($g['xml_rootobj'], 'pfsense'));
-			if($newxml == "-1") {
-				log_error(sprintf(gettext("The backup cache file %s is corrupted.  Unlinking."), $backup));
-				unlink($backup);
-				log_error(sprintf(gettext("The backup cache file %s is corrupted.  Unlinking."), $backup));
-				continue;
-			}
-			if($newxml['revision']['description'] == "")
-				$newxml['revision']['description'] = "Unknown";
-			if($newxml['version'] == "")
-				$newxml['version'] = "?";
-			$tocache[$tocheck] = array('description' => $newxml['revision']['description'], 'version' => $newxml['version'], 'filesize' => $backupsize);
-		}
+		++$cnt ;
 	}
-	foreach($backups as $checkbak) {
-		if(count(preg_grep('/' . $checkbak['time'] . '/i', $bakfiles)) != 0) {
-			$newbaks[] = $checkbak;
-		} else {
-			$i = true;
-			if(file_exists("/var/run/booting")) print " " . $tocheck . "r";
-		}
-	}
-	foreach($newbaks as $todo) $tocache[$todo['time']] = array('description' => $todo['description'], 'version' => $todo['version'], 'filesize' => $todo['filesize']);
-	if(is_int($revisions) and (count($tocache) > $revisions)) {
-		$toslice = array_slice(array_keys($tocache), 0, $revisions);
-		foreach($toslice as $sliced)
-			$newcache[$sliced] = $tocache[$sliced];
-		foreach($tocache as $version => $versioninfo) {
-			if(!in_array($version, array_keys($newcache))) {
-				unlink_if_exists('/conf/backup/config-' . $version . '.xml');
-			}
-		}
-		$tocache = $newcache;
-	}
-	$bakout = fopen('/conf/backup/backup.cache', 'w');
-	fwrite($bakout, serialize($tocache));
-	fclose($bakout);
-
-	if (!$lock)
-		unlock($lockkey);
-}
-
-function get_backups()
-{
-	if (file_exists('/conf/backup/backup.cache')) {
-		$confvers = unserialize(file_get_contents('/conf/backup/backup.cache'));
-		$bakvers = array_keys($confvers);
-		$toreturn = array();
-		sort($bakvers);
-		//	$bakvers = array_reverse($bakvers);
-		foreach(array_reverse($bakvers) as $bakver)
-			$toreturn[] = array('time' => $bakver, 'description' => $confvers[$bakver]['description'], 'version' => $confvers[$bakver]['version'], 'filesize' => $confvers[$bakver]['filesize']);
-	} else {
-		return false;
-	}
-	$toreturn['versions'] = $bakvers;
-	return $toreturn;
 }
 
 
@@ -534,8 +467,6 @@ function get_config_backup_count() {
 	global $config, $g;
 	if (isset($config['system']['backupcount']) && is_numeric($config['system']['backupcount']) && ($config['system']['backupcount'] >= 0)) {
 		return intval($config['system']['backupcount']);
-	} elseif ($g['platform'] == "nanobsd") {
-		return 5;
 	} else {
 		return 30;
 	}
