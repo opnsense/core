@@ -28,6 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("config.lib.inc");
 require_once("guiconfig.inc");
 require_once("script/load_phalcon.php");
 

@@ -2,10 +2,10 @@
 <?php
 
 require_once('config.inc');
+require_once("script/load_phalcon.php");
 
-cleanup_backupcache();
-$confvers = get_backups();
-unset($confvers['versions']);
+$cnf = OPNsense\Core\Config::getInstance();
+$confvers = $cnf->getBackups(true);
 
 $fp = fopen('php://stdin', 'r');
 
@@ -27,7 +27,7 @@ function print_backup_info($backup_info, $number) {
 	}
 }
 
-function list_backups($which="all", $return=false) {
+function list_backups($which="all") {
 	global $confvers;
 
 	if (count($confvers) == 0) {
@@ -35,11 +35,12 @@ function list_backups($which="all", $return=false) {
 		return;
 	}
 
-	for ($c = count($confvers)-1; $c >= 0; $c--) {
-		if (is_numeric($which) && ($c != $which))
-			continue;
-		print_backup_info($confvers[$c], $c+1);
-		echo "\n";
+	$c = 0 ;
+	foreach ($confvers as $filename => $bckinfo) {
+		$c++;
+                if (is_numeric($which) && ($c != $which))
+                        continue;
+		print_backup_info($bckinfo,$c);
 	}
 }
 
@@ -63,14 +64,15 @@ function choose_backup() {
 function restore_history_backup($number) {
 	global $g, $fp, $confvers;
 	if (is_numeric($number) && ($number > 0) && ($number <= count($confvers))) {
-		$realnumber = $number - 1;
 		echo "\n" . gettext("Is this the backup you wish to restore?") . "\n";
-		list_backups($realnumber);
-		$thisbackup = $confvers[$realnumber];
+		list_backups($number);
+		$filename = array_keys($confvers)[$number-1];
+		$thisbackup = $confvers[$filename];
 		echo gettext("Y/N?") . " : ";
 		$confirm = strtoupper(chop(fgets($fp)));
 		if ($confirm == gettext("Y")) {
-			if(config_restore('/conf/backup/config-' . $thisbackup['time'] . '.xml') == 0) {
+			$cnf = OPNsense\Core\Config::getInstance();
+			if($cnf->restoreBackup($filename)){
 				echo "\n";
 				echo sprintf(gettext('Successfully reverted to timestamp %1$s with description "%2$s".'), date(gettext("n/j/y H:i:s"), $thisbackup['time']), $thisbackup['description']);
 				echo "\n" . gettext("You may need to reboot the firewall or restart services before the restored configuration is fully active.") . "\n\n";
