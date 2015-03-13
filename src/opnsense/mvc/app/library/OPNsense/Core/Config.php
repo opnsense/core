@@ -44,12 +44,6 @@ class Config extends Singleton
     private $config_file = "";
 
     /**
-     * XMLDocument type reference to config
-     * @var \DOMDocument
-     */
-    private $configxml = null ;
-
-    /**
      * SimpleXML type reference to config
      * @var SimpleXML
      */
@@ -140,9 +134,7 @@ class Config extends Singleton
 
         // root node
         if ($node == null) {
-            $this->configxml = new \DOMDocument('1.0');
-            $this->configxml->loadXML('<'.$this->simplexml[0]->getName().'/>');
-            $this->simplexml = simplexml_import_dom($this->configxml);
+            $this->simplexml = simplexml_load_string('<'.$this->simplexml[0]->getName().'/>');
             $node = $this->simplexml ;
         }
 
@@ -179,7 +171,7 @@ class Config extends Singleton
 
 
     /**
-     * Execute a xpath expression on config.xml
+     * Execute a xpath expression on config.xml (full DOM implementation)
      * @param $query
      * @return \DOMNodeList
      * @throws ConfigException
@@ -187,7 +179,12 @@ class Config extends Singleton
     public function xpath($query)
     {
         $this->checkvalid();
-        $xpath = new \DOMXPath($this->configxml);
+
+        $configxml = dom_import_simplexml($this->simplexml);
+        $dom = new \DOMDocument('1.0');
+        $dom_sxe = $dom->importNode($configxml, true);
+        $dom->appendChild($dom_sxe);
+        $xpath = new \DOMXPath($dom);
         return  $xpath->query($query);
     }
 
@@ -203,18 +200,6 @@ class Config extends Singleton
         return $this->simplexml;
     }
 
-    /**
-     * get DOMDocument
-     * @return XMLDocument
-     * @throws ConfigException
-     */
-    public function getDOM()
-    {
-        $this->checkvalid();
-        return $this->configxml;
-
-    }
-
 
     /**
      * init new config object, try to load current configuration
@@ -226,7 +211,7 @@ class Config extends Singleton
         try {
             $this->load();
         } catch (\Exception $e) {
-            $this->configxml = null ;
+            $this->simplexml = null ;
         }
 
     }
@@ -253,9 +238,7 @@ class Config extends Singleton
             }
         );
 
-        $this->configxml = new \DOMDocument('1.0');
-        $this->configxml->loadXML($xml);
-        $this->simplexml = simplexml_import_dom($this->configxml);
+        $this->simplexml = simplexml_load_string($xml);
 
         restore_error_handler();
         $this->statusIsValid = true;
@@ -268,10 +251,13 @@ class Config extends Singleton
     public function __toString()
     {
         // reformat XML (pretty print)
-        $dom = new \DOMDocument;
+        $configxml = dom_import_simplexml($this->simplexml);
+        $dom = new \DOMDocument('1.0');
+        $dom_sxe = $dom->importNode($configxml, true);
+        $dom->appendChild($dom_sxe);
         $dom->formatOutput = true;
         $dom->preserveWhiteSpace = false;
-        $dom->loadXML($this->configxml->saveXML());
+        $dom->loadXML($dom->saveXML());
 
         return $dom->saveXML();
 
@@ -369,7 +355,6 @@ class Config extends Singleton
 
         if ($this->statusIsValid) {
             // if current config is valid,
-            $configxml = $this->configxml;
             $simplexml = $this->simplexml;
             try {
                 // try to restore config
@@ -378,7 +363,6 @@ class Config extends Singleton
                 return true;
             } catch (ConfigException $e) {
                 // copy / load failed, restore previous version
-                $this->configxml = $configxml;
                 $this->simplexml = $simplexml;
                 $this->statusIsValid = true;
                 $this->save(null, true);
