@@ -253,12 +253,21 @@ class Config extends Singleton
     public function __toString()
     {
         // reformat XML (pretty print)
-        $configxml = dom_import_simplexml($this->simplexml);
         $dom = new \DOMDocument('1.0');
-        $dom_sxe = $dom->importNode($configxml, true);
-        $dom->appendChild($dom_sxe);
+
+        // make sure our root element is always called "opnsense"
+        $root = $dom->createElement('opnsense');
+        $dom->appendChild($root);
+
+        foreach ($this->simplexml as $node) {
+            $domNode = dom_import_simplexml($node);
+            $domNode = $root->ownerDocument->importNode($domNode, true);
+            $root->appendChild($domNode);
+        }
+
         $dom->formatOutput = true;
         $dom->preserveWhiteSpace = false;
+
         $dom->loadXML($dom->saveXML());
 
         return $dom->saveXML();
