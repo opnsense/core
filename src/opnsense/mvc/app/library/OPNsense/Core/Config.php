@@ -85,13 +85,15 @@ class Config extends Singleton
                 $tmpNode = $this->toArray($forceList, $xmlNode);
                 if (array_key_exists($xmlNode->getName(), $result)) {
                     $old_content = $result[$xmlNode->getName()];
-                    // check if array content is associative, if move items to list
-                    if (array_keys($old_content) !== range(0, count($old_content) - 1) ||
-                        (is_array($forceList) && array_key_exists($xmlNode->getName(), $forceList))
-                    ) {
+                    // check if array content is associative, move items to list
+                    if (array_keys($old_content) !== range(0, count($old_content) - 1)) {
                         $result[$xmlNode->getName()] = array();
                         $result[$xmlNode->getName()][] = $old_content;
                     }
+                    $result[$xmlNode->getName()][] = $tmpNode;
+                } elseif (is_array($forceList) && array_key_exists($xmlNode->getName(), $forceList)) {
+                    // force tag in an array
+                    $result[$xmlNode->getName()] = array();
                     $result[$xmlNode->getName()][] = $tmpNode;
                 } else {
                     $result[$xmlNode->getName()] = $tmpNode;
