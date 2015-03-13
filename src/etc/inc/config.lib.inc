@@ -1,4 +1,5 @@
 <?php
+require_once("xmlparse.inc");
 require_once("script/load_phalcon.php");
 
 /*
@@ -55,7 +56,8 @@ function parse_config()
 		}
 	}
 
-	return $cnf->toArray();
+	// return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
+	return $cnf->toArray(listtags());
 }
 
 
