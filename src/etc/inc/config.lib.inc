@@ -312,32 +312,6 @@ function config_restore($conffile) {
 	return 0;
 }
 
-function config_install($conffile)
-{
-	if (!file_exists($conffile)) {
-		return 1;
-	}
-
-	if (!config_validate($conffile)) {
-		return 1;
-	}
-
-	if (file_exists('/var/run/booting')) {
-		echo gettext("Installing configuration...") . "\n";
-	} else {
-		log_error(gettext("Installing configuration ...."));
-	}
-
-	$lockkey = lock('config', LOCK_EX);
-
-	copy($conffile, '/conf/config.xml');
-	disable_security_checks();
-
-	unlock($lockkey);
-
-	return 0;
-}
-
 /*
  * Disable security checks for DNS rebind and HTTP referrer until next time
  * they pass (or reboot), to aid in preventing accidental lockout when
