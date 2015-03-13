@@ -332,10 +332,8 @@ function config_install($conffile)
 
 	copy($conffile, '/conf/config.xml');
 	disable_security_checks();
-	@unlink('/tmp/config.cache');
 
 	unlock($lockkey);
-	conf_mount_ro();
 
 	return 0;
 }

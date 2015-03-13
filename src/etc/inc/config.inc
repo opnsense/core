@@ -62,20 +62,6 @@ if(file_exists("/debugging")) {
 	$g['debug'] = true;
 }
 
-if(file_exists("/var/run/booting") && file_exists("/conf/config.xml")) {
-	$config_contents = file_get_contents("/conf/config.xml");
-	if(stristr($config_contents, "<m0n0wall>") == true) {
-		/* user has just upgraded to m0n0wall, replace root xml tags */
-		log_error(gettext("Upgrading m0n0wall configuration to pfSense... "));
-		$config_contents = str_replace("m0n0wall","pfsense", $config_contents);
-		if (!config_validate('/conf/config.xml'))
-			log_error(gettext("ERROR!  Could not convert m0n0wall -> pfsense in config.xml"));
-		$fd = fopen("/conf/config.xml", "w");
-		fwrite($fd, $config_contents);
-		fclose($fd);
-	}
-}
-
 /* if our config file exists bail out, we're already set. */
 else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
 	/* find the device where config.xml resides and write out an fstab */

@@ -176,9 +176,10 @@ if(function_exists("display_error_form") && !isset($config['system']['webgui']['
 		$security_passed = false;
 }
 
-if (function_exists("display_error_form") && $security_passed)
+if (function_exists("display_error_form") && $security_passed) {
 	/* Security checks passed, so it should be OK to turn them back on */
 	restore_security_checks();
+}
 unset($security_passed);
 
 $groupindex = index_groups();
