@@ -319,15 +319,30 @@ class Config extends Singleton
 
     /**
      * return list of config backups
+     * @param bool $fetchRevisionInfo fetch revision information and return detailed information. (key/value)
      * @return array list of backups
      */
-    public function getBackups()
+    public function getBackups($fetchRevisionInfo = false)
     {
         $target_dir = dirname($this->config_file)."/backup/";
         if (file_exists($target_dir)) {
             $backups = glob($target_dir."config*.xml");
+            // sort by date (descending)
             rsort($backups);
-            return $backups;
+            if (!$fetchRevisionInfo) {
+                return $backups;
+            } else {
+                $result = array ();
+                foreach ($backups as $filename) {
+                    // try to read backup info from xml
+                    $xmlNode = simplexml_load_file($filename, "SimpleXMLElement", LIBXML_NOERROR |  LIBXML_ERR_NONE);
+                    if (isset($xmlNode->revision)) {
+                        $result[$filename] = $this->toArray($xmlNode->revision);
+                    }
+                }
+
+                return $result;
+            }
         }
 
         return array();
