@@ -337,32 +337,6 @@ function security_checks_disabled()
 	return file_exists('/tmp/disable_security_checks');
 }
 
-function config_validate($conffile) {
-
-	global $g, $xmlerr;
-
-	$xml_parser = xml_parser_create();
-
-	if (!($fp = fopen($conffile, "r"))) {
-		$xmlerr = gettext("XML error: unable to open file");
-		return false;
-	}
-
-	while ($data = fread($fp, 4096)) {
-		if (!xml_parse($xml_parser, $data, feof($fp))) {
-			$xmlerr = sprintf(gettext('%1$s at line %2$d'),
-						xml_error_string(xml_get_error_code($xml_parser)),
-						xml_get_current_line_number($xml_parser));
-			return false;
-		}
-	}
-	xml_parser_free($xml_parser);
-
-	fclose($fp);
-
-	return true;
-}
-
 /**
  * remove old backups
  */
@@ -401,25 +375,23 @@ function set_device_perms() {
 	}
 }
 
-function get_config_user() {
-	if (empty($_SESSION["Username"])) {
-		$username = getenv("USER");
-		if (empty($conuser) || $conuser == "root")
-			$username = "(system)";
-	} else
-		$username = $_SESSION["Username"];
-
-	if (!empty($_SERVER['REMOTE_ADDR']))
-		$username .= '@' . $_SERVER['REMOTE_ADDR'];
-
-	return $username;
-}
 
 function make_config_revision_entry($desc = null, $override_user = null) {
-	if (empty($override_user))
-		$username = get_config_user();
-	else
+	if (empty($override_user)) {
+		if (empty($_SESSION["Username"])) {
+			$username = getenv("USER");
+			if (empty($conuser) || $conuser == "root")
+				$username = "(system)";
+		} else {
+			$username = $_SESSION["Username"];
+		}
+		if (!empty($_SERVER['REMOTE_ADDR'])) {
+			$username .= '@' . $_SERVER['REMOTE_ADDR'];
+		}
+	}
+	else {
 		$username = $override_user;
+	}
 
 	$revision = array();
 
