@@ -253,7 +253,6 @@ function get_user_privileges(& $user) {
         $privs = $user['priv'];
         if (!is_array($privs)) {
                 $privs = array();
-		$privs[] = $user['priv'];
 	}
 
         $names = local_user_get_groups($user, true);
