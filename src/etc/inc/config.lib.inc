@@ -290,8 +290,8 @@ function config_restore($conffile) {
 	if (!file_exists($conffile))
 		return 1;
 
-	backup_config();
-
+	$cnf = OPNsense\Core\Config::getInstance();
+	$cnf->backup();
 
 	$lockkey = lock('config', LOCK_EX);
 
@@ -478,42 +478,6 @@ function get_backups()
 	return $toreturn;
 }
 
-function backup_config()
-{
-
-	/* Create backup directory if needed */
-	safe_mkdir('/conf/backup');
-
-	if ($config['revision']['time'] == '') {
-		$baktime = 0;
-	} else {
-		$baktime = $config['revision']['time'];
-	}
-
-	if ($config['revision']['description'] == '') {
-		$bakdesc = 'Unknown';
-	} else {
-		$bakdesc = $config['revision']['description'];
-	}
-
-	$bakver = ($config['version'] == '') ? '?' : $config['version'];
-	$bakfilename = '/conf/backup/config-' . $baktime . '.xml';
-	copy('/conf/config.xml', $bakfilename);
-
-	if (file_exists('/conf/backup/backup.cache')) {
-		$backupcache = unserialize(file_get_contents('/conf/backup/backup.cache'));
-	} else {
-		$backupcache = array();
-	}
-
-	$backupcache[$baktime] = array('description' => $bakdesc, 'version' => $bakver, 'filesize' => filesize($bakfilename));
-	$bakout = fopen('/conf/backup/backup.cache', 'w');
-	fwrite($bakout, serialize($backupcache));
-	fclose($bakout);
-
-
-	return true;
-}
 
 function set_device_perms() {
 	$devices = array(
