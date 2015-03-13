@@ -29,6 +29,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("script/load_phalcon.php");
 
 if (isset($_POST['backupcount'])) {
 	if (is_numeric($_POST['backupcount']) && ($_POST['backupcount'] >= 0)) {
@@ -89,9 +90,9 @@ if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime
 	}
 }
 
-cleanup_backupcache(false);
-$confvers = get_backups();
-unset($confvers['versions']);
+// list backups
+$cnf = OPNsense\Core\Config::getInstance();
+$confvers = $cnf->getBackups(true);
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Configuration History"));
 include("head.inc");
