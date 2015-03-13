@@ -347,7 +347,7 @@ class Config extends Singleton
                         $result[$filename] = $this->toArray(null, $xmlNode->revision);
                     }
                     // append filesize to revision info object
-                    $result[$filename]['size'] = filesize($filename);
+                    $result[$filename]['filesize'] = filesize($filename);
                 }
 
                 return $result;
