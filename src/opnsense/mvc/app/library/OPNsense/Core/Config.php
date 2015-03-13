@@ -93,7 +93,8 @@ class Config extends Singleton
                     $old_content = $result[$xmlNode->getName()];
                     // check if array content is associative, if move items to list
                     if (array_keys($old_content) !== range(0, count($old_content) - 1) ||
-                        array_key_exists($xmlNode->getName(), $forceList)) {
+                        (is_array($forceList) && array_key_exists($xmlNode->getName(), $forceList))
+                    ) {
                         $result[$xmlNode->getName()] = array();
                         $result[$xmlNode->getName()][] = $old_content;
                     }
@@ -113,7 +114,7 @@ class Config extends Singleton
                     $result[$xmlNode->getName()][] = $xmlNode->__toString();
                 } else {
                     // single content item
-                    if (array_key_exists($xmlNode->getName(), $forceList)) {
+                    if (is_array($forceList) && array_key_exists($xmlNode->getName(), $forceList)) {
                         $result[$xmlNode->getName()] = array();
                         $result[$xmlNode->getName()][] = $xmlNode->__toString();
                     } else {
