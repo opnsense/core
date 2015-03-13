@@ -341,11 +341,15 @@ function security_checks_disabled()
  * remove old backups
  */
 function cleanup_backups() {
-	global $g;
+	global $g, $config;
 	$i = false;
 
-	$revisions = get_config_backup_count();
-	
+	if (isset($config['system']['backupcount']) && is_numeric($config['system']['backupcount']) && ($config['system']['backupcount'] >= 0)) {
+		$revisions = intval($config['system']['backupcount']);
+	} else {
+		$revisions = 30;
+	}
+
 	$cnf = OPNsense\Core\Config::getInstance();
 	
 	$cnt=1;
@@ -407,14 +411,6 @@ function make_config_revision_entry($desc = null, $override_user = null) {
 	return $revision;
 }
 
-function get_config_backup_count() {
-	global $config, $g;
-	if (isset($config['system']['backupcount']) && is_numeric($config['system']['backupcount']) && ($config['system']['backupcount'] >= 0)) {
-		return intval($config['system']['backupcount']);
-	} else {
-		return 30;
-	}
-}
 
 function pfSense_clear_globals() {
 	global $config, $FilterIfList, $GatewaysList, $filterdns, $aliases, $aliastable;
