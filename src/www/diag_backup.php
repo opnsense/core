@@ -27,6 +27,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("script/load_phalcon.php");  
 
 /* Allow additional execution time 0 = no limit. */
 ini_set('max_execution_time', '0');
@@ -384,7 +385,8 @@ if ($_POST) {
 						} else {
 							/* restore the entire configuration */
 							file_put_contents($_FILES['conffile']['tmp_name'], $data);
-							if (config_install($_FILES['conffile']['tmp_name']) == 0) {
+							$cnf = OPNsense\Core\Config::getInstance();
+							if ($cnf->restoreBackup($filename)) {
 								/* this will be picked up by /index.php */
 								mark_subsystem_dirty("restore");
 								touch("/conf/needs_package_sync");
@@ -543,7 +545,8 @@ if ($_POST) {
 			$input_errors[] = gettext("XXX - this feature may hose your config (do NOT backrev configs!) - billm");
 			if ($ver2restore <> "") {
 				$conf_file = '/conf/backup/config-' . strtotime($ver2restore) . '.xml';
-				if (config_install($conf_file) == 0) {
+				$cnf = OPNsense\Core\Config::getInstance();
+				if ($cnf->restoreBackup($conf_file)) {
 					mark_subsystem_dirty("restore");
 				} else {
 					$input_errors[] = gettext("The configuration could not be restored.");

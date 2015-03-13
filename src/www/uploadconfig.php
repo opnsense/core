@@ -28,6 +28,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("script/load_phalcon.php");
 
 header("Content-Type: text/plain");
 
@@ -40,7 +41,8 @@ if ($_POST['config']) {
 	}
 	fwrite($fd, $_POST['config']);
 	fclose($fd);
-	if (config_install("{$g['tmp_path']}/config.xml") == 0) {
+	$cnf = OPNsense\Core\Config::getInstance();
+	if ($cnf->restoreBackup("{$g['tmp_path']}/config.xml")) {
 		echo gettext("OK")."\n";
 		system_reboot();
 	} else {
