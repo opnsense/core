@@ -72,11 +72,12 @@ class Config extends Singleton
 
     /**
      * serialize xml to array structure (backwards compatibility mode)
+     * @param null|array $forceList force specific tags to be contained in a list.
      * @param DOMNode $node
      * @return string|array
      * @throws ConfigException
      */
-    public function toArray($node = null)
+    public function toArray($forceList = null, $node = null)
     {
         $result = array();
         $this->checkvalid();
@@ -87,11 +88,12 @@ class Config extends Singleton
 
         foreach ($node->children() as $xmlNode) {
             if ($xmlNode->count() > 0) {
-                $tmpNode = $this->toArray($xmlNode);
+                $tmpNode = $this->toArray($forceList, $xmlNode);
                 if (array_key_exists($xmlNode->getName(), $result)) {
                     $old_content = $result[$xmlNode->getName()];
                     // check if array content is associative, if move items to list
-                    if (array_keys($old_content) !== range(0, count($old_content) - 1)) {
+                    if (array_keys($old_content) !== range(0, count($old_content) - 1) ||
+                        array_key_exists($xmlNode->getName(), $forceList)) {
                         $result[$xmlNode->getName()] = array();
                         $result[$xmlNode->getName()][] = $old_content;
                     }
@@ -111,7 +113,12 @@ class Config extends Singleton
                     $result[$xmlNode->getName()][] = $xmlNode->__toString();
                 } else {
                     // single content item
-                    $result[$xmlNode->getName()] = $xmlNode->__toString();
+                    if (array_key_exists($xmlNode->getName(), $forceList)) {
+                        $result[$xmlNode->getName()] = array();
+                        $result[$xmlNode->getName()][] = $xmlNode->__toString();
+                    } else {
+                        $result[$xmlNode->getName()] = $xmlNode->__toString();
+                    }
                 }
             }
         }
@@ -337,7 +344,7 @@ class Config extends Singleton
                     // try to read backup info from xml
                     $xmlNode = simplexml_load_file($filename, "SimpleXMLElement", LIBXML_NOERROR |  LIBXML_ERR_NONE);
                     if (isset($xmlNode->revision)) {
-                        $result[$filename] = $this->toArray($xmlNode->revision);
+                        $result[$filename] = $this->toArray(null, $xmlNode->revision);
                     }
                 }
 
