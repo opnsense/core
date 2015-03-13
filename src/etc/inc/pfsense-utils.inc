@@ -737,7 +737,7 @@ function reload_interfaces_sync() {
 		log_error(gettext("reload_interfaces_sync() is starting."));
 
 	/* parse config.xml again */
-	$config = parse_config(true);
+	$config = parse_config();
 
 	/* enable routing */
 	system_routing_enable();
@@ -787,7 +787,7 @@ function reload_all_sync() {
 	global $config, $g;
 
 	/* parse config.xml again */
-	$config = parse_config(true);
+	$config = parse_config();
 
 	/* set up our timezone */
 	system_timezone_configure();

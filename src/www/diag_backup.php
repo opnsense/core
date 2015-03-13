@@ -145,7 +145,7 @@ function add_base_packages_menu_items() {
 	}
 	if($modified_config) {
 		write_config(gettext("Restored base_package menus after configuration restore."));
-		$config = parse_config(true);
+		$config = parse_config();
 	}
 }
 
@@ -390,7 +390,7 @@ if ($_POST) {
 								touch("/conf/needs_package_sync");
 								/* remove cache, we will force a config reboot */
 								@unlink('/tmp/config.cache');
-								$config = parse_config(true);
+								$config = parse_config();
 								/* extract out rrd items, unset from $config when done */
 								if($config['rrddata']) {
 									restore_rrddata();

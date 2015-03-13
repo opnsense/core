@@ -34,12 +34,10 @@ require_once("script/load_phalcon.php");
 /****f* config/parse_config
  * NAME
  *   parse_config - Read in config.cache or config.xml if needed and return $config array
- * INPUTS
- *   $parse       - boolean to force parse_config() to read config.xml and generate config.cache
  * RESULT
  *   $config      - array containing all configuration variables
  ******/
-function parse_config($parse = false)
+function parse_config()
 {
 	$cnf = OPNsense\Core\Config::getInstance();
 	if (!$cnf->isValid()) {
@@ -107,7 +105,7 @@ function parse_config_bootup()
 	}
 
 
-	$config = parse_config(true);
+	$config = parse_config();
 
 	if ((float)$config['version'] > (float)$g['latest_config']) {
 		echo <<<EOD
@@ -301,7 +299,7 @@ function config_restore($conffile) {
 
 	unlock($lockkey);
 
-	$config = parse_config(true);
+	$config = parse_config();
 
 
 	write_config(gettext("Reverted to") . " " . array_pop(explode("/", $conffile)) . ".", false);
