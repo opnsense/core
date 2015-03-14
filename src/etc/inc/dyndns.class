@@ -165,10 +165,15 @@
 			case 'custom':
 				if (!$dnsUpdateURL) $this->_error(7);
 				break;
+			case 'duckdns':
+				if (!$dnsUser) $this->_error(3);
+				if (!$dnsHost) $this->_error(5);
+				break;
 			default:
 				if (!$dnsUser) $this->_error(3);
 				if (!$dnsPass) $this->_error(4);
 				if (!$dnsHost) $this->_error(5);
+				break;
 			}
 
 			switch ($dnsService) {
@@ -684,7 +689,7 @@
 						log_error("Duck DNS ({$this->_dnsHost}): DNS update() starting.");
 					$server = "https://www.duckdns.org/update";
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-					curl_setopt($ch, CURLOPT_URL, $server . '?domains=' . $this->_dnsHost . '&token=' . $this->_dnsUser);
+					curl_setopt($ch, CURLOPT_URL, $server . '?domains=' . str_replace('.duckdns.org', '', $this->_dnsHost) . '&token=' . $this->_dnsUser);
 					break;
 				default:
 					break;
