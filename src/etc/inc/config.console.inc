@@ -54,12 +54,13 @@ function set_networking_interfaces_ports()
 
 	$iflist = get_interface_list();
 
-/* Function flow is based on $key and $auto_assign or the lack thereof */
+	/* Function flow is based on $key and $auto_assign or the lack thereof */
 	$key = null;
 
-/* Only present auto interface option if running from LiveCD and interface mismatch*/
-	if ((preg_match("/cdrom/", $g['platform'])) && is_interface_mismatch())
+	/* Only present auto interface option if running from LiveCD and interface mismatch*/
+	if (is_install_media() && is_interface_mismatch()) {
 		$auto_assign = false;
+	}
 
 	echo <<<EOD
 

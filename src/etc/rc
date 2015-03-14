@@ -39,8 +39,8 @@ else
 
 	# fake a writeable environment in some subdirs
 	for i in conf etc home root usr var; do
-		/bin/mkdir -p /tmp/.cdrom/${i}
-		/sbin/mount_unionfs /tmp/.cdrom/${i} /${i}
+		/bin/mkdir -p /tmp/.install.media/${i}
+		/sbin/mount_unionfs /tmp/.install.media/${i} /${i}
 	done
 fi
 

@@ -53,7 +53,6 @@ $g = array(
 	"product_copyright_url" => "https://www.deciso.com/",
 	"crashreporterurl" => "https://crash.opnsense.org/",
 	"latest_config" => "11.1",
-	"nopkg_platforms" => array("cdrom"),
 	"minimum_ram_warning" => "101",
 	"minimum_ram_warning_text" => "128 MB",
 	"wan_interface_name" => "wan",
@@ -132,5 +131,23 @@ $sysctls = array(
 	"net.inet.icmp.reply_from_interface" => 1,
 	"net.inet6.ip6.rfc6204w3" => 1,
 );
+
+function is_install_media()
+{
+	/*
+	 * Despite unionfs underneath, / is still not writeable,
+	 * making the following the perfect test for install media.
+	 */
+
+	$file = '/.probe.for.install.media';
+	$fd = @fopen($file, 'w');
+	if ($fd) {
+		fclose($fd);
+		unlink($file);
+		return false;
+	}
+
+	return true;
+}
 
 $config_parsed = false;

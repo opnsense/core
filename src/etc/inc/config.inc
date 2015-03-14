@@ -71,103 +71,19 @@ if(file_exists("/var/run/booting") && file_exists("/conf/config.xml")) {
 	}
 }
 
-/* if our config file exists bail out, we're already set. */
-else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
-	/* find the device where config.xml resides and write out an fstab */
-	unset($cfgdevice);
-	/* check if there's already an fstab (NFS booting?) */
-	if (!file_exists('/etc/fstab')) {
-		if (strstr($g['platform'], "cdrom")) {
-			/* config is on floppy disk for CD-ROM version */
-			$cfgdevice = $cfgpartition = "fd0";
-			$_gb = exec('/sbin/dmesg -a', $dmesg);
-			if(preg_match("/da0/", $dmesg) == true) {
-				$cfgdevice = $cfgpartition = "da0" ;
-				if (mwexec("/sbin/mount -r /dev/{$cfgdevice} /cf")) {
-					/* could not mount, fallback to floppy */
-					$cfgdevice = $cfgpartition = "fd0";
-				}
-			}
-			$cfgfstype = "msdosfs";
-			echo gettext("CDROM build") . "\n";
-			echo "   " . gettext("CFG:") . " {$cfgpartition}\n";
-			echo "   " . gettext("CFG:") . " {$cfgpartition}\n";
-			echo "  " . gettext("TYPE:") . " {$cfgfstype}\n";
-		} else {
-			/* probe kernel known disks until we find one with config.xml */
-			$disks = explode(" ", get_single_sysctl("kern.disks"));
-			foreach ($disks as $mountdisk) {
-				/* skip mfs mounted filesystems */
-				if (strstr($mountdisk, "md"))
-					continue;
-				if (mwexec("/sbin/mount -r /dev/{$mountdisk}a /cf") == 0) {
-					if (file_exists('/conf/config.xml')) {
-						/* found it */
-						$cfgdevice = $mountdisk;
-						$cfgpartition = $cfgdevice . "a";
-						$cfgfstype = "ufs";
-						printf(gettext("Found configuration on %s.%s"), $cfgdevice, "\n");
-					}
-
-					mwexec("/sbin/umount -f /cf");
-
-					if ($cfgdevice)
-						break;
-				}
-				if (mwexec("/sbin/mount -r /dev/{$mountdisk}d /cf") == 0) {
-					if (file_exists('/conf/config.xml')) {
-						/* found it */
-						$cfgdevice = $mountdisk;
-						$cfgpartition = $cfgdevice . "d";
-						$cfgfstype = "ufs";
-						printf(gettext("Found configuration on %s.%s"), $cfgdevice, "\n");
-					}
-
-					mwexec("/sbin/umount -f /cf");
-
-					if ($cfgdevice)
-						break;
-				}
-			}
-		}
-		if (!$cfgdevice) {
-			$last_backup = discover_last_backup();
-			if($last_backup) {
-				log_error(gettext("No config.xml found, attempting last known config restore."));
-				file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-				restore_backup("/conf/backup/{$last_backup}");
-			} else {
-				log_error(gettext("No config.xml or config backups found, resetting to factory defaults."));
-				restore_backup('/usr/local/etc/config.xml');
-			}
-		}
-
-		/* write out an fstab */
-		$fd = fopen('/etc/fstab', 'w');
-
-		$fstab = "/dev/{$cfgpartition} /cf {$cfgfstype} ro,noatime 1 1\n";
-		$fstab .= "proc /proc procfs rw 0 0\n";
-
-		fwrite($fd, $fstab);
-		fclose($fd);
-	}
-	/* mount all filesystems */
-	mwexec("/sbin/mount -a");
-}
-
 $config = parse_config();
 
 /* set timezone */
 $timezone = $config['system']['timezone'];
-if (!$timezone)
+if (!$timezone) {
 	$timezone = "Etc/UTC";
+}
+
 date_default_timezone_set("$timezone");
 
-if($config_parsed == true) {
+if ($config_parsed == true) {
 	/* process packager manager custom rules */
 	if(is_dir("/usr/local/pkg/parse_config")) {
 		run_plugins("/usr/local/pkg/parse_config/");
 	}
 }
-
-?>

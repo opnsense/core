@@ -1856,14 +1856,9 @@ EOD;
 	name => platform string (e.g. 'wrap', 'alix' etc.)
 	descr => human-readable description (e.g. "PC Engines WRAP")
 */
-function system_identify_specific_platform() {
+function system_identify_specific_platform()
+{
 	global $g;
-
-	if ($g['platform'] == 'generic-pc')
-		return array('name' => 'generic-pc', 'descr' => gettext("Generic PC"));
-
-	if ($g['platform'] == 'generic-pc-cdrom')
-		return array('name' => 'generic-pc-cdrom', 'descr' => gettext("Generic PC (CD-ROM)"));
 
 	/* the rest of the code only deals with 'embedded' platforms */
 	if ($g['platform'] != 'nanobsd')

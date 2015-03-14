@@ -843,7 +843,7 @@ function setup_serial_port($when = 'save', $path = '')
 		$boot_config = "";
 
 	$serialspeed = (is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
-	if ($g['platform'] != "cdrom") {
+	if (!is_install_media()) {
 		$boot_config_split = explode("\n", $boot_config);
 		$fd = fopen($boot_config_file,"w");
 		if($fd) {
@@ -886,7 +886,7 @@ function setup_serial_port($when = 'save', $path = '')
 			} else if (is_serial_enabled()) {
 				$new_boot_config[] = 'boot_multicons="YES"';
 				$new_boot_config[] = 'boot_serial="YES"';
-				$primaryconsole = isset($g['primaryconsole_force']) ? $g['primaryconsole_force'] : $config['system']['primaryconsole'];
+				$primaryconsole = $config['system']['primaryconsole'];
 				switch ($primaryconsole) {
 					case "video":
 						$new_boot_config[] = 'console="vidconsole,comconsole"';
@@ -932,14 +932,9 @@ function setup_serial_port($when = 'save', $path = '')
 
 function is_serial_enabled()
 {
-	global $g, $config;
+	global $config;
 
-	if (!isset($g['enableserial_force']) &&
-	    !isset($config['system']['enableserial']) &&
-	    ($g['platform'] == "pfSense" || $g['platform'] == "cdrom" || file_exists("/etc/nano_use_vga.txt")))
-		return false;
-
-	return true;
+	return isset($config['system']['enableserial']);
 }
 
 function reload_ttys()
