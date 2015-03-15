@@ -364,7 +364,7 @@ class Config extends Singleton
     public function restoreBackup($filename)
     {
 
-        if ($this->statusIsValid) {
+        if ($this->isValid()) {
             // if current config is valid,
             $simplexml = $this->simplexml;
             try {
@@ -377,6 +377,7 @@ class Config extends Singleton
                 $this->simplexml = $simplexml;
                 $this->statusIsValid = true;
                 $this->save(null, true);
+                return false;
             }
         } else {
             // we don't have a valid config loaded, just copy and load the requested one
