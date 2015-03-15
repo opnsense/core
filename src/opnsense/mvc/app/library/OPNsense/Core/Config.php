@@ -236,11 +236,16 @@ class Config extends Singleton
 
         set_error_handler(
             function() {
-                throw new ConfigException("invalid config xml") ;
+                // reset simplexml pointer on parse error.
+                $this->simplexml = null ;
             }
         );
 
         $this->simplexml = simplexml_load_string($xml);
+
+        if ($this->simplexml == null) {
+            throw new ConfigException("invalid config xml") ;
+        }
 
         restore_error_handler();
         $this->statusIsValid = true;
