@@ -119,36 +119,6 @@ function restore_rrddata() {
 	}
 }
 
-function add_base_packages_menu_items() {
-	global $g, $config;
-	$base_packages = explode(",", $g['base_packages']);
-	$modified_config = false;
-	foreach($base_packages as $bp) {
-		$basepkg_path = "/usr/local/pkg/{$bp}";
-		$tmpinfo = pathinfo($basepkg_path, PATHINFO_EXTENSION);
-		if($tmpinfo['extension'] == "xml" && file_exists($basepkg_path)) {
-			$pkg_config = parse_xml_config_pkg($basepkg_path, "packagegui");
-			if($pkg_config['menu'] != "") {
-				if(is_array($pkg_config['menu'])) {
-					foreach($pkg_config['menu'] as $menu) {
-						if(is_array($config['installedpackages']['menu']))
-							foreach($config['installedpackages']['menu'] as $amenu)
-								if($amenu['name'] == $menu['name'])
-									continue;
-						$config['installedpackages']['menu'][] = $menu;
-						$modified_config = true;
-					}
-				}
-				$static_output .= "done.\n";
-				update_output_window($static_output);
-			}
-		}
-	}
-	if($modified_config) {
-		write_config(gettext("Restored base_package menus after configuration restore."));
-		$config = parse_config();
-	}
-}
 
 function remove_bad_chars($string) {
 	return preg_replace('/[^a-z_0-9]/i','',$string);
@@ -175,7 +145,6 @@ function spit_out_select_items($name, $showall) {
 		       "ipsec" => gettext("IPSEC"),
 		       "nat" => gettext("NAT"),
 		       "openvpn" => gettext("OpenVPN"),
-		       "installedpackages" => gettext("Package Manager"),
 		       "pptpd" => gettext("PPTP Server"),
 		       "rrddata" => gettext("RRD Data"),
 		       "cron" => gettext("Scheduled Tasks"),
@@ -231,17 +200,10 @@ if ($_POST) {
 	unset($input_errors);
 	if (stristr($_POST['Submit'], gettext("Restore configuration")))
 		$mode = "restore";
-	else if (stristr($_POST['Submit'], gettext("Reinstall")))
-		$mode = "reinstallpackages";
-	else if (stristr($_POST['Submit'], gettext("Clear Package Lock")))
-		$mode = "clearpackagelock";
 	else if (stristr($_POST['Submit'], gettext("Download")))
 		$mode = "download";
 	else if (stristr($_POST['Submit'], gettext("Restore version")))
 		$mode = "restore_ver";
-
-	if ($_POST["nopackages"] <> "")
-		$options = "nopackages";
 
 	if ($_POST["ver"] <> "")
 		$ver2restore = $_POST["ver"];
@@ -259,47 +221,28 @@ if ($_POST) {
 
 			if (!$input_errors) {
 
-				//$lockbckp = lock('config');
-
 				$host = "{$config['system']['hostname']}.{$config['system']['domain']}";
 				$name = "config-{$host}-".date("YmdHis").".xml";
 				$data = "";
 
-				if($options == "nopackages") {
-					if(!$_POST['backuparea']) {
-						/* backup entire configuration */
-						$data = file_get_contents('/conf/config.xml');
-					} else {
-						/* backup specific area of configuration */
-						$data = backup_config_section($_POST['backuparea']);
-						$name = "{$_POST['backuparea']}-{$name}";
-					}
-					$sfn = '/tmp/config.xml.nopkg';
-					file_put_contents($sfn, $data);
-					exec("sed '/<installedpackages>/,/<\/installedpackages>/d' {$sfn} > {$sfn}-new");
-					$data = file_get_contents($sfn . "-new");
+				if(!$_POST['backuparea']) {
+					/* backup entire configuration */
+					$data = file_get_contents('/conf/config.xml');
+				} else if ($_POST['backuparea'] === "rrddata") {
+					$data = rrd_data_xml();
+					$name = "{$_POST['backuparea']}-{$name}";
 				} else {
-					if(!$_POST['backuparea']) {
-						/* backup entire configuration */
-						$data = file_get_contents('/conf/config.xml');
-					} else if ($_POST['backuparea'] === "rrddata") {
-						$data = rrd_data_xml();
-						$name = "{$_POST['backuparea']}-{$name}";
-					} else {
-						/* backup specific area of configuration */
-						$data = backup_config_section($_POST['backuparea']);
-						$name = "{$_POST['backuparea']}-{$name}";
-					}
+					/* backup specific area of configuration */
+					$data = backup_config_section($_POST['backuparea']);
+					$name = "{$_POST['backuparea']}-{$name}";
 				}
-
-				//unlock($lockbckp);
 
 				/*
 				 *  Backup RRD Data
 				 */
 				if ($_POST['backuparea'] !== "rrddata" && !$_POST['donotbackuprrd']) {
 					$rrd_data_xml = rrd_data_xml();
-					$closing_tag = "</" . $g['xml_rootobj'] . ">";
+					$closing_tag = "</opnsense>";
 					$data = str_replace($closing_tag, $rrd_data_xml . $closing_tag, $data);
 				}
 
@@ -370,9 +313,7 @@ if ($_POST) {
 								if ($config['rrddata']) {
 									restore_rrddata();
 									unset($config['rrddata']);
-									@unlink('/tmp/config.cache');
 									write_config();
-									add_base_packages_menu_items();
 									convert_config();
 								}
 								filter_configure();
@@ -380,26 +321,20 @@ if ($_POST) {
 							}
 						}
 					} else {
-						if(!stristr($data, "<" . $g['xml_rootobj'] . ">")) {
-							$input_errors[] = sprintf(gettext("You have selected to restore the full configuration but we could not locate a %s tag."), $g['xml_rootobj']);
-						} else {
+						if(true) {
 							/* restore the entire configuration */
-							file_put_contents($_FILES['conffile']['tmp_name'], $data);
+							$filename = $_FILES['conffile']['tmp_name'];
+							file_put_contents($filename, $data);
 							$cnf = OPNsense\Core\Config::getInstance();
 							if ($cnf->restoreBackup($filename)) {
 								/* this will be picked up by /index.php */
 								mark_subsystem_dirty("restore");
-								touch("/conf/needs_package_sync");
-								/* remove cache, we will force a config reboot */
-								@unlink('/tmp/config.cache');
 								$config = parse_config();
 								/* extract out rrd items, unset from $config when done */
 								if($config['rrddata']) {
 									restore_rrddata();
 									unset($config['rrddata']);
-									@unlink('/tmp/config.cache');
 									write_config();
-									add_base_packages_menu_items();
 									convert_config();
 								}
 								if($m0n0wall_upgrade == true) {
@@ -430,7 +365,6 @@ if ($_POST) {
 											}
 										}
 									}
-									@unlink('/tmp/config.cache');
 									// Reset configuration version to something low
 									// in order to force the config upgrade code to
 									// run through with all steps that are required.
@@ -494,7 +428,6 @@ if ($_POST) {
 									}
 									$config['diag']['ipv6nat'] = true;
 									write_config();
-									add_base_packages_menu_items();
 									convert_config();
 									$savemsg = gettext("The m0n0wall configuration has been restored and upgraded to OPNsense.");
 									mark_subsystem_dirty("restore");
@@ -534,14 +467,7 @@ if ($_POST) {
 			}
 		}
 
-		if ($mode == "reinstallpackages") {
-
-			header("Location: pkg_mgr_install.php?mode=reinstallall");
-			exit;
-		} else if ($mode == "clearpackagelock") {
-			clear_subsystem_dirty('packagelock');
-			$savemsg = "Package Lock Cleared";
-		} else if ($mode == "restore_ver") {
+		if ($mode == "restore_ver") {
 			$input_errors[] = gettext("XXX - this feature may hose your config (do NOT backrev configs!) - billm");
 			if ($ver2restore <> "") {
 				$conf_file = '/conf/backup/config-' . strtotime($ver2restore) . '.xml';
@@ -593,10 +519,8 @@ function decrypt_change() {
 
 function backuparea_change(obj) {
 	if (obj.value == "rrddata") {
-		document.getElementById("nopackages").disabled      = true;
 		document.getElementById("dotnotbackuprrd").disabled = true;
 	} else {
-		document.getElementById("nopackages").disabled      = false;
 		document.getElementById("dotnotbackuprrd").disabled = false;
 	}
 }
@@ -655,19 +579,11 @@ function backuparea_change(obj) {
 										        <tr>
 										          <td>
 											          <table>
-																		<tr>
-																			<td width="25">
-																				<input name="nopackages" type="checkbox" class="formcheckbox" id="nopackages" />
-																			</td>
-																			<td>
-																				<span class="vexpl"><?=gettext("Do not backup package information."); ?></span>
-																			</td>
-																		</tr>
 																	</table>
 																	<table>
 																		<tr>
 																			<td width="25">
-																				<input name="encrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="encrypt_change()" />
+																				<input name="encrypt" type="checkbox" class="formcheckbox" id="encryptconf" onclick="encrypt_change()" />
 																			</td>
 																			<td>
 																				<span class="vexpl"><?=gettext("Encrypt this configuration file."); ?></span>
@@ -738,7 +654,7 @@ function backuparea_change(obj) {
 																<table>
 																	<tr>
 																		<td width="25">
-																			<input name="decrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="decrypt_change()" />
+																			<input name="decrypt" type="checkbox" class="formcheckbox" id="encryptconf" onclick="decrypt_change()" />
 																		</td>
 																		<td>
 																			<span class="vexpl"><?=gettext("Configuration file is encrypted."); ?></span>
@@ -778,46 +694,6 @@ function backuparea_change(obj) {
 									</div>
 								</section>
 
-<?php if (($config['installedpackages']['package'] != "") || (is_subsystem_dirty("packagelock"))) { ?>
-
-
-									<section>
-				                        <div class="content-box">
-
-				                            <header class="content-box-head container-fluid">
-									        <h3><?=gettext("Package Functions"); ?></h3>
-									    </header>
-
-									    <div class="content-box-main col-xs-12">
-									    <div class="table-responsive">
-									        <table class="table table-striped">
-										        <tbody>
-										        <tr>
-										          <td>
-
-															<?php if ($config['installedpackages']['package'] != "") { ?>
-																<p><?=gettext("Click this button to reinstall all system packages.  This may take a while."); ?> <br /><br />
-																<input name="Submit" type="submit" class="formbtn" id="reinstallpackages" value="<?=gettext("Reinstall packages"); ?>" />
-																<br />
-																<br />
-															<?php } ?>
-															<?php if (is_subsystem_dirty("packagelock")) { ?>
-																<p><?=gettext("Click this button to clear the package lock if a package fails to reinstall properly after an upgrade."); ?> <br /><br />
-																<input name="Submit" type="submit" class="formbtn" id="clearpackagelock" value="<?=gettext("Clear Package Lock"); ?>" />
-															<?php } ?>
-																</p>
-
-										          </td>
-										        </tr>
-										        </tbody>
-										    </table>
-									    </div>
-
-									    </div>
-
-									</div>
-								</section>
-<? } ?>
 
 						</div>
 						</div>

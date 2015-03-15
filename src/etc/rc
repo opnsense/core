@@ -372,9 +372,6 @@ fi
 
 /usr/local/bin/beep.sh start 2>&1 >/dev/null
 
-# Reset the cache.  read-only requires this.
-/bin/rm -f /tmp/config.cache
-
 /usr/local/etc/rc.initial.banner
 
 exit 0

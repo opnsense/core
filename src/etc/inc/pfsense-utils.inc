@@ -495,7 +495,6 @@ function restore_config_section($section_name, $new_contents)
 	}
 
 	$config[$section_name] = &$section_xml;
-	@unlink('/tmp/config.cache');
 	write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
 	disable_security_checks();
 

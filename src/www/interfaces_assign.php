@@ -212,9 +212,6 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 
 		uksort($config['interfaces'], "compare_interface_friendly_names");
 
-		/* XXX: Do not remove this. */
-		unlink_if_exists("{$g['tmp_path']}/config.cache");
-
 		write_config();
 
 		$savemsg = gettext("Interface has been added.");

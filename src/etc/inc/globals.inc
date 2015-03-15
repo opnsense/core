@@ -44,7 +44,6 @@ $g = array(
 	"vardb_path" => "/var/db",
 	"varlog_path" => "/var/log",
 	"tmp_path" => "/tmp",
-	"xml_rootobj" => "pfsense",
 	"admin_group" => "admins",
 	"product_name" => "OPNsense",
 	"product_copyright" => "Deciso B.V.",

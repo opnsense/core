@@ -1,3 +1,2 @@
 #!/bin/sh
 vi /conf/config.xml
-rm /tmp/config.cache

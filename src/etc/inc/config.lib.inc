@@ -34,7 +34,7 @@ require_once("script/load_phalcon.php");
 
 /****f* config/parse_config
  * NAME
- *   parse_config - Read in config.cache or config.xml if needed and return $config array
+ *   parse_config - Read in config.xml if needed and return $config array
  * RESULT
  *   $config      - array containing all configuration variables
  ******/
@@ -272,7 +272,6 @@ function reset_factory_defaults($lock = false)
 		}
 	}
 	closedir($dh);
-	unlink_if_exists('/tmp/config.cache');
 
 	/* copy default configuration */
 	copy('/usr/local/etc/config.xml', '/conf/config.xml');
