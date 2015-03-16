@@ -313,149 +313,102 @@ msgstr ""
 msgid "ERROR!  Could not convert m0n0wall -> pfsense in config.xml"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-71
-echo "n" . gettext("Config.xml unlocked.") . "n";
+#: src/etc/inc/config.lib.inc:71
+msgid "Config.xml unlocked."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-74
-echo "n" . gettext("Invalid password entered.  Please try again.") . "n";
+#: src/etc/inc/config.lib.inc:74
+msgid "Invalid password entered.  Please try again."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-99
-log_error(gettext("No config.xml found, attempting last known config restore."));
+#: src/etc/inc/config.lib.inc:99
+msgid "No config.xml found, attempting last known config restore."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-100
-file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
+#: src/etc/inc/config.lib.inc:100
+msgid "No config.xml found, attempting last known config restore."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-103
-log_error(gettext('No config.xml found, attempting to restore factory config.'));
+#: src/etc/inc/config.lib.inc:103
+msgid "No config.xml found, attempting to restore factory config."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-128
-log_error(gettext('No config.xml found, attempting to restore factory config.'));
+#: src/etc/inc/config.lib.inc:128
+msgid "No config.xml found, attempting to restore factory config."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-138
-log_error(gettext('No config.xml found, attempting to restore factory config.'));
+#: src/etc/inc/config.lib.inc:138
+msgid "No config.xml found, attempting to restore factory config."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-187
-log_error(sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file));
+#: src/etc/inc/config.lib.inc:187
+msgid "%1$s is restoring the configuration %2$s"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-188
-file_notice("config.xml", sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file), "pfSenseConfigurator", "");
+#: src/etc/inc/config.lib.inc:188
+msgid "%1$s is restoring the configuration %2$s"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-211
-file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
+#: src/etc/inc/config.lib.inc:211
+msgid "No config.xml found, attempting last known config restore."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-215
-echo sprintf(gettext("XML configuration file not found.  %s cannot continue booting."), $g['product_name']) . "n";
+#: src/etc/inc/config.lib.inc:215
+msgid "XML configuration file not found.  %s cannot continue booting."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-221
-file_notice("config.xml", gettext("Last known config found and restored.  Please double check your configuration file for accuracy."), "pfSenseConfigurator", "");
+#: src/etc/inc/config.lib.inc:221
+msgid ""
+"Last known config found and restored.  Please double check your configuration "
+"file for accuracy."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-224
-log_error(gettext("Could not find a usable configuration file! Exiting...."));
+#: src/etc/inc/config.lib.inc:224
+msgid "Could not find a usable configuration file! Exiting...."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-232
-log_error(gettext("No config.xml found, attempting last known config restore."));
+#: src/etc/inc/config.lib.inc:232
+msgid "No config.xml found, attempting last known config restore."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-233
-file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
+#: src/etc/inc/config.lib.inc:233
+msgid "No config.xml found, attempting last known config restore."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-236
-log_error(gettext('No config.xml found, attempting to restore factory config.'));
+#: src/etc/inc/config.lib.inc:236
+msgid "No config.xml found, attempting to restore factory config."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-284
-echo gettext("Disk is dirty.  Running fsck -y") . "n";
+#: src/etc/inc/config.lib.inc:284
+msgid "Disk is dirty.  Running fsck -y"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-295
-log_error(gettext("File system is dirty.  Launching FSCK for /"));
+#: src/etc/inc/config.lib.inc:295
+msgid "File system is dirty.  Launching FSCK for /"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-347
-log_error(sprintf(gettext("Start Configuration upgrade at %s, set execution timeout to 15 minutes"), $now));
+#: src/etc/inc/config.lib.inc:347
+msgid "Start Configuration upgrade at %s, set execution timeout to 15 minutes"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-358
-write_config(gettext("Updated bogon update frequency to 3am"));
+#: src/etc/inc/config.lib.inc:358
+msgid "Updated bogon update frequency to 3am"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-359
-log_error(gettext("Updated bogon update frequency to 3am"));
+#: src/etc/inc/config.lib.inc:359
+msgid "Updated bogon update frequency to 3am"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-385
-log_error(sprintf(gettext("Ended Configuration upgrade at %s"), $now));
+#: src/etc/inc/config.lib.inc:385
+msgstr "Ended Configuration upgrade at %s"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-388
-write_config(sprintf(gettext('Upgraded config version level from %1$s to %2$s'), $prev_version, $config['version']));
+#: src/etc/inc/config.lib.inc:388
+msgid "Upgraded config version level from %1$s to %2$s"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-485
-log_error(gettext("WARNING
-Config contents could not be save. Could not open file!"));
+#: src/etc/inc/config.lib.inc:485
+msgid "WARNING Config contents could not be save. Could not open file!"
 msgstr ""
 
 #:
