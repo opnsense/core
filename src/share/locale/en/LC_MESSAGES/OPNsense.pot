@@ -89,347 +89,228 @@ msgstr ""
 msgid "ERROR! ldap_get_groups() could not bind to server %s."
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1056
-log_error(gettext("ERROR! ldap_backed() called with no LDAP authentication server defined.  Defaulting to local user database. Visit System -> User Manager."));
+#: src/etc/inc/auth.inc:1056
+msgid ""
+"ERROR! ldap_backed() called with no LDAP authentication server defined.  "
+"Defaulting to local user database. Visit System -> User Manager."
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1059
-log_error(gettext("ERROR! ldap_backed() called with no LDAP authentication server defined."));
+#: src/etc/inc/auth.inc:1059
+msgid ""
+"ERROR! ldap_backed() called with no LDAP authentication server defined."
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1077
-log_error(sprintf(gettext("ERROR!  Could not connect to server %s."), $ldapname));
+#: src/etc/inc/auth.inc:1077
+msgid "ERROR!  Could not connect to server %s."
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1093
-log_error(sprintf(gettext("ERROR! Could not bind to server %s."), $ldapname));
+#: src/etc/inc/auth.inc:1093
+msgid "ERROR! Could not bind to server %s."
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1127
-log_error(sprintf(gettext("Search resulted in error
-%s"), ldap_error($ldap)));
+#: src/etc/inc/auth.inc:1127
+msgid "Search resulted in error %s"
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1143
-log_error(gettext("ERROR! Either LDAP search failed, or multiple users were found."));
+#: src/etc/inc/auth.inc:1143
+msgid "ERROR! Either LDAP search failed, or multiple users were found."
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1150
-log_error(sprintf(gettext('ERROR! Could not login to server %1$s as user %2$s
-%3$s'), $ldapname, $username, ldap_error($ldap)));
+#: src/etc/inc/auth.inc:1150
+msgid ""
+"ERROR! Could not login to server %1$s as user %2$s %3$s"
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1245
-return array("name" => gettext("Local Database"), "type" => "Local Auth", "host" => $config['system']['hostname']);
+#: src/etc/inc/auth.inc:1245
+msgid "Local Database"
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1260
-$list["Local Database"] = array( "name" => gettext("Local Database"), "type" => "Local Auth", "host" => $config['system']['hostname']);
+#: src/etc/inc/auth.inc:1260
+msgid "Local Database"
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1350
-log_error(sprintf(gettext("Successful login for user '%1$s' from
-%2$s"), $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
+#: src/etc/inc/auth.inc:1350
+msgid "Successful login for user '%1$s' from %2$s"
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1401
-log_error(sprintf(gettext("Session timed out for user '%1$s' from
-%2$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+#: src/etc/inc/auth.inc:1401
+msgid "Session timed out for user '%1$s' from %2$s"
 msgstr ""
 
-#:
-src/etc/inc/auth.inc
-1403
-log_error(sprintf(gettext("User logged out for user '%1$s' from
-%2$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+#: src/etc/inc/auth.inc:1403
+msgid "User logged out for user '%1$s' from %2$s"
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-66
-display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
+#: src/etc/inc/authgui.inc:66
+msgid "No page assigned to this user! Click here to logout."
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-98
-printf(gettext('Error
-%1$s Description
-%2$s'), $http_code, $desc);
+#: src/etc/inc/authgui.inc:98
+msgid "Error %1$s Description %2$s"
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-150
-isset($_SESSION['Login_Error']) ? $login_error = $_SESSION['Login_Error'] 
-$login_error = gettext("unknown reason");
+#: src/etc/inc/authgui.inc:150
+msgid "unknown reason"
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-151
-printf("showajaxmessage('" . gettext("Invalid login (%s).") . "')", $login_error);
+#: src/etc/inc/authgui.inc:151
+msgid "Invalid login (%s)."
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-156
-printf("showajaxmessage('" . gettext("This device is currently being maintained by
-%s.") . "');", $whom);
+#: src/etc/inc/authgui.inc:156
+msgid "This device is currently being maintained by %s."
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-224
-<title><?=gettext("Login"); ?></title>
+#: src/etc/inc/authgui.inc:224
+msgid "Login"
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-238
-print_info_box(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this forwarding, you may be the target of a man-in-the-middle attack."));
+#: src/etc/inc/authgui.inc:238
+msgid ""
+"You are accessing this router by an IP address not configured locally, "
+"which may be forwarded by NAT or other means. <br /><br />If you did not "
+"setup this forwarding, you may be the target of a man-in-the-middle attack."
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-258
-<label for="usernamefld"><?=gettext("Username
-"); ?></label>
+#: src/etc/inc/authgui.inc:258
+msgid "Username"
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-263
-<label for="passwordfld"><?=gettext("Password
-"); ?></label>
+#: src/etc/inc/authgui.inc:263
+msgid "Password"
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-269
-<button type="submit" name="login" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
+#: src/etc/inc/authgui.inc:269
+msgid "Login"
 msgstr ""
 
-#:
-src/etc/inc/authgui.inc
-276
-<?= gettext("Your browser must support cookies to login."); ?>
+#: src/etc/inc/authgui.inc:276
+msgid "Your browser must support cookies to login."
 msgstr ""
 
-#:
-src/etc/inc/captiveportal.inc
-1098
-printf(gettext("Error
-cannot open '%s' in captiveportal_write_elements()%s"), $data['name'], "n");
+#: src/etc/inc/captiveportal.inc:1098
+msgid "Error cannot open '%s' in captiveportal_write_elements()%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-47
-echo gettext("DANGER!  WARNING!  ACHTUNG!") . "nn";
+#: src/etc/inc/config.console.inc:47
+msgid "DANGER!  WARNING!  ACHTUNG!"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-48
-printf(gettext("%s requires *AT LEAST* %s RAM to function correctly.%s"), $g['product_name'], $g['minimum_ram_warning_text'], "n");
+#: src/etc/inc/config.console.inc:48
+msgid "%s requires *AT LEAST* %s RAM to function correctly.%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-49
-printf(gettext("Only (%s) MB RAM has been detected, with (%s) available to %s.%s"), $realmem, $physmem, $g['product_name'], "n");
+#: src/etc/inc/config.console.inc:49
+msgid "Only (%s) MB RAM has been detected, with (%s) available to %s.%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-50
-echo "n" . gettext("Press ENTER to continue.") . " ";
+#: src/etc/inc/config.console.inc:50
+msgid "Press ENTER to continue."
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-73
-echo gettext("No interfaces found!") . "n";
+#: src/etc/inc/config.console.inc:73
+msgid "No interfaces found!"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-171
-echo "nn" . gettext("VLAN interfaces
-") . "nn";
+#: src/etc/inc/config.console.inc:171
+msgid "VLAN interfaces"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-190
-echo "n" . gettext("Enter the WAN interface name or 'a' for auto-detection
-") . " ";
+#: src/etc/inc/config.console.inc:190
+msgid "Enter the WAN interface name or 'a' for auto-detection"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-198
-printf(gettext("%sInvalid interface name '%s'%s"), "n", $wanif, "n");
+#: src/etc/inc/config.console.inc:198
+msgid "%sInvalid interface name '%s'%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-205
-printf(gettext("%sEnter the LAN interface name or 'a' for auto-detection %s" .
+#: src/etc/inc/config.console.inc:205
+msgid "%sEnter the LAN interface name or 'a' for auto-detection %s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-222
-printf(gettext("%sInvalid interface name '%s'%s"), "n", $lanif, "n");
+#: src/etc/inc/config.console.inc:222
+msgid "%sInvalid interface name '%s'%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-239
-printf(gettext("%sOptional interface %s description found
-%s"), "n", $io, $config['interfaces']['opt' . $io]['descr']);
+#: src/etc/inc/config.console.inc:239
+msgid "%sOptional interface %s description found %s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-241
-printf(gettext("%sEnter the Optional %s interface name or 'a' for auto-detection%s" .
+#: src/etc/inc/config.console.inc:241
+msgid "%sEnter the Optional %s interface name or 'a' for auto-detection%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-248
-$ad = autodetect_interface(gettext("Optional") . " " . $io, $fp);
+#: src/etc/inc/config.console.inc:248
+msgid "Optional"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-254
-printf(gettext("%sInvalid interface name '%s'%s"), "n", $optif[$i], "n");
+#: src/etc/inc/config.console.inc:254
+msgid "%sInvalid interface name '%s'%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-282
-echo "n" . gettext("The interfaces will be assigned as follows
-") . "nn";
+#: src/etc/inc/config.console.inc:282
+msgid "The interfaces will be assigned as follows"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-396
-printf(gettext("%sWriting configuration..."), "n");
+#: src/etc/inc/config.console.inc:396
+msgid "%sWriting configuration..."
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-398
-printf(gettext("done.%s"), "n");
+#: src/etc/inc/config.console.inc:398
+msgid "done.%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-405
-echo gettext("One moment while we reload the settings...");
+#: src/etc/inc/config.console.inc:405
+msgid "One moment while we reload the settings..."
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-407
-echo gettext(" done!") . "n";
+#: src/etc/inc/config.console.inc:407
+msgid " done!"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-428
-printf(gettext("Detected link-up on interface %s.%s"), $ifn, "n");
+#: src/etc/inc/config.console.inc:428
+msgid "Detected link-up on interface %s.%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-433
-printf(gettext("No link-up detected.%s"), "n");
+#: src/etc/inc/config.console.inc:433
+msgid "No link-up detected.%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-467
-echo "nn" . gettext("VLAN Capable interfaces
-") . "nn";
+#: src/etc/inc/config.console.inc:467
+msgid "VLAN Capable interfaces"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-469
-echo gettext("No interfaces found!") . "n";
+#: src/etc/inc/config.console.inc:469
+msgid "No interfaces found!"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-482
-echo gettext("No VLAN capable interfaces detected.") . "n";
+#: src/etc/inc/config.console.inc:482
+msgid "No VLAN capable interfaces detected."
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-486
-echo "n" . gettext("Enter the parent interface name for the new VLAN (or nothing if finished)
-") . " ";
+#: src/etc/inc/config.console.inc:486
+msgid ""
+"Enter the parent interface name for the new VLAN (or nothing if finished)"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-492
-printf(gettext("%sInvalid interface name '%s'%s"), "n", $vlan['if'], "n");
+#: src/etc/inc/config.console.inc:492
+msgid "%sInvalid interface name '%s'%s"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-499
-echo gettext("Enter the VLAN tag (1-4094)
-") . " ";
+#: src/etc/inc/config.console.inc:499
+msgid "Enter the VLAN tag (1-4094)"
 msgstr ""
 
-#:
-src/etc/inc/config.console.inc
-503
-printf(gettext("%sInvalid VLAN tag '%s'%s"), "n", $vlan['tag'], "n");
+#: src/etc/inc/config.console.inc:503
+msgid "%sInvalid VLAN tag '%s'%s")
 msgstr ""
 
-#:
-src/etc/inc/config.inc
-62
-log_error(gettext("Upgrading m0n0wall configuration to pfSense... "));
+#: src/etc/inc/config.inc:62
+msgid "Upgrading m0n0wall configuration to pfSense... "
 msgstr ""
 
-#:
-src/etc/inc/config.inc
-65
-log_error(gettext("ERROR!  Could not convert m0n0wall -> pfsense in config.xml"));
+#: src/etc/inc/config.inc:65
+msgid "ERROR!  Could not convert m0n0wall -> pfsense in config.xml"
 msgstr ""
 
 #:
