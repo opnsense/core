@@ -411,71 +411,48 @@ msgstr ""
 msgid "WARNING Config contents could not be save. Could not open file!"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-487
-file_notice('config.xml', sprintf("%sn", gettext('Unable to open /conf/config.xml for writing in write_config()')));
+#: src/etc/inc/config.lib.inc:487
+msgid "Unable to open /conf/config.xml for writing in write_config()i"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-508
-log_error(gettext("Could not restore config.xml."));
+#: src/etc/inc/config.lib.inc:508
+msgid "Could not restore config.xml."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-594
-write_config(gettext("Reverted to") . " " . array_pop(explode("/", $conffile)) . ".", false);
+#: src/etc/inc/config.lib.inc:594
+msgid "Reverted to"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-610
-echo gettext("Installing configuration...") . "n";
+#: src/etc/inc/config.lib.inc:610
+msgid "Installing configuration..."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-612
-log_error(gettext("Installing configuration ...."));
+#: src/etc/inc/config.lib.inc:612
+msgid "Installing configuration ...."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-660
-$xmlerr = gettext("XML error
-unable to open file");
+#: src/etc/inc/config.lib.inc:660
+msgid "XML error unable to open file"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-666
-$xmlerr = sprintf(gettext('%1$s at line %2$d'),
+#: src/etc/inc/config.lib.inc:666
+msgid "%1$s at line %2$d"
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-713
-log_error(sprintf(gettext("The backup cache file %s is corrupted.  Unlinking."), $backup));
+#: src/etc/inc/config.lib.inc:713
+msgid "The backup cache file %s is corrupted.  Unlinking."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-715
-log_error(sprintf(gettext("The backup cache file %s is corrupted.  Unlinking."), $backup));
+#: src/etc/inc/config.lib.inc:715
+msgid "The backup cache file %s is corrupted.  Unlinking."
 msgstr ""
 
-#:
-src/etc/inc/config.lib.inc
-854
-$desc = sprintf(gettext("%s made unknown change"), $_SERVER['SCRIPT_NAME']);
+#: src/etc/inc/config.lib.inc:854
+msgid "%s made unknown change"
 msgstr ""
 
-#:
-src/etc/inc/dyndns.class
-1223
-notify_all_remote(sprintf(gettext("DynDNS updated IP Address on %s (%s) to %s"), convert_real_interface_to_friendly_descr($this->_if), $this->_if, $wan_ip));
+#: src/etc/inc/dyndns.class:1223
+msgid "DynDNS updated IP Address on %s (%s) to %s"
 msgstr ""
 
 #:
