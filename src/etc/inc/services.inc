@@ -1342,7 +1342,7 @@ EOD;
         }
 	$igmpconf .= "\n";
 
-        $igmpfl = fopen('/tmp/igmpproxy.conf', 'w');
+        $igmpfl = fopen('/usr/local/etc/igmpproxy.conf', 'w');
         if (!$igmpfl) {
                 log_error(gettext("Could not write Igmpproxy configuration file!"));
                 return;
@@ -1351,8 +1351,7 @@ EOD;
         fclose($igmpfl);
 	unset($igmpconf);
 
-	/* NOTE: -d4 means everything LOG_WARNING and smaller */
-        mwexec('/usr/local/sbin/igmpproxy -d4 -c /tmp/igmpproxy.conf');
+	mwexec('/usr/local/etc/rc.d/igmpproxy onestart');
         log_error(gettext("Started IGMP proxy service."));
 
         return 0;
