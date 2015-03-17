@@ -878,28 +878,19 @@ msgstr ""
 msgid "Configuring QinQ interfaces..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-358
-msgid " "done." "n";
+#: src/etc/inc/interfaces.inc 358
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-365
-msgid "QinQ compat VLAN
-called with wrong options. Problems with config!%s"), "n"
+#: src/etc/inc/interfaces.inc:365
+msgid "QinQ compat VLAN called with wrong options. Problems with config!%s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-373
-msgid "interface_qinq2_configure called with if undefined.%s"), "n"
+#: src/etc/inc/interfaces.inc:373
+msgid "interface_qinq2_configure called with if undefined.%s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-394
+#: src/etc/inc/interfaces.inc:394
 msgid "Creating wireless clone interfaces..."
 msgstr ""
 
