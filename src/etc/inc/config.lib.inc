@@ -1,5 +1,6 @@
 <?php
 require_once("xmlparse.inc");
+require_once("crypt.inc");
 require_once("script/load_phalcon.php");
 
 /*
@@ -431,6 +432,42 @@ function pfSense_clear_globals() {
 		unset($aliastable);
 
 	unset($config);
+}
+
+/**
+ * backup config to google drive and return current file list 
+ *
+ */
+function backup_to_google_drive() {
+	$client = new Google\API\Drive() ;
+        $cnf = OPNsense\Core\Config::getInstance();
+        if ($cnf->isValid()) {
+		$config = $cnf->object() ;
+		if (  isset($config->system->remotebackup) && isset($config->system->remotebackup->GDriveEnabled) && $config->system->remotebackup->GDriveEnabled == "on" ){
+			$client->login($config->system->remotebackup->GDriveEmail, $config->system->remotebackup->GDriveP12key );
+			// backup config
+			$target_filename = "config-".time().".xml";
+			$confdata = encrypt_data(file_get_contents('/conf/config.xml'),$config->system->remotebackup->GDrivePassword) ;
+			$client->upload($config->system->remotebackup->GDriveFolderID,$target_filename, $confdata );
+			
+			// cleanup old files
+			$files = $client->listFiles($config->system->remotebackup->GDriveFolderID);
+			$configfiles  = array();
+			foreach ($files as $file) {
+			    if (fnmatch("config-*.xml", $file['title'])) {
+			        $configfiles[$file['title']] = $file;
+			    }
+			}
+			krsort($configfiles);
+			
+			foreach ($configfiles as $filename => $file) {
+				print ($filename . "\n");
+			}
+//			print_r($configfiles);
+
+		}
+	}
+	
 }
 
 register_shutdown_function('pfSense_clear_globals');
