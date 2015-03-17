@@ -842,66 +842,46 @@ msgstr ""
 msgid "Configuring loopback interface..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-202
-msgid "done.") . "n";
+#: src/etc/inc/interfaces.inc:202
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-211
+#: src/etc/inc/interfaces.inc:211
 msgid "Configuring VLAN interfaces..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-224
-msgid "done.") . "n";
+#: src/etc/inc/interfaces.inc:224
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-231
-msgid "VLAN
-called with wrong options. Problems with config!"
+#: src/etc/inc/interfaces.inc:231
+msgid "VLAN called with wrong options. Problems with config!"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-239
+#: src/etc/inc/interfaces.inc:239
 msgid "interface_vlan_configure called with if undefined."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-273
-msgid "QinQ compat VLAN
-called with wrong options. Problems with config!%s"), "n"
+#: src/etc/inc/interfaces.inc:273
+msgid "QinQ compat VLAN called with wrong options. Problems with config!%s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-280
-msgid "interface_qinq_configure called with if undefined.%s"), "n"
+#: src/etc/inc/interfaces.inc:280
+msgid "interface_qinq_configure called with if undefined.%s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-285
-msgid "interface_qinq_configure called with invalid if.%s"), "n"
+#: src/etc/inc/interfaces.inc:285
+msgid "interface_qinq_configure called with invalid if.%s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-350
+#: src/etc/inc/interfaces.inc:350
 msgid "Configuring QinQ interfaces..."
 msgstr ""
 
 #:
 src/etc/inc/interfaces.inc
 358
-msgid " "done.") . "n";
+msgid " "done." "n";
 msgstr ""
 
 #:
@@ -926,7 +906,7 @@ msgstr ""
 #:
 src/etc/inc/interfaces.inc
 415
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -956,7 +936,7 @@ msgstr ""
 #:
 src/etc/inc/interfaces.inc
 724
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -986,7 +966,7 @@ msgstr ""
 #:
 src/etc/inc/interfaces.inc
 1060
-msgid " "done.") . "n";
+msgid " "done." "n";
 msgstr ""
 
 #:
@@ -998,7 +978,7 @@ msgstr ""
 #:
 src/etc/inc/interfaces.inc
 1086
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1010,7 +990,7 @@ msgstr ""
 #:
 src/etc/inc/interfaces.inc
 1105
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1022,7 +1002,7 @@ msgstr ""
 #:
 src/etc/inc/interfaces.inc
 1118
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1071,7 +1051,7 @@ msgstr ""
 #:
 src/etc/inc/interfaces.inc
 1978
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1369,7 +1349,7 @@ msgstr ""
 #:
 src/etc/inc/openvpn.inc
 96
-msgid "Peer to Peer ( Shared Key )") );
+msgid "Peer to Peer ( Shared Key )");
 msgstr ""
 
 #:
@@ -1801,7 +1781,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 347
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1831,7 +1811,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 620
-msgid "Beginning package installation.") . "n"
+msgid "Beginning package installation." "n"
 msgstr ""
 
 #:
@@ -1849,7 +1829,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 630
-msgid "Saving updated package information...") . " ";
+msgid "Saving updated package information..." " ";
 msgstr ""
 
 #:
@@ -1861,7 +1841,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 635
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1873,13 +1853,13 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 639
-msgid "overwrite!") . "n";
+msgid "overwrite!" "n";
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 651
-msgid "Failed to install package.") . "n";
+msgid "Failed to install package." "n";
 msgstr ""
 
 #:
@@ -1891,7 +1871,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 658
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1915,7 +1895,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 719
-msgid "Package WAS NOT installed properly.") . "n"
+msgid "Package WAS NOT installed properly." "n"
 msgstr ""
 
 #:
@@ -1927,7 +1907,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 736
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1945,19 +1925,19 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 751
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 763
-msgid "Loading package instructions...") . "n";
+msgid "Loading package instructions..." "n";
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 778
-msgid "Custom commands...") . "n";
+msgid "Custom commands..." "n";
 msgstr ""
 
 #:
@@ -1969,7 +1949,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 785
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1981,7 +1961,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 814
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -1993,7 +1973,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 821
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2005,7 +1985,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 838
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2017,7 +1997,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 854
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2029,7 +2009,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 870
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2041,7 +2021,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 876
-msgid "Unable to load package configuration. Installation aborted.") ."n"
+msgid "Unable to load package configuration. Installation aborted.""n"
 msgstr ""
 
 #:
@@ -2077,7 +2057,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 977
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2089,7 +2069,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 994
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2101,13 +2081,13 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1019
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 1035
-msgid "Loading package instructions...") . "n";
+msgid "Loading package instructions..." "n";
 msgstr ""
 
 #:
@@ -2119,7 +2099,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1064
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2131,7 +2111,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1073
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2149,7 +2129,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1083
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2161,7 +2141,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1098
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2173,7 +2153,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1105
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2185,7 +2165,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1124
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2216,38 +2196,38 @@ msgstr ""
 src/etc/inc/pkg-utils.inc
 1214
 msgid "Cannot reinstall packages
-") . $error);
+" $error);
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 1223
 msgid "List of packages to reinstall
-") . implode(", ", $all_names);
+" implode(", ", $all_names);
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 1230
-msgid "Uninstalling package") . " {$pkgtodo['name']}"
+msgid "Uninstalling package" " {$pkgtodo['name']}"
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 1232
-msgid "Finished uninstalling package") . " {$pkgtodo['name']}"
+msgid "Finished uninstalling package" " {$pkgtodo['name']}"
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 1233
-msgid "Reinstalling package") . " {$pkgtodo['name']}"
+msgid "Reinstalling package" " {$pkgtodo['name']}"
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 1235
-msgid "Finished installing package") . " {$pkgtodo['name']}"
+msgid "Finished installing package" " {$pkgtodo['name']}"
 msgstr ""
 
 #:
@@ -2271,7 +2251,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1415
-msgid "Package Manager Settings") . '</a>';
+msgid "Package Manager Settings" '</a>';
 msgstr ""
 
 #:
@@ -2283,19 +2263,19 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1436
-msgid "Downloading package configuration file...") . "n"
+msgid "Downloading package configuration file..." "n"
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 1440
-msgid "ERROR! Unable to fetch package configuration file. Aborting installation.") . "n"
+msgid "ERROR! Unable to fetch package configuration file. Aborting installation." "n"
 msgstr ""
 
 #:
 src/etc/inc/pkg-utils.inc
 1442
-msgid "ERROR! Unable to fetch package configuration file. Aborting package installation.") . "n";
+msgid "ERROR! Unable to fetch package configuration file. Aborting package installation." "n";
 msgstr ""
 
 #:
@@ -2307,7 +2287,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1451
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2319,7 +2299,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1477
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -2331,7 +2311,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1507
-msgid "Extracting tarball to -C for ") . $filename . "...n"
+msgid "Extracting tarball to -C for " $filename . "...n"
 msgstr ""
 
 #:
@@ -2343,7 +2323,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1520
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -5887,7 +5867,7 @@ msgstr ""
 #:
 src/etc/inc/rrd.inc
 922
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -5917,7 +5897,7 @@ msgstr ""
 #:
 src/etc/inc/service-utils.inc
 289
-msgid "Captive Portal") . "
+msgid "Captive Portal" "
 ".htmlspecialchars($setting['zone']);
 msgstr ""
 
@@ -5984,7 +5964,7 @@ msgstr ""
 #:
 src/etc/inc/service-utils.inc
 383
-msgid "OpenVPN") . " ".$mode."
+msgid "OpenVPN" " ".$mode."
 ".htmlspecialchars($setting['description']);
 msgstr ""
 
@@ -6015,7 +5995,7 @@ msgstr ""
 #:
 src/etc/inc/service-utils.inc
 517
-msgid "Stopped") 
+msgid "Stopped"
 msgid "Disabled"
 msgstr ""
 
@@ -6090,7 +6070,7 @@ msgstr ""
 #:
 src/etc/inc/services.inc
 1298
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -6126,7 +6106,7 @@ msgstr ""
 #:
 src/etc/inc/services.inc
 1678
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -6138,7 +6118,7 @@ msgstr ""
 #:
 src/etc/inc/services.inc
 1847
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -6150,7 +6130,7 @@ msgstr ""
 #:
 src/etc/inc/services.inc
 1875
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -6169,7 +6149,7 @@ msgstr ""
 #:
 src/etc/inc/services.inc
 2081
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -6187,27 +6167,27 @@ msgstr ""
 #:
 src/etc/inc/services.inc
 2245
-msgid "pfSense specific crontab entries") . "n";
+msgid "pfSense specific crontab entries" "n";
 msgstr ""
 
 #:
 src/etc/inc/services.inc
 2246
 msgid " "Created
-") . " " . date("F j, Y, g
-i a") . "n";
+" " " . date("F j, Y, g
+i a" "n";
 msgstr ""
 
 #:
 src/etc/inc/services.inc
 2260
-msgid "If possible do not add items to this file manually.") . "n";
+msgid "If possible do not add items to this file manually." "n";
 msgstr ""
 
 #:
 src/etc/inc/services.inc
 2261
-msgid "If you do so, this file must be terminated with a blank line (e.g. new line)") . "n";
+msgid "If you do so, this file must be terminated with a blank line (e.g. new line)" "n";
 msgstr ""
 
 #:
@@ -6303,13 +6283,13 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 639
-msgid "Enable/disable discipline and its children") . "</span>";
+msgid "Enable/disable discipline and its children" "</span>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 641
-msgid "Name") . "</span></td>";
+msgid "Name" "</span></td>";
 msgstr ""
 
 #:
@@ -6394,13 +6374,13 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 1167
-msgid "Enable/Disable queue and its children") . "</span>";
+msgid "Enable/Disable queue and its children" "</span>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1171
-msgid "Queue Name") . "</td><td width="78%" class="vtable">";
+msgid "Queue Name" "</td><td width="78%" class="vtable">";
 msgstr ""
 
 #:
@@ -6412,19 +6392,19 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 1181
-msgid "Priority") . "</td>";
+msgid "Priority" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1185
-msgid "For hfsc, the range is 0 to 7. The default is 1.  Hfsc queues with a higher priority are preferred in the case of overload.") . "</span></td>";
+msgid "For hfsc, the range is 0 to 7. The default is 1.  Hfsc queues with a higher priority are preferred in the case of overload." "</span></td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1188
-msgid "Queue limit") . "</td>";
+msgid "Queue limit" "</td>";
 msgstr ""
 
 #:
@@ -6436,47 +6416,47 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 1195
-msgid "Scheduler options") . "</td>";
+msgid "Scheduler options" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1200
-msgid "Default queue") . "<br />";
+msgid "Default queue" "<br />";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1203
-msgid "Default queue") . "<br />";
+msgid "Default queue" "<br />";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1210
 $form .= " /> <a target="_new" href="http
-msgid "Random Early Detection") . "</a><br />";
+msgid "Random Early Detection" "</a><br />";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1215
 $form .= " /> <a target="_new" href="http
-msgid "Random Early Detection In and Out") . "</a><br />";
+msgid "Random Early Detection In and Out" "</a><br />";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1220
 $form .= " /> <a target="_new" href="http
-msgid "Explicit Congestion Notification") . "</a><br />";
+msgid "Explicit Congestion Notification" "</a><br />";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1225
 $form .= " /> <a target="_new" href="http
-msgid "Codel Active Queue") . "</a><br />";
+msgid "Codel Active Queue" "</a><br />";
 msgstr ""
 
 #:
@@ -6488,34 +6468,34 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 1228
-msgid "Description") . "</td>";
+msgid "Description" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1255
 msgid "Bandwidth
-") . " " . $this->GetBandwidth().$this->GetBwscale();
+" " " . $this->GetBandwidth().$this->GetBwscale();
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1259
 msgid "Priority
-on") . " </td></tr>";
+on" " </td></tr>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1262
 msgid "Default
-on") . " </td></tr>";
+on" " </td></tr>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1268
-msgid "Delete queue from interface") . ""  >";
+msgid "Delete queue from interface" ""  >";
 msgstr ""
 
 #:
@@ -6641,31 +6621,31 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 1908
-msgid "Bandwidth") . "</td>";
+msgid "Bandwidth" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1916
-msgid "Gbit/s") . "</option>";
+msgid "Gbit/s" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1920
-msgid "Mbit/s") . "</option>";
+msgid "Mbit/s" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1924
-msgid "Kbit/s") . "</option>";
+msgid "Kbit/s" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1928
-msgid "Bit/s") . "</option>";
+msgid "Bit/s" "</option>";
 msgstr ""
 
 #:
@@ -6677,46 +6657,46 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 1937
-msgid "Service Curve (sc)") . "</td>";
+msgid "Service Curve (sc)" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1944
 msgid "Upperlimit
-") . "</td><td><input size="6" value="";
+" "</td><td><input size="6" value="";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1959
-msgid "The maximum allowed bandwidth for the queue.") . "</td></tr>";
+msgid "The maximum allowed bandwidth for the queue." "</td></tr>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1963
 msgid "Real time
-") . "</td><td><input size="6" value="";
+" "</td><td><input size="6" value="";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1978
-msgid "The minimum required bandwidth for the queue.") . "</td></tr>";
+msgid "The minimum required bandwidth for the queue." "</td></tr>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1982
 msgid "Link share
-") . "</td><td><input size="6" value="";
+" "</td><td><input size="6" value="";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 1997
-msgid "The bandwidth share of a backlogged queue - this overrides priority.") . "</td></tr>";
+msgid "The bandwidth share of a backlogged queue - this overrides priority." "</td></tr>";
 msgstr ""
 
 #:
@@ -6764,31 +6744,31 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 2393
-msgid "Bandwidth") . "</td>";
+msgid "Bandwidth" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2402
-msgid "Gbit/s") . "</option>";
+msgid "Gbit/s" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2406
-msgid "Mbit/s") . "</option>";
+msgid "Mbit/s" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2410
-msgid "Kbit/s") . "</option>";
+msgid "Kbit/s" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2414
-msgid "Bit/s") . "</option>";
+msgid "Bit/s" "</option>";
 msgstr ""
 
 #:
@@ -6800,13 +6780,13 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 2422
-msgid "Scheduler specific options") . "</td>";
+msgid "Scheduler specific options" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2426
-msgid "Borrow from other queues when available") . "<br /></td></tr>";
+msgid "Borrow from other queues when available" "<br /></td></tr>";
 msgstr ""
 
 #:
@@ -6848,31 +6828,31 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 2667
-msgid "Bandwidth") . "</td>";
+msgid "Bandwidth" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2676
-msgid "Gbit/s") . "</option>";
+msgid "Gbit/s" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2680
-msgid "Mbit/s") . "</option>";
+msgid "Mbit/s" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2684
-msgid "Kbit/s") . "</option>";
+msgid "Kbit/s" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2688
-msgid "Bit/s") . "</option>";
+msgid "Bit/s" "</option>";
 msgstr ""
 
 #:
@@ -6884,19 +6864,19 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 2696
-msgid "Scheduler specific options") . "</td>";
+msgid "Scheduler specific options" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2702
-msgid "Number of buckets available.") . "<br /></td></tr>";
+msgid "Number of buckets available." "<br /></td></tr>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 2707
-msgid "Bandwidth limit for hosts to not saturate link.") . "<br /></td></tr>";
+msgid "Bandwidth limit for hosts to not saturate link." "<br /></td></tr>";
 msgstr ""
 
 #:
@@ -7010,13 +6990,13 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3302
-msgid "Enable limiter and its children") . "</span>";
+msgid "Enable limiter and its children" "</span>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3304
-msgid "Name") . "</span></td>";
+msgid "Name" "</span></td>";
 msgstr ""
 
 #:
@@ -7028,25 +7008,25 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3358
-msgid "Bandwidth is a rate (e.g. Mbit/s), burst is a total amount of data that will be transferred at full speed after an idle period.") . "</span><br />";
+msgid "Bandwidth is a rate (e.g. Mbit/s), burst is a total amount of data that will be transferred at full speed after an idle period." "</span><br />";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3360
-msgid "Mask") . "</td>";
+msgid "Mask" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3371
-msgid "Source addresses") . "</option>";
+msgid "Source addresses" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3375
-msgid "Destination addresses") . "</option>";
+msgid "Destination addresses" "</option>";
 msgstr ""
 
 #:
@@ -7064,25 +7044,25 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3404
-msgid "Description") . "</td>";
+msgid "Description" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3410
-msgid "You may enter a description here for your reference (not parsed).") . "</span>";
+msgid "You may enter a description here for your reference (not parsed)." "</span>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3416
-msgid "Show advanced options") . "" />";
+msgid "Show advanced options" "" />";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3420
-msgid "Delay") . "</td>";
+msgid "Delay" "</td>";
 msgstr ""
 
 #:
@@ -7095,7 +7075,7 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3428
-msgid "Packet loss rate") . "</td>";
+msgid "Packet loss rate" "</td>";
 msgstr ""
 
 #:
@@ -7108,7 +7088,7 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3437
-msgid "Queue Size") . "</td>";
+msgid "Queue Size" "</td>";
 msgstr ""
 
 #:
@@ -7121,7 +7101,7 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3448
-msgid "Bucket Size") . "</td>";
+msgid "Bucket Size" "</td>";
 msgstr ""
 
 #:
@@ -7146,37 +7126,37 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3628
-msgid "Enable/Disable queue") . "</span>";
+msgid "Enable/Disable queue" "</span>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3630
-msgid "Name") . "</span></td>";
+msgid "Name" "</span></td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3641
-msgid "Mask") . "</td>";
+msgid "Mask" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3648
-msgid "none") . "</option>";
+msgid "none" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3652
-msgid "Source addresses") . "</option>";
+msgid "Source addresses" "</option>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3656
-msgid "Destination addresses") . "</option>";
+msgid "Destination addresses" "</option>";
 msgstr ""
 
 #:
@@ -7194,25 +7174,25 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3685
-msgid "Description") . "</td>";
+msgid "Description" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3691
-msgid "You may enter a description here for your reference (not parsed).") . "</span>";
+msgid "You may enter a description here for your reference (not parsed)." "</span>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3697
-msgid "Show advanced options") . "" />";
+msgid "Show advanced options" "" />";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3700
-msgid "Weight") . "</td>";
+msgid "Weight" "</td>";
 msgstr ""
 
 #:
@@ -7225,7 +7205,7 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3708
-msgid "Packet loss rate") . "</td>";
+msgid "Packet loss rate" "</td>";
 msgstr ""
 
 #:
@@ -7238,7 +7218,7 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3717
-msgid "Queue Size") . "</td>";
+msgid "Queue Size" "</td>";
 msgstr ""
 
 #:
@@ -7251,13 +7231,13 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3728
-msgid "Bucket Size") . "</td>";
+msgid "Bucket Size" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3732
-msgid "slots") . "<br />";
+msgid "slots" "<br />";
 msgstr ""
 
 #:
@@ -7276,25 +7256,25 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 3876
-msgid "Enable/Disable layer7 Container") . "</span>";
+msgid "Enable/Disable layer7 Container" "</span>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3878
-msgid "Name") . "</span></td>";
+msgid "Name" "</span></td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3883
-msgid "Description") . "</td>";
+msgid "Description" "</td>";
 msgstr ""
 
 #:
 src/etc/inc/shaper.inc
 3889
-msgid "You may enter a description here for your reference (not parsed).") . "</span>";
+msgid "You may enter a description here for your reference (not parsed)." "</span>";
 msgstr ""
 
 #:
@@ -7318,7 +7298,7 @@ msgstr ""
 #:
 src/etc/inc/shaper.inc
 4502
-msgid " Clone shaper/queue on this interface") . "</a></td></tr>";
+msgid " Clone shaper/queue on this interface" "</a></td></tr>";
 msgstr ""
 
 #:
@@ -7467,7 +7447,7 @@ msgstr ""
 src/etc/inc/smtp.inc
 295
 msgid "Could not start the SASL authentication client
-") . " ".$sasl->error;
+" " ".$sasl->error;
 msgstr ""
 
 #:
@@ -7480,7 +7460,7 @@ msgstr ""
 src/etc/inc/smtp.inc
 317
 msgid "Authentication error
-") . " ".$responses[0];
+" " ".$responses[0];
 msgstr ""
 
 #:
@@ -7493,14 +7473,14 @@ msgstr ""
 src/etc/inc/smtp.inc
 347
 msgid "Authentication error
-") . " ".$responses[0];
+" " ".$responses[0];
 msgstr ""
 
 #:
 src/etc/inc/smtp.inc
 352
 msgid "Could not process the SASL authentication step
-") . " ".$sasl->error;
+" " ".$sasl->error;
 msgstr ""
 
 #:
@@ -7537,14 +7517,14 @@ msgstr ""
 src/etc/inc/smtp.inc
 429
 msgid "POP3 authentication user was not accepted
-") . " ".$this->Tokenize("rn"
+" " ".$this->Tokenize("rn"
 msgstr ""
 
 #:
 src/etc/inc/smtp.inc
 437
 msgid "POP3 authentication password was not accepted
-") . " ".$this->Tokenize("rn"
+" " ".$this->Tokenize("rn"
 msgstr ""
 
 #:
@@ -7666,7 +7646,7 @@ msgstr ""
 #:
 src/etc/inc/system.inc
 801
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -7690,13 +7670,13 @@ msgstr ""
 #:
 src/etc/inc/system.inc
 899
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
 src/etc/inc/system.inc
 901
-msgid "failed!") . "n";
+msgid "failed!" "n";
 msgstr ""
 
 #:
@@ -7716,7 +7696,7 @@ msgstr ""
 #:
 src/etc/inc/system.inc
 1209
-msgid "ssl configuration") . "n";
+msgid "ssl configuration" "n";
 msgstr ""
 
 #:
@@ -7735,7 +7715,7 @@ msgstr ""
 #:
 src/etc/inc/system.inc
 1300
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -7747,7 +7727,7 @@ msgstr ""
 #:
 src/etc/inc/system.inc
 1661
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -7766,19 +7746,19 @@ msgstr ""
 #:
 src/etc/inc/system.inc
 1761
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
 src/etc/inc/system.inc
 1764
-msgid "failed!") . "n";
+msgid "failed!" "n";
 msgstr ""
 
 #:
 src/etc/inc/system.inc
 1767
-msgid "failed!") . "n";
+msgid "failed!" "n";
 msgstr ""
 
 #:
@@ -7802,7 +7782,7 @@ msgstr ""
 #:
 src/etc/inc/system.inc
 1931
-msgid "OpenVPN") . " ".$mode."
+msgid "OpenVPN" " ".$mode."
 ".htmlspecialchars($setting['description']);
 msgstr ""
 
@@ -8143,7 +8123,7 @@ msgstr ""
 src/etc/inc/voucher.inc
 501
 msgid "Error
-cannot write voucher.cfg") . "n"
+cannot write voucher.cfg" "n"
 msgstr ""
 
 #:
@@ -8241,21 +8221,21 @@ msgstr ""
 src/etc/inc/vpn.inc
 955
 msgid "Error
-cannot open mpd.conf in vpn_pptpd_configure().") . "n"
+cannot open mpd.conf in vpn_pptpd_configure()." "n"
 msgstr ""
 
 #:
 src/etc/inc/vpn.inc
 1074
 msgid "Error
-cannot open mpd.links in vpn_pptpd_configure().") . "n"
+cannot open mpd.links in vpn_pptpd_configure()." "n"
 msgstr ""
 
 #:
 src/etc/inc/vpn.inc
 1099
 msgid "Error
-cannot open mpd.secret in vpn_pptpd_configure().") . "n"
+cannot open mpd.secret in vpn_pptpd_configure()." "n"
 msgstr ""
 
 #:
@@ -8268,27 +8248,27 @@ msgstr ""
 src/etc/inc/vpn.inc
 1181
 msgid "Error
-cannot open mpd.conf in vpn_pppoe_configure().") . "n"
+cannot open mpd.conf in vpn_pppoe_configure()." "n"
 msgstr ""
 
 #:
 src/etc/inc/vpn.inc
 1290
 msgid "Error
-cannot open mpd.links in vpn_pppoe_configure().") . "n"
+cannot open mpd.links in vpn_pppoe_configure()." "n"
 msgstr ""
 
 #:
 src/etc/inc/vpn.inc
 1317
 msgid "Error
-cannot open mpd.secret in vpn_pppoe_configure().") . "n"
+cannot open mpd.secret in vpn_pppoe_configure()." "n"
 msgstr ""
 
 #:
 src/etc/inc/vpn.inc
 1350
-msgid "done") . "n";
+msgid "done" "n";
 msgstr ""
 
 #:
@@ -8301,21 +8281,21 @@ msgstr ""
 src/etc/inc/vpn.inc
 1394
 msgid "Error
-cannot open mpd.conf in vpn_l2tp_configure().") . "n"
+cannot open mpd.conf in vpn_l2tp_configure()." "n"
 msgstr ""
 
 #:
 src/etc/inc/vpn.inc
 1493
 msgid "Error
-cannot open mpd.links in vpn_l2tp_configure().") . "n"
+cannot open mpd.links in vpn_l2tp_configure()." "n"
 msgstr ""
 
 #:
 src/etc/inc/vpn.inc
 1519
 msgid "Error
-cannot open mpd.secret in vpn_l2tp_configure().") . "n"
+cannot open mpd.secret in vpn_l2tp_configure()." "n"
 msgstr ""
 
 #:
@@ -8329,7 +8309,7 @@ msgstr ""
 src/etc/inc/xmlparse.inc
 184
 msgid "Error
-could not open XML input") . "n"
+could not open XML input" "n"
 msgstr ""
 
 #:
@@ -8343,7 +8323,7 @@ msgstr ""
 src/etc/inc/xmlparse.inc
 207
 msgid "XML error
-no %s object found!") . "n", implode(" or ", $rootobj)
+no %s object found!" "n", implode(" or ", $rootobj)
 msgstr ""
 
 #:
@@ -8357,7 +8337,7 @@ msgstr ""
 src/etc/inc/xmlparse_attr.inc
 185
 msgid "Error
-could not open XML input") . "n"
+could not open XML input" "n"
 msgstr ""
 
 #:
@@ -8371,7 +8351,7 @@ msgstr ""
 src/etc/inc/xmlparse_attr.inc
 208
 msgid "XML error
-no %s object found!") . "n", $rootobj
+no %s object found!" "n", $rootobj
 msgstr ""
 
 #:
@@ -8565,7 +8545,7 @@ msgstr ""
 #:
 src/etc/rc.initial.setlanip
 269
-msgid "This IP address conflicts with another interface or a VIP") . "n";
+msgid "This IP address conflicts with another interface or a VIP" "n";
 msgstr ""
 
 #:
@@ -8603,7 +8583,7 @@ msgstr ""
 src/etc/rc.initial.setlanip
 315
 msgid "For a LAN, press <ENTER> for none
-") . "n> ";
+" "n> ";
 msgstr ""
 
 #:
@@ -8615,7 +8595,7 @@ msgstr ""
 #:
 src/etc/rc.initial.setlanip
 323
-msgid "not in subnet!") . "n";
+msgid "not in subnet!" "n";
 msgstr ""
 
 #:
@@ -8628,7 +8608,7 @@ msgstr ""
 #:
 src/etc/rc.initial.setlanip
 376
-msgid "This IP address must be in the interface's subnet") . "n";
+msgid "This IP address must be in the interface's subnet" "n";
 msgstr ""
 
 #:
@@ -8641,13 +8621,13 @@ msgstr ""
 #:
 src/etc/rc.initial.setlanip
 389
-msgid "This IP address must be in the interface's subnet") . "n";
+msgid "This IP address must be in the interface's subnet" "n";
 msgstr ""
 
 #:
 src/etc/rc.initial.setlanip
 392
-msgid "The end address of the DHCP range must be >= the start address") . "n";
+msgid "The end address of the DHCP range must be >= the start address" "n";
 msgstr ""
 
 #:
@@ -8759,7 +8739,7 @@ msgstr ""
 #:
 src/etc/rc.restore_config_backup
 52
-msgid "Which configuration would you like to restore?") . "n";
+msgid "Which configuration would you like to restore?" "n";
 msgstr ""
 
 #:
@@ -8771,13 +8751,13 @@ msgstr ""
 #:
 src/etc/rc.restore_config_backup
 67
-msgid "Is this the backup you wish to restore?") . "n";
+msgid "Is this the backup you wish to restore?" "n";
 msgstr ""
 
 #:
 src/etc/rc.restore_config_backup
 70
-msgid "Y/N?") . " 
+msgid "Y/N?" " 
 ";
 msgstr ""
 
@@ -8798,55 +8778,55 @@ msgstr ""
 #:
 src/etc/rc.restore_config_backup
 77
-msgid "You may need to reboot the firewall or restart services before the restored configuration is fully active.") . "nn";
+msgid "You may need to reboot the firewall or restart services before the restored configuration is fully active." "nn";
 msgstr ""
 
 #:
 src/etc/rc.restore_config_backup
 79
-msgid "Unable to revert to the selected configuration.") . "n";
+msgid "Unable to revert to the selected configuration." "n";
 msgstr ""
 
 #:
 src/etc/rc.restore_config_backup
 83
-msgid "Restore canceled.") . "n";
+msgid "Restore canceled." "n";
 msgstr ""
 
 #:
 src/etc/rc.restore_config_backup
 86
-msgid "Restore canceled due to invalid input.") . "n";
+msgid "Restore canceled due to invalid input." "n";
 msgstr ""
 
 #:
 src/etc/rc.restore_config_backup
 93
-msgid "Restore Backup from Configuration History") . "nn";
+msgid "Restore Backup from Configuration History" "nn";
 msgstr ""
 
 #:
 src/etc/rc.restore_config_backup
 94
-msgid "List Backups") . "n";
+msgid "List Backups" "n";
 msgstr ""
 
 #:
 src/etc/rc.restore_config_backup
 95
-msgid "Restore Backup") . "n";
+msgid "Restore Backup" "n";
 msgstr ""
 
 #:
 src/etc/rc.restore_config_backup
 96
-msgid "Quit") . "n";
+msgid "Quit" "n";
 msgstr ""
 
 #:
 src/etc/rc.restore_config_backup
 98
-msgid "Please select an option to continue") . "
+msgid "Please select an option to continue" "
 ";
 msgstr ""
 
@@ -8923,7 +8903,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 40
-msgid "Redirecting to the dashboard...") . "</body></html>";
+msgid "Redirecting to the dashboard..." "</body></html>";
 msgstr ""
 
 #:
@@ -9079,7 +9059,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 153
-msgid "Invalid login (%s).") . """, $login_error);
+msgid "Invalid login (%s)." """, $login_error);
 msgstr ""
 
 #: src/share/locale/en/LC_MESSAGES/OPNsense.pot:157
@@ -9129,7 +9109,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 193
-msgid "DANGER!  WARNING!  ACHTUNG!") . "nn";
+msgid "DANGER!  WARNING!  ACHTUNG!" "nn";
 msgstr ""
 
 #:
@@ -9147,13 +9127,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 205
-msgid "Press ENTER to continue.") . " ";
+msgid "Press ENTER to continue." " ";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 209
-msgid "No interfaces found!") . "n";
+msgid "No interfaces found!" "n";
 msgstr ""
 
 #:
@@ -9201,7 +9181,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 244
-msgid "Optional") . " " . $io, $fp);
+msgid "Optional" " " . $io, $fp);
 msgstr ""
 
 #:
@@ -9237,7 +9217,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 269
-msgid " done!") . "n";
+msgid " done!" "n";
 msgstr ""
 
 #:
@@ -9261,13 +9241,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 286
-msgid "No interfaces found!") . "n";
+msgid "No interfaces found!" "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 290
-msgid "No VLAN capable interfaces detected.") . "n";
+msgid "No VLAN capable interfaces detected." "n";
 msgstr ""
 
 #:
@@ -9309,13 +9289,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 320
-msgid "Config.xml unlocked.") . "n";
+msgid "Config.xml unlocked." "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 324
-msgid "Invalid password entered.  Please try again.") . "n";
+msgid "Invalid password entered.  Please try again." "n";
 msgstr ""
 
 #:
@@ -9405,7 +9385,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 384
-msgid "Disk is dirty.  Running fsck -y") . "n";
+msgid "Disk is dirty.  Running fsck -y" "n";
 msgstr ""
 
 #:
@@ -9465,13 +9445,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 425
-msgid "Reverted to") . " " . array_pop(explode("/", $conffile)) . ".", false);
+msgid "Reverted to" " " . array_pop(explode("/", $conffile)) . ".", false);
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 429
-msgid "Installing configuration...") . "n";
+msgid "Installing configuration..." "n";
 msgstr ""
 
 #:
@@ -9723,7 +9703,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 608
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -9801,7 +9781,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 663
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -10101,7 +10081,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 872
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -10113,7 +10093,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 880
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -10155,7 +10135,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 910
-msgid " "done.") . "n";
+msgid " "done." "n";
 msgstr ""
 
 #:
@@ -10179,7 +10159,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 927
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -10209,7 +10189,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 947
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -10239,7 +10219,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 967
-msgid " "done.") . "n";
+msgid " "done." "n";
 msgstr ""
 
 #:
@@ -10251,7 +10231,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 975
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -10263,7 +10243,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 983
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -10275,7 +10255,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 991
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -10323,7 +10303,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1024
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -10605,7 +10585,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1228
-msgid "Peer to Peer ( Shared Key )") );
+msgid "Peer to Peer ( Shared Key )");
 msgstr ""
 
 #:
@@ -11031,7 +11011,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1518
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11061,7 +11041,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1538
-msgid "Beginning package installation.") . "n"
+msgid "Beginning package installation." "n"
 msgstr ""
 
 #:
@@ -11079,7 +11059,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1550
-msgid "Saving updated package information...") . " ";
+msgid "Saving updated package information..." " ";
 msgstr ""
 
 #:
@@ -11091,7 +11071,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1558
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11103,13 +11083,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1566
-msgid "overwrite!") . "n";
+msgid "overwrite!" "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1570
-msgid "Failed to install package.") . "n";
+msgid "Failed to install package." "n";
 msgstr ""
 
 #:
@@ -11121,7 +11101,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1578
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11145,7 +11125,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1594
-msgid "Package WAS NOT installed properly.") . "n"
+msgid "Package WAS NOT installed properly." "n"
 msgstr ""
 
 #:
@@ -11157,7 +11137,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1602
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11175,19 +11155,19 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1614
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1618
-msgid "Loading package instructions...") . "n";
+msgid "Loading package instructions..." "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1622
-msgid "Custom commands...") . "n";
+msgid "Custom commands..." "n";
 msgstr ""
 
 #:
@@ -11199,7 +11179,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1630
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11211,7 +11191,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1638
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11223,7 +11203,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1646
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11235,7 +11215,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1654
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11247,7 +11227,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1662
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11259,7 +11239,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1670
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11271,7 +11251,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1678
-msgid "Unable to load package configuration. Installation aborted.") ."n"
+msgid "Unable to load package configuration. Installation aborted.""n"
 msgstr ""
 
 #:
@@ -11307,7 +11287,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1702
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11319,7 +11299,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1710
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11331,13 +11311,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1718
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1722
-msgid "Loading package instructions...") . "n";
+msgid "Loading package instructions..." "n";
 msgstr ""
 
 #:
@@ -11349,7 +11329,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1730
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11361,7 +11341,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1738
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11379,7 +11359,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1750
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11391,7 +11371,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1758
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11403,7 +11383,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1766
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11415,7 +11395,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1774
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11457,25 +11437,25 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1804
-msgid "Uninstalling package") . " {$pkgtodo['name']}"
+msgid "Uninstalling package" " {$pkgtodo['name']}"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1808
-msgid "Finished uninstalling package") . " {$pkgtodo['name']}"
+msgid "Finished uninstalling package" " {$pkgtodo['name']}"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1812
-msgid "Reinstalling package") . " {$pkgtodo['name']}"
+msgid "Reinstalling package" " {$pkgtodo['name']}"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1816
-msgid "Finished installing package") . " {$pkgtodo['name']}"
+msgid "Finished installing package" " {$pkgtodo['name']}"
 msgstr ""
 
 #:
@@ -11499,7 +11479,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1832
-msgid "Package Manager Settings") . '</a>';
+msgid "Package Manager Settings" '</a>';
 msgstr ""
 
 #:
@@ -11511,19 +11491,19 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1840
-msgid "Downloading package configuration file...") . "n"
+msgid "Downloading package configuration file..." "n"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1844
-msgid "ERROR! Unable to fetch package configuration file. Aborting installation.") . "n"
+msgid "ERROR! Unable to fetch package configuration file. Aborting installation." "n"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1848
-msgid "ERROR! Unable to fetch package configuration file. Aborting package installation.") . "n";
+msgid "ERROR! Unable to fetch package configuration file. Aborting package installation." "n";
 msgstr ""
 
 #:
@@ -11535,7 +11515,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1856
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11547,7 +11527,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1864
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -11559,7 +11539,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1872
-msgid "Extracting tarball to -C for ") . $filename . "...n"
+msgid "Extracting tarball to -C for " $filename . "...n"
 msgstr ""
 
 #:
@@ -11571,7 +11551,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1880
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -14421,7 +14401,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4474
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -14451,7 +14431,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4494
-msgid "Captive Portal") . "
+msgid "Captive Portal" "
 msgstr ""
 
 #:
@@ -14517,7 +14497,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4539
-msgid "OpenVPN") . " ".$mode."
+msgid "OpenVPN" " ".$mode."
 msgstr ""
 
 #:
@@ -14625,7 +14605,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4611
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -14661,7 +14641,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4635
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -14673,7 +14653,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4643
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -14685,7 +14665,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4651
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -14703,7 +14683,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4664
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -14721,7 +14701,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4676
-msgid "pfSense specific crontab entries") . "n";
+msgid "pfSense specific crontab entries" "n";
 msgstr ""
 
 #:
@@ -14733,13 +14713,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4686
-msgid "If possible do not add items to this file manually.") . "n";
+msgid "If possible do not add items to this file manually." "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4690
-msgid "If you do so, this file must be terminated with a blank line (e.g. new line)") . "n";
+msgid "If you do so, this file must be terminated with a blank line (e.g. new line)" "n";
 msgstr ""
 
 #:
@@ -14835,13 +14815,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4754
-msgid "Enable/disable discipline and its children") . "</span>";
+msgid "Enable/disable discipline and its children" "</span>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4758
-msgid "Name") . "</span></td>";
+msgid "Name" "</span></td>";
 msgstr ""
 
 #:
@@ -14925,13 +14905,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4815
-msgid "Enable/Disable queue and its children") . "</span>";
+msgid "Enable/Disable queue and its children" "</span>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4819
-msgid "Queue Name") . "</td><td width="78%" class="vtable">";
+msgid "Queue Name" "</td><td width="78%" class="vtable">";
 msgstr ""
 
 #:
@@ -14943,19 +14923,19 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4827
-msgid "Priority") . "</td>";
+msgid "Priority" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4831
-msgid "For hfsc, the range is 0 to 7. The default is 1.  Hfsc queues with a higher priority are preferred in the case of overload.") . "</span></td>";
+msgid "For hfsc, the range is 0 to 7. The default is 1.  Hfsc queues with a higher priority are preferred in the case of overload." "</span></td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4835
-msgid "Queue limit") . "</td>";
+msgid "Queue limit" "</td>";
 msgstr ""
 
 #:
@@ -14967,43 +14947,43 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4843
-msgid "Scheduler options") . "</td>";
+msgid "Scheduler options" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4847
-msgid "Default queue") . "<br />";
+msgid "Default queue" "<br />";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4851
-msgid "Default queue") . "<br />";
+msgid "Default queue" "<br />";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4856
-msgid "Random Early Detection") . "</a><br />";
+msgid "Random Early Detection" "</a><br />";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4861
-msgid "Random Early Detection In and Out") . "</a><br />";
+msgid "Random Early Detection In and Out" "</a><br />";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4866
-msgid "Explicit Congestion Notification") . "</a><br />";
+msgid "Explicit Congestion Notification" "</a><br />";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4871
-msgid "Codel Active Queue") . "</a><br />";
+msgid "Codel Active Queue" "</a><br />";
 msgstr ""
 
 #:
@@ -15015,7 +14995,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4879
-msgid "Description") . "</td>";
+msgid "Description" "</td>";
 msgstr ""
 
 #:
@@ -15039,7 +15019,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4898
-msgid "Delete queue from interface") . ""  >";
+msgid "Delete queue from interface" ""  >";
 msgstr ""
 
 #:
@@ -15165,31 +15145,31 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4982
-msgid "Bandwidth") . "</td>";
+msgid "Bandwidth" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4986
-msgid "Gbit/s") . "</option>";
+msgid "Gbit/s" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4990
-msgid "Mbit/s") . "</option>";
+msgid "Mbit/s" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4994
-msgid "Kbit/s") . "</option>";
+msgid "Kbit/s" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4998
-msgid "Bit/s") . "</option>";
+msgid "Bit/s" "</option>";
 msgstr ""
 
 #:
@@ -15201,7 +15181,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5006
-msgid "Service Curve (sc)") . "</td>";
+msgid "Service Curve (sc)" "</td>";
 msgstr ""
 
 #:
@@ -15213,7 +15193,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5015
-msgid "The maximum allowed bandwidth for the queue.") . "</td></tr>";
+msgid "The maximum allowed bandwidth for the queue." "</td></tr>";
 msgstr ""
 
 #:
@@ -15225,7 +15205,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5024
-msgid "The minimum required bandwidth for the queue.") . "</td></tr>";
+msgid "The minimum required bandwidth for the queue." "</td></tr>";
 msgstr ""
 
 #:
@@ -15237,7 +15217,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5033
-msgid "The bandwidth share of a backlogged queue - this overrides priority.") . "</td></tr>";
+msgid "The bandwidth share of a backlogged queue - this overrides priority." "</td></tr>";
 msgstr ""
 
 #:
@@ -15285,31 +15265,31 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5065
-msgid "Bandwidth") . "</td>";
+msgid "Bandwidth" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5069
-msgid "Gbit/s") . "</option>";
+msgid "Gbit/s" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5073
-msgid "Mbit/s") . "</option>";
+msgid "Mbit/s" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5077
-msgid "Kbit/s") . "</option>";
+msgid "Kbit/s" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5081
-msgid "Bit/s") . "</option>";
+msgid "Bit/s" "</option>";
 msgstr ""
 
 #:
@@ -15321,13 +15301,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5089
-msgid "Scheduler specific options") . "</td>";
+msgid "Scheduler specific options" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5093
-msgid "Borrow from other queues when available") . "<br /></td></tr>";
+msgid "Borrow from other queues when available" "<br /></td></tr>";
 msgstr ""
 
 #:
@@ -15369,31 +15349,31 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5121
-msgid "Bandwidth") . "</td>";
+msgid "Bandwidth" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5125
-msgid "Gbit/s") . "</option>";
+msgid "Gbit/s" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5129
-msgid "Mbit/s") . "</option>";
+msgid "Mbit/s" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5133
-msgid "Kbit/s") . "</option>";
+msgid "Kbit/s" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5137
-msgid "Bit/s") . "</option>";
+msgid "Bit/s" "</option>";
 msgstr ""
 
 #:
@@ -15405,19 +15385,19 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5145
-msgid "Scheduler specific options") . "</td>";
+msgid "Scheduler specific options" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5149
-msgid "Number of buckets available.") . "<br /></td></tr>";
+msgid "Number of buckets available." "<br /></td></tr>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5153
-msgid "Bandwidth limit for hosts to not saturate link.") . "<br /></td></tr>";
+msgid "Bandwidth limit for hosts to not saturate link." "<br /></td></tr>";
 msgstr ""
 
 #:
@@ -15531,13 +15511,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5229
-msgid "Enable limiter and its children") . "</span>";
+msgid "Enable limiter and its children" "</span>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5233
-msgid "Name") . "</span></td>";
+msgid "Name" "</span></td>";
 msgstr ""
 
 #:
@@ -15549,25 +15529,25 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5241
-msgid "Bandwidth is a rate (e.g. Mbit/s), burst is a total amount of data that will be transferred at full speed after an idle period.") . "</span><br />";
+msgid "Bandwidth is a rate (e.g. Mbit/s), burst is a total amount of data that will be transferred at full speed after an idle period." "</span><br />";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5245
-msgid "Mask") . "</td>";
+msgid "Mask" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5249
-msgid "Source addresses") . "</option>";
+msgid "Source addresses" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5253
-msgid "Destination addresses") . "</option>";
+msgid "Destination addresses" "</option>";
 msgstr ""
 
 #:
@@ -15585,25 +15565,25 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5265
-msgid "Description") . "</td>";
+msgid "Description" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5269
-msgid "You may enter a description here for your reference (not parsed).") . "</span>";
+msgid "You may enter a description here for your reference (not parsed)." "</span>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5273
-msgid "Show advanced options") . "" />";
+msgid "Show advanced options" "" />";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5277
-msgid "Delay") . "</td>";
+msgid "Delay" "</td>";
 msgstr ""
 
 #:
@@ -15615,7 +15595,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5286
-msgid "Packet loss rate") . "</td>";
+msgid "Packet loss rate" "</td>";
 msgstr ""
 
 #:
@@ -15627,7 +15607,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5295
-msgid "Queue Size") . "</td>";
+msgid "Queue Size" "</td>";
 msgstr ""
 
 #:
@@ -15639,7 +15619,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5304
-msgid "Bucket Size") . "</td>";
+msgid "Bucket Size" "</td>";
 msgstr ""
 
 #:
@@ -15663,37 +15643,37 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5321
-msgid "Enable/Disable queue") . "</span>";
+msgid "Enable/Disable queue" "</span>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5325
-msgid "Name") . "</span></td>";
+msgid "Name" "</span></td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5329
-msgid "Mask") . "</td>";
+msgid "Mask" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5333
-msgid "none") . "</option>";
+msgid "none" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5337
-msgid "Source addresses") . "</option>";
+msgid "Source addresses" "</option>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5341
-msgid "Destination addresses") . "</option>";
+msgid "Destination addresses" "</option>";
 msgstr ""
 
 #:
@@ -15711,25 +15691,25 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5353
-msgid "Description") . "</td>";
+msgid "Description" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5357
-msgid "You may enter a description here for your reference (not parsed).") . "</span>";
+msgid "You may enter a description here for your reference (not parsed)." "</span>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5361
-msgid "Show advanced options") . "" />";
+msgid "Show advanced options" "" />";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5365
-msgid "Weight") . "</td>";
+msgid "Weight" "</td>";
 msgstr ""
 
 #:
@@ -15741,7 +15721,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5374
-msgid "Packet loss rate") . "</td>";
+msgid "Packet loss rate" "</td>";
 msgstr ""
 
 #:
@@ -15753,7 +15733,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5383
-msgid "Queue Size") . "</td>";
+msgid "Queue Size" "</td>";
 msgstr ""
 
 #:
@@ -15765,13 +15745,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5392
-msgid "Bucket Size") . "</td>";
+msgid "Bucket Size" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5396
-msgid "slots") . "<br />";
+msgid "slots" "<br />";
 msgstr ""
 
 #:
@@ -15789,25 +15769,25 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5409
-msgid "Enable/Disable layer7 Container") . "</span>";
+msgid "Enable/Disable layer7 Container" "</span>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5413
-msgid "Name") . "</span></td>";
+msgid "Name" "</span></td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5417
-msgid "Description") . "</td>";
+msgid "Description" "</td>";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5421
-msgid "You may enter a description here for your reference (not parsed).") . "</span>";
+msgid "You may enter a description here for your reference (not parsed)." "</span>";
 msgstr ""
 
 #:
@@ -15831,7 +15811,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5437
-msgid " Clone shaper/queue on this interface") . "</a></td></tr>";
+msgid " Clone shaper/queue on this interface" "</a></td></tr>";
 msgstr ""
 
 #:
@@ -16167,7 +16147,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5673
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -16191,13 +16171,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5689
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5693
-msgid "failed!") . "n";
+msgid "failed!" "n";
 msgstr ""
 
 #:
@@ -16215,7 +16195,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5707
-msgid "ssl configuration") . "n";
+msgid "ssl configuration" "n";
 msgstr ""
 
 #:
@@ -16233,7 +16213,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5720
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -16245,7 +16225,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5728
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
@@ -16263,19 +16243,19 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5741
-msgid "done.") . "n";
+msgid "done." "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5745
-msgid "failed!") . "n";
+msgid "failed!" "n";
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5749
-msgid "failed!") . "n";
+msgid "failed!" "n";
 msgstr ""
 
 #:
@@ -16299,7 +16279,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5765
-msgid "OpenVPN") . " ".$mode."
+msgid "OpenVPN" " ".$mode."
 msgstr ""
 
 #:
@@ -16755,7 +16735,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6099
-msgid "done") . "n";
+msgid "done" "n";
 msgstr ""
 
 #:
@@ -17037,25 +17017,25 @@ msgstr ""
 #:
 src/www/carp_status.php
 118
-msgid "Enable CARP") . "" />";
+msgid "Enable CARP" "" />";
 msgstr ""
 
 #:
 src/www/carp_status.php
 121
-msgid "Temporarily Disable CARP") . "" />";
+msgid "Temporarily Disable CARP" "" />";
 msgstr ""
 
 #:
 src/www/carp_status.php
 124
-msgid "Leave Persistent CARP Maintenance Mode") . "" />";
+msgid "Leave Persistent CARP Maintenance Mode" "" />";
 msgstr ""
 
 #:
 src/www/carp_status.php
 126
-msgid "Enter Persistent CARP Maintenance Mode") . "" />";
+msgid "Enter Persistent CARP Maintenance Mode" "" />";
 msgstr ""
 
 #:
@@ -17098,45 +17078,45 @@ msgstr ""
 #:
 src/www/carp_status.php
 189
-msgid "pfSync nodes") . "
+msgid "pfSync nodes" "
 <br />";
 msgstr ""
 
 #:
 src/www/crash_reporter.php
 57
-msgid "Unfortunately we have detected a programming bug.") . "</strong></p>";
+msgid "Unfortunately we have detected a programming bug." "</strong></p>";
 msgstr ""
 
 #:
 src/www/crash_reporter.php
 58
-msgid "Would you like to submit the programming debug logs to the OPNsense developers for inspection?") . "</p>";
+msgid "Would you like to submit the programming debug logs to the OPNsense developers for inspection?" "</p>";
 msgstr ""
 
 #:
 src/www/crash_reporter.php
 59
-msgid "Please double check the contents to ensure you are comfortable sending this information before clicking Yes.") . "</i></p>";
+msgid "Please double check the contents to ensure you are comfortable sending this information before clicking Yes." "</i></p>";
 msgstr ""
 
 #:
 src/www/crash_reporter.php
 60
-msgid "Contents of crash reports") . "
+msgid "Contents of crash reports" "
 <br />";
 msgstr ""
 
 #:
 src/www/crash_reporter.php
 62
-msgid " - Submit this to the developers for inspection") . "</p>";
+msgid " - Submit this to the developers for inspection" "</p>";
 msgstr ""
 
 #:
 src/www/crash_reporter.php
 63
-msgid " - Just delete the crash report and take me back to the Dashboard") . "</p>";
+msgid " - Just delete the crash report and take me back to the Dashboard" "</p>";
 msgstr ""
 
 #:
@@ -17148,7 +17128,7 @@ msgstr ""
 #:
 src/www/crash_reporter.php
 94
-msgid "$_POST['Submit']) == "Yes") {
+msgid "$_POST['Submit']) == "Yes"{
 msgstr ""
 
 #:
@@ -17166,13 +17146,13 @@ msgstr ""
 #:
 src/www/crash_reporter.php
 114
-msgid " and delete crash report files from local disk.") . "</p>";
+msgid " and delete crash report files from local disk." "</p>";
 msgstr ""
 
 #:
 src/www/crash_reporter.php
 118
-msgid "$_POST['Submit']) == "No") {
+msgid "$_POST['Submit']) == "No"{
 msgstr ""
 
 #:
@@ -17209,7 +17189,7 @@ msgstr ""
 src/www/diag_arp.php
 363
 msgid "NOTE
-msgid "instead of ARP") ?>.</div>
+msgid "instead of ARP"?>.</div>
 msgstr ""
 
 #:
@@ -17227,14 +17207,14 @@ msgstr ""
 #:
 src/www/diag_authentication.php
 46
-msgid "User") . "
+msgid "User" "
 msgid "authenticated successfully."
 msgstr ""
 
 #:
 src/www/diag_authentication.php
 48
-msgid "This user is a member of these groups") . "
+msgid "This user is a member of these groups" "
 <br />";
 msgstr ""
 
@@ -17421,7 +17401,7 @@ msgstr ""
 #:
 src/www/diag_backup.php
 192
-msgid "ALL") . "</option>";
+msgid "ALL" "</option>";
 msgstr ""
 
 #:
@@ -17842,7 +17822,7 @@ src/www/diag_confbak.php
 228
 msgid "NOTE
 Be aware of how much space is consumed by backups before adjusting this value. Current space used by backups
-"); ?> <?= exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'") ?>
+"); ?> <?= exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'"?>
 msgstr ""
 
 #:
@@ -18048,14 +18028,14 @@ msgstr ""
 #:
 src/www/diag_dns.php
 150
-msgid "IP Address") . "
+msgid "IP Address" "
 {$address} n";
 msgstr ""
 
 #:
 src/www/diag_dns.php
 151
-msgid "Host Name") . "
+msgid "Host Name" "
 {$hostname} n";
 msgstr ""
 
@@ -18232,7 +18212,7 @@ msgstr ""
 #:
 src/www/diag_dump_states.php
 247
-msgid "No states were found.") ?>
+msgid "No states were found."?>
 msgstr ""
 
 #:
@@ -18318,13 +18298,13 @@ msgstr ""
 #:
 src/www/diag_dump_states_sources.php
 177
-msgid "to") . " {$dstip}";?>' alt='' >
+msgid "to" " {$dstip}";?>' alt='' >
 msgstr ""
 
 #:
 src/www/diag_dump_states_sources.php
 188
-msgid "No source tracking entries were found.") . "
+msgid "No source tracking entries were found." "
 msgstr ""
 
 #:
@@ -18766,21 +18746,21 @@ msgstr ""
 src/www/diag_ipsec_leases.php
 65
 msgid "Pool
-") . $pool['name'];
+" $pool['name'];
 msgstr ""
 
 #:
 src/www/diag_ipsec_leases.php
 66
 msgid "usage
-") . $pool['usage'];
+" $pool['usage'];
 msgstr ""
 
 #:
 src/www/diag_ipsec_leases.php
 67
 msgid "online
-") . $pool['online'];
+" $pool['online'];
 msgstr ""
 
 #:
@@ -19066,7 +19046,7 @@ msgstr ""
 #:
 src/www/diag_logs_filter.php
 62
-msgid "The rule that triggered this action is") . "
+msgid "The rule that triggered this action is" "
 nn{$rule}";
 msgstr ""
 
@@ -19652,13 +19632,13 @@ msgstr ""
 src/www/diag_logs_settings.php
 278
 msgid "Hint
-This is only the number of log entries displayed in the GUI. It does not affect how many entries are contained in the actual log files.") ?></td>
+This is only the number of log entries displayed in the GUI. It does not affect how many entries are contained in the actual log files."?></td>
 msgstr ""
 
 #:
 src/www/diag_logs_settings.php
 284
-msgid "Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this is approximately 500KB per log file, and there are nearly 20 such log files.") ?>
+msgid "Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this is approximately 500KB per log file, and there are nearly 20 such log files."?>
 msgstr ""
 
 #:
@@ -19678,14 +19658,14 @@ msgstr ""
 src/www/diag_logs_settings.php
 288
 msgid "Disk space currently used by log files
-") ?><?= exec("/usr/bin/du -sh /var/log | /usr/bin/awk '{print $1;}'"); ?>.
+"?><?= exec("/usr/bin/du -sh /var/log | /usr/bin/awk '{print $1;}'"); ?>.
 msgstr ""
 
 #:
 src/www/diag_logs_settings.php
 289
 msgid "Remaining disk space for log files
-") ?><?= exec("/bin/df -h /var/log | /usr/bin/awk '{print $4;}'"); ?>.
+"?><?= exec("/bin/df -h /var/log | /usr/bin/awk '{print $4;}'"); ?>.
 msgstr ""
 
 #:
@@ -19853,19 +19833,19 @@ msgstr ""
 #:
 src/www/diag_logs_settings.php
 402
-msgid "Server") . " 1";?></td>
+msgid "Server" " 1";?></td>
 msgstr ""
 
 #:
 src/www/diag_logs_settings.php
 406
-msgid "Server") . " 2";?></td>
+msgid "Server" " 2";?></td>
 msgstr ""
 
 #:
 src/www/diag_logs_settings.php
 410
-msgid "Server") . " 3";?></td>
+msgid "Server" " 3";?></td>
 msgstr ""
 
 #:
@@ -20083,7 +20063,7 @@ msgstr ""
 #:
 src/www/diag_nanobsd.php
 65
-msgid "The boot slice has been set to") . " " . nanobsd_get_active_slice();
+msgid "The boot slice has been set to" " " . nanobsd_get_active_slice();
 msgstr ""
 
 #:
@@ -20157,13 +20137,13 @@ msgstr ""
 #:
 src/www/diag_nanobsd.php
 168
-msgid "Read/Write") . $refdisplay;
+msgid "Read/Write" $refdisplay;
 msgstr ""
 
 #:
 src/www/diag_nanobsd.php
 170
-msgid "Switch to Read-Only") . "'>";
+msgid "Switch to Read-Only" "'>";
 msgstr ""
 
 #:
@@ -20175,7 +20155,7 @@ msgstr ""
 #:
 src/www/diag_nanobsd.php
 174
-msgid "Switch to Read/Write") . "'>";
+msgid "Switch to Read/Write" "'>";
 msgstr ""
 
 #:
@@ -20188,13 +20168,13 @@ msgstr ""
 #:
 src/www/diag_nanobsd.php
 184
-msgid "Keep media mounted read/write at all times.") ?>
+msgid "Keep media mounted read/write at all times."?>
 msgstr ""
 
 #:
 src/www/diag_nanobsd.php
 185
-msgid "Save") ?>'>
+msgid "Save"?>'>
 msgstr ""
 
 #:
@@ -20225,7 +20205,7 @@ msgstr ""
 #:
 src/www/diag_nanobsd.php
 207
-msgid "Duplicate slice") ?>'>
+msgid "Duplicate slice"?>'>
 msgstr ""
 
 #:
@@ -20303,7 +20283,7 @@ msgstr ""
 #:
 src/www/diag_packet_capture.php
 97
-msgid "OpenVPN") . " ".$mode."
+msgid "OpenVPN" " ".$mode."
 ".htmlspecialchars($setting['description']);
 msgstr ""
 
@@ -20438,7 +20418,7 @@ msgstr ""
 #:
 src/www/diag_packet_capture.php
 297
-msgid "Matching can be negated by preceding the value with "!". Multiple IP addresses or CIDR subnets may be specified. Comma (",") separated values perform a boolean "and". Separating with a pipe ("|") performs a boolean "or".");?>
+msgid "Matching can be negated by preceding the value with "!". Multiple IP addresses or CIDR subnets may be specified. Comma (","separated values perform a boolean "and". Separating with a pipe ("|") performs a boolean "or".");?>
 msgstr ""
 
 #:
@@ -20516,14 +20496,14 @@ msgstr ""
 #:
 src/www/diag_packet_capture.php
 334
-msgid "This is the level of detail that will be displayed after hitting 'Stop' when the packets have been captured.") .  "<br /><b>" .
+msgid "This is the level of detail that will be displayed after hitting 'Stop' when the packets have been captured."  "<br /><b>" .
 msgstr ""
 
 #:
 src/www/diag_packet_capture.php
 335
 msgid "Note
-") . "</b> " .
+" "</b> " .
 msgstr ""
 
 #:
@@ -20554,38 +20534,38 @@ msgstr ""
 #:
 src/www/diag_packet_capture.php
 362
-msgid "Stop") or $action == "") and $processisrunning != true)
+msgid "Stop"or $action == "") and $processisrunning != true)
 msgstr ""
 
 #:
 src/www/diag_packet_capture.php
 363
-msgid "Start") . "" />&nbsp;";
+msgid "Start" "" />&nbsp;";
 msgstr ""
 
 #:
 src/www/diag_packet_capture.php
 365
-msgid "Stop") . "" />&nbsp;";
+msgid "Stop" "" />&nbsp;";
 msgstr ""
 
 #:
 src/www/diag_packet_capture.php
 368
-msgid "View Capture") . "" />&nbsp;";
+msgid "View Capture" "" />&nbsp;";
 msgstr ""
 
 #:
 src/www/diag_packet_capture.php
 369
-msgid "Download Capture") . "" />";
+msgid "Download Capture" "" />";
 msgstr ""
 
 #:
 src/www/diag_packet_capture.php
 370
 msgid "The packet capture file was last updated
-") . " " . date("F jS, Y g
+" " " . date("F jS, Y g
 i
 s a.", filemtime($fp.$fn
 msgstr ""
@@ -20630,7 +20610,7 @@ msgstr ""
 #:
 src/www/diag_patterns.php
 40
-msgid "Uploaded file to") . " /usr/local/share/protocols/" . htmlentities($_FILES['ulfile']['name']);
+msgid "Uploaded file to" " /usr/local/share/protocols/" . htmlentities($_FILES['ulfile']['name']);
 msgstr ""
 
 #:
@@ -20923,25 +20903,25 @@ msgstr ""
 #:
 src/www/diag_smart.php
 68
-msgid "PASSED") . '</font></b>';
+msgid "PASSED" '</font></b>';
 msgstr ""
 
 #:
 src/www/diag_smart.php
 69
-msgid "FAILED") . '</font></b>';
+msgid "FAILED" '</font></b>';
 msgstr ""
 
 #:
 src/www/diag_smart.php
 70
-msgid "Warning") . '</font>';
+msgid "Warning" '</font>';
 msgstr ""
 
 #:
 src/www/diag_smart.php
 121
-msgid "Abort") . '" />
+msgid "Abort" '" />
 msgstr ""
 
 #:
@@ -21161,7 +21141,7 @@ msgstr ""
 #:
 src/www/diag_smart.php
 485
-msgid "Back") . '</a>';
+msgid "Back" '</a>';
 msgstr ""
 
 #:
@@ -21280,147 +21260,147 @@ msgstr ""
 #:
 src/www/diag_system_pftop.php
 126
-<option value='default' <?php echo ($viewtype == "default") ? "selected="selected"" 
+<option value='default' <?php echo ($viewtype == "default"? "selected="selected"" 
 msgid "Default");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 127
-<option value='label' <?php echo ($viewtype == "label") ? "selected="selected"" 
+<option value='label' <?php echo ($viewtype == "label"? "selected="selected"" 
 msgid "Label");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 128
-<option value='long' <?php echo ($viewtype == "long") ? "selected="selected"" 
+<option value='long' <?php echo ($viewtype == "long"? "selected="selected"" 
 msgid "Long");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 129
-<option value='queue' <?php echo ($viewtype == "queue") ? "selected="selected"" 
+<option value='queue' <?php echo ($viewtype == "queue"? "selected="selected"" 
 msgid "Queue");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 130
-<option value='rules' <?php echo ($viewtype == "rules") ? "selected="selected"" 
+<option value='rules' <?php echo ($viewtype == "rules"? "selected="selected"" 
 msgid "Rules");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 131
-<option value='size' <?php echo ($viewtype == "size") ? "selected="selected"" 
+<option value='size' <?php echo ($viewtype == "size"? "selected="selected"" 
 msgid "Size");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 132
-<option value='speed' <?php echo ($viewtype == "speed") ? "selected="selected"" 
+<option value='speed' <?php echo ($viewtype == "speed"? "selected="selected"" 
 msgid "Speed");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 133
-<option value='state' <?php echo ($viewtype == "state") ? "selected="selected"" 
+<option value='state' <?php echo ($viewtype == "state"? "selected="selected"" 
 msgid "State");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 134
-<option value='time' <?php echo ($viewtype == "time") ? "selected="selected"" 
+<option value='time' <?php echo ($viewtype == "time"? "selected="selected"" 
 msgid "Time");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 137
-<option value='age' <?php echo ($sorttype == "age") ? "selected="selected"" 
+<option value='age' <?php echo ($sorttype == "age"? "selected="selected"" 
 msgid "Age");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 138
-<option value='bytes' <?php echo ($sorttype == "bytes") ? "selected="selected"" 
+<option value='bytes' <?php echo ($sorttype == "bytes"? "selected="selected"" 
 msgid "Bytes");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 139
-<option value='dest' <?php echo ($sorttype == "dest") ? "selected="selected"" 
+<option value='dest' <?php echo ($sorttype == "dest"? "selected="selected"" 
 msgid "Destination Address");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 140
-<option value='dport' <?php echo ($sorttype == "dport") ? "selected="selected"" 
+<option value='dport' <?php echo ($sorttype == "dport"? "selected="selected"" 
 msgid "Destination Port");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 141
-<option value='exp' <?php echo ($sorttype == "exp") ? "selected="selected"" 
+<option value='exp' <?php echo ($sorttype == "exp"? "selected="selected"" 
 msgid "Expiry");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 142
-<option value='none' <?php echo ($sorttype == "none") ? "selected="selected"" 
+<option value='none' <?php echo ($sorttype == "none"? "selected="selected"" 
 msgid "None");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 143
-<option value='peak' <?php echo ($sorttype == "peak") ? "selected="selected"" 
+<option value='peak' <?php echo ($sorttype == "peak"? "selected="selected"" 
 msgid "Peak");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 144
-<option value='pkt' <?php echo ($sorttype == "pkt") ? "selected="selected"" 
+<option value='pkt' <?php echo ($sorttype == "pkt"? "selected="selected"" 
 msgid "Packet");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 145
-<option value='rate' <?php echo ($sorttype == "rate") ? "selected="selected"" 
+<option value='rate' <?php echo ($sorttype == "rate"? "selected="selected"" 
 msgid "Rate");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 146
-<option value='size' <?php echo ($sorttype == "size") ? "selected="selected"" 
+<option value='size' <?php echo ($sorttype == "size"? "selected="selected"" 
 msgid "Size");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 147
-<option value='sport' <?php echo ($sorttype == "sport") ? "selected="selected"" 
+<option value='sport' <?php echo ($sorttype == "sport"? "selected="selected"" 
 msgid "Source Port");?></option>
 msgstr ""
 
 #:
 src/www/diag_system_pftop.php
 148
-<option value='src' <?php echo ($sorttype == "src") ? "selected="selected"" 
+<option value='src' <?php echo ($sorttype == "src"? "selected="selected"" 
 msgid "Source Address");?></option>
 msgstr ""
 
@@ -21463,7 +21443,7 @@ msgstr ""
 #:
 src/www/diag_tables.php
 167
-msgid " the latest bogon data.") . "<br />" . "$last_updated";
+msgid " the latest bogon data." "<br />" . "$last_updated";
 msgstr ""
 
 #:
@@ -22297,7 +22277,7 @@ msgstr ""
 #:
 src/www/fbegin.inc
 333
-msgid "Packages are currently being reinstalled in the background.<p>Do not make changes in the GUI until this is complete.") . "<p><img src='/themes/{$g['theme']}/images/icons/icon_fw-update.gif' alt='firmware update' />"
+msgid "Packages are currently being reinstalled in the background.<p>Do not make changes in the GUI until this is complete." "<p><img src='/themes/{$g['theme']}/images/icons/icon_fw-update.gif' alt='firmware update' />"
 msgstr ""
 
 #:
@@ -22501,7 +22481,7 @@ msgstr ""
 #:
 src/www/firewall_aliases_edit.php
 122
-msgid "The alias name must be less than 32 characters long and may only consist of the characters") . " a-z, A-Z, 0-9, _.";
+msgid "The alias name must be less than 32 characters long and may only consist of the characters" " a-z, A-Z, 0-9, _.";
 msgstr ""
 
 #:
@@ -22875,7 +22855,7 @@ msgstr ""
 #:
 src/www/firewall_aliases_import.php
 60
-msgid "The alias name may only consist of the characters") . " a-z, A-Z, 0-9, _.";
+msgid "The alias name may only consist of the characters" " a-z, A-Z, 0-9, _.";
 msgstr ""
 
 #:
@@ -23150,7 +23130,7 @@ msgstr ""
 #:
 src/www/firewall_nat_1to1.php
 155
-msgid "The NAT configuration has been changed.") .
+msgid "The NAT configuration has been changed."
 msgstr ""
 
 #:
@@ -24266,13 +24246,13 @@ msgstr ""
 #:
 src/www/firewall_nat_edit.php
 846
-msgid "View the filter rule") . "</a><br />";
+msgid "View the filter rule" "</a><br />";
 msgstr ""
 
 #:
 src/www/firewall_nat_edit.php
 854
-msgid "Create new associated filter rule") . "</option>n";
+msgid "Create new associated filter rule" "</option>n";
 msgstr ""
 
 #:
@@ -24329,7 +24309,7 @@ src/www/firewall_nat_edit.php
 893
 msgid "n/j/y H
 i
-msgid "by") ?> <strong><?= $a_nat[$id]['created']['username'] ?></strong>
+msgid "by"?> <strong><?= $a_nat[$id]['created']['username'] ?></strong>
 msgstr ""
 
 #:
@@ -24343,7 +24323,7 @@ src/www/firewall_nat_edit.php
 901
 msgid "n/j/y H
 i
-msgid "by") ?> <strong><?= $a_nat[$id]['updated']['username'] ?></strong>
+msgid "by"?> <strong><?= $a_nat[$id]['updated']['username'] ?></strong>
 msgstr ""
 
 #:
@@ -24928,7 +24908,7 @@ msgstr ""
 #:
 src/www/firewall_nat_out.php
 621
-msgid " may also be required.") ?>
+msgid " may also be required."?>
 msgstr ""
 
 #:
@@ -25381,7 +25361,7 @@ src/www/firewall_nat_out_edit.php
 824
 msgid "n/j/y H
 i
-msgid "by") ?> <strong><?= $a_out[$id]['created']['username'] ?></strong>
+msgid "by"?> <strong><?= $a_out[$id]['created']['username'] ?></strong>
 msgstr ""
 
 #:
@@ -25395,7 +25375,7 @@ src/www/firewall_nat_out_edit.php
 835
 msgid "n/j/y H
 i
-msgid "by") ?> <strong><?= $a_out[$id]['updated']['username'] ?></strong>
+msgid "by"?> <strong><?= $a_out[$id]['updated']['username'] ?></strong>
 msgstr ""
 
 #:
@@ -25533,7 +25513,7 @@ msgstr ""
 #:
 src/www/firewall_rules.php
 354
-msgid "Apply changes") , "firewall_rules.php?if={$_REQUEST['if']}&dragdroporder=true&{$dragtable}"
+msgid "Apply changes", "firewall_rules.php?if={$_REQUEST['if']}&dragdroporder=true&{$dragtable}"
 msgstr ""
 
 #:
@@ -25701,7 +25681,7 @@ msgstr ""
 #:
 src/www/firewall_rules.php
 512
-msgid "advanced settings set") . "
+msgid "advanced settings set" "
 {$isadvset}"></span>";
 msgstr ""
 
@@ -26353,7 +26333,7 @@ msgstr ""
 #:
 src/www/firewall_rules_edit.php
 867
-msgid "View the NAT rule") . "</a><br />";
+msgid "View the NAT rule" "</a><br />";
 msgstr ""
 
 #:
@@ -27221,7 +27201,7 @@ src/www/firewall_rules_edit.php
 1699
 msgid "n/j/y H
 i
-msgid "by") ?> <strong><?= $a_filter[$id]['created']['username'] ?></strong>
+msgid "by"?> <strong><?= $a_filter[$id]['created']['username'] ?></strong>
 msgstr ""
 
 #:
@@ -27235,7 +27215,7 @@ src/www/firewall_rules_edit.php
 1707
 msgid "n/j/y H
 i
-msgid "by") ?> <strong><?= $a_filter[$id]['updated']['username'] ?></strong>
+msgid "by"?> <strong><?= $a_filter[$id]['updated']['username'] ?></strong>
 msgstr ""
 
 #:
@@ -27650,31 +27630,31 @@ msgstr ""
 #:
 src/www/firewall_shaper.php
 335
-msgid "Queue Actions") . "<br />";
+msgid "Queue Actions" "<br />";
 msgstr ""
 
 #:
 src/www/firewall_shaper.php
 338
-msgid "Save") . "" class="btn btn-primary" />";
+msgid "Save" "" class="btn btn-primary" />";
 msgstr ""
 
 #:
 src/www/firewall_shaper.php
 346
-msgid "Add new queue") . "" />";
+msgid "Add new queue" "" />";
 msgstr ""
 
 #:
 src/www/firewall_shaper.php
 357
-msgid "Delete this queue") . "" />";
+msgid "Delete this queue" "" />";
 msgstr ""
 
 #:
 src/www/firewall_shaper.php
 359
-msgid "Disable shaper on interface") . "" />";
+msgid "Disable shaper on interface" "" />";
 msgstr ""
 
 #:
@@ -27728,14 +27708,14 @@ msgstr ""
 #:
 src/www/firewall_shaper_layer7.php
 53
-msgid "Note") . "
+msgid "Note" "
 <br />";
 msgstr ""
 
 #:
 src/www/firewall_shaper_layer7.php
 54
-msgid "here") . ".</a></span><br />";
+msgid "here" ".</a></span><br />";
 msgstr ""
 
 #:
@@ -27747,7 +27727,7 @@ msgstr ""
 #:
 src/www/firewall_shaper_layer7.php
 149
-msgid "Found the following repeated protocol definitions") . "
+msgid "Found the following repeated protocol definitions" "
 ";
 msgstr ""
 
@@ -27960,25 +27940,25 @@ msgstr ""
 #:
 src/www/firewall_shaper_vinterface.php
 306
-msgid "Save") . "" class="btn btn-primary" />";
+msgid "Save" "" class="btn btn-primary" />";
 msgstr ""
 
 #:
 src/www/firewall_shaper_vinterface.php
 314
-msgid "Add new queue") ."" />";
+msgid "Add new queue""" />";
 msgstr ""
 
 #:
 src/www/firewall_shaper_vinterface.php
 325
-msgid "Delete this queue") ."" />";
+msgid "Delete this queue""" />";
 msgstr ""
 
 #:
 src/www/firewall_shaper_vinterface.php
 327
-msgid "Delete Limiter") ."" />";
+msgid "Delete Limiter""" />";
 msgstr ""
 
 #:
@@ -28032,13 +28012,13 @@ msgstr ""
 #:
 src/www/firewall_shaper_wizards.php
 66
-msgid "Multiple Lan/Wan") => "traffic_shaper_wizard_multi_all.xml",
+msgid "Multiple Lan/Wan"=> "traffic_shaper_wizard_multi_all.xml",
 msgstr ""
 
 #:
 src/www/firewall_shaper_wizards.php
 67
-msgid "Dedicated Links") => "traffic_shaper_wizard_dedicated.xml",
+msgid "Dedicated Links"=> "traffic_shaper_wizard_dedicated.xml",
 msgstr ""
 
 #:
@@ -28104,7 +28084,7 @@ msgstr ""
 #:
 src/www/firewall_virtual_ip.php
 145
-msgid "This entry cannot be deleted because it is still referenced by a CARP IP with the description") . " {$vip['descr']}.";
+msgid "This entry cannot be deleted because it is still referenced by a CARP IP with the description" " {$vip['descr']}.";
 msgstr ""
 
 #:
@@ -28592,7 +28572,7 @@ msgstr ""
 src/www/guiconfig.inc
 266
 msgid "The following input errors were detected
-") . "</p>n<ul>";
+" "</p>n<ul>";
 msgstr ""
 
 #:
@@ -28610,13 +28590,13 @@ msgstr ""
 #:
 src/www/guiconfig.inc
 334
-msgid "Undo") . "" onclick="document.location='{$undo}'" />";
+msgid "Undo" "" onclick="document.location='{$undo}'" />";
 msgstr ""
 
 #:
 src/www/guiconfig.inc
 357
-msgid "Close") . "" type="button" onclick="$('#redboxtable".hide();" />";
+msgid "Close" "" type="button" onclick="$('#redboxtable".hide();" />";
 msgstr ""
 
 #:
@@ -28647,7 +28627,7 @@ msgstr ""
 #:
 src/www/guiconfig.inc
 1041
-msgid "listing only first 10k items") . "</td><tr>";
+msgid "listing only first 10k items" "</td><tr>";
 msgstr ""
 
 #:
@@ -28711,7 +28691,7 @@ msgstr ""
 #:
 src/www/headjs.php
 131
-msgid "Apply changes") . "" />';
+msgid "Apply changes" "" />';
 msgstr ""
 
 #:
@@ -28742,14 +28722,14 @@ msgstr ""
 #:
 src/www/index.php
 443
-msgid "One moment while we start the initial setup wizard.") . "<p>n";
+msgid "One moment while we start the initial setup wizard." "<p>n";
 msgstr ""
 
 #:
 src/www/index.php
 444
 msgid "Embedded platform users
-Please be patient, the wizard takes a little longer to run than the normal GUI.") . "<p>n";
+Please be patient, the wizard takes a little longer to run than the normal GUI." "<p>n";
 msgstr ""
 
 #:
@@ -29193,7 +29173,7 @@ msgstr ""
 #:
 src/www/interfaces.php
 1643
-msgid "This field can be used to modify ("spoof") the MAC " .
+msgid "This field can be used to modify ("spoof"the MAC " .
 msgstr ""
 
 #:
@@ -29241,7 +29221,7 @@ msgstr ""
 #:
 src/www/interfaces.php
 1675
-msgid "Speed and duplex") . '</td>';
+msgid "Speed and duplex" '</td>';
 msgstr ""
 
 #:
@@ -29253,13 +29233,13 @@ msgstr ""
 #:
 src/www/interfaces.php
 1690
-msgid "$mediaopt") . "</option>";
+msgid "$mediaopt" "</option>";
 msgstr ""
 
 #:
 src/www/interfaces.php
 1692
-msgid "$mediaopt") . "</option>";
+msgid "$mediaopt" "</option>";
 msgstr ""
 
 #:
@@ -29946,7 +29926,7 @@ db8
 msgstr ""
 
 #:
-/32'") ?><br />
+/32'"?><br />
 msgstr ""
 
 #:
@@ -29958,7 +29938,7 @@ msgstr ""
 #:
 src/www/interfaces.php
 2437
-msgid "The value in this field is 6RD IPv4 gateway address assigned by your ISP") ?><br />
+msgid "The value in this field is 6RD IPv4 gateway address assigned by your ISP"?><br />
 msgstr ""
 
 #:
@@ -29988,7 +29968,7 @@ msgstr ""
 #:
 src/www/interfaces.php
 2499
-msgid "This selects the dynamic IPv6 WAN interface to track for configuration") ?><br />
+msgid "This selects the dynamic IPv6 WAN interface to track for configuration"?><br />
 msgstr ""
 
 #:
@@ -34438,7 +34418,7 @@ src/www/load_balancer_monitor_edit.php
 55
 msgid "Load Balancer
 Monitor
-") . " ";
+" " ";
 msgstr ""
 
 #:
@@ -34714,7 +34694,7 @@ src/www/load_balancer_pool_edit.php
 57
 msgid "Load Balancer
 Pool
-") . " ";
+" " ";
 msgstr ""
 
 #:
@@ -35024,7 +35004,7 @@ src/www/load_balancer_relay_action_edit.php
 55
 msgid "Load Balancer
 Relay Action
-") . " ";
+" " ";
 msgstr ""
 
 #:
@@ -35239,7 +35219,7 @@ src/www/load_balancer_relay_protocol_edit.php
 55
 msgid "Load Balancer
 Relay Protocol
-") . " ";
+" " ";
 msgstr ""
 
 #:
@@ -35450,7 +35430,7 @@ msgstr ""
 #:
 src/www/load_balancer_setting.php
 129
-msgid "timeout") ; ?></td>
+msgid "timeout"; ?></td>
 msgstr ""
 
 #:
@@ -35462,7 +35442,7 @@ msgstr ""
 #:
 src/www/load_balancer_setting.php
 137
-msgid "interval") ; ?></td>
+msgid "interval"; ?></td>
 msgstr ""
 
 #:
@@ -35474,7 +35454,7 @@ msgstr ""
 #:
 src/www/load_balancer_setting.php
 145
-msgid "prefork") ; ?></td>
+msgid "prefork"; ?></td>
 msgstr ""
 
 #:
@@ -35572,7 +35552,7 @@ src/www/load_balancer_virtual_server_edit.php
 50
 msgid "Load Balancer
 Virtual Server
-") . " ";
+" " ";
 msgstr ""
 
 #:
@@ -35858,13 +35838,13 @@ msgstr ""
 #:
 src/www/pkg_edit.php
 448
-msgid "Advanced features") . "<br /></td></tr>n";
+msgid "Advanced features" "<br /></td></tr>n";
 msgstr ""
 
 #:
 src/www/pkg_edit.php
 938
-msgid "Note") . "
+msgid "Note" "
 </strong></span> {$pkg['note']}</p>";
 msgstr ""
 
@@ -35877,7 +35857,7 @@ msgstr ""
 #:
 src/www/pkg_edit.php
 1133
-msgid "Show advanced option") ."</div>n";
+msgid "Show advanced option""</div>n";
 msgstr ""
 
 #:
@@ -35967,7 +35947,7 @@ msgstr ""
 #:
 src/www/pkg_mgr.php
 213
-msgid "There are currently no packages available for installation.") . "</td></tr>";
+msgid "There are currently no packages available for installation." "</td></tr>";
 msgstr ""
 
 #:
@@ -36003,7 +35983,7 @@ msgstr ""
 #:
 src/www/pkg_mgr.php
 266
-msgid "platform") ."
+msgid "platform""
 ". $index['required_version'] ?>
 msgstr ""
 
@@ -36024,7 +36004,7 @@ msgstr ""
 #:
 src/www/pkg_mgr.php
 288
-msgid "There are currently no packages available for installation.") . "</td></tr>";
+msgid "There are currently no packages available for installation." "</td></tr>";
 msgstr ""
 
 #:
@@ -36162,7 +36142,7 @@ msgstr ""
 #:
 src/www/pkg_mgr_install.php
 280
-msgid "setup instructions") . "
+msgid "setup instructions" "
 n{$status}";
 msgstr ""
 
@@ -36229,42 +36209,42 @@ msgstr ""
 #:
 src/www/pkg_mgr_installed.php
 148
-msgid "Available") ."
+msgid "Available""
 ". $latest_package . "<br />";
 msgstr ""
 
 #:
 src/www/pkg_mgr_installed.php
 150
-msgid "Available") ."
+msgid "Available""
 ". $latest_package . "<br />";
 msgstr ""
 
 #:
 src/www/pkg_mgr_installed.php
 151
-msgid "Installed") ."
+msgid "Installed""
 ". $pkg['version']. "</a>";
 msgstr ""
 
 #:
 src/www/pkg_mgr_installed.php
 157
-msgid "Available") ."
+msgid "Available""
 ". $latest_package . "</font><br />";
 msgstr ""
 
 #:
 src/www/pkg_mgr_installed.php
 159
-msgid "Available") ."
+msgid "Available""
 ". $latest_package . "<br />";
 msgstr ""
 
 #:
 src/www/pkg_mgr_installed.php
 160
-msgid "Installed") ."
+msgid "Installed""
 ". $pkg['version']."</font></a>";
 msgstr ""
 
@@ -37291,7 +37271,7 @@ msgstr ""
 #:
 src/www/services_captiveportal.php
 904
-msgid "Specify a NAS identifier to override the default value") . " (" . php_uname("n") . ")"; ?></td>
+msgid "Specify a NAS identifier to override the default value" " (" . php_uname("n") . ")"; ?></td>
 msgstr ""
 
 #:
@@ -37597,7 +37577,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_filemanager.php
 93
-msgid "The total size of all files uploaded may not exceed ") .
+msgid "The total size of all files uploaded may not exceed "
 msgstr ""
 
 #:
@@ -38105,7 +38085,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_mac.php
 70
-msgid "No entry exists yet!") ."n";
+msgid "No entry exists yet!""n";
 msgstr ""
 
 #:
@@ -38118,20 +38098,20 @@ msgstr ""
 src/www/services_captiveportal_mac.php
 86
 msgid "No entry exists for this username
-") . " " . $_POST['username'] . "n";
+" " " . $_POST['username'] . "n";
 msgstr ""
 
 #:
 src/www/services_captiveportal_mac.php
 105
-msgid "The entry was sucessfully deleted") . "n";
+msgid "The entry was sucessfully deleted" "n";
 msgstr ""
 
 #:
 src/www/services_captiveportal_mac.php
 107
 msgid "No entry exists for this mac address
-") . " " .  $_POST['delmac'] . "n";
+" " " .  $_POST['delmac'] . "n";
 msgstr ""
 
 #:
@@ -38354,13 +38334,13 @@ msgstr ""
 #:
 src/www/services_captiveportal_vouchers.php
 161
-msgid "Cannot write private key file") . ".n";
+msgid "Cannot write private key file" ".n";
 msgstr ""
 
 #:
 src/www/services_captiveportal_vouchers.php
 181
-msgid "Need private RSA key to print vouchers") . "n";
+msgid "Need private RSA key to print vouchers" "n";
 msgstr ""
 
 #:
@@ -38899,7 +38879,7 @@ msgstr ""
 #:
 src/www/services_dhcp.php
 98
-msgid "Only interfaces configured with a static IP will be shown") . ".";
+msgid "Only interfaces configured with a static IP will be shown" ".";
 msgstr ""
 
 #:
@@ -40261,13 +40241,13 @@ msgstr ""
 #:
 src/www/services_dhcpv6.php
 58
-msgid "The DHCPv6 Server can only be enabled on interfaces configured with static IP addresses") .
+msgid "The DHCPv6 Server can only be enabled on interfaces configured with static IP addresses"
 msgstr ""
 
 #:
 src/www/services_dhcpv6.php
 59
-msgid "Only interfaces configured with a static IP will be shown") . ".";
+msgid "Only interfaces configured with a static IP will be shown" ".";
 msgstr ""
 
 #:
@@ -43141,13 +43121,13 @@ msgstr ""
 #:
 src/www/services_router_advertisements.php
 57
-msgid "The DHCPv6 Server can only be enabled on interfaces configured with static IP addresses") . ".</b></p>" .
+msgid "The DHCPv6 Server can only be enabled on interfaces configured with static IP addresses" ".</b></p>" .
 msgstr ""
 
 #:
 src/www/services_router_advertisements.php
 58
-msgid "Only interfaces configured with a static IP will be shown") . ".</b></p>";
+msgid "Only interfaces configured with a static IP will be shown" ".</b></p>";
 msgstr ""
 
 #:
@@ -44761,43 +44741,43 @@ msgstr ""
 #:
 src/www/shortcuts.inc
 91
-msgid "Main page for this section") . "">Main page</a>";
+msgid "Main page for this section" "">Main page</a>";
 msgstr ""
 
 #:
 src/www/shortcuts.inc
 93
-msgid "Main page for this section") . ""><span class="glyphicon glyphicon-home"></span></a>";
+msgid "Main page for this section" ""><span class="glyphicon glyphicon-home"></span></a>";
 msgstr ""
 
 #:
 src/www/shortcuts.inc
 118
-msgid "Status of items on this page") . "">Status</a>";
+msgid "Status of items on this page" "">Status</a>";
 msgstr ""
 
 #:
 src/www/shortcuts.inc
 120
-msgid "Status of items on this page") . ""><span class="glyphicon glyphicon-eye-open"></span></a>";
+msgid "Status of items on this page" ""><span class="glyphicon glyphicon-eye-open"></span></a>";
 msgstr ""
 
 #:
 src/www/shortcuts.inc
 128
-msgid "Log entries for items on this page") . "">Log</a>";
+msgid "Log entries for items on this page" "">Log</a>";
 msgstr ""
 
 #:
 src/www/shortcuts.inc
 130
-msgid "Log entries for items on this page") . ""><span class="glyphicon glyphicon-list"></span></a>";
+msgid "Log entries for items on this page" ""><span class="glyphicon glyphicon-list"></span></a>";
 msgstr ""
 
 #:
 src/www/status.php
 93
-msgid "This status page includes the following information") . "
+msgid "This status page includes the following information" "
 n";
 msgstr ""
 
@@ -45256,31 +45236,31 @@ msgstr ""
 #:
 src/www/status_dhcp_leases.php
 381
-msgid "$mac - send Wake on LAN packet to this MAC address") ."">{$mac}</a><br /><font size="-2"><i>{$mac_man[$mac_hi]}</i></font>{$fspane}</td>n";
+msgid "$mac - send Wake on LAN packet to this MAC address""">{$mac}</a><br /><font size="-2"><i>{$mac_man[$mac_hi]}</i></font>{$fspane}</td>n";
 msgstr ""
 
 #:
 src/www/status_dhcp_leases.php
 383
-msgid "send Wake on LAN packet to this MAC address") ."">{$data['mac']}</a>{$fspane}</td>n";
+msgid "send Wake on LAN packet to this MAC address""">{$data['mac']}</a>{$fspane}</td>n";
 msgstr ""
 
 #:
 src/www/status_dhcp_leases.php
 405
-msgid "add a static mapping for this MAC address") ."" alt="add" ></span></a>&nbsp;n";
+msgid "add a static mapping for this MAC address""" alt="add" ></span></a>&nbsp;n";
 msgstr ""
 
 #:
 src/www/status_dhcp_leases.php
 411
-msgid "add a Wake on LAN mapping for this MAC address") ."" alt="add"></span></a>&nbsp;n";
+msgid "add a Wake on LAN mapping for this MAC address""" alt="add"></span></a>&nbsp;n";
 msgstr ""
 
 #:
 src/www/status_dhcp_leases.php
 416
-msgid "delete this DHCP lease") . "" alt="delete" ></span></a>&nbsp;n";
+msgid "delete this DHCP lease" "" alt="delete" ></span></a>&nbsp;n";
 msgstr ""
 
 #:
@@ -45388,13 +45368,13 @@ msgstr ""
 #:
 src/www/status_dhcpv6_leases.php
 483
-msgid "add a static mapping for this MAC address") ."" alt="add" /></a></td>n";
+msgid "add a static mapping for this MAC address""" alt="add" /></a></td>n";
 msgstr ""
 
 #:
 src/www/status_dhcpv6_leases.php
 492
-msgid "delete this DHCP lease") . "" alt="delete" /></a></td>n";
+msgid "delete this DHCP lease" "" alt="delete" /></a></td>n";
 msgstr ""
 
 #:
@@ -45466,7 +45446,7 @@ msgstr ""
 #:
 src/www/status_gateway_groups.php
 35
-msgid "Gateway Groups") . "
+msgid "Gateway Groups" "
 ";
 msgstr ""
 
@@ -45662,13 +45642,13 @@ msgstr ""
 src/www/status_gateways.php
 144
 msgid "Last check
-") . '<br />' . $lastchange;
+" '<br />' . $lastchange;
 msgstr ""
 
 #:
 src/www/status_graph.php
 50
-msgid "OpenVPN") . " ".$mode."
+msgid "OpenVPN" " ".$mode."
 ".htmlspecialchars($setting['description']);
 msgstr ""
 
@@ -45687,7 +45667,7 @@ msgstr ""
 #:
 src/www/status_graph.php
 263
-msgid "Host IP") 
+msgid "Host IP"
 msgid "Host Name or IP")); ?></td>
 msgstr ""
 
@@ -45753,14 +45733,14 @@ msgstr ""
 #:
 src/www/status_interfaces.php
 99
-msgid "Release") 
+msgid "Release"
 msgid "Renew")); ?>
 msgstr ""
 
 #:
 src/www/status_interfaces.php
 115
-msgid "Release") 
+msgid "Release"
 msgid "Renew")); ?>
 msgstr ""
 
@@ -45773,7 +45753,7 @@ msgstr ""
 #:
 src/www/status_interfaces.php
 128
-msgid "Disconnect") 
+msgid "Disconnect"
 msgid "Connect")); ?>
 msgstr ""
 
@@ -45786,7 +45766,7 @@ msgstr ""
 #:
 src/www/status_interfaces.php
 141
-msgid "Disconnect") 
+msgid "Disconnect"
 msgid "Connect")); ?>
 msgstr ""
 
@@ -45799,7 +45779,7 @@ msgstr ""
 #:
 src/www/status_interfaces.php
 154
-msgid "Disconnect") 
+msgid "Disconnect"
 msgid "Connect")); ?>
 msgstr ""
 
@@ -46244,13 +46224,13 @@ msgstr ""
 #:
 src/www/status_ntpd.php
 243
-msgid "Clock Altitude") . '</th>'; $gps_goo_lnk++;}?>
+msgid "Clock Altitude" '</th>'; $gps_goo_lnk++;}?>
 msgstr ""
 
 #:
 src/www/status_ntpd.php
 244
-msgid "Satellites") . '</th>'; $gps_goo_lnk++;}?>
+msgid "Satellites" '</th>'; $gps_goo_lnk++;}?>
 msgstr ""
 
 #:
@@ -46316,13 +46296,13 @@ msgstr ""
 #:
 src/www/status_openvpn.php
 193
-msgid "Kill client connection from") . " " . $conn['remote_host']; ?>" alt="delete" />
+msgid "Kill client connection from" " " . $conn['remote_host']; ?>" alt="delete" />
 msgstr ""
 
 #:
 src/www/status_openvpn.php
 218
-msgid "Display OpenVPN's internal routing table for this server.") ?>
+msgid "Display OpenVPN's internal routing table for this server."?>
 msgstr ""
 
 #:
@@ -46358,7 +46338,7 @@ msgstr ""
 #:
 src/www/status_openvpn.php
 256
-msgid "An IP address followed by C indicates a host currently connected through the VPN.") ?></td>
+msgid "An IP address followed by C indicates a host currently connected through the VPN."?></td>
 msgstr ""
 
 #:
@@ -46472,7 +46452,7 @@ msgstr ""
 #:
 src/www/status_openvpn.php
 397
-msgid "NOTE") . "
+msgid "NOTE" "
 msgid "If you have custom options that override the management features of OpenVPN on a client or server, they will cause that OpenVPN instance to not work correctly with this status page."
 msgstr ""
 
@@ -46569,21 +46549,21 @@ echo "<td width="1%" bgcolor="#{$row_background}"><input style='border
 #{$row_background}; color
 #000000;width
 70px;text-align
-msgid "Loading") . ")' align='left' /></td>";
+msgid "Loading" ")' align='left' /></td>";
 msgstr ""
 
 #:
 src/www/status_rrd_graph.php
 147
 msgid "Invalid start date/time
-") . " '{$_GET['start']}'";
+" " '{$_GET['start']}'";
 msgstr ""
 
 #:
 src/www/status_rrd_graph.php
 160
 msgid "Invalid end date/time
-") . " '{$_GET['end']}'";
+" " '{$_GET['end']}'";
 msgstr ""
 
 #:
@@ -46642,7 +46622,7 @@ msgstr ""
 src/www/status_rrd_graph.php
 522
 msgid "Enter date and/or time. Current timezone
-") . " $tz";
+" " $tz";
 msgstr ""
 
 #:
@@ -46934,7 +46914,7 @@ msgstr ""
 #:
 src/www/status_services.php
 117
-msgid "No services found") . " . </td></tr>n";
+msgid "No services found" " . </td></tr>n";
 msgstr ""
 
 #:
@@ -47000,7 +46980,7 @@ msgstr ""
 #:
 src/www/status_wireless.php
 68
-msgid "Status") . " ({$ifdescr})", $enabled, "status_wireless.php?if={$interface}"
+msgid "Status" " ({$ifdescr})", $enabled, "status_wireless.php?if={$interface}"
 msgstr ""
 
 #:
@@ -47024,7 +47004,7 @@ msgstr ""
 #:
 src/www/system.php
 62
-msgid "System") . "
+msgid "System" "
 ";
 msgstr ""
 
@@ -47495,7 +47475,7 @@ msgstr ""
 #:
 src/www/system_advanced_admin.php
 474
-msgid "When this is checked, the webConfigurator can mitigate BEAST SSL attacks. ") ?>
+msgid "When this is checked, the webConfigurator can mitigate BEAST SSL attacks. "?>
 msgstr ""
 
 #:
@@ -49167,7 +49147,7 @@ msgstr ""
 src/www/system_advanced_notifications.php
 226
 msgid "NOTE
-A test notification will be sent even if the service is marked as disabled.") ?>
+A test notification will be sent even if the service is marked as disabled."?>
 msgstr ""
 
 #:
@@ -49276,7 +49256,7 @@ msgstr ""
 src/www/system_advanced_notifications.php
 295
 msgid "NOTE
-A test message will be sent even if the service is marked as disabled.") ?>
+A test message will be sent even if the service is marked as disabled."?>
 msgstr ""
 
 #:
@@ -49900,20 +49880,20 @@ msgstr ""
 #:
 src/www/system_authservers.php
 787
-msgid "This value controls how long, in seconds, that the RADIUS server may take to respond to an authentication request.") ?>
+msgid "This value controls how long, in seconds, that the RADIUS server may take to respond to an authentication request."?>
 msgstr ""
 
 #:
 src/www/system_authservers.php
 788
-msgid "If left blank, the default value is 5 seconds.") ?>
+msgid "If left blank, the default value is 5 seconds."?>
 msgstr ""
 
 #:
 src/www/system_authservers.php
 789
 msgid "NOTE
-If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token.") ?>
+If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token."?>
 msgstr ""
 
 #:
@@ -50141,7 +50121,7 @@ msgstr ""
 #:
 src/www/system_camanager.php
 363
-msgid "Save") || $input_errors)
+msgid "Save"|| $input_errors)
 ?>
 msgstr ""
 
@@ -50233,7 +50213,7 @@ msgstr ""
 src/www/system_camanager.php
 494
 msgid "NOTE
-It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
+It is recommended to use an algorithm stronger than SHA1 when possible."?>
 msgstr ""
 
 #:
@@ -50400,13 +50380,13 @@ msgstr ""
 #:
 src/www/system_camanager.php
 616
-msgid "self-signed") . "</em>";
+msgid "self-signed" "</em>";
 msgstr ""
 
 #:
 src/www/system_camanager.php
 618
-msgid "external") . "</em>";
+msgid "external" "</em>";
 msgstr ""
 
 #:
@@ -50788,7 +50768,7 @@ msgstr ""
 src/www/system_certmanager.php
 707
 msgid "NOTE
-It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
+It is recommended to use an algorithm stronger than SHA1 when possible."?>
 msgstr ""
 
 #:
@@ -50917,7 +50897,7 @@ msgstr ""
 src/www/system_certmanager.php
 865
 msgid "NOTE
-It is recommended to use an algorithm stronger than SHA1 when possible.") ?>
+It is recommended to use an algorithm stronger than SHA1 when possible."?>
 msgstr ""
 
 #:
@@ -51105,7 +51085,7 @@ msgstr ""
 #:
 src/www/system_certmanager.php
 1073
-msgid "self-signed") . "</em>";
+msgid "self-signed" "</em>";
 msgstr ""
 
 #:
@@ -51117,7 +51097,7 @@ msgstr ""
 #:
 src/www/system_certmanager.php
 1081
-msgid "external - signature pending") . "</em>";
+msgid "external - signature pending" "</em>";
 msgstr ""
 
 #:
@@ -51270,7 +51250,7 @@ msgstr ""
 #:
 src/www/system_crlmanager.php
 281
-msgid "Save") || $input_errors)
+msgid "Save"|| $input_errors)
 ?>
 msgstr ""
 
@@ -51387,7 +51367,7 @@ msgstr ""
 #:
 src/www/system_crlmanager.php
 437
-msgid "Currently Revoked Certificates for CRL") . '
+msgid "Currently Revoked Certificates for CRL" '
 ' . $crl['descr']; ?></b></th>
 msgstr ""
 
@@ -51502,31 +51482,31 @@ msgstr ""
 #:
 src/www/system_crlmanager.php
 606
-msgid "Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+msgid "Export CRL" " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
 msgstr ""
 
 #:
 src/www/system_crlmanager.php
 610
-msgid "Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+msgid "Edit CRL" " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
 msgstr ""
 
 #:
 src/www/system_crlmanager.php
 614
-msgid "Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+msgid "Edit CRL" " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
 msgstr ""
 
 #:
 src/www/system_crlmanager.php
 618
-msgid "Do you really want to delete this Certificate Revocation List?") . ' (' . htmlspecialchars($tmpcrl['descr']) . "';?>')"  class="btn btn-default btn-xs">
+msgid "Do you really want to delete this Certificate Revocation List?" ' (' . htmlspecialchars($tmpcrl['descr']) . "';?>')"  class="btn btn-default btn-xs">
 msgstr ""
 
 #:
 src/www/system_crlmanager.php
 619
-msgid "Delete CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+msgid "Delete CRL" " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
 msgstr ""
 
 #:
@@ -51586,7 +51566,7 @@ msgstr ""
 #:
 src/www/system_firmware.php
 93
-msgid "An upgrade is currently in progress.<p>The firewall will reboot when the operation is complete.") . "</p><p><img src='/themes/{$g['theme']}/images/icons/icon_fw-update.gif' alt='update' /></p>"
+msgid "An upgrade is currently in progress.<p>The firewall will reboot when the operation is complete." "</p><p><img src='/themes/{$g['theme']}/images/icons/icon_fw-update.gif' alt='update' /></p>"
 msgstr ""
 
 #:
@@ -51750,7 +51730,7 @@ msgstr ""
 #:
 src/www/system_firmware_auto.php
 126
-msgid "Downloading current version information") . "..."
+msgid "Downloading current version information" "..."
 msgstr ""
 
 #:
@@ -51768,7 +51748,7 @@ msgstr ""
 #:
 src/www/system_firmware_auto.php
 155
-msgid "Downloading updates") . "..."
+msgid "Downloading updates" "..."
 msgstr ""
 
 #:
@@ -51810,15 +51790,15 @@ msgstr ""
 #:
 src/www/system_firmware_auto.php
 200
-msgid "Downloaded SHA256") . "
-msgid "Needed SHA256") . "
+msgid "Downloaded SHA256" "
+msgid "Needed SHA256" "
 " . $upgrade_latest_tgz_sha256);
 msgstr ""
 
 #:
 src/www/system_firmware_auto.php
 202
-msgid "is now upgrading.") . "
+msgid "is now upgrading." "
 msgstr ""
 
 #:
@@ -51828,14 +51808,14 @@ msgstr ""
 #:
 src/www/system_firmware_auto.php
 224
-msgid "Auto Update Download Status") . "
+msgid "Auto Update Download Status" "
 ";
 msgstr ""
 
 #:
 src/www/system_firmware_auto.php
 226
-msgid "Current Version") . " 
+msgid "Current Version" " 
 {$current_installed_version}
 ";
 msgstr ""
@@ -51843,7 +51823,7 @@ msgstr ""
 #:
 src/www/system_firmware_auto.php
 227
-msgid "Latest Version") . "  
+msgid "Latest Version" "  
 {$latest_version}
 ";
 msgstr ""
@@ -51851,7 +51831,7 @@ msgstr ""
 #:
 src/www/system_firmware_auto.php
 228
-msgid "File size") . "       
+msgid "File size" "       
 {$a}
 ";
 msgstr ""
@@ -51859,7 +51839,7 @@ msgstr ""
 #:
 src/www/system_firmware_auto.php
 229
-msgid "Downloaded") . "      
+msgid "Downloaded" "      
 {$b}
 ";
 msgstr ""
@@ -51867,7 +51847,7 @@ msgstr ""
 #:
 src/www/system_firmware_auto.php
 230
-msgid "Percent") . "         
+msgid "Percent" "         
 {$c}%
 ";
 msgstr ""
@@ -51978,7 +51958,7 @@ msgstr ""
 #:
 src/www/system_firmware_restorefullbackup.php
 153
-msgid "Do you really want to delete this backup?") . """ href='system_firmware_restorefullbackup.php?deletefile=" . htmlspecialchars($arf) . "'>";
+msgid "Do you really want to delete this backup?" """ href='system_firmware_restorefullbackup.php?deletefile=" . htmlspecialchars($arf) . "'>";
 msgstr ""
 
 #:
@@ -52044,7 +52024,7 @@ msgstr ""
 #:
 src/www/system_firmware_settings.php
 151
-msgid "Use an unofficial server for firmware upgrades") ?><br />
+msgid "Use an unofficial server for firmware upgrades"?><br />
 msgstr ""
 
 #:
@@ -52181,14 +52161,14 @@ msgstr ""
 #:
 src/www/system_gateway_groups.php
 41
-msgid "Gateway Groups") . "
+msgid "Gateway Groups" "
 ";
 msgstr ""
 
 #:
 src/www/system_gateway_groups.php
 76
-msgid "removed gateway group") . " {$_GET['id']}";
+msgid "removed gateway group" " {$_GET['id']}";
 msgstr ""
 
 #:
@@ -52351,43 +52331,43 @@ msgstr ""
 #:
 src/www/system_gateway_groups_edit.php
 268
-msgid "Never") . "</option>n";
+msgid "Never" "</option>n";
 msgstr ""
 
 #:
 src/www/system_gateway_groups_edit.php
 269
-msgid "Tier 1") . "</option>n";
+msgid "Tier 1" "</option>n";
 msgstr ""
 
 #:
 src/www/system_gateway_groups_edit.php
 270
-msgid "Tier 2") . "</option>n";
+msgid "Tier 2" "</option>n";
 msgstr ""
 
 #:
 src/www/system_gateway_groups_edit.php
 271
-msgid "Tier 3") . "</option>n";
+msgid "Tier 3" "</option>n";
 msgstr ""
 
 #:
 src/www/system_gateway_groups_edit.php
 272
-msgid "Tier 4") . "</option>n";
+msgid "Tier 4" "</option>n";
 msgstr ""
 
 #:
 src/www/system_gateway_groups_edit.php
 273
-msgid "Tier 5") . "</option>n";
+msgid "Tier 5" "</option>n";
 msgstr ""
 
 #:
 src/www/system_gateway_groups_edit.php
 289
-msgid "Interface Address") . "</option>n";
+msgid "Interface Address" "</option>n";
 msgstr ""
 
 #:
@@ -52411,7 +52391,7 @@ msgstr ""
 #:
 src/www/system_gateway_groups_edit.php
 313
-msgid "The virtual IP field selects what (virtual) IP should be used when this group applies to a local Dynamic DNS, IPsec or OpenVPN endpoint") ?>
+msgid "The virtual IP field selects what (virtual) IP should be used when this group applies to a local Dynamic DNS, IPsec or OpenVPN endpoint"?>
 msgstr ""
 
 #:
@@ -53516,14 +53496,14 @@ msgstr ""
 #:
 src/www/system_routes.php
 40
-msgid "Static Routes") . "
+msgid "Static Routes" "
 ";
 msgstr ""
 
 #:
 src/www/system_routes.php
 101
-msgid "removed route to") . " " . $a_routes[$_GET['id']]['network'];
+msgid "removed route to" " " . $a_routes[$_GET['id']]['network'];
 msgstr ""
 
 #:
@@ -53535,13 +53515,13 @@ msgstr ""
 #:
 src/www/system_routes.php
 128
-msgid "enabled route to") . " " . $a_routes[$id]['network'];
+msgid "enabled route to" " " . $a_routes[$id]['network'];
 msgstr ""
 
 #:
 src/www/system_routes.php
 132
-msgid "disabled route to") . " " . $a_routes[$id]['network'];
+msgid "disabled route to" " " . $a_routes[$id]['network'];
 msgstr ""
 
 #:
@@ -53668,13 +53648,13 @@ msgstr ""
 #:
 src/www/system_routes_edit.php
 73
-msgid "Destination network") . "," .
+msgid "Destination network" "," .
 msgstr ""
 
 #:
 src/www/system_routes_edit.php
 74
-msgid "Destination network bit count") . "," .
+msgid "Destination network bit count" "," .
 msgstr ""
 
 #:
@@ -53716,7 +53696,7 @@ msgstr ""
 #:
 src/www/system_routes_edit.php
 143
-msgid "A route to these destination networks already exists") . "
+msgid "A route to these destination networks already exists" "
 " . implode(", ", $overlaps);
 msgstr ""
 
@@ -54030,7 +54010,7 @@ msgstr ""
 #:
 src/www/system_usermanager.php
 242
-msgid "Invalid internal Certificate Authority") . "n";
+msgid "Invalid internal Certificate Authority" "n";
 msgstr ""
 
 #:
@@ -54455,7 +54435,7 @@ msgstr ""
 #:
 src/www/system_usermanager_passwordmg.php
 57
-msgid "Password successfully changed") . "<br />";
+msgid "Password successfully changed" "<br />";
 msgstr ""
 
 #:
@@ -54509,7 +54489,7 @@ msgstr ""
 #:
 src/www/system_usermanager_settings.php
 87
-msgid "Popup blocker detected.  Action aborted.") ."";n";
+msgid "Popup blocker detected.  Action aborted.""";n";
 msgstr ""
 
 #:
@@ -54613,43 +54593,43 @@ msgstr ""
 #:
 src/www/system_usermanager_settings_test.php
 53
-msgid "Attempting connection to") . " " . $authserver . "</td>";
+msgid "Attempting connection to" " " . $authserver . "</td>";
 msgstr ""
 
 #:
 src/www/system_usermanager_settings_test.php
 57
-msgid "Attempting bind to") . " " .  $authserver . "</td>";
+msgid "Attempting bind to" " " .  $authserver . "</td>";
 msgstr ""
 
 #:
 src/www/system_usermanager_settings_test.php
 61
-msgid "Attempting to fetch Organizational Units from") . " " . $authserver . "</td>";
+msgid "Attempting to fetch Organizational Units from" " " . $authserver . "</td>";
 msgstr ""
 
 #:
 src/www/system_usermanager_settings_test.php
 66
-msgid "Organization units found") . "</td></tr>";
+msgid "Organization units found" "</td></tr>";
 msgstr ""
 
 #:
 src/www/system_usermanager_settings_test.php
 72
-msgid "failed") . "</font></td></tr>";
+msgid "failed" "</font></td></tr>";
 msgstr ""
 
 #:
 src/www/system_usermanager_settings_test.php
 75
-msgid "failed") . "</font></td></tr>";
+msgid "failed" "</font></td></tr>";
 msgstr ""
 
 #:
 src/www/system_usermanager_settings_test.php
 78
-msgid "failed") . "</font></td></tr>";
+msgid "failed" "</font></td></tr>";
 msgstr ""
 
 #:
@@ -54716,19 +54696,19 @@ msgstr ""
 #:
 src/www/vpn_ipsec.php
 311
-msgid "Mobile Client") . "</strong>";
+msgid "Mobile Client" "</strong>";
 msgstr ""
 
 #:
 src/www/vpn_ipsec.php
 326
-msgid "auto") . ")";
+msgid "auto" ")";
 msgstr ""
 
 #:
 src/www/vpn_ipsec.php
 328
-msgid "bits") . ")";
+msgid "bits" ")";
 msgstr ""
 
 #:
@@ -54818,13 +54798,13 @@ msgstr ""
 #:
 src/www/vpn_ipsec.php
 493
-msgid "auto") . ")";
+msgid "auto" ")";
 msgstr ""
 
 #:
 src/www/vpn_ipsec.php
 495
-msgid "bits") . ")";
+msgid "bits" ")";
 msgstr ""
 
 #:
@@ -56884,7 +56864,7 @@ msgstr ""
 src/www/vpn_l2tp_users.php
 87
 msgid "Warning
-this will terminate all current l2tp sessions!") . "</b>");?>
+this will terminate all current l2tp sessions!" "</b>");?>
 msgstr ""
 
 #:
@@ -60253,25 +60233,25 @@ msgstr ""
 #:
 src/www/widgets/widgets/services_status.widget.php
 87
-msgid "No services found") . " . </td></tr>n";
+msgid "No services found" " . </td></tr>n";
 msgstr ""
 
 #:
 src/www/widgets/widgets/smart_status.widget.php
 39
-msgid "Drive") ?></b></td>
+msgid "Drive"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/smart_status.widget.php
 40
-msgid "Ident") ?></b></td>
+msgid "Ident"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/smart_status.widget.php
 41
-msgid "SMART Status") ?></b></td>
+msgid "SMART Status"?></b></td>
 msgstr ""
 
 #:
@@ -60434,43 +60414,43 @@ msgstr ""
 #:
 src/www/widgets/widgets/wake_on_lan.widget.php
 43
-msgid "Computer / Device") . '</td>';
+msgid "Computer / Device" '</td>';
 msgstr ""
 
 #:
 src/www/widgets/widgets/wake_on_lan.widget.php
 44
-msgid "Interface") . '</td>';
+msgid "Interface" '</td>';
 msgstr ""
 
 #:
 src/www/widgets/widgets/wake_on_lan.widget.php
 45
-msgid "Status") . '</td>';
+msgid "Status" '</td>';
 msgstr ""
 
 #:
 src/www/widgets/widgets/wake_on_lan.widget.php
 59
-msgid "Online") . "</td>n";
+msgid "Online" "</td>n";
 msgstr ""
 
 #:
 src/www/widgets/widgets/wake_on_lan.widget.php
 62
-msgid "Offline") . "</td>n";
+msgid "Offline" "</td>n";
 msgstr ""
 
 #:
 src/www/widgets/widgets/wake_on_lan.widget.php
 69
-msgid "Wake Up") . "' border='0' alt='wol' ></span></a>n";
+msgid "Wake Up" "' border='0' alt='wol' ></span></a>n";
 msgstr ""
 
 #:
 src/www/widgets/widgets/wake_on_lan.widget.php
 74
-msgid "No saved WoL addresses") . ".</td></tr>n";
+msgid "No saved WoL addresses"
 msgstr ""
 
 #:
