@@ -1101,34 +1101,26 @@ msgstr ""
 msgid "User distinguished name"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-52
-msgid "ASN.1 distinguished Name" 'mobile' => true 
+#: src/etc/inc/ipsec.inc:52
+msgid "ASN.1 distinguished Name"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-53
-msgid "KeyID tag" 'mobile' => true 
+#: src/etc/inc/ipsec.inc:53
+msgid "KeyID tag"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-301
+#: src/etc/inc/ipsec.inc:301
 msgid "Mobile Client"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-304
+#: src/etc/inc/ipsec.inc:304
 msgid "None"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-608
-msgid "IPsec daemon seems to have issues or not running! Could not display mobile user stats!"
+#: src/etc/inc/ipsec.inc:608
+msgid ""
+"IPsec daemon seems to have issues or not running! "
+"Could not display mobile user stats!"
 msgstr ""
 
 #:
