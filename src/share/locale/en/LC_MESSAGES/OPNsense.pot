@@ -894,314 +894,217 @@ msgstr ""
 msgid "Creating wireless clone interfaces..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-415
-msgid "done." "n";
+#: src/etc/inc/interfaces.inc:415
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-462
-msgid "No members found on %s"), $bridge['bridgeif']
+#: src/etc/inc/interfaces.inc:462
+msgid "No members found on %s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-548
+#: src/etc/inc/interfaces.inc:548
 msgid "realif not defined in interfaces bridge - up"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-662
+#: src/etc/inc/interfaces.inc:662
 msgid "bridgeif not defined -- could not bring interface up"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-710
+#: src/etc/inc/interfaces.inc:710
 msgid "Configuring LAGG interfaces..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-724
-msgid "done." "n";
+#: src/etc/inc/interfaces.inc:724
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-879
+#: src/etc/inc/interfaces.inc:879
 msgid "Could not bring greif up -- variable not defined."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-950
-msgid "could not bring realif up -- variable not defined -- interface_gif_configure()"
+#: src/etc/inc/interfaces.inc:950
+msgid ""
+"could not bring realif up -- variable not defined -- interface_gif_configure()"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-975
+#: src/etc/inc/interfaces.inc:975
 msgid "could not bring gifif up -- variable not defined"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1056
-msgid "Configuring %s interface..."), $ifname);
+#: src/etc/inc/interfaces.inc:1056
+msgid "Configuring %s interface..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1060
-msgid " "done." "n";
+#: src/etc/inc/interfaces.inc:1060
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1081
-msgid "Configuring %s interface..."), $ifname);
+#: src/etc/inc/interfaces.inc:1081
+msgid "Configuring %s interface..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1086
-msgid "done." "n";
+#: src/etc/inc/interfaces.inc:1086
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1100
-msgid "Configuring %s interface..."), $ifname);
+#: src/etc/inc/interfaces.inc:1100
+msgid "Configuring %s interface..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1105
-msgid "done." "n";
+#: src/etc/inc/interfaces.inc:1105
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1113
-msgid "Configuring %s interface..."), $ifname);
+#: src/etc/inc/interfaces.inc:1113
+msgid "Configuring %s interface..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1118
-msgid "done." "n";
+#: src/etc/inc/interfaces.inc:1118
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1191
+#: src/etc/inc/interfaces.inc:1191
 msgid "Wrong parameters used during interface_bring_down"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1503
-msgid "Can't find PPP config for %s in interface_ppps_configure()."), $ifcfg['if']
+#: src/etc/inc/interfaces.inc:1503
+msgid "Can't find PPP config for %s in interface_ppps_configure()."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1560
-msgid "Could not get a PPTP/L2TP Remote IP address from %1$s for %2$s in interfaces_ppps_configure." $dhcp_gateway, $gway
+#: src/etc/inc/interfaces.inc:1560
+msgid ""
+"Could not get a PPTP/L2TP Remote IP address from "
+"%1$s for %2$s in interfaces_ppps_configure."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1567
-msgid "Device %s does not exist. PPP link cannot start without the modem device."), $port
+#: src/etc/inc/interfaces.inc:1567
+msgid "Device %s does not exist. PPP link cannot start without the modem device."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1572
-msgid "Unkown %s configured as ppp interface."), $type
+#: src/etc/inc/interfaces.inc:1572
+msgid "Unkown %s configured as ppp interface."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1844
-msgid "Error
-cannot open mpd_%s.conf in interface_ppps_configure().%s"), $interface, "n"
+#: src/etc/inc/interfaces.inc:1844
+msgid "Error cannot open mpd_%s.conf in interface_ppps_configure().%s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1921
+#: src/etc/inc/interfaces.inc:1921
 msgid "Configuring CARP settings..."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-1978
-msgid "done." "n";
+#: src/etc/inc/interfaces.inc:1978
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2159
-msgid "Interface specified for the virtual IP address %s does not exist. Skipping this VIP."), $vip['subnet']), "Firewall
-Virtual IP", ""
+#: src/etc/inc/interfaces.inc:2159
+msgid ""
+"Interface specified for the virtual IP address %s does not exist. "
+"Skipping this VIP."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2167
-msgid "Sorry but we could not find a required assigned ip address on the interface for the virtual IP address %s."), $vip['subnet']), "Firewall
-Virtual IP", ""
+#: src/etc/inc/interfaces.inc:2167
+msgid ""
+"Sorry but we could not find a required assigned ip address on the "
+"interface for the virtual IP address %s."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2174
-msgid "Sorry but we could not find a required assigned ip address on the interface for the virtual IPv6 address %s."), $vip['subnet']), "Firewall
-Virtual IP", ""
+#: src/etc/inc/interfaces.inc:2174
+msgid ""
+"Sorry but we could not find a required assigned ip address on the "
+"interface for the virtual IPv6 address %s."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2230
-msgid "Interface %s changed to hostap mode"), $realif
+#: src/etc/inc/interfaces.inc:2230
+msgid "Interface %s changed to hostap mode"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2234
-msgid "Interface %s changed to adhoc mode"), $realif
+#: src/etc/inc/interfaces.inc:2234
+msgid "Interface %s changed to adhoc mode"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2238
-msgid "Interface %s changed to infrastructure mode"), $realif
+#: src/etc/inc/interfaces.inc:2238
+msgid "Interface %s changed to infrastructure mode"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2250
-msgid "Cloning new wireless interface %s"), $realif
+#: src/etc/inc/interfaces.inc:2250
+msgid "Cloning new wireless interface %s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2255
-msgid "Failed to clone interface %1$s with error code %2$s, output %3$s" $baseif, $ret, $out[0]
+#: src/etc/inc/interfaces.inc:2255
+msgid ""
+"Failed to clone interface %1$s with error code %2$s, output %3$s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2974
+#: src/etc/inc/interfaces.inc:2974
 msgid "Generating new MAC address."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-2980
-msgid "The INVALID MAC address (ff
-ff
-ff
-ff
-ff
-ff) on interface %1$s has been automatically replaced with %2$s" $realif, $random_mac), "Interfaces"
+#: src/etc/inc/interfaces.inc:2980
+msgid "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %1$s has been automatically replaced with %2$s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-3807
-msgid "Error
-cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s"), $interface, "n"
+#: src/etc/inc/interfaces.inc:3807
+msgid ""
+"Error cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-3820
-msgid "Invalid interface "%s" in interface_dhcp_configure()"), $interface
+#: src/etc/inc/interfaces.inc:3820
+msgid "Invalid interface "%s" in interface_dhcp_configure()"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-3872
+#: src/etc/inc/interfaces.inc:3872
 msgid "Could not bring up %s interface in interface_dhcp_configure()"), $wanif
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-39
-msgid "My IP address" 'mobile' => true ),
+#: src/etc/inc/ipsec.inc:39
+msgid "My IP address"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-40
-msgid "IP address" 'mobile' => true ),
+#: src/etc/inc/ipsec.inc:40
+msgid "IP address"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-41
-msgid "Distinguished name" 'mobile' => true ),
+#: src/etc/inc/ipsec.inc:41
+msgid "Distinguished name"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-42
-msgid "User distinguished name" 'mobile' => true ),
+#: src/etc/inc/ipsec.inc:42
+msgid "User distinguished name"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-43
-msgid "ASN.1 distinguished Name" 'mobile' => true ),
+#: src/etc/inc/ipsec.inc:43
+msgid "ASN.1 distinguished Name"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-44
-msgid "KeyID tag" 'mobile' => true ),
+#: src/etc/inc/ipsec.inc:44
+msgid "KeyID tag"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-45
-msgid "Dynamic DNS" 'mobile' => true 
+#: src/etc/inc/ipsec.inc:45
+msgid "Dynamic DNS"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-48
-msgid "Peer IP address" 'mobile' => false ),
+#: src/etc/inc/ipsec.inc:48
+msgid "Peer IP address"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-49
-msgid "IP address" 'mobile' => false ),
+#: src/etc/inc/ipsec.inc:49
+msgid "IP address"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-50
-msgid "Distinguished name" 'mobile' => true ),
+#: src/etc/inc/ipsec.inc:50
+msgid "Distinguished name"
 msgstr ""
 
-#:
-src/etc/inc/ipsec.inc
-51
-msgid "User distinguished name" 'mobile' => true ),
+#: src/etc/inc/ipsec.inc:51
+msgid "User distinguished name"
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 52
-msgid "ASN.1 distinguished Name" 'mobile' => true ),
+msgid "ASN.1 distinguished Name" 'mobile' => true 
 msgstr ""
 
 #:
@@ -1304,25 +1207,25 @@ msgstr ""
 #:
 src/etc/inc/openvpn.inc
 87
-msgid "Peer to Peer ( SSL/TLS )"),
+msgid "Peer to Peer ( SSL/TLS )"
 msgstr ""
 
 #:
 src/etc/inc/openvpn.inc
 88
-msgid "Peer to Peer ( Shared Key )"),
+msgid "Peer to Peer ( Shared Key )"
 msgstr ""
 
 #:
 src/etc/inc/openvpn.inc
 89
-msgid "Remote Access ( SSL/TLS )"),
+msgid "Remote Access ( SSL/TLS )"
 msgstr ""
 
 #:
 src/etc/inc/openvpn.inc
 90
-msgid "Remote Access ( User Auth )"),
+msgid "Remote Access ( User Auth )"
 msgstr ""
 
 #:
@@ -1334,7 +1237,7 @@ msgstr ""
 #:
 src/etc/inc/openvpn.inc
 95
-msgid "Peer to Peer ( SSL/TLS )"),
+msgid "Peer to Peer ( SSL/TLS )"
 msgstr ""
 
 #:
@@ -1346,19 +1249,19 @@ msgstr ""
 #:
 src/etc/inc/openvpn.inc
 100
-msgid "No Preference"),
+msgid "No Preference"
 msgstr ""
 
 #:
 src/etc/inc/openvpn.inc
 101
-msgid "Disabled - No Compression"),
+msgid "Disabled - No Compression"
 msgstr ""
 
 #:
 src/etc/inc/openvpn.inc
 102
-msgid "Enabled with Adaptive Compression"),
+msgid "Enabled with Adaptive Compression"
 msgstr ""
 
 #:
@@ -1579,163 +1482,163 @@ msgstr ""
 #:
 src/etc/inc/pfsense-utils.inc
 2550
-msgid "Albanian")),
+msgid "Albanian")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2551
-msgid "Bulgarian")),
+msgid "Bulgarian")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2552
-msgid "Chinese (Simplified)")),
+msgid "Chinese (Simplified)")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2553
-msgid "Chinese (Traditional)")),
+msgid "Chinese (Traditional)")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2554
-msgid "Dutch")),
+msgid "Dutch")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2555
-msgid "Danish")),
+msgid "Danish")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2556
-msgid "English")),
+msgid "English")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2557
-msgid "Finnish")),
+msgid "Finnish")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2558
-msgid "French")),
+msgid "French")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2559
-msgid "German")),
+msgid "German")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2560
-msgid "Greek")),
+msgid "Greek")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2561
-msgid "Hungarian")),
+msgid "Hungarian")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2562
-msgid "Italian")),
+msgid "Italian")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2563
-msgid "Japanese")),
+msgid "Japanese")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2564
-msgid "Korean")),
+msgid "Korean")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2565
-msgid "Latvian")),
+msgid "Latvian")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2566
-msgid "Norwegian (Bokmal)")),
+msgid "Norwegian (Bokmal)")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2567
-msgid "Polish")),
+msgid "Polish")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2568
-msgid "Portuguese (Brazil)")),
+msgid "Portuguese (Brazil)")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2569
-msgid "Portuguese (Portugal)")),
+msgid "Portuguese (Portugal)")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2570
-msgid "Romanian")),
+msgid "Romanian")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2571
-msgid "Russian")),
+msgid "Russian")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2572
-msgid "Slovenian")),
+msgid "Slovenian")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2573
-msgid "Turkish")),
+msgid "Turkish")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2574
-msgid "Spanish")),
+msgid "Spanish")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2575
-msgid "Swedish")),
+msgid "Swedish")
 msgstr ""
 
 #:
 src/etc/inc/pfsense-utils.inc
 2576
-msgid "Slovak")),
+msgid "Slovak")
 msgstr ""
 
 #:
@@ -8348,45 +8251,45 @@ msgstr ""
 #:
 src/etc/inc/xmlrpc_client.inc
 152
-msgid "Unknown method"),
+msgid "Unknown method"
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 153
 msgid "Invalid return payload
-enable debugging to examine incoming payload"),
+enable debugging to examine incoming payload"
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 154
-msgid "Incorrect parameters passed to method"),
+msgid "Incorrect parameters passed to method"
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 155
 msgid "Can't introspect
-method unknown"),
+method unknown"
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 156
-msgid "Didn't receive 200 OK from remote server."),
+msgid "Didn't receive 200 OK from remote server."
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 157
-msgid "The requested method didn't return an XML_RPC_Response object."),
+msgid "The requested method didn't return an XML_RPC_Response object."
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 158
-msgid "Invalid request payload"),
+msgid "Invalid request payload"
 msgstr ""
 
 #:
@@ -8463,19 +8366,19 @@ msgstr ""
 #:
 src/etc/inc/xmlrpc_client.inc
 1600
-msgid "Not a scalar type (%s)"), $typeof),
+msgid "Not a scalar type (%s)"), $typeof
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 1636
-msgid "Already initialized as a [%s]" $this->kindOf()),
+msgid "Already initialized as a [%s]" $this->kindOf()
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 1652
-msgid "Already initialized as a [%s]" $this->kindOf()),
+msgid "Already initialized as a [%s]" $this->kindOf()
 msgstr ""
 
 #:
@@ -8530,7 +8433,7 @@ msgstr ""
 src/etc/rc.initial.setlanip
 263
 msgid "Enter the new %s %s address.  Press <ENTER> for none
-"),
+"
 msgstr ""
 
 #:
@@ -8542,14 +8445,14 @@ msgstr ""
 #:
 src/etc/rc.initial.setlanip
 274
-msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."),
+msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
 msgstr ""
 
 #:
 src/etc/rc.initial.setlanip
 289
 msgid "Enter the new %s %s subnet bit count (1 to %s)
-"),
+"
 msgstr ""
 
 #:
@@ -8649,25 +8552,25 @@ msgstr ""
 #:
 src/etc/rc.initial.setlanip
 470
-msgid "The IPv4 %s address has been set to %s"),
+msgid "The IPv4 %s address has been set to %s"
 msgstr ""
 
 #:
 src/etc/rc.initial.setlanip
 473
-msgid "The IPv4 %s address has been set to %s"),
+msgid "The IPv4 %s address has been set to %s"
 msgstr ""
 
 #:
 src/etc/rc.initial.setlanip
 479
-msgid "The IPv6 %s address has been set to %s"),
+msgid "The IPv6 %s address has been set to %s"
 msgstr ""
 
 #:
 src/etc/rc.initial.setlanip
 482
-msgid "The IPv6 %s address has been set to %s"),
+msgid "The IPv6 %s address has been set to %s"
 msgstr ""
 
 #:
@@ -8858,7 +8761,7 @@ src/sbin/gmirror_status_check.php
 70
 msgid "Mirror %s drive status changed. Old
 (%s) New
-(%s)"),
+(%s)"
 msgstr ""
 
 #:
@@ -10378,37 +10281,37 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1089
-msgid "My IP address" 'mobile' => true ),
+msgid "My IP address" 'mobile' => true 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1093
-msgid "IP address" 'mobile' => true ),
+msgid "IP address" 'mobile' => true 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1097
-msgid "Distinguished name" 'mobile' => true ),
+msgid "Distinguished name" 'mobile' => true 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1101
-msgid "User distinguished name" 'mobile' => true ),
+msgid "User distinguished name" 'mobile' => true 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1105
-msgid "ASN.1 distinguished Name" 'mobile' => true ),
+msgid "ASN.1 distinguished Name" 'mobile' => true 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1109
-msgid "KeyID tag" 'mobile' => true ),
+msgid "KeyID tag" 'mobile' => true 
 msgstr ""
 
 #:
@@ -10420,31 +10323,31 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1117
-msgid "Peer IP address" 'mobile' => false ),
+msgid "Peer IP address" 'mobile' => false 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1121
-msgid "IP address" 'mobile' => false ),
+msgid "IP address" 'mobile' => false 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1125
-msgid "Distinguished name" 'mobile' => true ),
+msgid "Distinguished name" 'mobile' => true 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1129
-msgid "User distinguished name" 'mobile' => true ),
+msgid "User distinguished name" 'mobile' => true 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1133
-msgid "ASN.1 distinguished Name" 'mobile' => true ),
+msgid "ASN.1 distinguished Name" 'mobile' => true 
 msgstr ""
 
 #:
@@ -10540,25 +10443,25 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1204
-msgid "Peer to Peer ( SSL/TLS )"),
+msgid "Peer to Peer ( SSL/TLS )"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1208
-msgid "Peer to Peer ( Shared Key )"),
+msgid "Peer to Peer ( Shared Key )"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1212
-msgid "Remote Access ( SSL/TLS )"),
+msgid "Remote Access ( SSL/TLS )"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1216
-msgid "Remote Access ( User Auth )"),
+msgid "Remote Access ( User Auth )"
 msgstr ""
 
 #:
@@ -10570,7 +10473,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1224
-msgid "Peer to Peer ( SSL/TLS )"),
+msgid "Peer to Peer ( SSL/TLS )"
 msgstr ""
 
 #:
@@ -10582,19 +10485,19 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1232
-msgid "No Preference"),
+msgid "No Preference"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1236
-msgid "Disabled - No Compression"),
+msgid "Disabled - No Compression"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1240
-msgid "Enabled with Adaptive Compression"),
+msgid "Enabled with Adaptive Compression"
 msgstr ""
 
 #:
@@ -10810,163 +10713,163 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1389
-msgid "Albanian")),
+msgid "Albanian")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1393
-msgid "Bulgarian")),
+msgid "Bulgarian")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1397
-msgid "Chinese (Simplified)")),
+msgid "Chinese (Simplified)")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1401
-msgid "Chinese (Traditional)")),
+msgid "Chinese (Traditional)")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1405
-msgid "Dutch")),
+msgid "Dutch")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1409
-msgid "Danish")),
+msgid "Danish")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1413
-msgid "English")),
+msgid "English")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1417
-msgid "Finnish")),
+msgid "Finnish")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1421
-msgid "French")),
+msgid "French")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1425
-msgid "German")),
+msgid "German")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1429
-msgid "Greek")),
+msgid "Greek")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1433
-msgid "Hungarian")),
+msgid "Hungarian")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1437
-msgid "Italian")),
+msgid "Italian")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1441
-msgid "Japanese")),
+msgid "Japanese")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1445
-msgid "Korean")),
+msgid "Korean")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1449
-msgid "Latvian")),
+msgid "Latvian")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1453
-msgid "Norwegian (Bokmal)")),
+msgid "Norwegian (Bokmal)")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1457
-msgid "Polish")),
+msgid "Polish")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1461
-msgid "Portuguese (Brazil)")),
+msgid "Portuguese (Brazil)")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1465
-msgid "Portuguese (Portugal)")),
+msgid "Portuguese (Portugal)")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1469
-msgid "Romanian")),
+msgid "Romanian")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1473
-msgid "Russian")),
+msgid "Russian")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1477
-msgid "Slovenian")),
+msgid "Slovenian")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1481
-msgid "Turkish")),
+msgid "Turkish")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1485
-msgid "Spanish")),
+msgid "Spanish")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1489
-msgid "Swedish")),
+msgid "Swedish")
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1493
-msgid "Slovak")),
+msgid "Slovak")
 msgstr ""
 
 #:
@@ -16804,7 +16707,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6162
-msgid "Unknown method"),
+msgid "Unknown method"
 msgstr ""
 
 #:
@@ -16816,7 +16719,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6171
-msgid "Incorrect parameters passed to method"),
+msgid "Incorrect parameters passed to method"
 msgstr ""
 
 #:
@@ -16828,19 +16731,19 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6180
-msgid "Didn't receive 200 OK from remote server."),
+msgid "Didn't receive 200 OK from remote server."
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6184
-msgid "The requested method didn't return an XML_RPC_Response object."),
+msgid "The requested method didn't return an XML_RPC_Response object."
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6188
-msgid "Invalid request payload"),
+msgid "Invalid request payload"
 msgstr ""
 
 #:
@@ -16912,19 +16815,19 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6239
-msgid "Not a scalar type (%s)"), $typeof),
+msgid "Not a scalar type (%s)"), $typeof
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6243
-msgid "Already initialized as a [%s]" $this->kindOf()),
+msgid "Already initialized as a [%s]" $this->kindOf()
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6247
-msgid "Already initialized as a [%s]" $this->kindOf()),
+msgid "Already initialized as a [%s]" $this->kindOf()
 msgstr ""
 
 #:
@@ -17254,133 +17157,133 @@ msgstr ""
 #:
 src/www/diag_backup.php
 166
-msgid "Aliases"),
+msgid "Aliases"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 167
-msgid "Captive Portal"),
+msgid "Captive Portal"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 168
-msgid "Captive Portal Vouchers"),
+msgid "Captive Portal Vouchers"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 169
-msgid "DNS Forwarder"),
+msgid "DNS Forwarder"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 170
-msgid "DHCP Server"),
+msgid "DHCP Server"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 171
-msgid "DHCPv6 Server"),
+msgid "DHCPv6 Server"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 172
-msgid "Firewall Rules"),
+msgid "Firewall Rules"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 173
-msgid "Interfaces"),
+msgid "Interfaces"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 174
-msgid "IPSEC"),
+msgid "IPSEC"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 175
-msgid "NAT"),
+msgid "NAT"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 176
-msgid "OpenVPN"),
+msgid "OpenVPN"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 177
-msgid "Package Manager"),
+msgid "Package Manager"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 178
-msgid "PPTP Server"),
+msgid "PPTP Server"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 179
-msgid "RRD Data"),
+msgid "RRD Data"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 180
-msgid "Scheduled Tasks"),
+msgid "Scheduled Tasks"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 181
-msgid "Syslog"),
+msgid "Syslog"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 182
-msgid "System"),
+msgid "System"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 183
-msgid "Static routes"),
+msgid "Static routes"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 184
-msgid "System tunables"),
+msgid "System tunables"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 185
-msgid "SNMP Server"),
+msgid "SNMP Server"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 186
-msgid "Traffic Shaper"),
+msgid "Traffic Shaper"
 msgstr ""
 
 #:
 src/www/diag_backup.php
 187
-msgid "VLANS"),
+msgid "VLANS"
 msgstr ""
 
 #:
@@ -18307,43 +18210,43 @@ msgstr ""
 #:
 src/www/diag_gmirror.php
 45
-msgid "Forget all formerly connected consumers"),
+msgid "Forget all formerly connected consumers"
 msgstr ""
 
 #:
 src/www/diag_gmirror.php
 46
-msgid "Remove metadata from disk"),
+msgid "Remove metadata from disk"
 msgstr ""
 
 #:
 src/www/diag_gmirror.php
 47
-msgid "Insert consumer into mirror"),
+msgid "Insert consumer into mirror"
 msgstr ""
 
 #:
 src/www/diag_gmirror.php
 48
-msgid "Remove consumer from mirror"),
+msgid "Remove consumer from mirror"
 msgstr ""
 
 #:
 src/www/diag_gmirror.php
 49
-msgid "Reactivate consumer on mirror"),
+msgid "Reactivate consumer on mirror"
 msgstr ""
 
 #:
 src/www/diag_gmirror.php
 50
-msgid "Deactivate consumer from mirror"),
+msgid "Deactivate consumer from mirror"
 msgstr ""
 
 #:
 src/www/diag_gmirror.php
 51
-msgid "Force rebuild of mirror consumer"),
+msgid "Force rebuild of mirror consumer"
 msgstr ""
 
 #:
@@ -19258,37 +19161,37 @@ msgstr ""
 #:
 src/www/diag_logs_filter_summary.php
 41
-msgid "Actions"),
+msgid "Actions"
 msgstr ""
 
 #:
 src/www/diag_logs_filter_summary.php
 42
-msgid "Interfaces"),
+msgid "Interfaces"
 msgstr ""
 
 #:
 src/www/diag_logs_filter_summary.php
 43
-msgid "Protocols"),
+msgid "Protocols"
 msgstr ""
 
 #:
 src/www/diag_logs_filter_summary.php
 44
-msgid "Source IPs"),
+msgid "Source IPs"
 msgstr ""
 
 #:
 src/www/diag_logs_filter_summary.php
 45
-msgid "Destination IPs"),
+msgid "Destination IPs"
 msgstr ""
 
 #:
 src/www/diag_logs_filter_summary.php
 46
-msgid "Source Ports"),
+msgid "Source Ports"
 msgstr ""
 
 #:
@@ -19397,37 +19300,37 @@ msgstr ""
 #:
 src/www/diag_logs_pills.php
 33
-msgid "PPTP Logins"),
+msgid "PPTP Logins"
 msgstr ""
 
 #:
 src/www/diag_logs_pills.php
 36
-msgid "PPTP Raw"),
+msgid "PPTP Raw"
 msgstr ""
 
 #:
 src/www/diag_logs_pills.php
 39
-msgid "PPPoE Logins"),
+msgid "PPPoE Logins"
 msgstr ""
 
 #:
 src/www/diag_logs_pills.php
 42
-msgid "PPPoE Raw"),
+msgid "PPPoE Raw"
 msgstr ""
 
 #:
 src/www/diag_logs_pills.php
 45
-msgid "L2TP Logins"),
+msgid "L2TP Logins"
 msgstr ""
 
 #:
 src/www/diag_logs_pills.php
 48
-msgid "L2TP Raw"),
+msgid "L2TP Raw"
 msgstr ""
 
 #:
@@ -22355,13 +22258,13 @@ msgstr ""
 #:
 src/www/firewall_aliases.php
 148
-msgid "Add a new alias")),
+msgid "Add a new alias")
 msgstr ""
 
 #:
 src/www/firewall_aliases.php
 149
-msgid "Bulk import aliases from list")),
+msgid "Bulk import aliases from list")
 msgstr ""
 
 #:
@@ -25396,97 +25299,97 @@ msgstr ""
 #:
 src/www/firewall_rules.php
 117
-msgid "any"),
+msgid "any"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 118
-msgid "Echo request"),
+msgid "Echo request"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 119
-msgid "Echo reply"),
+msgid "Echo reply"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 120
-msgid "Destination unreachable"),
+msgid "Destination unreachable"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 121
-msgid "Source quench"),
+msgid "Source quench"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 122
-msgid "Redirect"),
+msgid "Redirect"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 123
-msgid "Alternate Host"),
+msgid "Alternate Host"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 124
-msgid "Router advertisement"),
+msgid "Router advertisement"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 125
-msgid "Router solicitation"),
+msgid "Router solicitation"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 126
-msgid "Time exceeded"),
+msgid "Time exceeded"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 127
-msgid "Invalid IP header"),
+msgid "Invalid IP header"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 128
-msgid "Timestamp"),
+msgid "Timestamp"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 129
-msgid "Timestamp reply"),
+msgid "Timestamp reply"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 130
-msgid "Information request"),
+msgid "Information request"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 131
-msgid "Information reply"),
+msgid "Information reply"
 msgstr ""
 
 #:
 src/www/firewall_rules.php
 132
-msgid "Address mask request"),
+msgid "Address mask request"
 msgstr ""
 
 #:
@@ -26379,97 +26282,97 @@ msgstr ""
 #:
 src/www/firewall_rules_edit.php
 985
-msgid "any"),
+msgid "any"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 986
-msgid "Echo request"),
+msgid "Echo request"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 987
-msgid "Echo reply"),
+msgid "Echo reply"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 988
-msgid "Destination unreachable"),
+msgid "Destination unreachable"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 989
-msgid "Source quench"),
+msgid "Source quench"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 990
-msgid "Redirect"),
+msgid "Redirect"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 991
-msgid "Alternate Host"),
+msgid "Alternate Host"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 992
-msgid "Router advertisement"),
+msgid "Router advertisement"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 993
-msgid "Router solicitation"),
+msgid "Router solicitation"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 994
-msgid "Time exceeded"),
+msgid "Time exceeded"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 995
-msgid "Invalid IP header"),
+msgid "Invalid IP header"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 996
-msgid "Timestamp"),
+msgid "Timestamp"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 997
-msgid "Timestamp reply"),
+msgid "Timestamp reply"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 998
-msgid "Information request"),
+msgid "Information request"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 999
-msgid "Information reply"),
+msgid "Information reply"
 msgstr ""
 
 #:
 src/www/firewall_rules_edit.php
 1000
-msgid "Address mask request"),
+msgid "Address mask request"
 msgstr ""
 
 #:
@@ -32444,7 +32347,7 @@ msgstr ""
 #:
 src/www/interfaces_groups.php
 58
-msgid "Add a new group")),
+msgid "Add a new group")
 msgstr ""
 
 #:
@@ -37574,7 +37477,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_filemanager.php
 126
-msgid "add file" 'href'=>'services_captiveportal_filemanager.php?zone='.$cpzone.'&act=add'),
+msgid "add file" 'href'=>'services_captiveportal_filemanager.php?zone='.$cpzone.'&act=add'
 msgstr ""
 
 #:
@@ -38108,7 +38011,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_mac.php
 132
-msgid "add host"), 'href'=>'services_captiveportal_mac_edit.php?zone='.$cpzone),
+msgid "add host"), 'href'=>'services_captiveportal_mac_edit.php?zone='.$cpzone
 msgstr ""
 
 #:
@@ -38410,7 +38313,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_vouchers.php
 373
-msgid "add voucher"), 'href'=>'services_captiveportal_vouchers_edit.php?zone='.$cpzone),
+msgid "add voucher"), 'href'=>'services_captiveportal_vouchers_edit.php?zone='.$cpzone
 msgstr ""
 
 #:
@@ -38762,7 +38665,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_zones.php
 61
-msgid "add a new captiveportal instance")),
+msgid "add a new captiveportal instance")
 msgstr ""
 
 #:
@@ -46670,31 +46573,31 @@ msgstr ""
 #:
 src/www/status_rrd_graph_settings.php
 40
-msgid "System"),
+msgid "System"
 msgstr ""
 
 #:
 src/www/status_rrd_graph_settings.php
 41
-msgid "Traffic"),
+msgid "Traffic"
 msgstr ""
 
 #:
 src/www/status_rrd_graph_settings.php
 42
-msgid "Packets"),
+msgid "Packets"
 msgstr ""
 
 #:
 src/www/status_rrd_graph_settings.php
 43
-msgid "Quality"),
+msgid "Quality"
 msgstr ""
 
 #:
 src/www/status_rrd_graph_settings.php
 44
-msgid "Queues"),
+msgid "Queues"
 msgstr ""
 
 #:
@@ -46712,7 +46615,7 @@ msgstr ""
 #:
 src/www/status_rrd_graph_settings.php
 51
-msgid "Inverse"),
+msgid "Inverse"
 msgstr ""
 
 #:
@@ -46724,13 +46627,13 @@ msgstr ""
 #:
 src/www/status_rrd_graph_settings.php
 53
-msgid "Absolute Timespans"),
+msgid "Absolute Timespans"
 msgstr ""
 
 #:
 src/www/status_rrd_graph_settings.php
 54
-msgid "Current Period"),
+msgid "Current Period"
 msgstr ""
 
 #:
@@ -48223,7 +48126,7 @@ msgstr ""
 #:
 src/www/system_advanced_misc.php
 66
-msgid "AMD Geode LX Security Block"),
+msgid "AMD Geode LX Security Block"
 msgstr ""
 
 #:
@@ -48235,7 +48138,7 @@ msgstr ""
 #:
 src/www/system_advanced_misc.php
 69
-msgid "Intel Core* CPU on-die thermal sensor"),
+msgid "Intel Core* CPU on-die thermal sensor"
 msgstr ""
 
 #:
@@ -49435,61 +49338,61 @@ msgstr ""
 #:
 src/www/system_authservers.php
 154
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 155
-msgid "Type"),
+msgid "Type"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 156
-msgid "Hostname or IP"),
+msgid "Hostname or IP"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 157
-msgid "Port value"),
+msgid "Port value"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 158
-msgid "Transport"),
+msgid "Transport"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 159
-msgid "Protocol version"),
+msgid "Protocol version"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 160
-msgid "Search level"),
+msgid "Search level"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 161
-msgid "User naming Attribute"),
+msgid "User naming Attribute"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 162
-msgid "Group naming Attribute"),
+msgid "Group naming Attribute"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 163
-msgid "Group member attribute"),
+msgid "Group member attribute"
 msgstr ""
 
 #:
@@ -49513,19 +49416,19 @@ msgstr ""
 #:
 src/www/system_authservers.php
 177
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 178
-msgid "Type"),
+msgid "Type"
 msgstr ""
 
 #:
 src/www/system_authservers.php
 179
-msgid "Hostname or IP"),
+msgid "Hostname or IP"
 msgstr ""
 
 #:
@@ -49926,13 +49829,13 @@ msgstr ""
 #:
 src/www/system_camanager.php
 34
-msgid "Import an existing Certificate Authority"),
+msgid "Import an existing Certificate Authority"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 35
-msgid "Create an internal Certificate Authority"),
+msgid "Create an internal Certificate Authority"
 msgstr ""
 
 #:
@@ -49956,7 +49859,7 @@ msgstr ""
 #:
 src/www/system_camanager.php
 159
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
@@ -49980,49 +49883,49 @@ msgstr ""
 #:
 src/www/system_camanager.php
 171
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 172
-msgid "Key length"),
+msgid "Key length"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 173
-msgid "Lifetime"),
+msgid "Lifetime"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 174
-msgid "Distinguished name Country Code"),
+msgid "Distinguished name Country Code"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 175
-msgid "Distinguished name State or Province"),
+msgid "Distinguished name State or Province"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 176
-msgid "Distinguished name City"),
+msgid "Distinguished name City"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 177
-msgid "Distinguished name Organization"),
+msgid "Distinguished name Organization"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 178
-msgid "Distinguished name Email Address"),
+msgid "Distinguished name Email Address"
 msgstr ""
 
 #:
@@ -50034,55 +49937,55 @@ msgstr ""
 #:
 src/www/system_camanager.php
 186
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 187
-msgid "Signing Certificate Authority"),
+msgid "Signing Certificate Authority"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 188
-msgid "Key length"),
+msgid "Key length"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 189
-msgid "Lifetime"),
+msgid "Lifetime"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 190
-msgid "Distinguished name Country Code"),
+msgid "Distinguished name Country Code"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 191
-msgid "Distinguished name State or Province"),
+msgid "Distinguished name State or Province"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 192
-msgid "Distinguished name City"),
+msgid "Distinguished name City"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 193
-msgid "Distinguished name Organization"),
+msgid "Distinguished name Organization"
 msgstr ""
 
 #:
 src/www/system_camanager.php
 194
-msgid "Distinguished name Email Address"),
+msgid "Distinguished name Email Address"
 msgstr ""
 
 #:
@@ -50421,19 +50324,19 @@ msgstr ""
 #:
 src/www/system_certmanager.php
 34
-msgid "Import an existing Certificate"),
+msgid "Import an existing Certificate"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 35
-msgid "Create an internal Certificate"),
+msgid "Create an internal Certificate"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 36
-msgid "Create a Certificate Signing Request"),
+msgid "Create a Certificate Signing Request"
 msgstr ""
 
 #:
@@ -50463,13 +50366,13 @@ msgstr ""
 #:
 src/www/system_certmanager.php
 191
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 192
-msgid "Certificate data"),
+msgid "Certificate data"
 msgstr ""
 
 #:
@@ -50487,55 +50390,55 @@ msgstr ""
 #:
 src/www/system_certmanager.php
 203
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 204
-msgid "Certificate authority"),
+msgid "Certificate authority"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 205
-msgid "Key length"),
+msgid "Key length"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 206
-msgid "Lifetime"),
+msgid "Lifetime"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 207
-msgid "Distinguished name Country Code"),
+msgid "Distinguished name Country Code"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 208
-msgid "Distinguished name State or Province"),
+msgid "Distinguished name State or Province"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 209
-msgid "Distinguished name City"),
+msgid "Distinguished name City"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 210
-msgid "Distinguished name Organization"),
+msgid "Distinguished name Organization"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 211
-msgid "Distinguished name Email Address"),
+msgid "Distinguished name Email Address"
 msgstr ""
 
 #:
@@ -50547,43 +50450,43 @@ msgstr ""
 #:
 src/www/system_certmanager.php
 220
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 221
-msgid "Key length"),
+msgid "Key length"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 222
-msgid "Distinguished name Country Code"),
+msgid "Distinguished name Country Code"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 223
-msgid "Distinguished name State or Province"),
+msgid "Distinguished name State or Province"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 224
-msgid "Distinguished name City"),
+msgid "Distinguished name City"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 225
-msgid "Distinguished name Organization"),
+msgid "Distinguished name Organization"
 msgstr ""
 
 #:
 src/www/system_certmanager.php
 226
-msgid "Distinguished name Email Address"),
+msgid "Distinguished name Email Address"
 msgstr ""
 
 #:
@@ -50631,7 +50534,7 @@ msgstr ""
 #:
 src/www/system_certmanager.php
 404
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
@@ -51151,7 +51054,7 @@ msgstr ""
 #:
 src/www/system_crlmanager.php
 38
-msgid "Create an internal Certificate Revocation List"),
+msgid "Create an internal Certificate Revocation List"
 msgstr ""
 
 #:
@@ -51217,7 +51120,7 @@ msgstr ""
 #:
 src/www/system_crlmanager.php
 183
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
@@ -51229,7 +51132,7 @@ msgstr ""
 #:
 src/www/system_crlmanager.php
 190
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
@@ -52232,19 +52135,19 @@ msgstr ""
 #:
 src/www/system_gateway_groups_edit.php
 42
-msgid "Member Down"),
+msgid "Member Down"
 msgstr ""
 
 #:
 src/www/system_gateway_groups_edit.php
 43
-msgid "Packet Loss"),
+msgid "Packet Loss"
 msgstr ""
 
 #:
 src/www/system_gateway_groups_edit.php
 44
-msgid "High Latency"),
+msgid "High Latency"
 msgstr ""
 
 #:
@@ -53917,7 +53820,7 @@ msgstr ""
 #:
 src/www/system_usermanager.php
 171
-msgid "Username"),
+msgid "Username"
 msgstr ""
 
 #:
@@ -53929,31 +53832,31 @@ msgstr ""
 #:
 src/www/system_usermanager.php
 176
-msgid "Username"),
+msgid "Username"
 msgstr ""
 
 #:
 src/www/system_usermanager.php
 177
-msgid "Password"),
+msgid "Password"
 msgstr ""
 
 #:
 src/www/system_usermanager.php
 178
-msgid "Descriptive name"),
+msgid "Descriptive name"
 msgstr ""
 
 #:
 src/www/system_usermanager.php
 179
-msgid "Certificate authority"),
+msgid "Certificate authority"
 msgstr ""
 
 #:
 src/www/system_usermanager.php
 180
-msgid "Key length"),
+msgid "Key length"
 msgstr ""
 
 #:
@@ -57084,7 +56987,7 @@ msgstr ""
 #:
 src/www/vpn_openvpn_client.php
 336
-msgid "add client")),
+msgid "add client")
 msgstr ""
 
 #:
@@ -57691,7 +57594,7 @@ msgstr ""
 #:
 src/www/vpn_openvpn_csc.php
 301
-msgid "add csc")),
+msgid "add csc")
 msgstr ""
 
 #:
@@ -58300,7 +58203,7 @@ msgstr ""
 #:
 src/www/vpn_openvpn_server.php
 476
-msgid "add server")),
+msgid "add server")
 msgstr ""
 
 #:
