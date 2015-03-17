@@ -777,109 +777,68 @@ msgid "Checking for %1$s PF hooks in package %2$s"
 msgstr ""
 
 #: src/etc/inc/filter.inc:3582
-msgid "Processing early %1$s rules for package %2$s'), $ruletype, $pkg_inc
+msgid "Processing early %1$s rules for package %2$s"
 msgstr ""
 
-#:
-src/etc/inc/filter.inc
-3587
-msgid "There was an error while parsing the package filter rules for %s."), $pkg_inc) . "n";
+#: src/etc/inc/filter.inc:3587
+msgid "There was an error while parsing the package filter rules for %s."
 msgstr ""
 
-#:
-src/etc/inc/filter_log.inc
-245
-msgid "There was a error parsing rule number
-%s.   Please report to mailing list or forum."), $flent['rulenum']
+#: src/etc/inc/filter_log.inc:245
+msgid ""
+"There was a error parsing rule number %s.  "
+"Please report to mailing list or forum."
 msgstr ""
 
-#:
-src/etc/inc/filter_log.inc
-253
-msgid "There was a error parsing rule
-%s.   Please report to mailing list or forum."), $errline
+#: src/etc/inc/filter_log.inc:253
+msgid ""
+"There was a error parsing rule %s.  "
+"Please report to mailing list or forum."
 msgstr ""
 
-#:
-src/etc/inc/filter_log.inc
-265
-msgid "Service %1$s/%2$s
-%3$s') . '">' . htmlspecialchars($port) . '</span>', $port, $proto, $service);
+#: src/etc/inc/filter_log.inc:265
+msgid "Service %1$s/%2$s%3$s"
 msgstr ""
 
-#:
-src/etc/inc/functions.inc
-31
-if(!function_exists("gettext")) {
+#: src/etc/inc/functions.inc:87
+msgid "Acknowledge All Notices"
 msgstr ""
 
-#:
-src/etc/inc/functions.inc
-32
-msgid "$text) {
-msgstr ""
-
-#:
-src/etc/inc/functions.inc
-87
-msgid "Acknowledge All Notices")."</a></li><li class="divider"></li>";
-msgstr ""
-
-#:
-src/etc/inc/functions.inc
-106
+#: src/etc/inc/functions.inc:106
 msgid "unread notice"
 msgstr ""
 
-#:
-src/etc/inc/functions.inc
-108
+#: src/etc/inc/functions.inc:108
 msgid "unread notices"
 msgstr ""
 
-#:
-src/etc/inc/gwlb.inc
-825
-msgid "MONITOR
-%s is down, removing from routing group {$group['name']}"), $gwname);
+#: src/etc/inc/gwlb.inc:825
+msgid "MONITOR %s is down, removing from routing group {$group['name']}"
 msgstr ""
 
-#:
-src/etc/inc/gwlb.inc
-829
-msgid "MONITOR
-%s has packet loss, removing from routing group {$group['name']}"), $gwname);
+#: src/etc/inc/gwlb.inc:829
+msgid "MONITOR %s has packet loss, removing from routing group {$group['name']}"
 msgstr ""
 
-#:
-src/etc/inc/gwlb.inc
-833
-msgid "MONITOR
-%s has high latency, removing from routing group {$group['name']}"), $gwname);
+#: src/etc/inc/gwlb.inc:833
+msgid "MONITOR %s has high latency, removing from routing group {$group['name']}"
 msgstr ""
 
-#:
-src/etc/inc/gwlb.inc
-853
-msgid "Gateways status could not be determined, considering all as up/active. (Group
-{$group['name']})"
+#: src/etc/inc/gwlb.inc:853
+msgid ""
+"Gateways status could not be determined, considering all as up/active. "
+"(Group {$group['name']})"
 msgstr ""
 
-#:
-src/etc/inc/gwlb.inc
-916
-msgid "Updating gateway group gateway for %1$s - new gateway is %2$s'), $interfac, $current_gw
+#: src/etc/inc/gwlb.inc:916
+msgid "Updating gateway group gateway for %1$s - new gateway is %2$s"
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-39
+#: src/etc/inc/interfaces.inc:39
 msgid "interfaces_bring_up() was called but no variable defined."
 msgstr ""
 
-#:
-src/etc/inc/interfaces.inc
-195
+#: src/etc/inc/interfaces.inc:195
 msgid "Configuring loopback interface..."
 msgstr ""
 
@@ -1081,7 +1040,7 @@ msgstr ""
 #:
 src/etc/inc/interfaces.inc
 1560
-msgid "Could not get a PPTP/L2TP Remote IP address from %1$s for %2$s in interfaces_ppps_configure.'), $dhcp_gateway, $gway
+msgid "Could not get a PPTP/L2TP Remote IP address from %1$s for %2$s in interfaces_ppps_configure." $dhcp_gateway, $gway
 msgstr ""
 
 #:
@@ -1163,7 +1122,7 @@ msgstr ""
 #:
 src/etc/inc/interfaces.inc
 2255
-msgid "Failed to clone interface %1$s with error code %2$s, output %3$s'), $baseif, $ret, $out[0]
+msgid "Failed to clone interface %1$s with error code %2$s, output %3$s" $baseif, $ret, $out[0]
 msgstr ""
 
 #:
@@ -1180,7 +1139,7 @@ ff
 ff
 ff
 ff
-ff) on interface %1$s has been automatically replaced with %2$s'), $realif, $random_mac), "Interfaces"
+ff) on interface %1$s has been automatically replaced with %2$s" $realif, $random_mac), "Interfaces"
 msgstr ""
 
 #:
@@ -1205,79 +1164,79 @@ msgstr ""
 #:
 src/etc/inc/ipsec.inc
 39
-msgid "My IP address'), 'mobile' => true ),
+msgid "My IP address" 'mobile' => true ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 40
-msgid "IP address'), 'mobile' => true ),
+msgid "IP address" 'mobile' => true ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 41
-msgid "Distinguished name'), 'mobile' => true ),
+msgid "Distinguished name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 42
-msgid "User distinguished name'), 'mobile' => true ),
+msgid "User distinguished name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 43
-msgid "ASN.1 distinguished Name'), 'mobile' => true ),
+msgid "ASN.1 distinguished Name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 44
-msgid "KeyID tag'), 'mobile' => true ),
+msgid "KeyID tag" 'mobile' => true ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 45
-msgid "Dynamic DNS'), 'mobile' => true 
+msgid "Dynamic DNS" 'mobile' => true 
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 48
-msgid "Peer IP address'), 'mobile' => false ),
+msgid "Peer IP address" 'mobile' => false ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 49
-msgid "IP address'), 'mobile' => false ),
+msgid "IP address" 'mobile' => false ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 50
-msgid "Distinguished name'), 'mobile' => true ),
+msgid "Distinguished name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 51
-msgid "User distinguished name'), 'mobile' => true ),
+msgid "User distinguished name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 52
-msgid "ASN.1 distinguished Name'), 'mobile' => true ),
+msgid "ASN.1 distinguished Name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/etc/inc/ipsec.inc
 53
-msgid "KeyID tag'), 'mobile' => true 
+msgid "KeyID tag" 'mobile' => true 
 msgstr ""
 
 #:
@@ -1355,14 +1314,14 @@ msgstr ""
 src/etc/inc/notices.inc
 326
 msgid "Could not send the message to %1$s -- Error
-%2$s'), $to, $smtp->error
+%2$s" $to, $smtp->error
 msgstr ""
 
 #:
 src/etc/inc/notices.inc
 327
 msgid "Could not send the message to %1$s -- Error
-%2$s'), $to, $smtp->error
+%2$s" $to, $smtp->error
 msgstr ""
 
 #:
@@ -1519,7 +1478,7 @@ msgstr ""
 #:
 src/etc/inc/pfsense-utils.inc
 434
-msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s'), $e, $addr, $mac
+msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s" $e, $addr, $mac
 msgstr ""
 
 #:
@@ -1545,7 +1504,7 @@ msgstr ""
 src/etc/inc/pfsense-utils.inc
 643
 msgid "XMLRPC request failed with error %1$s
-%2$s'), $resp->faultCode(), $resp->faultString()
+%2$s" $resp->faultCode(), $resp->faultString()
 msgstr ""
 
 #:
@@ -1594,7 +1553,7 @@ msgstr ""
 src/etc/inc/pfsense-utils.inc
 1463
 msgid "DNSCACHE
-Found old IP %1$s and new IP %2$s'), $oldcontents, $contents
+Found old IP %1$s and new IP %2$s" $oldcontents, $contents
 msgstr ""
 
 #:
@@ -1830,7 +1789,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 263
-msgid "The %1$s package is missing required dependencies and must be reinstalled. %2$s'), $package['name'], $package['configurationfile']
+msgid "The %1$s package is missing required dependencies and must be reinstalled. %2$s" $package['name'], $package['configurationfile']
 msgstr ""
 
 #:
@@ -1860,7 +1819,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 612
-msgid "Package %s is not supported on this version.'), $pkg_info['name']
+msgid "Package %s is not supported on this version." $pkg_info['name']
 msgstr ""
 
 #:
@@ -1878,7 +1837,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 621
-msgid "Beginning package installation for %s .'), $pkg_info['name']
+msgid "Beginning package installation for %s ." $pkg_info['name']
 msgstr ""
 
 #:
@@ -2250,7 +2209,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1212
-msgid " >>> Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity.'), $xmlrpc_base_url, $g['product_name']);
+msgid " >>> Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity." $xmlrpc_base_url, $g['product_name']);
 msgstr ""
 
 #:
@@ -2378,7 +2337,7 @@ msgstr ""
 #:
 src/etc/inc/pkg-utils.inc
 1513
-msgid "Changing file mode to %1$s for %2$s%3$s%4$s'), $pkg_chmod, $prefix, $filename, "n"
+msgid "Changing file mode to %1$s for %2$s%3$s%4$s" $pkg_chmod, $prefix, $filename, "n"
 msgstr ""
 
 #:
@@ -5865,7 +5824,7 @@ msgstr ""
 src/etc/inc/radius.inc
 406
 msgid "Error sending request
-') . ' ' . $this->getError(
+" . ' ' . $this->getError(
 msgstr ""
 
 #:
@@ -5891,26 +5850,26 @@ msgstr ""
 src/etc/inc/rrd.inc
 38
 msgid "RRD dump failed exited with %1$s, the error is
-%2$s'), $dumpret, $dumpout
+%2$s" $dumpret, $dumpout
 msgstr ""
 
 #:
 src/etc/inc/rrd.inc
 93
 msgid "RRD create failed exited with %1$s, the error is
-%2$s'), $rrdcreatereturn, $rrdcreateoutput
+%2$s" $rrdcreatereturn, $rrdcreateoutput
 msgstr ""
 
 #:
 src/etc/inc/rrd.inc
 108
-msgid "Import RRD has %1$s DS values and %2$s RRA databases, new format RRD has %3$s DS values and %4$s RRA databases'), $numdsold, $numrraold, $numdsnew ,$numrranew
+msgid "Import RRD has %1$s DS values and %2$s RRA databases, new format RRD has %3$s DS values and %4$s RRA databases" $numdsold, $numrraold, $numdsnew ,$numrranew
 msgstr ""
 
 #:
 src/etc/inc/rrd.inc
 192
-msgid "The new RRD now has %1$s DS values and %2$s RRA databases'), $numdsnew, $numrranew
+msgid "The new RRD now has %1$s DS values and %2$s RRA databases" $numdsnew, $numrranew
 msgstr ""
 
 #:
@@ -6050,7 +6009,7 @@ msgstr ""
 #:
 src/etc/inc/service-utils.inc
 510
-msgid "%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
+msgid "%s Service is"$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
 msgstr ""
 
 #:
@@ -6063,7 +6022,7 @@ msgstr ""
 #:
 src/etc/inc/service-utils.inc
 519
-msgid "%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
+msgid "%s Service is"$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
 msgstr ""
 
 #:
@@ -6106,7 +6065,7 @@ msgstr ""
 src/etc/inc/services.inc
 352
 msgid "DHCP leases restore failed exited with %1$s, the error is
-%2$s%3$s'), $dhcpreturn, $dhcprestore, "n"
+%2$s%3$s" $dhcpreturn, $dhcprestore, "n"
 msgstr ""
 
 #:
@@ -7451,7 +7410,7 @@ msgstr ""
 #:
 src/etc/inc/smtp.inc
 240
-msgid "Connecting to host address "%1$s" port %2$s...'), $ip, $port
+msgid "Connecting to host address "%1$s" port %2$s..." $ip, $port
 msgstr ""
 
 #:
@@ -7488,7 +7447,7 @@ msgstr ""
 src/etc/inc/smtp.inc
 257
 msgid "could not connect to the host "%1$s"
-%2$s'), $domain, $error
+%2$s" $domain, $error
 msgstr ""
 
 #:
@@ -7501,7 +7460,7 @@ msgstr ""
 src/etc/inc/smtp.inc
 290
 msgid "authenticated mechanism %1$s may not be used
-%2$s'), $this->authentication_mechanism, $sasl->error);
+%2$s" $this->authentication_mechanism, $sasl->error);
 msgstr ""
 
 #:
@@ -8159,7 +8118,7 @@ msgstr ""
 #:
 src/etc/inc/voucher.inc
 368
-msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes'), $voucher, $roll, $nr, $remaining);
+msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes" $voucher, $roll, $nr, $remaining);
 msgstr ""
 
 #:
@@ -8190,13 +8149,13 @@ msgstr ""
 #:
 src/etc/inc/voucher.inc
 552
-msgid "cant write %1$s/voucher_%s_used_%2$s.db'), $g['vardb_path'], $cpzone, $roll
+msgid "cant write %1$s/voucher_%s_used_%2$s.db" $g['vardb_path'], $cpzone, $roll
 msgstr ""
 
 #:
 src/etc/inc/voucher.inc
 633
-msgid "cant read %1$s/voucher_%s_used_%2$s.db'), $g['vardb_path'], $cpzone, $roll
+msgid "cant read %1$s/voucher_%s_used_%2$s.db" $g['vardb_path'], $cpzone, $roll
 msgstr ""
 
 #:
@@ -8363,7 +8322,7 @@ msgstr ""
 src/etc/inc/xmlparse.inc
 93
 msgid "XML error
-%1$s at line %2$d cannot occur more than once') . "n",
+%1$s at line %2$d cannot occur more than once" . "n",
 msgstr ""
 
 #:
@@ -8377,7 +8336,7 @@ msgstr ""
 src/etc/inc/xmlparse.inc
 190
 msgid "XML error
-%1$s at line %2$d in %3$s') . "n",
+%1$s at line %2$d in %3$s" . "n",
 msgstr ""
 
 #:
@@ -8391,7 +8350,7 @@ msgstr ""
 src/etc/inc/xmlparse_attr.inc
 73
 msgid "XML error
-%1$s at line %2$d cannot occur more than once') . "n",
+%1$s at line %2$d cannot occur more than once" . "n",
 msgstr ""
 
 #:
@@ -8405,7 +8364,7 @@ msgstr ""
 src/etc/inc/xmlparse_attr.inc
 195
 msgid "XML error
-%1$s at line %2$d') . "n",
+%1$s at line %2$d" . "n",
 msgstr ""
 
 #:
@@ -8468,7 +8427,7 @@ msgstr ""
 #:
 src/etc/inc/xmlrpc_client.inc
 268
-msgid "xmlrpc element %1$s cannot be child of %2$s'), $name, $XML_RPC_xh[$parser]['stack'][0]);
+msgid "xmlrpc element %1$s cannot be child of %2$s" $name, $XML_RPC_xh[$parser]['stack'][0]);
 msgstr ""
 
 #:
@@ -8478,7 +8437,7 @@ XML_RPC_Base
 msgstr ""
 
 #:
-msgid "Non-numeric value received in INT or DOUBLE'),
+msgid "Non-numeric value received in INT or DOUBLE"
 msgstr ""
 
 #:
@@ -8502,13 +8461,13 @@ msgstr ""
 #:
 src/etc/inc/xmlrpc_client.inc
 1330
-msgid "The submitted request did not contain this parameter'),
+msgid "The submitted request did not contain this parameter"
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 1361
-msgid "mb_convert_encoding() is not available'),
+msgid "mb_convert_encoding() is not available"
 msgstr ""
 
 #:
@@ -8527,7 +8486,7 @@ msgstr ""
 #:
 src/etc/inc/xmlrpc_client.inc
 1593
-msgid "Scalar can have only one value'),
+msgid "Scalar can have only one value"
 msgstr ""
 
 #:
@@ -8539,13 +8498,13 @@ msgstr ""
 #:
 src/etc/inc/xmlrpc_client.inc
 1636
-msgid "Already initialized as a [%s]'), $this->kindOf()),
+msgid "Already initialized as a [%s]" $this->kindOf()),
 msgstr ""
 
 #:
 src/etc/inc/xmlrpc_client.inc
 1652
-msgid "Already initialized as a [%s]'), $this->kindOf()),
+msgid "Already initialized as a [%s]" $this->kindOf()),
 msgstr ""
 
 #:
@@ -8744,7 +8703,7 @@ msgstr ""
 src/etc/rc.initial.setlanip
 489
 msgid "You can now access the webConfigurator by opening the following URL in your web browser
-') . "n";
+" . "n";
 msgstr ""
 
 #:
@@ -8940,19 +8899,19 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 23
-msgid "Wrong parameter count for array_intersect_key()'), E_USER_WARNING);
+msgid "Wrong parameter count for array_intersect_key()" E_USER_WARNING);
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 27
-msgid "array_intersect_key() Argument #') .
+msgid "array_intersect_key() Argument #" .
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 31
-msgid " is not an array'), E_USER_WARNING);
+msgid " is not an array" E_USER_WARNING);
 msgstr ""
 
 #:
@@ -9120,7 +9079,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 153
-msgid "Invalid login (%s).") . "')", $login_error);
+msgid "Invalid login (%s).") . """, $login_error);
 msgstr ""
 
 #: src/share/locale/en/LC_MESSAGES/OPNsense.pot:157
@@ -9392,13 +9351,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 348
-msgid "%1$s is restoring the configuration %2$s'), $g['product_name'], $file
+msgid "%1$s is restoring the configuration %2$s" $g['product_name'], $file
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 352
-msgid "%1$s is restoring the configuration %2$s'), $g['product_name'], $file), "pfSenseConfigurator", ""
+msgid "%1$s is restoring the configuration %2$s" $g['product_name'], $file), "pfSenseConfigurator", ""
 msgstr ""
 
 #:
@@ -9482,7 +9441,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 408
-msgid "Upgraded config version level from %1$s to %2$s'), $prev_version, $config['version']
+msgid "Upgraded config version level from %1$s to %2$s" $prev_version, $config['version']
 msgstr ""
 
 #:
@@ -9494,7 +9453,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 417
-msgid "Unable to open /conf/config.xml for writing in write_config()')
+msgid "Unable to open /conf/config.xml for writing in write_config()"
 msgstr ""
 
 #:
@@ -9530,7 +9489,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 442
-msgid "%1$s at line %2$d'),
+msgid "%1$s at line %2$d"
 msgstr ""
 
 #:
@@ -9578,7 +9537,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 475
-msgid "Entry added') . ' ' . date('r') . '||';
+msgid "Entry added" . ' ' . date('r') . '||';
 msgstr ""
 
 #:
@@ -9590,7 +9549,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 483
-msgid "Entry added') . ' ' . date('r') . '||';
+msgid "Entry added" . ' ' . date('r') . '||';
 msgstr ""
 
 #:
@@ -10034,13 +9993,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 793
-msgid "Checking for %1$s PF hooks in package %2$s'), $ruletype, $pkg_inc
+msgid "Checking for %1$s PF hooks in package %2$s" $ruletype, $pkg_inc
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 797
-msgid "Processing early %1$s rules for package %2$s'), $ruletype, $pkg_inc
+msgid "Processing early %1$s rules for package %2$s" $ruletype, $pkg_inc
 msgstr ""
 
 #:
@@ -10124,7 +10083,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 860
-msgid "Updating gateway group gateway for %1$s - new gateway is %2$s'), $interfac, $current_gw
+msgid "Updating gateway group gateway for %1$s - new gateway is %2$s" $interfac, $current_gw
 msgstr ""
 
 #:
@@ -10334,7 +10293,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1003
-msgid "Could not get a PPTP/L2TP Remote IP address from %1$s for %2$s in interfaces_ppps_configure.'), $dhcp_gateway, $gway
+msgid "Could not get a PPTP/L2TP Remote IP address from %1$s for %2$s in interfaces_ppps_configure." $dhcp_gateway, $gway
 msgstr ""
 
 #:
@@ -10412,7 +10371,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1059
-msgid "Failed to clone interface %1$s with error code %2$s, output %3$s'), $baseif, $ret, $out[0]
+msgid "Failed to clone interface %1$s with error code %2$s, output %3$s" $baseif, $ret, $out[0]
 msgstr ""
 
 #:
@@ -10448,79 +10407,79 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1089
-msgid "My IP address'), 'mobile' => true ),
+msgid "My IP address" 'mobile' => true ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1093
-msgid "IP address'), 'mobile' => true ),
+msgid "IP address" 'mobile' => true ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1097
-msgid "Distinguished name'), 'mobile' => true ),
+msgid "Distinguished name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1101
-msgid "User distinguished name'), 'mobile' => true ),
+msgid "User distinguished name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1105
-msgid "ASN.1 distinguished Name'), 'mobile' => true ),
+msgid "ASN.1 distinguished Name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1109
-msgid "KeyID tag'), 'mobile' => true ),
+msgid "KeyID tag" 'mobile' => true ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1113
-msgid "Dynamic DNS'), 'mobile' => true 
+msgid "Dynamic DNS" 'mobile' => true 
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1117
-msgid "Peer IP address'), 'mobile' => false ),
+msgid "Peer IP address" 'mobile' => false ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1121
-msgid "IP address'), 'mobile' => false ),
+msgid "IP address" 'mobile' => false ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1125
-msgid "Distinguished name'), 'mobile' => true ),
+msgid "Distinguished name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1129
-msgid "User distinguished name'), 'mobile' => true ),
+msgid "User distinguished name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1133
-msgid "ASN.1 distinguished Name'), 'mobile' => true ),
+msgid "ASN.1 distinguished Name" 'mobile' => true ),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1137
-msgid "KeyID tag'), 'mobile' => true 
+msgid "KeyID tag" 'mobile' => true 
 msgstr ""
 
 #:
@@ -10754,7 +10713,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1301
-msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s'), $e, $addr, $mac
+msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s" $e, $addr, $mac
 msgstr ""
 
 #:
@@ -11060,7 +11019,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1510
-msgid "The %1$s package is missing required dependencies and must be reinstalled. %2$s'), $package['name'], $package['configurationfile']
+msgid "The %1$s package is missing required dependencies and must be reinstalled. %2$s" $package['name'], $package['configurationfile']
 msgstr ""
 
 #:
@@ -11090,7 +11049,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1530
-msgid "Package %s is not supported on this version.'), $pkg_info['name']
+msgid "Package %s is not supported on this version." $pkg_info['name']
 msgstr ""
 
 #:
@@ -11108,7 +11067,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1542
-msgid "Beginning package installation for %s .'), $pkg_info['name']
+msgid "Beginning package installation for %s ." $pkg_info['name']
 msgstr ""
 
 #:
@@ -11480,7 +11439,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1790
-msgid " >>> Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity.'), $xmlrpc_base_url, $g['product_name']);
+msgid " >>> Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity." $xmlrpc_base_url, $g['product_name']);
 msgstr ""
 
 #:
@@ -11606,7 +11565,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 1876
-msgid "Changing file mode to %1$s for %2$s%3$s%4$s'), $pkg_chmod, $prefix, $filename, "n"
+msgid "Changing file mode to %1$s for %2$s%3$s%4$s" $pkg_chmod, $prefix, $filename, "n"
 msgstr ""
 
 #:
@@ -14438,13 +14397,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4458
-msgid "Import RRD has %1$s DS values and %2$s RRA databases, new format RRD has %3$s DS values and %4$s RRA databases'), $numdsold, $numrraold, $numdsnew ,$numrranew
+msgid "Import RRD has %1$s DS values and %2$s RRA databases, new format RRD has %3$s DS values and %4$s RRA databases" $numdsold, $numrraold, $numdsnew ,$numrranew
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4462
-msgid "The new RRD now has %1$s DS values and %2$s RRA databases'), $numdsnew, $numrranew
+msgid "The new RRD now has %1$s DS values and %2$s RRA databases" $numdsnew, $numrranew
 msgstr ""
 
 #:
@@ -14582,7 +14541,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4556
-msgid "%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
+msgid "%s Service is"$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
 msgstr ""
 
 #:
@@ -14600,7 +14559,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 4565
-msgid "%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
+msgid "%s Service is"$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
 msgstr ""
 
 #:
@@ -15962,7 +15921,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5499
-msgid "Connecting to host address "%1$s" port %2$s...'), $ip, $port
+msgid "Connecting to host address "%1$s" port %2$s..." $ip, $port
 msgstr ""
 
 #:
@@ -16640,7 +16599,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 5981
-msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes'), $voucher, $roll, $nr, $remaining);
+msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes" $voucher, $roll, $nr, $remaining);
 msgstr ""
 
 #:
@@ -16670,13 +16629,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6002
-msgid "cant write %1$s/voucher_%s_used_%2$s.db'), $g['vardb_path'], $cpzone, $roll
+msgid "cant write %1$s/voucher_%s_used_%2$s.db" $g['vardb_path'], $cpzone, $roll
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6006
-msgid "cant read %1$s/voucher_%s_used_%2$s.db'), $g['vardb_path'], $cpzone, $roll
+msgid "cant read %1$s/voucher_%s_used_%2$s.db" $g['vardb_path'], $cpzone, $roll
 msgstr ""
 
 #:
@@ -16922,13 +16881,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6196
-msgid "xmlrpc element %1$s cannot be child of %2$s'), $name, $XML_RPC_xh[$parser]['stack'][0]);
+msgid "xmlrpc element %1$s cannot be child of %2$s" $name, $XML_RPC_xh[$parser]['stack'][0]);
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6202
-msgid "Non-numeric value received in INT or DOUBLE'),
+msgid "Non-numeric value received in INT or DOUBLE"
 msgstr ""
 
 #:
@@ -16952,13 +16911,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6218
-msgid "The submitted request did not contain this parameter'),
+msgid "The submitted request did not contain this parameter"
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6222
-msgid "mb_convert_encoding() is not available'),
+msgid "mb_convert_encoding() is not available"
 msgstr ""
 
 #:
@@ -16976,7 +16935,7 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6235
-msgid "Scalar can have only one value'),
+msgid "Scalar can have only one value"
 msgstr ""
 
 #:
@@ -16988,13 +16947,13 @@ msgstr ""
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6243
-msgid "Already initialized as a [%s]'), $this->kindOf()),
+msgid "Already initialized as a [%s]" $this->kindOf()),
 msgstr ""
 
 #:
 src/share/locale/en/LC_MESSAGES/OPNsense.pot
 6247
-msgid "Already initialized as a [%s]'), $this->kindOf()),
+msgid "Already initialized as a [%s]" $this->kindOf()),
 msgstr ""
 
 #:
@@ -18265,9 +18224,9 @@ msgstr ""
 #:
 src/www/diag_dump_states.php
 234
-<a href="#" onclick="removeState('<?= $srcip ?>', '<?= $dstip ?>');" name="i
+<a href="#" onclick="removeState('<?= $srcip ?>', '<?= $dstip ?>";" name="i
 <?= $srcip ?>
-msgid "to') ?> <?= $dstip ?>"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "to" ?> <?= $dstip ?>"><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -19156,8 +19115,8 @@ msgstr ""
 #:
 src/www/diag_logs_filter.php
 250
-msgid "Matches %1$s regular expression%2$s.'), '<a target="_blank" href="http
-//www.php.net/manual/en/book.pcre.php">', '</a>');?>&nbsp;&nbsp;
+msgid "Matches %1$s regular expression%2$s." '<a target="_blank" href="http
+//www.php.net/manual/en/book.pcre.php">', '</a>";?>&nbsp;&nbsp;
 msgstr ""
 
 #:
@@ -19231,7 +19190,7 @@ msgstr ""
 src/www/diag_logs_filter.php
 347
 msgid "Easy Rule
-msgid "Backups are also nice.")?>')">
+msgid "Backups are also nice.")?>"">
 msgstr ""
 
 #:
@@ -19245,7 +19204,7 @@ msgstr ""
 src/www/diag_logs_filter.php
 353
 msgid "Easy Rule
-msgid "Backups are also nice.");?>')">
+msgid "Backups are also nice.");?>"">
 msgstr ""
 
 #:
@@ -19382,7 +19341,7 @@ msgstr ""
 #:
 src/www/diag_logs_filter_summary.php
 196
-msgid "This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s).'), $gotlines, $lines)?><br />
+msgid "This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s)." $gotlines, $lines)?><br />
 msgstr ""
 
 #:
@@ -19820,7 +19779,7 @@ msgstr ""
 #:
 src/www/diag_logs_settings.php
 347
-msgid "Do you really want to reset the log files? This will erase all local log data.');?>')" />
+msgid "Do you really want to reset the log files? This will erase all local log data.";?>')" />
 msgstr ""
 
 #:
@@ -21196,7 +21155,7 @@ msgstr ""
 #:
 src/www/diag_smart.php
 466
-msgid "Do you really want to abort the test?"); ?>')" />
+msgid "Do you really want to abort the test?"); ?>"" />
 msgstr ""
 
 #:
@@ -22497,7 +22456,7 @@ msgstr ""
 #:
 src/www/firewall_aliases.php
 253
-msgid "Do you really want to delete this alias? All elements that still use it will become invalid (e.g. filter rules)!");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this alias? All elements that still use it will become invalid (e.g. filter rules)!");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -22608,13 +22567,13 @@ msgstr ""
 #:
 src/www/firewall_aliases_edit.php
 281
-msgid "%1$s is not a valid %2$s alias.'), $_POST["address{$x}"], $_POST['type']);
+msgid "%1$s is not a valid %2$s alias." $_POST["address{$x}"], $_POST['type']);
 msgstr ""
 
 #:
 src/www/firewall_aliases_edit.php
 291
-msgid "%s/%s is not a valid subnet.'), $_POST["address{$x}"], $_POST["address_subnet{$x}"]);
+msgid "%s/%s is not a valid subnet." $_POST["address{$x}"], $_POST["address_subnet{$x}"]);
 msgstr ""
 
 #:
@@ -22627,7 +22586,7 @@ msgstr ""
 src/www/firewall_aliases_edit.php
 315
 msgid "The alias(es)
-%s cannot be nested because they are not of the same type.'), $wrongaliases);
+%s cannot be nested because they are not of the same type." $wrongaliases);
 msgstr ""
 
 #:
@@ -23122,7 +23081,7 @@ msgstr ""
 #:
 src/www/firewall_nat.php
 379
-msgid "Do you really want to delete this rule?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this rule?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -23148,7 +23107,7 @@ msgstr ""
 #:
 src/www/firewall_nat.php
 397
-msgid "Do you really want to delete the selected rules?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+msgid "Do you really want to delete the selected rules?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 msgstr ""
 
 #:
@@ -23172,7 +23131,7 @@ msgstr ""
 #:
 src/www/firewall_nat.php
 419
-msgid "Do you really want to delete the selected rules?");?>')" class="btn btn-primary" value="Delete selected rules"/>
+msgid "Do you really want to delete the selected rules?");?>"" class="btn btn-primary" value="Delete selected rules"/>
 msgstr ""
 
 #:
@@ -23185,7 +23144,7 @@ msgstr ""
 #:
 src/www/firewall_nat_1to1.php
 137
-msgid "add rule"), 'href'=>'firewall_nat_1to1_edit.php'),
+msgid "add rule"), 'href'=>'firewall_nat_1to1_edit.php"
 msgstr ""
 
 #:
@@ -23276,7 +23235,7 @@ msgstr ""
 #:
 src/www/firewall_nat_1to1.php
 248
-msgid "Do you really want to delete this rule?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this rule?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -23318,7 +23277,7 @@ msgstr ""
 #:
 src/www/firewall_nat_1to1.php
 282
-msgid "Do you really want to delete the selected mappings?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+msgid "Do you really want to delete the selected mappings?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 msgstr ""
 
 #:
@@ -24622,7 +24581,7 @@ msgstr ""
 #:
 src/www/firewall_nat_out.php
 86
-msgid " - %1$s to %2$s'),
+msgid " - %1$s to %2$s"
 msgstr ""
 
 #:
@@ -24865,7 +24824,7 @@ msgstr ""
 #:
 src/www/firewall_nat_out.php
 488
-msgid "Do you really want to delete the selected mappings?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+msgid "Do you really want to delete the selected mappings?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 msgstr ""
 
 #:
@@ -25646,7 +25605,7 @@ msgstr ""
 #:
 src/www/firewall_rules.php
 419
-msgid "Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+msgid "Do you really want to delete the selected rules?";?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 msgstr ""
 
 #:
@@ -25803,7 +25762,7 @@ msgstr ""
 #:
 src/www/firewall_rules.php
 788
-msgid "delete rule"); ?>" onclick="return confirm('Do you really want to delete this rule?')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "delete rule"); ?>" onclick="return confirm('Do you really want to delete this rule?"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -25845,7 +25804,7 @@ msgstr ""
 #:
 src/www/firewall_rules.php
 826
-msgid "Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+msgid "Do you really want to delete the selected rules?";?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 msgstr ""
 
 #:
@@ -27795,7 +27754,7 @@ msgstr ""
 #:
 src/www/firewall_shaper_layer7.php
 384
-msgid "Create new l7 rules group"), 'href'=>'firewall_shaper_layer7.php?action=add'),
+msgid "Create new l7 rules group"), 'href'=>'firewall_shaper_layer7.php?action=add"
 msgstr ""
 
 #:
@@ -28025,7 +27984,7 @@ msgstr ""
 #:
 src/www/firewall_shaper_vinterface.php
 366
-msgid "Create new limiter"), 'href'=>'firewall_shaper_vinterface.php?pipe=new&amp;action=add'),
+msgid "Create new limiter"), 'href'=>'firewall_shaper_vinterface.php?pipe=new&amp;action=add"
 msgstr ""
 
 #:
@@ -28205,7 +28164,7 @@ msgstr ""
 #:
 src/www/firewall_virtual_ip.php
 266
-msgid "Do you really want to delete this entry?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this entry?");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -28657,7 +28616,7 @@ msgstr ""
 #:
 src/www/guiconfig.inc
 357
-msgid "Close") . "" type="button" onclick="$('#redboxtable').hide();" />";
+msgid "Close") . "" type="button" onclick="$('#redboxtable".hide();" />";
 msgstr ""
 
 #:
@@ -28682,7 +28641,7 @@ msgstr ""
 #:
 src/www/guiconfig.inc
 1001
-msgid "move mouse out this alias to hide')."'";
+msgid "move mouse out this alias to hide"."'";
 msgstr ""
 
 #:
@@ -28694,7 +28653,7 @@ msgstr ""
 #:
 src/www/guiconfig.inc
 1065
-msgid "edit this alias')."">&nbsp;&nbsp;edit </a>";
+msgid "edit this alias"."">&nbsp;&nbsp;edit </a>";
 msgstr ""
 
 #:
@@ -28707,7 +28666,7 @@ msgstr ""
 src/www/guiconfig.inc
 1088
 //$span_begin = "<span style="cursor
-msgid "loading...')."');" onmouseout="this.style.color = ''; domTT_mouseout(this, event);"><u>";
+msgid "loading..."."');" onmouseout="this.style.color = ''; domTT_mouseout(this, event);"><u>";
 msgstr ""
 
 #:
@@ -30274,25 +30233,25 @@ msgstr ""
 #:
 src/www/interfaces.php
 2701
-msgid "reset at each month ('0 0 1 * *')"); ?>
+msgid "reset at each month ('0 0 1 * *""); ?>
 msgstr ""
 
 #:
 src/www/interfaces.php
 2704
-msgid "reset at each week ('0 0 * * 0')"); ?>
+msgid "reset at each week ('0 0 * * 0""); ?>
 msgstr ""
 
 #:
 src/www/interfaces.php
 2707
-msgid "reset at each day ('0 0 * * *')"); ?>
+msgid "reset at each day ('0 0 * * *""); ?>
 msgstr ""
 
 #:
 src/www/interfaces.php
 2710
-msgid "reset at each hour ('0 * * * *')"); ?>
+msgid "reset at each hour ('0 * * * *""); ?>
 msgstr ""
 
 #:
@@ -31241,7 +31200,7 @@ msgstr ""
 #:
 src/www/interfaces_assign.php
 45
-msgid "VLAN %1$s on %2$s'),$portinfo['tag'],$portinfo['if']);
+msgid "VLAN %1$s on %2$s"$portinfo['tag'],$portinfo['if']);
 msgstr ""
 
 #:
@@ -31409,7 +31368,7 @@ msgstr ""
 #:
 src/www/interfaces_assign.php
 514
-msgid "Do you really want to delete this interface?"); ?>')">
+msgid "Do you really want to delete this interface?"); ?>"">
 msgstr ""
 
 #:
@@ -31536,7 +31495,7 @@ msgstr ""
 #:
 src/www/interfaces_bridge.php
 155
-msgid "Do you really want to delete this bridge?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this bridge?");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -32092,7 +32051,7 @@ msgstr ""
 #:
 src/www/interfaces_gif.php
 139
-msgid "Do you really want to delete this gif tunnel?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this gif tunnel?");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -32351,7 +32310,7 @@ msgstr ""
 #:
 src/www/interfaces_gre.php
 140
-msgid "Do you really want to delete this GRE tunnel?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this GRE tunnel?");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -32798,7 +32757,7 @@ msgstr ""
 #:
 src/www/interfaces_lagg.php
 145
-msgid "Do you really want to delete this LAGG interface?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this LAGG interface?");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -33041,7 +33000,7 @@ msgstr ""
 #:
 src/www/interfaces_ppps.php
 141
-msgid "Do you really want to delete this PPP interface?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this PPP interface?");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -33441,25 +33400,25 @@ msgstr ""
 #:
 src/www/interfaces_ppps_edit.php
 641
-msgid "reset at each month ('0 0 1 * *')"); ?>
+msgid "reset at each month ('0 0 1 * *""); ?>
 msgstr ""
 
 #:
 src/www/interfaces_ppps_edit.php
 644
-msgid "reset at each week ('0 0 * * 0')"); ?>
+msgid "reset at each week ('0 0 * * 0""); ?>
 msgstr ""
 
 #:
 src/www/interfaces_ppps_edit.php
 647
-msgid "reset at each day ('0 0 * * *')"); ?>
+msgid "reset at each day ('0 0 * * *""); ?>
 msgstr ""
 
 #:
 src/www/interfaces_ppps_edit.php
 650
-msgid "reset at each hour ('0 * * * *')"); ?>
+msgid "reset at each hour ('0 * * * *""); ?>
 msgstr ""
 
 #:
@@ -33801,7 +33760,7 @@ msgstr ""
 #:
 src/www/interfaces_qinq.php
 158
-msgid "Do you really want to delete this QinQ?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this QinQ?");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -34073,7 +34032,7 @@ msgstr ""
 #:
 src/www/interfaces_vlan.php
 140
-msgid "Do you really want to delete this VLAN?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this VLAN?");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -34290,7 +34249,7 @@ msgstr ""
 #:
 src/www/interfaces_wireless.php
 139
-msgid "Do you really want to delete this wireless clone?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this wireless clone?");?>""><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -34327,7 +34286,7 @@ msgstr ""
 #:
 src/www/interfaces_wireless_edit.php
 116
-msgid "Error creating interface with mode %1$s.  The %2$s interface may not support creating more clones with the selected mode.'), $wlan_modes[$clone['mode']], $clone['if']);
+msgid "Error creating interface with mode %1$s.  The %2$s interface may not support creating more clones with the selected mode." $wlan_modes[$clone['mode']], $clone['if']);
 msgstr ""
 
 #:
@@ -34459,19 +34418,19 @@ msgstr ""
 #:
 src/www/load_balancer_monitor.php
 123
-msgid "Name'),'name',20);
+msgid "Name"'name',20);
 msgstr ""
 
 #:
 src/www/load_balancer_monitor.php
 124
-msgid "Type'),'type',10);
+msgid "Type"'type',10);
 msgstr ""
 
 #:
 src/www/load_balancer_monitor.php
 125
-msgid "Description'),'descr',30);
+msgid "Description"'descr',30);
 msgstr ""
 
 #:
@@ -34698,37 +34657,37 @@ msgstr ""
 #:
 src/www/load_balancer_pool.php
 134
-msgid "Name'),'name',10);
+msgid "Name"'name',10);
 msgstr ""
 
 #:
 src/www/load_balancer_pool.php
 135
-msgid "Mode'),'mode',10);
+msgid "Mode"'mode',10);
 msgstr ""
 
 #:
 src/www/load_balancer_pool.php
 136
-msgid "Servers'),'servers',15);
+msgid "Servers"'servers',15);
 msgstr ""
 
 #:
 src/www/load_balancer_pool.php
 137
-msgid "Port'),'port',10);
+msgid "Port"'port',10);
 msgstr ""
 
 #:
 src/www/load_balancer_pool.php
 138
-msgid "Monitor'),'monitor',10);
+msgid "Monitor"'monitor',10);
 msgstr ""
 
 #:
 src/www/load_balancer_pool.php
 139
-msgid "Description'),'descr',25);
+msgid "Description"'descr',25);
 msgstr ""
 
 #:
@@ -34961,7 +34920,7 @@ msgstr ""
 #:
 src/www/load_balancer_pool_edit.php
 303
-msgid "Remove"); ?>" onclick="RemoveServerFromPool(document.iform, 'serversdisabled[]');" />
+msgid "Remove"); ?>" onclick="RemoveServerFromPool(document.iform, 'serversdisabled[]";" />
 msgstr ""
 
 #:
@@ -34973,7 +34932,7 @@ msgstr ""
 #:
 src/www/load_balancer_pool_edit.php
 323
-msgid "Remove"); ?>" onclick="RemoveServerFromPool(document.iform, 'servers[]');" />
+msgid "Remove"); ?>" onclick="RemoveServerFromPool(document.iform, 'servers[]";" />
 msgstr ""
 
 #:
@@ -35039,25 +34998,25 @@ msgstr ""
 #:
 src/www/load_balancer_relay_action.php
 138
-msgid "Name'),'name',20);
+msgid "Name"'name',20);
 msgstr ""
 
 #:
 src/www/load_balancer_relay_action.php
 139
-msgid "Type'),'type',10);
+msgid "Type"'type',10);
 msgstr ""
 
 #:
 src/www/load_balancer_relay_action.php
 140
-msgid "Options'),'options',30);
+msgid "Options"'options',30);
 msgstr ""
 
 #:
 src/www/load_balancer_relay_action.php
 141
-msgid "Description'),'descr',30);
+msgid "Description"'descr',30);
 msgstr ""
 
 #:
@@ -35254,25 +35213,25 @@ msgstr ""
 #:
 src/www/load_balancer_relay_protocol.php
 132
-msgid "Name'),'name',20);
+msgid "Name"'name',20);
 msgstr ""
 
 #:
 src/www/load_balancer_relay_protocol.php
 133
-msgid "Type'),'type',10);
+msgid "Type"'type',10);
 msgstr ""
 
 #:
 src/www/load_balancer_relay_protocol.php
 134
-msgid "Options'),'options',30);
+msgid "Options"'options',30);
 msgstr ""
 
 #:
 src/www/load_balancer_relay_protocol.php
 135
-msgid "Description'),'descr',30);
+msgid "Description"'descr',30);
 msgstr ""
 
 #:
@@ -35395,13 +35354,13 @@ msgstr ""
 #:
 src/www/load_balancer_relay_protocol_edit.php
 254
-msgid "Add"); ?>" onclick="copyOption($('available_action'), $('lbaction'));" /><br />
+msgid "Add"); ?>" onclick="copyOption($('available_action" $('lbaction'));" /><br />
 msgstr ""
 
 #:
 src/www/load_balancer_relay_protocol_edit.php
 255
-msgid "Remove"); ?>" onclick="deleteOption($('lbaction'));" />
+msgid "Remove"); ?>" onclick="deleteOption($('lbaction");" />
 msgstr ""
 
 #:
@@ -35413,7 +35372,7 @@ msgstr ""
 #:
 src/www/load_balancer_relay_protocol_edit.php
 282
-msgid "Save"); ?>" onClick="AllOptions($('lbaction'), true); AllOptions($('available_action'), false);">
+msgid "Save"); ?>" onClick="AllOptions($('lbaction" true); AllOptions($('available_action'), false);">
 msgstr ""
 
 #:
@@ -35569,43 +35528,43 @@ msgstr ""
 #:
 src/www/load_balancer_virtual_server.php
 131
-msgid "Name'),'name',10);
+msgid "Name"'name',10);
 msgstr ""
 
 #:
 src/www/load_balancer_virtual_server.php
 132
-msgid "Protocol'),'relay_protocol',10);
+msgid "Protocol"'relay_protocol',10);
 msgstr ""
 
 #:
 src/www/load_balancer_virtual_server.php
 133
-msgid "IP Address'),'ipaddr',10);
+msgid "IP Address"'ipaddr',10);
 msgstr ""
 
 #:
 src/www/load_balancer_virtual_server.php
 134
-msgid "Port'),'port',10);
+msgid "Port"'port',10);
 msgstr ""
 
 #:
 src/www/load_balancer_virtual_server.php
 135
-msgid "Pool'),'poolname',10);
+msgid "Pool"'poolname',10);
 msgstr ""
 
 #:
 src/www/load_balancer_virtual_server.php
 136
-msgid "Fall Back Pool'),'sitedown',15);
+msgid "Fall Back Pool"'sitedown',15);
 msgstr ""
 
 #:
 src/www/load_balancer_virtual_server.php
 137
-msgid "Description'),'descr',25);
+msgid "Description"'descr',25);
 msgstr ""
 
 #:
@@ -35817,7 +35776,7 @@ msgstr ""
 #:
 src/www/pkg.php
 49
-msgid "$title_msg)."', 'trail', true, 'delay', 0, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle');"";
+msgid "$title_msg)."', 'trail', true, 'delay', 0, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle";"";
 msgstr ""
 
 #:
@@ -35830,7 +35789,7 @@ msgstr ""
 #:
 src/www/pkg.php
 186
-msgid "Saving changes...');?>";
+msgid "Saving changes...";?>";
 msgstr ""
 
 #:
@@ -35866,7 +35825,7 @@ msgstr ""
 #:
 src/www/pkg.php
 456
-msgid "Do you really want to delete this item?");?>')"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" <?=domTT_title($delete_msg)?> alt="delete" /></a></td>
+msgid "Do you really want to delete this item?");?>""><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" <?=domTT_title($delete_msg)?> alt="delete" /></a></td>
 msgstr ""
 
 #:
@@ -35936,7 +35895,7 @@ msgstr ""
 #:
 src/www/pkg_mgr.php
 76
-msgid "Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity.'), $xmlrpc_base_url, $g['product_name']);
+msgid "Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity." $xmlrpc_base_url, $g['product_name']);
 msgstr ""
 
 #:
@@ -37644,7 +37603,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_filemanager.php
 126
-msgid "add file'), 'href'=>'services_captiveportal_filemanager.php?zone='.$cpzone.'&act=add'),
+msgid "add file" 'href'=>'services_captiveportal_filemanager.php?zone='.$cpzone.'&act=add'),
 msgstr ""
 
 #:
@@ -37704,7 +37663,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_filemanager.php
 201
-msgid "Do you really want to delete this file?"); ?>')">
+msgid "Do you really want to delete this file?"); ?>"">
 msgstr ""
 
 #:
@@ -37808,7 +37767,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_hostname.php
 134
-msgid "Do you really want to delete this address?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this address?"); ?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -38019,7 +37978,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_ip.php
 138
-msgid "Do you really want to delete this address?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this address?"); ?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -38238,7 +38197,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_mac.php
 195
-msgid "Do you really want to delete this host?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this host?"); ?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -38594,7 +38553,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_vouchers.php
 531
-msgid "new key');?>.</td>
+msgid "new key";?>.</td>
 msgstr ""
 
 #:
@@ -38606,7 +38565,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_vouchers.php
 538
-msgid "new key');?>.</td>
+msgid "new key";?>.</td>
 msgstr ""
 
 #:
@@ -38765,7 +38724,7 @@ msgstr ""
 #:
 src/www/services_captiveportal_vouchers_edit.php
 124
-msgid "All %1$s vouchers from Roll %2$s marked unused'), $rollent['count'], $rollent['number']
+msgid "All %1$s vouchers from Roll %2$s marked unused" $rollent['count'], $rollent['number']
 msgstr ""
 
 #:
@@ -39193,13 +39152,13 @@ msgstr ""
 #:
 src/www/services_dhcp.php
 581
-msgid "Boolean'),
+msgid "Boolean"
 msgstr ""
 
 #:
 src/www/services_dhcp.php
 582
-msgid "Unsigned 32-bit integer'),
+msgid "Unsigned 32-bit integer"
 msgstr ""
 
 #:
@@ -39319,7 +39278,7 @@ msgstr ""
 #:
 src/www/services_dhcp.php
 878
-msgid "Do you really want to delete this pool?");?>')"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" alt="delete" /></a></td>
+msgid "Do you really want to delete this pool?");?>""><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" alt="delete" /></a></td>
 msgstr ""
 
 #:
@@ -39801,7 +39760,7 @@ msgstr ""
 #:
 src/www/services_dhcp.php
 1249
-msgid "Do you really want to delete this mapping?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this mapping?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -40888,7 +40847,7 @@ msgstr ""
 #:
 src/www/services_dhcpv6.php
 881
-msgid "Do you really want to delete this mapping?");?>')" alt="delete"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this mapping?");?>"" alt="delete"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -41359,7 +41318,7 @@ msgstr ""
 #:
 src/www/services_dnsmasq.php
 396
-msgid "Do you really want to delete this host?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this host?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -41395,7 +41354,7 @@ msgstr ""
 #:
 src/www/services_dnsmasq.php
 469
-msgid "Do you really want to delete this domain override?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this domain override?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -41743,7 +41702,7 @@ msgstr ""
 #:
 src/www/services_dyndns.php
 180
-msgid "Do you really want to delete this entry?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this entry?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -42136,7 +42095,7 @@ msgstr ""
 #:
 src/www/services_igmpproxy.php
 69
-msgid "add a new igmpentry"), 'href'=>'services_igmpproxy_edit.php'),
+msgid "add a new igmpentry"), 'href'=>'services_igmpproxy_edit.php"
 msgstr ""
 
 #:
@@ -42311,7 +42270,7 @@ msgstr ""
 #:
 src/www/services_ntpd.php
 203
-msgid "Add another Time server");?>" onclick="NewTimeServer(' + next + ')" alt="add" />n';
+msgid "Add another Time server");?>" onclick="NewTimeServer(' + next + "" alt="add" />n';
 msgstr ""
 
 #:
@@ -42365,19 +42324,19 @@ msgstr ""
 #:
 src/www/services_ntpd.php
 302
-msgid "For best results three to five servers should be configured here.'); ?>
+msgid "For best results three to five servers should be configured here."; ?>
 msgstr ""
 
 #:
 src/www/services_ntpd.php
 304
-msgid "The <i>prefer</i> option indicates that NTP should favor the use of this server more than all others.'); ?>
+msgid "The <i>prefer</i> option indicates that NTP should favor the use of this server more than all others."; ?>
 msgstr ""
 
 #:
 src/www/services_ntpd.php
 306
-msgid "The <i>noselect</i> option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.'); ?>
+msgid "The <i>noselect</i> option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed."; ?>
 msgstr ""
 
 #:
@@ -42970,7 +42929,7 @@ msgstr ""
 #:
 src/www/services_rfc2136.php
 168
-msgid "Do you really want to delete this client?");?>')"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" alt="delete" /></a>
+msgid "Do you really want to delete this client?");?>""><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" width="17" height="17" border="0" alt="delete" /></a>
 msgstr ""
 
 #:
@@ -43815,7 +43774,7 @@ msgstr ""
 #:
 src/www/services_unbound.php
 416
-msgid "Do you really want to delete this host?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this host?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -43851,7 +43810,7 @@ msgstr ""
 #:
 src/www/services_unbound.php
 478
-msgid "Do you really want to delete this domain override?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this domain override?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -44047,7 +44006,7 @@ msgstr ""
 #:
 src/www/services_unbound_acls.php
 346
-msgid "Do you really want to delete this access list?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+msgid "Do you really want to delete this access list?"); ?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 msgstr ""
 
 #:
@@ -44594,13 +44553,13 @@ msgstr ""
 #:
 src/www/services_wol.php
 49
-msgid "Sent magic packet to %1$s (%2$s)%3$s'),$mac, $description, ".<br />"
+msgid "Sent magic packet to %1$s (%2$s)%3$s"$mac, $description, ".<br />"
 msgstr ""
 
 #:
 src/www/services_wol.php
 51
-msgid "Please check the %1$ssystem log%2$s, the wol command for %3$s (%4$s) did not complete successfully%5$s'),'<a href="/diag_logs.php">','</a>',$description,$mac,".<br />"
+msgid "Please check the %1$ssystem log%2$s, the wol command for %3$s (%4$s) did not complete successfully%5$s"'<a href="/diag_logs.php">','</a>',$description,$mac,".<br />"
 msgstr ""
 
 #:
@@ -44630,7 +44589,7 @@ msgstr ""
 #:
 src/www/services_wol.php
 87
-msgid "Please check the %1$ssystem log%2$s, the wol command for %3$s did not complete successfully%4$s'),'<a href="/diag_logs.php">', '</a>', $mac, ".<br />"
+msgid "Please check the %1$ssystem log%2$s, the wol command for %3$s did not complete successfully%4$s"'<a href="/diag_logs.php">', '</a>', $mac, ".<br />"
 msgstr ""
 
 #:
@@ -44710,7 +44669,7 @@ msgstr ""
 #:
 src/www/services_wol.php
 194
-msgid "Do you really want to delete this entry?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this entry?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -46309,7 +46268,7 @@ msgstr ""
 #:
 src/www/status_openvpn.php
 121
-msgid "An error occurred.");?>' + ' (' + values[3] + ')"
+msgid "An error occurred.");?>' + ' (' + values[3] + ""
 msgstr ""
 
 #:
@@ -46630,7 +46589,7 @@ msgstr ""
 #:
 src/www/status_rrd_graph.php
 175
-msgid "Inverse'),
+msgid "Inverse"
 msgstr ""
 
 #:
@@ -46722,7 +46681,7 @@ msgstr ""
 src/www/status_rrd_graph_img.php
 1234
 msgid "Failed to create graph with error code %1$s, the error is
-%2$s'),$graphcmdreturn,$graphcmdoutput
+%2$s"$graphcmdreturn,$graphcmdoutput
 msgstr ""
 
 #:
@@ -46872,7 +46831,7 @@ msgstr ""
 #:
 src/www/status_rrd_graph_settings.php
 193
-msgid "Do you really want to reset the RRD graphs? This will erase all graph data.');?>')" />
+msgid "Do you really want to reset the RRD graphs? This will erase all graph data.";?>')" />
 msgstr ""
 
 #:
@@ -49396,7 +49355,7 @@ msgstr ""
 #:
 src/www/system_advanced_sysctl.php
 174
-msgid "Do you really want to delete this entry?"); ?>')" class="btn btn-default btn-xs">
+msgid "Do you really want to delete this entry?"); ?>"" class="btn btn-default btn-xs">
 msgstr ""
 
 #:
@@ -49655,7 +49614,7 @@ msgstr ""
 #:
 src/www/system_authservers.php
 427
-msgid "Popup blocker detected.  Action aborted.');?>"
+msgid "Popup blocker detected.  Action aborted.";?>"
 msgstr ""
 
 #:
@@ -49990,7 +49949,7 @@ msgstr ""
 #:
 src/www/system_authservers.php
 847
-msgid "Do you really want to delete this Server?");?>')" class="btn btn-default btn-xs">
+msgid "Do you really want to delete this Server?");?>"" class="btn btn-default btn-xs">
 msgstr ""
 
 #:
@@ -50176,7 +50135,7 @@ msgstr ""
 #:
 src/www/system_camanager.php
 297
-msgid "add or import ca"), 'href'=>'system_camanager.php?act=new'),
+msgid "add or import ca"), 'href'=>'system_camanager.php?act=new"
 msgstr ""
 
 #:
@@ -50725,7 +50684,7 @@ msgstr ""
 #:
 src/www/system_certmanager.php
 456
-msgid "add or import certificate"), 'href'=>'system_certmanager.php?act=new'),
+msgid "add or import certificate"), 'href'=>'system_certmanager.php?act=new"
 msgstr ""
 
 #:
@@ -51459,7 +51418,7 @@ msgstr ""
 #:
 src/www/system_crlmanager.php
 469
-msgid "Do you really want to delete this Certificate from the CRL?");?>')" class="btn btn-default btn-xs">
+msgid "Do you really want to delete this Certificate from the CRL?");?>"" class="btn btn-default btn-xs">
 msgstr ""
 
 #:
@@ -51561,7 +51520,7 @@ msgstr ""
 #:
 src/www/system_crlmanager.php
 618
-msgid "Do you really want to delete this Certificate Revocation List?") . ' (' . htmlspecialchars($tmpcrl['descr']) . ')';?>')"  class="btn btn-default btn-xs">
+msgid "Do you really want to delete this Certificate Revocation List?") . ' (' . htmlspecialchars($tmpcrl['descr']) . "';?>')"  class="btn btn-default btn-xs">
 msgstr ""
 
 #:
@@ -51723,7 +51682,7 @@ msgstr ""
 #:
 src/www/system_firmware.php
 236
-msgid "Click "Enable firmware upload" to begin.'),$g['firmware_update_text']);?>
+msgid "Click "Enable firmware upload" to begin."$g['firmware_update_text']);?>
 msgstr ""
 
 #:
@@ -51754,7 +51713,7 @@ msgstr ""
 #:
 src/www/system_firmware.php
 257
-msgid "Click "Upgrade firmware" to start the upgrade process.');?>
+msgid "Click "Upgrade firmware" to start the upgrade process.";?>
 msgstr ""
 
 #:
@@ -52019,7 +51978,7 @@ msgstr ""
 #:
 src/www/system_firmware_restorefullbackup.php
 153
-msgid "Do you really want to delete this backup?") . "')" href='system_firmware_restorefullbackup.php?deletefile=" . htmlspecialchars($arf) . "'>";
+msgid "Do you really want to delete this backup?") . """ href='system_firmware_restorefullbackup.php?deletefile=" . htmlspecialchars($arf) . "'>";
 msgstr ""
 
 #:
@@ -52289,7 +52248,7 @@ msgstr ""
 #:
 src/www/system_gateway_groups.php
 175
-msgid "Do you really want to delete this gateway group?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+msgid "Do you really want to delete this gateway group?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 msgstr ""
 
 #:
@@ -52344,13 +52303,13 @@ msgstr ""
 #:
 src/www/system_gateway_groups_edit.php
 94
-msgid "A gateway group with this name "%s" already exists.'), $_POST['name']);
+msgid "A gateway group with this name "%s" already exists." $_POST['name']);
 msgstr ""
 
 #:
 src/www/system_gateway_groups_edit.php
 111
-msgid "A gateway group cannot have the same name with a gateway "%s" please choose another name.'), $_POST['name']);
+msgid "A gateway group cannot have the same name with a gateway "%s" please choose another name." $_POST['name']);
 msgstr ""
 
 #:
@@ -52608,7 +52567,7 @@ msgstr ""
 #:
 src/www/system_gateways.php
 360
-msgid "Do you really want to delete the selected gateway items?");?>')">
+msgid "Do you really want to delete the selected gateway items?");?>"">
 msgstr ""
 
 #:
@@ -52704,19 +52663,19 @@ msgstr ""
 #:
 src/www/system_gateways_edit.php
 213
-msgid "The gateway name "%s" already exists.'), $_POST['name']);
+msgid "The gateway name "%s" already exists." $_POST['name']);
 msgstr ""
 
 #:
 src/www/system_gateways_edit.php
 219
-msgid "The gateway IP address "%s" already exists.'), $_POST['gateway']);
+msgid "The gateway IP address "%s" already exists." $_POST['gateway']);
 msgstr ""
 
 #:
 src/www/system_gateways_edit.php
 225
-msgid "The monitor IP address "%s" is already in use. You must choose a different monitor IP.'), $_POST['monitor']);
+msgid "The monitor IP address "%s" is already in use. You must choose a different monitor IP." $_POST['monitor']);
 msgstr ""
 
 #:
@@ -53383,7 +53342,7 @@ msgstr ""
 #:
 src/www/system_groupmanager.php
 389
-msgid "Do you really want to delete this privilege?");?>');"
+msgid "Do you really want to delete this privilege?");?>";"
 msgstr ""
 
 #:
@@ -53443,7 +53402,7 @@ msgstr ""
 #:
 src/www/system_groupmanager.php
 514
-msgid "Do you really want to delete this group?");?>');"
+msgid "Do you really want to delete this group?");?>";"
 msgstr ""
 
 #:
@@ -53660,7 +53619,7 @@ msgstr ""
 #:
 src/www/system_routes.php
 300
-msgid "Do you really want to delete this rule?");?>')">
+msgid "Do you really want to delete this rule?");?>"">
 msgstr ""
 
 #:
@@ -53696,7 +53655,7 @@ msgstr ""
 #:
 src/www/system_routes.php
 351
-msgid "Do you really want to delete the selected routes?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+msgid "Do you really want to delete the selected routes?");?>"" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 msgstr ""
 
 #:
@@ -54218,7 +54177,7 @@ msgstr ""
 #:
 src/www/system_usermanager.php
 642
-msgid "Do you really want to delete this privilege?");?>');"
+msgid "Do you really want to delete this privilege?");?>";"
 msgstr ""
 
 #:
@@ -54260,7 +54219,7 @@ msgstr ""
 #:
 src/www/system_usermanager.php
 717
-msgid "(Certificate will not be deleted)");?>')"
+msgid "(Certificate will not be deleted)");?>""
 msgstr ""
 
 #:
@@ -54400,7 +54359,7 @@ msgstr ""
 #:
 src/www/system_usermanager.php
 953
-msgid "Do you really want to delete this user?");?>');"
+msgid "Do you really want to delete this user?");?>";"
 msgstr ""
 
 #:
@@ -54550,7 +54509,7 @@ msgstr ""
 #:
 src/www/system_usermanager_settings.php
 87
-msgid "Popup blocker detected.  Action aborted.") ."');n";
+msgid "Popup blocker detected.  Action aborted.") ."";n";
 msgstr ""
 
 #:
@@ -54793,7 +54752,7 @@ msgstr ""
 #:
 src/www/vpn_ipsec.php
 366
-msgid "Do you really want to delete this phase1 and all associated phase2 entries?"); ?>')"
+msgid "Do you really want to delete this phase1 and all associated phase2 entries?"); ?>""
 msgstr ""
 
 #:
@@ -54889,7 +54848,7 @@ msgstr ""
 #:
 src/www/vpn_ipsec.php
 528
-msgid "Do you really want to delete this phase2 entry?"); ?>')"
+msgid "Do you really want to delete this phase2 entry?"); ?>""
 msgstr ""
 
 #:
@@ -54931,7 +54890,7 @@ msgstr ""
 #:
 src/www/vpn_ipsec.php
 573
-msgid "Do you really want to delete the selected phase2 entries?");?>')"
+msgid "Do you really want to delete the selected phase2 entries?");?>""
 msgstr ""
 
 #:
@@ -54967,7 +54926,7 @@ msgstr ""
 #:
 src/www/vpn_ipsec.php
 633
-msgid "Do you really want to delete the selected phase1 entries?");?>')"
+msgid "Do you really want to delete the selected phase1 entries?");?>""
 msgstr ""
 
 #:
@@ -55555,7 +55514,7 @@ msgstr ""
 #:
 src/www/vpn_ipsec_phase1.php
 198
-msgid "The remote gateway "%1$s" is already used by phase1 "%2$s".'), $tremotegw, $ph1tmp['descr']);
+msgid "The remote gateway "%1$s" is already used by phase1 "%2$s"." $tremotegw, $ph1tmp['descr']);
 msgstr ""
 
 #:
@@ -56911,7 +56870,7 @@ msgstr ""
 #:
 src/www/vpn_l2tp_users.php
 71
-msgid "add user"), 'href'=>'vpn_l2tp_users_edit.php'),
+msgid "add user"), 'href'=>'vpn_l2tp_users_edit.php"
 msgstr ""
 
 #:
@@ -57058,7 +57017,7 @@ msgstr ""
 #:
 src/www/vpn_l2tp_users_edit.php
 191
-msgid "Save');?>" />
+msgid "Save";?>" />
 msgstr ""
 
 #:
@@ -58172,7 +58131,7 @@ msgstr ""
 #:
 src/www/vpn_openvpn_csc.php
 776
-msgid "Do you really want to delete this csc?"); ?>')">
+msgid "Do you really want to delete this csc?"); ?>"">
 msgstr ""
 
 #:
@@ -59140,7 +59099,7 @@ msgstr ""
 #:
 src/www/vpn_pppoe.php
 84
-msgid "add a new pppoe instance"), 'href'=>'vpn_pppoe_edit.php'),
+msgid "add a new pppoe instance"), 'href'=>'vpn_pppoe_edit.php"
 msgstr ""
 
 #:
@@ -59881,7 +59840,7 @@ msgstr ""
 #:
 src/www/vpn_pptp_users.php
 68
-msgid "add user"), 'href'=>'vpn_pptp_users_edit.php'),
+msgid "add user"), 'href'=>'vpn_pptp_users_edit.php"
 msgstr ""
 
 #:
@@ -60088,25 +60047,25 @@ msgstr ""
 #:
 src/www/widgets/widgets/gateways.widget.php
 46
-msgid "Name')?></b></td>
+msgid "Name"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/gateways.widget.php
 47
-msgid "RTT')?></b></td>
+msgid "RTT"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/gateways.widget.php
 48
-msgid "Loss')?></b></td>
+msgid "Loss"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/gateways.widget.php
 49
-msgid "Status')?></b></td>
+msgid "Status"?></b></td>
 msgstr ""
 
 #:
@@ -60130,61 +60089,61 @@ msgstr ""
 #:
 src/www/widgets/widgets/interface_statistics.widget.php
 82
-msgid "Packets In')?></b></td>
+msgid "Packets In"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/interface_statistics.widget.php
 85
-msgid "Packets Out')?></b></td>
+msgid "Packets Out"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/interface_statistics.widget.php
 88
-msgid "Bytes In')?></b></td>
+msgid "Bytes In"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/interface_statistics.widget.php
 91
-msgid "Bytes Out')?></b></td>
+msgid "Bytes Out"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/interface_statistics.widget.php
 94
-msgid "Errors In')?></b></td>
+msgid "Errors In"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/interface_statistics.widget.php
 97
-msgid "Errors Out')?></b></td>
+msgid "Errors Out"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/interface_statistics.widget.php
 100
-msgid "Collisions')?></b></td>
+msgid "Collisions"?></b></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/ipsec.widget.php
 95
-msgid "Active Tunnels');?></td>
+msgid "Active Tunnels";?></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/ipsec.widget.php
 96
-msgid "Inactive Tunnels');?></td>
+msgid "Inactive Tunnels";?></td>
 msgstr ""
 
 #:
 src/www/widgets/widgets/ipsec.widget.php
 97
-msgid "Mobile Users');?></td>
+msgid "Mobile Users";?></td>
 msgstr ""
 
 #:
@@ -60240,7 +60199,7 @@ msgstr ""
 #:
 src/www/widgets/widgets/openvpn.widget.php
 109
-msgid "An error occurred.");?>' + ' (' + values[3] + ')"
+msgid "An error occurred.");?>' + ' (' + values[3] + ""
 msgstr ""
 
 #:
@@ -60463,13 +60422,13 @@ msgstr ""
 #:
 src/www/widgets/widgets/traffic_graphs.widget.php
 132
-msgid "Scale up')?>
+msgid "Scale up"?>
 msgstr ""
 
 #:
 src/www/widgets/widgets/traffic_graphs.widget.php
 137
-msgid "Scale follow')?><br /><br />
+msgid "Scale follow"?><br /><br />
 msgstr ""
 
 #:
