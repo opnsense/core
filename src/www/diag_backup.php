@@ -204,6 +204,8 @@ if ($_POST) {
 		$mode = "download";
 	else if (stristr($_POST['Submit'], gettext("Restore version")))
 		$mode = "restore_ver";
+        else if (stristr($_POST['Submit'], gettext("Setup/Test Google Drive")))
+                $mode = "setup_gdrive";
 
 	if ($_POST["ver"] <> "")
 		$ver2restore = $_POST["ver"];
@@ -266,9 +268,7 @@ if ($_POST) {
 
 				exit;
 			}
-		}
-
-		if ($mode == "restore") {
+		}elseif ($mode == "restore") {
 
 			if ($_POST['decrypt']) {
 				if(!$_POST['decrypt_password'] || !$_POST['decrypt_passconf'])
@@ -465,9 +465,7 @@ if ($_POST) {
 					$input_errors[] = gettext("The configuration could not be restored (file upload error).");
 				}
 			}
-		}
-
-		if ($mode == "restore_ver") {
+		} elseif ($mode == "restore_ver") {
 			$input_errors[] = gettext("XXX - this feature may hose your config (do NOT backrev configs!) - billm");
 			if ($ver2restore <> "") {
 				$conf_file = '/conf/backup/config-' . strtotime($ver2restore) . '.xml';
@@ -480,6 +478,34 @@ if ($_POST) {
 			} else {
 				$input_errors[] = gettext("No version selected.");
 			}
+		} elseif ( $mode == "setup_gdrive" ){
+		      global $config;
+		      if (!isset($config['system']['remotebackup'])) {
+		        $config['system']['remotebackup'] = array() ;
+		      }
+		      $config['system']['remotebackup']['GDriveEnabled'] = $_POST['GDriveEnabled'];
+		      $config['system']['remotebackup']['GDriveEmail'] = $_POST['GDriveEmail'] ;
+		      $config['system']['remotebackup']['GDriveFolderID'] = $_POST['GDriveFolderID'];
+		      $config['system']['remotebackup']['GDrivePassword'] = $_POST['GDrivePassword'];
+		      if (is_numeric($_POST['GDriveBackupCount'])) {
+  		        $config['system']['remotebackup']['GDriveBackupCount'] = $_POST['GDriveBackupCount'];
+                      } else {
+                        $config['system']['remotebackup']['GDriveBackupCount'] = 30;
+                      }
+		      
+		      if ( $_POST['GDrivePasswordConfirm'] != $_POST['GDrivePassword'] ) {
+		        // log error, but continue
+		        $input_errors[] = gettext("The supplied 'Password' and 'Confirm' field values must match.");
+		      }
+		      
+		      if (is_uploaded_file($_FILES['GDriveP12file']['tmp_name'])) {		   
+                          $data = file_get_contents($_FILES['GDriveP12file']['tmp_name']);
+                          $config['system']['remotebackup']['GDriveP12key'] = base64_encode($data);
+                      } elseif ($config['system']['remotebackup']['GDriveEnabled'] != "on") {
+                          unset($config['system']['remotebackup']['GDriveP12key']);
+                      }
+                                            
+		  write_config();
 		}
 	}
 }
@@ -631,7 +657,7 @@ function backuparea_change(obj) {
 									</div>
 								</section>
 
-								<section>
+								<section class="__mb">
 				                        <div class="content-box">
 
 				                            <header class="content-box-head container-fluid">
@@ -693,6 +719,36 @@ function backuparea_change(obj) {
 
 									</div>
 								</section>
+								
+                                                                <section class="__mb">
+                				                        <div class="content-box">
+		                		                            <header class="content-box-head container-fluid">
+									        <h3><?=gettext("Remote backup (using Google drive)"); ?></h3>
+									    </header>
+									
+        								    <div class="content-box-main ">
+                                                                              <div class="table-responsive">
+                                                                                    <table class="table table-striped __nomb"> 
+                                                                                          <thead>
+                                                                                             <th class="col-sm-1"></th>
+                                                                                             <th class="col-sm-3"></th>
+                                                                                          </thead>
+                                                                                          <tbody>
+                                                                                             <tr><td><?=gettext("Enable"); ?> </td> <td><input name="GDriveEnabled" class="formcheckbox" id="GDriveEnabled" type="checkbox" <? if( $config['system']['remotebackup']['GDriveEnabled'] == "on" ) echo "checked";?> >  </td></tr>
+                                                                                             <tr><td><?=gettext("Email Address"); ?> </td><td><input name="GDriveEmail" class="formfld" size="20" value="<? echo $config['system']['remotebackup']['GDriveEmail'];?>" type="text"> </td> </tr>
+                                                                                             <tr><td><?=gettext("P12 key"); ?> <? if (isset($config['system']['remotebackup']['GDriveP12key'])) echo gettext("(replace)"); else echo gettext("(not loaded)"); ?> </td><td> <input name="GDriveP12file" class="formbtn" id="P12file" size="40" type="file"></td> </tr>
+                                                                                             <tr><td><?=gettext("Folder ID"); ?> </td><td> <input name="GDriveFolderID" class="formbtn" id="GDriveFolderID" value="<? echo $config['system']['remotebackup']['GDriveFolderID'];?>" size="40" type="text"></td> </tr>
+                                                                                             <tr><td><?=gettext("Backup Count"); ?> </td><td> <input name="GDriveBackupCount" class="formbtn" id="GDriveBackupCount" value="<? echo $config['system']['remotebackup']['GDriveBackupCount'];?>" size="40" type="text"></td> </tr>                                                                                             
+                                                                                             <tr><td colspan=2><?=gettext("Password protect your data"); ?> :</td></tr>
+                                                                                             <tr><td><?=gettext("Password :"); ?></td> <td> <input name="GDrivePassword" type="password" class="formfld pwd" size="20" value="<? echo $config['system']['remotebackup']['GDrivePassword'] ;?>" /> </td></tr>
+                                                                                             <tr><td><?=gettext("Confirm :"); ?></td> <td> <input name="GDrivePasswordConfirm" type="password" class="formfld pwd" size="20" value="<? echo $config['system']['remotebackup']['GDrivePassword'] ;?>" /> </td></tr>
+                                                                                             <tr><td><input name="Submit" class="btn btn-default" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit"></td><td></td></tr>
+                                                                                          </tbody>
+                                                                                    </table>
+                                                                              </div>
+                                                                            </div>                                                                                    
+									</div>
+                                                                </section>
 
 
 						</div>
@@ -701,7 +757,11 @@ function backuparea_change(obj) {
 					</div>
 
 
-				</section>
+
+
+
+				</section>				
+				
 			</div>
 		</div>
 	</section>
