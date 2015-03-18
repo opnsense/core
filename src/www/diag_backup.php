@@ -506,6 +506,21 @@ if ($_POST) {
                       }
                                             
 		  write_config();
+		  // test / perform backup 
+		  try {
+                      $filesInBackup = backup_to_google_drive() ;
+                  } catch (Exception $e) { 
+                      $filesInBackup = array() ;
+                  }
+                  
+                  if (count($filesInBackup) == 0) {
+                      $input_errors[] = gettext("Google Drive communication failure");
+                  } else {
+                      $input_messages = gettext("Backup succesfull, current filelist:");
+                      foreach ($filesInBackup as $filename => $file) {
+                          $input_messages = $input_messages . "<br>" . $filename ;
+                      }
+                  }
 		}
 	}
 }
@@ -567,7 +582,7 @@ function backuparea_change(obj) {
 	<section class="page-content-main">
 		<div class="container-fluid">
 			<div class="row">
-
+			        <?php if ($input_messages) print_info_box($input_messages); ?>
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
