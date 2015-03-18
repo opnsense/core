@@ -28,6 +28,10 @@
  */
 namespace Google\API;
 
+/**
+ * Class Drive wrapper around Google API for Drive support
+ * @package Google\API
+ */
 class Drive
 {
     /**
@@ -62,6 +66,11 @@ class Drive
             $key
         );
         $this->client->setAssertionCredentials($cred);
+        $this->client->setApplicationName("OPNsense");
+        $this->client->setAssertionCredentials($cred);
+        if ($this->client->getAuth()->isAccessTokenExpired()) {
+            $this->client->getAuth()->refreshTokenWithAssertion($cred);
+        }
 
         $this->service = new \Google_Service_Drive($this->client);
     }
