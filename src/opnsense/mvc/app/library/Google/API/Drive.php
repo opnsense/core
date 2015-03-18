@@ -44,6 +44,11 @@ class Drive
      */
     private $client = null;
 
+    /**
+     * @var null|Google_Auth_AssertionCredentials credential object
+     */
+    private $cred = null;
+
     public function __construct()
     {
         // hook in Google's autoloader
@@ -60,17 +65,13 @@ class Drive
         $this->client = new \Google_Client();
         $key = base64_decode($privateKeyB64);
 
-        $cred = new \Google_Auth_AssertionCredentials(
+        $this->cred = new \Google_Auth_AssertionCredentials(
             $client_id,
             array('https://www.googleapis.com/auth/drive'),
             $key
         );
-        $this->client->setAssertionCredentials($cred);
+        $this->client->setAssertionCredentials($this->cred);
         $this->client->setApplicationName("OPNsense");
-        $this->client->setAssertionCredentials($cred);
-        if ($this->client->getAuth()->isAccessTokenExpired()) {
-            $this->client->getAuth()->refreshTokenWithAssertion($cred);
-        }
 
         $this->service = new \Google_Service_Drive($this->client);
     }
@@ -87,6 +88,9 @@ class Drive
         if ($filename != null) {
             $query .= " and title in '".$filename."'";
         }
+        if ($this->client->getAuth()->isAccessTokenExpired()) {
+            $this->client->getAuth()->refreshTokenWithAssertion($this->cred);
+        }
         return $this->service->files->listFiles(array('q' => $query));
     }
 
@@ -97,6 +101,9 @@ class Drive
      */
     public function download($fileHandle)
     {
+        if ($this->client->getAuth()->isAccessTokenExpired()) {
+            $this->client->getAuth()->refreshTokenWithAssertion($this->cred);
+        }
         $sUrl = $fileHandle->getDownloadUrl();
         $request = new \Google_Http_Request($sUrl, 'GET', null, null);
         $httpRequest = $this->client->getAuth()->authenticatedRequest($request);
@@ -120,6 +127,9 @@ class Drive
     public function upload($directoryId, $filename, $content, $mimetype = 'text/plain')
     {
 
+        if ($this->client->getAuth()->isAccessTokenExpired()) {
+            $this->client->getAuth()->refreshTokenWithAssertion($this->cred);
+        }
         $parent = new \Google_Service_Drive_ParentReference();
         $parent->setId($directoryId);
 
@@ -144,6 +154,9 @@ class Drive
      */
     public function delete($fileHandle)
     {
+        if ($this->client->getAuth()->isAccessTokenExpired()) {
+            $this->client->getAuth()->refreshTokenWithAssertion($this->cred);
+        }
         $this->service->files->delete($fileHandle['id']);
     }
 }
