@@ -88,9 +88,6 @@ class Drive
         if ($filename != null) {
             $query .= " and title in '".$filename."'";
         }
-        if ($this->client->getAuth()->isAccessTokenExpired()) {
-            $this->client->getAuth()->refreshTokenWithAssertion($this->cred);
-        }
         return $this->service->files->listFiles(array('q' => $query));
     }
 
@@ -101,9 +98,6 @@ class Drive
      */
     public function download($fileHandle)
     {
-        if ($this->client->getAuth()->isAccessTokenExpired()) {
-            $this->client->getAuth()->refreshTokenWithAssertion($this->cred);
-        }
         $sUrl = $fileHandle->getDownloadUrl();
         $request = new \Google_Http_Request($sUrl, 'GET', null, null);
         $httpRequest = $this->client->getAuth()->authenticatedRequest($request);
@@ -127,9 +121,6 @@ class Drive
     public function upload($directoryId, $filename, $content, $mimetype = 'text/plain')
     {
 
-        if ($this->client->getAuth()->isAccessTokenExpired()) {
-            $this->client->getAuth()->refreshTokenWithAssertion($this->cred);
-        }
         $parent = new \Google_Service_Drive_ParentReference();
         $parent->setId($directoryId);
 
@@ -154,9 +145,6 @@ class Drive
      */
     public function delete($fileHandle)
     {
-        if ($this->client->getAuth()->isAccessTokenExpired()) {
-            $this->client->getAuth()->refreshTokenWithAssertion($this->cred);
-        }
         $this->service->files->delete($fileHandle['id']);
     }
 }
