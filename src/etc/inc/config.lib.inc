@@ -435,7 +435,7 @@ function pfSense_clear_globals() {
 }
 
 /**
- * backup config to google drive and return current file list 
+ * backup config to google drive and return current file list (/ info)
  *
  */
 function backup_to_google_drive() {
@@ -445,13 +445,12 @@ function backup_to_google_drive() {
 		$config = $cnf->object() ;
 		if (  isset($config->system->remotebackup) && isset($config->system->remotebackup->GDriveEnabled) && $config->system->remotebackup->GDriveEnabled == "on" ){
 			$client->login($config->system->remotebackup->GDriveEmail->__toString(), $config->system->remotebackup->GDriveP12key->__toString() );
-			// backup source data and target name 
-			$target_filename = "config-".time().".xml";
+			// backup source data to local strings (plain/encrypted)
 			$confdata = file_get_contents('/conf/config.xml') ; 
 			$confdata_enc = encrypt_data($confdata, $config->system->remotebackup->GDrivePassword->__toString()) ;					
 			
 			
-			// cleanup old files
+			// read filelist (config-*.xml) and cleanup old files
 			$files = $client->listFiles($config->system->remotebackup->GDriveFolderID->__toString());
 			$configfiles  = array();
 			foreach ($files as $file) {
@@ -461,35 +460,39 @@ function backup_to_google_drive() {
 			}
 			krsort($configfiles);
 			
-			if (isset($config->system->remotebackup->GDriveBackupCount) && is_numeric($config->system->remotebackup->GDriveBackupCount)) {
+			if (isset($config->system->remotebackup->GDriveBackupCount) && is_numeric($config->system->remotebackup->GDriveBackupCount->__toString())) {
 				$fcount = 0; 
 				foreach ($configfiles as $filename => $file) {
-					if ($fcount > $config->system->remotebackup->GDriveBackupCount) {
+					if ($fcount > $config->system->remotebackup->GDriveBackupCount->__toString()) {
+						log_error("remove " . $filename . " from Google Drive" );
 						$client->delete($file);
 					}
 					$fcount++ ;
 				}
 			}
 
-			// backup new file if changed (or first)
+			// backup new file if changed (or if first in backup)
+			$target_filename = "config-".time().".xml";
 			if (count($configfiles) > 1) {
 				// compare last backup with current, only save new 
 				$bck_data_enc = $client->download($configfiles[array_keys($configfiles)[0]]);
 				$bck_data = decrypt_data($bck_data_enc, $config->system->remotebackup->GDrivePassword->__toString());
-				if ($bck_data != $confdata) {
-					// backup
-					$configfiles[$target_filename] = $client->upload($config->system->remotebackup->GDriveFolderID->__toString(),$target_filename, $confdata );
+				if ($bck_data == $confdata) {
+					$target_filename = null;
 				}				
-			} else {
-				// first file, do backup
-				$configfiles[$target_filename] = $client->upload($config->system->remotebackup->GDriveFolderID->__toString(),$target_filename, $confdata );
+			} 
+			if (!is_null($target_filename)) {
+				log_error("backup configuration as " . $target_filename);
+				$configfiles[$target_filename] = $client->upload($config->system->remotebackup->GDriveFolderID->__toString(),$target_filename, $confdata_enc );
 			} 
 			
+			// return filelist
 			return $configfiles;
 
 		}
 	}
 
+	// not configured / issue, return empty list
 	return array(); 	
 }
 
