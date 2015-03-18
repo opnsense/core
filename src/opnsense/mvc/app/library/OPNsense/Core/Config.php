@@ -141,6 +141,10 @@ class Config extends Singleton
         }
 
         foreach ($source as $itemKey => $itemValue) {
+            if (is_bool($itemValue) && $itemValue == false) {
+                // skip empty booleans
+                continue;
+            }
             if (is_numeric($itemKey)) {
                 // recurring tag (content), use parent tagname.
                 $childNode = $node->addChild($parentTagName);
