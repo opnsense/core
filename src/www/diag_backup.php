@@ -291,7 +291,6 @@ if ($_POST) {
 					if ($_POST['decrypt']) {
 						if (!tagfile_deformat($data, $data, "config.xml")) {
 							$input_errors[] = gettext("The uploaded file does not appear to contain an encrypted OPNsense configuration.");
-							return 1;
 						}
 						$data = decrypt_data($data, $_POST['decrypt_password']);
 					}
@@ -321,7 +320,7 @@ if ($_POST) {
 							}
 						}
 					} else {
-						if(true) {
+						if(!$input_errors) {
 							/* restore the entire configuration */
 							$filename = $_FILES['conffile']['tmp_name'];
 							file_put_contents($filename, $data);
@@ -505,20 +504,20 @@ if ($_POST) {
                           unset($config['system']['remotebackup']['GDriveP12key']);
                       }
                                             
-		  write_config();
-		  // test / perform backup 
-		  try {
-                      $filesInBackup = backup_to_google_drive() ;
-                  } catch (Exception $e) { 
-                      $filesInBackup = array() ;
-                  }
+                      write_config();
+                      // test / perform backup 
+                      try {
+                         $filesInBackup = backup_to_google_drive() ;
+                      } catch (Exception $e) { 
+                         $filesInBackup = array() ;
+                      }
                   
-                  if (count($filesInBackup) == 0) {
-                      $input_errors[] = gettext("Google Drive communication failure");
-                  } else {
-                      $input_messages = gettext("Backup succesfull, current filelist:");
+                      if (count($filesInBackup) == 0) {
+                         $input_errors[] = gettext("Google Drive communication failure");
+                      } else {
+                         $input_messages = gettext("Backup succesfull, current filelist:");
                       foreach ($filesInBackup as $filename => $file) {
-                          $input_messages = $input_messages . "<br>" . $filename ;
+                         $input_messages = $input_messages . "<br>" . $filename ;
                       }
                   }
 		}

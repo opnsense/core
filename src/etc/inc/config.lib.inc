@@ -447,7 +447,8 @@ function backup_to_google_drive() {
 			$client->login($config->system->remotebackup->GDriveEmail->__toString(), $config->system->remotebackup->GDriveP12key->__toString() );
 			// backup source data to local strings (plain/encrypted)
 			$confdata = file_get_contents('/conf/config.xml') ; 
-			$confdata_enc = encrypt_data($confdata, $config->system->remotebackup->GDrivePassword->__toString()) ;					
+			$confdata_enc = encrypt_data($confdata, $config->system->remotebackup->GDrivePassword->__toString()) ;
+			tagfile_reformat($confdata_enc, $confdata_enc, "config.xml");				
 			
 			
 			// read filelist (config-*.xml) and cleanup old files
