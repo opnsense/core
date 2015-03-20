@@ -576,17 +576,6 @@ include("head.inc");
 										</td>
 									</tr>
 								<?php endif; ?>
-								<tr>
-									<th colspan="2" valign="top" class="listtopic"><?=gettext("Package settings"); ?></th>
-								</tr>
-								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("Package signature"); ?></td>
-									<td width="78%" class="vtable">
-										<input name="pkg_nochecksig" type="checkbox" id="pkg_nochecksig" value="yes" <?php if ($pconfig['pkg_nochecksig']) echo "checked=\"checked\""; ?> />
-										<strong><?=gettext("Do NOT check package signature"); ?></strong><br />
-										<?=gettext("Enable this option to allow OPNsense to install any package without checking its signature."); ?>
-									</td>
-								</tr>
 
 								<tr>
 									<td width="22%" valign="top">&nbsp;</td>
