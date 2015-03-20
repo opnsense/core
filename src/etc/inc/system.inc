@@ -1388,7 +1388,7 @@ function system_ntp_configure($start_ntpd = true)
 		$config['ntpd'] = array();
 
 	$ntpcfg = "# \n";
-	$ntpcfg .= "# pfSense ntp configuration file \n";
+	$ntpcfg .= "# OPNsense ntp configuration file \n";
 	$ntpcfg .= "# \n\n";
 	$ntpcfg .= "tinker panic 0 \n";
 
@@ -1442,7 +1442,7 @@ function system_ntp_configure($start_ntpd = true)
 	/* End PPS configuration */
 
 	/* Add GPS configuration */
-	if (!empty($config['ntpd']['gps'])
+	if (!empty($config['ntpd']['gps'] && !empty($config['ntpd']['gps']['port']))
 		&& file_exists('/dev/'.$config['ntpd']['gps']['port'])
 		&& system_ntp_setup_gps($config['ntpd']['gps']['port'])) {
 		$ntpcfg .= "\n";
