@@ -53,7 +53,6 @@ $pconfig['apinger_debug'] = isset($config['system']['apinger_debug']);
 $pconfig['use_mfs_tmpvar'] = isset($config['system']['use_mfs_tmpvar']);
 $pconfig['use_mfs_tmp_size'] = $config['system']['use_mfs_tmp_size'];
 $pconfig['use_mfs_var_size'] = $config['system']['use_mfs_var_size'];
-$pconfig['pkg_nochecksig'] = isset($config['system']['pkg_nochecksig']);
 
 $pconfig['powerd_ac_mode'] = "hadp";
 if (!empty($config['system']['powerd_ac_mode']))
@@ -135,11 +134,6 @@ if ($_POST) {
 			$config['system']['gw_switch_default'] = true;
 		else
 			unset($config['system']['gw_switch_default']);
-
-		if($_POST['pkg_nochecksig'] == "yes")
-			$config['system']['pkg_nochecksig'] = true;
-		elseif (isset($config['system']['pkg_nochecksig']))
-			unset($config['system']['pkg_nochecksig']);
 
 		if($_POST['powerd_enable'] == "yes")
 			$config['system']['powerd_enable'] = true;
