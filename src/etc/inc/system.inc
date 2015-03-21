@@ -1701,8 +1701,6 @@ function system_reboot_cleanup() {
 	}
 	require_once("voucher.inc");
 	voucher_save_db_to_config();
-	require_once("pkg-utils.inc");
-	stop_packages();
 }
 
 function system_console_configure()

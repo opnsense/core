@@ -27,7 +27,6 @@
 */
 
 require("guiconfig.inc");
-require("pkg-utils.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateways.php');
 

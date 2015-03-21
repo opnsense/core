@@ -265,7 +265,6 @@ function filter_configure_sync($delete_states_if_needed = true)
 	$rules .= "{$altq_queues}\n";
 	$rules .= "{$natrules}\n";
 	$rules .= "{$pfrules}\n";
-	$rules .= discover_pkg_rules("filter");
 
 	unset($aliases, $gateways, $altq_queues, $natrules, $pfrules);
 
@@ -1974,7 +1973,6 @@ function filter_nat_rules_generate() {
 		}
 	}
 
-	$natrules .= discover_pkg_rules("nat");
 
 	$natrules .= "# UPnPd rdr anchor\n";
 	$natrules .= "rdr-anchor \"miniupnpd\"\n";
@@ -2620,7 +2618,6 @@ function filter_rules_generate()
 	$pptpdcfg = $config['pptpd'];
 
 	$ipfrules = "";
-	$ipfrules .= discover_pkg_rules("pfearly");
 
 	/* relayd */
 	$ipfrules .= "anchor \"relayd/*\"\n";
@@ -3563,37 +3560,6 @@ EOD;
 	return($ipfrules);
 }
 
-function discover_pkg_rules($ruletype) {
-	global $config, $g, $aliases;
-
-	/* Bail if there is no pkg directory, or if the package files might be out of sync. */
-	if(!is_dir("/usr/local/pkg") || file_exists('/conf/needs_package_sync'))
-		return "";
-
-	$rules = "";
-	$files = glob("/usr/local/pkg/*.inc");
-	foreach($files as $pkg_inc) {
-		update_filter_reload_status(sprintf(gettext('Checking for %1$s PF hooks in package %2$s'), $ruletype, $pkg_inc));
-		$pkg = basename($pkg_inc, ".inc");
-		$pkg_generate_rules = "{$pkg}_generate_rules";
-		if (!function_exists($pkg_generate_rules))
-			require_once($pkg_inc);
-		if(function_exists($pkg_generate_rules)) {
-			update_filter_reload_status(sprintf(gettext('Processing early %1$s rules for package %2$s'), $ruletype, $pkg_inc));
-			$tmprules = $pkg_generate_rules("$ruletype");
-			file_put_contents('/tmp/rules.test.packages', $aliases . $tmprules);
-			$status = mwexec('/sbin/pfctl -nf /tmp/rules.test.packages');
-			if ($status <> 0) {
-				$errorrules = sprintf(gettext("There was an error while parsing the package filter rules for %s."), $pkg_inc) . "\n";
-				log_error($errorrules);
-				file_put_contents("/tmp/rules.packages.{$pkg}", "#{$errorrules}\n{$tmprules}\n");
-				continue;
-			}
-			$rules .= $tmprules;
-		}
-	}
-	return $rules;
-}
 
 function filter_get_antilockout_ports($wantarray = false) {
 	global $config;

@@ -331,16 +331,6 @@ function services_dhcpdv4_configure()
 	if (!is_dhcp_server_enabled())
 		return 0;
 
-	/* if OLSRD is enabled, allow WAN to house DHCP. */
-	if (!function_exists('is_package_installed'))
-		require_once('pkg-utils.inc');
-	if (is_package_installed('olsrd') && isset($config['installedpackages']['olsrd']))
-		foreach($config['installedpackages']['olsrd']['config'] as $olsrd)
-			if (isset($olsrd['enable']) && $olsrd['enable'] == "on") {
-				$is_olsr_enabled = true;
-				break;
-			}
-
 	if (file_exists("/var/run/booting")) {
 		/* restore the leases, if we have them */
 		if (file_exists('/conf/dhcpleases.tgz')) {
@@ -505,10 +495,6 @@ EOPP;
 
 		if (!is_ipaddr($subnet))
 			continue;
-
-		if($is_olsr_enabled == true)
-			if($dhcpifconf['netmask'])
-				$subnetmask = gen_subnet_mask($dhcpifconf['netmask']);
 
 		$all_pools = array();
 		$all_pools[] = $dhcpifconf;
@@ -1098,10 +1084,6 @@ EOD;
 		$ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
 		$subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
 
-		if ($is_olsr_enabled == true) {
-			if($dhcpv6ifconf['netmask'])
-				$subnetmask = gen_subnet_maskv6($dhcpv6ifconf['netmask']);
-		}
 
 		$dnscfgv6 = "";
 
@@ -2294,18 +2276,19 @@ function upnp_action ($action) {
 	}
 }
 
+
 function upnp_start() {
-	global $config;
+       global $config;
 
-	if(!isset($config['installedpackages']['miniupnpd']['config']))
-		return;
+       if(!isset($config['installedpackages']['miniupnpd']['config']))
+               return;
 
-	if($config['installedpackages']['miniupnpd']['config'][0]['enable']) {
-		echo gettext("Starting UPnP service... ");
-		require_once('/usr/local/pkg/miniupnpd.inc');
-		sync_package_miniupnpd();
-		echo "done.\n";
-	}
+       if($config['installedpackages']['miniupnpd']['config'][0]['enable']) {
+               echo gettext("Starting UPnP service... ");
+               require_once('/usr/local/pkg/miniupnpd.inc');
+               sync_package_miniupnpd();
+               echo "done.\n";
+       }
 }
 
 function install_cron_job($command, $active=false, $minute="0", $hour="*", $monthday="*", $month="*", $weekday="*", $who="root") {

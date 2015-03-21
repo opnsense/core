@@ -1170,12 +1170,6 @@ $priv_list['page-system-firmware-manualupdate']['descr'] = gettext("Allow access
 $priv_list['page-system-firmware-manualupdate']['match'] = array();
 $priv_list['page-system-firmware-manualupdate']['match'][] = "system_firmware.php*";
 
-$priv_list['page-system-firmware-checkforupdate'] = array();
-$priv_list['page-system-firmware-checkforupdate']['name'] = gettext("WebCfg - System: Firmware: Check For Update page");
-$priv_list['page-system-firmware-checkforupdate']['descr'] = gettext("Allow access to the 'System: Firmware: Check For Update' page.");
-$priv_list['page-system-firmware-checkforupdate']['match'] = array();
-$priv_list['page-system-firmware-checkforupdate']['match'][] = "system_firmware_auto.php*";
-
 $priv_list['page-system-firmware-autoupdate'] = array();
 $priv_list['page-system-firmware-autoupdate']['name'] = gettext("WebCfg - System: Firmware: Auto Update page");
 $priv_list['page-system-firmware-autoupdate']['descr'] = gettext("Allow access to the 'System: Firmware: Auto Update' page.");
