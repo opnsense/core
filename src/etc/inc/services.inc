@@ -2308,6 +2308,19 @@ function upnp_start() {
 	}
 }
 
+/**
+ * check if cron exists
+ */
+function cron_job_exists($command) {
+	global $config;
+	foreach($config['cron']['item'] as $item) {
+		if(strstr($item['command'], $command)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 function install_cron_job($command, $active=false, $minute="0", $hour="*", $monthday="*", $month="*", $weekday="*", $who="root") {
 	global $config, $g;
 

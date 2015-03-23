@@ -225,6 +225,12 @@ function write_config($desc = 'Unknown', $backup = true)
 		session_write_close();
 	}
 
+	if (!isset($config['version'])) {
+		// Examine config.xml, if for some strange reason the content is unexpected : exit directly.
+		log_error(gettext("WARNING: Corrupt config!"));
+		return -1;
+	}
+
 	$cnf = OPNsense\Core\Config::getInstance();
 	$cnf->fromArray($config);
 	$revision_info = make_config_revision_entry($desc);

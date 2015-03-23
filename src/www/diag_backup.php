@@ -41,6 +41,8 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
+require_once("services.inc");
+require_once("util.inc");
 
 $rrddbpath = '/var/db/rrd';
 $rrdtool = '/usr/local/bin/rrdtool';
@@ -508,6 +510,11 @@ if ($_POST) {
                       // test / perform backup 
                       try {
                          $filesInBackup = backup_to_google_drive() ;
+                         $cron_job = "/usr/local/opnsense/scripts/remote_backup.php";
+                         if (!cron_job_exists($cron_job)) {
+                           // initial cron job install
+                           install_cron_job($cron_job,true,0,1);
+                         }
                       } catch (Exception $e) { 
                          $filesInBackup = array() ;
                       }
