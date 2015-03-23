@@ -194,16 +194,13 @@ if ($_POST) {
 		else if (isset($config['system']['ssh']['port']))
 			unset($config['system']['ssh']['port']);
 
-		$sshd_permitrootlogin = $config['system']['ssh']['permitrootlogin'];
-		if ($_POST['sshdpermitrootlogin'])
-			$config['system']['ssh']['permitrootlogin'] = $_POST['sshdpermitrootlogin'];
-		else if (isset($config['system']['ssh']['permitrootlogin']))
+		if (!isset($_POST['sshdpermitrootlogin']) && isset($config['system']['ssh']['permitrootlogin']))
 			unset($config['system']['ssh']['permitrootlogin']);
 
 		if (($sshd_enabled != $config['system']['enablesshd']) ||
 			($sshd_keyonly != $config['system']['ssh']['sshdkeyonly']) ||
 			($sshd_port != $config['system']['ssh']['port']) ||
-			($sshd_permitrootlogin != $config['system']['ssh']['permitrootlogin'])) {
+			($pconfig['system']['ssh']['permitrootlogin'] != isset($config['system']['ssh']['permitrootlogin'])) ) {
 			$restart_sshd = true;
 		}
 
@@ -234,19 +231,17 @@ if ($_POST) {
 		write_config();
 
 		$retval = filter_configure();
-	    $savemsg = get_std_save_message($retval);
+		$savemsg = get_std_save_message($retval);
 
 		if ($restart_webgui)
 			$savemsg .= sprintf("<br />" . gettext("One moment...redirecting to %s in 20 seconds."),$url);
 
-		conf_mount_rw();
 		setup_serial_port();
 		// Restart DNS in case dns rebinding toggled
 		if (isset($config['dnsmasq']['enable']))
 			services_dnsmasq_configure();
 		elseif (isset($config['unbound']['enable']))
 			services_unbound_configure();
-		conf_mount_ro();
 	}
 }
 

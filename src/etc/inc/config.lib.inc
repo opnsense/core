@@ -1,4 +1,7 @@
 <?php
+require_once("xmlparse.inc");
+require_once("crypt.inc");
+require_once("script/load_phalcon.php");
 
 /*
 	Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
@@ -29,166 +32,35 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/****f* config/encrypted_configxml
- * NAME
- *   encrypted_configxml - Checks to see if config.xml is encrypted and if so, prompts to unlock.
- * INPUTS
- *   None
- * RESULT
- *   $config	- rewrites config.xml without encryption
- ******/
-function encrypted_configxml()
-{
-	global $g, $config;
-
-	$config_xml = '/conf/config.xml';
-
-	if (!file_exists($config_xml)) {
-		return;
-	}
-
-	if (!file_exists('/var/run/booting')) {
-		return;
-	}
-
-	$configtxt = file_get_contents($config_xml);
-	if(tagfile_deformat($configtxt, $configtxt, 'config.xml')) {
-		$fp = fopen('php://stdin', 'r');
-		$data = "";
-		echo "\n\n*** Encrypted config.xml detected ***\n";
-		while($data == "") {
-			echo "\nEnter the password to decrypt config.xml: ";
-			$decrypt_password = chop(fgets($fp));
-			$data = decrypt_data($configtxt, $decrypt_password);
-			if (!strstr($data, '<pfsense>')) {
-				$data = '';
-			}
-			if($data) {
-				$fd = fopen($config_xml . '.tmp', 'w');
-				fwrite($fd, $data);
-				fclose($fd);
-				exec("/bin/mv {$config_xml}.tmp {$config_xml}");
-				echo "\n" . gettext("Config.xml unlocked.") . "\n";
-				fclose($fp);
-			} else {
-				echo "\n" . gettext("Invalid password entered.  Please try again.") . "\n";
-			}
-		}
-	}
-}
 
 /****f* config/parse_config
  * NAME
- *   parse_config - Read in config.cache or config.xml if needed and return $config array
- * INPUTS
- *   $parse       - boolean to force parse_config() to read config.xml and generate config.cache
+ *   parse_config - Read in config.xml if needed and return $config array
  * RESULT
  *   $config      - array containing all configuration variables
  ******/
-function parse_config($parse = false)
+function parse_config()
 {
-	global $g, $config_parsed;
-
-	$config_xml = '/conf/config.xml';
-	$lockkey = lock('config');
-	$config_parsed = false;
-
-	if (!file_exists($config_xml) || filesize($config_xml) == 0) {
-		$last_backup = discover_last_backup();
-		if ($last_backup) {
-			log_error(gettext("No config.xml found, attempting last known config restore."));
-			file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-			restore_backup("/conf/backup/{$last_backup}");
+	$cnf = OPNsense\Core\Config::getInstance();
+	if (!$cnf->isValid()) {
+		// there was an issue with loading the config, try to restore the last backup
+		$backups = $cnf->getBackups();
+		if (count($backups) > 0) {
+			// load last backup
+			log_error(gettext("No (valid) config.xml found, attempting last known config restore."));
+			file_notice("config.xml", gettext("No (valid) config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
+			$cnf->restoreBackup($backups[0]);
 		} else {
+			// we don't have backups, try to load the default
 			log_error(gettext('No config.xml found, attempting to restore factory config.'));
-			restore_backup('/usr/local/etc/config.xml');
+			$cnf->restoreBackup('/usr/local/etc/config.xml');
 		}
 	}
 
-
-	// Check for encrypted config.xml
-	encrypted_configxml();
-
-	if (!$parse) {
-		if (file_exists('/tmp/config.cache')) {
-			$config = unserialize(file_get_contents('/tmp/config.cache'));
-			if (is_null($config))
-				$parse = true;
-		} else
-			$parse = true;
-	}
-	if ($parse == true) {
-		if (!file_exists($config_xml)) {
-			log_error("No config.xml found, attempting last known config restore.");
-			file_notice("config.xml", "No config.xml found, attempting last known config restore.", "pfSenseConfigurator", "");
-			$last_backup = discover_last_backup();
-			if ($last_backup) {
-				restore_backup("/conf/backup/{$last_backup}");
-			} else {
-				log_error(gettext('No config.xml found, attempting to restore factory config.'));
-				restore_backup('/usr/local/etc/config.xml');
-			}
-		}
-		$config = parse_xml_config($config_xml, array($g['xml_rootobj'], 'pfsense'));
-		if ($config == -1) {
-			$last_backup = discover_last_backup();
-			if ($last_backup)
-				restore_backup("/conf/backup/{$last_backup}");
-			else {
-				log_error(gettext('No config.xml found, attempting to restore factory config.'));
-				restore_backup('/usr/local/etc/config.xml');
-			}
-		}
-		generate_config_cache($config);
-	}
-
-
-	$config_parsed = true;
-	unlock($lockkey);
-
-	alias_make_table($config);
-
-	return $config;
+	// return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
+	return $cnf->toArray(listtags());
 }
 
-function generate_config_cache($config)
-{
-	$configcache = fopen('/tmp/config.cache', 'w');
-	fwrite($configcache, serialize($config));
-	fclose($configcache);
-	unset($configcache);
-}
-
-function discover_last_backup()
-{
-	$backups = glob('/conf/backup/*.xml');
-	$last_backup = '';
-	$last_mtime = 0;
-
-	foreach($backups as $backup) {
-		if (filemtime($backup) > $last_mtime) {
-			$last_mtime = filemtime($backup);
-			$last_backup = $backup;
-		}
-	}
-
-	return basename($last_backup);
-}
-
-function restore_backup($file)
-{
-	global $g;
-
-	if (file_exists($file)) {
-		conf_mount_rw();
-		@unlink('/tmp/config.cache');
-		copy($file, '/conf/config.xml');
-		disable_security_checks();
-		log_error(sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file));
-		file_notice("config.xml", sprintf(gettext('%1$s is restoring the configuration %2$s'), $g['product_name'], $file), "pfSenseConfigurator", "");
-		conf_mount_ro();
-	}
-}
 
 /****f* config/parse_config_bootup
  * NAME
@@ -202,44 +74,41 @@ function parse_config_bootup()
 
 	$config_xml = '/conf/config.xml';
 
-	$lockkey = lock('config');
 	if (!file_exists($config_xml)) {
 		if (file_exists("/var/run/booting")) {
-			$last_backup = discover_last_backup();
-			if($last_backup) {
-				log_error("No config.xml found, attempting last known config restore.");
-				file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-				restore_backup("/conf/backup/{$last_backup}");
+			if (strstr($g['platform'], "cdrom")) {
+				/* try copying the default config. to the floppy */
+				echo gettext("Resetting factory defaults...") . "\n";
+				reset_factory_defaults(true);
+				if (!file_exists($config_xml)) {
+					echo gettext("No XML configuration file found - using factory defaults.\n" .
+								 "Make sure that the configuration floppy disk with the conf/config.xml\n" .
+								 "file is inserted. If it isn't, your configuration changes will be lost\n" .
+								 "on reboot.\n");
+				}
+			} else {
+				$cnf = OPNsense\Core\Config::getInstance();
+				$backups = $cnf->getBackups();
+				if (count($backups) > 0) {
+                                        log_error("No config.xml found, attempting last known config restore.");
+                                        file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
+					$cnf->restoreBackup($backups[0]);					
+				} else {
+					echo sprintf(gettext("XML configuration file not found.  %s cannot continue booting."), $g['product_name']) . "\n";
+					mwexec("/sbin/halt");
+					exit;
+				}
+				log_error("Last known config found and restored.  Please double check your configuration file for accuracy.");
+				file_notice("config.xml", gettext("Last known config found and restored.  Please double check your configuration file for accuracy."), "pfSenseConfigurator", "");
 			}
-			if (!file_exists($config_xml)) {
-				echo sprintf(gettext("XML configuration file not found.  %s cannot continue booting."), $g['product_name']) . "\n";
-				unlock($lockkey);
-				mwexec("/sbin/halt");
-				exit;
-			}
-			log_error("Last known config found and restored.  Please double check your configuration file for accuracy.");
-			file_notice("config.xml", gettext("Last known config found and restored.  Please double check your configuration file for accuracy."), "pfSenseConfigurator", "");
 		} else {
-			unlock($lockkey);
 			log_error(gettext("Could not find a usable configuration file! Exiting...."));
 			exit(0);
 		}
 	}
 
-	if (filesize($config_xml) == 0) {
-		$last_backup = discover_last_backup();
-		if ($last_backup) {
-			log_error(gettext("No config.xml found, attempting last known config restore."));
-			file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-			restore_backup("/conf/backup/{$last_backup}");
-		} else {
-			log_error(gettext('No config.xml found, attempting to restore factory config.'));
-			restore_backup('/usr/local/etc/config.xml');
-		}
-	}
-	unlock($lockkey);
 
-	$config = parse_config(true);
+	$config = parse_config();
 
 	if ((float)$config['version'] > (float)$g['latest_config']) {
 		echo <<<EOD
@@ -261,73 +130,6 @@ EOD;
 	alias_make_table($config);
 }
 
-/****f* config/conf_mount_rw
- * NAME
- *   conf_mount_rw - Mount filesystems read/write.
- * RESULT
- *   null
- ******/
-/* mount flash card read/write */
-function conf_mount_rw()
-{
-	global $g, $config;
-
-	/* XXX do not mount (we're already set up) */
-	return;
-
-	if ((refcount_reference(1000) > 1) && is_writable("/"))
-		return;
-
-	$status = mwexec("/sbin/mount -u -w -o sync,noatime /cf");
-	if($status <> 0) {
-		if(file_exists("/var/run/booting"))
-			echo gettext("Disk is dirty.  Running fsck -y") . "\n";
-		mwexec("/sbin/fsck -y /cf");
-		$status = mwexec("/sbin/mount -u -w -o sync,noatime /cf");
-	}
-
-	/*    if the platform is soekris or wrap or pfSense, lets mount the
-	 *    compact flash cards root.
-         */
-	$status = mwexec("/sbin/mount -u -w -o sync,noatime /");
-	/* we could not mount this correctly.  kick off fsck */
-	if($status <> 0) {
-		log_error(gettext("File system is dirty.  Launching FSCK for /"));
-		mwexec("/sbin/fsck -y /");
-		$status = mwexec("/sbin/mount -u -w -o sync,noatime /");
-	}
-
-	mark_subsystem_dirty('mount');
-}
-
-/****f* config/conf_mount_ro
- * NAME
- *   conf_mount_ro - Mount filesystems readonly.
- * RESULT
- *   null
- ******/
-function conf_mount_ro()
-{
-	global $g, $config;
-
-	/* XXX do not mount (we're already set up) */
-	return;
-
-	if (refcount_unreference(1000) > 0)
-		return;
-
-	if(isset($config['system']['nanobsd_force_rw']))
-		return;
-
-	if(file_exists("/var/run/booting"))
-		return;
-
-	clear_subsystem_dirty('mount');
-	/* sync data, then force a remount of /cf */
-	pfSense_sync();
-	mwexec("/sbin/mount -u -r -f -o sync,noatime /cf");
-	mwexec("/sbin/mount -u -r -f -o sync,noatime /");
-}
 
 /****f* config/convert_config
  * NAME
@@ -388,49 +190,6 @@ function convert_config() {
 		write_config(sprintf(gettext('Upgraded config version level from %1$s to %2$s'), $prev_version, $config['version']));
 }
 
-/****f* config/safe_write_file
- * NAME
- *   safe_write_file - Write a file out atomically
- * DESCRIPTION
- *   safe_write_file() Writes a file out atomically by first writing to a
- *   temporary file of the same name but ending with the pid of the current
- *   process, them renaming the temporary file over the original.
- * INPUTS
- *   $filename  - string containing the filename of the file to write
- *   $content   - string containing the file content to write to file
- *   $force_binary      - boolean denoting whether we should force binary
- *   mode writing.
- * RESULT
- *   boolean - true if successful, false if not
- ******/
-function safe_write_file($file, $content, $force_binary) {
-	$tmp_file = $file . "." . getmypid();
-	$write_mode = $force_binary ? "wb" : "w";
-
-	$fd = fopen($tmp_file, $write_mode);
-	if (!$fd) {
-		// Unable to open temporary file for writing
-		return false;
-        }
-	if (!fwrite($fd, $content)) {
-		// Unable to write to temporary file
-		fclose($fd);
-		return false;
-	}
-	fflush($fd);
-	fclose($fd);
-
-	if (!rename($tmp_file, $file)) {
-		// Unable to move temporary file to original
-		@unlink($tmp_file);
-		return false;
-	}
-
-	// Sync file before returning
-	pfSense_sync();
-
-	return true;
-}
 
 /****f* config/write_config
  * NAME
@@ -449,8 +208,6 @@ function write_config($desc = 'Unknown', $backup = true)
 {
 	global $config, $g;
 
-	$config_xml = '/conf/config.xml';
-
 	if (!empty($_SERVER['REMOTE_ADDR'])) {
 		if (session_status() == PHP_SESSION_NONE) {
 			session_start();
@@ -468,63 +225,34 @@ function write_config($desc = 'Unknown', $backup = true)
 		session_write_close();
 	}
 
-	if ($backup) {
-		backup_config();
+	if (!isset($config['version'])) {
+		// Examine config.xml, if for some strange reason the content is unexpected : exit directly.
+		log_error(gettext("WARNING: Corrupt config!"));
+		return -1;
 	}
 
-	$config['revision'] = make_config_revision_entry($desc);
-
-	conf_mount_rw();
-	$lockkey = lock('config', LOCK_EX);
-
-	/* generate configuration XML */
-	$xmlconfig = dump_xml_config($config, $g['xml_rootobj']);
-
-	/* write new configuration */
-	if (!safe_write_file('/conf/config.xml', $xmlconfig, false)) {
+	$cnf = OPNsense\Core\Config::getInstance();
+	$cnf->fromArray($config);
+	$revision_info = make_config_revision_entry($desc);
+	try {
+		$cnf->save($revision_info, $backup);
+	} catch (OPNsense\Core\ConfigException $e) {
+		// write failure
 		log_error(gettext("WARNING: Config contents could not be save. Could not open file!"));
-		unlock($lockkey);
 		file_notice('config.xml', sprintf("%s\n", gettext('Unable to open /conf/config.xml for writing in write_config()')));
 		return -1;
 	}
 
-	cleanup_backupcache(true);
-
-	/* re-read configuration */
-	/* NOTE: We assume that the file can be parsed since we wrote it. */
-	$config = parse_xml_config($config_xml, $g['xml_rootobj']);
-	if ($config == -1) {
-		copy($config_xml, $config_xml . '.bad');
-		$last_backup = discover_last_backup();
-		if ($last_backup) {
-			restore_backup("/conf/backup/{$last_backup}");
-			$config = parse_xml_config($config_xml, $g['xml_rootobj']);
-			if (file_exists("/var/run/booting")) {
-				echo "\n\n ************** WARNING **************";
-				echo "\n\n Configuration could not be validated. A previous configuration was restored. \n";
-				echo "\n The failed configuration file has been saved as {$config_xml}.bad \n\n";
-			}
-		} else
-			log_error(gettext("Could not restore config.xml."));
-	} else
-		generate_config_cache($config);
-
-	unlock($lockkey);
-
 	unlink_if_exists("/usr/local/pkg/pf/carp_sync_client.php");
-
-	/* tell kernel to sync fs data */
-	conf_mount_ro();
 
 	/* sync carp entries to other firewalls */
 	carp_sync_client();
 
-	if(is_dir("/usr/local/pkg/write_config")) {
-		/* process packager manager custom rules */
-		run_plugins("/usr/local/pkg/write_config/");
-	}
+	/* cleanup backups */
+	cleanup_backups();
 
 	return $config;
+
 }
 
 /****f* config/reset_factory_defaults
@@ -537,7 +265,6 @@ function reset_factory_defaults($lock = false)
 {
 	global $g;
 
-	conf_mount_rw();
 	if (!$lock)
 		$lockkey = lock('config', LOCK_EX);
 
@@ -552,7 +279,6 @@ function reset_factory_defaults($lock = false)
 		}
 	}
 	closedir($dh);
-	unlink_if_exists('/tmp/config.cache');
 
 	/* copy default configuration */
 	copy('/usr/local/etc/config.xml', '/conf/config.xml');
@@ -563,7 +289,6 @@ function reset_factory_defaults($lock = false)
 	touch("/conf/trigger_initial_wizard");
 	if (!$lock)
 		unlock($lockkey);
-	conf_mount_ro();
 	setup_serial_port();
 	return 0;
 }
@@ -574,53 +299,21 @@ function config_restore($conffile) {
 	if (!file_exists($conffile))
 		return 1;
 
-	backup_config();
-
-	conf_mount_rw();
+	$cnf = OPNsense\Core\Config::getInstance();
+	$cnf->backup();
 
 	$lockkey = lock('config', LOCK_EX);
 
-	unlink_if_exists('/tmp/config.cache');
 	copy($conffile, '/conf/config.xml');
 
 	disable_security_checks();
 
 	unlock($lockkey);
 
-	$config = parse_config(true);
+	$config = parse_config();
 
-	conf_mount_ro();
 
 	write_config(gettext("Reverted to") . " " . array_pop(explode("/", $conffile)) . ".", false);
-
-	return 0;
-}
-
-function config_install($conffile)
-{
-	if (!file_exists($conffile)) {
-		return 1;
-	}
-
-	if (!config_validate($conffile)) {
-		return 1;
-	}
-
-	if (file_exists('/var/run/booting')) {
-		echo gettext("Installing configuration...") . "\n";
-	} else {
-		log_error(gettext("Installing configuration ...."));
-	}
-
-	conf_mount_rw();
-	$lockkey = lock('config', LOCK_EX);
-
-	copy($conffile, '/conf/config.xml');
-	disable_security_checks();
-	@unlink('/tmp/config.cache');
-
-	unlock($lockkey);
-	conf_mount_ro();
 
 	return 0;
 }
@@ -650,162 +343,30 @@ function security_checks_disabled()
 	return file_exists('/tmp/disable_security_checks');
 }
 
-function config_validate($conffile) {
-
-	global $g, $xmlerr;
-
-	$xml_parser = xml_parser_create();
-
-	if (!($fp = fopen($conffile, "r"))) {
-		$xmlerr = gettext("XML error: unable to open file");
-		return false;
-	}
-
-	while ($data = fread($fp, 4096)) {
-		if (!xml_parse($xml_parser, $data, feof($fp))) {
-			$xmlerr = sprintf(gettext('%1$s at line %2$d'),
-						xml_error_string(xml_get_error_code($xml_parser)),
-						xml_get_current_line_number($xml_parser));
-			return false;
-		}
-	}
-	xml_parser_free($xml_parser);
-
-	fclose($fp);
-
-	return true;
-}
-
-function cleanup_backupcache($lock = false) {
-	global $g;
+/**
+ * remove old backups
+ */
+function cleanup_backups() {
+	global $g, $config;
 	$i = false;
 
-	$revisions = get_config_backup_count();
-
-	if (!$lock)
-		$lockkey = lock('config');
-
-	conf_mount_rw();
-
-	$backups = get_backups();
-	if ($backups) {
-		$baktimes = $backups['versions'];
-		unset($backups['versions']);
+	if (isset($config['system']['backupcount']) && is_numeric($config['system']['backupcount']) && ($config['system']['backupcount'] >= 0)) {
+		$revisions = intval($config['system']['backupcount']);
 	} else {
-		$backups = array();
-		$baktimes = array();
+		$revisions = 30;
 	}
-	$newbaks = array();
-	$bakfiles = glob('/conf/backup/config-*');
-	$tocache = array();
 
-	foreach($bakfiles as $backup) { // Check for backups in the directory not represented in the cache.
-		$backupsize = filesize($backup);
-		if($backupsize == 0) {
-			unlink($backup);
-			continue;
+	$cnf = OPNsense\Core\Config::getInstance();
+	
+	$cnt=1;
+	foreach ($cnf->getBackups() as $filename) {
+		if ($cnt > $revisions ) {
+			unlink($filename);
 		}
-		$tocheck = array_shift(explode('.', array_pop(explode('-', $backup))));
-		if(!in_array($tocheck, $baktimes)) {
-			$i = true;
-			$newxml = parse_xml_config($backup, array($g['xml_rootobj'], 'pfsense'));
-			if($newxml == "-1") {
-				log_error(sprintf(gettext("The backup cache file %s is corrupted.  Unlinking."), $backup));
-				unlink($backup);
-				log_error(sprintf(gettext("The backup cache file %s is corrupted.  Unlinking."), $backup));
-				continue;
-			}
-			if($newxml['revision']['description'] == "")
-				$newxml['revision']['description'] = "Unknown";
-			if($newxml['version'] == "")
-				$newxml['version'] = "?";
-			$tocache[$tocheck] = array('description' => $newxml['revision']['description'], 'version' => $newxml['version'], 'filesize' => $backupsize);
-		}
+		++$cnt ;
 	}
-	foreach($backups as $checkbak) {
-		if(count(preg_grep('/' . $checkbak['time'] . '/i', $bakfiles)) != 0) {
-			$newbaks[] = $checkbak;
-		} else {
-			$i = true;
-			if(file_exists("/var/run/booting")) print " " . $tocheck . "r";
-		}
-	}
-	foreach($newbaks as $todo) $tocache[$todo['time']] = array('description' => $todo['description'], 'version' => $todo['version'], 'filesize' => $todo['filesize']);
-	if(is_int($revisions) and (count($tocache) > $revisions)) {
-		$toslice = array_slice(array_keys($tocache), 0, $revisions);
-		foreach($toslice as $sliced)
-			$newcache[$sliced] = $tocache[$sliced];
-		foreach($tocache as $version => $versioninfo) {
-			if(!in_array($version, array_keys($newcache))) {
-				unlink_if_exists('/conf/backup/config-' . $version . '.xml');
-			}
-		}
-		$tocache = $newcache;
-	}
-	$bakout = fopen('/conf/backup/backup.cache', 'w');
-	fwrite($bakout, serialize($tocache));
-	fclose($bakout);
-	conf_mount_ro();
-
-	if (!$lock)
-		unlock($lockkey);
 }
 
-function get_backups()
-{
-	if (file_exists('/conf/backup/backup.cache')) {
-		$confvers = unserialize(file_get_contents('/conf/backup/backup.cache'));
-		$bakvers = array_keys($confvers);
-		$toreturn = array();
-		sort($bakvers);
-		//	$bakvers = array_reverse($bakvers);
-		foreach(array_reverse($bakvers) as $bakver)
-			$toreturn[] = array('time' => $bakver, 'description' => $confvers[$bakver]['description'], 'version' => $confvers[$bakver]['version'], 'filesize' => $confvers[$bakver]['filesize']);
-	} else {
-		return false;
-	}
-	$toreturn['versions'] = $bakvers;
-	return $toreturn;
-}
-
-function backup_config()
-{
-	conf_mount_rw();
-
-	/* Create backup directory if needed */
-	safe_mkdir('/conf/backup');
-
-	if ($config['revision']['time'] == '') {
-		$baktime = 0;
-	} else {
-		$baktime = $config['revision']['time'];
-	}
-
-	if ($config['revision']['description'] == '') {
-		$bakdesc = 'Unknown';
-	} else {
-		$bakdesc = $config['revision']['description'];
-	}
-
-	$bakver = ($config['version'] == '') ? '?' : $config['version'];
-	$bakfilename = '/conf/backup/config-' . $baktime . '.xml';
-	copy('/conf/config.xml', $bakfilename);
-
-	if (file_exists('/conf/backup/backup.cache')) {
-		$backupcache = unserialize(file_get_contents('/conf/backup/backup.cache'));
-	} else {
-		$backupcache = array();
-	}
-
-	$backupcache[$baktime] = array('description' => $bakdesc, 'version' => $bakver, 'filesize' => filesize($bakfilename));
-	$bakout = fopen('/conf/backup/backup.cache', 'w');
-	fwrite($bakout, serialize($backupcache));
-	fclose($bakout);
-
-	conf_mount_ro();
-
-	return true;
-}
 
 function set_device_perms() {
 	$devices = array(
@@ -824,25 +385,23 @@ function set_device_perms() {
 	}
 }
 
-function get_config_user() {
-	if (empty($_SESSION["Username"])) {
-		$username = getenv("USER");
-		if (empty($conuser) || $conuser == "root")
-			$username = "(system)";
-	} else
-		$username = $_SESSION["Username"];
-
-	if (!empty($_SERVER['REMOTE_ADDR']))
-		$username .= '@' . $_SERVER['REMOTE_ADDR'];
-
-	return $username;
-}
 
 function make_config_revision_entry($desc = null, $override_user = null) {
-	if (empty($override_user))
-		$username = get_config_user();
-	else
+	if (empty($override_user)) {
+		if (empty($_SESSION["Username"])) {
+			$username = getenv("USER");
+			if (empty($conuser) || $conuser == "root")
+				$username = "(system)";
+		} else {
+			$username = $_SESSION["Username"];
+		}
+		if (!empty($_SERVER['REMOTE_ADDR'])) {
+			$username .= '@' . $_SERVER['REMOTE_ADDR'];
+		}
+	}
+	else {
 		$username = $override_user;
+	}
 
 	$revision = array();
 
@@ -858,16 +417,6 @@ function make_config_revision_entry($desc = null, $override_user = null) {
 	return $revision;
 }
 
-function get_config_backup_count() {
-	global $config, $g;
-	if (isset($config['system']['backupcount']) && is_numeric($config['system']['backupcount']) && ($config['system']['backupcount'] >= 0)) {
-		return intval($config['system']['backupcount']);
-	} elseif ($g['platform'] == "nanobsd") {
-		return 5;
-	} else {
-		return 30;
-	}
-}
 
 function pfSense_clear_globals() {
 	global $config, $FilterIfList, $GatewaysList, $filterdns, $aliases, $aliastable;
@@ -889,6 +438,69 @@ function pfSense_clear_globals() {
 		unset($aliastable);
 
 	unset($config);
+}
+
+/**
+ * backup config to google drive and return current file list (/ info)
+ *
+ */
+function backup_to_google_drive() {
+	$client = new Google\API\Drive() ;
+        $cnf = OPNsense\Core\Config::getInstance();
+        if ($cnf->isValid()) {
+		$config = $cnf->object() ;
+		if (  isset($config->system->remotebackup) && isset($config->system->remotebackup->GDriveEnabled) && $config->system->remotebackup->GDriveEnabled == "on" ){
+			$client->login($config->system->remotebackup->GDriveEmail->__toString(), $config->system->remotebackup->GDriveP12key->__toString() );
+			// backup source data to local strings (plain/encrypted)
+			$confdata = file_get_contents('/conf/config.xml') ; 
+			$confdata_enc = encrypt_data($confdata, $config->system->remotebackup->GDrivePassword->__toString()) ;
+			tagfile_reformat($confdata_enc, $confdata_enc, "config.xml");				
+			
+			
+			// read filelist (config-*.xml) and cleanup old files
+			$files = $client->listFiles($config->system->remotebackup->GDriveFolderID->__toString());
+			$configfiles  = array();
+			foreach ($files as $file) {
+			    if (fnmatch("config-*.xml", $file['title'])) {
+			        $configfiles[$file['title']] = $file;
+			    }
+			}
+			krsort($configfiles);
+			
+			if (isset($config->system->remotebackup->GDriveBackupCount) && is_numeric($config->system->remotebackup->GDriveBackupCount->__toString())) {
+				$fcount = 0; 
+				foreach ($configfiles as $filename => $file) {
+					if ($fcount > $config->system->remotebackup->GDriveBackupCount->__toString()) {
+						log_error("remove " . $filename . " from Google Drive" );
+						$client->delete($file);
+					}
+					$fcount++ ;
+				}
+			}
+
+			// backup new file if changed (or if first in backup)
+			$target_filename = "config-".time().".xml";
+			if (count($configfiles) > 1) {
+				// compare last backup with current, only save new 
+				$bck_data_enc = $client->download($configfiles[array_keys($configfiles)[0]]);
+				$bck_data = decrypt_data($bck_data_enc, $config->system->remotebackup->GDrivePassword->__toString());
+				if ($bck_data == $confdata) {
+					$target_filename = null;
+				}				
+			} 
+			if (!is_null($target_filename)) {
+				log_error("backup configuration as " . $target_filename);
+				$configfiles[$target_filename] = $client->upload($config->system->remotebackup->GDriveFolderID->__toString(),$target_filename, $confdata_enc );
+			} 
+			
+			// return filelist
+			return $configfiles;
+
+		}
+	}
+
+	// not configured / issue, return empty list
+	return array(); 	
 }
 
 register_shutdown_function('pfSense_clear_globals');

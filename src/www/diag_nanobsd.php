@@ -86,24 +86,6 @@ EOF;
 	nanobsd_detect_slice_info();
 }
 
-if ($_POST['changero']) {
-	if (is_writable("/")) {
-		conf_mount_ro();
-	} else {
-		conf_mount_rw();
-	}
-}
-
-if ($_POST['setrw']) {
-	conf_mount_rw();
-	if (isset($_POST['nanobsd_force_rw']))
-		$config['system']['nanobsd_force_rw'] = true;
-	else
-		unset($config['system']['nanobsd_force_rw']);
-
-	write_config("Changed Permanent Read/Write Setting");
-	conf_mount_ro();
-}
 
 if ($savemsg)
 	print_info_box($savemsg)
