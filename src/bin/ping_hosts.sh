@@ -35,12 +35,7 @@ if [ -f /var/db/hosts ]; then
 	HOSTS="/var/db/hosts"
 fi
 
-# Package specific ping requests
-if [ -f /var/db/pkgpinghosts ]; then
-	PKGHOSTS="/var/db/pkgpinghosts"
-fi
-
-cat $PKGHOSTS $HOSTS $IPSECHOSTS >/tmp/tmpHOSTS
+cat $HOSTS $IPSECHOSTS >/tmp/tmpHOSTS
 
 if [ ! -d /var/db/pingstatus ]; then
 	/bin/mkdir -p /var/db/pingstatus

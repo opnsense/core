@@ -244,8 +244,6 @@ function write_config($desc = 'Unknown', $backup = true)
 		return -1;
 	}
 
-	unlink_if_exists("/usr/local/pkg/pf/carp_sync_client.php");
-
 	/* sync carp entries to other firewalls */
 	carp_sync_client();
 

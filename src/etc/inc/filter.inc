@@ -379,13 +379,6 @@ function filter_configure_sync($delete_states_if_needed = true)
 
 	update_filter_reload_status(gettext("Running plugins"));
 
-	if(is_dir("/usr/local/pkg/pf/")) {
-		/* process packager manager custom rules */
-		update_filter_reload_status(gettext("Running plugins (pf)"));
-		run_plugins("/usr/local/pkg/pf/");
-		update_filter_reload_status(gettext("Plugins completed."));
-	}
-
 	update_filter_reload_status(gettext("Done"));
 	if(file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
