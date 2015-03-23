@@ -28,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("config.inc");
 
 $pgtitle = array(gettext("Status"),gettext("DHCPv6 leases"));

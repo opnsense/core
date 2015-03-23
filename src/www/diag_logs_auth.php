@@ -26,7 +26,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 $portal_logfile = "{$g['varlog_path']}/portalauth.log";
 

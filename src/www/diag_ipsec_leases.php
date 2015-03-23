@@ -26,8 +26,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
-require("ipsec.inc");
+require_once("guiconfig.inc");
+require_once("ipsec.inc");
 
 $pgtitle = array(gettext("Status"),gettext("IPsec"),gettext("Leases"));
 $shortcut_section = "ipsec";

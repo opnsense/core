@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 if (!is_array($config['dnsupdates']['dnsupdate']))
 	$config['dnsupdates']['dnsupdate'] = array();

@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 $pconfig['enable'] = isset($config['dhcrelay']['enable']);
 if (empty($config['dhcrelay']['interface']))

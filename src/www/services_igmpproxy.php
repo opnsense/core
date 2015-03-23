@@ -28,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 if (!is_array($config['igmpproxy']['igmpentry']))
 	$config['igmpproxy']['igmpentry'] = array();

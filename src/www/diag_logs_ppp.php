@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 $ppp_logfile = "{$g['varlog_path']}/ppp.log";
 

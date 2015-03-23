@@ -30,7 +30,7 @@
 @ini_set('zlib.output_compression', 0);
 @ini_set('implicit_flush', 1);
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 function leasecmp($a, $b) {
 	return strcmp($a[$_GET['order']], $b[$_GET['order']]);

@@ -29,8 +29,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("certs.inc");
-require("guiconfig.inc");
+require_once("certs.inc");
+require_once("guiconfig.inc");
 
 
 // start admin user code

@@ -39,7 +39,7 @@ function admin_groups_sort() {
         usort($config['system']['group'], "cpusercmp");
 }
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 $pgtitle = array(gettext("System"),gettext("Group manager"),gettext("Add privileges"));
 

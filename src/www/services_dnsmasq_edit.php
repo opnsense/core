@@ -39,7 +39,7 @@ function hosts_sort() {
         usort($config['dnsmasq']['hosts'], "hostcmp");
 }
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dnsmasq.php');
 

@@ -26,8 +26,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
-require("unbound.inc");
+require_once("guiconfig.inc");
+require_once("unbound.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_unbound_acls.php');
 

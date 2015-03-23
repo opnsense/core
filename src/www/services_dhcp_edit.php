@@ -43,7 +43,7 @@ if(!$g['services_dhcp_server_enable']) {
 	exit;
 }
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dhcp.php');
 

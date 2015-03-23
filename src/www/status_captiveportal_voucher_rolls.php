@@ -26,11 +26,11 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
-require("functions.inc");
+require_once("guiconfig.inc");
+require_once("functions.inc");
 require_once("filter.inc");
-require("shaper.inc");
-require("captiveportal.inc");
+require_once("shaper.inc");
+require_once("captiveportal.inc");
 require_once("voucher.inc");
 
 $cpzone = $_GET['zone'];

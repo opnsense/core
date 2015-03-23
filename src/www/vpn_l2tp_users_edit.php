@@ -42,7 +42,7 @@ function  l2tp_users_sort()  {
         usort($config['l2tp']['user'],  "l2tpusercmp");
 }
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("vpn.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/vpn_l2tp_users.php');

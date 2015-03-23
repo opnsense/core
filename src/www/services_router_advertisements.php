@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 if(!$g['services_dhcp_server_enable']) {
 	header("Location: /");

@@ -27,8 +27,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
-require("functions.inc");
+require_once("guiconfig.inc");
+require_once("functions.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_ppps.php');
 

@@ -36,7 +36,7 @@ function wol_sort() {
         usort($config['wol']['wolentry'], "wolcmp");
 }
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_wol.php');
 

@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 $pconfig['session_timeout'] = &$config['system']['webgui']['session_timeout'];
 $pconfig['authmode'] = &$config['system']['webgui']['authmode'];

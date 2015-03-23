@@ -26,9 +26,9 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
-require("functions.inc");
-require("captiveportal.inc");
+require_once("guiconfig.inc");
+require_once("functions.inc");
+require_once("captiveportal.inc");
 
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Reboot System"));

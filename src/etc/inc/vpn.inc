@@ -193,7 +193,7 @@ function vpn_ipsec_configure($ipchg = false)
 				}
 				$rgmap[$ph1ent['remote-gateway']] = $rg;
 
-				if (is_array($a_phase2)) {
+				if (is_array($a_phase2) && is_array($a_phase2)) {
 					/* step through each phase2 entry */
 					foreach ($a_phase2 as $ph2ent) {
 						if (isset($ph2ent['disabled']))
@@ -695,7 +695,7 @@ EOD;
 
 								if (!empty($ealg_kl) && $ealg_kl == "auto") {
 									if (empty($p2_ealgos) || !is_array($p2_ealgos))
-										require("ipsec.inc");
+										require_once("ipsec.inc");
 									$key_hi = $p2_ealgos[$ealg_id]['keysel']['hi'];
 									$key_lo = $p2_ealgos[$ealg_id]['keysel']['lo'];
 									$key_step = $p2_ealgos[$ealg_id]['keysel']['step'];

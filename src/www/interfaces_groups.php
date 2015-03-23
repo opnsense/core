@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("functions.inc");
 
 if (!is_array($config['ifgroups']['ifgroupentry']))

@@ -34,9 +34,9 @@ global $g;
 $pgtitle = array(gettext("Status"),gettext("IPsec"));
 $shortcut_section = "ipsec";
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 include("head.inc");
-require("ipsec.inc");
+require_once("ipsec.inc");
 
 if ($_GET['act'] == 'connect') {
 	if (ctype_digit($_GET['ikeid'])) {

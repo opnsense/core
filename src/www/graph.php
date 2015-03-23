@@ -27,8 +27,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("globals.inc");
-require("guiconfig.inc");
+require_once("globals.inc");
+require_once("guiconfig.inc");
 
 header("Last-Modified: " . gmdate( "D, j M Y H:i:s" ) . " GMT" );
 header("Expires: " . gmdate( "D, j M Y H:i:s", time() ) . " GMT" );

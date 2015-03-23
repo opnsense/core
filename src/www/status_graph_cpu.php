@@ -27,7 +27,7 @@
 */
 
 $pgtitle = array(gettext("Status"), gettext("CPU load"));
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 include("head.inc");
 include("fbegin.inc");
 

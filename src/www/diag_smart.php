@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 
 $pgtitle = array(gettext("Diagnostics"), gettext("S.M.A.R.T. Monitor Tools"));
 $smartctl = "/usr/local/sbin/smartctl";

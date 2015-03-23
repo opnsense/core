@@ -30,8 +30,8 @@
 	DISABLE_PHP_LINT_CHECKING
 */
 
-require("globals.inc");
-require("guiconfig.inc");
+require_once("globals.inc");
+require_once("guiconfig.inc");
 require("openvpn-client-export.inc");
 
 $pgtitle = array("OpenVPN", "Client Export Utility");

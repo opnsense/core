@@ -27,8 +27,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
-require("ipsec.inc");
+require_once("guiconfig.inc");
+require_once("ipsec.inc");
 
 $ipsec_logfile = "{$g['varlog_path']}/ipsec.log";
 
