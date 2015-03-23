@@ -26,6 +26,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("globals.inc");
 
 /* implement ipv6 route advertising deamon */
 function services_radvd_configure($blacklist = array())
@@ -343,7 +344,7 @@ function services_dhcpdv4_configure()
 			}
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
-		if (($g['platform'] == "pfSense") && !isset($config['system']['use_mfs_tmpvar'])) {
+		if (!isset($config['system']['use_mfs_tmpvar'])) {
 			unlink_if_exists('/conf/dhcpleases.tgz');
 		}
 	}
@@ -955,7 +956,7 @@ function services_dhcpdv6_configure($blacklist = array())
 		return 0;
 
 	if (file_exists("/var/run/booting")) {
-		if ($g['platform'] != "pfSense") {
+		if (is_install_media()) {
 			/* restore the leases, if we have them */
 			if (file_exists('/conf/dhcp6leases.tgz')) {
 				$dhcprestore = '';
@@ -969,7 +970,7 @@ function services_dhcpdv6_configure($blacklist = array())
 			}
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
-		if (($g['platform'] == "pfSense") && !isset($config['system']['use_mfs_tmpvar'])) {
+		if (isset($config['system']['use_mfs_tmpvar'])) {
 			unlink_if_exists('/conf/dhcp6leases.tgz');
 		}
 	}
@@ -1917,9 +1918,7 @@ EOD;
 		}
 
 		$version = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
-		$platform = trim(file_get_contents('/usr/local/etc/platform'));
-		if (($platform == "pfSense") && ($g['product_name'] != "pfSense"))
-			$platform = $g['product_name'];
+		$platform = $g['product_name'];
 		$sysDescr = "{$g['product_name']} " . php_uname("n") .
 			" {$version} {$platform} " . php_uname("s") .
 			" " . php_uname("r") . " " . php_uname("m");

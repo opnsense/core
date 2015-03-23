@@ -123,9 +123,6 @@ echo " done.\n";
 /* save dmesg output to file */
 system_dmesg_save();
 
-/* check whether config reset is desired (via hardware button on WRAP/ALIX) */
-system_check_reset_button();
-
 /* remove previous firmware upgrade if present */
 if (file_exists("/root/firmware.tgz"))
 	unlink("/root/firmware.tgz");

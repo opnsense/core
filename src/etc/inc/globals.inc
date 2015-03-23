@@ -55,7 +55,6 @@ $g = array(
 	"minimum_ram_warning" => "101",
 	"minimum_ram_warning_text" => "128 MB",
 	"wan_interface_name" => "wan",
-	"nopccard_platforms" => array("wrap", "net48xx"),
 	"xmlrpcbaseurl" => "https://not.supported.opnsense.org",
 	"captiveportal_path" => "/usr/local/captiveportal",
 	"captiveportal_element_path" => "/var/db/cpelements",
@@ -72,10 +71,6 @@ $iptos = array("lowdelay", "throughput", "reliability");
 
 /* TCP flags */
 $tcpflags = array("syn", "ack", "fin", "rst", "psh", "urg", "ece", "cwr");
-
-if(file_exists("/usr/local/etc/platform")) {
-	$g['platform'] = trim(file_get_contents("/usr/local/etc/platform"));
-}
 
 /* Default sysctls */
 $sysctls = array(

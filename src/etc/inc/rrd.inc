@@ -76,7 +76,7 @@ function restore_rrd()
 			@unlink($xml_file);
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
-		if (($g['platform'] == "pfSense") && !isset($config['system']['use_mfs_tmpvar'])) {
+		if (!isset($config['system']['use_mfs_tmpvar'])) {
 			unlink_if_exists('/conf/rrd.tgz');
 		}
 		return true;

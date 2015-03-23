@@ -335,11 +335,7 @@ function check_everything() {
 										<tr>
 											<td width="22%" valign="top" class="vtable">Local Logging</td>
 											<td width="78%" class="vtable"> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?php if ($pconfig['disablelocallogging']) echo "checked=\"checked\""; ?> onclick="enable_change(false)" />
-											<?php if ($g['platform'] == "pfSense"): ?>
 											<strong><?=gettext("Disable writing log files to the local disk");?></strong></td>
-											<?php else: ?>
-											<strong><?=gettext("Disable writing log files to the local RAM disk");?></strong></td>
-											<?php endif; ?>
 										</tr>
 										<tr>
 											<td width="22%" valign="top">Reset Logs</td>

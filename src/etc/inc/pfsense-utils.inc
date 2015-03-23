@@ -656,7 +656,6 @@ function check_firmware_version($tocheck = "all", $return_php = true) {
 	$rawparams = array("firmware" => array("version" => trim(file_get_contents('/usr/local/opnsense/version/opnsense'))),
 		"kernel"   => array("version" => $version[0]),
 		"base"     => array("version" => $version[0]),
-		"platform" => trim(file_get_contents('/usr/local/etc/platform')),
 		"config_version" => $config['version']
 		);
 	unset($version);
@@ -666,7 +665,6 @@ function check_firmware_version($tocheck = "all", $return_php = true) {
 	} else {
 		foreach($tocheck as $check) {
 			$params['check'] = $rawparams['check'];
-			$params['platform'] = $rawparams['platform'];
 		}
 	}
 	if($config['system']['firmware']['branch'])
@@ -694,7 +692,6 @@ function host_firmware_version($tocheck = "") {
 		"firmware" => array("version" => trim(file_get_contents('/usr/local/opnsense/version/opnsense', " \n"))),
 		"kernel"   => array("version" => $os_version),
 		"base"     => array("version" => $os_version),
-		"platform" => trim(file_get_contents('/usr/local/etc/platform', " \n")),
 		"config_version" => $config['version']
 	);
 }
@@ -845,10 +842,9 @@ function setup_serial_port($when = 'save', $path = '')
 						fwrite($fd, "{$bcs}\n");
 				}
 			}
-			if (($g['platform'] == "nanobsd") && !file_exists("/etc/nano_use_vga.txt"))
-				fwrite($fd, "-S{$serialspeed} -h\n");
-			else if (is_serial_enabled())
+			if (is_serial_enabled()) {
 				fwrite($fd, "-S{$serialspeed} -D\n");
+			}
 			fclose($fd);
 		}
 
@@ -870,10 +866,7 @@ function setup_serial_port($when = 'save', $path = '')
 					&& (stripos($bcs, "autoboot_delay") === false))
 					$new_boot_config[] = $bcs;
 
-			if (($g['platform'] == "nanobsd") && !file_exists("/etc/nano_use_vga.txt")) {
-				$new_boot_config[] = 'boot_serial="YES"';
-				$new_boot_config[] = 'console="comconsole"';
-			} else if (is_serial_enabled()) {
+			if (is_serial_enabled()) {
 				$new_boot_config[] = 'boot_multicons="YES"';
 				$new_boot_config[] = 'boot_serial="YES"';
 				$primaryconsole = $config['system']['primaryconsole'];

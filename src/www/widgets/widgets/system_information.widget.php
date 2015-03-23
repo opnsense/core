@@ -127,31 +127,9 @@ $filesystems = get_mounted_filesystems();
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Platform");?></td>
 			<td width="75%" class="listr">
-				<?=htmlspecialchars($g['platform'] == 'pfSense' ? 'OPNsense' : $g['platform']); /* Platform should not be used as product name */?>
-				<?php if (($g['platform'] == "nanobsd") && (file_exists("/etc/nanosize.txt"))) {
-					echo " (" . htmlspecialchars(trim(file_get_contents("/etc/nanosize.txt"))) . ")";
-				} ?>
+				<?=htmlspecialchars('OPNsense'); ?>
 			</td>
 		</tr>
-		<?php if ($g['platform'] == "nanobsd"): ?>
-			<?
-			global $SLICE, $OLDSLICE, $TOFLASH, $COMPLETE_PATH, $COMPLETE_BOOT_PATH;
-			global $GLABEL_SLICE, $UFS_ID, $OLD_UFS_ID, $BOOTFLASH;
-			global $BOOT_DEVICE, $REAL_BOOT_DEVICE, $BOOT_DRIVE, $ACTIVE_SLICE;
-			nanobsd_detect_slice_info();
-			$rw = is_writable("/") ? "(rw)" : "(ro)";
-			?>
-		<tr>
-			<td width="25%" class="vncellt"><?=gettext("NanoBSD Boot Slice");?></td>
-			<td width="75%" class="listr">
-				<?=htmlspecialchars(nanobsd_friendly_slice_name($BOOT_DEVICE));?> / <?=htmlspecialchars($BOOTFLASH);?> <?php echo $rw; ?>
-				<?php if ($BOOTFLASH != $ACTIVE_SLICE): ?>
-				<br /><br />Next Boot:<br />
-				<?=htmlspecialchars(nanobsd_friendly_slice_name($GLABEL_SLICE));?> / <?=htmlspecialchars($ACTIVE_SLICE);?>
-				<?php endif; ?>
-			</td>
-		</tr>
-		<?php endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("CPU Type");?></td>
 			<td width="75%" class="listr">

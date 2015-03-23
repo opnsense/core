@@ -1,6 +1,7 @@
 <?php
 require_once("xmlparse.inc");
 require_once("crypt.inc");
+require_once("globals.inc");
 require_once("script/load_phalcon.php");
 
 /*
@@ -76,7 +77,7 @@ function parse_config_bootup()
 
 	if (!file_exists($config_xml)) {
 		if (file_exists("/var/run/booting")) {
-			if (strstr($g['platform'], "cdrom")) {
+			if (is_install_media()) {
 				/* try copying the default config. to the floppy */
 				echo gettext("Resetting factory defaults...") . "\n";
 				reset_factory_defaults(true);

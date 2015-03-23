@@ -284,9 +284,6 @@ if(file_exists("/var/run/gmirror_active"))
 	$diagnostics_menu[] = array(gettext("GEOM Mirrors"), "/diag_gmirror.php" );
 
 
-if($g['platform'] == "nanobsd")
-	$diagnostics_menu[] = array(gettext("NanoBSD"), "/diag_nanobsd.php");
-
 if (isset($config['system']['developer'])) {
 	$diagnostics_menu[] = array(gettext("Restart HTTPD"), "/restart_httpd.php", "style" => "font-weight: bold; color: yellow;");
 
