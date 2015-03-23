@@ -59,12 +59,6 @@ $dir_array = get_priv_files("/usr/local/etc/inc/priv");
 foreach ($dir_array as $file)
 	if (!is_dir("/usr/local/etc/inc/priv/{$file}") && stristr($file,".inc"))
 		include("priv/{$file}");
-if(is_dir("/usr/local/pkg/priv")) {
-	$dir_array = get_priv_files("/usr/local/pkg/priv");
-	foreach ($dir_array as $file)
-		if (!is_dir("/usr/local/pkg/priv/{$file}") && stristr($file,".inc"))
-			include("/usr/local/pkg/priv/{$file}");
-}
 
 if(is_array($priv_list))
 	sort_privs($priv_list);
