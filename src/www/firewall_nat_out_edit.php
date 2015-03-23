@@ -234,9 +234,6 @@ if ($_POST) {
 		}
 	}
 
-	// Allow extending of the firewall edit page and include custom input validation
-	pfSense_handle_custom_code("/usr/local/pkg/firewall_aon/input_validation");
-
 	if (!$input_errors) {
 	        $natent = array();
 		$natent['source']['network'] = $osn;
@@ -303,9 +300,6 @@ if ($_POST) {
 			$natent['created'] = $a_out[$id]['created'];
 
 		$natent['updated'] = make_config_revision_entry();
-
-		// Allow extending of the firewall edit page and include custom input validation
-		pfSense_handle_custom_code("/usr/local/pkg/firewall_aon/pre_write_config");
 
 		if (isset($id) && $a_out[$id]) {
 			$a_out[$id] = $natent;
@@ -448,10 +442,6 @@ function poolopts_change() {
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Advanced Outbound NAT entry");?></td>
 									</tr>
-							<?php
-									// Allow extending of the firewall edit page and include custom input validation
-									pfSense_handle_custom_code("/usr/local/pkg/firewall_rules/htmlphpearly");
-							?>
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Disabled");?></td>
 										<td width="78%" class="vtable">
@@ -838,8 +828,6 @@ function poolopts_change() {
 							<?php
 									endif;
 								endif;
-								// Allow extending of the firewall edit page and include custom input validation
-								pfSense_handle_custom_code("/usr/local/pkg/firewall_aon/htmlphplate");
 							?>
 									<tr>
 										<td width="22%" valign="top">&nbsp;</td>

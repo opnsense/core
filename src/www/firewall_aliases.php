@@ -163,7 +163,6 @@ $main_buttons = array(
 				<?php if (is_subsystem_dirty('aliases')): ?><p>
 				<?php print_info_box_np(gettext("The alias list has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?>
 				<?php endif; ?>
-				<?php pfSense_handle_custom_code("/usr/local/pkg/firewall_aliases/pre_table"); ?>
 
 			    <section class="col-xs-12">
 

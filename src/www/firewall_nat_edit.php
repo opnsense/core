@@ -297,9 +297,6 @@ if ($_POST) {
 		}
 	}
 
-	// Allow extending of the firewall edit page and include custom input validation
-	pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/input_validation");
-
 	if (!$input_errors) {
 		$natent = array();
 
@@ -416,9 +413,6 @@ if ($_POST) {
 
 		$natent['updated'] = make_config_revision_entry();
 
-		// Allow extending of the firewall edit page and include custom input validation
-		pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/pre_write_config");
-
 		// Update the NAT entry now
 		if (isset($id) && $a_nat[$id])
 			$a_nat[$id] = $natent;
@@ -472,10 +466,6 @@ include("head.inc");
 									<tr>
 										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit Redirect entry"); ?></td>
 									</tr>
-					<?php
-							// Allow extending of the firewall edit page and include custom input validation
-							pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/htmlphpearly");
-					?>
 							<tr>
 								<td width="22%" valign="top" class="vncellreq"><?=gettext("Disabled"); ?></td>
 								<td width="78%" class="vtable">
@@ -499,8 +489,6 @@ include("head.inc");
 											<?php
 
 											$iflist = get_configured_interface_with_descr(false, true);
-											// Allow extending of the firewall edit interfaces
-											pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/pre_interfaces_edit");
 											foreach ($iflist as $if => $ifdesc)
 												if(have_ruleint_access($if))
 													$interfaces[$if] = $ifdesc;
@@ -871,10 +859,6 @@ include("head.inc");
 										<br /><br /><?=gettext("NOTE: The \"pass\" selection does not work properly with Multi-WAN. It will only work on an interface containing the default gateway.")?>
 									  </td>
 					                </tr><?php endif; ?>
-					<?php
-							// Allow extending of the firewall edit page and include custom input validation
-							pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/htmlphplate");
-					?>
 					<?php
 					$has_created_time = (isset($a_nat[$id]['created']) && is_array($a_nat[$id]['created']));
 					$has_updated_time = (isset($a_nat[$id]['updated']) && is_array($a_nat[$id]['updated']));

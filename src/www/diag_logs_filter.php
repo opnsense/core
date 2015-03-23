@@ -199,9 +199,6 @@ include("head.inc");
 										<option value="" <?=$interfacefilter?"":"selected=\"selected\""?>>*Any interface</option>
 										<?php
 										$iflist = get_configured_interface_with_descr(false, true);
-										//$iflist = get_interface_list();
-										// Allow extending of the firewall edit interfaces
-										pfSense_handle_custom_code("/usr/local/pkg/firewall_nat/pre_interfaces_edit");
 										foreach ($iflist as $if => $ifdesc)
 											$interfaces[$if] = $ifdesc;
 

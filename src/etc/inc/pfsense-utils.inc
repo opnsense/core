@@ -2461,26 +2461,6 @@ function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, 
 	return false;
 }
 
-/****f* legacy/pfSense_handle_custom_code
- * NAME
- *   pfSense_handle_custom_code
- * INPUTS
- *   directory name to process
- * RESULT
- *   globs the directory and includes the files
- */
-function pfSense_handle_custom_code($src_dir) {
-	// Allow extending of the nat edit page and include custom input validation
-	if(is_dir("$src_dir")) {
-		$cf = glob($src_dir . "/*.inc");
-		foreach($cf as $nf) {
-			if($nf == "." || $nf == "..")
-				continue;
-			// Include the extra handler
-			include("$nf");
-		}
-	}
-}
 
 function set_language($lang = 'en_US', $encoding = "UTF-8") {
 	putenv("LANG={$lang}.{$encoding}");
