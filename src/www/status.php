@@ -1,8 +1,10 @@
 <?php
+
 /*
 	Copyright (C) Scott Ullrich geekgod@pfsense.com
 	Copyright (C) Manuel Kasper <mk@neon1.net>
 	Copyright (C) 2003 Jim McBeath <jimmc@macrovision.com>
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
 
@@ -24,10 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-/* Execute a command, with a title, and generate an HTML table
- * showing the results.
- */
 
 /* include all configuration functions */
 require_once("guiconfig.inc");
@@ -180,7 +178,7 @@ defCmd("ls /var/run");
 
 defCmd("/sbin/mount");
 
-defCmdT("cat {$g['tmp_path']}/rules.debug","cat {$g['tmp_path']}/rules.debug");
+defCmdT("cat /tmp/rules.debug","cat /tmp/rules.debug");
 
 defCmdT("VMStat", "vmstat -afimsz");
 

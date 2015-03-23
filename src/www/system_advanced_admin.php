@@ -29,7 +29,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
@@ -136,7 +136,7 @@ if ($_POST) {
 		else
 			unset($config['system']['webgui']['noantilockout']);
 
-		if ($_POST['enableserial'] == "yes" || $g['enableserial_force'])
+		if ($_POST['enableserial'] == "yes")
 			$config['system']['enableserial'] = true;
 		else
 			unset($config['system']['enableserial']);
@@ -526,8 +526,6 @@ include("head.inc");
 								<tr>
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Serial Communications"); ?></th>
 								</tr>
-
-								<?php if (!$g['enableserial_force'] && ($g['platform'] == "pfSense" || $g['platform'] == "cdrom" || file_exists("/etc/nano_use_vga.txt"))): ?>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Serial Terminal"); ?></td>
 									<td width="78%" class="vtable">
@@ -536,7 +534,6 @@ include("head.inc");
 										<span class="vexpl"><?=gettext("Note:  This will redirect the console output and messages to the serial port. You can still access the console menu from the internal video card/keyboard. A <b>null modem</b> serial cable or adapter is required to use the serial console."); ?></span>
 									</td>
 								</tr>
-								<?php endif; ?>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Serial Speed")?></td>
 									<td width="78%" class="vtable">
@@ -551,7 +548,6 @@ include("head.inc");
 										<br /><?=gettext("Allows selection of different speeds for the serial console port."); ?>
 									</td>
 								</tr>
-								<?php if (!$g['primaryconsole_force'] && ($g['platform'] == "pfSense" || $g['platform'] == "cdrom" || file_exists("/etc/nano_use_vga.txt"))): ?>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Primary Console")?></td>
 									<td width="78%" class="vtable">
@@ -562,7 +558,6 @@ include("head.inc");
 										<br /><?=gettext("Select the preferred console if multiple consoles are present. The preferred console will show OPNsense boot script output. All consoles display OS boot messages, console messages, and the console menu."); ?>
 									</td>
 								</tr>
-								<?php endif; ?>
                                 <tr>
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Console Options"); ?></th>
 								</tr>

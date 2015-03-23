@@ -43,28 +43,20 @@ $g = array(
 	"varetc_path" => "/var/etc",
 	"vardb_path" => "/var/db",
 	"varlog_path" => "/var/log",
-	"tmp_path" => "/tmp",
 	"admin_group" => "admins",
 	"product_name" => "OPNsense",
-	"product_copyright" => "Deciso B.V.",
-	"product_copyright_url" => "http://www.deciso.com",
-	"product_copyright_years" => "2014 - ".date("Y"),
-	"product_website" => "www.opnsense.org",
-	"product_website_footer" => "https://www.opnsense.org/?gui22",
-	"product_email" => "coreteam@opnsense.org",
-	"hidedownloadbackup" => false,
-	"hidebackupbeforeupgrade" => false,
-	"disablehelpmenu" => false,
-	"disablehelpicon" => false,
+	"product_website" => "https://opnsense.org",
+	"product_email" => "project@opnsense.org",
+	"product_copyright_owner" => "Deciso B.V.",
+	"product_copyright_years" => "2014 - 2015",
+	"product_copyright_url" => "https://www.deciso.com/",
 	"crashreporterurl" => "https://crash.opnsense.org/",
-	"debug" => false,
 	"latest_config" => "11.1",
-	"nopkg_platforms" => array("cdrom"),
 	"minimum_ram_warning" => "101",
 	"minimum_ram_warning_text" => "128 MB",
 	"wan_interface_name" => "wan",
 	"nopccard_platforms" => array("wrap", "net48xx"),
-	"xmlrpcbaseurl" => "https://packages.pfsense.org",
+	"xmlrpcbaseurl" => "https://not.supported.opnsense.org",
 	"captiveportal_path" => "/usr/local/captiveportal",
 	"captiveportal_element_path" => "/var/db/cpelements",
 	"captiveportal_element_sizelimit" => 1048576,
@@ -82,23 +74,7 @@ $iptos = array("lowdelay", "throughput", "reliability");
 $tcpflags = array("syn", "ack", "fin", "rst", "psh", "urg", "ece", "cwr");
 
 if(file_exists("/usr/local/etc/platform")) {
-	$arch = php_uname("m");
-	/* Do not remove this, it is not needed for the snapshots URL but is needed later for the -RELEASE/stable URLs */
-	//$arch = ($arch == "i386") ? "" : '/' . $arch;
-
-	/* Full installs and NanoBSD use the same update directory and manifest in 2.x */
-	$g['update_url']="https://snapshots.opnsense.org/FreeBSD_releng/10.1/{$arch}/pfSense_HEAD/.updaters/";
-	$g['update_manifest']="https://updates.opnsense.org/manifest";
-
 	$g['platform'] = trim(file_get_contents("/usr/local/etc/platform"));
-	if($g['platform'] == "nanobsd") {
-		$g['firmware_update_text']="OPNsense-*.img.gz";
-		$g['hidedownloadbackup'] = true;
-		$g['hidebackupbeforeupgrade'] = true;
-
-	} else {
-		$g['firmware_update_text']="pfSense-*.tgz";
-	}
 }
 
 /* Default sysctls */
@@ -141,5 +117,23 @@ $sysctls = array(
 	"net.inet.icmp.reply_from_interface" => 1,
 	"net.inet6.ip6.rfc6204w3" => 1,
 );
+
+function is_install_media()
+{
+	/*
+	 * Despite unionfs underneath, / is still not writeable,
+	 * making the following the perfect test for install media.
+	 */
+
+	$file = '/.probe.for.install.media';
+	$fd = @fopen($file, 'w');
+	if ($fd) {
+		fclose($fd);
+		unlink($file);
+		return false;
+	}
+
+	return true;
+}
 
 $config_parsed = false;

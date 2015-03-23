@@ -50,13 +50,6 @@ if (file_exists("/usr/local/etc/platform")) {
 	$g['platform'] = "unknown";
 }
 
-/* if /debugging exists, lets set $debugging
-   so we can output more information */
-if(file_exists("/debugging")) {
-	$debugging = true;
-	$g['debug'] = true;
-}
-
 $config = parse_config();
 
 

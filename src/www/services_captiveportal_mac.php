@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Dinesh Nair <dinesh@alphaque.com>
@@ -26,11 +27,11 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
-require("functions.inc");
+require_once("guiconfig.inc");
+require_once("functions.inc");
 require_once("filter.inc");
-require("shaper.inc");
-require("captiveportal.inc");
+require_once("shaper.inc");
+require_once("captiveportal.inc");
 
 global $cpzone;
 global $cpzoneid;
@@ -96,9 +97,9 @@ if ($_POST) {
 				$cpzoneid = $a_cp[$cpzone]['zoneid'];
 				$rules = captiveportal_passthrumac_delete_entry($a_passthrumacs[$idx]);
 				$uniqid = uniqid("{$cpzone}_mac");
-				file_put_contents("{$g['tmp_path']}/{$uniqid}_tmp", $rules);
-				mwexec("/sbin/ipfw -x {$cpzoneid} -q {$g['tmp_path']}/{$uniqid}_tmp");
-				@unlink("{$g['tmp_path']}/{$uniqid}_tmp");
+				file_put_contents("/tmp/{$uniqid}_tmp", $rules);
+				mwexec("/sbin/ipfw -x {$cpzoneid} -q /tmp/{$uniqid}_tmp");
+				@unlink("/tmp/{$uniqid}_tmp");
 				unset($a_passthrumacs[$idx]);
 				write_config();
 				echo gettext("The entry was sucessfully deleted") . "\n";
@@ -115,9 +116,9 @@ if ($_GET['act'] == "del") {
 		$cpzoneid = $a_cp[$cpzone]['zoneid'];
 		$rules = captiveportal_passthrumac_delete_entry($a_passthrumacs[$_GET['id']]);
 		$uniqid = uniqid("{$cpzone}_mac");
-		file_put_contents("{$g['tmp_path']}/{$uniqid}_tmp", $rules);
-		mwexec("/sbin/ipfw -x {$cpzoneid} -q {$g['tmp_path']}/{$uniqid}_tmp");
-		@unlink("{$g['tmp_path']}/{$uniqid}_tmp");
+		file_put_contents("/tmp/{$uniqid}_tmp", $rules);
+		mwexec("/sbin/ipfw -x {$cpzoneid} -q /tmp/{$uniqid}_tmp");
+		@unlink("/tmp/{$uniqid}_tmp");
 		unset($a_passthrumacs[$_GET['id']]);
 		write_config();
 		header("Location: services_captiveportal_mac.php?zone={$cpzone}");

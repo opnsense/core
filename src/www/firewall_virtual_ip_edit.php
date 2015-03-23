@@ -1,6 +1,7 @@
 <?php
+
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>.
     Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
     Copyright (C) 2004-2005 Scott Ullrich <geekgod@pfsense.com>.
@@ -28,9 +29,9 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("filter.inc");
-require("shaper.inc");
+require_once("shaper.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_virtual_ip.php');
 
@@ -211,10 +212,11 @@ if ($_POST) {
 
 		if (!isset($id))
 			$id = count($a_vip);
-		if (file_exists("{$g['tmp_path']}/.firewall_virtual_ip.apply"))
-			$toapplylist = unserialize(file_get_contents("{$g['tmp_path']}/.firewall_virtual_ip.apply"));
-		else
+		if (file_exists('/tmp/.firewall_virtual_ip.apply')) {
+			$toapplylist = unserialize(file_get_contents('/tmp/.firewall_virtual_ip.apply'));
+		} else {
 			$toapplylist = array();
+		}
 
 		$toapplylist[$id] = $a_vip[$id];
 		if (!empty($a_vip[$id])) {
@@ -228,7 +230,7 @@ if ($_POST) {
 
 		if (write_config()) {
 			mark_subsystem_dirty('vip');
-			file_put_contents("{$g['tmp_path']}/.firewall_virtual_ip.apply", serialize($toapplylist));
+			file_put_contents('/tmp/.firewall_virtual_ip.apply', serialize($toapplylist));
 		}
 		header("Location: firewall_virtual_ip.php");
 		exit;

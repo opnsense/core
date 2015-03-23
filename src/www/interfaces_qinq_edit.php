@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Ermal Luçi
@@ -144,7 +145,7 @@ if ($_POST) {
 			$addmembers = array_diff($nmembers, $omembers);
 
 			if ((count($delmembers) > 0) || (count($addmembers) > 0)) {
-				$fd = fopen("{$g['tmp_path']}/netgraphcmd", "w");
+				$fd = fopen('/tmp/netgraphcmd', 'w');
 				foreach ($delmembers as $tag) {
 					fwrite($fd, "shutdown {$qinqentry['vlanif']}h{$tag}:\n");
 					fwrite($fd, "msg {$qinqentry['vlanif']}qinq: delfilter \\\"{$qinqentry['vlanif']}{$tag}\\\"\n");
@@ -159,7 +160,7 @@ if ($_POST) {
 				}
 
 				fclose($fd);
-				mwexec("/usr/sbin/ngctl -f {$g['tmp_path']}/netgraphcmd");
+				mwexec('/usr/sbin/ngctl -f /tmp/netgraphcmd');
 			}
 			$a_qinqs[$id] = $qinqentry;
 		} else {

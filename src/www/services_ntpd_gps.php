@@ -38,7 +38,7 @@ function set_default_gps() {
 		unset($config['ntpd']['gps']);
 
 	$config['ntpd']['gps'] = array();
-	$config['ntpd']['gps']['type'] = 'Default';
+	$config['ntpd']['gps']['type'] = 'Generic';
 	/* copy an existing configured GPS port if it exists, the unset may be uncommented post production */
 	if (!empty($config['ntpd']['gpsport']) && empty($config['ntpd']['gps']['port'])) {
 		$config['ntpd']['gps']['port'] = $config['ntpd']['gpsport'];
@@ -89,9 +89,9 @@ if ($_POST) {
 	elseif (isset($config['ntpd']['gps']['stratum']))
 		unset($config['ntpd']['gps']['stratum']);
 
-	if (empty($_POST['gpsprefer']))
+	if (empty($_POST['gpsprefer'])) {
 		$config['ntpd']['gps']['prefer'] = 'on';
-	elseif (isset($config['ntpd']['gps']['prefer']))
+        } elseif (isset($config['ntpd']['gps']['prefer']))
 		unset($config['ntpd']['gps']['prefer']);
 
 	if (!empty($_POST['gpsselect']))
@@ -99,11 +99,12 @@ if ($_POST) {
 	elseif (isset($config['ntpd']['gps']['noselect']))
 		unset($config['ntpd']['gps']['noselect']);
 
-	if (!empty($_POST['gpsflag1']))
+	if (!empty($_POST['gpsflag1'])) {
 		$config['ntpd']['gps']['flag1'] = $_POST['gpsflag1'];
-	elseif (isset($config['ntpd']['gps']['flag1']))
+        } elseif (isset($config['ntpd']['gps']['flag1'])) {
 		unset($config['ntpd']['gps']['flag1']);
-
+        } 
+        
 	if (!empty($_POST['gpsflag2']))
 		$config['ntpd']['gps']['flag2'] = $_POST['gpsflag2'];
 	elseif (isset($config['ntpd']['gps']['flag2']))
@@ -387,7 +388,7 @@ SureGPS =		#Sure Electronics SKG16B
 												<select id="gpstype" name="gpstype" class="formselect" onchange="set_gps_default(this.form)">
 													<option value="Custom"<?php if($pconfig['type'] == 'Custom') echo " selected=\"selected\""; ?>>Custom</option>
 													<option value="Default"<?php if($pconfig['type'] == 'Default') echo " selected=\"selected\""; ?>>Default</option>
-													<option value="Generic" title="Generic"<?php if($pconfig['type'] == 'Generic') echo " selected=\"selected\"";?>>Generic</option>
+													<option value="Generic" title="Generic"<?php if($pconfig['type'] == 'Generic' ) echo " selected=\"selected\"";?>>Generic</option>
 													<option value="Garmin" title="$PGRM... Most Garmin"<?php if($pconfig['type'] == 'Garmin') echo " selected=\"selected\"";?>>Garmin</option>
 													<option value="MediaTek" title="$PMTK... Adafruit, Fastrax, some Garmin and others"<?php if($pconfig['type'] == 'MediaTek') echo " selected=\"selected\"";?>>MediaTek</option>
 													<option value="SiRF" title="$PSRF... Used by many devices"<?php if($pconfig['type'] == 'sirf') echo " selected=\"selected\"";?>>SiRF</option>
@@ -396,8 +397,7 @@ SureGPS =		#Sure Electronics SKG16B
 												</select> <?php echo gettext("This option allows you to select a predefined configuration.");?>
 												<br />
 												<br />
-												<strong><?php echo gettext("Note: ");?></strong><?php echo gettext("Default is the configuration of pfSense 2.1 and earlier"); ?>
-												<?php echo gettext(" (not recommended). Select Generic if your GPS is not listed.)"); ?><br />
+												<strong><?php echo gettext("Note: ");?></strong><?php echo gettext("Select Generic if your GPS is not listed."); ?><br />
 												<strong><?php echo gettext("Note: ");?></strong><?php echo gettext("The perdefined configurations assume your GPS has already been set to NMEA mode."); ?>
 											</td>
 										</tr>
@@ -585,7 +585,11 @@ SureGPS =		#Sure Electronics SKG16B
 
 <script type="text/javascript">
 //<![CDATA[
-set_gps_default(this.form);
+jQuery(document).ready(function() {
+         setTimeout(function(){ 
+                 set_gps_default(this.form);
+         }, 1000); 
+        });
 //]]>
 </script>
 <?php include("foot.inc"); ?>

@@ -32,7 +32,22 @@ require("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
-require_once("pkg-utils.inc");
+
+function get_pkg_interfaces_select_source($include_localhost=false) {
+	$interfaces = get_configured_interface_with_descr();
+	$ssifs = array();
+	foreach ($interfaces as $iface => $ifacename) {
+		$tmp["name"]  = $ifacename;
+		$tmp["value"] = $iface;
+		$ssifs[] = $tmp;
+	}
+	if ($include_localhost) {
+		$tmp["name"]  = "Localhost";
+		$tmp["value"] = "lo0";
+		$ssifs[] = $tmp;
+	}
+	return $ssifs;
+}
 
 /* dummy stubs needed by some code that was MFC'd */
 function pfSenseHeader($location) { header("Location: " . $location); }

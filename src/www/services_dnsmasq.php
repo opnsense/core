@@ -96,6 +96,7 @@ if ($_POST && isset($_POST['submit'])) {
 
 	if (!$input_errors) {
 		write_config();
+
 		$retval = services_dnsmasq_configure();
 		$savemsg = get_std_save_message($retval);
 	}
@@ -105,6 +106,7 @@ if ($_POST && isset($_POST['submit'])) {
 		filter_configure();
 		/* Update resolv.conf in case the interface bindings exclude localhost. */
 		system_resolvconf_generate();
+		system_hosts_generate();
 		$retval = services_dnsmasq_configure();
 		$savemsg = get_std_save_message($retval);
 		if ($retval == 0)

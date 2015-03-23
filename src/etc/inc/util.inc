@@ -1053,10 +1053,6 @@ function log_error($error)
 	}
 
 	syslog(LOG_ERR, "$page: $error");
-
-	if ($g['debug']) {
-		syslog(LOG_WARNING, var_dump(debug_backtrace()));
-	}
 }
 
 /****f* util/exec_command
@@ -1079,10 +1075,6 @@ function exec_command($command) {
 function mwexec($command, $mute = false, $clearsigmask = false) {
 	global $g;
 
-	if ($g['debug']) {
-		if (!$_SERVER['REMOTE_ADDR'])
-			echo "mwexec(): $command\n";
-	}
 	$oarr = array();
 	$retval = 0;
 
@@ -1107,11 +1099,6 @@ function mwexec($command, $mute = false, $clearsigmask = false) {
 /* wrapper for exec() in background */
 function mwexec_bg($command, $clearsigmask = false) {
 	global $g;
-
-	if ($g['debug']) {
-		if (!$_SERVER['REMOTE_ADDR'])
-			echo "mwexec(): $command\n";
-	}
 
 	if ($clearsigmask) {
 		$oldset = array();

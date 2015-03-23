@@ -43,8 +43,8 @@ if ($_POST) {
 	$pconfig = $_POST;
 
 	if ($_POST['apply']) {
-		if (file_exists("{$g['tmp_path']}/.firewall_virtual_ip.apply")) {
-                        $toapplylist = unserialize(file_get_contents("{$g['tmp_path']}/.firewall_virtual_ip.apply"));
+		if (file_exists('/tmp/.firewall_virtual_ip.apply')) {
+                        $toapplylist = unserialize(file_get_contents('/tmp/.firewall_virtual_ip.apply'));
 			foreach ($toapplylist as $vid => $ovip) {
 				if (!empty($ovip))
 					interface_vip_bring_down($ovip);
@@ -64,7 +64,7 @@ if ($_POST) {
 					}
 				}
 			}
-			@unlink("{$g['tmp_path']}/.firewall_virtual_ip.apply");
+			@unlink('/tmp/.firewall_virtual_ip.apply');
 		}
 		$retval = 0;
 		$retval |= filter_configure();

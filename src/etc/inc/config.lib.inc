@@ -101,6 +101,14 @@ function parse_config_bootup()
 				log_error("Last known config found and restored.  Please double check your configuration file for accuracy.");
 				file_notice("config.xml", gettext("Last known config found and restored.  Please double check your configuration file for accuracy."), "pfSenseConfigurator", "");
 			}
+			if (!file_exists($config_xml)) {
+				echo sprintf(gettext("XML configuration file not found.  %s cannot continue booting."), $g['product_name']) . "\n";
+				unlock($lockkey);
+				mwexec("/sbin/halt");
+				exit;
+			}
+			log_error("Last known config found and restored.  Please double check your configuration file for accuracy.");
+			file_notice("config.xml", gettext("Last known config found and restored.  Please double check your configuration file for accuracy."), "pfSenseConfigurator", "");
 		} else {
 			log_error(gettext("Could not find a usable configuration file! Exiting...."));
 			exit(0);

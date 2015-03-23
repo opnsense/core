@@ -68,10 +68,7 @@ if ($filtersubmit) {
 	$interfacefilter = getGETPOSTsettingvalue('interface', null);
 	$filtertext = getGETPOSTsettingvalue('filtertext', "");
 	$filterlogentries_qty = getGETPOSTsettingvalue('filterlogentries_qty', null);
-}
 
-$filterlogentries_submit = getGETPOSTsettingvalue('filterlogentries_submit', null);
-if ($filterlogentries_submit) {
 	$filterfieldsarray = array();
 
 	$actpass = getGETPOSTsettingvalue('actpass', null);
@@ -280,7 +277,7 @@ include("head.inc");
 							$iflist = get_configured_interface_with_descr(false, true);
 							if ($iflist[$interfacefilter])
 								$interfacefilter = $iflist[$interfacefilter];
-							if ($filterlogentries_submit)
+							if ($filtersubmit)
 								$filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100, $filterfieldsarray);
 							else
 								$filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100, $filtertext, $interfacefilter);

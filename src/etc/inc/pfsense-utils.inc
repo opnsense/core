@@ -732,19 +732,11 @@ function strncpy(&$dst, $src, $length) {
 function reload_interfaces_sync() {
 	global $config, $g;
 
-	if($g['debug'])
-		log_error(gettext("reload_interfaces_sync() is starting."));
-
 	/* parse config.xml again */
 	$config = parse_config();
 
 	/* enable routing */
 	system_routing_enable();
-	if($g['debug'])
-		log_error(gettext("Enabling system routing"));
-
-	if($g['debug'])
-		log_error(gettext("Cleaning up Interfaces"));
 
 	/* set up interfaces */
 	interfaces_configure();
@@ -841,7 +833,7 @@ function setup_serial_port($when = 'save', $path = '')
 		$boot_config = "";
 
 	$serialspeed = (is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
-	if ($g['platform'] != "cdrom") {
+	if (!is_install_media()) {
 		$boot_config_split = explode("\n", $boot_config);
 		$fd = fopen($boot_config_file,"w");
 		if($fd) {
@@ -884,7 +876,7 @@ function setup_serial_port($when = 'save', $path = '')
 			} else if (is_serial_enabled()) {
 				$new_boot_config[] = 'boot_multicons="YES"';
 				$new_boot_config[] = 'boot_serial="YES"';
-				$primaryconsole = isset($g['primaryconsole_force']) ? $g['primaryconsole_force'] : $config['system']['primaryconsole'];
+				$primaryconsole = $config['system']['primaryconsole'];
 				switch ($primaryconsole) {
 					case "video":
 						$new_boot_config[] = 'console="vidconsole,comconsole"';
@@ -929,14 +921,9 @@ function setup_serial_port($when = 'save', $path = '')
 
 function is_serial_enabled()
 {
-	global $g, $config;
+	global $config;
 
-	if (!isset($g['enableserial_force']) &&
-	    !isset($config['system']['enableserial']) &&
-	    ($g['platform'] == "pfSense" || $g['platform'] == "cdrom" || file_exists("/etc/nano_use_vga.txt")))
-		return false;
-
-	return true;
+	return isset($config['system']['enableserial']);
 }
 
 function reload_ttys()
@@ -1462,9 +1449,7 @@ function compare_hostname_to_dnscache($hostname) {
 	}
 
 	if(trim($oldcontents) != trim($contents)) {
-		if($g['debug']) {
-			log_error(sprintf(gettext('DNSCACHE: Found old IP %1$s and new IP %2$s'), $oldcontents, $contents));
-		}
+		log_error(sprintf(gettext('DNSCACHE: Found old IP %1$s and new IP %2$s'), $oldcontents, $contents));
 		return ($oldcontents);
 	} else {
 		return false;
@@ -1729,8 +1714,9 @@ if(!function_exists("split")) {
 	}
 }
 
-function update_alias_names_upon_change($section, $field, $new_alias_name, $origname) {
-	global $g, $config, $pconfig, $debug;
+function update_alias_names_upon_change($section, $field, $new_alias_name, $origname)
+{
+	global $g, $config, $pconfig;
 	if(!$origname)
 		return;
 
@@ -1742,13 +1728,8 @@ function update_alias_names_upon_change($section, $field, $new_alias_name, $orig
 			return;
 	}
 
-	if($debug) $fd = fopen('/tmp/print_r', 'a');
-	if($debug) fwrite($fd, print_r($pconfig, true));
-
 	if(is_array($sectionref)) {
 		foreach($sectionref as $itemkey => $item) {
-			if($debug) fwrite($fd, "$itemkey\n");
-
 			$fieldfound = true;
 			$fieldref = &$sectionref[$itemkey];
 			foreach($field as $fieldname) {
@@ -1760,14 +1741,10 @@ function update_alias_names_upon_change($section, $field, $new_alias_name, $orig
 				}
 			}
 			if($fieldfound && $fieldref == $origname) {
-				if($debug) fwrite($fd, "Setting old alias value $origname to $new_alias_name\n");
 				$fieldref = $new_alias_name;
 			}
 		}
 	}
-
-	if($debug) fclose($fd);
-
 }
 
 function update_alias_url_data() {

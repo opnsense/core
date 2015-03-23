@@ -330,7 +330,9 @@ if ($_POST) {
 							if ($cnf->restoreBackup($filename)) {
 								/* this will be picked up by /index.php */
 								mark_subsystem_dirty("restore");
+
 								$config = parse_config();
+
 								/* extract out rrd items, unset from $config when done */
 								if($config['rrddata']) {
 									restore_rrddata();

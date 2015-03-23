@@ -197,10 +197,11 @@ include("head.inc");
 			if (add < 10) {
 				var TimeServerID = 'timeserver' + add;
 				document.getElementById(TimeServerID).style.display = 'block';
+				
 				//then revise the add another server line
 				if (add < 9) {
 					var next = add + 1;
-					var newdiv = '<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" title="<?php echo gettext("Add another Time server");?>" onclick="NewTimeServer(' + next + ')" alt="add" />\n';
+					var newdiv = '<a class="btn btn-default btn-xs" title="<?php echo gettext("Add another Time server");?>" onclick="NewTimeServer(' + next + ')" alt="add" ><span class="glyphicon glyphicon-plus"></span></a>\n';
 					document.getElementById('addserver').innerHTML=newdiv;
 				}else{
 					document.getElementById('addserver').style.display = 'none';
@@ -296,7 +297,7 @@ include("head.inc");
 												}
 												?>
 												<div id="addserver">
-												<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" width="17" height="17" border="0" title="<?php echo gettext("Add another Time server");?>" onclick="NewTimeServer(<?php echo $j;?>)" alt="add" />
+												<a class="btn btn-default btn-xs" title="<?php echo gettext("Add another Time server");?>" onclick="NewTimeServer(<?php echo $j;?>)" alt="add" ><span class="glyphicon glyphicon-plus"></span> </a>
 												</div>
 												<br />
 												<?php echo gettext('For best results three to five servers should be configured here.'); ?>
@@ -367,7 +368,7 @@ include("head.inc");
 												<input name="nomodify" type="checkbox" class="formcheckbox" id="nomodify"<?php if(!$pconfig['nomodify']) echo " checked=\"checked\""; ?> />
 												<?php echo gettext("Deny state modifications (i.e. run time configuration) by ntpq and ntpdc (default: enabled)."); ?>
 												<br />
-												<input name="noquery" type="checkbox" class="formcheckbox" id="noquery"<?php if($pconfig['noquery']) echo " checked=\"checked\""; ?> />>
+												<input name="noquery" type="checkbox" class="formcheckbox" id="noquery"<?php if($pconfig['noquery']) echo " checked=\"checked\""; ?> />
 												<?php echo gettext("Disable ntpq and ntpdc queries (default: disabled)."); ?>
 												<br />
 												<input name="noserve" type="checkbox" class="formcheckbox" id="noserve"<?php if($pconfig['noserve']) echo " checked=\"checked\""; ?> />

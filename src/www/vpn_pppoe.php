@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Ermal Luci
@@ -39,8 +40,8 @@ if ($_POST) {
         $pconfig = $_POST;
 
         if ($_POST['apply']) {
-                if (file_exists("{$g['tmp_path']}/.vpn_pppoe.apply")) {
-                        $toapplylist = unserialize(file_get_contents("{$g['tmp_path']}/.vpn_pppoe.apply"));
+                if (file_exists('/tmp/.vpn_pppoe.apply')) {
+                        $toapplylist = unserialize(file_get_contents('/tmp/.vpn_pppoe.apply'));
                         foreach ($toapplylist as $pppoeid) {
 				if (!is_numeric($pppoeid))
 					continue;
@@ -53,7 +54,7 @@ if ($_POST) {
 					}
 				}
                         }
-                        @unlink("{$g['tmp_path']}/.vpn_pppoe.apply");
+                        @unlink('/tmp/.vpn_pppoe.apply');
                 }
                 $retval = 0;
                 $retval |= filter_configure();

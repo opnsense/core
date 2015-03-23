@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004-2008 Scott Ullrich
@@ -396,13 +397,15 @@ $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
 
 if ($_POST['apply']) {
 	unset($input_errors);
-	if (!is_subsystem_dirty('interfaces'))
+	if (!is_subsystem_dirty('interfaces')) {
 		$intput_errors[] = gettext("You have already applied your settings!");
-	else {
+	} else {
+		unlink_if_exists('/tmp/config.cache');
+
 		clear_subsystem_dirty('interfaces');
 
-		if (file_exists("{$g['tmp_path']}/.interfaces.apply")) {
-			$toapplylist = unserialize(file_get_contents("{$g['tmp_path']}/.interfaces.apply"));
+		if (file_exists('/tmp/.interfaces.apply')) {
+			$toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
 			foreach ($toapplylist as $ifapply => $ifcfgo) {
 				if (isset($config['interfaces'][$ifapply]['enable'])) {
 					interface_bring_down($ifapply, false, $ifcfgo);
@@ -426,7 +429,7 @@ if ($_POST['apply']) {
 		if (is_subsystem_dirty('staticroutes') && (system_routing_configure() == 0))
 			clear_subsystem_dirty('staticroutes');
 	}
-	@unlink("{$g['tmp_path']}/.interfaces.apply");
+	@unlink('/tmp/.interfaces.apply');
 	header("Location: interfaces.php?if={$if}");
 	exit;
 } else if ($_POST && $_POST['enable'] != "yes") {
@@ -435,15 +438,15 @@ if ($_POST['apply']) {
 		interface_sync_wireless_clones($wancfg, false);
 	write_config("Interface {$_POST['descr']}({$if}) is now disabled.");
 	mark_subsystem_dirty('interfaces');
-	if (file_exists("{$g['tmp_path']}/.interfaces.apply")) {
-		$toapplylist = unserialize(file_get_contents("{$g['tmp_path']}/.interfaces.apply"));
+	if (file_exists('/tmp/.interfaces.apply')) {
+		$toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
 	} else {
 		$toapplylist = array();
 	}
 	$toapplylist[$if]['ifcfg'] = $wancfg;
 	$toapplylist[$if]['ppps'] = $a_ppps;
 	/* we need to be able remove IP aliases for IPv6 */
-	file_put_contents("{$g['tmp_path']}/.interfaces.apply", serialize($toapplylist));
+	file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
 	header("Location: interfaces.php?if={$if}");
 	exit;
 } else if ($_POST) {
@@ -1124,14 +1127,14 @@ if ($_POST['apply']) {
 
 		write_config();
 
-		if (file_exists("{$g['tmp_path']}/.interfaces.apply")) {
-			$toapplylist = unserialize(file_get_contents("{$g['tmp_path']}/.interfaces.apply"));
+		if (file_exists('/tmp/.interfaces.apply')) {
+			$toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
 		} else {
 			$toapplylist = array();
 		}
 		$toapplylist[$if]['ifcfg'] = $old_wancfg;
 		$toapplylist[$if]['ppps'] = $old_ppps;
-		file_put_contents("{$g['tmp_path']}/.interfaces.apply", serialize($toapplylist));
+		file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
 
 		mark_subsystem_dirty('interfaces');
 

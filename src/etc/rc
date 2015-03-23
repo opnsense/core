@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# Copyright (C) 2004-2010 Scott Ullrich, All rights reserved.
-# Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-# Copyright (C) 2014-2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2004-2010 Scott Ullrich <sullrich@gmail.com>
+# Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 # All rights reserved.
 
 stty status '^T' 2> /dev/null
@@ -17,76 +17,40 @@ HOME=/
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
 export HOME PATH
 
-PLATFORM=`/bin/cat /usr/local/etc/platform`
-
-if [ "${PLATFORM}" = "nanobsd" ]; then
-	kldstat -qm zfs
-	if [ $? = 0 ]; then
-		kldunload zfs
-	fi
-fi
-
-# Mount memory file system if it exists
 echo "Mounting filesystems..."
 
-kldstat -qm zfs
-# Handle ZFS read-only case
-if [ "$PLATFORM" = "pfSense" ]; then
-	kldstat -qm zfs
-	if [ $? = 0 ]; then
-		ZFSFSAVAILABLE=$(/sbin/zfs mount 2>/dev/null | wc -l)
-		if [ $ZFSAVAILABLE -eq 0 ]; then
-			kldunload zfs
-		elif [ -f /usr/bin/grep ]; then
-			ZFSROOT=`/sbin/zfs mount | /usr/bin/grep ' /$' | /usr/bin/cut -d ' ' -f 1`
-			if [ "$ZFSROOT" != "" ]; then
-				/sbin/zfs set readonly=off $ZFSROOT
-			fi
-		fi
+attempts=0
+while [ ${attempts} -lt 3 ]; do
+	if mount -a 2>/dev/null; then
+		# bail if all is well
+		break
 	fi
-fi
+	fsck -y /
+	attempts=$((attempts+1))
+done
 
-if [ "${PLATFORM}" = "cdrom" ]; then
+# see if / is writable (aka. non-LiveCD boot)
+if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
+	# only remove the directory
+	rmdir ${_tmpdir}
+else
+	# create a writable /tmp partition via mfs
 	/etc/rc.d/tmp start
 
 	# fake a writeable environment in some subdirs
 	for i in conf etc home root usr var; do
-		/bin/mkdir -p /tmp/.cdrom/${i}
-		/sbin/mount_unionfs /tmp/.cdrom/${i} /${i}
+		/bin/mkdir -p /tmp/.install.media/${i}
+		/sbin/mount_unionfs /tmp/.install.media/${i} /${i}
 	done
-else
-	# Mount /. If it fails run a fsck.
-	if [ "$PLATFORM" = "nanobsd" ]; then
-		export PKG_TMPDIR=/root/
-		/sbin/mount -uw / 2>/dev/null
-		mount_rc=$?
-		attempts=0
-		while [ ${mount_rc} != 0 -a ${attempts} -lt 3 ]; do
-			/sbin/fsck -y /
-			/sbin/mount -uw / 2>/dev/null
-			mount_rc=$?
-			attempts=$((attempts+1))
-		done
-	else
-		/sbin/mount -a 2>/dev/null
-		mount_rc=$?
-		attempts=0
-		while [ ${mount_rc} != 0 -a ${attempts} -lt 3 ]; do
-			/sbin/fsck -y /
-			/sbin/mount -a 2>/dev/null
-			mount_rc=$?
-			attempts=$((attempts+1))
-		done
-	fi
-
-	# !!! migration code for OPNsense <= 15.1.7, do not remove !!!
-	if [ -d "/cf/conf" ]; then
-		/bin/rm -f /conf
-		/bin/mv /cf/conf /conf
-		/bin/rm -rf /cf
-	fi
-	# !!! migration code for OPNsense <= 15.1.7, do not remove !!!
 fi
+
+# !!! migration code for OPNsense <= 15.1.7, do not remove !!!
+if [ -d "/cf/conf" ]; then
+	/bin/rm -f /conf
+	/bin/mv /cf/conf /conf
+	/bin/rm -rf /cf
+fi
+# !!! migration code for OPNsense <= 15.1.7, do not remove !!!
 
 # mount repo if available
 if [ -d /root/core ]; then
@@ -139,61 +103,53 @@ rm -f /etc/spwd.db.tmp
 # Enable console output if its muted.
 /sbin/conscontrol mute off >/dev/null
 
-if [ "$PLATFORM" != "cdrom" ]; then
-	USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
-
-	if [ "$PLATFORM" = "pfSense" ] && [ ${USE_MFS_TMPVAR} -eq 0 ]; then
-		mdmfs -S -M -s 4m md /var/run
+USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
+if [ ${USE_MFS_TMPVAR} -eq 0 ]; then
+	mdmfs -S -M -s 4m md /var/run
+else
+	USE_MFS_TMP_SIZE=`/usr/bin/grep use_mfs_tmp_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
+	if [ ! -z ${USE_MFS_TMP_SIZE} ] && [ ${USE_MFS_TMP_SIZE} -gt 0 ]; then
+		tmpsize="${USE_MFS_TMP_SIZE}m"
+	else
+		tmpsize="40m"
 	fi
 
-	if [ "${PLATFORM}" = "nanobsd" ] || [ ${USE_MFS_TMPVAR} -gt 0 ]; then
-		USE_MFS_TMP_SIZE=`/usr/bin/grep use_mfs_tmp_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
-		if [ ! -z ${USE_MFS_TMP_SIZE} ] && [ ${USE_MFS_TMP_SIZE} -gt 0 ]; then
-			tmpsize="${USE_MFS_TMP_SIZE}m"
-		else
-			tmpsize="40m"
-		fi
-
-		USE_MFS_VAR_SIZE=`/usr/bin/grep use_mfs_var_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
-		if [ ! -z ${USE_MFS_VAR_SIZE} ] && [ ${USE_MFS_VAR_SIZE} -gt 0 ]; then
-			varsize="${USE_MFS_VAR_SIZE}m"
-		else
-			varsize="60m"
-		fi
-
-		echo -n "Setting up memory disks..."
-
-		if [ ! -d /root/var/db/pkg ]; then
-			/bin/mkdir -p /root/var/db
-			/bin/mv /var/db/pkg /root/var/db/
-		fi
-
-		mdmfs -S -M -s ${tmpsize} md /tmp
-		mdmfs -S -M -s ${varsize} md /var
-
-		/bin/mkdir -p /var/db
-		/bin/ln -s /root/var/db/pkg /var/db/pkg
-
-		echo "done."
+	USE_MFS_VAR_SIZE=`/usr/bin/grep use_mfs_var_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
+	if [ ! -z ${USE_MFS_VAR_SIZE} ] && [ ${USE_MFS_VAR_SIZE} -gt 0 ]; then
+		varsize="${USE_MFS_VAR_SIZE}m"
+	else
+		varsize="60m"
 	fi
 
-	/sbin/swapon -a
-	/usr/local/etc/rc.savecore
+	echo -n "Setting up memory disks..."
 
-	if [ -d /root/var/db/pkg ]; then
-		# User must have just disabled RAM disks,
-		# let's move these back into place.
-		/bin/mkdir -p /var/db
-		/bin/mv /root/var/db/pkg /var/db/
+	if [ ! -d /root/var/db/pkg ]; then
+		/bin/mkdir -p /root/var/db
+		/bin/mv /var/db/pkg /root/var/db/
 	fi
+
+	mdmfs -S -M -s ${tmpsize} md /tmp
+	mdmfs -S -M -s ${varsize} md /var
+
+	/bin/mkdir -p /var/db
+	/bin/ln -s /root/var/db/pkg /var/db/pkg
+
+	echo "done."
+fi
+
+/sbin/swapon -a
+/usr/local/etc/rc.savecore
+
+if [ -d /root/var/db/pkg ]; then
+	# User must have just disabled RAM disks,
+	# let's move these back into place.
+	/bin/mkdir -p /var/db
+	/bin/mv /root/var/db/pkg /var/db/
 fi
 
 # make some directories in /var
 /bin/mkdir -p /var/run /var/log /var/etc /var/db/entropy /var/at/jobs/ /var/empty 2>/dev/null
 /bin/rm -rf /var/run/*
-if [ "$PLATFORM" != "pfSense" ]; then
-	/bin/rm /var/log/* 2>/dev/null
-fi
 
 # Cleanup configuration files from previous instance
 /bin/rm -rf /var/etc/*
@@ -235,14 +191,6 @@ fi
 
 /bin/rm -rf /tmp/*
 /bin/chmod 1777 /tmp
-
-if [ ! "$PLATFORM" = "cdrom" ] ; then
-	# Malloc debugging check
-	if [ -L /etc/malloc.conf ]; then
-	    #ln -s aj /etc/malloc.conf
-		/bin/rm /etc/malloc.conf
-	fi
-fi
 
 if [ ! -L /etc/dhclient.conf ]; then
     /bin/rm -rf /etc/dhclient.conf

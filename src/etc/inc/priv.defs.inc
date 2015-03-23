@@ -1170,12 +1170,6 @@ $priv_list['page-system-firmware-manualupdate']['descr'] = gettext("Allow access
 $priv_list['page-system-firmware-manualupdate']['match'] = array();
 $priv_list['page-system-firmware-manualupdate']['match'][] = "system_firmware.php*";
 
-$priv_list['page-system-firmware-checkforupdate'] = array();
-$priv_list['page-system-firmware-checkforupdate']['name'] = gettext("WebCfg - System: Firmware: Check For Update page");
-$priv_list['page-system-firmware-checkforupdate']['descr'] = gettext("Allow access to the 'System: Firmware: Check For Update' page.");
-$priv_list['page-system-firmware-checkforupdate']['match'] = array();
-$priv_list['page-system-firmware-checkforupdate']['match'][] = "system_firmware_auto.php*";
-
 $priv_list['page-system-firmware-autoupdate'] = array();
 $priv_list['page-system-firmware-autoupdate']['name'] = gettext("WebCfg - System: Firmware: Auto Update page");
 $priv_list['page-system-firmware-autoupdate']['descr'] = gettext("Allow access to the 'System: Firmware: Auto Update' page.");
@@ -1277,12 +1271,6 @@ $priv_list['page-upload_progress']['name'] = gettext("WebCfg - System: Firmware:
 $priv_list['page-upload_progress']['descr'] = gettext("Allow access to the 'System: Firmware: Manual Update: Progress bar' page.");
 $priv_list['page-upload_progress']['match'] = array();
 $priv_list['page-upload_progress']['match'][] = "upload_progress*";
-
-$priv_list['page-hidden-uploadconfiguration'] = array();
-$priv_list['page-hidden-uploadconfiguration']['name'] = gettext("WebCfg - Hidden: Upload Configuration page");
-$priv_list['page-hidden-uploadconfiguration']['descr'] = gettext("Allow access to the 'Hidden: Upload Configuration' page.");
-$priv_list['page-hidden-uploadconfiguration']['match'] = array();
-$priv_list['page-hidden-uploadconfiguration']['match'][] = "uploadconfig.php*";
 
 $priv_list['page-vpn-ipsec'] = array();
 $priv_list['page-vpn-ipsec']['name'] = gettext("WebCfg - VPN: IPsec page");

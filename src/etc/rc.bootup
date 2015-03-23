@@ -139,8 +139,8 @@ set_device_perms();
 unmute_kernel_msgs();
 echo "done.\n";
 
-// Display rescue configuration option
-if ($g['platform'] == 'cdrom') {
+/* Display live system's early boot options */
+if (is_install_media()) {
 	rescue_detect_keypress();
 }
 
@@ -217,11 +217,9 @@ setup_microcode();
 echo "done.\n";
 
 /* set up interfaces */
-if(!$debugging)
-	mute_kernel_msgs();
+mute_kernel_msgs();
 interfaces_configure();
-if(!$debugging)
-	unmute_kernel_msgs();
+unmute_kernel_msgs();
 
 /* re-make hosts file after configuring interfaces */
 system_hosts_generate();
@@ -368,18 +366,6 @@ prefer_ipv4_or_ipv6();
 if (file_exists("/sbin/shutdown.old"))
 	@unlink("/sbin/shutdown.old");
 
-/* Resync / Reinstall packages if need be */
-if(file_exists('/conf/needs_package_sync')) {
-	if($config['installedpackages'] <> '' && is_array($config['installedpackages']['package'])) {
-		require_once("pkg-utils.inc");
-		if($g['platform'] == "pfSense" || $g['platform'] == "nanobsd") {
-			mark_subsystem_dirty('packagelock');
-			pkg_reinstall_all();
-			clear_subsystem_dirty('packagelock');
-		}
-	}
-	@unlink('/conf/needs_package_sync');
-}
 
 /* Give syslogd a kick after everything else has been initialized, otherwise it can occasionally
    fail to route syslog messages properly on both IPv4 and IPv6 */

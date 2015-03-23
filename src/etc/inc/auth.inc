@@ -185,8 +185,9 @@ unset($security_passed);
 $groupindex = index_groups();
 $userindex = index_users();
 
-function index_groups() {
-	global $g, $debug, $config, $groupindex;
+function index_groups()
+{
+	global $config, $groupindex;
 
 	$groupindex = array();
 
@@ -201,8 +202,9 @@ function index_groups() {
 	return ($groupindex);
 }
 
-function index_users() {
-	global $g, $debug, $config;
+function index_users()
+{
+	global $config;
 
 	if (is_array($config['system']['user'])) {
 		$i = 0;
@@ -215,14 +217,16 @@ function index_users() {
 	return ($userindex);
 }
 
-function & getUserEntry($name) {
-	global $debug, $config, $userindex;
+function &getUserEntry($name)
+{
+	global $config, $userindex;
 	if (isset($userindex[$name]))
 		return $config['system']['user'][$userindex[$name]];
 }
 
-function & getUserEntryByUID($uid) {
-	global $debug, $config;
+function &getUserEntryByUID($uid)
+{
+	global $config;
 
 	if (is_array($config['system']['user']))
 		foreach ($config['system']['user'] as & $user)
@@ -232,25 +236,32 @@ function & getUserEntryByUID($uid) {
 	return false;
 }
 
-function & getGroupEntry($name) {
-	global $debug, $config, $groupindex;
-	if (isset($groupindex[$name]))
+function &getGroupEntry($name)
+{
+	global $config, $groupindex;
+
+	if (isset($groupindex[$name])) {
 		return $config['system']['group'][$groupindex[$name]];
+	}
 }
 
-function & getGroupEntryByGID($gid) {
-	global $debug, $config;
+function &getGroupEntryByGID($gid)
+{
+	global $config;
 
-	if (is_array($config['system']['group']))
-		foreach ($config['system']['group'] as & $group)
-			if ($group['gid'] == $gid)
+	if (is_array($config['system']['group'])) {
+		foreach ($config['system']['group'] as & $group) {
+			if ($group['gid'] == $gid) {
 				return $group;
+			}
+		}
+	}
 
 	return false;
 }
 
-function get_user_privileges(& $user) {
-
+function get_user_privileges(&$user)
+{
         $privs = $user['priv'];
         if (!is_array($privs)) {
                 $privs = array();
@@ -260,8 +271,9 @@ function get_user_privileges(& $user) {
 
         foreach ($names as $name) {
                 $group = getGroupEntry($name);
-                if (is_array($group['priv']))
-                        $privs = array_merge( $privs, $group['priv']);
+                if (is_array($group['priv'])) {
+                        $privs = array_merge($privs, $group['priv']);
+		}
         }
 
         return $privs;
@@ -362,9 +374,8 @@ function local_sync_accounts()
 
 }
 
-function local_user_set(& $user) {
-	global $g, $debug;
-
+function local_user_set(&$user)
+{
 	if (empty($user['password'])) {
 		log_error("There is something wrong in your config because user {$user['name']} password is missing!");
 		return;
@@ -406,8 +417,6 @@ function local_user_set(& $user) {
 	/* root user special handling */
 	if ($user_uid == 0) {
 		$cmd = "/usr/sbin/pw usermod -q -n root -s /usr/local/etc/rc.initial -H 0";
-		if($debug)
-			log_error(sprintf(gettext("Running: %s"), $cmd));
 		$fd = popen($cmd, "w");
 		fwrite($fd, $user['password']);
 		pclose($fd);
@@ -435,8 +444,6 @@ function local_user_set(& $user) {
 			" -g {$user_group} -s {$user_shell} -d {$user_home}".
 			" -c ".escapeshellarg($comment)." -H 0 2>&1";
 
-	if($debug)
-		log_error(sprintf(gettext("Running: %s"), $cmd));
 	$fd = popen($cmd, "w");
 	fwrite($fd, $user['password']);
 	pclose($fd);
@@ -507,8 +514,9 @@ function local_user_set_password(& $user, $password)
        $user['nt-hash'] = bin2hex(hash("md4", $ustr));
 }
 
-function local_user_get_groups($user, $all = false) {
-	global $debug, $config;
+function local_user_get_groups($user, $all = false)
+{
+	global $config;
 
 	$groups = array();
 	if (!is_array($config['system']['group']))
@@ -520,8 +528,9 @@ function local_user_get_groups($user, $all = false) {
 				if (in_array($user['uid'], $group['member']))
 					$groups[] = $group['name'];
 
-	if ( $all )
-		$groups[] = "all";
+	if ($all) {
+		$groups[] = 'all';
+	}
 
 	sort($groups);
 
@@ -529,8 +538,9 @@ function local_user_get_groups($user, $all = false) {
 
 }
 
-function local_user_set_groups($user, $new_groups = NULL ) {
-	global $debug, $config, $groupindex;
+function local_user_set_groups($user, $new_groups = null)
+{
+	global $config, $groupindex;
 
 	if (!is_array($config['system']['group']))
 		return;
@@ -590,9 +600,8 @@ function local_group_del_user($user) {
 	}
 }
 
-function local_group_set($group, $reset = false) {
-	global $debug;
-
+function local_group_set($group, $reset = false)
+{
 	$group_name = $group['name'];
 	$group_gid = $group['gid'];
 	$group_members = "''";
@@ -613,25 +622,20 @@ function local_group_set($group, $reset = false) {
 	/* add or mod group db */
 	$cmd = "/usr/sbin/pw {$group_op} {$group_name} -g {$group_gid} -M {$group_members} 2>&1";
 
-	if($debug)
-		log_error(sprintf(gettext("Running: %s"), $cmd));
 	mwexec($cmd);
 
 }
 
-function local_group_del($group) {
-	global $debug;
-
+function local_group_del($group)
+{
 	/* delete from group db */
 	$cmd = "/usr/sbin/pw groupdel {$group['name']}";
-
-	if($debug)
-		log_error(sprintf(gettext("Running: %s"), $cmd));
 	mwexec($cmd);
 }
 
-function ldap_test_connection($authcfg) {
-	global $debug, $config, $g;
+function ldap_test_connection($authcfg)
+{
+	global $config;
 
 	if ($authcfg) {
                 if (strstr($authcfg['ldap_urltype'], "Standard"))
@@ -668,8 +672,10 @@ function ldap_test_connection($authcfg) {
 	return true;
 }
 
-function ldap_setup_caenv($authcfg) {
+function ldap_setup_caenv($authcfg)
+{
 	global $g;
+
 	require_once("certs.inc");
 
 	unset($caref);
@@ -697,8 +703,9 @@ function ldap_setup_caenv($authcfg) {
 	}
 }
 
-function ldap_test_bind($authcfg) {
-	global $debug, $config, $g;
+function ldap_test_bind($authcfg)
+{
+	global $config;
 
 	if ($authcfg) {
                 if (strstr($authcfg['ldap_urltype'], "Standard"))
@@ -758,8 +765,9 @@ function ldap_test_bind($authcfg) {
 	return true;
 }
 
-function ldap_get_user_ous($show_complete_ou=true, $authcfg) {
-	global $debug, $config, $g;
+function ldap_get_user_ous($show_complete_ou=true, $authcfg)
+{
+	global $config;
 
 	if(!function_exists("ldap_connect"))
 		return;
@@ -856,8 +864,9 @@ function ldap_get_user_ous($show_complete_ou=true, $authcfg) {
 	return $ous;
 }
 
-function ldap_get_groups($username, $authcfg) {
-	global $debug, $config;
+function ldap_get_groups($username, $authcfg)
+{
+	global $config;
 
 	if(!function_exists("ldap_connect"))
 		return;
@@ -971,17 +980,17 @@ function ldap_get_groups($username, $authcfg) {
 
 	$groups = print_r($memberof,true);
 
-	//log_error("Returning groups ".$groups." for user $username");
-
 	return $memberof;
 }
 
-function ldap_format_host($host) {
+function ldap_format_host($host)
+{
 	return is_ipaddrv6($host) ? "[$host]" : $host ;
 }
 
-function ldap_backed($username, $passwd, $authcfg) {
-	global $debug, $config;
+function ldap_backed($username, $passwd, $authcfg)
+{
+	global $config;
 
 	if(!$username)
 		return;
@@ -1092,17 +1101,13 @@ function ldap_backed($username, $passwd, $authcfg) {
 	/*  Person.  To later be used by ldap_get_groups.                */
 	/*  that way we don't have to search twice.                      */
 	/*****************************************************************/
-	if ($debug)
-		log_error(sprintf(gettext("Now Searching for %s in directory."), $username));
+
 	/* Iterate through the user containers for search */
 	foreach ($ldac_splits as $i => $ldac_split) {
 		$ldac_split = isset($authcfg['ldap_utf8']) ? utf8_encode($ldac_split) : $ldac_split;
 		$ldapfilter = isset($authcfg['ldap_utf8']) ? utf8_encode($ldapfilter) : $ldapfilter;
 		$ldapsearchbasedn = isset($authcfg['ldap_utf8']) ? utf8_encode("{$ldac_split},{$ldapbasedn}") : "{$ldac_split},{$ldapbasedn}";
 		/* Make sure we just use the first user we find */
-		if ($debug) {
-			log_error(sprintf(gettext('Now Searching in server %1$s, container %2$s with filter %3$s.'), $ldapname, utf8_decode($ldac_split), utf8_decode($ldapfilter)));
-		}
 		if ($ldapscope == "one")
 			$ldapfunc = "ldap_list";
 		else
@@ -1141,19 +1146,15 @@ function ldap_backed($username, $passwd, $authcfg) {
 		return false;
 	}
 
-	if ($debug) {
-		$userdn = isset($authcfg['ldap_utf8']) ? utf8_decode($userdn) : $userdn;
-		log_error(sprintf(gettext('Logged in successfully as %1$s via LDAP server %2$s with DN = %3$s.'), $username, $ldapname, $userdn));
-	}
-
 	/* At this point we are bound to LDAP so the user was auth'd okay. Close connection. */
 	@ldap_unbind($ldap);
 
 	return true;
 }
 
-function radius_backed($username, $passwd, $authcfg, &$attributes = array()) {
-	global $debug, $config;
+function radius_backed($username, $passwd, $authcfg, &$attributes = array())
+{
+	global $config;
 	$ret = false;
 
 	require_once("radius.inc");
@@ -1177,8 +1178,6 @@ function radius_backed($username, $passwd, $authcfg, &$attributes = array()) {
 	if (PEAR::isError($rauth->start())) {
 		$retvalue['auth_val'] = 1;
 		$retvalue['error'] = $rauth->getError();
-		if ($debug)
-			printf(gettext("Radius start: %s<br />\n"), $retvalue['error']);
 	}
 
 	// XXX - billm - somewhere in here we need to handle securid challenge/response
@@ -1188,19 +1187,13 @@ function radius_backed($username, $passwd, $authcfg, &$attributes = array()) {
 	if (PEAR::isError($result)) {
 		$retvalue['auth_val'] = 1;
 		$retvalue['error'] = $result->getMessage();
-		if ($debug)
-			printf(gettext("Radius send failed: %s<br />\n"), $retvalue['error']);
 	} else if ($result === true) {
 		if ($rauth->getAttributes())
 			$attributes = $rauth->listAttributes();
 		$retvalue['auth_val'] = 2;
-		if ($debug)
-			printf(gettext("Radius Auth succeeded")."<br />\n");
 		$ret = true;
 	} else {
 		$retvalue['auth_val'] = 3;
-		if ($debug)
-			printf(gettext("Radius Auth rejected")."<br />\n");
 	}
 
 	// close OO RADIUS_AUTHENTICATION

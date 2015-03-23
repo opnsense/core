@@ -59,8 +59,8 @@ $fd = @fsockopen("unix://{$g['varrun_path']}/qstats");
 	while(!feof($fd))
 		$stats .= fread($fd, 4096);
 	fclose($fd);
-	@file_put_contents("{$g['tmp_path']}/qstats", $stats);
-	$altqstats = @parse_xml_config("{$g['tmp_path']}/qstats", array("altqstats"));
+	@file_put_contents('/tmp/qstats', $stats);
+	$altqstats = @parse_xml_config('/tmp/qstats', array('altqstats'));
 	if ($altqstats == -1)
 		$error = "No queue statistics could be read.";
 }

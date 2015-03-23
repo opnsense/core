@@ -109,15 +109,6 @@ function RADIUS_ACCOUNTING_START($ruleno, $username, $sessionid, $radiusservers,
         // If we encounter an error immediately stop this function and go back
         $racct->close();
         return $retvalue;
-
-        /* Old code:
-         * $status = $racct->start();
-         * if(PEAR::isError($status)) {
-         *    if ($debug)
-         *        printf("Radius start: %s<br />\n", $status->getMessage());
-         *        exit;
-         * }
-         */
     }
 
     /*

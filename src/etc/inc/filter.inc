@@ -265,7 +265,6 @@ function filter_configure_sync($delete_states_if_needed = true)
 	$rules .= "{$altq_queues}\n";
 	$rules .= "{$natrules}\n";
 	$rules .= "{$pfrules}\n";
-	$rules .= discover_pkg_rules("filter");
 
 	unset($aliases, $gateways, $altq_queues, $natrules, $pfrules);
 
@@ -680,8 +679,6 @@ function filter_generate_gateways() {
 					$int = $member['int'];
 					$gatewayip = $member['gwip'];
 					if (($int <> "") && is_ipaddr($gatewayip)) {
-						if ($g['debug'])
-							log_error(sprintf(gettext('Setting up route with %1$s on %2$s'), $gatewayip, $int));
 						if ($member['weight'] > 1) {
 							$routeto .= str_repeat("( {$int} {$gatewayip} ) ", $member['weight']);
 						} else
@@ -1976,7 +1973,6 @@ function filter_nat_rules_generate() {
 		}
 	}
 
-	$natrules .= discover_pkg_rules("nat");
 
 	$natrules .= "# UPnPd rdr anchor\n";
 	$natrules .= "rdr-anchor \"miniupnpd\"\n";
@@ -2464,7 +2460,7 @@ function filter_generate_user_rule($rule)
 		 *	# keep state
 		 *		works with TCP, UDP, and ICMP.
 		 *	# modulate state
-		 *		works only with TCP. pfSense will generate strong Initial Sequence Numbers (ISNs)
+		 *		works only with TCP. OPNsense will generate strong Initial Sequence Numbers (ISNs)
 		 *		for packets matching this rule.
 		 *	# synproxy state
 		 *		proxies incoming TCP connections to help protect servers from spoofed TCP SYN floods.
@@ -2577,8 +2573,7 @@ function filter_generate_user_rule($rule)
 					if(!isset($config['system']['schedule_states']))
 						mwexec("/sbin/pfctl -y {$sched['schedlabel']}");
 					return "# schedule finished - {$rule['descr']}";
-				} else if($g['debug'])
-					log_error("[TDR DEBUG] status true -- rule type '$type'");
+				}
 
 				$aline['schedlabel'] = " schedule \"{$sched['schedlabel']}\" ";
 				break;
@@ -2623,7 +2618,6 @@ function filter_rules_generate()
 	$pptpdcfg = $config['pptpd'];
 
 	$ipfrules = "";
-	$ipfrules .= discover_pkg_rules("pfearly");
 
 	/* relayd */
 	$ipfrules .= "anchor \"relayd/*\"\n";
@@ -3351,8 +3345,6 @@ function filter_get_time_based_rule_status($schedule) {
 function filter_tdr_day($schedule) {
 	global $g;
 
-	if($g['debug'])
-		log_error("[TDR DEBUG] filter_tdr_day($schedule)");
 
 	/*
 	 * Calculate day of month.
@@ -3374,8 +3366,6 @@ function filter_tdr_hour($schedule) {
 	$starting_time = strtotime($tmp[0]);
 	$ending_time = strtotime($tmp[1]);
 	$now = strtotime("now");
-	if($g['debug'])
-		log_error("[TDR DEBUG] S: $starting_time E: $ending_time N: $now");
 	if($now >= $starting_time and $now < $ending_time)
 		return true;
 	return false;
@@ -3392,8 +3382,6 @@ function filter_tdr_position($schedule) {
 	 * ...
 	 */
 	$weekday = date("w");
-	if($g['debug'])
-		log_error("[TDR DEBUG] filter_tdr_position($schedule) $weekday");
 	if($weekday == 0)
 		$weekday = 7;
 	$schedule_days = explode(",", $schedule);
@@ -3412,8 +3400,6 @@ function filter_tdr_month($schedule) {
 	 */
 	$todays_month = date("n");
 	$months = explode(",", $schedule);
-	if($g['debug'])
-		log_error("[TDR DEBUG] filter_tdr_month($schedule)");
 	foreach($months as $month) {
 		if($month == $todays_month)
 			return true;
@@ -3574,37 +3560,6 @@ EOD;
 	return($ipfrules);
 }
 
-function discover_pkg_rules($ruletype) {
-	global $config, $g, $aliases;
-
-	/* Bail if there is no pkg directory, or if the package files might be out of sync. */
-	if(!is_dir("/usr/local/pkg") || file_exists('/conf/needs_package_sync'))
-		return "";
-
-	$rules = "";
-	$files = glob("/usr/local/pkg/*.inc");
-	foreach($files as $pkg_inc) {
-		update_filter_reload_status(sprintf(gettext('Checking for %1$s PF hooks in package %2$s'), $ruletype, $pkg_inc));
-		$pkg = basename($pkg_inc, ".inc");
-		$pkg_generate_rules = "{$pkg}_generate_rules";
-		if (!function_exists($pkg_generate_rules))
-			require_once($pkg_inc);
-		if(function_exists($pkg_generate_rules)) {
-			update_filter_reload_status(sprintf(gettext('Processing early %1$s rules for package %2$s'), $ruletype, $pkg_inc));
-			$tmprules = $pkg_generate_rules("$ruletype");
-			file_put_contents('/tmp/rules.test.packages', $aliases . $tmprules);
-			$status = mwexec('/sbin/pfctl -nf /tmp/rules.test.packages');
-			if ($status <> 0) {
-				$errorrules = sprintf(gettext("There was an error while parsing the package filter rules for %s."), $pkg_inc) . "\n";
-				log_error($errorrules);
-				file_put_contents("/tmp/rules.packages.{$pkg}", "#{$errorrules}\n{$tmprules}\n");
-				continue;
-			}
-			$rules .= $tmprules;
-		}
-	}
-	return $rules;
-}
 
 function filter_get_antilockout_ports($wantarray = false) {
 	global $config;

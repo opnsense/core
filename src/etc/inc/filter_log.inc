@@ -242,8 +242,7 @@ function parse_filter_line($line) {
 			$flent['advbase'] = $rule_data[$field++];
 		}
 	} else {
-		if($g['debug'])
-			log_error(sprintf(gettext("There was a error parsing rule number: %s.   Please report to mailing list or forum."), $flent['rulenum']));
+		log_error(sprintf(gettext("There was a error parsing rule number: %s.   Please report to mailing list or forum."), $flent['rulenum']));
 		return "";
 	}
 
@@ -251,9 +250,7 @@ function parse_filter_line($line) {
 	if (!((trim($flent['src']) == "") || (trim($flent['dst']) == "") || (trim($flent['time']) == ""))) {
 		return $flent;
 	} else {
-		if($g['debug']) {
-			log_error(sprintf(gettext("There was a error parsing rule: %s.   Please report to mailing list or forum."), $errline));
-		}
+		log_error(sprintf(gettext("There was a error parsing rule: %s.   Please report to mailing list or forum."), $errline));
 		return "";
 	}
 }

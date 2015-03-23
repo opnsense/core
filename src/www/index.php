@@ -39,7 +39,6 @@ ob_start(null, "1000");
 require_once('functions.inc');
 require_once('guiconfig.inc');
 require_once('notices.inc');
-require_once("pkg-utils.inc");
 
 if(isset($_REQUEST['closenotice'])){
 	close_notice($_REQUEST['closenotice']);
@@ -134,21 +133,6 @@ if(file_exists("/usr/sbin/swapinfo")) {
 	$swapinfo = `/usr/sbin/swapinfo`;
 	if(stristr($swapinfo,'%') == true) $showswap=true;
 }
-
-## User recently restored his config.
-## If packages are installed lets resync
-if(file_exists('/conf/needs_package_sync')) {
-	if($config['installedpackages'] <> '' && is_array($config['installedpackages']['package'])) {
-		if($g['platform'] == "pfSense" || $g['platform'] == "nanobsd") {
-			header('Location: pkg_mgr_install.php?mode=reinstallall');
-			exit;
-		}
-	} else {
-		@unlink('/conf/needs_package_sync');
-	}
-}
-
-
 
 	## Find out whether there's hardware encryption or not
 	unset($hwcrypto);
@@ -459,10 +443,6 @@ echo $jscriptstr;
         <div class="row">
 
 				<?php
-				/* Print package server mismatch warning. See https://redmine.pfsense.org/issues/484 */
-				/*if (!verify_all_package_servers())
-					print_info_box(package_server_mismatch_message());*/
-
 				if ($savemsg)
 					print_info_box($savemsg);
 

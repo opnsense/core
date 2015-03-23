@@ -115,7 +115,7 @@ include("head.inc");
 
                 <div class="content-box tab-content">
 
-                    <form action="system_firmware_auto.php" method="post">
+                    <form method="post">
 
                         <div class="table table-striped">
 

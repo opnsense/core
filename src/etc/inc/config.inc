@@ -144,9 +144,9 @@ $config = parse_config();
 
 /* set timezone */
 $timezone = $config['system']['timezone'];
-if (!$timezone)
+if (!$timezone) {
 	$timezone = "Etc/UTC";
+}
+
 date_default_timezone_set("$timezone");
 
-
-?>

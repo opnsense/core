@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -26,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require("guiconfig.inc");
+require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
@@ -46,12 +47,13 @@ if ($_POST) {
 
 		$retval = 0;
 
-		if (file_exists("{$g['tmp_path']}/.system_routes.apply")) {
-			$toapplylist = unserialize(file_get_contents("{$g['tmp_path']}/.system_routes.apply"));
-			foreach ($toapplylist as $toapply)
+		if (file_exists('/tmp/.system_routes.apply')) {
+			$toapplylist = unserialize(file_get_contents('/tmp/.system_routes.apply'));
+			foreach ($toapplylist as $toapply) {
 				mwexec("{$toapply}");
+			}
 
-			@unlink("{$g['tmp_path']}/.system_routes.apply");
+			@unlink('/tmp/.system_routes.apply');
 		}
 
 		$retval = system_routing_configure();

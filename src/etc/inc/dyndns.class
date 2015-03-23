@@ -165,10 +165,15 @@
 			case 'custom':
 				if (!$dnsUpdateURL) $this->_error(7);
 				break;
+			case 'duckdns':
+				if (!$dnsUser) $this->_error(3);
+				if (!$dnsHost) $this->_error(5);
+				break;
 			default:
 				if (!$dnsUser) $this->_error(3);
 				if (!$dnsPass) $this->_error(4);
 				if (!$dnsHost) $this->_error(5);
+				break;
 			}
 
 			switch ($dnsService) {
@@ -684,7 +689,7 @@
 						log_error("Duck DNS ({$this->_dnsHost}): DNS update() starting.");
 					$server = "https://www.duckdns.org/update";
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-					curl_setopt($ch, CURLOPT_URL, $server . '?domains=' . $this->_dnsHost . '&token=' . $this->_dnsUser);
+					curl_setopt($ch, CURLOPT_URL, $server . '?domains=' . str_replace('.duckdns.org', '', $this->_dnsHost) . '&token=' . $this->_dnsUser);
 					break;
 				default:
 					break;
@@ -1283,11 +1288,6 @@
 		 *      | work with other systems. pfSense base is FreeBSD.
 		 */
 		function _detectChange() {
-			global $debug;
-
-			if ($debug)
-				log_error("DynDns ({$this->_dnsHost}): _detectChange() starting.");
-
 			$currentTime = time();
 
 			$wan_ip = $this->_checkIP();
@@ -1369,21 +1369,12 @@
 		 *   - status is returned from a DynDNS service provider.
 		 */
 		function _debug($data) {
-			global $g;
-
-			if (!$g['debug'])
-				return;
 			$string = date('m-d-y h:i:s').' - ('.$this->_debugID.') - ['.$this->_dnsService.'] - '.$data."\n";
 			$file = fopen($this->_debugFile, 'a');
 			fwrite($file, $string);
 			fclose($file);
 		}
 		function _checkIP() {
-			global $debug;
-
-			if ($debug)
-				log_error("DynDns ({$this->_dnsHost}): _checkIP() starting.");
-
 			if ($this->_useIPv6 == true) {
 				$ip_address = find_interface_ipv6($this->_if);
 				if (!is_ipaddrv6($ip_address))
