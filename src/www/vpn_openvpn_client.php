@@ -446,7 +446,8 @@ function autotls_change() {
 						$tab_array[] = array(gettext("Client"), true, "vpn_openvpn_client.php");
 						$tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
 						$tab_array[] = array(gettext("Wizards"), false, "wizard.php?xml=openvpn_wizard.xml");
-						add_package_tabs("OpenVPN", $tab_array);
+                                                $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
+                                                $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
 						display_top_tabs($tab_array);
 					?>
 

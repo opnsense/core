@@ -973,28 +973,6 @@ function display_top_tabs(& $tab_array, $no_drop_down = false) {
 }
 
 
-
-function add_package_tabs($tabgroup, & $tab_array) {
-	global $config, $g;
-
-	if(!is_array($config['installedpackages']))
-		return;
-	if(!is_array($config['installedpackages']['tab']))
-		return;
-
-	foreach($config['installedpackages']['tab'] as $tab) {
-		if ($tab['group'] !== $group)
-			continue;
-		$tab_entry = array();
-		if($tab['name']) {
-			$tab_entry[] = $tab['name'];
-			$tab_entry[] = false;
-			$tab_entry[] = $tab['url'];
-			$tab_array[] = $tab_entry;
-		}
-	}
-}
-
 function alias_info_popup($alias_id){
 	global $config;
 	$maxlength = 60;

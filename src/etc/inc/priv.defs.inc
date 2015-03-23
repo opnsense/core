@@ -1392,6 +1392,12 @@ $priv_list['page-firewall-easyrule']['descr'] = gettext("Allow access to the 'Fi
 $priv_list['page-firewall-easyrule']['match'] = array();
 $priv_list['page-firewall-easyrule']['match'][] = "easyrule.php*";
 
+$priv_list['page-openvpn-client-export'] = array();
+$priv_list['page-openvpn-client-export']['name'] = "WebCfg - OpenVPN: Client Export Utility";
+$priv_list['page-openvpn-client-export']['descr'] = "Allow access to the OpenVPN: Client Export Utility page.";
+$priv_list['page-openvpn-client-export']['match'] = array();
+$priv_list['page-openvpn-client-export']['match'][] = "vpn_openvpn_export.php*";
+
 $priv_rmvd = array();
 
 ?>
