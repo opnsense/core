@@ -29,12 +29,6 @@
 
 require_once("globals.inc");
 
-/* do not load this file twice. */
-if($config_parsed == true)
-	return;
-else
-	$config_parsed = true;
-
 /* include globals from notices.inc /utility/XML parser files */
 require_once('config.lib.inc');
 require_once("notices.inc");

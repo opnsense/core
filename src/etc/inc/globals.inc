@@ -136,4 +136,3 @@ function is_install_media()
 	return true;
 }
 
-$config_parsed = false;
