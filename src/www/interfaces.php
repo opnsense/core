@@ -400,8 +400,6 @@ if ($_POST['apply']) {
 	if (!is_subsystem_dirty('interfaces')) {
 		$intput_errors[] = gettext("You have already applied your settings!");
 	} else {
-		unlink_if_exists('/tmp/config.cache');
-
 		clear_subsystem_dirty('interfaces');
 
 		if (file_exists('/tmp/.interfaces.apply')) {
