@@ -47,13 +47,8 @@ require_once("IPv6.inc");
 require_once('config.lib.inc');
 require_once("xmlparse.inc");
 require_once("crypt.inc");
+require_once("globals.inc");
 
-/* read platform */
-if (file_exists("/usr/local/etc/platform")) {
-	$g['platform'] = chop(file_get_contents("/usr/local/etc/platform"));
-} else {
-	$g['platform'] = "unknown";
-}
 
 /* if /debugging exists, lets set $debugging
    so we can output more information */
@@ -63,13 +58,13 @@ if(file_exists("/debugging")) {
 }
 
 /* if our config file exists bail out, we're already set. */
-else if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
+if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
 	/* find the device where config.xml resides and write out an fstab */
 	unset($cfgdevice);
 	/* check if there's already an fstab (NFS booting?) */
 	if (!file_exists('/etc/fstab')) {
-		if (strstr($g['platform'], "cdrom")) {
-			/* config is on floppy disk for CD-ROM version */
+		if (is_install_media()) {
+			/* config is on install media CD-ROM/Flash version */
 			$cfgdevice = $cfgpartition = "fd0";
 			$_gb = exec('/sbin/dmesg -a', $dmesg);
 			if(preg_match("/da0/", $dmesg) == true) {

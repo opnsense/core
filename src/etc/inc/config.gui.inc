@@ -37,13 +37,6 @@ require_once("IPv6.inc");
 require_once("xmlparse.inc");
 require_once("crypt.inc");
 
-/* read platform */
-if (file_exists("/usr/local/etc/platform")) {
-	$g['platform'] = chop(file_get_contents("/usr/local/etc/platform"));
-} else {
-	$g['platform'] = "unknown";
-}
-
 $config = parse_config();
 
 
