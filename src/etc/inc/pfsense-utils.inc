@@ -593,54 +593,6 @@ function rmdir_recursive($path,$follow_links=false) {
 }
 
 /*
- * call_pfsense_method(): Call a method exposed by the pfsense.org XMLRPC server.
- */
-function call_pfsense_method($method, $params, $timeout = 0) {
-	global $g, $config;
-
-	$xmlrpc_base_url = get_active_xml_rpc_base_url();
-	$xmlrpc_path = $g['xmlrpcpath'];
-
-	$xmlrpcfqdn = preg_replace("(https?://)", "", $xmlrpc_base_url);
-	$ip = gethostbyname($xmlrpcfqdn);
-	if($ip == $xmlrpcfqdn)
-		return false;
-
-	$msg = new XML_RPC_Message($method, array(XML_RPC_Encode($params)));
-	$port = 0;
-	$proxyurl = "";
-	$proxyport = 0;
-	$proxyuser = "";
-	$proxypass = "";
-	if (!empty($config['system']['proxyurl']))
-		$proxyurl = $config['system']['proxyurl'];
-	if (!empty($config['system']['proxyport']) && is_numeric($config['system']['proxyport']))
-		$proxyport = $config['system']['proxyport'];
-	if (!empty($config['system']['proxyuser']))
-		$proxyuser = $config['system']['proxyuser'];
-	if (!empty($config['system']['proxypass']))
-		$proxypass = $config['system']['proxypass'];
-	$cli = new XML_RPC_Client($xmlrpc_path, $xmlrpc_base_url, $port, $proxyurl, $proxyport, $proxyuser, $proxypass);
-	// If the ALT PKG Repo has a username/password set, use it.
-	if($config['system']['altpkgrepo']['username'] &&
-	   $config['system']['altpkgrepo']['password']) {
-		$username = $config['system']['altpkgrepo']['username'];
-		$password = $config['system']['altpkgrepo']['password'];
-		$cli->setCredentials($username, $password);
-	}
-	$resp = $cli->send($msg, $timeout);
-	if(!is_object($resp)) {
-		log_error(sprintf(gettext("XMLRPC communication error: %s"), $cli->errstr));
-		return false;
-	} elseif($resp->faultCode()) {
-		log_error(sprintf(gettext('XMLRPC request failed with error %1$s: %2$s'), $resp->faultCode(), $resp->faultString()));
-		return false;
-	} else {
-		return XML_RPC_Decode($resp->value());
-	}
-}
-
-/*
  * check_firmware_version(): Check whether the current firmware installed is the most recently released.
  */
 function check_firmware_version($tocheck = "all", $return_php = true) {
@@ -670,12 +622,7 @@ function check_firmware_version($tocheck = "all", $return_php = true) {
 	if($config['system']['firmware']['branch'])
 		$params['branch'] = $config['system']['firmware']['branch'];
 
-	/* XXX: What is this method? */
-	if(!($versions = call_pfsense_method('pfsense.get_firmware_version', $params))) {
-		return false;
-	} else {
-		$versions["current"] = $params;
-	}
+	$versions["current"] = $params;
 
 	return $versions;
 }
