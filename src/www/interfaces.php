@@ -400,7 +400,6 @@ if ($_POST['apply']) {
 	if (!is_subsystem_dirty('interfaces')) {
 		$intput_errors[] = gettext("You have already applied your settings!");
 	} else {
-		unlink_if_exists('/tmp/config.cache');
 		clear_subsystem_dirty('interfaces');
 
 		if (file_exists('/tmp/.interfaces.apply')) {
@@ -462,7 +461,6 @@ if ($_POST['apply']) {
 		$pconfig['track6-prefix-id'] = intval($_POST['track6-prefix-id--hex'], 16);
 	else
 		$pconfig['track6-prefix-id'] = 0;
-	conf_mount_rw();
 
 	/* filter out spaces from descriptions  */
 	$_POST['descr'] = remove_bad_chars($_POST['descr']);
@@ -1125,7 +1123,6 @@ if ($_POST['apply']) {
 			handle_wireless_post();
 		}
 
-		conf_mount_ro();
 		write_config();
 
 		if (file_exists('/tmp/.interfaces.apply')) {

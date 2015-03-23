@@ -28,7 +28,9 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("config.lib.inc");
 require_once("guiconfig.inc");
+require_once("script/load_phalcon.php");
 
 if (isset($_POST['backupcount'])) {
 	if (is_numeric($_POST['backupcount']) && ($_POST['backupcount'] >= 0)) {
@@ -45,7 +47,6 @@ if (isset($_POST['backupcount'])) {
 		return;
 	}
 
-	conf_mount_rw();
 	$confvers = unserialize(file_get_contents('/conf/backup/backup.cache'));
 	if($_POST['newver'] != "") {
 		if(config_restore('/conf/backup/config-' . $_POST['newver'] . '.xml') == 0)
@@ -57,7 +58,6 @@ if (isset($_POST['backupcount'])) {
 		unlink_if_exists('/conf/backup/config-' . $_POST['rmver'] . '.xml');
 		$savemsg = sprintf(gettext('Deleted backup with timestamp %1$s and description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['rmver']),$confvers[$_POST['rmver']]['description']);
 	}
-	conf_mount_ro();
 }
 
 if($_GET['getcfg'] != "") {
@@ -91,9 +91,9 @@ if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime
 	}
 }
 
-cleanup_backupcache(false);
-$confvers = get_backups();
-unset($confvers['versions']);
+// list backups
+$cnf = OPNsense\Core\Config::getInstance();
+$confvers = $cnf->getBackups(true);
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Configuration History"));
 include("head.inc");
@@ -218,7 +218,7 @@ include("head.inc");
 										        <tr>
 										          <td><?=gettext("Backup Count");?></td>
 										          <td><input name="backupcount" type="text" class="formfld unknown" size="5" value="<?=htmlspecialchars($config['system']['backupcount']);?>"/></td>
-										          <td><?= gettext("Enter the number of older configurations to keep in the local backup cache. By default this is 30 for a full install or 5 on NanoBSD."); ?></td>
+										          <td><?= gettext("Enter the number of older configurations to keep in the local backup cache. By default this is 30."); ?></td>
 										          <td><input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" /></td>
 										        </tr>
 										        </tbody>

@@ -2148,7 +2148,6 @@ EOD;
 				$maxCacheAgeSecs = 25 * 24 * 60 * 60;
 				$need_update = false;
 
-				conf_mount_rw();
 				/* Update IPv4 if we have it. */
 				if (is_ipaddrv4($wanip)) {
 					if (($wanip != $cachedipv4) || (($currentTime - $cacheTimev4) > $maxCacheAgeSecs) || $forced) {
@@ -2178,7 +2177,6 @@ EOD;
 					}
 				} else
 					@unlink("{$cacheFile}.ipv6");
-				conf_mount_ro();
 
 				$upinst .= "\n";	/* mind that trailing newline! */
 
@@ -2207,7 +2205,6 @@ EOD;
 function configure_cron() {
 	global $g, $config;
 
-	conf_mount_rw();
 	/* preserve existing crontab entries */
 	$crontab_contents = file("/etc/crontab", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
@@ -2250,7 +2247,6 @@ function configure_cron() {
 	/* do a HUP kill to force sync changes */
 	sigkillbypid("{$g['varrun_path']}/cron.pid", "HUP");
 
-	conf_mount_ro();
 }
 
 function upnp_action ($action) {
@@ -2289,6 +2285,19 @@ function upnp_start() {
                sync_package_miniupnpd();
                echo "done.\n";
        }
+}
+
+/**
+ * check if cron exists
+ */
+function cron_job_exists($command) {
+	global $config;
+	foreach($config['cron']['item'] as $item) {
+		if(strstr($item['command'], $command)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 function install_cron_job($command, $active=false, $minute="0", $hour="*", $monthday="*", $month="*", $weekday="*", $who="root") {

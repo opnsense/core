@@ -27,6 +27,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("script/load_phalcon.php");  
 
 /* Allow additional execution time 0 = no limit. */
 ini_set('max_execution_time', '0');
@@ -40,6 +41,8 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
+require_once("services.inc");
+require_once("util.inc");
 
 $rrddbpath = '/var/db/rrd';
 $rrdtool = '/usr/local/bin/rrdtool';
@@ -118,36 +121,6 @@ function restore_rrddata() {
 	}
 }
 
-function add_base_packages_menu_items() {
-	global $g, $config;
-	$base_packages = explode(",", $g['base_packages']);
-	$modified_config = false;
-	foreach($base_packages as $bp) {
-		$basepkg_path = "/usr/local/pkg/{$bp}";
-		$tmpinfo = pathinfo($basepkg_path, PATHINFO_EXTENSION);
-		if($tmpinfo['extension'] == "xml" && file_exists($basepkg_path)) {
-			$pkg_config = parse_xml_config_pkg($basepkg_path, "packagegui");
-			if($pkg_config['menu'] != "") {
-				if(is_array($pkg_config['menu'])) {
-					foreach($pkg_config['menu'] as $menu) {
-						if(is_array($config['installedpackages']['menu']))
-							foreach($config['installedpackages']['menu'] as $amenu)
-								if($amenu['name'] == $menu['name'])
-									continue;
-						$config['installedpackages']['menu'][] = $menu;
-						$modified_config = true;
-					}
-				}
-				$static_output .= "done.\n";
-				update_output_window($static_output);
-			}
-		}
-	}
-	if($modified_config) {
-		write_config(gettext("Restored base_package menus after configuration restore."));
-		$config = parse_config(true);
-	}
-}
 
 function remove_bad_chars($string) {
 	return preg_replace('/[^a-z_0-9]/i','',$string);
@@ -174,7 +147,6 @@ function spit_out_select_items($name, $showall) {
 		       "ipsec" => gettext("IPSEC"),
 		       "nat" => gettext("NAT"),
 		       "openvpn" => gettext("OpenVPN"),
-		       "installedpackages" => gettext("Package Manager"),
 		       "pptpd" => gettext("PPTP Server"),
 		       "rrddata" => gettext("RRD Data"),
 		       "cron" => gettext("Scheduled Tasks"),
@@ -222,9 +194,7 @@ END_SCRIPT_BLOCK;
 if ($_POST['apply']) {
 	ob_flush();
 	flush();
-	conf_mount_rw();
 	clear_subsystem_dirty("restore");
-	conf_mount_ro();
 	exit;
 }
 
@@ -232,17 +202,12 @@ if ($_POST) {
 	unset($input_errors);
 	if (stristr($_POST['Submit'], gettext("Restore configuration")))
 		$mode = "restore";
-	else if (stristr($_POST['Submit'], gettext("Reinstall")))
-		$mode = "reinstallpackages";
-	else if (stristr($_POST['Submit'], gettext("Clear Package Lock")))
-		$mode = "clearpackagelock";
 	else if (stristr($_POST['Submit'], gettext("Download")))
 		$mode = "download";
 	else if (stristr($_POST['Submit'], gettext("Restore version")))
 		$mode = "restore_ver";
-
-	if ($_POST["nopackages"] <> "")
-		$options = "nopackages";
+        else if (stristr($_POST['Submit'], gettext("Setup/Test Google Drive")))
+                $mode = "setup_gdrive";
 
 	if ($_POST["ver"] <> "")
 		$ver2restore = $_POST["ver"];
@@ -260,47 +225,28 @@ if ($_POST) {
 
 			if (!$input_errors) {
 
-				//$lockbckp = lock('config');
-
 				$host = "{$config['system']['hostname']}.{$config['system']['domain']}";
 				$name = "config-{$host}-".date("YmdHis").".xml";
 				$data = "";
 
-				if($options == "nopackages") {
-					if(!$_POST['backuparea']) {
-						/* backup entire configuration */
-						$data = file_get_contents('/conf/config.xml');
-					} else {
-						/* backup specific area of configuration */
-						$data = backup_config_section($_POST['backuparea']);
-						$name = "{$_POST['backuparea']}-{$name}";
-					}
-					$sfn = '/tmp/config.xml.nopkg';
-					file_put_contents($sfn, $data);
-					exec("sed '/<installedpackages>/,/<\/installedpackages>/d' {$sfn} > {$sfn}-new");
-					$data = file_get_contents($sfn . "-new");
+				if(!$_POST['backuparea']) {
+					/* backup entire configuration */
+					$data = file_get_contents('/conf/config.xml');
+				} else if ($_POST['backuparea'] === "rrddata") {
+					$data = rrd_data_xml();
+					$name = "{$_POST['backuparea']}-{$name}";
 				} else {
-					if(!$_POST['backuparea']) {
-						/* backup entire configuration */
-						$data = file_get_contents('/conf/config.xml');
-					} else if ($_POST['backuparea'] === "rrddata") {
-						$data = rrd_data_xml();
-						$name = "{$_POST['backuparea']}-{$name}";
-					} else {
-						/* backup specific area of configuration */
-						$data = backup_config_section($_POST['backuparea']);
-						$name = "{$_POST['backuparea']}-{$name}";
-					}
+					/* backup specific area of configuration */
+					$data = backup_config_section($_POST['backuparea']);
+					$name = "{$_POST['backuparea']}-{$name}";
 				}
-
-				//unlock($lockbckp);
 
 				/*
 				 *  Backup RRD Data
 				 */
 				if ($_POST['backuparea'] !== "rrddata" && !$_POST['donotbackuprrd']) {
 					$rrd_data_xml = rrd_data_xml();
-					$closing_tag = "</" . $g['xml_rootobj'] . ">";
+					$closing_tag = "</opnsense>";
 					$data = str_replace($closing_tag, $rrd_data_xml . $closing_tag, $data);
 				}
 
@@ -324,9 +270,7 @@ if ($_POST) {
 
 				exit;
 			}
-		}
-
-		if ($mode == "restore") {
+		}elseif ($mode == "restore") {
 
 			if ($_POST['decrypt']) {
 				if(!$_POST['decrypt_password'] || !$_POST['decrypt_passconf'])
@@ -349,7 +293,6 @@ if ($_POST) {
 					if ($_POST['decrypt']) {
 						if (!tagfile_deformat($data, $data, "config.xml")) {
 							$input_errors[] = gettext("The uploaded file does not appear to contain an encrypted OPNsense configuration.");
-							return 1;
 						}
 						$data = decrypt_data($data, $_POST['decrypt_password']);
 					}
@@ -371,38 +314,31 @@ if ($_POST) {
 								if ($config['rrddata']) {
 									restore_rrddata();
 									unset($config['rrddata']);
-									@unlink('/tmp/config.cache');
 									write_config();
-									add_base_packages_menu_items();
 									convert_config();
-									conf_mount_ro();
 								}
 								filter_configure();
 								$savemsg = gettext("The configuration area has been restored.  You may need to reboot the firewall.");
 							}
 						}
 					} else {
-						if(!stristr($data, "<" . $g['xml_rootobj'] . ">")) {
-							$input_errors[] = sprintf(gettext("You have selected to restore the full configuration but we could not locate a %s tag."), $g['xml_rootobj']);
-						} else {
+						if(!$input_errors) {
 							/* restore the entire configuration */
-							file_put_contents($_FILES['conffile']['tmp_name'], $data);
-							if (config_install($_FILES['conffile']['tmp_name']) == 0) {
+							$filename = $_FILES['conffile']['tmp_name'];
+							file_put_contents($filename, $data);
+							$cnf = OPNsense\Core\Config::getInstance();
+							if ($cnf->restoreBackup($filename)) {
 								/* this will be picked up by /index.php */
-								conf_mount_rw();
 								mark_subsystem_dirty("restore");
-								/* remove cache, we will force a config reboot */
-								@unlink('/tmp/config.cache');
-								$config = parse_config(true);
+
+								$config = parse_config();
+
 								/* extract out rrd items, unset from $config when done */
 								if($config['rrddata']) {
 									restore_rrddata();
 									unset($config['rrddata']);
-									@unlink('/tmp/config.cache');
 									write_config();
-									add_base_packages_menu_items();
 									convert_config();
-									conf_mount_ro();
 								}
 								if($m0n0wall_upgrade == true) {
 									if($config['system']['gateway'] <> "")
@@ -432,7 +368,6 @@ if ($_POST) {
 											}
 										}
 									}
-									@unlink('/tmp/config.cache');
 									// Reset configuration version to something low
 									// in order to force the config upgrade code to
 									// run through with all steps that are required.
@@ -496,9 +431,7 @@ if ($_POST) {
 									}
 									$config['diag']['ipv6nat'] = true;
 									write_config();
-									add_base_packages_menu_items();
 									convert_config();
-									conf_mount_ro();
 									$savemsg = gettext("The m0n0wall configuration has been restored and upgraded to OPNsense.");
 									mark_subsystem_dirty("restore");
 								}
@@ -535,20 +468,12 @@ if ($_POST) {
 					$input_errors[] = gettext("The configuration could not be restored (file upload error).");
 				}
 			}
-		}
-
-		if ($mode == "reinstallpackages") {
-
-			header("Location: pkg_mgr_install.php?mode=reinstallall");
-			exit;
-		} else if ($mode == "clearpackagelock") {
-			clear_subsystem_dirty('packagelock');
-			$savemsg = "Package Lock Cleared";
-		} else if ($mode == "restore_ver") {
+		} elseif ($mode == "restore_ver") {
 			$input_errors[] = gettext("XXX - this feature may hose your config (do NOT backrev configs!) - billm");
 			if ($ver2restore <> "") {
 				$conf_file = '/conf/backup/config-' . strtotime($ver2restore) . '.xml';
-				if (config_install($conf_file) == 0) {
+				$cnf = OPNsense\Core\Config::getInstance();
+				if ($cnf->restoreBackup($conf_file)) {
 					mark_subsystem_dirty("restore");
 				} else {
 					$input_errors[] = gettext("The configuration could not be restored.");
@@ -556,6 +481,54 @@ if ($_POST) {
 			} else {
 				$input_errors[] = gettext("No version selected.");
 			}
+		} elseif ( $mode == "setup_gdrive" ){
+		      global $config;
+		      if (!isset($config['system']['remotebackup'])) {
+		        $config['system']['remotebackup'] = array() ;
+		      }
+		      $config['system']['remotebackup']['GDriveEnabled'] = $_POST['GDriveEnabled'];
+		      $config['system']['remotebackup']['GDriveEmail'] = $_POST['GDriveEmail'] ;
+		      $config['system']['remotebackup']['GDriveFolderID'] = $_POST['GDriveFolderID'];
+		      $config['system']['remotebackup']['GDrivePassword'] = $_POST['GDrivePassword'];
+		      if (is_numeric($_POST['GDriveBackupCount'])) {
+  		        $config['system']['remotebackup']['GDriveBackupCount'] = $_POST['GDriveBackupCount'];
+                      } else {
+                        $config['system']['remotebackup']['GDriveBackupCount'] = 30;
+                      }
+		      
+		      if ( $_POST['GDrivePasswordConfirm'] != $_POST['GDrivePassword'] ) {
+		        // log error, but continue
+		        $input_errors[] = gettext("The supplied 'Password' and 'Confirm' field values must match.");
+		      }
+		      
+		      if (is_uploaded_file($_FILES['GDriveP12file']['tmp_name'])) {		   
+                          $data = file_get_contents($_FILES['GDriveP12file']['tmp_name']);
+                          $config['system']['remotebackup']['GDriveP12key'] = base64_encode($data);
+                      } elseif ($config['system']['remotebackup']['GDriveEnabled'] != "on") {
+                          unset($config['system']['remotebackup']['GDriveP12key']);
+                      }
+                                            
+                      write_config();
+                      // test / perform backup 
+                      try {
+                         $filesInBackup = backup_to_google_drive() ;
+                         $cron_job = "/usr/local/opnsense/scripts/remote_backup.php";
+                         if (!cron_job_exists($cron_job)) {
+                           // initial cron job install
+                           install_cron_job($cron_job,true,0,1);
+                         }
+                      } catch (Exception $e) { 
+                         $filesInBackup = array() ;
+                      }
+                  
+                      if (count($filesInBackup) == 0) {
+                         $input_errors[] = gettext("Google Drive communication failure");
+                      } else {
+                         $input_messages = gettext("Backup succesfull, current filelist:");
+                      foreach ($filesInBackup as $filename => $file) {
+                         $input_messages = $input_messages . "<br>" . $filename ;
+                      }
+                  }
 		}
 	}
 }
@@ -595,10 +568,8 @@ function decrypt_change() {
 
 function backuparea_change(obj) {
 	if (obj.value == "rrddata") {
-		document.getElementById("nopackages").disabled      = true;
 		document.getElementById("dotnotbackuprrd").disabled = true;
 	} else {
-		document.getElementById("nopackages").disabled      = false;
 		document.getElementById("dotnotbackuprrd").disabled = false;
 	}
 }
@@ -619,7 +590,7 @@ function backuparea_change(obj) {
 	<section class="page-content-main">
 		<div class="container-fluid">
 			<div class="row">
-
+			        <?php if ($input_messages) print_info_box($input_messages); ?>
 				<?php if ($input_errors) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
@@ -657,19 +628,11 @@ function backuparea_change(obj) {
 										        <tr>
 										          <td>
 											          <table>
-																		<tr>
-																			<td width="25">
-																				<input name="nopackages" type="checkbox" class="formcheckbox" id="nopackages" />
-																			</td>
-																			<td>
-																				<span class="vexpl"><?=gettext("Do not backup package information."); ?></span>
-																			</td>
-																		</tr>
 																	</table>
 																	<table>
 																		<tr>
 																			<td width="25">
-																				<input name="encrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="encrypt_change()" />
+																				<input name="encrypt" type="checkbox" class="formcheckbox" id="encryptconf" onclick="encrypt_change()" />
 																			</td>
 																			<td>
 																				<span class="vexpl"><?=gettext("Encrypt this configuration file."); ?></span>
@@ -717,7 +680,7 @@ function backuparea_change(obj) {
 									</div>
 								</section>
 
-								<section>
+								<section class="__mb">
 				                        <div class="content-box">
 
 				                            <header class="content-box-head container-fluid">
@@ -740,7 +703,7 @@ function backuparea_change(obj) {
 																<table>
 																	<tr>
 																		<td width="25">
-																			<input name="decrypt" type="checkbox" class="formcheckbox" id="nopackages" onclick="decrypt_change()" />
+																			<input name="decrypt" type="checkbox" class="formcheckbox" id="encryptconf" onclick="decrypt_change()" />
 																		</td>
 																		<td>
 																			<span class="vexpl"><?=gettext("Configuration file is encrypted."); ?></span>
@@ -779,47 +742,37 @@ function backuparea_change(obj) {
 
 									</div>
 								</section>
-
-<?php if (($config['installedpackages']['package'] != "") || (is_subsystem_dirty("packagelock"))) { ?>
-
-
-									<section>
-				                        <div class="content-box">
-
-				                            <header class="content-box-head container-fluid">
-									        <h3><?=gettext("Package Functions"); ?></h3>
+								
+                                                                <section class="__mb">
+                				                        <div class="content-box">
+		                		                            <header class="content-box-head container-fluid">
+									        <h3><?=gettext("Remote backup (using Google drive)"); ?></h3>
 									    </header>
-
-									    <div class="content-box-main col-xs-12">
-									    <div class="table-responsive">
-									        <table class="table table-striped">
-										        <tbody>
-										        <tr>
-										          <td>
-
-															<?php if ($config['installedpackages']['package'] != "") { ?>
-																<p><?=gettext("Click this button to reinstall all system packages.  This may take a while."); ?> <br /><br />
-																<input name="Submit" type="submit" class="formbtn" id="reinstallpackages" value="<?=gettext("Reinstall packages"); ?>" />
-																<br />
-																<br />
-															<?php } ?>
-															<?php if (is_subsystem_dirty("packagelock")) { ?>
-																<p><?=gettext("Click this button to clear the package lock if a package fails to reinstall properly after an upgrade."); ?> <br /><br />
-																<input name="Submit" type="submit" class="formbtn" id="clearpackagelock" value="<?=gettext("Clear Package Lock"); ?>" />
-															<?php } ?>
-																</p>
-
-										          </td>
-										        </tr>
-										        </tbody>
-										    </table>
-									    </div>
-
-									    </div>
-
+									
+        								    <div class="content-box-main ">
+                                                                              <div class="table-responsive">
+                                                                                    <table class="table table-striped __nomb"> 
+                                                                                          <thead>
+                                                                                             <th class="col-sm-1"></th>
+                                                                                             <th class="col-sm-3"></th>
+                                                                                          </thead>
+                                                                                          <tbody>
+                                                                                             <tr><td><?=gettext("Enable"); ?> </td> <td><input name="GDriveEnabled" class="formcheckbox" id="GDriveEnabled" type="checkbox" <? if( $config['system']['remotebackup']['GDriveEnabled'] == "on" ) echo "checked";?> >  </td></tr>
+                                                                                             <tr><td><?=gettext("Email Address"); ?> </td><td><input name="GDriveEmail" class="formfld" size="20" value="<? echo $config['system']['remotebackup']['GDriveEmail'];?>" type="text"> </td> </tr>
+                                                                                             <tr><td><?=gettext("P12 key"); ?> <? if (isset($config['system']['remotebackup']['GDriveP12key'])) echo gettext("(replace)"); else echo gettext("(not loaded)"); ?> </td><td> <input name="GDriveP12file" class="formbtn" id="P12file" size="40" type="file"></td> </tr>
+                                                                                             <tr><td><?=gettext("Folder ID"); ?> </td><td> <input name="GDriveFolderID" class="formbtn" id="GDriveFolderID" value="<? echo $config['system']['remotebackup']['GDriveFolderID'];?>" size="40" type="text"></td> </tr>
+                                                                                             <tr><td><?=gettext("Backup Count"); ?> </td><td> <input name="GDriveBackupCount" class="formbtn" id="GDriveBackupCount" value="<? echo $config['system']['remotebackup']['GDriveBackupCount'];?>" size="40" type="text"></td> </tr>                                                                                             
+                                                                                             <tr><td colspan=2><?=gettext("Password protect your data"); ?> :</td></tr>
+                                                                                             <tr><td><?=gettext("Password :"); ?></td> <td> <input name="GDrivePassword" type="password" class="formfld pwd" size="20" value="<? echo $config['system']['remotebackup']['GDrivePassword'] ;?>" /> </td></tr>
+                                                                                             <tr><td><?=gettext("Confirm :"); ?></td> <td> <input name="GDrivePasswordConfirm" type="password" class="formfld pwd" size="20" value="<? echo $config['system']['remotebackup']['GDrivePassword'] ;?>" /> </td></tr>
+                                                                                             <tr><td><input name="Submit" class="btn btn-default" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit"></td><td></td></tr>
+                                                                                          </tbody>
+                                                                                    </table>
+                                                                              </div>
+                                                                            </div>                                                                                    
 									</div>
-								</section>
-<? } ?>
+                                                                </section>
+
 
 						</div>
 						</div>
@@ -827,7 +780,11 @@ function backuparea_change(obj) {
 					</div>
 
 
-				</section>
+
+
+
+				</section>				
+				
 			</div>
 		</div>
 	</section>

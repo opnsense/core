@@ -40,11 +40,6 @@ if (!isset($config['system']['enablesshd'])) {
 	return;
 }
 
-/* are we already running?  if not, do conf_mount_rw(), otherwise it should already be rw */
-if (!is_subsystem_dirty('sshdkeys')) {
-	conf_mount_rw();
-}
-
 $keys = array(
 	/* .pub files are implied */
 	'rsa1' => 'ssh_host_key',
@@ -157,5 +152,4 @@ if (mwexec($sbin_sshd)) {
 @mkdir('/conf/sshd', 0777, true);
 mwexec("/bin/cp -p ${etc_ssh}/ssh_host_* /conf/sshd/");
 
-conf_mount_ro();
 unset($keys);

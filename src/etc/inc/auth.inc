@@ -176,9 +176,10 @@ if(function_exists("display_error_form") && !isset($config['system']['webgui']['
 		$security_passed = false;
 }
 
-if (function_exists("display_error_form") && $security_passed)
+if (function_exists("display_error_form") && $security_passed) {
 	/* Security checks passed, so it should be OK to turn them back on */
 	restore_security_checks();
+}
 unset($security_passed);
 
 $groupindex = index_groups();
@@ -317,8 +318,6 @@ function local_sync_accounts()
 {
 	global $config;
 
-	conf_mount_rw();
-
 	/* remove local users to avoid uid conflicts */
 	$fd = popen('/usr/sbin/pw usershow -a', 'r');
 	if ($fd) {
@@ -373,8 +372,6 @@ function local_sync_accounts()
 		foreach ($config['system']['group'] as $group)
 			local_group_set($group);
 
-	conf_mount_ro();
-
 }
 
 function local_user_set(&$user)
@@ -383,8 +380,6 @@ function local_user_set(&$user)
 		log_error("There is something wrong in your config because user {$user['name']} password is missing!");
 		return;
 	}
-
-	conf_mount_rw();
 
 	$home_base = "/home/";
 	$user_uid = $user['uid'];
@@ -476,7 +471,6 @@ function local_user_set(&$user)
 	$un = $lock_account ? "" : "un";
 	exec("/usr/sbin/pw {$un}lock {$user_name} -q");
 
-	conf_mount_ro();
 }
 
 function local_user_del($user)

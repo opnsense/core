@@ -52,11 +52,5 @@ if (file_exists("/usr/local/etc/platform")) {
 
 $config = parse_config();
 
-if($config_parsed == true) {
-	/* process packager manager custom rules */
-	if(is_dir("/usr/local/pkg/parse_config")) {
-		run_plugins("/usr/local/pkg/parse_config/");
-	}
-}
 
 ?>

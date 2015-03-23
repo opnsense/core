@@ -13,7 +13,7 @@ require_once('xmlparse.inc');
 require_once('config.lib.inc');
 require_once('functions.inc');
 
-$config = parse_config(true);
+$config = parse_config();
 
 $passed_tests = true;
 

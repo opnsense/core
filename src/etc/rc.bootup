@@ -120,8 +120,6 @@ $physmem = $memory[0];
 $realmem = $memory[1];
 echo " done.\n";
 
-conf_mount_rw();
-
 /* save dmesg output to file */
 system_dmesg_save();
 
@@ -176,10 +174,6 @@ while(is_interface_mismatch() == true) {
 /* convert config and clean backups */
 echo "Updating configuration...";
 convert_config();
-echo "done.\n";
-
-echo "Cleaning backup cache...";
-cleanup_backupcache(true);
 echo "done.\n";
 
 /* read in /etc/sysctl.conf and set values if needed */
@@ -386,4 +380,3 @@ if ($ipsec_dynamic_hosts) {
 
 led_normalize();
 
-conf_mount_ro();

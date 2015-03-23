@@ -43,7 +43,6 @@ $g = array(
 	"varetc_path" => "/var/etc",
 	"vardb_path" => "/var/db",
 	"varlog_path" => "/var/log",
-	"xml_rootobj" => "pfsense",
 	"admin_group" => "admins",
 	"product_name" => "OPNsense",
 	"product_website" => "https://opnsense.org",
