@@ -1909,13 +1909,6 @@ function upgrade_054_to_055() {
 
 	$rrddbpath = "/var/db/rrd/";
 	$rrdtool = "/usr/local/bin/rrdtool";
-	if ($g['platform'] != "pfSense") {
-		/* restore the databases, if we have one */
-		if (restore_rrd()) {
-			/* Make sure to move the rrd backup out of the way. We will make a new one after converting. */
-			rename('/conf/rrd.tgz', '/conf/backup/rrd.tgz');
-		}
-	}
 
 	$rrdinterval = 60;
 	$valid = $rrdinterval * 2;
@@ -2572,14 +2565,6 @@ function upgrade_080_to_081() {
 	$rrddbpath = "/var/db/rrd/";
 	$rrdtool = "/usr/local/bin/rrdtool";
 
-	if ($g['platform'] != "pfSense") {
-		/* restore the databases, if we have one */
-		if (restore_rrd()) {
-			/* Make sure to move the rrd backup out of the way. We will make a new one after converting. */
-			@rename('/conf/rrd.tgz', '/conf/backup/rrd.tgz');
-		}
-	}
-
 	$rrdinterval = 60;
 	$valid = $rrdinterval * 2;
 
@@ -3018,14 +3003,6 @@ function upgrade_095_to_096() {
 		"inpass6", "outpass6", "inblock6", "outblock6");
 	$rrddbpath = "/var/db/rrd";
 	$rrdtool = "/usr/local/bin/rrdtool";
-
-	if ($g['platform'] != "pfSense") {
-		/* restore the databases, if we have one */
-		if (restore_rrd()) {
-			/* Make sure to move the rrd backup out of the way. We will make a new one after converting. */
-			rename('/conf/rrd.tgz', '/conf/backup/rrd.tgz');
-		}
-	}
 
 	/* Assume 2*10GigE for now */
 	$stream = 2500000000;
