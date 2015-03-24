@@ -193,27 +193,31 @@ function vpn_ipsec_configure($ipchg = false)
 				}
 				$rgmap[$ph1ent['remote-gateway']] = $rg;
 
-				if (is_array($a_phase2) && is_array($a_phase2)) {
+				if (isset($a_phase2)) {
 					/* step through each phase2 entry */
 					foreach ($a_phase2 as $ph2ent) {
-						if (isset($ph2ent['disabled']))
+						if (isset($ph2ent['disabled'])) {
 							continue;
+						}
 
-						if ($ikeid != $ph2ent['ikeid'])
+						if ($ikeid != $ph2ent['ikeid']) {
 							continue;
+						}
 
 						/* add an ipsec pinghosts entry */
 						if ($ph2ent['pinghost']) {
-							if (!is_array($iflist))
+							if (!is_array($iflist)) {
 								$iflist = get_configured_interface_list();
+							}
 							$viplist = get_configured_vips_list();
 							$srcip = null;
 							$local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
 							if(is_ipaddrv6($ph2ent['pinghost'])) {
 								foreach ($iflist as $ifent => $ifname) {
 									$interface_ip = get_interface_ipv6($ifent);
-									if(!is_ipaddrv6($interface_ip))
+									if (!is_ipaddrv6($interface_ip)) {
 										continue;
+									}
 									if (ip_in_subnet($interface_ip, $local_subnet)) {
 										$srcip = $interface_ip;
 										break;
@@ -222,8 +226,9 @@ function vpn_ipsec_configure($ipchg = false)
 							} else {
 								foreach ($iflist as $ifent => $ifname) {
 									$interface_ip = get_interface_ip($ifent);
-									if(!is_ipaddrv4($interface_ip))
+									if (!is_ipaddrv4($interface_ip)) {
 										continue;
+									}
 									if ($local_subnet == "0.0.0.0/0" || ip_in_subnet($interface_ip, $local_subnet)) {
 										$srcip = $interface_ip;
 										break;
