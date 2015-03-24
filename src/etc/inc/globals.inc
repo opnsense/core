@@ -110,7 +110,6 @@ $sysctls = array(
 	"net.inet.udp.checksum" => 1,
 	"net.bpf.zerocopy_enable" => 1,
 	"net.inet.icmp.reply_from_interface" => 1,
-	"net.inet6.ip6.rfc6204w3" => 1,
 );
 
 function is_install_media()
