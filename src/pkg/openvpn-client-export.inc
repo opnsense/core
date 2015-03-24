@@ -1,13 +1,11 @@
 <?php
+
 /*
-	openvpn-client-export.inc
 	Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
 	Copyright (C) 2008 Shrew Soft Inc
 	Copyright (C) 2010 Ermal Luci
-	All rights reserved.
-
-	Parts of this code was originally based on vpn_ipsec_sad.php
 	Copyright (C) 2003-2004 Manuel Kasper
+	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions are met:
@@ -179,7 +177,6 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 
 function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $nokeys = false, $proxy, $expformat = "baseconf", $outpass = "", $skiptls=false, $doslines=false, $openvpnmanager, $advancedoptions = "") {
 	global $config, $input_errors, $g;
-	$pfs_version = substr(trim(file_get_contents("/etc/version")),0,3);
 
 	$nl = ($doslines) ? "\r\n" : "\n";
 	$conf = "";
@@ -327,17 +324,14 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 
 	// add optional settings
 	if (!empty($settings['compression'])) {
-		if ($pfs_version > 2.1)
-			$conf .= "comp-lzo {$settings['compression']}{$nl}";
-		else
-			$conf .= "comp-lzo{$nl}";
+		$conf .= "comp-lzo {$settings['compression']}{$nl}";
 	}
 
-	if ($settings['passtos'])
+	if ($settings['passtos']) {
 		$conf .= "passtos{$nl}";
+	}
 
-	if ($openvpnmanager)
-	{
+	if ($openvpnmanager) {
 		if (!empty($settings['client_mgmt_port'])) {
 			$client_mgmt_port = $settings['client_mgmt_port'];
 		} else {
