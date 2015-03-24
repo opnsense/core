@@ -5,16 +5,12 @@ if ! /usr/bin/lockf -s -t 30 /tmp/config.lock /usr/bin/true; then
 	exit 1
 fi
 
-sleep 1
-
 /usr/local/etc/rc.backup_rrd
 /usr/local/etc/rc.backup_dhcpleases
-
-sleep 1
 
 SHUTDOWN=/sbin/shutdown
 if [ -f /sbin/shutdown.old ]; then
 	SHUTDOWN=/sbin/shutdown.old
 fi
 
-$SHUTDOWN -r now
+${SHUTDOWN} -or now
