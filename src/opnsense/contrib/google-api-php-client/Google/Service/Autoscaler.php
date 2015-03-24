@@ -41,7 +41,7 @@ class Google_Service_Autoscaler extends Google_Service
   public $autoscalers;
   public $zoneOperations;
   public $zones;
-  
+
 
   /**
    * Constructs the internal representation of the Autoscaler service.

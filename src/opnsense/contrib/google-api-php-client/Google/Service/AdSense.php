@@ -63,7 +63,7 @@ class Google_Service_AdSense extends Google_Service
   public $reports_saved;
   public $savedadstyles;
   public $urlchannels;
-  
+
 
   /**
    * Constructs the internal representation of the AdSense service.

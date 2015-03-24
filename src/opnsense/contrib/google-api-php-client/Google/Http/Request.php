@@ -49,7 +49,7 @@ class Google_Http_Request
   protected $responseHttpCode;
   protected $responseHeaders;
   protected $responseBody;
-  
+
   protected $expectedClass;
   protected $expectedRaw = false;
 
@@ -76,7 +76,7 @@ class Google_Http_Request
   {
     return $this->baseComponent;
   }
-  
+
   /**
    * Set the base URL that path and query parameters will be added to.
    * @param $baseComponent string
@@ -85,7 +85,7 @@ class Google_Http_Request
   {
     $this->baseComponent = $baseComponent;
   }
-  
+
   /**
    * Enable support for gzipped responses with this request.
    */
@@ -95,7 +95,7 @@ class Google_Http_Request
     $this->canGzip = true;
     $this->setUserAgent($this->userAgent);
   }
-  
+
   /**
    * Disable support for gzip responses with this request.
    */
@@ -110,7 +110,7 @@ class Google_Http_Request
     $this->canGzip = false;
     $this->userAgent = str_replace(self::GZIP_UA, "", $this->userAgent);
   }
-  
+
   /**
    * Can this request accept a gzip response?
    * @return bool
@@ -130,7 +130,7 @@ class Google_Http_Request
     return $this->queryParams;
   }
 
-  /** 
+  /**
    * Set a new query parameter.
    * @param $key - string to set, does not need to be URL encoded
    * @param $value - string to set, does not need to be URL encoded
@@ -171,7 +171,7 @@ class Google_Http_Request
   {
     return $this->responseBody;
   }
-  
+
   /**
    * Set the class the response to this request should expect.
    *
@@ -181,7 +181,7 @@ class Google_Http_Request
   {
     $this->expectedClass = $class;
   }
-  
+
   /**
    * Retrieve the expected class the response should expect.
    * @return string class name
@@ -427,7 +427,7 @@ class Google_Http_Request
       $str .= "\n";
       $str .= $this->getPostBody();
     }
-    
+
     $headers = '';
     foreach ($this->batchHeaders as $key => $val) {
       $headers .= $key . ': ' . $val . "\n";
@@ -438,10 +438,10 @@ class Google_Http_Request
 
     return $str;
   }
-  
+
   /**
    * Our own version of parse_str that allows for multiple variables
-   * with the same name. 
+   * with the same name.
    * @param $string - the query string to parse
    */
   private function parseQuery($string)
@@ -462,10 +462,10 @@ class Google_Http_Request
     }
     return $return;
   }
-  
+
   /**
    * A version of build query that allows for multiple
-   * duplicate keys. 
+   * duplicate keys.
    * @param $parts array of key value pairs
    */
   private function buildQuery($parts)
@@ -482,8 +482,8 @@ class Google_Http_Request
     }
     return implode('&', $return);
   }
-  
-  /** 
+
+  /**
    * If we're POSTing and have no body to send, we can send the query
    * parameters in there, which avoids length issues with longer query
    * params.

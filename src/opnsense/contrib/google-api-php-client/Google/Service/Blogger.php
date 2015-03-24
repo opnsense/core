@@ -45,7 +45,7 @@ class Google_Service_Blogger extends Google_Service
   public $postUserInfos;
   public $posts;
   public $users;
-  
+
 
   /**
    * Constructs the internal representation of the Blogger service.

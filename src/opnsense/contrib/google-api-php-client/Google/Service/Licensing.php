@@ -35,7 +35,7 @@ class Google_Service_Licensing extends Google_Service
       "https://www.googleapis.com/auth/apps.licensing";
 
   public $licenseAssignments;
-  
+
 
   /**
    * Constructs the internal representation of the Licensing service.

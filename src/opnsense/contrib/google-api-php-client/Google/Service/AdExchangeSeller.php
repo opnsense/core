@@ -48,7 +48,7 @@ class Google_Service_AdExchangeSeller extends Google_Service
   public $accounts_reports;
   public $accounts_reports_saved;
   public $accounts_urlchannels;
-  
+
 
   /**
    * Constructs the internal representation of the AdExchangeSeller service.

@@ -37,7 +37,7 @@ class Google_Service_GamesConfiguration extends Google_Service
   public $achievementConfigurations;
   public $imageConfigurations;
   public $leaderboardConfigurations;
-  
+
 
   /**
    * Constructs the internal representation of the GamesConfiguration service.

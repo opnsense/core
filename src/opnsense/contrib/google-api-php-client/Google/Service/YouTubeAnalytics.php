@@ -51,7 +51,7 @@ class Google_Service_YouTubeAnalytics extends Google_Service
   public $groupItems;
   public $groups;
   public $reports;
-  
+
 
   /**
    * Constructs the internal representation of the YouTubeAnalytics service.

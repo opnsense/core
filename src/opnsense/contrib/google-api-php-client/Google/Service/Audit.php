@@ -34,7 +34,7 @@ class Google_Service_Audit extends Google_Service
 
 
   public $activities;
-  
+
 
   /**
    * Constructs the internal representation of the Audit service.

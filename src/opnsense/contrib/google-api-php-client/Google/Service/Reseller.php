@@ -39,7 +39,7 @@ class Google_Service_Reseller extends Google_Service
 
   public $customers;
   public $subscriptions;
-  
+
 
   /**
    * Constructs the internal representation of the Reseller service.

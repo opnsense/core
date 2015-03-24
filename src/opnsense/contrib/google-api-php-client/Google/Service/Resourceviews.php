@@ -49,7 +49,7 @@ class Google_Service_Resourceviews extends Google_Service
 
   public $zoneOperations;
   public $zoneViews;
-  
+
 
   /**
    * Constructs the internal representation of the Resourceviews service.

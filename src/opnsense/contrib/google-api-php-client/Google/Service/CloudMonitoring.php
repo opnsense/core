@@ -37,7 +37,7 @@ class Google_Service_CloudMonitoring extends Google_Service
   public $metricDescriptors;
   public $timeseries;
   public $timeseriesDescriptors;
-  
+
 
   /**
    * Constructs the internal representation of the CloudMonitoring service.

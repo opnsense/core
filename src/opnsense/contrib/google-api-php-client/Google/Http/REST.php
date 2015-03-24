@@ -115,7 +115,7 @@ class Google_Http_REST
       if ($response->getExpectedRaw()) {
         return $body;
       }
-      
+
       $decoded = json_decode($body, true);
       if ($decoded === null || $decoded === "") {
         $error = "Invalid json in service response: $body";

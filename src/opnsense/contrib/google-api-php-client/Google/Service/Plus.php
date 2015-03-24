@@ -47,7 +47,7 @@ class Google_Service_Plus extends Google_Service
   public $comments;
   public $moments;
   public $people;
-  
+
 
   /**
    * Constructs the internal representation of the Plus service.

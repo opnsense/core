@@ -35,7 +35,7 @@ class Google_Service_DoubleClickBidManager extends Google_Service
   public $lineitems;
   public $queries;
   public $reports;
-  
+
 
   /**
    * Constructs the internal representation of the DoubleClickBidManager

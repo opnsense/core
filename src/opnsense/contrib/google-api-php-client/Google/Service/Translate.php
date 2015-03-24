@@ -35,7 +35,7 @@ class Google_Service_Translate extends Google_Service
   public $detections;
   public $languages;
   public $translations;
-  
+
 
   /**
    * Constructs the internal representation of the Translate service.

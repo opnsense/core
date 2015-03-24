@@ -35,7 +35,7 @@ class Google_Service_Urlshortener extends Google_Service
       "https://www.googleapis.com/auth/urlshortener";
 
   public $url;
-  
+
 
   /**
    * Constructs the internal representation of the Urlshortener service.

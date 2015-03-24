@@ -76,7 +76,7 @@ class Google_Service_Compute extends Google_Service
   public $urlMaps;
   public $zoneOperations;
   public $zones;
-  
+
 
   /**
    * Constructs the internal representation of the Compute service.

@@ -35,7 +35,7 @@ class Google_Service_Admin extends Google_Service
       "https://www.googleapis.com/auth/email.migration";
 
   public $mail;
-  
+
 
   /**
    * Constructs the internal representation of the Admin service.

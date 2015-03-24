@@ -46,7 +46,7 @@ class Google_Service_Deploymentmanager extends Google_Service
   public $operations;
   public $resources;
   public $types;
-  
+
 
   /**
    * Constructs the internal representation of the Deploymentmanager service.

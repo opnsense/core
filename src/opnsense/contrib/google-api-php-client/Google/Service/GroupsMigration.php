@@ -35,7 +35,7 @@ class Google_Service_GroupsMigration extends Google_Service
       "https://www.googleapis.com/auth/apps.groups.migration";
 
   public $archive;
-  
+
 
   /**
    * Constructs the internal representation of the GroupsMigration service.

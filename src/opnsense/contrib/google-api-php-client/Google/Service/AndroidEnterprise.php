@@ -46,7 +46,7 @@ class Google_Service_AndroidEnterprise extends Google_Service
   public $permissions;
   public $products;
   public $users;
-  
+
 
   /**
    * Constructs the internal representation of the AndroidEnterprise service.

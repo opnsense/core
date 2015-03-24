@@ -43,7 +43,7 @@ class Google_Service_Replicapool extends Google_Service
 
   public $instanceGroupManagers;
   public $zoneOperations;
-  
+
 
   /**
    * Constructs the internal representation of the Replicapool service.

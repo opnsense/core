@@ -66,7 +66,7 @@ class Google_Service_YouTube extends Google_Service
   public $videoCategories;
   public $videos;
   public $watermarks;
-  
+
 
   /**
    * Constructs the internal representation of the YouTube service.

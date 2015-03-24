@@ -68,7 +68,7 @@ class Google_Auth_AssertionCredentials
     $this->prn = $sub;
     $this->useCache = $useCache;
   }
-  
+
   /**
    * Generate a unique key to represent this credential.
    * @return string

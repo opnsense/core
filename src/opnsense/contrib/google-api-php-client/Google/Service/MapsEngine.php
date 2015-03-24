@@ -61,7 +61,7 @@ class Google_Service_MapsEngine extends Google_Service
   public $tables_files;
   public $tables_parents;
   public $tables_permissions;
-  
+
 
   /**
    * Constructs the internal representation of the MapsEngine service.

@@ -45,7 +45,7 @@ class Google_Service_Calendar extends Google_Service
   public $events;
   public $freebusy;
   public $settings;
-  
+
 
   /**
    * Constructs the internal representation of the Calendar service.

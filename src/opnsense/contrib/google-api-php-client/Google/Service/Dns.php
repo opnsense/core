@@ -45,7 +45,7 @@ class Google_Service_Dns extends Google_Service
   public $managedZones;
   public $projects;
   public $resourceRecordSets;
-  
+
 
   /**
    * Constructs the internal representation of the Dns service.

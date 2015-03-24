@@ -42,7 +42,7 @@ class Google_Service_AdExchangeBuyer extends Google_Service
   public $directDeals;
   public $performanceReport;
   public $pretargetingConfig;
-  
+
 
   /**
    * Constructs the internal representation of the AdExchangeBuyer service.

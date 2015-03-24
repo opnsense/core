@@ -87,7 +87,7 @@ class Google_Service_Dfareporting extends Google_Service
   public $userRolePermissionGroups;
   public $userRolePermissions;
   public $userRoles;
-  
+
 
   /**
    * Constructs the internal representation of the Dfareporting service.

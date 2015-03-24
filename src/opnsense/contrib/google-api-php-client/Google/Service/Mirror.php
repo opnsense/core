@@ -44,7 +44,7 @@ class Google_Service_Mirror extends Google_Service
   public $subscriptions;
   public $timeline;
   public $timeline_attachments;
-  
+
 
   /**
    * Constructs the internal representation of the Mirror service.

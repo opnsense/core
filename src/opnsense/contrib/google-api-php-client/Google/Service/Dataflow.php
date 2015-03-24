@@ -33,7 +33,7 @@ class Google_Service_Dataflow extends Google_Service
 
 
 
-  
+
 
   /**
    * Constructs the internal representation of the Dataflow service.
@@ -49,7 +49,3 @@ class Google_Service_Dataflow extends Google_Service
 
   }
 }
-
-
-
-

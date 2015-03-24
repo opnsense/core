@@ -105,7 +105,7 @@ class Google_Service_Directory extends Google_Service
   public $users_aliases;
   public $users_photos;
   public $verificationCodes;
-  
+
 
   /**
    * Constructs the internal representation of the Directory service.

@@ -52,7 +52,7 @@ class Google_Service_Manager extends Google_Service
 
   public $deployments;
   public $templates;
-  
+
 
   /**
    * Constructs the internal representation of the Manager service.

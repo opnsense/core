@@ -39,7 +39,7 @@ class Google_Service_Container extends Google_Service
   public $projects_operations;
   public $projects_zones_clusters;
   public $projects_zones_operations;
-  
+
 
   /**
    * Constructs the internal representation of the Container service.

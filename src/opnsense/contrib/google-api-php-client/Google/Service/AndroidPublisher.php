@@ -46,7 +46,7 @@ class Google_Service_AndroidPublisher extends Google_Service
   public $inappproducts;
   public $purchases_products;
   public $purchases_subscriptions;
-  
+
 
   /**
    * Constructs the internal representation of the AndroidPublisher service.

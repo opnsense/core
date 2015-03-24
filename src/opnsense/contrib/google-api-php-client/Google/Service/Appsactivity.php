@@ -44,7 +44,7 @@ class Google_Service_Appsactivity extends Google_Service
       "https://www.googleapis.com/auth/drive.readonly";
 
   public $activities;
-  
+
 
   /**
    * Constructs the internal representation of the Appsactivity service.

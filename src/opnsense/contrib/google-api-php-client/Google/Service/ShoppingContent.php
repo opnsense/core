@@ -44,7 +44,7 @@ class Google_Service_ShoppingContent extends Google_Service
   public $inventory;
   public $products;
   public $productstatuses;
-  
+
 
   /**
    * Constructs the internal representation of the ShoppingContent service.

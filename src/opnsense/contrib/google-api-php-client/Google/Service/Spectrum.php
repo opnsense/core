@@ -33,7 +33,7 @@ class Google_Service_Spectrum extends Google_Service
 
 
   public $paws;
-  
+
 
   /**
    * Constructs the internal representation of the Spectrum service.

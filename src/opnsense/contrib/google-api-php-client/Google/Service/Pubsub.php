@@ -39,7 +39,7 @@ class Google_Service_Pubsub extends Google_Service
 
   public $subscriptions;
   public $topics;
-  
+
 
   /**
    * Constructs the internal representation of the Pubsub service.

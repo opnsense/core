@@ -41,7 +41,7 @@ class Google_Service_Datastore extends Google_Service
       "https://www.googleapis.com/auth/userinfo.email";
 
   public $datasets;
-  
+
 
   /**
    * Constructs the internal representation of the Datastore service.

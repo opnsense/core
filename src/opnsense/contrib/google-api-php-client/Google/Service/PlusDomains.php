@@ -67,7 +67,7 @@ class Google_Service_PlusDomains extends Google_Service
   public $comments;
   public $media;
   public $people;
-  
+
 
   /**
    * Constructs the internal representation of the PlusDomains service.

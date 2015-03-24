@@ -39,7 +39,7 @@ class Google_Service_Taskqueue extends Google_Service
 
   public $taskqueues;
   public $tasks;
-  
+
 
   /**
    * Constructs the internal representation of the Taskqueue service.

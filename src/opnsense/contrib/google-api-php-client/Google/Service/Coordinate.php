@@ -43,7 +43,7 @@ class Google_Service_Coordinate extends Google_Service
   public $schedule;
   public $team;
   public $worker;
-  
+
 
   /**
    * Constructs the internal representation of the Coordinate service.

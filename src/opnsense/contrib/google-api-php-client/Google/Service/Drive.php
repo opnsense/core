@@ -65,7 +65,7 @@ class Google_Service_Drive extends Google_Service
   public $realtime;
   public $replies;
   public $revisions;
-  
+
 
   /**
    * Constructs the internal representation of the Drive service.

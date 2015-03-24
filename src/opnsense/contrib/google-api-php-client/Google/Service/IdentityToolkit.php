@@ -33,7 +33,7 @@ class Google_Service_IdentityToolkit extends Google_Service
 
 
   public $relyingparty;
-  
+
 
   /**
    * Constructs the internal representation of the IdentityToolkit service.

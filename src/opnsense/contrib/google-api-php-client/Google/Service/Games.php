@@ -55,7 +55,7 @@ class Google_Service_Games extends Google_Service
   public $scores;
   public $snapshots;
   public $turnBasedMatches;
-  
+
 
   /**
    * Constructs the internal representation of the Games service.

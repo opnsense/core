@@ -39,7 +39,7 @@ class Google_Service_Tasks extends Google_Service
 
   public $tasklists;
   public $tasks;
-  
+
 
   /**
    * Constructs the internal representation of the Tasks service.

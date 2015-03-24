@@ -41,7 +41,7 @@ class Google_Service_Webmasters extends Google_Service
   public $sites;
   public $urlcrawlerrorscounts;
   public $urlcrawlerrorssamples;
-  
+
 
   /**
    * Constructs the internal representation of the Webmasters service.

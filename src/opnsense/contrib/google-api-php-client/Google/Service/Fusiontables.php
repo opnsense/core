@@ -43,7 +43,7 @@ class Google_Service_Fusiontables extends Google_Service
   public $table;
   public $task;
   public $template;
-  
+
 
   /**
    * Constructs the internal representation of the Fusiontables service.

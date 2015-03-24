@@ -52,7 +52,7 @@ class Google_Service_Fitness extends Google_Service
   public $users_dataSources;
   public $users_dataSources_datasets;
   public $users_sessions;
-  
+
 
   /**
    * Constructs the internal representation of the Fitness service.

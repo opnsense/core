@@ -46,7 +46,7 @@ class Google_Service_Prediction extends Google_Service
 
   public $hostedmodels;
   public $trainedmodels;
-  
+
 
   /**
    * Constructs the internal representation of the Prediction service.

@@ -33,7 +33,7 @@ class Google_Service_Customsearch extends Google_Service
 
 
   public $cse;
-  
+
 
   /**
    * Constructs the internal representation of the Customsearch service.

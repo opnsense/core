@@ -34,7 +34,7 @@ class Google_Service_QPXExpress extends Google_Service
 
 
   public $trips;
-  
+
 
   /**
    * Constructs the internal representation of the QPXExpress service.

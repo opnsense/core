@@ -57,7 +57,7 @@ class Google_Service_Genomics extends Google_Service
   public $referencesets;
   public $variants;
   public $variantsets;
-  
+
 
   /**
    * Constructs the internal representation of the Genomics service.

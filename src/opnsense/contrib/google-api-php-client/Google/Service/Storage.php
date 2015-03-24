@@ -49,7 +49,7 @@ class Google_Service_Storage extends Google_Service
   public $defaultObjectAccessControls;
   public $objectAccessControls;
   public $objects;
-  
+
 
   /**
    * Constructs the internal representation of the Storage service.

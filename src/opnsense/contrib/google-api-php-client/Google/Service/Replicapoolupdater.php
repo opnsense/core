@@ -43,7 +43,7 @@ class Google_Service_Replicapoolupdater extends Google_Service
 
   public $rollingUpdates;
   public $zoneOperations;
-  
+
 
   /**
    * Constructs the internal representation of the Replicapoolupdater service.

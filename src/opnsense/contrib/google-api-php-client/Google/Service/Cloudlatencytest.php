@@ -35,7 +35,7 @@ class Google_Service_Cloudlatencytest extends Google_Service
       "https://www.googleapis.com/auth/monitoring.readonly";
 
   public $statscollection;
-  
+
 
   /**
    * Constructs the internal representation of the Cloudlatencytest service.

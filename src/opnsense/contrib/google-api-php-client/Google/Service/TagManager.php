@@ -61,7 +61,7 @@ class Google_Service_TagManager extends Google_Service
   public $accounts_containers_variables;
   public $accounts_containers_versions;
   public $accounts_permissions;
-  
+
 
   /**
    * Constructs the internal representation of the TagManager service.

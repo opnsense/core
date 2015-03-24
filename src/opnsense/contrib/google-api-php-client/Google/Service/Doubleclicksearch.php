@@ -38,7 +38,7 @@ class Google_Service_Doubleclicksearch extends Google_Service
   public $conversion;
   public $reports;
   public $savedColumns;
-  
+
 
   /**
    * Constructs the internal representation of the Doubleclicksearch service.

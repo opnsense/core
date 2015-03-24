@@ -35,7 +35,7 @@ class Google_Service_AppState extends Google_Service
       "https://www.googleapis.com/auth/appstate";
 
   public $states;
-  
+
 
   /**
    * Constructs the internal representation of the AppState service.

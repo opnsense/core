@@ -35,7 +35,7 @@ class Google_Service_CivicInfo extends Google_Service
   public $divisions;
   public $elections;
   public $representatives;
-  
+
 
   /**
    * Constructs the internal representation of the CivicInfo service.
