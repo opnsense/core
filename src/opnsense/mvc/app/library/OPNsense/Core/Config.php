@@ -222,6 +222,13 @@ class Config extends Singleton
 
     }
 
+    /**
+     * force a re-init of the object and reload the object
+     */
+    public function forceReload()
+    {
+        $this->init();
+    }
 
     /**
      * Load config file
