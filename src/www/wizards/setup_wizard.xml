@@ -571,16 +571,6 @@
 			<type>submit</type>
 		</field>
 	</fields>
-</step>
-<step>
-	<id>8</id>
-	<title>Reload in progress</title>
-	<description>
-		A reload is now in progress.  Please wait. &lt;p&gt;
-		&lt;meta http-equiv="refresh" content="5; url=wizard.php?xml=setup_wizard.xml&amp;stepid=8" &gt;
-		&lt;p&gt;
-		The wizard will redirect to the next step once the reload is completed.
-	</description>
 	<stepafterformdisplay>
 		<![CDATA[
 		$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
@@ -615,8 +605,21 @@
 		}
 		unset($config['wizardtemp']);
 		write_config();
+		]]>	
+	</stepafterformdisplay>
+</step>
+<step>
+	<id>8</id>
+	<title>Reload in progress</title>
+	<description>
+		A reload is now in progress.  Please wait. &lt;p&gt;
+		&lt;meta http-equiv="refresh" content="5; url=wizard.php?xml=setup_wizard.xml&amp;stepid=8" &gt;
+		&lt;p&gt;
+		The wizard will redirect to the next step once the reload is completed.
+	</description>
+	<stepafterformdisplay>
+		<![CDATA[
 		reload_all();
-		mwexec_bg("/usr/local/etc/rc.update_bogons now");
 		]]>
 	</stepafterformdisplay>
 </step>
