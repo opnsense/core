@@ -55,7 +55,7 @@ function listtags() {
 		'schedule', 'service', 'servernat', 'servers',
                 'serversdisabled', 'staticmap', 'subqueue',
 		'timerange', 'tunnel', 'user', 'vip', 'virtual_server', 'vlan',
-		'winsserver', 'wolentry', 'widget'
+		'winsserver', 'wolentry', 'widget','wol','aliases'
 	);
 	return array_flip($ret);
 }
