@@ -29,11 +29,6 @@
 
 require_once("guiconfig.inc");
 
-if(!$g['services_dhcp_server_enable']) {
-	header("Location: /");
-	exit;
-}
-
 /*  Fix failover DHCP problem
  *  http://article.gmane.org/gmane.comp.security.firewalls.pfsense.support/18749
  */

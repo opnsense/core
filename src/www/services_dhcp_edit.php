@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -37,12 +38,6 @@ function staticmaps_sort($ifgui) {
 }
 
 require_once('globals.inc');
-
-if(!$g['services_dhcp_server_enable']) {
-	header("Location: /");
-	exit;
-}
-
 require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dhcp.php');

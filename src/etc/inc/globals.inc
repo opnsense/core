@@ -33,10 +33,8 @@ openlog('opnsense', LOG_ODELAY, LOG_USER);
 register_shutdown_function('closelog');
 
 $g = array(
-	"base_packages" => "siproxd",
 	"factory_shipped_username" => "root",
 	"factory_shipped_password" => "opnsense",
-	"upload_path" => "/root",
 	"dhcpd_chroot_path" => "/var/dhcpd",
 	"unbound_chroot_path" => "/var/unbound",
 	"varrun_path" => "/var/run",
@@ -60,8 +58,6 @@ $g = array(
 	"captiveportal_element_path" => "/var/db/cpelements",
 	"captiveportal_element_sizelimit" => 1048576,
 	"xmlrpcpath" => "/xmlrpc.php",
-	"embeddedbootupslice" => "/dev/ad0a",
-	"services_dhcp_server_enable" => true,
 	"wireless_regex" => "/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/",
 	"help_base_url" => "/help.php"
 );

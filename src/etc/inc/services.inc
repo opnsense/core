@@ -320,10 +320,6 @@ function services_dhcpdv4_configure()
 	$need_ddns_updates = false;
 	$ddns_zones = array();
 
-	if($g['services_dhcp_server_enable'] == false) {
-		return;
-	}
-
 	/* kill any running dhcpd */
 	if (isvalidpid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpd.pid"))
 		killbypid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpd.pid");
@@ -940,10 +936,6 @@ function dhcpdzones($ddns_zones, $dhcpifconf)
 function services_dhcpdv6_configure($blacklist = array())
 {
 	global $config, $g;
-
-	if($g['services_dhcp_server_enable'] == false) {
-		return;
-	}
 
 	/* kill any running dhcpd */
 	if (isvalidpid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpdv6.pid"))

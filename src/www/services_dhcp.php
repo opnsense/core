@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -28,11 +29,6 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-
-if(!$g['services_dhcp_server_enable']) {
-	header("Location: /");
-	exit;
-}
 
 /* This function will remove entries from dhcpd.leases that would otherwise
  * overlap with static DHCP reservations. If we don't clean these out,

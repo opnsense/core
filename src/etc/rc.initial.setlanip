@@ -359,7 +359,7 @@ function console_configure_dhcpd($version = 4) {
 	$label_IPvX = ($version === 6) ? "IPv6"    : "IPv4";
 	$dhcpd      = ($version === 6) ? "dhcpdv6" : "dhcpd";
 
-	if($g['services_dhcp_server_enable'] && prompt_for_enable_dhcp_server($version)) {
+	if (prompt_for_enable_dhcp_server($version)) {
 		$subnet_start = ($version === 6) ? gen_subnetv6($intip6, $intbits6) : gen_subnet($intip, $intbits);
 		$subnet_end = ($version === 6) ? gen_subnetv6_max($intip6, $intbits6) : gen_subnet_max($intip, $intbits);
 		do {

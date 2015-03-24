@@ -1529,26 +1529,17 @@ function get_memory() {
 function mute_kernel_msgs()
 {
 	global $config;
-	// Do not mute serial console.  The kernel gets very very cranky
-	// and will start dishing you cannot control tty errors.
-	switch (trim(file_get_contents("/usr/local/etc/platform"))) {
-		case "nanobsd":
-			return;
-	}
-	if($config['system']['enableserial'])
+
+	if ($config['system']['enableserial']) {
 		return;
-	exec("/sbin/conscontrol mute on");
+	}
+
+	exec('/sbin/conscontrol mute on');
 }
 
-function unmute_kernel_msgs() {
-	global $config;
-	// Do not mute serial console.  The kernel gets very very cranky
-	// and will start dishing you cannot control tty errors.
-	switch (trim(file_get_contents("/usr/local/etc/platform"))) {
-		case "nanobsd":
-			return;
-	}
-	exec("/sbin/conscontrol mute off");
+function unmute_kernel_msgs()
+{
+	exec('/sbin/conscontrol mute off');
 }
 
 function is_interface_vlan_mismatch() {

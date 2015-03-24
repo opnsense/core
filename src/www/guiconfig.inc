@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
@@ -237,11 +238,8 @@ $medias = array("auto" => "autoselect", "100full" => "100BASE-TX full-duplex",
 $wlan_modes = array("bss" => "Infrastructure (BSS)", "adhoc" => "Ad-hoc (IBSS)",
 	"hostap" => "Access Point");
 
-/* platforms that support firmware updating */
-$fwupplatforms = array('pfSense', 'net45xx', 'net48xx', 'generic-pc', 'embedded', 'wrap', 'nanobsd');
-
-function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_errors) {
-
+function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_errors)
+{
 	/* check for bad control characters */
 	foreach ($postdata as $pn => $pd) {
 		if (is_string($pd) && preg_match("/[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]/", $pd)) {

@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+
 #	Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
 #	All rights reserved.
 #
@@ -24,23 +24,12 @@
 #	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 #	POSSIBILITY OF SUCH DAMAGE.
 
-# Set our operating platform
-PLATFORM=`/bin/cat /usr/local/etc/platform`
-
-
 if [ -d /usr/local/lib/php/20131226 ]; then
 	# PHP 5.6
 	EXTENSIONSDIR="/usr/local/lib/php/20131226/"
 else
 	echo "No supported PHP version was found."
 	exit 1
-fi
-
-# Set upload directory
-if [ "$PLATFORM" = "nanobsd" ]; then
-	UPLOADTMPDIR=`/usr/bin/grep upload_path /usr/local/etc/inc/globals.inc | /usr/bin/cut -d'"' -f4`
-else
-	UPLOADTMPDIR="/tmp"
 fi
 
 # Define php modules.  Do not add .so, it will
@@ -124,7 +113,7 @@ register_argc_argv = On
 register_long_arrays = Off
 variables_order = "GPCS"
 file_uploads = On
-upload_tmp_dir = ${UPLOADTMPDIR}
+upload_tmp_dir = /tmp
 upload_max_filesize = 200M
 post_max_size = 200M
 html_errors = Off
