@@ -996,7 +996,7 @@ function internalca_change() {
 					<?php elseif ($act == "csr" || (($_POST['save'] == gettext("Update")) && $input_errors)):?>
 
 					<form action="system_certmanager.php" method="post" name="iform" id="iform">
-						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="name"  class="table table-striped">>
+						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="name"  class="table table-striped">
 							<tr>
 								<td width="22%" valign="top" class="vncellreq"><?=gettext("Descriptive name");?></td>
 								<td width="78%" class="vtable">
@@ -1168,7 +1168,7 @@ function internalca_change() {
 						<?php endif; ?>
 						<?php if ($cert['csr']): ?>
 
-							<a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("update csr");?>">
+							<a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("update csr");?>">
 							<span class="glyphicon glyphicon-edit"></span>
 							</a>
 						<?php endif; ?>
@@ -1188,9 +1188,6 @@ function internalca_change() {
 		</div>
 	</div>
 </section>
-
-
-
 
 <script type="text/javascript">
 //<![CDATA[
