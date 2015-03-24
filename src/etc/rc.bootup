@@ -139,6 +139,8 @@ echo "done.\n";
 /* Display live system's early boot options */
 if (is_install_media()) {
 	rescue_detect_keypress();
+        // config may have changed (copied by installer)
+        OPNsense\Core\Config::getInstance()->forceReload();
 }
 
 echo "Loading configuration...";
