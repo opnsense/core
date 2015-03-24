@@ -1,16 +1,10 @@
-<?
+<?php
+
 /*
- * led.inc
- *
  * (C) 2009 Jim Pingle <jimp@pfsense.org>
  *
  * LED control library that wraps around the functionality of led(4)
- *
  */
-/*
-	pfSense_BUILDER_BINARIES:	/bin/echo
-	pfSense_MODULE:	utils
-*/
 
 $led_root = "/dev/led/led";
 

@@ -1,8 +1,6 @@
 #!/bin/sh
 
-# pfSense ping helper
-# written by Scott Ullrich
-# (C)2006 Scott Ullrich
+# Copyright (c) 2006 Scott Ullrich
 # All rights reserved.
 
 # Format of file should be deliminted by |

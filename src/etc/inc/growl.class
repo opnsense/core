@@ -1,7 +1,4 @@
-<?PHP
-/*
-	pfSense_MODULE:	notifications
-*/
+<?php
 
     class Growl
     {
@@ -98,5 +95,3 @@
             return false;
         }
     }
-
-?>

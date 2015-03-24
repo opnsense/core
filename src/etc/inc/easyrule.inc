@@ -1,7 +1,6 @@
 <?php
-/*
-	easyrule.inc.php
 
+/*
 	Copyright (C) 2009-2010 Jim Pingle (jpingle@gmail.com)
 	Originally Sponsored By Anathematic @ pfSense Forums
 	All rights reserved.
@@ -27,13 +26,10 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/*
-	pfSense_BUILDER_BINARIES:
-	pfSense_MODULE:	filter
-*/
 
 $blockaliasname = 'EasyRuleBlockHosts';
 $protocols_with_ports = array('tcp', 'udp');
+
 require_once("functions.inc");
 require_once("util.inc");
 require_once("config.inc");

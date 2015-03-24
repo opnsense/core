@@ -1,9 +1,6 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
+
 /*
-
-    $Id$
-
     Copyright (c) 2006, Jonathan De Graeve <jonathan.de.graeve@imelda.be>
     All rights reserved.
 
@@ -33,13 +30,8 @@
     This code cannot simply be copied and put under the GNU Public License or
     any other GPL-like (LGPL, GPL2) License.
 
-        This code is made possible thx to samples made by Michael Bretterklieber <michael@bretterklieber.com>
-        author of the PHP PECL Radius package
-
-*/
-
-/*
-	pfSense_MODULE:	captiveportal
+    This code is made possible thx to samples made by Michael Bretterklieber <michael@bretterklieber.com>
+    author of the PHP PECL Radius package
 */
 
 define('GIGAWORDS_RIGHT_OPERAND', '4294967296'); // 2^32

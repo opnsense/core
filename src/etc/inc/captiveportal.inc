@@ -1,12 +1,9 @@
 <?php
-/*
-    captiveportal.inc
-    part of pfSense (https://www.pfsense.org)
-    Copyright (C) 2004-2011 Scott Ullrich <sullrich@gmail.com>
-    Copyright (C) 2009-2012 Ermal Lu�i <eri@pfsense.org>
-    Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
 
-    originally part of m0n0wall (http://m0n0.ch/wall)
+/*
+    Copyright (C) 2004-2011 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2009-2012 Ermal Luçi <eri@pfsense.org>
+    Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -35,11 +32,6 @@
     via returned RADIUS attributes. This page has been modified to delete any
     added rules which may have been created by other per-user code (index.php, etc).
     These changes are (c) 2004 Keycom PLC.
-
-    pfSense_BUILDER_BINARIES:	/sbin/ipfw	/sbin/route
-    pfSense_BUILDER_BINARIES:	/usr/local/sbin/lighttpd	/usr/local/bin/minicron /sbin/pfctl
-    pfSense_BUILDER_BINARIES:	/bin/hostname	/bin/cp
-    pfSense_MODULE: captiveportal
 */
 
 /* include all configuration functions */

@@ -1,11 +1,5 @@
 <?php
 
-/*
-       pfSense_MODULE: utils
-*/
-
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
 /**
  * This file contains the implementation of the Net_IPv6 class
  *
