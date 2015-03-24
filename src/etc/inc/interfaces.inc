@@ -3613,14 +3613,17 @@ function interface_dhcpv6_configure($interface = "wan", $wancfg) {
 	/* accept router advertisements for this interface */
 	set_single_sysctl("net.inet6.ip6.accept_rtadv", "1");
 	log_error("Accept router advertisements on interface {$wanif} ");
-	mwexec("/sbin/ifconfig {$wanif} inet6 accept_rtadv");
+	mwexec("/sbin/ifconfig {$wanif} inet6 accept_rtadv -ifdisabled");
+
+	/* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
+	set_single_sysctl("net.inet6.ip6.rfc6204w", "1");
 
 	/* fire up rtsold for IPv6 RAs first, this backgrounds immediately. It will call dhcp6c */
 	if (isvalidpid("{$g['varrun_path']}/rtsold_{$wanif}.pid")) {
 		killbypid("{$g['varrun_path']}/rtsold_{$wanif}.pid");
 		sleep(2);
 	}
-	mwexec("/usr/sbin/rtsold -1 -p {$g['varrun_path']}/rtsold_{$wanif}.pid -O {$g['varetc_path']}/rtsold_{$wanif}_script.sh {$wanif}");
+	mwexec("/usr/sbin/rtsold -p {$g['varrun_path']}/rtsold_{$wanif}.pid -O {$g['varetc_path']}/rtsold_{$wanif}_script.sh {$wanif}");
 
 	/* NOTE: will be called from rtsold invoked script
 	 * link_interface_to_track6($interface, "update");
