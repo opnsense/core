@@ -467,7 +467,7 @@ echo '<tr><td>';
 			continue;
 
 		if ($pkga['type'] == "listtopic") {
-			$input = "<tr id='td_{$pkga['fieldname']}'><td>&nbsp;</td></tr>";
+			$input = "<tr id='td_{$pkga['fieldname']}'><td colspan=\"2\">&nbsp;</td></tr>";
 			$input .= "<tr id='tr_{$pkga['fieldname']}'><td colspan=\"2\" class=\"listtopic\">{$pkga['name']}<br /></td></tr>\n";
 			if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
 				$advanced .= $input;
@@ -549,7 +549,7 @@ echo '<tr><td>';
 		switch($pkga['type']){
 			case "input":
 				$size = ($pkga['size'] ? " size='{$pkga['size']}' " : "");
-				$input = "<input {$size} id='{$pkga['fieldname']}' name='{$pkga['fieldname']}' class='formfld unknown' value=\"" . htmlspecialchars($value) ."\" />\n";
+				$input = "<input {$size} id='{$pkga['fieldname']}' name='{$pkga['fieldname']}' class='formfld unknown' type='text' value=\"" . htmlspecialchars($value) ."\" />\n";
 				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
 				if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
 					$js_array[] = $pkga['fieldname'];
@@ -942,7 +942,7 @@ echo '<tr><td>';
 
 	?>
   <tr>
-	<td>&nbsp;</td>
+	<td colspan="2">&nbsp;</td>
   </tr>
   <tr>
     <td width="22%" valign="top">&nbsp;</td>
@@ -954,7 +954,7 @@ echo '<tr><td>';
 			}
 		//if (isset($id) && $a_pkg[$id]) // We'll always have a valid ID in our hands
 		echo "<input name='id' type='hidden' value=\"" . htmlspecialchars($id) . "\" />";
-		echo "<input name='Submit' type='submit' class='formbtn' value=\"" . htmlspecialchars($savevalue) . "\" />\n{$pkg_buttons}\n";
+		echo "<input name='Submit' type='submit' class='btn btn-primary formbtn' value=\"" . htmlspecialchars($savevalue) . "\" />\n{$pkg_buttons}\n";
 		if (!$only_edit){
 			echo "<input class=\"formbtn\" type=\"button\" value=\"".gettext("Cancel")."\" onclick=\"window.location.href='" . $_SERVER['HTTP_REFERER'] . "'\" />";
 			}
@@ -1001,7 +1001,7 @@ function display_row($trc, $value, $fieldname, $type, $rowhelper, $size) {
 	echo "<td>\n";
 	switch($type){
 		case "input":
-			echo "<input size='{$size}' name='{$fieldname}{$trc}' id='{$fieldname}{$trc}' class='formfld unknown' value=\"" . htmlspecialchars($value) . "\" />\n";
+			echo "<input size='{$size}' name='{$fieldname}{$trc}' id='{$fieldname}{$trc}' class='formfld unknown' type='text' value=\"" . htmlspecialchars($value) . "\" />\n";
 			break;
 		case "checkbox":
 			echo "<input size='{$size}' type='checkbox' id='{$fieldname}{$trc}' name='{$fieldname}{$trc}' value='ON' ".($value?"CHECKED":"")." />\n";
