@@ -113,11 +113,6 @@ require_once("rrd.inc");
 echo ".";
 require_once("pfsense-utils.inc");
 echo ".";
-
-/* get system memory amount */
-$memory = get_memory();
-$physmem = $memory[0];
-$realmem = $memory[1];
 echo " done.\n";
 
 /* save dmesg output to file */
@@ -245,14 +240,8 @@ echo "Synchronizing user settings...";
 local_sync_accounts();
 echo "done.\n";
 
-if($realmem > 0 and $realmem < 65) {
-	echo "System has less than 65 megabytes of ram {$realmem}.  Delaying webConfigurator startup.\n";
-	/* start webConfigurator up on final pass */
-	send_event('service restart webgui');
-} else {
-	/* start web server */
-	system_webgui_start();
-}
+/* start web server */
+system_webgui_start();
 
 /* configure cron service */
 echo "Configuring CRON...";
@@ -328,15 +317,6 @@ enable_rrd_graphing();
 
 /* enable watchdog if supported */
 enable_watchdog();
-
-if($physmem < $g['minimum_ram_warning']) {
-	require_once("notices.inc");
-	file_notice("{$g['product_name']}MemoryRequirements", "{$g['product_name']} requires at least {$g['minimum_ram_warning_text']} of RAM.  Expect unusual performance.  This platform is not supported.", "Memory", "", 1);
-	set_sysctl(array(
-		"net.inet.tcp.recvspace" => "4096",
-		"net.inet.tcp.sendspace" => "4096"
-	));
-}
 
 /* if we are operating at 1000 then increase timeouts.
    this was never accounted for after moving to 1000 hz */

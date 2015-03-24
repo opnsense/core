@@ -49,8 +49,6 @@ $g = array(
 	"product_copyright_years" => "2014 - 2015",
 	"product_copyright_url" => "https://www.deciso.com/",
 	"latest_config" => "11.1",
-	"minimum_ram_warning" => "101",
-	"minimum_ram_warning_text" => "128 MB",
 	"wireless_regex" => "/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/",
 );
 

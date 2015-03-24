@@ -38,20 +38,6 @@ function set_networking_interfaces_ports()
 
 	$fp = fopen('php://stdin', 'r');
 
-	$memory = get_memory();
-	$physmem = $memory[0];
-	$realmem = $memory[1];
-
-	if($physmem < $g['minimum_ram_warning']) {
-		echo "\n\n\n";
-		echo gettext("DANGER!  WARNING!  ACHTUNG!") . "\n\n";
-		printf(gettext("%s requires *AT LEAST* %s RAM to function correctly.%s"), $g['product_name'], $g['minimum_ram_warning_text'], "\n");
-		printf(gettext("Only (%s) MB RAM has been detected, with (%s) available to %s.%s"), $realmem, $physmem, $g['product_name'], "\n");
-		echo "\n" . gettext("Press ENTER to continue.") . " ";
-		fgets($fp);
-		echo "\n";
-	}
-
 	$iflist = get_interface_list();
 
 	/* Function flow is based on $key and $auto_assign or the lack thereof */
