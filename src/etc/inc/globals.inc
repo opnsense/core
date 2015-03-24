@@ -130,4 +130,3 @@ function is_install_media()
 
 	return true;
 }
-

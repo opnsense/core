@@ -103,8 +103,8 @@ if ($_POST) {
 		$config['ntpd']['gps']['flag1'] = $_POST['gpsflag1'];
         } elseif (isset($config['ntpd']['gps']['flag1'])) {
 		unset($config['ntpd']['gps']['flag1']);
-        } 
-        
+        }
+
 	if (!empty($_POST['gpsflag2']))
 		$config['ntpd']['gps']['flag2'] = $_POST['gpsflag2'];
 	elseif (isset($config['ntpd']['gps']['flag2']))
@@ -586,9 +586,9 @@ SureGPS =		#Sure Electronics SKG16B
 <script type="text/javascript">
 //<![CDATA[
 jQuery(document).ready(function() {
-         setTimeout(function(){ 
+         setTimeout(function(){
                  set_gps_default(this.form);
-         }, 1000); 
+         }, 1000);
         });
 //]]>
 </script>

@@ -197,7 +197,7 @@ include("head.inc");
 			if (add < 10) {
 				var TimeServerID = 'timeserver' + add;
 				document.getElementById(TimeServerID).style.display = 'block';
-				
+
 				//then revise the add another server line
 				if (add < 9) {
 					var next = add + 1;

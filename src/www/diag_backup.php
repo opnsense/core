@@ -27,7 +27,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-require_once("script/load_phalcon.php");  
+require_once("script/load_phalcon.php");
 
 /* Allow additional execution time 0 = no limit. */
 ini_set('max_execution_time', '0');
@@ -491,25 +491,25 @@ if ($_POST) {
 		      $config['system']['remotebackup']['GDriveFolderID'] = $_POST['GDriveFolderID'];
 		      $config['system']['remotebackup']['GDrivePassword'] = $_POST['GDrivePassword'];
 		      if (is_numeric($_POST['GDriveBackupCount'])) {
-  		        $config['system']['remotebackup']['GDriveBackupCount'] = $_POST['GDriveBackupCount'];
+		        $config['system']['remotebackup']['GDriveBackupCount'] = $_POST['GDriveBackupCount'];
                       } else {
                         $config['system']['remotebackup']['GDriveBackupCount'] = 30;
                       }
-		      
+
 		      if ( $_POST['GDrivePasswordConfirm'] != $_POST['GDrivePassword'] ) {
 		        // log error, but continue
 		        $input_errors[] = gettext("The supplied 'Password' and 'Confirm' field values must match.");
 		      }
-		      
-		      if (is_uploaded_file($_FILES['GDriveP12file']['tmp_name'])) {		   
+
+		      if (is_uploaded_file($_FILES['GDriveP12file']['tmp_name'])) {
                           $data = file_get_contents($_FILES['GDriveP12file']['tmp_name']);
                           $config['system']['remotebackup']['GDriveP12key'] = base64_encode($data);
                       } elseif ($config['system']['remotebackup']['GDriveEnabled'] != "on") {
                           unset($config['system']['remotebackup']['GDriveP12key']);
                       }
-                                            
+
                       write_config();
-                      // test / perform backup 
+                      // test / perform backup
                       try {
                          $filesInBackup = backup_to_google_drive() ;
                          $cron_job = "/usr/local/opnsense/scripts/remote_backup.php";
@@ -517,10 +517,10 @@ if ($_POST) {
                            // initial cron job install
                            install_cron_job($cron_job,true,0,1);
                          }
-                      } catch (Exception $e) { 
+                      } catch (Exception $e) {
                          $filesInBackup = array() ;
                       }
-                  
+
                       if (count($filesInBackup) == 0) {
                          $input_errors[] = gettext("Google Drive communication failure");
                       } else {
@@ -742,16 +742,16 @@ function backuparea_change(obj) {
 
 									</div>
 								</section>
-								
+
                                                                 <section class="__mb">
-                				                        <div class="content-box">
-		                		                            <header class="content-box-head container-fluid">
+						                        <div class="content-box">
+						                            <header class="content-box-head container-fluid">
 									        <h3><?=gettext("Remote backup (using Google drive)"); ?></h3>
 									    </header>
-									
-        								    <div class="content-box-main ">
+
+									    <div class="content-box-main ">
                                                                               <div class="table-responsive">
-                                                                                    <table class="table table-striped __nomb"> 
+                                                                                    <table class="table table-striped __nomb">
                                                                                           <thead>
                                                                                              <th class="col-sm-1"></th>
                                                                                              <th class="col-sm-3"></th>
@@ -761,7 +761,7 @@ function backuparea_change(obj) {
                                                                                              <tr><td><?=gettext("Email Address"); ?> </td><td><input name="GDriveEmail" class="formfld" size="20" value="<? echo $config['system']['remotebackup']['GDriveEmail'];?>" type="text"> </td> </tr>
                                                                                              <tr><td><?=gettext("P12 key"); ?> <? if (isset($config['system']['remotebackup']['GDriveP12key'])) echo gettext("(replace)"); else echo gettext("(not loaded)"); ?> </td><td> <input name="GDriveP12file" class="formbtn" id="P12file" size="40" type="file"></td> </tr>
                                                                                              <tr><td><?=gettext("Folder ID"); ?> </td><td> <input name="GDriveFolderID" class="formbtn" id="GDriveFolderID" value="<? echo $config['system']['remotebackup']['GDriveFolderID'];?>" size="40" type="text"></td> </tr>
-                                                                                             <tr><td><?=gettext("Backup Count"); ?> </td><td> <input name="GDriveBackupCount" class="formbtn" id="GDriveBackupCount" value="<? echo $config['system']['remotebackup']['GDriveBackupCount'];?>" size="40" type="text"></td> </tr>                                                                                             
+                                                                                             <tr><td><?=gettext("Backup Count"); ?> </td><td> <input name="GDriveBackupCount" class="formbtn" id="GDriveBackupCount" value="<? echo $config['system']['remotebackup']['GDriveBackupCount'];?>" size="40" type="text"></td> </tr>
                                                                                              <tr><td colspan=2><?=gettext("Password protect your data"); ?> :</td></tr>
                                                                                              <tr><td><?=gettext("Password :"); ?></td> <td> <input name="GDrivePassword" type="password" class="formfld pwd" size="20" value="<? echo $config['system']['remotebackup']['GDrivePassword'] ;?>" /> </td></tr>
                                                                                              <tr><td><?=gettext("Confirm :"); ?></td> <td> <input name="GDrivePasswordConfirm" type="password" class="formfld pwd" size="20" value="<? echo $config['system']['remotebackup']['GDrivePassword'] ;?>" /> </td></tr>
@@ -769,7 +769,7 @@ function backuparea_change(obj) {
                                                                                           </tbody>
                                                                                     </table>
                                                                               </div>
-                                                                            </div>                                                                                    
+                                                                            </div>
 									</div>
                                                                 </section>
 
@@ -783,8 +783,8 @@ function backuparea_change(obj) {
 
 
 
-				</section>				
-				
+				</section>
+
 			</div>
 		</div>
 	</section>

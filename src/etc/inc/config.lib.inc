@@ -93,7 +93,7 @@ function parse_config_bootup()
 				if (count($backups) > 0) {
                                         log_error("No config.xml found, attempting last known config restore.");
                                         file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-					$cnf->restoreBackup($backups[0]);					
+					$cnf->restoreBackup($backups[0]);
 				} else {
 					echo sprintf(gettext("XML configuration file not found.  %s cannot continue booting."), $g['product_name']) . "\n";
 					mwexec("/sbin/halt");
@@ -356,7 +356,7 @@ function cleanup_backups() {
 	}
 
 	$cnf = OPNsense\Core\Config::getInstance();
-	
+
 	$cnt=1;
 	foreach ($cnf->getBackups() as $filename) {
 		if ($cnt > $revisions ) {
@@ -451,11 +451,11 @@ function backup_to_google_drive() {
 		if (  isset($config->system->remotebackup) && isset($config->system->remotebackup->GDriveEnabled) && $config->system->remotebackup->GDriveEnabled == "on" ){
 			$client->login($config->system->remotebackup->GDriveEmail->__toString(), $config->system->remotebackup->GDriveP12key->__toString() );
 			// backup source data to local strings (plain/encrypted)
-			$confdata = file_get_contents('/conf/config.xml') ; 
+			$confdata = file_get_contents('/conf/config.xml') ;
 			$confdata_enc = encrypt_data($confdata, $config->system->remotebackup->GDrivePassword->__toString()) ;
-			tagfile_reformat($confdata_enc, $confdata_enc, "config.xml");				
-			
-			
+			tagfile_reformat($confdata_enc, $confdata_enc, "config.xml");
+
+
 			// read filelist (config-*.xml) and cleanup old files
 			$files = $client->listFiles($config->system->remotebackup->GDriveFolderID->__toString());
 			$configfiles  = array();
@@ -465,9 +465,9 @@ function backup_to_google_drive() {
 			    }
 			}
 			krsort($configfiles);
-			
+
 			if (isset($config->system->remotebackup->GDriveBackupCount) && is_numeric($config->system->remotebackup->GDriveBackupCount->__toString())) {
-				$fcount = 0; 
+				$fcount = 0;
 				foreach ($configfiles as $filename => $file) {
 					if ($fcount > $config->system->remotebackup->GDriveBackupCount->__toString()) {
 						log_error("remove " . $filename . " from Google Drive" );
@@ -480,18 +480,18 @@ function backup_to_google_drive() {
 			// backup new file if changed (or if first in backup)
 			$target_filename = "config-".time().".xml";
 			if (count($configfiles) > 1) {
-				// compare last backup with current, only save new 
+				// compare last backup with current, only save new
 				$bck_data_enc = $client->download($configfiles[array_keys($configfiles)[0]]);
 				$bck_data = decrypt_data($bck_data_enc, $config->system->remotebackup->GDrivePassword->__toString());
 				if ($bck_data == $confdata) {
 					$target_filename = null;
-				}				
-			} 
+				}
+			}
 			if (!is_null($target_filename)) {
 				log_error("backup configuration as " . $target_filename);
 				$configfiles[$target_filename] = $client->upload($config->system->remotebackup->GDriveFolderID->__toString(),$target_filename, $confdata_enc );
-			} 
-			
+			}
+
 			// return filelist
 			return $configfiles;
 
@@ -499,7 +499,7 @@ function backup_to_google_drive() {
 	}
 
 	// not configured / issue, return empty list
-	return array(); 	
+	return array();
 }
 
 register_shutdown_function('pfSense_clear_globals');

@@ -376,4 +376,3 @@ if ($ipsec_dynamic_hosts) {
 }
 
 led_normalize();
-

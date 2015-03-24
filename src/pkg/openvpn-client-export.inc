@@ -85,7 +85,7 @@ function openvpn_client_export_prefix($srvid, $usrid = null, $crtid = null) {
 	$host = empty($config['system']['hostname']) ? "openvpn" : $config['system']['hostname'];
 	$prot = ($settings['protocol'] == 'UDP' ? 'udp' : $settings['protocol']);
 	$port = $settings['local_port'];
-	
+
 	$filename_addition = "";
 	if ($usrid && is_numeric($usrid))
 		$filename_addition = "-".$config['system']['user'][$usrid]['name'];
@@ -128,7 +128,7 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 
 	// lookup server certificate info
 	$server_cert = lookup_cert($settings['certref']);
-	if (!$server_cert) 
+	if (!$server_cert)
 	{
 		$input_errors[] = "Could not locate server certificate.";
 	} else {
@@ -173,7 +173,7 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 
 	if ($input_errors)
 		return false;
-		
+
 	return array($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys);
 }
 
@@ -250,7 +250,7 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 			}
 			$conf .= "http-proxy {$proxy['ip']} {$proxy['port']} ";
 		}
-		if ($proxy['proxy_type'] == "socks") 
+		if ($proxy['proxy_type'] == "socks")
 			$conf .= "socks-proxy {$proxy['ip']} {$proxy['port']} ";
 		if ($proxy['proxy_authtype'] != "none") {
 			if (!isset($proxy['passwdfile']))
@@ -358,7 +358,7 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 		$conf .= "management-forget-disconnect{$nl}";
 		$conf .= $nl;
 	};
-		
+
 	// add advanced options
 	$advancedoptions = str_replace("\r\n", "\n", $advancedoptions);
 	$advancedoptions = str_replace("\n", $nl, $advancedoptions);
@@ -581,12 +581,12 @@ function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $veri
 	$files .= "openvpn-install.exe ";
 	$files .= "openvpn-postinstall.exe ";
 	if ($usetoken)
-		$procchain = 	';!@Install@!UTF-8!
+		$procchain =	';!@Install@!UTF-8!
 RunProgram="openvpn-postinstall.exe /Import"
 ;!@InstallEnd@!'
 ;
 	else
-		$procchain = 	';!@Install@!UTF-8!
+		$procchain =	';!@Install@!UTF-8!
 RunProgram="openvpn-postinstall.exe"
 ;!@InstallEnd@!'
 ;
@@ -804,7 +804,7 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
 			}
 			$conf .= "http-proxy {$proxy['ip']} {$proxy['port']} ";
 		}
-		if ($proxy['proxy_type'] == "socks") 
+		if ($proxy['proxy_type'] == "socks")
 			$conf .= "socks-proxy {$proxy['ip']} {$proxy['port']} ";
 		if ($proxy['proxy_authtype'] != "none") {
 			if (!isset($proxy['passwdfile']))

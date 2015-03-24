@@ -578,7 +578,7 @@ function useproxy_changed(obj) {
 		print_info_box($savemsg);
 ?>
 <table width="100%" border="0" cellpadding="0" cellspacing="0" summary="openvpn export">
- 	<tr>
+	<tr>
 		<td>
 			<?php
 				$tab_array = array();
