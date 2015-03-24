@@ -605,7 +605,7 @@
 		}
 		unset($config['wizardtemp']);
 		write_config();
-		]]>	
+		]]>
 	</stepafterformdisplay>
 </step>
 <step>

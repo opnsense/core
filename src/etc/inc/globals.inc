@@ -48,18 +48,10 @@ $g = array(
 	"product_copyright_owner" => "Deciso B.V.",
 	"product_copyright_years" => "2014 - 2015",
 	"product_copyright_url" => "https://www.deciso.com/",
-	"crashreporterurl" => "https://crash.opnsense.org/",
 	"latest_config" => "11.1",
 	"minimum_ram_warning" => "101",
 	"minimum_ram_warning_text" => "128 MB",
-	"wan_interface_name" => "wan",
-	"xmlrpcbaseurl" => "https://not.supported.opnsense.org",
-	"captiveportal_path" => "/usr/local/captiveportal",
-	"captiveportal_element_path" => "/var/db/cpelements",
-	"captiveportal_element_sizelimit" => 1048576,
-	"xmlrpcpath" => "/xmlrpc.php",
 	"wireless_regex" => "/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/",
-	"help_base_url" => "/help.php"
 );
 
 /* IP TOS flags */

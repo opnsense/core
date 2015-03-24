@@ -1075,22 +1075,23 @@ function radius($username,$password,$clientip,$clientmac,$type, $radiusctx = nul
 }
 
 
-function captiveportal_write_elements() {
+function captiveportal_write_elements()
+{
     global $g, $config, $cpzone;
 
     $cpcfg = $config['captiveportal'][$cpzone];
 
-    if (!is_dir($g['captiveportal_element_path']))
-        @mkdir($g['captiveportal_element_path']);
+    @mkdir('/var/db/cpelements');
 
     if (is_array($cpcfg['element'])) {
         foreach ($cpcfg['element'] as $data) {
-            if (!@file_put_contents("{$g['captiveportal_element_path']}/{$data['name']}", base64_decode($data['content']))) {
+            if (!@file_put_contents("/var/db/cpelements/{$data['name']}", base64_decode($data['content']))) {
                 printf(gettext("Error: cannot open '%s' in captiveportal_write_elements()%s"), $data['name'], "\n");
                 return 1;
             }
-            if (!file_exists("{$g['captiveportal_path']}/{$data['name']}"))
-                @symlink("{$g['captiveportal_element_path']}/{$data['name']}", "{$g['captiveportal_path']}/{$data['name']}");
+            if (!file_exists("/usr/local/captiveportal/{$data['name']}")) {
+                @symlink("/var/db/cpelements/{$data['name']}", "/usr/local/captiveportal/{$data['name']}");
+	    }
         }
     }
 

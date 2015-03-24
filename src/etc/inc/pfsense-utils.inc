@@ -598,8 +598,7 @@ function rmdir_recursive($path,$follow_links=false) {
 function check_firmware_version($tocheck = "all", $return_php = true) {
 	global $g, $config;
 
-	$xmlrpc_base_url = get_active_xml_rpc_base_url();
-	$xmlrpcfqdn = preg_replace("(https?://)", "", $xmlrpc_base_url);
+	$xmlrpcfqdn = preg_replace('(https?://)', '', '/xmlrpc.php');
 	$ip = gethostbyname($xmlrpcfqdn);
 	if($ip == $xmlrpcfqdn)
 		return false;
@@ -2675,16 +2674,3 @@ function get_pppoes_child_interfaces($ifpattern) {
 	return $if_arr;
 
 }
-
-/* Function to find and return the active XML RPC base URL to avoid code duplication */
-function get_active_xml_rpc_base_url() {
-	global $config, $g;
-	/* If the user has activated the option to enable an alternate xmlrpcbaseurl, and it's not empty, then use it */
-	if (isset($config['system']['altpkgrepo']['enable']) && !empty($config['system']['altpkgrepo']['xmlrpcbaseurl'])) {
-		return $config['system']['altpkgrepo']['xmlrpcbaseurl'];
-	} else {
-		return $g['xmlrpcbaseurl'];
-	}
-}
-
-?>

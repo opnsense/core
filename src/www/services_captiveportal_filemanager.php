@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005-2006 Jonathan De Graeve (jonathan.de.graeve@imelda.be)
@@ -26,6 +27,8 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+
+$captiveportal_element_sizelimit = 1048576;
 
 function cpelementscmp($a, $b) {
 	return strcasecmp($a['name'], $b['name']);
@@ -89,9 +92,9 @@ if ($_POST) {
 		}
 
 		// check total file size
-		if (($total_size + $size) > $g['captiveportal_element_sizelimit']) {
+		if (($total_size + $size) > $captiveportal_element_sizelimit) {
 			$input_errors[] = gettext("The total size of all files uploaded may not exceed ") .
-				format_bytes($g['captiveportal_element_sizelimit']) . ".";
+				format_bytes($captiveportal_element_sizelimit) . ".";
 		}
 
 		if (!$input_errors) {
@@ -110,8 +113,8 @@ if ($_POST) {
 		}
     }
 } else if (($_GET['act'] == "del") && !empty($cpzone) && $a_element[$_GET['id']]) {
-	@unlink("{$g['captiveportal_element_path']}/" . $a_element[$_GET['id']]['name']);
-	@unlink("{$g['captiveportal_path']}/" . $a_element[$_GET['id']]['name']);
+	@unlink("/var/db/cpelements/" . $a_element[$_GET['id']]['name']);
+	@unlink("/usr/local/captiveportal/" . $a_element[$_GET['id']]['name']);
 	unset($a_element[$_GET['id']]);
 	write_config();
 	header("Location: services_captiveportal_filemanager.php?zone={$cpzone}");
@@ -228,7 +231,7 @@ $main_buttons = array(
 								<br /><br />
 								<tt>&lt;a href="/captiveportal-aup.php?zone=$PORTAL_ZONE$&amp;redirurl=$PORTAL_REDIRURL$"&gt;<?=gettext("Acceptable usage policy"); ?>&lt;/a&gt;</tt>
 								<br /><br />
-								<?php printf(gettext("The total size limit for all files is %s."), format_bytes($g['captiveportal_element_sizelimit']));?></span>
+								<?php printf(gettext("The total size limit for all files is %s."), format_bytes($captiveportal_element_sizelimit));?></span>
 
 		                    </form>
 					</div>

@@ -11,7 +11,7 @@ install:
 	@cp ${.CURDIR}/pkg/+PRE_DEINSTALL ${DESTDIR}
 	@cp ${.CURDIR}/pkg/+POST_INSTALL ${DESTDIR}
 	@cp ${.CURDIR}/pkg/+MANIFEST ${DESTDIR}
-	# move all sources to their destination and...
+	# move all sources to their destination
 	@mkdir -p ${DESTDIR}/usr/local
 	@cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
 	# bootstrap pkg(8) files that are not in sources
@@ -20,7 +20,7 @@ install:
 	@echo /usr/local/etc/pkg/repos/OPNsense.conf
 	@cp ${.CURDIR}/pkg/pkg.conf ${DESTDIR}/usr/local/etc
 	@echo /usr/local/etc/pkg.conf
-	# ... pretty-print a list of files present
+	# and finally pretty-print a list of files present
 	@(cd ${.CURDIR}/src; find * -type f) | \
 	    xargs -n1 printf "/usr/local/%s\n"
 
@@ -58,4 +58,4 @@ health:
 clean:
 	git reset --hard HEAD && git clean -xdqf .
 
-.PHONY: mount umount install lint sweep style setup clean
+.PHONY: mount umount install lint sweep style setup health clean

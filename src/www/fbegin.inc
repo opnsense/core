@@ -62,7 +62,7 @@ if (($pagename == "pkg.php") || ($pagename == "pkg_edit.php") || ($pagename == "
 }
 
 /* Build the full help URL. */
-$helpurl .= "{$g['help_base_url']}?page={$pagename}";
+$helpurl .= "/help.php?page={$pagename}";
 
 function return_ext_menu($section) {
 	global $config;
