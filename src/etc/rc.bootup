@@ -123,10 +123,6 @@ echo " done.\n";
 /* save dmesg output to file */
 system_dmesg_save();
 
-/* remove previous firmware upgrade if present */
-if (file_exists("/root/firmware.tgz"))
-	unlink("/root/firmware.tgz");
-
 /* start devd (dhclient now uses it) */
 echo "Starting device manager (devd)...";
 mute_kernel_msgs();
@@ -144,7 +140,8 @@ if (is_install_media()) {
 }
 
 echo "Loading configuration...";
-parse_config_bootup();
+global $config;
+$config = parse_config();
 echo "done.\n";
 
 /*

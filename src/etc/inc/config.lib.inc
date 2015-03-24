@@ -1,8 +1,4 @@
 <?php
-require_once("xmlparse.inc");
-require_once("crypt.inc");
-require_once("globals.inc");
-require_once("script/load_phalcon.php");
 
 /*
 	Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
@@ -33,6 +29,10 @@ require_once("script/load_phalcon.php");
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("globals.inc");
+require_once("xmlparse.inc");
+require_once("crypt.inc");
+require_once("script/load_phalcon.php");
 
 /****f* config/parse_config
  * NAME
@@ -58,79 +58,12 @@ function parse_config()
 		}
 	}
 
+	/* make alias table (for faster lookups) */
+	alias_make_table($config);
+
 	// return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
 	return $cnf->toArray(listtags());
 }
-
-
-/****f* config/parse_config_bootup
- * NAME
- *   parse_config_bootup - Bootup-specific configuration checks.
- * RESULT
- *   null
- ******/
-function parse_config_bootup()
-{
-	global $config, $g;
-
-	$config_xml = '/conf/config.xml';
-
-	if (!file_exists($config_xml)) {
-		if (file_exists("/var/run/booting")) {
-			if (is_install_media()) {
-				/* try copying the default config. to the floppy */
-				echo gettext("Resetting factory defaults...") . "\n";
-				reset_factory_defaults(true);
-				if (!file_exists($config_xml)) {
-					echo gettext("No XML configuration file found - using factory defaults.\n" .
-								 "Make sure that the configuration floppy disk with the conf/config.xml\n" .
-								 "file is inserted. If it isn't, your configuration changes will be lost\n" .
-								 "on reboot.\n");
-				}
-			} else {
-				$cnf = OPNsense\Core\Config::getInstance();
-				$backups = $cnf->getBackups();
-				if (count($backups) > 0) {
-                                        log_error("No config.xml found, attempting last known config restore.");
-                                        file_notice("config.xml", gettext("No config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
-					$cnf->restoreBackup($backups[0]);
-				} else {
-					echo sprintf(gettext("XML configuration file not found.  %s cannot continue booting."), $g['product_name']) . "\n";
-					mwexec("/sbin/halt");
-					exit;
-				}
-				log_error("Last known config found and restored.  Please double check your configuration file for accuracy.");
-				file_notice("config.xml", gettext("Last known config found and restored.  Please double check your configuration file for accuracy."), "pfSenseConfigurator", "");
-			}
-		} else {
-			log_error(gettext("Could not find a usable configuration file! Exiting...."));
-			exit(0);
-		}
-	}
-
-
-	$config = parse_config();
-
-	if ((float)$config['version'] > (float)$g['latest_config']) {
-		echo <<<EOD
-
-
-*******************************************************************************
-* WARNING!                                                                    *
-* The current configuration has been created with a newer version of {$g['product_name']}  *
-* than this one! This can lead to serious misbehavior and even security       *
-* holes! You are urged to either upgrade to a newer version of {$g['product_name']} or     *
-* revert to the default configuration immediately!                            *
-*******************************************************************************
-
-
-EOD;
-		}
-
-	/* make alias table (for faster lookups) */
-	alias_make_table($config);
-}
-
 
 /****f* config/convert_config
  * NAME
@@ -503,5 +436,3 @@ function backup_to_google_drive() {
 }
 
 register_shutdown_function('pfSense_clear_globals');
-
-?>

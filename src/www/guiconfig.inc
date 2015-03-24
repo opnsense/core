@@ -1099,9 +1099,8 @@ function rule_popup($src,$srcport,$dst,$dstport){
 }
 
 $timezone = $config['system']['timezone'];
-if (!$timezone)
-	$timezone = "Etc/UTC";
+if (!$timezone) {
+	$timezone = 'Etc/UTC';
+}
 
 date_default_timezone_set($timezone);
-
-?>

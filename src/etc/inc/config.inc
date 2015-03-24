@@ -49,98 +49,12 @@ require_once("xmlparse.inc");
 require_once("crypt.inc");
 require_once("globals.inc");
 
-
-/* if /debugging exists, lets set $debugging
-   so we can output more information */
-if(file_exists("/debugging")) {
-	$debugging = true;
-	$g['debug'] = true;
-}
-
-/* if our config file exists bail out, we're already set. */
-if (file_exists("/var/run/booting") && !file_exists('/conf/config.xml')) {
-	/* find the device where config.xml resides and write out an fstab */
-	unset($cfgdevice);
-	/* check if there's already an fstab (NFS booting?) */
-	if (!file_exists('/etc/fstab')) {
-		if (is_install_media()) {
-			/* config is on install media CD-ROM/Flash version */
-			$cfgdevice = $cfgpartition = "fd0";
-			$_gb = exec('/sbin/dmesg -a', $dmesg);
-			if(preg_match("/da0/", $dmesg) == true) {
-				$cfgdevice = $cfgpartition = "da0" ;
-				if (mwexec("/sbin/mount -r /dev/{$cfgdevice} /cf")) {
-					/* could not mount, fallback to floppy */
-					$cfgdevice = $cfgpartition = "fd0";
-				}
-			}
-			$cfgfstype = "msdosfs";
-			echo gettext("CDROM build") . "\n";
-			echo "   " . gettext("CFG:") . " {$cfgpartition}\n";
-			echo "   " . gettext("CFG:") . " {$cfgpartition}\n";
-			echo "  " . gettext("TYPE:") . " {$cfgfstype}\n";
-		} else {
-			/* probe kernel known disks until we find one with config.xml */
-			$disks = explode(" ", get_single_sysctl("kern.disks"));
-			foreach ($disks as $mountdisk) {
-				/* skip mfs mounted filesystems */
-				if (strstr($mountdisk, "md"))
-					continue;
-				if (mwexec("/sbin/mount -r /dev/{$mountdisk}a /cf") == 0) {
-					if (file_exists('/conf/config.xml')) {
-						/* found it */
-						$cfgdevice = $mountdisk;
-						$cfgpartition = $cfgdevice . "a";
-						$cfgfstype = "ufs";
-						printf(gettext("Found configuration on %s.%s"), $cfgdevice, "\n");
-					}
-
-					mwexec("/sbin/umount -f /cf");
-
-					if ($cfgdevice)
-						break;
-				}
-				if (mwexec("/sbin/mount -r /dev/{$mountdisk}d /cf") == 0) {
-					if (file_exists('/conf/config.xml')) {
-						/* found it */
-						$cfgdevice = $mountdisk;
-						$cfgpartition = $cfgdevice . "d";
-						$cfgfstype = "ufs";
-						printf(gettext("Found configuration on %s.%s"), $cfgdevice, "\n");
-					}
-
-					mwexec("/sbin/umount -f /cf");
-
-					if ($cfgdevice)
-						break;
-				}
-			}
-		}
-
-		/* write device name to a file for rc.firmware */
-		$fd = fopen("{$g['varetc_path']}/cfdevice", "w");
-		fwrite($fd, $cfgdevice . "\n");
-		fclose($fd);
-
-		/* write out an fstab */
-		$fd = fopen('/etc/fstab', 'w');
-
-		$fstab = "/dev/{$cfgpartition} /cf {$cfgfstype} ro,noatime 1 1\n";
-		$fstab .= "proc /proc procfs rw 0 0\n";
-
-		fwrite($fd, $fstab);
-		fclose($fd);
-	}
-	/* mount all filesystems */
-	mwexec("/sbin/mount -a");
-}
-
 $config = parse_config();
 
 /* set timezone */
 $timezone = $config['system']['timezone'];
 if (!$timezone) {
-	$timezone = "Etc/UTC";
+	$timezone = 'Etc/UTC';
 }
 
-date_default_timezone_set("$timezone");
+date_default_timezone_set($timezone);
