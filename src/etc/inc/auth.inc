@@ -35,8 +35,8 @@
  * NOTE : Portions of the mschapv2 support was based on the BSD licensed CHAP.php
  * file courtesy of Michael Retterklieber.
  */
-if(!$do_not_include_config_gui_inc)
-	require_once("config.gui.inc");
+
+require_once("config.gui.inc");
 
 // Will be changed to false if security checks fail
 $security_passed = true;
@@ -44,7 +44,7 @@ $security_passed = true;
 /* If this function doesn't exist, we're being called from Captive Portal or
    another internal subsystem which does not include authgui.inc */
 if (function_exists("display_error_form") && !isset($config['system']['webgui']['nodnsrebindcheck'])) {
-	/* DNS ReBinding attack prevention.  https://redmine.pfsense.org/issues/708 */
+	/* DNS ReBinding attack prevention */
 	$found_host = false;
 
 	/* Either a IPv6 address with or without a alternate port */

@@ -349,29 +349,6 @@ function make_config_revision_entry($desc = null, $override_user = null) {
 	return $revision;
 }
 
-
-function pfSense_clear_globals() {
-	global $config, $FilterIfList, $GatewaysList, $filterdns, $aliases, $aliastable;
-
-	if (isset($FilterIfList))
-		unset($FilterIfList);
-
-	if (isset($GatewaysList))
-		unset($GatewaysList);
-
-	/* Used for the hostname dns resolver */
-	if (isset($filterdns))
-		unset($filterdns);
-
-	/* Used for aliases and interface macros */
-	if (isset($aliases))
-		unset($aliases);
-	if (isset($aliastable))
-		unset($aliastable);
-
-	unset($config);
-}
-
 /**
  * backup config to google drive and return current file list (/ info)
  *
@@ -434,5 +411,3 @@ function backup_to_google_drive() {
 	// not configured / issue, return empty list
 	return array();
 }
-
-register_shutdown_function('pfSense_clear_globals');
