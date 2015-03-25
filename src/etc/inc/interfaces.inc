@@ -5250,7 +5250,7 @@ function interfaces_staticarp_configure($if)
 		}
 	} else {
 		mwexec("/sbin/ifconfig " . escapeshellarg($ifcfg['if']) . " -staticarp " );
-		mwexec("/usr/sbin/arp -d -i " . escapeshellarg($ifcfg['if']) . " -a > /dev/null 2>&1 ");
+		mwexec("/usr/sbin/arp -d -i " . escapeshellarg($ifcfg['if']) . " -a ");
 		if (isset($config['dhcpd'][$if]['staticmap'])) {
 			foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
 				if (isset($arpent['arp_table_static_entry'])) {
