@@ -1,10 +1,6 @@
 <?php
-/* $Id$ */
-/*
-	xmlparse.inc
-	functions to parse/dump configuration files in XML format
-	part of m0n0wall (http://m0n0.ch/wall)
 
+/*
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -30,33 +26,34 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* The following items will be treated as arrays in config.xml */
-function listtags() {
-	/*
-	 * Please keep this list alpha sorted and no longer than 80 characters
-	 * I know it's a pain, but it's a pain to find stuff too if it's not
-	 */
+function listtags()
+{
+	/* The following items will be treated as arrays in config.xml */
 	$ret = array(
-                'acls', 'alias', 'aliasurl', 'allowedip', 'allowedhostname', 'authserver',
-                'bridged', 'build_port_path',
-                'ca', 'cacert', 'cert', 'crl', 'clone', 'config', 'container', 'columnitem',
-                'depends_on_package', 'disk', 'dnsserver', 'dnsupdate', 'domainoverrides', 'dyndns',
-                'element', 'encryption-algorithm-option',
-                'field', 'fieldname',
-                'gateway_item', 'gateway_group', 'gif', 'gre', 'group',
-                'hash-algorithm-option', 'hosts', 'member', 'ifgroupentry', 'igmpentry', 'interface_array', 'item', 'key',
-                'lagg', 'lbaction', 'lbpool', 'l7rules', 'lbprotocol',
-                'member', 'menu', 'tab', 'mobilekey', 'monitor_type', 'mount',
+		'acls', 'alias', 'aliases', 'aliasurl', 'allowedip', 'allowedhostname', 'authserver',
+		'bridged', 'build_port_path',
+		'ca', 'cacert', 'cert', 'crl', 'clone', 'config', 'container', 'columnitem',
+		'depends_on_package', 'disk', 'dnsserver', 'dnsupdate', 'domainoverrides', 'dyndns',
+		'element', 'encryption-algorithm-option',
+		'field', 'fieldname',
+		'gateway_item', 'gateway_group', 'gif', 'gre', 'group',
+		'hash-algorithm-option', 'hosts',
+		'ifgroupentry', 'igmpentry', 'interface_array', 'item',
+		'key',
+		'lagg', 'lbaction', 'lbpool', 'l7rules', 'lbprotocol',
+		'member', 'menu', 'mobilekey', 'monitor_type', 'mount',
 		'npt', 'ntpserver',
-                'onetoone', 'openvpn-server', 'openvpn-client', 'openvpn-csc', 'option',
-                'package', 'passthrumac', 'phase1', 'phase2', 'ppp', 'pppoe', 'priv', 'proxyarpnet', 'pool',
+		'onetoone', 'openvpn-server', 'openvpn-client', 'openvpn-csc', 'option',
+		'package', 'passthrumac', 'phase1', 'phase2', 'ppp', 'pppoe', 'priv', 'proxyarpnet', 'pool', 'pages', 'pipe',
 		'qinqentry', 'queue',
-                'pages', 'pipe', 'radnsserver', 'roll', 'route', 'row', 'rrddatafile', 'rule',
-		'schedule', 'service', 'servernat', 'servers',
-                'serversdisabled', 'staticmap', 'subqueue',
-		'timerange', 'tunnel', 'user', 'vip', 'virtual_server', 'vlan',
-		'winsserver', 'wolentry', 'widget','wol','aliases'
+		'radnsserver', 'roll', 'route', 'row', 'rrddatafile', 'rule',
+		'schedule', 'service', 'servernat', 'servers', 'serversdisabled', 'staticmap', 'subqueue',
+		'tab', 'timerange', 'tunnel',
+		'user',
+		'vip', 'virtual_server', 'vlan',
+		'winsserver', 'wolentry', 'widget', 'wol',
 	);
+
 	return array_flip($ret);
 }
 
