@@ -30,7 +30,7 @@ function listtags()
 {
 	/* The following items will be treated as arrays in config.xml */
 	$ret = array(
-		'acls', 'alias', 'aliases', 'aliasurl', 'allowedip', 'allowedhostname', 'authserver',
+		'acls', 'alias', 'aliasurl', 'allowedip', 'allowedhostname', 'authserver',
 		'bridged', 'build_port_path',
 		'ca', 'cacert', 'cert', 'crl', 'clone', 'config', 'container', 'columnitem',
 		'depends_on_package', 'disk', 'dnsserver', 'dnsupdate', 'domainoverrides', 'dyndns',
@@ -51,7 +51,7 @@ function listtags()
 		'tab', 'timerange', 'tunnel',
 		'user',
 		'vip', 'virtual_server', 'vlan',
-		'winsserver', 'wolentry', 'widget', 'wol',
+		'winsserver', 'wolentry', 'widget',
 	);
 
 	return array_flip($ret);

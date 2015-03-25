@@ -32,6 +32,10 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
+if (!is_array($config['aliases'])){ 
+        $config['aliases'] = array() ;
+}
+
 if (!is_array($config['aliases']['alias']))
 	$config['aliases']['alias'] = array();
 $a_aliases = &$config['aliases']['alias'];
