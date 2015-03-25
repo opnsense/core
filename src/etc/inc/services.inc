@@ -281,7 +281,8 @@ function services_radvd_configure($blacklist = array())
 	return 0;
 }
 
-function services_dhcpd_configure($family = "all", $blacklist = array()) {
+function services_dhcpd_configure($family = "all", $blacklist = array())
+{
 	global $config, $g;
 
 	/* configure DHCPD chroot once */
@@ -295,19 +296,19 @@ function services_dhcpd_configure($family = "all", $blacklist = array()) {
 	fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/usr\n");
 	fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/lib\n");
 	fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/run\n");
-	fwrite($fd, "/usr/sbin/chown -R dhcpd:_dhcp {$g['dhcpd_chroot_path']}/*\n");
-	fwrite($fd, "/bin/cp -n /lib/libc.so.* {$g['dhcpd_chroot_path']}/lib/\n");
-	fwrite($fd, "/bin/cp -n /usr/local/sbin/dhcpd {$g['dhcpd_chroot_path']}/usr/local/sbin/\n");
-	fwrite($fd, "/bin/chmod a+rx {$g['dhcpd_chroot_path']}/usr/local/sbin/dhcpd\n");
-
-	$status = `/sbin/mount | /usr/bin/grep -v grep  | /usr/bin/grep  "{$g['dhcpd_chroot_path']}/dev"`;
-	if (!trim($status))
+	$status = `/sbin/mount -t devfs | /usr/bin/grep "{$g['dhcpd_chroot_path']}/dev"`;
+	if (!trim($status)) {
 		fwrite($fd, "/sbin/mount -t devfs devfs {$g['dhcpd_chroot_path']}/dev\n");
+	}
+	fwrite($fd, "/usr/sbin/chown -R dhcpd:dhcpd {$g['dhcpd_chroot_path']}\n");
 	fclose($fd);
+
 	mwexec('/bin/sh /tmp/dhcpd.sh');
 
-	if ($family == "all" || $family == "inet")
+	if ($family == "all" || $family == "inet") {
 		services_dhcpdv4_configure();
+	}
+
 	if ($family == "all" || $family == "inet6") {
 		services_dhcpdv6_configure($blacklist);
 		services_radvd_configure($blacklist);
@@ -860,7 +861,7 @@ EOD;
 
 	/* fire up dhcpd in a chroot */
 	if (count($dhcpdifs) > 0) {
-		mwexec("/usr/local/sbin/dhcpd -user dhcpd -group _dhcp -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpd.conf -pf {$g['varrun_path']}/dhcpd.pid " .
+		mwexec("/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpd.conf -pf {$g['varrun_path']}/dhcpd.pid " .
 			join(" ", $dhcpdifs));
 	}
 
@@ -1265,7 +1266,7 @@ EOD;
 
 	/* fire up dhcpd in a chroot */
 	if (count($dhcpdv6ifs) > 0) {
-		mwexec("/usr/local/sbin/dhcpd -6 -user dhcpd -group _dhcp -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpdv6.conf -pf {$g['varrun_path']}/dhcpdv6.pid " .
+		mwexec("/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpdv6.conf -pf {$g['varrun_path']}/dhcpdv6.pid " .
 			join(" ", $dhcpdv6ifs));
 		mwexec("/usr/local/sbin/dhcpleases6 -c \"/usr/local/bin/php -f /usr/local/sbin/prefixes.php|/bin/sh\" -l {$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases");
 	}
