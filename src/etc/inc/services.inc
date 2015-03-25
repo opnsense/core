@@ -496,7 +496,7 @@ EOPP;
 
 		$all_pools = array();
 		$all_pools[] = $dhcpifconf;
-		if (is_array($dhcpifconf['pool'])) {
+		if (is_array($dhcpifconf['pool']) && isset($dhcpifconf['pool']['range']) ) {
 			$all_pools = array_merge($all_pools, $dhcpifconf['pool']);
 		}
 
@@ -546,7 +546,7 @@ EOPP;
 		/* Create classes - These all contain comma separated lists. Join them into one
 		   big comma separated string then split them all up. */
 		$all_mac_strings = array();
-		if (is_array($dhcpifconf['pool'])) {
+		if (is_array($dhcpifconf['pool']) && isset($dhcpifconf['pool']['range']) ) {
 			foreach($all_pools as $poolconf) {
 				$all_mac_strings[] = $poolconf['mac_allow'];
 				$all_mac_strings[] = $poolconf['mac_deny'];

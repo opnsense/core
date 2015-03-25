@@ -33,6 +33,10 @@ require_once("shaper.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
 
+if (!is_array($config['ipsec'])) {
+        $config['ipsec'] = array();
+}
+        
 $pconfig['noinstalllanspd'] = $config['system']['noinstalllanspd'];
 $pconfig['preferoldsa_enable'] = isset($config['ipsec']['preferoldsa']);
 foreach ($ipsec_loglevels as $lkey => $ldescr) {

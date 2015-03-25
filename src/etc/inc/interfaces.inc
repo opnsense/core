@@ -5241,7 +5241,9 @@ function interfaces_staticarp_configure($if)
 		if (is_array($config['dhcpd'][$if]['staticmap'])) {
 
 			foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
-				mwexec("/usr/sbin/arp -s " . escapeshellarg($arpent['ipaddr']) . " " . escapeshellarg($arpent['mac']));
+				if (isset($arpent['ipaddr'])) {
+					mwexec("/usr/sbin/arp -s " . escapeshellarg($arpent['ipaddr']) . " " . escapeshellarg($arpent['mac']));
+				}
 
 			}
 
@@ -5252,7 +5254,9 @@ function interfaces_staticarp_configure($if)
 		if (isset($config['dhcpd'][$if]['staticmap'])) {
 			foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
 				if (isset($arpent['arp_table_static_entry'])) {
-					mwexec("/usr/sbin/arp -s " . escapeshellarg($arpent['ipaddr']) . " " . escapeshellarg($arpent['mac']));
+					if (isset($arpent['ipaddr'])) {
+						mwexec("/usr/sbin/arp -s " . escapeshellarg($arpent['ipaddr']) . " " . escapeshellarg($arpent['mac']));
+					}
 				}
 			}
 		}
