@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
@@ -32,8 +33,8 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
-if (!is_array($config['aliases'])){ 
-        $config['aliases'] = array() ;
+if (!is_array($config['aliases'])) {
+        $config['aliases'] = array();
 }
 
 if (!is_array($config['aliases']['alias']))
