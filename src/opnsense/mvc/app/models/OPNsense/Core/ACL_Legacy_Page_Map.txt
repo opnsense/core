@@ -228,3 +228,4 @@ page-vpn-vpnpptp-user-edit=vpn_pptp_users_edit.php*
 page-pfsensewizardsubsystem=wizard.php*
 page-xmlrpclibrary=xmlrpc.php*
 page-firewall-easyrule=easyrule.php*
+page-openvpn-client-export=vpn_openvpn_export.php*
