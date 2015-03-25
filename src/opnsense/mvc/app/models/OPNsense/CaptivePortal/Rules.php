@@ -303,7 +303,10 @@ class Rules
                 $interface = $zone->interface->xpath("//" . $zone->interface);
                 if (count($interface) > 0) {
                     $interface = $interface[0];
-                    $cpinterfaces[$interface->if->__toString()] = 1;
+                    if ($interface->if != null) {
+                        // check if interface exists before appending it.
+                        $cpinterfaces[$interface->if->__toString()] = 1;
+                    }
                 }
             }
 
