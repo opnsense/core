@@ -183,6 +183,8 @@ function write_config($desc = 'Unknown', $backup = true)
 	/* cleanup backups */
 	cleanup_backups();
 
+	// on succesfull save, serialize config back to global.
+	$config = $cnf->toArray(listtags());
 	return $config;
 
 }
