@@ -50,6 +50,10 @@ if (is_array($config['load_balancer']['lbpool']))
 $reserved_ifs = get_configured_interface_list(false, true);
 $reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_table_names);
 
+if (!is_array($config['aliases'])){
+        $config['aliases'] = array();
+}
+
 if (!is_array($config['aliases']['alias']))
 	$config['aliases']['alias'] = array();
 $a_aliases = &$config['aliases']['alias'];
