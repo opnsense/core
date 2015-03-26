@@ -3616,7 +3616,7 @@ function interface_dhcpv6_configure($interface = "wan", $wancfg) {
 	mwexec("/sbin/ifconfig {$wanif} inet6 accept_rtadv -ifdisabled");
 
 	/* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
-	set_single_sysctl("net.inet6.ip6.rfc6204w", "1");
+	set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
 
 	/* fire up rtsold for IPv6 RAs first, this backgrounds immediately. It will call dhcp6c */
 	if (isvalidpid("{$g['varrun_path']}/rtsold_{$wanif}.pid")) {
