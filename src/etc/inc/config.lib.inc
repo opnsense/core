@@ -58,15 +58,13 @@ function parse_config()
 		}
 	}
 
-
 	// return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
 	$config=$cnf->toArray(listtags());
 
 	/* make alias table (for faster lookups) */
 	alias_make_table($config);
-	
+
 	return $config;
-	
 }
 
 /****f* config/convert_config

@@ -32,8 +32,13 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
-if (!is_array($config['staticroutes']['route']))
+if (!is_array($config['staticroutes'])) {
+	$config['staticroutes'] = array();
+}
+
+if (!is_array($config['staticroutes']['route'])) {
 	$config['staticroutes']['route'] = array();
+}
 
 $a_routes = &$config['staticroutes']['route'];
 $a_gateways = return_gateways_array(true, true, true);
