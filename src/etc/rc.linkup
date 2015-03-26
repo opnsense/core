@@ -82,10 +82,6 @@ function handle_argument_group($iface, $argument2) {
 }
 
 if (!file_exists("/var/run/booting")) {
-	if (isset($_GET)) {
-		if (!empty($_GET['interface']))
-			handle_argument_group($_GET['interface'], $_GET['action']);
-	} else {
 		if ($argc < 3) {
 			log_error("HOTPLUG event: The number of required parameters not passed!");
 			exit;
@@ -105,5 +101,4 @@ if (!file_exists("/var/run/booting")) {
 		if (!empty($interface)) {
 			handle_argument_group($interface, $action);
 		}
-	}
 }
