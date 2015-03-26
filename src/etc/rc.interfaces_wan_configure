@@ -32,10 +32,7 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
-if (isset($_GET))
-	$argument = $_GET['interface'];
-else
-	$argument = str_replace("\n", "", $argv[1]);
+$argument = str_replace("\n", "", $argv[1]);
 if (empty($argument))
 	interface_configure("wan");
 else {

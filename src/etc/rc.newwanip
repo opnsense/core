@@ -56,10 +56,7 @@ function restart_packages() {
 }
 
 /* Interface IP address has changed */
-if (isset($_GET['interface']))
-	$argument = $_GET['interface'];
-else
-	$argument = str_replace("\n", "", $argv[1]);
+$argument = str_replace("\n", "", $argv[1]);
 
 log_error("rc.newwanip: Informational is starting {$argument}.");
 
