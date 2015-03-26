@@ -350,7 +350,7 @@ function filter_configure_sync($delete_states_if_needed = true)
 	if($fda) {
 		if($after_filter_configure_run) {
 			foreach($after_filter_configure_run as $afcr)
-				fwrite($fda, $afcr . "\n");
+				fwrite($fda, $afcr . " >/dev/null 2>&1 \n");
 			unset($after_filter_configure_run);
 		}
 
