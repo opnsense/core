@@ -1,5 +1,5 @@
 <?php
-/* $Id$ */
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -57,8 +57,13 @@ if ($_GET['act'] == 'connect') {
 	}
 }
 
-if (!is_array($config['ipsec']['phase1']))
+if (!is_array($config['ipsec'])) {
+    $config['ipsec'] = array();
+}
+
+if (!is_array($config['ipsec']['phase1'])) {
     $config['ipsec']['phase1'] = array();
+}
 
 $a_phase1 = &$config['ipsec']['phase1'];
 

@@ -33,8 +33,13 @@ global $g;
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
 
-if (!is_array($config['ipsec']['phase2']))
+if (!is_array($config['ipsec'])) {
+    $config['ipsec'] = array();
+}
+
+if (!is_array($config['ipsec']['phase2'])) {
     $config['ipsec']['phase2'] = array();
+}
 
 $ipsec_status = array();
 

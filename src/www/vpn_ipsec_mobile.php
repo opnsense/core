@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc
@@ -35,14 +36,15 @@ if (!is_array($config['ipsec'])) {
         $config['ipsec'] = array();
 }
 
-if (!is_array($config['ipsec']['phase1']))
+if (!is_array($config['ipsec']['phase1'])) {
 	$config['ipsec']['phase1'] = array();
+}
+
+if (!is_array($config['ipsec']['client'])) {
+	$config['ipsec']['client'] = array();
+}
 
 $a_phase1 = &$config['ipsec']['phase1'];
-
-if (!is_array($config['ipsec']['client']))
-	$config['ipsec']['client'] = array();
-
 $a_client = &$config['ipsec']['client'];
 
 if (count($a_client)) {

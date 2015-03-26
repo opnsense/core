@@ -1,9 +1,10 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
-	Copyright (C) 2014 Ermal LUÇI
+	Copyright (C) 2014 Ermal Luçi
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -37,11 +38,13 @@ if (!is_array($config['ipsec'])) {
         $config['ipsec'] = array();
 }
 
-if (!is_array($config['ipsec']['phase1']))
+if (!is_array($config['ipsec']['phase1'])) {
 	$config['ipsec']['phase1'] = array();
+}
 
-if (!is_array($config['ipsec']['phase2']))
+if (!is_array($config['ipsec']['phase2'])) {
 	$config['ipsec']['phase2'] = array();
+}
 
 $a_phase1 = &$config['ipsec']['phase1'];
 $a_phase2 = &$config['ipsec']['phase2'];

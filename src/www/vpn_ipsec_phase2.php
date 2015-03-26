@@ -36,14 +36,15 @@ if (!is_array($config['ipsec'])) {
         $config['ipsec'] = array();
 }
 
-if (!is_array($config['ipsec']['client']))
+if (!is_array($config['ipsec']['client'])) {
 	$config['ipsec']['client'] = array();
+}
+
+if (!is_array($config['ipsec']['phase2'])) {
+	$config['ipsec']['phase2'] = array();
+}
 
 $a_client = &$config['ipsec']['client'];
-
-if (!is_array($config['ipsec']['phase2']))
-	$config['ipsec']['phase2'] = array();
-
 $a_phase2 = &$config['ipsec']['phase2'];
 
 if (!empty($_GET['p2index']))
