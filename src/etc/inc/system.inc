@@ -918,7 +918,7 @@ function system_generate_lighty_config(
 	@mkdir('/tmp/lighttpdcompress');
 
 	if ($captive_portal !== false)  {
-		$captiveportal = ",\"mod_rewrite\",\"mod_evasive\"";
+		$captiveportal = ',"mod_evasive"';
 		$captive_portal_rewrite = "url.rewrite-once = ( \"(.*captiveportal.*)\" => \"$1\", \"(.*)\" => \"/index.php?zone={$captive_portal}&redirurl=$1\" )\n";
 
 		$maxprocperip = $config['captiveportal'][$captive_portal]['maxprocperip'];

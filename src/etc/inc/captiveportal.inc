@@ -679,12 +679,13 @@ function captiveportal_init_webgui_zone($cpcfg) {
  * timestamp,ipfw_rule_no,clientip,clientmac,username,sessionid,password,session_timeout,idle_timeout,session_terminate_time,interim_interval
  * (password is in Base64 and only saved when reauthentication is enabled)
  */
-function captiveportal_prune_old() {
-
+function captiveportal_prune_old()
+{
     global $g, $config, $cpzone, $cpzoneid;
 
-    if (empty($cpzone))
+    if (empty($cpzone)) {
         return;
+    }
 
     $cpc = new OPNsense\CaptivePortal\CPClient();
 
@@ -853,19 +854,10 @@ function captiveportal_prune_old() {
                 }
             }
         }
-
     }
 
-
-
-
-
     unset($cpdb);
-
-
-
 }
-
 
 /* send RADIUS acct stop for all current clients */
 function captiveportal_radius_stop_all() {
@@ -1637,4 +1629,3 @@ function captiveportal_send_server_accounting($off = false) {
     $racct->close();
     return $retvalue;
 }
-?>

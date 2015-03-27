@@ -382,18 +382,8 @@ if ($_POST) {
 			$newcp['page']['logouttext'] = base64_encode(file_get_contents($_FILES['logoutfile']['tmp_name']));
 
 		write_config();
-
-		/* Clear up unselected interfaces */
-		$newifaces = explode(",", $newcp['interface']);
-		$toremove = array_diff($oldifaces, $newifaces);
-		if (!empty($toremove)) {
-			foreach ($toremove as $removeif) {
-				$removeif = get_real_interface($removeif);
-				mwexec("/sbin/ipfw zone {$cpzoneid} mdel {$removeif}");
-			}
-		}
 		captiveportal_configure_zone($newcp);
-		unset($newcp, $newifaces, $toremove);
+		unset($newcp);
 		filter_configure();
 		header("Location: services_captiveportal_zones.php");
 		exit;
