@@ -32,6 +32,7 @@
 require_once("globals.inc");
 require_once("xmlparse.inc");
 require_once("crypt.inc");
+require_once("util.inc");
 require_once("script/load_phalcon.php");
 
 /****f* config/parse_config
