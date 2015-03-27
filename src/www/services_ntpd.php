@@ -35,18 +35,12 @@ if (!is_array($config['ntpd']))
 	$config['ntpd'] = array();
 
 if (empty($config['ntpd']['interface'])) {
-	if (is_array($config['installedpackages']['openntpd']) && is_array($config['installedpackages']['openntpd']['config']) &&
-	    is_array($config['installedpackages']['openntpd']['config'][0]) && !empty($config['installedpackages']['openntpd']['config'][0]['interface'])) {
-		$pconfig['interface'] = explode(",", $config['installedpackages']['openntpd']['config'][0]['interface']);
-		unset($config['installedpackages']['openntpd']);
-		write_config("Upgraded settings from openttpd");
-	} else
-		$pconfig['interface'] = array();
-} else
+	$pconfig['interface'] = array();
+} else {
 	$pconfig['interface'] = explode(",", $config['ntpd']['interface']);
+}
 
 if ($_POST) {
-
 	unset($input_errors);
 	$pconfig = $_POST;
 

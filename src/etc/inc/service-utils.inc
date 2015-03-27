@@ -34,166 +34,6 @@ require_once("vpn.inc");
 require_once("vslb.inc");
 require_once("gwlb.inc");
 
-define("RCFILEPREFIX", "/usr/local/etc/rc.d/");
-
-if (!function_exists('write_rcfile')) {
-	function write_rcfile($params) {
-		global $g;
-
-		safe_mkdir(RCFILEPREFIX);
-		$rcfile_fullname = RCFILEPREFIX . $params['file'];
-		if (!file_exists($rcfile_fullname) && !is_link($rcfile_fullname) && !touch($rcfile_fullname))
-			return false;
-
-		if (!is_writable($rcfile_fullname) || empty($params['start']))
-			return false;
-
-		$towrite = "#!/bin/sh\n";
-		$towrite .= "# This file was automatically generated\n# by the {$g['product_name']} service handler.\n\n";
-
-		/* write our rc functions */
-		$towrite .= "rc_start() {\n";
-		$towrite .= "\t{$params['start']}\n";
-		$towrite .= "}\n\n";
-		if(!empty($params['stop'])) {
-			$tokill =& $params['stop'];
-		} else if(!empty($params['executable'])) {
-			/* just nuke the executable */
-			$tokill = "/usr/bin/killall " . escapeshellarg($params['executable']);
-		} else {
-			/* make an educated guess (bad) */
-			$tokill = array_pop(explode('/', array_shift(explode(' ', $params['start']))));
-		}
-		$towrite .= "rc_stop() {\n";
-		$towrite .= "\t{$tokill}\n";
-		$towrite .= "}\n\n";
-
-		/* begin rcfile logic */
-		$towrite .= "case \$1 in\n\tstart)\n\t\trc_start\n\t\t;;\n\tstop)\n\t\trc_stop\n\t\t;;\n\trestart)\n\t\trc_stop\n\t\trc_start\n\t\t;;\nesac\n\n";
-
-		@file_put_contents($rcfile_fullname, $towrite);
-		unset($towrite);
-		@chmod("{$rcfile_fullname}", 0755);
-
-		return;
-	}
-}
-
-if (!function_exists('start_service')) {
-	function start_service($name) {
-		global $config;
-
-		if (empty($name))
-			return;
-
-		if (is_array($config['installedpackages']) && is_array($config['installedpackages']['service'])) {
-			foreach($config['installedpackages']['service'] as $service) {
-				if(strtolower($service['name']) == strtolower($name)) {
-					if($service['rcfile']) {
-						$prefix = RCFILEPREFIX;
-						if (!empty($service['prefix'])) {
-							$prefix =& $service['prefix'];
-						}
-						if(file_exists("{$prefix}{$service['rcfile']}") || is_link("{$prefix}{$service['rcfile']}")) {
-							mwexec_bg("{$prefix}{$service['rcfile']} start");
-						}
-					}
-					if (!empty($service['startcmd']))
-						eval($service['startcmd']);
-					break;
-				}
-			}
-		}
-	}
-}
-if (!function_exists('stop_service')) {
-
-	function stop_service($name) {
-		global $config;
-
-		if (empty($name))
-			return;
-
-		if (is_array($config['installedpackages']) && is_array($config['installedpackages']['service'])) {
-			foreach($config['installedpackages']['service'] as $service) {
-				if(strtolower($service['name']) == strtolower($name)) {
-					if($service['rcfile']) {
-						$prefix = RCFILEPREFIX;
-						if(!empty($service['prefix'])) {
-							$prefix =& $service['prefix'];
-						}
-						if(file_exists("{$prefix}{$service['rcfile']}") || is_link("{$prefix}{$service['rcfile']}")) {
-							mwexec("{$prefix}{$service['rcfile']} stop");
-						}
-						return;
-					}
-					if (!empty($service['stopcmd']))
-						eval($service['stopcmd']);
-
-					break;
-				}
-			}
-		}
-	}
-}
-
-if (!function_exists('restart_service')) {
-
-	function restart_service($name) {
-		global $config;
-
-		if (empty($name))
-			return;
-
-		stop_service($name);
-		start_service($name);
-
-		if (is_array($config['installedpackages']) && is_array($config['installedpackages']['service'])) {
-			foreach($config['installedpackages']['service'] as $service) {
-				if(strtolower($service['name']) == strtolower($name)) {
-					if($service['restartcmd']) {
-						eval($service['restartcmd']);
-					}
-					break;
-				}
-			}
-		}
-	}
-
-}
-
-if (!function_exists('is_pid_running')) {
-
-	function is_pid_running($pidfile) {
-		if (!file_exists($pidfile))
-			return false;
-
-		return (isvalidpid($pidfile));
-	}
-}
-
-if (!function_exists('is_dhcp_running')) {
-
-	function is_dhcp_running($interface) {
-		$status = find_dhclient_process($interface);
-		if($status != 0)
-			return true;
-		return false;
-	}
-
-}
-
-if (!function_exists('restart_service_if_running')) {
-
-	function restart_service_if_running($service) {
-		global $config;
-		if(is_service_running($service))
-			restart_service($service);
-		return;
-	}
-
-}
-
 if (!function_exists('is_service_enabled')) {
 
 	function is_service_enabled($service_name) {
@@ -473,21 +313,21 @@ if (!function_exists('get_service_status')) {
 		global $g;
 		switch ($service['name']) {
 			case "openvpn":
-				$running = is_pid_running("{$g['varrun_path']}/openvpn_{$service['mode']}{$service['vpnid']}.pid");
+				$running = isvalidpid("{$g['varrun_path']}/openvpn_{$service['mode']}{$service['vpnid']}.pid");
 				break;
 			case "captiveportal":
-				$running = is_pid_running("{$g['varrun_path']}/lighty-{$service['zone']}-CaptivePortal.pid");
+				$running = isvalidpid("{$g['varrun_path']}/lighty-{$service['zone']}-CaptivePortal.pid");
 				if (isset($config['captiveportal'][$service['zone']]['httpslogin']))
-					$running = $running && is_pid_running("{$g['varrun_path']}/lighty-{$service['zone']}-CaptivePortal-SSL.pid");
+					$running = $running && isvalidpid("{$g['varrun_path']}/lighty-{$service['zone']}-CaptivePortal-SSL.pid");
 				break;
 			case "vhosts-http":
-				$running = is_pid_running("{$g['varrun_path']}/vhosts-http.pid");
+				$running = isvalidpid("{$g['varrun_path']}/vhosts-http.pid");
 				break;
 			case "dhcrelay6":
-				$running = is_pid_running("{$g['varrun_path']}/dhcrelay6.pid");
+				$running = isvalidpid("{$g['varrun_path']}/dhcrelay6.pid");
 				break;
 			case 'ipsec':
-				$running = is_pid_running("{$g['varrun_path']}/charon.pid");
+				$running = isvalidpid("{$g['varrun_path']}/charon.pid");
 				break;
 			default:
 				$running = is_service_running($service['name']);
@@ -592,7 +432,6 @@ if (!function_exists('service_control_start')) {
 				captiveportal_init_webgui_zonename($zone);
 				break;
 			case 'ntpd':
-			case 'openntpd':
 				system_ntp_configure();
 				break;
 			case 'apinger':
@@ -638,7 +477,7 @@ if (!function_exists('service_control_start')) {
 				relayd_configure();
 				break;
 			default:
-				start_service($name);
+				log_error(gettext("Could not start unknown service `%s'", $name));
 				break;
 		}
 		return sprintf(gettext("%s has been started."),htmlspecialchars($name));
@@ -662,9 +501,6 @@ if (!function_exists('service_control_stop')) {
 				break;
 			case 'ntpd':
 				killbyname("ntpd");
-				break;
-			case 'openntpd':
-				killbyname("openntpd");
 				break;
 			case 'apinger':
 				killbypid("{$g['varrun_path']}/apinger.pid");
@@ -714,7 +550,7 @@ if (!function_exists('service_control_stop')) {
 				mwexec('pkill relayd');
 				break;
 			default:
-				stop_service($name);
+				log_error(gettext("Could not stop unknown service `%s'", $name));
 				break;
 		}
 		return sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
@@ -740,7 +576,6 @@ if (!function_exists('service_control_restart')) {
 				captiveportal_configure();
 				break;
 			case 'ntpd':
-			case 'openntpd':
 				system_ntp_configure();
 				break;
 			case 'apinger':
@@ -790,11 +625,9 @@ if (!function_exists('service_control_restart')) {
 				relayd_configure(true);
 				break;
 			default:
-				restart_service($name);
+				log_error(gettext("Could not restart unknown service `%s'", $name));
 				break;
 		}
 		return sprintf(gettext("%s has been restarted."),htmlspecialchars($name));
 	}
 }
-
-?>
