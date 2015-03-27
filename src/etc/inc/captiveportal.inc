@@ -630,11 +630,13 @@ function captiveportal_init_webgui_zonename($zone) {
     }
 }
 
-function captiveportal_init_webgui_zone($cpcfg) {
+function captiveportal_init_webgui_zone($cpcfg)
+{
     global $g, $config, $cpzone;
 
-    if (!isset($cpcfg['enable']))
+    if (!isset($cpcfg['enable'])) {
         return;
+    }
 
     if (isset($cpcfg['httpslogin'])) {
         $cert = lookup_cert($cpcfg['certref']);
@@ -643,23 +645,45 @@ function captiveportal_init_webgui_zone($cpcfg) {
         $ca = ca_chain($cert);
 
         /* generate lighttpd configuration */
-        if (!empty($cpcfg['listenporthttps']))
+        if (!empty($cpcfg['listenporthttps'])) {
             $listenporthttps = $cpcfg['listenporthttps'];
-        else
+        } else {
             $listenporthttps = 8001 + $cpcfg['zoneid'];
-        system_generate_lighty_config("{$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal-SSL.conf",
-            $crt, $key, $ca, "lighty-{$cpzone}-CaptivePortal-SSL.pid", $listenporthttps, "/usr/local/captiveportal",
-            "cert-{$cpzone}-portal.pem", "ca-{$cpzone}-portal.pem", $cpzone);
+        }
+
+        system_generate_lighty_config(
+	    "{$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal-SSL.conf",
+            $crt,
+            $key,
+            $ca,
+            "lighty-{$cpzone}-CaptivePortal-SSL.pid",
+            $listenporthttps,
+            "/usr/local/captiveportal",
+            "cert-{$cpzone}-portal.pem",
+            "ca-{$cpzone}-portal.pem",
+            $cpzone
+        );
     }
 
     /* generate lighttpd configuration */
-    if (!empty($cpcfg['listenporthttp']))
+    if (!empty($cpcfg['listenporthttp'])) {
         $listenporthttp = $cpcfg['listenporthttp'];
-    else
+    } else {
         $listenporthttp = 8000 + $cpcfg['zoneid'];
-    system_generate_lighty_config("{$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal.conf",
-        "", "", "", "lighty-{$cpzone}-CaptivePortal.pid", $listenporthttp, "/usr/local/captiveportal",
-        "", "", $cpzone);
+    }
+
+    system_generate_lighty_config(
+        "{$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal.conf",
+        "",
+        "",
+        "",
+        "lighty-{$cpzone}-CaptivePortal.pid",
+        $listenporthttp,
+        "/usr/local/captiveportal",
+        "",
+        "",
+        $cpzone
+    );
 
     @unlink("{$g['varrun']}/lighty-{$cpzone}-CaptivePortal.pid");
     /* attempt to start lighttpd */

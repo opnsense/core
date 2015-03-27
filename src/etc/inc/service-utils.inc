@@ -428,8 +428,7 @@ if (!function_exists('service_control_start')) {
 				services_radvd_configure();
 				break;
 			case 'captiveportal':
-				$zone = htmlspecialchars($extras['zone']);
-				captiveportal_init_webgui_zonename($zone);
+				captiveportal_configure();
 				break;
 			case 'ntpd':
 				system_ntp_configure();
@@ -569,10 +568,6 @@ if (!function_exists('service_control_restart')) {
 				services_radvd_configure();
 				break;
 			case 'captiveportal':
-				$zone = htmlspecialchars($extras['zone']);
-				killbypid("{$g['varrun_path']}/lighty-{$zone}-CaptivePortal.pid");
-				killbypid("{$g['varrun_path']}/lighty-{$zone}-CaptivePortal-SSL.pid");
-				captiveportal_init_webgui_zonename($zone);
 				captiveportal_configure();
 				break;
 			case 'ntpd':
