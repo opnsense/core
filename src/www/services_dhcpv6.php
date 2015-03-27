@@ -40,16 +40,6 @@ $if = $_GET['if'];
 if ($_POST['if'])
 	$if = $_POST['if'];
 
-/* if OLSRD is enabled, allow WAN to house DHCP. */
-if($config['installedpackages']['olsrd']) {
-	foreach($config['installedpackages']['olsrd']['config'] as $olsrd) {
-			if($olsrd['enable']) {
-				$is_olsr_enabled = true;
-				break;
-			}
-	}
-}
-
 if (!$_GET['if'])
 	$savemsg = gettext("The DHCPv6 Server can only be enabled on interfaces configured with static IP addresses") .
 		   gettext("Only interfaces configured with a static IP will be shown") . ".";
@@ -128,11 +118,15 @@ if ($_POST) {
 
 	unset($input_errors);
 
-	$old_dhcpdv6_enable = ($pconfig['enable'] == true);
-	$new_dhcpdv6_enable = ($_POST['enable'] ? true : false);
-	$dhcpdv6_enable_changed = ($old_dhcpdv6_enable != $new_dhcpdv6_enable);
+	if ($_POST['apply'] != 'Apply changes') {
+        	$old_dhcpdv6_enable = ($pconfig['enable'] == true);	
+        	$new_dhcpdv6_enable = ($_POST['enable'] ? true : false);
+        	$dhcpdv6_enable_changed = ($old_dhcpdv6_enable != $new_dhcpdv6_enable);
+        	$pconfig = $_POST;
+        } else {
+                $dhcpdv6_enable_changed = false;
+        }
 
-	$pconfig = $_POST;
 
 	$numberoptions = array();
 	for($x=0; $x<99; $x++) {
@@ -250,7 +244,7 @@ if ($_POST) {
 		}
 	}
 
-	if (!$input_errors) {
+	if (!$input_errors && $_POST['apply'] != 'Apply changes') {
 		if (!is_array($config['dhcpdv6'][$if]))
 			$config['dhcpdv6'][$if] = array();
 		if (!is_array($config['dhcpdv6'][$if]['range']))
@@ -303,10 +297,9 @@ if ($_POST) {
 		$config['dhcpdv6'][$if]['numberoptions'] = $numberoptions;
 
 		write_config();
-
-		$retval = 0;
-		$retvaldhcp = 0;
-		$retvaldns = 0;
+	}
+	
+	if (!$input_errors || $_POST['apply'] == 'Apply changes') {
 		/* Stop DHCPv6 so we can cleanup leases */
 		killbypid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpdv6.pid");
 		// dhcp_clean_leases();
@@ -332,7 +325,7 @@ if ($_POST) {
 		if($retvaldhcp == 1 || $retvaldns == 1 || $retvalfc == 1)
 			$retval = 1;
 		$savemsg = get_std_save_message($retval);
-	}
+        }
 }
 
 if ($_GET['act'] == "del") {
