@@ -248,20 +248,22 @@ if ($_POST['save']) {
 
 	if (!$input_errors) {
 		$userent = array();
-		if (isset($id) && $a_user[$id])
+		if (isset($id) && $a_user[$id]) {
 			$userent = $a_user[$id];
 
+                        /* the user name was modified */
+                        if ($_POST['usernamefld'] <> $_POST['oldusername']) {
+                            $_SERVER['REMOTE_USER'] = $_POST['usernamefld'];
+                            local_user_del($userent);
+                        }
+
+                        /* the user password was mofified */
+                        if ($_POST['passwordfld1']) {
+                            local_user_set_password($userent, $_POST['passwordfld1']);
+                        }
+                }
+
 		isset($_POST['utype']) ? $userent['scope'] = $_POST['utype'] : $userent['scope'] = "system";
-
-		/* the user name was modified */
-		if ($_POST['usernamefld'] <> $_POST['oldusername']) {
-			$_SERVER['REMOTE_USER'] = $_POST['usernamefld'];
-			local_user_del($userent);
-		}
-
-		/* the user password was mofified */
-		if ($_POST['passwordfld1'])
-			local_user_set_password($userent, $_POST['passwordfld1']);
 
 		$userent['name'] = $_POST['usernamefld'];
 		$userent['descr'] = $_POST['descr'];
@@ -319,10 +321,6 @@ if ($_POST['save']) {
 		local_user_set_groups($userent,$_POST['groups']);
 		local_user_set($userent);
 		write_config();
-
-		//if(is_dir("/usr/local/etc/inc/privhooks"))
-		//	run_plugins("/usr/local/etc/inc/privhooks");
-
 
 		pfSenseHeader("system_usermanager.php");
 	}

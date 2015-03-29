@@ -519,17 +519,16 @@ function local_user_get_groups($user, $all = false)
 	global $config;
 
 	$groups = array();
-	if (!is_array($config['system']['group']))
+	if (!is_array($config['system']['group'])) {
 		return $groups;
+	}
 
-	foreach ($config['system']['group'] as $group)
-		if ( $all || ( !$all && ($group['name'] != "all")))
-			if (is_array($group['member']))
-				if (in_array($user['uid'], $group['member']))
-					$groups[] = $group['name'];
-
-	if ($all) {
-		$groups[] = 'all';
+	foreach ($config['system']['group'] as $group) {
+		if (is_array($group['member'])) {
+			if (in_array($user['uid'], $group['member']) || ($group['name'] == "all" && $all)) {
+				$groups[] = $group['name'];
+			}
+		}
 	}
 
 	sort($groups);
@@ -548,28 +547,33 @@ function local_user_set_groups($user, $new_groups = null)
 	$cur_groups = local_user_get_groups($user, true);
 	$mod_groups = array();
 
-	if (!is_array($new_groups))
+	if (!is_array($new_groups)) {
 		$new_groups = array();
+	}
 
-	if (!is_array($cur_groups))
+	if (!is_array($cur_groups)) {
 		$cur_groups = array();
+	}
 
 	/* determine which memberships to add */
 	foreach ($new_groups as $groupname) {
-		if (in_array($groupname,$cur_groups))
+		if (in_array($groupname,$cur_groups) || !isset($groupindex[$groupname])) {
+			// continue if group is already in current list or the groupname is invalid
 			continue;
+		}
 		$group = & $config['system']['group'][$groupindex[$groupname]];
 		$group['member'][] = $user['uid'];
 		$mod_groups[] = $group;
 	}
-	unset($group);
 
 	/* determine which memberships to remove */
 	foreach ($cur_groups as $groupname) {
-		if (in_array($groupname,$new_groups))
+		if (in_array($groupname,$new_groups)) {
 			continue;
-		if (!isset($config['system']['group'][$groupindex[$groupname]]))
+		}
+		if (!isset($config['system']['group'][$groupindex[$groupname]])) {
 			continue;
+		}
 		$group = & $config['system']['group'][$groupindex[$groupname]];
 		if (is_array($group['member'])) {
 			$index = array_search($user['uid'], $group['member']);
@@ -577,11 +581,11 @@ function local_user_set_groups($user, $new_groups = null)
 			$mod_groups[] = $group;
 		}
 	}
-	unset($group);
 
 	/* sync all modified groups */
-	foreach ($mod_groups as $group)
+	foreach ($mod_groups as $group) {
 		local_group_set($group);
+	}
 }
 
 function local_group_del_user($user) {
