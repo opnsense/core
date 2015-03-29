@@ -112,7 +112,7 @@ class Config extends Singleton
                     // single content item
                     if (is_array($forceList) && array_key_exists($xmlNode->getName(), $forceList)) {
                         $result[$xmlNode->getName()] = array();
-                        if ($xmlNode->__toString() != null && trim($xmlNode->__toString()) !== "" ){
+                        if ($xmlNode->__toString() != null && trim($xmlNode->__toString()) !== "") {
                             $result[$xmlNode->getName()][] = $xmlNode->__toString();
                         }
                     } else {
@@ -143,8 +143,9 @@ class Config extends Singleton
         }
 
         foreach ($source as $itemKey => $itemValue) {
-            if (is_bool($itemValue) && $itemValue == false) {
-                // skip empty booleans
+            if ((is_bool($itemValue) && $itemValue == false) || // skip empty booleans
+                $itemKey == null || trim($itemKey) == ""        // skip empty tag names
+            ) {
                 continue;
             }
             if (is_numeric($itemKey)) {
