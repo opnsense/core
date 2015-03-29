@@ -140,6 +140,12 @@ class Config extends Singleton
         if ($node == null) {
             $this->simplexml = simplexml_load_string('<'.$this->simplexml[0]->getName().'/>');
             $node = $this->simplexml ;
+            // invalidate object on warnings/errors (prevent save from happening)
+            set_error_handler(
+                function() {
+                    $this->statusIsValid = false;
+                }
+            );
         }
 
         foreach ($source as $itemKey => $itemValue) {
@@ -165,6 +171,11 @@ class Config extends Singleton
             } else {
                 $childNode[0] = $itemValue;
             }
+        }
+
+        // restore error handling on initial call
+        if ($node == $this->simplexml) {
+            restore_error_handler();
         }
     }
 
