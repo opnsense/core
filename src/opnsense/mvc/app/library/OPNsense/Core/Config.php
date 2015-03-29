@@ -143,8 +143,8 @@ class Config extends Singleton
         }
 
         foreach ($source as $itemKey => $itemValue) {
-            if ((is_bool($itemValue) && $itemValue == false) || // skip empty booleans
-                $itemKey == null || trim($itemKey) == ""        // skip empty tag names
+            if ((is_bool($itemValue) && $itemValue == false) ||   // skip empty booleans
+                $itemKey === null || trim($itemKey) === ""        // skip empty tag names
             ) {
                 continue;
             }
