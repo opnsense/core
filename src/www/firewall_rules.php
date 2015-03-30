@@ -310,7 +310,6 @@ include("head.inc");
 </head>
 <body>
 
-
 <script type='text/javascript'>//<![CDATA[
 	jQuery(window).load(
 		function(){
@@ -782,7 +781,7 @@ include("head.inc");
 											<span class="<?=$textse;?>"><?=htmlspecialchars($filterent['descr']);?>&nbsp;</span>
 										</td>
 										<td valign="middle" class="list nowrap">
-												<button name="move_<?=$i;?>_x" type="submit" title="<?=gettext("move selected rules before this rule"); ?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs" value="<?=$i;?>"><span class="glyphicon glyphicon-arrow-left"></span></button>
+												<button name="move_<?=$i;?>_x" type="submit" title="<?=gettext("move selected rules before this rule"); ?>" class="btn btn-default btn-xs" value="<?=$i;?>"><span class="glyphicon glyphicon-arrow-left"></span></button>
 												<a href="firewall_rules_edit.php?id=<?=$i;?>" title="<?=gettext("edit rule"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 
 												<a href="firewall_rules.php?act=del&amp;if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" title="<?=gettext("delete rule"); ?>" onclick="return confirm('Do you really want to delete this rule?')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
@@ -822,7 +821,7 @@ include("head.inc");
 										<td class="list">
 
 										<?php if ($nrules): ?>
-											<button name="move_<?=$i;?>_x" type="submit" value="<?=$i;?>"  title="<?=gettext("move selected rules to end");?>" onmouseover="fr_insline(<?=$nrules;?>, true)" onmouseout="fr_insline(<?=$nrules;?>, false)" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
+											<button name="move_<?=$i;?>_x" type="submit" value="<?=$i;?>"  title="<?=gettext("move selected rules to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
 											<button name="del" type="submit" title="<?=gettext("delete selected rules");?>" onclick="return confirm('<?=gettext('Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 											<a href="firewall_rules_edit.php?if=<?=htmlspecialchars($if);?>" title="<?=gettext("add new rule");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 										<?php endif; ?>
