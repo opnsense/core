@@ -67,58 +67,63 @@ function killbyname($procname)
 	}
 }
 
-function is_subsystem_dirty($subsystem = "") {
-	global $g;
-
-	if ($subsystem == "")
+function is_subsystem_dirty($subsystem = '')
+{
+	if ($subsystem == '') {
 		return false;
+	}
 
-	if (file_exists("{$g['varrun_path']}/{$subsystem}.dirty"))
+	if (file_exists("/var/run/{$subsystem}.dirty")) {
 		return true;
+	}
 
 	return false;
 }
 
-function mark_subsystem_dirty($subsystem = "") {
-	global $g;
-
-	if (!file_put_contents("{$g['varrun_path']}/{$subsystem}.dirty", "DIRTY"))
+function mark_subsystem_dirty($subsystem = '')
+{
+	if (!file_put_contents("/var/run/{$subsystem}.dirty", 'DIRTY')) {
 		log_error(sprintf(gettext("WARNING: Could not mark subsystem: %s dirty"), $subsystem));
+	}
 }
 
-function clear_subsystem_dirty($subsystem = "") {
-	global $g;
-
-	@unlink("{$g['varrun_path']}/{$subsystem}.dirty");
+function clear_subsystem_dirty($subsystem = '')
+{
+	@unlink("/var/run/{$subsystem}.dirty");
 }
 
 /* lock configuration file */
-function lock($lock, $op = LOCK_SH) {
-	global $g, $cfglckkeyconsumers;
-	if (!$lock)
+function lock($lock, $op = LOCK_SH)
+{
+	if (!$lock) {
 		die(gettext("WARNING: You must give a name as parameter to lock() function."));
+	}
+
 	if (!file_exists("{/tmp/{$lock}.lock")) {
 		@touch("/tmp/{$lock}.lock");
 		@chmod("/tmp/{$lock}.lock", 0666);
 	}
-	$cfglckkeyconsumers++;
+
 	if ($fp = fopen("/tmp/{$lock}.lock", "w")) {
-		if (flock($fp, $op))
+		if (flock($fp, $op)) {
 			return $fp;
-		else
+		} else {
 			fclose($fp);
+		}
 	}
 }
 
-function try_lock($lock, $timeout = 5) {
-	global $g, $cfglckkeyconsumers;
-	if (!$lock)
+function try_lock($lock, $timeout = 5)
+{
+	if (!$lock) {
 		die(gettext("WARNING: You must give a name as parameter to try_lock() function."));
+	}
+
 	if (!file_exists("/tmp/{$lock}.lock")) {
 		@touch("/tmp/{$lock}.lock");
 		@chmod("/tmp/{$lock}.lock", 0666);
 	}
-	$cfglckkeyconsumers++;
+
 	if ($fp = fopen("/tmp/{$lock}.lock", "w")) {
 		$trycounter = 0;
 		while(!flock($fp, LOCK_EX | LOCK_NB)) {
@@ -137,17 +142,15 @@ function try_lock($lock, $timeout = 5) {
 }
 
 /* unlock configuration file */
-function unlock($cfglckkey = 0) {
-	global $g, $cfglckkeyconsumers;
+function unlock($cfglckkey = 0)
+{
 	flock($cfglckkey, LOCK_UN);
 	fclose($cfglckkey);
-	return;
 }
 
 /* unlock forcefully configuration file */
-function unlock_force($lock) {
-	global $g;
-
+function unlock_force($lock)
+{
 	@unlink("/tmp/{$lock}.lock");
 }
 
@@ -1044,8 +1047,6 @@ function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "")
 ******/
 function log_error($error)
 {
-	global $g;
-
 	$page = $_SERVER['SCRIPT_NAME'];
 	if (empty($page)) {
 		$files = get_included_files();
@@ -1087,9 +1088,8 @@ function mwexecf($format, $args = array(), $mute = false, $clearsigmask = false)
 }
 
 /* wrapper for exec() */
-function mwexec($command, $mute = false, $clearsigmask = false) {
-	global $g;
-
+function mwexec($command, $mute = false, $clearsigmask = false)
+{
 	$oarr = array();
 	$retval = 0;
 
@@ -1112,9 +1112,8 @@ function mwexec($command, $mute = false, $clearsigmask = false) {
 }
 
 /* wrapper for exec() in background */
-function mwexec_bg($command, $clearsigmask = false) {
-	global $g;
-
+function mwexec_bg($command, $clearsigmask = false)
+{
 	if ($clearsigmask) {
 		$oldset = array();
 		pcntl_sigprocmask(SIG_SETMASK, array(), $oldset);
@@ -1372,10 +1371,9 @@ function format_bytes($bytes) {
 	}
 }
 
-function update_filter_reload_status($text) {
-	global $g;
-
-	file_put_contents("{$g['varrun_path']}/filter_reload_status", $text);
+function update_filter_reload_status($text)
+{
+	file_put_contents('/var/run/filter_reload_status', $text);
 }
 
 /****** util/return_dir_as_array
@@ -1404,28 +1402,12 @@ function return_dir_as_array($dir, $filter_regex = '') {
 	return $dir_array;
 }
 
-function run_plugins($directory) {
-	global $config, $g;
-
-	/* process packager manager custom rules */
-	$files = return_dir_as_array($directory);
-	if (is_array($files)) {
-		foreach ($files as $file) {
-			if (stristr($file, ".sh") == true)
-				mwexec($directory . $file . " start");
-			else if (!is_dir($directory . "/" . $file) && stristr($file,".inc"))
-				require_once($directory . "/" . $file);
-		}
-	}
-}
-
 /*
  *    safe_mkdir($path, $mode = 0755)
  *    create directory if it doesn't already exist and isn't a file!
  */
-function safe_mkdir($path, $mode=0755) {
-	global $g;
-
+function safe_mkdir($path, $mode= 0755)
+{
 	if (!is_file($path) && !is_dir($path)) {
 		return @mkdir($path, $mode, true);
 	} else {
@@ -1557,8 +1539,9 @@ function unmute_kernel_msgs()
 	exec('/sbin/conscontrol mute off');
 }
 
-function is_interface_vlan_mismatch() {
-	global $config, $g;
+function is_interface_vlan_mismatch()
+{
+	global $config;
 
 	if (is_array($config['vlans']['vlan'])) {
 		foreach ($config['vlans']['vlan'] as $vlan) {
@@ -1570,8 +1553,9 @@ function is_interface_vlan_mismatch() {
 	return false;
 }
 
-function is_interface_mismatch() {
-	global $config, $g;
+function is_interface_mismatch()
+{
+	global $config;
 
 	$do_assign = false;
 	$i = 0;
@@ -1605,9 +1589,9 @@ function is_interface_mismatch() {
 }
 
 /* sync carp entries to other firewalls */
-function carp_sync_client() {
-	global $g;
-	send_event("filter sync");
+function carp_sync_client()
+{
+	send_event('filter sync');
 }
 
 /****f* util/isAjax
@@ -1874,8 +1858,6 @@ function array_exclude($needle, $haystack) {
 
 function get_current_theme()
 {
-	global $config, $g;
-
 	$theme = 'opnsense';
 
 	if (isset($config['theme']) && is_dir('/usr/local/www/themes/' . $config['theme'])) {
