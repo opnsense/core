@@ -4,3 +4,4 @@
 *.codekit
 *.sass-cache
 *.volt.php
+*.pyc
