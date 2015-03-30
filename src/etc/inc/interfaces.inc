@@ -5214,7 +5214,8 @@ function get_interface_default_mtu($type = "ethernet") {
 	return 1500;
 }
 
-function get_vip_descr($ipaddress) {
+function get_vip_descr($ipaddress)
+{
 	global $config;
 
 	foreach ($config['virtualip']['vip'] as $vip) {
@@ -5222,47 +5223,51 @@ function get_vip_descr($ipaddress) {
 			return ($vip['descr']);
 		}
 	}
-	return "";
+
+	return '';
 }
 
 function interfaces_staticarp_configure($if)
 {
-	global $config, $g;
+	global $config;
 
 	$ifcfg = $config['interfaces'][$if];
+	if (empty($ifcfg['if']) || !isset($ifcfg['enable'])) {
+		return;
+	}
 
-	if (empty($if) || empty($ifcfg['if']) || !isset($ifcfg['enable']))
-		return 0;
-
-	/* Enable staticarp, if enabled */
-	if(isset($config['dhcpd'][$if]['staticarp'])) {
-		mwexec("/sbin/ifconfig " . escapeshellarg($ifcfg['if']) . " staticarp " );
-		mwexec("/usr/sbin/arp -d -i " . escapeshellarg($ifcfg['if']) . " -a > /dev/null 2>&1 ");
+	if (isset($config['dhcpd'][$if]['staticarp'])) {
+		mwexecf('/sbin/ifconfig %s staticarp', array($ifcfg['if']));
+		mwexecf('/usr/sbin/arp -d -i %s  -a > /dev/null 2>&1', array($ifcfg['if']));
 		if (is_array($config['dhcpd'][$if]['staticmap'])) {
 
 			foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
 				if (isset($arpent['ipaddr'])) {
-					mwexec("/usr/sbin/arp -s " . escapeshellarg($arpent['ipaddr']) . " " . escapeshellarg($arpent['mac']));
+					mwexecf(
+						'/usr/sbin/arp -s %s %s',
+						array($arpent['ipaddr'], $arpent['mac'])
+					);
 				}
 
 			}
 
 		}
 	} else {
-		mwexec("/sbin/ifconfig " . escapeshellarg($ifcfg['if']) . " -staticarp " );
-		mwexec("/usr/sbin/arp -d -i " . escapeshellarg($ifcfg['if']) . " -a ");
+		mwexecf('/sbin/ifconfig %s -staticarp', array($ifcfg['if']));
+		mwexecf('/usr/sbin/arp -d -i %s  -a > /dev/null 2>&1', array($ifcfg['if']));
 		if (isset($config['dhcpd'][$if]['staticmap'])) {
 			foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
 				if (isset($arpent['arp_table_static_entry'])) {
 					if (isset($arpent['ipaddr'])) {
-						mwexec("/usr/sbin/arp -s " . escapeshellarg($arpent['ipaddr']) . " " . escapeshellarg($arpent['mac']));
+						mwexecf(
+							'/usr/sbin/arp -s %s %s',
+							array($arpent['ipaddr'], $arpent['mac'])
+						);
 					}
 				}
 			}
 		}
 	}
-
-	return 0;
 }
 
 function get_failover_interface($interface, $family = "all") {

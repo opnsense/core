@@ -1071,6 +1071,21 @@ function exec_command($command) {
 	return(implode("\n", $output));
 }
 
+/* wrapper for mwexec() ;) */
+function mwexecf($format, $args = array(), $mute = false, $clearsigmask = false)
+{
+	if (!is_array($args)) {
+		/* just in case there's only one argument */
+		$args = array($args);
+	}
+
+	foreach ($args as $id => $arg) {
+		$args[$id] = escapeshellarg($arg);
+	}
+
+	mwexec(vsprintf($format, $args), $mute, $clearsigmask);
+}
+
 /* wrapper for exec() */
 function mwexec($command, $mute = false, $clearsigmask = false) {
 	global $g;
