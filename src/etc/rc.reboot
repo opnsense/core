@@ -8,9 +8,4 @@ fi
 /usr/local/etc/rc.backup_rrd
 /usr/local/etc/rc.backup_dhcpleases
 
-SHUTDOWN=/sbin/shutdown
-if [ -f /sbin/shutdown.old ]; then
-	SHUTDOWN=/sbin/shutdown.old
-fi
-
-${SHUTDOWN} -or now
+/sbin/shutdown -or now

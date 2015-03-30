@@ -321,10 +321,11 @@ enable_watchdog();
 /* if we are operating at 1000 then increase timeouts.
    this was never accounted for after moving to 1000 hz */
 $kern_hz = get_single_sysctl('kern.clockrate');
-$kern_hz = substr($kern_hz, strpos($kern_hz, "hz = ") + 5);
-$kern_hz = substr($kern_hz, 0, strpos($kern_hz, ","));
-if($kern_hz == "1000")
-	set_single_sysctl("net.inet.tcp.rexmit_min" , "30");
+$kern_hz = substr($kern_hz, strpos($kern_hz, 'hz = ') + 5);
+$kern_hz = substr($kern_hz, 0, strpos($kern_hz, ','));
+if ($kern_hz == '1000') {
+	set_single_sysctl('net.inet.tcp.rexmit_min' , '30');
+}
 
 /* start the igmpproxy daemon */
 services_igmpproxy_configure();
@@ -338,15 +339,12 @@ activate_powerd();
 /* Set preferred protocol */
 prefer_ipv4_or_ipv6();
 
-/* Remove the old shutdown binary if we kept it. */
-if (file_exists("/sbin/shutdown.old"))
-	@unlink("/sbin/shutdown.old");
-
-
-/* Give syslogd a kick after everything else has been initialized, otherwise it can occasionally
-   fail to route syslog messages properly on both IPv4 and IPv6 */
+/*
+ * Give syslogd a kick after everything else has been
+ * initialized, otherwise it can occasionally fail to
+ * route syslog messages properly on both IPv4 and IPv6.
+ */
 system_syslogd_start();
-
 
 /* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
 if ($ipsec_dynamic_hosts) {

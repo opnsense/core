@@ -53,8 +53,6 @@ echo
 
 # if we can update base, we'll do that as well
 if opnsense-update -c; then
-	# apparently, this is for moving between amd64 <-> i386
-	cp -p /sbin/shutdown /sbin/shutdown.old
 	opnsense-update && /usr/local/etc/rc.reboot
 else
 	opnsense-update
