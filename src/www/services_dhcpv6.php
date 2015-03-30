@@ -119,10 +119,10 @@ if ($_POST) {
 	unset($input_errors);
 
 	if ($_POST['apply'] != 'Apply changes') {
-        	$old_dhcpdv6_enable = ($pconfig['enable'] == true);	
-        	$new_dhcpdv6_enable = ($_POST['enable'] ? true : false);
-        	$dhcpdv6_enable_changed = ($old_dhcpdv6_enable != $new_dhcpdv6_enable);
-        	$pconfig = $_POST;
+		$old_dhcpdv6_enable = ($pconfig['enable'] == true);
+		$new_dhcpdv6_enable = ($_POST['enable'] ? true : false);
+		$dhcpdv6_enable_changed = ($old_dhcpdv6_enable != $new_dhcpdv6_enable);
+		$pconfig = $_POST;
         } else {
                 $dhcpdv6_enable_changed = false;
         }
@@ -298,7 +298,7 @@ if ($_POST) {
 
 		write_config();
 	}
-	
+
 	if (!$input_errors || $_POST['apply'] == 'Apply changes') {
 		/* Stop DHCPv6 so we can cleanup leases */
 		killbypid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpdv6.pid");
