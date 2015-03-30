@@ -205,13 +205,6 @@ function get_mounted_filesystems() {
 	return $filesystems;
 }
 
-function disk_usage($slice = '/') {
-	$dfout = "";
-	exec("/bin/df -h {$slice} | /usr/bin/tail -n 1 | /usr/bin/awk '{ print $5 }' | /usr/bin/cut -d '%' -f 1", $dfout);
-	$diskusage = trim($dfout[0]);
-
-	return $diskusage;
-}
 
 function swap_usage() {
 	exec("/usr/sbin/swapinfo", $swap_info);
