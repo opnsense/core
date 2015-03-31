@@ -34,7 +34,6 @@ require_once("vpn.inc");
 require_once("shaper.inc");
 require_once("xmlrpc_server.inc");
 require_once("xmlrpc.inc");
-require_once("array_intersect_key.inc");
 
 function xmlrpc_loop_detect() {
 	global $config;
