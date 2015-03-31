@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# shutdown rc scripts 
+/usr/local/etc/rc.opnsense stop
+
+/usr/local/etc/rc.backup_rrd
+/usr/local/etc/rc.backup_dhcpleases
+
 # wait for config lock to release
 php -a >/dev/null  << EOF
 \$fp = fopen('/conf/config.xml', "w+");
@@ -9,11 +15,5 @@ if (flock(\$fp, LOCK_EX)) {
 }
 
 EOF
-
-# shutdown rc scripts 
-/usr/local/etc/rc.opnsense stop
-
-/usr/local/etc/rc.backup_rrd
-/usr/local/etc/rc.backup_dhcpleases
 
 /sbin/shutdown -op now
