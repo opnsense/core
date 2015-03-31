@@ -154,26 +154,6 @@ function close_notice($id)
 	return;
 }
 
-/****f* notices/dump_xml_notices
- * NAME
- *   dump_xml_notices
- * INPUTS
- *	 NONE
- * RESULT
- *   Outputs notices in XML formatted text
- ******/
-function dump_xml_notices() {
-	require_once("xmlparse.inc");
-	global $listtags;
-	$listtags[] = 'notice';
-	if(!$notices = get_notices()) return;
-	foreach($notices as $time => $notice) {
-		$notice['time'] = $time;
-		$toput['notice'][] = $notice;
-	}
-	$xml = dump_xml_config($toput, 'notices');
-	return $xml;
-}
 
 /****f* notices/print_notices
  * NAME
@@ -211,20 +191,6 @@ function print_notices($notices, $category = "all") {
 	return $toreturn;
 }
 
-/****f* notices/print_notice_box
- * NAME
- *   print_notice_box
- * INPUTS
- *	 $category
- * RESULT
- *   prints an info box to the GUI
- ******/
-function print_notice_box($category = "all") {
-	$notices = get_notices();
-	if(!$notices) return;
-	print_info_box_np(print_notices($notices, $category));
-	return;
-}
 
 /****f* notices/are_notices_pending
  * NAME
