@@ -282,6 +282,9 @@ echo -n "Starting CRON... "
 cd /tmp && /usr/sbin/cron -s 2>/dev/null
 echo "done."
 
+# starting standard rc scripts
+/usr/local/etc/rc.opnsense start
+
 # Start ping handler every 240 seconds
 /usr/local/bin/minicron 240 /var/run/ping_hosts.pid /usr/local/bin/ping_hosts.sh
 
