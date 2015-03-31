@@ -900,22 +900,6 @@ function return_gateway_groups_array() {
 	return ($gateway_groups_array);
 }
 
-/* Update DHCP WAN Interface ip address in gateway group item */
-function dhclient_update_gateway_groups_defaultroute($interface = "wan") {
-	global $config, $g;
-	foreach($config['gateways']['gateway_item'] as & $gw) {
-		if($gw['interface'] == $interface) {
-			$current_gw = get_interface_gateway($interface);
-			if($gw['gateway'] <> $current_gw) {
-				$gw['gateway'] = $current_gw;
-				$changed = true;
-			}
-		}
-	}
-	if($changed && $current_gw)
-		write_config(sprintf(gettext('Updating gateway group gateway for %1$s - new gateway is %2$s'), $interfac, $current_gw));
-}
-
 function lookup_gateway_ip_by_name($name) {
 
 	$gateways_arr = return_gateways_array(false, true);
@@ -1056,33 +1040,6 @@ function validate_address_family($ipaddr, $gwname) {
 		return true;
 	if($v6ip && $v6gw)
 		return true;
-
-	return false;
-}
-
-/* check if a interface is part of a gateway group */
-function interface_gateway_group_member($interface) {
-	global $config;
-
-	if (is_array($config['gateways']['gateway_group']))
-		$groups = $config['gateways']['gateway_group'];
-	else
-		return false;
-
-	$gateways_arr = return_gateways_array(false, true);
-	foreach($groups as $group) {
-		if(is_array($group['item'])) {
-			foreach($group['item'] as $item) {
-				$elements = explode("|", $item);
-				$gwname = $elements[0];
-				if ($interface == $gateways_arr[$gwname]['interface']) {
-					unset($gateways_arr);
-					return true;
-				}
-			}
-		}
-	}
-	unset($gateways_arr);
 
 	return false;
 }
