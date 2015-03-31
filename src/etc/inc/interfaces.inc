@@ -34,6 +34,15 @@ require_once("globals.inc");
 require_once("util.inc");
 require_once("gwlb.inc");
 
+function return_hex_ipv4($ipv4) {
+	if(!is_ipaddrv4($ipv4))
+		return(false);
+
+	/* we need the hex form of the interface IPv4 address */
+	$ip4arr = explode(".", $ipv4);
+	return (sprintf("%02x%02x%02x%02x", $ip4arr[0], $ip4arr[1], $ip4arr[2], $ip4arr[3]));
+}
+
 function interfaces_bring_up($interface) {
 	if(!$interface) {
 		log_error(gettext("interfaces_bring_up() was called but no variable defined."));
