@@ -297,17 +297,6 @@ function dump_xml_config($arr, $rootobj) {
 	return dump_xml_config_raw($arr, $rootobj);
 }
 
-function dump_xml_config_pkg($arr, $rootobj) {
-	global $listtags;
-	$listtags = listtags_pkg();
-        if (isset($GLOBALS['custom_listtags_pkg'])) {
-          foreach($GLOBALS['custom_listtags_pkg'] as $tag) {
-            $listtags[$tag] = $tag;
-          }
-        }
-	return dump_xml_config_raw($arr, $rootobj);
-}
-
 function dump_xml_config_raw($arr, $rootobj) {
 
 	$xmlconfig = "<?xml version=\"1.0\"?" . ">\n";
