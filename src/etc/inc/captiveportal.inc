@@ -42,6 +42,19 @@ require_once("radius.inc");
 require_once("voucher.inc");
 require_once("script/load_phalcon.php");
 
+function get_include_contents($filename) {
+	if (is_file($filename)) {
+		ob_start();
+		include $filename;
+		$contents = ob_get_contents();
+		ob_end_clean();
+		return $contents;
+	}
+	return false;
+}
+
+
+
 //
 // TODO : restructure code / gui, for now we try to maintain gui compatibility by not breaking the old callbacks
 //
