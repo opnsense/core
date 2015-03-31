@@ -19,10 +19,8 @@ do
   # check if service is enabled
   eval "is_enabled=\$"$rcvar""
 
-  # start/stop service  
+  # start/stop service
   if [ "$is_enabled" == "YES" ]; then
-  	$rc_filename $1
+	$rc_filename $1
   fi
 done
-
- 

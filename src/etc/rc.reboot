@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# shutdown rc scripts 
+# shutdown rc scripts
 /usr/local/etc/rc.opnsense stop
 
 /usr/local/etc/rc.backup_rrd
@@ -12,8 +12,8 @@ php -a >/dev/null  << EOF
 if (flock(\$fp, LOCK_EX)) {
   flock(\$fp, LOCK_UN);
   fclose(\$fp);
-}      
+}
 
 EOF
-      
+
 /sbin/shutdown -or now
