@@ -972,11 +972,6 @@ function filter_generate_optcfg_array()
 	}
 }
 
-function filter_flush_nat_table()
-{
-	return mwexec('/sbin/pfctl -F nat');
-}
-
 function filter_flush_state_table()
 {
 	return mwexec('/sbin/pfctl -F state');
