@@ -4035,16 +4035,6 @@ function convert_friendly_interface_to_real_interface_name($interface) {
 	return get_real_interface($interface);
 }
 
-/* COMPAT Function */
-function get_real_wan_interface($interface = "wan") {
-	return get_real_interface($interface);
-}
-
-/* COMPAT Function */
-function get_current_wan_address($interface = "wan") {
-	return get_interface_ip($interface);
-}
-
 /*
  * convert_real_interface_to_friendly_interface_name($interface): convert fxp0 -> wan, etc.
  */
@@ -4426,13 +4416,6 @@ function find_virtual_ip_alias($ip, $bits = null) {
 }
 
 /*
- *   find_number_of_created_carp_interfaces: return the number of carp interfaces
- */
-function find_number_of_created_carp_interfaces() {
-	return `/sbin/ifconfig | grep "carp:" | wc -l`;
-}
-
-/*
  * find_carp_interface($ip): return the carp interface where an ip is defined
  */
 function find_carp_interface($ip) {
@@ -4462,40 +4445,6 @@ function find_carp_interface($ip) {
 			}
 		}
 	}
-}
-
-function link_carp_interface_to_parent($interface) {
-	global $config;
-
-	if (empty($interface))
-		return;
-
-	$carp_ip = get_interface_ip($interface);
-	$carp_ipv6 = get_interface_ipv6($interface);
-
-	if((!is_ipaddrv4($carp_ip)) && (!is_ipaddrv6($carp_ipv6)))
-		return;
-
-	/* if list */
-	$ifdescrs = get_configured_interface_list();
-	foreach ($ifdescrs as $ifdescr => $ifname) {
-		/* check IPv4 */
-		if(is_ipaddrv4($carp_ip)) {
-			$interfaceip = get_interface_ip($ifname);
-			$subnet_bits = get_interface_subnet($ifname);
-			$subnet_ip = gen_subnet("{$interfaceip}", "{$subnet_bits}");
-			if(ip_in_subnet($carp_ip, "{$subnet_ip}/{$subnet_bits}"))
-				return $ifname;
-		}
-		/* Check IPv6 */
-		if(is_ipaddrv6($carp_ipv6)) {
-			$interfaceipv6 = get_interface_ipv6($ifname);
-			$prefixlen = get_interface_subnetv6($ifname);
-			if(ip_in_subnet($carp_ipv6, "{$interfaceipv6}/{$prefixlen}"))
-				return $ifname;
-		}
-	}
-	return "";
 }
 
 
@@ -4895,33 +4844,6 @@ function get_interface_subnetv6($interface = "wan") {
 	return null;
 }
 
-/* return outside interfaces with a gateway */
-function get_interfaces_with_gateway() {
-	global $config;
-
-	$ints = array();
-
-	/* loop interfaces, check config for outbound */
-	foreach($config['interfaces'] as $ifdescr => $ifname) {
-		switch ($ifname['ipaddr']) {
-			case "dhcp":
-			case "ppp";
-			case "pppoe":
-			case "pptp":
-			case "l2tp":
-			case "ppp";
-				$ints[$ifdescr] = $ifdescr;
-			break;
-			default:
-				if (substr($ifname['if'], 0, 4) ==  "ovpn" ||
-				    !empty($ifname['gateway']))
-					$ints[$ifdescr] = $ifdescr;
-			break;
-		}
-	}
-	return $ints;
-}
-
 /* return true if interface has a gateway */
 function interface_has_gateway($friendly) {
 	global $config;
@@ -5171,27 +5093,6 @@ EOD;
 		sigkillbypid("{$g['varrun_path']}/cron.pid", "HUP");
 	} else
 		unlink_if_exists($cron_file);
-}
-
-function get_interface_default_mtu($type = "ethernet") {
-	switch ($type) {
-	case "gre":
-		return 1476;
-		break;
-	case "gif":
-		return 1280;
-		break;
-	case "tun":
-	case "vlan":
-	case "tap":
-	case "ethernet":
-	default:
-		return 1500;
-		break;
-	}
-
-	/* Never reached */
-	return 1500;
 }
 
 function get_vip_descr($ipaddress)
