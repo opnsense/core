@@ -116,12 +116,12 @@ class sasl_client_class
 
 	var $driver;
 	var $drivers=array(
-		"Digest"   => array("digest_sasl_client_class",   "digest_sasl_client.inc"   ),
-		"CRAM-MD5" => array("cram_md5_sasl_client_class", "cram_md5_sasl_client.inc" ),
-		"LOGIN"    => array("login_sasl_client_class",    "login_sasl_client.inc"    ),
-		"NTLM"     => array("ntlm_sasl_client_class",     "ntlm_sasl_client.inc"     ),
-		"PLAIN"    => array("plain_sasl_client_class",    "plain_sasl_client.inc"    ),
-		"Basic"    => array("basic_sasl_client_class",    "basic_sasl_client.inc"    )
+		"Digest"   => array("digest_sasl_client_class",   "notices.digest_sasl_client.inc"   ),
+		"CRAM-MD5" => array("cram_md5_sasl_client_class", "notices.cram_md5_sasl_client.inc" ),
+		"LOGIN"    => array("login_sasl_client_class",    "notices.login_sasl_client.inc"    ),
+		"NTLM"     => array("ntlm_sasl_client_class",     "notices.ntlm_sasl_client.inc"     ),
+		"PLAIN"    => array("plain_sasl_client_class",    "notices.plain_sasl_client.inc"    ),
+		"Basic"    => array("basic_sasl_client_class",    "notices.basic_sasl_client.inc"    )
 	);
 	var $credentials=array();
 
