@@ -59,6 +59,21 @@ function generate_ipv6_from_mac($mac) {
 	return $ipv6;
 }
 
+function get_pppoes_child_interfaces($ifpattern) {
+	$if_arr = array();
+	if($ifpattern == "")
+		return;
+
+	exec("ifconfig", $out, $ret);
+	foreach($out as $line) {
+		if(preg_match("/^({$ifpattern}[0-9]+):/i", $line, $match)) {
+			$if_arr[] = $match[1];
+		}
+	}
+	return $if_arr;
+
+}
+
 
 /* implement ipv6 route advertising deamon */
 function services_radvd_configure($blacklist = array())
