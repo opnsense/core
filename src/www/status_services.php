@@ -93,8 +93,6 @@ include("fbegin.inc");
 							foreach($services as $service) {
 								if (empty($service['name']))
 									continue;
-								if (empty($service['description']))
-									$service['description'] = get_pkg_descr($service['name']);
 								echo "<tr><td class=\"listlr\" >" . $service['name'] . "</td>\n";
 								echo "<td class=\"listr\">" . $service['description'] . "</td>\n";
 								// if service is running then listr else listbg

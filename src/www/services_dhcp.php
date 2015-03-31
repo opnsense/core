@@ -80,16 +80,6 @@ $if = $_GET['if'];
 if (!empty($_POST['if']))
 	$if = $_POST['if'];
 
-/* if OLSRD is enabled, allow WAN to house DHCP. */
-if($config['installedpackages']['olsrd']) {
-	foreach($config['installedpackages']['olsrd']['config'] as $olsrd) {
-			if($olsrd['enable']) {
-				$is_olsr_enabled = true;
-				break;
-			}
-	}
-}
-
 if (!$_GET['if'])
 	$savemsg = gettext("The DHCP Server can only be enabled on interfaces configured with static IP addresses") . ".<br/><br/>" . gettext("Only interfaces configured with a static IP will be shown") . ".";
 
@@ -810,24 +800,6 @@ include("head.inc");
 										<?php endif; ?>
 										</td>
 										</tr>
-										<?php if($is_olsr_enabled): ?>
-										<tr>
-										<td width="22%" valign="top" class="vncellreq"><?=gettext("Subnet Mask");?></td>
-										<td width="78%" class="vtable">
-											<select name="netmask" class="form-control" id="netmask">
-											<?php
-											for ($i = 32; $i > 0; $i--) {
-												if($i <> 31) {
-													echo "<option value=\"{$i}\" ";
-													if ($i == $pconfig['netmask']) echo "selected=\"selected\"";
-													echo ">" . $i . "</option>";
-												}
-											}
-											?>
-											</select>
-										</td>
-										</tr>
-										<?php endif; ?>
 										<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Range");?></td>
 										<td width="78%" class="vtable">

@@ -382,7 +382,7 @@ function sync_unbound_service() {
     unbound_generate_config();
     do_as_unbound_user("start");
     require_once("service-utils.inc");
-    if (is_service_running("unbound"))
+    if (is_process_running("unbound"))
         do_as_unbound_user("restore_cache");
 
 }
@@ -573,7 +573,7 @@ function unbound_control($action) {
         case "start":
             // Start Unbound
             if ($config['unbound']['enable'] == "on") {
-                if (!is_service_running("unbound"))
+                if (!is_process_running("unbound"))
                     do_as_unbound_user("start");
             }
             break;
@@ -592,7 +592,7 @@ function unbound_control($action) {
             break;
         case "restore_cache":
             // Restore Unbound's Cache
-            if ((is_service_running("unbound")) && ($config['unbound']['dumpcache'] == "on")) {
+            if ((is_process_running("unbound")) && ($config['unbound']['dumpcache'] == "on")) {
                 if (file_exists($cache_dumpfile) && filesize($cache_dumpfile) > 0)
                     do_as_unbound_user("load_cache < /var/tmp/unbound_cache");
             }

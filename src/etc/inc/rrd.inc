@@ -726,37 +726,6 @@ function enable_rrd_graphing() {
 
 		/* End mbuf statistics */
 
-		/* SPAMD, set up the spamd rrd file */
-		if (isset($config['installedpackages']['spamdsettings']) &&
-			 $config['installedpackages']['spamdsettings']['config'][0]['enablerrd']) {
-			/* set up the spamd rrd file */
-			if (!file_exists("$rrddbpath$ifname$spamd")) {
-				$rrdcreate = "$rrdtool create $rrddbpath$ifname$spamd --step $rrdspamdinterval ";
-				$rrdcreate .= "DS:conn:GAUGE:$spamdvalid:0:10000 ";
-				$rrdcreate .= "DS:time:GAUGE:$spamdvalid:0:86400 ";
-				$rrdcreate .= "RRA:MIN:0.5:1:1200 ";
-				$rrdcreate .= "RRA:MIN:0.5:5:720 ";
-				$rrdcreate .= "RRA:MIN:0.5:60:1860 ";
-				$rrdcreate .= "RRA:MIN:0.5:1440:2284 ";
-				$rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-				$rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-				$rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-				$rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-				$rrdcreate .= "RRA:MAX:0.5:1:1200 ";
-				$rrdcreate .= "RRA:MAX:0.5:5:720 ";
-				$rrdcreate .= "RRA:MAX:0.5:60:1860 ";
-				$rrdcreate .= "RRA:MAX:0.5:1440:2284 ";
-
-				create_new_rrd($rrdcreate);
-				unset($rrdcreate);
-			}
-
-			$rrdupdatesh .= "\n";
-			$rrdupdatesh .= "# polling spamd for connections and tarpitness \n";
-			$rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$spamd \\\n";
-			$rrdupdatesh .= "`$php -q $spamd_gather`\n";
-
-		}
 		/* End System statistics */
 
 		/* Captive Portal statistics, set up the rrd file */

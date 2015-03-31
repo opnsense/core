@@ -427,38 +427,25 @@ function system_routing_configure($interface = '')
 		$gatewayipv6 = get_interface_gateway_v6("wan");
 		@touch("/tmp/{$defaultif}_defaultgwv6");
 	}
-	$dont_add_route = false;
-	/* if OLSRD is enabled, allow WAN to house DHCP. */
-	if (is_array($config['installedpackages']['olsrd'])) {
-		foreach($config['installedpackages']['olsrd']['config'] as $olsrd) {
-			if(($olsrd['enabledyngw'] == "on") && ($olsrd['enable'] == "on")) {
-				$dont_add_route = true;
-				log_error(sprintf(gettext("Not adding default route because OLSR dynamic gateway is enabled.")));
-				break;
-			}
-		}
+
+	if (!empty($interface) && $interface != $interfacegw)
+		;
+	else if (is_ipaddrv4($gatewayip)) {
+		log_error("ROUTING: remove current default route to $gatewayip");
+		mwexec("/sbin/route delete default");
+		log_error("ROUTING: setting default route to $gatewayip");
+		mwexec("/sbin/route add -inet default " . escapeshellarg($gatewayip));
 	}
 
-	if ($dont_add_route == false ) {
-		if (!empty($interface) && $interface != $interfacegw)
-			;
-		else if (is_ipaddrv4($gatewayip)) {
-			log_error("ROUTING: remove current default route to $gatewayip");
-			mwexec("/sbin/route delete default");
-			log_error("ROUTING: setting default route to $gatewayip");
-			mwexec("/sbin/route add -inet default " . escapeshellarg($gatewayip));
-		}
-
-		if (!empty($interface) && $interface != $interfacegwv6)
-			;
-		else if (is_ipaddrv6($gatewayipv6)) {
-			$ifscope = "";
-			if (is_linklocal($gatewayipv6))
-				$ifscope = "%{$defaultifv6}";
-			log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}{$ifscope}");
-			mwexec("/sbin/route delete -inet6 default " . escapeshellarg("{$gatewayipv6}{$ifscope}"));
-			mwexec("/sbin/route add -inet6 default " . escapeshellarg("{$gatewayipv6}{$ifscope}"));
-		}
+	if (!empty($interface) && $interface != $interfacegwv6)
+		;
+	else if (is_ipaddrv6($gatewayipv6)) {
+		$ifscope = "";
+		if (is_linklocal($gatewayipv6))
+			$ifscope = "%{$defaultifv6}";
+		log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}{$ifscope}");
+		mwexec("/sbin/route delete -inet6 default " . escapeshellarg("{$gatewayipv6}{$ifscope}"));
+		mwexec("/sbin/route add -inet6 default " . escapeshellarg("{$gatewayipv6}{$ifscope}"));
 	}
 
 	system_staticroutes_configure($interface, false);
@@ -639,15 +626,7 @@ function system_syslogd_start()
 	if (isset($syslogcfg)) {
 		$separatelogfacilities = array('ntp','ntpd','ntpdate','charon','openvpn','pptps','poes','l2tps','relayd','hostapd','dnsmasq','filterdns','unbound','dhcpd','dhcrelay','dhclient','dhcp6c','apinger','radvd','routed','olsrd','zebra','ospfd','bgpd','miniupnpd','filterlog');
 		$syslogconf = "";
-		if($config['installedpackages']['package']) {
-			foreach($config['installedpackages']['package'] as $package) {
-				if($package['logging']) {
-					array_push($separatelogfacilities, $package['logging']['facilityname']);
-					mwexec("{$log_create_directive} {$log_size} {$g['varlog_path']}/{$package['logging']['logfilename']}");
-					$syslogconf .= "!{$package['logging']['facilityname']}\n*.*\t\t\t\t\t\t {$log_directive}{$g['varlog_path']}/{$package['logging']['logfilename']}\n";
-				}
-			}
-		}
+
 		$facilitylist = implode(',', array_unique($separatelogfacilities));
 		$syslogconf .= "!radvd,routed,olsrd,zebra,ospfd,bgpd,miniupnpd\n";
 		if (!isset($syslogcfg['disablelocallogging']))

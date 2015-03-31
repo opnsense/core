@@ -64,35 +64,6 @@ if (($pagename == "pkg.php") || ($pagename == "pkg_edit.php") || ($pagename == "
 /* Build the full help URL. */
 $helpurl .= "/help.php?page={$pagename}";
 
-function return_ext_menu($section) {
-	global $config;
-	$htmltext = "";
-	$extarray = array();
-	if($config['installedpackages']['menu'] <> "") {
-		foreach($config['installedpackages']['menu'] as $menuitem) {
-			if($menuitem['section'] != $section) continue;
-			if($menuitem['url'] <> "") {
-				$test_url=$menuitem['url'];
-				$addresswithport = getenv("HTTP_HOST");
-				$colonpos = strpos($addresswithport, ":");
-				if ($colonpos !== False){
-					//my url is actually just the IP address of the OPNsense box
-					$myurl = substr($addresswithport, 0, $colonpos);
-				} else {
-					$myurl = $addresswithport;
-				}
-				$description = str_replace('$myurl', $myurl, $menuitem['url']);
-			} else {
-				$description = '/pkg.php?xml=' . $menuitem['configfile'];
-				$test_url=$description;
-			}
-			 if(isAllowedPage($test_url)){
-				$extarray[] = array($menuitem['name'], $description);
-			 }
-		}
-	}
-	return $extarray;
-}
 
 function output_menu($arrayitem, $target = null) {
 	foreach ($arrayitem as $item) {
@@ -166,7 +137,7 @@ if (!isAllowedPage("system_usermanager.php*"))
 	$system_menu[] = array(gettext("User Manager"), "/system_usermanager_passwordmg.php");
 else
 	$system_menu[] = array(gettext("User Manager"), "/system_usermanager.php");
-$system_menu = msort(array_merge($system_menu, return_ext_menu("System")),0);
+$system_menu = msort($system_menu,0);
 
 // Interfaces
 $interfaces_menu = array();
@@ -176,7 +147,7 @@ $opts = get_configured_interface_with_descr(false, true);
 foreach ($opts as $oif => $odescr)
 	if (!isset($config['interfaces'][$oif]['ovpn']))
 		$interfaces_menu[] = array(htmlspecialchars($odescr), "/interfaces.php?if={$oif}");
-$interfaces_menu = msort(array_merge($interfaces_menu, return_ext_menu("Interfaces")),0);
+$interfaces_menu = msort($interfaces_menu,0);
 
 // Firewall
 $firewall_menu = array();
@@ -186,7 +157,7 @@ $firewall_menu[] = array(gettext("Rules"), "/firewall_rules.php");
 $firewall_menu[] = array(gettext("Schedules"), "/firewall_schedule.php");
 $firewall_menu[] = array(gettext("Traffic Shaper"), "/firewall_shaper.php");
 $firewall_menu[] = array(gettext("Virtual IPs"), "/firewall_virtual_ip.php");
-$firewall_menu = msort(array_merge($firewall_menu, return_ext_menu("Firewall")),0);
+$firewall_menu = msort($firewall_menu,0);
 
 // Services
 $services_menu = array();
@@ -210,7 +181,7 @@ if(count($config['interfaces']) > 1) {
 	$services_menu[] = array(gettext("UPnP &amp; NAT-PMP"), "/pkg_edit.php?xml=miniupnpd.xml");
 }
 $services_menu[] = array(gettext("Wake on LAN"), "/services_wol.php");
-$services_menu = msort(array_merge($services_menu, return_ext_menu("Services")),0);
+$services_menu = msort($services_menu, 0);
 
 // VPN
 $vpn_menu = array();
@@ -218,7 +189,7 @@ $vpn_menu[] = array(gettext("IPsec"), "/vpn_ipsec.php");
 $vpn_menu[] = array(gettext("OpenVPN"), "/vpn_openvpn_server.php");
 $vpn_menu[] = array(gettext("PPTP"), "/vpn_pptp.php");
 $vpn_menu[] = array(gettext("L2TP"), "/vpn_l2tp.php");
-$vpn_menu = msort(array_merge($vpn_menu, return_ext_menu("VPN")),0);
+$vpn_menu = msort($vpn_menu, 0);
 
 // Status
 $status_menu = array();
@@ -249,7 +220,7 @@ foreach ($ifentries as $ent => $entdesc) {
 }
 if (count($wifdescrs) > 0)
 	$status_menu[] = array(gettext("Wireless"), "/status_wireless.php");
-$status_menu = msort(array_merge($status_menu, return_ext_menu("Status")),0);
+$status_menu = msort($status_menu, 0);
 
 // Diagnostics
 $diagnostics_menu = array();
@@ -286,7 +257,7 @@ if (isset($config['system']['developer'])) {
 	$diagnostics_menu[] = array(gettext("Restart HTTPD"), "/restart_httpd.php", "style" => "font-weight: bold; color: yellow;");
 
 }
-$diagnostics_menu = msort(array_merge($diagnostics_menu, return_ext_menu("Diagnostics")),0);
+$diagnostics_menu = msort($diagnostics_menu, 0);
 
 $help_menu = array();
 $help_menu[] = array(gettext("About this Page"), $helpurl);
@@ -296,7 +267,7 @@ $help_menu[] = array(gettext("Documentation"), "https://wiki.opnsense.org/");
 $help_menu[] = array(gettext("Developers Wiki"), "https://wiki.opnsense.org/index.php/Develop:Info");
 $help_menu[] = array(gettext("Paid Support"), "https://opnsense.org/support-overview/commercial-support/");
 $help_menu[] = array(gettext("FreeBSD Handbook"), "https://www.freebsd.org/doc/handbook/");
-$help_menu = msort(array_merge($help_menu, return_ext_menu("Help")),0);
+$help_menu = msort($help_menu, 0);
 
 function add_to_menu($url, $name) {
 	if (isAllowedPage($url))

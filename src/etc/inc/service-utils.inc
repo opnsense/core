@@ -34,62 +34,12 @@ require_once("vpn.inc");
 require_once("vslb.inc");
 require_once("gwlb.inc");
 
-if (!function_exists('is_service_enabled')) {
-
-	function is_service_enabled($service_name) {
-		global $config;
-		if ($service_name == "")
-			return false;
-		if (is_array($config['installedpackages'])) {
-			if (isset($config['installedpackages'][$service_name]['config'][0]['enable']) &&
-				((empty($config['installedpackages'][$service_name]['config'][0]['enable'])) ||
-				($config['installedpackages'][$service_name]['config'][0]['enable'] === 'off'))) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-}
-
-if (!function_exists('is_service_running')) {
-
-	function is_service_running($service, $ps = "") {
-		global $config;
-
-		if(is_array($config['installedpackages']['service'])) {
-			foreach($config['installedpackages']['service'] as $aservice) {
-				if(strtolower($service) == strtolower($aservice['name'])) {
-					if ($aservice['custom_php_service_status_command'] <> "") {
-						eval("\$rc={$aservice['custom_php_service_status_command']};");
-						return $rc;
-					}
-					if(empty($aservice['executable']))
-						return false;
-					if (is_process_running($aservice['executable']))
-						return true;
-
-					return false;
-				}
-			}
-		}
-
-		if (is_process_running($service))
-			return true;
-
-		return false;
-	}
-
-}
 
 if (!function_exists('get_services')) {
 
 	function get_services() {
 		global $config;
-		if (is_array($config['installedpackages']['service']))
-			$services = $config['installedpackages']['service'];
-		else
-			$services = array();
+		$services = array();
 
 		/*    Add services that are in the base.
 		 *
@@ -190,13 +140,6 @@ if (!function_exists('get_services')) {
 			$services[] = $pconfig;
 		}
 
-		if (isset($config['installedpackages']['routed']) && $config['installedpackages']['routed']['config'][0]['enable']) {
-			$pconfig = array();
-			$pconfig['name'] = "routed";
-			$pconfig['description'] = gettext("RIP Daemon");
-			$services[] = $pconfig;
-		}
-
 		if (isset($config['ipsec']['enable'])) {
 			$pconfig = array();
 			$pconfig['name'] = "ipsec";
@@ -289,22 +232,6 @@ if (!function_exists('service_name_compare')) {
 
 }
 
-if (!function_exists('get_pkg_descr')) {
-
-
-	function get_pkg_descr($package_name) {
-		global $config;
-		if (is_array($config['installedpackages']['package'])) {
-			foreach($config['installedpackages']['package'] as $pkg) {
-				if($pkg['name'] == $package_name)
-					return $pkg['descr'];
-			}
-		}
-		return gettext("Not available.");
-	}
-
-
-}
 
 if (!function_exists('get_service_status')) {
 
@@ -330,7 +257,7 @@ if (!function_exists('get_service_status')) {
 				$running = isvalidpid("{$g['varrun_path']}/charon.pid");
 				break;
 			default:
-				$running = is_service_running($service['name']);
+				$running = is_process_running($service['name']);
 		}
 		return $running;
 	}
@@ -346,16 +273,9 @@ if (!function_exists('get_service_status_icon')) {
 		$output = "";
 		if(get_service_status($service)) {
 			$statustext = gettext("Running");
-
 			$output .= '<span class="btn btn-success"><span class="glyphicon glyphicon-play" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
-
-		}
-
-
-		else {
-			$service_enabled = is_service_enabled($service['name']);
-			$statustext = ($service_enabled) ? gettext("Stopped") : gettext("Disabled");
-
+		} else {
+			$statustext = gettext("Stopped") ;
 			$output .= '<span class="btn btn-danger"><span class="glyphicon glyphicon-stop" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
 
 		}
@@ -397,7 +317,6 @@ if (!function_exists('get_service_control_links')) {
 			$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Stop %sService"),$stitle) . "' class=\"glyphicon glyphicon-stop\" />";
 			$output .= "</a>";
 		} else {
-			$service_enabled = is_service_enabled($service['name']);
 			switch ($service['name']) {
 				case "openvpn":
 					$output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}&amp;vpnmode={$service['mode']}&amp;id={$service['vpnid']}' class=\"btn btn-default\">";
@@ -409,8 +328,7 @@ if (!function_exists('get_service_control_links')) {
 					if ($service_enabled)
 						$output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}' class=\"btn btn-default\">";
 			}
-			if ($service_enabled)
-				$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Start %sService"),$stitle) . "' alt='start' class=\"glyphicon glyphicon-play\"/></a>\n";
+			$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Start %sService"),$stitle) . "' alt='start' class=\"glyphicon glyphicon-play\"/></a>\n";
 		}
 		return $output;
 	}

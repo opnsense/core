@@ -287,25 +287,6 @@ $merge_config_section_sig = array(
 	)
 );
 
-function merge_installedpackages_section_xmlrpc($raw_params) {
-	global $config, $xmlrpc_g;
-
-	if (xmlrpc_loop_detect()) {
-		log_error("Disallowing CARP sync loop");
-		return;
-	}
-
-	$params = xmlrpc_params_to_php($raw_params);
-	if(!xmlrpc_auth($params)) {
-		xmlrpc_authfail();
-		return $xmlrpc_g['return']['authfail'];
-	}
-	$config['installedpackages'] = array_merge($config['installedpackages'], $params[0]);
-	$mergedkeys = implode(",", array_keys($params[0]));
-	write_config(sprintf(gettext("Merged in config (%s sections) from XMLRPC client."),$mergedkeys));
-
-	return $xmlrpc_g['return']['true'];
-}
 
 /*****************************/
 $merge_config_section_doc = gettext("XMLRPC wrapper for merge_config_section. This method must be called with two parameters: a string containing the local system\'s password and an array to merge into the system\'s config. This function returns true upon completion.");
@@ -513,9 +494,6 @@ $server = new XML_RPC_Server(
 			'signature' => $restore_config_section_sig,
 			'docstring' => $restore_config_section_doc),
 		'pfsense.merge_config_section' => array('function' => 'merge_config_section_xmlrpc',
-			'signature' => $merge_config_section_sig,
-			'docstring' => $merge_config_section_doc),
-		'pfsense.merge_installedpackages_section_xmlrpc' => array('function' => 'merge_installedpackages_section_xmlrpc',
 			'signature' => $merge_config_section_sig,
 			'docstring' => $merge_config_section_doc),
 		'pfsense.check_firmware_version' => array('function' => 'check_firmware_version_xmlrpc',
