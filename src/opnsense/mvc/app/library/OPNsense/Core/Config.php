@@ -470,9 +470,10 @@ class Config extends Singleton
             // lock aquired, truncate and write new data
             ftruncate($fp, 0);
             fwrite($fp, $xml_text);
-            // flush and unlock
+            // flush, unlock and close file handler
             fflush($fp);
             flock($fp, LOCK_UN);
+            fclose($fp);
         } else {
             throw new ConfigException("Unable to lock config");
         }
