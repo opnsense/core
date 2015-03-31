@@ -57,23 +57,6 @@ function have_ruleint_access($if) {
 	return false;
 }
 
-/****f* legacy/does_url_exist
- * NAME
- *   does_url_exist
- * INPUTS
- *	none
- * RESULT
- *   returns true if a url is available
- ******/
-function does_url_exist($url) {
-	$fd = fopen("$url","r");
-	if($fd) {
-		fclose($fd);
-		return true;
-	} else {
-		return false;
-	}
-}
 
 /****f* legacy/is_private_ip
  * NAME
@@ -147,60 +130,6 @@ function enable_hardware_offloading($interface) {
 	return;
 }
 
-/****f* legacy/interface_supports_polling
- * NAME
- *   checks to see if an interface supports polling according to man polling
- * INPUTS
- *
- * RESULT
- *   true or false
- * NOTES
- *
- ******/
-function interface_supports_polling($iface) {
-	$opts = pfSense_get_interface_addresses($iface);
-	if (is_array($opts) && isset($opts['caps']['polling']))
-		return true;
-
-	return false;
-}
-
-/****f* legacy/is_alias_inuse
- * NAME
- *   checks to see if an alias is currently in use by a rule
- * INPUTS
- *
- * RESULT
- *   true or false
- * NOTES
- *
- ******/
-function is_alias_inuse($alias) {
-	global $g, $config;
-
-	if($alias == "") return false;
-	/* loop through firewall rules looking for alias in use */
-	if(is_array($config['filter']['rule']))
-		foreach($config['filter']['rule'] as $rule) {
-			if($rule['source']['address'])
-				if($rule['source']['address'] == $alias)
-					return true;
-			if($rule['destination']['address'])
-				if($rule['destination']['address'] == $alias)
-					return true;
-		}
-	/* loop through nat rules looking for alias in use */
-	if(is_array($config['nat']['rule']))
-		foreach($config['nat']['rule'] as $rule) {
-			if($rule['target'] && $rule['target'] == $alias)
-				return true;
-			if($rule['source']['address'] && $rule['source']['address'] == $alias)
-				return true;
-			if($rule['destination']['address'] && $rule['destination']['address'] == $alias)
-				return true;
-		}
-	return false;
-}
 
 /****f* legacy/is_schedule_inuse
  * NAME
@@ -331,17 +260,6 @@ function add_rule_to_anchor($anchor, $rule, $label) {
 	mwexec("echo " . escapeshellarg($rule) . " | /sbin/pfctl -a " . escapeshellarg($anchor) . ":" . escapeshellarg($label) . " -f -");
 }
 
-/*
- * remove_text_from_file
- * remove $text from file $file
- */
-function remove_text_from_file($file, $text) {
-	if(!file_exists($file) && !is_writable($file))
-		return;
-	$filecontents = file_get_contents($file);
-	$text = str_replace($text, "", $filecontents);
-	@file_put_contents($file, $text);
-}
 
 /*
  * add_text_to_file($file, $text): adds $text to $file.
@@ -387,18 +305,6 @@ function get_filename_from_url($url) {
 	return basename($url);
 }
 
-/*
- *   get_dir: return an array of $dir
- */
-function get_dir($dir) {
-	$dir_array = array();
-	$d = dir($dir);
-	while (false !== ($entry = $d->read())) {
-		array_push($dir_array, $entry);
-	}
-	$d->close();
-	return $dir_array;
-}
 
 /****f* legacy/WakeOnLan
  * NAME
@@ -642,11 +548,6 @@ function host_firmware_version($tocheck = "") {
 	);
 }
 
-function get_disk_info() {
-	$diskout = "";
-	exec("/bin/df -h | /usr/bin/grep -w '/' | /usr/bin/awk '{ print $2, $3, $4, $5 }'", $diskout);
-	return explode(' ', $diskout[0]);
-}
 
 /****f* legacy/strncpy
  * NAME
@@ -871,15 +772,6 @@ function reload_ttys()
 	posix_kill(1, SIGHUP);
 }
 
-function print_value_list($list, $count = 10, $separator = ",") {
-	$list = implode($separator, array_slice($list, 0, $count));
-	if(count($list) < $count) {
-		$list .= ".";
-	} else {
-		$list .= "...";
-	}
-	return $list;
-}
 
 /* DHCP enabled on any interfaces? */
 function is_dhcp_server_enabled() {
@@ -1264,11 +1156,6 @@ function get_interface_info($ifdescr) {
 	return $ifinfo;
 }
 
-//returns cpu speed of processor. Good for determining capabilities of machine
-function get_cpu_speed() {
-	return get_single_sysctl("hw.clockrate");
-}
-
 function get_uptime_sec() {
 	$boottime = "";
 	$matches = "";
@@ -1339,11 +1226,6 @@ function pfsense_default_state_size() {
 	/* Be cautious and only allocate 10% of system memory to the state table */
 	$max_states = (int) ($physmem/10)*1000;
 	return $max_states;
-}
-
-function pfsense_default_tables_size() {
-	$current = `pfctl -sm | grep ^tables | awk '{print $4};'`;
-	return $current;
 }
 
 function pfsense_default_table_entries_size() {
@@ -1427,23 +1309,6 @@ function load_thermal_hardware() {
 	}
 }
 
-/****f* legacy/isvm
- * NAME
- *   isvm
- * INPUTS
- *	none
- * RESULT
- *   returns true if machine is running under a virtual environment
- ******/
-function isvm() {
-	$virtualenvs = array("vmware", "parallels", "qemu", "bochs", "plex86");
-	$bios_product = trim(`/bin/kenv smbios.system.product`);
-	foreach ($virtualenvs as $virtualenv)
-		if (stripos($bios_product, $virtualenv) !== false)
-			return true;
-
-	return false;
-}
 
 function get_freebsd_version() {
 	$version = explode(".", php_uname("r"));
@@ -1485,49 +1350,6 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
 	return ($http_code == 200) ? true : $http_code;
 }
 
-function download_file_with_progress_bar($url_file, $destination_file, $readbody = 'read_body', $connect_timeout=60, $timeout=0) {
-	global $ch, $fout, $file_size, $downloaded, $config, $first_progress_update;
-	$file_size  = 1;
-	$downloaded = 1;
-	$first_progress_update = TRUE;
-	/* open destination file */
-	$fout = fopen($destination_file, "wb");
-
-	/*
-	 *      Originally by Author: Keyvan Minoukadeh
-	 *      Modified by Scott Ullrich to return Content-Length size
-	 */
-
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url_file);
-	curl_setopt($ch, CURLOPT_HEADERFUNCTION, 'read_header');
-	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-	/* Don't verify SSL peers since we don't have the certificates to do so. */
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($ch, CURLOPT_WRITEFUNCTION, $readbody);
-	curl_setopt($ch, CURLOPT_NOPROGRESS, '1');
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connect_timeout);
-	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/opnsense/version/opnsense")));
-
-	if (!empty($config['system']['proxyurl'])) {
-		curl_setopt($ch, CURLOPT_PROXY, $config['system']['proxyurl']);
-		if (!empty($config['system']['proxyport']))
-			curl_setopt($ch, CURLOPT_PROXYPORT, $config['system']['proxyport']);
-		if (!empty($config['system']['proxyuser']) && !empty($config['system']['proxypass'])) {
-			@curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_ANY | CURLAUTH_ANYSAFE);
-			curl_setopt($ch, CURLOPT_PROXYUSERPWD, "{$config['system']['proxyuser']}:{$config['system']['proxypass']}");
-		}
-	}
-
-	@curl_exec($ch);
-	$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	if($fout)
-		fclose($fout);
-	curl_close($ch);
-	return ($http_code == 200) ? true : $http_code;
-}
-
 function read_header($ch, $string) {
 	global $file_size, $fout;
 	$length = strlen($string);
@@ -1536,56 +1358,6 @@ function read_header($ch, $string) {
 	if($regs[2] <> "") {
 		$file_size = intval($regs[2]);
 	}
-	ob_flush();
-	return $length;
-}
-
-function read_body($ch, $string) {
-	global $fout, $file_size, $downloaded, $sendto, $static_status, $static_output, $lastseen, $first_progress_update;
-	global $pkg_interface;
-	$length = strlen($string);
-	$downloaded += intval($length);
-	if($file_size > 0) {
-		$downloadProgress = round(100 * (1 - $downloaded / $file_size), 0);
-		$downloadProgress = 100 - $downloadProgress;
-	} else
-		$downloadProgress = 0;
-	if($lastseen <> $downloadProgress and $downloadProgress < 101) {
-		if($sendto == "status") {
-			if($pkg_interface == "console") {
-				if(($downloadProgress % 10) == 0 || $downloadProgress < 10) {
-					$tostatus = $static_status . $downloadProgress . "%";
-					if ($downloadProgress == 100) {
-						$tostatus = $tostatus . "\r";
-					}
-					update_status($tostatus);
-				}
-			} else {
-				$tostatus = $static_status . $downloadProgress . "%";
-				update_status($tostatus);
-			}
-		} else {
-			if($pkg_interface == "console") {
-				if(($downloadProgress % 10) == 0 || $downloadProgress < 10) {
-					$tooutput = $static_output . $downloadProgress . "%";
-					if ($downloadProgress == 100) {
-						$tooutput = $tooutput . "\r";
-					}
-					update_output_window($tooutput);
-				}
-			} else {
-				$tooutput = $static_output . $downloadProgress . "%";
-				update_output_window($tooutput);
-			}
-		}
-				if(($pkg_interface != "console") || (($downloadProgress % 10) == 0) || ($downloadProgress < 10)) {
-					update_progress_bar($downloadProgress, $first_progress_update);
-					$first_progress_update = FALSE;
-				}
-		$lastseen = $downloadProgress;
-	}
-	if($fout)
-		fwrite($fout, $string);
 	ob_flush();
 	return $length;
 }
@@ -1815,98 +1587,6 @@ function process_alias_tgz($temp_filename) {
 	return true;
 }
 
-function version_compare_dates($a, $b) {
-	$a_time = strtotime($a);
-	$b_time = strtotime($b);
-
-	if ((!$a_time) || (!$b_time)) {
-		return FALSE;
-	} else {
-		if ($a_time < $b_time)
-			return -1;
-		elseif ($a_time == $b_time)
-			return 0;
-		else
-			return 1;
-	}
-}
-function version_get_string_value($a) {
-	$strs = array(
-		0 => "ALPHA-ALPHA",
-		2 => "ALPHA",
-		3 => "BETA",
-		4 => "B",
-		5 => "C",
-		6 => "D",
-		7 => "RC",
-		8 => "RELEASE",
-		9 => "*"			// Matches all release levels
-	);
-	$major = 0;
-	$minor = 0;
-	foreach ($strs as $num => $str) {
-		if (substr($a, 0, strlen($str)) == $str) {
-			$major = $num;
-			$n = substr($a, strlen($str));
-			if (is_numeric($n))
-				$minor = $n;
-			break;
-		}
-	}
-	return "{$major}.{$minor}";
-}
-function version_compare_string($a, $b) {
-	// Only compare string parts if both versions give a specific release
-	// (If either version lacks a string part, assume intended to match all release levels)
-	if (isset($a) && isset($b))
-		return version_compare_numeric(version_get_string_value($a), version_get_string_value($b));
-	else
-		return 0;
-}
-function version_compare_numeric($a, $b) {
-	$a_arr = explode('.', rtrim($a, '.0'));
-	$b_arr = explode('.', rtrim($b, '.0'));
-
-	foreach ($a_arr as $n => $val) {
-		if (array_key_exists($n, $b_arr)) {
-			// So far so good, both have values at this minor version level. Compare.
-			if ($val > $b_arr[$n])
-				return 1;
-			elseif ($val < $b_arr[$n])
-				return -1;
-		} else {
-			// a is greater, since b doesn't have any minor version here.
-			return 1;
-		}
-	}
-	if (count($b_arr) > count($a_arr)) {
-		// b is longer than a, so it must be greater.
-		return -1;
-	} else {
-		// Both a and b are of equal length and value.
-		return 0;
-	}
-}
-function pfs_version_compare($cur_time, $cur_text, $remote) {
-	// First try date compare
-	$v = version_compare_dates($cur_time, $remote);
-	if ($v === FALSE) {
-		// If that fails, try to compare by string
-		// Before anything else, simply test if the strings are equal
-		if (($cur_text == $remote) || ($cur_time == $remote))
-			return 0;
-		list($cur_num, $cur_str) = explode('-', $cur_text);
-		list($rem_num, $rem_str) = explode('-', $remote);
-
-		// First try to compare the numeric parts of the version string.
-		$v = version_compare_numeric($cur_num, $rem_num);
-
-		// If the numeric parts are the same, compare the string parts.
-		if ($v == 0)
-			return version_compare_string($cur_str, $rem_str);
-	}
-	return $v;
-}
 function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
 	global $config;
 
@@ -1945,157 +1625,7 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
 		return -1;
 	}
 }
-function get_real_slice_from_glabel($label) {
-	$label = escapeshellarg($label);
-	return trim(`/sbin/glabel list | /usr/bin/grep -B2 ufs/{$label} | /usr/bin/head -n 1 | /usr/bin/cut -f3 -d' '`);
-}
-function nanobsd_get_boot_slice() {
-	return trim(`/sbin/mount | /usr/bin/grep pfsense | /usr/bin/cut -d'/' -f4 | /usr/bin/cut -d' ' -f1`);
-}
-function nanobsd_get_boot_drive() {
-	return trim(`/sbin/glabel list | /usr/bin/grep -B2 ufs/pfsense | /usr/bin/head -n 1 | /usr/bin/cut -f3 -d' ' | /usr/bin/cut -d's' -f1`);
-}
-function nanobsd_get_active_slice() {
-	$boot_drive = nanobsd_get_boot_drive();
-	$active = trim(`gpart show $boot_drive | grep '\[active\]' | awk '{print $3;}'`);
 
-	return "{$boot_drive}s{$active}";
-}
-function nanobsd_get_size() {
-	return strtoupper(file_get_contents("/etc/nanosize.txt"));
-}
-function nanobsd_switch_boot_slice() {
-	global $SLICE, $OLDSLICE, $TOFLASH, $COMPLETE_PATH, $COMPLETE_BOOT_PATH;
-	global $GLABEL_SLICE, $UFS_ID, $OLD_UFS_ID, $BOOTFLASH;
-	global $BOOT_DEVICE, $REAL_BOOT_DEVICE, $BOOT_DRIVE, $ACTIVE_SLICE;
-	nanobsd_detect_slice_info();
-
-	if ($BOOTFLASH == $ACTIVE_SLICE) {
-		$slice = $TOFLASH;
-	} else {
-		$slice = $BOOTFLASH;
-	}
-
-	for ($i = 0; $i < ob_get_level(); $i++) { ob_end_flush(); }
-	ob_implicit_flush(1);
-	if(strstr($slice, "s2")) {
-		$ASLICE="2";
-		$AOLDSLICE="1";
-		$AGLABEL_SLICE="pfsense1";
-		$AUFS_ID="1";
-		$AOLD_UFS_ID="0";
-	} else {
-		$ASLICE="1";
-		$AOLDSLICE="2";
-		$AGLABEL_SLICE="pfsense0";
-		$AUFS_ID="0";
-		$AOLD_UFS_ID="1";
-	}
-	$ATOFLASH="{$BOOT_DRIVE}s{$ASLICE}";
-	$ACOMPLETE_PATH="{$BOOT_DRIVE}s{$ASLICE}a";
-	$ABOOTFLASH="{$BOOT_DRIVE}s{$AOLDSLICE}";
-	set_single_sysctl("kern.geom.debugflags", "16");
-	exec("gpart set -a active -i {$ASLICE} {$BOOT_DRIVE}");
-	exec("/usr/sbin/boot0cfg -s {$ASLICE} -v /dev/{$BOOT_DRIVE}");
-	// We can't update these if they are mounted now.
-	if ($BOOTFLASH != $slice) {
-		exec("/sbin/tunefs -L ${AGLABEL_SLICE} /dev/$ACOMPLETE_PATH");
-		nanobsd_update_fstab($AGLABEL_SLICE, $ACOMPLETE_PATH, $AOLD_UFS_ID, $AUFS_ID);
-	}
-	set_single_sysctl("kern.geom.debugflags", "0");
-}
-function nanobsd_clone_slice() {
-	global $SLICE, $OLDSLICE, $TOFLASH, $COMPLETE_PATH, $COMPLETE_BOOT_PATH;
-	global $GLABEL_SLICE, $UFS_ID, $OLD_UFS_ID, $BOOTFLASH;
-	global $BOOT_DEVICE, $REAL_BOOT_DEVICE, $BOOT_DRIVE, $ACTIVE_SLICE;
-	nanobsd_detect_slice_info();
-
-	for ($i = 0; $i < ob_get_level(); $i++) { ob_end_flush(); }
-	ob_implicit_flush(1);
-	set_single_sysctl("kern.geom.debugflags", "16");
-	exec("/bin/dd if=/dev/zero of=/dev/{$TOFLASH} bs=1m count=1");
-	exec("/bin/dd if=/dev/{$BOOTFLASH} of=/dev/{$TOFLASH} bs=64k");
-	exec("/sbin/tunefs -L {$GLABEL_SLICE} /dev/{$COMPLETE_PATH}");
-	$status = nanobsd_update_fstab($GLABEL_SLICE, $COMPLETE_PATH, $OLD_UFS_ID, $UFS_ID);
-	set_single_sysctl("kern.geom.debugflags", "0");
-	if($status) {
-		return false;
-	} else {
-		return true;
-	}
-}
-function nanobsd_update_fstab($gslice, $complete_path, $oldufs, $newufs) {
-	$tmppath = "/tmp/{$gslice}";
-	$fstabpath = "/tmp/{$gslice}/etc/fstab";
-
-	mkdir($tmppath);
-	exec("/sbin/fsck_ufs -y /dev/{$complete_path}");
-	exec("/sbin/mount /dev/ufs/{$gslice} {$tmppath}");
-	copy("/etc/fstab", $fstabpath);
-
-	if (!file_exists($fstabpath)) {
-		$fstab = <<<EOF
-/dev/ufs/{$gslice} / ufs ro,noatime 1 1
-/dev/ufs/cf /cf ufs ro,noatime 1 1
-EOF;
-		if (file_put_contents($fstabpath, $fstab))
-			$status = true;
-		else
-			$status = false;
-	} else {
-		$status = exec("sed -i \"\" \"s/pfsense{$oldufs}/pfsense{$newufs}/g\" {$fstabpath}");
-	}
-	exec("/sbin/umount {$tmppath}");
-	rmdir($tmppath);
-
-	return $status;
-}
-function nanobsd_detect_slice_info() {
-	global $SLICE, $OLDSLICE, $TOFLASH, $COMPLETE_PATH, $COMPLETE_BOOT_PATH;
-	global $GLABEL_SLICE, $UFS_ID, $OLD_UFS_ID, $BOOTFLASH;
-	global $BOOT_DEVICE, $REAL_BOOT_DEVICE, $BOOT_DRIVE, $ACTIVE_SLICE;
-
-	$BOOT_DEVICE=nanobsd_get_boot_slice();
-	$REAL_BOOT_DEVICE=get_real_slice_from_glabel($BOOT_DEVICE);
-	$BOOT_DRIVE=nanobsd_get_boot_drive();
-	$ACTIVE_SLICE=nanobsd_get_active_slice();
-
-	// Detect which slice is active and set information.
-	if(strstr($REAL_BOOT_DEVICE, "s1")) {
-		$SLICE="2";
-		$OLDSLICE="1";
-		$GLABEL_SLICE="pfsense1";
-		$UFS_ID="1";
-		$OLD_UFS_ID="0";
-
-	} else {
-		$SLICE="1";
-		$OLDSLICE="2";
-		$GLABEL_SLICE="pfsense0";
-		$UFS_ID="0";
-		$OLD_UFS_ID="1";
-	}
-	$TOFLASH="{$BOOT_DRIVE}s{$SLICE}";
-	$COMPLETE_PATH="{$BOOT_DRIVE}s{$SLICE}a";
-	$COMPLETE_BOOT_PATH="{$BOOT_DRIVE}s{$OLDSLICE}";
-	$BOOTFLASH="{$BOOT_DRIVE}s{$OLDSLICE}";
-}
-
-function nanobsd_friendly_slice_name($slicename) {
-	global $g;
-	return strtolower(str_ireplace('pfsense', $g['product_name'], $slicename));
-}
-
-function get_include_contents($filename) {
-	if (is_file($filename)) {
-		ob_start();
-		include $filename;
-		$contents = ob_get_contents();
-		ob_end_clean();
-		return $contents;
-	}
-	return false;
-}
 
 /* This xml 2 array function is courtesy of the php.net comment section on xml_parse.
  * it is roughly 4 times faster then our existing pfSense parser but due to the large
@@ -2232,31 +1762,6 @@ function xml2array($contents, $get_attributes = 1, $priority = 'tag')
 	return ($xml_array);
 }
 
-function get_country_name($country_code) {
-	if ($country_code != "ALL" && strlen($country_code) != 2)
-		return "";
-
-	$country_names_xml = "/usr/local/share/mobile-broadband-provider-info/iso_3166-1_list_en.xml";
-	$country_names_contents = file_get_contents($country_names_xml);
-	$country_names = xml2array($country_names_contents);
-
-	if($country_code == "ALL") {
-		$country_list = array();
-		foreach($country_names['ISO_3166-1_List_en']['ISO_3166-1_Entry'] as $country) {
-			$country_list[] = array("code" => $country['ISO_3166-1_Alpha-2_Code_element'],
-						"name" => ucwords(strtolower($country['ISO_3166-1_Country_name'])) );
-		}
-		return $country_list;
-	}
-
-	foreach ($country_names['ISO_3166-1_List_en']['ISO_3166-1_Entry'] as $country) {
-		if ($country['ISO_3166-1_Alpha-2_Code_element'] == strtoupper($country_code)) {
-			return ucwords(strtolower($country['ISO_3166-1_Country_name']));
-		}
-	}
-	return "";
-}
-
 /* sort by interface only, retain the original order of rules that apply to
    the same interface */
 function filter_rules_sort() {
@@ -2285,36 +1790,6 @@ function filter_rules_compare($a, $b) {
 		return compare_interface_friendly_names($a['interface'], $b['interface']);
 }
 
-function generate_ipv6_from_mac($mac) {
-	$elements = explode(":", $mac);
-	if(count($elements) <> 6)
-		return false;
-
-	$i = 0;
-	$ipv6 = "fe80::";
-	foreach($elements as $byte) {
-		if($i == 0) {
-			$hexadecimal =  substr($byte, 1, 2);
-			$bitmap = base_convert($hexadecimal, 16, 2);
-			$bitmap = str_pad($bitmap, 4, "0", STR_PAD_LEFT);
-			$bitmap = substr($bitmap, 0, 2) ."1". substr($bitmap, 3,4);
-			$byte = substr($byte, 0, 1) . base_convert($bitmap, 2, 16);
-		}
-		$ipv6 .= $byte;
-		if($i == 1) {
-			$ipv6 .= ":";
-		}
-		if($i == 3) {
-			$ipv6 .= ":";
-		}
-		if($i == 2) {
-			$ipv6 .= "ff:fe";
-		}
-
-		$i++;
-	}
-	return $ipv6;
-}
 
 /****f* legacy/load_mac_manufacturer_table
  * NAME
@@ -2407,117 +1882,6 @@ function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, 
 	return false;
 }
 
-
-function set_language($lang = 'en_US', $encoding = "UTF-8") {
-	putenv("LANG={$lang}.{$encoding}");
-	setlocale(LC_ALL, "{$lang}.{$encoding}");
-	textdomain("pfSense");
-	bindtextdomain("pfSense","/usr/local/share/locale");
-	bind_textdomain_codeset("pfSense","{$lang}.{$encoding}");
-}
-
-function get_locale_list()
-{
-	$locales = array('en_US' => gettext('English'));
-	asort($locales);
-	return $locales;
-}
-
-function system_get_language_code() {
-	global $config, $g_languages;
-
-	// a language code, as per [RFC3066]
-	$language = $config['system']['language'];
-	//$code = $g_languages[$language]['code'];
-	$code = str_replace("_", "-", $language);
-
-	if (empty($code))
-		$code = "en-US"; // Set default code.
-
-	return $code;
-}
-
-function system_get_language_codeset() {
-	global $config, $g_languages;
-
-	$language = $config['system']['language'];
-	$codeset = $g_languages[$language]['codeset'];
-
-	if (empty($codeset))
-		$codeset = "UTF-8"; // Set default codeset.
-
-	return $codeset;
-}
-
-/* Available languages/locales */
-$g_languages = array (
-	"sq"    => array("codeset" => "UTF-8", "desc" => gettext("Albanian")),
-	"bg"    => array("codeset" => "UTF-8", "desc" => gettext("Bulgarian")),
-	"zh_CN" => array("codeset" => "UTF-8", "desc" => gettext("Chinese (Simplified)")),
-	"zh_TW" => array("codeset" => "UTF-8", "desc" => gettext("Chinese (Traditional)")),
-	"nl"    => array("codeset" => "UTF-8", "desc" => gettext("Dutch")),
-	"da"    => array("codeset" => "UTF-8", "desc" => gettext("Danish")),
-	"en_US" => array("codeset" => "UTF-8", "desc" => gettext("English")),
-	"fi"    => array("codeset" => "UTF-8", "desc" => gettext("Finnish")),
-	"fr"    => array("codeset" => "UTF-8", "desc" => gettext("French")),
-	"de"    => array("codeset" => "UTF-8", "desc" => gettext("German")),
-	"el"    => array("codeset" => "UTF-8", "desc" => gettext("Greek")),
-	"hu"    => array("codeset" => "UTF-8", "desc" => gettext("Hungarian")),
-	"it"    => array("codeset" => "UTF-8", "desc" => gettext("Italian")),
-	"ja"    => array("codeset" => "UTF-8", "desc" => gettext("Japanese")),
-	"ko"    => array("codeset" => "UTF-8", "desc" => gettext("Korean")),
-	"lv"    => array("codeset" => "UTF-8", "desc" => gettext("Latvian")),
-	"nb"    => array("codeset" => "UTF-8", "desc" => gettext("Norwegian (Bokmal)")),
-	"pl"    => array("codeset" => "UTF-8", "desc" => gettext("Polish")),
-	"pt_BR" => array("codeset" => "ISO-8859-1", "desc" => gettext("Portuguese (Brazil)")),
-	"pt"    => array("codeset" => "UTF-8", "desc" => gettext("Portuguese (Portugal)")),
-	"ro"    => array("codeset" => "UTF-8", "desc" => gettext("Romanian")),
-	"ru"    => array("codeset" => "UTF-8", "desc" => gettext("Russian")),
-	"sl"    => array("codeset" => "UTF-8", "desc" => gettext("Slovenian")),
-	"tr"    => array("codeset" => "UTF-8", "desc" => gettext("Turkish")),
-	"es"    => array("codeset" => "UTF-8", "desc" => gettext("Spanish")),
-	"sv"    => array("codeset" => "UTF-8", "desc" => gettext("Swedish")),
-	"sk"    => array("codeset" => "UTF-8", "desc" => gettext("Slovak")),
-	"cs"    => array("codeset" => "UTF-8", "desc" => gettext("Czech"))
-);
-
-function return_hex_ipv4($ipv4) {
-	if(!is_ipaddrv4($ipv4))
-		return(false);
-
-	/* we need the hex form of the interface IPv4 address */
-	$ip4arr = explode(".", $ipv4);
-	return (sprintf("%02x%02x%02x%02x", $ip4arr[0], $ip4arr[1], $ip4arr[2], $ip4arr[3]));
-}
-
-function convert_ipv6_to_128bit($ipv6) {
-	if(!is_ipaddrv6($ipv6))
-		return(false);
-
-	$ip6arr = array();
-	$ip6prefix = Net_IPv6::uncompress($ipv6);
-	$ip6arr = explode(":", $ip6prefix);
-	/* binary presentation of the prefix for all 128 bits. */
-	$ip6prefixbin = "";
-	foreach($ip6arr as $element) {
-		$ip6prefixbin .= sprintf("%016b", hexdec($element));
-	}
-	return($ip6prefixbin);
-}
-
-function convert_128bit_to_ipv6($ip6bin) {
-	if(strlen($ip6bin) <> 128)
-		return(false);
-
-	$ip6arr = array();
-	$ip6binarr = array();
-	$ip6binarr = str_split($ip6bin, 16);
-	foreach($ip6binarr as $binpart)
-		$ip6arr[] = dechex(bindec($binpart));
-	$ip6addr = Net_IPv6::compress(implode(":", $ip6arr));
-
-	return($ip6addr);
-}
 
 
 /* Returns the calculated bit length of the prefix delegation from the WAN interface */
@@ -2660,17 +2024,3 @@ function get_configured_pppoe_server_interfaces() {
 	return $iflist;
 }
 
-function get_pppoes_child_interfaces($ifpattern) {
-	$if_arr = array();
-	if($ifpattern == "")
-		return;
-
-	exec("ifconfig", $out, $ret);
-	foreach($out as $line) {
-		if(preg_match("/^({$ifpattern}[0-9]+):/i", $line, $match)) {
-			$if_arr[] = $match[1];
-		}
-	}
-	return $if_arr;
-
-}
