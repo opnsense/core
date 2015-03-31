@@ -36,6 +36,33 @@ $serviceproviders_attr = xml2array($serviceproviders_contents,1,"attr");
 
 $serviceproviders = &$serviceproviders_attr['serviceproviders']['country'];
 
+function get_country_name($country_code) {
+	if ($country_code != "ALL" && strlen($country_code) != 2)
+		return "";
+
+	$country_names_xml = "/usr/local/share/mobile-broadband-provider-info/iso_3166-1_list_en.xml";
+	$country_names_contents = file_get_contents($country_names_xml);
+	$country_names = xml2array($country_names_contents);
+
+	if($country_code == "ALL") {
+		$country_list = array();
+		foreach($country_names['ISO_3166-1_List_en']['ISO_3166-1_Entry'] as $country) {
+			$country_list[] = array("code" => $country['ISO_3166-1_Alpha-2_Code_element'],
+						"name" => ucwords(strtolower($country['ISO_3166-1_Country_name'])) );
+		}
+		return $country_list;
+	}
+
+	foreach ($country_names['ISO_3166-1_List_en']['ISO_3166-1_Entry'] as $country) {
+		if ($country['ISO_3166-1_Alpha-2_Code_element'] == strtoupper($country_code)) {
+			return ucwords(strtolower($country['ISO_3166-1_Country_name']));
+		}
+	}
+	return "";
+}
+
+
+
 function get_country_providers($country) {
 	global $serviceproviders;
 	foreach($serviceproviders as $sp) {
