@@ -28,6 +28,38 @@
 */
 require_once("globals.inc");
 
+function generate_ipv6_from_mac($mac) {
+	$elements = explode(":", $mac);
+	if(count($elements) <> 6)
+		return false;
+
+	$i = 0;
+	$ipv6 = "fe80::";
+	foreach($elements as $byte) {
+		if($i == 0) {
+			$hexadecimal =  substr($byte, 1, 2);
+			$bitmap = base_convert($hexadecimal, 16, 2);
+			$bitmap = str_pad($bitmap, 4, "0", STR_PAD_LEFT);
+			$bitmap = substr($bitmap, 0, 2) ."1". substr($bitmap, 3,4);
+			$byte = substr($byte, 0, 1) . base_convert($bitmap, 2, 16);
+		}
+		$ipv6 .= $byte;
+		if($i == 1) {
+			$ipv6 .= ":";
+		}
+		if($i == 3) {
+			$ipv6 .= ":";
+		}
+		if($i == 2) {
+			$ipv6 .= "ff:fe";
+		}
+
+		$i++;
+	}
+	return $ipv6;
+}
+
+
 /* implement ipv6 route advertising deamon */
 function services_radvd_configure($blacklist = array())
 {
