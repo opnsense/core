@@ -148,12 +148,6 @@ function unlock($cfglckkey = 0)
 	fclose($cfglckkey);
 }
 
-/* unlock forcefully configuration file */
-function unlock_force($lock)
-{
-	@unlink("/tmp/{$lock}.lock");
-}
-
 function send_event($cmd)
 {
 	require_once("script/load_phalcon.php");
@@ -167,61 +161,6 @@ function refcount_init($reference) {
 	@shmop_close($shmid);
 }
 
-function refcount_reference($reference) {
-	/* Take out a lock across the shared memory read, increment, write sequence to make it atomic. */
-	$shm_lck = lock("shm{$reference}", LOCK_EX);
-	try {
-		/* NOTE: A warning is generated when shared memory does not exist */
-		$shmid = @shmop_open($reference, "w", 0, 0);
-		if (!$shmid) {
-			refcount_init($reference);
-			$shmid = @shmop_open($reference, "w", 0, 0);
-			if (!$shmid) {
-				log_error(gettext("Could not open shared memory {$reference}"));
-				unlock($shm_lck);
-				return;
-			}
-		}
-		$shm_data = @shmop_read($shmid, 0, 10);
-		$shm_data = intval($shm_data) + 1;
-		@shmop_write($shmid, str_pad($shm_data, 10, "\x0", STR_PAD_RIGHT), 0);
-		@shmop_close($shmid);
-		unlock($shm_lck);
-	} catch (Exception $e) {
-		log_error($e->getMessage());
-		unlock($shm_lck);
-	}
-
-	return $shm_data;
-}
-
-function refcount_unreference($reference) {
-	/* Take out a lock across the shared memory read, decrement, write sequence to make it atomic. */
-	$shm_lck = lock("shm{$reference}", LOCK_EX);
-	try {
-		$shmid = @shmop_open($reference, "w", 0, 0);
-		if (!$shmid) {
-			refcount_init($reference);
-			log_error(gettext("Could not open shared memory {$reference}"));
-			unlock($shm_lck);
-			return;
-		}
-		$shm_data = @shmop_read($shmid, 0, 10);
-		$shm_data = intval($shm_data) - 1;
-		if ($shm_data < 0) {
-			//debug_backtrace();
-			log_error(sprintf(gettext("Reference %s is going negative, not doing unreference."), $reference));
-		} else
-			@shmop_write($shmid, str_pad($shm_data, 10, "\x0", STR_PAD_RIGHT), 0);
-		@shmop_close($shmid);
-		unlock($shm_lck);
-	} catch (Exception $e) {
-		log_error($e->getMessage());
-		unlock($shm_lck);
-	}
-
-	return $shm_data;
-}
 
 function refcount_read($reference) {
 	/* This function just reads the current value of the refcount for information. */
@@ -556,16 +495,6 @@ function is_subnetv4($subnet) {
 /* same as is_subnet() but accepts IPv6 only */
 function is_subnetv6($subnet) {
 	return (is_subnet($subnet) == 6);
-}
-
-/* returns true if $subnet is a valid subnet in CIDR format or an alias thereof */
-function is_subnetoralias($subnet) {
-	global $aliastable;
-
-	if (isset($aliastable[$subnet]) && is_subnet($aliastable[$subnet]))
-		return true;
-	else
-		return is_subnet($subnet);
 }
 
 /* returns true if $hostname is a valid hostname */
@@ -1215,16 +1144,6 @@ function subnet_size($subnet) {
 	}
 }
 
-function subnet_expand($subnet) {
-	if (is_subnetv4($subnet)) {
-		return subnetv4_expand($subnet);
-	} else if (is_subnetv6($subnet)) {
-		return subnetv6_expand($subnet);
-	} else {
-		return $subnet;
-	}
-}
-
 function subnetv4_expand($subnet) {
 	$result = array();
 	list ($ip, $bits) = explode("/", $subnet);
@@ -1288,23 +1207,6 @@ function ip_in_subnet($addr,$subnet) {
 	}
 }
 
-/* obtain MAC address given an IP address by looking at the ARP table */
-function arp_get_mac_by_ip($ip) {
-	mwexec("/sbin/ping -c 1 -t 1 " . escapeshellarg($ip), true);
-	$arpoutput = "";
-	exec("/usr/sbin/arp -n " . escapeshellarg($ip), $arpoutput);
-
-	if ($arpoutput[0]) {
-		$arpi = explode(" ", $arpoutput[0]);
-		$macaddr = $arpi[3];
-		if (is_macaddr($macaddr))
-			return $macaddr;
-		else
-			return false;
-	}
-
-	return false;
-}
 
 /* return a fieldname that is safe for xml usage */
 function xml_safe_fieldname($fieldname) {
@@ -1675,14 +1577,6 @@ function is_URL($url) {
 	$match = preg_match("'\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))'", $url);
 	if($match)
 		return true;
-	return false;
-}
-
-function is_file_included($file = "") {
-	$files = get_included_files();
-	if (in_array($file, $files))
-		return true;
-
 	return false;
 }
 
