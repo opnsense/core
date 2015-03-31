@@ -208,23 +208,6 @@ function gmirror_clear_consumer($consumer) {
 	return mwexec("/sbin/gmirror clear " . escapeshellarg($consumer));
 }
 
-/* Find the balance method used by a given mirror */
-function gmirror_get_mirror_balance($mirror) {
-	if (!is_valid_mirror($mirror))
-		return false;
-	$balancemethod = "";
-	exec("/sbin/gmirror list " . escapeshellarg($mirror) . " | /usr/bin/grep '^Balance:' | /usr/bin/awk '{print $2;}'", $balancemethod);
-	return $balancemethod[0];
-}
-
-/* Change balance algorithm of the mirror */
-function gmirror_configure_balance($mirror, $balancemethod) {
-	global $balance_methods;
-	if (!is_valid_mirror($mirror) || !in_array($balancemethod, $balance_methods))
-		return false;
-	return mwexec("/sbin/gmirror configure -b " . escapeshellarg($balancemethod) . " " . escapeshellarg($mirror));
-}
-
 /* Force a mirror member to rebuild */
 function gmirror_force_rebuild($mirror, $consumer) {
 	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
