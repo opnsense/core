@@ -7,7 +7,7 @@
 function getFormData(parent) {
 
     data = {};
-    $( "#"+parent+"  input,select" ).each(function( index ) {
+    $( "#"+parent+"  input,#"+parent+" select" ).each(function( index ) {
             node = data ;
             keyparts = $(this).attr('id').split('.');
             for (var i in keyparts) {
@@ -58,9 +58,7 @@ function getFormData(parent) {
  * @param data named array structure
  */
 function setFormData(parent,data) {
-    //alert( JSON.stringify(data['general']['interfaces']) );
-
-    $( "#"+parent+"  input,select" ).each(function( index ) {
+    $( "#"+parent+"  input,#"+parent+" select" ).each(function( index ) {
         node = data ;
         keyparts = $(this).attr('id').split('.');
         for (var i in keyparts) {
