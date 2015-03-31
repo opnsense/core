@@ -32,6 +32,14 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 
+function get_locale_list()
+{
+	$locales = array('en_US' => gettext('English'));
+	asort($locales);
+	return $locales;
+}
+
+
 $pconfig['hostname'] = $config['system']['hostname'];
 $pconfig['domain'] = $config['system']['domain'];
 list($pconfig['dns1'],$pconfig['dns2'],$pconfig['dns3'],$pconfig['dns4']) = $config['system']['dnsserver'];
