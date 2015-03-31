@@ -1632,22 +1632,6 @@ function system_ntp_configure($start_ntpd = true)
 	return;
 }
 
-function sync_system_time() {
-	global $config, $g;
-
-	if (file_exists("/var/run/booting"))
-		echo gettext("Syncing system time before startup...");
-
-	/* foreach through servers and write out to ntpd.conf */
-	foreach (explode(' ', $config['system']['timeservers']) as $ts) {
-		mwexec("/usr/local/sbin/ntpdate -s $ts");
-	}
-
-	if (file_exists("/var/run/booting"))
-		echo gettext("done.") . "\n";
-
-}
-
 function system_halt($sync = false)
 {
 	system_reboot_cleanup();
@@ -1803,12 +1787,6 @@ function enable_watchdog() {
 }
 
 
-
-function system_get_dmesg_boot() {
-	global $g;
-
-	return file_get_contents("{$g['varlog_path']}/dmesg.boot");
-}
 
 function get_possible_listen_ips($include_ipv6_link_local=false) {
 	$interfaces = get_configured_interface_with_descr();
