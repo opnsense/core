@@ -66,6 +66,14 @@ if($config['system']['language'] <> "") {
 	$g['language'] = 'en_US';
 }
 
+function set_language($lang = 'en_US', $encoding = "UTF-8") {
+	putenv("LANG={$lang}.{$encoding}");
+	setlocale(LC_ALL, "{$lang}.{$encoding}");
+	textdomain("pfSense");
+	bindtextdomain("pfSense","/usr/local/share/locale");
+	bind_textdomain_codeset("pfSense","{$lang}.{$encoding}");
+}
+
 set_language($g['language']);
 
 /* used by progress bar */
