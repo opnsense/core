@@ -43,6 +43,38 @@ function return_hex_ipv4($ipv4) {
 	return (sprintf("%02x%02x%02x%02x", $ip4arr[0], $ip4arr[1], $ip4arr[2], $ip4arr[3]));
 }
 
+function convert_ipv6_to_128bit($ipv6) {
+	if(!is_ipaddrv6($ipv6))
+		return(false);
+
+	$ip6arr = array();
+	$ip6prefix = Net_IPv6::uncompress($ipv6);
+	$ip6arr = explode(":", $ip6prefix);
+	/* binary presentation of the prefix for all 128 bits. */
+	$ip6prefixbin = "";
+	foreach($ip6arr as $element) {
+		$ip6prefixbin .= sprintf("%016b", hexdec($element));
+	}
+	return($ip6prefixbin);
+}
+
+function convert_128bit_to_ipv6($ip6bin) {
+	if(strlen($ip6bin) <> 128)
+		return(false);
+
+	$ip6arr = array();
+	$ip6binarr = array();
+	$ip6binarr = str_split($ip6bin, 16);
+	foreach($ip6binarr as $binpart)
+		$ip6arr[] = dechex(bindec($binpart));
+	$ip6addr = Net_IPv6::compress(implode(":", $ip6arr));
+
+	return($ip6addr);
+}
+
+
+
+
 function interfaces_bring_up($interface) {
 	if(!$interface) {
 		log_error(gettext("interfaces_bring_up() was called but no variable defined."));
