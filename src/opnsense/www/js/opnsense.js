@@ -8,38 +8,42 @@ function getFormData(parent) {
 
     data = {};
     $( "#"+parent+"  input,#"+parent+" select" ).each(function( index ) {
-            node = data ;
-            keyparts = $(this).attr('id').split('.');
-            for (var i in keyparts) {
-                if (!(keyparts[i] in node)) {
-                    node[keyparts[i]] = {};
-                }
-                if (i < keyparts.length - 1 ) {
-                    node = node[keyparts[i]];
-                } else {
-                    if ($(this).is("select")) {
-                        // selectbox, collect selected items
-                        var tmp_str = "";
-                        $(this).children().each(function(index){
-                            if ($(this).prop("selected")){
-                                if (tmp_str != "") tmp_str = tmp_str + ",";
-                                tmp_str = tmp_str + $(this).val();
-                            }
-                            node[keyparts[i]] = tmp_str;
-                        });
-                    } else if ($(this).prop("type") == "checkbox") {
-                        // checkbox input type
-                        if ($(this).prop("checked")) {
-                            node[keyparts[i]] = 1 ;
-                        } else {
-                            node[keyparts[i]] = 0 ;
+        if ($(this).attr('id') == undefined) {
+            // we need an id.
+            return;
+        }
+        node = data ;
+        keyparts = $(this).attr('id').split('.');
+        for (var i in keyparts) {
+            if (!(keyparts[i] in node)) {
+                node[keyparts[i]] = {};
+            }
+            if (i < keyparts.length - 1 ) {
+                node = node[keyparts[i]];
+            } else {
+                if ($(this).is("select")) {
+                    // selectbox, collect selected items
+                    var tmp_str = "";
+                    $(this).children().each(function(index){
+                        if ($(this).prop("selected")){
+                            if (tmp_str != "") tmp_str = tmp_str + ",";
+                            tmp_str = tmp_str + $(this).val();
                         }
+                        node[keyparts[i]] = tmp_str;
+                    });
+                } else if ($(this).prop("type") == "checkbox") {
+                    // checkbox input type
+                    if ($(this).prop("checked")) {
+                        node[keyparts[i]] = 1 ;
                     } else {
-                        // regular input type
-                        node[keyparts[i]] = $(this).val();
+                        node[keyparts[i]] = 0 ;
                     }
+                } else {
+                    // regular input type
+                    node[keyparts[i]] = $(this).val();
                 }
             }
+        }
     });
 
     return data;
@@ -59,6 +63,10 @@ function getFormData(parent) {
  */
 function setFormData(parent,data) {
     $( "#"+parent+"  input,#"+parent+" select" ).each(function( index ) {
+        if ($(this).attr('id') == undefined) {
+            // we need an id.
+            return;
+        }
         node = data ;
         keyparts = $(this).attr('id').split('.');
         for (var i in keyparts) {
