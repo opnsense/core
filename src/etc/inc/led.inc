@@ -21,35 +21,6 @@ function led_ctl($led, $str) {
 }
 
 /*
- * Blink an LED at set speed from 1-9 (1=Very Fast, 9=Very Slow)
- */
-function led_blink($led, $speed=0) {
-	switch ($speed) {
-		case "reallyfast":
-		case "veryfast":
-			$speed = 1;
-			break;
-		case "fast":
-			$speed = 3;
-			break;
-		case "medium":
-			$speed = 5;
-			break;
-		case "slow":
-			$speed = 7;
-			break;
-		case "reallyslow":
-		case "veryslow":
-			$speed = 9;
-			break;
-	}
-	if (is_numeric($speed) && ($speed > 0) && ($speed < 10)) {
-		return led_ctl($led, "f{$speed}");
-	}
-	return false;
-}
-
-/*
  * Blink an LED in a specific pattern
  * Letters A-J are on from 1/10s to 1s
  * Letters a-j are off from 1/10s to 1s
@@ -67,22 +38,6 @@ function led_morse($led, $message) {
 	return led_ctl($led, "m" . str_to_morse($message));
 }
 
-/*
- * Blink digits out on LED at 1/10s intervals
- * e.g 1=1 blink, 8=8 blinks
- * 0 is 10 pulses.
- * One second pause between digits.
- */
-function led_digit($led, $digitstring) {
-	$i = 0;
-	$dstring = "d";
-	while ($i < strlen($digitstring)) {
-		$thisdigit = substr($digitstring, $i++, 1);
-		if (is_numeric($thisdigit))
-			$dstring .= $thisdigit;
-	}
-	led_ctl($led, $dstring);
-}
 
 /*
  * Turn an LED on
@@ -145,15 +100,6 @@ function led_assigninterfaces() {
  */
 function led_normalize() {
 	led_on(1);
-	led_off(2);
-	led_off(3);
-}
-
-/*
- * Shut off ALL LEDs.
- */
-function led_alloff() {
-	led_off(1);
 	led_off(2);
 	led_off(3);
 }
