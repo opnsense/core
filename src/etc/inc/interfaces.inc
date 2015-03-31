@@ -2112,35 +2112,6 @@ function interface_ipalias_configure(&$vip) {
 	mwexec("/sbin/ifconfig " . escapeshellarg($if) ." {$af} ". escapeshellarg($vip['subnet']) ."/" . escapeshellarg($vip['subnet_bits']) . " alias");
 }
 
-function interface_reload_carps($cif) {
-	global $config;
-
-	$carpifs = link_ip_to_carp_interface(find_interface_ip($cif));
-	if (empty($carpifs))
-		return;
-
-	$carps = explode(" ", $carpifs);
-	if(is_array($config['virtualip']['vip'])) {
-		$viparr = &$config['virtualip']['vip'];
-		foreach ($viparr as $vip) {
-			if (in_array($vip['carpif'], $carps)) {
-				switch ($vip['mode']) {
-				case "carp":
-					interface_vip_bring_down($vip);
-					sleep(1);
-					interface_carp_configure($vip);
-					break;
-				case "ipalias":
-					interface_vip_bring_down($vip);
-					sleep(1);
-					interface_ipalias_configure($vip);
-					break;
-				}
-			}
-		}
-	}
-}
-
 function interface_carp_configure(&$vip)
 {
 	global $config, $g;
