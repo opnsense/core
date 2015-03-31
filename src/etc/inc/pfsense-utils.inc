@@ -2023,4 +2023,3 @@ function get_configured_pppoe_server_interfaces() {
 	}
 	return $iflist;
 }
-
