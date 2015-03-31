@@ -528,10 +528,6 @@ function cert_get_serial($str_crt, $decode = true) {
 		return NULL;
 }
 
-function prv_get_modulus($str_crt, $decode = true){
-	return cert_get_modulus($str_crt, $decode, "prv");
-}
-
 function is_user_cert($certref) {
 	global $config;
 	if (!is_array($config['system']['user']))
@@ -605,21 +601,6 @@ function cert_in_use($certref) {
 		is_openvpn_client_cert($certref) ||
 		is_ipsec_cert($certref) ||
 		is_captiveportal_cert($certref));
-}
-
-function crl_create(& $crl, $caref, $name, $serial=0, $lifetime=9999) {
-	global $config;
-	$ca =& lookup_ca($caref);
-	if (!$ca)
-		return false;
-	$crl['descr'] = $name;
-	$crl['caref'] = $caref;
-	$crl['serial'] = $serial;
-	$crl['lifetime'] = $lifetime;
-	$crl['cert'] = array();
-	$crl_res = crl_update($crl);
-	$config['crl'][] = $crl;
-	return $crl_res;
 }
 
 function crl_update(& $crl) {
