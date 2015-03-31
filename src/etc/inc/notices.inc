@@ -30,6 +30,10 @@
 
 require_once("globals.inc");
 require_once("led.inc");
+require_once("util.inc");
+require_once("notices.growl.class");
+require_once("notices.sasl.inc");
+require_once("notices.smtp.inc");
 
 /****f* notices/file_notice
  * NAME
@@ -115,7 +119,6 @@ function get_notices($category = 'all')
  ******/
 function close_notice($id)
 {
-	require_once("util.inc");
 
 	/* soekris */
 	if(file_exists("/dev/led/error"))
@@ -243,8 +246,6 @@ function notify_via_smtp($message, $force = false) {
 
 function send_smtp_message($message, $subject = "(no subject)") {
 	global $config, $g;
-	require_once("sasl.inc");
-	require_once("smtp.inc");
 
 	if(!$config['notifications']['smtp']['ipaddress'])
 		return;
@@ -303,7 +304,6 @@ function send_smtp_message($message, $subject = "(no subject)") {
  *   returns true if message was sent
  ******/
 function notify_via_growl($message, $force=false) {
-	require_once("growl.class");
 	global $config,$g;
 
 	if (isset($config['notifications']['growl']['disable']) && !$force)
@@ -342,7 +342,6 @@ function notify_via_growl($message, $force=false) {
  *   none
  ******/
 function register_via_growl() {
-	require_once("growl.class");
 	global $config;
 	$growl_ip = $config['notifications']['growl']['ipaddress'];
 	$growl_password = $config['notifications']['growl']['password'];
