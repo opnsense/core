@@ -51,6 +51,10 @@
         <!-- bootstrap dialog -->
         <link href="/ui/themes/opnsense/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
 
+        <!-- JQuery Tokenize (http://zellerda.com/projects/tokenize) -->
+        <script type="text/javascript" src="/ui/js/jquery.tokenize.js"></script>
+        <link rel="stylesheet" type="text/css" href="/ui/css/jquery.tokenize.css" />
+
         <!-- OPNsense standard toolkit -->
         <script type="text/javascript" src="/ui/js/opnsense.js"></script>
         <script type="text/javascript" src="/ui/js/opnsense_ui.js"></script>
