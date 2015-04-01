@@ -185,7 +185,7 @@ function interface_netgraph_needed($interface = "wan") {
 	}
 	if ($found == false) {
 		$realif = get_real_interface($interface);
-		if (is_array($config['ppps']['ppp']) && count($config['ppps']['ppp'])) {
+		if (isset($config['ppps']['ppp'])) {
 			foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
 
 /* This if block doesn't do anything. It can be deleted.

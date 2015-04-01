@@ -445,7 +445,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 
 	$i = -1;
 	/* Process/add all the configured gateways. */
-	if (is_array($config['gateways']['gateway_item'])) {
+	if (isset($config['gateways']['gateway_item'])) {
 		foreach ($config['gateways']['gateway_item'] as $gateway) {
 			/* Increment it here to do not skip items */
 			$i++;
@@ -796,7 +796,7 @@ function return_gateway_groups_array() {
 		fixup_default_gateway("inet", $gateways_status, $gateways_arr);
 		fixup_default_gateway("inet6", $gateways_status, $gateways_arr);
 	}
-	if (is_array($config['gateways']['gateway_group'])) {
+	if (isset($config['gateways']['gateway_group'])) {
 		$carplist = get_configured_carp_interface_list();
 		foreach ($config['gateways']['gateway_group'] as $group) {
 			/* create array with group gateways members separated by tier */

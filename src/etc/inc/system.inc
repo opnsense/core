@@ -387,7 +387,7 @@ function system_routing_configure($interface = '')
 	$interfacegwv6 = "";
 	$foundgwv6 = false;
 	/* tack on all the hard defined gateways as well */
-	if (is_array($config['gateways']['gateway_item'])) {
+	if (isset($config['gateways']['gateway_item'])) {
 		array_map('unlink', glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE));
 		foreach	($config['gateways']['gateway_item'] as $gateway) {
 			if (isset($gateway['defaultgw'])) {
