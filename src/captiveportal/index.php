@@ -162,6 +162,7 @@ EOD;
 		if (portal_allow($clientip, $clientmac,$voucher,null,$attr)) {
 			// YES: user is good for $timecredit minutes.
 			captiveportal_logportalauth($voucher,$clientmac,$clientip,"Voucher login good for $timecredit min.");
+			portal_reply_page($redirurl, "redir", "Just redirect the user.");
 		} else {
 			portal_reply_page($redirurl, "error", $config['voucher'][$cpzone]['msgexpired'] ? $config['voucher'][$cpzone]['msgexpired']: $errormsg);
 		}
