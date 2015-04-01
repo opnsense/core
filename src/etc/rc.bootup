@@ -294,11 +294,11 @@ filter_configure_sync();
 /* setup pppoe and pptp */
 vpn_setup();
 
+/* start Voucher support */
+echo 'Enabling voucher support...' . (voucher_configure(true) ? 'done.' : 'failed.');
+
 /* start the captive portal */
 captiveportal_configure();
-
-/* start Voucher support */
-voucher_configure();
 
 /* start IPsec tunnels */
 $ipsec_dynamic_hosts = vpn_ipsec_configure();

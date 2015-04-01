@@ -274,84 +274,89 @@ function voucher_configure($sync = false)
 {
 	global $config, $cpzone;
 
-	if (is_array($config['voucher'])) {
-		foreach ($config['voucher'] as $voucherzone => $vcfg) {
-			if (file_exists("/var/run/booting"))
-			    echo gettext("Enabling voucher support... ");
-			$cpzone = $voucherzone;
-			$error = voucher_configure_zone($sync);
-			if (file_exists("/var/run/booting")) {
-				if ($error)
-					echo "error\n";
-				else
-					echo "done\n";
-			}
+	$ret = true;
+
+	if (!is_array($config['voucher'])) {
+		return $ret;
+	}
+
+	foreach ($config['voucher'] as $voucherzone => $vcfg) {
+		$cpzone = $voucherzone;
+		$error = voucher_configure_zone($sync);
+		if ($error) {
+			$ret = false;
 		}
 	}
+
+	return $ret;
 }
 
-function voucher_configure_zone($sync = false) {
+function voucher_configure_zone($sync = false)
+{
 	global $config, $g, $cpzone;
 
-	if (!isset($config['voucher'][$cpzone]['enable']))
+	if (!isset($config['voucher'][$cpzone]['enable'])) {
 		return 0;
-
-	if ($sync == true)
-	    captiveportal_syslog("Writing voucher db from sync data...");
+	}
 
 	$voucherlck = lock("voucher{$cpzone}", LOCK_EX);
 
-        /* write public key used to verify vouchers */
-        $pubkey = base64_decode($config['voucher'][$cpzone]['publickey']);
-        $fd = fopen("{$g['varetc_path']}/voucher_{$cpzone}.public", "w");
-        if (!$fd) {
-            captiveportal_syslog("Voucher error: cannot write voucher.public\n");
-	    unlock($voucherlck);
-            return 1;
-        }
-        fwrite($fd, $pubkey);
-        fclose($fd);
-        @chmod("{$g['varetc_path']}/voucher_{$cpzone}.public", 0600);
+	/* write public key used to verify vouchers */
+	$pubkey = base64_decode($config['voucher'][$cpzone]['publickey']);
+	$fd = fopen("{$g['varetc_path']}/voucher_{$cpzone}.public", "w");
+	if (!$fd) {
+		captiveportal_syslog("Voucher error: cannot write voucher.public\n");
+		unlock($voucherlck);
+		return 1;
+	}
+	fwrite($fd, $pubkey);
+	fclose($fd);
+	@chmod("{$g['varetc_path']}/voucher_{$cpzone}.public", 0600);
 
-        /* write config file used by voucher binary to decode vouchers */
-        $fd = fopen("{$g['varetc_path']}/voucher_{$cpzone}.cfg", "w");
-        if (!$fd) {
-	    printf(gettext("Error: cannot write voucher.cfg") . "\n");
-	    unlock($voucherlck);
-            return 1;
-        }
-        fwrite($fd, "{$config['voucher'][$cpzone]['rollbits']},{$config['voucher'][$cpzone]['ticketbits']},{$config['voucher'][$cpzone]['checksumbits']},{$config['voucher'][$cpzone]['magic']},{$config['voucher'][$cpzone]['charset']}\n");
-        fclose($fd);
-        @chmod("{$g['varetc_path']}/voucher_{$cpzone}.cfg", 0600);
+	/* write config file used by voucher binary to decode vouchers */
+	$fd = fopen("{$g['varetc_path']}/voucher_{$cpzone}.cfg", "w");
+	if (!$fd) {
+		captiveportal_syslog(gettext("Error: cannot write voucher.cfg") . "\n");
+		unlock($voucherlck);
+		return 1;
+	}
+	fwrite($fd, "{$config['voucher'][$cpzone]['rollbits']},{$config['voucher'][$cpzone]['ticketbits']},{$config['voucher'][$cpzone]['checksumbits']},{$config['voucher'][$cpzone]['magic']},{$config['voucher'][$cpzone]['charset']}\n");
+	fclose($fd);
+	@chmod("{$g['varetc_path']}/voucher_{$cpzone}.cfg", 0600);
 	unlock($voucherlck);
 
-        if ((file_exists("/var/run/booting") || $sync == true) && is_array($config['voucher'][$cpzone]['roll'])) {
+	if (!$sync) {
+		return 0;
+	}
 
+	captiveportal_syslog('Writing voucher db from sync data...');
+
+	if (isset($config['voucher'][$cpzone]['roll'])) {
 		$voucherlck = lock("voucher{$cpzone}", LOCK_EX);
 
-            // create active and used DB per roll on ramdisk from config
-            foreach ($config['voucher'][$cpzone]['roll'] as $rollent) {
+		// create active and used DB per roll on ramdisk from config
+		foreach ($config['voucher'][$cpzone]['roll'] as $rollent) {
+			$roll = $rollent['number'];
+			voucher_write_used_db($roll, $rollent['used']);
+			$minutes = $rollent['minutes'];
+			$active_vouchers = array();
+			$a_active = &$rollent['active'];
+			if (is_array($a_active)) {
+				foreach ($a_active as $activent) {
+					$voucher = $activent['voucher'];
+					$timestamp = $activent['timestamp'];
+					$minutes = $activent['minutes'];
+					// its tempting to check for expired timestamps, but during
+					// bootup, we most likely don't have the correct time time.
+					$active_vouchers[$voucher] = "$timestamp,$minutes";
+				}
+			}
 
-                $roll = $rollent['number'];
-                voucher_write_used_db($roll, $rollent['used']);
-                $minutes = $rollent['minutes'];
-                $active_vouchers = array();
-                $a_active = &$rollent['active'];
-                if (is_array($a_active)) {
-                    foreach ($a_active as $activent) {
-                        $voucher = $activent['voucher'];
-                        $timestamp = $activent['timestamp'];
-                        $minutes = $activent['minutes'];
-                        // its tempting to check for expired timestamps, but during
-                        // bootup, we most likely don't have the correct time time.
-                        $active_vouchers[$voucher] = "$timestamp,$minutes";
-                    }
-                }
-                voucher_write_active_db($roll, $active_vouchers);
-            }
+			voucher_write_active_db($roll, $active_vouchers);
+		}
 
 		unlock($voucherlck);
-        }
+	}
 
 	return 0;
 }
