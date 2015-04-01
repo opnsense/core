@@ -33,6 +33,7 @@ require_once('config.inc');
 require_once('certs.inc');
 require_once('pfsense-utils.inc');
 require_once('auth.inc');
+require_once('util.inc');
 
 global $openvpn_prots;
 $openvpn_prots = array("UDP", "UDP6", "TCP", "TCP6");
@@ -824,11 +825,12 @@ function openvpn_restart($mode, $settings) {
 		unlink($pfile);
 
 		/* send a term signal to the process */
-		posix_kill($pid, SIGTERM);
+		sigkillbypid($pid, 'TERM');
 
 		/* wait until the process exits */
-		while(posix_kill($pid, 0))
+		while(isvalidpid($pid)) {
 			usleep(250000);
+		}
 	}
 
 	if (isset($settings['disable']))
@@ -881,7 +883,7 @@ function openvpn_delete($mode, & $settings) {
 		unlink($pfile);
 
 		/* send a term signal to the process */
-		posix_kill($pid, SIGTERM);
+		sigkillbypid($pid, 'TERM');
 	}
 
 	/* remove the device from the openvpn group */

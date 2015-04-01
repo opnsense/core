@@ -178,10 +178,8 @@ function parse_cisco_acl($attribs) {
 
 $rules = parse_cisco_acl($attributes);
 if (!empty($rules)) {
-	$pid = posix_getpid();
+	$pid = getmypid();
 	@file_put_contents("/tmp/ovpn_{$pid}{$common_name}.rules", $rules);
 	mwexec("/sbin/pfctl -a " . escapeshellarg("openvpn/{$common_name}") . " -f /tmp/ovpn_{$pid}" . escapeshellarg($common_name) . ".rules");
 	@unlink("/tmp/ovpn_{$pid}{$common_name}.rules");
 }
-
-?>

@@ -48,9 +48,6 @@ PHPMODULES="$PHPMODULES hash"
 PHPMODULES="$PHPMODULES mcrypt"
 # Regexs, PERL style!
 PHPMODULES="$PHPMODULES pcre"
-# The mighty posix!
-PHPMODULES="$PHPMODULES posix"
-PHPMODULES="$PHPMODULES readline"
 # Login sessions
 PHPMODULES="$PHPMODULES session"
 # Extra sanity seatbelts

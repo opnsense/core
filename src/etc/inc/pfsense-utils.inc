@@ -768,10 +768,10 @@ function is_serial_enabled()
 
 function reload_ttys()
 {
-	// Send a HUP signal to init will make it reload /etc/ttys
-	posix_kill(1, SIGHUP);
+	/* Send a HUP signal to init will make it reload /etc/ttys */
+	require_once('util.inc');
+	sigkillbypid(1, 'HUP');
 }
-
 
 /* DHCP enabled on any interfaces? */
 function is_dhcp_server_enabled() {

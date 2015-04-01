@@ -1296,8 +1296,9 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 	case "slaac":
 	case "dhcp6":
 		$pidv6 = find_dhcp6c_process($realif);
-		if($pidv6)
-			posix_kill($pidv6, SIGTERM);
+		if ($pidv6) {
+			sigkillbypid($pidv6, 'TERM');
+		}
 		sleep(3);
 		unlink_if_exists("{$g['varetc_path']}/dhcp6c_{$interface}.conf");
 		if (does_interface_exist($realifv6)) {
@@ -2777,15 +2778,17 @@ function find_dhclient_process($interface) {
 	return intval($pid);
 }
 
-function kill_dhclient_process($interface) {
-	if (empty($interface) || !does_interface_exist($interface))
+function kill_dhclient_process($interface)
+{
+	if (empty($interface) || !does_interface_exist($interface)) {
 		return;
+	}
 
 	$i = 0;
 	while ((($pid = find_dhclient_process($interface)) != 0) && ($i < 3)) {
 		/* 3rd time make it die for sure */
-		$sig = ($i == 2 ? SIGKILL : SIGTERM);
-		posix_kill($pid, $sig);
+		$sig = ($i == 2 ? 'KILL' : 'TERM');
+		sigkillbypid($pid, $sig);
 		sleep(1);
 		$i++;
 	}
@@ -3217,8 +3220,9 @@ function interface_track6_configure($interface = "lan", $wancfg, $linkupevent = 
 			 */
 			$parentrealif = get_real_interface($wancfg['track6-interface']);
 			$pidv6 = find_dhcp6c_process($parentrealif);
-			if($pidv6)
-				posix_kill($pidv6, SIGHUP);
+			if ($pidv6) {
+				sigkillbypid($pidv6, 'HUP');
+			}
 		}
 		break;
 	}
