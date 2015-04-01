@@ -770,7 +770,7 @@ function reload_ttys()
 {
 	/* Send a HUP signal to init will make it reload /etc/ttys */
 	require_once('util.inc');
-	sigkillbypid(1, 'HUP');
+	killbypid(1, 'HUP');
 }
 
 /* DHCP enabled on any interfaces? */

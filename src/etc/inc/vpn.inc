@@ -840,9 +840,9 @@ EOD;
 		file_put_contents("/usr/local/etc/filterdns-ipsec.hosts", $hostnames);
 		unset($hostnames);
 
-		if (isvalidpid("{$g['varrun_path']}/filterdns-ipsec.pid"))
-			sigkillbypid("{$g['varrun_path']}/filterdns-ipsec.pid", "HUP");
-		else {
+		if (isvalidpid("{$g['varrun_path']}/filterdns-ipsec.pid")) {
+			killbypid("{$g['varrun_path']}/filterdns-ipsec.pid", 'HUP');
+		} else {
 			mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-ipsec.pid -i {$interval} -c /usr/local/etc/filterdns-ipsec.hosts -d 1");
 		}
 	} else {

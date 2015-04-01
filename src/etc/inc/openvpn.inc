@@ -825,7 +825,7 @@ function openvpn_restart($mode, $settings) {
 		unlink($pfile);
 
 		/* send a term signal to the process */
-		sigkillbypid($pid, 'TERM');
+		killbypid($pid);
 
 		/* wait until the process exits */
 		while(isvalidpid($pid)) {
@@ -883,7 +883,7 @@ function openvpn_delete($mode, & $settings) {
 		unlink($pfile);
 
 		/* send a term signal to the process */
-		sigkillbypid($pid, 'TERM');
+		killbypid($pid);
 	}
 
 	/* remove the device from the openvpn group */

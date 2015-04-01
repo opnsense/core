@@ -26,8 +26,15 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function killbypid($pidfile) {
-	return sigkillbypid($pidfile, "TERM");
+function killbypid($pidfile, $sig = 'TERM')
+{
+	/* return 1 for success and 0 for a failure */
+
+	if (file_exists($pidfile)) {
+		return mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile), true);
+	}
+
+	return 0;
 }
 
 function isvalidpid($pidfile) {
@@ -44,15 +51,6 @@ function is_process_running($process)
 	exec('/bin/pgrep -anx ' . escapeshellarg($process), $output, $retval);
 
 	return (intval($retval) == 0);
-}
-
-/* sigkill a process by pid file */
-/* return 1 for success and 0 for a failure */
-function sigkillbypid($pidfile, $sig) {
-	if (file_exists($pidfile))
-		return mwexec("/bin/pkill " . escapeshellarg("-{$sig}") . " -F {$pidfile}", true);
-
-	return 0;
 }
 
 /* kill a process by name */

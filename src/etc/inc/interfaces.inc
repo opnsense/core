@@ -1297,7 +1297,7 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 	case "dhcp6":
 		$pidv6 = find_dhcp6c_process($realif);
 		if ($pidv6) {
-			sigkillbypid($pidv6, 'TERM');
+			killbypid($pidv6);
 		}
 		sleep(3);
 		unlink_if_exists("{$g['varetc_path']}/dhcp6c_{$interface}.conf");
@@ -1450,7 +1450,7 @@ function handle_pppoe_reset($post_array) {
 	if (empty($post_array['pppoe-reset-type'])) {
 		if (isset($itemhash))
 			unset($config['cron']['item'][$itemhash['ID']]);
-		sigkillbypid("{$g['varrun_path']}/cron.pid", "HUP");
+		killbypid("{$g['varrun_path']}/cron.pid", 'HUP');
 		return;
 	}
 
@@ -2788,7 +2788,7 @@ function kill_dhclient_process($interface)
 	while ((($pid = find_dhclient_process($interface)) != 0) && ($i < 3)) {
 		/* 3rd time make it die for sure */
 		$sig = ($i == 2 ? 'KILL' : 'TERM');
-		sigkillbypid($pid, $sig);
+		killbypid($pid, $sig);
 		sleep(1);
 		$i++;
 	}
@@ -3221,7 +3221,7 @@ function interface_track6_configure($interface = "lan", $wancfg, $linkupevent = 
 			$parentrealif = get_real_interface($wancfg['track6-interface']);
 			$pidv6 = find_dhcp6c_process($parentrealif);
 			if ($pidv6) {
-				sigkillbypid($pidv6, 'HUP');
+				killbypid($pidv6, 'HUP');
 			}
 		}
 		break;
@@ -5135,9 +5135,10 @@ EOD;
 
 		@file_put_contents($cron_file, $cron_cmd);
 		chmod($cron_file, 0755);
-		sigkillbypid("{$g['varrun_path']}/cron.pid", "HUP");
-	} else
+		killbypid("{$g['varrun_path']}/cron.pid", 'HUP');
+	} else {
 		unlink_if_exists($cron_file);
+	}
 }
 
 function get_vip_descr($ipaddress)

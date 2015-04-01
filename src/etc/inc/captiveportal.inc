@@ -273,7 +273,7 @@ function captiveportal_allowedhostname_configure() {
 //        @file_put_contents($cp_filterdns_filename, $cp_filterdns_conf);
 //        unset($cp_filterdns_conf);
 //        if (isvalidpid("{$g['varrun_path']}/filterdns-{$cpzone}-cpah.pid"))
-//            sigkillbypid("{$g['varrun_path']}/filterdns-{$cpzone}-cpah.pid", "HUP");
+//            killbypid("{$g['varrun_path']}/filterdns-{$cpzone}-cpah.pid", "HUP");
 //        else
 //            mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-{$cpzone}-cpah.pid -i 300 -c {$cp_filterdns_filename} -y {$cpzone} -d 1");
 //    } else {

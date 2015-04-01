@@ -342,32 +342,32 @@ EOD;
 	@chown("{$g['vardb_path']}/rrd", "nobody");
 
 	/* Restart apinger process */
-	if (isvalidpid("{$g['varrun_path']}/apinger.pid"))
-		sigkillbypid("{$g['varrun_path']}/apinger.pid", "HUP");
-	else {
+	if (isvalidpid("{$g['varrun_path']}/apinger.pid")) {
+		killbypid("{$g['varrun_path']}/apinger.pid", 'HUP');
+	} else {
 		/* start a new apinger process */
 		@unlink("{$g['varrun_path']}/apinger.status");
 		sleep(1);
 		mwexec_bg("/usr/local/sbin/apinger -c {$g['varetc_path']}/apinger.conf");
 		sleep(1);
-		sigkillbypid("{$g['varrun_path']}/apinger.pid", "USR1");
+		killbypid("{$g['varrun_path']}/apinger.pid", 'USR1');
 	}
 
 	return 0;
 }
 
 /* return the status of the apinger targets as a array */
-function return_gateways_status($byname = false) {
+function return_gateways_status($byname = false)
+{
 	global $config, $g;
 
 	$apingerstatus = array();
+
 	/* Always get the latest status from apinger */
-	if (file_exists("{$g['varrun_path']}/apinger.pid"))
-                sigkillbypid("{$g['varrun_path']}/apinger.pid", "USR1");
+	killbypid("{$g['varrun_path']}/apinger.pid", 'USR1');
 	if (file_exists("{$g['varrun_path']}/apinger.status")) {
 		$apingerstatus = file("{$g['varrun_path']}/apinger.status");
-	} else
-		$apingerstatus = array();
+	}
 
 	$status = array();
 	foreach($apingerstatus as $line) {

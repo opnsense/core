@@ -312,10 +312,11 @@ function services_radvd_configure($blacklist = array())
 	unset($radvdconf);
 
 	if (count($radvdifs) > 0) {
-		if (isvalidpid("{$g['varrun_path']}/radvd.pid"))
-			sigkillbypid("{$g['varrun_path']}/radvd.pid", "HUP");
-		else
+		if (isvalidpid("{$g['varrun_path']}/radvd.pid")) {
+			killbypid("{$g['varrun_path']}/radvd.pid", 'HUP');
+		} else {
 			mwexec("/usr/local/sbin/radvd -p {$g['varrun_path']}/radvd.pid -C {$g['varetc_path']}/radvd.conf -m syslog");
+		}
 	} else {
 		/* we need to shut down the radvd cleanly, it will send out the prefix
 		 * information with a lifetime of 0 to notify clients of a (possible) new prefix */
@@ -1742,8 +1743,7 @@ function services_dnsmasq_configure()
 	);
 
 	/* kill any running dnsmasq */
-	if (file_exists("{$g['varrun_path']}/dnsmasq.pid"))
-		sigkillbypid("{$g['varrun_path']}/dnsmasq.pid", "TERM");
+	killbypid("{$g['varrun_path']}/dnsmasq.pid");
 
 	if (isset($config['dnsmasq']['enable'])) {
 
@@ -1877,13 +1877,13 @@ function services_dnsmasq_configure()
 	return $return;
 }
 
-function services_unbound_configure() {
+function services_unbound_configure()
+{
 	global $config, $g;
 	$return = 0;
 
 	// kill any running Unbound instance
-	if (file_exists("{$g['varrun_path']}/unbound.pid"))
-		sigkillbypid("{$g['varrun_path']}/unbound.pid", "TERM");
+	killbypid("{$g['varrun_path']}/unbound.pid");
 
 	if (isset($config['unbound']['enable'])) {
 		if (file_exists("/var/run/booting"))
@@ -1910,7 +1910,7 @@ function services_snmpd_configure()
 	global $config, $g;
 
 	/* kill any running snmpd */
-	sigkillbypid("{$g['varrun_path']}/snmpd.pid", "TERM");
+	killbypid("{$g['varrun_path']}/snmpd.pid");
 	sleep(2);
 	if(is_process_running("bsnmpd"))
 		mwexec("/usr/bin/killall bsnmpd", true);
@@ -2284,7 +2284,7 @@ function configure_cron() {
 	unset($crontab_contents);
 
 	/* do a HUP kill to force sync changes */
-	sigkillbypid("{$g['varrun_path']}/cron.pid", "HUP");
+	killbypid("{$g['varrun_path']}/cron.pid", 'HUP');
 
 }
 

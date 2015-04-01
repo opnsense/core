@@ -299,13 +299,11 @@ function system_hosts_generate()
 	}
 
 	/*
-	 * Do not remove this because dhcpleases monitors with kqueue it needs to be
-	 * killed before writing to hosts files.
+	 * Do not remove this because dhcpleases monitors with kqueue
+	 * it needs to be * killed before writing to hosts files.
 	 */
-	if (file_exists("{$g['varrun_path']}/dhcpleases.pid")) {
-		sigkillbypid("{$g['varrun_path']}/dhcpleases.pid", "TERM");
-		@unlink("{$g['varrun_path']}/dhcpleases.pid");
-	}
+	killbypid("{$g['varrun_path']}/dhcpleases.pid");
+
 	$fd = fopen('/etc/hosts', 'w');
 	if (!$fd) {
 		log_error("Error: cannot open hosts file in system_hosts_generate().\n");
@@ -337,7 +335,7 @@ function system_dhcpleases_configure()
 			@touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
 		}
 		if (isvalidpid("{$g['varrun_path']}/dhcpleases.pid")) {
-			sigkillbypid("{$g['varrun_path']}/dhcpleases.pid", "HUP");
+			killbypid("{$g['varrun_path']}/dhcpleases.pid", 'HUP');
 		} else {
 			/* To ensure we do not start multiple instances of dhcpleases, perform some clean-up first. */
 			killbyname('dhcpleases');
@@ -358,8 +356,7 @@ function system_dhcpleases_configure()
 			);
 		}
 	} else {
-		sigkillbypid("{$g['varrun_path']}/dhcpleases.pid", "TERM");
-		@unlink("{$g['varrun_path']}/dhcpleases.pid");
+		killbypid("{$g['varrun_path']}/dhcpleases.pid");
 	}
 }
 
@@ -555,10 +552,11 @@ function system_staticroutes_configure($interface = "", $update_dns = false) {
 			file_put_contents("{$g['varetc_path']}/filterdns-route.hosts", $hostnames);
 			unset($hostnames);
 
-			if (isvalidpid("{$g['varrun_path']}/filterdns-route.pid"))
-				sigkillbypid("{$g['varrun_path']}/filterdns-route.pid", "HUP");
-			else
+			if (isvalidpid("{$g['varrun_path']}/filterdns-route.pid")) {
+				killbypid("{$g['varrun_path']}/filterdns-route.pid", 'HUP');
+			} else {
 				mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-route.pid -i {$interval} -c {$g['varetc_path']}/filterdns-route.hosts -d 1");
+			}
 		} else {
 			killbypid("{$g['varrun_path']}/filterdns-route.pid");
 			@unlink("{$g['varrun_path']}/filterdns-route.pid");
@@ -777,10 +775,11 @@ EOD;
 		$syslogd_extra = "-f {$g['varetc_path']}/syslog.conf {$sourceip}";
 	}
 
-	if (isvalidpid("{$g['varrun_path']}/syslog.pid"))
-		sigkillbypid("{$g['varrun_path']}/syslog.pid", "HUP");
-	else
+	if (isvalidpid("{$g['varrun_path']}/syslog.pid")) {
+		killbypid("{$g['varrun_path']}/syslog.pid", 'HUP');
+	} else {
 		$retval = mwexec_bg("/usr/local/sbin/syslogd -s -c -c -l {$g['dhcpd_chroot_path']}/var/run/log -P {$g['varrun_path']}/syslog.pid {$syslogd_extra}");
+	}
 
 	if (file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";

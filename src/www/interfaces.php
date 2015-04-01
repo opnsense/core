@@ -789,7 +789,7 @@ if ($_POST['apply']) {
 			if ($wancfg['ipaddrv6'] == "dhcp6") {
 				$pid = find_dhcp6c_process($wancfg['if']);
 				if ($pid) {
-					sigkillbypid($pid, 'TERM');
+					killbypid($pid);
 				}
 			}
 		}

@@ -327,9 +327,9 @@ function filter_configure_sync($delete_states_if_needed = true)
 	if(!empty($filterdns)) {
 		@file_put_contents("{$g['varetc_path']}/filterdns.conf", implode("", $filterdns));
 		unset($filterdns);
-		if (isvalidpid("{$g['varrun_path']}/filterdns.pid"))
-			sigkillbypid("{$g['varrun_path']}/filterdns.pid", "HUP");
-		else {
+		if (isvalidpid("{$g['varrun_path']}/filterdns.pid")) {
+			killbypid("{$g['varrun_path']}/filterdns.pid", 'HUP');
+		} else {
 			/*
 			 * FilterDNS has three debugging levels. The default choosen is 1.
 			 * Availabe are level 2 and greater then 2.
@@ -1974,7 +1974,7 @@ function filter_nat_rules_generate() {
 		if (!$helpers) {
 			mwexec("/usr/sbin/inetd -wW -R 0 -a 127.0.0.1 /var/etc/inetd.conf");
 		} else {
-			sigkillbypid("/var/run/inetd.pid", "HUP");
+			killbypid('/var/run/inetd.pid', 'HUP');
 		}
 	}
 
