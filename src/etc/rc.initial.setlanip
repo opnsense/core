@@ -460,7 +460,7 @@ if (!$dry_run) {
 		services_dhcpd_configure();
 	}
 	if ($restart_webgui) {
-		mwexec('/usr/local/etc/rc.restart_webgui please');
+		mwexec('/usr/local/etc/rc.restart_webgui');
 	}
 }
 

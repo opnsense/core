@@ -26,18 +26,26 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function killbypid($pidfile, $sig = 'TERM')
+function killbyname($procname, $sig = 'TERM')
 {
-	/* return 1 for success and 0 for a failure */
-
-	if (file_exists($pidfile)) {
-		return mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile), true);
+	if (!is_process_running($procname)) {
+		return;
 	}
 
-	return 0;
+	mwexecf('/bin/pkill -%s %s', array($sig, $procname));
 }
 
-function isvalidpid($pidfile) {
+function killbypid($pidfile, $sig = 'TERM')
+{
+	if (!file_exists($pidfile)) {
+		return;
+	}
+
+	mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile));
+}
+
+function isvalidpid($pidfile)
+{
 	$output = "";
 	if (file_exists($pidfile)) {
 		exec("/bin/pgrep -nF {$pidfile}", $output, $retval);
@@ -51,14 +59,6 @@ function is_process_running($process)
 	exec('/bin/pgrep -anx ' . escapeshellarg($process), $output, $retval);
 
 	return (intval($retval) == 0);
-}
-
-/* kill a process by name */
-function killbyname($procname)
-{
-	if (is_process_running($procname)) {
-		mwexec('/usr/bin/killall ' . escapeshellarg($procname));
-	}
 }
 
 function is_subsystem_dirty($subsystem = '')
@@ -987,7 +987,7 @@ function mwexecf($format, $args = array(), $mute = false, $clearsigmask = false)
 		$args[$id] = escapeshellarg($arg);
 	}
 
-	mwexec(vsprintf($format, $args), $mute, $clearsigmask);
+	return mwexec(vsprintf($format, $args), $mute, $clearsigmask);
 }
 
 /* wrapper for exec() */

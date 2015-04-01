@@ -1,25 +1,23 @@
 #!/usr/local/bin/php
 <?php
 
-require_once("config.inc");
-require_once("functions.inc");
-require_once("shaper.inc");
-require_once("captiveportal.inc");
-require_once("rrd.inc");
+require_once('config.inc');
+require_once('functions.inc');
+require_once('shaper.inc');
+require_once('captiveportal.inc');
+require_once('rrd.inc');
 
-echo "Restarting webConfigurator...";
+echo 'Restarting webConfigurator...';
 
-killbyname("lighttpd");
+killbyname('lighttpd');
 
-if ($argc > 1) {
-	/*
-	 * Force killing all php-cgi children as well
-	 * to avoid hiccups with moved include files.
-	 */
-	killbyname("php-cgi");
-}
+/*
+ * Force reloading all php-cgi children to
+ * avoid hiccups with moved include files.
+ */
+killbyname('php-cgi', 'HUP');
 
-while (is_process_running("lighttpd")) {
+while (is_process_running('lighttpd')) {
         echo '.';
         sleep(1);
 }
@@ -28,4 +26,4 @@ system_webgui_start();
 captiveportal_init_webgui();
 enable_rrd_graphing();
 
-echo "done.\n";
+echo 'done.' . PHP_EOL;
