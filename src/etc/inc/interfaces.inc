@@ -3643,8 +3643,8 @@ function interface_dhcpv6_configure($interface = "wan", $wancfg) {
 	mwexecf(
 		'/usr/sbin/rtsold -p %s -O %s -R %s %s',
 		array(
-			"{$g['varetc_path']}/rtsold_{$wanif}_script.sh",
 			"{$g['varrun_path']}/rtsold_{$wanif}.pid",
+			"{$g['varetc_path']}/rtsold_{$wanif}_script.sh",
 			'/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
 			$wanif
 		)
