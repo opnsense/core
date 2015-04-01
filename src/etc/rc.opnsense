@@ -1,26 +1,28 @@
 #!/bin/sh
 
+if [ ! -d /etc/rc.conf.d ]; then
+	exit 0
+fi
+
 # check which services to enable
 . /etc/rc.conf
 for rc_conf in /etc/rc.conf.d/*;
 do
-   . $rc_conf
+	. $rc_conf
 done
 
 # probe all deamons in /usr/local/etc/rc.d/
-ls /usr/local/etc/rc.d/* | while read rc_filename
-do
-#  echo $rc_filename
-  # read rc scripts and parse name and rcvar variables
-  _file=`basename $rc_filename`
-  eval `/usr/bin/grep "name[[:blank:]]*=" $rc_filename | /usr/bin/head -n 1`
-  eval `grep "rcvar[[:blank:]]*=" $rc_filename | /usr/bin/sed '/^$/d'`
+ls /usr/local/etc/rc.d/* | while read rc_filename; do
+	# read rc scripts and parse name and rcvar variables
+	_file=`basename $rc_filename`
+	eval `/usr/bin/grep "name[[:blank:]]*=" $rc_filename | /usr/bin/head -n 1`
+	eval `grep "rcvar[[:blank:]]*=" $rc_filename | /usr/bin/sed '/^$/d'`
 
-  # check if service is enabled
-  eval "is_enabled=\$"$rcvar""
+	# check if service is enabled
+	eval "is_enabled=\$"$rcvar""
 
-  # start/stop service
-  if [ "$is_enabled" == "YES" ]; then
-	$rc_filename $1
-  fi
+	# start/stop service
+	if [ "$is_enabled" == "YES" ]; then
+		$rc_filename $1
+	fi
 done
