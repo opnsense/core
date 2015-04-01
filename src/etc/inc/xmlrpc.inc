@@ -39,6 +39,8 @@ class XMLRPCServer
      * every usable module should include a function to return it's own registrable functions, using
      * the following patten:
      *      xmlrpc_publishable_{filename without .inc}
+     *
+     * when functions wrap around a local variant with the same name, suffix with _xmlrpc (which will be stripped off)
      */
     private function loadPlugins()
     {
@@ -48,7 +50,8 @@ class XMLRPCServer
             $publ_func = "xmlrpc_publishable_" .str_replace(".inc", "", basename($filename));
             if (function_exists($publ_func)) {
                 foreach ($publ_func() as $function) {
-                    $this->xmlrpc_callbacks[$this->prefix.".".$function] = $function;
+                    $publish_name = $this->prefix.".".str_replace("_xmlrpc", "", $function);
+                    $this->xmlrpc_callbacks[$publish_name] = $function;
                 }
             }
         }
