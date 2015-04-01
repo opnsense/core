@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# shutdown rc scripts
+/usr/local/etc/rc.opnsense stop
+
+# backup volatile internals
+/usr/local/etc/rc.backup_rrd
+/usr/local/etc/rc.backup_dhcpleases
+/usr/local/etc/rc.savevouchers
+
+# wait for config lock to release
+php -a >/dev/null  << EOF
+\$fp = fopen('/conf/config.xml', "w+");
+if (flock(\$fp, LOCK_EX)) {
+	flock(\$fp, LOCK_UN);
+	fclose(\$fp);
+}
+EOF
+
+# run beep sequence if enabled
+/usr/local/bin/beep.sh stop

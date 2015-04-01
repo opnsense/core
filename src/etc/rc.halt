@@ -1,19 +1,7 @@
 #!/bin/sh
 
-# shutdown rc scripts
-/usr/local/etc/rc.opnsense stop
+# invoke shared powerdown routines
+. /usr/local/etc/rc.halt.common
 
-/usr/local/etc/rc.backup_rrd
-/usr/local/etc/rc.backup_dhcpleases
-
-# wait for config lock to release
-php -a >/dev/null  << EOF
-\$fp = fopen('/conf/config.xml', "w+");
-if (flock(\$fp, LOCK_EX)) {
-   flock(\$fp, LOCK_UN);
-   fclose(\$fp);
-}
-
-EOF
-
+# power down the system
 /sbin/shutdown -op now

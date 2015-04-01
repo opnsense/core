@@ -1,7 +1,8 @@
 <?php
+
 /*
-	Copyright (C) 2010-2012 Ermal Luci <eri@pfsense.org>
-	Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2010-2012 Ermal Luci <eri@pfsense.org>
+    Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2007 Marcel Wiget <mwiget@mac.com>
     All rights reserved.
 
@@ -28,15 +29,8 @@
 
 */
 
-/*
-	pfSense_BUILDER_BINARIES:	/usr/local/bin/voucher
-	pfSense_MODULE:	captiveportal
-*/
-
 /* include all configuration functions */
-if(!function_exists('captiveportal_syslog'))
-	require_once("captiveportal.inc");
-
+require_once("captiveportal.inc");
 
 function voucher_expire($voucher_received) {
 	global $g, $config, $cpzone;
@@ -276,8 +270,9 @@ function voucher_auth($voucher_received, $test = 0) {
 	return $total_minutes;
 }
 
-function voucher_configure($sync = false) {
-	global $config, $g, $cpzone;
+function voucher_configure($sync = false)
+{
+	global $config, $cpzone;
 
 	if (is_array($config['voucher'])) {
 		foreach ($config['voucher'] as $voucherzone => $vcfg) {
@@ -474,57 +469,70 @@ function voucher_log($priority, $message) {
     closelog();
 }
 
-/* Save active and used voucher DB into XML config and write it to flash
- * Called during reboot -> system_reboot_cleanup() and every active voucher change
+/*
+ * Save active and used voucher DB into XML config and write it to config
+ * Called during reboot and every active voucher change
  */
-function voucher_save_db_to_config() {
-    global $config, $g, $cpzone;
+function voucher_save_db_to_config()
+{
+	global $config, $cpzone;
 
-	if (is_array($config['voucher'])) {
-		foreach ($config['voucher'] as $voucherzone => $vcfg) {
-			$cpzone = $voucherzone;
-			voucher_save_db_to_config_zone();
-		}
+	if (!isset($config['voucher'])) {
+		return;
+	}
+
+	$needs_write = 0;
+
+	foreach ($config['voucher'] as $voucherzone => $vcfg) {
+		$cpzone = $voucherzone;
+		$needs_write += voucher_save_db_to_config_zone();
+	}
+
+	if ($needs_write) {
+		write_config("Backing up vouchers");
 	}
 }
 
-function voucher_save_db_to_config_zone() {
-    global $config, $g, $cpzone;
+function voucher_save_db_to_config_zone()
+{
+	global $config, $cpzone;
 
-    if (!isset($config['voucher'][$cpzone]['enable']))
-        return;   // no vouchers or don't want to save DB's
+	if (!isset($config['voucher'][$cpzone]['enable'])) {
+		// no vouchers or don't want to save DB's
+		return 0;
+	}
 
-    if (!is_array($config['voucher'][$cpzone]['roll']))
-	return;
+	if (!isset($config['voucher'][$cpzone]['roll'])) {
+		return 0;
+	}
 
-    $voucherlck = lock("voucher{$cpzone}", LOCK_EX);
+	$voucherlck = lock("voucher{$cpzone}", LOCK_EX);
 
-    // walk all active rolls and save runtime DB's to flash
-    $a_roll = &$config['voucher'][$cpzone]['roll'];
-    while (list($key, $value) = each($a_roll)) {
-        $rollent = &$a_roll[$key];
-        $roll = $rollent['number'];
-        $bitmask = voucher_read_used_db($roll);
-        $rollent['used'] = base64_encode($bitmask);
-        $active_vouchers = voucher_read_active_db($roll);
-        $db = array();
+	// walk all active rolls and save runtime DBs
+	$a_roll = &$config['voucher'][$cpzone]['roll'];
+	while (list($key, $value) = each($a_roll)) {
+		$rollent = &$a_roll[$key];
+		$roll = $rollent['number'];
+		$bitmask = voucher_read_used_db($roll);
+		$rollent['used'] = base64_encode($bitmask);
+		$active_vouchers = voucher_read_active_db($roll);
+		$db = array();
 		$dbi = 1;
-        foreach($active_vouchers as $voucher => $line) {
-            list($timestamp,$minutes) = explode(",", $line);
-            $activent['voucher'] = $voucher;
-            $activent['timestamp'] = $timestamp;
-            $activent['minutes'] = $minutes;
-            $db["v{$dbi}"] = $activent;
-	    $dbi++;
-        }
-        $rollent['active'] = $db;
-	unset($active_vouchers);
-    }
 
-    unlock($voucherlck);
+		foreach($active_vouchers as $voucher => $line) {
+			list($timestamp, $minutes) = explode(',', $line);
+			$activent['voucher'] = $voucher;
+			$activent['timestamp'] = $timestamp;
+			$activent['minutes'] = $minutes;
+			$db["v{$dbi}"] = $activent;
+			$dbi++;
+		}
 
-    write_config("Synching vouchers");
-    return;
+		$rollent['active'] = $db;
+		unset($active_vouchers);
+	}
+
+	unlock($voucherlck);
+
+	return 1;
 }
-
-?>

@@ -1645,10 +1645,10 @@ function system_reboot($sync = false)
 	mwexec($cmd);
 }
 
-function system_reboot_cleanup() {
+function system_reboot_cleanup()
+{
 	global $config, $cpzone;
 
-	mwexec("/usr/local/bin/beep.sh stop");
 	require_once("captiveportal.inc");
 	if (is_array($config['captiveportal'])) {
 		foreach ($config['captiveportal'] as $cpzone=>$cp) {
@@ -1656,8 +1656,6 @@ function system_reboot_cleanup() {
 			captiveportal_send_server_accounting(true);
 		}
 	}
-	require_once("voucher.inc");
-	voucher_save_db_to_config();
 }
 
 function system_console_configure()
