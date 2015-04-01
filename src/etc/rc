@@ -175,10 +175,8 @@ if [ ! -L /etc/hosts ]; then
 	/bin/ln -s /var/etc/hosts /etc/hosts
 fi
 
-if [ ! -L /etc/resolv.conf ]; then
-    /bin/rm -rf /etc/resolv.conf
-    /bin/ln -s /var/etc/resolv.conf /etc/resolv.conf
-fi
+# Remove symlinks that are no longer needed
+if [ -L /etc/resolv.conf ]; then rm /etc/resolv.conf; fi
 
 # Setup compatibility link for packages that
 # have trouble overriding the PREFIX configure

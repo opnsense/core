@@ -124,7 +124,7 @@ function system_resolvconf_generate($dynupdate = false)
 
 	$dnslock = lock('resolvconf', LOCK_EX);
 
-	$fd = fopen("{$g['varetc_path']}/resolv.conf", "w");
+	$fd = fopen('/etc/resolv.conf', 'w');
 	if (!$fd) {
 		printf("Error: cannot open resolv.conf in system_resolvconf_generate().\n");
 		unlock($dnslock);
@@ -133,7 +133,7 @@ function system_resolvconf_generate($dynupdate = false)
 
 	fwrite($fd, $resolvconf);
 	fclose($fd);
-	chmod("{$g['varetc_path']}/resolv.conf", 0644);
+	chmod('/etc/resolv.conf', 0644);
 
 	if (!file_exists("/var/run/booting")) {
 		/* restart dhcpd (nameservers may have changed) */

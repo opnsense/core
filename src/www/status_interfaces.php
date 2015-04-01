@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>.
@@ -305,7 +306,7 @@ include("head.inc");
 									<?=htmlspecialchars($ifinfo['gatewayv6']);?>
 								</td>
 							</tr>
-							<?php endif; if ($ifdescr == "wan" && file_exists("{$g['varetc_path']}/resolv.conf")): ?>
+							<?php endif; if ($ifdescr == 'wan' && file_exists('/etc/resolv.conf')): ?>
 							<tr>
 							<td width="22%" class="vncellt"><?=gettext("ISP DNS servers");?></td>
 							<td width="78%" class="listr">
