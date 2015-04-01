@@ -41,7 +41,7 @@ function xmlrpc_publishable_test()
  * test function
  * @return string
  */
-function test()
+function test($message="test")
 {
-    return "test";
+    return $message;
 }

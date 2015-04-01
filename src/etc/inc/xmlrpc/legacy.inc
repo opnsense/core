@@ -41,7 +41,7 @@ function xmlrpc_publishable_legacy()
     );
 
 
-    return array($publish);
+    return $publish;
 }
 
 /**
