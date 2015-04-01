@@ -8,12 +8,12 @@ function getFormData(parent) {
 
     data = {};
     $( "#"+parent+"  input,#"+parent+" select" ).each(function( index ) {
-        if ($(this).attr('id') == undefined) {
+        if ($(this).prop('id') == undefined) {
             // we need an id.
             return;
         }
         node = data ;
-        keyparts = $(this).attr('id').split('.');
+        keyparts = $(this).prop('id').split('.');
         for (var i in keyparts) {
             if (!(keyparts[i] in node)) {
                 node[keyparts[i]] = {};
@@ -25,7 +25,9 @@ function getFormData(parent) {
                     // selectbox, collect selected items
                     var tmp_str = "";
                     $(this).children().each(function(index){
-                        if ($(this).prop("selected")){
+                        // normally this should use prop, but this sometimes seem to return incorrect data....
+                        // maybe replace this with a later version of jquery. tested with 1.11.2
+                        if ($(this).attr("selected") != undefined){
                             if (tmp_str != "") tmp_str = tmp_str + ",";
                             tmp_str = tmp_str + $(this).val();
                         }
@@ -63,12 +65,12 @@ function getFormData(parent) {
  */
 function setFormData(parent,data) {
     $( "#"+parent+"  input,#"+parent+" select" ).each(function( index ) {
-        if ($(this).attr('id') == undefined) {
+        if ($(this).prop('id') == undefined) {
             // we need an id.
             return;
         }
         node = data ;
-        keyparts = $(this).attr('id').split('.');
+        keyparts = $(this).prop('id').split('.');
         for (var i in keyparts) {
             if (!(keyparts[i] in node)) {
                 break;
@@ -111,12 +113,12 @@ function setFormData(parent,data) {
  */
 function handleFormValidation(parent,validationErrors) {
     $( "#"+parent+"  input" ).each(function( index ) {
-        if (validationErrors != undefined && $(this).attr('id') in validationErrors) {
-            $("*[for='" + $(this).attr('id') + "']").addClass("has-error");
-            $("span[for='" + $(this).attr('id') + "']").text(validationErrors[$(this).attr('id')]);
+        if (validationErrors != undefined && $(this).prop('id') in validationErrors) {
+            $("*[for='" + $(this).prop('id') + "']").addClass("has-error");
+            $("span[for='" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
         } else {
-            $("*[for='" + $(this).attr('id') + "']").removeClass("has-error");
-            $("span[for='" + $(this).attr('id') + "']").text("");
+            $("*[for='" + $(this).prop('id') + "']").removeClass("has-error");
+            $("span[for='" + $(this).prop('id') + "']").text("");
         }
     });
 }
