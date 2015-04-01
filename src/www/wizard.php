@@ -802,13 +802,15 @@ function showchange() {
 	$aliases = "";
 	$addrisfirst = 0;
 	$aliasesaddr = "";
-	if($config['aliases']['alias'] <> "" and is_array($config['aliases']['alias']))
-		foreach($config['aliases']['alias'] as $alias_name) {
-				if($isfirst == 1)
+	if (isset($config['aliases']['alias'])) {
+		foreach ($config['aliases']['alias'] as $alias_name) {
+				if ($isfirst == 1) {
 					$aliases .= ",";
+				}
 				$aliases .= "'" . $alias_name['name'] . "'";
 				$isfirst = 1;
 		}
+	}
 ?>
 
 	var customarray=new Array(<?php echo $aliases; ?>);
