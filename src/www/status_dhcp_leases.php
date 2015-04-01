@@ -85,23 +85,32 @@ include("head.inc");
 
 <?php
 
-function leasecmp($a, $b) {
+function leasecmp($a, $b)
+{
         return strcmp($a[$_GET['order']], $b[$_GET['order']]);
 }
 
-function adjust_gmt($dt) {
+function adjust_gmt($dt)
+{
 	global $config;
-	$dhcpd = $config['dhcpd'];
+
+	$dhcpd = array();
+	if (isset($config['dhcpd'])) {
+		$dhcpd = $config['dhcpd'];
+	}
+
 	foreach ($dhcpd as $dhcpditem) {
 		$dhcpleaseinlocaltime = $dhcpditem['dhcpleaseinlocaltime'];
 		if ($dhcpleaseinlocaltime == "yes")
 			break;
 	}
+
 	if ($dhcpleaseinlocaltime == "yes") {
 		$ts = strtotime($dt . " GMT");
 		return strftime("%Y/%m/%d %I:%M:%S%p", $ts);
-	} else
-		return $dt;
+	}
+
+	return $dt;
 }
 
 function remove_duplicate($array, $field)
@@ -347,9 +356,15 @@ if(count($pools) > 0) {
 										$fspans = "";
 										$fspane = "&nbsp;";
 									}
+
+									$dhcpd = array();
+									if (isset($config['dhcpd'])) {
+										$dhcpd = $config['dhcpd'];
+									}
+
 							                $lip = ip2ulong($data['ip']);
 									if ($data['act'] == "static") {
-										foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
+										foreach ($dhcpd as $dhcpif => $dhcpifconf) {
 											if(is_array($dhcpifconf['staticmap'])) {
 												foreach ($dhcpifconf['staticmap'] as $staticent) {
 													if ($data['ip'] == $staticent['ipaddr']) {
@@ -363,7 +378,7 @@ if(count($pools) > 0) {
 												break;
 										}
 									} else {
-										foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
+										foreach ($dhcpd as $dhcpif => $dhcpifconf) {
 											if (!is_array($dhcpifconf['range']))
 												continue;
 											if (($lip >= ip2ulong($dhcpifconf['range']['from'])) && ($lip <= ip2ulong($dhcpifconf['range']['to']))) {
