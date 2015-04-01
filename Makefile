@@ -14,13 +14,16 @@ install:
 	# move all sources to their destination
 	@mkdir -p ${DESTDIR}/usr/local
 	@cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
+	# disable warnings for production systems
+	@sed -i '' -e 's/E_STRICT/E_STRICT | E_WARNING/g' \
+	    ${DESTDIR}/usr/local/etc/rc.php_ini_setup
 	# bootstrap pkg(8) files that are not in sources
 	@mkdir -p ${DESTDIR}/usr/local/etc/pkg/repos
 	@cp ${.CURDIR}/pkg/OPNsense.conf ${DESTDIR}/usr/local/etc/pkg/repos
 	@echo /usr/local/etc/pkg/repos/OPNsense.conf
 	@cp ${.CURDIR}/pkg/pkg.conf ${DESTDIR}/usr/local/etc
 	@echo /usr/local/etc/pkg.conf
-	# and finally pretty-print a list of files present
+	# finally pretty-print a list of files present
 	@(cd ${.CURDIR}/src; find * -type f) | \
 	    xargs -n1 printf "/usr/local/%s\n"
 
