@@ -1969,12 +1969,13 @@ function filter_nat_rules_generate() {
 		$natrules .= "\n# Reflection redirects and NAT for 1:1 mappings\n" . $reflection_txt;
 
 	// Check if inetd is running, if not start it.	If so, restart it gracefully.
-	$helpers = isvalidproc("inetd");
-	if(file_exists("/var/etc/inetd.conf")) {
-		if(!$helpers)
+	$helpers = is_process_running('inetd');
+	if (file_exists('/var/etc/inetd.conf')) {
+		if (!$helpers) {
 			mwexec("/usr/sbin/inetd -wW -R 0 -a 127.0.0.1 /var/etc/inetd.conf");
-		else
+		} else {
 			sigkillbypid("/var/run/inetd.pid", "HUP");
+		}
 	}
 
 	return $natrules;

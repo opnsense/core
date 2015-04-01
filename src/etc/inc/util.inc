@@ -39,15 +39,11 @@ function isvalidpid($pidfile) {
 	return false;
 }
 
-function is_process_running($process) {
-	$output = "";
-	exec("/bin/pgrep -anx " . escapeshellarg($process), $output, $retval);
+function is_process_running($process)
+{
+	exec('/bin/pgrep -anx ' . escapeshellarg($process), $output, $retval);
 
 	return (intval($retval) == 0);
-}
-
-function isvalidproc($proc) {
-	return is_process_running($proc);
 }
 
 /* sigkill a process by pid file */
@@ -62,7 +58,7 @@ function sigkillbypid($pidfile, $sig) {
 /* kill a process by name */
 function killbyname($procname)
 {
-	if (isvalidproc($procname)) {
+	if (is_process_running($procname)) {
 		mwexec('/usr/bin/killall ' . escapeshellarg($procname));
 	}
 }
