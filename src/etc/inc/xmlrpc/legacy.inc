@@ -49,11 +49,15 @@ function xmlrpc_publishable_legacy()
  * @param $params
  * @return mixed
  */
-function get_notices_xmlrpc($category)
+function get_notices_xmlrpc($category=null)
 {
     if (!function_exists("get_notices")) {
         require_once("notices.inc");
     }
 
-    return get_notices($category);
+    if ($category==null) {
+        return get_notices();
+    } else {
+        return get_notices($category);
+    }
 }
