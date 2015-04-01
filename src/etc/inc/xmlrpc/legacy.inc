@@ -78,7 +78,7 @@ function reboot_xmlrpc()
  */
 function firmware_version_xmlrpc()
 {
-    if (!function_exists("get_notices")) {
+    if (!function_exists("host_firmware_version")) {
         require_once("pfsense-utils.inc");
     }
     return host_firmware_version();
