@@ -1451,4 +1451,23 @@ function session_auth() {
 	return true;
 }
 
+/**
+ * do a basic authentication, uses $_SERVER['HTTP_AUTHORIZATION'] to validate user.
+ * @param $http_auth_header http_authorization header content
+ * @return bool
+ */
+function http_basic_auth($http_auth_header)
+{
+    $tags=explode(" ", $http_auth_header) ;
+    if (count($tags) >= 2) {
+        $userinfo= explode(":", base64_decode($tags[1])) ;
+        if (count($userinfo)>=2) {
+            return authenticate_user($userinfo[0], $userinfo[1]);
+        }
+    }
+
+    // not authenticated
+    return false;
+}
+
 ?>
