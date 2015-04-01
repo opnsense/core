@@ -306,7 +306,7 @@ function system_hosts_generate()
 		sigkillbypid("{$g['varrun_path']}/dhcpleases.pid", "TERM");
 		@unlink("{$g['varrun_path']}/dhcpleases.pid");
 	}
-	$fd = fopen("{$g['varetc_path']}/hosts", "w");
+	$fd = fopen('/etc/hosts', 'w');
 	if (!$fd) {
 		log_error("Error: cannot open hosts file in system_hosts_generate().\n");
 		return 1;
@@ -333,20 +333,29 @@ function system_dhcpleases_configure()
 		|| (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcp']))) {
 		/* Make sure we do not error out */
 		mwexec("/bin/mkdir -p {$g['dhcpd_chroot_path']}/var/db");
-		if (!file_exists("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases"))
+		if (!file_exists("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases")) {
 			@touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
-		if (isvalidpid("{$g['varrun_path']}/dhcpleases.pid"))
+		}
+		if (isvalidpid("{$g['varrun_path']}/dhcpleases.pid")) {
 			sigkillbypid("{$g['varrun_path']}/dhcpleases.pid", "HUP");
-		else {
+		} else {
 			/* To ensure we do not start multiple instances of dhcpleases, perform some clean-up first. */
-			if (is_process_running("dhcpleases"))
-				mwexec('/bin/pkill dhcpleases');
-			@unlink("{$g['varrun_path']}/dhcpleases.pid");
-			if (isset($config['unbound']['enable']))
-				$dns_pid = "unbound.pid";
-			else
-				$dns_pid = "dnsmasq.pid";
-			mwexec("/usr/local/sbin/dhcpleases -l {$g['dhcpd_chroot_path']}/var/db/dhcpd.leases -d {$config['system']['domain']} -p {$g['varrun_path']}/{$dns_pid} -h {$g['varetc_path']}/hosts");
+			killbyname('dhcpleases');
+			@unlink('/var/run/dhcpleases.pid');
+			if (isset($config['unbound']['enable'])) {
+				$dns_pid = 'unbound.pid';
+			} else {
+				$dns_pid = 'dnsmasq.pid';
+			}
+			mwexecf(
+				'/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
+				array(
+					"{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases",
+					$config['system']['domain'],
+					"/var/run/{$dns_pid}",
+					'/etc/hosts'
+				)
+			);
 		}
 	} else {
 		sigkillbypid("{$g['varrun_path']}/dhcpleases.pid", "TERM");

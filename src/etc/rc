@@ -169,14 +169,9 @@ if [ ! -L /etc/syslog.conf ]; then
 	/bin/ln -s /var/etc/syslog.conf /etc/syslog.conf
 fi
 
-# Repair symlinks if they are broken
-if [ ! -L /etc/hosts ]; then
-	/bin/rm -rf /etc/hosts
-	/bin/ln -s /var/etc/hosts /etc/hosts
-fi
-
 # Remove symlinks that are no longer needed
 if [ -L /etc/resolv.conf ]; then rm /etc/resolv.conf; fi
+if [ -L /etc/hosts ]; then /bin/rm /etc/hosts; fi
 
 # Setup compatibility link for packages that
 # have trouble overriding the PREFIX configure

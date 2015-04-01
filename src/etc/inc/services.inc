@@ -1755,7 +1755,7 @@ function services_dnsmasq_configure()
 		$args = "";
 
 		if (isset($config['dnsmasq']['regdhcp'])) {
-			$args .= " --dhcp-hostsfile={$g['varetc_path']}/hosts ";
+			$args .= " --dhcp-hostsfile=/etc/hosts ";
 		}
 
 		/* Setup listen port, if non-default */
