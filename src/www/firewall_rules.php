@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
@@ -152,20 +153,24 @@ if ($config['pptpd']['mode'] == "server")
 		$iflist['pptp'] = "PPTP VPN";
 
 if (is_array($config['pppoes']['pppoe'])) {
-	foreach ($config['pppoes']['pppoe'] as $pppoes)
-		if (($pppoes['mode'] == 'server') && have_ruleint_access("pppoe"))
+	foreach ($config['pppoes']['pppoe'] as $pppoes) {
+		if (($pppoes['mode'] == 'server') && have_ruleint_access('pppoe')) {
 			$iflist['pppoe'] = "PPPoE Server";
+		}
+	}
 }
 
 /* add ipsec interfaces */
-if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
-	if(have_ruleint_access("enc0"))
-		$iflist["enc0"] = "IPsec";
+if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
+	if (have_ruleint_access('enc0')) {
+		$iflist['enc0'] = 'IPsec';
+	}
+}
 
 /* add openvpn/tun interfaces */
-if  ($config['openvpn']["openvpn-server"] || $config['openvpn']["openvpn-client"])
-	$iflist["openvpn"] = "OpenVPN";
-
+if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
+	$iflist['openvpn'] = 'OpenVPN';
+}
 
 if (!$if || !isset($iflist[$if])) {
 	if ("any" == $if)
