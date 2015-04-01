@@ -1621,8 +1621,6 @@ function system_ntp_configure($start_ntpd = true)
 
 function system_halt($sync = false)
 {
-	system_reboot_cleanup();
-
 	$cmd ='/usr/local/etc/rc.halt > /dev/null 2>&1';
 
 	if (!$sync) {
@@ -1634,8 +1632,6 @@ function system_halt($sync = false)
 
 function system_reboot($sync = false)
 {
-	system_reboot_cleanup();
-
 	$cmd ='/usr/local/etc/rc.reboot > /dev/null 2>&1';
 
 	if (!$sync) {
@@ -1643,19 +1639,6 @@ function system_reboot($sync = false)
 	}
 
 	mwexec($cmd);
-}
-
-function system_reboot_cleanup()
-{
-	global $config, $cpzone;
-
-	require_once("captiveportal.inc");
-	if (is_array($config['captiveportal'])) {
-		foreach ($config['captiveportal'] as $cpzone=>$cp) {
-			captiveportal_radius_stop_all();
-			captiveportal_send_server_accounting(true);
-		}
-	}
 }
 
 function system_console_configure()

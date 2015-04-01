@@ -98,12 +98,13 @@ function voucher_expire($voucher_received) {
 
 	// Refresh active DBs
 	if ($active_dirty == true) {
-		foreach ($active_vouchers as $roll => $active)
+		foreach ($active_vouchers as $roll => $active) {
 			voucher_write_active_db($roll, $active);
+		}
 		unset($active_vouchers);
 
-		/* Triger a sync of the vouchers on config */
-		send_event("service sync vouchers");
+		/* trigger a sync of the vouchers on config */
+		voucher_save_db_to_config();
 	}
 
 	// Write back the used DB's
@@ -263,9 +264,8 @@ function voucher_auth($voucher_received, $test = 0) {
 	$active_vouchers[$first_voucher_roll][$first_voucher] = "$timestamp,$minutes";
 	voucher_write_active_db($first_voucher_roll, $active_vouchers[$first_voucher_roll]);
 
-	/* Triger a sync of the vouchers on config */
-	send_event("service sync vouchers");
-
+	/* trigger a sync of the vouchers on config */
+	voucher_save_db_to_config();
 
 	return $total_minutes;
 }
@@ -393,11 +393,11 @@ function voucher_read_active_db($roll) {
 				}
 			}
 			fclose($fd);
-			if ($dirty) { // if we found expired entries, lets save our snapshot
+			if ($dirty) {
+				/* if we found expired entries, lets save our snapshot */
 				voucher_write_active_db($roll, $active);
-
-				/* Triger a sync of the vouchers on config */
-				send_event("service sync vouchers");
+				/* trigger a sync of the vouchers on config */
+				voucher_save_db_to_config();
 			}
 		}
 	}
