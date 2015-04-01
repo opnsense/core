@@ -54,14 +54,14 @@ if (file_exists($file_pkg_status)) {
 
 if($_POST['action'] == 'pkg_upgrade') {
 	// execute shell command and collect (only valid) info into named array
-	$cmd="/usr/local/opnsense/scripts/pkg_upgrade.sh " . $package . " > /dev/null 2 > /dev/null < /dev/null &";
-	$shell->exec($cmd,false,false,$shell_output);
+	$cmd = '/usr/bin/nohup /usr/local/opnsense/scripts/pkg_upgrade.sh ' . $package . ' > /dev/null 2> /dev/null < /dev/null &';
+	$shell->exec($cmd, false, false, $shell_output);
 	exit;
 }
 
 if($_POST['action'] == 'pkg_update') {
 	// execute shell command and collect (only valid) info into named array
-	$shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh",false,false,$shell_output);
+	$shell->exec('/usr/local/opnsense/scripts/pkg_updatecheck.sh', false, false, $shell_output);
 }
 
 if($_POST['action'] == 'update_status' ) {
