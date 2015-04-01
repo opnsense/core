@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -342,7 +343,7 @@ function enable_change(whichone) {
 								  <td width="22%" valign="top" class="vncellreq">Write community string</td>
 						          <td width="78%" class="vtable">
 						                    <input name="rwcommunity" type="text" class="formfld unknown" id="rwcommunity" size="40" value="<?=htmlspecialchars($pconfig['rwcommunity']);?>" />
-								    <br />Please use something other then &quot;private&quot; here<br />
+								    <br />Please use something other than &quot;private&quot; here<br />
 								  </td>
 						                </tr>
 									*/

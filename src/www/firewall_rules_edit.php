@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
@@ -283,10 +284,6 @@ if ($_POST) {
 		}
 	}
 
-	if (($_POST['proto'] != "tcp") && ($_POST['proto'] != "udp") && ($_POST['proto'] != "tcp/udp") && ($_POST['proto'] != "icmp")) {
-		if($_POST['ipprotocol'] == "inet46")
-			$input_errors[] =  gettext("You can not assign a protocol other then ICMP, TCP, UDP or TCP/UDP to a rule that applies to IPv4 and IPv6");
-	}
 	if (($_POST['proto'] == "icmp") && ($_POST['icmptype'] <> "")){
 		if($_POST['ipprotocol'] == "inet46")
 			$input_errors[] =  gettext("You can not assign a ICMP type to a rule that applies to IPv4 and IPv6");
