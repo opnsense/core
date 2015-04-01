@@ -36,7 +36,7 @@ function xmlrpc_publishable_legacy()
     $publish = array(
         'exec_shell_xmlrpc','exec_php_xmlrpc','filter_configure_xmlrpc','interfaces_carp_configure_xmlrpc',
         'backup_config_section_xmlrpc','restore_config_section_xmlrpc', 'merge_config_section_xmlrpc',
-        'check_firmware_version_xmlrpc','firmware_version_xmlrpc','reboot_xmlrpc','get_notices_xmlrpc'
+        'firmware_version_xmlrpc','reboot_xmlrpc','get_notices_xmlrpc'
     );
 
 
@@ -49,9 +49,7 @@ function xmlrpc_publishable_legacy()
  */
 function get_notices_xmlrpc($category = null)
 {
-    if (!function_exists("get_notices")) {
-        require_once("notices.inc");
-    }
+    require_once("notices.inc");
 
     if ($category==null) {
         return get_notices();
@@ -78,8 +76,55 @@ function reboot_xmlrpc()
  */
 function firmware_version_xmlrpc()
 {
-    if (!function_exists("host_firmware_version")) {
-        require_once("pfsense-utils.inc");
-    }
+    require_once("pfsense-utils.inc");
+
     return host_firmware_version();
 }
+
+/**
+ * interfaces_vips_configure
+ * @return mixed
+ */
+function interfaces_carp_configure_xmlrpc()
+{
+    require_once("interfaces.inc");
+
+    interfaces_vips_configure();
+    return true;
+}
+
+/**
+ * filter reconfigure
+ * @return mixed
+ */
+function filter_configure_xmlrpc()
+{
+    require_once("config.inc");
+    require_once("filter.inc");
+    require_once("system.in");
+    require_once("gwlb.inc");
+    require_once("vslb.inc");
+    require_once("openvpn.inc");
+    require_once("services.inc");
+    require_once("auth.inc");
+
+    filter_configure();
+    system_routing_configure();
+    setup_gateways_monitor();
+    relayd_configure();
+    openvpn_resync_all();
+    if (isset($config['dnsmasq']['enable'])) {
+        services_dnsmasq_configure();
+    } elseif (isset($config['unbound']['enable'])) {
+        services_unbound_configure();
+    } else {
+        # Both calls above run services_dhcpd_configure(), then we just
+        # need to call it when them are not called to avoid restart dhcpd
+        # twice, as described on ticket #3797
+        services_dhcpd_configure();
+    }
+    local_sync_accounts();
+
+    return true;
+}
+
