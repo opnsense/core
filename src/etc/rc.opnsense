@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -d /etc/rc.conf.d ]; then
+if [ -z "$(ls /etc/rc.conf.d)" ]; then
 	exit 0
 fi
 
