@@ -36,7 +36,7 @@ fi
 # be done automatically by the script below.
 PHPMODULES="standard"
 # Config read/write
-PHPMODULES="$PHPMODULES xml simplexml"
+PHPMODULES="$PHPMODULES dom xml simplexml"
 # Downloading via HTTP/FTP (pkg mgr, etc)
 PHPMODULES="$PHPMODULES curl date"
 # Internationalization
