@@ -459,9 +459,8 @@ if (!$dry_run) {
 		echo "\n DHCPD...";
 		services_dhcpd_configure();
 	}
-	if($restart_webgui) {
-		echo "\n Restarting webConfigurator... ";
-		mwexec("/usr/local/etc/rc.restart_webgui");
+	if ($restart_webgui) {
+		mwexec('/usr/local/etc/rc.restart_webgui please');
 	}
 }
 

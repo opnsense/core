@@ -87,7 +87,7 @@ case ${opmode} in
 	/usr/sbin/tcpdump -s 256 -v -S -l -n -e -ttt -i pflog0
 	;;
 11)
-	/usr/local/etc/rc.restart_webgui
+	/usr/local/etc/rc.restart_webgui please
 	;;
 12)
 	/usr/local/etc/rc.initial.firmware

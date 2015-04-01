@@ -11,6 +11,14 @@ echo "Restarting webConfigurator...";
 
 killbyname("lighttpd");
 
+if ($argc > 1) {
+	/*
+	 * Force killing all php-cgi children as well
+	 * to avoid hiccups with moved include files.
+	 */
+	killbyname("php-cgi");
+}
+
 while (is_process_running("lighttpd")) {
         echo '.';
         sleep(1);
