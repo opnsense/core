@@ -26,43 +26,22 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-require_once("IXR_Library.php") ;
 
-class XMLRPCServer
+/**
+ * request functions which may be registered by the xmlrpc system
+ * every registrable module should include a file with this pattern xmlrpc_publishable_{filename without .inc}
+ * @return array
+ */
+function xmlrpc_publishable_test()
 {
-    private $prefix = "opnsense" ;
-
-    private $xmlrpc_callbacks = array() ;
-
-    /**
-     * load publishable function from inc/xmlrpc/*.inc
-     * every usable module should include a function to return it's own registrable functions, using
-     * the following patten:
-     *      xmlrpc_publishable_{filename without .inc}
-     */
-    private function loadPlugins()
-    {
-        // load all xmlrpc published functions
-        foreach (glob(__DIR__ . "/xmlrpc/*.inc") as $filename) {
-            require_once($filename);
-            $publ_func = "xmlrpc_publishable_" .str_replace(".inc", "", basename($filename));
-            if (function_exists($publ_func)) {
-                foreach ($publ_func() as $function) {
-                    $this->xmlrpc_callbacks[$this->prefix.".".$function] = $function;
-                }
-            }
-        }
-    }
-
-    /**
-     * handle request
-     * @return IXR_Server
-     */
-    public function start()
-    {
-        $this->loadPlugins();
-        $server = new IXR_Server($this->xmlrpc_callbacks);
-        return $server;
-    }
+    return array("test");
 }
 
+/**
+ * test function
+ * @return string
+ */
+function test()
+{
+    return "test";
+}
