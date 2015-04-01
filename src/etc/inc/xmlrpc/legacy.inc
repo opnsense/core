@@ -32,7 +32,7 @@
  * request functions which may be registered by the xmlrpc system
  * @return array
  */
-function xmlrpc_publishable_test()
+function xmlrpc_publishable_legacy()
 {
     $publish = array(
         'exec_shell_xmlrpc','exec_php_xmlrpc','filter_configure_xmlrpc','interfaces_carp_configure_xmlrpc',
