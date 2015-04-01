@@ -27,7 +27,6 @@
         POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 /**
  * request functions which may be registered by the xmlrpc system
  * @return array
@@ -37,7 +36,7 @@ function xmlrpc_publishable_legacy()
     $publish = array(
         'exec_shell_xmlrpc','exec_php_xmlrpc','filter_configure_xmlrpc','interfaces_carp_configure_xmlrpc',
         'backup_config_section_xmlrpc','restore_config_section_xmlrpc', 'merge_config_section_xmlrpc',
-        'check_firmware_version_xmlrpc','pfsense_firmware_version_xmlrpc','reboot_xmlrpc','get_notices_xmlrpc'
+        'check_firmware_version_xmlrpc','firmware_version_xmlrpc','reboot_xmlrpc','get_notices_xmlrpc'
     );
 
 
@@ -45,11 +44,10 @@ function xmlrpc_publishable_legacy()
 }
 
 /**
- * trigger getnotices
- * @param $params
+ * @param null $category
  * @return mixed
  */
-function get_notices_xmlrpc($category=null)
+function get_notices_xmlrpc($category = null)
 {
     if (!function_exists("get_notices")) {
         require_once("notices.inc");
@@ -60,4 +58,28 @@ function get_notices_xmlrpc($category=null)
     } else {
         return get_notices($category);
     }
+
+}
+
+/**
+ * perform a system reboot
+ * @return bool true
+ */
+function reboot_xmlrpc()
+{
+    mwexec_bg("/usr/local/etc/rc.reboot");
+
+    return true;
+}
+
+/**
+ * retrieve firmware version
+ * @return mixed
+ */
+function firmware_version_xmlrpc()
+{
+    if (!function_exists("get_notices")) {
+        require_once("pfsense-utils.inc");
+    }
+    return host_firmware_version();
 }
