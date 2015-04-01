@@ -33,24 +33,26 @@ PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
+echo "***GOT REQUEST TO UPGRADE: $package***" >> ${PKG_PROGRESS_FILE}
+
 if [ -z "$pkg_running" ]; then
-	echo "***GOT REQUEST TO UPGRADE: $package***" >> ${PKG_PROGRESS_FILE}
+	echo '***STARTING UPGRADE***' >> ${PKG_PROGRESS_FILE}
 	if [ "$package" == "all" ]; then
-		echo '***STARTING UPGRADE***' >> ${PKG_PROGRESS_FILE}
+		# update all installed packages
 		pkg upgrade -y >> ${PKG_PROGRESS_FILE}
-	else
-		# XXX this is dangerous and not recommended by pkgng devs
-		echo '***STARTING UPGRADE - ONE PACKAGE***' >> ${PKG_PROGRESS_FILE}
+		# restart the web server
+		/usr/local/opnsense/service/configd_ctl.py 'service restart webgui' >> ${PKG_PROGRESS_FILE}
+		# remove no longer referenced packages
+		pkg autoremove -y >> ${PKG_PROGRESS_FILE}
+	elif [ "$package" == "pkg" ]; then
 		pkg upgrade -y $package >> ${PKG_PROGRESS_FILE}
+	else
+		echo "Cannot update $package" >> ${PKG_PROGRESS_FILE}
 	fi
 	echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> ${PKG_PROGRESS_FILE}
 	/usr/local/opnsense/scripts/pkg_updatecheck.sh
-	# remove no longer referenced packages
-	pkg autoremove -y >> ${PKG_PROGRESS_FILE}
-	# restart the web server
-	/usr/local/opnsense/service/configd_ctl.py 'service restart webgui' >> ${PKG_PROGRESS_FILE}
-	echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 else
 	echo 'Upgrade already in progress' >> ${PKG_PROGRESS_FILE}
-	echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 fi
+
+echo '***DONE***' >> ${PKG_PROGRESS_FILE}
