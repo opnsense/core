@@ -155,26 +155,6 @@ function send_event($cmd)
 	return $backend->sendEvent("{$cmd}");
 }
 
-function refcount_init($reference) {
-	$shmid = @shmop_open($reference, "c", 0644, 10);
-	@shmop_write($shmid, str_pad("0", 10, "\x0", STR_PAD_RIGHT), 0);
-	@shmop_close($shmid);
-}
-
-
-function refcount_read($reference) {
-	/* This function just reads the current value of the refcount for information. */
-	/* There is no need for locking. */
-	$shmid = @shmop_open($reference, "a", 0, 0);
-	if (!$shmid) {
-		log_error(gettext("Could not open shared memory for read {$reference}"));
-		return -1;
-	}
-	$shm_data = @shmop_read($shmid, 0, 10);
-	@shmop_close($shmid);
-	return $shm_data;
-}
-
 function is_module_loaded($module_name) {
 	$module_name = str_replace(".ko", "", $module_name);
 	$running = 0;

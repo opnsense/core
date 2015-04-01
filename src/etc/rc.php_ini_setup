@@ -59,8 +59,6 @@ PHPMODULES="$PHPMODULES suhosin"
 PHPMODULES="$PHPMODULES ctype"
 # firewall_rules_edit.php
 PHPMODULES="$PHPMODULES mbstring"
-# Synchronization primitives
-PHPMODULES="$PHPMODULES shmop"
 # Page compression
 PHPMODULES="$PHPMODULES zlib"
 # SQLlite & Database
