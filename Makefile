@@ -23,6 +23,10 @@ install:
 	@echo /usr/local/etc/pkg/repos/OPNsense.conf
 	@cp ${.CURDIR}/pkg/pkg.conf ${DESTDIR}/usr/local/etc
 	@echo /usr/local/etc/pkg.conf
+	@mkdir -p ${DESTDIR}/usr/local/etc/pkg/fingerprints/OPNsense/trusted
+	@cp ${.CURDIR}/pkg/trusted/pkg.opnsense.org.20150402 \
+	    ${DESTDIR}/usr/local/etc/pkg/fingerprints/OPNsense/trusted
+	@echo /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20150402
 	# finally pretty-print a list of files present
 	@(cd ${.CURDIR}/src; find * -type f) | \
 	    xargs -n1 printf "/usr/local/%s\n"
