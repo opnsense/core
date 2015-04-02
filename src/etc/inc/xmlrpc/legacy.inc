@@ -278,6 +278,11 @@ function backup_config_section_xmlrpc($sectionKeys)
 {
     global $config;
     require_once("config.inc");
-
-    return array_intersect_key($config, array_flip($sectionKeys));
+    if (!is_array($sectionKeys)) {
+        // single item
+        return array_intersect_key($config, array($sectionKeys => 0));  
+    } else {
+        // backup more sections at once
+        return array_intersect_key($config, array_flip($sectionKeys));
+    }
 }
