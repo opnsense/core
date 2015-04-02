@@ -147,12 +147,8 @@ if ($_POST) {
 
 		if (isset($config['captiveportal'][$cpzone]['enable'])) {
 			$cpzoneid = $config['captiveportal'][$cpzone]['zoneid'];
-			$rules = captiveportal_passthrumac_delete_entry($oldmac);
-			$rules .= captiveportal_passthrumac_configure_entry($mac);
-			$uniqid = uniqid("{$cpzone}_macedit");
-			file_put_contents("/tmp/{$uniqid}_tmp", $rules);
-			mwexec("/sbin/ipfw -x {$cpzoneid} -q /tmp/{$uniqid}_tmp");
-			@unlink("/tmp/{$uniqid}_tmp");
+			captiveportal_passthrumac_delete_entry($oldmac);
+			captiveportal_passthrumac_configure_entry($mac);
 			unset($cpzoneid);
 		}
 

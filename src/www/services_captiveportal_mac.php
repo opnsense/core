@@ -95,11 +95,7 @@ if ($_POST) {
 			}
 			if ($found == true) {
 				$cpzoneid = $a_cp[$cpzone]['zoneid'];
-				$rules = captiveportal_passthrumac_delete_entry($a_passthrumacs[$idx]);
-				$uniqid = uniqid("{$cpzone}_mac");
-				file_put_contents("/tmp/{$uniqid}_tmp", $rules);
-				mwexec("/sbin/ipfw -x {$cpzoneid} -q /tmp/{$uniqid}_tmp");
-				@unlink("/tmp/{$uniqid}_tmp");
+				captiveportal_passthrumac_delete_entry($a_passthrumacs[$idx]);
 				unset($a_passthrumacs[$idx]);
 				write_config();
 				echo gettext("The entry was sucessfully deleted") . "\n";
@@ -114,11 +110,7 @@ if ($_GET['act'] == "del") {
 	$a_passthrumacs =& $a_cp[$cpzone]['passthrumac'];
 	if ($a_passthrumacs[$_GET['id']]) {
 		$cpzoneid = $a_cp[$cpzone]['zoneid'];
-		$rules = captiveportal_passthrumac_delete_entry($a_passthrumacs[$_GET['id']]);
-		$uniqid = uniqid("{$cpzone}_mac");
-		file_put_contents("/tmp/{$uniqid}_tmp", $rules);
-		mwexec("/sbin/ipfw -x {$cpzoneid} -q /tmp/{$uniqid}_tmp");
-		@unlink("/tmp/{$uniqid}_tmp");
+		captiveportal_passthrumac_delete_entry($a_passthrumacs[$_GET['id']]);
 		unset($a_passthrumacs[$_GET['id']]);
 		write_config();
 		header("Location: services_captiveportal_mac.php?zone={$cpzone}");

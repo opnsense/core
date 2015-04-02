@@ -253,37 +253,6 @@ function captiveportal_init_rules($reinit = false) {
 }
 
 
-//
-// DEPRECATED...
-//
-
-function captiveportal_allowedhostname_configure() {
-    global $config, $g, $cpzone;
-
-    $rules = "";
-//    if (is_array($config['captiveportal'][$cpzone]['allowedhostname'])) {
-//        $rules = "\n# captiveportal_allowedhostname_configure()\n";
-//        $cp_filterdns_conf = "";
-//        foreach ($config['captiveportal'][$cpzone]['allowedhostname'] as $hostnameent) {
-//            $tmprules = captiveportal_allowedip_configure_entry($hostnameent, true);
-//            $rules .= $tmprules[0];
-//            $cp_filterdns_conf .= $tmprules[1];
-//        }
-//        $cp_filterdns_filename = "{$g['varetc_path']}/filterdns-{$cpzone}-captiveportal.conf";
-//        @file_put_contents($cp_filterdns_filename, $cp_filterdns_conf);
-//        unset($cp_filterdns_conf);
-//        if (isvalidpid("{$g['varrun_path']}/filterdns-{$cpzone}-cpah.pid"))
-//            killbypid("{$g['varrun_path']}/filterdns-{$cpzone}-cpah.pid", "HUP");
-//        else
-//            mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-{$cpzone}-cpah.pid -i 300 -c {$cp_filterdns_filename} -y {$cpzone} -d 1");
-//    } else {
-//        killbypid("{$g['varrun_path']}/filterdns-{$cpzone}-cpah.pid");
-//        @unlink("{$g['varrun_path']}/filterdns-{$cpzone}-cpah.pid");
-//    }
-
-    return $rules;
-}
-
 // Unchanged
 
 

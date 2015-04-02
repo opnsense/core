@@ -137,23 +137,8 @@ if ($_POST) {
 			$rules = "";
 			$cpzoneid = $a_cp[$cpzone]['zoneid'];
 			unset($ipfw);
-			if (isset($oldip) && isset($oldmask)) {
-				$ipfw = pfSense_ipfw_getTablestats($cpzoneid, 3, $oldip, $oldmask);
-				$rules .= "table 3 delete {$oldip}/{$oldmask}\n";
-				$rules .= "table 4 delete {$oldip}/{$oldmask}\n";
-				if (is_array($ipfw)) {
-					$rules .= "pipe delete {$ipfw['dnpipe']}\n";
-					$rules .= "pipe delete " . ($ipfw['dnpipe']+1 . "\n");
-				}
-			}
-			$rules .= captiveportal_allowedip_configure_entry($ip);
-			if (is_array($ipfw)) {
-				captiveportal_free_dn_ruleno($ipfw['dnpipe']);
-			}
+			captiveportal_allowedip_configure_entry($ip);
 			$uniqid = uniqid("{$cpzone}_allowed");
-			@file_put_contents("/tmp/{$uniqid}_tmp", $rules);
-			mwexec("/sbin/ipfw -x {$cpzoneid} -q /tmp/{$uniqid}_tmp");
-			@unlink("/tmp/{$uniqid}_tmp");
 		}
 
 		header("Location: services_captiveportal_ip.php?zone={$cpzone}");
