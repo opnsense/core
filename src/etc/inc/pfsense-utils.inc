@@ -656,10 +656,10 @@ function reload_all_sync() {
 	mwexec("/usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd");
 
 	/* restart sshd */
-	mwexec('/usr/local/etc/rc.sshd');
+	mwexec_bg('/usr/local/etc/rc.sshd');
 
 	/* restart webConfigurator if needed */
-	mwexec('/usr/local/etc/rc.restart_webgui');
+	mwexec_bg('/usr/local/etc/rc.restart_webgui');
 }
 
 function setup_serial_port($when = 'save', $path = '')

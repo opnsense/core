@@ -1000,32 +1000,29 @@ function mwexec($command, $mute = false, $clearsigmask = false)
 		$oldset = array();
 		pcntl_sigprocmask(SIG_SETMASK, array(), $oldset);
 	}
-	$garbage = exec("$command 2>&1", $oarr, $retval);
+
+	$garbage = exec("{$command} 2>&1", $oarr, $retval);
+	unset($garbage);
+
 	if ($clearsigmask) {
 		pcntl_sigprocmask(SIG_SETMASK, $oldset);
 	}
 
-	if(($retval <> 0) && ($mute === false)) {
-		$output = implode(" ", $oarr);
-		log_error(sprintf(gettext("The command '%1\$s' returned exit code '%2\$d', the output was '%3\$s' "), $command, $retval, $output));
+	if ($retval != 0 && $mute == false) {
+		$output = implode(' ', $oarr);
+		log_error(sprintf(gettext("The command '%s' returned exit code '%d', the output was '%s'"), $command, $retval, $output));
 		unset($output);
 	}
+
 	unset($oarr);
+
 	return $retval;
 }
 
 /* wrapper for exec() in background */
-function mwexec_bg($command, $clearsigmask = false)
+function mwexec_bg($command, $mute = false, $clearsigmask = false)
 {
-	if ($clearsigmask) {
-		$oldset = array();
-		pcntl_sigprocmask(SIG_SETMASK, array(), $oldset);
-	}
-	$_gb = exec("/usr/bin/nohup $command > /dev/null 2>&1 &");
-	if ($clearsigmask) {
-		pcntl_sigprocmask(SIG_SETMASK, $oldset);
-	}
-	unset($_gb);
+	mwexec("/usr/sbin/daemon -f {$command}", $mute, $clearsigmask);
 }
 
 /* unlink a file, if it exists */
