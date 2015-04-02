@@ -46,7 +46,7 @@ if (isset($_POST['act']))
 
 if ($act == "del") {
 	if (!$a_acls[$id]) {
-		pfSenseHeader("services_unbound_acls.php");
+		redirectHeader("services_unbound_acls.php");
 		exit;
 	}
 
@@ -122,7 +122,7 @@ if ($_POST) {
 				mark_subsystem_dirty("unbound");
 				write_config();
 
-				pfSenseHeader("/services_unbound_acls.php");
+				redirectHeader("/services_unbound_acls.php");
 				exit;
 			}
 

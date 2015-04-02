@@ -56,7 +56,7 @@ if ($_POST['act'])
 if ($act == "del") {
 
 	if (!$a_server[$_GET['id']]) {
-		pfSenseHeader("system_authservers.php");
+		redirectHeader("system_authservers.php");
 		exit;
 	}
 
@@ -293,7 +293,7 @@ if ($_POST) {
 
 		write_config();
 
-		pfSenseHeader("system_authservers.php");
+		redirectHeader("system_authservers.php");
 	}
 }
 

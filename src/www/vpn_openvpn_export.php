@@ -120,11 +120,11 @@ if (!empty($act)) {
 	$usrid = $_GET['usrid'];
 	$crtid = $_GET['crtid'];
 	if ($srvid === false) {
-		pfSenseHeader("vpn_openvpn_export.php");
+		redirectHeader("vpn_openvpn_export.php");
 		exit;
 	} else if (($config['openvpn']['openvpn-server'][$srvid]['mode'] != "server_user") &&
 		(($usrid === false) || ($crtid === false))) {
-		pfSenseHeader("vpn_openvpn_export.php");
+		redirectHeader("vpn_openvpn_export.php");
 		exit;
 	}
 

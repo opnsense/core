@@ -51,7 +51,7 @@ if (isset($_POST['groupid']) && is_numericint($_POST['groupid']))
 $a_group = & $config['system']['group'][$groupid];
 
 if (!is_array($a_group)) {
-	pfSenseHeader("system_groupmanager.php?id={$groupid}");
+	redirectHeader("system_groupmanager.php?id={$groupid}");
 	exit;
 }
 
@@ -98,7 +98,7 @@ if ($_POST) {
 		$retval = write_config();
 		$savemsg = get_std_save_message($retval);
 
-		pfSenseHeader("system_groupmanager.php?act=edit&amp;id={$groupid}");
+		redirectHeader("system_groupmanager.php?act=edit&amp;id={$groupid}");
 		exit;
 	}
 }

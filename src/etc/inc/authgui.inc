@@ -53,7 +53,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 		$page = str_replace('*', '', $allowedpages[0]);
 		$_SESSION['Post_Login'] = true;
 		require_once("functions.inc");
-		pfSenseHeader("/{$page}");
+		redirectHeader("/{$page}");
 
 		$username = empty($_SESSION["Username"]) ? "(system)" : $_SESSION['Username'];
 		if (!empty($_SERVER['REMOTE_ADDR'])) {
@@ -77,7 +77,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
 if (!$_SESSION['Post_Login']) {
 	$_SESSION['Post_Login'] = true;
 	require_once("functions.inc");
-	pfSenseHeader($_SERVER['REQUEST_URI']);
+	redirectHeader($_SERVER['REQUEST_URI']);
 	exit;
 }
 

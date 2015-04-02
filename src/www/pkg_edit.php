@@ -50,7 +50,7 @@ function get_pkg_interfaces_select_source($include_localhost=false) {
 }
 
 /* dummy stubs needed by some code that was MFC'd */
-function pfSenseHeader($location) { header("Location: " . $location); }
+function redirectHeader($location) { header("Location: " . $location); }
 
 function gentitle_pkg($pgname) {
 	global $pfSense_config;
@@ -241,11 +241,11 @@ if ($_POST) {
 			    exec($pkg['restart_command'] . ">/dev/null 2&>1");
 
 			if($pkg['aftersaveredirect'] <> "") {
-			    pfSenseHeader($pkg['aftersaveredirect']);
+			    redirectHeader($pkg['aftersaveredirect']);
 			} elseif(!$pkg['adddeleteeditpagefields']) {
-			    pfSenseHeader("pkg_edit.php?xml={$xml}&amp;id=0");
+			    redirectHeader("pkg_edit.php?xml={$xml}&amp;id=0");
 			} elseif(!$pkg['preoutput']) {
-			    pfSenseHeader("pkg.php?xml=" . $xml);
+			    redirectHeader("pkg.php?xml=" . $xml);
 			}
 			exit;
 		} else {

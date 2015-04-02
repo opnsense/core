@@ -82,7 +82,7 @@ if ($_POST['act'])
 if ($act == "del") {
 
 	if (!isset($a_cert[$id])) {
-		pfSenseHeader("system_certmanager.php");
+		redirectHeader("system_certmanager.php");
 		exit;
 	}
 
@@ -90,7 +90,7 @@ if ($act == "del") {
 	unset($a_cert[$id]);
 	write_config();
 	$savemsg = sprintf(gettext("Certificate %s successfully deleted"), $name) . "<br />";
-	pfSenseHeader("system_certmanager.php");
+	redirectHeader("system_certmanager.php");
 	exit;
 }
 
@@ -106,7 +106,7 @@ if ($act == "new") {
 if ($act == "exp") {
 
 	if (!$a_cert[$id]) {
-		pfSenseHeader("system_certmanager.php");
+		redirectHeader("system_certmanager.php");
 		exit;
 	}
 
@@ -124,7 +124,7 @@ if ($act == "exp") {
 if ($act == "key") {
 
 	if (!$a_cert[$id]) {
-		pfSenseHeader("system_certmanager.php");
+		redirectHeader("system_certmanager.php");
 		exit;
 	}
 
@@ -141,7 +141,7 @@ if ($act == "key") {
 
 if ($act == "p12") {
 	if (!$a_cert[$id]) {
-		pfSenseHeader("system_certmanager.php");
+		redirectHeader("system_certmanager.php");
 		exit;
 	}
 
@@ -170,7 +170,7 @@ if ($act == "p12") {
 if ($act == "csr") {
 
 	if (!$a_cert[$id]) {
-		pfSenseHeader("system_certmanager.php");
+		redirectHeader("system_certmanager.php");
 		exit;
 	}
 
@@ -445,7 +445,7 @@ if ($_POST) {
 
 			write_config();
 
-			pfSenseHeader("system_certmanager.php");
+			redirectHeader("system_certmanager.php");
 		}
 	}
 }

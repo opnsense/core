@@ -59,7 +59,7 @@ if ($_GET['act'] == "del") {
 		unset($a_secret[$_GET['id']]);
 		write_config();
 		mark_subsystem_dirty('l2tpusers');
-		pfSenseHeader("vpn_l2tp_users.php");
+		redirectHeader("vpn_l2tp_users.php");
 		exit;
 	}
 }

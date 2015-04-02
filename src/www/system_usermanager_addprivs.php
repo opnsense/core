@@ -40,7 +40,7 @@ if (isset($_POST['userid']) && is_numericint($_POST['userid']))
 	$userid = $_POST['userid'];
 
 if (!isset($config['system']['user'][$userid]) && !is_array($config['system']['user'][$userid])) {
-	pfSenseHeader("system_usermanager.php");
+	redirectHeader("system_usermanager.php");
 	exit;
 }
 

@@ -67,7 +67,7 @@ if ($_POST['act'])
 if ($act == "del") {
 
 	if (!isset($a_ca[$id])) {
-		pfSenseHeader("system_camanager.php");
+		redirectHeader("system_camanager.php");
 		exit;
 	}
 
@@ -85,13 +85,13 @@ if ($act == "del") {
 	unset($a_ca[$id]);
 	write_config();
 	$savemsg = sprintf(gettext("Certificate Authority %s and its CRLs (if any) successfully deleted"), $name) . "<br />";
-	pfSenseHeader("system_camanager.php");
+	redirectHeader("system_camanager.php");
 	exit;
 }
 
 if ($act == "edit") {
 	if (!$a_ca[$id]) {
-		pfSenseHeader("system_camanager.php");
+		redirectHeader("system_camanager.php");
 		exit;
 	}
 	$pconfig['descr']  = $a_ca[$id]['descr'];
@@ -113,7 +113,7 @@ if ($act == "new") {
 if ($act == "exp") {
 
 	if (!$a_ca[$id]) {
-		pfSenseHeader("system_camanager.php");
+		redirectHeader("system_camanager.php");
 		exit;
 	}
 
@@ -131,7 +131,7 @@ if ($act == "exp") {
 if ($act == "expkey") {
 
 	if (!$a_ca[$id]) {
-		pfSenseHeader("system_camanager.php");
+		redirectHeader("system_camanager.php");
 		exit;
 	}
 
@@ -287,7 +287,7 @@ if ($_POST) {
 		if (!$input_errors)
 			write_config();
 
-//		pfSenseHeader("system_camanager.php");
+//		redirectHeader("system_camanager.php");
 	}
 }
 

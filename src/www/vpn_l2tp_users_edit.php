@@ -128,7 +128,7 @@ if ($_POST) {
 
 		$retval = vpn_l2tp_configure();
 
-		pfSenseHeader("vpn_l2tp_users.php");
+		redirectHeader("vpn_l2tp_users.php");
 
 		exit;
 	}

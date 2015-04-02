@@ -46,7 +46,7 @@ $act = (isset($_POST['act']) ? $_POST['act'] : '');
 if ($act == "delgroup") {
 
 	if (!isset($id) || !isset($_POST['groupname']) || !isset($a_group[$id]) || ($_POST['groupname'] != $a_group[$id]['name'])) {
-		pfSenseHeader("system_groupmanager.php");
+		redirectHeader("system_groupmanager.php");
 		exit;
 	}
 
@@ -61,7 +61,7 @@ if ($act == "delgroup") {
 if ($act == "delpriv") {
 
 	if (!isset($id) || !isset($a_group[$id])) {
-		pfSenseHeader("system_groupmanager.php");
+		redirectHeader("system_groupmanager.php");
 		exit;
 	}
 

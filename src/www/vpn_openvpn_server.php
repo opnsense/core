@@ -70,7 +70,7 @@ else
 if ($_GET['act'] == "del") {
 
 	if (!isset($a_server[$id])) {
-		pfSenseHeader("vpn_openvpn_server.php");
+		redirectHeader("vpn_openvpn_server.php");
 		exit;
 	}
 	if (!empty($a_server[$id]))

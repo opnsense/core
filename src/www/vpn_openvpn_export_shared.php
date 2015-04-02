@@ -75,7 +75,7 @@ $error = false;
 if(($act == "skconf") || ($act == "skzipconf")) {
 	$srvid = $_GET['srvid'];
 	if (($srvid === false) || ($config['openvpn']['openvpn-server'][$srvid]['mode'] != "p2p_shared_key")) {
-		pfSenseHeader("vpn_openvpn_export.php");
+		redirectHeader("vpn_openvpn_export.php");
 		exit;
 	}
 

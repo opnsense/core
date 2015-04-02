@@ -65,7 +65,7 @@ if (isset($id) && $a_user[$id]) {
 if ($_POST['act'] == "deluser") {
 
 	if (!isset($_POST['username']) || !isset($a_user[$id]) || ($_POST['username'] != $a_user[$id]['name'])) {
-		pfSenseHeader("system_usermanager.php");
+		redirectHeader("system_usermanager.php");
 		exit;
 	}
 
@@ -79,7 +79,7 @@ if ($_POST['act'] == "deluser") {
 else if ($_POST['act'] == "delpriv") {
 
 	if (!$a_user[$id]) {
-		pfSenseHeader("system_usermanager.php");
+		redirectHeader("system_usermanager.php");
 		exit;
 	}
 
@@ -94,7 +94,7 @@ else if ($_POST['act'] == "delpriv") {
 else if ($_POST['act'] == "expcert") {
 
 	if (!$a_user[$id]) {
-		pfSenseHeader("system_usermanager.php");
+		redirectHeader("system_usermanager.php");
 		exit;
 	}
 
@@ -113,7 +113,7 @@ else if ($_POST['act'] == "expcert") {
 else if ($_POST['act'] == "expckey") {
 
 	if (!$a_user[$id]) {
-		pfSenseHeader("system_usermanager.php");
+		redirectHeader("system_usermanager.php");
 		exit;
 	}
 
@@ -132,7 +132,7 @@ else if ($_POST['act'] == "expckey") {
 else if ($_POST['act'] == "delcert") {
 
 	if (!$a_user[$id]) {
-		pfSenseHeader("system_usermanager.php");
+		redirectHeader("system_usermanager.php");
 		exit;
 	}
 
@@ -322,7 +322,7 @@ if ($_POST['save']) {
 		local_user_set($userent);
 		write_config();
 
-		pfSenseHeader("system_usermanager.php");
+		redirectHeader("system_usermanager.php");
 	}
 }
 
