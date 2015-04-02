@@ -103,14 +103,14 @@ $filesystems = get_mounted_filesystems();
 			<td width="75%" class="listr"><?php echo $config['system']['hostname'] . "." . $config['system']['domain']; ?></td>
 		</tr>
 		<tr>
-			<td width="25%" valign="top" class="vncellt"><?=gettext("Version");?></td>
+			<td width="25%" valign="top" class="vncellt"><?=gettext("Versions");?></td>
 			<td width="75%" class="listr">
-				<strong><span id="version"><?php
-					$pkgver = explode('-', file_get_contents('/usr/local/opnsense/version/opnsense'));
-					echo sprintf('%s %s-%s (%s)', $g['product_name'], $pkgver[0], php_uname('m'), $pkgver[1]);
-				?></span></strong>
-		<br /><?php echo exec('/usr/local/bin/openssl version'); ?>
-		<br /><div id="uname"><a href="#" onclick='swapuname(); return false;'><?php echo php_uname("s") . " " . php_uname("r"); ?></a></div>
+				<?php
+					$pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
+					echo sprintf('%s %s-%s', $g['product_name'], $pkgver[0], php_uname('m'));
+				?>
+				<br /><?php echo php_uname('s') . ' ' . php_uname('r'); ?>
+				<br /><?php echo exec('/usr/local/bin/openssl version'); ?>
 			</td>
 
 		</tr>
@@ -283,9 +283,6 @@ $filesystems = get_mounted_filesystems();
 </table>
 <script type="text/javascript">
 //<![CDATA[
-	function swapuname() {
-		jQuery('#uname').html("<?php echo php_uname("a"); ?>");
-	}
 	function checkupdate() {
 		jQuery('#updatestatus').html('<span class="text-info">Updating.... (may take up to 30 seconds) </span>');
 		jQuery.ajax({
