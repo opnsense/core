@@ -3245,11 +3245,9 @@ function upgrade_109_to_110() {
 	}
 }
 
-function upgrade_110_to_111() {
+function upgrade_110_to_111()
+{
 	global $config;
-
-	/* OPNsense modifications on top of this version */
-	$config['theme'] = 'opnsense';
 
 	/* Make sure unbound user exist */
 	mwexec('/usr/sbin/pw groupadd -n unbound -g 59', true);
@@ -3371,4 +3369,22 @@ function upgrade_110_to_111() {
 		unset($config['installedpackages']['unboundacls']);
 
 	unset($pkg, $new);
+}
+
+function upgrade_111_to_112()
+{
+	global $config;
+
+	$config['theme'] = 'opnsense';
+
+	if (isset($config['system']['ssh']['sshdkeyonly'])) {
+		unset($config['system']['ssh']['sshdkeyonly']);
+	} else {
+		$config['system']['ssh']['passwordauth'] = true;
+	}
+
+	if (isset($config['system']['sshdenable'])) {
+		$config['system']['ssh']['enabled'] = true;
+		unset($config['system']['sshdenable']);
+	}
 }

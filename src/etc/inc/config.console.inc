@@ -145,7 +145,7 @@ EOD;
 				return;
 		} while (!isset($wanif));
 
-		$config['system']['enablesshd'] = 'enabled';
+		$config['system']['ssh']['enabled'] = 'enabled';
 		$key = 'y';
 
 	} else {		//Manually assign interfaces

@@ -3562,8 +3562,9 @@ function filter_get_antilockout_ports($wantarray = false) {
 	if (($config['system']['webgui']['protocol'] == "https") && !isset($config['system']['webgui']['disablehttpredirect']) && ($guiport != "80"))
 		$lockoutports[] = "80";
 
-	if (isset($config['system']['enablesshd']))
+	if (isset($config['system']['ssh']['enabled'])) {
 		$lockoutports[] = empty($config['system']['ssh']['port']) ? "22" : $config['system']['ssh']['port'];
+	}
 
 	if ($wantarray)
 		return $lockoutports;

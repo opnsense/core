@@ -49,9 +49,9 @@ $pconfig['althostnames'] = $config['system']['webgui']['althostnames'];
 $pconfig['enableserial'] = $config['system']['enableserial'];
 $pconfig['serialspeed'] = $config['system']['serialspeed'];
 $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
-$pconfig['enablesshd'] = $config['system']['enablesshd'];
+$pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
 $pconfig['sshport'] = $config['system']['ssh']['port'];
-$pconfig['sshdkeyonly'] = isset($config['system']['ssh']['sshdkeyonly']);
+$pconfig['passwordauth'] = isset($config['system']['ssh']['passwordauth']);
 $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
 $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
 
@@ -89,10 +89,11 @@ if ($_POST) {
 		if(!is_port($_POST['sshport']))
 			$input_errors[] = gettext("You must specify a valid port number");
 
-	if($_POST['sshdkeyonly'] == "yes")
-		$config['system']['ssh']['sshdkeyonly'] = "enabled";
-	else if (isset($config['system']['ssh']['sshdkeyonly']))
-		unset($config['system']['ssh']['sshdkeyonly']);
+	if ($_POST['passwordauth'] == 'yes') {
+		$config['system']['ssh']['passwordauth'] = 'enabled';
+	} elseif (isset($config['system']['ssh']['passwordauth'])) {
+		unset($config['system']['ssh']['passwordauth']);
+	}
 
 	if($_POST['sshdpermitrootlogin'] == "yes")
 		$config['system']['ssh']['permitrootlogin'] = "enabled";
@@ -176,17 +177,19 @@ if ($_POST) {
 		else
 			unset($config['system']['webgui']['althostnames']);
 
-		$sshd_enabled = $config['system']['enablesshd'];
-		if($_POST['enablesshd'])
-			$config['system']['enablesshd'] = "enabled";
-		else
-			unset($config['system']['enablesshd']);
+		$sshd_enabled = $config['system']['ssh']['enabled'];
+		if ($_POST['enablesshd']) {
+			$config['system']['ssh']['enabled'] = 'enabled';
+		} else {
+			unset($config['system']['ssh']['enabled']);
+		}
 
-		$sshd_keyonly = isset($config['system']['ssh']['sshdkeyonly']);
-		if ($_POST['sshdkeyonly'])
-			$config['system']['ssh']['sshdkeyonly'] = true;
-		else if (isset($config['system']['ssh']['sshdkeyonly']))
-			unset($config['system']['ssh']['sshdkeyonly']);
+		$sshd_passwordauth = isset($config['system']['ssh']['passwordauth']);
+		if ($_POST['passwordauth']) {
+			$config['system']['ssh']['passwordauth'] = true;
+		} else if (isset($config['system']['ssh']['passwordauth'])) {
+			unset($config['system']['ssh']['passwordauth']);
+		}
 
 		$sshd_port = $config['system']['ssh']['port'];
 		if ($_POST['sshport'])
@@ -197,8 +200,8 @@ if ($_POST) {
 		if (!isset($_POST['sshdpermitrootlogin']) && isset($config['system']['ssh']['permitrootlogin']))
 			unset($config['system']['ssh']['permitrootlogin']);
 
-		if (($sshd_enabled != $config['system']['enablesshd']) ||
-			($sshd_keyonly != $config['system']['ssh']['sshdkeyonly']) ||
+		if (($sshd_enabled != $config['system']['ssh']['enabled']) ||
+			($sshd_passwordauth != $config['system']['ssh']['passwordauth']) ||
 			($sshd_port != $config['system']['ssh']['port']) ||
 			($pconfig['system']['ssh']['permitrootlogin'] != isset($config['system']['ssh']['permitrootlogin'])) ) {
 			$restart_sshd = true;
@@ -501,10 +504,10 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Authentication Method"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="sshdkeyonly" type="checkbox" id="sshdkeyonly" value="yes" <?php if ($pconfig['sshdkeyonly']) echo "checked=\"checked\""; ?> />
-										<strong><?=gettext("Disable password login for Secure Shell (RSA/DSA key only)"); ?></strong>
+										<input name="passwordauth" type="checkbox" id="passwordauth" value="yes" <?php if ($pconfig['passwordauth']) echo "checked=\"checked\""; ?> />
+										<strong><?=gettext("Enable password login for Secure Shell"); ?></strong>
 										<br />
-										<?=gettext("When enabled, authorized keys need to be configured for each"); ?>
+										<?=gettext("When disabled, authorized keys need to be configured for each"); ?>
 										<a href="system_usermanager.php"><?=gettext("user"); ?></a>
 										<?=gettext("that has been granted secure shell access."); ?>
 									</td>
@@ -603,7 +606,7 @@ if ($restart_sshd) {
 	killbyname("sshd");
 	log_error(gettext("secure shell configuration has changed. Stopping sshd."));
 
-	if ($config['system']['enablesshd']) {
+	if ($config['system']['ssh']['enabled']) {
 		log_error(gettext("secure shell configuration has changed. Restarting sshd."));
 		send_event("service restart sshd");
 	}

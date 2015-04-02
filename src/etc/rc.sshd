@@ -36,7 +36,7 @@ require_once('shaper.inc');
 
 killbyname('sshd');
 
-if (!isset($config['system']['enablesshd'])) {
+if (!isset($config['system']['ssh']['enabled'])) {
 	return;
 }
 
@@ -103,12 +103,12 @@ $sshconf .= "Subsystem\tsftp\tinternal-sftp\n";
 if (isset($config['system']['ssh']['permitrootlogin'])) {
 	$sshconf .= "PermitRootLogin yes\n";
 }
-if (isset($config['system']['ssh']['sshdkeyonly'])) {
-	$sshconf .= "PasswordAuthentication no\n";
-	$sshconf .= "ChallengeResponseAuthentication no\n";
-} else {
-	$sshconf .= "PasswordAuthentication yes\n";
+if (isset($config['system']['ssh']['passwordauth'])) {
 	$sshconf .= "ChallengeResponseAuthentication yes\n";
+	$sshconf .= "PasswordAuthentication yes\n";
+} else {
+	$sshconf .= "ChallengeResponseAuthentication no\n";
+	$sshconf .= "PasswordAuthentication no\n";
 }
 
 /* Write the new sshd config file */

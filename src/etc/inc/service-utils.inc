@@ -147,10 +147,10 @@ if (!function_exists('get_services')) {
 			$services[] = $pconfig;
 		}
 
-		if (isset($config['system']['enablesshd'])) {
+		if (isset($config['system']['ssh']['enabled'])) {
 			$pconfig = array();
-			$pconfig['name'] = "sshd";
-			$pconfig['description'] = gettext("Secure Shell Daemon");
+			$pconfig['name'] = 'sshd';
+			$pconfig['description'] = gettext('Secure Shell Daemon');
 			$services[] = $pconfig;
 		}
 
