@@ -164,15 +164,8 @@ do {
 $closehead = false;
 $pgtitle = array($title);
 include("head.inc");
-/*
 
-if(file_exists("/usr/local/www/themes/{$g['theme']}/wizard.css"))
-	echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"/themes/{$g['theme']}/wizard.css\" media=\"all\" />\n";
-else
-	echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"/themes/{$g['theme']}/all.css\" media=\"all\" />";
-*/
 ?>
-
 <body>
 <? include("fbegin.inc"); ?>
 
@@ -334,10 +327,6 @@ function showchange() {
 						<h3><?= fixup_string($title) ?></h3>
 					</header>
 					<? endif; ?>
-
-
-
-						<!--<a href="<?=$ip;?>"><img border="0" src="./themes/<?= $g['theme']; ?>/images/logo.gif" alt="logo" /></a> -->
 
 						<div class="content-box-main">
 							<div style="padding:20px !important;">
