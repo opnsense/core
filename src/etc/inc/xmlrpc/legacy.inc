@@ -280,9 +280,40 @@ function backup_config_section_xmlrpc($sectionKeys)
     require_once("config.inc");
     if (!is_array($sectionKeys)) {
         // single item
-        return array_intersect_key($config, array($sectionKeys => 0));  
+        return array_intersect_key($config, array($sectionKeys => 0));
     } else {
         // backup more sections at once
         return array_intersect_key($config, array_flip($sectionKeys));
     }
 }
+
+/**
+ * execute shell command (no..no..no.. this shouldn't be exposed)
+ * @param $shell_cmd shell command
+ * @return bool
+ */
+function exec_shell_xmlrpc($shell_cmd)
+{
+    // TODO: we really... really... don't want this, needs to be replaced for decent encapsulated calls
+    require_once("util.inc");
+    mwexec($shell_cmd);
+
+    return true;
+}
+
+/**
+ * execute any php script (no..no..no.. this shouldn't be exposed)
+ * @param $exec_php
+ * @return bool
+ */
+function exec_php_xmlrpc($exec_php)
+{
+    // TODO: we really... really... don't want this, needs to be replaced for decent encapsulated calls
+    eval($exec_php);
+    if (isset($toreturn)) {
+        return $toreturn;
+    } else {
+        return true;
+    }
+}
+
