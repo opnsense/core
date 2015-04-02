@@ -477,20 +477,16 @@ include("head.inc");
 							<td width="78%" class="vtable">
 								<select name="theme" class="selectpicker" data-style="btn-default" data-width="auto">
 									<?php
-										$files = return_dir_as_array("/usr/local/www/themes/");
-										foreach($files as $f):
-											if ((substr($f, 0, 1) == "_") && !isset($config['system']['developer']))
-												continue;
-											if ($f == "CVS")
-												continue;
-											$curtheme = "opnsense";
-											if ($config['theme'])
-												$curtheme = $config['theme'];
-											$selected = "";
-											if($f == $curtheme)
-												$selected = " selected=\"selected\"";
+										$files = return_dir_as_array('/usr/local/www/themes/');
+										$curtheme = get_current_theme();
+
+										foreach ($files as $file):
+											$selected = '';
+											if ($file == $curtheme) {
+												$selected = ' selected="selected"';
+											}
 									?>
-									<option <?=$selected;?>><?=$f;?></option>
+									<option <?=$selected;?>><?=$file;?></option>
 									<?php endforeach; ?>
 								</select>
 								<strong>
