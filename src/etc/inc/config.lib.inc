@@ -198,15 +198,12 @@ function write_config($desc = 'Unknown', $backup = true)
  * RESULT
  *   integer	- indicates completion
  ******/
-function reset_factory_defaults($lock = false)
+function reset_factory_defaults()
 {
-	global $g;
-
-	if (!$lock)
-		$lockkey = lock('config', LOCK_EX);
+	$lockkey = lock('config', LOCK_EX);
 
 	/* create conf directory, if necessary */
-	safe_mkdir('/conf');
+	@mkdir('/conf');
 
 	/* clear out /conf */
 	$dh = opendir('/conf');
@@ -217,17 +214,17 @@ function reset_factory_defaults($lock = false)
 	}
 	closedir($dh);
 
-	/* copy default configuration */
-	copy('/usr/local/etc/config.xml', '/conf/config.xml');
-
 	disable_security_checks();
 
 	/* call the wizard */
-	touch("/conf/trigger_initial_wizard");
-	if (!$lock)
-		unlock($lockkey);
+	touch('/conf/trigger_initial_wizard');
+
+	unlock($lockkey);
+
 	setup_serial_port();
-	return 0;
+
+	/* as we go through a special case directly reboot */
+	mwexec('/sbin/shutdown -or now');
 }
 
 function config_restore($conffile) {
