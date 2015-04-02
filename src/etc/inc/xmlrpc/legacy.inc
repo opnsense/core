@@ -34,7 +34,7 @@
 function xmlrpc_publishable_legacy()
 {
     $publish = array(
-        'exec_shell_xmlrpc','exec_php_xmlrpc','filter_configure_xmlrpc','interfaces_carp_configure_xmlrpc',
+        'filter_configure_xmlrpc','interfaces_carp_configure_xmlrpc',
         'backup_config_section_xmlrpc','restore_config_section_xmlrpc', 'merge_config_section_xmlrpc',
         'firmware_version_xmlrpc','reboot_xmlrpc','get_notices_xmlrpc'
     );
@@ -285,19 +285,5 @@ function backup_config_section_xmlrpc($sectionKeys)
         // backup more sections at once
         return array_intersect_key($config, array_flip($sectionKeys));
     }
-}
-
-/**
- * execute shell command (no..no..no.. this shouldn't be exposed)
- * @param $shell_cmd shell command
- * @return bool
- */
-function exec_shell_xmlrpc($shell_cmd)
-{
-    // TODO: we really... really... don't want this, needs to be replaced for decent encapsulated calls
-    require_once("util.inc");
-    mwexec($shell_cmd);
-
-    return true;
 }
 
