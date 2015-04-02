@@ -269,3 +269,15 @@ function restore_config_section_xmlrpc($new_config)
 
     return true;
 }
+
+/**
+ * @param $sectionKeys
+ * @return array config data
+ */
+function backup_config_section_xmlrpc($sectionKeys)
+{
+    global $config;
+    require_once("config.inc");
+
+    return array_intersect_key($config, array_flip($sectionKeys));
+}
