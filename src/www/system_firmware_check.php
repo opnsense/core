@@ -139,7 +139,8 @@ include("head.inc");
 										</div>
 							</td>
 						</tr>
-						<?php if (file_exists($file_pkg_status)) { ?>
+						<?php if (file_exists($file_pkg_status) && (count($pkg_status['upgrade_packages']) ||
+						    count($pkg_status['new_packages']) || count($pkg_status['reinstall_packages']))) { ?>
 						<tr>
 						</tr>
 							<tr>
