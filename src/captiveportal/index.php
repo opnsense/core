@@ -87,9 +87,24 @@ else if ($_REQUEST['redirurl'])
 $macfilter = !isset($cpcfg['nomacfilter']);
 $passthrumac = isset($cpcfg['passthrumacadd']);
 
+function ip_to_mac($addr)
+{
+	$cmd = '/usr/sbin/arp -n ' . $addr;
+
+	exec($cmd, $out, $ret);
+	if ($ret) {
+		log_error('The command `' . $cmd . '\' failed to execute');
+	} else {
+		$mac = explode(' ', $out);
+		if (isset($mac[3])) {
+			return array('macaddr' => $mac[3]);
+		}
+	}
+}
+
 /* find MAC address for client */
 if ($macfilter || $passthrumac) {
-	$tmpres = pfSense_ip_to_mac($clientip);
+	$tmpres = ip_to_mac($clientip);
 	if (!is_array($tmpres)) {
 		/* unable to find MAC address - shouldn't happen! - bail out */
 		captiveportal_logportalauth("unauthenticated","noclientmac",$clientip,"ERROR");
