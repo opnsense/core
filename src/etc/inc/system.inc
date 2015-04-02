@@ -791,11 +791,6 @@ function system_webgui_start()
 {
 	global $config, $g;
 
-	if (file_exists("/var/run/booting")) {
-		/* XXX no no no no no no no no  */
-		echo gettext("Starting webConfigurator...");
-	}
-
 	chdir('/usr/local/www');
 
 	/* defaults */
@@ -864,17 +859,8 @@ function system_webgui_start()
 	/* regenerate the php.ini files in case the setup has changed */
 	mwexec('/usr/local/etc/rc.php_ini_setup');
 
-	/* attempt to start lighthttpd */
-	$res = mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-webConfigurator.conf");
-
-	if (file_exists("/var/run/booting")) {
-		if ($res == 0)
-			echo gettext("done.") . "\n";
-		else
-			echo gettext("failed!") . "\n";
-	}
-
-	return $res;
+	/* attempt to start lighthttpd and return true if ok */
+	return !mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-webConfigurator.conf");
 }
 
 function system_generate_lighty_config(

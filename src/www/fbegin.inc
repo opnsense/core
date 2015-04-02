@@ -248,15 +248,10 @@ $diagnostics_menu[] = array(gettext("States"), "/diag_dump_states.php");
 $diagnostics_menu[] = array(gettext("States Summary"), "/diag_states_summary.php");
 $diagnostics_menu[] = array(gettext("Tables"), "/diag_tables.php");
 
-
-if(file_exists("/var/run/gmirror_active"))
+if (file_exists("/var/run/gmirror_active")) {
 	$diagnostics_menu[] = array(gettext("GEOM Mirrors"), "/diag_gmirror.php" );
-
-
-if (isset($config['system']['developer'])) {
-	$diagnostics_menu[] = array(gettext("Restart HTTPD"), "/restart_httpd.php", "style" => "font-weight: bold; color: yellow;");
-
 }
+
 $diagnostics_menu = msort($diagnostics_menu, 0);
 
 $help_menu = array();
@@ -269,11 +264,12 @@ $help_menu[] = array(gettext("Paid Support"), "https://opnsense.org/support-over
 $help_menu[] = array(gettext("FreeBSD Handbook"), "https://www.freebsd.org/doc/handbook/");
 $help_menu = msort($help_menu, 0);
 
-function add_to_menu($url, $name) {
-	if (isAllowedPage($url))
+function add_to_menu($url, $name)
+{
+	if (isAllowedPage($url)) {
 		echo "<a href=\"{$url}\" class=\"list-group-item\">{$name}</a>\n";
+	}
 }
-
 
 /* display a top alert bar if need be */
 $need_alert_display = false;

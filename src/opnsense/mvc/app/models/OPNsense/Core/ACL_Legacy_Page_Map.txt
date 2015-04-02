@@ -114,7 +114,6 @@ page-services-ntp-pps=status_ntpd_pps.php*
 page-loadbalancer-virtualserver-edit=load_balancer_virtual_server_edit.php*
 page-package-edit=pkg_edit.php*
 page-diagnostics-rebootsystem=reboot.php*
-page-diagnostics-restart-httpd=restart_httpd.php*
 page-services-captiveportal=services_captiveportal.php*
 page-services-captiveportal-filemanager=services_captiveportal_filemanager.php*
 page-services-captiveportal-allowedips=services_captiveportal_ip.php*

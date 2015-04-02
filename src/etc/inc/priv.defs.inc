@@ -728,12 +728,6 @@ $priv_list['page-diagnostics-rebootsystem']['descr'] = gettext("Allow access to 
 $priv_list['page-diagnostics-rebootsystem']['match'] = array();
 $priv_list['page-diagnostics-rebootsystem']['match'][] = "reboot.php*";
 
-$priv_list['page-diagnostics-restart-httpd'] = array();
-$priv_list['page-diagnostics-restart-httpd']['name'] = gettext("WebCfg - Diagnostics: Restart HTTPD : System page");
-$priv_list['page-diagnostics-restart-httpd']['descr'] = gettext("Allow access to the 'Diagnostics: Restart HTTPD: System' page.");
-$priv_list['page-diagnostics-restart-httpd']['match'] = array();
-$priv_list['page-diagnostics-restart-httpd']['match'][] = "restart_httpd.php*";
-
 $priv_list['page-services-captiveportal'] = array();
 $priv_list['page-services-captiveportal']['name'] = gettext("WebCfg - Services: Captive portal page");
 $priv_list['page-services-captiveportal']['descr'] = gettext("Allow access to the 'Services: Captive portal' page.");
