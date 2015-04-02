@@ -105,12 +105,12 @@ $filesystems = get_mounted_filesystems();
 		<tr>
 			<td width="25%" valign="top" class="vncellt"><?=gettext("Version");?></td>
 			<td width="75%" class="listr">
-				<strong><?php readfile('/usr/local/opnsense/version/opnsense'); ?><span id="version"></span></strong>
-				(<?php echo php_uname("m"); ?>)
-		<?php if(!$g['hideuname']): ?>
-		<br />
-		<div id="uname"><a href="#" onclick='swapuname(); return false;'><?php echo php_uname("s") . " " . php_uname("r"); ?></a></div>
-		<?php endif; ?>
+				<strong><span id="version"><?php
+					$pkgver = explode('-', file_get_contents('/usr/local/opnsense/version/opnsense'));
+					echo sprintf('%s %s-%s (%s)', $g['product_name'], $pkgver[0], php_uname('m'), $pkgver[1]);
+				?></span></strong>
+		<br /><?php echo exec('/usr/local/bin/openssl version'); ?>
+		<br /><div id="uname"><a href="#" onclick='swapuname(); return false;'><?php echo php_uname("s") . " " . php_uname("r"); ?></a></div>
 			</td>
 
 		</tr>
@@ -124,12 +124,6 @@ $filesystems = get_mounted_filesystems();
 					</td>
 				</tr>
 				<?php endif; ?>
-		<tr>
-			<td width="25%" class="vncellt"><?=gettext("Platform");?></td>
-			<td width="75%" class="listr">
-				<?=htmlspecialchars('OPNsense'); ?>
-			</td>
-		</tr>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("CPU Type");?></td>
 			<td width="75%" class="listr">
