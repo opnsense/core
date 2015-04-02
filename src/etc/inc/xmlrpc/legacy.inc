@@ -301,19 +301,3 @@ function exec_shell_xmlrpc($shell_cmd)
     return true;
 }
 
-/**
- * execute any php script (no..no..no.. this shouldn't be exposed)
- * @param $exec_php
- * @return bool
- */
-function exec_php_xmlrpc($exec_php)
-{
-    // TODO: we really... really... don't want this, needs to be replaced for decent encapsulated calls
-    eval($exec_php);
-    if (isset($toreturn)) {
-        return $toreturn;
-    } else {
-        return true;
-    }
-}
-
