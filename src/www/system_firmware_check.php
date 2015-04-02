@@ -139,6 +139,7 @@ include("head.inc");
 										</div>
 							</td>
 						</tr>
+						<?php if (file_exists($file_pkg_status)) { ?>
 						<tr>
 						</tr>
 							<tr>
@@ -199,6 +200,7 @@ include("head.inc");
 									</div>
 								</td>
 							</tr>
+						<?php } // endif ?>
 					</table>
 
 		            </div>

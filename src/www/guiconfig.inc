@@ -1054,7 +1054,7 @@ function alias_info_popup($alias_id){
 function rule_popup($src,$srcport,$dst,$dstport){
 	global $config,$g;
 	$aliases_array = array();
-	if ($config['aliases']['alias'] <> "" and is_array($config['aliases']['alias'])) {
+	if (isset($config['aliases']['alias'])) {
 		$descriptions = array ();
 		foreach ($config['aliases']['alias'] as $alias_id=>$alias_name){
 			//$loading_image="<a><img src=\'/themes/{$g['theme']}/images/misc/loader.gif\' alt=\'loader\' /> " .gettext("loading...")."</a>";
