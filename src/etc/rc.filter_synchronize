@@ -36,8 +36,8 @@ require_once("config.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
-require_once("xmlrpc.inc");
 require_once("interfaces.inc");
+require_once("XMLRPC_client.inc") ;
 
 /*
  *  backup_vip_config_section($section): returns as an xml file string of
@@ -83,58 +83,47 @@ function remove_special_characters($string) {
 	return $string;
 }
 
-function carp_check_version($url, $username, $password, $port = 80, $method = 'pfsense.host_firmware_version') {
+function carp_check_version($url, $username, $password, $method = 'opnsense.host_firmware_version') {
 	global $config, $g;
 
 	if (file_exists('/var/run/booting')) {
 		return;
 	}
 
-	$params = array(
-		XML_RPC_encode($password)
-	);
-
-	$numberofruns = 0;
-	while ($numberofruns < 2) {
-		$msg = new XML_RPC_Message($method, $params);
-		$cli = new XML_RPC_Client('/xmlrpc.php', $url, $port);
-		$cli->setCredentials($username, $password);
-		if($numberofruns > 0)
-			$cli->setDebug(1);
-		/* send our XMLRPC message and timeout after 240 seconds */
-		$resp = $cli->send($msg, "240");
-		if(!is_object($resp)) {
-			$error = "A communications error occurred while attempting XMLRPC sync with username {$username} {$url}:{$port}.";
-		} elseif($resp->faultCode()) {
-			$error = "An error code was received while attempting XMLRPC sync with username {$username} {$url}:{$port} - Code " . $resp->faultCode() . ": " . $resp->faultString();
-		} else {
-			$parsed_response =  XML_RPC_decode($resp->value());
-			if(!is_array($parsed_response)) {
-				if (trim($parsed_response) == "Authentication failed") {
-					$error = "An authentication failure occurred while trying to access {$url}:{$port} ({$method}).";
-					log_error($error);
-					file_notice("sync_settings", $error, "Settings Sync", "");
-					exit;
-				}
-			} else {
-				if (!isset($parsed_response['config_version']) ||
-				  $parsed_response['config_version'] < $config['version']) {
-					update_filter_reload_status("The other member is on older configuration version of {$g['product_name']}. Sync will not be done to prevent problems!");
-					log_error("The other member is on older configuration version of {$g['product_name']}. Sync will not be done to prevent problems!");
-					return false;
-				} else
-					return true;
-			}
-		}
-		log_error($error);
-		file_notice("sync_settings", $error, "Settings Sync", "");
-		$numberofruns++;
+	
+	$client = new SimpleXMLRPC_Client($url,240);
+	$client->setCredentials($username, $password);
+	if ($client->query($method)) {
+	    $remote_version = $client->getResponse();
+	} else {
+            // propagate error to log
+            $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
+	    log_error($error);            
+            file_notice("sync_settings", $error, "Settings Sync", "");
+	    // print communication details on failure 
+	    echo $client->getDetails();
+            return false ;
 	}
 
-	return false;
+	if (!is_array($remote_version) && trim($remote_version) == "Authentication failed") {
+		$error = "An authentication failure occurred while trying to access {$url} ({$method}).";
+		log_error($error);
+		file_notice("sync_settings", $error, "Settings Sync", "");
+		exit;
+	}
+	
+	if (!isset($remote_version['config_version']) ||
+		$remote_version['config_version'] < $config['version']) {
+		update_filter_reload_status("The other member is on older configuration version of {$g['product_name']}. Sync will not be done to prevent problems!");
+		log_error("The other member is on older configuration version of {$g['product_name']}. Sync will not be done to prevent problems!");
+		return false;
+	} else {
+		return true;
+	}
+	
 }
 
-function carp_sync_xml($url, $username, $password, $sections, $port = 80, $method = 'pfsense.restore_config_section') {
+function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsense.restore_config_section') {
 	global $config, $g;
 
 	if (file_exists('/var/run/booting')) {
@@ -229,44 +218,29 @@ function carp_sync_xml($url, $username, $password, $sections, $port = 80, $metho
 		}
 	}
 
-	$params = array(
-		XML_RPC_encode($password),
-		XML_RPC_encode($xml)
-	);
 
-	$numberofruns = 0;
-	while ($numberofruns < 2) {
-		log_error("Beginning XMLRPC sync to {$url}:{$port}.");
-		$msg = new XML_RPC_Message($method, $params);
-		$cli = new XML_RPC_Client('/xmlrpc.php', $url, $port);
-		$cli->setCredentials($username, $password);
-		if($numberofruns > 0)
-			$cli->setDebug(1);
-		/* send our XMLRPC message and timeout after 240 seconds */
-		$resp = $cli->send($msg, "240");
-		if(!is_object($resp)) {
-			$error = "A communications error occurred while attempting XMLRPC sync with username {$username} {$url}:{$port}.";
-			log_error($error);
-			file_notice("sync_settings", $error, "Settings Sync", "");
-		} elseif($resp->faultCode()) {
-			$error = "An error code was received while attempting XMLRPC sync with username {$username} {$url}:{$port} - Code " . $resp->faultCode() . ": " . $resp->faultString();
-			log_error($error);
-			file_notice("sync_settings", $error, "Settings Sync", "");
-		} else {
-			$parsed_response =  XML_RPC_decode($resp->value());
-			if(!is_array($parsed_response) && trim($parsed_response) == "Authentication failed") {
-				$error = "An authentication failure occurred while trying to access {$url}:{$port} ($method).";
-				log_error($error);
-				file_notice("sync_settings", $error, "Settings Sync", "");
-				exit;
-			} else {
-				log_error("XMLRPC sync successfully completed with {$url}:{$port}.");
-				update_filter_reload_status("XMLRPC sync successfully completed with {$url}:{$port}.");
-			}
-			$numberofruns = 3;
-		}
-		$numberofruns++;
+	$client = new SimpleXMLRPC_Client($url,240);
+	$client->setCredentials($username, $password);
+	if ($client->query($method, $xml)) {
+	    $response = $client->getResponse();
+	} else {
+            // propagate error to log
+            $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
+	    log_error($error);            
+            file_notice("sync_settings", $error, "Settings Sync", "");
+	    // print communication details on failure 
+	    echo $client->getDetails();
+            return false ;
 	}
+	
+	if (!is_array($response) && trim($response) == "Authentication failed") {
+		$error = "An authentication failure occurred while trying to access {$url} ({$method}).";
+		log_error($error);
+		file_notice("sync_settings", $error, "Settings Sync", "");
+		exit;
+	}
+
+	return true;
 }
 
 global $g;
@@ -283,28 +257,24 @@ if (is_array($config['hasync'])) {
 		log_error("Config sync not being done because of missing sync IP (this is normal on secondary systems).");
 		exit;
 	}
+	if(is_ipaddrv6($hasync['synchronizetoip']))
+		$hasync['synchronizetoip'] = "[{$hasync['synchronizetoip']}]";
 
 	/*
 	* XXX: The way we're finding the port right now is really suboptimal -
 	*     we can't assume that the other machine is setup identically.
 	*/
 	if (!empty($config['system']['webgui']['protocol'])) {
-		$synchronizetoip = $config['system']['webgui']['protocol'];
-		$synchronizetoip .= "://";
+		$port = $config['system']['webgui']['port'];
+		if (!empty($port)) {
+			$synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'].':'.$port;
+		} elseif ($config['system']['webgui']['protocol'] == "http") {
+			$synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'] ;
+		} else {
+		}
 	}
 
-	/* if port is empty lets rely on the protocol selection */
-	$port = $config['system']['webgui']['port'];
-	if (empty($port)) {
-		if ($config['system']['webgui']['protocol'] == "http")
-			$port = "80";
-		else
-			$port = "443";
-	}
 
-	if(is_ipaddrv6($hasync['synchronizetoip']))
-		$hasync['synchronizetoip'] = "[{$hasync['synchronizetoip']}]";
-	$synchronizetoip .= $hasync['synchronizetoip'];
 	if ($hasync['synchronizerules'] != "") {
 		if (!is_array($config['filter']))
 			$config['filter'] = array();
@@ -405,30 +375,34 @@ if (is_array($config['hasync'])) {
 	else
 		$username = $hasync['username'];
 
-	if (!carp_check_version($synchronizetoip, $username, $hasync['password'], $port))
+	if (!carp_check_version($synchronizeto, $username, $hasync['password'], $port))
 		exit;
 
 	update_filter_reload_status("Signaling CARP reload signal...");
-	carp_sync_xml($synchronizetoip, $username, $hasync['password'], $sections, $port);
-	$cli = new XML_RPC_Client('/xmlrpc.php', $synchronizetoip, $port);
-	$params = array(
-	  XML_RPC_encode($hasync['password'])
-	);
+	carp_sync_xml($synchronizeto, $username, $hasync['password'], $sections, $port);
 
-	$msg = new XML_RPC_Message('pfsense.filter_configure', $params);
-	$cli->setCredentials($username, $hasync['password']);
-	$resp = $cli->send($msg, "900");
-
-	if (!is_object($resp)) {
-		$error = "A communications error occurred while attempting Filter sync with username {$username} {$synchronizetoip}:{$port}.";
-		log_error($error);
-		file_notice("sync_settings", $error, "Settings Sync", "");
-	} elseif($resp->faultCode()) {
-		$error = "An error code was received while attempting Filter sync with username {$username} {$synchronizetoip}:{$port} - Code " . $resp->faultCode() . ": " . $resp->faultString();
-		log_error($error);
-		file_notice("sync_settings", $error, "Settings Sync", "");
+	$client = new SimpleXMLRPC_Client($synchronizeto,240);
+	$client->setCredentials($username, $hasync['password']);
+	if ($client->query("opnsense.filter_configure")) {
+	    $response = $client->getResponse();
 	} else {
-		log_error("Filter sync successfully completed with {$synchronizetoip}:{$port}.");
-		$numberofruns = 3;
+            // propagate error to log
+            $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
+	    log_error($error);            
+            file_notice("sync_settings", $error, "Settings Sync", "");
+	    // print communication details on failure 
+	    echo $client->getDetails();
+            return false ;
 	}
+
+	if (!is_array($response) && trim($response) == "Authentication failed") {
+		$error = "An authentication failure occurred while trying to access {$url} ({$method}).";
+		log_error($error);
+		file_notice("sync_settings", $error, "Settings Sync", "");
+		exit;
+	}
+
+
+
+	log_error("Filter sync successfully completed with {$synchronizetoip}:{$port}.");
 }
