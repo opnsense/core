@@ -1,0 +1,37 @@
+<model>
+    <mount>//OPNsense/proxy</mount>
+    <description>
+        (squid) proxy settings
+    </description>
+    <items>
+        <general>
+        <enabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+        </enabled>
+        </general>
+        <forward>
+            <interfaces type="CSVListField">
+                <Required>N</Required>
+            </interfaces>
+            <port type="IntegerField">
+                <default>3128</default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>"Proxy port needs to be an integer value between 1 and 65535"</ValidationMessage>
+                <Required>Y</Required>
+            </port>
+            <addACLforInterfaceSubnets type="BooleanField">
+                <default>1</default>
+                <Required>Y</Required>
+            </addACLforInterfaceSubnets>
+            <transparentProxyMode type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </transparentProxyMode>
+            <alternateDNSservers type="CSVListField">
+                <Required>N</Required>
+            </alternateDNSservers>
+        </forward>
+    </items>
+</model>

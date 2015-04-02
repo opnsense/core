@@ -29,7 +29,9 @@ div.Tokenize ul.TokensContainer
 {
     cursor: text;
     padding: 0 5px 0 0;
-    height: 100px;
+    height:auto;
+    min-height:34px;
+    max-height: 170px;
     overflow-y: auto;
     background-color: white;
 }
@@ -138,6 +140,9 @@ div.Tokenize ul.Dropdown
     border-radius: 0 0 6px 6px;
 
     z-index: 20;
+
+    height: auto;
+    overflow-x: hidden;
 }
 
 div.Tokenize ul.Dropdown li

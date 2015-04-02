@@ -30,7 +30,7 @@ namespace OPNsense\Proxy\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
-use \OPNsense\Proxy\General;
+use \OPNsense\Proxy\Proxy;
 
 /**
  * Class ServiceController
@@ -101,13 +101,13 @@ class ServiceController extends ApiControllerBase
         // close session for long running action
         session_write_close();
 
-        $mdlGeneral = new General();
+        $mdlProxy = new Proxy();
         $backend = new Backend();
 
         $runStatus = $this->statusAction();
 
         // stop squid when disabled
-        if ($runStatus['status'] == "running" && $mdlGeneral->enabled->__toString() == 0) {
+        if ($runStatus['status'] == "running" && $mdlProxy->general->enabled->__toString() == 0) {
             $this->stopAction();
         }
 
@@ -115,7 +115,7 @@ class ServiceController extends ApiControllerBase
         $backend->sendEvent("template reload OPNsense.Proxy");
 
         // (res)start daemon
-        if ($mdlGeneral->enabled->__toString() == 1) {
+        if ($mdlProxy->general->enabled->__toString() == 1) {
             if ($runStatus['status'] == "running") {
                 $backend->sendEvent("service reconfigure proxy");
             } else {

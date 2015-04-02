@@ -30,6 +30,6 @@ namespace OPNsense\Proxy;
 
 use OPNsense\Base\BaseModel;
 
-class General extends BaseModel
+class Proxy extends BaseModel
 {
 }

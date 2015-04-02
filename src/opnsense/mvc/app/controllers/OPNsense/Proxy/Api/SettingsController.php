@@ -29,7 +29,7 @@
 namespace OPNsense\Proxy\Api;
 
 use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Proxy\General;
+use \OPNsense\Proxy\Proxy;
 use \OPNsense\Core\Config;
 
 /**
@@ -39,19 +39,40 @@ use \OPNsense\Core\Config;
 class SettingsController extends ApiControllerBase
 {
     /**
-     * retrieve general settings
+     * retrieve proxy settings
      * @return array
      */
     public function getAction()
     {
         $result = array();
         if ($this->request->isGet()) {
-            $mdlGeneral = new General();
+            $mdlProxy = new Proxy();
 
-            $selopt=array("lan"=>"LAN","wan"=>"WAN");
-            $mdlGeneral->interfaces->setSelectOptions($selopt);
+            // Define array for selected interfaces
+            $selopt=Array();
 
-            $result['general'] = $mdlGeneral->getNodes();
+            // Get ConfigObject
+            $configObj = Config::getInstance()->object();
+            // Iterate over all interfaces configuration
+            // TODO: replace for <interfaces> helper
+            foreach ( $configObj->interfaces->children() as $key => $value ) {
+                // Check if interface is enabled, if tag is <enable/> treat as enabled.
+                if  ( isset($value->enable) && ( $value->enable != '0' ) ) {
+                    // Check if interface has static ip
+                    if ($value->ipaddr != 'dhcp') {
+
+                        if ($value->descr == '') {
+                            $description = strtoupper($key); // Use interface name as description if none is given
+                        } else {
+                            $description = $value->descr;
+                        }
+                        $selopt[$key] = (string)$description; // Add Interface to selectable options.
+                    }
+                }
+            }
+
+            $mdlProxy->forward->interfaces->setSelectOptions($selopt);
+            $result['proxy'] = $mdlProxy->getNodes();
         }
 
         return $result;
@@ -66,23 +87,23 @@ class SettingsController extends ApiControllerBase
     public function setAction()
     {
         $result = array("result"=>"failed");
-        if ($this->request->hasPost("general")) {
+        if ($this->request->hasPost("proxy")) {
             // load model and update with provided data
-            $mdlGeneral = new General();
-            $mdlGeneral->setNodes($this->request->getPost("general"));
+            $mdlProxy = new Proxy();
+            $mdlProxy->setNodes($this->request->getPost("proxy"));
 
             // perform validation
-            $valMsgs = $mdlGeneral->performValidation();
+            $valMsgs = $mdlProxy->performValidation();
             foreach ($valMsgs as $field => $msg) {
                 if (!array_key_exists("validations", $result)) {
                     $result["validations"] = array();
                 }
-                $result["validations"]["general.".$msg->getField()] = $msg->getMessage();
+                $result["validations"]["proxy.".$msg->getField()] = $msg->getMessage();
             }
 
             // serialize model to config
             if ($valMsgs->count() == 0) {
-                $mdlGeneral->serializeToConfig();
+                $mdlProxy->serializeToConfig();
             }
 
         }
