@@ -139,7 +139,7 @@ function merge_config_section_xmlrpc($confData)
     global $config;
     require_once("config.inc");
 
-    $config_new = array_overlay($config, $confData);
+    $config_new = array_merge_recursive($config, $confData);
     $config = $config_new;
     $mergedkeys = implode(",", array_keys($confData));
     write_config(sprintf(gettext("Merged in config (%s sections) from XMLRPC client."), $mergedkeys));
