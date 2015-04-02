@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<pfsense>
+<opnsense>
 	<version>9.9</version>
 	<lastchange></lastchange>
 	<theme>opnsense</theme>
@@ -746,4 +746,4 @@
 	<widgets>
 		<sequence>system_information-container:col1:show,captive_portal_status-container:col1:close,carp_status-container:col1:close,cpu_graphs-container:col1:close,gateways-container:col1:close,gmirror_status-container:col1:close,installed_packages-container:col1:close,interface_statistics-container:col1:close,interface_list-container:col2:show,ipsec-container:col2:close,load_balancer_status-container:col2:close,log-container:col2:close,picture-container:col2:close,rss-container:col2:close,services_status-container:col2:close,traffic_graphs-container:col2:close</sequence>
 	</widgets>
-</pfsense>
+</opnsense>
