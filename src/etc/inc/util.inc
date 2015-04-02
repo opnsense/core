@@ -1464,7 +1464,7 @@ function is_interface_mismatch()
 /* sync carp entries to other firewalls */
 function carp_sync_client()
 {
-	send_event('filter sync');
+	send_event('filter sync load');
 }
 
 /****f* util/isAjax

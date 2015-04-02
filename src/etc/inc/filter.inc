@@ -121,6 +121,7 @@ function filter_configure()
 	 */
 	if (!file_exists("/var/run/booting")) {
 		send_event('filter reload');
+		send_event('filter sync restart');
 	}
 }
 

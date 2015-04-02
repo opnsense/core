@@ -37,7 +37,7 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("shaper.inc");
 require_once("interfaces.inc");
-require_once("XMLRPC_client.inc") ;
+require_once("XMLRPC_Client.inc") ;
 
 /*
  *  backup_vip_config_section($section): returns as an xml file string of
@@ -83,7 +83,7 @@ function remove_special_characters($string) {
 	return $string;
 }
 
-function carp_check_version($url, $username, $password, $method = 'opnsense.host_firmware_version') {
+function carp_check_version($url, $username, $password, $method = 'opnsense.firmware_version') {
 	global $config, $g;
 
 	if (file_exists('/var/run/booting')) {
@@ -136,7 +136,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
 	$config_copy = $config;
 
 	/* strip out nosync items */
-	if (is_array($config_copy['nat']['outbound']['rule'])) {
+	if (is_array($config_copy['nat']) && is_array($config_copy['nat']['outbound']['rule'])) {
 		$rulescnt = count($config_copy['nat']['outbound']['rule']);
 		for ($x = 0; $x < $rulescnt; $x++) {
 			$config_copy['nat']['outbound']['rule'][$x]['descr'] = remove_special_characters($config_copy['nat']['outbound']['rule'][$x]['descr']);
@@ -144,7 +144,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
 				unset ($config_copy['nat']['outbound']['rule'][$x]);
 		}
 	}
-	if (is_array($config_copy['nat']['rule'])) {
+	if (is_array($config_copy['nat']) && is_array($config_copy['nat']['rule'])) {
 		$natcnt = count($config_copy['nat']['rule']);
 		for ($x = 0; $x < $natcnt; $x++) {
 			$config_copy['nat']['rule'][$x]['descr'] = remove_special_characters($config_copy['nat']['rule'][$x]['descr']);
@@ -152,7 +152,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
 				unset ($config_copy['nat']['rule'][$x]);
 		}
 	}
-	if (is_array($config_copy['filter']['rule'])) {
+	if (is_array($config_copy['filter']) && is_array($config_copy['filter']['rule'])) {
 		$filtercnt = count($config_copy['filter']['rule']);
 		for ($x = 0; $x < $filtercnt; $x++) {
 			$config_copy['filter']['rule'][$x]['descr'] = remove_special_characters($config_copy['filter']['rule'][$x]['descr']);
@@ -160,7 +160,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
 				unset ($config_copy['filter']['rule'][$x]);
 		}
 	}
-	if (is_array($config_copy['aliases']['alias'])) {
+	if (is_array($config_copy['aliases']) && is_array($config_copy['aliases']['alias'])) {
 		$aliascnt = count($config_copy['aliases']['alias']);
 		for ($x = 0; $x < $aliascnt; $x++) {
 			$config_copy['aliases']['alias'][$x]['descr'] = remove_special_characters($config_copy['aliases']['alias'][$x]['descr']);
@@ -168,7 +168,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
 				unset ($config_copy['aliases']['alias'][$x]);
 		}
 	}
-	if (is_array($config_copy['dnsmasq']['hosts'])) {
+	if (is_array($config_copy['dnsmasq']) && is_array($config_copy['dnsmasq']['hosts'])) {
 		$dnscnt = count($config_copy['dnsmasq']['hosts']);
 		for ($x = 0; $x < $dnscnt; $x++) {
 			$config_copy['dnsmasq']['hosts'][$x]['descr'] = remove_special_characters($config_copy['dnsmasq']['hosts'][$x]['descr']);
@@ -176,7 +176,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
 				unset ($config_copy['dnsmasq']['hosts'][$x]);
 		}
 	}
-	if (is_array($config_copy['ipsec']['tunnel'])) {
+	if (is_array($config_copy['ipsec']) && is_array($config_copy['ipsec']['tunnel'])) {
 		$ipseccnt = count($config_copy['ipsec']['tunnel']);
 		for ($x = 0; $x < $ipseccnt; $x++) {
 			$config_copy['ipsec']['tunnel'][$x]['descr'] = remove_special_characters($config_copy['ipsec']['tunnel'][$x]['descr']);
@@ -267,10 +267,9 @@ if (is_array($config['hasync'])) {
 	if (!empty($config['system']['webgui']['protocol'])) {
 		$port = $config['system']['webgui']['port'];
 		if (!empty($port)) {
-			$synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'].':'.$port;
-		} elseif ($config['system']['webgui']['protocol'] == "http") {
-			$synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'] ;
+			$synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'].':'.$port."/xmlrpc.php";
 		} else {
+			$synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip']."/xmlrpc.php" ;
 		}
 	}
 
@@ -375,12 +374,18 @@ if (is_array($config['hasync'])) {
 	else
 		$username = $hasync['username'];
 
-	if (!carp_check_version($synchronizeto, $username, $hasync['password'], $port))
+	if (!carp_check_version($synchronizeto, $username, $hasync['password']))
 		exit;
 
 	update_filter_reload_status("Signaling CARP reload signal...");
-	carp_sync_xml($synchronizeto, $username, $hasync['password'], $sections, $port);
+	carp_sync_xml($synchronizeto, $username, $hasync['password'], $sections);
 
+	if (count($argv) <= 1 || $argv[1] != 'restart' ) {
+		// only sync data, no reload
+		// TODO: config sync probably needs more thinking, but when we always force a reload 
+		// TODO: the machine tends to get sloppy
+		exit;
+	}
 	$client = new SimpleXMLRPC_Client($synchronizeto,240);
 	$client->setCredentials($username, $hasync['password']);
 	if ($client->query("opnsense.filter_configure")) {

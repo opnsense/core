@@ -42,6 +42,7 @@ if($_GET['getstatus']) {
 }
 if($_POST['reloadfilter']) {
 	send_event("filter reload");
+        send_event("filter sync reload")
 	header("Location: status_filter_reload.php");
 	exit;
 }
