@@ -215,19 +215,8 @@ function openvpn_get_digestlist() {
 
 function openvpn_get_engines()
 {
-	if (file_exists('/usr/local/bin/openssl')) {
-		/* use the ports version */
-		$bin_openssl = '/usr/local/bin/openssl';
-	} elseif (file_exists('/usr/bin/openssl')) {
-		/* use the base version (legacy fallback) */
-		$bin_openssl = '/usr/bin/openssl';
-	} else {
-		/* the infamous "this should never happen" */
-		log_error(_('Could not find an OpenSSL implementation on your system.'));
-	}
-
 	$openssl_engines = array('none' => 'No Hardware Crypto Acceleration');
-	exec($bin_openssl . ' engine -t -c', $openssl_engine_output);
+	exec('/usr/local/bin/openssl engine -t -c', $openssl_engine_output);
 	$openssl_engine_output = implode("\n", $openssl_engine_output);
 	$openssl_engine_output = preg_replace("/\\n\\s+/", "|", $openssl_engine_output);
 	$openssl_engine_output = explode("\n", $openssl_engine_output);

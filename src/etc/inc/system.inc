@@ -791,17 +791,6 @@ function system_webgui_start()
 {
 	global $config, $g;
 
-	if (file_exists('/usr/local/bin/openssl')) {
-		/* use the ports version */
-		$bin_openssl = '/usr/local/bin/openssl';
-	} elseif (file_exists('/usr/bin/openssl')) {
-		/* use the base version (legacy fallback) */
-		$bin_openssl = '/usr/bin/openssl';
-	} else {
-		/* the infamous "this should never happen" */
-		log_error(_('Could not find an OpenSSL implementation on your system.'));
-	}
-
 	if (file_exists("/var/run/booting")) {
 		/* XXX no no no no no no no no  */
 		echo gettext("Starting webConfigurator...");
@@ -833,13 +822,13 @@ function system_webgui_start()
 			$cert = array();
 			$cert['refid'] = uniqid();
 			$cert['descr'] = gettext("webConfigurator default");
-			/* mind the gap ->.<- */
-			$openssl_args  = ' req -new -newkey rsa:4096 -sha256';
-			$openssl_args .= ' -days 365 -nodes -x509';
-			$openssl_args .= ' -subj "/C=NL/ST=Zuid-Holland/L=Middelharnis/O=OPNsense"';
-			$openssl_args .= ' -keyout /tmp/ssl.key';
-			$openssl_args .= ' -out /tmp/ssl.crt';
-			mwexec($bin_openssl . $openssl_args);
+			mwexec(
+				/* XXX ought to be replaced by PHP calls */
+				'/usr/local/bin/openssl req -new ' .
+				'-newkey rsa:4096 -sha256 -days 365 -nodes -x509 ' .
+				'-subj "/C=NL/ST=Zuid-Holland/L=Middelharnis/O=OPNsense" ' .
+				'-keyout /tmp/ssl.key -out /tmp/ssl.crt'
+			);
 			$crt = file_get_contents('/tmp/ssl.crt');
 			$key = file_get_contents('/tmp/ssl.key');
 			unlink('/tmp/ssl.key');

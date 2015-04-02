@@ -100,9 +100,9 @@ function openvpn_client_pem_to_pk12($outpath, $outpass, $crtpath, $keypath, $cap
 	$ekeypath = escapeshellarg($keypath);
 	if ($capath) {
 		$ecapath = escapeshellarg($capath);
-		exec("/usr/bin/openssl pkcs12 -export -in {$ecrtpath} -inkey {$ekeypath} -certfile {$ecapath} -out {$eoutpath} -passout pass:{$eoutpass}");
+		exec("/usr/local/bin/openssl pkcs12 -export -in {$ecrtpath} -inkey {$ekeypath} -certfile {$ecapath} -out {$eoutpath} -passout pass:{$eoutpass}");
 	} else
-		exec("/usr/bin/openssl pkcs12 -export -in {$ecrtpath} -inkey {$ekeypath} -out {$eoutpath} -passout pass:{$eoutpass}");
+		exec("/usr/local/bin/openssl pkcs12 -export -in {$ecrtpath} -inkey {$ekeypath} -out {$eoutpath} -passout pass:{$eoutpass}");
 
 	unlink($crtpath);
 	unlink($keypath);
@@ -692,7 +692,7 @@ EOF;
 			$eoutpass = escapeshellarg($outpass);
 			$ekeyfile = escapeshellarg($keyfile);
 			$eclearkeyfile = escapeshellarg($clearkeyfile);
-			exec("/usr/bin/openssl rsa -in ${eclearkeyfile} -out ${ekeyfile} -des3 -passout pass:${eoutpass}");
+			exec("/usr/local/bin/openssl rsa -in ${eclearkeyfile} -out ${ekeyfile} -des3 -passout pass:${eoutpass}");
 			unlink($clearkeyfile);
 		} else {
 			$keyfile = "{$tempdir}/key.key";

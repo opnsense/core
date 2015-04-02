@@ -463,18 +463,6 @@ function cert_get_modulus($str_crt, $decode = true, $type = 'crt')
 	$type_cmd = array('x509', 'rsa', 'req');
 	$modulus = '';
 
-	if (file_exists('/usr/local/bin/openssl')) {
-		/* use the ports version */
-		$bin_openssl = '/usr/local/bin/openssl';
-	} elseif (file_exists('/usr/bin/openssl')) {
-		/* use the base version (legacy fallback) */
-		$bin_openssl = '/usr/bin/openssl';
-	} else {
-		/* the infamous "this should never happen" */
-		log_error(_('Could not find an OpenSSL implementation on your system.'));
-		return $modulus;
-	}
-
 	if ($decode) {
 		$str_crt = base64_decode($str_crt);
 	}
@@ -482,9 +470,8 @@ function cert_get_modulus($str_crt, $decode = true, $type = 'crt')
 	if (in_array($type, $type_list)) {
 		$type = str_replace($type_list, $type_cmd, $type);
 		$modulus = exec(sprintf(
-			'echo %s | %s %s -noout -modulus',
+			'echo %s | /usr/local/bin/openssl %s -noout -modulus',
 			escapeshellarg($str_crt),
-			$bin_openssl,
 			escapeshellarg($type)
 		));
 	}
