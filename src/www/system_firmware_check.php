@@ -54,7 +54,7 @@ if (file_exists($file_pkg_status)) {
 
 if($_POST['action'] == 'pkg_upgrade') {
 	// execute shell command and collect (only valid) info into named array
-	$cmd = '/usr/bin/nohup /usr/local/opnsense/scripts/pkg_upgrade.sh ' . $package . ' > /dev/null 2> /dev/null < /dev/null &';
+	$cmd = '/usr/sbin/daemon -f /usr/local/opnsense/scripts/pkg_upgrade.sh ' . escapeshellarg($package);
 	$shell->exec($cmd, false, false, $shell_output);
 	exit;
 }
