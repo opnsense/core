@@ -89,28 +89,22 @@ if ($_POST) {
 
 	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	if ($_POST['subnet'])
+	if (isset($_POST['subnet'])) {
 		$_POST['subnet'] = trim($_POST['subnet']);
-
-	if ($_POST['subnet']) {
 		if (!is_ipaddr($_POST['subnet']))
 			$input_errors[] = gettext("A valid IP address must be specified.");
 		else {
-			if (isset($id) && isset($a_vip[$id])) {
-				$ignore_if = $a_vip[$id]['interface'];
-				$ignore_mode = $a_vip[$id]['mode'];
+			if ($_POST['mode'] == 'carp') {
+				$ignore_if = $_POST['interface']."_vip{$_POST['vhid']}";
 			} else {
 				$ignore_if = $_POST['interface'];
-				$ignore_mode = $_POST['mode'];
 			}
 
-			if ($ignore_mode == 'carp')
-				$ignore_if .= "_vip{$id}";
-
-			if (is_ipaddr_configured($_POST['subnet'], $ignore_if))
+			if (is_ipaddr_configured($_POST['subnet'], $ignore_if)) {
 				$input_errors[] = gettext("This IP address is being used by another interface or VIP.");
-
-			unset($ignore_if, $ignore_mode);
+			}
+			
+			unset($ignore_if);
 		}
 	}
 
