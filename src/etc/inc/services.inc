@@ -1213,7 +1213,7 @@ EOD;
 
 		// Handle option, number rowhelper values
 		$dhcpdv6conf .= "\n";
-		if ($dhcpv6ifconf['numberoptions']['item']) {
+		if (isset($dhcpv6ifconf['numberoptions']['item'])) {
 			foreach($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
 				$dhcpdv6conf .= "	option custom-{$dhcpv6if}-{$itemv6idx} \"{$itemv6['value']}\";\n";
 			}
