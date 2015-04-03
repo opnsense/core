@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -37,8 +38,13 @@ define("CRON_WEEKLY_PATTERN", "0 0 * * 0");
 define("CRON_DAILY_PATTERN", "0 0 * * *");
 define("CRON_HOURLY_PATTERN", "0 * * * *");
 
-if (!is_array($config['ppps']['ppp']))
+if (!is_array($config['ppps'])) {
+	$config['ppps'] = array();
+}
+
+if (!is_array($config['ppps']['ppp'])) {
 	$config['ppps']['ppp'] = array();
+}
 
 $a_ppps = &$config['ppps']['ppp'];
 
