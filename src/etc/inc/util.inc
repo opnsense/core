@@ -1025,14 +1025,18 @@ function mwexec_bg($command, $mute = false, $clearsigmask = false)
 	mwexec("/usr/sbin/daemon -f {$command}", $mute, $clearsigmask);
 }
 
-/* unlink a file, if it exists */
-function unlink_if_exists($fn) {
+/* unlink a file or directory, if it exists */
+function unlink_if_exists($fn)
+{
 	$to_do = glob($fn);
-	if(is_array($to_do)) {
-		foreach($to_do as $filename)
-			@unlink($filename);
-	} else {
-		@unlink($fn);
+
+	foreach($to_do as $filename) {
+		if (is_dir($filename)) {
+			/* rmdir() is not recursive... */
+			mwexecf('/bin/rm -r %s', $filename);
+		} else {
+			unlink($filename);
+		}
 	}
 }
 
