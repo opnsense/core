@@ -172,4 +172,3 @@ maxheight: define max height of select box, default=170px to hold 5 items
         'activetab':'proxy-general'
     ])
 }}
-

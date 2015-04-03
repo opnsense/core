@@ -103,7 +103,7 @@ if ($_POST) {
 			if (is_ipaddr_configured($_POST['subnet'], $ignore_if)) {
 				$input_errors[] = gettext("This IP address is being used by another interface or VIP.");
 			}
-			
+
 			unset($ignore_if);
 		}
 	}

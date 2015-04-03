@@ -90,7 +90,7 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
 		return;
 	}
 
-	
+
 	$client = new SimpleXMLRPC_Client($url,240);
 	$client->setCredentials($username, $password);
 	if ($client->query($method)) {
@@ -98,9 +98,9 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
 	} else {
             // propagate error to log
             $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
-	    log_error($error);            
+	    log_error($error);
             file_notice("sync_settings", $error, "Settings Sync", "");
-	    // print communication details on failure 
+	    // print communication details on failure
 	    echo $client->getDetails();
             return false ;
 	}
@@ -111,7 +111,7 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
 		file_notice("sync_settings", $error, "Settings Sync", "");
 		exit;
 	}
-	
+
 	if (!isset($remote_version['config_version']) ||
 		$remote_version['config_version'] < $config['version']) {
 		update_filter_reload_status("The other member is on older configuration version of {$g['product_name']}. Sync will not be done to prevent problems!");
@@ -120,7 +120,7 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
 	} else {
 		return true;
 	}
-	
+
 }
 
 function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsense.restore_config_section') {
@@ -226,13 +226,13 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
 	} else {
             // propagate error to log
             $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
-	    log_error($error);            
+	    log_error($error);
             file_notice("sync_settings", $error, "Settings Sync", "");
-	    // print communication details on failure 
+	    // print communication details on failure
 	    echo $client->getDetails();
             return false ;
 	}
-	
+
 	if (!is_array($response) && trim($response) == "Authentication failed") {
 		$error = "An authentication failure occurred while trying to access {$url} ({$method}).";
 		log_error($error);
@@ -382,7 +382,7 @@ if (is_array($config['hasync'])) {
 
 	if (count($argv) <= 1 || $argv[1] != 'restart' ) {
 		// only sync data, no reload
-		// TODO: config sync probably needs more thinking, but when we always force a reload 
+		// TODO: config sync probably needs more thinking, but when we always force a reload
 		// TODO: the machine tends to get sloppy
 		exit;
 	}
@@ -393,9 +393,9 @@ if (is_array($config['hasync'])) {
 	} else {
             // propagate error to log
             $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
-	    log_error($error);            
+	    log_error($error);
             file_notice("sync_settings", $error, "Settings Sync", "");
-	    // print communication details on failure 
+	    // print communication details on failure
 	    echo $client->getDetails();
             return false ;
 	}

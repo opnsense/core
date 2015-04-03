@@ -286,4 +286,3 @@ function backup_config_section_xmlrpc($sectionKeys)
         return array_intersect_key($config, array_flip($sectionKeys));
     }
 }
-

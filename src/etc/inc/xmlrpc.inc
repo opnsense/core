@@ -68,4 +68,3 @@ class XMLRPCServer
         return $server;
     }
 }
-

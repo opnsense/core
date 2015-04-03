@@ -238,7 +238,7 @@ if ($_POST) {
                         $newvoucher = array();
                 } else {
                         $newvoucher = $config['voucher'][$cpzone];
-                }                        
+                }
 		if ($_POST['enable'] == "yes") {
 			$newvoucher['enable'] = true;
 		} else {
