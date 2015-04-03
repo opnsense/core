@@ -60,20 +60,33 @@ define("CRON_WEEKLY_PATTERN", "0 0 * * 0");
 define("CRON_DAILY_PATTERN", "0 0 * * *");
 define("CRON_HOURLY_PATTERN", "0 * * * *");
 
-if (!is_array($pconfig))
+if (!is_array($pconfig)) {
 	$pconfig = array();
+}
 
-if (!is_array($config['ppps']['ppp']))
+if (!is_array($config['ppps'])) {
+	$config['ppps'] = array();
+}
+
+if (!is_array($config['ppps']['ppp'])) {
 	$config['ppps']['ppp'] = array();
+}
 
 $a_ppps = &$config['ppps']['ppp'];
 
-function remove_bad_chars($string) {
+function remove_bad_chars($string)
+{
 	return preg_replace('/[^a-z_0-9]/i','',$string);
 }
 
-if (!is_array($config['gateways']['gateway_item']))
+if (!is_array($config['gateways'])) {
+	$config['gateways'] = array();
+}
+
+if (!is_array($config['gateways']['gateway_item'])) {
 	$config['gateways']['gateway_item'] = array();
+}
+
 $a_gateways = &$config['gateways']['gateway_item'];
 
 $wancfg = &$config['interfaces'][$if];
