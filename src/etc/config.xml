@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <opnsense>
+	<trigger_initial_wizard/>
 	<version>9.9</version>
 	<lastchange></lastchange>
 	<theme>opnsense</theme>

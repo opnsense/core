@@ -402,7 +402,7 @@ echo $jscriptstr;
 <?php
 	## If it is the first time webConfigurator has been
 	## accessed since initial install show this stuff.
-	if(file_exists('/conf/trigger_initial_wizard')) : ?>
+	if (isset($config['trigger_initial_wizard'])) : ?>
 	<header class="page-content-head">
 		<div class="container-fluid">
 			<h1><?=gettext("Starting initial configuration"); ?>!</h1>

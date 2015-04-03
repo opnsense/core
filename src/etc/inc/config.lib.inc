@@ -200,23 +200,8 @@ function write_config($desc = 'Unknown', $backup = true)
  ******/
 function reset_factory_defaults($sync = true)
 {
-	/* create conf directory, if necessary */
-	@mkdir('/conf');
-
-	/* clear out /conf */
-	$dh = opendir('/conf');
-	while ($filename = readdir($dh)) {
-		if (($filename != '.') && ($filename != '..')) {
-			unlink_if_exists('/conf/' . $filename);
-		}
-	}
-	closedir($dh);
-
+	unlink_if_exists('/conf/*' . $filename);
 	disable_security_checks();
-
-	/* call the wizard */
-	touch('/conf/trigger_initial_wizard');
-
 	setup_serial_port();
 
 	/* as we go through a special case directly reboot */
