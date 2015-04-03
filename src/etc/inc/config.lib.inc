@@ -198,10 +198,8 @@ function write_config($desc = 'Unknown', $backup = true)
  * RESULT
  *   integer	- indicates completion
  ******/
-function reset_factory_defaults()
+function reset_factory_defaults($sync = true)
 {
-	$lockkey = lock('config', LOCK_EX);
-
 	/* create conf directory, if necessary */
 	@mkdir('/conf');
 
@@ -219,12 +217,15 @@ function reset_factory_defaults()
 	/* call the wizard */
 	touch('/conf/trigger_initial_wizard');
 
-	unlock($lockkey);
-
 	setup_serial_port();
 
 	/* as we go through a special case directly reboot */
-	mwexec('/sbin/shutdown -or now');
+	$shutdown_cmd = '/sbin/shutdown -or now';
+	if ($sync) {
+		mwexec($shutdown_cmd);
+	} else {
+		mwexec_bg($shutdown_cmd);
+	}
 }
 
 function config_restore($conffile) {

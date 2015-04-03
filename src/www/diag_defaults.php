@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -48,8 +49,7 @@ include("head.inc");
 				print_info_box(gettext("The system has been reset to factory defaults and is now rebooting. This may take a few minutes, depending on your hardware.")); ?>
 			<pre>
 			<?php
-				reset_factory_defaults();
-				system_reboot();
+				reset_factory_defaults(false);
 			?>
 			</pre>
 			<?php else: ?>
