@@ -235,17 +235,11 @@ function config_restore($conffile) {
 
 	$cnf = OPNsense\Core\Config::getInstance();
 	$cnf->backup();
-
-	$lockkey = lock('config', LOCK_EX);
-
-	copy($conffile, '/conf/config.xml');
+	$cnf->restoreBackup($conffile);
 
 	disable_security_checks();
 
-	unlock($lockkey);
-
 	$config = parse_config();
-
 
 	write_config(gettext("Reverted to") . " " . array_pop(explode("/", $conffile)) . ".", false);
 
