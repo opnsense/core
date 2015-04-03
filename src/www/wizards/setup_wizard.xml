@@ -579,8 +579,12 @@
 		$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
 		$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
 		if (!empty($config['wizardtemp']['wangateway'])) {
-			if (!is_array($config['gateways']['gateway_item']))
+			if (!is_array($config['gateways'])) {
+				$config['gateways'] = array();
+			}
+			if (!is_array($config['gateways']['gateway_item'])) {
 				$config['gateways']['gateway_item'] = array();
+			}
 			$found = false;
 			$defaultgw_found = false;
 			foreach ($config['gateways']['gateway_item'] as & $gw) {

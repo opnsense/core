@@ -32,8 +32,13 @@ require_once("vpn.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateway_groups.php');
 
-if (!is_array($config['gateways']['gateway_group']))
+if (!is_array($config['gateways'])) {
+	$config['gateways'] = array();
+}
+
+if (!is_array($config['gateways']['gateway_group'])) {
 	$config['gateways']['gateway_group'] = array();
+}
 
 $a_gateway_groups = &$config['gateways']['gateway_group'];
 $a_gateways = return_gateways_array();

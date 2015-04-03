@@ -37,8 +37,13 @@ foreach($a_gateways as $gw) {
 }
 $a_gateways = $a_gateways_arr;
 
-if (!is_array($config['gateways']['gateway_item']))
+if (!is_array($config['gateways'])) {
+	$config['gateways'] = array();
+}
+
+if (!is_array($config['gateways']['gateway_item'])) {
 	$config['gateways']['gateway_item'] = array();
+}
 
 $a_gateway_item = &$config['gateways']['gateway_item'];
 $apinger_default = return_apinger_defaults();
