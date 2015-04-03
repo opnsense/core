@@ -1663,8 +1663,7 @@ function system_set_harddisk_standby()
 		$standby = $config['system']['harddiskstandby'];
 		// Check for a numeric value
 		if (is_numeric($standby)) {
-			// Sync the disk(s)
-			pfSense_sync();
+			mwexec('/bin/sync');
 			if (set_single_sysctl('hw.ata.standby', (int)$standby)) {
 				// Reinitialize ATA-drives
 				mwexec('/usr/local/sbin/atareinit');
