@@ -33,6 +33,12 @@ done
 if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	# only remove the directory
 	rmdir ${_tmpdir}
+
+	# cleanup configuration files from previous instance
+	# (does not work with install media unfortunately)
+	/bin/rm -rf /var/run/*
+	/bin/rm -rf /var/etc/*
+	/bin/rm -rf /var/tmp/*
 else
 	# fake a writeable environment in some subdirs
 	for i in conf etc home root usr var; do
@@ -146,11 +152,6 @@ fi
 
 # make some directories in /var
 /bin/mkdir -p /var/run /var/log /var/etc /var/db/entropy /var/at/jobs/ /var/empty 2>/dev/null
-/bin/rm -rf /var/run/*
-
-# Cleanup configuration files from previous instance
-/bin/rm -rf /var/etc/*
-/bin/rm -rf /var/tmp/*
 
 echo -n "Creating symlinks..."
 
