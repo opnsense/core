@@ -3383,8 +3383,8 @@ function upgrade_111_to_112()
 		$config['system']['ssh']['passwordauth'] = true;
 	}
 
-	if (isset($config['system']['sshdenable'])) {
+	if (isset($config['system']['enablesshd'])) {
 		$config['system']['ssh']['enabled'] = true;
-		unset($config['system']['sshdenable']);
+		unset($config['system']['enablesshd']);
 	}
 }
