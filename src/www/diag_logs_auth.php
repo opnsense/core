@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -28,14 +29,16 @@
 
 require_once("guiconfig.inc");
 
-$portal_logfile = "{$g['varlog_path']}/portalauth.log";
+$portal_logfile = '/var/log/portalauth.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($portal_logfile);
+}
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Portal Auth"));
 $shortcut_section = "captiveportal";
@@ -60,11 +63,16 @@ include("head.inc");
 
 
 						<div class="tab-content content-box col-xs-12">
+						<div class="container-fluid">
+							<?php printf(gettext('Last %s Portal Auth log entries'), $nentries); ?>
+						</div>
+						<div class="table-responsive">
+							<table class="table table-striped table-sort">
+								<?php dump_clog($portal_logfile, $nentries, true); ?>
+							</table>
+						</div>
+
 					    <div class="container-fluid">
-
-							<p>  <?php printf(gettext("Last %s Portal Auth log entries"),$nentries);?></p>
-								<pre>  <?php dump_clog($portal_logfile, $nentries, true); ?></pre>
-
 								<form action="diag_logs_auth.php" method="post">
 									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 								</form>
