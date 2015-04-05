@@ -121,18 +121,18 @@ function in_arrayi($needle, $haystack) {
 	return in_array(strtolower($needle), array_map('strtolower', $haystack));
 }
 
-function parse_filter_line($line) {
-	global $config, $g;
-
+function parse_filter_line($line)
+{
 	$flent = array();
-	$log_split = "";
+	$log_split = '';
 
-	if (!preg_match("/(.*)\s(.*)\sfilterlog:\s(.*)$/", $line, $log_split))
-		return "";
+	if (!preg_match('/(.*)\s(.*)\sfilterlog:\s(.*)$/', $line, $log_split)) {
+		return '';
+	}
 
 	list($all, $flent['time'], $host, $rule) = $log_split;
 
-	$rule_data = explode(",", $rule);
+	$rule_data = explode(',', $rule);
 	$field = 0;
 
 	$flent['rulenum'] = $rule_data[$field++];
@@ -146,113 +146,119 @@ function parse_filter_line($line) {
 	$flent['direction'] = $rule_data[$field++];
 	$flent['version'] = $rule_data[$field++];
 
-
-	if ($flent['version'] == '4' || $flent['version'] == '6') {
-		if ($flent['version'] == '4') {
-			$flent['tos'] = $rule_data[$field++];
-			$flent['ecn'] = $rule_data[$field++];
-			$flent['ttl'] = $rule_data[$field++];
-			$flent['id'] = $rule_data[$field++];
-			$flent['offset'] = $rule_data[$field++];
-			$flent['flags'] = $rule_data[$field++];
-			$flent['protoid'] = $rule_data[$field++];
-			$flent['proto'] = strtoupper($rule_data[$field++]);
-		} else {
-			$flent['class'] = $rule_data[$field++];
-			$flent['flowlabel'] = $rule_data[$field++];
-			$flent['hlim'] = $rule_data[$field++];
-			$flent['proto'] = $rule_data[$field++];
-			$flent['protoid'] = $rule_data[$field++];
-		}
-
-		$flent['length'] = $rule_data[$field++];
-		$flent['srcip'] = $rule_data[$field++];
-		$flent['dstip'] = $rule_data[$field++];
-
-		if ($flent['protoid'] == '6' || $flent['protoid'] == '17') { // TCP or UDP
-			$flent['srcport'] = $rule_data[$field++];
-			$flent['dstport'] = $rule_data[$field++];
-
-			$flent['src'] = $flent['srcip'] . ':' . $flent['srcport'];
-			$flent['dst'] = $flent['dstip'] . ':' . $flent['dstport'];
-
-			$flent['datalen'] = $rule_data[$field++];
-			if ($flent['protoid'] == '6') { // TCP
-				$flent['tcpflags'] = $rule_data[$field++];
-				$flent['seq'] = $rule_data[$field++];
-				$flent['ack'] = $rule_data[$field++];
-				$flent['window'] = $rule_data[$field++];
-				$flent['urg'] = $rule_data[$field++];
-				$flent['options'] = explode(";",$rule_data[$field++]);
-			}
-		} else if ($flent['protoid'] == '1') { // ICMP
-			$flent['src'] = $flent['srcip'];
-			$flent['dst'] = $flent['dstip'];
-
-			$flent['icmp_type'] = $rule_data[$field++];
-
-			switch ($flent['icmp_type']) {
-			case "request":
-			case "reply":
-				$flent['icmp_id'] = $rule_data[$field++];
-				$flent['icmp_seq'] = $rule_data[$field++];
-				break;
-			case "unreachproto":
-				$flent['icmp_dstip'] = $rule_data[$field++];
-				$flent['icmp_protoid'] = $rule_data[$field++];
-				break;
-			case "unreachport":
-				$flent['icmp_dstip'] = $rule_data[$field++];
-				$flent['icmp_protoid'] = $rule_data[$field++];
-				$flent['icmp_port'] = $rule_data[$field++];
-				break;
-			case "unreach":
-			case "timexceed":
-			case "paramprob":
-			case "redirect":
-			case "maskreply":
-				$flent['icmp_descr'] = $rule_data[$field++];
-				break;
-			case "needfrag":
-				$flent['icmp_dstip'] = $rule_data[$field++];
-				$flent['icmp_mtu'] = $rule_data[$field++];
-				break;
-			case "tstamp":
-				$flent['icmp_id'] = $rule_data[$field++];
-				$flent['icmp_seq'] = $rule_data[$field++];
-				break;
-			case "tstampreply":
-				$flent['icmp_id'] = $rule_data[$field++];
-				$flent['icmp_seq'] = $rule_data[$field++];
-				$flent['icmp_otime'] = $rule_data[$field++];
-				$flent['icmp_rtime'] = $rule_data[$field++];
-				$flent['icmp_ttime'] = $rule_data[$field++];
-				break;
-			default :
-				$flent['icmp_descr'] = $rule_data[$field++];
-				break;
-			}
-
-		} else if ($flent['protoid'] == '112') { // CARP
-			$flent['type'] = $rule_data[$field++];
-			$flent['ttl'] = $rule_data[$field++];
-			$flent['vhid'] = $rule_data[$field++];
-			$flent['version'] = $rule_data[$field++];
-			$flent['advskew'] = $rule_data[$field++];
-			$flent['advbase'] = $rule_data[$field++];
-		}
-	} else {
-		log_error(sprintf(gettext("There was a error parsing rule number: %s.   Please report to mailing list or forum."), $flent['rulenum']));
-		return "";
+	if ($flent['version'] != '4' && $flent['version'] != '6') {
+		log_error(sprintf(
+			gettext("There was a error parsing rule number: %s -- not IPv4 or IPv6 (`%s')"),
+			$flent['rulenum'],
+			$rule
+		));
+		return '';
 	}
 
-	/* If there is a src, a dst, and a time, then the line should be usable/good */
-	if (!((trim($flent['src']) == "") || (trim($flent['dst']) == "") || (trim($flent['time']) == ""))) {
-		return $flent;
+	if ($flent['version'] == '4') {
+		$flent['tos'] = $rule_data[$field++];
+		$flent['ecn'] = $rule_data[$field++];
+		$flent['ttl'] = $rule_data[$field++];
+		$flent['id'] = $rule_data[$field++];
+		$flent['offset'] = $rule_data[$field++];
+		$flent['flags'] = $rule_data[$field++];
+		$flent['protoid'] = $rule_data[$field++];
+		$flent['proto'] = strtoupper($rule_data[$field++]);
 	} else {
-		log_error(sprintf(gettext("There was a error parsing rule: %s.   Please report to mailing list or forum."), $errline));
-		return "";
+		$flent['class'] = $rule_data[$field++];
+		$flent['flowlabel'] = $rule_data[$field++];
+		$flent['hlim'] = $rule_data[$field++];
+		$flent['proto'] = $rule_data[$field++];
+		$flent['protoid'] = $rule_data[$field++];
 	}
+
+	$flent['length'] = $rule_data[$field++];
+	$flent['srcip'] = $rule_data[$field++];
+	$flent['dstip'] = $rule_data[$field++];
+
+	if ($flent['protoid'] == '6' || $flent['protoid'] == '17') { // TCP or UDP
+		$flent['srcport'] = $rule_data[$field++];
+		$flent['dstport'] = $rule_data[$field++];
+
+		$flent['src'] = $flent['srcip'] . ':' . $flent['srcport'];
+		$flent['dst'] = $flent['dstip'] . ':' . $flent['dstport'];
+
+		$flent['datalen'] = $rule_data[$field++];
+		if ($flent['protoid'] == '6') { // TCP
+			$flent['tcpflags'] = $rule_data[$field++];
+			$flent['seq'] = $rule_data[$field++];
+			$flent['ack'] = $rule_data[$field++];
+			$flent['window'] = $rule_data[$field++];
+			$flent['urg'] = $rule_data[$field++];
+			$flent['options'] = explode(";",$rule_data[$field++]);
+		}
+	} else if ($flent['protoid'] == '1') { // ICMP
+		$flent['src'] = $flent['srcip'];
+		$flent['dst'] = $flent['dstip'];
+
+		$flent['icmp_type'] = $rule_data[$field++];
+
+		switch ($flent['icmp_type']) {
+		case 'request':
+		case 'reply':
+			$flent['icmp_id'] = $rule_data[$field++];
+			$flent['icmp_seq'] = $rule_data[$field++];
+			break;
+		case 'unreachproto':
+			$flent['icmp_dstip'] = $rule_data[$field++];
+			$flent['icmp_protoid'] = $rule_data[$field++];
+			break;
+		case 'unreachport':
+			$flent['icmp_dstip'] = $rule_data[$field++];
+			$flent['icmp_protoid'] = $rule_data[$field++];
+			$flent['icmp_port'] = $rule_data[$field++];
+			break;
+		case 'unreach':
+		case 'timexceed':
+		case 'paramprob':
+		case 'redirect':
+		case 'maskreply':
+			$flent['icmp_descr'] = $rule_data[$field++];
+			break;
+		case 'needfrag':
+			$flent['icmp_dstip'] = $rule_data[$field++];
+			$flent['icmp_mtu'] = $rule_data[$field++];
+			break;
+		case 'tstamp':
+			$flent['icmp_id'] = $rule_data[$field++];
+			$flent['icmp_seq'] = $rule_data[$field++];
+			break;
+		case 'tstampreply':
+			$flent['icmp_id'] = $rule_data[$field++];
+			$flent['icmp_seq'] = $rule_data[$field++];
+			$flent['icmp_otime'] = $rule_data[$field++];
+			$flent['icmp_rtime'] = $rule_data[$field++];
+			$flent['icmp_ttime'] = $rule_data[$field++];
+			break;
+		default :
+			$flent['icmp_descr'] = $rule_data[$field++];
+			break;
+		}
+	} else if ($flent['protoid'] == '112') { // CARP
+		$flent['type'] = $rule_data[$field++];
+		$flent['ttl'] = $rule_data[$field++];
+		$flent['vhid'] = $rule_data[$field++];
+		$flent['version'] = $rule_data[$field++];
+		$flent['advskew'] = $rule_data[$field++];
+		$flent['advbase'] = $rule_data[$field++];
+	}
+
+	/* If there isn't a src, a dst, or a time, then the line is unusable/bad */
+	if (trim($flent['src']) == '' || trim($flent['dst']) == '' || trim($flent['time']) == '') {
+		log_error(sprintf(
+			gettext("There was a error parsing rule: %s -- no src or test or time (`%s')"),
+			$flent['rulenum'],
+			$rule
+		));
+		return '';
+	}
+
+	return $flent;
 }
 
 function get_port_with_service($port, $proto) {
