@@ -50,9 +50,9 @@ $reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_ta
 if (!is_array($config['aliases'])) {
         $config['aliases'] = array();
 }
-
-if (!is_array($config['aliases']['alias']))
+if (!is_array($config['aliases']['alias'])) {
 	$config['aliases']['alias'] = array();
+}
 $a_aliases = &$config['aliases']['alias'];
 
 if($_POST['aliasimport'] <> "") {

@@ -140,9 +140,12 @@ function easyrule_block_alias_add($host, $int = 'wan') {
 		return false;
 
 	/* If there are no aliases, start an array */
-	if (!is_array($config['aliases']['alias']))
+	if (!is_array($config['aliases'])) {
+		$config['aliases'] = array();
+	}
+	if (!is_array($config['aliases']['alias'])) {
 		$config['aliases']['alias'] = array();
-
+	}
 	$a_aliases = &$config['aliases']['alias'];
 
 	/* Try to get the ID if the alias already exists */
