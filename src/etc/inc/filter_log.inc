@@ -131,7 +131,6 @@ function parse_filter_line($line)
 	}
 
 	list($all, $flent['time'], $host, $rule) = $log_split;
-
 	$rule_data = explode(',', $rule);
 	$field = 0;
 
@@ -192,7 +191,7 @@ function parse_filter_line($line)
 			$flent['urg'] = $rule_data[$field++];
 			$flent['options'] = explode(";",$rule_data[$field++]);
 		}
-	} else if ($flent['protoid'] == '1') { // ICMP
+	} elseif ($flent['protoid'] == '1') { // ICMP
 		$flent['src'] = $flent['srcip'];
 		$flent['dst'] = $flent['dstip'];
 
@@ -239,13 +238,16 @@ function parse_filter_line($line)
 			$flent['icmp_descr'] = $rule_data[$field++];
 			break;
 		}
-	} else if ($flent['protoid'] == '112') { // CARP
+	} elseif ($flent['protoid'] == '112') { // CARP
 		$flent['type'] = $rule_data[$field++];
 		$flent['ttl'] = $rule_data[$field++];
 		$flent['vhid'] = $rule_data[$field++];
 		$flent['version'] = $rule_data[$field++];
 		$flent['advskew'] = $rule_data[$field++];
 		$flent['advbase'] = $rule_data[$field++];
+	} else { // e.g. IGMP, simply write src/dst as we are IP
+		$flent['src'] = $flent['srcip'];
+		$flent['dst'] = $flent['dstip'];
 	}
 
 	/* If there isn't a src, a dst, or a time, then the line is unusable/bad */
