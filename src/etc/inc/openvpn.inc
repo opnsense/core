@@ -1285,12 +1285,10 @@ function openvpn_refresh_crls() {
 	}
 }
 
-function openvpn_create_dirs() {
-	global $g;
-	if (!is_dir("{$g['varetc_path']}/openvpn"))
-		safe_mkdir("{$g['varetc_path']}/openvpn", 0750);
-	if (!is_dir("{$g['varetc_path']}/openvpn-csc"))
-		safe_mkdir("{$g['varetc_path']}/openvpn-csc", 0750);
+function openvpn_create_dirs()
+{
+	@mkdir('/var/etc/openvpn-csc', 0750);
+	@mkdir('/var/etc/openvpn', 0750);
 }
 
 function openvpn_get_interface_ip($ip, $mask) {

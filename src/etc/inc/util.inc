@@ -1280,19 +1280,6 @@ function return_dir_as_array($dir, $filter_regex = '') {
 }
 
 /*
- *    safe_mkdir($path, $mode = 0755)
- *    create directory if it doesn't already exist and isn't a file!
- */
-function safe_mkdir($path, $mode= 0755)
-{
-	if (!is_file($path) && !is_dir($path)) {
-		return @mkdir($path, $mode, true);
-	} else {
-		return false;
-	}
-}
-
-/*
  * get_sysctl($names)
  * Get values of sysctl OID's listed in $names (accepts an array or a single
  * name) and return an array of key/value pairs set for those that exist

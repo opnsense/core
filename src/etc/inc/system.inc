@@ -1333,7 +1333,7 @@ function system_ntp_configure($start_ntpd = true)
 	$statsdir = '/var/log/ntp';
 	$gps_device = '/dev/gps0';
 
-	safe_mkdir($statsdir);
+	@mkdir($statsdir, 0755);
 
 	if (!is_array($config['ntpd'])) {
 		$config['ntpd'] = array();
