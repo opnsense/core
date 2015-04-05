@@ -131,6 +131,12 @@ function parse_filter_line($line)
 	}
 
 	list($all, $flent['time'], $host, $rule) = $log_split;
+
+	if (trim($flent['time']) == '') {
+		log_error(sprintf(gettext('There was an error parsing a rule: no time (`%s\')'), $log_split));
+		return '';
+	}
+
 	$rule_data = explode(',', $rule);
 	$field = 0;
 
@@ -147,7 +153,7 @@ function parse_filter_line($line)
 
 	if ($flent['version'] != '4' && $flent['version'] != '6') {
 		log_error(sprintf(
-			gettext("There was a error parsing rule number: %s -- not IPv4 or IPv6 (`%s')"),
+			gettext('There was an error parsing rule number: %s -- not IPv4 or IPv6 (`%s\')'),
 			$flent['rulenum'],
 			$rule
 		));
@@ -175,6 +181,19 @@ function parse_filter_line($line)
 	$flent['srcip'] = $rule_data[$field++];
 	$flent['dstip'] = $rule_data[$field++];
 
+	/* bootstrap src and dst for non-port protocols */
+	$flent['src'] = $flent['srcip'];
+	$flent['dst'] = $flent['dstip'];
+
+	if (trim($flent['src']) == '' || trim($flent['dst']) == '') {
+		log_error(sprintf(
+			gettext('There was an error parsing rule number: %s -- no src or dst (`%s\')'),
+			$flent['rulenum'],
+			$rule
+		));
+		return '';
+	}
+
 	if ($flent['protoid'] == '6' || $flent['protoid'] == '17') { // TCP or UDP
 		$flent['srcport'] = $rule_data[$field++];
 		$flent['dstport'] = $rule_data[$field++];
@@ -192,11 +211,7 @@ function parse_filter_line($line)
 			$flent['options'] = explode(";",$rule_data[$field++]);
 		}
 	} elseif ($flent['protoid'] == '1') { // ICMP
-		$flent['src'] = $flent['srcip'];
-		$flent['dst'] = $flent['dstip'];
-
 		$flent['icmp_type'] = $rule_data[$field++];
-
 		switch ($flent['icmp_type']) {
 		case 'request':
 		case 'reply':
@@ -245,19 +260,6 @@ function parse_filter_line($line)
 		$flent['version'] = $rule_data[$field++];
 		$flent['advskew'] = $rule_data[$field++];
 		$flent['advbase'] = $rule_data[$field++];
-	} else { // e.g. IGMP, simply write src/dst as we are IP
-		$flent['src'] = $flent['srcip'];
-		$flent['dst'] = $flent['dstip'];
-	}
-
-	/* If there isn't a src, a dst, or a time, then the line is unusable/bad */
-	if (trim($flent['src']) == '' || trim($flent['dst']) == '' || trim($flent['time']) == '') {
-		log_error(sprintf(
-			gettext("There was a error parsing rule: %s -- no src or test or time (`%s')"),
-			$flent['rulenum'],
-			$rule
-		));
-		return '';
 	}
 
 	return $flent;
