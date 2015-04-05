@@ -1131,11 +1131,8 @@ msgstr ""
 msgid "unable to read %sn"
 msgstr ""
 
-#:
-src/etc/inc/meta.inc
-132
-msgid "error
-tag mismatch ( %1$s != %2$s ) in '%3$s'%4$s"), $tagbeg, $tagend, $fpath, "n"
+#: src/etc/inc/meta.inc:132
+msgid "error: tag mismatch ( %1$s != %2$s ) in '%3$s'%4$s"
 msgstr ""
 
 #: src/etc/inc/meta.inc:143
