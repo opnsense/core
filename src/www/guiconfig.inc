@@ -1112,9 +1112,13 @@ function get_crash_report($pedantic = false)
 	$count = 0;
 
 	if (file_exists('/tmp/PHP_errors.log')) {
-		/* only notify about crash report when there's an error */
-		$total = `/usr/bin/grep -v 'PHP Warning:' /tmp/PHP_errors.log | /usr/bin/wc -l | /usr/bin/awk '{ print $1 }'`;
-		if ($total > 0 || $pedantic) {
+		if ($pedantic) {
+			$total = `/usr/bin/wc -l /tmp/PHP_errors.log | /usr/bin/awk '{ print $1 }'`;
+		} else {
+			/* only notify about crash report when there's an error */
+			$total = `/usr/bin/grep -v 'PHP Warning:' /tmp/PHP_errors.log | /usr/bin/wc -l | /usr/bin/awk '{ print $1 }'`;
+		}
+		if ($total > 0) {
 			$count++;
 		}
 	}
