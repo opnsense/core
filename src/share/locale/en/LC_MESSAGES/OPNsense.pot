@@ -1123,17 +1123,12 @@ msgid ""
 "Could not display mobile user stats!"
 msgstr ""
 
-#:
-src/etc/inc/meta.inc
-68
-msgid "list_phpfiles
-unable to examine path %sn"), $path);
+#: src/etc/inc/meta.inc:68
+msgid "list_phpfiles unable to examine path %sn"
 msgstr ""
 
-#:
-src/etc/inc/meta.inc
-99
-msgid "unable to read %sn"), $fpath);
+#: src/etc/inc/meta.inc:99
+msgid "unable to read %sn"
 msgstr ""
 
 #:
@@ -1143,62 +1138,39 @@ msgid "error
 tag mismatch ( %1$s != %2$s ) in '%3$s'%4$s"), $tagbeg, $tagend, $fpath, "n"
 msgstr ""
 
-#:
-src/etc/inc/meta.inc
-143
-msgid "warning
-tag %1$s has no data in '%2$s'%3$s"), $tagbeg, $fpath, "n"
+#: src/etc/inc/meta.inc:143
+msgid "warning: tag %1$s has no data in '%2$s'%3$s"
 msgstr ""
 
-#:
-src/etc/inc/meta.inc
-163
-msgid "warning
-tag %1$s has malformed data in '%2$s'%3$s"), $tagbeg, $fpath, "n"
+#: src/etc/inc/meta.inc:163
+msgid "warning: tag %1$s has malformed data in '%2$s'%3$s"
 msgstr ""
 
-#:
-src/etc/inc/meta.inc
-185
-msgid "warning
-tag %1$s has invalid data in '%2$s'%3$s"), $tagbeg, $fpath, "n"
+#: src/etc/inc/meta.inc:185
+msgid "warning: tag %1$s has invalid data in '%2$s'%3$s"
 msgstr ""
 
-#:
-src/etc/inc/notices.inc
-62
-msgid "Could not open %s for writing"), '/tmp/notices'
+#: src/etc/inc/notices.inc:62
+msgid "Could not open %s for writing"
 msgstr ""
 
-#:
-src/etc/inc/notices.inc
-323
-msgid "Message sent to %s OK"), $to
+#: src/etc/inc/notices.inc:323
+msgid "Message sent to %s OK"
 msgstr ""
 
-#:
-src/etc/inc/notices.inc
-326
-msgid "Could not send the message to %1$s -- Error
-%2$s" $to, $smtp->error
+#: src/etc/inc/notices.inc:326
+msgid "Could not send the message to %1$s -- Error %2$s"
 msgstr ""
 
-#:
-src/etc/inc/notices.inc
-327
-msgid "Could not send the message to %1$s -- Error
-%2$s" $to, $smtp->error
+#: src/etc/inc/notices.inc:327
+msgid "Could not send the message to %1$s -- Error %2$s"
 msgstr ""
 
-#:
-src/etc/inc/notices.inc
-361
-msgid "sprintf("%s (%s) - Notification", $g['product_name'], $hostname)), "{$message}"
+#: src/etc/inc/notices.inc:361
+msgid "sprintf("%s (%s) - Notification", $g['product_name'], $hostname)"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-87
+#: src/etc/inc/openvpn.inc:87
 msgid "Peer to Peer ( SSL/TLS )"
 msgstr ""
 
