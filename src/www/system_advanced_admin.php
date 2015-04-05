@@ -615,7 +615,7 @@ if ($restart_webgui) {
 	ob_flush();
 	flush();
 	log_error(gettext("webConfigurator configuration has changed. Restarting webConfigurator."));
-	send_event("service restart webgui");
+	send_event("&service restart webgui");
 }
 
 ?>
