@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
@@ -29,14 +30,16 @@
 
 require_once("guiconfig.inc");
 
-$relayd_logfile = "{$g['varlog_path']}/relayd.log";
+$relayd_logfile = '/var/log/relayd.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($relayd_logfile);
+}
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Load Balancer"));
 $shortcut_section = "relayd";

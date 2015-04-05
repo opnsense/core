@@ -523,19 +523,22 @@ function clear_log_file($logfile = "/var/log/system.log", $restart_syslogd = tru
 		system_syslogd_start();
 }
 
-function clear_all_log_files() {
-	global $g;
-	exec("/usr/bin/killall syslogd");
+function clear_all_log_files()
+{
+	killbyname('syslogd');
 
-	$log_files = array("system", "filter", "dhcpd", "vpn", "pptps", "poes", "l2tps", "openvpn", "portalauth", "ipsec", "ppp", "relayd", "wireless", "lighttpd", "ntpd", "gateways", "resolver", "routing");
+	$log_files = array(
+		"system", "filter", "dhcpd", "vpn", "pptps", "poes", "l2tps", "openvpn", "portalauth",
+		"ipsec", "ppp", "relayd", "wireless", "lighttpd", "ntpd", "gateways", "resolver", "routing"
+	);
+
 	foreach ($log_files as $lfile) {
-		clear_log_file("{$g['varlog_path']}/{$lfile}.log", false);
+		clear_log_file("/var/log/{$lfile}.log", false);
 	}
 
 	system_syslogd_start();
 	killbyname("dhcpd");
 	services_dhcpd_configure();
-	return;
 }
 
 function dump_clog($logfile, $tail, $withorig = true, $grepfor = "", $grepinvert = "") {

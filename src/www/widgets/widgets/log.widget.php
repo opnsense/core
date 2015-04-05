@@ -72,8 +72,8 @@ $filterfieldsarray = array(
 	"interface" => $nentriesinterfaces
 );
 
-$filter_logfile = "{$g['varlog_path']}/filter.log";
-$filterlog = conv_log_filter($filter_logfile, $nentries, 50, $filterfieldsarray);        //Get log entries
+$filter_logfile = '/var/log/filter.log';
+$filterlog = conv_log_filter($filter_logfile, $nentries, 50, $filterfieldsarray);
 
 /* AJAX related routines */
 handle_ajax($nentries, $nentries + 20);

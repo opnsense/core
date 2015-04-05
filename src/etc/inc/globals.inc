@@ -40,7 +40,6 @@ $g = array(
 	"varrun_path" => "/var/run",
 	"varetc_path" => "/var/etc",
 	"vardb_path" => "/var/db",
-	"varlog_path" => "/var/log",
 	"admin_group" => "admins",
 	"product_name" => "OPNsense",
 	"product_website" => "https://opnsense.org",

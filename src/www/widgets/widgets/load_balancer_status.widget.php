@@ -41,6 +41,9 @@ require_once("vslb.inc");
 $now = time();
 $year = date("Y");
 
+if (!is_array($config['load_balancer'])) {
+	$config['load_balancer'] = array();
+}
 if (!is_array($config['load_balancer']['lbpool'])) {
 	$config['load_balancer']['lbpool'] = array();
 }
@@ -52,10 +55,11 @@ $a_pool = &$config['load_balancer']['lbpool'];
 $rdr_a = get_lb_redirects();
 $relay_hosts = get_lb_summary();
 
-$lb_logfile = "{$g['varlog_path']}/relayd.log";
+$lb_logfile = '/var/log/relayd.log';
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
 ?>
 

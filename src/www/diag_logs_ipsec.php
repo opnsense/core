@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -30,14 +31,16 @@
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
 
-$ipsec_logfile = "{$g['varlog_path']}/ipsec.log";
+$ipsec_logfile = '/var/log/ipsec.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($ipsec_logfile);
+}
 
 $ipsec_logarr = return_clog($ipsec_logfile, $nentries);
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) Deciso B.V.
 	Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
@@ -30,14 +31,16 @@
 
 require_once("guiconfig.inc");
 
-$wireless_logfile = "{$g['varlog_path']}/wireless.log";
+$wireless_logfile = '/var/log/wireless.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($wireless_logfile);
+}
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Wireless"));
 $shortcut_section = "wireless";

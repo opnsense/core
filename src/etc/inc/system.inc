@@ -637,84 +637,84 @@ function system_syslogd_start()
 		$facilitylist = implode(',', array_unique($separatelogfacilities));
 		$syslogconf .= "!radvd,routed,olsrd,zebra,ospfd,bgpd,miniupnpd\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/routing.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/routing.log\n";
 
 		$syslogconf .= "!ntp,ntpd,ntpdate\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/ntpd.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/ntpd.log\n";
 
 		$syslogconf .= "!ppp\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/ppp.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/ppp.log\n";
 
 		$syslogconf .= "!pptps\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/pptps.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/pptps.log\n";
 
 		$syslogconf .= "!poes\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/poes.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/poes.log\n";
 
 		$syslogconf .= "!l2tps\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/l2tps.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/l2tps.log\n";
 
 		$syslogconf .= "!charon\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/ipsec.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/ipsec.log\n";
 		if (isset($syslogcfg['vpn']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!openvpn\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/openvpn.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/openvpn.log\n";
 		if (isset($syslogcfg['vpn']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!apinger\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/gateways.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/gateways.log\n";
 		if (isset($syslogcfg['apinger']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!dnsmasq,filterdns,unbound\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/resolver.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/resolver.log\n";
 
 		$syslogconf .= "!dhcpd,dhcrelay,dhclient,dhcp6c\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/dhcpd.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/dhcpd.log\n";
 		if (isset($syslogcfg['dhcp']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!relayd\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/relayd.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/relayd.log\n";
 		if (isset($syslogcfg['relayd']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!hostapd\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/wireless.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/wireless.log\n";
 		if (isset($syslogcfg['hostapd']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!filterlog\n";
-		$syslogconf .= "*.*								{$log_directive}{$g['varlog_path']}/filter.log\n";
+		$syslogconf .= "*.*								{$log_directive}/var/log/filter.log\n";
 		if (isset($syslogcfg['filter']))
 			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
 
 		$syslogconf .= "!-{$facilitylist}\n";
 		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= <<<EOD
-local3.*							{$log_directive}{$g['varlog_path']}/vpn.log
-local4.*							{$log_directive}{$g['varlog_path']}/portalauth.log
-local7.*							{$log_directive}{$g['varlog_path']}/dhcpd.log
-*.notice;kern.debug;lpr.info;mail.crit;daemon.none;		{$log_directive}{$g['varlog_path']}/system.log
-news.err;local0.none;local3.none;local4.none;			{$log_directive}{$g['varlog_path']}/system.log
-local7.none							{$log_directive}{$g['varlog_path']}/system.log
-security.*							{$log_directive}{$g['varlog_path']}/system.log
-auth.info;authpriv.info;daemon.info				{$log_directive}{$g['varlog_path']}/system.log
+local3.*							{$log_directive}/var/log/vpn.log
+local4.*							{$log_directive}/var/log/portalauth.log
+local7.*							{$log_directive}/var/log/dhcpd.log
+*.notice;kern.debug;lpr.info;mail.crit;daemon.none;		{$log_directive}/var/log/system.log
+news.err;local0.none;local3.none;local4.none;			{$log_directive}/var/log/system.log
+local7.none							{$log_directive}/var/log/system.log
+security.*							{$log_directive}/var/log/system.log
+auth.info;authpriv.info;daemon.info				{$log_directive}/var/log/system.log
 auth.info;authpriv.info						|exec /usr/local/sbin/sshlockout_pf 15
 *.emerg								*
 
@@ -1173,7 +1173,7 @@ EOD;
 		$lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
 
 		/* Hifn accelerators do NOT work with the BEAST mitigation code. Do not allow it to be enabled if a Hifn card has been detected. */
-		$fd = @fopen("{$g['varlog_path']}/dmesg.boot", "r");
+		$fd = fopen('/var/log/dmesg.boot', 'r');
 		if ($fd) {
 			while (!feof($fd)) {
 				$dmesgl = fgets($fd);
@@ -1329,14 +1329,15 @@ function system_ntp_configure($start_ntpd = true)
 {
 	global $config, $g;
 
-	$driftfile = "/var/db/ntpd.drift";
-	$statsdir = "/var/log/ntp";
+	$driftfile = '/var/db/ntpd.drift';
+	$statsdir = '/var/log/ntp';
 	$gps_device = '/dev/gps0';
 
 	safe_mkdir($statsdir);
 
-	if (!is_array($config['ntpd']))
+	if (!is_array($config['ntpd'])) {
 		$config['ntpd'] = array();
+	}
 
 	$ntpcfg = "# \n";
 	$ntpcfg .= "# OPNsense ntp configuration file \n";
@@ -1636,7 +1637,7 @@ function system_dmesg_save()
 			$lastcpline = $i;
 	}
 
-	$fd = fopen("{$g['varlog_path']}/dmesg.boot", "w");
+	$fd = fopen('/var/log/dmesg.boot', 'w');
 	if (!$fd) {
 		printf(gettext("Error: cannot open dmesg.boot in system_dmesg_save().%s"), "\n");
 		return 1;
@@ -1702,20 +1703,21 @@ function system_disable_arp_wrong_if()
 
 function system_enable_arp_wrong_if()
 {
-	global $config;
-
 	set_sysctl(array(
 		"net.link.ether.inet.log_arp_wrong_iface" => "1",
 		"net.link.ether.inet.log_arp_movements" => "1"
 	));
 }
 
-function enable_watchdog() {
+function enable_watchdog()
+{
 	global $config;
-	return;
+
+	return;	/* XXX delete or repair please */
+
 	$install_watchdog = false;
 	$supported_watchdogs = array("Geode");
-	$file = file_get_contents("/var/log/dmesg.boot");
+	$file = file_get_contents('/var/log/dmesg.boot');
 	foreach($supported_watchdogs as $sd) {
 		if(stristr($file, "Geode")) {
 			$install_watchdog = true;

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -33,14 +34,16 @@ $shortcut_section = "openvpn";
 require_once("guiconfig.inc");
 require_once("vpn.inc");
 
-$openvpn_logfile = "{$g['varlog_path']}/openvpn.log";
+$openvpn_logfile = '/var/log/openvpn.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($openvpn_logfile);
+}
 
 include("head.inc");
 

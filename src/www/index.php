@@ -101,30 +101,32 @@ require_once('includes/functions.inc.php');
 
 ## Check to see if we have a swap space,
 ## if true, display, if false, hide it ...
-if(file_exists("/usr/sbin/swapinfo")) {
+if (file_exists('/usr/sbin/swapinfo')) {
 	$swapinfo = `/usr/sbin/swapinfo`;
-	if(stristr($swapinfo,'%') == true) $showswap=true;
+	if (stristr($swapinfo,'%')) {
+		$showswap = true;
+	}
 }
 
-	## Find out whether there's hardware encryption or not
-	unset($hwcrypto);
-	$fd = @fopen("{$g['varlog_path']}/dmesg.boot", "r");
-	if ($fd) {
-		while (!feof($fd)) {
-			$dmesgl = fgets($fd);
-			if (preg_match("/^hifn.: (.*?),/", $dmesgl, $matches)
-				or preg_match("/.*(VIA Padlock)/", $dmesgl, $matches)
-				or preg_match("/^safe.: (\w.*)/", $dmesgl, $matches)
-				or preg_match("/^ubsec.: (.*?),/", $dmesgl, $matches)
-				or preg_match("/^padlock.: <(.*?)>,/", $dmesgl, $matches)
-				or preg_match("/^glxsb.: (.*?),/", $dmesgl, $matches)
-				or preg_match("/^aesni.: (.*?),/", $dmesgl, $matches)) {
-				$hwcrypto = $matches[1];
-				break;
-			}
+## Find out whether there's hardware encryption or not
+unset($hwcrypto);
+$fd = fopen('/var/log/dmesg.boot', 'r');
+if ($fd) {
+	while (!feof($fd)) {
+		$dmesgl = fgets($fd);
+		if (preg_match("/^hifn.: (.*?),/", $dmesgl, $matches)
+			or preg_match("/.*(VIA Padlock)/", $dmesgl, $matches)
+			or preg_match("/^safe.: (\w.*)/", $dmesgl, $matches)
+			or preg_match("/^ubsec.: (.*?),/", $dmesgl, $matches)
+			or preg_match("/^padlock.: <(.*?)>,/", $dmesgl, $matches)
+			or preg_match("/^glxsb.: (.*?),/", $dmesgl, $matches)
+			or preg_match("/^aesni.: (.*?),/", $dmesgl, $matches)) {
+			$hwcrypto = $matches[1];
+			break;
 		}
-		fclose($fd);
 	}
+	fclose($fd);
+}
 
 ##build widget saved list information
 if ($config['widgets'] && $config['widgets']['sequence'] != "") {

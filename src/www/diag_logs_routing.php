@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>.
@@ -28,14 +29,16 @@
 
 require_once("guiconfig.inc");
 
-$routing_logfile = "{$g['varlog_path']}/routing.log";
+$routing_logfile = '/var/log/routing.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($routing_logfile);
+}
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Routing"));
 $shortcut_section = "routing";

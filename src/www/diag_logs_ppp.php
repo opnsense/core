@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -29,14 +30,16 @@
 
 require_once("guiconfig.inc");
 
-$ppp_logfile = "{$g['varlog_path']}/ppp.log";
+$ppp_logfile = '/var/log/ppp.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($ppp_logfile);
+}
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("PPP"));
 include("head.inc");

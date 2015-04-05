@@ -88,19 +88,22 @@ if ($filtersubmit) {
 	$filterlogentries_qty = getGETPOSTsettingvalue('filterlogentries_qty', null);
 }
 
-$filter_logfile = "{$g['varlog_path']}/filter.log";
+$filter_logfile = '/var/log/filter.log';
 
 $nentries = $config['syslog']['nentries'];
 
 # Override Display Quantity
-if ($filterlogentries_qty)
+if ($filterlogentries_qty) {
 	$nentries = $filterlogentries_qty;
+}
 
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($filter_logfile);
+}
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Firewall"));
 $shortcut_section = "firewall";

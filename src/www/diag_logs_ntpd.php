@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>.
@@ -29,14 +30,16 @@
 
 require_once("guiconfig.inc");
 
-$ntpd_logfile = "{$g['varlog_path']}/ntpd.log";
+$ntpd_logfile = '/var/log/ntpd.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($ntpd_logfile);
+}
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("NTP"));
 $shortcut_section = "ntp";

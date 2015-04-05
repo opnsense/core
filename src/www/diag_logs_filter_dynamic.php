@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -30,7 +31,7 @@
 require_once("guiconfig.inc");
 require_once("filter_log.inc");
 
-$filter_logfile = "{$g['varlog_path']}/filter.log";
+$filter_logfile = '/var/log/filter.log';
 
 /* Hardcode this. AJAX doesn't do so well with large numbers */
 $nentries = 50;
@@ -38,8 +39,9 @@ $nentries = 50;
 /* AJAX related routines */
 handle_ajax($nentries, $nentries + 20);
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($filter_logfile);
+}
 
 $filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100);
 

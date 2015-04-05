@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -29,11 +30,12 @@
 
 require_once("guiconfig.inc");
 
-$dhcpd_logfile = "{$g['varlog_path']}/dhcpd.log";
+$dhcpd_logfile = '/var/log/dhcpd.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
 if ($_POST['clear']) {
 	clear_log_file($dhcpd_logfile);

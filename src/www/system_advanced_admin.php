@@ -249,7 +249,7 @@ if ($_POST) {
 }
 
 unset($hwcrypto);
-$fd = @fopen("{$g['varlog_path']}/dmesg.boot", "r");
+$fd = fopen('/var/log/dmesg.boot', 'r');
 if ($fd) {
 	while (!feof($fd)) {
 		$dmesgl = fgets($fd);

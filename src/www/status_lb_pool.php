@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
@@ -32,16 +33,22 @@ require_once("filter.inc");
 require_once("shaper.inc");
 require_once("vslb.inc");
 
+if (!is_array($config['load_balancer'])) {
+	$config['load_balancer'] = array();
+}
+
 if (!is_array($config['load_balancer']['lbpool'])) {
 	$config['load_balancer']['lbpool'] = array();
 }
+
 $a_pool = &$config['load_balancer']['lbpool'];
 
-$lb_logfile = "{$g['varlog_path']}/relayd.log";
+$lb_logfile = '/var/log/relayd.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
 $now = time();
 $year = date("Y");

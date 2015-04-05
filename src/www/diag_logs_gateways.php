@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -30,23 +31,28 @@
 
 require_once("guiconfig.inc");
 
-$system_logfile = "{$g['varlog_path']}/gateways.log";
+$system_logfile = '/var/log/gateways.log';
 
 $nentries = $config['syslog']['nentries'];
-if (!$nentries)
+if (!$nentries) {
 	$nentries = 50;
+}
 
-if ($_POST['clear'])
+if ($_POST['clear']) {
 	clear_log_file($system_logfile);
+}
 
-if ($_GET['filtertext'])
+if ($_GET['filtertext']) {
 	$filtertext = htmlspecialchars($_GET['filtertext']);
+}
 
-if ($_POST['filtertext'])
+if ($_POST['filtertext']) {
 	$filtertext = htmlspecialchars($_POST['filtertext']);
+}
 
-if ($filtertext)
-	$filtertextmeta="?filtertext=$filtertext";
+if ($filtertext) {
+	$filtertextmeta = "?filtertext={$filtertext}";
+}
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Gateways"));
 $shortcut_section = "gateways";

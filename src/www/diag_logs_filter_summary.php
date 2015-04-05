@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2009 Jim Pingle (jpingle@gmail.com)
@@ -31,7 +32,7 @@ $shortcut_section = "firewall";
 require_once("guiconfig.inc");
 include_once("filter_log.inc");
 
-$filter_logfile = "{$g['varlog_path']}/filter.log";
+$filter_logfile = '/var/log/filter.log';
 $lines = 5000;
 $entriesperblock = 5;
 
