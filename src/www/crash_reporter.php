@@ -1,6 +1,7 @@
 <?php
 
 /*
+	Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2011 Scott Ullrich
 	All rights reserved.
@@ -58,27 +59,17 @@ function upload_crash_report($files)
 	return $response;
 }
 
-function output_crash_reporter_html($crash_reports) {
-	echo "<p><strong>" . gettext("Unfortunately we have detected a programming bug.") . "</strong></p>";
-	echo "<p>" . gettext("Would you like to submit the programming debug logs to the OPNsense developers for inspection?") . "</p>";
-	echo "<p><i>" . gettext("Please double check the contents to ensure you are comfortable sending this information before clicking Yes.") . "</i></p>";
-	echo "<p>" . gettext("Contents of crash reports") . ":<br />";
-	echo "<textarea readonly=\"readonly\" style=\"max-width: none;\" rows=\"24\" cols=\"80\" name=\"crashreports\">{$crash_reports}</textarea></p>";
-	echo "<p><input disabled=\"disabled\" name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"" . gettext("Yes") .  "\" />" . gettext(" - Submit this to the developers for inspection") . "</p>";
-	echo "<p><input name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"" . gettext("No") .  "\" />" . gettext(" - Just delete the crash report and take me back to the Dashboard") . "</p>";
-	echo "</form>";
-}
-
 $pgtitle = array(gettext("Diagnostics"),gettext("Crash Reporter"));
 include('head.inc');
 
-$crash_report_header = "Crash report begins.  Anonymous machine information:\n\n";
-$crash_report_header .= php_uname("m") . "\n";
-$crash_report_header .= php_uname("r") . "\n";
-$crash_report_header .= php_uname("v") . "\n";
-$crash_report_header .= "\nCrash report details:\n";
-
-$php_errors = @file_get_contents('/tmp/PHP_errors.log');
+$crash_report_header = sprintf(
+	"System Information:\n%s\n%s %s (%s)\n%s\n",
+	php_uname('v'),
+	$g['product_name'],
+	trim(file_get_contents('/usr/local/opnsense/version/opnsense')),
+	php_uname('m'),
+	exec('/usr/local/bin/openssl version')
+);
 
 ?>
 
@@ -96,56 +87,58 @@ $php_errors = @file_get_contents('/tmp/PHP_errors.log');
 
 
 <?php
-	if (gettext($_POST['Submit']) == "Yes") {
-		echo gettext("Processing...");
-		if (!is_dir("/var/crash"))
-			mkdir("/var/crash", 0750, true);
-		@file_put_contents("/var/crash/crashreport_header.txt", $crash_report_header);
-		if(file_exists("/tmp/PHP_errors.log"))
-			copy("/tmp/PHP_errors.log", "/var/crash/PHP_errors.log");
-		exec("/usr/bin/gzip /var/crash/*");
-		$files_to_upload = glob("/var/crash/*");
-		echo "<br/>";
-		echo gettext("Uploading...");
+	if ($_POST['Submit'] == 'yes') {
+		echo '<p>' . gettext('Processing...');
 		ob_flush();
 		flush();
-		if(is_array($files_to_upload)) {
-			$resp = upload_crash_report($files_to_upload);
-			array_map('unlink', glob("/var/crash/*"));
-			// Erase the contents of the PHP error log
-			fclose(fopen("/tmp/PHP_errors.log", 'w'));
-			echo "<br/>";
-			print_r($resp);
-			echo "<p><a href=\"/\">" . gettext("Continue") . "</a>" . gettext(" and delete crash report files from local disk.") . "</p>";
-		} else {
-			echo "Could not find any crash files.";
+		if (!is_dir('/var/crash')) {
+			mkdir('/var/crash', 0750, true);
 		}
-	} else if(gettext($_POST['Submit']) == "No") {
-		array_map('unlink', glob("/var/crash/*"));
-		// Erase the contents of the PHP error log
-		fclose(fopen("/tmp/PHP_errors.log", 'w'));
-		header("Location: /");
-		exit;
-	} elseif (get_crash_report(true) == '') {
-		echo '<p><strong>' . gettext('Luckily we have not detected a programming bug.') . '</strong></p>';
+		file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
+		@rename('/tmp/PHP_errors.log', '/var/crash/PHP_errors.log');
+		exec('/usr/bin/gzip /var/crash/*');
+		$files_to_upload = glob('/var/crash/*');
+		echo '<br/>' . gettext('Uploading...');
+		ob_flush();
+		flush();
+		$resp = upload_crash_report($files_to_upload);
+		echo '<br/>' . print_r($resp) . '</p>';
+		array_map('unlink', $files_to_upload);
+	} elseif ($_POST['Submit'] == 'no') {
+		array_map('unlink', glob('/var/crash/*'));
+		@unlink('/tmp/PHP_errors.log');
+	}
+
+	if (get_crash_report(true) == '') {
+		echo '<p><strong>';
+		if ($_POST['Submit'] == 'yes') {
+			echo gettext('Thank you for submitting this crash report.');
+		} elseif ($_POST['Submit'] == 'no') {
+			echo gettext('Please consider submitting a crash report if the error persists.');
+		} else {
+			echo gettext('Luckily we have not detected a programming bug.');
+		}
+		echo '</strong></p>';
 	} else {
 		$crash_files = glob("/var/crash/*");
 		$crash_reports = $crash_report_header;
+		$php_errors = @file_get_contents('/tmp/PHP_errors.log');
 		if (!empty($php_errors)) {
 			$crash_reports .= "\nPHP Errors:\n";
 			$crash_reports .= $php_errors;
 		}
-		if(is_array($crash_files))	{
-			foreach($crash_files as $cf) {
-				if(filesize($cf) < FILE_SIZE) {
-					$crash_reports .= "\nFilename: {$cf}\n";
-					$crash_reports .= file_get_contents($cf);
-				}
+		foreach ($crash_files as $cf) {
+			if (filesize($cf) < FILE_SIZE) {
+				$crash_reports .= "\nFilename: {$cf}\n";
+				$crash_reports .= file_get_contents($cf);
 			}
-		} else {
-			echo "Could not locate any crash data.";
 		}
-		output_crash_reporter_html($crash_reports);
+		echo "<p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
+		echo "<p><br/>" . sprintf(gettext("Would you like to submit this crash report to the %s developers?"), $g['product_name']) . "</p>";
+		echo "<p><button disabled=\"disabled\" name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"yes\">" . gettext('Yes') . "</button> ";
+		echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"no\">" . gettext('No') . "</button></p>";
+		echo "<p><br/><i>" . gettext("Please-double check the contents to ensure you are comfortable submitting the following information:") . "</i></p>";
+		echo "<textarea readonly=\"readonly\" style=\"max-width: none;\" rows=\"24\" cols=\"80\" name=\"crashreports\">{$crash_reports}</textarea></p>";
 	}
 ?>
 						 </div>
