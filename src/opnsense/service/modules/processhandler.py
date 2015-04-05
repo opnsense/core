@@ -109,6 +109,9 @@ class Handler(object):
             except KeyboardInterrupt:
                 # exit on <ctrl><c>
                 raise
+            except SystemExit:
+                # stop process handler on system exit
+                return
             except:
                 # something went wrong... send traceback to syslog, restart listener (wait for a short time)
                 print (traceback.format_exc())
@@ -174,6 +177,9 @@ class HandlerClient(threading.Thread):
 
             # send end of stream characters
             self.connection.sendall("%c%c%c"%(chr(0),chr(0),chr(0)))
+        except SystemExit:
+            # ignore system exit related errors
+            pass
         except:
             print (traceback.format_exc())
             syslog.syslog(syslog.LOG_ERR,
