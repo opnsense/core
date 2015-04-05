@@ -43,6 +43,7 @@ import threading
 import ConfigParser
 import glob
 import time
+import uuid
 import shlex
 import ph_inline_actions
 
@@ -136,6 +137,7 @@ class HandlerClient(threading.Thread):
         self.client_address = client_address
         self.action_handler = action_handler
         self.simulation_mode = simulation_mode
+        self.message_uuid = uuid.uuid4()
 
     def run(self):
         """ handle single action ( read data, execute command, send response )
@@ -146,6 +148,7 @@ class HandlerClient(threading.Thread):
         exec_command = ''
         exec_action = ''
         exec_params = ''
+        exec_in_background = False
         try:
             # receive command, maximum data length is 4k... longer messages will be truncated
             data = self.connection.recv(4096)
@@ -156,6 +159,10 @@ class HandlerClient(threading.Thread):
                 self.connection.sendall('no data\n')
             else:
                 exec_command = data_parts[0]
+                if exec_command[0] == "&":
+                    # set run in background
+                    exec_in_background = True
+                    exec_command= exec_command[1:]
                 if len(data_parts) > 1:
                     exec_action = data_parts[1]
                 else:
@@ -165,31 +172,47 @@ class HandlerClient(threading.Thread):
                 else:
                     exec_params = None
 
+                # when running in background, return this message uuid and detach socket
+                if exec_in_background:
+                    result = self.message_uuid
+                    self.connection.sendall('%s\n%c%c%c' % (result, chr(0), chr(0), chr(0)))
+                    self.connection.close()
+
                 # execute requested action
-                if  self.simulation_mode:
+                if self.simulation_mode:
                     self.action_handler.showAction(exec_command,exec_action,exec_params)
-                    result='OK'
+                    result = 'OK'
                 else:
                     result = self.action_handler.execute(exec_command,exec_action,exec_params)
 
-                # send response back to client( including trailing enter )
-                self.connection.sendall('%s\n'%result)
+                if not exec_in_background:
+                    # send response back to client( including trailing enter )
+                    self.connection.sendall('%s\n' % result)
+                else:
+                    # log response
+                    syslog.syslog(syslog.LOG_INFO, "message %s [%s.%s] returned %s " % (self.message_uuid,
+                                                                                        exec_command,
+                                                                                        exec_action,
+                                                                                        unicode(result)[:100]))
 
             # send end of stream characters
-            self.connection.sendall("%c%c%c"%(chr(0),chr(0),chr(0)))
+            if not exec_in_background:
+                self.connection.sendall("%c%c%c"%(chr(0),chr(0),chr(0)))
         except SystemExit:
             # ignore system exit related errors
             pass
         except:
             print (traceback.format_exc())
             syslog.syslog(syslog.LOG_ERR,
-                          'unable to sendback response [%s] for [%s][%s][%s], message was %s'%(result,
-                                                                                               exec_command,
-                                                                                               exec_action,
-                                                                                               exec_params ,
-                                                                                               traceback.format_exc()))
+                          'unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (result,
+                                                                                                      exec_command,
+                                                                                                      exec_action,
+                                                                                                      exec_params,
+                                                                                                      self.message_uuid,
+                                                                                                      traceback.format_exc()))
         finally:
-            self.connection.close()
+            if not exec_in_background:
+                self.connection.close()
 
 class ActionHandler(object):
     """ Start/stop services and functions using configuration data defined in conf/actions_<topic>.conf
@@ -238,7 +261,7 @@ class ActionHandler(object):
                     for alias in section.split('|'):
                         self.action_map[topic_name][alias] = action_obj
 
-    def findAction(self,command,action,parameters):
+    def findAction(self, command, action, parameters):
         """ find action object
 
         :param command: command/topic for example interface
