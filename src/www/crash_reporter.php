@@ -126,6 +126,8 @@ $php_errors = @file_get_contents('/tmp/PHP_errors.log');
 		fclose(fopen("/tmp/PHP_errors.log", 'w'));
 		header("Location: /");
 		exit;
+	} elseif (get_crash_report(true) == '') {
+		echo '<p><strong>' . gettext('Luckily we have not detected a programming bug.') . '</strong></p>';
 	} else {
 		$crash_files = glob("/var/crash/*");
 		$crash_reports = $crash_report_header;

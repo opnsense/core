@@ -1102,3 +1102,33 @@ if (!$timezone) {
 }
 
 date_default_timezone_set($timezone);
+
+function get_crash_report($pedantic = false)
+{
+	global $g;
+
+	$savemsg = "{$g['product_name']} has detected a crash report or programming bug. Click <a href='crash_reporter.php'>here</a> for more information.";
+	$skip_files = array('.', '..', 'minfree', '');
+	$count = 0;
+
+	if (file_exists('/tmp/PHP_errors.log')) {
+		/* only notify about crash report when there's an error */
+		$total = `/usr/bin/grep -v 'PHP Warning:' /tmp/PHP_errors.log | /usr/bin/wc -l | /usr/bin/awk '{ print $1 }'`;
+		if ($total > 0 || $pedantic) {
+			$count++;
+		}
+	}
+
+	$crashes = glob('/var/crash/*');
+	foreach ($crashes as $crash) {
+		if (!in_array(basename($crash), $skip_files)) {
+			$count++;
+		}
+	}
+
+	if (!$count) {
+		$savemsg = '';
+	}
+
+	return $savemsg;
+}
