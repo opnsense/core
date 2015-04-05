@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) Jim Pingle jim@pingle.org
@@ -216,8 +217,9 @@ include("head.inc");
 											$interfaces["enc0"] = "IPsec";
 
 										/* add openvpn/tun interfaces */
-										if  ($config['openvpn']["openvpn-server"] || $config['openvpn']["openvpn-client"])
-											$interfaces["openvpn"] = "OpenVPN";
+										if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
+											$interfaces['openvpn'] = 'OpenVPN';
+										}
 
 										foreach ($interfaces as $iface => $ifacename): ?>
 										<option value="<?=$iface;?>" <?=($iface==$interfacefilter)?"selected=\"selected\"":"";?>><?=htmlspecialchars($ifacename);?></option>
