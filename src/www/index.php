@@ -348,7 +348,7 @@ EOD;
 
 
 ## Set Page Title and Include Header
-$pgtitle = array(gettext("Status: Dashboard"));
+$pgtitle = array(gettext('Lobby'), gettext('Dashboard'));
 include("head.inc");
 
 ?>
