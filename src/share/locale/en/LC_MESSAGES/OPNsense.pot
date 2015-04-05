@@ -1171,1057 +1171,709 @@ msgstr ""
 msgid "Peer to Peer ( SSL/TLS )"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-88
+#: src/etc/inc/openvpn.inc:88
 msgid "Peer to Peer ( Shared Key )"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-89
+#: src/etc/inc/openvpn.inc:89
 msgid "Remote Access ( SSL/TLS )"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-90
+#: src/etc/inc/openvpn.inc:90
 msgid "Remote Access ( User Auth )"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-91
+#: src/etc/inc/openvpn.inc:91
 msgid "Remote Access ( SSL/TLS + User Auth )"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-95
+#: src/etc/inc/openvpn.inc:95
 msgid "Peer to Peer ( SSL/TLS )"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-96
+#: src/etc/inc/openvpn.inc:96
 msgid "Peer to Peer ( Shared Key )");
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-100
+#: src/etc/inc/openvpn.inc:100
 msgid "No Preference"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-101
+#: src/etc/inc/openvpn.inc:101
 msgid "Disabled - No Compression"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-102
+#: src/etc/inc/openvpn.inc:102
 msgid "Enabled with Adaptive Compression"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-103
+#: src/etc/inc/openvpn.inc:103
 msgid "Enabled without Adaptive Compression"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-197
+#: src/etc/inc/openvpn.inc:197
 msgid "None (No Encryption)"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-211
+#: src/etc/inc/openvpn.inc:211
 msgid "None (No Authentication)"
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-266
-msgid "The field '%s' must contain a valid IP address or domain name."), $name);
+#: src/etc/inc/openvpn.inc:266
+msgid "The field '%s' must contain a valid IP address or domain name."
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-273
-msgid "The field '%s' must contain a valid port, ranging from 0 to 65535."), $name);
+#: src/etc/inc/openvpn.inc:273
+msgid "The field '%s' must contain a valid port, ranging from 0 to 65535."
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-285
-msgid "The field '%s' must contain a single valid %s CIDR range."), $name, $ipproto);
+#: src/etc/inc/openvpn.inc:285
+msgid "The field '%s' must contain a single valid %s CIDR range."
 msgstr ""
 
-#:
-src/etc/inc/openvpn.inc
-297
-msgid "The field '%s' must contain only valid %s CIDR range(s) separated by commas."), $name, $ipproto);
+#: src/etc/inc/openvpn.inc:297
+msgid ""
+"The field '%s' must contain only valid %s CIDR range(s) separated by commas."
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-308
+#: src/etc/inc/pfsense-utils.inc:308
 msgid "MASTER"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-310
+#: src/etc/inc/pfsense-utils.inc:310
 msgid "BACKUP"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-312
+#: src/etc/inc/pfsense-utils.inc:312
 msgid "INIT"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-380
+#: src/etc/inc/pfsense-utils.inc:380
 msgid "After synch increase advertising skew"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-425
+#: src/etc/inc/pfsense-utils.inc:425
 msgid "Error creating socket!"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-426
-msgid "Error code is '%1$s' - %2$s"), socket_last_error($s), socket_strerror(socket_last_error($s))
+#: src/etc/inc/pfsense-utils.inc:426
+msgid "Error code is '%1$s' - %2$s"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-431
-msgid "setsockopt() failed, error
-%s"), strerror($opt_ret)
+#: src/etc/inc/pfsense-utils.inc:431
+msgid "setsockopt() failed, error %s"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-434
-msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s" $e, $addr, $mac
+#: src/etc/inc/pfsense-utils.inc:434
+msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-502
-msgid "Restored %s of config file (maybe from CARP partner)"), $section_name
+#: src/etc/inc/pfsense-utils.inc:502
+msgid "Restored %s of config file (maybe from CARP partner)"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-526
-msgid "Restored %s of config file (maybe from CARP partner)"), $section_name
+#: src/etc/inc/pfsense-utils.inc:526
+msgid "Restored %s of config file (maybe from CARP partner)"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-640
-msgid "XMLRPC communication error
-%s"), $cli->errstr
+#: src/etc/inc/pfsense-utils.inc:640
+msgid "XMLRPC communication error %s"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-643
-msgid "XMLRPC request failed with error %1$s
-%2$s" $resp->faultCode(), $resp->faultString()
+#: src/etc/inc/pfsense-utils.inc:643
+msgid "XMLRPC request failed with error %1$s %2$s"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1092
+#: src/etc/inc/pfsense-utils.inc:1092
 msgid "No history data found!"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1214
+#: src/etc/inc/pfsense-utils.inc:1214
 msgid "device not present! Is the modem attached to the system?"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1281
+#: src/etc/inc/pfsense-utils.inc:1281
 msgid "running"))
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1282
+#: src/etc/inc/pfsense-utils.inc:1282
 msgid "up"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1325
+#: src/etc/inc/pfsense-utils.inc:1325
 msgid "check for ethernet loops"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1328
+#: src/etc/inc/pfsense-utils.inc:1328
 msgid "learning"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1331
+#: src/etc/inc/pfsense-utils.inc:1331
 msgid "forwarding"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1463
-msgid "DNSCACHE
-Found old IP %1$s and new IP %2$s" $oldcontents, $contents
+#: src/etc/inc/pfsense-utils.inc:1463
+msgid "DNSCACHE Found old IP %1$s and new IP %2$s"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1794
-msgid "Could not process aliases from alias
-{$alias_url}"
+#: src/etc/inc/pfsense-utils.inc:1794
+msgid "Could not process aliases from alias {$alias_url}"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1828
-msgid "Alias archive is a .zip file which cannot be decompressed because utility is missing!"
+#: src/etc/inc/pfsense-utils.inc:1828
+msgid ""
+"Alias archive is a .zip file which cannot be "
+"decompressed because utility is missing!"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1838
+#: src/etc/inc/pfsense-utils.inc:1838
 msgid "Could not open {$temp_filename}/aliases for writing!"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1844
+#: src/etc/inc/pfsense-utils.inc:1844
 msgid "The following file could not be read {$f2p} from {$temp_filename}"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1860
-msgid "Alias archive is a .tar/tgz file which cannot be decompressed because utility is missing!"
+#: src/etc/inc/pfsense-utils.inc:1860
+msgid ""
+"Alias archive is a .tar/tgz file which cannot be "
+"decompressed because utility is missing!"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1870
+#: src/etc/inc/pfsense-utils.inc:1870
 msgid "Could not open {$temp_filename}/aliases for writing!"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-1876
+#: src/etc/inc/pfsense-utils.inc:1876
 msgid "The following file could not be read {$f2p} from {$temp_filename}"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2517
-msgid "English'
+#: src/etc/inc/pfsense-utils.inc:2517
+msgid "English"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2550
-msgid "Albanian")
+#: src/etc/inc/pfsense-utils.inc:2550
+msgid "Albanian"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2551
-msgid "Bulgarian")
+#: src/etc/inc/pfsense-utils.inc:2551
+msgid "Bulgarian"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2552
-msgid "Chinese (Simplified)")
+#: src/etc/inc/pfsense-utils.inc:2552
+msgid "Chinese (Simplified)"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2553
-msgid "Chinese (Traditional)")
+#: src/etc/inc/pfsense-utils.inc:2553
+msgid "Chinese (Traditional)"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2554
-msgid "Dutch")
+#: src/etc/inc/pfsense-utils.inc:2554
+msgid "Dutch"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2555
-msgid "Danish")
+#: src/etc/inc/pfsense-utils.inc:2555
+msgid "Danish"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2556
-msgid "English")
+#: src/etc/inc/pfsense-utils.inc:2556
+msgid "English"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2557
-msgid "Finnish")
+#: src/etc/inc/pfsense-utils.inc:2557
+msgid "Finnish"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2558
-msgid "French")
+#: src/etc/inc/pfsense-utils.inc:2558
+msgid "French"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2559
-msgid "German")
+#: src/etc/inc/pfsense-utils.inc:2559
+msgid "German"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2560
-msgid "Greek")
+#: src/etc/inc/pfsense-utils.inc:2560
+msgid "Greek"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2561
-msgid "Hungarian")
+#: src/etc/inc/pfsense-utils.inc:2561
+msgid "Hungarian"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2562
-msgid "Italian")
+#: src/etc/inc/pfsense-utils.inc:2562
+msgid "Italian"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2563
-msgid "Japanese")
+#: src/etc/inc/pfsense-utils.inc:2563
+msgid "Japanese"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2564
-msgid "Korean")
+#: src/etc/inc/pfsense-utils.inc:2564
+msgid "Korean"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2565
-msgid "Latvian")
+#: src/etc/inc/pfsense-utils.inc:2565
+msgid "Latvian"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2566
-msgid "Norwegian (Bokmal)")
+#: src/etc/inc/pfsense-utils.inc:2566
+msgid "Norwegian (Bokmal)"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2567
-msgid "Polish")
+#: src/etc/inc/pfsense-utils.inc:2567
+msgid "Polish"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2568
-msgid "Portuguese (Brazil)")
+#: src/etc/inc/pfsense-utils.inc:2568
+msgid "Portuguese (Brazil)"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2569
-msgid "Portuguese (Portugal)")
+#: src/etc/inc/pfsense-utils.inc:2569
+msgid "Portuguese (Portugal)"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2570
-msgid "Romanian")
+#: src/etc/inc/pfsense-utils.inc:2570
+msgid "Romanian"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2571
-msgid "Russian")
+#: src/etc/inc/pfsense-utils.inc:2571
+msgid "Russian"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2572
-msgid "Slovenian")
+#: src/etc/inc/pfsense-utils.inc:2572
+msgid "Slovenian"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2573
-msgid "Turkish")
+#: src/etc/inc/pfsense-utils.inc:2573
+msgid "Turkish"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2574
-msgid "Spanish")
+#: src/etc/inc/pfsense-utils.inc:2574
+msgid "Spanish"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2575
-msgid "Swedish")
+#: src/etc/inc/pfsense-utils.inc:2575
+msgid "Swedish"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2576
-msgid "Slovak")
+#: src/etc/inc/pfsense-utils.inc:2576
+msgid "Slovak"
 msgstr ""
 
-#:
-src/etc/inc/pfsense-utils.inc
-2577
-msgid "Czech"))
+#: src/etc/inc/pfsense-utils.inc:2577
+msgid "Czech"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-201
+#: src/etc/inc/pkg-utils.inc:201
 msgid "Resyncing configuration for all packages."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-221
-msgid "Syncing packages
-"
+#: src/etc/inc/pkg-utils.inc:221
+msgid "Syncing packages"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-263
-msgid "The %1$s package is missing required dependencies and must be reinstalled. %2$s" $package['name'], $package['configurationfile']
+#: src/etc/inc/pkg-utils.inc:263
+msgid ""
+"The %1$s package is missing required dependencies "
+"and must be reinstalled. %2$s"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-288
-msgid "The %s package is missing required dependencies and must be reinstalled."), $package['name']
+#: src/etc/inc/pkg-utils.inc:288
+msgid ""
+"The %s package is missing required dependencies "
+"and must be reinstalled."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-347
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:347
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-383
-msgid "The %s package is missing its configuration file and must be reinstalled."), $package['name']
+#: src/etc/inc/pkg-utils.inc:383
+msgid ""
+"The %s package is missing its configuration "
+"file and must be reinstalled."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-416
-msgid "The %s package is missing required dependencies and must be reinstalled."), $package['name']), "Packages", "/pkg_mgr_install.php?mode=reinstallpkg&pkg={$package['name']}", 1);
+#: src/etc/inc/pkg-utils.inc:416
+msgid ""
+"The %s package is missing required dependencies and must be reinstalled."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-612
-msgid "Package %s is not supported on this version." $pkg_info['name']
+#: src/etc/inc/pkg-utils.inc:612
+#: src/etc/inc/pkg-utils.inc:613
+msgid "Package %s is not supported on this version."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-613
-msgid "Package %s is not supported on this version."), $pkg_info['name']);
+#: src/etc/inc/pkg-utils.inc:620
+msgid "Beginning package installation."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-620
-msgid "Beginning package installation." "n"
+#: src/etc/inc/pkg-utils.inc:621
+msgid "Beginning package installation for %s ."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-621
-msgid "Beginning package installation for %s ." $pkg_info['name']
+#: src/etc/inc/pkg-utils.inc:622
+msgid "Beginning package installation for %s ."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-622
-msgid "Beginning package installation for %s ."), $pkg_info['name']);
+#: src/etc/inc/pkg-utils.inc:630
+msgid "Saving updated package information..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-630
-msgid "Saving updated package information..." " ";
+#: src/etc/inc/pkg-utils.inc:634
+msgid "Installed %s package."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-634
-msgid "Installed %s package."),$pkg_info['name']);
+#: src/etc/inc/pkg-utils.inc:635
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-635
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:638
+msgid "Overwrote previous installation of %s."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-638
-msgid "Overwrote previous installation of %s."), $pkg_info['name']);
+#: src/etc/inc/pkg-utils.inc:639
+msgid "overwrite!"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-639
-msgid "overwrite!" "n";
+#: src/etc/inc/pkg-utils.inc:651
+msgid "Failed to install package."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-651
-msgid "Failed to install package." "n";
-msgstr ""
-
-#:
-src/etc/inc/pkg-utils.inc
-655
+#: src/etc/inc/pkg-utils.inc:655
 msgid "Writing configuration... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-658
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:658
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-691
-msgid "The %s package is not installed.%sInstallation aborted."), $pkg, "nn"
+#: src/etc/inc/pkg-utils.inc:691
+msgid "The %s package is not installed.%sInstallation aborted."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-706
+#: src/etc/inc/pkg-utils.inc:706
 msgid "and its dependencies."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-707
+#: src/etc/inc/pkg-utils.inc:707
 msgid "and its dependencies... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-719
-msgid "Package WAS NOT installed properly." "n"
+#: src/etc/inc/pkg-utils.inc:719
+msgid "Package WAS NOT installed properly."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-733
+#: src/etc/inc/pkg-utils.inc:733
 msgid "Loading package configuration... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-736
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:736
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-738
-msgid "Configuring package components...n"
+#: src/etc/inc/pkg-utils.inc:738
+msgid "Configuring package components...\n"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-744
+#: src/etc/inc/pkg-utils.inc:744
 msgid "System files... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-751
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:751
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-763
-msgid "Loading package instructions..." "n";
+#: src/etc/inc/pkg-utils.inc:763
+msgid "Loading package instructions..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-778
-msgid "Custom commands..." "n";
+#: src/etc/inc/pkg-utils.inc:778
+msgid "Custom commands..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-782
+#: src/etc/inc/pkg-utils.inc:782
 msgid "Executing custom_php_global_functions()..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-785
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:785
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-789
+#: src/etc/inc/pkg-utils.inc:789
 msgid "Executing custom_php_install_command()..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-814
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:814
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-818
+#: src/etc/inc/pkg-utils.inc:818
 msgid "Executing custom_php_resync_config_command()..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-821
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:821
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-827
+#: src/etc/inc/pkg-utils.inc:827
 msgid "Menu items... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-838
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:838
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-843
+#: src/etc/inc/pkg-utils.inc:843
 msgid "Integrated Tab items... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-854
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:854
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-859
+#: src/etc/inc/pkg-utils.inc:859
 msgid "Services... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-870
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:870
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-874
+#: src/etc/inc/pkg-utils.inc:874
 msgid "Installation aborted."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-876
-msgid "Unable to load package configuration. Installation aborted.""n"
+#: src/etc/inc/pkg-utils.inc:876
+msgid "Unable to load package configuration. Installation aborted."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-921
-msgid "Starting package deletion for %s..."),$pkg);
+#: src/etc/inc/pkg-utils.inc:921
+msgid "Starting package deletion for %s..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-941
-msgid "The %s package is not installed.%sDeletion aborted."), $pkg, "nn"
+#: src/etc/inc/pkg-utils.inc:941
+msgid "The %s package is not installed.%sDeletion aborted."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-952
-msgid "Removing %s package... "),$pkg
+#: src/etc/inc/pkg-utils.inc:952
+msgid "Removing %s package... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-953
-msgid "Removing %s components..."),$pkg) . "n";
+#: src/etc/inc/pkg-utils.inc:953
+msgid "Removing %s components..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-965
+#: src/etc/inc/pkg-utils.inc:965
 msgid "Tabs items... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-977
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:977
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-982
+#: src/etc/inc/pkg-utils.inc:982
 msgid "Menu items... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-994
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:994
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-999
+#: src/etc/inc/pkg-utils.inc:999
 msgid "Services... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1019
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:1019
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1035
-msgid "Loading package instructions..." "n";
+#: src/etc/inc/pkg-utils.inc:1035
+msgid "Loading package instructions..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1059
+#: src/etc/inc/pkg-utils.inc:1059
 msgid "System files... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1064
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:1064
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1069
+#: src/etc/inc/pkg-utils.inc:1069
 msgid "Deinstall commands... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1073
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:1073
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1079
+#: src/etc/inc/pkg-utils.inc:1079
 msgid "Removing package instructions..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1081
-msgid "Remove '%s'"), $pkg_config['include_file']) . "n"
+#: src/etc/inc/pkg-utils.inc:1081
+msgid "Remove '%s'"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1083
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:1083
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1088
+#: src/etc/inc/pkg-utils.inc:1088
 msgid "Auxiliary files... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1098
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:1098
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1102
+#: src/etc/inc/pkg-utils.inc:1102
 msgid "Package XML... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1105
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:1105
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1121
+#: src/etc/inc/pkg-utils.inc:1121
 msgid "Configuration... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1124
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:1124
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1204
-msgid "One moment please, reinstalling packages...n"
+#: src/etc/inc/pkg-utils.inc:1204
+msgid "One moment please, reinstalling packages...\n"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1205
+#: src/etc/inc/pkg-utils.inc:1205
 msgid " >>> Trying to fetch package info..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1206
+#: src/etc/inc/pkg-utils.inc:1206
 msgid "Attempting to reinstall all packages"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1212
-msgid " >>> Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity." $xmlrpc_base_url, $g['product_name']);
+#: src/etc/inc/pkg-utils.inc:1212
+msgid ""
+" >>> Unable to communicate with %1$s. "
+"Please verify DNS and interface configuration, "
+"and that %2$s has functional Internet connectivity."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1214
-msgid "Cannot reinstall packages
-" $error);
+#: src/etc/inc/pkg-utils.inc:1214
+msgid "Cannot reinstall packages"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1223
-msgid "List of packages to reinstall
-" implode(", ", $all_names);
+#: src/etc/inc/pkg-utils.inc:1223
+msgid "List of packages to reinstall"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1230
-msgid "Uninstalling package" " {$pkgtodo['name']}"
+#: src/etc/inc/pkg-utils.inc:1230
+msgid "Uninstalling package"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1232
-msgid "Finished uninstalling package" " {$pkgtodo['name']}"
+#: src/etc/inc/pkg-utils.inc:1232
+msgid "Finished uninstalling package"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1233
-msgid "Reinstalling package" " {$pkgtodo['name']}"
+#: src/etc/inc/pkg-utils.inc:1233
+msgid "Reinstalling package"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1235
-msgid "Finished installing package" " {$pkgtodo['name']}"
+#: src/etc/inc/pkg-utils.inc:1235
+msgid "Finished installing package"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1238
+#: src/etc/inc/pkg-utils.inc:1238
 msgid "Finished reinstalling all packages."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1402
-msgid "$msg), htmlspecialchars(get_active_xml_rpc_base_url()
+#: src/etc/inc/pkg-utils.inc:1402
+#: src/etc/inc/pkg-utils.inc:1414
+msgid "$msg"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1414
-msgid "$msg), htmlspecialchars(get_active_xml_rpc_base_url())) . '<br/><br/>'
+#: src/etc/inc/pkg-utils.inc:1415
+msgid "Package Manager Settings"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1415
-msgid "Package Manager Settings" '</a>';
+#: src/etc/inc/pkg-utils.inc:1434
+#: src/etc/inc/pkg-utils.inc:1436
+msgid "Downloading package configuration file..."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1434
-msgid "Downloading package configuration file... "
+#: src/etc/inc/pkg-utils.inc:1440
+msgid ""
+"ERROR! Unable to fetch package configuration file. "
+"Aborting installation."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1436
-msgid "Downloading package configuration file..." "n"
+#: src/etc/inc/pkg-utils.inc:1442
+msgid ""
+"ERROR! Unable to fetch package configuration file. "
+"Aborting package installation."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1440
-msgid "ERROR! Unable to fetch package configuration file. Aborting installation." "n"
+#: src/etc/inc/pkg-utils.inc:1444
+msgid "failed!\n\nInstallation aborted.\n"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1442
-msgid "ERROR! Unable to fetch package configuration file. Aborting package installation." "n";
+#: src/etc/inc/pkg-utils.inc:1451
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1444
-msgid "failed!nnInstallation aborted.n"
-msgstr ""
-
-#:
-src/etc/inc/pkg-utils.inc
-1451
-msgid "done." "n";
-msgstr ""
-
-#:
-src/etc/inc/pkg-utils.inc
-1474
+#: src/etc/inc/pkg-utils.inc:1474
 msgid "Loading package configuration... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1477
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:1477
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1481
+#: src/etc/inc/pkg-utils.inc:1481
 msgid "Additional files... "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1507
-msgid "Extracting tarball to -C for " $filename . "...n"
+#: src/etc/inc/pkg-utils.inc:1507
+msgid "Extracting tarball to -C for "
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1513
-msgid "Changing file mode to %1$s for %2$s%3$s%4$s" $pkg_chmod, $prefix, $filename, "n"
+#: src/etc/inc/pkg-utils.inc:1513
+msgid "Changing file mode to %1$s for %2$s%3$s%4$s"
 msgstr ""
 
-#:
-src/etc/inc/pkg-utils.inc
-1520
-msgid "done." "n";
+#: src/etc/inc/pkg-utils.inc:1520
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-6
+#: src/etc/inc/priv.defs.inc:6
 msgid "WebCfg - All pages"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-7
+#: src/etc/inc/priv.defs.inc:7
 msgid "Allow access to all pages"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-12
-msgid "WebCfg - Status
-CARP page"
+#: src/etc/inc/priv.defs.inc:12
+msgid "WebCfg - Status CARP page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-13
-msgid "Allow access to the 'Status
-CARP' page."
+#: src/etc/inc/priv.defs.inc:13
+msgid "Allow access to the 'Status CARP' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-18
+#: src/etc/inc/priv.defs.inc:18
 msgid "WebCfg - Crash reporter"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-19
+#: src/etc/inc/priv.defs.inc:19
 msgid "Uploads crash reports to pfSense and or deletes crash reports."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-24
+#: src/etc/inc/priv.defs.inc:24
 msgid "WebCfg - Diagnostics
 ARP Table page"
 msgstr ""
