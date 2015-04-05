@@ -967,17 +967,17 @@ if ($_POST['apply']) {
 					$a_ppps[$pppid]['ports'] = $wancfg['if'];
 				$a_ppps[$pppid]['username'] = $_POST['pppoe_username'];
 				$a_ppps[$pppid]['password'] = base64_encode($_POST['pppoe_password']);
-				if (!empty($_POST['provider']))
+				if (isset($_POST['provider']))
 					$a_ppps[$pppid]['provider'] = $_POST['provider'];
 				else
 					$a_ppps[$pppid]['provider'] = true;
 				$a_ppps[$pppid]['ondemand'] = $_POST['pppoe_dialondemand'] ? true : false;
-				if (!empty($_POST['pppoe_idletimeout']))
+				if (isset($_POST['pppoe_idletimeout']))
 					$a_ppps[$pppid]['idletimeout'] = $_POST['pppoe_idletimeout'];
 				else
 					unset($a_ppps[$pppid]['idletimeout']);
 
-				if (!empty($_POST['pppoe-reset-type']))
+				if (isset($_POST['pppoe-reset-type']))
 					$a_ppps[$pppid]['pppoe-reset-type'] = $_POST['pppoe-reset-type'];
 				else
 					unset($a_ppps[$pppid]['pppoe-reset-type']);
@@ -1003,7 +1003,7 @@ if ($_POST['apply']) {
 				$a_ppps[$pppid]['subnet'] = $_POST['pptp_subnet'];
 				$a_ppps[$pppid]['gateway'] = $_POST['pptp_remote'];
 				$a_ppps[$pppid]['ondemand'] = $_POST['pptp_dialondemand'] ? true : false;
-				if (!empty($_POST['pptp_idletimeout']))
+				if (isset($_POST['pptp_idletimeout']))
 					$a_ppps[$pppid]['idletimeout'] = $_POST['pptp_idletimeout'];
 				else
 					unset($a_ppps[$pppid]['idletimeout']);
