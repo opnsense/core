@@ -126,7 +126,6 @@ class HandlerClient(threading.Thread):
     """
     def __init__(self, connection, client_address, action_handler, simulation_mode=False):
         """
-
         :param connection: socket connection object
         :param client_address: client address ( from socket accept )
         :param action_handler: action handler object
@@ -181,10 +180,10 @@ class HandlerClient(threading.Thread):
 
                 # execute requested action
                 if self.simulation_mode:
-                    self.action_handler.showAction(exec_command, exec_action, exec_params)
+                    self.action_handler.showAction(exec_command, exec_action, exec_params, self.message_uuid)
                     result = 'OK'
                 else:
-                    result = self.action_handler.execute(exec_command, exec_action, exec_params)
+                    result = self.action_handler.execute(exec_command, exec_action, exec_params, self.message_uuid)
 
                 if not exec_in_background:
                     # send response back to client( including trailing enter )
@@ -285,12 +284,13 @@ class ActionHandler(object):
 
         return action_obj
 
-    def execute(self, command, action, parameters):
+    def execute(self, command, action, parameters, message_uuid):
         """ execute configuration defined action
 
         :param command: command/topic for example interface
         :param action: action to run ( for example linkup )
         :param parameters: the parameters to supply
+        :param message_uuid: message unique id
         :return: OK on success, else error code
         """
         action_params = []
@@ -300,13 +300,17 @@ class ActionHandler(object):
             if parameters is not None and len(parameters) > action_obj.getParameterStartPos():
                 action_params = parameters[action_obj.getParameterStartPos():]
 
-            return '%s\n' % action_obj.execute(action_params)
+            return '%s\n' % action_obj.execute(action_params, message_uuid)
 
         return 'Action not found\n'
 
-    def showAction(self, command, action, parameters):
+    def showAction(self, command, action, parameters, message_uuid):
         """ debug/simulation mode: show action information
-        :return:
+        :param command: command/topic for example interface
+        :param action: action to run ( for example linkup )
+        :param parameters: the parameters to supply
+        :param message_uuid: message unique id
+        :return: None
         """
         action_obj = self.findAction(command, action, parameters)
         print ('---------------------------------------------------------------------')
@@ -344,18 +348,21 @@ class Action(object):
         """
         return self._parameter_start_pos
 
-    def execute(self, parameters):
+    def execute(self, parameters, message_uuid):
         """ execute an action
 
         :param parameters: list of parameters
+        :param message_uuid: unique message id
         :return:
         """
         # send-out syslog message
         if self.message is not None:
+            log_message = '[%s] ' % message_uuid
             if self.message.count('%s') > 0 and parameters is not None and len(parameters) > 0:
-                syslog.syslog(syslog.LOG_NOTICE, self.message % tuple(parameters[0:self.message.count('%s')]))
+                log_message = log_message + self.message % tuple(parameters[0:self.message.count('%s')])
             else:
-                syslog.syslog(syslog.LOG_NOTICE, self.message)
+                log_message = log_message + self.message
+            syslog.syslog(syslog.LOG_NOTICE, log_message)
 
         # validate input
         if self.type is None:
@@ -387,14 +394,16 @@ class Action(object):
                     else:
                         return 'Error (%d)' % exit_status
                 except:
-                    syslog.syslog(syslog.LOG_ERR, 'Script action failed at %s' % traceback.format_exc())
+                    syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed at %s' % (message_uuid,
+                                                                                       traceback.format_exc()))
                     return 'Execute error'
             elif self.type.lower() == 'script_output':
                 try:
                     script_output = subprocess.check_output(script_command, shell=True)
                     return script_output
                 except:
-                    syslog.syslog(syslog.LOG_ERR, 'Script action failed at %s' % traceback.format_exc())
+                    syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed at %s' % (message_uuid,
+                                                                                       traceback.format_exc()))
                     return 'Execute error'
 
             # fallback should never get here
@@ -411,7 +420,8 @@ class Action(object):
                 return ph_inline_actions.execute(self, inline_act_parameters)
 
             except:
-                syslog.syslog(syslog.LOG_ERR, 'Inline action failed at %s' % traceback.format_exc())
+                syslog.syslog(syslog.LOG_ERR, '[%s] Inline action failed at %s' % (message_uuid,
+                                                                                   traceback.format_exc()))
                 return 'Execute error'
 
         return 'Unknown action type'
