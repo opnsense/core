@@ -7719,763 +7719,540 @@ msgstr ""
 msgid "System events"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-428
-msgid "Firewall events");?><br />
+#: src/www/diag_logs_settings.php:428
+msgid "Firewall events"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-430
-msgid "DHCP service events");?><br />
+#: src/www/diag_logs_settings.php:430
+msgid "DHCP service events"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-432
-msgid "Portal Auth events");?><br />
+#: src/www/diag_logs_settings.php:432
+msgid "Portal Auth events"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-434
-msgid "VPN (PPTP, IPsec, OpenVPN) events");?><br />
+#: src/www/diag_logs_settings.php:434
+msgid "VPN (PPTP, IPsec, OpenVPN) events"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-436
-msgid "Gateway Monitor events");?><br />
+#: src/www/diag_logs_settings.php:436
+msgid "Gateway Monitor events"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-438
-msgid "Server Load Balancer events");?><br />
+#: src/www/diag_logs_settings.php:438
+msgid "Server Load Balancer events"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-440
-msgid "Wireless events");?><br />
+#: src/www/diag_logs_settings.php:440
+msgid "Wireless events"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-445
-msgid "Save"); ?>" onclick="enable_change(true)" />
+#: src/www/diag_logs_settings.php:445
+msgid "Save"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-450
-msgid "Note
-")?></span></strong><br />
+#: src/www/diag_logs_settings.php:450
+msgid "Note:"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-451
-msgid "syslog sends UDP datagrams to port 514 on the specified " .
+#: src/www/diag_logs_settings.php:451
+msgid "syslog sends UDP datagrams to port 514 on the specified "
 msgstr ""
 
-#:
-src/www/diag_logs_tabs.php
-29
-msgid "System"), $active_tab == "/diag_logs.php", "diag_logs.php"
+#: src/www/diag_logs_tabs.php:29
+msgid "System"
 msgstr ""
 
-#:
-src/www/diag_logs_tabs.php
-30
-msgid "Firewall"), $active_tab == "/diag_logs_filter.php", "diag_logs_filter.php"
+#: src/www/diag_logs_tabs.php:30
+msgid "Firewall"
 msgstr ""
 
-#:
-src/www/diag_logs_tabs.php
-31
-msgid "DHCP"), $active_tab == "/diag_logs_dhcp.php", "diag_logs_dhcp.php"
+#: src/www/diag_logs_tabs.php:31
+msgid "DHCP"
 msgstr ""
 
-#:
-src/www/diag_logs_tabs.php
-32
-msgid "Portal Auth"), $active_tab == "/diag_logs_auth.php", "diag_logs_auth.php"
+#: src/www/diag_logs_tabs.php:32
+msgid "Portal Auth"
 msgstr ""
 
-#:
-src/www/diag_logs_tabs.php
-33
-msgid "IPsec"), $active_tab == "/diag_logs_ipsec.php", "diag_logs_ipsec.php"
+#: src/www/diag_logs_tabs.php:33
+msgid "IPsec"
 msgstr ""
 
-#:
-src/www/diag_logs_tabs.php
-34
-msgid "PPP"), $active_tab == "/diag_logs_ppp.php", "diag_logs_ppp.php"
+#: src/www/diag_logs_tabs.php:34
+msgid "PPP"
 msgstr ""
 
-#:
-src/www/diag_logs_tabs.php
-35
-msgid "VPN"), $active_tab == "/diag_logs_vpn.php", "diag_logs_vpn.php"
-msgstr ""
-
-#:
-src/www/diag_logs_tabs.php
-36
-msgid "Load Balancer"), $active_tab == "/diag_logs_relayd.php", "diag_logs_relayd.php"
-msgstr ""
-
-#:
-src/www/diag_logs_tabs.php
-37
-msgid "OpenVPN"), $active_tab == "/diag_logs_openvpn.php", "diag_logs_openvpn.php"
-msgstr ""
-
-#:
-src/www/diag_logs_tabs.php
-38
-msgid "NTP"), $active_tab == "/diag_logs_ntpd.php", "diag_logs_ntpd.php"
-msgstr ""
-
-#:
-src/www/diag_logs_tabs.php
-39
-msgid "Settings"), $active_tab == "/diag_logs_settings.php", "diag_logs_settings.php"
-msgstr ""
-
-#:
-src/www/diag_logs_vpn.php
-30
+#: src/www/diag_logs_tabs.php:35
 msgid "VPN"
 msgstr ""
 
-#:
-src/www/diag_logs_vpn.php
-133
-msgid "Time");?></td>
+#: src/www/diag_logs_tabs.php:36
+msgid "Load Balancer"
 msgstr ""
 
-#:
-src/www/diag_logs_vpn.php
-134
-msgid "Action");?></td>
+#: src/www/diag_logs_tabs.php:37
+msgid "OpenVPN"
 msgstr ""
 
-#:
-src/www/diag_logs_vpn.php
-135
-msgid "User");?></td>
+#: src/www/diag_logs_tabs.php:38
+msgid "NTP"
 msgstr ""
 
-#:
-src/www/diag_logs_vpn.php
-136
-msgid "IP address");?></td>
+#: src/www/diag_logs_tabs.php:39
+msgid "Settings"
 msgstr ""
 
-#:
-src/www/diag_logs_vpn.php
-148
-msgid "Clear log");?>" />
+#: src/www/diag_logs_vpn.php:30
+msgid "VPN"
 msgstr ""
 
-#:
-src/www/diag_logs_wireless.php
-42
+#: src/www/diag_logs_vpn.php:133
+msgid "Time"
+msgstr ""
+
+#: src/www/diag_logs_vpn.php:134
+msgid "Action"
+msgstr ""
+
+#: src/www/diag_logs_vpn.php:135
+msgid "User"
+msgstr ""
+
+#: src/www/diag_logs_vpn.php:136
+msgid "IP address"
+msgstr ""
+
+#: src/www/diag_logs_vpn.php:148
+msgid "Clear log"
+msgstr ""
+
+#: src/www/diag_logs_wireless.php:42
 msgid "Wireless"
 msgstr ""
 
-#:
-src/www/diag_logs_wireless.php
-76
-msgid "Clear log");?>" />
+#: src/www/diag_logs_wireless.php:76
+msgid "Clear log"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-36
+#: src/www/diag_nanobsd.php:36
 msgid "NanoBSD"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-56
+#: src/www/diag_nanobsd.php:56
 msgid "Setting slice information, please wait..."
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-65
-msgid "The boot slice has been set to" " " . nanobsd_get_active_slice();
+#: src/www/diag_nanobsd.php:65
+msgid "The boot slice has been set to"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-72
+#: src/www/diag_nanobsd.php:72
 msgid "Duplicating slice.  Please wait, this will take a moment..."
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-81
-msgid "If you would like to boot from this newly duplicated slice please set it using the bootup information area."
+#: src/www/diag_nanobsd.php:81
+msgid ""
+"If you would like to boot from this newly duplicated slice please set it using "
+"the bootup information area."
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-83
+#: src/www/diag_nanobsd.php:83
 msgid "There was an error while duplicating the slice.  Operation aborted."
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-123
-msgid "NOTE
-")?>&nbsp;</strong>
+#: src/www/diag_nanobsd.php:123
+msgid "NOTE:"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-125
-msgid "The options on this page are intended for use by advanced users only.")?>
+#: src/www/diag_nanobsd.php:125
+msgid "The options on this page are intended for use by advanced users only."
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-131
-msgid "Bootup information");?></td>
+#: src/www/diag_nanobsd.php:131
+msgid "Bootup information"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-134
-msgid "NanoBSD Image size");?></td>
+#: src/www/diag_nanobsd.php:134
+msgid "NanoBSD Image size"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-140
-msgid "Bootup");?></td>
+#: src/www/diag_nanobsd.php:140
+msgid "Bootup"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-143
-msgid "Bootup slice is currently
-");?> <?php echo $ACTIVE_SLICE; ?>
+#: src/www/diag_nanobsd.php:143
+msgid "Bootup slice is currently:"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-144
-msgid "This will switch the bootup slice to the alternate slice.");?>
+#: src/www/diag_nanobsd.php:144
+msgid "This will switch the bootup slice to the alternate slice."
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-154
-msgid "Media Read/Write Status");?></td>
+#: src/www/diag_nanobsd.php:154
+msgid "Media Read/Write Status"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-168
-msgid "Read/Write" $refdisplay;
+#: src/www/diag_nanobsd.php:168
+msgid "Read/Write"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-170
-msgid "Switch to Read-Only" "'>";
+#: src/www/diag_nanobsd.php:170
+msgid "Switch to Read-Only"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-172
+#: src/www/diag_nanobsd.php:172
 msgid "Read-Only"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-174
-msgid "Switch to Read/Write" "'>";
+#: src/www/diag_nanobsd.php:174
+msgid "Switch to Read/Write"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-177
-msgid "NOTE
-This setting is only temporary, and can be switched dynamically in the background."); ?>
+#: src/www/diag_nanobsd.php:177
+msgid ""
+"NOTE: This setting is only temporary, and can be switched dynamically in the "
+"background."
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-184
-msgid "Keep media mounted read/write at all times."?>
+#: src/www/diag_nanobsd.php:184
+msgid "Keep media mounted read/write at all times."
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-185
-msgid "Save"?>'>
+#: src/www/diag_nanobsd.php:185
+msgid "Save"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-193
-msgid "Duplicate bootup slice to alternate");?></td>
+#: src/www/diag_nanobsd.php:193
+msgid "Duplicate bootup slice to alternate"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-196
-msgid "Duplicate bootup slice");?></td>
+#: src/www/diag_nanobsd.php:196
+msgid "Duplicate bootup slice"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-199
-msgid "Destination slice
-");?>
+#: src/www/diag_nanobsd.php:199
+msgid "Destination slice:"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-206
-msgid "This will duplicate the bootup slice to the alternate slice.  Use this if you would like to duplicate the known good working boot partition to the alternate.");?>
+#: src/www/diag_nanobsd.php:206
+msgid ""
+"This will duplicate the bootup slice to the alternate slice.  Use this if you "
+"would like to duplicate the known good working boot partition to the alternate."
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-207
-msgid "Duplicate slice"?>'>
+#: src/www/diag_nanobsd.php:207
+msgid "Duplicate slice"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-215
-msgid "Periodic Data Backup");?></td>
+#: src/www/diag_nanobsd.php:215
+msgid "Periodic Data Backup"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-218
-msgid "RRD/DHCP Backup");?></td>
+#: src/www/diag_nanobsd.php:218
+msgid "RRD/DHCP Backup"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-220
-msgid "System > Advanced, Miscellaneous tab")?></a>.
+#: src/www/diag_nanobsd.php:220
+msgid "System > Advanced, Miscellaneous tab"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-228
-msgid "View upgrade log");?></td>
+#: src/www/diag_nanobsd.php:228
+msgid "View upgrade log"
 msgstr ""
 
-#:
-src/www/diag_nanobsd.php
-231
-msgid "View previous upgrade log");?></td>
+#: src/www/diag_nanobsd.php:231
+msgid "View previous upgrade log"
 msgstr ""
 
-#:
-src/www/diag_ndp.php
-91
+#: src/www/diag_ndp.php:91
 msgid "NDP Table"
 msgstr ""
 
-#:
-src/www/diag_ndp.php
-124
-msgid "IPv6 address"); ?></td>
+#: src/www/diag_ndp.php:124
+msgid "IPv6 address"
 msgstr ""
 
-#:
-src/www/diag_ndp.php
-134
-msgid "MAC address"); ?></td>
+#: src/www/diag_ndp.php:134
+msgid "MAC address"
 msgstr ""
 
-#:
-src/www/diag_ndp.php
-144
-msgid "Hostname"); ?></td>
+#: src/www/diag_ndp.php:144
+msgid "Hostname"
 msgstr ""
 
-#:
-src/www/diag_ndp.php
-154
-msgid "Interface"); ?></td>
+#: src/www/diag_ndp.php:154
+msgid "Interface"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-72
-msgid "Download Capture"))
+#: src/www/diag_packet_capture.php:72
+msgid "Download Capture"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-75
+#: src/www/diag_packet_capture.php:75
 msgid "Packet Capture"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-97
-msgid "OpenVPN" " ".$mode."
-".htmlspecialchars($setting['description']);
+#: src/www/diag_packet_capture.php:97
+msgid "OpenVPN"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-114
+#: src/www/diag_packet_capture.php:114
 msgid "Invalid interface."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-117
+#: src/www/diag_packet_capture.php:117
 msgid "Invalid address family."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-120
+#: src/www/diag_packet_capture.php:120
 msgid "Invalid protocol."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-132
-msgid "A valid IP address or CIDR block must be specified. [%s]"), $h);
+#: src/www/diag_packet_capture.php:132
+msgid "A valid IP address or CIDR block must be specified. [%s]"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-138
+#: src/www/diag_packet_capture.php:138
 msgid "Invalid value specified for port."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-145
+#: src/www/diag_packet_capture.php:145
 msgid "Invalid value specified for packet length."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-152
+#: src/www/diag_packet_capture.php:152
 msgid "Invalid value specified for packet count."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-178
+#: src/www/diag_packet_capture.php:178
 msgid "Start"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-185
+#: src/www/diag_packet_capture.php:185
 msgid "Stop"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-230
-msgid "Packet capture");?></h3>
+#: src/www/diag_packet_capture.php:230
+msgid "Packet capture"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-239
-msgid "Interface");?></td>
+#: src/www/diag_packet_capture.php:239
+msgid "Interface"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-248
-msgid "Select the interface on which to capture traffic.");?></small></em></p>
+#: src/www/diag_packet_capture.php:248
+msgid "Select the interface on which to capture traffic."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-252
-msgid "Promiscuous");?></td>
+#: src/www/diag_packet_capture.php:252
+msgid "Promiscuous"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-255
-msgid "If checked, the");?> <a target="_blank" href="http
-msgid "will be performed using promiscuous mode.");?>
+#: src/www/diag_packet_capture.php:255
+msgid "If checked, the"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-256
-msgid "Note");?>
-msgid "Some network adapters do not support or work well in promiscuous mode.");?></small></em></p>
+#: src/www/diag_packet_capture.php:255
+msgid "packet capture"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-260
-msgid "Address Family");?></td>
+#: src/www/diag_packet_capture.php:255
+msgid "will be performed using promiscuous mode."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-267
-msgid "Select the type of traffic to be captured, either Any, IPv4 only or IPv6 only.");?></small></em></p>
+#: src/www/diag_packet_capture.php:256
+msgid "Note"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-271
-msgid "Protocol");?></td>
+#: src/www/diag_packet_capture.php:256
+msgid "Some network adapters do not support or work well in promiscuous mode."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-289
-msgid "Select the protocol to capture, or Any.");?></small></em></p>
+#: src/www/diag_packet_capture.php:260
+msgid "Address Family"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-293
-msgid "Host Address");?></td>
+#: src/www/diag_packet_capture.php:267
+msgid ""
+"Select the type of traffic to be captured, either Any, IPv4 only or IPv6 only."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-296
-msgid "This value is either the Source or Destination IP address or subnet in CIDR notation. The packet capture will look for this address in either field.");?>
+#: src/www/diag_packet_capture.php:271
+msgid "Protocol"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-297
-msgid "Matching can be negated by preceding the value with "!". Multiple IP addresses or CIDR subnets may be specified. Comma (","separated values perform a boolean "and". Separating with a pipe ("|") performs a boolean "or".");?>
+#: src/www/diag_packet_capture.php:289
+msgid "Select the protocol to capture, or Any."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-298
-msgid "If you leave this field blank, all packets on the specified interface will be captured.");?>
+#: src/www/diag_packet_capture.php:293
+msgid "Host Address"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-303
-msgid "Port");?></td>
+#: src/www/diag_packet_capture.php:296
+msgid ""
+"This value is either the Source or Destination IP address or subnet in CIDR "
+"notation. The packet capture will look for this address in either field."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-307
-msgid "Leave blank if you do not want to filter by port.");?></small></em></p>
+#: src/www/diag_packet_capture.php:297
+msgid ""
+"Matching can be negated by preceding the value with \"!\". Multiple IP "
+"addresses or CIDR subnets may be specified. Comma (","separated values perform "
+"a boolean \"and\". Separating with a pipe (\"|\") performs a boolean \"or\"."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-311
-msgid "Packet Length");?></td>
+#: src/www/diag_packet_capture.php:298
+msgid "If you leave this field blank, all packets on the specified interface will be captured."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-314
-msgid "The Packet length is the number of bytes of each packet that will be captured. Default value is 0, which will capture the entire frame regardless of its size.");?></small></em></p>
+#: src/www/diag_packet_capture.php:303
+msgid "Port"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-318
-msgid "Count");?></td>
+#: src/www/diag_packet_capture.php:307
+msgid "Leave blank if you do not want to filter by port."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-321
-msgid "Enter 0 (zero) for no count limit.");?></small></em></p>
+#: src/www/diag_packet_capture.php:311
+msgid "Packet Length"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-326
-msgid "Level of Detail");?></td>
+#: src/www/diag_packet_capture.php:314
+msgid ""
+"The Packet length is the number of bytes of each packet that will be captured. "
+"Default value is 0, which will capture the entire frame regardless of its size."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-329
-msgid "Normal");?></option>
+#: src/www/diag_packet_capture.php:318
+msgid "Count"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-330
-msgid "Medium");?></option>
+#: src/www/diag_packet_capture.php:321
+msgid "Enter 0 (zero) for no count limit."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-331
-msgid "High");?></option>
+#: src/www/diag_packet_capture.php:326
+msgid "Level of Detail"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-332
-msgid "Full");?></option>
+#: src/www/diag_packet_capture.php:329
+msgid "Normal"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-334
-msgid "This is the level of detail that will be displayed after hitting 'Stop' when the packets have been captured."  "<br /><b>" .
+#: src/www/diag_packet_capture.php:330
+msgid "Medium"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-335
-msgid "Note
-" "</b> " .
+#: src/www/diag_packet_capture.php:331
+msgid "High"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-336
-msgid "This option does not affect the level of detail when downloading the packet capture.");?></small></em></p>
+#: src/www/diag_packet_capture.php:332
+msgid "Full"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-341
-msgid "Reverse DNS Lookup");?></td>
+#: src/www/diag_packet_capture.php:334
+msgid ""
+"This is the level of detail that will be displayed after hitting 'Stop' when "
+"the packets have been captured."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-344
-msgid "This check box will cause the packet capture to perform a reverse DNS lookup associated with all IP addresses.");?>
+#: src/www/diag_packet_capture.php:335
+msgid "Note:"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-345
-msgid "Note");?>
-msgid "This option can cause delays for large packet captures.");?></small></em></p>
+#: src/www/diag_packet_capture.php:336
+msgid ""
+"This option does not affect the level of detail when downloading the packet "
+"capture."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-362
-msgid "Stop"or $action == "") and $processisrunning != true)
+#: src/www/diag_packet_capture.php:341
+msgid "Reverse DNS Lookup"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-363
-msgid "Start" "" />&nbsp;";
+#: src/www/diag_packet_capture.php:344
+msgid ""
+"This check box will cause the packet capture to perform a reverse DNS lookup "
+"associated with all IP addresses."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-365
-msgid "Stop" "" />&nbsp;";
+#: src/www/diag_packet_capture.php:345
+msgid "Note"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-368
-msgid "View Capture" "" />&nbsp;";
+#: src/www/diag_packet_capture.php:345
+msgid "This option can cause delays for large packet captures."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-369
-msgid "Download Capture" "" />";
+#: src/www/diag_packet_capture.php:362
+msgid "Stop"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-370
-msgid "The packet capture file was last updated
-" " " . date("F jS, Y g
-i
-s a.", filemtime($fp.$fn
+#: src/www/diag_packet_capture.php:363
+msgid "Start"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-390
+#: src/www/diag_packet_capture.php:365
+msgid "Stop"
+msgstr ""
+
+#: src/www/diag_packet_capture.php:368
+msgid "View Capture"
+msgstr ""
+
+#: src/www/diag_packet_capture.php:369
+msgid "Download Capture"
+msgstr ""
+
+#: src/www/diag_packet_capture.php:370
+msgid "The packet capture file was last updated:"
+msgstr ""
+
+#: src/www/diag_packet_capture.php:370
+msgid "F jS, Y g:i:s a."
+msgstr ""
+
+#: src/www/diag_packet_capture.php:390
 msgid "Packet Capture is running."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-426
-msgid "Start")) {
+#: src/www/diag_packet_capture.php:426
+msgid "Start"
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-428
+#: src/www/diag_packet_capture.php:428
 msgid "Packet Capture is running."
 msgstr ""
 
-#:
-src/www/diag_packet_capture.php
-437
-msgid "Packets Captured
-"
+#: src/www/diag_packet_capture.php:437
+msgid "Packets Captured:"
 msgstr ""
 
-#:
-src/www/diag_patterns.php
-32
-msgid "Upload Pattern file")) && is_uploaded_file($_FILES['ulfile']['tmp_name'])) {
+#: src/www/diag_patterns.php:32
+msgid "Upload Pattern file"
 msgstr ""
 
-#:
-src/www/diag_patterns.php
-38
-msgid "Added custom l7 pattern %s"), $_FILES['ulfile']['name']
+#: src/www/diag_patterns.php:38
+msgid "Added custom l7 pattern %s"
 msgstr ""
 
-#:
-src/www/diag_patterns.php
-40
-msgid "Uploaded file to" " /usr/local/share/protocols/" . htmlentities($_FILES['ulfile']['name']);
+#: src/www/diag_patterns.php:40
+msgid "Uploaded file to"
 msgstr ""
 
-#:
-src/www/diag_patterns.php
-43
-msgid "Warning
-You must upload a file with .pat extension."
+#: src/www/diag_patterns.php:43
+msgid "Warning: You must upload a file with .pat extension."
 msgstr ""
 
-#:
-src/www/diag_patterns.php
-52
+#: src/www/diag_patterns.php:52
 msgid "Add layer7 pattern"
 msgstr ""
 
-#:
-src/www/diag_patterns.php
-76
-msgid "Upload layer7 pattern file");?></td>
+#: src/www/diag_patterns.php:76
+msgid "Upload layer7 pattern file"
 msgstr ""
 
 #:
