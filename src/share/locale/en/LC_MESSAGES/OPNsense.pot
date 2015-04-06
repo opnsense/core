@@ -2414,1584 +2414,858 @@ msgstr ""
 msgid "WebCfg - Firewall Virtual IP Address Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-427
-msgid "Allow access to the 'Firewall
-Virtual IP Address
-Edit' page."
+#: src/etc/inc/priv.defs.inc:427
+msgid "Allow access to the 'Firewall Virtual IP Address Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-432
-msgid "WebCfg - AJAX
-Get Service Providers"
+#: src/etc/inc/priv.defs.inc:432
+msgid "WebCfg - AJAX Get Service Providers"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-433
-msgid "Allow access to the 'AJAX
-Service Providers' page."
+#: src/etc/inc/priv.defs.inc:433
+msgid "Allow access to the 'AJAX Service Providers' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-438
-msgid "WebCfg - AJAX
-Get Stats"
+#: src/etc/inc/priv.defs.inc:438
+msgid "WebCfg - AJAX Get Stats"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-439
-msgid "Allow access to the 'AJAX
-Get Stats' page."
+#: src/etc/inc/priv.defs.inc:439
+msgid "Allow access to the 'AJAX Get Stats' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-444
-msgid "WebCfg - Diagnostics
-Interface Traffic page"
+#: src/etc/inc/priv.defs.inc:444
+msgid "WebCfg - Diagnostics Interface Traffic page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-445
-msgid "Allow access to the 'Diagnostics
-Interface Traffic' page."
+#: src/etc/inc/priv.defs.inc:445
+msgid "Allow access to the 'Diagnostics Interface Traffic' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-450
-msgid "WebCfg - Diagnostics
-CPU Utilization page"
+#: src/etc/inc/priv.defs.inc:450
+msgid "WebCfg - Diagnostics CPU Utilization page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-451
-msgid "Allow access to the 'Diagnostics
-CPU Utilization' page."
+#: src/etc/inc/priv.defs.inc:451
+msgid "Allow access to the 'Diagnostics CPU Utilization' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-456
-msgid "WebCfg - Diagnostics
-Halt system page"
+#: src/etc/inc/priv.defs.inc:456
+msgid "WebCfg - Diagnostics Halt system page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-457
-msgid "Allow access to the 'Diagnostics
-Halt system' page."
+#: src/etc/inc/priv.defs.inc:457
+msgid "Allow access to the 'Diagnostics Halt system' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-462
+#: src/etc/inc/priv.defs.inc:462
 msgid "WebCfg - Required for javascript page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-463
+#: src/etc/inc/priv.defs.inc:463
 msgid "Allow access to the 'Required for javascript' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-468
+#: src/etc/inc/priv.defs.inc:468
 msgid "WebCfg - XMLRPC Interface Stats page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-469
+#: src/etc/inc/priv.defs.inc:469
 msgid "Allow access to the 'XMLRPC Interface Stats' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-474
-msgid "WebCfg - System
-Login / Logout page / Dashboard"
+#: src/etc/inc/priv.defs.inc:474
+msgid "WebCfg - System Login / Logout page / Dashboard"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-475
-msgid "Allow access to the 'System
-Login / Logout' page and Dashboard."
+#: src/etc/inc/priv.defs.inc:475
+msgid "Allow access to the 'System Login / Logout' page and Dashboard."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-480
-msgid "WebCfg - Interfaces
-WAN page"
+#: src/etc/inc/priv.defs.inc:480
+msgid "WebCfg - Interfaces WAN page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-481
+#: src/etc/inc/priv.defs.inc:481
 msgid "Allow access to the 'Interfaces' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-486
-msgid "WebCfg - Interfaces
-Assign network ports page"
+#: src/etc/inc/priv.defs.inc:486
+msgid "WebCfg - Interfaces Assign network ports page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-487
-msgid "Allow access to the 'Interfaces
-Assign network ports' page."
+#: src/etc/inc/priv.defs.inc:487
+msgid "Allow access to the 'Interfaces Assign network ports' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-492
-msgid "WebCfg - Interfaces
-Bridge page"
+#: src/etc/inc/priv.defs.inc:492
+msgid "WebCfg - Interfaces Bridge page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-493
-msgid "Allow access to the 'Interfaces
-Bridge' page."
+#: src/etc/inc/priv.defs.inc:493
+msgid "Allow access to the 'Interfaces Bridge' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-498
-msgid "WebCfg - Interfaces
-Bridge edit page"
+#: src/etc/inc/priv.defs.inc:498
+msgid "WebCfg - Interfaces Bridge edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-499
-msgid "Allow access to the 'Interfaces
-Bridge 
-Edit' page."
+#: src/etc/inc/priv.defs.inc:499
+msgid "Allow access to the 'Interfaces Bridge Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-504
-msgid "WebCfg - Interfaces
-GIF page"
+#: src/etc/inc/priv.defs.inc:504
+msgid "WebCfg - Interfaces GIF page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-505
-msgid "Allow access to the 'Interfaces
-GIF' page."
+#: src/etc/inc/priv.defs.inc:505
+msgid "Allow access to the 'Interfaces GIF' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-510
-msgid "WebCfg - Interfaces
-GIF
-Edit page"
+#: src/etc/inc/priv.defs.inc:510
+msgid "WebCfg - Interfaces GIF Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-511
-msgid "Allow access to the 'Interfaces
-GIF
-Edit' page."
+#: src/etc/inc/priv.defs.inc:511
+msgid "Allow access to the 'Interfaces GIF Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-516
-msgid "WebCfg - Interfaces
-GRE page"
+#: src/etc/inc/priv.defs.inc:516
+msgid "WebCfg - Interfaces GRE page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-517
-msgid "Allow access to the 'Interfaces
-GRE' page."
+#: src/etc/inc/priv.defs.inc:517
+msgid "Allow access to the 'Interfaces GRE' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-522
-msgid "WebCfg - Interfaces
-GRE
-Edit page"
+#: src/etc/inc/priv.defs.inc:522
+msgid "WebCfg - Interfaces GRE Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-523
-msgid "Allow access to the 'Interfaces
-GRE
-Edit' page."
+#: src/etc/inc/priv.defs.inc:523
+msgid "Allow access to the 'Interfaces GRE Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-528
-msgid "WebCfg - Interfaces
-Groups page"
+#: src/etc/inc/priv.defs.inc:528
+msgid "WebCfg - Interfaces Groups page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-529
+#: src/etc/inc/priv.defs.inc:529
 msgid "Create interface groups"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-534
-msgid "Interfaces
-Groups
-Edit page"
+#: src/etc/inc/priv.defs.inc:534
+msgid "Interfaces Groups Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-535
-msgid "Allow access to the 'Interfaces
-Groups
-Edit' page."
+#: src/etc/inc/priv.defs.inc:535
+msgid "Allow access to the 'Interfaces Groups Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-540
-msgid "WebCfg - Interfaces
-LAGG
-page"
+#: src/etc/inc/priv.defs.inc:540
+msgid "WebCfg - Interfaces LAGG page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-541
+#: src/etc/inc/priv.defs.inc:541
 msgid "Edit Interface LAGG"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-546
-msgid "Interfaces
-LAGG
-Edit page"
+#: src/etc/inc/priv.defs.inc:546
+msgid "Interfaces LAGG Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-547
-msgid "Allow access to the 'Interfaces
-LAGG
-Edit' page."
+#: src/etc/inc/priv.defs.inc:547
+msgid "Allow access to the 'Interfaces LAGG Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-552
-msgid "WebCfg - Interfaces
-ppps page"
+#: src/etc/inc/priv.defs.inc:552
+msgid "WebCfg - Interfaces ppps page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-553
-msgid "Allow access to the 'Interfaces
-ppps' page."
+#: src/etc/inc/priv.defs.inc:553
+msgid "Allow access to the 'Interfaces ppps' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-558
-msgid "WebCfg - Interfaces
-PPPs
-Edit page"
+#: src/etc/inc/priv.defs.inc:558
+msgid "WebCfg - Interfaces PPPs Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-559
-msgid "Allow access to the 'Interfaces
-PPPs
-Edit' page."
+#: src/etc/inc/priv.defs.inc:559
+msgid "Allow access to the 'Interfaces PPPs Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-564
-msgid "WebCfg - Interfaces
-QinQ page"
+#: src/etc/inc/priv.defs.inc:564
+msgid "WebCfg - Interfaces QinQ page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-565
-msgid "Allow access to the 'Interfaces
-QinQ' page."
+#: src/etc/inc/priv.defs.inc:565
+msgid "Allow access to the 'Interfaces QinQ' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-570
-msgid "Interfaces
-QinQ
-Edit page"
+#: src/etc/inc/priv.defs.inc:570
+msgid "Interfaces QinQ Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-571
-msgid "Allow access to 'Interfaces
-QinQ
-Edit' page"
+#: src/etc/inc/priv.defs.inc:571
+msgid "Allow access to 'Interfaces QinQ Edit' page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-576
-msgid "WebCfg - Interfaces
-VLAN page"
+#: src/etc/inc/priv.defs.inc:576
+msgid "WebCfg - Interfaces VLAN page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-577
-msgid "Allow access to the 'Interfaces
-VLAN' page."
+#: src/etc/inc/priv.defs.inc:577
+msgid "Allow access to the 'Interfaces VLAN' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-582
-msgid "WebCfg - Interfaces
-VLAN
-Edit page"
+#: src/etc/inc/priv.defs.inc:582
+msgid "WebCfg - Interfaces VLAN Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-583
-msgid "Allow access to the 'Interfaces
-VLAN
-Edit' page."
+#: src/etc/inc/priv.defs.inc:583
+msgid "Allow access to the 'Interfaces VLAN Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-588
-msgid "WebCfg - Interfaces
-Wireless page"
+#: src/etc/inc/priv.defs.inc:588
+msgid "WebCfg - Interfaces Wireless page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-589
-msgid "Allow access to the 'Interfaces
-Wireless' page."
+#: src/etc/inc/priv.defs.inc:589
+msgid "Allow access to the 'Interfaces Wireless' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-594
-msgid "WebCfg - Interfaces
-Wireless edit page"
+#: src/etc/inc/priv.defs.inc:594
+msgid "WebCfg - Interfaces Wireless edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-595
-msgid "Allow access to the 'Interfaces
-Wireless 
-Edit' page."
+#: src/etc/inc/priv.defs.inc:595
+msgid "Allow access to the 'Interfaces Wireless Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-600
-msgid "WebCfg - System
-License page"
+#: src/etc/inc/priv.defs.inc:600
+msgid "WebCfg - System License page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-601
-msgid "Allow access to the 'System
-License' page."
+#: src/etc/inc/priv.defs.inc:601
+msgid "Allow access to the 'System License' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-606
-msgid "WebCfg - Services
-Load Balancer
-Monitors page"
+#: src/etc/inc/priv.defs.inc:606
+msgid "WebCfg - Services Load Balancer Monitors page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-607
-msgid "Allow access to the 'Services
-Load Balancer
-Monitors' page."
+#: src/etc/inc/priv.defs.inc:607
+msgid "Allow access to the 'Services Load Balancer Monitors' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-612
-msgid "WebCfg - Services
-Load Balancer
-Monitor
-Edit page"
+#: src/etc/inc/priv.defs.inc:612
+msgid "WebCfg - Services Load Balancer Monitor Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-613
-msgid "Allow access to the 'Services
-Load Balancer
-Monitor
-Edit' page."
+#: src/etc/inc/priv.defs.inc:613
+msgid "Allow access to the 'Services Load Balancer Monitor Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-618
-msgid "WebCfg - Load Balancer
-Pool page"
+#: src/etc/inc/priv.defs.inc:618
+msgid "WebCfg - Load Balancer Pool page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-619
-msgid "Allow access to the 'Load Balancer
-Pool' page."
-msgstr ""
+#: src/etc/inc/priv.defs.inc:619
+msgid "Allow access to the 'Load Balancer Pool' page."
+msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-624
-msgid "WebCfg - Load Balancer
-Pool
-Edit page"
-msgstr ""
+#: src/etc/inc/priv.defs.inc:624
+msgid "WebCfg - Load Balancer Pool Edit page"
+msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-625
-msgid "Allow access to the 'Load Balancer
-Pool
-Edit' page."
-msgstr ""
+#: src/etc/inc/priv.defs.inc:625
+msgid "Allow access to the 'Load Balancer Pool Edit' page."
+msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-630
-msgid "WebCfg - Services
-Load Balancer
-Relay Actions page"
+#: src/etc/inc/priv.defs.inc:630
+msgid "WebCfg - Services Load Balancer Relay Actions page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-631
-msgid "Allow access to the 'Services
-Load Balancer
-Relay Actions' page."
+#: src/etc/inc/priv.defs.inc:631
+msgid "Allow access to the 'Services Load Balancer Relay Actions' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-636
-msgid "WebCfg - Services
-Load Balancer
-Relay Action
-Edit page"
+#: src/etc/inc/priv.defs.inc:636
+msgid "WebCfg - Services Load Balancer Relay Action Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-637
-msgid "Allow access to the 'Services
-Load Balancer
-Relay Action
-Edit' page."
+#: src/etc/inc/priv.defs.inc:637
+msgid "Allow access to the 'Services Load Balancer Relay Action Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-642
-msgid "WebCfg - Services
-Load Balancer
-Relay Protocols page"
+#: src/etc/inc/priv.defs.inc:642
+msgid "WebCfg - Services Load Balancer Relay Protocols page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-643
-msgid "Allow access to the 'Services
-Load Balancer
-Relay Protocols' page."
+#: src/etc/inc/priv.defs.inc:643
+msgid "Allow access to the 'Services Load Balancer Relay Protocols' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-648
-msgid "WebCfg - Services
-Load Balancer
-Relay Protocol
-Edit page"
+#: src/etc/inc/priv.defs.inc:648
+msgid "WebCfg - Services Load Balancer Relay Protocol Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-649
-msgid "Allow access to the 'Services
-Load Balancer
-Relay Protocol
-Edit' page."
+#: src/etc/inc/priv.defs.inc:649
+msgid "Allow access to the 'Services Load Balancer Relay Protocol Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-654
-msgid "Webcfg - Services
-Load Balancer
-setting page"
+#: src/etc/inc/priv.defs.inc:654
+msgid "Webcfg - Services Load Balancer setting page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-655
-msgid "Allow access to the 'Settings
-Load Balancer
-Settings' page."
+#: src/etc/inc/priv.defs.inc:655
+msgid "Allow access to the 'Settings Load Balancer Settings' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-660
-msgid "WebCfg - Services
-Load Balancer
-Virtual Servers page"
+#: src/etc/inc/priv.defs.inc:660
+msgid "WebCfg - Services Load Balancer Virtual Servers page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-661
-msgid "Allow access to the 'Services
-Load Balancer
-Virtual Servers' page."
+#: src/etc/inc/priv.defs.inc:661
+msgid "Allow access to the 'Services Load Balancer Virtual Servers' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-666
-msgid "Webcfg - Services
-NTP"
+#: src/etc/inc/priv.defs.inc:666
+msgid "Webcfg - Services NTP"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-667
-msgid "Allow access to the 'Services
-NTP' page."
+#: src/etc/inc/priv.defs.inc:667
+msgid "Allow access to the 'Services NTP' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-672
-msgid "Webcfg - Status
-NTP GPS page"
+#: src/etc/inc/priv.defs.inc:672
+msgid "Webcfg - Status NTP GPS page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-673
-msgid "Allow access to the 'Status
-NTP Serial GPS' page."
+#: src/etc/inc/priv.defs.inc:673
+msgid "Allow access to the 'Status NTP Serial GPS' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-678
-msgid "Webcfg - Status
-NTP PPS page"
+#: src/etc/inc/priv.defs.inc:678
+msgid "Webcfg - Status NTP PPS page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-679
-msgid "Allow access to the 'Status
-NTP PPS' page."
+#: src/etc/inc/priv.defs.inc:679
+msgid "Allow access to the 'Status NTP PPS' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-684
-msgid "WebCfg - Load Balancer
-Virtual Server
-Edit page"
+#: src/etc/inc/priv.defs.inc:684
+msgid "WebCfg - Load Balancer Virtual Server Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-685
-msgid "Allow access to the 'Load Balancer
-Virtual Server
-Edit' page."
+#: src/etc/inc/priv.defs.inc:685
+msgid "Allow access to the 'Load Balancer Virtual Server Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-690
-msgid "WebCfg - Package
-Settings page"
+#: src/etc/inc/priv.defs.inc:690
+msgid "WebCfg - Package Settings page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-691
-msgid "Allow access to the 'Package
-Settings' page."
+#: src/etc/inc/priv.defs.inc:691
+msgid "Allow access to the 'Package Settings' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-696
-msgid "WebCfg - Package
-Edit page"
+#: src/etc/inc/priv.defs.inc:696
+msgid "WebCfg - Package Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-697
-msgid "Allow access to the 'Package
-Edit' page."
+#: src/etc/inc/priv.defs.inc:697
+msgid "Allow access to the 'Package Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-702
-msgid "WebCfg - System
-Package Manager page"
+#: src/etc/inc/priv.defs.inc:702
+msgid "WebCfg - System Package Manager page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-703
-msgid "Allow access to the 'System
-Package Manager' page."
+#: src/etc/inc/priv.defs.inc:703
+msgid "Allow access to the 'System Package Manager' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-708
-msgid "WebCfg - System
-Package Manager
-Install Package page"
+#: src/etc/inc/priv.defs.inc:708
+msgid "WebCfg - System Package Manager Install Package page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-709
-msgid "Allow access to the 'System
-Package Manager
-Install Package' page."
+#: src/etc/inc/priv.defs.inc:709
+msgid "Allow access to the 'System Package Manager Install Package' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-714
-msgid "WebCfg - System
-Package Manager
-Installed page"
+#: src/etc/inc/priv.defs.inc:714
+msgid "WebCfg - System Package Manager Installed page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-715
-msgid "Allow access to the 'System
-Package Manager
-Installed' page."
+#: src/etc/inc/priv.defs.inc:715
+msgid "Allow access to the 'System Package Manager Installed' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-720
-msgid "WebCfg - Packages
-Settings page"
+#: src/etc/inc/priv.defs.inc:720
+msgid "WebCfg - Packages Settings page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-721
-msgid "Allow access to the 'Packages
-Settings' page."
+#: src/etc/inc/priv.defs.inc:721
+msgid "Allow access to the 'Packages Settings' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-726
-msgid "WebCfg - Diagnostics
-Reboot System page"
+#: src/etc/inc/priv.defs.inc:726
+msgid "WebCfg - Diagnostics Reboot System page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-727
-msgid "Allow access to the 'Diagnostics
-Reboot System' page."
+#: src/etc/inc/priv.defs.inc:727
+msgid "Allow access to the 'Diagnostics Reboot System' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-732
-msgid "WebCfg - Diagnostics
-Restart HTTPD 
-System page"
+#: src/etc/inc/priv.defs.inc:732
+msgid "WebCfg - Diagnostics Restart HTTPD System page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-733
-msgid "Allow access to the 'Diagnostics
-Restart HTTPD
-System' page."
+#: src/etc/inc/priv.defs.inc:733
+msgid "Allow access to the 'Diagnostics Restart HTTPD System' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-738
-msgid "WebCfg - Services
-Captive portal page"
+#: src/etc/inc/priv.defs.inc:738
+msgid "WebCfg - Services Captive portal page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-739
-msgid "Allow access to the 'Services
-Captive portal' page."
+#: src/etc/inc/priv.defs.inc:739
+msgid "Allow access to the 'Services Captive portal' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-744
-msgid "WebCfg - Services
-Captive portal
-File Manager page"
+#: src/etc/inc/priv.defs.inc:744
+msgid "WebCfg - Services Captive portal File Manager page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-745
-msgid "Allow access to the 'Services
-Captive portal
-File Manager' page."
+#: src/etc/inc/priv.defs.inc:745
+msgid "Allow access to the 'Services Captive portal File Manager' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-750
-msgid "WebCfg - Services
-Captive portal
-Allowed IPs page"
+#: src/etc/inc/priv.defs.inc:750
+msgid "WebCfg - Services Captive portal Allowed IPs page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-751
-msgid "Allow access to the 'Services
-Captive portal
-Allowed IPs' page."
+#: src/etc/inc/priv.defs.inc:751
+msgid "Allow access to the 'Services Captive portal Allowed IPs' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-756
-msgid "WebCfg - Services
-Captive portal
-Edit Allowed IPs page"
+#: src/etc/inc/priv.defs.inc:756
+msgid "WebCfg - Services Captive portal Edit Allowed IPs page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-757
-msgid "Allow access to the 'Services
-Captive portal
-Edit Allowed IPs' page."
+#: src/etc/inc/priv.defs.inc:757
+msgid "Allow access to the 'Services Captive portal Edit Allowed IPs' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-762
-msgid "WebCfg - Services
-Captive portal
-Mac Addresses page"
+#: src/etc/inc/priv.defs.inc:762
+msgid "WebCfg - Services Captive portal Mac Addresses page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-763
-msgid "Allow access to the 'Services
-Captive portal
-Mac Addresses' page."
+#: src/etc/inc/priv.defs.inc:763
+msgid "Allow access to the 'Services Captive portal Mac Addresses' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-768
-msgid "WebCfg - Services
-Captive portal
-Edit MAC Addresses page"
+#: src/etc/inc/priv.defs.inc:768
+msgid "WebCfg - Services Captive portal Edit MAC Addresses page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-769
-msgid "Allow access to the 'Services
-Captive portal
-Edit MAC Addresses' page."
+#: src/etc/inc/priv.defs.inc:769
+msgid "Allow access to the 'Services Captive portal Edit MAC Addresses' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-774
+#: src/etc/inc/priv.defs.inc:774
 msgid "WebCfg - Services
 Captive portal
 Allowed Hostnames page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-775
-msgid "Allow access to the 'Services
-Captive portal
-Allowed Hostnames' page."
+#: src/etc/inc/priv.defs.inc:775
+msgid "Allow access to the 'Services Captive portal Allowed Hostnames' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-780
-msgid "WebCfg - Services
-Captive portal
-Edit Allowed Hostnames page"
+#: src/etc/inc/priv.defs.inc:780
+msgid "WebCfg - Services Captive portal Edit Allowed Hostnames page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-781
-msgid "Allow access to the 'Services
-Captive portal
-Allowed Hostnames' page."
+#: src/etc/inc/priv.defs.inc:781
+msgid "Allow access to the 'Services Captive portal Allowed Hostnames' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-786
-msgid "Webcfg - Services
-Captive portal
-Edit Zones page"
+#: src/etc/inc/priv.defs.inc:786
+msgid "Webcfg - Services Captive portal Edit Zones page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-787
-msgid "Allow access to the 'Services
-Captive portal
-Edit Zones' page."
+#: src/etc/inc/priv.defs.inc:787
+msgid "Allow access to the 'Services Captive portal Edit Zones' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-792
-msgid "WebCfg - Services
-Captive portal Vouchers page"
+#: src/etc/inc/priv.defs.inc:792
+msgid "WebCfg - Services Captive portal Vouchers page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-793
-msgid "Allow access to the 'Services
-Captive portal Vouchers' page."
+#: src/etc/inc/priv.defs.inc:793
+msgid "Allow access to the 'Services Captive portal Vouchers' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-804
-msgid "WebCfg - Services
-Captiveprotal Zones page"
+#: src/etc/inc/priv.defs.inc:804
+msgid "WebCfg - Services Captiveprotal Zones page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-805
-msgid "Allow access to the 'Services
-CaptivePortal Zones' page."
+#: src/etc/inc/priv.defs.inc:805
+msgid "Allow access to the 'Services CaptivePortal Zones' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-810
-msgid "WebCfg - Services
-DHCP server page"
+#: src/etc/inc/priv.defs.inc:810
+msgid "WebCfg - Services DHCP server page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-811
-msgid "Allow access to the 'Services
-DHCP server' page."
+#: src/etc/inc/priv.defs.inc:811
+msgid "Allow access to the 'Services DHCP server' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-816
-msgid "WebCfg - Services
-DHCP Server 
-Edit static mapping page"
+#: src/etc/inc/priv.defs.inc:816
+msgid "WebCfg - Services DHCP Server Edit static mapping page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-817
-msgid "Allow access to the 'Services
-DHCP Server 
-Edit static mapping' page."
+#: src/etc/inc/priv.defs.inc:817
+msgid "Allow access to the 'Services DHCP Server Edit static mapping' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-822
-msgid "WebCfg - Services
-DHCP Relay page"
+#: src/etc/inc/priv.defs.inc:822
+msgid "WebCfg - Services DHCP Relay page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-823
-msgid "Allow access to the 'Services
-DHCP Relay' page."
+#: src/etc/inc/priv.defs.inc:823
+msgid "Allow access to the 'Services DHCP Relay' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-828
-msgid "Webcfg - Services
-DHCPv6 server page"
+#: src/etc/inc/priv.defs.inc:828
+msgid "Webcfg - Services DHCPv6 server page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-829
-msgid "Allow access to the 'Services
-DHCPv6 server' page."
+#: src/etc/inc/priv.defs.inc:829
+msgid "Allow access to the 'Services DHCPv6 server' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-834
-msgid "Webcfg - Services
-DHCPv6 Server 
-Edit static mapping page"
+#: src/etc/inc/priv.defs.inc:834
+msgid "Webcfg - Services DHCPv6 Server Edit static mapping page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-835
-msgid "Allow access to the 'Services
-DHCPv6 Server 
-Edit static mapping' page."
+#: src/etc/inc/priv.defs.inc:835
+msgid "Allow access to the 'Services DHCPv6 Server Edit static mapping' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-840
-msgid "Webcfg - Services
-DHCPv6 Relay page"
+#: src/etc/inc/priv.defs.inc:840
+msgid "Webcfg - Services DHCPv6 Relay page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-841
-msgid "Allow access to the 'Services
-DHCPv6 Relay' page."
+#: src/etc/inc/priv.defs.inc:841
+msgid "Allow access to the 'Services DHCPv6 Relay' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-846
-msgid "WebCfg - Services
-DNS Forwarder page"
+#: src/etc/inc/priv.defs.inc:846
+msgid "WebCfg - Services DNS Forwarder page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-847
-msgid "Allow access to the 'Services
-DNS Forwarder' page."
+#: src/etc/inc/priv.defs.inc:847
+msgid "Allow access to the 'Services DNS Forwarder' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-852
-msgid "WebCfg - Services
-DNS Forwarder
-Edit Domain Override page"
+#: src/etc/inc/priv.defs.inc:852
+msgid "WebCfg - Services DNS Forwarder Edit Domain Override page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-853
-msgid "Allow access to the 'Services
-DNS Forwarder
-Edit Domain Override' page."
+#: src/etc/inc/priv.defs.inc:853
+msgid "Allow access to the 'Services DNS Forwarder Edit Domain Override' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-858
-msgid "WebCfg - Services
-DNS Forwarder
-Edit host page"
+#: src/etc/inc/priv.defs.inc:858
+msgid "WebCfg - Services DNS Forwarder Edit host page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-859
-msgid "Allow access to the 'Services
-DNS Forwarder
-Edit host' page."
+#: src/etc/inc/priv.defs.inc:859
+msgid "Allow access to the 'Services DNS Forwarder Edit host' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-864
-msgid "WebCfg - Services
-DNS Resolver page"
+#: src/etc/inc/priv.defs.inc:864
+msgid "WebCfg - Services DNS Resolver page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-865
-msgid "Allow access to the 'Services
-DNS Resolver' page."
+#: src/etc/inc/priv.defs.inc:865
+msgid "Allow access to the 'Services DNS Resolver' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-870
-msgid "WebCfg - Services
-DNS Resolver
-Advanced page"
+#: src/etc/inc/priv.defs.inc:870
+msgid "WebCfg - Services DNS Resolver Advanced page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-871
-msgid "Allow access to the 'Services
-DNS Resolver
-Advanced' page."
+#: src/etc/inc/priv.defs.inc:871
+msgid "Allow access to the 'Services DNS Resolver Advanced' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-876
-msgid "WebCfg - Services
-DNS Resolver
-Access Lists page"
+#: src/etc/inc/priv.defs.inc:876
+msgid "WebCfg - Services DNS Resolver Access Lists page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-877
-msgid "Allow access to the 'Services
-DNS Resolver
-Access Lists' page."
+#: src/etc/inc/priv.defs.inc:877
+msgid "Allow access to the 'Services DNS Resolver Access Lists' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-882
-msgid "WebCfg - Services
-DNS Resolver
-Access Lists
-Edit page"
+#: src/etc/inc/priv.defs.inc:882
+msgid "WebCfg - Services DNS Resolver Access Lists Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-883
-msgid "Allow access to the 'Services
-DNS Resolver
-Access Lists
-Edit' page."
+#: src/etc/inc/priv.defs.inc:883
+msgid "Allow access to the 'Services DNS Resolver Access Lists Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-888
-msgid "WebCfg - Services
-DNS Resolver
-Edit Domain Override page"
+#: src/etc/inc/priv.defs.inc:888
+msgid "WebCfg - Services DNS Resolver Edit Domain Override page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-889
-msgid "Allow access to the 'Services
-DNS Resolver
-Edit Domain Override' page."
+#: src/etc/inc/priv.defs.inc:889
+msgid "Allow access to the 'Services DNS Resolver Edit Domain Override' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-894
-msgid "WebCfg - Services
-DNS Resolver
-Edit host page"
+#: src/etc/inc/priv.defs.inc:894
+msgid "WebCfg - Services DNS Resolver Edit host page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-895
-msgid "Allow access to the 'Services
-DNS Resolver
-Edit host' page."
+#: src/etc/inc/priv.defs.inc:895
+msgid "Allow access to the 'Services DNS Resolver Edit host' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-900
-msgid "WebCfg - Services
-Dynamic DNS clients page"
+#: src/etc/inc/priv.defs.inc:900
+msgid "WebCfg - Services Dynamic DNS clients page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-901
-msgid "Allow access to the 'Services
-Dynamic DNS clients' page."
+#: src/etc/inc/priv.defs.inc:901
+msgid "Allow access to the 'Services Dynamic DNS clients' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-906
-msgid "WebCfg - Services
-Dynamic DNS client page"
+#: src/etc/inc/priv.defs.inc:906
+msgid "WebCfg - Services Dynamic DNS client page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-907
-msgid "Allow access to the 'Services
-Dynamic DNS client' page."
+#: src/etc/inc/priv.defs.inc:907
+msgid "Allow access to the 'Services Dynamic DNS client' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-912
-msgid "WebCfg - Services
-Igmpproxy page"
+#: src/etc/inc/priv.defs.inc:912
+msgid "WebCfg - Services Igmpproxy page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-913
-msgid "Allow access to the 'Services
-Igmpproxy' page."
+#: src/etc/inc/priv.defs.inc:913
+msgid "Allow access to the 'Services Igmpproxy' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-918
-msgid "Firewall
-Igmpproxy
-Edit page"
+#: src/etc/inc/priv.defs.inc:918
+msgid "Firewall Igmpproxy Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-919
-msgid "Allow access to the 'Services
-Igmpproxy
-Edit' page."
+#: src/etc/inc/priv.defs.inc:919
+msgid "Allow access to the 'Services Igmpproxy Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-924
-msgid "WebCfg - Services
-RFC 2136 clients page"
+#: src/etc/inc/priv.defs.inc:924
+msgid "WebCfg - Services RFC 2136 clients page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-925
-msgid "Allow access to the 'Services
-RFC 2136 clients' page."
+#: src/etc/inc/priv.defs.inc:925
+msgid "Allow access to the 'Services RFC 2136 clients' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-930
-msgid "Webcfg - Services
-Router advertisementspage"
+#: src/etc/inc/priv.defs.inc:930
+msgid "Webcfg - Services Router advertisementspage"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-931
-msgid "Allow access to the 'Services
-Router Advertisements' page."
+#: src/etc/inc/priv.defs.inc:931
+msgid "Allow access to the 'Services Router Advertisements' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-936
-msgid "WebCfg - Services
-SNMP page"
+#: src/etc/inc/priv.defs.inc:936
+msgid "WebCfg - Services SNMP page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-937
-msgid "Allow access to the 'Services
-SNMP' page."
+#: src/etc/inc/priv.defs.inc:937
+msgid "Allow access to the 'Services SNMP' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-942
-msgid "WebCfg - Services
-Wake on LAN page"
+#: src/etc/inc/priv.defs.inc:942
+msgid "WebCfg - Services Wake on LAN page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-943
-msgid "Allow access to the 'Services
-Wake on LAN' page."
+#: src/etc/inc/priv.defs.inc:943
+msgid "Allow access to the 'Services Wake on LAN' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-948
-msgid "WebCfg - Services
-Wake on LAN
-Edit page"
+#: src/etc/inc/priv.defs.inc:948
+msgid "WebCfg - Services Wake on LAN Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-949
-msgid "Allow access to the 'Services
-Wake on LAN
-Edit' page."
+#: src/etc/inc/priv.defs.inc:949
+msgid "Allow access to the 'Services Wake on LAN Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-954
-msgid "WebCfg - Diagnostics
-CPU Utilization page"
+#: src/etc/inc/priv.defs.inc:954
+msgid "WebCfg - Diagnostics CPU Utilization page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-955
-msgid "Allow access to the 'Diagnostics
-CPU Utilization' page."
+#: src/etc/inc/priv.defs.inc:955
+msgid "Allow access to the 'Diagnostics CPU Utilization' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-960
-msgid "WebCfg - Hidden
-Detailed Status page"
+#: src/etc/inc/priv.defs.inc:960
+msgid "WebCfg - Hidden Detailed Status page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-961
-msgid "Allow access to the 'Hidden
-Detailed Status' page."
+#: src/etc/inc/priv.defs.inc:961
+msgid "Allow access to the 'Hidden Detailed Status' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-966
-msgid "WebCfg - Status
-Captive portal page"
+#: src/etc/inc/priv.defs.inc:966
+msgid "WebCfg - Status Captive portal page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-967
-msgid "Allow access to the 'Status
-Captive portal' page."
+#: src/etc/inc/priv.defs.inc:967
+msgid "Allow access to the 'Status Captive portal' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-972
-msgid "Webcfg - Status
-Captive portal Expire Vouchers page"
+#: src/etc/inc/priv.defs.inc:972
+msgid "Webcfg - Status Captive portal Expire Vouchers page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-973
-msgid "Allow access to the 'Status
-Captive portal Expire Vouchers' page."
+#: src/etc/inc/priv.defs.inc:973
+msgid "Allow access to the 'Status Captive portal Expire Vouchers' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-978
-msgid "WebCfg - Status
-Captive portal test Vouchers page"
+#: src/etc/inc/priv.defs.inc:978
+msgid "WebCfg - Status Captive portal test Vouchers page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-979
-msgid "Allow access to the 'Status
-Captive portal Test Vouchers' page."
+#: src/etc/inc/priv.defs.inc:979
+msgid "Allow access to the 'Status Captive portal Test Vouchers' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-984
-msgid "WebCfg - Status
-Captive portal Voucher Rolls page"
+#: src/etc/inc/priv.defs.inc:984
+msgid "WebCfg - Status Captive portal Voucher Rolls page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-985
-msgid "Allow access to the 'Status
-Captive portal Voucher Rolls' page."
+#: src/etc/inc/priv.defs.inc:985
+msgid "Allow access to the 'Status Captive portal Voucher Rolls' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-990
-msgid "WebCfg - Status
-Captive portal Vouchers page"
+#: src/etc/inc/priv.defs.inc:990
+msgid "WebCfg - Status Captive portal Vouchers page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-991
-msgid "Allow access to the 'Status
-Captive portal Vouchers' page."
+#: src/etc/inc/priv.defs.inc:991
+msgid "Allow access to the 'Status Captive portal Vouchers' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-996
-msgid "WebCfg - Status
-DHCP leases page"
+#: src/etc/inc/priv.defs.inc:996
+msgid "WebCfg - Status DHCP leases page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-997
-msgid "Allow access to the 'Status
-DHCP leases' page."
+#: src/etc/inc/priv.defs.inc:997
+msgid "Allow access to the 'Status DHCP leases' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1002
-msgid "Webcfg - Status
-DHCPv6 leases page"
+#: src/etc/inc/priv.defs.inc:1002
+msgid "Webcfg - Status DHCPv6 leases page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1003
-msgid "Allow access to the 'Status
-DHCPv6 leases' page."
+#: src/etc/inc/priv.defs.inc:1003
+msgid "Allow access to the 'Status DHCPv6 leases' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1008
-msgid "WebCfg - Status
-Filter Reload Status page"
+#: src/etc/inc/priv.defs.inc:1008
+msgid "WebCfg - Status Filter Reload Status page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1009
-msgid "Allow access to the 'Status
-Filter Reload Status' page."
+#: src/etc/inc/priv.defs.inc:1009
+msgid "Allow access to the 'Status Filter Reload Status' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1014
-msgid "WebCfg - Status
-Gateway Groups page"
+#: src/etc/inc/priv.defs.inc:1014
+msgid "WebCfg - Status Gateway Groups page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1015
-msgid "Allow access to the 'Status
-Gateway Groups' page."
+#: src/etc/inc/priv.defs.inc:1015
+msgid "Allow access to the 'Status Gateway Groups' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1020
-msgid "WebCfg - Status
-Gateways page"
+#: src/etc/inc/priv.defs.inc:1020
+msgid "WebCfg - Status Gateways page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1021
-msgid "Allow access to the 'Status
-Gateways' page."
+#: src/etc/inc/priv.defs.inc:1021
+msgid "Allow access to the 'Status Gateways' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1026
-msgid "WebCfg - Status
-Traffic Graph page"
+#: src/etc/inc/priv.defs.inc:1026
+msgid "WebCfg - Status Traffic Graph page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1027
-msgid "Allow access to the 'Status
-Traffic Graph' page."
+#: src/etc/inc/priv.defs.inc:1027
+msgid "Allow access to the 'Status Traffic Graph' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1035
-msgid "WebCfg - Status
-CPU load page"
+#: src/etc/inc/priv.defs.inc:1035
+msgid "WebCfg - Status CPU load page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1036
-msgid "Allow access to the 'Status
-CPU load' page."
+#: src/etc/inc/priv.defs.inc:1036
+msgid "Allow access to the 'Status CPU load' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1041
-msgid "WebCfg - Status
-Interfaces page"
+#: src/etc/inc/priv.defs.inc:1041
+msgid "WebCfg - Status Interfaces page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1042
-msgid "Allow access to the 'Status
-Interfaces' page."
+#: src/etc/inc/priv.defs.inc:1042
+msgid "Allow access to the 'Status Interfaces' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1047
-msgid "WebCfg - Status
-Load Balancer
-Pool page"
+#: src/etc/inc/priv.defs.inc:1047
+msgid "WebCfg - Status Load Balancer Pool page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1048
-msgid "Allow access to the 'Status
-Load Balancer
-Pool' page."
+#: src/etc/inc/priv.defs.inc:1048
+msgid "Allow access to the 'Status Load Balancer Pool' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1053
-msgid "WebCfg - Status
-Load Balancer
-Virtual Server page"
+#: src/etc/inc/priv.defs.inc:1053
+msgid "WebCfg - Status Load Balancer Virtual Server page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1054
-msgid "Allow access to the 'Status
-Load Balancer
-Virtual Server' page."
+#: src/etc/inc/priv.defs.inc:1054
+msgid "Allow access to the 'Status Load Balancer Virtual Server' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1059
-msgid "WebCfg - Status
-OpenVPN page"
+#: src/etc/inc/priv.defs.inc:1059
+msgid "WebCfg - Status OpenVPN page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1060
-msgid "Allow access to the 'Status
-OpenVPN' page."
+#: src/etc/inc/priv.defs.inc:1060
+msgid "Allow access to the 'Status OpenVPN' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1065
-msgid "WebCfg - Status
-Traffic shaper
-Queues page"
+#: src/etc/inc/priv.defs.inc:1065
+msgid "WebCfg - Status Traffic shaper Queues page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1066
-msgid "Allow access to the 'Status
-Traffic shaper
-Queues' page."
+#: src/etc/inc/priv.defs.inc:1066
+msgid "Allow access to the 'Status Traffic shaper Queues' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1071
-msgid "WebCfg - Status
-RRD Graphs page"
+#: src/etc/inc/priv.defs.inc:1071
+msgid "WebCfg - Status RRD Graphs page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1072
-msgid "Allow access to the 'Status
-RRD Graphs' page."
+#: src/etc/inc/priv.defs.inc:1072
+msgid "Allow access to the 'Status RRD Graphs' page."
 msgstr ""
 
 #:
