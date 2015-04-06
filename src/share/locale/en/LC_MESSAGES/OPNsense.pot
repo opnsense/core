@@ -3268,863 +3268,464 @@ msgstr ""
 msgid "Allow access to the 'Status RRD Graphs' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1078
-msgid "WebCfg - Status
-RRD Graphs settings page"
+#: src/etc/inc/priv.defs.inc:1078
+msgid "WebCfg - Status RRD Graphs settings page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1079
-msgid "Allow access to the 'Status
-RRD Graphs
-settings' page."
+#: src/etc/inc/priv.defs.inc:1079
+msgid "Allow access to the 'Status RRD Graphs settings' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1084
-msgid "WebCfg - Status
-Services page"
+#: src/etc/inc/priv.defs.inc:1084
+msgid "WebCfg - Status Services page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1085
-msgid "Allow access to the 'Status
-Services' page."
+#: src/etc/inc/priv.defs.inc:1085
+msgid "Allow access to the 'Status Services' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1090
-msgid "WebCfg - Status
-UPnP Status page"
+#: src/etc/inc/priv.defs.inc:1090
+msgid "WebCfg - Status UPnP Status page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1091
-msgid "Allow access to the 'Status
-UPnP Status' page."
+#: src/etc/inc/priv.defs.inc:1091
+msgid "Allow access to the 'Status UPnP Status' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1096
-msgid "WebCfg - Status
-Wireless page"
+#: src/etc/inc/priv.defs.inc:1096
+msgid "WebCfg - Status Wireless page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1097
-msgid "Allow access to the 'Status
-Wireless' page."
+#: src/etc/inc/priv.defs.inc:1097
+msgid "Allow access to the 'Status Wireless' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1102
-msgid "WebCfg - System
-General Setup page"
+#: src/etc/inc/priv.defs.inc:1102
+msgid "WebCfg - System General Setup page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1103
-msgid "Allow access to the 'System
-General Setup' page."
+#: src/etc/inc/priv.defs.inc:1103
+msgid "Allow access to the 'System General Setup' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1108
-msgid "WebCfg - System
-Advanced
-Admin Access Page"
+#: src/etc/inc/priv.defs.inc:1108
+msgid "WebCfg - System Advanced Admin Access Page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1109
-msgid "Allow access to the 'System
-Advanced
-Admin Access' page."
+#: src/etc/inc/priv.defs.inc:1109
+msgid "Allow access to the 'System Advanced Admin Access' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1114
-msgid "WebCfg - System
-Advanced
-Firewall and NAT page"
+#: src/etc/inc/priv.defs.inc:1114
+msgid "WebCfg - System Advanced Firewall and NAT page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1115
-msgid "Allow access to the 'System
-Advanced
-Firewall and NAT' page."
+#: src/etc/inc/priv.defs.inc:1115
+msgid "Allow access to the 'System Advanced Firewall and NAT' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1120
-msgid "WebCfg - System
-Advanced
-Miscellaneous page"
+#: src/etc/inc/priv.defs.inc:1120
+msgid "WebCfg - System Advanced Miscellaneous page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1121
-msgid "Allow access to the 'System
-Advanced
-Miscellaneous' page."
+#: src/etc/inc/priv.defs.inc:1121
+msgid "Allow access to the 'System Advanced Miscellaneous' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1126
-msgid "WebCfg - System
-Advanced
-Network page"
+#: src/etc/inc/priv.defs.inc:1126
+msgid "WebCfg - System Advanced Network page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1127
-msgid "Allow access to the 'System
-Advanced
-Networking' page."
+#: src/etc/inc/priv.defs.inc:1127
+msgid "Allow access to the 'System Advanced Networking' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1132
-msgid "WebCfg - System
-Advanced
-Notifications page"
+#: src/etc/inc/priv.defs.inc:1132
+msgid "WebCfg - System Advanced Notifications page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1133
-msgid "Allow access to the 'System
-Advanced
-Notifications' page."
+#: src/etc/inc/priv.defs.inc:1133
+msgid "Allow access to the 'System Advanced Notifications' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1138
-msgid "WebCfg - System
-Advanced
-Tunables page"
+#: src/etc/inc/priv.defs.inc:1138
+msgid "WebCfg - System Advanced Tunables page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1139
-msgid "Allow access to the 'System
-Advanced
-Tunables' page."
+#: src/etc/inc/priv.defs.inc:1139
+msgid "Allow access to the 'System Advanced Tunables' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1144
-msgid "WebCfg - System
-Authentication Servers"
+#: src/etc/inc/priv.defs.inc:1144
+msgid "WebCfg - System Authentication Servers"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1145
-msgid "Allow access to the 'System
-Authentication Servers' page."
+#: src/etc/inc/priv.defs.inc:1145
+msgid "Allow access to the 'System Authentication Servers' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1150
-msgid "WebCfg - System
-CA Manager"
+#: src/etc/inc/priv.defs.inc:1150
+msgid "WebCfg - System CA Manager"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1151
-msgid "Allow access to the 'System
-CA Manager' page."
+#: src/etc/inc/priv.defs.inc:1151
+msgid "Allow access to the 'System CA Manager' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1156
-msgid "WebCfg - System
-Certificate Manager"
+#: src/etc/inc/priv.defs.inc:1156
+msgid "WebCfg - System Certificate Manager"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1157
-msgid "Allow access to the 'System
-Certificate Manager' page."
+#: src/etc/inc/priv.defs.inc:1157
+msgid "Allow access to the 'System Certificate Manager' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1162
-msgid "WebCfg - System
-CRL Manager"
+#: src/etc/inc/priv.defs.inc:1162
+msgid "WebCfg - System CRL Manager"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1163
-msgid "Allow access to the 'System
-CRL Manager' page."
+#::src/etc/inc/priv.defs.inc:1163
+msgid "Allow access to the 'System CRL Manager' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1168
-msgid "WebCfg - System
-Firmware
-Manual Update page"
+#: src/etc/inc/priv.defs.inc:1168
+msgid "WebCfg - System Firmware Manual Update page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1169
-msgid "Allow access to the 'System
-Firmware
-Manual Update' page."
+#: src/etc/inc/priv.defs.inc:1169
+msgid "Allow access to the 'System Firmware Manual Update' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1174
-msgid "WebCfg - System
-Firmware
-Check For Update page"
+#: src/etc/inc/priv.defs.inc:1174
+msgid "WebCfg - System Firmware Check For Update page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1175
-msgid "Allow access to the 'System
-Firmware
-Check For Update' page."
+#: src/etc/inc/priv.defs.inc:1175
+msgid "Allow access to the 'System Firmware Check For Update' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1180
-msgid "WebCfg - System
-Firmware
-Auto Update page"
+#: src/etc/inc/priv.defs.inc:1180
+msgid "WebCfg - System Firmware Auto Update page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1181
-msgid "Allow access to the 'System
-Firmware
-Auto Update' page."
+#: src/etc/inc/priv.defs.inc:1181
+msgid "Allow access to the 'System Firmware Auto Update' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1186
-msgid "WebCfg - System
-Firmware
-Settings page"
+#: src/etc/inc/priv.defs.inc:1186
+msgid "WebCfg - System Firmware Settings page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1187
-msgid "Allow access to the 'System
-Firmware
-Settings' page."
+#: src/etc/inc/priv.defs.inc:1187
+msgid "Allow access to the 'System Firmware Settings' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1192
-msgid "WebCfg - System
-Gateway Groups page"
+#: src/etc/inc/priv.defs.inc:1192
+msgid "WebCfg - System Gateway Groups page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1193
-msgid "Allow access to the 'System
-Gateway Groups' page."
+#: src/etc/inc/priv.defs.inc:1193
+msgid "Allow access to the 'System Gateway Groups' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1198
-msgid "WebCfg - System
-Gateways
-Edit Gateway Groups page"
+#: src/etc/inc/priv.defs.inc:1198
+msgid "WebCfg - System Gateways Edit Gateway Groups page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1199
-msgid "Allow access to the 'System
-Gateways
-Edit Gateway Groups' page."
+#: src/etc/inc/priv.defs.inc:1199
+msgid "Allow access to the 'System Gateways Edit Gateway Groups' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1204
-msgid "WebCfg - System
-Gateways page"
+#: src/etc/inc/priv.defs.inc:1204
+msgid "WebCfg - System Gateways page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1205
-msgid "Allow access to the 'System
-Gateways' page."
+#: src/etc/inc/priv.defs.inc:1205
+msgid "Allow access to the 'System Gateways' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1210
-msgid "WebCfg - System
-Gateways
-Edit Gateway page"
+#: src/etc/inc/priv.defs.inc:1210
+msgid "WebCfg - System Gateways Edit Gateway page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1211
-msgid "Allow access to the 'System
-Gateways
-Edit Gateway' page."
+#: src/etc/inc/priv.defs.inc:1211
+msgid "Allow access to the 'System Gateways Edit Gateway' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1216
-msgid "WebCfg - System
-Group manager page"
+#: src/etc/inc/priv.defs.inc:1216
+msgid "WebCfg - System Group manager page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1217
-msgid "Allow access to the 'System
-Group manager' page."
+#: src/etc/inc/priv.defs.inc:1217
+msgid "Allow access to the 'System Group manager' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1222
-msgid "WebCfg - System
-Group Manager
-Add Privileges page"
+#: src/etc/inc/priv.defs.inc:1222
+msgid "WebCfg - System Group Manager Add Privileges page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1223
-msgid "Allow access to the 'System
-Group Manager
-Add Privileges' page."
+#: src/etc/inc/priv.defs.inc:1223
+msgid "Allow access to the 'System Group Manager Add Privileges' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1228
-msgid "Webcfg - System
-High Availability Sync"
+#: src/etc/inc/priv.defs.inc:1228
+msgid "Webcfg - System High Availability Sync"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1229
-msgid "Allow access to the 'System
-High Availability Sync' page."
+#: src/etc/inc/priv.defs.inc:1229
+msgid "Allow access to the 'System High Availability Sync' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1234
-msgid "WebCfg - System
-Static Routes page"
+#: src/etc/inc/priv.defs.inc:1234
+msgid "WebCfg - System Static Routes page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1235
-msgid "Allow access to the 'System
-Static Routes' page."
+#: src/etc/inc/priv.defs.inc:1235
+msgid "Allow access to the 'System Static Routes' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1240
-msgid "WebCfg - System
-Static Routes
-Edit route page"
+#: src/etc/inc/priv.defs.inc:1240
+msgid "WebCfg - System Static Routes Edit route page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1241
-msgid "Allow access to the 'System
-Static Routes
-Edit route' page."
+#: src/etc/inc/priv.defs.inc:1241
+msgid "Allow access to the 'System Static Routes Edit route' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1246
-msgid "WebCfg - System
-User Manager page"
+#: src/etc/inc/priv.defs.inc:1246
+msgid "WebCfg - System User Manager page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1247
-msgid "Allow access to the 'System
-User Manager' page."
+#: src/etc/inc/priv.defs.inc:1247
+msgid "Allow access to the 'System User Manager' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1252
-msgid "WebCfg - System
-User Manager
-Add Privileges page"
+#: src/etc/inc/priv.defs.inc:1252
+msgid "WebCfg - System User Manager Add Privileges page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1253
-msgid "Allow access to the 'System
-User Manager
-Add Privileges' page."
+#: src/etc/inc/priv.defs.inc:1253
+msgid "Allow access to the 'System User Manager Add Privileges' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1258
-msgid "WebCfg - System
-User Password Manager page"
+#: src/etc/inc/priv.defs.inc:1258
+msgid "WebCfg - System User Password Manager page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1259
-msgid "Allow access to the 'System
-User Password Manager' page."
+#: src/etc/inc/priv.defs.inc:1259
+msgid "Allow access to the 'System User Password Manager' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1264
-msgid "WebCfg - System
-User Manager
-settings page"
+#: src/etc/inc/priv.defs.inc:1264
+msgid "WebCfg - System User Manager settings page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1265
-msgid "Allow access to the 'System
-User Manager
-settings' page."
+#: src/etc/inc/priv.defs.inc:1265
+msgid "Allow access to the 'System User Manager settings' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1270
-msgid "WebCfg - System
-User Manager
-Settings
-Test LDAP page"
+#: src/etc/inc/priv.defs.inc:1270
+msgid "WebCfg - System User Manager Settings Test LDAP page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1271
-msgid "Allow access to the 'System
-User Manager
-Settings
-Test LDAP' page."
+#: src/etc/inc/priv.defs.inc:1271
+msgid "Allow access to the 'System User Manager Settings Test LDAP' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1276
-msgid "WebCfg - System
-Firmware
-Manual Update page (progress bar)"
+#: src/etc/inc/priv.defs.inc:1276
+msgid "WebCfg - System Firmware Manual Update page (progress bar)"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1277
-msgid "Allow access to the 'System
-Firmware
-Manual Update
-Progress bar' page."
+#: src/etc/inc/priv.defs.inc:1277
+msgid ""
+"Allow access to the 'System Firmware Manual Update Progress bar' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1282
-msgid "WebCfg - VPN
-IPsec page"
+#: src/etc/inc/priv.defs.inc:1282
+msgid "WebCfg - VPN IPsec page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1283
-msgid "Allow access to the 'VPN
-IPsec' page."
+#: src/etc/inc/priv.defs.inc:1283
+msgid "Allow access to the 'VPN IPsec' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1288
-msgid "WebCfg - VPN
-IPsec
-Pre-Shared Keys List"
+#: src/etc/inc/priv.defs.inc:1288
+msgid "WebCfg - VPN IPsec Pre-Shared Keys List"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1289
-msgid "Allow access to the 'VPN
-IPsec
-Pre-Shared Keys List' page."
+#: src/etc/inc/priv.defs.inc:1289
+msgid "Allow access to the 'VPN IPsec Pre-Shared Keys List' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1294
-msgid "WebCfg - VPN
-IPsec
-Edit Pre-Shared Keys"
+#: src/etc/inc/priv.defs.inc:1294
+msgid "WebCfg - VPN IPsec Edit Pre-Shared Keys"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1295
-msgid "Allow access to the 'VPN
-IPsec
-Edit Pre-Shared Keys' page."
+#: src/etc/inc/priv.defs.inc:1295
+msgid "Allow access to the 'VPN IPsec Edit Pre-Shared Keys' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1300
-msgid "WebCfg - VPN
-IPsec
-Mobile page"
+#: src/etc/inc/priv.defs.inc:1300
+msgid "WebCfg - VPN IPsec Mobile page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1301
-msgid "Allow access to the 'VPN
-IPsec
-Mobile' page."
+#: src/etc/inc/priv.defs.inc:1301
+msgid "Allow access to the 'VPN IPsec Mobile' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1306
-msgid "WebCfg - VPN
-IPsec
-Edit Phase 1 page"
+#: src/etc/inc/priv.defs.inc:1306
+msgid "WebCfg - VPN IPsec Edit Phase 1 page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1307
-msgid "Allow access to the 'VPN
-IPsec
-Edit Phase 1' page."
+#: src/etc/inc/priv.defs.inc:1307
+msgid "Allow access to the 'VPN IPsec Edit Phase 1' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1312
-msgid "WebCfg - VPN
-IPsec
-Edit Phase 2 page"
+#: src/etc/inc/priv.defs.inc:1312
+msgid "WebCfg - VPN IPsec Edit Phase 2 page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1313
-msgid "Allow access to the 'VPN
-IPsec
-Edit Phase 2' page."
+#: src/etc/inc/priv.defs.inc:1313
+msgid "Allow access to the 'VPN IPsec Edit Phase 2' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1318
-msgid "WebCfg - VPN
-VPN L2TP page"
+#: src/etc/inc/priv.defs.inc:1318
+msgid "WebCfg - VPN VPN L2TP page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1319
-msgid "Allow access to the 'VPN
-VPN L2TP' page."
+#: src/etc/inc/priv.defs.inc:1319
+msgid "Allow access to the 'VPN VPN L2TP' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1324
-msgid "WebCfg - VPN
-VPN L2TP 
-Users page"
+#: src/etc/inc/priv.defs.inc:1324
+msgid "WebCfg - VPN VPN L2TP Users page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1325
-msgid "Allow access to the 'VPN
-VPN L2TP 
-Users' page."
+#: src/etc/inc/priv.defs.inc:1325
+msgid "Allow access to the 'VPN VPN L2TP Users' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1330
-msgid "WebCfg - VPN
-VPN L2TP 
-Users 
-Edit page"
+#: src/etc/inc/priv.defs.inc:1330
+msgid "WebCfg - VPN VPN L2TP Users Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1331
-msgid "Allow access to the 'VPN
-VPN L2TP 
-Users 
-Edit' page."
+#: src/etc/inc/priv.defs.inc:1331
+msgid "Allow access to the 'VPN VPN L2TP Users Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1336
-msgid "WebCfg - OpenVPN
-Client page"
+#: src/etc/inc/priv.defs.inc:1336
+msgid "WebCfg - OpenVPN Client page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1337
-msgid "Allow access to the 'OpenVPN
-Client' page."
+#: src/etc/inc/priv.defs.inc:1337
+msgid "Allow access to the 'OpenVPN Client' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1342
-msgid "WebCfg - OpenVPN
-Client Specific Override page"
+#: src/etc/inc/priv.defs.inc:1342
+msgid "WebCfg - OpenVPN Client Specific Override page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1343
-msgid "Allow access to the 'OpenVPN
-Client Specific Override' page."
+#: src/etc/inc/priv.defs.inc:1343
+msgid "Allow access to the 'OpenVPN Client Specific Override' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1348
-msgid "WebCfg - OpenVPN
-Server page"
+#: src/etc/inc/priv.defs.inc:1348
+msgid "WebCfg - OpenVPN Server page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1349
-msgid "Allow access to the 'OpenVPN
-Server' page."
+#: src/etc/inc/priv.defs.inc:1349
+msgid "Allow access to the 'OpenVPN Server' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1354
-msgid "WebCfg - Services
-PPPoE Server page"
+#: src/etc/inc/priv.defs.inc:1354
+msgid "WebCfg - Services PPPoE Server page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1355
-msgid "Allow access to the 'Services
-PPPoE Server' page."
+#: src/etc/inc/priv.defs.inc:1355
+msgid "Allow access to the 'Services PPPoE Server' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1360
-msgid "WebCfg - Services
-PPPoE Server
-Edit page"
+#: src/etc/inc/priv.defs.inc:1360
+msgid "WebCfg - Services PPPoE Server Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1361
-msgid "Allow access to the 'Services
-PPPoE Server
-Edit' page."
+#: src/etc/inc/priv.defs.inc:1361
+msgid "Allow access to the 'Services PPPoE Server Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1366
-msgid "WebCfg - VPN
-VPN PPTP page"
+#: src/etc/inc/priv.defs.inc:1366
+msgid "WebCfg - VPN VPN PPTP page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1367
-msgid "Allow access to the 'VPN
-VPN PPTP' page."
+#: src/etc/inc/priv.defs.inc:1367
+msgid "Allow access to the 'VPN VPN PPTP' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1372
-msgid "WebCfg - VPN
-VPN PPTP
-Users page"
+#: src/etc/inc/priv.defs.inc:1372
+msgid "WebCfg - VPN VPN PPTP Users page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1373
-msgid "Allow access to the 'VPN
-VPN PPTP
-Users' page."
+#: src/etc/inc/priv.defs.inc:1373
+msgid "Allow access to the 'VPN VPN PPTP Users' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1378
-msgid "WebCfg - VPN
-VPN PPTP
-User
-Edit page"
+#: src/etc/inc/priv.defs.inc:1378
+msgid "WebCfg - VPN VPN PPTP User Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1379
-msgid "Allow access to the 'VPN
-VPN PPTP
-User
-Edit' page."
+#: src/etc/inc/priv.defs.inc:1379
+msgid "Allow access to the 'VPN VPN PPTP User Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1384
+#: src/etc/inc/priv.defs.inc:1384
 msgid "WebCfg - pfSense wizard subsystem page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1385
+#: src/etc/inc/priv.defs.inc:1385
 msgid "Allow access to the 'pfSense wizard subsystem' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1390
+#: src/etc/inc/priv.defs.inc:1390
 msgid "WebCfg - XMLRPC Library page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1391
+#: src/etc/inc/priv.defs.inc:1391
 msgid "Allow access to the 'XMLRPC Library' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1396
-msgid "WebCfg - Firewall
-Easy Rule add/status page"
+#: src/etc/inc/priv.defs.inc:1396
+msgid "WebCfg - Firewall Easy Rule add/status page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-1397
-msgid "Allow access to the 'Firewall
-Easy Rule' add/status page."
+#: src/etc/inc/priv.defs.inc:1397
+msgid "Allow access to the 'Firewall Easy Rule' add/status page."
 msgstr ""
 
-#:
-src/etc/inc/priv/user.priv.inc
-6
+#: src/etc/inc/priv/user.priv.inc:6
 msgid "User - Services - Captive portal login"
 msgstr ""
 
-#:
-src/etc/inc/priv/user.priv.inc
-7
+#: src/etc/inc/priv/user.priv.inc:7
 msgid "Indicates whether the user is able to login on the captive portal."
 msgstr ""
 
-#:
-src/etc/inc/radius.inc
-406
-msgid "Error sending request
-" . ' ' . $this->getError(
+#: src/etc/inc/radius.inc:406
+msgid "Error sending request"
 msgstr ""
 
-#:
-src/etc/inc/radius.inc
-412
-msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting'
+#: src/etc/inc/radius.inc:412
+msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting"
 msgstr ""
 
-#:
-src/etc/inc/radius.inc
-421
-msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication'
+#: src/etc/inc/radius.inc:421
+msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
 msgstr ""
 
-#:
-src/etc/inc/radius.inc
-426
-msgid "Unexpected return value
-%s"),$req
+#: src/etc/inc/radius.inc:426
+msgid "Unexpected return value %s"),$req
 msgstr ""
 
-#:
-src/etc/inc/rrd.inc
-38
+#: src/etc/inc/rrd.inc:38
 msgid "RRD dump failed exited with %1$s, the error is
 %2$s" $dumpret, $dumpout
 msgstr ""
