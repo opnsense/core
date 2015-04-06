@@ -1878,1003 +1878,528 @@ msgid "WebCfg - Diagnostics
 ARP Table page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-25
-msgid "Allow access to the 'Diagnostics
-ARP Table' page."
+#: src/etc/inc/priv.defs.inc:25
+msgid "Allow access to the 'Diagnostics ARP Table' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-30
-msgid "WebCfg - Diagnostics
-Authentication page"
+#: src/etc/inc/priv.defs.inc:30
+msgid "WebCfg - Diagnostics Authentication page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-31
-msgid "Allow access to the 'Diagnostics
-Authentication' page."
+#: src/etc/inc/priv.defs.inc:31
+msgid "Allow access to the 'Diagnostics Authentication' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-36
-msgid "WebCfg - Diagnostics
-Backup/restore page"
+#: src/etc/inc/priv.defs.inc:36
+msgid "WebCfg - Diagnostics Backup/restore page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-37
-msgid "Allow access to the 'Diagnostics
-Backup/restore' page."
+#: src/etc/inc/priv.defs.inc:37
+msgid "Allow access to the 'Diagnostics Backup/restore' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-42
-msgid "WebCfg - Diagnostics
-Configuration History page"
+#: src/etc/inc/priv.defs.inc:42
+msgid "WebCfg - Diagnostics Configuration History page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-43
-msgid "Allow access to the 'Diagnostics
-Configuration History' page."
+#: src/etc/inc/priv.defs.inc:43
+msgid "Allow access to the 'Diagnostics Configuration History' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-48
-msgid "WebCfg - Diagnostics
-Factory defaults page"
+#: src/etc/inc/priv.defs.inc:48
+msgid "WebCfg - Diagnostics Factory defaults page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-49
-msgid "Allow access to the 'Diagnostics
-Factory defaults' page."
+#: src/etc/inc/priv.defs.inc:49
+msgid "Allow access to the 'Diagnostics Factory defaults' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-54
-msgid "Webcfg - Diagnostics
-NDP Table page"
+#: src/etc/inc/priv.defs.inc:54
+msgid "Webcfg - Diagnostics NDP Table page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-55
-msgid "Allow access to the 'Diagnostics
-NDP Table' page."
+#: src/etc/inc/priv.defs.inc:55
+msgid "Allow access to the 'Diagnostics NDP Table' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-60
-msgid "Webcfg - Diagnostics
-Restore full backup"
+#: src/etc/inc/priv.defs.inc:60
+msgid "Webcfg - Diagnostics Restore full backup"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-61
-msgid "Allow access to the 'Diagnostics
-Restore Full Backup' page."
+#: src/etc/inc/priv.defs.inc:61
+msgid "Allow access to the 'Diagnostics Restore Full Backup' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-66
-msgid "WebCfg - Diagnostics
-Show States page"
+#: src/etc/inc/priv.defs.inc:66
+msgid "WebCfg - Diagnostics Show States page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-67
-msgid "Allow access to the 'Diagnostics
-Show States' page."
+#: src/etc/inc/priv.defs.inc:67
+msgid "Allow access to the 'Diagnostics Show States' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-72
-msgid "WebCfg - Diagnostics
-Sockets page"
+#: src/etc/inc/priv.defs.inc:72
+msgid "WebCfg - Diagnostics Sockets page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-73
-msgid "Allow access to the 'Diagnostics
-Sockets' page."
+#: src/etc/inc/priv.defs.inc:73
+msgid "Allow access to the 'Diagnostics Sockets' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-78
-msgid "Webcfg - Diagnostics
-Test Port"
+#: src/etc/inc/priv.defs.inc:78
+msgid "Webcfg - Diagnostics Test Port"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-79
-msgid "Allow access to the 'Diagnostics
-Test Port' page."
+#: src/etc/inc/priv.defs.inc:79
+msgid "Allow access to the 'Diagnostics Test Port' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-84
-msgid "WebCfg - Status
-IPsec page"
+#: src/etc/inc/priv.defs.inc:84
+msgid "WebCfg - Status IPsec page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-85
-msgid "Allow access to the 'Status
-IPsec' page."
+#: src/etc/inc/priv.defs.inc:85
+msgid "Allow access to the 'Status IPsec' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-90
-msgid "WebCfg - Status
-IPsec
-Leasespage"
+#: src/etc/inc/priv.defs.inc:90
+msgid "WebCfg - Status IPsec Leasespage"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-91
-msgid "Allow access to the 'Status
-IPsec
-Leases' page."
+#: src/etc/inc/priv.defs.inc:91
+msgid "Allow access to the 'Status IPsec Leases' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-96
-msgid "WebCfg - Status
-IPsec
-SAD page"
+#: src/etc/inc/priv.defs.inc:96
+msgid "WebCfg - Status IPsec SAD page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-97
-msgid "Allow access to the 'Status
-IPsec
-SAD' page."
+#: src/etc/inc/priv.defs.inc:97
+msgid "Allow access to the 'Status IPsec SAD' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-102
-msgid "WebCfg - Status
-IPsec
-SPD page"
+#: src/etc/inc/priv.defs.inc:102
+msgid "WebCfg - Status IPsec SPD page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-103
-msgid "Allow access to the 'Status
-IPsec
-SPD' page."
+#: src/etc/inc/priv.defs.inc:103
+msgid "Allow access to the 'Status IPsec SPD' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-108
-msgid "Webcfg - Status
-NTP page"
+#: src/etc/inc/priv.defs.inc:108
+msgid "Webcfg - Status NTP page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-109
-msgid "Allow access to the 'Status
-NTP' page."
+#: src/etc/inc/priv.defs.inc:109
+msgid "Allow access to the 'Status NTP' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-114
+#: src/etc/inc/priv.defs.inc:114
 msgid "WebCfg - Diag IPsec XML page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-115
+#: src/etc/inc/priv.defs.inc:115
 msgid "Allow access to the 'Diag IPsec XML' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-120
-msgid "WebCfg - Diagnostics
-Logs
-System page"
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-121
-msgid "Allow access to the 'Diagnostics
-Logs
-System' page."
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-126
-msgid "WebCfg - Status
-System logs
-Portal Auth page"
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-127
-msgid "Allow access to the 'Status
-System logs
-Portal Auth' page."
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-132
-msgid "WebCfg - Diagnostics
-Logs
-DHCP page"
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-133
-msgid "Allow access to the 'Diagnostics
-Logs
-DHCP' page."
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-138
-msgid "WebCfg - Diagnostics
-Logs
-Firewall page"
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-139
-msgid "Allow access to the 'Diagnostics
-Logs
-Firewall' page."
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-144
-msgid "WebCfg - Diagnostics
-Logs
-Gateways page"
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-145
-msgid "Allow access to the 'Diagnostics
-Logs
-System
-Gateways' page."
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-150
-msgid "WebCfg - Diagnostics
-Logs
-Resolver page"
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-151
-msgid "Allow access to the 'Diagnostics
-Logs
-System
-Resolver' page."
-msgstr ""
-
-#:
-src/etc/inc/priv.defs.inc
-156
-msgid "WebCfg - Hidden
-No longer included page"
+#: src/etc/inc/priv.defs.inc:120
+msgid "WebCfg - Diagnostics Logs System page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-157
-msgid "Allow access to the 'Hidden
-No longer included' page."
+#: src/etc/inc/priv.defs.inc:121
+msgid "Allow access to the 'Diagnostics Logs System' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-162
-msgid "WebCfg - Status
-System logs
-IPsec VPN page"
+#: src/etc/inc/priv.defs.inc:126
+msgid "WebCfg - Status System logs Portal Auth page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-163
-msgid "Allow access to the 'Status
-System logs
-IPsec VPN' page."
+#: src/etc/inc/priv.defs.inc:127
+msgid "Allow access to the 'Status System logs Portal Auth' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-168
-msgid "WebCfg - Status
-System logs
-NTP page"
+#: src/etc/inc/priv.defs.inc:132
+msgid "WebCfg - Diagnostics Logs DHCP page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-169
-msgid "Allow access to the 'Status
-System logs
-NTP' page."
+#: src/etc/inc/priv.defs.inc:133
+msgid "Allow access to the 'Diagnostics Logs DHCP' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-174
-msgid "WebCfg - Status
-System logs
-OpenVPN page"
+#: src/etc/inc/priv.defs.inc:138
+msgid "WebCfg - Diagnostics Logs Firewall page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-175
-msgid "Allow access to the 'Status
-System logs
-OpenVPN' page."
+#: src/etc/inc/priv.defs.inc:139
+msgid "Allow access to the 'Diagnostics Logs Firewall' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-180
-msgid "WebCfg - Status
-System logs
-IPsec VPN page"
+#: src/etc/inc/priv.defs.inc:144
+msgid "WebCfg - Diagnostics Logs Gateways page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-181
-msgid "Allow access to the 'Status
-System logs
-IPsec VPN' page."
+#: src/etc/inc/priv.defs.inc:145
+msgid "Allow access to the 'Diagnostics Logs System Gateways' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-186
-msgid "WebCfg - Status
-System logs
-Load Balancer page"
+#: src/etc/inc/priv.defs.inc:150
+msgid "WebCfg - Diagnostics Logs Resolver page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-187
-msgid "Allow access to the 'Status
-System logs
-Load Balancer' page."
+#: src/etc/inc/priv.defs.inc:151
+msgid "Allow access to the 'Diagnostics Logs System Resolver' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-192
-msgid "Webcfg - Status
-System logs
-Routing page"
+#: src/etc/inc/priv.defs.inc:156
+msgid "WebCfg - Hidden No longer included page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-193
-msgid "Allow access to the 'Status
-System logs
-System
-Routing' page."
+#: src/etc/inc/priv.defs.inc:157
+msgid "Allow access to the 'Hidden No longer included' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-198
-msgid "Webcfg - Status
-System logs
-Wireless page"
+#: src/etc/inc/priv.defs.inc:162
+msgid "WebCfg - Status System logs IPsec VPN page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-199
-msgid "Allow access to the 'Status
-System logs
-System
-Wireless' page."
+#: src/etc/inc/priv.defs.inc:163
+msgid "Allow access to the 'Status System logs IPsec VPN' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-204
-msgid "WebCfg - Diagnostics
-Logs
-Settings page"
+#: src/etc/inc/priv.defs.inc:168
+msgid "WebCfg - Status System logs NTP page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-205
-msgid "Allow access to the 'Diagnostics
-Logs
-Settings' page."
+#: src/etc/inc/priv.defs.inc:169
+msgid "Allow access to the 'Status System logs NTP' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-210
-msgid "WebCfg - Diagnostics
-Logs
-VPN page"
+#: src/etc/inc/priv.defs.inc:174
+msgid "WebCfg - Status System logs OpenVPN page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-211
-msgid "Allow access to the 'Diagnostics
-Logs
-VPN' page."
+#: src/etc/inc/priv.defs.inc:175
+msgid "Allow access to the 'Status System logs OpenVPN' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-216
-msgid "WebCfg - Diagnostics
-NanoBSD"
+#: src/etc/inc/priv.defs.inc:180
+msgid "WebCfg - Status System logs IPsec VPN page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-217
-msgid "Allow access to the 'Diagnostics
-NanoBSD' page."
+#: src/etc/inc/priv.defs.inc:181
+msgid "Allow access to the 'Status System logs IPsec VPN' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-222
-msgid "WebCfg - Diagnostics
-Packet Capture page"
+#: src/etc/inc/priv.defs.inc:186
+msgid "WebCfg - Status System logs Load Balancer page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-223
-msgid "Allow access to the 'Diagnostics
-Packet Capture' page."
+#: src/etc/inc/priv.defs.inc:187
+msgid "Allow access to the 'Status System logs Load Balancer' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-228
-msgid "WebCfg - Diagnostics
-Patterns page"
+#: src/etc/inc/priv.defs.inc:192
+msgid "Webcfg - Status System logs Routing page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-229
-msgid "Allow access to the 'Diagnostics
-Patterns' page."
+#: src/etc/inc/priv.defs.inc:193
+msgid "Allow access to the 'Status System logs System Routing' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-234
-msgid "Diagnostics
-Limiter Info"
+#: src/etc/inc/priv.defs.inc:198
+msgid "Webcfg - Status System logs Wireless page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-235
-msgid "Allows access to the 'Diagnostics
-Limiter Info' page"
+#: src/etc/inc/priv.defs.inc:199
+msgid "Allow access to the 'Status System logs System Wireless' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-240
-msgid "Diagnostics
-pfInfo"
+#: src/etc/inc/priv.defs.inc:204
+msgid "WebCfg - Diagnostics Logs Settings page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-241
-msgid "Allows access to the 'Diagnostics
-pfInfo' page"
+#: src/etc/inc/priv.defs.inc:205
+msgid "Allow access to the 'Diagnostics Logs Settings' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-246
-msgid "WebCfg - Diagnostics
-System Activity"
+#: src/etc/inc/priv.defs.inc:210
+msgid "WebCfg - Diagnostics Logs VPN page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-247
-msgid "Allows access to the 'Diagnostics
-System Activity' page"
+#: src/etc/inc/priv.defs.inc:211
+msgid "Allow access to the 'Diagnostics Logs VPN' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-252
-msgid "Diagnostics
-pfTop"
+#: src/etc/inc/priv.defs.inc:216
+msgid "WebCfg - Diagnostics NanoBSD"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-253
-msgid "Allows access to the 'Diagnostics
-pfTop' page"
+#: src/etc/inc/priv.defs.inc:217
+msgid "Allow access to the 'Diagnostics NanoBSD' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-258
-msgid "WebCfg - Diagnostics
-Ping page"
+#: src/etc/inc/priv.defs.inc:222
+msgid "WebCfg - Diagnostics Packet Capture page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-259
-msgid "Allow access to the 'Diagnostics
-Ping' page."
+#: src/etc/inc/priv.defs.inc:223
+msgid "Allow access to the 'Diagnostics Packet Capture' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-264
-msgid "WebCfg - Status
-Package logs page"
+#: src/etc/inc/priv.defs.inc:228
+msgid "WebCfg - Diagnostics Patterns page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-265
-msgid "Allow access to the 'Status
-Package logs' page."
+#: src/etc/inc/priv.defs.inc:229
+msgid "Allow access to the 'Diagnostics Patterns' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-270
-msgid "WebCfg - Diagnostics
-Reset state page"
+#: src/etc/inc/priv.defs.inc:234
+msgid "Diagnostics Limiter Info"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-271
-msgid "Allow access to the 'Diagnostics
-Reset state' page."
+#: src/etc/inc/priv.defs.inc:235
+msgid "Allows access to the 'Diagnostics Limiter Info' page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-276
-msgid "WebCfg - Diagnostics
-Routing tables page"
+#: src/etc/inc/priv.defs.inc:240
+msgid "Diagnostics pfInfo"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-277
-msgid "Allow access to the 'Diagnostics
-Routing tables' page."
+#: src/etc/inc/priv.defs.inc:241
+msgid "Allows access to the 'Diagnostics pfInfo' page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-282
-msgid "WebCfg - Diagnostics
-States Summary page"
+#: src/etc/inc/priv.defs.inc:246
+msgid "WebCfg - Diagnostics System Activity"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-283
-msgid "Allow access to the 'Diagnostics
-States Summary' page."
+#: src/etc/inc/priv.defs.inc:247
+msgid "Allows access to the 'Diagnostics System Activity' page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-288
-msgid "WebCfg - Diagnostics
-PF Table IP addresses"
+#: src/etc/inc/priv.defs.inc:252
+msgid "Diagnostics pfTop"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-289
-msgid "Allow access to the 'Diagnostics
-Tables' page."
+#: src/etc/inc/priv.defs.inc:253
+msgid "Allows access to the 'Diagnostics pfTop' page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-294
-msgid "WebCfg - Diagnostics
-Traceroute page"
+#: src/etc/inc/priv.defs.inc:258
+msgid "WebCfg - Diagnostics Ping page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-295
-msgid "Allow access to the 'Diagnostics
-Traceroute' page."
+#: src/etc/inc/priv.defs.inc:259
+msgid "Allow access to the 'Diagnostics Ping' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-300
-msgid "WebCfg - Firewall
-Aliases page"
+#: src/etc/inc/priv.defs.inc:264
+msgid "WebCfg - Status Package logs page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-301
-msgid "Allow access to the 'Firewall
-Aliases' page."
+#: src/etc/inc/priv.defs.inc:265
+msgid "Allow access to the 'Status Package logs' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-306
-msgid "WebCfg - Firewall
-Alias
-Edit page"
+#: src/etc/inc/priv.defs.inc:270
+msgid "WebCfg - Diagnostics Reset state page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-307
-msgid "Allow access to the 'Firewall
-Alias
-Edit' page."
+#: src/etc/inc/priv.defs.inc:271
+msgid "Allow access to the 'Diagnostics Reset state' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-312
-msgid "WebCfg - Firewall
-Alias
-Import page"
+#: src/etc/inc/priv.defs.inc:276
+msgid "WebCfg - Diagnostics Routing tables page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-313
-msgid "Allow access to the 'Firewall
-Alias
-Import' page."
+#: src/etc/inc/priv.defs.inc:277
+msgid "Allow access to the 'Diagnostics Routing tables' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-318
-msgid "Webcfg - Firewall
-NAT
-NPT page"
+#: src/etc/inc/priv.defs.inc:282
+msgid "WebCfg - Diagnostics States Summary page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-319
-msgid "Allow access to the 'Firewall
-NAT
-NPT' page."
+#: src/etc/inc/priv.defs.inc:283
+msgid "Allow access to the 'Diagnostics States Summary' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-324
-msgid "Webcfg - Firewall
-NAT
-NPt
-Edit page"
+#: src/etc/inc/priv.defs.inc:288
+msgid "WebCfg - Diagnostics PF Table IP addresses"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-325
-msgid "Allow access to the 'Firewall
-NAT
-NPt
-Edit' page."
+#: src/etc/inc/priv.defs.inc:289
+msgid "Allow access to the 'Diagnostics Tables' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-330
-msgid "WebCfg - Firewall
-NAT
-Port Forward page"
+#: src/etc/inc/priv.defs.inc:294
+msgid "WebCfg - Diagnostics Traceroute page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-331
-msgid "Allow access to the 'Firewall
-NAT
-Port Forward' page."
+#: src/etc/inc/priv.defs.inc:295
+msgid "Allow access to the 'Diagnostics Traceroute' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-336
-msgid "WebCfg - Firewall
-NAT
-1
-1 page"
+#: src/etc/inc/priv.defs.inc:300
+msgid "WebCfg - Firewall Aliases page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-337
-msgid "Allow access to the 'Firewall
-NAT
-1
-1' page."
+#: src/etc/inc/priv.defs.inc:301
+msgid "Allow access to the 'Firewall Aliases' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-342
-msgid "WebCfg - Firewall
-NAT
-1
-1
-Edit page"
+#: src/etc/inc/priv.defs.inc:306
+msgid "WebCfg - Firewall Alias Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-343
-msgid "Allow access to the 'Firewall
-NAT
-1
-1
-Edit' page."
+#: src/etc/inc/priv.defs.inc:307
+msgid "Allow access to the 'Firewall Alias Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-348
-msgid "WebCfg - Firewall
-NAT
-Port Forward
-Edit page"
+#: src/etc/inc/priv.defs.inc:312
+msgid "WebCfg - Firewall Alias Import page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-349
-msgid "Allow access to the 'Firewall
-NAT
-Port Forward
-Edit' page."
+#: src/etc/inc/priv.defs.inc:313
+msgid "Allow access to the 'Firewall Alias Import' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-354
-msgid "WebCfg - Firewall
-NAT
-Outbound page"
+#: src/etc/inc/priv.defs.inc:318
+msgid "Webcfg - Firewall NAT NPT page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-355
-msgid "Allow access to the 'Firewall
-NAT
-Outbound' page."
+#: src/etc/inc/priv.defs.inc:319
+msgid "Allow access to the 'Firewall NAT NPT' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-360
-msgid "WebCfg - Firewall
-NAT
-Outbound
-Edit page"
+#: src/etc/inc/priv.defs.inc:324
+msgid "Webcfg - Firewall NAT NPt Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-361
-msgid "Allow access to the 'Firewall
-NAT
-Outbound
-Edit' page."
+#: src/etc/inc/priv.defs.inc:325
+msgid "Allow access to the 'Firewall NAT NPt Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-366
-msgid "WebCfg - Firewall
-Rules page"
+#: src/etc/inc/priv.defs.inc:330
+msgid "WebCfg - Firewall NAT Port Forward page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-367
-msgid "Allow access to the 'Firewall
-Rules' page."
+#: src/etc/inc/priv.defs.inc:331
+msgid "Allow access to the 'Firewall NAT Port Forward' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-372
-msgid "WebCfg - Firewall
-Rules
-Edit page"
+#: src/etc/inc/priv.defs.inc:336
+msgid "WebCfg - Firewall NAT 1:1 page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-373
-msgid "Allow access to the 'Firewall
-Rules
-Edit' page."
+#: src/etc/inc/priv.defs.inc:337
+msgid "Allow access to the 'Firewall NAT 1:1' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-378
-msgid "WebCfg - Firewall
-Schedules page"
+#: src/etc/inc/priv.defs.inc:342
+msgid "WebCfg - Firewall NAT 1:1 Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-379
-msgid "Allow access to the 'Firewall
-Schedules' page."
+#: src/etc/inc/priv.defs.inc:343
+msgid "Allow access to the 'Firewall NAT 1:1 Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-384
-msgid "WebCfg - Firewall
-Schedules
-Edit page"
+#: src/etc/inc/priv.defs.inc:348
+msgid "WebCfg - Firewall NAT Port Forward Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-385
-msgid "Allow access to the 'Firewall
-Schedules
-Edit' page."
+#: src/etc/inc/priv.defs.inc:349
+msgid "Allow access to the 'Firewall NAT Port Forward Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-390
-msgid "WebCfg - Firewall
-Traffic Shaper page"
+#: src/etc/inc/priv.defs.inc:354
+msgid "WebCfg - Firewall NAT Outbound page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-391
-msgid "Allow access to the 'Firewall
-Traffic Shaper' page."
+#: src/etc/inc/priv.defs.inc:355
+msgid "Allow access to the 'Firewall NAT Outbound' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-396
-msgid "WebCfg - Firewall
-Traffic Shaper
-Layer7 page"
+#: src/etc/inc/priv.defs.inc:360
+msgid "WebCfg - Firewall NAT Outbound Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-397
-msgid "Allow access to the 'Firewall
-Traffic Shaper
-Layer7' page."
+#: src/etc/inc/priv.defs.inc:361
+msgid "Allow access to the 'Firewall NAT Outbound Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-402
-msgid "WebCfg - Firewall
-Traffic Shaper
-Queues page"
+#: src/etc/inc/priv.defs.inc:366
+msgid "WebCfg - Firewall Rules page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-403
-msgid "Allow access to the 'Firewall
-Traffic Shaper
-Queues' page."
+#: src/etc/inc/priv.defs.inc:367
+msgid "Allow access to the 'Firewall Rules' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-408
-msgid "WebCfg - Firewall
-Traffic Shaper
-Limiter page"
+#: src/etc/inc/priv.defs.inc:372
+msgid "WebCfg - Firewall Rules Edit page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-409
-msgid "Allow access to the 'Firewall
-Traffic Shaper
-Limiter' page."
+#: src/etc/inc/priv.defs.inc:373
+msgid "Allow access to the 'Firewall Rules Edit' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-414
-msgid "WebCfg - Firewall
-Traffic Shaper
-Wizard page"
+#: src/etc/inc/priv.defs.inc:378
+msgid "WebCfg - Firewall Schedules page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-415
-msgid "Allow access to the 'Firewall
-Traffic Shaper
-Wizard' page."
+#: src/etc/inc/priv.defs.inc:379
+msgid "Allow access to the 'Firewall Schedules' page."
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:384
+msgid "WebCfg - Firewall Schedules Edit page"
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:385
+msgid "Allow access to the 'Firewall Schedules Edit' page."
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:390
+msgid "WebCfg - Firewall Traffic Shaper page"
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:391
+msgid "Allow access to the 'Firewall Traffic Shaper' page."
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:396
+msgid "WebCfg - Firewall Traffic Shaper Layer7 page"
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:397
+msgid "Allow access to the 'Firewall Traffic Shaper Layer7' page."
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:402
+msgid "WebCfg - Firewall Traffic Shaper Queues page"
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:403
+msgid "Allow access to the 'Firewall Traffic Shaper Queues' page."
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:408
+msgid "WebCfg - Firewall Traffic Shaper Limiter page"
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:409
+msgid "Allow access to the 'Firewall Traffic Shaper Limiter' page."
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:414
+msgid "WebCfg - Firewall Traffic Shaper Wizard page"
+msgstr ""
+
+#: src/etc/inc/priv.defs.inc:415
+msgid "Allow access to the 'Firewall Traffic Shaper Wizard' page."
 msgstr ""
 
 #:
