@@ -7270,621 +7270,453 @@ msgstr ""
 msgid "TCP Flags"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-29
-msgid "Status")."
-msgid "System logs")."
+#: src/www/diag_logs_filter_summary.php:29
+msgid "Status"
+msgstr ""
+
+#: src/www/diag_logs_filter_summary.php:29
+msgid "System logs"
+msgstr ""
+
+#: src/www/diag_logs_filter_summary.php:29
 msgid "Firewall Log Summary"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-41
+#: src/www/diag_logs_filter_summary.php:41
 msgid "Actions"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-42
+#: src/www/diag_logs_filter_summary.php:42
 msgid "Interfaces"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-43
+#: src/www/diag_logs_filter_summary.php:43
 msgid "Protocols"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-44
+#: src/www/diag_logs_filter_summary.php:44
 msgid "Source IPs"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-45
+#: src/www/diag_logs_filter_summary.php:45
 msgid "Destination IPs"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-46
+#: src/www/diag_logs_filter_summary.php:46
 msgid "Source Ports"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-47
+#: src/www/diag_logs_filter_summary.php:47
 msgid "Destination Ports"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-67
-msgid "data")."</th></tr>";
+#: src/www/diag_logs_filter_summary.php:67
+msgid "data"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-77
-msgid "Reverse Resolve with DNS").""><img border="0" src="/themes/{$g['theme']}/images/icons/icon_log.gif" alt="log" /></a> {$outstr}";
+#: src/www/diag_logs_filter_summary.php:77
+msgid "Reverse Resolve with DNS"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-196
-msgid "This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s)." $gotlines, $lines)?><br />
+#: src/www/diag_logs_filter_summary.php:196
+msgid ""
+"This is a firewall log summary, of the last %1$s lines of the firewall log "
+"(Max %2$s)."
 msgstr ""
 
-#:
-src/www/diag_logs_filter_summary.php
-197
-msgid "NOTE
-IE8 users must enable compatibility view.")?></p>
+#: src/www/diag_logs_filter_summary.php:197
+msgid "NOTE: IE8 users must enable compatibility view."
 msgstr ""
 
-#:
-src/www/diag_logs_gateways.php
-51
+#: src/www/diag_logs_gateways.php:51
 msgid "Gateways"
 msgstr ""
 
-#:
-src/www/diag_logs_gateways.php
-93
-msgid "Clear log");?>" />
+#: src/www/diag_logs_gateways.php:93
+msgid "Clear log"
 msgstr ""
 
-#:
-src/www/diag_logs_gateways.php
-97
-msgid "Filter");?>" />
+#: src/www/diag_logs_gateways.php:97
+msgid "Filter"
 msgstr ""
 
-#:
-src/www/diag_logs_ipsec.php
-44
+#: src/www/diag_logs_ipsec.php:44
 msgid "IPsec VPN"
 msgstr ""
 
-#:
-src/www/diag_logs_ipsec.php
-69
-msgid "Last %s  IPsec log entries"),$nentries);?></p>
+#: src/www/diag_logs_ipsec.php:69
+msgid "Last %s  IPsec log entries"
 msgstr ""
 
-#:
-src/www/diag_logs_ipsec.php
-88
-msgid "Clear log");?>" />
+#: src/www/diag_logs_ipsec.php:88
+msgid "Clear log"
 msgstr ""
 
-#:
-src/www/diag_logs_ntpd.php
-41
+#: src/www/diag_logs_ntpd.php:41
 msgid "NTP"
 msgstr ""
 
-#:
-src/www/diag_logs_ntpd.php
-66
-msgid "Last %s NTP log entries"), $nentries);?></p>
+#: src/www/diag_logs_ntpd.php:66
+msgid "Last %s NTP log entries"
 msgstr ""
 
-#:
-src/www/diag_logs_ntpd.php
-75
-msgid "Clear log");?>" />
+#: src/www/diag_logs_ntpd.php:75
+msgid "Clear log"
 msgstr ""
 
-#:
-src/www/diag_logs_openvpn.php
-30
+#: src/www/diag_logs_openvpn.php:30
 msgid "OpenVPN"
 msgstr ""
 
-#:
-src/www/diag_logs_openvpn.php
-68
-msgid "Last %s OpenVPN log entries"),$nentries)?></p>
+#: src/www/diag_logs_openvpn.php:68
+msgid "Last %s OpenVPN log entries"
 msgstr ""
 
-#:
-src/www/diag_logs_openvpn.php
-77
-msgid "Clear log");?>" />
+#: src/www/diag_logs_openvpn.php:77
+msgid "Clear log"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-33
+#: src/www/diag_logs_pills.php:33
 msgid "PPTP Logins"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-36
+#: src/www/diag_logs_pills.php:36
 msgid "PPTP Raw"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-39
+#: src/www/diag_logs_pills.php:39
 msgid "PPPoE Logins"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-42
+#: src/www/diag_logs_pills.php:42
 msgid "PPPoE Raw"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-45
+#: src/www/diag_logs_pills.php:45
 msgid "L2TP Logins"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-48
+#: src/www/diag_logs_pills.php:48
 msgid "L2TP Raw"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-56
-msgid "Normal View"), true, "/diag_logs_filter.php"
+#: src/www/diag_logs_pills.php:56
+msgid "Normal View"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-57
-msgid "Dynamic View"), false, "/diag_logs_filter_dynamic.php"
+#: src/www/diag_logs_pills.php:57
+msgid "Dynamic View"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-58
-msgid "Summary View"), false, "/diag_logs_filter_summary.php"
+#: src/www/diag_logs_pills.php:58
+msgid "Summary View"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-63
-msgid "General"), true, "/diag_logs.php"
+#: src/www/diag_logs_pills.php:63
+msgid "General"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-64
-msgid "Gateways"), false, "/diag_logs_gateways.php"
+#: src/www/diag_logs_pills.php:64
+msgid "Gateways"
 msgstr ""
 
-#:
-src/www/diag_logs_pills.php
-65
-msgid "Routing"), false, "/diag_logs_routing.php"
-msgstr ""
-
-#:
-src/www/diag_logs_pills.php
-66
-msgid "Resolver"), false, "/diag_logs_resolver.php"
-msgstr ""
-
-#:
-src/www/diag_logs_pills.php
-67
-msgid "Wireless"), false, "/diag_logs_wireless.php"
-msgstr ""
-
-#:
-src/www/diag_logs_ppp.php
-41
-msgid "PPP"
-msgstr ""
-
-#:
-src/www/diag_logs_ppp.php
-65
-msgid "Last %s PPP log entries"),$nentries);?></p>
-msgstr ""
-
-#:
-src/www/diag_logs_ppp.php
-74
-msgid "Clear log");?>" />
-msgstr ""
-
-#:
-src/www/diag_logs_relayd.php
-41
-msgid "Load Balancer"
-msgstr ""
-
-#:
-src/www/diag_logs_relayd.php
-67
-msgid "Last %s Load Balancer log entries"),$nentries);?></p>
-msgstr ""
-
-#:
-src/www/diag_logs_relayd.php
-76
-msgid "Clear log");?>" />
-msgstr ""
-
-#:
-src/www/diag_logs_resolver.php
-51
-msgid "Resolver"
-msgstr ""
-
-#:
-src/www/diag_logs_resolver.php
-91
-msgid "Clear log");?>" />
-msgstr ""
-
-#:
-src/www/diag_logs_resolver.php
-96
-msgid "Filter");?>" />
-msgstr ""
-
-#:
-src/www/diag_logs_routing.php
-40
+#: src/www/diag_logs_pills.php:65
 msgid "Routing"
 msgstr ""
 
-#:
-src/www/diag_logs_routing.php
-74
-msgid "Clear log");?>" />
+#: src/www/diag_logs_pills.php:66
+msgid "Resolver"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-72
-msgid "Reset Log Files")) {
+#: src/www/diag_logs_pills.php:67
+msgid "Wireless"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-74
+#: src/www/diag_logs_ppp.php:41
+msgid "PPP"
+msgstr ""
+
+#: src/www/diag_logs_ppp.php:65
+msgid "Last %s PPP log entries"
+msgstr ""
+
+#: src/www/diag_logs_ppp.php:74
+msgid "Clear log"
+msgstr ""
+
+#: src/www/diag_logs_relayd.php:41
+msgid "Load Balancer"
+msgstr ""
+
+#: src/www/diag_logs_relayd.php:67
+msgid "Last %s Load Balancer log entries"
+msgstr ""
+
+#: src/www/diag_logs_relayd.php:76
+msgid "Clear log"
+msgstr ""
+
+#: src/www/diag_logs_resolver.php:51
+msgid "Resolver"
+msgstr ""
+
+#: src/www/diag_logs_resolver.php:91
+msgid "Clear log"
+msgstr ""
+
+#: src/www/diag_logs_resolver.php:96
+msgid "Filter"
+msgstr ""
+
+#: src/www/diag_logs_routing.php:40
+msgid "Routing"
+msgstr ""
+
+#: src/www/diag_logs_routing.php:74
+msgid "Clear log"
+msgstr ""
+
+#: src/www/diag_logs_settings.php:72
+msgid "Reset Log Files"
+msgstr ""
+
+#: src/www/diag_logs_settings.php:74
 msgid "The log files have been reset."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-82
-msgid "A valid IP address/hostname or IP/hostname
-port must be specified for remote syslog server #1."
+#: src/www/diag_logs_settings.php:82
+msgid ""
+"A valid IP address/hostname or IP/hostname:port must be specified for remote "
+"syslog server #1."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-85
-msgid "A valid IP address/hostname or IP/hostname
-port must be specified for remote syslog server #2."
+#: src/www/diag_logs_settings.php:85
+msgid ""
+"A valid IP address/hostname or IP/hostname:port must be specified for remote "
+"syslog server #2."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-88
-msgid "A valid IP address/hostname or IP/hostname
-port must be specified for remote syslog server #3."
+#: src/www/diag_logs_settings.php:88
+msgid ""
+"A valid IP address/hostname or IP/hostname:port must be specified for remote "
+"syslog server #3."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-92
+#: src/www/diag_logs_settings.php:92
 msgid "Number of log entries to show must be between 5 and 2000."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-97
+#: src/www/diag_logs_settings.php:97
 msgid "Log file size must be a positive integer greater than 5120."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-162
+#: src/www/diag_logs_settings.php:162
 msgid "webConfigurator configuration has changed. Restarting webConfigurator."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-164
+#: src/www/diag_logs_settings.php:164
 msgid "WebGUI process is restarting."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-171
+#: src/www/diag_logs_settings.php:171
 msgid "Settings"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-267
-msgid "General Logging Options");?></td>
+#: src/www/diag_logs_settings.php:267
+msgid "General Logging Options"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-272
-msgid "Show log entries in reverse order (newest entries on top)");?></strong></td>
+#: src/www/diag_logs_settings.php:272
+msgid "Show log entries in reverse order (newest entries on top)"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-278
-msgid "Hint
-This is only the number of log entries displayed in the GUI. It does not affect how many entries are contained in the actual log files."?></td>
+#: src/www/diag_logs_settings.php:278
+msgid ""
+"Hint: This is only the number of log entries displayed in the GUI. It does not "
+"affect how many entries are contained in the actual log files."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-284
-msgid "Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this is approximately 500KB per log file, and there are nearly 20 such log files."?>
+#: src/www/diag_logs_settings.php:284
+msgid ""
+"Logs are held in constant-size circular log files. This field controls how "
+"large each log file is, and thus how many entries may exist inside the log. By "
+"default this is approximately 500KB per log file, and there are nearly 20 such "
+"log files."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-286
-msgid "NOTE
-Log sizes are changed the next time a log file is cleared or deleted. To immediately increase the size of the log files, you must first save the options to set the size, then clear all logs using the "Reset Log Files" option farther down this page. "); ?>
+#: src/www/diag_logs_settings.php:286
+msgid ""
+"NOTE: Log sizes are changed the next time a log file is cleared or deleted. To "
+"immediately increase the size of the log files, you must first save the options "
+"to set the size, then clear all logs using the \"Reset Log Files\" option farther down this page. "
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-287
-msgid "Be aware that increasing this value increases every log file size, so disk usage will increase significantly."); ?>
+#: src/www/diag_logs_settings.php:287
+msgid ""
+"Be aware that increasing this value increases every log file size, so disk "
+"usage will increase significantly."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-288
-msgid "Disk space currently used by log files
-"?><?= exec("/usr/bin/du -sh /var/log | /usr/bin/awk '{print $1;}'"); ?>.
+#: src/www/diag_logs_settings.php:288
+msgid "Disk space currently used by log files:"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-289
-msgid "Remaining disk space for log files
-"?><?= exec("/bin/df -h /var/log | /usr/bin/awk '{print $4;}'"); ?>.
+#: src/www/diag_logs_settings.php:289
+msgid "Remaining disk space for log files:"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-296
-msgid "Log packets matched from the default block rules put in the ruleset");?></strong><br />
+#: src/www/diag_logs_settings.php:296
+msgid ""
+"Log packets matched from the default block rules put in the ruleset"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-297
-msgid "Hint
-packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.");?>
+#: src/www/diag_logs_settings.php:297
+msgid ""
+"Hint: packets that are blocked by the implicit default block rule will not be "
+"logged if you uncheck this option. Per-rule logging options are still respected."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-300
-msgid "Log packets matched from the default pass rules put in the ruleset");?></strong><br />
+#: src/www/diag_logs_settings.php:300
+msgid "Log packets matched from the default pass rules put in the ruleset"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-301
-msgid "Hint
-packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.");?>
+#: src/www/diag_logs_settings.php:301
+msgid ""
+"Hint: packets that are allowed by the implicit default pass rule will be logged "
+"if you check this option. Per-rule logging options are still respected."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-304
-msgid "Log packets blocked by 'Block Bogon Networks' rules");?></strong><br />
+#: src/www/diag_logs_settings.php:304
+msgid "Log packets blocked by 'Block Bogon Networks' rules"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-307
-msgid "Log packets blocked by 'Block Private Networks' rules");?></strong><br />
+#: src/www/diag_logs_settings.php:307
+msgid "Log packets blocked by 'Block Private Networks' rules"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-313
-msgid "Log errors from the web server process.");?></strong><br />
+#: src/www/diag_logs_settings.php:313
+msgid "Log errors from the web server process."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-314
-msgid "Hint
-If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.");?></td>
+#: src/www/diag_logs_settings.php:314
+msgid ""
+"Hint: If this is checked, errors from the lighttpd web server process for the "
+"GUI or Captive Portal will appear in the main system log."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-319
-msgid "Show raw filter logs");?></strong><br />
+#: src/www/diag_logs_settings.php:319
+msgid "Show raw filter logs"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-320
-msgid "Hint
-If this is checked, filter logs are shown as generated by the packet filter, without any formatting. This will reveal more detailed information, but it is more difficult to read.");?></td>
+#: src/www/diag_logs_settings.php:320
+msgid ""
+"Hint: If this is checked, filter logs are shown as generated by the packet "
+"filter, without any formatting. This will reveal more detailed information, but "
+"it is more difficult to read."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-330
-msgid "Show the applied rule description below or in the firewall log rows.");?></strong>
+#: src/www/diag_logs_settings.php:330
+msgid "Show the applied rule description below or in the firewall log rows."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-332
-msgid "Displaying rule descriptions for all lines in the log might affect performance with large rule sets.");?>
+#: src/www/diag_logs_settings.php:332
+msgid ""
+"Displaying rule descriptions for all lines in the log might affect performance "
+"with large rule sets."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-339
-msgid "Disable writing log files to the local disk");?></strong></td>
+#: src/www/diag_logs_settings.php:339
+msgid "Disable writing log files to the local disk"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-341
-msgid "Disable writing log files to the local RAM disk");?></strong></td>
+#: src/www/diag_logs_settings.php:341
+msgid "Disable writing log files to the local RAM disk"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-347
-msgid "Do you really want to reset the log files? This will erase all local log data.";?>')" />
+#: src/www/diag_logs_settings.php:347
+msgid ""
+"Do you really want to reset the log files? This will erase all local log data."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-349
-msgid "Note
-Clears all local log files and reinitializes them as empty logs. This also restarts the DHCP daemon. Use the Save button first if you have made any setting changes."); ?>
+#: src/www/diag_logs_settings.php:349
+msgid ""
+"Note: Clears all local log files and reinitializes them as empty logs. This "
+"also restarts the DHCP daemon. Use the Save button first if you have made any "
+"setting changes."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-356
-msgid "Remote Logging Options");?></td>
+#: src/www/diag_logs_settings.php:356
+msgid "Remote Logging Options"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-359
-msgid "Source Address"); ?></td>
+#: src/www/diag_logs_settings.php:359
+msgid "Source Address"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-375
-msgid "This option will allow the logging daemon to bind to a single IP address, rather than all IP addresses."); ?>
+#: src/www/diag_logs_settings.php:375
+msgid ""
+"This option will allow the logging daemon to bind to a single IP address, "
+"rather than all IP addresses."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-376
-msgid "If you pick a single IP, remote syslog severs must all be of that IP type. If you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all interfaces."); ?>
+#: src/www/diag_logs_settings.php:376
+msgid ""
+"If you pick a single IP, remote syslog severs must all be of that IP type. If "
+"you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all "
+"interfaces."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-378
-msgid "NOTE
-If an IP address cannot be located on the chosen interface, the daemon will bind to all addresses."); ?>
+#: src/www/diag_logs_settings.php:378
+msgid ""
+"NOTE: If an IP address cannot be located on the chosen interface, the daemon "
+"will bind to all addresses."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-382
-msgid "IP Protocol"); ?></td>
+#: src/www/diag_logs_settings.php:382
+msgid "IP Protocol"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-389
-msgid "This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is not found on the chosen interface, the other type will be tried."); ?>
+#: src/www/diag_logs_settings.php:389
+msgid ""
+"This option is only used when a non-default address is chosen as the source "
+"above. This option only expresses a preference; If an IP address of the "
+"selected type is not found on the chosen interface, the other type will be "
+"tried."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-393
-msgid "Enable Remote Logging");?></td>
+#: src/www/diag_logs_settings.php:393
+msgid "Enable Remote Logging"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-395
-msgid "Send log messages to remote syslog server");?></strong></td>
+#: src/www/diag_logs_settings.php:395
+msgid "Send log messages to remote syslog server"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-398
-msgid "Remote Syslog Servers");?></td>
+#: src/www/diag_logs_settings.php:398
+msgid "Remote Syslog Servers"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-402
-msgid "Server" " 1";?></td>
+#: src/www/diag_logs_settings.php:402
+#: src/www/diag_logs_settings.php:406
+#: src/www/diag_logs_settings.php:410
+msgid "Server"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-406
-msgid "Server" " 2";?></td>
+
+#: src/www/diag_logs_settings.php:415
+msgid "IP addresses of remote syslog servers, or an IP:port."
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-410
-msgid "Server" " 3";?></td>
+#: src/www/diag_logs_settings.php:421
+msgid "Remote Syslog Contents"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-415
-msgid "IP addresses of remote syslog servers, or an IP
-port.");?></td>
+#: src/www/diag_logs_settings.php:424
+msgid "Everything"
 msgstr ""
 
-#:
-src/www/diag_logs_settings.php
-421
-msgid "Remote Syslog Contents");?></td>
-msgstr ""
-
-#:
-src/www/diag_logs_settings.php
-424
-msgid "Everything");?><br /><br />
-msgstr ""
-
-#:
-src/www/diag_logs_settings.php
-426
-msgid "System events");?><br />
+#: src/www/diag_logs_settings.php:426
+msgid "System events"
 msgstr ""
 
 #:
