@@ -37,14 +37,14 @@ __author__ = 'Ad Schellevis'
 import syslog
 
 
-def execute(action,parameters):
+def execute(action, parameters):
     """ wrapper for inline functions
 
     :param action: action object ( processhandler.Action type )
     :param parameters: parameter string
     :return: status ( string )
     """
-    if  action.command == 'template.reload':
+    if action.command == 'template.reload':
         import template
         import config
         tmpl = template.Template(action.root_dir)
@@ -54,7 +54,7 @@ def execute(action,parameters):
 
         # send generated filenames to syslog
         for filename in filenames:
-            syslog.syslog(syslog.LOG_DEBUG,' %s generated %s' % ( parameters, filename ) )
+            syslog.syslog(syslog.LOG_DEBUG, ' %s generated %s' % (parameters, filename))
 
         del conf
         del tmpl

@@ -30,8 +30,9 @@
     package : configd
 """
 
+
 class Helpers(object):
-    def __init__(self,template_in_data):
+    def __init__(self, template_in_data):
         """ initialize template helpers
 
         :param template_in_data:
@@ -39,22 +40,22 @@ class Helpers(object):
         """
         self._template_in_data = template_in_data
 
-    def getNodeByTag(self,tag):
+    def getNodeByTag(self, tag):
         """ get tree node by tag
         :param tag: tag in dot notation (section.item)
         :return: dict or None if not found
         """
         node = self._template_in_data
         for item in tag.split('.'):
-            if node.has_key(item):
-                node=node[item]
+            if item in node:
+                node = node[item]
             else:
                 # not found
                 return None
         # path found, return
         return node
 
-    def exists(self,tag):
+    def exists(self, tag):
         """
         check if node exists in dictionary structure
         :param tag: tag in dot notation (section.item)
@@ -64,3 +65,4 @@ class Helpers(object):
             return True
         else:
             return False
+

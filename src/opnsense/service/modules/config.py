@@ -43,7 +43,7 @@ import xml.etree.cElementTree as ElementTree
 
 
 class Config(object):
-    def __init__(self,filename):
+    def __init__(self, filename):
         self._filename = filename
         self._config_data = {}
         self._file_mod = 0
@@ -62,25 +62,25 @@ class Config(object):
             self._config_data = self._traverse(root)
             self._file_mod = mod_time
 
-    def _traverse(self,xmlNode):
+    def _traverse(self, xmlNode):
         """ traverse xml node and return ordered dictionary structure
         :param xmlNode: ElementTree node
         :return: collections.OrderedDict
         """
         this_item = collections.OrderedDict()
-        if len(list(xmlNode)) > 0 :
+        if len(list(xmlNode)) > 0:
             for item in list(xmlNode):
                 item_content = self._traverse(item)
-                if this_item.has_key(item.tag):
+                if item.tag in this_item:
                     if type(this_item[item.tag]) != list:
                         tmp_item = copy.deepcopy(this_item[item.tag])
                         this_item[item.tag] = []
                         this_item[item.tag].append(tmp_item)
 
-                    if item_content != None:
+                    if item_content is not None:
                         # skip empty fields
                         this_item[item.tag].append(item_content)
-                elif item_content != None:
+                elif item_content is not None:
                     # create a new named item
                     this_item[item.tag] = self._traverse(item)
         else:
@@ -89,8 +89,7 @@ class Config(object):
 
         return this_item
 
-
-    def indent(self,elem, level=0):
+    def indent(self, elem, level=0):
         """ indent cElementTree (prettyprint fix)
             used from : http://infix.se/2007/02/06/gentlemen-indent-your-xml
             @param elem: cElementTree
@@ -109,7 +108,6 @@ class Config(object):
         else:
             if level and (not elem.tail or not elem.tail.strip()):
                 elem.tail = i
-
 
     def get(self):
         """ get active config data, load from disc if file in memory is different
