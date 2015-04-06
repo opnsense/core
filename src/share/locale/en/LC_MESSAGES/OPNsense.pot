@@ -4793,1085 +4793,701 @@ msgstr ""
 msgid "could not connect to the host \"%1$s\": %2$s"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-266
-msgid "it is not possible to authenticate using the specified mechanism because the SASL library class is not loaded"
+#: src/etc/inc/smtp.inc:266
+msgid ""
+"it is not possible to authenticate using the specified mechanism because "
+"the SASL library class is not loaded"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-290
-msgid "authenticated mechanism %1$s may not be used
-%2$s" $this->authentication_mechanism, $sasl->error);
+#: src/etc/inc/smtp.inc:290
+msgid "authenticated mechanism %1$s may not be used: %2$s"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-295
-msgid "Could not start the SASL authentication client
-" " ".$sasl->error;
+#: src/etc/inc/smtp.inc:295
+msgid "Could not start the SASL authentication client:"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-302
+#: src/etc/inc/smtp.inc:302
 msgid "Could not send the AUTH command"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-317
-msgid "Authentication error
-" " ".$responses[0];
+#: src/etc/inc/smtp.inc:317
+msgid "Authentication error:"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-332
+#: src/etc/inc/smtp.inc:332
 msgid "Could not send the authentication step message"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-347
-msgid "Authentication error
-" " ".$responses[0];
+#: src/etc/inc/smtp.inc:347
+msgid "Authentication error:"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-352
-msgid "Could not process the SASL authentication step
-" " ".$sasl->error;
+#: src/etc/inc/smtp.inc:352
+msgid "Could not process the SASL authentication step:"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-366
+#: src/etc/inc/smtp.inc:366
 msgid "connection is already established"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-404
+#: src/etc/inc/smtp.inc:404
 msgid "it was not specified the POP3 authentication user"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-410
+#: src/etc/inc/smtp.inc:410
 msgid "it was not specified the POP3 authentication password"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-414
-msgid "Resolving POP3 authentication host "%s"..."), $domain
+#: src/etc/inc/smtp.inc:414
+msgid "Resolving POP3 authentication host \"%s\"..."
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-421
+#: src/etc/inc/smtp.inc:421
 msgid "POP3 authentication server greeting was not found"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-429
-msgid "POP3 authentication user was not accepted
-" " ".$this->Tokenize("rn"
+#: src/etc/inc/smtp.inc:429
+msgid "POP3 authentication user was not accepted:"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-437
-msgid "POP3 authentication password was not accepted
-" " ".$this->Tokenize("rn"
+#: src/etc/inc/smtp.inc:437
+msgid "POP3 authentication password was not accepted:"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-446
+#: src/etc/inc/smtp.inc:446
 msgid "could not determine the SMTP to connect"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-452
-msgid "Resolving SMTP server domain "%s"..."), $domain
+#: src/etc/inc/smtp.inc:452
+msgid "Resolving SMTP server domain \"%s\"..."
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-464
-msgid "Connected to SMTP server "%s"."), $domain
+#: src/etc/inc/smtp.inc:464
+msgid "Connected to SMTP server \"%s\"."
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-478
+#: src/etc/inc/smtp.inc:478
 msgid "server does not require authentication"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-542
-msgid "it is not supported any of the authentication mechanisms required by the server"
+#: src/etc/inc/smtp.inc:542
+msgid ""
+"it is not supported any of the authentication mechanisms required by the "
+"server"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-632
-msgid "direct delivery connection is already established and sender is already set"
+#: src/etc/inc/smtp.inc:632
+msgid ""
+"direct delivery connection is already established and sender is already set"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-640
+#: src/etc/inc/smtp.inc:640
 msgid "connection is not in the initial state"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-662
+#: src/etc/inc/smtp.inc:662
 msgid "it was not specified a valid direct recipient"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-681
-msgid "it is not possible to deliver directly to recipients of different domains"
+#: src/etc/inc/smtp.inc:681
+msgid ""
+"it is not possible to deliver directly to recipients of different domains"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-686
+#: src/etc/inc/smtp.inc:686
 msgid "connection is already established and the recipient is already set"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-698
+#: src/etc/inc/smtp.inc:698
 msgid "connection is not in the recipient setting state"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-727
+#: src/etc/inc/smtp.inc:727
 msgid "connection is not in the start sending data state"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-757
+#: src/etc/inc/smtp.inc:757
 msgid "connection is not in the sending data state"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-768
+#: src/etc/inc/smtp.inc:768
 msgid "connection is not in the sending data state"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-804
+#: src/etc/inc/smtp.inc:804
 msgid "it was not previously established a SMTP connection"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-439
-msgid "Not adding default route because OLSR dynamic gateway is enabled.")
+#: src/etc/inc/system.inc:439
+msgid "Not adding default route because OLSR dynamic gateway is enabled."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-483
-msgid "Static Routes
-Gateway IP could not be found for %s"), $rtent['network']
+#: src/etc/inc/system.inc:483
+msgid "Static Routes Gateway IP could not be found for %s"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-621
+#: src/etc/inc/system.inc:621
 msgid "Starting syslog..."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-766
-msgid "Error
-cannot open syslog.conf in system_syslogd_start().%s"), "n"
+#: src/etc/inc/system.inc:766
+msgid "Error: cannot open syslog.conf in system_syslogd_start().%s"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-801
-msgid "done." "n";
+#: src/etc/inc/system.inc:801
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-823
+#: src/etc/inc/system.inc:823
 msgid "Starting webConfigurator..."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-851
+#: src/etc/inc/system.inc:851
 msgid "webConfigurator default"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-866
+#: src/etc/inc/system.inc:866
 msgid "Importing HTTPS certificate"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-899
-msgid "done." "n";
+#: src/etc/inc/system.inc:899
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-901
-msgid "failed!" "n";
+#: src/etc/inc/system.inc:901
+msgid "failed!"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1190
-msgid "Error
-cannot open cert.pem in system_webgui_start().%s"), "n"
+#: src/etc/inc/system.inc:1190
+msgid "Error cannot open cert.pem in system_webgui_start().%s"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1201
-msgid "Error
-cannot open ca.pem in system_webgui_start().%s"), "n"
+#: src/etc/inc/system.inc:1201
+msgid "Error: cannot open ca.pem in system_webgui_start().%s"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1209
-msgid "ssl configuration" "n";
+#: src/etc/inc/system.inc:1209
+msgid "ssl configuration"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1261
-msgid "Error
-cannot open %s in system_generate_lighty_config().%s"), $filename, "n"
+#: src/etc/inc/system.inc:1261
+msgid "Error: cannot open %s in system_generate_lighty_config().%s"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1278
+#: src/etc/inc/system.inc:1278
 msgid "Setting timezone..."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1300
-msgid "done." "n";
+#: src/etc/inc/system.inc:1300
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1653
+#: src/etc/inc/system.inc:1653
 msgid "Syncing system time before startup..."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1661
-msgid "done." "n";
+#: src/etc/inc/system.inc:1661
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1730
-msgid "Error
-cannot open dmesg.boot in system_dmesg_save().%s"), "n"
+#: src/etc/inc/system.inc:1730
+msgid "Error: cannot open dmesg.boot in system_dmesg_save().%s"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1749
+#: src/etc/inc/system.inc:1749
 msgid "Setting hard disk standby... "
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1761
-msgid "done." "n";
+#: src/etc/inc/system.inc:1761
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1764
-msgid "failed!" "n";
+#: src/etc/inc/system.inc:1764
+msgid "failed!"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1767
-msgid "failed!" "n";
+#: src/etc/inc/system.inc:1767
+msgid "failed!"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1870
-msgid "PC Engines WRAP'
+#: src/etc/inc/system.inc:1870
+msgid "PC Engines WRAP"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1873
-msgid "PC Engines ALIX'
+#: src/etc/inc/system.inc:1873
+msgid "PC Engines ALIX"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1885
-msgid "embedded (unknown)'
+#: src/etc/inc/system.inc:1885
+msgid "embedded (unknown)"
 msgstr ""
 
-#:
-src/etc/inc/system.inc
-1931
-msgid "OpenVPN" " ".$mode."
-".htmlspecialchars($setting['description']);
+#: src/etc/inc/system.inc:1931
+msgid "OpenVPN"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-107
-msgid "%sWarning
-filter rule removed " .
+#: src/etc/inc/upgrade_config.inc:107
+msgid "%sWarning: filter rule removed "
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-119
-msgid "%sWarning
-filter rule removed " .
+#: src/etc/inc/upgrade_config.inc:119
+#: src/etc/inc/upgrade_config.inc:132
+msgid "%sWarning: filter rule removed "
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-132
-msgid "%sWarning
-filter rule removed " .
+#: src/etc/inc/upgrade_config.inc:152
+msgid "%sWarning:traffic shaper rule removed "
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-152
-msgid "%sWarning
-traffic shaper rule removed " .
+#: src/etc/inc/upgrade_config.inc:164
+msgid "%sWarning: traffic shaper rule removed "
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-164
-msgid "%sWarning
-traffic shaper rule removed " .
+#: src/etc/inc/upgrade_config.inc:177
+msgid "%sWarning: traffic shaper rule removed "
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-177
-msgid "%sWarning
-traffic shaper rule removed " .
+#: src/etc/inc/upgrade_config.inc:327
+msgid "CARP vhid %s"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-327
-msgid "CARP vhid %s"), $carpent['vhid']);
-msgstr ""
-
-#:
-src/etc/inc/upgrade_config.inc
-487
+#: src/etc/inc/upgrade_config.inc:487
 msgid "Permit IPsec traffic."
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-507
+#: src/etc/inc/upgrade_config.inc:507
 msgid "System Administrators"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-526
-msgid "Indicates whether this user will lock access to the webConfigurator for other users."
+#: src/etc/inc/upgrade_config.inc:526
+msgid ""
+"Indicates whether this user will lock access to the webConfigurator for "
+"other users."
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-529
-msgid "Indicates whether this user will lock individual HTML pages after having accessed a particular page (the lock will be freed if the user leaves or saves the page form)."
+#: src/etc/inc/upgrade_config.inc:529
+msgid ""
+"Indicates whether this user will lock individual HTML pages after having "
+"accessed a particular page (the lock will be freed if the user leaves or "
+"saves the page form)."
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-532
+#: src/etc/inc/upgrade_config.inc:532
 msgid "Indicates whether this user is able to login for example via SSH."
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-535
-msgid "Indicates whether this user is allowed to copy files onto the %s appliance via SCP/SFTP. If you are going to use this privilege, you must install scponly on the appliance (Hint
-pkg_add -r scponly)."), $g['product_name']);
+#: src/etc/inc/upgrade_config.inc:535
+msgid ""
+"Indicates whether this user is allowed to copy files onto the %s appliance "
+"via SCP/SFTP. If you are going to use this privilege, you must install "
+"scponly on the appliance (Hint pkg_add -r scponly)."
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-538
-msgid "This user is associated with the UNIX root user (you should associate this privilege only with one single user)."
+#: src/etc/inc/upgrade_config.inc:538
+msgid ""
+"This user is associated with the UNIX root user (you should associate this "
+"privilege only with one single user)."
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-555
+#: src/etc/inc/upgrade_config.inc:555
 msgid "Drop packets to closed TCP ports without returning a RST"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-559
+#: src/etc/inc/upgrade_config.inc:559
 msgid "Do not send ICMP port unreachable messages for closed UDP ports"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-563
-msgid "Randomize the ID field in IP packets (default is 0
-sequential IP IDs)"
+#: src/etc/inc/upgrade_config.inc:563
+msgid "Randomize the ID field in IP packets (default is 0 sequential IP IDs)"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-567
+#: src/etc/inc/upgrade_config.inc:567
 msgid "Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-571
+#: src/etc/inc/upgrade_config.inc:571
 msgid "Sending of IPv4 ICMP redirects"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-575
+#: src/etc/inc/upgrade_config.inc:575
 msgid "Sending of IPv6 ICMP redirects"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-579
+#: src/etc/inc/upgrade_config.inc:579
 msgid "Generate SYN cookies for outbound SYN-ACK packets"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-583
+#: src/etc/inc/upgrade_config.inc:583
 msgid "Maximum incoming TCP datagram size"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-587
+#: src/etc/inc/upgrade_config.inc:587
 msgid "Maximum outgoing TCP datagram size"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-591
-msgid "Fastforwarding (see http
-//lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html)"
+#: src/etc/inc/upgrade_config.inc:591
+msgid ""
+"Fastforwarding (see "
+"http://lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html)"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-595
+#: src/etc/inc/upgrade_config.inc:595
 msgid "Do not delay ACK to try and piggyback it onto a data packet"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-599
+#: src/etc/inc/upgrade_config.inc:599
 msgid "Maximum outgoing UDP datagram size"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-603
-msgid "Handling of non-IP packets which are not passed to pfil (see if_bridge(4))"
+#: src/etc/inc/upgrade_config.inc:603
+msgid ""
+"Handling of non-IP packets which are not passed to pfil (see if_bridge(4))"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-607
+#: src/etc/inc/upgrade_config.inc:607
 msgid "Allow unprivileged access to tap(4) device nodes"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-611
+#: src/etc/inc/upgrade_config.inc:611
 msgid "Randomize PID's (see src/sys/kern/kern_fork.c
 sysctl_kern_randompid())"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-615
-msgid "The system will attempt to calculate the bandwidth delay product for each connection and limit the amount of data queued to the network to just the amount required to maintain optimum throughput. "
+#: src/etc/inc/upgrade_config.inc:615
+msgid ""
+"The system will attempt to calculate the bandwidth delay product for each "
+"connection and limit the amount of data queued to the network to just the "
+"amount required to maintain optimum throughput. "
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-619
+#: src/etc/inc/upgrade_config.inc:619
 msgid "Set ICMP Limits"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-623
+#: src/etc/inc/upgrade_config.inc:623
 msgid "TCP Offload engine"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-664
-msgid "Interface %s Static Gateway"), $ifname);
+#: src/etc/inc/upgrade_config.inc:664
+msgid "Interface %s Static Gateway"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-667
-msgid "Interface %s Dynamic Gateway"), $ifname);
+#: src/etc/inc/upgrade_config.inc:667
+msgid "Interface %s Dynamic Gateway"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-733
-msgid "Upgraded static route for %s"), $sroute['network']);
+#: src/etc/inc/upgrade_config.inc:733
+msgid "Upgraded static route for %s"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-830
-msgid "Sitedown pool for VS
-%s"), $vs_a[$i]['name']);
+#: src/etc/inc/upgrade_config.inc:830
+msgid "Sitedown pool for VS: %s"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-985
-msgid "phase2 for %s"), $tunnel['descr']);
+#: src/etc/inc/upgrade_config.inc:985
+msgid "phase2 for %s"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-1212
-msgid "Upgraded Dyndns %s"), $tempdyn['type']);
+#: src/etc/inc/upgrade_config.inc:1212
+msgid "Upgraded Dyndns %s"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-1264
+#: src/etc/inc/upgrade_config.inc:1264
 msgid "All Users"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-1396
-msgid "Converted bridged %s"), $ifr);
+#: src/etc/inc/upgrade_config.inc:1396
+msgid "Converted bridged %s"
 msgstr ""
 
-#:
-src/etc/inc/upgrade_config.inc
-1770
+#: src/etc/inc/upgrade_config.inc:1770
 msgid "Auto added OpenVPN rule from config upgrade."
 msgstr ""
 
-#:
-src/etc/inc/util.inc
-86
-msgid "WARNING
-Could not mark subsystem
-%s dirty"), $subsystem
+#: src/etc/inc/util.inc:86
+msgid "WARNING: Could not mark subsystem: %s dirty"
 msgstr ""
 
-#:
-src/etc/inc/util.inc
-99
-msgid "WARNING
-You must give a name as parameter to lock() function."
+#: src/etc/inc/util.inc:99
+msgid "WARNING: You must give a name as parameter to lock() function."
 msgstr ""
 
-#:
-src/etc/inc/util.inc
-116
-msgid "WARNING
-You must give a name as parameter to try_lock() function."
+#: src/etc/inc/util.inc:116
+msgid "WARNING: You must give a name as parameter to try_lock() function."
 msgstr ""
 
-#:
-src/etc/inc/util.inc
-177
+#: src/etc/inc/util.inc:177
 msgid "Could not open shared memory {$reference}"
 msgstr ""
 
-#:
-src/etc/inc/util.inc
-202
+#: src/etc/inc/util.inc:202
 msgid "Could not open shared memory {$reference}"
 msgstr ""
 
-#:
-src/etc/inc/util.inc
-210
-msgid "Reference %s is going negative, not doing unreference."), $reference
+#: src/etc/inc/util.inc:210
+msgid "Reference %s is going negative, not doing unreference."
 msgstr ""
 
-#:
-src/etc/inc/util.inc
-228
+#: src/etc/inc/util.inc:228
 msgid "Could not open shared memory for read {$reference}"
 msgstr ""
 
-#:
-src/etc/inc/util.inc
-1092
-msgid "The command '%1$s' returned exit code '%2$d', the output was '%3$s' "), $command, $retval, $output
+#: src/etc/inc/util.inc:1092
+msgid ""
+"The command '%1$s' returned exit code '%2$d', the output was '%3$s' "
 msgstr ""
 
-#:
-src/etc/inc/voucher.inc
-368
-msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes" $voucher, $roll, $nr, $remaining);
+#: src/etc/inc/voucher.inc:368
+msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes"
 msgstr ""
 
-#:
-src/etc/inc/voucher.inc
-405
+#: src/etc/inc/voucher.inc:405
 msgid "Access denied!"
 msgstr ""
 
-#:
-src/etc/inc/voucher.inc
-407
-msgid "Access granted for %d Minutes in total."),$total_minutes);
+#: src/etc/inc/voucher.inc:407
+msgid "Access granted for %d Minutes in total."
 msgstr ""
 
-#:
-src/etc/inc/voucher.inc
-462
+#: src/etc/inc/voucher.inc:462
 msgid "Enabling voucher support... "
 msgstr ""
 
-#:
-src/etc/inc/voucher.inc
-501
-msgid "Error
-cannot write voucher.cfg" "n"
+#: src/etc/inc/voucher.inc:501
+msgid "Error: cannot write voucher.cfg"
 msgstr ""
 
-#:
-src/etc/inc/voucher.inc
-552
-msgid "cant write %1$s/voucher_%s_used_%2$s.db" $g['vardb_path'], $cpzone, $roll
+#: src/etc/inc/voucher.inc:552
+msgid "cant write %1$s/voucher_%s_used_%2$s.db"
 msgstr ""
 
-#:
-src/etc/inc/voucher.inc
-633
-msgid "cant read %1$s/voucher_%s_used_%2$s.db" $g['vardb_path'], $cpzone, $roll
+#: src/etc/inc/voucher.inc:633
+msgid "cant read %1$s/voucher_%s_used_%2$s.db"
 msgstr ""
 
-#:
-src/etc/inc/voucher.inc
-650
-msgid "Voucher
-%s"),$message
+#: src/etc/inc/voucher.inc:650
+msgid "Voucher: %s"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-145
+#: src/etc/inc/vpn.inc:145
 msgid "Configuring IPsec VPN... "
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-398
-msgid "Error
-Invalid certificate info for %s"), $ca['descr']
+#: src/etc/inc/vpn.inc:398
+msgid "Error: Invalid certificate info for %s"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-404
-msgid "Error
-Invalid certificate hash info for %s"), $ca['descr']
+#: src/etc/inc/vpn.inc:404
+msgid "Error: Invalid certificate hash info for %s"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-409
-msgid "Error
-Cannot write IPsec CA file for %s"), $ca['descr']
+#: src/etc/inc/vpn.inc:409
+msgid "Error: Cannot write IPsec CA file for %s"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-431
-msgid "Error
-Invalid phase1 certificate reference for %s"), $ph1ent['name']
+#: src/etc/inc/vpn.inc:431
+msgid "Error: Invalid phase1 certificate reference for %s"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-439
-msgid "Error
-Cannot write phase1 key file for %s"), $ph1ent['name']
+#: src/etc/inc/vpn.inc:439
+msgid "Error: Cannot write phase1 key file for %s"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-446
-msgid "Error
-Cannot write phase1 certificate file for %s"), $ph1ent['name']
+#: src/etc/inc/vpn.inc:446
+msgid "Error: Cannot write phase1 certificate file for %s"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-874
-msgid "Ignoring IPsec reload since there are no tunnels on interface %s"), $interface
+#: src/etc/inc/vpn.inc:874
+msgid "Ignoring IPsec reload since there are no tunnels on interface %s"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-881
+#: src/etc/inc/vpn.inc:881
 msgid "Forcefully reloading IPsec"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-922
+#: src/etc/inc/vpn.inc:922
 msgid "Configuring PPTP VPN service... "
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-932
+#: src/etc/inc/vpn.inc:932
 msgid "Could not kill mpd within 3 seconds.   Trying again."
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-955
-msgid "Error
-cannot open mpd.conf in vpn_pptpd_configure()." "n"
+#: src/etc/inc/vpn.inc:955
+msgid "Error: cannot open mpd.conf in vpn_pptpd_configure()."
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1074
-msgid "Error
-cannot open mpd.links in vpn_pptpd_configure()." "n"
+#: src/etc/inc/vpn.inc:1074
+msgid "Error: cannot open mpd.links in vpn_pptpd_configure()."
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1099
-msgid "Error
-cannot open mpd.secret in vpn_pptpd_configure()." "n"
+#: src/etc/inc/vpn.inc:1099
+msgid "Error: cannot open mpd.secret in vpn_pptpd_configure()."
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1157
+#: src/etc/inc/vpn.inc:1157
 msgid "Configuring PPPoE VPN service... "
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1181
-msgid "Error
-cannot open mpd.conf in vpn_pppoe_configure()." "n"
+#: src/etc/inc/vpn.inc:1181
+msgid "Error: cannot open mpd.conf in vpn_pppoe_configure()."
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1290
-msgid "Error
-cannot open mpd.links in vpn_pppoe_configure()." "n"
+#: src/etc/inc/vpn.inc:1290
+msgid "Error: cannot open mpd.links in vpn_pppoe_configure()."
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1317
-msgid "Error
-cannot open mpd.secret in vpn_pppoe_configure()." "n"
+#: src/etc/inc/vpn.inc:1317
+msgid "Error: cannot open mpd.secret in vpn_pppoe_configure()."
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1350
-msgid "done" "n";
+#: src/etc/inc/vpn.inc:1350
+msgid "done"
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1369
+#: src/etc/inc/vpn.inc:1369
 msgid "Configuring l2tp VPN service... "
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1394
-msgid "Error
-cannot open mpd.conf in vpn_l2tp_configure()." "n"
+#: src/etc/inc/vpn.inc:1394
+msgid "Error: cannot open mpd.conf in vpn_l2tp_configure()."
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1493
-msgid "Error
-cannot open mpd.links in vpn_l2tp_configure()." "n"
+#: src/etc/inc/vpn.inc:1493
+msgid "Error: cannot open mpd.links in vpn_l2tp_configure()."
 msgstr ""
 
-#:
-src/etc/inc/vpn.inc
-1519
-msgid "Error
-cannot open mpd.secret in vpn_l2tp_configure()." "n"
+#: src/etc/inc/vpn.inc:1519
+msgid "Error: cannot open mpd.secret in vpn_l2tp_configure()."
 msgstr ""
 
-#:
-src/etc/inc/xmlparse.inc
-93
-msgid "XML error
-%1$s at line %2$d cannot occur more than once" . "n",
+#: src/etc/inc/xmlparse.inc:93
+msgid "XML error: %1$s at line %2$d cannot occur more than once"
 msgstr ""
 
-#:
-src/etc/inc/xmlparse.inc
-184
-msgid "Error
-could not open XML input" "n"
+#: src/etc/inc/xmlparse.inc:184
+msgid "Error: could not open XML input"
 msgstr ""
 
-#:
-src/etc/inc/xmlparse.inc
-190
-msgid "XML error
-%1$s at line %2$d in %3$s" . "n",
+#: src/etc/inc/xmlparse.inc:190
+msgid "XML error: %1$s at line %2$d in %3$s"
 msgstr ""
 
-#:
-src/etc/inc/xmlparse.inc
-207
-msgid "XML error
-no %s object found!" "n", implode(" or ", $rootobj)
+#: src/etc/inc/xmlparse.inc:207
+msgid "XML error: no %s object found!"
 msgstr ""
 
-#:
-src/etc/inc/xmlparse_attr.inc
-73
-msgid "XML error
-%1$s at line %2$d cannot occur more than once" . "n",
+#: src/etc/inc/xmlparse_attr.inc:73
+msgid "XML error: %1$s at line %2$d cannot occur more than once"
 msgstr ""
 
-#:
-src/etc/inc/xmlparse_attr.inc
-185
-msgid "Error
-could not open XML input" "n"
+#: src/etc/inc/xmlparse_attr.inc:185
+msgid "Error: could not open XML input"
 msgstr ""
 
-#:
-src/etc/inc/xmlparse_attr.inc
-195
-msgid "XML error
-%1$s at line %2$d" . "n",
+#: src/etc/inc/xmlparse_attr.inc:195
+msgid "XML error: %1$s at line %2$d"
 msgstr ""
 
-#:
-src/etc/inc/xmlparse_attr.inc
-208
-msgid "XML error
-no %s object found!" "n", $rootobj
+#: src/etc/inc/xmlparse_attr.inc:208
+msgid "XML error: no %s object found!"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-152
+#: src/etc/inc/xmlrpc_client.inc:152
 msgid "Unknown method"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-153
-msgid "Invalid return payload
-enable debugging to examine incoming payload"
+#: src/etc/inc/xmlrpc_client.inc:153
+msgid "Invalid return payload: enable debugging to examine incoming payload"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-154
+#: src/etc/inc/xmlrpc_client.inc:154
 msgid "Incorrect parameters passed to method"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-155
-msgid "Can't introspect
-method unknown"
+#: src/etc/inc/xmlrpc_client.inc:155
+msgid "Can't introspect: method unknown"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-156
+#: src/etc/inc/xmlrpc_client.inc:156
 msgid "Didn't receive 200 OK from remote server."
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-157
+#: src/etc/inc/xmlrpc_client.inc:157
 msgid "The requested method didn't return an XML_RPC_Response object."
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-158
+#: src/etc/inc/xmlrpc_client.inc:158
 msgid "Invalid request payload"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-260
+#: src/etc/inc/xmlrpc_client.inc:260
 msgid "missing top level xmlrpc element"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-268
-msgid "xmlrpc element %1$s cannot be child of %2$s" $name, $XML_RPC_xh[$parser]['stack'][0]);
+#: src/etc/inc/xmlrpc_client.inc:268
+msgid "xmlrpc element %1$s cannot be child of %2$s"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-431
-XML_RPC_Base
-msgstr ""
-
-#:
+#: src/etc/inc/xmlrpc_client.inc:431
 msgid "Non-numeric value received in INT or DOUBLE"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-859
-msgid ""
+#: src/etc/inc/xmlrpc_client.inc:859
+msgid "send()'s %s parameter must be an XML_RPC_Message object."
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-951
-msgid "Connection to proxy server
+#: src/etc/inc/xmlrpc_client.inc:951
+#: src/etc/inc/xmlrpc_client.inc:957
+msgid "Connection to proxy server %1$s:%2$s failed. %3$s"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-957
-msgid "Connection to RPC server
-msgstr ""
-
-#:
-src/etc/inc/xmlrpc_client.inc
-1330
+#: src/etc/inc/xmlrpc_client.inc:1330
 msgid "The submitted request did not contain this parameter"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-1361
+#: src/etc/inc/xmlrpc_client.inc:1361
 msgid "mb_convert_encoding() is not available"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-1470
-msgid "HTTP error, got response
-%s"),$errstr
+#: src/etc/inc/xmlrpc_client.inc:1470
+msgid "HTTP error, got response: %s"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-1497
+#: src/etc/inc/xmlrpc_client.inc:1497
 msgid "XML error at line 1, check URL"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-1593
+#: src/etc/inc/xmlrpc_client.inc:1593
 msgid "Scalar can have only one value"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-1600
-msgid "Not a scalar type (%s)"), $typeof
+#: src/etc/inc/xmlrpc_client.inc:1600
+msgid "Not a scalar type (%s)"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-1636
-msgid "Already initialized as a [%s]" $this->kindOf()
+#: src/etc/inc/xmlrpc_client.inc:1636
+#: src/etc/inc/xmlrpc_client.inc:1652
+msgid "Already initialized as a [%s]"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_client.inc
-1652
-msgid "Already initialized as a [%s]" $this->kindOf()
+#: src/etc/inc/xmlrpc_server.inc:48
+msgid "This method lists all the"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_server.inc
-48
-msgid "This method lists all the'
+#: src/etc/inc/xmlrpc_server.inc:66
+msgid "Returns an array of known"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_server.inc
-66
-msgid "Returns an array of known'
+#: src/etc/inc/xmlrpc_server.inc:86
+msgid "Returns help text if defined"
 msgstr ""
 
-#:
-src/etc/inc/xmlrpc_server.inc
-86
-msgid "Returns help text if defined'
-msgstr ""
-
-#:
-src/etc/rc.initial.password
-48
-msgid "
+#: src/etc/rc.initial.password:48
+msgid ""
+"The User manager authentication server is set to \"' . "
+"$config['system']['webgui']    ['authmode'] . '\"."
 msgstr ""
 
 #:
