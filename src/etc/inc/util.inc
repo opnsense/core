@@ -149,6 +149,13 @@ function send_event($cmd)
 	return $backend->sendEvent("{$cmd}");
 }
 
+function send_background_event($cmd)
+{
+	require_once("script/load_phalcon.php");
+	$backend = new OPNsense\Core\Backend();
+	return $backend->sendBackgroundEvent("{$cmd}");
+}
+
 function is_module_loaded($module_name) {
 	$module_name = str_replace(".ko", "", $module_name);
 	$running = 0;
