@@ -3730,163 +3730,110 @@ msgid "RRD dump failed exited with %1$s, the error is
 %2$s" $dumpret, $dumpout
 msgstr ""
 
-#:
-src/etc/inc/rrd.inc
-93
-msgid "RRD create failed exited with %1$s, the error is
-%2$s" $rrdcreatereturn, $rrdcreateoutput
+#: src/etc/inc/rrd.inc:93
+msgid "RRD create failed exited with %1$s, the error is %2$s"
 msgstr ""
 
-#:
-src/etc/inc/rrd.inc
-108
-msgid "Import RRD has %1$s DS values and %2$s RRA databases, new format RRD has %3$s DS values and %4$s RRA databases" $numdsold, $numrraold, $numdsnew ,$numrranew
+#: src/etc/inc/rrd.inc:108
+msgid ""
+"Import RRD has %1$s DS values and %2$s RRA databases, "
+"new format RRD has %3$s DS values and %4$s RRA databases"
 msgstr ""
 
-#:
-src/etc/inc/rrd.inc
-192
-msgid "The new RRD now has %1$s DS values and %2$s RRA databases" $numdsnew, $numrranew
+#: src/etc/inc/rrd.inc:192
+msgid "The new RRD now has %1$s DS values and %2$s RRA databases"
 msgstr ""
 
-#:
-src/etc/inc/rrd.inc
-200
+#: src/etc/inc/rrd.inc:200
 msgid "Generating RRD graphs..."
 msgstr ""
 
-#:
-src/etc/inc/rrd.inc
-896
+#: src/etc/inc/rrd.inc:896
 msgid "Creating rrd update script"
 msgstr ""
 
-#:
-src/etc/inc/rrd.inc
-922
-msgid "done." "n";
+#: src/etc/inc/rrd.inc:922
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-260
+#: src/etc/inc/service-utils.inc:260
 msgid "Router Advertisement Daemon"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-267
+#: src/etc/inc/service-utils.inc:267
 msgid "DNS Forwarder"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-274
+#: src/etc/inc/service-utils.inc:274
 msgid "Unbound DNS Forwarder"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-280
+#: src/etc/inc/service-utils.inc:280
 msgid "NTP clock sync"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-289
-msgid "Captive Portal" "
-".htmlspecialchars($setting['zone']);
+#: src/etc/inc/service-utils.inc:289
+msgid "Captive Portal"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-306
+#: src/etc/inc/service-utils.inc:306
 msgid "DHCP Relay"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-313
+#: src/etc/inc/service-utils.inc:313
 msgid "DHCPv6 Relay"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-320
+#: src/etc/inc/service-utils.inc:320
 msgid "DHCP Service"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-328
+#: src/etc/inc/service-utils.inc:328
 msgid "Gateway Monitoring Daemon"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-335
+#: src/etc/inc/service-utils.inc:335
 msgid "SNMP Service"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-342
+#: src/etc/inc/service-utils.inc:342
 msgid "IGMP proxy"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-349
+#: src/etc/inc/service-utils.inc:349
 msgid "UPnP Service"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-356
+#: src/etc/inc/service-utils.inc:356
 msgid "RIP Daemon"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-363
+#: src/etc/inc/service-utils.inc:363
 msgid "IPsec VPN"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-370
+#: src/etc/inc/service-utils.inc:370
 msgid "Secure Shell Daemon"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-383
-msgid "OpenVPN" " ".$mode."
-".htmlspecialchars($setting['description']);
+#: src/etc/inc/service-utils.inc:383
+msgid "OpenVPN"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-393
+#: src/etc/inc/service-utils.inc:393
 msgid "Server load balancing daemon"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-463
+#: src/etc/inc/service-utils.inc:463
 msgid "Not available."
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-508
+#: src/etc/inc/service-utils.inc:508
 msgid "Running"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-510
-msgid "%s Service is"$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
+#: src/etc/inc/service-utils.inc:510
+msgid "%s Service is"
 msgstr ""
 
 #:
