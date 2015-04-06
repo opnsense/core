@@ -4204,820 +4204,544 @@ msgid ""
 "upperlimit service curve defined but missing initial bandwidth (m1) value"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1629
+#: src/etc/inc/shaper.inc:1629
 msgid "upperlimit m1 value needs to be Kb, Mb, Gb, or %"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1631
+#: src/etc/inc/shaper.inc:1631
 msgid "upperlimit d value needs to be numeric"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1633
+#: src/etc/inc/shaper.inc:1633
 msgid "upperlimit m2 value needs to be Kb, Mb, Gb, or %"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1647
+#: src/etc/inc/shaper.inc:1647
 msgid "linkshare service curve defined but missing (d) value"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1649
-msgid "linkshare service curve defined but missing initial bandwidth (m1) value"
+#: src/etc/inc/shaper.inc:1649
+msgid ""
+"linkshare service curve defined but missing initial bandwidth (m1) value"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1651
+#: src/etc/inc/shaper.inc:1651
 msgid "linkshare m1 value needs to be Kb, Mb, Gb, or %"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1653
+#: src/etc/inc/shaper.inc:1653
 msgid "linkshare d value needs to be numeric"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1655
+#: src/etc/inc/shaper.inc:1655
 msgid "linkshare m2 value needs to be Kb, Mb, Gb, or %"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1657
+#: src/etc/inc/shaper.inc:1657
 msgid "realtime service curve defined but missing (d) value"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1659
-msgid "realtime service curve defined but missing initial bandwidth (m1) value"
+#: src/etc/inc/shaper.inc:1659
+msgid ""
+"realtime service curve defined but missing initial bandwidth (m1) value"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1674
+#: src/etc/inc/shaper.inc:1674
 msgid "realtime m1 value needs to be Kb, Mb, Gb, or %"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1676
+#: src/etc/inc/shaper.inc:1676
 msgid "realtime d value needs to be numeric"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1678
+#: src/etc/inc/shaper.inc:1678
 msgid "realtime m2 value needs to be Kb, Mb, Gb, or %"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1908
-msgid "Bandwidth" "</td>";
+#: src/etc/inc/shaper.inc:1908
+msgid "Bandwidth"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1916
-msgid "Gbit/s" "</option>";
+#: src/etc/inc/shaper.inc:1916
+msgid "Gbit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1920
-msgid "Mbit/s" "</option>";
+#: src/etc/inc/shaper.inc:1920
+msgid "Mbit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1924
-msgid "Kbit/s" "</option>";
+#: src/etc/inc/shaper.inc:1924
+msgid "Kbit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1928
-msgid "Bit/s" "</option>";
+#: src/etc/inc/shaper.inc:1928
+msgid "Bit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1934
+#: src/etc/inc/shaper.inc:1934
 msgid "Choose the amount of bandwidth for this queue"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1937
-msgid "Service Curve (sc)" "</td>";
+#: src/etc/inc/shaper.inc:1937
+msgid "Service Curve (sc)"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1944
-msgid "Upperlimit
-" "</td><td><input size="6" value="";
+#: src/etc/inc/shaper.inc:1944
+msgid "Upperlimit:"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1959
-msgid "The maximum allowed bandwidth for the queue." "</td></tr>";
+#: src/etc/inc/shaper.inc:1959
+msgid "The maximum allowed bandwidth for the queue."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1963
-msgid "Real time
-" "</td><td><input size="6" value="";
+#: src/etc/inc/shaper.inc:1963
+msgid "Real time:"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1978
-msgid "The minimum required bandwidth for the queue." "</td></tr>";
+#: src/etc/inc/shaper.inc:1978
+msgid "The minimum required bandwidth for the queue."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1982
-msgid "Link share
-" "</td><td><input size="6" value="";
+#: src/etc/inc/shaper.inc:1982
+msgid "Link share:"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1997
-msgid "The bandwidth share of a backlogged queue - this overrides priority." "</td></tr>";
+#: src/etc/inc/shaper.inc:1997
+msgid "The bandwidth share of a backlogged queue - this overrides priority."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1999
-msgid "The format for service curve specifications is (m1, d, m2).  m2 controls "
+#: src/etc/inc/shaper.inc:1999
+msgid ""
+"The format for service curve specifications is (m1, d, m2).  m2 controls "
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2251
+#: src/etc/inc/shaper.inc:2251
 msgid "Priority must be an integer between 1 and 7."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2253
+#: src/etc/inc/shaper.inc:2253
 msgid "Bandwidth"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2255
+#: src/etc/inc/shaper.inc:2255
 msgid "Bandwidthtype"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2260
+#: src/etc/inc/shaper.inc:2260
 msgid "Bandwidth must be an integer."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2264
+#: src/etc/inc/shaper.inc:2264
 msgid "Bandwidth cannot be negative."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2268
+#: src/etc/inc/shaper.inc:2268
 msgid "Bandwidth in percentage should be between 1 and 100 bounds."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2393
-msgid "Bandwidth" "</td>";
+#: src/etc/inc/shaper.inc:2393
+msgid "Bandwidth"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2402
-msgid "Gbit/s" "</option>";
+#: src/etc/inc/shaper.inc:2402
+msgid "Gbit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2406
+#: src/etc/inc/shaper.inc:2406
 msgid "Mbit/s" "</option>";
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2410
-msgid "Kbit/s" "</option>";
+#: src/etc/inc/shaper.inc:2410
+msgid "Kbit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2414
-msgid "Bit/s" "</option>";
+#: src/etc/inc/shaper.inc:2414
+msgid "Bit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2420
+#: src/etc/inc/shaper.inc:2420
 msgid "Choose the amount of bandwidth for this queue"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2422
-msgid "Scheduler specific options" "</td>";
+#: src/etc/inc/shaper.inc:2422
+msgid "Scheduler specific options"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2426
-msgid "Borrow from other queues when available" "<br /></td></tr>";
+#: src/etc/inc/shaper.inc:2426
+msgid "Borrow from other queues when available"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2534
+#: src/etc/inc/shaper.inc:2534
 msgid "Priority must be an integer between 1 and 255."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2536
+#: src/etc/inc/shaper.inc:2536
 msgid "Bandwidth"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2538
+#: src/etc/inc/shaper.inc:2538
 msgid "Bandwidthtype"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2543
+#: src/etc/inc/shaper.inc:2543
 msgid "Bandwidth must be an integer."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2547
+#: src/etc/inc/shaper.inc:2547
 msgid "Bandwidth cannot be negative."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2552
+#: src/etc/inc/shaper.inc:2552
 msgid "Bandwidth in percentage should be between 1 and 100 bounds."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2667
-msgid "Bandwidth" "</td>";
+#: src/etc/inc/shaper.inc:2667
+msgid "Bandwidth"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2676
-msgid "Gbit/s" "</option>";
+#: src/etc/inc/shaper.inc:2676
+msgid "Gbit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2680
-msgid "Mbit/s" "</option>";
+#: src/etc/inc/shaper.inc:2680
+msgid "Mbit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2684
-msgid "Kbit/s" "</option>";
+#: src/etc/inc/shaper.inc:2684
+msgid "Kbit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2688
-msgid "Bit/s" "</option>";
+#: src/etc/inc/shaper.inc:2688
+msgid "Bit/s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2694
+#: src/etc/inc/shaper.inc:2694
 msgid "Choose the amount of bandwidth for this queue"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2696
-msgid "Scheduler specific options" "</td>";
+#: src/etc/inc/shaper.inc:2696
+msgid "Scheduler specific options"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2702
-msgid "Number of buckets available." "<br /></td></tr>";
+#: src/etc/inc/shaper.inc:2702
+msgid "Number of buckets available."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2707
-msgid "Bandwidth limit for hosts to not saturate link." "<br /></td></tr>";
+#: src/etc/inc/shaper.inc:2707
+msgid "Bandwidth limit for hosts to not saturate link."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2883
+#: src/etc/inc/shaper.inc:2883
 msgid "Bandwidth"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2885
+#: src/etc/inc/shaper.inc:2885
 msgid "Burst"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2887
+#: src/etc/inc/shaper.inc:2887
 msgid "Bandwidthtype"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2889
+#: src/etc/inc/shaper.inc:2889
 msgid "Name"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2895
+#: src/etc/inc/shaper.inc:2895
 msgid "Plr must be a value between 0 and 1."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2898
+#: src/etc/inc/shaper.inc:2898
 msgid "Buckets must be an integer between 16 and 65535."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2900
+#: src/etc/inc/shaper.inc:2900
 msgid "Queue limit must be an integer"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2902
+#: src/etc/inc/shaper.inc:2902
 msgid "Queue names must be alphanumeric and _ or - only."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2904
+#: src/etc/inc/shaper.inc:2904
 msgid "Queue names must be alphanumeric and _ or - only."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2907
+#: src/etc/inc/shaper.inc:2907
 msgid "IPV4 bit mask must be blank or numeric value between 1 and 32."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-2910
+#: src/etc/inc/shaper.inc:2910
 msgid "IPV6 bit mask must be blank or numeric value between 1 and 128."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3050
+#: src/etc/inc/shaper.inc:3050
 msgid "Bandwidth for schedule %s must be an integer."), $data["bwsched{$i}"]);
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3052
-msgid "Burst for schedule %s must be an integer."), $data["bwsched{$i}"]);
+#: src/etc/inc/shaper.inc:3052
+msgid "Burst for schedule %s must be an integer."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3058
+#: src/etc/inc/shaper.inc:3058
 msgid "You need to specify a schedule for every additional entry"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3060
-msgid "If more than one bandwidth configured all schedules need to be selected"
+#: src/etc/inc/shaper.inc:3060
+msgid ""
+"If more than one bandwidth configured all schedules need to be selected"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3062
+#: src/etc/inc/shaper.inc:3062
 msgid "At least one bw specification is necessary"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3064
+#: src/etc/inc/shaper.inc:3064
 msgid "Delay must be an integer."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3297
+#: src/etc/inc/shaper.inc:3297
 msgid "Enable"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3302
-msgid "Enable limiter and its children" "</span>";
+#: src/etc/inc/shaper.inc:3302
+msgid "Enable limiter and its children"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3304
-msgid "Name" "</span></td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3315
-msgid "Bandwidth"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3358
-msgid "Bandwidth is a rate (e.g. Mbit/s), burst is a total amount of data that will be transferred at full speed after an idle period." "</span><br />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3360
-msgid "Mask" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3371
-msgid "Source addresses" "</option>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3375
-msgid "Destination addresses" "</option>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3378
-msgid "If 'source' or 'destination' slots is chosen, n"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3399
-msgid "If 'source' or 'destination' slots is chosen, n"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3404
-msgid "Description" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3410
-msgid "You may enter a description here for your reference (not parsed)." "</span>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3416
-msgid "Show advanced options" "" />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3420
-msgid "Delay" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3424
-msgid "Hint
-in most cases, you "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3428
-msgid "Packet loss rate" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3432
-msgid "Hint
-in most cases, you "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3437
-msgid "Queue Size" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3442
-msgid "Hint
-in most cases, you "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3448
-msgid "Bucket Size" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3453
-msgid "Hint
-in most cases, you "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3521
-msgid "Weight must be an integer between 1 and 100."
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3623
-msgid "Enable/Disable"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3628
-msgid "Enable/Disable queue" "</span>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3630
-msgid "Name" "</span></td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3641
-msgid "Mask" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3648
-msgid "none" "</option>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3652
-msgid "Source addresses" "</option>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3656
-msgid "Destination addresses" "</option>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3659
-msgid "If 'source' or 'destination' slots is chosen, n"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3680
-msgid "If 'source' or 'destination' slots is chosen, n"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3685
-msgid "Description" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3691
-msgid "You may enter a description here for your reference (not parsed)." "</span>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3697
-msgid "Show advanced options" "" />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3700
-msgid "Weight" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3704
-msgid "Hint
-For queues under the same parent "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3708
-msgid "Packet loss rate" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3712
-msgid "Hint
-in most cases, you "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3717
-msgid "Queue Size" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3722
-msgid "Hint
-in most cases, you "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3728
-msgid "Bucket Size" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3732
-msgid "slots" "<br />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3733
-msgid "Hint
-in most cases, you "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3870
-msgid "Enable/Disable"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3876
-msgid "Enable/Disable layer7 Container" "</span>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3878
-msgid "Name" "</span></td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3883
-msgid "Description" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3889
-msgid "You may enter a description here for your reference (not parsed)." "</span>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-3950
+#: src/etc/inc/shaper.inc:3304
 msgid "Name"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-3955
+#: src/etc/inc/shaper.inc:3315
+msgid "Bandwidth"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3358
+msgid ""
+"Bandwidth is a rate (e.g. Mbit/s), burst is a total amount of data that "
+"will be transferred at full speed after an idle period."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3360
+msgid "Mask"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3371
+msgid "Source addresses"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3375
+msgid "Destination addresses"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3378
+msgid "If 'source' or 'destination' slots is chosen, \n"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3399
+msgid "If 'source' or 'destination' slots is chosen, \n"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3404
+msgid "Description"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3410
+msgid "You may enter a description here for your reference (not parsed)."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3416
+msgid "Show advanced options"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3420
+msgid "Delay"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3424
+msgid "Hint: in most cases, you "
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3428
+msgid "Packet loss rate"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3432
+msgid "Hint:in most cases, you "
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3437
+msgid "Queue Size"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3442
+msgid "Hint in most cases, you "
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3448
+msgid "Bucket Size"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3453
+msgid "Hint: in most cases, you "
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3521
+msgid "Weight must be an integer between 1 and 100."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3623
+msgid "Enable/Disable"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3628
+msgid "Enable/Disable queue"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3630
+msgid "Name"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3641
+msgid "Mask"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3648
+msgid "none"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3652
+msgid "Source addresses"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3656
+msgid "Destination addresses"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3659
+msgid "If 'source' or 'destination' slots is chosen, \n"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3680
+msgid "If 'source' or 'destination' slots is chosen, \n"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3685
+msgid "Description"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3691
+msgid "You may enter a description here for your reference (not parsed)."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3697
+msgid "Show advanced options"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3700
+msgid "Weight"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3704
+msgid "Hint: For queues under the same parent "
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3708
+msgid "Packet loss rate"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3712
+msgid "Hint: in most cases, you "
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3717
+msgid "Queue Size"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3722
+msgid "Hint: in most cases, you "
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3728
+msgid "Bucket Size"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3732
+msgid "slots"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3733
+msgid "Hint in most cases, you "
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3870
+msgid "Enable/Disable"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3876
+msgid "Enable/Disable layer7 Container"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3878 msgid "Name"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3883
+msgid "Description"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3889
+msgid "You may enter a description here for your reference (not parsed)."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3950
+msgid "Name"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:3955
 msgid "Queue names must be alphanumeric and _ or - only."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-4141
+#: src/etc/inc/shaper.inc:4141
 msgid "Sending HUP signal to %s"), $l7pid[0]
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-4502
+#: src/etc/inc/shaper.inc:4502
 msgid " Clone shaper/queue on this interface" "</a></td></tr>";
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-4510
-msgid "Welcome to the %s Traffic Shaper."), $g['product_name']) . "</b><br />";
+#: src/etc/inc/shaper.inc:4510
+msgid "Welcome to the %s Traffic Shaper."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-4511
+#: src/etc/inc/shaper.inc:4511
 msgid "The tree on the left helps you navigate through the queues <br />"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-4517
-msgid "Welcome to the %s Traffic Shaper."), $g['product_name']) . "</b><br />";
+#: src/etc/inc/shaper.inc:4517
+msgid "Welcome to the %s Traffic Shaper."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-4518
+#: src/etc/inc/shaper.inc:4518
 msgid "The tree on the left helps you navigate through the queues <br />"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-93
-msgid ""
-data access time out"
+#: src/etc/inc/smtp.inc:93
+msgid ": data access time out"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-96
-msgid ""
-the server disconnected"
+#: src/etc/inc/smtp.inc:96
+msgid ": the server disconnected"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-108
+#: src/etc/inc/smtp.inc:108
 msgid "reached the end of data while reading from the SMTP server conection"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-114
+#: src/etc/inc/smtp.inc:114
 msgid "it was not possible to read line from the SMTP server"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-136
+#: src/etc/inc/smtp.inc:136
 msgid "it was not possible to send a line to the SMTP server"
 msgstr ""
 
