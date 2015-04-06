@@ -4745,77 +4745,52 @@ msgstr ""
 msgid "it was not possible to send a line to the SMTP server"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-150
+#: src/etc/inc/smtp.inc:150
 msgid "it was not possible to send data to the SMTP server"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-222
+#: src/etc/inc/smtp.inc:222
 msgid "establishing SSL connections requires at least PHP version 4.3.0"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-225
+#: src/etc/inc/smtp.inc:225
 msgid "establishing SSL connections requires the OpenSSL extension enabled"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-234
-msgid "could not resolve host "%s""), $domain
+#: src/etc/inc/smtp.inc:234
+msgid "could not resolve host \"%s\""
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-238
-msgid "domain "%s" resolved to an address excluded to be valid"), $domain
+#: src/etc/inc/smtp.inc:238
+msgid "domain \"%s\" resolved to an address excluded to be valid"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-240
-msgid "Connecting to host address "%1$s" port %2$s..." $ip, $port
+#: src/etc/inc/smtp.inc:240
+msgid "Connecting to host address \"%1$s\" port %2$s..."
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-247
+#: src/etc/inc/smtp.inc:247
 msgid "-3 socket could not be created"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-249
-msgid "-4 dns lookup on hostname "%s" failed"), $domain
+#: src/etc/inc/smtp.inc:249
+msgid "-4 dns lookup on hostname \"%s\" failed"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-251
+#: src/etc/inc/smtp.inc:251
 msgid "-5 connection refused or timed out"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-253
+#: src/etc/inc/smtp.inc:253
 msgid "-6 fdopen() call failed"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-255
+#: src/etc/inc/smtp.inc:255
 msgid "-7 setvbuf() call failed"
 msgstr ""
 
-#:
-src/etc/inc/smtp.inc
-257
-msgid "could not connect to the host "%1$s"
-%2$s" $domain, $error
+#: src/etc/inc/smtp.inc:257
+msgid "could not connect to the host \"%1$s\": %2$s"
 msgstr ""
 
 #:
