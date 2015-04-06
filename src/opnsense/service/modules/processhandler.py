@@ -372,6 +372,7 @@ class Action(object):
             # script type commands, basic script type only uses exit statuses, script_output sends back stdout data.
             if self.command is None:
                 # no command supplied, exit
+                syslog.syslog(syslog.LOG_ERR, '[%s] returned "No command"' % message_uuid)
                 return 'No command'
 
             # build script command to execute, shared for both types
@@ -392,6 +393,7 @@ class Action(object):
                     if exit_status == 0:
                         return 'OK'
                     else:
+                        syslog.syslog(syslog.LOG_ERR, '[%s] returned exit status %d' % (message_uuid, exit_status))
                         return 'Error (%d)' % exit_status
                 except:
                     syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed at %s' % (message_uuid,
