@@ -5490,363 +5490,239 @@ msgid ""
 "\"' . $config['system']['webgui']    ['authmode'] . '\"."
 msgstr ""
 
-#:
-src/etc/rc.initial.password
-50
+#: src/etc/rc.initial.password:50
 msgid "Do you want to set it back to Local Database [y|n]?"
 msgstr ""
 
-#:
-src/etc/rc.initial.password
-74
+#: src/etc/rc.initial.password:74
 msgid "password changed from console menu"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-106
-msgid "Do you want to enable the %s server on %s?"), $label_DHCP, $upperifname
+#: src/etc/rc.initial.setlanip:106
+msgid "Do you want to enable the %s server on %s?"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-249
-msgid "Configure %s address %s interface via %s?"), $label_IPvX, $upperifname, $label_DHCP))) {
+#: src/etc/rc.initial.setlanip:249
+msgid "Configure %s address %s interface via %s?"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-263
-msgid "Enter the new %s %s address.  Press <ENTER> for none
-"
+#: src/etc/rc.initial.setlanip:263
+msgid "Enter the new %s %s address.  Press <ENTER> for none:"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-269
-msgid "This IP address conflicts with another interface or a VIP" "n";
+#: src/etc/rc.initial.setlanip:269
+msgid "This IP address conflicts with another interface or a VIP"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-274
+#: src/etc/rc.initial.setlanip:274
 msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-289
-msgid "Enter the new %s %s subnet bit count (1 to %s)
-"
+#: src/etc/rc.initial.setlanip:289
+msgid "Enter the new %s %s subnet bit count (1 to %s):"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-297
+#: src/etc/rc.initial.setlanip:297
 msgid "You cannot set network address to an interface"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-301
+#: src/etc/rc.initial.setlanip:301
 msgid "You cannot set broadcast address to an interface"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-314
-msgid "For a WAN, enter the new %s %s upstream gateway address."), $upperifname, $label_IPvX) . "n" .
+#: src/etc/rc.initial.setlanip:314
+msgid "For a WAN, enter the new %s %s upstream gateway address."
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-315
-msgid "For a LAN, press <ENTER> for none
-" "n> ";
+#: src/etc/rc.initial.setlanip:315
+msgid "For a LAN, press <ENTER> for none:"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-321
-msgid "not an %s IP address!"), $label_IPvX) . "n";
+#: src/etc/rc.initial.setlanip:321
+msgid "not an %s IP address!"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-323
-msgid "not in subnet!" "n";
+#: src/etc/rc.initial.setlanip:323
+msgid "not in subnet!"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-367
-msgid "Enter the start address of the %s client address range
-"), $label_IPvX) . " ";
+#: src/etc/rc.initial.setlanip:367
+msgid "Enter the start address of the %s client address range:"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-376
-msgid "This IP address must be in the interface's subnet" "n";
+#: src/etc/rc.initial.setlanip:376
+msgid "This IP address must be in the interface's subnet"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-380
-msgid "Enter the end address of the %s client address range
-"), $label_IPvX) . " ";
+#: src/etc/rc.initial.setlanip:380
+msgid "Enter the end address of the %s client address range:"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-389
-msgid "This IP address must be in the interface's subnet" "n";
+#: src/etc/rc.initial.setlanip:389
+msgid "This IP address must be in the interface's subnet"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-392
-msgid "The end address of the DHCP range must be >= the start address" "n";
+#: src/etc/rc.initial.setlanip:392
+msgid "The end address of the DHCP range must be >= the start address"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-403
-msgid "Disabling %s DHCPD..."), $label_IPvX);
+#: src/etc/rc.initial.setlanip:403
+msgid "Disabling %s DHCPD..."
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-416
-msgid "Do you want to revert to HTTP as the webConfigurator protocol?"))) {
+#: src/etc/rc.initial.setlanip:416
+msgid "Do you want to revert to HTTP as the webConfigurator protocol?"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-423
-msgid "Note
-the anti-lockout rule on %s has been re-enabled."), $interface) . "n";
+#: src/etc/rc.initial.setlanip:423
+msgid "Note: the anti-lockout rule on %s has been re-enabled."
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-454
-msgid "%s IP configuration from console menu"), $interface
+#: src/etc/rc.initial.setlanip:454
+msgid "%s IP configuration from console menu"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-470
+#: src/etc/rc.initial.setlanip:470
 msgid "The IPv4 %s address has been set to %s"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-473
+#: src/etc/rc.initial.setlanip:473
 msgid "The IPv4 %s address has been set to %s"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-479
+#: src/etc/rc.initial.setlanip:479
 msgid "The IPv6 %s address has been set to %s"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-482
+#: src/etc/rc.initial.setlanip:482
 msgid "The IPv6 %s address has been set to %s"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-489
-msgid "You can now access the webConfigurator by opening the following URL in your web browser
-" . "n";
+#: src/etc/rc.initial.setlanip:489
+msgid ""
+"You can now access the webConfigurator by opening the following URL in "
+"your web browser:"
 msgstr ""
 
-#:
-src/etc/rc.initial.setlanip
-517
+#: src/etc/rc.initial.setlanip:517
 msgid "Press <ENTER> to continue."
 msgstr ""
 
-#:
-src/etc/rc.openvpn
-91
-msgid "Could not obtain openvpn lock for executing rc.openvpn for more than 10 seconds continuing..."
+#: src/etc/rc.openvpn:91
+msgid ""
+"Could not obtain openvpn lock for executing rc.openvpn for more than 10 "
+"seconds continuing..."
 msgstr ""
 
-#:
-src/etc/rc.php_ini_setup
-55
-PHPMODULES="$PHPMODULES gettext"
+#: src/etc/rc.restore_config_backup:14
+msgid "n/j/y H:i:s"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-14
-msgid "n/j/y H
-i
-s"), $backup_info['time']);
-msgstr ""
-
-#:
-src/etc/rc.restore_config_backup
-16
+#: src/etc/rc.restore_config_backup:16
 msgid "Unknown"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-21
+#: src/etc/rc.restore_config_backup:21
 msgid "Unknown Page"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-34
+#: src/etc/rc.restore_config_backup:34
 msgid "No backups found in the configuration history."
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-49
+#: src/etc/rc.restore_config_backup:49
 msgid "No backups found in the configuration history."
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-52
-msgid "Which configuration would you like to restore?" "n";
+#: src/etc/rc.restore_config_backup:52
+msgid "Which configuration would you like to restore?"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-58
-msgid "That is not a valid backup number.n"
+#: src/etc/rc.restore_config_backup:58
+msgid "That is not a valid backup number.\n"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-67
-msgid "Is this the backup you wish to restore?" "n";
+#: src/etc/rc.restore_config_backup:67
+msgid "Is this the backup you wish to restore?"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-70
-msgid "Y/N?" " 
-";
+#: src/etc/rc.restore_config_backup:70
+msgid "Y/N?"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-72
-msgid "Y")) {
+#: src/etc/rc.restore_config_backup:72
+msgid "Y"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-76
-msgid "n/j/y H
-i
-s"), $thisbackup['time']), $thisbackup['description']);
+#: src/etc/rc.restore_config_backup:76
+msgid "Successfully reverted to timestamp %1$s with description "%2$s"."
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-77
-msgid "You may need to reboot the firewall or restart services before the restored configuration is fully active." "nn";
+#: src/etc/rc.restore_config_backup:76
+msgid "n/j/y H:i:s"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-79
-msgid "Unable to revert to the selected configuration." "n";
+#: src/etc/rc.restore_config_backup:77
+msgid ""
+"You may need to reboot the firewall or restart services before the restored "
+"configuration is fully active."
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-83
-msgid "Restore canceled." "n";
+#: src/etc/rc.restore_config_backup:79
+msgid "Unable to revert to the selected configuration."
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-86
-msgid "Restore canceled due to invalid input." "n";
+#: src/etc/rc.restore_config_backup:83
+msgid "Restore canceled."
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-93
-msgid "Restore Backup from Configuration History" "nn";
+#: src/etc/rc.restore_config_backup:86
+msgid "Restore canceled due to invalid input."
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-94
-msgid "List Backups" "n";
+#: src/etc/rc.restore_config_backup:93
+msgid "Restore Backup from Configuration History"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-95
-msgid "Restore Backup" "n";
+#: src/etc/rc.restore_config_backup:94
+msgid "List Backups"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-96
-msgid "Quit" "n";
+#: src/etc/rc.restore_config_backup:95
+msgid "Restore Backup"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-98
-msgid "Please select an option to continue" "
-";
+#: src/etc/rc.restore_config_backup:96
+msgid "Quit"
 msgstr ""
 
-#:
-src/etc/rc.restore_config_backup
-103
-msgid "quit"))
+#: src/etc/rc.restore_config_backup:98
+msgid "Please select an option to continue"
 msgstr ""
 
-#:
-src/opnsense/mvc/app/library/OPNsense/Core/Shell.php
-111
-msgid "The command '%1$s'
+#: src/etc/rc.restore_config_backup:103
+msgid "quit"
 msgstr ""
 
-#:
-src/sbin/gmirror_status_check.php
-51
-msgid "List of mirrors changed. Old
-(%s) New
-(%s)"), implode(", ", $previous_mirror_list), implode(", ", $mirror_list
+#: src/opnsense/mvc/app/library/OPNsense/Core/Shell.php:111
+msgid ""
+"The command '%1\$s' returned exit code '%2\$d', the output was '%3\$s' "
 msgstr ""
 
-#:
-src/sbin/gmirror_status_check.php
-58
-msgid "Mirror %s status changed from %s to %s."), $mirror, $previous_mirror_status[$mirror]['status'], $mirror_status[$mirror]['status']);
+#: src/sbin/gmirror_status_check.php:51
+msgid "List of mirrors changed. Old: (%s) New: (%s)"
 msgstr ""
 
-#:
-src/sbin/gmirror_status_check.php
-63
-msgid "Mirror %s consumer count changed from %d to %d."), $mirror, count($previous_mirror_status[$mirror]['components']), count($mirror_status[$mirror]['components']
+#: src/sbin/gmirror_status_check.php:58
+msgid "Mirror %s status changed from %s to %s."
 msgstr ""
 
-#:
-src/sbin/gmirror_status_check.php
-70
-msgid "Mirror %s drive status changed. Old
-(%s) New
-(%s)"
+#: src/sbin/gmirror_status_check.php:63
+msgid "Mirror %s consumer count changed from %d to %d."
+msgstr ""
+
+#: src/sbin/gmirror_status_check.php:70
+msgid "Mirror %s drive status changed. Old: (%s) New: (%s)"
 msgstr ""
 
 #:
