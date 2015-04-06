@@ -2402,26 +2402,16 @@ msgstr ""
 msgid "Allow access to the 'Firewall Traffic Shaper Wizard' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-420
-msgid "WebCfg - Firewall
-Virtual IP Addresses page"
+#: src/etc/inc/priv.defs.inc:420
+msgid "WebCfg - Firewall Virtual IP Addresses page"
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-421
-msgid "Allow access to the 'Firewall
-Virtual IP Addresses' page."
+#: src/etc/inc/priv.defs.inc:421
+msgid "Allow access to the 'Firewall Virtual IP Addresses' page."
 msgstr ""
 
-#:
-src/etc/inc/priv.defs.inc
-426
-msgid "WebCfg - Firewall
-Virtual IP Address
-Edit page"
+#: src/etc/inc/priv.defs.inc:426
+msgid "WebCfg - Firewall Virtual IP Address Edit page"
 msgstr ""
 
 #:
