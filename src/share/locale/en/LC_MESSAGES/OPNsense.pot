@@ -3836,10 +3836,11 @@ msgstr ""
 msgid "%s Service is"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-517
+#: src/etc/inc/service-utils.inc:517
 msgid "Stopped"
+msgstr ""
+
+#: src/etc/inc/service-utils.inc:517
 msgid "Disabled"
 msgstr ""
 
