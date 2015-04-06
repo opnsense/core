@@ -5486,8 +5486,8 @@ msgstr ""
 
 #: src/etc/rc.initial.password:48
 msgid ""
-"The User manager authentication server is set to \"' . "
-"$config['system']['webgui']    ['authmode'] . '\"."
+"The User manager authentication server is set to "
+"\"' . $config['system']['webgui']    ['authmode'] . '\"."
 msgstr ""
 
 #:
