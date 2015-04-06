@@ -162,12 +162,12 @@ class HandlerClient(threading.Thread):
                 if exec_command[0] == "&":
                     # set run in background
                     exec_in_background = True
-                    exec_command= exec_command[1:]
+                    exec_command = exec_command[1:]
                 if len(data_parts) > 1:
                     exec_action = data_parts[1]
                 else:
                     exec_action = None
-                if len(data_parts) >2:
+                if len(data_parts) > 2:
                     exec_params = data_parts[2:]
                 else:
                     exec_params = None
@@ -227,7 +227,6 @@ class ActionHandler(object):
         self.action_map = {}
         self.load_config()
 
-
     def load_config(self):
         """ load action configuration from config files into local dictionary
 
@@ -243,7 +242,7 @@ class ActionHandler(object):
                 self.action_map[topic_name] = {}
 
             # traverse config directory and open all filenames starting with actions_
-            cnf=ConfigParser.RawConfigParser()
+            cnf = ConfigParser.RawConfigParser()
             cnf.read(config_filename)
             for section in cnf.sections():
                 # map configuration data on object
@@ -294,8 +293,8 @@ class ActionHandler(object):
         action_params = []
         action_obj = self.findAction(command,action,parameters)
 
-        if action_obj != None:
-            if parameters != None and len(parameters) > action_obj.getParameterStartPos():
+        if action_obj is not None:
+            if parameters is not None and len(parameters) > action_obj.getParameterStartPos():
                 action_params = parameters[action_obj.getParameterStartPos():]
 
             return '%s\n'%action_obj.execute(action_params)
@@ -349,19 +348,19 @@ class Action(object):
         :return:
         """
         # send-out syslog message
-        if self.message != None:
-            if self.message.count('%s') > 0 and parameters != None and len(parameters) > 0:
+        if self.message is not None:
+            if self.message.count('%s') > 0 and parameters is not None and len(parameters) > 0:
                 syslog.syslog(syslog.LOG_NOTICE,self.message % tuple(parameters[0:self.message.count('%s')]) )
             else:
                 syslog.syslog(syslog.LOG_NOTICE,self.message)
 
         # validate input
-        if self.type == None:
+        if self.type is None:
             # no action type, nothing to do here
             return 'No action type'
         elif self.type.lower() in ('script','script_output'):
             # script type commands, basic script type only uses exit statuses, script_output sends back stdout data.
-            if self.command == None:
+            if self.command is None:
                 # no command supplied, exit
                 return 'No command'
 
@@ -380,7 +379,7 @@ class Action(object):
                 try:
                     exit_status = subprocess.call(script_command, shell=True)
                     # send response
-                    if exit_status == 0 :
+                    if exit_status == 0:
                         return 'OK'
                     else:
                         return 'Error (%d)'%exit_status
