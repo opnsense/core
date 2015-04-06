@@ -3844,545 +3844,364 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-519
-msgid "%s Service is"$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
+#: src/etc/inc/service-utils.inc:519
+msgid "%s Service is"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-546
-msgid "Restart %sService"),$stitle) . "' class="glyphicon glyphicon-refresh"/></a>n";
+#: src/etc/inc/service-utils.inc:546
+msgid "Restart %sService"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-557
-msgid "Stop %sService"),$stitle) . "' class="glyphicon glyphicon-stop" />";
+#: src/etc/inc/service-utils.inc:557
+msgid "Stop %sService"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-573
-msgid "Start %sService"),$stitle) . "' alt='start' class="glyphicon glyphicon-play"/></a>n";
+#: src/etc/inc/service-utils.inc:573
+msgid "Start %sService"
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-644
-msgid "%s has been started."),htmlspecialchars($name
+#: src/etc/inc/service-utils.inc:644
+msgid "%s has been started."
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-720
-msgid "%s has been stopped."), htmlspecialchars($name
+#: src/etc/inc/service-utils.inc:720
+msgid "%s has been stopped."
 msgstr ""
 
-#:
-src/etc/inc/service-utils.inc
-796
-msgid "%s has been restarted."),htmlspecialchars($name
+#: src/etc/inc/service-utils.inc:796
+msgid "%s has been restarted."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-352
-msgid "DHCP leases restore failed exited with %1$s, the error is
-%2$s%3$s" $dhcpreturn, $dhcprestore, "n"
+#: src/etc/inc/services.inc:352
+msgid "DHCP leases restore failed exited with %1$s, the error is %2$s%3$s"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-378
+#: src/etc/inc/services.inc:378
 msgid "Starting DHCP service..."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-461
+#: src/etc/inc/services.inc:461
 msgid "Warning!  DHCP Failover setup and no CARP virtual IPs defined!"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-864
-msgid "Error
-cannot open dhcpd.conf in services_dhcpdv4_configure().%s"), "n"
+#: src/etc/inc/services.inc:864
+msgid "Error cannot open dhcpd.conf in services_dhcpdv4_configure().%s"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1298
-msgid "done." "n";
+#: src/etc/inc/services.inc:1298
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1347
+#: src/etc/inc/services.inc:1347
 msgid "Could not write Igmpproxy configuration file!"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1356
+#: src/etc/inc/services.inc:1356
 msgid "Started IGMP proxy service."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1375
+#: src/etc/inc/services.inc:1375
 msgid "Starting DHCP relay service..."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1492
+#: src/etc/inc/services.inc:1492
 msgid "Starting DHCPv6 relay service..."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1665
+#: src/etc/inc/services.inc:1665
 msgid "Starting DynDNS clients..."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1678
-msgid "done." "n";
+#: src/etc/inc/services.inc:1678
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1729
+#: src/etc/inc/services.inc:1729
 msgid "Starting DNS forwarder..."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1847
-msgid "done." "n";
+#: src/etc/inc/services.inc:1847
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1868
+#: src/etc/inc/services.inc:1868
 msgid "Starting DNS Resolver..."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1875
-msgid "done." "n";
+#: src/etc/inc/services.inc:1875
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1899
+#: src/etc/inc/services.inc:1899
 msgid "Starting SNMP daemon... "
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-1904
-msgid "Error
-cannot open snmpd.conf in services_snmpd_configure().%s"),"n"
+#: src/etc/inc/services.inc:1904
+msgid "Error cannot open snmpd.conf in services_snmpd_configure().%s"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2081
-msgid "done." "n";
+#: src/etc/inc/services.inc:2081
+msgid "done."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2176
-msgid "DynDNS updated IP Address (A) for {$dnsupdate['host']} on %s (%s) to %s"), convert_real_interface_to_friendly_descr($if), $if, $wanip) . "n";
+#: src/etc/inc/services.inc:2176
+msgid ""
+"DynDNS updated IP Address (A) for {$dnsupdate['host']} on %s (%s) to %s"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2191
-msgid "DynDNS updated IPv6 Address (AAAA) for {$dnsupdate['host']} on %s (%s) to %s"), convert_real_interface_to_friendly_descr($if), $if, $wanipv6) . "n";
+#: src/etc/inc/services.inc:2191
+msgid ""
+"DynDNS updated IPv6 Address (AAAA) for {$dnsupdate['host']} on %s (%s) to %s"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2245
-msgid "pfSense specific crontab entries" "n";
+#: src/etc/inc/services.inc:2245
+msgid "pfSense specific crontab entries"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2246
-msgid " "Created
-" " " . date("F j, Y, g
-i a" "n";
+#: src/etc/inc/services.inc:2246
+msgid "Created:"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2260
-msgid "If possible do not add items to this file manually." "n";
+#: src/etc/inc/services.inc:2260
+msgid "If possible do not add items to this file manually."
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2261
-msgid "If you do so, this file must be terminated with a blank line (e.g. new line)" "n";
+#: src/etc/inc/services.inc:2261
+msgid ""
+"If you do so, this file must be terminated with a blank line (e.g. new line)"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2305
+#: src/etc/inc/services.inc:2305
 msgid "Starting UPnP service... "
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2342
-msgid "Installed cron job for %s"), $command
+#: src/etc/inc/services.inc:2342
+msgid "Installed cron job for %s"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2345
-msgid "Updated cron job for %s"), $command
+#: src/etc/inc/services.inc:2345
+msgid "Updated cron job for %s"
 msgstr ""
 
-#:
-src/etc/inc/services.inc
-2350
-msgid "Removed cron job for %s"), $command
+#: src/etc/inc/services.inc:2350
+msgid "Removed cron job for %s"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-186
-msgid "The field '%s' contains invalid characters."), $pn);
+#: src/etc/inc/shaper.inc:186
+msgid "The field '%s' contains invalid characters."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-192
-msgid "The field '%s' is required."), $reqdfieldsn[$i]);
+#: src/etc/inc/shaper.inc:192
+msgid "The field '%s' is required."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-317
+#: src/etc/inc/shaper.inc:317
 msgid "Bandwidth"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-319
+#: src/etc/inc/shaper.inc:319
 msgid "Bandwidthtype"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-324
+#: src/etc/inc/shaper.inc:324
 msgid "Bandwidth must be an integer."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-326
+#: src/etc/inc/shaper.inc:326
 msgid "Bandwidth cannot be negative."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-328
+#: src/etc/inc/shaper.inc:328
 msgid "Qlimit must be an integer."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-330
+#: src/etc/inc/shaper.inc:330
 msgid "Qlimit must be positive."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-332
+#: src/etc/inc/shaper.inc:332
 msgid "Tbrsize must be an integer."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-334
+#::src/etc/inc/shaper.inc:334
 msgid "Tbrsize must be positive."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-634
+#: src/etc/inc/shaper.inc:634
 msgid "Enable/Disable"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-639
+#: src/etc/inc/shaper.inc:639
 msgid "Enable/disable discipline and its children" "</span>";
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-641
-msgid "Name" "</span></td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-645
-msgid "Scheduler Type "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-671
-msgid "NOTE
-Changing this changes all child queues!"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-672
-msgid " Beware you can lose information."
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-675
-msgid "Bandwidth"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-710
-msgid "Adjusts the size, in bytes, of the token bucket regulator. "
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-999
+#: src/etc/inc/shaper.inc:641
 msgid "Name"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1008
-msgid "The priority must be an integer between 1 and 15."
+#: src/etc/inc/shaper.inc:645
+msgid "Scheduler Type "
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1011
-msgid "Queue limit must be an integer"
+#: src/etc/inc/shaper.inc:671
+msgid "NOTE: Changing this changes all child queues!"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1013
-msgid "Queue limit must be positive"
+#: src/etc/inc/shaper.inc:672
+msgid " Beware you can lose information."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1015
-msgid "Queue names must be alphanumeric and _ or - only."
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1017
-msgid "Queue names must be alphanumeric and _ or - only."
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1020
-msgid "Only one default queue per interface is allowed."
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1162
-msgid "Enable/Disable"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1167
-msgid "Enable/Disable queue and its children" "</span>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1171
-msgid "Queue Name" "</td><td width="78%" class="vtable">";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1178
-msgid "Enter the name of the queue here.  Do not use spaces and limit the size to 15 characters."
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1181
-msgid "Priority" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1185
-msgid "For hfsc, the range is 0 to 7. The default is 1.  Hfsc queues with a higher priority are preferred in the case of overload." "</span></td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1188
-msgid "Queue limit" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1192
-msgid "Queue limit in packets."
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1195
-msgid "Scheduler options" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1200
-msgid "Default queue" "<br />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1203
-msgid "Default queue" "<br />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1210
-$form .= " /> <a target="_new" href="http
-msgid "Random Early Detection" "</a><br />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1215
-$form .= " /> <a target="_new" href="http
-msgid "Random Early Detection In and Out" "</a><br />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1220
-$form .= " /> <a target="_new" href="http
-msgid "Explicit Congestion Notification" "</a><br />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1225
-$form .= " /> <a target="_new" href="http
-msgid "Codel Active Queue" "</a><br />";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1226
-msgid "Select options for this queue"
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1228
-msgid "Description" "</td>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1255
-msgid "Bandwidth
-" " " . $this->GetBandwidth().$this->GetBwscale();
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1259
-msgid "Priority
-on" " </td></tr>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1262
-msgid "Default
-on" " </td></tr>";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1268
-msgid "Delete queue from interface" ""  >";
-msgstr ""
-
-#:
-src/etc/inc/shaper.inc
-1593
+#: src/etc/inc/shaper.inc:675
 msgid "Bandwidth"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1595
+#: src/etc/inc/shaper.inc:710
+msgid "Adjusts the size, in bytes, of the token bucket regulator. "
+msgstr ""
+
+#: src/etc/inc/shaper.inc:999
+msgid "Name"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1008
+msgid "The priority must be an integer between 1 and 15."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1011
+msgid "Queue limit must be an integer"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1013
+msgid "Queue limit must be positive"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1015
+msgid "Queue names must be alphanumeric and _ or - only."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1017
+msgid "Queue names must be alphanumeric and _ or - only."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1020
+msgid "Only one default queue per interface is allowed."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1162
+msgid "Enable/Disable"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1167
+msgid "Enable/Disable queue and its children"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1171
+msgid "Queue Name"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1178
+msgid ""
+"Enter the name of the queue here.  Do not use spaces and limit the size to "
+"15 characters."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1181
+msgid "Priority"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1185
+msgid ""
+"For hfsc, the range is 0 to 7. The default is 1.  Hfsc queues with a higher "
+"priority are preferred in the case of overload."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1188
+msgid "Queue limit"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1192
+msgid "Queue limit in packets."
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1195
+msgid "Scheduler options"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1200
+msgid "Default queue"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1203
+msgid "Default queue"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1210
+msgid "Random Early Detection"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1215
+msgid "Random Early Detection In and Out"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1220
+msgid "Explicit Congestion Notification"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1225
+msgid "Codel Active Queue"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1226
+msgid "Select options for this queue"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1228
+msgid "Description"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1255
+msgid "Bandwidth:"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1259
+msgid "Priority: on"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1262
+msgid "Default: on"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1268
+msgid "Delete queue from interface"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1593
+msgid "Bandwidth"
+msgstr ""
+
+#: src/etc/inc/shaper.inc:1595
 msgid "Bandwidthtype"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1601
+#: src/etc/inc/shaper.inc:1601
 msgid "Bandwidth must be an integer."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1604
+#: src/etc/inc/shaper.inc:1604
 msgid "Bandwidth cannot be negative."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1608
+#: src/etc/inc/shaper.inc:1608
 msgid "Bandwidth in percentage should be between 1 and 100 bounds."
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1625
+#: src/etc/inc/shaper.inc:1625
 msgid "upperlimit service curve defined but missing (d) value"
 msgstr ""
 
-#:
-src/etc/inc/shaper.inc
-1627
-msgid "upperlimit service curve defined but missing initial bandwidth (m1) value"
+#: src/etc/inc/shaper.inc:1627
+msgid ""
+"upperlimit service curve defined but missing initial bandwidth (m1) value"
 msgstr ""
 
 #:
