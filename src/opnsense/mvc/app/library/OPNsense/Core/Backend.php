@@ -88,4 +88,16 @@ class Backend
 
         return $resp;
     }
+
+    /**
+     * send event to backend, but prefix & to force it to run in background
+     * @param string $event event string
+     * @param int $timeout timeout in seconds
+     * @return string (message uuid from configd)
+     * @throws \Exception
+     */
+    public function sendBackgroundEvent($event, $timeout = 120)
+    {
+        return $this->sendEvent('&'.$event, $timeout);
+    }
 }
