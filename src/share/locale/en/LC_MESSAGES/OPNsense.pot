@@ -5725,2282 +5725,1549 @@ msgstr ""
 msgid "Mirror %s drive status changed. Old: (%s) New: (%s)"
 msgstr ""
 
-#:
-src/www/bandwidth_by_ip.php
-47
+#: src/www/bandwidth_by_ip.php:47
 msgid "Wrong Interface"
 msgstr ""
 
-#:
-src/www/bandwidth_by_ip.php
-142
+#: src/www/bandwidth_by_ip.php:142
 msgid "no info"
 msgstr ""
 
-#:
-src/www/carp_status.php
-59
-msgid "%s IPs have been disabled. Please note that disabling does not survive a reboot."), $carp_counter);
+#: src/www/carp_status.php:59
+msgid ""
+"%s IPs have been disabled. Please note that disabling does not survive a "
+"reboot."
 msgstr ""
 
-#:
-src/www/carp_status.php
-61
+#: src/www/carp_status.php:61
 msgid "CARP has been enabled."
 msgstr ""
 
-#:
-src/www/carp_status.php
-82
+#: src/www/carp_status.php:82
 msgid "CARP"
 msgstr ""
 
-#:
-src/www/carp_status.php
-99
-msgid "Check link status on all interfaces with configured CARP VIPs.")); ?>
+#: src/www/carp_status.php:99
+msgid "Check link status on all interfaces with configured CARP VIPs."
 msgstr ""
 
-#:
-src/www/carp_status.php
-118
-msgid "Enable CARP" "" />";
+#: src/www/carp_status.php:118
+msgid "Enable CARP"
 msgstr ""
 
-#:
-src/www/carp_status.php
-121
-msgid "Temporarily Disable CARP" "" />";
+#: src/www/carp_status.php:121
+msgid "Temporarily Disable CARP"
 msgstr ""
 
-#:
-src/www/carp_status.php
-124
-msgid "Leave Persistent CARP Maintenance Mode" "" />";
+#: src/www/carp_status.php:124
+msgid "Leave Persistent CARP Maintenance Mode"
 msgstr ""
 
-#:
-src/www/carp_status.php
-126
-msgid "Enter Persistent CARP Maintenance Mode" "" />";
+#: src/www/carp_status.php:126
+msgid "Enter Persistent CARP Maintenance Mode"
 msgstr ""
 
-#:
-src/www/carp_status.php
-135
-msgid "CARP Interface"); ?></td>
+#: src/www/carp_status.php:135
+msgid "CARP Interface"
 msgstr ""
 
-#:
-src/www/carp_status.php
-136
-msgid "Virtual IP"); ?></td>
+#: src/www/carp_status.php:136
+msgid "Virtual IP"
 msgstr ""
 
-#:
-src/www/carp_status.php
-137
-msgid "Status"); ?></td>
+#: src/www/carp_status.php:137
+msgid "Status"
 msgstr ""
 
-#:
-src/www/carp_status.php
-141
+#: src/www/carp_status.php:141
 msgid "Could not locate any defined CARP interfaces."
 msgstr ""
 
-#:
-src/www/carp_status.php
-183
-msgid "Note"); ?>
-</strong></span>
+#: src/www/carp_status.php:183
+msgid "Note"
 msgstr ""
 
-#:
-src/www/carp_status.php
-185
-msgid "here"); ?></a>.
+#: src/www/carp_status.php:185
+msgid "here"
 msgstr ""
 
-#:
-src/www/carp_status.php
-189
-msgid "pfSync nodes" "
-<br />";
+#: src/www/carp_status.php:189
+msgid "pfSync nodes"
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-57
-msgid "Unfortunately we have detected a programming bug." "</strong></p>";
+#: src/www/crash_reporter.php:57
+msgid "Unfortunately we have detected a programming bug."
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-58
-msgid "Would you like to submit the programming debug logs to the OPNsense developers for inspection?" "</p>";
+#: src/www/crash_reporter.php:58
+msgid ""
+"Would you like to submit the programming debug logs to the OPNsense "
+"developers for inspection?"
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-59
-msgid "Please double check the contents to ensure you are comfortable sending this information before clicking Yes." "</i></p>";
+#: src/www/crash_reporter.php:59
+msgid ""
+"Please double check the contents to ensure you are comfortable sending this "
+"information before clicking Yes."
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-60
-msgid "Contents of crash reports" "
-<br />";
+#: src/www/crash_reporter.php:60
+msgid "Contents of crash reports"
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-62
-msgid " - Submit this to the developers for inspection" "</p>";
+#: src/www/crash_reporter.php:62
+msgid " - Submit this to the developers for inspection"
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-63
-msgid " - Just delete the crash report and take me back to the Dashboard" "</p>";
+#: src/www/crash_reporter.php:63
+msgid " - Just delete the crash report and take me back to the Dashboard"
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-67
+#: src/www/crash_reporter.php:67
 msgid "Crash Reporter"
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-94
-msgid "$_POST['Submit']) == "Yes"{
+#: src/www/crash_reporter.php:94
+msgid "$_POST['Submit']) == \"Yes\""
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-95
+#: src/www/crash_reporter.php:95
 msgid "Processing..."
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-104
+#: src/www/crash_reporter.php:104
 msgid "Uploading..."
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-114
-msgid " and delete crash report files from local disk." "</p>";
+#: src/www/crash_reporter.php:114
+msgid " and delete crash report files from local disk."
 msgstr ""
 
-#:
-src/www/crash_reporter.php
-118
-msgid "$_POST['Submit']) == "No"{
+#: src/www/crash_reporter.php:118
+msgid "$_POST['Submit']) == \"No\""
 msgstr ""
 
-#:
-src/www/diag_arp.php
-246
+#: src/www/diag_arp.php:246
 msgid "ARP Table"
 msgstr ""
 
-#:
-src/www/diag_arp.php
-307
-msgid "IP address"); ?></td>
+#: src/www/diag_arp.php:307
+msgid "IP address"
 msgstr ""
 
-#:
-src/www/diag_arp.php
-317
-msgid "MAC address"); ?></td>
+#: src/www/diag_arp.php:317
+msgid "MAC address"
 msgstr ""
 
-#:
-src/www/diag_arp.php
-327
-msgid "Hostname"); ?></td>
+#: src/www/diag_arp.php:327
+msgid "Hostname"
 msgstr ""
 
-#:
-src/www/diag_arp.php
-337
-msgid "Interface"); ?></td>
+#: src/www/diag_arp.php:337
+msgid "Interface"
 msgstr ""
 
-#:
-src/www/diag_arp.php
-363
-msgid "NOTE
-msgid "instead of ARP"?>.</div>
+#: src/www/diag_arp.php:363
+msgid "NOTE: Local IPv6 peers use"
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-39
+#: src/www/diag_arp.php:363
+msgid "NDP"
+msgstr ""
+
+#: src/www/diag_arp.php:363
+msgid "instead of ARP"
+msgstr ""
+
+#: src/www/diag_authentication.php:39
 msgid "is not a valid authentication server"
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-42
+#: src/www/diag_authentication.php:42
 msgid "A username and password must be specified."
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-46
-msgid "User" "
+#: src/www/diag_authentication.php:46
+msgid "User"
+msgstr ""
+
+#: src/www/diag_authentication.php:46
 msgid "authenticated successfully."
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-48
-msgid "This user is a member of these groups" "
-<br />";
+#: src/www/diag_authentication.php:48
+msgid "This user is a member of these groups"
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-52
+#: src/www/diag_authentication.php:52
 msgid "Authentication failed."
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-56
+#: src/www/diag_authentication.php:56
 msgid "Authentication"
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-88
-msgid "Authentication Server"); ?></td>
+#: src/www/diag_authentication.php:88
+msgid "Authentication Server"
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-103
-msgid "Username"); ?></td>
+#: src/www/diag_authentication.php:103
+msgid "Username"
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-107
-msgid "Password"); ?></td>
+#: src/www/diag_authentication.php:107
+msgid "Password"
 msgstr ""
 
-#:
-src/www/diag_authentication.php
-112
-msgid "Test");?>" /></td>
+#: src/www/diag_authentication.php:112
+msgid "Test"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-147
+#: src/www/diag_backup.php:147
 msgid "Restored base_package menus after configuration restore."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-166
+#: src/www/diag_backup.php:166
 msgid "Aliases"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-167
+#: src/www/diag_backup.php:167
 msgid "Captive Portal"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-168
+#: src/www/diag_backup.php:168
 msgid "Captive Portal Vouchers"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-169
+#: src/www/diag_backup.php:169
 msgid "DNS Forwarder"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-170
+#: src/www/diag_backup.php:170
 msgid "DHCP Server"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-171
+#: src/www/diag_backup.php:171
 msgid "DHCPv6 Server"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-172
+#: src/www/diag_backup.php:172
 msgid "Firewall Rules"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-173
+#: src/www/diag_backup.php:173
 msgid "Interfaces"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-174
+#: src/www/diag_backup.php:174
 msgid "IPSEC"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-175
+#: src/www/diag_backup.php:175
 msgid "NAT"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-176
+#: src/www/diag_backup.php:176
 msgid "OpenVPN"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-177
+#: src/www/diag_backup.php:177
 msgid "Package Manager"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-178
+#: src/www/diag_backup.php:178
 msgid "PPTP Server"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-179
+#: src/www/diag_backup.php:179
 msgid "RRD Data"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-180
+#: src/www/diag_backup.php:180
 msgid "Scheduled Tasks"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-181
+#: src/www/diag_backup.php:181
 msgid "Syslog"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-182
+#: src/www/diag_backup.php:182
 msgid "System"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-183
+#: src/www/diag_backup.php:183
 msgid "Static routes"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-184
+#: src/www/diag_backup.php:184
 msgid "System tunables"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-185
+#: src/www/diag_backup.php:185
 msgid "SNMP Server"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-186
+#: src/www/diag_backup.php:186
 msgid "Traffic Shaper"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-187
+#: src/www/diag_backup.php:187
 msgid "VLANS"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-188
-msgid "Wake on LAN")
+#: src/www/diag_backup.php:188
+msgid "Wake on LAN"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-192
-msgid "ALL" "</option>";
+#: src/www/diag_backup.php:192
+msgid "ALL" "</option>"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-233
-msgid "Restore configuration")))
+#: src/www/diag_backup.php:233
+msgid "Restore configuration"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-235
-msgid "Reinstall")))
+#: src/www/diag_backup.php:235
+msgid "Reinstall"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-237
-msgid "Clear Package Lock")))
+#: src/www/diag_backup.php:237
+msgid "Clear Package Lock"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-239
-msgid "Download")))
+#: src/www/diag_backup.php:239
+msgid "Download"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-241
-msgid "Restore version")))
+#: src/www/diag_backup.php:241
+msgid "Restore version"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-256
+#: src/www/diag_backup.php:256
 msgid "You must supply and confirm the password for encryption."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-258
+#: src/www/diag_backup.php:258
 msgid "The supplied 'Password' and 'Confirm' field values must match."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-333
+#: src/www/diag_backup.php:333
 msgid "You must supply and confirm the password for decryption."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-335
+#: src/www/diag_backup.php:335
 msgid "The supplied 'Password' and 'Confirm' field values must match."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-345
-msgid "Warning, could not read file %s"), $_FILES['conffile']['tmp_name']
+#: src/www/diag_backup.php:345
+msgid "Warning, could not read file %s"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-351
+#: src/www/diag_backup.php:351
 msgid "The uploaded file does not appear to contain an encrypted OPNsense configuration."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-358
+#: src/www/diag_backup.php:358
 msgid "Upgrading m0n0wall configuration to OPNsense."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-366
-msgid "You have selected to restore an area but we could not locate the correct xml tag."
+#: src/www/diag_backup.php:366
+#: src/www/diag_backup.php:369
+msgid ""
+"You have selected to restore an area but we could not locate the correct "
+"xml tag."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-369
-msgid "You have selected to restore an area but we could not locate the correct xml tag."
+#: src/www/diag_backup.php:381
+msgid ""
+"The configuration area has been restored.  "
+"You may need to reboot the firewall."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-381
-msgid "The configuration area has been restored.  You may need to reboot the firewall."
+#: src/www/diag_backup.php:386
+msgid ""
+"You have selected to restore the full configuration but we could not locate "
+"a %s tag."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-386
-msgid "You have selected to restore the full configuration but we could not locate a %s tag."), $g['xml_rootobj']);
-msgstr ""
-
-#:
-src/www/diag_backup.php
-503
+#: src/www/diag_backup.php:503
 msgid "The m0n0wall configuration has been restored and upgraded to OPNsense."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-531
+#: src/www/diag_backup.php:531
 msgid "The configuration could not be restored."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-536
+#: src/www/diag_backup.php:536
 msgid "The configuration could not be restored (file upload error)."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-549
-msgid "XXX - this feature may hose your config (do NOT backrev configs!) - billm"
+#: src/www/diag_backup.php:549
+msgid ""
+"XXX - this feature may hose your config (do NOT backrev configs!) - billm"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-555
+#: src/www/diag_backup.php:555
 msgid "The configuration could not be restored."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-558
+#: src/www/diag_backup.php:558
 msgid "No version selected."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-569
+#: src/www/diag_backup.php:569
 msgid "Backup/restore"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-614
-msgid "The firewall is now rebooting."));?><br />
+#: src/www/diag_backup.php:614
+msgid "The firewall is now rebooting."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-631
-msgid "Config History"), false, "diag_confbak.php"
+#: src/www/diag_backup.php:631
+msgid "Config History"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-632
-msgid "Backup/Restore"), true, "diag_backup.php"
+#: src/www/diag_backup.php:632
+msgid "Backup/Restore"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-656
-msgid "Backup area
-"); ?> <?php spit_out_select_items("backuparea", false); ?></p></td>
+#: src/www/diag_backup.php:656
+msgid "Backup area:"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-666
-msgid "Do not backup package information."); ?></span>
+#: src/www/diag_backup.php:666
+msgid "Do not backup package information."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-676
-msgid "Encrypt this configuration file."); ?></span>
+#: src/www/diag_backup.php:676
+msgid "Encrypt this configuration file."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-684
-msgid "Do not backup RRD data (NOTE
-RRD Data can consume 4+ megabytes of config.xml space!)"); ?></span>
+#: src/www/diag_backup.php:684
+msgid ""
+"Do not backup RRD data (NOTE RRD Data can consume 4+ megabytes of "
+"config.xml space!)"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-691
-msgid "Password
-"); ?> </span>
+#: src/www/diag_backup.php:691
+msgid "Password:"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-699
-msgid "confirm
-"); ?> </span>
+#: src/www/diag_backup.php:699
+msgid "confirm:"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-707
-msgid "Download configuration"); ?>" />
+#: src/www/diag_backup.php:707
+msgid "Download configuration"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-725
-msgid "Restore configuration"); ?></h3>
+#: src/www/diag_backup.php:725
+msgid "Restore configuration"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-733
-msgid "configuration XML file and click the button below to restore the configuration."); ?>
+#: src/www/diag_backup.php:733
+msgid ""
+"configuration XML file and click the button below to restore the "
+"configuration."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-735
-msgid "Restore area
-"); ?> <?php spit_out_select_items("restorearea", true); ?></p></td>
+#: src/www/diag_backup.php:735
+msgid "Restore area:"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-747
-msgid "Configuration file is encrypted."); ?></span>
+#: src/www/diag_backup.php:747
+msgid "Configuration file is encrypted."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-754
-msgid "Password 
-"); ?></span>
+#: src/www/diag_backup.php:754
+msgid "Password :"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-762
-msgid "confirm 
-"); ?></span>
+#: src/www/diag_backup.php:762
+msgid "confirm :"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-769
-msgid "Restore configuration"); ?>" /></p>
+#: src/www/diag_backup.php:769
+msgid "Restore configuration"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-770
-msgid "Note
-msgid "The firewall will reboot after restoring the configuration."); ?><br /></p>
+#: src/www/diag_backup.php:770
+msgid "Note:"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-791
-msgid "Package Functions"); ?></h3>
+#: src/www/diag_backup.php:770
+msgid "The firewall will reboot after restoring the configuration."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-802
-msgid "Click this button to reinstall all system packages.  This may take a while."); ?> <br /><br />
+#: src/www/diag_backup.php:791
+msgid "Package Functions"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-803
-msgid "Reinstall packages"); ?>" />
+#: src/www/diag_backup.php:802
+msgid ""
+"Click this button to reinstall all system packages.  This may take a while."
 msgstr ""
 
-#:
-src/www/diag_backup.php
-808
-msgid "Click this button to clear the package lock if a package fails to reinstall properly after an upgrade."); ?> <br /><br />
+#: src/www/diag_backup.php:803
+msgid "Reinstall packages"
 msgstr ""
 
-#:
-src/www/diag_backup.php
-809
-msgid "Clear Package Lock"); ?>" />
+#: src/www/diag_backup.php:808
+msgid ""
+"Click this button to clear the package lock if a package fails to reinstall "
+"properly after an upgrade."
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-43
-msgid "Confirm")) || (!isset($_POST['newver']) && !isset($_POST['rmver']))) {
+#: src/www/diag_backup.php:809
+msgid "Clear Package Lock"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-52
-msgid "n/j/y H
-i
-s"), $_POST['newver']), $confvers[$_POST['newver']]['description']);
+#: src/www/diag_confbak.php:43
+msgid "Confirm"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-54
+#: src/www/diag_confbak.php:52
+#: src/www/diag_confbak.php:58
+#: src/www/diag_confbak.php:135
+#: src/www/diag_confbak.php:135
+#: src/www/diag_confbak.php:195
+#: src/www/diag_confbak.php:266
+#: src/www/diag_confbak.php:276
+msgid "n/j/y H:i:s"
+msgstr ""
+
+#: src/www/diag_confbak.php:54
 msgid "Unable to revert to the selected configuration."
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-58
-msgid "n/j/y H
-i
-s"), $_POST['rmver']),$confvers[$_POST['rmver']]['description']);
+#: src/www/diag_confbak.php:58
+msgid "Deleted backup with timestamp %1$s and description \"%2$s\""
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-98
+#: src/www/diag_confbak.php:98
 msgid "Configuration History"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-118
-msgid "Config History"), true, "diag_confbak.php"
+#: src/www/diag_confbak.php:118
+msgid "Config History"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-119
-msgid "Backup/Restore"), false, "diag_backup.php"
+#: src/www/diag_confbak.php:119
+msgid "Backup/Restore"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-135
-msgid "n/j/y H
-i
-msgid "n/j/y H
-i
-s"), $newtime); ?></h3>
+#: src/www/diag_confbak.php:177
+msgid "Confirm Action"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-177
-msgid "Confirm Action"); ?></h3>
+#: src/www/diag_confbak.php:182
+msgid "Please confirm the selected action"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-182
-msgid "Please confirm the selected action"); ?></strong>
+#: src/www/diag_confbak.php:184
+msgid "Action"
 msgstr ""
 
-#:
-msgstr ""
-
-#:
-src/www/diag_confbak.php
-184
-msgid "Action"); ?>
-</strong>
-msgstr ""
-
-#:
-src/www/diag_confbak.php
-186
+#: src/www/diag_confbak.php:186
 msgid "Restore from Configuration Backup"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-190
+#: src/www/diag_confbak.php:190
 msgid "Remove Configuration Backup"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-194
-msgid "Target Configuration"); ?>
-</strong>
+#: src/www/diag_confbak.php:194
+msgid "Target Configuration"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-195
-msgid "n/j/y H
-i
-s"), $target_config)); ?>
+#: src/www/diag_confbak.php:195
+msgid "Timestamp %1$s"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-196
-msgid "Confirm"); ?>" />
+#: src/www/diag_confbak.php:196
+msgid "Confirm"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-219
-msgid "Backup Count");?></td>
+#: src/www/diag_confbak.php:219
+msgid "Backup Count"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-221
-msgid "Enter the number of older configurations to keep in the local backup cache. By default this is 30 for a full install or 5 on NanoBSD."); ?></td>
+#: src/www/diag_confbak.php:221
+msgid ""
+"Enter the number of older configurations to keep in the local backup cache. "
+"By default this is 30 for a full install or 5 on NanoBSD."
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-222
-msgid "Save"); ?>" /></td>
+#: src/www/diag_confbak.php:222
+msgid "Save"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-228
-msgid "NOTE
-Be aware of how much space is consumed by backups before adjusting this value. Current space used by backups
-"); ?> <?= exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'"?>
+#: src/www/diag_confbak.php:228
+msgid "NOTE: Be aware of how much space is consumed by backups before "
+"adjusting this value. Current space used by backups:"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-244
-msgid "To view the differences between an older configuration and a newer configuration, select the older configuration using the left column of radio options and select the newer configuration in the right column, then press the Diff button."); ?>
+#: src/www/diag_confbak.php:244
+msgid ""
+"To view the differences between an older configuration and a newer "
+"configuration, select the older configuration using the left column of "
+"radio options and select the newer configuration in the right column, then "
+"press the Diff button."
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-252
-msgid "Diff");?></td>
+#: src/www/diag_confbak.php:252
+msgid "Diff"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-253
-msgid "Date");?></td>
+#: src/www/diag_confbak.php:253
+msgid "Date"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-254
-msgid "Version");?></td>
+#: src/www/diag_confbak.php:254
+msgid "Version"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-255
-msgid "Size");?></td>
+#: src/www/diag_confbak.php:255
+msgid "Size"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-256
-msgid "Configuration Change");?></td>
+#: src/www/diag_confbak.php:256
+msgid "Configuration Change"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-266
-msgid "n/j/y H
-i
-s"), $config['revision']['time']) ?></td>
+#: src/www/diag_confbak.php:270
+msgid "Current"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-270
-msgid "Current");?></b></td>
-msgstr ""
-
-#:
-src/www/diag_confbak.php
-276
-msgid "n/j/y H
-i
-s"), $version['time']);
-msgstr ""
-
-#:
-src/www/diag_confbak.php
-278
+#: src/www/diag_confbak.php:278
 msgid "Unknown"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-298
-msgid "Revert to this configuration");?>"><span class="glyphicon glyphicon-log-in"></span></a>
+#: src/www/diag_confbak.php:298
+msgid "Revert to this configuration"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-299
-msgid "Remove this backup");?>" ><span class="glyphicon glyphicon-remove"></span></a>
+#: src/www/diag_confbak.php:299
+msgid "Remove this backup"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-300
-msgid "Download this backup");?>"><span class="glyphicon glyphicon-download"></span></a>
+#: src/www/diag_confbak.php:300
+msgid "Download this backup"
 msgstr ""
 
-#:
-src/www/diag_confbak.php
-309
-msgid "Diff"); ?>" />
+#: src/www/diag_confbak.php:309
+msgid "Diff"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-32
+#: src/www/diag_defaults.php:32
 msgid "Factory defaults"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-47
-msgid "Yes"))
+#: src/www/diag_defaults.php:47
+msgid "Yes"
 msgstr ""
 
-#:
+#: src/www/diag_defaults.php:48
+msgid ""
+"The system has been reset to factory defaults and is now rebooting. This "
+"may take a few minutes, depending on your hardware."
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-48
-msgid "The system has been reset to factory defaults and is now rebooting. This may take a few minutes, depending on your hardware.")); ?>
+#: src/www/diag_defaults.php:59
+msgid "the firewall will:"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-59
-msgid "the firewall will
-")?></strong></p>
+#: src/www/diag_defaults.php:61
+msgid "Reset to factory defaults"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-61
-msgid "Reset to factory defaults");?></li>
+#: src/www/diag_defaults.php:62
+msgid "LAN IP address will be reset to 192.168.1.1"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-62
-msgid "LAN IP address will be reset to 192.168.1.1");?></li>
+#: src/www/diag_defaults.php:63
+msgid ""
+"System will be configured as a DHCP server on the default LAN interface"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-63
-msgid "System will be configured as a DHCP server on the default LAN interface");?></li>
+#: src/www/diag_defaults.php:64
+msgid "Reboot after changes are installed"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-64
-msgid "Reboot after changes are installed");?></li>
+#: src/www/diag_defaults.php:65
+msgid ""
+"WAN interface will be set to obtain an address automatically from a DHCP "
+"server"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-65
-msgid "WAN interface will be set to obtain an address automatically from a DHCP server");?></li>
+#: src/www/diag_defaults.php:66
+msgid "webConfigurator admin username will be reset to 'root'"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-66
-msgid "webConfigurator admin username will be reset to 'root'");?></li>
+#: src/www/diag_defaults.php:67
+msgid "webConfigurator admin password will be reset to"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-67
-msgid "webConfigurator admin password will be reset to");?> '<?=$g['factory_shipped_password']?>'</li>
+#: src/www/diag_defaults.php:69
+msgid "Are you sure you want to proceed?"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-69
-msgid "Are you sure you want to proceed?");?></strong></p>
+#: src/www/diag_defaults.php:73
+msgid "Yes"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-73
-msgid "Yes");?>" />
+#: src/www/diag_defaults.php:74
+msgid "No"
 msgstr ""
 
-#:
-src/www/diag_defaults.php
-74
-msgid "No");?></a>
-msgstr ""
-
-#:
-src/www/diag_dns.php
-29
+#: src/www/diag_dns.php:29
 msgid "DNS Lookup"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-100
+#: src/www/diag_dns.php:100
 msgid "Host must be a valid hostname or IP address."
 msgstr ""
 
-#:
-src/www/diag_dns.php
-109
+#: src/www/diag_dns.php:109
 msgid "No response"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-142
+#: src/www/diag_dns.php:142
 msgid "No record found"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-150
-msgid "IP Address" "
-{$address} n";
+#: src/www/diag_dns.php:150
+msgid "IP Address"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-151
-msgid "Host Name" "
-{$hostname} n";
+#: src/www/diag_dns.php:151
+msgid "Host Name"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-154
+#: src/www/diag_dns.php:154
 msgid "Query Time"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-181
-msgid "Resolve DNS hostname or IP");?></h3>
+#: src/www/diag_dns.php:181
+msgid "Resolve DNS hostname or IP"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-189
-msgid "Hostname or IP");?></td>
+#: src/www/diag_dns.php:189
+msgid "Hostname or IP"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-226
-msgid "Resolution time per server");?></td>
+#: src/www/diag_dns.php:226
+msgid "Resolution time per server"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-231
-msgid "Server");?></th>
+#: src/www/diag_dns.php:231
+msgid "Server"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-232
-msgid "Query time");?></th>
+#: src/www/diag_dns.php:232
+msgid "Query time"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-250
-msgid "More Information
-");?></td>
+#: src/www/diag_dns.php:250
+msgid "More Information:"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-251
-msgid "Ping");?></a> <br />
+#: src/www/diag_dns.php:251
+msgid "Ping"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-252
-msgid "Traceroute");?></a>
+#: src/www/diag_dns.php:252
+msgid "Traceroute"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-254
-msgid "NOTE
-The following links are to external services, so their reliability cannot be guaranteed.");?><br /><br />
+#: src/www/diag_dns.php:254
+msgid ""
+"NOTE: The following links are to external services, so their reliability "
+"cannot be guaranteed."
 msgstr ""
 
-#:
-src/www/diag_dns.php
-255
-<a target="_blank" href="http
-msgid "IP WHOIS @ DNS Stuff");?></a><br />
+#: src/www/diag_dns.php:255
+msgid "IP WHOIS @ DNS Stuff"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-256
-<a target="_blank" href="http
-msgid "IP Info @ DNS Stuff");?></a>
+#: src/www/diag_dns.php:256
+msgid "IP Info @ DNS Stuff"
 msgstr ""
 
-#:
-src/www/diag_dns.php
-265
-msgid "DNS Lookup");?>" />
+#: src/www/diag_dns.php 265
+msgid "DNS Lookup"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-39
+#: src/www/diag_dump_states.php:39
 msgid "invalid input"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-59
+#: src/www/diag_dump_states.php:59
 msgid "Show States"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-95
-msgid "An error occurred.");?>"
+#: src/www/diag_dump_states.php:95
+msgid "An error occurred."
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-117
-msgid "States"), true, "diag_dump_states.php"
+#: src/www/diag_dump_states.php:117
+msgid "States"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-118
-msgid "Reset states"), false, "diag_resetstate.php"
+#: src/www/diag_dump_states.php:118
+msgid "Reset states"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-133
-msgid "Current total state count");?>
-<?= $current_statecount ?></td>
+#: src/www/diag_dump_states.php:133
+msgid "Current total state count"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-134
-msgid "Filter expression
-");?></td>
+#: src/www/diag_dump_states.php:134
+msgid "Filter expression:"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-136
-msgid "Filter");?>" />
+#: src/www/diag_dump_states.php:136
+msgid "Filter"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-138
-msgid "Kill");?>" />
+#: src/www/diag_dump_states.php:138
+msgid "Kill"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-162
-msgid "Int");?></td>
+#: src/www/diag_dump_states.php:162
+msgid "Int"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-172
-msgid "Proto");?></td>
+#: src/www/diag_dump_states.php:172
+msgid "Proto"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-182
-msgid "Source -> Router -> Destination");?></td>
+#: src/www/diag_dump_states.php:182
+msgid "Source -> Router -> Destination"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-192
-msgid "State");?></td>
+#: src/www/diag_dump_states.php:192
+msgid "State"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-234
-<a href="#" onclick="removeState('<?= $srcip ?>', '<?= $dstip ?>";" name="i
-<?= $srcip ?>
-msgid "to" ?> <?= $dstip ?>"><span class="glyphicon glyphicon-remove"></span></a>
+#: src/www/diag_dump_states.php:234
+msgid "to"
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-247
-msgid "No states were found."?>
+#: src/www/diag_dump_states.php:247
+msgid "No states were found."
 msgstr ""
 
-#:
-src/www/diag_dump_states.php
-257
-msgid "States matching current filter")?>
-<?= $row ?></p></div>
+#: src/www/diag_dump_states.php:257
+msgid "States matching current filter"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-39
+#: src/www/diag_dump_states_sources.php:39
 msgid "invalid input"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-53
+#: src/www/diag_dump_states_sources.php:53
 msgid "Show Source Tracking"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-83
-msgid "An error occurred.");?>"
+#: src/www/diag_dump_states_sources.php:83
+msgid "An error occurred."
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-99
-msgid "States"), false, "diag_dump_states.php"
+#: src/www/diag_dump_states_sources.php:99
+msgid "States"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-100
-msgid "Source Tracking"), true, "diag_dump_states_sources.php"
+#: src/www/diag_dump_states_sources.php:100
+msgid "Source Tracking"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-101
-msgid "Reset States"), false, "diag_resetstate.php"
+#: src/www/diag_dump_states_sources.php:101
+msgid "Reset States"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-119
-msgid "Filter expression
-");?>
+#: src/www/diag_dump_states_sources.php:119
+msgid "Filter expression:"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-130
-msgid "Filter");?>" />
+#: src/www/diag_dump_states_sources.php:130
+msgid "Filter"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-142
-msgid "Source -> Destination");?></th>
+#: src/www/diag_dump_states_sources.php:142
+msgid "Source -> Destination"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-143
-msgid "# States");?></th>
+#: src/www/diag_dump_states_sources.php:143
+msgid "# States"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-144
-msgid "# Connections");?></th>
+#: src/www/diag_dump_states_sources.php:144
+msgid "# Connections"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-145
-msgid "Rate");?></th>
+#: src/www/diag_dump_states_sources.php:145
+msgid "Rate"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-177
-msgid "to" " {$dstip}";?>' alt='' >
+#: src/www/diag_dump_states_sources.php:177
+msgid "to" " {$dstip}"
 msgstr ""
 
-#:
-src/www/diag_dump_states_sources.php
-188
-msgid "No source tracking entries were found." "
+#: src/www/diag_dump_states_sources.php:188
+msgid "No source tracking entries were found."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-33
+#: src/www/diag_gmirror.php:33
 msgid "GEOM Mirrors"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-45
+#: src/www/diag_gmirror.php:45
 msgid "Forget all formerly connected consumers"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-46
+#: src/www/diag_gmirror.php:46
 msgid "Remove metadata from disk"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-47
+#: src/www/diag_gmirror.php:47
 msgid "Insert consumer into mirror"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-48
+#: src/www/diag_gmirror.php:48
 msgid "Remove consumer from mirror"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-49
+#: src/www/diag_gmirror.php:49
 msgid "Reactivate consumer on mirror"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-50
+#: src/www/diag_gmirror.php:50
 msgid "Deactivate consumer from mirror"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-51
+#: src/www/diag_gmirror.php:51
 msgid "Force rebuild of mirror consumer"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-61
-msgid "Confirm"))) {
+#: src/www/diag_gmirror.php:61
+msgid "Confirm"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-68
+#: src/www/diag_gmirror.php:68
 msgid "You must supply a valid mirror name."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-71
+#: src/www/diag_gmirror.php:71
 msgid "You must supply a valid consumer name"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-77
-msgid "Consumer is already in use and cannot be inserted. Remove consumer from existing mirror first."
+#: src/www/diag_gmirror.php:77
+msgid ""
+"Consumer is already in use and cannot be inserted. Remove consumer from "
+"existing mirror first."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-79
-msgid "Consumer has metadata from an existing mirror. Clear metadata before inserting consumer."
+#: src/www/diag_gmirror.php:79
+msgid ""
+"Consumer has metadata from an existing mirror. Clear metadata before "
+"inserting consumer."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-82
-msgid "Mirror is not in a COMPLETE state, cannot insert consumer. Forget disconnected disks or wait for rebuild to finish."
+#: src/www/diag_gmirror.php:82
+msgid ""
+"Mirror is not in a COMPLETE state, cannot insert consumer. Forget "
+"disconnected disks or wait for rebuild to finish."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-86
+#: src/www/diag_gmirror.php:86
 msgid "Consumer is in use and cannot be cleared. Deactivate disk first."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-88
+#: src/www/diag_gmirror.php:88
 msgid "Consumer has no metadata to clear."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-92
+#: src/www/diag_gmirror.php:92
 msgid "Consumer is already present on specified mirror."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-94
+#: src/www/diag_gmirror.php:94
 msgid "Consumer has no metadata and cannot be reactivated."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-101
+#: src/www/diag_gmirror.php:101
 msgid "Consumer must be present on the specified mirror."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-163
-msgid "There was an error performing the chosen mirror operation. Check the System Log for details."
+#: src/www/diag_gmirror.php:163
+msgid ""
+"There was an error performing the chosen mirror operation. Check the System "
+"Log for details."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-176
-msgid "NOTE
-")?>&nbsp;</strong>
+#: src/www/diag_gmirror.php:176
+msgid "NOTE:"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-178
-msgid "The options on this page are intended for use by advanced users only. This page is for managing existing mirrors, not creating new mirrors.")?>
+#: src/www/diag_gmirror.php:178
+msgid ""
+"The options on this page are intended for use by advanced users only. This "
+"page is for managing existing mirrors, not creating new mirrors."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-187
-msgid "Confirm Action"); ?></td>
+#: src/www/diag_gmirror.php:187
+msgid "Confirm Action"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-192
-msgid "Please confirm the selected action"); ?></strong>
+#: src/www/diag_gmirror.php:192
+msgid "Please confirm the selected action"
 msgstr ""
 
-#:
+#: src/www/diag_gmirror.php:194
+msgid "Action"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-194
-msgid "Action"); ?>
-</strong> <?PHP echo $action_list[$_GET["action"]]; ?>
+#: src/www/diag_gmirror.php:197
+msgid "Mirror"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-197
-msgid "Mirror"); ?>
-</strong> <?PHP echo htmlspecialchars($_GET["mirror"]); ?>
+#: src/www/diag_gmirror.php:201
+msgid "Consumer"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-201
-msgid "Consumer"); ?>
-</strong> <?PHP echo htmlspecialchars($_GET["consumer"]); ?>
+#: src/www/diag_gmirror.php:205
+msgid "Confirm"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-205
-msgid "Confirm"); ?>" />
+#: src/www/diag_gmirror.php:210
+msgid "GEOM Mirror information"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-210
-msgid "GEOM Mirror information"); ?></td>
+#: src/www/diag_gmirror.php:214
+msgid "Mirror Status"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-214
-msgid "Mirror Status"); ?></td>
+#: src/www/diag_gmirror.php:221
+msgid "Name"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-221
-msgid "Name"); ?></td>
+#: src/www/diag_gmirror.php:222
+msgid "Status"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-222
-msgid "Status"); ?></td>
+#: src/www/diag_gmirror.php:223
+msgid "Component"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-223
-msgid "Component"); ?></td>
+#: src/www/diag_gmirror.php:235
+msgid "Forget Disconnected Disks"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-235
-msgid "Forget Disconnected Disks"); ?>]</a>
+#: src/www/diag_gmirror.php:243
+msgid "Rebuild"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-243
-msgid "Rebuild"); ?>]</a>
+#: src/www/diag_gmirror.php:244
+msgid "Deactivate"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-244
-msgid "Deactivate"); ?>]</a>
+#: src/www/diag_gmirror.php:245
+msgid "Remove"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-245
-msgid "Remove"); ?>]</a>
+#: src/www/diag_gmirror.php:258
+msgid "Rebuild"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-258
-msgid "Rebuild"); ?>]</a>
+#: src/www/diag_gmirror.php:259
+msgid "Deactivate"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-259
-msgid "Deactivate"); ?>]</a>
+#: src/www/diag_gmirror.php:260
+msgid "Remove"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-260
-msgid "Remove"); ?>]</a>
+#: src/www/diag_gmirror.php:268
+msgid "No Mirrors Found"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-268
-msgid "No Mirrors Found"); ?></td></tr>
+#: src/www/diag_gmirror.php:272
+msgid ""
+"Some disk operations may only be performed when there are multiple "
+"consumers present in a mirror."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-272
-msgid "Some disk operations may only be performed when there are multiple consumers present in a mirror."); ?>
+#: src/www/diag_gmirror.php:277
+msgid "Consumer information"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-277
-msgid "Consumer information"); ?></td>
+#: src/www/diag_gmirror.php:281
+msgid "Available Consumers"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-281
-msgid "Available Consumers"); ?></td>
+#: src/www/diag_gmirror.php:288
+msgid "Name"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-288
-msgid "Name"); ?></td>
+#: src/www/diag_gmirror.php:289
+msgid "Size"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-289
-msgid "Size"); ?></td>
+#: src/www/diag_gmirror.php:290
+msgid "Add to Mirror"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-290
-msgid "Add to Mirror"); ?></td>
+#: src/www/diag_gmirror.php:301
+msgid "Reactivate on:"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-301
-msgid "Reactivate on
-"); ?> <?PHP echo htmlspecialchars($oldmirror); ?>]</a>
+#: src/www/diag_gmirror.php:302
+msgid "Remove metadata from disk"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-302
-msgid "Remove metadata from disk"); ?>]</a>
+#: src/www/diag_gmirror.php:317
+msgid "No unused consumers found"
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-317
-msgid "No unused consumers found"); ?></td></tr>
+#: src/www/diag_gmirror.php:321
+msgid ""
+"Consumers may only be added to a mirror if they are larger than the size of "
+"the mirror."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-321
-msgid "Consumers may only be added to a mirror if they are larger than the size of the mirror."); ?>
+#: src/www/diag_gmirror.php:328
+msgid ""
+"To repair a failed mirror, first perform a 'Forget' command on the mirror, "
+"followed by an 'insert' action on the new consumer."
 msgstr ""
 
-#:
-src/www/diag_gmirror.php
-328
-msgid "To repair a failed mirror, first perform a 'Forget' command on the mirror, followed by an 'insert' action on the new consumer."); ?></td>
-msgstr ""
-
-#:
-src/www/diag_ipsec.php
-34
+#: src/www/diag_ipsec.php:34
 msgid "IPsec"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-91
-msgid "Description");?></th>
+#: src/www/diag_ipsec.php:91
+msgid "Description"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-92
-msgid "Local ID");?></th>
+#: src/www/diag_ipsec.php:92
+msgid "Local ID"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-93
-msgid "Local IP");?></th>
+#: src/www/diag_ipsec.php:93
+msgid "Local IP"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-94
-msgid "Remote ID");?></th>
+#: src/www/diag_ipsec.php:94
+msgid "Remote ID"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-95
-msgid "Remote IP");?></th>
+#: src/www/diag_ipsec.php:95
+msgid "Remote IP"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-96
-msgid "Role");?></th>
+#: src/www/diag_ipsec.php:96
+msgid "Role"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-97
-msgid "Reauth");?></th>
+#: src/www/diag_ipsec.php:97
+msgid "Reauth"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-98
-msgid "Algo");?></th>
+#: src/www/diag_ipsec.php:98
+msgid "Algo"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-99
-msgid "Status");?></th>
+#: src/www/diag_ipsec.php:99
+msgid "Status"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-246
-msgid "Local subnets");?></th>
+#: src/www/diag_ipsec.php:246
+msgid "Local subnets"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-247
-msgid "Local SPI(s)");?></th>
+#: src/www/diag_ipsec.php:247
+msgid "Local SPI(s)"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-248
-msgid "Remote subnets");?></th>
+#: src/www/diag_ipsec.php:248
+msgid "Remote subnets"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-249
-msgid "Times");?></th>
+#: src/www/diag_ipsec.php:249
+msgid "Times"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-250
-msgid "Algo");?></th>
+#: src/www/diag_ipsec.php:250
+msgid "Algo"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-251
-msgid "Stats");?></th>
+#: src/www/diag_ipsec.php:251
+msgid "Stats"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-426
-msgid "Note
-");?><br /></strong>
+#: src/www/diag_ipsec.php:426
+msgid "Note:"
 msgstr ""
 
-#:
-src/www/diag_ipsec.php
-428
-msgid "You can configure IPsec");?>
+#: src/www/diag_ipsec.php:428
+msgid "You can configure IPsec"
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-32
+#: src/www/diag_ipsec_leases.php:32
 msgid "Leases"
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-65
-msgid "Pool
-" $pool['name'];
+#: src/www/diag_ipsec_leases.php:65
+msgid "Pool:"
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-66
-msgid "usage
-" $pool['usage'];
+#: src/www/diag_ipsec_leases.php:66
+msgid "usage:"
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-67
-msgid "online
-" $pool['online'];
+#: src/www/diag_ipsec_leases.php:67
+msgid "online:"
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-73
-msgid "ID");?></td>
+#: src/www/diag_ipsec_leases.php:73
+msgid "ID"
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-74
-msgid "Host");?></td>
+#: src/www/diag_ipsec_leases.php:74
+msgid "Host"
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-75
-msgid "Status");?></td>
+#: src/www/diag_ipsec_leases.php:75
+msgid "Status"
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-90
-msgid "No leases from this pool yet.");?></strong></p>
+#: src/www/diag_ipsec_leases.php:90
+msgid "No leases from this pool yet."
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-97
-msgid "No IPsec pools.");?></strong></p>
+#: src/www/diag_ipsec_leases.php:97
+msgid "No IPsec pools."
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-102
-msgid "Note
-");?><br /></strong></span>
+#: src/www/diag_ipsec_leases.php:102
+msgid "Note:"
 msgstr ""
 
-#:
-src/www/diag_ipsec_leases.php
-103
-msgid "here.");?></a>
+#: src/www/diag_ipsec_leases.php:103
+msgid "here."
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-33
+#: src/www/diag_ipsec_sad.php:33
 msgid "SAD"
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-62
-msgid "Source");?></td>
+#: src/www/diag_ipsec_sad.php:62
+msgid "Source"
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-63
-msgid "Destination");?></td>
+#: src/www/diag_ipsec_sad.php:63
+msgid "Destination"
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-64
-msgid "Protocol");?></td>
+#: src/www/diag_ipsec_sad.php:64
+msgid "Protocol"
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-65
-msgid "SPI");?></td>
+#: src/www/diag_ipsec_sad.php:65
+msgid "SPI"
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-66
-msgid "Enc. alg.");?></td>
+#: src/www/diag_ipsec_sad.php:66
+msgid "Enc. alg."
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-67
-msgid "Auth. alg.");?></td>
+#: src/www/diag_ipsec_sad.php:67
+msgid "Auth. alg."
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-68
-msgid "Data");?></td>
+#: src/www/diag_ipsec_sad.php:68
+msgid "Data"
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-87
-msgid "No IPsec security associations.");?></strong></p>
+#: src/www/diag_ipsec_sad.php:87
+msgid "No IPsec security associations."
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-96
-msgid "Note
-");?><br /></strong></span>
+#: src/www/diag_ipsec_sad.php:96
+msgid "Note:"
 msgstr ""
 
-#:
-src/www/diag_ipsec_sad.php
-97
-msgid "here.");?></a>
+#: src/www/diag_ipsec_sad.php:97
+msgid "here."
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-33
+#: src/www/diag_ipsec_spd.php:33
 msgid "SPD"
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-62
-msgid "Source"); ?></td>
+#: src/www/diag_ipsec_spd.php:62
+msgid "Source"
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-63
-msgid "Destination"); ?></td>
+#: src/www/diag_ipsec_spd.php:63
+msgid "Destination"
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-64
-msgid "Direction"); ?></td>
+#: src/www/diag_ipsec_spd.php:64
+msgid "Direction"
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-65
-msgid "Protocol"); ?></td>
+#: src/www/diag_ipsec_spd.php:65
+msgid "Protocol"
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-66
-msgid "Tunnel endpoints"); ?></td>
+#: src/www/diag_ipsec_spd.php:66
+msgid "Tunnel endpoints"
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-92
-msgid "incoming (as seen by firewall)"); ?></td>
+#: src/www/diag_ipsec_spd.php:92
+msgid "incoming (as seen by firewall)"
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-99
-msgid "outgoing (as seen by firewall)"); ?></td>
+#: src/www/diag_ipsec_spd.php:99
+msgid "outgoing (as seen by firewall)"
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-104
-msgid "No IPsec security policies."); ?></strong></p>
+#: src/www/diag_ipsec_spd.php:104
+msgid "No IPsec security policies."
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-113
-msgid "Note
-"); ?><br /></strong></span>
+#: src/www/diag_ipsec_spd.php:113
+msgid "Note:"
 msgstr ""
 
-#:
-src/www/diag_ipsec_spd.php
-114
-msgid "here."); ?></a>
+#: src/www/diag_ipsec_spd.php:114
+msgid "here."
 msgstr ""
 
-#:
-src/www/diag_ipsec_tabs.php
-28
-msgid "Overview"), $_SERVER['PHP_SELF'] == '/diag_ipsec.php', "diag_ipsec.php"
+#: src/www/diag_ipsec_tabs.php:28
+msgid "Overview"
 msgstr ""
 
-#:
-src/www/diag_ipsec_tabs.php
-29
-msgid "Leases"), $_SERVER['PHP_SELF'] == '/diag_ipsec_leases.php', "diag_ipsec_leases.php"
+#: src/www/diag_ipsec_tabs.php:29
+msgid "Leases"
 msgstr ""
 
-#:
-src/www/diag_ipsec_tabs.php
-30
-msgid "SAD"), $_SERVER['PHP_SELF'] == '/diag_ipsec_sad.php', "diag_ipsec_sad.php"
+#: src/www/diag_ipsec_tabs.php:30
+msgid "SAD"
 msgstr ""
 
-#:
-src/www/diag_ipsec_tabs.php
-31
-msgid "SPD"), $_SERVER['PHP_SELF'] == '/diag_ipsec_spd.php', "diag_ipsec_spd.php"
+#: src/www/diag_ipsec_tabs.php:31
+msgid "SPD"
 msgstr ""
 
-#:
-src/www/diag_ipsec_tabs.php
-32
-msgid "Logs"), $_SERVER['PHP_SELF'] == '/diag_logs_ipsec.php', "diag_logs_ipsec.php"
+#: src/www/diag_ipsec_tabs.php:32
+msgid "Logs"
 msgstr ""
 
-#:
-src/www/diag_limiter_info.php
-31
-msgid "Diagnostics
-Limiter Info"
+#: src/www/diag_limiter_info.php:31
+msgid "Diagnostics: Limiter Info"
 msgstr ""
 
-#:
-src/www/diag_limiter_info.php
-92
-msgid "Gathering Limiter information, please wait...");?>
+#: src/www/diag_limiter_info.php:92
+msgid "Gathering Limiter information, please wait..."
 msgstr ""
 
-#:
-src/www/diag_logs.php
-50
+#: src/www/diag_logs.php:50
 msgid "General"
 msgstr ""
 
-#:
-src/www/diag_logs.php
-90
-msgid "Clear log");?>" />
+#: src/www/diag_logs.php:90
+msgid "Clear log"
 msgstr ""
 
-#:
-src/www/diag_logs.php
-95
-msgid "Filter");?>" />
+#: src/www/diag_logs.php:95
+msgid "Filter"
 msgstr ""
 
-#:
-src/www/diag_logs_auth.php
-40
+#: src/www/diag_logs_auth.php:40
 msgid "Portal Auth"
 msgstr ""
 
-#:
-src/www/diag_logs_auth.php
-65
-msgid "Last %s Portal Auth log entries"),$nentries);?></p>
+#: src/www/diag_logs_auth.php:65
+msgid "Last %s Portal Auth log entries"
 msgstr ""
 
-#:
-src/www/diag_logs_auth.php
-69
-msgid "Clear log");?>" />
+#: src/www/diag_logs_auth.php:69
+msgid "Clear log"
 msgstr ""
 
-#:
-src/www/diag_logs_dhcp.php
-44
+#: src/www/diag_logs_dhcp.php:44
 msgid "DHCP"
 msgstr ""
 
-#:
-src/www/diag_logs_dhcp.php
-68
-msgid "Last %s DHCP service log entries"), $nentries);?></p>
+#: src/www/diag_logs_dhcp.php:68
+msgid "Last %s DHCP service log entries"
 msgstr ""
 
-#:
-src/www/diag_logs_dhcp.php
-72
-msgid "Clear log");?>" />
+#: src/www/diag_logs_dhcp.php:72
+msgid "Clear log"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-42
+#: src/www/diag_logs_filter.php:42
 msgid "Cannot resolve"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-62
-msgid "The rule that triggered this action is" "
-nn{$rule}";
+#: src/www/diag_logs_filter.php:62
+msgid "The rule that triggered this action is"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-107
+#: src/www/diag_logs_filter.php:107
 msgid "Firewall"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-176
-<td><input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" style="vertical-align
-msgid "Filter");?>" /></td>
+#: src/www/diag_logs_filter.php:176
+msgid "Filter"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-199
-<div align="center" style="vertical-align
-msgid "Interface");?></div>
+#: src/www/diag_logs_filter.php:199
+msgid "Interface"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-235
-<div align="center" style="vertical-align
-msgid "Filter expression");?></div>
+#: src/www/diag_logs_filter.php:235
+msgid "Filter expression"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-239
-<div align="center" style="vertical-align
-msgid "Quantity");?></div>
+#: src/www/diag_logs_filter.php:239
+msgid "Quantity"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-244
-<div align="center" style="vertical-align
-top;"><input id="filtersubmit" name="filtersubmit" type="submit" class="formbtn" style="vertical-align
-msgid "Filter");?>" /></div>
+#: src/www/diag_logs_filter.php:244
+msgid "Filter"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-250
-msgid "Matches %1$s regular expression%2$s." '<a target="_blank" href="http
-//www.php.net/manual/en/book.pcre.php">', '</a>";?>&nbsp;&nbsp;
+#: src/www/diag_logs_filter.php:250
+msgid "Matches %1$s regular expression%2$s."
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-292
-msgid "Last %s firewall log entries."),count($filterlog
+#: src/www/diag_logs_filter.php:292
+msgid "Last %s firewall log entries."
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-294
+#: src/www/diag_logs_filter.php:294
 msgid "matched log entries."
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-295
-msgid "Max(%s)"),$nentries);?>
+#: src/www/diag_logs_filter.php:295
+msgid "Max(%s)"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-299
-msgid "Act");?></td>
+#: src/www/diag_logs_filter.php:299
+msgid "Act"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-300
-msgid "Time");?></td>
+#: src/www/diag_logs_filter.php:300
+msgid "Time"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-301
-msgid "If");?></td>
+#: src/www/diag_logs_filter.php:301
+msgid "If"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-303
-msgid "Rule");?></td>
+#: src/www/diag_logs_filter.php:303
+msgid "Rule"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-305
-msgid "Source");?></td>
+#: src/www/diag_logs_filter.php:305
+msgid "Source"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-306
-msgid "Destination");?></td>
+#: src/www/diag_logs_filter.php:306
+msgid "Destination"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-307
-msgid "Proto");?></td>
+#: src/www/diag_logs_filter.php:307
+msgid "Proto"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-346
-<span onclick="javascript
-msgid "Click to resolve");?>" class="ICON-<?= $src_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs glyphicon glyphicon-info-sign"></span></span>
+#: src/www/diag_logs_filter.php:346
+#: src/www/diag_logs_filter.php:352
+msgid "Click to resolve"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-347
-msgid "Easy Rule
-msgid "Backups are also nice.")?>"">
+#: src/www/diag_logs_filter.php:347
+msgid "Easy Rule: Add to Block List"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-352
-<span onclick="javascript
-msgid "Click to resolve");?>" class="ICON-<?= $dst_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs  glyphicon glyphicon-info-sign"></span></span>
+#: src/www/diag_logs_filter.php:347
+msgid "Do you really want to add this BLOCK rule?"
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-353
-msgid "Easy Rule
-msgid "Backups are also nice.");?>"">
+#: src/www/diag_logs_filter.php:347
+#: src/www/diag_logs_filter.php:353
+msgid "Easy Rule is still experimental."
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-374
-msgid "Last %s firewall log entries"),$nentries);?></td>
+#: src/www/diag_logs_filter.php:347
+#: src/www/diag_logs_filter.php:353
+msgid "Continue at risk of your own peril."
 msgstr ""
 
-#:
-src/www/diag_logs_filter.php
-392
-msgid "Clear log");?>" />
+#: src/www/diag_logs_filter.php:347
+#: src/www/diag_logs_filter.php:353
+msgid "Backups are also nice."
 msgstr ""
 
-#:
-src/www/diag_logs_filter_dynamic.php
-46
+#: src/www/diag_logs_filter.php:352
+msgid "Icon Reverse Resolve with DNS"
+msgstr ""
+
+#: src/www/diag_logs_filter.php:353
+msgid "Easy Rule: Pass this traffic"
+msgstr ""
+
+#: src/www/diag_logs_filter.php:353
+msgid "Do you really want to add this PASS rule?"
+msgstr ""
+
+#: src/www/diag_logs_filter.php:374
+msgid "Last %s firewall log entries"
+msgstr ""
+
+#: src/www/diag_logs_filter.php:392
+msgid "Clear log"
+msgstr ""
+
+#: src/www/diag_logs_filter_dynamic.php:46
 msgid "Firewall (Dynamic View)"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_dynamic.php
-105
-msgid "Last %s records"),$nentries);?>.   &nbsp;&nbsp;&nbsp;<input type="checkbox" onclick="javascript
-msgid "Pause");?>
+#: src/www/diag_logs_filter_dynamic.php:105
+msgid "Last %s records"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_dynamic.php
-109
-msgid "Act");?></td>
+#: src/www/diag_logs_filter_dynamic.php:109
+msgid "Act"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_dynamic.php
-110
-msgid "Time");?></td>
+#: src/www/diag_logs_filter_dynamic.php:110
+msgid "Time"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_dynamic.php
-111
-msgid "If");?></td>
+#: src/www/diag_logs_filter_dynamic.php:111
+msgid "If"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_dynamic.php
-112
-msgid "Source");?></td>
+#: src/www/diag_logs_filter_dynamic.php:112
+msgid "Source"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_dynamic.php
-113
-msgid "Destination");?></td>
+#: src/www/diag_logs_filter_dynamic.php:113
+msgid "Destination"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_dynamic.php
-114
-msgid "Proto");?></td>
+#: src/www/diag_logs_filter_dynamic.php:114
+msgid "Proto"
 msgstr ""
 
-#:
-src/www/diag_logs_filter_dynamic.php
-144
-<p><span class="vexpl"><a href="https
-msgid "TCP Flags"); ?></a>
-F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, C - CWR</span></p></div>
+#: src/www/diag_logs_filter_dynamic.php:144
+msgid "TCP Flags"
 msgstr ""
 
 #:
