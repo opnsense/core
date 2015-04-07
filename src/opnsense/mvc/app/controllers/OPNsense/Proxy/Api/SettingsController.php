@@ -49,18 +49,17 @@ class SettingsController extends ApiControllerBase
             $mdlProxy = new Proxy();
 
             // Define array for selected interfaces
-            $selopt=Array();
+            $selopt = array();
 
             // Get ConfigObject
             $configObj = Config::getInstance()->object();
             // Iterate over all interfaces configuration
             // TODO: replace for <interfaces> helper
-            foreach ( $configObj->interfaces->children() as $key => $value ) {
+            foreach ($configObj->interfaces->children() as $key => $value) {
                 // Check if interface is enabled, if tag is <enable/> treat as enabled.
-                if  ( isset($value->enable) && ( $value->enable != '0' ) ) {
+                if (isset($value->enable) && $value->enable != '0') {
                     // Check if interface has static ip
                     if ($value->ipaddr != 'dhcp') {
-
                         if ($value->descr == '') {
                             $description = strtoupper($key); // Use interface name as description if none is given
                         } else {
