@@ -43,10 +43,11 @@ echo
 
 # upgrade all packages if possible
 pkg upgrade -y
+pkg autoremove -y
 
 echo
 
-# restart the GUI after PHP changes have been applied
+# trigger a webgui restart to cope with changes
 /usr/local/etc/rc.restart_webgui
 
 echo
