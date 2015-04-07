@@ -41,16 +41,6 @@ require_once("IPv6.inc");
 require_once("services.inc");
 require_once("rrd.inc");
 
-function restart_packages() {
-	global $oldipv6, $curwanipv6, $g;
-
-	/* restart packages */
-	system_ntp_configure(false);
-	mwexec_bg("/usr/local/sbin/ntpdate_sync_once.sh", false, true);
-	log_error("{$g['product_name']} package system has detected an ip change $oldipv6 ->  $curwanipv6 ... Restarting packages.");
-	configd_run("service reload packages");
-}
-
 /* Interface IP address has changed */
 $argument = trim($argv[1], " \n\t");
 
@@ -70,7 +60,6 @@ $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 
 if (empty($interface)) {
 	filter_configure();
-	// restart_packages();
 	return;
 }
 
@@ -169,4 +158,6 @@ enable_rrd_graphing();
 /* reload igmpproxy */
 services_igmpproxy_configure();
 
-restart_packages();
+/* reconfigure ntpd */
+system_ntp_configure(false);
+mwexec_bg("/usr/local/sbin/ntpdate_sync_once.sh", false, true);
