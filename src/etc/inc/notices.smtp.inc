@@ -606,6 +606,13 @@ class smtp_class
 
 	Function startTLS() {
 		if ($this->PutLine("STARTTLS") && $this->VerifyResultLines("220",$responses)>0) {
+			$contextOptions = array(
+					'ssl' => array(
+					'verify_peer' => false,
+					'verify_peer_name' => false,
+					),);
+			stream_context_set_option($this->connection, $contextOptions );
+
 			if (!stream_socket_enable_crypto($this->connection,true,STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
 				return false;
 			} else {
