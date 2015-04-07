@@ -3169,7 +3169,7 @@ function interface_configure($interface = "wan", $reloadall = false, $linkupeven
 				services_unbound_configure();
 
 			/* update dyndns */
-			configd_run("service reload dyndns {$interface}");
+			configd_run("dyndns reload {$interface}");
 
 			/* XXX: which CPZONE? Needed? */
 			/* reload captive portal */
