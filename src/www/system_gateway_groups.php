@@ -60,7 +60,7 @@ if ($_POST) {
 		$retval = system_routing_configure();
 
 		configd_run('dyndns reload all');
-		configd_run('service reload ipsecdns');
+		configd_run('ipsecdns reload');
 		configd_run('filter reload');
 
 		/* reconfigure our gateway monitor */
