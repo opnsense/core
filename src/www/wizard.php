@@ -57,9 +57,11 @@ if(empty($xml)) {
 	print_info_box_np(sprintf(gettext("ERROR:  Could not open %s."), $xml));
 	die;
 } else {
-	if (file_exists("/usr/local/www/wizards/{$xml}"))
-		$pkg = parse_xml_config_pkg('/usr/local/www/wizards/' . $xml, 'pfsensewizard');
-	else {
+	if (file_exists("/usr/local/www/wizards/{$xml}")) {
+		global $listtags ;
+		$listtags = array_flip(array('build_port_path', 'depends_on_package', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'template', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
+		$pkg = parse_xml_config_raw('/usr/local/www/wizards/' . $xml, 'pfsensewizard', false);	
+	} else {
 		print_info_box_np(sprintf(gettext("ERROR:  Could not open %s."), $xml));
 		die;
 	}

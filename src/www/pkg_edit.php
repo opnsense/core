@@ -49,9 +49,6 @@ function get_pkg_interfaces_select_source($include_localhost=false) {
 	return $ssifs;
 }
 
-/* dummy stubs needed by some code that was MFC'd */
-function redirectHeader($location) { header("Location: " . $location); }
-
 function gentitle_pkg($pgname) {
 	global $pfSense_config;
 	return $pfSense_config['system']['hostname'] . "." . $pfSense_config['system']['domain'] . " - " . $pgname;
@@ -75,7 +72,9 @@ if ($xml == "" || $xml_fullpath === false ||
             print_info_box_np(gettext("ERROR: No valid package defined."));
             die;
 } else {
-            $pkg = parse_xml_config_pkg($xml_fullpath, "packagegui");
+            global $listtags ;
+            $listtags = array_flip(array('build_port_path', 'depends_on_package', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'template', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
+            $pkg = parse_xml_config_raw($xml_fullpath, "packagegui", false);
 }
 
 if($pkg['include_file'] <> "") {

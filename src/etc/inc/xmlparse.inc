@@ -33,7 +33,7 @@ function listtags()
 		'acls', 'alias', 'aliasurl', 'allowedip', 'allowedhostname', 'authserver',
 		'bridged', 'build_port_path',
 		'ca', 'cacert', 'cert', 'crl', 'clone', 'config', 'container', 'columnitem',
-		'depends_on_package', 'disk', 'dnsserver', 'dnsupdate', 'domainoverrides', 'dyndns',
+		 'disk', 'dnsserver', 'dnsupdate', 'domainoverrides', 'dyndns',
 		'element', 'encryption-algorithm-option',
 		'field', 'fieldname',
 		'gateway_item', 'gateway_group', 'gif', 'gre', 'group',
@@ -53,13 +53,6 @@ function listtags()
 		'vip', 'virtual_server', 'vlan',
 		'winsserver', 'wolentry', 'widget',
 	);
-
-	return array_flip($ret);
-}
-
-/* Package XML tags that should be treat as a list not as a traditional array */
-function listtags_pkg() {
-	$ret = array('build_port_path', 'depends_on_package', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'template', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file');
 
 	return array_flip($ret);
 }
@@ -146,21 +139,6 @@ function parse_xml_config($cffile, $rootobj, $isstring = "false") {
           }
         }
 	return parse_xml_config_raw($cffile, $rootobj, $isstring);
-}
-
-function parse_xml_config_pkg($cffile, $rootobj, $isstring = "false") {
-	global $listtags;
-	$listtags = listtags_pkg();
-        if (isset($GLOBALS['custom_listtags_pkg'])) {
-          foreach($GLOBALS['custom_listtags_pkg'] as $tag) {
-            $listtags[$tag] = $tag;
-          }
-        }
-	$cfg =parse_xml_config_raw($cffile, $rootobj, $isstring);
-	if ($cfg == -1)
-		return array();
-
-	return $cfg;
 }
 
 function parse_xml_config_raw($cffile, $rootobj, $isstring = "false") {

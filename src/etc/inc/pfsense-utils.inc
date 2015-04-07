@@ -607,7 +607,7 @@ function reload_interfaces_sync() {
  *   none
  ******/
 function reload_all() {
-	configd_run("service reload all");
+	configd_run("service reload all", true);
 }
 
 /****f* legacy/reload_interfaces
