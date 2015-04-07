@@ -48,24 +48,30 @@ read_dummynet_config();
  */
 
 if ($_GET) {
-	if ($_GET['queue'])
+	if (isset($_GET['queue'])) {
 		$qname = htmlspecialchars(trim($_GET['queue']));
-        if ($_GET['pipe'])
+        }
+        if (isset($_GET['pipe'])) {
                 $pipe = htmlspecialchars(trim($_GET['pipe']));
-        if ($_GET['action'])
+        }
+        if (isset($_GET['action'])) {
                 $action = htmlspecialchars($_GET['action']);
+        }
 }
 if ($_POST) {
-	if ($_POST['name'])
+	if (isset($_POST['name'])) {
 		$qname = htmlspecialchars(trim($_POST['name']));
-	else if ($_POST['newname'])
+        } else if (isset($_POST['newname'])) {
 		$qname = htmlspecialchars(trim($_POST['newname']));
-        if ($_POST['pipe'])
+        }
+        if (isset($_POST['pipe'])) {
 		$pipe = htmlspecialchars(trim($_POST['pipe']));
-	else
+        } else {
 		$pipe = htmlspecialchars(trim($qname));
-	if ($_POST['parentqueue'])
+        }
+	if (isset($_POST['parentqueue'])) {
 		$parentqueue = htmlspecialchars(trim($_POST['parentqueue']));
+        }
 }
 
 if ($pipe) {
