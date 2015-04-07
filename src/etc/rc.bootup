@@ -194,7 +194,7 @@ interfaces_loopback_configure();
 system_syslogd_start();
 
 echo "Starting Secure Shell Services...";
-configd_run("service reload sshd");
+configd_run("sshd restart");
 echo "done.\n";
 
 /* setup polling */
