@@ -8255,356 +8255,262 @@ msgstr ""
 msgid "Upload layer7 pattern file"
 msgstr ""
 
-#:
-src/www/diag_patterns.php
-79
-msgid "File to upload
-");?></strong></td>
+#: src/www/diag_patterns.php:79
+msgid "File to upload:"
 msgstr ""
 
-#:
-src/www/diag_patterns.php
-87
-msgid "Upload Pattern file");?>" />
+#: src/www/diag_patterns.php:87
+msgid "Upload Pattern file"
 msgstr ""
 
-#:
-src/www/diag_pf_info.php
-31
-msgid "Diagnostics
-pfInfo"
+#: src/www/diag_pf_info.php:31
+msgid "Diagnostics: pfInfo"
 msgstr ""
 
-#:
-src/www/diag_pf_info.php
-87
-msgid "Gathering PF information, please wait...");?>
+#: src/www/diag_pf_info.php:87
+msgid "Gathering PF information, please wait..."
 msgstr ""
 
-#:
-src/www/diag_ping.php
-30
+#: src/www/diag_ping.php:30
 msgid "Ping"
 msgstr ""
 
-#:
-src/www/diag_ping.php
-43
+#: src/www/diag_ping.php:43
 msgid "Count"
 msgstr ""
 
-#:
-src/www/diag_ping.php
-47
-msgid "Count must be between 1 and %s"), MAX_COUNT);
+#: src/www/diag_ping.php:47
+msgid "Count must be between 1 and %s"
 msgstr ""
 
-#:
-src/www/diag_ping.php
-53
+#: src/www/diag_ping.php:53
 msgid "When using IPv4, the target host must be an IPv4 address or hostname."
 msgstr ""
 
-#:
-src/www/diag_ping.php
-55
+#: src/www/diag_ping.php:55
 msgid "When using IPv6, the target host must be an IPv6 address or hostname."
 msgstr ""
 
-#:
-src/www/diag_ping.php
-86
-msgid "Ping"); ?></h3>
+#: src/www/diag_ping.php:86
+msgid "Ping"
 msgstr ""
 
-#:
-src/www/diag_ping.php
-95
-msgid "Host"); ?></td>
+#: src/www/diag_ping.php:95
+msgid "Host"
 msgstr ""
 
-#:
-src/www/diag_ping.php
-99
-msgid "IP Protocol"); ?></td>
+#: src/www/diag_ping.php:99
+msgid "IP Protocol"
 msgstr ""
 
-#:
-src/www/diag_ping.php
-106
-msgid "Source Address"); ?></td>
+#: src/www/diag_ping.php:106
+msgid "Source Address"
 msgstr ""
 
-#:
-src/www/diag_ping.php
-122
-msgid "Count"); ?></td>
+#: src/www/diag_ping.php:122
+msgid "Count"
 msgstr ""
 
-#:
-src/www/diag_ping.php
-131
-msgid "Ping"); ?>" /></td>
+#: src/www/diag_ping.php:131
+msgid "Ping"
 msgstr ""
 
-#:
-src/www/diag_ping.php
-155
-msgid "Ping output"); ?></h3>
+#: src/www/diag_ping.php:155
+msgid "Ping output"
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-40
+#: src/www/diag_resetstate.php:40
 msgid "The state table has been flushed successfully."
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-46
+#: src/www/diag_resetstate.php:46
 msgid "The source tracking table has been flushed successfully."
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-50
+#: src/www/diag_resetstate.php:50
+msgid "Diagnostics"
+msgstr ""
+
+#: src/www/diag_resetstate.php:50
 msgid "Reset state"
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-67
-msgid "States"), false, "diag_dump_states.php"
+#: src/www/diag_resetstate.php:67
+msgid "States"
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-68
-msgid "Reset states"), true, "diag_resetstate.php"
+#: src/www/diag_resetstate.php:68
+msgid "Reset states"
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-88
-msgid "Firewall state table"); ?></strong><br />
+#: src/www/diag_resetstate.php:88
+msgid "Firewall state table"
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-90
-msgid "Resetting the state tables will remove all entries from " .
+#: src/www/diag_resetstate.php:90
+msgid ""
+"Resetting the state tables will remove all entries from "
+"the corresponding tables. This means that all open connections "
+"will be broken and will have to be re-established. This "
+"may be necessary after making substantial changes to the "
+"firewall and/or NAT rules, especially if there are IP protocol "
+"mappings (e.g. for PPTP or IPv6) with open connections."
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-97
-msgid "The firewall will normally leave " .
+#: src/www/diag_resetstate.php:97
+msgid ""
+"The firewall will normally leave "
+"the state tables intact when changing rules."
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-100
-msgid "NOTE
-If you reset the firewall state table, the browser " .
+#: src/www/diag_resetstate.php:100
+msgid ""
+"E: If you reset the firewall state table, the browser "
+"session may appear to be hung after clicking &quot;Reset&quot;. "
+"Simply refresh the page to continue."
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-107
-msgid "Firewall Source Tracking"); ?></strong><br />
+#: src/www/diag_resetstate.php:107
+msgid "Firewall Source Tracking"
 msgstr ""
 
 #:
 src/www/diag_resetstate.php
 109
-msgid "Resetting the source tracking table will remove all source/destination associations. " .
+msgid ""
+"Resetting the source tracking table will remove all source/destination associations. "
+"This means that the \"sticky\" source/destination association "
+"will be cleared for all clients."
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-113
-msgid "This does not clear active connection states, only source tracking."); ?><br />
+#: src/www/diag_resetstate.php:113
+msgid "This does not clear active connection states, only source tracking."
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-116
-msgid "Reset"); ?>" />
+#: src/www/diag_resetstate.php:116
+msgid "Reset"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-57
+#: src/www/diag_routes.php:57
 msgid "Routing tables"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-161
-msgid "Routing tables"); ?></h3>
+#: src/www/diag_routes.php:161
+msgid "Routing tables"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-171
-msgid "Name resolution");?></td>
+#: src/www/diag_routes.php:171
+msgid "Name resolution"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-172
-msgid "Enable");?>
+#: src/www/diag_routes.php:172
+msgid "Enable"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-173
-msgid "Enable this to attempt to resolve names when displaying the tables.");?></small></em></p>
+#: src/www/diag_routes.php:173
+msgid "Enable this to attempt to resolve names when displaying the tables."
 msgstr ""
 
-#:
-src/www/diag_routes.php
-177
-msgid "Number of rows");?></td>
+#: src/www/diag_routes.php:177
+msgid "Number of rows"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-180
-msgid "all")) as $item) {
+#: src/www/diag_routes.php:180
+msgid "all"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-185
-msgid "Select how many rows to display.");?></small></em></p>
+#: src/www/diag_routes.php:185
+msgid "Select how many rows to display."
 msgstr ""
 
-#:
-src/www/diag_routes.php
-189
-msgid "Filter expression");?></td>
+#: src/www/diag_routes.php:189
+msgid "Filter expression"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-192
-msgid "Use a regular expression to filter IP address or hostnames.");?></small></em></p>
+#: src/www/diag_routes.php:192
+msgid "Use a regular expression to filter IP address or hostnames."
 msgstr ""
 
-#:
-src/www/diag_routes.php
-198
-msgid "Update"); ?>" />
+#: src/www/diag_routes.php:198
+msgid "Update"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-199
-msgid "Note
-msgid "By enabling name resolution, the query should take a bit longer. You can stop it at any time by clicking the Stop button in your browser.");?></small></em></p>
+#: src/www/diag_routes.php:199
+msgid "Note:"
 msgstr ""
 
-#:
-src/www/diag_routes.php
-221
-msgid "Gathering data, please wait...");?></td></tr>
+#: src/www/diag_routes.php:199
+msgid ""
+"By enabling name resolution, the query should take a bit longer. "
+"You can stop it at any time by clicking the Stop button in your browser."
 msgstr ""
 
-#:
-src/www/diag_routes.php
-237
-msgid "Gathering data, please wait...");?></td></tr>
+#: src/www/diag_routes.php:221
+msgid "Gathering data, please wait..."
 msgstr ""
 
-#:
-src/www/diag_smart.php
-32
+#: src/www/diag_routes.php:237
+msgid "Gathering data, please wait..."
+msgstr ""
+
+#: src/www/diag_smart.php:32
 msgid "S.M.A.R.T. Monitor Tools"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-68
-msgid "PASSED" '</font></b>';
+#: src/www/diag_smart.php:68
+msgid "PASSED"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-69
-msgid "FAILED" '</font></b>';
+#: src/www/diag_smart.php:69
+msgid "FAILED"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-70
-msgid "Warning" '</font>';
+#: src/www/diag_smart.php:70
+msgid "Warning"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-121
-msgid "Abort" '" />
+#: src/www/diag_smart.php:121
+msgid "Abort"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-170
-msgid "Email sent to %s"), $config['system']['smartmonemail']);
+#: src/www/diag_smart.php:170
+msgid "Email sent to %s"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-208
-msgid "Information/Tests"), false, $_SERVER['PHP_SELF'] . "?action=default"
+#: src/www/diag_smart.php:208
+msgid "Information/Tests"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-209
-msgid "Config"), true, $_SERVER['PHP_SELF'] . "?action=config"
+#: src/www/diag_smart.php:209
+msgid "Config"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-220
-msgid "Config"); ?></td>
+#: src/www/diag_smart.php:220
+msgid "Config"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-223
-msgid "Email Address"); ?></td>
+#: src/www/diag_smart.php 223
+msgid "Email Address"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-233
-msgid "Save"); ?>" class="formbtn" />
+#: src/www/diag_smart.php:233
+msgid "Save"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-245
-msgid "Test email"); ?></td>
+#: src/www/diag_smart.php:245
+msgid "Test email"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-250
-msgid "Send test email to %s"), $config['system']['smartmonemail']); ?>
+#: src/www/diag_smart.php:250
+msgid "Send test email to %s"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-258
-msgid "Send"); ?>" class="formbtn" />
+#: src/www/diag_smart.php:258
+msgid "Send"
 msgstr ""
 
-#:
-src/www/diag_smart.php
-284
-msgid "Info"); ?></h3>
+#: src/www/diag_smart.php:284
+msgid "Info"
 msgstr ""
 
 #:
