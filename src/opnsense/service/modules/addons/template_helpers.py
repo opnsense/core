@@ -65,4 +65,3 @@ class Helpers(object):
             return True
         else:
             return False
-
