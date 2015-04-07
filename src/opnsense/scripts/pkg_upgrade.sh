@@ -41,7 +41,7 @@ if [ -z "$pkg_running" ]; then
 		# update all installed packages
 		pkg upgrade -y >> ${PKG_PROGRESS_FILE}
 		# restart the web server
-		/usr/local/opnsense/service/configd_ctl.py 'service restart webgui' >> ${PKG_PROGRESS_FILE}
+		/usr/local/opnsense/service/configd_ctl.py 'webgui restart' >> ${PKG_PROGRESS_FILE}
 		# remove no longer referenced packages
 		pkg autoremove -y >> ${PKG_PROGRESS_FILE}
 	elif [ "$package" == "pkg" ]; then

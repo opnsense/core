@@ -836,7 +836,7 @@ EOD;
 		$hostnames = "";
 		array_unique($filterdns_list);
 		foreach ($filterdns_list as $hostname)
-			$hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py \"service reload ipsecdns\"'\n";
+			$hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py \"ipsecdns reload\"'\n";
 		file_put_contents("/usr/local/etc/filterdns-ipsec.hosts", $hostnames);
 		unset($hostnames);
 

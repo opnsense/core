@@ -29,7 +29,7 @@ if [ "${2}" == "inet" ]; then
 			echo "${DNS2}" >> /var/etc/nameserver_${1}
 			route change "${DNS2}" ${4}
 		fi
-		/usr/local/opnsense/service/configd_ctl.py 'service reload dns'
+		/usr/local/opnsense/service/configd_ctl.py 'dns reload'
 		sleep 1
 	fi
 	/usr/local/opnsense/service/configd_ctl.py "interface newip ${1}"
@@ -53,7 +53,7 @@ elif [ "${2}" == "inet6" ]; then
 			echo "${DNS2}" >> /var/etc/nameserver_v6${1}
 			route change -inet6 "${DNS2}" ${4}
 		fi
-		/usr/local/opnsense/service/configd_ctl.py 'service reload dns'
+		/usr/local/opnsense/service/configd_ctl.py 'dns reload'
 		sleep 1
 	fi
 	/usr/local/opnsense/service/configd_ctl.py "interface newipv6 ${1}"

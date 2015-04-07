@@ -548,7 +548,7 @@ function system_staticroutes_configure($interface = "", $update_dns = false) {
 			$hostnames = "";
 			array_unique($filterdns_list);
 			foreach ($filterdns_list as $hostname)
-				$hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py \"service reload routedns\"'\n";
+				$hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py \"routedns reload\"'\n";
 			file_put_contents("{$g['varetc_path']}/filterdns-route.hosts", $hostnames);
 			unset($hostnames);
 
