@@ -734,8 +734,8 @@ function filter_get_vpns_list() {
 
 	/* openvpn */
 	foreach (array('client', 'server') as $type) {
-		if(is_array($config['openvpn']["openvpn-$type"])) {
-			foreach ($config['openvpn']["openvpn-$type"] as $settings) {
+		if (isset($config['openvpn']['openvpn-' . $type])) {
+			foreach ($config['openvpn']['openvpn-' . $type] as $settings) {
 				if(is_array($settings)) {
 					if (!isset($settings['disable'])) {
 						$remote_networks = explode(',', $settings['remote_network']);
@@ -1357,19 +1357,23 @@ function filter_nat_rules_automatic_tonathosts($with_descr = false) {
 	}
 
 	/* add openvpn interfaces */
-	if(is_array($config['openvpn']['openvpn-server']))
-		foreach ($config['openvpn']['openvpn-server'] as $ovpnsrv)
+	if (isset($config['openvpn']['openvpn-server'])) {
+		foreach ($config['openvpn']['openvpn-server'] as $ovpnsrv) {
 			if (!isset($ovpnsrv['disable']) && !empty($ovpnsrv['tunnel_network'])) {
 				$tonathosts[] = $ovpnsrv['tunnel_network'];
 				$descriptions[] = gettext("OpenVPN server");
 			}
+		}
+	}
 
-	if(is_array($config['openvpn']['openvpn-client']))
-		foreach ($config['openvpn']['openvpn-client'] as $ovpncli)
+	if (isset($config['openvpn']['openvpn-client'])) {
+		foreach ($config['openvpn']['openvpn-client'] as $ovpncli) {
 			if (!isset($ovpncli['disable']) && !empty($ovpncli['tunnel_network'])) {
 				$tonathosts[] = $ovpncli['tunnel_network'];
 				$descriptions[] = gettext("OpenVPN client");
 			}
+		}
+	}
 
 	/* IPsec mode_cfg subnet */
 	if (isset($config['ipsec']['client']['enable']) &&

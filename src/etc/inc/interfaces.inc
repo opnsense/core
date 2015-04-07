@@ -1225,13 +1225,19 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 	 */
 	if ($ifacecfg === false) {
 		$ifcfg = $config['interfaces'][$interface];
-		$ppps = $config['ppps']['ppp'];
+		$ppps = array();
+		if (isset($config['ppps']['ppp'])) {
+			$ppps = $config['ppps']['ppp'];
+		}
 		$realif = get_real_interface($interface);
 		$realifv6 = get_real_interface($interface, "inet6", true);
 	} elseif (!is_array($ifacecfg)) {
 		log_error(gettext("Wrong parameters used during interface_bring_down"));
 		$ifcfg = $config['interfaces'][$interface];
-		$ppps = $config['ppps']['ppp'];
+		$ppps = array();
+		if (isset($config['ppps']['ppp'])) {
+			$ppps = $config['ppps']['ppp'];
+		}
 		$realif = get_real_interface($interface);
 		$realifv6 = get_real_interface($interface, "inet6", true);
 	} else {
