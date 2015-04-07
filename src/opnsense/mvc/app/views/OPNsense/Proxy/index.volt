@@ -1,3 +1,31 @@
+{#
+
+OPNsense® is Copyright © 2014 – 2015 by Deciso B.V.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+1.  Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
+
+2.  Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+#}
+
 <script type="text/javascript">
 
     $( document ).ready(function() {
@@ -80,10 +108,25 @@
             }
         });
 
+        // handle advanced show/hide
+        $('[data-advanced*="true"]').hide(function(){
+            $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>"); // the table row is added to keep correct table striping
+        });
+        $('[id*="show_advanced"]').click(function() {
+            $('[id*="show_advanced"]').toggleClass("fa-toggle-on fa-toggle-off");
+            $('[id*="show_advanced"]').toggleClass("text-success text-danger");
+            if ($('[id*="show_advanced"]').hasClass("fa-toggle-on")) {
+                $('[data-advanced*="true"]').show();
+                $('[data-advanced*="hidden_row"]').remove(); // the table row is deleted to keep correct table striping
+            } else {
+                $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>").hide(); // the table row is added to keep correct table striping
+            }
+        });
+
+        // Apply tokenizer
         setTimeout(function(){
             $('select[class="tokenize"]').each(function(){
                 if ($(this).prop("size")==0) {
-                    //number_of_items = $(this).children('option').length;
                     maxDropdownHeight=String(36*5)+"px"; // default number of items
 
                 } else {
@@ -113,7 +156,7 @@
 
 </script>
 
-<!-- TODO: explain TABS
+<!-- TODO: explain TABS and SUBTABS
 content_location,tab_name,
     field_array
 activetab: content_location
@@ -134,38 +177,42 @@ maxheight: define max height of select box, default=170px to hold 5 items
             'label':'Enable proxy',
             'type':'checkbox',
             'help':'Enable or disable the proxy service.'
-             ]}
+            ]}
         ],
-        ['proxy-forward','Forward Proxy',
-            {['id': 'proxy.forward.interfaces',
-            'label':'Proxy interfaces',
-            'type':'select_multiple',
-            'style':'tokenize',
-            'help':'Select interface(s) the proxy will bind to.',
-            'hint':'Type or select interface'
-            ],
-            ['id': 'proxy.forward.port',
-            'label':'Proxy port',
-            'type':'text',
-            'help':'The port the proxy service will listen to.'
-            ],
-            ['id': 'proxy.forward.addACLforInterfaceSubnets',
-            'label':'Allow interface subnets',
-            'type':'checkbox',
-            'help':'When enabled the subnets of the selected interfaces will be added to the allow access list.'
-            ],
-            ['id': 'proxy.forward.transparentProxyMode',
-            'label':'Enable Transparent HTTP proxy',
-            'type':'checkbox',
-            'help':'Enable transparent proxe mode to forward all requests for destination port 80 to the proxy server without any additional configuration.'
-            ],
-            ['id': 'proxy.forward.alternateDNSservers',
-            'label':'Use alternate DNS-servers',
-            'type':'select_multiple',
-            'style':'tokenize',
-            'help':'Type IPs of alternative DNS servers you like to use.',
-            'hint':'Type or select interface',
-            'allownew':'true'
+        ['proxy-forward','Forward Proxy','subtabs': {
+            [ 'proxy-forward-general','General Forward Settings',
+                {['id': 'proxy.forward.interfaces',
+                'label':'Proxy interfaces',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Select interface(s) the proxy will bind to.',
+                'hint':'Type or select interface.'
+                ],
+                ['id': 'proxy.forward.port',
+                'label':'Proxy port',
+                'type':'text',
+                'help':'The port the proxy service will listen to.'
+                ],
+                ['id': 'proxy.forward.transparentProxyMode',
+                'label':'Enable Transparent HTTP proxy',
+                'type':'checkbox',
+                'help':'Enable transparent proxe mode to forward all requests for destination port 80 to the proxy server without any additional configuration.'
+                ],
+                ['id': 'proxy.forward.addACLforInterfaceSubnets',
+                'label':'Allow interface subnets',
+                'type':'checkbox',
+                'help':'When enabled the subnets of the selected interfaces will be added to the allow access list.',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.forward.alternateDNSservers',
+                'label':'Use alternate DNS-servers',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Type IPs of alternative DNS servers you like to use.',
+                'hint':'Type IP adresses, followed by Enter.',
+                'allownew':'true',
+                'advanced':'true'
+                ]}
             ]}
         ]
     },
