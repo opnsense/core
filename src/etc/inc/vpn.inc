@@ -867,7 +867,7 @@ function vpn_ipsec_force_reload($interface = "") {
 
 	$ipseccfg = $config['ipsec'];
 
-	if (!empty($interface) && is_array($ipseccfg['phase1'])) {
+	if (!empty($interface) && isset($ipseccfg['phase1']) && is_array($ipseccfg['phase1'])) {
 		$found = false;
 		foreach ($ipseccfg['phase1'] as $ipsec) {
 			if (!isset($ipsec['disabled']) && ($ipsec['interface'] == $interface)) {

@@ -45,16 +45,6 @@ if (file_exists('/var/run/booting')) {
 	return;
 }
 
-function restart_packages() {
-	global $oldip, $curwanip, $g;
-
-	/* restart packages */
-	system_ntp_configure(false);
-	mwexec_bg("/usr/local/sbin/ntpdate_sync_once.sh", false, true);
-	log_error("{$g['product_name']} package system has detected an ip change $oldip ->  $curwanip ... Restarting packages.");
-	configd_run("service reload packages");
-}
-
 /* Interface IP address has changed */
 $argument = str_replace("\n", "", $argv[1]);
 
@@ -73,6 +63,9 @@ $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 /* If the interface is configured and not enabled, bail. We do not need to change settings for disabled interfaces. #3313 */
 if (is_array($config['interfaces'][$interface]) && !isset($config['interfaces'][$interface]['enable'])) {
 	log_error("Interface is disabled, nothing to do.");
+	return;
+} elseif (empty($interface)) {
+	log_error("Interface is empty, nothing to do.");
 	return;
 }
 
@@ -100,12 +93,6 @@ if ($curwanip == "0.0.0.0" || !is_ipaddr($curwanip)) {
 	}
 }
 
-/* XXX: This really possible? */
-if (empty($interface)) {
-	filter_configure();
-	restart_packages();
-	return;
-}
 
 $oldip = "0.0.0.0";
 if (file_exists("{$g['vardb_path']}/{$interface}_cacheip"))
@@ -210,8 +197,10 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
 
 	/* restart snmp */
 	services_snmpd_configure();
-
-	restart_packages();
+	
+	/* reconfigure ntpd */
+	system_ntp_configure(false);
+	mwexec_bg("/usr/local/sbin/ntpdate_sync_once.sh", false, true);
 }
 
 /* signal filter reload */
