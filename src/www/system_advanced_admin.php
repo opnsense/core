@@ -608,7 +608,7 @@ if ($restart_sshd) {
 
 	if ($config['system']['ssh']['enabled']) {
 		log_error(gettext("secure shell configuration has changed. Restarting sshd."));
-		configd_run("service restart sshd");
+		configd_run("sshd restart");
 	}
 }
 if ($restart_webgui) {
