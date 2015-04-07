@@ -42,7 +42,6 @@ function &get_reference_to_me_in_config(&$mypath)
 	foreach ($mypath as $indeks) {
 		$ptr =& $ptr['queue'][$indeks];
 	}
-
 	return $ptr;
 }
 
@@ -4306,9 +4305,6 @@ function read_altq_config() {
 	$a_int = &$config['shaper']['queue'];
 
 	$altq_list_queues = array();
-
-	if (!is_array($config['shaper']['queue']))
-		return;
 
 	foreach ($a_int as $key => $conf) {
 		$int = $conf['interface'];

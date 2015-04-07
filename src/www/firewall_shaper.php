@@ -58,8 +58,11 @@ if ($_GET) {
                 $action = htmlspecialchars($_GET['action']);
 }
 if ($_POST) {
-	if ($_POST['name'])
+	if (isset($_POST['name']) && trim($_POST['name']) != '') {
 		$qname = htmlspecialchars(trim($_POST['name']));
+        } else {
+                $qname = htmlspecialchars(trim($_POST['newname']));
+        }
         if ($_POST['interface'])
                 $interface = htmlspecialchars(trim($_POST['interface']));
 	if ($_POST['parentqueue'])
