@@ -619,7 +619,7 @@ function reload_all() {
  *   none
  ******/
 function reload_interfaces() {
-	configd_run("interface all reload");
+	configd_run("interface reload all");
 }
 
 /****f* legacy/reload_all_sync
