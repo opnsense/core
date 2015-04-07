@@ -120,8 +120,8 @@ function filter_configure()
 	 *	 The reason is that rc.bootup calls filter_configure_sync directly which does this too.
 	 */
 	if (!file_exists("/var/run/booting")) {
-		send_event('filter reload');
-		send_event('filter sync restart');
+		configd_run('filter reload');
+		configd_run('filter sync restart');
 	}
 }
 

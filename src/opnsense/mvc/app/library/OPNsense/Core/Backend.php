@@ -50,11 +50,12 @@ class Backend
     /**
      * send event to backend
      * @param string $event event string
+     * @param bool $detach detach process
      * @param int $timeout timeout in seconds
      * @return string
      * @throws \Exception
      */
-    public function sendEvent($event, $timeout = 120)
+    public function configdRun($event, $detach = false, $timeout = 120)
     {
         $endOfStream = chr(0).chr(0).chr(0);
         $poll_timeout = 2 ; // poll timeout interval
@@ -67,7 +68,11 @@ class Backend
 
         stream_set_timeout($stream, $poll_timeout);
         // send command
-        fwrite($stream, $event);
+        if ($detach) {
+            fwrite($stream, "&".$event);
+        } else {
+            fwrite($stream, $event);
+        }
 
         // read response data
         $starttime = time() ;
@@ -89,15 +94,5 @@ class Backend
         return $resp;
     }
 
-    /**
-     * send event to backend, but prefix & to force it to run in background
-     * @param string $event event string
-     * @param int $timeout timeout in seconds
-     * @return string (message uuid from configd)
-     * @throws \Exception
-     */
-    public function sendBackgroundEvent($event, $timeout = 120)
-    {
-        return $this->sendEvent('&'.$event, $timeout);
-    }
+
 }

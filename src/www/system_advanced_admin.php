@@ -608,14 +608,14 @@ if ($restart_sshd) {
 
 	if ($config['system']['ssh']['enabled']) {
 		log_error(gettext("secure shell configuration has changed. Restarting sshd."));
-		send_event("service restart sshd");
+		configd_run("service restart sshd");
 	}
 }
 if ($restart_webgui) {
 	ob_flush();
 	flush();
 	log_error(gettext("webConfigurator configuration has changed. Restarting webConfigurator."));
-	send_background_event("service restart webgui");
+	configd_run("webgui restart delayed", true);
 }
 
 ?>

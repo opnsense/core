@@ -45,7 +45,7 @@ class ServiceController extends ApiControllerBase
     public function startAction()
     {
         $backend = new Backend();
-        $response = $backend->sendEvent("service start proxy");
+        $response = $backend->configdRun("service start proxy");
         return array("response" => $response);
     }
 
@@ -56,7 +56,7 @@ class ServiceController extends ApiControllerBase
     public function stopAction()
     {
         $backend = new Backend();
-        $response = $backend->sendEvent("service stop proxy");
+        $response = $backend->configdRun("service stop proxy");
         return array("response" => $response);
     }
 
@@ -67,7 +67,7 @@ class ServiceController extends ApiControllerBase
     public function restartAction()
     {
         $backend = new Backend();
-        $response = $backend->sendEvent("service restart proxy");
+        $response = $backend->configdRun("service restart proxy");
         return array("response" => $response);
     }
 
@@ -79,7 +79,7 @@ class ServiceController extends ApiControllerBase
     public function statusAction()
     {
         $backend = new Backend();
-        $response = $backend->sendEvent("service status proxy");
+        $response = $backend->configdRun("service status proxy");
 
         if (strpos($response, "not running") > 0) {
             $status = "stopped";
@@ -112,12 +112,12 @@ class ServiceController extends ApiControllerBase
         }
 
         // generate template
-        $backend->sendEvent("template reload OPNsense.Proxy");
+        $backend->configdRun("template reload OPNsense.Proxy");
 
         // (res)start daemon
         if ($mdlProxy->general->enabled->__toString() == 1) {
             if ($runStatus['status'] == "running") {
-                $backend->sendEvent("service reconfigure proxy");
+                $backend->configdRun("service reconfigure proxy");
             } else {
                 $this->startAction();
             }

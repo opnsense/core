@@ -489,7 +489,7 @@ if ($_POST) {
 			echo $_POST['name'];
 			exit;
 		} else if (!empty($reloadif))
-			send_event("interface reconfigure {$reloadif}");
+			configd_run("interface reconfigure {$reloadif}");
 
 		header("Location: system_gateways.php");
 		exit;

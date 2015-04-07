@@ -843,7 +843,7 @@ function openvpn_restart($mode, $settings) {
 	mwexec_bg("/usr/local/sbin/openvpn --config " . escapeshellarg($fpath));
 
 	if (!file_exists("/var/run/booting"))
-		send_event("filter reload");
+		configd_run("filter reload");
 }
 
 function openvpn_delete($mode, & $settings) {

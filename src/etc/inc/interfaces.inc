@@ -1262,7 +1262,7 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 			foreach ($ppps as $pppid => $ppp) {
 				if ($realif == $ppp['if']) {
 					if (isset($ppp['ondemand']) && !$destroy){
-						send_event("interface reconfigure {$interface}");
+						configd_run("interface reconfigure {$interface}");
 						break;
 					}
 					if (file_exists("{$g['varrun_path']}/{$ppp['type']}_{$interface}.pid")) {
@@ -3169,7 +3169,7 @@ function interface_configure($interface = "wan", $reloadall = false, $linkupeven
 				services_unbound_configure();
 
 			/* update dyndns */
-			send_event("service reload dyndns {$interface}");
+			configd_run("service reload dyndns {$interface}");
 
 			/* XXX: which CPZONE? Needed? */
 			/* reload captive portal */

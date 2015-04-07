@@ -54,5 +54,5 @@ if (count($todo) > 0) {
 	}
 
 	if ($filter_reload)
-		send_event("filter reload");
+		configd_run("filter reload");
 }

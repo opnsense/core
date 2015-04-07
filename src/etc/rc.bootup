@@ -194,7 +194,7 @@ interfaces_loopback_configure();
 system_syslogd_start();
 
 echo "Starting Secure Shell Services...";
-send_event("service reload sshd");
+configd_run("service reload sshd");
 echo "done.\n";
 
 /* setup polling */
@@ -286,7 +286,7 @@ services_dhcrelay_configure();
 services_dhcrelay6_configure();
 
 /* dyndns service updates */
-send_event("service reload dyndnsall");
+configd_run("service reload dyndnsall");
 
 /* Run a filter configure now that most all services have started */
 filter_configure_sync();

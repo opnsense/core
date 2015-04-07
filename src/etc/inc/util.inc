@@ -142,18 +142,11 @@ function unlock($cfglckkey = 0)
 	fclose($cfglckkey);
 }
 
-function send_event($cmd)
+function configd_run($cmd, $detach = false)
 {
 	require_once("script/load_phalcon.php");
 	$backend = new OPNsense\Core\Backend();
-	return $backend->sendEvent("{$cmd}");
-}
-
-function send_background_event($cmd)
-{
-	require_once("script/load_phalcon.php");
-	$backend = new OPNsense\Core\Backend();
-	return $backend->sendBackgroundEvent("{$cmd}");
+	return $backend->configdRun("{$cmd}", $detach);
 }
 
 function is_module_loaded($module_name) {
@@ -1462,7 +1455,7 @@ function is_interface_mismatch()
 /* sync carp entries to other firewalls */
 function carp_sync_client()
 {
-	send_event('filter sync load');
+	configd_run('filter sync load');
 }
 
 /****f* util/isAjax

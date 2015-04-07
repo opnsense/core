@@ -379,7 +379,7 @@ if (!function_exists('service_control_start')) {
 				vpn_ipsec_force_reload();
 				break;
 			case 'sshd':
-				send_event("service restart sshd");
+				configd_run("service restart sshd");
 				break;
 			case 'openvpn':
 				$vpnmode = isset($extras['vpnmode']) ? htmlspecialchars($extras['vpnmode']) : htmlspecialchars($extras['mode']);
@@ -523,7 +523,7 @@ if (!function_exists('service_control_restart')) {
 				vpn_ipsec_force_reload();
 				break;
 			case 'sshd':
-				send_event("service restart sshd");
+				configd_run("service restart sshd");
 				break;
 			case 'openvpn':
 				$vpnmode = htmlspecialchars($extras['vpnmode']);

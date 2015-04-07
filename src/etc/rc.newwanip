@@ -52,7 +52,7 @@ function restart_packages() {
 	system_ntp_configure(false);
 	mwexec_bg("/usr/local/sbin/ntpdate_sync_once.sh", false, true);
 	log_error("{$g['product_name']} package system has detected an ip change $oldip ->  $curwanip ... Restarting packages.");
-	send_event("service reload packages");
+	configd_run("service reload packages");
 }
 
 /* Interface IP address has changed */
@@ -94,7 +94,7 @@ if ($curwanip == "0.0.0.0" || !is_ipaddr($curwanip)) {
 	if (substr($interface_real, 0, 4) != "ovpn") {
 		if (!empty($config['interfaces'][$interface]['ipaddr'])) {
 			log_error("rc.newwanip: Failed to update {$interface} IP, restarting...");
-			send_event("interface reconfigure {$interface}");
+			configd_run("interface reconfigure {$interface}");
 			return;
 		}
 	}

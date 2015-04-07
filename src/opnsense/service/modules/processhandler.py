@@ -361,7 +361,7 @@ class Action(object):
             if self.message.count('%s') > 0 and parameters is not None and len(parameters) > 0:
                 log_message = log_message + self.message % tuple(parameters[0:self.message.count('%s')])
             else:
-                log_message = log_message + self.message
+                log_message = log_message + self.message.replace("%s", "")
             syslog.syslog(syslog.LOG_NOTICE, log_message)
 
         # validate input
@@ -377,9 +377,9 @@ class Action(object):
 
             # build script command to execute, shared for both types
             script_command = self.command
-            if self.parameters is not None and type(self.parameters) == str:
+            if self.parameters is not None and type(self.parameters) == str and len(parameters) > 0:
                 script_command = '%s %s' % (script_command, self.parameters)
-                if script_command.find('%s') > -1 and len(parameters) > 0:
+                if script_command.find('%s') > -1:
                     # use command execution parameters in action parameter template
                     # use quotes on parameters to prevent code injection
                     script_command = script_command % tuple(map(lambda x: '"'+x.replace('"', '\\"')+'"',

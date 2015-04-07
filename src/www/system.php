@@ -257,7 +257,7 @@ if ($_POST) {
 		$retval |= system_ntp_configure();
 
 		if ($olddnsallowoverride != $config['system']['dnsallowoverride']) {
-			send_event("service reload dns");
+			configd_run("service reload dns");
 		}
 
 		// Reload the filter - plugins might need to be run.

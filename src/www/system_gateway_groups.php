@@ -59,9 +59,9 @@ if ($_POST) {
 
 		$retval = system_routing_configure();
 
-		send_event('service reload dyndnsall');
-		send_event('service reload ipsecdns');
-		send_event('filter reload');
+		configd_run('service reload dyndnsall');
+		configd_run('service reload ipsecdns');
+		configd_run('filter reload');
 
 		/* reconfigure our gateway monitor */
 		setup_gateways_monitor();

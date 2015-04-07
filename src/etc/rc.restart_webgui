@@ -7,6 +7,11 @@ require_once('shaper.inc');
 require_once('captiveportal.inc');
 require_once('rrd.inc');
 
+if (count($argv) > 1 && $argv[1] == 'delayed') {
+    // starting delayed.
+    sleep(2);
+}
+
 echo 'Restarting webConfigurator...';
 
 killbyname('lighttpd');

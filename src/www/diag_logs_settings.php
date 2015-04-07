@@ -160,7 +160,7 @@ if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
 			ob_flush();
 			flush();
 			log_error(gettext("webConfigurator configuration has changed. Restarting webConfigurator."));
-			send_background_event("service restart webgui");
+			configd_run("webgui restart delayed", true);
 			$savemsg .= "<br />" . gettext("WebGUI process is restarting.");
 		}
 

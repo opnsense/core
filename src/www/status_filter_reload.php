@@ -41,13 +41,13 @@ if($_GET['getstatus']) {
 	exit;
 }
 if($_POST['reloadfilter']) {
-	send_event("filter reload");
-        send_event("filter sync reload");
+	configd_run("filter reload");
+        configd_run("filter sync reload");
 	header("Location: status_filter_reload.php");
 	exit;
 }
 if($_POST['syncfilter']) {
-	send_event("filter sync");
+	configd_run("filter sync");
 	header("Location: status_filter_reload.php");
 	exit;
 }
