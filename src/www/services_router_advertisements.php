@@ -215,7 +215,7 @@ include("head.inc");
 						}
 						if ($tabscounter == 0) {
 							echo "</td></tr></table></form>";
-							include("fend.inc");
+							include("foot.inc");
 							echo "</body>";
 							echo "</html>";
 							exit;
@@ -410,6 +410,6 @@ include("head.inc");
 //]]>
 </script>
 
-<?php include("fend.inc"); ?>
+<?php include("foot.inc"); ?>      
 </body>
 </html>

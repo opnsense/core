@@ -91,7 +91,7 @@ include("head.inc");
 
 				if ($islocal == false) {
 					echo gettext("Sorry, you cannot change the password for a non-local user.");
-					include("fend.inc");
+                                        include("foot.inc");
 					exit;
 				}
 

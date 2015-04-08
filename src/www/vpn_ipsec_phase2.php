@@ -815,7 +815,7 @@ typesel_change_remote(<?=htmlspecialchars($pconfig['remoteid_netbits'])?>);
 <?php endif; ?>
 //]]>
 </script>
-<?php include("fend.inc"); ?>
+<?php include("foot.inc"); ?>      
 </body>
 </html>
 

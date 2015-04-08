@@ -483,10 +483,6 @@ include("head.inc");
 							}
 						}
 						if ($tabscounter == 0) {
-							//echo "</td></tr></table></form>";
-							//include("fend.inc");
-							//echo "</body>";
-							//echo "</html>";
 							echo "</section>";
 							echo "</div>";
 							echo "</div>";

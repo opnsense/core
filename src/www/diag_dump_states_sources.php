@@ -203,6 +203,6 @@ else {
   </tr>
 </table>
 
-<?php require("fend.inc"); ?>
+<?php include("foot.inc"); ?>
 </body>
 </html>

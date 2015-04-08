@@ -467,6 +467,6 @@ function useproxy_changed(obj) {
 server_changed();
 //]]>
 </script>
-<?php include("fend.inc"); ?>
+<?php include("foot.inc"); ?>
 </body>
 </html>

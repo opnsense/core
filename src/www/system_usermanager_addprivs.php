@@ -188,6 +188,6 @@ function update_description() {
 </section>
 
 
-<?php include("fend.inc"); ?>
+<?php include("foot.inc"); ?>      
 </body>
 </html>

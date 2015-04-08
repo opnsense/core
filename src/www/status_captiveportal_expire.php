@@ -124,4 +124,4 @@ if ($_POST) {
 	</section>
 
 
-<? include("fend.inc"); ?>
+<?php include("foot.inc"); ?>      
