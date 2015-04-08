@@ -8385,9 +8385,7 @@ msgid "Tabs (   ), newlines (
 ) and carriage returns (^M) at the beginning or end of the returned results are removed before comparison."
 msgstr ""
 
-#:
-src/www/diag_resetstate.php
-109
+#: src/www/diag_resetstate.php:109
 msgid ""
 "Resetting the source tracking table will remove all source/destination associations. "
 "This means that the \"sticky\" source/destination association "
