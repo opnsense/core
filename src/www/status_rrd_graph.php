@@ -273,26 +273,6 @@ include("head.inc");
 
 <body>
 
-<?php if ($curcat === "custom") { ?>
-	<link rel="stylesheet" type="text/css" href="/javascript/jquery-ui-timepicker-addon/css/jquery-ui-timepicker-addon.css" />
-	<link rel="stylesheet" type="text/css" href="/javascript/jquery/jquery-ui-1.11.1.css" />
-
-	<script type="text/javascript" src="/javascript/jquery-ui-timepicker-addon/js/jquery-ui-timepicker-addon.js"></script>
-	<script type="text/javascript">
-	//<![CDATA[
-		jQuery(function ($) {
-			var options = {
-				dateFormat: 'mm/dd/yy',
-				timeFormat: 'hh:mm:ss',
-				showSecond: true
-			};
-			$("#startDateTime").datetimepicker(options);
-			$("#endDateTime").datetimepicker(options);
-		});
-	//]]>
-	</script>
-<?php } ?>
-
 <?php
 
 function get_dates($curperiod, $graph) {
