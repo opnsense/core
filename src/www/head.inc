@@ -51,13 +51,6 @@ $pagetitle = gentitle( $pgtitle );
 		<!-- Ticker used for notices-->
 		<script type="text/javascript" src="/javascript/ticker.js"></script>
 
-		<?php if($_GET['enablefirebuglite']): ?>
-			<script type=\"text/javascript" src=\"/javascript/pi.js\"></script>
-			<script type=\"text/javascript" src=\"/javascript/firebug-lite.js\"></script>
-		<?php endif; ?>
-
-
-
 		<?php
 		/*
 		 *	Find all javascript files that need to be included
