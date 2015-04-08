@@ -59,7 +59,7 @@ if ($_POST) {
 
 		$retval = system_routing_configure();
 
-		configd_run('dyndns reload all');
+		configd_run('dyndns reload');
 		configd_run('ipsecdns reload');
 		configd_run('filter reload');
 

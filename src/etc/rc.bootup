@@ -286,7 +286,7 @@ services_dhcrelay_configure();
 services_dhcrelay6_configure();
 
 /* dyndns service updates */
-configd_run("dyndns reload all");
+configd_run("dyndns reload");
 
 /* Run a filter configure now that most all services have started */
 filter_configure_sync();
