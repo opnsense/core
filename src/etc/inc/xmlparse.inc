@@ -45,7 +45,7 @@ function listtags()
 		'npt', 'ntpserver',
 		'onetoone', 'openvpn-server', 'openvpn-client', 'openvpn-csc', 'option',
 		'package', 'passthrumac', 'phase1', 'phase2', 'ppp', 'pppoe', 'priv', 'proxyarpnet', 'pool', 'pages', 'pipe',
-		'qinqentry', 
+		'qinqentry',
 		'radnsserver', 'roll', 'route', 'row', 'rrddatafile', 'rule',
 		'schedule', 'service', 'servernat', 'servers', 'serversdisabled', 'staticmap', 'subqueue',
 		'tab', 'timerange', 'tunnel',
