@@ -8522,537 +8522,439 @@ msgstr ""
 msgid "Info"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:32
 msgid "Diagnostics"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:68
 msgid "PASSED"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:69
 msgid "FAILED"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:70
 msgid "Warning"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:121
 msgid "Abort"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:170
 msgid "Email sent to %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:208
 msgid "Information/Tests"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:209
 msgid "Config"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:220
 msgid "Config"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:223
 msgid "Email Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:233
 msgid "Save"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:245
 msgid "Test email"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:250
 msgid "Send test email to %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:258
 msgid "Send"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:284
 msgid "Info"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:293
 msgid "Info type"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:295
 msgid "Info"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:296
 msgid "Health"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:297
 msgid "SMART Capabilities"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:298
 msgid "Attributes"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:299
 msgid "All"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:304
 msgid "Device: /dev/"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:320
 msgid "View"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:337
 msgid "Perform Self-tests"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:346
 msgid "Test type"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:349
 msgid "Offline"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:350
 msgid "Short"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:351
 msgid "Long"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:352
 msgid "Conveyance (ATA Disks Only)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:357
 msgid "Device: /dev/"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:373
 msgid "Test"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:390
 msgid "View Logs"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:399
 msgid "Log type"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:402
 msgid "Error"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:403
 msgid "Self-test"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:408
 msgid "Device: /dev/"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:424
 msgid "View"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:441
 msgid "Abort tests"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:450
 msgid "Device: /dev/"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:466
 msgid "Abort"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_smart.php:485
 msgid "Back"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_sockets.php:32
 msgid "Diagnostics"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:143
 msgid "IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:144
 msgid "States"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:145
 msgid "Proto"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:146
 msgid "States"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:147
 msgid "Src Ports"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:148
 msgid "Dst Ports"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:180
 msgid "Diagnostics"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:194
 msgid "By Source IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:195
 msgid "By Destination IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:196
 msgid "Total per IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_states_summary.php:197
 msgid "By IP Pair"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_activity.php:31
 msgid "Diagnostics: System Activity"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_activity.php:86
 msgid "Gathering CPU activity, please wait..."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:31
 msgid "Diagnostics: pfTop"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:118
 msgid "View type:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:119
 msgid "Sort type:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:120
 msgid "Number of States:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:126
 msgid "Default"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:127
 msgid "Label"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:128
 msgid "Long"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:129
 msgid "Queue"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:130
 msgid "Rules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:131
 msgid "Size"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:132
 msgid "Speed"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:133
 msgid "State"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:134
 msgid "Time"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:137
 msgid "Age"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:138
 msgid "Bytes"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:139
 msgid "Destination Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:140
 msgid "Destination Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:141
 msgid "Expiry"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:142
 msgid "None"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:143
 msgid "Peak"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:144
 msgid "Packet"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:145
 msgid "Rate"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:146
 msgid "Size"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:147
 msgid "Source Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:148
 msgid "Source Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:178
 msgid "Gathering pfTOP activity, please wait..."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:33
 msgid "Diagnostics"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:76
 msgid "The bogons database has been updated."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:138
 msgid "IP Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:158
 msgid "No entries exist in this table."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:160
 msgid "No entries exist in this table."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:167
 msgid "entries in this table."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:170
 msgid "Delete"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:32
 msgid "Diagnostics"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:43
 msgid "Host"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:47
 msgid "Please enter a valid IP or hostname."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:51
 msgid "Please enter a valid port number."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:55
 msgid "Please enter a valid source port number, or leave the field blank."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:59
 msgid "You cannot connect to an IPv4 address using IPv6."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:62
 msgid "You cannot connect to an IPv6 address using IPv4."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:92
-msgid "This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function for UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."
+msgid ""
+"This page allows you to perform a simple TCP connection test to determine "
+"if a host is up and accepting connections on a given port. This test does "
+"not function for UDP since there is no way to reliably determine if a UDP "
+"port accepts connections in this manner."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:94
-msgid "No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."
+msgid ""
+"No data is transmitted to the remote host during this test, it will only "
+"attempt to open a connection and optionally display the data sent back from "
+"the server."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:102
 msgid "Test Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:111
 msgid "Host"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:115
 msgid "Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:119
 msgid "Source Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:121
 msgid "This should typically be left blank."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:125
 msgid "Show Remote Text"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:127
-msgid "Shows the text given by the server when connecting to the port. Will take 10+ seconds to display if checked."
+msgid ""
+"Shows the text given by the server when connecting to the port. Will take "
+"10+ seconds to display if checked."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:131
 msgid "Source Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:148
 msgid "IP Protocol"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:155
 msgid "IPv4"
 msgstr ""
