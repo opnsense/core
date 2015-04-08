@@ -7,9 +7,9 @@ require_once('shaper.inc');
 require_once('captiveportal.inc');
 require_once('rrd.inc');
 
-if (count($argv) > 1 && $argv[1] == 'delayed') {
+if (count($argv) > 1 && is_numeric($argv[1])) {
     // starting delayed.
-    sleep(2);
+    sleep($argv[1]);
 }
 
 echo 'Restarting webConfigurator...';

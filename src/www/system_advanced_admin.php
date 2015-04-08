@@ -615,7 +615,7 @@ if ($restart_webgui) {
 	ob_flush();
 	flush();
 	log_error(gettext("webConfigurator configuration has changed. Restarting webConfigurator."));
-	configd_run("webgui restart delayed", true);
+	configd_run("webgui restart 2", true);
 }
 
 ?>
