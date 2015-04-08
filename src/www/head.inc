@@ -58,10 +58,6 @@ $pagetitle = gentitle( $pgtitle );
 
 
 
-		<?php if (file_exists('/usr/local/www/javascript/global.js')):?>
-		<script type="text/javascript" src="/javascript/global.js"></script>
-		<?php endif; ?>
-
 		<?php
 		/*
 		 *	Find all javascript files that need to be included
