@@ -34,8 +34,8 @@ function gettext($text)
 	return $text;
 }
 }
-/* END compatibility goo with HEAD */
 
+if (!function_exists('redirectHeader')) {
 function redirectHeader($text)
 {
         global $_SERVER;
@@ -61,6 +61,8 @@ function redirectHeader($text)
 		header("Location: $text");
 	}
 }
+}
+/* END compatibility goo with HEAD */
 
 function get_menu_messages()
 {
