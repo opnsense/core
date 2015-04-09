@@ -9957,2837 +9957,2049 @@ msgstr ""
 msgid "NDP Table"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:267
-msgid "Factory Defaults"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:268
 msgid "Factory Defaults"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:268
-msgid "Halt System"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:269
 msgid "Halt System"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:269
-msgid "Limiter Info"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:270
 msgid "Limiter Info"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:270
-msgid "pfInfo"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:271
 msgid "pfInfo"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:271
-msgid "pfTop"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:272
 msgid "pfTop"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:272
-msgid "Ping"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:273
 msgid "Ping"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:273
-msgid "Reboot"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:274
 msgid "Reboot"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:274
-msgid "Packet Capture"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:275
 msgid "Packet Capture"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:275
-msgid "Traceroute"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:276
 msgid "Traceroute"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:276
-msgid "SMART Status"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:277
 msgid "SMART Status"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:277
-msgid "System Activity"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:278
 msgid "System Activity"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:278
-msgid "Test Port"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:279
 msgid "Test Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:279
-msgid "Routes"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:280
 msgid "Routes"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:280
-msgid "Sockets"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:281
 msgid "Sockets"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:281
-msgid "States"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:282
 msgid "States"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:282
-msgid "States Summary"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:283
 msgid "States Summary"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:283
-msgid "Tables"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:284
 msgid "Tables"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:288
 msgid "GEOM Mirrors"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:292
 msgid "NanoBSD"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:295
 msgid "Restart HTTPD"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:301
 msgid "About this Page"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:301
-msgid "Bug Database"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:302
 msgid "Bug Database"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:302
-msgid "User Forum"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:303
 msgid "User Forum"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:303
-msgid "Documentation"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:304
 msgid "Documentation"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:304
-msgid "Developers Wiki"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:305
 msgid "Developers Wiki"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:305
-msgid "Paid Support"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:306
 msgid "Paid Support"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:306
-msgid "FreeBSD Handbook"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:307
 msgid "FreeBSD Handbook"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:332
 msgid "System"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:332
 msgid "Package Manager"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:332
-msgid "Packages are currently being reinstalled in the background.<p>Do not make changes in the GUI until this is complete."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:333
-msgid "Packages are currently being reinstalled in the background.<p>Do not make changes in the GUI until this is complete."
+msgid ""
+"Packages are currently being reinstalled in the background.<p>Do not make "
+"changes in the GUI until this is complete."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:372
 msgid "Help for items on this page"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:392
 msgid "System"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:401
 msgid "Interfaces"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:410
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:419
 msgid "Services"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:428
 msgid "VPN"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:437
 msgid "Status"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:446
 msgid "Diagnostics"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:455
 msgid "Help"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:510
 msgid "Save Settings"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:94
 msgid "Cannot delete alias. Currently in use by %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:142
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:142
 msgid "Aliases"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:148
 msgid "Add a new alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:148
 msgid "Bulk import aliases from list"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:149
 msgid "Bulk import aliases from list"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:164
 msgid "The alias list has been changed."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:164
 msgid "You must apply the changes in order for them to take effect."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:173
 msgid "IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:173
 msgid "Ports"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:174
 msgid "Ports"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:174
 msgid "URLs"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:175
 msgid "URLs"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:175
 msgid "All"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:176
 msgid "All"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:188
 msgid "Name"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:188
 msgid "Values"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:189
 msgid "Values"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:189
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:190
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:251
 msgid "Edit alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:253
-msgid "Do you really want to delete this alias? All elements that still use it will become invalid (e.g. filter rules)!"
+msgid ""
+"Do you really want to delete this alias? All elements that still use it "
+"will become invalid (e.g. filter rules)!"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:267
 msgid "Note:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases.php:267
-msgid "Aliases act as placeholders for real hosts, networks or ports. They can be used to minimize the number of changes that have to be made if a host, network or port changes. You can enter the name of an alias instead of the host, network or port in all fields that have a red background. The alias will be resolved according to the list above. If an alias cannot be resolved (e.g. because you deleted it), the corresponding element (e.g. filter/NAT/shaper rule) will be considered invalid and skipped."
+msgid ""
+"Aliases act as placeholders for real hosts, networks or ports. They can be "
+"used to minimize the number of changes that have to be made if a host, "
+"network or port changes. You can enter the name of an alias instead of the "
+"host, network or port in all fields that have a red background. The alias "
+"will be resolved according to the list above. If an alias cannot be "
+"resolved (e.g. because you deleted it), the corresponding element (e.g. "
+"filter/NAT/shaper rule) will be considered invalid and skipped."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:38
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:38
 msgid "Aliases"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:38
 msgid "Edit"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:106
 msgid "Vertical bars (|) at start or end, or double in the middle of descriptions not allowed. Descriptions have been cleaned. Check and save again."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:111
 msgid "Name"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:117
 msgid "Reserved word used for alias name."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:119
 msgid "Reserved word used for alias name."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:122
 msgid "The alias name must be less than 32 characters long and may only consist of the characters"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:128
 msgid "An alias with this name already exists."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:137
 msgid "Cannot use a reserved keyword as alias name %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:142
 msgid "An interface description with this name already exists."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:165
 msgid "You must provide a valid URL."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:167
 msgid "Unable to fetch usable data."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:179
 msgid "Entry added %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:221
 msgid "Entry added %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:250
 msgid "You must provide a valid URL. Could not fetch usable data from '%s'."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:254
 msgid "URL '%s' is not valid."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:276
 msgid "is not a valid port or alias."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:281
 msgid "%1$s is not a valid %2$s alias."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:291
 msgid "%s/%s is not a valid subnet."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:310
 msgid "Entry added %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:315
 msgid "The alias(es): %s cannot be nested because they are not of the same type."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:461
 msgid "Network or FQDN"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:461
-msgid "Network(s)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:462
 msgid "Network(s)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:462
-msgid "CIDR"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:463
 msgid "CIDR"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:463
-msgid "Description"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:464
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:464
-msgid "Host(s)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:465
 msgid "Host(s)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:465
-msgid "IP or FQDN"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:466
 msgid "IP or FQDN"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:466
-msgid "Port(s)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:467
 msgid "Port(s)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:467
-msgid "Port"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:468
 msgid "Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:468
-msgid "URL (IPs)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:469
 msgid "URL (IPs)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:469
-msgid "URL (Ports)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:470
 msgid "URL (Ports)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:470
-msgid "URL Table (IPs)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:471
 msgid "URL Table (IPs)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:471
-msgid "URL Table (Ports)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:472
 msgid "URL Table (Ports)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:472
-msgid "Update Freq. (days)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:473
 msgid "Update Freq. (days)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:475
-msgid "Networks are specified in CIDR format.  Select the CIDR mask that pertains to each entry. /32 specifies a single IPv4 host, /128 specifies a single IPv6 host, /24 specifies 255.255.255.0, /64 specifies a normal IPv6 network, etc. Hostnames (FQDNs) may also be specified, using a /32 mask for IPv4 or /128 for IPv6. You may also enter an IP range such as 192.168.1.1-192.168.1.254 and a list of CIDR networks will be derived to fill the range."
+msgid ""
+"Networks are specified in CIDR format.  Select the CIDR mask that pertains "
+"to each entry. /32 specifies a single IPv4 host, /128 specifies a single "
+"IPv6 host, /24 specifies 255.255.255.0, /64 specifies a normal IPv6 "
+"network, etc. Hostnames (FQDNs) may also be specified, using a /32 mask for "
+"IPv4 or /128 for IPv6. You may also enter an IP range such as "
+"192.168.1.1-192.168.1.254 and a list of CIDR networks will be derived to "
+"fill the range."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:475
-msgid "Enter as many hosts as you would like.  Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-resolved and updated. If multiple IPs are returned by a DNS query, all are used."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:476
-msgid "Enter as many hosts as you would like.  Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-resolved and updated. If multiple IPs are returned by a DNS query, all are used."
+msgid ""
+"Enter as many hosts as you would like.  Hosts must be specified by their IP "
+"address or fully qualified domain name (FQDN). FQDN hostnames are "
+"periodically re-resolved and updated. If multiple IPs are returned by a DNS "
+"query, all are used."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:476
-msgid "Enter as many ports as you wish.  Port ranges can be expressed by separating with a colon."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:477
-msgid "Enter as many ports as you wish.  Port ranges can be expressed by separating with a colon."
+msgid ""
+"Enter as many ports as you wish.  Port ranges can be expressed by "
+"separating with a colon."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:477
-msgid "Enter as many URLs as you wish. After saving %s will download the URL and import the items into the alias. Use only with small sets of IP addresses (less than 3000)."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:478
-msgid "Enter as many URLs as you wish. After saving %s will download the URL and import the items into the alias. Use only with small sets of IP addresses (less than 3000)."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:478
-msgid "Enter as many URLs as you wish. After saving %s will download the URL and import the items into the alias. Use only with small sets of Ports (less than 3000)."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:479
-msgid "Enter as many URLs as you wish. After saving %s will download the URL and import the items into the alias. Use only with small sets of Ports (less than 3000)."
+msgid ""
+"Enter as many URLs as you wish. After saving %s will download the URL and "
+"import the items into the alias. Use only with small sets of Ports (less "
+"than 3000)."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:479
-msgid "Enter a single URL containing a large number of IPs and/or Subnets. After saving %s will download the URL and create a table file containing these addresses. This will work with large numbers of addresses (30,000+) or small numbers."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:480
-msgid "Enter a single URL containing a large number of IPs and/or Subnets. After saving %s will download the URL and create a table file containing these addresses. This will work with large numbers of addresses (30,000+) or small numbers."
+msgid ""
+"Enter a single URL containing a large number of IPs and/or Subnets. After "
+"saving %s will download the URL and create a table file containing these "
+"addresses. This will work with large numbers of addresses (30,000+) or "
+"small numbers."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:480
-msgid "Enter a single URL containing a list of Port numbers and/or Port ranges. After saving %s will download the URL."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:481
-msgid "Enter a single URL containing a list of Port numbers and/or Port ranges. After saving %s will download the URL."
+msgid ""
+"Enter a single URL containing a list of Port numbers and/or Port ranges. "
+"After saving %s will download the URL."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:483
 msgid "Username"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:483
-msgid "OpenVPN Users"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:484
 msgid "OpenVPN Users"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:484
-msgid "Enter as many usernames as you wish."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:485
 msgid "Enter as many usernames as you wish."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:622
 msgid "Alias Edit"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:644
 msgid "Name"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:653
 msgid "The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and _"."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:659
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:664
 msgid "You may enter a description here for your reference (not parsed)."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:669
 msgid "Type"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:672
 msgid "Host(s)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:672
 msgid "Network(s)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:673
 msgid "Network(s)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:673
-msgid "Port(s)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:674
 msgid "Port(s)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:674
-msgid "OpenVPN Users"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:675
 msgid "OpenVPN Users"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:675
-msgid "URL (IPs)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:676
-msgid "URL (IPs)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:676
-msgid "URL (Ports)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:677
 msgid "URL (Ports)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:677
-msgid "URL Table (IPs)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:678
 msgid "URL Table (IPs)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:678
-msgid "URL Table (Ports)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:679
 msgid "URL Table (Ports)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:684
 msgid "Host(s)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:690
 msgid "Item information"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:694
 msgid "Network"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:696
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:728
 msgid "remove this entry"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:749
 msgid "Save"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:749
-msgid "Cancel"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_edit.php:750
 msgid "Cancel"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:37
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:37
 msgid "Aliases"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:37
 msgid "Bulk import"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:55
 msgid "Name"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:55
 msgid "Aliases"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:60
 msgid "The alias name may only consist of the characters"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:64
 msgid "An alias with this name already exists."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:70
 msgid "Cannot use a reserved keyword as alias name %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:75
 msgid "An interface description with this name already exists."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:99
 msgid "%s is not an IP address. Please correct the error to continue"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:107
-msgid "Descriptions may not start or end with vertical bar (|) or contain double vertical bar ||."
+msgid ""
+"Descriptions may not start or end with vertical bar (|) or contain double "
+"vertical bar ||."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:116
 msgid "Descriptions must be less than 200 characters long."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:165
 msgid "Alias Import"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:173
 msgid "Alias Name"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:178
-msgid "The name of the alias may only consist of the characters "a-z, A-Z and 0-9"."
+msgid ""
+"The name of the alias may only consist of the characters \"a-z, A-Z and "
+"0-9\"."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:183
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:188
 msgid "You may enter a description here for your reference (not parsed)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:193
 msgid "Aliases to import"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:198
 msgid "Paste in the aliases to import separated by a carriage return.  Common examples are lists of IPs, networks, blacklists, etc."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:200
 msgid "The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:213
 msgid "Save"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:213
-msgid "Cancel"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_aliases_import.php:214
 msgid "Cancel"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:155
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:155
 msgid "NAT"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:155
 msgid "Port Forward"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:200
 msgid "The NAT configuration has been changed"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:200
 msgid "You must apply the changes in order for them to take effect."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:208
 msgid "Port Forward"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:208
 msgid "1:1"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:209
 msgid "1:1"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:209
 msgid "Outbound"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:210
 msgid "Outbound"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:210
 msgid "NPt"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:211
 msgid "NPt"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:225
 msgid "If"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:225
-msgid "Proto"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:226
 msgid "Proto"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:226
-msgid "Src. addr"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:227
 msgid "Src. addr"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:227
-msgid "Src. ports"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:228
 msgid "Src. ports"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:228
-msgid "Dest. addr"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:229
 msgid "Dest. addr"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:229
-msgid "Dest. ports"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:230
 msgid "Dest. ports"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:230
-msgid "NAT IP"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:231
 msgid "NAT IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:231
-msgid "NAT Ports"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:232
 msgid "NAT Ports"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:232
-msgid "Description"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:233
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:377
 msgid "move selected rules before this rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:377
-msgid "edit this rule"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:378
 msgid "edit this rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:378
-msgid "delete this rule"
-msgstr ""
-
-## Machine parsed, please check:
-#: src/www/firewall_nat.php:378
-msgid "Do you really want to delete this rule?"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:379
 msgid "delete this rule"
 msgstr ""
 
-## Machine parsed, please check:
+#: src/www/firewall_nat.php:378
+msgid "Do you really want to delete this rule?"
+msgstr ""
+
 #: src/www/firewall_nat.php:379
 msgid "Do you really want to delete this rule?"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:381
 msgid "add new rule based on this one"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:391
 msgid "move selected rules to end"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:395
 msgid "delete selected rules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:397
 msgid "delete selected rules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:397
 msgid "Do you really want to delete the selected rules?"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:399
 msgid "add new rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:407
 msgid "pass"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:411
 msgid "linked rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:419
 msgid "delete selected rules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat.php:419
 msgid "Do you really want to delete the selected rules?"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:133
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:133
 msgid "NAT"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:133
 msgid "1:1"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:137
 msgid "add rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:155
 msgid "The NAT configuration has been changed."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:157
 msgid "You must apply the changes in order for them to take effect."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:164
 msgid "Port Forward"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:164
-msgid "1:1"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:165
 msgid "1:1"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:165
-msgid "Outbound"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:166
 msgid "Outbound"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:166
-msgid "NPt"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:167
 msgid "NPt"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:182
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:182
-msgid "External IP"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:183
 msgid "External IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:183
-msgid "Internal IP"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:184
 msgid "Internal IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:184
-msgid "Destination IP"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:185
 msgid "Destination IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:185
-msgid "Description"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:186
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:208
 msgid "click to toggle enabled/disabled status"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:244
 msgid "move selected mapping before this rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:247
 msgid "edit this mapping"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:247
 msgid "delete this mapping"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:247
 msgid "Do you really want to delete this rule?"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:248
 msgid "delete this mapping"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:248
 msgid "Do you really want to delete this rule?"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:248
 msgid "add new mapping based on this one"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:249
 msgid "add new mapping based on this one"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:263
-msgid "move selected mappings to end"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:267
 msgid "move selected mappings to end"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:272
 msgid "add new mapping"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:277
 msgid "delete selected rules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:277
 msgid "delete mapping"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:281
 msgid "delete selected mappings"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:281
-msgid "Do you really want to delete the selected mappings?"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:282
 msgid "Do you really want to delete the selected mappings?"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:291
 msgid "Note:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:291
-msgid "Depending on the way your WAN connection is setup, you may also need a"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:292
 msgid "Depending on the way your WAN connection is setup, you may also need a"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:292
-msgid "Virtual IP."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:293
 msgid "Virtual IP."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:293
-msgid "If you add a 1:1 NAT entry for any of the interface IPs on this system, " .
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1.php:294
-msgid "If you add a 1:1 NAT entry for any of the interface IPs on this system, " . 													"it will make this system inaccessible on that IP address. i.e. if " .
+msgid "If you add a 1:1 NAT entry for any of the interface IPs on this "
+"system, it will make this system inaccessible on that IP address. i.e. if "
+"you use your WAN IP address, any services on this system (IPsec, OpenVPN "
+"server, etc.) using the WAN IP address will no longer function."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:97
 msgid "Invalid characters detected (%s).  Please remove invalid characters and save again."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:102
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:102
 msgid "External subnet"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:105
 msgid "Source address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:109
 msgid "Destination address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:140
 msgid "A valid external subnet must be specified."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:144
 msgid "You must specify single host or alias for alias entries."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:149
 msgid "%s is not a valid internal IP address."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:152
 msgid "A valid internal bit count must be specified."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:159
 msgid "%s is not a valid destination IP address or alias."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:162
 msgid "A valid destination bit count must be specified."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:212
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:212
 msgid "NAT"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:212
 msgid "1:1"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:212
 msgid "Edit"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:299
 msgid "Edit NAT 1:1 entry"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:302
 msgid "Disabled"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:305
 msgid "Disable this rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:305
-msgid "Set this option to disable this rule without removing it from the list."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:306
-msgid "Set this option to disable this rule without removing it from the list."
+msgid ""
+"Set this option to disable this rule without removing it from the list."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:310
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:347
 msgid "Choose which interface this rule applies to"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:347
-msgid "Hint: in most cases, you'll want to use WAN here"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:348
 msgid "Hint: in most cases, you'll want to use WAN here"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:351
 msgid "External subnet IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:356
-msgid "Enter the external (usually on a WAN) subnet's starting address for the 1:1 mapping.  " . 													"The subnet mask from the internal address below will be applied to this IP address."
+msgid ""
+"Enter the external (usually on a WAN) subnet's starting address for the 1:1 "
+"mapping.  The subnet mask from the internal address below will be applied "
+"to this IP address."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:358
-msgid "Hint: this is generally an address owned by the router itself on the selected interface."
+msgid ""
+"Hint: this is generally an address owned by the router itself on the "
+"selected interface."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:363
 msgid "Internal IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:366
 msgid "not"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:368
 msgid "Use this option to invert the sense of the match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:373
 msgid "Type:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:379
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:381
 msgid "Single host"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:383
 msgid "Network"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:387
 msgid "PPTP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:392
 msgid "PPPoE clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:397
 msgid "L2TP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:404
 msgid "net"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:407
 msgid "address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:417
 msgid "Address:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:441
-msgid "Enter the internal (LAN) subnet for the 1:1 mapping. The subnet size specified for the internal subnet will be applied to the external subnet."
+msgid ""
+"Enter the internal (LAN) subnet for the 1:1 mapping. The subnet size "
+"specified for the internal subnet will be applied to the external subnet."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:445
 msgid "Destination"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:448
 msgid "not"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:450
 msgid "Use this option to invert the sense of the match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:455
 msgid "Type:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:460
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:462
 msgid "Single host or alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:465
 msgid "Network"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:471
 msgid "PPTP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:478
 msgid "PPPoE clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:485
 msgid "L2TP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:494
 msgid "net"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:497
 msgid "address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:507
 msgid "Address:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:532
-msgid "The 1:1 mapping will only be used for connections to or from the specified destination."
+msgid ""
+"The 1:1 mapping will only be used for connections to or from the specified "
+"destination."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:532
 msgid "Hint: this is usually 'any'."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:533
 msgid "Hint: this is usually 'any'."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:538
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:543
 msgid "You may enter a description here for your reference (not parsed)."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:548
 msgid "NAT reflection"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:552
 msgid "use system default"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:555
 msgid "enable"
 msgstr ""
 
-## Machine parsed, please check:
-#: src/www/firewall_nat_1to1_edit.php:558
-msgid "disable"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:566
 msgid "Save"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:566
-msgid "Cancel"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_1to1_edit.php:567
 msgid "Cancel"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:109
-msgid "Invalid characters detected %s. Please remove invalid characters and save again."
+msgid ""
+"Invalid characters detected %s. Please remove invalid characters and save "
+"again."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:182
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:182
 msgid "Protocol"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:182
 msgid "Destination port from"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:182
 msgid "Destination port to"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:185
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:185
 msgid "Protocol"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:190
 msgid "Source address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:194
 msgid "Destination address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:198
 msgid "Redirect target IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:220
 msgid ""%s" is not a valid redirect target IP address or host alias."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:224
-msgid "%s is not a valid start source port. It must be a port alias or integer between 1 and 65535."
+msgid ""
+"%s is not a valid start source port. It must be a port alias or integer "
+"between 1 and 65535."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:226
-msgid "%s is not a valid end source port. It must be a port alias or integer between 1 and 65535."
+msgid ""
+"%s is not a valid end source port. It must be a port alias or integer "
+"between 1 and 65535."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:228
-msgid "%s is not a valid start destination port. It must be a port alias or integer between 1 and 65535."
+msgid ""
+"%s is not a valid start destination port. It must be a port alias or "
+"integer between 1 and 65535."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:230
-msgid "%s is not a valid end destination port. It must be a port alias or integer between 1 and 65535."
+msgid ""
+"%s is not a valid end destination port. It must be a port alias or integer "
+"between 1 and 65535."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:233
-msgid "A valid redirect target port must be specified. It must be a port alias or integer between 1 and 65535."
+msgid ""
+"A valid redirect target port must be specified. It must be a port alias or "
+"integer between 1 and 65535."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:239
 msgid "You must specify single host or alias for alias entries."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:244
 msgid "%s is not a valid source IP address or alias."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:247
 msgid "A valid source bit count must be specified."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:252
 msgid "%s is not a valid destination IP address or alias."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:255
 msgid "A valid destination bit count must be specified."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:274
 msgid "The target port range must be an integer between 1 and 65535."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:295
 msgid "The destination port range overlaps with an existing entry."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:407
 msgid "NAT Port Forward"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:442
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:442
 msgid "NAT"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:442
 msgid "Port Forward"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:442
 msgid "Edit"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:473
 msgid "Edit Redirect entry"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:480
 msgid "Disabled"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:483
 msgid "Disable this rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:483
-msgid "Set this option to disable this rule without removing it from the list."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:484
-msgid "Set this option to disable this rule without removing it from the list."
+msgid ""
+"Set this option to disable this rule without removing it from the list."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:488
 msgid "No RDR (NOT)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:491
 msgid "Enabling this option will disable redirection for traffic matching this rule."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:491
-msgid "Hint: this option is rarely needed, don't use this unless you know what you're doing."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:492
-msgid "Hint: this option is rarely needed, don't use this unless you know what you're doing."
+msgid ""
+"Hint: this option is rarely needed, don't use this unless you know what "
+"you're doing."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:496
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:534
 msgid "Choose which interface this rule applies to."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:534
-msgid "Hint: in most cases, you'll want to use WAN here."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:535
 msgid "Hint: in most cases, you'll want to use WAN here."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:538
 msgid "Protocol"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:544
-msgid "Choose which IP protocol " . 					                    "this rule should match."
+msgid "Choose which IP protocol this rule should match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:546
 msgid "Hint: in most cases, you should specify"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:546
 msgid "TCP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:546
 msgid "here."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:549
 msgid "Source"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:551
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:551
 msgid "Show source address and port range"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:555
 msgid "Source"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:558
 msgid "not"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:560
 msgid "Use this option to invert the sense of the match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:565
 msgid "Type:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:570
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:570
 msgid "Single host or alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:571
 msgid "Single host or alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:571
 msgid "Network"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:572
 msgid "Network"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:574
 msgid "PPTP clients"
 msgstr ""
 
-## Machine parsed, please check:
-#: src/www/firewall_nat_edit.php:577
-msgid "PPPoE clients"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:580
 msgid "L2TP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:585
 msgid "net"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:587
 msgid "address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:595
 msgid "Address:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:617
 msgid "Source port range"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:621
 msgid "from:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:625
 msgid "other"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:625
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:626
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:635
 msgid "to:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:638
 msgid "other"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:638
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
-#: src/www/firewall_nat_edit.php:639
-msgid "any"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:649
 msgid "Specify the source port or port range for this rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:649
 msgid "This is usually"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:649
 msgid "random"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:649
-msgid "and almost never equal to the destination port range (and should usually be 'any')"
+msgid ""
+"and almost never equal to the destination port range (and should usually "
+"be 'any')"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:649
 msgid "Hint: you can leave the"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:649
 msgid "to"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:649
 msgid "field empty if you only want to filter a single port."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:653
 msgid "Destination"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:656
 msgid "not"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:658
 msgid "Use this option to invert the sense of the match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:663
 msgid "Type:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:668
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:668
 msgid "Single host or alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:669
 msgid "Single host or alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:669
 msgid "Network"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:670
 msgid "Network"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:670
-msgid "This Firewall (self)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:671
 msgid "This Firewall (self)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:673
 msgid "PPTP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:676
 msgid "PPPoE clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:679
 msgid "L2TP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:684
 msgid "net"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:686
 msgid "address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:715
 msgid "Address:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:738
 msgid "Destination port range"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:742
 msgid "from:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:745
 msgid "other"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:755
 msgid "to:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:758
 msgid "other"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:770
-msgid "Specify the port or port range for the destination of the packet for this mapping."
+msgid ""
+"Specify the port or port range for the destination of the packet for this "
+"mapping."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:772
 msgid "Hint: you can leave the"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:772
 msgid "to"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:772
 msgid "field empty if you only want to map a single port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:777
 msgid "Redirect target IP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:780
-msgid "Enter the internal IP address of " . 					                    "the server on which you want to map the ports."
+msgid ""
+"Enter the internal IP address of the server on which you want to map the "
+"ports."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:782
 msgid "e.g."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:785
 msgid "Redirect target port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:788
 msgid "other"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:799
-msgid "Specify the port on the machine with the " . 					                    "IP address entered above. In case of a port range, specify " .
+msgid ""
+"Specify the port on the machine with the IP address entered above. In case "
+"of a port range, specify the beginning port of the range (the end port will "
+"be calculated automatically)."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:803
 msgid "Hint: this is usually identical to the 'from' port above"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:806
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:809
-msgid "You may enter a description here " . 					                    "for your reference (not parsed)."
+msgid "You may enter a description here for your reference (not parsed)."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:813
 msgid "No XMLRPC Sync"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:816
-msgid "Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave."
+msgid ""
+"Hint: This prevents the rule on Master from automatically syncing to other "
+"CARP members. This does NOT prevent the rule from being overwritten on "
+"Slave."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:820
 msgid "NAT reflection"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:823
 msgid "Use system default"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:823
 msgid "Enable (NAT + Proxy)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:824
 msgid "Enable (NAT + Proxy)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:824
-msgid "Enable (Pure NAT)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:825
 msgid "Enable (Pure NAT)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:825
-msgid "Disable"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:826
 msgid "Disable"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:832
 msgid "Filter rule association"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:835
 msgid "None"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:835
-msgid "Pass"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:836
 msgid "Pass"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:846
 msgid "View the filter rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:854
 msgid "Create new associated filter rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:863
 msgid "Filter rule association"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:866
 msgid "None"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:866
-msgid "Add associated filter rule"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:867
 msgid "Add associated filter rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:867
-msgid "Add unassociated filter rule"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:868
 msgid "Add unassociated filter rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:868
-msgid "Pass"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:869
 msgid "Pass"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:871
-msgid "NOTE: The "pass" selection does not work properly with Multi-WAN. It will only work on an interface containing the default gateway."
+msgid ""
+"NOTE: The "pass" selection does not work properly with Multi-WAN. It will "
+"only work on an interface containing the default gateway."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:887
 msgid "Rule Information"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:891
 msgid "Created"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:893
 msgid "n/j/y H:i:s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:893
 msgid "by"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:899
 msgid "Updated"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:901
 msgid "n/j/y H:i:s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:901
 msgid "by"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:913
 msgid "Save"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:913
-msgid "Cancel"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_edit.php:914
 msgid "Cancel"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:65
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:65
 msgid "NAT"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:65
 msgid "NPt"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:85
 msgid "The NAT configuration has been changed"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:85
 msgid "You must apply the changes in order for them to take effect."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:92
 msgid "Port Forward"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:92
 msgid "1:1"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:93
 msgid "1:1"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:93
-msgid "Outbound"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:94
 msgid "Outbound"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:94
-msgid "NPt"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:95
 msgid "NPt"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:108
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:108
-msgid "External Prefix"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:109
 msgid "External Prefix"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:109
-msgid "Internal prefix"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:110
 msgid "Internal prefix"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:110
-msgid "Description"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:111
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:155
 msgid "edit rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:155
 msgid "Do you really want to delete this mapping?"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt.php:155
 msgid "delete rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:94
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:96
 msgid "Source prefix"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:98
 msgid "Destination prefix"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:134
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:134
 msgid "NAT"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:134
 msgid "NPt"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:134
 msgid "Edit"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:160
 msgid "Edit NAT NPt entry"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:163
 msgid "Disabled"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:166
 msgid "Disable this rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:166
 msgid "Set this option to disable this rule without removing it from the list."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:167
 msgid "Set this option to disable this rule without removing it from the list."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:171
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:207
 msgid "Choose which interface this rule applies to"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:207
-msgid "Hint: in most cases, you'll want to use WAN here"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:208
 msgid "Hint: in most cases, you'll want to use WAN here"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:211
 msgid "Internal IPv6 Prefix"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:214
 msgid "not"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:216
 msgid "Use this option to invert the sense of the match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:221
 msgid "Address:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:241
-msgid "Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix translation. The prefix size specified for the internal IPv6 prefix will be applied to the 					external prefix."
+msgid ""
+"Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix "
+"translation. The prefix size specified for the internal IPv6 prefix will be "
+"applied to the external prefix."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:247
 msgid "Destination IPv6 Prefix"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:250
 msgid "not"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:252
 msgid "Use this option to invert the sense of the match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:257
 msgid "Address:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:278
 msgid "Enter the Global Unicast routable IPv6 prefix here"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:282
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:285
 msgid "You may enter a description here " . 					                    "for your reference (not parsed)."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:291
 msgid "Save"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:291
-msgid "Cancel"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_nat_npt_edit.php:292
 msgid "Cancel"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_nat_out.php:86
 msgid " - %1$s to %2$s"
 msgstr ""
