@@ -182,7 +182,8 @@ maxheight: define max height of select box, default=170px to hold 5 items
             'label':'ICP port',
             'type':'text',
             'help':'The port number where Squid sends and receives ICP queries to
-                    and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.'
+                    and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.',
+            'advanced':'true'
             ],
             ['id': 'proxy.general.logging.enable.accessLog',
             'label':'Enable access logging',
