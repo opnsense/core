@@ -1,6 +1,8 @@
 <?php
 /*
-	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2004 Scott Ullrich
+	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -24,6 +26,46 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+
+require_once("guiconfig.inc");
+require_once("functions.inc");
+require_once("captiveportal.inc");
+
+
+$pgtitle = array(gettext("Diagnostics"),gettext("Halt system"));
+include('head.inc');
 ?>
 
-<? include("halt.php"); ?>
+<body>
+<?php include("fbegin.inc"); ?>
+
+<section class="page-content-main">
+	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+		<div class="row">
+		    <section class="col-xs-12">
+
+			<?php if ($_POST['Submit'] == gettext("Yes")):
+				print_info_box(gettext("The system is halting now. This may take one minute.")); ?>
+			<pre>
+			<?php	system_halt(); ?>
+			</pre>
+			<?php else: ?>
+
+
+			<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
+				<p><strong><?=gettext("Are you sure you want to halt the system?");?></strong></p>
+
+				<div class="btn-group">
+				   <input type="submit" name="Submit" class="btn btn-primary" value="<?=gettext("Yes");?>" />
+				  <a href="/" class="btn btn-default"><?=gettext("No");?></a>
+				</div>
+				<br /><br />
+			</form>
+
+			<?php endif; ?>
+		    </section>
+		</div>
+	</div>
+</section>
+
+<?php include("foot.inc"); ?>

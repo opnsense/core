@@ -456,7 +456,7 @@ $priv_list['page-diagnostics-haltsystem'] = array();
 $priv_list['page-diagnostics-haltsystem']['name'] = gettext("WebCfg - Diagnostics: Halt system page");
 $priv_list['page-diagnostics-haltsystem']['descr'] = gettext("Allow access to the 'Diagnostics: Halt system' page.");
 $priv_list['page-diagnostics-haltsystem']['match'] = array();
-$priv_list['page-diagnostics-haltsystem']['match'][] = "halt.php*";
+$priv_list['page-diagnostics-haltsystem']['match'][] = "diag_halt.php*";
 
 $priv_list['page-requiredforjavascript'] = array();
 $priv_list['page-requiredforjavascript']['name'] = gettext("WebCfg - Required for javascript page");
