@@ -11,6 +11,13 @@
             <Mask>/^([A-Z,1-9]){0,10}$/</Mask>
             <ValidationMessage>test</ValidationMessage>
         </tag1>
+        <optionTag type="OptionField">
+            <default>1</default>
+            <OptionValues>
+                <A>description 1</A>
+                <B>description 2</B>
+            </OptionValues>
+        </optionTag>
         <tagX>
             <tag1 type="EmailField">
                 <Default>test1234</Default>

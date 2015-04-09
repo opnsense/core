@@ -66,6 +66,24 @@ abstract class BaseModel
     }
 
     /**
+     * parse option data for model setter.
+     * @param $xmlNode
+     * @return array|string
+     */
+    private function parseOptionData($xmlNode)
+    {
+        if ($xmlNode->count() == 0) {
+            $result = $xmlNode->__toString();
+        } else {
+            $result = array();
+            foreach ($xmlNode->children() as $childNode) {
+                $result[$childNode->getName()] = $this->parseOptionData($childNode);
+            }
+        }
+        return $result;
+    }
+
+    /**
      * parse model and config xml to object model using types in FieldTypes
      * @param SimpleXMLElement $xml model xml data (from items section)
      * @param SimpleXMLElement $config_data (current) config data
@@ -106,10 +124,9 @@ abstract class BaseModel
                 if ($xmlNode->count() > 0) {
                     // if fieldtype contains properties, try to call the setters
                     foreach ($xmlNode->children() as $fieldMethod) {
-                        $param_value = $fieldMethod->__toString() ;
                         $method_name = "set".$fieldMethod->getName();
                         if ($field_rfcls->hasMethod($method_name)) {
-                            $fieldObject->$method_name($param_value);
+                            $fieldObject->$method_name($this->parseOptionData($fieldMethod));
                         }
                     }
                 }
