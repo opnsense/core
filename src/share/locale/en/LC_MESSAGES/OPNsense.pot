@@ -9302,1022 +9302,657 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:130
-msgid "Size"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:131
 msgid "Size"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:131
-msgid "Speed"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:132
 msgid "Speed"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:132
-msgid "State"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:133
 msgid "State"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:133
-msgid "Time"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:134
 msgid "Time"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:137
 msgid "Age"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:137
-msgid "Bytes"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:138
 msgid "Bytes"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:138
-msgid "Destination Address"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:139
 msgid "Destination Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:139
 msgid "Destination Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:140
 msgid "Destination Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:140
 msgid "Expiry"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:141
 msgid "Expiry"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:141
-msgid "None"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:142
 msgid "None"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:142
-msgid "Peak"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:143
 msgid "Peak"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:143
-msgid "Packet"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:144
 msgid "Packet"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:144
-msgid "Rate"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:145
 msgid "Rate"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:145
-msgid "Size"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:146
 msgid "Size"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:146
-msgid "Source Port"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:147
 msgid "Source Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:147
-msgid "Source Address"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:148
 msgid "Source Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_system_pftop.php:178
 msgid "Gathering pfTOP activity, please wait..."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:33
 msgid "Diagnostics"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:33
 msgid "Tables"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:76
 msgid "The bogons database has been updated."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:138
 msgid "IP Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:158
 msgid "No entries exist in this table."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:158
 msgid "Download"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:158
 msgid " the latest bogon data."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:160
 msgid "No entries exist in this table."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:167
 msgid "entries in this table."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:167
 msgid "Download"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:167
 msgid " the latest bogon data."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:170
 msgid "Delete"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:170
 msgid "all"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_tables.php:170
 msgid "entries in this table."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:32
 msgid "Diagnostics"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:32
 msgid "Test Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:43
 msgid "Host"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:43
 msgid "Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:47
 msgid "Please enter a valid IP or hostname."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:51
 msgid "Please enter a valid port number."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:55
 msgid "Please enter a valid source port number, or leave the field blank."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:59
 msgid "You cannot connect to an IPv4 address using IPv6."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:62
 msgid "You cannot connect to an IPv6 address using IPv4."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:92
 msgid "This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function for UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:94
 msgid "No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:102
 msgid "Test Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:111
 msgid "Host"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:115
 msgid "Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:119
 msgid "Source Port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:121
 msgid "This should typically be left blank."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:125
 msgid "Show Remote Text"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:127
 msgid "Shows the text given by the server when connecting to the port. Will take 10+ seconds to display if checked."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:131
 msgid "Source Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:148
 msgid "IP Protocol"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:155
 msgid "IPv4"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:158
 msgid "IPv6"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:161
-msgid "If you force IPv4 or IPv6 and use a hostname that does not contain a result using that protocol, <br />it will result in an error. For example if you force IPv4 and use a hostname that only returns an AAAA IPv6 IP address, it will not work."
+msgid ""
+"If you force IPv4 or IPv6 and use a hostname that does not contain a result "
+"using that protocol, <br />it will result in an error. For example if you "
+"force IPv4 and use a hostname that only returns an AAAA IPv6 IP address, it "
+"will not work."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:166
 msgid "Test"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:193
 msgid "Port Test Results"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:268
-msgid "No output received, or connection failed. Try with "Show Remote Text" unchecked first."
+msgid ""
+"No output received, or connection failed. Try with \"Show Remote Text\" "
+"unchecked first."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_testport.php:270
 msgid "Connection failed (Refused/Timeout)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:32
 msgid "Diagnostics"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:32
 msgid "Traceroute"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:49
 msgid "Host"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:49
 msgid "ttl"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:53
 msgid "Maximum number of hops must be between 1 and %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:58
 msgid "When using IPv4, the target host must be an IPv4 address or hostname."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:60
 msgid "When using IPv6, the target host must be an IPv6 address or hostname."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:94
 msgid "Traceroute"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:103
 msgid "Host"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:107
 msgid "IP Protocol"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:114
 msgid "Source Address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:130
 msgid "Maximum number of hops"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:138
 msgid "Reverse Address Lookup"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:142
 msgid "Use ICMP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:147
 msgid "Traceroute"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:153
 msgid "Note: "
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:153
-msgid "Traceroute may take a while to complete. You may hit the Stop button on your browser at any time to see the progress of failed traceroutes."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:154
-msgid "Traceroute may take a while to complete. You may hit the Stop button on your browser at any time to see the progress of failed traceroutes."
+msgid ""
+"Traceroute may take a while to complete. You may hit the Stop button on "
+"your browser at any time to see the progress of failed traceroutes."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:156
 msgid "Using a source interface/IP address that does not match selected type (IPv4, IPv6) will result in an error or empty output."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/diag_traceroute.php:180
 msgid "Traceroute output"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/easyrule.php:31
 msgid "Firewall: EasyRule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/easyrule.php:71
 msgid "Message"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/easyrule.php:74
-msgid "This is the Easy Rule status page, mainly used to display errors when adding rules. " . "If you are seeing this, there apparently was not an error, and you navigated to the " .
+msgid ""
+"This is the Easy Rule status page, mainly used to display errors when "
+"adding rules. If you are seeing this, there apparently was not an error, "
+"and you navigated to the page directly without telling it what to do"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/easyrule.php:77
-msgid "This page is meant to be called from the block/pass buttons on the Firewall Logs page"
+msgid ""
+"This page is meant to be called from the block/pass buttons on the Firewall "
+"Logs page"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/easyrule.php:77
 msgid "Status"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/easyrule.php:77
-msgid "System Logs, " . "Firewall Tab"
+msgid "System Logs, Firewall Tab"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:158
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:158
 msgid "Firmware"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:159
 msgid "Firmware"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:159
-msgid "General Setup"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:160
 msgid "General Setup"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:160
-msgid "High Avail. Sync"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:161
 msgid "High Avail. Sync"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:163
 msgid "Packages"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:163
-msgid "Setup Wizard"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:164
 msgid "Setup Wizard"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:164
-msgid "Routing"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:165
 msgid "Routing"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:165
-msgid "Cert Manager"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:166
 msgid "Cert Manager"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:168
-msgid "User Manager"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:170
 msgid "User Manager"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:176
 msgid "(assign)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:185
 msgid "Aliases"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:185
-msgid "NAT"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:186
 msgid "NAT"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:186
-msgid "Rules"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:187
 msgid "Rules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:187
-msgid "Schedules"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:188
 msgid "Schedules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:188
-msgid "Traffic Shaper"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:189
 msgid "Traffic Shaper"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:189
-msgid "Virtual IPs"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:190
 msgid "Virtual IPs"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:195
 msgid "Captive Portal"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:195
-msgid "DNS Forwarder"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:196
 msgid "DNS Forwarder"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:196
-msgid "DNS Resolver"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:197
 msgid "DNS Resolver"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:197
-msgid "DHCP Relay"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:198
 msgid "DHCP Relay"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:198
-msgid "DHCPv6 Relay"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:199
 msgid "DHCPv6 Relay"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:201
 msgid "DHCP Server"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:201
 msgid "DHCPv6 Server/RA"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:202
 msgid "DHCPv6 Server/RA"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:204
 msgid "Dynamic DNS"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:204
-msgid "IGMP proxy"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:205
 msgid "IGMP proxy"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:205
-msgid "Load Balancer"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:206
 msgid "Load Balancer"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:206
-msgid "NTP"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:207
 msgid "NTP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:207
-msgid "PPPoE Server"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:208
 msgid "PPPoE Server"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:208
-msgid "SNMP"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:209
 msgid "SNMP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:214
 msgid "UPnP &amp; NAT-PMP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:216
 msgid "Wake on LAN"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:221
 msgid "IPsec"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:221
-msgid "OpenVPN"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:222
 msgid "OpenVPN"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:222
-msgid "PPTP"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:223
 msgid "PPTP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:223
-msgid "L2TP"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:224
 msgid "L2TP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:230
-msgid "Captive Portal"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:230
-msgid "CARP (failover)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:231
 msgid "CARP (failover)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:231
-msgid "Gateways"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:232
 msgid "Gateways"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:232
-msgid "DHCP Leases"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:233
 msgid "DHCP Leases"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:233
-msgid "DHCPv6 Leases"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:234
 msgid "DHCPv6 Leases"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:234
-msgid "Filter Reload"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:235
 msgid "Filter Reload"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:235
-msgid "Interfaces"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:236
 msgid "Interfaces"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:236
-msgid "IPsec"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:237
 msgid "IPsec"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:237
-msgid "Load Balancer"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:238
 msgid "Load Balancer"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:238
-msgid "NTP"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:239
 msgid "NTP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:239
-msgid "OpenVPN"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:240
 msgid "OpenVPN"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:242
 msgid "Package Logs"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:242
-msgid "Queues"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:243
 msgid "Queues"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:243
-msgid "RRD Graphs"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:244
 msgid "RRD Graphs"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:244
-msgid "Services"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:245
 msgid "Services"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:245
-msgid "System Logs"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:246
 msgid "System Logs"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:246
-msgid "Traffic Graph"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:247
 msgid "Traffic Graph"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:249
 msgid "UPnP &amp; NAT-PMP"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:257
 msgid "Wireless"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:262
 msgid "ARP Table"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:262
-msgid "Authentication"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:263
 msgid "Authentication"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:263
-msgid "Backup/Restore"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:264
 msgid "Backup/Restore"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:264
-msgid "Crash Reporter"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:265
 msgid "Crash Reporter"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:265
-msgid "DNS Lookup"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:266
 msgid "DNS Lookup"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/fbegin.inc:266
-msgid "NDP Table"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/fbegin.inc:267
 msgid "NDP Table"
 msgstr ""
