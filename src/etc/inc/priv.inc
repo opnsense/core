@@ -60,22 +60,10 @@ foreach ($dir_array as $file)
 	if (!is_dir("/usr/local/etc/inc/priv/{$file}") && stristr($file,".inc"))
 		include("priv/{$file}");
 
-if(is_array($priv_list))
-	sort_privs($priv_list);
-
-function cmp_privkeys($a, $b) {
-	/* user privs at the top */
-	$auser = strncmp("user-", $a, 5);
-	$buser = strncmp("user-", $b, 5);
-	if($auser != $buser)
-		return $auser - $buser;
-
-	/* name compare others */
-	return strcasecmp($a, $b);
-}
-
-function sort_privs(& $privs) {
-	uksort($privs, "cmp_privkeys");
+if (is_array($priv_list)) {
+	usort($priv_list, function($a, $b) {
+		return strcasecmp($a['name'], $b['name']);
+	});
 }
 
 function cmp_page_matches($page, & $matches, $fullwc = true) {
