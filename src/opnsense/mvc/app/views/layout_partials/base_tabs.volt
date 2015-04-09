@@ -40,22 +40,23 @@ POSSIBILITY OF SUCH DAMAGE.
             {% endfor %}
 
         <li role="presentation" class="dropdown {% if activetab|default("") == active_subtab %}active{% endif %}">
-            <a data-toggle="dropdown" href="#" class="dropdown-toggle" role="button">
-                <b>{{tab[1]}} <span class="caret"></span></b>
+            <a data-toggle="dropdown" href="#" class="dropdown-toggle pull-right visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" role="button" style="border-left: 1px dashed lightgray;">
+                <b><span class="caret"></span></b>
             </a>
-             <ul class="dropdown-menu" role="menu">
-                 {% for subtab in tab['subtabs']|default({})%}
-                 <li class="{% if activetab|default("") == subtab[0] %}active{% endif %}"><a data-toggle="tab" href="#subtab_{{subtab[0]}}"><i class="fa fa-check-square"></i> {{subtab[1]}}</a></li>
-                 {% endfor %}
-             </ul>
+            <a data-toggle="tab" href="#subtab_{{tab['subtabs'][0][0]}}" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;"><b>{{tab[1]}}</b></a>
+            <ul class="dropdown-menu" role="menu">
+                {% for subtab in tab['subtabs']|default({})%}
+                <li class="{% if activetab|default("") == subtab[0] %}active{% endif %}"><a data-toggle="tab" href="#subtab_{{subtab[0]}}"><i class="fa fa-check-square"></i> {{subtab[1]}}</a></li>
+                {% endfor %}
+            </ul>
         </li>
     {% else %}
         {# Standard Tab #}
-            <li {% if activetab|default("") == tab[0] %} class="active" {% endif %}>
-                    <a data-toggle="tab" href="#tab_{{tab[0]}}">
-                        <b>{{tab[1]}}</b>
-                    </a>
-            </li>
+        <li {% if activetab|default("") == tab[0] %} class="active" {% endif %}>
+                <a data-toggle="tab" href="#tab_{{tab[0]}}">
+                    <b>{{tab[1]}}</b>
+                </a>
+        </li>
     {% endif %}
 {% endfor %}
 </ul>

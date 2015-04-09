@@ -5,10 +5,29 @@
     </description>
     <items>
         <general>
-        <enabled type="BooleanField">
-            <default>0</default>
-            <Required>Y</Required>
-        </enabled>
+            <enabled type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </enabled>
+            <logging>
+                <enable>
+                    <accessLog type="BooleanField">
+                        <default>1</default>
+                        <Required>Y</Required>
+                    </accessLog>
+                    <storeLog type="BooleanField">
+                        <default>1</default>
+                        <Required>Y</Required>
+                    </storeLog>
+                </enable>
+            </logging>
+            <alternateDNSservers type="CSVListField">
+                <Required>N</Required>
+            </alternateDNSservers>
+            <dnsV4First type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </dnsV4First>
         </general>
         <forward>
             <interfaces type="CSVListField">
@@ -25,13 +44,10 @@
                 <default>1</default>
                 <Required>Y</Required>
             </addACLforInterfaceSubnets>
-            <transparentProxyMode type="BooleanField">
+            <transparentMode type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
-            </transparentProxyMode>
-            <alternateDNSservers type="CSVListField">
-                <Required>N</Required>
-            </alternateDNSservers>
+            </transparentMode>
         </forward>
     </items>
 </model>

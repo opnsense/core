@@ -71,16 +71,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
             });
         });
-        $("#save_proxy-forward").click(function(){
+        $("#save_proxy-forward-general").click(function(){
             // save data for Proxy TAB
-            saveFormToEndpoint(url="/api/proxy/settings/set",formid="frm_proxy-forward",callback_ok=function(){
+            saveFormToEndpoint(url="/api/proxy/settings/set",formid="frm_proxy-forward-general",callback_ok=function(){
                 // on correct save, perform reconfigure. set progress animation when reloading
-                $("#frm_proxy-forward_progress").addClass("fa fa-spinner fa-pulse");
+                $("#frm_proxy-forward-general_progress").addClass("fa fa-spinner fa-pulse");
 
                 //
                 ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status){
                     // when done, disable progress animation.
-                    $("#frm_proxy-forward_progress").removeClass("fa fa-spinner fa-pulse");
+                    $("#frm_proxy-forward-general_progress").removeClass("fa fa-spinner fa-pulse");
 
                     if (status != "success" || data['status'] != 'ok' ) {
                         // fix error handling
@@ -177,6 +177,37 @@ maxheight: define max height of select box, default=170px to hold 5 items
             'label':'Enable proxy',
             'type':'checkbox',
             'help':'Enable or disable the proxy service.'
+            ],
+            ['id': 'proxy.general.logging.enable.accessLog',
+            'label':'Enable access logging',
+            'type':'checkbox',
+            'help':'Enable access logging for squid.',
+            'advanced':'true'
+            ],
+            ['id': 'proxy.general.logging.enable.storeLog',
+            'label':'Enable store logging',
+            'type':'checkbox',
+            'help':'Enable access logging for squid.',
+            'advanced':'true'
+            ],
+            ['id': 'proxy.general.alternateDNSservers',
+            'label':'Use alternate DNS-servers',
+            'type':'select_multiple',
+            'style':'tokenize',
+            'help':'Type IPs of alternative DNS servers you like to use.',
+            'hint':'Type IP adresses, followed by Enter.',
+            'allownew':'true',
+            'advanced':'true'
+            ],
+            ['id': 'proxy.general.dnsV4First',
+            'label':'Enable DNS v4 first',
+            'type':'checkbox',
+            'help':'This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first.
+            Squid will still perform both IPv6 and IPv4 DNS lookups before connecting.
+            <div class="alert alert-warning"><b class="text-danger">Warning:</b> This option will restrict the situations under which IPv6
+                connectivity is used (and tested). Hiding network problems
+                which would otherwise be detected and warned about.</div>',
+            'advanced':'true'
             ]}
         ],
         ['proxy-forward','Forward Proxy','subtabs': {
@@ -193,7 +224,7 @@ maxheight: define max height of select box, default=170px to hold 5 items
                 'type':'text',
                 'help':'The port the proxy service will listen to.'
                 ],
-                ['id': 'proxy.forward.transparentProxyMode',
+                ['id': 'proxy.forward.transparentMode',
                 'label':'Enable Transparent HTTP proxy',
                 'type':'checkbox',
                 'help':'Enable transparent proxe mode to forward all requests for destination port 80 to the proxy server without any additional configuration.'
@@ -202,15 +233,6 @@ maxheight: define max height of select box, default=170px to hold 5 items
                 'label':'Allow interface subnets',
                 'type':'checkbox',
                 'help':'When enabled the subnets of the selected interfaces will be added to the allow access list.',
-                'advanced':'true'
-                ],
-                ['id': 'proxy.forward.alternateDNSservers',
-                'label':'Use alternate DNS-servers',
-                'type':'select_multiple',
-                'style':'tokenize',
-                'help':'Type IPs of alternative DNS servers you like to use.',
-                'hint':'Type IP adresses, followed by Enter.',
-                'allownew':'true',
                 'advanced':'true'
                 ]}
             ]}
