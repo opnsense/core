@@ -73,9 +73,9 @@ class OptionField extends BaseField
         $result = array ();
         foreach ($this->internalOptionList as $optKey => $optValue) {
             if ($optKey == $this->internalValue) {
-                $selected = 0;
-            } else {
                 $selected = 1;
+            } else {
+                $selected = 0;
             }
             $result[$optKey] = array("value"=>$optKey,"description" => $optValue, "selected" => $selected);
         }
