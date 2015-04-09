@@ -9,6 +9,12 @@
                 <default>0</default>
                 <Required>Y</Required>
             </enabled>
+            <icpPort type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>"ICP port needs to be an integer value between 1 and 65535"</ValidationMessage>
+                <Required>N</Required>
+            </icpPort>
             <logging>
                 <enable>
                     <accessLog type="BooleanField">
@@ -31,7 +37,6 @@
             <forwardedForHandling type="OptionsField">
             </forwardedForHandling>
             <uriWhitespaceHandling type="OptionsField">
-
             </uriWhitespaceHandling>
             <useViaHeader type="BooleanField">
                 <default>1</default>

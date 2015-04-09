@@ -178,6 +178,12 @@ maxheight: define max height of select box, default=170px to hold 5 items
             'type':'checkbox',
             'help':'Enable or disable the proxy service.'
             ],
+            ['id': 'proxy.general.icpPort',
+            'label':'ICP port',
+            'type':'text',
+            'help':'The port number where Squid sends and receives ICP queries to
+                    and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.'
+            ],
             ['id': 'proxy.general.logging.enable.accessLog',
             'label':'Enable access logging',
             'type':'checkbox',
@@ -194,8 +200,8 @@ maxheight: define max height of select box, default=170px to hold 5 items
             'label':'Use alternate DNS-servers',
             'type':'select_multiple',
             'style':'tokenize',
-            'help':'Type IPs of alternative DNS servers you like to use.',
-            'hint':'Type IP adresses, followed by Enter.',
+            'help':'Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma seperated list into this field.</div>',
+            'hint':'Type IP adresses, followed by Enter or comma.',
             'allownew':'true',
             'advanced':'true'
             ],
