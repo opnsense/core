@@ -1303,40 +1303,46 @@ $priv_list['page-vpn-ipsec-editphase2']['match'] = array();
 $priv_list['page-vpn-ipsec-editphase2']['match'][] = "vpn_ipsec_phase2.php*";
 
 $priv_list['page-vpn-vpnl2tp'] = array();
-$priv_list['page-vpn-vpnl2tp']['name'] = gettext("WebCfg - VPN: VPN L2TP page");
-$priv_list['page-vpn-vpnl2tp']['descr'] = gettext("Allow access to the 'VPN: VPN L2TP' page.");
+$priv_list['page-vpn-vpnl2tp']['name'] = gettext("WebCfg - VPN: L2TP page");
+$priv_list['page-vpn-vpnl2tp']['descr'] = gettext("Allow access to the 'VPN: L2TP' page.");
 $priv_list['page-vpn-vpnl2tp']['match'] = array();
 $priv_list['page-vpn-vpnl2tp']['match'][] = "vpn_l2tp.php*";
 
 $priv_list['page-vpn-vpnl2tp-users'] = array();
-$priv_list['page-vpn-vpnl2tp-users']['name'] = gettext("WebCfg - VPN: VPN L2TP : Users page");
-$priv_list['page-vpn-vpnl2tp-users']['descr'] = gettext("Allow access to the 'VPN: VPN L2TP : Users' page.");
+$priv_list['page-vpn-vpnl2tp-users']['name'] = gettext("WebCfg - VPN: L2TP: Users page");
+$priv_list['page-vpn-vpnl2tp-users']['descr'] = gettext("Allow access to the 'VPN: L2TP : Users' page.");
 $priv_list['page-vpn-vpnl2tp-users']['match'] = array();
 $priv_list['page-vpn-vpnl2tp-users']['match'][] = "vpn_l2tp_users.php*";
 
 $priv_list['page-vpn-vpnl2tp-users-edit'] = array();
-$priv_list['page-vpn-vpnl2tp-users-edit']['name'] = gettext("WebCfg - VPN: VPN L2TP : Users : Edit page");
-$priv_list['page-vpn-vpnl2tp-users-edit']['descr'] = gettext("Allow access to the 'VPN: VPN L2TP : Users : Edit' page.");
+$priv_list['page-vpn-vpnl2tp-users-edit']['name'] = gettext("WebCfg - VPN: L2TP: Users : Edit page");
+$priv_list['page-vpn-vpnl2tp-users-edit']['descr'] = gettext("Allow access to the 'VPN: L2TP: Users : Edit' page.");
 $priv_list['page-vpn-vpnl2tp-users-edit']['match'] = array();
 $priv_list['page-vpn-vpnl2tp-users-edit']['match'][] = "vpn_l2tp_users_edit.php*";
 
 $priv_list['page-openvpn-client'] = array();
-$priv_list['page-openvpn-client']['name'] = gettext("WebCfg - OpenVPN: Client page");
-$priv_list['page-openvpn-client']['descr'] = gettext("Allow access to the 'OpenVPN: Client' page.");
+$priv_list['page-openvpn-client']['name'] = gettext("WebCfg - VPN: OpenVPN: Client page");
+$priv_list['page-openvpn-client']['descr'] = gettext("Allow access to the 'VPN: OpenVPN: Client' page.");
 $priv_list['page-openvpn-client']['match'] = array();
 $priv_list['page-openvpn-client']['match'][] = "vpn_openvpn_client.php*";
 
 $priv_list['page-openvpn-csc'] = array();
-$priv_list['page-openvpn-csc']['name'] = gettext("WebCfg - OpenVPN: Client Specific Override page");
-$priv_list['page-openvpn-csc']['descr'] = gettext("Allow access to the 'OpenVPN: Client Specific Override' page.");
+$priv_list['page-openvpn-csc']['name'] = gettext("WebCfg - VPN: OpenVPN: Client Specific Override page");
+$priv_list['page-openvpn-csc']['descr'] = gettext("Allow access to the 'VPN: OpenVPN: Client Specific Override' page.");
 $priv_list['page-openvpn-csc']['match'] = array();
 $priv_list['page-openvpn-csc']['match'][] = "vpn_openvpn_csc.php*";
 
 $priv_list['page-openvpn-server'] = array();
-$priv_list['page-openvpn-server']['name'] = gettext("WebCfg - OpenVPN: Server page");
-$priv_list['page-openvpn-server']['descr'] = gettext("Allow access to the 'OpenVPN: Server' page.");
+$priv_list['page-openvpn-server']['name'] = gettext("WebCfg - VPN: OpenVPN: Server page");
+$priv_list['page-openvpn-server']['descr'] = gettext("Allow access to the 'VPN: OpenVPN: Server' page.");
 $priv_list['page-openvpn-server']['match'] = array();
 $priv_list['page-openvpn-server']['match'][] = "vpn_openvpn_server.php*";
+
+$priv_list['page-openvpn-client-export'] = array();
+$priv_list['page-openvpn-client-export']['name'] = "WebCfg - VPN: OpenVPN: Client Export Utility";
+$priv_list['page-openvpn-client-export']['descr'] = "Allow access to the 'VPN: OpenVPN: Client Export Utility' page.";
+$priv_list['page-openvpn-client-export']['match'] = array();
+$priv_list['page-openvpn-client-export']['match'][] = "vpn_openvpn_export.php*";
 
 $priv_list['page-services-pppoeserver'] = array();
 $priv_list['page-services-pppoeserver']['name'] = gettext("WebCfg - Services: PPPoE Server page");
@@ -1351,20 +1357,20 @@ $priv_list['page-services-pppoeserver-edit']['match'] = array();
 $priv_list['page-services-pppoeserver-edit']['match'][] = "vpn_pppoe_edit.php*";
 
 $priv_list['page-vpn-vpnpptp'] = array();
-$priv_list['page-vpn-vpnpptp']['name'] = gettext("WebCfg - VPN: VPN PPTP page");
-$priv_list['page-vpn-vpnpptp']['descr'] = gettext("Allow access to the 'VPN: VPN PPTP' page.");
+$priv_list['page-vpn-vpnpptp']['name'] = gettext("WebCfg - VPN: PPTP page");
+$priv_list['page-vpn-vpnpptp']['descr'] = gettext("Allow access to the 'VPN: PPTP' page.");
 $priv_list['page-vpn-vpnpptp']['match'] = array();
 $priv_list['page-vpn-vpnpptp']['match'][] = "vpn_pptp.php*";
 
 $priv_list['page-vpn-vpnpptp-users'] = array();
-$priv_list['page-vpn-vpnpptp-users']['name'] = gettext("WebCfg - VPN: VPN PPTP: Users page");
-$priv_list['page-vpn-vpnpptp-users']['descr'] = gettext("Allow access to the 'VPN: VPN PPTP: Users' page.");
+$priv_list['page-vpn-vpnpptp-users']['name'] = gettext("WebCfg - VPN: PPTP: Users page");
+$priv_list['page-vpn-vpnpptp-users']['descr'] = gettext("Allow access to the 'VPN: PPTP: Users' page.");
 $priv_list['page-vpn-vpnpptp-users']['match'] = array();
 $priv_list['page-vpn-vpnpptp-users']['match'][] = "vpn_pptp_users.php*";
 
 $priv_list['page-vpn-vpnpptp-user-edit'] = array();
-$priv_list['page-vpn-vpnpptp-user-edit']['name'] = gettext("WebCfg - VPN: VPN PPTP: User: Edit page");
-$priv_list['page-vpn-vpnpptp-user-edit']['descr'] = gettext("Allow access to the 'VPN: VPN PPTP: User: Edit' page.");
+$priv_list['page-vpn-vpnpptp-user-edit']['name'] = gettext("WebCfg - VPN: PPTP: User: Edit page");
+$priv_list['page-vpn-vpnpptp-user-edit']['descr'] = gettext("Allow access to the 'VPN: PPTP: User: Edit' page.");
 $priv_list['page-vpn-vpnpptp-user-edit']['match'] = array();
 $priv_list['page-vpn-vpnpptp-user-edit']['match'][] = "vpn_pptp_users_edit.php*";
 
@@ -1385,13 +1391,3 @@ $priv_list['page-firewall-easyrule']['name'] = gettext("WebCfg - Firewall: Easy 
 $priv_list['page-firewall-easyrule']['descr'] = gettext("Allow access to the 'Firewall: Easy Rule' add/status page.");
 $priv_list['page-firewall-easyrule']['match'] = array();
 $priv_list['page-firewall-easyrule']['match'][] = "easyrule.php*";
-
-$priv_list['page-openvpn-client-export'] = array();
-$priv_list['page-openvpn-client-export']['name'] = "WebCfg - OpenVPN: Client Export Utility";
-$priv_list['page-openvpn-client-export']['descr'] = "Allow access to the OpenVPN: Client Export Utility page.";
-$priv_list['page-openvpn-client-export']['match'] = array();
-$priv_list['page-openvpn-client-export']['match'][] = "vpn_openvpn_export.php*";
-
-$priv_rmvd = array();
-
-?>
