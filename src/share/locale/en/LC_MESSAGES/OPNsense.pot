@@ -13446,9 +13446,10 @@ msgid ""
 "statetype is none and no L7 container is selected."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:549
-msgid "You cannot specify the maximum new connections per host / per second(s) (advanced option) if statetype is none and no L7 container is selected."
+msgid ""
+"You cannot specify the maximum new connections per host / per second(s) "
+"(advanced option) if statetype is none and no L7 container is selected."
 msgstr ""
 
 ## Machine parsed, please check:
