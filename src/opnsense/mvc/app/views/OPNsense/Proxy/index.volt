@@ -181,13 +181,13 @@ maxheight: define max height of select box, default=170px to hold 5 items
             ['id': 'proxy.general.logging.enable.accessLog',
             'label':'Enable access logging',
             'type':'checkbox',
-            'help':'Enable access logging for squid.',
+            'help':'Enable access logging.',
             'advanced':'true'
             ],
             ['id': 'proxy.general.logging.enable.storeLog',
             'label':'Enable store logging',
             'type':'checkbox',
-            'help':'Enable access logging for squid.',
+            'help':'Enable store logging.',
             'advanced':'true'
             ],
             ['id': 'proxy.general.alternateDNSservers',
@@ -207,6 +207,19 @@ maxheight: define max height of select box, default=170px to hold 5 items
             <div class="alert alert-warning"><b class="text-danger">Warning:</b> This option will restrict the situations under which IPv6
                 connectivity is used (and tested). Hiding network problems
                 which would otherwise be detected and warned about.</div>',
+            'advanced':'true'
+            ],
+            ['id': 'proxy.general.useViaHeader',
+            'label':'Use Via header',
+            'type':'checkbox',
+            'help':'If set (default), Squid will include a Via header in requests and
+                    replies as required by RFC2616.',
+            'advanced':'true'
+            ],
+            ['id': 'proxy.general.suppressVersion',
+            'label':'Suppress version string',
+            'type':'checkbox',
+            'help':'Suppress Squid version string info in HTTP headers and HTML error pages.',
             'advanced':'true'
             ]}
         ],
