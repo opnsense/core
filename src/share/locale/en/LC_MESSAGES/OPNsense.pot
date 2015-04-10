@@ -14620,187 +14620,151 @@ msgstr ""
 msgid "January"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "February"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "March"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "April"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "May"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "June"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "July"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "August"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "September"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "October"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "November"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "December"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "January"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "February"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "March"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "April"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "May"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "June"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "July"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "August"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "September"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "October"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "November"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:53
 msgid "December"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:76
 msgid "Schedule may not be named LAN."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:78
 msgid "Schedule may not be named WAN."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:80
 msgid "Schedule name cannot be blank."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:84
 msgid "Reserved word used for schedule name."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:87
 msgid "The schedule name may only consist of the characters a-z, A-Z, 0-9"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:96
 msgid "A Schedule with this name already exists."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:109
 msgid "Invalid start time - '%s'"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:113
 msgid "Invalid stop time - '%s'"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:161
 msgid "The schedule must have at least one time range configured."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:777
 msgid "Schedule information"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:788
 msgid "Schedule Name"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:794
 msgid "NOTE: This schedule is in use so the name may not be modified!"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:799
-msgid "The name of the alias may only consist of the characters a-z, A-Z and 0-9"
+msgid ""
+"The name of the alias may only consist of the characters a-z, A-Z and 0-9"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:805
 msgid "Description"
 msgstr ""
