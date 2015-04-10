@@ -230,7 +230,7 @@ msgid "%sInvalid interface name '%s'%s"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:239
-msgid "%sOptional interface %s description found %s"
+msgid "%sOptional interface %s description found: %s"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:241
