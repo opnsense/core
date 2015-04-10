@@ -13452,1537 +13452,1170 @@ msgid ""
 "(advanced option) if statetype is none and no L7 container is selected."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:551
-msgid "You cannot specify the state timeout (advanced option) if statetype is none and no L7 container is selected."
+msgid ""
+"You cannot specify the state timeout (advanced option) if statetype is none "
+"and no L7 container is selected."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:555
 msgid "Maximum state entries (advanced option) must be a positive integer"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:558
-msgid "Maximum number of unique source hosts (advanced option) must be a positive integer"
+msgid ""
+"Maximum number of unique source hosts (advanced option) must be a positive "
+"integer"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:561
-msgid "Maximum number of established connections per host (advanced option) must be a positive integer"
+msgid ""
+"Maximum number of established connections per host (advanced option) must "
+"be a positive integer"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:564
-msgid "Maximum state entries per host (advanced option) must be a positive integer"
+msgid ""
+"Maximum state entries per host (advanced option) must be a positive integer"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:567
-msgid "Maximum new connections per host / per second(s) (advanced option) must be a positive integer"
+msgid ""
+"Maximum new connections per host / per second(s) (advanced option) must be "
+"a positive integer"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:570
 msgid "State timeout (advanced option) must be a positive integer"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:574
-msgid "Both maximum new connections per host and the interval (per second(s)) must be specified"
+msgid ""
+"Both maximum new connections per host and the interval (per second(s)) must "
+"be specified"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:586
-msgid "If you specify TCP flags that should be set you should specify out of which flags as well."
+msgid ""
+"If you specify TCP flags that should be set you should specify out of which "
+"flags as well."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:777
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:777
 msgid "Rules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:777
 msgid "Edit"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:811
 msgid "Edit Firewall rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:815
 msgid "Action"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:829
-msgid "Choose what to do with packets that match the criteria specified below."
+msgid ""
+"Choose what to do with packets that match the criteria specified below."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:829
-msgid "Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block the packet is dropped silently. In either case, the original packet is discarded."
+msgid ""
+"Hint: the difference between block and reject is that with reject, a packet "
+"(TCP RST or ICMP port unreachable for UDP) is returned to the sender, "
+"whereas with block the packet is dropped silently. In either case, the "
+"original packet is discarded."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:830
-msgid "Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block the packet is dropped silently. In either case, the original packet is discarded."
+msgid ""
+"Hint: the difference between block and reject is that with reject, a packet "
+"(TCP RST or ICMP port unreachable for UDP) is returned to the sender, "
+"whereas with block the packet is dropped silently. In either case, the "
+"original packet is discarded."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:835
 msgid "Disabled"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:838
 msgid "Disable this rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:838
-msgid "Set this option to disable this rule without removing it from the list."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:839
-msgid "Set this option to disable this rule without removing it from the list."
+msgid ""
+"Set this option to disable this rule without removing it from the list."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:845
 msgid "Quick"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:849
 msgid "Apply the action immediately on match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:849
 msgid "Set this option if you need to apply this action to traffic that matches this rule immediately."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:850
 msgid "Set this option if you need to apply this action to traffic that matches this rule immediately."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:857
 msgid "Associated filter rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:859
 msgid "Note: "
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:859
 msgid "This is associated to a NAT rule."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:859
 msgid "You cannot edit the interface, protocol, source, or destination of associated filter rules."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:860
 msgid "You cannot edit the interface, protocol, source, or destination of associated filter rules."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:867
 msgid "View the NAT rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:885
 msgid "Interface"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:926
 msgid "Choose on which interface packets must come in to match this rule."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:932
 msgid "Direction"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:950
 msgid "TCP/IP Version"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:962
 msgid "Select the Internet Protocol version this rule applies to"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:966
 msgid "Protocol"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:976
 msgid "Choose which IP protocol this rule should match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:976
 msgid "Hint: in most cases, you should specify "
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:976
 msgid "here."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:980
 msgid "ICMP type"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:985
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:985
-msgid "Echo request"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:986
 msgid "Echo request"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:986
-msgid "Echo reply"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:987
 msgid "Echo reply"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:987
-msgid "Destination unreachable"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:988
 msgid "Destination unreachable"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:988
-msgid "Source quench"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:989
 msgid "Source quench"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:989
-msgid "Redirect"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:990
 msgid "Redirect"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:990
-msgid "Alternate Host"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:991
 msgid "Alternate Host"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:991
-msgid "Router advertisement"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:992
 msgid "Router advertisement"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:992
-msgid "Router solicitation"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:993
 msgid "Router solicitation"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:993
-msgid "Time exceeded"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:994
 msgid "Time exceeded"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:994
-msgid "Invalid IP header"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:995
 msgid "Invalid IP header"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:995
-msgid "Timestamp"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:996
 msgid "Timestamp"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:996
-msgid "Timestamp reply"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:997
 msgid "Timestamp reply"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:997
-msgid "Information request"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:998
 msgid "Information request"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:998
-msgid "Information reply"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:999
 msgid "Information reply"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:999
-msgid "Address mask request"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1000
 msgid "Address mask request"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1000
-msgid "Address mask reply"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1001
 msgid "Address mask reply"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1009
-msgid "If you selected ICMP for the protocol above, you may specify an ICMP type here."
+msgid ""
+"If you selected ICMP for the protocol above, you may specify an ICMP type "
+"here."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1013
 msgid "Source"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1016
 msgid "not"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1018
 msgid "Use this option to invert the sense of the match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1023
 msgid "Type:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1028
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1035
 msgid "Single host or alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1035
-msgid "Network"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1036
 msgid "Network"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1038
 msgid "This Firewall (self)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1041
 msgid "PPTP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1044
 msgid "PPPoE clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1047
 msgid "L2TP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1052
 msgid "net"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1054
 msgid "address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1062
 msgid "Address:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1075
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1075
 msgid "Show source port range"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1081
 msgid "Source port range"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1085
 msgid "from:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1088
 msgid "other"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1088
-msgid "any"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1089
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1098
 msgid "to:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1101
 msgid "other"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1101
-msgid "any"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1102
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1112
 msgid "Specify the source port or port range for this rule."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1112
 msgid "This is usually"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1112
 msgid "random"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1112
-msgid "and almost never equal to the destination port range (and should usually be"
+msgid ""
+"and almost never equal to the destination port range (and should usually be"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1112
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1112
 msgid "Hint: you can leave the"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1112
 msgid "'to'"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1112
 msgid "field empty if you only want to filter a single port."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1116
 msgid "Destination"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1119
 msgid "not"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1121
 msgid "Use this option to invert the sense of the match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1126
 msgid "Type:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1131
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1138
 msgid "Single host or alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1138
-msgid "Network"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1139
 msgid "Network"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1139
-msgid "This Firewall (self)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1140
 msgid "This Firewall (self)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1142
 msgid "PPTP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1145
 msgid "PPPoE clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1148
 msgid "L2TP clients"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1153
 msgid "net"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1155
 msgid "address"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1163
 msgid "Address:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1180
 msgid "Destination port range "
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1184
 msgid "from:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1187
 msgid "other"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1187
-msgid "any"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1188
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1197
 msgid "to:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1200
 msgid "other"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1200
-msgid "any"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1201
 msgid "any"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1212
-msgid "Specify the port or port range for the destination of the packet for this rule."
+msgid ""
+"Specify the port or port range for the destination of the packet for this "
+"rule."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1214
 msgid "Hint: you can leave the"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1214
 msgid "'to'"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1214
 msgid "field empty if you only want to filter a single port"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1219
 msgid "Log"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1222
 msgid "Log packets that are handled by this rule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1224
-msgid "Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a remote syslog server"
+msgid ""
+"Hint: the firewall has limited local log space. Don't turn on logging for "
+"everything. If you want to do a lot of logging, consider using a remote "
+"syslog server"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1224
 msgid "see the"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1224
 msgid "Diagnostics: System logs: Settings"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1224
 msgid "page"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1228
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1232
 msgid "You may enter a description here for your reference."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1240
 msgid "Save"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1240
-msgid "Cancel"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1241
 msgid "Cancel"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1254
 msgid "Advanced features"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1257
 msgid "Source OS"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1260
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1260
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1263
 msgid "OS Type:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1274
 msgid "Note: this only works for TCP rules. General OS choice matches all subtypes."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1279
 msgid "Diffserv Code Point"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1282
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1282
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1295
 msgid "Advanced Options"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1298
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1298
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1302
-msgid "This allows packets with IP options to pass. Otherwise they are blocked by default. This is usually only seen with multicast traffic."
+msgid ""
+"This allows packets with IP options to pass. Otherwise they are blocked by "
+"default. This is usually only seen with multicast traffic."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1305
 msgid "This will disable auto generated reply-to for this rule."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1308
-msgid "You can mark a packet matching this rule and use this mark to match on other NAT/filter rules. It is called"
+msgid ""
+"You can mark a packet matching this rule and use this mark to match on "
+"other NAT/filter rules. It is called"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1308
 msgid "Policy filtering"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1311
 msgid "You can match packet on a mark placed before on another rule."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1313
 msgid " Maximum state entries this rule can create"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1313
-msgid " Maximum number of unique source hosts"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1314
 msgid " Maximum number of unique source hosts"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1314
-msgid " Maximum number of established connections per host (TCP only)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1315
 msgid " Maximum number of established connections per host (TCP only)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1315
-msgid " Maximum state entries per host"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1316
 msgid " Maximum state entries per host"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1325
 msgid "Maximum new connections per host / per second(s) (TCP only)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1328
 msgid "State Timeout in seconds (TCP only)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1330
 msgid "Note: Leave fields blank to disable that feature."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1335
 msgid "TCP flags"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1338
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1338
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1367
 msgid "Any flags."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1369
-msgid "Use this to choose TCP flags that must ". 										"be set or cleared for this rule to match."
+msgid ""
+"Use this to choose TCP flags that must be set or cleared for this rule to "
+"match."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1375
 msgid "State Type"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1378
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1378
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1384
 msgid "Hint: This prevents states created by this rule to be sync'ed over pfsync."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1387
 msgid "keep state"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1387
-msgid "sloppy state"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1388
 msgid "sloppy state"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1388
-msgid "synproxy state"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1389
 msgid "synproxy state"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1389
-msgid "none"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1390
 msgid "none"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1393
-msgid "Hint: Select which type of state tracking mechanism you would like to use.  If in doubt, use keep state."
+msgid ""
+"Hint: Select which type of state tracking mechanism you would like to use.  "
+"If in doubt, use keep state."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1396
 msgid "keep state"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1396
+#: src/www/firewall_rules_edit.php:1396
+#: src/www/firewall_rules_edit.php:1397
 msgid "Works with all IP protocols."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1396
-msgid "sloppy state"
-msgstr ""
-
-## Machine parsed, please check:
-#: src/www/firewall_rules_edit.php:1396
-msgid "Works with all IP protocols."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1397
 msgid "sloppy state"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1397
-msgid "Works with all IP protocols."
-msgstr ""
-
-## Machine parsed, please check:
-#: src/www/firewall_rules_edit.php:1397
-msgid "synproxy state"
-msgstr ""
-
-## Machine parsed, please check:
-#: src/www/firewall_rules_edit.php:1397
-msgid "Proxies incoming TCP connections to help protect servers from spoofed TCP SYN floods. This option includes the functionality of keep state and modulate state combined."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1398
 msgid "synproxy state"
 msgstr ""
 
-## Machine parsed, please check:
-#: src/www/firewall_rules_edit.php:1398
-msgid "Proxies incoming TCP connections to help protect servers from spoofed TCP SYN floods. This option includes the functionality of keep state and modulate state combined."
+#: src/www/firewall_rules_edit.php:1397
+msgid ""
+"Proxies incoming TCP connections to help protect servers from spoofed TCP "
+"SYN floods. This option includes the functionality of keep state and "
+"modulate state combined."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1398
-msgid "none"
+msgid ""
+"Proxies incoming TCP connections to help protect servers from spoofed TCP "
+"SYN floods. This option includes the functionality of keep state and "
+"modulate state combined."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1398
-msgid "Do not use state mechanisms to keep track.  This is only useful if you're doing advanced queueing in certain situations.  Please check the documentation."
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1399
 msgid "none"
 msgstr ""
 
-## Machine parsed, please check:
+#: src/www/firewall_rules_edit.php:1398
 #: src/www/firewall_rules_edit.php:1399
-msgid "Do not use state mechanisms to keep track.  This is only useful if you're doing advanced queueing in certain situations.  Please check the documentation."
+msgid ""
+"Do not use state mechanisms to keep track.  This is only useful if you're "
+"doing advanced queueing in certain situations.  Please check the "
+"documentation."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1405
 msgid "No XMLRPC Sync"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1408
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1408
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1412
 msgid "Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1417
 msgid "802.1p"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1420
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1420
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1452
 msgid "Choose 802.1p priority to match on"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1456
 msgid "Choose 802.1p priority to apply"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1472
 msgid "Schedule"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1475
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1475
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1494
 msgid "Leave as 'none' to leave the rule enabled all the time."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1499
 msgid "Gateway"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1502
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1502
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1506
 msgid "default"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1543
-msgid "Leave as 'default' to use the system routing table.  Or choose a gateway to utilize policy based routing."
+msgid ""
+"Leave as 'default' to use the system routing table.  Or choose a gateway to "
+"utilize policy based routing."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1548
 msgid "In/Out"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1551
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1551
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1592
-msgid "Choose the Out queue/Virtual interface only if you have also selected In."
+msgid ""
+"Choose the Out queue/Virtual interface only if you have also selected In."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1592
-msgid "The Out selection is applied to traffic leaving the interface where the rule is created, In is applied to traffic coming into the chosen interface."
+msgid ""
+"The Out selection is applied to traffic leaving the interface where the "
+"rule is created, In is applied to traffic coming into the chosen interface."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1592
-msgid "If you are creating a floating rule, if the direction is In then the same rules apply, if the direction is out the selections are reverted Out is for incoming and In is for outgoing."
+msgid ""
+"If you are creating a floating rule, if the direction is In then the same "
+"rules apply, if the direction is out the selections are reverted Out is for "
+"incoming and In is for outgoing."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1598
 msgid "Ackqueue/Queue"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1601
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1601
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1648
 msgid "Choose the Acknowledge Queue only if you have selected Queue."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1653
 msgid "Layer7"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1656
 msgid "Advanced"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1656
 msgid "Show advanced option"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1676
 msgid "Choose a Layer7 container to apply application protocol inspection rules. " . 														"These are valid for TCP and UDP protocols only."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1693
 msgid "Rule Information"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1697
 msgid "Created"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1699
 msgid "n/j/y H:i:s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1699
 msgid "by"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1705
 msgid "Updated"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1707
 msgid "n/j/y H:i:s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1707
 msgid "by"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1716
 msgid "Save"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1716
 msgid "Cancel"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_rules_edit.php:1717
 msgid "Cancel"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "Mon"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "Tues"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "Wed"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "Thur"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "Fri"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "Sat"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "Sun"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "January"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "February"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "March"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "April"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "May"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "June"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "July"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "August"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "September"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "October"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "November"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:30
 msgid "December"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "January"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "February"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "March"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "April"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "May"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "June"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "July"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "August"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "September"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "October"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "November"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:31
 msgid "December"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:37
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:37
 msgid "Schedules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:64
 msgid "Cannot delete Schedule.  Currently in use by %s"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:105
 msgid "Name"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:105
-msgid "Time Range(s)"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:106
 msgid "Time Range(s)"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:106
-msgid "Description"
-msgstr ""
-
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:107
 msgid "Description"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:121
 msgid "Schedule is currently active"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:226
 msgid "edit alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:226
 msgid "Do you really want to delete this schedule?"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:226
 msgid "delete alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:227
 msgid "Do you really want to delete this schedule?"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:227
 msgid "delete alias"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:237
 msgid "Note:"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule.php:237
-msgid "Schedules act as placeholders for time ranges to be used in Firewall Rules."
+msgid ""
+"Schedules act as placeholders for time ranges to be used in Firewall Rules."
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:48
 msgid "Firewall"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:48
 msgid "Schedules"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:48
 msgid "Edit"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "Mon"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "Tues"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "Wed"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "Thur"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "Fri"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "Sat"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "Sun"
 msgstr ""
 
-## Machine parsed, please check:
 #: src/www/firewall_schedule_edit.php:52
 msgid "January"
 msgstr ""
