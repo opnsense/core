@@ -917,6 +917,6 @@ server_changed();
 //]]>
 </script>
 
-<?php include("foot.inc"); ?>      
+<?php include("foot.inc"); ?>
 </body>
 </html>

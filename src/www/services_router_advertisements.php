@@ -410,6 +410,6 @@ include("head.inc");
 //]]>
 </script>
 
-<?php include("foot.inc"); ?>      
+<?php include("foot.inc"); ?>
 </body>
 </html>

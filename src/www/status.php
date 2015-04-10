@@ -218,6 +218,6 @@ pre {
 <?php execCmds(); ?>
 </div>
 
-<?php include("foot.inc"); ?>      
+<?php include("foot.inc"); ?>
 </body>
 </html>
