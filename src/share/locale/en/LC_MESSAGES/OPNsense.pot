@@ -26877,3 +26877,17 @@ msgstr ""
 msgid (sprintf("The probe interval needs to be less than the default down time setting (%d)", $apinger_default['down'])); 				}
 msgstr ""
 
+#: src/www/services_dyndns_edit.php:411
+msgid ""
+"Tabs (\\t), newlines (\\n) and carriage returns (\\r) at the beginning or "
+"end of the returned results are removed before comparison.");?>
+msgstr ""
+
+#: src/www/system_firmware_auto.php:202
+msgid "is now upgrading."
+msgstr ""
+
+#: src/www/system_firmware_auto.php:202
+msgid "The firewall will reboot once the operation is completed."
+msgstr ""
+
