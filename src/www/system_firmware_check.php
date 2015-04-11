@@ -247,7 +247,6 @@ include("head.inc");
 	}
 
 	function updatestatus() {
-
 		jQuery.ajax({
 			type: "POST",
 			url: '/system_firmware_check.php',
@@ -255,10 +254,12 @@ include("head.inc");
 			success:function(data, textStatus, jqXHR) {
 				jQuery('#output').prop('innerHTML',data);
 				document.getElementById("output").scrollTop = document.getElementById("output").scrollHeight ;
-				if ( data.indexOf('***DONE***') < 0 )  {
-					setTimeout(function() { updatestatus(); }, 500);
+				if (data.indexOf('***REBOOT***') >= 0) {
+					jQuery('#updatestatus').html('<span class="text-info">Upgrade done! A reboot is erquired.</span><br/>');
+				if (data.indexOf('***DONE***') >= 0) {
+					jQuery('#updatestatus').html('<a href="/system_firmware_check.php"><span class="btn btn-primary btn-xs">Check to refresh</span></a>&nbsp;<span class="text-info">Upgrade done!</span><br/>');
 				} else {
-					jQuery('#updatestatus').html('<a href="/system_firmware_check.php"><span class="btn btn-primary btn-xs">Check to refresh</span></a>&nbsp;<span class="text-info">Upgrade Done!</span><br/>');
+					setTimeout(function() { updatestatus(); }, 500);
 				}
 			}
 		});

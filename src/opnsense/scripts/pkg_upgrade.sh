@@ -29,6 +29,7 @@ package=$1
 pkg_running=`ps -x | grep "pkg " | grep -v "grep" | grep -v "pkg_upgrade.sh"`
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
+REBOOT=
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
@@ -40,10 +41,15 @@ if [ -z "$pkg_running" ]; then
 	if [ "$package" == "all" ]; then
 		# update all installed packages
 		pkg upgrade -y >> ${PKG_PROGRESS_FILE}
-		# restart the web server
-		/usr/local/opnsense/service/configd_ctl.py 'webgui restart' >> ${PKG_PROGRESS_FILE}
-		# remove no longer referenced packages
 		pkg autoremove -y >> ${PKG_PROGRESS_FILE}
+		# restart the web server
+		/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE}
+		# if we can update base, we'll do that as well
+		if opnsense-update -c; then
+			if opnsense-update >> ${PROGRESS_FILE}; then
+				REBOOT=1
+			fi
+		fi
 	elif [ "$package" == "pkg" ]; then
 		pkg upgrade -y $package >> ${PKG_PROGRESS_FILE}
 	else
@@ -55,4 +61,8 @@ else
 	echo 'Upgrade already in progress' >> ${PKG_PROGRESS_FILE}
 fi
 
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+if [ -n "${REBOOT}" ]; then
+	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
+else
+	echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+fi
