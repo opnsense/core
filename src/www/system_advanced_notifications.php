@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Scott Ullrich <sullrich@gmail.com>
@@ -148,7 +149,7 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("System"),gettext("Advanced: Notifications"));
+$pgtitle = array(gettext("System"),gettext("Settings"),gettext("Notifications"));
 include("head.inc");
 
 ?>

@@ -263,7 +263,7 @@ if ($fd) {
 	fclose($fd);
 }
 
-$pgtitle = array(gettext("System"),gettext("Advanced: Admin Access"));
+$pgtitle = array(gettext("System"),gettext("Settings"),gettext("Admin Access"));
 include("head.inc");
 
 ?>

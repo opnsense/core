@@ -110,7 +110,7 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext("System"),gettext("Advanced: System Tunables"));
+$pgtitle = array(gettext("System"),gettext("Settings"),gettext("System Tunables"));
 include("head.inc");
 
 ?>

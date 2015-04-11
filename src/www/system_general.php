@@ -269,7 +269,7 @@ if ($_POST) {
 	unset($ignore_posted_dnsgw);
 }
 
-$pgtitle = array(gettext("System"),gettext("General Setup"));
+$pgtitle = array(gettext("System"),gettext("Settings"),gettext("General"));
 include("head.inc");
 
 ?>
