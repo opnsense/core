@@ -581,42 +581,6 @@ msgstr ""
 msgid ": the server disconnected"
 msgstr ""
 
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5">Configuration File</a> Override"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS">Lease Requirements and Requests</a>"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS">Request</a> <a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp-options&amp;sektion=5">Options</a>"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS">Require</a> <a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp-options&amp;sektion=5">Options</a>"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS">Send</a> <a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp-options&amp;sektion=5">Options</a>"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp-options&amp;sektion=5">Option</a> <a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#OPTION_MODIFIERS">Modifiers</a>"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports">Configuration File</a> Override"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports#Authentication_statement">Authentication Statement</a>"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports#Identity_association_statement">Identity Association Statement</a>"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports#Interface_statement">Interface Statement</a>"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports#Keyinfo_statement">Keyinfo Statement</a>"
-msgstr ""
-
-msgid "<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports#Prefix_interface_statement">Prefix Interface Statement</a>"
-msgstr ""
-
 #: src/www/services_unbound_acls.php:224
 msgid "<b>Allow Snoop:</b> This action allows recursive and nonrecursive access from hosts within the netblock defined below. Used for cache snooping and ideally should only be configured for your administrative host."
 msgstr ""
