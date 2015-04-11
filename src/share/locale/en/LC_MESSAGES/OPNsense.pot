@@ -21,6 +21,7 @@ msgstr ""
 msgid " (not recommended). Select Generic if your GPS is not listed.)"
 msgstr ""
 
+#: src/www/firewall_nat_out.php:86
 msgid " - %1$s to %2$s"
 msgstr ""
 
@@ -40,7 +41,11 @@ msgstr ""
 msgid " >>> Trying to fetch package info..."
 msgstr ""
 
-msgid " >>> Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity."
+#: src/etc/inc/pkg-utils.inc:1212
+msgid ""
+" >>> Unable to communicate with %1$s. "
+"Please verify DNS and interface configuration, "
+"and that %2$s has functional Internet connectivity."
 msgstr ""
 
 #: src/etc/inc/shaper.inc:672
@@ -88,6 +93,7 @@ msgstr ""
 msgid " done!"
 msgstr ""
 
+#: src/etc/inc/array_intersect_key.inc:46
 msgid " is not an array"
 msgstr ""
 
