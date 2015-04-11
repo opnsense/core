@@ -14,7 +14,7 @@
 
         <GeneralSetup VisibleName="General Setup" url="/system_general.php"/>
 
-        <HighAvailSync VisibleName="High Availability Sync" url="/system_hasync.php"/>
+        <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>
 
         <Routing url="/system_gateways.php"/>
 

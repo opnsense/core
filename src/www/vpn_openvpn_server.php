@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc.
@@ -960,7 +961,7 @@ function tuntap_change() {
 												<?php endforeach; ?>
 												</select>
 												<?php else: ?>
-													<b>No Certificate Authorities defined.</b> <br />Create one under <a href="system_camanager.php">System &gt; Cert Manager</a>.
+													<b>No Certificate Authorities defined.</b> <br />Create one under <a href="system_camanager.php">System: Certificates</a>.
 												<?php endif; ?>
 												</td>
 										</tr>
@@ -985,7 +986,7 @@ function tuntap_change() {
 												<?php endforeach; ?>
 												</select>
 												<?php else: ?>
-													<b>No Certificate Revocation Lists (CRLs) defined.</b> <br />Create one under <a href="system_crlmanager.php">System &gt; Cert Manager</a>.
+													<b>No Certificate Revocation Lists (CRLs) defined.</b> <br />Create one under <a href="system_crlmanager.php">System: Certificates</a>.
 												<?php endif; ?>
 												</td>
 										</tr>
@@ -1014,7 +1015,7 @@ function tuntap_change() {
 												<?php endforeach; ?>
 												</select>
 												<?php else: ?>
-													<b>No Certificates defined.</b> <br />Create one under <a href="system_certmanager.php">System &gt; Cert Manager</a>.
+													<b>No Certificates defined.</b> <br />Create one under <a href="system_certmanager.php">System: Certificates</a>.
 												<?php endif; ?>
 											</td>
 										</tr>

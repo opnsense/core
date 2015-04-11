@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
@@ -949,7 +950,7 @@ function enable_change(enable_change) {
 												<?php endforeach; ?>
 												</select>
 												<?php else: ?>
-													<b><?=gettext("No Certificates defined."); ?></b> <br />Create one under <a href="system_certmanager.php">System &gt; Cert Manager</a>.
+													<b><?=gettext("No Certificates defined."); ?></b> <br />Create one under <a href="system_certmanager.php">System: Certificates</a>.
 												<?php endif; ?>
 											</td>
 										</tr>

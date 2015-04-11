@@ -126,17 +126,17 @@ function active_main_menu() {
 
 // System
 $system_menu = array();
-$system_menu[] = array(gettext("Settings"), "/system_general.php");
+$system_menu[] = array(gettext("Certificates"), "/system_camanager.php");
 $system_menu[] = array(gettext("Firmware"), "/system_firmware_check.php");
-$system_menu[] = array(gettext("High Avail. Sync"), "/system_hasync.php");
-$system_menu[] = array(gettext("Setup Wizard"), "/wizard.php?xml=setup_wizard.xml");
+$system_menu[] = array(gettext("High Availability"), "/system_hasync.php");
 $system_menu[] = array(gettext("Routing"), "/system_gateways.php");
-$system_menu[] = array(gettext("Cert Manager"), "/system_camanager.php");
-if (!isAllowedPage("system_usermanager.php*"))
+$system_menu[] = array(gettext("Settings"), "/system_general.php");
+$system_menu[] = array(gettext("Setup Wizard"), "/wizard.php?xml=setup_wizard.xml");
+if (!isAllowedPage("system_usermanager.php*")) {
 	$system_menu[] = array(gettext("User Manager"), "/system_usermanager_passwordmg.php");
-else
+} else {
 	$system_menu[] = array(gettext("User Manager"), "/system_usermanager.php");
-$system_menu = msort($system_menu,0);
+}
 
 // Interfaces
 $interfaces_menu = array();

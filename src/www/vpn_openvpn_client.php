@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc.
@@ -760,7 +761,7 @@ function autotls_change() {
 							<?php endforeach; ?>
 							</select>
 							<?php else: ?>
-								<b>No Certificate Authorities defined.</b> <br />Create one under <a href="system_camanager.php">System &gt; Cert Manager</a>.
+								<b>No Certificate Authorities defined.</b> <br />Create one under <a href="system_camanager.php">System: Certificates</a>.
 							<?php endif; ?>
 							</td>
 					</tr>
@@ -789,7 +790,7 @@ function autotls_change() {
 								<option value="" <?PHP if (empty($pconfig['certref'])) echo "selected=\"selected\""; ?>>None (Username and Password required)</option>
 							</select>
 							<?php if (!count($a_cert)): ?>
-								<b>No Certificates defined.</b> <br />Create one under <a href="system_certmanager.php">System &gt; Cert Manager</a> if one is required for this connection.
+								<b>No Certificates defined.</b> <br />Create one under <a href="system_certmanager.php">System: Certificates</a> if one is required for this connection.
 							<?php endif; ?>
 						</td>
 					</tr>

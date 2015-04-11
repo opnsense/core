@@ -1219,8 +1219,8 @@ $priv_list['page-system-groupmanager-addprivs']['match'] = array();
 $priv_list['page-system-groupmanager-addprivs']['match'][] = "system_groupmanager_addprivs.php*";
 
 $priv_list['page-system-hasync'] = array();
-$priv_list['page-system-hasync']['name'] = gettext("Webcfg - System: High Availability Sync");
-$priv_list['page-system-hasync']['descr'] = gettext("Allow access to the 'System: High Availability Sync' page.");
+$priv_list['page-system-hasync']['name'] = gettext("Webcfg - System: High Availability");
+$priv_list['page-system-hasync']['descr'] = gettext("Allow access to the 'System: High Availability' page.");
 $priv_list['page-system-hasync']['match'] = array();
 $priv_list['page-system-hasync']['match'][] = "system_hasync.php*";
 

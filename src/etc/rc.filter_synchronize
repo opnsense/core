@@ -250,7 +250,7 @@ if (file_exists('/var/run/booting')) {
 }
 
 if (is_array($config['hasync'])) {
-	update_filter_reload_status("Building high availability sync information");
+	update_filter_reload_status("Building high availability information");
 	$hasync = $config['hasync'];
 
 	if (empty($hasync['synchronizetoip'])) {

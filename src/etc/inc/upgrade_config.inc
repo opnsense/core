@@ -2039,7 +2039,7 @@ function upgrade_055_to_056() {
 	if (!is_array($config['cert']))
 		$config['cert'] = array();
 
-	/* migrate ipsec ca's to cert manager */
+	/* migrate ipsec ca's to certificate manager */
 	if (is_array($config['ipsec']['cacert'])) {
 		foreach($config['ipsec']['cacert'] as & $cacert) {
 			$ca = array();
@@ -2054,7 +2054,7 @@ function upgrade_055_to_056() {
 		unset($config['ipsec']['cacert']);
 	}
 
-	/* migrate phase1 certificates to cert manager */
+	/* migrate phase1 certificates to certificate manager */
 	if (is_array($config['ipsec']['phase1'])) {
 		foreach($config['ipsec']['phase1'] as & $ph1ent) {
 			$cert = array();

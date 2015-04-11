@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2004 Scott Ullrich
@@ -182,7 +183,7 @@ include("head.inc");
 						<p class="vexpl">
 							<span class="red"><strong><?=gettext("Note"); ?>:</strong></span>
 							<br />
-							<?=gettext("You can configure high availability sync settings"); ?> <a href="system_hasync.php"><?=gettext("here"); ?></a>.
+							<?=gettext("You can configure high availability settings"); ?> <a href="system_hasync.php"><?=gettext("here"); ?></a>.
 						</p>
 
 						<?php

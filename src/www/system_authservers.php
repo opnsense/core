@@ -1,6 +1,7 @@
 <?php
+
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2010 Ermal Luçi
     Copyright (C) 2008 Shrew Soft Inc.
     All rights reserved.
@@ -546,7 +547,7 @@ function select_clicked() {
 													<br /><span><?=gettext("This option is used if 'SSL Encrypted' option is choosen.");?> <br />
 													<?=gettext("It must match with the CA in the AD otherwise problems will arise.");?></span>
 					                                                        <?php else: ?>
-					                                                                <b>No Certificate Authorities defined.</b> <br />Create one under <a href="system_camanager.php">System &gt; Cert Manager</a>.
+					                                                                <b>No Certificate Authorities defined.</b> <br />Create one under <a href="system_camanager.php">System: Certificates</a>.
 					                                                        <?php endif; ?>
 					                                                        </td>
 											</tr>

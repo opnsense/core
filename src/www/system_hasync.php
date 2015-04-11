@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2012 Darren Embry <dse@webonastick.com>.
@@ -66,7 +67,7 @@ if ($_POST) {
 	$a_hasync['synchronizetoip'] = $pconfig['synchronizetoip'];
 	$a_hasync['username']        = $pconfig['username'];
 	$a_hasync['password']        = $pconfig['password'];
-	write_config("Updated High Availability Sync configuration");
+	write_config("Updated High Availability configuration");
 	interfaces_carp_setup();
 	header("Location: system_hasync.php");
 	exit();
@@ -84,7 +85,7 @@ $pconfig['password']        = $a_hasync['password'];
 $ifaces = get_configured_interface_with_descr();
 $ifaces["lo0"] = "loopback";
 
-$pgtitle = array(gettext("System"),gettext("High Availability Sync"));
+$pgtitle = array(gettext("System"),gettext("High Availability"));
 $shortcut_section = "carp";
 include("head.inc");
 ?>
