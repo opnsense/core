@@ -255,8 +255,8 @@ include("head.inc");
 				jQuery('#output').prop('innerHTML',data);
 				document.getElementById("output").scrollTop = document.getElementById("output").scrollHeight ;
 				if (data.indexOf('***REBOOT***') >= 0) {
-					jQuery('#updatestatus').html('<span class="text-info">Upgrade done! A reboot is erquired.</span><br/>');
-				if (data.indexOf('***DONE***') >= 0) {
+					jQuery('#updatestatus').html('<span class="text-info">Upgrade done! A reboot is required.</span><br/>');
+				} else if (data.indexOf('***DONE***') >= 0) {
 					jQuery('#updatestatus').html('<a href="/system_firmware_check.php"><span class="btn btn-primary btn-xs">Check to refresh</span></a>&nbsp;<span class="text-info">Upgrade done!</span><br/>');
 				} else {
 					setTimeout(function() { updatestatus(); }, 500);

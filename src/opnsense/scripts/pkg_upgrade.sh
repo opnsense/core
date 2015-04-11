@@ -46,7 +46,7 @@ if [ -z "$pkg_running" ]; then
 		/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE}
 		# if we can update base, we'll do that as well
 		if opnsense-update -c; then
-			if opnsense-update >> ${PROGRESS_FILE}; then
+			if opnsense-update >> ${PKG_PROGRESS_FILE}; then
 				REBOOT=1
 			fi
 		fi
