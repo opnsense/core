@@ -302,6 +302,7 @@ msgstr ""
 msgid "%s packages"
 msgstr ""
 
+#: src/etc/inc/config.console.inc:48
 msgid "%s requires *AT LEAST* %s RAM to function correctly.%s"
 msgstr ""
 
@@ -310,13 +311,21 @@ msgstr ""
 msgid "%s subnet"
 msgstr ""
 
+#: src/www/firewall_aliases_edit.php:291
 msgid "%s/%s is not a valid subnet."
 msgstr ""
 
-msgid "%sEnter the LAN interface name or 'a' for auto-detection %s" . 			    "NOTE: this enables full Firewalling/NAT mode.%s" .
+#: src/etc/inc/config.console.inc:205
+msgid ""
+"%sEnter the LAN interface name or 'a' for auto-detection %s"
+"NOTE: this enables full Firewalling/NAT mode.%s" .
+"(or nothing if finished):%s"
 msgstr ""
 
-msgid "%sEnter the Optional %s interface name or 'a' for auto-detection%s" . 					"(or nothing if finished):%s"
+#: src/etc/inc/config.console.inc:241
+msgid ""
+"%sEnter the Optional %s interface name or 'a' for auto-detection%s"
+"(or nothing if finished):%s"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:503
@@ -334,22 +343,38 @@ msgstr ""
 msgid "%sOptional interface %s description found: %s"
 msgstr ""
 
-msgid "%sWarning: filter rule removed " . 					"(destination network '%s' does not exist anymore)."
+#: src/etc/inc/upgrade_config.inc:132
+msgid ""
+"%sWarning: filter rule removed "
+"(destination network '%s' does not exist anymore)."
 msgstr ""
 
+#: src/etc/inc/upgrade_config.inc:119
 msgid "%sWarning: filter rule removed " . 					"(source network '%s' does not exist anymore)."
 msgstr ""
 
-msgid "%sWarning: filter rule removed " . 				"(interface '%s' does not exist anymore)."
+#: src/etc/inc/upgrade_config.inc:107
+msgid ""
+"%sWarning: filter rule removed "
+"(interface '%s' does not exist anymore)."
 msgstr ""
 
-msgid "%sWarning: traffic shaper rule removed " . 					"(destination network '%s' does not exist anymore)."
+#: src/etc/inc/upgrade_config.inc:177
+msgid ""
+"%sWarning: traffic shaper rule removed "
+"(destination network '%s' does not exist anymore)."
 msgstr ""
 
-msgid "%sWarning: traffic shaper rule removed " . 					"(source network '%s' does not exist anymore)."
+#: src/etc/inc/upgrade_config.inc:164
+msgid ""
+"%sWarning: traffic shaper rule removed "
+"(source network '%s' does not exist anymore)."
 msgstr ""
 
-msgid "%sWarning: traffic shaper rule removed " . 				"(interface '%s' does not exist anymore)."
+#: src/etc/inc/upgrade_config.inc:152
+msgid ""
+"%sWarning: traffic shaper rule removed "
+"(interface '%s' does not exist anymore)."
 msgstr ""
 
 #: src/etc/inc/config.console.inc:396
@@ -442,7 +467,9 @@ msgstr ""
 msgid "-3 socket could not be created"
 msgstr ""
 
-msgid "-4 dns lookup on hostname "%s" failed"
+
+#: src/etc/inc/smtp.inc:249
+msgid "-4 dns lookup on hostname \"%s\" failed"
 msgstr ""
 
 #: src/etc/inc/smtp.inc:251
