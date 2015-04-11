@@ -162,6 +162,7 @@ $firewall_menu = msort($firewall_menu,0);
 // Services
 $services_menu = array();
 $services_menu[] = array(gettext("Captive Portal"), "/services_captiveportal.php");
+$services_menu[] = array(gettext("DNS Filter"), "/services_opendns.php");
 $services_menu[] = array(gettext("DNS Forwarder"), "/services_dnsmasq.php");
 $services_menu[] = array(gettext("DNS Resolver"), "/services_unbound.php");
 $services_menu[] = array(gettext("DHCP Relay"), "/services_dhcp_relay.php");

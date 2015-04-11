@@ -854,6 +854,12 @@ $priv_list['page-services-dnsforwarder-edithost']['descr'] = gettext("Allow acce
 $priv_list['page-services-dnsforwarder-edithost']['match'] = array();
 $priv_list['page-services-dnsforwarder-edithost']['match'][] = "services_dnsmasq_edit.php*";
 
+$priv_list['page-services-opendns'] = array();
+$priv_list['page-services-opendns']['name'] = gettext("WebCfg - Services: DNS Filter");
+$priv_list['page-services-opendns']['descr'] = gettext("Allow access to the 'Services: DNS Filter' page.");
+$priv_list['page-services-opendns']['match'] = array();
+$priv_list['page-services-opendns']['match'][] = "services_opendns.php*";
+
 $priv_list['page-services-dnsresolver'] = array();
 $priv_list['page-services-dnsresolver']['name'] = gettext("WebCfg - Services: DNS Resolver page");
 $priv_list['page-services-dnsresolver']['descr'] = gettext("Allow access to the 'Services: DNS Resolver' page.");

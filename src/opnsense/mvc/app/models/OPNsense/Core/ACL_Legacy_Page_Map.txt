@@ -135,6 +135,7 @@ page-services-dhcpv6relay=services_dhcpv6_relay.php*
 page-services-dnsforwarder=services_dnsmasq.php*
 page-services-dnsforwarder-editdomainoverride=services_dnsmasq_domainoverride_edit.php*
 page-services-dnsforwarder-edithost=services_dnsmasq_edit.php*
+page-services-opendns=services_opendns.php*
 page-services-dnsresolver=services_unbound.php*
 page-services-dnsresolver-advanced=services_unbound_advanced.php*
 page-services-dnsresolver-acls=services_unbound_acls.php*

@@ -83,6 +83,7 @@
         <DHCPv6ServerRA VisibleName="DHCPv6 Server/RA" url="/services_dhcpv6.php">
             <RouterAdvertisement url="/services_router_advertisements.php"/>
         </DHCPv6ServerRA>
+        <DNSFilter VisibleName="DNS Filter" url="/services_opendns.php"/>
         <DNSForwarder VisibleName="DNS Forwarder" url="/services_dnsmasq.php"/>
         <DNSResolver VisibleName="DNS Resolver" url="/services_unbound.php">
             <Advanced url="/services_unbound_advanced.php/"/>
