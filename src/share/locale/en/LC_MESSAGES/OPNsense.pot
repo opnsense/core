@@ -222,20 +222,26 @@ msgstr ""
 msgid "%s has been stopped."
 msgstr ""
 
-msgid "%s is a subnet containing more than 64 IP addresses (in "disabled" list)."
+#: src/www/load_balancer_pool_edit.php:109
+msgid ""
+"%s is a subnet containing more than 64 IP addresses (in \"disabled\" list)."
 msgstr ""
 
-msgid "%s is a subnet containing more than 64 IP addresses (in "enabled" list)."
+#: src/www/load_balancer_pool_edit.php:99
+msgid ""
+"%s is a subnet containing more than 64 IP addresses (in \"enabled\" list)."
 msgstr ""
 
 #: src/www/load_balancer_virtual_server_edit.php:86
 msgid "%s is a subnet containing more than 64 IP addresses."
 msgstr ""
 
-msgid "%s is not a valid IP address or IPv4 subnet (in "disabled" list)."
+#: src/www/load_balancer_pool_edit.php:96
+msgid "%s is not a valid IP address or IPv4 subnet (in \"enabled\" list)."
 msgstr ""
 
-msgid "%s is not a valid IP address or IPv4 subnet (in "enabled" list)."
+#: src/www/load_balancer_pool_edit.php:106
+msgid "%s is not a valid IP address or IPv4 subnet (in \"disabled\" list)."
 msgstr ""
 
 #: src/www/load_balancer_virtual_server_edit.php:84
