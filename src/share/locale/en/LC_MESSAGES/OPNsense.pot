@@ -1642,10 +1642,18 @@ msgstr ""
 msgid "Additional files... "
 msgstr ""
 
-msgid "Additional users can be added here. User permissions for accessing " . 										"the webConfigurator can be assigned directly or inherited from group memberships. " .
+#: src/www/system_usermanager.php:892
+msgid ""
+"Additional users can be added here. User permissions for accessing "
+"the webConfigurator can be assigned directly or inherited from group memberships. "
 msgstr ""
 
-msgid "Additional webConfigurator groups can be added here. 															Group permissions can be assigned which are inherited by users who are members of the group.
+#: src/www/system_groupmanager.php:458
+msgid ""
+"Additional webConfigurator groups can be added here.
+                                                                                                                        Group permissions can be assigned which are inherited by users who are members of the group.
+                                                                                                                        An icon that appears grey indicates that it is a system defined object.
+                                                                                                                        Some system object properties can be modified but they cannot be deleted."
 msgstr ""
 
 #: src/www/diag_packet_capture.php:260
