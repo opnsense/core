@@ -287,8 +287,9 @@ include("head.inc");
 		if ($savemsg) print_info_box($savemsg);
             ?>
             <section class="col-xs-12">
+                <? include('system_advanced_tabs.php'); ?>
 
-                <div class="content-box table-responsive">
+                <div class="content-box tab-content">
 
 			<form action="system_general.php" method="post">
 				<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">

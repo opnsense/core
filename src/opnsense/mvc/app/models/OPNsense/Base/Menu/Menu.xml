@@ -1,15 +1,6 @@
 <menu>
     <!-- Core menu system including legacy stuff -->
     <System order="0" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
-        <Advanced url="/system_advanced_admin.php">
-                <Admin_Access VisibleName="Admin Access" url="/system_advanced_admin.php"/>
-                <Firewall_NAT VisibleName="Firewall/NAT" url="/system_advanced_firewall.php"/>
-                <Networking url="/system_advanced_network.php"></Networking>
-                <Miscellaneos url="/system_advanced_misc.php"/>
-                <System_Tunables VisibleName="System Tunables" url="/system_advanced_sysctl.php"/>
-                <Notifications url="system_advanced_notifications.php"/>
-        </Advanced>
-
         <CertificateManager VisibleName="Certificate Manager" url="/system_camanager.php">
                 <CAs url="/system_camanager.php"/>
                 <Certificates url="/system_certmanager.php"/>
@@ -26,6 +17,16 @@
         <HighAvailSync VisibleName="High Availability Sync" url="/system_hasync.php"/>
 
         <Routing url="/system_gateways.php"/>
+
+        <Settings url="/system_general.php">
+                <General VisibleName="General" url="/system_general.php"/>
+                <Admin_Access VisibleName="Admin Access" url="/system_advanced_admin.php"/>
+                <Firewall_NAT VisibleName="Firewall/NAT" url="/system_advanced_firewall.php"/>
+                <Networking url="/system_advanced_network.php"></Networking>
+                <Miscellaneos url="/system_advanced_misc.php"/>
+                <System_Tunables VisibleName="System Tunables" url="/system_advanced_sysctl.php"/>
+                <Notifications url="system_advanced_notifications.php"/>
+        </Settings>
 
         <SetupWizard  VisibleName="Setup Wizard" url="wizard.php?xml=setup_wizard.xml"/>
 
