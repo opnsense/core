@@ -676,10 +676,13 @@ msgstr ""
 msgid "A NTP Time Server name may only contain the characters a-z, 0-9, '-' and '.'."
 msgstr ""
 
-msgid "A NetBIOS Scope	ID provides an extended naming " . 															"service for	NetBIOS over TCP/IP. The NetBIOS " .
-msgstr ""
-
-msgid "A NetBIOS Scope	ID provides an extended naming " . 														"service for	NetBIOS over TCP/IP. The NetBIOS " .
+#: src/www/vpn_openvpn_csc.php:670
+msgid ""
+"A NetBIOS Scope   ID provides an extended naming "
+"service for    NetBIOS over TCP/IP. The NetBIOS "
+"scope ID isolates NetBIOS traffic on a single "
+"network to only those nodes with the same "
+"NetBIOS scope ID"
 msgstr ""
 
 #: src/www/services_ntpd_pps.php:130
@@ -698,16 +701,28 @@ msgstr ""
 msgid "A VLAN with the tag %s is already defined on this interface."
 msgstr ""
 
-msgid "A cryptographic accelerator module will use hardware support to speed up some " . 											"cryptographic functions on systems which have the chip. Do not enable this " .
+#: src/www/system_advanced_misc.php:401
+msgid ""
+"A cryptographic accelerator module will use hardware support to speed up some "
+"cryptographic functions on systems which have the chip. Do not enable this "
+"option if you have a Hifn cryptographic acceleration card, as this will take "
+"precedence and the Hifn card will not be used. Acceleration should be automatic "
+"for IPsec when using a cipher supported by your chip, such as AES-128. OpenVPN "
+"should be set for AES-128-CBC and have cryptodev enabled for hardware "
+"acceleration."
 msgstr ""
 
 #: src/www/services_captiveportal_filemanager.php:86
 msgid "A file with the name '%s' already exists."
 msgstr ""
 
-msgid "A gateway group cannot have the same name with a gateway "%s" please choose another name."
+#: src/www/system_gateway_groups_edit.php:111
+msgid ""
+"A gateway group cannot have the same name with a gateway "%s" please choose "
+"another name."
 msgstr ""
 
+#: src/www/system_gateway_groups_edit.php:94
 msgid "A gateway group with this name "%s" already exists."
 msgstr ""
 
@@ -784,11 +799,14 @@ msgstr ""
 msgid "A valid FQDN for 'Peer identifier' must be specified."
 msgstr ""
 
+#: src/www/services_captiveportal_hostname_edit.php:93
 msgid "A valid Hostname must be specified. [%s]"
 msgstr ""
 
 #: src/www/services_unbound_domainoverride_edit.php:76
-msgid "A valid IP address and port must be specified, for example 192.168.100.10@5353."
+msgid ""
+"A valid IP address and port must be specified, for example "
+"192.168.100.10@5353."
 msgstr ""
 
 #: src/www/vpn_ipsec_mobile.php:153
@@ -864,6 +882,11 @@ msgstr ""
 msgid "A valid IP address must be specified, or # for an exclusion or ! to not forward at all."
 msgstr ""
 
+#: src/www/services_captiveportal.php:256
+#: src/www/services_captiveportal.php:259
+#: src/www/services_captiveportal.php:262
+#: src/www/services_captiveportal.php:265
+#: src/www/services_captiveportal_ip_edit.php:92
 msgid "A valid IP address must be specified. [%s]"
 msgstr ""
 
@@ -874,6 +897,7 @@ msgstr ""
 msgid "A valid IP address must be specified."
 msgstr ""
 
+#: src/www/diag_packet_capture.php:132
 msgid "A valid IP address or CIDR block must be specified. [%s]"
 msgstr ""
 
@@ -1144,6 +1168,11 @@ msgstr ""
 msgid "A valid monitor IP address must be specified."
 msgstr ""
 
+#: src/www/services_captiveportal.php:268
+#: src/www/services_captiveportal.php:271
+#: src/www/services_captiveportal.php:274
+#: src/www/services_captiveportal.php:277
+#: src/www/services_captiveportal.php:280
 msgid "A valid port number must be specified. [%s]"
 msgstr ""
 
@@ -1308,6 +1337,8 @@ msgstr ""
 msgid "ARP Table"
 msgstr ""
 
+#: src/etc/inc/ipsec.inc:43
+#: src/etc/inc/ipsec.inc:52
 msgid "ASN.1 distinguished Name"
 msgstr ""
 
@@ -1394,7 +1425,10 @@ msgstr ""
 msgid "Accounting"
 msgstr ""
 
-msgid "Accounts created here are also used for other parts of the system " . 										"such as OpenVPN, IPsec, and Captive Portal."
+#: src/www/system_usermanager.php:897
+msgid ""
+"Accounts created here are also used for other parts of the system "
+"such as OpenVPN, IPsec, and Captive Portal."
 msgstr ""
 
 #: src/etc/inc/functions.inc:87
@@ -1437,6 +1471,7 @@ msgstr ""
 msgid "Activated at"
 msgstr ""
 
+#: src/www/widgets/widgets/ipsec.widget.php:95
 msgid "Active Tunnels"
 msgstr ""
 
@@ -1536,7 +1571,9 @@ msgstr ""
 msgid "Add privileges"
 msgstr ""
 
-msgid "Add the interface named by interface as a span port on the " . 							     "bridge.  Span ports transmit a copy of every frame received by " .
+#: src/www/interfaces_bridge_edit.php:462
+msgid "Add the interface named by interface as a span port on the "
+"bridge.  Span ports transmit a copy of every frame received by "
 msgstr ""
 
 #: src/www/diag_gmirror.php:290
