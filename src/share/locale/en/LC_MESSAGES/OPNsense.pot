@@ -1716,7 +1716,10 @@ msgstr ""
 msgid "Adds interface to QinQ interface groups so you can write filter rules easily."
 msgstr ""
 
-msgid "Adjusts the size, in bytes, of the token bucket regulator. " 		      .  "If not specified, heuristics based on the interface "
+#: src/etc/inc/shaper.inc:710
+msgid ""
+"Adjusts the size, in bytes, of the token bucket regulator. "
+"If not specified, heuristics based on the interface "
 msgstr ""
 
 #: src/www/system_advanced_tabs.php:9
@@ -1934,6 +1937,7 @@ msgstr ""
 msgid "Aliases"
 msgstr ""
 
+#: src/www/services_captiveportal_vouchers_edit.php:124
 msgid "All %1$s vouchers from Roll %2$s marked unused"
 msgstr ""
 
@@ -2893,7 +2897,10 @@ msgstr ""
 msgid "Allow default gateway switching"
 msgstr ""
 
-msgid "Allow interface to automatically detect edge status.  This is the " . 							     "default for all interfaces added to a bridge."
+#: src/www/interfaces_bridge_edit.php:510
+msgid ""
+"Allow interface to automatically detect edge status.  This is the "
+"default for all interfaces added to a bridge."
 msgstr ""
 
 #: src/www/interfaces.php:3060
@@ -2966,6 +2973,8 @@ msgstr ""
 msgid "Allows selection of different speeds for the serial console port."
 msgstr ""
 
+#: src/etc/inc/xmlrpc_client.inc:1636
+#: src/etc/inc/xmlrpc_client.inc:1652
 msgid "Already initialized as a [%s]"
 msgstr ""
 
@@ -3045,6 +3054,7 @@ msgstr ""
 msgid "An interface with the specified description already exists."
 msgstr ""
 
+#: src/www/services_router_advertisements.php:127
 msgid "An invalid subnet or alias was specified. [%s/%s]"
 msgstr ""
 
@@ -3078,7 +3088,10 @@ msgstr ""
 msgid "Anti-lockout"
 msgstr ""
 
-msgid "Any files that you upload here with the filename prefix of captiveportal- will " . 								"be made available in the root directory of the captive portal HTTP(S) server. " .
+#: src/www/services_captiveportal_filemanager.php:221
+msgid ""
+"Any files that you upload here with the filename prefix of captiveportal- will "
+"be made available in the root directory of the captive portal HTTP(S) server. "
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:1367
@@ -3108,6 +3121,8 @@ msgstr ""
 msgid "Apply the action immediately on match."
 msgstr ""
 
+#: src/www/javascript/datepicker/js/datepicker.js:66
+#: src/www/javascript/jquery/jquery-ui-1.11.1.min.js:6
 msgid "April"
 msgstr ""
 
@@ -3188,6 +3203,8 @@ msgstr ""
 msgid "Attributes"
 msgstr ""
 
+#: src/www/javascript/datepicker/js/datepicker.js:70
+#: src/www/javascript/jquery/jquery-ui-1.11.1.min.js:6
 msgid "August"
 msgstr ""
 
@@ -3288,9 +3305,11 @@ msgstr ""
 msgid "Auto added OpenVPN rule from config upgrade."
 msgstr ""
 
+#: src/etc/inc/filter.inc:1429
 msgid "Auto created rule for ISAKMP"
 msgstr ""
 
+#: src/etc/inc/filter.inc:1439
 msgid "Auto created rule"
 msgstr ""
 
