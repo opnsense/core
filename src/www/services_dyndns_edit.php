@@ -444,7 +444,7 @@ include("head.inc");
 					                  <td width="78%"><span class="vexpl"><span class="red"><strong><?=gettext("Note:");?><br />
 					                    </strong></span><?php printf(gettext("You must configure a DNS server in %sSystem:
 					                    General setup%s or allow the DNS server list to be overridden
-					                    by DHCP/PPP on WAN for dynamic DNS updates to work."),'<a href="system.php">','</a>');?></span></td>
+					                    by DHCP/PPP on WAN for dynamic DNS updates to work."),'<a href="system_general.php">','</a>');?></span></td>
 					                </tr>
 					              </table>
 				</div>

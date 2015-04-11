@@ -1102,7 +1102,7 @@ $priv_list['page-system-generalsetup'] = array();
 $priv_list['page-system-generalsetup']['name'] = gettext("WebCfg - System: General Setup page");
 $priv_list['page-system-generalsetup']['descr'] = gettext("Allow access to the 'System: General Setup' page.");
 $priv_list['page-system-generalsetup']['match'] = array();
-$priv_list['page-system-generalsetup']['match'][] = "system.php*";
+$priv_list['page-system-generalsetup']['match'][] = "system_general.php*";
 
 $priv_list['page-system-advanced-admin'] = array();
 $priv_list['page-system-advanced-admin']['name'] = gettext("WebCfg - System: Advanced: Admin Access Page");

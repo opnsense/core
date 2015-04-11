@@ -1,7 +1,8 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2014	Warren Baker (warren@pfsense.org)
+	Copyright (C) 2014 Warren Baker <warren@pfsense.org>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -303,7 +304,7 @@ function show_advanced_dns() {
 													" their hostname when requesting a DHCP lease will be registered".
 													" in the DNS Resolver, so that their name can be resolved.".
 													" You should also set the domain in %sSystem:".
-													" General setup%s to the proper value."),'<a href="system.php">','</a>')?></p>
+													" General setup%s to the proper value."),'<a href="system_general.php">','</a>')?></p>
 												</td>
 											</tr>
 											<tr>
@@ -314,7 +315,7 @@ function show_advanced_dns() {
 													</strong><?php printf(gettext("If this option is set, then DHCP static mappings will ".
 															"be registered in the DNS Resolver, so that their name can be ".
 															"resolved. You should also set the domain in %s".
-															"System: General setup%s to the proper value."),'<a href="system.php">','</a>');?></p>
+															"System: General setup%s to the proper value."),'<a href="system_general.php">','</a>');?></p>
 												</td>
 											</tr>
 											<tr>
@@ -356,7 +357,7 @@ function show_advanced_dns() {
                         " entered in %sSystem: General setup%s".
                         " or those obtained via DHCP or PPP on WAN if the &quot;Allow".
                         " DNS server list to be overridden by DHCP/PPP on WAN&quot;".
-                        " is checked."),'<a href="system.php">','</a>');?><br />
+                        " is checked."),'<a href="system_general.php">','</a>');?><br />
                         </span></p>
 					</div>
 

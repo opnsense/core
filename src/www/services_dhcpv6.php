@@ -811,7 +811,7 @@ include("head.inc");
 											<tr>
 											<td width="22%" valign="top">&nbsp;</td>
 											<td width="78%"> <p><span class="vexpl"><span class="red"><strong><?=gettext("Note:");?><br />
-												</strong></span><?=gettext("The DNS servers entered in"); ?> <a href="system.php"><?=gettext("System: " .
+												</strong></span><?=gettext("The DNS servers entered in"); ?> <a href="system_general.php"><?=gettext("System: " .
 												"General setup"); ?></a> <?=gettext("(or the"); ?> <a href="services_dnsmasq.php"><?=gettext("DNS " .
 												"forwarder"); ?></a>, <?=gettext("if enabled)"); ?> </span><span class="vexpl"><?=gettext("will " .
 												"be assigned to clients by the DHCP server."); ?><br />

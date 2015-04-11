@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
@@ -207,7 +208,7 @@ function show_advanced_dns() {
 											" their hostname when requesting a DHCP lease will be registered".
 											" in the DNS forwarder, so that their name can be resolved.".
 											" You should also set the domain in %sSystem:".
-											" General setup%s to the proper value."),'<a href="system.php">','</a>')?></p>
+											" General setup%s to the proper value."),'<a href="system_general.php">','</a>')?></p>
 										</td>
 									</tr>
 									<tr>
@@ -218,7 +219,7 @@ function show_advanced_dns() {
 											</strong><?php printf(gettext("If this option is set, then DHCP static mappings will ".
 													"be registered in the DNS forwarder, so that their name can be ".
 													"resolved. You should also set the domain in %s".
-													"System: General setup%s to the proper value."),'<a href="system.php">','</a>');?></p>
+													"System: General setup%s to the proper value."),'<a href="system_general.php">','</a>');?></p>
 										</td>
 									</tr>
 									<tr>
@@ -338,8 +339,8 @@ function show_advanced_dns() {
 							" DNS server list to be overridden by DHCP/PPP on WAN&quot;".
 							" is checked. If you don't use that option (or if you use".
 							" a static IP address on WAN), you must manually specify at".
-							" least one DNS server on the %sSystem:".
-							"General setup%s page."),'<a href="system.php">','</a>','<a href="system.php">','</a>');?><br />
+							" least one DNS server on the %sSystem: General setup%s page."),
+							'<a href="system_general.php">','</a>','<a href="system_general.php">','</a>');?><br />
 							</span></p>
                             </div>
 
