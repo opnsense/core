@@ -63,7 +63,7 @@ if (count($wolcomputers) > 0) {
 		}
 		echo '<td valign="middle" class="list nowrap">';
 		/*if($is_active) { */
-			/* Will always show wake-up button even if pfsense thinks it is awake */
+			/* Will always show wake-up button even if opnsense thinks it is awake */
 		/* } else { */
 			echo "<a href='services_wol.php?mac={$wolent['mac']}&amp;if={$wolent['interface']}'> ";
 			echo "<span class='glyphicon glyphicon-flash' title='" . gettext("Wake Up") . "' border='0' alt='wol' ></span></a>\n";

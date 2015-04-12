@@ -227,7 +227,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
 function captiveportal_get_last_activity($ip, $mac = NULL) {
     global $cpzone;
 
-    $ipfwoutput = pfSense_ipfw_getTablestats($cpzone, 1, $ip, $mac);
+    $ipfwoutput = OPNsense_ipfw_getTablestats($cpzone, 1, $ip, $mac);
     /* Reading only from one of the tables is enough of approximation. */
     if (is_array($ipfwoutput)) {
         return $ipfwoutput['timestamp'];
@@ -1187,7 +1187,7 @@ function getVolume($ip, $mac = NULL) {
     // Initialize vars properly, since we don't want NULL vars
     $volume['input_pkts'] = $volume['input_bytes'] = $volume['output_pkts'] = $volume['output_bytes'] = 0 ;
 
-    $ipfw = pfSense_ipfw_getTablestats($cpzone, 1, $ip, $mac);
+    $ipfw = OPNsense_ipfw_getTablestats($cpzone, 1, $ip, $mac);
     if (is_array($ipfw)) {
         if ($reverse) {
             $volume['output_pkts'] = $ipfw['packets'];
@@ -1199,7 +1199,7 @@ function getVolume($ip, $mac = NULL) {
         }
     }
 
-    $ipfw = pfSense_ipfw_getTablestats($cpzone, 2, $ip);
+    $ipfw = OPNsense_ipfw_getTablestats($cpzone, 2, $ip);
     if (is_array($ipfw)) {
         if ($reverse) {
             $volume['input_pkts'] = $ipfw['packets'];

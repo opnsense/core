@@ -34,6 +34,6 @@ print_r($acc_list);
 //$config = \Core\Core\Config::getInstance();
 
 //$config->dump();
-//print_r($config->xpath('//pfsense/interfaces/*') );
+//print_r($config->xpath('//opnsense/interfaces/*') );
 
 //$rules= new \Core\Captiveportal\Rules();

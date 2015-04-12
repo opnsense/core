@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<pfsensewizard>
+<opnsensewizard>
 	<copyright><![CDATA[
 	/*
 		Copyright (C) Deciso B.V.
@@ -1631,4 +1631,4 @@
 		<stepsubmitphpaction>step8_stepsubmitphpaction();</stepsubmitphpaction>
 		<includefile>/usr/local/www/wizards/traffic_shaper_wizard_multi_all.inc</includefile>
 	</step>
-</pfsensewizard>
+</opnsensewizard>

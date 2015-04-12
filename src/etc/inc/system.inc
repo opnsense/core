@@ -1476,7 +1476,7 @@ function system_ntp_configure($start_ntpd = true)
 	unset($ts);
 
 	$ntpcfg .= "\n\n";
-	$ntpcfg .= "disable monitor\n"; //prevent NTP reflection attack, see https://forum.pfsense.org/index.php/topic,67189.msg389132.html#msg389132
+	$ntpcfg .= "disable monitor\n"; //prevent NTP reflection attack, see https://ics-cert.us-cert.gov/advisories/ICSA-14-051-04
 	if (!empty($config['ntpd']['clockstats']) || !empty($config['ntpd']['loopstats']) || !empty($config['ntpd']['peerstats'])) {
 		$ntpcfg .= "enable stats\n";
 		$ntpcfg .= 'statistics';

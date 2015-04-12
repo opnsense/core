@@ -31,7 +31,7 @@
 
 require_once('config.inc');
 require_once('certs.inc');
-require_once('pfsense-utils.inc');
+require_once('opnsense-utils.inc');
 require_once('auth.inc');
 require_once('util.inc');
 
@@ -63,7 +63,7 @@ $openvpn_verbosity_level = array(
  * a CA configuration parameter. In this mode,
  * clients don't send a certificate so there is
  * no need for a CA. If we require that admins
- * provide one in the pfSense UI due to a bogus
+ * provide one in the OPNsense UI due to a bogus
  * requirement imposed by OpenVPN, it could be
  * considered very confusing ( I know I was ).
  *

@@ -1458,7 +1458,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 	}
 
 	function openwindow(url) {
-		var oWin = window.open(url,"pfSensePop","width=620,height=400,top=150,left=150");
+		var oWin = window.open(url,"OPNsensePop","width=620,height=400,top=150,left=150");
 		if (oWin==null || typeof(oWin)=="undefined")
 			return false;
 		else
@@ -2022,7 +2022,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																Initial Interval: <input name="adv_dhcp_pt_initial_interval" type="text" class="form-control unknown" id="adv_dhcp_pt_initial_interval" size="2" value="<?=htmlspecialchars($pconfig['adv_dhcp_pt_initial_interval']);?>" onchange="customdhcpptcheckradiobuton(document.iform.adv_dhcp_pt_values, '');" />
 
 																&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-																<input name="adv_dhcp_pt_values" type="radio" value="pfSense"	id="customdhcpptpfsensedefaults"	onclick="customdhcpptsetvalues(this, iform);" />OPNsense Default &nbsp;
+																<input name="adv_dhcp_pt_values" type="radio" value="OPNsense"	id="customdhcpptopnsensedefaults"	onclick="customdhcpptsetvalues(this, iform);" />OPNsense Default &nbsp;
 																<input name="adv_dhcp_pt_values" type="radio" value="SavedCfg" checked="checked"	id="customdhcpptsavedcfg"		onclick="customdhcpptsetvalues(this, iform);" />Saved Cfg
 
 																<br />
@@ -2041,7 +2041,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																	function customdhcpptsetvalues(T, FORM) {
 																		// timeout, retry, select-timeout, reboot, backoff-cutoff, initial-interval
 																		if (T.value == "DHCP")		customdhcpptsetvaluesnow(T, FORM, "60", "300", "0", "10", "120", "10");
-																		if (T.value == "pfSense")	customdhcpptsetvaluesnow(T, FORM, "60", "15", "0", "", "", "1");
+																		if (T.value == "OPNsense")	customdhcpptsetvaluesnow(T, FORM, "60", "15", "0", "", "", "1");
 																		if (T.value == "SavedCfg")	customdhcpptsetvaluesnow(T, FORM, "<?=htmlspecialchars($pconfig['adv_dhcp_pt_timeout']);?>", "<?=htmlspecialchars($pconfig['adv_dhcp_pt_retry']);?>", "<?=htmlspecialchars($pconfig['adv_dhcp_pt_select_timeout']);?>", "<?=htmlspecialchars($pconfig['adv_dhcp_pt_reboot']);?>", "<?=htmlspecialchars($pconfig['adv_dhcp_pt_backoff_cutoff']);?>", "<?=htmlspecialchars($pconfig['adv_dhcp_pt_initial_interval']);?>");
 																		if (T.value == "Clear")		customdhcpptsetvaluesnow(T, FORM, "", "", "", "", "", "");
 																	}

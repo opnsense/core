@@ -16,7 +16,7 @@ $priv_list['page-status-carp']['match'][] = "carp_status.php*";
 
 $priv_list['page-diagnostics-crash-reporter'] = array();
 $priv_list['page-diagnostics-crash-reporter']['name'] = gettext("WebCfg - Crash reporter");
-$priv_list['page-diagnostics-crash-reporter']['descr'] = gettext("Uploads crash reports to pfSense and or deletes crash reports.");
+$priv_list['page-diagnostics-crash-reporter']['descr'] = gettext("Uploads crash reports to OPNsense and or deletes crash reports.");
 $priv_list['page-diagnostics-crash-reporter']['match'] = array();
 $priv_list['page-diagnostics-crash-reporter']['match'][] = "crash_reporter.php*";
 
@@ -1380,11 +1380,11 @@ $priv_list['page-vpn-vpnpptp-user-edit']['descr'] = gettext("Allow access to the
 $priv_list['page-vpn-vpnpptp-user-edit']['match'] = array();
 $priv_list['page-vpn-vpnpptp-user-edit']['match'][] = "vpn_pptp_users_edit.php*";
 
-$priv_list['page-pfsensewizardsubsystem'] = array();
-$priv_list['page-pfsensewizardsubsystem']['name'] = gettext("WebCfg - pfSense wizard subsystem page");
-$priv_list['page-pfsensewizardsubsystem']['descr'] = gettext("Allow access to the 'pfSense wizard subsystem' page.");
-$priv_list['page-pfsensewizardsubsystem']['match'] = array();
-$priv_list['page-pfsensewizardsubsystem']['match'][] = "wizard.php*";
+$priv_list['page-opnsensewizardsubsystem'] = array();
+$priv_list['page-opnsensewizardsubsystem']['name'] = gettext("WebCfg - OPNsense wizard subsystem page");
+$priv_list['page-opnsensewizardsubsystem']['descr'] = gettext("Allow access to the 'OPNsense wizard subsystem' page.");
+$priv_list['page-opnsensewizardsubsystem']['match'] = array();
+$priv_list['page-opnsensewizardsubsystem']['match'][] = "wizard.php*";
 
 $priv_list['page-xmlrpclibrary'] = array();
 $priv_list['page-xmlrpclibrary']['name'] = gettext("WebCfg - XMLRPC Library page");

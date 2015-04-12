@@ -1,7 +1,7 @@
 <?php
 /*
     unbound.inc
-    part of the pfSense project (https://www.pfsense.org)
+    orignally part of the OPNsense project (https://www.pfsense.org)
     Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
     All rights reserved.
 
@@ -26,9 +26,9 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 
-    pfSense_BUILDER_BINARIES:   /usr/sbin/unbound  /usr/sbin/unbound-anchor    /usr/sbin/unbound-checkconf
-    pfSense_BUILDER_BINARIES:   /usr/sbin/unbound-control    /usr/sbin/unbound-control-setup
-    pfSense_MODULE: unbound
+    OPNsense_BUILDER_BINARIES:   /usr/sbin/unbound  /usr/sbin/unbound-anchor    /usr/sbin/unbound-checkconf
+    OPNsense_BUILDER_BINARIES:   /usr/sbin/unbound-control    /usr/sbin/unbound-control-setup
+    OPNsense_MODULE: unbound
 */
 
 /* include all configuration functions */

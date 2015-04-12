@@ -66,8 +66,8 @@ PHPMODULES="$PHPMODULES sqlite3"
 PHPMODULES="$PHPMODULES radius"
 # SSH2
 PHPMODULES="$PHPMODULES ssh2"
-# pfSense extensions
-PHPMODULES="$PHPMODULES pfSense"
+# OPNsense extensions
+PHPMODULES="$PHPMODULES OPNsense"
 # json
 PHPMODULES="$PHPMODULES json"
 # bcmath

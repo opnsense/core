@@ -50,8 +50,8 @@ function get_pkg_interfaces_select_source($include_localhost=false) {
 }
 
 function gentitle_pkg($pgname) {
-	global $pfSense_config;
-	return $pfSense_config['system']['hostname'] . "." . $pfSense_config['system']['domain'] . " - " . $pgname;
+	global $OPNsense_config;
+	return $OPNsense_config['system']['hostname'] . "." . $OPNsense_config['system']['domain'] . " - " . $pgname;
 }
 
 function domTT_title($title_msg){
@@ -419,7 +419,7 @@ if ($pkg['tabs'] <> "") {
 		$addresswithport = getenv("HTTP_HOST");
 		$colonpos = strpos($addresswithport, ":");
 		if ($colonpos !== False) {
-			//my url is actually just the IP address of the pfsense box
+			//my url is actually just the IP address of the opnsense box
 			$myurl = substr($addresswithport, 0, $colonpos);
 		} else {
 			$myurl = $addresswithport;

@@ -197,7 +197,7 @@ if ($_POST) {
 include("head.inc");
 
 /* put your custom HTML head content here        */
-/* using some of the $pfSenseHead function calls */
+/* using some of the $OPNsenseHead function calls */
 $jscriptstr = <<<EOD
 <script type="text/javascript">
 //<![CDATA[

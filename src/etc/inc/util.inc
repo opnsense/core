@@ -869,10 +869,10 @@ function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "")
 	}
 	switch($mode) {
 	case "active":
-		$upints = pfSense_interface_listget(IFF_UP);
+		$upints = OPNsense_interface_listget(IFF_UP);
 		break;
 	case "media":
-		$intlist = pfSense_interface_listget();
+		$intlist = OPNsense_interface_listget();
 		$ifconfig = "";
 		exec("/sbin/ifconfig -a", $ifconfig);
 		$regexp = '/(' . implode('|', $intlist) . '):\s/';
@@ -883,7 +883,7 @@ function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "")
 		}
 		break;
 	default:
-		$upints = pfSense_interface_listget();
+		$upints = OPNsense_interface_listget();
 		break;
 	}
 	/* build interface list with netstat */

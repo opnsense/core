@@ -348,7 +348,7 @@ include("head.inc");
 										<br />
 										<strong><?=gettext("Maximum number of connections to hold in the firewall state table.");?></strong>
 										<br />
-										<span class="vexpl"><?=gettext("Note:  Leave this blank for the default.  On your system the default size is:");?> <?= pfsense_default_state_size() ?></span>
+										<span class="vexpl"><?=gettext("Note:  Leave this blank for the default.  On your system the default size is:");?> <?= opnsense_default_state_size() ?></span>
 									</td>
 								</tr>
 								<tr>
@@ -361,7 +361,7 @@ include("head.inc");
 										<span class="vexpl">
 											<?=gettext("Note:  Leave this blank for the default.");?>
 											<?php if (empty($pconfig['maximumtableentries'])): ?>
-												<?= gettext("On your system the default size is:");?> <?= pfsense_default_table_entries_size(); ?>
+												<?= gettext("On your system the default size is:");?> <?= opnsense_default_table_entries_size(); ?>
 											<?php endif; ?>
 										</span>
 									</td>
