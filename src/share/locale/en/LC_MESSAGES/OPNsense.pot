@@ -17086,10 +17086,18 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-msgid "Returns an array of known'         . ' signatures (an array of arrays) for the method name passed. If'
+#: src/etc/inc/xmlrpc_server.inc:66
+msgid ""
+"Returns an array of known"
+" signatures (an array of arrays) for the method name passed. If"
+" no signatures are known, returns a none-array (test for type !="
+" array to detect missing signature)"
 msgstr ""
 
-msgid "Returns help text if defined'         . ' for the method passed, otherwise returns an empty string"
+#: src/etc/inc/xmlrpc_server.inc:86
+msgid ""
+"Returns help text if defined"
+" for the method passed, otherwise returns an empty string"
 msgstr ""
 
 #: src/www/diag_traceroute.php:138
@@ -17244,7 +17252,13 @@ msgstr ""
 msgid "Rule(s)"
 msgstr ""
 
-msgid "Rules are evaluated on a first-match basis (i.e. " . 													"the action of the first rule to match a packet will be executed). " .
+#: src/www/firewall_rules.php:878
+msgid ""
+"Rules are evaluated on a first-match basis (i.e. "
+"the action of the first rule to match a packet will be executed). "
+"This means that if you use block rules, you'll have to pay attention "
+"to the rule order. Everything that isn't explicitly passed is blocked "
+"by default. "
 msgstr ""
 
 #: src/www/interfaces_groups_edit.php:327
@@ -17530,6 +17544,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: src/www/pkg.php:186
 msgid "Saving changes..."
 msgstr ""
 
@@ -17537,12 +17552,15 @@ msgstr ""
 msgid "Saving updated package information..."
 msgstr ""
 
+#: src/etc/inc/xmlrpc_client.inc:1593
 msgid "Scalar can have only one value"
 msgstr ""
 
+#: src/www/widgets/widgets/traffic_graphs.widget.php:137
 msgid "Scale follow"
 msgstr ""
 
+#: src/www/widgets/widgets/traffic_graphs.widget.php:132
 msgid "Scale up"
 msgstr ""
 
@@ -17861,9 +17879,15 @@ msgstr ""
 msgid "Sends and receives traffic only through the master port.  If " .
 msgstr ""
 
-msgid "Sends and receives traffic only through the master port.  If " . 						                  "the master port becomes unavailable, the next active port is " .
+#: src/www/interfaces_lagg_edit.php:189
+msgid ""
+"Sends and receives traffic only through the master port.  If "
+"the master port becomes unavailable, the next active port is "
+"used.  The first interface added is the master port; any "
+"interfaces added after that are used as failover devices."
 msgstr ""
 
+#: src/www/services_wol.php:49
 msgid "Sent magic packet to %1$s (%2$s)%3$s"
 msgstr ""
 
@@ -17871,6 +17895,10 @@ msgstr ""
 msgid "Sent magic packet to %s."
 msgstr ""
 
+#: src/www/firewall_rules.php:592
+#: src/www/firewall_schedule.php:31
+#: src/www/firewall_schedule_edit.php:53
+#: src/www/firewall_schedule_edit.php:205
 msgid "September"
 msgstr ""
 
@@ -18034,6 +18062,7 @@ msgstr ""
 msgid "Servers"
 msgstr ""
 
+#: src/etc/inc/filter_log.inc:265
 msgid "Service %1$s/%2$s: %3$s"
 msgstr ""
 
@@ -18143,7 +18172,8 @@ msgstr ""
 msgid "Session start"
 msgstr ""
 
-msgid "Session timed out for user '%1$s' from: %2$s"
+#: src/etc/inc/auth.inc:1401
+msgid "Session timed out for user '%1\$s' from: %2\$s"
 msgstr ""
 
 #: src/www/system_usermanager_settings.php:47
