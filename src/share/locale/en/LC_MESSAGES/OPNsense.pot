@@ -3343,7 +3343,11 @@ msgstr ""
 msgid "Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from."
 msgstr ""
 
-msgid "Automatically detect the point-to-point status on interface by " . 							     "checking the full duplex link status.  This is the default for " .
+#: src/www/interfaces_bridge_edit.php:553
+msgid ""
+"Automatically detect the point-to-point status on interface by "
+"checking the full duplex link status.  This is the default for "
+"interfaces added to the bridge." 
 msgstr ""
 
 #: src/www/vpn_openvpn_client.php:731
@@ -3452,7 +3456,14 @@ msgstr ""
 msgid "Backups are also nice."
 msgstr ""
 
-msgid "Balances outgoing traffic across the active ports based on " . 						                  "hashed protocol header information and accepts incoming " .
+#: src/www/interfaces_lagg_edit.php:209
+msgid "Balances outgoing traffic across the active ports based on "
+"hashed protocol header information and accepts incoming "
+"traffic from any active port.  This is a static setup and "
+"does not negotiate aggregation with the peer or exchange "
+"frames to monitor the link.  The hash includes the Ethernet "
+"source and destination address, and, if available, the VLAN "
+"tag, and the IP source and destination address"
 msgstr ""
 
 #: src/www/status_graph.php:264
@@ -3552,7 +3563,11 @@ msgstr ""
 msgid "Basic XMLRPC wrapper for configuring CARP interfaces."
 msgstr ""
 
-msgid "Basic XMLRPC wrapper for filter_configure. This method must be called with one paramater: a string containing the local system's password. This function returns true upon completion."
+#: src/www/xmlrpc.php:342
+msgid ""
+"Basic XMLRPC wrapper for filter_configure. This method must be called with one "
+"paramater: a string containing the local system's password. This function returns "
+"true upon completion."
 msgstr ""
 
 #: src/www/xmlrpc.php:448
@@ -3560,7 +3575,9 @@ msgid "Basic XMLRPC wrapper for rc.reboot."
 msgstr ""
 
 #: src/www/diag_logs_settings.php:287
-msgid "Be aware that increasing this value increases every log file size, so disk usage will increase significantly."
+msgid ""
+"Be aware that increasing this value increases every log file size, so disk usage will "
+"increase significantly."
 msgstr ""
 
 #: src/www/system_firmware_auto.php:103
@@ -3628,13 +3645,17 @@ msgstr ""
 msgid "Bogon Networks"
 msgstr ""
 
-msgid "Bogons are prefixes that should never appear in the Internet routing table, " . 													"and obviously should not appear as the source address in any packets you receive."
+#: src/www/interfaces.php:3306
+msgid ""
+"Bogons are prefixes that should never appear in the Internet routing table, "
+"and obviously should not appear as the source address in any packets you receive."
 msgstr ""
 
 #: src/www/services_dhcp.php:333
 msgid "Boolean type must be true, false, on, or off."
 msgstr ""
 
+#: src/www/services_dhcp.php:581
 msgid "Boolean"
 msgstr ""
 
@@ -3786,9 +3807,12 @@ msgstr ""
 msgid "By Source IP"
 msgstr ""
 
-msgid "By default DHCP leases are displayed in UTC time.  By checking this 													box DHCP lease time will be displayed in local time and set to time zone selected.  This will be used for all DHCP interfaces lease time."
+#: src/www/services_dhcp.php:995
+msgid ""
+"By default DHCP leases are displayed in UTC time.  By checking this 													box DHCP lease time will be displayed in local time and set to time zone selected.  This will be used for all DHCP interfaces lease time."
 msgstr ""
 
+#: src/www/services_dhcpv6.php:676
 msgid "By default DHCPv6 leases are displayed in UTC time.  By checking this 														box DHCPv6 lease time will be displayed in local time and set to time zone selected.  This will be used for all DHCPv6 interfaces lease time."
 msgstr ""
 
@@ -3796,29 +3820,47 @@ msgstr ""
 msgid "By default NTP will listen for all supported NMEA sentences. Here one or more sentences to listen for may be specified."
 msgstr ""
 
-msgid "By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. ". 									"Checking this box omits localhost from the list of DNS servers."
+#: src/www/system.php:401
+msgid ""
+"By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. "
+"Checking this box omits localhost from the list of DNS servers."
 msgstr ""
 
-msgid "By default schedules clear the states of existing connections when the expiration time has come. ". 										"This option overrides that behavior by not clearing states for existing connections."
+#: src/www/system_advanced_misc.php:451
+msgid ""
+"By default schedules clear the states of existing connections when the expiration time has come. ". 										"This option overrides that behavior by not clearing states for existing connections."
 msgstr ""
 
-msgid "By default, gateway monitoring does not log its error messages, ". 										"by toggling this setting the daemon would enable logging its messages to syslog."
+#: src/www/system_advanced_misc.php:481
+msgid ""
+"By default, gateway monitoring does not log its error messages, "
+"by toggling this setting the daemon would enable logging its messages to syslog."
 msgstr ""
 
-msgid "By default, if IPSec is enabled negating SPD are inserted to provide protection. " . 												"This behaviour can be changed by enabling this setting which will prevent installing these SPDs."
+#: src/www/vpn_ipsec_settings.php:167
+msgid ""
+"By default, if IPSec is enabled negating SPD are inserted to provide protection. "
+"This behaviour can be changed by enabling this setting which will prevent installing these SPDs."
 msgstr ""
 
 #: src/www/system_advanced_network.php:214
-msgid "By default, if a hostname resolves IPv6 and IPv4 addresses ".
+msgid ""
+"By default, if a hostname resolves IPv6 and IPv4 addresses "
+"IPv6 will be used, if you check this option, IPv4 will be "
+"used instead of IPv6."
 msgstr ""
 
-msgid "By default, if a hostname resolves IPv6 and IPv4 addresses ". 										"IPv6 will be used, if you check this option, IPv4 will be " .
+#: src/www/vpn_ipsec_settings.php:177
+msgid ""
+"By default, if several SAs match, the newest one is "
+"preferred if it's at least 30 seconds old. Select this "
+"option to always prefer old SAs over new ones."
 msgstr ""
 
-msgid "By default, if several SAs match, the newest one is " . 												"preferred if it's at least 30 seconds old. Select this " .
-msgstr ""
-
-msgid "By default, when a rule has a specific gateway set, and this gateway is down, ". 										"rule is created and traffic is sent to default gateway.This option overrides that behavior ".
+#: src/www/system_advanced_misc.php:471
+msgid ""
+"By default, when a rule has a specific gateway set, and this gateway is down, "
+"rule is created and traffic is sent to default gateway.This option overrides that behavior "
 msgstr ""
 
 #: src/www/diag_routes.php:199
@@ -3829,9 +3871,11 @@ msgstr ""
 msgid "Bypass firewall rules for traffic on the same interface"
 msgstr ""
 
+#: src/www/widgets/widgets/interface_statistics.widget.php:88
 msgid "Bytes In"
 msgstr ""
 
+#: src/www/widgets/widgets/interface_statistics.widget.php:91
 msgid "Bytes Out"
 msgstr ""
 
@@ -4284,6 +4328,7 @@ msgstr ""
 msgid "Changing any settings on this page will disconnect all clients! Don't forget to enable the DHCP server on your captive portal interface! Make sure that the default/maximum DHCP lease time is higher than the timeout entered on this page. Also, the DNS forwarder needs to be enabled for DNS lookups by unauthenticated clients to work."
 msgstr ""
 
+#: src/etc/inc/pkg-utils.inc:1513
 msgid "Changing file mode to %1$s for %2$s%3$s%4$s"
 msgstr ""
 
@@ -4328,6 +4373,7 @@ msgstr ""
 msgid "Checking ..."
 msgstr ""
 
+#: src/etc/inc/filter.inc:3576
 msgid "Checking for %1$s PF hooks in package %2$s"
 msgstr ""
 
@@ -4363,7 +4409,10 @@ msgstr ""
 msgid "Choose a Certificate to Revoke"
 msgstr ""
 
-msgid "Choose a Layer7 container to apply application protocol inspection rules. " . 														"These are valid for TCP and UDP protocols only."
+#: src/www/firewall_rules_edit.php:1676
+msgid ""
+"Choose a Layer7 container to apply application protocol inspection rules. "
+"These are valid for TCP and UDP protocols only."
 msgstr ""
 
 #: src/www/system.php:463
