@@ -66,7 +66,7 @@ function setup_gateways_monitor() {
 	$apinger_default = return_apinger_defaults();
 	$apingerconfig = <<<EOD
 
-# pfSense apinger configuration file. Automatically Generated!
+# OPNsense apinger configuration file. Automatically Generated!
 
 {$apinger_debug}
 
@@ -329,9 +329,9 @@ EOD;
 		$apingerconfig .= $alarmscfg;
 		$apingerconfig .= $apingercfg;
 
-		# Create gateway quality RRD with settings more suitable for pfSense graph set,
+		# Create gateway quality RRD with settings more suitable for OPNsense graph set,
 		# since apinger uses default step (300; 5 minutes) and other settings that don't
-		# match the pfSense gateway quality graph set.
+		# match the OPNsense gateway quality graph set.
 		create_gateway_quality_rrd("{$g['vardb_path']}/rrd/{$gateway['name']}-quality.rrd");
 	}
 	@file_put_contents("{$g['varetc_path']}/apinger.conf", $apingerconfig);
@@ -729,7 +729,7 @@ function fixup_default_gateway($ipprotocol, $gateways_status, $gateways_arr) {
 	global $config, $g;
 	/*
 	 * NOTE: The code below is meant to replace the default gateway when it goes down.
-	 *	This facilitates services running on pfSense itself and are not handled by a PBR to continue working.
+	 *	This facilitates services running on OPNsense itself and are not handled by a PBR to continue working.
 	 */
 	$upgw = "";
 	$dfltgwdown = false;

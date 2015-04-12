@@ -55,7 +55,7 @@ if ($_GET['act'] == "del") {
 		$input_errors[] = gettext("This VLAN cannot be deleted because it is still being used as an interface.");
 	} else {
 		if (does_interface_exist($a_vlans[$_GET['id']]['vlanif']))
-			pfSense_interface_destroy($a_vlans[$_GET['id']]['vlanif']);
+			OPNsense_interface_destroy($a_vlans[$_GET['id']]['vlanif']);
 		unset($a_vlans[$_GET['id']]);
 
 		write_config();

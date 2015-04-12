@@ -124,7 +124,7 @@ function enable_hardware_offloading($interface) {
 	$supported_ints = array('fxp');
 	if (in_array($int_family, $supported_ints)) {
 		if(does_interface_exist($int))
-			pfSense_interface_flags($int, IFF_LINK0);
+			OPNsense_interface_flags($int, IFF_LINK0);
 	}
 
 	return;
@@ -395,8 +395,8 @@ function restore_config_section($section_name, $new_contents)
 	fclose($fout);
 
 	$xml = parse_xml_config($tmpxml, null);
-	if ($xml['pfsense']) {
-		$xml = $xml['pfsense'];
+	if ($xml['OPNsense']) {
+		$xml = $xml['OPNsense'];
 	} elseif ($xml['m0n0wall']) {
 		$xml = $xml['m0n0wall'];
 	}
@@ -937,7 +937,7 @@ function get_interface_info($ifdescr) {
 	$ifinfo['if'] = get_real_interface($ifdescr);
 
 	$chkif = $ifinfo['if'];
-	$ifinfotmp = pfSense_get_interface_addresses($chkif);
+	$ifinfotmp = OPNsense_get_interface_addresses($chkif);
 	$ifinfo['status'] = $ifinfotmp['status'];
 	if (empty($ifinfo['status']))
 		$ifinfo['status'] = "down";
@@ -949,7 +949,7 @@ function get_interface_info($ifdescr) {
 	$ifinfo['subnetv6'] = get_interface_subnetv6($ifdescr);
 	if (isset($ifinfotmp['link0']))
 		$link0 = "down";
-	$ifinfotmp = pfSense_get_interface_stats($chkif);
+	$ifinfotmp = OPNsense_get_interface_stats($chkif);
 	// $ifinfo['inpkts'] = $ifinfotmp['inpkts'];
 	// $ifinfo['outpkts'] = $ifinfotmp['outpkts'];
 	$ifinfo['inerrs'] = $ifinfotmp['inerrs'];
@@ -1231,7 +1231,7 @@ function is_fqdn($fqdn) {
 	return($hostname);
 }
 
-function pfsense_default_state_size() {
+function opnsense_default_state_size() {
 	/* get system memory amount */
 	$memory = get_memory();
 	$physmem = $memory[0];
@@ -1240,7 +1240,7 @@ function pfsense_default_state_size() {
 	return $max_states;
 }
 
-function pfsense_default_table_entries_size() {
+function opnsense_default_table_entries_size() {
 	$current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
 	return $current;
 }
@@ -1640,9 +1640,9 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
 
 
 /* This xml 2 array function is courtesy of the php.net comment section on xml_parse.
- * it is roughly 4 times faster then our existing pfSense parser but due to the large
+ * it is roughly 4 times faster then our existing OPNsense parser but due to the large
  * size of the RRD xml dumps this is required.
- * The reason we do not use it for pfSense is that it does not know about array fields
+ * The reason we do not use it for OPNsense is that it does not know about array fields
  * which causes it to fail on array fields with single items. Possible Todo?
  */
 function xml2array($contents, $get_attributes = 1, $priority = 'tag')

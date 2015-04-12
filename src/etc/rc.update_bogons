@@ -6,7 +6,7 @@
 
 sys.exit(0)
 # Update bogons file
-# Part of the pfSense project
+# Originally part of the pfSense project
 # https://www.pfsense.org
 
 # Global variables

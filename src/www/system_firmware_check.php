@@ -29,7 +29,7 @@
 */
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("opnsense-utils.inc");
 require_once("script/load_phalcon.php");
 
 /* Setup variables for upgrade procedure */

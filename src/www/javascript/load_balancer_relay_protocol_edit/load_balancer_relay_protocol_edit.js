@@ -1,6 +1,6 @@
 /*
         pool.js
-        part of pfSense (https://www.pfsense.org/)
+        originally part of pfSense (https://www.pfsense.org/)
 
         Copyright (C) 2005-2008 Bill Marquette <bill.marquette@gmail.com>.
         All rights reserved.

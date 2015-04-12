@@ -892,7 +892,7 @@ function enable_rrd_graphing() {
 
 }
 
-# Create gateway quality RRD with settings suitable for pfSense graph set.
+# Create gateway quality RRD with settings suitable for OPNsense graph set.
 function create_gateway_quality_rrd($rrd_file) {
 	global $g;
 	$rrdinterval = 60;

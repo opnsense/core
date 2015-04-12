@@ -143,7 +143,7 @@ include("head.inc");
 								</table>
 							</div>
 
-							<p><span class="vexpl"><a href="https://doc.pfsense.org/index.php/What_are_TCP_Flags%3F"><?=gettext("TCP Flags"); ?></a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, C - CWR</span></p></div>
+							<p><span class="vexpl"><a href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol"><?=gettext("TCP Flags"); ?></a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, C - CWR</span></p></div>
 				    </div>
 			</section>
 			</div>

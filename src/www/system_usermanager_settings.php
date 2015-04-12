@@ -110,9 +110,9 @@ include("head.inc");
 							$tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
 							display_top_tabs($tab_array);
 
-							/* Default to pfsense backend type if none is defined */
+							/* Default to opnsense backend type if none is defined */
 							if(!$pconfig['backend'])
-								$pconfig['backend'] = "pfsense";
+								$pconfig['backend'] = "opnsense";
 						?>
 
 						<div class="tab-content content-box col-xs-12 table-responsive">

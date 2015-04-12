@@ -48,7 +48,7 @@
 */
 
 /*
-    pfSense_MODULE:    auth
+    OPNsense_MODULE:    auth
 */
 
 require_once("PEAR.inc");

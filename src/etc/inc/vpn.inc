@@ -908,9 +908,9 @@ function vpn_netgraph_support() {
 	foreach ($iflist as $iface) {
 		$realif = get_real_interface($iface);
 		/* Get support for netgraph(4) from the nic */
-		$ifinfo = pfSense_get_interface_addresses($realif);
+		$ifinfo = OPNsense_get_interface_addresses($realif);
 		if (!empty($ifinfo) && in_array($ifinfo['iftype'], array("ether", "vlan", "bridge")))
-			pfSense_ngctl_attach(".", $realif);
+			OPNsense_ngctl_attach(".", $realif);
 	}
 }
 
@@ -1344,7 +1344,7 @@ EOD;
 				killbypid("{$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
 
 			/* Get support for netgraph(4) from the nic */
-			pfSense_ngctl_attach(".", $pppoe_interface);
+			OPNsense_ngctl_attach(".", $pppoe_interface);
 			/* fire up mpd */
 			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn -p {$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid -s poes poes");
 

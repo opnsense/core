@@ -111,7 +111,7 @@ require_once("captiveportal.inc");
 echo ".";
 require_once("rrd.inc");
 echo ".";
-require_once("pfsense-utils.inc");
+require_once("opnsense-utils.inc");
 echo ".";
 echo " done.\n";
 

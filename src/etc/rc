@@ -202,7 +202,7 @@ DISABLESYSLOGCLOG=`/usr/bin/grep -c disablesyslogclog /conf/config.xml`
 ENABLEFIFOLOG=`/usr/bin/grep -c usefifolog /conf/config.xml`
 LOG_FILES="system filter dhcpd vpn pptps poes l2tps openvpn portalauth ipsec ppp relayd wireless lighttpd ntpd gateways resolver routing"
 
-DEFAULT_LOG_FILE_SIZE=`/usr/local/bin/xmllint --xpath 'string(//pfsense/syslog/logfilesize)' /conf/config.xml`
+DEFAULT_LOG_FILE_SIZE=`/usr/local/bin/xmllint --xpath 'string(//opnsense/syslog/logfilesize)' /conf/config.xml`
 if [ ! ${DEFAULT_LOG_FILE_SIZE} ]; then
 	DEFAULT_LOG_FILE_SIZE=511488
 fi

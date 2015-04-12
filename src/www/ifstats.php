@@ -35,7 +35,7 @@
 	if(!$realif)
 		$realif = $if; // Need for IPSec case interface.
 
-	$ifinfo = pfSense_get_interface_stats($realif);
+	$ifinfo = OPNsense_get_interface_stats($realif);
 
 	$temp = gettimeofday();
 	$timing = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;

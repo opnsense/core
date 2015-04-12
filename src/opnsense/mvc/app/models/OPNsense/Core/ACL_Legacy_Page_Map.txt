@@ -226,6 +226,6 @@ page-services-pppoeserver-edit=vpn_pppoe_edit.php*
 page-vpn-vpnpptp=vpn_pptp.php*
 page-vpn-vpnpptp-users=vpn_pptp_users.php*
 page-vpn-vpnpptp-user-edit=vpn_pptp_users_edit.php*
-page-pfsensewizardsubsystem=wizard.php*
+page-opnsensewizardsubsystem=wizard.php*
 page-xmlrpclibrary=xmlrpc.php*
 page-firewall-easyrule=easyrule.php*

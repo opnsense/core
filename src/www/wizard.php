@@ -60,7 +60,7 @@ if(empty($xml)) {
 	if (file_exists("/usr/local/www/wizards/{$xml}")) {
 		global $listtags ;
 		$listtags = array_flip(array('build_port_path', 'depends_on_package', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'template', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
-		$pkg = parse_xml_config_raw('/usr/local/www/wizards/' . $xml, 'pfsensewizard', false);
+		$pkg = parse_xml_config_raw('/usr/local/www/wizards/' . $xml, 'opnsensewizard', false);
 	} else {
 		print_info_box_np(sprintf(gettext("ERROR:  Could not open %s."), $xml));
 		die;
@@ -72,8 +72,8 @@ if (!is_array($pkg)) {
 	die;
 }
 
-$title       = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$stepid]['title']);
-$description = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$stepid]['description']);
+$title       = preg_replace("/OPNsense/i", $g['product_name'], $pkg['step'][$stepid]['title']);
+$description = preg_replace("/OPNsense/i", $g['product_name'], $pkg['step'][$stepid]['description']);
 $totalsteps  = $pkg['totalsteps'];
 
 if ($pkg['includefile'])
@@ -153,8 +153,8 @@ function update_config_field($field, $updatetext, $unset, $arraynum, $field_type
 	eval($text);
 }
 
-$title       = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$stepid]['title']);
-$description = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$stepid]['description']);
+$title       = preg_replace("/OPNsense/i", $g['product_name'], $pkg['step'][$stepid]['title']);
+$description = preg_replace("/OPNsense/i", $g['product_name'], $pkg['step'][$stepid]['description']);
 
 // handle before form display event.
 do {

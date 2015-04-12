@@ -7,7 +7,7 @@
  */
 
 /*
-	pfSense_MODULE:	notifications
+	OPNsense_MODULE:	notifications
 */
 
 class smtp_class

@@ -100,9 +100,9 @@ if ($_POST) {
 				if (!empty($a_vlans[$id]['vlanif'])) {
 					$confif = convert_real_interface_to_friendly_interface_name($vlan['vlanif']);
 					// Destroy previous vlan
-					pfSense_interface_destroy($a_vlans[$id]['vlanif']);
+					OPNsense_interface_destroy($a_vlans[$id]['vlanif']);
 				} else {
-					pfSense_interface_destroy("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
+					OPNsense_interface_destroy("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
 					$confif = convert_real_interface_to_friendly_interface_name("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
 				}
 				if ($confif <> "")
