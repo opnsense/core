@@ -46,9 +46,14 @@ if [ -z "$pkg_running" ]; then
 		/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE}
 		# if we can update base, we'll do that as well
 		if opnsense-update -c; then
-			if opnsense-update >> ${PKG_PROGRESS_FILE}; then
-				REBOOT=1
-			fi
+			echo "!!!!!!!!!!!! ATTENTION !!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
+			echo "A kernel/base upgrade is required." >> ${PKG_PROGRESS_FILE}
+			echo "Please trigger a firmware upgrade" >> ${PKG_PROGRESS_FILE}
+			echo "via root console menu option '12'." >> ${PKG_PROGRESS_FILE}
+			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
+			#if opnsense-update >> ${PKG_PROGRESS_FILE}; then
+			#	REBOOT=1
+			#fi
 		fi
 	elif [ "$package" == "pkg" ]; then
 		pkg upgrade -y $package >> ${PKG_PROGRESS_FILE}
