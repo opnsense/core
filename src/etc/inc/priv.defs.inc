@@ -458,12 +458,6 @@ $priv_list['page-diagnostics-haltsystem']['descr'] = gettext("Allow access to th
 $priv_list['page-diagnostics-haltsystem']['match'] = array();
 $priv_list['page-diagnostics-haltsystem']['match'][] = "diag_halt.php*";
 
-$priv_list['page-requiredforjavascript'] = array();
-$priv_list['page-requiredforjavascript']['name'] = gettext("WebCfg - Required for javascript page");
-$priv_list['page-requiredforjavascript']['descr'] = gettext("Allow access to the 'Required for javascript' page.");
-$priv_list['page-requiredforjavascript']['match'] = array();
-$priv_list['page-requiredforjavascript']['match'][] = "headjs.php*";
-
 $priv_list['page-xmlrpcinterfacestats'] = array();
 $priv_list['page-xmlrpcinterfacestats']['name'] = gettext("WebCfg - XMLRPC Interface Stats page");
 $priv_list['page-xmlrpcinterfacestats']['descr'] = gettext("Allow access to the 'XMLRPC Interface Stats' page.");

@@ -74,7 +74,6 @@ page-getstats=getstats.php*
 page-diagnostics-interfacetraffic=graph.php*
 page-diagnostics-cpuutilization=graph_cpu.php*
 page-diagnostics-haltsystem=diag_halt.php*
-page-requiredforjavascript=headjs.php*
 page-xmlrpcinterfacestats=ifstats.php*
 page-system-login/logout=index.php*
 page-interfaces=interfaces.php*
