@@ -4473,7 +4473,10 @@ msgstr ""
 msgid "Choose what to do with packets that match the criteria specified below."
 msgstr ""
 
-msgid "Choose which IP protocol " . 					                    "this rule should match."
+#: src/www/firewall_nat_edit.php:544
+msgid ""
+"Choose which IP protocol "
+"this rule should match."
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:976
@@ -4554,10 +4557,12 @@ msgstr ""
 msgid "Click "
 msgstr ""
 
-msgid "Click "Enable firmware upload" to begin."
+#: src/www/system_firmware.php:236
+msgid "Click \"Enable firmware upload\" to begin."
 msgstr ""
 
-msgid "Click "Upgrade firmware" to start the upgrade process."
+#: src/www/system_firmware.php:257
+msgid "Click \"Upgrade firmware\" to start the upgrade process."
 msgstr ""
 
 #: src/www/interfaces.php:2613
@@ -4573,17 +4578,22 @@ msgstr ""
 msgid "Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday."
 msgstr ""
 
-msgid "Click on ".ucfirst($pkg['name'])." version to check its change log."
+#: src/www/pkg_mgr_installed.php:203
+msgid ""
+"Click on \".ucfirst($pkg['name']).\" version to check its change log."
 msgstr ""
 
 #: src/www/pkg_mgr.php:245
 msgid "Click on package name to access its website."
 msgstr ""
 
-msgid "Click package info for more details about ".ucfirst($index['name'])." package."
+#: src/www/pkg_mgr.php:270
+msgid ""
+"Click package info for more details about \".ucfirst($index['name']).\" package."
 msgstr ""
 
-msgid "Click package info for more details about ".ucfirst($pkg['name'])." package."
+#: src/www/pkg_mgr_installed.php:205
+msgid "Click package info for more details about \".ucfirst($pkg['name']).\" package."
 msgstr ""
 
 #: src/www/firewall_rules.php:806
@@ -4904,7 +4914,8 @@ msgstr ""
 msgid "Configuring loopback interface..."
 msgstr ""
 
-msgid "Configuring package components...n"
+#: src/etc/inc/pkg-utils.inc:738
+msgid "Configuring package components...\n"
 msgstr ""
 
 #: src/www/diag_confbak.php:177
@@ -4936,10 +4947,12 @@ msgstr ""
 msgid "Connected Since"
 msgstr ""
 
-msgid "Connected to SMTP server "%s"."
+#: src/etc/inc/smtp.inc:464
+msgid "Connected to SMTP server \"%s\"."
 msgstr ""
 
-msgid "Connecting to host address "%1$s" port %2$s..."
+#: src/etc/inc/smtp.inc:240
+msgid "Connecting to host address \"%1$s\" port %2$s..."
 msgstr ""
 
 #: src/www/system_firmware_check.php:78
@@ -4959,10 +4972,16 @@ msgstr ""
 msgid "Connection failed (Refused/Timeout)"
 msgstr ""
 
-msgid "Connection to RPC server                               %1$s:%2$s failed. %3$s"
+#: src/etc/inc/xmlrpc_client.inc:957
+msgid ""
+"'Connection to RPC server"
+"                              %1$s:%2$s failed. %3$s"
 msgstr ""
 
-msgid "Connection to proxy server                               %1$s:%2$s failed. %3$s"
+#: src/etc/inc/xmlrpc_client.inc:951
+msgid ""
+"Connection to proxy server"
+"                              %1$s:%2$s failed. %3$s"
 msgstr ""
 
 #: src/www/wizards/traffic_shaper_wizard_dedicated.inc:1465
@@ -5041,7 +5060,11 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-msgid "Continuously attempt to resolve the server host " . 							"name. Useful when communicating with a server " .
+#: src/www/vpn_openvpn_client.php:656
+msgid ""
+"Continuously attempt to resolve the server host "
+"name. Useful when communicating with a server "
+"that is not permanently connected to the Internet"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:1396
@@ -5099,6 +5122,7 @@ msgstr ""
 msgid "Could not find settings for %s%s"
 msgstr ""
 
+#: src/etc/inc/interfaces.inc:1560
 msgid "Could not get a PPTP/L2TP Remote IP address from %1$s for %2$s in interfaces_ppps_configure."
 msgstr ""
 
@@ -5156,6 +5180,8 @@ msgstr ""
 msgid "Could not send the authentication step message"
 msgstr ""
 
+#: src/etc/inc/notices.inc:326
+#: src/etc/inc/notices.inc:327
 msgid "Could not send the message to %1$s -- Error: %2$s"
 msgstr ""
 
@@ -5207,7 +5233,8 @@ msgstr ""
 msgid "Create a Certificate Signing Request"
 msgstr ""
 
-msgid "Create an ARP Table Static Entry for this MAC &amp; IP Address pair. ". 							                    ""
+#: src/www/services_dhcp_edit.php:427
+msgid "Create an ARP Table Static Entry for this MAC &amp; IP Address pair. "
 msgstr ""
 
 #: src/www/system_camanager.php:36
@@ -5246,7 +5273,13 @@ msgstr ""
 msgid "Create or Import"
 msgstr ""
 
-msgid "Create, generate and activate Rolls with Vouchers that allow access through the " . 													"captive portal for the configured time. Once a voucher is activated, " .
+#: src/www/services_captiveportal_vouchers.php:514
+msgid ""
+"Create, generate and activate Rolls with Vouchers that allow access through the "
+"captive portal for the configured time. Once a voucher is activated, "
+"its clock is started and runs uninterrupted until it expires. During that "
+"time, the voucher can be re-used from the same or a different computer. If the voucher "
+"is used again from another computer, the previous session is stopped."
 msgstr ""
 
 #: src/www/interfaces_wireless_edit.php:121
@@ -5283,6 +5316,7 @@ msgstr ""
 msgid "Creating aliases"
 msgstr ""
 
+#: src/etc/inc/filter.inc:1729
 msgid "Creating automatic outbound rules"
 msgstr ""
 
@@ -5449,6 +5483,7 @@ msgstr ""
 msgid "DHCP client configuration"
 msgstr ""
 
+#: src/etc/inc/services.inc:352
 msgid "DHCP leases restore failed exited with %1$s, the error is: %2$s%3$s"
 msgstr ""
 
@@ -5472,7 +5507,14 @@ msgstr ""
 msgid "DHCP"
 msgstr ""
 
-msgid "DHCP6 client configuration &nbsp; &nbsp; " . 															' <input name="adv_dhcp6_config_advanced" type="checkbox" id="adv_dhcp6_config_advanced" value="" onclick="show_adv_dhcp6_config(this)" /> ' .
+#: TODO this one is a total disaster,
+#: src/www/interfaces.php:2150
+msgid ""
+"DHCP6 client configuration &nbsp; &nbsp; "
+"<input name=\"adv_dhcp6_config_advanced\" type=\"checkbox\" id=\"adv_dhcp6_config_advanced\" value=\"\" onclick=\"show_adv_dhcp6_config(this)\" /> "
+" Advanced &nbsp; &nbsp; "
+" <input name="adv_dhcp6_config_file_override" type="checkbox" id="adv_dhcp6_config_file_override" value="" onclick="show_adv_dhcp6_config(this)" /> "
+" Config File Override &nbsp; &nbsp; "
 msgstr ""
 
 #: src/www/interfaces.php:1341
@@ -5534,10 +5576,11 @@ msgstr ""
 msgid "DNS " .
 msgstr ""
 
-msgid "DNS " . 												"forwarder"
-msgstr ""
-
-msgid "DNS " . 											"forwarder"
+#: src/www/services_dhcp.php:1191
+#: src/www/services_dhcpv6.php:831
+msgid ""
+"DNS "
+"forwarder"
 msgstr ""
 
 #: src/www/vpn_ipsec_mobile.php:486
@@ -5609,6 +5652,7 @@ msgstr ""
 msgid "DNS"
 msgstr ""
 
+#: src/etc/inc/pfsense-utils.inc:1463
 msgid "DNSCACHE: Found old IP %1$s and new IP %2$s"
 msgstr ""
 
@@ -5624,7 +5668,10 @@ msgstr ""
 msgid "DNSSEC"
 msgstr ""
 
-msgid "DO NOT abort the firmware upgrade once it " . 											"has started. The firewall will reboot automatically after " .
+#: src/www/system_firmware.php:274
+msgid ""
+"DO NOT abort the firmware upgrade once it "
+"has started. The firewall will reboot automatically after "
 msgstr ""
 
 #: src/www/services_dhcpv6_edit.php:100
@@ -5681,6 +5728,8 @@ msgstr ""
 msgid "Debug info range"
 msgstr ""
 
+#: src/www/javascript/datepicker/js/datepicker.js:74
+#: src/www/javascript/jquery/jquery-ui-1.11.1.min.js:6
 msgid "December"
 msgstr ""
 
@@ -5772,7 +5821,11 @@ msgstr ""
 msgid "Defined by"
 msgstr ""
 
-msgid "Defines the TTL threshold for  the  network  interface.  Packets". 								             " with  a lower TTL than the threshold value will be ignored. This".
+#: src/www/services_igmpproxy_edit.php:211
+msgid ""
+"Defines the TTL threshold for  the  network  interface.  Packets"
+" with  a lower TTL than the threshold value will be ignored. This"
+" setting is optional, and by default the threshold is 1."
 msgstr ""
 
 #: src/www/services_captiveportal_vouchers_edit.php:193
@@ -5841,6 +5894,7 @@ msgstr ""
 msgid "Deleted IPsec Pre-Shared Key"
 msgstr ""
 
+#: src/www/diag_confbak.php:58
 msgid "Deleted backup with timestamp %1$s and description "%2$s"."
 msgstr ""
 
@@ -6597,7 +6651,10 @@ msgstr ""
 msgid "Distinguished name"
 msgstr ""
 
-msgid "Distributes outgoing traffic using a round-robin scheduler " . 						                  "through all active ports and accepts incoming traffic from " .
+#: src/www/interfaces_lagg_edit.php:217
+msgid "" 
+"Distributes outgoing traffic using a round-robin scheduler "
+"through all active ports and accepts incoming traffic from "
 msgstr ""
 
 #: src/www/interfaces.php:2913
@@ -6865,6 +6922,7 @@ msgstr ""
 msgid "Do you really want to delete this rule?"
 msgstr ""
 
+#: src/www/firewall_schedule.php:227
 msgid "Do you really want to delete this schedule?"
 msgstr ""
 
