@@ -1,14 +1,4 @@
 <?php
-/*
- * smtp.php
- *
- * @(#) $Header$
- *
- */
-
-/*
-	pfSense_MODULE:	notifications
-*/
 
 class smtp_class
 {

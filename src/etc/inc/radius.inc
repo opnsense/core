@@ -1,9 +1,7 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
-/*
-    $Id$
 
-    Copyright (c) 2003, Michael Bretterklieber <michael@bretterklieber.com>
+/*
+    Copyright (c) 2003 Michael Bretterklieber <michael@bretterklieber.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -32,23 +30,19 @@
     This code cannot simply be copied and put under the GNU Public License or
     any other GPL-like (LGPL, GPL2) License.
 
-        This version of RADIUS.php has been modified by
-        Jonathan De Graeve <m0n0wall@esstec.be> to integrate with M0n0wall <http://www.m0n0.ch/wall>
+    This version of RADIUS.php has been modified by
+    Jonathan De Graeve <m0n0wall@esstec.be> to integrate with M0n0wall <http://www.m0n0.ch/wall>
 
-        Changes made include:
-        * StandardAttributes for M0n0wall use
-        * Removed internal Session-Id creation
-        * Adding of ReplyMessage to getAttributes()
-        * Adding of listAttributes()
-        * Adding of VENDOR Bay Networks (Nortel)
-        * Adding of VENDOR Nomadix
-        * Adding of VENDOR WISPr (Wi-Fi Alliance)
-        * Adding of VENDOR ChilliSpot (bandwidth-attributes only)
+    Changes made include:
 
-*/
-
-/*
-    pfSense_MODULE:    auth
+    * StandardAttributes for M0n0wall use
+    * Removed internal Session-Id creation
+    * Adding of ReplyMessage to getAttributes()
+    * Adding of listAttributes()
+    * Adding of VENDOR Bay Networks (Nortel)
+    * Adding of VENDOR Nomadix
+    * Adding of VENDOR WISPr (Wi-Fi Alliance)
+    * Adding of VENDOR ChilliSpot (bandwidth-attributes only)
 */
 
 require_once("PEAR.inc");
