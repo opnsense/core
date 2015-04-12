@@ -50,7 +50,7 @@ function parse_config()
 		if (count($backups) > 0) {
 			// load last backup
 			log_error(gettext("No (valid) config.xml found, attempting last known config restore."));
-			file_notice("config.xml", gettext("No (valid) config.xml found, attempting last known config restore."), "pfSenseConfigurator", "");
+			file_notice("config.xml", gettext("No (valid) config.xml found, attempting last known config restore."), "OPNsenseConfigurator", "");
 			$cnf->restoreBackup($backups[0]);
 		} else {
 			// we don't have backups, try to load the default

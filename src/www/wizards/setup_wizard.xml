@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<pfsensewizard>
+<opnsensewizard>
 <copyright>
 /*
 	Copyright (C) 2014 Deciso B.V.
@@ -645,4 +645,4 @@
 	]]>
 	</description>
 </step>
-</pfsensewizard>
+</opnsensewizard>

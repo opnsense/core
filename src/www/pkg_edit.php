@@ -415,7 +415,7 @@ if ($pkg['tabs'] <> "") {
 		$addresswithport = getenv("HTTP_HOST");
 		$colonpos = strpos($addresswithport, ":");
 		if ($colonpos !== False) {
-			//my url is actually just the IP address of the pfsense box
+			//my url is actually just the IP address of the opnsense box
 			$myurl = substr($addresswithport, 0, $colonpos);
 		} else {
 			$myurl = $addresswithport;

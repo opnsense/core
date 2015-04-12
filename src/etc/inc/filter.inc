@@ -240,7 +240,7 @@ function filter_configure_sync($delete_states_if_needed = true)
 		$limitrules .= "set limit states {$config['system']['maximumstates']}\n";
 		$limitrules .= "set limit src-nodes {$config['system']['maximumstates']}\n";
 	} else {
-		$max_states = pfsense_default_state_size();
+		$max_states = default_state_size();
 		$limitrules .= "set limit states {$max_states}\n";
 		$limitrules .= "set limit src-nodes {$max_states}\n";
 	}

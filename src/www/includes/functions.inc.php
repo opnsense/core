@@ -137,7 +137,7 @@ function get_pfstate($percent=false) {
 	if (isset($config['system']['maximumstates']) and $config['system']['maximumstates'] > 0)
 		$maxstates="{$config['system']['maximumstates']}";
 	else
-		$maxstates=pfsense_default_state_size();
+		$maxstates=default_state_size();
 	$curentries = `/sbin/pfctl -si |grep current`;
 	if (preg_match("/([0-9]+)/", $curentries, $matches)) {
 		$curentries = $matches[1];

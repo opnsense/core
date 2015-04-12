@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<pfsensewizard>
+<opnsensewizard>
 <copyright>
 /*
 	Copyright (C) 2014 Deciso B.V.
@@ -981,4 +981,4 @@
 	<stepsubmitphpaction>step12_submitphpaction();</stepsubmitphpaction>
 	<includefile>/usr/local/www/wizards/openvpn_wizard.inc</includefile>
 </step>
-</pfsensewizard>
+</opnsensewizard>

@@ -1812,7 +1812,7 @@ function services_dnsmasq_configure()
 		if (isset($config['dnsmasq']['no_private_reverse'])) {
 			/* Note: Carrier Grade NAT (CGN) addresses 100.64.0.0/10 are intentionally not here. */
 			/* End-users should not be aware of CGN addresses, so reverse lookups for these should not happen. */
-			/* Just the pfSense WAN might get a CGN address from an ISP. */
+			/* Just the OPNsense WAN might get a CGN address from an ISP. */
 			$args .= " --server=/10.in-addr.arpa/ ";
 			$args .= " --server=/168.192.in-addr.arpa/ ";
 			/* Unfortunately the 172.16.0.0/12 range does not map nicely to the in-addr.arpa scheme. */
@@ -1964,7 +1964,7 @@ EOD;
 			" " . php_uname("r") . " " . php_uname("m");
 
 		$snmpdconf .= <<<EOD
-system := 1     # pfSense
+system := 1
 %snmpd
 sysDescr			= "{$sysDescr}"
 begemotSnmpdDebugDumpPdus       = 2

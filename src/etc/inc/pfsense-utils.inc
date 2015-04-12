@@ -1231,17 +1231,22 @@ function is_fqdn($fqdn) {
 	return($hostname);
 }
 
-function pfsense_default_state_size() {
+function default_state_size()
+{
 	/* get system memory amount */
 	$memory = get_memory();
 	$physmem = $memory[0];
+
 	/* Be cautious and only allocate 10% of system memory to the state table */
 	$max_states = (int) ($physmem/10)*1000;
+
 	return $max_states;
 }
 
-function pfsense_default_table_entries_size() {
+function default_table_entries_size()
+{
 	$current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
+
 	return $current;
 }
 

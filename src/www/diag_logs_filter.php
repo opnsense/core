@@ -391,7 +391,7 @@ include("head.inc");
 							<input id="submit" name="clear" type="submit" class="btn btn-primary" value="<?=gettext("Clear log");?>" />
 						</form>
 
-						<p><span class="vexpl"><a href="https://doc.pfsense.org/index.php/What_are_TCP_Flags%3F">TCP Flags</a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, W - CWR</span></p>
+						<p><span class="vexpl"><a href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol">TCP Flags</a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, W - CWR</span></p>
 
 
 						</div>
