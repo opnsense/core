@@ -30,35 +30,7 @@
         POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("priv.defs.inc");
-
-/* Load and process custom privs. */
-function get_priv_files($directory) {
-	$dir_array = array();
-	if(!is_dir($directory))
-		return;
-	if ($dh = opendir($directory)) {
-		while (($file = readdir($dh)) !== false) {
-			$canadd = 0;
-			if($file == ".")
-				$canadd = 1;
-			if($file == "..")
-				$canadd = 1;
-			if($canadd == 0)
-				array_push($dir_array, $file);
-		}
-		closedir($dh);
-	}
-	if(!is_array($dir_array))
-		return;
-	return $dir_array;
-}
-
-// Load and sort privs
-$dir_array = get_priv_files("/usr/local/etc/inc/priv");
-foreach ($dir_array as $file)
-	if (!is_dir("/usr/local/etc/inc/priv/{$file}") && stristr($file,".inc"))
-		include("priv/{$file}");
+require_once 'priv.defs.inc';
 
 if (is_array($priv_list)) {
 	usort($priv_list, function($a, $b) {
