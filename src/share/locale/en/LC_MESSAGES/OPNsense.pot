@@ -8941,6 +8941,7 @@ msgstr ""
 msgid "File to upload:"
 msgstr ""
 
+#: src/www/system_firmware.php:80
 msgid "File upload stopped by extension"
 msgstr ""
 
@@ -9566,6 +9567,8 @@ msgstr ""
 msgid "Generate SYN cookies for outbound SYN-ACK packets"
 msgstr ""
 
+#: src/www/services_captiveportal_vouchers.php:531
+#: src/www/services_captiveportal_vouchers.php:538
 msgid "Generate"
 msgstr ""
 
@@ -9617,7 +9620,10 @@ msgstr ""
 msgid "Graphs will not be allowed to be recreated within a 1 minute interval, please " .
 msgstr ""
 
-msgid "Graphs will not be allowed to be recreated within a 1 minute interval, please " . 											"take this into account after changing the style."
+#: src/www/status_rrd_graph_settings.php:200
+msgid ""
+"Graphs will not be allowed to be recreated within a 1 minute interval, please "
+"take this into account after changing the style."
 msgstr ""
 
 #: src/www/status_rrd_graph.php:424
@@ -9845,7 +9851,10 @@ msgstr ""
 msgid "Here you can explicitly set speed and duplex mode for this interface. WARNING: You MUST leave this set to autoselect (automatically negotiate speed) unless the port this interface connects to has its speed and duplex forced."
 msgstr ""
 
-msgid "Here you can specify alternate hostnames by which the router may be queried, to " . 										"bypass the DNS Rebinding Attack checks. Separate hostnames with spaces."
+#: src/www/system_advanced_admin.php:452
+msgid ""
+"Here you can specify alternate hostnames by which the router may be queried, to "
+"bypass the DNS Rebinding Attack checks. Separate hostnames with spaces."
 msgstr ""
 
 #: src/www/system_advanced_misc.php:359
@@ -9889,7 +9898,10 @@ msgstr ""
 msgid "Hint: 10 is ten PPTP clients"
 msgstr ""
 
-msgid "Hint: For queues under the same parent " 			.  "this specifies the share that a queue gets(values range from 1 to 100, you can leave it blank otherwise)"
+#: src/etc/inc/shaper.inc:3704
+msgid ""
+"Hint: For queues under the same parent "
+"this specifies the share that a queue gets(values range from 1 to 100, you can leave it blank otherwise)"
 msgstr ""
 
 #: src/www/diag_logs_settings.php:314
@@ -9928,10 +9940,19 @@ msgstr ""
 msgid "Hint: in most cases, you "
 msgstr ""
 
-msgid "Hint: in most cases, you " 			.  "should leave the field empty. All packets in this pipe are placed into a fixed-size queue first, "
+#: src/etc/inc/shaper.inc:3442
+#: src/etc/inc/shaper.inc:3722
+msgid ""
+"Hint: in most cases, you "
+"should leave the field empty. All packets in this pipe are placed into a fixed-size queue first, "
+"then they are delayed by value specified in the Delay field, and then they "
+"are delivered to their destination."
 msgstr ""
 
-msgid "Hint: in most cases, you " 			.  "should leave the field empty. It increases the hash size set."
+#: src/etc/inc/shaper.inc:3733
+msgid ""
+"Hint: in most cases, you "
+"should leave the field empty. It increases the hash size set."
 msgstr ""
 
 msgid "Hint: in most cases, you " 			.  "should specify 0 here (or leave the field empty). "
