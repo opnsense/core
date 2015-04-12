@@ -15675,10 +15675,20 @@ msgstr ""
 msgid "Portuguese (Portugal)"
 msgstr ""
 
-msgid "Possible options: b-node (broadcasts), p-node " . 															"(point-to-point name queries to a WINS server), " .
+#: src/www/vpn_openvpn_csc.php:656
+msgid ""
+"Possible options: b-node (broadcasts), p-node "
+"(point-to-point name queries to a WINS server), "
+"m-node (broadcast then query name server), and "
+"h-node (query name server, then broadcast)"
 msgstr ""
 
-msgid "Possible options: b-node (broadcasts), p-node " . 														"(point-to-point name queries to a WINS server), " .
+#: src/www/vpn_openvpn_server.php:1677
+msgid ""
+"Possible options: b-node (broadcasts), p-node "
+"(point-to-point name queries to a WINS server), "
+"m-node (broadcast then query name server), and "
+"h-node (query name server, then broadcast)"
 msgstr ""
 
 #: src/etc/inc/auth.inc:96
@@ -15769,6 +15779,7 @@ msgstr ""
 msgid "Prefork value must be between 1 and 32"
 msgstr ""
 
+#: src/etc/rc.initial.setlanip:517
 msgid "Press <ENTER> to continue."
 msgstr ""
 
@@ -15842,6 +15853,7 @@ msgstr ""
 msgid "Processing down interface states"
 msgstr ""
 
+#: src/etc/inc/filter.inc:3582
 msgid "Processing early %1$s rules for package %2$s"
 msgstr ""
 
@@ -16060,7 +16072,10 @@ msgstr ""
 msgid "Proxy username for allowing %s to use this proxy to connect outside"
 msgstr ""
 
-msgid "Puts the hard disk into standby mode when the selected amount of time after the last ". 											"access has elapsed."
+#: src/www/system_advanced_misc.php:574
+msgid ""
+"Puts the hard disk into standby mode when the selected amount of time after the last "
+"access has elapsed."
 msgstr ""
 
 #: src/www/interfaces_qinq_edit.php:189
@@ -16306,9 +16321,11 @@ msgstr ""
 msgid "RADIUS"
 msgstr ""
 
+#: src/etc/inc/radius.inc:412
 msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting"
 msgstr ""
 
+#: src/etc/inc/radius.inc:421
 msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
 msgstr ""
 
@@ -16350,9 +16367,11 @@ msgstr ""
 msgid "RRD Graphs"
 msgstr ""
 
+#: src/etc/inc/rrd.inc:93
 msgid "RRD create failed exited with %1$s, the error is: %2$s"
 msgstr ""
 
+#: src/etc/inc/rrd.inc:38
 msgid "RRD dump failed exited with %1$s, the error is: %2$s"
 msgstr ""
 
@@ -16579,9 +16598,11 @@ msgstr ""
 msgid "Regulatory settings"
 msgstr ""
 
+#: src/www/pkg_mgr_installed.php:213
 msgid "Reinstall ".ucfirst($pkg['name'])." package."
 msgstr ""
 
+#: src/www/pkg_mgr_installed.php:216
 msgid "Reinstall ".ucfirst($pkg['name'])."'s GUI components."
 msgstr ""
 
@@ -16707,7 +16728,11 @@ msgstr ""
 msgid "Remote Syslog Servers"
 msgstr ""
 
-msgid "Remote address " . 						                    "range"
+#: TODO: whitespace duplicate
+#: src/www/vpn_pptp.php:373
+msgid ""
+"Remote address "
+"range"
 msgstr ""
 
 #: src/www/vpn_pppoe_edit.php:451
@@ -16765,6 +16790,7 @@ msgstr ""
 msgid "Remove all source tracking entries from"
 msgstr ""
 
+#: src/www/diag_dump_states.php:234
 msgid "Remove all state entries from"
 msgstr ""
 
@@ -16818,7 +16844,12 @@ msgstr ""
 msgid "Replaces the IP identification field of packets with random values to " .
 msgstr ""
 
-msgid "Replaces the IP identification field of packets with random values to " . 										"compensate for operating systems that use predictable values. " .
+#: src/www/system_advanced_firewall.php:283
+msgid ""
+"Replaces the IP identification field of packets with random values to "
+"compensate for operating systems that use predictable values. "
+"This option only applies to packets that are not fragmented after the "
+"optional packet reassembly."
 msgstr ""
 
 #: src/www/system_firmware_check.php:80
@@ -16918,10 +16949,21 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-msgid "Resetting the source tracking table will remove all source/destination associations. " . 									"This means that the "sticky" source/destination association " .
+#: src/www/diag_resetstate.php:109
+msgid ""
+"Resetting the source tracking table will remove all source/destination associations. "
+"This means that the \"sticky\" source/destination association "
+"will be cleared for all clients."
 msgstr ""
 
-msgid "Resetting the state tables will remove all entries from " . 			                      "the corresponding tables. This means that all open connections " .
+#: src/www/diag_resetstate.php:90
+msgid ""
+"Resetting the state tables will remove all entries from "
+"the corresponding tables. This means that all open connections "
+"will be broken and will have to be re-established. This "
+"may be necessary after making substantial changes to the "
+"firewall and/or NAT rules, especially if there are IP protocol "
+"mappings (e.g. for PPTP or IPv6) with open connections."
 msgstr ""
 
 #: src/www/diag_dns.php:226
@@ -16941,10 +16983,12 @@ msgstr ""
 msgid "Resolver"
 msgstr ""
 
-msgid "Resolving POP3 authentication host "%s"..."
+#: src/etc/inc/smtp.inc:414
+msgid "Resolving POP3 authentication host \"%s\"..."
 msgstr ""
 
-msgid "Resolving SMTP server domain "%s"..."
+#: src/etc/inc/smtp.inc:452
+msgid "Resolving SMTP server domain \"%s\"..."
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:546
