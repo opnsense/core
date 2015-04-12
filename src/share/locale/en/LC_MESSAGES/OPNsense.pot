@@ -13375,16 +13375,25 @@ msgstr ""
 msgid "NOTE: Local IPv6 peers use"
 msgstr ""
 
-msgid "NOTE: Log sizes are changed the next time a log file is cleared or deleted. To immediately increase the size of the log files, you must first save the options to set the size, then clear all logs using the "Reset Log Files" option farther down this page. "
+#: src/www/diag_logs_settings.php:286
+msgid "NOTE: Log sizes are changed the next time a log file is cleared or deleted. To immediately increase the size of the log files, you must first save the options to set the size, then clear all logs using the \"Reset Log Files\" option farther down this page. "
 msgstr ""
 
-msgid "NOTE: Remember to add these subnets to the " . 											"IPv4 Remote Networks list on the corresponding OpenVPN server settings."
+#: src/www/vpn_openvpn_csc.php:448
+msgid ""
+"NOTE: Remember to add these subnets to the "
+"IPv4 Remote Networks list on the corresponding OpenVPN server settings."
 msgstr ""
 
-msgid "NOTE: Remember to add these subnets to the " . 											"IPv6 Remote Networks list on the corresponding OpenVPN server settings."
+#: src/www/vpn_openvpn_csc.php:462
+msgid ""
+"NOTE: Remember to add these subnets to the "
+"IPv6 Remote Networks list on the corresponding OpenVPN server settings."
 msgstr ""
 
-msgid "NOTE: The "pass" selection does not work properly with Multi-WAN. It will only work on an interface containing the default gateway."
+#: src/www/firewall_nat_edit.php:871
+msgid ""
+"NOTE: The \"pass\" selection does not work properly with Multi-WAN. It will only work on an interface containing the default gateway."
 msgstr ""
 
 #: src/www/diag_dns.php:254
@@ -13399,7 +13408,9 @@ msgstr ""
 msgid "NOTE: This does not disable any IPv6 features on the firewall, it only blocks traffic."
 msgstr ""
 
-msgid "NOTE: This is known as the "group" setting on some VPN client implementations"
+#: src/www/vpn_ipsec_phase1.php:729
+msgid ""
+"NOTE: This is known as the \"group\" setting on some VPN client implementations"
 msgstr ""
 
 #: src/www/services_dnsmasq.php:303
@@ -13428,7 +13439,11 @@ msgstr ""
 msgid "NOTE: With iPhone clients, this does not work when deployed via the iPhone configuration utility, only by manual entry."
 msgstr ""
 
-msgid "NOTE: You do not need to specify networks here if they have " . 											"already been defined on the main server configuration."
+#: src/www/vpn_openvpn_csc.php:424
+#: src/www/vpn_openvpn_csc.php:434
+msgid ""
+"NOTE: You do not need to specify networks here if they have "
+"already been defined on the main server configuration."
 msgstr ""
 
 #: src/www/services_dhcp.php:903
@@ -13537,7 +13552,11 @@ msgstr ""
 msgid "Name of the host, without domain part."
 msgstr ""
 
-msgid "Name of the host, without". 					                   " domain part"
+#: TODO: whitespace duplicate,
+#: src/www/services_dnsmasq_edit.php:204 
+msgid ""
+"Name of the host, without"
+" domain part"
 msgstr ""
 
 #: src/www/diag_routes.php:171
@@ -13621,7 +13640,8 @@ msgstr ""
 msgid "Needed SHA256"
 msgstr ""
 
-msgid "Negating destination address of "any" is invalid."
+#: src/www/firewall_nat_out_edit.php:177
+msgid "Negating destination address of \"any\" is invalid."
 msgstr ""
 
 #: src/www/vpn_ipsec_phase1.php:686
@@ -13792,6 +13812,10 @@ msgstr ""
 msgid "No config.xml found, attempting last known config restore."
 msgstr ""
 
+#: src/etc/inc/config.lib.inc:103
+#: src/etc/inc/config.lib.inc:128
+#: src/etc/inc/config.lib.inc:138
+#: src/etc/inc/config.lib.inc:236
 msgid "No config.xml found, attempting to restore factory config."
 msgstr ""
 
@@ -13816,6 +13840,7 @@ msgstr ""
 msgid "No entry exists yet!"
 msgstr ""
 
+#: src/www/system_firmware.php:74
 msgid "No file was uploaded"
 msgstr ""
 
@@ -13866,7 +13891,9 @@ msgstr ""
 msgid "No output except fatal errors"
 msgstr ""
 
-msgid "No output received, or connection failed. Try with "Show Remote Text" unchecked first."
+#: src/www/diag_testport.php:268
+msgid ""
+"No output received, or connection failed. Try with \"Show Remote Text\" unchecked first."
 msgstr ""
 
 #: src/www/pkg_mgr.php:238
@@ -13954,6 +13981,7 @@ msgstr ""
 msgid "Non-Temporary Address Allocation"
 msgstr ""
 
+#: src/etc/inc/xmlrpc_client.inc:431
 msgid "Non-numeric value received in INT or DOUBLE"
 msgstr ""
 
@@ -14037,7 +14065,10 @@ msgstr ""
 msgid "Not available."
 msgstr ""
 
-msgid "Note that the ECN friendly behavior violates RFC2893.  This should be " . 						     "used in mutual agreement with the peer."
+#: src/www/interfaces_gif_edit.php:228
+msgid ""
+"Note that the ECN friendly behavior violates RFC2893.  This should be "
+"used in mutual agreement with the peer."
 msgstr ""
 
 #: src/www/carp_status.php:183
@@ -14101,7 +14132,9 @@ msgstr ""
 msgid "Note: All wireless networks on this interface will be temporarily brought down when changing regulatory settings.  Some of the regulatory domains or country codes may not be allowed by some cards.  These settings may not be able to add additional channels that are not already supported."
 msgstr ""
 
-msgid "Note: Any country setting other than "Default" will override the regulatory domain setting"
+#: src/www/interfaces.php:2996
+msgid ""
+"Note: Any country setting other than \"Default\" will override the regulatory domain setting"
 msgstr ""
 
 #: src/www/status_rrd_graph.php:416
@@ -14120,7 +14153,9 @@ msgstr ""
 msgid "Note: Defaults to 1 if you set APN above. Ignored if you set no APN above."
 msgstr ""
 
-msgid "Note: Enter the modem initialization string here. Do NOT include the "AT"" . 															" string at the beginning of the command. Many modern USB 3G modems don't need an initialization string."
+#: src/www/interfaces_ppps_edit.php:576
+msgid ""
+"Note: Enter the modem initialization string here. Do NOT include the \"AT\""
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:584
@@ -14197,7 +14232,9 @@ msgstr ""
 msgid "Note: Time to wait for SIM to discover network after PIN is sent to SIM (seconds)."
 msgstr ""
 
-msgid "Note: Typically *99# for GSM networks and #777 for CDMA networks"
+#: src/www/interfaces_ppps_edit.php:538
+msgid ""
+"Note: Typically *99# for GSM networks and #777 for CDMA networks" 
 msgstr ""
 
 #: src/www/interfaces.php:2873
@@ -14216,7 +14253,11 @@ msgstr ""
 msgid "Note: You need both a filename and a boot server configured for this to work!"
 msgstr ""
 
-msgid "Note: make sure to remove any sensitive information " . "(passwords, maybe also IP addresses) before posting " .
+#: src/www/status.php:213
+msgid ""
+"Note: make sure to remove any sensitive information "
+"(passwords, maybe also IP addresses) before posting "
+"information from this page in public places (like mailing lists)"
 msgstr ""
 
 #: src/www/services_dhcp.php:1097
@@ -14307,6 +14348,10 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
+#: src/www/firewall_rules.php:592
+#: src/www/firewall_schedule.php:31
+#: src/www/firewall_schedule_edit.php:53
+#: src/www/firewall_schedule_edit.php:205
 msgid "November"
 msgstr ""
 
@@ -14376,6 +14421,10 @@ msgstr ""
 msgid "Obscure location in timestamp (default: unobscured)."
 msgstr ""
 
+#: src/www/firewall_rules.php:592
+#: src/www/firewall_schedule.php:31
+#: src/www/firewall_schedule_edit.php:53
+#: src/www/firewall_schedule_edit.php:205
 msgid "October"
 msgstr ""
 
@@ -14409,7 +14458,9 @@ msgstr ""
 msgid "On Battery Power Mode"
 msgstr ""
 
-msgid "On local LANs the upstream gateway should be "none"."
+#: src/www/interfaces.php:1766
+#: src/www/interfaces.php:1875
+msgid "On local LANs the upstream gateway should be \"none\"."
 msgstr ""
 
 #: src/www/system_advanced_firewall.php:364
@@ -14420,7 +14471,8 @@ msgstr ""
 msgid "On"
 msgstr ""
 
-msgid "One moment please, reinstalling packages...n"
+#: src/etc/inc/pkg-utils.inc:1204
+msgid "One moment please, reinstalling packages...\n"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:405
@@ -14680,9 +14732,14 @@ msgstr ""
 msgid "PASSED"
 msgstr ""
 
+#: src/etc/inc/system.inc:1872
+#: src/etc/inc/system.inc:1873
 msgid "PC Engines ALIX"
 msgstr ""
 
+#: src/etc/inc/system.inc:1857
+#: src/etc/inc/system.inc:1869
+#: src/etc/inc/system.inc:1870
 msgid "PC Engines WRAP"
 msgstr ""
 
@@ -14823,7 +14880,9 @@ msgstr ""
 msgid "PPTP clients"
 msgstr ""
 
-msgid "PPTP is no longer considered a secure VPN technology because it relies upon MS-CHAPv2 which has been compromised. If you continue to use PPTP be aware that intercepted traffic can be decrypted by a third party, so it should be considered unencrypted. We advise migrating to another VPN type such as OpenVPN or IPsec.<br /><br /><a href="https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807">Read More</a>"
+#: src/www/vpn_pptp.php:297
+msgid ""
+"PPTP is no longer considered a secure VPN technology because it relies upon MS-CHAPv2 which has been compromised. If you continue to use PPTP be aware that intercepted traffic can be decrypted by a third party, so it should be considered unencrypted. We advise migrating to another VPN type such as OpenVPN or IPsec.<br /><br /><a href=\"https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807\">Read More</a>"
 msgstr ""
 
 #: src/www/interfaces.php:531
@@ -15023,9 +15082,11 @@ msgstr ""
 msgid "Packets Captured:"
 msgstr ""
 
+#: src/www/widgets/widgets/interface_statistics.widget.php:82
 msgid "Packets In"
 msgstr ""
 
+#: src/www/widgets/widgets/interface_statistics.widget.php:85
 msgid "Packets Out"
 msgstr ""
 
@@ -15196,6 +15257,7 @@ msgstr ""
 msgid "Peer Certificate Revocation List"
 msgstr ""
 
+#: src/etc/inc/ipsec.inc:48
 msgid "Peer IP address"
 msgstr ""
 
@@ -15349,10 +15411,10 @@ msgstr ""
 msgid "Please add the interface for upstream, the allowed subnets, and the downstream interfaces you would like the proxy to allow. Only one 'upstream' interface can be configured."
 msgstr ""
 
-msgid "Please check the %1$ssystem log%2$s, the wol command for %3$s (%4$s) did not complete successfully%5$s"
-msgstr ""
-
-msgid "Please check the %1$ssystem log%2$s, the wol command for %3$s did not complete successfully%4$s"
+#: src/www/services_wol.php:51
+#: src/www/services_wol.php:87
+msgid ""
+"Please check the %1$ssystem log%2$s, the wol command for %3$s did not complete successfully%4$s"
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:202
@@ -15537,7 +15599,11 @@ msgstr ""
 msgid "Popup blocker detected.  Action aborted."
 msgstr ""
 
-msgid "Port %1$s '. 				' was assigned to %2$s' .
+#: src/www/interfaces_assign.php:261
+msgid ""
+"Port %1$s "
+" was assigned to %2$s"
+" interfaces:"
 msgstr ""
 
 #: src/www/firewall_nat.php:155
