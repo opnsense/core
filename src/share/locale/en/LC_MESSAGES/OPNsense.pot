@@ -6952,10 +6952,15 @@ msgstr ""
 msgid "Do you really want to remove this certificate association?"
 msgstr ""
 
-msgid "Do you really want to reset the RRD graphs? This will erase all graph data."
+#: src/www/status_rrd_graph_settings.php:193
+msgid ""
+"Do you really want to reset the RRD graphs? This will erase all graph data."
 msgstr ""
 
-msgid "Do you really want to reset the log files? This will erase all local log data."
+#: src/www/diag_logs_settings.php:347
+msgid ""
+"Do you really want to reset the log files? This will erase all local log "
+"data."
 msgstr ""
 
 #: src/www/pkg.php:187
@@ -7061,7 +7066,11 @@ msgstr ""
 msgid "Don't show last activity"
 msgstr ""
 
-msgid "Don't use this option to permanently disable a " . 											"client due to a compromised key or password. " .
+#: src/www/vpn_openvpn_csc.php:394
+msgid ""
+"Don't use this option to permanently disable a "
+"client due to a compromised key or password. "
+"Use a CRL (certificate revocation list) instead"
 msgstr ""
 
 #: src/etc/inc/filter.inc:390
@@ -7211,14 +7220,18 @@ msgstr ""
 msgid "Dutch"
 msgstr ""
 
-msgid "DynDNS updated IP Address (A) for {$dnsupdate['host']} on %s (%s) to %s"
+#: src/etc/inc/services.inc:2176
+msgid ""
+"DynDNS updated IP Address (A) for {$dnsupdate['host']} on %s (%s) to %s"
 msgstr ""
 
 #: src/etc/inc/dyndns.class:1223
 msgid "DynDNS updated IP Address on %s (%s) to %s"
 msgstr ""
 
-msgid "DynDNS updated IPv6 Address (AAAA) for {$dnsupdate['host']} on %s (%s) to %s"
+#: src/etc/inc/services.inc:2191
+msgid ""
+"DynDNS updated IPv6 Address (AAAA) for {$dnsupdate['host']} on %s (%s) to %s"
 msgstr ""
 
 #: src/etc/inc/dyndns.class:1230
@@ -7297,6 +7310,7 @@ msgstr ""
 msgid "ERROR! Could not bind to server %s."
 msgstr ""
 
+#: src/etc/inc/auth.inc:1150
 msgid "ERROR! Could not login to server %1$s as user %2$s: %3$s"
 msgstr ""
 
@@ -7361,7 +7375,9 @@ msgstr ""
 msgid "ESP is encryption, AH is authentication only"
 msgstr ""
 
-msgid "EXAMPLE: push "route 10.0.0.0 255.255.255.0""
+#: src/www/vpn_openvpn_csc.php:723
+#: src/www/vpn_openvpn_server.php:1779
+msgid "EXAMPLE: push \"route 10.0.0.0 255.255.255.0\""
 msgstr ""
 
 #: src/www/vpn_openvpn_client.php:1054
@@ -7660,7 +7676,10 @@ msgstr ""
 msgid "Enable DHCP relay on interface"
 msgstr ""
 
-msgid "Enable DHCP server on " . 										"%s " .
+#: src/www/services_dhcp.php:754
+msgid ""
+"Enable DHCP server on "
+"%s "
 msgstr ""
 
 #: src/www/interfaces.php:1939
@@ -7675,7 +7694,10 @@ msgstr ""
 msgid "Enable DHCPv6 relay on interface"
 msgstr ""
 
-msgid "Enable DHCPv6 server on " . 											"%s " .
+#: src/www/services_dhcpv6.php:536
+msgid ""
+"Enable DHCPv6 server on "
+"%s "
 msgstr ""
 
 #: src/www/services_unbound.php:218
@@ -7743,7 +7765,11 @@ msgstr ""
 msgid "Enable L2TP server"
 msgstr ""
 
-msgid "Enable MSS clamping on TCP flows over VPN. " . 												"This helps overcome problems with PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes. "
+#: src/www/vpn_ipsec_settings.php:230
+msgid ""
+"Enable MSS clamping on TCP flows over VPN. "
+"This helps overcome problems with PMTUD on IPsec VPN links. If left blank, "
+"the default value is 1400 bytes. "
 msgstr ""
 
 #: src/www/vpn_ipsec_settings.php:226
@@ -7789,7 +7815,12 @@ msgstr ""
 msgid "Enable Secure Shell"
 msgstr ""
 
-msgid "Enable Spanning Tree Protocol on interface.  The if_bridge(4) " . 							     "driver has support for the IEEE 802.1D Spanning Tree Protocol " .
+#: src/www/interfaces_bridge_edit.php:341
+msgid ""
+"Enable Spanning Tree Protocol on interface.  The if_bridge(4) "
+"driver has support for the IEEE 802.1D Spanning Tree Protocol "
+"(STP).  STP is used to detect and remove loops in a "
+"network topology."
 msgstr ""
 
 #: src/www/services_dhcp.php:965
@@ -8064,7 +8095,11 @@ msgstr ""
 msgid "Enter 0 to never expire sessions. NOTE: This is a security risk!"
 msgstr ""
 
-msgid "Enter IP addresses to be used by the system for DNS resolution. " . 									"These are also used for the DHCP service, DNS forwarder and for PPTP VPN clients."
+#: src/www/system.php:374
+msgid ""
+"Enter IP addresses to be used by the system for DNS resolution. "
+"These are also used for the DHCP service, DNS forwarder and for PPTP VPN "
+"clients."
 msgstr ""
 
 #: src/www/services_ntpd.php:394
@@ -8087,14 +8122,22 @@ msgstr ""
 msgid "Enter a DUID Identifier in the following format: "
 msgstr ""
 
-msgid "Enter a MAC address  in the following format: ". 						                    "xx:xx:xx:xx:xx:xx"
+#: TODO whitespace duplicate
+#: src/www/services_wol_edit.php:151
+msgid ""
+"Enter a MAC address  in the following format: "
+"xx:xx:xx:xx:xx:xx"
+msgstr ""
+
+#: src/www/interfaces.php:1646
+#: src/www/services_dhcp_edit.php:377
+msgid ""
+"Enter a MAC address in the following format: "
+"xx:xx:xx:xx:xx:xx"
 msgstr ""
 
 #: src/www/services_wol.php:150
 msgid "Enter a MAC address "
-msgstr ""
-
-msgid "Enter a MAC address in the following format: ". 							                    "xx:xx:xx:xx:xx:xx"
 msgstr ""
 
 #: src/www/interfaces.php:1646
