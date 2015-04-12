@@ -5507,7 +5507,7 @@ msgstr ""
 msgid "DHCP"
 msgstr ""
 
-#: TODO this one is a total disaster,
+#: TODO: this one is a total disaster,
 #: src/www/interfaces.php:2150
 msgid ""
 "DHCP6 client configuration &nbsp; &nbsp; "
@@ -8123,7 +8123,7 @@ msgstr ""
 msgid "Enter a DUID Identifier in the following format: "
 msgstr ""
 
-#: TODO whitespace duplicate
+#: TODO: whitespace duplicate
 #: src/www/services_wol_edit.php:151
 msgid ""
 "Enter a MAC address  in the following format: "
@@ -8492,7 +8492,7 @@ msgstr ""
 msgid "Enter the public IP address or host name of the remote gateway"
 msgstr ""
 
-#: TODO whitespace duplicate,
+#: TODO: whitespace duplicate,
 #: src/www/vpn_pppoe_edit.php:525
 #: src/www/vpn_pppoe_edit.php:542
 msgid ""
@@ -9462,7 +9462,7 @@ msgstr ""
 msgid "Gateway"
 msgstr ""
 
-#: TODO, there's no way this line will work
+#: TODO: there's no way this line will work
 #: src/etc/inc/gwlb.inc:853
 msgid ""
 "Gateways status could not be determined, considering all as up/active. (Group: {$group['name']})"
@@ -9955,16 +9955,26 @@ msgid ""
 "should leave the field empty. It increases the hash size set."
 msgstr ""
 
-msgid "Hint: in most cases, you " 			.  "should specify 0 here (or leave the field empty). "
+#: src/etc/inc/shaper.inc:3424
+msgid ""
+"Hint: in most cases, you "
+"should specify 0 here (or leave the field empty). "
 msgstr ""
 
-msgid "Hint: in most cases, you " 		      .  "should leave the field empty. All packets in this pipe are placed into a fixed-size queue first, "
+#: src/etc/inc/shaper.inc:3432
+#: src/etc/inc/shaper.inc:3712
+msgid ""
+"Hint: in most cases, you "
+"should specify 0 here (or leave the field empty). " 
+"A value of 0.001 means one packet in 1000 gets dropped"
 msgstr ""
 
-msgid "Hint: in most cases, you " 		      .  "should specify 0 here (or leave the field empty)"
-msgstr ""
-
-msgid "Hint: in most cases, you " 		      .  "should specify 0 here (or leave the field empty). "
+#: src/etc/inc/shaper.inc:3442
+msgid ""
+"Hint: in most cases, you "
+"should leave the field empty. All packets in this pipe are placed into a fixed-size queue first, "
+"then they are delayed by value specified in the Delay field, and then they "
+"are delivered to their destination."
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:976
@@ -10017,7 +10027,8 @@ msgstr ""
 msgid "Hint: this field can usually be left empty"
 msgstr ""
 
-msgid "Hint: this field can usually be left empty. Service name will not be configured if this field is empty. Check the "Configure NULL" box to configure a blank Service name."
+#: src/www/interfaces_ppps_edit.php:604
+msgid "Hint: this field can usually be left empty. Service name will not be configured if this field is empty. Check the \"Configure NULL\" box to configure a blank Service name."
 msgstr ""
 
 #: src/www/firewall_nat_1to1_edit.php:358
@@ -10036,7 +10047,11 @@ msgstr ""
 msgid "Hint: this option is rarely needed, don't use this unless you know what you're doing."
 msgstr ""
 
-msgid "Hint: use 3DES for best compatibility or if you have a hardware " . 														"crypto accelerator card. Blowfish is usually the fastest in " .
+#: src/www/vpn_ipsec_phase2.php:720
+msgid ""
+"Hint: use 3DES for best compatibility or if you have a hardware "
+"crypto accelerator card. Blowfish is usually the fastest in "
+"software encryption"
 msgstr ""
 
 #: src/www/firewall_nat_edit.php:649
@@ -10200,6 +10215,7 @@ msgstr ""
 msgid "ICMP"
 msgstr ""
 
+#: src/www/firewall_rules_edit.php:507
 msgid "ID must be an integer"
 msgstr ""
 
@@ -10305,6 +10321,7 @@ msgstr ""
 msgid "IP address or host type must be an IP address or host name."
 msgstr ""
 
+#: src/www/services_dhcp.php:583
 msgid "IP address or host"
 msgstr ""
 
@@ -10553,19 +10570,36 @@ msgstr ""
 msgid "Idle timeout"
 msgstr ""
 
-msgid "If 'source' or 'destination' slots is chosen, n" 			.  "a dynamic pipe with the bandwidth, delay, packet loss and queue size given above will n"
+#: src/etc/inc/shaper.inc:3378
+msgid ""
+"If 'source' or 'destination' slots is chosen, \n"
+"a dynamic pipe with the bandwidth, delay, packet loss and queue size given above will \n"
+"be created for each source/destination IP address encountered, \n"
+"respectively. This makes it possible to easily specify bandwidth \n"
+"limits per host."
 msgstr ""
 
-msgid "If 'source' or 'destination' slots is chosen, n" 			.  "leaving the mask bits blank will create one pipe per host. Otherwise specify n"
+#: src/etc/inc/shaper.inc:3399
+msgid ""
+"If 'source' or 'destination' slots is chosen, \n"
+"leaving the mask bits blank will create one pipe per host. Otherwise specify \n"
+"the number of 'one' bits in the subnet mask used to group multiple hosts \n"
+"per pipe."
 msgstr ""
 
-msgid "If 'source' or 'destination' slots is chosen, n" 		      .  "a dynamic pipe with the bandwidth, delay, packet loss and queue size given above will n"
+#: src/etc/inc/shaper.inc:3359
+msgid ""
+"If 'source' or 'des     tination' slots is chosen, \n"
+"a dynamic pipe with the bandwidth, delay, packet los     s and queue size given above will \n"
+"be created for each source/destination IP address en     countered, \n"
+"respectively. This makes it possible to easily speci     fy bandwidth \n"
+"limits per host."
 msgstr ""
 
-msgid "If 'source' or 'destination' slots is chosen, n" 		      .  "leaving the mask bits blank will create one pipe per host. Otherwise specify n"
-msgstr ""
-
-msgid "If RADIUS type is set to Cisco, in Access-Requests the value of Calling-Station-Id will be set to the client's IP address and " . 													"the Called-Station-Id to the client's MAC address. Default behavior is Calling-Station-Id = client's MAC address and Called-Station-Id = %s's WAN IP address."
+#: src/www/services_captiveportal.php:890
+msgid ""
+"If RADIUS type is set to Cisco, in Access-Requests the value of Calling-Station-Id will be set to the client's IP address and "
+"the Called-Station-Id to the client's MAC address. Default behavior is Calling-Station-Id = client's MAC address and Called-Station-Id = %s's WAN IP address."
 msgstr ""
 
 #: src/www/services_dhcp_edit.php:391
@@ -10577,10 +10611,9 @@ msgid "If an IPv6 address is entered, the address must be outside of the pool."
 msgstr ""
 
 #: src/www/firewall_nat_out.php:609
-msgid "If automatic outbound NAT selected, a mapping is automatically created " .
-msgstr ""
-
-msgid "If automatic outbound NAT selected, a mapping is automatically created " . 								"for each interface's subnet (except WAN-type connections) and the rules " .
+msgid ""
+"If automatic outbound NAT selected, a mapping is automatically created "
+"for each interface's subnet (except WAN-type connections) and the rules "
 msgstr ""
 
 #: src/www/diag_packet_capture.php:255
@@ -10656,21 +10689,57 @@ msgstr ""
 msgid "If reauthentication is enabled, Access-Requests will be sent to the RADIUS server for each user that is " .
 msgstr ""
 
-msgid "If reauthentication is enabled, Access-Requests will be sent to the RADIUS server for each user that is " . 													"logged in every minute. If an Access-Reject is received for a user, that user is disconnected from the captive portal immediately."
+#: src/www/services_captiveportal.php:822
+msgid ""
+"If reauthentication is enabled, Access-Requests will be sent to the RADIUS server for each user that is "
+"logged in every minute. If an Access-Reject is received for a user, that user is disconnected from the captive portal immediately."
 msgstr ""
 
 #: src/www/services_unbound.php:352
 msgid "If the DNS Resolver is enabled, the DHCP".
 msgstr ""
 
-msgid "If the DNS Resolver is enabled, the DHCP".                         " service (if enabled) will automatically serve the LAN IP".
+#: src/www/services_unbound.php:352
+msgid ""
+"If the DNS Resolver is enabled, the DHCP"
+" service (if enabled) will automatically serve the LAN IP"
+" address as a DNS server to DHCP clients so they will use"
+" the DNS Resolver. If Forwarding, is enabled, the DNS Resolver will use the DNS servers"
+" entered in %sSystem: General setup%s"
+" or those obtained via DHCP or PPP on WAN if the &quot;Allow"
+" DNS server list to be overridden by DHCP/PPP on WAN&quot;"
+" is checked."
 msgstr ""
 
 #: src/www/services_dnsmasq.php:330
 msgid "If the DNS forwarder is enabled, the DHCP".
 msgstr ""
 
-msgid "If the DNS forwarder is enabled, the DHCP". 							" service (if enabled) will automatically serve the LAN IP".
+#: src/www/services_dnsmasq.php:330
+msgid ""
+"If the DNS forwarder is enabled, the DHCP"
+" service (if enabled) will automatically serve the LAN IP"
+" address as a DNS server to DHCP clients so they will use"
+" the forwarder. The DNS forwarder will use the DNS servers"
+" entered in %sSystem: General setup%s"
+" or those obtained via DHCP or PPP on WAN if the &quot;Allow"
+" DNS server list to be overridden by DHCP/PPP on WAN&quot;"
+" is checked. If you don't use that option (or if you use"
+" a static IP address on WAN), you must manually specify at"
+" least one DNS server on the %sSystem:"
+"General setup%s page."
+msgstr ""
+
+#: src/www/services_unbound.php:352
+msgid ""
+"If the DNS Resolver is enabled, the DHCP".
+" service (if enabled) will automatically serve the LAN IP".
+" address as a DNS server to DHCP clients so they will use".
+" the DNS Resolver. If Forwarding, is enabled, the DNS Resolver will use the DNS servers".
+" entered in %sSystem: General setup%s".
+" or those obtained via DHCP or PPP on WAN if the &quot;Allow".
+" DNS server list to be overridden by DHCP/PPP on WAN&quot;".
+" is checked."
 msgstr ""
 
 #: src/www/services_rfc2136_edit.php:213
@@ -10681,7 +10750,10 @@ msgstr ""
 msgid "If the link where the default gateway resides fails " .
 msgstr ""
 
-msgid "If the link where the default gateway resides fails " . 										"switch the default gateway to another available one."
+#: src/www/system_advanced_misc.php:344
+msgid ""
+"If the link where the default gateway resides fails "
+"switch the default gateway to another available one."
 msgstr ""
 
 #: src/www/interfaces.php:1990
@@ -10713,7 +10785,10 @@ msgstr ""
 msgid "If this option is enabled, the captive portal will try to authenticate users by sending their MAC address as the username and the password " .
 msgstr ""
 
-msgid "If this option is enabled, the captive portal will try to authenticate users by sending their MAC address as the username and the password " . 													"entered below to the RADIUS server."
+#: src/www/services_captiveportal.php:829
+msgid ""
+"If this option is enabled, the captive portal will try to authenticate users by sending their MAC address as the username and the password "
+"entered below to the RADIUS server."
 msgstr ""
 
 #: src/www/vpn_openvpn_csc.php:637
@@ -10727,16 +10802,46 @@ msgstr ""
 msgid "If this option is set, %s DNS Forwarder (dnsmasq) will ".
 msgstr ""
 
-msgid "If this option is set, %s DNS Forwarder (dnsmasq) will ". 													"not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers.  ".
+#: src/www/services_dnsmasq.php:248
+msgid ""
+"If this option is set, %s DNS Forwarder (dnsmasq) will "
+"not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers.  "
+"If the name is not known from /etc/hosts or DHCP then a \"not found\" answer is returned. "
+""
 msgstr ""
 
-msgid "If this option is set, %s DNS Forwarder (dnsmasq) will ". 													"not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers.  ".
+#: src/www/services_dnsmasq.php:237
+msgid ""
+"If this option is set, %s DNS Forwarder (dnsmasq) will "
+"query the DNS servers sequentially in the order specified (<i>System - General Setup - DNS Servers</i>), "
+"rather than all at once in parallel. "
+""
 msgstr ""
 
-msgid "If this option is set, %s DNS Forwarder (dnsmasq) will ". 													"query the DNS servers sequentially in the order specified (<i>System - General Setup - DNS Servers</i>), ".
+#: src/www/services_dnsmasq.php:247
+msgid ""
+"If this option is set, %s DNS Forwarder (dnsmasq) will "
+"not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers.  "
+"If the name is not known from /etc/hosts or DHCP then a \    "not found\" answer is returned. "
+""
 msgstr ""
 
-msgid "If this option is set, %s will " . 									"use DNS servers assigned by a DHCP/PPP server on WAN " .
+#: src/www/services_dnsmasq.php:257
+msgid ""
+"If this option is set, %s DNS Forwarder (dnsmasq) will "
+"not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers.  "
+"Any entries in the Domain Overrides section forwarding private \"n.n.n.in-addr.arpa\" names to a specific server are still forwarded. "
+"If the IP to name is not known from /etc/hosts, DHCP or a specific domain override then a \"not found\" answer is immediately returned. "
+""
+msgstr ""
+
+#: src/www/system.php:389
+msgid ""
+"If this option is set, %s will "
+"use DNS servers assigned by a DHCP/PPP server on WAN "
+"for its own purposes (including the DNS forwarder). "
+"However, they will not be assigned to DHCP and PPTP "
+"VPN clients."
 msgstr ""
 
 #: src/www/services_captiveportal.php:971
@@ -10759,7 +10864,11 @@ msgstr ""
 msgid "If this option is set, then DHCP mappings will ".
 msgstr ""
 
-msgid "If this option is set, then DHCP mappings will ". 													"be resolved before the manual list of names below. This only ".
+#: src/www/services_dnsmasq.php:227
+msgid ""
+"If this option is set, then DHCP mappings will "
+"be resolved before the manual list of names below. This only "
+"affects the name given for a reverse lookup (PTR)."
 msgstr ""
 
 #: src/www/services_dnsmasq.php:216
@@ -10767,10 +10876,13 @@ msgstr ""
 msgid "If this option is set, then DHCP static mappings will ".
 msgstr ""
 
-msgid "If this option is set, then DHCP static mappings will ". 															"be registered in the DNS Resolver, so that their name can be ".
-msgstr ""
-
-msgid "If this option is set, then DHCP static mappings will ". 													"be registered in the DNS forwarder, so that their name can be ".
+#: src/www/services_dnsmasq.php:216
+#: src/www/services_unbound.php:314
+msgid ""
+"If this option is set, then DHCP static mappings will "
+"be registered in the DNS forwarder, so that their name can be "
+"resolved. You should also set the domain in %s"
+"System: General setup%s to the proper value."
 msgstr ""
 
 #: src/www/services_unbound.php:324
@@ -10782,17 +10894,23 @@ msgstr ""
 msgid "If this option is set, then machines that specify".
 msgstr ""
 
-msgid "If this option is set, then machines that specify". 													" their hostname when requesting a DHCP lease will be registered".
+#: src/www/services_dnsmasq.php:204
+#: src/www/services_unbound.php:302
+msgid ""
+"If this option is set, then machines that specify"
+" their hostname when requesting a DHCP lease will be registered"
+" in the DNS forwarder, so that their name can be resolved."
+" You should also set the domain in %sSystem:"
+" General setup%s to the proper value."
 msgstr ""
 
-msgid "If this option is set, then machines that specify". 											" their hostname when requesting a DHCP lease will be registered".
-msgstr ""
 
 #: src/www/firewall_nat_1to1.php:294
-msgid "If you add a 1:1 NAT entry for any of the interface IPs on this system, " .
-msgstr ""
-
-msgid "If you add a 1:1 NAT entry for any of the interface IPs on this system, " . 													"it will make this system inaccessible on that IP address. i.e. if " .
+msgid ""
+"If you add a 1:1 NAT entry for any of the interface IPs on this system, "
+"it will make this system inaccessible on that IP address. i.e. if "
+"you use your WAN IP address, any services on this system (IPsec, OpenVPN server, etc.) "
+"using the WAN IP address will no longer function."
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:1592
@@ -10807,17 +10925,27 @@ msgstr ""
 msgid "If you click"
 msgstr ""
 
-msgid "If you do not have a crypto chip in your system, this option will have no " . 										"effect. To unload the selected module, set this option to 'none' and then reboot."
+#: src/www/system_advanced_misc.php:409
+msgid ""
+"If you do not have a crypto chip in your system, this option will have no "
+"effect. To unload the selected module, set this option to 'none' and then reboot."
 msgstr ""
 
-msgid "If you do not have a supported thermal sensor chip in your system, this option will have no " . 										"effect. To unload the selected module, set this option to 'none' and then reboot."
+#: src/www/system_advanced_misc.php:430
+msgid ""
+"If you do not have a supported thermal sensor chip in your system, this option will have no "
+"effect. To unload the selected module, set this option to 'none' and then reboot."
 msgstr ""
 
 #: src/etc/inc/services.inc:2261
 msgid "If you do so, this file must be terminated with a blank line (e.g. new line)"
 msgstr ""
 
-msgid "If you enter a value in this field, then MSS clamping for " . 													"TCP connections to the value entered above minus 40 (TCP/IP " .
+#: src/www/interfaces.php:1666
+msgid ""
+"If you enter a value in this field, then MSS clamping for "
+"TCP connections to the value entered above minus 40 (TCP/IP "
+"header size) will be in effect."
 msgstr ""
 
 #: src/www/diag_testport.php:161
@@ -10832,7 +10960,11 @@ msgstr ""
 msgid "If you have a second RADIUS server, you can activate it by entering its IP address here."
 msgstr ""
 
-msgid "If you have a supported CPU, selecting a themal sensor will load the appropriate " . 											"driver to read its temperature. Setting this to 'None' will attempt to read the " .
+#: src/www/system_advanced_misc.php:426
+msgid ""
+"If you have a supported CPU, selecting a themal sensor will load the appropriate "
+"driver to read its temperature. Setting this to 'None' will attempt to read the "
+"temperature from an ACPI-compliant motherboard sensor instead, if one is present."
 msgstr ""
 
 #: src/www/services_captiveportal.php:755
@@ -10852,7 +10984,10 @@ msgstr ""
 msgid "If you leave this field blank, all packets on the specified interface will be captured."
 msgstr ""
 
-msgid "If you leave this field blank, the adapter's default MTU will " . 														"be used. This is typically 1500 bytes but can vary in some circumstances."
+#: src/www/interfaces.php:1656
+msgid ""
+"If you leave this field blank, the adapter's default MTU will "
+"be used. This is typically 1500 bytes but can vary in some circumstances."
 msgstr ""
 
 #: src/www/services_dhcp.php:846
@@ -10864,7 +10999,9 @@ msgstr ""
 msgid "If you need the new IP to be included in the request, put %IP% in its place."
 msgstr ""
 
-msgid "If you need to include multiple possible values, separate them with a |.  If your provider includes a |, escape it with |"
+#: src/www/services_dyndns_edit.php:409
+msgid ""
+"If you need to include multiple possible values, separate them with a |.  If your provider includes a |, escape it with \\|"
 msgstr ""
 
 #: src/www/system_advanced_firewall.php:317
@@ -10879,7 +11016,10 @@ msgstr ""
 msgid "If you provide a URL here, MAC addresses set to be blocked will be redirect to that URL when attempt to access anything."
 msgstr ""
 
-msgid "If you provide a URL here, clients will be redirected to that URL instead of the one they initially tried " . 									"to access after they've authenticated."
+#: src/www/services_captiveportal.php:607
+msgid ""
+"If you provide a URL here, clients will be redirected to that URL instead of the one they initially tried "
+"to access after they've authenticated."
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:1009
@@ -10907,7 +11047,10 @@ msgstr ""
 msgid "If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, ".
 msgstr ""
 
-msgid "If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, ". 															"select it here (you will need to define "
+#: src/www/firewall_nat_out_edit.php:729
+msgid ""
+"If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, "
+"select it here (you will need to define "
 msgstr ""
 
 #: src/www/vpn_l2tp_users_edit.php:179
@@ -10918,7 +11061,10 @@ msgstr ""
 msgid "If you want to change the users' password, ".
 msgstr ""
 
-msgid "If you want to change the users' password, ". 						                    "enter it here twice."
+#: src/www/vpn_pptp_users_edit.php:171
+msgid ""
+"If you want to change the users' password, "
+"enter it here twice."
 msgstr ""
 
 #: src/www/diag_nanobsd.php:81
@@ -10956,6 +11102,7 @@ msgstr ""
 msgid "Import Certificate"
 msgstr ""
 
+#: src/etc/inc/rrd.inc:108
 msgid "Import RRD has %1$s DS values and %2$s RRA databases, new format RRD has %3$s DS values and %4$s RRA databases"
 msgstr ""
 
@@ -10980,10 +11127,15 @@ msgstr ""
 msgid "In Use"
 msgstr ""
 
-msgid "In addition, optionally select the gateway for each DNS server. " . 									"When using multiple WAN connections there should be at least one unique DNS server per gateway."
+#: src/www/system.php:379
+msgid ""
+"In addition, optionally select the gateway for each DNS server. "
+"When using multiple WAN connections there should be at least one unique DNS server per gateway."
 msgstr ""
 
-msgid "In addition, you can also upload .php files for execution.  You can pass the filename " . 								"to your custom page from the initial page by using text similar to:"
+#: src/www/services_captiveportal_filemanager.php:229
+msgid "In addition, you can also upload .php files for execution.  You can pass the filename "
+"to your custom page from the initial page by using text similar to:"
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:498
@@ -10994,7 +11146,12 @@ msgstr ""
 msgid "In case you need NAT/BINAT on this network specify the address to be translated"
 msgstr ""
 
-msgid "In some circumstances using a gateway group as the interface for " . 												"an IPsec tunnel does not function properly, and IPsec must be forcefully reloaded " .
+#: src/www/vpn_ipsec_settings.php:216
+msgid ""
+"In some circumstances using a gateway group as the interface for "
+"an IPsec tunnel does not function properly, and IPsec must be forcefully reloaded "
+"when a failover occurs. Because this will disrupt all IPsec tunnels, this behavior"
+" is disabled by default. Check this box to force IPsec to fully reload on failover."
 msgstr ""
 
 #: src/www/graph.php:104
@@ -11021,6 +11178,7 @@ msgstr ""
 msgid "In/out packets"
 msgstr ""
 
+#: src/www/widgets/widgets/ipsec.widget.php:96
 msgid "Inactive Tunnels"
 msgstr ""
 
@@ -11133,7 +11291,9 @@ msgstr ""
 msgid "Insert my local MAC address"
 msgstr ""
 
-msgid "Install ".ucfirst($index['name'])." package."
+#: TODO: does this even work?
+#: src/www/pkg_mgr.php:282
+msgid "Install \".ucfirst($index['name']).\" package."
 msgstr ""
 
 #: src/www/pkg_mgr_install.php:44
@@ -11215,6 +11375,7 @@ msgstr ""
 msgid "Integrated Tab items... "
 msgstr ""
 
+#: src/www/system_advanced_misc.php:69
 msgid "Intel Core* CPU on-die thermal sensor"
 msgstr ""
 
@@ -11581,7 +11742,8 @@ msgstr ""
 msgid "Invalid expiration date format; use MM/DD/YYYY instead."
 msgstr ""
 
-msgid "Invalid interface "%s" in interface_dhcp_configure()"
+#: src/share/locale/en/LC_MESSAGES/OPNsense.pot:11745
+msgid "Invalid interface \"%s\" in interface_dhcp_configure()"
 msgstr ""
 
 #: src/etc/inc/easyrule.inc:323
@@ -11685,7 +11847,9 @@ msgstr ""
 msgid "Issuer"
 msgstr ""
 
-msgid "It is not required to activate this DHCPv6 server when set to "Managed", this can be another host on the network"
+#: src/www/services_router_advertisements.php:260
+msgid ""
+"It is not required to activate this DHCPv6 server when set to \"Managed\", this can be another host on the network"
 msgstr ""
 
 #: src/www/system_authservers.php:547
@@ -11700,6 +11864,10 @@ msgstr ""
 msgid "Item information"
 msgstr ""
 
+#: src/www/firewall_rules.php:592
+#: src/www/firewall_schedule.php:31
+#: src/www/firewall_schedule_edit.php:53
+#: src/www/firewall_schedule_edit.php:205
 msgid "January"
 msgstr ""
 
