@@ -11883,9 +11883,17 @@ msgstr ""
 msgid "Jostle Timeout"
 msgstr ""
 
+#: src/www/firewall_rules.php:592
+#: src/www/firewall_schedule.php:31
+#: src/www/firewall_schedule_edit.php:53
+#: src/www/firewall_schedule_edit.php:205
 msgid "July"
 msgstr ""
 
+#: src/www/firewall_rules.php:592
+#: src/www/firewall_schedule.php:31
+#: src/www/firewall_schedule_edit.php:53
+#: src/www/firewall_schedule_edit.php:205
 msgid "June"
 msgstr ""
 
@@ -11964,6 +11972,8 @@ msgstr ""
 msgid "Key"
 msgstr ""
 
+#: src/etc/inc/ipsec.inc:44
+#: src/etc/inc/ipsec.inc:53
 msgid "KeyID tag"
 msgstr ""
 
@@ -12170,7 +12180,10 @@ msgstr ""
 msgid "Latvian"
 msgstr ""
 
-msgid "Launches IPSec in debug mode so that more verbose logs " . 												"will be generated to aid in troubleshooting."
+#: src/www/vpn_ipsec_settings.php:206
+msgid ""
+"Launches IPSec in debug mode so that more verbose logs "
+"will be generated to aid in troubleshooting."
 msgstr ""
 
 #: src/www/firewall_shaper_layer7.php:99
@@ -12657,13 +12670,19 @@ msgstr ""
 msgid "MBUF Usage"
 msgstr ""
 
-msgid "MONITOR: %s has high latency, removing from routing group {$group['name']}"
+#: src/etc/inc/gwlb.inc:833
+msgid ""
+"MONITOR: %s has high latency, removing from routing group {$group['name']}"
 msgstr ""
 
-msgid "MONITOR: %s has packet loss, removing from routing group {$group['name']}"
+#: src/etc/inc/gwlb.inc:829
+msgid ""
+"MONITOR: %s has packet loss, removing from routing group {$group['name']}"
 msgstr ""
 
-msgid "MONITOR: %s is down, removing from routing group {$group['name']}"
+#: src/etc/inc/gwlb.inc:825
+msgid ""
+"MONITOR: %s is down, removing from routing group {$group['name']}"
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:782
@@ -12707,6 +12726,7 @@ msgstr ""
 msgid "Magic Number"
 msgstr ""
 
+#: src/etc/inc/pfsense-utils.inc:434
 msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s"
 msgstr ""
 
@@ -12752,6 +12772,10 @@ msgstr ""
 msgid "Mappings:"
 msgstr ""
 
+#: src/www/firewall_rules.php:592
+#: src/www/firewall_schedule.php:31
+#: src/www/firewall_schedule_edit.php:53
+#: src/www/firewall_schedule_edit.php:205
 msgid "March"
 msgstr ""
 
@@ -12760,10 +12784,18 @@ msgstr ""
 msgid "Mark Gateway as Down"
 msgstr ""
 
-msgid "Mark an interface as a "private" interface.  A private interface does not forward any traffic to any other port that is also " . 							     "a private interface."
+#: src/www/interfaces_bridge_edit.php:598
+msgid ""
+"Mark an interface as a \"private\" interface.  A private interface does not forward any traffic to any other port that is also "
+"a private interface."
 msgstr ""
 
-msgid "Mark an interface as a "sticky" interface.  Dynamically learned " . 							     "address entries are treated as static once entered into the " .
+#: src/www/interfaces_bridge_edit.php:577
+msgid ""
+"Mark an interface as a \"sticky\" interface.  Dynamically learned "
+"address entries are treated as static once entered into the "
+"cache.  Sticky entries are never aged out of the cache or "
+"replaced, even if the address is seen on a different interface."
 msgstr ""
 
 #: src/etc/inc/shaper.inc:3360
@@ -12775,6 +12807,7 @@ msgstr ""
 msgid "Master Key Regeneration"
 msgstr ""
 
+#: src/www/diag_logs_filter.php:250
 msgid "Matches %1$s regular expression%2$s."
 msgstr ""
 
