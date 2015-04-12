@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2004-2012 Scott Ullrich <sullrich@gmail.com>
@@ -47,11 +48,6 @@ function get_pkg_interfaces_select_source($include_localhost=false) {
 		$ssifs[] = $tmp;
 	}
 	return $ssifs;
-}
-
-function gentitle_pkg($pgname) {
-	global $pfSense_config;
-	return $pfSense_config['system']['hostname'] . "." . $pfSense_config['system']['domain'] . " - " . $pgname;
 }
 
 function domTT_title($title_msg){
