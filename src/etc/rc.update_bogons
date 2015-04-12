@@ -1,14 +1,5 @@
 #!/bin/sh
 
-#
-# TODO: opnSense, drop/replace?
-#
-
-sys.exit(0)
-# Update bogons file
-# Part of the pfSense project
-# https://www.pfsense.org
-
 # Global variables
 proc_error=""
 
