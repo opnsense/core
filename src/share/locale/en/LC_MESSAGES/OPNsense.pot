@@ -8145,10 +8145,17 @@ msgstr ""
 msgid "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx " .
 msgstr ""
 
-msgid "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx " . 													"or leave blank"
+#: src/www/wizards/setup_wizard.xml:222
+msgid ""
+"Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx "
+"or leave blank"
 msgstr ""
 
-msgid "Enter a custom port number for the webConfigurator " . 											"above if you want to override the default (80 for HTTP, 443 " .
+#: src/www/system_advanced_admin.php:359
+msgid ""
+"Enter a custom port number for the webConfigurator "
+"above if you want to override the default (80 for HTTP, 443 "
+"for HTTPS). Changes will take effect immediately after save."
 msgstr ""
 
 #: src/www/system_camanager.php:431
@@ -8212,7 +8219,11 @@ msgstr ""
 msgid "Enter an alternative address here to be used to monitor the link. This is used for the " .
 msgstr ""
 
-msgid "Enter an alternative address here to be used to monitor the link. This is used for the " . 												"quality RRD graphs as well as the load balancer entries. Use this if the gateway does not respond " .
+#: src/www/system_gateways_edit.php:730
+msgid ""
+"Enter an alternative address here to be used to monitor the link. This is used for the "
+"quality RRD graphs as well as the load balancer entries. Use this if the gateway does not respond "
+"to ICMP echo requests (pings)"
 msgstr ""
 
 #: src/www/vpn_openvpn_csc.php:722
@@ -8280,7 +8291,10 @@ msgstr ""
 msgid "Enter the Global Unicast routable IPv6 prefix here"
 msgstr ""
 
-msgid "Enter the IP address of a host which will accept incoming " . 						                    "PPTP connections"
+#: src/www/vpn_pptp.php:333
+msgid ""
+"Enter the IP address of a host which will accept incoming "
+"PPTP connections"
 msgstr ""
 
 #: src/www/interfaces.php:3234
@@ -8296,13 +8310,19 @@ msgstr ""
 msgid "Enter the IP address of the RADIUS server."
 msgstr ""
 
-msgid "Enter the IP address the L2TP server should give to clients for use as their "gateway""
+#: src/www/vpn_l2tp.php:331
+msgid ""
+"Enter the IP address the L2TP server should give to clients for use as their \"gateway\""
 msgstr ""
 
-msgid "Enter the IP address the PPPoE server should give to clients for use as their "gateway""
+#: src/www/vpn_pppoe_edit.php:443
+msgid ""
+"Enter the IP address the PPPoE server should give to clients for use as their \"gateway\""
 msgstr ""
 
-msgid "Enter the IP address the PPTP server should give to clients for use as their "gateway""
+#: src/www/vpn_pptp.php:365
+msgid ""
+"Enter the IP address the PPTP server should give to clients for use as their \"gateway\""
 msgstr ""
 
 #: src/www/vpn_pptp.php:438
@@ -8392,17 +8412,27 @@ msgstr ""
 msgid "Enter the end address of the %s client address range:"
 msgstr ""
 
-msgid "Enter the external (usually on a WAN) subnet's starting address for the 1:1 mapping.  " . 													"The subnet mask from the internal address below will be applied to this IP address."
+#: src/www/firewall_nat_1to1_edit.php:356
+msgid ""
+"Enter the external (usually on a WAN) subnet's starting address for the 1:1 mapping.  "
+"The subnet mask from the internal address below will be applied to this IP address."
 msgstr ""
 
-msgid "Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix translation. The prefix size specified for the internal IPv6 prefix will be applied to the 					external prefix."
+#: src/www/firewall_nat_npt_edit.php:241
+msgid ""
+"Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix "
+"translation. The prefix size specified for the internal IPv6 prefix will "
+"be applied to the external prefix."
 msgstr ""
 
 #: src/www/firewall_nat_1to1_edit.php:441
 msgid "Enter the internal (LAN) subnet for the 1:1 mapping. The subnet size specified for the internal subnet will be applied to the external subnet."
 msgstr ""
 
-msgid "Enter the internal IP address of " . 					                    "the server on which you want to map the ports."
+#: src/www/firewall_nat_edit.php:780
+msgid ""
+"Enter the internal IP address of "
+"the server on which you want to map the ports."
 msgstr ""
 
 #: src/etc/inc/shaper.inc:1178
@@ -8429,7 +8459,11 @@ msgstr ""
 msgid "Enter the number of vouchers"
 msgstr ""
 
-msgid "Enter the number of webConfigurator processes you " . 											"want to run. This defaults to 2. Increasing this will allow more " .
+#: src/www/system_advanced_admin.php:371
+msgid ""
+"Enter the number of webConfigurator processes you "
+"want to run. This defaults to 2. Increasing this will allow more "
+"users/browsers to access the GUI concurrently."
 msgstr ""
 
 #: src/etc/inc/config.console.inc:486
@@ -8458,13 +8492,18 @@ msgstr ""
 msgid "Enter the public IP address or host name of the remote gateway"
 msgstr ""
 
-msgid "Enter the shared secret that will be used to authenticate " . 													"to the RADIUS server"
+#: TODO whitespace duplicate,
+#: src/www/vpn_pppoe_edit.php:525
+#: src/www/vpn_pppoe_edit.php:542
+msgid ""
+"Enter the shared secret that will be used to authenticate "
+"to the RADIUS server"
 msgstr ""
 
-msgid "Enter the shared secret that will be used to authenticate " . 						                      "to the RADIUS server"
-msgstr ""
-
-msgid "Enter the shared secret that will be used to authenticate " . 						                      "to the secondary RADIUS server"
+#: src/www/vpn_pptp.php:463
+msgid ""
+"Enter the shared secret that will be used to authenticate "
+"to the secondary RADIUS server"
 msgstr ""
 
 #: src/www/vpn_l2tp.php:437
@@ -8483,7 +8522,9 @@ msgstr ""
 msgid "Enter the start address of the %s client address range:"
 msgstr ""
 
-msgid "Enter the text between &quot;$&quot; and &quot;*&quot; of a NMEA command string:"
+#: src/www/services_ntpd_gps.php:563
+msgid ""
+"Enter the text between &quot;$&quot; and &quot;*&quot; of a NMEA command string:"
 msgstr ""
 
 #: src/www/services_dhcp.php:1095
@@ -8500,13 +8541,21 @@ msgstr ""
 msgid "Enter value for Reflection timeout in seconds."
 msgstr ""
 
-msgid "Entries denoted by "Current architecture" match the architecture of your current installation, such as %s. Changing architectures during an upgrade is not recommended, and may require a manual reboot after the update completes."
+#: src/www/system_firmware_settings.php:144
+msgid ""
+"Entries denoted by \"Current architecture\" match the architecture of your current installation, such as %s. Changing architectures during an upgrade is not recommended, and may require a manual reboot after the update completes."
 msgstr ""
 
-msgid "Entries in this area override an entire domain by specifying an". 	" authoritative DNS server to be queried for that domain."
+#: src/www/services_unbound.php:440
+msgid ""
+"Entries in this area override an entire domain by specifying an"
+" authoritative DNS server to be queried for that domain."
 msgstr ""
 
-msgid "Entries in this area override an entire domain, and subdomains, by specifying an". 										" authoritative DNS server to be queried for that domain."
+#: src/www/services_dnsmasq.php:433
+msgid ""
+"Entries in this area override an entire domain, and subdomains, by specifying an"
+" authoritative DNS server to be queried for that domain."
 msgstr ""
 
 #: src/www/services_dnsmasq.php:352
@@ -8520,13 +8569,19 @@ msgstr ""
 msgid "Entry added %s"
 msgstr ""
 
+#: src/etc/inc/easyrule.inc:179
+#: src/etc/inc/easyrule.inc:187
 msgid "Entry added"
 msgstr ""
 
-msgid "Error code is '%1$s' - %2$s"
+#: src/etc/inc/pfsense-utils.inc:426
+msgid ""
+"Error code is '%1\$s' - %2\$s"
 msgstr ""
 
-msgid "Error creating interface with mode %1$s.  The %2$s interface may not support creating more clones with the selected mode."
+#: src/www/interfaces_wireless_edit.php:116
+msgid ""
+"Error creating interface with mode %1$s.  The %2$s interface may not support creating more clones with the selected mode."
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:425
@@ -8549,13 +8604,16 @@ msgstr ""
 msgid "Error occurred creating interface, please retry."
 msgstr ""
 
-msgid "Error sending request:"
+#: src/etc/inc/radius.inc:406 
+msgid ""
+"Error sending request:"
 msgstr ""
 
 #: src/www/diag_smart.php:402
 msgid "Error"
 msgstr ""
 
+#: src/etc/inc/authgui.inc:98
 msgid "Error: %1$s Description: %2$s"
 msgstr ""
 
