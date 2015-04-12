@@ -8726,9 +8726,11 @@ msgstr ""
 msgid "Error: could not open XML input"
 msgstr ""
 
+#: src/www/widgets/widgets/interface_statistics.widget.php:94
 msgid "Errors In"
 msgstr ""
 
+#: src/www/widgets/widgets/interface_statistics.widget.php:97
 msgid "Errors Out"
 msgstr ""
 
@@ -8875,6 +8877,7 @@ msgstr ""
 msgid "Failed to add pass rule."
 msgstr ""
 
+#: src/etc/inc/interfaces.inc:2255
 msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
 msgstr ""
 
@@ -8882,6 +8885,7 @@ msgstr ""
 msgid "Failed to create block rule, alias, or add host."
 msgstr ""
 
+#: src/www/status_rrd_graph_img.php:1234
 msgid "Failed to create graph with error code %1$s, the error is: %2$s"
 msgstr ""
 
@@ -8893,6 +8897,7 @@ msgstr ""
 msgid "Failed to install package."
 msgstr ""
 
+#: src/www/system_firmware.php:78
 msgid "Failed to write file to disk"
 msgstr ""
 
@@ -8913,6 +8918,9 @@ msgstr ""
 msgid "Fastforwarding (see http://lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html)"
 msgstr ""
 
+#: src/www/firewall_rules.php:592
+#: src/www/firewall_schedule.php:31
+#: src/www/firewall_schedule_edit.php:53
 msgid "February"
 msgstr ""
 
@@ -9127,7 +9135,13 @@ msgstr ""
 msgid "First level tag"
 msgstr ""
 
-msgid "Floating rules are evaluated on a first-match basis (i.e. " . 													"the action of the first rule to match a packet will be executed) only " .
+#: src/www/firewall_rules.php:885
+msgid ""
+"Floating rules are evaluated on a first-match basis (i.e. "
+"the action of the first rule to match a packet will be executed) only " .
+"if the 'quick' option is checked on a rule. Otherwise they will only apply if no "
+"other rules match. Pay close attention to the rule order and options "
+"chosen. If no rule here matches, the per-interface or default rules are used. "
 msgstr ""
 
 #: src/www/firewall_rules.php:372
@@ -9150,10 +9164,16 @@ msgstr ""
 msgid "For a WAN, enter the new %s %s upstream gateway address."
 msgstr ""
 
+#: src/www/services_ntpd.php:302
 msgid "For best results three to five servers should be configured here."
 msgstr ""
 
-msgid "For correct operation, the GRE device needs a route to the destination". 						    " that is less specific than the one over the tunnel.  (Basically, there".
+#: src/www/interfaces_gre_edit.php:224
+msgid ""
+"For correct operation, the GRE device needs a route to the destination"
+" that is less specific than the one over the tunnel.  (Basically, there"
+" needs to be a route to the decapsulating host that does not run over the"
+" tunnel, as this would be a loop."
 msgstr ""
 
 #: src/www/services_dyndns_edit.php:327
@@ -9234,7 +9254,9 @@ msgstr ""
 msgid "FreeBSD Handbook"
 msgstr ""
 
-msgid "FreeDNS (freedns.afraid.org): Enter your "Authentication Token" provided by FreeDNS."
+#: src/www/services_dyndns_edit.php:377
+msgid ""
+"FreeDNS (freedns.afraid.org): Enter your \"Authentication Token\" provided by FreeDNS."
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:2558
@@ -9439,7 +9461,10 @@ msgstr ""
 msgid "Gateway"
 msgstr ""
 
-msgid "Gateways status could not be determined, considering all as up/active. (Group: {$group['name']})"
+#: TODO, there's no way this line will work
+#: src/etc/inc/gwlb.inc:853
+msgid ""
+"Gateways status could not be determined, considering all as up/active. (Group: {$group['name']})"
 msgstr ""
 
 #: src/www/diag_logs_gateways.php:51
