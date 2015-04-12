@@ -12811,7 +12811,9 @@ msgstr ""
 msgid "Matches %1$s regular expression%2$s."
 msgstr ""
 
-msgid "Matching can be negated by preceding the value with "!". Multiple IP addresses or CIDR subnets may be specified. Comma (","
+#: src/www/diag_packet_capture.php:297
+msgid ""
+"Matching can be negated by preceding the value with \"!\". Multiple IP addresses or CIDR subnets may be specified. Comma (\",\") separated values perform a boolean \"and\". Separating with a pipe (\"|\") performs a boolean \"or\"."
 msgstr ""
 
 #: src/www/system_advanced_admin.php:79
@@ -12896,7 +12898,12 @@ msgstr ""
 msgid "Maximum outgoing UDP datagram size"
 msgstr ""
 
-msgid "Maximum outgoing bandwidth for this tunnel. " . 							"Leave empty for no limit. The input value has " .
+#: src/www/vpn_openvpn_client.php:940
+msgid ""
+"Maximum outgoing bandwidth for this tunnel. "
+"Leave empty for no limit. The input value has "
+"to be something between 100 bytes/sec and 100 "
+"Mbytes/sec (entered as bytes per second)"
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:555
@@ -12912,6 +12919,10 @@ msgstr ""
 msgid "Maximum"
 msgstr ""
 
+#: src/www/firewall_rules.php:592
+#: src/www/firewall_schedule.php:31
+#: src/www/firewall_schedule_edit.php:53
+#: src/www/firewall_schedule_edit.php:205
 msgid "May"
 msgstr ""
 
@@ -13067,6 +13078,7 @@ msgstr ""
 msgid "Miscellaneous"
 msgstr ""
 
+#: src/www/system_firmware.php:76
 msgid "Missing a temporary folder"
 msgstr ""
 
@@ -13089,6 +13101,7 @@ msgstr ""
 msgid "Mobile Client"
 msgstr ""
 
+#: src/www/widgets/widgets/ipsec.widget.php:97
 msgid "Mobile Users"
 msgstr ""
 
@@ -13211,6 +13224,7 @@ msgstr ""
 msgid "My Company Inc."
 msgstr ""
 
+#: src/etc/inc/ipsec.inc:39
 msgid "My IP address"
 msgstr ""
 
@@ -13336,7 +13350,11 @@ msgstr ""
 msgid "NOTE: If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token."
 msgstr ""
 
-msgid "NOTE: If you reset the firewall state table, the browser " . 			                      "session may appear to be hung after clicking &quot;Reset&quot;. " .
+#: src/www/diag_resetstate.php:100
+msgid ""
+"NOTE: If you reset the firewall state table, the browser "
+"session may appear to be hung after clicking &quot;Reset&quot;. "
+"Simply refresh the page to continue."
 msgstr ""
 
 #: src/www/system_camanager.php:494
