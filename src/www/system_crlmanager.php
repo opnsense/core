@@ -274,7 +274,7 @@ include("head.inc");
             ?>
             <section class="col-xs-12">
 
-                <? include('system_manager_tabs.php'); ?>
+                <? include('system_certificates_tabs.inc'); ?>
 
                 <div class="content-box tab-content">
 

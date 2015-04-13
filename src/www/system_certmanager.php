@@ -574,7 +574,7 @@ function internalca_change() {
             ?>
             <section class="col-xs-12">
 
-                <?php include('system_manager_tabs.php'); ?>
+                <?php include('system_certificates_tabs.inc'); ?>
 
                 <div class="content-box tab-content table-responsive">
 
