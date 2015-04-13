@@ -431,12 +431,11 @@ include("head.inc");
 					                  <td width="22%" valign="top">&nbsp;</td>
 					                  <td width="78%">
 					                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
-										<a href="services_dyndns.php" class="btn btn-default"><?=gettext("Cancel");?></a>
-
-										<?php if (isset($id) && $a_dyndns[$id]): ?>
-											<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-											<input name="force" type="submit" class="formbtn" value="<?=gettext("Save & Force Update");?>" onclick="enable_change(true)" />
-										<?php endif; ?>
+								<?php if (isset($id) && $a_dyndns[$id]): ?>
+								<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+								<input name="force" type="submit" class="btn btn-primary" value="<?=gettext("Save & Force Update");?>" onclick="enable_change(true)" />
+								<?php endif; ?>
+								<a href="services_dyndns.php" class="btn btn-default"><?=gettext("Cancel");?></a>
 					                  </td>
 					                </tr>
 					                <tr>
