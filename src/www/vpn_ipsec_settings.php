@@ -55,7 +55,6 @@ if ($_POST) {
 	if (!$input_errors) {
 
 		if($_POST['noinstalllanspd'] == "yes") {
-			if (!isset($pconfig['noinstalllanspd']))
 			$config['system']['noinstalllanspd'] = true;
 		} else {
 			if (isset($config['system']['noinstalllanspd']))
