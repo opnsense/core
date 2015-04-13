@@ -90,19 +90,15 @@ $status = ipsec_smp_dump_status();
 
 							<div class="table-responsive">
 								<table class="table table-striped table-sort">
-
 									<thead>
-										<tr>
-											<th class="listhdrr nowrap"><?php echo gettext("Description");?></th>
-											<th class="listhdrr nowrap"><?php echo gettext("Local ID");?></th>
-											<th class="listhdrr nowrap"><?php echo gettext("Local IP");?></th>
-											<th class="listhdrr nowrap"><?php echo gettext("Remote ID");?></th>
-											<th class="listhdrr nowrap"><?php echo gettext("Remote IP");?></th>
-											<th class="listhdrr nowrap"><?php echo gettext("Role");?></th>
-											<th class="listhdrr nowrap"><?php echo gettext("Reauth");?></th>
-											<th class="listhdrr nowrap"><?php echo gettext("Algo");?></th>
-											<th class="listhdrr nowrap"><?php echo gettext("Status");?></th>
-											<td class="list nowrap"></td>
+									<tr>
+										<th class="listhdrr nowrap"><?php echo gettext("Description");?></th>
+										<th class="listhdrr nowrap"><?php echo gettext("Local ID");?></th>
+										<th class="listhdrr nowrap"><?php echo gettext("Local IP");?></th>
+										<th class="listhdrr nowrap"><?php echo gettext("Remote ID");?></th>
+										<th class="listhdrr nowrap"><?php echo gettext("Remote IP");?></th>
+										<th class="listhdrr nowrap"><?php echo gettext("Role");?></th>
+										<th class="listhdrr nowrap"><?php echo gettext("Status");?></th>
 									</tr>
 									</thead>
 									<tbody>
@@ -122,138 +118,115 @@ $status = ipsec_smp_dump_status();
 												}
 									?>
 												<tr>
-													<td class="listlr">
-														<?php echo htmlspecialchars(ipsec_get_descr($con_id));?>
-													</td>
-													<td class="listr">
-												<?php   if (!is_array($ikesa['local']))
-														echo "Unknown";
-													else {
-														if (!empty($ikesa['local']['identification'])) {
-															if ($ikesa['local']['identification'] == '%any')
-																echo 'Any identifier';
-															else
-																echo htmlspecialchars($ikesa['local']['identification']);
-														} else
-															echo 'Unknown';
-													}
-												?>
-													</td>
-													<td class="listr">
-												<?php   if (!is_array($ikesa['local']))
-														echo "Unknown";
-													else {
-														if (!empty($ikesa['local']['address']))
-															echo htmlspecialchars($ikesa['local']['address']) . '<br/>Port:' . htmlspecialchars($ikesa['local']['port']);
-														else
-															echo 'Unknown';
-														if ($ikesa['local']['nat'] != 'false')
-															echo " NAT-T";
-													}
-												?>
-													</td>
-													<td class="listr">
-												<?php   if (!is_array($ikesa['remote']))
-														echo "Unknown";
-													else {
-														$identity = "";
-														if (!empty($ikesa['remote']['identification'])) {
-															if ($ikesa['remote']['identification'] == '%any')
-																$identity = 'Any identifier';
-															else
-																$identity = htmlspecialchars($ikesa['remote']['identification']);
-														}
-
-														if (is_array($ikesa['remote']['auth']) && !empty($ikesa['remote']['auth'][0]['identity'])) {
-															echo htmlspecialchars($ikesa['remote']['auth'][0]['identity']);
-															echo "<br/>{$identity}";
+													<td class="listr"><?php echo htmlspecialchars(ipsec_get_descr($con_id));?></td>
+													<td class="listr"> 
+													<?php   if (!is_array($ikesa['local'])) {
+																	echo "Unknown";
 														} else {
-															if (empty($identity))
-																echo "Unknown";
-															else
-																echo $identity;
+															if (!empty($ikesa['local']['identification'])) {
+																if ($ikesa['local']['identification'] == '%any')
+																	echo 'Any identifier';
+																else
+																	echo htmlspecialchars($ikesa['local']['identification']);
+															} else {
+																echo 'Unknown';
+															}
 														}
-													}
-												?>
+													?>
 													</td>
 													<td class="listr">
-												<?php   if (!is_array($ikesa['remote']))
-														echo "Unknown";
-													else {
-														if (!empty($ikesa['remote']['address']))
-															echo htmlspecialchars($ikesa['remote']['address']) . '<br/>Port:' . htmlspecialchars($ikesa['remote']['port']);
-														else
-															echo 'Unknown';
-														if ($ikesa['remote']['nat'] != 'false')
-															echo " NAT-T";
-													}
-												?>
+													<?php   if (!is_array($ikesa['local'])) {
+															echo "Unknown";
+														} else {
+															if (!empty($ikesa['local']['address'])) {
+																echo htmlspecialchars($ikesa['local']['address']) . '<br/>Port:' . htmlspecialchars($ikesa['local']['port']);
+															} else {
+																echo 'Unknown';
+															}
+															if ($ikesa['local']['nat'] != 'false') {
+																echo " NAT-T";
+															}
+														}
+													?>
 													</td>
 													<td class="listr">
-														IKEv<?php echo htmlspecialchars($ikesa['version']);?>
-														<br/>
+													<?php   if (!is_array($ikesa['remote'])) {
+															echo "Unknown";
+														}
+														else {
+															$identity = "";
+															if (!empty($ikesa['remote']['identification'])) {
+																if ($ikesa['remote']['identification'] == '%any') {
+																	$identity = 'Any identifier';
+																} else {
+																	$identity = htmlspecialchars($ikesa['remote']['identification']);
+																}
+															}
+
+															if (is_array($ikesa['remote']['auth']) && !empty($ikesa['remote']['auth'][0]['identity'])) {
+																echo htmlspecialchars($ikesa['remote']['auth'][0]['identity']);
+																echo "<br/>{$identity}";
+															} else {
+																if (empty($identity)) {
+																	echo "Unknown";
+																} else {
+																	echo $identity;
+																}
+															}
+														}
+													?>
+													</td>
+													<td class="listr">
+													<?php   if (!is_array($ikesa['remote'])) {
+															echo "Unknown";
+														} else {
+															if (!empty($ikesa['remote']['address'])) {
+																echo htmlspecialchars($ikesa['remote']['address']) . '<br/>Port:' . htmlspecialchars($ikesa['remote']['port']);
+															} else {
+																echo 'Unknown';
+															}
+															if ($ikesa['remote']['nat'] != 'false') {
+																echo " NAT-T";
+															}
+														}
+													?>
+													</td>
+													<td class="listr">
 														<?php echo htmlspecialchars($ikesa['role']);?>
 
 													</td>
 													<td class="listr">
-														<?php echo htmlspecialchars($ikesa['reauth']);?>
-													</td>
-													<td class="listr">
-														<?php
-															echo htmlspecialchars($ikesa['encalg']);
-															echo "<br/>";
-															echo htmlspecialchars($ikesa['intalg']);
-															echo "<br/>";
-															echo htmlspecialchars($ikesa['prfalg']);
-															echo "<br/>";
-															echo htmlspecialchars($ikesa['dhgroup']);
-														?>
-													</td>
-													<td class="listr">
-														<center>
 															<span class="<?php echo $icon; ?>" title="<?php echo $ikesa['status']; ?>" alt=""></span>
-															<br/><?php echo htmlspecialchars($ikesa['status']);?>
-															<br/><?php echo htmlspecialchars($ikesa['established']);?>
-														</center>
+															<small><?php echo htmlspecialchars($ikesa['status']);?></small>
 													</td>
 													<td >
 													<?php if ($icon != "glyphicon glyphicon-play text-success"): ?>
-														<center>
-															<a href="diag_ipsec.php?act=connect&amp;ikeid=<?php echo $con_id; ?>">
-															<span class="glyphicon glyphicon-play text-default" alt="Connect VPN" title="Connect VPN"></span>
-															</a>
-														</center>
+														<a href="diag_ipsec.php?act=connect&amp;ikeid=<?php echo $con_id; ?>">
+														<span class="glyphicon glyphicon-play text-default" alt="Connect VPN" title="Connect VPN"></span>
+														</a>
 													<?php else: ?>
-														<center>
-															<a href="diag_ipsec.php?act=ikedisconnect&amp;ikeid=<?php echo $con_id; ?>">
-															<span class="glyphicon glyphicon-stop text-default" alt="Disconnect VPN" title="Disconnect VPN"></span>
-															</a>
-															<a href="diag_ipsec.php?act=ikedisconnect&amp;ikeid=<?php echo $con_id; ?>&amp;ikesaid=<?php echo $ikesa['id']; ?>">
-															<span class="glyphicon glyphicon-remove text-default" alt="Disconnect VPN Connection" title="Disconnect VPN Connection" border="0"></span>
-															</a>
-														</center>
+														<a href="diag_ipsec.php?act=ikedisconnect&amp;ikeid=<?php echo $con_id; ?>">
+														<span class="glyphicon glyphicon-stop text-default" alt="Disconnect VPN" title="Disconnect VPN"></span>
+														</a>
+														<a href="diag_ipsec.php?act=ikedisconnect&amp;ikeid=<?php echo $con_id; ?>&amp;ikesaid=<?php echo $ikesa['id']; ?>">
+														<span class="glyphicon glyphicon-remove text-default" alt="Disconnect VPN Connection" title="Disconnect VPN Connection" border="0"></span>
+														</a>
 													<?php endif; ?>
-													</td>
-													<td valign="middle" class="list nowrap">
-														<table border="0" cellspacing="0" cellpadding="1" summary="">
-														</table>
 													</td>
 												</tr>
 												<?php if (is_array($ikesa['childsalist'])): ?>
 												<tr>
-													<td class="listrborder" colspan="9">
+													<td class="listrborder" colspan="10">
 													<div id="btnchildsa-<?=$ikeid;?>">
 														<input  type="button" onclick="show_childsa('childsa-<?=$ikeid;?>','btnchildsa-<?=$ikeid;?>');" value="+" /> - Show child SA entries
 													</div>
-													<table class="tabcont" width="100%" height="100%" border="0" cellspacing="0" cellpadding="0" id="childsa-<?=$ikeid;?>" style="display:none" summary="">
+													<table class="table table-sort" id="childsa-<?=$ikeid;?>" style="display:none">
 													<thead>
 														<tr>
+															<th> </th>
 															<th class="listhdrr nowrap"><?php echo gettext("Local subnets");?></th>
 															<th class="listhdrr nowrap"><?php echo gettext("Local SPI(s)");?></th>
 															<th class="listhdrr nowrap"><?php echo gettext("Remote subnets");?></th>
-															<th class="listhdrr nowrap"><?php echo gettext("Times");?></th>
-															<th class="listhdrr nowrap"><?php echo gettext("Algo");?></th>
-															<th class="listhdrr nowrap"><?php echo gettext("Stats");?></th>
 														</tr>
 													</thead>
 													<tbody>
@@ -262,6 +235,11 @@ $status = ipsec_smp_dump_status();
 															foreach ($ikesa['childsalist']['childsa'] as $childsa) {
 													?>
 														<tr valign="top">
+															<td>
+																<a href="diag_ipsec.php?act=childdisconnect&amp;ikeid=<?php echo $con_id; ?>&amp;ikesaid=<?php echo $childsa['reqid']; ?>">
+																<span class="glyphicon glyphicon-remove text-default" alt="Disconnect Child SA" title="Disconnect Child SA"></span>
+																</a>
+															</td>
 															<td class="listlr nowrap">
 													<?php	if (is_array($childsa['local']) && is_array($childsa['local']['networks']) && is_array($childsa['local']['networks']['network'])) {
 															foreach ($childsa['local']['networks']['network'] as $lnets) {
@@ -287,52 +265,6 @@ $status = ipsec_smp_dump_status();
 														} else
 															echo "Unknown";
 													?>
-															</td>
-															<td class="listr nowrap">
-																<?php
-																	echo "Rekey: " . htmlspecialchars($childsa['rekey']);
-																	echo "<br/>Life: " . htmlspecialchars($childsa['lifetime']);
-																	echo "<br/>Install: " .htmlspecialchars($childsa['installtime']);
-
-																?>
-															</td>
-															<td class="listr nowrap">
-															<?php
-																echo htmlspecialchars($childsa['encalg']);
-																echo "<br/>";
-																echo htmlspecialchars($childsa['intalg']);
-																echo "<br/>";
-																if (!empty($childsa['prfalg'])) {
-																	echo htmlspecialchars($childsa['prfalg']);
-																	echo "<br/>";
-																}
-																if (!empty($childsa['dhgroup'])) {
-																	echo htmlspecialchars($childsa['dhgroup']);
-																	echo "<br/>";
-																}
-																if (!empty($childsa['esn'])) {
-																	echo htmlspecialchars($childsa['esn']);
-																	echo "<br/>";
-																}
-																echo "IPComp: " . htmlspecialchars($childsa['ipcomp']);
-															?>
-															</td>
-															<td class="listr nowrap">
-															<?php
-																echo "Bytes-In: " . htmlspecialchars($childsa['bytesin']) . "<br/>Packets-In: " . htmlspecialchars($childsa['packetsin']);;
-																echo "<br/>";
-																echo "Bytes-Out: " . htmlspecialchars($childsa['bytesout']) . "<br/>Packets-Out: " . htmlspecialchars($childsa['packetsout']);;
-															?>
-															</td>
-															<td>
-																<center>
-																	<a href="diag_ipsec.php?act=childdisconnect&amp;ikeid=<?php echo $con_id; ?>&amp;ikesaid=<?php echo $childsa['reqid']; ?>">
-																	<span class="glyphicon glyphicon-remove text-default" alt="Disconnect Child SA" title="Disconnect Child SA"></span>
-																	</a>
-																</center>
-															</td>
-															<td class="list nowrap">
-																&nbsp;
 															</td>
 														</tr>
 													<?php } } ?>
@@ -395,26 +327,14 @@ $status = ipsec_smp_dump_status();
 												</td>
 												<td class="listr" >
 												</td>
-												<td class="listr" >
-												</td>
-												<td class="listr" >
-												</td>
 												<td class="listr">
-													<center>
-														<span class="glyphicon glyphicon-remove text-warning" title="Disconnected" alt=""></span>
-														<small>Disconnected</small>
-													</center>
+													<span class="glyphicon glyphicon-remove text-warning" title="Disconnected" alt=""></span>
+													<small>Disconnected</small>
 												</td>
 												<td >
-													<center>
-														<a href="diag_ipsec.php?act=connect&amp;ikeid=<?php echo $ph1ent['ikeid']; ?>">
-														<span class="glyphicon glyphicon-play text-default" alt="Connect VPN" title="Connect VPN"></span>
-														</a>
-													</center>
-												</td>
-												<td valign="middle" class="list nowrap">
-													<table border="0" cellspacing="0" cellpadding="1" summary="">
-													</table>
+													<a href="diag_ipsec.php?act=connect&amp;ikeid=<?php echo $ph1ent['ikeid']; ?>">
+													<span class="glyphicon glyphicon-play text-default" alt="Connect VPN" title="Connect VPN"></span>
+													</a>
 												</td>
 											</tr>
 									<?php
@@ -450,7 +370,7 @@ $status = ipsec_smp_dump_status();
 function show_childsa(id, buttonid) {
 	document.getElementById(buttonid).innerHTML='';
 	aodiv = document.getElementById(id);
-	aodiv.style.display = "block";
+	aodiv.style.display = "";
 }
 //]]>
 </script>
