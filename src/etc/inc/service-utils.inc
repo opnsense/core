@@ -240,21 +240,21 @@ if (!function_exists('get_service_status')) {
 		global $g;
 		switch ($service['name']) {
 			case "openvpn":
-				$running = isvalidpid("{$g['varrun_path']}/openvpn_{$service['mode']}{$service['vpnid']}.pid");
+				$running = isvalidpid("/var/run/openvpn_{$service['mode']}{$service['vpnid']}.pid");
 				break;
 			case "captiveportal":
-				$running = isvalidpid("{$g['varrun_path']}/lighty-{$service['zone']}-CaptivePortal.pid");
+				$running = isvalidpid("/var/run/lighty-{$service['zone']}-CaptivePortal.pid");
 				if (isset($config['captiveportal'][$service['zone']]['httpslogin']))
-					$running = $running && isvalidpid("{$g['varrun_path']}/lighty-{$service['zone']}-CaptivePortal-SSL.pid");
+					$running = $running && isvalidpid("/var/run/lighty-{$service['zone']}-CaptivePortal-SSL.pid");
 				break;
 			case "vhosts-http":
-				$running = isvalidpid("{$g['varrun_path']}/vhosts-http.pid");
+				$running = isvalidpid("/var/run/vhosts-http.pid");
 				break;
 			case "dhcrelay6":
-				$running = isvalidpid("{$g['varrun_path']}/dhcrelay6.pid");
+				$running = isvalidpid("/var/run/dhcrelay6.pid");
 				break;
 			case 'ipsec':
-				$running = isvalidpid("{$g['varrun_path']}/charon.pid");
+				$running = isvalidpid("/var/run/charon.pid");
 				break;
 			default:
 				$running = is_process_running($service['name']);
@@ -410,21 +410,21 @@ if (!function_exists('service_control_stop')) {
 		global $g;
 		switch($name) {
 			case 'radvd':
-				killbypid("{$g['varrun_path']}/radvd.pid");
+				killbypid("/var/run/radvd.pid");
 				break;
 			case 'captiveportal':
 				$zone = htmlspecialchars($extras['zone']);
-				killbypid("{$g['varrun_path']}/lighty-{$zone}-CaptivePortal.pid");
-				killbypid("{$g['varrun_path']}/lighty-{$zone}-CaptivePortal-SSL.pid");
+				killbypid("/var/run/lighty-{$zone}-CaptivePortal.pid");
+				killbypid("/var/run/lighty-{$zone}-CaptivePortal-SSL.pid");
 				break;
 			case 'ntpd':
 				killbyname("ntpd");
 				break;
 			case 'apinger':
-				killbypid("{$g['varrun_path']}/apinger.pid");
+				killbypid("/var/run/apinger.pid");
 				break;
 			case 'bsnmpd':
-				killbypid("{$g['varrun_path']}/snmpd.pid");
+				killbypid("/var/run/snmpd.pid");
 				break;
 			case 'choparp':
 				killbyname("choparp");
@@ -433,16 +433,16 @@ if (!function_exists('service_control_stop')) {
 				killbyname("dhcpd");
 				break;
 			case 'dhcrelay':
-				killbypid("{$g['varrun_path']}/dhcrelay.pid");
+				killbypid("/var/run/dhcrelay.pid");
 				break;
 			case 'dhcrelay6':
-				killbypid("{$g['varrun_path']}/dhcrelay6.pid");
+				killbypid("/var/run/dhcrelay6.pid");
 				break;
 			case 'dnsmasq':
-				killbypid("{$g['varrun_path']}/dnsmasq.pid");
+				killbypid("/var/run/dnsmasq.pid");
 				break;
 			case 'unbound':
-				killbypid("{$g['varrun_path']}/unbound.pid");
+				killbypid("/var/run/unbound.pid");
 				break;
 			case 'igmpproxy':
 				killbyname("igmpproxy");
@@ -460,7 +460,7 @@ if (!function_exists('service_control_stop')) {
 				$vpnmode = htmlspecialchars($extras['vpnmode']);
 				if (($vpnmode == "server") or ($vpnmode == "client")) {
 					$id = htmlspecialchars($extras['id']);
-					$pidfile = "{$g['varrun_path']}/openvpn_{$vpnmode}{$id}.pid";
+					$pidfile = "/var/run/openvpn_{$vpnmode}{$id}.pid";
 					killbypid($pidfile);
 				}
 				break;
@@ -493,7 +493,7 @@ if (!function_exists('service_control_restart')) {
 				system_ntp_configure();
 				break;
 			case 'apinger':
-				killbypid("{$g['varrun_path']}/apinger.pid");
+				killbypid("/var/run/apinger.pid");
 				setup_gateways_monitor();
 				break;
 			case 'bsnmpd':
