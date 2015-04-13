@@ -632,7 +632,7 @@ function get_configured_carp_interface_list($carpinterface = "", $family = "inet
 
 	$iflist = array();
 
-	if(is_array($config['virtualip']['vip'])) {
+	if(isset($config['virtualip']['vip']) && is_array($config['virtualip']['vip'])) {
 		$viparr = &$config['virtualip']['vip'];
 		foreach ($viparr as $vip) {
 			switch ($vip['mode']) {
@@ -661,7 +661,7 @@ function get_configured_ip_aliases_list($returnfullentry = false) {
 
 	$alias_list=array();
 
-	if(is_array($config['virtualip']['vip'])) {
+	if(isset($config['virtualip']['vip']) && is_array($config['virtualip']['vip'])) {
 		$viparr = &$config['virtualip']['vip'];
 		foreach ($viparr as $vip) {
 			if ($vip['mode']=="ipalias") {
