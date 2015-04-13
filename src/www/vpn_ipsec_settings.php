@@ -145,7 +145,7 @@ function maxmss_checked(obj) {
 
 			    <section class="col-xs-12">
 
-				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.php'); ?>
+				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.inc'); ?>
 
 					<div class="tab-content content-box col-xs-12">
 

@@ -59,7 +59,7 @@ include("head.inc");
 			    <section class="col-xs-12">
 
 
-					<? include('diag_logs_tabs.php'); ?>
+					<? include('diag_logs_tabs.inc'); ?>
 
 
 						<div class="tab-content content-box col-xs-12">

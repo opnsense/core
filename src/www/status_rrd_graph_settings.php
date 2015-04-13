@@ -121,7 +121,7 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-				<? include("status_rrd_graph_tabs.php"); ?>
+				<? include("status_rrd_graph_tabs.inc"); ?>
 
 					<div class="tab-content content-box col-xs-12">
 

@@ -84,7 +84,7 @@ $status = ipsec_smp_dump_status();
 
 			    <section class="col-xs-12">
 
-				<? $active_tab = "/diag_ipsec.php"; include('diag_ipsec_tabs.php'); ?>
+				<? $active_tab = "/diag_ipsec.php"; include('diag_ipsec_tabs.inc'); ?>
 
 					<div class="tab-content content-box col-xs-12">
 
