@@ -49,10 +49,6 @@ if (!empty($service_name)) {
 	sleep(5);
 }
 
-/* batch mode, allow other scripts to call this script */
-if($_GET['batch'])
-	exit;
-
 $pgtitle = array(gettext("Status"),gettext("Services"));
 include("head.inc");
 

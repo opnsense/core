@@ -451,7 +451,7 @@ include("head.inc");
 									<td class="listt" align="center" valign="middle">
 										<input name="togglep2_<?=$ph2index;?>" src="/themes/<?= $g['theme']; ?>/images/icons/icon_<?=$iconfn?>.gif"
 											title="<?=gettext("click to toggle enabled/disabled status");?>"
-											type="image" style="height:11;width:11;border:0" />
+											type="image" style="height:11;width:11;border:0" value="" />
 										<button name="togglep2_<?=$ph2index;?>_x"
 											title="<?=gettext("click to toggle enabled/disabled status");?>"
 											type="submit"

@@ -27,6 +27,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("xmlparse.inc");
 
 /* IPsec defines */
 $ipsec_loglevels = array("dmn" => "Daemon", "mgr" => "SA Manager", "ike" => "IKE SA", "chd" => "IKE Child SA",
@@ -316,12 +317,12 @@ function ipsec_phase1_status($ipsec_status, $ikeid) {
 function ipsec_smp_dump_status() {
 	global $config, $g, $custom_listtags;
 
-	if (!file_exists("{$g['varrun_path']}/charon.xml")) {
+	if (!file_exists("/var/run/charon.xml")) {
 		log_error("IPsec daemon seems to have issues or not running!");
 		return;
 	}
 
-	$fd = @fsockopen("unix://{$g['varrun_path']}/charon.xml");
+	$fd = @fsockopen("unix:///var/run/charon.xml");
 	if (!$fd) {
 		log_error("Could not read status from ipsec");
 		return;

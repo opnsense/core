@@ -87,10 +87,7 @@ function get_shortcut_main_link($shortcut_section, $addspace = true, $service = 
 			break;
 	}
 	if(!empty($link) && ($_SERVER['REQUEST_URI'] != "/{$link}"))
-		if ($_SERVER['REQUEST_URI'] != "/status_services.php")
-			return "{$space}<a href=\"{$link}\" title=\"" . gettext("Main page for this section") . "\">Main page</a>";
-		else
-			return "{$space}<a href=\"{$link}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Main page for this section") . "\"><span class=\"glyphicon glyphicon-home\"></span></a>";
+		return "{$space}<a href=\"{$link}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Main page for this section") . "\"><span class=\"glyphicon glyphicon-home\"></span></a>";
 }
 
 function get_shortcut_status_link($shortcut_section, $addspace = true, $service = array()) {
@@ -114,20 +111,14 @@ function get_shortcut_status_link($shortcut_section, $addspace = true, $service 
 			break;
 	}
 	if(!empty($link))
-		if ($_SERVER['REQUEST_URI'] != "/status_services.php")
-			return "{$space}<a href=\"{$link}\" title=\"" . gettext("Status of items on this page") . "\">Status</a>";
-		else
-			return "{$space}<a href=\"{$link}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Status of items on this page") . "\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>";
+		return "{$space}<a href=\"{$link}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Status of items on this page") . "\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>";
 }
 
 function get_shortcut_log_link($shortcut_section, $addspace = true) {
 	global $g, $shortcuts;
 	$space = ($addspace) ? "&nbsp;" : "" ;
 	if(!empty($shortcut_section) && !empty($shortcuts[$shortcut_section]['log'])) {
-		if ($_SERVER['REQUEST_URI'] != "/status_services.php")
-			return "{$space}<a href=\"{$shortcuts[$shortcut_section]['log']}\" title=\"" . gettext("Log entries for items on this page") . "\">Log</a>";
-		else
-			return "{$space}<a href=\"{$shortcuts[$shortcut_section]['log']}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Log entries for items on this page") . "\"><span class=\"glyphicon glyphicon-list\"></span></a>";
+		return "{$space}<a href=\"{$shortcuts[$shortcut_section]['log']}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Log entries for items on this page") . "\"><span class=\"glyphicon glyphicon-list\"></span></a>";
 	}
 }
 
