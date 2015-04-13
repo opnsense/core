@@ -345,7 +345,7 @@ function method_change() {
 
             <section class="col-xs-12">
 
-                <? include('system_tabs.php'); ?>
+                <? include('system_manager_tabs.php'); ?>
 
                 <div class="content-box tab-content table-responsive" style="overflow: auto;">
 
