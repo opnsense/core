@@ -19527,10 +19527,25 @@ msgstr ""
 msgid "Support for IPsec Mobile clients is enabled but a Phase1 definition was not found"
 msgstr ""
 
-msgid "Supports Cisco EtherChannel.  This is a static setup and " . 						                  "does not negotiate aggregation with the peer or exchange " .
+#: src/www/interfaces_lagg_edit.php:194
+msgid ""
+"Supports Cisco EtherChannel.  This is a static setup and "
+"does not negotiate aggregation with the peer or exchange "
+"frames to monitor the link."
 msgstr ""
 
-msgid "Supports the IEEE 802.3ad Link Aggregation Control Protocol " . 						                  "(LACP) and the Marker Protocol.  LACP will negotiate a set " .
+#: src/www/interfaces_lagg_edit.php:198
+msgid ""
+"Supports the IEEE 802.3ad Link Aggregation Control Protocol " .
+"(LACP) and the Marker Protocol.  LACP will negotiate a set " .
+"of aggregable links with the peer in to one or more Link " .
+"Aggregated Groups.  Each LAG is composed of ports of the " .
+"same speed, set to full-duplex operation.  The traffic will " .
+"be balanced across the ports in the LAG with the greatest " .
+"total speed, in most cases there will only be one LAG which " .
+"contains all ports.  In the event of changes in physical " .
+"connectivity, Link Aggregation will quickly converge to a " .
+"new configuration."
 msgstr ""
 
 #: src/www/system_advanced_network.php:267
@@ -19605,7 +19620,10 @@ msgstr ""
 msgid "System Logs"
 msgstr ""
 
-msgid "System Logs, " . "Firewall Tab"
+#: src/www/easyrule.php:76
+msgid ""
+"System Logs, "
+"Firewall Tab"
 msgstr ""
 
 #: src/www/system_groupmanager_addprivs.php:169
@@ -19716,10 +19734,11 @@ msgstr ""
 msgid "System: " .
 msgstr ""
 
-msgid "System: " . 												"General setup"
-msgstr ""
-
-msgid "System: " . 											"General setup"
+#: src/www/services_dhcp.php:1189
+#: src/www/services_dhcpv6.php:829
+msgid ""
+"System: "
+"General setup"
 msgstr ""
 
 #: src/www/system_firmware_settings.php:156
@@ -19902,17 +19921,21 @@ msgstr ""
 msgid "Text type cannot include quotation marks."
 msgstr ""
 
+#: src/www/services_dhcp.php:581:
 msgid "Text"
 msgstr ""
 
-msgid "That is not a valid backup number.n"
+#: src/etc/rc.restore_config_backup:58
+msgid "That is not a valid backup number.\n"
 msgstr ""
 
 #: src/www/system_usermanager.php:215
 msgid "That username is reserved by the system."
 msgstr ""
 
-msgid "The %1$s package is missing required dependencies and must be reinstalled. %2$s"
+#: src/etc/inc/pkg-utils.inc:263
+msgid ""
+"The %1$s package is missing required dependencies and must be reinstalled. %2$s"
 msgstr ""
 
 #: src/www/interfaces.php:1556
@@ -19940,13 +19963,21 @@ msgstr ""
 msgid "The 1:1 mapping will only be used for connections to or from the specified destination."
 msgstr ""
 
-msgid "The <b>upstream</b> network interface is the outgoing interface which is". 								      " responsible for communicating to available multicast data sources.".
+#: src/www/services_igmpproxy_edit.php:193
+msgid ""
+"The <b>upstream</b> network interface is the outgoing interface which is"
+" responsible for communicating to available multicast data sources."
+" There can only be one upstream interface."
 msgstr ""
 
-msgid "The <i>noselect</i> option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed."
+#: src/www/services_ntpd.php:306
+msgid ""
+"The <i>noselect</i> option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed."
 msgstr ""
 
-msgid "The <i>prefer</i> option indicates that NTP should favor the use of this server more than all others."
+#: src/www/services_ntpd.php:304
+msgid ""
+"The <i>prefer</i> option indicates that NTP should favor the use of this server more than all others."
 msgstr ""
 
 #: src/www/system_advanced_firewall.php:79
@@ -20046,7 +20077,10 @@ msgstr ""
 msgid "The IGMP entry list has been changed"
 msgstr ""
 
-msgid "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %1$s has been automatically replaced with %2$s"
+#: TODO: 'file_notice' message is in english, all of them are...
+#: src/etc/inc/interfaces.inc:2980
+msgid ""
+"The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %1$s has been automatically replaced with %2$s"
 msgstr ""
 
 #: src/www/vpn_l2tp_users_edit.php:91
@@ -20077,10 +20111,14 @@ msgstr ""
 msgid "The IPv4 %s address has been set to %s"
 msgstr ""
 
-msgid "The IPv4 gateway address '{$_POST['gateway']}' can not be used as a IPv6 gateway'."
+#: src/www/system_gateways_edit.php:190
+msgid ""
+"The IPv4 gateway address '{$_POST['gateway']}' can not be used as a IPv6 gateway'."
 msgstr ""
 
-msgid "The IPv4 monitor address '{$_POST['monitor']}' can not be used on a IPv6 gateway'."
+#: src/www/system_gateways_edit.php:199
+msgid ""
+"The IPv4 monitor address '{$_POST['monitor']}' can not be used on a IPv6 gateway'."
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:479
@@ -20088,9 +20126,12 @@ msgstr ""
 msgid "The IPv6 %s address has been set to %s"
 msgstr ""
 
-msgid "The IPv6 gateway address '{$_POST['gateway']}' can not be used as a IPv4 gateway'."
+#: src/www/system_gateways_edit.php:187
+msgid ""
+"The IPv6 gateway address '{$_POST['gateway']}' can not be used as a IPv4 gateway'."
 msgstr ""
 
+#: src/www/system_gateways_edit.php:196
 msgid "The IPv6 monitor address '{$_POST['monitor']}' can not be used on a IPv4 gateway'."
 msgstr ""
 
@@ -20216,7 +20257,9 @@ msgstr ""
 msgid "The alias name must be less than 32 characters long and may only consist of the characters"
 msgstr ""
 
-msgid "The alias(es): %s cannot be nested because they are not of the same type."
+#: src/www/firewall_aliases_edit.php:315
+msgid ""
+"The alias(es): %s cannot be nested because they are not of the same type."
 msgstr ""
 
 #: src/www/system_gateways_edit.php:370
@@ -20284,10 +20327,9 @@ msgstr ""
 msgid "The changes have been applied successfully."
 msgstr ""
 
-msgid "The command '%1$s'                 // returned exit code '%2$d', the output was '%3$s' "
-msgstr ""
-
-msgid "The command '%1$s' returned exit code '%2$d', the output was '%3$s' "
+#: src/etc/inc/util.inc:1092
+msgid ""
+"The command '%1\$s' returned exit code '%2\$d', the output was '%3\$s' "
 msgstr ""
 
 #: src/www/services_snmp.php:327
@@ -20319,7 +20361,10 @@ msgstr ""
 msgid "The contents of the HTML/PHP file that you upload here are displayed on authentication success when the logout popup is enabled."
 msgstr ""
 
-msgid "The contents of the HTML/PHP file that you upload here are displayed when an authentication error occurs. " . 									"You may include"
+#: src/www/services_captiveportal.php:1039:
+msgid ""
+"The contents of the HTML/PHP file that you upload here are displayed when an authentication error occurs. "
+"You may include"
 msgstr ""
 
 #: src/www/pkg_mgr_settings.php:101
@@ -20342,11 +20387,14 @@ msgstr ""
 msgid "The default is 86400 seconds."
 msgstr ""
 
-msgid "The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network. Type "none" for no gateway assignment."
+#: src/www/services_dhcp.php:910
+msgid ""
+"The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network. Type \"none\" for no gateway assignment."
 msgstr ""
 
 #: src/www/services_dhcp_edit.php:449
-msgid "The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network."
+msgid ""
+"The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network."
 msgstr ""
 
 #: src/www/services_dhcp.php:917
@@ -20513,7 +20561,10 @@ msgstr ""
 msgid "The firewall tunables have changed.  You must apply the configuration to take affect."
 msgstr ""
 
-msgid "The firewall will normally leave " . 			                      "the state tables intact when changing rules."
+#: src/www/diag_resetstate.php:97
+msgid ""
+"The firewall will normally leave "
+"the state tables intact when changing rules."
 msgstr ""
 
 #: src/www/diag_backup.php:770
@@ -20533,7 +20584,12 @@ msgstr ""
 msgid "The following input errors were detected:"
 msgstr ""
 
-msgid "The format for service curve specifications is (m1, d, m2).  m2 controls " 		      .  "the bandwidth assigned to the queue.  m1 and d are optional and can be "
+#: src/etc/inc/shaper.inc:1999
+msgid ""
+"The format for service curve specifications is (m1, d, m2).  m2 controls "
+"the bandwidth assigned to the queue.  m1 and d are optional and can be "
+"used to control the initial bandwidth assignment.  For the first d milliseconds the queue gets the bandwidth given as m1, afterwards the value "
+"given in m2."
 msgstr ""
 
 #: src/www/system_advanced_firewall.php:446
@@ -20544,13 +20600,19 @@ msgstr ""
 msgid "The frequency that this machine will advertise.  0 means usually master. Otherwise the lowest combination of both values in the cluster determines the master."
 msgstr ""
 
-msgid "The gateway '{$a_gateways[$_POST['gateway']]['gateway']}' is a different Address Family as network '{$_POST['network']}'."
+#: src/www/system_routes_edit.php:89
+msgid ""
+"The gateway '{$a_gateways[$_POST['gateway']]['gateway']}' is a different Address Family as network '{$_POST['network']}'."
 msgstr ""
 
+#: src/www/system_gateways_edit.php:219
 msgid "The gateway IP address "%s" already exists."
 msgstr ""
 
-msgid "The gateway address %1$s does not lie within one of the chosen interface's subnets."
+#: src/www/system_gateways_edit.php:139
+#: src/www/system_gateways_edit.php:167
+msgid ""
+"The gateway address %1\$s does not lie within one of the chosen interface's subnets."
 msgstr ""
 
 #: src/www/services_dhcp.php:243
@@ -20566,7 +20628,9 @@ msgstr ""
 msgid "The gateway configuration has been changed.%sYou must apply the changes in order for them to take effect."
 msgstr ""
 
-msgid "The gateway name "%s" already exists."
+#: TODO: man, do these even work out?
+#: src/www/system_gateways_edit.php:213
+msgid "The gateway name \"%s\" already exists."
 msgstr ""
 
 #: src/www/system_gateway_groups_edit.php:80
@@ -20682,7 +20746,14 @@ msgstr ""
 msgid "The interface is part of a group. Please remove it from the group to continue"
 msgstr ""
 
-msgid "The interface to which this tap instance will be " . 												"bridged. This is not done automatically. You must assign this " .
+#: src/www/vpn_openvpn_server.php:1240
+msgid ""
+"The interface to which this tap instance will be "
+"bridged. This is not done automatically. You must assign this "
+"interface and create the bridge separately. "
+"This setting controls which existing IP address and subnet "
+"mask are used by OpenVPN for the bridge. Setting this to "
+"'none' will cause the Server Bridge DHCP settings below to be ignored."
 msgstr ""
 
 #: src/www/interfaces_bridge_edit.php:559
@@ -20701,6 +20772,7 @@ msgstr ""
 msgid "The length of the passphrase should be between 8 and 63 characters."
 msgstr ""
 
+#: src/etc/inc/filter.inc:300
 msgid "The line in question reads [%1$d]: %2$s"
 msgstr ""
 
@@ -20778,7 +20850,9 @@ msgstr ""
 msgid "The minimum required bandwidth for the queue."
 msgstr ""
 
-msgid "The monitor IP address "%s" is already in use. You must choose a different monitor IP."
+#: src/www/system_gateways_edit.php:225
+msgid ""
+"The monitor IP address "%s" is already in use. You must choose a different monitor IP."
 msgstr ""
 
 #: src/www/system_advanced_misc.php:463
@@ -20797,16 +20871,22 @@ msgstr ""
 msgid "The name '%s' is a reserved word and cannot be used."
 msgstr ""
 
-msgid "The name of the alias may only consist of the characters "a-z, A-Z and 0-9"."
+#: src/www/firewall_aliases_edit.php:653
+msgid ""
+"The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and _\"."
 msgstr ""
 
-msgid "The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and _"."
+#: src/www/firewall_aliases_import.php:178
+msgid ""
+"The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."
 msgstr ""
 
 #: src/www/firewall_schedule_edit.php:799
-msgid "The name of the alias may only consist of the characters a-z, A-Z and 0-9"
+msgid ""
+"The name of the alias may only consist of the characters a-z, A-Z and 0-9"
 msgstr ""
 
+#: src/etc/inc/rrd.inc:192
 msgid "The new RRD now has %1$s DS values and %2$s RRA databases"
 msgstr ""
 
@@ -20893,7 +20973,21 @@ msgstr ""
 msgid "The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53."
 msgstr ""
 
-msgid "The powerd utility monitors the system state and sets various power control " . 										"options accordingly.  It offers four modes (maximum, minimum, adaptive " .
+#: src/www/system_advanced_misc.php:373
+msgid ""
+"The powerd utility monitors the system state and sets various power control "
+"options accordingly.  It offers four modes (maximum, minimum, adaptive "
+"and hiadaptive) that can be individually selected while on AC power or batteries. "
+"The modes maximum, minimum, adaptive and hiadaptive may be abbreviated max, "
+"min, adp, hadp.  Maximum mode chooses the highest performance values.  Minimum "
+"mode selects the lowest performance values to get the most power savings. "
+"Adaptive mode attempts to strike a balance by degrading performance when "
+"the system appears idle and increasing it when the system is busy.  It "
+"offers a good balance between a small performance loss for greatly "
+"increased power savings.  Hiadaptive mode is alike adaptive mode, but " .
+"tuned for systems where performance and interactivity are more important "
+"than power consumption.  It raises frequency faster, drops slower and "
+"keeps twice lower CPU load."
 msgstr ""
 
 #: src/etc/inc/shaper.inc:1008
@@ -20901,10 +20995,10 @@ msgid "The priority must be an integer between 1 and 15."
 msgstr ""
 
 #: src/www/system_gateway_groups_edit.php:308
-msgid "The priority selected here defines in what order failover and balancing of links will be done. " .
-msgstr ""
-
-msgid "The priority selected here defines in what order failover and balancing of links will be done. " . 												"Multiple links of the same priority will balance connections until all links in the priority will be exhausted. " .
+msgid ""
+"The priority selected here defines in what order failover and balancing of links will be done. "
+"Multiple links of the same priority will balance connections until all links in the priority will be exhausted. "
+"If all links in a priority level are exhausted we will use the next available link(s) in the next priority level."
 msgstr ""
 
 #: src/www/system_gateways_edit.php:844
@@ -20932,7 +21026,9 @@ msgstr ""
 msgid "The range is invalid (first element higher than second element)."
 msgstr ""
 
-msgid "The remote gateway "%1$s" is already used by phase1 "%2$s"."
+#: src/www/vpn_ipsec_phase1.php:198
+msgid ""
+"The remote gateway \"%1$s\" is already used by phase1 \"%2$s\"."
 msgstr ""
 
 #: src/etc/inc/xmlrpc_client.inc:157
@@ -20955,7 +21051,9 @@ msgstr ""
 msgid "The schedule name may only consist of the characters a-z, A-Z, 0-9"
 msgstr ""
 
-msgid "The server pool to which clients will be redirected if *ALL* servers in the Virtual Server Pool are offline."
+#: src/www/load_balancer_virtual_server_edit.php:243
+msgid ""
+"The server pool to which clients will be redirected if *ALL* servers in the Virtual Server Pool are offline."
 msgstr ""
 
 #: src/www/interfaces.php:677
@@ -21028,6 +21126,7 @@ msgstr ""
 msgid "The static route configuration has been changed.%sYou must apply the changes in order for them to take effect."
 msgstr ""
 
+#: src/etc/inc/xmlrpc_client.inc:1330
 msgid "The submitted request did not contain this parameter"
 msgstr ""
 
@@ -21101,10 +21200,9 @@ msgstr ""
 
 #: src/etc/inc/shaper.inc:4511
 #: src/etc/inc/shaper.inc:4518
-msgid "The tree on the left helps you navigate through the queues <br />"
-msgstr ""
-
-msgid "The tree on the left helps you navigate through the queues <br />" 	.  "buttons at the bottom represent queue actions and are activated accordingly."
+msgid ""
+"The tree on the left helps you navigate through the queues <br />"
+"buttons at the bottom represent queue actions and are activated accordingly."
 msgstr ""
 
 #: src/www/interfaces_gif_edit.php:71
