@@ -293,8 +293,7 @@ include("head.inc");
 				if ($savemsg) print_info_box($savemsg);
             ?>
             <section class="col-xs-12">
-                <? include('system_advanced_tabs.php'); ?>
-
+                <? include('system_advanced_tabs.inc'); ?>
                 <div class="content-box tab-content">
 
 					<form action="system_advanced_admin.php" method="post" name="iform" id="iform">

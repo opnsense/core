@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005-2007 Scott Ullrich
@@ -133,7 +134,7 @@ include("head.inc");
 			</form>
 
             <section class="col-xs-12">
-                <? include('system_advanced_tabs.php'); ?>
+                <? include('system_advanced_tabs.inc'); ?>
                 <div class="table-responsive content-box tab-content" style="overflow: auto;">
                     <?php if ($act != "edit" ): ?>
 						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
