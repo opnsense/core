@@ -111,7 +111,7 @@ include("head.inc");
         <div class="row">
             <section class="col-xs-12">
 
-                <? include('system_firmware_tabs.php'); ?>
+                <? include('system_firmware_tabs.inc'); ?>
 
                 <div class="content-box tab-content">
 
