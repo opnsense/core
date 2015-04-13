@@ -313,6 +313,7 @@ if (!function_exists('get_service_control_links')) {
 					break;
 				default:
 					$output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}' class=\"btn btn-default\">";
+					break;
 			}
 			$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Stop %sService"),$stitle) . "' class=\"glyphicon glyphicon-stop\" />";
 			$output .= "</a>";
@@ -325,8 +326,8 @@ if (!function_exists('get_service_control_links')) {
 					$output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}&amp;zone={$service['zone']}' class=\"btn btn-default\">";
 					break;
 				default:
-					if ($service_enabled)
-						$output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}' class=\"btn btn-default\">";
+					$output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}' class=\"btn btn-default\">";
+					break;
 			}
 			$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Start %sService"),$stitle) . "' alt='start' class=\"glyphicon glyphicon-play\"/></a>\n";
 		}
