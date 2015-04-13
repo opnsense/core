@@ -18200,13 +18200,24 @@ msgstr ""
 msgid "Set globally in mobile client options"
 msgstr ""
 
-msgid "Set interface as an edge port.  An edge port connects directly to " . 							     "end stations and cannot create bridging loops in the network; this " .
+#: src/www/interfaces_bridge_edit.php:490
+msgid ""
+"Set interface as an edge port.  An edge port connects directly to "
+"end stations and cannot create bridging loops in the network; this "
+"allows it to transition straight to forwarding."
 msgstr ""
 
-msgid "Set the Spanning Tree path cost of interface to value.  The " . 							     "default is calculated from the link speed.  To change a previously selected path cost back to automatic, set the cost to 0. ".
+#: src/www/interfaces_bridge_edit.php:418
+msgid ""
+"Set the Spanning Tree path cost of interface to value.  The "
+"default is calculated from the link speed.  To change a previously selected path cost back to automatic, set the cost to 0. "
+"The minimum is 1 and the maximum is 200000000."
 msgstr ""
 
-msgid "Set the Spanning Tree priority of interface to value.  The " . 							     "default is 128.  The minimum is 0 and the maximum is 240.  Increments of 16."
+#: src/www/interfaces_bridge_edit.php:404
+msgid ""
+"Set the Spanning Tree priority of interface to value.  The "
+"default is 128.  The minimum is 0 and the maximum is 240.  Increments of 16."
 msgstr ""
 
 #: src/www/vpn_openvpn_client.php:973
@@ -18214,52 +18225,93 @@ msgstr ""
 msgid "Set the TOS IP header value of tunnel packets to match the encapsulated packet value"
 msgstr ""
 
-msgid "Set the bridge priority for Spanning Tree.  The default is 32768. " . 							     "The minimum is 0 and the maximum is 61440."
+#: src/www/interfaces_bridge_edit.php:380
+msgid ""
+"Set the bridge priority for Spanning Tree.  The default is 32768. "
+"The minimum is 0 and the maximum is 61440."
 msgstr ""
 
 #: src/www/load_balancer_setting.php:133
 msgid "Set the global timeout in milliseconds for checks. Leave blank to use the default value of 1000 ms "
 msgstr ""
 
-msgid "Set the interface as a point-to-point link.  This is required for " . 							     "straight transitions to forwarding and should be enabled on a " .
+#: src/www/interfaces_bridge_edit.php:533
+msgid ""
+"Set the interface as a point-to-point link.  This is required for "
+"straight transitions to forwarding and should be enabled on a " .
+"direct link to another RSTP-capable switch."
 msgstr ""
 
 #: src/www/load_balancer_setting.php:141
 msgid "Set the interval in seconds at which the member of a pool will be checked. Leave blank to use the default interval of 10 seconds"
 msgstr ""
 
-msgid "Set the size of the bridge address cache to size.	The default is " . 							     ".100 entries."
+#: src/www/interfaces_bridge_edit.php:431
+msgid ""
+"Set the size of the bridge address cache to size.   The default is "
+".100 entries."
 msgstr ""
 
-msgid "Set the size, in MB, for the /tmp RAM disk. " . 										"Leave blank for 40MB. Do not set lower than 40."
+#: src/www/system_advanced_misc.php:504
+msgid ""
+"Set the size, in MB, for the /tmp RAM disk. "
+"Leave blank for 40MB. Do not set lower than 40."
 msgstr ""
 
-msgid "Set the size, in MB, for the /var RAM disk. " . 										"Leave blank for 60MB. Do not set lower than 60."
+#: src/www/system_advanced_misc.php:513
+msgid ""
+"Set the size, in MB, for the /var RAM disk. "
+"Leave blank for 60MB. Do not set lower than 60."
 msgstr ""
 
-msgid "Set the source tracking timeout for sticky connections. " . 										"By default this is 0, so source tracking is removed as soon as the state expires. " .
+#: src/www/system_advanced_misc.php:334
+msgid ""
+"Set the source tracking timeout for sticky connections. "
+"By default this is 0, so source tracking is removed as soon as the state expires. "
+"Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."
 msgstr ""
 
-msgid "Set the time between broadcasting of Spanning Tree Protocol configuration messages.  The hello time may only be changed when " . 							     "operating in legacy STP mode.  The default is 2 seconds.  The minimum is 1 second and the maximum is 2 seconds."
+#: src/www/interfaces_bridge_edit.php:371
+msgid ""
+"Set the time between broadcasting of Spanning Tree Protocol configuration messages.  The hello time may only be changed when "
+"operating in legacy STP mode.  The default is 2 seconds.  The minimum is 1 second and the maximum is 2 seconds."
 msgstr ""
 
-msgid "Set the time that a Spanning Tree Protocol configuration is " . 							     "valid.  The default is 20 seconds.  The minimum is 6 seconds and " .
+#: src/www/interfaces_bridge_edit.php:352
+msgid ""
+"Set the time that a Spanning Tree Protocol configuration is "
+"valid.  The default is 20 seconds.  The minimum is 6 seconds and "
+"the maximum is 40 seconds."
 msgstr ""
 
-msgid "Set the time that must pass before an interface begins forwarding " . 							     "packets when Spanning Tree is enabled.  The default is 15 seconds.  The minimum is 4 seconds and the maximum is 30 seconds."
+#: src/www/interfaces_bridge_edit.php:362
+msgid ""
+"Set the time that must pass before an interface begins forwarding "
+"packets when Spanning Tree is enabled.  The default is 15 seconds.  The minimum is 4 seconds and the maximum is 30 seconds."
 msgstr ""
 
-msgid "Set the timeout of address cache entries to this number of seconds.  If " . 							     "seconds is zero, then address cache entries will not be expired. " .
+#: src/www/interfaces_bridge_edit.php:441
+msgid ""
+"Set the timeout of address cache entries to this number of seconds.  If "
+"seconds is zero, then address cache entries will not be expired. "
+"The default is 240 seconds."
 msgstr ""
 
-msgid "Set the transmit hold count for Spanning Tree.  This is the number" . 							     " of packets transmitted before being rate limited.  The " .
+#: src/www/interfaces_bridge_edit.php:389
+msgid ""
+"Set the transmit hold count for Spanning Tree.  This is the number"
+" of packets transmitted before being rate limited.  The "
+"default is 6.  The minimum is 1 and the maximum is 10."
 msgstr ""
 
 #: src/www/system_advanced_misc.php:494
-msgid "Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install " .
+msgid "Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install "
 msgstr ""
 
-msgid "Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install " . 										"rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost at reboot, including log data. RRD and DHCP Leases will be retained."
+#: src/www/system_advanced_misc.php:494
+msgid ""
+"Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install "
+"rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost at reboot, including log data. RRD and DHCP Leases will be retained."
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:850
@@ -18270,7 +18322,10 @@ msgstr ""
 msgid "Set this option if you would like to bind to a specific port. Leave this blank or enter 0 for a random dynamic port."
 msgstr ""
 
-msgid "Set this option only if you need a special MX record. Not". 					                   " all services support this."
+#: src/www/services_dyndns_edit.php:338
+msgid ""
+"Set this option only if you need a special MX record. Not"
+" all services support this."
 msgstr ""
 
 #: src/www/vpn_openvpn_client.php:481
@@ -18285,10 +18340,14 @@ msgstr ""
 msgid "Set this option to disable this gateway without removing it from the list."
 msgstr ""
 
+#: src/www/vpn_ipsec_phase1.php:553
 msgid "Set this option to disable this phase1 without " . 												"removing it from the list"
 msgstr ""
 
-msgid "Set this option to disable this phase2 entry without " . 														  "removing it from the list"
+#: src/www/vpn_ipsec_phase2.php:509
+msgid ""
+"Set this option to disable this phase2 entry without "
+"removing it from the list"
 msgstr ""
 
 #: src/www/firewall_nat_1to1_edit.php:306
@@ -18307,9 +18366,13 @@ msgstr ""
 msgid "Set this option to disable this static route without removing it from the list."
 msgstr ""
 
-msgid "Set this option to enable the use of NAT-T (i.e. the encapsulation of ESP in UDP packets) if needed, " . 												"which can help with clients that are behind restrictive firewalls"
+#: src/www/vpn_ipsec_phase1.php:889
+msgid ""
+"Set this option to enable the use of NAT-T (i.e. the encapsulation of ESP in UDP packets) if needed, "
+"which can help with clients that are behind restrictive firewalls"
 msgstr ""
 
+#: src/etc/inc/system.inc:1749
 msgid "Setting hard disk standby... "
 msgstr ""
 
@@ -18390,6 +18453,8 @@ msgstr ""
 msgid "Shared Secret"
 msgstr ""
 
+#: src/www/vpn_openvpn_client.php:253
+#: src/www/vpn_openvpn_server.php:328
 msgid "Shared key"
 msgstr ""
 
@@ -18553,6 +18618,7 @@ msgstr ""
 msgid "Signed 16-bit integer type must be a number in the range -32768 to 32767."
 msgstr ""
 
+#: src/www/services_dhcp.php:583
 msgid "Signed 16-bit integer"
 msgstr ""
 
@@ -18560,6 +18626,7 @@ msgstr ""
 msgid "Signed 32-bit integer type must be a number in the range -2147483648 to 2147483647."
 msgstr ""
 
+#: src/www/services_dhcp.php:583
 msgid "Signed 32-bit integer"
 msgstr ""
 
@@ -18567,6 +18634,7 @@ msgstr ""
 msgid "Signed 8-bit integer type must be a number in the range -128 to 127."
 msgstr ""
 
+#: src/www/services_dhcp.php:583
 msgid "Signed 8-bit integer"
 msgstr ""
 
@@ -18821,7 +18889,12 @@ msgstr ""
 msgid "Specify the maximum number of clients allowed to concurrently connect to this server"
 msgstr ""
 
-msgid "Specify the port on the machine with the " . 					                    "IP address entered above. In case of a port range, specify " .
+#: src/www/firewall_nat_edit.php:799
+msgid ""
+"Specify the port on the machine with the "
+"IP address entered above. In case of a port range, specify "
+"the beginning port of the range (the end port will be calculated "
+"automatically)."
 msgstr ""
 
 #: src/www/firewall_nat_edit.php:770
@@ -19180,10 +19253,18 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-msgid "Status: " . 												"DHCPv6 leases"
+#: TODO: whitespace dup
+#: src/www/services_dhcpv6.php:835
+msgid ""
+"Status: "
+"DHCPv6 leases"
 msgstr ""
 
-msgid "Status: " . 											"DHCP leases"
+#: TODO: whitespace dup
+#: src/www/services_dhcp.php:1195
+msgid ""
+"Status: "
+"DHCP leases"
 msgstr ""
 
 #: src/www/status_graph_cpu.php:34
@@ -19245,9 +19326,12 @@ msgstr ""
 msgid "Strict User/CN Matching"
 msgstr ""
 
-msgid "String type must be enclosed in quotes like "this" or must be a series of octets specified in hexadecimal, separated by colons, like 01:23:45:67:89:ab:cd:ef"
+#: src/www/services_dhcp.php:331
+msgid ""
+"String type must be enclosed in quotes like \"this\" or must be a series of octets specified in hexadecimal, separated by colons, like 01:23:45:67:89:ab:cd:ef"
 msgstr ""
 
+#: src/www/services_dhcp.php:581
 msgid "String"
 msgstr ""
 
@@ -19394,16 +19478,24 @@ msgstr ""
 msgid "Subnet"
 msgstr ""
 
-msgid "Subnets are specified in CIDR format.  " . 			"Select the CIDR mask that pertains to each entry.  " .
+#: src/www/services_router_advertisements.php:100
+msgid ""
+"Subnets are specified in CIDR format.  "
+"Select the CIDR mask that pertains to each entry.  "
+"/128 specifies a single IPv6 host; /64 specifies a normal IPv6 network; etc.  "
+"If no subnets are specified here, the Router Advertisement (RA) Daemon will advertise to the subnet to which the router's interface is assigned."
 msgstr ""
 
-msgid "Successful login for user '%1$s' from: %2$s"
+#: src/etc/inc/auth.inc:1350
+msgid "Successful login for user '%1\$s' from: %2\$s"
 msgstr ""
 
 #: src/etc/inc/easyrule.inc:367
 msgid "Successfully added pass rule!"
 msgstr ""
 
+#: src/etc/rc.restore_config_backup:76
+#: src/www/diag_confbak.php:52
 msgid "Successfully reverted to timestamp %1$s with description "%2$s"."
 msgstr ""
 
@@ -19411,7 +19503,16 @@ msgstr ""
 msgid "Successive connections will be redirected to the servers " .
 msgstr ""
 
-msgid "Successive connections will be redirected to the servers " . 										"in a round-robin manner with connections from the same " .
+#: src/www/system_advanced_misc.php:323
+msgid ""
+"Successive connections will be redirected to the servers "
+"in a round-robin manner with connections from the same "
+"source being sent to the same web server. This 'sticky "
+"connection' will exist as long as there are states that "
+"refer to this connection. Once the states expire, so will "
+"the sticky connection. Further connections from that host "
+"will be redirected to the next web server in the round "
+"robin. Changing this option will restart the Load Balancing service."
 msgstr ""
 
 #: src/www/diag_logs_pills.php:58
