@@ -1,9 +1,9 @@
 <menu>
     <!-- Core menu system including legacy stuff -->
     <System order="0" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
-        <Certificates url="/system_camanager.php">
-                <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php"/>
+        <Certificates url="/system_certmanager.php">
                 <Certificates url="/system_certmanager.php"/>
+                <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php"/>
                 <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php"/>
         </Certificates>
 
