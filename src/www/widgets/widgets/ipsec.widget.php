@@ -45,7 +45,7 @@ if (isset($config['ipsec']['phase1'])){?>
 
 	$spd = ipsec_dump_spd();
 	$sad = ipsec_dump_sad();
-	$mobile = ipsec_dump_mobile();
+	$mobile = array(); // TODO: temporary disabled ( https://github.com/opnsense/core/issues/139 )  ipsec_dump_mobile();
 	$ipsec_status = ipsec_smp_dump_status();
 
 	$activecounter = 0;
@@ -66,8 +66,7 @@ if (isset($config['ipsec']['phase1'])){?>
 			$tun_disabled = "true";
 			continue;
 		}
-
-		if (ipsec_phase1_status($ipsec_status, $ph1ent)) {
+		if (isset($ipsec_status['query']['ikesalist']['ikesa']) && isset($ph1ent['ikeid']) &&  ipsec_phase1_status($ipsec_status['query']['ikesalist']['ikesa'], $ph1ent['ikeid'])) {
 			/* tunnel is up */
 			$iconfn = "true";
 			$activecounter++;
