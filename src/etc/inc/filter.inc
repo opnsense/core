@@ -962,7 +962,7 @@ function filter_generate_optcfg_array()
 		$FilterIflist['openvpn'] = $oic;
 	}
 	/* add interface groups */
-	if(isset($config['ifgroups']['ifgroupentry']) && is_array($config['ifgroups']['ifgroupentry'])) {
+	if(isset($config['ifgroups']['ifgroupentry'])) {
 		foreach($config['ifgroups']['ifgroupentry'] as $ifgen) {
 			$oc = array();
 			$oc['if'] = $ifgen['ifname'];
