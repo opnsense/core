@@ -4580,7 +4580,7 @@ function link_interface_to_vlans($int, $action = "") {
 function link_interface_to_vips($int, $action = "") {
 	global $config;
 
-	if (is_array($config['virtualip']['vip'])) {
+	if (isset($config['virtualip']['vip']) && is_array($config['virtualip']['vip'])) {
 		$result = array();
 		foreach ($config['virtualip']['vip'] as $vip) {
 			if ($int == $vip['interface']) {
