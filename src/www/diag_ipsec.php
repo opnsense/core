@@ -119,7 +119,7 @@ $status = ipsec_smp_dump_status();
 									?>
 												<tr>
 													<td class="listr"><?php echo htmlspecialchars(ipsec_get_descr($con_id));?></td>
-													<td class="listr"> 
+													<td class="listr">
 													<?php   if (!is_array($ikesa['local'])) {
 																	echo "Unknown";
 														} else {

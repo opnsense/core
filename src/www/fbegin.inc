@@ -126,7 +126,7 @@ function active_main_menu() {
 
 // System
 $system_menu = array();
-$system_menu[] = array(gettext("Certificates"), "/system_camanager.php");
+$system_menu[] = array(gettext("Certificates"), "/system_certmanager.php");
 $system_menu[] = array(gettext("Firmware"), "/system_firmware_check.php");
 $system_menu[] = array(gettext("High Availability"), "/system_hasync.php");
 $system_menu[] = array(gettext("Routing"), "/system_gateways.php");
