@@ -432,20 +432,21 @@ function is_hostnamewithport($hostport) {
 }
 
 /* returns true if $ipaddr is a valid dotted IPv4 address or an alias thereof */
-function is_ipaddroralias($ipaddr) {
+function is_ipaddroralias($ipaddr)
+{
 	global $config;
 
 	if (is_alias($ipaddr)) {
-		if (is_array($config['aliases']['alias'])) {
+		if (isset($config['aliases']['alias'])) {
 			foreach ($config['aliases']['alias'] as $alias) {
 				if ($alias['name'] == $ipaddr && !preg_match("/port/i", $alias['type']))
 					return true;
 			}
 		}
 		return false;
-	} else
-		return is_ipaddr($ipaddr);
+	}
 
+	return is_ipaddr($ipaddr);
 }
 
 /* returns true if $subnet is a valid IPv4 or IPv6 subnet in CIDR format
@@ -537,19 +538,21 @@ function is_portrange($portrange) {
 }
 
 /* returns true if $port is a valid port number or an alias thereof */
-function is_portoralias($port) {
+function is_portoralias($port)
+{
 	global $config;
 
 	if (is_alias($port)) {
-		if (is_array($config['aliases']['alias'])) {
+		if (isset($config['aliases']['alias'])) {
 			foreach ($config['aliases']['alias'] as $alias) {
 				if ($alias['name'] == $port && preg_match("/port/i", $alias['type']))
 					return true;
 				}
 			}
 			return false;
-	} else
-		return is_port($port);
+	}
+
+	return is_port($port);
 }
 
 /* create ranges of sequential port numbers (200:215) and remove duplicates */
@@ -627,12 +630,13 @@ function is_inrange($test, $start, $end) {
 }
 
 /* XXX: return the configured carp interface list */
-function get_configured_carp_interface_list($carpinterface = "", $family = "inet") {
+function get_configured_carp_interface_list($carpinterface = '', $family = 'inet')
+{
 	global $config;
 
 	$iflist = array();
 
-	if(isset($config['virtualip']['vip']) && is_array($config['virtualip']['vip'])) {
+	if (isset($config['virtualip']['vip'])) {
 		$viparr = &$config['virtualip']['vip'];
 		foreach ($viparr as $vip) {
 			switch ($vip['mode']) {
@@ -656,12 +660,13 @@ function get_configured_carp_interface_list($carpinterface = "", $family = "inet
 }
 
 /* return the configured IP aliases list */
-function get_configured_ip_aliases_list($returnfullentry = false) {
+function get_configured_ip_aliases_list($returnfullentry = false)
+{
 	global $config;
 
-	$alias_list=array();
+	$alias_list = array();
 
-	if(isset($config['virtualip']['vip']) && is_array($config['virtualip']['vip'])) {
+	if (isset($config['virtualip']['vip'])) {
 		$viparr = &$config['virtualip']['vip'];
 		foreach ($viparr as $vip) {
 			if ($vip['mode']=="ipalias") {
@@ -677,12 +682,13 @@ function get_configured_ip_aliases_list($returnfullentry = false) {
 }
 
 /* return all configured aliases list (IP, carp, proxyarp and other) */
-function get_configured_vips_list() {
+function get_configured_vips_list()
+{
 	global $config;
 
 	$alias_list=array();
 
-	if(is_array($config['virtualip']['vip'])) {
+	if (isset($config['virtualip']['vip'])) {
 		$viparr = &$config['virtualip']['vip'];
 		foreach ($viparr as $vip) {
 			if ($vip['mode'] == "carp")
@@ -788,12 +794,14 @@ function get_configured_ip_addresses() {
 		}
 	}
 	$interfaces = get_configured_carp_interface_list();
-	if (is_array($interfaces))
-		foreach($interfaces as $int => $ipaddr)
+	if (is_array($interfaces)) {
+		foreach($interfaces as $int => $ipaddr) {
 			$ip_array[$int] = $ipaddr;
+		}
+	}
 
 	/* pppoe server */
-	if (is_array($config['pppoes']) && is_array($config['pppoes']['pppoe'])) {
+	if (isset($config['pppoes']['pppoe'])) {
 		foreach($config['pppoes']['pppoe'] as $pppoe) {
 			if ($pppoe['mode'] == "server") {
 				if(is_ipaddr($pppoe['localip'])) {
@@ -812,7 +820,8 @@ function get_configured_ip_addresses() {
  *   interfaces IPv6 Addresses
  *
  */
-function get_configured_ipv6_addresses() {
+function get_configured_ipv6_addresses()
+{
 	require_once("interfaces.inc");
 	$ipv6_array = array();
 	$interfaces = get_configured_interface_list();
@@ -1407,7 +1416,7 @@ function is_interface_vlan_mismatch()
 {
 	global $config;
 
-	if (is_array($config['vlans']['vlan'])) {
+	if (isset($config['vlans']['vlan'])) {
 		foreach ($config['vlans']['vlan'] as $vlan) {
 			if (does_interface_exist($vlan['if']) == false)
 				return true;
@@ -1545,15 +1554,19 @@ function is_URL($url) {
 /*
  * Replace a value on a deep associative array using regex
  */
-function array_replace_values_recursive($data, $match, $replace) {
-	if (empty($data))
+function array_replace_values_recursive($data, $match, $replace)
+{
+	if (empty($data)) {
 		return $data;
+	}
 
-	if (is_string($data))
+	if (is_string($data)) {
 		$data = preg_replace("/{$match}/", $replace, $data);
-	else if (is_array($data))
-		foreach ($data as $k => $v)
+	} elseif (is_array($data)) {
+		foreach ($data as $k => $v) {
 			$data[$k] = array_replace_values_recursive($v, $match, $replace);
+		}
+	}
 
 	return $data;
 }
@@ -1678,30 +1691,34 @@ function get_staticroutes($returnsubnetsonly = false, $returnhostnames = false)
  *   If $type is a string, all aliases of the type specified in $type are returned.
  *   If $type is an array, all aliases of any type specified in any element of $type are returned.
  */
-function get_alias_list($type = null) {
+function get_alias_list($type = null)
+{
 	global $config;
+
 	$result = array();
-	if ($config['aliases']['alias'] <> "" && is_array($config['aliases']['alias'])) {
+
+	if (isset($config['aliases']['alias'])) {
 		foreach ($config['aliases']['alias'] as $alias) {
 			if ($type === null) {
 				$result[] = $alias['name'];
-			}
-			else if (is_array($type)) {
+			} elseif (is_array($type)) {
 				if (in_array($alias['type'], $type)) {
 					$result[] = $alias['name'];
 				}
-			}
-			else if ($type === $alias['type']) {
+			} elseif ($type === $alias['type']) {
 				$result[] = $alias['name'];
 			}
 		}
 	}
+
 	return $result;
 }
 
 /* returns an array consisting of every element of $haystack that is not equal to $needle. */
-function array_exclude($needle, $haystack) {
+function array_exclude($needle, $haystack)
+{
 	$result = array();
+
 	if (is_array($haystack)) {
 		foreach ($haystack as $thing) {
 			if ($needle !== $thing) {
@@ -1709,6 +1726,7 @@ function array_exclude($needle, $haystack) {
 			}
 		}
 	}
+
 	return $result;
 }
 
