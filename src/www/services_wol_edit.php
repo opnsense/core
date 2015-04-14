@@ -40,6 +40,9 @@ require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_wol.php');
 
+if (!isset($config['wol']) || !is_array($config['wol'])) {
+	$config['wol'] = array();
+}
 if (!is_array($config['wol']['wolentry'])) {
 	$config['wol']['wolentry'] = array();
 }
