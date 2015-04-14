@@ -1462,3 +1462,9 @@ $priv_list['user-pptp-dialin']['descr'] = "Indicates whether the user is allowed
 $priv_list['user-pppoe-dialin'] = array();
 $priv_list['user-pppoe-dialin']['name'] = "User - VPN - PPPOE Dialin";
 $priv_list['user-pppoe-dialin']['descr'] = "Indicates whether the user is allowed to dial in via PPPOE";
+
+// sort by name ( case insensitive ) 
+uasort($priv_list,function($a,$b) {
+	return strcasecmp($a["name"], $b["name"]) ;
+});
+

@@ -536,7 +536,7 @@ function local_user_get_groups($user, $all = false)
 	}
 
 	foreach ($config['system']['group'] as $group) {
-		if (is_array($group['member'])) {
+		if (isset($group['member'])) {
 			if (in_array($user['uid'], $group['member']) || ($group['name'] == "all" && $all)) {
 				$groups[] = $group['name'];
 			}

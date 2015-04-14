@@ -32,12 +32,6 @@
 
 require_once 'priv.defs.inc';
 
-if (is_array($priv_list)) {
-	usort($priv_list, function($a, $b) {
-		return strcasecmp($a['name'], $b['name']);
-	});
-}
-
 function cmp_page_matches($page, & $matches, $fullwc = true) {
 
 //	$dbg_matches = implode(",", $matches);
@@ -172,7 +166,7 @@ function isAllowedPage($page)
 function getPrivPages(& $entry, & $allowed_pages) {
 	global $priv_list;
 
-	if (!is_array($entry['priv']))
+	if (!isset($entry['priv']) || !is_array($entry['priv']))
 		return;
 
 	foreach ($entry['priv'] as $pname) {
@@ -198,7 +192,11 @@ function getAllowedPages($username) {
 	$allowed_pages = array();
 	$allowed_groups = array();
 
-	$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
+	if (isset($config['system']['webgui']['authmode'])) {
+		$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
+	} else {
+		$authcfg['type'] = 'local';
+	}
 	// obtain ldap groups if we are in ldap mode
 	if ($authcfg['type'] == "ldap")
 		$allowed_groups = @ldap_get_groups($username, $authcfg);
@@ -208,15 +206,17 @@ function getAllowedPages($username) {
 		getPrivPages($local_user, $allowed_pages);
 
 		// obtain local groups if we have a local user
-		if ($local_user)
-			$allowed_groups = local_user_get_groups($local_user);
+		$allowed_groups = local_user_get_groups($local_user);
 	}
 
 	// build a list of allowed pages
-	if (is_array($config['system']['group']) && is_array($allowed_groups))
-		foreach ($config['system']['group'] as $group)
-			if (in_array($group['name'], $allowed_groups))
+	if (is_array($config['system']['group']) && is_array($allowed_groups)) {
+		foreach ($config['system']['group'] as $group) {
+			if (in_array($group['name'], $allowed_groups)) {
 				getPrivPages($group, $allowed_pages);
+			}
+		}
+	}
 
 //	$dbg_pages = implode(",", $allowed_pages);
 //	$dbg_groups = implode(",", $allowed_groups);
