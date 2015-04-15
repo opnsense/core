@@ -25019,12 +25019,21 @@ msgstr ""
 msgid "XML error at line 1, check URL"
 msgstr ""
 
+#: src/etc/inc/xmlparse.inc:93
+#: src/etc/inc/xmlparse_attr.inc:73
 msgid "XML error: %1$s at line %2$d cannot occur more than once"
 msgstr ""
 
+#: src/etc/inc/xmlparse.inc:93
+#: src/etc/inc/xmlparse_attr.inc:73
+msgid "XML error: %1$s at line %2$d cannot occur more than once"
+msgstr ""
+
+#: src/etc/inc/xmlparse.inc:190
 msgid "XML error: %1$s at line %2$d in %3$s"
 msgstr ""
 
+#: src/etc/inc/xmlparse_attr.inc:195
 msgid "XML error: %1$s at line %2$d"
 msgstr ""
 
