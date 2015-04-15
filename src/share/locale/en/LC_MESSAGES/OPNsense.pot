@@ -1648,6 +1648,7 @@ msgid ""
 "the webConfigurator can be assigned directly or inherited from group memberships. "
 msgstr ""
 
+#: TODO: gnarly,
 #: src/www/system_groupmanager.php:458
 msgid ""
 "Additional webConfigurator groups can be added here.
@@ -10822,7 +10823,7 @@ msgstr ""
 msgid ""
 "If this option is set, %s DNS Forwarder (dnsmasq) will "
 "not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers.  "
-"If the name is not known from /etc/hosts or DHCP then a \    "not found\" answer is returned. "
+"If the name is not known from /etc/hosts or DHCP then a \"not found\" answer is returned. "
 ""
 msgstr ""
 
@@ -21401,6 +21402,8 @@ msgstr ""
 msgid "There was an error while parsing the package filter rules for %s."
 msgstr ""
 
+#: src/etc/inc/filter.inc:314
+#: src/etc/inc/filter.inc:315
 msgid "There were error(s) loading the rules: %1$s - %2$s"
 msgstr ""
 
@@ -21409,34 +21412,116 @@ msgstr ""
 msgid "Thermal Sensors"
 msgstr ""
 
-msgid "These are the IPv4 networks that will be accessible " . 												"from the remote endpoint. Expressed as a comma-separated list of one or more CIDR ranges. " .
+#: src/www/vpn_openvpn_csc.php:422
+msgid ""
+"These are the IPv4 networks that will be accessible "
+"from this particular client. Expressed as a comma-separated list of one or more CIDR ranges."
 msgstr ""
 
-msgid "These are the IPv4 networks that will be accessible " . 											"from this particular client. Expressed as a comma-separated list of one or more CIDR ranges."
+#: src/www/vpn_openvpn_server.php:1291
+msgid ""
+"These are the IPv4 networks that will be accessible "
+"from the remote endpoint. Expressed as a comma-separated list of one or more CIDR ranges. "
+"You may leave this blank if you don't "
+"want to add a route to the local network "
+"through this tunnel on the remote machine. "
+"This is generally set to your LAN network"
 msgstr ""
 
-msgid "These are the IPv4 networks that will be routed " . 											"to this client specifically using iroute, so that a site-to-site " .
+#: src/www/vpn_openvpn_csc.php:422
+msgid ""
+"NOTE: You do not need to specify networks here if they have "
+"already been defined on the main server configuration."
 msgstr ""
 
-msgid "These are the IPv4 networks that will be routed through " . 												"the tunnel, so that a site-to-site VPN can be " .
+#: src/www/vpn_openvpn_server.php:1291
+msgid ""
+"These are the IPv4 networks that will be accessible "
+"from the remote endpoint. Expressed as a comma-separated list of one or more CIDR ranges. "
+"You may leave this blank if you don't "
+"want to add a route to the local network "
+"through this tunnel on the remote machine. "
+"This is generally set to your LAN network"
 msgstr ""
 
-msgid "These are the IPv4 networks that will be routed through " . 							"the tunnel, so that a site-to-site VPN can be " .
+#: src/www/vpn_openvpn_csc.php:442
+msgid ""
+"These are the IPv4 networks that will be routed "
+"to this client specifically using iroute, so that a site-to-site "
+"VPN can be established. "
+"Expressed as a comma-separated list of one or more CIDR ranges. "
+"You may leave this blank if there are no client-side networks to "
+"be routed"
 msgstr ""
 
-msgid "These are the IPv6 networks that will be accessible " . 												"from the remote endpoint. Expressed as a comma-separated list of one or more IP/PREFIX. " .
+#: src/www/vpn_openvpn_client.php:914
+msgid ""
+"These are the IPv4 networks that will be routed through "
+"the tunnel, so that a site-to-site VPN can be "
+"established without manually changing the routing tables. "
+"Expressed as a comma-separated list of one or more CIDR ranges. "
+"If this is a site-to-site VPN, enter the "
+"remote LAN/s here. You may leave this blank to "
+"only communicate with other clients"
 msgstr ""
 
-msgid "These are the IPv6 networks that will be accessible " . 											"from this particular client. Expressed as a comma-separated list of one or more IP/PREFIX networks."
+#: src/www/vpn_openvpn_server.php:1317
+msgid ""
+"These are the IPv4 networks that will be routed through "
+"the tunnel, so that a site-to-site VPN can be "
+"established without manually changing the routing tables. "
+"Expressed as a comma-separated list of one or more CIDR ranges. "
+"If this is a site-to-site VPN, enter the "
+"remote LAN/s here. You may leave this blank if "
+"you don't want a site-to-site VPN"
 msgstr ""
 
-msgid "These are the IPv6 networks that will be routed " . 											"to this client specifically using iroute, so that a site-to-site " .
+#: src/www/vpn_openvpn_csc.php:432
+msgid ""
+"These are the IPv6 networks that will be accessible "
+"from this particular client. Expressed as a comma-separated list of one or more IP/PREFIX networks."
 msgstr ""
 
-msgid "These are the IPv6 networks that will be routed through " . 												"the tunnel, so that a site-to-site VPN can be " .
+#: src/www/vpn_openvpn_server.php:1304
+msgid ""
+"These are the IPv6 networks that will be accessible " .
+"from the remote endpoint. Expressed as a comma-separated list of one or more IP/PREFIX. "
+"You may leave this blank if you don't "
+"want to add a route to the local network "
+"through this tunnel on the remote machine. "
+"This is generally set to your LAN network"
 msgstr ""
 
-msgid "These are the IPv6 networks that will be routed through " . 							"the tunnel, so that a site-to-site VPN can be " .
+#: src/www/vpn_openvpn_client.php:927
+msgid ""
+"These are the IPv6 networks that will be routed through "
+"the tunnel, so that a site-to-site VPN can be " .
+"established without manually changing the routing tables. " .
+"Expressed as a comma-separated list of one or more IP/PREFIX. " .
+"If this is a site-to-site VPN, enter the " .
+"remote LAN/s here. You may leave this blank to " .
+"only communicate with other clients"
+msgstr ""
+
+#: src/www/vpn_openvpn_csc.php:456
+msgid ""
+"These are the IPv6 networks that will be routed "
+"to this client specifically using iroute, so that a site-to-site "
+"VPN can be established. "
+"Expressed as a comma-separated list of one or more IP/PREFIX networks. "
+"You may leave this blank if there are no client-side networks to "
+"be routed"
+msgstr ""
+
+#: src/www/vpn_openvpn_server.php:1331
+msgid ""
+"These are the IPv6 networks that will be routed through "
+"the tunnel, so that a site-to-site VPN can be "
+"established without manually changing the routing tables. "
+"Expressed as a comma-separated list of one or more IP/PREFIX. "
+"If this is a site-to-site VPN, enter the "
+"remote LAN/s here. You may leave this blank if "
+"you don't want a site-to-site VPN"
 msgstr ""
 
 #: src/www/services_ntpd.php:326
@@ -21447,7 +21532,9 @@ msgstr ""
 msgid "These options have been relocated to"
 msgstr ""
 
-msgid "These settings have moved to <a href="vpn_ipsec_settings.php">VPN &gt; IPsec on the Advanced Settings tab</a>."
+#: src/www/system_advanced_misc.php:440
+msgid ""
+"These settings have moved to <a href=\"vpn_ipsec_settings.php\">VPN &gt; IPsec on the Advanced Settings tab</a>."
 msgstr ""
 
 #: src/www/interfaces.php:3006
@@ -21530,11 +21617,15 @@ msgstr ""
 msgid "This allows for communications with hosts that generate fragmented " .
 msgstr ""
 
-msgid "This allows for communications with hosts that generate fragmented " . 										"packets with the don't fragment (DF) bit set. Linux NFS is known to " .
+#: src/www/system_advanced_firewall.php:272
+msgid ""
+"This allows for communications with hosts that generate fragmented "
+"packets with the don't fragment (DF) bit set. Linux NFS is known to "
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:1302
-msgid "This allows packets with IP options to pass. Otherwise they are blocked by default. This is usually only seen with multicast traffic."
+msgid ""
+"This allows packets with IP options to pass. Otherwise they are blocked by default. This is usually only seen with multicast traffic."
 msgstr ""
 
 #: src/www/interfaces_bridge.php:55
@@ -21595,7 +21686,10 @@ msgstr ""
 msgid "This entry cannot be deleted because it is still referenced by at least one virtual server."
 msgstr ""
 
-msgid "This field can be used to modify ("spoof"
+#: src/www/interfaces.php:1643
+msgid ""
+"This field can be used to modify (\"spoof\") the MAC "
+"address of this interface"
 msgstr ""
 
 #: src/www/services_dyndns_edit.php:403
@@ -21631,7 +21725,9 @@ msgstr ""
 msgid "This is a CIDR block of proxy ARP addresses."
 msgstr ""
 
-msgid "This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s)."
+#: src/www/diag_logs_filter_summary.php:196
+msgid ""
+"This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s)."
 msgstr ""
 
 #: src/www/system_advanced_notifications.php:140
@@ -21647,31 +21743,62 @@ msgstr ""
 msgid "This is normally the WAN IP address that you would like the server to listen on.  All connections to this IP and port will be forwarded to the pool cluster."
 msgstr ""
 
-msgid "This is the Easy Rule status page, mainly used to display errors when adding rules. " . "If you are seeing this, there apparently was not an error, and you navigated to the " .
+#: src/www/easyrule.php:74
+msgid ""
+"This is the Easy Rule status page, mainly used to display errors when adding rules. "
+"If you are seeing this, there apparently was not an error, and you navigated to the "
+"page directly without telling it what to do"
 msgstr ""
 
 #: src/www/system_advanced_notifications.php:244
 msgid "This is the FQDN or IP address of the SMTP E-Mail server to which notifications will be sent."
 msgstr ""
 
-msgid "This is the IP address of the server to which DHCP requests are relayed. You can enter multiple server IP addresses, separated by commas. Select "Proxy requests to DHCP server on WAN subnet" to relay DHCP packets to the server that was used on the WAN interface."
+#: src/www/services_dhcp_relay.php:179
+msgid ""
+"This is the IP address of the server to which DHCP requests are relayed. You can enter multiple server IP addresses, separated by commas. Select \"Proxy requests to DHCP server on WAN subnet\" to relay DHCP packets to the server that was used on the WAN interface."
 msgstr ""
 
 #: src/www/system_advanced_notifications.php:210
 msgid "This is the IP address that you would like to send growl notifications to."
 msgstr ""
 
-msgid "This is the IPv4 virtual network used for private " . 												"communications between this server and client " .
+#: TODO: odd spacing in the original copy
+#: src/www/vpn_openvpn_server.php:1176
+msgid ""
+"This is the IPv4 virtual network used for private "
+"communications between this server and client "
+"hosts expressed using CIDR (eg. 10.0.8.0/24). "
+"The first network address will be assigned to "
+"the    server virtual interface. The remaining "
+"network addresses can optionally be assigned "
+"to connecting clients. (see Address Pool)"
 msgstr ""
 
 #: src/www/services_dhcpv6_relay.php:181
 msgid "This is the IPv6 address of the server to which DHCPv6 requests are relayed. You can enter multiple server IPv6 addresses, separated by commas. "
 msgstr ""
 
-msgid "This is the IPv6 virtual network used for private " . 												"communications between this server and client " .
+#: src/www/vpn_openvpn_client.php:901
+msgid ""
+"This is the IPv6 virtual network used for private "
+"communications between this client and the "
+"server expressed using CIDR (eg. fe80::/64). "
+"The first network address is assumed to be the "
+"server address and the second network address "
+"will be assigned to the client virtual "
+"interface"
 msgstr ""
 
-msgid "This is the IPv6 virtual network used for private " . 							"communications between this client and the " .
+#: src/www/vpn_openvpn_server.php:1190
+msgid ""
+"This is the IPv6 virtual network used for private "
+"communications between this server and client "
+"hosts expressed using CIDR (eg. fe80::/64). "
+"The first network address will be assigned to "
+"the server virtual interface. The remaining "
+"network addresses can optionally be assigned "
+"to connecting clients. (see Address Pool)"
 msgstr ""
 
 #: src/www/system_advanced_notifications.php:265
@@ -21692,13 +21819,22 @@ msgstr ""
 msgid "This is the maximum lease time for clients that ask".
 msgstr ""
 
-msgid "This is the maximum lease time for clients that ask". 												" for a specific expiration time."
+#: src/www/services_dhcp.php:942
+msgid ""
+"This is the maximum lease time for clients that ask"
+" for a specific expiration time."
 msgstr ""
 
-msgid "This is the maximum lease time for clients that ask". 											" for a specific expiration time."
+#: src/www/services_dhcp_edit.php:481
+msgid ""
+"This is the maximum lease time for clients that ask"
+" for a specific expiration time."
 msgstr ""
 
-msgid "This is the maximum lease time for clients that ask". 										" for a specific expiration time."
+#: src/www/services_dhcpv6.php:654
+msgid ""
+"This is the maximum lease time for clients that ask"
+" for a specific expiration time."
 msgstr ""
 
 #: src/www/diag_packet_capture.php:321
@@ -21721,25 +21857,34 @@ msgstr ""
 msgid "This is the port your servers are listening on."
 msgstr ""
 
-msgid "This is the virtual network used for private " . 											"communications between this client and the " .
+#: src/www/vpn_openvpn_client.php:888
+msgid ""
+"This is the virtual network used for private "
+"communications between this client and the "
+"server expressed using CIDR (eg. 10.0.8.0/24). "
+"The first network address is assumed to be the "
+"server address and the second network address "
+"will be assigned to the client virtual "
+"interface"
 msgstr ""
 
-msgid "This is the virtual network used for private " . 							"communications between this client and the " .
+#: src/www/vpn_openvpn_csc.php:409
+msgid ""
+"This is the virtual network used for private "
+"communications between this client and the "
+"server expressed using CIDR (eg. 10.0.8.0/24). "
+"The first network address is assumed to be the "
+"server address and the second network address "
+"will be assigned to the client virtual "
+"interface"
 msgstr ""
 
 #: src/www/services_dhcp.php:932
 #: src/www/services_dhcp_edit.php:471
 #: src/www/services_dhcpv6.php:644
-msgid "This is used for clients that do not ask for a specific " .
-msgstr ""
-
-msgid "This is used for clients that do not ask for a specific " . 												"expiration time."
-msgstr ""
-
-msgid "This is used for clients that do not ask for a specific " . 											"expiration time."
-msgstr ""
-
-msgid "This is used for clients that do not ask for a specific " . 										"expiration time."
+msgid ""
+"This is used for clients that do not ask for a specific " .
+"expiration time."
 msgstr ""
 
 #: src/www/interfaces.php:1991
