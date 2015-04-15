@@ -21928,10 +21928,18 @@ msgstr ""
 msgid "This may be useful if, for some reason, you want ntpd to prefer a different clock"
 msgstr ""
 
-msgid "This means that the image you uploaded " . 					"is not an official/supported image and may lead to unexpected behavior or security " .
+#: src/www/system_firmware.php:201
+msgid ""
+"This means that the image you uploaded "
+"is not an official/supported image and may lead to unexpected behavior or security "
+"compromises. Only install images that come from sources that you trust, and make sure "
+"that the image has not been tampered with."
 msgstr ""
 
-msgid "This method lists all the'         . ' methods that the XML-RPC server knows how to dispatch"
+#: src/etc/inc/xmlrpc_server.inc:48
+msgid ""
+"This method lists all the"
+" methods that the XML-RPC server knows how to dispatch"
 msgstr ""
 
 #: src/www/load_balancer_monitor_edit.php:84
@@ -21972,7 +21980,13 @@ msgstr ""
 msgid "This option causes mpd to adjust incoming and outgoing TCP SYN segments so that the requested maximum segment size is not greater than the amount ".
 msgstr ""
 
-msgid "This option causes mpd to adjust incoming and outgoing TCP SYN segments so that the requested maximum segment size is not greater than the amount ". 												"allowed by the interface MTU. This is necessary in many setups to avoid problems caused by routers that drop ICMP Datagram Too Big messages. Without these messages, ".
+#: src/www/interfaces_ppps_edit.php:718
+msgid ""
+"This option causes mpd to adjust incoming and outgoing TCP SYN segments so that the requested maximum segment size is not greater than the amount "
+"allowed by the interface MTU. This is necessary in many setups to avoid problems caused by routers that drop ICMP Datagram Too Big messages. Without these messages, "
+"the originating machine sends data, it passes the rogue router then hits a machine that has an MTU that is not big enough for the data. Because the IP Don't Fragment option is set, "
+"this machine sends an ICMP Datagram Too Big message back to the originator and drops the packet. The rogue router drops the ICMP message and the originator never "
+"gets to discover that it must reduce the fragment size or drop the IP Don't Fragment option from its outgoing data."
 msgstr ""
 
 #: src/www/interfaces.php:2658
@@ -21987,7 +22001,10 @@ msgstr ""
 msgid "This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. " .
 msgstr ""
 
-msgid "This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. " . 												"The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."
+#: src/www/interfaces_ppps_edit.php:693
+msgid ""
+"This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. "
+"The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."
 msgstr ""
 
 #: src/www/services_captiveportal.php:922
@@ -22006,7 +22023,11 @@ msgstr ""
 msgid "This option enables Van Jacobson TCP header compression, which saves several bytes per TCP data packet. " .
 msgstr ""
 
-msgid "This option enables Van Jacobson TCP header compression, which saves several bytes per TCP data packet. " . 												"You almost always want this option. This compression ineffective for TCP connections with enabled modern extensions like time " .
+#: src/www/interfaces_ppps_edit.php:709
+msgid ""
+"This option enables Van Jacobson TCP header compression, which saves several bytes per TCP data packet. "
+"You almost always want this option. This compression ineffective for TCP connections with enabled modern extensions like time "
+"stamping or SACK, which modify TCP options between sequential packets."
 msgstr ""
 
 #: src/www/system_advanced_admin.php:477
@@ -22017,14 +22038,17 @@ msgstr ""
 msgid "This option is NOT compatible with the DNS relay protocol."
 msgstr ""
 
-msgid "This option is off by default because Hifn accelerators do NOT work with this option, and the GUI will not function. " . 										"It is possible that other accelerators have a similar problem that is not yet known/documented. " .
+#: src/www/system_advanced_admin.php:479
+msgid ""
+"This option is off by default because Hifn accelerators do NOT work with this option, and the GUI will not function. "
+"It is possible that other accelerators have a similar problem that is not yet known/documented. " .
+"More information on BEAST is available from <a target='_blank' href='https://en.wikipedia.org/wiki/Transport_Layer_Security#BEAST_attack'>Wikipedia</a>."
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:729
-msgid "This option is only meaningful if multi-link PPP is negotiated. It proscribes shorter multi-link fragment headers, saving two bytes on every frame. " .
-msgstr ""
-
-msgid "This option is only meaningful if multi-link PPP is negotiated. It proscribes shorter multi-link fragment headers, saving two bytes on every frame. " . 												"It is not necessary to disable this for connections that are not multi-link."
+msgid ""
+"This option is only meaningful if multi-link PPP is negotiated. It proscribes shorter multi-link fragment headers, saving two bytes on every frame. "
+"It is not necessary to disable this for connections that are not multi-link."
 msgstr ""
 
 #: src/www/diag_logs_settings.php:389
@@ -22035,7 +22059,11 @@ msgstr ""
 msgid "This option is used if 'SSL Encrypted' option is choosen."
 msgstr ""
 
-msgid "This option only applies if you have defined one or more static routes. If it is enabled, traffic that enters and " . 										"leaves through the same interface will not be checked by the firewall. This may be desirable in some situations where " .
+#: src/www/system_advanced_firewall.php:375
+msgid ""
+"This option only applies if you have defined one or more static routes. If it is enabled, traffic that enters and "
+"leaves through the same interface will not be checked by the firewall. This may be desirable in some situations where "
+"multiple subnets are connected to the same interface."
 msgstr ""
 
 #: src/www/services_dhcp.php:970
@@ -22078,7 +22106,10 @@ msgstr ""
 msgid "This pool name has already been used.  Pool names must be unique."
 msgstr ""
 
-msgid "This protocol is intended to do nothing: it disables any " . 						                  "traffic without disabling the lagg interface itself"
+#: src/www/interfaces_lagg_edit.php:221
+msgid ""
+"This protocol is intended to do nothing: it disables any "
+"traffic without disabling the lagg interface itself"
 msgstr ""
 
 #: src/www/load_balancer_relay_protocol_edit.php:76
