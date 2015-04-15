@@ -38,7 +38,6 @@ require_once("filter.inc");
 require_once("shaper.inc");
 require_once("rrd.inc");
 require_once("vpn.inc");
-require_once("util.inc");
 require_once("xmlparse_attr.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces.php');
@@ -802,7 +801,7 @@ if ($_POST['apply']) {
 			if ($wancfg['ipaddrv6'] == "dhcp6") {
 				$pid = find_dhcp6c_process($wancfg['if']);
 				if ($pid) {
-					killbypid($pid);
+					exec('/bin/kill ' . $pid);
 				}
 			}
 		}

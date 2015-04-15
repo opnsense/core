@@ -780,9 +780,8 @@ function is_serial_enabled()
 
 function reload_ttys()
 {
-	/* Send a HUP signal to init will make it reload /etc/ttys */
-	require_once('util.inc');
-	killbypid(1, 'HUP');
+	/* force init(8) to reload /etc/ttys */
+	exec('/bin/kill -HUP 1');
 }
 
 /* DHCP enabled on any interfaces? */

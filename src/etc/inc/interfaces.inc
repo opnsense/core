@@ -1303,7 +1303,7 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 	case "dhcp6":
 		$pidv6 = find_dhcp6c_process($realif);
 		if ($pidv6) {
-			killbypid($pidv6);
+			exec('/bin/kill ' . $pidv6);
 		}
 		sleep(3);
 		unlink_if_exists("{$g['varetc_path']}/dhcp6c_{$interface}.conf");
@@ -2794,7 +2794,7 @@ function kill_dhclient_process($interface)
 	while ((($pid = find_dhclient_process($interface)) != 0) && ($i < 3)) {
 		/* 3rd time make it die for sure */
 		$sig = ($i == 2 ? 'KILL' : 'TERM');
-		killbypid($pid, $sig);
+		exec(sprintf('/bin/kill -%s %s', $sig, $pid));
 		sleep(1);
 		$i++;
 	}
@@ -3227,7 +3227,7 @@ function interface_track6_configure($interface = "lan", $wancfg, $linkupevent = 
 			$parentrealif = get_real_interface($wancfg['track6-interface']);
 			$pidv6 = find_dhcp6c_process($parentrealif);
 			if ($pidv6) {
-				killbypid($pidv6, 'HUP');
+				exec('/bin/kill -HUP ' . $pidv6);
 			}
 		}
 		break;
