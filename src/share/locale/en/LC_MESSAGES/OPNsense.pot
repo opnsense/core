@@ -24810,14 +24810,21 @@ msgstr ""
 msgid "When the number of state entries exceeds this value, adaptive scaling begins.  All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start)."
 msgstr ""
 
-msgid "When this is checked, login credentials for the webConfigurator " . 										"may be saved by the browser. While convenient, some security standards require this to be disabled. " .
+#: src/www/system_advanced_admin.php:395
+msgid ""
+"When this is checked, login credentials for the webConfigurator "
+"may be saved by the browser. While convenient, some security standards require this to be disabled. "
+"Check this box to enable autocomplete on the login form so that browsers will prompt to save credentials (NOTE: Some browsers do not respect this option). "
 msgstr ""
 
 #: src/www/system_advanced_notifications.php:311
 msgid "When this is checked, startup and shutdown sounds will no longer play."
 msgstr ""
 
-msgid "When this is checked, successful logins to the webConfigurator " . 										"will not be logged."
+#: src/www/system_advanced_admin.php:407
+msgid ""
+"When this is checked, successful logins to the webConfigurator "
+"will not be logged."
 msgstr ""
 
 #: src/www/system_advanced_admin.php:474
@@ -24832,16 +24839,37 @@ msgstr ""
 msgid "When this is enabled, data counts for RADIUS accounting packets will be taken from the client perspective, not the NAS. Acct-Input-Octets will represent download, and Acct-Output-Octets will represent upload."
 msgstr ""
 
-msgid "When this is unchecked, access to the webConfigurator " . 										"is always permitted even on port 80, regardless of the listening port configured. " .
+#: src/www/system_advanced_admin.php:383
+msgid ""
+"When this is unchecked, access to the webConfigurator "
+"is always permitted even on port 80, regardless of the listening port configured. "
+"Check this box to disable this automatically added redirect rule. "
 msgstr ""
 
-msgid "When this is unchecked, access to the webConfigurator " . 										"is protected against HTTP_REFERER redirection attempts. " .
+#: src/www/system_advanced_admin.php:424
+msgid ""
+"When this is unchecked, access to the webConfigurator "
+"on the %s interface is always permitted, regardless of the user-defined firewall "
+"rule set. Check this box to disable this automatically added rule, so access "
+"to the webConfigurator is controlled by the user-defined firewall rules "
+"(ensure you have a firewall rule in place that allows you in, or you will "
+"lock yourself out!)"
 msgstr ""
 
-msgid "When this is unchecked, access to the webConfigurator " . 										"on the %s interface is always permitted, regardless of the user-defined firewall " .
+#: src/www/system_advanced_admin.php:462
+msgid ""
+"When this is unchecked, access to the webConfigurator "
+"is protected against HTTP_REFERER redirection attempts. "
+"Check this box to disable this protection if you find that it interferes with "
+"webConfigurator access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER is available from <a target='_blank' href='http://en.wikipedia.org/wiki/HTTP_referrer'>Wikipedia</a>."
 msgstr ""
 
-msgid "When this is unchecked, your system " . 										"is protected against <a href="http://en.wikipedia.org/wiki/DNS_rebinding">DNS Rebinding attacks</a>. " .
+#: src/www/system_advanced_admin.php:439
+msgid ""
+"When this is unchecked, your system "
+"is protected against <a href=\"http://en.wikipedia.org/wiki/DNS_rebinding\">DNS Rebinding attacks</a>. "
+"This blocks private IP responses from your configured DNS servers. Check this box to disable this protection if it interferes with "
+"webConfigurator access or name resolution in your environment. "
 msgstr ""
 
 #: src/www/system_gateway_groups_edit.php:329
@@ -24858,7 +24886,14 @@ msgstr ""
 msgid "When using IPv6, the target host must be an IPv6 address or hostname."
 msgstr ""
 
-msgid "When using tap mode as a multi-point server, " . 												"you may optionally supply a DHCP range to use on the " .
+#: src/www/vpn_openvpn_server.php:1253
+msgid ""
+"When using tap mode as a multi-point server, "
+"you may optionally supply a DHCP range to use on the "
+"interface to which this tap instance is bridged. "
+"If these settings are left blank, DHCP will be passed "
+"through to the LAN, and the interface setting above "
+"will be ignored."
 msgstr ""
 
 #: src/www/status_ntpd.php:179
@@ -24917,7 +24952,10 @@ msgstr ""
 msgid "Wireless"
 msgstr ""
 
-msgid "With Multi-WAN you generally want to ensure traffic leaves the same interface it arrives on, hence reply-to is added automatically by default. " . 										"When using bridging, you must disable this behavior if the WAN gateway IP is different from the gateway IP of the hosts behind the bridged interface."
+#: src/www/system_advanced_firewall.php:397
+msgid ""
+"With Multi-WAN you generally want to ensure traffic leaves the same interface it arrives on, hence reply-to is added automatically by default. "
+"When using bridging, you must disable this behavior if the WAN gateway IP is different from the gateway IP of the hosts behind the bridged interface."
 msgstr ""
 
 #: src/www/system_advanced_firewall.php:408
@@ -24965,6 +25003,7 @@ msgstr ""
 msgid "Wrong data submitted"
 msgstr ""
 
+#: src/etc/inc/array_intersect_key.inc:37
 msgid "Wrong parameter count for array_intersect_key()"
 msgstr ""
 
