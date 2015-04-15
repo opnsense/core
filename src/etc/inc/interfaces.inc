@@ -457,11 +457,12 @@ function interfaces_create_wireless_clones() {
 
 }
 
-function interfaces_bridge_configure($checkmember = 0, $realif = "") {
+function interfaces_bridge_configure($checkmember = 0, $realif = '')
+{
 	global $config;
 
 	$i = 0;
-	if (is_array($config['bridges']['bridged']) && count($config['bridges']['bridged'])) {
+	if (isset($config['bridges']['bridged'])) {
 		foreach ($config['bridges']['bridged'] as $bridge) {
 			if (empty($bridge['bridgeif']))
 				$bridge['bridgeif'] = "bridge{$i}";
@@ -4435,14 +4436,16 @@ function find_ip_interface($ip, $bits = null) {
  * find_virtual_ip_alias($ip): return the virtual IP alias where an IP is found
  *   (or if $bits is specified, where an IP within the subnet is found)
  */
-function find_virtual_ip_alias($ip, $bits = null) {
+function find_virtual_ip_alias($ip, $bits = null)
+{
 	global $config;
 
-	if (!is_array($config['virtualip']['vip'])) {
+	if (!isset($config['virtualip']['vip'])) {
 		return false;
 	}
-	if (!is_ipaddr($ip))
+	if (!is_ipaddr($ip)) {
 		return false;
+	}
 
 	$isv6ip = is_ipaddrv6($ip);
 
@@ -4469,9 +4472,11 @@ function find_virtual_ip_alias($ip, $bits = null) {
 /*
  * find_carp_interface($ip): return the carp interface where an ip is defined
  */
-function find_carp_interface($ip) {
+function find_carp_interface($ip)
+{
 	global $config;
-	if (is_array($config['virtualip']['vip'])) {
+
+	if (isset($config['virtualip']['vip'])) {
 		foreach ($config['virtualip']['vip'] as $vip) {
 			if ($vip['mode'] == "carp") {
 				if(is_ipaddrv4($ip)) {
@@ -4491,8 +4496,9 @@ function find_carp_interface($ip) {
 					}
 				}
 
-				if ($if)
+				if ($if) {
 					return $if;
+				}
 			}
 		}
 	}
@@ -4507,14 +4513,16 @@ function find_carp_interface($ip) {
  * RESULT
  *   $carp_ints
  ******/
-function link_ip_to_carp_interface($ip) {
+function link_ip_to_carp_interface($ip)
+{
 	global $config;
 
-	if (!is_ipaddr($ip))
+	if (!is_ipaddr($ip)) {
 		return;
+	}
 
-	$carp_ints = "";
-	if (is_array($config['virtualip']['vip'])) {
+	$carp_ints = '';
+	if (isset($config['virtualip']['vip'])) {
 		$first = 0;
 		$carp_int = array();
 		foreach ($config['virtualip']['vip'] as $vip) {
@@ -4527,20 +4535,23 @@ function link_ip_to_carp_interface($ip) {
 				}
 			}
 		}
-		if (!empty($carp_int))
+		if (!empty($carp_int)) {
 			$carp_ints = implode(" ", array_unique($carp_int));
+		}
 	}
 
 	return $carp_ints;
 }
 
-function link_interface_to_track6($int, $action = "") {
+function link_interface_to_track6($int, $action = '')
+{
 	global $config;
 
-	if (empty($int))
+	if (empty($int)) {
 		return;
+	}
 
-	if (is_array($config['interfaces'])) {
+	if (isset($config['interfaces'])) {
 		$list = array();
 		foreach ($config['interfaces'] as $ifname => $ifcfg) {
 			if (!isset($ifcfg['enable']))
@@ -4556,13 +4567,15 @@ function link_interface_to_track6($int, $action = "") {
 	}
 }
 
-function link_interface_to_vlans($int, $action = "") {
+function link_interface_to_vlans($int, $action = '')
+{
 	global $config;
 
-	if (empty($int))
+	if (empty($int)) {
 		return;
+	}
 
-	if (is_array($config['vlans']['vlan'])) {
+	if (isset($config['vlans']['vlan'])) {
 		$ifaces = array();
 		foreach ($config['vlans']['vlan'] as $vlan) {
 			if ($int == $vlan['if']) {
@@ -4572,22 +4585,25 @@ function link_interface_to_vlans($int, $action = "") {
 					$ifaces[$vlan['tag']] = $vlan;
 			}
 		}
-		if (!empty($ifaces))
+		if (!empty($ifaces)) {
 			return $ifaces;
+		}
 	}
 }
 
-function link_interface_to_vips($int, $action = "") {
+function link_interface_to_vips($int, $action = '')
+{
 	global $config;
 
 	if (isset($config['virtualip']['vip'])) {
 		$result = array();
 		foreach ($config['virtualip']['vip'] as $vip) {
 			if ($int == $vip['interface']) {
-				if ($action == "update")
+				if ($action == 'update') {
 					interfaces_vips_configure($int);
-				else
+				} else {
 					$result[] = $vip;
+				}
 			}
 		}
 		return $result;
@@ -4602,10 +4618,11 @@ function link_interface_to_vips($int, $action = "") {
  * RESULT
  *   bridge[0-99]
  ******/
-function link_interface_to_bridge($int) {
+function link_interface_to_bridge($int)
+{
 	global $config;
 
-	if (is_array($config['bridges']['bridged'])) {
+	if (isset($config['bridges']['bridged'])) {
 		foreach ($config['bridges']['bridged'] as $bridge) {
 			if (in_array($int, explode(',', $bridge['members'])))
 				return "{$bridge['bridgeif']}";
@@ -4613,12 +4630,13 @@ function link_interface_to_bridge($int) {
 	}
 }
 
-function link_interface_to_group($int) {
+function link_interface_to_group($int)
+{
 	global $config;
 
 	$result = array();
 
-	if (is_array($config['ifgroups']['ifgroupentry'])) {
+	if (isset($config['ifgroups']['ifgroupentry'])) {
 		foreach ($config['ifgroups']['ifgroupentry'] as $group) {
 			if (in_array($int, explode(" ", $group['members'])))
 				$result[$group['ifname']] = $int;
@@ -4628,12 +4646,13 @@ function link_interface_to_group($int) {
 	return $result;
 }
 
-function link_interface_to_gre($interface) {
+function link_interface_to_gre($interface)
+{
 	global $config;
 
 	$result = array();
 
-	if (is_array($config['gres']['gre'])) {
+	if (isset($config['gres']['gre'])) {
 		foreach ($config['gres']['gre'] as $gre)
 			if($gre['if'] == $interface)
 				$result[] = $gre;
@@ -4642,12 +4661,13 @@ function link_interface_to_gre($interface) {
 	return $result;
 }
 
-function link_interface_to_gif($interface) {
+function link_interface_to_gif($interface)
+{
 	global $config;
 
 	$result = array();
 
-	if (is_array($config['gifs']['gif'])) {
+	if (isset($config['gifs']['gif'])) {
 		foreach ($config['gifs']['gif'] as $gif)
 			if($gif['if'] == $interface)
 				$result[] = $gif;
@@ -5228,5 +5248,3 @@ function get_failover_interface($interface, $family = "all") {
 function remove_ifindex($ifname) {
 	return preg_replace("/[0-9]+$/", "", $ifname);
 }
-
-?>

@@ -86,7 +86,7 @@ function interface_assign_description($portinfo, $portname) {
 $portlist = get_interface_list();
 
 /* add wireless clone interfaces */
-if (is_array($config['wireless']['clone']) && count($config['wireless']['clone'])) {
+if (isset($config['wireless']['clone'])) {
 	foreach ($config['wireless']['clone'] as $clone) {
 		$portlist[$clone['cloneif']] = $clone;
 		$portlist[$clone['cloneif']]['iswlclone'] = true;
@@ -94,7 +94,7 @@ if (is_array($config['wireless']['clone']) && count($config['wireless']['clone']
 }
 
 /* add VLAN interfaces */
-if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
+if (isset($config['vlans']['vlan'])) {
 	foreach ($config['vlans']['vlan'] as $vlan) {
 		$portlist[$vlan['vlanif']] = $vlan;
 		$portlist[$vlan['vlanif']]['isvlan'] = true;
@@ -102,7 +102,7 @@ if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
 }
 
 /* add Bridge interfaces */
-if (is_array($config['bridges']['bridged']) && count($config['bridges']['bridged'])) {
+if (isset($config['bridges']['bridged'])) {
 	foreach ($config['bridges']['bridged'] as $bridge) {
 		$portlist[$bridge['bridgeif']] = $bridge;
 		$portlist[$bridge['bridgeif']]['isbridge'] = true;
@@ -110,7 +110,7 @@ if (is_array($config['bridges']['bridged']) && count($config['bridges']['bridged
 }
 
 /* add GIF interfaces */
-if (is_array($config['gifs']['gif']) && count($config['gifs']['gif'])) {
+if (isset($config['gifs']['gif'])) {
 	foreach ($config['gifs']['gif'] as $gif) {
 		$portlist[$gif['gifif']] = $gif;
 		$portlist[$gif['gifif']]['isgif'] = true;
@@ -118,7 +118,7 @@ if (is_array($config['gifs']['gif']) && count($config['gifs']['gif'])) {
 }
 
 /* add GRE interfaces */
-if (is_array($config['gres']['gre']) && count($config['gres']['gre'])) {
+if (isset($config['gres']['gre'])) {
 	foreach ($config['gres']['gre'] as $gre) {
 		$portlist[$gre['greif']] = $gre;
 		$portlist[$gre['greif']]['isgre'] = true;
@@ -126,7 +126,7 @@ if (is_array($config['gres']['gre']) && count($config['gres']['gre'])) {
 }
 
 /* add LAGG interfaces */
-if (is_array($config['laggs']['lagg']) && count($config['laggs']['lagg'])) {
+if (isset($config['laggs']['lagg'])) {
 	foreach ($config['laggs']['lagg'] as $lagg) {
 		$portlist[$lagg['laggif']] = $lagg;
 		$portlist[$lagg['laggif']]['islagg'] = true;
@@ -139,7 +139,7 @@ if (is_array($config['laggs']['lagg']) && count($config['laggs']['lagg'])) {
 }
 
 /* add QinQ interfaces */
-if (is_array($config['qinqs']['qinqentry']) && count($config['qinqs']['qinqentry'])) {
+if (isset($config['qinqs']['qinqentry'])) {
 	foreach ($config['qinqs']['qinqentry'] as $qinq) {
 		$portlist["vlan{$qinq['tag']}"]['descr'] = "VLAN {$qinq['tag']}";
 		$portlist["vlan{$qinq['tag']}"]['isqinq'] = true;
@@ -153,7 +153,7 @@ if (is_array($config['qinqs']['qinqentry']) && count($config['qinqs']['qinqentry
 }
 
 /* add PPP interfaces */
-if (is_array($config['ppps']['ppp']) && count($config['ppps']['ppp'])) {
+if (isset($config['ppps']['ppp'])) {
 	foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
 		$portname = $ppp['if'];
 		$portlist[$portname] = $ppp;
@@ -169,13 +169,17 @@ if (is_array($config['ppps']['ppp']) && count($config['ppps']['ppp'])) {
 }
 
 $ovpn_descrs = array();
-if (is_array($config['openvpn'])) {
-	if (is_array($config['openvpn']['openvpn-server']))
-		foreach ($config['openvpn']['openvpn-server'] as $s)
+if (isset($config['openvpn'])) {
+	if (isset($config['openvpn']['openvpn-server'])) {
+		foreach ($config['openvpn']['openvpn-server'] as $s) {
 			$ovpn_descrs[$s['vpnid']] = $s['description'];
-	if (is_array($config['openvpn']['openvpn-client']))
-		foreach ($config['openvpn']['openvpn-client'] as $c)
+		}
+	}
+	if (isset($config['openvpn']['openvpn-client'])) {
+		foreach ($config['openvpn']['openvpn-client'] as $c) {
 			$ovpn_descrs[$c['vpnid']] = $c['description'];
+		}
+	}
 }
 
 if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
@@ -262,10 +266,11 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 				$errstr .= " " . $ifn;
 
 			$input_errors[] = $errstr;
-		} else if (count($ifnames) == 1 && preg_match('/^bridge[0-9]/', $portname) && is_array($config['bridges']['bridged']) && count($config['bridges']['bridged'])) {
+		} else if (count($ifnames) == 1 && preg_match('/^bridge[0-9]/', $portname) && isset($config['bridges']['bridged'])) {
 			foreach ($config['bridges']['bridged'] as $bridge) {
-				if ($bridge['bridgeif'] != $portname)
+				if ($bridge['bridgeif'] != $portname) {
 					continue;
+				}
 
 				$members = explode(",", strtoupper($bridge['members']));
 				foreach ($members as $member) {
@@ -278,7 +283,7 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 		}
 	}
 
-	if (is_array($config['vlans']['vlan'])) {
+	if (isset($config['vlans']['vlan'])) {
 		foreach ($config['vlans']['vlan'] as $vlan) {
 			if (does_interface_exist($vlan['if']) == false)
 				$input_errors[] = "Vlan parent interface {$vlan['if']} does not exist anymore so vlan id {$vlan['tag']} cannot be created please fix the issue before continuing.";

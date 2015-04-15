@@ -2799,7 +2799,7 @@ EOD;
 		}
 
 		$isbridged = false;
-		if(is_array($config['bridges']['bridged'])) {
+		if (isset($config['bridges']['bridged'])) {
 			foreach ($config['bridges']['bridged'] as $oc2) {
 				if(stristr($oc2['members'], $on)) {
 					$isbridged = true;

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
@@ -28,8 +29,13 @@
 
 require_once("guiconfig.inc");
 
-if (!is_array($config['bridges']['bridged']))
+if (!is_array($config['bridges'])) {
+	$config['bridges'] = array();
+}
+
+if (!is_array($config['bridges']['bridged'])) {
 	$config['bridges']['bridged'] = array();
+}
 
 $a_bridges = &$config['bridges']['bridged'] ;
 

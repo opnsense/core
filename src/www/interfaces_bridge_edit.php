@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
@@ -30,8 +31,13 @@ require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_bridge.php');
 
-if (!is_array($config['bridges']['bridged']))
+if (!is_array($config['bridges'])) {
+	$config['bridges'] = array();
+}
+
+if (!is_array($config['bridges']['bridged'])) {
 	$config['bridges']['bridged'] = array();
+}
 
 $a_bridges = &$config['bridges']['bridged'];
 
