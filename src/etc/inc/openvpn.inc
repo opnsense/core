@@ -380,14 +380,16 @@ function openvpn_add_keyfile(& $data, & $conf, $mode_id, $directive, $opt = "") 
 	$conf .= "{$directive} {$fpath} {$opt}\n";
 }
 
-function openvpn_reconfigure($mode, $settings) {
+function openvpn_reconfigure($mode, $settings)
+{
 	global $g, $config;
 
-	if (empty($settings))
+	if (empty($settings) || isset($settings['disable'])) {
 		return;
-	if (isset($settings['disable']))
-		return;
+	}
+
 	openvpn_create_dirs();
+
 	/*
 	 * NOTE: Deleting tap devices causes spontaneous reboots. Instead,
 	 * we use a vpnid number which is allocated for a particular client
@@ -397,17 +399,18 @@ function openvpn_reconfigure($mode, $settings) {
 	$vpnid = $settings['vpnid'];
 	$mode_id = $mode.$vpnid;
 
-	if (isset($settings['dev_mode']))
+	if (isset($settings['dev_mode'])) {
 		$tunname = "{$settings['dev_mode']}{$vpnid}";
-	else {	/* defaults to tun */
+	} else {	/* defaults to tun */
 		$tunname = "tun{$vpnid}";
 		$settings['dev_mode'] = "tun";
 	}
 
-	if ($mode == "server")
+	if ($mode == "server") {
 		$devname = "ovpns{$vpnid}";
-	else
+	} else {
 		$devname = "ovpnc{$vpnid}";
+	}
 
 	/* is our device already configured */
 	if (!does_interface_exist($devname)) {
@@ -423,7 +426,6 @@ function openvpn_reconfigure($mode, $settings) {
 		mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " group openvpn");
 	}
 
-	$pfile = $g['varrun_path'] . "/openvpn_{$mode_id}.pid";
 	$proto = strtolower($settings['protocol']);
 	if (substr($settings['protocol'], 0, 3) == "TCP")
 			$proto = "{$proto}-{$mode}";
@@ -469,7 +471,7 @@ function openvpn_reconfigure($mode, $settings) {
 			break;
 	}
 	$conf .= "dev-node /dev/{$tunname}\n";
-	$conf .= "writepid {$pfile}\n";
+	$conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
 	$conf .= "#user nobody\n";
 	$conf .= "#group nobody\n";
 	$conf .= "script-security 3\n";
@@ -799,35 +801,28 @@ function openvpn_reconfigure($mode, $settings) {
 	@chmod("{$g['varetc_path']}/openvpn/{$mode_id}.conf", 0600);
 }
 
-function openvpn_restart($mode, $settings) {
+function openvpn_restart($mode, $settings)
+{
 	global $g, $config;
 
 	$vpnid = $settings['vpnid'];
 	$mode_id = $mode.$vpnid;
 
 	/* kill the process if running */
-	$pfile = $g['varrun_path']."/openvpn_{$mode_id}.pid";
-	if (file_exists($pfile)) {
-
-		/* read the pid file */
-		$pid = rtrim(file_get_contents($pfile));
-		unlink($pfile);
-
-		/* send a term signal to the process */
-		killbypid($pid);
-
-		/* wait until the process exits */
-		while(isvalidpid($pid)) {
-			usleep(250000);
-		}
+	$pfile = "/var/run/openvpn_{$mode_id}.pid";
+	killbypid($pfile);
+	while (isvalidpid($pfile)) {
+		usleep(250000);
 	}
 
-	if (isset($settings['disable']))
+	if (isset($settings['disable'])) {
 		return;
+	}
 
 	/* Do not start a client if we are a CARP backup on this vip! */
-	if (($mode == "client") && (strstr($settings['interface'], "_vip") && get_carp_interface_status($settings['interface']) == "BACKUP"))
+	if (($mode == "client") && (strstr($settings['interface'], "_vip") && get_carp_interface_status($settings['interface']) == "BACKUP")) {
 		return;
+	}
 
 	/* Check if client is bound to a gateway group */
 	$a_groups = return_gateway_groups_array();
@@ -846,34 +841,27 @@ function openvpn_restart($mode, $settings) {
 		configd_run("filter reload");
 }
 
-function openvpn_delete($mode, & $settings) {
+function openvpn_delete($mode, & $settings)
+{
 	global $g, $config;
 
 	$vpnid = $settings['vpnid'];
 	$mode_id = $mode.$vpnid;
 
-	if (isset($settings['dev_mode']))
+	if (isset($settings['dev_mode'])) {
 		$tunname = "{$settings['dev_mode']}{$vpnid}";
-	else {  /* defaults to tun */
+	} else {  /* defaults to tun */
 		$tunname = "tun{$vpnid}";
 	}
 
-	if ($mode == "server")
+	if ($mode == "server") {
 		$devname = "ovpns{$vpnid}";
-	else
+	} else {
 		$devname = "ovpnc{$vpnid}";
+	}
 
 	/* kill the process if running */
-	$pfile = "{$g['varrun_path']}/openvpn_{$mode_id}.pid";
-	if (file_exists($pfile)) {
-
-		/* read the pid file */
-		$pid = trim(file_get_contents($pfile));
-		unlink($pfile);
-
-		/* send a term signal to the process */
-		killbypid($pid);
-	}
+	killbypid("/var/run/openvpn_{$mode_id}.pid");
 
 	/* remove the device from the openvpn group */
 	mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " -group openvpn");
