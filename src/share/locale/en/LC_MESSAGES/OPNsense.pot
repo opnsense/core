@@ -22120,7 +22120,12 @@ msgstr ""
 msgid "This provides an RFC 2893 compatibility mechanism ".
 msgstr ""
 
-msgid "This provides an RFC 2893 compatibility mechanism ". 										"that can be used to tunneling IPv6 packets over IPv4 ".
+#: src/www/system_advanced_network.php:200
+msgid ""
+"This provides an RFC 2893 compatibility mechanism "
+"that can be used to tunneling IPv6 packets over IPv4 "
+"routing infrastructures. If enabled, don't forget to "
+"add a firewall rule to permit IPv6 packets."
 msgstr ""
 
 #: src/www/firewall_nat_out.php:358
@@ -22155,7 +22160,11 @@ msgstr ""
 msgid "This setting allows passing through the captive portal without authentication a limited number of times per MAC address. Once used up, the client can only log in with valid credentials until the waiting period specified below has expired. Recommended to set a hard timeout and/or idle timeout when using this for it to be effective."
 msgstr ""
 
-msgid "This setting limits the number of concurrent connections to the captive portal HTTP(S) server. This does not set how many users can be logged in " . 									"to the captive portal, but rather how many users can load the portal page or authenticate at the same time! " .
+#: src/www/services_captiveportal.php:547
+msgid ""
+"This setting limits the number of concurrent connections to the captive portal HTTP(S) server. This does not set how many users can be logged in "
+"to the captive portal, but rather how many users can load the portal page or authenticate at the same time! "
+"Possible setting allowed is: minimum 4 connections per client IP address, with a total maximum of 100 connections."
 msgstr ""
 
 #: src/www/diag_testport.php:121
@@ -22252,10 +22261,16 @@ msgstr ""
 msgid "Threshold"
 msgstr ""
 
+#: src/share/locale/en/LC_MESSAGES/OPNsense.pot:22265
 #: src/www/firewall_schedule_edit.php:861
+#: src/www/javascript/jquery/jquery-ui-1.11.1.min.js:6
 msgid "Thu"
 msgstr ""
 
+#: src/www/firewall_rules.php:591
+#: src/www/firewall_schedule.php:30
+#: src/www/firewall_schedule_edit.php:52
+#: src/www/firewall_schedule_edit.php:206
 msgid "Thur"
 msgstr ""
 
@@ -22346,6 +22361,7 @@ msgstr ""
 msgid "Times"
 msgstr ""
 
+#: src/www/diag_confbak.php:195
 msgid "Timestamp %1$s"
 msgstr ""
 
@@ -22534,6 +22550,10 @@ msgstr ""
 msgid "Tue"
 msgstr ""
 
+#: src/www/firewall_rules.php:591
+#: src/www/firewall_schedule.php:30
+#: src/www/firewall_schedule_edit.php:52
+#: src/www/firewall_schedule_edit.php:206
 msgid "Tues"
 msgstr ""
 
@@ -22560,6 +22580,7 @@ msgstr ""
 msgid "Tunnel endpoints"
 msgstr ""
 
+#: src/www/vpn_openvpn_server.php:333
 msgid "Tunnel network"
 msgstr ""
 
@@ -22697,6 +22718,8 @@ msgstr ""
 msgid "Unable to check for updates."
 msgstr ""
 
+#: src/etc/inc/pkg-utils.inc:1212
+#: src/www/pkg_mgr.php:76
 msgid "Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity."
 msgstr ""
 
@@ -22708,6 +22731,7 @@ msgstr ""
 msgid "Unable to load package configuration. Installation aborted."
 msgstr ""
 
+#: src/etc/inc/config.lib.inc:487
 msgid "Unable to open /conf/config.xml for writing in write_config()"
 msgstr ""
 
@@ -22765,6 +22789,7 @@ msgstr ""
 msgid "Unknown pass error."
 msgstr ""
 
+#: src/www/system_firmware.php:82
 msgid "Unknown upload error"
 msgstr ""
 
@@ -22783,6 +22808,7 @@ msgstr ""
 msgid "Unsigned 16-bit integer type must be a number in the range 0 to 65535."
 msgstr ""
 
+#: src/www/services_dhcp.php:582
 msgid "Unsigned 16-bit integer"
 msgstr ""
 
@@ -22790,6 +22816,7 @@ msgstr ""
 msgid "Unsigned 32-bit integer type must be a number in the range 0 to 4294967295."
 msgstr ""
 
+#: src/www/services_dhcp.php:582
 msgid "Unsigned 32-bit integer"
 msgstr ""
 
@@ -22797,6 +22824,7 @@ msgstr ""
 msgid "Unsigned 8-bit integer type must be a number in the range 0 to 255."
 msgstr ""
 
+#: src/www/services_dhcp.php:582
 msgid "Unsigned 8-bit integer"
 msgstr ""
 
@@ -22854,7 +22882,9 @@ msgstr ""
 msgid "Updates"
 msgstr ""
 
-msgid "Updating gateway group gateway for %1$s - new gateway is %2$s"
+#: src/etc/inc/gwlb.inc:916
+msgid ""
+"Updating gateway group gateway for %1$s - new gateway is %2$s"
 msgstr ""
 
 #: src/www/system_firmware_check.php:87
@@ -22879,6 +22909,7 @@ msgstr ""
 msgid "Upgraded Dyndns %s"
 msgstr ""
 
+#: src/etc/inc/config.lib.inc:388
 msgid "Upgraded config version level from %1$s to %2$s"
 msgstr ""
 
@@ -22899,7 +22930,11 @@ msgstr ""
 msgid "Upload Pattern file"
 msgstr ""
 
-msgid "Upload an HTML/PHP file for the portal page here (leave blank to keep the current one). ' . 																'Make sure to include a form (POST to %1$s) with a submit button (%2$s) and a hidden field with %3$s and %4$s. ' .
+#: src/www/services_captiveportal.php:1001
+msgid ""
+"Upload an HTML/PHP file for the portal page here (leave blank to keep the current one). "
+"Make sure to include a form (POST to %1$s) with a submit button (%2$s) and a hidden field with %3$s and %4$s. "
+"Include the %5$s and %6$s and/or %7$s input fields if authentication is enabled, otherwise it will always fail."
 msgstr ""
 
 #: src/www/wizards/traffic_shaper_wizard_dedicated.inc:288
