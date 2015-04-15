@@ -22995,7 +22995,9 @@ msgstr ""
 msgid "Uptime"
 msgstr ""
 
-msgid "Use "Router Only" to only advertise this router, "Unmanaged" for Router Advertising with Stateless Autoconfig, "Managed" for assignment through (a) DHCPv6 Server, "Assisted" for DHCPv6 Server assignment combined with Stateless Autoconfig"
+#: src/www/services_router_advertisements.php:259
+msgid ""
+"Use \"Router Only\" to only advertise this router, \"Unmanaged\" for Router Advertising with Stateless Autoconfig, \"Managed\" for assignment through (a) DHCPv6 Server, \"Assisted\" for DHCPv6 Server assignment combined with Stateless Autoconfig"
 msgstr ""
 
 #: src/www/vpn_pppoe_edit.php:489
@@ -23048,7 +23050,11 @@ msgstr ""
 msgid "Use a regular expression to filter IP address or hostnames."
 msgstr ""
 
-msgid "Use a space to separate multiple hosts (only one " . 									"required). Remember to set up at least one DNS server " .
+#: src/www/system.php:443
+msgid ""
+"Use a space to separate multiple hosts (only one "
+"required). Remember to set up at least one DNS server "
+"if you enter a host name here!"
 msgstr ""
 
 #: src/www/system_firmware_settings.php:151
@@ -23094,7 +23100,9 @@ msgstr ""
 msgid "Use these for changing DNS results or for adding custom DNS records."
 msgstr ""
 
-msgid "Use this field to set $PORTAL_REDIRURL$ variable which can be accessed using your custom captive portal index.php page or error pages."
+#: src/www/services_captiveportal.php:599
+msgid ""
+"Use this field to set \$PORTAL_REDIRURL\$ variable which can be accessed using your custom captive portal index.php page or error pages."
 msgstr ""
 
 #: src/www/firewall_nat_1to1_edit.php:368
@@ -23109,7 +23117,10 @@ msgstr ""
 msgid "Use this option to invert the sense of the match."
 msgstr ""
 
-msgid "Use this to choose TCP flags that must ". 										"be set or cleared for this rule to match."
+#: src/www/firewall_rules_edit.php:1369
+msgid ""
+"Use this to choose TCP flags that must "
+"be set or cleared for this rule to match."
 msgstr ""
 
 #: src/www/services_captiveportal_hostname_edit.php:178
@@ -23160,10 +23171,13 @@ msgstr ""
 msgid "User Password"
 msgstr ""
 
+#: src/etc/inc/ipsec.inc:42
+#: src/etc/inc/ipsec.inc:51
 msgid "User distinguished name"
 msgstr ""
 
-msgid "User logged out for user '%1$s' from: %2$s"
+#: src/etc/inc/auth.inc:1403
+msgid "User logged out for user '%1\$s' from: %2\$s"
 msgstr ""
 
 #: src/www/system_usermanager_settings.php:37
@@ -23268,7 +23282,13 @@ msgstr ""
 msgid "Using a tunnel network and server bridge settings together is not allowed."
 msgstr ""
 
-msgid "Using dial-on-demand will bring the connection up again if any packet ". 						"triggers it. To substantiate this point: disconnecting manually ".
+#: src/www/status_interfaces.php:466
+msgid ""
+"Using dial-on-demand will bring the connection up again if any packet "
+"triggers it. To substantiate this point: disconnecting manually "
+"will %snot%s prevent dial-on-demand from making connections "
+"to the outside! Don't use dial-on-demand if you want to make sure that the line "
+"is kept disconnected."
 msgstr ""
 
 #: src/www/system_firmware_settings.php:246
@@ -23287,6 +23307,7 @@ msgstr ""
 msgid "VHID Group"
 msgstr ""
 
+#: src/www/interfaces_assign.php:45
 msgid "VLAN %1$s on %2$s"
 msgstr ""
 
@@ -23725,7 +23746,11 @@ msgstr ""
 msgid "Warning: Using this option may create an " .
 msgstr ""
 
-msgid "Warning: Using this option may create an " . 									"invalid certificate.  Check this box to disable the request -> " .
+#: src/www/system_certmanager.php:1035
+msgid ""
+"Warning: Using this option may create an "
+"invalid certificate.  Check this box to disable the request -> "
+"response subject verification. "
 msgstr ""
 
 #: src/www/diag_patterns.php:43
@@ -24671,7 +24696,8 @@ msgstr ""
 msgid "Weight"
 msgstr ""
 
-msgid "Welcome to %s!n"
+#: src/www/index.php:442
+msgid "Welcome to %s!\n"
 msgstr ""
 
 #: src/etc/inc/shaper.inc:4510
@@ -24721,13 +24747,10 @@ msgstr ""
 
 #: src/www/vpn_pppoe_edit.php:480
 #: src/www/vpn_pptp.php:402
-msgid "When set, all users will be authenticated using " .
-msgstr ""
-
-msgid "When set, all users will be authenticated using " . 													"the RADIUS server specified below. The local user database " .
-msgstr ""
-
-msgid "When set, all users will be authenticated using " . 						                      "the RADIUS server specified below. The local user database " .
+msgid ""
+"When set, all users will be authenticated using "
+"the RADIUS server specified below. The local user database "
+"will not be used"
 msgstr ""
 
 #: src/www/vpn_l2tp.php:419
@@ -24742,7 +24765,12 @@ msgstr ""
 msgid "When set, only 128-bit encryption will be accepted. Otherwise " .
 msgstr ""
 
-msgid "When set, only 128-bit encryption will be accepted. Otherwise " . 						                    "40-bit and 56-bit encryption will be accepted as well. Note that " .
+#: src/www/vpn_pptp.php:473
+msgid ""
+"When set, only 128-bit encryption will be accepted. Otherwise "
+"40-bit and 56-bit encryption will be accepted as well. Note that "
+"encryption will always be forced on PPTP connections (i.e. "
+"unencrypted connections will not be accepted)"
 msgstr ""
 
 #: src/www/interfaces.php:3292
@@ -24750,10 +24778,28 @@ msgstr ""
 msgid "When set, this option blocks traffic from IP addresses that are reserved " .
 msgstr ""
 
-msgid "When set, this option blocks traffic from IP addresses that are reserved " . 													"(but not RFC 1918) or not yet assigned by IANA."
+#: src/www/interfaces.php:3292
+msgid ""
+"When set, this option blocks traffic from IP addresses that are reserved "
+"for private  networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as"
 msgstr ""
 
-msgid "When set, this option blocks traffic from IP addresses that are reserved " . 													"for private  networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as"
+#: src/www/interfaces.php:3304
+msgid ""
+"When set, this option blocks traffic from IP addresses that are reserved "
+"(but not RFC 1918) or not yet assigned by IANA."
+msgstr ""
+
+#: src/www/interfaces.php:3292
+msgid ""
+"When set, this option blocks traffic from IP addresses that are reserved "
+"for private  networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as"
+msgstr ""
+
+#: src/www/interfaces.php:3304
+msgid ""
+"When set, this option blocks traffic from IP addresses that are reserved "
+"(but not RFC 1918) or not yet assigned by IANA."
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:702
