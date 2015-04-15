@@ -25050,19 +25050,26 @@ msgstr ""
 msgid "XMLRPC communication error: %s"
 msgstr ""
 
+#: src/etc/inc/pfsense-utils.inc:643
 msgid "XMLRPC request failed with error %1$s: %2$s"
 msgstr ""
 
+#: src/www/xmlrpc.php:124
 msgid "XMLRPC wrapper for backup_config_section. This method must be called with two parameters: a string containing the local system's password followed by an array containing the keys to be backed up."
 msgstr ""
 
+#: src/www/xmlrpc.php:68
 msgid "XMLRPC wrapper for eval(). This method must be called with two parameters: a string containing the local system's password followed by the PHP code to evaluate."
 msgstr ""
 
-msgid "XMLRPC wrapper for merge_config_section. This method must be called with two parameters: a string containing the local system's password and an array to merge into the system's config. This function returns true upon completion."
+#: src/www/xmlrpc.php:312
+msgid ""
+"XMLRPC wrapper for merge_config_section. This method must be called with two parameters: a string containing the local system\'s password and an array to merge into the system\'s config. This function returns true upon completion."
 msgstr ""
 
-msgid "XMLRPC wrapper for merging package sections. This method must be called with two parameters: a string containing the local system's password and an array to merge into the system's config. This function returns true upon completion."
+#: src/www/xmlrpc.php:282
+msgid ""
+"XMLRPC wrapper for merging package sections. This method must be called with two parameters: a string containing the local system\'s password and an array to merge into the system\'s config. This function returns true upon completion."
 msgstr ""
 
 msgid "XMLRPC wrapper for mwexec(). This method must be called with two parameters: a string containing the local system's password followed by an shell command to execute."
