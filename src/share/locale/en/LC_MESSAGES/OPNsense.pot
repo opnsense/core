@@ -21214,12 +21214,16 @@ msgstr ""
 msgid "The uploaded file does not appear to contain an encrypted OPNsense configuration."
 msgstr ""
 
-msgid "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"
+#:rc/www/system_firmware.php:70
+msgid ""
+"The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"
 msgstr ""
 
+#: src/www/system_firmware.php:68
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
 msgstr ""
 
+#: src/www/system_firmware.php:72
 msgid "The uploaded file was only partially uploaded"
 msgstr ""
 
@@ -21242,10 +21246,17 @@ msgstr ""
 msgid "The value in this field is 6RD IPv4 gateway address assigned by your ISP"
 msgstr ""
 
-msgid "The value in this field is sent as the DHCP client identifier " . 																"and hostname when requesting a DHCP lease. Some ISPs may require " .
+#: src/www/interfaces.php:1953
+msgid ""
+"The value in this field is sent as the DHCP client identifier "
+"and hostname when requesting a DHCP lease. Some ISPs may require "
+"this (for client identification)."
 msgstr ""
 
-msgid "The value in this field is sent as the DHCPv6 client identifier " . 																"when requesting a DHCPv6 lease."
+#: src/www/interfaces.php:2163
+msgid ""
+"The value in this field is sent as the DHCPv6 client identifier "
+"when requesting a DHCPv6 lease."
 msgstr ""
 
 #: src/www/interfaces.php:2512
@@ -21260,39 +21271,69 @@ msgstr ""
 msgid "The value in this field is the 6RD IPv6 prefix assigned by your ISP. e.g. '2001:db8::/32'"
 msgstr ""
 
-msgid "The value in this field is the absolute path to a script invoked on certain conditions including when a reply message is received. <br />" . 																"[/[dirname/[.../]]filename[.ext]] "
+#: src/www/interfaces.php:2240
+msgid ""
+"The value in this field is the absolute path to a script invoked on certain conditions including when a reply message is received. <br />"
+"[/[dirname/[.../]]filename[.ext]] "
 msgstr ""
 
 #: src/www/interfaces.php:2202
 msgid "The value in this field is the delegated prefix length provided by the DHCPv6 server. Normally specified by the ISP."
 msgstr ""
 
-msgid "The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] <br /> " . 																"Value Substitutions in Config File: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />" .
+#: src/www/interfaces.php:2096
+#: src/www/interfaces.php:2341
+msgid ""
+"The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] <br /> "
 msgstr ""
 
-msgid "The value in this field is used as a fixed alias IPv4 address by the " . 																			"DHCP client."
+#: src/www/interfaces.php:1978
+msgid ""
+"The value in this field is used as a fixed alias IPv4 address by the "
+"DHCP client."
 msgstr ""
 
 #: src/www/interfaces.php:2017
-msgid "The values in these fields are DHCP protocol timings used when requesting a lease. <br /> " ); ?>
+msgid "The values in these fields are DHCP protocol timings used when requesting a lease. <br /> "
 msgstr ""
 
-msgid "The values in this field are DHCP option 55 to be sent when requesting a DHCP lease.  [option [, ...]] <br />" . 																"Some ISPs may require certain options be or not be requested. "
+#: src/www/interfaces.php:2071
+msgid ""
+"The values in this field are DHCP option 55 to be sent when requesting a DHCP lease.  [option [, ...]] <br />"
+"Some ISPs may require certain options be or not be requested. "
 msgstr ""
 
-msgid "The values in this field are DHCP option modifiers applied to obtained DHCP lease.  [modifier option declaration [, ...]] <br /> " . 																"modifiers: (default, supersede, prepend, append)"
+#: src/www/interfaces.php:2086
+msgid ""
+"The values in this field are DHCP option modifiers applied to obtained DHCP lease.  [modifier option declaration [, ...]] <br /> "
+"modifiers: (default, supersede, prepend, append)"
 msgstr ""
 
-msgid "The values in this field are DHCP options required by the client when requesting a DHCP lease.  [option [, ...]] "
+#: src/www/interfaces.php:2077
+msgid ""
+"The values in this field are DHCP options required by the client when requesting a DHCP lease.  [option [, ...]] "
 msgstr ""
 
-msgid "The values in this field are DHCP options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />" . 																"Value Substitutions: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />" .
+#: src/www/interfaces.php:2063
+msgid ""
+"The values in this field are DHCP options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />"
+"Value Substitutions: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />"
+"Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none). <br />"
+"Some ISPs may require certain options be or not be sent. "
 msgstr ""
 
-msgid "The values in this field are DHCP request options to be sent when requesting a DHCP lease.  [option [, ...]] <br />" . 																"Some DHCP services may require certain options be or not be requested. "
+#: src/www/interfaces.php:2233
+msgid ""
+"The values in this field are DHCP request options to be sent when requesting a DHCP lease.  [option [, ...]] <br />"
+"Some DHCP services may require certain options be or not be requested. "
 msgstr ""
 
-msgid "The values in this field are DHCP send options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />" . 																"Value Substitutions: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />" .
+#: src/www/interfaces.php:2224
+msgid ""
+"The values in this field are DHCP send options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />"
+"Value Substitutions: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />"
+"Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none). <br />"
+"Some DHCP services may require certain options be or not be sent. "
 msgstr ""
 
 #: src/www/firewall_virtual_ip.php:279
