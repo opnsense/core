@@ -25072,10 +25072,12 @@ msgid ""
 "XMLRPC wrapper for merging package sections. This method must be called with two parameters: a string containing the local system\'s password and an array to merge into the system\'s config. This function returns true upon completion."
 msgstr ""
 
-msgid "XMLRPC wrapper for mwexec(). This method must be called with two parameters: a string containing the local system's password followed by an shell command to execute."
+#: src/www/xmlrpc.php:100
+msgid "XMLRPC wrapper for mwexec(). This method must be called with two parameters: a string containing the local system\'s password followed by an shell command to execute."
 msgstr ""
 
-msgid "XMLRPC wrapper for restore_config_section. This method must be called with two parameters: a string containing the local system's password and an array to merge into the system's config. This function returns true upon completion."
+#: src/www/xmlrpc.php:152
+msgid "XMLRPC wrapper for restore_config_section. This method must be called with two parameters: a string containing the local system\'s password and an array to merge into the system\'s config. This function returns true upon completion."
 msgstr ""
 
 #: src/www/diag_backup.php:549
@@ -25129,7 +25131,8 @@ msgstr ""
 msgid "You can add new layer7 protocol patterns by simply uploading the file"
 msgstr ""
 
-msgid "You can also <a href="status_filter_reload.php">monitor</a> the filter reload progress."
+#: src/www/guiconfig.inc:390
+msgid "You can also <a href=\"status_filter_reload.php\">monitor</a> the filter reload progress."
 msgstr ""
 
 #: src/www/firewall_virtual_ip.php:280
@@ -25158,7 +25161,11 @@ msgstr ""
 msgid "You can configure your IPsec"
 msgstr ""
 
-msgid "You can define a Prefix range here for DHCP Prefix Delegation. This allows for 													assigning networks to subrouters. The start and end of the range must end on boundaries of the prefix delegation size."
+#: TODO: whitespace cleanup
+#: src/www/services_dhcpv6.php:613
+msgid ""
+"You can define a Prefix range here for DHCP Prefix Delegation. This allows for"
+"                                                                                                        assigning networks to subrouters. The start and end of the range must end on boundaries of the prefix delegation size."
 msgstr ""
 
 #: src/www/services_dyndns.php:190
@@ -25215,9 +25222,11 @@ msgstr ""
 msgid "You can not assign the IPv6 Gateway to a IPv4 Filter rule"
 msgstr ""
 
+#: src/www/system.php:117
 msgid "You can not specify IPv4 gateway '{$_POST[$dnsgwname]}' for IPv6 DNS server '{$_POST[$dnsname]}'"
 msgstr ""
 
+#: src/www/system.php:114
 msgid "You can not specify IPv6 gateway '{$_POST[$dnsgwname]}' for IPv4 DNS server '{$_POST[$dnsname]}'"
 msgstr ""
 
@@ -25241,6 +25250,7 @@ msgstr ""
 msgid "You can not use limiters in Floating rules without choosing a direction."
 msgstr ""
 
+#: src/etc/rc.initial.setlanip:489
 msgid "You can now access the webConfigurator by opening the following URL in your web browser:"
 msgstr ""
 
