@@ -404,8 +404,11 @@ function captiveportal_configure_zone($cpcfg) {
             unlink_if_exists("{$g['vardb_path']}/captiveportal{$cpzone}.db");
         } else
             captiveportal_syslog("Reconfiguring captive portal({$cpcfg['zone']}).");
+
         /* kill any running minicron */
-        killbypid("{$g['varrun_path']}/cp_prunedb_{$cpzone}.pid");
+	if (file_exists("/var/run/cp_prunedb_{$cpzone}.pid")) {
+        	killbypid("/var/run/cp_prunedb_{$cpzone}.pid");
+	}
 
         /* initialize minicron interval value */
         $croninterval = $cpcfg['croninterval'] ? $cpcfg['croninterval'] : 60;
