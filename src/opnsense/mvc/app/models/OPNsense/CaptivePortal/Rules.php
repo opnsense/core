@@ -130,7 +130,7 @@ class Rules
         $this->rules[] = "# Allow traffic to this hosts static ip's ( 1001..1999 ) ";
         $this->rules[] = "#======================================================================================";
         foreach ($this->config->object()->interfaces->children() as $interface => $content) {
-            if ($interface != "wan" && $content->ipaddr != "dhcp") {
+            if ($interface != "wan" && $content->ipaddr != "dhcp" && trim($content->ipaddr) != "") {
                 // only keep state of dns traffic to prevent dns resolver failures
                 $this->rules[] = "add ".$rulenum++." allow udp from any to ".
                     $content->ipaddr." dst-port 53 keep-state";
