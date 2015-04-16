@@ -25,9 +25,7 @@ function getFormData(parent) {
                     // selectbox, collect selected items
                     var tmp_str = "";
                     $(this).children().each(function(index){
-                        // normally this should use prop, but this sometimes seem to return incorrect data....
-                        // maybe replace this with a later version of jquery. tested with 1.11.2
-                        if ($(this).attr("selected") != undefined){
+                        if ($(this).prop("selected")){
                             if (tmp_str != "") tmp_str = tmp_str + ",";
                             tmp_str = tmp_str + $(this).val();
                         }
