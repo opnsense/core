@@ -1,6 +1,7 @@
 <?php
+
 /*
-	Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2007 Marcel Wiget <mwiget@mac.com>.
     All rights reserved.
 
@@ -38,7 +39,7 @@ if (isset($_POST['zone']))
         $cpzone = $_POST['zone'];
 
 if (empty($cpzone)) {
-        header("Location: services_captiveportal_zones.php");
+        header("Location: status_captiveportal.php");
         exit;
 }
 
