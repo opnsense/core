@@ -257,12 +257,13 @@ if ($_POST['save']) {
                             local_user_del($userent);
                         }
 
-                        /* the user password was mofified */
-                        if ($_POST['passwordfld1']) {
-                            local_user_set_password($userent, $_POST['passwordfld1']);
-                        }
                 }
 
+                /* the user password was mofified */
+	        if ($_POST['passwordfld1']) {
+        	    local_user_set_password($userent, $_POST['passwordfld1']);
+		}
+		
 		isset($_POST['utype']) ? $userent['scope'] = $_POST['utype'] : $userent['scope'] = "system";
 
 		$userent['name'] = $_POST['usernamefld'];
