@@ -42,7 +42,10 @@ if($_GET['getstatus']) {
 }
 if($_POST['reloadfilter']) {
 	configd_run("filter reload");
-        configd_run("filter sync reload");
+	if ( isset($config['hasync']['synchronizetoip']) && trim($config['hasync']['synchronizetoip']) != "") {
+	    // only try to sync when hasync is configured
+            configd_run("filter sync reload");
+        }
 	header("Location: status_filter_reload.php");
 	exit;
 }
