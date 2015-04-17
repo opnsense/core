@@ -1461,12 +1461,6 @@ function is_interface_mismatch()
 	return $do_assign;
 }
 
-/* sync carp entries to other firewalls */
-function carp_sync_client()
-{
-	configd_run('filter sync load');
-}
-
 /****f* util/isAjax
  * NAME
  *   isAjax - reports if the request is driven from prototype

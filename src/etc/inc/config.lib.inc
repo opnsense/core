@@ -183,7 +183,9 @@ function write_config($desc = 'Unknown', $backup = true)
 	}
 
 	/* sync carp entries to other firewalls */
-	carp_sync_client();
+	if ( isset($config['hasync']['synchronizetoip']) && trim($config['hasync']['synchronizetoip']) != "") {
+	    configd_run('filter sync load');
+	}
 
 	/* cleanup backups */
 	cleanup_backups();
