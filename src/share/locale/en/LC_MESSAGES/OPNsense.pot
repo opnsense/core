@@ -318,7 +318,7 @@ msgstr ""
 #: src/etc/inc/config.console.inc:205
 msgid ""
 "%sEnter the LAN interface name or 'a' for auto-detection %s"
-"NOTE: this enables full Firewalling/NAT mode.%s" .
+"NOTE: this enables full Firewalling/NAT mode.%s"
 "(or nothing if finished):%s"
 msgstr ""
 
@@ -5574,7 +5574,7 @@ msgstr ""
 
 #: src/www/services_dhcp.php:1190
 #: src/www/services_dhcpv6.php:830
-msgid "DNS " .
+msgid "DNS "
 msgstr ""
 
 #: src/www/services_dhcp.php:1191
@@ -8143,7 +8143,7 @@ msgid "Enter a MAC address "
 msgstr ""
 
 #: src/www/interfaces.php:1646
-msgid "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx " .
+msgid "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx "
 msgstr ""
 
 #: src/www/wizards/setup_wizard.xml:222
@@ -8217,7 +8217,7 @@ msgid "Enter additional names for this host."
 msgstr ""
 
 #: src/www/system_gateways_edit.php:730
-msgid "Enter an alternative address here to be used to monitor the link. This is used for the " .
+msgid "Enter an alternative address here to be used to monitor the link. This is used for the "
 msgstr ""
 
 #: src/www/system_gateways_edit.php:730
@@ -9140,7 +9140,7 @@ msgstr ""
 #: src/www/firewall_rules.php:885
 msgid ""
 "Floating rules are evaluated on a first-match basis (i.e. "
-"the action of the first rule to match a packet will be executed) only " .
+"the action of the first rule to match a packet will be executed) only "
 "if the 'quick' option is checked on a rule. Otherwise they will only apply if no "
 "other rules match. Pay close attention to the rule order and options "
 "chosen. If no rule here matches, the per-interface or default rules are used. "
@@ -9618,7 +9618,7 @@ msgid "Graph shows last"
 msgstr ""
 
 #: src/www/status_rrd_graph_settings.php:200
-msgid "Graphs will not be allowed to be recreated within a 1 minute interval, please " .
+msgid "Graphs will not be allowed to be recreated within a 1 minute interval, please "
 msgstr ""
 
 #: src/www/status_rrd_graph_settings.php:200
@@ -10687,7 +10687,7 @@ msgid "If possible do not add items to this file manually."
 msgstr ""
 
 #: src/www/services_captiveportal.php:822
-msgid "If reauthentication is enabled, Access-Requests will be sent to the RADIUS server for each user that is " .
+msgid "If reauthentication is enabled, Access-Requests will be sent to the RADIUS server for each user that is "
 msgstr ""
 
 #: src/www/services_captiveportal.php:822
@@ -10697,7 +10697,7 @@ msgid ""
 msgstr ""
 
 #: src/www/services_unbound.php:352
-msgid "If the DNS Resolver is enabled, the DHCP".
+msgid "If the DNS Resolver is enabled, the DHCP"
 msgstr ""
 
 #: src/www/services_unbound.php:352
@@ -10713,7 +10713,7 @@ msgid ""
 msgstr ""
 
 #: src/www/services_dnsmasq.php:330
-msgid "If the DNS forwarder is enabled, the DHCP".
+msgid "If the DNS forwarder is enabled, the DHCP"
 msgstr ""
 
 #: src/www/services_dnsmasq.php:330
@@ -10733,13 +10733,13 @@ msgstr ""
 
 #: src/www/services_unbound.php:352
 msgid ""
-"If the DNS Resolver is enabled, the DHCP".
-" service (if enabled) will automatically serve the LAN IP".
-" address as a DNS server to DHCP clients so they will use".
-" the DNS Resolver. If Forwarding, is enabled, the DNS Resolver will use the DNS servers".
-" entered in %sSystem: General setup%s".
-" or those obtained via DHCP or PPP on WAN if the &quot;Allow".
-" DNS server list to be overridden by DHCP/PPP on WAN&quot;".
+"If the DNS Resolver is enabled, the DHCP"
+" service (if enabled) will automatically serve the LAN IP"
+" address as a DNS server to DHCP clients so they will use"
+" the DNS Resolver. If Forwarding, is enabled, the DNS Resolver will use the DNS servers"
+" entered in %sSystem: General setup%s"
+" or those obtained via DHCP or PPP on WAN if the &quot;Allow"
+" DNS server list to be overridden by DHCP/PPP on WAN&quot;"
 " is checked."
 msgstr ""
 
@@ -10748,7 +10748,7 @@ msgid "If the interface IP is private, attempt to fetch and use the public IP in
 msgstr ""
 
 #: src/www/system_advanced_misc.php:344
-msgid "If the link where the default gateway resides fails " .
+msgid "If the link where the default gateway resides fails "
 msgstr ""
 
 #: src/www/system_advanced_misc.php:344
@@ -10783,7 +10783,7 @@ msgid "If this is enabled, RADIUS accounting packets will be sent to the primary
 msgstr ""
 
 #: src/www/services_captiveportal.php:829
-msgid "If this option is enabled, the captive portal will try to authenticate users by sending their MAC address as the username and the password " .
+msgid "If this option is enabled, the captive portal will try to authenticate users by sending their MAC address as the username and the password "
 msgstr ""
 
 #: src/www/services_captiveportal.php:829
@@ -10800,7 +10800,7 @@ msgstr ""
 #: src/www/services_dnsmasq.php:237
 #: src/www/services_dnsmasq.php:247
 #: src/www/services_dnsmasq.php:257
-msgid "If this option is set, %s DNS Forwarder (dnsmasq) will ".
+msgid "If this option is set, %s DNS Forwarder (dnsmasq) will "
 msgstr ""
 
 #: src/www/services_dnsmasq.php:248
@@ -10862,7 +10862,7 @@ msgid "If this option is set, the captive portal will restrict each user who log
 msgstr ""
 
 #: src/www/services_dnsmasq.php:227
-msgid "If this option is set, then DHCP mappings will ".
+msgid "If this option is set, then DHCP mappings will "
 msgstr ""
 
 #: src/www/services_dnsmasq.php:227
@@ -10874,7 +10874,7 @@ msgstr ""
 
 #: src/www/services_dnsmasq.php:216
 #: src/www/services_unbound.php:314
-msgid "If this option is set, then DHCP static mappings will ".
+msgid "If this option is set, then DHCP static mappings will "
 msgstr ""
 
 #: src/www/services_dnsmasq.php:216
@@ -10892,7 +10892,7 @@ msgstr ""
 
 #: src/www/services_dnsmasq.php:204
 #: src/www/services_unbound.php:302
-msgid "If this option is set, then machines that specify".
+msgid "If this option is set, then machines that specify"
 msgstr ""
 
 #: src/www/services_dnsmasq.php:204
@@ -11045,7 +11045,7 @@ msgid "If you want the user to be assigned a specific IP address, enter it here.
 msgstr ""
 
 #: src/www/firewall_nat_out_edit.php:729
-msgid "If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, ".
+msgid "If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, "
 msgstr ""
 
 #: src/www/firewall_nat_out_edit.php:729
@@ -11059,7 +11059,7 @@ msgid "If you want to change the users password, enter it here twice."
 msgstr ""
 
 #: src/www/vpn_pptp_users_edit.php:171
-msgid "If you want to change the users' password, ".
+msgid "If you want to change the users' password, "
 msgstr ""
 
 #: src/www/vpn_pptp_users_edit.php:171
@@ -11743,7 +11743,7 @@ msgstr ""
 msgid "Invalid expiration date format; use MM/DD/YYYY instead."
 msgstr ""
 
-#: src/share/locale/en/LC_MESSAGES/OPNsense.pot:11745
+#: src/etc/inc/interfaces.inc:3820
 msgid "Invalid interface \"%s\" in interface_dhcp_configure()"
 msgstr ""
 
@@ -16842,7 +16842,7 @@ msgid "Renew"
 msgstr ""
 
 #: src/www/system_advanced_firewall.php:283
-msgid "Replaces the IP identification field of packets with random values to " .
+msgid "Replaces the IP identification field of packets with random values to "
 msgstr ""
 
 #: src/www/system_advanced_firewall.php:283
@@ -17877,7 +17877,7 @@ msgid "Sends accounting packets to the RADIUS server."
 msgstr ""
 
 #: src/www/interfaces_lagg_edit.php:189
-msgid "Sends and receives traffic only through the master port.  If " .
+msgid "Sends and receives traffic only through the master port.  If "
 msgstr ""
 
 #: src/www/interfaces_lagg_edit.php:189
@@ -18239,7 +18239,7 @@ msgstr ""
 #: src/www/interfaces_bridge_edit.php:533
 msgid ""
 "Set the interface as a point-to-point link.  This is required for "
-"straight transitions to forwarding and should be enabled on a " .
+"straight transitions to forwarding and should be enabled on a "
 "direct link to another RSTP-capable switch."
 msgstr ""
 
@@ -19501,7 +19501,7 @@ msgid "Successfully reverted to timestamp %1$s with description "%2$s"."
 msgstr ""
 
 #: src/www/system_advanced_misc.php:323
-msgid "Successive connections will be redirected to the servers " .
+msgid "Successive connections will be redirected to the servers "
 msgstr ""
 
 #: src/www/system_advanced_misc.php:323
@@ -19537,15 +19537,15 @@ msgstr ""
 
 #: src/www/interfaces_lagg_edit.php:198
 msgid ""
-"Supports the IEEE 802.3ad Link Aggregation Control Protocol " .
-"(LACP) and the Marker Protocol.  LACP will negotiate a set " .
-"of aggregable links with the peer in to one or more Link " .
-"Aggregated Groups.  Each LAG is composed of ports of the " .
-"same speed, set to full-duplex operation.  The traffic will " .
-"be balanced across the ports in the LAG with the greatest " .
-"total speed, in most cases there will only be one LAG which " .
-"contains all ports.  In the event of changes in physical " .
-"connectivity, Link Aggregation will quickly converge to a " .
+"Supports the IEEE 802.3ad Link Aggregation Control Protocol "
+"(LACP) and the Marker Protocol.  LACP will negotiate a set "
+"of aggregable links with the peer in to one or more Link "
+"Aggregated Groups.  Each LAG is composed of ports of the "
+"same speed, set to full-duplex operation.  The traffic will "
+"be balanced across the ports in the LAG with the greatest "
+"total speed, in most cases there will only be one LAG which "
+"contains all ports.  In the event of changes in physical "
+"connectivity, Link Aggregation will quickly converge to a "
 "new configuration."
 msgstr ""
 
@@ -19732,7 +19732,7 @@ msgstr ""
 
 #: src/www/services_dhcp.php:1189
 #: src/www/services_dhcpv6.php:829
-msgid "System: " .
+msgid "System: "
 msgstr ""
 
 #: src/www/services_dhcp.php:1189
@@ -20985,7 +20985,7 @@ msgid ""
 "Adaptive mode attempts to strike a balance by degrading performance when "
 "the system appears idle and increasing it when the system is busy.  It "
 "offers a good balance between a small performance loss for greatly "
-"increased power savings.  Hiadaptive mode is alike adaptive mode, but " .
+"increased power savings.  Hiadaptive mode is alike adaptive mode, but "
 "tuned for systems where performance and interactivity are more important "
 "than power consumption.  It raises frequency faster, drops slower and "
 "keeps twice lower CPU load."
@@ -21484,7 +21484,7 @@ msgstr ""
 
 #: src/www/vpn_openvpn_server.php:1304
 msgid ""
-"These are the IPv6 networks that will be accessible " .
+"These are the IPv6 networks that will be accessible "
 "from the remote endpoint. Expressed as a comma-separated list of one or more IP/PREFIX. "
 "You may leave this blank if you don't "
 "want to add a route to the local network "
@@ -21495,11 +21495,11 @@ msgstr ""
 #: src/www/vpn_openvpn_client.php:927
 msgid ""
 "These are the IPv6 networks that will be routed through "
-"the tunnel, so that a site-to-site VPN can be " .
-"established without manually changing the routing tables. " .
-"Expressed as a comma-separated list of one or more IP/PREFIX. " .
-"If this is a site-to-site VPN, enter the " .
-"remote LAN/s here. You may leave this blank to " .
+"the tunnel, so that a site-to-site VPN can be "
+"established without manually changing the routing tables. "
+"Expressed as a comma-separated list of one or more IP/PREFIX. "
+"If this is a site-to-site VPN, enter the "
+"remote LAN/s here. You may leave this blank to "
 "only communicate with other clients"
 msgstr ""
 
@@ -21614,7 +21614,7 @@ msgid "This action name has already been used.  Action names must be unique."
 msgstr ""
 
 #: src/www/system_advanced_firewall.php:272
-msgid "This allows for communications with hosts that generate fragmented " .
+msgid "This allows for communications with hosts that generate fragmented "
 msgstr ""
 
 #: src/www/system_advanced_firewall.php:272
@@ -21816,7 +21816,7 @@ msgstr ""
 #: src/www/services_dhcp.php:942
 #: src/www/services_dhcp_edit.php:481
 #: src/www/services_dhcpv6.php:654
-msgid "This is the maximum lease time for clients that ask".
+msgid "This is the maximum lease time for clients that ask"
 msgstr ""
 
 #: src/www/services_dhcp.php:942
@@ -21883,7 +21883,7 @@ msgstr ""
 #: src/www/services_dhcp_edit.php:471
 #: src/www/services_dhcpv6.php:644
 msgid ""
-"This is used for clients that do not ask for a specific " .
+"This is used for clients that do not ask for a specific "
 "expiration time."
 msgstr ""
 
@@ -21977,7 +21977,7 @@ msgid "This option causes cumulative uptime to be recorded and displayed on the 
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:718
-msgid "This option causes mpd to adjust incoming and outgoing TCP SYN segments so that the requested maximum segment size is not greater than the amount ".
+msgid "This option causes mpd to adjust incoming and outgoing TCP SYN segments so that the requested maximum segment size is not greater than the amount "
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:718
@@ -21998,7 +21998,7 @@ msgid "This option causes the interface to operate in dial-on-demand mode, allow
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:693
-msgid "This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. " .
+msgid "This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. "
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:693
@@ -22020,7 +22020,7 @@ msgid "This option effectively bars the server from adding routes to the client'
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:709
-msgid "This option enables Van Jacobson TCP header compression, which saves several bytes per TCP data packet. " .
+msgid "This option enables Van Jacobson TCP header compression, which saves several bytes per TCP data packet. "
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:709
@@ -22041,7 +22041,7 @@ msgstr ""
 #: src/www/system_advanced_admin.php:479
 msgid ""
 "This option is off by default because Hifn accelerators do NOT work with this option, and the GUI will not function. "
-"It is possible that other accelerators have a similar problem that is not yet known/documented. " .
+"It is possible that other accelerators have a similar problem that is not yet known/documented. "
 "More information on BEAST is available from <a target='_blank' href='https://en.wikipedia.org/wiki/Transport_Layer_Security#BEAST_attack'>Wikipedia</a>."
 msgstr ""
 
@@ -22117,7 +22117,7 @@ msgid "This protocol name has already been used.  Protocol names must be unique.
 msgstr ""
 
 #: src/www/system_advanced_network.php:200
-msgid "This provides an RFC 2893 compatibility mechanism ".
+msgid "This provides an RFC 2893 compatibility mechanism "
 msgstr ""
 
 #: src/www/system_advanced_network.php:200
@@ -22261,7 +22261,6 @@ msgstr ""
 msgid "Threshold"
 msgstr ""
 
-#: src/share/locale/en/LC_MESSAGES/OPNsense.pot:22265
 #: src/www/firewall_schedule_edit.php:861
 #: src/www/javascript/jquery/jquery-ui-1.11.1.min.js:6
 msgid "Thu"
@@ -23743,7 +23742,7 @@ msgid "Warning: RADIUS is enabled. The local user database will not be used."
 msgstr ""
 
 #: src/www/system_certmanager.php:1035
-msgid "Warning: Using this option may create an " .
+msgid "Warning: Using this option may create an "
 msgstr ""
 
 #: src/www/system_certmanager.php:1035
@@ -24762,7 +24761,7 @@ msgid "When set, if primary server fails all requests will be sent via backup se
 msgstr ""
 
 #: src/www/vpn_pptp.php:473
-msgid "When set, only 128-bit encryption will be accepted. Otherwise " .
+msgid "When set, only 128-bit encryption will be accepted. Otherwise "
 msgstr ""
 
 #: src/www/vpn_pptp.php:473
@@ -24775,7 +24774,7 @@ msgstr ""
 
 #: src/www/interfaces.php:3292
 #: src/www/interfaces.php:3304
-msgid "When set, this option blocks traffic from IP addresses that are reserved " .
+msgid "When set, this option blocks traffic from IP addresses that are reserved "
 msgstr ""
 
 #: src/www/interfaces.php:3292
@@ -25486,28 +25485,20 @@ msgstr ""
 msgid "You may also specify a port alias listed in Firewall -&gt; Aliases here."
 msgstr ""
 
-msgid "You may enter a description here " . 															"for your reference (not parsed)"
-msgstr ""
-
-msgid "You may enter a description here " . 												"for your reference (not parsed)"
-msgstr ""
-
-msgid "You may enter a description here " . 						                    "for your reference (not parsed)"
-msgstr ""
-
-msgid "You may enter a description here " . 						                    "for your reference (not parsed)."
-msgstr ""
-
-msgid "You may enter a description here " . 					                    "for your reference (not parsed)."
-msgstr ""
-
-msgid "You may enter a description here ". 							                    "for your reference (not parsed)."
-msgstr ""
-
-msgid "You may enter a description here ". 						                    "for your reference (not parsed)."
-msgstr ""
-
-msgid "You may enter a description here ". 					                    "for your reference (not parsed)."
+#: TODO: line break duplicatee
+#: src/www/firewall_nat_edit.php:809
+#: src/www/firewall_nat_npt_edit.php:285
+#: src/www/interfaces_gif_edit.php:236
+#: src/www/interfaces_lagg_edit.php:231
+#: src/www/interfaces_vlan_edit.php:200
+#: src/www/interfaces_wireless_edit.php:191
+#: src/www/services_dhcp_edit.php:420
+#: src/www/services_dhcpv6_edit.php:243
+#: src/www/vpn_ipsec_phase1.php:644
+#: src/www/vpn_ipsec_phase2.php:648
+msgid ""
+"You may enter a description here "
+"for your reference (not parsed)"
 msgstr ""
 
 #: src/www/firewall_aliases_import.php:188
@@ -25541,7 +25532,8 @@ msgstr ""
 msgid "You may enter a description here for your reference (not parsed)."
 msgstr ""
 
-msgid "You may enter a description here for your reference. Description will appear in the "Interfaces Assign" select lists."
+#: src/www/interfaces_ppps_edit.php:484
+msgid "You may enter a description here for your reference. Description will appear in the \"Interfaces Assign\" select lists."
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:1232
@@ -25549,16 +25541,12 @@ msgstr ""
 msgid "You may enter a description here for your reference."
 msgstr ""
 
-msgid "You may enter a description here". 						                    " for your reference (not parsed)."
-msgstr ""
-
-msgid "You may enter a description here". 						                   " for your reference (not parsed)."
-msgstr ""
-
-msgid "You may enter a description here". 					                    " for your reference (not parsed)."
-msgstr ""
-
-msgid "You may enter a description here". 					                   " for your reference (not parsed)."
+#: src/www/interfaces_gre_edit.php:241
+#: src/www/services_dnsmasq_domainoverride_edit.php:160
+#: src/www/services_dnsmasq_edit.php:226
+#: src/www/services_wol_edit.php:158
+msgid "You may enter a description here"
+" for your reference (not parsed)."
 msgstr ""
 
 #: src/etc/rc.restore_config_backup:77
@@ -25602,10 +25590,14 @@ msgid "You must apply the changes in order for them to take effect."
 msgstr ""
 
 #: src/www/services_rfc2136_edit.php:236
-msgid "You must configure a DNS server in %sSystem: " .
+msgid "You must configure a DNS server in %sSystem: "
 msgstr ""
 
-msgid "You must configure a DNS server in %sSystem: " . 					                    "General setup %sor allow the DNS server list to be overridden " .
+#: src/www/services_rfc2136_edit.php:236
+msgid ""
+"You must configure a DNS server in %sSystem: "
+"General setup %sor allow the DNS server list to be overridden "
+"by DHCP/PPP on WAN for dynamic DNS updates to work."
 msgstr ""
 
 #: src/www/services_dhcp.php:385
@@ -25613,15 +25605,19 @@ msgstr ""
 msgid "You must disable the DHCP relay on the %s interface before enabling the DHCP server."
 msgstr ""
 
+#: src/www/services_unbound_acls.php:99
 msgid "You must enter a valid IPv4 address for {$networkacl[$x]['acl_network']}."
 msgstr ""
 
+#: src/www/services_unbound_acls.php:92
 msgid "You must enter a valid IPv4 netmask for {$networkacl[$x]['acl_network']}/{$networkacl[$x]['mask']}."
 msgstr ""
 
+#: src/www/services_unbound_acls.php:95
 msgid "You must enter a valid IPv6 address for {$networkacl[$x]['acl_network']}."
 msgstr ""
 
+#: src/www/services_unbound_acls.php:97
 msgid "You must enter a valid IPv6 netmask for {$networkacl[$x]['acl_network']}/{$networkacl[$x]['mask']}."
 msgstr ""
 
@@ -25629,6 +25625,7 @@ msgstr ""
 msgid "You must enter a valid hexadecimal number for the IPv6 prefix ID."
 msgstr ""
 
+#: src/www/services_unbound_acls.php:88
 msgid "You must enter a valid network IP address for {$networkacl[$x]['acl_network']}."
 msgstr ""
 
@@ -25731,7 +25728,15 @@ msgstr ""
 msgid "You need to specify the number of connections."
 msgstr ""
 
-msgid "You should generally " . 													"leave this option turned on, unless your WAN network lies in such " .
+#: src/www/interfaces.php:3294
+msgid "well as loopback addresses (127/8)."
+msgstr ""
+
+#: src/www/interfaces.php:3294
+msgid ""
+"You should generally "
+"leave this option turned on, unless your WAN network lies in such "
+"a private address space, too."
 msgstr ""
 
 #: src/www/interfaces.php:598
@@ -25844,6 +25849,7 @@ msgstr ""
 msgid "add csc"
 msgstr ""
 
+#: src/www/services_captiveportal_filemanager.php:126
 msgid "add file"
 msgstr ""
 
@@ -26025,6 +26031,7 @@ msgstr ""
 msgid "aren't allowed."
 msgstr ""
 
+#: src/etc/inc/array_intersect_key.inc:45
 msgid "array_intersect_key() Argument #"
 msgstr ""
 
@@ -26036,6 +26043,7 @@ msgstr ""
 msgid "association removed."
 msgstr ""
 
+#: src/etc/inc/smtp.inc:290
 msgid "authenticated mechanism %1$s may not be used: %2$s"
 msgstr ""
 
@@ -26091,9 +26099,11 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+#: src/etc/inc/voucher.inc:633
 msgid "cant read %1$s/voucher_%s_used_%2$s.db"
 msgstr ""
 
+#: src/etc/inc/voucher.inc:552
 msgid "cant write %1$s/voucher_%s_used_%2$s.db"
 msgstr ""
 
@@ -26197,14 +26207,16 @@ msgstr ""
 msgid "could not bring realif up -- variable not defined -- interface_gif_configure()"
 msgstr ""
 
-msgid "could not connect to the host "%1$s": %2$s"
+#: src/etc/inc/smtp.inc:257
+msgid "could not connect to the host \"%1$s\": %2$s"
 msgstr ""
 
 #: src/etc/inc/smtp.inc:446
 msgid "could not determine the SMTP to connect"
 msgstr ""
 
-msgid "could not resolve host "%s""
+#: src/etc/inc/smtp.inc:234
+msgid "could not resolve host \"%s\""
 msgstr ""
 
 #: src/www/guiconfig.inc:292
@@ -26424,7 +26436,8 @@ msgstr ""
 msgid "do not restore config.xml."
 msgstr ""
 
-msgid "domain "%s" resolved to an address excluded to be valid"
+#: src/etc/inc/smtp.inc:238
+msgid "domain \"%s\" resolved to an address excluded to be valid"
 msgstr ""
 
 #: src/www/vpn_pptp.php:487
@@ -26432,10 +26445,13 @@ msgid "don't forget to "
 msgstr ""
 
 #: src/www/vpn_pppoe_edit.php:612
-msgid "don't forget to add a firewall rule to permit " .
+msgid "don't forget to add a firewall rule to permit "
 msgstr ""
 
-msgid "don't forget to add a firewall rule to permit " . 														"traffic from PPPoE clients"
+#: src/www/vpn_pppoe_edit.php:612
+msgid ""
+"don't forget to add a firewall rule to permit "
+"traffic from PPPoE clients"
 msgstr ""
 
 #: src/etc/inc/vpn.inc:1350
@@ -26581,6 +26597,7 @@ msgstr ""
 msgid "edit server"
 msgstr ""
 
+#: src/www/guiconfig.inc:1065
 msgid "edit this alias"
 msgstr ""
 
@@ -26611,6 +26628,7 @@ msgstr ""
 msgid "edit"
 msgstr ""
 
+#: src/etc/inc/system.inc:1885
 msgid "embedded (unknown)"
 msgstr ""
 
@@ -26638,6 +26656,7 @@ msgstr ""
 msgid "error page"
 msgstr ""
 
+#: src/etc/inc/meta.inc:132
 msgid "error: tag mismatch ( %1$s != %2$s ) in '%3$s'%4$s"
 msgstr ""
 
@@ -26715,6 +26734,7 @@ msgstr ""
 msgid "failed!"
 msgstr ""
 
+#: src/etc/inc/pkg-utils.inc:1444
 msgid "failed!nnInstallation aborted.n"
 msgstr ""
 
@@ -27036,7 +27056,8 @@ msgstr ""
 msgid "linkshare service curve defined but missing initial bandwidth (m1) value"
 msgstr ""
 
-msgid "list_phpfiles: unable to examine path %sn"
+#: src/etc/inc/meta.inc:68
+msgid "list_phpfiles: unable to examine path %s\n"
 msgstr ""
 
 #: src/www/guiconfig.inc:1041
@@ -27084,6 +27105,8 @@ msgstr ""
 msgid "matched log entries."
 msgstr ""
 
+#: TODO: figure out what's going on with src/etc/inc/xmlrpc_server.inc:392
+#: src/etc/inc/xmlrpc_client.inc:1361
 msgid "mb_convert_encoding() is not available"
 msgstr ""
 
@@ -27109,6 +27132,7 @@ msgstr ""
 msgid "minutes"
 msgstr ""
 
+#: src/etc/inc/xmlrpc_client.inc:260
 msgid "missing top level xmlrpc element"
 msgstr ""
 
@@ -27128,6 +27152,7 @@ msgstr ""
 msgid "modified '%s' vs:"
 msgstr ""
 
+#: src/www/guiconfig.inc:1001
 msgid "move mouse out this alias to hide"
 msgstr ""
 
@@ -27223,9 +27248,15 @@ msgstr ""
 msgid "net"
 msgstr ""
 
-msgid "network interfaces are the distribution  interfaces  to  the". 								      " destination  networks,  where  multicast  clients  can  join groups and".
+#: src/www/services_igmpproxy_edit.php:199
+msgid ""
+"network interfaces are the distribution  interfaces  to  the"
+" destination  networks,  where  multicast  clients  can  join groups and"
+" receive multicast data. One or more downstream interfaces must be configured."
 msgstr ""
 
+#: src/www/services_captiveportal_vouchers.php:531
+#: src/www/services_captiveportal_vouchers.php:538
 msgid "new key"
 msgstr ""
 
@@ -27500,15 +27531,23 @@ msgstr ""
 msgid "reset at a specific date (mm/dd/yyyy)"
 msgstr ""
 
+#: src/www/interfaces.php:2707
+#: src/www/interfaces_ppps_edit.php:647
 msgid "reset at each day ('0 0 * * *')"
 msgstr ""
 
+#: src/www/interfaces.php:2710
+#: src/www/interfaces_ppps_edit.php:650
 msgid "reset at each hour ('0 * * * *')"
 msgstr ""
 
+#: src/www/interfaces.php:2701
+#: src/www/interfaces_ppps_edit.php:641
 msgid "reset at each month ('0 0 1 * *')"
 msgstr ""
 
+#: src/www/interfaces.php:2704
+#: src/www/interfaces_ppps_edit.php:644
 msgid "reset at each week ('0 0 * * 0')"
 msgstr ""
 
@@ -27673,10 +27712,14 @@ msgid "synproxy state"
 msgstr ""
 
 #: src/www/diag_logs_settings.php:451
-msgid "syslog sends UDP datagrams to port 514 on the specified " .
+msgid "syslog sends UDP datagrams to port 514 on the specified "
 msgstr ""
 
-msgid "syslog sends UDP datagrams to port 514 on the specified " . 											"remote syslog server, unless another port is specified. Be sure to set syslogd on the " .
+#: src/www/diag_logs_settings.php:451
+msgid ""
+"syslog sends UDP datagrams to port 514 on the specified "
+"remote syslog server, unless another port is specified. Be sure to set syslogd on the "
+"remote server to accept syslog messages from"
 msgstr ""
 
 #: src/www/diag_backup.php:182
@@ -27714,7 +27757,8 @@ msgstr ""
 msgid "these options will create persistant daily log files in /var/log/ntp."
 msgstr ""
 
-msgid "this option requires checking the "Enable WPA box"."
+#: src/www/interfaces.php:3227
+msgid "this option requires checking the \"Enable WPA box\"."
 msgstr ""
 
 #: src/www/services_captiveportal_vouchers.php:216
@@ -27755,10 +27799,13 @@ msgid "to minimize clock drift if the GPS data is not valid over time. Otherwise
 msgstr ""
 
 #: src/www/vpn_pptp.php:487
-msgid "to permit ".
+msgid "to permit "
 msgstr ""
 
-msgid "to permit ". 						                    "traffic from PPTP clients"
+#: src/www/vpn_pptp.php:487
+msgid ""
+"to permit "
+"traffic from PPTP clients"
 msgstr ""
 
 #: src/www/services_ntpd_pps.php:132
@@ -27809,6 +27856,7 @@ msgstr ""
 msgid "type"
 msgstr ""
 
+#: src/etc/inc/meta.inc:99
 msgid "unable to read %sn"
 msgstr ""
 
@@ -27893,12 +27941,15 @@ msgstr ""
 msgid "virtual full time"
 msgstr ""
 
-msgid "warning: tag %1$s has invalid data in '%2$s'%3$s"
+#: src/etc/inc/meta.inc:185
+msgid "warning: tag %1\$s has invalid data in '%2\$s'%3\$s"
 msgstr ""
 
+#: src/etc/inc/meta.inc:163
 msgid "warning: tag %1$s has malformed data in '%2$s'%3$s"
 msgstr ""
 
+#: src/etc/inc/meta.inc:143
 msgid "warning: tag %1$s has no data in '%2$s'%3$s"
 msgstr ""
 
@@ -27938,13 +27989,14 @@ msgstr ""
 
 #: src/www/services_dhcp.php:1191
 #: src/www/services_dhcpv6.php:831
-msgid "will " .
+msgid "will "
 msgstr ""
 
-msgid "will " . 												"be assigned to clients by the DHCP server."
-msgstr ""
-
-msgid "will " . 											"be assigned to clients by the DHCP server."
+#: src/www/services_dhcp.php:1191
+#: src/www/services_dhcp.php:1192
+msgid ""
+"will "
+"be assigned to clients by the DHCP server."
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:778
@@ -27965,6 +28017,7 @@ msgstr ""
 msgid "www.example.com"
 msgstr ""
 
+#: src/etc/inc/xmlrpc_client.inc:268
 msgid "xmlrpc element %1$s cannot be child of %2$s"
 msgstr ""
 
@@ -27987,132 +28040,185 @@ msgstr ""
 msgid "yes"
 msgstr ""
 
-msgid ( 						"The Captive Portal zone '%s' has Hard Timeout parameter set to a value bigger than Default lease time (%s)."), $cpZone, $deftime);
+#: src/www/services_dhcp.php:266
+msgid "The Captive Portal zone '%s' has Hard Timeout parameter set to a value bigger than Default lease time (%s)."
 msgstr ""
 
-msgid (                     "send()'s %s parameter must be an XML_RPC_Message object."
+#: src/etc/inc/xmlrpc_client.inc:860
+msgid "send()'s %s parameter must be an XML_RPC_Message object."
 msgstr ""
 
-msgid ( "Created:") . " " . date("F j, Y, g:i a") . "n";
+#: internationalize date() calls
+#: src/etc/inc/services.inc:2246
+msgid "Created:"
 msgstr ""
 
-msgid ( "Created:") . " " . date("F j, Y, g:i a") . "n"; 		$crontab_contents .= "#n";
+#: src/etc/inc/interfaces.inc:358
+#: src/etc/inc/interfaces.inc:1060
+msgid "done."
 msgstr ""
 
-msgid ( "done.") . "n"; 		}
+#: TODO: not sure if these even work? 
+#: src/www/crash_reporter.php:94
+msgid "$_POST['Submit']) == \"Yes\")"
 msgstr ""
 
-msgid ( "done.") . "n"; }
+#: TODO: not sure if these even work? 
+#: src/www/crash_reporter.php:118
+msgid "$_POST['Submit']) == \"No\""
 msgstr ""
 
-msgid ($_POST['Submit']) == "No") { 		array_map('unlink', glob("/var/crash/*"));
+# TODO: unqouted gettext string,
+# src/www/pkg_mgr.php:174
+#msgid ($category)
+#msgstr ""
+
+# TODO: unqouted gettext string,
+# src/www/pkg.php:437
+#msgid ($column['listmodeoff']). $column['suffix'];
+#msgstr ""
+
+# TODO: unqouted gettext string,
+# src/www/pkg.php:434
+#msgid ($column['listmodeon']). $column['suffix'];
+#msgstr ""
+
+# TODO: unqouted gettext string,
+# src/www/status_interfaces.php:76
+# src/www/system_advanced_firewall.php:516
+#msgid ($ifdesc);?></option>
+#msgstr ""
+
+# TODO: unqouted gettext string,
+# src/www/pkg_mgr.php:249
+#msgid ($index['category']).'</td>'."n";
+#msgstr ""
+
+# TODO: unqouted gettext string,
+# src/www/services_captiveportal.php:915
+# src/www/services_captiveportal.php:917:                                         
+# TODO: unqouted gettext string,
+#msgid ($macformat),"</option>n";
 msgstr ""
 
-msgid ($_POST['Submit']) == "Yes") { 		echo
-msgstr ""
+# TODO: unqouted vars gettext string,
+# src/www/services_captiveportal.php:915
+# src/www/services_captiveportal.php:917
+#msgid ($macformat),"</option>n";
+#msgstr ""
 
-msgid ($category) , $menu_category==$category ? true : false, "pkg_mgr.php?category={$category}"); 												$visible_categories[]=$category;
-msgstr ""
+# TODO: unqouted vars gettext string,
+# src/etc/inc/pkg-utils.inc:1402
+# src/etc/inc/pkg-utils.inc:1414
+#msgid ($msg)
+#msgstr ""
 
-msgid ($column['listmodeoff']). $column['suffix']; 									else
-msgstr ""
+# TODO: unqouted vars gettext string,
+# src/www/system_advanced_misc.php:213
+# src/www/system_advanced_network.php:139
+# src/www/vpn_ipsec_settings.php:96
+#msgid ($retval);
+#msgstr ""
 
-msgid ($column['listmodeon']). $column['suffix']; 									#Check if there is a custom info to show when $fieldname is empty
-msgstr ""
+# TODO: unqouted vars gettext string,
+# src/etc/inc/functions.inc:32
+#msgid ($text) {
+#msgstr ""
 
-msgid ($ifdesc);?></option> 			                                            <?php endforeach;
-msgstr ""
+# TODO: unqouted vars gettext string,
+# src/www/pkg.php:49
+#msgid ($title_msg)
+#msgstr ""
 
-msgid ($index['category']).'</td>'."n";
-msgstr ""
+# TODO: unqouted vars gettext string,
+# src/etc/inc/notices.inc:361:
+#msgid sprintf("%s (%s) - Notification", $g['product_name'], $hostname)
+#msgstr ""
 
-msgid ($macformat),"</option>n"; 																}
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:829
+#msgid (sprintf("How many probes should be useds to compute average packet loss?  Default is %d.", $apinger_default['avg_loss_samples']));?><br /><br /></span>
+#msgstr ""
 
-msgid ($macformat),"</option>n"; 																} else {
-msgstr ""
-
-msgid ($msg), htmlspecialchars(get_active_xml_rpc_base_url())) . '<br/><br/>' 	. '<a href="/pkg_mgr_settings.php">' .
-msgstr ""
-
-msgid ($msg), htmlspecialchars(get_active_xml_rpc_base_url())); }
-msgstr ""
-
-msgid ($retval)); 		else
-msgstr ""
-
-#: src/www/system_advanced_misc.php:213
-#: src/www/system_advanced_network.php:139
-#: src/www/vpn_ipsec_settings.php:96
-msgid ($retval);
-msgstr ""
-
-msgid ($retval); 	}
-msgstr ""
-
-#: src/etc/inc/functions.inc:32
-msgid ($text) {
-msgstr ""
-
-msgid ($text) { 		return $text;
-msgstr ""
-
-msgid ($title_msg)."', 'trail', true, 'delay', 0, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle');""; }
-msgstr ""
-
-msgid (sprintf("%s (%s) - Notification", $g['product_name'], $hostname)), "{$message}"); 	}
-msgstr ""
-
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:829
 msgid (sprintf("How many probes should be useds to compute average packet loss?  Default is %d.", $apinger_default['avg_loss_samples']));?><br /><br /></span>
 msgstr ""
 
-msgid (sprintf("How many probes should be useds to compute average packet loss?  Default is %d.", $apinger_default['avg_loss_samples']));?><br /><br /></span> 															</td>
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:819:
+#msgid (sprintf("How many replies should be used to compute average delay for controlling "delay" alarms?  Default is %d.", $apinger_default['avg_delay_samples']));?><br /><br /></span>
+#msgstr ""
 
-msgid (sprintf("How many replies should be used to compute average delay for controlling "delay" alarms?  Default is %d.", $apinger_default['avg_delay_samples']));?><br /><br /></span>
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:819
+#msgid (sprintf("How many replies should be used to compute average delay for controlling "delay" alarms?  Default is %d.", $apinger_default['avg_delay_samples']));?><br /><br /></span>
+#msgstr ""
 
-msgid (sprintf("How many replies should be used to compute average delay for controlling "delay" alarms?  Default is %d.", $apinger_default['avg_delay_samples']));?><br /><br /></span> 															</td>
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:799:
+#msgid (sprintf("How often that an ICMP probe will be sent in seconds. Default is %d.", $apinger_default['interval']));?><br /><br />
+#msgstr ""
 
-msgid (sprintf("How often that an ICMP probe will be sent in seconds. Default is %d.", $apinger_default['interval']));?><br /><br /> 																	<?=
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/pkg_mgr_install.php:276
+#msgid (sprintf("Installation of %s completed.", $pkgid)); 				update_status($status_a);
+#msgstr ""
 
-msgid (sprintf("Installation of %s completed.", $pkgid)); 				update_status($status_a);
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:778
+#msgid (sprintf("Low and high thresholds for latency in milliseconds. Default is %d/%d.", $apinger_default['latencylow'], $apinger_default['latencyhigh']));?></span>
+#msgstr ""
 
-msgid (sprintf("Low and high thresholds for latency in milliseconds. Default is %d/%d.", $apinger_default['latencylow'], $apinger_default['latencyhigh']));?></span> 															</td>
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:790:
+#msgid (sprintf("Low and high thresholds for packet loss in %%. Default is %d/%d.", $apinger_default['losslow'], $apinger_default['losshigh']));?>
+#msgstr ""
 
-msgid (sprintf("Low and high thresholds for packet loss in %%. Default is %d/%d.", $apinger_default['losslow'], $apinger_default['losshigh']));?></span> 															</td>
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:839
+#msgid (sprintf("The delay (in qty of probe samples) after which loss is computed.  Without this, delays longer than the probe interval would be treated as packet loss.  Default is %d.", $apinger_default['avg_loss_delay_samples']));?><br /><br /></span>
+#msgstr ""
 
-msgid (sprintf("The delay (in qty of probe samples) after which loss is computed.  Without this, delays longer than the probe interval would be treated as packet loss.  Default is %d.", $apinger_default['avg_loss_delay_samples']));?><br /><br /></span>
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:839
+#msgid (sprintf("The delay (in qty of probe samples) after which loss is computed.  Without this, delays longer than the probe interval would be treated as packet loss.  Default is %d.", $apinger_default['avg_loss_delay_samples']));?><br /><br /></span>
+#msgstr ""
 
-msgid (sprintf("The delay (in qty of probe samples) after which loss is computed.  Without this, delays longer than the probe interval would be treated as packet loss.  Default is %d.", $apinger_default['avg_loss_delay_samples']));?><br /><br /></span> 															</td>
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+#msgid (sprintf("The down time setting needs to be higher than the default probe interval (%d)", $apinger_default['interval'])); 				}
+#msgstr ""
 
-msgid (sprintf("The down time setting needs to be higher than the default probe interval (%d)", $apinger_default['interval'])); 				}
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:319
+#msgid (sprintf("The high Packet Loss threshold needs to be higher than the default low Packet Loss threshold (%d)", $apinger_default['losslow']));
+#msgstr ""
 
-msgid (sprintf("The high Packet Loss threshold needs to be higher than the default low Packet Loss threshold (%d)", $apinger_default['losslow'])); 				}
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:296
+#msgid (sprintf("The high latency threshold needs to be higher than the default low latency threshold (%d)", $apinger_default['latencylow']));
+#msgstr ""
 
-msgid (sprintf("The high latency threshold needs to be higher than the default low latency threshold (%d)", $apinger_default['latencylow'])); 				}
-msgstr ""
 
-msgid (sprintf("The low Packet Loss threshold needs to be less than the default high Packet Loss threshold (%d)", $apinger_default['losshigh'])); 				}
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:312
+#msgid (sprintf("The low Packet Loss threshold needs to be less than the default high Packet Loss threshold (%d)", $apinger_default['losshigh']));
+#msgstr ""
 
-msgid (sprintf("The low latency threshold needs to be less than the default high latency threshold (%d)", $apinger_default['latencyhigh'])); 				}
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:289
+#msgid (sprintf("The low latency threshold needs to be less than the default high latency threshold (%d)", $apinger_default['latencyhigh'])); 				}
+#msgstr ""
 
-msgid (sprintf("The number of seconds of failed probes before the alarm will fire. Default is %d.", $apinger_default['down']));?></span> 															</td>
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+#  src/www/system_gateways_edit.php:809:
+#msgid (sprintf("The number of seconds of failed probes before the alarm will fire. Default is %d.", $apinger_default['down']));?></span>
+#msgstr ""
 
-msgid (sprintf("The probe interval needs to be less than the default down time setting (%d)", $apinger_default['down'])); 				}
-msgstr ""
+# TODO: vars cleanup, does this even work: 
+# src/www/system_gateways_edit.php:355
+#msgid (sprintf("The probe interval needs to be less than the default down time setting (%d)", $apinger_default['down'])); 				}
+#msgstr ""
 
 #: src/www/services_dyndns_edit.php:411
 msgid ""
@@ -28128,3 +28234,20 @@ msgstr ""
 msgid "The firewall will reboot once the operation is completed."
 msgstr ""
 
+# TODO: These lines need clarification in the source:
+# src/www/interfaces.php:1931
+# src/www/interfaces.php:2092
+# src/www/interfaces.php:2336
+# src/www/interfaces.php:2058
+# src/www/interfaces.php:2060
+# src/www/interfaces.php:2068
+# src/www/interfaces.php:2074
+# src/www/interfaces.php:2082
+# src/www/interfaces.php:2092
+# src/www/interfaces.php:2336
+# src/www/interfaces.php:2301
+# src/www/interfaces.php:2247
+# src/www/interfaces.php:2215
+# src/www/interfaces.php:2288
+# src/www/interfaces.php:2317
+# src/www/interfaces.php:2288
