@@ -480,17 +480,16 @@
 
         tokenRemove: function(value){
 
-            var option = $('option[value="' + value + '"]', this.select);
-
+            var option = $('option[value="' + value.replace('\\','\\\\') + '"]', this.select);
             if(option.attr('data-type') == 'custom'){
                 option.remove();
             } else {
                 option.removeAttr('selected');
             }
 
-            $('li.Token[data-value="' + value + '"]', this.tokensContainer).remove();
+            $('li.Token[data-value="' + value.replace('\\','\\\\')  + '"]', this.tokensContainer).remove();
 
-            this.options.onRemoveToken(value);
+            this.options.onRemoveToken(value.replace('\\','\\\\') );
             this.resizeSearchInput();
             this.dropdownHide();
 

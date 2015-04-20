@@ -39,4 +39,5 @@ class IndexController extends \OPNsense\Base\IndexController
         $this->view->title = "Proxy Server";
         $this->view->pick('OPNsense/Proxy/index');
     }
+
 }

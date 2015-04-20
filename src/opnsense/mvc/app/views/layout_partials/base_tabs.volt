@@ -86,7 +86,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     {% endfor %}
 
                 <div id="subtab_{{subtab[0]}}" class="tab-pane fade{% if activetab|default("") == subtab[0] %} in active {% endif %}">
-                    <form id="frm_{{subtab[0]}}" class="form-inline">
+                    <form id="frm_{{subtab[0]}}" class="form-inline" data-title="{{subtab[1]}}">
                         <table class="table table-striped table-condensed table-responsive">
                             <colgroup>
                                 <col class="col-md-3"/>
@@ -96,7 +96,8 @@ POSSIBILITY OF SUCH DAMAGE.
                             <tbody>
                                 <tr>
                                     <td align="left"><a href="#">{% if advanced|default(false) %}<i class="fa fa-toggle-off text-danger" id="show_advanced_{{subtab[0]}}" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
-                                    <td colspan="2" align="right">
+                                    <td><i class="fa fa-chevron-right text-primary"></i><b> {{subtab[1]}} </b><i class="fa fa-chevron-left text-primary"></td>
+                                    <td  align="right">
                                         {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{subtab[0]}}" type="button"></i></a>{% endif %}
                                     </td>
                                 </tr>

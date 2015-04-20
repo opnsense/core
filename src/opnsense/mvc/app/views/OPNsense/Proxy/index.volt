@@ -47,53 +47,35 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         // form event handlers
-        $("#save_proxy-general").click(function(){
+        $('[id*="save_"]').each(function(){
+            $(this).click(function() {
+                var frm_id = $(this).closest("form").attr("id");
+                var frm_title = $(this).closest("form").attr("data-title");
+                // save data for General TAB
+                saveFormToEndpoint(url="/api/proxy/settings/set",formid=frm_id,callback_ok=function(){
+                    // on correct save, perform reconfigure. set progress animation when reloading
+                    $("#"+frm_id+"_progress").addClass("fa fa-spinner fa-pulse");
 
-            // save data for General TAB
-            saveFormToEndpoint(url="/api/proxy/settings/set",formid="frm_proxy-general",callback_ok=function(){
-                // on correct save, perform reconfigure. set progress animation when reloading
-                $("#frm_proxy-general_progress").addClass("fa fa-spinner fa-pulse");
+                    //
+                    ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status){
+                        // when done, disable progress animation.
+                        $("#"+frm_id+"_progress").removeClass("fa fa-spinner fa-pulse");
 
-                //
-                ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status){
-                    // when done, disable progress animation.
-                    $("#frm_proxy-general_progress").removeClass("fa fa-spinner fa-pulse");
+                        if (status != "success" || data['status'] != 'ok' ) {
+                            // fix error handling
+                            BootstrapDialog.show({
+                                type:BootstrapDialog.TYPE_WARNING,
+                                title: frm_title,
+                                message: JSON.stringify(data),
+                                draggable: true
+                            });
+                        }
+                    });
 
-                    if (status != "success" || data['status'] != 'ok' ) {
-                        // fix error handling
-                        BootstrapDialog.show({
-                            type:BootstrapDialog.TYPE_WARNING,
-                            title: 'Proxy General TAB',
-                            message: JSON.stringify(data)
-                        });
-                    }
                 });
-
             });
         });
-        $("#save_proxy-forward-general").click(function(){
-            // save data for Proxy TAB
-            saveFormToEndpoint(url="/api/proxy/settings/set",formid="frm_proxy-forward-general",callback_ok=function(){
-                // on correct save, perform reconfigure. set progress animation when reloading
-                $("#frm_proxy-forward-general_progress").addClass("fa fa-spinner fa-pulse");
 
-                //
-                ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status){
-                    // when done, disable progress animation.
-                    $("#frm_proxy-forward-general_progress").removeClass("fa fa-spinner fa-pulse");
-
-                    if (status != "success" || data['status'] != 'ok' ) {
-                        // fix error handling
-                        BootstrapDialog.show({
-                            type:BootstrapDialog.TYPE_WARNING,
-                            title: 'Proxy Server TAB',
-                            message: JSON.stringify(data)
-                        });
-                    }
-                });
-
-            });
-        });
 
         // handle help messages show/hide
         $('[id*="show_all_help"]').click(function() {
@@ -151,6 +133,34 @@ POSSIBILITY OF SUCH DAMAGE.
             })
         },500);
 
+        // clear multiselect boxes, works on standard and tokenized versions
+        $('[id*="clear-options"]').each(function() {
+            $(this).click(function() {
+                var id = $(this).attr("for");
+                BootstrapDialog.confirm({
+                    title: 'Deselect or remove all items ?',
+                    message: 'Deselect or remove all items ?',
+                    type: BootstrapDialog.TYPE_DANGER,
+                    closable: true,
+                    draggable: true,
+                    btnCancelLabel: 'Cancel',
+                    btnOKLabel: 'Yes',
+                    btnOKClass: 'btn-primary',
+                    callback: function(result) {
+                        if(result) {
+                                if ($('select[id="' + id + '"]').hasClass("tokenize")) {
+                                    // trigger close on all Tokens
+                                    $('select[id="' + id + '"]').parent().find('ul[class="TokensContainer"]').find('li[class="Token"]').find('a').trigger("click");
+                                } else {
+                                    // remove options from selection
+                                    $('select[id="' + id + '"]').find('option').prop('selected',false);
+                                }
+                        }
+                    }
+                });
+            });
+        });
+
     });
 
 
@@ -172,62 +182,78 @@ maxheight: define max height of select box, default=170px to hold 5 items
 
 {{ partial("layout_partials/base_tabs",
     ['tabs': {
-        ['proxy-general','General Proxy Settings',
-            {['id': 'proxy.general.enabled',
-            'label':'Enable proxy',
-            'type':'checkbox',
-            'help':'Enable or disable the proxy service.'
+        ['proxy-general','General Proxy Settings','subtabs': {
+            [ 'proxy-general-settings','General Proxy Settings',
+                {['id': 'proxy.general.enabled',
+                'label':'Enable proxy',
+                'type':'checkbox',
+                'help':'Enable or disable the proxy service.'
+                ],
+                ['id': 'proxy.general.icpPort',
+                'label':'ICP port',
+                'type':'text',
+                'help':'The port number where Squid sends and receives ICP queries to
+                        and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.general.logging.enable.accessLog',
+                'label':'Enable access logging',
+                'type':'checkbox',
+                'help':'Enable access logging.',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.general.logging.enable.storeLog',
+                'label':'Enable store logging',
+                'type':'checkbox',
+                'help':'Enable store logging.',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.general.alternateDNSservers',
+                'label':'Use alternate DNS-servers',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma seperated list into this field.</div>',
+                'hint':'Type IP adresses, followed by Enter or comma.',
+                'allownew':'true',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.general.dnsV4First',
+                'label':'Enable DNS v4 first',
+                'type':'checkbox',
+                'help':'This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first.
+                Squid will still perform both IPv6 and IPv4 DNS lookups before connecting.
+                <div class="alert alert-warning"><b class="text-danger">Warning:</b> This option will restrict the situations under which IPv6
+                    connectivity is used (and tested). Hiding network problems
+                    which would otherwise be detected and warned about.</div>',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.general.useViaHeader',
+                'label':'Use Via header',
+                'type':'checkbox',
+                'help':'If set (default), Squid will include a Via header in requests and
+                        replies as required by RFC2616.',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.general.suppressVersion',
+                'label':'Suppress version string',
+                'type':'checkbox',
+                'help':'Suppress Squid version string info in HTTP headers and HTML error pages.',
+                'advanced':'true'
+                ]}
             ],
-            ['id': 'proxy.general.icpPort',
-            'label':'ICP port',
-            'type':'text',
-            'help':'The port number where Squid sends and receives ICP queries to
-                    and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.',
-            'advanced':'true'
+            [ 'proxy-general-cache','Local Cache Settings',
+                {['id': 'proxy.general.enabled',
+                'label':'Enable proxy',
+                'type':'checkbox',
+                'help':'Enable or disable the proxy service.'
+                ]}
             ],
-            ['id': 'proxy.general.logging.enable.accessLog',
-            'label':'Enable access logging',
-            'type':'checkbox',
-            'help':'Enable access logging.',
-            'advanced':'true'
-            ],
-            ['id': 'proxy.general.logging.enable.storeLog',
-            'label':'Enable store logging',
-            'type':'checkbox',
-            'help':'Enable store logging.',
-            'advanced':'true'
-            ],
-            ['id': 'proxy.general.alternateDNSservers',
-            'label':'Use alternate DNS-servers',
-            'type':'select_multiple',
-            'style':'tokenize',
-            'help':'Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma seperated list into this field.</div>',
-            'hint':'Type IP adresses, followed by Enter or comma.',
-            'allownew':'true',
-            'advanced':'true'
-            ],
-            ['id': 'proxy.general.dnsV4First',
-            'label':'Enable DNS v4 first',
-            'type':'checkbox',
-            'help':'This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first.
-            Squid will still perform both IPv6 and IPv4 DNS lookups before connecting.
-            <div class="alert alert-warning"><b class="text-danger">Warning:</b> This option will restrict the situations under which IPv6
-                connectivity is used (and tested). Hiding network problems
-                which would otherwise be detected and warned about.</div>',
-            'advanced':'true'
-            ],
-            ['id': 'proxy.general.useViaHeader',
-            'label':'Use Via header',
-            'type':'checkbox',
-            'help':'If set (default), Squid will include a Via header in requests and
-                    replies as required by RFC2616.',
-            'advanced':'true'
-            ],
-            ['id': 'proxy.general.suppressVersion',
-            'label':'Suppress version string',
-            'type':'checkbox',
-            'help':'Suppress Squid version string info in HTTP headers and HTML error pages.',
-            'advanced':'true'
+            [ 'proxy-general-remote-cache','Remote Cache Settings',
+                {['id': 'proxy.general.enabled',
+                'label':'Enable proxy',
+                'type':'checkbox',
+                'help':'Enable or disable the proxy service.'
+                ]}
             ]}
         ],
         ['proxy-forward','Forward Proxy','subtabs': {
@@ -255,9 +281,69 @@ maxheight: define max height of select box, default=170px to hold 5 items
                 'help':'When enabled the subnets of the selected interfaces will be added to the allow access list.',
                 'advanced':'true'
                 ]}
+            ],
+            [ 'proxy-forward-acl','Access Control List',
+                {['id': 'proxy.forward.acl.allowedSubnets',
+                'label':'Allowed Subnets',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Type subnets you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
+                'hint':'Type subnet adresses (ex. 192.168.2.0/24)',
+                'allownew':'true'
+                ],
+                ['id': 'proxy.forward.acl.unrestricted',
+                'label':'Unrestricted IP adresses',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Type IP adresses you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
+                'hint':'Type IP adresses (ex. 192.168.1.100)',
+                'allownew':'true'
+                ],
+                ['id': 'proxy.forward.acl.bannedHosts',
+                'label':'Banned host IP adresses',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Type IP adresses you want to deny acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
+                'hint':'Type IP adresses (ex. 192.168.1.100)',
+                'allownew':'true'
+                ],
+                ['id': 'proxy.forward.acl.whiteList',
+                'label':'Whitelist',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Whitelist destination domains.<br/>
+                        You may use a regular expression, use a comma or press Enter for new item.<br/>
+                        <div class="alert alert-info">
+                            <b>Examples:</b><br/>
+                            <b class="text-primary">.mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
+                            <b class="text-primary">^http(s|)://([a-zA-Z]+)\.mydomain\.*</b> -> matches on <b>http(s)://*.mydomain.*</b><br/>
+                            <b class="text-primary">\\.+\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
+                            <b class="text-primary">\\.+[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
+                        </div>
+                        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
+                'hint':'Example ',
+                'allownew':'true'
+                ],
+                ['id': 'proxy.forward.acl.blackList',
+                'label':'Blacklist',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Blacklist destination domains.<br/>
+                You may use a regular expression, use a comma or press Enter for new item.<br/>
+                <div class="alert alert-info">
+                    <b>Examples:</b><br/>
+                    <b class="text-primary">.mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
+                    <b class="text-primary">^http(s|)://([a-zA-Z]+)\.mydomain\.*</b> -> matches on <b>http(s)://*.mydomain.*</b><br/>
+                    <b class="text-primary">\\.+\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
+                    <b class="text-primary">\\.+[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
+                </div>
+                <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
+                'hint':'Example ',
+                'allownew':'true'
+                ]}
             ]}
         ]
     },
-        'activetab':'proxy-general'
+        'activetab':'proxy-general-settings'
     ])
 }}
