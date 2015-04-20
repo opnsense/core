@@ -490,21 +490,8 @@ function local_user_del($user)
 	/* remove all memberships */
 	local_user_set_groups($user);
 
-	/* read from pw db */
-	$fd = popen("/usr/sbin/pw usershow -n {$user['name']} 2>&1", "r");
-	$pwread = fgets($fd);
-	pclose($fd);
-	$userattrs = explode(":", trim($pwread));
-
-	if ($userattrs[0] != $user['name']) {
-		log_error("Tried to remove user {$user['name']} but got user {$userattrs[0]} instead. Bailing.");
-		return;
-	}
-
 	/* delete from pw db */
-	$cmd = "/usr/sbin/pw userdel -n {$user['name']} -r";
-
-	mwexec($cmd);
+	mwexecf('/usr/sbin/pw userdel -n %s -r', $user['name']);
 
 	/* Delete user from groups needs a call to write_config() */
 	local_group_del_user($user);
@@ -600,17 +587,20 @@ function local_user_set_groups($user, $new_groups = null)
 	}
 }
 
-function local_group_del_user($user) {
+function local_group_del_user($user)
+{
 	global $config;
 
-	if (!is_array($config['system']['group']))
+	if (!isset($config['system']['group'])) {
                 return;
+	}
 
         foreach ($config['system']['group'] as $group) {
-		if (is_array($group['member'])) {
+		if (isset($group['member'])) {
 			foreach ($group['member'] as $idx => $uid) {
-				if ($user['uid'] == $uid)
+				if ($user['uid'] == $uid) {
 					unset($config['system']['group']['member'][$idx]);
+				}
 			}
 		}
 	}
