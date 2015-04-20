@@ -1,6 +1,8 @@
 all:
 
 mount:
+	@${.CURDIR}/scripts/version.sh > \
+	    ${.CURDIR}/src/opnsense/version/opnsense
 	/sbin/mount_unionfs ${.CURDIR}/src /usr/local
 
 umount:

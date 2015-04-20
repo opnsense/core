@@ -1,3 +1,6 @@
+/src/etc/pkg.conf
+/src/etc/pkg/**
+/src/etc/ssh/**
 /src/etc/php.ini
 /src/lib/**
 *.DS_Store
