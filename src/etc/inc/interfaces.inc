@@ -4981,31 +4981,47 @@ function interface_has_gatewayv6($friendly) {
  *   boolean         - true or false
  ******/
 
-function is_altq_capable($int) {
+function is_altq_capable($int)
+{
+	if (stristr($int, '_vlan') || stristr($int, '_wlan')) {
+		return true;
+	}
+
 	/* Per:
-	 * http://www.freebsd.org/cgi/man.cgi?query=altq&apropos=0&sektion=0&manpath=FreeBSD+8.3-RELEASE&arch=default&format=html
+	 * http://www.freebsd.org/cgi/man.cgi?query=altq&apropos=0&sektion=0&manpath=FreeBSD+10.1-RELEASE&arch=default&format=html
 	 * Only the following drivers have ALTQ support
 	 */
-	$capable = array("ae", "age", "alc", "ale", "an", "ath", "aue", "axe", "awi", "bce",
-			"bfe", "bge", "bridge", "cas", "dc", "de", "ed", "em", "ep", "epair", "et", "fxp", "gem",
-			"hme", "igb", "ipw", "iwi", "ixgbe", "jme", "le", "lem", "msk", "mxge", "my", "nfe",
-			"nge", "npe", "nve", "ral", "re", "rl", "rum", "run", "bwn", "sf", "sge", "sis", "sk",
-			"ste", "stge", "ti", "txp", "udav", "ural", "vge", "vr", "vte", "wi", "xl",
-			"ndis", "tun", "ovpns", "ovpnc", "vlan", "pppoe", "pptp", "ng",
-			"l2tp", "ppp", "vtnet");
+	$capable = array(
+		'ae', 'age', 'alc', 'ale', 'an', 'ath', 'aue', 'axe', 'awi',
+		'bce', 'bfe', 'bge', 'bridge', 'bwn',
+		'cas',
+		'dc', 'de',
+		'ed', 'em', 'ep', 'epair', 'et',
+		'fxp',
+		'gem',
+		'hme', 'hn',
+		'igb', 'ipw', 'iwi', 'ixgbe',
+		'jme',
+		'l2tp', 'le', 'lem',
+		'msk', 'mxge', 'my',
+		'ndis', 'nfe', 'nge', 'npe', 'nve', 'ng',
+		'ovpns', 'ovpnc',
+		'pppoe', 'pptp', 'ppp',
+		'ral', 're', 'rl', 'rum', 'run',
+		'sf', 'sge', 'sis', 'sk', 'ste', 'stge',
+		'ti', 'txp', 'tun',
+		'udav', 'ural',
+		'vge', 'vr', 'vte', 'vlan', 'vtnet',
+		'wi',
+		'xl'
+	);
 
-	$int_family = remove_ifindex($int);
+	$int_family = preg_replace('/[0-9]+$/', '', $ifname);
+	if (in_array($int_family, $capable)) {
+		return true;
+	}
 
-	if (in_array($int_family, $capable))
-		return true;
-	else if (stristr($int, "l2tp")) /* VLANs are name $parent_$vlan now */
-		return true;
-	else if (stristr($int, "_vlan")) /* VLANs are name $parent_$vlan now */
-		return true;
-	else if (stristr($int, "_wlan")) /* WLANs are name $parent_$wlan now */
-		return true;
-	else
-		return false;
+	return false;
 }
 
 /****f* interfaces/is_interface_wireless
@@ -5243,8 +5259,4 @@ function get_failover_interface($interface, $family = "all") {
 	/* fall through to get_real_interface */
 	/* XXX: Really needed? */
 	return get_real_interface($interface, $family);
-}
-
-function remove_ifindex($ifname) {
-	return preg_replace("/[0-9]+$/", "", $ifname);
 }
