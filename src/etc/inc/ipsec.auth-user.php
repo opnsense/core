@@ -46,15 +46,16 @@ require_once("interfaces.inc");
  * We will use our local hostname to make up the nas_id
  */
 if (!function_exists("getNasID")) {
-function getNasID()
-{
-    global $g;
+    function getNasID()
+    {
+        global $g;
 
-    $nasId = gethostname();
-    if(empty($nasId))
-        $nasId = $g['product_name'];
-    return $nasId;
-}
+        $nasId = gethostname();
+        if(empty($nasId)) {
+            $nasId = $g['product_name'];
+        }
+        return $nasId;
+    }
 }
 
 /**
@@ -64,29 +65,22 @@ function getNasID()
  *
  */
 if (!function_exists("getNasIP")) {
-function getNasIP()
-{
-    $nasIp = get_interface_ip();
-    if(!$nasIp)
-        $nasIp = "0.0.0.0";
-    return $nasIp;
-}
+    function getNasIP()
+    {
+        $nasIp = get_interface_ip();
+        if(!$nasIp)
+            $nasIp = "0.0.0.0";
+        return $nasIp;
+    }
 }
 /* setup syslog logging */
 openlog("charon", LOG_ODELAY, LOG_AUTH);
 
-if (isset($_GET['username'])) {
-	$authmodes = explode(",", $_GET['authcfg']);
-	$username = $_GET['username'];
-	$password = $_GET['password'];
-	$common_name = $_GET['cn'];
-} else {
-	/* read data from environment */
-	$username = getenv("username");
-	$password = getenv("password");
-	$common_name = getenv("common_name");
-	$authmodes = explode(",", getenv("authcfg"));
-}
+/* read data from environment */
+$username = getenv("username");
+$password = getenv("password");
+$common_name = getenv("common_name");
+$authmodes = explode(",", getenv("authcfg"));
 
 if (!$username || !$password) {
 	syslog(LOG_ERR, "invalid user authentication environment");
@@ -151,7 +145,4 @@ if ($authenticated == false) {
 syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
 closelog();
 
-if (isset($_GET['username']))
-	echo "OK";
-else
-	exit(0);
+exit(0);
