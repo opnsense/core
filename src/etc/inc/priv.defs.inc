@@ -125,8 +125,8 @@ $priv_list['page-diagnostics-logs-system']['match'] = array();
 $priv_list['page-diagnostics-logs-system']['match'][] = "diag_logs.php*";
 
 $priv_list['page-status-systemlogs-portalauth'] = array();
-$priv_list['page-status-systemlogs-portalauth']['name'] = gettext("WebCfg - Status: System logs: Portal Auth page");
-$priv_list['page-status-systemlogs-portalauth']['descr'] = gettext("Allow access to the 'Status: System logs: Portal Auth' page.");
+$priv_list['page-status-systemlogs-portalauth']['name'] = gettext("WebCfg - Status: System logs: Captive portal page");
+$priv_list['page-status-systemlogs-portalauth']['descr'] = gettext("Allow access to the 'Status: System logs: Captive portal' page.");
 $priv_list['page-status-systemlogs-portalauth']['match'] = array();
 $priv_list['page-status-systemlogs-portalauth']['match'][] = "diag_logs_auth.php*";
 
@@ -779,20 +779,20 @@ $priv_list['page-services-captiveportal-editzones']['match'] = array();
 $priv_list['page-services-captiveportal-editzones']['match'][] = "services_captiveportal_zones_edit.php*";
 
 $priv_list['page-services-captiveportal-vouchers'] = array();
-$priv_list['page-services-captiveportal-vouchers']['name'] = gettext("WebCfg - Services: Captive portal Vouchers page");
-$priv_list['page-services-captiveportal-vouchers']['descr'] = gettext("Allow access to the 'Services: Captive portal Vouchers' page.");
+$priv_list['page-services-captiveportal-vouchers']['name'] = gettext("WebCfg - Services: Captive portal: Vouchers page");
+$priv_list['page-services-captiveportal-vouchers']['descr'] = gettext("Allow access to the 'Services: Captive portal: Vouchers' page.");
 $priv_list['page-services-captiveportal-vouchers']['match'] = array();
 $priv_list['page-services-captiveportal-vouchers']['match'][] = "services_captiveportal_vouchers.php*";
 
 $priv_list['page-services-captiveportal-voucher-edit'] = array();
-$priv_list['page-services-captiveportal-voucher-edit']['name'] = "WebCfg - Services: Captive portal Voucher Rolls page";
-$priv_list['page-services-captiveportal-voucher-edit']['descr'] = "Allow access to the 'Services: Captive portal Edit Voucher Rolls' page.";
+$priv_list['page-services-captiveportal-voucher-edit']['name'] = "WebCfg - Services: Captive portal: Edit Voucher Rolls page";
+$priv_list['page-services-captiveportal-voucher-edit']['descr'] = "Allow access to the 'Services: Captive portal: Edit Voucher Rolls' page.";
 $priv_list['page-services-captiveportal-voucher-edit']['match'] = array();
 $priv_list['page-services-captiveportal-voucher-edit']['match'][] = "services_captiveportal_vouchers_edit.php*";
 
 $priv_list['page-services-captiveportal-zones'] = array();
-$priv_list['page-services-captiveportal-zones']['name'] = gettext("WebCfg - Services: Captiveprotal Zones page");
-$priv_list['page-services-captiveportal-zones']['descr'] = gettext("Allow access to the 'Services: CaptivePortal Zones' page.");
+$priv_list['page-services-captiveportal-zones']['name'] = gettext("WebCfg - Services: Captive portal: Zones page");
+$priv_list['page-services-captiveportal-zones']['descr'] = gettext("Allow access to the 'Services: Captive portal: Zones' page.");
 $priv_list['page-services-captiveportal-zones']['match'] = array();
 $priv_list['page-services-captiveportal-zones']['match'][] = "services_captiveportal_zones.php*";
 
@@ -965,26 +965,26 @@ $priv_list['page-status-captiveportal']['match'] = array();
 $priv_list['page-status-captiveportal']['match'][] = "status_captiveportal.php*";
 
 $priv_list['page-status-captiveportal-expire'] = array();
-$priv_list['page-status-captiveportal-expire']['name'] = gettext("Webcfg - Status: Captive portal Expire Vouchers page");
-$priv_list['page-status-captiveportal-expire']['descr'] = gettext("Allow access to the 'Status: Captive portal Expire Vouchers' page.");
+$priv_list['page-status-captiveportal-expire']['name'] = gettext("Webcfg - Status: Captive portal: Expire Vouchers page");
+$priv_list['page-status-captiveportal-expire']['descr'] = gettext("Allow access to the 'Status: Captive portal: Expire Vouchers' page.");
 $priv_list['page-status-captiveportal-expire']['match'] = array();
 $priv_list['page-status-captiveportal-expire']['match'][] = "status_captiveportal_expire.php*";
 
 $priv_list['page-status-captiveportal-test'] = array();
-$priv_list['page-status-captiveportal-test']['name'] = gettext("WebCfg - Status: Captive portal test Vouchers page");
-$priv_list['page-status-captiveportal-test']['descr'] = gettext("Allow access to the 'Status: Captive portal Test Vouchers' page.");
+$priv_list['page-status-captiveportal-test']['name'] = gettext("WebCfg - Status: Captive portal: Test Vouchers page");
+$priv_list['page-status-captiveportal-test']['descr'] = gettext("Allow access to the 'Status: Captive portal: Test Vouchers' page.");
 $priv_list['page-status-captiveportal-test']['match'] = array();
 $priv_list['page-status-captiveportal-test']['match'][] = "status_captiveportal_test.php*";
 
 $priv_list['page-status-captiveportal-voucher-rolls'] = array();
-$priv_list['page-status-captiveportal-voucher-rolls']['name'] = gettext("WebCfg - Status: Captive portal Voucher Rolls page");
-$priv_list['page-status-captiveportal-voucher-rolls']['descr'] = gettext("Allow access to the 'Status: Captive portal Voucher Rolls' page.");
+$priv_list['page-status-captiveportal-voucher-rolls']['name'] = gettext("WebCfg - Status: Captive portal: Voucher Rolls page");
+$priv_list['page-status-captiveportal-voucher-rolls']['descr'] = gettext("Allow access to the 'Status: Captive portal: Voucher Rolls' page.");
 $priv_list['page-status-captiveportal-voucher-rolls']['match'] = array();
 $priv_list['page-status-captiveportal-voucher-rolls']['match'][] = "status_captiveportal_voucher_rolls.php*";
 
 $priv_list['page-status-captiveportal-vouchers'] = array();
-$priv_list['page-status-captiveportal-vouchers']['name'] = gettext("WebCfg - Status: Captive portal Vouchers page");
-$priv_list['page-status-captiveportal-vouchers']['descr'] = gettext("Allow access to the 'Status: Captive portal Vouchers' page.");
+$priv_list['page-status-captiveportal-vouchers']['name'] = gettext("WebCfg - Status: Captive portal: Vouchers page");
+$priv_list['page-status-captiveportal-vouchers']['descr'] = gettext("Allow access to the 'Status: Captive portal: Vouchers' page.");
 $priv_list['page-status-captiveportal-vouchers']['match'] = array();
 $priv_list['page-status-captiveportal-vouchers']['match'][] = "status_captiveportal_vouchers.php*";
 
