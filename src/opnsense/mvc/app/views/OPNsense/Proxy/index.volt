@@ -247,13 +247,6 @@ maxheight: define max height of select box, default=170px to hold 5 items
                 'type':'checkbox',
                 'help':'Enable or disable the proxy service.'
                 ]}
-            ],
-            [ 'proxy-general-remote-cache','Remote Cache Settings',
-                {['id': 'proxy.general.enabled',
-                'label':'Enable proxy',
-                'type':'checkbox',
-                'help':'Enable or disable the proxy service.'
-                ]}
             ]}
         ],
         ['proxy-forward','Forward Proxy','subtabs': {
@@ -321,7 +314,7 @@ maxheight: define max height of select box, default=170px to hold 5 items
                             <b class="text-primary">\\.+[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
                         </div>
                         <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
-                'hint':'Example ',
+                'hint':'Regular expressions are allowed. ',
                 'allownew':'true'
                 ],
                 ['id': 'proxy.forward.acl.blackList',
@@ -338,8 +331,83 @@ maxheight: define max height of select box, default=170px to hold 5 items
                     <b class="text-primary">\\.+[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
                 </div>
                 <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
-                'hint':'Example ',
+                'hint':'Regular expressions are allowed.',
                 'allownew':'true'
+                ],
+                ['id': 'proxy.forward.acl.browser',
+                'label':'Block browser/user-agents',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Block user-agents.<br/>
+                You may use a regular expression, use a comma or press Enter for new item.<br/>
+                <div class="alert alert-info">
+                    <b>Examples:</b><br/>
+                    <b class="text-primary">^(.)+Macintosh(.)+Firefox/37\.0</b> -> matches on <b>Macintosh version of Firefox revision 37.0</b><br/>
+                    <b class="text-primary">^Mozilla</b> -> matches on <b>all Mozilla based browsers</b><br/>
+                </div>
+                <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
+                'hint':'Regular expressions are allowed.',
+                'allownew':'true',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.forward.acl.mimeType',
+                'label':'Block specific MIME type reply',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Block specific MIME type reply.<br/>
+                You may use a regular expression, use a comma or press Enter for new item.<br/>
+                <div class="alert alert-info">
+                    <b>Examples:</b><br/>
+                    <b class="text-primary">video/flv</b> -> matches on <b>Flash Video</b><br/>
+                    <b class="text-primary">application/x-javascript</b> -> matches on <b>javascripts</b><br/>
+                </div>
+                <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
+                'hint':'Regular expressions are allowed.',
+                'allownew':'true',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.forward.acl.safePorts',
+                'label':'Allowed destination TCP port',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with collon (ex. 22:ssh).<br/>
+                        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
+                'hint':'Type port number or range.',
+                'allownew':'true',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.forward.acl.sslPorts',
+                'label':'Allowed SSL ports',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with collon (ex. 22:ssh).<br/>
+                <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>',
+                'hint':'Type port number or range.',
+                'allownew':'true',
+                'advanced':'true'
+                ]}
+            ],
+            [ 'proxy-general-authentication', 'Athentication Settings',
+                {['id':'proxy.forward.authentication.method',
+                'label':'Authentication method',
+                'type':'dropdown',
+                'help':'Select Authentication method'
+                ],
+                ['id': 'proxy.forward.authentication.realm',
+                'label':'Authentication Prompt',
+                'type':'text',
+                'help':'The prompt will be displayed in the autherntication request window.'
+                ],
+                ['id': 'proxy.forward.authentication.credentialsttl',
+                'label':'Authentication TTL (hours)',
+                'type':'text',
+                'help':'This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live).<br/>
+                        When the TTL expires, the user will be prompted for credentials again. '
+                ],
+                ['id': 'proxy.forward.authentication.children',
+                'label':'Authentication processes',
+                'type':'text',
+                'help':'The total number of authenticator processes to spawn.'
                 ]}
             ]}
         ]

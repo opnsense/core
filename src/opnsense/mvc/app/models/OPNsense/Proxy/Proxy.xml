@@ -82,7 +82,47 @@
                 <blackList type="CSVListField">
                     <Required>N</Required>
                 </blackList>
+                <browser type="CSVListField">
+                    <Required>N</Required>
+                </browser>
+                <mimeType type="CSVListField">
+                    <Required>N</Required>
+                </mimeType>
+                <safePorts type="CSVListField">
+                    <default>80:http,21:ftp,443:https,70:gopher,210:wais,1025-65535:unregistered ports,280:http-mgmt,488:gss-http,591:filemaker,777:multiling http</default>
+                    <Required>N</Required>
+                </safePorts>
+                <sslPorts type="CSVListField">
+                    <default>443:https</default>
+                    <Required>N</Required>
+                </sslPorts>
             </acl>
+            <authentication>
+                <method type="OptionField">
+                    <default>none</default>
+                    <Required>N</Required>
+                    <OptionValues>
+                        <none>No Authentication</none>
+                        <local>Local User Authentication</local>
+                    </OptionValues>
+                </method>
+                <realm type="TextField">
+                    <default>OPNsense proxy authentication</default>
+                    <Required>N</Required>
+                </realm>
+                <credentialsttl type="IntegerField">
+                    <default>2</default>
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>"Credentials TTL needs to be an integer value above 0"</ValidationMessage>
+                    <Required>N</Required>
+                </credentialsttl>
+                <children type="IntegerField">
+                    <default>5</default>
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>"Number of children needs to be an integer value above 0"</ValidationMessage>
+                    <Required>N</Required>
+                </children>
+            </authentication>
         </forward>
     </items>
 </model>
