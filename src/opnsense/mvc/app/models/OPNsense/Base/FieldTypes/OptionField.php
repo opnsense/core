@@ -78,7 +78,7 @@ class OptionField extends BaseField
             } else {
                 $selected = 0;
             }
-            $result[$optKey] = array("value"=>$optKey,"description" => $optValue, "selected" => $selected);
+            $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
         }
 
         return $result;
