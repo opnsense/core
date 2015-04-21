@@ -937,7 +937,7 @@ function interface_gre_configure(&$gre, $grekey = "") {
 function interfaces_gif_configure($checkparent = 0, $realif = "") {
 	global $config;
 
-	if (is_array($config['gifs']['gif']) && count($config['gifs']['gif'])) {
+	if (isset($config['gifs']['gif']) && count($config['gifs']['gif'])) {
 		foreach ($config['gifs']['gif'] as $i => $gif) {
 			if (empty($gif['gifif']))
 				$gre['gifif'] = "gif{$i}";
