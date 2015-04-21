@@ -1135,7 +1135,7 @@ function autotls_change() {
 						<?=htmlspecialchars($client['description']);?>
 					</td>
 					<td valign="middle" class="list nowrap">
-						<a href="vpn_openvpn_client.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a>
+						<a href="vpn_openvpn_client.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a>
 
                         <a href="vpn_openvpn_client.php?act=del&amp;id=<?=$i;?>" class="btn btn-default" onclick="return confirm('<?=gettext("Do you really want to delete this client?"); ?>')"title="<?=gettext("delete client"); ?>"><span class="glyphicon glyphicon-remove"></span></a>
 
