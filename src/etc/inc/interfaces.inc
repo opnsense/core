@@ -4350,7 +4350,7 @@ function get_real_interface($interface = "wan", $family = "all", $realv6iface = 
 			// Wireless cloned NIC support (FreeBSD 8+)
 			// interface name format: $parentnic_wlanparentnic#
 			// example: ath0_wlan0
-			if( is_array($cfg['wireless']) || preg_match($g['wireless_regex'], $cfg['if']))
+			if( (isset($cfg['wireless']) && is_array($cfg['wireless'])) || preg_match($g['wireless_regex'], $cfg['if']))
 				$wanif = interface_get_wireless_clone($cfg['if']);
 			else
 				$wanif = $cfg['if'];
@@ -5016,7 +5016,7 @@ function is_altq_capable($int)
 		'xl'
 	);
 
-	$int_family = preg_replace('/[0-9]+$/', '', $ifname);
+	$int_family = preg_replace('/[0-9]+$/', '', $int);
 	if (in_array($int_family, $capable)) {
 		return true;
 	}
