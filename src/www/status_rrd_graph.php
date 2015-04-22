@@ -526,7 +526,7 @@ function get_dates($curperiod, $graph) {
 													echo "<tr><td colspan=\"100%\" class=\"list\">\n";
 													echo "<img border=\"0\" width=\"100%;\" name=\"{$id}\"";
 													echo "id=\"{$id}\" alt=\"$prettydb Graph\" ";
-													echo "src=\"status_rrd_graph_img.php?start={$start}&amp;end={$end}&amp;database={$curdatabase}&amp;style={$curstyle}&amp;graph={$graph}?refresh_date={$img_date}\" />\n";
+													echo "src=\"status_rrd_graph_img.php?start={$start}&amp;end={$end}&amp;database={$curdatabase}&amp;style={$curstyle}&amp;graph={$graph}-{$img_date}\" />\n";
 													echo "<br /><hr /><br />\n";
 													echo "</td></tr>\n";
 												}
@@ -595,7 +595,7 @@ function get_dates($curperiod, $graph) {
 															echo "<tr><td colspan=\"100%\" class=\"list\">\n";
 															echo "<img border=\"0\" width=\"100%;\" name=\"{$id}\" ";
 															echo "id=\"{$id}\" alt=\"$prettydb Graph\" ";
-															echo "src=\"status_rrd_graph_img.php?start={$start}&amp;end={$end}&amp;database={$curdatabase}&amp;style={$curstyle}&amp;graph={$graph}?refresh_date={$img_date}\" />\n";
+															echo "src=\"status_rrd_graph_img.php?start={$start}&amp;end={$end}&amp;database={$curdatabase}&amp;style={$curstyle}&amp;graph={$graph}-{$img_date}\" />\n";
 															echo "<br /><hr /><br />\n";
 															echo "</td></tr>\n";
 														}
