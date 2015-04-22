@@ -248,22 +248,22 @@ if ($_POST['save']) {
 
 	if (!$input_errors) {
 		$userent = array();
+
 		if (isset($id) && $a_user[$id]) {
 			$userent = $a_user[$id];
 
-                        /* the user name was modified */
-                        if ($_POST['usernamefld'] <> $_POST['oldusername']) {
-                            $_SERVER['REMOTE_USER'] = $_POST['usernamefld'];
-                            local_user_del($userent);
-                        }
-
-                }
-
-                /* the user password was mofified */
-	        if ($_POST['passwordfld1']) {
-        	    local_user_set_password($userent, $_POST['passwordfld1']);
+			/* the user name was modified */
+			if ($_POST['usernamefld'] != $_POST['oldusername']) {
+				$_SERVER['REMOTE_USER'] = $_POST['usernamefld'];
+				local_user_del($userent);
+			}
 		}
-		
+
+		/* the user password was modified */
+		if ($_POST['passwordfld1']) {
+			local_user_set_password($userent, $_POST['passwordfld1']);
+		}
+
 		isset($_POST['utype']) ? $userent['scope'] = $_POST['utype'] : $userent['scope'] = "system";
 
 		$userent['name'] = $_POST['usernamefld'];
