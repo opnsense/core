@@ -4,7 +4,7 @@ origin: opnsense/opnsense
 comment: "%%REPO_COMMENT%%"
 desc: "OPNsense core package"
 maintainer: franco@opnsense.org
-www: https://opnsense.org
+www: https://opnsense.org/
 prefix: /
 deps: {
 %%REPO_DEPENDS%%
