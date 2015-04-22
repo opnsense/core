@@ -522,7 +522,7 @@ function get_dates($curperiod, $graph) {
 												if(in_array($curdatabase, $custom_databases)) {
 													$id = "{$graph}-{$curoption}-{$curdatabase}";
 													$id = preg_replace('/\./', '_', $id);
-													$img_date = Date("Y.m.d.G.i.s"); /* Add a way to let the browser know we have refreshed the image */
+													$img_date = date('YmdGis'); /* Add a way to let the browser know we have refreshed the image */
 													echo "<tr><td colspan=\"100%\" class=\"list\">\n";
 													echo "<img border=\"0\" width=\"100%;\" name=\"{$id}\"";
 													echo "id=\"{$id}\" alt=\"$prettydb Graph\" ";
@@ -588,7 +588,7 @@ function get_dates($curperiod, $graph) {
 														if(in_array($curdatabase, $ui_databases)) {
 															$id = "{$graph}-{$curoption}-{$curdatabase}";
 															$id = preg_replace('/\./', '_', $id);
-															$img_date = Date("Y.m.d.G.i.s"); /* Add a way to let the browser know we have refreshed the image */
+															$img_date = date('YmdGis'); /* Add a way to let the browser know we have refreshed the image */
 															$dates = get_dates($curperiod, $graph);
 															$start = $dates['start'];
 															$end = $dates['end'];
