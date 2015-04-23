@@ -22418,7 +22418,7 @@ msgid "WAN interface will be set to obtain an address automatically from a DHCP 
 msgstr ""
 
 #: src/etc/inc/config.lib.inc:180
-msgid "WARNING: Config contents could not be save. Could not open file!"
+msgid "WARNING: Config contents could not be saved. Could not open file!"
 msgstr ""
 
 #: src/etc/inc/util.inc:86

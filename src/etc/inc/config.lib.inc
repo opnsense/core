@@ -177,7 +177,7 @@ function write_config($desc = 'Unknown', $backup = true)
 		$cnf->save($revision_info, $backup);
 	} catch (OPNsense\Core\ConfigException $e) {
 		// write failure
-		log_error(gettext("WARNING: Config contents could not be save. Could not open file!"));
+		log_error(gettext("WARNING: Config contents could not be saved. Could not open file!"));
 		file_notice('config.xml', sprintf("%s\n", gettext('Unable to open /conf/config.xml for writing in write_config()')));
 		return -1;
 	}
