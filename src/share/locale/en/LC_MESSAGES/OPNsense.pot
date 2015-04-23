@@ -138,10 +138,6 @@ msgstr ""
 msgid "#2"
 msgstr ""
 
-#: src/www/system_firmware_restorefullbackup.php:77
-msgid "$filename has been deleted."
-msgstr ""
-
 #: src/www/status_dhcp_leases.php:381
 msgid "$mac - send Wake on LAN packet to this MAC address"
 msgstr ""
@@ -618,7 +614,7 @@ msgstr ""
 msgid "A IPv4 subnet can not be over 32 bits."
 msgstr ""
 
-#: src/www/system.php:151
+#: src/www/system_general.php:151
 msgid "A NTP Time Server name may only contain the characters a-z, 0-9, '-' and '.'."
 msgstr ""
 
@@ -787,7 +783,7 @@ msgstr ""
 msgid "A valid IP address for 'WINS Server #2' must be specified."
 msgstr ""
 
-#: src/www/system.php:108
+#: src/www/system_general.php:108
 msgid "A valid IP address must be specified for DNS server $dnscounter."
 msgstr ""
 
@@ -1653,7 +1649,7 @@ msgid ""
 "If not specified, heuristics based on the interface "
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:9
+#: src/www/system_advanced_tabs.inc:9
 msgid "Admin Access"
 msgstr ""
 
@@ -1901,7 +1897,7 @@ msgstr ""
 msgid "Allocate only one IP per client (topology subnet), rather than an isolated subnet per client (topology net30)."
 msgstr ""
 
-#: src/www/system.php:386
+#: src/www/system_general.php:386
 msgid "Allow DNS server list to be overridden by DHCP/PPP on WAN"
 msgstr ""
 
@@ -2967,10 +2963,6 @@ msgstr ""
 msgid "An invalid subnet or alias was specified. [%s/%s]"
 msgstr ""
 
-#: src/www/system_firmware.php:93
-msgid "An upgrade is currently in progress.<p>The firewall will reboot when the operation is complete."
-msgstr ""
-
 #: src/www/system_groupmanager.php:119
 msgid "Another entry with the same group name already exists."
 msgstr ""
@@ -3188,9 +3180,8 @@ msgstr ""
 msgid "Auto PTP ports"
 msgstr ""
 
-#: src/www/system_firmware_auto.php:47
 #: src/www/system_firmware_check.php:98
-#: src/www/system_firmware_tabs.php:33
+#: src/www/system_firmware_tabs.inc:33
 msgid "Auto Update"
 msgstr ""
 
@@ -3208,10 +3199,6 @@ msgstr ""
 
 #: src/www/system_firmware_settings.php:196
 msgid "Auto sync on update"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:200
-msgid "Auto upgrade aborted."
 msgstr ""
 
 #: src/www/interfaces.php:2880
@@ -3450,10 +3437,6 @@ msgid ""
 "increase significantly."
 msgstr ""
 
-#: src/www/system_firmware_auto.php:103
-msgid "Beginning firmware upgrade"
-msgstr ""
-
 #: src/www/firewall_shaper_layer7.php:484
 msgid "Behaviour"
 msgstr ""
@@ -3668,7 +3651,7 @@ msgstr ""
 msgid "By default NTP will listen for all supported NMEA sentences. Here one or more sentences to listen for may be specified."
 msgstr ""
 
-#: src/www/system.php:401
+#: src/www/system_general.php:401
 msgid ""
 "By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. "
 "Checking this box omits localhost from the list of DNS servers."
@@ -4042,7 +4025,7 @@ msgstr ""
 msgid "Cell Upstream"
 msgstr ""
 
-#: src/www/status_rrd_graph_tabs.php:23
+#: src/www/status_rrd_graph_tabs.inc:23
 msgid "Cellular"
 msgstr ""
 
@@ -4243,7 +4226,7 @@ msgid ""
 "These are valid for TCP and UDP protocols only."
 msgstr ""
 
-#: src/www/system.php:463
+#: src/www/system_general.php:463
 msgid "Choose a language for the webConfigurator"
 msgstr ""
 
@@ -4379,14 +4362,6 @@ msgstr ""
 
 #: src/www/status_upnp.php:110
 msgid "Clear"
-msgstr ""
-
-#: src/www/system_firmware.php:236
-msgid "Click \"Enable firmware upload\" to begin."
-msgstr ""
-
-#: src/www/system_firmware.php:257
-msgid "Click \"Upgrade firmware\" to start the upgrade process."
 msgstr ""
 
 #: src/www/interfaces.php:2613
@@ -4908,10 +4883,6 @@ msgstr ""
 msgid "Could not locate any defined CARP interfaces."
 msgstr ""
 
-#: src/www/system_firmware_restorefullbackup.php:165
-msgid "Could not locate any previous backups."
-msgstr ""
-
 #: src/etc/rc.openvpn:91
 msgid "Could not obtain openvpn lock for executing rc.openvpn for more than 10 seconds continuing..."
 msgstr ""
@@ -5169,7 +5140,7 @@ msgstr ""
 
 #: src/www/interfaces.php:2676
 #: src/www/interfaces_ppps_edit.php:616
-#: src/www/status_rrd_graph_tabs.php:38
+#: src/www/status_rrd_graph_tabs.inc:38
 msgid "Custom"
 msgstr ""
 
@@ -5367,7 +5338,7 @@ msgstr ""
 msgid "DNS Resolver"
 msgstr ""
 
-#: src/www/system.php:322
+#: src/www/system_general.php:322
 msgid "DNS Server"
 msgstr ""
 
@@ -5391,7 +5362,7 @@ msgstr ""
 #: src/www/services_dhcp_edit.php:438
 #: src/www/services_dhcpv6.php:618
 #: src/www/services_router_advertisements.php:356
-#: src/www/system.php:316
+#: src/www/system_general.php:316
 #: src/www/vpn_pppoe_edit.php:466
 msgid "DNS servers"
 msgstr ""
@@ -5415,12 +5386,6 @@ msgstr ""
 
 #: src/www/services_unbound.php:283
 msgid "DNSSEC"
-msgstr ""
-
-#: src/www/system_firmware.php:274
-msgid ""
-"DO NOT abort the firmware upgrade once it "
-"has started. The firewall will reboot automatically after "
 msgstr ""
 
 #: src/www/services_dhcpv6_edit.php:100
@@ -5451,7 +5416,6 @@ msgid "Data"
 msgstr ""
 
 #: src/www/diag_confbak.php:253
-#: src/www/system_firmware_restorefullbackup.php:128
 msgid "Date"
 msgstr ""
 
@@ -5625,7 +5589,6 @@ msgstr ""
 #: src/www/diag_tables.php:170
 #: src/www/firewall_shaper_layer7.php:571
 #: src/www/services_dhcpv6.php:797
-#: src/www/system_firmware_restorefullbackup.php:154
 msgid "Delete"
 msgstr ""
 
@@ -5996,8 +5959,6 @@ msgstr ""
 #: src/www/diag_traceroute.php:32
 #: src/www/fbegin.inc:446
 #: src/www/reboot.php:34
-#: src/www/system_firmware_auto.php:47
-#: src/www/system_firmware_restorefullbackup.php:89
 msgid "Diagnostics"
 msgstr ""
 
@@ -6135,10 +6096,6 @@ msgstr ""
 msgid "Disable concurrent logins"
 msgstr ""
 
-#: src/www/system_firmware.php:239
-msgid "Disable firmware upload"
-msgstr ""
-
 #: src/www/system_advanced_network.php:245
 msgid "Disable hardware TCP segmentation offload"
 msgstr ""
@@ -6252,7 +6209,6 @@ msgstr ""
 #: src/www/system_advanced_firewall.php:461
 #: src/www/system_advanced_misc.php:522
 #: src/www/system_advanced_misc.php:538
-#: src/www/system_firmware.php:112
 #: src/www/vpn_ipsec_phase1.php:883
 msgid "Disable"
 msgstr ""
@@ -6438,7 +6394,7 @@ msgstr ""
 msgid "Do not strip away parts of the username after the @ symbol, e.g. user@host becomes user when unchecked."
 msgstr ""
 
-#: src/www/system.php:309
+#: src/www/system_general.php:309
 msgid "Do not use 'local' as a domain name. It will cause local hosts running mDNS (avahi, bonjour, etc.) to be unable to resolve local hosts not running mDNS."
 msgstr ""
 
@@ -6446,7 +6402,7 @@ msgstr ""
 msgid "Do not use state mechanisms to keep track.  This is only useful if you're doing advanced queueing in certain situations.  Please check the documentation."
 msgstr ""
 
-#: src/www/system.php:398
+#: src/www/system_general.php:398
 msgid "Do not use the DNS Forwarder as a DNS server for the firewall"
 msgstr ""
 
@@ -6542,10 +6498,6 @@ msgstr ""
 
 #: src/www/firewall_aliases.php:253
 msgid "Do you really want to delete this alias? All elements that still use it will become invalid (e.g. filter rules)!"
-msgstr ""
-
-#: src/www/system_firmware_restorefullbackup.php:153
-msgid "Do you really want to delete this backup?"
 msgstr ""
 
 #: src/www/interfaces_bridge.php:155
@@ -6691,10 +6643,6 @@ msgstr ""
 msgid "Do you want to enable the %s server on %s?"
 msgstr ""
 
-#: src/www/system_firmware.php:205
-msgid "Do you want to install this image anyway (on your own risk)?"
-msgstr ""
-
 #: src/etc/rc.initial.setlanip:416
 msgid "Do you want to revert to HTTP as the webConfigurator protocol?"
 msgstr ""
@@ -6749,8 +6697,8 @@ msgstr ""
 #: src/www/services_unbound_host_edit.php:72
 #: src/www/services_unbound_host_edit.php:209
 #: src/www/services_unbound_host_edit.php:245
-#: src/www/system.php:91
-#: src/www/system.php:305
+#: src/www/system_general.php:91
+#: src/www/system_general.php:305
 msgid "Domain"
 msgstr ""
 
@@ -6840,24 +6788,7 @@ msgstr ""
 #: src/www/diag_backup.php:239
 #: src/www/diag_tables.php:158
 #: src/www/diag_tables.php:167
-#: src/www/system_firmware_restorefullbackup.php:157
 msgid "Download"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:200
-msgid "Downloaded SHA256"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:199
-msgid "Downloading complete but sha256 does not match."
-msgstr ""
-
-#: src/www/system_firmware_auto.php:126
-msgid "Downloading current version information"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:155
-msgid "Downloading updates"
 msgstr ""
 
 #: src/www/services_igmpproxy_edit.php:189
@@ -7545,11 +7476,6 @@ msgstr ""
 msgid "Enable falling edge PPS signal processing (default: rising edge)."
 msgstr ""
 
-#: src/www/system_firmware.php:234
-#: src/www/system_firmware.php:236
-msgid "Enable firmware upload"
-msgstr ""
-
 #: src/www/services_ntpd_pps.php:188
 msgid "Enable kernel PPS clock discipline (default: disabled)."
 msgstr ""
@@ -7642,7 +7568,6 @@ msgstr ""
 #: src/www/services_snmp.php:370
 #: src/www/services_snmp.php:372
 #: src/www/services_unbound.php:215
-#: src/www/system_firmware.php:110
 #: src/www/vpn_ipsec_phase1.php:884
 msgid "Enable"
 msgstr ""
@@ -7767,7 +7692,7 @@ msgstr ""
 msgid "Enter 0 to never expire sessions. NOTE: This is a security risk!"
 msgstr ""
 
-#: src/www/system.php:374
+#: src/www/system_general.php:374
 msgid ""
 "Enter IP addresses to be used by the system for DNS resolution. "
 "These are also used for the DHCP service, DNS forwarder and for PPTP VPN "
@@ -8536,10 +8461,6 @@ msgstr ""
 msgid "Failed to delete Certificate %s from CRL %s"
 msgstr ""
 
-#: src/www/system_firmware.php:78
-msgid "Failed to write file to disk"
-msgstr ""
-
 #: src/www/status_dhcp_leases.php:295
 #: src/www/status_dhcpv6_leases.php:382
 msgid "Failover Group"
@@ -8577,14 +8498,6 @@ msgstr ""
 
 #: src/www/diag_patterns.php:79
 msgid "File to upload:"
-msgstr ""
-
-#: src/www/system_firmware.php:80
-msgid "File upload stopped by extension"
-msgstr ""
-
-#: src/www/system_firmware_restorefullbackup.php:127
-msgid "Filename"
 msgstr ""
 
 #: src/www/status_filter_reload.php:33
@@ -8645,7 +8558,7 @@ msgstr ""
 msgid "Firewall (Dynamic View)"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:10
+#: src/www/system_advanced_tabs.inc:10
 msgid "Firewall / NAT"
 msgstr ""
 
@@ -8736,18 +8649,7 @@ msgstr ""
 msgid "Firmware Branch"
 msgstr ""
 
-#: src/www/system_firmware.php:251
-msgid "Firmware image file ($type):"
-msgstr ""
-
-#: src/www/system_firmware.php:159
-msgid "Firmware image missing or other error, please try again %s."
-msgstr ""
-
 #: src/www/fbegin.inc:159
-#: src/www/system_firmware.php:88
-#: src/www/system_firmware.php:166
-#: src/www/system_firmware_auto.php:47
 #: src/www/system_firmware_check.php:98
 #: src/www/system_firmware_settings.php:64
 msgid "Firmware"
@@ -9157,7 +9059,7 @@ msgid "General Settings"
 msgstr ""
 
 #: src/www/fbegin.inc:160
-#: src/www/system.php:264
+#: src/www/system_general.php:264
 msgid "General Setup"
 msgstr ""
 
@@ -9778,8 +9680,8 @@ msgstr ""
 #: src/www/services_rfc2136_edit.php:70
 #: src/www/services_rfc2136_edit.php:163
 #: src/www/status_dhcp_leases.php:332
-#: src/www/system.php:91
-#: src/www/system.php:294
+#: src/www/system_general.php:91
+#: src/www/system_general.php:294
 #: src/www/widgets/widgets/dyn_dns_status.widget.php:76
 msgid "Hostname"
 msgstr ""
@@ -10442,7 +10344,7 @@ msgid ""
 ""
 msgstr ""
 
-#: src/www/system.php:389
+#: src/www/system_general.php:389
 msgid ""
 "If this option is set, %s will "
 "use DNS servers assigned by a DHCP/PPP server on WAN "
@@ -10689,10 +10591,6 @@ msgstr ""
 msgid "Ignoring IPsec reload since there are no tunnels on interface %s"
 msgstr ""
 
-#: src/www/system_firmware.php:136
-msgid "Image upload failed (out of memory?)"
-msgstr ""
-
 #: src/www/status_rrd_graph_img.php:38
 msgid "Image viewer"
 msgstr ""
@@ -10730,7 +10628,7 @@ msgstr ""
 msgid "In Use"
 msgstr ""
 
-#: src/www/system.php:379
+#: src/www/system_general.php:379
 msgid ""
 "In addition, optionally select the gateway for each DNS server. "
 "When using multiple WAN connections there should be at least one unique DNS server per gateway."
@@ -11358,10 +11256,6 @@ msgstr ""
 msgid "Invert Acct-Input-Octets and Acct-Output-Octets"
 msgstr ""
 
-#: src/www/system_firmware.php:224
-msgid "Invoke"
-msgstr ""
-
 #: src/etc/rc.restore_config_backup:67
 msgid "Is this the backup you wish to restore?"
 msgstr ""
@@ -11639,7 +11533,7 @@ msgstr ""
 msgid "Lagg protocol"
 msgstr ""
 
-#: src/www/system.php:450
+#: src/www/system_general.php:450
 msgid "Language"
 msgstr ""
 
@@ -12262,13 +12156,8 @@ msgstr ""
 msgid "Manual Outbound NAT rule generation"
 msgstr ""
 
-#: src/www/system_firmware.php:88
-#: src/www/system_firmware_tabs.php:32
+#: src/www/system_firmware_tabs.inc:32
 msgid "Manual Update"
-msgstr ""
-
-#: src/www/system_firmware.php:224
-msgid "Manual Upgrade"
 msgstr ""
 
 #: src/www/firewall_nat_out.php:300
@@ -12568,12 +12457,8 @@ msgstr ""
 msgid "Mirror"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:12
+#: src/www/system_advanced_tabs.inc:12
 msgid "Miscellaneous"
-msgstr ""
-
-#: src/www/system_firmware.php:76
-msgid "Missing a temporary folder"
 msgstr ""
 
 #: src/etc/inc/easyrule.inc:357
@@ -12941,7 +12826,7 @@ msgstr ""
 #: src/www/interfaces_groups_edit.php:326
 #: src/www/load_balancer_virtual_server_edit.php:211
 #: src/www/load_balancer_virtual_server_edit.php:230
-#: src/www/system_advanced_tabs.php:3
+#: src/www/system_advanced_tabs.inc:3
 #: src/www/system_firmware_settings.php:158
 #: src/www/system_routes_edit.php:408
 msgid "NOTE:"
@@ -13003,7 +12888,7 @@ msgstr ""
 msgid "NTP should prefer this clock (default: enabled)."
 msgstr ""
 
-#: src/www/system.php:438
+#: src/www/system_general.php:438
 msgid "NTP time server"
 msgstr ""
 
@@ -13019,7 +12904,7 @@ msgstr ""
 msgid "NTP"
 msgstr ""
 
-#: src/www/system.php:298
+#: src/www/system_general.php:298
 msgid "Name of the firewall host, without domain part"
 msgstr ""
 
@@ -13109,10 +12994,6 @@ msgstr ""
 msgid "Need private RSA key to print vouchers"
 msgstr ""
 
-#: src/www/system_firmware_auto.php:200
-msgid "Needed SHA256"
-msgstr ""
-
 #: src/www/firewall_nat_out_edit.php:177
 msgid "Negating destination address of \"any\" is invalid."
 msgstr ""
@@ -13184,7 +13065,7 @@ msgstr ""
 msgid "Network-specific wireless configuration"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:11
+#: src/www/system_advanced_tabs.inc:11
 msgid "Networking"
 msgstr ""
 
@@ -13313,10 +13194,6 @@ msgstr ""
 msgid "No entry exists yet!"
 msgstr ""
 
-#: src/www/system_firmware.php:74
-msgid "No file was uploaded"
-msgstr ""
-
 #: src/www/firewall_rules.php:801
 msgid "No floating rules are currently defined."
 msgstr ""
@@ -13422,7 +13299,6 @@ msgstr ""
 #: src/www/crash_reporter.php:118
 #: src/www/diag_defaults.php:74
 #: src/www/reboot.php:58
-#: src/www/system_firmware.php:214
 msgid "No"
 msgstr ""
 
@@ -13797,7 +13673,7 @@ msgstr ""
 msgid "Notification Name"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:14
+#: src/www/system_advanced_tabs.inc:14
 msgid "Notifications"
 msgstr ""
 
@@ -14461,7 +14337,7 @@ msgid "Packets matching this rule will be mapped to the IP address given here."
 msgstr ""
 
 #: src/www/status_rrd_graph_settings.php:42
-#: src/www/status_rrd_graph_tabs.php:8
+#: src/www/status_rrd_graph_tabs.inc:8
 msgid "Packets"
 msgstr ""
 
@@ -14677,10 +14553,6 @@ msgstr ""
 
 #: src/www/diag_smart.php:337
 msgid "Perform Self-tests"
-msgstr ""
-
-#: src/www/system_firmware.php:254
-msgid "Perform full backup prior to upgrade"
 msgstr ""
 
 #: src/www/status_rrd_graph.php:506
@@ -15487,7 +15359,7 @@ msgid "Qlimit must be positive."
 msgstr ""
 
 #: src/www/status_rrd_graph_settings.php:43
-#: src/www/status_rrd_graph_tabs.php:10
+#: src/www/status_rrd_graph_tabs.inc:10
 msgid "Quality"
 msgstr ""
 
@@ -15565,14 +15437,14 @@ msgstr ""
 msgid "Queue"
 msgstr ""
 
-#: src/www/status_rrd_graph_tabs.php:15
+#: src/www/status_rrd_graph_tabs.inc:15
 msgid "QueueDrops"
 msgstr ""
 
 #: src/www/fbegin.inc:243
 #: src/www/status_queues.php:111
 #: src/www/status_rrd_graph_settings.php:44
-#: src/www/status_rrd_graph_tabs.php:13
+#: src/www/status_rrd_graph_tabs.inc:13
 msgid "Queues"
 msgstr ""
 
@@ -16320,7 +16192,7 @@ msgstr ""
 msgid "Restore Backup"
 msgstr ""
 
-#: src/www/system_firmware_tabs.php:35
+#: src/www/system_firmware_tabs.inc:35
 msgid "Restore Full Backup"
 msgstr ""
 
@@ -16358,16 +16230,8 @@ msgstr ""
 msgid "Restore from Configuration Backup"
 msgstr ""
 
-#: src/www/system_firmware_restorefullbackup.php:89
-msgid "Restore full backup"
-msgstr ""
-
 #: src/www/diag_backup.php:241
 msgid "Restore version"
-msgstr ""
-
-#: src/www/system_firmware_restorefullbackup.php:175
-msgid "Restore"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:502
@@ -16781,7 +16645,7 @@ msgstr ""
 #: src/www/services_wol_edit.php:164
 #: src/www/status_lb_pool.php:221
 #: src/www/status_rrd_graph_settings.php:192
-#: src/www/system.php:497
+#: src/www/system_general.php:497
 #: src/www/system_advanced_admin.php:581
 #: src/www/system_advanced_firewall.php:529
 #: src/www/system_advanced_misc.php:594
@@ -17035,7 +16899,7 @@ msgstr ""
 msgid "Select the interface(s) to enable for captive portal."
 msgstr ""
 
-#: src/www/system.php:420
+#: src/www/system_general.php:420
 msgid "Select the location closest to you"
 msgstr ""
 
@@ -17684,7 +17548,7 @@ msgstr ""
 #: src/www/load_balancer_setting.php:85
 #: src/www/load_balancer_setting.php:113
 #: src/www/load_balancer_virtual_server.php:118
-#: src/www/status_rrd_graph_tabs.php:40
+#: src/www/status_rrd_graph_tabs.inc:40
 #: src/www/system_authservers.php:451
 #: src/www/system_firmware_settings.php:64
 #: src/www/system_groupmanager.php:249
@@ -17944,7 +17808,6 @@ msgstr ""
 #: src/www/diag_system_pftop.php:131
 #: src/www/diag_system_pftop.php:146
 #: src/www/services_captiveportal_filemanager.php:190
-#: src/www/system_firmware_restorefullbackup.php:129
 msgid "Size"
 msgstr ""
 
@@ -18661,15 +18524,12 @@ msgstr ""
 #: src/www/status_lb_pool.php:221
 #: src/www/status_rrd_graph.php:537
 #: src/www/status_rrd_graph_settings.php:192
-#: src/www/system.php:497
+#: src/www/system_general.php:497
 #: src/www/system_advanced_admin.php:581
 #: src/www/system_advanced_firewall.php:529
 #: src/www/system_advanced_misc.php:594
 #: src/www/system_advanced_network.php:273
 #: src/www/system_advanced_sysctl.php:223
-#: src/www/system_firmware.php:234
-#: src/www/system_firmware.php:239
-#: src/www/system_firmware.php:256
 #: src/www/system_firmware_settings.php:261
 #: src/www/system_gateway_groups_edit.php:342
 #: src/www/system_gateways_edit.php:862
@@ -18868,7 +18728,7 @@ msgstr ""
 msgid "System Sounds"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:13
+#: src/www/system_advanced_tabs.inc:13
 msgid "System Tunables"
 msgstr ""
 
@@ -18917,10 +18777,10 @@ msgstr ""
 #: src/www/fbegin.inc:392
 #: src/www/status_rrd_graph_img.php:38
 #: src/www/status_rrd_graph_settings.php:40
-#: src/www/status_rrd_graph_tabs.php:4
-#: src/www/system.php:62
-#: src/www/system.php:264
-#: src/www/system.php:289
+#: src/www/status_rrd_graph_tabs.inc:4
+#: src/www/system_general.php:62
+#: src/www/system_general.php:264
+#: src/www/system_general.php:289
 #: src/www/system_advanced_admin.php:268
 #: src/www/system_advanced_firewall.php:219
 #: src/www/system_advanced_misc.php:225
@@ -18931,8 +18791,6 @@ msgstr ""
 #: src/www/system_camanager.php:41
 #: src/www/system_certmanager.php:44
 #: src/www/system_crlmanager.php:35
-#: src/www/system_firmware.php:88
-#: src/www/system_firmware.php:166
 #: src/www/system_firmware_check.php:98
 #: src/www/system_firmware_settings.php:64
 #: src/www/system_gateway_groups.php:89
@@ -19596,7 +19454,7 @@ msgstr ""
 msgid "The destination port range overlaps with an existing entry."
 msgstr ""
 
-#: src/www/system.php:99
+#: src/www/system_general.php:99
 msgid "The domain may only contain the characters a-z, 0-9, '-' and '.'."
 msgstr ""
 
@@ -19722,16 +19580,10 @@ msgid "The field 'WINS Server #2' must contain a valid IP address"
 msgstr ""
 
 #: src/www/diag_backup.php:614
-#: src/www/system_firmware_restorefullbackup.php:116
 msgid "The firewall configuration has been changed."
 msgstr ""
 
-#: src/www/system_firmware_restorefullbackup.php:85
-msgid "The firewall is currently restoring $filename"
-msgstr ""
-
 #: src/www/diag_backup.php:614
-#: src/www/system_firmware_restorefullbackup.php:116
 msgid "The firewall is now rebooting."
 msgstr ""
 
@@ -19752,10 +19604,6 @@ msgstr ""
 
 #: src/www/diag_backup.php:770
 msgid "The firewall will reboot after restoring the configuration."
-msgstr ""
-
-#: src/www/system_firmware.php:156
-msgid "The firmware is now being updated. The firewall will reboot automatically."
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:1844
@@ -19874,7 +19722,7 @@ msgstr ""
 msgid "The hostname cannot end with a hyphen according to RFC952"
 msgstr ""
 
-#: src/www/system.php:96
+#: src/www/system_general.php:96
 msgid "The hostname may only contain the characters a-z, 0-9 and '-'."
 msgstr ""
 
@@ -19890,11 +19738,6 @@ msgstr ""
 #: src/www/interfaces.php:695
 #: src/www/interfaces_ppps_edit.php:212
 msgid "The idle timeout value must be an integer."
-msgstr ""
-
-#: src/www/system_firmware.php:143
-#: src/www/system_firmware_auto.php:187
-msgid "The image file is corrupt."
 msgstr ""
 
 #: src/www/firewall_virtual_ip_edit.php:120
@@ -20098,7 +19941,7 @@ msgstr ""
 msgid "The options on this page are intended for use by advanced users only. This page is for managing existing mirrors, not creating new mirrors."
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:3
+#: src/www/system_advanced_tabs.inc:3
 msgid "The options on this page are intended for use by advanced users only."
 msgstr ""
 
@@ -20333,7 +20176,7 @@ msgstr ""
 msgid "The test was not performed because it is supported only for ldap based backends."
 msgstr ""
 
-#: src/www/system.php:144
+#: src/www/system_general.php:144
 msgid "The time update interval must be either 0 (disabled) or between 6 and 1440."
 msgstr ""
 
@@ -20374,23 +20217,6 @@ msgstr ""
 
 #: src/www/diag_backup.php:351
 msgid "The uploaded file does not appear to contain an encrypted OPNsense configuration."
-msgstr ""
-
-#:rc/www/system_firmware.php:70
-msgid ""
-"The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"
-msgstr ""
-
-#: src/www/system_firmware.php:68
-msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
-msgstr ""
-
-#: src/www/system_firmware.php:72
-msgid "The uploaded file was only partially uploaded"
-msgstr ""
-
-#: src/www/system_firmware.php:133
-msgid "The uploaded image file is not for this platform."
 msgstr ""
 
 #: src/www/services_dyndns_edit.php:119
@@ -20518,7 +20344,7 @@ msgstr ""
 msgid "The zone name can only contain letters, digits, and underscores (_)."
 msgstr ""
 
-#: src/www/system.php:468
+#: src/www/system_general.php:468
 msgid "Theme"
 msgstr ""
 
@@ -21068,14 +20894,6 @@ msgstr ""
 msgid "This may be useful if, for some reason, you want ntpd to prefer a different clock"
 msgstr ""
 
-#: src/www/system_firmware.php:201
-msgid ""
-"This means that the image you uploaded "
-"is not an official/supported image and may lead to unexpected behavior or security "
-"compromises. Only install images that come from sources that you trust, and make sure "
-"that the image has not been tampered with."
-msgstr ""
-
 #: src/www/load_balancer_monitor_edit.php:84
 msgid "This monitor name has already been used.  Monitor names must be unique."
 msgstr ""
@@ -21333,7 +21151,7 @@ msgstr ""
 msgid "This will be used if the field is left blank."
 msgstr ""
 
-#: src/www/system.php:489
+#: src/www/system_general.php:489
 msgid "This will change the look and feel of"
 msgstr ""
 
@@ -21452,7 +21270,7 @@ msgstr ""
 msgid "Time to live for when a delegation is considered to be lame. The default is 15 minutes."
 msgstr ""
 
-#: src/www/system.php:408
+#: src/www/system_general.php:408
 msgid "Time zone"
 msgstr ""
 
@@ -21597,7 +21415,7 @@ msgid "Traffic shaping is not configured."
 msgstr ""
 
 #: src/www/status_rrd_graph_settings.php:41
-#: src/www/status_rrd_graph_tabs.php:6
+#: src/www/status_rrd_graph_tabs.inc:6
 msgid "Traffic"
 msgstr ""
 
@@ -21831,11 +21649,6 @@ msgstr ""
 msgid "Unable to change mode to %s.  You may already have the maximum number of wireless clones supported in this mode."
 msgstr ""
 
-#: src/www/system_firmware_auto.php:141
-#: src/www/system_firmware_auto.php:150
-msgid "Unable to check for updates."
-msgstr ""
-
 #: src/www/firewall_aliases_edit.php:167
 msgid "Unable to fetch usable data."
 msgstr ""
@@ -21884,10 +21697,6 @@ msgstr ""
 
 #: src/etc/inc/easyrule.inc:374
 msgid "Unknown pass error."
-msgstr ""
-
-#: src/www/system_firmware.php:82
-msgid "Unknown upload error"
 msgstr ""
 
 #: src/etc/rc.restore_config_backup:16
@@ -21941,14 +21750,6 @@ msgstr ""
 msgid "Update URL"
 msgstr ""
 
-#: src/www/system_firmware_auto.php:188
-msgid "Update cannot continue"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:181
-msgid "Update cannot continue.  You can disable this check on the Updater Settings tab."
-msgstr ""
-
 #: src/www/diag_routes.php:198
 #: src/www/system_certmanager.php:397
 #: src/www/system_certmanager.php:996
@@ -21971,7 +21772,7 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
-#: src/www/system_firmware_tabs.php:34
+#: src/www/system_firmware_tabs.inc:34
 msgid "Updater Settings"
 msgstr ""
 
@@ -21989,17 +21790,8 @@ msgstr ""
 msgid "Upgrade Now"
 msgstr ""
 
-#: src/www/system_firmware.php:256
-#: src/www/system_firmware.php:257
-msgid "Upgrade firmware"
-msgstr ""
-
 #: src/www/system_firmware_check.php:86
 msgid "Upgrade pkg and recheck, there maybe other updates available."
-msgstr ""
-
-#: src/www/system_firmware.php:114
-msgid "Upgrade"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:1212
@@ -22142,7 +21934,7 @@ msgstr ""
 msgid "Use a regular expression to filter IP address or hostnames."
 msgstr ""
 
-#: src/www/system.php:443
+#: src/www/system_general.php:443
 msgid ""
 "Use a space to separate multiple hosts (only one "
 "required). Remember to set up at least one DNS server "
@@ -22163,7 +21955,7 @@ msgstr ""
 msgid "Use calculated value."
 msgstr ""
 
-#: src/www/system.php:324
+#: src/www/system_general.php:324
 msgid "Use gateway"
 msgstr ""
 
@@ -22835,10 +22627,6 @@ msgstr ""
 
 #: src/www/vpn_l2tp_users.php:87
 msgid "Warning: this will terminate all current l2tp sessions!"
-msgstr ""
-
-#: src/www/system_firmware.php:271
-msgid "Warning:"
 msgstr ""
 
 #: src/etc/inc/priv.defs.inc:432
@@ -24019,7 +23807,7 @@ msgstr ""
 #: src/www/interfaces_wireless.php:66
 #: src/www/interfaces_wireless.php:93
 #: src/www/interfaces_wireless_edit.php:138
-#: src/www/status_rrd_graph_tabs.php:19
+#: src/www/status_rrd_graph_tabs.inc:19
 #: src/www/status_wireless.php:31
 msgid "Wireless"
 msgstr ""
@@ -24164,7 +23952,6 @@ msgstr ""
 #: src/www/diag_defaults.php:73
 #: src/www/reboot.php:47
 #: src/www/reboot.php:57
-#: src/www/system_firmware.php:213
 msgid "Yes"
 msgstr ""
 
@@ -24178,10 +23965,6 @@ msgstr ""
 
 #: src/www/interfaces_qinq_edit.php:81
 msgid "You are editing an existing entry and modifying the interface is not allowed."
-msgstr ""
-
-#: src/www/system_firmware_auto.php:167
-msgid "You are on the latest version."
 msgstr ""
 
 #: src/www/firewall_shaper_layer7.php:54
@@ -24258,7 +24041,7 @@ msgstr ""
 msgid "You can not assign a IPv6 gateway group on IPv4 Address Family rule"
 msgstr ""
 
-#: src/www/system.php:135
+#: src/www/system_general.php:135
 msgid "You can not assign a gateway to DNS '%s' server which is on a directly connected network."
 msgstr ""
 
@@ -24279,11 +24062,11 @@ msgstr ""
 msgid "You can not assign the IPv6 Gateway to a IPv4 Filter rule"
 msgstr ""
 
-#: src/www/system.php:117
+#: src/www/system_general.php:117
 msgid "You can not specify IPv4 gateway '{$_POST[$dnsgwname]}' for IPv6 DNS server '{$_POST[$dnsname]}'"
 msgstr ""
 
-#: src/www/system.php:114
+#: src/www/system_general.php:114
 msgid "You can not specify IPv6 gateway '{$_POST[$dnsgwname]}' for IPv4 DNS server '{$_POST[$dnsname]}'"
 msgstr ""
 
@@ -24692,10 +24475,6 @@ msgstr ""
 
 #: src/www/firewall_aliases_edit.php:165
 msgid "You must provide a valid URL."
-msgstr ""
-
-#: src/www/system_firmware.php:259
-msgid "You must reboot the system before you can upgrade the firmware."
 msgstr ""
 
 #: src/www/vpn_openvpn_server.php:238
@@ -25429,10 +25208,6 @@ msgstr ""
 msgid "disabled route to"
 msgstr ""
 
-#: src/www/system_firmware_restorefullbackup.php:173
-msgid "do not restore config.xml."
-msgstr ""
-
 #: src/www/vpn_pptp.php:487
 msgid "don't forget to "
 msgstr ""
@@ -25481,10 +25256,6 @@ msgstr ""
 msgid "done.%s"
 msgstr ""
 
-#: src/www/system_firmware_auto.php:165
-msgid "download complete."
-msgstr ""
-
 #: src/www/firewall_nat_edit.php:782
 #: src/www/services_dnsmasq_domainoverride_edit.php:140
 #: src/www/services_dnsmasq_domainoverride_edit.php:147
@@ -25496,8 +25267,8 @@ msgstr ""
 #: src/www/services_unbound_host_edit.php:205
 #: src/www/services_unbound_host_edit.php:213
 #: src/www/services_unbound_host_edit.php:221
-#: src/www/system.php:300
-#: src/www/system.php:311
+#: src/www/system_general.php:300
+#: src/www/system_general.php:311
 msgid "e.g."
 msgstr ""
 
@@ -26094,7 +25865,7 @@ msgstr ""
 msgid "move selected rules to end"
 msgstr ""
 
-#: src/www/system.php:311
+#: src/www/system_general.php:311
 msgid "mycorp.com, home, office, private, etc."
 msgstr ""
 
@@ -27013,14 +26784,6 @@ msgstr ""
 msgid ""
 "Tabs (\\t), newlines (\\n) and carriage returns (\\r) at the beginning or "
 "end of the returned results are removed before comparison.");?>
-msgstr ""
-
-#: src/www/system_firmware_auto.php:202
-msgid "is now upgrading."
-msgstr ""
-
-#: src/www/system_firmware_auto.php:202
-msgid "The firewall will reboot once the operation is completed."
 msgstr ""
 
 # TODO: These lines need clarification in the source:
