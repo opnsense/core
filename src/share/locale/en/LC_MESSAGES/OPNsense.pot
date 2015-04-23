@@ -159,11 +159,6 @@ msgstr ""
 msgid "%1$s is not a valid %2$s alias."
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:187
-#: src/etc/inc/config.lib.inc:188
-msgid "%1$s is restoring the configuration %2$s"
-msgstr ""
-
 #: src/www/firewall_rules_edit.php:396
 msgid "%s  is not a valid end source port. It must be a port alias or integer between 1 and 65535."
 msgstr ""
@@ -271,10 +266,6 @@ msgstr ""
 
 #: src/etc/inc/config.lib.inc:854
 msgid "%s made unknown change"
-msgstr ""
-
-#: src/etc/inc/config.console.inc:48
-msgid "%s requires *AT LEAST* %s RAM to function correctly.%s"
 msgstr ""
 
 #: src/www/vpn_ipsec_phase2.php:544
@@ -4589,10 +4580,6 @@ msgstr ""
 msgid "Config"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:71
-msgid "Config.xml unlocked."
-msgstr ""
-
 #: src/www/diag_confbak.php:256
 msgid "Configuration Change"
 msgstr ""
@@ -4855,10 +4842,6 @@ msgstr ""
 
 #: src/etc/inc/filter.inc:2343
 msgid "Could not find IPv4 gateway for interface (%s)."
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:224
-msgid "Could not find a usable configuration file! Exiting...."
 msgstr ""
 
 #: src/www/system_usermanager_settings_test.php:47
@@ -5140,10 +5123,6 @@ msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:2577
 msgid "Czech"
-msgstr ""
-
-#: src/etc/inc/config.console.inc:47
-msgid "DANGER!  WARNING!  ACHTUNG!"
 msgstr ""
 
 #: src/www/vpn_openvpn_server.php:1021
@@ -6253,10 +6232,6 @@ msgstr ""
 msgid "Disconnect"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:284
-msgid "Disk is dirty.  Running fsck -y"
-msgstr ""
-
 #: src/www/diag_logs_settings.php:288
 msgid "Disk space currently used by log files: "
 msgstr ""
@@ -6909,10 +6884,6 @@ msgstr ""
 #: src/etc/inc/auth.inc:821
 #: src/etc/inc/auth.inc:1077
 msgid "ERROR!  Could not connect to server %s."
-msgstr ""
-
-#: src/etc/inc/config.inc:65
-msgid "ERROR!  Could not convert m0n0wall -> pfsense in config.xml"
 msgstr ""
 
 #: src/etc/inc/auth.inc:808
@@ -11206,10 +11177,6 @@ msgstr ""
 msgid "Invalid monitor chosen."
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:74
-msgid "Invalid password entered.  Please try again."
-msgstr ""
-
 #: src/etc/inc/easyrule.inc:347
 msgid "Invalid protocol for pass rule:"
 msgstr ""
@@ -11586,10 +11553,6 @@ msgstr ""
 
 #: src/www/widgets/widgets/system_information.widget.php:198
 msgid "Last config change"
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:221
-msgid "Last known config found and restored.  Please double check your configuration file for accuracy."
 msgstr ""
 
 #: src/www/system_gateways_edit.php:770
@@ -13152,21 +13115,6 @@ msgstr ""
 msgid "No callback function for getURL"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:99
-#: src/etc/inc/config.lib.inc:100
-#: src/etc/inc/config.lib.inc:211
-#: src/etc/inc/config.lib.inc:232
-#: src/etc/inc/config.lib.inc:233
-msgid "No config.xml found, attempting last known config restore."
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:103
-#: src/etc/inc/config.lib.inc:128
-#: src/etc/inc/config.lib.inc:138
-#: src/etc/inc/config.lib.inc:236
-msgid "No config.xml found, attempting to restore factory config."
-msgstr ""
-
 #: src/www/diag_testport.php:94
 msgid "No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."
 msgstr ""
@@ -13813,10 +13761,6 @@ msgstr ""
 #: src/www/status_gateways.php:135
 #: src/www/widgets/widgets/wake_on_lan.widget.php:59
 msgid "Online"
-msgstr ""
-
-#: src/etc/inc/config.console.inc:49
-msgid "Only (%s) MB RAM has been detected, with (%s) available to %s.%s"
 msgstr ""
 
 #: src/www/interfaces_qinq_edit.php:314
@@ -15008,10 +14952,6 @@ msgstr ""
 
 #: src/etc/rc.initial.setlanip:517
 msgid "Press <ENTER> to continue."
-msgstr ""
-
-#: src/etc/inc/config.console.inc:50
-msgid "Press ENTER to continue."
 msgstr ""
 
 #: src/www/vpn_openvpn_csc.php:501
@@ -21805,10 +21745,6 @@ msgstr ""
 msgid "Upgrading m0n0wall configuration to OPNsense."
 msgstr ""
 
-#: src/etc/inc/config.inc:62
-msgid "Upgrading m0n0wall configuration to pfSense... "
-msgstr ""
-
 #: src/www/diag_patterns.php:32
 #: src/www/diag_patterns.php:87
 msgid "Upload Pattern file"
@@ -23856,10 +23792,6 @@ msgstr ""
 
 #: src/etc/inc/interfaces.inc:1191
 msgid "Wrong parameters used during interface_bring_down"
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:215
-msgid "XML configuration file not found.  %s cannot continue booting."
 msgstr ""
 
 #: src/etc/inc/xmlparse.inc:93
