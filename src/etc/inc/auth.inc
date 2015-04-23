@@ -203,7 +203,7 @@ function index_groups()
 
 	$groupindex = array();
 
-	if (is_array($config['system']['group'])) {
+	if (isset($config['system']['group'])) {
 		$i = 0;
 		foreach($config['system']['group'] as $groupent) {
 			$groupindex[$groupent['name']] = $i;
@@ -261,7 +261,7 @@ function &getGroupEntryByGID($gid)
 {
 	global $config;
 
-	if (is_array($config['system']['group'])) {
+	if (isset($config['system']['group'])) {
 		foreach ($config['system']['group'] as & $group) {
 			if ($group['gid'] == $gid) {
 				return $group;
@@ -518,7 +518,8 @@ function local_user_get_groups($user, $all = false)
 	global $config;
 
 	$groups = array();
-	if (!is_array($config['system']['group'])) {
+
+	if (!isset($config['system']['group'])) {
 		return $groups;
 	}
 
@@ -540,8 +541,9 @@ function local_user_set_groups($user, $new_groups = null)
 {
 	global $config, $groupindex;
 
-	if (!is_array($config['system']['group']))
+	if (!isset($config['system']['group'])) {
 		return;
+	}
 
 	$cur_groups = local_user_get_groups($user, true);
 	$mod_groups = array();
@@ -680,33 +682,31 @@ function ldap_test_connection($authcfg)
 
 function ldap_setup_caenv($authcfg)
 {
-	global $g;
-
 	require_once("certs.inc");
 
 	unset($caref);
+
 	if (empty($authcfg['ldap_caref']) || !strstr($authcfg['ldap_urltype'], "SSL")) {
 		putenv('LDAPTLS_REQCERT=never');
 		return;
-	} else {
-		$caref = lookup_ca($authcfg['ldap_caref']);
-		if (!$caref) {
-			log_error(sprintf(gettext("LDAP: Could not lookup CA by reference for host %s."), $authcfg['ldap_caref']));
-			/* XXX: Prevent for credential leaking since we cannot setup the CA env. Better way? */
-			putenv('LDAPTLS_REQCERT=hard');
-			return;
-		}
-		if (!is_dir("{$g['varrun_path']}/certs"))
-			@mkdir("{$g['varrun_path']}/certs");
-		if (file_exists("{$g['varrun_path']}/certs/{$caref['refid']}.ca"))
-			@unlink("{$g['varrun_path']}/certs/{$caref['refid']}.ca");
-		file_put_contents("{$g['varrun_path']}/certs/{$caref['refid']}.ca", base64_decode($caref['crt']));
-		@chmod("{$g['varrun_path']}/certs/{$caref['refid']}.ca", 0600);
-		putenv('LDAPTLS_REQCERT=hard');
-		/* XXX: Probably even the hashed link should be created for this? */
-		putenv("LDAPTLS_CACERTDIR={$g['varrun_path']}/certs");
-		putenv("LDAPTLS_CACERT={$g['varrun_path']}/certs/{$caref['refid']}.ca");
 	}
+
+	$caref = lookup_ca($authcfg['ldap_caref']);
+	if (!$caref) {
+		log_error(sprintf(gettext("LDAP: Could not lookup CA by reference for host %s."), $authcfg['ldap_caref']));
+		/* XXX: Prevent for credential leaking since we cannot setup the CA env. Better way? */
+		putenv('LDAPTLS_REQCERT=hard');
+		return;
+	}
+
+	@mkdir("/var/run/certs");
+	@unlink("/var/run/certs/{$caref['refid']}.ca");
+	file_put_contents("/var/run/certs/{$caref['refid']}.ca", base64_decode($caref['crt']));
+	@chmod("/var/run/certs/{$caref['refid']}.ca", 0600);
+	putenv('LDAPTLS_REQCERT=hard');
+	/* XXX: Probably even the hashed link should be created for this? */
+	putenv("LDAPTLS_CACERTDIR=/var/run/certs");
+	putenv("LDAPTLS_CACERT=/var/run/certs/{$caref['refid']}.ca");
 }
 
 function ldap_test_bind($authcfg)
@@ -1261,12 +1261,14 @@ function auth_get_authserver_list() {
 	return $list;
 }
 
-function getUserGroups($username, $authcfg) {
+function getUserGroups($username, $authcfg)
+{
 	global $config;
 
 	$allowed_groups = array();
+	$member_groups = array();
 
-	switch($authcfg['type']) {
+	switch ($authcfg['type']) {
         case 'ldap':
 		$allowed_groups = @ldap_get_groups($username, $authcfg);
 		break;
@@ -1278,11 +1280,12 @@ function getUserGroups($username, $authcfg) {
 		break;
 	}
 
-	$member_groups = array();
-        if (is_array($config['system']['group'])) {
-                foreach ($config['system']['group'] as $group)
-                        if (in_array($group['name'], $allowed_groups))
+        if (isset($config['system']['group'])) {
+                foreach ($config['system']['group'] as $group) {
+                        if (in_array($group['name'], $allowed_groups)) {
 				$member_groups[] = $group['name'];
+			}
+		}
 	}
 
 	return $member_groups;

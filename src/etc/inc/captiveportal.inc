@@ -405,7 +405,7 @@ function captiveportal_configure_zone($cpcfg) {
         } else
             captiveportal_syslog("Reconfiguring captive portal({$cpcfg['zone']}).");
         /* kill any running minicron */
-        killbypid("{$g['varrun_path']}/cp_prunedb_{$cpzone}.pid");
+        killbypid("/var/run/cp_prunedb_{$cpzone}.pid");
 
         /* initialize minicron interval value */
         $croninterval = $cpcfg['croninterval'] ? $cpcfg['croninterval'] : 60;
@@ -521,19 +521,23 @@ EOD;
         captiveportal_write_elements();
 
         /* kill any running mini_httpd */
-        killbypid("{$g['varrun_path']}/lighty-{$cpzone}-CaptivePortal.pid");
-        killbypid("{$g['varrun_path']}/lighty-{$cpzone}-CaptivePortal-SSL.pid");
+        killbypid("/var/run/lighty-{$cpzone}-CaptivePortal.pid");
+        killbypid("/var/run/lighty-{$cpzone}-CaptivePortal-SSL.pid");
 
         /* start up the webserving daemon */
         captiveportal_init_webgui_zone($cpcfg);
 
         /* Kill any existing prunecaptiveportal processes */
-        if (file_exists("{$g['varrun_path']}/cp_prunedb_{$cpzone}.pid"))
-            killbypid("{$g['varrun_path']}/cp_prunedb_{$cpzone}.pid");
+        killbypid("/var/run/cp_prunedb_{$cpzone}.pid");
 
         /* start pruning process (interval defaults to 60 seconds) */
-        mwexec("/usr/local/bin/minicron $croninterval {$g['varrun_path']}/cp_prunedb_{$cpzone}.pid " .
-            "/usr/local/etc/rc.prunecaptiveportal {$cpzone}");
+        mwexecf(
+		'/usr/local/bin/minicron %s %s %s %s',
+		 $croninterval,
+		"/var/run/cp_prunedb_{$cpzone}.pid",
+		'/usr/local/etc/rc.prunecaptiveportal',
+		$cpzone
+	);
 
         /* generate radius server database */
         unlink_if_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db");
@@ -546,9 +550,9 @@ EOD;
         }
 
     } else {
-        killbypid("{$g['varrun_path']}/lighty-{$cpzone}-CaptivePortal.pid");
-        killbypid("{$g['varrun_path']}/lighty-{$cpzone}-CaptivePortal-SSL.pid");
-        killbypid("{$g['varrun_path']}/cp_prunedb_{$cpzone}.pid");
+        killbypid("/var/run/lighty-{$cpzone}-CaptivePortal.pid");
+        killbypid("/var/run/lighty-{$cpzone}-CaptivePortal-SSL.pid");
+        killbypid("/var/run/cp_prunedb_{$cpzone}.pid");
         @unlink("{$g['varetc_path']}/captiveportal_{$cpzone}.html");
         @unlink("{$g['varetc_path']}/captiveportal-{$cpzone}-error.html");
         @unlink("{$g['varetc_path']}/captiveportal-{$cpzone}-logout.html");
@@ -566,7 +570,6 @@ EOD;
         unlink_if_exists("{$g['vardb_path']}/captiveportal_{$cpzone}.rules");
         /* Release allocated pipes for this zone */
         captiveportal_free_dnrules();
-
 
         if (empty($config['captiveportal']))
             set_single_sysctl("net.link.ether.ipfw", "0");
