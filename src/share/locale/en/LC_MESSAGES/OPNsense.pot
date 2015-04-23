@@ -36,17 +36,6 @@ msgstr ""
 msgid " - Submit this to the developers for inspection"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1205
-msgid " >>> Trying to fetch package info..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1212
-msgid ""
-" >>> Unable to communicate with %1$s. "
-"Please verify DNS and interface configuration, "
-"and that %2$s has functional Internet connectivity."
-msgstr ""
-
 #: src/etc/inc/shaper.inc:672
 msgid " Beware you can lose information."
 msgstr ""
@@ -90,10 +79,6 @@ msgstr ""
 
 #: src/etc/inc/config.console.inc:407
 msgid " done!"
-msgstr ""
-
-#: src/etc/inc/array_intersect_key.inc:46
-msgid " is not an array"
 msgstr ""
 
 #: src/www/firewall_nat_out.php:621
@@ -462,27 +447,6 @@ msgstr ""
 msgid "(this might create problems for some clients)."
 msgstr ""
 
-#: src/etc/inc/smtp.inc:247
-msgid "-3 socket could not be created"
-msgstr ""
-
-
-#: src/etc/inc/smtp.inc:249
-msgid "-4 dns lookup on hostname \"%s\" failed"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:251
-msgid "-5 connection refused or timed out"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:253
-msgid "-6 fdopen() call failed"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:255
-msgid "-7 setvbuf() call failed"
-msgstr ""
-
 #: src/www/system_advanced_misc.php:500
 msgid "/tmp RAM Disk Size"
 msgstr ""
@@ -570,14 +534,6 @@ msgstr ""
 
 #: src/www/firewall_rules_edit.php:1417
 msgid "802.1p"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:93
-msgid ": data access time out"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:96
-msgid ": the server disconnected"
 msgstr ""
 
 #: src/www/services_unbound_acls.php:224
@@ -1635,10 +1591,6 @@ msgstr ""
 
 #: src/www/system_authservers.php:824
 msgid "Additional authentication servers can be added here."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1481
-msgid "Additional files... "
 msgstr ""
 
 #: src/www/system_usermanager.php:892
@@ -2973,11 +2925,6 @@ msgstr ""
 msgid "Allows selection of different speeds for the serial console port."
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:1636
-#: src/etc/inc/xmlrpc_client.inc:1652
-msgid "Already initialized as a [%s]"
-msgstr ""
-
 #: src/www/firewall_rules.php:123
 #: src/www/firewall_rules_edit.php:991
 msgid "Alternate Host"
@@ -3195,10 +3142,6 @@ msgstr ""
 msgid "Attempting to fetch Organizational Units from"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1206
-msgid "Attempting to reinstall all packages"
-msgstr ""
-
 #: src/www/diag_smart.php:298
 msgid "Attributes"
 msgstr ""
@@ -3249,11 +3192,6 @@ msgstr ""
 
 #: src/www/system_authservers.php:598
 msgid "Authentication containers"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:317
-#: src/etc/inc/smtp.inc:347
-msgid "Authentication error:"
 msgstr ""
 
 #: src/www/xmlrpc.php:57
@@ -3362,10 +3300,6 @@ msgstr ""
 
 #: src/www/vpn_ipsec_phase2.php:772
 msgid "Automatically ping host"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1088
-msgid "Auxiliary files... "
 msgstr ""
 
 #: src/www/load_balancer_relay_protocol_edit.php:239
@@ -3584,11 +3518,6 @@ msgstr ""
 msgid "Beginning firmware upgrade"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:622
-msgid "Beginning package installation for %s ."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:620
 #: src/www/pkg_mgr_install.php:169
 msgid "Beginning package installation."
 msgstr ""
@@ -4008,10 +3937,6 @@ msgstr ""
 msgid "Can't find PPP config for %s in interface_ppps_configure()."
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:155
-msgid "Can't introspect: method unknown"
-msgstr ""
-
 #: src/www/firewall_aliases_edit.php:750
 #: src/www/firewall_aliases_import.php:214
 #: src/www/firewall_nat_1to1_edit.php:567
@@ -4087,10 +4012,6 @@ msgstr ""
 
 #: src/www/graph_cpu.php:71
 msgid "Cannot get CPU load"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1214
-msgid "Cannot reinstall packages: "
 msgstr ""
 
 #: src/www/diag_logs_filter.php:42
@@ -4326,10 +4247,6 @@ msgstr ""
 
 #: src/www/services_captiveportal.php:1072
 msgid "Changing any settings on this page will disconnect all clients! Don't forget to enable the DHCP server on your captive portal interface! Make sure that the default/maximum DHCP lease time is higher than the timeout entered on this page. Also, the DNS forwarder needs to be enabled for DNS lookups by unauthenticated clients to work."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1513
-msgid "Changing file mode to %1$s for %2$s%3$s%4$s"
 msgstr ""
 
 #: src/www/system_gateway_groups_edit.php:89
@@ -4843,10 +4760,6 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1121
-msgid "Configuration... "
-msgstr ""
-
 #: src/etc/rc.initial.setlanip:249
 msgid "Configure %s address %s interface via %s?"
 msgstr ""
@@ -4914,10 +4827,6 @@ msgstr ""
 msgid "Configuring loopback interface..."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:738
-msgid "Configuring package components...\n"
-msgstr ""
-
 #: src/www/diag_confbak.php:177
 #: src/www/diag_gmirror.php:187
 msgid "Confirm Action"
@@ -4947,14 +4856,6 @@ msgstr ""
 msgid "Connected Since"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:464
-msgid "Connected to SMTP server \"%s\"."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:240
-msgid "Connecting to host address \"%1$s\" port %2$s..."
-msgstr ""
-
 #: src/www/system_firmware_check.php:78
 #: src/www/widgets/widgets/system_information.widget.php:57
 msgid "Connection Error"
@@ -4970,18 +4871,6 @@ msgstr ""
 
 #: src/www/diag_testport.php:270
 msgid "Connection failed (Refused/Timeout)"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:957
-msgid ""
-"'Connection to RPC server"
-"                              %1$s:%2$s failed. %3$s"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:951
-msgid ""
-"Connection to proxy server"
-"                              %1$s:%2$s failed. %3$s"
 msgstr ""
 
 #: src/www/wizards/traffic_shaper_wizard_dedicated.inc:1465
@@ -5164,29 +5053,13 @@ msgstr ""
 msgid "Could not process aliases from alias: {$alias_url}"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:352
-msgid "Could not process the SASL authentication step:"
-msgstr ""
-
 #: src/etc/inc/config.lib.inc:508
 msgid "Could not restore config.xml."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:302
-msgid "Could not send the AUTH command"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:332
-msgid "Could not send the authentication step message"
 msgstr ""
 
 #: src/etc/inc/notices.inc:326
 #: src/etc/inc/notices.inc:327
 msgid "Could not send the message to %1$s -- Error: %2$s"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:295
-msgid "Could not start the SASL authentication client:"
 msgstr ""
 
 #: src/etc/inc/services.inc:1347
@@ -5411,10 +5284,6 @@ msgstr ""
 #: src/www/wizards/traffic_shaper_wizard_multi_all.inc:809
 #: src/www/wizards/traffic_shaper_wizard_multi_all.inc:1207
 msgid "Custom Bandwidths are greater than 30%. Please lower them for the wizard to continue."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:778
-msgid "Custom commands..."
 msgstr ""
 
 #: src/www/interfaces.php:2676
@@ -5830,10 +5699,6 @@ msgstr ""
 
 #: src/www/services_captiveportal_vouchers_edit.php:193
 msgid "Defines the time in minutes that a user is allowed access. The clock starts ticking the first time a voucher is used for authentication"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1069
-msgid "Deinstall commands... "
 msgstr ""
 
 #: src/www/vpn_ipsec_phase1.php:904
@@ -6302,10 +6167,6 @@ msgstr ""
 #: src/www/interfaces_ppps_edit.php:183
 #: src/www/interfaces_ppps_edit.php:194
 msgid "Dial on demand"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:156
-msgid "Didn't receive 200 OK from remote server."
 msgstr ""
 
 #: src/www/diag_confbak.php:252
@@ -7141,20 +7002,8 @@ msgstr ""
 msgid "Downloading current version information"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1434
-msgid "Downloading package configuration file... "
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1436
-msgid "Downloading package configuration file..."
-msgstr ""
-
 #: src/www/system_firmware_auto.php:155
 msgid "Downloading updates"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:707
-msgid "Downloading"
 msgstr ""
 
 #: src/www/services_igmpproxy_edit.php:189
@@ -7317,14 +7166,6 @@ msgstr ""
 
 #: src/etc/inc/auth.inc:1143
 msgid "ERROR! Either LDAP search failed, or multiple users were found."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1440
-msgid "ERROR! Unable to fetch package configuration file. Aborting installation."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1442
-msgid "ERROR! Unable to fetch package configuration file. Aborting package installation."
 msgstr ""
 
 #: src/etc/inc/auth.inc:1056
@@ -8748,18 +8589,6 @@ msgstr ""
 msgid "Example:"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:782
-msgid "Executing custom_php_global_functions()..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:789
-msgid "Executing custom_php_install_command()..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:818
-msgid "Executing custom_php_resync_config_command()..."
-msgstr ""
-
 #: src/www/system_camanager.php:404
 msgid "Existing Certificate Authority"
 msgstr ""
@@ -8853,10 +8682,6 @@ msgstr ""
 msgid "External subnet"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1507
-msgid "Extracting tarball to -C for "
-msgstr ""
-
 #: src/www/pkg_mgr_install.php:272
 msgid "FAILED!"
 msgstr ""
@@ -8891,10 +8716,6 @@ msgstr ""
 
 #: src/www/system_crlmanager.php:170
 msgid "Failed to delete Certificate %s from CRL %s"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:651
-msgid "Failed to install package."
 msgstr ""
 
 #: src/www/system_firmware.php:78
@@ -8993,18 +8814,6 @@ msgstr ""
 
 #: src/www/system_certmanager.php:1022
 msgid "Final certificate data"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1235
-msgid "Finished installing package"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1238
-msgid "Finished reinstalling all packages."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1232
-msgid "Finished uninstalling package"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:2557
@@ -9718,10 +9527,6 @@ msgstr ""
 #: src/www/load_balancer_monitor_edit.php:286
 #: src/www/load_balancer_monitor_edit.php:319
 msgid "HTTP Code"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:1470
-msgid "HTTP error, got response: %s"
 msgstr ""
 
 #: src/www/load_balancer_monitor_edit.php:186
@@ -11190,14 +10995,6 @@ msgstr ""
 msgid "Incorrect ip address  specified for username %s"
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:154
-msgid "Incorrect parameters passed to method"
-msgstr ""
-
-#: src/etc/inc/priv/user.priv.inc:7
-msgid "Indicates whether the user is able to login on the captive portal."
-msgstr ""
-
 #: src/etc/inc/upgrade_config.inc:532
 msgid "Indicates whether this user is able to login for example via SSH."
 msgstr ""
@@ -11300,10 +11097,6 @@ msgstr ""
 msgid "Install Package"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:874
-msgid "Installation aborted."
-msgstr ""
-
 #: src/www/pkg_mgr_install.php:282
 msgid "Installation completed.   Please check to make sure that the package is configured from the respective menu then start the package."
 msgstr ""
@@ -11318,10 +11111,6 @@ msgstr ""
 
 #: src/www/pkg_mgr_install.php:272
 msgid "Installation of"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:634
-msgid "Installed %s package."
 msgstr ""
 
 #: src/etc/inc/filter.inc:3274
@@ -11355,10 +11144,6 @@ msgstr ""
 msgid "Installing configuration..."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:706
-msgid "Installing"
-msgstr ""
-
 #: src/www/diag_dump_states.php:162
 msgid "Int"
 msgstr ""
@@ -11369,10 +11154,6 @@ msgstr ""
 
 #: src/www/widgets/widgets/dyn_dns_status.widget.php:74
 msgid "Int."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:843
-msgid "Integrated Tab items... "
 msgstr ""
 
 #: src/www/system_advanced_misc.php:69
@@ -11780,14 +11561,6 @@ msgstr ""
 
 #: src/www/diag_packet_capture.php:120
 msgid "Invalid protocol."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:158
-msgid "Invalid request payload"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:153
-msgid "Invalid return payload: enable debugging to examine incoming payload"
 msgstr ""
 
 #: src/www/status_rrd_graph.php:147
@@ -12365,10 +12138,6 @@ msgstr ""
 msgid "List of mirrors changed. Old: (%s) New: (%s)"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1223
-msgid "List of packages to reinstall: "
-msgstr ""
-
 #: src/www/services_dnsmasq.php:265
 #: src/www/services_unbound.php:223
 msgid "Listen Port"
@@ -12430,20 +12199,6 @@ msgstr ""
 
 #: src/etc/inc/filter.inc:205
 msgid "Loading filter rules"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:733
-#: src/etc/inc/pkg-utils.inc:1474
-msgid "Loading package configuration... "
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:874
-msgid "Loading package configuration... failed!"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:763
-#: src/etc/inc/pkg-utils.inc:1035
-msgid "Loading package instructions..."
 msgstr ""
 
 #: src/www/index.php:618
@@ -12984,11 +12739,6 @@ msgstr ""
 
 #: src/www/widgets/widgets/system_information.widget.php:269
 msgid "Memory usage"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:827
-#: src/etc/inc/pkg-utils.inc:982
-msgid "Menu items... "
 msgstr ""
 
 #: src/www/xmlrpc.php:219
@@ -13981,10 +13731,6 @@ msgstr ""
 msgid "Non-Temporary Address Allocation"
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:431
-msgid "Non-numeric value received in INT or DOUBLE"
-msgstr ""
-
 #: src/etc/inc/openvpn.inc:211
 msgid "None (No Authentication)"
 msgstr ""
@@ -14043,10 +13789,6 @@ msgstr ""
 
 #: src/www/system_groupmanager.php:300
 msgid "Not Members"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:1600
-msgid "Not a scalar type (%s)"
 msgstr ""
 
 #: src/etc/inc/system.inc:439
@@ -14471,10 +14213,6 @@ msgstr ""
 msgid "On"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1204
-msgid "One moment please, reinstalling packages...\n"
-msgstr ""
-
 #: src/etc/inc/config.console.inc:405
 msgid "One moment while we reload the settings..."
 msgstr ""
@@ -14695,10 +14433,6 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:638
-msgid "Overwrote previous installation of %s."
-msgstr ""
-
 #: src/www/vpn_ipsec.php:246
 msgid "P1 Description"
 msgstr ""
@@ -14753,18 +14487,6 @@ msgstr ""
 
 #: src/www/vpn_ipsec_phase2.php:736
 msgid "PFS key group"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:437
-msgid "POP3 authentication password was not accepted:"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:421
-msgid "POP3 authentication server greeting was not found"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:429
-msgid "POP3 authentication user was not accepted:"
 msgstr ""
 
 #: src/www/interfaces.php:2527
@@ -14946,10 +14668,6 @@ msgstr ""
 msgid "PTP ports"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:613
-msgid "Package %s is not supported on this version."
-msgstr ""
-
 #: src/www/pkg_edit.php:249
 msgid "Package Editor"
 msgstr ""
@@ -14964,10 +14682,6 @@ msgstr ""
 
 #: src/www/fbegin.inc:242
 msgid "Package Logs"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1415
-msgid "Package Manager Settings"
 msgstr ""
 
 #: src/www/diag_backup.php:177
@@ -14988,14 +14702,6 @@ msgstr ""
 #: src/www/pkg_mgr_settings.php:51
 #: src/www/pkg_mgr_settings.php:91
 msgid "Package Settings"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:719
-msgid "Package WAS NOT installed properly."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1102
-msgid "Package XML... "
 msgstr ""
 
 #: src/www/pkg_mgr_install.php:224
@@ -15030,7 +14736,6 @@ msgstr ""
 msgid "Packages are currently being reinstalled in the background.<p>Do not make changes in the GUI until this is complete."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:416
 #: src/www/fbegin.inc:163
 msgid "Packages"
 msgstr ""
@@ -16614,10 +16319,6 @@ msgstr ""
 msgid "Reinstall"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1233
-msgid "Reinstalling package"
-msgstr ""
-
 #: src/www/interfaces.php:1986
 msgid "Reject Leases From"
 msgstr ""
@@ -16770,10 +16471,6 @@ msgstr ""
 msgid "Remote tunnel network"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1081
-msgid "Remove '%s'"
-msgstr ""
-
 #: src/www/diag_confbak.php:190
 msgid "Remove Configuration Backup"
 msgstr ""
@@ -16821,18 +16518,6 @@ msgstr ""
 
 #: src/etc/inc/services.inc:2350
 msgid "Removed cron job for %s"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:953
-msgid "Removing %s components..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:952
-msgid "Removing %s package... "
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1079
-msgid "Removing package instructions..."
 msgstr ""
 
 #: src/www/status_interfaces.php:99
@@ -16983,14 +16668,6 @@ msgstr ""
 msgid "Resolver"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:414
-msgid "Resolving POP3 authentication host \"%s\"..."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:452
-msgid "Resolving SMTP server domain \"%s\"..."
-msgstr ""
-
 #: src/etc/inc/service-utils.inc:546
 msgid "Restart %sService"
 msgstr ""
@@ -17078,26 +16755,8 @@ msgstr ""
 msgid "Result Match"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:201
-msgid "Resyncing configuration for all packages."
-msgstr ""
-
 #: src/www/load_balancer_pool_edit.php:239
 msgid "Retry"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_server.inc:66
-msgid ""
-"Returns an array of known"
-" signatures (an array of arrays) for the method name passed. If"
-" no signatures are known, returns a none-array (test for type !="
-" array to detect missing signature)"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_server.inc:86
-msgid ""
-"Returns help text if defined"
-" for the method passed, otherwise returns an empty string"
 msgstr ""
 
 #: src/www/diag_traceroute.php:138
@@ -17546,14 +17205,6 @@ msgstr ""
 
 #: src/www/pkg.php:186
 msgid "Saving changes..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:630
-msgid "Saving updated package information..."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:1593
-msgid "Scalar can have only one value"
 msgstr ""
 
 #: src/www/widgets/widgets/traffic_graphs.widget.php:137
@@ -18156,8 +17807,6 @@ msgstr ""
 msgid "Services"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:859
-#: src/etc/inc/pkg-utils.inc:999
 #: src/www/fbegin.inc:245
 msgid "Services... "
 msgstr ""
@@ -19031,10 +18680,6 @@ msgstr ""
 msgid "Starting initial configuration"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:921
-msgid "Starting package deletion for %s..."
-msgstr ""
-
 #: src/etc/inc/system.inc:621
 msgid "Starting syslog..."
 msgstr ""
@@ -19592,10 +19237,6 @@ msgstr ""
 msgid "Synchronize Voucher Database IP"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:221
-msgid "Syncing packages:"
-msgstr ""
-
 #: src/etc/inc/system.inc:1653
 msgid "Syncing system time before startup..."
 msgstr ""
@@ -19645,11 +19286,6 @@ msgstr ""
 
 #: src/www/diag_logs_settings.php:426
 msgid "System events"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:744
-#: src/etc/inc/pkg-utils.inc:1059
-msgid "System files... "
 msgstr ""
 
 #: src/www/services_snmp.php:310
@@ -19836,10 +19472,6 @@ msgstr ""
 msgid "Tables"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:965
-msgid "Tabs items... "
-msgstr ""
-
 #: src/www/interfaces_qinq.php:126
 #: src/www/interfaces_qinq_edit.php:353
 msgid "Tag"
@@ -19933,30 +19565,8 @@ msgstr ""
 msgid "That username is reserved by the system."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:263
-msgid ""
-"The %1$s package is missing required dependencies and must be reinstalled. %2$s"
-msgstr ""
-
 #: src/www/interfaces.php:1556
 msgid "The %s configuration has been changed."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:383
-msgid "The %s package is missing its configuration file and must be reinstalled."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:288
-#: src/etc/inc/pkg-utils.inc:416
-msgid "The %s package is missing required dependencies and must be reinstalled."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:941
-msgid "The %s package is not installed.%sDeletion aborted."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:691
-msgid "The %s package is not installed.%sInstallation aborted."
 msgstr ""
 
 #: src/www/firewall_nat_1to1_edit.php:532
@@ -21031,10 +20641,6 @@ msgid ""
 "The remote gateway \"%1$s\" is already used by phase1 \"%2$s\"."
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:157
-msgid "The requested method didn't return an XML_RPC_Response object."
-msgstr ""
-
 #: src/www/load_balancer_pool_edit.php:91
 msgid "The retry value must be an integer between 1 and 65535."
 msgstr ""
@@ -21124,10 +20730,6 @@ msgstr ""
 
 #: src/www/system_routes.php:209
 msgid "The static route configuration has been changed.%sYou must apply the changes in order for them to take effect."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:1330
-msgid "The submitted request did not contain this parameter"
 msgstr ""
 
 #: src/www/services_dhcp.php:314
@@ -21935,12 +21537,6 @@ msgid ""
 "that the image has not been tampered with."
 msgstr ""
 
-#: src/etc/inc/xmlrpc_server.inc:48
-msgid ""
-"This method lists all the"
-" methods that the XML-RPC server knows how to dispatch"
-msgstr ""
-
 #: src/www/load_balancer_monitor_edit.php:84
 msgid "This monitor name has already been used.  Monitor names must be unique."
 msgstr ""
@@ -22716,17 +22312,8 @@ msgstr ""
 msgid "Unable to check for updates."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1212
-#: src/www/pkg_mgr.php:76
-msgid "Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity."
-msgstr ""
-
 #: src/www/firewall_aliases_edit.php:167
 msgid "Unable to fetch usable data."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:876
-msgid "Unable to load package configuration. Installation aborted."
 msgstr ""
 
 #: src/etc/inc/config.lib.inc:487
@@ -22763,10 +22350,6 @@ msgstr ""
 msgid "Unfortunately we have detected a programming bug."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1230
-msgid "Uninstalling package"
-msgstr ""
-
 #: src/www/vpn_ipsec_phase2.php:122
 msgid "Unique Identifier"
 msgstr ""
@@ -22777,10 +22360,6 @@ msgstr ""
 
 #: src/etc/inc/easyrule.inc:333
 msgid "Unknown block error."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:152
-msgid "Unknown method"
 msgstr ""
 
 #: src/etc/inc/easyrule.inc:374
@@ -23128,10 +22707,6 @@ msgstr ""
 
 #: src/www/vpn_pppoe_edit.php:546
 msgid "User (s)"
-msgstr ""
-
-#: src/etc/inc/priv/user.priv.inc:6
-msgid "User - Services - Captive portal login"
 msgstr ""
 
 #: src/www/vpn_openvpn_client.php:672
@@ -24989,10 +24564,6 @@ msgstr ""
 msgid "Would you like to submit the programming debug logs to the OPNsense developers for inspection?"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:655
-msgid "Writing configuration... "
-msgstr ""
-
 #: src/www/bandwidth_by_ip.php:47
 msgid "Wrong Interface"
 msgstr ""
@@ -25001,20 +24572,12 @@ msgstr ""
 msgid "Wrong data submitted"
 msgstr ""
 
-#: src/etc/inc/array_intersect_key.inc:37
-msgid "Wrong parameter count for array_intersect_key()"
-msgstr ""
-
 #: src/etc/inc/interfaces.inc:1191
 msgid "Wrong parameters used during interface_bring_down"
 msgstr ""
 
 #: src/etc/inc/config.lib.inc:215
 msgid "XML configuration file not found.  %s cannot continue booting."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:1497
-msgid "XML error at line 1, check URL"
 msgstr ""
 
 #: src/etc/inc/xmlparse.inc:93
@@ -25977,14 +25540,6 @@ msgstr ""
 msgid "and almost never equal to the destination port range (and should usually be"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:706
-msgid "and its dependencies."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:707
-msgid "and its dependencies... "
-msgstr ""
-
 #: src/www/services_dhcp.php:1089
 msgid "and the UEFI 32bit filename  "
 msgstr ""
@@ -26030,20 +25585,12 @@ msgstr ""
 msgid "aren't allowed."
 msgstr ""
 
-#: src/etc/inc/array_intersect_key.inc:45
-msgid "array_intersect_key() Argument #"
-msgstr ""
-
 #: src/www/system_advanced_firewall.php:231
 msgid "as the name says, it is the normal optimization algorithm"
 msgstr ""
 
 #: src/www/system_usermanager.php:147
 msgid "association removed."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:290
-msgid "authenticated mechanism %1$s may not be used: %2$s"
 msgstr ""
 
 #: src/www/diag_authentication.php:46
@@ -26155,31 +25702,6 @@ msgstr ""
 msgid "confirmation"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:686
-msgid "connection is already established and the recipient is already set"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:366
-msgid "connection is already established"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:640
-msgid "connection is not in the initial state"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:698
-msgid "connection is not in the recipient setting state"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:757
-#: src/etc/inc/smtp.inc:768
-msgid "connection is not in the sending data state"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:727
-msgid "connection is not in the start sending data state"
-msgstr ""
-
 #: src/www/interfaces.php:2658
 #: src/www/interfaces.php:2780
 msgid "connection. The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."
@@ -26204,18 +25726,6 @@ msgstr ""
 
 #: src/etc/inc/interfaces.inc:950
 msgid "could not bring realif up -- variable not defined -- interface_gif_configure()"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:257
-msgid "could not connect to the host \"%1$s\": %2$s"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:446
-msgid "could not determine the SMTP to connect"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:234
-msgid "could not resolve host \"%s\""
 msgstr ""
 
 #: src/www/guiconfig.inc:292
@@ -26416,10 +25926,6 @@ msgstr ""
 msgid "device not present! Is the modem attached to the system?"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:632
-msgid "direct delivery connection is already established and sender is already set"
-msgstr ""
-
 #: src/www/firewall_nat_1to1_edit.php:558
 #: src/www/firewall_nat_edit.php:823
 #: src/www/firewall_nat_edit.php:826
@@ -26433,10 +25939,6 @@ msgstr ""
 
 #: src/www/system_firmware_restorefullbackup.php:173
 msgid "do not restore config.xml."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:238
-msgid "domain \"%s\" resolved to an address excluded to be valid"
 msgstr ""
 
 #: src/www/vpn_pptp.php:487
@@ -26469,29 +25971,6 @@ msgstr ""
 #: src/etc/inc/interfaces.inc:1105
 #: src/etc/inc/interfaces.inc:1118
 #: src/etc/inc/interfaces.inc:1978
-#: src/etc/inc/pkg-utils.inc:347
-#: src/etc/inc/pkg-utils.inc:635
-#: src/etc/inc/pkg-utils.inc:658
-#: src/etc/inc/pkg-utils.inc:736
-#: src/etc/inc/pkg-utils.inc:751
-#: src/etc/inc/pkg-utils.inc:785
-#: src/etc/inc/pkg-utils.inc:814
-#: src/etc/inc/pkg-utils.inc:821
-#: src/etc/inc/pkg-utils.inc:838
-#: src/etc/inc/pkg-utils.inc:854
-#: src/etc/inc/pkg-utils.inc:870
-#: src/etc/inc/pkg-utils.inc:977
-#: src/etc/inc/pkg-utils.inc:994
-#: src/etc/inc/pkg-utils.inc:1019
-#: src/etc/inc/pkg-utils.inc:1064
-#: src/etc/inc/pkg-utils.inc:1073
-#: src/etc/inc/pkg-utils.inc:1083
-#: src/etc/inc/pkg-utils.inc:1098
-#: src/etc/inc/pkg-utils.inc:1105
-#: src/etc/inc/pkg-utils.inc:1124
-#: src/etc/inc/pkg-utils.inc:1451
-#: src/etc/inc/pkg-utils.inc:1477
-#: src/etc/inc/pkg-utils.inc:1520
 #: src/etc/inc/rrd.inc:922
 #: src/etc/inc/services.inc:1298
 #: src/etc/inc/services.inc:1678
@@ -26655,18 +26134,6 @@ msgstr ""
 msgid "error page"
 msgstr ""
 
-#: src/etc/inc/meta.inc:132
-msgid "error: tag mismatch ( %1$s != %2$s ) in '%3$s'%4$s"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:222
-msgid "establishing SSL connections requires at least PHP version 4.3.0"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:225
-msgid "establishing SSL connections requires the OpenSSL extension enabled"
-msgstr ""
-
 #: src/www/system_camanager.php:528
 #: src/www/system_camanager.php:538
 #: src/www/system_camanager.php:548
@@ -26731,10 +26198,6 @@ msgstr ""
 #: src/etc/inc/system.inc:1764
 #: src/etc/inc/system.inc:1767
 msgid "failed!"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1444
-msgid "failed!nnInstallation aborted.n"
 msgstr ""
 
 #: src/www/system_usermanager_settings_test.php:72
@@ -26974,46 +26437,6 @@ msgstr ""
 msgid "is"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:266
-msgid "it is not possible to authenticate using the specified mechanism because the SASL library class is not loaded"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:681
-msgid "it is not possible to deliver directly to recipients of different domains"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:542
-msgid "it is not supported any of the authentication mechanisms required by the server"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:114
-msgid "it was not possible to read line from the SMTP server"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:136
-msgid "it was not possible to send a line to the SMTP server"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:150
-msgid "it was not possible to send data to the SMTP server"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:804
-msgid "it was not previously established a SMTP connection"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:662
-msgid "it was not specified a valid direct recipient"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:410
-msgid "it was not specified the POP3 authentication password"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:404
-msgid "it was not specified the POP3 authentication user"
-msgstr ""
-
 #: src/www/firewall_rules_edit.php:1387
 #: src/www/firewall_rules_edit.php:1396
 msgid "keep state"
@@ -27053,10 +26476,6 @@ msgstr ""
 
 #: src/etc/inc/shaper.inc:1649
 msgid "linkshare service curve defined but missing initial bandwidth (m1) value"
-msgstr ""
-
-#: src/etc/inc/meta.inc:68
-msgid "list_phpfiles: unable to examine path %s\n"
 msgstr ""
 
 #: src/www/guiconfig.inc:1041
@@ -27104,11 +26523,6 @@ msgstr ""
 msgid "matched log entries."
 msgstr ""
 
-#: TODO: figure out what's going on with src/etc/inc/xmlrpc_server.inc:392
-#: src/etc/inc/xmlrpc_client.inc:1361
-msgid "mb_convert_encoding() is not available"
-msgstr ""
-
 #: src/www/interfaces_qinq_edit.php:263
 msgid "members"
 msgstr ""
@@ -27129,10 +26543,6 @@ msgstr ""
 #: src/www/services_captiveportal_vouchers_edit.php:84
 #: src/www/system_advanced_misc.php:570
 msgid "minutes"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:260
-msgid "missing top level xmlrpc element"
 msgstr ""
 
 #: src/www/load_balancer_relay_action_edit.php:124
@@ -27364,10 +26774,6 @@ msgstr ""
 msgid "outgoing (as seen by firewall)"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:639
-msgid "overwrite!"
-msgstr ""
-
 #: src/www/pkg_mgr_installed.php:105
 msgid "packages"
 msgstr ""
@@ -27467,10 +26873,6 @@ msgstr ""
 #: src/www/diag_system_pftop.php:145
 #: src/www/status_interfaces.php:454
 msgid "rate"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:108
-msgid "reached the end of data while reading from the SMTP server conection"
 msgstr ""
 
 #: src/www/status_captiveportal_voucher_rolls.php:95
@@ -27648,10 +27050,6 @@ msgstr ""
 
 #: src/www/status_dhcp_leases.php:383
 msgid "send Wake on LAN packet to this MAC address"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:478
-msgid "server does not require authentication"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:431
@@ -27855,10 +27253,6 @@ msgstr ""
 msgid "type"
 msgstr ""
 
-#: src/etc/inc/meta.inc:99
-msgid "unable to read %sn"
-msgstr ""
-
 #: src/www/services_captiveportal.php:928
 msgid "unformatted:"
 msgstr ""
@@ -27940,18 +27334,6 @@ msgstr ""
 msgid "virtual full time"
 msgstr ""
 
-#: src/etc/inc/meta.inc:185
-msgid "warning: tag %1\$s has invalid data in '%2\$s'%3\$s"
-msgstr ""
-
-#: src/etc/inc/meta.inc:163
-msgid "warning: tag %1$s has malformed data in '%2$s'%3$s"
-msgstr ""
-
-#: src/etc/inc/meta.inc:143
-msgid "warning: tag %1$s has no data in '%2$s'%3$s"
-msgstr ""
-
 #: src/www/diag_defaults.php:67
 msgid "webConfigurator admin password will be reset to"
 msgstr ""
@@ -28016,10 +27398,6 @@ msgstr ""
 msgid "www.example.com"
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:268
-msgid "xmlrpc element %1$s cannot be child of %2$s"
-msgstr ""
-
 #: src/www/diag_routes.php:172
 #: src/www/pkg_mgr_settings.php:114
 #: src/www/services_captiveportal.php:828
@@ -28041,10 +27419,6 @@ msgstr ""
 
 #: src/www/services_dhcp.php:266
 msgid "The Captive Portal zone '%s' has Hard Timeout parameter set to a value bigger than Default lease time (%s)."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:860
-msgid "send()'s %s parameter must be an XML_RPC_Message object."
 msgstr ""
 
 #: internationalize date() calls
@@ -28104,12 +27478,6 @@ msgstr ""
 # src/www/services_captiveportal.php:915
 # src/www/services_captiveportal.php:917
 #msgid ($macformat),"</option>n";
-#msgstr ""
-
-# TODO: unqouted vars gettext string,
-# src/etc/inc/pkg-utils.inc:1402
-# src/etc/inc/pkg-utils.inc:1414
-#msgid ($msg)
 #msgstr ""
 
 # TODO: unqouted vars gettext string,
