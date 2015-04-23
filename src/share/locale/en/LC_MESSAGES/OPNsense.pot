@@ -151,10 +151,6 @@ msgstr ""
 msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:666
-msgid "%1$s at line %2$d"
-msgstr ""
-
 #: src/www/firewall_aliases_edit.php:281
 msgid "%1$s is not a valid %2$s alias."
 msgstr ""
@@ -4167,10 +4163,6 @@ msgstr ""
 
 #: src/www/widgets/widgets/dyn_dns_status.widget.php:125
 msgid "Checking ..."
-msgstr ""
-
-#: src/etc/inc/filter.inc:3576
-msgid "Checking for %1$s PF hooks in package %2$s"
 msgstr ""
 
 #: src/www/system_advanced_network.php:246
@@ -10758,14 +10750,6 @@ msgstr ""
 msgid "Installed cron job for %s"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:612
-msgid "Installing configuration ...."
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:610
-msgid "Installing configuration..."
-msgstr ""
-
 #: src/www/diag_dump_states.php:162
 msgid "Int"
 msgstr ""
@@ -14702,10 +14686,6 @@ msgstr ""
 msgid "Plr must be a value between 0 and 1."
 msgstr ""
 
-#: src/etc/inc/filter.inc:387
-msgid "Plugins completed."
-msgstr ""
-
 #: src/www/firewall_rules_edit.php:1308
 msgid "Policy filtering"
 msgstr ""
@@ -15014,10 +14994,6 @@ msgstr ""
 
 #: src/etc/inc/filter.inc:377
 msgid "Processing down interface states"
-msgstr ""
-
-#: src/etc/inc/filter.inc:3582
-msgid "Processing early %1$s rules for package %2$s"
 msgstr ""
 
 #: src/www/crash_reporter.php:95
@@ -16359,10 +16335,6 @@ msgstr ""
 
 #: src/www/vpn_openvpn_server.php:1597
 msgid "Run ''net stop dnscache'', ''net start dnscache'', ''ipconfig /flushdns'' and ''ipconfig /registerdns'' on connection initiation. This is known to kick Windows into recognizing pushed DNS servers."
-msgstr ""
-
-#: src/etc/inc/filter.inc:385
-msgid "Running plugins (pf)"
 msgstr ""
 
 #: src/etc/inc/filter.inc:381
@@ -19255,11 +19227,6 @@ msgstr ""
 
 #: src/www/system_gateways_edit.php:383
 msgid "The average packet loss probes qty needs to be positive."
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:713
-#: src/etc/inc/config.lib.inc:715
-msgid "The backup cache file %s is corrupted.  Unlinking."
 msgstr ""
 
 #: src/www/vpn_openvpn_client.php:231
@@ -23811,10 +23778,6 @@ msgstr ""
 #: src/etc/inc/xmlparse.inc:207
 #: src/etc/inc/xmlparse_attr.inc:208
 msgid "XML error: no %s object found!"
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:660
-msgid "XML error: unable to open file"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:640
