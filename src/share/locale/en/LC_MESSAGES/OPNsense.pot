@@ -1676,9 +1676,9 @@ msgstr ""
 msgid "Advanced Resolver Options"
 msgstr ""
 
-#: src/www/vpn_ipsec_phase1.php:528
-#: src/www/vpn_ipsec_phase2.php:490
-#: src/www/vpn_ipsec_tabs.php:6
+#: src/www/vpn_ipsec_phase1.php:535
+#: src/www/vpn_ipsec_phase2.php:495
+#: src/www/vpn_ipsec_tabs.inc:6
 msgid "Advanced Settings"
 msgstr ""
 
@@ -3773,11 +3773,6 @@ msgstr ""
 msgid "CARP"
 msgstr ""
 
-#: src/www/system_manager_tabs.php:5
-#: src/www/system_tabs.php:4
-msgid "CAs"
-msgstr ""
-
 #: src/www/vpn_l2tp.php:391
 msgid "CHAP"
 msgstr ""
@@ -4085,8 +4080,7 @@ msgstr ""
 msgid "Certificate Revocation List data"
 msgstr ""
 
-#: src/www/system_manager_tabs.php:7
-#: src/www/system_tabs.php:6
+#: src/www/system_certificates_tabs.inc:8
 msgid "Certificate Revocation"
 msgstr ""
 
@@ -4116,10 +4110,10 @@ msgstr ""
 msgid "Certificate"
 msgstr ""
 
+#: src/www/fbegin.inc:129
 #: src/www/system_camanager.php:601
+#: src/www/system_certificates_tabs.inc:6
 #: src/www/system_crlmanager.php:549
-#: src/www/system_manager_tabs.php:6
-#: src/www/system_tabs.php:5
 msgid "Certificates"
 msgstr ""
 
@@ -12486,7 +12480,7 @@ msgstr ""
 
 #: src/www/vpn_ipsec_phase1.php:526
 #: src/www/vpn_ipsec_phase2.php:488
-#: src/www/vpn_ipsec_tabs.php:4
+#: src/www/vpn_ipsec_tabs.inc:4
 msgid "Mobile clients"
 msgstr ""
 
@@ -14952,7 +14946,7 @@ msgstr ""
 
 #: src/www/vpn_ipsec_phase1.php:527
 #: src/www/vpn_ipsec_phase2.php:489
-#: src/www/vpn_ipsec_tabs.php:5
+#: src/www/vpn_ipsec_tabs.inc:5
 msgid "Pre-Shared Keys"
 msgstr ""
 
@@ -21525,9 +21519,10 @@ msgstr ""
 msgid "Tunnel to..."
 msgstr ""
 
-#: src/www/vpn_ipsec_phase1.php:525
-#: src/www/vpn_ipsec_phase2.php:487
-#: src/www/vpn_ipsec_tabs.php:3
+#: src/www/vpn_ipsec_phase1.php:532
+#: src/www/vpn_ipsec_phase2.php:492
+#: src/www/vpn_ipsec_tabs.inc:3
+#: src/www/widgets/widgets/ipsec.widget.php:42
 msgid "Tunnels"
 msgstr ""
 
