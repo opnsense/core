@@ -8457,10 +8457,6 @@ msgstr ""
 msgid "File Manager"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:295
-msgid "File system is dirty.  Launching FSCK for /"
-msgstr ""
-
 #: src/www/diag_patterns.php:79
 msgid "File to upload:"
 msgstr ""
@@ -22421,7 +22417,7 @@ msgstr ""
 msgid "WAN interface will be set to obtain an address automatically from a DHCP server"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:485
+#: src/etc/inc/config.lib.inc:180
 msgid "WARNING: Config contents could not be save. Could not open file!"
 msgstr ""
 
@@ -26730,3 +26726,16 @@ msgstr ""
 # src/www/interfaces.php:2288
 # src/www/interfaces.php:2317
 # src/www/interfaces.php:2288
+
+#: src/etc/inc/config.lib.inc:157
+msgid "WARNING: User"
+msgstr ""
+
+#: src/etc/inc/config.lib.inc:157
+msgid "may not write config (user-config-readonly set)"
+msgstr ""
+
+#: src/etc/inc/config.lib.inc:169
+msgid "WARNING: Corrupt config!"
+msgstr ""
+
