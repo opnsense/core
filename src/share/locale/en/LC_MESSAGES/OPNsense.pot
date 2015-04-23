@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-15 18:00-0400\n"
-"PO-Revision-Date: 2015-04-17 00:00-0400\n"
+"PO-Revision-Date: 2015-04-23 00:00-0400\n"
 "Last-Translator: Isaac (.ike) Levy <ike@blackskyresearch.net>\n"
 "Language-Team: ENGLISH <http://opnsense.org/>\n"
 "Language: EN\n"
@@ -34,17 +34,6 @@ msgstr ""
 
 #: src/www/crash_reporter.php:62
 msgid " - Submit this to the developers for inspection"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1205
-msgid " >>> Trying to fetch package info..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1212
-msgid ""
-" >>> Unable to communicate with %1$s. "
-"Please verify DNS and interface configuration, "
-"and that %2$s has functional Internet connectivity."
 msgstr ""
 
 #: src/etc/inc/shaper.inc:672
@@ -92,10 +81,6 @@ msgstr ""
 msgid " done!"
 msgstr ""
 
-#: src/etc/inc/array_intersect_key.inc:46
-msgid " is not an array"
-msgstr ""
-
 #: src/www/firewall_nat_out.php:621
 msgid " may also be required."
 msgstr ""
@@ -117,11 +102,6 @@ msgstr ""
 #: src/www/system_firmware_check.php:90
 #: src/www/widgets/widgets/system_information.widget.php:63
 msgid " update(s) are available."
-msgstr ""
-
-#: src/www/pkg_mgr.php:254
-#: src/www/pkg_mgr_installed.php:203
-msgid " version to check its change log."
 msgstr ""
 
 #: src/www/diag_dump_states_sources.php:144
@@ -158,10 +138,6 @@ msgstr ""
 msgid "#2"
 msgstr ""
 
-#: src/www/system_firmware_restorefullbackup.php:77
-msgid "$filename has been deleted."
-msgstr ""
-
 #: src/www/status_dhcp_leases.php:381
 msgid "$mac - send Wake on LAN packet to this MAC address"
 msgstr ""
@@ -175,17 +151,8 @@ msgstr ""
 msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:666
-msgid "%1$s at line %2$d"
-msgstr ""
-
 #: src/www/firewall_aliases_edit.php:281
 msgid "%1$s is not a valid %2$s alias."
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:187
-#: src/etc/inc/config.lib.inc:188
-msgid "%1$s is restoring the configuration %2$s"
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:396
@@ -295,14 +262,6 @@ msgstr ""
 
 #: src/etc/inc/config.lib.inc:854
 msgid "%s made unknown change"
-msgstr ""
-
-#: src/www/pkg_mgr_settings.php:89
-msgid "%s packages"
-msgstr ""
-
-#: src/etc/inc/config.console.inc:48
-msgid "%s requires *AT LEAST* %s RAM to function correctly.%s"
 msgstr ""
 
 #: src/www/vpn_ipsec_phase2.php:544
@@ -462,27 +421,6 @@ msgstr ""
 msgid "(this might create problems for some clients)."
 msgstr ""
 
-#: src/etc/inc/smtp.inc:247
-msgid "-3 socket could not be created"
-msgstr ""
-
-
-#: src/etc/inc/smtp.inc:249
-msgid "-4 dns lookup on hostname \"%s\" failed"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:251
-msgid "-5 connection refused or timed out"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:253
-msgid "-6 fdopen() call failed"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:255
-msgid "-7 setvbuf() call failed"
-msgstr ""
-
 #: src/www/system_advanced_misc.php:500
 msgid "/tmp RAM Disk Size"
 msgstr ""
@@ -570,14 +508,6 @@ msgstr ""
 
 #: src/www/firewall_rules_edit.php:1417
 msgid "802.1p"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:93
-msgid ": data access time out"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:96
-msgid ": the server disconnected"
 msgstr ""
 
 #: src/www/services_unbound_acls.php:224
@@ -671,7 +601,7 @@ msgstr ""
 msgid "A IPv4 subnet can not be over 32 bits."
 msgstr ""
 
-#: src/www/system.php:151
+#: src/www/system_general.php:151
 msgid "A NTP Time Server name may only contain the characters a-z, 0-9, '-' and '.'."
 msgstr ""
 
@@ -798,10 +728,6 @@ msgstr ""
 msgid "A valid FQDN for 'Peer identifier' must be specified."
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:93
-msgid "A valid Hostname must be specified. [%s]"
-msgstr ""
-
 #: src/www/services_unbound_domainoverride_edit.php:76
 msgid ""
 "A valid IP address and port must be specified, for example "
@@ -844,7 +770,7 @@ msgstr ""
 msgid "A valid IP address for 'WINS Server #2' must be specified."
 msgstr ""
 
-#: src/www/system.php:108
+#: src/www/system_general.php:108
 msgid "A valid IP address must be specified for DNS server $dnscounter."
 msgstr ""
 
@@ -1287,10 +1213,6 @@ msgstr ""
 msgid "A valid value for 'Login Banner' must be specified."
 msgstr ""
 
-#: src/www/pkg_mgr_settings.php:104
-msgid "A warning is printed on the Dashboard and in the package manager when an unofficial package server is in use."
-msgstr ""
-
 #: src/www/interfaces_ppps_edit.php:734
 msgid "ACFComp"
 msgstr ""
@@ -1608,10 +1530,6 @@ msgstr ""
 msgid "Adding MAC addresses as 'pass' MACs allows them access through the captive portal automatically without being taken to the portal page."
 msgstr ""
 
-#: src/www/services_captiveportal_hostname.php:142
-msgid "Adding allowed Hostnames will allow a DNS hostname access to/from access through the captive portal without being taken to the portal page. This can be used for a web server serving images for the portal page or a DNS server on another network, for example. By specifying <em>from</em> addresses, it may be used to always allow pass-through access from a client behind the captive portal."
-msgstr ""
-
 #: src/www/services_captiveportal_ip.php:146
 msgid "Adding allowed IP addresses will allow IP access to/from these addresses through the captive portal without being taken to the portal page. This can be used for a web server serving images for the portal page or a DNS server on another network, for example."
 msgstr ""
@@ -1635,10 +1553,6 @@ msgstr ""
 
 #: src/www/system_authservers.php:824
 msgid "Additional authentication servers can be added here."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1481
-msgid "Additional files... "
 msgstr ""
 
 #: src/www/system_usermanager.php:892
@@ -1722,7 +1636,7 @@ msgid ""
 "If not specified, heuristics based on the interface "
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:9
+#: src/www/system_advanced_tabs.inc:9
 msgid "Admin Access"
 msgstr ""
 
@@ -1749,9 +1663,9 @@ msgstr ""
 msgid "Advanced Resolver Options"
 msgstr ""
 
-#: src/www/vpn_ipsec_phase1.php:528
-#: src/www/vpn_ipsec_phase2.php:490
-#: src/www/vpn_ipsec_tabs.php:6
+#: src/www/vpn_ipsec_phase1.php:535
+#: src/www/vpn_ipsec_phase2.php:495
+#: src/www/vpn_ipsec_tabs.inc:6
 msgid "Advanced Settings"
 msgstr ""
 
@@ -1949,18 +1863,8 @@ msgstr ""
 msgid "All Users"
 msgstr ""
 
-#: src/www/services_captiveportal_hostname.php:146
-#: src/www/services_captiveportal_hostname.php:153
-msgid "All connections"
-msgstr ""
-
 #: src/www/firewall_rules.php:804
 msgid "All incoming connections on this interface will be blocked until you add pass rules."
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:261
-#: src/www/pkg_mgr_install.php:262
-msgid "All packages reinstalled."
 msgstr ""
 
 #: src/www/services_ntpd_gps.php:425
@@ -1973,7 +1877,6 @@ msgstr ""
 
 #: src/www/diag_smart.php:299
 #: src/www/firewall_aliases.php:176
-#: src/www/pkg_mgr.php:171
 msgid "All"
 msgstr ""
 
@@ -1981,7 +1884,7 @@ msgstr ""
 msgid "Allocate only one IP per client (topology subnet), rather than an isolated subnet per client (topology net30)."
 msgstr ""
 
-#: src/www/system.php:386
+#: src/www/system_general.php:386
 msgid "Allow DNS server list to be overridden by DHCP/PPP on WAN"
 msgstr ""
 
@@ -2919,13 +2822,8 @@ msgstr ""
 msgid "Allow unprivileged access to tap(4) device nodes"
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:88
-msgid "Allowed Hostname"
-msgstr ""
-
 #: src/www/services_captiveportal.php:504
 #: src/www/services_captiveportal_filemanager.php:150
-#: src/www/services_captiveportal_hostname.php:89
 #: src/www/services_captiveportal_ip.php:90
 #: src/www/services_captiveportal_mac.php:156
 #: src/www/services_captiveportal_vouchers.php:447
@@ -2938,7 +2836,6 @@ msgstr ""
 
 #: src/www/services_captiveportal.php:502
 #: src/www/services_captiveportal_filemanager.php:148
-#: src/www/services_captiveportal_hostname.php:88
 #: src/www/services_captiveportal_ip.php:88
 #: src/www/services_captiveportal_mac.php:154
 #: src/www/services_captiveportal_vouchers.php:445
@@ -2971,11 +2868,6 @@ msgstr ""
 
 #: src/www/system_advanced_admin.php:550
 msgid "Allows selection of different speeds for the serial console port."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:1636
-#: src/etc/inc/xmlrpc_client.inc:1652
-msgid "Already initialized as a [%s]"
 msgstr ""
 
 #: src/www/firewall_rules.php:123
@@ -3058,10 +2950,6 @@ msgstr ""
 msgid "An invalid subnet or alias was specified. [%s/%s]"
 msgstr ""
 
-#: src/www/system_firmware.php:93
-msgid "An upgrade is currently in progress.<p>The firewall will reboot when the operation is complete."
-msgstr ""
-
 #: src/www/system_groupmanager.php:119
 msgid "Another entry with the same group name already exists."
 msgstr ""
@@ -3113,7 +3001,6 @@ msgstr ""
 
 #: src/www/firewall_rules.php:354
 #: src/www/guiconfig.inc:285
-#: src/www/headjs.php:131
 msgid "Apply changes"
 msgstr ""
 
@@ -3122,12 +3009,7 @@ msgid "Apply the action immediately on match."
 msgstr ""
 
 #: src/www/javascript/datepicker/js/datepicker.js:66
-#: src/www/javascript/jquery/jquery-ui-1.11.1.min.js:6
 msgid "April"
-msgstr ""
-
-#: src/www/halt.php:56
-msgid "Are you sure you want to halt the system?"
 msgstr ""
 
 #: src/www/diag_defaults.php:69
@@ -3195,16 +3077,11 @@ msgstr ""
 msgid "Attempting to fetch Organizational Units from"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1206
-msgid "Attempting to reinstall all packages"
-msgstr ""
-
 #: src/www/diag_smart.php:298
 msgid "Attributes"
 msgstr ""
 
 #: src/www/javascript/datepicker/js/datepicker.js:70
-#: src/www/javascript/jquery/jquery-ui-1.11.1.min.js:6
 msgid "August"
 msgstr ""
 
@@ -3251,11 +3128,6 @@ msgstr ""
 msgid "Authentication containers"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:317
-#: src/etc/inc/smtp.inc:347
-msgid "Authentication error:"
-msgstr ""
-
 #: src/www/xmlrpc.php:57
 msgid "Authentication failed"
 msgstr ""
@@ -3295,9 +3167,8 @@ msgstr ""
 msgid "Auto PTP ports"
 msgstr ""
 
-#: src/www/system_firmware_auto.php:47
 #: src/www/system_firmware_check.php:98
-#: src/www/system_firmware_tabs.php:33
+#: src/www/system_firmware_tabs.inc:33
 msgid "Auto Update"
 msgstr ""
 
@@ -3315,10 +3186,6 @@ msgstr ""
 
 #: src/www/system_firmware_settings.php:196
 msgid "Auto sync on update"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:200
-msgid "Auto upgrade aborted."
 msgstr ""
 
 #: src/www/interfaces.php:2880
@@ -3364,21 +3231,12 @@ msgstr ""
 msgid "Automatically ping host"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1088
-msgid "Auxiliary files... "
-msgstr ""
-
 #: src/www/load_balancer_relay_protocol_edit.php:239
 msgid "Available Actions"
 msgstr ""
 
 #: src/www/diag_gmirror.php:281
 msgid "Available Consumers"
-msgstr ""
-
-#: src/www/pkg_mgr.php:130
-#: src/www/pkg_mgr_installed.php:104
-msgid "Available Packages"
 msgstr ""
 
 #: src/www/foot.inc:25
@@ -3389,20 +3247,9 @@ msgstr ""
 msgid "Available network ports:"
 msgstr ""
 
-#: src/www/pkg_mgr_install.php:98
-msgid "Available packages"
-msgstr ""
-
 #: src/www/services_dhcp.php:791
 #: src/www/services_dhcpv6.php:557
 msgid "Available range"
-msgstr ""
-
-#: src/www/pkg_mgr_installed.php:148
-#: src/www/pkg_mgr_installed.php:150
-#: src/www/pkg_mgr_installed.php:157
-#: src/www/pkg_mgr_installed.php:159
-msgid "Available"
 msgstr ""
 
 #: src/www/system_gateways_edit.php:813
@@ -3481,7 +3328,6 @@ msgstr ""
 msgid "Bandwidth cannot be negative."
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:201
 #: src/www/services_captiveportal_ip_edit.php:220
 #: src/www/services_captiveportal_mac_edit.php:238
 msgid "Bandwidth down"
@@ -3512,7 +3358,6 @@ msgstr ""
 msgid "Bandwidth must be an integer."
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:195
 #: src/www/services_captiveportal_ip_edit.php:213
 #: src/www/services_captiveportal_mac_edit.php:230
 msgid "Bandwidth up"
@@ -3549,7 +3394,6 @@ msgstr ""
 msgid "Base DN:"
 msgstr ""
 
-#: src/www/pkg_mgr_settings.php:116
 #: src/www/system_firmware_settings.php:153
 msgid "Base URL:"
 msgstr ""
@@ -3578,19 +3422,6 @@ msgstr ""
 msgid ""
 "Be aware that increasing this value increases every log file size, so disk usage will "
 "increase significantly."
-msgstr ""
-
-#: src/www/system_firmware_auto.php:103
-msgid "Beginning firmware upgrade"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:622
-msgid "Beginning package installation for %s ."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:620
-#: src/www/pkg_mgr_install.php:169
-msgid "Beginning package installation."
 msgstr ""
 
 #: src/www/firewall_shaper_layer7.php:484
@@ -3659,18 +3490,6 @@ msgstr ""
 msgid "Boolean"
 msgstr ""
 
-#: src/www/diag_nanobsd.php:131
-msgid "Bootup information"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:143
-msgid "Bootup slice is currently:"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:140
-msgid "Bootup"
-msgstr ""
-
 #: src/etc/inc/shaper.inc:2426
 msgid "Borrow from other queues when available"
 msgstr ""
@@ -3696,7 +3515,6 @@ msgstr ""
 #: src/www/interfaces.php:3176
 #: src/www/interfaces.php:3186
 #: src/www/interfaces.php:3195
-#: src/www/services_captiveportal_hostname_edit.php:170
 msgid "Both"
 msgstr ""
 
@@ -3820,7 +3638,7 @@ msgstr ""
 msgid "By default NTP will listen for all supported NMEA sentences. Here one or more sentences to listen for may be specified."
 msgstr ""
 
-#: src/www/system.php:401
+#: src/www/system_general.php:401
 msgid ""
 "By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. "
 "Checking this box omits localhost from the list of DNS servers."
@@ -3942,11 +3760,6 @@ msgstr ""
 msgid "CARP"
 msgstr ""
 
-#: src/www/system_manager_tabs.php:5
-#: src/www/system_tabs.php:4
-msgid "CAs"
-msgstr ""
-
 #: src/www/vpn_l2tp.php:391
 msgid "CHAP"
 msgstr ""
@@ -4006,10 +3819,6 @@ msgstr ""
 
 #: src/etc/inc/interfaces.inc:1503
 msgid "Can't find PPP config for %s in interface_ppps_configure()."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:155
-msgid "Can't introspect: method unknown"
 msgstr ""
 
 #: src/www/firewall_aliases_edit.php:750
@@ -4089,10 +3898,6 @@ msgstr ""
 msgid "Cannot get CPU load"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1214
-msgid "Cannot reinstall packages: "
-msgstr ""
-
 #: src/www/diag_logs_filter.php:42
 msgid "Cannot resolve"
 msgstr ""
@@ -4140,8 +3945,6 @@ msgstr ""
 
 #: src/www/services_captiveportal.php:56
 #: src/www/services_captiveportal_filemanager.php:59
-#: src/www/services_captiveportal_hostname.php:49
-#: src/www/services_captiveportal_hostname_edit.php:46
 #: src/www/services_captiveportal_ip.php:48
 #: src/www/services_captiveportal_ip_edit.php:47
 #: src/www/services_captiveportal_mac.php:52
@@ -4158,7 +3961,6 @@ msgstr ""
 
 #: src/www/services_captiveportal.php:500
 #: src/www/services_captiveportal_filemanager.php:146
-#: src/www/services_captiveportal_hostname.php:86
 #: src/www/services_captiveportal_ip.php:86
 #: src/www/services_captiveportal_mac.php:152
 #: src/www/services_captiveportal_vouchers.php:443
@@ -4171,11 +3973,6 @@ msgstr ""
 
 #: src/www/services_captiveportal_zones.php:56
 msgid "Captiveportal"
-msgstr ""
-
-#: src/www/pkg_mgr.php:201
-#: src/www/pkg_mgr_installed.php:118
-msgid "Category"
 msgstr ""
 
 #: src/www/status_interfaces.php:235
@@ -4210,7 +4007,7 @@ msgstr ""
 msgid "Cell Upstream"
 msgstr ""
 
-#: src/www/status_rrd_graph_tabs.php:23
+#: src/www/status_rrd_graph_tabs.inc:23
 msgid "Cellular"
 msgstr ""
 
@@ -4270,8 +4067,7 @@ msgstr ""
 msgid "Certificate Revocation List data"
 msgstr ""
 
-#: src/www/system_manager_tabs.php:7
-#: src/www/system_tabs.php:6
+#: src/www/system_certificates_tabs.inc:8
 msgid "Certificate Revocation"
 msgstr ""
 
@@ -4301,10 +4097,10 @@ msgstr ""
 msgid "Certificate"
 msgstr ""
 
+#: src/www/fbegin.inc:129
 #: src/www/system_camanager.php:601
+#: src/www/system_certificates_tabs.inc:6
 #: src/www/system_crlmanager.php:549
-#: src/www/system_manager_tabs.php:6
-#: src/www/system_tabs.php:5
 msgid "Certificates"
 msgstr ""
 
@@ -4326,10 +4122,6 @@ msgstr ""
 
 #: src/www/services_captiveportal.php:1072
 msgid "Changing any settings on this page will disconnect all clients! Don't forget to enable the DHCP server on your captive portal interface! Make sure that the default/maximum DHCP lease time is higher than the timeout entered on this page. Also, the DNS forwarder needs to be enabled for DNS lookups by unauthenticated clients to work."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1513
-msgid "Changing file mode to %1$s for %2$s%3$s%4$s"
 msgstr ""
 
 #: src/www/system_gateway_groups_edit.php:89
@@ -4373,10 +4165,6 @@ msgstr ""
 msgid "Checking ..."
 msgstr ""
 
-#: src/etc/inc/filter.inc:3576
-msgid "Checking for %1$s PF hooks in package %2$s"
-msgstr ""
-
 #: src/www/system_advanced_network.php:246
 msgid "Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."
 msgstr ""
@@ -4415,7 +4203,7 @@ msgid ""
 "These are valid for TCP and UDP protocols only."
 msgstr ""
 
-#: src/www/system.php:463
+#: src/www/system_general.php:463
 msgid "Choose a language for the webConfigurator"
 msgstr ""
 
@@ -4553,18 +4341,6 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#: src/www/pkg_mgr.php:254
-msgid "Click "
-msgstr ""
-
-#: src/www/system_firmware.php:236
-msgid "Click \"Enable firmware upload\" to begin."
-msgstr ""
-
-#: src/www/system_firmware.php:257
-msgid "Click \"Upgrade firmware\" to start the upgrade process."
-msgstr ""
-
 #: src/www/interfaces.php:2613
 #: src/www/interfaces.php:2618
 #: src/www/interfaces.php:2722
@@ -4576,24 +4352,6 @@ msgstr ""
 
 #: src/www/firewall_schedule_edit.php:921
 msgid "Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday."
-msgstr ""
-
-#: src/www/pkg_mgr_installed.php:203
-msgid ""
-"Click on \".ucfirst($pkg['name']).\" version to check its change log."
-msgstr ""
-
-#: src/www/pkg_mgr.php:245
-msgid "Click on package name to access its website."
-msgstr ""
-
-#: src/www/pkg_mgr.php:270
-msgid ""
-"Click package info for more details about \".ucfirst($index['name']).\" package."
-msgstr ""
-
-#: src/www/pkg_mgr_installed.php:205
-msgid "Click package info for more details about \".ucfirst($pkg['name']).\" package."
 msgstr ""
 
 #: src/www/firewall_rules.php:806
@@ -4814,10 +4572,6 @@ msgstr ""
 msgid "Config"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:71
-msgid "Config.xml unlocked."
-msgstr ""
-
 #: src/www/diag_confbak.php:256
 msgid "Configuration Change"
 msgstr ""
@@ -4841,10 +4595,6 @@ msgstr ""
 #: src/www/vpn_pptp_users.php:91
 #: src/www/vpn_pptp_users_edit.php:148
 msgid "Configuration"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1121
-msgid "Configuration... "
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:249
@@ -4914,10 +4664,6 @@ msgstr ""
 msgid "Configuring loopback interface..."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:738
-msgid "Configuring package components...\n"
-msgstr ""
-
 #: src/www/diag_confbak.php:177
 #: src/www/diag_gmirror.php:187
 msgid "Confirm Action"
@@ -4947,14 +4693,6 @@ msgstr ""
 msgid "Connected Since"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:464
-msgid "Connected to SMTP server \"%s\"."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:240
-msgid "Connecting to host address \"%1$s\" port %2$s..."
-msgstr ""
-
 #: src/www/system_firmware_check.php:78
 #: src/www/widgets/widgets/system_information.widget.php:57
 msgid "Connection Error"
@@ -4970,18 +4708,6 @@ msgstr ""
 
 #: src/www/diag_testport.php:270
 msgid "Connection failed (Refused/Timeout)"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:957
-msgid ""
-"'Connection to RPC server"
-"                              %1$s:%2$s failed. %3$s"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:951
-msgid ""
-"Connection to proxy server"
-"                              %1$s:%2$s failed. %3$s"
 msgstr ""
 
 #: src/www/wizards/traffic_shaper_wizard_dedicated.inc:1465
@@ -5106,16 +4832,8 @@ msgstr ""
 msgid "Could not create new queue/discipline!"
 msgstr ""
 
-#: src/www/pkg_mgr_install.php:208
-msgid "Could not find %s."
-msgstr ""
-
 #: src/etc/inc/filter.inc:2343
 msgid "Could not find IPv4 gateway for interface (%s)."
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:224
-msgid "Could not find a usable configuration file! Exiting...."
 msgstr ""
 
 #: src/www/system_usermanager_settings_test.php:47
@@ -5132,10 +4850,6 @@ msgstr ""
 
 #: src/www/carp_status.php:141
 msgid "Could not locate any defined CARP interfaces."
-msgstr ""
-
-#: src/www/system_firmware_restorefullbackup.php:165
-msgid "Could not locate any previous backups."
 msgstr ""
 
 #: src/etc/rc.openvpn:91
@@ -5164,29 +4878,13 @@ msgstr ""
 msgid "Could not process aliases from alias: {$alias_url}"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:352
-msgid "Could not process the SASL authentication step:"
-msgstr ""
-
 #: src/etc/inc/config.lib.inc:508
 msgid "Could not restore config.xml."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:302
-msgid "Could not send the AUTH command"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:332
-msgid "Could not send the authentication step message"
 msgstr ""
 
 #: src/etc/inc/notices.inc:326
 #: src/etc/inc/notices.inc:327
 msgid "Could not send the message to %1$s -- Error: %2$s"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:295
-msgid "Could not start the SASL authentication client:"
 msgstr ""
 
 #: src/etc/inc/services.inc:1347
@@ -5344,10 +5042,6 @@ msgstr ""
 msgid "Creating reflection rule for %s..."
 msgstr ""
 
-#: src/www/pkg_mgr_install.php:219
-msgid "Creating restore point before package installation."
-msgstr ""
-
 #: src/etc/inc/rrd.inc:896
 msgid "Creating rrd update script"
 msgstr ""
@@ -5413,22 +5107,14 @@ msgstr ""
 msgid "Custom Bandwidths are greater than 30%. Please lower them for the wizard to continue."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:778
-msgid "Custom commands..."
-msgstr ""
-
 #: src/www/interfaces.php:2676
 #: src/www/interfaces_ppps_edit.php:616
-#: src/www/status_rrd_graph_tabs.php:38
+#: src/www/status_rrd_graph_tabs.inc:38
 msgid "Custom"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:2577
 msgid "Czech"
-msgstr ""
-
-#: src/etc/inc/config.console.inc:47
-msgid "DANGER!  WARNING!  ACHTUNG!"
 msgstr ""
 
 #: src/www/vpn_openvpn_server.php:1021
@@ -5501,7 +5187,6 @@ msgid "DHCP service events"
 msgstr ""
 
 #: src/www/diag_logs_dhcp.php:44
-#: src/www/diag_logs_tabs.php:31
 #: src/www/interfaces.php:1340
 #: src/www/services_dhcp_edit.php:314
 msgid "DHCP"
@@ -5618,7 +5303,7 @@ msgstr ""
 msgid "DNS Resolver"
 msgstr ""
 
-#: src/www/system.php:322
+#: src/www/system_general.php:322
 msgid "DNS Server"
 msgstr ""
 
@@ -5642,7 +5327,7 @@ msgstr ""
 #: src/www/services_dhcp_edit.php:438
 #: src/www/services_dhcpv6.php:618
 #: src/www/services_router_advertisements.php:356
-#: src/www/system.php:316
+#: src/www/system_general.php:316
 #: src/www/vpn_pppoe_edit.php:466
 msgid "DNS servers"
 msgstr ""
@@ -5666,12 +5351,6 @@ msgstr ""
 
 #: src/www/services_unbound.php:283
 msgid "DNSSEC"
-msgstr ""
-
-#: src/www/system_firmware.php:274
-msgid ""
-"DO NOT abort the firmware upgrade once it "
-"has started. The firewall will reboot automatically after "
 msgstr ""
 
 #: src/www/services_dhcpv6_edit.php:100
@@ -5702,7 +5381,6 @@ msgid "Data"
 msgstr ""
 
 #: src/www/diag_confbak.php:253
-#: src/www/system_firmware_restorefullbackup.php:128
 msgid "Date"
 msgstr ""
 
@@ -5729,7 +5407,6 @@ msgid "Debug info range"
 msgstr ""
 
 #: src/www/javascript/datepicker/js/datepicker.js:74
-#: src/www/javascript/jquery/jquery-ui-1.11.1.min.js:6
 msgid "December"
 msgstr ""
 
@@ -5832,10 +5509,6 @@ msgstr ""
 msgid "Defines the time in minutes that a user is allowed access. The clock starts ticking the first time a voucher is used for authentication"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1069
-msgid "Deinstall commands... "
-msgstr ""
-
 #: src/www/vpn_ipsec_phase1.php:904
 msgid "Delay between requesting peer acknowledgement"
 msgstr ""
@@ -5881,7 +5554,6 @@ msgstr ""
 #: src/www/diag_tables.php:170
 #: src/www/firewall_shaper_layer7.php:571
 #: src/www/services_dhcpv6.php:797
-#: src/www/system_firmware_restorefullbackup.php:154
 msgid "Delete"
 msgstr ""
 
@@ -5971,10 +5643,6 @@ msgstr ""
 #: src/www/load_balancer_relay_protocol_edit.php:69
 #: src/www/load_balancer_relay_protocol_edit.php:220
 #: src/www/load_balancer_virtual_server_edit.php:173
-#: src/www/pkg_mgr.php:204
-#: src/www/pkg_mgr_installed.php:120
-#: src/www/services_captiveportal_hostname.php:107
-#: src/www/services_captiveportal_hostname_edit.php:189
 #: src/www/services_captiveportal_ip.php:107
 #: src/www/services_captiveportal_ip_edit.php:205
 #: src/www/services_captiveportal_mac.php:174
@@ -6172,10 +5840,6 @@ msgstr ""
 msgid "Destination server"
 msgstr ""
 
-#: src/www/diag_nanobsd.php:199
-msgid "Destination slice:"
-msgstr ""
-
 #: src/www/firewall_rules.php:120
 #: src/www/firewall_rules_edit.php:988
 msgid "Destination unreachable"
@@ -6246,7 +5910,6 @@ msgstr ""
 #: src/www/diag_dump_states.php:59
 #: src/www/diag_dump_states_sources.php:53
 #: src/www/diag_gmirror.php:33
-#: src/www/diag_nanobsd.php:36
 #: src/www/diag_ndp.php:91
 #: src/www/diag_packet_capture.php:75
 #: src/www/diag_patterns.php:52
@@ -6260,10 +5923,7 @@ msgstr ""
 #: src/www/diag_testport.php:32
 #: src/www/diag_traceroute.php:32
 #: src/www/fbegin.inc:446
-#: src/www/halt.php:35
 #: src/www/reboot.php:34
-#: src/www/system_firmware_auto.php:47
-#: src/www/system_firmware_restorefullbackup.php:89
 msgid "Diagnostics"
 msgstr ""
 
@@ -6304,10 +5964,6 @@ msgstr ""
 msgid "Dial on demand"
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:156
-msgid "Didn't receive 200 OK from remote server."
-msgstr ""
-
 #: src/www/diag_confbak.php:252
 #: src/www/diag_confbak.php:309
 msgid "Diff"
@@ -6327,7 +5983,6 @@ msgstr ""
 #: src/www/firewall_rules_edit.php:932
 #: src/www/load_balancer_relay_action_edit.php:107
 #: src/www/load_balancer_relay_action_edit.php:444
-#: src/www/services_captiveportal_hostname_edit.php:166
 msgid "Direction"
 msgstr ""
 
@@ -6404,10 +6059,6 @@ msgstr ""
 
 #: src/www/services_captiveportal.php:623
 msgid "Disable concurrent logins"
-msgstr ""
-
-#: src/www/system_firmware.php:239
-msgid "Disable firmware upload"
 msgstr ""
 
 #: src/www/system_advanced_network.php:245
@@ -6523,7 +6174,6 @@ msgstr ""
 #: src/www/system_advanced_firewall.php:461
 #: src/www/system_advanced_misc.php:522
 #: src/www/system_advanced_misc.php:538
-#: src/www/system_firmware.php:112
 #: src/www/vpn_ipsec_phase1.php:883
 msgid "Disable"
 msgstr ""
@@ -6572,10 +6222,6 @@ msgstr ""
 #: src/www/status_interfaces.php:154
 #: src/www/status_interfaces.php:168
 msgid "Disconnect"
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:284
-msgid "Disk is dirty.  Running fsck -y"
 msgstr ""
 
 #: src/www/diag_logs_settings.php:288
@@ -6709,7 +6355,7 @@ msgstr ""
 msgid "Do not strip away parts of the username after the @ symbol, e.g. user@host becomes user when unchecked."
 msgstr ""
 
-#: src/www/system.php:309
+#: src/www/system_general.php:309
 msgid "Do not use 'local' as a domain name. It will cause local hosts running mDNS (avahi, bonjour, etc.) to be unable to resolve local hosts not running mDNS."
 msgstr ""
 
@@ -6717,7 +6363,7 @@ msgstr ""
 msgid "Do not use state mechanisms to keep track.  This is only useful if you're doing advanced queueing in certain situations.  Please check the documentation."
 msgstr ""
 
-#: src/www/system.php:398
+#: src/www/system_general.php:398
 msgid "Do not use the DNS Forwarder as a DNS server for the firewall"
 msgstr ""
 
@@ -6807,17 +6453,12 @@ msgstr ""
 msgid "Do you really want to delete this access list?"
 msgstr ""
 
-#: src/www/services_captiveportal_hostname.php:134
 #: src/www/services_captiveportal_ip.php:138
 msgid "Do you really want to delete this address?"
 msgstr ""
 
 #: src/www/firewall_aliases.php:253
 msgid "Do you really want to delete this alias? All elements that still use it will become invalid (e.g. filter rules)!"
-msgstr ""
-
-#: src/www/system_firmware_restorefullbackup.php:153
-msgid "Do you really want to delete this backup?"
 msgstr ""
 
 #: src/www/interfaces_bridge.php:155
@@ -6886,10 +6527,6 @@ msgstr ""
 
 #: src/www/interfaces_assign.php:514
 msgid "Do you really want to delete this interface?"
-msgstr ""
-
-#: src/www/pkg.php:456
-msgid "Do you really want to delete this item?"
 msgstr ""
 
 #: src/www/firewall_nat_npt.php:155
@@ -6963,16 +6600,8 @@ msgid ""
 "data."
 msgstr ""
 
-#: src/www/pkg.php:187
-msgid "Do you really want to save changes?"
-msgstr ""
-
 #: src/etc/rc.initial.setlanip:106
 msgid "Do you want to enable the %s server on %s?"
-msgstr ""
-
-#: src/www/system_firmware.php:205
-msgid "Do you want to install this image anyway (on your own risk)?"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:416
@@ -7029,8 +6658,8 @@ msgstr ""
 #: src/www/services_unbound_host_edit.php:72
 #: src/www/services_unbound_host_edit.php:209
 #: src/www/services_unbound_host_edit.php:245
-#: src/www/system.php:91
-#: src/www/system.php:305
+#: src/www/system_general.php:91
+#: src/www/system_general.php:305
 msgid "Domain"
 msgstr ""
 
@@ -7075,10 +6704,6 @@ msgid ""
 msgstr ""
 
 #: src/etc/inc/filter.inc:390
-#: src/www/restart_httpd.php:41
-#: src/www/restart_httpd.php:44
-#: src/www/restart_httpd.php:47
-#: src/www/restart_httpd.php:50
 msgid "Done"
 msgstr ""
 
@@ -7112,7 +6737,6 @@ msgstr ""
 msgid "Download current page"
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:98
 #: src/www/services_captiveportal_ip_edit.php:101
 #: src/www/services_captiveportal_mac_edit.php:112
 msgid "Download speed needs to be an integer"
@@ -7125,36 +6749,7 @@ msgstr ""
 #: src/www/diag_backup.php:239
 #: src/www/diag_tables.php:158
 #: src/www/diag_tables.php:167
-#: src/www/system_firmware_restorefullbackup.php:157
 msgid "Download"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:200
-msgid "Downloaded SHA256"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:199
-msgid "Downloading complete but sha256 does not match."
-msgstr ""
-
-#: src/www/system_firmware_auto.php:126
-msgid "Downloading current version information"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1434
-msgid "Downloading package configuration file... "
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1436
-msgid "Downloading package configuration file..."
-msgstr ""
-
-#: src/www/system_firmware_auto.php:155
-msgid "Downloading updates"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:707
-msgid "Downloading"
 msgstr ""
 
 #: src/www/services_igmpproxy_edit.php:189
@@ -7199,22 +6794,6 @@ msgstr ""
 
 #: src/www/vpn_openvpn_server.php:1402
 msgid "Duplicate Connections"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:193
-msgid "Duplicate bootup slice to alternate"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:196
-msgid "Duplicate bootup slice"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:207
-msgid "Duplicate slice"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:72
-msgid "Duplicating slice.  Please wait, this will take a moment..."
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:2554
@@ -7299,10 +6878,6 @@ msgstr ""
 msgid "ERROR!  Could not connect to server %s."
 msgstr ""
 
-#: src/etc/inc/config.inc:65
-msgid "ERROR!  Could not convert m0n0wall -> pfsense in config.xml"
-msgstr ""
-
 #: src/etc/inc/auth.inc:808
 msgid "ERROR!  ldap_get_user_ous() backed selected with no LDAP authentication server defined."
 msgstr ""
@@ -7317,14 +6892,6 @@ msgstr ""
 
 #: src/etc/inc/auth.inc:1143
 msgid "ERROR! Either LDAP search failed, or multiple users were found."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1440
-msgid "ERROR! Unable to fetch package configuration file. Aborting installation."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1442
-msgid "ERROR! Unable to fetch package configuration file. Aborting package installation."
 msgstr ""
 
 #: src/etc/inc/auth.inc:1056
@@ -7362,10 +6929,6 @@ msgstr ""
 
 #: src/www/wizard.php:69
 msgid "ERROR: Could not parse /usr/local/www/wizards/%s file."
-msgstr ""
-
-#: src/www/pkg.php:55
-msgid "ERROR: No package defined."
 msgstr ""
 
 #: src/www/pkg_edit.php:60
@@ -7541,10 +7104,6 @@ msgstr ""
 
 #: src/www/firewall_aliases.php:251
 msgid "Edit alias"
-msgstr ""
-
-#: src/www/services_captiveportal_hostname_edit.php:46
-msgid "Edit allowed Hostname"
 msgstr ""
 
 #: src/www/services_captiveportal_ip_edit.php:47
@@ -7874,11 +7433,6 @@ msgstr ""
 msgid "Enable falling edge PPS signal processing (default: rising edge)."
 msgstr ""
 
-#: src/www/system_firmware.php:234
-#: src/www/system_firmware.php:236
-msgid "Enable firmware upload"
-msgstr ""
-
 #: src/www/services_ntpd_pps.php:188
 msgid "Enable kernel PPS clock discipline (default: disabled)."
 msgstr ""
@@ -7971,7 +7525,6 @@ msgstr ""
 #: src/www/services_snmp.php:370
 #: src/www/services_snmp.php:372
 #: src/www/services_unbound.php:215
-#: src/www/system_firmware.php:110
 #: src/www/vpn_ipsec_phase1.php:884
 msgid "Enable"
 msgstr ""
@@ -8096,7 +7649,7 @@ msgstr ""
 msgid "Enter 0 to never expire sessions. NOTE: This is a security risk!"
 msgstr ""
 
-#: src/www/system.php:374
+#: src/www/system_general.php:374
 msgid ""
 "Enter IP addresses to be used by the system for DNS resolution. "
 "These are also used for the DHCP service, DNS forwarder and for PPTP VPN "
@@ -8166,10 +7719,6 @@ msgstr ""
 msgid "Enter a description (name) for the interface here."
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:204
-msgid "Enter a download limit to be enforced on this Hostname in Kbit/s"
-msgstr ""
-
 #: src/www/services_captiveportal_ip_edit.php:223
 msgid "Enter a download limit to be enforced on this IP address in Kbit/s"
 msgstr ""
@@ -8196,10 +7745,6 @@ msgstr ""
 
 #: src/www/firewall_aliases_edit.php:481
 msgid "Enter a single URL containing a list of Port numbers and/or Port ranges. After saving %s will download the URL."
-msgstr ""
-
-#: src/www/services_captiveportal_hostname_edit.php:198
-msgid "Enter a upload limit to be enforced on this Hostname in Kbit/s"
 msgstr ""
 
 #: src/www/services_captiveportal_ip_edit.php:216
@@ -8748,18 +8293,6 @@ msgstr ""
 msgid "Example:"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:782
-msgid "Executing custom_php_global_functions()..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:789
-msgid "Executing custom_php_install_command()..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:818
-msgid "Executing custom_php_resync_config_command()..."
-msgstr ""
-
 #: src/www/system_camanager.php:404
 msgid "Existing Certificate Authority"
 msgstr ""
@@ -8853,14 +8386,6 @@ msgstr ""
 msgid "External subnet"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1507
-msgid "Extracting tarball to -C for "
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:272
-msgid "FAILED!"
-msgstr ""
-
 #: src/www/diag_smart.php:69
 msgid "FAILED"
 msgstr ""
@@ -8893,14 +8418,6 @@ msgstr ""
 msgid "Failed to delete Certificate %s from CRL %s"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:651
-msgid "Failed to install package."
-msgstr ""
-
-#: src/www/system_firmware.php:78
-msgid "Failed to write file to disk"
-msgstr ""
-
 #: src/www/status_dhcp_leases.php:295
 #: src/www/status_dhcpv6_leases.php:382
 msgid "Failover Group"
@@ -8926,27 +8443,14 @@ msgstr ""
 
 #: src/www/services_captiveportal.php:506
 #: src/www/services_captiveportal_filemanager.php:152
-#: src/www/services_captiveportal_hostname.php:91
 #: src/www/services_captiveportal_ip.php:92
 #: src/www/services_captiveportal_mac.php:158
 #: src/www/services_captiveportal_vouchers.php:449
 msgid "File Manager"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:295
-msgid "File system is dirty.  Launching FSCK for /"
-msgstr ""
-
 #: src/www/diag_patterns.php:79
 msgid "File to upload:"
-msgstr ""
-
-#: src/www/system_firmware.php:80
-msgid "File upload stopped by extension"
-msgstr ""
-
-#: src/www/system_firmware_restorefullbackup.php:127
-msgid "Filename"
 msgstr ""
 
 #: src/www/status_filter_reload.php:33
@@ -8995,18 +8499,6 @@ msgstr ""
 msgid "Final certificate data"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1235
-msgid "Finished installing package"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1238
-msgid "Finished reinstalling all packages."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1232
-msgid "Finished uninstalling package"
-msgstr ""
-
 #: src/etc/inc/pfsense-utils.inc:2557
 msgid "Finnish"
 msgstr ""
@@ -9019,7 +8511,7 @@ msgstr ""
 msgid "Firewall (Dynamic View)"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:10
+#: src/www/system_advanced_tabs.inc:10
 msgid "Firewall / NAT"
 msgstr ""
 
@@ -9064,7 +8556,6 @@ msgid "Firewall state table"
 msgstr ""
 
 #: src/www/diag_logs_filter.php:107
-#: src/www/diag_logs_tabs.php:30
 #: src/www/fbegin.inc:410
 #: src/www/firewall_aliases.php:142
 #: src/www/firewall_aliases_edit.php:38
@@ -9111,18 +8602,7 @@ msgstr ""
 msgid "Firmware Branch"
 msgstr ""
 
-#: src/www/system_firmware.php:251
-msgid "Firmware image file ($type):"
-msgstr ""
-
-#: src/www/system_firmware.php:159
-msgid "Firmware image missing or other error, please try again %s."
-msgstr ""
-
 #: src/www/fbegin.inc:159
-#: src/www/system_firmware.php:88
-#: src/www/system_firmware.php:166
-#: src/www/system_firmware_auto.php:47
 #: src/www/system_firmware_check.php:98
 #: src/www/system_firmware_settings.php:64
 msgid "Firmware"
@@ -9227,10 +8707,6 @@ msgstr ""
 msgid "Forcefully reloading IPsec"
 msgstr ""
 
-#: src/www/restart_httpd.php:42
-msgid "Forcing all PHP file permissions to 0755"
-msgstr ""
-
 #: src/www/diag_gmirror.php:235
 msgid "Forget Disconnected Disks"
 msgstr ""
@@ -9277,8 +8753,6 @@ msgstr ""
 msgid "From e-mail address"
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:170
-#: src/www/services_captiveportal_hostname_edit.php:178
 #: src/www/system_gateways_edit.php:772
 #: src/www/system_gateways_edit.php:784
 msgid "From"
@@ -9538,7 +9012,7 @@ msgid "General Settings"
 msgstr ""
 
 #: src/www/fbegin.inc:160
-#: src/www/system.php:264
+#: src/www/system_general.php:264
 msgid "General Setup"
 msgstr ""
 
@@ -9720,10 +9194,6 @@ msgstr ""
 msgid "HTTP Code"
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:1470
-msgid "HTTP error, got response: %s"
-msgstr ""
-
 #: src/www/load_balancer_monitor_edit.php:186
 #: src/www/load_balancer_monitor_edit.php:270
 #: src/www/load_balancer_relay_action_edit.php:174
@@ -9752,10 +9222,6 @@ msgstr ""
 
 #: src/www/fbegin.inc:269
 msgid "Halt System"
-msgstr ""
-
-#: src/www/halt.php:35
-msgid "Halt system"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:603
@@ -10157,9 +9623,6 @@ msgstr ""
 #: src/www/diag_arp.php:327
 #: src/www/diag_ndp.php:144
 #: src/www/interfaces.php:1949
-#: src/www/services_captiveportal_hostname.php:106
-#: src/www/services_captiveportal_hostname_edit.php:182
-#: src/www/services_captiveportal_hostname_edit.php:186
 #: src/www/services_dhcp.php:1213
 #: src/www/services_dhcp_edit.php:397
 #: src/www/services_dhcpv6.php:850
@@ -10170,8 +9633,8 @@ msgstr ""
 #: src/www/services_rfc2136_edit.php:70
 #: src/www/services_rfc2136_edit.php:163
 #: src/www/status_dhcp_leases.php:332
-#: src/www/system.php:91
-#: src/www/system.php:294
+#: src/www/system_general.php:91
+#: src/www/system_general.php:294
 #: src/www/widgets/widgets/dyn_dns_status.widget.php:76
 msgid "Hostname"
 msgstr ""
@@ -10429,7 +9892,6 @@ msgstr ""
 #: src/www/diag_ipsec_leases.php:32
 #: src/www/diag_ipsec_sad.php:33
 #: src/www/diag_ipsec_spd.php:33
-#: src/www/diag_logs_tabs.php:33
 #: src/www/fbegin.inc:221
 #: src/www/fbegin.inc:237
 #: src/www/vpn_ipsec.php:205
@@ -10835,7 +10297,7 @@ msgid ""
 ""
 msgstr ""
 
-#: src/www/system.php:389
+#: src/www/system_general.php:389
 msgid ""
 "If this option is set, %s will "
 "use DNS servers assigned by a DHCP/PPP server on WAN "
@@ -11067,10 +10529,6 @@ msgid ""
 "enter it here twice."
 msgstr ""
 
-#: src/www/diag_nanobsd.php:81
-msgid "If you would like to boot from this newly duplicated slice please set it using the bootup information area."
-msgstr ""
-
 #: src/www/diag_logs_filter.php:301
 #: src/www/diag_logs_filter_dynamic.php:111
 #: src/www/firewall_nat.php:225
@@ -11084,10 +10542,6 @@ msgstr ""
 
 #: src/etc/inc/vpn.inc:874
 msgid "Ignoring IPsec reload since there are no tunnels on interface %s"
-msgstr ""
-
-#: src/www/system_firmware.php:136
-msgid "Image upload failed (out of memory?)"
 msgstr ""
 
 #: src/www/status_rrd_graph_img.php:38
@@ -11127,7 +10581,7 @@ msgstr ""
 msgid "In Use"
 msgstr ""
 
-#: src/www/system.php:379
+#: src/www/system_general.php:379
 msgid ""
 "In addition, optionally select the gateway for each DNS server. "
 "When using multiple WAN connections there should be at least one unique DNS server per gateway."
@@ -11188,14 +10642,6 @@ msgstr ""
 
 #: src/www/vpn_pppoe_edit.php:136
 msgid "Incorrect ip address  specified for username %s"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:154
-msgid "Incorrect parameters passed to method"
-msgstr ""
-
-#: src/etc/inc/priv/user.priv.inc:7
-msgid "Indicates whether the user is able to login on the captive portal."
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:532
@@ -11292,71 +10738,16 @@ msgid "Insert my local MAC address"
 msgstr ""
 
 #: TODO: does this even work?
-#: src/www/pkg_mgr.php:282
 msgid "Install \".ucfirst($index['name']).\" package."
 msgstr ""
 
-#: src/www/pkg_mgr_install.php:44
-msgid "Install Package"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:874
-msgid "Installation aborted."
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:282
-msgid "Installation completed.   Please check to make sure that the package is configured from the respective menu then start the package."
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:280
-msgid "Installation completed."
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:273
-msgid "Installation halted."
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:272
-msgid "Installation of"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:634
-msgid "Installed %s package."
-msgstr ""
 
 #: src/etc/inc/filter.inc:3274
 msgid "Installed 15 minute filter reload for Time Based Rules"
 msgstr ""
 
-#: src/www/pkg_mgr.php:131
-#: src/www/pkg_mgr_installed.php:108
-#: src/www/pkg_mgr_settings.php:90
-msgid "Installed Packages"
-msgstr ""
-
 #: src/etc/inc/services.inc:2342
 msgid "Installed cron job for %s"
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:99
-msgid "Installed packages"
-msgstr ""
-
-#: src/www/pkg_mgr_installed.php:151
-#: src/www/pkg_mgr_installed.php:160
-msgid "Installed"
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:612
-msgid "Installing configuration ...."
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:610
-msgid "Installing configuration..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:706
-msgid "Installing"
 msgstr ""
 
 #: src/www/diag_dump_states.php:162
@@ -11369,10 +10760,6 @@ msgstr ""
 
 #: src/www/widgets/widgets/dyn_dns_status.widget.php:74
 msgid "Int."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:843
-msgid "Integrated Tab items... "
 msgstr ""
 
 #: src/www/system_advanced_misc.php:69
@@ -11770,24 +11157,12 @@ msgstr ""
 msgid "Invalid monitor chosen."
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:74
-msgid "Invalid password entered.  Please try again."
-msgstr ""
-
 #: src/etc/inc/easyrule.inc:347
 msgid "Invalid protocol for pass rule:"
 msgstr ""
 
 #: src/www/diag_packet_capture.php:120
 msgid "Invalid protocol."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:158
-msgid "Invalid request payload"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:153
-msgid "Invalid return payload: enable debugging to examine incoming payload"
 msgstr ""
 
 #: src/www/status_rrd_graph.php:147
@@ -11820,10 +11195,6 @@ msgstr ""
 
 #: src/www/services_captiveportal.php:897
 msgid "Invert Acct-Input-Octets and Acct-Output-Octets"
-msgstr ""
-
-#: src/www/system_firmware.php:224
-msgid "Invoke"
 msgstr ""
 
 #: src/etc/rc.restore_config_backup:67
@@ -11911,10 +11282,6 @@ msgstr ""
 
 #: src/www/graph.php:355
 msgid "Kbps"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:184
-msgid "Keep media mounted read/write at all times."
 msgstr ""
 
 #: src/www/interfaces.php:3098
@@ -12107,7 +11474,7 @@ msgstr ""
 msgid "Lagg protocol"
 msgstr ""
 
-#: src/www/system.php:450
+#: src/www/system_general.php:450
 msgid "Language"
 msgstr ""
 
@@ -12168,10 +11535,6 @@ msgstr ""
 msgid "Last config change"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:221
-msgid "Last known config found and restored.  Please double check your configuration file for accuracy."
-msgstr ""
-
 #: src/www/system_gateways_edit.php:770
 msgid "Latency thresholds"
 msgstr ""
@@ -12206,7 +11569,6 @@ msgid "Lease Type"
 msgstr ""
 
 #: src/www/diag_ipsec_leases.php:32
-#: src/www/diag_ipsec_tabs.php:29
 msgid "Leases"
 msgstr ""
 
@@ -12365,10 +11727,6 @@ msgstr ""
 msgid "List of mirrors changed. Old: (%s) New: (%s)"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1223
-msgid "List of packages to reinstall: "
-msgstr ""
-
 #: src/www/services_dnsmasq.php:265
 #: src/www/services_unbound.php:223
 msgid "Listen Port"
@@ -12379,7 +11737,6 @@ msgid "Load Balance"
 msgstr ""
 
 #: src/www/diag_logs_relayd.php:41
-#: src/www/diag_logs_tabs.php:36
 #: src/www/fbegin.inc:206
 #: src/www/fbegin.inc:238
 #: src/www/load_balancer_monitor.php:77
@@ -12430,20 +11787,6 @@ msgstr ""
 
 #: src/etc/inc/filter.inc:205
 msgid "Loading filter rules"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:733
-#: src/etc/inc/pkg-utils.inc:1474
-msgid "Loading package configuration... "
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:874
-msgid "Loading package configuration... failed!"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:763
-#: src/etc/inc/pkg-utils.inc:1035
-msgid "Loading package instructions..."
 msgstr ""
 
 #: src/www/index.php:618
@@ -12569,10 +11912,6 @@ msgstr ""
 msgid "Log type"
 msgstr ""
 
-#: src/www/pkg_mgr_install.php:200
-msgid "Log was not retrievable."
-msgstr ""
-
 #: src/www/firewall_rules_edit.php:1219
 msgid "Log"
 msgstr ""
@@ -12596,10 +11935,6 @@ msgstr ""
 
 #: src/www/diag_logs_settings.php:284
 msgid "Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this is approximately 500KB per log file, and there are nearly 20 such log files."
-msgstr ""
-
-#: src/www/diag_ipsec_tabs.php:32
-msgid "Logs"
 msgstr ""
 
 #: src/www/diag_smart.php:351
@@ -12651,7 +11986,6 @@ msgstr ""
 
 #: src/www/services_captiveportal.php:501
 #: src/www/services_captiveportal_filemanager.php:147
-#: src/www/services_captiveportal_hostname.php:87
 #: src/www/services_captiveportal_ip.php:87
 #: src/www/services_captiveportal_mac.php:153
 #: src/www/services_captiveportal_vouchers.php:444
@@ -12759,13 +12093,8 @@ msgstr ""
 msgid "Manual Outbound NAT rule generation"
 msgstr ""
 
-#: src/www/system_firmware.php:88
-#: src/www/system_firmware_tabs.php:32
+#: src/www/system_firmware_tabs.inc:32
 msgid "Manual Update"
-msgstr ""
-
-#: src/www/system_firmware.php:224
-msgid "Manual Upgrade"
 msgstr ""
 
 #: src/www/firewall_nat_out.php:300
@@ -12936,10 +12265,6 @@ msgstr ""
 msgid "Mbps"
 msgstr ""
 
-#: src/www/diag_nanobsd.php:154
-msgid "Media Read/Write Status"
-msgstr ""
-
 #: src/www/status_interfaces.php:322
 msgid "Media"
 msgstr ""
@@ -12984,11 +12309,6 @@ msgstr ""
 
 #: src/www/widgets/widgets/system_information.widget.php:269
 msgid "Memory usage"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:827
-#: src/etc/inc/pkg-utils.inc:982
-msgid "Menu items... "
 msgstr ""
 
 #: src/www/xmlrpc.php:219
@@ -13074,12 +12394,8 @@ msgstr ""
 msgid "Mirror"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:12
+#: src/www/system_advanced_tabs.inc:12
 msgid "Miscellaneous"
-msgstr ""
-
-#: src/www/system_firmware.php:76
-msgid "Missing a temporary folder"
 msgstr ""
 
 #: src/etc/inc/easyrule.inc:357
@@ -13107,7 +12423,7 @@ msgstr ""
 
 #: src/www/vpn_ipsec_phase1.php:526
 #: src/www/vpn_ipsec_phase2.php:488
-#: src/www/vpn_ipsec_tabs.php:4
+#: src/www/vpn_ipsec_tabs.inc:4
 msgid "Mobile clients"
 msgstr ""
 
@@ -13184,14 +12500,6 @@ msgstr ""
 
 #: src/www/diag_dns.php:250
 msgid "More Information:"
-msgstr ""
-
-#: src/www/restart_httpd.php:45
-msgid "Mounting file systems read only"
-msgstr ""
-
-#: src/www/restart_httpd.php:39
-msgid "Mounting file systems read/write"
 msgstr ""
 
 #: src/www/interfaces_ppps_edit.php:206
@@ -13421,10 +12729,6 @@ msgstr ""
 msgid "NOTE: This schedule is in use so the name may not be modified!"
 msgstr ""
 
-#: src/www/diag_nanobsd.php:177
-msgid "NOTE: This setting is only temporary, and can be switched dynamically in the background."
-msgstr ""
-
 #: src/www/vpn_l2tp.php:336
 #: src/www/vpn_pppoe_edit.php:448
 #: src/www/vpn_pptp.php:370
@@ -13454,13 +12758,12 @@ msgid "NOTE: leave blank to use the system default DNS servers - this interface'
 msgstr ""
 
 #: src/www/diag_gmirror.php:176
-#: src/www/diag_nanobsd.php:123
 #: src/www/interfaces.php:3435
 #: src/www/interfaces.php:3444
 #: src/www/interfaces_groups_edit.php:326
 #: src/www/load_balancer_virtual_server_edit.php:211
 #: src/www/load_balancer_virtual_server_edit.php:230
-#: src/www/system_advanced_tabs.php:3
+#: src/www/system_advanced_tabs.inc:3
 #: src/www/system_firmware_settings.php:158
 #: src/www/system_routes_edit.php:408
 msgid "NOTE:"
@@ -13522,12 +12825,11 @@ msgstr ""
 msgid "NTP should prefer this clock (default: enabled)."
 msgstr ""
 
-#: src/www/system.php:438
+#: src/www/system_general.php:438
 msgid "NTP time server"
 msgstr ""
 
 #: src/www/diag_logs_ntpd.php:41
-#: src/www/diag_logs_tabs.php:38
 #: src/www/fbegin.inc:207
 #: src/www/fbegin.inc:239
 #: src/www/services_ntpd.php:168
@@ -13539,7 +12841,7 @@ msgstr ""
 msgid "NTP"
 msgstr ""
 
-#: src/www/system.php:298
+#: src/www/system_general.php:298
 msgid "Name of the firewall host, without domain part"
 msgstr ""
 
@@ -13589,8 +12891,6 @@ msgstr ""
 #: src/www/load_balancer_virtual_server_edit.php:61
 #: src/www/load_balancer_virtual_server_edit.php:66
 #: src/www/load_balancer_virtual_server_edit.php:167
-#: src/www/pkg_mgr.php:198
-#: src/www/pkg_mgr_installed.php:117
 #: src/www/services_captiveportal_filemanager.php:189
 #: src/www/services_igmpproxy.php:96
 #: src/www/status_gateways.php:71
@@ -13615,11 +12915,6 @@ msgstr ""
 msgid "NanoBSD Boot Slice"
 msgstr ""
 
-#: src/www/diag_nanobsd.php:134
-msgid "NanoBSD Image size"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:36
 #: src/www/fbegin.inc:292
 msgid "NanoBSD"
 msgstr ""
@@ -13634,10 +12929,6 @@ msgstr ""
 
 #: src/www/services_captiveportal_vouchers.php:181
 msgid "Need private RSA key to print vouchers"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:200
-msgid "Needed SHA256"
 msgstr ""
 
 #: src/www/firewall_nat_out_edit.php:177
@@ -13711,7 +13002,7 @@ msgstr ""
 msgid "Network-specific wireless configuration"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:11
+#: src/www/system_advanced_tabs.inc:11
 msgid "Networking"
 msgstr ""
 
@@ -13804,21 +13095,6 @@ msgstr ""
 msgid "No callback function for getURL"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:99
-#: src/etc/inc/config.lib.inc:100
-#: src/etc/inc/config.lib.inc:211
-#: src/etc/inc/config.lib.inc:232
-#: src/etc/inc/config.lib.inc:233
-msgid "No config.xml found, attempting last known config restore."
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:103
-#: src/etc/inc/config.lib.inc:128
-#: src/etc/inc/config.lib.inc:138
-#: src/etc/inc/config.lib.inc:236
-msgid "No config.xml found, attempting to restore factory config."
-msgstr ""
-
 #: src/www/diag_testport.php:94
 msgid "No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."
 msgstr ""
@@ -13838,10 +13114,6 @@ msgstr ""
 
 #: src/www/services_captiveportal_mac.php:70
 msgid "No entry exists yet!"
-msgstr ""
-
-#: src/www/system_firmware.php:74
-msgid "No file was uploaded"
 msgstr ""
 
 #: src/www/firewall_rules.php:801
@@ -13896,15 +13168,6 @@ msgid ""
 "No output received, or connection failed. Try with \"Show Remote Text\" unchecked first."
 msgstr ""
 
-#: src/www/pkg_mgr.php:238
-#: src/www/pkg_mgr_installed.php:188
-msgid "No package info, check the forum"
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:266
-msgid "No packages are installed."
-msgstr ""
-
 #: src/etc/inc/authgui.inc:66
 msgid "No page assigned to this user! Click here to logout."
 msgstr ""
@@ -13957,10 +13220,7 @@ msgstr ""
 #: src/www/crash_reporter.php:63
 #: src/www/crash_reporter.php:118
 #: src/www/diag_defaults.php:74
-#: src/www/halt.php:60
-#: src/www/pkg.php:422
 #: src/www/reboot.php:58
-#: src/www/system_firmware.php:214
 msgid "No"
 msgstr ""
 
@@ -13979,10 +13239,6 @@ msgstr ""
 
 #: src/www/interfaces.php:2252
 msgid "Non-Temporary Address Allocation"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:431
-msgid "Non-numeric value received in INT or DOUBLE"
 msgstr ""
 
 #: src/etc/inc/openvpn.inc:211
@@ -14043,10 +13299,6 @@ msgstr ""
 
 #: src/www/system_groupmanager.php:300
 msgid "Not Members"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:1600
-msgid "Not a scalar type (%s)"
 msgstr ""
 
 #: src/etc/inc/system.inc:439
@@ -14301,7 +13553,6 @@ msgstr ""
 #: src/www/load_balancer_virtual_server_edit.php:289
 #: src/www/services_captiveportal.php:1071
 #: src/www/services_captiveportal_filemanager.php:219
-#: src/www/services_captiveportal_hostname.php:140
 #: src/www/services_captiveportal_ip.php:144
 #: src/www/services_captiveportal_mac.php:207
 #: src/www/services_captiveportal_vouchers.php:611
@@ -14344,7 +13595,7 @@ msgstr ""
 msgid "Notification Name"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:14
+#: src/www/system_advanced_tabs.inc:14
 msgid "Notifications"
 msgstr ""
 
@@ -14471,10 +13722,6 @@ msgstr ""
 msgid "On"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1204
-msgid "One moment please, reinstalling packages...\n"
-msgstr ""
-
 #: src/etc/inc/config.console.inc:405
 msgid "One moment while we reload the settings..."
 msgstr ""
@@ -14494,10 +13741,6 @@ msgstr ""
 #: src/www/status_gateways.php:135
 #: src/www/widgets/widgets/wake_on_lan.widget.php:59
 msgid "Online"
-msgstr ""
-
-#: src/etc/inc/config.console.inc:49
-msgid "Only (%s) MB RAM has been detected, with (%s) available to %s.%s"
 msgstr ""
 
 #: src/www/interfaces_qinq_edit.php:314
@@ -14584,7 +13827,6 @@ msgstr ""
 #: src/etc/inc/system.inc:1931
 #: src/www/diag_backup.php:176
 #: src/www/diag_logs_openvpn.php:30
-#: src/www/diag_logs_tabs.php:37
 #: src/www/diag_packet_capture.php:97
 #: src/www/fbegin.inc:222
 #: src/www/fbegin.inc:240
@@ -14640,10 +13882,6 @@ msgstr ""
 msgid "Orphan mode allows the system clock to be used when no other clocks are available. The number here specifies the stratum reported during orphan mode and should normally be set to a number high enough to insure that any other servers available to clients are preferred over this server. (default: 12)."
 msgstr ""
 
-#: src/www/pkg_mgr.php:179
-msgid "Other Categories"
-msgstr ""
-
 #: src/www/firewall_nat_out_edit.php:703
 msgid "Other Subnet (Enter Below)"
 msgstr ""
@@ -14653,7 +13891,6 @@ msgid "Other Subnet:"
 msgstr ""
 
 #: src/www/firewall_virtual_ip_edit.php:361
-#: src/www/pkg_mgr.php:179
 msgid "Other"
 msgstr ""
 
@@ -14689,14 +13926,6 @@ msgstr ""
 #: src/www/vpn_openvpn_client.php:1077
 #: src/www/vpn_openvpn_server.php:1803
 msgid "Output R and W characters to the console for each packet read and write, uppercase is used for TCP/UDP packets and lowercase is used for TUN/TAP packets"
-msgstr ""
-
-#: src/www/diag_ipsec_tabs.php:28
-msgid "Overview"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:638
-msgid "Overwrote previous installation of %s."
 msgstr ""
 
 #: src/www/vpn_ipsec.php:246
@@ -14755,24 +13984,11 @@ msgstr ""
 msgid "PFS key group"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:437
-msgid "POP3 authentication password was not accepted:"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:421
-msgid "POP3 authentication server greeting was not found"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:429
-msgid "POP3 authentication user was not accepted:"
-msgstr ""
-
 #: src/www/interfaces.php:2527
 msgid "PPP configuration"
 msgstr ""
 
 #: src/www/diag_logs_ppp.php:41
-#: src/www/diag_logs_tabs.php:34
 #: src/www/interfaces.php:1340
 #: src/www/interfaces_ppps_edit.php:377
 #: src/www/status_interfaces.php:161
@@ -14946,10 +14162,6 @@ msgstr ""
 msgid "PTP ports"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:613
-msgid "Package %s is not supported on this version."
-msgstr ""
-
 #: src/www/pkg_edit.php:249
 msgid "Package Editor"
 msgstr ""
@@ -14958,64 +14170,13 @@ msgstr ""
 msgid "Package Functions"
 msgstr ""
 
-#: src/www/pkg_mgr_install.php:100
-msgid "Package Installer"
-msgstr ""
-
 #: src/www/fbegin.inc:242
 msgid "Package Logs"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1415
-msgid "Package Manager Settings"
-msgstr ""
-
 #: src/www/diag_backup.php:177
 #: src/www/fbegin.inc:332
-#: src/www/pkg_mgr.php:47
-#: src/www/pkg_mgr.php:88
-#: src/www/pkg_mgr_install.php:44
-#: src/www/pkg_mgr_installed.php:41
-#: src/www/pkg_mgr_installed.php:70
 msgid "Package Manager"
-msgstr ""
-
-#: src/www/pkg_mgr_settings.php:109
-#: src/www/pkg_mgr_settings.php:112
-msgid "Package Repository URL"
-msgstr ""
-
-#: src/www/pkg_mgr_settings.php:51
-#: src/www/pkg_mgr_settings.php:91
-msgid "Package Settings"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:719
-msgid "Package WAS NOT installed properly."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1102
-msgid "Package XML... "
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:224
-#: src/www/pkg_mgr_install.php:225
-msgid "Package deleted."
-msgstr ""
-
-#: src/www/pkg_mgr.php:235
-#: src/www/pkg_mgr_installed.php:184
-msgid "Package info"
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:235
-#: src/www/pkg_mgr_install.php:236
-msgid "Package reinstallation failed."
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:239
-#: src/www/pkg_mgr_install.php:240
-msgid "Package reinstalled."
 msgstr ""
 
 #: src/www/system_advanced_misc.php:580
@@ -15030,7 +14191,6 @@ msgstr ""
 msgid "Packages are currently being reinstalled in the background.<p>Do not make changes in the GUI until this is complete."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:416
 #: src/www/fbegin.inc:163
 msgid "Packages"
 msgstr ""
@@ -15095,7 +14255,7 @@ msgid "Packets matching this rule will be mapped to the IP address given here."
 msgstr ""
 
 #: src/www/status_rrd_graph_settings.php:42
-#: src/www/status_rrd_graph_tabs.php:8
+#: src/www/status_rrd_graph_tabs.inc:8
 msgid "Packets"
 msgstr ""
 
@@ -15313,20 +14473,12 @@ msgstr ""
 msgid "Perform Self-tests"
 msgstr ""
 
-#: src/www/system_firmware.php:254
-msgid "Perform full backup prior to upgrade"
-msgstr ""
-
 #: src/www/status_rrd_graph.php:506
 msgid "Period:"
 msgstr ""
 
 #: src/www/system_advanced_misc.php:534
 msgid "Periodic DHCP Leases Backup"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:215
-msgid "Periodic Data Backup"
 msgstr ""
 
 #: src/www/system_advanced_misc.php:518
@@ -15534,10 +14686,6 @@ msgstr ""
 msgid "Plr must be a value between 0 and 1."
 msgstr ""
 
-#: src/etc/inc/filter.inc:387
-msgid "Plugins completed."
-msgstr ""
-
 #: src/www/firewall_rules_edit.php:1308
 msgid "Policy filtering"
 msgstr ""
@@ -15655,7 +14803,6 @@ msgid "Portal Auth events"
 msgstr ""
 
 #: src/www/diag_logs_auth.php:40
-#: src/www/diag_logs_tabs.php:32
 msgid "Portal Auth"
 msgstr ""
 
@@ -15719,7 +14866,7 @@ msgstr ""
 
 #: src/www/vpn_ipsec_phase1.php:527
 #: src/www/vpn_ipsec_phase2.php:489
-#: src/www/vpn_ipsec_tabs.php:5
+#: src/www/vpn_ipsec_tabs.inc:5
 msgid "Pre-Shared Keys"
 msgstr ""
 
@@ -15781,10 +14928,6 @@ msgstr ""
 
 #: src/etc/rc.initial.setlanip:517
 msgid "Press <ENTER> to continue."
-msgstr ""
-
-#: src/etc/inc/config.console.inc:50
-msgid "Press ENTER to continue."
 msgstr ""
 
 #: src/www/vpn_openvpn_csc.php:501
@@ -15851,10 +14994,6 @@ msgstr ""
 
 #: src/etc/inc/filter.inc:377
 msgid "Processing down interface states"
-msgstr ""
-
-#: src/etc/inc/filter.inc:3582
-msgid "Processing early %1$s rules for package %2$s"
 msgstr ""
 
 #: src/www/crash_reporter.php:95
@@ -16126,7 +15265,7 @@ msgid "Qlimit must be positive."
 msgstr ""
 
 #: src/www/status_rrd_graph_settings.php:43
-#: src/www/status_rrd_graph_tabs.php:10
+#: src/www/status_rrd_graph_tabs.inc:10
 msgid "Quality"
 msgstr ""
 
@@ -16204,14 +15343,14 @@ msgstr ""
 msgid "Queue"
 msgstr ""
 
-#: src/www/status_rrd_graph_tabs.php:15
+#: src/www/status_rrd_graph_tabs.inc:15
 msgid "QueueDrops"
 msgstr ""
 
 #: src/www/fbegin.inc:243
 #: src/www/status_queues.php:111
 #: src/www/status_rrd_graph_settings.php:44
-#: src/www/status_rrd_graph_tabs.php:13
+#: src/www/status_rrd_graph_tabs.inc:13
 msgid "Queues"
 msgstr ""
 
@@ -16375,10 +15514,6 @@ msgstr ""
 msgid "RRD dump failed exited with %1$s, the error is: %2$s"
 msgstr ""
 
-#: src/www/diag_nanobsd.php:218
-msgid "RRD/DHCP Backup"
-msgstr ""
-
 #: src/www/status_interfaces.php:373
 msgid "RSSI"
 msgstr ""
@@ -16459,14 +15594,6 @@ msgstr ""
 
 #: src/www/services_snmp.php:324
 msgid "Read Community String"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:172
-msgid "Read-Only"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:168
-msgid "Read/Write"
 msgstr ""
 
 #: src/www/status_openvpn.php:162
@@ -16598,24 +15725,12 @@ msgstr ""
 msgid "Regulatory settings"
 msgstr ""
 
-#: src/www/pkg_mgr_installed.php:213
-msgid "Reinstall ".ucfirst($pkg['name'])." package."
-msgstr ""
-
-#: src/www/pkg_mgr_installed.php:216
-msgid "Reinstall ".ucfirst($pkg['name'])."'s GUI components."
-msgstr ""
-
 #: src/www/diag_backup.php:803
 msgid "Reinstall packages"
 msgstr ""
 
 #: src/www/diag_backup.php:235
 msgid "Reinstall"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1233
-msgid "Reinstalling package"
 msgstr ""
 
 #: src/www/interfaces.php:1986
@@ -16770,10 +15885,6 @@ msgstr ""
 msgid "Remote tunnel network"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1081
-msgid "Remove '%s'"
-msgstr ""
-
 #: src/www/diag_confbak.php:190
 msgid "Remove Configuration Backup"
 msgstr ""
@@ -16821,18 +15932,6 @@ msgstr ""
 
 #: src/etc/inc/services.inc:2350
 msgid "Removed cron job for %s"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:953
-msgid "Removing %s components..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:952
-msgid "Removing %s package... "
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1079
-msgid "Removing package instructions..."
 msgstr ""
 
 #: src/www/status_interfaces.php:99
@@ -16983,28 +16082,12 @@ msgstr ""
 msgid "Resolver"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:414
-msgid "Resolving POP3 authentication host \"%s\"..."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:452
-msgid "Resolving SMTP server domain \"%s\"..."
-msgstr ""
-
 #: src/etc/inc/service-utils.inc:546
 msgid "Restart %sService"
 msgstr ""
 
 #: src/www/fbegin.inc:295
 msgid "Restart HTTPD"
-msgstr ""
-
-#: src/www/restart_httpd.php:31
-msgid "Restarting httpd"
-msgstr ""
-
-#: src/www/restart_httpd.php:48
-msgid "Restarting mini_httpd"
 msgstr ""
 
 #: src/etc/rc.restore_config_backup:93
@@ -17015,7 +16098,7 @@ msgstr ""
 msgid "Restore Backup"
 msgstr ""
 
-#: src/www/system_firmware_tabs.php:35
+#: src/www/system_firmware_tabs.inc:35
 msgid "Restore Full Backup"
 msgstr ""
 
@@ -17053,16 +16136,8 @@ msgstr ""
 msgid "Restore from Configuration Backup"
 msgstr ""
 
-#: src/www/system_firmware_restorefullbackup.php:89
-msgid "Restore full backup"
-msgstr ""
-
 #: src/www/diag_backup.php:241
 msgid "Restore version"
-msgstr ""
-
-#: src/www/system_firmware_restorefullbackup.php:175
-msgid "Restore"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:502
@@ -17078,26 +16153,8 @@ msgstr ""
 msgid "Result Match"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:201
-msgid "Resyncing configuration for all packages."
-msgstr ""
-
 #: src/www/load_balancer_pool_edit.php:239
 msgid "Retry"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_server.inc:66
-msgid ""
-"Returns an array of known"
-" signatures (an array of arrays) for the method name passed. If"
-" no signatures are known, returns a none-array (test for type !="
-" array to detect missing signature)"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_server.inc:86
-msgid ""
-"Returns help text if defined"
-" for the method passed, otherwise returns an empty string"
 msgstr ""
 
 #: src/www/diag_traceroute.php:138
@@ -17280,10 +16337,6 @@ msgstr ""
 msgid "Run ''net stop dnscache'', ''net start dnscache'', ''ipconfig /flushdns'' and ''ipconfig /registerdns'' on connection initiation. This is known to kick Windows into recognizing pushed DNS servers."
 msgstr ""
 
-#: src/etc/inc/filter.inc:385
-msgid "Running plugins (pf)"
-msgstr ""
-
 #: src/etc/inc/filter.inc:381
 msgid "Running plugins"
 msgstr ""
@@ -17301,7 +16354,6 @@ msgid "S.M.A.R.T. Monitor Tools"
 msgstr ""
 
 #: src/www/diag_ipsec_sad.php:33
-#: src/www/diag_ipsec_tabs.php:30
 msgid "SAD"
 msgstr ""
 
@@ -17360,7 +16412,6 @@ msgid "SNMP"
 msgstr ""
 
 #: src/www/diag_ipsec_spd.php:33
-#: src/www/diag_ipsec_tabs.php:31
 msgid "SPD"
 msgstr ""
 
@@ -17433,7 +16484,6 @@ msgstr ""
 
 #: src/www/diag_confbak.php:222
 #: src/www/diag_logs_settings.php:445
-#: src/www/diag_nanobsd.php:185
 #: src/www/diag_smart.php:233
 #: src/www/firewall_aliases_edit.php:749
 #: src/www/firewall_aliases_import.php:213
@@ -17466,9 +16516,7 @@ msgstr ""
 #: src/www/load_balancer_relay_protocol_edit.php:282
 #: src/www/load_balancer_setting.php:155
 #: src/www/pkg_edit.php:437
-#: src/www/pkg_mgr_settings.php:131
 #: src/www/services_captiveportal.php:1065
-#: src/www/services_captiveportal_hostname_edit.php:209
 #: src/www/services_captiveportal_ip_edit.php:230
 #: src/www/services_captiveportal_mac_edit.php:249
 #: src/www/services_captiveportal_vouchers.php:605
@@ -17499,7 +16547,7 @@ msgstr ""
 #: src/www/services_wol_edit.php:164
 #: src/www/status_lb_pool.php:221
 #: src/www/status_rrd_graph_settings.php:192
-#: src/www/system.php:497
+#: src/www/system_general.php:497
 #: src/www/system_advanced_admin.php:581
 #: src/www/system_advanced_firewall.php:529
 #: src/www/system_advanced_misc.php:594
@@ -17542,18 +16590,6 @@ msgstr ""
 #: src/www/vpn_pptp.php:481
 #: src/www/vpn_pptp_users_edit.php:183
 msgid "Save"
-msgstr ""
-
-#: src/www/pkg.php:186
-msgid "Saving changes..."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:630
-msgid "Saving updated package information..."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:1593
-msgid "Scalar can have only one value"
 msgstr ""
 
 #: src/www/widgets/widgets/traffic_graphs.widget.php:137
@@ -17765,7 +16801,7 @@ msgstr ""
 msgid "Select the interface(s) to enable for captive portal."
 msgstr ""
 
-#: src/www/system.php:420
+#: src/www/system_general.php:420
 msgid "Select the location closest to you"
 msgstr ""
 
@@ -18116,8 +17152,6 @@ msgstr ""
 #: src/www/load_balancer_virtual_server_edit.php:132
 #: src/www/services_captiveportal.php:56
 #: src/www/services_captiveportal_filemanager.php:59
-#: src/www/services_captiveportal_hostname.php:49
-#: src/www/services_captiveportal_hostname_edit.php:46
 #: src/www/services_captiveportal_ip.php:48
 #: src/www/services_captiveportal_ip_edit.php:47
 #: src/www/services_captiveportal_mac.php:52
@@ -18156,8 +17190,6 @@ msgstr ""
 msgid "Services"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:859
-#: src/etc/inc/pkg-utils.inc:999
 #: src/www/fbegin.inc:245
 msgid "Services... "
 msgstr ""
@@ -18376,10 +17408,6 @@ msgstr ""
 msgid "Setting hard disk standby... "
 msgstr ""
 
-#: src/www/diag_nanobsd.php:56
-msgid "Setting slice information, please wait..."
-msgstr ""
-
 #: src/www/interfaces.php:3226
 msgid "Setting this option will enable 802.1x authentication."
 msgstr ""
@@ -18417,13 +17445,12 @@ msgid "Setting up pass/block rules %s"
 msgstr ""
 
 #: src/www/diag_logs_settings.php:171
-#: src/www/diag_logs_tabs.php:39
 #: src/www/load_balancer_monitor.php:108
 #: src/www/load_balancer_pool.php:119
 #: src/www/load_balancer_setting.php:85
 #: src/www/load_balancer_setting.php:113
 #: src/www/load_balancer_virtual_server.php:118
-#: src/www/status_rrd_graph_tabs.php:40
+#: src/www/status_rrd_graph_tabs.inc:40
 #: src/www/system_authservers.php:451
 #: src/www/system_firmware_settings.php:64
 #: src/www/system_groupmanager.php:249
@@ -18683,7 +17710,6 @@ msgstr ""
 #: src/www/diag_system_pftop.php:131
 #: src/www/diag_system_pftop.php:146
 #: src/www/services_captiveportal_filemanager.php:190
-#: src/www/system_firmware_restorefullbackup.php:129
 msgid "Size"
 msgstr ""
 
@@ -18714,10 +17740,6 @@ msgstr ""
 
 #: src/www/diag_packet_capture.php:256
 msgid "Some network adapters do not support or work well in promiscuous mode."
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:196
-msgid "Something is wrong on the request."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:2167
@@ -19031,10 +18053,6 @@ msgstr ""
 msgid "Starting initial configuration"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:921
-msgid "Starting package deletion for %s..."
-msgstr ""
-
 #: src/etc/inc/system.inc:621
 msgid "Starting syslog..."
 msgstr ""
@@ -19218,7 +18236,6 @@ msgstr ""
 #: src/www/diag_logs_wireless.php:42
 #: src/www/easyrule.php:77
 #: src/www/fbegin.inc:437
-#: src/www/pkg_mgr.php:203
 #: src/www/status_captiveportal_expire.php:49
 #: src/www/status_captiveportal_test.php:49
 #: src/www/status_captiveportal_voucher_rolls.php:48
@@ -19361,7 +18378,6 @@ msgstr ""
 #: src/www/firewall_rules_edit.php:1240
 #: src/www/firewall_rules_edit.php:1716
 #: src/www/firewall_virtual_ip_edit.php:474
-#: src/www/halt.php:59
 #: src/www/interfaces.php:3322
 #: src/www/interfaces_assign.php:556
 #: src/www/interfaces_bridge_edit.php:606
@@ -19377,11 +18393,9 @@ msgstr ""
 #: src/www/load_balancer_relay_protocol_edit.php:282
 #: src/www/load_balancer_setting.php:155
 #: src/www/load_balancer_virtual_server_edit.php:280
-#: src/www/pkg_mgr_settings.php:131
 #: src/www/reboot.php:57
 #: src/www/services_captiveportal.php:1065
 #: src/www/services_captiveportal_filemanager.php:173
-#: src/www/services_captiveportal_hostname_edit.php:209
 #: src/www/services_captiveportal_ip_edit.php:230
 #: src/www/services_captiveportal_mac_edit.php:249
 #: src/www/services_captiveportal_vouchers.php:605
@@ -19412,15 +18426,12 @@ msgstr ""
 #: src/www/status_lb_pool.php:221
 #: src/www/status_rrd_graph.php:537
 #: src/www/status_rrd_graph_settings.php:192
-#: src/www/system.php:497
+#: src/www/system_general.php:497
 #: src/www/system_advanced_admin.php:581
 #: src/www/system_advanced_firewall.php:529
 #: src/www/system_advanced_misc.php:594
 #: src/www/system_advanced_network.php:273
 #: src/www/system_advanced_sysctl.php:223
-#: src/www/system_firmware.php:234
-#: src/www/system_firmware.php:239
-#: src/www/system_firmware.php:256
 #: src/www/system_firmware_settings.php:261
 #: src/www/system_gateway_groups_edit.php:342
 #: src/www/system_gateways_edit.php:862
@@ -19560,14 +18571,6 @@ msgstr ""
 msgid "Swedish"
 msgstr ""
 
-#: src/www/diag_nanobsd.php:170
-msgid "Switch to Read-Only"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:174
-msgid "Switch to Read/Write"
-msgstr ""
-
 #: src/www/graph.php:109
 msgid "Switch to bytes/s"
 msgstr ""
@@ -19592,20 +18595,12 @@ msgstr ""
 msgid "Synchronize Voucher Database IP"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:221
-msgid "Syncing packages:"
-msgstr ""
-
 #: src/etc/inc/system.inc:1653
 msgid "Syncing system time before startup..."
 msgstr ""
 
 #: src/www/diag_backup.php:181
 msgid "Syslog"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:220
-msgid "System > Advanced, Miscellaneous tab"
 msgstr ""
 
 #: src/www/fbegin.inc:278
@@ -19635,7 +18630,7 @@ msgstr ""
 msgid "System Sounds"
 msgstr ""
 
-#: src/www/system_advanced_tabs.php:13
+#: src/www/system_advanced_tabs.inc:13
 msgid "System Tunables"
 msgstr ""
 
@@ -19645,11 +18640,6 @@ msgstr ""
 
 #: src/www/diag_logs_settings.php:426
 msgid "System events"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:744
-#: src/etc/inc/pkg-utils.inc:1059
-msgid "System files... "
 msgstr ""
 
 #: src/www/services_snmp.php:310
@@ -19685,21 +18675,14 @@ msgid "System will be configured as a DHCP server on the default LAN interface"
 msgstr ""
 
 #: src/www/diag_backup.php:182
-#: src/www/diag_logs_tabs.php:29
 #: src/www/fbegin.inc:332
 #: src/www/fbegin.inc:392
-#: src/www/pkg_mgr.php:47
-#: src/www/pkg_mgr.php:88
-#: src/www/pkg_mgr_install.php:44
-#: src/www/pkg_mgr_installed.php:41
-#: src/www/pkg_mgr_installed.php:70
-#: src/www/pkg_mgr_settings.php:51
 #: src/www/status_rrd_graph_img.php:38
 #: src/www/status_rrd_graph_settings.php:40
-#: src/www/status_rrd_graph_tabs.php:4
-#: src/www/system.php:62
-#: src/www/system.php:264
-#: src/www/system.php:289
+#: src/www/status_rrd_graph_tabs.inc:4
+#: src/www/system_general.php:62
+#: src/www/system_general.php:264
+#: src/www/system_general.php:289
 #: src/www/system_advanced_admin.php:268
 #: src/www/system_advanced_firewall.php:219
 #: src/www/system_advanced_misc.php:225
@@ -19710,8 +18693,6 @@ msgstr ""
 #: src/www/system_camanager.php:41
 #: src/www/system_certmanager.php:44
 #: src/www/system_crlmanager.php:35
-#: src/www/system_firmware.php:88
-#: src/www/system_firmware.php:166
 #: src/www/system_firmware_check.php:98
 #: src/www/system_firmware_settings.php:64
 #: src/www/system_gateway_groups.php:89
@@ -19743,10 +18724,6 @@ msgstr ""
 
 #: src/www/system_firmware_settings.php:156
 msgid "System: Firmware: Auto Update"
-msgstr ""
-
-#: src/www/pkg_mgr_settings.php:119
-msgid "System: Packages"
 msgstr ""
 
 #: src/www/diag_logs_filter_dynamic.php:144
@@ -19834,10 +18811,6 @@ msgstr ""
 #: src/www/diag_tables.php:33
 #: src/www/fbegin.inc:284
 msgid "Tables"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:965
-msgid "Tabs items... "
 msgstr ""
 
 #: src/www/interfaces_qinq.php:126
@@ -19933,30 +18906,8 @@ msgstr ""
 msgid "That username is reserved by the system."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:263
-msgid ""
-"The %1$s package is missing required dependencies and must be reinstalled. %2$s"
-msgstr ""
-
 #: src/www/interfaces.php:1556
 msgid "The %s configuration has been changed."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:383
-msgid "The %s package is missing its configuration file and must be reinstalled."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:288
-#: src/etc/inc/pkg-utils.inc:416
-msgid "The %s package is missing required dependencies and must be reinstalled."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:941
-msgid "The %s package is not installed.%sDeletion aborted."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:691
-msgid "The %s package is not installed.%sInstallation aborted."
 msgstr ""
 
 #: src/www/firewall_nat_1to1_edit.php:532
@@ -20278,11 +19229,6 @@ msgstr ""
 msgid "The average packet loss probes qty needs to be positive."
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:713
-#: src/etc/inc/config.lib.inc:715
-msgid "The backup cache file %s is corrupted.  Unlinking."
-msgstr ""
-
 #: src/www/vpn_openvpn_client.php:231
 msgid "The bandwidth limit must be a positive numeric value."
 msgstr ""
@@ -20297,10 +19243,6 @@ msgstr ""
 
 #: src/www/diag_tables.php:76
 msgid "The bogons database has been updated."
-msgstr ""
-
-#: src/www/diag_nanobsd.php:65
-msgid "The boot slice has been set to"
 msgstr ""
 
 #: src/www/services_captiveportal_mac.php:145
@@ -20367,10 +19309,6 @@ msgid ""
 "You may include"
 msgstr ""
 
-#: src/www/pkg_mgr_settings.php:101
-msgid "The contents of unofficial packages servers cannot be verified and may contain malicious files."
-msgstr ""
-
 #: src/www/interfaces.php:2168
 msgid "The current DUID is: '%s'"
 msgstr ""
@@ -20413,7 +19351,7 @@ msgstr ""
 msgid "The destination port range overlaps with an existing entry."
 msgstr ""
 
-#: src/www/system.php:99
+#: src/www/system_general.php:99
 msgid "The domain may only contain the characters a-z, 0-9, '-' and '.'."
 msgstr ""
 
@@ -20539,16 +19477,10 @@ msgid "The field 'WINS Server #2' must contain a valid IP address"
 msgstr ""
 
 #: src/www/diag_backup.php:614
-#: src/www/system_firmware_restorefullbackup.php:116
 msgid "The firewall configuration has been changed."
 msgstr ""
 
-#: src/www/system_firmware_restorefullbackup.php:85
-msgid "The firewall is currently restoring $filename"
-msgstr ""
-
 #: src/www/diag_backup.php:614
-#: src/www/system_firmware_restorefullbackup.php:116
 msgid "The firewall is now rebooting."
 msgstr ""
 
@@ -20569,10 +19501,6 @@ msgstr ""
 
 #: src/www/diag_backup.php:770
 msgid "The firewall will reboot after restoring the configuration."
-msgstr ""
-
-#: src/www/system_firmware.php:156
-msgid "The firmware is now being updated. The firewall will reboot automatically."
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:1844
@@ -20691,7 +19619,7 @@ msgstr ""
 msgid "The hostname cannot end with a hyphen according to RFC952"
 msgstr ""
 
-#: src/www/system.php:96
+#: src/www/system_general.php:96
 msgid "The hostname may only contain the characters a-z, 0-9 and '-'."
 msgstr ""
 
@@ -20707,11 +19635,6 @@ msgstr ""
 #: src/www/interfaces.php:695
 #: src/www/interfaces_ppps_edit.php:212
 msgid "The idle timeout value must be an integer."
-msgstr ""
-
-#: src/www/system_firmware.php:143
-#: src/www/system_firmware_auto.php:187
-msgid "The image file is corrupt."
 msgstr ""
 
 #: src/www/firewall_virtual_ip_edit.php:120
@@ -20915,13 +19838,8 @@ msgstr ""
 msgid "The options on this page are intended for use by advanced users only. This page is for managing existing mirrors, not creating new mirrors."
 msgstr ""
 
-#: src/www/diag_nanobsd.php:125
-#: src/www/system_advanced_tabs.php:3
+#: src/www/system_advanced_tabs.inc:3
 msgid "The options on this page are intended for use by advanced users only."
-msgstr ""
-
-#: src/www/pkg_mgr_settings.php:102
-msgid "The package server settings should remain at their default values to ensure that verifiable and trusted packages are recevied."
 msgstr ""
 
 #: src/www/diag_packet_capture.php:370
@@ -21031,10 +19949,6 @@ msgid ""
 "The remote gateway \"%1$s\" is already used by phase1 \"%2$s\"."
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:157
-msgid "The requested method didn't return an XML_RPC_Response object."
-msgstr ""
-
 #: src/www/load_balancer_pool_edit.php:91
 msgid "The retry value must be an integer between 1 and 65535."
 msgstr ""
@@ -21066,10 +19980,6 @@ msgstr ""
 
 #: src/www/firewall_rules.php:191
 msgid "The settings have been applied. The firewall rules are now reloading in the background.<br />You can also %s monitor %s the reload progress"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:81
-msgid "The slice has been duplicated."
 msgstr ""
 
 #: src/www/diag_resetstate.php:46
@@ -21126,10 +20036,6 @@ msgstr ""
 msgid "The static route configuration has been changed.%sYou must apply the changes in order for them to take effect."
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:1330
-msgid "The submitted request did not contain this parameter"
-msgstr ""
-
 #: src/www/services_dhcp.php:314
 msgid "The subnet range cannot overlap with virtual IP address %s."
 msgstr ""
@@ -21145,10 +20051,6 @@ msgstr ""
 
 #: src/www/diag_defaults.php:48
 msgid "The system has been reset to factory defaults and is now rebooting. This may take a few minutes, depending on your hardware."
-msgstr ""
-
-#: src/www/halt.php:48
-msgid "The system is halting now. This may take one minute."
 msgstr ""
 
 #: src/www/interfaces_assign.php:422
@@ -21171,7 +20073,7 @@ msgstr ""
 msgid "The test was not performed because it is supported only for ldap based backends."
 msgstr ""
 
-#: src/www/system.php:144
+#: src/www/system_general.php:144
 msgid "The time update interval must be either 0 (disabled) or between 6 and 1440."
 msgstr ""
 
@@ -21212,23 +20114,6 @@ msgstr ""
 
 #: src/www/diag_backup.php:351
 msgid "The uploaded file does not appear to contain an encrypted OPNsense configuration."
-msgstr ""
-
-#:rc/www/system_firmware.php:70
-msgid ""
-"The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"
-msgstr ""
-
-#: src/www/system_firmware.php:68
-msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
-msgstr ""
-
-#: src/www/system_firmware.php:72
-msgid "The uploaded file was only partially uploaded"
-msgstr ""
-
-#: src/www/system_firmware.php:133
-msgid "The uploaded image file is not for this platform."
 msgstr ""
 
 #: src/www/services_dyndns_edit.php:119
@@ -21356,17 +20241,8 @@ msgstr ""
 msgid "The zone name can only contain letters, digits, and underscores (_)."
 msgstr ""
 
-#: src/www/system.php:468
+#: src/www/system_general.php:468
 msgid "Theme"
-msgstr ""
-
-#: src/www/pkg_mgr.php:213
-#: src/www/pkg_mgr.php:288
-msgid "There are currently no packages available for installation."
-msgstr ""
-
-#: src/www/pkg_mgr_installed.php:227
-msgid "There are no packages currently installed."
 msgstr ""
 
 #: src/www/vpn_ipsec_phase1.php:213
@@ -21391,10 +20267,6 @@ msgstr ""
 
 #: src/www/diag_gmirror.php:163
 msgid "There was an error performing the chosen mirror operation. Check the System Log for details."
-msgstr ""
-
-#: src/www/diag_nanobsd.php:83
-msgid "There was an error while duplicating the slice.  Operation aborted."
 msgstr ""
 
 #: src/etc/inc/filter.inc:3587
@@ -21525,10 +20397,6 @@ msgstr ""
 
 #: src/www/services_ntpd.php:326
 msgid "These options enable additional messages from NTP to be written to the System Log"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:220
-msgid "These options have been relocated to"
 msgstr ""
 
 #: src/www/system_advanced_misc.php:440
@@ -21895,10 +20763,6 @@ msgstr ""
 msgid "This is usually"
 msgstr ""
 
-#: src/www/pkg_mgr_settings.php:119
-msgid "This is where %s will check for packages when the"
-msgstr ""
-
 #: src/www/system_firmware_settings.php:156
 msgid "This is where"
 msgstr ""
@@ -21925,20 +20789,6 @@ msgstr ""
 
 #: src/www/services_ntpd_gps.php:473
 msgid "This may be useful if, for some reason, you want ntpd to prefer a different clock"
-msgstr ""
-
-#: src/www/system_firmware.php:201
-msgid ""
-"This means that the image you uploaded "
-"is not an official/supported image and may lead to unexpected behavior or security "
-"compromises. Only install images that come from sources that you trust, and make sure "
-"that the image has not been tampered with."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_server.inc:48
-msgid ""
-"This method lists all the"
-" methods that the XML-RPC server knows how to dispatch"
 msgstr ""
 
 #: src/www/load_balancer_monitor_edit.php:84
@@ -22077,10 +20927,6 @@ msgstr ""
 msgid "This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain"
 msgstr ""
 
-#: src/www/pkg_mgr_settings.php:100
-msgid "This page allows an alternate package repository to be configured, primarily for temporary use as a testing mechanism."
-msgstr ""
-
 #: src/www/diag_testport.php:92
 msgid "This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function for UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."
 msgstr ""
@@ -22202,7 +21048,7 @@ msgstr ""
 msgid "This will be used if the field is left blank."
 msgstr ""
 
-#: src/www/system.php:489
+#: src/www/system_general.php:489
 msgid "This will change the look and feel of"
 msgstr ""
 
@@ -22216,10 +21062,6 @@ msgstr ""
 
 #: src/www/interfaces_bridge_edit.php:515
 msgid "This will disable the autoedge status of interfaces."
-msgstr ""
-
-#: src/www/diag_nanobsd.php:206
-msgid "This will duplicate the bootup slice to the alternate slice.  Use this if you would like to duplicate the known good working boot partition to the alternate."
 msgstr ""
 
 #: src/www/system_gateways_edit.php:741
@@ -22236,10 +21078,6 @@ msgstr ""
 
 #: src/www/system_gateways_edit.php:708
 msgid "This will select the above gateway as the default gateway"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:144
-msgid "This will switch the bootup slice to the alternate slice."
 msgstr ""
 
 #: src/www/system_advanced_network.php:238
@@ -22261,7 +21099,6 @@ msgid "Threshold"
 msgstr ""
 
 #: src/www/firewall_schedule_edit.php:861
-#: src/www/javascript/jquery/jquery-ui-1.11.1.min.js:6
 msgid "Thu"
 msgstr ""
 
@@ -22330,7 +21167,7 @@ msgstr ""
 msgid "Time to live for when a delegation is considered to be lame. The default is 15 minutes."
 msgstr ""
 
-#: src/www/system.php:408
+#: src/www/system_general.php:408
 msgid "Time zone"
 msgstr ""
 
@@ -22389,8 +21226,6 @@ msgstr ""
 msgid "To view the differences between an older configuration and a newer configuration, select the older configuration using the left column of radio options and select the newer configuration in the right column, then press the Diff button."
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:170
-#: src/www/services_captiveportal_hostname_edit.php:179
 #: src/www/system_gateways_edit.php:775
 #: src/www/system_gateways_edit.php:787
 msgid "To"
@@ -22477,7 +21312,7 @@ msgid "Traffic shaping is not configured."
 msgstr ""
 
 #: src/www/status_rrd_graph_settings.php:41
-#: src/www/status_rrd_graph_tabs.php:6
+#: src/www/status_rrd_graph_tabs.inc:6
 msgid "Traffic"
 msgstr ""
 
@@ -22587,9 +21422,10 @@ msgstr ""
 msgid "Tunnel to..."
 msgstr ""
 
-#: src/www/vpn_ipsec_phase1.php:525
-#: src/www/vpn_ipsec_phase2.php:487
-#: src/www/vpn_ipsec_tabs.php:3
+#: src/www/vpn_ipsec_phase1.php:532
+#: src/www/vpn_ipsec_phase2.php:492
+#: src/www/vpn_ipsec_tabs.inc:3
+#: src/www/widgets/widgets/ipsec.widget.php:42
 msgid "Tunnels"
 msgstr ""
 
@@ -22711,30 +21547,12 @@ msgstr ""
 msgid "Unable to change mode to %s.  You may already have the maximum number of wireless clones supported in this mode."
 msgstr ""
 
-#: src/www/system_firmware_auto.php:141
-#: src/www/system_firmware_auto.php:150
-msgid "Unable to check for updates."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:1212
-#: src/www/pkg_mgr.php:76
-msgid "Unable to communicate with %1$s. Please verify DNS and interface configuration, and that %2$s has functional Internet connectivity."
-msgstr ""
-
 #: src/www/firewall_aliases_edit.php:167
 msgid "Unable to fetch usable data."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:876
-msgid "Unable to load package configuration. Installation aborted."
-msgstr ""
-
 #: src/etc/inc/config.lib.inc:487
 msgid "Unable to open /conf/config.xml for writing in write_config()"
-msgstr ""
-
-#: src/www/pkg_mgr.php:73
-msgid "Unable to retrieve package info from %s. Cached data will be used."
 msgstr ""
 
 #: src/etc/rc.restore_config_backup:79
@@ -22763,10 +21581,6 @@ msgstr ""
 msgid "Unfortunately we have detected a programming bug."
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1230
-msgid "Uninstalling package"
-msgstr ""
-
 #: src/www/vpn_ipsec_phase2.php:122
 msgid "Unique Identifier"
 msgstr ""
@@ -22779,16 +21593,8 @@ msgstr ""
 msgid "Unknown block error."
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:152
-msgid "Unknown method"
-msgstr ""
-
 #: src/etc/inc/easyrule.inc:374
 msgid "Unknown pass error."
-msgstr ""
-
-#: src/www/system_firmware.php:82
-msgid "Unknown upload error"
 msgstr ""
 
 #: src/etc/rc.restore_config_backup:16
@@ -22842,14 +21648,6 @@ msgstr ""
 msgid "Update URL"
 msgstr ""
 
-#: src/www/system_firmware_auto.php:188
-msgid "Update cannot continue"
-msgstr ""
-
-#: src/www/system_firmware_auto.php:181
-msgid "Update cannot continue.  You can disable this check on the Updater Settings tab."
-msgstr ""
-
 #: src/www/diag_routes.php:198
 #: src/www/system_certmanager.php:397
 #: src/www/system_certmanager.php:996
@@ -22872,7 +21670,7 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
-#: src/www/system_firmware_tabs.php:34
+#: src/www/system_firmware_tabs.inc:34
 msgid "Updater Settings"
 msgstr ""
 
@@ -22890,17 +21688,8 @@ msgstr ""
 msgid "Upgrade Now"
 msgstr ""
 
-#: src/www/system_firmware.php:256
-#: src/www/system_firmware.php:257
-msgid "Upgrade firmware"
-msgstr ""
-
 #: src/www/system_firmware_check.php:86
 msgid "Upgrade pkg and recheck, there maybe other updates available."
-msgstr ""
-
-#: src/www/system_firmware.php:114
-msgid "Upgrade"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:1212
@@ -22917,10 +21706,6 @@ msgstr ""
 
 #: src/www/diag_backup.php:358
 msgid "Upgrading m0n0wall configuration to OPNsense."
-msgstr ""
-
-#: src/etc/inc/config.inc:62
-msgid "Upgrading m0n0wall configuration to pfSense... "
 msgstr ""
 
 #: src/www/diag_patterns.php:32
@@ -22946,7 +21731,6 @@ msgstr ""
 msgid "Upload layer7 pattern file"
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:96
 #: src/www/services_captiveportal_ip_edit.php:98
 #: src/www/services_captiveportal_mac_edit.php:110
 msgid "Upload speed needs to be an integer"
@@ -23040,15 +21824,11 @@ msgstr ""
 msgid "Use a different management port on clients. The default port is 166. Specify a different port if the client machines need to select from multiple OpenVPN links."
 msgstr ""
 
-#: src/www/pkg_mgr_settings.php:114
-msgid "Use a non-official server for packages"
-msgstr ""
-
 #: src/www/diag_routes.php:192
 msgid "Use a regular expression to filter IP address or hostnames."
 msgstr ""
 
-#: src/www/system.php:443
+#: src/www/system_general.php:443
 msgid ""
 "Use a space to separate multiple hosts (only one "
 "required). Remember to set up at least one DNS server "
@@ -23069,7 +21849,7 @@ msgstr ""
 msgid "Use calculated value."
 msgstr ""
 
-#: src/www/system.php:324
+#: src/www/system_general.php:324
 msgid "Use gateway"
 msgstr ""
 
@@ -23121,17 +21901,8 @@ msgid ""
 "be set or cleared for this rule to match."
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:178
-#: src/www/services_captiveportal_hostname_edit.php:179
-msgid "Use"
-msgstr ""
-
 #: src/www/vpn_pppoe_edit.php:546
 msgid "User (s)"
-msgstr ""
-
-#: src/etc/inc/priv/user.priv.inc:6
-msgid "User - Services - Captive portal login"
 msgstr ""
 
 #: src/www/vpn_openvpn_client.php:672
@@ -23366,7 +22137,6 @@ msgstr ""
 msgid "VPN PPTP"
 msgstr ""
 
-#: src/www/diag_logs_tabs.php:35
 #: src/www/diag_logs_vpn.php:30
 #: src/www/fbegin.inc:428
 #: src/www/vpn_ipsec.php:205
@@ -23449,7 +22219,6 @@ msgid "Verify SSL peer"
 msgstr ""
 
 #: src/www/diag_confbak.php:254
-#: src/www/pkg_mgr_installed.php:119
 #: src/www/widgets/widgets/system_information.widget.php:106
 msgid "Version"
 msgstr ""
@@ -23472,10 +22241,6 @@ msgstr ""
 msgid "View current page"
 msgstr ""
 
-#: src/www/diag_nanobsd.php:231
-msgid "View previous upgrade log"
-msgstr ""
-
 #: src/www/firewall_rules_edit.php:867
 msgid "View the NAT rule"
 msgstr ""
@@ -23486,10 +22251,6 @@ msgstr ""
 
 #: src/www/diag_system_pftop.php:118
 msgid "View type:"
-msgstr ""
-
-#: src/www/diag_nanobsd.php:228
-msgid "View upgrade log"
 msgstr ""
 
 #: src/www/diag_smart.php:320
@@ -23611,7 +22372,6 @@ msgstr ""
 #: src/www/services_captiveportal.php:505
 #: src/www/services_captiveportal.php:655
 #: src/www/services_captiveportal_filemanager.php:151
-#: src/www/services_captiveportal_hostname.php:90
 #: src/www/services_captiveportal_ip.php:91
 #: src/www/services_captiveportal_mac.php:157
 #: src/www/services_captiveportal_vouchers.php:83
@@ -23624,8 +22384,8 @@ msgstr ""
 msgid "WAN interface will be set to obtain an address automatically from a DHCP server"
 msgstr ""
 
-#: src/etc/inc/config.lib.inc:485
-msgid "WARNING: Config contents could not be save. Could not open file!"
+#: src/etc/inc/config.lib.inc:180
+msgid "WARNING: Config contents could not be saved. Could not open file!"
 msgstr ""
 
 #: src/etc/inc/util.inc:86
@@ -23761,10 +22521,6 @@ msgstr ""
 
 #: src/www/vpn_l2tp_users.php:87
 msgid "Warning: this will terminate all current l2tp sessions!"
-msgstr ""
-
-#: src/www/system_firmware.php:271
-msgid "Warning:"
 msgstr ""
 
 #: src/etc/inc/priv.defs.inc:432
@@ -24945,7 +23701,7 @@ msgstr ""
 #: src/www/interfaces_wireless.php:66
 #: src/www/interfaces_wireless.php:93
 #: src/www/interfaces_wireless_edit.php:138
-#: src/www/status_rrd_graph_tabs.php:19
+#: src/www/status_rrd_graph_tabs.inc:19
 #: src/www/status_wireless.php:31
 msgid "Wireless"
 msgstr ""
@@ -24989,10 +23745,6 @@ msgstr ""
 msgid "Would you like to submit the programming debug logs to the OPNsense developers for inspection?"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:655
-msgid "Writing configuration... "
-msgstr ""
-
 #: src/www/bandwidth_by_ip.php:47
 msgid "Wrong Interface"
 msgstr ""
@@ -25001,20 +23753,8 @@ msgstr ""
 msgid "Wrong data submitted"
 msgstr ""
 
-#: src/etc/inc/array_intersect_key.inc:37
-msgid "Wrong parameter count for array_intersect_key()"
-msgstr ""
-
 #: src/etc/inc/interfaces.inc:1191
 msgid "Wrong parameters used during interface_bring_down"
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:215
-msgid "XML configuration file not found.  %s cannot continue booting."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:1497
-msgid "XML error at line 1, check URL"
 msgstr ""
 
 #: src/etc/inc/xmlparse.inc:93
@@ -25038,10 +23778,6 @@ msgstr ""
 #: src/etc/inc/xmlparse.inc:207
 #: src/etc/inc/xmlparse_attr.inc:208
 msgid "XML error: no %s object found!"
-msgstr ""
-
-#: src/etc/inc/config.lib.inc:660
-msgid "XML error: unable to open file"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:640
@@ -25100,12 +23836,8 @@ msgstr ""
 #: src/www/diag_defaults.php:47
 #: src/www/diag_defaults.php:59
 #: src/www/diag_defaults.php:73
-#: src/www/halt.php:47
-#: src/www/halt.php:59
-#: src/www/pkg.php:424
 #: src/www/reboot.php:47
 #: src/www/reboot.php:57
-#: src/www/system_firmware.php:213
 msgid "Yes"
 msgstr ""
 
@@ -25119,10 +23851,6 @@ msgstr ""
 
 #: src/www/interfaces_qinq_edit.php:81
 msgid "You are editing an existing entry and modifying the interface is not allowed."
-msgstr ""
-
-#: src/www/system_firmware_auto.php:167
-msgid "You are on the latest version."
 msgstr ""
 
 #: src/www/firewall_shaper_layer7.php:54
@@ -25199,7 +23927,7 @@ msgstr ""
 msgid "You can not assign a IPv6 gateway group on IPv4 Address Family rule"
 msgstr ""
 
-#: src/www/system.php:135
+#: src/www/system_general.php:135
 msgid "You can not assign a gateway to DNS '%s' server which is on a directly connected network."
 msgstr ""
 
@@ -25220,11 +23948,11 @@ msgstr ""
 msgid "You can not assign the IPv6 Gateway to a IPv4 Filter rule"
 msgstr ""
 
-#: src/www/system.php:117
+#: src/www/system_general.php:117
 msgid "You can not specify IPv4 gateway '{$_POST[$dnsgwname]}' for IPv6 DNS server '{$_POST[$dnsname]}'"
 msgstr ""
 
-#: src/www/system.php:114
+#: src/www/system_general.php:114
 msgid "You can not specify IPv6 gateway '{$_POST[$dnsgwname]}' for IPv4 DNS server '{$_POST[$dnsname]}'"
 msgstr ""
 
@@ -25501,7 +24229,6 @@ msgid ""
 msgstr ""
 
 #: src/www/firewall_aliases_import.php:188
-#: src/www/services_captiveportal_hostname_edit.php:192
 #: src/www/services_captiveportal_ip_edit.php:208
 #: src/www/services_captiveportal_mac_edit.php:225
 #: src/www/services_captiveportal_zones_edit.php:115
@@ -25634,10 +24361,6 @@ msgstr ""
 
 #: src/www/firewall_aliases_edit.php:165
 msgid "You must provide a valid URL."
-msgstr ""
-
-#: src/www/system_firmware.php:259
-msgid "You must reboot the system before you can upgrade the firmware."
 msgstr ""
 
 #: src/www/vpn_openvpn_server.php:238
@@ -25955,7 +24678,6 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/www/services_captiveportal_hostname_edit.php:105
 #: src/www/services_captiveportal_ip_edit.php:108
 msgid "already allowed"
 msgstr ""
@@ -25975,14 +24697,6 @@ msgstr ""
 
 #: src/www/firewall_rules_edit.php:1112
 msgid "and almost never equal to the destination port range (and should usually be"
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:706
-msgid "and its dependencies."
-msgstr ""
-
-#: src/etc/inc/pkg-utils.inc:707
-msgid "and its dependencies... "
 msgstr ""
 
 #: src/www/services_dhcp.php:1089
@@ -26016,8 +24730,6 @@ msgstr ""
 #: src/www/firewall_rules_edit.php:1188
 #: src/www/firewall_rules_edit.php:1201
 #: src/www/interfaces.php:3040
-#: src/www/services_captiveportal_hostname.php:145
-#: src/www/services_captiveportal_hostname.php:152
 msgid "any"
 msgstr ""
 
@@ -26030,20 +24742,12 @@ msgstr ""
 msgid "aren't allowed."
 msgstr ""
 
-#: src/etc/inc/array_intersect_key.inc:45
-msgid "array_intersect_key() Argument #"
-msgstr ""
-
 #: src/www/system_advanced_firewall.php:231
 msgid "as the name says, it is the normal optimization algorithm"
 msgstr ""
 
 #: src/www/system_usermanager.php:147
 msgid "association removed."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:290
-msgid "authenticated mechanism %1$s may not be used: %2$s"
 msgstr ""
 
 #: src/www/diag_authentication.php:46
@@ -26155,31 +24859,6 @@ msgstr ""
 msgid "confirmation"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:686
-msgid "connection is already established and the recipient is already set"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:366
-msgid "connection is already established"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:640
-msgid "connection is not in the initial state"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:698
-msgid "connection is not in the recipient setting state"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:757
-#: src/etc/inc/smtp.inc:768
-msgid "connection is not in the sending data state"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:727
-msgid "connection is not in the start sending data state"
-msgstr ""
-
 #: src/www/interfaces.php:2658
 #: src/www/interfaces.php:2780
 msgid "connection. The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."
@@ -26204,18 +24883,6 @@ msgstr ""
 
 #: src/etc/inc/interfaces.inc:950
 msgid "could not bring realif up -- variable not defined -- interface_gif_configure()"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:257
-msgid "could not connect to the host \"%1$s\": %2$s"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:446
-msgid "could not determine the SMTP to connect"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:234
-msgid "could not resolve host \"%s\""
 msgstr ""
 
 #: src/www/guiconfig.inc:292
@@ -26416,10 +25083,6 @@ msgstr ""
 msgid "device not present! Is the modem attached to the system?"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:632
-msgid "direct delivery connection is already established and sender is already set"
-msgstr ""
-
 #: src/www/firewall_nat_1to1_edit.php:558
 #: src/www/firewall_nat_edit.php:823
 #: src/www/firewall_nat_edit.php:826
@@ -26429,14 +25092,6 @@ msgstr ""
 
 #: src/www/system_routes.php:132
 msgid "disabled route to"
-msgstr ""
-
-#: src/www/system_firmware_restorefullbackup.php:173
-msgid "do not restore config.xml."
-msgstr ""
-
-#: src/etc/inc/smtp.inc:238
-msgid "domain \"%s\" resolved to an address excluded to be valid"
 msgstr ""
 
 #: src/www/vpn_pptp.php:487
@@ -26469,29 +25124,6 @@ msgstr ""
 #: src/etc/inc/interfaces.inc:1105
 #: src/etc/inc/interfaces.inc:1118
 #: src/etc/inc/interfaces.inc:1978
-#: src/etc/inc/pkg-utils.inc:347
-#: src/etc/inc/pkg-utils.inc:635
-#: src/etc/inc/pkg-utils.inc:658
-#: src/etc/inc/pkg-utils.inc:736
-#: src/etc/inc/pkg-utils.inc:751
-#: src/etc/inc/pkg-utils.inc:785
-#: src/etc/inc/pkg-utils.inc:814
-#: src/etc/inc/pkg-utils.inc:821
-#: src/etc/inc/pkg-utils.inc:838
-#: src/etc/inc/pkg-utils.inc:854
-#: src/etc/inc/pkg-utils.inc:870
-#: src/etc/inc/pkg-utils.inc:977
-#: src/etc/inc/pkg-utils.inc:994
-#: src/etc/inc/pkg-utils.inc:1019
-#: src/etc/inc/pkg-utils.inc:1064
-#: src/etc/inc/pkg-utils.inc:1073
-#: src/etc/inc/pkg-utils.inc:1083
-#: src/etc/inc/pkg-utils.inc:1098
-#: src/etc/inc/pkg-utils.inc:1105
-#: src/etc/inc/pkg-utils.inc:1124
-#: src/etc/inc/pkg-utils.inc:1451
-#: src/etc/inc/pkg-utils.inc:1477
-#: src/etc/inc/pkg-utils.inc:1520
 #: src/etc/inc/rrd.inc:922
 #: src/etc/inc/services.inc:1298
 #: src/etc/inc/services.inc:1678
@@ -26510,10 +25142,6 @@ msgstr ""
 msgid "done.%s"
 msgstr ""
 
-#: src/www/system_firmware_auto.php:165
-msgid "download complete."
-msgstr ""
-
 #: src/www/firewall_nat_edit.php:782
 #: src/www/services_dnsmasq_domainoverride_edit.php:140
 #: src/www/services_dnsmasq_domainoverride_edit.php:147
@@ -26525,8 +25153,8 @@ msgstr ""
 #: src/www/services_unbound_host_edit.php:205
 #: src/www/services_unbound_host_edit.php:213
 #: src/www/services_unbound_host_edit.php:221
-#: src/www/system.php:300
-#: src/www/system.php:311
+#: src/www/system_general.php:300
+#: src/www/system_general.php:311
 msgid "e.g."
 msgstr ""
 
@@ -26655,18 +25283,6 @@ msgstr ""
 msgid "error page"
 msgstr ""
 
-#: src/etc/inc/meta.inc:132
-msgid "error: tag mismatch ( %1$s != %2$s ) in '%3$s'%4$s"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:222
-msgid "establishing SSL connections requires at least PHP version 4.3.0"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:225
-msgid "establishing SSL connections requires the OpenSSL extension enabled"
-msgstr ""
-
 #: src/www/system_camanager.php:528
 #: src/www/system_camanager.php:538
 #: src/www/system_camanager.php:548
@@ -26733,10 +25349,6 @@ msgstr ""
 msgid "failed!"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:1444
-msgid "failed!nnInstallation aborted.n"
-msgstr ""
-
 #: src/www/system_usermanager_settings_test.php:72
 #: src/www/system_usermanager_settings_test.php:75
 #: src/www/system_usermanager_settings_test.php:78
@@ -26800,10 +25412,6 @@ msgstr ""
 
 #: src/www/services_captiveportal_vouchers_edit.php:201
 msgid "found on top of the generated/printed vouchers. WARNING: Changing this number for an existing Roll will mark all vouchers as unused again"
-msgstr ""
-
-#: src/www/services_captiveportal_hostname.php:153
-msgid "from"
 msgstr ""
 
 #: src/www/firewall_nat_edit.php:621
@@ -26898,10 +25506,6 @@ msgstr ""
 msgid "incoming (as seen by firewall)"
 msgstr ""
 
-#: src/www/pkg_mgr_install.php:205
-msgid "installation completed."
-msgstr ""
-
 #: src/www/diag_arp.php:363
 msgid "instead of ARP"
 msgstr ""
@@ -26974,46 +25578,6 @@ msgstr ""
 msgid "is"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:266
-msgid "it is not possible to authenticate using the specified mechanism because the SASL library class is not loaded"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:681
-msgid "it is not possible to deliver directly to recipients of different domains"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:542
-msgid "it is not supported any of the authentication mechanisms required by the server"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:114
-msgid "it was not possible to read line from the SMTP server"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:136
-msgid "it was not possible to send a line to the SMTP server"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:150
-msgid "it was not possible to send data to the SMTP server"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:804
-msgid "it was not previously established a SMTP connection"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:662
-msgid "it was not specified a valid direct recipient"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:410
-msgid "it was not specified the POP3 authentication password"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:404
-msgid "it was not specified the POP3 authentication user"
-msgstr ""
-
 #: src/www/firewall_rules_edit.php:1387
 #: src/www/firewall_rules_edit.php:1396
 msgid "keep state"
@@ -27053,10 +25617,6 @@ msgstr ""
 
 #: src/etc/inc/shaper.inc:1649
 msgid "linkshare service curve defined but missing initial bandwidth (m1) value"
-msgstr ""
-
-#: src/etc/inc/meta.inc:68
-msgid "list_phpfiles: unable to examine path %s\n"
 msgstr ""
 
 #: src/www/guiconfig.inc:1041
@@ -27104,11 +25664,6 @@ msgstr ""
 msgid "matched log entries."
 msgstr ""
 
-#: TODO: figure out what's going on with src/etc/inc/xmlrpc_server.inc:392
-#: src/etc/inc/xmlrpc_client.inc:1361
-msgid "mb_convert_encoding() is not available"
-msgstr ""
-
 #: src/www/interfaces_qinq_edit.php:263
 msgid "members"
 msgstr ""
@@ -27129,10 +25684,6 @@ msgstr ""
 #: src/www/services_captiveportal_vouchers_edit.php:84
 #: src/www/system_advanced_misc.php:570
 msgid "minutes"
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:260
-msgid "missing top level xmlrpc element"
 msgstr ""
 
 #: src/www/load_balancer_relay_action_edit.php:124
@@ -27200,7 +25751,7 @@ msgstr ""
 msgid "move selected rules to end"
 msgstr ""
 
-#: src/www/system.php:311
+#: src/www/system_general.php:311
 msgid "mycorp.com, home, office, private, etc."
 msgstr ""
 
@@ -27364,21 +25915,8 @@ msgstr ""
 msgid "outgoing (as seen by firewall)"
 msgstr ""
 
-#: src/etc/inc/pkg-utils.inc:639
-msgid "overwrite!"
-msgstr ""
-
-#: src/www/pkg_mgr_installed.php:105
-msgid "packages"
-msgstr ""
-
 #: src/www/diag_packet_capture.php:255
 msgid "packet capture"
-msgstr ""
-
-#: src/www/pkg_mgr_settings.php:119
-#: src/www/system_firmware_settings.php:156
-msgid "page is viewed."
 msgstr ""
 
 #: src/www/firewall_rules_edit.php:1224
@@ -27435,10 +25973,6 @@ msgstr ""
 msgid "phase2 for %s"
 msgstr ""
 
-#: src/www/pkg_mgr.php:266
-msgid "platform"
-msgstr ""
-
 #: src/www/load_balancer_setting.php:145
 msgid "prefork"
 msgstr ""
@@ -27467,10 +26001,6 @@ msgstr ""
 #: src/www/diag_system_pftop.php:145
 #: src/www/status_interfaces.php:454
 msgid "rate"
-msgstr ""
-
-#: src/etc/inc/smtp.inc:108
-msgid "reached the end of data while reading from the SMTP server conection"
 msgstr ""
 
 #: src/www/status_captiveportal_voucher_rolls.php:95
@@ -27650,16 +26180,8 @@ msgstr ""
 msgid "send Wake on LAN packet to this MAC address"
 msgstr ""
 
-#: src/etc/inc/smtp.inc:478
-msgid "server does not require authentication"
-msgstr ""
-
 #: src/etc/inc/pfsense-utils.inc:431
 msgid "setsockopt() failed, error: %s"
-msgstr ""
-
-#: src/www/pkg_mgr_install.php:280
-msgid "setup instructions"
 msgstr ""
 
 #: src/www/services_captiveportal.php:925
@@ -27735,11 +26257,6 @@ msgstr ""
 msgid "that has been granted secure shell access."
 msgstr ""
 
-#: src/www/services_captiveportal_hostname.php:146
-#: src/www/services_captiveportal_hostname.php:153
-msgid "the Hostname are allowed"
-msgstr ""
-
 #: src/www/diag_defaults.php:59
 msgid "the firewall will:"
 msgstr ""
@@ -27767,14 +26284,6 @@ msgstr ""
 #: src/www/interfaces_bridge_edit.php:439
 #: src/www/load_balancer_setting.php:129
 msgid "timeout"
-msgstr ""
-
-#: src/www/services_captiveportal_hostname_edit.php:179
-msgid "to allow access from all clients (even non-authenticated ones) behind the portal to this Hostname"
-msgstr ""
-
-#: src/www/services_captiveportal_hostname_edit.php:178
-msgid "to always allow an Hostname through the captive portal (without authentication)"
 msgstr ""
 
 #: src/www/interfaces.php:2619
@@ -27815,7 +26324,6 @@ msgstr ""
 #: src/www/diag_dump_states_sources.php:177
 #: src/www/firewall_nat_edit.php:649
 #: src/www/firewall_nat_edit.php:772
-#: src/www/services_captiveportal_hostname.php:146
 #: src/www/services_dhcp.php:839
 #: src/www/services_dhcpv6.php:596
 #: src/www/services_dhcpv6.php:603
@@ -27853,10 +26361,6 @@ msgstr ""
 #: src/www/load_balancer_relay_protocol_edit.php:98
 #: src/www/load_balancer_relay_protocol_edit.php:100
 msgid "type"
-msgstr ""
-
-#: src/etc/inc/meta.inc:99
-msgid "unable to read %sn"
 msgstr ""
 
 #: src/www/services_captiveportal.php:928
@@ -27940,18 +26444,6 @@ msgstr ""
 msgid "virtual full time"
 msgstr ""
 
-#: src/etc/inc/meta.inc:185
-msgid "warning: tag %1\$s has invalid data in '%2\$s'%3\$s"
-msgstr ""
-
-#: src/etc/inc/meta.inc:163
-msgid "warning: tag %1$s has malformed data in '%2$s'%3$s"
-msgstr ""
-
-#: src/etc/inc/meta.inc:143
-msgid "warning: tag %1$s has no data in '%2$s'%3$s"
-msgstr ""
-
 #: src/www/diag_defaults.php:67
 msgid "webConfigurator admin password will be reset to"
 msgstr ""
@@ -28016,12 +26508,7 @@ msgstr ""
 msgid "www.example.com"
 msgstr ""
 
-#: src/etc/inc/xmlrpc_client.inc:268
-msgid "xmlrpc element %1$s cannot be child of %2$s"
-msgstr ""
-
 #: src/www/diag_routes.php:172
-#: src/www/pkg_mgr_settings.php:114
 #: src/www/services_captiveportal.php:828
 #: src/www/services_captiveportal.php:873
 #: src/www/services_captiveportal.php:897
@@ -28041,10 +26528,6 @@ msgstr ""
 
 #: src/www/services_dhcp.php:266
 msgid "The Captive Portal zone '%s' has Hard Timeout parameter set to a value bigger than Default lease time (%s)."
-msgstr ""
-
-#: src/etc/inc/xmlrpc_client.inc:860
-msgid "send()'s %s parameter must be an XML_RPC_Message object."
 msgstr ""
 
 #: internationalize date() calls
@@ -28068,29 +26551,9 @@ msgid "$_POST['Submit']) == \"No\""
 msgstr ""
 
 # TODO: unqouted gettext string,
-# src/www/pkg_mgr.php:174
-#msgid ($category)
-#msgstr ""
-
-# TODO: unqouted gettext string,
-# src/www/pkg.php:437
-#msgid ($column['listmodeoff']). $column['suffix'];
-#msgstr ""
-
-# TODO: unqouted gettext string,
-# src/www/pkg.php:434
-#msgid ($column['listmodeon']). $column['suffix'];
-#msgstr ""
-
-# TODO: unqouted gettext string,
 # src/www/status_interfaces.php:76
 # src/www/system_advanced_firewall.php:516
 #msgid ($ifdesc);?></option>
-#msgstr ""
-
-# TODO: unqouted gettext string,
-# src/www/pkg_mgr.php:249
-#msgid ($index['category']).'</td>'."n";
 #msgstr ""
 
 # TODO: unqouted gettext string,
@@ -28107,12 +26570,6 @@ msgstr ""
 #msgstr ""
 
 # TODO: unqouted vars gettext string,
-# src/etc/inc/pkg-utils.inc:1402
-# src/etc/inc/pkg-utils.inc:1414
-#msgid ($msg)
-#msgstr ""
-
-# TODO: unqouted vars gettext string,
 # src/www/system_advanced_misc.php:213
 # src/www/system_advanced_network.php:139
 # src/www/vpn_ipsec_settings.php:96
@@ -28122,11 +26579,6 @@ msgstr ""
 # TODO: unqouted vars gettext string,
 # src/etc/inc/functions.inc:32
 #msgid ($text) {
-#msgstr ""
-
-# TODO: unqouted vars gettext string,
-# src/www/pkg.php:49
-#msgid ($title_msg)
 #msgstr ""
 
 # TODO: unqouted vars gettext string,
@@ -28157,11 +26609,6 @@ msgstr ""
 # TODO: vars cleanup, does this even work: 
 # src/www/system_gateways_edit.php:799:
 #msgid (sprintf("How often that an ICMP probe will be sent in seconds. Default is %d.", $apinger_default['interval']));?><br /><br />
-#msgstr ""
-
-# TODO: vars cleanup, does this even work: 
-# src/www/pkg_mgr_install.php:276
-#msgid (sprintf("Installation of %s completed.", $pkgid)); 				update_status($status_a);
 #msgstr ""
 
 # TODO: vars cleanup, does this even work: 
@@ -28225,14 +26672,6 @@ msgid ""
 "end of the returned results are removed before comparison.");?>
 msgstr ""
 
-#: src/www/system_firmware_auto.php:202
-msgid "is now upgrading."
-msgstr ""
-
-#: src/www/system_firmware_auto.php:202
-msgid "The firewall will reboot once the operation is completed."
-msgstr ""
-
 # TODO: These lines need clarification in the source:
 # src/www/interfaces.php:1931
 # src/www/interfaces.php:2092
@@ -28250,3 +26689,16 @@ msgstr ""
 # src/www/interfaces.php:2288
 # src/www/interfaces.php:2317
 # src/www/interfaces.php:2288
+
+#: src/etc/inc/config.lib.inc:157
+msgid "WARNING: User"
+msgstr ""
+
+#: src/etc/inc/config.lib.inc:157
+msgid "may not write config (user-config-readonly set)"
+msgstr ""
+
+#: src/etc/inc/config.lib.inc:169
+msgid "WARNING: Corrupt config!"
+msgstr ""
+
