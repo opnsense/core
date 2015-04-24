@@ -2025,9 +2025,10 @@ function upgrade_054_to_055() {
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
 	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
-	unlink_if_exists("/var/db/rrd/*.xml");
-	if (file_exists("/var/run/booting"))
+	mwexec('/bin/rm /var/db/rrd/*.xml');
+	if (file_exists("/var/run/booting")) {
 		echo "Updating configuration...";
+	}
 }
 
 function upgrade_055_to_056() {

@@ -204,7 +204,7 @@ function write_config($desc = 'Unknown', $backup = true)
  ******/
 function reset_factory_defaults($sync = true)
 {
-	unlink_if_exists('/conf/*' . $filename);
+	mwexec('/bin/rm -r /conf/*');
 	disable_security_checks();
 	setup_serial_port();
 
@@ -217,7 +217,8 @@ function reset_factory_defaults($sync = true)
 	}
 }
 
-function config_restore($conffile) {
+function config_restore($conffile)
+{
 	global $config, $g;
 
 	if (!file_exists($conffile))
