@@ -333,26 +333,34 @@ EODD;
 			if(isset($config['nat']))
 				unset($config['nat']);
 		}
-		if (preg_match($g['wireless_regex'], $lanif)) {
+
+		if (match_wireless_interface($lanif)) {
 			if (is_array($config['interfaces']['lan']) &&
-				(!is_array($config['interfaces']['lan']['wireless'])))
+				(!is_array($config['interfaces']['lan']['wireless']))) {
 				$config['interfaces']['lan']['wireless'] = array();
+			}
 		} else {
-			if (isset($config['interfaces']['lan']))
+			if (isset($config['interfaces']['lan'])) {
 				unset($config['interfaces']['lan']['wireless']);
+			}
 		}
 
-		if (!is_array($config['interfaces']['wan']))
+		if (!is_array($config['interfaces']['wan'])) {
 			$config['interfaces']['wan'] = array();
+		}
+
 		$config['interfaces']['wan']['if'] = $wanif;
 		$config['interfaces']['wan']['enable'] = true;
-		if (preg_match($g['wireless_regex'], $wanif)) {
+
+		if (match_wireless_interface($wanif)) {
 			if (is_array($config['interfaces']['wan']) &&
-				(!is_array($config['interfaces']['wan']['wireless'])))
+				(!is_array($config['interfaces']['wan']['wireless']))) {
 				$config['interfaces']['wan']['wireless'] = array();
+			}
 		} else {
-			if (isset($config['interfaces']['wan']))
+			if (isset($config['interfaces']['wan'])) {
 				unset($config['interfaces']['wan']['wireless']);
+			}
 		}
 
 		for ($i = 0; $i < count($optif); $i++) {
@@ -361,8 +369,7 @@ EODD;
 
 			$config['interfaces']['opt' . ($i+1)]['if'] = $optif[$i];
 
-			/* wireless interface? */
-			if (preg_match($g['wireless_regex'], $optif[$i])) {
+			if (match_wireless_interface($optif[$i])) {
 				if (!is_array($config['interfaces']['opt' . ($i+1)]['wireless']))
 					$config['interfaces']['opt' . ($i+1)]['wireless'] = array();
 			} else {

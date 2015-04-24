@@ -4336,10 +4336,11 @@ function get_real_interface($interface = "wan", $family = "all", $realv6iface = 
 			case 'ppp':
 			case 'l2tp':
 			case 'pptp':
-				if( is_array($cfg['wireless']) || preg_match($g['wireless_regex'], $cfg['if']))
+				if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
 					$wanif = interface_get_wireless_clone($cfg['if']);
-				else
+				} else {
 					$wanif = $cfg['if'];
+				}
 				break;
 			default:
 				switch ($cfg['ipaddr']) {
@@ -4358,10 +4359,11 @@ function get_real_interface($interface = "wan", $family = "all", $realv6iface = 
 					}
 					break;
 				default:
-					if( is_array($cfg['wireless']) || preg_match($g['wireless_regex'], $cfg['if']))
+					if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
 						$wanif = interface_get_wireless_clone($cfg['if']);
-					else
+					} else {
 						$wanif = $cfg['if'];
+					}
 					break;
 				}
 				break;
@@ -4370,10 +4372,11 @@ function get_real_interface($interface = "wan", $family = "all", $realv6iface = 
 			// Wireless cloned NIC support (FreeBSD 8+)
 			// interface name format: $parentnic_wlanparentnic#
 			// example: ath0_wlan0
-			if( (isset($cfg['wireless']) && is_array($cfg['wireless'])) || preg_match($g['wireless_regex'], $cfg['if']))
+			if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
 				$wanif = interface_get_wireless_clone($cfg['if']);
-			else
+			} else {
 				$wanif = $cfg['if'];
+			}
 		}
 		break;
 	}
@@ -5050,19 +5053,22 @@ function is_altq_capable($int)
  * RESULT
  *   $tmp       - Returns if an interface is wireless
  ******/
-function is_interface_wireless($interface) {
+function is_interface_wireless($interface)
+{
 	global $config, $g;
 
 	$friendly = convert_real_interface_to_friendly_interface_name($interface);
-	if(!isset($config['interfaces'][$friendly]['wireless'])) {
-		if (preg_match($g['wireless_regex'], $interface)) {
-			if (isset($config['interfaces'][$friendly]))
+	if (!isset($config['interfaces'][$friendly]['wireless'])) {
+		if (match_wireless_interface($interface)) {
+			if (isset($config['interfaces'][$friendly])) {
 				$config['interfaces'][$friendly]['wireless'] = array();
+			}
 			return true;
 		}
 		return false;
-	} else
-		return true;
+	}
+
+	return true;
 }
 
 function get_wireless_modes($interface) {
