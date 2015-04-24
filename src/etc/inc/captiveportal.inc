@@ -401,7 +401,7 @@ function captiveportal_configure_zone($cpcfg) {
             echo "Starting captive portal({$cpcfg['zone']})... ";
 
             /* remove old information */
-            unlink_if_exists("{$g['vardb_path']}/captiveportal{$cpzone}.db");
+            @unlink("/var/db/captiveportal{$cpzone}.db");
         } else
             captiveportal_syslog("Reconfiguring captive portal({$cpcfg['zone']}).");
         /* kill any running minicron */
@@ -540,7 +540,7 @@ EOD;
 	);
 
         /* generate radius server database */
-        unlink_if_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db");
+        @unlink("/var/db/captiveportal_radius_{$cpzone}.db");
         captiveportal_init_radius_servers();
 
         if (file_exists("/var/run/booting")) {
@@ -565,9 +565,9 @@ EOD;
         }
 
         /* remove old information */
-        unlink_if_exists("{$g['vardb_path']}/captiveportal{$cpzone}.db");
-        unlink_if_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db");
-        unlink_if_exists("{$g['vardb_path']}/captiveportal_{$cpzone}.rules");
+        @unlink("/var/db/captiveportal{$cpzone}.db");
+        @unlink("/var/db/captiveportal_radius_{$cpzone}.db");
+        @unlink("/var/db/captiveportal_{$cpzone}.rules");
         /* Release allocated pipes for this zone */
         captiveportal_free_dnrules();
 
@@ -953,7 +953,7 @@ function captiveportal_init_radius_servers() {
         $radiuskey4 = $config['captiveportal'][$cpzone]['radiuskey4'];
 
         $cprdsrvlck = lock("captiveportalradius{$cpzone}", LOCK_EX);
-        $fd = @fopen("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db", "w");
+        $fd = @fopen("/var/db/captiveportal_radius_{$cpzone}.db", "w");
         if (!$fd) {
             captiveportal_syslog("Error: cannot open radius DB file in captiveportal_configure().\n");
             unlock($cprdsrvlck);
@@ -979,9 +979,9 @@ function captiveportal_get_radius_servers() {
     global $g, $cpzone;
 
     $cprdsrvlck = lock("captiveportalradius{$cpzone}");
-    if (file_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db")) {
+    if (file_exists("/var/db/captiveportal_radius_{$cpzone}.db")) {
         $radiusservers = array();
-        $cpradiusdb = file("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db",
+        $cpradiusdb = file("/var/db/captiveportal_radius_{$cpzone}.db",
         FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if ($cpradiusdb) {
             foreach($cpradiusdb as $cpradiusentry) {
@@ -1103,8 +1103,8 @@ function captiveportal_free_dnrules($rulenos_start = 2000, $rulenos_range_max = 
     global $cpzone;
 
     $cpruleslck = lock("captiveportalrulesdn", LOCK_EX);
-    if (file_exists("{$g['vardb_path']}/captiveportaldn.rules")) {
-        $rules = unserialize(file_get_contents("{$g['vardb_path']}/captiveportaldn.rules"));
+    if (file_exists("/var/db/captiveportaldn.rules")) {
+        $rules = unserialize(file_get_contents("/var/db/captiveportaldn.rules"));
         $ridx = $rulenos_start;
         while ($ridx < $rulenos_range_max) {
             if ($rules[$ridx] == $cpzone) {
@@ -1115,7 +1115,7 @@ function captiveportal_free_dnrules($rulenos_start = 2000, $rulenos_range_max = 
             } else
                 $ridx += 2;
         }
-        file_put_contents("{$g['vardb_path']}/captiveportaldn.rules", serialize($rules));
+        file_put_contents("/var/db/captiveportaldn.rules", serialize($rules));
         unset($rules);
     }
     unlock($cpruleslck);
@@ -1126,8 +1126,8 @@ function captiveportal_get_next_dn_ruleno($rulenos_start = 2000, $rulenos_range_
 
     $cpruleslck = lock("captiveportalrulesdn", LOCK_EX);
     $ruleno = 0;
-    if (file_exists("{$g['vardb_path']}/captiveportaldn.rules")) {
-        $rules = unserialize(file_get_contents("{$g['vardb_path']}/captiveportaldn.rules"));
+    if (file_exists("/var/db/captiveportaldn.rules")) {
+        $rules = unserialize(file_get_contents("/var/db/captiveportaldn.rules"));
         $ridx = $rulenos_start;
         while ($ridx < $rulenos_range_max) {
             if (empty($rules[$ridx])) {
@@ -1147,7 +1147,7 @@ function captiveportal_get_next_dn_ruleno($rulenos_start = 2000, $rulenos_range_
         $rulenos_start++;
         $rules[$rulenos_start] = $cpzone;
     }
-    file_put_contents("{$g['vardb_path']}/captiveportaldn.rules", serialize($rules));
+    file_put_contents("/var/db/captiveportaldn.rules", serialize($rules));
     unlock($cpruleslck);
     unset($rules);
 
@@ -1158,12 +1158,12 @@ function captiveportal_free_dn_ruleno($ruleno) {
     global $config, $g;
 
     $cpruleslck = lock("captiveportalrulesdn", LOCK_EX);
-    if (file_exists("{$g['vardb_path']}/captiveportaldn.rules")) {
-        $rules = unserialize(file_get_contents("{$g['vardb_path']}/captiveportaldn.rules"));
+    if (file_exists("/var/db/captiveportaldn.rules")) {
+        $rules = unserialize(file_get_contents("/var/db/captiveportaldn.rules"));
         $rules[$ruleno] = false;
         $ruleno++;
         $rules[$ruleno] = false;
-        file_put_contents("{$g['vardb_path']}/captiveportaldn.rules", serialize($rules));
+        file_put_contents("/var/db/captiveportaldn.rules", serialize($rules));
         unset($rules);
     }
     unlock($cpruleslck);
@@ -1448,8 +1448,8 @@ function captiveportal_read_usedmacs_db() {
     global $g, $cpzone;
 
     $cpumaclck = lock("captiveusedmacs{$cpzone}");
-    if (file_exists("{$g['vardb_path']}/captiveportal_usedmacs_{$cpzone}.db")) {
-        $usedmacs = file("{$g['vardb_path']}/captiveportal_usedmacs_{$cpzone}.db", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if (file_exists("/var/db/captiveportal_usedmacs_{$cpzone}.db")) {
+        $usedmacs = file("/var/db/captiveportal_usedmacs_{$cpzone}.db", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if (!$usedmacs)
             $usedmacs = array();
     } else
@@ -1463,7 +1463,7 @@ function captiveportal_write_usedmacs_db($usedmacs) {
     global $g, $cpzone;
 
     $cpumaclck = lock("captiveusedmacs{$cpzone}", LOCK_EX);
-    @file_put_contents("{$g['vardb_path']}/captiveportal_usedmacs_{$cpzone}.db", implode("\n", $usedmacs));
+    @file_put_contents("/var/db/captiveportal_usedmacs_{$cpzone}.db", implode("\n", $usedmacs));
     unlock($cpumaclck);
 }
 

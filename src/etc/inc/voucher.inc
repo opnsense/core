@@ -364,15 +364,19 @@ function voucher_configure_zone($sync = false)
 /* write bitstring of used vouchers to ramdisk.
  * Bitstring must already be base64_encoded!
  */
-function voucher_write_used_db($roll, $vdb) {
-	global $g, $cpzone;
+function voucher_write_used_db($roll, $vdb)
+{
+	global $cpzone;
 
-	$fd = fopen("{$g['vardb_path']}/voucher_{$cpzone}_used_$roll.db", "w");
+	$fn = "/var/db/voucher_{$cpzone}_used_{$roll}.db";
+
+	$fd = fopen($fn, 'w');
 	if ($fd) {
 		fwrite($fd, $vdb . "\n");
 		fclose($fd);
-	} else
-		voucher_log(LOG_ERR, sprintf(gettext('cant write %1$s/voucher_%s_used_%2$s.db'), $g['vardb_path'], $cpzone, $roll));
+	} else {
+		voucher_log(LOG_ERR, sprintf(gettext('Can\'t write %s'), $fn));
+	}
 }
 
 /* return assoc array of active vouchers with activation timestamp
@@ -383,7 +387,7 @@ function voucher_read_active_db($roll) {
 
 	$active = array();
 	$dirty = 0;
-	$file = "{$g['vardb_path']}/voucher_{$cpzone}_active_$roll.db";
+	$file = "/var/db/voucher_{$cpzone}_active_{$roll}.db";
 	if (file_exists($file)) {
 		$fd = fopen($file, "r");
 		if ($fd) {
@@ -415,7 +419,7 @@ function voucher_write_active_db($roll, $active) {
 
 	if (!is_array($active))
 		return;
-    $fd = fopen("{$g['vardb_path']}/voucher_{$cpzone}_active_$roll.db", "w");
+    $fd = fopen("/var/db/voucher_{$cpzone}_active_{$roll}.db", "w");
     if ($fd) {
         foreach($active as $voucher => $value)
             fwrite($fd, "$voucher,$value\n");
@@ -442,32 +446,35 @@ function voucher_used_count($roll) {
     return $used;
 }
 
-function voucher_read_used_db($roll) {
-    global $g, $cpzone;
+function voucher_read_used_db($roll)
+{
+	global $cpzone;
 
-    $vdb = "";
-    $file = "{$g['vardb_path']}/voucher_{$cpzone}_used_$roll.db";
-    if (file_exists($file)) {
-        $fd = fopen($file, "r");
+	$fn = "/var/db/voucher_{$cpzone}_used_{$roll}.db";
+	$vdb = '';
+
+        $fd = fopen($fn, 'r');
         if ($fd) {
-            $vdb = trim(fgets($fd));
-            fclose($fd);
-        } else {
-	    voucher_log(LOG_ERR, sprintf(gettext('cant read %1$s/voucher_%s_used_%2$s.db'), $g['vardb_path'], $cpzone, $roll));
-        }
-    }
-    return base64_decode($vdb);
+		$vdb = trim(fgets($fd));
+		fclose($fd);
+	} else {
+		voucher_log(LOG_ERR, sprintf(gettext('Can\'t read %s'), $fn));
+	}
+
+	return base64_decode($vdb);
 }
 
-function voucher_unlink_db($roll) {
-    global $g, $cpzone;
-    @unlink("{$g['vardb_path']}/voucher_{$cpzone}_used_$roll.db");
-    @unlink("{$g['vardb_path']}/voucher_{$cpzone}_active_$roll.db");
+function voucher_unlink_db($roll)
+{
+	global $cpzone;
+
+	@unlink("/var/db/voucher_{$cpzone}_used_{$roll}.db");
+	@unlink("/var/db/voucher_{$cpzone}_active_{$roll}.db");
 }
 
 /* we share the log with captiveportal for now */
-function voucher_log($priority, $message) {
-
+function voucher_log($priority, $message)
+{
     $message = trim($message);
     openlog("logportalauth", LOG_PID, LOG_LOCAL4);
     syslog($priority, sprintf(gettext("Voucher: %s"),$message));

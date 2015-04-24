@@ -146,7 +146,7 @@ target default {
 	alarms "down","delay","loss"
 
 	## Location of the RRD
-	#rrd file "{$g['vardb_path']}/rrd/apinger-%t.rrd"
+	#rrd file "/var/db/rrd/apinger-%t.rrd"
 }
 
 EOD;
@@ -324,7 +324,7 @@ EOD;
 		if (isset($gateway['force_down']))
 			$apingercfg .= "\tforce_down on\n";
 
-		$apingercfg .= "	rrd file \"{$g['vardb_path']}/rrd/{$gateway['name']}-quality.rrd\"\n";
+		$apingercfg .= "	rrd file \"/var/db/rrd/{$gateway['name']}-quality.rrd\"\n";
 		$apingercfg .= "}\n";
 		$apingercfg .= "\n";
 
@@ -334,14 +334,14 @@ EOD;
 		# Create gateway quality RRD with settings more suitable for OPNsense graph set,
 		# since apinger uses default step (300; 5 minutes) and other settings that don't
 		# match the OPNsense gateway quality graph set.
-		create_gateway_quality_rrd("{$g['vardb_path']}/rrd/{$gateway['name']}-quality.rrd");
+		create_gateway_quality_rrd("/var/db/rrd/{$gateway['name']}-quality.rrd");
 	}
 	@file_put_contents('/var/etc/apinger.conf', $apingerconfig);
 	unset($apingerconfig);
 
 	@chmod('/tmp', 01777);
-	@mkdir("{$g['vardb_path']}/rrd", 0775);
-	@chown("{$g['vardb_path']}/rrd", "nobody");
+	@mkdir('/var/db/rrd', 0775);
+	@chown('/var/db/rrd', 'nobody');
 
 	/* Restart apinger process */
 	if (isvalidpid('/var/run/apinger.pid')) {

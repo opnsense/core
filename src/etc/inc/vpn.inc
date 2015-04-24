@@ -88,8 +88,8 @@ function vpn_ipsec_configure($ipchg = false)
 	global $config, $g, $sa, $sn, $p1_ealgos, $p2_ealgos;
 
 	/* get the automatic ping_hosts.sh ready */
-	unlink_if_exists("{$g['vardb_path']}/ipsecpinghosts");
-	touch("{$g['vardb_path']}/ipsecpinghosts");
+	@unlink('/var/db/ipsecpinghosts');
+	touch('/var/db/ipsecpinghosts');
 
 	vpn_ipsec_configure_preferoldsa();
 
@@ -256,7 +256,7 @@ function vpn_ipsec_configure($ipchg = false)
 					}
 				}
 			}
-			@file_put_contents("{$g['vardb_path']}/ipsecpinghosts", $ipsecpinghosts);
+			@file_put_contents('/var/db/ipsecpinghosts', $ipsecpinghosts);
 			unset($ipsecpinghosts);
 		}
 		unset($iflist);

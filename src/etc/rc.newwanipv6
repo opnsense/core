@@ -95,13 +95,13 @@ if (!empty($new_domain_name))
 
 /* write current WAN IPv6 to file */
 if (is_ipaddrv6($curwanipv6))
-	@file_put_contents("{$g['vardb_path']}/{$interface}_ipv6", $curwanipv6);
+	@file_put_contents("/var/db/{$interface}_ipv6", $curwanipv6);
 
 log_error("rc.newwanipv6: on (IP address: {$curwanipv6}) (interface: {$interface}) (real interface: {$interface_real}).");
 
 $oldipv6 = "";
-if (file_exists("{$g['vardb_path']}/{$interface}_cacheipv6"))
-	$oldipv6 = file_get_contents("{$g['vardb_path']}/{$interface}_cacheipv6");
+if (file_exists("/var/db/{$interface}_cacheipv6"))
+	$oldipv6 = file_get_contents("/var/db/{$interface}_cacheipv6");
 
 $grouptmp = link_interface_to_group($interface);
 if (!empty($grouptmp))
@@ -136,7 +136,7 @@ if (is_ipaddrv6($oldipv6)) {
 	} else if (does_interface_exist($interface_real))
 		mwexec("/sbin/ifconfig {$interface_real} inet6 {$oldipv6} delete");
 
-	file_put_contents("{$g['vardb_path']}/{$interface}_cacheipv6", $curwanipv6);
+	file_put_contents("/var/db/{$interface}_cacheipv6", $curwanipv6);
 }
 
 /* perform RFC 2136 DNS update */

@@ -121,10 +121,11 @@ if ($macfilter || $passthrumac) {
 }
 
 /* find out if we need RADIUS + RADIUSMAC or not */
-if (file_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db")) {
+if (file_exists("/var/db/captiveportal_radius_{$cpzone}.db")) {
 	$radius_enable = TRUE;
-	if (isset($cpcfg['radmac_enable']))
+	if (isset($cpcfg['radmac_enable'])) {
 		$radmac_enable = TRUE;
+	}
 }
 
 /* find radius context */

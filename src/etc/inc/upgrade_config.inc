@@ -2025,7 +2025,7 @@ function upgrade_054_to_055() {
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
 	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
-	unlink_if_exists("{$g['vardb_path']}/rrd/*.xml");
+	unlink_if_exists("/var/db/rrd/*.xml");
 	if (file_exists("/var/run/booting"))
 		echo "Updating configuration...";
 }
@@ -2529,7 +2529,7 @@ function upgrade_077_to_078() {
 function upgrade_078_to_079() {
 	global $g;
 	/* Delete old and unused RRD file */
-	unlink_if_exists("{$g['vardb_path']}/rrd/captiveportal-totalusers.rrd");
+	unlink_if_exists("/var/db/rrd/captiveportal-totalusers.rrd");
 }
 
 function upgrade_079_to_080() {
@@ -2967,9 +2967,9 @@ function upgrade_092_to_093() {
 	$suffixes = array("concurrent", "loggedin");
 
 	foreach ($suffixes as $suffix)
-		if (file_exists("{$g['vardb_path']}/rrd/captiveportal-{$suffix}.rrd"))
-			rename("{$g['vardb_path']}/rrd/captiveportal-{$suffix}.rrd",
-				"{$g['vardb_path']}/rrd/captiveportal-cpZone-{$suffix}.rrd");
+		if (file_exists("/var/db/rrd/captiveportal-{$suffix}.rrd"))
+			rename("/var/db/rrd/captiveportal-{$suffix}.rrd",
+				"/var/db/rrd/captiveportal-cpZone-{$suffix}.rrd");
 
 	enable_rrd_graphing();
 }

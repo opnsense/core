@@ -38,7 +38,6 @@ $g = array(
 	"dhcpd_chroot_path" => "/var/dhcpd",
 	"unbound_chroot_path" => "/var/unbound",
 	"varetc_path" => "/var/etc",
-	"vardb_path" => "/var/db",
 	"admin_group" => "admins",
 	"product_name" => "OPNsense",
 	"product_website" => "https://opnsense.org",

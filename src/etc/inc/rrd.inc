@@ -864,7 +864,7 @@ function enable_rrd_graphing() {
 		$rrdupdatesh .= "done\n";
 		log_error(gettext("Creating rrd update script"));
 		/* write the rrd update script */
-		$updaterrdscript = "{$g['vardb_path']}/rrd/updaterrd.sh";
+		$updaterrdscript = '/var/db/rrd/updaterrd.sh';
 		$fd = fopen("$updaterrdscript", "w");
 		fwrite($fd, "$rrdupdatesh");
 		fclose($fd);

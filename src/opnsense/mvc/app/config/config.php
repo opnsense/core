@@ -20,9 +20,7 @@ return new \Phalcon\Config(array(
     'globals' => array(
         'config_path'    => '/conf/',
         'temp_path'      => '/tmp/',
-        'vardb_path'     => '/var/db/',
         'debug'          => false,
         'simulate_mode'  => false
-
     )
 ));
