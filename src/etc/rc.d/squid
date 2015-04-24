@@ -1,0 +1,144 @@
+#!/bin/sh
+#
+# $FreeBSD$
+#
+# PROVIDE: squid
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+# Note:
+# Set "squid_enable=yes" in either /etc/rc.conf, /etc/rc.conf.local or
+# /etc/rc.conf.d/squid to activate Squid.
+#
+# Additional variables you can define in one of these files:
+#
+# squid_chdir:	the directory into which the rc system moves into before
+# 		starting Squid. Default: /var/squid
+#
+# squid_conf:	The configuration file that Squid should use.
+#		Default: /usr/local/etc/squid/squid.conf
+#
+# squid_fib:	The alternative routing table id that Squid should use.
+#		Default: none
+#		See setfib(1) for further details. Note that the setfib(2)
+#		system call is not available in FreeBSD versions prior to 7.1.
+#
+# squid_user:	The user id that should be used to run the Squid master
+#		process. Default: squid.
+#		Note that you probably need to define "squid_user=root" if
+#		you want to run Squid in reverse proxy setups or if you want
+#		Squid to listen on a "privileged" port < 1024.
+#
+# squid_pidfile:
+#		The name (including the full path) of the Squid
+#		master process' PID file.
+#		Default: /var/run/squid/squid.pid.
+#		You only need to change this if you changed the
+#		corresponding entry in your Squid configuration.
+#
+# squid_flags:	Additional commandline arguments for Squid you might want to
+#		use. See squid(8) for further details.
+#
+# squid_krb5_ktname:
+#		Alternative Kerberos 5 Key Table.
+#		Default: none
+
+. /etc/rc.subr
+
+name=squid
+rcvar=squid_enable
+
+# Make sure that we invoke squid with "-f ${squid_conf}"; define this
+# variable early so reload_cmd and stop_precmd pick it up:
+
+extra_commands=reload
+reload_cmd=squid_reload
+start_precmd=squid_prestart
+start_postcmd=squid_getpid
+stop_precmd=squid_prestop
+stop_postcmd=squid_poststop
+
+# squid(8) will not start if ${squid_conf} is not present so try
+# to catch that beforehand via ${required_files} rather than make
+# squid(8) crash.
+
+squid_load_rc_config()
+{
+	: ${squid_chdir:=/var/squid}
+	: ${squid_conf:=/usr/local/etc/squid/squid.conf}
+	: ${squid_enable:=NO}
+	: ${squid_program:=/usr/local/sbin/squid}
+	: ${squid_pidfile:=/var/run/squid/squid.pid}
+	: ${squid_user:=squid}
+
+	required_args="-f ${squid_conf}"
+	required_dirs=$chdir
+	required_files=$squid_conf
+	command_args="${required_args} ${squid_flags}"
+	procname="?squid-*"
+	pidfile=$squid_pidfile
+	state_dir=/var/run/squid
+}
+
+squid_prestart()
+{
+	# prepare the state directory:
+	[ -d ${state_dir} ] && rm -rf ${state_dir}
+	install -d -o ${squid_user} -m 0755 ${state_dir}
+
+	# setup KRB5_KTNAME:
+	squid_krb5_ktname=${squid_krb5_ktname:-"NONE"}
+	if [ "${squid_krb5_ktname}" != "NONE" ]; then
+		export KRB5_KTNAME=${squid_krb5_ktname}
+	fi
+
+	# setup FIB tables:
+	if command -v check_namevarlist > /dev/null 2>&1; then
+		check_namevarlist fib && return 0
+	fi
+
+	${SYSCTL} net.fibs >/dev/null 2>&1 || return 0
+
+	squid_fib=${squid_fib:-"NONE"}
+	if [ "${squid_fib}" != "NONE" ]; then
+		command="setfib -F $squid_fib $command"
+	else
+		return 0
+	fi
+}
+
+squid_reload()
+{
+
+	$command $required_args $squid_flags -k reconfigure
+}
+
+squid_getpid()
+{
+	# retrieve the PID of the Squid master process explicitly here
+	# in case rc.subr was unable to determine it:
+	if [ -z "$rc_pid" ]; then
+		while ! [ -f ${pidfile} ]; do
+			sleep 1
+		done
+		read _pid _junk <${pidfile}
+		[ -z "${_pid}" ] || pid=${_pid}
+	else
+		pid=${rc_pid}
+	fi
+}
+
+squid_prestop()
+{
+	command_args="$command_args -k shutdown"
+	$command $required_args $squid_flags -k check 2>/dev/null
+}
+
+squid_poststop()
+{
+	rm -rf ${state_dir}
+}
+
+load_rc_config $name
+squid_load_rc_config
+run_rc_command $1
