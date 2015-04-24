@@ -342,9 +342,8 @@ function local_sync_accounts()
 			 * If a crontab was created to user, pw userdel will be interactive and
 			 * can cause issues. Just remove crontab before run it when necessary
 			 */
-			unlink_if_exists("/var/cron/tabs/{$line[0]}");
-			$cmd = "/usr/sbin/pw userdel -n '{$line[0]}'";
-			mwexec($cmd);
+			@unlink("/var/cron/tabs/{$line[0]}");
+			mwexecf('/usr/sbin/pw userdel -n %s', $line[0]);
 		}
 		pclose($fd);
 	}
@@ -364,8 +363,7 @@ function local_sync_accounts()
 			if ($line[2] > 65000) {
 				continue;
 			}
-			$cmd = "/usr/sbin/pw groupdel {$line[2]}";
-			mwexec($cmd);
+			mwexecf('/usr/sbin/pw groupdel %s', $line[2]);
 		}
 		pclose($fd);
 	}
@@ -477,12 +475,11 @@ function local_user_set(&$user)
 		$keys = base64_decode($user['authorizedkeys']);
 		@file_put_contents("{$user_home}/.ssh/authorized_keys", $keys);
 		@chown("{$user_home}/.ssh/authorized_keys", $user_name);
-	} else
-		unlink_if_exists("{$user_home}/.ssh/authorized_keys");
+	} else {
+		@unlink("{$user_home}/.ssh/authorized_keys");
+	}
 
-	$un = $lock_account ? "" : "un";
-	exec("/usr/sbin/pw {$un}lock {$user_name} -q");
-
+	mwexecf('/usr/sbin/pw %s %s -q', array($lock_account ? 'lock' : 'unlock', $user_name));
 }
 
 function local_user_del($user)
@@ -622,23 +619,20 @@ function local_group_set($group, $reset = false)
 	pclose($fd);
 
 	/* determine add or mod */
-	if (!strncmp($pwread, "pw:", 3))
+	if (!strncmp($pwread, "pw:", 3)) {
 		$group_op = "groupadd";
-	else
+	} else {
 		$group_op = "groupmod";
+	}
 
 	/* add or mod group db */
-	$cmd = "/usr/sbin/pw {$group_op} {$group_name} -g {$group_gid} -M {$group_members} 2>&1";
-
-	mwexec($cmd);
-
+	mwexecf('/usr/sbin/pw %s %s -g %s -M %s', array($group_op, $group_name, $group_gid, $group_members));
 }
 
 function local_group_del($group)
 {
 	/* delete from group db */
-	$cmd = "/usr/sbin/pw groupdel {$group['name']}";
-	mwexec($cmd);
+	mwexecf('/usr/sbin/pw groupdel %s', $group['name']);
 }
 
 function ldap_test_connection($authcfg)
@@ -1462,5 +1456,3 @@ function http_basic_auth($http_auth_header)
     // not authenticated
     return false;
 }
-
-?>

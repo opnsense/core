@@ -30,7 +30,7 @@ function dump_rrd_to_xml($rrddatabase, $xmldumpfile)
 {
 	$rrdtool = '/usr/local/bin/rrdtool';
 
-	unlink_if_exists($xmldumpfile);
+	@unlink($xmldumpfile);
 
 	exec("$rrdtool dump " . escapeshellarg($rrddatabase) . " {$xmldumpfile} 2>&1", $dumpout, $dumpret);
 	if ($dumpret <> 0) {
@@ -77,7 +77,7 @@ function restore_rrd()
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
 		if (!isset($config['system']['use_mfs_tmpvar'])) {
-			unlink_if_exists('/conf/rrd.tgz');
+			@unlink('/conf/rrd.tgz');
 		}
 		return true;
 	}

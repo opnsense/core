@@ -937,9 +937,9 @@ function vpn_pptpd_configure() {
 		}
 
 		/* remove mpd.conf, if it exists */
-		unlink_if_exists("{$g['varetc_path']}/pptp-vpn/mpd.conf");
-		unlink_if_exists("{$g['varetc_path']}/pptp-vpn/mpd.links");
-		unlink_if_exists("{$g['varetc_path']}/pptp-vpn/mpd.secret");
+		@unlink('/var/etc/pptp-vpn/mpd.conf');
+		@unlink('/var/etc/pptp-vpn/mpd.links');
+		@unlink('/var/etc/pptp-vpn/mpd.secret');
 	}
 
 	if (empty($pptpdcfg['n_pptp_units'])) {

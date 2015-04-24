@@ -686,8 +686,8 @@ function reload_all_sync() {
 	system_ntp_configure();
 
 	/* sync pw database */
-	unlink_if_exists("/etc/spwd.db.tmp");
-	mwexec("/usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd");
+	@unlink('/etc/spwd.db.tmp');
+	mwexec('/usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd');
 
 	/* restart sshd */
 	mwexec_bg('/usr/local/etc/rc.sshd');
@@ -1657,18 +1657,19 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
 		|| $forceupdate) {
 
 		// Try to fetch the URL supplied
-		unlink_if_exists($urltable_filename . ".tmp");
+		@unlink("{$urltable_filename}.tmp");
 		$verify_ssl = isset($config['system']['checkaliasesurlcert']);
-		if (download_file($url, $urltable_filename . ".tmp", $verify_ssl)) {
+		if (download_file($url, "{$urltable_filename}.tmp", $verify_ssl)) {
 			mwexec("/usr/bin/sed -E 's/\;.*//g; /^[[:space:]]*($|#)/d' ". escapeshellarg($urltable_filename . ".tmp") . " > " . escapeshellarg($urltable_filename));
 			if (alias_get_type($name) == "urltable_ports") {
 				$ports = explode("\n", file_get_contents($urltable_filename));
 				$ports = group_ports($ports);
 				file_put_contents($urltable_filename, implode("\n", $ports));
 			}
-			unlink_if_exists($urltable_filename . ".tmp");
-		} else
+			@unlink("{$urltable_filename}.tmp");
+		} else {
 			touch($urltable_filename);
+		}
 		return true;
 	} else {
 		// File exists, and it doesn't need updated.

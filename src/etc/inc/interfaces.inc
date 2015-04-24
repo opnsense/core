@@ -2371,7 +2371,7 @@ function interface_wireless_configure($if, &$wl, &$wlcfg) {
 	 */
 
 	// Remove script file
-	unlink_if_exists("/tmp/{$if}_setup.sh");
+	@unlink("/tmp/{$if}_setup.sh");
 
 	// Clone wireless nic if needed.
 	interface_wireless_clone($if, $wl);
@@ -5198,7 +5198,7 @@ EOD;
 		chmod($cron_file, 0755);
 		killbypid('/var/run/cron.pid', 'HUP');
 	} else {
-		unlink_if_exists($cron_file);
+		@unlink($cron_file);
 	}
 }
 

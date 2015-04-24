@@ -1264,7 +1264,7 @@ function system_ntp_setup_gps($serialport) {
 		return false;
 
 	// Create symlink that ntpd requires
-	unlink_if_exists($gps_device);
+	@unlink($gps_device);
 	symlink($serialport, $gps_device);
 
 	/* Send the following to the GPS port to initialize the GPS */
@@ -1306,22 +1306,21 @@ function system_ntp_setup_gps($serialport) {
 	return true;
 }
 
-function system_ntp_setup_pps($serialport) {
-	global $config, $g;
-
+function system_ntp_setup_pps($serialport)
+{
 	$pps_device = '/dev/pps0';
-	$serialport = '/dev/'.$serialport;
+	$serialport = "/dev/{$serialport}";
 
-	if (!file_exists($serialport))
+	if (!file_exists($serialport)) {
 		return false;
+	}
 
 	// Create symlink that ntpd requires
-	unlink_if_exists($pps_device);
+	@unlink($pps_device);
 	@symlink($serialport, $pps_device);
 
 	return true;
 }
-
 
 function system_ntp_configure($start_ntpd = true)
 {

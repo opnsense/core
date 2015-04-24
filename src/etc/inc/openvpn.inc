@@ -873,14 +873,9 @@ function openvpn_delete($mode, & $settings)
 	@array_map('unlink', glob("{$g['varetc_path']}/openvpn/{$mode_id}.*"));
 }
 
-function openvpn_cleanup_csc($common_name) {
-	global $g, $config;
-	if (empty($common_name))
-		return;
-	$fpath = "{$g['varetc_path']}/openvpn-csc/" . basename($common_name);
-	if (is_file($fpath))
-		unlink_if_exists($fpath);
-	return;
+function openvpn_cleanup_csc($common_name)
+{
+	@unlink('/var/etc/openvpn-csc/' . basename($common_name));
 }
 
 function openvpn_resync_csc(& $settings) {
@@ -889,7 +884,7 @@ function openvpn_resync_csc(& $settings) {
 	$fpath = $g['varetc_path']."/openvpn-csc/".$settings['common_name'];
 
 	if (isset($settings['disable'])) {
-		unlink_if_exists($fpath);
+		@unlink($fpath);
 		return;
 	}
 	openvpn_create_dirs();
@@ -941,20 +936,17 @@ function openvpn_resync_csc(& $settings) {
 	chgrp($fpath, 'nobody');
 }
 
-function openvpn_delete_csc(& $settings) {
-	global $g, $config;
-
-	$fpath = $g['varetc_path']."/openvpn-csc/".$settings['common_name'];
-	unlink_if_exists($fpath);
+function openvpn_delete_csc(&$settings)
+{
+	@unlink("/var/etc/openvpn-csc/{$settings['common_name']}");
 }
 
-// Resync the configuration and restart the VPN
-function openvpn_resync($mode, $settings) {
+function openvpn_resync($mode, $settings)
+{
 	openvpn_reconfigure($mode, $settings);
 	openvpn_restart($mode, $settings);
 }
 
-// Resync and restart all VPNs
 function openvpn_resync_all($interface = '')
 {
 	global $g, $config;

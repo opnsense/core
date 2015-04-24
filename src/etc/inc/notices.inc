@@ -128,7 +128,7 @@ function close_notice($id)
 	$ids = array();
 	if(!$notices = get_notices()) return;
 	if($id == "all") {
-		unlink_if_exists('/tmp/notices');
+		@unlink('/tmp/notices');
 		return;
 	}
 	foreach(array_keys($notices) as $time) {
@@ -151,12 +151,9 @@ function close_notice($id)
 		fwrite($queueout, serialize($notices));
 		fclose($queueout);
 	} else {
-		unlink_if_exists('/tmp/notices');
+		@unlink('/tmp/notices');
 	}
-
-	return;
 }
-
 
 /****f* notices/print_notices
  * NAME
@@ -360,5 +357,3 @@ function notify_all_remote($msg) {
 	notify_via_smtp($msg);
 	notify_via_growl($msg);
 }
-
-?>
