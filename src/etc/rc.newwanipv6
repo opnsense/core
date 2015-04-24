@@ -87,11 +87,11 @@ if (!empty($new_domain_name_servers)) {
 	}
 
 	if (count($valid_ns > 0))
-		file_put_contents("{$g['varetc_path']}/nameserver_v6{$interface}", implode("\n", $valid_ns));
+		file_put_contents("/var/etc/nameserver_v6{$interface}", implode("\n", $valid_ns));
 }
 $new_domain_name = getenv("new_domain_name");
 if (!empty($new_domain_name))
-	file_put_contents("{$g['varetc_path']}/searchdomain_v6{$interface}", $new_domain_name);
+	file_put_contents("/var/etc/searchdomain_v6{$interface}", $new_domain_name);
 
 /* write current WAN IPv6 to file */
 if (is_ipaddrv6($curwanipv6))

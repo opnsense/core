@@ -71,8 +71,7 @@ if ($_POST) {
 if ($_GET['act'] == "del") {
 	if ($a_pppoes[$_GET['id']]) {
 		killbypid("/var/run/pppoe{$a_pppoes[$_GET['id']]['pppoeid']}-vpn.pid");
-		if (is_dir("{$g['varetc_path']}/pppoe" . $a_pppoes[$_GET['id']]['pppoeid']))
-			mwexec("/bin/rm -r {$g['varetc_path']}/pppoe" . $a_pppoes[$_GET['id']]['pppoeid']);
+		mwexecf('/bin/rm -r %s', "/var/etc/pppoe{$a_pppoes[$_GET['id']]['pppoeid']}");
 		unset($a_pppoes[$_GET['id']]);
 		write_config();
 		header("Location: vpn_pppoe.php");

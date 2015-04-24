@@ -156,11 +156,11 @@ if ($_GET['act'] == "del") {
 else if ($_GET['act'] == "csv") {
 	$privkey = base64_decode($config['voucher'][$cpzone]['privatekey']);
 	if (strstr($privkey,"BEGIN RSA PRIVATE KEY")) {
-		$fd = fopen("{$g['varetc_path']}/voucher_{$cpzone}.private","w");
+		$fd = fopen("/var/etc/voucher_{$cpzone}.private","w");
 		if (!$fd) {
 			$input_errors[] = gettext("Cannot write private key file") . ".\n";
 		} else {
-			chmod("{$g['varetc_path']}/voucher_{$cpzone}.private", 0600);
+			chmod("/var/etc/voucher_{$cpzone}.private", 0600);
 			fwrite($fd, $privkey);
 			fclose($fd);
 			$a_voucher = &$config['voucher'][$cpzone]['roll'];
@@ -170,11 +170,13 @@ else if ($_GET['act'] == "csv") {
 				$count = $a_voucher[$id]['count'];
 				header("Content-Type: application/octet-stream");
 				header("Content-Disposition: attachment; filename=vouchers_{$cpzone}_roll{$number}.csv");
-				if (file_exists("{$g['varetc_path']}/voucher_{$cpzone}.cfg"))
-					system("/usr/local/bin/voucher -c {$g['varetc_path']}/voucher_{$cpzone}.cfg -p {$g['varetc_path']}/voucher_{$cpzone}.private $number $count");
-				@unlink("{$g['varetc_path']}/voucher_{$cpzone}.private");
-			} else
+				if (file_exists("/var/etc/voucher_{$cpzone}.cfg")) {
+					system("/usr/local/bin/voucher -c /var/etc/voucher_{$cpzone}.cfg -p /var/etc/voucher_{$cpzone}.private $number $count");
+				}
+				@unlink("/var/etc/voucher_{$cpzone}.private");
+			} else {
 				header("Location: services_captiveportal_vouchers.php?zone={$cpzone}");
+			}
 			exit;
 		}
 	} else {
