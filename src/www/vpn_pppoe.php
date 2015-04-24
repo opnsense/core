@@ -31,8 +31,13 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("vpn.inc");
 
-if (!is_array($config['pppoes']['pppoe']))
+if (!is_array($config['pppoes'])) {
+	$config['pppoes'] = array();
+}
+
+if (!is_array($config['pppoes']['pppoe'])) {
 	$config['pppoes']['pppoe'] = array();
+}
 
 $a_pppoes = &$config['pppoes']['pppoe'];
 
@@ -65,8 +70,7 @@ if ($_POST) {
 
 if ($_GET['act'] == "del") {
 	if ($a_pppoes[$_GET['id']]) {
-		if ("{$g['varrun_path']}/pppoe" . $a_pppoes[$_GET['id']]['pppoeid'] . "-vpn.pid")
-			killbypid("{$g['varrun_path']}/pppoe" . $a_pppoes[$_GET['id']]['pppoeid'] . "-vpn.pid");
+		killbypid("/var/run/pppoe{$a_pppoes[$_GET['id']]['pppoeid']}-vpn.pid");
 		if (is_dir("{$g['varetc_path']}/pppoe" . $a_pppoes[$_GET['id']]['pppoeid']))
 			mwexec("/bin/rm -r {$g['varetc_path']}/pppoe" . $a_pppoes[$_GET['id']]['pppoeid']);
 		unset($a_pppoes[$_GET['id']]);

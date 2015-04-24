@@ -37,7 +37,6 @@ $g = array(
 	"factory_shipped_password" => "opnsense",
 	"dhcpd_chroot_path" => "/var/dhcpd",
 	"unbound_chroot_path" => "/var/unbound",
-	"varrun_path" => "/var/run",
 	"varetc_path" => "/var/etc",
 	"vardb_path" => "/var/db",
 	"admin_group" => "admins",

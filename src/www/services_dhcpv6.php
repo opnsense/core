@@ -301,7 +301,7 @@ if ($_POST) {
 
 	if (!$input_errors || $_POST['apply'] == 'Apply changes') {
 		/* Stop DHCPv6 so we can cleanup leases */
-		killbypid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpdv6.pid");
+		killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid");
 		// dhcp_clean_leases();
 		/* dnsmasq_configure calls dhcpd_configure */
 		/* no need to restart dhcpd twice */
