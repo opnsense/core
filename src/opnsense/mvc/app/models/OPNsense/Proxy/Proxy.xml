@@ -35,8 +35,25 @@
                 <Required>Y</Required>
             </dnsV4First>
             <forwardedForHandling type="OptionField">
+                <default>on</default>
+                <Required>N</Required>
+                <OptionValues>
+                    <on>Append client's IP (on)</on>
+                    <off>Set forward header to unknown (off)</off>
+                    <transparent>Do not alter forward header (transparent)</transparent>
+                    <truncate>Replace all with client's IP (truncate)</truncate>
+                </OptionValues>
             </forwardedForHandling>
             <uriWhitespaceHandling type="OptionField">
+                <default>strip</default>
+                <Required>N</Required>
+                <OptionValues>
+                    <strip>Strip whitespaces</strip>
+                    <deny>Deny request</deny>
+                    <allow>Allow whitespaces</allow>
+                    <encode>Encode whitespaces (RFC1738)</encode>
+                    <chop>Chop URI at first whitespace</chop>
+                </OptionValues>
             </uriWhitespaceHandling>
             <useViaHeader type="BooleanField">
                 <default>1</default>
@@ -46,6 +63,66 @@
                 <default>0</default>
                 <Required>N</Required>
             </suppressVersion>
+            <cache>
+                <local>
+                    <enabled type="BooleanField">
+                        <default>0</default>
+                        <Required>Y</Required>
+                    </enabled>
+                    <directory type="TextField">
+                        <default>/var/squid/cache</default>
+                        <Required>Y</Required>
+                    </directory>
+                    <size type="IntegerField">
+                        <default>100</default>
+                        <MinimumValue>1</MinimumValue>
+                        <ValidationMessage>"Specify a positive cache size. (number of MB's)"</ValidationMessage>
+                        <Required>Y</Required>
+                    </size>
+                    <l1 type="IntegerField">
+                        <default>16</default>
+                        <MinimumValue>1</MinimumValue>
+                        <ValidationMessage>"Specify a positive number of first-level subdirectories."</ValidationMessage>
+                        <Required>Y</Required>
+                    </l1>
+                    <l2 type="IntegerField">
+                        <default>256</default>
+                        <MinimumValue>1</MinimumValue>
+                        <ValidationMessage>"Specify a positive number of second-level subdirectories."</ValidationMessage>
+                        <Required>Y</Required>
+                    </l2>
+                </local>
+            </cache>
+            <traffic>
+                <enabled type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </enabled>
+                <maxDownloadSize type="IntegerField">
+                    <default>2048</default>
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>"Specify the maximum download size. (number of KB's)"</ValidationMessage>
+                    <Required>N</Required>
+                </maxDownloadSize>
+                <maxUploadSize type="IntegerField">
+                    <default>1024</default>
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>"Specify the maximum upload size. (number of KB's)"</ValidationMessage>
+                    <Required>N</Required>
+                </maxUploadSize>
+                <OverallBandwidthTrotteling type="IntegerField">
+                    <default>1024</default>
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>"Specify the overall bandwidth for downloads in kilobits per second."</ValidationMessage>
+                    <Required>N</Required>
+                </OverallBandwidthTrotteling>
+                <perHostTrotteling type="IntegerField">
+                    <default>256</default>
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>"Specify the per host bandwidth for downloads in kilobits per second."</ValidationMessage>
+                    <Required>N</Required>
+                </perHostTrotteling>
+            </traffic>
         </general>
         <forward>
             <interfaces type="CSVListField">
