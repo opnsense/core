@@ -101,9 +101,9 @@ function vpn_ipsec_configure($ipchg = false)
 
 	if (!isset($ipseccfg['enable'])) {
 		/* try to stop charon */
-		mwexec("/usr/local/sbin/ipsec stop");
+		mwexec('/usr/local/sbin/ipsec stop');
 		/* Stop dynamic monitoring */
-		killbypid("{$g['varrun_path']}/filterdns-ipsec.pid");
+		killbypid('/var/run/filterdns-ipsec.pid');
 
 		/* wait for process to die */
 		sleep(2);
@@ -816,11 +816,11 @@ EOD;
 	/* end ipsec.conf */
 
 	/* mange process */
-	if (isvalidpid("{$g['varrun_path']}/charon.pid")) {
+	if (isvalidpid('/var/run/charon.pid')) {
 		/* Read secrets */
-		mwexec("/usr/local/sbin/ipsec rereadall", false);
+		mwexec('/usr/local/sbin/ipsec rereadall', false);
 		/* Update configuration changes */
-		mwexec("/usr/local/sbin/ipsec reload", false);
+		mwexec('/usr/local/sbin/ipsec reload', false);
 	} else {
 		mwexec("/usr/local/sbin/ipsec start", false);
 	}
@@ -840,14 +840,13 @@ EOD;
 		file_put_contents("/usr/local/etc/filterdns-ipsec.hosts", $hostnames);
 		unset($hostnames);
 
-		if (isvalidpid("{$g['varrun_path']}/filterdns-ipsec.pid")) {
-			killbypid("{$g['varrun_path']}/filterdns-ipsec.pid", 'HUP');
+		if (isvalidpid('/var/run/filterdns-ipsec.pid')) {
+			killbypid('/var/run/filterdns-ipsec.pid', 'HUP');
 		} else {
-			mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-ipsec.pid -i {$interval} -c /usr/local/etc/filterdns-ipsec.hosts -d 1");
+			mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-ipsec.pid -i {$interval} -c /usr/local/etc/filterdns-ipsec.hosts -d 1");
 		}
 	} else {
-		killbypid("{$g['varrun_path']}/filterdns-ipsec.pid");
-		@unlink("{$g['varrun_path']}/filterdns-ipsec.pid");
+		killbypid('/var/run/filterdns-ipsec.pid');
 	}
 
 	if (file_exists("/var/run/booting"))
@@ -927,13 +926,13 @@ function vpn_pptpd_configure() {
 		echo gettext("Configuring PPTP VPN service... ");
 	} else {
 		/* kill mpd */
-		killbypid("{$g['varrun_path']}/pptp-vpn.pid");
+		killbypid('/var/run/pptp-vpn.pid');
 
 		/* wait for process to die */
 		sleep(3);
 
 		if (is_process_running("mpd -b")) {
-			killbypid("{$g['varrun_path']}/pptp-vpn.pid");
+			killbypid('/var/run/pptp-vpn.pid');
 			log_error(gettext("Could not kill mpd within 3 seconds.   Trying again."));
 		}
 
@@ -1123,7 +1122,7 @@ EOD;
 			vpn_netgraph_support();
 
 			/* fire up mpd */
-			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/pptp-vpn -p {$g['varrun_path']}/pptp-vpn.pid -s pptps pptps");
+			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/pptp-vpn -p /var/run/pptp-vpn.pid -s pptps pptps");
 
 			break;
 
@@ -1162,7 +1161,7 @@ function vpn_pppoe_configure(&$pppoecfg) {
 		echo gettext("Configuring PPPoE VPN service... ");
 	} else {
 		/* kill mpd */
-		killbypid("{$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
+		killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
 
 		/* wait for process to die */
 		sleep(2);
@@ -1340,13 +1339,12 @@ EOD;
 			}
 
 			/* Check if previous instance is still up */
-			while (file_exists("{$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid") && isvalidpid("{$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid"))
-				killbypid("{$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
+			killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
 
 			/* Get support for netgraph(4) from the nic */
 			pfSense_ngctl_attach(".", $pppoe_interface);
 			/* fire up mpd */
-			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn -p {$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid -s poes poes");
+			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn -p /var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid -s poes poes");
 
 			break;
 	}
@@ -1374,7 +1372,7 @@ function vpn_l2tp_configure() {
 		echo gettext("Configuring l2tp VPN service... ");
 	} else {
 		/* kill mpd */
-		killbypid("{$g['varrun_path']}/l2tp-vpn.pid");
+		killbypid('/var/run/l2tp-vpn.pid');
 
 		/* wait for process to die */
 		sleep(8);
@@ -1540,7 +1538,7 @@ EOD;
 			vpn_netgraph_support();
 
 			/* fire up mpd */
-			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/l2tp-vpn -p {$g['varrun_path']}/l2tp-vpn.pid -s l2tps l2tps");
+			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/l2tp-vpn -p /var/run/l2tp-vpn.pid -s l2tps l2tps");
 
 			break;
 
@@ -1554,12 +1552,13 @@ EOD;
 	return 0;
 }
 
-function vpn_ipsec_configure_preferoldsa() {
+function vpn_ipsec_configure_preferoldsa()
+{
 	global $config;
-	if(isset($config['ipsec']['preferoldsa']))
-		set_single_sysctl("net.key.preferred_oldsa", "-30");
-	else
-		set_single_sysctl("net.key.preferred_oldsa", "0");
-}
 
-?>
+	if (isset($config['ipsec']['preferoldsa'])) {
+		set_single_sysctl("net.key.preferred_oldsa", "-30");
+	} else {
+		set_single_sysctl("net.key.preferred_oldsa", "0");
+	}
+}
