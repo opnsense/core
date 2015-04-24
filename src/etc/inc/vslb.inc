@@ -183,8 +183,7 @@ function relayd_configure($kill_first=false) {
 		}
 	}
 
-
-	$fd = fopen("{$g['varetc_path']}/relayd.conf", "w");
+	$fd = fopen('/var/etc/relayd.conf', 'w');
 	$conf .= "log updates \n";
 
 	/* Global timeout, interval and prefork settings
@@ -355,13 +354,13 @@ function relayd_configure($kill_first=false) {
 	if (is_process_running('relayd')) {
 		if (! empty($vs_a)) {
 			if ($kill_first) {
-				mwexec('pkill relayd');
+				killbyname('relayd');
 				/* Remove all active relayd anchors now that relayd is no longer running. */
-				cleanup_lb_anchor("*");
-				mwexec("/usr/local/sbin/relayd -f {$g['varetc_path']}/relayd.conf");
+				cleanup_lb_anchor('*');
+				mwexec('/usr/local/sbin/relayd -f /var/etc/relayd.conf');
 			} else {
 				// it's running and there is a config, just reload
-				mwexec("/usr/local/sbin/relayctl reload");
+				mwexec('/usr/local/sbin/relayctl reload');
 			}
 		} else {
 			/*
@@ -371,7 +370,7 @@ function relayd_configure($kill_first=false) {
 			 * mwexec('/usr/local/sbin/relayctl stop');
 			 *  returns "command failed"
 			 */
-			mwexec('pkill relayd');
+			killbyname('relayd');
 			/* Remove all active relayd anchors now that relayd is no longer running. */
 			cleanup_lb_anchor("*");
 		}
@@ -379,8 +378,8 @@ function relayd_configure($kill_first=false) {
 		if (! empty($vs_a)) {
 			// not running and there is a config, start it
 			/* Remove all active relayd anchors so it can start fresh. */
-			cleanup_lb_anchor("*");
-			mwexec("/usr/local/sbin/relayd -f {$g['varetc_path']}/relayd.conf");
+			cleanup_lb_anchor('*');
+			mwexec('/usr/local/sbin/relayd -f /var/etc/relayd.conf');
 		}
 	}
 }

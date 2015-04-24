@@ -34,7 +34,6 @@ require_once("vpn.inc");
 require_once("vslb.inc");
 require_once("gwlb.inc");
 
-
 if (!function_exists('get_services')) {
 
 	function get_services() {
@@ -386,7 +385,7 @@ if (!function_exists('service_control_start')) {
 				$vpnmode = isset($extras['vpnmode']) ? htmlspecialchars($extras['vpnmode']) : htmlspecialchars($extras['mode']);
 				if (($vpnmode == "server") || ($vpnmode == "client")) {
 					$id = isset($extras['vpnid']) ? htmlspecialchars($extras['vpnid']) : htmlspecialchars($extras['id']);
-					$configfile = "{$g['varetc_path']}/openvpn/{$vpnmode}{$id}.conf";
+					$configfile = "/var/etc/openvpn/{$vpnmode}{$id}.conf";
 					if (file_exists($configfile))
 						openvpn_restart_by_vpnid($vpnmode, $id);
 				}
@@ -530,7 +529,7 @@ if (!function_exists('service_control_restart')) {
 				$vpnmode = htmlspecialchars($extras['vpnmode']);
 				if ($vpnmode == "server" || $vpnmode == "client") {
 					$id = htmlspecialchars($extras['id']);
-					$configfile = "{$g['varetc_path']}/openvpn/{$vpnmode}{$id}.conf";
+					$configfile = "/var/etc/openvpn/{$vpnmode}{$id}.conf";
 					if (file_exists($configfile))
 						openvpn_restart_by_vpnid($vpnmode, $id);
 				}

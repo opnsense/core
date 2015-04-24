@@ -304,7 +304,7 @@ function services_radvd_configure($blacklist = array())
 	}
 
 	/* write radvd.conf */
-	if (!@file_put_contents("{$g['varetc_path']}/radvd.conf", $radvdconf)) {
+	if (!@file_put_contents("/var/etc/radvd.conf", $radvdconf)) {
 		log_error("Error: cannot open radvd.conf in services_radvd_configure().\n");
 		if (file_exists("/var/run/booting"))
 			printf("Error: cannot open radvd.conf in services_radvd_configure().\n");
@@ -1919,7 +1919,7 @@ function services_snmpd_configure()
 			echo gettext("Starting SNMP daemon... ");
 
 		/* generate snmpd.conf */
-		$fd = fopen("{$g['varetc_path']}/snmpd.conf", "w");
+		$fd = fopen("/var/etc/snmpd.conf", "w");
 		if (!$fd) {
 			printf(gettext("Error: cannot open snmpd.conf in services_snmpd_configure().%s"),"\n");
 			return 1;
@@ -2092,7 +2092,7 @@ EOD;
 		}
 
 		/* run bsnmpd */
-		mwexec("/usr/sbin/bsnmpd -c {$g['varetc_path']}/snmpd.conf" .
+		mwexec("/usr/sbin/bsnmpd -c /var/etc/snmpd.conf" .
 			"{$bindlan} -p /var/run/snmpd.pid");
 
 		if (file_exists("/var/run/booting"))
@@ -2143,7 +2143,7 @@ function services_dnsupdate_process($int = '', $updatehost = '', $forced = false
 				/* write private key file
 				   this is dumb - public and private keys are the same for HMAC-MD5,
 				   but nsupdate insists on having both */
-				$fd = fopen("{$g['varetc_path']}/K{$i}{$keyname}+157+00000.private", "w");
+				$fd = fopen("/var/etc/K{$i}{$keyname}+157+00000.private", "w");
 				$privkey = <<<EOD
 Private-key-format: v1.2
 Algorithm: 157 (HMAC)
@@ -2165,7 +2165,7 @@ EOD;
 					$proto = 2;
 				}
 
-				$fd = fopen("{$g['varetc_path']}/K{$i}{$keyname}+157+00000.key", "w");
+				$fd = fopen("/var/etc/K{$i}{$keyname}+157+00000.key", "w");
 				fwrite($fd, "{$keyname} IN KEY {$flags} {$proto} 157 {$dnsupdate['keydata']}\n");
 				fclose($fd);
 
@@ -2218,13 +2218,13 @@ EOD;
 				$upinst .= "\n";	/* mind that trailing newline! */
 
 				if ($need_update) {
-					@file_put_contents("{$g['varetc_path']}/nsupdatecmds{$i}", $upinst);
+					@file_put_contents("/var/etc/nsupdatecmds{$i}", $upinst);
 					unset($upinst);
 					/* invoke nsupdate */
-					$cmd = "/usr/local/bin/nsupdate -k {$g['varetc_path']}/K{$i}{$keyname}+157+00000.key";
+					$cmd = "/usr/local/bin/nsupdate -k /var/etc/K{$i}{$keyname}+157+00000.key";
 					if (isset($dnsupdate['usetcp']))
 						$cmd .= " -v";
-					$cmd .= " {$g['varetc_path']}/nsupdatecmds{$i}";
+					$cmd .= " /var/etc/nsupdatecmds{$i}";
 					mwexec_bg($cmd);
 					unset($cmd);
 				}
@@ -2380,5 +2380,3 @@ function install_cron_job($command, $active=false, $minute="0", $hour="*", $mont
 	}
 	configure_cron();
 }
-
-?>

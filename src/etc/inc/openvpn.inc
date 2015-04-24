@@ -367,10 +367,9 @@ function openvpn_add_custom(& $settings, & $conf) {
 	}
 }
 
-function openvpn_add_keyfile(& $data, & $conf, $mode_id, $directive, $opt = "") {
-	global $g;
-
-	$fpath = $g['varetc_path']."/openvpn/{$mode_id}.{$directive}";
+function openvpn_add_keyfile(&$data, &$conf, $mode_id, $directive, $opt = '')
+{
+	$fpath = "/var/etc/openvpn/{$mode_id}.{$directive}";
 	openvpn_create_dirs();
 	file_put_contents($fpath, base64_decode($data));
 	//chown($fpath, 'nobody');
@@ -530,7 +529,7 @@ function openvpn_reconfigure($mode, $settings)
 				//  See ticket #1417
 				if (!empty($ip) && !empty($mask) && ($cidr < 30)) {
 					$conf .= "server {$ip} {$mask}\n";
-					$conf .= "client-config-dir {$g['varetc_path']}/openvpn-csc\n";
+					$conf .= "client-config-dir /var/etc/openvpn-csc\n";
 					if(is_ipaddr($ipv6))
 						$conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
 				}
@@ -557,7 +556,7 @@ function openvpn_reconfigure($mode, $settings)
 					$conf .= "server {$ip} {$mask}\n";
 					if(is_ipaddr($ipv6))
 						$conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
-					$conf .= "client-config-dir {$g['varetc_path']}/openvpn-csc\n";
+					$conf .= "client-config-dir /var/etc/openvpn-csc\n";
 				} else {
 					if ($settings['serverbridge_dhcp']) {
 						if ((!empty($settings['serverbridge_interface'])) && (strcmp($settings['serverbridge_interface'], "none"))) {
@@ -565,7 +564,7 @@ function openvpn_reconfigure($mode, $settings)
 							$biface_sm=gen_subnet_mask(get_interface_subnet($settings['serverbridge_interface']));
 							if (is_ipaddrv4($biface_ip) && is_ipaddrv4($settings['serverbridge_dhcp_start']) && is_ipaddrv4($settings['serverbridge_dhcp_end'])) {
 								$conf .= "server-bridge {$biface_ip} {$biface_sm} {$settings['serverbridge_dhcp_start']} {$settings['serverbridge_dhcp_end']}\n";
-								$conf .= "client-config-dir {$g['varetc_path']}/openvpn-csc\n";
+								$conf .= "client-config-dir /var/etc/openvpn-csc\n";
 							} else {
 								$conf .= "mode server\n";
 							}
@@ -611,7 +610,7 @@ function openvpn_reconfigure($mode, $settings)
 
 		// The management port to listen on
 		// Use unix socket to overcome the problem on any type of server
-		$conf .= "management {$g['varetc_path']}/openvpn/{$mode_id}.sock unix\n";
+		$conf .= "management /var/etc/openvpn/{$mode_id}.sock unix\n";
 		//$conf .= "management 127.0.0.1 {$settings['local_port']}\n";
 
 		if ($settings['maxclients'])
@@ -663,7 +662,7 @@ function openvpn_reconfigure($mode, $settings)
 			$conf .= "lport 0\n";
 
 		// Use unix socket to overcome the problem on any type of server
-		$conf .= "management {$g['varetc_path']}/openvpn/{$mode_id}.sock unix\n";
+		$conf .= "management /var/etc/openvpn/{$mode_id}.sock unix\n";
 
 		// The remote server
 		$conf .= "remote {$settings['server_addr']} {$settings['server_port']}\n";
@@ -691,7 +690,7 @@ function openvpn_reconfigure($mode, $settings)
 		}
 
 		if ($settings['auth_user'] && $settings['auth_pass']) {
-			$up_file = "{$g['varetc_path']}/openvpn/{$mode_id}.up";
+			$up_file = "/var/etc/openvpn/{$mode_id}.up";
 			$conf .= "auth-user-pass {$up_file}\n";
 			$userpass = "{$settings['auth_user']}\n";
 			$userpass .= "{$settings['auth_pass']}\n";
@@ -701,10 +700,10 @@ function openvpn_reconfigure($mode, $settings)
 		if ($settings['proxy_addr']) {
 			$conf .= "http-proxy {$settings['proxy_addr']} {$settings['proxy_port']}";
 			if ($settings['proxy_authtype'] != "none") {
-				$conf .= " {$g['varetc_path']}/openvpn/{$mode_id}.pas {$settings['proxy_authtype']}";
+				$conf .= " /var/etc/openvpn/{$mode_id}.pas {$settings['proxy_authtype']}";
 				$proxypas = "{$settings['proxy_user']}\n";
 				$proxypas .= "{$settings['proxy_passwd']}\n";
-				file_put_contents("{$g['varetc_path']}/openvpn/{$mode_id}.pas", $proxypas);
+				file_put_contents("/var/etc/openvpn/{$mode_id}.pas", $proxypas);
 			}
 			$conf .= " \n";
 		}
@@ -787,18 +786,18 @@ function openvpn_reconfigure($mode, $settings)
 	openvpn_add_custom($settings, $conf);
 
 	openvpn_create_dirs();
-	$fpath = "{$g['varetc_path']}/openvpn/{$mode_id}.conf";
+	$fpath = "/var/etc/openvpn/{$mode_id}.conf";
 	file_put_contents($fpath, $conf);
 	unset($conf);
-	$fpath = "{$g['varetc_path']}/openvpn/{$mode_id}.interface";
+	$fpath = "/var/etc/openvpn/{$mode_id}.interface";
 	file_put_contents($fpath, $interface);
 	//chown($fpath, 'nobody');
 	//chgrp($fpath, 'nobody');
-	@chmod("{$g['varetc_path']}/openvpn/{$mode_id}.conf", 0600);
-	@chmod("{$g['varetc_path']}/openvpn/{$mode_id}.interface", 0600);
-	@chmod("{$g['varetc_path']}/openvpn/{$mode_id}.key", 0600);
-	@chmod("{$g['varetc_path']}/openvpn/{$mode_id}.tls-auth", 0600);
-	@chmod("{$g['varetc_path']}/openvpn/{$mode_id}.conf", 0600);
+	@chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
+	@chmod("/var/etc/openvpn/{$mode_id}.interface", 0600);
+	@chmod("/var/etc/openvpn/{$mode_id}.key", 0600);
+	@chmod("/var/etc/openvpn/{$mode_id}.tls-auth", 0600);
+	@chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
 }
 
 function openvpn_restart($mode, $settings)
@@ -833,7 +832,7 @@ function openvpn_restart($mode, $settings)
 	}
 
 	/* start the new process */
-	$fpath = $g['varetc_path']."/openvpn/{$mode_id}.conf";
+	$fpath = "/var/etc/openvpn/{$mode_id}.conf";
 	openvpn_clear_route($mode, $settings);
 	mwexec_bg("/usr/local/sbin/openvpn --config " . escapeshellarg($fpath));
 
@@ -870,7 +869,7 @@ function openvpn_delete($mode, & $settings)
 	mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " name " . escapeshellarg($tunname));
 
 	/* remove the configuration files */
-	@array_map('unlink', glob("{$g['varetc_path']}/openvpn/{$mode_id}.*"));
+	@array_map('unlink', glob("/var/etc/openvpn/{$mode_id}.*"));
 }
 
 function openvpn_cleanup_csc($common_name)
@@ -878,10 +877,11 @@ function openvpn_cleanup_csc($common_name)
 	@unlink('/var/etc/openvpn-csc/' . basename($common_name));
 }
 
-function openvpn_resync_csc(& $settings) {
+function openvpn_resync_csc(&$settings)
+{
 	global $g, $config;
 
-	$fpath = $g['varetc_path']."/openvpn-csc/".$settings['common_name'];
+	$fpath = "/var/etc/openvpn-csc/{$settings['common_name']}";
 
 	if (isset($settings['disable'])) {
 		@unlink($fpath);
@@ -1034,7 +1034,7 @@ function openvpn_get_active_servers($type="multipoint") {
 			$server['conns'] = array();
 			$server['vpnid'] = $settings['vpnid'];
 			$server['mgmt'] = "server{$server['vpnid']}";
-			$socket = "unix://{$g['varetc_path']}/openvpn/{$server['mgmt']}.sock";
+			$socket = "unix:///var/etc/openvpn/{$server['mgmt']}.sock";
 			list($tn, $sm) = explode('/', $settings['tunnel_network']);
 
 			if ((($server['mode'] == "p2p_shared_key") || ($sm >= 30) ) && ($type == "p2p"))
@@ -1136,7 +1136,7 @@ function openvpn_get_active_clients() {
 
 			$client['vpnid'] = $settings['vpnid'];
 			$client['mgmt'] = "client{$client['vpnid']}";
-			$socket = "unix://{$g['varetc_path']}/openvpn/{$client['mgmt']}.sock";
+			$socket = "unix:///var/etc/openvpn/{$client['mgmt']}.sock";
 			$client['status']="down";
 
 			$clients[] = openvpn_get_client_status($client, $socket);
@@ -1255,7 +1255,7 @@ function openvpn_refresh_crls() {
 					if (!empty($settings['crlref'])) {
 						$crl = lookup_crl($settings['crlref']);
 						crl_update($crl);
-						$fpath = $g['varetc_path']."/openvpn/server{$settings['vpnid']}.crl-verify";
+						$fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
 						file_put_contents($fpath, base64_decode($crl['text']));
 						@chmod($fpath, 0644);
 					}

@@ -60,7 +60,7 @@ function voucher_expire($voucher_received) {
 			continue;   // seems too short to be a voucher!
 
 		unset($output);
-		$_gb = exec("/usr/local/bin/voucher -c {$g['varetc_path']}/voucher_{$cpzone}.cfg -k {$g['varetc_path']}/voucher_{$cpzone}.public -- $v", $output);
+		$_gb = exec("/usr/local/bin/voucher -c /var/etc/voucher_{$cpzone}.cfg -k /var/etc/voucher_{$cpzone}.public -- $v", $output);
 		list($status, $roll, $nr) = explode(" ", $output[0]);
 		if ($status == "OK") {
 			// check if we have this ticket on a registered roll for this ticket
@@ -165,7 +165,7 @@ function voucher_auth($voucher_received, $test = 0) {
 		if (strlen($voucher) < 3)
 			continue;   // seems too short to be a voucher!
 
-		$result = exec("/usr/local/bin/voucher -c {$g['varetc_path']}/voucher_{$cpzone}.cfg -k {$g['varetc_path']}/voucher_{$cpzone}.public -- $v");
+		$result = exec("/usr/local/bin/voucher -c /var/etc/voucher_{$cpzone}.cfg -k /var/etc/voucher_{$cpzone}.public -- $v");
 		list($status, $roll, $nr) = explode(" ", $result);
 		if ($status == "OK") {
 			if (!$first_voucher) {
@@ -303,7 +303,7 @@ function voucher_configure_zone($sync = false)
 
 	/* write public key used to verify vouchers */
 	$pubkey = base64_decode($config['voucher'][$cpzone]['publickey']);
-	$fd = fopen("{$g['varetc_path']}/voucher_{$cpzone}.public", "w");
+	$fd = fopen("/var/etc/voucher_{$cpzone}.public", "w");
 	if (!$fd) {
 		captiveportal_syslog("Voucher error: cannot write voucher.public\n");
 		unlock($voucherlck);
@@ -311,10 +311,10 @@ function voucher_configure_zone($sync = false)
 	}
 	fwrite($fd, $pubkey);
 	fclose($fd);
-	@chmod("{$g['varetc_path']}/voucher_{$cpzone}.public", 0600);
+	@chmod("/var/etc/voucher_{$cpzone}.public", 0600);
 
 	/* write config file used by voucher binary to decode vouchers */
-	$fd = fopen("{$g['varetc_path']}/voucher_{$cpzone}.cfg", "w");
+	$fd = fopen("/var/etc/voucher_{$cpzone}.cfg", "w");
 	if (!$fd) {
 		captiveportal_syslog(gettext("Error: cannot write voucher.cfg") . "\n");
 		unlock($voucherlck);
@@ -322,7 +322,7 @@ function voucher_configure_zone($sync = false)
 	}
 	fwrite($fd, "{$config['voucher'][$cpzone]['rollbits']},{$config['voucher'][$cpzone]['ticketbits']},{$config['voucher'][$cpzone]['checksumbits']},{$config['voucher'][$cpzone]['magic']},{$config['voucher'][$cpzone]['charset']}\n");
 	fclose($fd);
-	@chmod("{$g['varetc_path']}/voucher_{$cpzone}.cfg", 0600);
+	@chmod("/var/etc/voucher_{$cpzone}.cfg", 0600);
 	unlock($voucherlck);
 
 	if (!$sync) {

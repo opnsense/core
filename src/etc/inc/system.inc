@@ -549,13 +549,13 @@ function system_staticroutes_configure($interface = "", $update_dns = false) {
 			array_unique($filterdns_list);
 			foreach ($filterdns_list as $hostname)
 				$hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py \"routedns reload\"'\n";
-			file_put_contents("{$g['varetc_path']}/filterdns-route.hosts", $hostnames);
+			file_put_contents("/var/etc/filterdns-route.hosts", $hostnames);
 			unset($hostnames);
 
 			if (isvalidpid('/var/run/filterdns-route.pid')) {
 				killbypid('/var/run/filterdns-route.pid', 'HUP');
 			} else {
-				mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-route.pid -i {$interval} -c {$g['varetc_path']}/filterdns-route.hosts -d 1");
+				mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-route.pid -i {$interval} -c /var/etc/filterdns-route.hosts -d 1");
 			}
 		} else {
 			killbypid('/var/run/filterdns-route.pid');
@@ -744,7 +744,7 @@ EOD;
 EOD;
 		}
 		/* write syslog.conf */
-		if (!@file_put_contents("{$g['varetc_path']}/syslog.conf", $syslogconf)) {
+		if (!@file_put_contents("/var/etc/syslog.conf", $syslogconf)) {
 			printf(gettext("Error: cannot open syslog.conf in system_syslogd_start().%s"), "\n");
 			unset($syslogconf);
 			return 1;
@@ -771,7 +771,7 @@ EOD;
 			}
 		}
 
-		$syslogd_extra = "-f {$g['varetc_path']}/syslog.conf {$sourceip}";
+		$syslogd_extra = "-f /var/etc/syslog.conf {$sourceip}";
 	}
 
 	if (isvalidpid('/var/run/syslog.pid')) {
@@ -845,7 +845,7 @@ function system_webgui_start()
 	}
 
 	/* generate lighttpd configuration */
-	system_generate_lighty_config("{$g['varetc_path']}/lighty-webConfigurator.conf",
+	system_generate_lighty_config("/var/etc/lighty-webConfigurator.conf",
 		$crt, $key, $ca, "lighty-webConfigurator.pid", $portarg, "/usr/local/www/",
 		"cert.pem", "ca.pem");
 
@@ -858,7 +858,7 @@ function system_webgui_start()
 	mwexec('/usr/local/etc/rc.php_ini_setup');
 
 	/* attempt to start lighthttpd and return true if ok */
-	return !mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-webConfigurator.conf");
+	return !mwexec("/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf");
 }
 
 function system_generate_lighty_config(
@@ -1088,9 +1088,9 @@ EOD;
 		$lighty_config .= "\n";
 		$lighty_config .= "## ssl configuration\n";
 		$lighty_config .= "ssl.engine = \"enable\"\n";
-		$lighty_config .= "ssl.pemfile = \"{$g['varetc_path']}/{$cert_location}\"\n\n";
+		$lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n\n";
 		if($ca <> "")
-			$lighty_config .= "ssl.ca-file = \"{$g['varetc_path']}/{$ca_location}\"\n\n";
+			$lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n\n";
 	}
 	$lighty_config .= " }\n";
 
@@ -1142,30 +1142,30 @@ EOD;
 	$ca = str_replace("\n\n", "\n", $ca);
 
 	if($cert <> "" and $key <> "") {
-		$fd = fopen("{$g['varetc_path']}/{$cert_location}", "w");
+		$fd = fopen("/var/etc/{$cert_location}", "w");
 		if (!$fd) {
 			printf(gettext("Error: cannot open cert.pem in system_webgui_start().%s"), "\n");
 			return 1;
 		}
-		chmod("{$g['varetc_path']}/{$cert_location}", 0600);
+		chmod("/var/etc/{$cert_location}", 0600);
 		fwrite($fd, $cert);
 		fwrite($fd, "\n");
 		fwrite($fd, $key);
 		fclose($fd);
 		if(!(empty($ca) || (strlen(trim($ca)) == 0))) {
-			$fd = fopen("{$g['varetc_path']}/{$ca_location}", "w");
+			$fd = fopen("/var/etc/{$ca_location}", "w");
 			if (!$fd) {
 				printf(gettext("Error: cannot open ca.pem in system_webgui_start().%s"), "\n");
 				return 1;
 			}
-			chmod("{$g['varetc_path']}/{$ca_location}", 0600);
+			chmod("/var/etc/{$ca_location}", 0600);
 			fwrite($fd, $ca);
 			fclose($fd);
 		}
 		$lighty_config .= "\n";
 		$lighty_config .= "## " . gettext("ssl configuration") . "\n";
 		$lighty_config .= "ssl.engine = \"enable\"\n";
-		$lighty_config .= "ssl.pemfile = \"{$g['varetc_path']}/{$cert_location}\"\n\n";
+		$lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n\n";
 
 		// Harden SSL a bit for PCI conformance testing
 		$lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
@@ -1192,7 +1192,7 @@ EOD;
 		}
 
 		if(!(empty($ca) || (strlen(trim($ca)) == 0)))
-			$lighty_config .= "ssl.ca-file = \"{$g['varetc_path']}/{$ca_location}\"\n\n";
+			$lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n\n";
 	}
 
 	// Add HTTP to HTTPS redirect

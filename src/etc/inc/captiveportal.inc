@@ -212,7 +212,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
         else
             $message = 0;
 
-        include("{$g['varetc_path']}/captiveportal-{$cpzone}-logout.html");
+        include("/var/etc/captiveportal-{$cpzone}-logout.html");
 
     } else {
         // TODO: remove? should be handled by login page
@@ -422,7 +422,7 @@ function captiveportal_configure_zone($cpcfg) {
             $htmltext = get_default_captive_portal_html();
         }
 
-        $fd = @fopen("{$g['varetc_path']}/captiveportal_{$cpzone}.html", "w");
+        $fd = @fopen("/var/etc/captiveportal_{$cpzone}.html", "w");
         if ($fd) {
             // Special case handling.  Convert so that we can pass this page
             // through the PHP interpreter later without clobbering the vars.
@@ -450,7 +450,7 @@ function captiveportal_configure_zone($cpcfg) {
             $errtext = get_default_captive_portal_html();
         }
 
-        $fd = @fopen("{$g['varetc_path']}/captiveportal-{$cpzone}-error.html", "w");
+        $fd = @fopen("/var/etc/captiveportal-{$cpzone}-error.html", "w");
         if ($fd) {
             // Special case handling.  Convert so that we can pass this page
             // through the PHP interpreter later without clobbering the vars.
@@ -510,7 +510,7 @@ document.location.href="<?=\$my_redirurl;?>";
 EOD;
         }
 
-        $fd = @fopen("{$g['varetc_path']}/captiveportal-{$cpzone}-logout.html", "w");
+        $fd = @fopen("/var/etc/captiveportal-{$cpzone}-logout.html", "w");
         if ($fd) {
             fwrite($fd, $logouttext);
             fclose($fd);
@@ -553,9 +553,9 @@ EOD;
         killbypid("/var/run/lighty-{$cpzone}-CaptivePortal.pid");
         killbypid("/var/run/lighty-{$cpzone}-CaptivePortal-SSL.pid");
         killbypid("/var/run/cp_prunedb_{$cpzone}.pid");
-        @unlink("{$g['varetc_path']}/captiveportal_{$cpzone}.html");
-        @unlink("{$g['varetc_path']}/captiveportal-{$cpzone}-error.html");
-        @unlink("{$g['varetc_path']}/captiveportal-{$cpzone}-logout.html");
+        @unlink("/var/etc/captiveportal_{$cpzone}.html");
+        @unlink("/var/etc/captiveportal-{$cpzone}-error.html");
+        @unlink("/var/etc/captiveportal-{$cpzone}-logout.html");
 
         captiveportal_radius_stop_all();
 
@@ -637,7 +637,7 @@ function captiveportal_init_webgui_zone($cpcfg)
         }
 
         system_generate_lighty_config(
-	    "{$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal-SSL.conf",
+	    "/var/etc/lighty-{$cpzone}-CaptivePortal-SSL.conf",
             $crt,
             $key,
             $ca,
@@ -658,7 +658,7 @@ function captiveportal_init_webgui_zone($cpcfg)
     }
 
     system_generate_lighty_config(
-        "{$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal.conf",
+        "/var/etc/lighty-{$cpzone}-CaptivePortal.conf",
         "",
         "",
         "",
@@ -672,12 +672,12 @@ function captiveportal_init_webgui_zone($cpcfg)
 
     @unlink("{$g['varrun']}/lighty-{$cpzone}-CaptivePortal.pid");
     /* attempt to start lighttpd */
-    $res = mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal.conf");
+    $res = mwexec("/usr/local/sbin/lighttpd -f /var/etc/lighty-{$cpzone}-CaptivePortal.conf");
 
     /* fire up https instance */
     if (isset($cpcfg['httpslogin'])) {
         @unlink("{$g['varrun']}/lighty-{$cpzone}-CaptivePortal-SSL.pid");
-        $res = mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal-SSL.conf");
+        $res = mwexec("/usr/local/sbin/lighttpd -f /var/etc/lighty-{$cpzone}-CaptivePortal-SSL.conf");
     }
 }
 
@@ -1318,9 +1318,9 @@ function portal_reply_page($redirurl, $type = null, $message = null, $clientmac 
         header("Location: {$redirurl}");
         return;
     } else if ($type == "login")
-        $htmltext = get_include_contents("{$g['varetc_path']}/captiveportal_{$cpzone}.html");
+        $htmltext = get_include_contents("/var/etc/captiveportal_{$cpzone}.html");
     else
-        $htmltext = get_include_contents("{$g['varetc_path']}/captiveportal-{$cpzone}-error.html");
+        $htmltext = get_include_contents("/var/etc/captiveportal-{$cpzone}-error.html");
 
     $cpcfg = $config['captiveportal'][$cpzone];
 
