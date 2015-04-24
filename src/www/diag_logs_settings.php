@@ -164,7 +164,7 @@ if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
 			$savemsg .= "<br />" . gettext("WebGUI process is restarting.");
 		}
 
-		filter_pflog_start(true);
+		filter_pflog_start();
 	}
 }
 

@@ -70,8 +70,8 @@ if (!$pconfig['timeservers'])
 $changedesc = gettext("System") . ": ";
 $changecount = 0;
 
-if($pconfig['timezone'] <> $_POST['timezone']) {
-	filter_pflog_start(true);
+if ($pconfig['timezone'] <> $_POST['timezone']) {
+	filter_pflog_start();
 }
 
 $timezonelist = array_map(

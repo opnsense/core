@@ -100,14 +100,13 @@ function flowtable_configure() {
 	}
 }
 
-function filter_pflog_start($kill_first = false)
+function filter_pflog_start()
 {
-	global $config, $g;
-
-	if (!file_exists("{$g['varrun_path']}/filterlog.pid") ||
-	    !isvalidpid("{$g['varrun_path']}/filterlog.pid")) {
-		mwexec("/usr/local/sbin/filterlog -i pflog0 -p {$g['varrun_path']}/filterlog.pid");
+	if (isvalidpid('/var/run/filterlog.pid')) {
+		return;
 	}
+
+	mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 }
 
 /* reload filter async */
@@ -321,31 +320,32 @@ function filter_configure_sync($delete_states_if_needed = true)
 	}
 
 	# If we are not using bogonsv6 then we can remove any bogonsv6 table from the running pf (if the table is not there, the kill is still fine).
-	if (!is_bogonsv6_used())
-		$_grbg = exec("/sbin/pfctl -t bogonsv6 -T kill 2>/dev/null");
+	if (!is_bogonsv6_used()) {
+		$_grbg = exec('/sbin/pfctl -t bogonsv6 -T kill 2>/dev/null');
+	}
 
 	update_filter_reload_status(gettext("Starting up layer7 daemon"));
 	layer7_start_l7daemon();
 
-	if(!empty($filterdns)) {
-		@file_put_contents("{$g['varetc_path']}/filterdns.conf", implode("", $filterdns));
+	if (!empty($filterdns)) {
+		@file_put_contents('/var/etc/filterdns.conf', implode('', $filterdns));
 		unset($filterdns);
-		if (isvalidpid("{$g['varrun_path']}/filterdns.pid")) {
-			killbypid("{$g['varrun_path']}/filterdns.pid", 'HUP');
+		if (isvalidpid('/var/run/filterdns.pid')) {
+			killbypid('/var/run/filterdns.pid', 'HUP');
 		} else {
 			/*
 			 * FilterDNS has three debugging levels. The default choosen is 1.
 			 * Availabe are level 2 and greater then 2.
 			 */
-			if (isset($config['system']['aliasesresolveinterval']) && is_numeric($config['system']['aliasesresolveinterval']))
+			if (isset($config['system']['aliasesresolveinterval']) && is_numeric($config['system']['aliasesresolveinterval'])) {
 				$resolve_interval = $config['system']['aliasesresolveinterval'];
-			else
+			} else {
 				$resolve_interval = 300;
-			mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns.pid -i {$resolve_interval} -c {$g['varetc_path']}/filterdns.conf -d 1");
+			}
+			mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns.pid -i {$resolve_interval} -c /var/etc/filterdns.conf -d 1");
 		}
 	} else {
-		killbypid("{$g['varrun_path']}/filterdns.pid");
-		@unlink("{$g['varrun_path']}/filterdns.pid");
+		killbypid('/var/run/filterdns.pid');
 	}
 
 	/* run items scheduled for after filter configure run */
