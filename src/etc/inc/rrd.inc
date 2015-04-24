@@ -287,7 +287,7 @@ function enable_rrd_graphing() {
 		$rrdupdatesh .= "\n";
 		$rrdupdatesh .= "export TERM=dumb\n";
 		$rrdupdatesh .= "\n";
-		$rrdupdatesh .= 'echo $$ > ' . $g['varrun_path'] . '/updaterrd.sh.pid';
+		$rrdupdatesh .= 'echo $$ > /var/run/updaterrd.sh.pid';
 		$rrdupdatesh .= "\n";
 		$rrdupdatesh .= "counter=1\n";
 		$rrdupdatesh .= "while [ \"\$counter\" -ne 0 ]\n";
@@ -920,10 +920,7 @@ function create_gateway_quality_rrd($rrd_file) {
 	unset($rrdtool, $rrdinterval, $valid, $rrd_file);
 }
 
-function kill_traffic_collector() {
-	global $g;
-
-	killbypid("{$g['varrun_path']}/updaterrd.sh.pid");
+function kill_traffic_collector()
+{
+	killbypid('/var/run/updaterrd.sh.pid');
 }
-
-?>

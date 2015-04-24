@@ -302,7 +302,7 @@ function system_hosts_generate()
 	 * Do not remove this because dhcpleases monitors with kqueue
 	 * it needs to be * killed before writing to hosts files.
 	 */
-	killbypid("{$g['varrun_path']}/dhcpleases.pid");
+	killbypid('/var/run/dhcpleases.pid');
 
 	$fd = fopen('/etc/hosts', 'w');
 	if (!$fd) {
@@ -334,8 +334,8 @@ function system_dhcpleases_configure()
 		if (!file_exists("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases")) {
 			@touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
 		}
-		if (isvalidpid("{$g['varrun_path']}/dhcpleases.pid")) {
-			killbypid("{$g['varrun_path']}/dhcpleases.pid", 'HUP');
+		if (isvalidpid('/var/run/dhcpleases.pid')) {
+			killbypid('/var/run/dhcpleases.pid', 'HUP');
 		} else {
 			/* To ensure we do not start multiple instances of dhcpleases, perform some clean-up first. */
 			killbyname('dhcpleases');
@@ -356,7 +356,7 @@ function system_dhcpleases_configure()
 			);
 		}
 	} else {
-		killbypid("{$g['varrun_path']}/dhcpleases.pid");
+		killbypid('/var/run/dhcpleases.pid');
 	}
 }
 
@@ -552,14 +552,13 @@ function system_staticroutes_configure($interface = "", $update_dns = false) {
 			file_put_contents("{$g['varetc_path']}/filterdns-route.hosts", $hostnames);
 			unset($hostnames);
 
-			if (isvalidpid("{$g['varrun_path']}/filterdns-route.pid")) {
-				killbypid("{$g['varrun_path']}/filterdns-route.pid", 'HUP');
+			if (isvalidpid('/var/run/filterdns-route.pid')) {
+				killbypid('/var/run/filterdns-route.pid', 'HUP');
 			} else {
-				mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-route.pid -i {$interval} -c {$g['varetc_path']}/filterdns-route.hosts -d 1");
+				mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-route.pid -i {$interval} -c {$g['varetc_path']}/filterdns-route.hosts -d 1");
 			}
 		} else {
-			killbypid("{$g['varrun_path']}/filterdns-route.pid");
-			@unlink("{$g['varrun_path']}/filterdns-route.pid");
+			killbypid('/var/run/filterdns-route.pid');
 		}
 	}
 	unset($filterdns_list);
@@ -775,14 +774,15 @@ EOD;
 		$syslogd_extra = "-f {$g['varetc_path']}/syslog.conf {$sourceip}";
 	}
 
-	if (isvalidpid("{$g['varrun_path']}/syslog.pid")) {
-		killbypid("{$g['varrun_path']}/syslog.pid", 'HUP');
+	if (isvalidpid('/var/run/syslog.pid')) {
+		killbypid('/var/run/syslog.pid', 'HUP');
 	} else {
-		$retval = mwexec_bg("/usr/local/sbin/syslogd -s -c -c -l {$g['dhcpd_chroot_path']}/var/run/log -P {$g['varrun_path']}/syslog.pid {$syslogd_extra}");
+		$retval = mwexec_bg("/usr/local/sbin/syslogd -s -c -c -l {$g['dhcpd_chroot_path']}/var/run/log -P /var/run/syslog.pid {$syslogd_extra}");
 	}
 
-	if (file_exists("/var/run/booting"))
+	if (file_exists("/var/run/booting")) {
 		echo gettext("done.") . "\n";
+	}
 
 	return $retval;
 }
@@ -850,11 +850,9 @@ function system_webgui_start()
 		"cert.pem", "ca.pem");
 
 	/* kill any running lighttpd */
-	killbypid("{$g['varrun_path']}/lighty-webConfigurator.pid");
+	killbypid('/var/run/lighty-webConfigurator.pid');
 
 	sleep(1);
-
-	@unlink("{$g['varrun_path']}/lighty-webConfigurator.pid");
 
 	/* regenerate the php.ini files in case the setup has changed */
 	mwexec('/usr/local/etc/rc.php_ini_setup');
@@ -1104,7 +1102,7 @@ EOD;
 #server.error-handler-404   = "/error-handler.php"
 
 ## to help the rc.scripts
-server.pid-file            = "{$g['varrun_path']}/{$pid_file}"
+server.pid-file            = "/var/run/{$pid_file}"
 
 ## virtual directory listings
 server.dir-listing         = "disable"
@@ -1568,8 +1566,8 @@ function system_ntp_configure($start_ntpd = true)
 	}
 
 	/* open configuration for wrting or bail */
-	if (!@file_put_contents("{$g['varetc_path']}/ntpd.conf", $ntpcfg)) {
-		log_error("Could not open {$g['varetc_path']}/ntpd.conf for writing");
+	if (!@file_put_contents('/var/etc/ntpd.conf', $ntpcfg)) {
+		log_error("Could not open /var/etc/ntpd.conf for writing");
 		return;
 	}
 
@@ -1578,21 +1576,19 @@ function system_ntp_configure($start_ntpd = true)
 		return;
 
 	/* if ntpd is running, kill it */
-	while (isvalidpid("{$g['varrun_path']}/ntpd.pid")) {
-		killbypid("{$g['varrun_path']}/ntpd.pid");
+	while (isvalidpid('/var/run/ntpd.pid')) {
+		killbypid('/var/run/ntpd.pid');
+		usleep(200 * 1000);
 	}
-	@unlink("{$g['varrun_path']}/ntpd.pid");
 
 	/* if /var/empty does not exist, create it */
-	if(!is_dir("/var/empty"))
-		mkdir("/var/empty", 0775, true);
+	@mkdir('/var/empty', 0775, true);
 
-	/* start opentpd, set time now and use /var/etc/ntpd.conf */
-	mwexec("/usr/local/sbin/ntpd -g -c {$g['varetc_path']}/ntpd.conf -p {$g['varrun_path']}/ntpd.pid", false, true);
+	/* start opentpd, set time now and use new config */
+	mwexec('/usr/local/sbin/ntpd -g -c /var/etc/ntpd.conf -p /var/run/ntpd.pid', false, true);
 
 	// Note that we are starting up
 	log_error("NTPD is starting up.");
-	return;
 }
 
 function system_halt($sync = false)
