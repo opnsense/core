@@ -45,7 +45,7 @@ class ServiceController extends ApiControllerBase
     public function startAction()
     {
         $backend = new Backend();
-        $response = $backend->configdRun("service start proxy");
+        $response = $backend->configdRun("proxy start");
         return array("response" => $response);
     }
 
@@ -56,7 +56,7 @@ class ServiceController extends ApiControllerBase
     public function stopAction()
     {
         $backend = new Backend();
-        $response = $backend->configdRun("service stop proxy");
+        $response = $backend->configdRun("proxy stop");
         return array("response" => $response);
     }
 
@@ -67,7 +67,7 @@ class ServiceController extends ApiControllerBase
     public function restartAction()
     {
         $backend = new Backend();
-        $response = $backend->configdRun("service restart proxy");
+        $response = $backend->configdRun("proxy restart");
         return array("response" => $response);
     }
 
@@ -79,7 +79,7 @@ class ServiceController extends ApiControllerBase
     public function statusAction()
     {
         $backend = new Backend();
-        $response = $backend->configdRun("service status proxy");
+        $response = $backend->configdRun("proxy status");
 
         if (strpos($response, "not running") > 0) {
             $status = "stopped";
@@ -117,7 +117,7 @@ class ServiceController extends ApiControllerBase
         // (res)start daemon
         if ($mdlProxy->general->enabled->__toString() == 1) {
             if ($runStatus['status'] == "running") {
-                $backend->configdRun("service reconfigure proxy");
+                $backend->configdRun("proxy reconfigure");
             } else {
                 $this->startAction();
             }
