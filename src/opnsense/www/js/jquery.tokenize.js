@@ -479,17 +479,17 @@
         },
 
         tokenRemove: function(value){
-
-            var option = $('option[value="' + value.replace('\\','\\\\') + '"]', this.select);
+            var new_value=value.replace(/\\/g,'\\\\').replace(/\*/g,'\\*'); // add escape character
+            var option = $('option[value="' + new_value + '"]', this.select);
             if(option.attr('data-type') == 'custom'){
                 option.remove();
             } else {
                 option.removeAttr('selected');
             }
 
-            $('li.Token[data-value="' + value.replace('\\','\\\\')  + '"]', this.tokensContainer).remove();
+            $('li.Token[data-value="' + new_value  + '"]', this.tokensContainer).remove();
 
-            this.options.onRemoveToken(value.replace('\\','\\\\') );
+            this.options.onRemoveToken(new_value );
             this.resizeSearchInput();
             this.dropdownHide();
 
