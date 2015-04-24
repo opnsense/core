@@ -312,18 +312,17 @@ function services_radvd_configure($blacklist = array())
 	unset($radvdconf);
 
 	if (count($radvdifs) > 0) {
-		if (isvalidpid("{$g['varrun_path']}/radvd.pid")) {
-			killbypid("{$g['varrun_path']}/radvd.pid", 'HUP');
+		if (isvalidpid('/var/run/radvd.pid')) {
+			killbypid('/var/run/radvd.pid', 'HUP');
 		} else {
-			mwexec("/usr/local/sbin/radvd -p {$g['varrun_path']}/radvd.pid -C {$g['varetc_path']}/radvd.conf -m syslog");
+			mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
 		}
 	} else {
 		/* we need to shut down the radvd cleanly, it will send out the prefix
 		 * information with a lifetime of 0 to notify clients of a (possible) new prefix */
-		if (isvalidpid("{$g['varrun_path']}/radvd.pid")) {
+		if (isvalidpid('/var/run/radvd.pid')) {
 			log_error("Shutting down Router Advertisment daemon cleanly");
-			killbypid("{$g['varrun_path']}/radvd.pid");
-			@unlink("{$g['varrun_path']}/radvd.pid");
+			killbypid('/var/run/radvd.pid');
 		}
 	}
 	return 0;
@@ -370,8 +369,7 @@ function services_dhcpdv4_configure()
 	$ddns_zones = array();
 
 	/* kill any running dhcpd */
-	if (isvalidpid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpd.pid"))
-		killbypid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpd.pid");
+	killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid");
 
 	/* DHCP enabled on any interfaces? */
 	if (!is_dhcp_server_enabled())
@@ -900,16 +898,15 @@ EOD;
 	unset($dhcpdconf);
 
 	/* create an empty leases database */
-	if (!file_exists("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases"))
-		@touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
+	@touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
 
 	/* make sure there isn't a stale dhcpd.pid file, which can make dhcpd fail to start.   */
 	/* if we get here, dhcpd has been killed and is not started yet                        */
-	unlink_if_exists("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpd.pid");
+	@unlink("{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid");
 
 	/* fire up dhcpd in a chroot */
 	if (count($dhcpdifs) > 0) {
-		mwexec("/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpd.conf -pf {$g['varrun_path']}/dhcpd.pid " .
+		mwexec("/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid " .
 			join(" ", $dhcpdifs));
 	}
 
@@ -987,14 +984,13 @@ function services_dhcpdv6_configure($blacklist = array())
 	global $config, $g;
 
 	/* kill any running dhcpd */
-	if (isvalidpid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpdv6.pid"))
-		killbypid("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpdv6.pid");
-	if (isvalidpid("{$g['varrun_path']}/dhcpleases6.pid"))
-		killbypid("{$g['varrun_path']}/dhcpleases6.pid");
+	killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid");
+	killbypid('/var/run/dhcpleases6.pid');
 
 	/* DHCP enabled on any interfaces? */
-	if (!is_dhcpv6_server_enabled())
+	if (!is_dhcpv6_server_enabled()) {
 		return 0;
+	}
 
 	if (file_exists("/var/run/booting")) {
 		if (is_install_media()) {
@@ -1310,11 +1306,11 @@ EOD;
 
         /* make sure there isn't a stale dhcpdv6.pid file, which may make dhcpdv6 fail to start.  */
         /* if we get here, dhcpdv6 has been killed and is not started yet                         */
-        unlink_if_exists("{$g['dhcpd_chroot_path']}{$g['varrun_path']}/dhcpdv6.pid");
+        @unlink("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid");
 
 	/* fire up dhcpd in a chroot */
 	if (count($dhcpdv6ifs) > 0) {
-		mwexec("/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpdv6.conf -pf {$g['varrun_path']}/dhcpdv6.pid " .
+		mwexec("/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid " .
 			join(" ", $dhcpdv6ifs));
 		mwexec("/usr/local/sbin/dhcpleases6 -c \"/usr/local/bin/php -f /usr/local/sbin/prefixes.php|/bin/sh\" -l {$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases");
 	}
@@ -1386,7 +1382,7 @@ function services_dhcrelay_configure()
 	global $config, $g;
 
 	/* kill any running dhcrelay */
-	killbypid("{$g['varrun_path']}/dhcrelay.pid");
+	killbypid('/var/run/dhcrelay.pid');
 
 	$dhcrelaycfg =& $config['dhcrelay'];
 
@@ -1503,7 +1499,7 @@ function services_dhcrelay6_configure()
 	global $config, $g;
 
 	/* kill any running dhcrelay */
-	killbypid("{$g['varrun_path']}/dhcrelay6.pid");
+	killbypid('/var/run/dhcrelay6.pid');
 
 	$dhcrelaycfg =& $config['dhcrelay6'];
 
@@ -1599,7 +1595,7 @@ function services_dhcrelay6_configure()
 		return; /* XXX */
 	}
 
-	$cmd = "/usr/local/sbin/dhcrelay -6 -pf \"{$g['varrun_path']}/dhcrelay6.pid\"";
+	$cmd = '/usr/local/sbin/dhcrelay -6 -pf /var/run/dhcrelay6.pid';
 	foreach ($dhcrelayifs as $dhcrelayif) {
 		$cmd .= " -l {$dhcrelayif}";
 	}
@@ -1743,7 +1739,7 @@ function services_dnsmasq_configure()
 	);
 
 	/* kill any running dnsmasq */
-	killbypid("{$g['varrun_path']}/dnsmasq.pid");
+	killbypid('/var/run/dnsmasq.pid');
 
 	if (isset($config['dnsmasq']['enable'])) {
 
@@ -1883,7 +1879,7 @@ function services_unbound_configure()
 	$return = 0;
 
 	// kill any running Unbound instance
-	killbypid("{$g['varrun_path']}/unbound.pid");
+	killbypid('/var/run/unbound.pid');
 
 	if (isset($config['unbound']['enable'])) {
 		if (file_exists("/var/run/booting"))
@@ -1910,10 +1906,12 @@ function services_snmpd_configure()
 	global $config, $g;
 
 	/* kill any running snmpd */
-	killbypid("{$g['varrun_path']}/snmpd.pid");
+	killbypid('/var/run/snmpd.pid');
 	sleep(2);
-	if(is_process_running("bsnmpd"))
-		mwexec("/usr/bin/killall bsnmpd", true);
+
+	if (is_process_running('bsnmpd')) {
+		mwexec('/usr/bin/killall bsnmpd', true);
+	}
 
 	if (isset($config['snmpd']['enable'])) {
 
@@ -2095,7 +2093,7 @@ EOD;
 
 		/* run bsnmpd */
 		mwexec("/usr/sbin/bsnmpd -c {$g['varetc_path']}/snmpd.conf" .
-			"{$bindlan} -p {$g['varrun_path']}/snmpd.pid");
+			"{$bindlan} -p /var/run/snmpd.pid");
 
 		if (file_exists("/var/run/booting"))
 			echo gettext("done.") . "\n";
@@ -2280,11 +2278,11 @@ function configure_cron() {
 	}
 
 	/* please maintain the newline at the end of file */
-	file_put_contents("/etc/crontab", $crontab_contents);
+	file_put_contents('/etc/crontab', $crontab_contents);
 	unset($crontab_contents);
 
 	/* do a HUP kill to force sync changes */
-	killbypid("{$g['varrun_path']}/cron.pid", 'HUP');
+	killbypid('/var/run/cron.pid', 'HUP');
 
 }
 
@@ -2293,12 +2291,12 @@ function upnp_action ($action) {
 	switch($action) {
 		case "start":
 			if (file_exists('/var/etc/miniupnpd.conf')) {
-				@unlink("{$g['varrun_path']}/miniupnpd.pid");
-				mwexec_bg("/usr/local/sbin/miniupnpd -f /var/etc/miniupnpd.conf -P {$g['varrun_path']}/miniupnpd.pid");
+				@unlink('/var/run/miniupnpd.pid');
+				mwexec_bg('/usr/local/sbin/miniupnpd -f /var/etc/miniupnpd.conf -P /var/run/miniupnpd.pid');
 			}
 			break;
 		case "stop":
-			killbypid("{$g['varrun_path']}/miniupnpd.pid");
+			killbypid('/var/run/miniupnpd.pid');
 			while((int)exec("/bin/pgrep -a miniupnpd | wc -l") > 0)
 				mwexec('killall miniupnpd 2>/dev/null', true);
 			mwexec('/sbin/pfctl -aminiupnpd -Fr 2>&1 >/dev/null');
