@@ -327,7 +327,7 @@ maxheight: define max height of select box, default=170px to hold 5 items
                 ['id': 'proxy.forward.transparentMode',
                 'label':'Enable Transparent HTTP proxy',
                 'type':'checkbox',
-                'help':'Enable transparent proxe mode to forward all requests for destination port 80 to the proxy server without any additional configuration.'
+                'help':'Enable transparent proxy mode to forward all requests for destination port 80 to the proxy server without any additional configuration.'
                 ],
                 ['id': 'proxy.forward.addACLforInterfaceSubnets',
                 'label':'Allow interface subnets',
