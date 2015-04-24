@@ -45,7 +45,7 @@ class ServiceController extends ApiControllerBase
     public function startAction()
     {
         $backend = new Backend();
-        $response = $backend->configdRun("proxy start");
+        $response = $backend->configdRun("proxy start",true);
         return array("response" => $response);
     }
 
