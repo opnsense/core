@@ -479,7 +479,7 @@ function local_user_set(&$user)
 		@unlink("{$user_home}/.ssh/authorized_keys");
 	}
 
-	mwexecf('/usr/sbin/pw %s %s -q', array($lock_account ? 'lock' : 'unlock', $user_name));
+	mwexecf('/usr/sbin/pw %s %s', array($lock_account ? 'lock' : 'unlock', $user_name), true);
 }
 
 function local_user_del($user)
@@ -609,23 +609,19 @@ function local_group_set($group, $reset = false)
 {
 	$group_name = $group['name'];
 	$group_gid = $group['gid'];
-	$group_members = "''";
-	if (!$reset && !empty($group['member']) && count($group['member']) > 0)
-		$group_members = implode(",",$group['member']);
+	$group_members = '';
 
-	/* read from group db */
-	$fd = popen("/usr/sbin/pw groupshow {$group_name} 2>&1", "r");
-	$pwread = fgets($fd);
-	pclose($fd);
-
-	/* determine add or mod */
-	if (!strncmp($pwread, "pw:", 3)) {
-		$group_op = "groupadd";
-	} else {
-		$group_op = "groupmod";
+	if (!$reset && !empty($group['member']) && count($group['member']) > 0) {
+		$group_members = implode(',', $group['member']);
 	}
 
-	/* add or mod group db */
+	$ret = mwexecf('/usr/sbin/pw groupshow %s', $group_name, true);
+	if ($ret) {
+		$group_op = 'groupadd';
+	} else {
+		$group_op = 'groupmod';
+	}
+
 	mwexecf('/usr/sbin/pw %s %s -g %s -M %s', array($group_op, $group_name, $group_gid, $group_members));
 }
 
