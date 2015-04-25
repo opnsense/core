@@ -296,7 +296,7 @@ $pgtitle_output = true;
 
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="/">
+				<a class="navbar-brand" href="/index.php">
 				<img class="brand-logo" src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
 				<img class="brand-icon" src="/themes/<?=$g['theme'];?>/assets/images/icon-logo.png" height="30" width="29"/>
 				</a>
