@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -30,8 +31,13 @@ require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_vlan.php');
 
-if (!is_array($config['vlans']['vlan']))
+if (!is_array($config['vlans'])) {
+	$config['vlans'] = array();
+}
+
+if (!is_array($config['vlans']['vlan'])) {
 	$config['vlans']['vlan'] = array();
+}
 
 $a_vlans = &$config['vlans']['vlan'];
 
@@ -99,10 +105,9 @@ if ($_POST) {
 			if (($a_vlans[$id]['if'] != $_POST['if']) || ($a_vlans[$id]['tag'] != $_POST['tag'])) {
 				if (!empty($a_vlans[$id]['vlanif'])) {
 					$confif = convert_real_interface_to_friendly_interface_name($vlan['vlanif']);
-					// Destroy previous vlan
-					pfSense_interface_destroy($a_vlans[$id]['vlanif']);
+					legacy_interface_destroy($a_vlans[$id]['vlanif']);
 				} else {
-					pfSense_interface_destroy("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
+					legacy_interface_destroy("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
 					$confif = convert_real_interface_to_friendly_interface_name("{$a_vlans[$id]['if']}_vlan{$a_vlans[$id]['tag']}");
 				}
 				if ($confif <> "")

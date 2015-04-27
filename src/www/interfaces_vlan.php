@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -28,8 +29,13 @@
 
 require_once("guiconfig.inc");
 
-if (!is_array($config['vlans']['vlan']))
+if (!is_array($config['vlans'])) {
+	$config['vlans'] = array();
+}
+
+if (!is_array($config['vlans']['vlan'])) {
 	$config['vlans']['vlan'] = array();
+}
 
 $a_vlans = &$config['vlans']['vlan'] ;
 
@@ -54,8 +60,9 @@ if ($_GET['act'] == "del") {
 	else if (vlan_inuse($_GET['id'])) {
 		$input_errors[] = gettext("This VLAN cannot be deleted because it is still being used as an interface.");
 	} else {
-		if (does_interface_exist($a_vlans[$_GET['id']]['vlanif']))
-			pfSense_interface_destroy($a_vlans[$_GET['id']]['vlanif']);
+		if (does_interface_exist($a_vlans[$_GET['id']]['vlanif'])) {
+			legacy_interface_destroy($a_vlans[$_GET['id']]['vlanif']);
+		}
 		unset($a_vlans[$_GET['id']]);
 
 		write_config();

@@ -29,7 +29,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* include all configuration functions */
+require_once("interfaces.lib.inc");
 require_once("globals.inc");
 require_once("util.inc");
 require_once("gwlb.inc");
@@ -289,8 +289,8 @@ function interface_vlan_configure(&$vlan) {
 	if (!empty($vlanif) && does_interface_exist($vlanif)) {
 		interface_bring_down($vlanif, true);
 	} else {
-		$tmpvlanif = pfSense_interface_create("vlan");
-		pfSense_interface_rename($tmpvlanif, $vlanif);
+		$tmpvlanif = legacy_interface_create('vlan');
+		legacy_interface_rename($tmpvlanif, $vlanif);
 		pfSense_ngctl_name("{$tmpvlanif}:", $vlanif);
 	}
 
@@ -571,11 +571,11 @@ function interface_bridge_configure(&$bridge, $checkmember = 0) {
 		$flags_on |= IFCAP_LRO;
 
 	if (file_exists("/var/run/booting") || !empty($bridge['bridgeif'])) {
-		pfSense_interface_destroy($bridge['bridgeif']);
-		pfSense_interface_create($bridge['bridgeif']);
-		$bridgeif = escapeshellarg($bridge['bridgeif']);
+		legacy_interface_destroy($bridge['bridgeif']);
+		legacy_interface_create($bridge['bridgeif']);
+		$bridgeif = $bridge['bridgeif'];
 	} else {
-		$bridgeif = pfSense_interface_create("bridge");
+		$bridgeif = legacy_interface_create('bridge');
 		$bridge['bridgeif'] = $bridgeif;
 	}
 
@@ -766,22 +766,25 @@ function interfaces_lagg_configure($realif = "") {
 		echo gettext("done.") . "\n";
 }
 
-function interface_lagg_configure(&$lagg) {
+function interface_lagg_configure(&$lagg)
+{
 	global $config;
 
-	if (!is_array($lagg))
+	if (!is_array($lagg)) {
 		return -1;
+	}
 
 	$members = explode(',', $lagg['members']);
 	if (!count($members))
 		return -1;
 
 	if (file_exists("/var/run/booting") || !(empty($lagg['laggif']))) {
-		pfSense_interface_destroy($lagg['laggif']);
-		pfSense_interface_create($lagg['laggif']);
+		legacy_interface_destroy($lagg['laggif']);
+		legacy_interface_create($lagg['laggif']);
 		$laggif = $lagg['laggif'];
-	} else
-		$laggif = pfSense_interface_create("lagg");
+	} else {
+		$laggif = legacy_interface_create('lagg');
+	}
 
 	/* Calculate smaller mtu and enforce it */
 	$smallermtu = 0;
@@ -893,11 +896,12 @@ function interface_gre_configure(&$gre, $grekey = "") {
 	interfaces_bring_up($realif);
 
 	if (file_exists("/var/run/booting") || !(empty($gre['greif']))) {
-		pfSense_interface_destroy($gre['greif']);
-		pfSense_interface_create($gre['greif']);
+		legacy_interface_destroy($gre['greif']);
+		legacy_interface_create($gre['greif']);
 		$greif = $gre['greif'];
-	} else
-		$greif = pfSense_interface_create("gre");
+	} else {
+		$greif = legacy_interface_create('gre');
+	}
 
 	/* Do not change the order here for more see gre(4) NOTES section. */
 	mwexec("/sbin/ifconfig {$greif} tunnel {$realifip} " . escapeshellarg($gre['remote-addr']));
@@ -992,11 +996,12 @@ function interface_gif_configure(&$gif, $gifkey = "") {
 		log_error(gettext("could not bring realif up -- variable not defined -- interface_gif_configure()"));
 
 	if (file_exists("/var/run/booting") || !(empty($gif['gifif']))) {
-		pfSense_interface_destroy($gif['gifif']);
-		pfSense_interface_create($gif['gifif']);
+		legacy_interface_destroy($gif['gifif']);
+		legacy_interface_create($gif['gifif']);
 		$gifif = $gif['gifif'];
-	} else
-		$gifif = pfSense_interface_create("gif");
+	} else {
+		$gifif = legacy_interface_create('gif');
+	}
 
 	/* Do not change the order here for more see gif(4) NOTES section. */
 	mwexec("/sbin/ifconfig {$gifif} tunnel {$realifip} " . escapeshellarg($gif['remote-addr']));
@@ -1382,8 +1387,9 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 	}
 
 	if ($destroy == true) {
-		if (preg_match("/^[a-z0-9]+^tun|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_stf$/i", $realif))
-			pfSense_interface_destroy($realif);
+		if (preg_match("/^[a-z0-9]+^tun|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_stf$/i", $realif)) {
+			legacy_interface_destroy($realif);
+		}
 	}
 
 	return;
@@ -2267,10 +2273,11 @@ function interface_wireless_clone($realif, $wlcfg)
 		$needs_clone = true;
 	}
 
-	if($needs_clone == true) {
+	if ($needs_clone == true) {
 		/* remove previous instance if it exists */
-		if(does_interface_exist($realif))
-			pfSense_interface_destroy($realif);
+		if (does_interface_exist($realif)) {
+			legacy_interface_destroy($realif);
+		}
 
 		log_error(sprintf(gettext("Cloning new wireless interface %s"), $realif));
 		// Create the new wlan interface. FreeBSD returns the new interface name.
@@ -2282,7 +2289,7 @@ function interface_wireless_clone($realif, $wlcfg)
 		}
 		$newif = trim($out[0]);
 		// Rename the interface to {$parentnic}_wlan{$number}#: EX: ath0_wlan0
-		pfSense_interface_rename($newif, $realif);
+		legacy_interface_rename($newif, $realif);
 		// FIXME: not sure what ngctl is for. Doesn't work.
 		// mwexec("/usr/sbin/ngctl name {$newif}: {$realif}", false);
 		file_put_contents("/tmp/{$realif}_oldmac", get_interface_mac($realif));
@@ -3418,13 +3425,15 @@ function interface_6rd_configure($interface = "wan", $wancfg)
 	$rd6brgw = "{$rd6prefix}{$wancfg['gateway-6rd']}";
 
 	/* XXX: need to extend to support variable prefix size for v4 */
-	if (!is_module_loaded("if_stf"))
-		mwexec("/sbin/kldload if_stf.ko");
+	if (!is_module_loaded('if_stf')) {
+		mwexec('/sbin/kldload if_stf.ko');
+	}
 	$stfiface = "{$interface}_stf";
-	if (does_interface_exist($stfiface))
-		pfSense_interface_destroy($stfiface);
-	$tmpstfiface = pfSense_interface_create("stf");
-	pfSense_interface_rename($tmpstfiface, $stfiface);
+	if (does_interface_exist($stfiface)) {
+		legacy_interface_destroy($stfiface);
+	}
+	$tmpstfiface = legacy_interface_create('stf');
+	legacy_interface_rename($tmpstfiface, $stfiface);
 	pfSense_interface_flags($stfiface, IFF_LINK2);
 	if ($wancfg['prefix-6rd-v4plen'] > 0)
 		$rd6prefixlen += intval($wancfg['prefix-6rd-v4plen']);
@@ -3521,13 +3530,15 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 	$stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
 	/* setup the stf interface */
-	if (!is_module_loaded("if_stf"))
+	if (!is_module_loaded("if_stf")) {
 		mwexec("/sbin/kldload if_stf.ko");
+	}
 	$stfiface = "{$interface}_stf";
-	if (does_interface_exist($stfiface))
-		pfSense_interface_destroy($stfiface);
-	$tmpstfiface = pfSense_interface_create("stf");
-	pfSense_interface_rename($tmpstfiface, $stfiface);
+	if (does_interface_exist($stfiface)) {
+		legacy_interface_destroy($stfiface);
+	}
+	$tmpstfiface = legacy_interface_create('stf');
+	legacy_interface_rename($tmpstfiface, $stfiface);
 	pfSense_interface_flags($stfiface, IFF_LINK2);
 	mwexec("/sbin/ifconfig {$stfiface} inet6 {$stflanpr} prefixlen 16");
 
