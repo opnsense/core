@@ -52,8 +52,6 @@ $checkbox_names = array('pfsyncenabled',
 			'synchronizelb',
 			'synchronizevirtualip',
 			'synchronizetrafficshaper',
-			'synchronizetrafficshaperlimiter',
-			'synchronizetrafficshaperlayer7',
 			'synchronizednsforwarder',
 			'synchronizecaptiveportal');
 
@@ -311,13 +309,6 @@ include("head.inc");
 						<td class="vtable">
 							<input id='synchronizetrafficshaperlimiter' type='checkbox' name='synchronizetrafficshaperlimiter' value='on' <?php if ($pconfig['synchronizetrafficshaperlimiter'] === "on") echo "checked='checked'"; ?> />
 							Automatically sync the traffic shaper configuration for limiters to the other HA host when changes are made.
-						</td>
-					</tr>
-					<tr valign="top">
-						<td width="22%" class="vncell">Synchronize traffic shaper(layer7)</td>
-						<td class="vtable">
-							<input id='synchronizetrafficshaperlayer7' type='checkbox' name='synchronizetrafficshaperlayer7' value='on' <?php if ($pconfig['synchronizetrafficshaperlayer7'] === "on") echo "checked='checked'"; ?> />
-							Automatically sync the traffic shaper configuration for layer7 to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">

@@ -201,12 +201,6 @@ function show_advanced_tcpflags() {
         aodiv.style.display = "block";
 }
 
-function show_advanced_layer7() {
-	document.getElementById("showadvlayer7box").innerHTML='';
-	aodiv = document.getElementById('showlayer7adv');
-	aodiv.style.display = "block";
-}
-
 function src_rep_change() {
 	document.iform.srcendport.selectedIndex = document.iform.srcbeginport.selectedIndex;
 }

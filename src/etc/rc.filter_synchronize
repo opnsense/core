@@ -298,10 +298,6 @@ if (is_array($config['hasync'])) {
 	}
 	if ($hasync['synchronizetrafficshaper'] != "" and is_array($config['shaper']))
 		$sections[] = 'shaper';
-	if ($hasync['synchronizetrafficshaperlimiter'] != "" and is_array($config['dnshaper']))
-		$sections[] = 'dnshaper';
-	if ($hasync['synchronizetrafficshaperlayer7'] != "" and is_array($config['l7shaper']))
-		$sections[] = 'l7shaper';
 	if ($hasync['synchronizestaticroutes'] != "") {
 		if (!is_array($config['staticroutes']))
 			$config['staticroutes'] = array();

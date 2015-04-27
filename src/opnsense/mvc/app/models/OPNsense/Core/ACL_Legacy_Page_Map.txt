@@ -63,7 +63,6 @@ page-firewall-rules-edit=firewall_rules_edit.php*
 page-firewall-schedules=firewall_schedule.php*
 page-firewall-schedules-edit=firewall_schedule_edit.php*
 page-firewall-trafficshaper=firewall_shaper.php*
-page-firewall-trafficshaper-layer7=firewall_shaper_layer7.php*
 page-firewall-trafficshaper-queues=firewall_shaper_queues.php*
 page-firewall-trafficshaper-wizard=firewall_shaper_wizards.php*
 page-firewall-virtualipaddresses=firewall_virtual_ip.php*

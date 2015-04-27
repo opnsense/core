@@ -190,7 +190,6 @@ include("head.inc");
 							$tab_array = array();
 							$tab_array[0] = array(gettext("By Interface"), false, "firewall_shaper.php");
 							$tab_array[1] = array(gettext("By Queue"), true, "firewall_shaper_queues.php");
-							$tab_array[3] = array(gettext("Layer7"), false, "firewall_shaper_layer7.php");
 							$tab_array[4] = array(gettext("Wizards"), false, "firewall_shaper_wizards.php");
 							display_top_tabs($tab_array);
 						?>

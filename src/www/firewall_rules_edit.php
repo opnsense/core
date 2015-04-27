@@ -208,7 +208,6 @@ if (isset($id) && $a_filter[$id]) {
 	/* Shaper support */
 	$pconfig['defaultqueue'] = (($a_filter[$id]['ackqueue'] == "none") ? '' : $a_filter[$id]['defaultqueue']);
 	$pconfig['ackqueue'] = (($a_filter[$id]['ackqueue'] == "none") ? '' : $a_filter[$id]['ackqueue']);
-	$pconfig['l7container'] = (($a_filter[$id]['l7container'] == "none") ? '' : $a_filter[$id]['l7container']);
 
 	//schedule support
 	$pconfig['sched'] = (($a_filter[$id]['sched'] == "none") ? '' : $a_filter[$id]['sched']);
@@ -234,8 +233,6 @@ if (isset($_GET['dup']) && is_numericint($_GET['dup']))
 
 read_altq_config(); /* XXX: */
 $qlist =& get_unique_queue_list();
-read_layer7_config();
-$l7clist =& get_l7_unique_list();
 $a_gatewaygroups = return_gateway_groups_array();
 
 if ($_POST) {
@@ -484,12 +481,6 @@ if ($_POST) {
 		$input_errors[] = gettext("You can not use gateways in Floating rules without choosing a direction.");
 	if( !empty($_POST['ruleid']) && !ctype_digit($_POST['ruleid']))
 		$input_errors[] = gettext('ID must be an integer');
-	if($_POST['l7container'] && $_POST['l7container'] != "") {
-		if(!($_POST['proto'] == "tcp" || $_POST['proto'] == "udp" || $_POST['proto'] == "tcp/udp"))
-			$input_errors[] = gettext("You can only select a layer7 container for TCP and/or UDP protocols");
-		if ($_POST['type'] <> "pass")
-			$input_errors[] = gettext("You can only select a layer7 container for Pass type rules.");
-	}
 
 	if (!in_array($_POST['proto'], array("tcp","tcp/udp"))) {
 		if (!empty($_POST['max-src-conn']))
@@ -515,19 +506,19 @@ if ($_POST) {
 			$input_errors[] = gettext("You can only specify the state timeout (advanced option) for Pass type rules.");
 	}
 
-	if (($_POST['statetype'] == "none") && (empty($_POST['l7container']))) {
+	if (($_POST['statetype'] == "none")) {
 		if (!empty($_POST['max']))
-			$input_errors[] = gettext("You cannot specify the maximum state entries (advanced option) if statetype is none and no L7 container is selected.");
+			$input_errors[] = gettext("You cannot specify the maximum state entries (advanced option) if statetype is none.");
 		if (!empty($_POST['max-src-nodes']))
-			$input_errors[] = gettext("You cannot specify the maximum number of unique source hosts (advanced option) if statetype is none and no L7 container is selected.");
+			$input_errors[] = gettext("You cannot specify the maximum number of unique source hosts (advanced option) if statetype is none.");
 		if (!empty($_POST['max-src-conn']))
-			$input_errors[] = gettext("You cannot specify the maximum number of established connections per host (advanced option) if statetype is none and no L7 container is selected.");
+			$input_errors[] = gettext("You cannot specify the maximum number of established connections per host (advanced option) if statetype is none.");
 		if (!empty($_POST['max-src-states']))
-			$input_errors[] = gettext("You cannot specify the maximum state entries per host (advanced option) if statetype is none and no L7 container is selected.");
+			$input_errors[] = gettext("You cannot specify the maximum state entries per host (advanced option) if statetype is none.");
 		if (!empty($_POST['max-src-conn-rate']) || !empty($_POST['max-src-conn-rates']))
-			$input_errors[] = gettext("You cannot specify the maximum new connections per host / per second(s) (advanced option) if statetype is none and no L7 container is selected.");
+			$input_errors[] = gettext("You cannot specify the maximum new connections per host / per second(s) (advanced option) if statetype is none.");
 		if (!empty($_POST['statetimeout']))
-			$input_errors[] = gettext("You cannot specify the state timeout (advanced option) if statetype is none and no L7 container is selected.");
+			$input_errors[] = gettext("You cannot specify the state timeout (advanced option) if statetype is none.");
 	}
 
 	if (($_POST['max'] != "") && !is_posnumericint($_POST['max']))
@@ -685,10 +676,6 @@ if ($_POST) {
 			$filterent['defaultqueue'] = $_POST['defaultqueue'];
 			if ($_POST['ackqueue'] != "")
 				$filterent['ackqueue'] = $_POST['ackqueue'];
-		}
-
-		if ($_POST['l7container'] != "") {
-			$filterent['l7container'] = $_POST['l7container'];
 		}
 
 		if ($_POST['sched'] != "") {
@@ -1294,7 +1281,7 @@ include("head.inc");
 													if($x == $pconfig['max-src-conn-rates']) $selected = " selected=\"selected\""; else $selected = "";
 													echo "<option value=\"{$x}\"{$selected}>{$x}</option>\n";
 												} ?>
-											</select><br />
+											</select><br /> 
 											<?=gettext("Maximum new connections per host / per second(s) (TCP only)");?>
 											</p><p>
 											<input name="statetimeout" value="<?php echo htmlspecialchars($pconfig['statetimeout']) ?>" /><br />
@@ -1360,7 +1347,7 @@ include("head.inc");
 													<option value="keep state" <?php if(!isset($pconfig['statetype']) or $pconfig['statetype'] == "keep state") echo "selected=\"selected\""; ?>><?=gettext("keep state");?></option>
 													<option value="sloppy state" <?php if($pconfig['statetype'] == "sloppy state") echo "selected=\"selected\""; ?>><?=gettext("sloppy state");?></option>
 													<option value="synproxy state"<?php if($pconfig['statetype'] == "synproxy state")  echo "selected=\"selected\""; ?>><?=gettext("synproxy state");?></option>
-													<option value="none"<?php if($pconfig['statetype'] == "none") echo "selected=\"selected\""; ?>><?=gettext("none");?></option>
+													<option value="none"<?php if($pconfig['statetype'] == "none") echo "selected=\"selected\""; ?>><?=gettext("none");?></option> 
 												</select><br />
 												<span class="vexpl">
 													<?=gettext("Hint: Select which type of state tracking mechanism you would like to use.  If in doubt, use keep state.");?>
@@ -1569,36 +1556,6 @@ include("head.inc");
 											</select>
 												<br />
 												<span class="vexpl"><?=gettext("Choose the Acknowledge Queue only if you have selected Queue.");?></span>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td width="22%" valign="top" class="vncell"><?=gettext("Layer7");?></td>
-											<td width="78%" class="vtable">
-												<div id="showadvlayer7box" <?php if (!empty($pconfig['l7container'])) echo "style='display:none'"; ?>>
-													<input type="button" onclick="show_advanced_layer7()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
-												</div>
-												<div id="showlayer7adv" <?php if (empty($pconfig['l7container'])) echo "style='display:none'"; ?>>
-													<select name="l7container">
-							<?php
-													if (!is_array($l7clist))
-														$l7clist = array();
-													echo "<option value=\"\"";
-													echo " >none</option>";
-													foreach ($l7clist as $l7ckey) {
-														echo "<option value=\"{$l7ckey}\"";
-														if ($l7ckey == $pconfig['l7container']) {
-															echo " selected=\"selected\"";
-														}
-														echo ">{$l7ckey}</option>";
-													}
-							?>
-													</select>
-													<br />
-													<span class="vexpl">
-														<?=gettext("Choose a Layer7 container to apply application protocol inspection rules. " .
-														"These are valid for TCP and UDP protocols only.");?>
-													</span>
 												</div>
 											</td>
 										</tr>

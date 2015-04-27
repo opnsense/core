@@ -64,7 +64,6 @@
         <Schedules url="/firewall_schedule.php"/>
         <TrafficShaper url="/firewall_shaper.php">
                 <ByQueue VisibleName="By Queue" url="/firewall_shaper_queues.php"/>
-                <Layer7 url="/firewall_shaper_layer7.php"/>
                 <Wizards url="/firewall_shaper_wizards.php"/>
         </TrafficShaper>
         <VirtualIPs VisableName="Virtual IPs" url="/firewall_virtual_ip.php"/>
