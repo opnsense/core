@@ -75,7 +75,7 @@ function restore_rrddata() {
 	global $config, $g, $rrdtool, $input_errors;
 	foreach($config['rrddata']['rrddatafile'] as $rrd) {
 		if ($rrd['xmldata']) {
-			$rrd_file = "{$g['vardb_path']}/rrd/{$rrd['filename']}";
+			$rrd_file = "/var/db/rrd/{$rrd['filename']}";
 			$xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
 			if (file_put_contents($xml_file, gzinflate(base64_decode($rrd['xmldata']))) === false) {
 				log_error("Cannot write $xml_file");
@@ -91,7 +91,7 @@ function restore_rrddata() {
 			unlink($xml_file);
 		}
 		else if ($rrd['data']) {
-			$rrd_file = "{$g['vardb_path']}/rrd/{$rrd['filename']}";
+			$rrd_file = "/var/db/rrd/{$rrd['filename']}";
 			$rrd_fd = fopen($rrd_file, "w");
 			if (!$rrd_fd) {
 				log_error("Cannot write $rrd_file");

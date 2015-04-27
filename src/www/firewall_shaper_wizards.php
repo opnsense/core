@@ -52,8 +52,8 @@ if ($_POST['apply']) {
 		$savemsg = $retval;
 
 	/* reset rrd queues */
-	unlink_if_exists("/var/db/rrd/*queuedrops.rrd");
-	unlink_if_exists("/var/db/rrd/*queues.rrd");
+	mwexec('/bin/rm /var/db/rrd/*queuedrops.rrd');
+	mwexec('/bin/rm /var/db/rrd/*queues.rrd');
 	enable_rrd_graphing();
 
 	clear_subsystem_dirty('shaper');

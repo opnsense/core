@@ -302,7 +302,7 @@ function system_hosts_generate()
 	 * Do not remove this because dhcpleases monitors with kqueue
 	 * it needs to be * killed before writing to hosts files.
 	 */
-	killbypid("{$g['varrun_path']}/dhcpleases.pid");
+	killbypid('/var/run/dhcpleases.pid');
 
 	$fd = fopen('/etc/hosts', 'w');
 	if (!$fd) {
@@ -334,8 +334,8 @@ function system_dhcpleases_configure()
 		if (!file_exists("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases")) {
 			@touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
 		}
-		if (isvalidpid("{$g['varrun_path']}/dhcpleases.pid")) {
-			killbypid("{$g['varrun_path']}/dhcpleases.pid", 'HUP');
+		if (isvalidpid('/var/run/dhcpleases.pid')) {
+			killbypid('/var/run/dhcpleases.pid', 'HUP');
 		} else {
 			/* To ensure we do not start multiple instances of dhcpleases, perform some clean-up first. */
 			killbyname('dhcpleases');
@@ -356,7 +356,7 @@ function system_dhcpleases_configure()
 			);
 		}
 	} else {
-		killbypid("{$g['varrun_path']}/dhcpleases.pid");
+		killbypid('/var/run/dhcpleases.pid');
 	}
 }
 
@@ -549,17 +549,16 @@ function system_staticroutes_configure($interface = "", $update_dns = false) {
 			array_unique($filterdns_list);
 			foreach ($filterdns_list as $hostname)
 				$hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py \"routedns reload\"'\n";
-			file_put_contents("{$g['varetc_path']}/filterdns-route.hosts", $hostnames);
+			file_put_contents("/var/etc/filterdns-route.hosts", $hostnames);
 			unset($hostnames);
 
-			if (isvalidpid("{$g['varrun_path']}/filterdns-route.pid")) {
-				killbypid("{$g['varrun_path']}/filterdns-route.pid", 'HUP');
+			if (isvalidpid('/var/run/filterdns-route.pid')) {
+				killbypid('/var/run/filterdns-route.pid', 'HUP');
 			} else {
-				mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-route.pid -i {$interval} -c {$g['varetc_path']}/filterdns-route.hosts -d 1");
+				mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-route.pid -i {$interval} -c /var/etc/filterdns-route.hosts -d 1");
 			}
 		} else {
-			killbypid("{$g['varrun_path']}/filterdns-route.pid");
-			@unlink("{$g['varrun_path']}/filterdns-route.pid");
+			killbypid('/var/run/filterdns-route.pid');
 		}
 	}
 	unset($filterdns_list);
@@ -745,7 +744,7 @@ EOD;
 EOD;
 		}
 		/* write syslog.conf */
-		if (!@file_put_contents("{$g['varetc_path']}/syslog.conf", $syslogconf)) {
+		if (!@file_put_contents("/var/etc/syslog.conf", $syslogconf)) {
 			printf(gettext("Error: cannot open syslog.conf in system_syslogd_start().%s"), "\n");
 			unset($syslogconf);
 			return 1;
@@ -772,17 +771,18 @@ EOD;
 			}
 		}
 
-		$syslogd_extra = "-f {$g['varetc_path']}/syslog.conf {$sourceip}";
+		$syslogd_extra = "-f /var/etc/syslog.conf {$sourceip}";
 	}
 
-	if (isvalidpid("{$g['varrun_path']}/syslog.pid")) {
-		killbypid("{$g['varrun_path']}/syslog.pid", 'HUP');
+	if (isvalidpid('/var/run/syslog.pid')) {
+		killbypid('/var/run/syslog.pid', 'HUP');
 	} else {
-		$retval = mwexec_bg("/usr/local/sbin/syslogd -s -c -c -l {$g['dhcpd_chroot_path']}/var/run/log -P {$g['varrun_path']}/syslog.pid {$syslogd_extra}");
+		$retval = mwexec_bg("/usr/local/sbin/syslogd -s -c -c -l {$g['dhcpd_chroot_path']}/var/run/log -P /var/run/syslog.pid {$syslogd_extra}");
 	}
 
-	if (file_exists("/var/run/booting"))
+	if (file_exists("/var/run/booting")) {
 		echo gettext("done.") . "\n";
+	}
 
 	return $retval;
 }
@@ -845,22 +845,20 @@ function system_webgui_start()
 	}
 
 	/* generate lighttpd configuration */
-	system_generate_lighty_config("{$g['varetc_path']}/lighty-webConfigurator.conf",
+	system_generate_lighty_config("/var/etc/lighty-webConfigurator.conf",
 		$crt, $key, $ca, "lighty-webConfigurator.pid", $portarg, "/usr/local/www/",
 		"cert.pem", "ca.pem");
 
 	/* kill any running lighttpd */
-	killbypid("{$g['varrun_path']}/lighty-webConfigurator.pid");
+	killbypid('/var/run/lighty-webConfigurator.pid');
 
 	sleep(1);
-
-	@unlink("{$g['varrun_path']}/lighty-webConfigurator.pid");
 
 	/* regenerate the php.ini files in case the setup has changed */
 	mwexec('/usr/local/etc/rc.php_ini_setup');
 
 	/* attempt to start lighthttpd and return true if ok */
-	return !mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-webConfigurator.conf");
+	return !mwexec("/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf");
 }
 
 function system_generate_lighty_config(
@@ -1090,9 +1088,9 @@ EOD;
 		$lighty_config .= "\n";
 		$lighty_config .= "## ssl configuration\n";
 		$lighty_config .= "ssl.engine = \"enable\"\n";
-		$lighty_config .= "ssl.pemfile = \"{$g['varetc_path']}/{$cert_location}\"\n\n";
+		$lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n\n";
 		if($ca <> "")
-			$lighty_config .= "ssl.ca-file = \"{$g['varetc_path']}/{$ca_location}\"\n\n";
+			$lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n\n";
 	}
 	$lighty_config .= " }\n";
 
@@ -1104,7 +1102,7 @@ EOD;
 #server.error-handler-404   = "/error-handler.php"
 
 ## to help the rc.scripts
-server.pid-file            = "{$g['varrun_path']}/{$pid_file}"
+server.pid-file            = "/var/run/{$pid_file}"
 
 ## virtual directory listings
 server.dir-listing         = "disable"
@@ -1144,30 +1142,30 @@ EOD;
 	$ca = str_replace("\n\n", "\n", $ca);
 
 	if($cert <> "" and $key <> "") {
-		$fd = fopen("{$g['varetc_path']}/{$cert_location}", "w");
+		$fd = fopen("/var/etc/{$cert_location}", "w");
 		if (!$fd) {
 			printf(gettext("Error: cannot open cert.pem in system_webgui_start().%s"), "\n");
 			return 1;
 		}
-		chmod("{$g['varetc_path']}/{$cert_location}", 0600);
+		chmod("/var/etc/{$cert_location}", 0600);
 		fwrite($fd, $cert);
 		fwrite($fd, "\n");
 		fwrite($fd, $key);
 		fclose($fd);
 		if(!(empty($ca) || (strlen(trim($ca)) == 0))) {
-			$fd = fopen("{$g['varetc_path']}/{$ca_location}", "w");
+			$fd = fopen("/var/etc/{$ca_location}", "w");
 			if (!$fd) {
 				printf(gettext("Error: cannot open ca.pem in system_webgui_start().%s"), "\n");
 				return 1;
 			}
-			chmod("{$g['varetc_path']}/{$ca_location}", 0600);
+			chmod("/var/etc/{$ca_location}", 0600);
 			fwrite($fd, $ca);
 			fclose($fd);
 		}
 		$lighty_config .= "\n";
 		$lighty_config .= "## " . gettext("ssl configuration") . "\n";
 		$lighty_config .= "ssl.engine = \"enable\"\n";
-		$lighty_config .= "ssl.pemfile = \"{$g['varetc_path']}/{$cert_location}\"\n\n";
+		$lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n\n";
 
 		// Harden SSL a bit for PCI conformance testing
 		$lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
@@ -1194,7 +1192,7 @@ EOD;
 		}
 
 		if(!(empty($ca) || (strlen(trim($ca)) == 0)))
-			$lighty_config .= "ssl.ca-file = \"{$g['varetc_path']}/{$ca_location}\"\n\n";
+			$lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n\n";
 	}
 
 	// Add HTTP to HTTPS redirect
@@ -1266,7 +1264,7 @@ function system_ntp_setup_gps($serialport) {
 		return false;
 
 	// Create symlink that ntpd requires
-	unlink_if_exists($gps_device);
+	@unlink($gps_device);
 	symlink($serialport, $gps_device);
 
 	/* Send the following to the GPS port to initialize the GPS */
@@ -1308,22 +1306,21 @@ function system_ntp_setup_gps($serialport) {
 	return true;
 }
 
-function system_ntp_setup_pps($serialport) {
-	global $config, $g;
-
+function system_ntp_setup_pps($serialport)
+{
 	$pps_device = '/dev/pps0';
-	$serialport = '/dev/'.$serialport;
+	$serialport = "/dev/{$serialport}";
 
-	if (!file_exists($serialport))
+	if (!file_exists($serialport)) {
 		return false;
+	}
 
 	// Create symlink that ntpd requires
-	unlink_if_exists($pps_device);
+	@unlink($pps_device);
 	@symlink($serialport, $pps_device);
 
 	return true;
 }
-
 
 function system_ntp_configure($start_ntpd = true)
 {
@@ -1568,8 +1565,8 @@ function system_ntp_configure($start_ntpd = true)
 	}
 
 	/* open configuration for wrting or bail */
-	if (!@file_put_contents("{$g['varetc_path']}/ntpd.conf", $ntpcfg)) {
-		log_error("Could not open {$g['varetc_path']}/ntpd.conf for writing");
+	if (!@file_put_contents('/var/etc/ntpd.conf', $ntpcfg)) {
+		log_error("Could not open /var/etc/ntpd.conf for writing");
 		return;
 	}
 
@@ -1578,21 +1575,19 @@ function system_ntp_configure($start_ntpd = true)
 		return;
 
 	/* if ntpd is running, kill it */
-	while (isvalidpid("{$g['varrun_path']}/ntpd.pid")) {
-		killbypid("{$g['varrun_path']}/ntpd.pid");
+	while (isvalidpid('/var/run/ntpd.pid')) {
+		killbypid('/var/run/ntpd.pid');
+		usleep(200 * 1000);
 	}
-	@unlink("{$g['varrun_path']}/ntpd.pid");
 
 	/* if /var/empty does not exist, create it */
-	if(!is_dir("/var/empty"))
-		mkdir("/var/empty", 0775, true);
+	@mkdir('/var/empty', 0775, true);
 
-	/* start opentpd, set time now and use /var/etc/ntpd.conf */
-	mwexec("/usr/local/sbin/ntpd -g -c {$g['varetc_path']}/ntpd.conf -p {$g['varrun_path']}/ntpd.pid", false, true);
+	/* start opentpd, set time now and use new config */
+	mwexec('/usr/local/sbin/ntpd -g -c /var/etc/ntpd.conf -p /var/run/ntpd.pid', false, true);
 
 	// Note that we are starting up
 	log_error("NTPD is starting up.");
-	return;
 }
 
 function system_halt($sync = false)

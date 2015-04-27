@@ -48,20 +48,22 @@ function return_apinger_defaults() {
  * Creates monitoring configuration file and
  * adds appropriate static routes.
  */
-function setup_gateways_monitor() {
+function setup_gateways_monitor()
+{
 	global $config, $g;
 
 	$gateways_arr = return_gateways_array();
 	if (!is_array($gateways_arr)) {
 		log_error("No gateways to monitor. Apinger will not be run.");
-		killbypid("{$g['varrun_path']}/apinger.pid");
-		@unlink("{$g['varrun_path']}/apinger.status");
+		killbypid('/var/run/apinger.pid');
+		@unlink('/var/run/apinger.status');
 		return;
 	}
 
 	$apinger_debug = "";
-	if (isset($config['system']['apinger_debug']))
+	if (isset($config['system']['apinger_debug'])) {
 		$apinger_debug = "debug on";
+	}
 
 	$apinger_default = return_apinger_defaults();
 	$apingerconfig = <<<EOD
@@ -78,14 +80,14 @@ group "wheel"
 #mailer "/var/qmail/bin/qmail-inject"
 
 ## Location of the pid-file (default: "/var/run/apinger.pid")
-pid_file "{$g['varrun_path']}/apinger.pid"
+pid_file "/var/run/apinger.pid"
 
 ## Format of timestamp (%s macro) (default: "%b %d %H:%M:%S")
 #timestamp_format "%Y%m%d%H%M%S"
 
 status {
 	## File where the status information should be written to
-	file "{$g['varrun_path']}/apinger.status"
+	file "/var/run/apinger.status"
 	## Interval between file updates
 	## when 0 or not set, file is written only when SIGUSR1 is received
 	interval 5s
@@ -144,7 +146,7 @@ target default {
 	alarms "down","delay","loss"
 
 	## Location of the RRD
-	#rrd file "{$g['vardb_path']}/rrd/apinger-%t.rrd"
+	#rrd file "/var/db/rrd/apinger-%t.rrd"
 }
 
 EOD;
@@ -322,7 +324,7 @@ EOD;
 		if (isset($gateway['force_down']))
 			$apingercfg .= "\tforce_down on\n";
 
-		$apingercfg .= "	rrd file \"{$g['vardb_path']}/rrd/{$gateway['name']}-quality.rrd\"\n";
+		$apingercfg .= "	rrd file \"/var/db/rrd/{$gateway['name']}-quality.rrd\"\n";
 		$apingercfg .= "}\n";
 		$apingercfg .= "\n";
 
@@ -332,25 +334,25 @@ EOD;
 		# Create gateway quality RRD with settings more suitable for OPNsense graph set,
 		# since apinger uses default step (300; 5 minutes) and other settings that don't
 		# match the OPNsense gateway quality graph set.
-		create_gateway_quality_rrd("{$g['vardb_path']}/rrd/{$gateway['name']}-quality.rrd");
+		create_gateway_quality_rrd("/var/db/rrd/{$gateway['name']}-quality.rrd");
 	}
-	@file_put_contents("{$g['varetc_path']}/apinger.conf", $apingerconfig);
+	@file_put_contents('/var/etc/apinger.conf', $apingerconfig);
 	unset($apingerconfig);
 
 	@chmod('/tmp', 01777);
-	@mkdir("{$g['vardb_path']}/rrd", 0775);
-	@chown("{$g['vardb_path']}/rrd", "nobody");
+	@mkdir('/var/db/rrd', 0775);
+	@chown('/var/db/rrd', 'nobody');
 
 	/* Restart apinger process */
-	if (isvalidpid("{$g['varrun_path']}/apinger.pid")) {
-		killbypid("{$g['varrun_path']}/apinger.pid", 'HUP');
+	if (isvalidpid('/var/run/apinger.pid')) {
+		killbypid('/var/run/apinger.pid', 'HUP');
 	} else {
 		/* start a new apinger process */
-		@unlink("{$g['varrun_path']}/apinger.status");
+		@unlink('/var/run/apinger.status');
 		sleep(1);
-		mwexec_bg("/usr/local/sbin/apinger -c {$g['varetc_path']}/apinger.conf");
+		mwexec_bg('/usr/local/sbin/apinger -c /var/etc/apinger.conf');
 		sleep(1);
-		killbypid("{$g['varrun_path']}/apinger.pid", 'USR1');
+		killbypid('/var/run/apinger.pid', 'USR1');
 	}
 
 	return 0;
@@ -359,23 +361,24 @@ EOD;
 /* return the status of the apinger targets as a array */
 function return_gateways_status($byname = false)
 {
-	global $config, $g;
+	global $config;
 
 	$apingerstatus = array();
 
 	/* Always get the latest status from apinger */
-	killbypid("{$g['varrun_path']}/apinger.pid", 'USR1');
-	if (file_exists("{$g['varrun_path']}/apinger.status")) {
-		$apingerstatus = file("{$g['varrun_path']}/apinger.status");
+	killbypid('/var/run/apinger.pid', 'USR1');
+	if (file_exists('/var/run/apinger.status')) {
+		$apingerstatus = file('/var/run/apinger.status');
 	}
 
 	$status = array();
-	foreach($apingerstatus as $line) {
-		$info = explode("|", $line);
-		if ($byname == false)
+	foreach ($apingerstatus as $line) {
+		$info = explode('|', $line);
+		if ($byname == false) {
 			$target = $info[0];
-		else
+		} else {
 			$target = $info[2];
+		}
 
 		$status[$target] = array();
 		$status[$target]['monitorip'] = $info[0];

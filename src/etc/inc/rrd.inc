@@ -30,7 +30,7 @@ function dump_rrd_to_xml($rrddatabase, $xmldumpfile)
 {
 	$rrdtool = '/usr/local/bin/rrdtool';
 
-	unlink_if_exists($xmldumpfile);
+	@unlink($xmldumpfile);
 
 	exec("$rrdtool dump " . escapeshellarg($rrddatabase) . " {$xmldumpfile} 2>&1", $dumpout, $dumpret);
 	if ($dumpret <> 0) {
@@ -77,7 +77,7 @@ function restore_rrd()
 		}
 		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
 		if (!isset($config['system']['use_mfs_tmpvar'])) {
-			unlink_if_exists('/conf/rrd.tgz');
+			@unlink('/conf/rrd.tgz');
 		}
 		return true;
 	}
@@ -287,7 +287,7 @@ function enable_rrd_graphing() {
 		$rrdupdatesh .= "\n";
 		$rrdupdatesh .= "export TERM=dumb\n";
 		$rrdupdatesh .= "\n";
-		$rrdupdatesh .= 'echo $$ > ' . $g['varrun_path'] . '/updaterrd.sh.pid';
+		$rrdupdatesh .= 'echo $$ > /var/run/updaterrd.sh.pid';
 		$rrdupdatesh .= "\n";
 		$rrdupdatesh .= "counter=1\n";
 		$rrdupdatesh .= "while [ \"\$counter\" -ne 0 ]\n";
@@ -441,7 +441,7 @@ function enable_rrd_graphing() {
 				$rrdupdatesh .= " sleep 0.2\n";
 				$rrdupdatesh .= " echo \"quit\"\n";
 				$rrdupdatesh .= "}\n";
-				$rrdupdatesh .= "OVPN=`list_current_users | nc -U {$g['varetc_path']}/openvpn/server{$vpnid}.sock | awk -F\",\" '/^CLIENT_LIST/ {print \$2}' | wc -l | awk '{print $1}'`\n";
+				$rrdupdatesh .= "OVPN=`list_current_users | nc -U /var/etc/openvpn/server{$vpnid}.sock | awk -F\",\" '/^CLIENT_LIST/ {print \$2}' | wc -l | awk '{print $1}'`\n";
 				$rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$vpnusers N:\${OVPN}\n";
 			}
 
@@ -864,7 +864,7 @@ function enable_rrd_graphing() {
 		$rrdupdatesh .= "done\n";
 		log_error(gettext("Creating rrd update script"));
 		/* write the rrd update script */
-		$updaterrdscript = "{$g['vardb_path']}/rrd/updaterrd.sh";
+		$updaterrdscript = '/var/db/rrd/updaterrd.sh';
 		$fd = fopen("$updaterrdscript", "w");
 		fwrite($fd, "$rrdupdatesh");
 		fclose($fd);
@@ -920,10 +920,7 @@ function create_gateway_quality_rrd($rrd_file) {
 	unset($rrdtool, $rrdinterval, $valid, $rrd_file);
 }
 
-function kill_traffic_collector() {
-	global $g;
-
-	killbypid("{$g['varrun_path']}/updaterrd.sh.pid");
+function kill_traffic_collector()
+{
+	killbypid('/var/run/updaterrd.sh.pid');
 }
-
-?>

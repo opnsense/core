@@ -2025,11 +2025,11 @@ function upgrade_054_to_055() {
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
 	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
-	unlink_if_exists("{$g['vardb_path']}/rrd/*.xml");
-	if (file_exists("/var/run/booting"))
+	mwexec('/bin/rm /var/db/rrd/*.xml');
+	if (file_exists("/var/run/booting")) {
 		echo "Updating configuration...";
+	}
 }
-
 
 function upgrade_055_to_056() {
 	global $config;
@@ -2526,10 +2526,10 @@ function upgrade_077_to_078() {
 		$config['pptpd']['n_pptp_units'] = empty($config['pptpd']['n_pptp_units']) ? 16 : $config['pptpd']['n_pptp_units'];
 	}
 }
-function upgrade_078_to_079() {
-	global $g;
+function upgrade_078_to_079()
+{
 	/* Delete old and unused RRD file */
-	unlink_if_exists("{$g['vardb_path']}/rrd/captiveportal-totalusers.rrd");
+	@unlink('/var/db/rrd/captiveportal-totalusers.rrd');
 }
 
 function upgrade_079_to_080() {
@@ -2692,8 +2692,8 @@ function upgrade_080_to_081() {
 		mwexec("$rrdtool restore -f /tmp/{$xmldumpnew} {$rrddbpath}/{$database} 2>&1");
 		unset($xml);
 		# Default /tmp tmpfs is ~40mb, do not leave temp files around
-		unlink_if_exists("/tmp/{$xmldump}");
-		unlink_if_exists("/tmp/{$xmldumpnew}");
+		@unlink("/tmp/{$xmldump}");
+		@unlink("/tmp/{$xmldumpnew}");
 	}
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
@@ -2943,9 +2943,9 @@ function upgrade_092_to_093() {
 	$suffixes = array("concurrent", "loggedin");
 
 	foreach ($suffixes as $suffix)
-		if (file_exists("{$g['vardb_path']}/rrd/captiveportal-{$suffix}.rrd"))
-			rename("{$g['vardb_path']}/rrd/captiveportal-{$suffix}.rrd",
-				"{$g['vardb_path']}/rrd/captiveportal-cpZone-{$suffix}.rrd");
+		if (file_exists("/var/db/rrd/captiveportal-{$suffix}.rrd"))
+			rename("/var/db/rrd/captiveportal-{$suffix}.rrd",
+				"/var/db/rrd/captiveportal-cpZone-{$suffix}.rrd");
 
 	enable_rrd_graphing();
 }
@@ -3230,13 +3230,13 @@ function upgrade_110_to_111()
 	mwexec('/usr/sbin/pw useradd -n unbound -c "Unbound DNS Resolver" -d /var/unbound -s /usr/sbin/nologin -u 59 -g 59', true);
 
 	/* cleanup old unbound package stuffs */
-	unlink_if_exists("/usr/local/pkg/unbound.xml");
-	unlink_if_exists("/usr/local/pkg/unbound.inc");
-	unlink_if_exists("/usr/local/pkg/unbound_advanced.xml");
-	unlink_if_exists("/usr/local/www/unbound_status.php");
-	unlink_if_exists("/usr/local/www/unbound_acls.php");
-	unlink_if_exists("/usr/local/bin/unbound_monitor.sh");
-	unlink_if_exists("/usr/local/etc/rc.d/unbound.sh");
+	@unlink('/usr/local/pkg/unbound.xml');
+	@unlink('/usr/local/pkg/unbound.inc');
+	@unlink('/usr/local/pkg/unbound_advanced.xml');
+	@unlink('/usr/local/www/unbound_status.php');
+	@unlink('/usr/local/www/unbound_acls.php');
+	@unlink('/usr/local/bin/unbound_monitor.sh');
+	@unlink('/usr/local/etc/rc.d/unbound.sh');
 
 	/* Remove old menu and service entries */
 	if (isset($config['installedpackages']['menu']) && is_array($config['installedpackages']['menu'])) {

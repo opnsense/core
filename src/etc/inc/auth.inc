@@ -203,7 +203,7 @@ function index_groups()
 
 	$groupindex = array();
 
-	if (is_array($config['system']['group'])) {
+	if (isset($config['system']['group'])) {
 		$i = 0;
 		foreach($config['system']['group'] as $groupent) {
 			$groupindex[$groupent['name']] = $i;
@@ -261,7 +261,7 @@ function &getGroupEntryByGID($gid)
 {
 	global $config;
 
-	if (is_array($config['system']['group'])) {
+	if (isset($config['system']['group'])) {
 		foreach ($config['system']['group'] as & $group) {
 			if ($group['gid'] == $gid) {
 				return $group;
@@ -342,9 +342,8 @@ function local_sync_accounts()
 			 * If a crontab was created to user, pw userdel will be interactive and
 			 * can cause issues. Just remove crontab before run it when necessary
 			 */
-			unlink_if_exists("/var/cron/tabs/{$line[0]}");
-			$cmd = "/usr/sbin/pw userdel -n '{$line[0]}'";
-			mwexec($cmd);
+			@unlink("/var/cron/tabs/{$line[0]}");
+			mwexecf('/usr/sbin/pw userdel -n %s', $line[0]);
 		}
 		pclose($fd);
 	}
@@ -364,8 +363,7 @@ function local_sync_accounts()
 			if ($line[2] > 65000) {
 				continue;
 			}
-			$cmd = "/usr/sbin/pw groupdel {$line[2]}";
-			mwexec($cmd);
+			mwexecf('/usr/sbin/pw groupdel %s', $line[2]);
 		}
 		pclose($fd);
 	}
@@ -477,12 +475,11 @@ function local_user_set(&$user)
 		$keys = base64_decode($user['authorizedkeys']);
 		@file_put_contents("{$user_home}/.ssh/authorized_keys", $keys);
 		@chown("{$user_home}/.ssh/authorized_keys", $user_name);
-	} else
-		unlink_if_exists("{$user_home}/.ssh/authorized_keys");
+	} else {
+		@unlink("{$user_home}/.ssh/authorized_keys");
+	}
 
-	$un = $lock_account ? "" : "un";
-	exec("/usr/sbin/pw {$un}lock {$user_name} -q");
-
+	mwexecf('/usr/sbin/pw %s %s', array($lock_account ? 'lock' : 'unlock', $user_name), true);
 }
 
 function local_user_del($user)
@@ -518,7 +515,8 @@ function local_user_get_groups($user, $all = false)
 	global $config;
 
 	$groups = array();
-	if (!is_array($config['system']['group'])) {
+
+	if (!isset($config['system']['group'])) {
 		return $groups;
 	}
 
@@ -540,8 +538,9 @@ function local_user_set_groups($user, $new_groups = null)
 {
 	global $config, $groupindex;
 
-	if (!is_array($config['system']['group']))
+	if (!isset($config['system']['group'])) {
 		return;
+	}
 
 	$cur_groups = local_user_get_groups($user, true);
 	$mod_groups = array();
@@ -610,33 +609,26 @@ function local_group_set($group, $reset = false)
 {
 	$group_name = $group['name'];
 	$group_gid = $group['gid'];
-	$group_members = "''";
-	if (!$reset && !empty($group['member']) && count($group['member']) > 0)
-		$group_members = implode(",",$group['member']);
+	$group_members = '';
 
-	/* read from group db */
-	$fd = popen("/usr/sbin/pw groupshow {$group_name} 2>&1", "r");
-	$pwread = fgets($fd);
-	pclose($fd);
+	if (!$reset && !empty($group['member']) && count($group['member']) > 0) {
+		$group_members = implode(',', $group['member']);
+	}
 
-	/* determine add or mod */
-	if (!strncmp($pwread, "pw:", 3))
-		$group_op = "groupadd";
-	else
-		$group_op = "groupmod";
+	$ret = mwexecf('/usr/sbin/pw groupshow %s', $group_name, true);
+	if ($ret) {
+		$group_op = 'groupadd';
+	} else {
+		$group_op = 'groupmod';
+	}
 
-	/* add or mod group db */
-	$cmd = "/usr/sbin/pw {$group_op} {$group_name} -g {$group_gid} -M {$group_members} 2>&1";
-
-	mwexec($cmd);
-
+	mwexecf('/usr/sbin/pw %s %s -g %s -M %s', array($group_op, $group_name, $group_gid, $group_members));
 }
 
 function local_group_del($group)
 {
 	/* delete from group db */
-	$cmd = "/usr/sbin/pw groupdel {$group['name']}";
-	mwexec($cmd);
+	mwexecf('/usr/sbin/pw groupdel %s', $group['name']);
 }
 
 function ldap_test_connection($authcfg)
@@ -680,33 +672,31 @@ function ldap_test_connection($authcfg)
 
 function ldap_setup_caenv($authcfg)
 {
-	global $g;
-
 	require_once("certs.inc");
 
 	unset($caref);
+
 	if (empty($authcfg['ldap_caref']) || !strstr($authcfg['ldap_urltype'], "SSL")) {
 		putenv('LDAPTLS_REQCERT=never');
 		return;
-	} else {
-		$caref = lookup_ca($authcfg['ldap_caref']);
-		if (!$caref) {
-			log_error(sprintf(gettext("LDAP: Could not lookup CA by reference for host %s."), $authcfg['ldap_caref']));
-			/* XXX: Prevent for credential leaking since we cannot setup the CA env. Better way? */
-			putenv('LDAPTLS_REQCERT=hard');
-			return;
-		}
-		if (!is_dir("{$g['varrun_path']}/certs"))
-			@mkdir("{$g['varrun_path']}/certs");
-		if (file_exists("{$g['varrun_path']}/certs/{$caref['refid']}.ca"))
-			@unlink("{$g['varrun_path']}/certs/{$caref['refid']}.ca");
-		file_put_contents("{$g['varrun_path']}/certs/{$caref['refid']}.ca", base64_decode($caref['crt']));
-		@chmod("{$g['varrun_path']}/certs/{$caref['refid']}.ca", 0600);
-		putenv('LDAPTLS_REQCERT=hard');
-		/* XXX: Probably even the hashed link should be created for this? */
-		putenv("LDAPTLS_CACERTDIR={$g['varrun_path']}/certs");
-		putenv("LDAPTLS_CACERT={$g['varrun_path']}/certs/{$caref['refid']}.ca");
 	}
+
+	$caref = lookup_ca($authcfg['ldap_caref']);
+	if (!$caref) {
+		log_error(sprintf(gettext("LDAP: Could not lookup CA by reference for host %s."), $authcfg['ldap_caref']));
+		/* XXX: Prevent for credential leaking since we cannot setup the CA env. Better way? */
+		putenv('LDAPTLS_REQCERT=hard');
+		return;
+	}
+
+	@mkdir("/var/run/certs");
+	@unlink("/var/run/certs/{$caref['refid']}.ca");
+	file_put_contents("/var/run/certs/{$caref['refid']}.ca", base64_decode($caref['crt']));
+	@chmod("/var/run/certs/{$caref['refid']}.ca", 0600);
+	putenv('LDAPTLS_REQCERT=hard');
+	/* XXX: Probably even the hashed link should be created for this? */
+	putenv("LDAPTLS_CACERTDIR=/var/run/certs");
+	putenv("LDAPTLS_CACERT=/var/run/certs/{$caref['refid']}.ca");
 }
 
 function ldap_test_bind($authcfg)
@@ -1261,12 +1251,14 @@ function auth_get_authserver_list() {
 	return $list;
 }
 
-function getUserGroups($username, $authcfg) {
+function getUserGroups($username, $authcfg)
+{
 	global $config;
 
 	$allowed_groups = array();
+	$member_groups = array();
 
-	switch($authcfg['type']) {
+	switch ($authcfg['type']) {
         case 'ldap':
 		$allowed_groups = @ldap_get_groups($username, $authcfg);
 		break;
@@ -1278,11 +1270,12 @@ function getUserGroups($username, $authcfg) {
 		break;
 	}
 
-	$member_groups = array();
-        if (is_array($config['system']['group'])) {
-                foreach ($config['system']['group'] as $group)
-                        if (in_array($group['name'], $allowed_groups))
+        if (isset($config['system']['group'])) {
+                foreach ($config['system']['group'] as $group) {
+                        if (in_array($group['name'], $allowed_groups)) {
 				$member_groups[] = $group['name'];
+			}
+		}
 	}
 
 	return $member_groups;
@@ -1459,5 +1452,3 @@ function http_basic_auth($http_auth_header)
     // not authenticated
     return false;
 }
-
-?>

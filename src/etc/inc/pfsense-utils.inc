@@ -110,26 +110,27 @@ function get_dns_servers() {
  * NOTES
  *   This function only supports the fxp driver's loadable microcode.
  ******/
-function enable_hardware_offloading($interface) {
-	global $g, $config;
+function enable_hardware_offloading($interface)
+{
+	global $config;
 
-	if(isset($config['system']['do_not_use_nic_microcode']))
+	if (isset($config['system']['do_not_use_nic_microcode'])) {
 		return;
+	}
 
 	/* translate wan, lan, opt -> real interface if needed */
 	$int = get_real_interface($interface);
-	if(empty($int))
+	if (empty($int)) {
 		return;
-	$int_family = preg_split("/[0-9]+/", $int);
+	}
+	$int_family = preg_split('/[0-9]+/', $int);
 	$supported_ints = array('fxp');
 	if (in_array($int_family, $supported_ints)) {
-		if(does_interface_exist($int))
+		if (does_interface_exist($int)) {
 			pfSense_interface_flags($int, IFF_LINK0);
+		}
 	}
-
-	return;
 }
-
 
 /****f* legacy/is_schedule_inuse
  * NAME
@@ -141,16 +142,23 @@ function enable_hardware_offloading($interface) {
  * NOTES
  *
  ******/
-function is_schedule_inuse($schedule) {
-	global $g, $config;
+function is_schedule_inuse($schedule)
+{
+	global $config;
 
-	if($schedule == "") return false;
+	if ($schedule == '') {
+		return false;
+	}
+
 	/* loop through firewall rules looking for schedule in use */
-	if(is_array($config['filter']['rule']))
-		foreach($config['filter']['rule'] as $rule) {
-			if($rule['sched'] == $schedule)
+	if (isset($config['filter']['rule'])) {
+		foreach ($config['filter']['rule'] as $rule) {
+			if ($rule['sched'] == $schedule) {
 				return true;
+			}
 		}
+	}
+
 	return false;
 }
 
@@ -164,20 +172,27 @@ function is_schedule_inuse($schedule) {
  * NOTES
  *
  ******/
-function setup_polling() {
-	global $g, $config;
+function setup_polling()
+{
+	global $config;
 
-	if (isset($config['system']['polling']))
+	if (isset($config['system']['polling'])) {
 		set_single_sysctl("kern.polling.idle_poll", "1");
-	else
+	} else {
 		set_single_sysctl("kern.polling.idle_poll", "0");
+	}
 
-	if($config['system']['polling_each_burst'])
+	if ($config['system']['polling_each_burst']) {
 		set_single_sysctl("kern.polling.each_burst", $config['system']['polling_each_burst']);
-	if($config['system']['polling_burst_max'])
+	}
+
+	if ($config['system']['polling_burst_max']) {
 		set_single_sysctl("kern.polling.burst_max", $config['system']['polling_burst_max']);
-	if($config['system']['polling_user_frac'])
+	}
+
+	if ($config['system']['polling_user_frac']) {
 		set_single_sysctl("kern.polling.user_frac", $config['system']['polling_user_frac']);
+	}
 }
 
 function set_language($lang)
@@ -296,8 +311,10 @@ function add_text_to_file($file, $text, $replace = false) {
 /*
  *   after_sync_bump_adv_skew(): create skew values by 1S
  */
-function after_sync_bump_adv_skew() {
-	global $config, $g;
+function after_sync_bump_adv_skew()
+{
+	global $config;
+
 	$processed_skew = 1;
 	$a_vip = &$config['virtualip']['vip'];
 	foreach ($a_vip as $vipent) {
@@ -306,8 +323,10 @@ function after_sync_bump_adv_skew() {
 			$vipent['advskew'] = $vipent['advskew']+1;
 		}
 	}
-	if($processed_skew == 1)
+
+	if ($processed_skew == 1) {
 		write_config(gettext("After synch increase advertising skew"));
+	}
 }
 
 /*
@@ -513,8 +532,9 @@ function rmdir_recursive($path,$follow_links=false) {
 /*
  * check_firmware_version(): Check whether the current firmware installed is the most recently released.
  */
-function check_firmware_version($tocheck = "all", $return_php = true) {
-	global $g, $config;
+function check_firmware_version($tocheck = "all", $return_php = true)
+{
+	global $config;
 
 	$xmlrpcfqdn = preg_replace('(https?://)', '', '/xmlrpc.php');
 	$ip = gethostbyname($xmlrpcfqdn);
@@ -547,8 +567,9 @@ function check_firmware_version($tocheck = "all", $return_php = true) {
 /*
  * host_firmware_version(): Return the versions used in this install
  */
-function host_firmware_version($tocheck = "") {
-	global $g, $config;
+function host_firmware_version($tocheck = "")
+{
+	global $config;
 
 	$os_version = trim(substr(php_uname("r"), 0, strpos(php_uname("r"), '-')));
 
@@ -585,8 +606,9 @@ function strncpy(&$dst, $src, $length) {
  * RESULT
  *   none
  ******/
-function reload_interfaces_sync() {
-	global $config, $g;
+function reload_interfaces_sync()
+{
+	global $config;
 
 	/* parse config.xml again */
 	$config = parse_config();
@@ -631,7 +653,7 @@ function reload_interfaces() {
  *   none
  ******/
 function reload_all_sync() {
-	global $config, $g;
+	global $config;
 
 	/* parse config.xml again */
 	$config = parse_config();
@@ -664,8 +686,8 @@ function reload_all_sync() {
 	system_ntp_configure();
 
 	/* sync pw database */
-	unlink_if_exists("/etc/spwd.db.tmp");
-	mwexec("/usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd");
+	@unlink('/etc/spwd.db.tmp');
+	mwexec('/usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd');
 
 	/* restart sshd */
 	mwexec_bg('/usr/local/etc/rc.sshd');
@@ -676,7 +698,7 @@ function reload_all_sync() {
 
 function setup_serial_port($when = 'save', $path = '')
 {
-	global $g, $config;
+	global $config;
 	$prefix = "";
 	if (($when == "upgrade") && (!empty($path)) && is_dir($path.'/boot/'))
 		$prefix = "/tmp/{$path}";
@@ -926,8 +948,9 @@ function get_ppp_uptime($port){
 }
 
 //returns interface information
-function get_interface_info($ifdescr) {
-	global $config, $g;
+function get_interface_info($ifdescr)
+{
+	global $config;
 
 	$ifinfo = array();
 	if (empty($config['interfaces'][$ifdescr]))
@@ -1079,7 +1102,7 @@ function get_interface_info($ifdescr) {
 		break;
 	}
 
-	if (file_exists("{$g['varrun_path']}/{$link_type}_{$ifdescr}.pid")) {
+	if (file_exists("/var/run/{$link_type}_{$ifdescr}.pid")) {
 		$sec = trim(`/usr/local/sbin/ppp-uptime.sh {$ifinfo['if']}`);
 		$ifinfo['ppp_uptime'] = convert_seconds_to_hms($sec);
 	}
@@ -1296,12 +1319,15 @@ function compare_hostname_to_dnscache($hostname) {
 /*
  * load_crypto() - Load crypto modules if enabled in config.
  */
-function load_crypto() {
-	global $config, $g;
+function load_crypto()
+{
+	global $config;
+
 	$crypto_modules = array('glxsb', 'aesni');
 
-	if (!in_array($config['system']['crypto_hardware'], $crypto_modules))
+	if (!in_array($config['system']['crypto_hardware'], $crypto_modules)) {
 		return false;
+	}
 
 	if (!empty($config['system']['crypto_hardware']) && !is_module_loaded($config['system']['crypto_hardware'])) {
 		log_error("Loading {$config['system']['crypto_hardware']} cryptographic accelerator module.");
@@ -1312,12 +1338,15 @@ function load_crypto() {
 /*
  * load_thermal_hardware() - Load temperature monitor kernel module
  */
-function load_thermal_hardware() {
-	global $config, $g;
+function load_thermal_hardware()
+{
+	global $config;
+
 	$thermal_hardware_modules = array('coretemp', 'amdtemp');
 
-	if (!in_array($config['system']['thermal_hardware'], $thermal_hardware_modules))
+	if (!in_array($config['system']['thermal_hardware'], $thermal_hardware_modules)) {
 		return false;
+	}
 
 	if (!empty($config['system']['thermal_hardware']) && !is_module_loaded($config['system']['thermal_hardware'])) {
 		log_error("Loading {$config['system']['thermal_hardware']} thermal monitor module.");
@@ -1326,12 +1355,14 @@ function load_thermal_hardware() {
 }
 
 
-function get_freebsd_version() {
+function get_freebsd_version()
+{
 	$version = explode(".", php_uname("r"));
 	return $version[0];
 }
 
-function download_file($url, $destination, $verify_ssl = false, $connect_timeout = 60, $timeout = 0) {
+function download_file($url, $destination, $verify_ssl = false, $connect_timeout = 60, $timeout = 0)
+{
 	global $config, $g;
 
 	$fp = fopen($destination, "wb");
@@ -1443,9 +1474,11 @@ if(!function_exists("split")) {
 
 function update_alias_names_upon_change($section, $field, $new_alias_name, $origname)
 {
-	global $g, $config, $pconfig;
-	if(!$origname)
+	global $config, $pconfig;
+
+	if (!$origname) {
 		return;
+	}
 
 	$sectionref = &$config;
 	foreach($section as $sectionname) {
@@ -1474,8 +1507,9 @@ function update_alias_names_upon_change($section, $field, $new_alias_name, $orig
 	}
 }
 
-function update_alias_url_data() {
-	global $config, $g;
+function update_alias_url_data()
+{
+	global $config;
 
 	$updated = false;
 
@@ -1623,18 +1657,19 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
 		|| $forceupdate) {
 
 		// Try to fetch the URL supplied
-		unlink_if_exists($urltable_filename . ".tmp");
+		@unlink("{$urltable_filename}.tmp");
 		$verify_ssl = isset($config['system']['checkaliasesurlcert']);
-		if (download_file($url, $urltable_filename . ".tmp", $verify_ssl)) {
+		if (download_file($url, "{$urltable_filename}.tmp", $verify_ssl)) {
 			mwexec("/usr/bin/sed -E 's/\;.*//g; /^[[:space:]]*($|#)/d' ". escapeshellarg($urltable_filename . ".tmp") . " > " . escapeshellarg($urltable_filename));
 			if (alias_get_type($name) == "urltable_ports") {
 				$ports = explode("\n", file_get_contents($urltable_filename));
 				$ports = group_ports($ports);
 				file_put_contents($urltable_filename, implode("\n", $ports));
 			}
-			unlink_if_exists($urltable_filename . ".tmp");
-		} else
+			@unlink("{$urltable_filename}.tmp");
+		} else {
 			touch($urltable_filename);
+		}
 		return true;
 	} else {
 		// File exists, and it doesn't need updated.

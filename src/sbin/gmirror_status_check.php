@@ -32,7 +32,7 @@ require_once("globals.inc");
 require_once("gmirror.inc");
 
 global $g;
-$status_file = "{$g['varrun_path']}/gmirror.status";
+$status_file = '/var/run/gmirror.status';
 
 $mirror_status = gmirror_get_status();
 $mirror_list = array_keys($mirror_status);

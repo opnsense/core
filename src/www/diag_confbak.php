@@ -55,7 +55,7 @@ if (isset($_POST['backupcount'])) {
 			$savemsg = gettext("Unable to revert to the selected configuration.");
 	}
 	if($_POST['rmver'] != "") {
-		unlink_if_exists('/conf/backup/config-' . $_POST['rmver'] . '.xml');
+		@unlink('/conf/backup/config-' . $_POST['rmver'] . '.xml');
 		$savemsg = sprintf(gettext('Deleted backup with timestamp %1$s and description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['rmver']),$confvers[$_POST['rmver']]['description']);
 	}
 }

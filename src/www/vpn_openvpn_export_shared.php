@@ -1,7 +1,6 @@
 <?php
-/*
-	vpn_openvpn_export_shared.php
 
+/*
 	Copyright (C) 2008 Shrew Soft Inc.
 	Copyright (C) 2010 Ermal Luçi
 	All rights reserved.
@@ -26,13 +25,11 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-	DISABLE_PHP_LINT_CHECKING
 */
 
 require_once("globals.inc");
 require_once("guiconfig.inc");
-require("openvpn-client-export.inc");
+require_once("openvpn-client-export.inc");
 
 $pgtitle = array("OpenVPN", "Client Export Utility");
 
@@ -125,7 +122,7 @@ if(($act == "skconf") || ($act == "skzipconf")) {
 	if (!$error) {
 		if ($zipconf) {
 			$exp_name = urlencode($exp_data);
-			$exp_size = filesize("{$g['tmp_path']}/{$exp_data}");
+			$exp_size = filesize("/tmp/{$exp_data}");
 		} else {
 			$exp_name = urlencode($exp_name."-config.ovpn");
 			$exp_size = strlen($exp_data);
@@ -137,11 +134,11 @@ if(($act == "skconf") || ($act == "skzipconf")) {
 		header("Content-Disposition: attachment; filename={$exp_name}");
 		header("Content-Length: $exp_size");
 		if ($zipconf)
-			readfile("{$g['tmp_path']}/{$exp_data}");
+			readfile("/tmp/{$exp_data}");
 		else
 			echo $exp_data;
 
-		@unlink("{$g['tmp_path']}/{$exp_data}");
+		@unlink("/tmp/{$exp_data}");
 		exit;
 	}
 }

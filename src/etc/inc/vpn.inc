@@ -88,8 +88,8 @@ function vpn_ipsec_configure($ipchg = false)
 	global $config, $g, $sa, $sn, $p1_ealgos, $p2_ealgos;
 
 	/* get the automatic ping_hosts.sh ready */
-	unlink_if_exists("{$g['vardb_path']}/ipsecpinghosts");
-	touch("{$g['vardb_path']}/ipsecpinghosts");
+	@unlink('/var/db/ipsecpinghosts');
+	touch('/var/db/ipsecpinghosts');
 
 	vpn_ipsec_configure_preferoldsa();
 
@@ -101,9 +101,9 @@ function vpn_ipsec_configure($ipchg = false)
 
 	if (!isset($ipseccfg['enable'])) {
 		/* try to stop charon */
-		mwexec("/usr/local/sbin/ipsec stop");
+		mwexec('/usr/local/sbin/ipsec stop');
 		/* Stop dynamic monitoring */
-		killbypid("{$g['varrun_path']}/filterdns-ipsec.pid");
+		killbypid('/var/run/filterdns-ipsec.pid');
 
 		/* wait for process to die */
 		sleep(2);
@@ -120,26 +120,17 @@ function vpn_ipsec_configure($ipchg = false)
 
 		mwexec("/sbin/ifconfig enc0 up");
 		set_single_sysctl("net.inet.ip.ipsec_in_use", "1");
-		/* needed for config files */
-		if (!is_dir("/usr/local/etc/ipsec.d"))
-			mkdir("/usr/local/etc/ipsec.d");
-		if (!is_dir($capath))
-			mkdir($capath);
-		if (!is_dir($keypath))
-			mkdir($keypath);
-		if (!is_dir("/usr/local/etc/ipsec.d/crls"))
-			mkdir("/usr/local/etc/ipsec.d/crls");
-		if (!is_dir($certpath))
-			mkdir($certpath);
-		if (!is_dir("/usr/local/etc/ipsec.d/aacerts"))
-			mkdir("/usr/local/etc/ipsec.d/aacerts");
-		if (!is_dir("/usr/local/etc/ipsec.d/acerts"))
-			mkdir("/usr/local/etc/ipsec.d/acerts");
-		if (!is_dir("/usr/local/etc/ipsec.d/ocspcerts"))
-			mkdir("/usr/local/etc/ipsec.d/ocspcerts");
-		if (!is_dir("/usr/local/etc/ipsec.d/reqs"))
-			mkdir("/usr/local/etc/ipsec.d/reqs");
 
+		/* needed directories for config files */
+		@mkdir($capath);
+		@mkdir($keypath);
+		@mkdir($certpath);
+		@mkdir('/usr/local/etc/ipsec.d');
+		@mkdir('/usr/local/etc/ipsec.d/crls');
+		@mkdir('/usr/local/etc/ipsec.d/aacerts');
+		@mkdir('/usr/local/etc/ipsec.d/acerts');
+		@mkdir('/usr/local/etc/ipsec.d/ocspcerts');
+		@mkdir('/usr/local/etc/ipsec.d/reqs');
 
 		if (file_exists("/var/run/booting"))
 			echo gettext("Configuring IPsec VPN... ");
@@ -256,7 +247,7 @@ function vpn_ipsec_configure($ipchg = false)
 					}
 				}
 			}
-			@file_put_contents("{$g['vardb_path']}/ipsecpinghosts", $ipsecpinghosts);
+			@file_put_contents('/var/db/ipsecpinghosts', $ipsecpinghosts);
 			unset($ipsecpinghosts);
 		}
 		unset($iflist);
@@ -816,11 +807,11 @@ EOD;
 	/* end ipsec.conf */
 
 	/* mange process */
-	if (isvalidpid("{$g['varrun_path']}/charon.pid")) {
+	if (isvalidpid('/var/run/charon.pid')) {
 		/* Read secrets */
-		mwexec("/usr/local/sbin/ipsec rereadall", false);
+		mwexec('/usr/local/sbin/ipsec rereadall', false);
 		/* Update configuration changes */
-		mwexec("/usr/local/sbin/ipsec reload", false);
+		mwexec('/usr/local/sbin/ipsec reload', false);
 	} else {
 		mwexec("/usr/local/sbin/ipsec start", false);
 	}
@@ -840,14 +831,13 @@ EOD;
 		file_put_contents("/usr/local/etc/filterdns-ipsec.hosts", $hostnames);
 		unset($hostnames);
 
-		if (isvalidpid("{$g['varrun_path']}/filterdns-ipsec.pid")) {
-			killbypid("{$g['varrun_path']}/filterdns-ipsec.pid", 'HUP');
+		if (isvalidpid('/var/run/filterdns-ipsec.pid')) {
+			killbypid('/var/run/filterdns-ipsec.pid', 'HUP');
 		} else {
-			mwexec("/usr/local/sbin/filterdns -p {$g['varrun_path']}/filterdns-ipsec.pid -i {$interval} -c /usr/local/etc/filterdns-ipsec.hosts -d 1");
+			mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-ipsec.pid -i {$interval} -c /usr/local/etc/filterdns-ipsec.hosts -d 1");
 		}
 	} else {
-		killbypid("{$g['varrun_path']}/filterdns-ipsec.pid");
-		@unlink("{$g['varrun_path']}/filterdns-ipsec.pid");
+		killbypid('/var/run/filterdns-ipsec.pid');
 	}
 
 	if (file_exists("/var/run/booting"))
@@ -927,20 +917,20 @@ function vpn_pptpd_configure() {
 		echo gettext("Configuring PPTP VPN service... ");
 	} else {
 		/* kill mpd */
-		killbypid("{$g['varrun_path']}/pptp-vpn.pid");
+		killbypid('/var/run/pptp-vpn.pid');
 
 		/* wait for process to die */
 		sleep(3);
 
 		if (is_process_running("mpd -b")) {
-			killbypid("{$g['varrun_path']}/pptp-vpn.pid");
+			killbypid('/var/run/pptp-vpn.pid');
 			log_error(gettext("Could not kill mpd within 3 seconds.   Trying again."));
 		}
 
 		/* remove mpd.conf, if it exists */
-		unlink_if_exists("{$g['varetc_path']}/pptp-vpn/mpd.conf");
-		unlink_if_exists("{$g['varetc_path']}/pptp-vpn/mpd.links");
-		unlink_if_exists("{$g['varetc_path']}/pptp-vpn/mpd.secret");
+		@unlink('/var/etc/pptp-vpn/mpd.conf');
+		@unlink('/var/etc/pptp-vpn/mpd.links');
+		@unlink('/var/etc/pptp-vpn/mpd.secret');
 	}
 
 	if (empty($pptpdcfg['n_pptp_units'])) {
@@ -949,13 +939,12 @@ function vpn_pptpd_configure() {
 	}
 
 	/* make sure pptp-vpn directory exists */
-	if (!file_exists("{$g['varetc_path']}/pptp-vpn"))
-		mkdir("{$g['varetc_path']}/pptp-vpn");
+	@mkdir('/var/etc/pptp-vpn');
 
 	switch ($pptpdcfg['mode']) {
 		case 'server' :
 			/* write mpd.conf */
-			$fd = fopen("{$g['varetc_path']}/pptp-vpn/mpd.conf", "w");
+			$fd = fopen('/var/etc/pptp-vpn/mpd.conf', 'w');
 			if (!$fd) {
 				printf(gettext("Error: cannot open mpd.conf in vpn_pptpd_configure().") . "\n");
 				return 1;
@@ -1074,7 +1063,7 @@ EOD;
 			unset($mpdconf);
 
 			/* write mpd.links */
-			$fd = fopen("{$g['varetc_path']}/pptp-vpn/mpd.links", "w");
+			$fd = fopen('/var/etc/pptp-vpn/mpd.links', 'w');
 			if (!$fd) {
 				printf(gettext("Error: cannot open mpd.links in vpn_pptpd_configure().") . "\n");
 				return 1;
@@ -1099,7 +1088,7 @@ EOD;
 			unset($mpdlinks);
 
 			/* write mpd.secret */
-			$fd = fopen("{$g['varetc_path']}/pptp-vpn/mpd.secret", "w");
+			$fd = fopen('/var/etc/pptp-vpn/mpd.secret', 'w');
 			if (!$fd) {
 				printf(gettext("Error: cannot open mpd.secret in vpn_pptpd_configure().") . "\n");
 				return 1;
@@ -1118,12 +1107,12 @@ EOD;
 			fwrite($fd, $mpdsecret);
 			fclose($fd);
 			unset($mpdsecret);
-			chmod("{$g['varetc_path']}/pptp-vpn/mpd.secret", 0600);
+			chmod('/var/etc/pptp-vpn/mpd.secret', 0600);
 
 			vpn_netgraph_support();
 
 			/* fire up mpd */
-			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/pptp-vpn -p {$g['varrun_path']}/pptp-vpn.pid -s pptps pptps");
+			mwexec('/usr/local/sbin/mpd4 -b -d /var/etc/pptp-vpn -p /var/run/pptp-vpn.pid -s pptps pptps');
 
 			break;
 
@@ -1152,8 +1141,7 @@ function vpn_pppoe_configure(&$pppoecfg) {
 	$syscfg = $config['system'];
 
 	/* create directory if it does not exist */
-	if (!is_dir("{$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn"))
-		mkdir("{$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn");
+	@mkdir("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
 
 	if (file_exists("/var/run/booting")) {
 		if (!$pppoecfg['mode'] || ($pppoecfg['mode'] == "off"))
@@ -1162,7 +1150,7 @@ function vpn_pppoe_configure(&$pppoecfg) {
 		echo gettext("Configuring PPPoE VPN service... ");
 	} else {
 		/* kill mpd */
-		killbypid("{$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
+		killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
 
 		/* wait for process to die */
 		sleep(2);
@@ -1181,7 +1169,7 @@ function vpn_pppoe_configure(&$pppoecfg) {
 				$paporchap = "set link enable pap";
 
 			/* write mpd.conf */
-			$fd = fopen("{$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.conf", "w");
+			$fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.conf", "w");
 			if (!$fd) {
 				printf(gettext("Error: cannot open mpd.conf in vpn_pppoe_configure().") . "\n");
 				return 1;
@@ -1290,7 +1278,7 @@ EOD;
 			unset($mpdconf);
 
 			/* write mpd.links */
-			$fd = fopen("{$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.links", "w");
+			$fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.links", "w");
 			if (!$fd) {
 				printf(gettext("Error: cannot open mpd.links in vpn_pppoe_configure().") . "\n");
 				return 1;
@@ -1317,7 +1305,7 @@ EOD;
 
 			if ($pppoecfg['username']) {
 				/* write mpd.secret */
-				$fd = fopen("{$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", "w");
+				$fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", "w");
 				if (!$fd) {
 					printf(gettext("Error: cannot open mpd.secret in vpn_pppoe_configure().") . "\n");
 					return 1;
@@ -1336,17 +1324,16 @@ EOD;
 				fwrite($fd, $mpdsecret);
 				fclose($fd);
 				unset($mpdsecret);
-				chmod("{$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", 0600);
+				chmod("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", 0600);
 			}
 
 			/* Check if previous instance is still up */
-			while (file_exists("{$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid") && isvalidpid("{$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid"))
-				killbypid("{$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
+			killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
 
 			/* Get support for netgraph(4) from the nic */
 			pfSense_ngctl_attach(".", $pppoe_interface);
 			/* fire up mpd */
-			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/pppoe{$pppoecfg['pppoeid']}-vpn -p {$g['varrun_path']}/pppoe{$pppoecfg['pppoeid']}-vpn.pid -s poes poes");
+			mwexec("/usr/local/sbin/mpd4 -b -d /var/etc/pppoe{$pppoecfg['pppoeid']}-vpn -p /var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid -s poes poes");
 
 			break;
 	}
@@ -1357,15 +1344,12 @@ EOD;
 	return 0;
 }
 
-function vpn_l2tp_configure() {
+function vpn_l2tp_configure()
+{
 	global $config, $g;
 
 	$syscfg = $config['system'];
 	$l2tpcfg = $config['l2tp'];
-
-	/* create directory if it does not exist */
-	if (!is_dir("{$g['varetc_path']}/l2tp-vpn"))
-		mkdir("{$g['varetc_path']}/l2tp-vpn");
 
 	if (file_exists("/var/run/booting")) {
 		if (!$l2tpcfg['mode'] || ($l2tpcfg['mode'] == "off"))
@@ -1373,17 +1357,13 @@ function vpn_l2tp_configure() {
 
 		echo gettext("Configuring l2tp VPN service... ");
 	} else {
-		/* kill mpd */
-		killbypid("{$g['varrun_path']}/l2tp-vpn.pid");
-
-		/* wait for process to die */
-		sleep(8);
-
+		while (isvalidpid('/var/run/l2tp-vpn.pid')) {
+			killbypid('/var/run/l2tp-vpn.pid');
+			usleep(250 * 1000);
+		}
 	}
 
-	/* make sure l2tp-vpn directory exists */
-	if (!file_exists("{$g['varetc_path']}/l2tp-vpn"))
-		mkdir("{$g['varetc_path']}/l2tp-vpn");
+	@mkdir('/var/etc/l2tp-vpn');
 
 	switch ($l2tpcfg['mode']) {
 
@@ -1394,7 +1374,7 @@ function vpn_l2tp_configure() {
 				$paporchap = "set link enable pap";
 
 			/* write mpd.conf */
-			$fd = fopen("{$g['varetc_path']}/l2tp-vpn/mpd.conf", "w");
+			$fd = fopen("/var/etc/l2tp-vpn/mpd.conf", "w");
 			if (!$fd) {
 				printf(gettext("Error: cannot open mpd.conf in vpn_l2tp_configure().") . "\n");
 				return 1;
@@ -1493,7 +1473,7 @@ EOD;
 			unset($mpdconf);
 
 			/* write mpd.links */
-			$fd = fopen("{$g['varetc_path']}/l2tp-vpn/mpd.links", "w");
+			$fd = fopen("/var/etc/l2tp-vpn/mpd.links", "w");
 			if (!$fd) {
 				printf(gettext("Error: cannot open mpd.links in vpn_l2tp_configure().") . "\n");
 				return 1;
@@ -1519,7 +1499,7 @@ EOD;
 			unset($mpdlinks);
 
 			/* write mpd.secret */
-			$fd = fopen("{$g['varetc_path']}/l2tp-vpn/mpd.secret", "w");
+			$fd = fopen("/var/etc/l2tp-vpn/mpd.secret", "w");
 			if (!$fd) {
 				printf(gettext("Error: cannot open mpd.secret in vpn_l2tp_configure().") . "\n");
 				return 1;
@@ -1535,12 +1515,12 @@ EOD;
 			fwrite($fd, $mpdsecret);
 			fclose($fd);
 			unset($mpdsecret);
-			chmod("{$g['varetc_path']}/l2tp-vpn/mpd.secret", 0600);
+			chmod('/var/etc/l2tp-vpn/mpd.secret', 0600);
 
 			vpn_netgraph_support();
 
 			/* fire up mpd */
-			mwexec("/usr/local/sbin/mpd4 -b -d {$g['varetc_path']}/l2tp-vpn -p {$g['varrun_path']}/l2tp-vpn.pid -s l2tps l2tps");
+			mwexec('/usr/local/sbin/mpd4 -b -d /var/etc/l2tp-vpn -p /var/run/l2tp-vpn.pid -s l2tps l2tps');
 
 			break;
 
@@ -1554,12 +1534,13 @@ EOD;
 	return 0;
 }
 
-function vpn_ipsec_configure_preferoldsa() {
+function vpn_ipsec_configure_preferoldsa()
+{
 	global $config;
-	if(isset($config['ipsec']['preferoldsa']))
-		set_single_sysctl("net.key.preferred_oldsa", "-30");
-	else
-		set_single_sysctl("net.key.preferred_oldsa", "0");
-}
 
-?>
+	if (isset($config['ipsec']['preferoldsa'])) {
+		set_single_sysctl("net.key.preferred_oldsa", "-30");
+	} else {
+		set_single_sysctl("net.key.preferred_oldsa", "0");
+	}
+}

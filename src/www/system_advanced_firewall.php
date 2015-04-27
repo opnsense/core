@@ -203,9 +203,9 @@ if ($_POST) {
 		write_config();
 
 		// Kill filterdns when value changes, filter_configure() will restart it
-		if (($old_aliasesresolveinterval != $config['system']['aliasesresolveinterval']) &&
-		    isvalidpid("{$g['varrun_path']}/filterdns.pid"))
-			killbypid("{$g['varrun_path']}/filterdns.pid");
+		if ($old_aliasesresolveinterval != $config['system']['aliasesresolveinterval']) {
+			killbypid('/var/run/filterdns.pid');
+		}
 
 		$retval = 0;
 		$retval = filter_configure();

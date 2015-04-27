@@ -209,7 +209,7 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 		$config['interfaces'][$newifname] = array();
 		$config['interfaces'][$newifname]['descr'] = $descr;
 		$config['interfaces'][$newifname]['if'] = $_POST['if_add'];
-		if (preg_match($g['wireless_regex'], $_POST['if_add'])) {
+		if (match_wireless_interface($_POST['if_add'])) {
 			$config['interfaces'][$newifname]['wireless'] = array();
 			interface_sync_wireless_clones($config['interfaces'][$newifname], false);
 		}
@@ -315,7 +315,7 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 					}
 
 					/* check for wireless interfaces, set or clear ['wireless'] */
-					if (preg_match($g['wireless_regex'], $ifport)) {
+					if (match_wireless_interface($ifport)) {
 						if (!is_array($config['interfaces'][$ifname]['wireless']))
 							$config['interfaces'][$ifname]['wireless'] = array();
 					} else {
@@ -327,8 +327,9 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 						$config['interfaces'][$ifname]['descr'] = strtoupper($ifname);
 
 					if ($reloadif == true) {
-						if (preg_match($g['wireless_regex'], $ifport))
+						if (match_wireless_interface($ifport)) {
 							interface_sync_wireless_clones($config['interfaces'][$ifname], false);
+						}
 						/* Reload all for the interface. */
 						interface_configure($ifname, true);
 					}

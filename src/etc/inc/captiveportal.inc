@@ -212,7 +212,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
         else
             $message = 0;
 
-        include("{$g['varetc_path']}/captiveportal-{$cpzone}-logout.html");
+        include("/var/etc/captiveportal-{$cpzone}-logout.html");
 
     } else {
         // TODO: remove? should be handled by login page
@@ -401,11 +401,11 @@ function captiveportal_configure_zone($cpcfg) {
             echo "Starting captive portal({$cpcfg['zone']})... ";
 
             /* remove old information */
-            unlink_if_exists("{$g['vardb_path']}/captiveportal{$cpzone}.db");
+            @unlink("/var/db/captiveportal{$cpzone}.db");
         } else
             captiveportal_syslog("Reconfiguring captive portal({$cpcfg['zone']}).");
         /* kill any running minicron */
-        killbypid("{$g['varrun_path']}/cp_prunedb_{$cpzone}.pid");
+        killbypid("/var/run/cp_prunedb_{$cpzone}.pid");
 
         /* initialize minicron interval value */
         $croninterval = $cpcfg['croninterval'] ? $cpcfg['croninterval'] : 60;
@@ -422,7 +422,7 @@ function captiveportal_configure_zone($cpcfg) {
             $htmltext = get_default_captive_portal_html();
         }
 
-        $fd = @fopen("{$g['varetc_path']}/captiveportal_{$cpzone}.html", "w");
+        $fd = @fopen("/var/etc/captiveportal_{$cpzone}.html", "w");
         if ($fd) {
             // Special case handling.  Convert so that we can pass this page
             // through the PHP interpreter later without clobbering the vars.
@@ -450,7 +450,7 @@ function captiveportal_configure_zone($cpcfg) {
             $errtext = get_default_captive_portal_html();
         }
 
-        $fd = @fopen("{$g['varetc_path']}/captiveportal-{$cpzone}-error.html", "w");
+        $fd = @fopen("/var/etc/captiveportal-{$cpzone}-error.html", "w");
         if ($fd) {
             // Special case handling.  Convert so that we can pass this page
             // through the PHP interpreter later without clobbering the vars.
@@ -510,7 +510,7 @@ document.location.href="<?=\$my_redirurl;?>";
 EOD;
         }
 
-        $fd = @fopen("{$g['varetc_path']}/captiveportal-{$cpzone}-logout.html", "w");
+        $fd = @fopen("/var/etc/captiveportal-{$cpzone}-logout.html", "w");
         if ($fd) {
             fwrite($fd, $logouttext);
             fclose($fd);
@@ -521,22 +521,26 @@ EOD;
         captiveportal_write_elements();
 
         /* kill any running mini_httpd */
-        killbypid("{$g['varrun_path']}/lighty-{$cpzone}-CaptivePortal.pid");
-        killbypid("{$g['varrun_path']}/lighty-{$cpzone}-CaptivePortal-SSL.pid");
+        killbypid("/var/run/lighty-{$cpzone}-CaptivePortal.pid");
+        killbypid("/var/run/lighty-{$cpzone}-CaptivePortal-SSL.pid");
 
         /* start up the webserving daemon */
         captiveportal_init_webgui_zone($cpcfg);
 
         /* Kill any existing prunecaptiveportal processes */
-        if (file_exists("{$g['varrun_path']}/cp_prunedb_{$cpzone}.pid"))
-            killbypid("{$g['varrun_path']}/cp_prunedb_{$cpzone}.pid");
+        killbypid("/var/run/cp_prunedb_{$cpzone}.pid");
 
         /* start pruning process (interval defaults to 60 seconds) */
-        mwexec("/usr/local/bin/minicron $croninterval {$g['varrun_path']}/cp_prunedb_{$cpzone}.pid " .
-            "/usr/local/etc/rc.prunecaptiveportal {$cpzone}");
+        mwexecf(
+		'/usr/local/bin/minicron %s %s %s %s',
+		 $croninterval,
+		"/var/run/cp_prunedb_{$cpzone}.pid",
+		'/usr/local/etc/rc.prunecaptiveportal',
+		$cpzone
+	);
 
         /* generate radius server database */
-        unlink_if_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db");
+        @unlink("/var/db/captiveportal_radius_{$cpzone}.db");
         captiveportal_init_radius_servers();
 
         if (file_exists("/var/run/booting")) {
@@ -546,12 +550,12 @@ EOD;
         }
 
     } else {
-        killbypid("{$g['varrun_path']}/lighty-{$cpzone}-CaptivePortal.pid");
-        killbypid("{$g['varrun_path']}/lighty-{$cpzone}-CaptivePortal-SSL.pid");
-        killbypid("{$g['varrun_path']}/cp_prunedb_{$cpzone}.pid");
-        @unlink("{$g['varetc_path']}/captiveportal_{$cpzone}.html");
-        @unlink("{$g['varetc_path']}/captiveportal-{$cpzone}-error.html");
-        @unlink("{$g['varetc_path']}/captiveportal-{$cpzone}-logout.html");
+        killbypid("/var/run/lighty-{$cpzone}-CaptivePortal.pid");
+        killbypid("/var/run/lighty-{$cpzone}-CaptivePortal-SSL.pid");
+        killbypid("/var/run/cp_prunedb_{$cpzone}.pid");
+        @unlink("/var/etc/captiveportal_{$cpzone}.html");
+        @unlink("/var/etc/captiveportal-{$cpzone}-error.html");
+        @unlink("/var/etc/captiveportal-{$cpzone}-logout.html");
 
         captiveportal_radius_stop_all();
 
@@ -561,12 +565,11 @@ EOD;
         }
 
         /* remove old information */
-        unlink_if_exists("{$g['vardb_path']}/captiveportal{$cpzone}.db");
-        unlink_if_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db");
-        unlink_if_exists("{$g['vardb_path']}/captiveportal_{$cpzone}.rules");
+        @unlink("/var/db/captiveportal{$cpzone}.db");
+        @unlink("/var/db/captiveportal_radius_{$cpzone}.db");
+        @unlink("/var/db/captiveportal_{$cpzone}.rules");
         /* Release allocated pipes for this zone */
         captiveportal_free_dnrules();
-
 
         if (empty($config['captiveportal']))
             set_single_sysctl("net.link.ether.ipfw", "0");
@@ -634,7 +637,7 @@ function captiveportal_init_webgui_zone($cpcfg)
         }
 
         system_generate_lighty_config(
-	    "{$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal-SSL.conf",
+	    "/var/etc/lighty-{$cpzone}-CaptivePortal-SSL.conf",
             $crt,
             $key,
             $ca,
@@ -655,7 +658,7 @@ function captiveportal_init_webgui_zone($cpcfg)
     }
 
     system_generate_lighty_config(
-        "{$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal.conf",
+        "/var/etc/lighty-{$cpzone}-CaptivePortal.conf",
         "",
         "",
         "",
@@ -669,12 +672,12 @@ function captiveportal_init_webgui_zone($cpcfg)
 
     @unlink("{$g['varrun']}/lighty-{$cpzone}-CaptivePortal.pid");
     /* attempt to start lighttpd */
-    $res = mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal.conf");
+    $res = mwexec("/usr/local/sbin/lighttpd -f /var/etc/lighty-{$cpzone}-CaptivePortal.conf");
 
     /* fire up https instance */
     if (isset($cpcfg['httpslogin'])) {
         @unlink("{$g['varrun']}/lighty-{$cpzone}-CaptivePortal-SSL.pid");
-        $res = mwexec("/usr/local/sbin/lighttpd -f {$g['varetc_path']}/lighty-{$cpzone}-CaptivePortal-SSL.conf");
+        $res = mwexec("/usr/local/sbin/lighttpd -f /var/etc/lighty-{$cpzone}-CaptivePortal-SSL.conf");
     }
 }
 
@@ -950,7 +953,7 @@ function captiveportal_init_radius_servers() {
         $radiuskey4 = $config['captiveportal'][$cpzone]['radiuskey4'];
 
         $cprdsrvlck = lock("captiveportalradius{$cpzone}", LOCK_EX);
-        $fd = @fopen("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db", "w");
+        $fd = @fopen("/var/db/captiveportal_radius_{$cpzone}.db", "w");
         if (!$fd) {
             captiveportal_syslog("Error: cannot open radius DB file in captiveportal_configure().\n");
             unlock($cprdsrvlck);
@@ -976,9 +979,9 @@ function captiveportal_get_radius_servers() {
     global $g, $cpzone;
 
     $cprdsrvlck = lock("captiveportalradius{$cpzone}");
-    if (file_exists("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db")) {
+    if (file_exists("/var/db/captiveportal_radius_{$cpzone}.db")) {
         $radiusservers = array();
-        $cpradiusdb = file("{$g['vardb_path']}/captiveportal_radius_{$cpzone}.db",
+        $cpradiusdb = file("/var/db/captiveportal_radius_{$cpzone}.db",
         FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if ($cpradiusdb) {
             foreach($cpradiusdb as $cpradiusentry) {
@@ -1100,8 +1103,8 @@ function captiveportal_free_dnrules($rulenos_start = 2000, $rulenos_range_max = 
     global $cpzone;
 
     $cpruleslck = lock("captiveportalrulesdn", LOCK_EX);
-    if (file_exists("{$g['vardb_path']}/captiveportaldn.rules")) {
-        $rules = unserialize(file_get_contents("{$g['vardb_path']}/captiveportaldn.rules"));
+    if (file_exists("/var/db/captiveportaldn.rules")) {
+        $rules = unserialize(file_get_contents("/var/db/captiveportaldn.rules"));
         $ridx = $rulenos_start;
         while ($ridx < $rulenos_range_max) {
             if ($rules[$ridx] == $cpzone) {
@@ -1112,7 +1115,7 @@ function captiveportal_free_dnrules($rulenos_start = 2000, $rulenos_range_max = 
             } else
                 $ridx += 2;
         }
-        file_put_contents("{$g['vardb_path']}/captiveportaldn.rules", serialize($rules));
+        file_put_contents("/var/db/captiveportaldn.rules", serialize($rules));
         unset($rules);
     }
     unlock($cpruleslck);
@@ -1123,8 +1126,8 @@ function captiveportal_get_next_dn_ruleno($rulenos_start = 2000, $rulenos_range_
 
     $cpruleslck = lock("captiveportalrulesdn", LOCK_EX);
     $ruleno = 0;
-    if (file_exists("{$g['vardb_path']}/captiveportaldn.rules")) {
-        $rules = unserialize(file_get_contents("{$g['vardb_path']}/captiveportaldn.rules"));
+    if (file_exists("/var/db/captiveportaldn.rules")) {
+        $rules = unserialize(file_get_contents("/var/db/captiveportaldn.rules"));
         $ridx = $rulenos_start;
         while ($ridx < $rulenos_range_max) {
             if (empty($rules[$ridx])) {
@@ -1144,7 +1147,7 @@ function captiveportal_get_next_dn_ruleno($rulenos_start = 2000, $rulenos_range_
         $rulenos_start++;
         $rules[$rulenos_start] = $cpzone;
     }
-    file_put_contents("{$g['vardb_path']}/captiveportaldn.rules", serialize($rules));
+    file_put_contents("/var/db/captiveportaldn.rules", serialize($rules));
     unlock($cpruleslck);
     unset($rules);
 
@@ -1155,12 +1158,12 @@ function captiveportal_free_dn_ruleno($ruleno) {
     global $config, $g;
 
     $cpruleslck = lock("captiveportalrulesdn", LOCK_EX);
-    if (file_exists("{$g['vardb_path']}/captiveportaldn.rules")) {
-        $rules = unserialize(file_get_contents("{$g['vardb_path']}/captiveportaldn.rules"));
+    if (file_exists("/var/db/captiveportaldn.rules")) {
+        $rules = unserialize(file_get_contents("/var/db/captiveportaldn.rules"));
         $rules[$ruleno] = false;
         $ruleno++;
         $rules[$ruleno] = false;
-        file_put_contents("{$g['vardb_path']}/captiveportaldn.rules", serialize($rules));
+        file_put_contents("/var/db/captiveportaldn.rules", serialize($rules));
         unset($rules);
     }
     unlock($cpruleslck);
@@ -1315,9 +1318,9 @@ function portal_reply_page($redirurl, $type = null, $message = null, $clientmac 
         header("Location: {$redirurl}");
         return;
     } else if ($type == "login")
-        $htmltext = get_include_contents("{$g['varetc_path']}/captiveportal_{$cpzone}.html");
+        $htmltext = get_include_contents("/var/etc/captiveportal_{$cpzone}.html");
     else
-        $htmltext = get_include_contents("{$g['varetc_path']}/captiveportal-{$cpzone}-error.html");
+        $htmltext = get_include_contents("/var/etc/captiveportal-{$cpzone}-error.html");
 
     $cpcfg = $config['captiveportal'][$cpzone];
 
@@ -1445,8 +1448,8 @@ function captiveportal_read_usedmacs_db() {
     global $g, $cpzone;
 
     $cpumaclck = lock("captiveusedmacs{$cpzone}");
-    if (file_exists("{$g['vardb_path']}/captiveportal_usedmacs_{$cpzone}.db")) {
-        $usedmacs = file("{$g['vardb_path']}/captiveportal_usedmacs_{$cpzone}.db", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if (file_exists("/var/db/captiveportal_usedmacs_{$cpzone}.db")) {
+        $usedmacs = file("/var/db/captiveportal_usedmacs_{$cpzone}.db", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if (!$usedmacs)
             $usedmacs = array();
     } else
@@ -1460,7 +1463,7 @@ function captiveportal_write_usedmacs_db($usedmacs) {
     global $g, $cpzone;
 
     $cpumaclck = lock("captiveusedmacs{$cpzone}", LOCK_EX);
-    @file_put_contents("{$g['vardb_path']}/captiveportal_usedmacs_{$cpzone}.db", implode("\n", $usedmacs));
+    @file_put_contents("/var/db/captiveportal_usedmacs_{$cpzone}.db", implode("\n", $usedmacs));
     unlock($cpumaclck);
 }
 

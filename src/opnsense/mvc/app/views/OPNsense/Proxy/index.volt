@@ -234,19 +234,80 @@ maxheight: define max height of select box, default=170px to hold 5 items
                         replies as required by RFC2616.',
                 'advanced':'true'
                 ],
+                ['id':'proxy.general.forwardedForHandling',
+                'label':'X-Forwarded for header handling',
+                'type':'dropdown',
+                'help':'Select what to do with X-Forwarded for header.',
+                'advanced':'true'
+                ],
                 ['id': 'proxy.general.suppressVersion',
                 'label':'Suppress version string',
                 'type':'checkbox',
                 'help':'Suppress Squid version string info in HTTP headers and HTML error pages.',
                 'advanced':'true'
+                ],
+                ['id':'proxy.general.uriWhitespaceHandling',
+                'label':'Whitespace handling of URI',
+                'type':'dropdown',
+                'help':'Select what to do with URI that contain whitespaces.<br/>
+                        <div class="text-info"><b>NOTE:</b> the current Squid implementation of encode and chop violates
+                        RFC2616 by not using a 301 redirect after altering the URL.</div>',
+                'advanced':'true'
                 ]}
             ],
-            [ 'proxy-general-cache','Local Cache Settings',
-                {['id': 'proxy.general.enabled',
-                'label':'Enable proxy',
+            [ 'proxy-general-cache-local','Local Cache Settings',
+                {['id': 'proxy.general.cache.local.enabled',
+                'label':'Enable local cache.',
                 'type':'checkbox',
-                'help':'Enable or disable the proxy service.'
+                'help':'Enable or disable the local cache.<br/>
+                        Curently only ufs directory cache type is supported.<br/>
+                        <b class="text-danger">Do not enable on embedded systems with SD or CF cards as this may break your drive.</b>'
+                ],
+                ['id': 'proxy.general.cache.local.size',
+                'label':'Cache size in Megabytes',
+                'type':'text',
+                'help':'Enter the storage size for the local cache (default is 100).',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.general.cache.local.l1',
+                'label':'Number of first-level subdirectories',
+                'type':'text',
+                'help':'Enter the number of first-level subdirectories for the local cache (default is 16).',
+                'advanced':'true'
+                ],
+                ['id': 'proxy.general.cache.local.l2',
+                'label':'Number of second-level subdirectories',
+                'type':'text',
+                'help':'Enter the number of first-level subdirectories for the local cache (default is 256).',
+                'advanced':'true'
                 ]}
+            ],
+            [ 'proxy-general-traffic','Traffic Management Settings',
+                    {['id': 'proxy.general.traffic.enabled',
+                    'label':'Enable traffic management.',
+                    'type':'checkbox',
+                    'help':'Enable or disable traffic management.'
+                    ],
+                    ['id': 'proxy.general.traffic.maxDownloadSize',
+                    'label':'Maximum download size (Kb)',
+                    'type':'text',
+                    'help':'Enter the maxium size for downloads in kilobytes (leave empty to disable).'
+                    ],
+                    ['id': 'proxy.general.traffic.maxUploadSize',
+                    'label':'Maximum upload size (Kb)',
+                    'type':'text',
+                    'help':'Enter the maxium size for uploads in kilobytes (leave empty to disable).'
+                    ],
+                    ['id': 'proxy.general.traffic.OverallBandwidthTrotteling',
+                    'label':'Overall bandwidth throtteling (Kbps)',
+                    'type':'text',
+                    'help':'Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).'
+                    ],
+                    ['id': 'proxy.general.traffic.perHostTrotteling',
+                    'label':'Per host bandwidth throtteling (Kbps)',
+                    'type':'text',
+                    'help':'Enter the allowed per host bandtwith in kilobits per second (leave empty to disable).'
+                    ]}
             ]}
         ],
         ['proxy-forward','Forward Proxy','subtabs': {
@@ -266,7 +327,7 @@ maxheight: define max height of select box, default=170px to hold 5 items
                 ['id': 'proxy.forward.transparentMode',
                 'label':'Enable Transparent HTTP proxy',
                 'type':'checkbox',
-                'help':'Enable transparent proxe mode to forward all requests for destination port 80 to the proxy server without any additional configuration.'
+                'help':'Enable transparent proxy mode to forward all requests for destination port 80 to the proxy server without any additional configuration.'
                 ],
                 ['id': 'proxy.forward.addACLforInterfaceSubnets',
                 'label':'Allow interface subnets',

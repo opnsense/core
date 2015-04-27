@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Erik Fonnesbeck
@@ -163,7 +164,7 @@ include("head.inc");
 					                    <select name="if" class="selectpicker">
 					                      <?php
 					                      foreach ($portlist as $ifn => $ifinfo)
-					                        if (preg_match($g['wireless_regex'], $ifn)) {
+					                        if (match_wireless_interface($ifn)) {
 					                            echo "<option value=\"{$ifn}\"";
 					                            if ($ifn == $pconfig['if'])
 					                                echo " selected=\"selected\"";

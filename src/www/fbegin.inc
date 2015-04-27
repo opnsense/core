@@ -215,8 +215,9 @@ if(count($config['interfaces']) > 1)
 $ifentries = get_configured_interface_with_descr();
 foreach ($ifentries as $ent => $entdesc) {
 	if (is_array($config['interfaces'][$ent]['wireless']) &&
-		preg_match($g['wireless_regex'], $config['interfaces'][$ent]['if']))
+		match_wireless_interface($config['interfaces'][$ent]['if'])) {
 		$wifdescrs[$ent] = $entdesc;
+	}
 }
 if (count($wifdescrs) > 0)
 	$status_menu[] = array(gettext("Wireless"), "/status_wireless.php");
@@ -295,7 +296,7 @@ $pgtitle_output = true;
 
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="/">
+				<a class="navbar-brand" href="/index.php">
 				<img class="brand-logo" src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
 				<img class="brand-icon" src="/themes/<?=$g['theme'];?>/assets/images/icon-logo.png" height="30" width="29"/>
 				</a>

@@ -49,7 +49,7 @@ $concurrent_users = $no_users;
 $current_user_count = 0;
 
 /* tmp file to use to store old data (per interface)*/
-$tmpfile = "{$g['vardb_path']}/captiveportal_online_users";
+$tmpfile = '/var/db/captiveportal_online_users';
 
 if(empty($type))
 	exit;

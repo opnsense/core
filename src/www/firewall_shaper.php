@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004, 2005 Scott Ullrich
@@ -303,7 +304,6 @@ if ($_GET) {
 		$output_form .= $default_shaper_msg;
 		$dontshow = true;
 	}
-	mwexec("killall qstats");
 } else {
 	$output_form .= $default_shaper_msg;
 	$dontshow = true;

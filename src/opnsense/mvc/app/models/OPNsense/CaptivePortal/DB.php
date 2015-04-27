@@ -122,8 +122,7 @@ class DB
     public function open()
     {
         // open database
-        $db_path = FactoryDefault::getDefault()->get('config')->globals->vardb_path .
-            "/captiveportal" . $this->zone . ".db";
+        $db_path = "/var/db/captiveportal{$this->zone}.db";
 
         try {
             $this->handle = new Sqlite(array("dbname" => $db_path));

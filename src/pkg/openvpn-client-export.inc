@@ -63,9 +63,9 @@ function openvpn_client_export_deinstall()
 	$ovpndir = "/usr/local/share/openvpn";
 	$workdir = "{$ovpndir}/client-export";
 
-	unlink_if_exists("/usr/local/www/{$phpfile}");
-	unlink_if_exists("/usr/local/www/{$phpfile2}");
-	unlink_if_exists("/usr/local/pkg/openvpn-client-export-{$current_openvpn_version}.tgz");
+	@unlink("/usr/local/www/{$phpfile}");
+	@unlink("/usr/local/www/{$phpfile2}");
+	@unlink("/usr/local/pkg/openvpn-client-export-{$current_openvpn_version}.tgz");
 
 	exec("/bin/rm -r {$workdir}");
 }
@@ -363,7 +363,7 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 	switch ($expformat) {
 		case "zip":
 			// create template directory
-			$tempdir = "{$g['tmp_path']}/{$prefix}";
+			$tempdir = "/tmp/{$prefix}";
 			@mkdir($tempdir, 0700, true);
 
 			file_put_contents("{$tempdir}/{$prefix}.ovpn", $conf);
@@ -391,12 +391,12 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 			}
 			$command = "cd " . escapeshellarg("{$tempdir}/..")
 					. " && /usr/local/bin/zip -r "
-					. escapeshellarg("{$g['tmp_path']}/{$prefix}-config.zip")
+					. escapeshellarg("/tmp/{$prefix}-config.zip")
 					. " " . escapeshellarg($prefix);
 			exec($command);
 			// Remove temporary directory
 			exec("rm -rf " . escapeshellarg($tempdir));
-			return "{$g['tmp_path']}/{$prefix}-config.zip";
+			return "/tmp/{$prefix}-config.zip";
 			break;
 		case "inline":
 		case "inlinedroid":
@@ -422,7 +422,7 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 		case "yealink_t38g":
 		case "yealink_t38g2":
 			// create template directory
-			$tempdir = "{$g['tmp_path']}/{$prefix}";
+			$tempdir = "/tmp/{$prefix}";
 			$keydir  = "{$tempdir}/keys";
 			mkdir($tempdir, 0700, true);
 			mkdir($keydir, 0700, true);
@@ -443,14 +443,13 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 				$keyfile = "{$keydir}/client1.key";
 				file_put_contents($keyfile, base64_decode($cert['prv']));
 			}
-			exec("tar -C {$tempdir} -cf {$g['tmp_path']}/client.tar ./keys ./vpn.cnf");
+			exec("tar -C {$tempdir} -cf /tmp/client.tar ./keys ./vpn.cnf");
 			// Remove temporary directory
 			exec("rm -rf {$tempdir}");
-			return $g['tmp_path'] . "/client.tar";
-			break;
+			return '/tmp/client.tar';
 		case "snom":
 			// create template directory
-			$tempdir = "{$g['tmp_path']}/{$prefix}";
+			$tempdir = "/tmp/{$prefix}";
 			mkdir($tempdir, 0700, true);
 
 			file_put_contents("{$tempdir}/vpn.cnf", $conf);
@@ -469,11 +468,10 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 				$keyfile = "{$tempdir}/phone1.key";
 				file_put_contents($keyfile, base64_decode($cert['prv']));
 			}
-			exec("cd {$tempdir}/ && tar -cf {$g['tmp_path']}/vpnclient.tar *");
+			exec("cd {$tempdir}/ && tar -cf /tmp/vpnclient.tar *");
 			// Remove temporary directory
 			exec("rm -rf {$tempdir}");
-			return $g['tmp_path'] . "/vpnclient.tar";
-			break;
+			return '/tmp/vpnclient.tar';
 		default:
 			return $conf;
 	}
@@ -513,7 +511,7 @@ function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $veri
 	}
 
 	// create template directory
-	$tempdir = $g['tmp_path'] . "/openvpn-export-".uniqid();
+	$tempdir = "/tmp//openvpn-export-".uniqid();
 	mkdir($tempdir, 0700, true);
 
 	// create config directory
@@ -593,7 +591,7 @@ RunProgram="openvpn-postinstall.exe"
 
 	// create the final installer
 	$outfile = "{$tempdir}-install.exe";
-	chdir($g['tmp_path']);
+	chdir('/tmp');
 	exec("/bin/cat {$tempdir}/7zS.sfx {$tempdir}/7zipConfig {$tempdir}/archive.7z > {$outfile}");
 
 	// cleanup
@@ -611,8 +609,8 @@ function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $usead
 		openvpn_client_export_install();
 
 	$uniq = uniqid();
-	$tempdir = $g['tmp_path'] . "/openvpn-export-" . $uniq;
-	$zipfile = $g['tmp_path'] . "/{$uniq}-Viscosity.visc.zip";
+	$tempdir = "/tmp/openvpn-export-{$uniq}";
+	$zipfile = "/tmp/{$uniq}-Viscosity.visc.zip";
 
 	$validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
 	if ($validconfig) {
@@ -821,7 +819,7 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
 
 	if ($zipconf == true) {
 		// create template directory
-		$tempdir = "{$g['tmp_path']}/{$prefix}";
+		$tempdir = "/tmp/{$prefix}";
 		mkdir($tempdir, 0700, true);
 
 		file_put_contents("{$tempdir}/{$prefix}.ovpn", $conf);
@@ -830,9 +828,9 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
 		file_put_contents("{$shkeyfile}", base64_decode($settings['shared_key']));
 
 		if(file_exists("/usr/pbi/zip-{$uname_p}/bin/zip"))
-			exec("cd {$tempdir}/.. && /usr/pbi/zip-{$uname_p}/bin/zip -r {$g['tmp_path']}/{$prefix}-config.zip {$prefix}");
+			exec("cd {$tempdir}/.. && /usr/pbi/zip-{$uname_p}/bin/zip -r /tmp/{$prefix}-config.zip {$prefix}");
 		else
-			exec("cd {$tempdir}/.. && /usr/local/bin/zip -r {$g['tmp_path']}/{$prefix}-config.zip {$prefix}");
+			exec("cd {$tempdir}/.. && /usr/local/bin/zip -r /tmp/{$prefix}-config.zip {$prefix}");
 
 		// Remove temporary directory
 		exec("rm -rf {$tempdir}");

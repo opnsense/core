@@ -274,7 +274,8 @@ class ActionHandler(object):
         if command in self.action_map:
             if action in self.action_map[command]:
                 if type(self.action_map[command][action]) == dict:
-                    if len(parameters) > 0 and parameters[0] in self.action_map[command][action]:
+                    if parameters is not None and len(parameters) > 0 \
+                            and parameters[0] in self.action_map[command][action]:
                         # 3 level action (  "interface linkup start" for example )
                         if isinstance(self.action_map[command][action][parameters[0]], Action):
                             action_obj = self.action_map[command][action][parameters[0]]

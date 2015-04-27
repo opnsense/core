@@ -45,13 +45,15 @@ class QueueStats {
 	public $suspends;
 	public $drops;
 }
-if (!file_exists("{$g['varrun_path']}/qstats.pid") || !isvalidpid("{$g['varrun_path']}/qstats.pid")) {
+
+if (!isvalidpid('/var/run/qstats.pid')) {
 	/* Start in the background so we don't hang up the GUI */
-	mwexec_bg("/usr/local/sbin/qstats -p {$g['varrun_path']}/qstats.pid");
+	mwexec_bg('/usr/local/sbin/qstats -p /var/run/qstats.pid');
 	/* Give it a moment to start up */
 	sleep(1);
 }
-$fd = @fsockopen("unix://{$g['varrun_path']}/qstats");
+
+$fd = @fsockopen('unix:///var/run/qstats');
  if (!$fd) {
 	$error = "Something wrong happened during comunication with stat gathering";
 } else {

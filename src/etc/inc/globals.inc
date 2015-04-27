@@ -37,9 +37,6 @@ $g = array(
 	"factory_shipped_password" => "opnsense",
 	"dhcpd_chroot_path" => "/var/dhcpd",
 	"unbound_chroot_path" => "/var/unbound",
-	"varrun_path" => "/var/run",
-	"varetc_path" => "/var/etc",
-	"vardb_path" => "/var/db",
 	"admin_group" => "admins",
 	"product_name" => "OPNsense",
 	"product_website" => "https://opnsense.org",
@@ -48,7 +45,6 @@ $g = array(
 	"product_copyright_years" => "2014 - 2015",
 	"product_copyright_url" => "https://www.deciso.com/",
 	"latest_config" => "11.2",
-	"wireless_regex" => "/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/",
 );
 
 /* IP TOS flags */
@@ -113,4 +109,10 @@ function is_install_media()
 	}
 
 	return true;
+}
+
+function match_wireless_interface($int)
+{
+	$wireless_regex = '/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/';
+	return preg_match($wireless_regex, $int);
 }

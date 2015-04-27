@@ -1,6 +1,6 @@
 <?php
+
 /*
-	status_filter_reload.php
 	Copyright (C) 2006 Scott Ullrich
 	All rights reserved.
 
@@ -33,8 +33,9 @@ require_once("functions.inc");
 $pgtitle = array(gettext("Status"),gettext("Filter Reload Status"));
 $shortcut_section = "firewall";
 
-if(file_exists("{$g['varrun_path']}/filter_reload_status"))
-	$status = file_get_contents("{$g['varrun_path']}/filter_reload_status");
+if (file_exists('/var/run/filter_reload_status')) {
+	$status = file_get_contents('/var/run/filter_reload_status');
+}
 
 if($_GET['getstatus']) {
 	echo "|{$status}|";
