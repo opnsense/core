@@ -208,8 +208,6 @@ if (isset($id) && $a_filter[$id]) {
 	/* Shaper support */
 	$pconfig['defaultqueue'] = (($a_filter[$id]['ackqueue'] == "none") ? '' : $a_filter[$id]['defaultqueue']);
 	$pconfig['ackqueue'] = (($a_filter[$id]['ackqueue'] == "none") ? '' : $a_filter[$id]['ackqueue']);
-	$pconfig['dnpipe'] = (($a_filter[$id]['dnpipe'] == "none") ? '' : $a_filter[$id]['dnpipe']);
-	$pconfig['pdnpipe'] = (($a_filter[$id]['pdnpipe'] == "none") ? '' : $a_filter[$id]['pdnpipe']);
 	$pconfig['l7container'] = (($a_filter[$id]['l7container'] == "none") ? '' : $a_filter[$id]['l7container']);
 
 	//schedule support
@@ -236,8 +234,6 @@ if (isset($_GET['dup']) && is_numericint($_GET['dup']))
 
 read_altq_config(); /* XXX: */
 $qlist =& get_unique_queue_list();
-read_dummynet_config(); /* XXX: */
-$dnqlist =& get_unique_dnqueue_list();
 read_layer7_config();
 $l7clist =& get_l7_unique_list();
 $a_gatewaygroups = return_gateway_groups_array();
@@ -484,22 +480,8 @@ if ($_POST) {
 		else if ($_POST['ackqueue'] == $_POST['defaultqueue'])
 			$input_errors[] = gettext("Acknowledge queue and Queue cannot be the same.");
 	}
-	if (isset($_POST['floating']) && $_POST['pdnpipe'] != "" && (empty($_POST['direction']) || $_POST['direction'] == "any"))
-		$input_errors[] = gettext("You can not use limiters in Floating rules without choosing a direction.");
 	if (isset($_POST['floating']) && $_POST['gateway'] != "" && (empty($_POST['direction']) || $_POST['direction'] == "any"))
 		$input_errors[] = gettext("You can not use gateways in Floating rules without choosing a direction.");
-	if ($_POST['pdnpipe'] && $_POST['pdnpipe'] != "") {
-		if ($_POST['dnpipe'] == "" )
-			$input_errors[] = gettext("You must select a queue for the In direction before selecting one for Out too.");
-		else if ($_POST['pdnpipe'] == $_POST['dnpipe'])
-			$input_errors[] = gettext("In and Out Queue cannot be the same.");
-		else if ($dnqlist[$_POST['pdnpipe']][0] == "?" && $dnqlist[$_POST['dnpipe']][0] <> "?")
-			$input_errors[] = gettext("You cannot select one queue and one virtual interface for IN and Out. both must be from the same type.");
-		else if ($dnqlist[$_POST['dnpipe']][0] == "?" && $dnqlist[$_POST['pdnpipe']][0] <> "?")
-			$input_errors[] = gettext("You cannot select one queue and one virtual interface for IN and Out. both must be from the same type.");
-		if ($_POST['direction'] == "out" && empty($_POST['gateway']))
-			$input_errors[] = gettext("Please select a gateway, normaly the interface selected gateway, so the limiters work correctly");
-	}
 	if( !empty($_POST['ruleid']) && !ctype_digit($_POST['ruleid']))
 		$input_errors[] = gettext('ID must be an integer');
 	if($_POST['l7container'] && $_POST['l7container'] != "") {
@@ -703,12 +685,6 @@ if ($_POST) {
 			$filterent['defaultqueue'] = $_POST['defaultqueue'];
 			if ($_POST['ackqueue'] != "")
 				$filterent['ackqueue'] = $_POST['ackqueue'];
-		}
-
-		if ($_POST['dnpipe'] != "") {
-			$filterent['dnpipe'] = $_POST['dnpipe'];
-			if ($_POST['pdnpipe'] != "")
-				$filterent['pdnpipe'] = $_POST['pdnpipe'];
 		}
 
 		if ($_POST['l7container'] != "") {
@@ -1541,56 +1517,6 @@ include("head.inc");
 											</div>
 										</td>
 									</tr>
-									<tr>
-										<td width="22%" valign="top" class="vncell"><?=gettext("In/Out");?></td>
-										<td width="78%" class="vtable">
-											<div id="showadvinoutbox" <?php if (!empty($pconfig['dnpipe'])) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_advanced_inout()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
-											</div>
-											<div id="showinoutadv" <?php if (empty($pconfig['dnpipe'])) echo "style='display:none'"; ?>>
-												<select name="dnpipe">
-							<?php
-									if (!is_array($dnqlist))
-										$dnqlist = array();
-									echo "<option value=\"\"";
-									if (!$dnqselected) echo " selected=\"selected\"";
-									echo " >none</option>";
-									foreach ($dnqlist as $dnq => $dnqkey) {
-										if($dnq == "")
-											continue;
-										echo "<option value=\"$dnq\"";
-										if ($dnq == $pconfig['dnpipe']) {
-											$dnqselected = 1;
-											echo " selected=\"selected\"";
-										}
-										echo ">{$dnq}</option>";
-									}
-							?>
-										</select> /
-										<select name="pdnpipe">
-							<?php
-									$dnqselected = 0;
-									echo "<option value=\"\"";
-									if (!$dnqselected) echo " selected=\"selected\"";
-									echo " >none</option>";
-									foreach ($dnqlist as $dnq => $dnqkey) {
-										if($dnq == "")
-											continue;
-										echo "<option value=\"$dnq\"";
-										if ($dnq == $pconfig['pdnpipe']) {
-											$dnqselected = 1;
-											echo " selected=\"selected\"";
-										}
-										echo ">{$dnq}</option>";
-									}
-							?>
-											</select>
-											<br />
-											<span class="vexpl"><?=gettext("Choose the Out queue/Virtual interface only if you have also selected In.")."<br />".gettext("The Out selection is applied to traffic leaving the interface where the rule is created, In is applied to traffic coming into the chosen interface.")."<br />".gettext("If you are creating a floating rule, if the direction is In then the same rules apply, if the direction is out the selections are reverted Out is for incoming and In is for outgoing.");?></span>
-											</div>
-										</td>
-									</tr>
-
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Ackqueue/Queue");?></td>
 										<td width="78%" class="vtable">

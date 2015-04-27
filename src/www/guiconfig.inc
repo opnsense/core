@@ -459,10 +459,6 @@ function firewall_check_for_advanced_options(&$item) {
 		$item_set .= "vlanprioset {$item['vlanprioset']} ";
 	if($item['gateway'])
 		$item_set .= "gateway {$item['gateway']} ";
-	if($item['dnpipe'])
-		$item_set .= "limiter {$item['dnpipe']} ";
-	if($item['pdnpipe'])
-		$item_set .= "limiter {$item['pdnpipe']} ";
 	if($item['ackqueue'])
 		$item_set .= "ackqueue {$item['ackqueue']} ";
 	if($item['defaultqueue'])

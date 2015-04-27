@@ -406,12 +406,6 @@ $priv_list['page-firewall-trafficshaper-queues']['descr'] = gettext("Allow acces
 $priv_list['page-firewall-trafficshaper-queues']['match'] = array();
 $priv_list['page-firewall-trafficshaper-queues']['match'][] = "firewall_shaper_queues.php*";
 
-$priv_list['page-firewall-trafficshaper-limiter'] = array();
-$priv_list['page-firewall-trafficshaper-limiter']['name'] = gettext("WebCfg - Firewall: Traffic Shaper: Limiter page");
-$priv_list['page-firewall-trafficshaper-limiter']['descr'] = gettext("Allow access to the 'Firewall: Traffic Shaper: Limiter' page.");
-$priv_list['page-firewall-trafficshaper-limiter']['match'] = array();
-$priv_list['page-firewall-trafficshaper-limiter']['match'][] = "firewall_shaper_vinterface.php*";
-
 $priv_list['page-firewall-trafficshaper-wizard'] = array();
 $priv_list['page-firewall-trafficshaper-wizard']['name'] = gettext("WebCfg - Firewall: Traffic Shaper: Wizard page");
 $priv_list['page-firewall-trafficshaper-wizard']['descr'] = gettext("Allow access to the 'Firewall: Traffic Shaper: Wizard' page.");

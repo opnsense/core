@@ -160,7 +160,7 @@ function filter_delete_states_for_down_gateways() {
 function filter_configure_sync($delete_states_if_needed = true)
 {
 	global $config, $g, $after_filter_configure_run, $FilterIflist;
-	global $time_based_rules, $filterdns, $aliases, $dummynet_name_list;
+	global $time_based_rules, $filterdns, $aliases;
 
 	/* Use filter lock to not allow concurrent filter reloads during this run. */
 	$filterlck = lock('filter', LOCK_EX);
@@ -186,8 +186,6 @@ function filter_configure_sync($delete_states_if_needed = true)
 	if(file_exists("/var/run/booting"))
 		echo ".";
 	update_filter_reload_status(gettext("Generating Limiter rules"));
-	$dummynet_rules = filter_generate_dummynet_rules();
-	$dummynet_name_list = get_unique_dnqueue_list();
 	update_filter_reload_status(gettext("Generating NAT rules"));
 	/* generate nat rules */
 	$natrules = filter_nat_rules_generate();
@@ -2229,7 +2227,7 @@ function filter_generate_address(& $rule, $target = "source", $isnat = false) {
 function filter_generate_user_rule($rule)
 {
 	global $config, $g, $FilterIflist, $GatewaysList;
-	global $layer7_rules_list, $dummynet_name_list;
+	global $layer7_rules_list;
 
 	/* don't include disabled rules */
 	if(isset($rule['disabled'])) {
@@ -2544,21 +2542,6 @@ function filter_generate_user_rule($rule)
 			$aline['queue'] .= ",".$rule['ackqueue'];
 		$aline['queue'] .= ") ";
 	}
-	if($rule['dnpipe'] <> "") {
-		if (!empty($dummynet_name_list[$rule['dnpipe']])) {
-			if($dummynet_name_list[$rule['dnpipe']][0] == "?") {
-				$aline['dnpipe'] = " dnqueue( ";
-				$aline['dnpipe'] .= substr($dummynet_name_list[$rule['dnpipe']],1);
-				if($rule['pdnpipe'] <> "")
-					$aline['dnpipe'] .= ",".substr($dummynet_name_list[$rule['pdnpipe']], 1);
-			} else {
-				$aline['dnpipe'] = " dnpipe ( " . $dummynet_name_list[$rule['dnpipe']];
-				if($rule['pdnpipe'] <> "")
-					$aline['dnpipe'] .= "," . $dummynet_name_list[$rule['pdnpipe']];
-			}
-			$aline['dnpipe'] .= ") ";
-		}
-	}
 
 	/* is a time based rule schedule attached? */
 	if(!empty($rule['sched']) && !empty($config['schedules'])) {
@@ -2588,7 +2571,7 @@ function filter_generate_user_rule($rule)
 			$aline['interface'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] .
 			$negate_networks . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] .
 			$aline['vlanprio'] . $aline['vlanprioset'] . $aline['dscp']  . $aline['allowopts'] . $aline['flags'] .
-			$aline['queue'] . $aline['dnpipe'] . $aline['schedlabel'] .
+			$aline['queue'] . $aline['schedlabel'] .
 			" label \"NEGATE_ROUTE: Negate policy routing for destination\"\n";
 
 	}
@@ -2596,7 +2579,7 @@ function filter_generate_user_rule($rule)
 	$line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] . $aline['interface'] .
 		$aline['reply'] . $aline['route'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] . $aline['dst'] .
 		$aline['divert'] . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] . $aline['dscp'] .
-		$aline['vlanprio'] . $aline['vlanprioset'] . $aline['allowopts'] . $aline['flags'] . $aline['queue'] . $aline['dnpipe'] . $aline['schedlabel'];
+		$aline['vlanprio'] . $aline['vlanprioset'] . $aline['allowopts'] . $aline['flags'] . $aline['queue'] . $aline['schedlabel'];
 
 	unset($aline);
 

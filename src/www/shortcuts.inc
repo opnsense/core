@@ -214,10 +214,6 @@ $shortcuts['trafficshaper'] = array();
 $shortcuts['trafficshaper']['main'] = "firewall_shaper.php";
 $shortcuts['trafficshaper']['status'] = "status_queues.php";
 
-$shortcuts['trafficshaper-limiters'] = array();
-$shortcuts['trafficshaper-limiters']['main'] = "firewall_shaper_vinterface.php";
-$shortcuts['trafficshaper-limiters']['status'] = "diag_limiter_info.php";
-
 $shortcuts['forwarder'] = array();
 $shortcuts['forwarder']['main'] = "services_dnsmasq.php";
 $shortcuts['forwarder']['log'] = "diag_logs_resolver.php";

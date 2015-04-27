@@ -2813,7 +2813,7 @@ function upgrade_085_to_086() {
 }
 
 function upgrade_086_to_087() {
-	global $config, $dummynet_pipe_list;
+	global $config;
 
 	if (!is_array($config['filter']) || !is_array($config['filter']['rule']))
 		return;
@@ -2836,30 +2836,6 @@ function upgrade_086_to_087() {
 
 	unset($dnqueue_number, $dnpipe_number, $qidx, $idx, $dnpipe, $dnqueue);
 
-	require_once("shaper.inc");
-	read_dummynet_config();
-
-	$dn_list = array();
-	if (is_array($dummynet_pipe_list)) {
-		foreach ($dummynet_pipe_list as $dn) {
-			$tmplist =& $dn->get_queue_list();
-			foreach ($tmplist as $qname => $link) {
-				$dn_list[$link] = $qname;
-			}
-		}
-		unset($dummynet_pipe_list);
-	}
-
-	foreach ($config['filter']['rule'] as $idx => $rule) {
-		if (!empty($rule['dnpipe'])) {
-			if (!empty($dn_list[$rule['dnpipe']]))
-				$config['filter']['rule'][$idx]['dnpipe'] = $dn_list[$rule['dnpipe']];
-		}
-		if (!empty($rule['pdnpipe'])) {
-			if (!empty($dn_list[$rule['pdnpipe']]))
-				$config['filter']['rule'][$idx]['pdnpipe'] = $dn_list[$rule['pdnpipe']];
-		}
-	}
 }
 
 function upgrade_087_to_088() {
