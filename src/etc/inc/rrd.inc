@@ -75,10 +75,6 @@ function restore_rrd()
 			unset($output);
 			@unlink($xml_file);
 		}
-		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
-		if (!isset($config['system']['use_mfs_tmpvar'])) {
-			@unlink('/conf/rrd.tgz');
-		}
 		return true;
 	}
 	return false;

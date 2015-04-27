@@ -386,10 +386,6 @@ function services_dhcpdv4_configure()
 				log_error(sprintf(gettext('DHCP leases restore failed exited with %1$s, the error is: %2$s%3$s'), $dhcpreturn, $dhcprestore, "\n"));
 			}
 		}
-		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
-		if (!isset($config['system']['use_mfs_tmpvar'])) {
-			@unlink('/conf/dhcpleases.tgz');
-		}
 	}
 
 	$syscfg = $config['system'];
@@ -1005,10 +1001,6 @@ function services_dhcpdv6_configure($blacklist = array())
 				}
 
 			}
-		}
-		/* If this backup is still there on a full install, but we aren't going to use ram disks, remove the archive since this is a transition. */
-		if (isset($config['system']['use_mfs_tmpvar'])) {
-			@unlink('/conf/dhcp6leases.tgz');
 		}
 	}
 
