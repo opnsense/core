@@ -248,21 +248,27 @@ function interfaces_vlan_configure($realif = '')
 {
 	global $config;
 
-	if(file_exists("/var/run/booting"))
+	if (file_exists("/var/run/booting")) {
 		echo gettext("Configuring VLAN interfaces...");
-	if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
+	}
+
+	if (isset($config['vlans']['vlan'])) {
 		foreach ($config['vlans']['vlan'] as $vlan) {
-			if (empty($vlan['vlanif']))
+			if (empty($vlan['vlanif'])) {
 				$vlan['vlanif'] = "{$vlan['if']}_vlan{$vlan['tag']}";
-			if (!empty($realif) && $realif != $vlan['vlanif'])
+			}
+			if (!empty($realif) && $realif != $vlan['vlanif']) {
 				continue;
+			}
 
 			/* XXX: Maybe we should report any errors?! */
 			interface_vlan_configure($vlan);
 		}
 	}
-	if(file_exists("/var/run/booting"))
+
+	if (file_exists("/var/run/booting")) {
 		echo gettext("done.") . "\n";
+	}
 }
 
 function interface_vlan_configure(&$vlan) {
