@@ -72,9 +72,6 @@ function clean_child_queues($type, $mypath)
 		if (isset($ref['bandwidth'])) unset($ref['bandwidth']);
 		if (isset($ref['bandwidthtype'])) unset($ref['bandwidthtype']);
 		/* fall through */
-	case 'FAIRQ':
-		if (isset($ref['borrow'])) unset($ref['borrow']);
-		/* fall through */
 	case 'CBQ':
 		if (isset($ref['realtime'])) unset($ref['realtime']);
 		if (isset($ref['realtime1'])) unset($ref['realtime1']);
@@ -225,9 +222,6 @@ class altq_root_queue {
 		$this->qenabled = $value;
 	}
 	function CanHaveChildren() {
-		if ($this->GetScheduler() == "CODELQ")
-			return false;
-		else
 			return true;
 	}
 	function CanBeDeleted() {
@@ -372,9 +366,6 @@ class altq_root_queue {
 			break;
 		case "CBQ":
 			$q =& new cbq_queue();
-			break;
-		case "FAIRQ":
-			$q =& new fairq_queue();
 			break;
 		default:
 			/* XXX: but should not happen anyway */
@@ -523,22 +514,7 @@ class altq_root_queue {
 				return "\n";
 			}
 			$frule .= $rules;
-		} else if ($this->GetEnabled() == "on" && $this->GetScheduler() == "CODELQ") {
-			$rules = " altq on  " . get_real_interface($this->GetInterface());
-			if ($this->GetScheduler())
-				$rules .= " ".strtolower($this->GetScheduler());
-			if ($this->GetQlimit() > 0)
-				$rules .= " ( qlimit " . $this->GetQlimit() . " ) ";
-			if ($this->GetBandwidth()) {
-				$rules .= " bandwidth ".trim($this->GetBandwidth());
-				if ($this->GetBwscale())
-					$rules .= $this->GetBwscale();
-			}
-			if ($this->GetTbrConfig())
-				$rules .= " tbrsize ".$this->GetTbrConfig();
-
-			$rules .= " queue";
-		}
+		} 
 
 		$rules .= " \n";
 		return $rules;
@@ -619,14 +595,6 @@ class altq_root_queue {
 		if ($this->GetScheduler() == "CBQ")
 			$form .= " selected=\"selected\"";
 		$form .= ">CBQ</option>";
-		$form .= "<option value=\"FAIRQ\"";
-		if ($this->GetScheduler() == "FAIRQ")
-			$form .= " selected=\"selected\"";
-		$form .= ">FAIRQ</option>";
-		$form .= "<option value=\"CODELQ\"";
-		if ($this->GetScheduler() == "CODELQ")
-			$form .= " selected=\"selected\"";
-		$form .= ">CODELQ</option>";
 		$form .= "<option value=\"PRIQ\"";
 		if ($this->GetScheduler() == "PRIQ")
 			$form .= " selected=\"selected\"";
