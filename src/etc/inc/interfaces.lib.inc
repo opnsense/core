@@ -28,7 +28,7 @@
 
 function legacy_interface_create($ifs)
 {
-	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create 2>&1';
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create';
 	$new = null;
 
 	exec($cmd . ' 2>&1', $out, $ret);
@@ -46,7 +46,27 @@ function legacy_interface_create($ifs)
 
 function legacy_interface_destroy($ifs)
 {
-	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' destroy 2>&1';
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' destroy';
+
+	exec($cmd . ' 2>&1', $out, $ret);
+	if ($ret) {
+		log_error('The command `' . $cmd . '\' failed to execute');
+	}
+}
+
+function legacy_interface_setaddress($ifs, $addr)
+{
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' alias ' . escapeshellarg($addr);
+
+	exec($cmd . ' 2>&1', $out, $ret);
+	if ($ret) {
+		log_error('The command `' . $cmd . '\' failed to execute');
+	}
+}
+
+function legacy_interface_deladdress($ifs, $addr)
+{
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' -alias ' . escapeshellarg($addr);
 
 	exec($cmd . ' 2>&1', $out, $ret);
 	if ($ret) {
@@ -56,7 +76,7 @@ function legacy_interface_destroy($ifs)
 
 function legacy_interface_rename($ifs, $name)
 {
-	$cmd = '/sbin/ifconfig ' . $ifs . ' name ' . $name;
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($if) . ' name ' . escapeshellarg($name);
 
 	exec($cmd . ' 2>&1', $out, $ret);
 	if ($ret) {

@@ -234,7 +234,7 @@ function interfaces_loopback_configure()
 		echo gettext("Configuring loopback interface...");
 	}
 
-	pfSense_interface_setaddress("lo0", "127.0.0.1");
+	legacy_interface_setaddress('lo0', '127.0.0.1');
 	interfaces_bring_up("lo0");
 
 	if (file_exists("/var/run/booting")) {
@@ -1206,14 +1206,13 @@ function interface_vip_bring_down($vip)
 			if (is_ipaddrv6($vip['subnet'])) {
 				mwexec("/sbin/ifconfig {$vipif} inet6 " . escapeshellarg($vip['subnet']) . " -alias");
 			} else {
-				pfSense_interface_deladdress($vipif, $vip['subnet']);
+				legacy_interface_deladdress($vipif, $vip['subnet']);
 			}
 		}
 		break;
-	case "carp":
-		/* XXX: Is enough to delete ip address? */
+	case 'carp':
 		if (does_interface_exist($vipif)) {
-			pfSense_interface_deladdress($vipif, $vip['subnet']);
+			legacy_interface_deladdress($vipif, $vip['subnet']);
 		}
 		break;
 	}
@@ -1608,7 +1607,7 @@ function interface_ppps_configure($interface)
 				/* configure interface */
 				if(is_ipaddr($localips[$pid])){
 					// Manually configure interface IP/subnet
-					pfSense_interface_setaddress($port, "{$localips[$pid]}/{$subnets[$pid]}");
+					legacy_interface_setaddress($port, "{$localips[$pid]}/{$subnets[$pid]}");
 					interfaces_bring_up($port);
 				} else if (empty($localips[$pid]))
 					$localips[$pid] = get_interface_ip($port); // try to get the interface IP from the port
@@ -2934,15 +2933,17 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 		if (is_array($tmpifaces)) {
 			foreach ($tmpifaces as $tmpiface) {
 				if (is_ipaddrv6($tmpiface) || is_subnetv6($tmpiface)) {
-					if (!is_linklocal($tmpiface))
+					if (!is_linklocal($tmpiface)) {
 						mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$tmpiface} delete");
+					}
 				} else {
 					if (is_subnetv4($tmpiface)) {
 						$tmpip = explode('/', $tmpiface);
 						$tmpip = $tmpip[0];
-					} else
+					} else {
 						$tmpip = $tmpiface;
-					pfSense_interface_deladdress($realif, $tmpip);
+					}
+					legacy_interface_deladdress($realif, $tmpip);
 				}
 			}
 		}
@@ -3079,8 +3080,9 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	default:
 		/* XXX: Kludge for now related to #3280 */
 		if (!in_array($tunnelif, array("gif", "gre", "ovp"))) {
-			if (is_ipaddrv4($wancfg['ipaddr']) && $wancfg['subnet'] <> "")
-				pfSense_interface_setaddress($realif, "{$wancfg['ipaddr']}/{$wancfg['subnet']}");
+			if (is_ipaddrv4($wancfg['ipaddr']) && $wancfg['subnet'] <> "") {
+				legacy_interface_setaddress($realif, "{$wancfg['ipaddr']}/{$wancfg['subnet']}");
+			}
 		}
 		break;
 	}
@@ -3103,8 +3105,6 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 		/* XXX: Kludge for now related to #3280 */
 		if (!in_array($tunnelif, array("gif", "gre", "ovp"))) {
 			if (is_ipaddrv6($wancfg['ipaddrv6']) && $wancfg['subnetv6'] <> "") {
-				//pfSense_interface_setaddress($realif, "{$wancfg['ipaddrv6']}/{$wancfg['subnetv6']}");
-				// FIXME: Add IPv6 Support to the pfSense module
 				mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$wancfg['ipaddrv6']} prefixlen " . escapeshellarg($wancfg['subnetv6']));
 			}
 		}
