@@ -31,6 +31,7 @@ require_once("globals.inc");
 require_once("functions.inc");
 require_once("shortcuts.inc");
 require_once("service-utils.inc");
+require_once("script/load_phalcon.php");
 
 /* Determine automated help URL. Should output the page name and
    parameters separately */
@@ -64,213 +65,19 @@ if (($pagename == "pkg.php") || ($pagename == "pkg_edit.php") || ($pagename == "
 /* Build the full help URL. */
 $helpurl .= "/help.php?page={$pagename}";
 
+// link menu system
+$menu = new OPNsense\Base\Menu\MenuSystem();
 
-function output_menu($arrayitem, $target = null) {
-	foreach ($arrayitem as $item) {
-		if (isAllowedPage($item[1]) || $item[1]=="/index.php?logout") {
-
-
-			$attr = sprintf("href=\"%s\"", htmlentities($item[1]));
-			if ($target) {
-				$attr .= sprintf(" target=\"%s\"", htmlentities($target));
-			}
-			$class = "list-group-item";
-
-
-			$check = substr($item[1],1,-3);
-			if (stripos($_SERVER['PHP_SELF'], $check) !== false) {
-				$class .= " active";
-			}
-
-			if ($item['class']) {
-				$class .= " {$item['class']}";
-			}
-			$attr .= sprintf(" class=\"%s\"", htmlentities($class));
-			if ($item['style']) {
-				$attr .= sprintf(" style=\"%s\"", htmlentities($item['style']));
-			}
-			//echo "<li>\n";
-			printf("<a %s>%s</a>\n", $attr, $item[0]);
-			//echo "</li>\n";
-		}
-	}
+// add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
+$cnf = OPNsense\Core\Config::getInstance();
+$ordid = 0;
+foreach ($cnf->object()->interfaces->children() as $key => $node) {
+    $menu->appendItem("Interfaces", $key, array("url"=>"/interfaces.php?if=".$key,"order"=>($ordid++),
+                      "visiblename"=>$node->descr?$node->descr:strtoupper($key)));
 }
+$menuSystem = $menu->getItems($_SERVER['PHP_SELF']);
 
-
-function active_menu($arrayitem, $pagename) {
-	$pagename = "/".ltrim($pagename,"/");
-
-	foreach ($arrayitem as $item) {
-		$check = substr($item[1],1,-3);
-
-		if (stripos($pagename, $check) !== false) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-function active_main_menu() {
-	$options = func_get_args();
-
-	foreach ($options as $uri) {
-		if (substr($_SERVER['PHP_SELF'], 0, strlen($uri)) == $uri) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-
-// System
-$system_menu = array();
-$system_menu[] = array(gettext("Certificates"), "/system_certmanager.php");
-$system_menu[] = array(gettext("Firmware"), "/system_firmware_check.php");
-$system_menu[] = array(gettext("High Availability"), "/system_hasync.php");
-$system_menu[] = array(gettext("Routing"), "/system_gateways.php");
-$system_menu[] = array(gettext("Settings"), "/system_general.php");
-$system_menu[] = array(gettext("Setup Wizard"), "/wizard.php?xml=setup_wizard.xml");
-if (!isAllowedPage("system_usermanager.php*")) {
-	$system_menu[] = array(gettext("User Manager"), "/system_usermanager_passwordmg.php");
-} else {
-	$system_menu[] = array(gettext("User Manager"), "/system_usermanager.php");
-}
-
-// Interfaces
-$interfaces_menu = array();
-if (!isset($config['system']['webgui']['noassigninterfaces']))
-	$interfaces_menu[] = array(gettext("(assign)"), "/interfaces_assign.php");
-$opts = get_configured_interface_with_descr(false, true);
-foreach ($opts as $oif => $odescr)
-	if (!isset($config['interfaces'][$oif]['ovpn']))
-		$interfaces_menu[] = array(htmlspecialchars($odescr), "/interfaces.php?if={$oif}");
-$interfaces_menu = msort($interfaces_menu,0);
-
-// Firewall
-$firewall_menu = array();
-$firewall_menu[] = array(gettext("Aliases"), "/firewall_aliases.php");
-$firewall_menu[] = array(gettext("NAT"), "/firewall_nat.php");
-$firewall_menu[] = array(gettext("Rules"), "/firewall_rules.php");
-$firewall_menu[] = array(gettext("Schedules"), "/firewall_schedule.php");
-$firewall_menu[] = array(gettext("Traffic Shaper"), "/firewall_shaper.php");
-$firewall_menu[] = array(gettext("Virtual IPs"), "/firewall_virtual_ip.php");
-$firewall_menu = msort($firewall_menu,0);
-
-// Services
-$services_menu = array();
-$services_menu[] = array(gettext("Captive Portal"), "/services_captiveportal.php");
-$services_menu[] = array(gettext("DNS Filter"), "/services_opendns.php");
-$services_menu[] = array(gettext("DNS Forwarder"), "/services_dnsmasq.php");
-$services_menu[] = array(gettext("DNS Resolver"), "/services_unbound.php");
-$services_menu[] = array(gettext("DHCP Relay"), "/services_dhcp_relay.php");
-$services_menu[] = array(gettext("DHCPv6 Relay"), "/services_dhcpv6_relay.php");
-$services_menu[] = array(gettext("DHCP Server"), "/services_dhcp.php");
-$services_menu[] = array(gettext("DHCPv6 Server/RA"), "/services_dhcpv6.php");
-$services_menu[] = array(gettext("Dynamic DNS"), "/services_dyndns.php");
-$services_menu[] = array(gettext("IGMP proxy"), "/services_igmpproxy.php");
-$services_menu[] = array(gettext("Load Balancer"), "/load_balancer_pool.php");
-$services_menu[] = array(gettext("NTP"), "/services_ntpd.php");
-$services_menu[] = array(gettext("PPPoE Server"), "/services_vpn_pppoe.php");
-$services_menu[] = array(gettext("SNMP"), "/services_snmp.php");
-if(count($config['interfaces']) > 1) {
-	/* no use for UPnP in single-interface deployments
-	remove to reduce user confusion
-	*/
-	$services_menu[] = array(gettext("UPnP &amp; NAT-PMP"), "/pkg_edit.php?xml=miniupnpd.xml");
-}
-$services_menu[] = array(gettext("Wake on LAN"), "/services_wol.php");
-$services_menu = msort($services_menu, 0);
-
-// VPN
-$vpn_menu = array();
-$vpn_menu[] = array(gettext("IPsec"), "/vpn_ipsec.php");
-$vpn_menu[] = array(gettext("OpenVPN"), "/vpn_openvpn_server.php");
-$vpn_menu[] = array(gettext("PPTP"), "/vpn_pptp.php");
-$vpn_menu[] = array(gettext("L2TP"), "/vpn_l2tp.php");
-$vpn_menu = msort($vpn_menu, 0);
-
-// Status
-$status_menu = array();
-//if (count($config['captiveportal']) > 0)
-	$status_menu[] = array(gettext("Captive Portal"), "/status_captiveportal.php");
-$status_menu[] = array(gettext("CARP (failover)"), "/carp_status.php");
-$status_menu[] = array(gettext("Gateways"), "/status_gateways.php");
-$status_menu[] = array(gettext("DHCP Leases"), "/status_dhcp_leases.php");
-$status_menu[] = array(gettext("DHCPv6 Leases"), "/status_dhcpv6_leases.php");
-$status_menu[] = array(gettext("Filter Reload"), "/status_filter_reload.php");
-$status_menu[] = array(gettext("Interfaces"), "/status_interfaces.php");
-$status_menu[] = array(gettext("IPsec"), "/diag_ipsec.php");
-$status_menu[] = array(gettext("Load Balancer"), "/status_lb_pool.php");
-$status_menu[] = array(gettext("NTP"), "/status_ntpd.php");
-$status_menu[] = array(gettext("OpenVPN"), "/status_openvpn.php");
-$status_menu[] = array(gettext("Queues"), "/status_queues.php");
-$status_menu[] = array(gettext("RRD Graphs"), "/status_rrd_graph.php");
-$status_menu[] = array(gettext("Services"), "/status_services.php");
-$status_menu[] = array(gettext("System Logs"), "/diag_logs.php");
-$status_menu[] = array(gettext("Traffic Graph"), "/status_graph.php?if=wan");
-if(count($config['interfaces']) > 1)
-	$status_menu[] = array(gettext("UPnP &amp; NAT-PMP"), "/status_upnp.php");
-$ifentries = get_configured_interface_with_descr();
-foreach ($ifentries as $ent => $entdesc) {
-	if (is_array($config['interfaces'][$ent]['wireless']) &&
-		match_wireless_interface($config['interfaces'][$ent]['if'])) {
-		$wifdescrs[$ent] = $entdesc;
-	}
-}
-if (count($wifdescrs) > 0)
-	$status_menu[] = array(gettext("Wireless"), "/status_wireless.php");
-$status_menu = msort($status_menu, 0);
-
-// Diagnostics
-$diagnostics_menu = array();
-$diagnostics_menu[] = array(gettext("ARP Table"), "/diag_arp.php");
-$diagnostics_menu[] = array(gettext("Authentication"), "/diag_authentication.php");
-$diagnostics_menu[] = array(gettext("Backup/Restore"), "/diag_backup.php");
-$diagnostics_menu[] = array(gettext("Crash Reporter"), "/crash_reporter.php");
-$diagnostics_menu[] = array(gettext("DNS Lookup"), "/diag_dns.php");
-$diagnostics_menu[] = array(gettext("NDP Table"), "/diag_ndp.php" );
-$diagnostics_menu[] = array(gettext("Factory Defaults"), "/diag_defaults.php");
-$diagnostics_menu[] = array(gettext("Halt System"), "/diag_halt.php" );
-$diagnostics_menu[] = array(gettext("Limiter Info"), "/diag_limiter_info.php" );
-$diagnostics_menu[] = array(gettext("pfInfo"), "/diag_pf_info.php");
-$diagnostics_menu[] = array(gettext("pfTop"), "/diag_system_pftop.php");
-$diagnostics_menu[] = array(gettext("Ping"), "/diag_ping.php");
-$diagnostics_menu[] = array(gettext("Reboot"), "/diag_reboot.php");
-$diagnostics_menu[] = array(gettext("Packet Capture"), "/diag_packet_capture.php");
-$diagnostics_menu[] = array(gettext("Traceroute"), "/diag_traceroute.php");
-$diagnostics_menu[] = array(gettext("SMART Status"), "/diag_smart.php");
-$diagnostics_menu[] = array(gettext("System Activity"), "/diag_system_activity.php");
-$diagnostics_menu[] = array(gettext("Test Port"), "/diag_testport.php");
-$diagnostics_menu[] = array(gettext("Routes"), "/diag_routes.php");
-$diagnostics_menu[] = array(gettext("Sockets"), "/diag_sockets.php" );;
-$diagnostics_menu[] = array(gettext("States"), "/diag_dump_states.php");
-$diagnostics_menu[] = array(gettext("States Summary"), "/diag_states_summary.php");
-$diagnostics_menu[] = array(gettext("Tables"), "/diag_tables.php");
-
-if (file_exists("/var/run/gmirror_active")) {
-	$diagnostics_menu[] = array(gettext("GEOM Mirrors"), "/diag_gmirror.php" );
-}
-
-$diagnostics_menu = msort($diagnostics_menu, 0);
-
-$help_menu = array();
-$help_menu[] = array(gettext("About this Page"), $helpurl);
-$help_menu[] = array(gettext("Bug Database"), "https://github.com/opnsense/core/issues");
-$help_menu[] = array(gettext("User Forum"), "https://forum.opnsense.org/");
-$help_menu[] = array(gettext("Documentation"), "https://wiki.opnsense.org/");
-$help_menu[] = array(gettext("Developers Wiki"), "https://wiki.opnsense.org/index.php/Develop:Info");
-$help_menu[] = array(gettext("Paid Support"), "https://opnsense.org/support-overview/commercial-support/");
-$help_menu[] = array(gettext("FreeBSD Handbook"), "https://www.freebsd.org/doc/handbook/");
-$help_menu = msort($help_menu, 0);
-
-function add_to_menu($url, $name)
-{
-	if (isAllowedPage($url)) {
-		echo "<a href=\"{$url}\" class=\"list-group-item\">{$name}</a>\n";
-	}
-}
+$aclObj = new \OPNsense\Core\ACL();
 
 /* display a top alert bar if need be */
 $need_alert_display = false;
@@ -288,7 +95,6 @@ if($need_alert_display == true) {
 
 $pgtitle_output = true;
 ?>
-
 
 <header class="page-head">
 
@@ -333,93 +139,30 @@ $pgtitle_output = true;
 
 </header>
 
-<main class="page-content col-sm-10 col-sm-push-2 ">
+<main class="page-content col-sm-10 col-sm-push-2">
 
-	<aside id="navigation" class="page-side col-xs-12 col-sm-2 hidden-xs">
-
-		<div class="row">
-				<nav class="page-side-nav" role="navigation">
-
-					<div class="list-group" id="mainmenu">
-
-						<?php $active = active_main_menu("/system"); ?>
-						<a href="#system" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-dashboard __iconspacer"></span><?php echo gettext("System"); ?></a>
-
-						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="system">
-							<?php
-								output_menu($system_menu);
-							?>
-						</div>
-
-						<?php $active = active_main_menu("/interface"); ?>
-						<a href="#interfaces" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-wrench __iconspacer"></span><?php echo gettext("Interfaces"); ?></a>
-
-						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="interfaces">
-							<?php
-								output_menu($interfaces_menu);
-							?>
-						</div>
-
-						<?php $active = active_main_menu("/firewall"); ?>
-						<a href="#firewall" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-fire __iconspacer"></span><?php echo gettext("Firewall"); ?></a>
-
-						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="firewall">
-							<?php
-								output_menu($firewall_menu);
-							?>
-						</div>
-
-						<?php $active = active_main_menu("/service", "/load_balancer", "/pkg_edit"); ?>
-						<a href="#services" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-cog __iconspacer"></span><?php echo gettext("Services"); ?></a>
-
-						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="services">
-							<?php
-								output_menu($services_menu);
-							?>
-						</div>
-
-						<?php $active = active_main_menu("/vpn"); ?>
-						<a href="#vpn" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-lock __iconspacer"></span><?php echo gettext("VPN"); ?></a>
-
-						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="vpn">
-							<?php
-								output_menu($vpn_menu);
-							?>
-						</div>
-
-						<?php $active = active_main_menu("/status", "/carp_status", "/diag_ipsec", "/diag_logs"); ?>
-						<a href="#statusmenu" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-tasks __iconspacer"></span><?php echo gettext("Status"); ?></a>
-
-						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="statusmenu">
-							<?php
-								output_menu($status_menu);
-							?>
-						</div>
-
-						<?php $active = active_main_menu("/diag", "/crash_reporter"); ?>
-						<a href="#diagnostics" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-stats __iconspacer"></span><?php echo gettext("Diagnostics"); ?></a>
-
-						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="diagnostics">
-							<?php
-								output_menu($diagnostics_menu);
-							?>
-						</div>
-
-						<?php $active = active_main_menu("/help"); ?>
-						<a href="#help" class="list-group-item <?php if ($active):?>active-menu-title<? endif; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="glyphicon glyphicon-question-sign __iconspacer"></span><?php echo gettext("Help"); ?></a>
-
-						<div class="collapse <?php if ($active):?>active-menu in<? endif; ?>" id="help">
-							<?php
-								output_menu($help_menu, "_blank");
-							?>
-						</div>
-					</div>
-
-			</nav>
-
-		</div>
-
-	</aside>
+    <aside id="navigation" class="page-side col-xs-12 col-sm-2 hidden-xs">
+        <div class="row">
+            <nav class="page-side-nav" role="navigation">
+                <div id="mainmenu" class="panel" style="border:0px" >
+                    <div class="panel list-group" style="border:0px">
+                        <?php foreach($menuSystem as $topMenuItem): ?>
+                            <a href="#<?php echo $topMenuItem->Id;?>" class="list-group-item <?php if ($topMenuItem->Selected) echo 'active-menu-title'; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?php echo $topMenuItem->CssClass;?> __iconspacer"></span><?php echo $topMenuItem->VisibleName;?>  </a>
+                            <div class="collapse <?php if ($topMenuItem->Selected) echo 'active-menu in';?>" id="<?php echo $topMenuItem->Id;?>">
+			    <?php foreach($topMenuItem->Children as $subMenuItem): ?>
+				<?php if ($subMenuItem->IsExternal == "Y" ):?>
+					<a href="<?php echo $subMenuItem->Url;?>" target="_new" class="list-group-item <?php if ($subMenuItem->Selected ) echo "active";?>"><?php echo $subMenuItem->VisibleName ?></a>
+				<?php elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subMenuItem->Url)):?>
+					<a href="<?php echo $subMenuItem->Url;?>" class="list-group-item <?php if ($subMenuItem->Selected) echo "active";?>"><?php echo $subMenuItem->VisibleName;?></a>
+				<?php endif;?>
+			    <?php endforeach; ?>
+		            </div>			
+		        <?php endforeach; ?>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </aside>
 
 	<div class="row">
 

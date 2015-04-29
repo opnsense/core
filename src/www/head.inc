@@ -43,13 +43,15 @@ $pagetitle = gentitle( $pgtitle );
 
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
+
 		<script>var theme = '<?=$g['theme'];?>'; </script>
 
-		<script src="/themes/<?=$g['theme'];?>/build/js/main.min.js" type="text/javascript"></script>
-		<!-- Fancy select with search options -->
-		<script src="/themes/<?=$g['theme'];?>/build/js/bootstrap-select.min.js" type="text/javascript"></script>
+		<!-- JQuery -->
+                <script type="text/javascript" src="/javascript/jquery-1.11.2.min.js"></script>
+
 		<!-- Ticker used for notices-->
-		<script type="text/javascript" src="/javascript/ticker.js"></script>
+		<script type="text/javascript" src="/javascript/ticker.js"></script> 
+
 
 		<?php
 		/*
@@ -76,21 +78,21 @@ $pagetitle = gentitle( $pgtitle );
 		<?php if (basename($_SERVER["SCRIPT_FILENAME"] != "index.php") && !$allowautocomplete): ?>
 		<script type="text/javascript">
 		//<![CDATA[
-		(function ($) {
+		$( document ).ready(function() {
+			$('[data-toggle="tooltip"]').tooltip();
 			$("input").attr("autocomplete","off");
-		})(jQuery);
-
-
-		jQuery(function () {
-			jQuery('[data-toggle="tooltip"]').tooltip()
-		})
+			// hide empty menu items
+			$('#mainmenu > div > .collapse').each(function(){
+				if ($(this).children().length == 0) {
+					$("#mainmenu").find('[href="#'+$(this).attr('id')+'"]').remove();
+				}
+			});
+		});
 		//]]>
 		</script>
+
 		<? endif; ?>
 
 
-		<?php if (!$closehead):?></head><? endif;?>
+<?php if (!$closehead):?></head><? endif;?>
 
-<?php
-
-?>

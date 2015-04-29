@@ -32,7 +32,7 @@ require_once("guiconfig.inc");
 $host = trim($_REQUEST['host'], " \t\n\r\0\x0B[];\"'");
 $host_esc = escapeshellarg($host);
 
-if (is_array($config['aliases']['alias'])) {
+if (isset($config['aliases']['alias']) && is_array($config['aliases']['alias'])) {
 	$a_aliases = &$config['aliases']['alias'];
 } else {
 	$a_aliases = array();
@@ -271,3 +271,4 @@ include("head.inc"); ?>
 		</div>
 	</div>
 </section>
+<?php include("foot.inc"); ?>

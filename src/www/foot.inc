@@ -61,5 +61,9 @@
         </div><!-- /modal -->
 		<?php endif; ?>
 
+	<!-- bootstrap script -->
+	<script type="text/javascript" src="/javascript/bootstrap.min.js"></script>
+	<!-- Fancy select with search options -->
+	<script type="text/javascript" src="/javascript/bootstrap-select.min.js"></script>
 	</body>
 </html>

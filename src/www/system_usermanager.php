@@ -333,14 +333,6 @@ include("head.inc");
 
 <body onload="<?= $jsevents["body"]["onload"] ?>">
 
-<script type="text/javascript">
-//<![CDATA[
-	jQuery(function() {
-		jQuery( "#expires" ).datepicker( { dateFormat: 'mm/dd/yy', changeYear: true, yearRange: "+0:+100" } );
-	});
-//]]>
-</script>
-
 <?php include("fbegin.inc"); ?>
 
 <script type="text/javascript">

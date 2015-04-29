@@ -82,6 +82,14 @@ class ACL
                 $this->legacyUsers[$node->name->__toString()] = array() ;
                 $this->legacyUsers[$node->name->__toString()]["uid"] = $node->uid->__toString();
                 $this->legacyUsers[$node->name->__toString()]["groups"] = array();
+                $this->legacyUsers[$node->name->__toString()]["priv"] = array();
+                foreach ($node->priv as $priv) {
+                    if (substr($priv, 0, 5) == "page-") {
+                        if (array_key_exists($priv->__toString(), $legacyPageMap)) {
+                            $this->legacyUsers[$node->name->__toString()]["priv"][] = $legacyPageMap[$priv->__toString()] ;
+                        }
+                    }
+                }                
             } elseif ($key == "group") {
                 $groupmap[$node->name->__toString()] = $node ;
             }
@@ -115,6 +123,16 @@ class ACL
     public function isPageAccessible($username, $url)
     {
         if (array_key_exists($username, $this->legacyUsers)) {
+            // search user privs
+            foreach ($this->legacyUsers[$username]["priv"] as $privset) {
+                foreach ($privset as $urlmask) {
+                    $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $urlmask);
+                    $result = preg_match("@^/{$match}$@", "{$url}");
+                    if ($result) {
+                        return true;
+                    }
+                }                        
+            }
             // search groups
             foreach ($this->legacyUsers[$username]["groups"] as $itemkey => $group) {
                 if (array_key_exists($group, $this->legacyGroupPrivs)) {

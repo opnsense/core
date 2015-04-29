@@ -12,8 +12,6 @@
                 <UpdaterSettings VisibleName="Updater Settings" url="/system_firmware_settings.php"/>
         </Firmware>
 
-        <GeneralSetup VisibleName="General Setup" url="/system_general.php"/>
-
         <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>
 
         <Routing url="/system_gateways.php"/>
@@ -101,7 +99,7 @@
         <PPPoEServer  VisibleName="PPPoE Server" url="/services_vpn_pppoe.php"/>
         <SNMP  VisibleName="SNMP" url="/services_snmp.php"/>
         <UPnPNATPMP  VisibleName="Universal P&amp;P / NAT-PMP" url="/pkg_edit.php?xml=miniupnpd.xml"/>
-        <WoL VisibleName="Wake on LAN" url="/pkg_edit.php?xml=miniupnpd.xml"/>
+        <WoL VisibleName="Wake on LAN" url="/services_wol.php"/>
     </Services>
 
     <VPN order="4" cssClass="glyphicon glyphicon-lock">
@@ -126,8 +124,8 @@
     <Status order="5" cssClass="glyphicon glyphicon-tasks">
         <CaptivePortal VisibleName="Captive Portal" url="/status_captiveportal.php"/>
         <CARP url="/status_captiveportal.php"/>
-        <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_captiveportal.php"/>
-        <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_captiveportal.php"/>
+        <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_dhcp_leases.php"/>
+        <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php"/>
         <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
         <Gateways url="/status_gateways.php">
             <GatewayGroups url="/status_gateway_groups.php"/>
