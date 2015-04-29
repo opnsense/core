@@ -44,6 +44,13 @@
                 $("a[class='showhelp']").click(function () {
                     $("*[for='" + $(this).attr('id') + "']").toggleClass("hidden show");
                 });
+
+                // hide empty menu items
+                $('#mainmenu > div > .collapse').each(function(){
+                    if ($(this).children().length == 0) {
+                        $("#mainmenu").find('[href="#'+$(this).attr('id')+'"]').remove();
+                    }
+                });
             });
 
         </script>
