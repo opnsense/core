@@ -123,7 +123,7 @@
 
     <Status order="5" cssClass="glyphicon glyphicon-tasks">
         <CaptivePortal VisibleName="Captive Portal" url="/status_captiveportal.php"/>
-        <CARP url="/status_captiveportal.php"/>
+        <CARP url="/carp_status.php"/>
         <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_dhcp_leases.php"/>
         <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php"/>
         <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
