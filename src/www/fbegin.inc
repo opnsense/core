@@ -75,7 +75,7 @@ foreach ($cnf->object()->interfaces->children() as $key => $node) {
     $menu->appendItem("Interfaces", $key, array("url"=>"/interfaces.php?if=".$key,"order"=>($ordid++),
                       "visiblename"=>$node->descr?$node->descr:strtoupper($key)));
 }
-$menuSystem = $menu->getItems($_SERVER['PHP_SELF']);
+$menuSystem = $menu->getItems($_SERVER['REQUEST_URI']);
 
 $aclObj = new \OPNsense\Core\ACL();
 
