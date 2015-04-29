@@ -71,6 +71,7 @@ class SettingsController extends ApiControllerBase
             }
 
             $mdlProxy->forward->interfaces->setSelectOptions($selopt);
+            $mdlProxy->forward->ftpInterfaces->setSelectOptions($selopt);
             $result['proxy'] = $mdlProxy->getNodes();
         }
 

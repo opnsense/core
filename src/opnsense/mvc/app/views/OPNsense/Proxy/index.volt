@@ -338,6 +338,25 @@ maxheight: define max height of select box, default=170px to hold 5 items
                 'advanced':'true'
                 ]}
             ],
+            [ 'proxy-forward-ftp','FTP Proxy Settings',
+                {['id': 'proxy.forward.ftpInterfaces',
+                'label':'FTP proxy interfaces',
+                'type':'select_multiple',
+                'style':'tokenize',
+                'help':'Select interface(s) the ftp proxy will bind to.',
+                'hint':'Type or select interface (Leave blank to disable ftp proxy).'
+                ],
+                ['id': 'proxy.forward.ftpPort',
+                'label':'FTP proxy port',
+                'type':'text',
+                'help':'The port the proxy service will listen to.'
+                ],
+                ['id': 'proxy.forward.ftpTransparentMode',
+                'label':'Enable Transparent mode',
+                'type':'checkbox',
+                'help':'Enable transparent ftp proxy mode to forward all requests for destination port 21 to the proxy server without any additional configuration.'
+                ]}
+            ],
             [ 'proxy-forward-acl','Access Control List',
                 {['id': 'proxy.forward.acl.allowedSubnets',
                 'label':'Allowed Subnets',
