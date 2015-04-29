@@ -130,7 +130,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 if ( maxDropdownHeight != undefined ) {
                     $(this).parent().find('ul[class="TokensContainer"]').css("max-height", maxTokenContainerHeight);
                 }
-            })
+            });
+	    // TODO: fix loading order
+	    $('.selectpicker').selectpicker('refresh');
         },500);
 
         // clear multiselect boxes, works on standard and tokenized versions
