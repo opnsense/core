@@ -147,7 +147,7 @@
         <RRDGraphs VisibleName="RRD Graphs" url="/status_rrd_graph.php">
             <Settings url="/status_rrd_graph_settings.php"/>
         </RRDGraphs>
-        <Services/>
+        <Services url="/status_services.php"/>
         <SystemLogs VisibleName="System Logs" url="/diag_logs.php">
             <System url="/diag_logs.php">
                 <Gateways url="/diag_logs_gateways.php"/>
