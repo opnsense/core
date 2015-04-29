@@ -73,44 +73,62 @@ fi
 # set keyboard map if needed
 /etc/rc.d/syscons onestart
 
+# probe for a persistent core dump device
+/usr/local/etc/rc.dumpon
+swapon -a
+/usr/local/etc/rc.savecore
+
+# Remove symlinks that are no longer needed
+if [ -L /etc/dhclient.conf ]; then rm /etc/dhclient.conf; fi
+if [ -L /etc/syslog.conf ]; then rm /etc/syslog.conf; fi
+if [ -L /etc/resolv.conf ]; then rm /etc/resolv.conf; fi
+if [ -L /etc/hosts ]; then rm /etc/hosts; fi
+
 # !!! migration code for OPNsense <= 15.1.7, do not remove !!!
 if [ -d "/cf/conf" ]; then
-	/bin/rm -f /conf
-	/bin/mv /cf/conf /conf
-	/bin/rm -rf /cf
+	rm -f /conf
+	mv /cf/conf /conf
+	rm -rf /cf
 fi
 # !!! migration code for OPNsense <= 15.1.7, do not remove !!!
 
 # mount repo if available
 if [ -d /root/core ]; then
-	/usr/bin/make -C /root/core mount
+	make -C /root/core mount
 fi
 
-# probe for a persistent core dump device
-/usr/local/etc/rc.dumpon
-
 # set up config directory structure
-/bin/mkdir -p /conf/backup
-/bin/mkdir -p /conf/sshd
+mkdir -p /conf/backup
+mkdir -p /conf/sshd
 
 # Bootstrap config.xml if necessary
 if [ ! -f /conf/config.xml ]; then
 	echo -n "Bootstrapping config.xml..."
-	/bin/cp /usr/local/etc/config.xml /conf/config.xml
+	cp /usr/local/etc/config.xml /conf/config.xml
 	echo "done."
 fi
 
 # Bootstrap openssl.cnf for port if necessary
 if [ ! -f /usr/local/openssl/openssl.cnf ]; then
 	echo -n "Bootstrapping openssl.cnf..."
-	/bin/cp /etc/ssl/openssl.cnf /usr/local/openssl/openssl.cnf
+	cp /etc/ssl/openssl.cnf /usr/local/openssl/openssl.cnf
 	echo "done."
 fi
 
-# Disable APM on ATA drives. Leaving this on will kill drives long-term, especially laptop drives, by generating excessive Load Cycles.
-if [ -f /usr/local/etc/rc.disable_hdd_apm ]; then
-	/usr/local/etc/rc.disable_hdd_apm
-fi
+# Disable APM on ATA drives.  Leaving this on will kill
+# drives long-term, especially laptop drives, by generating
+# excessive load cycles.
+ATAIDLE=/usr/local/sbin/ataidle
+for i in /dev/ad?; do
+	if [ ! -e ${i} ]; then
+		continue;
+	fi
+	SUPPORTED=`${ATAIDLE} ${i} | grep "APM Supported" | awk '{print $3;}'`
+	if [ "${SUPPORTED}" = "yes" ] ; then
+		echo Disabling APM on $i
+		${ATAIDLE} -P 0 ${i}
+	fi
+done
 
 #Eject CD devices on 3G modems
 MANUFACTURER="huawei|zte"
@@ -127,9 +145,7 @@ rm -f /etc/spwd.db.tmp
 /sbin/conscontrol mute off >/dev/null
 
 USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
-if [ ${USE_MFS_TMPVAR} -eq 0 ]; then
-	mdmfs -S -M -s 4m md /var/run
-else
+if [ ${USE_MFS_TMPVAR} -ne 0 ]; then
 	USE_MFS_TMP_SIZE=`/usr/bin/grep use_mfs_tmp_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
 	if [ ! -z ${USE_MFS_TMP_SIZE} ] && [ ${USE_MFS_TMP_SIZE} -gt 0 ]; then
 		tmpsize="${USE_MFS_TMP_SIZE}m"
@@ -147,75 +163,32 @@ else
 	echo -n "Setting up memory disks..."
 
 	if [ ! -d /root/var/db/pkg ]; then
-		/bin/mkdir -p /root/var/db
-		/bin/mv /var/db/pkg /root/var/db/
+		mkdir -p /root/var/db
+		mv /var/db/pkg /root/var/db
 	fi
 
 	mdmfs -S -M -s ${tmpsize} md /tmp
 	mdmfs -S -M -s ${varsize} md /var
 
-	/bin/mkdir -p /var/db
-	/bin/ln -s /root/var/db/pkg /var/db/pkg
+	mkdir -p /var/db
+	ln -s /root/var/db/pkg /var/db/pkg
 
 	echo "done."
 fi
 
-/sbin/swapon -a
-/usr/local/etc/rc.savecore
-
 if [ -d /root/var/db/pkg ]; then
 	# User must have just disabled RAM disks,
 	# let's move these back into place.
-	/bin/mkdir -p /var/db
-	/bin/mv /root/var/db/pkg /var/db/
+	mkdir -p /var/db
+	mv /root/var/db/pkg /var/db/
 fi
 
 # make some directories in /var
-/bin/mkdir -p /var/run /var/log /var/etc /var/db/entropy /var/at/jobs/ /var/empty 2>/dev/null
+mkdir -p /var/run /var/log /var/etc /var/db/entropy /var/at/jobs \
+    /var/empty /var/tmp
 
-echo -n "Creating symlinks..."
-
-# Repair symlinks if they are broken
-if [ -f /etc/newsyslog.conf ]; then
-	/bin/rm -f /etc/newsyslog.conf
-fi
-if [ ! -L /etc/syslog.conf ]; then
-	/bin/rm -rf /etc/syslog.conf
-	if [ ! -f /var/etc/syslog.conf ]; then
-		touch /var/etc/syslog.conf
-	fi
-	/bin/ln -s /var/etc/syslog.conf /etc/syslog.conf
-fi
-
-# Remove symlinks that are no longer needed
-if [ -L /etc/resolv.conf ]; then rm /etc/resolv.conf; fi
-if [ -L /etc/hosts ]; then /bin/rm /etc/hosts; fi
-
-# Setup compatibility link for packages that
-# have trouble overriding the PREFIX configure
-# argument since we build our packages in a
-# separated PREFIX area
-# Only create if symlink does not exist.
-if [ ! -h /tmp/tmp ]; then
-    /bin/ln -hfs / /tmp/tmp
-fi
-
-/bin/rm -rf /tmp/*
-/bin/chmod 1777 /tmp
-
-if [ ! -L /etc/dhclient.conf ]; then
-    /bin/rm -rf /etc/dhclient.conf
-fi
-
-if [ ! -d /var/tmp ]; then
-	/bin/mkdir -p /var/tmp
-fi
-
-set -T
-trap "echo 'Reboot interrupted'; exit 1" 3
-
-# Remove old nameserver resolution files
-/bin/rm -f /var/etc/nameserver*
+rm -rf /tmp/*
+chmod 1777 /tmp
 
 echo -n "."
 DISABLESYSLOGCLOG=`/usr/bin/grep -c disablesyslogclog /conf/config.xml`
@@ -243,7 +216,7 @@ for logfile in $LOG_FILES; do
 done
 
 # change permissions on newly created fifolog files.
-/bin/chmod 0600 /var/log/*.log
+chmod 0600 /var/log/*.log
 
 echo -n "."
 /sbin/ldconfig -elf /usr/lib /usr/local/lib /lib
@@ -270,13 +243,10 @@ echo "done."
 
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
-/bin/rm -f /conf/backup/backup.cache
-/bin/rm -f /root/lighttpd*
-/usr/bin/touch /var/run/booting
+rm -f /root/lighttpd*
+touch /var/run/booting
 /usr/local/etc/rc.bootup
-
-# end of boot process, remove status file
-/bin/rm /var/run/booting
+rm /var/run/booting
 
 # If a shell was selected from recovery
 # console then just drop to the shell now.
@@ -293,23 +263,21 @@ echo "done."
 /usr/local/etc/rc.opnsense start
 
 # Start ping handler every 240 seconds
-/usr/local/bin/minicron 240 /var/run/ping_hosts.pid /usr/local/bin/ping_hosts.sh
+minicron 240 /var/run/ping_hosts.pid /usr/local/bin/ping_hosts.sh
 
 # Start account expire handler every hour
-/usr/local/bin/minicron 3600 /var/run/expire_accounts.pid /usr/local/etc/rc.expireaccounts
+minicron 3600 /var/run/expire_accounts.pid /usr/local/etc/rc.expireaccounts
 
 # Start alias url updater every 24 hours
-/usr/local/bin/minicron 86400 /var/run/update_alias_url_data.pid /usr/local/etc/rc.update_alias_url_data
-
-/bin/chmod a+rw /tmp/.
+minicron 86400 /var/run/update_alias_url_data.pid /usr/local/etc/rc.update_alias_url_data
 
 # Check for GEOM mirrors
 GMIRROR_STATUS=`/sbin/gmirror status`
 if [ "${GMIRROR_STATUS}" != "" ]; then
 	# Using a flag file at bootup saves an expensive exec/check on each page load.
-	/usr/bin/touch /var/run/gmirror_active
+	touch /var/run/gmirror_active
 	# Setup monitoring/notifications
-	/usr/local/bin/minicron 60 /var/run/gmirror_status_check.pid /usr/local/sbin/gmirror_status_check.php
+	minicron 60 /var/run/gmirror_status_check.pid /usr/local/sbin/gmirror_status_check.php
 fi
 
 /usr/local/bin/beep.sh start 2>&1 >/dev/null
