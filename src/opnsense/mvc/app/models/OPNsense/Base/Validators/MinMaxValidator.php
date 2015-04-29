@@ -35,7 +35,14 @@ use \Phalcon\Validation\Message;
 
 class MinMaxValidator extends Validator implements ValidatorInterface
 {
-    public function validate($validator, $attribute)
+   /**
+   * Executes MinMax validation
+   *
+   * @param Phalcon\Validation $validator
+   * @param string $attribute
+   * @return boolean
+   */
+   public function validate(\Phalcon\Validation $validator, $attribute)
     {
         $value = $validator->getValue($attribute);
 

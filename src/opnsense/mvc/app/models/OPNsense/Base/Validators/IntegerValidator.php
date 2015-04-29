@@ -35,7 +35,15 @@ use \Phalcon\Validation\Message;
 
 class IntegerValidator extends Validator implements ValidatorInterface
 {
-    public function validate($validator, $attribute)
+
+   /**
+    * Executes Integer validation
+    *
+    * @param Phalcon\Validation $validator
+    * @param string $attribute
+    * @return boolean
+    */
+    public function validate(\Phalcon\Validation $validator, $attribute)
     {
         $value = $validator->getValue($attribute);
         $msg = $this->getOption('message');
