@@ -1581,7 +1581,7 @@ function interface_ppps_configure($interface)
 		$descr = isset($ifcfg['descr']) ? $ifcfg['descr'] : strtoupper($interface);
 		echo "starting {$pppif} link...";
 		// Do not re-configure the interface if we are booting and it's already been started
-		if (isvalidproc("/var/run/{$ppp['type']}_{$interface}.pid")) {
+		if (isvalidpid("/var/run/{$ppp['type']}_{$interface}.pid")) {
 			return 0;
 		}
 	}

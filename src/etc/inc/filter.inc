@@ -1738,20 +1738,15 @@ function filter_nat_rules_generate() {
 		unset($tonathosts, $tonathosts_array, $numberofnathosts);
 	}
 
-	/* load balancer anchor */
-	$natrules .= "\n# Load balancing anchor\n";
+	$natrules .= "\n# Load balancing\n";
 	$natrules .= "rdr-anchor \"relayd/*\"\n";
 
-	update_filter_reload_status(gettext("Setting up TFTP helper"));
-	$natrules .= "# TFTP proxy\n";
-	$natrules .= "rdr-anchor \"tftp-proxy/*\"\n";
-
-	if (!empty($config['system']['tftpinterface'])) {
-		$tftpifs = explode(",", $config['system']['tftpinterface']);
-		foreach($tftpifs as $tftpif) {
-			if ($FilterIflist[$tftpif])
-				$natrules .= "rdr pass on {$FilterIflist[$tftpif]['if']} proto udp from any to any port tftp -> 127.0.0.1 port 6969\n";
-		}
+	if (isset($config['system']['ftp-proxy']['client'])) {
+		$natrules .= "\n# FTP proxy\n";
+		$natrules .= "nat-anchor \"ftp-proxy/*\"\n";
+		$natrules .= "rdr-anchor \"ftp-proxy/*\"\n";
+		$natrules .= "rdr pass proto tcp to port ftp -> 127.0.0.1 port 8021\n";
+		mwexec('service ftp-proxy onerestart');
 	}
 
 	/* DIAG: add ipv6 NAT, if requested */
@@ -1762,13 +1757,7 @@ function filter_nat_rules_generate() {
 		$natrules .= "rdr on \${$FilterIflist['wan']['descr']} proto ipv6 from any to any -> {$config['diag']['ipv6nat']['ipaddr']}\n";
 	}
 
-	if(file_exists("/var/etc/inetd.conf"))
-		@unlink("/var/etc/inetd.conf");
-	// Open inetd.conf write handle
-	$inetd_fd = fopen("/var/etc/inetd.conf","w");
-	/* add tftp protocol helper */
-	// TODO triggers "inetd[28893]: tftp-proxy/udp: unknown service"
-	//fwrite($inetd_fd, "tftp-proxy\tdgram\tudp\twait\t\troot\t/usr/libexec/tftp-proxy\ttftp-proxy -v\n");
+	$inetd_fd = fopen('/var/etc/inetd.conf', 'w');
 
 	if(isset($config['nat']['rule'])) {
 		/* start reflection redirects on port 19000 of localhost */
@@ -1928,8 +1917,9 @@ function filter_nat_rules_generate() {
 					if($reflection_type == "proxy" && !isset($rule['nordr'])) {
 						$natrules .= filter_generate_reflection_proxy($rule, $nordr, $nat_if_list, $srcaddr, $dstaddr, $starting_localhost_port, $reflection_rules);
 						$nat_if_list = array($natif);
-						foreach ($reflection_rules as $txtline)
+						foreach ($reflection_rules as $txtline) {
 							fwrite($inetd_fd, $txtline);
+						}
 					} else if($reflection_type == "purenat" || isset($rule['nordr'])) {
 						$rdr_if_list = implode(" ", $nat_if_list);
 						if(count($nat_if_list) > 1)
@@ -1949,7 +1939,8 @@ function filter_nat_rules_generate() {
 			}
 		}
 	}
-	fclose($inetd_fd);		// Close file handle
+
+	fclose($inetd_fd);
 
 	if (isset($config['pptpd']['mode']) && ($config['pptpd']['mode'] != "off")) {
 		if ($config['pptpd']['mode'] == "redir") {
@@ -1961,20 +1952,17 @@ function filter_nat_rules_generate() {
 	}
 
 
-	$natrules .= "# UPnPd rdr anchor\n";
+	$natrules .= "\n# UPnP\n";
 	$natrules .= "rdr-anchor \"miniupnpd\"\n";
 
-	if(!empty($reflection_txt))
+	if (!empty($reflection_txt)) {
 		$natrules .= "\n# Reflection redirects and NAT for 1:1 mappings\n" . $reflection_txt;
+	}
 
-	// Check if inetd is running, if not start it.	If so, restart it gracefully.
-	$helpers = is_process_running('inetd');
-	if (file_exists('/var/etc/inetd.conf')) {
-		if (!$helpers) {
-			mwexec("/usr/sbin/inetd -wW -R 0 -a 127.0.0.1 /var/etc/inetd.conf");
-		} else {
-			killbypid('/var/run/inetd.pid', 'HUP');
-		}
+	if (!isvalidpid('/var/run/inetd.pid')) {
+		mwexec("/usr/sbin/inetd -wW -R 0 -a 127.0.0.1 /var/etc/inetd.conf");
+	} else {
+		killbypid('/var/run/inetd.pid', 'HUP');
 	}
 
 	return $natrules;
@@ -2585,6 +2573,12 @@ function filter_rules_generate()
 	$ipfrules .= "anchor \"openvpn/*\"\n";
 	/* IPsec user rules from radius */
 	$ipfrules .= "anchor \"ipsec/*\"\n";
+
+	if (isset($config['system']['ftp-proxy']['client'])) {
+		$ipfrules .= "\nanchor \"ftp-proxy/*\"\n";
+		$ipfrules .= "pass out quick proto tcp from 127.0.0.1 to port ftp\n";
+	}
+
 	# BEGIN OF firewall rules
 	/* default block logging? */
 	$log = array();
@@ -2595,13 +2589,13 @@ function filter_rules_generate()
 
 
 	if(!isset($config['system']['ipv6allow'])) {
-		$ipfrules .= "# Block all IPv6\n";
+		$ipfrules .= "\n# Block all IPv6\n";
 		$ipfrules .= "block in {$log['block']} quick inet6 all  label \"Block all IPv6\"\n";
 		$ipfrules .= "block out {$log['block']} quick inet6 all label \"Block all IPv6\"\n";
 	}
 
-
 	$ipfrules .= <<<EOD
+
 #---------------------------------------------------------------------------
 # default deny rules
 #---------------------------------------------------------------------------
@@ -3138,8 +3132,6 @@ EOD;
 
 	update_filter_reload_status(gettext("Creating IPsec rules..."));
 	$ipfrules .= filter_generate_ipsec_rules($log);
-
-	$ipfrules .= "\nanchor \"tftp-proxy/*\"\n";
 
 	update_filter_reload_status("Creating uPNP rules...");
 	if (is_array($config['installedpackages']['miniupnpd']) && is_array($config['installedpackages']['miniupnpd']['config'][0])) {

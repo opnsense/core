@@ -55,11 +55,10 @@ $pconfig['enablebinatreflection'] = $config['system']['enablebinatreflection'];
 $pconfig['reflectiontimeout'] = $config['system']['reflectiontimeout'];
 $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
 $pconfig['disablescrub'] = isset($config['system']['disablescrub']);
-$pconfig['tftpinterface'] = explode(",", $config['system']['tftpinterface']);
+$pconfig['ftp-proxy-client'] = isset($config['system']['ftp-proxy']['client']);
 $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
 
 if ($_POST) {
-
 	unset($input_errors);
 	$pconfig = $_POST;
 
@@ -179,10 +178,11 @@ if ($_POST) {
 		else
 			unset($config['system']['disablescrub']);
 
-		if ($_POST['tftpinterface'])
-			$config['system']['tftpinterface'] = implode(",", $_POST['tftpinterface']);
-		else
-			unset($config['system']['tftpinterface']);
+		if ($_POST['ftp-proxy-client'] == 'yes') {
+			$config['system']['ftp-proxy']['client'] = true;
+		} else {
+			unset($config['system']['ftp-proxy']['client']);
+		}
 
 		if ($_POST['bogonsinterval'] != $config['system']['bogons']['interval']) {
 			switch ($_POST['bogonsinterval']) {
@@ -502,22 +502,12 @@ include("head.inc");
 										</td>
 									</tr>
 									<tr>
-										<td width="22%" valign="top" class="vncell"><?=gettext("TFTP Proxy");?></td>
+										<td width="22%" valign="top" class="vncell"><?=gettext("FTP Proxy");?></td>
 										<td width="78%" class="vtable">
-											<select name="tftpinterface[]" multiple="multiple" class="formselect selectpicker" data-style="btn-default" data-width="auto">
-			                                        <?php
-												$ifdescs = get_configured_interface_with_descr();
-												$rowIndex = 0;
-												foreach ($ifdescs as $ifent => $ifdesc):
-													$rowIndex++;
-												?>
-													<option value="<?=$ifent;?>" <?php if (in_array($ifent, $pconfig['tftpinterface'])) echo "selected=\"selected\""; ?>><?=gettext($ifdesc);?></option>
-			                                            <?php endforeach;
-												if ($rowIndex == 0)
-													echo "<option></option>";
-												?>
-											</select>
-											<strong><?=gettext("Choose the interfaces where you want TFTP proxy helper to be enabled.");?></strong>
+											<input name="ftp-proxy-client" type="checkbox" id="ftp-proxy-client" value="yes" <?php if (isset($config['system']['ftp-proxy']['client'])) echo "checked=\"checked\""; ?> />
+											<strong><?=gettext("Enable FTP proxy for clients");?></strong>
+											<br />
+											<?=gettext("Configures the FTP proxy to allow for client connections behind the firewall using active file transfer mode.");?>
 										</td>
 									</tr>
 
