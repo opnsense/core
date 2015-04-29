@@ -89,7 +89,7 @@ class ACL
                             $this->legacyUsers[$node->name->__toString()]["priv"][] = $legacyPageMap[$priv->__toString()] ;
                         }
                     }
-                }                
+                }
             } elseif ($key == "group") {
                 $groupmap[$node->name->__toString()] = $node ;
             }
@@ -115,6 +115,23 @@ class ACL
     }
 
     /**
+     * check url against regex mask
+     * @param $url url to match
+     * @param $urlmask regex mask
+     * @return bool url matches mask
+     */
+    private function urlMatch($url, $urlmask)
+    {
+        $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $urlmask);
+        $result = preg_match("@^/{$match}$@", "{$url}");
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * legacy functionality to check if a page is accessible for the specified user.
      * @param $username user name
      * @param $url full url, for example /firewall_rules.php
@@ -126,21 +143,17 @@ class ACL
             // search user privs
             foreach ($this->legacyUsers[$username]["priv"] as $privset) {
                 foreach ($privset as $urlmask) {
-                    $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $urlmask);
-                    $result = preg_match("@^/{$match}$@", "{$url}");
-                    if ($result) {
+                    if ($this->urlMatch($url, $urlmask)) {
                         return true;
                     }
-                }                        
+                }
             }
             // search groups
             foreach ($this->legacyUsers[$username]["groups"] as $itemkey => $group) {
                 if (array_key_exists($group, $this->legacyGroupPrivs)) {
                     foreach ($this->legacyGroupPrivs[$group] as $privset) {
                         foreach ($privset as $urlmask) {
-                            $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $urlmask);
-                            $result = preg_match("@^/{$match}$@", "{$url}");
-                            if ($result) {
+                            if ($this->urlMatch($url, $urlmask)) {
                                 return true;
                             }
                         }

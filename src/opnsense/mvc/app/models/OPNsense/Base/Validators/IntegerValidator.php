@@ -36,10 +36,10 @@ use \Phalcon\Validation\Message;
 class IntegerValidator extends Validator implements ValidatorInterface
 {
 
-   /**
+    /**
     * Executes Integer validation
     *
-    * @param Phalcon\Validation $validator
+    * @param \Phalcon\Validation $validator
     * @param string $attribute
     * @return boolean
     */
