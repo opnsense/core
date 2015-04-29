@@ -1617,36 +1617,6 @@ function system_console_configure()
 	setup_serial_port();
 }
 
-function system_dmesg_save()
-{
-	global $g;
-
-	$dmesg = '';
-	$_gb = exec('/sbin/dmesg', $dmesg);
-
-	/* find last copyright line (output from previous boots may be present) */
-	$lastcpline = 0;
-
-	for ($i = 0; $i < count($dmesg); $i++) {
-		if (strstr($dmesg[$i], "Copyright (c) 1992-"))
-			$lastcpline = $i;
-	}
-
-	$fd = fopen('/var/log/dmesg.boot', 'w');
-	if (!$fd) {
-		printf(gettext("Error: cannot open dmesg.boot in system_dmesg_save().%s"), "\n");
-		return 1;
-	}
-
-	for ($i = $lastcpline; $i < count($dmesg); $i++)
-		fwrite($fd, $dmesg[$i] . "\n");
-
-	fclose($fd);
-	unset($dmesg);
-
-	return 0;
-}
-
 function system_set_harddisk_standby()
 {
 	global $g, $config;

@@ -115,9 +115,6 @@ require_once("pfsense-utils.inc");
 echo ".";
 echo " done.\n";
 
-/* save dmesg output to file */
-system_dmesg_save();
-
 /* start devd (dhclient now uses it) */
 echo "Starting device manager (devd)...";
 mute_kernel_msgs();

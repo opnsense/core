@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 BEEP=`/usr/bin/grep -c disablebeep /conf/config.xml`
 if [ $BEEP -gt 0 ]; then
 	exit;
@@ -8,14 +7,6 @@ fi
 
 # Standard note length
 NOTELENGTH="25"
-
-# this is super annoying in VMware, exit if in VMware
-if [ -f /var/log/dmesg.boot ]; then
-	VMWCOUNT=`/usr/bin/grep -c VMware /var/log/dmesg.boot`
-	if [ $VMWCOUNT -gt 0 ]; then
-		exit;
-	fi
-fi
 
 # Check for different HZ
 if [ -f /boot/loader.conf ]; then

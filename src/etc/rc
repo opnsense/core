@@ -64,6 +64,15 @@ else
 	done
 fi
 
+# write /var/log/dmesg.boot
+/etc/rc.d/dmesg onestart
+
+# rewrite message of the day
+/etc/rc.d/motd onestart
+
+# set keyboard map if needed
+/etc/rc.d/syscons onestart
+
 # !!! migration code for OPNsense <= 15.1.7, do not remove !!!
 if [ -d "/cf/conf" ]; then
 	/bin/rm -f /conf
@@ -76,12 +85,6 @@ fi
 if [ -d /root/core ]; then
 	/usr/bin/make -C /root/core mount
 fi
-
-# rewrite message of the day
-/etc/rc.d/motd onestart
-
-# set keyboard map if needed
-/etc/rc.d/syscons onestart
 
 # probe for a persistent core dump device
 /usr/local/etc/rc.dumpon
