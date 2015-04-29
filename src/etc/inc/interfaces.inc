@@ -87,12 +87,14 @@ function interfaces_bring_up($interface) {
 /*
  * Return the interface array
  */
-function get_interface_arr($flush = false) {
+function get_interface_arr($flush = false)
+{
 	global $interface_arr_cache;
 
 	/* If the cache doesn't exist, build it */
-	if (!isset($interface_arr_cache) or $flush)
-		$interface_arr_cache = pfSense_interface_listget();
+	if (!isset($interface_arr_cache) or $flush) {
+		$interface_arr_cache = legacy_interface_listget();
+	}
 
 	return $interface_arr_cache;
 }

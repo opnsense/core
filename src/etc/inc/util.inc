@@ -877,22 +877,24 @@ function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "")
 		);
 	}
 	switch($mode) {
-	case "active":
-		$upints = pfSense_interface_listget(IFF_UP);
+	case 'active':
+		$upints = legacy_interface_listget('up');
 		break;
-	case "media":
-		$intlist = pfSense_interface_listget();
+	case 'media':
+		$intlist = legacy_interface_listget();
 		$ifconfig = "";
 		exec("/sbin/ifconfig -a", $ifconfig);
 		$regexp = '/(' . implode('|', $intlist) . '):\s/';
 		$ifstatus = preg_grep('/status:/', $ifconfig);
-		foreach($ifstatus as $status) {
+		foreach ($ifstatus as $status) {
 			$int = array_shift($intlist);
-			if(stristr($status, "active")) $upints[] = $int;
+			if (stristr($status, 'active')) {
+				$upints[] = $int;
+			}
 		}
 		break;
 	default:
-		$upints = pfSense_interface_listget();
+		$upints = legacy_interface_listget();
 		break;
 	}
 	/* build interface list with netstat */

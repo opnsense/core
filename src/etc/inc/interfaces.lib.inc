@@ -26,6 +26,30 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+function legacy_interface_listget($flag = '')
+{
+	$cmd = '/sbin/ifconfig -l';
+	$ifs = null;
+
+	if ($flag === 'up') {
+		$cmd .= 'u';
+	} else if ($flag === 'down') {
+		$cmd .= 'd';
+	}
+
+	exec($cmd . ' 2>&1', $out, $ret);
+	if ($ret) {
+		log_error('The command `' . $cmd . '\' failed to execute');
+		return ($ifs);
+	}
+
+	if (isset($out[0])) {
+		$ifs = explode(' ', $out[0]);
+	}
+
+	return ($ifs);
+}
+
 function legacy_interface_create($ifs)
 {
 	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create';
