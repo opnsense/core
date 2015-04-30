@@ -1281,7 +1281,7 @@ include("head.inc");
 													if($x == $pconfig['max-src-conn-rates']) $selected = " selected=\"selected\""; else $selected = "";
 													echo "<option value=\"{$x}\"{$selected}>{$x}</option>\n";
 												} ?>
-											</select><br /> 
+											</select><br />
 											<?=gettext("Maximum new connections per host / per second(s) (TCP only)");?>
 											</p><p>
 											<input name="statetimeout" value="<?php echo htmlspecialchars($pconfig['statetimeout']) ?>" /><br />
@@ -1347,7 +1347,7 @@ include("head.inc");
 													<option value="keep state" <?php if(!isset($pconfig['statetype']) or $pconfig['statetype'] == "keep state") echo "selected=\"selected\""; ?>><?=gettext("keep state");?></option>
 													<option value="sloppy state" <?php if($pconfig['statetype'] == "sloppy state") echo "selected=\"selected\""; ?>><?=gettext("sloppy state");?></option>
 													<option value="synproxy state"<?php if($pconfig['statetype'] == "synproxy state")  echo "selected=\"selected\""; ?>><?=gettext("synproxy state");?></option>
-													<option value="none"<?php if($pconfig['statetype'] == "none") echo "selected=\"selected\""; ?>><?=gettext("none");?></option> 
+													<option value="none"<?php if($pconfig['statetype'] == "none") echo "selected=\"selected\""; ?>><?=gettext("none");?></option>
 												</select><br />
 												<span class="vexpl">
 													<?=gettext("Hint: Select which type of state tracking mechanism you would like to use.  If in doubt, use keep state.");?>

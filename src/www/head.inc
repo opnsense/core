@@ -50,7 +50,7 @@ $pagetitle = gentitle( $pgtitle );
                 <script type="text/javascript" src="/javascript/jquery-1.11.2.min.js"></script>
 
 		<!-- Ticker used for notices-->
-		<script type="text/javascript" src="/javascript/ticker.js"></script> 
+		<script type="text/javascript" src="/javascript/ticker.js"></script>
 
 
 		<?php
@@ -95,4 +95,3 @@ $pagetitle = gentitle( $pgtitle );
 
 
 <?php if (!$closehead):?></head><? endif;?>
-

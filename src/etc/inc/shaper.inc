@@ -514,7 +514,7 @@ class altq_root_queue {
 				return "\n";
 			}
 			$frule .= $rules;
-		} 
+		}
 
 		$rules .= " \n";
 		return $rules;

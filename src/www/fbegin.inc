@@ -156,7 +156,7 @@ $pgtitle_output = true;
 					<a href="<?php echo $subMenuItem->Url;?>" class="list-group-item <?php if ($subMenuItem->Selected) echo "active";?>"><?php echo $subMenuItem->VisibleName;?></a>
 				<?php endif;?>
 			    <?php endforeach; ?>
-		            </div>			
+		            </div>
 		        <?php endforeach; ?>
                     </div>
                 </div>
