@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo -n "Configuring crash dump device: "
+
+while read DEV MP TYPE MORE; do
+	[ "${TYPE}" = "swap" ] || continue
+	[ -c "${DEV}" ] || continue
+	if dumpon ${DEV}; then
+		echo ${DEV}
+		if [ -n "`sysctl -Nq debug.ddb.scripting.scripts`" ]; then
+			ddb /usr/local/etc/ddb.conf
+		fi
+		if savecore -C ${DEV} > /dev/null; then
+			savecore /var/crash ${DEV}
+		fi
+		exit 0
+	fi
+done < /etc/fstab
+
+echo "/dev/null"

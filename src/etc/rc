@@ -73,10 +73,9 @@ fi
 # set keyboard map if needed
 /etc/rc.d/syscons onestart
 
-# probe for a persistent core dump device
-/usr/local/etc/rc.dumpon
+# set up and recover a crash dump before activating swap
+/usr/local/etc/rc.crashdump
 swapon -a
-/usr/local/etc/rc.savecore
 
 # Remove symlinks that are no longer needed
 if [ -L /etc/dhclient.conf ]; then rm /etc/dhclient.conf; fi
