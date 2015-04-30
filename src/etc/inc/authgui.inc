@@ -248,8 +248,10 @@ function display_login_form()
 				</div>
 			</header>
 
-			    <div class="login-modal-content">
-				    <div id="inputerrors"><?=$_SESSION['Login_Error'];?></div>
+			<div class="login-modal-content">
+				<?php if (isset($_SESSION['Login_Error'])) { ?>
+				<div id="inputerrors" class="text-danger"><?=$_SESSION['Login_Error'];?></div><br />
+				<?php unset($_SESSION['Login_Error']); } // endif ?>
 
 				    <form class="clearfix" id="iform" name="iform" method="post" <?= $loginautocomplete ?> action="<?=$_SERVER['REQUEST_URI'];?>">
 
