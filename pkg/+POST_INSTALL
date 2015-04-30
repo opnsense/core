@@ -7,9 +7,6 @@ rm -f /etc/shells.bak
 echo "Registering root shell"
 pw usermod -n root -s /usr/local/etc/rc.initial
 
-echo "Disabling FreeBSD mirror"
-sed -i "" -e "s/^  enabled: yes$/  enabled: no/" /etc/pkg/FreeBSD.conf
-
 echo "Hooking into /etc/rc"
 cp /etc/rc /etc/rc.bak
 cat > /etc/rc <<EOF
