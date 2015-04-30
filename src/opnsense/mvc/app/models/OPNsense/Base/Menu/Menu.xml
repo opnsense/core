@@ -60,11 +60,11 @@
         </NAT>
         <Rules url="/firewall_rules.php"/>
         <Schedules url="/firewall_schedule.php"/>
-        <TrafficShaper url="/firewall_shaper.php">
+        <TrafficShaper VisibleName="Traffic Shaper" url="/firewall_shaper.php">
                 <ByQueue VisibleName="By Queue" url="/firewall_shaper_queues.php"/>
                 <Wizards url="/firewall_shaper_wizards.php"/>
         </TrafficShaper>
-        <VirtualIPs VisableName="Virtual IPs" url="/firewall_virtual_ip.php"/>
+        <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php"/>
     </Firewall>
 
     <Services order="3" cssClass="glyphicon glyphicon-cog">
