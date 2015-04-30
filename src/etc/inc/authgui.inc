@@ -256,7 +256,7 @@ function display_login_form()
 
 			  <div class="form-group">
 			    <label for="usernamefld"><?=gettext("Username:"); ?></label>
-			    <input id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" />
+			    <input id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" autofocus="autofocus" />
 			  </div>
 
 			  <div class="form-group">
@@ -289,13 +289,6 @@ function display_login_form()
 					[<a href="/license.php" class="tblnk">view license</a>]
 			</footer>
 
-		<script src="/themes/<?=$g['theme'];?>/build/js/main.min.js" type="text/javascript"></script>
-
-			<script type="text/javascript">
-			//<![CDATA[
-			$(document).ready(function() { jQuery('#usernamefld').focus(); });
-			//]]>
-			</script>
 		</body>
 	</html><?php
 
