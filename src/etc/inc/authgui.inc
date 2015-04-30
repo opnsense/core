@@ -242,12 +242,11 @@ function display_login_form()
 
 
 		<main class="login-modal-container">
-			    <header class="login-modal-head" style="height:55px;">
-			<a class="navbar-brand" href="/">
-					<img class="brand-logo" src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
-					<img class="brand-icon" src="/themes/<?=$g['theme'];?>/assets/images/icon-logo.png" height="30" width="29"/>
-					</a>
-			    </header>
+			<header class="login-modal-head" style="height:55px;">
+				<div class="navbar-brand">
+					<img src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
+				</div>
+			</header>
 
 			    <div class="login-modal-content">
 				    <div id="inputerrors"><?=$_SESSION['Login_Error'];?></div>
@@ -286,7 +285,6 @@ function display_login_form()
 			<footer class="login-foot container-fluid">
 			<a target="_blank" href="<?=$g['product_website']?>" class="redlnk"><?=$g['product_name']?></a> is &copy;
 					<?=$g['product_copyright_years']?> by <a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright_owner']?></a> All Rights Reserved.
-					[<a href="/license.php" class="tblnk">view license</a>]
 			</footer>
 
 		</body>
