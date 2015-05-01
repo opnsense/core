@@ -1,6 +1,9 @@
 <menu>
     <!-- Core menu system including legacy stuff -->
-    <System order="0" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
+    <User order="0" cssClass="glyphicon glyphicon-user">
+        <ChangePassword VisibleName="Change password" url="/system_usermanager_passwordmg.php" />
+    </User>
+    <System order="1" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
         <Certificates url="/system_certmanager.php">
                 <Certificates url="/system_certmanager.php"/>
                 <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php"/>
@@ -34,9 +37,10 @@
                 <Settings url="/system_usermanager_settings.php"/>
                 <Servers url="/system_authservers.php"/>
         </UserManager>
+        
     </System>
 
-    <Interfaces order="1" cssClass="glyphicon glyphicon-wrench">
+    <Interfaces order="2" cssClass="glyphicon glyphicon-wrench">
         <Assign VisibleName="(Assign)" order="999" url="/interfaces_assign.php">
                 <InterfaceAssignments VisibleName="Interface Addignments" url="/interfaces_assign.php"/>
                 <InterfaceGroups VisibleName="Interface Groups" url="/interfaces_groups.php"/>
@@ -50,7 +54,7 @@
                 <LAGG url="/interfaces_lagg.php"/>
         </Assign>
     </Interfaces>
-    <Firewall order="2" cssClass="glyphicon glyphicon-fire">
+    <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases url="/firewall_aliases.php"/>
         <NAT url="/firewall_nat.php">
             <PortForward VisibleName="Port Forward" url="/firewall_nat.php"/>
@@ -67,7 +71,7 @@
         <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php"/>
     </Firewall>
 
-    <Services order="3" cssClass="glyphicon glyphicon-cog">
+    <Services order="4" cssClass="glyphicon glyphicon-cog">
         <CaptivePortal VisibleName="Captive Portal" url="/services_captiveportal_zones.php">
             <IP url="/services_captiveportal_ip.php"/>
             <MAC url="/services_captiveportal_mac.php"/>
@@ -102,7 +106,7 @@
         <WoL VisibleName="Wake on LAN" url="/services_wol.php"/>
     </Services>
 
-    <VPN order="4" cssClass="glyphicon glyphicon-lock">
+    <VPN order="5" cssClass="glyphicon glyphicon-lock">
         <IPsec url="/vpn_ipsec.php">
             <MobileClients url="/vpn_ipsec_mobile.php"/>
             <Keys url="/vpn_ipsec_keys.php"/>
@@ -121,7 +125,7 @@
         </PPTP>
     </VPN>
 
-    <Status order="5" cssClass="glyphicon glyphicon-tasks">
+    <Status order="6" cssClass="glyphicon glyphicon-tasks">
         <CaptivePortal VisibleName="Captive Portal" url="/status_captiveportal.php"/>
         <CARP url="/carp_status.php"/>
         <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_dhcp_leases.php"/>
@@ -172,7 +176,7 @@
         <UPnPandNATPMP VisibleName="UPnP &amp; NAT-PMP" url="/status_upnp.php"/>
     </Status>
 
-    <Diagnostics order="6" cssClass="glyphicon glyphicon-stats">
+    <Diagnostics order="7" cssClass="glyphicon glyphicon-stats">
         <ARPTable VisibleName="ARP Table" url="/diag_arp.php"/>
         <Authentication url="/diag_authentication.php"/>
         <BackupRestore VisibleName="Backup &amp; Restore" url="/diag_backup.php">
@@ -200,7 +204,7 @@
         <Traceroute url="/diag_traceroute.php"/>
     </Diagnostics>
 
-    <Help order="7" cssClass="glyphicon glyphicon-question-sign">
+    <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
         <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers" IsExternal="Y"/>
         <Documentation url="https://wiki.opnsense.org/" IsExternal="Y"/>

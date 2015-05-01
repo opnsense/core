@@ -29,8 +29,11 @@
         ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
         POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("script/load_phalcon.php");
+global $priv_list;
+$acl = new OPNsense\Core\ACL();
+$priv_list = $acl->getLegacyPrivList();
 
-require_once 'priv.defs.inc';
 
 function cmp_page_matches($page, & $matches, $fullwc = true) {
 
