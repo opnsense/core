@@ -36,30 +36,40 @@ namespace OPNsense\Core;
  */
 class ACL
 {
+    /**
+     * @var array legacy users
+     */
     private $legacyUsers = array();
+
+    /**
+     * @var array privileges per group
+     */
     private $legacyGroupPrivs = array();
 
     /**
-     * temporary hack to support the old pfSense priv to page mapping.
+     * @var array old page mapping structure
+     */
+    private $legacyACL = array();
+
+    /**
+     * temporary hack to support the old pfSense priv to page mapping and metadata.
      * @return array
      */
     private function loadLegacyPageMap()
     {
         $legacyPageMap = array();
-        $handle = fopen(__DIR__."/ACL_Legacy_Page_Map.txt", "r");
-        if ($handle) {
-            while (($line = fgets($handle)) !== false) {
-                $parts = explode("=", $line);
-                if (count($parts) == 2) {
-                    if (array_key_exists($parts[0], $legacyPageMap) == 0) {
-                        $legacyPageMap[$parts[0]] = array();
-                    }
-                    $legacyPageMap[$parts[0]][] = trim($parts[1]);
+
+        foreach ($this->legacyACL as $aclKey => $aclItem) {
+            if (property_exists($aclItem, "match")) {
+                // check if acl item already exists and add match expressions
+                if (!array_key_exists($aclKey, $legacyPageMap)) {
+                    $legacyPageMap[$aclKey] = array();
+                }
+                foreach ($aclItem->match as $matchexpr) {
+                    $legacyPageMap[$aclKey][] = trim($matchexpr);
                 }
             }
-            fclose($handle);
         }
-
         return $legacyPageMap;
     }
 
@@ -68,6 +78,10 @@ class ACL
      */
     private function initLegacy()
     {
+        // load legacy acl from json file
+        $this->legacyACL = json_decode(file_get_contents(__DIR__."/ACL_Legacy_Page_Map.json"));
+
+        // create privilege mappings
         $this->legacyUsers = array();
         $this->legacyGroupPrivs = array();
 
@@ -132,6 +146,14 @@ class ACL
     }
 
     /**
+     * Construct new ACL object
+     */
+    public function __construct()
+    {
+        $this->initLegacy();
+    }
+
+    /**
      * legacy functionality to check if a page is accessible for the specified user.
      * @param $username user name
      * @param $url full url, for example /firewall_rules.php
@@ -148,7 +170,7 @@ class ACL
                     }
                 }
             }
-            // search groups
+            // search group privs
             foreach ($this->legacyUsers[$username]["groups"] as $itemkey => $group) {
                 if (array_key_exists($group, $this->legacyGroupPrivs)) {
                     foreach ($this->legacyGroupPrivs[$group] as $privset) {
@@ -159,15 +181,37 @@ class ACL
                         }
                     }
                 }
-
             }
         }
 
         return false;
     }
 
-    public function __construct()
+    /**
+     * return privilege list as array (sorted)
+     * @return array
+     */
+    public function getLegacyPrivList()
     {
-        $this->initLegacy();
+        // convert json priv map to array
+        $priv_list = array();
+        foreach ($this->legacyACL as $aclKey => $aclItem) {
+            $priv_list[$aclKey] = array();
+            foreach ($aclItem as $propName => $propValue) {
+                if ($propName == 'name' || $propName == 'descr') {
+                    // translate name and description tags
+                    $priv_list[$aclKey][$propName] = gettext($propValue);
+                } else {
+                    $priv_list[$aclKey][$propName] = $propValue;
+                }
+            }
+        }
+
+        // sort by name ( case insensitive )
+        uasort($priv_list, function($a, $b) {
+            return strcasecmp($a["name"], $b["name"]) ;
+        });
+
+        return $priv_list;
     }
 }
