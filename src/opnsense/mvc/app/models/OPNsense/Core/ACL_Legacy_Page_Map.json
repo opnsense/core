@@ -1,0 +1,1665 @@
+{
+    "user-config-readonly": {
+        "name": "User - Config - Deny Config Write",
+        "descr": "If present, ignores requests from this user to write config.xml."
+    },
+    "user-services-captiveportal-login": {
+        "name": "User - Services - Captive portal login",
+        "descr": "Indicates whether the user is able to login on the captive portal."
+    },
+    "user-copy-files": {
+        "name": "User - System - Copy files",
+        "descr": "Indicates whether the user is allowed to copy files onto the  appliance via SCP\/SFTP. If you are going to use this privilege, you must install scponly on the appliance (Hint: pkg_add -r scponly)."
+    },
+    "user-shell-access": {
+        "name": "User - System - Shell account access",
+        "descr": "Indicates whether the user is able to login for example via SSH."
+    },
+    "user-ssh-tunnel": {
+        "name": "User - System - SSH tunneling",
+        "descr": "Indicates whether the user is able to login for tunneling via SSH when they have no shell access. Note: User - System - Copy files conflicts with this privilege."
+    },
+    "user-ipsec-xauth-dialin": {
+        "name": "User - VPN - IPsec xauth Dialin",
+        "descr": "Indicates whether the user is allowed to dial in via IPsec xauth (Note: Does not allow shell access, but may allow the user to create ssh tunnels)"
+    },
+    "user-l2tp-dialin": {
+        "name": "User - VPN - L2TP Dialin",
+        "descr": "Indicates whether the user is allowed to dial in via L2TP"
+    },
+    "user-pppoe-dialin": {
+        "name": "User - VPN - PPPOE Dialin",
+        "descr": "Indicates whether the user is allowed to dial in via PPPOE"
+    },
+    "user-pptp-dialin": {
+        "name": "User - VPN - PPTP Dialin",
+        "descr": "Indicates whether the user is allowed to dial in via PPTP"
+    },
+    "page-getserviceproviders": {
+        "name": "WebCfg - AJAX: Get Service Providers",
+        "descr": "Allow access to the 'AJAX: Service Providers' page.",
+        "match": [
+            "getserviceproviders.php*"
+        ]
+    },
+    "page-getstats": {
+        "name": "WebCfg - AJAX: Get Stats",
+        "descr": "Allow access to the 'AJAX: Get Stats' page.",
+        "match": [
+            "getstats.php*"
+        ]
+    },
+    "page-all": {
+        "name": "WebCfg - All pages",
+        "descr": "Allow access to all pages",
+        "match": [
+            "*"
+        ]
+    },
+    "page-diagnostics-crash-reporter": {
+        "name": "WebCfg - Crash reporter",
+        "descr": "Uploads crash reports to pfSense and or deletes crash reports.",
+        "match": [
+            "crash_reporter.php*"
+        ]
+    },
+    "page-dashboard-all": {
+        "name": "WebCfg - Dashboard (all)",
+        "descr": "Allow access to all pages required for the dashboard.",
+        "match": [
+            "index.php*",
+            "*.widget.php*",
+            "graph.php*",
+            "graph_cpu.php*",
+            "getstats.php*",
+            "ifstats.php*",
+            "diag_logs_filter_dynamic.php*"
+        ]
+    },
+    "page-dashboard-widgets": {
+        "name": "WebCfg - Dashboard widgets (direct access).",
+        "descr": "Allow direct access to all Dashboard widget pages, required for some widgets using AJAX.",
+        "match": [
+            "*.widget.php*"
+        ]
+    },
+    "page-ipsecxml": {
+        "name": "WebCfg - Diag IPsec XML page",
+        "descr": "Allow access to the 'Diag IPsec XML' page.",
+        "match": [
+            "diag_ipsec_xml.php"
+        ]
+    },
+    "page-diagnostics-arptable": {
+        "name": "WebCfg - Diagnostics: ARP Table page",
+        "descr": "Allow access to the 'Diagnostics: ARP Table' page.",
+        "match": [
+            "diag_arp.php*"
+        ]
+    },
+    "page-diagnostics-authentication": {
+        "name": "WebCfg - Diagnostics: Authentication page",
+        "descr": "Allow access to the 'Diagnostics: Authentication' page.",
+        "match": [
+            "diag_authentication.php*"
+        ]
+    },
+    "page-diagnostics-backup\/restore": {
+        "name": "WebCfg - Diagnostics: Backup\/restore page",
+        "descr": "Allow access to the 'Diagnostics: Backup\/restore' page.",
+        "match": [
+            "diag_backup.php*"
+        ]
+    },
+    "page-diagnostics-configurationhistory": {
+        "name": "WebCfg - Diagnostics: Configuration History page",
+        "descr": "Allow access to the 'Diagnostics: Configuration History' page.",
+        "match": [
+            "diag_confbak.php*"
+        ]
+    },
+    "page-diagnostics-cpuutilization": {
+        "name": "WebCfg - Diagnostics: CPU Utilization page",
+        "descr": "Allow access to the 'Diagnostics: CPU Utilization' page.",
+        "match": [
+            "stats.php*"
+        ]
+    },
+    "page-diagnostics-factorydefaults": {
+        "name": "WebCfg - Diagnostics: Factory defaults page",
+        "descr": "Allow access to the 'Diagnostics: Factory defaults' page.",
+        "match": [
+            "diag_defaults.php*"
+        ]
+    },
+    "page-diagnostics-haltsystem": {
+        "name": "WebCfg - Diagnostics: Halt system page",
+        "descr": "Allow access to the 'Diagnostics: Halt system' page.",
+        "match": [
+            "diag_halt.php*"
+        ]
+    },
+    "page-diagnostics-interfacetraffic": {
+        "name": "WebCfg - Diagnostics: Interface Traffic page",
+        "descr": "Allow access to the 'Diagnostics: Interface Traffic' page.",
+        "match": [
+            "graph.php*"
+        ]
+    },
+    "page-diagnostics-limiter-info": {
+        "name": "WebCfg - Diagnostics: Limiter Info",
+        "descr": "Allows access to the 'Diagnostics: Limiter Info' page",
+        "match": [
+            "diag_limiter_info.php*"
+        ]
+    },
+    "page-diagnostics-logs-dhcp": {
+        "name": "WebCfg - Diagnostics: Logs: DHCP page",
+        "descr": "Allow access to the 'Diagnostics: Logs: DHCP' page.",
+        "match": [
+            "diag_logs_dhcp.php*"
+        ]
+    },
+    "page-diagnostics-logs-firewall": {
+        "name": "WebCfg - Diagnostics: Logs: Firewall page",
+        "descr": "Allow access to the 'Diagnostics: Logs: Firewall' page.",
+        "match": [
+            "diag_logs_filter.php*"
+        ]
+    },
+    "page-diagnostics-logs-gateways": {
+        "name": "WebCfg - Diagnostics: Logs: Gateways page",
+        "descr": "Allow access to the 'Diagnostics: Logs: System: Gateways' page.",
+        "match": [
+            "diag_logs_gateways.php*"
+        ]
+    },
+    "page-diagnostics-logs-resolver": {
+        "name": "WebCfg - Diagnostics: Logs: Resolver page",
+        "descr": "Allow access to the 'Diagnostics: Logs: System: Resolver' page.",
+        "match": [
+            "diag_logs_resolver.php*"
+        ]
+    },
+    "page-diagnostics-logs-settings": {
+        "name": "WebCfg - Diagnostics: Logs: Settings page",
+        "descr": "Allow access to the 'Diagnostics: Logs: Settings' page.",
+        "match": [
+            "diag_logs_settings.php*"
+        ]
+    },
+    "page-diagnostics-logs-system": {
+        "name": "WebCfg - Diagnostics: Logs: System page",
+        "descr": "Allow access to the 'Diagnostics: Logs: System' page.",
+        "match": [
+            "diag_logs.php*"
+        ]
+    },
+    "page-diagnostics-logs-pptpvpn": {
+        "name": "WebCfg - Diagnostics: Logs: VPN page",
+        "descr": "Allow access to the 'Diagnostics: Logs: VPN' page.",
+        "match": [
+            "diag_logs_vpn.php*"
+        ]
+    },
+    "page-diagnostics-nanobsd": {
+        "name": "WebCfg - Diagnostics: NanoBSD",
+        "descr": "Allow access to the 'Diagnostics: NanoBSD' page.",
+        "match": [
+            "diag_nanobsd.php*"
+        ]
+    },
+    "page-diagnostics-ndptable": {
+        "name": "Webcfg - Diagnostics: NDP Table page",
+        "descr": "Allow access to the 'Diagnostics: NDP Table' page.",
+        "match": [
+            "diag_ndp.php*"
+        ]
+    },
+    "page-diagnostics-packetcapture": {
+        "name": "WebCfg - Diagnostics: Packet Capture page",
+        "descr": "Allow access to the 'Diagnostics: Packet Capture' page.",
+        "match": [
+            "diag_packet_capture.php*"
+        ]
+    },
+    "page-diagnostics-patters": {
+        "name": "WebCfg - Diagnostics: Patterns page",
+        "descr": "Allow access to the 'Diagnostics: Patterns' page.",
+        "match": [
+            "patterns.php*"
+        ]
+    },
+    "page-diagnostics-tables": {
+        "name": "WebCfg - Diagnostics: PF Table IP addresses",
+        "descr": "Allow access to the 'Diagnostics: Tables' page.",
+        "match": [
+            "diag_tables.php*"
+        ]
+    },
+    "page-diagnostics-pf-info": {
+        "name": "WebCfg - Diagnostics: pfInfo",
+        "descr": "Allows access to the 'Diagnostics: pfInfo' page",
+        "match": [
+            "diag_pf_info.php*"
+        ]
+    },
+    "page-diagnostics-system-pftop": {
+        "name": "WebCfg - Diagnostics: pfTop",
+        "descr": "Allows access to the 'Diagnostics: pfTop' page",
+        "match": [
+            "diag_system_pftop.php*"
+        ]
+    },
+    "page-diagnostics-ping": {
+        "name": "WebCfg - Diagnostics: Ping page",
+        "descr": "Allow access to the 'Diagnostics: Ping' page.",
+        "match": [
+            "diag_ping.php*"
+        ]
+    },
+    "page-diagnostics-rebootsystem": {
+        "name": "WebCfg - Diagnostics: Reboot System page",
+        "descr": "Allow access to the 'Diagnostics: Reboot System' page.",
+        "match": [
+            "reboot.php*"
+        ]
+    },
+    "page-diagnostics-resetstate": {
+        "name": "WebCfg - Diagnostics: Reset state page",
+        "descr": "Allow access to the 'Diagnostics: Reset state' page.",
+        "match": [
+            "diag_resetstate.php*"
+        ]
+    },
+    "page-diagnostics-restore-full-backup": {
+        "name": "Webcfg - Diagnostics: Restore full backup",
+        "descr": "Allow access to the 'Diagnostics: Restore Full Backup' page.",
+        "match": [
+            "system_firmware_restorefullbackup.php"
+        ]
+    },
+    "page-diagnostics-routingtables": {
+        "name": "WebCfg - Diagnostics: Routing tables page",
+        "descr": "Allow access to the 'Diagnostics: Routing tables' page.",
+        "match": [
+            "diag_routes.php*"
+        ]
+    },
+    "page-diagnostics-showstates": {
+        "name": "WebCfg - Diagnostics: Show States page",
+        "descr": "Allow access to the 'Diagnostics: Show States' page.",
+        "match": [
+            "diag_dump_states.php*"
+        ]
+    },
+    "page-diagnostics-sockets": {
+        "name": "WebCfg - Diagnostics: Sockets page",
+        "descr": "Allow access to the 'Diagnostics: Sockets' page.",
+        "match": [
+            "diag_sockets.php*"
+        ]
+    },
+    "page-diagnostics-statessummary": {
+        "name": "WebCfg - Diagnostics: States Summary page",
+        "descr": "Allow access to the 'Diagnostics: States Summary' page.",
+        "match": [
+            "diag_states_summary.php*"
+        ]
+    },
+    "page-diagnostics-system-activity": {
+        "name": "WebCfg - Diagnostics: System Activity",
+        "descr": "Allows access to the 'Diagnostics: System Activity' page",
+        "match": [
+            "diag_system_activity.php*"
+        ]
+    },
+    "page-diagnostics-testport": {
+        "name": "Webcfg - Diagnostics: Test Port",
+        "descr": "Allow access to the 'Diagnostics: Test Port' page.",
+        "match": [
+            "diag_testport.php*"
+        ]
+    },
+    "page-diagnostics-traceroute": {
+        "name": "WebCfg - Diagnostics: Traceroute page",
+        "descr": "Allow access to the 'Diagnostics: Traceroute' page.",
+        "match": [
+            "diag_traceroute.php*"
+        ]
+    },
+    "page-firewall-alias-edit": {
+        "name": "WebCfg - Firewall: Alias: Edit page",
+        "descr": "Allow access to the 'Firewall: Alias: Edit' page.",
+        "match": [
+            "firewall_aliases_edit.php*"
+        ]
+    },
+    "page-firewall-alias-import": {
+        "name": "WebCfg - Firewall: Alias: Import page",
+        "descr": "Allow access to the 'Firewall: Alias: Import' page.",
+        "match": [
+            "firewall_aliases_import.php*"
+        ]
+    },
+    "page-firewall-aliases": {
+        "name": "WebCfg - Firewall: Aliases page",
+        "descr": "Allow access to the 'Firewall: Aliases' page.",
+        "match": [
+            "firewall_aliases.php*"
+        ]
+    },
+    "page-firewall-easyrule": {
+        "name": "WebCfg - Firewall: Easy Rule add\/status page",
+        "descr": "Allow access to the 'Firewall: Easy Rule' add\/status page.",
+        "match": [
+            "easyrule.php*"
+        ]
+    },
+    "page-firewall-nat-1-1": {
+        "name": "WebCfg - Firewall: NAT: 1:1 page",
+        "descr": "Allow access to the 'Firewall: NAT: 1:1' page.",
+        "match": [
+            "firewall_nat_1to1.php*"
+        ]
+    },
+    "page-firewall-nat-1-1-edit": {
+        "name": "WebCfg - Firewall: NAT: 1:1: Edit page",
+        "descr": "Allow access to the 'Firewall: NAT: 1:1: Edit' page.",
+        "match": [
+            "firewall_nat_1to1_edit.php*"
+        ]
+    },
+    "page-firewall-nat-npt": {
+        "name": "WebCfg - Firewall: NAT: NPT page",
+        "descr": "Allow access to the 'Firewall: NAT: NPT' page.",
+        "match": [
+            "firewall_nat_npt.php*"
+        ]
+    },
+    "page-firewall-nat-npt-edit": {
+        "name": "WebCfg - Firewall: NAT: NPt: Edit page",
+        "descr": "Allow access to the 'Firewall: NAT: NPt: Edit' page.",
+        "match": [
+            "firewall_nat_npt_edit.php*"
+        ]
+    },
+    "page-firewall-nat-outbound": {
+        "name": "WebCfg - Firewall: NAT: Outbound page",
+        "descr": "Allow access to the 'Firewall: NAT: Outbound' page.",
+        "match": [
+            "firewall_nat_out.php*"
+        ]
+    },
+    "page-firewall-nat-outbound-edit": {
+        "name": "WebCfg - Firewall: NAT: Outbound: Edit page",
+        "descr": "Allow access to the 'Firewall: NAT: Outbound: Edit' page.",
+        "match": [
+            "firewall_nat_out_edit.php*"
+        ]
+    },
+    "page-firewall-nat-portforward": {
+        "name": "WebCfg - Firewall: NAT: Port Forward page",
+        "descr": "Allow access to the 'Firewall: NAT: Port Forward' page.",
+        "match": [
+            "firewall_nat.php*"
+        ]
+    },
+    "page-firewall-nat-portforward-edit": {
+        "name": "WebCfg - Firewall: NAT: Port Forward: Edit page",
+        "descr": "Allow access to the 'Firewall: NAT: Port Forward: Edit' page.",
+        "match": [
+            "firewall_nat_edit.php*"
+        ]
+    },
+    "page-firewall-rules": {
+        "name": "WebCfg - Firewall: Rules page",
+        "descr": "Allow access to the 'Firewall: Rules' page.",
+        "match": [
+            "firewall_rules.php*"
+        ]
+    },
+    "page-firewall-rules-edit": {
+        "name": "WebCfg - Firewall: Rules: Edit page",
+        "descr": "Allow access to the 'Firewall: Rules: Edit' page.",
+        "match": [
+            "firewall_rules_edit.php*"
+        ]
+    },
+    "page-firewall-schedules": {
+        "name": "WebCfg - Firewall: Schedules page",
+        "descr": "Allow access to the 'Firewall: Schedules' page.",
+        "match": [
+            "firewall_schedule.php*"
+        ]
+    },
+    "page-firewall-schedules-edit": {
+        "name": "WebCfg - Firewall: Schedules: Edit page",
+        "descr": "Allow access to the 'Firewall: Schedules: Edit' page.",
+        "match": [
+            "firewall_schedule_edit.php*"
+        ]
+    },
+    "page-firewall-trafficshaper": {
+        "name": "WebCfg - Firewall: Traffic Shaper page",
+        "descr": "Allow access to the 'Firewall: Traffic Shaper' page.",
+        "match": [
+            "firewall_shaper.php*"
+        ]
+    },
+    "page-firewall-trafficshaper-queues": {
+        "name": "WebCfg - Firewall: Traffic Shaper: Queues page",
+        "descr": "Allow access to the 'Firewall: Traffic Shaper: Queues' page.",
+        "match": [
+            "firewall_shaper_queues.php*"
+        ]
+    },
+    "page-firewall-trafficshaper-wizard": {
+        "name": "WebCfg - Firewall: Traffic Shaper: Wizard page",
+        "descr": "Allow access to the 'Firewall: Traffic Shaper: Wizard' page.",
+        "match": [
+            "firewall_shaper_wizards.php*"
+        ]
+    },
+    "page-firewall-virtualipaddress-edit": {
+        "name": "WebCfg - Firewall: Virtual IP Address: Edit page",
+        "descr": "Allow access to the 'Firewall: Virtual IP Address: Edit' page.",
+        "match": [
+            "firewall_virtual_ip_edit.php*"
+        ]
+    },
+    "page-firewall-virtualipaddresses": {
+        "name": "WebCfg - Firewall: Virtual IP Addresses page",
+        "descr": "Allow access to the 'Firewall: Virtual IP Addresses' page.",
+        "match": [
+            "firewall_virtual_ip.php*"
+        ]
+    },
+    "page-help-all": {
+        "name": "WebCfg - Help pages",
+        "descr": "Show all items on help menu",
+        "match": [
+            "*help.php"
+        ]
+    },
+    "page-hidden-detailedstatus": {
+        "name": "WebCfg - Hidden: Detailed Status page",
+        "descr": "Allow access to the 'Hidden: Detailed Status' page.",
+        "match": [
+            "status.php*"
+        ]
+    },
+    "page-hidden-nolongerincluded": {
+        "name": "WebCfg - Hidden: No longer included page",
+        "descr": "Allow access to the 'Hidden: No longer included' page.",
+        "match": [
+            "diag_logs_filter_dynamic.php*"
+        ]
+    },
+    "page-interfaces-assignnetworkports": {
+        "name": "WebCfg - Interfaces: Assign network ports page",
+        "descr": "Allow access to the 'Interfaces: Assign network ports' page.",
+        "match": [
+            "interfaces_assign.php*"
+        ]
+    },
+    "page-interfaces-bridge-edit": {
+        "name": "WebCfg - Interfaces: Bridge edit page",
+        "descr": "Allow access to the 'Interfaces: Bridge : Edit' page.",
+        "match": [
+            "interfaces_bridge_edit.php*"
+        ]
+    },
+    "page-interfaces-bridge": {
+        "name": "WebCfg - Interfaces: Bridge page",
+        "descr": "Allow access to the 'Interfaces: Bridge' page.",
+        "match": [
+            "interfaces_bridge.php*"
+        ]
+    },
+    "page-interfaces-gif": {
+        "name": "WebCfg - Interfaces: GIF page",
+        "descr": "Allow access to the 'Interfaces: GIF' page.",
+        "match": [
+            "interfaces_gif.php*"
+        ]
+    },
+    "page-interfaces-gif-edit": {
+        "name": "WebCfg - Interfaces: GIF: Edit page",
+        "descr": "Allow access to the 'Interfaces: GIF: Edit' page.",
+        "match": [
+            "interfaces_gif_edit.php*"
+        ]
+    },
+    "page-interfaces-gre": {
+        "name": "WebCfg - Interfaces: GRE page",
+        "descr": "Allow access to the 'Interfaces: GRE' page.",
+        "match": [
+            "interfaces_gre.php*"
+        ]
+    },
+    "page-interfaces-gre-edit": {
+        "name": "WebCfg - Interfaces: GRE: Edit page",
+        "descr": "Allow access to the 'Interfaces: GRE: Edit' page.",
+        "match": [
+            "interfaces_gre_edit.php*"
+        ]
+    },
+    "page-interfaces-groups": {
+        "name": "WebCfg - Interfaces: Groups page",
+        "descr": "Create interface groups",
+        "match": [
+            "interfaces_groups.php*"
+        ]
+    },
+    "page-interfaces-groups-edit": {
+        "name": "WebCfg - Interfaces: Groups: Edit page",
+        "descr": "Allow access to the 'Interfaces: Groups: Edit' page.",
+        "match": [
+            "interfaces_groups_edit.php*"
+        ]
+    },
+    "page-interfaces-lagg-edit": {
+        "name": "WebCfg - Interfaces: LAGG: Edit page",
+        "descr": "Allow access to the 'Interfaces: LAGG: Edit' page.",
+        "match": [
+            "interfaces_lagg_edit.php*"
+        ]
+    },
+    "page-interfaces-lagg": {
+        "name": "WebCfg - Interfaces: LAGG: page",
+        "descr": "Edit Interface LAGG",
+        "match": [
+            "interfaces_lagg.php*"
+        ]
+    },
+    "page-interfaces-ppps": {
+        "name": "WebCfg - Interfaces: ppps page",
+        "descr": "Allow access to the 'Interfaces: ppps' page.",
+        "match": [
+            "interfaces_ppps.php*"
+        ]
+    },
+    "page-interfaces-ppps-edit": {
+        "name": "WebCfg - Interfaces: PPPs: Edit page",
+        "descr": "Allow access to the 'Interfaces: PPPs: Edit' page.",
+        "match": [
+            "interfaces_ppps_edit.php*"
+        ]
+    },
+    "page-interfaces-qinq": {
+        "name": "WebCfg - Interfaces: QinQ page",
+        "descr": "Allow access to the 'Interfaces: QinQ' page.",
+        "match": [
+            "interfaces_qinq.php*"
+        ]
+    },
+    "page-interfaces-qinq-edit": {
+        "name": "WebCfg - Interfaces: QinQ: Edit page",
+        "descr": "Allow access to 'Interfaces: QinQ: Edit' page",
+        "match": [
+            "interfaces_qinq_edit.php*"
+        ]
+    },
+    "page-interfaces-vlan": {
+        "name": "WebCfg - Interfaces: VLAN page",
+        "descr": "Allow access to the 'Interfaces: VLAN' page.",
+        "match": [
+            "interfaces_vlan.php*"
+        ]
+    },
+    "page-interfaces-vlan-edit": {
+        "name": "WebCfg - Interfaces: VLAN: Edit page",
+        "descr": "Allow access to the 'Interfaces: VLAN: Edit' page.",
+        "match": [
+            "interfaces_vlan_edit.php*"
+        ]
+    },
+    "page-interfaces": {
+        "name": "WebCfg - Interfaces: WAN page",
+        "descr": "Allow access to the 'Interfaces' page.",
+        "match": [
+            "interfaces.php*"
+        ]
+    },
+    "page-interfaces-wireless-edit": {
+        "name": "WebCfg - Interfaces: Wireless edit page",
+        "descr": "Allow access to the 'Interfaces: Wireless : Edit' page.",
+        "match": [
+            "interfaces_wireless_edit.php*"
+        ]
+    },
+    "page-interfaces-wireless": {
+        "name": "WebCfg - Interfaces: Wireless page",
+        "descr": "Allow access to the 'Interfaces: Wireless' page.",
+        "match": [
+            "interfaces_wireless.php*"
+        ]
+    },
+    "page-loadbalancer-pool": {
+        "name": "WebCfg - Load Balancer: Pool page",
+        "descr": "Allow access to the 'Load Balancer: Pool' page.",
+        "match": [
+            "load_balancer_pool.php*"
+        ]
+    },
+    "page-loadbalancer-pool-edit": {
+        "name": "WebCfg - Load Balancer: Pool: Edit page",
+        "descr": "Allow access to the 'Load Balancer: Pool: Edit' page.",
+        "match": [
+            "load_balancer_pool_edit.php*"
+        ]
+    },
+    "page-loadbalancer-virtualserver-edit": {
+        "name": "WebCfg - Load Balancer: Virtual Server: Edit page",
+        "descr": "Allow access to the 'Load Balancer: Virtual Server: Edit' page.",
+        "match": [
+            "load_balancer_virtual_server_edit.php*"
+        ]
+    },
+    "page-system-login\/logout": {
+        "name": "WebCfg - Lobby: Login \/ Logout \/ Dashboard page",
+        "descr": "Allow access to the 'Lobby: Login \/ Logout\/ Dashboard' page.",
+        "match": [
+            "index.php*"
+        ]
+    },
+    "page-package-edit": {
+        "name": "WebCfg - Package: Edit page",
+        "descr": "Allow access to the 'Package: Edit' page.",
+        "match": [
+            "pkg_edit.php*"
+        ]
+    },
+    "page-package-settings": {
+        "name": "WebCfg - Package: Settings page",
+        "descr": "Allow access to the 'Package: Settings' page.",
+        "match": [
+            "pkg.php*"
+        ]
+    },
+    "page-pkg-mgr-settings": {
+        "name": "WebCfg - Packages: Settings page",
+        "descr": "Allow access to the 'Packages: Settings' page.",
+        "match": [
+            "pkg_mgr_settings.php*"
+        ]
+    },
+    "page-pfsensewizardsubsystem": {
+        "name": "WebCfg - pfSense wizard subsystem page",
+        "descr": "Allow access to the 'pfSense wizard subsystem' page.",
+        "match": [
+            "wizard.php*"
+        ]
+    },
+    "page-services-captiveportal": {
+        "name": "WebCfg - Services: Captive portal page",
+        "descr": "Allow access to the 'Services: Captive portal' page.",
+        "match": [
+            "services_captiveportal.php*"
+        ]
+    },
+    "page-services-captiveportal-allowedhostnames": {
+        "name": "WebCfg - Services: Captive portal: Allowed Hostnames page",
+        "descr": "Allow access to the 'Services: Captive portal: Allowed Hostnames' page.",
+        "match": [
+            "services_captiveportal_hostname.php*"
+        ]
+    },
+    "page-services-captiveportal-allowedips": {
+        "name": "WebCfg - Services: Captive portal: Allowed IPs page",
+        "descr": "Allow access to the 'Services: Captive portal: Allowed IPs' page.",
+        "match": [
+            "services_captiveportal_ip.php*"
+        ]
+    },
+    "page-services-captiveportal-editallowedhostnames": {
+        "name": "WebCfg - Services: Captive portal: Edit Allowed Hostnames page",
+        "descr": "Allow access to the 'Services: Captive portal: Allowed Hostnames' page.",
+        "match": [
+            "services_captiveportal_hostname_edit.php*"
+        ]
+    },
+    "page-services-captiveportal-editallowedips": {
+        "name": "WebCfg - Services: Captive portal: Edit Allowed IPs page",
+        "descr": "Allow access to the 'Services: Captive portal: Edit Allowed IPs' page.",
+        "match": [
+            "services_captiveportal_ip_edit.php*"
+        ]
+    },
+    "page-services-captiveportal-editmacaddresses": {
+        "name": "WebCfg - Services: Captive portal: Edit MAC Addresses page",
+        "descr": "Allow access to the 'Services: Captive portal: Edit MAC Addresses' page.",
+        "match": [
+            "services_captiveportal_mac_edit.php*"
+        ]
+    },
+    "page-services-captiveportal-voucher-edit": {
+        "name": "WebCfg - Services: Captive portal: Edit Voucher Rolls page",
+        "descr": "Allow access to the 'Services: Captive portal: Edit Voucher Rolls' page.",
+        "match": [
+            "services_captiveportal_vouchers_edit.php*"
+        ]
+    },
+    "page-services-captiveportal-editzones": {
+        "name": "WebCfg - Services: Captive portal: Edit Zones page",
+        "descr": "Allow access to the 'Services: Captive portal: Edit Zones' page.",
+        "match": [
+            "services_captiveportal_zones_edit.php*"
+        ]
+    },
+    "page-services-captiveportal-filemanager": {
+        "name": "WebCfg - Services: Captive portal: File Manager page",
+        "descr": "Allow access to the 'Services: Captive portal: File Manager' page.",
+        "match": [
+            "services_captiveportal_filemanager.php*"
+        ]
+    },
+    "page-services-captiveportal-macaddresses": {
+        "name": "WebCfg - Services: Captive portal: Mac Addresses page",
+        "descr": "Allow access to the 'Services: Captive portal: Mac Addresses' page.",
+        "match": [
+            "services_captiveportal_mac.php*"
+        ]
+    },
+    "page-services-captiveportal-vouchers": {
+        "name": "WebCfg - Services: Captive portal: Vouchers page",
+        "descr": "Allow access to the 'Services: Captive portal: Vouchers' page.",
+        "match": [
+            "services_captiveportal_vouchers.php*"
+        ]
+    },
+    "page-services-captiveportal-zones": {
+        "name": "WebCfg - Services: Captive portal: Zones page",
+        "descr": "Allow access to the 'Services: Captive portal: Zones' page.",
+        "match": [
+            "services_captiveportal_zones.php*"
+        ]
+    },
+    "page-services-dhcprelay": {
+        "name": "WebCfg - Services: DHCP Relay page",
+        "descr": "Allow access to the 'Services: DHCP Relay' page.",
+        "match": [
+            "services_dhcp_relay.php*"
+        ]
+    },
+    "page-services-dhcpserver-editstaticmapping": {
+        "name": "WebCfg - Services: DHCP Server : Edit static mapping page",
+        "descr": "Allow access to the 'Services: DHCP Server : Edit static mapping' page.",
+        "match": [
+            "services_dhcp_edit.php*"
+        ]
+    },
+    "page-services-dhcpserver": {
+        "name": "WebCfg - Services: DHCP server page",
+        "descr": "Allow access to the 'Services: DHCP server' page.",
+        "match": [
+            "services_dhcp.php*"
+        ]
+    },
+    "page-services-dhcpv6relay": {
+        "name": "WebCfg - Services: DHCPv6 Relay page",
+        "descr": "Allow access to the 'Services: DHCPv6 Relay' page.",
+        "match": [
+            "services_dhcpv6_relay.php*"
+        ]
+    },
+    "page-services-dhcpserverv6-editstaticmapping": {
+        "name": "WebCfg - Services: DHCPv6 Server : Edit static mapping page",
+        "descr": "Allow access to the 'Services: DHCPv6 Server : Edit static mapping' page.",
+        "match": [
+            "services_dhcpv6_edit.php*"
+        ]
+    },
+    "page-services-dhcpv6server": {
+        "name": "WebCfg - Services: DHCPv6 server page",
+        "descr": "Allow access to the 'Services: DHCPv6 server' page.",
+        "match": [
+            "services_dhcpv6.php*"
+        ]
+    },
+    "page-services-opendns": {
+        "name": "WebCfg - Services: DNS Filter",
+        "descr": "Allow access to the 'Services: DNS Filter' page.",
+        "match": [
+            "services_opendns.php*"
+        ]
+    },
+    "page-services-dnsforwarder": {
+        "name": "WebCfg - Services: DNS Forwarder page",
+        "descr": "Allow access to the 'Services: DNS Forwarder' page.",
+        "match": [
+            "services_dnsmasq.php*"
+        ]
+    },
+    "page-services-dnsforwarder-editdomainoverride": {
+        "name": "WebCfg - Services: DNS Forwarder: Edit Domain Override page",
+        "descr": "Allow access to the 'Services: DNS Forwarder: Edit Domain Override' page.",
+        "match": [
+            "services_dnsmasq_domainoverride_edit.php*"
+        ]
+    },
+    "page-services-dnsforwarder-edithost": {
+        "name": "WebCfg - Services: DNS Forwarder: Edit host page",
+        "descr": "Allow access to the 'Services: DNS Forwarder: Edit host' page.",
+        "match": [
+            "services_dnsmasq_edit.php*"
+        ]
+    },
+    "page-services-dnsresolver": {
+        "name": "WebCfg - Services: DNS Resolver page",
+        "descr": "Allow access to the 'Services: DNS Resolver' page.",
+        "match": [
+            "services_unbound.php*"
+        ]
+    },
+    "page-services-dnsresolver-acls": {
+        "name": "WebCfg - Services: DNS Resolver: Access Lists page",
+        "descr": "Allow access to the 'Services: DNS Resolver: Access Lists' page.",
+        "match": [
+            "services_unbound_acls.php*"
+        ]
+    },
+    "page-services-dnsresolver-editacls": {
+        "name": "WebCfg - Services: DNS Resolver: Access Lists: Edit page",
+        "descr": "Allow access to the 'Services: DNS Resolver: Access Lists: Edit' page.",
+        "match": [
+            "services_unbound_acls_edit.php*"
+        ]
+    },
+    "page-services-dnsresolver-advanced": {
+        "name": "WebCfg - Services: DNS Resolver: Advanced page",
+        "descr": "Allow access to the 'Services: DNS Resolver: Advanced' page.",
+        "match": [
+            "services_unbound_advanced.php*"
+        ]
+    },
+    "page-services-dnsresolver-editdomainoverride": {
+        "name": "WebCfg - Services: DNS Resolver: Edit Domain Override page",
+        "descr": "Allow access to the 'Services: DNS Resolver: Edit Domain Override' page.",
+        "match": [
+            "services_unbound_domainoverride_edit.php*"
+        ]
+    },
+    "page-services-dnsresolver-edithost": {
+        "name": "WebCfg - Services: DNS Resolver: Edit host page",
+        "descr": "Allow access to the 'Services: DNS Resolver: Edit host' page.",
+        "match": [
+            "services_unbound_host_edit.php*"
+        ]
+    },
+    "page-services-dynamicdnsclient": {
+        "name": "WebCfg - Services: Dynamic DNS client page",
+        "descr": "Allow access to the 'Services: Dynamic DNS client' page.",
+        "match": [
+            "services_dyndns_edit.php*"
+        ]
+    },
+    "page-services-dynamicdnsclients": {
+        "name": "WebCfg - Services: Dynamic DNS clients page",
+        "descr": "Allow access to the 'Services: Dynamic DNS clients' page.",
+        "match": [
+            "services_dyndns.php*"
+        ]
+    },
+    "page-services-igmpproxy": {
+        "name": "WebCfg - Services: Igmpproxy page",
+        "descr": "Allow access to the 'Services: Igmpproxy' page.",
+        "match": [
+            "services_igmpproxy.php*"
+        ]
+    },
+    "page-services-igmpproxy-edit": {
+        "name": "WebCfg - Services: Igmpproxy: Edit page",
+        "descr": "Allow access to the 'Services: Igmpproxy: Edit' page.",
+        "match": [
+            "services_igmpproxy_edit.php*"
+        ]
+    },
+    "page-services-loadbalancer-monitor-edit": {
+        "name": "WebCfg - Services: Load Balancer: Monitor: Edit page",
+        "descr": "Allow access to the 'Services: Load Balancer: Monitor: Edit' page.",
+        "match": [
+            "load_balancer_monitor_edit.php*"
+        ]
+    },
+    "page-services-loadbalancer-monitor": {
+        "name": "WebCfg - Services: Load Balancer: Monitors page",
+        "descr": "Allow access to the 'Services: Load Balancer: Monitors' page.",
+        "match": [
+            "load_balancer_monitor.php*"
+        ]
+    },
+    "page-services-loadbalancer-relay-action-edit": {
+        "name": "WebCfg - Services: Load Balancer: Relay Action: Edit page",
+        "descr": "Allow access to the 'Services: Load Balancer: Relay Action: Edit' page.",
+        "match": [
+            "load_balancer_relay_action_edit.php*"
+        ]
+    },
+    "page-services-loadbalancer-relay-action": {
+        "name": "WebCfg - Services: Load Balancer: Relay Actions page",
+        "descr": "Allow access to the 'Services: Load Balancer: Relay Actions' page.",
+        "match": [
+            "load_balancer_relay_action.php*"
+        ]
+    },
+    "page-services-loadbalancer-relay-protocol-edit": {
+        "name": "WebCfg - Services: Load Balancer: Relay Protocol: Edit page",
+        "descr": "Allow access to the 'Services: Load Balancer: Relay Protocol: Edit' page.",
+        "match": [
+            "load_balancer_relay_protocol_edit.php*"
+        ]
+    },
+    "page-services-loadbalancer-relay-protocol": {
+        "name": "WebCfg - Services: Load Balancer: Relay Protocols page",
+        "descr": "Allow access to the 'Services: Load Balancer: Relay Protocols' page.",
+        "match": [
+            "load_balancer_relay_protocol.php*"
+        ]
+    },
+    "page-services-loadbalancer-setting": {
+        "name": "WebCfg - Services: Load Balancer: setting page",
+        "descr": "Allow access to the 'Settings: Load Balancer: Settings' page.",
+        "match": [
+            "load_balancer_setting.php*"
+        ]
+    },
+    "page-services-loadbalancer-virtualservers": {
+        "name": "WebCfg - Services: Load Balancer: Virtual Servers page",
+        "descr": "Allow access to the 'Services: Load Balancer: Virtual Servers' page.",
+        "match": [
+            "load_balancer_virtual_server.php*"
+        ]
+    },
+    "page-services-ntpd": {
+        "name": "WebCfg - Services: NTP",
+        "descr": "Allow access to the 'Services: NTP' page.",
+        "match": [
+            "services_ntpd.php*"
+        ]
+    },
+    "page-services-pppoeserver": {
+        "name": "WebCfg - Services: PPPoE Server page",
+        "descr": "Allow access to the 'Services: PPPoE Server' page.",
+        "match": [
+            "vpn_pppoe.php*"
+        ]
+    },
+    "page-services-pppoeserver-edit": {
+        "name": "WebCfg - Services: PPPoE Server: Edit page",
+        "descr": "Allow access to the 'Services: PPPoE Server: Edit' page.",
+        "match": [
+            "vpn_pppoe_edit.php*"
+        ]
+    },
+    "page-services-rfc2136clients": {
+        "name": "WebCfg - Services: RFC 2136 clients page",
+        "descr": "Allow access to the 'Services: RFC 2136 clients' page.",
+        "match": [
+            "services_rfc2136.php*"
+        ]
+    },
+    "page-services-router-advertisements": {
+        "name": "WebCfg - Services: Router advertisements page",
+        "descr": "Allow access to the 'Services: Router Advertisements' page.",
+        "match": [
+            "services_router_advertisements.php*"
+        ]
+    },
+    "page-services-snmp": {
+        "name": "WebCfg - Services: SNMP page",
+        "descr": "Allow access to the 'Services: SNMP' page.",
+        "match": [
+            "services_snmp.php*"
+        ]
+    },
+    "page-services-wakeonlan": {
+        "name": "WebCfg - Services: Wake on LAN page",
+        "descr": "Allow access to the 'Services: Wake on LAN' page.",
+        "match": [
+            "services_wol.php*"
+        ]
+    },
+    "page-services-wakeonlan-edit": {
+        "name": "WebCfg - Services: Wake on LAN: Edit page",
+        "descr": "Allow access to the 'Services: Wake on LAN: Edit' page.",
+        "match": [
+            "services_wol_edit.php*"
+        ]
+    },
+    "page-status-captiveportal": {
+        "name": "WebCfg - Status: Captive portal page",
+        "descr": "Allow access to the 'Status: Captive portal' page.",
+        "match": [
+            "status_captiveportal.php*"
+        ]
+    },
+    "page-status-captiveportal-expire": {
+        "name": "WebCfg - Status: Captive portal: Expire Vouchers page",
+        "descr": "Allow access to the 'Status: Captive portal: Expire Vouchers' page.",
+        "match": [
+            "status_captiveportal_expire.php*"
+        ]
+    },
+    "page-status-captiveportal-test": {
+        "name": "WebCfg - Status: Captive portal: Test Vouchers page",
+        "descr": "Allow access to the 'Status: Captive portal: Test Vouchers' page.",
+        "match": [
+            "status_captiveportal_test.php*"
+        ]
+    },
+    "page-status-captiveportal-voucher-rolls": {
+        "name": "WebCfg - Status: Captive portal: Voucher Rolls page",
+        "descr": "Allow access to the 'Status: Captive portal: Voucher Rolls' page.",
+        "match": [
+            "status_captiveportal_voucher_rolls.php*"
+        ]
+    },
+    "page-status-captiveportal-vouchers": {
+        "name": "WebCfg - Status: Captive portal: Vouchers page",
+        "descr": "Allow access to the 'Status: Captive portal: Vouchers' page.",
+        "match": [
+            "status_captiveportal_vouchers.php*"
+        ]
+    },
+    "page-status-carp": {
+        "name": "WebCfg - Status: CARP page",
+        "descr": "Allow access to the 'Status: CARP' page.",
+        "match": [
+            "carp_status.php*"
+        ]
+    },
+    "page-status-cpuload": {
+        "name": "WebCfg - Status: CPU load page",
+        "descr": "Allow access to the 'Status: CPU load' page.",
+        "match": [
+            "status_graph_cpu.php*"
+        ]
+    },
+    "page-status-dhcpleases": {
+        "name": "WebCfg - Status: DHCP leases page",
+        "descr": "Allow access to the 'Status: DHCP leases' page.",
+        "match": [
+            "status_dhcp_leases.php*"
+        ]
+    },
+    "page-status-dhcpv6leases": {
+        "name": "Webcfg - Status: DHCPv6 leases page",
+        "descr": "Allow access to the 'Status: DHCPv6 leases' page.",
+        "match": [
+            "status_dhcpv6_leases.php*"
+        ]
+    },
+    "page-status-filterreloadstatus": {
+        "name": "WebCfg - Status: Filter Reload Status page",
+        "descr": "Allow access to the 'Status: Filter Reload Status' page.",
+        "match": [
+            "status_filter_reload.php*"
+        ]
+    },
+    "page-status-gatewaygroups": {
+        "name": "WebCfg - Status: Gateway Groups page",
+        "descr": "Allow access to the 'Status: Gateway Groups' page.",
+        "match": [
+            "status_gateway_groups.php*"
+        ]
+    },
+    "page-status-gateways": {
+        "name": "WebCfg - Status: Gateways page",
+        "descr": "Allow access to the 'Status: Gateways' page.",
+        "match": [
+            "status_gateways.php*"
+        ]
+    },
+    "page-status-interfaces": {
+        "name": "WebCfg - Status: Interfaces page",
+        "descr": "Allow access to the 'Status: Interfaces' page.",
+        "match": [
+            "status_interfaces.php*"
+        ]
+    },
+    "page-status-ipsec": {
+        "name": "WebCfg - Status: IPsec page",
+        "descr": "Allow access to the 'Status: IPsec' page.",
+        "match": [
+            "diag_ipsec.php*"
+        ]
+    },
+    "page-status-ipsec-leases": {
+        "name": "WebCfg - Status: IPsec: Leasespage",
+        "descr": "Allow access to the 'Status: IPsec: Leases' page.",
+        "match": [
+            "diag_ipsec_leases.php*"
+        ]
+    },
+    "page-status-ipsec-sad": {
+        "name": "WebCfg - Status: IPsec: SAD page",
+        "descr": "Allow access to the 'Status: IPsec: SAD' page.",
+        "match": [
+            "diag_ipsec_sad.php*"
+        ]
+    },
+    "page-status-ipsec-spd": {
+        "name": "WebCfg - Status: IPsec: SPD page",
+        "descr": "Allow access to the 'Status: IPsec: SPD' page.",
+        "match": [
+            "diag_ipsec_spd.php*"
+        ]
+    },
+    "page-status-loadbalancer-pool": {
+        "name": "WebCfg - Status: Load Balancer: Pool page",
+        "descr": "Allow access to the 'Status: Load Balancer: Pool' page.",
+        "match": [
+            "status_lb_pool.php*"
+        ]
+    },
+    "page-status-loadbalancer-virtualserver": {
+        "name": "WebCfg - Status: Load Balancer: Virtual Server page",
+        "descr": "Allow access to the 'Status: Load Balancer: Virtual Server' page.",
+        "match": [
+            "status_lb_vs.php*"
+        ]
+    },
+    "page-services-ntp-gps": {
+        "name": "WebCfg - Status: NTP GPS page",
+        "descr": "Allow access to the 'Status: NTP Serial GPS' page.",
+        "match": [
+            "status_ntpd_gps.php*"
+        ]
+    },
+    "page-status-ntp": {
+        "name": "Webcfg - Status: NTP page",
+        "descr": "Allow access to the 'Status: NTP' page.",
+        "match": [
+            "status_ntpd.php*"
+        ]
+    },
+    "page-services-ntp-pps": {
+        "name": "WebCfg - Status: NTP PPS page",
+        "descr": "Allow access to the 'Status: NTP PPS' page.",
+        "match": [
+            "status_ntpd_pps.php*"
+        ]
+    },
+    "page-status-openvpn": {
+        "name": "WebCfg - Status: OpenVPN page",
+        "descr": "Allow access to the 'Status: OpenVPN' page.",
+        "match": [
+            "status_openvpn.php*"
+        ]
+    },
+    "page-status-packagelogs": {
+        "name": "WebCfg - Status: Package logs page",
+        "descr": "Allow access to the 'Status: Package logs' page.",
+        "match": [
+            "diag_pkglogs.php*"
+        ]
+    },
+    "page-status-rrdgraphs": {
+        "name": "WebCfg - Status: RRD Graphs page",
+        "descr": "Allow access to the 'Status: RRD Graphs' page.",
+        "match": [
+            "status_rrd_graph.php*",
+            "status_rrd_graph_img.php*"
+        ]
+    },
+    "page-status-rrdgraph-settings": {
+        "name": "WebCfg - Status: RRD Graphs settings page",
+        "descr": "Allow access to the 'Status: RRD Graphs: settings' page.",
+        "match": [
+            "status_rrd_graph_settings.php*"
+        ]
+    },
+    "page-status-services": {
+        "name": "WebCfg - Status: Services page",
+        "descr": "Allow access to the 'Status: Services' page.",
+        "match": [
+            "status_services.php*"
+        ]
+    },
+    "page-status-systemlogs-portalauth": {
+        "name": "WebCfg - Status: System logs: Captive portal page",
+        "descr": "Allow access to the 'Status: System logs: Captive portal' page.",
+        "match": [
+            "diag_logs_auth.php*"
+        ]
+    },
+    "page-status-systemlogs-ipsecvpn": {
+        "name": "WebCfg - Status: System logs: IPsec VPN page",
+        "descr": "Allow access to the 'Status: System logs: IPsec VPN' page.",
+        "match": [
+            "diag_logs_ipsec.php*"
+        ]
+    },
+    "page-status-systemlogs-ppp": {
+        "name": "WebCfg - Status: System logs: IPsec VPN page",
+        "descr": "Allow access to the 'Status: System logs: IPsec VPN' page.",
+        "match": [
+            "diag_logs_ppp.php*"
+        ]
+    },
+    "page-status-systemlogs-loadbalancer": {
+        "name": "WebCfg - Status: System logs: Load Balancer page",
+        "descr": "Allow access to the 'Status: System logs: Load Balancer' page.",
+        "match": [
+            "diag_logs_relayd.php*"
+        ]
+    },
+    "page-status-systemlogs-ntpd": {
+        "name": "WebCfg - Status: System logs: NTP page",
+        "descr": "Allow access to the 'Status: System logs: NTP' page.",
+        "match": [
+            "diag_logs_ntpd.php*"
+        ]
+    },
+    "page-status-systemlogs-openvpn": {
+        "name": "WebCfg - Status: System logs: OpenVPN page",
+        "descr": "Allow access to the 'Status: System logs: OpenVPN' page.",
+        "match": [
+            "diag_logs_openvpn.php*"
+        ]
+    },
+    "page-status-systemlogs-routing": {
+        "name": "Webcfg - Status: System logs: Routing page",
+        "descr": "Allow access to the 'Status: System logs: System: Routing' page.",
+        "match": [
+            "diag_logs_routing.php*"
+        ]
+    },
+    "page-status-systemlogs-wireless": {
+        "name": "Webcfg - Status: System logs: Wireless page",
+        "descr": "Allow access to the 'Status: System logs: System: Wireless' page.",
+        "match": [
+            "diag_logs_wireless.php*"
+        ]
+    },
+    "page-status-trafficgraph": {
+        "name": "WebCfg - Status: Traffic Graph page",
+        "descr": "Allow access to the 'Status: Traffic Graph' page.",
+        "match": [
+            "status_graph.php*",
+            "bandwidth_by_ip.php*",
+            "graph.php*",
+            "ifstats.php*"
+        ]
+    },
+    "page-status-trafficshaper-queues": {
+        "name": "WebCfg - Status: Traffic shaper: Queues page",
+        "descr": "Allow access to the 'Status: Traffic shaper: Queues' page.",
+        "match": [
+            "status_queues.php*"
+        ]
+    },
+    "page-status-upnpstatus": {
+        "name": "WebCfg - Status: UPnP Status page",
+        "descr": "Allow access to the 'Status: UPnP Status' page.",
+        "match": [
+            "status_upnp.php*"
+        ]
+    },
+    "page-diagnostics-wirelessstatus": {
+        "name": "WebCfg - Status: Wireless page",
+        "descr": "Allow access to the 'Status: Wireless' page.",
+        "match": [
+            "status_wireless.php*"
+        ]
+    },
+    "page-system-advanced-admin": {
+        "name": "WebCfg - System: Advanced: Admin Access Page",
+        "descr": "Allow access to the 'System: Advanced: Admin Access' page.",
+        "match": [
+            "system_advanced_admin.php*"
+        ]
+    },
+    "page-system-advanced-firewall": {
+        "name": "WebCfg - System: Advanced: Firewall and NAT page",
+        "descr": "Allow access to the 'System: Advanced: Firewall and NAT' page.",
+        "match": [
+            "system_advanced_firewall.php*"
+        ]
+    },
+    "page-system-advanced-misc": {
+        "name": "WebCfg - System: Advanced: Miscellaneous page",
+        "descr": "Allow access to the 'System: Advanced: Miscellaneous' page.",
+        "match": [
+            "system_advanced_misc.php*"
+        ]
+    },
+    "page-system-advanced-network": {
+        "name": "WebCfg - System: Advanced: Network page",
+        "descr": "Allow access to the 'System: Advanced: Networking' page.",
+        "match": [
+            "system_advanced_network.php*"
+        ]
+    },
+    "page-system-advanced-notifications": {
+        "name": "WebCfg - System: Advanced: Notifications page",
+        "descr": "Allow access to the 'System: Advanced: Notifications' page.",
+        "match": [
+            "system_advanced_notifications.php*"
+        ]
+    },
+    "page-system-advanced-sysctl": {
+        "name": "WebCfg - System: Advanced: Tunables page",
+        "descr": "Allow access to the 'System: Advanced: Tunables' page.",
+        "match": [
+            "system_advanced_sysctl.php*"
+        ]
+    },
+    "page-system-authservers": {
+        "name": "WebCfg - System: Authentication Servers",
+        "descr": "Allow access to the 'System: Authentication Servers' page.",
+        "match": [
+            "system_authservers.php*"
+        ]
+    },
+    "page-system-camanager": {
+        "name": "WebCfg - System: CA Manager",
+        "descr": "Allow access to the 'System: CA Manager' page.",
+        "match": [
+            "system_camanager.php*"
+        ]
+    },
+    "page-system-certmanager": {
+        "name": "WebCfg - System: Certificate Manager",
+        "descr": "Allow access to the 'System: Certificate Manager' page.",
+        "match": [
+            "system_certmanager.php*"
+        ]
+    },
+    "page-system-crlmanager": {
+        "name": "WebCfg - System: CRL Manager",
+        "descr": "Allow access to the 'System: CRL Manager' page.",
+        "match": [
+            "system_crlmanager.php*"
+        ]
+    },
+    "page-system-firmware-autoupdate": {
+        "name": "WebCfg - System: Firmware: Auto Update page",
+        "descr": "Allow access to the 'System: Firmware: Auto Update' page.",
+        "match": [
+            "system_firmware_check.php*"
+        ]
+    },
+    "page-system-firmware-manualupdate": {
+        "name": "WebCfg - System: Firmware: Manual Update page",
+        "descr": "Allow access to the 'System: Firmware: Manual Update' page.",
+        "match": [
+            "system_firmware.php*"
+        ]
+    },
+    "page-upload_progress": {
+        "name": "WebCfg - System: Firmware: Manual Update page (progress bar)",
+        "descr": "Allow access to the 'System: Firmware: Manual Update: Progress bar' page.",
+        "match": [
+            "upload_progress*"
+        ]
+    },
+    "page-system-firmware-settings": {
+        "name": "WebCfg - System: Firmware: Settings page",
+        "descr": "Allow access to the 'System: Firmware: Settings' page.",
+        "match": [
+            "system_firmware_settings.php*"
+        ]
+    },
+    "page-system-gatewaygroups": {
+        "name": "WebCfg - System: Gateway Groups page",
+        "descr": "Allow access to the 'System: Gateway Groups' page.",
+        "match": [
+            "system_gateway_groups.php*"
+        ]
+    },
+    "page-system-gateways": {
+        "name": "WebCfg - System: Gateways page",
+        "descr": "Allow access to the 'System: Gateways' page.",
+        "match": [
+            "system_gateways.php*"
+        ]
+    },
+    "page-system-gateways-editgatewaygroups": {
+        "name": "WebCfg - System: Gateways: Edit Gateway Groups page",
+        "descr": "Allow access to the 'System: Gateways: Edit Gateway Groups' page.",
+        "match": [
+            "system_gateway_groups_edit.php*"
+        ]
+    },
+    "page-system-gateways-editgateway": {
+        "name": "WebCfg - System: Gateways: Edit Gateway page",
+        "descr": "Allow access to the 'System: Gateways: Edit Gateway' page.",
+        "match": [
+            "system_gateways_edit.php*"
+        ]
+    },
+    "page-system-generalsetup": {
+        "name": "WebCfg - System: General Setup page",
+        "descr": "Allow access to the 'System: General Setup' page.",
+        "match": [
+            "system_general.php*"
+        ]
+    },
+    "page-system-groupmanager": {
+        "name": "WebCfg - System: Group manager page",
+        "descr": "Allow access to the 'System: Group manager' page.",
+        "match": [
+            "system_groupmanager.php*"
+        ]
+    },
+    "page-system-groupmanager-addprivs": {
+        "name": "WebCfg - System: Group Manager: Add Privileges page",
+        "descr": "Allow access to the 'System: Group Manager: Add Privileges' page.",
+        "match": [
+            "system_groupmanager_addprivs.php*"
+        ]
+    },
+    "page-system-hasync": {
+        "name": "Webcfg - System: High Availability",
+        "descr": "Allow access to the 'System: High Availability' page.",
+        "match": [
+            "system_hasync.php*"
+        ]
+    },
+    "page-system-license": {
+        "name": "WebCfg - System: License page",
+        "descr": "Allow access to the 'System: License' page.",
+        "match": [
+            "license.php*"
+        ]
+    },
+    "page-system-packagemanager": {
+        "name": "WebCfg - System: Package Manager page",
+        "descr": "Allow access to the 'System: Package Manager' page.",
+        "match": [
+            "pkg_mgr.php*"
+        ]
+    },
+    "page-system-packagemanager-installpackage": {
+        "name": "WebCfg - System: Package Manager: Install Package page",
+        "descr": "Allow access to the 'System: Package Manager: Install Package' page.",
+        "match": [
+            "pkg_mgr_install.php*"
+        ]
+    },
+    "page-system-packagemanager-installed": {
+        "name": "WebCfg - System: Package Manager: Installed page",
+        "descr": "Allow access to the 'System: Package Manager: Installed' page.",
+        "match": [
+            "pkg_mgr_installed.php*"
+        ]
+    },
+    "page-system-staticroutes": {
+        "name": "WebCfg - System: Static Routes page",
+        "descr": "Allow access to the 'System: Static Routes' page.",
+        "match": [
+            "system_routes.php*"
+        ]
+    },
+    "page-system-staticroutes-editroute": {
+        "name": "WebCfg - System: Static Routes: Edit route page",
+        "descr": "Allow access to the 'System: Static Routes: Edit route' page.",
+        "match": [
+            "system_routes_edit.php*"
+        ]
+    },
+    "page-system-usermanager": {
+        "name": "WebCfg - System: User Manager page",
+        "descr": "Allow access to the 'System: User Manager' page.",
+        "match": [
+            "system_usermanager.php*"
+        ]
+    },
+    "page-system-usermanager-addprivs": {
+        "name": "WebCfg - System: User Manager: Add Privileges page",
+        "descr": "Allow access to the 'System: User Manager: Add Privileges' page.",
+        "match": [
+            "system_usermanager_addprivs.php*"
+        ]
+    },
+    "page-system-usermanager-settings": {
+        "name": "WebCfg - System: User Manager: settings page",
+        "descr": "Allow access to the 'System: User Manager: settings' page.",
+        "match": [
+            "system_usermanager_settings.php*"
+        ]
+    },
+    "page-system-usermanager-settings-testldap": {
+        "name": "WebCfg - System: User Manager: Settings: Test LDAP page",
+        "descr": "Allow access to the 'System: User Manager: Settings: Test LDAP' page.",
+        "match": [
+            "system_usermanager_settings_test.php*"
+        ]
+    },
+    "page-system-usermanager-passwordmg": {
+        "name": "WebCfg - System: User Password Manager page",
+        "descr": "Allow access to the 'System: User Password Manager' page.",
+        "match": [
+            "system_usermanager_passwordmg.php*"
+        ]
+    },
+    "page-vpn-ipsec": {
+        "name": "WebCfg - VPN: IPsec page",
+        "descr": "Allow access to the 'VPN: IPsec' page.",
+        "match": [
+            "vpn_ipsec.php*"
+        ]
+    },
+    "page-vpn-ipsec-editphase1": {
+        "name": "WebCfg - VPN: IPsec: Edit Phase 1 page",
+        "descr": "Allow access to the 'VPN: IPsec: Edit Phase 1' page.",
+        "match": [
+            "vpn_ipsec_phase1.php*"
+        ]
+    },
+    "page-vpn-ipsec-editphase2": {
+        "name": "WebCfg - VPN: IPsec: Edit Phase 2 page",
+        "descr": "Allow access to the 'VPN: IPsec: Edit Phase 2' page.",
+        "match": [
+            "vpn_ipsec_phase2.php*"
+        ]
+    },
+    "page-vpn-ipsec-editkeys": {
+        "name": "WebCfg - VPN: IPsec: Edit Pre-Shared Keys",
+        "descr": "Allow access to the 'VPN: IPsec: Edit Pre-Shared Keys' page.",
+        "match": [
+            "vpn_ipsec_keys_edit.php*"
+        ]
+    },
+    "page-vpn-ipsec-mobile": {
+        "name": "WebCfg - VPN: IPsec: Mobile page",
+        "descr": "Allow access to the 'VPN: IPsec: Mobile' page.",
+        "match": [
+            "vpn_ipsec_mobile.php*"
+        ]
+    },
+    "page-vpn-ipsec-listkeys": {
+        "name": "WebCfg - VPN: IPsec: Pre-Shared Keys List",
+        "descr": "Allow access to the 'VPN: IPsec: Pre-Shared Keys List' page.",
+        "match": [
+            "vpn_ipsec_keys.php*"
+        ]
+    },
+    "page-vpn-vpnl2tp": {
+        "name": "WebCfg - VPN: L2TP page",
+        "descr": "Allow access to the 'VPN: L2TP' page.",
+        "match": [
+            "vpn_l2tp.php*"
+        ]
+    },
+    "page-vpn-vpnl2tp-users-edit": {
+        "name": "WebCfg - VPN: L2TP: Users : Edit page",
+        "descr": "Allow access to the 'VPN: L2TP: Users : Edit' page.",
+        "match": [
+            "vpn_l2tp_users_edit.php*"
+        ]
+    },
+    "page-vpn-vpnl2tp-users": {
+        "name": "WebCfg - VPN: L2TP: Users page",
+        "descr": "Allow access to the 'VPN: L2TP : Users' page.",
+        "match": [
+            "vpn_l2tp_users.php*"
+        ]
+    },
+    "page-openvpn-client-export": {
+        "name": "WebCfg - VPN: OpenVPN: Client Export Utility",
+        "descr": "Allow access to the 'VPN: OpenVPN: Client Export Utility' page.",
+        "match": [
+            "vpn_openvpn_export.php*"
+        ]
+    },
+    "page-openvpn-client": {
+        "name": "WebCfg - VPN: OpenVPN: Client page",
+        "descr": "Allow access to the 'VPN: OpenVPN: Client' page.",
+        "match": [
+            "vpn_openvpn_client.php*"
+        ]
+    },
+    "page-openvpn-csc": {
+        "name": "WebCfg - VPN: OpenVPN: Client Specific Override page",
+        "descr": "Allow access to the 'VPN: OpenVPN: Client Specific Override' page.",
+        "match": [
+            "vpn_openvpn_csc.php*"
+        ]
+    },
+    "page-openvpn-server": {
+        "name": "WebCfg - VPN: OpenVPN: Server page",
+        "descr": "Allow access to the 'VPN: OpenVPN: Server' page.",
+        "match": [
+            "vpn_openvpn_server.php*"
+        ]
+    },
+    "page-vpn-vpnpptp": {
+        "name": "WebCfg - VPN: PPTP page",
+        "descr": "Allow access to the 'VPN: PPTP' page.",
+        "match": [
+            "vpn_pptp.php*"
+        ]
+    },
+    "page-vpn-vpnpptp-user-edit": {
+        "name": "WebCfg - VPN: PPTP: User: Edit page",
+        "descr": "Allow access to the 'VPN: PPTP: User: Edit' page.",
+        "match": [
+            "vpn_pptp_users_edit.php*"
+        ]
+    },
+    "page-vpn-vpnpptp-users": {
+        "name": "WebCfg - VPN: PPTP: Users page",
+        "descr": "Allow access to the 'VPN: PPTP: Users' page.",
+        "match": [
+            "vpn_pptp_users.php*"
+        ]
+    },
+    "page-xmlrpcinterfacestats": {
+        "name": "WebCfg - XMLRPC Interface Stats page",
+        "descr": "Allow access to the 'XMLRPC Interface Stats' page.",
+        "match": [
+            "ifstats.php*"
+        ]
+    },
+    "page-xmlrpclibrary": {
+        "name": "WebCfg - XMLRPC Library page",
+        "descr": "Allow access to the 'XMLRPC Library' page.",
+        "match": [
+            "xmlrpc.php*"
+        ]
+    }
+}
