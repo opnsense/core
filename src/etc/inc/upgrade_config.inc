@@ -29,6 +29,24 @@
 
 require_once('rrd.inc');
 
+
+function map_page_privname($page) {
+	global $priv_list;
+
+	foreach ($priv_list as $pname => $pdata) {
+		if (strncmp($pname, "page-", 5))
+			continue;
+		$fullwc = false;
+		if (!strcasecmp($page,"any")||!strcmp($page,"*"))
+			$fullwc = true;
+		if (cmp_page_matches($page, $pdata['match'], $fullwc))
+			return $pname;
+	}
+
+	return false;
+}
+
+
 /*
  * Upgrade functions must be named:
  *    upgrade_XXX_to_YYY
