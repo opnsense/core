@@ -37,7 +37,7 @@ function killbyname($procname, $sig = 'TERM')
 
 function killbypid($pidfile, $sig = 'TERM')
 {
-	if (!file_exists($pidfile)) {
+	if (!isvalidpid($pidfile)) {
 		return;
 	}
 
@@ -46,12 +46,11 @@ function killbypid($pidfile, $sig = 'TERM')
 
 function isvalidpid($pidfile)
 {
-	$output = "";
-	if (file_exists($pidfile)) {
-		exec("/bin/pgrep -nF {$pidfile}", $output, $retval);
-		return (intval($retval) == 0);
+	if (!file_exists($pidfile)) {
+		return false;
 	}
-	return false;
+
+	return mwexecf('/bin/pgrep -nF %s', $pidfile) == 0;
 }
 
 function is_process_running($process)
