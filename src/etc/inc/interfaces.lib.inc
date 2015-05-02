@@ -107,3 +107,33 @@ function legacy_interface_rename($ifs, $name)
 		log_error('The command `' . $cmd . '\' failed to execute');
 	}
 }
+
+function legacy_interface_mtu($ifs, $mtu)
+{
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' mtu ' . escapeshellarg($mtu);
+
+	exec($cmd . ' 2>&1', $out, $ret);
+	if ($ret) {
+		log_error('The command `' . $cmd . '\' failed to execute');
+	}
+}
+
+function legacy_bridge_member($ifs, $member)
+{
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' addm ' . escapeshellarg($member);
+
+	exec($cmd . ' 2>&1', $out, $ret);
+	if ($ret) {
+		log_error('The command `' . $cmd . '\' failed to execute');
+	}
+}
+
+function legacy_vlan_tag($ifs, $member, $tag)
+{
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlandev ' . escapeshellarg($member) . ' vlan ' . escapeshellarg($tag);
+
+	exec($cmd . ' 2>&1', $out, $ret);
+	if ($ret) {
+		log_error('The command `' . $cmd . '\' failed to execute');
+	}
+}

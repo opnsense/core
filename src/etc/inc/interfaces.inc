@@ -302,7 +302,7 @@ function interface_vlan_configure(&$vlan) {
 		pfSense_ngctl_name("{$tmpvlanif}:", $vlanif);
 	}
 
-	pfSense_vlan_create($vlanif, $if, $tag);
+	legacy_vlan_tag($vlanif, $if, $tag);
 
 	interfaces_bring_up($vlanif);
 
@@ -599,11 +599,11 @@ function interface_bridge_configure(&$bridge, $checkmember = 0) {
 			continue;
 		}
 		/* make sure the parent interface is up */
-		pfSense_interface_mtu($realif, $smallermtu);
+		legacy_interface_mtu($realif, $smallermtu);
 		pfSense_interface_capabilities($realif, -$flags_off);
 		pfSense_interface_capabilities($realif, $flags_on);
 		interfaces_bring_up($realif);
-		pfSense_bridge_add_member($bridge['bridgeif'], $realif);
+		legacy_bridge_member($bridge['bridgeif'], $realif);
 	}
 
 	if (isset($bridge['enablestp'])) {
@@ -720,8 +720,9 @@ function interface_bridge_add_member($bridgeif, $interface) {
 	$mtu = get_interface_mtu($bridgeif);
 	$mtum = get_interface_mtu($interface);
 
-	if ($mtu != $mtum && !(substr($interface, 0, 3) == "gif" && $mtu <= 1500))
-		pfSense_interface_mtu($interface, $mtu);
+	if ($mtu != $mtum && !(substr($interface, 0, 3) == "gif" && $mtu <= 1500)) {
+		legacy_interface_mtu($interface, $mtu);
+	}
 
 	$options = pfSense_get_interface_addresses($bridgeif);
 	$flags_on = 0;
@@ -751,7 +752,7 @@ function interface_bridge_add_member($bridgeif, $interface) {
 	pfSense_interface_capabilities($interface, $flags_on);
 
 	interfaces_bring_up($interface);
-	pfSense_bridge_add_member($bridgeif, $interface);
+	legacy_bridge_member($bridgeif, $interface);
 }
 
 function interfaces_lagg_configure($realif = "") {
@@ -845,10 +846,12 @@ function interface_lagg_configure(&$lagg)
 	$checklist = get_interface_list();
 
 	foreach ($members as $member) {
-		if (!array_key_exists($member, $checklist))
+		if (!array_key_exists($member, $checklist)) {
 			continue;
+		}
+
 		/* make sure the parent interface is up */
-		pfSense_interface_mtu($member, $smallermtu);
+		legacy_interface_mtu($member, $smallermtu);
 		pfSense_interface_capabilities($member, -$flags_off);
 		pfSense_interface_capabilities($member, $flags_on);
 		interfaces_bring_up($member);
@@ -2908,14 +2911,17 @@ function interface_vlan_adapt_mtu($vlanifs, $mtu) {
 				* It never happens since interface_vlan_mtu_configured finds the biggest mtu on vlans.
 				* Also if it has a lower mtu configured just respect user choice.
 				*/
-				if (intval($config['interfaces'][$assignedport]['mtu']) > $mtu)
-					pfSense_interface_mtu($vlan['vlanif'], $mtu);
+				if (intval($config['interfaces'][$assignedport]['mtu']) > $mtu) {
+					legacy_interface_mtu($vlan['vlanif'], $mtu);
+				}
 			} else {
-				if (get_interface_mtu($vlan['vlanif']) != $mtu)
-					pfSense_interface_mtu($vlan['vlanif'], $mtu);
+				if (get_interface_mtu($vlan['vlanif']) != $mtu) {
+					legacy_interface_mtu($vlan['vlanif'], $mtu);
+				}
 			}
-		} else if (get_interface_mtu($vlan['vlanif']) != $mtu)
-			pfSense_interface_mtu($vlan['vlanif'], $mtu);
+		} else if (get_interface_mtu($vlan['vlanif']) != $mtu) {
+			legacy_interface_mtu($vlan['vlanif'], $mtu);
+		}
 	}
 }
 
@@ -3128,16 +3134,19 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 				$parentmtu = interface_vlan_mtu_configured($realhwif, $wancfg['mtu']);
 
 			if ($wancfg['mtu'] > $parentmtu) {
-				if (get_interface_mtu($realhwif) != $wancfg['mtu'])
-					pfSense_interface_mtu($realhwif, $wancfg['mtu']);
+				if (get_interface_mtu($realhwif) != $wancfg['mtu']) {
+					legacy_interface_mtu($realhwif, $wancfg['mtu']);
+				}
 
 				/* All vlans need to use the same mtu value as their parent. */
 				interface_vlan_adapt_mtu(link_interface_to_vlans($realhwif), $wancfg['mtu']);
-			} else
-				pfSense_interface_mtu($realif, $wancfg['mtu']);
+			} else {
+				legacy_interface_mtu($realif, $wancfg['mtu']);
+			}
 		} else {
-			if ($wancfg['mtu'] != get_interface_mtu($realif))
-				pfSense_interface_mtu($realif, $wancfg['mtu']);
+			if ($wancfg['mtu'] != get_interface_mtu($realif)) {
+				legacy_interface_mtu($realif, $wancfg['mtu']);
+			}
 
 			/* This case is needed when the parent of vlans is being configured */
 			interface_vlan_adapt_mtu(link_interface_to_vlans($realif), $wancfg['mtu']);
