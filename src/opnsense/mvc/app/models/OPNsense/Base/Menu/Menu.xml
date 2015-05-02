@@ -37,7 +37,7 @@
                 <Settings url="/system_usermanager_settings.php"/>
                 <Servers url="/system_authservers.php"/>
         </UserManager>
-        
+
     </System>
 
     <Interfaces order="2" cssClass="glyphicon glyphicon-wrench">
