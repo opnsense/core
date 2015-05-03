@@ -29,6 +29,7 @@
 namespace OPNsense\Base;
 
 use OPNsense\Core\Config;
+use OPNsense\Core\ACL;
 use Phalcon\Mvc\Controller;
 use Phalcon\Translate\Adapter\NativeArray;
 
@@ -75,6 +76,14 @@ class ControllerBase extends Controller
             if ($this->session->has("Username") == false) {
                 $this->response->redirect("/", true);
             }
+
+            // Authorization using legacy acl structure
+            $acl = new ACL();
+            if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
+                $this->response->redirect("/", true);
+            }
+
+
             // check for valid csrf on post requests
             if ($this->request->isPost() && !$this->security->checkToken()) {
                 // post without csrf, exit.

@@ -28,6 +28,7 @@
  */
 namespace OPNsense\Base;
 
+use OPNsense\Core\ACL;
 use Phalcon\Mvc\Controller;
 
 /**
@@ -56,6 +57,12 @@ class ApiControllerBase extends Controller
 
         // use authentication of legacy OPNsense to validate user.
         if ($this->session->has("Username") == false) {
+            $this->response->redirect("/", true);
+        }
+
+        // Authorization using legacy acl structure
+        $acl = new ACL();
+        if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
             $this->response->redirect("/", true);
         }
 
