@@ -50,6 +50,16 @@ function legacy_interface_listget($flag = '')
 	return ($ifs);
 }
 
+function legacy_interface_flags($ifs, $flag)
+{
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' ' . escapeshellarg($flag);
+
+	exec($cmd . ' 2>&1', $out, $ret);
+	if ($ret) {
+		log_error('The command `' . $cmd . '\' failed to execute');
+	}
+}
+
 function legacy_interface_create($ifs)
 {
 	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' create';

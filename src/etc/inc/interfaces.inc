@@ -72,16 +72,15 @@ function convert_128bit_to_ipv6($ip6bin) {
 	return($ip6addr);
 }
 
-
-
-
-function interfaces_bring_up($interface) {
-	if(!$interface) {
+function interfaces_bring_up($interface)
+{
+	if (!$interface) {
 		log_error(gettext("interfaces_bring_up() was called but no variable defined."));
-		log_error( "Backtrace: " . debug_backtrace() );
+		log_error( "Backtrace: " . debug_backtrace());
 		return;
 	}
-	pfSense_interface_flags($interface, IFF_UP);
+
+	legacy_interface_flags($interface, 'up');
 }
 
 /*
@@ -923,20 +922,30 @@ function interface_gre_configure(&$gre, $grekey = "") {
 	} else {
 		mwexec("/sbin/ifconfig {$greif} " . escapeshellarg($gre['tunnel-local-addr']) . " " . escapeshellarg($gre['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gre['tunnel-remote-net']));
 	}
-	if (isset($gre['link0']))
-		pfSense_interface_flags($greif, IFF_LINK0);
-	if (isset($gre['link1']))
-		pfSense_interface_flags($greif, IFF_LINK1);
-	if (isset($gre['link2']))
-		pfSense_interface_flags($greif, IFF_LINK2);
 
-	if($greif)
-		interfaces_bring_up($greif);
-	else
-		log_error(gettext("Could not bring greif up -- variable not defined."));
+	if (isset($gre['link0'])) {
+		legacy_interface_flags($greif, 'link0');
+	}
+	if (isset($gre['link1'])) {
+		legacy_interface_flags($greif, 'link1');
+	}
+	if (isset($gre['link2'])) {
+		legacy_interface_flags($greif, 'link2');
+	}
 
-	if (isset($gre['link1']) && $gre['link1'])
-		mwexec("/sbin/route add " . escapeshellarg($gre['tunnel-remote-addr']) . "/" . escapeshellarg($gre['tunnel-remote-net']) . " " . escapeshellarg($gre['tunnel-local-addr']));
+	interfaces_bring_up($greif);
+
+	if (isset($gre['link1']) && $gre['link1']) {
+		mwexecf(
+			'/sbin/route add %s/%s %s',
+			array(
+				$gre['tunnel-remote-addr'],
+				$gre['tunnel-remote-net'],
+				$gre['tunnel-local-addr']
+			)
+		);
+	}
+
 	if (is_ipaddrv4($gre['tunnel-remote-addr'])) {
 		file_put_contents("/tmp/{$greif}_router", $gre['tunnel-remote-addr']);
 	}
@@ -1023,14 +1032,15 @@ function interface_gif_configure(&$gif, $gifkey = "") {
 	} else {
 		mwexec("/sbin/ifconfig {$gifif} " . escapeshellarg($gif['tunnel-local-addr']) . " " . escapeshellarg($gif['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gif['tunnel-remote-net']));
 	}
-	if (isset($gif['link0']))
-		pfSense_interface_flags($gifif, IFF_LINK0);
-	if (isset($gif['link1']))
-		pfSense_interface_flags($gifif, IFF_LINK1);
-	if($gifif)
-		interfaces_bring_up($gifif);
-	else
-		log_error(gettext("could not bring gifif up -- variable not defined"));
+
+	if (isset($gif['link0'])) {
+		legacy_interface_flags($gifif, 'link0');
+	}
+	if (isset($gif['link1'])) {
+		legacy_interface_flags($gifif, 'link1');
+	}
+
+	interfaces_bring_up($gifif);
 
 	$iflist = get_configured_interface_list();
 	foreach($iflist as $ifname) {
@@ -1045,7 +1055,6 @@ function interface_gif_configure(&$gif, $gifkey = "") {
 			}
 		}
 	}
-
 
 	if (is_ipaddrv4($gif['tunnel-remote-addr'])) {
 		file_put_contents("/tmp/{$gifif}_router", $gif['tunnel-remote-addr']);
@@ -1298,8 +1307,9 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 		if(does_interface_exist("$realif")) {
 			mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " delete", true);
 			interface_ipalias_cleanup($interface);
-			if ($destroy == true)
-				pfSense_interface_flags($realif, -IFF_UP);
+			if ($destroy) {
+				legacy_interface_flags($realif, 'down');
+			}
 			mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
 		}
 		break;
@@ -1307,8 +1317,9 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 		if(does_interface_exist("$realif")) {
 			mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " delete", true);
 			interface_ipalias_cleanup($interface);
-			if ($destroy == true)
-				pfSense_interface_flags($realif, -IFF_UP);
+			if ($destroy) {
+				legacy_interface_flags($realif, 'down');
+			}
 			mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
 		}
 		break;
@@ -1329,8 +1340,9 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 			if (is_ipaddrv6($ip6) && $ip6 != "::")
 				mwexec("/sbin/ifconfig " . escapeshellarg($realifv6) . " inet6 {$ip6} delete", true);
 			interface_ipalias_cleanup($interface, "inet6");
-			if ($destroy == true)
-				pfSense_interface_flags($realif, -IFF_UP);
+			if ($destroy) {
+				legacy_interface_flags($realif, 'down');
+			}
 			mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
 		}
 		$track6 = link_interface_to_track6($interface);
@@ -1343,8 +1355,9 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 			if (is_ipaddrv6($ip6))
 				mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$ip6} delete", true);
 			interface_ipalias_cleanup($interface, "inet6");
-			if ($destroy == true)
-				pfSense_interface_flags($realif, -IFF_UP);
+			if ($destroy) {
+				legacy_interface_flags($realif, 'down');
+			}
 		}
 		$track6 = link_interface_to_track6($interface);
 		break;
@@ -1356,8 +1369,9 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 			if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6']))
 				mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$ifcfg['ipaddrv6']} delete", true);
 			interface_ipalias_cleanup($interface, "inet6");
-			if ($destroy == true)
-				pfSense_interface_flags($realif, -IFF_UP);
+			if ($destroy) {
+				legacy_interface_flags($realif, 'down');
+			}
 			mwexec("/usr/sbin/arp -d -i " . escapeshellarg($realif) . " -a");
 		}
 		$track6 = link_interface_to_track6($interface);
@@ -3451,11 +3465,12 @@ function interface_6rd_configure($interface = "wan", $wancfg)
 	}
 	$tmpstfiface = legacy_interface_create('stf');
 	legacy_interface_rename($tmpstfiface, $stfiface);
-	pfSense_interface_flags($stfiface, IFF_LINK2);
-	if ($wancfg['prefix-6rd-v4plen'] > 0)
+	legacy_interface_flags($stfiface, 'link2');
+	if ($wancfg['prefix-6rd-v4plen'] > 0) {
 		$rd6prefixlen += intval($wancfg['prefix-6rd-v4plen']);
-	else
+	} else {
 		$rd6prefixlen += 32;
+	}
 	mwexec("/sbin/ifconfig {$stfiface} inet6 {$rd6prefix}/{$rd6prefixlen}");
 	mwexec("/sbin/ifconfig {$stfiface} stfv4br " . escapeshellarg($wancfg['gateway-6rd']));
 	if ($wancfg['prefix-6rd-v4plen'] > 0 && $wancfg['prefix-6rd-v4plen'] < 32)
@@ -3556,7 +3571,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 	}
 	$tmpstfiface = legacy_interface_create('stf');
 	legacy_interface_rename($tmpstfiface, $stfiface);
-	pfSense_interface_flags($stfiface, IFF_LINK2);
+	legacy_interface_flags($stfiface, 'link2');
 	mwexec("/sbin/ifconfig {$stfiface} inet6 {$stflanpr} prefixlen 16");
 
 	/* write out a default router file */

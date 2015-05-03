@@ -127,7 +127,7 @@ function enable_hardware_offloading($interface)
 	$supported_ints = array('fxp');
 	if (in_array($int_family, $supported_ints)) {
 		if (does_interface_exist($int)) {
-			pfSense_interface_flags($int, IFF_LINK0);
+			legacy_interface_flags($int, 'link0');
 		}
 	}
 }
