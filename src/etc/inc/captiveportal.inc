@@ -222,20 +222,6 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
     return $sessionid;
 }
 
-// TODO: fix statistics request
-/* get last activity timestamp given client IP address */
-function captiveportal_get_last_activity($ip, $mac = NULL) {
-    global $cpzone;
-
-    $ipfwoutput = pfSense_ipfw_getTablestats($cpzone, 1, $ip, $mac);
-    /* Reading only from one of the tables is enough of approximation. */
-    if (is_array($ipfwoutput)) {
-        return $ipfwoutput['timestamp'];
-    }
-
-    return 0;
-}
-
 //
 //
 //
@@ -761,21 +747,6 @@ function captiveportal_prune_old()
                 }
             }
 
-            /* check if the radius idle_timeout attribute has been set and if its set change the idletimeout to this value */
-            $uidletimeout = (is_numeric($cpentry[8])) ? $cpentry[8] : $idletimeout;
-            /* if an idle timeout is specified, get last activity timestamp from ipfw */
-            if (!$timedout && $uidletimeout > 0) {
-                $lastact = captiveportal_get_last_activity($cpentry[2], $cpentry[3]);
-                /*	If the user has logged on but not sent any traffic they will never be logged out.
-                 *	We "fix" this by setting lastact to the login timestamp.
-                 */
-                $lastact = $lastact ? $lastact : $cpentry[0];
-                if ($lastact && (($pruning_time - $lastact) >= $uidletimeout)) {
-                    $timedout = true;
-                    $term_cause = 4; // Idle-Timeout
-                    $stop_time = $lastact; // Entry added to comply with WISPr
-                }
-            }
 
             /* if vouchers are configured, activate session timeouts */
             if (!$timedout && isset($vcpcfg['enable']) && !empty($cpentry[7])) {

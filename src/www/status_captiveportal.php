@@ -185,7 +185,6 @@ $mac_man = load_mac_manufacturer_table();
 								    <td class="listr"><?=htmlspecialchars($cpent->username);?>&nbsp;</td>
 								    <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent->allow_time));?></td>
 									<?php if ($_GET['showact']):
-									//$last_act = captiveportal_get_last_activity($cpent->ip, $cpent->mac);
 									if ( array_key_exists($cpent->ip,$accounting_info) ) $last_act = $accounting_info[$cpent->ip]['last_accessed'] ;
 									else $last_act=0;
 									?>
