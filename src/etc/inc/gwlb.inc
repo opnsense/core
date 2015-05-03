@@ -52,6 +52,9 @@ function setup_gateways_monitor()
 {
 	global $config, $g;
 
+	@mkdir('/var/db/rrd', 0775);
+	@chown('/var/db/rrd', 'nobody');
+
 	$gateways_arr = return_gateways_array();
 	if (!is_array($gateways_arr)) {
 		log_error("No gateways to monitor. Apinger will not be run.");
@@ -338,10 +341,6 @@ EOD;
 	}
 	@file_put_contents('/var/etc/apinger.conf', $apingerconfig);
 	unset($apingerconfig);
-
-	@chmod('/tmp', 01777);
-	@mkdir('/var/db/rrd', 0775);
-	@chown('/var/db/rrd', 'nobody');
 
 	/* Restart apinger process */
 	if (isvalidpid('/var/run/apinger.pid')) {
