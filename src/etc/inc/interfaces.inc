@@ -291,7 +291,7 @@ function interface_vlan_configure(&$vlan) {
 	/* make sure the parent interface is up */
 	interfaces_bring_up($if);
 	/* Since we are going to add vlan(4) try to enable all that hardware supports. */
-	pfSense_interface_capabilities($if, IFCAP_VLAN_HWTAGGING|IFCAP_VLAN_MTU|IFCAP_VLAN_HWFILTER);
+	legacy_interface_flags($if, 'vlanhwtag vlanmtu vlanhwfilter');
 
 	if (!empty($vlanif) && does_interface_exist($vlanif)) {
 		interface_bring_down($vlanif, true);
@@ -547,35 +547,36 @@ function interface_bridge_configure(&$bridge, $checkmember = 0) {
 		else if (!empty($mtu) && $mtu < $smallermtu)
 			$smallermtu = $mtu;
 	}
-	if ($foundgif == false && $checkmember == 2)
+	if ($foundgif == false && $checkmember == 2) {
 		return;
+	}
 
 	/* Just in case anything is not working well */
-	if ($smallermtu == 0)
+	if ($smallermtu == 0) {
 		$smallermtu = 1500;
+	}
 
-	$flags_on = 0;
-	$flags_off = 0;
-	if (isset($config['system']['disablechecksumoffloading']) || ($commonrx === false))
-		$flags_off |= IFCAP_RXCSUM;
-	else
-		$flags_on |= IFCAP_RXCSUM;
-	if (isset($config['system']['disablechecksumoffloading']) || ($commontx === false))
-		$flags_off |= IFCAP_TXCSUM;
-	else
-		$flags_on |= IFCAP_TXCSUM;
-	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso4 === false))
-		$flags_off |= IFCAP_TSO4;
-	else
-		$flags_on |= IFCAP_TSO4;
-	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso6 === false))
-		$flags_off |= IFCAP_TSO6;
-	else
-		$flags_on |= IFCAP_TSO6;
-	if (isset($config['system']['disablelargereceiveoffloading']) || ($commonlro === false))
-		$flags_off |= IFCAP_LRO;
-	else
-		$flags_on |= IFCAP_LRO;
+	$flags = '';
+	if (isset($config['system']['disablechecksumoffloading']) || ($commonrx === false)) {
+		$flags .= '-';
+	}
+	$flags .= 'rxcsum ';
+	if (isset($config['system']['disablechecksumoffloading']) || ($commontx === false)) {
+		$flags .= '-';
+	}
+	$flags .= 'txcsum ';
+	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso4 === false)) {
+		$flags .= '-';
+	}
+	$flags .= 'tso4 ';
+	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso6 === false)) {
+		$flags .= '-';
+	}
+	$flags .= 'tso6 ';
+	if (isset($config['system']['disablelargereceiveoffloading']) || ($commonlro === false)) {
+		$flags .= '-';
+	}
+	$flags .= 'lro ';
 
 	if (file_exists("/var/run/booting") || !empty($bridge['bridgeif'])) {
 		legacy_interface_destroy($bridge['bridgeif']);
@@ -590,8 +591,9 @@ function interface_bridge_configure(&$bridge, $checkmember = 0) {
 
 	/* Add interfaces to bridge */
 	foreach ($members as $member) {
-		if (empty($checklist[$member]))
+		if (empty($checklist[$member])) {
 			continue;
+		}
 		$realif = get_real_interface($member);
 		if (!$realif) {
 			log_error(gettext("realif not defined in interfaces bridge - up"));
@@ -599,8 +601,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0) {
 		}
 		/* make sure the parent interface is up */
 		legacy_interface_mtu($realif, $smallermtu);
-		pfSense_interface_capabilities($realif, -$flags_off);
-		pfSense_interface_capabilities($realif, $flags_on);
+		legacy_interface_flags($realif, $flags);
 		interfaces_bring_up($realif);
 		legacy_bridge_member($bridge['bridgeif'], $realif);
 	}
@@ -711,10 +712,11 @@ function interface_bridge_configure(&$bridge, $checkmember = 0) {
 		log_error(gettext("bridgeif not defined -- could not bring interface up"));
 }
 
-function interface_bridge_add_member($bridgeif, $interface) {
-
-	if (!does_interface_exist($bridgeif) || !does_interface_exist($interface))
+function interface_bridge_add_member($bridgeif, $interface)
+{
+	if (!does_interface_exist($bridgeif) || !does_interface_exist($interface)) {
 		return;
+	}
 
 	$mtu = get_interface_mtu($bridgeif);
 	$mtum = get_interface_mtu($interface);
