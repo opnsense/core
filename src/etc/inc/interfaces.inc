@@ -3037,38 +3037,14 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
 	/* skip vlans for checksumming and polling */
 	if (!stristr($realif, "_vlan") && is_array($options)) {
-		$flags_on = 0;
-		$flags_off = 0;
-		if(isset($config['system']['disablechecksumoffloading'])) {
-			if (isset($options['encaps']['txcsum']))
-				$flags_off |= IFCAP_TXCSUM;
-			if (isset($options['encaps']['rxcsum']))
-				$flags_off |= IFCAP_RXCSUM;
-		} else {
-			if (isset($options['caps']['txcsum']))
-				$flags_on |= IFCAP_TXCSUM;
-			if (isset($options['caps']['rxcsum']))
-				$flags_on |= IFCAP_RXCSUM;
-		}
-
-		if(isset($config['system']['disablesegmentationoffloading']))
-			$flags_off |= IFCAP_TSO;
-		else if (isset($options['caps']['tso']) || isset($options['caps']['tso4']) || isset($options['caps']['tso6']))
-			$flags_on |= IFCAP_TSO;
-
-		if(isset($config['system']['disablelargereceiveoffloading']))
-			$flags_off |= IFCAP_LRO;
-		else if (isset($options['caps']['lro']))
-			$flags_on |= IFCAP_LRO;
-
-		/* if the NIC supports polling *AND* it is enabled in the GUI */
-		if (!isset($config['system']['polling']))
-			$flags_off |= IFCAP_POLLING;
-		else if (isset($options['caps']['polling']))
-			$flags_on |= IFCAP_POLLING;
-
-		pfSense_interface_capabilities($realhwif, -$flags_off);
-		pfSense_interface_capabilities($realhwif, $flags_on);
+		legacy_interface_flags($realhwif, sprintf(
+			'%stxcsum %srxcsum %stso %slro %spolling',
+			isset($config['system']['disablechecksumoffloading']) ? '-' : '',
+			isset($config['system']['disablechecksumoffloading']) ? '-' : '',
+			isset($config['system']['disablesegmentationoffloading']) ? '-' : '',
+			isset($config['system']['disablelargereceiveoffloading']) ? '-' : '',
+			isset($config['system']['polling']) ? '' : '-'
+		));
 	}
 
 	/* invalidate interface/ip/sn cache */
