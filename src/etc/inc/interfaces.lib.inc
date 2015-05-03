@@ -52,7 +52,8 @@ function legacy_interface_listget($flag = '')
 
 function legacy_interface_flags($ifs, $flag)
 {
-	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' ' . escapeshellarg($flag);
+	/* $flags isn't escaped because it can be an argument list */
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' ' . $flag;
 
 	exec($cmd . ' 2>&1', $out, $ret);
 	if ($ret) {

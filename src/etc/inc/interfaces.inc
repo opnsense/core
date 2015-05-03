@@ -726,32 +726,16 @@ function interface_bridge_add_member($bridgeif, $interface)
 	}
 
 	$options = pfSense_get_interface_addresses($bridgeif);
-	$flags_on = 0;
-	$flags_off = 0;
-	if (isset($options['encaps']['txcsum']))
-		$flags_on |= IFCAP_TXCSUM;
-	else
-		$flags_off |= IFCAP_TXCSUM;
-	if (isset($options['encaps']['rxcsum']))
-		$flags_on |= IFCAP_RXCSUM;
-	else
-		$flags_off |= IFCAP_RXCSUM;
-	if (isset($options['encaps']['tso4']))
-		$flags_on |= IFCAP_TSO4;
-	else
-		$flags_off |= IFCAP_TSO4;
-	if (isset($options['encaps']['tso6']))
-		$flags_on |= IFCAP_TSO6;
-	else
-		$flags_off |= IFCAP_TSO6;
-	if (isset($options['encaps']['lro']))
-		$flags_on |= IFCAP_LRO;
-	else
-		$flags_off |= IFCAP_LRO;
+	$flags = sprintf(
+		'%stxcsum %srxcsum %stso4 %stso6 %slro',
+		isset($options['encaps']['txcsum']) ? '' : '-',
+		isset($options['encaps']['rxcsum']) ? '' : '-',
+		isset($options['encaps']['tso4']) ? '' : '-',
+		isset($options['encaps']['tso6']) ? '' : '-',
+		isset($options['encaps']['lro']) ? '' : '-'
+	);
 
-	pfSense_interface_capabilities($interface, -$flags_off);
-	pfSense_interface_capabilities($interface, $flags_on);
-
+	legacy_interface_flags($interface, $flags);
 	interfaces_bring_up($interface);
 	legacy_bridge_member($bridgeif, $interface);
 }
@@ -821,28 +805,27 @@ function interface_lagg_configure(&$lagg)
 	if ($smallermtu == 0)
 		$smallermtu = 1500;
 
-	$flags_on = 0;
-	$flags_off = 0;
-	if (isset($config['system']['disablechecksumoffloading']) || ($commonrx === false))
-		$flags_off |= IFCAP_RXCSUM;
-	else
-		$flags_on |= IFCAP_RXCSUM;
-	if (isset($config['system']['disablechecksumoffloading']) || ($commontx === false))
-		$flags_off |= IFCAP_TXCSUM;
-	else
-		$flags_on |= IFCAP_TXCSUM;
-	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso4 === false))
-		$flags_off |= IFCAP_TSO4;
-	else
-		$flags_on |= IFCAP_TSO4;
-	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso6 === false))
-		$flags_off |= IFCAP_TSO6;
-	else
-		$flags_on |= IFCAP_TSO6;
-	if (isset($config['system']['disablelargereceiveoffloading']) || ($commonlro === false))
-		$flags_off |= IFCAP_LRO;
-	else
-		$flags_on |= IFCAP_LRO;
+	$flags = '';
+	if (isset($config['system']['disablechecksumoffloading']) || ($commonrx === false)) {
+		$flags .= '';
+	}
+	$flags .= 'rxcsum ';
+	if (isset($config['system']['disablechecksumoffloading']) || ($commontx === false)) {
+		$flags .= '';
+	}
+	$flags .= 'txcsum ';
+	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso4 === false)) {
+		$flags .= '';
+	}
+	$flags .= 'tso4 ';
+	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso6 === false)) {
+		$flags .= '';
+	}
+	$flags .= 'tso6 ';
+	if (isset($config['system']['disablelargereceiveoffloading']) || ($commonlro === false)) {
+		$flags .= '';
+	}
+	$flags .= 'lro ';
 
 	$checklist = get_interface_list();
 
@@ -853,8 +836,7 @@ function interface_lagg_configure(&$lagg)
 
 		/* make sure the parent interface is up */
 		legacy_interface_mtu($member, $smallermtu);
-		pfSense_interface_capabilities($member, -$flags_off);
-		pfSense_interface_capabilities($member, $flags_on);
+		legacy_interface_flags($member, $flags);
 		interfaces_bring_up($member);
 		mwexec("/sbin/ifconfig {$laggif} laggport {$member}");
 	}
