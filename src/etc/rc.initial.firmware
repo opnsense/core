@@ -44,6 +44,7 @@ echo
 # upgrade all packages if possible
 pkg upgrade -y
 pkg autoremove -y
+pkg clean -y
 
 echo
 

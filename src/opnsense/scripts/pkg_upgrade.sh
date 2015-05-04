@@ -42,6 +42,7 @@ if [ -z "$pkg_running" ]; then
 		# update all installed packages
 		pkg upgrade -y >> ${PKG_PROGRESS_FILE}
 		pkg autoremove -y >> ${PKG_PROGRESS_FILE}
+		pkg clean -y >> ${PKG_PROGRESS_FILE}
 		# restart the web server
 		/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE}
 		# if we can update base, we'll do that as well
