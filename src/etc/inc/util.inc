@@ -50,7 +50,7 @@ function isvalidpid($pidfile)
 		return false;
 	}
 
-	return mwexecf('/bin/pgrep -nF %s', $pidfile) == 0;
+	return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
 }
 
 function is_process_running($process)
