@@ -1141,53 +1141,6 @@ function captiveportal_free_dn_ruleno($ruleno) {
 }
 
 
-
-/**
- * This function will calculate the traffic produced by a client
- * based on its firewall rule
- *
- * Point of view: NAS
- *
- * Input means: from the client
- * Output means: to the client
- *
- */
-
-function getVolume($ip, $mac = NULL) {
-    global $config, $cpzone;
-
-    $reverse = empty($config['captiveportal'][$cpzone]['reverseacct']) ? false : true;
-    $volume = array();
-    // Initialize vars properly, since we don't want NULL vars
-    $volume['input_pkts'] = $volume['input_bytes'] = $volume['output_pkts'] = $volume['output_bytes'] = 0 ;
-
-    $ipfw = pfSense_ipfw_getTablestats($cpzone, 1, $ip, $mac);
-    if (is_array($ipfw)) {
-        if ($reverse) {
-            $volume['output_pkts'] = $ipfw['packets'];
-            $volume['output_bytes'] = $ipfw['bytes'];
-        }
-        else {
-            $volume['input_pkts'] = $ipfw['packets'];
-            $volume['input_bytes'] = $ipfw['bytes'];
-        }
-    }
-
-    $ipfw = pfSense_ipfw_getTablestats($cpzone, 2, $ip);
-    if (is_array($ipfw)) {
-        if ($reverse) {
-            $volume['input_pkts'] = $ipfw['packets'];
-            $volume['input_bytes'] = $ipfw['bytes'];
-        }
-        else {
-            $volume['output_pkts'] = $ipfw['packets'];
-            $volume['output_bytes'] = $ipfw['bytes'];
-        }
-    }
-
-    return $volume;
-}
-
 /**
  * Get the NAS-IP-Address based on the current wan address
  *
