@@ -1,7 +1,8 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2005-2006 Scott Ullrich (sullrich@gmail.com)
+	Copyright (C) 2005-2006 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -26,26 +27,25 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-	require_once('guiconfig.inc');
-	require_once("interfaces.inc");
+require_once('guiconfig.inc');
+require_once("interfaces.inc");
 
-	$if = $_GET['if'];
+$if = $_GET['if'];
 
-	$realif = get_real_interface($if);
-	if(!$realif)
-		$realif = $if; // Need for IPSec case interface.
+$realif = get_real_interface($if);
+if (!$realif) {
+	$realif = $if; // Need for IPSec case interface.
+}
 
-	$ifinfo = pfSense_get_interface_stats($realif);
+$ifinfo = pfSense_get_interface_stats($realif);
 
-	$temp = gettimeofday();
-	$timing = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
+$temp = gettimeofday();
+$timing = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
 
-	header("Last-Modified: " . gmdate( "D, j M Y H:i:s" ) . " GMT" );
-	header("Expires: " . gmdate( "D, j M Y H:i:s", time() ) . " GMT" );
-	header("Cache-Control: no-store, no-cache, must-revalidate" ); // HTTP/1.1
-	header("Cache-Control: post-check=0, pre-check=0", FALSE );
-	header("Pragma: no-cache"); // HTTP/1.0
+header("Last-Modified: " . gmdate( "D, j M Y H:i:s" ) . " GMT" );
+header("Expires: " . gmdate( "D, j M Y H:i:s", time() ) . " GMT" );
+header("Cache-Control: no-store, no-cache, must-revalidate" ); // HTTP/1.1
+header("Cache-Control: post-check=0, pre-check=0", FALSE );
+header("Pragma: no-cache"); // HTTP/1.0
 
-	echo "$timing|" . $ifinfo['inbytes'] . "|" . $ifinfo['outbytes'] . "\n";
-
-?>
+echo "$timing|" . $ifinfo['inbytes'] . "|" . $ifinfo['outbytes'] . "\n";
