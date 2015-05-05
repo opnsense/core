@@ -879,7 +879,7 @@ function system_generate_lighty_config(
 
 	if ($captive_portal !== false)  {
 		$captiveportal = ',"mod_evasive"';
-		$captive_portal_rewrite = "url.rewrite-once = ( \"(.*captiveportal.*)\" => \"$1\", \"(.*)\" => \"/index.php?zone={$captive_portal}&redirurl=$1\" )\n";
+		$http_rewrite_rules = "url.rewrite-once = ( \"(.*captiveportal.*)\" => \"$1\", \"(.*)\" => \"/index.php?zone={$captive_portal}&redirurl=$1\" )\n";
 
 		$maxprocperip = $config['captiveportal'][$captive_portal]['maxprocperip'];
 		if (empty($maxprocperip))
@@ -892,7 +892,15 @@ function system_generate_lighty_config(
 		$cgi_config = "";
 	} else {
 		$captiveportal = ",\"mod_cgi\"";
-		$captive_portal_rewrite = "";
+		$http_rewrite_rules = <<<EOD
+### Phalcon ui and api routing
+alias.url += ( "/ui/" => "/usr/local/opnsense/www/" )
+alias.url += ( "/api/"  => "/usr/local/opnsense/www/" )
+url.rewrite-if-not-file = ( "^/ui/(.*)$" => "/ui/index.php?_url=/$1" ,
+                            "^/api/(.*)$" => "/api/api.php?_url=/$1"
+)
+EOD;
+
 		$captive_portal_mod_evasive = "";
 		$server_upload_dirs = "server.upload-dirs = ( \"{$g['upload_path']}/\", \"/tmp/\", \"/var/\" )\n";
 		$server_max_request_size = "server.max-request-size    = 2097152";
@@ -991,14 +999,8 @@ server.max-keep-alive-idle = 30
 ## server.virtual-* options
 server.document-root        = "{$document_root}"
 
-### todo implement phalcon ui and api routing
-#alias.url += ( "/ui/" => "/usr/local/opnsense/www/" )
-#alias.url += ( "/api/"  => "/usr/local/opnsense/www/" )
-#url.rewrite-if-not-file = ( "^/ui/(.*)$" => "/ui/index.php?_url=/$1" ,
-#                            "^/api/(.*)$" => "/api/api.php?_url=/$1"
-#)
 
-{$captive_portal_rewrite}
+{$http_rewrite_rules}
 
 # Maximum idle time with nothing being written (php downloading)
 server.max-write-idle = 999
