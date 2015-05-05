@@ -353,7 +353,7 @@ function backup_to_google_drive() {
 			tagfile_reformat($confdata_enc, $confdata_enc, "config.xml");
 
 
-			// read filelist (config-*.xml) and cleanup old files
+			// read filelist (config-*.xml)
 			$files = $client->listFiles($config->system->remotebackup->GDriveFolderID->__toString());
 			$configfiles  = array();
 			foreach ($files as $file) {
@@ -363,22 +363,14 @@ function backup_to_google_drive() {
 			}
 			krsort($configfiles);
 
-			if (isset($config->system->remotebackup->GDriveBackupCount) && is_numeric($config->system->remotebackup->GDriveBackupCount->__toString())) {
-				$fcount = 0;
-				foreach ($configfiles as $filename => $file) {
-					if ($fcount > $config->system->remotebackup->GDriveBackupCount->__toString()) {
-						log_error("remove " . $filename . " from Google Drive" );
-						$client->delete($file);
-					}
-					$fcount++ ;
-				}
-			}
 
 			// backup new file if changed (or if first in backup)
 			$target_filename = "config-".time().".xml";
 			if (count($configfiles) > 1) {
 				// compare last backup with current, only save new
-				$bck_data_enc = $client->download($configfiles[array_keys($configfiles)[0]]);
+				$bck_data_enc_in = $client->download($configfiles[array_keys($configfiles)[0]]);
+				$bck_data_enc="";
+				tagfile_deformat($bck_data_enc_in, $bck_data_enc,"config.xml") ;
 				$bck_data = decrypt_data($bck_data_enc, $config->system->remotebackup->GDrivePassword->__toString());
 				if ($bck_data == $confdata) {
 					$target_filename = null;
@@ -387,6 +379,19 @@ function backup_to_google_drive() {
 			if (!is_null($target_filename)) {
 				log_error("backup configuration as " . $target_filename);
 				$configfiles[$target_filename] = $client->upload($config->system->remotebackup->GDriveFolderID->__toString(),$target_filename, $confdata_enc );
+				krsort($configfiles);
+			}
+
+			// cleanup old files
+			if (isset($config->system->remotebackup->GDriveBackupCount) && is_numeric($config->system->remotebackup->GDriveBackupCount->__toString())) {
+				$fcount = 0;
+				foreach ($configfiles as $filename => $file) {
+					if ($fcount >= $config->system->remotebackup->GDriveBackupCount->__toString()) {
+						log_error("remove " . $filename . " from Google Drive" );
+						$client->delete($file);
+					}
+					$fcount++ ;
+				}
 			}
 
 			// return filelist
