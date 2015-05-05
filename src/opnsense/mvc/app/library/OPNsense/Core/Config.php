@@ -98,43 +98,44 @@ class Config extends Singleton
         }
 
         foreach ($node->children() as $xmlNode) {
+            $xmlNodeName = $xmlNode->getName();
             if ($xmlNode->count() > 0) {
                 $tmpNode = $this->toArray($forceList, $xmlNode);
-                if (array_key_exists($xmlNode->getName(), $result)) {
-                    $old_content = $result[$xmlNode->getName()];
+                if (array_key_exists($xmlNodeName, $result)) {
+                    $old_content = $result[$xmlNodeName];
                     // check if array content is associative, move items to new list
                     // (handles first item of specific type)
                     if (!$this->isArraySequential($old_content)) {
-                        $result[$xmlNode->getName()] = array();
-                        $result[$xmlNode->getName()][] = $old_content;
+                        $result[$xmlNodeName] = array();
+                        $result[$xmlNodeName][] = $old_content;
                     }
-                    $result[$xmlNode->getName()][] = $tmpNode;
-                } elseif (is_array($forceList) && array_key_exists($xmlNode->getName(), $forceList)) {
+                    $result[$xmlNodeName][] = $tmpNode;
+                } elseif (is_array($forceList) && array_key_exists($xmlNodeName, $forceList)) {
                     // force tag in an array
-                    $result[$xmlNode->getName()] = array();
-                    $result[$xmlNode->getName()][] = $tmpNode;
+                    $result[$xmlNodeName] = array();
+                    $result[$xmlNodeName][] = $tmpNode;
                 } else {
-                    $result[$xmlNode->getName()] = $tmpNode;
+                    $result[$xmlNodeName] = $tmpNode;
                 }
             } else {
-                if (array_key_exists($xmlNode->getName(), $result)) {
+                if (array_key_exists($xmlNodeName, $result)) {
                     // repeating item
-                    if (!is_array($result[$xmlNode->getName()])) {
+                    if (!is_array($result[$xmlNodeName])) {
                         // move first item into list
-                        $tmp = $result[$xmlNode->getName()];
-                        $result[$xmlNode->getName()] = array();
-                        $result[$xmlNode->getName()][] = $tmp;
+                        $tmp = $result[$xmlNodeName];
+                        $result[$xmlNodeName] = array();
+                        $result[$xmlNodeName][] = $tmp;
                     }
-                    $result[$xmlNode->getName()][] = $xmlNode->__toString();
+                    $result[$xmlNodeName][] = $xmlNode->__toString();
                 } else {
                     // single content item
-                    if (is_array($forceList) && array_key_exists($xmlNode->getName(), $forceList)) {
-                        $result[$xmlNode->getName()] = array();
+                    if (is_array($forceList) && array_key_exists($xmlNodeName, $forceList)) {
+                        $result[$xmlNodeName] = array();
                         if ($xmlNode->__toString() != null && trim($xmlNode->__toString()) !== "") {
-                            $result[$xmlNode->getName()][] = $xmlNode->__toString();
+                            $result[$xmlNodeName][] = $xmlNode->__toString();
                         }
                     } else {
-                        $result[$xmlNode->getName()] = $xmlNode->__toString();
+                        $result[$xmlNodeName] = $xmlNode->__toString();
                     }
                 }
             }
