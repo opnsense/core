@@ -44,6 +44,7 @@ $pconfig['noantilockout'] = isset($config['system']['webgui']['noantilockout']);
 $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
 $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
 $pconfig['beast_protection'] = isset($config['system']['webgui']['beast_protection']);
+$pconfig['enable_xdebug'] = isset($config['system']['webgui']['enable_xdebug']) ;
 $pconfig['loginautocomplete'] = isset($config['system']['webgui']['loginautocomplete']);
 $pconfig['althostnames'] = $config['system']['webgui']['althostnames'];
 $pconfig['enableserial'] = $config['system']['enableserial'];
@@ -166,6 +167,12 @@ if ($_POST) {
 			$config['system']['webgui']['beast_protection'] = true;
 		else
 			unset($config['system']['webgui']['beast_protection']);
+
+		if ($_POST['enable_xdebug'] == "yes") {
+			$config['system']['webgui']['enable_xdebug'] = true;
+		} else {
+			unset($config['system']['webgui']['enable_xdebug']);
+		}
 
 		if ($_POST['loginautocomplete'] == "yes")
 			$config['system']['webgui']['loginautocomplete'] = true;
@@ -476,6 +483,17 @@ include("head.inc");
 										<?php echo gettext("This option is off by default because Hifn accelerators do NOT work with this option, and the GUI will not function. " .
 										"It is possible that other accelerators have a similar problem that is not yet known/documented. " .
 										"More information on BEAST is available from <a target='_blank' href='https://en.wikipedia.org/wiki/Transport_Layer_Security#BEAST_attack'>Wikipedia</a>."); ?>
+									</td>
+								</tr>
+								<tr>
+									<td width="22%" valign="top" class="vncell"><?=gettext("Enable XDebug"); ?></td>
+									<td width="78%" class="vtable">
+										<input name="enable_xdebug" type="checkbox" id="enable_xdebug" value="yes"  <?php if ($pconfig['enable_xdebug']) echo "checked=\"checked\""; ?> />
+										<strong><?=gettext("Enable debugger / profiler (developer mode, do not enable in production environment)"); ?></strong>
+										<br />
+										<?php echo gettext("When this is checked, php XDebug will be enabled and profiling output can be analysed using webgrind which will be available at [this-url]/webgrind/"); ?>
+										<br />
+										<?php echo gettext("For more information about XDebug profiling and how to enable it for your requests, please visit http://www.xdebug.org/docs/all_settings#profiler_enable_trigger"); ?>
 									</td>
 								</tr>
 

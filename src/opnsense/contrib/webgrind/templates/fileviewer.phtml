@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jquery.scrollTo.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="styles/style.css">
+	<title>
+		webgrind - fileviewer: <?php echo $file?>
+	</title>
+	<script type="text/javascript" charset="utf-8">
+		$(document).ready(function() { 
+			$('div#'+location.hash.substr(1)).addClass('line_emph');
+		});
+
+	</script>
+	
+</head>
+<body>
+    <div id="head">
+        <div id="logo">
+            <h1>webgrind<sup style="font-size:10px">v<?php echo Webgrind_Config::$webgrindVersion?></sup></h1>
+            <p>profiling in the browser</p>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <div id="main">
+    	<h2><?php echo $file?></h2>
+        <br>
+        <?php if ($message==''):?>
+            <?php $source = highlight_file($file, true); ?>
+    	<table border="0">
+            <tr>
+                <td align="right" valign="top"><code>
+                <?php 
+                foreach ($lines = explode('<br />', $source) as $num => $line) {
+                    $num++;
+                    echo "<span class='num' name='line$num' id='line$num'>$num</span>";
+                }
+                ?>
+                </code></td>
+                <td valign="top" nowrap="nowrap"><?php echo $source; ?></td>
+            </tr>
+    	</table>    	
+        <?php else:?>
+        	<p><b><?php echo $message?></b></p>
+        <?php endif?>
+    </div>
+</body>
+</html>

@@ -163,6 +163,20 @@ for EXT in $PHPMODULES; do
 	fi
 done
 
+# Enable XDebug if enabled in config 
+if [ ! -z `/usr/bin/grep "<enable_xdebug>1</enable_xdebug>" /conf/config.xml` ]; then
+	/bin/cat >>/usr/local/lib/php.ini <<EOF
+extension=xdebug.so
+
+[xdebug]
+xdebug.profiler_enable_trigger = 1
+xdebug.profiler_output_name = cachegrind.out.%t.%p
+
+EOF
+	
+fi
+
+
 /bin/cat >>/usr/local/lib/php.ini <<EOF
 [suhosin]
 suhosin.get.max_array_depth = 5000
