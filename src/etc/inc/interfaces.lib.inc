@@ -111,7 +111,7 @@ function legacy_interface_deladdress($ifs, $addr)
 
 function legacy_interface_rename($ifs, $name)
 {
-	$cmd = '/sbin/ifconfig ' . escapeshellarg($if) . ' name ' . escapeshellarg($name);
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' name ' . escapeshellarg($name);
 
 	exec($cmd . ' 2>&1', $out, $ret);
 	if ($ret) {
