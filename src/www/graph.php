@@ -1,6 +1,7 @@
 <?php
+
 /*
-  Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004-2006 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
 	and Jonathan Watt <jwatt@jwatt.org>.
 	All rights reserved.
@@ -81,12 +82,6 @@ $height=100;            //SVG internal height : do not modify
 $width=200;             //SVG internal width : do not modify
 
 $fetch_link = "ifstats.php?if=" . htmlspecialchars($ifnum);
-
-/* check for custom theme colors */
-if(file_exists("/usr/local/www/themes/{$g['theme']}/graph.php")) {
-	$themetxt = file_get_contents("/usr/local/www/themes/{$g['theme']}/graph.php");
-	eval($themetxt);
-}
 
 /********* Graph DATA **************/
 print('<?xml version="1.0" ?>' . "\n");?>

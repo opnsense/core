@@ -37,7 +37,7 @@ if (!$realif) {
 	$realif = $if; // Need for IPSec case interface.
 }
 
-$ifinfo = pfSense_get_interface_stats($realif);
+$ifinfo = legacy_interface_stats($realif);
 
 $temp = gettimeofday();
 $timing = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
@@ -48,4 +48,4 @@ header("Cache-Control: no-store, no-cache, must-revalidate" ); // HTTP/1.1
 header("Cache-Control: post-check=0, pre-check=0", FALSE );
 header("Pragma: no-cache"); // HTTP/1.0
 
-echo "$timing|" . $ifinfo['inbytes'] . "|" . $ifinfo['outbytes'] . "\n";
+echo "$timing|" . $ifinfo['bytes received'] . "|" . $ifinfo['bytes transmitted'] . "\n";

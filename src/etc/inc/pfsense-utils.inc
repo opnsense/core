@@ -961,21 +961,21 @@ function get_interface_info($ifdescr)
 	$chkif = $ifinfo['if'];
 	$ifinfotmp = pfSense_get_interface_addresses($chkif);
 	$ifinfo['status'] = $ifinfotmp['status'];
-	if (empty($ifinfo['status']))
-		$ifinfo['status'] = "down";
+	if (empty($ifinfo['status'])) {
+		$ifinfo['status'] = 'down';
+	}
 	$ifinfo['macaddr'] = $ifinfotmp['macaddr'];
 	$ifinfo['ipaddr'] = $ifinfotmp['ipaddr'];
 	$ifinfo['subnet'] = $ifinfotmp['subnet'];
 	$ifinfo['linklocal'] = get_interface_linklocal($ifdescr);
 	$ifinfo['ipaddrv6'] = get_interface_ipv6($ifdescr);
 	$ifinfo['subnetv6'] = get_interface_subnetv6($ifdescr);
-	if (isset($ifinfotmp['link0']))
-		$link0 = "down";
-	$ifinfotmp = pfSense_get_interface_stats($chkif);
-	// $ifinfo['inpkts'] = $ifinfotmp['inpkts'];
-	// $ifinfo['outpkts'] = $ifinfotmp['outpkts'];
-	$ifinfo['inerrs'] = $ifinfotmp['inerrs'];
-	$ifinfo['outerrs'] = $ifinfotmp['outerrs'];
+	if (isset($ifinfotmp['link0'])) {
+		$link0 = 'down';
+	}
+	$ifinfotmp = legacy_interface_stats($chkif);
+	$ifinfo['inerrs'] = $ifinfotmp['input errors'];
+	$ifinfo['outerrs'] = $ifinfotmp['output errors'];
 	$ifinfo['collisions'] = $ifinfotmp['collisions'];
 
 	/* Use pfctl for non wrapping 64 bit counters */
