@@ -160,7 +160,7 @@ function legacy_interface_stats($ifs)
 		return $stats;
 	}
 
-	if (count($count)) {
+	if (count($out)) {
 		/* first one is header */
 		array_shift($out);
 
