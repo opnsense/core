@@ -27,7 +27,7 @@
 
 set -e
 
-VERSION=$(git describe --abbrev=0)
+VERSION=$(git describe --abbrev=0 --always)
 REVISION=$(git rev-list ${VERSION}.. --count)
 if [ "${REVISION}" != "0" ]; then
 	# must construct full version string manually
