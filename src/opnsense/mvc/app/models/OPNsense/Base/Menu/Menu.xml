@@ -101,6 +101,7 @@
         </LoadBalancer>
         <NTP VisibleName="Network Time Protocol" url="/services_ntpd.php"></NTP>
         <PPPoEServer  VisibleName="PPPoE Server" url="/services_vpn_pppoe.php"/>
+        <Proxy VisibleName="Proxy server" url="/ui/proxy/"/>
         <SNMP  VisibleName="SNMP" url="/services_snmp.php"/>
         <UPnPNATPMP  VisibleName="Universal P&amp;P / NAT-PMP" url="/pkg_edit.php?xml=miniupnpd.xml"/>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php"/>
