@@ -35,6 +35,10 @@
         "name": "User - VPN - PPTP Dialin",
         "descr": "Indicates whether the user is allowed to dial in via PPTP"
     },
+    "user-proxy-auth": {
+        "name": "User - Proxy - Login",
+        "descr": "Indicates whether the user is allowed to use the proxy"
+    },
     "page-getserviceproviders": {
         "name": "WebCfg - AJAX: Get Service Providers",
         "descr": "Allow access to the 'AJAX: Service Providers' page.",
