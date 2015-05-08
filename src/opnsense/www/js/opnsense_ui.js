@@ -105,7 +105,7 @@ function mapDataToFormUI(data_get_map) {
 /**
  * update service status buttons in user interface
  */
-function updateServiceStatusUI(service, status) {
+function updateServiceStatusUI(status) {
 
     var status_html = '';
 
