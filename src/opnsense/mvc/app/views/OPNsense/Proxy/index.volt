@@ -248,6 +248,7 @@ maxheight: define max height of select box, default=170px to hold 5 items
                 'label':'Enable Transparent HTTP proxy',
                 'type':'checkbox',
                 'help':'Enable transparent proxy mode to forward all requests for destination port 80 to the proxy server without any additional configuration.'
+                ,'disable':true
                 ],
                 ['id': 'proxy.forward.addACLforInterfaceSubnets',
                 'label':'Allow interface subnets',
@@ -273,6 +274,7 @@ maxheight: define max height of select box, default=170px to hold 5 items
                 'label':'Enable Transparent mode',
                 'type':'checkbox',
                 'help':'Enable transparent ftp proxy mode to forward all requests for destination port 21 to the proxy server without any additional configuration.'
+                ,'disable':true
                 ]}
             ],
             [ 'proxy-forward-acl','Access Control List',

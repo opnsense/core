@@ -102,7 +102,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                     </td>
                                 </tr>
                                     {% for field in subtab[2]|default({})%}
-                                        {{ partial("layout_partials/form_input_tr",field) }}
+                                        {% if field['disable']|default(false) == false %}
+                                            {{ partial("layout_partials/form_input_tr",field) }}
+                                        {% endif %}
                                     {% endfor %}
                             <tr>
                                 <td colspan="3"><button class="btn btn-primary"  id="save_{{subtab[0]}}" type="button"><b>Apply </b><i id="frm_{{subtab[0]}}_progress" class=""></i></button></td>
@@ -149,7 +151,9 @@ POSSIBILITY OF SUCH DAMAGE.
                             </td>
                         </tr>
                         {% for field in tab[2]|default({})%}
-                            {{ partial("layout_partials/form_input_tr",field)}}
+                            {% if field['disable']|default(false) == false %}
+                                {{ partial("layout_partials/form_input_tr",field)}}
+                            {% endif %}
                         {% endfor %}
                         <tr>
                             <td colspan="3"><button class="btn btn-primary"  id="save_{{tab[0]}}" type="button"><b>Apply </b><i id="frm_{{tab[0]}}_progress" class=""></i></button></td>
