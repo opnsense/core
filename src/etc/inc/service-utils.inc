@@ -175,6 +175,10 @@ if (!function_exists('get_services')) {
 			$pconfig['description'] = gettext("Server load balancing daemon");
 			$services[] = $pconfig;
 		}
+
+		if (isset($config['OPNsense']['proxy']['general']['enabled']) && $config['OPNsense']['proxy']['general']['enabled'] == 1) {
+			$services[] = array('name'=>'squid', 'description' => gettext("Proxy server"));
+		}
 		return $services;
 	}
 
@@ -393,6 +397,8 @@ if (!function_exists('service_control_start')) {
 			case 'relayd':
 				relayd_configure();
 				break;
+			case 'squid':
+				configd_run("proxy start");
 			default:
 				log_error(gettext("Could not start unknown service `%s'", $name));
 				break;
@@ -466,6 +472,8 @@ if (!function_exists('service_control_stop')) {
 			case 'relayd':
 				mwexec('pkill relayd');
 				break;
+			case 'squid':
+				configd_run("proxy stop");
 			default:
 				log_error(gettext("Could not stop unknown service `%s'", $name));
 				break;
@@ -537,6 +545,8 @@ if (!function_exists('service_control_restart')) {
 			case 'relayd':
 				relayd_configure(true);
 				break;
+			case 'squid':
+				configd_run("proxy restart");
 			default:
 				log_error(gettext("Could not restart unknown service `%s'", $name));
 				break;
