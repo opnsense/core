@@ -399,6 +399,7 @@ if (!function_exists('service_control_start')) {
 				break;
 			case 'squid':
 				configd_run("proxy start");
+				break;
 			default:
 				log_error(gettext("Could not start unknown service `%s'", $name));
 				break;
@@ -474,6 +475,7 @@ if (!function_exists('service_control_stop')) {
 				break;
 			case 'squid':
 				configd_run("proxy stop");
+				break;
 			default:
 				log_error(gettext("Could not stop unknown service `%s'", $name));
 				break;
@@ -547,6 +549,7 @@ if (!function_exists('service_control_restart')) {
 				break;
 			case 'squid':
 				configd_run("proxy restart");
+				break;
 			default:
 				log_error(gettext("Could not restart unknown service `%s'", $name));
 				break;
