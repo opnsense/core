@@ -79,12 +79,19 @@ class ServiceController extends ApiControllerBase
     public function statusAction()
     {
         $backend = new Backend();
+        $mdlProxy = new Proxy();
         $response = $backend->configdRun("proxy status");
 
         if (strpos($response, "not running") > 0) {
-            $status = "stopped";
+            if ($mdlProxy->general->enabled->__toString() == 1) {
+                $status = "stopped";
+            } else {
+                $status = "disabled";
+            }
         } elseif (strpos($response, "is running") > 0) {
             $status = "running";
+        } elseif ($mdlProxy->general->enabled->__toString() == 0) {
+            $status = "disabled";
         } else {
             $status = "unkown";
         }

@@ -40,20 +40,20 @@
                     }
                 });
 
-                // handle help messages show/hide
-                $("a[class='showhelp']").click(function () {
-                    $("*[for='" + $(this).attr('id') + "']").toggleClass("hidden show");
-                });
-
                 // hide empty menu items
                 $('#mainmenu > div > .collapse').each(function(){
                     if ($(this).children().length == 0) {
                         $("#mainmenu").find('[href="#'+$(this).attr('id')+'"]').remove();
                     }
                 });
-            });
 
+                initFormHelpUI();
+                initFormAdvancedUI();
+                addMultiSelectClearUI();
+
+            });
         </script>
+
 
         <!-- bootstrap dialog -->
         <link href="/ui/themes/opnsense/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
@@ -112,8 +112,8 @@
 						<ul class="list-inline">
 							<li class="__mb"><h1>{{title | default("")}}</h1></li>
 
-							<li class="btn-group-container">
-								<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span>Add widget</button> -->
+							<li class="btn-group-container" id="service_status_container">
+                                <!-- placeholder for service status buttons -->
 							</li>
 						</ul>
 				</div>
@@ -147,6 +147,5 @@
 	<script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
     <!-- bootstrap dialog -->
     <script src="/ui/js/bootstrap-dialog.js"></script>
-
-	</body>
+    </body>
 </html>

@@ -30,23 +30,21 @@ POSSIBILITY OF SUCH DAMAGE.
 
     $( document ).ready(function() {
 
-        data_get_map = {'frm_proxy':"/api/proxy/settings/get"};
+        var data_get_map = {'frm_proxy':"/api/proxy/settings/get"};
+
+
 
         // load initial data
-        $.each(data_get_map, function(data_index, data_url) {
-            ajaxGet(url=data_url,sendData={},callback=function(data,status) {
-                if (status == "success") {
-                    $("form").each(function( index ) {
-                        if ( $(this).attr('id').split('-')[0] == data_index) {
-                            // related form found, load data
-                            setFormData($(this).attr('id'),data);
-                        }
-                    });
-                }
+        mapDataToFormUI(data_get_map).done(function(){
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+            // request service status on load and update status box
+            ajaxCall(url="/api/proxy/service/status", sendData={}, callback=function(data,status) {
+                updateServiceStatusUI("proxy",data['responseText']);
             });
         });
 
-        // form event handlers
+        // form save event handlers for all defined forms
         $('[id*="save_"]').each(function(){
             $(this).click(function() {
                 var frm_id = $(this).closest("form").attr("id");
@@ -69,99 +67,17 @@ POSSIBILITY OF SUCH DAMAGE.
                                 message: JSON.stringify(data),
                                 draggable: true
                             });
+                        } else {
+                            // request service status after successful save and update status box
+                            ajaxCall(url="/api/proxy/service/status", sendData={}, callback=function(data,status) {
+                                updateServiceStatusUI("proxy",data['responseText']);
+                            });
                         }
                     });
-
                 });
             });
         });
 
-
-        // handle help messages show/hide
-        $('[id*="show_all_help"]').click(function() {
-            $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
-            $('[id*="show_all_help"]').toggleClass("text-success text-danger");
-            if ($('[id*="show_all_help"]').hasClass("fa-toggle-on")) {
-                $('[for*="help_for"]').addClass("show");
-                $('[for*="help_for"]').removeClass("hidden");
-            } else {
-                $('[for*="help_for"]').addClass("hidden");
-                $('[for*="help_for"]').removeClass("show");
-            }
-        });
-
-        // handle advanced show/hide
-        $('[data-advanced*="true"]').hide(function(){
-            $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>"); // the table row is added to keep correct table striping
-        });
-        $('[id*="show_advanced"]').click(function() {
-            $('[id*="show_advanced"]').toggleClass("fa-toggle-on fa-toggle-off");
-            $('[id*="show_advanced"]').toggleClass("text-success text-danger");
-            if ($('[id*="show_advanced"]').hasClass("fa-toggle-on")) {
-                $('[data-advanced*="true"]').show();
-                $('[data-advanced*="hidden_row"]').remove(); // the table row is deleted to keep correct table striping
-            } else {
-                $('[data-advanced*="true"]').after("<tr data-advanced='hidden_row'></tr>").hide(); // the table row is added to keep correct table striping
-            }
-        });
-
-        // Apply tokenizer
-        setTimeout(function(){
-            $('select[class="tokenize"]').each(function(){
-                if ($(this).prop("size")==0) {
-                    maxDropdownHeight=String(36*5)+"px"; // default number of items
-
-                } else {
-                    number_of_items = $(this).prop("size");
-                    maxDropdownHeight=String(36*number_of_items)+"px";
-                }
-                hint=$(this).data("hint");
-                width=$(this).data("width");
-                allownew=$(this).data("allownew");
-                maxTokenContainerHeight=$(this).data("maxheight");
-
-                $(this).tokenize({
-                    displayDropdownOnFocus: true,
-                    newElements: allownew,
-                    placeholder:hint
-                });
-                $(this).parent().find('ul[class="TokensContainer"]').parent().css("width",width);
-                $(this).parent().find('ul[class="Dropdown"]').css("max-height", maxDropdownHeight);
-                if ( maxDropdownHeight != undefined ) {
-                    $(this).parent().find('ul[class="TokensContainer"]').css("max-height", maxTokenContainerHeight);
-                }
-            });
-	    // TODO: fix loading order
-	    $('.selectpicker').selectpicker('refresh');
-        },500);
-
-        // clear multiselect boxes, works on standard and tokenized versions
-        $('[id*="clear-options"]').each(function() {
-            $(this).click(function() {
-                var id = $(this).attr("for");
-                BootstrapDialog.confirm({
-                    title: 'Deselect or remove all items ?',
-                    message: 'Deselect or remove all items ?',
-                    type: BootstrapDialog.TYPE_DANGER,
-                    closable: true,
-                    draggable: true,
-                    btnCancelLabel: 'Cancel',
-                    btnOKLabel: 'Yes',
-                    btnOKClass: 'btn-primary',
-                    callback: function(result) {
-                        if(result) {
-                                if ($('select[id="' + id + '"]').hasClass("tokenize")) {
-                                    // trigger close on all Tokens
-                                    $('select[id="' + id + '"]').parent().find('ul[class="TokensContainer"]').find('li[class="Token"]').find('a').trigger("click");
-                                } else {
-                                    // remove options from selection
-                                    $('select[id="' + id + '"]').find('option').prop('selected',false);
-                                }
-                        }
-                    }
-                });
-            });
-        });
 
     });
 
