@@ -169,6 +169,7 @@
             <LoadBalancer url="/diag_logs_relayd.php"/>
             <OpenVPN url="/diag_logs_openvpn.php"/>
             <NTP url="/diag_logs_ntpd.php"/>
+            <Proxy url="/diag_logs_proxy.php"/>
             <Settings url="/diag_logs_settings.php"/>
         </SystemLogs>
 
