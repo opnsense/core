@@ -111,7 +111,7 @@ function legacy_interface_deladdress($ifs, $addr)
 
 function legacy_interface_rename($ifs, $name)
 {
-	$cmd = '/sbin/ifconfig ' . escapeshellarg($if) . ' name ' . escapeshellarg($name);
+	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' name ' . escapeshellarg($name);
 
 	exec($cmd . ' 2>&1', $out, $ret);
 	if ($ret) {
@@ -147,4 +147,28 @@ function legacy_vlan_tag($ifs, $member, $tag)
 	if ($ret) {
 		log_error('The command `' . $cmd . '\' failed to execute');
 	}
+}
+
+function legacy_interface_stats($ifs)
+{
+	$cmd = '/usr/local/sbin/ifinfo ' . escapeshellarg($ifs);
+	$stats = array();
+
+	exec($cmd . ' 2>&1', $out, $ret);
+	if ($ret) {
+		log_error('The command `' . $cmd . '\' failed to execute');
+		return $stats;
+	}
+
+	if (count($out)) {
+		/* first one is header */
+		array_shift($out);
+
+		foreach ($out as $line) {
+			$stat = explode(':', $line);
+			$stats[trim($stat[0])] = trim($stat[1]);
+		}
+	}
+
+	return $stats;
 }

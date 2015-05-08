@@ -1,8 +1,8 @@
-name: opnsense-proxy
+name: opnsense-ipfw
 version: 0.1
 origin: opnsense/proxy
-comment: Squid proxy configuration
-desc: configuration templates for squid proxy
+comment: IPFW configuration
+desc: configuration templates for ipfw rulesets
 maintainer: ad at opnsense.org
 www: https://opnsense.org
 prefix: /
