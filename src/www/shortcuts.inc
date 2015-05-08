@@ -262,3 +262,9 @@ $shortcuts['authentication']['status'] = "diag_authentication.php";
 $shortcuts['aliases'] = array();
 $shortcuts['aliases']['main'] = "firewall_aliases.php";
 $shortcuts['aliases']['status'] = "diag_tables.php";
+
+$shortcuts['squid'] = array();
+$shortcuts['squid']['main'] = "ui/proxy/";
+$shortcuts['squid']['log'] = "diag_logs_proxy.php";
+//TODO: $shortcuts['squid']['status'] = "";
+$shortcuts['squid']['service'] = "squid";
