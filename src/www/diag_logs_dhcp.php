@@ -68,7 +68,7 @@ include("head.inc");
 					    <div class="container-fluid">
 
 							<p> <?php printf(gettext("Last %s DHCP service log entries"), $nentries);?></p>
-								<pre> <?php dump_clog($dhcpd_logfile, $nentries); ?></pre>
+								<pre> <?php echo trim(implode("", array_slice(file($dhcpd_logfile), -$nentries)));?></pre>
 
 								<form action="diag_logs_dhcp.php" method="post">
 									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
