@@ -34,8 +34,13 @@
  */
 class IndexController extends \OPNsense\Base\IndexController
 {
+    /**
+     * return to / for non existent actions
+     */
     public function indexAction()
     {
-        $this->view->pick('OPNsense/Core/index');
+        //$this->view->pick('OPNsense/Core/index');
+        $this->response->redirect('/', true);
+        return;
     }
 }
