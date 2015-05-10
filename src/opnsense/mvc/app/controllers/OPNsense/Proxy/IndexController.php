@@ -37,6 +37,7 @@ class IndexController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->title = "Proxy Server";
+        $this->view->mainForm = $this->getForm("main");
         $this->view->pick('OPNsense/Proxy/index');
     }
 }
