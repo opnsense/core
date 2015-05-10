@@ -40,7 +40,7 @@ class IndexController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         //$this->view->pick('OPNsense/Core/index');
-        $this->response->redirect('/', true);
+        $this->response->redirect('/index.php', true);
         return;
     }
 }
