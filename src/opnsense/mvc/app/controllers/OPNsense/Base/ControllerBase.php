@@ -53,6 +53,78 @@ class ControllerBase extends Controller
     }
 
     /**
+     * convert xml form definition to simple data structure to use in our Volt templates
+     *
+     * @param $xmlNode
+     * @return array
+     */
+    private function parseFormNode($xmlNode)
+    {
+        $result = array();
+        foreach ($xmlNode as $key => $node) {
+            switch ($key) {
+                case "tab":
+                    if (!array_key_exists("tabs", $result)) {
+                        $result['tabs'] = array();
+                    }
+                    $tab = array();
+                    $tab[] = $node->attributes()->id;
+                    $tab[] = $node->attributes()->description;
+                    if (isset($node->subtab)) {
+                        $tab["subtabs"] = $this->parseFormNode($node);
+                    } else {
+                        $tab[] = $this->parseFormNode($node);
+                    }
+                    $result['tabs'][] = $tab ;
+                    break;
+                case "subtab":
+                    $subtab = array();
+                    $subtab[] = $node->attributes()->id;
+                    $subtab[] = $node->attributes()->description;
+                    $subtab[] = $this->parseFormNode($node);
+                    $result[] = $subtab;
+                    break;
+                case "field":
+                    // field type, containing attributes
+                    $result[] = $this->parseFormNode($node);
+                    break;
+                case "help":
+                case "hint":
+                case "label":
+                    // translate text items
+                    $result[$key] = gettext((string)$node);
+                    break;
+                default:
+                    // default behavior, copy in value as key/value data
+                    $result[$key] = (string)$node;
+                    break;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $formname
+     * @return array
+     * @throws \Exception
+     */
+    public function getForm($formname)
+    {
+        $class_info = new \ReflectionClass($this);
+        $filename = dirname($class_info->getFileName()) . "/forms/".$formname.".xml" ;
+        if (!file_exists($filename)) {
+            throw new \Exception('form xml '.$filename.' missing') ;
+        }
+        $formXml = simplexml_load_file($filename);
+        if ($formXml === false) {
+            throw new \Exception('form xml '.$filename.' not valid') ;
+        }
+
+        return $this->parseFormNode($formXml);
+    }
+
+    /**
      * Default action. Set the standard layout.
      */
     public function initialize()
