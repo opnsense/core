@@ -32,6 +32,7 @@ use OPNsense\Core\Config;
 use OPNsense\Core\ACL;
 use Phalcon\Mvc\Controller;
 use Phalcon\Translate\Adapter\Gettext;
+use Phalcon\Translate\Adapter\NativeArray;
 
 /**
  * Class ControllerBase implements core controller for OPNsense framework
@@ -44,20 +45,21 @@ class ControllerBase extends Controller
      * @return NativeArray
      */
     public function getTranslator()
-    {
+    { /*
         if (function_exists("gettext")) {
             // gettext installed, return gettext translator
             return new Gettext(array(
-                "locale" => locale_get_default(),
+                "locale" => "en_US",
                 "directory" => "/usr/local/share/locale/",
                 'file' => 'LC_MESSAGES/OPNsense.pot',
             ));
         } else {
+        */
             // no gettext installed, return original content
-            return new Gettext(array(
+            return new NativeArray(array(
                 "content" => array()
             ));
-        }
+        //}
     }
 
     /**
