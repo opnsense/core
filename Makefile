@@ -68,8 +68,7 @@ MO+=		${LOCALEDIR}/${LANG}/LC_MESSAGES/OPNsense.mo
 .SUFFIXES:	.po .mo
 
 .po.mo: force
-	@${MSGFMT} -o ${.TARGET} ${.IMPSRC}
-	@echo ${.TARGET:S/${LOCALEDIR}/\/usr\/local\/share\/locale/}
+	${MSGFMT} -o ${.TARGET} ${.IMPSRC}
 
 bootstrap: ${MO}
 
