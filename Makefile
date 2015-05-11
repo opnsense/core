@@ -52,7 +52,7 @@ health:
 	# check test script output and advertise a failure...
 	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
 
-OPNSENSE_POT=	src/share/locale/en/LC_MESSAGES/OPNsense.pot
+OPNSENSE_POT=	src/share/locale/en_US/LC_MESSAGES/OPNsense.pot
 
 translate:
 	@: > ${.CURDIR}/${OPNSENSE_POT}
