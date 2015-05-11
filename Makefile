@@ -20,7 +20,8 @@ install: force
 	@sed -i '' -e 's/E_STRICT/E_STRICT | E_WARNING/g' \
 	    ${DESTDIR}/usr/local/etc/rc.php_ini_setup
 	# finally pretty-print a list of files present
-	@(cd ${.CURDIR}/src; find * -type f) | \
+	@(cd ${.CURDIR}/src; find * -type f \
+	    ! -name "*.po" ! -name "*.pot") | \
 	    xargs -n1 printf "/usr/local/%s\n"
 
 lint: force
