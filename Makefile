@@ -1,14 +1,16 @@
 all:
 
-mount:
+force:
+
+mount: force
 	@${.CURDIR}/scripts/version.sh > \
 	    ${.CURDIR}/src/opnsense/version/opnsense
 	/sbin/mount_unionfs ${.CURDIR}/src /usr/local
 
-umount:
+umount: force
 	/sbin/umount -f "<above>:${.CURDIR}/src"
 
-install:
+install: force
 	# invoke pkg(8) bootstraping
 	@make -C ${.CURDIR}/pkg install
 	# move all sources to their destination
@@ -21,21 +23,21 @@ install:
 	@(cd ${.CURDIR}/src; find * -type f) | \
 	    xargs -n1 printf "/usr/local/%s\n"
 
-lint:
+lint: force
 	find ${.CURDIR}/src ! -name "*.xml" ! -name "*.eot" \
 	    ! -name "*.svg" ! -name "*.woff" ! -name "*.woff2" \
 	    ! -name "*.otf" ! -name "*.png" ! -name "*.js" \
 	    ! -name "*.scss" ! -name "*.py" ! -name "*.ttf" \
 	    ! -name "*.tgz" -type f -print0 | xargs -0 -n1 php -l
 
-sweep:
+sweep: force
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.map" -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 	find ${.CURDIR}/pkg -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 
-style:
+style: force
 	@(phpcs --tab-width=4 --standard=PSR2 ${.CURDIR}/src/opnsense/mvc \
 	    || true) > ${.CURDIR}/.style.out
 	@echo -n "Total number of style warnings: "
@@ -45,21 +47,36 @@ style:
 	@cat ${.CURDIR}/.style.out
 	@rm ${.CURDIR}/.style.out
 
-setup:
+setup: force
 	${.CURDIR}/src/etc/rc.php_ini_setup
 
-health:
+health: force
 	# check test script output and advertise a failure...
 	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
 
-OPNSENSE_POT=	src/share/locale/en_US/LC_MESSAGES/OPNsense.pot
+# translation glue
+XGETTEXT=	xgettext -L PHP --from-code=UTF-8 -F --strict --debug
+MSGFMT=		msgfmt --strict
+LOCALEDIR=	${.CURDIR}/src/share/locale
+POT=		${LOCALEDIR}/en_US/LC_MESSAGES/OPNsense.pot
+LANGS=		ja
+. for LANG in ${LANGS}
+MO+=		${LOCALEDIR}/${LANG}/LC_MESSAGES/OPNsense.mo
+. endfor
 
-translate:
-	@: > ${.CURDIR}/${OPNSENSE_POT}
-	find src | xargs xgettext -j -L PHP --from-code=UTF-8 -F \
-	    --strict --debug -o ${.CURDIR}/${OPNSENSE_POT}
+.SUFFIXES:	.po .mo
+
+.po.mo: force
+	@${MSGFMT} -o ${.TARGET} ${.IMPSRC}
+	@echo ${.TARGET:S/${LOCALEDIR}/\/usr\/local\/share\/locale/}
+
+bootstrap: ${MO}
+
+translate: force
+	@: > ${POT}
+	find src | xargs ${XGETTEXT} -j -o ${POT}
 
 clean:
 	git reset --hard HEAD && git clean -xdqf .
 
-.PHONY: mount umount install lint sweep style setup health clean
+.PHONY: force
