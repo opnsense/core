@@ -1992,9 +1992,11 @@ function filter_generate_port(& $rule, $target = "source", $isnat = false) {
 		if($rule[$target]['port']) {
 			$srcport = explode("-", $rule[$target]['port']);
 			$srcporta = alias_expand($srcport[0]);
-			if(!$srcporta)
-				log_error(sprintf(gettext("filter_generate_port: %s is not a valid {$target} port."), $srcport[0]));
-			else if((!$srcport[1]) || ($srcport[0] == $srcport[1])) {
+			if (!$srcporta) {
+				log_error(sprintf(
+					_('filter_generate_port: %s is not a valid %s port.'), $srcport[0], $target
+				));
+			} elseif ((!$srcport[1]) || ($srcport[0] == $srcport[1])) {
 				$src .= " port {$srcporta} ";
 			} else if(($srcport[0] == 1) && ($srcport[1] == 65535)) {
 			/* no need for a port statement here */
