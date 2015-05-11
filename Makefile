@@ -52,10 +52,12 @@ health:
 	# check test script output and advertise a failure...
 	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
 
+OPNSENSE_POT=	src/share/locale/en/LC_MESSAGES/OPNsense.pot
+
 translate:
-	@: > src/share/locale/en/LC_MESSAGES/OPNsense.pot
+	@: > ${.CURDIR}/${OPNSENSE_POT}
 	find src | xargs xgettext -j -L PHP --from-code=UTF-8 -F \
-	    -o src/share/locale/en/LC_MESSAGES/OPNsense.pot
+	    --strict --debug -o ${.CURDIR}/${OPNSENSE_POT}
 
 clean:
 	git reset --hard HEAD && git clean -xdqf .
