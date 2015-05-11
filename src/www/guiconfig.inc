@@ -51,8 +51,6 @@ if (!$omit_nocacheheaders) {
 }
 
 header("X-Frame-Options: SAMEORIGIN");
-require_once("authgui.inc");
-
 
 /* parse the configuration and include all configuration functions */
 require_once("functions.inc");
@@ -67,6 +65,8 @@ if($config['system']['language'] <> "") {
 }
 
 set_language($g['language']);
+
+require_once("authgui.inc");
 
 /* used by progress bar */
 $lastseen = "-1";
