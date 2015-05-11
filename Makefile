@@ -55,6 +55,9 @@ health:
 translate:
 	@: > src/share/locale/en/LC_MESSAGES/OPNsense.pot
 	find src | xargs xgettext -j -L PHP --from-code=UTF-8 -F \
+            --copyright-holder="OPNsense project." \
+            --package-name="OPNsense" \
+            --msgid-bugs-address="https://forum.opnsense.org/" \
 	    -o src/share/locale/en/LC_MESSAGES/OPNsense.pot
 
 clean:
