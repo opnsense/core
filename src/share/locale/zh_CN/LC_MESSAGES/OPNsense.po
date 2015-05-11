@@ -21412,7 +21412,7 @@ msgstr ""
 # File: src/www/system_firmware_check.php, line: 82
 # File: src/www/widgets/widgets/system_information.widget.php, line: 61
 msgid " no updates found."
-msgstr "没有发现更新"
+msgstr " 没有发现更新"
 #
 # File: src/www/system_firmware_check.php, line: 82
 # File: src/www/widgets/widgets/system_information.widget.php, line: 61
@@ -21446,7 +21446,7 @@ msgstr ""
 # File: src/www/system_firmware_check.php, line: 90
 # File: src/www/widgets/widgets/system_information.widget.php, line: 63
 msgid " update(s) are available."
-msgstr "有可用的更新"
+msgstr " 有可用的更新"
 #
 # File: src/www/system_firmware_check.php, line: 90
 # File: src/www/widgets/widgets/system_information.widget.php, line: 63
