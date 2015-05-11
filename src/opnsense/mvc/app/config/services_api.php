@@ -100,7 +100,7 @@ $di->set('router', function() {
     foreach (glob($controller_dir."*", GLOB_ONLYDIR) as $namespace_base) {
         foreach (glob($namespace_base."/*", GLOB_ONLYDIR) as $module_base) {
             if (strpos($module_base, 'OPNsense/Base') === false) {
-                foreach (glob($module_base."/*", GLOB_ONLYDIR) as $api_base) {
+                foreach (glob($module_base."/Api", GLOB_ONLYDIR) as $api_base) {
                     $namespace_name = str_replace('/', '\\', str_replace($controller_dir, '', $api_base));
                     $registered_modules[strtolower(basename($module_base))] = $namespace_name;
                 }
