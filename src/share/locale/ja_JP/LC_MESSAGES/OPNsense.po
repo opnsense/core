@@ -154,7 +154,7 @@ msgstr ""
 # File: src/etc/inc/authgui.inc, line: 224
 # File: src/etc/inc/authgui.inc, line: 270
 msgid "Login"
-msgstr ""
+msgstr "ログイン"
 #
 # File: src/etc/inc/authgui.inc, line: 238
 msgid ""
@@ -165,13 +165,13 @@ msgstr ""
 #
 # File: src/etc/inc/authgui.inc, line: 259
 msgid "Username:"
-msgstr ""
+msgstr "ユーザ名:"
 #
 # File: src/etc/inc/authgui.inc, line: 264
 # File: src/www/diag_backup.php, line: 653
 # File: src/www/system_authservers.php, line: 663
 msgid "Password:"
-msgstr ""
+msgstr "パスワード:"
 #
 # File: src/etc/inc/authgui.inc, line: 277
 msgid "Your browser must support cookies to login."
