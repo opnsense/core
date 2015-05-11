@@ -2182,7 +2182,7 @@ EOD;
 					if (($wanip != $cachedipv4) || (($currentTime - $cacheTimev4) > $maxCacheAgeSecs) || $forced) {
 						$upinst .= "update delete {$dnsupdate['host']}. A\n";
 						$upinst .= "update add {$dnsupdate['host']}. {$dnsupdate['ttl']} A {$wanip}\n";
-						$notify_text .= sprintf(gettext("DynDNS updated IP Address (A) for {$dnsupdate['host']} on %s (%s) to %s"), convert_real_interface_to_friendly_descr($if), $if, $wanip) . "\n";
+						$notify_text .= sprintf(_('DynDNS updated IP Address (A) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanip) . "\n";
 						@file_put_contents($cacheFile, "{$wanip}|{$currentTime}");
 						log_error("phpDynDNS: updating cache file {$cacheFile}: {$wanip}");
 						$need_update = true;
@@ -2197,7 +2197,7 @@ EOD;
 					if (($wanipv6 != $cachedipv6) || (($currentTime - $cacheTimev6) > $maxCacheAgeSecs) || $forced) {
 						$upinst .= "update delete {$dnsupdate['host']}. AAAA\n";
 						$upinst .= "update add {$dnsupdate['host']}. {$dnsupdate['ttl']} AAAA {$wanipv6}\n";
-						$notify_text .= sprintf(gettext("DynDNS updated IPv6 Address (AAAA) for {$dnsupdate['host']} on %s (%s) to %s"), convert_real_interface_to_friendly_descr($if), $if, $wanipv6) . "\n";
+						$notify_text .= sprintf(_('DynDNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanipv6) . "\n";
 						@file_put_contents("{$cacheFile}.ipv6", "{$wanipv6}|{$currentTime}");
 						log_error("phpDynDNS: updating cache file {$cacheFile}.ipv6: {$wanipv6}");
 						$need_update = true;
