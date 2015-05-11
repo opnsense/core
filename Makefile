@@ -53,7 +53,7 @@ health:
 	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
 
 translate:
-	find src | xargs xgettext -L PHP --from-code=UTF-8 -F \
+	find src | xargs xgettext -j -L PHP --from-code=UTF-8 -F \
 	    -o src/share/locale/en/LC_MESSAGES/OPNsense.pot
 
 clean:
