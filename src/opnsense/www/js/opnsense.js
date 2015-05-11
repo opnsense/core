@@ -62,8 +62,8 @@ function getFormData(parent) {
                             if (tmp_str != "") tmp_str = tmp_str + ",";
                             tmp_str = tmp_str + $(this).val();
                         }
-                        node[keyparts[i]] = tmp_str;
                     });
+                    node[keyparts[i]] = tmp_str;
                 } else if ($(this).prop("type") == "checkbox") {
                     // checkbox input type
                     if ($(this).prop("checked")) {
