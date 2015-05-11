@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-11 01:30-0400\n"
+"POT-Creation-Date: 2015-05-11 09:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,12 +34,12 @@ msgstr ""
 
 #: src/etc/inc/auth.inc:666 src/etc/inc/auth.inc:739 src/etc/inc/auth.inc:811
 #: src/etc/inc/auth.inc:1067
-#, c-format, php-format
+#, php-format
 msgid "ERROR!  Could not connect to server %s."
 msgstr ""
 
 #: src/etc/inc/auth.inc:686
-#, c-format, php-format
+#, php-format
 msgid "LDAP: Could not lookup CA by reference for host %s."
 msgstr ""
 
@@ -50,27 +50,27 @@ msgid ""
 msgstr ""
 
 #: src/etc/inc/auth.inc:825
-#, c-format, php-format
+#, php-format
 msgid "ERROR! ldap_get_user_ous() could not bind anonymously to server %s."
 msgstr ""
 
 #: src/etc/inc/auth.inc:830
-#, c-format, php-format
+#, php-format
 msgid "ERROR! ldap_get_user_ous() could not bind to server %s."
 msgstr ""
 
 #: src/etc/inc/auth.inc:927
-#, c-format, php-format
+#, php-format
 msgid "ERROR! ldap_get_groups() Could not connect to server %s."
 msgstr ""
 
 #: src/etc/inc/auth.inc:940
-#, c-format, php-format
+#, php-format
 msgid "ERROR! ldap_get_groups() could not bind anonymously to server %s."
 msgstr ""
 
 #: src/etc/inc/auth.inc:945
-#, c-format, php-format
+#, php-format
 msgid "ERROR! ldap_get_groups() could not bind to server %s."
 msgstr ""
 
@@ -85,12 +85,12 @@ msgid "ERROR! ldap_backed() called with no LDAP authentication server defined."
 msgstr ""
 
 #: src/etc/inc/auth.inc:1083
-#, c-format, php-format
+#, php-format
 msgid "ERROR! Could not bind to server %s."
 msgstr ""
 
 #: src/etc/inc/auth.inc:1117
-#, c-format, php-format
+#, php-format
 msgid "Search resulted in error: %s"
 msgstr ""
 
@@ -108,17 +108,17 @@ msgid "Local Database"
 msgstr ""
 
 #: src/etc/inc/auth.inc:1343
-#, c-format, php-format
+#, php-format
 msgid "Successful login for user '%1$s' from: %2$s"
 msgstr ""
 
 #: src/etc/inc/auth.inc:1394
-#, c-format, php-format
+#, php-format
 msgid "Session timed out for user '%1$s' from: %2$s"
 msgstr ""
 
 #: src/etc/inc/auth.inc:1396
-#, c-format, php-format
+#, php-format
 msgid "User logged out for user '%1$s' from: %2$s"
 msgstr ""
 
@@ -136,12 +136,12 @@ msgid "unknown reason"
 msgstr ""
 
 #: src/etc/inc/authgui.inc:151
-#, c-format, php-format
+#, php-format
 msgid "Invalid login (%s)."
 msgstr ""
 
 #: src/etc/inc/authgui.inc:156
-#, c-format, php-format
+#, php-format
 msgid "This device is currently being maintained by: %s."
 msgstr ""
 
@@ -170,7 +170,7 @@ msgid "Your browser must support cookies to login."
 msgstr ""
 
 #: src/etc/inc/captiveportal.inc:1061
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open '%s' in captiveportal_write_elements()%s"
 msgstr ""
 
@@ -188,13 +188,8 @@ msgstr ""
 
 #: src/etc/inc/config.console.inc:184 src/etc/inc/config.console.inc:208
 #: src/etc/inc/config.console.inc:240 src/etc/inc/config.console.inc:485
-#, c-format, php-format
+#, php-format
 msgid "%sInvalid interface name '%s'%s"
-msgstr ""
-
-#: src/etc/inc/config.console.inc:191
-#, c-format
-msgid "%sEnter the LAN interface name or 'a' for auto-detection %s"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:191
@@ -205,13 +200,8 @@ msgid ""
 msgstr ""
 
 #: src/etc/inc/config.console.inc:225
-#, c-format, php-format
+#, php-format
 msgid "%sOptional interface %s description found: %s"
-msgstr ""
-
-#: src/etc/inc/config.console.inc:227
-#, c-format
-msgid "%sEnter the Optional %s interface name or 'a' for auto-detection%s"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:227
@@ -230,12 +220,12 @@ msgid "The interfaces will be assigned as follows:"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:389
-#, c-format, php-format
+#, php-format
 msgid "%sWriting configuration..."
 msgstr ""
 
 #: src/etc/inc/config.console.inc:391
-#, c-format, php-format
+#, php-format
 msgid "done.%s"
 msgstr ""
 
@@ -248,12 +238,12 @@ msgid " done!"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:421
-#, c-format, php-format
+#, php-format
 msgid "Detected link-up on interface %s.%s"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:426
-#, c-format, php-format
+#, php-format
 msgid "No link-up detected.%s"
 msgstr ""
 
@@ -275,7 +265,7 @@ msgid "Enter the VLAN tag (1-4094):"
 msgstr ""
 
 #: src/etc/inc/config.console.inc:496
-#, c-format, php-format
+#, php-format
 msgid "%sInvalid VLAN tag '%s'%s"
 msgstr ""
 
@@ -288,7 +278,7 @@ msgid "No config.xml found, attempting to restore factory config."
 msgstr ""
 
 #: src/etc/inc/config.lib.inc:86
-#, c-format, php-format
+#, php-format
 msgid "Start Configuration upgrade at %s, set execution timeout to 15 minutes"
 msgstr ""
 
@@ -297,7 +287,7 @@ msgid "Updated bogon update frequency to 3am"
 msgstr ""
 
 #: src/etc/inc/config.lib.inc:124
-#, c-format, php-format
+#, php-format
 msgid "Ended Configuration upgrade at %s"
 msgstr ""
 
@@ -331,17 +321,21 @@ msgid "Reverted to"
 msgstr ""
 
 #: src/etc/inc/config.lib.inc:332
-#, c-format, php-format
+#, php-format
 msgid "%s made unknown change"
 msgstr ""
 
+#: src/etc/inc/crypt.inc:47
+msgid "Failed to encrypt/decrypt data!"
+msgstr ""
+
 #: src/etc/inc/dyndns.class:1222
-#, c-format, php-format
+#, php-format
 msgid "DynDNS updated IP Address on %s (%s) to %s"
 msgstr ""
 
 #: src/etc/inc/dyndns.class:1229
-#, c-format, php-format
+#, php-format
 msgid "DynDNS updated IPv6 Address on %s (%s) to %s"
 msgstr ""
 
@@ -518,19 +512,19 @@ msgid "Creating gateway group item..."
 msgstr ""
 
 #: src/etc/inc/filter.inc:677
-#, c-format, php-format
+#, php-format
 msgid ""
 "An error occurred while trying to find the interface got %s .  The rule has "
 "not been added."
 msgstr ""
 
 #: src/etc/inc/filter.inc:1003
-#, c-format, php-format
+#, php-format
 msgid "Creating reflection NAT rule for %s..."
 msgstr ""
 
 #: src/etc/inc/filter.inc:1092
-#, c-format, php-format
+#, php-format
 msgid "Creating reflection rule for %s..."
 msgstr ""
 
@@ -583,7 +577,7 @@ msgid "Creating 1:1 rules..."
 msgstr ""
 
 #: src/etc/inc/filter.inc:1670
-#, c-format, php-format
+#, php-format
 msgid "Creating advanced outbound rule %s"
 msgstr ""
 
@@ -596,32 +590,32 @@ msgid "Creating automatic outbound rules"
 msgstr ""
 
 #: src/etc/inc/filter.inc:1767
-#, c-format, php-format
+#, php-format
 msgid "Creating NAT rule %s"
 msgstr ""
 
 #: src/etc/inc/filter.inc:1973
-#, c-format, php-format
+#, php-format
 msgid "Creating filter rule %s ..."
 msgstr ""
 
 #: src/etc/inc/filter.inc:1996
-#, c-format
-msgid "filter_generate_port: %s is not a valid {$target} port."
+#, php-format
+msgid "filter_generate_port: %s is not a valid %s port."
 msgstr ""
 
 #: src/etc/inc/filter.inc:2301
-#, c-format, php-format
+#, php-format
 msgid "Setting up pass/block rules %s"
 msgstr ""
 
 #: src/etc/inc/filter.inc:2316
-#, c-format, php-format
+#, php-format
 msgid "Could not find IPv4 gateway for interface (%s)."
 msgstr ""
 
 #: src/etc/inc/filter.inc:2343
-#, c-format, php-format
+#, php-format
 msgid "Creating rule %s"
 msgstr ""
 
@@ -680,26 +674,25 @@ msgid "unread notices"
 msgstr ""
 
 #: src/etc/inc/gwlb.inc:827
-#, c-format
-msgid "MONITOR: %s is down, removing from routing group {$group['name']}"
+#, php-format
+msgid "MONITOR: %s is down, removing from routing group %s"
 msgstr ""
 
 #: src/etc/inc/gwlb.inc:831
-#, c-format
-msgid ""
-"MONITOR: %s has packet loss, removing from routing group {$group['name']}"
+#, php-format
+msgid "MONITOR: %s has packet loss, removing from routing group %s"
 msgstr ""
 
 #: src/etc/inc/gwlb.inc:835
-#, c-format
-msgid ""
-"MONITOR: %s has high latency, removing from routing group {$group['name']}"
+#, php-format
+msgid "MONITOR: %s has high latency, removing from routing group %s"
 msgstr ""
 
-#: src/etc/inc/gwlb.inc:855
+#: src/etc/inc/gwlb.inc:856
+#, php-format
 msgid ""
 "Gateways status could not be determined, considering all as up/active. "
-"(Group: {$group['name']})"
+"(Group: %s)"
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:78
@@ -723,17 +716,17 @@ msgid "interface_vlan_configure called with if undefined."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:321 src/etc/inc/interfaces.inc:413
-#, c-format, php-format
+#, php-format
 msgid "QinQ compat VLAN: called with wrong options. Problems with config!%s"
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:328
-#, c-format, php-format
+#, php-format
 msgid "interface_qinq_configure called with if undefined.%s"
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:333
-#, c-format, php-format
+#, php-format
 msgid "interface_qinq_configure called with invalid if.%s"
 msgstr ""
 
@@ -742,7 +735,7 @@ msgid "Configuring QinQ interfaces..."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:421
-#, c-format, php-format
+#, php-format
 msgid "interface_qinq2_configure called with if undefined.%s"
 msgstr ""
 
@@ -751,7 +744,7 @@ msgid "Creating wireless clone interfaces..."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:511
-#, c-format, php-format
+#, php-format
 msgid "No members found on %s"
 msgstr ""
 
@@ -775,7 +768,7 @@ msgstr ""
 
 #: src/etc/inc/interfaces.inc:1107 src/etc/inc/interfaces.inc:1132
 #: src/etc/inc/interfaces.inc:1151 src/etc/inc/interfaces.inc:1164
-#, c-format, php-format
+#, php-format
 msgid "Configuring %s interface..."
 msgstr ""
 
@@ -784,7 +777,7 @@ msgid "Wrong parameters used during interface_bring_down"
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:1571
-#, c-format, php-format
+#, php-format
 msgid "Can't find PPP config for %s in interface_ppps_configure()."
 msgstr ""
 
@@ -796,18 +789,18 @@ msgid ""
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:1636
-#, c-format, php-format
+#, php-format
 msgid ""
 "Device %s does not exist. PPP link cannot start without the modem device."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:1641
-#, c-format, php-format
+#, php-format
 msgid "Unkown %s configured as ppp interface."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:1913
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd_%s.conf in interface_ppps_configure().%s"
 msgstr ""
 
@@ -816,43 +809,43 @@ msgid "Configuring CARP settings..."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:2196
-#, c-format, php-format
+#, php-format
 msgid ""
 "Interface specified for the virtual IP address %s does not exist. Skipping "
 "this VIP."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:2204
-#, c-format, php-format
+#, php-format
 msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IP address %s."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:2211
-#, c-format, php-format
+#, php-format
 msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IPv6 address %s."
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:2269
-#, c-format, php-format
+#, php-format
 msgid "Interface %s changed to hostap mode"
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:2273
-#, c-format, php-format
+#, php-format
 msgid "Interface %s changed to adhoc mode"
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:2277
-#, c-format, php-format
+#, php-format
 msgid "Interface %s changed to infrastructure mode"
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:2290
-#, c-format, php-format
+#, php-format
 msgid "Cloning new wireless interface %s"
 msgstr ""
 
@@ -873,19 +866,19 @@ msgid ""
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:3852
-#, c-format, php-format
+#, php-format
 msgid ""
 "Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for "
 "writing.%s"
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:3865
-#, c-format, php-format
+#, php-format
 msgid "Invalid interface \"%s\" in interface_dhcp_configure()"
 msgstr ""
 
 #: src/etc/inc/interfaces.inc:3917
-#, c-format, php-format
+#, php-format
 msgid "Could not bring up %s interface in interface_dhcp_configure()"
 msgstr ""
 
@@ -963,12 +956,12 @@ msgid ""
 msgstr ""
 
 #: src/etc/inc/notices.inc:66
-#, c-format, php-format
+#, php-format
 msgid "Could not open %s for writing"
 msgstr ""
 
 #: src/etc/inc/notices.inc:287
-#, c-format, php-format
+#, php-format
 msgid "Message sent to %s OK"
 msgstr ""
 
@@ -1010,12 +1003,12 @@ msgid "establishing SSL connections requires the OpenSSL extension enabled"
 msgstr ""
 
 #: src/etc/inc/notices.smtp.inc:224
-#, c-format, php-format
+#, php-format
 msgid "could not resolve host \"%s\""
 msgstr ""
 
 #: src/etc/inc/notices.smtp.inc:228
-#, c-format, php-format
+#, php-format
 msgid "domain \"%s\" resolved to an address excluded to be valid"
 msgstr ""
 
@@ -1029,7 +1022,7 @@ msgid "-3 socket could not be created"
 msgstr ""
 
 #: src/etc/inc/notices.smtp.inc:239
-#, c-format, php-format
+#, php-format
 msgid "-4 dns lookup on hostname \"%s\" failed"
 msgstr ""
 
@@ -1094,7 +1087,7 @@ msgid "it was not specified the POP3 authentication password"
 msgstr ""
 
 #: src/etc/inc/notices.smtp.inc:404
-#, c-format, php-format
+#, php-format
 msgid "Resolving POP3 authentication host \"%s\"..."
 msgstr ""
 
@@ -1115,12 +1108,12 @@ msgid "could not determine the SMTP to connect"
 msgstr ""
 
 #: src/etc/inc/notices.smtp.inc:442
-#, c-format, php-format
+#, php-format
 msgid "Resolving SMTP server domain \"%s\"..."
 msgstr ""
 
 #: src/etc/inc/notices.smtp.inc:454
-#, c-format, php-format
+#, php-format
 msgid "Connected to SMTP server \"%s\"."
 msgstr ""
 
@@ -1217,22 +1210,22 @@ msgid "None (No Authentication)"
 msgstr ""
 
 #: src/etc/inc/openvpn.inc:256
-#, c-format, php-format
+#, php-format
 msgid "The field '%s' must contain a valid IP address or domain name."
 msgstr ""
 
 #: src/etc/inc/openvpn.inc:263
-#, c-format, php-format
+#, php-format
 msgid "The field '%s' must contain a valid port, ranging from 0 to 65535."
 msgstr ""
 
 #: src/etc/inc/openvpn.inc:275
-#, c-format, php-format
+#, php-format
 msgid "The field '%s' must contain a single valid %s CIDR range."
 msgstr ""
 
 #: src/etc/inc/openvpn.inc:287
-#, c-format, php-format
+#, php-format
 msgid ""
 "The field '%s' must contain only valid %s CIDR range(s) separated by commas."
 msgstr ""
@@ -1258,12 +1251,12 @@ msgid "Error creating socket!"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:363
-#, c-format, php-format
+#, php-format
 msgid "Error code is '%1$s' - %2$s"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:368
-#, c-format, php-format
+#, php-format
 msgid "setsockopt() failed, error: %s"
 msgstr ""
 
@@ -1273,7 +1266,7 @@ msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:437 src/etc/inc/pfsense-utils.inc:459
-#, c-format, php-format
+#, php-format
 msgid "Restored %s of config file (maybe from CARP partner)"
 msgstr ""
 
@@ -1315,7 +1308,8 @@ msgid "DNSCACHE: Found old IP %1$s and new IP %2$s"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:1546
-msgid "Could not process aliases from alias: {$alias_url}"
+#, php-format
+msgid "Could not process aliases from alias: %s"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:1580
@@ -1325,11 +1319,13 @@ msgid ""
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:1590 src/etc/inc/pfsense-utils.inc:1622
-msgid "Could not open {$temp_filename}/aliases for writing!"
+#, php-format
+msgid "Could not open %s/aliases for writing!"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:1596 src/etc/inc/pfsense-utils.inc:1628
-msgid "The following file could not be read {$f2p} from {$temp_filename}"
+#, php-format
+msgid "The following file could not be read %s from %s"
 msgstr ""
 
 #: src/etc/inc/pfsense-utils.inc:1612
@@ -1351,7 +1347,7 @@ msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
 msgstr ""
 
 #: src/etc/inc/radius.inc:420
-#, c-format, php-format
+#, php-format
 msgid "Unexpected return value: %s"
 msgstr ""
 
@@ -1473,47 +1469,47 @@ msgid "Stopped"
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:309
-#, c-format, php-format
+#, php-format
 msgid "Restart %sService"
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:321
-#, c-format, php-format
+#, php-format
 msgid "Stop %sService"
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:335
-#, c-format, php-format
+#, php-format
 msgid "Start %sService"
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:404
-#, c-format, php-format
+#, php-format
 msgid "Could not start unknown service `%s'"
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:407
-#, c-format, php-format
+#, php-format
 msgid "%s has been started."
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:480
-#, c-format, php-format
+#, php-format
 msgid "Could not stop unknown service `%s'"
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:483
-#, c-format, php-format
+#, php-format
 msgid "%s has been stopped."
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:554
-#, c-format, php-format
+#, php-format
 msgid "Could not restart unknown service `%s'"
 msgstr ""
 
 #: src/etc/inc/service-utils.inc:557
-#, c-format, php-format
+#, php-format
 msgid "%s has been restarted."
 msgstr ""
 
@@ -1531,7 +1527,7 @@ msgid "Warning!  DHCP Failover setup and no CARP virtual IPs defined!"
 msgstr ""
 
 #: src/etc/inc/services.inc:890
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open dhcpd.conf in services_dhcpdv4_configure().%s"
 msgstr ""
 
@@ -1568,19 +1564,18 @@ msgid "Starting SNMP daemon... "
 msgstr ""
 
 #: src/etc/inc/services.inc:1916
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open snmpd.conf in services_snmpd_configure().%s"
 msgstr ""
 
 #: src/etc/inc/services.inc:2185
-#, c-format
-msgid "DynDNS updated IP Address (A) for {$dnsupdate['host']} on %s (%s) to %s"
+#, php-format
+msgid "DynDNS updated IP Address (A) for %s on %s (%s) to %s"
 msgstr ""
 
 #: src/etc/inc/services.inc:2200
-#, c-format
-msgid ""
-"DynDNS updated IPv6 Address (AAAA) for {$dnsupdate['host']} on %s (%s) to %s"
+#, php-format
+msgid "DynDNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s"
 msgstr ""
 
 #: src/etc/inc/services.inc:2252
@@ -1605,27 +1600,27 @@ msgid "Starting UPnP service... "
 msgstr ""
 
 #: src/etc/inc/services.inc:2362
-#, c-format, php-format
+#, php-format
 msgid "Installed cron job for %s"
 msgstr ""
 
 #: src/etc/inc/services.inc:2365
-#, c-format, php-format
+#, php-format
 msgid "Updated cron job for %s"
 msgstr ""
 
 #: src/etc/inc/services.inc:2370
-#, c-format, php-format
+#, php-format
 msgid "Removed cron job for %s"
 msgstr ""
 
 #: src/etc/inc/shaper.inc:160
-#, c-format, php-format
+#, php-format
 msgid "The field '%s' contains invalid characters."
 msgstr ""
 
 #: src/etc/inc/shaper.inc:166
-#, c-format, php-format
+#, php-format
 msgid "The field '%s' is required."
 msgstr ""
 
@@ -1720,10 +1715,6 @@ msgstr ""
 
 #: src/etc/inc/shaper.inc:605
 msgid " Beware you can lose information."
-msgstr ""
-
-#: src/etc/inc/shaper.inc:643
-msgid "Adjusts the size, in bytes, of the token bucket regulator. "
 msgstr ""
 
 #: src/etc/inc/shaper.inc:643
@@ -1832,8 +1823,9 @@ msgstr ""
 #: src/www/interfaces_groups.php:102 src/www/interfaces_groups_edit.php:261
 #: src/www/interfaces_lagg.php:123 src/www/interfaces_lagg_edit.php:228
 #: src/www/interfaces_ppps.php:118 src/www/interfaces_ppps_edit.php:487
-#: src/www/interfaces_qinq.php:128 src/www/interfaces_vlan.php:125
-#: src/www/interfaces_vlan_edit.php:202 src/www/interfaces_wireless.php:116
+#: src/www/interfaces_qinq.php:128 src/www/interfaces_qinq_edit.php:334
+#: src/www/interfaces_vlan.php:125 src/www/interfaces_vlan_edit.php:202
+#: src/www/interfaces_wireless.php:116
 #: src/www/interfaces_wireless_edit.php:189
 #: src/www/load_balancer_monitor.php:125
 #: src/www/load_balancer_monitor_edit.php:77
@@ -1860,10 +1852,11 @@ msgstr ""
 #: src/www/services_dnsmasq_domainoverride_edit.php:157
 #: src/www/services_dnsmasq_edit.php:223 src/www/services_dnsmasq_edit.php:244
 #: src/www/services_dyndns.php:93 src/www/services_dyndns_edit.php:425
-#: src/www/services_igmpproxy.php:99 src/www/services_rfc2136.php:86
-#: src/www/services_rfc2136_edit.php:218 src/www/services_unbound.php:387
-#: src/www/services_unbound.php:451 src/www/services_unbound_acls.php:235
-#: src/www/services_unbound_acls.php:285 src/www/services_unbound_acls.php:310
+#: src/www/services_igmpproxy.php:99 src/www/services_igmpproxy_edit.php:175
+#: src/www/services_rfc2136.php:86 src/www/services_rfc2136_edit.php:218
+#: src/www/services_unbound.php:387 src/www/services_unbound.php:451
+#: src/www/services_unbound_acls.php:235 src/www/services_unbound_acls.php:285
+#: src/www/services_unbound_acls.php:310
 #: src/www/services_unbound_domainoverride_edit.php:151
 #: src/www/services_unbound_host_edit.php:225
 #: src/www/services_unbound_host_edit.php:246 src/www/services_wol.php:173
@@ -2026,11 +2019,6 @@ msgstr ""
 
 #: src/etc/inc/shaper.inc:1932
 msgid ""
-"The format for service curve specifications is (m1, d, m2).  m2 controls "
-msgstr ""
-
-#: src/etc/inc/shaper.inc:1932
-msgid ""
 "The format for service curve specifications is (m1, d, m2).  m2 controls the "
 "bandwidth assigned to the queue.  m1 and d are optional and can be used to "
 "control the initial bandwidth assignment.  For the first d milliseconds the "
@@ -2062,12 +2050,8 @@ msgid "Bandwidth limit for hosts to not saturate link."
 msgstr ""
 
 #: src/etc/inc/shaper.inc:2854 src/etc/inc/shaper.inc:2861
-#, c-format, php-format
+#, php-format
 msgid "Welcome to the %s Traffic Shaper."
-msgstr ""
-
-#: src/etc/inc/shaper.inc:2855 src/etc/inc/shaper.inc:2862
-msgid "The tree on the left helps you navigate through the queues <br />"
 msgstr ""
 
 #: src/etc/inc/shaper.inc:2855 src/etc/inc/shaper.inc:2862
@@ -2077,7 +2061,7 @@ msgid ""
 msgstr ""
 
 #: src/etc/inc/system.inc:473
-#, c-format, php-format
+#, php-format
 msgid "Static Routes: Gateway IP could not be found for %s"
 msgstr ""
 
@@ -2086,7 +2070,7 @@ msgid "Starting syslog..."
 msgstr ""
 
 #: src/etc/inc/system.inc:748
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open syslog.conf in system_syslogd_start().%s"
 msgstr ""
 
@@ -2099,12 +2083,12 @@ msgid "Importing HTTPS certificate"
 msgstr ""
 
 #: src/etc/inc/system.inc:1156
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open cert.pem in system_webgui_start().%s"
 msgstr ""
 
 #: src/etc/inc/system.inc:1167
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open ca.pem in system_webgui_start().%s"
 msgstr ""
 
@@ -2113,7 +2097,7 @@ msgid "ssl configuration"
 msgstr ""
 
 #: src/etc/inc/system.inc:1227
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open %s in system_generate_lighty_config().%s"
 msgstr ""
 
@@ -2127,12 +2111,6 @@ msgstr ""
 
 #: src/etc/inc/system.inc:1649 src/etc/inc/system.inc:1652
 msgid "failed!"
-msgstr ""
-
-#: src/etc/inc/upgrade_config.inc:107 src/etc/inc/upgrade_config.inc:119
-#: src/etc/inc/upgrade_config.inc:132
-#, c-format
-msgid "%sWarning: filter rule removed "
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:107
@@ -2151,12 +2129,6 @@ msgstr ""
 msgid ""
 "%sWarning: filter rule removed (destination network '%s' does not exist "
 "anymore)."
-msgstr ""
-
-#: src/etc/inc/upgrade_config.inc:152 src/etc/inc/upgrade_config.inc:164
-#: src/etc/inc/upgrade_config.inc:177
-#, c-format
-msgid "%sWarning: traffic shaper rule removed "
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:152
@@ -2181,7 +2153,7 @@ msgid ""
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:327
-#, c-format, php-format
+#, php-format
 msgid "CARP vhid %s"
 msgstr ""
 
@@ -2211,7 +2183,7 @@ msgid "Indicates whether this user is able to login for example via SSH."
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:535
-#, c-format, php-format
+#, php-format
 msgid ""
 "Indicates whether this user is allowed to copy files onto the %s appliance "
 "via SCP/SFTP. If you are going to use this privilege, you must install "
@@ -2303,32 +2275,32 @@ msgid "TCP Offload engine"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:664
-#, c-format, php-format
+#, php-format
 msgid "Interface %s Static Gateway"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:667
-#, c-format, php-format
+#, php-format
 msgid "Interface %s Dynamic Gateway"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:733
-#, c-format, php-format
+#, php-format
 msgid "Upgraded static route for %s"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:830
-#, c-format, php-format
+#, php-format
 msgid "Sitedown pool for VS: %s"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:985
-#, c-format, php-format
+#, php-format
 msgid "phase2 for %s"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:1212
-#, c-format, php-format
+#, php-format
 msgid "Upgraded Dyndns %s"
 msgstr ""
 
@@ -2337,7 +2309,7 @@ msgid "All Users"
 msgstr ""
 
 #: src/etc/inc/upgrade_config.inc:1419
-#, c-format, php-format
+#, php-format
 msgid "Converted bridged %s"
 msgstr ""
 
@@ -2346,7 +2318,7 @@ msgid "Auto added OpenVPN rule from config upgrade."
 msgstr ""
 
 #: src/etc/inc/util.inc:79
-#, c-format, php-format
+#, php-format
 msgid "WARNING: Could not mark subsystem: %s dirty"
 msgstr ""
 
@@ -2359,7 +2331,7 @@ msgid "WARNING: You must give a name as parameter to try_lock() function."
 msgstr ""
 
 #: src/etc/inc/util.inc:1023
-#, c-format, php-format
+#, php-format
 msgid "The command '%s' returned exit code '%d', the output was '%s'"
 msgstr ""
 
@@ -2373,7 +2345,7 @@ msgid "Access denied!"
 msgstr ""
 
 #: src/etc/inc/voucher.inc:225
-#, c-format, php-format
+#, php-format
 msgid "Access granted for %d Minutes in total."
 msgstr ""
 
@@ -2392,7 +2364,7 @@ msgid "Can't read %s"
 msgstr ""
 
 #: src/etc/inc/voucher.inc:480
-#, c-format, php-format
+#, php-format
 msgid "Voucher: %s"
 msgstr ""
 
@@ -2401,37 +2373,37 @@ msgid "Configuring IPsec VPN... "
 msgstr ""
 
 #: src/etc/inc/vpn.inc:394
-#, c-format, php-format
+#, php-format
 msgid "Error: Invalid certificate info for %s"
 msgstr ""
 
 #: src/etc/inc/vpn.inc:400
-#, c-format, php-format
+#, php-format
 msgid "Error: Invalid certificate hash info for %s"
 msgstr ""
 
 #: src/etc/inc/vpn.inc:405
-#, c-format, php-format
+#, php-format
 msgid "Error: Cannot write IPsec CA file for %s"
 msgstr ""
 
 #: src/etc/inc/vpn.inc:427
-#, c-format, php-format
+#, php-format
 msgid "Error: Invalid phase1 certificate reference for %s"
 msgstr ""
 
 #: src/etc/inc/vpn.inc:435
-#, c-format, php-format
+#, php-format
 msgid "Error: Cannot write phase1 key file for %s"
 msgstr ""
 
 #: src/etc/inc/vpn.inc:442
-#, c-format, php-format
+#, php-format
 msgid "Error: Cannot write phase1 certificate file for %s"
 msgstr ""
 
 #: src/etc/inc/vpn.inc:869
-#, c-format, php-format
+#, php-format
 msgid "Ignoring IPsec reload since there are no tunnels on interface %s"
 msgstr ""
 
@@ -2448,17 +2420,17 @@ msgid "Could not kill mpd within 3 seconds.   Trying again."
 msgstr ""
 
 #: src/etc/inc/vpn.inc:949
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd.conf in vpn_pptpd_configure()."
 msgstr ""
 
 #: src/etc/inc/vpn.inc:1068
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd.links in vpn_pptpd_configure()."
 msgstr ""
 
 #: src/etc/inc/vpn.inc:1093
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd.secret in vpn_pptpd_configure()."
 msgstr ""
 
@@ -2467,17 +2439,17 @@ msgid "Configuring PPPoE VPN service... "
 msgstr ""
 
 #: src/etc/inc/vpn.inc:1174
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd.conf in vpn_pppoe_configure()."
 msgstr ""
 
 #: src/etc/inc/vpn.inc:1283
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd.links in vpn_pppoe_configure()."
 msgstr ""
 
 #: src/etc/inc/vpn.inc:1310
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd.secret in vpn_pppoe_configure()."
 msgstr ""
 
@@ -2490,17 +2462,17 @@ msgid "Configuring l2tp VPN service... "
 msgstr ""
 
 #: src/etc/inc/vpn.inc:1379
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd.conf in vpn_l2tp_configure()."
 msgstr ""
 
 #: src/etc/inc/vpn.inc:1478
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd.links in vpn_l2tp_configure()."
 msgstr ""
 
 #: src/etc/inc/vpn.inc:1504
-#, c-format, php-format
+#, php-format
 msgid "Error: cannot open mpd.secret in vpn_l2tp_configure()."
 msgstr ""
 
@@ -2519,7 +2491,7 @@ msgid "XML error: %1$s at line %2$d in %3$s"
 msgstr ""
 
 #: src/etc/inc/xmlparse.inc:182 src/etc/inc/xmlparse_attr.inc:208
-#, c-format, php-format
+#, php-format
 msgid "XML error: no %s object found!"
 msgstr ""
 
@@ -2529,7 +2501,7 @@ msgid "XML error: %1$s at line %2$d"
 msgstr ""
 
 #: src/etc/inc/xmlrpc/legacy.inc:145 src/etc/inc/xmlrpc/legacy.inc:210
-#, c-format, php-format
+#, php-format
 msgid "Merged in config (%s sections) from XMLRPC client."
 msgstr ""
 
@@ -2543,46 +2515,42 @@ msgstr ""
 msgid "Do you want to proceed [y|n]? "
 msgstr ""
 
-#: src/etc/rc.initial.password:48
-msgid ""
-"\n"
-"The User manager authentication server is set to \""
-msgstr ""
-
 #: src/etc/rc.initial.password:49
-msgid "' . $config['system']['webgui']['authmode'] . '"
+#, php-format
+msgid "The User manager authentication server is set to \"%s\"."
 msgstr ""
 
-#: src/etc/rc.initial.password:50
-msgid "Do you want to set it back to Local Database [y|n]?"
+#: src/etc/rc.initial.password:51
+#, php-format
+msgid "Do you want to set it back to Local Database [y|n]? "
 msgstr ""
 
-#: src/etc/rc.initial.password:74
+#: src/etc/rc.initial.password:76
 msgid "password changed from console menu"
 msgstr ""
 
-#: src/etc/rc.initial.password:77
+#: src/etc/rc.initial.password:79
 #, php-format
 msgid "The password has been reset."
 msgstr ""
 
-#: src/etc/rc.initial.password:79
+#: src/etc/rc.initial.password:81
 #, php-format
 msgid "Please change the password as soon as you log in!"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:106
-#, c-format, php-format
+#, php-format
 msgid "Do you want to enable the %s server on %s?"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:249
-#, c-format, php-format
+#, php-format
 msgid "Configure %s address %s interface via %s?"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:263
-#, c-format, php-format
+#, php-format
 msgid "Enter the new %s %s address.  Press <ENTER> for none:"
 msgstr ""
 
@@ -2591,12 +2559,12 @@ msgid "This IP address conflicts with another interface or a VIP"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:274
-#, c-format, php-format
+#, php-format
 msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:289
-#, c-format, php-format
+#, php-format
 msgid "Enter the new %s %s subnet bit count (1 to %s):"
 msgstr ""
 
@@ -2609,7 +2577,7 @@ msgid "You cannot set broadcast address to an interface"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:314
-#, c-format, php-format
+#, php-format
 msgid "For a WAN, enter the new %s %s upstream gateway address."
 msgstr ""
 
@@ -2618,7 +2586,7 @@ msgid "For a LAN, press <ENTER> for none:"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:321
-#, c-format, php-format
+#, php-format
 msgid "not an %s IP address!"
 msgstr ""
 
@@ -2627,7 +2595,7 @@ msgid "not in subnet!"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:367
-#, c-format, php-format
+#, php-format
 msgid "Enter the start address of the %s client address range:"
 msgstr ""
 
@@ -2636,7 +2604,7 @@ msgid "This IP address must be in the interface's subnet"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:380
-#, c-format, php-format
+#, php-format
 msgid "Enter the end address of the %s client address range:"
 msgstr ""
 
@@ -2645,7 +2613,7 @@ msgid "The end address of the DHCP range must be >= the start address"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:403
-#, c-format, php-format
+#, php-format
 msgid "Disabling %s DHCPD..."
 msgstr ""
 
@@ -2654,22 +2622,22 @@ msgid "Do you want to revert to HTTP as the webConfigurator protocol?"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:423
-#, c-format, php-format
+#, php-format
 msgid "Note: the anti-lockout rule on %s has been re-enabled."
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:454
-#, c-format, php-format
+#, php-format
 msgid "%s IP configuration from console menu"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:469 src/etc/rc.initial.setlanip:472
-#, c-format, php-format
+#, php-format
 msgid "The IPv4 %s address has been set to %s"
 msgstr ""
 
 #: src/etc/rc.initial.setlanip:478 src/etc/rc.initial.setlanip:481
-#, c-format, php-format
+#, php-format
 msgid "The IPv6 %s address has been set to %s"
 msgstr ""
 
@@ -2778,6 +2746,14 @@ msgstr ""
 
 #: src/etc/rc.restore_config_backup:103
 msgid "quit"
+msgstr ""
+
+#: src/etc/rc.sshd:133
+msgid "Started creating your SSH keys. SSH startup is being delayed a wee bit."
+msgstr ""
+
+#: src/etc/rc.sshd:140
+msgid "Completed creating your SSH keys. SSH will now be started."
 msgstr ""
 
 #: src/sbin/gmirror_status_check.php:51
@@ -3033,14 +3009,15 @@ msgstr ""
 #: src/www/interfaces_qinq.php:125 src/www/interfaces_vlan.php:123
 #: src/www/interfaces_wireless.php:114 src/www/services_captiveportal.php:199
 #: src/www/services_dhcp_relay.php:61 src/www/services_dhcpv6_relay.php:62
-#: src/www/services_dyndns.php:89 src/www/services_wol.php:136
-#: src/www/services_wol.php:171 src/www/services_wol_edit.php:75
-#: src/www/services_wol_edit.php:136 src/www/status_graph.php:205
-#: src/www/system_gateways.php:217 src/www/system_gateways_edit.php:104
-#: src/www/system_gateways_edit.php:660 src/www/system_routes.php:236
-#: src/www/vpn_ipsec_phase1.php:596 src/www/vpn_l2tp.php:310
-#: src/www/vpn_openvpn_client.php:532 src/www/vpn_openvpn_server.php:852
-#: src/www/vpn_pppoe.php:116 src/www/vpn_pppoe_edit.php:386
+#: src/www/services_dyndns.php:89 src/www/services_igmpproxy_edit.php:161
+#: src/www/services_wol.php:136 src/www/services_wol.php:171
+#: src/www/services_wol_edit.php:75 src/www/services_wol_edit.php:136
+#: src/www/status_graph.php:205 src/www/system_gateways.php:217
+#: src/www/system_gateways_edit.php:104 src/www/system_gateways_edit.php:660
+#: src/www/system_routes.php:236 src/www/vpn_ipsec_phase1.php:596
+#: src/www/vpn_l2tp.php:310 src/www/vpn_openvpn_client.php:532
+#: src/www/vpn_openvpn_server.php:852 src/www/vpn_pppoe.php:116
+#: src/www/vpn_pppoe_edit.php:386
 #: src/www/widgets/widgets/wake_on_lan.widget.php:44
 msgid "Interface"
 msgstr ""
