@@ -60,17 +60,14 @@ XGETTEXT=	xgettext -L PHP --from-code=UTF-8 -F --strict --debug
 MSGFMT=		msgfmt --strict
 LOCALEDIR=	${.CURDIR}/src/share/locale
 POT=		${LOCALEDIR}/en_US/LC_MESSAGES/OPNsense.pot
-LANGS=		ja zh_CN
-. for LANG in ${LANGS}
-MO+=		${LOCALEDIR}/${LANG}/LC_MESSAGES/OPNsense.mo
-. endfor
+PO!=		ls ${LOCALEDIR}/*/LC_MESSAGES/OPNsense.po
 
 .SUFFIXES:	.po .mo
 
 .po.mo: force
 	${MSGFMT} -o ${.TARGET} ${.IMPSRC}
 
-bootstrap: ${MO}
+bootstrap: ${PO:S/.po/.mo/g}
 
 translate: force
 	@: > ${POT}
