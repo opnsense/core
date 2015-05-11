@@ -25372,19 +25372,19 @@ msgstr ""
 #
 # File: src/www/widgets/widgets/log.widget.php, line: 199
 msgid "IF"
-msgstr ""
+msgstr "IF"
 #
 # File: src/www/widgets/widgets/smart_status.widget.php, line: 39
 msgid "Drive"
-msgstr ""
+msgstr "ドライブ"
 #
 # File: src/www/widgets/widgets/smart_status.widget.php, line: 40
 msgid "Ident"
-msgstr ""
+msgstr "ID"
 #
 # File: src/www/widgets/widgets/smart_status.widget.php, line: 41
 msgid "SMART Status"
-msgstr ""
+msgstr "SMART ステータス"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 63
 msgid "Click to upgrade"
@@ -25396,63 +25396,63 @@ msgstr ""
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 128
 msgid "CPU Type"
-msgstr ""
+msgstr "CPU タイプ"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 143
 msgid "Hardware crypto"
-msgstr ""
+msgstr "ハードウェア暗号"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 148
 msgid "Uptime"
-msgstr ""
+msgstr "稼働時間"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 152
 msgid "Current date/time"
-msgstr ""
+msgstr "現在の日付 / 時刻"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 158
 msgid "DNS server(s)"
-msgstr ""
+msgstr "DNS サーバ"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 170
 msgid "Last config change"
-msgstr ""
+msgstr "最新構成変更"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 175
 msgid "State table size"
-msgstr ""
+msgstr "ステータステーブルサイズ"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 188
 msgid "Show states"
-msgstr ""
+msgstr "ステータス表示"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 192
 msgid "MBUF Usage"
-msgstr ""
+msgstr "MBUF 使用量"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 209
 msgid "Temperature"
-msgstr ""
+msgstr "温度"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 223
 msgid "Load average"
-msgstr ""
+msgstr "ロードアベレージ"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 229
 msgid "CPU usage"
-msgstr ""
+msgstr "CPU 使用率"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 241
 msgid "Memory usage"
-msgstr ""
+msgstr "メモリ使用量"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 254
 msgid "SWAP usage"
-msgstr ""
+msgstr "スワップ使用状況"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 267
 msgid "Disk usage"
-msgstr ""
+msgstr "ディスク使用状況"
 #
 # File: src/www/widgets/widgets/traffic_graphs.widget.php, line: 132
 msgid "Scale up"
@@ -25464,62 +25464,62 @@ msgstr ""
 #
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 43
 msgid "Computer / Device"
-msgstr ""
+msgstr "コンピュータ / デバイス"
 #
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 69
 msgid "Wake Up"
-msgstr ""
+msgstr "起動"
 #
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 74
 msgid "No saved WoL addresses"
-msgstr ""
+msgstr "WOL アドレスは保存されていません"
 #
 # File: src/www/wizard.php, line: 52
 # File: src/www/wizard.php, line: 60
 #, php-format
 msgid "ERROR:  Could not open %s."
-msgstr ""
+msgstr "エラー: %s を開けません"
 #
 # File: src/www/wizard.php, line: 66
 #, php-format
 msgid "ERROR: Could not parse /usr/local/www/wizards/%s file."
-msgstr ""
+msgstr "エラー: /usr/local/www/wizards/%s ファイルを解析できません"
 #
 # File: src/www/wizards/openvpn_wizard.inc, line: 625
 # File: src/www/wizards/openvpn_wizard.inc, line: 642
 #, php-format
 msgid "OpenVPN %s wizard"
-msgstr ""
+msgstr "OpenVPN %s ウィザード"
 #
 # File: src/www/wizards/openvpn_wizard.inc, line: 637
 # File: src/www/wizards/openvpn_wizard.inc, line: 652
 msgid "OpenVPN Wizard"
-msgstr ""
+msgstr "OpenVPN ウィザード"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 58
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 61
 msgid "You need to specify the number of connections."
-msgstr ""
+msgstr "接続数を指定してください"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 63
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 66
 msgid "The number of connections should be greater than 1."
-msgstr ""
+msgstr "接続数は 1 より大きい値を設定してください"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 88
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 102
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 109
 msgid "You have less interfaces than number of connections!"
-msgstr ""
+msgstr "接続数よりも少ないインタフェースしかありません！"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 300
 msgid "You cannot specify bandwidth smaller than 1!"
-msgstr ""
+msgstr "1 より小さい帯域幅は指定できません！"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 311
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 334
 msgid "You cannot select the same interface for local and outside."
-msgstr ""
+msgstr "ローカル用と外向き用に、同じインタフェースは選択できません"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 493
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 589
@@ -25529,13 +25529,15 @@ msgid ""
 "Address must be a valid IP address or Firewall Alias.  Please correct this "
 "value to continue."
 msgstr ""
+"アドレスには、有効な IP アドレスか、ファイアウォールエイリアスを設定してください。"
+"続行するには、この値を修正してください。"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 577
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 606
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 627
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 654
 msgid "Only percentage bandwidth specification is allowed."
-msgstr ""
+msgstr "帯域幅は % で指定してください"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 760
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1144
@@ -25545,11 +25547,13 @@ msgid ""
 "Custom Bandwidths are greater than 30%. Please lower them for the wizard to "
 "continue."
 msgstr ""
+"カスタム帯域幅が 30% を超えています。"
+"ウィザードを続行するには、値を下げてください。"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1446
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1515
 msgid "Penalty Box"
-msgstr ""
+msgstr "ペナルティボックス"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1453
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1473
@@ -25567,17 +25571,17 @@ msgstr ""
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1644
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1697
 msgid "Traffic Shaper Wizard"
-msgstr ""
+msgstr "トラフィックシェーパウィザード"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1465
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1535
 msgid "Connections From Upstream SIP Server"
-msgstr ""
+msgstr "上流 SIP サーバからの接続"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1479
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1549
 msgid "Connections To Upstream SIP Server"
-msgstr ""
+msgstr "上流 SIP サーバへの接続"
 #
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 72
 msgid "You need to specify the number of LAN type interfaces."
@@ -25589,8 +25593,8 @@ msgstr ""
 #
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 321
 msgid "You cannot specify 0 bandwidth!"
-msgstr ""
+msgstr "帯域幅に 0 を指定できません！"
 #
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 343
 msgid "You cannot select the same interface twice on local interfaces."
-msgstr ""
+msgstr "ローカルインタフェースで、同じインタフェースを 2 回選択できません"
