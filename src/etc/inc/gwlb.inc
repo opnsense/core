@@ -823,16 +823,16 @@ function return_gateway_groups_array() {
 				if (is_array($gateways_status[$gwname])) {
 					$status = $gateways_status[$gwname];
 					$gwdown = false;
-					if (stristr($status['status'], "down")) {
-						$msg = sprintf(gettext("MONITOR: %s is down, removing from routing group {$group['name']}"), $gwname);
+					if (stristr($status['status'], 'down')) {
+						$msg = sprintf(_('MONITOR: %s is down, removing from routing group %s'), $gwname, $group['name']);
 						$gwdown = true;
-					} else if (stristr($status['status'], "loss") && strstr($group['trigger'], "loss")) {
+					} elseif (stristr($status['status'], 'loss') && strstr($group['trigger'], 'loss')) {
 						/* packet loss */
-						$msg = sprintf(gettext("MONITOR: %s has packet loss, removing from routing group {$group['name']}"), $gwname);
+						$msg = sprintf(_('MONITOR: %s has packet loss, removing from routing group %s'), $gwname, $group['name']);
 						$gwdown = true;
-					} else if (stristr($status['status'], "delay") && strstr($group['trigger'] , "latency")) {
+					} elseif (stristr($status['status'], 'delay') && strstr($group['trigger'] , 'latency')) {
 						/* high latency */
-						$msg = sprintf(gettext("MONITOR: %s has high latency, removing from routing group {$group['name']}"), $gwname);
+						$msg = sprintf(_('MONITOR: %s has high latency, removing from routing group %s'), $gwname, $group['name']);
 						$gwdown = true;
 					}
 					if ($gwdown == true) {
@@ -845,14 +845,15 @@ function return_gateway_groups_array() {
 							$tiers[$tier] = array();
 						$tiers[$tier][] = $gwname;
 					}
-				} else if (isset($gateways_arr[$gwname]['monitor_disable']))
+				} elseif (isset($gateways_arr[$gwname]['monitor_disable'])) {
 					$tiers[$tier][] = $gwname;
+				}
 			}
 			$tiers_count = count($tiers);
 			if ($tiers_count == 0) {
 				/* Oh dear, we have no members! Engage Plan B */
-				if (!file_exists("/var/run/booting")) {
-					$msg = gettext("Gateways status could not be determined, considering all as up/active. (Group: {$group['name']})");
+				if (!file_exists('/var/run/booting')) {
+					$msg = sprintf(_('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
 					log_error($msg);
 					notify_via_growl($msg);
 					//notify_via_smtp($msg);
