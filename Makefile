@@ -71,6 +71,7 @@ bootstrap: ${PO:S/.po/.mo/g}
 
 translate: force
 	@: > ${POT}
+	scripts/translate/collect.py
 	find src | xargs ${XGETTEXT} -j -o ${POT}
 
 clean:
