@@ -1625,7 +1625,7 @@ function process_alias_tgz($temp_filename) {
 	foreach($files_to_process as $f2p) {
 		$tmpfd = @fopen($f2p, 'r');
 		if (!$tmpfd) {
-			log_error(gettext("The following file could not be read {$f2p} from {$temp_filename}"));
+			log_error(sprintf(_('The following file could not be read %s from %s'), $f2p, $temp_filename));
 			continue;
 		}
 		while (($tmpbuf = fread($tmpfd, 65536)) !== FALSE)
