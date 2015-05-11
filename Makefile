@@ -56,7 +56,7 @@ translate:
 	@: > src/share/locale/en/LC_MESSAGES/OPNsense.pot
 	find src | xargs xgettext -j -L PHP --from-code=UTF-8 -F \
             --copyright-holder="OPNsense project." \
-            --package-name="OPNsense" \
+            --package-name="OPNsense `git describe --abbrev=0`" \
             --msgid-bugs-address="https://forum.opnsense.org/" \
 	    -o src/share/locale/en/LC_MESSAGES/OPNsense.pot
 
