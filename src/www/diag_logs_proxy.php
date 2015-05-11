@@ -38,7 +38,7 @@ if ($_POST['clear']) {
         // trash log file
         $handle = fopen($logfile, 'r+');
         ftruncate($handle, 0);
-        fclose($handle); 
+        fclose($handle);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Proxy"));
