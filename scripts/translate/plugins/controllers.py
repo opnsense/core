@@ -28,36 +28,27 @@
 
     --------------------------------------------------------------------------------------
     package : translate
-    function: collect model translatable text 
+    function: collect controller translatable text 
 
 
 
 """
 __author__ = 'Ad Schellevis'
 
-def recursiveParseModel(xmlNode):
+def recursiveParseForm(xmlNode):
     for childNode in xmlNode:
-        for tag in recursiveParseModel(childNode):
+        for tag in recursiveParseForm(childNode):
             yield tag
     
-    if xmlNode.tag == 'ValidationMessage':
+    if xmlNode.tag == 'help':
         yield xmlNode.text
 
-def recursiveParseMenu(xmlNode):
-    for childNode in xmlNode:
-        for tag in recursiveParseMenu(childNode):
-            yield tag
-    
-    if xmlNode.attrib.has_key('VisibleName'):
-        yield xmlNode.attrib['VisibleName']
-    else:
-        yield xmlNode.tag
 
 def getTranslations(root):
     import os
     import xml.etree.ElementTree as ET
     
-    rootpath='%s/opnsense/mvc/app/models/'%root
+    rootpath='%s/opnsense/mvc/app/controllers/'%root
     
     
     for root, dirs, files in os.walk(rootpath, topdown=False):
@@ -66,11 +57,8 @@ def getTranslations(root):
                 filename = '%s/%s'%(root,name)
                 tree = ET.parse(filename)
                 root = tree.getroot()
-                if root.tag == 'model':
-                    for tag in recursiveParseModel(root):
-                        yield tag
-                elif root.tag == 'menu':
-                    for tag in recursiveParseMenu(root):
+                if root.tag == 'form':
+                    for tag in recursiveParseForm(root):
                         yield tag
         
     
