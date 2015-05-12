@@ -45,7 +45,8 @@ class ControllerBase extends Controller
      * @return NativeArray
      */
     public function getTranslator()
-    { /*
+    {
+        /*
         if (function_exists("gettext")) {
             // gettext installed, return gettext translator
             return new Gettext(array(
