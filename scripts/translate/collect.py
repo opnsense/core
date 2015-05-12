@@ -51,13 +51,12 @@ for filename in glob.glob('%s/plugins/*.py'%'/'.join(os.path.realpath(__file__).
     lang = importlib.import_module('plugins.%s'%modulename)
     if hasattr(lang,'getTranslations'):
         # open filehandle for collected plugin
-        fOut=open('%s/%s.php'%(targetPath,modulename),'w')        
+        fOut=open('%s/%s.php'%(targetPath,modulename),'w')
         fOut.write(templateText)
-        
+
         # fill with gettext tags
         for textValue in lang.getTranslations(OPNsenseRoot):
             line="echo gettext('%s');\n"%(unicode(textValue).replace("'","\\'"))
             fOut.write(line)
-        
-        fOut.close()
 
+        fOut.close()

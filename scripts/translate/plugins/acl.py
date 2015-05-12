@@ -28,7 +28,7 @@
 
     --------------------------------------------------------------------------------------
     package : translate
-    function: collect acl translatable text 
+    function: collect acl translatable text
 
 
 
@@ -39,9 +39,7 @@ def getTranslations(root):
     import json
     filename='%s/opnsense/mvc/app/models/OPNsense/Core/ACL_Legacy_Page_Map.json'%root
     aclMap = json.loads(open(filename).read())
-    
+
     for aclKey in aclMap.keys():
         if aclMap[aclKey].has_key('descr'):
            yield aclMap[aclKey]['descr']
-    
-
