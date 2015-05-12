@@ -81,6 +81,24 @@ abstract class BaseField
     protected $internalIsVirtual = false ;
 
     /**
+     * @var array key value store for attributes (will be saved as xml attributes)
+     */
+    protected $internalAttributes = array();
+
+    /**
+     * @return string uuid v4 number
+     */
+    protected function generateUUID() {
+        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+            mt_rand( 0, 0xffff ),
+            mt_rand( 0, 0x0fff ) | 0x4000,
+            mt_rand( 0, 0x3fff ) | 0x8000,
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+        );
+    }
+
+    /**
      * Template action for post loading actions, triggered by eventPostLoadingEvent.
      * Overwrite this method for custom loading hooks.
      */
@@ -88,6 +106,7 @@ abstract class BaseField
     {
         return;
     }
+
 
     /**
      * trigger post loading event. (executed by BaseModel)
@@ -216,6 +235,24 @@ abstract class BaseField
     public function setValue($value)
     {
         $this->internalValue = $value;
+    }
+
+    /**
+     * Set attribute on Field object
+     * @param $key attribute key
+     * @param $value attribute value
+     */
+    public function setAttributeValue($key, $value)
+    {
+        $this->internalAttributes[$key] = $value;
+    }
+
+    /**
+     * @return array Field attributes
+     */
+    public function getAttributes()
+    {
+        return $this->internalAttributes;
     }
 
     /**
@@ -363,6 +400,12 @@ abstract class BaseField
             } else {
                 $subnode = $node->addChild($this->getInternalXMLTagName());
             }
+
+            // copy attributes into xml node
+            foreach ($this->getAttributes() as $AttrKey => $AttrValue) {
+                $subnode->addAttribute($AttrKey, $AttrValue);
+            }
+
 
         }
 

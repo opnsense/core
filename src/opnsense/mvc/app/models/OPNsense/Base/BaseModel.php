@@ -92,6 +92,14 @@ abstract class BaseModel
      */
     private function parseXml($xml, &$config_data, &$internal_data)
     {
+        // copy xml tag attributes to Field
+        if ($config_data != null) {
+            foreach($config_data->attributes() as $AttrKey => $AttrValue) {
+                $internal_data->setAttributeValue($AttrKey, $AttrValue);
+            }
+        }
+
+        // iterate model children
         foreach ($xml->children() as $xmlNode) {
             $tagName = $xmlNode->getName();
             // every item results in a Field type object, the first step is to determine which object to create
@@ -134,7 +142,6 @@ abstract class BaseModel
                     // set field content from config (if available)
                     $fieldObject->setValue($config_data->$tagName->__toString());
                 }
-
             } else {
                 // add new child node container, always try to pass config data
                 if ($config_data != null && isset($config_data->$tagName)) {

@@ -72,6 +72,13 @@ class ArrayField extends BaseField
                 $this->internalArrayCounter--;
             }
         }
+
+        // check if all children have a uuid, generate one if missing
+        foreach ($this->internalChildnodes as $nodeKey => $node) {
+            if (!array_key_exists('uuid', $node->getAttributes())) {
+                $node->setAttributeValue("uuid", $this->generateUUID());
+            }
+        }
     }
 
     /**
@@ -98,6 +105,8 @@ class ArrayField extends BaseField
         foreach ($new_record as $key => $node) {
             $node->setInternalReference($container_node->__reference.".".$key);
             $container_node->addChildNode($key, $node);
+            // make sure we have a UUID on repeating child items
+            $container_node->setAttributeValue("uuid", $this->generateUUID());
         }
 
         // add node to this object
@@ -116,4 +125,23 @@ class ArrayField extends BaseField
             unset($this->internalChildnodes[$index]);
         }
     }
+
+
+    /**
+     * search child item by UUID
+     * @param $uuid item uuid
+     * @return BaseField|null
+     */
+    public function findByUUID($uuid)
+    {
+        foreach ($this->internalChildnodes as $nodeKey => $node) {
+            $nodeAttr = $node->getAttributes();
+            if (array_key_exists('uuid', $nodeAttr) && $nodeAttr['uuid'] == $uuid) {
+                return $node;
+            }
+        }
+
+        return null;
+    }
+
 }
