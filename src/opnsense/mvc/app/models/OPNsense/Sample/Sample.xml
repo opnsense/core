@@ -12,7 +12,7 @@
             <ValidationMessage>test</ValidationMessage>
         </tag1>
         <optionTag type="OptionField">
-            <default>1</default>
+            <default>A</default>
             <OptionValues>
                 <A>description 1</A>
                 <B>description 2</B>
