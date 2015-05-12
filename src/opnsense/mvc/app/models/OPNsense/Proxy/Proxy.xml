@@ -12,7 +12,7 @@
             <icpPort type="IntegerField">
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
-                <ValidationMessage>"ICP port needs to be an integer value between 1 and 65535"</ValidationMessage>
+                <ValidationMessage>ICP port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>N</Required>
             </icpPort>
             <logging>
@@ -76,19 +76,19 @@
                     <size type="IntegerField">
                         <default>100</default>
                         <MinimumValue>1</MinimumValue>
-                        <ValidationMessage>"Specify a positive cache size. (number of MB's)"</ValidationMessage>
+                        <ValidationMessage>Specify a positive cache size. (number of MB's)</ValidationMessage>
                         <Required>Y</Required>
                     </size>
                     <l1 type="IntegerField">
                         <default>16</default>
                         <MinimumValue>1</MinimumValue>
-                        <ValidationMessage>"Specify a positive number of first-level subdirectories."</ValidationMessage>
+                        <ValidationMessage>Specify a positive number of first-level subdirectories.</ValidationMessage>
                         <Required>Y</Required>
                     </l1>
                     <l2 type="IntegerField">
                         <default>256</default>
                         <MinimumValue>1</MinimumValue>
-                        <ValidationMessage>"Specify a positive number of second-level subdirectories."</ValidationMessage>
+                        <ValidationMessage>Specify a positive number of second-level subdirectories.</ValidationMessage>
                         <Required>Y</Required>
                     </l2>
                 </local>
@@ -101,25 +101,25 @@
                 <maxDownloadSize type="IntegerField">
                     <default>2048</default>
                     <MinimumValue>1</MinimumValue>
-                    <ValidationMessage>"Specify the maximum download size. (number of KB's)"</ValidationMessage>
+                    <ValidationMessage>Specify the maximum download size. (number of KB's)</ValidationMessage>
                     <Required>N</Required>
                 </maxDownloadSize>
                 <maxUploadSize type="IntegerField">
                     <default>1024</default>
                     <MinimumValue>1</MinimumValue>
-                    <ValidationMessage>"Specify the maximum upload size. (number of KB's)"</ValidationMessage>
+                    <ValidationMessage>Specify the maximum upload size. (number of KB's)</ValidationMessage>
                     <Required>N</Required>
                 </maxUploadSize>
                 <OverallBandwidthTrotteling type="IntegerField">
                     <default>1024</default>
                     <MinimumValue>1</MinimumValue>
-                    <ValidationMessage>"Specify the overall bandwidth for downloads in kilobits per second."</ValidationMessage>
+                    <ValidationMessage>Specify the overall bandwidth for downloads in kilobits per second.</ValidationMessage>
                     <Required>N</Required>
                 </OverallBandwidthTrotteling>
                 <perHostTrotteling type="IntegerField">
                     <default>256</default>
                     <MinimumValue>1</MinimumValue>
-                    <ValidationMessage>"Specify the per host bandwidth for downloads in kilobits per second."</ValidationMessage>
+                    <ValidationMessage>Specify the per host bandwidth for downloads in kilobits per second.</ValidationMessage>
                     <Required>N</Required>
                 </perHostTrotteling>
             </traffic>
@@ -132,7 +132,7 @@
                 <default>3128</default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
-                <ValidationMessage>"Proxy port needs to be an integer value between 1 and 65535"</ValidationMessage>
+                <ValidationMessage>Proxy port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>Y</Required>
             </port>
             <ftpInterfaces type="CSVListField">
@@ -142,7 +142,7 @@
                 <default>2121</default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
-                <ValidationMessage>"FTP Proxy port needs to be an integer value between 1 and 65535"</ValidationMessage>
+                <ValidationMessage>FTP Proxy port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>Y</Required>
             </ftpPort>
             <ftpTransparentMode type="BooleanField">
@@ -204,13 +204,13 @@
                 <credentialsttl type="IntegerField">
                     <default>2</default>
                     <MinimumValue>1</MinimumValue>
-                    <ValidationMessage>"Credentials TTL needs to be an integer value above 0"</ValidationMessage>
+                    <ValidationMessage>Credentials TTL needs to be an integer value above 0</ValidationMessage>
                     <Required>N</Required>
                 </credentialsttl>
                 <children type="IntegerField">
                     <default>5</default>
                     <MinimumValue>1</MinimumValue>
-                    <ValidationMessage>"Number of children needs to be an integer value above 0"</ValidationMessage>
+                    <ValidationMessage>Number of children needs to be an integer value above 0</ValidationMessage>
                     <Required>N</Required>
                 </children>
             </authentication>
