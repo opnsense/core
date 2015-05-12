@@ -28,7 +28,7 @@
 
     --------------------------------------------------------------------------------------
     package : translate
-    function: collect acl translatable text 
+    function: collect model translatable text 
 
 
 
