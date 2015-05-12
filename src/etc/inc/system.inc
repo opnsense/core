@@ -901,13 +901,6 @@ url.rewrite-if-not-file = ( "^/ui/(.*)$" => "/ui/index.php?_url=/$1" ,
 )
 
 EOD;
-		if (isset($config['system']['webgui']['enable_xdebug'])) {
-			$http_rewrite_rules .= <<<EOD
-# Enable webgrind to analyse profiler results
-alias.url += ( "/webgrind/"  => "/usr/local/opnsense/contrib/webgrind/" )
-EOD;
-		}
-
 		$captive_portal_mod_evasive = "";
 		$server_upload_dirs = "server.upload-dirs = ( \"{$g['upload_path']}/\", \"/tmp/\", \"/var/\" )\n";
 		$server_max_request_size = "server.max-request-size    = 2097152";
