@@ -31,6 +31,7 @@ namespace OPNsense\CaptivePortal;
 use \Phalcon\Logger\Adapter\Syslog;
 use \Phalcon\DI\FactoryDefault;
 use \OPNsense\Core;
+use \OPNsense\Core\Backend;
 
 /**
  * Class CPClient main class for captive portal backend functionality
@@ -92,10 +93,13 @@ class CPClient
     {
         if ($this->isEnabled()) {
             $ruleset_filename = FactoryDefault::getDefault()->get('config')->globals->temp_path."/ipfw.rules";
-            $this->rules->generate($ruleset_filename);
+            $backend = new Backend();
+            $response = $backend->configdRun("template reload OPNsense.IPFW");
 
-            // load ruleset
-            $this->shell->exec("/sbin/ipfw -f ".$ruleset_filename);
+            if (trim($response) == "OK") {
+                // load ruleset when ruleset is successfully loaded
+                $this->shell->exec("/sbin/ipfw -f ".$ruleset_filename);
+            }
 
             // update tables
             $this->update();
