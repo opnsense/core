@@ -94,7 +94,7 @@ abstract class BaseModel
     {
         // copy xml tag attributes to Field
         if ($config_data != null) {
-            foreach($config_data->attributes() as $AttrKey => $AttrValue) {
+            foreach ($config_data->attributes() as $AttrKey => $AttrValue) {
                 $internal_data->setAttributeValue($AttrKey, $AttrValue);
             }
         }

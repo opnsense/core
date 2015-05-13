@@ -143,5 +143,4 @@ class ArrayField extends BaseField
 
         return null;
     }
-
 }

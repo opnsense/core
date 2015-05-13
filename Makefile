@@ -50,6 +50,9 @@ style: force
 	@cat ${.CURDIR}/.style.out
 	@rm ${.CURDIR}/.style.out
 
+stylefix: force
+	phpcbf --standard=PSR2 ${.CURDIR}/src/opnsense/mvc || true
+
 setup: force
 	${.CURDIR}/src/etc/rc.php_ini_setup
 
