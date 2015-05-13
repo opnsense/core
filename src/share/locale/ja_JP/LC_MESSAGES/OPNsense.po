@@ -25098,61 +25098,64 @@ msgstr ""
 # File: src/www/vpn_pppoe_edit.php, line: 487
 # File: src/www/vpn_pptp.php, line: 408
 msgid "Sends accounting packets to the RADIUS server"
-msgstr ""
+msgstr "RADIUS サーバにアカウンティングパケットを送信"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 489
 msgid "Use Backup RADIUS Server"
-msgstr ""
+msgstr "バックアップ RADIUS サーバを使用"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 490
 msgid ""
 "When set, if primary server fails all requests will be sent via backup server"
 msgstr ""
+"設定した場合、プライマリサーバに障害が発生すると、全ての要求はバックアップサーバ経由で送信されます。"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 493
 msgid "NAS IP Address"
-msgstr ""
+msgstr "NAS IP アドレス"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 496
 msgid "RADIUS server NAS IP Address"
-msgstr ""
+msgstr "RADIUS サーバ NAS IP アドレス"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 500
 # File: src/www/vpn_pptp.php, line: 426
 msgid "RADIUS Accounting Update"
-msgstr ""
+msgstr "RADIUS アカウンティング更新"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 503
 msgid "RADIUS accounting update period in seconds"
-msgstr ""
+msgstr "RADIUS アカウンティング更新期間。単位は秒"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 507
 # File: src/www/vpn_pptp.php, line: 415
 msgid "RADIUS issued IPs"
-msgstr ""
+msgstr "RADIUS IP 割当"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 510
 msgid "Issue IP Addresses via RADIUS server"
-msgstr ""
+msgstr "RADIUS サーバから割当てられる IP アドレス"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 513
 msgid "RADIUS server Primary"
-msgstr ""
+msgstr "プライマリ RADIUS サーバ"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 518
 msgid ""
 "Enter the IP address, authentication port and accounting port (optional) of "
 "the RADIUS server."
 msgstr ""
+"バックアップ RADIUS サーバの IP アドレス、認証ポート、"
+"アカウンティングポート ( オプション ) を入力してください。"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 519
 # File: src/www/vpn_pppoe_edit.php, line: 535
 msgid "standard port 1812 and 1813 accounting"
-msgstr ""
+msgstr "標準ポートは、認証用が 1812、アカウンティング用が 1813 です。"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 522
 msgid "RADIUS primary shared secret"
-msgstr ""
+msgstr "RADIUS プライマリ共有秘密鍵"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 525
 # File: src/www/vpn_pppoe_edit.php, line: 542
@@ -25161,43 +25164,48 @@ msgid ""
 "Enter the shared secret that will be used to authenticate to the RADIUS "
 "server"
 msgstr ""
+"RADIUS サーバへの認証に使用される共有秘密鍵を"
+"入力してください"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 529
 msgid "RADIUS server Secondary"
-msgstr ""
+msgstr "セカンダリ RADIUS サーバ"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 534
 msgid ""
 "Enter the IP address, authentication port and accounting port (optional) of "
 "the backup RADIUS server."
 msgstr ""
+"RADIUS サーバの IP アドレス、認証ポート、"
+"アカウンティングポート ( オプション ) を入力してください。"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 538
 msgid "RADIUS secondary shared secret"
-msgstr ""
+msgstr "RADIUS セカンダリ共有秘密鍵"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 546
 msgid "User (s)"
-msgstr ""
+msgstr "ユーザ"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 612
 msgid ""
 "don't forget to add a firewall rule to permit traffic from PPPoE clients"
 msgstr ""
+"PPPoE クライアントからのトラフィックを許可する、ファイアウォールルールを必ず追加してください。"
 #
 # File: src/www/vpn_pptp.php, line: 112
 msgid "PPTP redirection target address"
-msgstr ""
+msgstr "PPTP リダイレクトターゲットアドレス"
 #
 # File: src/www/vpn_pptp.php, line: 117
 msgid "A valid target address must be specified."
-msgstr ""
+msgstr "有効なターゲットアドレスを指定してください"
 #
 # File: src/www/vpn_pptp.php, line: 188
 # File: src/www/vpn_pptp_users.php, line: 63
 # File: src/www/vpn_pptp_users_edit.php, line: 128
 msgid "VPN PPTP"
-msgstr ""
+msgstr "VPN PPTP"
 #
 # File: src/www/vpn_pptp.php, line: 297
 msgid ""
@@ -25208,66 +25216,75 @@ msgid ""
 "OpenVPN or IPsec.<br /><br /><a href=\"https://isc.sans.edu/diary/End+of+Days"
 "+for+MS-CHAPv2/13807\">Read More</a>"
 msgstr ""
+"PPTP は、セキュリティ的に問題のある MS-CHAPv2 に依存しているため、"
+"現在はセキュアな VPN 技術とは見なされていません。"
+"PPTP の使用を継続するのであれば、盗聴されたトラフィックの第三者による復号が可能なため、"
+"暗号化とは見なされませんので注意してください。"
+"そのため、OpenVPN や IPsec 等、他のタイプの VPN に移行することをお勧めします。<br/><br/>"
+"<a href=\"https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807\">詳しくはこちらを参照してください。</a>"
 #
 # File: src/www/vpn_pptp.php, line: 326
 msgid "Redirect incoming PPTP connections to"
-msgstr ""
+msgstr "次に対する着信 PPTP 接続をリダイレクト"
 #
 # File: src/www/vpn_pptp.php, line: 329
 msgid "PPTP redirection"
-msgstr ""
+msgstr "PPTP リダイレクト"
 #
 # File: src/www/vpn_pptp.php, line: 333
 msgid ""
 "Enter the IP address of a host which will accept incoming PPTP connections"
-msgstr ""
+msgstr "着信 PPTP 接続を受信するホストの IP アドレスを入力してください"
 #
 # File: src/www/vpn_pptp.php, line: 340
 msgid "Enable PPTP server"
-msgstr ""
+msgstr "PPTP サーバを有効"
 #
 # File: src/www/vpn_pptp.php, line: 343
 msgid "No. PPTP users"
-msgstr ""
+msgstr "PPTP ユーザ番号"
 #
 # File: src/www/vpn_pptp.php, line: 357
 msgid "Hint: 10 is ten PPTP clients"
-msgstr ""
+msgstr "ヒント: 10 の場合は PPTP クライアント数が 10 です"
 #
 # File: src/www/vpn_pptp.php, line: 365
 msgid ""
 "Enter the IP address the PPTP server should give to clients for use as their "
 "\"gateway\""
 msgstr ""
+"PPTP サーバがクライアントに与える、"
+"クライアントの「ゲートウェイ」IP アドレスを入力してください。"
 #
 # File: src/www/vpn_pptp.php, line: 378
 msgid "Specify the starting address for the client IP subnet"
-msgstr ""
+msgstr "クライアント IP サブネットの開始アドレスを指定してください"
 #
 # File: src/www/vpn_pptp.php, line: 382
 msgid "PPTP DNS Servers"
-msgstr ""
+msgstr "PPTP DNS サーバ"
 #
 # File: src/www/vpn_pptp.php, line: 388
 msgid "primary and secondary DNS servers assigned to PPTP clients"
-msgstr ""
+msgstr "PPTP クライアントに割り当てられた、プライマリ、及び、セカンダリ DNS サーバ"
 #
 # File: src/www/vpn_pptp.php, line: 411
 msgid "Secondary RADIUS server for failover authentication"
-msgstr ""
+msgstr "フェイルオーバ用セカンダリ認証 RADIUS サーバ"
 #
 # File: src/www/vpn_pptp.php, line: 412
 msgid ""
 "When set, all requests will go to the secondary server when primary fails"
 msgstr ""
+"設定すると、プライマリに障害が発生した場合、全てのリクエストはセカンダリサーバに送信されます"
 #
 # File: src/www/vpn_pptp.php, line: 416
 msgid "Issue IP addresses via RADIUS server"
-msgstr ""
+msgstr "RADIUS サーバから割当てられる IP アドレス"
 #
 # File: src/www/vpn_pptp.php, line: 420
 msgid "RADIUS NAS IP"
-msgstr ""
+msgstr "RADIUS NAS IP アトリビュート"
 #
 # File: src/www/vpn_pptp.php, line: 438
 # File: src/www/vpn_pptp.php, line: 455
@@ -25275,20 +25292,24 @@ msgid ""
 "Enter the IP address, RADIUS port, and RADIUS accounting port of the RADIUS "
 "server"
 msgstr ""
+"RADIUS サーバの IP アドレス、RADIUS ポート、RADIUS アカウンティングポートを"
+"入力してください"
 #
 # File: src/www/vpn_pptp.php, line: 458
 msgid "Secondary RADIUS shared secret"
-msgstr ""
+msgstr "セカンダリ RADIUS 共有秘密鍵"
 #
 # File: src/www/vpn_pptp.php, line: 462
 msgid ""
 "Enter the shared secret that will be used to authenticate to the secondary "
 "RADIUS server"
 msgstr ""
+"セカンダリ RADIUS サーバへの認証に使用される共有秘密鍵を"
+"入力してください"
 #
 # File: src/www/vpn_pptp.php, line: 472
 msgid "Require 128-bit encryption"
-msgstr ""
+msgstr "128 ビット暗号化を要求"
 #
 # File: src/www/vpn_pptp.php, line: 473
 msgid ""
@@ -25297,10 +25318,14 @@ msgid ""
 "forced on PPTP connections (i.e. unencrypted connections will not be "
 "accepted)"
 msgstr ""
+"設定すると、128 ビット暗号化のみを受け入れます。"
+"設定されていなければ、40 ビットと 56 ビットの暗号化も受け入れます。"
+"PPTP 接続に、常に暗号化が強制されるようになりますので注意してください。"
+" ( 非暗号化接続は受け入れなくなります )"
 #
 # File: src/www/vpn_pptp.php, line: 487
 msgid "add a firewall rule"
-msgstr ""
+msgstr "ファイアウォールルールを追加"
 #
 # File: src/www/vpn_pptp.php, line: 487
 msgid "don't forget to "
@@ -25308,23 +25333,23 @@ msgstr ""
 #
 # File: src/www/vpn_pptp.php, line: 487
 msgid "to permit traffic from PPTP clients"
-msgstr ""
+msgstr "するのを忘れないで下さい"
 #
 # File: src/www/vpn_pptp_users.php, line: 84
 msgid "The PPTP user list has been modified"
-msgstr ""
+msgstr "PPTP ユーザリストが変更されました"
 #
 # File: src/www/vpn_pptp_users.php, line: 84
 msgid "Warning: this will terminate all current PPTP sessions"
-msgstr ""
+msgstr "警告: 現在の PPTP セッションは全て終了します"
 #
 # File: src/www/vpn_pptp_users_edit.php, line: 81
 msgid "The password cannot start with '!'."
-msgstr ""
+msgstr "「!」から始まるパスワードは使用できません"
 #
 # File: src/www/vpn_pptp_users_edit.php, line: 171
 msgid "If you want to change the users' password, enter it here twice."
-msgstr ""
+msgstr "ユーザのパスワードを変更する場合は、ここに 2 回入力してください"
 #
 # File: src/www/widgets/widgets/dyn_dns_status.widget.php, line: 74
 msgid "Int."
