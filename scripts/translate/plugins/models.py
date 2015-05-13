@@ -28,7 +28,7 @@
 
     --------------------------------------------------------------------------------------
     package : translate
-    function: collect model translatable text 
+    function: collect model translatable text
 
 
 
@@ -39,7 +39,7 @@ def recursiveParseModel(xmlNode):
     for childNode in xmlNode:
         for tag in recursiveParseModel(childNode):
             yield tag
-    
+
     if xmlNode.tag == 'ValidationMessage':
         yield xmlNode.text
 
@@ -47,7 +47,7 @@ def recursiveParseMenu(xmlNode):
     for childNode in xmlNode:
         for tag in recursiveParseMenu(childNode):
             yield tag
-    
+
     if xmlNode.attrib.has_key('VisibleName'):
         yield xmlNode.attrib['VisibleName']
     else:
@@ -56,10 +56,10 @@ def recursiveParseMenu(xmlNode):
 def getTranslations(root):
     import os
     import xml.etree.ElementTree as ET
-    
+
     rootpath='%s/opnsense/mvc/app/models/'%root
-    
-    
+
+
     for root, dirs, files in os.walk(rootpath, topdown=False):
         for name in files:
             if name.lower()[-4:] == '.xml':
@@ -72,7 +72,3 @@ def getTranslations(root):
                 elif root.tag == 'menu':
                     for tag in recursiveParseMenu(root):
                         yield tag
-        
-    
-    
-

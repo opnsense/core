@@ -28,7 +28,7 @@
 
     --------------------------------------------------------------------------------------
     package : translate
-    function: collect controller translatable text 
+    function: collect controller translatable text
 
 
 
@@ -39,7 +39,7 @@ def recursiveParseForm(xmlNode):
     for childNode in xmlNode:
         for tag in recursiveParseForm(childNode):
             yield tag
-    
+
     if xmlNode.tag == 'help':
         yield xmlNode.text
 
@@ -47,10 +47,10 @@ def recursiveParseForm(xmlNode):
 def getTranslations(root):
     import os
     import xml.etree.ElementTree as ET
-    
+
     rootpath='%s/opnsense/mvc/app/controllers/'%root
-    
-    
+
+
     for root, dirs, files in os.walk(rootpath, topdown=False):
         for name in files:
             if name.lower()[-4:] == '.xml':
@@ -60,7 +60,3 @@ def getTranslations(root):
                 if root.tag == 'form':
                     for tag in recursiveParseForm(root):
                         yield tag
-        
-    
-    
-

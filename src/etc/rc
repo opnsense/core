@@ -163,7 +163,7 @@ if [ ${USE_MFS_TMPVAR} -ne 0 ]; then
 
 	if [ ! -d /root/var/db/pkg ]; then
 		mkdir -p /root/var/db
-                mv /var/db/pkg /root/var/db 		
+		mv /var/db/pkg /root/var/db
 	fi
 
 	mdmfs -S -M -s ${tmpsize} md /tmp
