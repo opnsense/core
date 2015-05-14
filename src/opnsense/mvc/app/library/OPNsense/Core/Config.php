@@ -434,8 +434,6 @@ class Config extends Singleton
             $this->load();
             return true;
         }
-
-        return false;
     }
 
     /**
