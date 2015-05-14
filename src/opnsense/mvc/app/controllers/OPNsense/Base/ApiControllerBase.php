@@ -80,8 +80,6 @@ class ApiControllerBase extends Controller
             return false;
         }
 
-        // TODO: implement ACL
-
     }
 
         /**
