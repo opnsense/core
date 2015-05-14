@@ -34,8 +34,8 @@ include_once("priv.inc");
 
 /* Authenticate user - exit if failed */
 if (!session_auth()) {
-	display_login_form();
-	exit;
+    display_login_form();
+    exit;
 }
 
 /*
@@ -49,25 +49,25 @@ $allowedpages = getAllowedPages($_SESSION['Username']);
  * redirect to first allowed page if requesting a wrong url
  */
 if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
-	if (count($allowedpages) > 0) {
-		$page = str_replace('*', '', $allowedpages[0]);
-		$_SESSION['Post_Login'] = true;
-		require_once("functions.inc");
-		redirectHeader("/{$page}");
+    if (count($allowedpages) > 0) {
+        $page = str_replace('*', '', $allowedpages[0]);
+        $_SESSION['Post_Login'] = true;
+        require_once("functions.inc");
+        redirectHeader("/{$page}");
 
-		$username = empty($_SESSION["Username"]) ? "(system)" : $_SESSION['Username'];
-		if (!empty($_SERVER['REMOTE_ADDR'])) {
-			$username .= '@' . $_SERVER['REMOTE_ADDR'];
-		}
-		log_error("{$username} attempted to access {$_SERVER['REQUEST_URI']} but does not have access to that page. Redirecting to {$page}.");
+        $username = empty($_SESSION["Username"]) ? "(system)" : $_SESSION['Username'];
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $username .= '@' . $_SERVER['REMOTE_ADDR'];
+        }
+        log_error("{$username} attempted to access {$_SERVER['REQUEST_URI']} but does not have access to that page. Redirecting to {$page}.");
 
-		exit;
-	} else {
-		display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
-		exit;
-	}
+        exit;
+    } else {
+        display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
+        exit;
+    }
 } else {
-	$_SESSION['Post_Login'] = true;
+    $_SESSION['Post_Login'] = true;
 }
 
 /*
@@ -75,10 +75,10 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
  * taking action in reponse to a POST request
  */
 if (!$_SESSION['Post_Login']) {
-	$_SESSION['Post_Login'] = true;
-	require_once("functions.inc");
-	redirectHeader($_SERVER['REQUEST_URI']);
-	exit;
+    $_SESSION['Post_Login'] = true;
+    require_once("functions.inc");
+    redirectHeader($_SERVER['REQUEST_URI']);
+    exit;
 }
 
 /*
@@ -92,12 +92,12 @@ session_write_close();
  */
 function display_error_form($http_code, $desc)
 {
-	global $config, $g;
-	$g['theme'] = get_current_theme();
-	if(isAjax()) {
-		printf(gettext('Error: %1$s Description: %2$s'), $http_code, $desc);
-		return;
-	}
+    global $config, $g;
+    $g['theme'] = get_current_theme();
+    if (isAjax()) {
+        printf(gettext('Error: %1$s Description: %2$s'), $http_code, $desc);
+        return;
+    }
 
 ?><!doctype html>
 <!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
@@ -138,73 +138,76 @@ function display_error_form($http_code, $desc)
 
 function display_login_form()
 {
-	require_once("globals.inc");
-	global $config, $g;
-	$g['theme'] = get_current_theme();
+    require_once("globals.inc");
+    global $config, $g;
+    $g['theme'] = get_current_theme();
 
-	unset($input_errors);
+    unset($input_errors);
 
-	if(isAjax()) {
-		if (isset($_POST['login'])) {
-			if($_SESSION['Logged_In'] <> "True") {
-				isset($_SESSION['Login_Error']) ? $login_error = $_SESSION['Login_Error'] : $login_error = gettext("unknown reason");
-				printf("showajaxmessage('" . gettext("Invalid login (%s).") . "')", $login_error);
-			}
-			if (file_exists('/tmp/webconfigurator.lock')) {
-				// TODO: add the IP from the user who did lock the device
-				$whom = file_get_contents('/tmp/webconfigurator.lock');
-				printf("showajaxmessage('" . gettext("This device is currently being maintained by: %s.") . "');", $whom);
-			}
-		}
-		exit;
-	}
+    if (isAjax()) {
+        if (isset($_POST['login'])) {
+            if ($_SESSION['Logged_In'] <> "True") {
+                isset($_SESSION['Login_Error']) ? $login_error = $_SESSION['Login_Error'] : $login_error = gettext("unknown reason");
+                printf("showajaxmessage('" . gettext("Invalid login (%s).") . "')", $login_error);
+            }
+            if (file_exists('/tmp/webconfigurator.lock')) {
+                // TODO: add the IP from the user who did lock the device
+                $whom = file_get_contents('/tmp/webconfigurator.lock');
+                printf("showajaxmessage('" . gettext("This device is currently being maintained by: %s.") . "');", $whom);
+            }
+        }
+        exit;
+    }
 
-	/* Check against locally configured IP addresses, which will catch when someone
+    /* Check against locally configured IP addresses, which will catch when someone
 	   port forwards WebGUI access from WAN to an internal IP on the router. */
-	global $FilterIflist, $nifty_background;
-	$local_ip = false;
-	if(strstr($_SERVER['HTTP_HOST'], ":")) {
-		$http_host_port = explode(":", $_SERVER['HTTP_HOST']);
-		$http_host = $http_host_port[0];
-	} else {
-		$http_host = $_SERVER['HTTP_HOST'];
-	}
-	if (empty($FilterIflist)) {
-		require_once('filter.inc');
-		require_once('shaper.inc');
-		filter_generate_optcfg_array();
-	}
-	foreach ($FilterIflist as $iflist) {
-		if($iflist['ip'] == $http_host)
-			$local_ip = true;
-		if($iflist['ipv6'] == $http_host)
-			$local_ip = true;
-	}
-	unset($FilterIflist);
+    global $FilterIflist, $nifty_background;
+    $local_ip = false;
+    if (strstr($_SERVER['HTTP_HOST'], ":")) {
+        $http_host_port = explode(":", $_SERVER['HTTP_HOST']);
+        $http_host = $http_host_port[0];
+    } else {
+        $http_host = $_SERVER['HTTP_HOST'];
+    }
+    if (empty($FilterIflist)) {
+        require_once('filter.inc');
+        require_once('shaper.inc');
+        filter_generate_optcfg_array();
+    }
+    foreach ($FilterIflist as $iflist) {
+        if ($iflist['ip'] == $http_host) {
+            $local_ip = true;
+        }
+        if ($iflist['ipv6'] == $http_host) {
+            $local_ip = true;
+        }
+    }
+    unset($FilterIflist);
 
-	if($config['virtualip']) {
-		if($config['virtualip']['vip']) {
-			foreach($config['virtualip']['vip'] as $vip) {
-				if($vip['subnet'] == $http_host)
-					$local_ip = true;
-			}
-		}
-	}
-	if (isset($config['openvpn']['openvpn-server'])) {
-		foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
-			if (is_ipaddrv4($http_host) && !empty($ovpns['tunnel_network']) && ip_in_subnet($http_host, $ovpns['tunnel_network'])) {
-				$local_ip = true;
-				break;
-			}
+    if ($config['virtualip']) {
+        if ($config['virtualip']['vip']) {
+            foreach ($config['virtualip']['vip'] as $vip) {
+                if ($vip['subnet'] == $http_host) {
+                    $local_ip = true;
+                }
+            }
+        }
+    }
+    if (isset($config['openvpn']['openvpn-server'])) {
+        foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
+            if (is_ipaddrv4($http_host) && !empty($ovpns['tunnel_network']) && ip_in_subnet($http_host, $ovpns['tunnel_network'])) {
+                $local_ip = true;
+                break;
+            }
 
-			if (is_ipaddrv6($http_host) && !empty($ovpns['tunnel_networkv6']) && ip_in_subnet($http_host, $ovpns['tunnel_networkv6'])) {
-				$local_ip = true;
-				break;
-			}
-		}
-	}
-	setcookie("cookie_test", time() + 3600);
-	$have_cookies = isset($_COOKIE["cookie_test"]);
+            if (is_ipaddrv6($http_host) && !empty($ovpns['tunnel_networkv6']) && ip_in_subnet($http_host, $ovpns['tunnel_networkv6'])) {
+                $local_ip = true;
+                break;
+            }
+        }
+    }
+    setcookie("cookie_test", time() + 3600);
+    $have_cookies = isset($_COOKIE["cookie_test"]);
 
 ?><!doctype html>
 <!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
@@ -233,12 +236,12 @@ function display_login_form()
 
 	<div class="container">
 		<?php
-				if(is_ipaddr($http_host) && !$local_ip && !isset($config['system']['webgui']['nohttpreferercheck'])) {
-					$nifty_background = "#999";
-					print_info_box(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this forwarding, you may be the target of a man-in-the-middle attack."));
-				}
-				$loginautocomplete = isset($config['system']['webgui']['loginautocomplete']) ? '' : 'autocomplete="off"';
-			?>
+        if (is_ipaddr($http_host) && !$local_ip && !isset($config['system']['webgui']['nohttpreferercheck'])) {
+            $nifty_background = "#999";
+            print_info_box(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this forwarding, you may be the target of a man-in-the-middle attack."));
+        }
+                $loginautocomplete = isset($config['system']['webgui']['loginautocomplete']) ? '' : 'autocomplete="off"';
+            ?>
 
 
 		<main class="login-modal-container">
@@ -249,9 +252,11 @@ function display_login_form()
 			</header>
 
 			<div class="login-modal-content">
-				<?php if (isset($_SESSION['Login_Error'])) { ?>
+				<?php if (isset($_SESSION['Login_Error'])) {
+?>
 				<div id="inputerrors" class="text-danger"><?=$_SESSION['Login_Error'];?></div><br />
-				<?php unset($_SESSION['Login_Error']); } // endif ?>
+				<?php unset($_SESSION['Login_Error']);
+} // endif ?>
 
 				    <form class="clearfix" id="iform" name="iform" method="post" <?= $loginautocomplete ?> action="<?=$_SERVER['REQUEST_URI'];?>">
 
@@ -271,12 +276,14 @@ function display_login_form()
 
 			</form>
 
-			<?php if (!$have_cookies && isset($_POST['login'])): ?>
+			<?php if (!$have_cookies && isset($_POST['login'])) :
+?>
 					<br /><br />
 					<span class="text-danger">
 						<?= gettext("Your browser must support cookies to login."); ?>
 					</span>
-					<?php endif; ?>
+					<?php
+endif; ?>
 
 			    </div>
 

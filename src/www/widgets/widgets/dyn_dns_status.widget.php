@@ -35,36 +35,39 @@ require_once("pfsense-utils.inc");
 require_once("functions.inc");
 require_once("widgets/include/dyn_dns_status.inc");
 
-if (!is_array($config['dyndnses']['dyndns']))
-	$config['dyndnses']['dyndns'] = array();
+if (!is_array($config['dyndnses']['dyndns'])) {
+    $config['dyndnses']['dyndns'] = array();
+}
 
 $a_dyndns = &$config['dyndnses']['dyndns'];
 
-if($_REQUEST['getdyndnsstatus']) {
-	$first_entry = true;
-	foreach ($a_dyndns as $dyndns) {
-		if ($first_entry)
-			$first_entry = false;
-		else
-			// Put a vertical bar delimiter between the echoed HTML for each entry processed.
-			echo "|";
+if ($_REQUEST['getdyndnsstatus']) {
+    $first_entry = true;
+    foreach ($a_dyndns as $dyndns) {
+        if ($first_entry) {
+            $first_entry = false;
+        } else {
+        // Put a vertical bar delimiter between the echoed HTML for each entry processed.
+            echo "|";
+        }
 
-		$filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
-		if (file_exists($filename)) {
-			$ipaddr = dyndnsCheckIP($dyndns['interface']);
-			$cached_ip_s = split(":", file_get_contents($filename));
-			$cached_ip = $cached_ip_s[0];
-			if ($ipaddr <> $cached_ip)
-				echo "<font color='red'>";
-			else
-				echo "<font color='green'>";
-			echo htmlspecialchars($cached_ip);
-			echo "</font>";
-		} else {
-			echo "N/A " . date("H:i:s");
-		}
-	}
-	exit;
+        $filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
+        if (file_exists($filename)) {
+            $ipaddr = dyndnsCheckIP($dyndns['interface']);
+            $cached_ip_s = split(":", file_get_contents($filename));
+            $cached_ip = $cached_ip_s[0];
+            if ($ipaddr <> $cached_ip) {
+                echo "<font color='red'>";
+            } else {
+                echo "<font color='green'>";
+            }
+            echo htmlspecialchars($cached_ip);
+            echo "</font>";
+        } else {
+            echo "N/A " . date("H:i:s");
+        }
+    }
+    exit;
 }
 
 ?>
@@ -76,56 +79,62 @@ if($_REQUEST['getdyndnsstatus']) {
 		<td width="20%" class="listhdrr"><b><?=gettext("Hostname");?></b></td>
 		<td width="20%" class="listhdrr"><b><?=gettext("Cached IP");?></b></td>
 	</tr>
-	<?php $i = 0; foreach ($a_dyndns as $dyndns): ?>
+	<?php $i = 0; foreach ($a_dyndns as $dyndns) :
+?>
 	<tr ondblclick="document.location='services_dyndns_edit.php?id=<?=$i;?>'">
 		<td class="listlr">
 		<?php $iflist = get_configured_interface_with_descr();
-		foreach ($iflist as $if => $ifdesc) {
-			if ($dyndns['interface'] == $if) {
-				if (!isset($dyndns['enable']))
-					echo "<span class=\"gray\">{$ifdesc}</span>";
-				else
-					echo "{$ifdesc}";
-				break;
-			}
-		}
-		$groupslist = return_gateway_groups_array();
-		foreach ($groupslist as $if => $group) {
-			if ($dyndns['interface'] == $if) {
-				if (!isset($dyndns['enable']))
-					echo "<span class=\"gray\">{$if}</span>";
-				else
-					echo "{$if}";
-				break;
-			}
-		}
-		?>
+        foreach ($iflist as $if => $ifdesc) {
+            if ($dyndns['interface'] == $if) {
+                if (!isset($dyndns['enable'])) {
+                    echo "<span class=\"gray\">{$ifdesc}</span>";
+                } else {
+                    echo "{$ifdesc}";
+                }
+                break;
+            }
+        }
+        $groupslist = return_gateway_groups_array();
+        foreach ($groupslist as $if => $group) {
+            if ($dyndns['interface'] == $if) {
+                if (!isset($dyndns['enable'])) {
+                    echo "<span class=\"gray\">{$if}</span>";
+                } else {
+                    echo "{$if}";
+                }
+                break;
+            }
+        }
+        ?>
 		</td>
 		<td class="listr">
 		<?php
-		$types = services_dyndns_list();
-		if (isset($types[$dyndns['type']])) {
-			if (!isset($dyndns['enable'])) {
-				echo '<span class="gray">' . htmlspecialchars($types[$dyndns['type']]) . '</span>';
-			} else {
-				echo htmlspecialchars($types[$dyndns['type']]);
-			}
-		}
-		?>
+        $types = services_dyndns_list();
+        if (isset($types[$dyndns['type']])) {
+            if (!isset($dyndns['enable'])) {
+                echo '<span class="gray">' . htmlspecialchars($types[$dyndns['type']]) . '</span>';
+            } else {
+                echo htmlspecialchars($types[$dyndns['type']]);
+            }
+        }
+        ?>
 		</td>
 		<td class="listr">
 		<?php
-		if (!isset($dyndns['enable']))
-			echo "<span class=\"gray\">".htmlspecialchars($dyndns['host'])."</span>";
-		else
-			echo htmlspecialchars($dyndns['host']);
-		?>
+        if (!isset($dyndns['enable'])) {
+            echo "<span class=\"gray\">".htmlspecialchars($dyndns['host'])."</span>";
+        } else {
+            echo htmlspecialchars($dyndns['host']);
+        }
+        ?>
 		</td>
 		<td class="listr">
 		<div id='dyndnsstatus<?php echo $i; ?>'><?php echo gettext("Checking ..."); ?></div>
 		</td>
 	</tr>
-	<?php $i++; endforeach; ?>
+	<?php $i++;
+
+endforeach; ?>
 </table>
 <script type="text/javascript">
 //<![CDATA[

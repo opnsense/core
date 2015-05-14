@@ -37,35 +37,34 @@ require_once("script/load_phalcon.php");
 
 $file_pkg_status="/tmp/pkg_status.json";
 
-if($_POST['action'] == 'pkg_update') {
-	/* Setup Shell variables */
-	$shell_output = array();
-	$shell = new OPNsense\Core\Shell();
-	// execute shell command and collect (only valid) info into named array
-	$shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh",false,false,$shell_output);
+if ($_POST['action'] == 'pkg_update') {
+    /* Setup Shell variables */
+    $shell_output = array();
+    $shell = new OPNsense\Core\Shell();
+    // execute shell command and collect (only valid) info into named array
+    $shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh", false, false, $shell_output);
 }
 
 if (file_exists($file_pkg_status)) {
-
-		$json = file_get_contents($file_pkg_status);
-		$pkg_status = json_decode($json,true);
+        $json = file_get_contents($file_pkg_status);
+        $pkg_status = json_decode($json, true);
 }
 
-if($_REQUEST['getupdatestatus']) {
-	if (file_exists($file_pkg_status)) {
-		if ($pkg_status["connection"]=="error") {
-			echo "<span class='text-danger'>".gettext("Connection Error")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
-		} elseif ($pkg_status["repository"]=="error") {
-			echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
-		} elseif  ($pkg_status["updates"]=="0") {
-			echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn-link' onclick='checkupdate()'>Click to check now</span>";
-		} else {
-			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<br/><span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><a href='/system_firmware_check.php'>".gettext("Click to upgrade")."</a> | <span class='btn-link' onclick='checkupdate()'>Re-check now</span>";
-		}
-	} else {
-		echo "<span class='text-danger'>".gettext("Unknown")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
-	}
-	exit;
+if ($_REQUEST['getupdatestatus']) {
+    if (file_exists($file_pkg_status)) {
+        if ($pkg_status["connection"]=="error") {
+            echo "<span class='text-danger'>".gettext("Connection Error")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
+        } elseif ($pkg_status["repository"]=="error") {
+            echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
+        } elseif ($pkg_status["updates"]=="0") {
+            echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn-link' onclick='checkupdate()'>Click to check now</span>";
+        } else {
+            echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<br/><span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><a href='/system_firmware_check.php'>".gettext("Click to upgrade")."</a> | <span class='btn-link' onclick='checkupdate()'>Re-check now</span>";
+        }
+    } else {
+        echo "<span class='text-danger'>".gettext("Unknown")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
+    }
+    exit;
 }
 
 $curcfg = $config['system']['firmware'];
@@ -82,16 +81,22 @@ $filesystems = get_mounted_filesystems();
 		jQuery("#memUsagePB").css( { width: '<?php echo mem_usage(); ?>%' } );
 
 <?PHP $d = 0; ?>
-<?PHP foreach ($filesystems as $fs): ?>
+<?PHP foreach ($filesystems as $fs) :
+?>
 		jQuery("#diskUsagePB<?php echo $d++; ?>").css( { width: '<?php echo $fs['percent_used']; ?>%' } );
-<?PHP endforeach; ?>
+<?PHP
+endforeach; ?>
 
-		<?php if($showswap == true): ?>
+		<?php if ($showswap == true) :
+?>
 			jQuery("#swapUsagePB").css( { width: '<?php echo swap_usage(); ?>%' } );
-		<?php endif; ?>
-		<?php if (get_temp() != ""): ?>
+		<?php
+endif; ?>
+		<?php if (get_temp() != "") :
+?>
 			jQuery("#tempPB").css( { width: '<?php echo get_temp(); ?>%' } );
-		<?php endif; ?>
+		<?php
+endif; ?>
 	});
 //]]>
 </script>
@@ -106,15 +111,16 @@ $filesystems = get_mounted_filesystems();
 			<td width="25%" valign="top" class="vncellt"><?=gettext("Versions");?></td>
 			<td width="75%" class="listr">
 				<?php
-					$pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
-					echo sprintf('%s %s-%s', $g['product_name'], $pkgver[0], php_uname('m'));
-				?>
+                    $pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
+                    echo sprintf('%s %s-%s', $g['product_name'], $pkgver[0], php_uname('m'));
+                ?>
 				<br /><?php echo php_uname('s') . ' ' . php_uname('r'); ?>
 				<br /><?php echo exec('/usr/local/bin/openssl version'); ?>
 			</td>
 
 		</tr>
-					<?php if(!isset($config['system']['firmware']['disablecheck'])): ?>
+					<?php if (!isset($config['system']['firmware']['disablecheck'])) :
+?>
 			<tr>
 				<td>
 					Updates
@@ -123,27 +129,32 @@ $filesystems = get_mounted_filesystems();
 						<div id='updatestatus'><span class="text-info">Fetching status</span></div>
 					</td>
 				</tr>
-				<?php endif; ?>
+				<?php
+endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("CPU Type");?></td>
 			<td width="75%" class="listr">
 			<?php
-				echo (htmlspecialchars(get_single_sysctl("hw.model")));
-			?>
+                echo (htmlspecialchars(get_single_sysctl("hw.model")));
+            ?>
 			<div id="cpufreq"><?= get_cpufreq(); ?></div>
 		<?php	$cpucount = get_cpu_count();
-			if ($cpucount > 1): ?>
+        if ($cpucount > 1) :
+?>
 			<div id="cpucount">
 				<?= htmlspecialchars($cpucount) ?> CPUs: <?= htmlspecialchars(get_cpu_count(true)); ?></div>
-		<?php	endif; ?>
+		<?php
+        endif; ?>
 			</td>
 		</tr>
-		<?php if ($hwcrypto): ?>
+		<?php if ($hwcrypto) :
+?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Hardware crypto");?></td>
 			<td width="75%" class="listr"><?=htmlspecialchars($hwcrypto);?></td>
 		</tr>
-		<?php endif; ?>
+		<?php
+endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Uptime");?></td>
 			<td width="75%" class="listr" id="uptime"><?= htmlspecialchars(get_uptime()); ?></td>
@@ -158,32 +169,35 @@ $filesystems = get_mounted_filesystems();
              <td width="30%" class="vncellt"><?=gettext("DNS server(s)");?></td>
              <td width="70%" class="listr">
 					<?php
-						$dns_servers = get_dns_servers();
-						foreach($dns_servers as $dns) {
-							echo "{$dns}<br />";
-						}
-					?>
+                        $dns_servers = get_dns_servers();
+                    foreach ($dns_servers as $dns) {
+                        echo "{$dns}<br />";
+                    }
+                    ?>
 			</td>
 		</tr>
-		<?php if ($config['revision']): ?>
+		<?php if ($config['revision']) :
+?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Last config change");?></td>
 			<td width="75%" class="listr"><?= htmlspecialchars(date("D M j G:i:s T Y", intval($config['revision']['time'])));?></td>
 		</tr>
-		<?php endif; ?>
+		<?php
+endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("State table size");?></td>
 			<td width="75%" class="listr">
 				<?php	$pfstatetext = get_pfstate();
-					$pfstateusage = get_pfstate(true);
-				?>
+                    $pfstateusage = get_pfstate(true);
+                ?>
 				<div class="progress">
 				  <div id="statePB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
 
-				<span id="pfstateusagemeter"><?= $pfstateusage.'%'; ?></span> (<span id="pfstate"><?= htmlspecialchars($pfstatetext); ?></span>)
+				<span id="pfstateusagemeter"><?= $pfstateusage.'%';
+?></span> (<span id="pfstate"><?= htmlspecialchars($pfstatetext); ?></span>)
 			<br />
 			<a href="diag_dump_states.php"><?=gettext("Show states");?></a>
 			</td>
@@ -192,9 +206,9 @@ $filesystems = get_mounted_filesystems();
 			<td width="25%" class="vncellt"><?=gettext("MBUF Usage");?></td>
 			<td width="75%" class="listr">
 				<?php
-					$mbufstext = get_mbuf();
-					$mbufusage = get_mbuf(true);
-				?>
+                    $mbufstext = get_mbuf();
+                    $mbufusage = get_mbuf(true);
+                ?>
 
 				<div class="progress">
 				  <div id="mbufPB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
@@ -204,7 +218,8 @@ $filesystems = get_mounted_filesystems();
 				<span id="mbufusagemeter"><?= $mbufusage.'%'; ?></span> (<span id="mbuf"><?= $mbufstext ?></span>)
 			</td>
 		</tr>
-                <?php if (get_temp() != ""): ?>
+                <?php if (get_temp() != "") :
+?>
                 <tr>
                         <td width="25%" class="vncellt"><?=gettext("Temperature");?></td>
 			<td width="75%" class="listr">
@@ -218,7 +233,8 @@ $filesystems = get_mounted_filesystems();
 				<span id="tempmeter"><?= $temp."&#176;C"; ?></span>
 			</td>
                 </tr>
-                <?php endif; ?>
+                <?php
+endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Load average");?></td>
 			<td width="75%" class="listr">
@@ -246,10 +262,11 @@ $filesystems = get_mounted_filesystems();
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
-				<span id="memusagemeter"><?= $memUsage.'%'; ?></span> used <?= sprintf("%.0f/%.0f", $memUsage/100.0 * get_single_sysctl('hw.physmem') / (1024*1024)  ,get_single_sysctl('hw.physmem') / (1024*1024)) ?> MB
+				<span id="memusagemeter"><?= $memUsage.'%'; ?></span> used <?= sprintf("%.0f/%.0f", $memUsage/100.0 * get_single_sysctl('hw.physmem') / (1024*1024), get_single_sysctl('hw.physmem') / (1024*1024)) ?> MB
 			</td>
 		</tr>
-		<?php if($showswap == true): ?>
+		<?php if ($showswap == true) :
+?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("SWAP usage");?></td>
 			<td width="75%" class="listr">
@@ -259,24 +276,29 @@ $filesystems = get_mounted_filesystems();
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
-				<span id="swapusagemeter"><?= $swapusage.'%'; ?></span> used <?= sprintf("%.0f/%.0f",`/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $3;}'`, `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $2;}'`) ?> MB
+				<span id="swapusagemeter"><?= $swapusage.'%'; ?></span> used <?= sprintf("%.0f/%.0f", `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $3;}'`, `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $2;}'`) ?> MB
 			</td>
 		</tr>
-		<?php endif; ?>
+		<?php
+endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Disk usage");?></td>
 			<td width="75%" class="listr">
 <?PHP $d = 0; ?>
-<?PHP foreach ($filesystems as $fs): ?>
+<?PHP foreach ($filesystems as $fs) :
+?>
 				<div class="progress">
 				  <div id="diskUsagePB<?php echo $d; ?>" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
-				<?PHP if (substr(basename($fs['device']), 0, 2) == "md") $fs['type'] .= " in RAM"; ?>
+				<?PHP if (substr(basename($fs['device']), 0, 2) == "md") {
+                    $fs['type'] .= " in RAM";
+} ?>
 				<?PHP echo "{$fs['mountpoint']} ({$fs['type']})";?>: <span id="diskusagemeter<?php echo $d++ ?>"><?= $fs['percent_used'].'%'; ?></span> used <?PHP echo $fs['used_size'] ."/". $fs['total_size'];?>
 				<br />
-<?PHP endforeach; ?>
+<?PHP
+endforeach; ?>
 			</td>
 		</tr>
 	</tbody>
@@ -300,7 +322,8 @@ $filesystems = get_mounted_filesystems();
 		getstatus();
 	}
 
-	<?php if(!isset($config['system']['firmware']['disablecheck'])): ?>
+	<?php if (!isset($config['system']['firmware']['disablecheck'])) :
+?>
 		function getstatus() {
 			scroll(0,0);
 			var url = "/widgets/widgets/system_information.widget.php";
@@ -318,6 +341,7 @@ $filesystems = get_mounted_filesystems();
 			// to avoid this we set the innerHTML property
 			jQuery('#updatestatus').prop('innerHTML',transport.responseText);
 		}
-	<?php endif; ?>
+	<?php
+endif; ?>
 //]]>
 </script>

@@ -36,94 +36,94 @@ require_once("pfsense-utils.inc");
 require_once("functions.inc");
 require_once("widgets/include/ntp_status.inc");
 
-if($_REQUEST['updateme']) {
+if ($_REQUEST['updateme']) {
 //this block displays only on ajax refresh
-	exec("/usr/local/sbin/ntpq -pn | /usr/bin/tail +3", $ntpq_output);
-	$ntpq_counter = 0;
-	foreach ($ntpq_output as $line) {
-		if (substr($line, 0, 1) == "*") {
-			//Active NTP Peer
-			$line = substr($line, 1);
-			$peerinfo = preg_split("/[\s\t]+/", $line);
-			if ($peerinfo[2] == "1") {
-				$syncsource = $peerinfo[0] . " (stratum " . $peerinfo[2] . ", " . $peerinfo[1] . ")";
-			} else {
-				$syncsource = $peerinfo[0] . " (stratum " . $peerinfo[2] . ")";
-			}
-			$ntpq_counter++;
-		} elseif (substr($line, 0, 1) == "o") {
-			//Local PPS Peer
-			$line = substr($line, 1);
-			$peerinfo = preg_split("/[\s\t]+/", $line);
-			$syncsource = $peerinfo[1] . " (stratum " . $peerinfo[2] . ", PPS)";
-			$ntpq_counter++;
-		}
-	}
+    exec("/usr/local/sbin/ntpq -pn | /usr/bin/tail +3", $ntpq_output);
+    $ntpq_counter = 0;
+    foreach ($ntpq_output as $line) {
+        if (substr($line, 0, 1) == "*") {
+            //Active NTP Peer
+            $line = substr($line, 1);
+            $peerinfo = preg_split("/[\s\t]+/", $line);
+            if ($peerinfo[2] == "1") {
+                $syncsource = $peerinfo[0] . " (stratum " . $peerinfo[2] . ", " . $peerinfo[1] . ")";
+            } else {
+                $syncsource = $peerinfo[0] . " (stratum " . $peerinfo[2] . ")";
+            }
+            $ntpq_counter++;
+        } elseif (substr($line, 0, 1) == "o") {
+            //Local PPS Peer
+            $line = substr($line, 1);
+            $peerinfo = preg_split("/[\s\t]+/", $line);
+            $syncsource = $peerinfo[1] . " (stratum " . $peerinfo[2] . ", PPS)";
+            $ntpq_counter++;
+        }
+    }
 
-	exec("/usr/local/sbin/ntpq -c clockvar", $ntpq_clockvar_output);
-	foreach ($ntpq_clockvar_output as $line) {
-		if (substr($line, 0, 9) == "timecode=") {
-			$tmp = explode('"', $line);
-			$tmp = $tmp[1];
-			if (substr($tmp, 0, 6) == '$GPRMC') {
-				$gps_vars = explode(",", $tmp);
-				$gps_ok  = ($gps_vars[2] == "A");
-				$gps_lat_deg = substr($gps_vars[3], 0, 2);
-				$gps_lat_min = substr($gps_vars[3], 2) / 60.0;
-				$gps_lon_deg = substr($gps_vars[5], 0, 3);
-				$gps_lon_min = substr($gps_vars[5], 3) / 60.0;
-				$gps_lat = $gps_lat_deg + $gps_lat_min;
-				$gps_lat = $gps_lat * (($gps_vars[4] == "N") ? 1 : -1);
-				$gps_lon = $gps_lon_deg + $gps_lon_min;
-				$gps_lon = $gps_lon * (($gps_vars[6] == "E") ? 1 : -1);
-				$gps_la = $gps_vars[4];
-				$gps_lo = $gps_vars[6];
-			}elseif (substr($tmp, 0, 6) == '$GPGGA') {
-				$gps_vars = explode(",", $tmp);
-				$gps_ok  = $gps_vars[6];
-				$gps_lat_deg = substr($gps_vars[2], 0, 2);
-				$gps_lat_min = substr($gps_vars[2], 2) / 60.0;
-				$gps_lon_deg = substr($gps_vars[4], 0, 3);
-				$gps_lon_min = substr($gps_vars[4], 3) / 60.0;
-				$gps_lat = $gps_lat_deg + $gps_lat_min;
-				$gps_lat = $gps_lat * (($gps_vars[3] == "N") ? 1 : -1);
-				$gps_lon = $gps_lon_deg + $gps_lon_min;
-				$gps_lon = $gps_lon * (($gps_vars[5] == "E") ? 1 : -1);
-				$gps_alt = $gps_vars[9];
-				$gps_alt_unit = $gps_vars[10];
-				$gps_sat = $gps_vars[7];
-				$gps_la = $gps_vars[3];
-				$gps_lo = $gps_vars[5];
-			}elseif (substr($tmp, 0, 6) == '$GPGLL') {
-				$gps_vars = explode(",", $tmp);
-				$gps_ok  = ($gps_vars[6] == "A");
-				$gps_lat_deg = substr($gps_vars[1], 0, 2);
-				$gps_lat_min = substr($gps_vars[1], 2) / 60.0;
-				$gps_lon_deg = substr($gps_vars[3], 0, 3);
-				$gps_lon_min = substr($gps_vars[3], 3) / 60.0;
-				$gps_lat = $gps_lat_deg + $gps_lat_min;
-				$gps_lat = $gps_lat * (($gps_vars[2] == "N") ? 1 : -1);
-				$gps_lon = $gps_lon_deg + $gps_lon_min;
-				$gps_lon = $gps_lon * (($gps_vars[4] == "E") ? 1 : -1);
-				$gps_la = $gps_vars[2];
-				$gps_lo = $gps_vars[4];
-			}
-		}
-	}
+    exec("/usr/local/sbin/ntpq -c clockvar", $ntpq_clockvar_output);
+    foreach ($ntpq_clockvar_output as $line) {
+        if (substr($line, 0, 9) == "timecode=") {
+            $tmp = explode('"', $line);
+            $tmp = $tmp[1];
+            if (substr($tmp, 0, 6) == '$GPRMC') {
+                $gps_vars = explode(",", $tmp);
+                $gps_ok  = ($gps_vars[2] == "A");
+                $gps_lat_deg = substr($gps_vars[3], 0, 2);
+                $gps_lat_min = substr($gps_vars[3], 2) / 60.0;
+                $gps_lon_deg = substr($gps_vars[5], 0, 3);
+                $gps_lon_min = substr($gps_vars[5], 3) / 60.0;
+                $gps_lat = $gps_lat_deg + $gps_lat_min;
+                $gps_lat = $gps_lat * (($gps_vars[4] == "N") ? 1 : -1);
+                $gps_lon = $gps_lon_deg + $gps_lon_min;
+                $gps_lon = $gps_lon * (($gps_vars[6] == "E") ? 1 : -1);
+                $gps_la = $gps_vars[4];
+                $gps_lo = $gps_vars[6];
+            } elseif (substr($tmp, 0, 6) == '$GPGGA') {
+                $gps_vars = explode(",", $tmp);
+                $gps_ok  = $gps_vars[6];
+                $gps_lat_deg = substr($gps_vars[2], 0, 2);
+                $gps_lat_min = substr($gps_vars[2], 2) / 60.0;
+                $gps_lon_deg = substr($gps_vars[4], 0, 3);
+                $gps_lon_min = substr($gps_vars[4], 3) / 60.0;
+                $gps_lat = $gps_lat_deg + $gps_lat_min;
+                $gps_lat = $gps_lat * (($gps_vars[3] == "N") ? 1 : -1);
+                $gps_lon = $gps_lon_deg + $gps_lon_min;
+                $gps_lon = $gps_lon * (($gps_vars[5] == "E") ? 1 : -1);
+                $gps_alt = $gps_vars[9];
+                $gps_alt_unit = $gps_vars[10];
+                $gps_sat = $gps_vars[7];
+                $gps_la = $gps_vars[3];
+                $gps_lo = $gps_vars[5];
+            } elseif (substr($tmp, 0, 6) == '$GPGLL') {
+                $gps_vars = explode(",", $tmp);
+                $gps_ok  = ($gps_vars[6] == "A");
+                $gps_lat_deg = substr($gps_vars[1], 0, 2);
+                $gps_lat_min = substr($gps_vars[1], 2) / 60.0;
+                $gps_lon_deg = substr($gps_vars[3], 0, 3);
+                $gps_lon_min = substr($gps_vars[3], 3) / 60.0;
+                $gps_lat = $gps_lat_deg + $gps_lat_min;
+                $gps_lat = $gps_lat * (($gps_vars[2] == "N") ? 1 : -1);
+                $gps_lon = $gps_lon_deg + $gps_lon_min;
+                $gps_lon = $gps_lon * (($gps_vars[4] == "E") ? 1 : -1);
+                $gps_la = $gps_vars[2];
+                $gps_lo = $gps_vars[4];
+            }
+        }
+    }
 
-	if (isset($config['ntpd']['gps']['type']) && ($config['ntpd']['gps']['type'] == 'SureGPS') && (isset($gps_ok))) {
-		//GSV message is only enabled by init commands in services_ntpd_gps.php for SureGPS board
-		$gpsport = fopen("/dev/gps0", "r+");
-		while($gpsport){
-			$buffer = fgets($gpsport);
-			if(substr($buffer, 0, 6)=='$GPGSV'){
-				//echo $buffer."\n";
-				$gpgsv = explode(',',$buffer);
-				$gps_satview = $gpgsv[3];
-				break;
-			}
-		}
-	}
+    if (isset($config['ntpd']['gps']['type']) && ($config['ntpd']['gps']['type'] == 'SureGPS') && (isset($gps_ok))) {
+        //GSV message is only enabled by init commands in services_ntpd_gps.php for SureGPS board
+        $gpsport = fopen("/dev/gps0", "r+");
+        while ($gpsport) {
+            $buffer = fgets($gpsport);
+            if (substr($buffer, 0, 6)=='$GPGSV') {
+                //echo $buffer."\n";
+                $gpgsv = explode(',', $buffer);
+                $gps_satview = $gpgsv[3];
+                break;
+            }
+        }
+    }
 ?>
 
 <table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="clock">
@@ -131,41 +131,57 @@ if($_REQUEST['updateme']) {
 		<tr>
 			<td width="40%" class="vncellt">Sync Source</td>
 			<td width="60%" class="listr">
-			<?php if ($ntpq_counter == 0): ?>
+			<?php if ($ntpq_counter == 0) :
+?>
 				No active peers available
-			<?php else: ?>
+			<?php
+else :
+?>
 				<?php echo $syncsource; ?>
-			<?php endif; ?>
+			<?php
+endif; ?>
 			</td>
 		</tr>
-		<?php if (($gps_ok) && ($gps_lat) && ($gps_lon)): ?>
+		<?php if (($gps_ok) && ($gps_lat) && ($gps_lon)) :
+?>
 			<tr>
 				<td width="40%" class="vncellt">Clock location</td>
 				<td width="60%" class="listr">
 					<a target="_gmaps" href="http://maps.google.com/?q=<?php echo $gps_lat; ?>,<?php echo $gps_lon; ?>">
 					<?php
-					echo sprintf("%.5f", $gps_lat) . " " . $gps_la . ", " . sprintf("%.5f", $gps_lon) . " " . $gps_lo; ?>
+                    echo sprintf("%.5f", $gps_lat) . " " . $gps_la . ", " . sprintf("%.5f", $gps_lon) . " " . $gps_lo; ?>
 					</a>
-					<?php if (isset($gps_alt)) {echo " (" . $gps_alt . " " . $gps_alt_unit . " alt.)";} ?>
+					<?php if (isset($gps_alt)) {
+                        echo " (" . $gps_alt . " " . $gps_alt_unit . " alt.)";
+} ?>
 				</td>
 			</tr>
-			<?php if (isset($gps_sat) || isset($gps_satview)): ?>
+			<?php if (isset($gps_sat) || isset($gps_satview)) :
+?>
 				<tr>
 					<td width="40%" class="vncellt">Satellites</td>
 					<td width="60%" class="listr">
 					<?php
-					if (isset($gps_satview)) {echo 'in view ' . intval($gps_satview);}
-					if (isset($gps_sat) && isset($gps_satview)) {echo ', ';}
-					if (isset($gps_sat)) {echo 'in use ' . $gps_sat;}
-					?>
+                    if (isset($gps_satview)) {
+                        echo 'in view ' . intval($gps_satview);
+                    }
+                    if (isset($gps_sat) && isset($gps_satview)) {
+                        echo ', ';
+                    }
+                    if (isset($gps_sat)) {
+                        echo 'in use ' . $gps_sat;
+                    }
+                    ?>
 					</td>
 				</tr>
-			<?php endif; ?>
-		<?php endif; ?>
+			<?php
+endif; ?>
+		<?php
+endif; ?>
 	</tbody>
 </table>
 <?php
-	exit;
+    exit;
 }
 
 /*** Clock -- beginning of server-side support code
@@ -186,20 +202,23 @@ $gDate = time();
    JavaScript client code's definition of clockShowsSeconds below to match. */
 $gClockShowsSeconds = true;
 
-function getServerDateItems($inDate) {
-	return date('Y,n,j,G,',$inDate).intval(date('i',$inDate)).','.intval(date('s',$inDate));
-	// year (4-digit),month,day,hours (0-23),minutes,seconds
-	// use intval to strip leading zero from minutes and seconds
-	//   so JavaScript won't try to interpret them in octal
-	//   (use intval instead of ltrim, which translates '00' to '')
+function getServerDateItems($inDate)
+{
+    return date('Y,n,j,G,', $inDate).intval(date('i', $inDate)).','.intval(date('s', $inDate));
+    // year (4-digit),month,day,hours (0-23),minutes,seconds
+    // use intval to strip leading zero from minutes and seconds
+    //   so JavaScript won't try to interpret them in octal
+    //   (use intval instead of ltrim, which translates '00' to '')
 }
 
-function clockDateString($inDate) {
-    return date('Y. F j l',$inDate);    // eg "Monday, January 1, 2002"
+function clockDateString($inDate)
+{
+    return date('Y. F j l', $inDate);    // eg "Monday, January 1, 2002"
 }
 
-function clockTimeString($inDate, $showSeconds) {
-    return date($showSeconds ? 'G:i:s' : 'g:i',$inDate).' ';
+function clockTimeString($inDate, $showSeconds)
+{
+    return date($showSeconds ? 'G:i:s' : 'g:i', $inDate).' ';
 }
 /*** Clock -- end of server-side support code ***/
 ?>
@@ -453,7 +472,7 @@ function clockUpdate()
 			<td width="40%" class="vncellt">Server Time</td>
 			<td width="60%" class="listr">
 				<div id="ClockTime">
-					<b><?php echo(clockTimeString($gDate,$gClockShowsSeconds));?></b>
+					<b><?php echo(clockTimeString($gDate, $gClockShowsSeconds));?></b>
 				</div>
 			</td>
 		</tr>

@@ -62,44 +62,45 @@ const MAX_THRESHOLD_VALUE = 100; //deg C
 //=========================================================================
 //save widget config settings on POST
 if ($_POST) {
-	saveThresholdSettings($config, $_POST, "thermal_sensors_widget_zone_warning_threshold", "thermal_sensors_widget_zone_critical_threshold");
-	saveThresholdSettings($config, $_POST, "thermal_sensors_widget_core_warning_threshold", "thermal_sensors_widget_core_critical_threshold");
+    saveThresholdSettings($config, $_POST, "thermal_sensors_widget_zone_warning_threshold", "thermal_sensors_widget_zone_critical_threshold");
+    saveThresholdSettings($config, $_POST, "thermal_sensors_widget_core_warning_threshold", "thermal_sensors_widget_core_critical_threshold");
 
-	//handle checkboxes separately
-	saveGraphDisplaySettings($config, $_POST, "thermal_sensors_widget_show_raw_output");
-	saveGraphDisplaySettings($config, $_POST, "thermal_sensors_widget_show_full_sensor_name");
-	saveGraphDisplaySettings($config, $_POST, "thermal_sensors_widget_pulsate_warning");
-	saveGraphDisplaySettings($config, $_POST, "thermal_sensors_widget_pulsate_critical");
+    //handle checkboxes separately
+    saveGraphDisplaySettings($config, $_POST, "thermal_sensors_widget_show_raw_output");
+    saveGraphDisplaySettings($config, $_POST, "thermal_sensors_widget_show_full_sensor_name");
+    saveGraphDisplaySettings($config, $_POST, "thermal_sensors_widget_pulsate_warning");
+    saveGraphDisplaySettings($config, $_POST, "thermal_sensors_widget_pulsate_critical");
 
-	//write settings to config file
-	write_config("Saved thermal_sensors_widget settings via Dashboard.");
-	header("Location: ../../index.php");
+    //write settings to config file
+    write_config("Saved thermal_sensors_widget settings via Dashboard.");
+    header("Location: ../../index.php");
 }
 
-function saveThresholdSettings(&$configArray, &$postArray, $warningValueKey, $criticalValueKey) {
-	$warningValue = 0;
-	$criticalValue = 0;
+function saveThresholdSettings(&$configArray, &$postArray, $warningValueKey, $criticalValueKey)
+{
+    $warningValue = 0;
+    $criticalValue = 0;
 
-	if (isset($postArray[$warningValueKey])) {
-		$warningValue = (int) $postArray[$warningValueKey];
-	}
+    if (isset($postArray[$warningValueKey])) {
+        $warningValue = (int) $postArray[$warningValueKey];
+    }
 
-	if (isset($postArray[$criticalValueKey])) {
-		$criticalValue = (int) $postArray[$criticalValueKey];
-	}
+    if (isset($postArray[$criticalValueKey])) {
+        $criticalValue = (int) $postArray[$criticalValueKey];
+    }
 
-	if (
-		($warningValue >= MIN_THRESHOLD_VALUE && $warningValue <= MAX_THRESHOLD_VALUE) &&
-		($criticalValue >= MIN_THRESHOLD_VALUE && $criticalValue <= MAX_THRESHOLD_VALUE) &&
-		($warningValue < $criticalValue)
-	) {
-		//all validated ok, save to config array
-		$configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$warningValueKey] = $warningValue;
-		$configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$criticalValueKey] = $criticalValue;
-	}
+    if (($warningValue >= MIN_THRESHOLD_VALUE && $warningValue <= MAX_THRESHOLD_VALUE) &&
+        ($criticalValue >= MIN_THRESHOLD_VALUE && $criticalValue <= MAX_THRESHOLD_VALUE) &&
+        ($warningValue < $criticalValue)
+    ) {
+        //all validated ok, save to config array
+        $configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$warningValueKey] = $warningValue;
+        $configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$criticalValueKey] = $criticalValue;
+    }
 }
 
-function saveGraphDisplaySettings(&$configArray, &$postArray, $valueKey) {
+function saveGraphDisplaySettings(&$configArray, &$postArray, $valueKey)
+{
     $configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$valueKey] = isset($postArray[$valueKey]) ? 1 : 0;
 }
 
@@ -116,32 +117,34 @@ $thermal_sensors_widget_showFullSensorName = getBoolValueFromConfig($config, "th
 $thermal_sensors_widget_pulsateWarning = getBoolValueFromConfig($config, "thermal_sensors_widget_pulsate_warning", true);
 $thermal_sensors_widget_pulsateCritical = getBoolValueFromConfig($config, "thermal_sensors_widget_pulsate_critical", true);
 
-function getThresholdValueFromConfig(&$configArray, $valueKey, $defaultValue) {
+function getThresholdValueFromConfig(&$configArray, $valueKey, $defaultValue)
+{
 
-	$thresholdValue = $defaultValue;
+    $thresholdValue = $defaultValue;
 
-	if (isset($configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$valueKey])) {
-		$thresholdValue = (int) $configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$valueKey];
-	}
+    if (isset($configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$valueKey])) {
+        $thresholdValue = (int) $configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$valueKey];
+    }
 
-	if ($thresholdValue < MIN_THRESHOLD_VALUE || $thresholdValue > MAX_THRESHOLD_VALUE) {
-		//set to default if not in allowed range
-		$thresholdValue = $defaultValue;
-	}
-	return $thresholdValue;
+    if ($thresholdValue < MIN_THRESHOLD_VALUE || $thresholdValue > MAX_THRESHOLD_VALUE) {
+        //set to default if not in allowed range
+        $thresholdValue = $defaultValue;
+    }
+    return $thresholdValue;
 }
 
-function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
+function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue)
+{
 
-	$boolValue = false;
+    $boolValue = false;
 
-	if (isset($configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$valueKey])) {
-		$boolValue = (bool) $configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$valueKey];
-	} else {
-		//set to default if not in allowed range
-		$boolValue = $defaultValue;
-	}
-	return $boolValue;
+    if (isset($configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$valueKey])) {
+        $boolValue = (bool) $configArray[WIDGETS_CONFIG_SECTION_KEY][THERMAL_SENSORS_WIDGET_SUBSECTION_KEY][$valueKey];
+    } else {
+        //set to default if not in allowed range
+        $boolValue = $defaultValue;
+    }
+    return $boolValue;
 }
 
 //=========================================================================
@@ -196,7 +199,8 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 			<input type="checkbox"
 			   id="thermal_sensors_widget_show_raw_output"
 			   name="thermal_sensors_widget_show_raw_output"
-			   value="<?= $thermal_sensors_widget_showRawOutput; ?>" <?= ($thermal_sensors_widget_showRawOutput) ? " checked='checked'" : ""; ?> />
+			   value="<?= $thermal_sensors_widget_showRawOutput;
+?>" <?= ($thermal_sensors_widget_showRawOutput) ? " checked='checked'" : ""; ?> />
 		</td>
 		</tr>
 		<tr>
@@ -214,7 +218,8 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 			<input type="checkbox"
 			   id="thermal_sensors_widget_show_full_sensor_name"
 			   name="thermal_sensors_widget_show_full_sensor_name"
-			   value="<?= $thermal_sensors_widget_showFullSensorName; ?>" <?= ($thermal_sensors_widget_showFullSensorName) ? " checked='checked'" : ""; ?> />
+			   value="<?= $thermal_sensors_widget_showFullSensorName;
+?>" <?= ($thermal_sensors_widget_showFullSensorName) ? " checked='checked'" : ""; ?> />
 		</td>
 		</tr>
 		<tr>
@@ -232,7 +237,8 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 			<input type="checkbox"
 			   id="thermal_sensors_widget_pulsate_warning"
 			   name="thermal_sensors_widget_pulsate_warning"
-			   value="<?= $thermal_sensors_widget_pulsateWarning; ?>" <?= ($thermal_sensors_widget_pulsateWarning) ? " checked='checked'" : ""; ?> />
+			   value="<?= $thermal_sensors_widget_pulsateWarning;
+?>" <?= ($thermal_sensors_widget_pulsateWarning) ? " checked='checked'" : ""; ?> />
 		</td>
 		</tr>
 		<tr>
@@ -250,7 +256,8 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue) {
 			<input type="checkbox"
 			   id="thermal_sensors_widget_pulsate_critical"
 			   name="thermal_sensors_widget_pulsate_critical"
-			   value="<?= $thermal_sensors_widget_pulsateCritical; ?>" <?= ($thermal_sensors_widget_pulsateCritical) ? " checked='checked'" : ""; ?> />
+			   value="<?= $thermal_sensors_widget_pulsateCritical;
+?>" <?= ($thermal_sensors_widget_pulsateCritical) ? " checked='checked'" : ""; ?> />
 		</td>
 		</tr>
 		<tr>

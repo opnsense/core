@@ -31,9 +31,9 @@ require_once("guiconfig.inc");
 require_once("gmirror.inc");
 
 if ($_GET['textonly'] == "true") {
-	header("Cache-Control: no-cache");
-	echo gmirror_html_status();
-	exit;
+    header("Cache-Control: no-cache");
+    echo gmirror_html_status();
+    exit;
 }
 ?>
 <table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="gmirror status">

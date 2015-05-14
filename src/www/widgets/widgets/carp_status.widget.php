@@ -39,43 +39,49 @@ $carp_enabled = get_carp_status();
 ?>
 <table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="carp status">
 <?php
-	if(is_array($config['virtualip']['vip'])) {
-		$carpint=0;
-		foreach($config['virtualip']['vip'] as $carp) {
-			if ($carp['mode'] != "carp")
-				continue;
-			$ipaddress = $carp['subnet'];
-			$password = $carp['password'];
-			$netmask = $carp['subnet_bits'];
-			$vhid = $carp['vhid'];
-			$advskew = $carp['advskew'];
-			$status = get_carp_interface_status("{$carp['interface']}_vip{$vhid}");
+if (is_array($config['virtualip']['vip'])) {
+    $carpint=0;
+    foreach ($config['virtualip']['vip'] as $carp) {
+        if ($carp['mode'] != "carp") {
+            continue;
+        }
+        $ipaddress = $carp['subnet'];
+        $password = $carp['password'];
+        $netmask = $carp['subnet_bits'];
+        $vhid = $carp['vhid'];
+        $advskew = $carp['advskew'];
+        $status = get_carp_interface_status("{$carp['interface']}_vip{$vhid}");
 ?>
 <tr>
-	<td class="vncellt" width="35%">
-		<span alt="cablenic" class="glyphicon glyphicon-transfer text-success"></span>&nbsp;
-		<strong><a href="/system_hasync.php">
-		<span><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$vhid}");?></span></a></strong>
-	</td>
-	<td width="65%"  class="listr">
+<td class="vncellt" width="35%">
+    <span alt="cablenic" class="glyphicon glyphicon-transfer text-success"></span>&nbsp;
+    <strong><a href="/system_hasync.php">
+    <span><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$vhid}");?></span></a></strong>
+</td>
+<td width="65%"  class="listr">
 <?php
-			if($carp_enabled == false) {
-				$status = "DISABLED";
-				echo "<span class=\"glyphicon glyphicon-remove text-danger\" title=\"$status\" alt=\"$status\" ></span>";
-			} else {
-				if($status == "MASTER") {
-					echo "<span class=\"glyphicon glyphicon-play text-success\" title=\"$status\" alt=\"$status\" ></span>";
-				} else if($status == "BACKUP") {
-					echo "<span class=\"glyphicon glyphicon-play text-muted\" title=\"$status\" alt=\"$status\" ></span>";
-				} else if($status == "INIT") {
-					echo "<span class=\"glyphicon glyphicon-info-sign\" title=\"$status\" alt=\"$status\" ></span>";
-				}
-			}
-			if ($ipaddress){ ?> &nbsp;
-				<?=htmlspecialchars($status);?> &nbsp;
-				<?=htmlspecialchars($ipaddress);}?>
-</td></tr><?php	}
-	} else { ?>
+if ($carp_enabled == false) {
+    $status = "DISABLED";
+    echo "<span class=\"glyphicon glyphicon-remove text-danger\" title=\"$status\" alt=\"$status\" ></span>";
+} else {
+    if ($status == "MASTER") {
+        echo "<span class=\"glyphicon glyphicon-play text-success\" title=\"$status\" alt=\"$status\" ></span>";
+    } elseif ($status == "BACKUP") {
+        echo "<span class=\"glyphicon glyphicon-play text-muted\" title=\"$status\" alt=\"$status\" ></span>";
+    } elseif ($status == "INIT") {
+        echo "<span class=\"glyphicon glyphicon-info-sign\" title=\"$status\" alt=\"$status\" ></span>";
+    }
+}
+if ($ipaddress) {
+?> &nbsp;
+        <?=htmlspecialchars($status);?> &nbsp;
+        <?=htmlspecialchars($ipaddress);
+}?>
+</td></tr><?php
+    }
+} else {
+?>
 		<tr><td class="listr">No CARP Interfaces Defined. Click <a href="carp_status.php">here</a> to configure CARP.</td></tr>
-<?php	} ?>
+<?php
+} ?>
 </table>

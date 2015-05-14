@@ -36,69 +36,97 @@ require_once("pfsense-utils.inc");
 require_once("functions.inc");
 require_once("widgets/include/interfaces.inc");
 
-		$i = 0;
-		$ifdescrs = get_configured_interface_with_descr();
+        $i = 0;
+        $ifdescrs = get_configured_interface_with_descr();
 ?>
 
 	         <table class="table table-striped">
 				<?php
-				foreach ($ifdescrs as $ifdescr => $ifname) {
-					$ifinfo = get_interface_info($ifdescr);
-					$iswireless = is_interface_wireless($ifdescr);
-				?>
+                foreach ($ifdescrs as $ifdescr => $ifname) {
+                    $ifinfo = get_interface_info($ifdescr);
+                    $iswireless = is_interface_wireless($ifdescr);
+                ?>
 				<tr>
 				<td class="vncellt" >
 				<?php
-				if($ifinfo['ppplink']) {
-					?> <span alt="3g" class="glyphicon glyphicon-phone text-success"></span> <?php
-				} else if($iswireless) {
-					if($ifinfo['status'] == "associated") { ?>
+                if ($ifinfo['ppplink']) {
+                    ?> <span alt="3g" class="glyphicon glyphicon-phone text-success"></span> <?php
+                } elseif ($iswireless) {
+                    if ($ifinfo['status'] == "associated") {
+?>
 						<span alt="wlan" class="glyphicon glyphicon-signal text-success"></span>
-					<?php } else { ?>
+					<?php
+                    } else {
+                    ?>
 						<span alt="wlan_d" class="glyphicon glyphicon-signal text-danger"></span>
-					<?php } ?>
-				<?php } else { ?>
-						<?php if ($ifinfo['status'] == "up") { ?>
+					<?php
+                    } ?>
+				<?php
+                } else {
+                ?>
+						<?php if ($ifinfo['status'] == "up") {
+?>
 							<span alt="cablenic" id="<?php echo $ifname . 'icon';?>" class="glyphicon glyphicon-transfer text-success"></span>
-						<?php } else { ?>
-							<span alt="cablenic" id="<?php echo $ifname . 'icon';?>" class="glyphicon glyphicon-transfer text-danger"></span>
-						<?php } ?>
-				<?php } ?>&nbsp;
+						<?php
+} else {
+?>
+            <span alt="cablenic" id="<?php echo $ifname . 'icon';?>" class="glyphicon glyphicon-transfer text-danger"></span>
+        <?php
+} ?>
+				<?php
+                } ?>&nbsp;
 				<strong><u>
 				<span onclick="location.href='/interfaces.php?if=<?=$ifdescr; ?>'" style="cursor:pointer">
 				<?=htmlspecialchars($ifname);?></span></u></strong>
 				<?php
-					if ($ifinfo['dhcplink'])
-						echo "&nbsp;(DHCP)";
-				?>
+                if ($ifinfo['dhcplink']) {
+                    echo "&nbsp;(DHCP)";
+                }
+                ?>
 				</td>
-				<?php if($ifinfo['status'] == "up" || $ifinfo['status'] == "associated") { ?>
+				<?php if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated") {
+?>
 							<td class="listr" align="center">
 								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-up text-success"></span>
 
 							</td>
-		                <?php } else if ($ifinfo['status'] == "no carrier") { ?>
+		                <?php
+} elseif ($ifinfo['status'] == "no carrier") {
+?>
 							<td class="listr" align="center">
 								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-down text-danger"></span>
 
 							</td>
-				<?php }  else if ($ifinfo['status'] == "down") { ?>
+				<?php
+} elseif ($ifinfo['status'] == "down") {
+?>
 							<td class="listr" align="center">
 								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-remove text-danger"></span>
 							</td>
-		                <?php } else { ?><?=htmlspecialchars($ifinfo['status']); }?>
+		                <?php
+} else {
+?><?=htmlspecialchars($ifinfo['status']);
+}?>
 							<td class="listr">
-								<div id="<?php echo $ifname;?>" style="display:inline"><?=htmlspecialchars($ifinfo['media']);?></div>
+								<div id="<?php echo $ifname;
+?>" style="display:inline"><?=htmlspecialchars($ifinfo['media']);?></div>
 							</td>
 							<td class="vncellt">
-								<?php if($ifinfo['ipaddr'] != "") { ?>
-									<div id="<?php echo $ifname;?>-ip" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddr']);?> </div>
+								<?php if ($ifinfo['ipaddr'] != "") {
+?>
+									<div id="<?php echo $ifname;
+?>-ip" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddr']);?> </div>
 									<br />
-								<?php }
-								if ($ifinfo['ipaddrv6'] != "") { ?>
-									<div id="<?php echo $ifname;?>-ipv6" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddrv6']);?> </div>
-								<?php } ?>
+								<?php
+}
+if ($ifinfo['ipaddrv6'] != "") {
+?>
+									<div id="<?php echo $ifname;
+?>-ipv6" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddrv6']);?> </div>
+								<?php
+} ?>
 							</td>
 						</tr>
-				<?php	}//end for each ?>
+				<?php
+                }//end for each ?>
 			</table>

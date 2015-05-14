@@ -36,28 +36,36 @@ require_once("pfsense-utils.inc");
 require_once("functions.inc");
 require_once("filter_log.inc");
 
-if(is_numeric($_POST['filterlogentries'])) {
-	$config['widgets']['filterlogentries'] = $_POST['filterlogentries'];
+if (is_numeric($_POST['filterlogentries'])) {
+    $config['widgets']['filterlogentries'] = $_POST['filterlogentries'];
 
-	$acts = array();
-	if ($_POST['actpass'])   $acts[] = "Pass";
-	if ($_POST['actblock'])  $acts[] = "Block";
-	if ($_POST['actreject']) $acts[] = "Reject";
+    $acts = array();
+    if ($_POST['actpass']) {
+        $acts[] = "Pass";
+    }
+    if ($_POST['actblock']) {
+        $acts[] = "Block";
+    }
+    if ($_POST['actreject']) {
+        $acts[] = "Reject";
+    }
 
-	if (!empty($acts))
-		$config['widgets']['filterlogentriesacts'] = implode(" ", $acts);
-	else
-		unset($config['widgets']['filterlogentriesacts']);
-	unset($acts);
+    if (!empty($acts)) {
+        $config['widgets']['filterlogentriesacts'] = implode(" ", $acts);
+    } else {
+        unset($config['widgets']['filterlogentriesacts']);
+    }
+    unset($acts);
 
-	if( ($_POST['filterlogentriesinterfaces']) and ($_POST['filterlogentriesinterfaces'] != "All") )
-		$config['widgets']['filterlogentriesinterfaces'] = trim($_POST['filterlogentriesinterfaces']);
-	else
-		unset($config['widgets']['filterlogentriesinterfaces']);
+    if (($_POST['filterlogentriesinterfaces']) and ($_POST['filterlogentriesinterfaces'] != "All")) {
+        $config['widgets']['filterlogentriesinterfaces'] = trim($_POST['filterlogentriesinterfaces']);
+    } else {
+        unset($config['widgets']['filterlogentriesinterfaces']);
+    }
 
-	write_config("Saved Filter Log Entries via Dashboard");
-	Header("Location: /");
-	exit(0);
+    write_config("Saved Filter Log Entries via Dashboard");
+    Header("Location: /");
+    exit(0);
 }
 
 $nentries = isset($config['widgets']['filterlogentries']) ? $config['widgets']['filterlogentries'] : 5;
@@ -68,8 +76,8 @@ $nentriesacts       = isset($config['widgets']['filterlogentriesacts'])       ? 
 $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? $config['widgets']['filterlogentriesinterfaces'] : 'All';
 
 $filterfieldsarray = array(
-	"act" => $nentriesacts,
-	"interface" => $nentriesinterfaces
+    "act" => $nentriesacts,
+    "interface" => $nentriesinterfaces
 );
 
 $filter_logfile = '/var/log/filter.log';
@@ -91,10 +99,11 @@ var isPaused = false;
 var nentries = <?php echo $nentries; ?>;
 
 <?php
-if(isset($config['syslog']['reverse']))
-	echo "var isReverse = true;\n";
-else
-	echo "var isReverse = false;\n";
+if (isset($config['syslog']['reverse'])) {
+    echo "var isReverse = true;\n";
+} else {
+    echo "var isReverse = false;\n";
+}
 ?>
 
 /* Called by the AJAX updater */
@@ -133,21 +142,33 @@ function format_log_line(row) {
 				<tr>
 					<td>
 				<select name="filterlogentries" class="formfld unknown" id="filterlogentries">
-				<?php for ($i = 1; $i <= 20; $i++) { ?>
-					<option value="<?php echo $i;?>" <?php if ($nentries == $i) echo "selected=\"selected\"";?>><?php echo $i;?></option>
-				<?php } ?>
+				<?php for ($i = 1; $i <= 20; $i++) {
+?>
+					<option value="<?php echo $i;?>" <?php if ($nentries == $i) {
+                        echo "selected=\"selected\"";
+}?>><?php echo $i;?></option>
+				<?php
+} ?>
 				</select>
 					</td>
 				</tr>
 <?php
-		$Include_Act = explode(" ", $nentriesacts);
-		if ($nentriesinterfaces == "All") $nentriesinterfaces = "";
+        $Include_Act = explode(" ", $nentriesacts);
+if ($nentriesinterfaces == "All") {
+    $nentriesinterfaces = "";
+}
 ?>
 		<tr>
 			<td>
-		<input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass',   $Include_Act)) echo "checked=\"checked\""; ?> /> Pass
-		<input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block',  $Include_Act)) echo "checked=\"checked\""; ?> /> Block
-		<input id="actreject" name="actreject" type="checkbox" value="Reject" <?php if (in_arrayi('Reject', $Include_Act)) echo "checked=\"checked\""; ?> /> Reject
+		<input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass', $Include_Act)) {
+            echo "checked=\"checked\"";
+} ?> /> Pass
+		<input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block', $Include_Act)) {
+            echo "checked=\"checked\"";
+} ?> /> Block
+		<input id="actreject" name="actreject" type="checkbox" value="Reject" <?php if (in_arrayi('Reject', $Include_Act)) {
+            echo "checked=\"checked\"";
+} ?> /> Reject
 			</td>
 		</tr>
 		<tr>
@@ -160,16 +181,18 @@ function format_log_line(row) {
 		<select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="formselect">
 			<option value="All">ALL</option>
 <?php
-		$interfaces = get_configured_interface_with_descr();
-		foreach ($interfaces as $iface => $ifacename):
+        $interfaces = get_configured_interface_with_descr();
+foreach ($interfaces as $iface => $ifacename) :
 ?>
-			<option value="<?=$iface;?>" <?php if ($nentriesinterfaces == $iface) echo "selected=\"selected\"";?>>
-				<?=htmlspecialchars($ifacename);?>
-			</option>
+    <option value="<?=$iface;?>" <?php if ($nentriesinterfaces == $iface) {
+        echo "selected=\"selected\"";
+}?>>
+        <?=htmlspecialchars($ifacename);?>
+    </option>
 <?php
-		endforeach;
-		unset($interfaces);
-		unset($Include_Act);
+endforeach;
+        unset($interfaces);
+        unset($Include_Act);
 ?>
 		</select>
 	</td>
@@ -203,31 +226,35 @@ function format_log_line(row) {
 	</thead>
 	<tbody id='filter-log-entries'>
 	<?php
-	$rowIndex = 0;
-	foreach ($filterlog as $filterent):
-	$evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
-	$rowIndex++;
-	?>
+    $rowIndex = 0;
+    foreach ($filterlog as $filterent) :
+        $evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
+        $rowIndex++;
+    ?>
 		<tr class="<?=$evenRowClass?>">
 			<td class="listMRlr nowrap" align="center">
 			<a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);">
 			<span class="<?php echo find_action_image($filterent['act']);?>" alt="<?php echo $filterent['act'];?>" title="<?php echo $filterent['act'];?>" ></span>
 			</a>
 			</td>
-			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['time']);?>"><?php echo substr(htmlspecialchars($filterent['time']),0,-3);?></td>
+			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['time']);?>"><?php echo substr(htmlspecialchars($filterent['time']), 0, -3);?></td>
 			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['interface']);?>"><?php echo htmlspecialchars($filterent['interface']);?></td>
 			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['src']);?>">
-				<a href="#" onclick="javascript:getURL('diag_dns.php?host=<?php echo "{$filterent['srcip']}"; ?>&amp;dialog_output=true', outputrule);" title="<?=gettext("Reverse Resolve with DNS");?>">
+				<a href="#" onclick="javascript:getURL('diag_dns.php?host=<?php echo "{$filterent['srcip']}";
+?>&amp;dialog_output=true', outputrule);" title="<?=gettext("Reverse Resolve with DNS");?>">
 				<?php echo htmlspecialchars($filterent['srcip']);?></a></td>
 			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['dst']);?>">
-				<a href="#" onclick="javascript:getURL('diag_dns.php?host=<?php echo "{$filterent['dstip']}"; ?>&amp;dialog_output=true', outputrule);" title="<?=gettext("Reverse Resolve with DNS");?>">
+				<a href="#" onclick="javascript:getURL('diag_dns.php?host=<?php echo "{$filterent['dstip']}";
+?>&amp;dialog_output=true', outputrule);" title="<?=gettext("Reverse Resolve with DNS");?>">
 				<?php echo htmlspecialchars($filterent['dstip']);?></a><?php echo ":" . htmlspecialchars($filterent['dstport']);?></td>
 			<?php
-				if ($filterent['proto'] == "TCP")
-					$filterent['proto'] .= ":{$filterent['tcpflags']}";
-			?>
+            if ($filterent['proto'] == "TCP") {
+                $filterent['proto'] .= ":{$filterent['tcpflags']}";
+            }
+            ?>
 		</tr>
-	<?php endforeach; ?>
+	<?php
+    endforeach; ?>
 		<tr style="display:none;"><td></td></tr>
 	</tbody>
 </table>

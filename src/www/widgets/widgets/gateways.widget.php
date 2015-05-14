@@ -48,7 +48,8 @@ $counter = 1;
 		<td align="center"><b><?php echo gettext('Loss')?></b></td>
 		<td align="center"><b><?php echo gettext('Status')?></b></td>
 	</tr>
-	<?php foreach ($a_gateways as $gname => $gateway) { ?>
+	<?php foreach ($a_gateways as $gname => $gateway) {
+?>
 	<tr>
 		<td class="h6" id="gateway<?php echo $counter; ?>" rowspan="2" align="center">
 		<strong>
@@ -59,69 +60,74 @@ $counter = 1;
 			<td colspan="3"  align="left">
 				<div class="h6" id="gateway<?php echo $counter; ?>" style="display:inline">
 					<?php
-						$if_gw = '';
-						if (is_ipaddr($gateway['gateway']))
-							$if_gw = htmlspecialchars($gateway['gateway']);
-						else {
-							if($gateway['ipprotocol'] == "inet")
-								$if_gw = htmlspecialchars(get_interface_gateway($gateway['friendlyiface']));
-							if($gateway['ipprotocol'] == "inet6")
-								$if_gw = htmlspecialchars(get_interface_gateway_v6($gateway['friendlyiface']));
-						}
-						echo ($if_gw == '' ? '~' : $if_gw);
-						unset ($if_gw);
-						$counter++;
-					?>
+                        $if_gw = '';
+                    if (is_ipaddr($gateway['gateway'])) {
+                        $if_gw = htmlspecialchars($gateway['gateway']);
+                    } else {
+                        if ($gateway['ipprotocol'] == "inet") {
+                            $if_gw = htmlspecialchars(get_interface_gateway($gateway['friendlyiface']));
+                        }
+                        if ($gateway['ipprotocol'] == "inet6") {
+                            $if_gw = htmlspecialchars(get_interface_gateway_v6($gateway['friendlyiface']));
+                        }
+                    }
+                        echo ($if_gw == '' ? '~' : $if_gw);
+                        unset ($if_gw);
+                        $counter++;
+                    ?>
 				</div>
 			</td>
 	</tr>
 	<tr>
 			<td align="center" id="gateway<?php echo $counter; ?>">
 			<?php
-				if ($gateways_status[$gname])
-					echo htmlspecialchars($gateways_status[$gname]['delay']);
-				else
-					echo gettext("Pending");
-			?>
+            if ($gateways_status[$gname]) {
+                echo htmlspecialchars($gateways_status[$gname]['delay']);
+            } else {
+                echo gettext("Pending");
+            }
+            ?>
 			<?php $counter++; ?>
 			</td>
 			<td align="center" id="gateway<?php echo $counter; ?>">
 			<?php
-				if ($gateways_status[$gname])
-					echo htmlspecialchars($gateways_status[$gname]['loss']);
-				else
-					echo gettext("Pending");
-			?>
+            if ($gateways_status[$gname]) {
+                echo htmlspecialchars($gateways_status[$gname]['loss']);
+            } else {
+                echo gettext("Pending");
+            }
+            ?>
 			<?php $counter++; ?>
 			</td>
 			<?php
-				if ($gateways_status[$gname]) {
-					if (stristr($gateways_status[$gname]['status'], "force_down")) {
-						$online = "Offline (forced)";
-						$class="danger";
-					} elseif (stristr($gateways_status[$gname]['status'], "down")) {
-						$online = "Offline";
-						$class="danger";
-					} elseif (stristr($gateways_status[$gname]['status'], "loss")) {
-						$online = "Packetloss";
-						$class="warning";
-					} elseif (stristr($gateways_status[$gname]['status'], "delay")) {
-						$online = "Latency";
-						$class="warning";
-					} elseif ($gateways_status[$gname]['status'] == "none") {
-						$online = "Online";
-						$class="success";
-					} elseif ($gateways_status[$gname]['status'] == "") {
-						$online = "Pending";
-						$class="info";
-					}
-				} else {
-					$online = gettext("Unknown");
-					$class="info";
-				}
-				echo "<td class=\"$class\" align=\"center\">$online</td>\n";
-				$counter++;
-			?>
+            if ($gateways_status[$gname]) {
+                if (stristr($gateways_status[$gname]['status'], "force_down")) {
+                    $online = "Offline (forced)";
+                    $class="danger";
+                } elseif (stristr($gateways_status[$gname]['status'], "down")) {
+                    $online = "Offline";
+                    $class="danger";
+                } elseif (stristr($gateways_status[$gname]['status'], "loss")) {
+                    $online = "Packetloss";
+                    $class="warning";
+                } elseif (stristr($gateways_status[$gname]['status'], "delay")) {
+                    $online = "Latency";
+                    $class="warning";
+                } elseif ($gateways_status[$gname]['status'] == "none") {
+                    $online = "Online";
+                    $class="success";
+                } elseif ($gateways_status[$gname]['status'] == "") {
+                    $online = "Pending";
+                    $class="info";
+                }
+            } else {
+                $online = gettext("Unknown");
+                $class="info";
+            }
+                echo "<td class=\"$class\" align=\"center\">$online</td>\n";
+                $counter++;
+            ?>
 	</tr>
-	<?php } // foreach ?>
+	<?php
+} // foreach ?>
 </table>

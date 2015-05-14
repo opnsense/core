@@ -31,47 +31,48 @@ $nocsrf = true;
 require_once("guiconfig.inc");
 require_once("widgets/include/wake_on_lan.inc");
 
-if (is_array($config['wol']['wolentry']))
-	$wolcomputers = $config['wol']['wolentry'];
-else
-	$wolcomputers = array();
+if (is_array($config['wol']['wolentry'])) {
+    $wolcomputers = $config['wol']['wolentry'];
+} else {
+    $wolcomputers = array();
+}
 
 ?>
 <table width="100%" border="0" cellpadding="0" cellspacing="0" summary="wol status">
 	<tr>
 		<?php
-		echo '<td class="widgetsubheader" align="center">' . gettext("Computer / Device") . '</td>';
-		echo '<td class="widgetsubheader" align="center">' . gettext("Interface") . '</td>';
-		echo '<td class="widgetsubheader" align="center">' . gettext("Status") . '</td>';
-		?>
+        echo '<td class="widgetsubheader" align="center">' . gettext("Computer / Device") . '</td>';
+        echo '<td class="widgetsubheader" align="center">' . gettext("Interface") . '</td>';
+        echo '<td class="widgetsubheader" align="center">' . gettext("Status") . '</td>';
+        ?>
 		<td class="widgetsubheader">&nbsp;</td>
 	</tr>
 <?php
 
 if (count($wolcomputers) > 0) {
-	foreach($wolcomputers as $wolent) {
-		echo '<tr><td class="listlr">' . $wolent['descr'] . '<br />' . $wolent['mac'] . '</td>' . "\n";
-		echo '<td class="listr">' . convert_friendly_interface_to_friendly_descr($wolent['interface']) . '</td>' . "\n";
+    foreach ($wolcomputers as $wolent) {
+        echo '<tr><td class="listlr">' . $wolent['descr'] . '<br />' . $wolent['mac'] . '</td>' . "\n";
+        echo '<td class="listr">' . convert_friendly_interface_to_friendly_descr($wolent['interface']) . '</td>' . "\n";
 
-		$is_active = exec("/usr/sbin/arp -an |/usr/bin/grep {$wolent['mac']}| /usr/bin/wc -l|/usr/bin/awk '{print $1;}'");
-		if($is_active == 1) {
-			echo '<td class="listr" align="center">' . "\n";
-			echo "<span class=\"glyphicon glyphicon-play text-success\" alt=\"pass\" ></span> " . gettext("Online") . "</td>\n";
-		} else {
-			echo '<td class="listbg" align="center">' . "\n";
-			echo "<span class=\"glyphicon glyphicon-remove text-danger\" alt=\"block\" ></span> " . gettext("Offline") . "</td>\n";
-		}
-		echo '<td valign="middle" class="list nowrap">';
-		/*if($is_active) { */
-			/* Will always show wake-up button even if the code thinks it is awake */
-		/* } else { */
-			echo "<a href='services_wol.php?mac={$wolent['mac']}&amp;if={$wolent['interface']}'> ";
-			echo "<span class='glyphicon glyphicon-flash' title='" . gettext("Wake Up") . "' border='0' alt='wol' ></span></a>\n";
-		/* } */
-		echo "</td></tr>\n";
-	}
+        $is_active = exec("/usr/sbin/arp -an |/usr/bin/grep {$wolent['mac']}| /usr/bin/wc -l|/usr/bin/awk '{print $1;}'");
+        if ($is_active == 1) {
+            echo '<td class="listr" align="center">' . "\n";
+            echo "<span class=\"glyphicon glyphicon-play text-success\" alt=\"pass\" ></span> " . gettext("Online") . "</td>\n";
+        } else {
+            echo '<td class="listbg" align="center">' . "\n";
+            echo "<span class=\"glyphicon glyphicon-remove text-danger\" alt=\"block\" ></span> " . gettext("Offline") . "</td>\n";
+        }
+        echo '<td valign="middle" class="list nowrap">';
+        /*if($is_active) { */
+            /* Will always show wake-up button even if the code thinks it is awake */
+        /* } else { */
+            echo "<a href='services_wol.php?mac={$wolent['mac']}&amp;if={$wolent['interface']}'> ";
+            echo "<span class='glyphicon glyphicon-flash' title='" . gettext("Wake Up") . "' border='0' alt='wol' ></span></a>\n";
+        /* } */
+        echo "</td></tr>\n";
+    }
 } else {
-	echo "<tr><td colspan=\"4\" align=\"center\">" . gettext("No saved WoL addresses") . ".</td></tr>\n";
+    echo "<tr><td colspan=\"4\" align=\"center\">" . gettext("No saved WoL addresses") . ".</td></tr>\n";
 }
 ?>
 </table>

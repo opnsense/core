@@ -32,39 +32,40 @@ require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("functions.inc");
 
-if($_GET['getpic']=="true") {
-	$pic_type_s = explode(".", $config['widgets']['picturewidget_filename']);
-	$pic_type = $pic_type_s[1];
-	if($config['widgets']['picturewidget'])
-		$data = base64_decode($config['widgets']['picturewidget']);
-	header("Content-Disposition: inline; filename=\"{$config['widgets']['picturewidget_filename']}\"");
-	header("Content-Type: image/{$pic_type}");
-	header("Content-Length: " . strlen($data));
-	echo $data;
-	exit;
+if ($_GET['getpic']=="true") {
+    $pic_type_s = explode(".", $config['widgets']['picturewidget_filename']);
+    $pic_type = $pic_type_s[1];
+    if ($config['widgets']['picturewidget']) {
+        $data = base64_decode($config['widgets']['picturewidget']);
+    }
+    header("Content-Disposition: inline; filename=\"{$config['widgets']['picturewidget_filename']}\"");
+    header("Content-Type: image/{$pic_type}");
+    header("Content-Length: " . strlen($data));
+    echo $data;
+    exit;
 }
 
-if($_POST) {
-	if (is_uploaded_file($_FILES['pictfile']['tmp_name'])) {
-		/* read the file contents */
-		$fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
-		while ( ($buf=fread( $fd_pic, 8192 )) != '' ) {
-		    // Here, $buf is guaranteed to contain data
-		    $data .= $buf;
-		}
-		fclose($fd_pic);
-		if(!$data) {
-			log_error("Warning, could not read file " . $_FILES['pictfile']['tmp_name']);
-			die("Could not read temporary file");
-		} else {
-			$picname = basename($_FILES['uploadedfile']['name']);
-			$config['widgets']['picturewidget'] = base64_encode($data);
-			$config['widgets']['picturewidget_filename'] = $_FILES['pictfile']['name'];
-			write_config("Picture widget saved via Dashboard.");
-			header("Location: /index.php");
-			exit;
-		}
-	}
+if ($_POST) {
+    if (is_uploaded_file($_FILES['pictfile']['tmp_name'])) {
+        /* read the file contents */
+        $fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
+        while (($buf=fread($fd_pic, 8192)) != '') {
+            // Here, $buf is guaranteed to contain data
+            $data .= $buf;
+        }
+        fclose($fd_pic);
+        if (!$data) {
+            log_error("Warning, could not read file " . $_FILES['pictfile']['tmp_name']);
+            die("Could not read temporary file");
+        } else {
+            $picname = basename($_FILES['uploadedfile']['name']);
+            $config['widgets']['picturewidget'] = base64_encode($data);
+            $config['widgets']['picturewidget_filename'] = $_FILES['pictfile']['name'];
+            write_config("Picture widget saved via Dashboard.");
+            header("Location: /index.php");
+            exit;
+        }
+    }
 }
 
 ?>
@@ -89,13 +90,15 @@ if($_POST) {
 </div>
 
 <!-- hide picture if none is defined in the configuration  -->
-<?php if ( $config['widgets']['picturewidget_filename'] != "" ): ?>
+<?php if ($config['widgets']['picturewidget_filename'] != "") :
+?>
 <div id="picture-widgets" style="padding: 5px">
 	<a href='/widgets/widgets/picture.widget.php?getpic=true' target='_blank'>
 		<img border="0" width="100%" height="100%" src="/widgets/widgets/picture.widget.php?getpic=true" alt="picture" />
 	</a>
 </div>
-<?php endif ?>
+<?php
+endif ?>
 <!-- needed to show the settings widget icon -->
 <script type="text/javascript">
 //<![CDATA[

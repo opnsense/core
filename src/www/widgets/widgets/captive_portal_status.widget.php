@@ -37,35 +37,41 @@ require_once("functions.inc");
 require_once("captiveportal.inc");
 
 if (($_GET['act'] == "del") && (!empty($_GET['zone']))) {
-	$cpzone = $_GET['zone'];
-	captiveportal_disconnect_client($_GET['id']);
+    $cpzone = $_GET['zone'];
+    captiveportal_disconnect_client($_GET['id']);
 }
 
 flush();
 
-function clientcmp($a, $b) {
-	global $order;
-	return strcmp($a[$order], $b[$order]);
+function clientcmp($a, $b)
+{
+    global $order;
+    return strcmp($a[$order], $b[$order]);
 }
 
-if (!is_array($config['captiveportal']))
+if (!is_array($config['captiveportal'])) {
         $config['captiveportal'] = array();
+}
 $a_cp =& $config['captiveportal'];
 
 $cpdb_all = array();
 
 foreach ($a_cp as $cpzone => $cp) {
-	$cpdb_handle = new OPNsense\CaptivePortal\DB($cpzone);
+    $cpdb_handle = new OPNsense\CaptivePortal\DB($cpzone);
 
         $order = "";
-        if ($_GET['order']) {
-            if ($_GET['order'] == "ip") $order = "ip";
-            else if ($_GET['order'] == "mac") $order = "mac";
-            else if ($_GET['order'] == "user") $order = "username";
+    if ($_GET['order']) {
+        if ($_GET['order'] == "ip") {
+            $order = "ip";
+        } elseif ($_GET['order'] == "mac") {
+            $order = "mac";
+        } elseif ($_GET['order'] == "user") {
+            $order = "username";
         }
+    }
 
-	$cpdb = $cpdb_handle->listClients(array(),"and",array($order) ) ;
-	$cpdb_all[$cpzone] = $cpdb;
+    $cpdb = $cpdb_handle->listClients(array(), "and", array($order)) ;
+    $cpdb_all[$cpzone] = $cpdb;
 }
 
 ?>
@@ -73,25 +79,39 @@ foreach ($a_cp as $cpzone => $cp) {
   <tr>
     <td class="listhdrr"><a href="?order=ip&amp;showact=<?=$_GET['showact'];?>"><b>IP address</b></a></td>
     <td class="listhdrr"><a href="?order=mac&amp;showact=<?=$_GET['showact'];?>"><b>MAC address</b></a></td>
-    <td class="listhdrr"><a href="?order=user&amp;showact=<?=$_GET['showact'];?>"><b><?=gettext("Username");?></b></a></td>
-	<?php if ($_GET['showact']): ?>
-    <td class="listhdrr"><a href="?order=start&amp;showact=<?=$_GET['showact'];?>"><b><?=gettext("Session start");?></b></a></td>
-    <td class="listhdrr"><a href="?order=start&amp;showact=<?=$_GET['showact'];?>"><b><?=gettext("Last activity");?></b></a></td>
-	<?php endif; ?>
+    <td class="listhdrr"><a href="?order=user&amp;showact=<?=$_GET['showact'];
+?>"><b><?=gettext("Username");?></b></a></td>
+	<?php if ($_GET['showact']) :
+?>
+    <td class="listhdrr"><a href="?order=start&amp;showact=<?=$_GET['showact'];
+?>"><b><?=gettext("Session start");?></b></a></td>
+    <td class="listhdrr"><a href="?order=start&amp;showact=<?=$_GET['showact'];
+?>"><b><?=gettext("Last activity");?></b></a></td>
+	<?php
+endif; ?>
   </tr>
-<?php foreach ($cpdb_all as $cpzone=>$cpdb): ?>
-  <?php foreach ($cpdb as $cpent): ?>
+<?php foreach ($cpdb_all as $cpzone => $cpdb) :
+?>
+    <?php foreach ($cpdb as $cpent) :
+?>
   <tr>
     <td class="listlr"><?=$cpent->ip;?></td>
     <td class="listr"><?=$cpent->mac;?>&nbsp;</td>
     <td class="listr"><?=$cpent->username;?>&nbsp;</td>
-	<?php if ($_GET['showact']): ?>
+	<?php if ($_GET['showact']) :
+?>
     <td class="listr"><?=htmlspecialchars(date("m/d/Y H:i:s", $cpent->allow_time));?></td>
     <td class="listr">?</td>
-	<?php endif; ?>
+	<?php
+endif; ?>
 	<td valign="middle" class="list nowrap">
-	<a href="?order=<?=$_GET['order'];?>&amp;showact=<?=$_GET['showact'];?>&amp;act=del&amp;zone=<?=$cpzone;?>&amp;id=<?=$cpent->sessionid;?>" onclick="return confirm('Do you really want to disconnect this client?')"><span class="glyphicon glyphicon-remove"></span></a></td>
+	<a href="?order=<?=$_GET['order'];
+?>&amp;showact=<?=$_GET['showact'];
+?>&amp;act=del&amp;zone=<?=$cpzone;
+?>&amp;id=<?=$cpent->sessionid;?>" onclick="return confirm('Do you really want to disconnect this client?')"><span class="glyphicon glyphicon-remove"></span></a></td>
   </tr>
-  <?php endforeach; ?>
-<?php endforeach; ?>
+    <?php
+endforeach; ?>
+<?php
+endforeach; ?>
 </table>

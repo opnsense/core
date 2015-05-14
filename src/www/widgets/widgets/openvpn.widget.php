@@ -32,53 +32,56 @@ require_once("guiconfig.inc");
 require_once("openvpn.inc");
 
 /* Handle AJAX */
-if($_GET['action']) {
-	if($_GET['action'] == "kill") {
-		$port = $_GET['port'];
-		$remipp = $_GET['remipp'];
-		if (!empty($port) and !empty($remipp)) {
-			$retval = kill_client($port, $remipp);
-			echo htmlentities("|{$port}|{$remipp}|{$retval}|");
-		} else {
-			echo gettext("invalid input");
-		}
-		exit;
-	}
+if ($_GET['action']) {
+    if ($_GET['action'] == "kill") {
+        $port = $_GET['port'];
+        $remipp = $_GET['remipp'];
+        if (!empty($port) and !empty($remipp)) {
+            $retval = kill_client($port, $remipp);
+            echo htmlentities("|{$port}|{$remipp}|{$retval}|");
+        } else {
+            echo gettext("invalid input");
+        }
+        exit;
+    }
 }
 
 
-function kill_client($port, $remipp) {
-	global $g;
+function kill_client($port, $remipp)
+{
+    global $g;
 
-	//$tcpsrv = "tcp://127.0.0.1:{$port}";
-	$tcpsrv = "unix:///var/etc/openvpn/{$port}.sock";
-	$errval;
-	$errstr;
+    //$tcpsrv = "tcp://127.0.0.1:{$port}";
+    $tcpsrv = "unix:///var/etc/openvpn/{$port}.sock";
+    $errval;
+    $errstr;
 
-	/* open a tcp connection to the management port of each server */
-	$fp = @stream_socket_client($tcpsrv, $errval, $errstr, 1);
-	$killed = -1;
-	if ($fp) {
-		stream_set_timeout($fp, 1);
-		fputs($fp, "kill {$remipp}\n");
-		while (!feof($fp)) {
-			$line = fgets($fp, 1024);
+    /* open a tcp connection to the management port of each server */
+    $fp = @stream_socket_client($tcpsrv, $errval, $errstr, 1);
+    $killed = -1;
+    if ($fp) {
+        stream_set_timeout($fp, 1);
+        fputs($fp, "kill {$remipp}\n");
+        while (!feof($fp)) {
+            $line = fgets($fp, 1024);
 
-			$info = stream_get_meta_data($fp);
-			if ($info['timed_out'])
-				break;
+            $info = stream_get_meta_data($fp);
+            if ($info['timed_out']) {
+                break;
+            }
 
-			/* parse header list line */
-			if (strpos($line, "INFO:") !== false)
-				continue;
-			if (strpos($line, "SUCCESS") !== false) {
-				$killed = 0;
-			}
-			break;
-		}
-		fclose($fp);
-	}
-	return $killed;
+            /* parse header list line */
+            if (strpos($line, "INFO:") !== false) {
+                continue;
+            }
+            if (strpos($line, "SUCCESS") !== false) {
+                $killed = 0;
+            }
+            break;
+        }
+        fclose($fp);
+    }
+    return $killed;
 }
 
 $servers = openvpn_get_active_servers();
@@ -117,7 +120,8 @@ $clients = openvpn_get_active_clients();
 	}
 </script>
 
-<?php foreach ($servers as $server): ?>
+<?php foreach ($servers as $server) :
+?>
 
 <table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
@@ -133,10 +137,10 @@ $clients = openvpn_get_active_clients();
 				<td class="listhdrr">Real/Virtual IP</td>
 			</tr>
 			<?php $rowIndex = 0;
-			foreach ($server['conns'] as $conn):
-			$evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
-			$rowIndex++;
-			?>
+            foreach ($server['conns'] as $conn) :
+                $evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
+                $rowIndex++;
+            ?>
 			<tr name='<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>' class="<?=$evenRowClass?>">
 				<td class="listMRlr">
 					<?=$conn['common_name'];?>
@@ -160,7 +164,8 @@ $clients = openvpn_get_active_clients();
 				</td>
 			</tr>
 
-			<?php endforeach; ?>
+			<?php
+            endforeach; ?>
 			<tfoot>
 			<tr>
 				<td colspan="6" class="list" height="12"></td>
@@ -171,8 +176,10 @@ $clients = openvpn_get_active_clients();
 	</tr>
 </table>
 
-<?php endforeach; ?>
-<?php if (!empty($sk_servers)) { ?>
+<?php
+endforeach; ?>
+<?php if (!empty($sk_servers)) {
+?>
 <table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td colspan="6" class="listtopic">
@@ -186,7 +193,8 @@ $clients = openvpn_get_active_clients();
 			<td class="listhdrr">Remote/Virtual IP</td>
 		</tr>
 
-<?php foreach ($sk_servers as $sk_server): ?>
+<?php foreach ($sk_servers as $sk_server) :
+?>
 		<tr name='<?php echo "r:{$sk_server['port']}:{$sk_server['remote_host']}"; ?>'>
 			<td class="listlr">
 				<?=$sk_server['name'];?>
@@ -196,15 +204,15 @@ $clients = openvpn_get_active_clients();
 			</td>
 			<td rowspan="2" align="center">
 			<?php
-			if ($sk_server['status'] == "up") {
-				/* tunnel is up */
-				$iconfn = "text-success";
-			} else {
-				/* tunnel is down */
-				$iconfn = "text-danger";
-			}
-			echo "<span class='glyphicon glyphicon-transfer ".$iconfn."'></span>";
-			?>
+            if ($sk_server['status'] == "up") {
+                /* tunnel is up */
+                $iconfn = "text-success";
+            } else {
+                /* tunnel is down */
+                $iconfn = "text-danger";
+            }
+            echo "<span class='glyphicon glyphicon-transfer ".$iconfn."'></span>";
+            ?>
 			</td>
 		</tr>
 		<tr name='<?php echo "r:{$sk_server['port']}:{$sk_server['remote_host']}"; ?>'>
@@ -215,14 +223,16 @@ $clients = openvpn_get_active_clients();
 				<?=$sk_server['virtual_addr'];?>
 			</td>
 		</tr>
-<?php endforeach; ?>
+<?php
+endforeach; ?>
 		</table>
 	</tr>
 </table>
 
 <?php
 } ?>
-<?php if (!empty($clients)) { ?>
+<?php if (!empty($clients)) {
+?>
 <table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td colspan="6" class="listtopic">
@@ -236,7 +246,8 @@ $clients = openvpn_get_active_clients();
 			<td class="listhdrr">Remote/Virtual IP</td>
 		</tr>
 
-<?php foreach ($clients as $client): ?>
+<?php foreach ($clients as $client) :
+?>
 		<tr name='<?php echo "r:{$client['port']}:{$client['remote_host']}"; ?>'>
 			<td class="listlr">
 				<?=$client['name'];?>
@@ -246,15 +257,15 @@ $clients = openvpn_get_active_clients();
 			</td>
 			<td rowspan="2" align="center">
 			<?php
-			if ($client['status'] == "up") {
-				/* tunnel is up */
-				$iconfn = "text-success";
-			} else {
-				/* tunnel is down */
-				$iconfn = "text-danger";
-			}
-			echo "<span class='glyphicon glyphicon-transfer ".$iconfn."'></span>";
-			?>
+            if ($client['status'] == "up") {
+                /* tunnel is up */
+                $iconfn = "text-success";
+            } else {
+                /* tunnel is down */
+                $iconfn = "text-danger";
+            }
+            echo "<span class='glyphicon glyphicon-transfer ".$iconfn."'></span>";
+            ?>
 			</td>
 		</tr>
 		<tr name='<?php echo "r:{$client['port']}:{$client['remote_host']}"; ?>'>
@@ -265,7 +276,8 @@ $clients = openvpn_get_active_clients();
 				<?=$client['virtual_addr'];?>
 			</td>
 		</tr>
-<?php endforeach; ?>
+<?php
+endforeach; ?>
 		</table>
 	</tr>
 </table>
@@ -274,10 +286,9 @@ $clients = openvpn_get_active_clients();
 }
 
 if ($DisplayNote) {
-	echo "<br /><b>NOTE:</b> You need to bind each OpenVPN client to enable its management daemon: use 'Local port' setting in the OpenVPN client screen";
+    echo "<br /><b>NOTE:</b> You need to bind each OpenVPN client to enable its management daemon: use 'Local port' setting in the OpenVPN client screen";
 }
 
 if ((empty($clients)) && (empty($servers)) && (empty($sk_servers))) {
-	echo "No OpenVPN instance defined";
+    echo "No OpenVPN instance defined";
 }
-?>
