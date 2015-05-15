@@ -36,172 +36,188 @@ require_once("gwlb.inc");
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_routes.php');
 
 if (!is_array($config['staticroutes'])) {
-	$config['staticroutes'] = array();
+    $config['staticroutes'] = array();
 }
 
 if (!is_array($config['staticroutes']['route'])) {
-	$config['staticroutes']['route'] = array();
+    $config['staticroutes']['route'] = array();
 }
 
 $a_routes = &$config['staticroutes']['route'];
 $a_gateways = return_gateways_array(true, true);
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
-
-if (isset($_GET['dup']) && is_numericint($_GET['dup']))
-	$id = $_GET['dup'];
-
-if (isset($id) && $a_routes[$id]) {
-	list($pconfig['network'],$pconfig['network_subnet']) =
-		explode('/', $a_routes[$id]['network']);
-	$pconfig['gateway'] = $a_routes[$id]['gateway'];
-	$pconfig['descr'] = $a_routes[$id]['descr'];
-	$pconfig['disabled'] = isset($a_routes[$id]['disabled']);
+if (is_numericint($_GET['id'])) {
+    $id = $_GET['id'];
+}
+if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+    $id = $_POST['id'];
 }
 
-if (isset($_GET['dup']) && is_numericint($_GET['dup']))
-	unset($id);
+if (isset($_GET['dup']) && is_numericint($_GET['dup'])) {
+    $id = $_GET['dup'];
+}
+
+if (isset($id) && $a_routes[$id]) {
+    list($pconfig['network'],$pconfig['network_subnet']) =
+        explode('/', $a_routes[$id]['network']);
+    $pconfig['gateway'] = $a_routes[$id]['gateway'];
+    $pconfig['descr'] = $a_routes[$id]['descr'];
+    $pconfig['disabled'] = isset($a_routes[$id]['disabled']);
+}
+
+if (isset($_GET['dup']) && is_numericint($_GET['dup'])) {
+    unset($id);
+}
 
 if ($_POST) {
+    global $aliastable;
 
-	global $aliastable;
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    $reqdfields = explode(" ", "network network_subnet gateway");
+    $reqdfieldsn = explode(
+        ",",
+        gettext("Destination network") . "," .
+        gettext("Destination network bit count") . "," .
+        gettext("Gateway")
+    );
 
-	/* input validation */
-	$reqdfields = explode(" ", "network network_subnet gateway");
-	$reqdfieldsn = explode(",",
-			gettext("Destination network") . "," .
-			gettext("Destination network bit count") . "," .
-			gettext("Gateway"));
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    if (($_POST['network'] && !is_ipaddr($_POST['network']) && !is_alias($_POST['network']))) {
+        $input_errors[] = gettext("A valid IPv4 or IPv6 destination network must be specified.");
+    }
+    if (($_POST['network_subnet'] && !is_numeric($_POST['network_subnet']))) {
+        $input_errors[] = gettext("A valid destination network bit count must be specified.");
+    }
+    if (($_POST['gateway']) && is_ipaddr($_POST['network'])) {
+        if (!isset($a_gateways[$_POST['gateway']])) {
+            $input_errors[] = gettext("A valid gateway must be specified.");
+        }
+        if (!validate_address_family($_POST['network'], lookup_gateway_ip_by_name($_POST['gateway']))) {
+            $input_errors[] = gettext("The gateway '{$a_gateways[$_POST['gateway']]['gateway']}' is a different Address Family as network '{$_POST['network']}'.");
+        }
+    }
 
-	if (($_POST['network'] && !is_ipaddr($_POST['network']) && !is_alias($_POST['network']))) {
-		$input_errors[] = gettext("A valid IPv4 or IPv6 destination network must be specified.");
-	}
-	if (($_POST['network_subnet'] && !is_numeric($_POST['network_subnet']))) {
-		$input_errors[] = gettext("A valid destination network bit count must be specified.");
-	}
-	if (($_POST['gateway']) && is_ipaddr($_POST['network'])) {
-		if (!isset($a_gateways[$_POST['gateway']]))
-			$input_errors[] = gettext("A valid gateway must be specified.");
-		if(!validate_address_family($_POST['network'], lookup_gateway_ip_by_name($_POST['gateway'])))
-			$input_errors[] = gettext("The gateway '{$a_gateways[$_POST['gateway']]['gateway']}' is a different Address Family as network '{$_POST['network']}'.");
-	}
+    /* check for overlaps */
+    $current_targets = get_staticroutes(true);
+    $new_targets = array();
+    if (is_ipaddrv6($_POST['network'])) {
+        $osn = gen_subnetv6($_POST['network'], $_POST['network_subnet']) . "/" . $_POST['network_subnet'];
+        $new_targets[] = $osn;
+    }
+    if (is_ipaddrv4($_POST['network'])) {
+        if ($_POST['network_subnet'] > 32) {
+            $input_errors[] = gettext("A IPv4 subnet can not be over 32 bits.");
+        } else {
+            $osn = gen_subnet($_POST['network'], $_POST['network_subnet']) . "/" . $_POST['network_subnet'];
+            $new_targets[] = $osn;
+        }
+    } elseif (is_alias($_POST['network'])) {
+        $osn = $_POST['network'];
+        foreach (preg_split('/\s+/', $aliastable[$osn]) as $tgt) {
+            if (is_ipaddrv4($tgt)) {
+                $tgt .= "/32";
+            }
+            if (is_ipaddrv6($tgt)) {
+                $tgt .= "/128";
+            }
+            if (!is_subnet($tgt)) {
+                continue;
+            }
+            if (!is_subnetv6($tgt)) {
+                continue;
+            }
+            $new_targets[] = $tgt;
+        }
+    }
+    if (!isset($id)) {
+        $id = count($a_routes);
+    }
+    $oroute = $a_routes[$id];
+    $old_targets = array();
+    if (!empty($oroute)) {
+        if (is_alias($oroute['network'])) {
+            foreach (filter_expand_alias_array($oroute['network']) as $tgt) {
+                if (is_ipaddrv4($tgt)) {
+                    $tgt .= "/32";
+                } elseif (is_ipaddrv6($tgt)) {
+                    $tgt .= "/128";
+                }
+                if (!is_subnet($tgt)) {
+                    continue;
+                }
+                $old_targets[] = $tgt;
+            }
+        } else {
+            $old_targets[] = $oroute['network'];
+        }
+    }
 
-	/* check for overlaps */
-	$current_targets = get_staticroutes(true);
-	$new_targets = array();
-	if(is_ipaddrv6($_POST['network'])) {
-		$osn = gen_subnetv6($_POST['network'], $_POST['network_subnet']) . "/" . $_POST['network_subnet'];
-		$new_targets[] = $osn;
-	}
-	if (is_ipaddrv4($_POST['network'])) {
-		if($_POST['network_subnet'] > 32)
-			$input_errors[] = gettext("A IPv4 subnet can not be over 32 bits.");
-		else {
-			$osn = gen_subnet($_POST['network'], $_POST['network_subnet']) . "/" . $_POST['network_subnet'];
-			$new_targets[] = $osn;
-		}
-	} elseif (is_alias($_POST['network'])) {
-		$osn = $_POST['network'];
-		foreach (preg_split('/\s+/', $aliastable[$osn]) as $tgt) {
-			if (is_ipaddrv4($tgt))
-				$tgt .= "/32";
-			if (is_ipaddrv6($tgt))
-				$tgt .= "/128";
-			if (!is_subnet($tgt))
-				continue;
-			if (!is_subnetv6($tgt))
-				continue;
-			$new_targets[] = $tgt;
-		}
-	}
-	if (!isset($id))
-		$id = count($a_routes);
-	$oroute = $a_routes[$id];
-	$old_targets = array();
-	if (!empty($oroute)) {
-		if (is_alias($oroute['network'])) {
-			foreach (filter_expand_alias_array($oroute['network']) as $tgt) {
-				if (is_ipaddrv4($tgt))
-					$tgt .= "/32";
-				else if (is_ipaddrv6($tgt))
-					$tgt .= "/128";
-				if (!is_subnet($tgt))
-					continue;
-				$old_targets[] = $tgt;
-			}
-		} else {
-			$old_targets[] = $oroute['network'];
-		}
-	}
+    $overlaps = array_intersect($current_targets, $new_targets);
+    $overlaps = array_diff($overlaps, $old_targets);
+    if (count($overlaps)) {
+        $input_errors[] = gettext("A route to these destination networks already exists") . ": " . implode(", ", $overlaps);
+    }
 
-	$overlaps = array_intersect($current_targets, $new_targets);
-	$overlaps = array_diff($overlaps, $old_targets);
-	if (count($overlaps)) {
-		$input_errors[] = gettext("A route to these destination networks already exists") . ": " . implode(", ", $overlaps);
-	}
+    if (is_array($config['interfaces'])) {
+        foreach ($config['interfaces'] as $if) {
+            if (is_ipaddrv4($_POST['network'])
+                && isset($if['ipaddr']) && isset($if['subnet'])
+                && is_ipaddrv4($if['ipaddr']) && is_numeric($if['subnet'])
+                && ($_POST['network_subnet'] == $if['subnet'])
+                && (gen_subnet($_POST['network'], $_POST['network_subnet']) == gen_subnet($if['ipaddr'], $if['subnet']))) {
+                    $input_errors[] = sprintf(gettext("This network conflicts with address configured on interface %s."), $if['descr']);
+            } elseif (is_ipaddrv6($_POST['network'])
+                && isset($if['ipaddrv6']) && isset($if['subnetv6'])
+                && is_ipaddrv6($if['ipaddrv6']) && is_numeric($if['subnetv6'])
+                && ($_POST['network_subnet'] == $if['subnetv6'])
+                && (gen_subnetv6($_POST['network'], $_POST['network_subnet']) == gen_subnetv6($if['ipaddrv6'], $if['subnetv6']))) {
+                    $input_errors[] = sprintf(gettext("This network conflicts with address configured on interface %s."), $if['descr']);
+            }
+        }
+    }
 
-	if (is_array($config['interfaces'])) {
-		foreach ($config['interfaces'] as $if) {
-			if (is_ipaddrv4($_POST['network'])
-				&& isset($if['ipaddr']) && isset($if['subnet'])
-				&& is_ipaddrv4($if['ipaddr']) && is_numeric($if['subnet'])
-				&& ($_POST['network_subnet'] == $if['subnet'])
-				&& (gen_subnet($_POST['network'], $_POST['network_subnet']) == gen_subnet($if['ipaddr'], $if['subnet'])))
-					$input_errors[] = sprintf(gettext("This network conflicts with address configured on interface %s."), $if['descr']);
+    if (!$input_errors) {
+        $route = array();
+        $route['network'] = $osn;
+        $route['gateway'] = $_POST['gateway'];
+        $route['descr'] = $_POST['descr'];
+        if ($_POST['disabled']) {
+            $route['disabled'] = true;
+        } else {
+            unset($route['disabled']);
+        }
 
-			else if (is_ipaddrv6($_POST['network'])
-				&& isset($if['ipaddrv6']) && isset($if['subnetv6'])
-				&& is_ipaddrv6($if['ipaddrv6']) && is_numeric($if['subnetv6'])
-				&& ($_POST['network_subnet'] == $if['subnetv6'])
-				&& (gen_subnetv6($_POST['network'], $_POST['network_subnet']) == gen_subnetv6($if['ipaddrv6'], $if['subnetv6'])))
-					$input_errors[] = sprintf(gettext("This network conflicts with address configured on interface %s."), $if['descr']);
-		}
-	}
+        if (file_exists('/tmp/.system_routes.apply')) {
+            $toapplylist = unserialize(file_get_contents('/tmp/.system_routes.apply'));
+        } else {
+            $toapplylist = array();
+        }
+        $a_routes[$id] = $route;
 
-	if (!$input_errors) {
-		$route = array();
-		$route['network'] = $osn;
-		$route['gateway'] = $_POST['gateway'];
-		$route['descr'] = $_POST['descr'];
-		if ($_POST['disabled'])
-			$route['disabled'] = true;
-		else
-			unset($route['disabled']);
+        if (!empty($oroute)) {
+            $delete_targets = array_diff($old_targets, $new_targets);
+            if (count($delete_targets)) {
+                foreach ($delete_targets as $dts) {
+                    if (is_ipaddrv6($dts)) {
+                        $family = '-inet6';
+                    }
+                    $toapplylist[] = "/sbin/route delete {$family} {$dts}";
+                }
+            }
+        }
+        file_put_contents('/tmp/.system_routes.apply', serialize($toapplylist));
 
-		if (file_exists('/tmp/.system_routes.apply')) {
-			$toapplylist = unserialize(file_get_contents('/tmp/.system_routes.apply'));
-		} else {
-			$toapplylist = array();
-		}
-		$a_routes[$id] = $route;
+        mark_subsystem_dirty('staticroutes');
 
-		if (!empty($oroute)) {
-			$delete_targets = array_diff($old_targets, $new_targets);
-			if (count($delete_targets))
-				foreach ($delete_targets as $dts) {
-					if (is_ipaddrv6($dts)) {
-						$family = '-inet6';
-					}
-					$toapplylist[] = "/sbin/route delete {$family} {$dts}";
-				}
-		}
-		file_put_contents('/tmp/.system_routes.apply', serialize($toapplylist));
+        write_config();
 
-		mark_subsystem_dirty('staticroutes');
-
-		write_config();
-
-		header("Location: system_routes.php");
-		exit;
-	}
+        header("Location: system_routes.php");
+        exit;
+    }
 }
 
 $pgtitle = array(gettext("System"),gettext("Static Routes"),gettext("Edit route"));
@@ -221,7 +237,9 @@ include("head.inc");
 		<div class="container-fluid">
 
 			<div class="row">
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($input_errors) {
+                    print_input_errors($input_errors);
+} ?>
 
 			    <section class="col-xs-12">
 
@@ -244,11 +262,15 @@ include("head.inc");
 													</td>
 													<td>
 														<select name="network_subnet" class="selectpicker ipv4v6" id="network_subnet" data-width="auto">
-														<?php for ($i = 128; $i >= 1; $i--): ?>
-															<option value="<?=$i;?>" <?php if ($i == $pconfig['network_subnet']) echo "selected=\"selected\""; ?>>
+														<?php for ($i = 128; $i >= 1; $i--) :
+?>
+															<option value="<?=$i;?>" <?php if ($i == $pconfig['network_subnet']) {
+                                                                echo "selected=\"selected\"";
+} ?>>
 																<?=$i;?>
 															</option>
-														<?php endfor; ?>
+														<?php
+endfor; ?>
 														</select>
 													</td>
 												</tr>
@@ -261,17 +283,20 @@ include("head.inc");
 										<td width="78%" class="vtable">
 											<select name="gateway" id="gateway" class="selectpicker">
 											<?php
-												foreach ($a_gateways as $gateway) {
-													?>
-													<option value="<?=$gateway['name'];?>" <?php if ($gateway['name'] == $pconfig['gateway']) echo "selected=\"selected\""; ?>>
-														<?=htmlspecialchars($gateway['name']) . " - " . htmlspecialchars($gateway['gateway']);?>
+                                            foreach ($a_gateways as $gateway) {
+                                                ?>
+                                                <option value="<?=$gateway['name'];?>" <?php if ($gateway['name'] == $pconfig['gateway']) {
+                                                    echo "selected=\"selected\"";
+} ?>>
+                                                    <?=htmlspecialchars($gateway['name']) . " - " . htmlspecialchars($gateway['gateway']);?>
 													</option>
 													<?php
-												}
-											?>
+                                            }
+                                            ?>
 											</select> <br />
 											<div id='addgwbox'>
-												<?=gettext("Choose which gateway this route applies to or"); ?> <a onclick="show_add_gateway();" href="#"><?=gettext("add a new one.");?></a>
+												<?=gettext("Choose which gateway this route applies to or");
+?> <a onclick="show_add_gateway();" href="#"><?=gettext("add a new one.");?></a>
 											</div>
 											<div id='notebox'>
 											</div>
@@ -291,9 +316,10 @@ include("head.inc");
 																	<td with="78%">
 																		<select name="addinterfacegw" id="addinterfacegw" class="selectpicker">
 																		<?php $gwifs = get_configured_interface_with_descr();
-																			foreach($gwifs as $fif => $dif)
-																				echo "<option value=\"{$fif}\">{$dif}</option>\n";
-																		?>
+                                                                        foreach ($gwifs as $fif => $dif) {
+                                                                            echo "<option value=\"{$fif}\">{$dif}</option>\n";
+                                                                        }
+                                                                        ?>
 																		</select>
 																	</td>
 																</tr>
@@ -324,7 +350,9 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Disabled");?></td>
 										<td width="78%" class="vtable">
-											<input name="disabled" type="checkbox" id="disabled" value="yes" <?php if ($pconfig['disabled']) echo "checked=\"checked\""; ?> />
+											<input name="disabled" type="checkbox" id="disabled" value="yes" <?php if ($pconfig['disabled']) {
+                                                echo "checked=\"checked\"";
+} ?> />
 											<strong><?=gettext("Disable this static route");?></strong><br />
 											<span class="vexpl"><?=gettext("Set this option to disable this static route without removing it from the list.");?></span>
 										</td>
@@ -340,10 +368,13 @@ include("head.inc");
 										<td width="22%" valign="top">&nbsp;</td>
 										<td width="78%">
 											<input id="save" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-											<input id="cancel" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-											<?php if (isset($id) && $a_routes[$id]): ?>
+											<input id="cancel" type="button" class="btn btn-default" value="<?=gettext("Cancel");
+?>" onclick="window.location.href='<?=$referer;?>'" />
+											<?php if (isset($id) && $a_routes[$id]) :
+?>
 												<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-											<?php endif; ?>
+											<?php
+endif; ?>
 										</td>
 									</tr>
 								</table>
@@ -432,4 +463,4 @@ include("head.inc");
 		var oTextbox1 = new AutoSuggestControl(document.getElementById("network"), new StateSuggestions(addressarray));
 	//]]>
 	</script>
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

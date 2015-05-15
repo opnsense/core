@@ -33,11 +33,11 @@ require_once("filter.inc");
 require_once("shaper.inc");
 
 if (!is_array($config['staticroutes'])) {
-	$config['staticroutes'] = array();
+    $config['staticroutes'] = array();
 }
 
 if (!is_array($config['staticroutes']['route'])) {
-	$config['staticroutes']['route'] = array();
+    $config['staticroutes']['route'] = array();
 }
 
 $a_routes = &$config['staticroutes']['route'];
@@ -45,147 +45,158 @@ $a_gateways = return_gateways_array(true, true, true);
 $changedesc_prefix = gettext("Static Routes") . ": ";
 
 if ($_POST) {
+    $pconfig = $_POST;
 
-	$pconfig = $_POST;
+    if ($_POST['apply']) {
+        $retval = 0;
 
-	if ($_POST['apply']) {
+        if (file_exists('/tmp/.system_routes.apply')) {
+            $toapplylist = unserialize(file_get_contents('/tmp/.system_routes.apply'));
+            foreach ($toapplylist as $toapply) {
+                mwexec("{$toapply}");
+            }
 
-		$retval = 0;
+            @unlink('/tmp/.system_routes.apply');
+        }
 
-		if (file_exists('/tmp/.system_routes.apply')) {
-			$toapplylist = unserialize(file_get_contents('/tmp/.system_routes.apply'));
-			foreach ($toapplylist as $toapply) {
-				mwexec("{$toapply}");
-			}
+        $retval = system_routing_configure();
+        $retval |= filter_configure();
+        /* reconfigure our gateway monitor */
+        setup_gateways_monitor();
 
-			@unlink('/tmp/.system_routes.apply');
-		}
-
-		$retval = system_routing_configure();
-		$retval |= filter_configure();
-		/* reconfigure our gateway monitor */
-		setup_gateways_monitor();
-
-		$savemsg = get_std_save_message($retval);
-		if ($retval == 0)
-			clear_subsystem_dirty('staticroutes');
-	}
+        $savemsg = get_std_save_message($retval);
+        if ($retval == 0) {
+            clear_subsystem_dirty('staticroutes');
+        }
+    }
 }
 
-function delete_static_route($id) {
-	global $config, $a_routes, $changedesc_prefix;
+function delete_static_route($id)
+{
+    global $config, $a_routes, $changedesc_prefix;
 
-	if (!isset($a_routes[$id]))
-		return;
+    if (!isset($a_routes[$id])) {
+        return;
+    }
 
-	$targets = array();
-	if (is_alias($a_routes[$id]['network'])) {
-		foreach (filter_expand_alias_array($a_routes[$id]['network']) as $tgt) {
-			if (is_ipaddrv4($tgt))
-				$tgt .= "/32";
-			else if (is_ipaddrv6($tgt))
-				$tgt .= "/128";
-			if (!is_subnet($tgt))
-				continue;
-			$targets[] = $tgt;
-		}
-	} else {
-		$targets[] = $a_routes[$id]['network'];
-	}
+    $targets = array();
+    if (is_alias($a_routes[$id]['network'])) {
+        foreach (filter_expand_alias_array($a_routes[$id]['network']) as $tgt) {
+            if (is_ipaddrv4($tgt)) {
+                $tgt .= "/32";
+            } elseif (is_ipaddrv6($tgt)) {
+                $tgt .= "/128";
+            }
+            if (!is_subnet($tgt)) {
+                continue;
+            }
+            $targets[] = $tgt;
+        }
+    } else {
+        $targets[] = $a_routes[$id]['network'];
+    }
 
-	foreach ($targets as $tgt) {
-		$family = (is_subnetv6($tgt) ? "-inet6" : "-inet");
-		mwexec("/sbin/route delete {$family} " . escapeshellarg($tgt));
-	}
+    foreach ($targets as $tgt) {
+        $family = (is_subnetv6($tgt) ? "-inet6" : "-inet");
+        mwexec("/sbin/route delete {$family} " . escapeshellarg($tgt));
+    }
 
-	unset($targets);
+    unset($targets);
 }
 
 if ($_GET['act'] == "del") {
-	if ($a_routes[$_GET['id']]) {
-		$changedesc = $changedesc_prefix . gettext("removed route to") . " " . $a_routes[$_GET['id']]['network'];
-		delete_static_route($_GET['id']);
-		unset($a_routes[$_GET['id']]);
-		write_config($changedesc);
-		header("Location: system_routes.php");
-		exit;
-	}
+    if ($a_routes[$_GET['id']]) {
+        $changedesc = $changedesc_prefix . gettext("removed route to") . " " . $a_routes[$_GET['id']]['network'];
+        delete_static_route($_GET['id']);
+        unset($a_routes[$_GET['id']]);
+        write_config($changedesc);
+        header("Location: system_routes.php");
+        exit;
+    }
 }
 
 if (isset($_POST['del_x'])) {
-	/* delete selected routes */
-	if (is_array($_POST['route']) && count($_POST['route'])) {
-		$changedesc = $changedesc_prefix . gettext("removed route to");
-		foreach ($_POST['route'] as $routei) {
-			$changedesc .= " " . $a_routes[$routei]['network'];
-			delete_static_route($routei);
-			unset($a_routes[$routei]);
-		}
-		write_config($changedesc);
-		header("Location: system_routes.php");
-		exit;
-	}
+    /* delete selected routes */
+    if (is_array($_POST['route']) && count($_POST['route'])) {
+        $changedesc = $changedesc_prefix . gettext("removed route to");
+        foreach ($_POST['route'] as $routei) {
+            $changedesc .= " " . $a_routes[$routei]['network'];
+            delete_static_route($routei);
+            unset($a_routes[$routei]);
+        }
+        write_config($changedesc);
+        header("Location: system_routes.php");
+        exit;
+    }
 
-} else if ($_GET['act'] == "toggle") {
-	if ($a_routes[$_GET['id']]) {
-		if(isset($a_routes[$_GET['id']]['disabled'])) {
-			unset($a_routes[$_GET['id']]['disabled']);
-			$changedesc = $changedesc_prefix . gettext("enabled route to") . " " . $a_routes[$id]['network'];
-		} else {
-			delete_static_route($_GET['id']);
-			$a_routes[$_GET['id']]['disabled'] = true;
-			$changedesc = $changedesc_prefix . gettext("disabled route to") . " " . $a_routes[$id]['network'];
-		}
+} elseif ($_GET['act'] == "toggle") {
+    if ($a_routes[$_GET['id']]) {
+        if (isset($a_routes[$_GET['id']]['disabled'])) {
+            unset($a_routes[$_GET['id']]['disabled']);
+            $changedesc = $changedesc_prefix . gettext("enabled route to") . " " . $a_routes[$id]['network'];
+        } else {
+            delete_static_route($_GET['id']);
+            $a_routes[$_GET['id']]['disabled'] = true;
+            $changedesc = $changedesc_prefix . gettext("disabled route to") . " " . $a_routes[$id]['network'];
+        }
 
-		if (write_config($changedesc))
-			mark_subsystem_dirty('staticroutes');
-		header("Location: system_routes.php");
-		exit;
-	}
+        if (write_config($changedesc)) {
+            mark_subsystem_dirty('staticroutes');
+        }
+        header("Location: system_routes.php");
+        exit;
+    }
 } else {
-	/* yuck - IE won't send value attributes for image buttons, while Mozilla does - so we use .x/.y to find move button clicks instead... */
-	unset($movebtn);
-	foreach ($_POST as $pn => $pd) {
-		if (preg_match("/move_(\d+)_x/", $pn, $matches)) {
-			$movebtn = $matches[1];
-			break;
-		}
-	}
-	/* move selected routes before this route */
-	if (isset($movebtn) && is_array($_POST['route']) && count($_POST['route'])) {
-		$a_routes_new = array();
+    /* yuck - IE won't send value attributes for image buttons, while Mozilla does - so we use .x/.y to find move button clicks instead... */
+    unset($movebtn);
+    foreach ($_POST as $pn => $pd) {
+        if (preg_match("/move_(\d+)_x/", $pn, $matches)) {
+            $movebtn = $matches[1];
+            break;
+        }
+    }
+    /* move selected routes before this route */
+    if (isset($movebtn) && is_array($_POST['route']) && count($_POST['route'])) {
+        $a_routes_new = array();
 
-		/* copy all routes < $movebtn and not selected */
-		for ($i = 0; $i < $movebtn; $i++) {
-			if (!in_array($i, $_POST['route']))
-				$a_routes_new[] = $a_routes[$i];
-		}
+        /* copy all routes < $movebtn and not selected */
+        for ($i = 0; $i < $movebtn; $i++) {
+            if (!in_array($i, $_POST['route'])) {
+                $a_routes_new[] = $a_routes[$i];
+            }
+        }
 
-		/* copy all selected routes */
-		for ($i = 0; $i < count($a_routes); $i++) {
-			if ($i == $movebtn)
-				continue;
-			if (in_array($i, $_POST['route']))
-				$a_routes_new[] = $a_routes[$i];
-		}
+        /* copy all selected routes */
+        for ($i = 0; $i < count($a_routes); $i++) {
+            if ($i == $movebtn) {
+                continue;
+            }
+            if (in_array($i, $_POST['route'])) {
+                $a_routes_new[] = $a_routes[$i];
+            }
+        }
 
-		/* copy $movebtn route */
-		if ($movebtn < count($a_routes))
-			$a_routes_new[] = $a_routes[$movebtn];
+        /* copy $movebtn route */
+        if ($movebtn < count($a_routes)) {
+            $a_routes_new[] = $a_routes[$movebtn];
+        }
 
-		/* copy all routes > $movebtn and not selected */
-		for ($i = $movebtn+1; $i < count($a_routes); $i++) {
-			if (!in_array($i, $_POST['route']))
-				$a_routes_new[] = $a_routes[$i];
-		}
-		if (count($a_routes_new) > 0)
-			$a_routes = $a_routes_new;
+        /* copy all routes > $movebtn and not selected */
+        for ($i = $movebtn+1; $i < count($a_routes); $i++) {
+            if (!in_array($i, $_POST['route'])) {
+                $a_routes_new[] = $a_routes[$i];
+            }
+        }
+        if (count($a_routes_new) > 0) {
+            $a_routes = $a_routes_new;
+        }
 
-		if (write_config())
-			mark_subsystem_dirty('staticroutes');
-		header("Location: system_routes.php");
-		exit;
-	}
+        if (write_config()) {
+            mark_subsystem_dirty('staticroutes');
+        }
+        header("Location: system_routes.php");
+        exit;
+    }
 }
 
 $pgtitle = array(gettext("System"),gettext("Static Routes"));
@@ -194,7 +205,7 @@ $shortcut_section = "routing";
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>'Add', 'href'=>'system_routes_edit.php'),
+    array('label'=>'Add', 'href'=>'system_routes_edit.php'),
 );
 
 
@@ -209,10 +220,14 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
-				<?php if (is_subsystem_dirty('staticroutes')): ?><p>
+				<?php if ($savemsg) {
+                    print_info_box($savemsg);
+} ?>
+				<?php if (is_subsystem_dirty('staticroutes')) :
+?><p>
 				<?php print_info_box_np(sprintf(gettext("The static route configuration has been changed.%sYou must apply the changes in order for them to take effect."), "<br />"));?><br /></p>
-				<?php endif; ?>
+				<?php
+endif; ?>
 
 			    <section class="col-xs-12">
 
@@ -239,50 +254,68 @@ $main_buttons = array(
 
 										</td>
 									</tr>
-									<?php $i = 0; foreach ($a_routes as $route): ?>
+									<?php $i = 0; foreach ($a_routes as $route) :
+?>
 									<tr valign="top" id="fr<?=$i;?>">
 									<?php
-										$iconfn = "glyphicon glyphicon-play text-success";
-										if (isset($route['disabled'])) {
-											$textss = "<span class=\"gray\">";
-											$textse = "</span>";
-											$iconfn .= "glyphicon glyphicon-play text-muted";
-										} else
-											$textss = $textse = "";
-									?>
+                                        $iconfn = "glyphicon glyphicon-play text-success";
+                                    if (isset($route['disabled'])) {
+                                        $textss = "<span class=\"gray\">";
+                                        $textse = "</span>";
+                                        $iconfn .= "glyphicon glyphicon-play text-muted";
+                                    } else {
+                                        $textss = $textse = "";
+                                    }
+                                    ?>
 										<td class="listt">
-											<input type="checkbox" id="frc<?=$i;?>" name="route[]" value="<?=$i;?>" onclick="fr_bgcolor('<?=$i;?>')" />
+											<input type="checkbox" id="frc<?=$i;
+?>" name="route[]" value="<?=$i;
+?>" onclick="fr_bgcolor('<?=$i;?>')" />
 										</td>
 										<td class="listt" align="center">
 											<a href="?act=toggle&amp;id=<?=$i;?>">
-												<span class="<?=$iconfn;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" alt="icon"></span>
+												<span class="<?=$iconfn;
+?>" title="<?=gettext("click to toggle enabled/disabled status");?>" alt="icon"></span>
 											</a>
 										</td>
-										<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_routes_edit.php?id=<?=$i;?>';">
-											<?=$textss;?><?=strtolower($route['network']);?><?=$textse;?>
+										<td class="listlr" onclick="fr_toggle(<?=$i;
+?>)" id="frd<?=$i;
+?>" ondblclick="document.location='system_routes_edit.php?id=<?=$i;?>';">
+											<?=$textss;
+?><?=strtolower($route['network']);
+?><?=$textse;?>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_routes_edit.php?id=<?=$i;?>';">
+										<td class="listr" onclick="fr_toggle(<?=$i;
+?>)" id="frd<?=$i;
+?>" ondblclick="document.location='system_routes_edit.php?id=<?=$i;?>';">
 											<?=$textss;?>
 											<?php
-												echo htmlentities($a_gateways[$route['gateway']]['name']) . " - " . htmlentities($a_gateways[$route['gateway']]['gateway']);
-											?>
+                                                echo htmlentities($a_gateways[$route['gateway']]['name']) . " - " . htmlentities($a_gateways[$route['gateway']]['gateway']);
+                                            ?>
 											<?=$textse;?>
 										</td>
-										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='system_routes_edit.php?id=<?=$i;?>';">
+										<td class="listr" onclick="fr_toggle(<?=$i;
+?>)" id="frd<?=$i;
+?>" ondblclick="document.location='system_routes_edit.php?id=<?=$i;?>';">
 											<?=$textss;?>
 											<?php
-												echo convert_friendly_interface_to_friendly_descr($a_gateways[$route['gateway']]['friendlyiface']) . " ";
-											?>
+                                                echo convert_friendly_interface_to_friendly_descr($a_gateways[$route['gateway']]['friendlyiface']) . " ";
+                                            ?>
 											<?=$textse;?>
 										</td>
-										<td class="listbg" onclick="fr_toggle(<?=$i;?>)" ondblclick="document.location='system_routes_edit.php?id=<?=$i;?>';">
-											<?=$textss;?><?=htmlspecialchars($route['descr']);?>&nbsp;<?=$textse;?>
+										<td class="listbg" onclick="fr_toggle(<?=$i;
+?>)" ondblclick="document.location='system_routes_edit.php?id=<?=$i;?>';">
+											<?=$textss;
+?><?=htmlspecialchars($route['descr']);
+?>&nbsp;<?=$textse;?>
 										</td>
 										<td class="list nowrap" valign="middle">
 											<table border="0" cellspacing="0" cellpadding="1" summary="move">
 												<tr>
 													<td align="center" valign="middle">
-														<button onmouseover="fr_insline(<?=$i;?>, true)" onmouseout="fr_insline(<?=$i;?>, false)" name="move_<?=$i;?>"
+														<button onmouseover="fr_insline(<?=$i;
+?>, true)" onmouseout="fr_insline(<?=$i;
+?>, false)" name="move_<?=$i;?>"
 															class="btn btn-default btn-xs"
 															title="<?=gettext("move selected rules before this rule");?>"
 															type="submit"><span class="glyphicon glyphicon-arrow-left"></span></button>
@@ -295,7 +328,8 @@ $main_buttons = array(
 												</tr>
 												<tr>
 													<td align="center" valign="middle">
-														<a class="btn btn-default btn-xs" href="system_routes.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')">
+														<a class="btn btn-default btn-xs" href="system_routes.php?act=del&amp;id=<?=$i;
+?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')">
 															<span class="glyphicon glyphicon-remove" title="<?=gettext("delete rule");?>" alt="delete"></span>
 														</a>
 													</td>
@@ -308,7 +342,9 @@ $main_buttons = array(
 											</table>
 										</td>
 									</tr>
-									<?php $i++; endforeach; ?>
+									<?php $i++;
+
+endforeach; ?>
 									<tr>
 										<td class="list" colspan="6"></td>
 										<td class="list nowrap" valign="middle">
@@ -316,18 +352,18 @@ $main_buttons = array(
 												<tr>
 													<td>
 				<?php
-													if ($i == 0):
-				?>
-														<span class="glyphicon glyphicon-arrow-left text-muted"
-															title="<?=gettext("move selected routes to end");?>" alt="move" />
+                if ($i == 0) :
+                ?>
+                    <span class="glyphicon glyphicon-arrow-left text-muted"
+                        title="<?=gettext("move selected routes to end");?>" alt="move" />
 				<?php
-													else:
-				?>
+                else :
+                ?>
 														<button name="move_<?=$i;?>" type="submit" class="btn btn-default btn-xs"
 															title="<?=gettext("move selected routes to end");?>"><span class="glyphicon glyphicon-arrow-left"></span></button>
 				<?php
-													endif;
-				?>
+                endif;
+                ?>
 													</td>
 													<td>
 														<a href="system_routes_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
@@ -336,20 +372,20 @@ $main_buttons = array(
 												<tr>
 													<td>
 				<?php
-													if ($i == 0):
-				?>
-														<span class="btn btn-default btn-xs">
-															<span class="glyphicon glyphicon-remove text-muted"></span>
-														</span>
+                if ($i == 0) :
+                ?>
+                    <span class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-remove text-muted"></span>
+                    </span>
 
 				<?php
-													else:
-				?>
+                else :
+                ?>
 														<button name="del_x" type="submit" title="<?=gettext("delete selected routes");?>"
 															onclick="return confirm('<?=gettext("Do you really want to delete the selected routes?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 				<?php
-													endif;
-				?>
+                endif;
+                ?>
 													</td>
 												</tr>
 											</table>
@@ -357,7 +393,8 @@ $main_buttons = array(
 									</tr>
 								</table>
 	                        </div>
-	                        <p><b><?=gettext("Note:");?></b>  <?=gettext("Do not enter static routes for networks assigned on any interface of this firewall.  Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.");?></p>
+	                        <p><b><?=gettext("Note:");
+?></b>  <?=gettext("Do not enter static routes for networks assigned on any interface of this firewall.  Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.");?></p>
 
 	                        </form>
 				    </div>
@@ -368,4 +405,4 @@ $main_buttons = array(
 	</section>
 
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");
