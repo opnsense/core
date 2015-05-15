@@ -92,6 +92,6 @@ class Backend
 
         }
 
-        return $resp;
+        return  str_replace($endOfStream, "", $resp);
     }
 }
