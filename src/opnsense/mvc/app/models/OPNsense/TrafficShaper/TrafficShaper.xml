@@ -1,0 +1,45 @@
+<model>
+    <mount>//OPNsense/TrafficShaper</mount>
+    <description>
+        OPNsense traffic shaper
+    </description>
+    <items>
+        <pipe type="ArrayField">
+            <number type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4096</MaximumValue>
+                <ValidationMessage></ValidationMessage>
+                <Required>Y</Required>
+            </number>
+            <bandwidth type="TextField">
+                <Required>Y</Required>
+                <default>1024</default>
+            </bandwidth>
+            <bandwidthMetric type="OptionField">
+                <Required>Y</Required>
+                <default>Kbit</default>
+                <OptionValues>
+                    <bit>bit/s</bit>
+                    <Kbit>Kbit/s</Kbit>
+                    <Mbit>Mbit/s</Mbit>
+                </OptionValues>
+                <ValidationMessage>Bandwidth metric should be one of bit,Kbit,Mbit</ValidationMessage>
+            </bandwidthMetric>
+            <queue type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>100</MaximumValue>
+            </queue>
+            <queueMetric type="OptionField">
+                <Required>N</Required>
+                <default>slots</default>
+                <OptionValues>
+                    <slots>Slots</slots>
+                    <bit>bit/s</bit>
+                    <Kbit>Kbit/s</Kbit>
+                    <Mbit>Mbit/s</Mbit>
+                </OptionValues>
+            </queueMetric>
+        </pipe>
+    </items>
+</model>
