@@ -47,6 +47,14 @@ class ApiControllerBase extends Controller
     }
 
     /**
+     * Wrap close session, for long running operations.
+     */
+    protected function sessionClose()
+    {
+        session_write_close();
+    }
+
+    /**
      * before routing event
      * @param Dispatcher $dispatcher
      * @return null|bool
@@ -82,7 +90,7 @@ class ApiControllerBase extends Controller
 
     }
 
-        /**
+    /**
      * process API results, serialize return data to json.
      * @param $dispatcher
      * @return string json data

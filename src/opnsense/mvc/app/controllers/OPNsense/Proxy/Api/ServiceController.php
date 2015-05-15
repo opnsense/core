@@ -106,7 +106,7 @@ class ServiceController extends ApiControllerBase
     public function reconfigureAction()
     {
         // close session for long running action
-        session_write_close();
+        $this->sessionClose();
 
         $mdlProxy = new Proxy();
         $backend = new Backend();
