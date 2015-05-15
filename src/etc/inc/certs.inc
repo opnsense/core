@@ -515,69 +515,101 @@ function cert_get_serial($str_crt, $decode = true) {
 		return NULL;
 }
 
-function is_user_cert($certref) {
+function is_user_cert($certref)
+{
 	global $config;
-	if (!is_array($config['system']['user']))
+
+	if (!isset($config['system']['user'])) {
 		return;
+	}
+
 	foreach ($config['system']['user'] as $user) {
-		if (!is_array($user['cert']))
+		if (!is_array($user['cert'])) {
 			continue;
+		}
 		foreach ($user['cert'] as $cert) {
-			if ($certref == $cert)
+			if ($certref == $cert) {
 				return true;
+			}
 		}
 	}
+
 	return false;
 }
 
-function is_openvpn_server_cert($certref) {
+function is_openvpn_server_cert($certref)
+{
 	global $config;
-	if (!is_array($config['openvpn']['openvpn-server']))
+
+	if (!isset($config['openvpn']['openvpn-server'])) {
 		return;
+	}
+
 	foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
-		if ($ovpns['certref'] == $certref)
+		if ($ovpns['certref'] == $certref) {
 			return true;
+		}
 	}
+
 	return false;
 }
 
-function is_openvpn_client_cert($certref) {
+function is_openvpn_client_cert($certref)
+{
 	global $config;
-	if (!is_array($config['openvpn']['openvpn-client']))
+
+	if (!isset($config['openvpn']['openvpn-client'])) {
 		return;
+	}
+
 	foreach ($config['openvpn']['openvpn-client'] as $ovpnc) {
-		if ($ovpnc['certref'] == $certref)
+		if ($ovpnc['certref'] == $certref) {
 			return true;
+		}
 	}
+
 	return false;
 }
 
-function is_ipsec_cert($certref) {
+function is_ipsec_cert($certref)
+{
 	global $config;
-	if (!is_array($config['ipsec']['phase1']))
+
+	if (!isset($config['ipsec']['phase1'])) {
 		return;
+	}
+
 	foreach ($config['ipsec']['phase1'] as $ipsec) {
-		if ($ipsec['certref'] == $certref)
+		if ($ipsec['certref'] == $certref) {
 			return true;
+		}
 	}
+
 	return false;
 }
 
-function is_webgui_cert($certref) {
+function is_webgui_cert($certref)
+{
 	global $config;
-	if (($config['system']['webgui']['ssl-certref'] == $certref)
-		&& ($config['system']['webgui']['protocol'] != "http"))
-		return true;
+
+	return $config['system']['webgui']['ssl-certref'] == $certref &&
+		$config['system']['webgui']['protocol'] != 'http';
 }
 
-function is_captiveportal_cert($certref) {
+function is_captiveportal_cert($certref)
+{
 	global $config;
-	if (!is_array($config['captiveportal']))
+
+	if (!issset($config['captiveportal'])) {
 		return;
-	foreach ($config['captiveportal'] as $portal) {
-		if (isset($portal['enable']) && isset($portal['httpslogin']) && ($portal['certref'] == $certref))
-			return true;
 	}
+
+	foreach ($config['captiveportal'] as $portal) {
+		if (isset($portal['enable']) && isset($portal['httpslogin']) && ($portal['certref'] == $certref)) {
+			return true;
+		}
+	}
+
 	return false;
 }
 
