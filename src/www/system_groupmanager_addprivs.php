@@ -26,15 +26,18 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function cpusercmp($a, $b) {
-	return strcasecmp($a['name'], $b['name']);
+function cpusercmp($a, $b)
+{
+    return strcasecmp($a['name'], $b['name']);
 }
 
-function admin_groups_sort() {
+function admin_groups_sort()
+{
         global $config;
 
-        if (!is_array($config['system']['group']))
-                return;
+    if (!is_array($config['system']['group'])) {
+            return;
+    }
 
         usort($config['system']['group'], "cpusercmp");
 }
@@ -43,69 +46,74 @@ require_once("guiconfig.inc");
 
 $pgtitle = array(gettext("System"),gettext("Group manager"),gettext("Add privileges"));
 
-if (is_numericint($_GET['groupid']))
-	$groupid = $_GET['groupid'];
-if (isset($_POST['groupid']) && is_numericint($_POST['groupid']))
-	$groupid = $_POST['groupid'];
+if (is_numericint($_GET['groupid'])) {
+    $groupid = $_GET['groupid'];
+}
+if (isset($_POST['groupid']) && is_numericint($_POST['groupid'])) {
+    $groupid = $_POST['groupid'];
+}
 
 $a_group = & $config['system']['group'][$groupid];
 
 if (!is_array($a_group)) {
-	redirectHeader("system_groupmanager.php?id={$groupid}");
-	exit;
+    redirectHeader("system_groupmanager.php?id={$groupid}");
+    exit;
 }
 
-if (!is_array($a_group['priv']))
-	$a_group['priv'] = array();
+if (!is_array($a_group['priv'])) {
+    $a_group['priv'] = array();
+}
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    $reqdfields = explode(" ", "sysprivs");
+    $reqdfieldsn = array(gettext("Selected priveleges"));
 
-	/* input validation */
-	$reqdfields = explode(" ", "sysprivs");
-	$reqdfieldsn = array(gettext("Selected priveleges"));
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    /* if this is an AJAX caller then handle via JSON */
+    if (isAjax() && is_array($input_errors)) {
+        input_errors2Ajax($input_errors);
+        exit;
+    }
 
-	/* if this is an AJAX caller then handle via JSON */
-	if(isAjax() && is_array($input_errors)) {
-		input_errors2Ajax($input_errors);
-		exit;
-	}
+    if (!$input_errors) {
+        if (!is_array($pconfig['sysprivs'])) {
+            $pconfig['sysprivs'] = array();
+        }
 
-	if (!$input_errors) {
+        if (!count($a_group['priv'])) {
+            $a_group['priv'] = $pconfig['sysprivs'];
+        } else {
+            $a_group['priv'] = array_merge($a_group['priv'], $pconfig['sysprivs']);
+        }
 
-		if (!is_array($pconfig['sysprivs']))
-			$pconfig['sysprivs'] = array();
+        if (is_array($a_group['member'])) {
+            foreach ($a_group['member'] as $uid) {
+                $user = getUserEntryByUID($uid);
+                if ($user) {
+                    local_user_set($user);
+                }
+            }
+        }
 
-		if (!count($a_group['priv']))
-			$a_group['priv'] = $pconfig['sysprivs'];
-		else
-			$a_group['priv'] = array_merge($a_group['priv'], $pconfig['sysprivs']);
+        admin_groups_sort();
 
-		if (is_array($a_group['member'])) {
-			foreach ($a_group['member'] as $uid) {
-				$user = getUserEntryByUID($uid);
-				if ($user)
-					local_user_set($user);
-			}
-		}
+        $retval = write_config();
+        $savemsg = get_std_save_message($retval);
 
-		admin_groups_sort();
-
-		$retval = write_config();
-		$savemsg = get_std_save_message($retval);
-
-		redirectHeader("system_groupmanager.php?act=edit&amp;id={$groupid}");
-		exit;
-	}
+        redirectHeader("system_groupmanager.php?act=edit&amp;id={$groupid}");
+        exit;
+    }
 }
 
 /* if ajax is calling, give them an update message */
-if(isAjax())
-	print_info_box_np($savemsg);
+if (isAjax()) {
+    print_info_box_np($savemsg);
+}
 
 include("head.inc");
 ?>
@@ -118,18 +126,19 @@ include("head.inc");
 <?php
 
 if (is_array($priv_list)) {
-	$id = 0;
+    $id = 0;
 
-	$jdescs = "var descs = new Array();\n";
-	foreach($priv_list as $pname => $pdata) {
-		if (in_array($pname, $a_group['priv']))
-			continue;
-		$desc = addslashes($pdata['descr']);
-		$jdescs .= "descs[{$id}] = '{$desc}';\n";
-		$id++;
-	}
+    $jdescs = "var descs = new Array();\n";
+    foreach ($priv_list as $pname => $pdata) {
+        if (in_array($pname, $a_group['priv'])) {
+            continue;
+        }
+        $desc = addslashes($pdata['descr']);
+        $jdescs .= "descs[{$id}] = '{$desc}';\n";
+        $id++;
+    }
 
-	echo $jdescs;
+    echo $jdescs;
 }
 
 ?>
@@ -146,21 +155,23 @@ function update_description() {
 	<div class="container-fluid">
 		<div class="row">
 			<?php
-				if ($input_errors)
-					print_input_errors($input_errors);
-				if ($savemsg)
-					print_info_box($savemsg);
-			?>
+            if ($input_errors) {
+                print_input_errors($input_errors);
+            }
+            if ($savemsg) {
+                print_info_box($savemsg);
+            }
+            ?>
 			<section class="col-xs-12">
 
 						<?php
-							$tab_array = array();
-							$tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
-							$tab_array[] = array(gettext("Groups"), true, "system_groupmanager.php");
-							$tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
-							$tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
-							display_top_tabs($tab_array);
-						?>
+                            $tab_array = array();
+                            $tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
+                            $tab_array[] = array(gettext("Groups"), true, "system_groupmanager.php");
+                            $tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
+                            $tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
+                            display_top_tabs($tab_array);
+                        ?>
 						<div class="tab-content content-box col-xs-12">
 
 						<form action="system_groupmanager_addprivs.php" method="post" name="iform" id="iform">
@@ -170,12 +181,15 @@ function update_description() {
 									<td width="78%" class="vtable">
 										<select name="sysprivs[]" id="sysprivs" class="formselect" onchange="update_description();" multiple="multiple" size="35">
 											<?php
-												foreach($priv_list as $pname => $pdata):
-													if (in_array($pname, $a_group['priv']))
-														continue;
-											?>
-											<option value="<?=$pname;?>"><?=$pdata['name'];?></option>
-											<?php endforeach; ?>
+                                            foreach ($priv_list as $pname => $pdata) :
+                                                if (in_array($pname, $a_group['priv'])) {
+                                                    continue;
+                                                }
+                                            ?>
+											<option value="<?=$pname;
+?>"><?=$pdata['name'];?></option>
+											<?php
+                                            endforeach; ?>
 										</select>
 										<br />
 										<?=gettext("Hold down CTRL (pc)/COMMAND (mac) key to select multiple items");?>
@@ -205,9 +219,11 @@ function update_description() {
 									<td width="78%">
 										<input id="submitt"  name="Submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>" />
 										<input id="cancelbutton" class="formbtn btn btn-default" type="button" value="<?=gettext("Cancel");?>" onclick="history.back()" />
-										<?php if (isset($groupid)): ?>
+										<?php if (isset($groupid)) :
+?>
 										<input name="groupid" type="hidden" value="<?=htmlspecialchars($groupid);?>" />
-										<?php endif; ?>
+										<?php
+endif; ?>
 									</td>
 								</tr>
 							</table>

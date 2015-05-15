@@ -43,56 +43,56 @@ $shell_output = array();
 $shell = new OPNsense\Core\Shell();
 
 if (file_exists($file_pkg_status)) {
-		$json = file_get_contents($file_pkg_status);
-		$pkg_status = json_decode($json,true);
-		if($pkg_status["updates"] == "1" && $pkg_status["upgrade_packages"][0]["name"] == "pkg") {
-			$package="pkg";
-		} else {
-			$package="all";
-		}
+        $json = file_get_contents($file_pkg_status);
+        $pkg_status = json_decode($json, true);
+    if ($pkg_status["updates"] == "1" && $pkg_status["upgrade_packages"][0]["name"] == "pkg") {
+        $package="pkg";
+    } else {
+        $package="all";
+    }
 }
 
-if($_POST['action'] == 'pkg_upgrade') {
-	// execute shell command and collect (only valid) info into named array
-	$cmd = '/usr/sbin/daemon -f /usr/local/opnsense/scripts/pkg_upgrade.sh ' . escapeshellarg($package);
-	$shell->exec($cmd, false, false, $shell_output);
-	exit;
+if ($_POST['action'] == 'pkg_upgrade') {
+    // execute shell command and collect (only valid) info into named array
+    $cmd = '/usr/sbin/daemon -f /usr/local/opnsense/scripts/pkg_upgrade.sh ' . escapeshellarg($package);
+    $shell->exec($cmd, false, false, $shell_output);
+    exit;
 }
 
-if($_POST['action'] == 'pkg_update') {
-	// execute shell command and collect (only valid) info into named array
-	$shell->exec('/usr/local/opnsense/scripts/pkg_updatecheck.sh', false, false, $shell_output);
+if ($_POST['action'] == 'pkg_update') {
+    // execute shell command and collect (only valid) info into named array
+    $shell->exec('/usr/local/opnsense/scripts/pkg_updatecheck.sh', false, false, $shell_output);
 }
 
-if($_POST['action'] == 'update_status' ) {
-	if (file_exists($file_upgrade_progress)) {
-		$content = file_get_contents($file_upgrade_progress);
-		echo $content;
-	}
-	exit;
+if ($_POST['action'] == 'update_status') {
+    if (file_exists($file_upgrade_progress)) {
+        $content = file_get_contents($file_upgrade_progress);
+        echo $content;
+    }
+    exit;
 }
 
-if($_REQUEST['getupdatestatus']) {
-	if (file_exists($file_pkg_status)) {
-		if ($pkg_status["connection"]=="error") {
-			echo "<span class='text-danger'>".gettext("Connection Error")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
-		} elseif ($pkg_status["repository"]=="error") {
-			echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
-		} elseif  ($pkg_status["updates"]=="0") {
-			echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
-		} elseif ( $pkg_status["updates"] == "1" && $pkg_status["upgrade_packages"][0]["name"] == "pkg" ) {
-			echo "<span class='text-danger'>".gettext("There is a mandatory update for the package manager.").
-					"</span><span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span><br />".
-					"<span class='text-danger'>".gettext("Upgrade pkg and recheck, there maybe other updates available.").
-					"</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now").
-					"</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
-		} else {
-			echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now")."</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
-		}
-	} else {
-		echo "<span class='text-danger'>".gettext("Current status is unknown")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
-	}
-	exit;
+if ($_REQUEST['getupdatestatus']) {
+    if (file_exists($file_pkg_status)) {
+        if ($pkg_status["connection"]=="error") {
+            echo "<span class='text-danger'>".gettext("Connection Error")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
+        } elseif ($pkg_status["repository"]=="error") {
+            echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to retry now")."</span>";
+        } elseif ($pkg_status["updates"]=="0") {
+            echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
+        } elseif ($pkg_status["updates"] == "1" && $pkg_status["upgrade_packages"][0]["name"] == "pkg") {
+            echo "<span class='text-danger'>".gettext("There is a mandatory update for the package manager.").
+                    "</span><span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span><br />".
+                    "<span class='text-danger'>".gettext("Upgrade pkg and recheck, there maybe other updates available.").
+                    "</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now").
+                    "</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
+        } else {
+            echo "<span class='text-danger'>".gettext("A total of ").$pkg_status["updates"].gettext(" update(s) are available.")."<span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><span class='btn btn-primary' onclick='upgradenow()'>".gettext("Upgrade Now")."</span>&nbsp;<span class='btn btn-primary' onclick='checkupdate()'>".gettext("Re-Check Now")."</span>";
+        }
+    } else {
+        echo "<span class='text-danger'>".gettext("Current status is unknown")."</span><br/><span class='btn btn-primary' onclick='checkupdate()'>".gettext("Click to check now")."</span>";
+    }
+    exit;
 }
 
 $pgtitle=array(gettext("System"), gettext("Firmware"), gettext("Auto Update"));
@@ -140,7 +140,8 @@ include("head.inc");
 							</td>
 						</tr>
 						<?php if (file_exists($file_pkg_status) && (count($pkg_status['upgrade_packages']) ||
-						    count($pkg_status['new_packages']) || count($pkg_status['reinstall_packages']))) { ?>
+                            count($pkg_status['new_packages']) || count($pkg_status['reinstall_packages']))) {
+?>
 						<tr>
 						</tr>
 							<tr>
@@ -150,58 +151,59 @@ include("head.inc");
 								<td>
 									<div id="upgrades">
 										<?php
-											echo '<table class="table table-striped">';
-												echo '<tr>';
-												echo '<th>Package Name</th>';
-												echo '<th>Current Version</th>';
-												echo '<th>New Version</th>';
-												echo '</tr>';
-											foreach ($pkg_status["upgrade_packages"] as $upgrade_new) {
-												echo '<tr>';
-												echo '<td>';
-												echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
-												echo '</td>';
-												echo '<td>';
-														echo '<span class="text-info"><b>'.$upgrade_new["current_version"].'</b></span><br/>';
-												echo '</td>';
-														echo '<td>';
-														echo '<span class="text-info"><b>'.$upgrade_new["new_version"].'</b></span><br/>';
-														echo '</td>';
-												echo '</tr>';
+                                            echo '<table class="table table-striped">';
+                                                echo '<tr>';
+                                                echo '<th>Package Name</th>';
+                                                echo '<th>Current Version</th>';
+                                                echo '<th>New Version</th>';
+                                                echo '</tr>';
+                                        foreach ($pkg_status["upgrade_packages"] as $upgrade_new) {
+                                            echo '<tr>';
+                                            echo '<td>';
+                                            echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
+                                            echo '</td>';
+                                            echo '<td>';
+                                                    echo '<span class="text-info"><b>'.$upgrade_new["current_version"].'</b></span><br/>';
+                                            echo '</td>';
+                                                    echo '<td>';
+                                                    echo '<span class="text-info"><b>'.$upgrade_new["new_version"].'</b></span><br/>';
+                                                    echo '</td>';
+                                            echo '</tr>';
 
-											}
-											foreach ($pkg_status["new_packages"] as $upgrade_new) {
-												echo '<tr>';
-													echo '<td>';
-														echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
-													echo '</td>';
-													echo '<td>';
-														echo '<span class="text-info"><b>NEW</b></span><br/>';
-													echo '</td>';
-													echo '<td>';
-																echo '<span class="text-info"><b>'.$upgrade_new["version"].'</b></span><br/>';
-													echo '</td>';
-												echo '</tr>';
-											}
-											foreach ($pkg_status["reinstall_packages"] as $upgrade_new) {
-												echo '<tr>';
-													echo '<td>';
-														echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
-													echo '</td>';
-													echo '<td>';
-														echo '<span class="text-info"><b>'.$upgrade_new["version"].'</b></span><br/>';
-													echo '</td>';
-													echo '<td>';
-														echo '<span class="text-info"><b>REINSTALL</b></span><br/>';
-													echo '</td>';
-												echo '</tr>';
-											}
-											echo '</table>';
-										?>
+                                        }
+                                        foreach ($pkg_status["new_packages"] as $upgrade_new) {
+                                            echo '<tr>';
+                                                echo '<td>';
+                                                    echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
+                                                echo '</td>';
+                                                echo '<td>';
+                                                    echo '<span class="text-info"><b>NEW</b></span><br/>';
+                                                echo '</td>';
+                                                echo '<td>';
+                                                            echo '<span class="text-info"><b>'.$upgrade_new["version"].'</b></span><br/>';
+                                                echo '</td>';
+                                            echo '</tr>';
+                                        }
+                                        foreach ($pkg_status["reinstall_packages"] as $upgrade_new) {
+                                            echo '<tr>';
+                                                echo '<td>';
+                                                    echo '<span class="text-info"><b>'.$upgrade_new["name"].'</b></span><br/>';
+                                                echo '</td>';
+                                                echo '<td>';
+                                                    echo '<span class="text-info"><b>'.$upgrade_new["version"].'</b></span><br/>';
+                                                echo '</td>';
+                                                echo '<td>';
+                                                    echo '<span class="text-info"><b>REINSTALL</b></span><br/>';
+                                                echo '</td>';
+                                            echo '</tr>';
+                                        }
+                                            echo '</table>';
+                                        ?>
 									</div>
 								</td>
 							</tr>
-						<?php } // endif ?>
+						<?php
+} // endif ?>
 					</table>
 
 		            </div>
@@ -290,4 +292,4 @@ include("head.inc");
 //]]>
 </script>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

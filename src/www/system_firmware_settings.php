@@ -31,14 +31,15 @@
 require_once('guiconfig.inc');
 
 if ($_POST) {
-	if (!$input_errors) {
-		if($_POST['disablecheck'] == "yes")
-			$config['system']['firmware']['disablecheck'] = true;
-		else
-			unset($config['system']['firmware']['disablecheck']);
+    if (!$input_errors) {
+        if ($_POST['disablecheck'] == "yes") {
+            $config['system']['firmware']['disablecheck'] = true;
+        } else {
+            unset($config['system']['firmware']['disablecheck']);
+        }
 
-		write_config();
-	}
+        write_config();
+    }
 }
 
 $curcfg = $config['system']['firmware'];
@@ -59,8 +60,12 @@ include("head.inc");
 
         <div class="row">
             <?php
-		if ($input_errors) print_input_errors($input_errors);
-		if ($savemsg) print_info_box($savemsg);
+            if ($input_errors) {
+                print_input_errors($input_errors);
+            }
+            if ($savemsg) {
+                print_info_box($savemsg);
+            }
             ?>
             <section class="col-xs-12">
 
@@ -81,7 +86,9 @@ include("head.inc");
 				<tr>
 					<td width="22%" valign="top" class="vncell"><?=gettext("Dashboard check"); ?></td>
 					<td width="78%" class="vtable">
-						<input name="disablecheck" type="checkbox" id="disablecheck" value="yes" <?php if (isset($curcfg['disablecheck'])) echo "checked=\"checked\""; ?> />
+						<input name="disablecheck" type="checkbox" id="disablecheck" value="yes" <?php if (isset($curcfg['disablecheck'])) {
+                            echo "checked=\"checked\"";
+} ?> />
 						<br />
 						<?=gettext("Disable the automatic dashboard auto-update check."); ?>
 					</td>
@@ -107,4 +114,4 @@ include("head.inc");
 </section>
 
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

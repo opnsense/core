@@ -32,130 +32,136 @@ require_once("guiconfig.inc");
 
 $pgtitle = array(gettext("System"), gettext("Group manager"));
 
-if (!is_array($config['system']['group']))
-	$config['system']['group'] = array();
+if (!is_array($config['system']['group'])) {
+    $config['system']['group'] = array();
+}
 
 $a_group = &$config['system']['group'];
 
 unset($id);
-if (isset($_POST['groupid']) && is_numericint($_POST['groupid']))
-	$id = $_POST['groupid'];
+if (isset($_POST['groupid']) && is_numericint($_POST['groupid'])) {
+    $id = $_POST['groupid'];
+}
 
 $act = (isset($_POST['act']) ? $_POST['act'] : '');
 
 if ($act == "delgroup") {
+    if (!isset($id) || !isset($_POST['groupname']) || !isset($a_group[$id]) || ($_POST['groupname'] != $a_group[$id]['name'])) {
+        redirectHeader("system_groupmanager.php");
+        exit;
+    }
 
-	if (!isset($id) || !isset($_POST['groupname']) || !isset($a_group[$id]) || ($_POST['groupname'] != $a_group[$id]['name'])) {
-		redirectHeader("system_groupmanager.php");
-		exit;
-	}
-
-	local_group_del($a_group[$id]);
-	$groupdeleted = $a_group[$id]['name'];
-	unset($a_group[$id]);
-	write_config();
-	$savemsg = gettext("Group")." {$groupdeleted} ".
-		gettext("successfully deleted")."<br />";
+    local_group_del($a_group[$id]);
+    $groupdeleted = $a_group[$id]['name'];
+    unset($a_group[$id]);
+    write_config();
+    $savemsg = gettext("Group")." {$groupdeleted} ".
+        gettext("successfully deleted")."<br />";
 }
 
 if ($act == "delpriv") {
+    if (!isset($id) || !isset($a_group[$id])) {
+        redirectHeader("system_groupmanager.php");
+        exit;
+    }
 
-	if (!isset($id) || !isset($a_group[$id])) {
-		redirectHeader("system_groupmanager.php");
-		exit;
-	}
+    $privdeleted = $priv_list[$a_group[$id]['priv'][$_POST['privid']]]['name'];
+    unset($a_group[$id]['priv'][$_POST['privid']]);
 
-	$privdeleted = $priv_list[$a_group[$id]['priv'][$_POST['privid']]]['name'];
-	unset($a_group[$id]['priv'][$_POST['privid']]);
+    if (is_array($a_group[$id]['member'])) {
+        foreach ($a_group[$id]['member'] as $uid) {
+            $user = getUserEntryByUID($uid);
+            if ($user) {
+                local_user_set($user);
+            }
+        }
+    }
 
-	if (is_array($a_group[$id]['member'])) {
-		foreach ($a_group[$id]['member'] as $uid) {
-			$user = getUserEntryByUID($uid);
-			if ($user)
-				local_user_set($user);
-		}
-	}
-
-	write_config();
-	$act = "edit";
-	$savemsg = gettext("Privilege")." {$privdeleted} ".
-				gettext("successfully deleted")."<br />";
+    write_config();
+    $act = "edit";
+    $savemsg = gettext("Privilege")." {$privdeleted} ".
+                gettext("successfully deleted")."<br />";
 }
 
 if ($act == "edit") {
-	if (isset($id) && isset($a_group[$id])) {
-		$pconfig['name'] = $a_group[$id]['name'];
-		$pconfig['gid'] = $a_group[$id]['gid'];
-		$pconfig['gtype'] = $a_group[$id]['scope'];
-		$pconfig['description'] = $a_group[$id]['description'];
-		$pconfig['members'] = $a_group[$id]['member'];
-		$pconfig['priv'] = $a_group[$id]['priv'];
-	}
+    if (isset($id) && isset($a_group[$id])) {
+        $pconfig['name'] = $a_group[$id]['name'];
+        $pconfig['gid'] = $a_group[$id]['gid'];
+        $pconfig['gtype'] = $a_group[$id]['scope'];
+        $pconfig['description'] = $a_group[$id]['description'];
+        $pconfig['members'] = $a_group[$id]['member'];
+        $pconfig['priv'] = $a_group[$id]['priv'];
+    }
 }
 
 if (isset($_POST['save'])) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    $reqdfields = explode(" ", "groupname");
+    $reqdfieldsn = array(gettext("Group Name"));
 
-	/* input validation */
-	$reqdfields = explode(" ", "groupname");
-	$reqdfieldsn = array(gettext("Group Name"));
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    if (preg_match("/[^a-zA-Z0-9\.\-_ ]/", $_POST['groupname'])) {
+        $input_errors[] = gettext("The group name contains invalid characters.");
+    }
 
-	if (preg_match("/[^a-zA-Z0-9\.\-_ ]/", $_POST['groupname']))
-		$input_errors[] = gettext("The group name contains invalid characters.");
+    if (strlen($_POST['groupname']) > 16) {
+        $input_errors[] = gettext("The group name is longer than 16 characters.");
+    }
 
-	if (strlen($_POST['groupname']) > 16)
-		$input_errors[] = gettext("The group name is longer than 16 characters.");
+    if (!$input_errors && !(isset($id) && $a_group[$id])) {
+        /* make sure there are no dupes */
+        foreach ($a_group as $group) {
+            if ($group['name'] == $_POST['groupname']) {
+                $input_errors[] = gettext("Another entry with the same group name already exists.");
+                break;
+            }
+        }
+    }
 
-	if (!$input_errors && !(isset($id) && $a_group[$id])) {
-		/* make sure there are no dupes */
-		foreach ($a_group as $group) {
-			if ($group['name'] == $_POST['groupname']) {
-				$input_errors[] = gettext("Another entry with the same group name already exists.");
-				break;
-			}
-		}
-	}
+    if (!$input_errors) {
+        $group = array();
+        if (isset($id) && $a_group[$id]) {
+            $group = $a_group[$id];
+        }
 
-	if (!$input_errors) {
-		$group = array();
-		if (isset($id) && $a_group[$id])
-			$group = $a_group[$id];
+        $group['name'] = $_POST['groupname'];
+        $group['description'] = $_POST['description'];
 
-		$group['name'] = $_POST['groupname'];
-		$group['description'] = $_POST['description'];
+        if (empty($_POST['members'])) {
+            unset($group['member']);
+        } elseif ($group['gid'] != 1998) {
+        // all group
+            $group['member'] = $_POST['members'];
+        }
 
-		if (empty($_POST['members']))
-			unset($group['member']);
-		else if ($group['gid'] != 1998) // all group
-			$group['member'] = $_POST['members'];
+        if (isset($id) && $a_group[$id]) {
+            $a_group[$id] = $group;
+        } else {
+            $group['gid'] = $config['system']['nextgid']++;
+            $a_group[] = $group;
+        }
 
-		if (isset($id) && $a_group[$id])
-			$a_group[$id] = $group;
-		else {
-			$group['gid'] = $config['system']['nextgid']++;
-			$a_group[] = $group;
-		}
+        local_group_set($group);
 
-		local_group_set($group);
+        /* Refresh users in this group since their privileges may have changed. */
+        if (is_array($group['member'])) {
+            $a_user = &$config['system']['user'];
+            foreach ($a_user as & $user) {
+                if (in_array($user['uid'], $group['member'])) {
+                    local_user_set($user);
+                }
+            }
+        }
 
-		/* Refresh users in this group since their privileges may have changed. */
-		if (is_array($group['member'])) {
-			$a_user = &$config['system']['user'];
-			foreach ($a_user as & $user) {
-				if (in_array($user['uid'], $group['member']))
-					local_user_set($user);
-			}
-		}
+        write_config();
 
-		write_config();
-
-		header("Location: system_groupmanager.php");
-		exit;
-	}
+        header("Location: system_groupmanager.php");
+        exit;
+    }
 }
 
 include("head.inc");
@@ -229,200 +235,212 @@ function presubmit() {
 			<div class="row">
 
 				<?php
-					if ($input_errors)
-						print_input_errors($input_errors);
-					if ($savemsg)
-						print_info_box($savemsg);
-				?>
+                if ($input_errors) {
+                    print_input_errors($input_errors);
+                }
+                if ($savemsg) {
+                    print_info_box($savemsg);
+                }
+                ?>
 
 			    <section class="col-xs-12">
 
 
 					<?php
-									$tab_array = array();
-									$tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
-									$tab_array[] = array(gettext("Groups"), true, "system_groupmanager.php");
-									$tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
-									$tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
-									display_top_tabs($tab_array);
-						?>
+                                    $tab_array = array();
+                                    $tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
+                                    $tab_array[] = array(gettext("Groups"), true, "system_groupmanager.php");
+                                    $tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
+                                    $tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
+                                    display_top_tabs($tab_array);
+                        ?>
 
 						<div class="tab-content content-box col-xs-12">
 
 							<?php
-										if($act == "new" || $act == "edit"):
-							?>
-								<form action="system_groupmanager.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
-									<input type="hidden" id="act" name="act" value="" />
-									<input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : '');?>" />
-									<input type="hidden" id="privid" name="privid" value="" />
+                            if ($act == "new" || $act == "edit") :
+                            ?>
+                    <form action="system_groupmanager.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
+                        <input type="hidden" id="act" name="act" value="" />
+                        <input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : '');?>" />
+                        <input type="hidden" id="privid" name="privid" value="" />
 
-									<table class="table table-striped table-sort">
-										<?php
-											$ro = "";
-											if ($pconfig['gtype'] == "system")
-												$ro = "readonly=\"readonly\"";
-										?>
-											<tr>
-												<td width="22%" valign="top" class="vncell"><?=gettext("Defined by");?></td>
-												<td width="78%" class="vtable">
-													<strong><?=strtoupper($pconfig['gtype']);?></strong>
-													<input name="gtype" type="hidden" value="<?=htmlspecialchars($pconfig['gtype'])?>"/>
-												</td>
-											</tr>
-											<tr>
-												<td width="22%" valign="top" class="vncellreq"><?=gettext("Group name");?></td>
-												<td width="78%" class="vtable">
-													<input name="groupname" type="text" class="formfld group" id="groupname" size="20" maxlength="16" value="<?=htmlspecialchars($pconfig['name']);?>" <?=$ro;?> />
-												</td>
-											</tr>
-											<tr>
-												<td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-												<td width="78%" class="vtable">
-													<input name="description" type="text" class="formfld unknown" id="description" size="20" value="<?=htmlspecialchars($pconfig['description']);?>" />
-													<br />
-													<?=gettext("Group description, for your own information only");?>
-												</td>
-											</tr>
+                        <table class="table table-striped table-sort">
+                            <?php
+                                $ro = "";
+                            if ($pconfig['gtype'] == "system") {
+                                $ro = "readonly=\"readonly\"";
+                            }
+                            ?>
+                                <tr>
+                                    <td width="22%" valign="top" class="vncell"><?=gettext("Defined by");?></td>
+                                    <td width="78%" class="vtable">
+                                        <strong><?=strtoupper($pconfig['gtype']);?></strong>
+                                        <input name="gtype" type="hidden" value="<?=htmlspecialchars($pconfig['gtype'])?>"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="22%" valign="top" class="vncellreq"><?=gettext("Group name");?></td>
+                                    <td width="78%" class="vtable">
+                                        <input name="groupname" type="text" class="formfld group" id="groupname" size="20" maxlength="16" value="<?=htmlspecialchars($pconfig['name']);
+?>" <?=$ro;?> />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
+                                    <td width="78%" class="vtable">
+                                        <input name="description" type="text" class="formfld unknown" id="description" size="20" value="<?=htmlspecialchars($pconfig['description']);?>" />
+                                        <br />
+                                        <?=gettext("Group description, for your own information only");?>
+                                    </td>
+                                </tr>
 						<?php
-											if ($pconfig['gid'] != 1998): // all users group
-						?>
-											<tr>
-												<td width="22%" valign="top" class="vncell"><?=gettext("Group Memberships");?></td>
-												<td width="78%" class="vtable" align="center">
-													<table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="membership">
-														<tr>
-															<td align="center" width="50%">
-																<strong><?=gettext("Not Members");?></strong><br />
-																<br />
-																	<select size="10" style="width: 75%" name="notmembers[]" class="formselect" id="notmembers" onchange="clear_selected('members')" multiple="multiple">
+                        if ($pconfig['gid'] != 1998) :
+// all users group
+                        ?>
+                        <tr>
+                            <td width="22%" valign="top" class="vncell"><?=gettext("Group Memberships");?></td>
+                            <td width="78%" class="vtable" align="center">
+                                <table class="tabcont" width="100%" border="0" cellpadding="0" cellspacing="0" summary="membership">
+                                    <tr>
+                                        <td align="center" width="50%">
+                                            <strong><?=gettext("Not Members");?></strong><br />
+                                            <br />
+                                                <select size="10" style="width: 75%" name="notmembers[]" class="formselect" id="notmembers" onchange="clear_selected('members')" multiple="multiple">
 					<?php
-																$rowIndex = 0;
-																foreach ($config['system']['user'] as $user):
-																	if (is_array($pconfig['members']) && in_array($user['uid'],$pconfig['members']))
-																		continue;
-																	$rowIndex++;
-					?>
-																	<option value="<?=$user['uid'];?>" <?=$selected;?>>
-																		<?=htmlspecialchars($user['name']);?>
-																	</option>
+                                            $rowIndex = 0;
+                    foreach ($config['system']['user'] as $user) :
+                        if (is_array($pconfig['members']) && in_array($user['uid'], $pconfig['members'])) {
+                            continue;
+                        }
+                        $rowIndex++;
+                    ?>
+                        <option value="<?=$user['uid'];
+?>" <?=$selected;?>>
+                            <?=htmlspecialchars($user['name']);?>
+                        </option>
+<?php
+                    endforeach;
+                    if ($rowIndex == 0) {
+                        echo "<option></option>";
+                    }
+                    ?>
+                                            </select>
+                                            <br />
+                                        </td>
+                                        <td>
+                                            <br />
+                                            <a href="javascript:move_selected('notmembers','members')" class="btn btn-default btn-xs">
+                                                <span class="glyphicon glyphicon-arrow-right"></span>
+                                            </a>
+                                            <br /><br />
+                                            <a href="javascript:move_selected('members','notmembers')" class="btn btn-default btn-xs">
+                                                <span class="glyphicon glyphicon-arrow-left"></span>
+                                            </a>
+                                        </td>
+                                        <td align="center" width="50%">
+                                            <strong><?=gettext("Members");?></strong><br />
+                                            <br />
+                                            <select size="10" style="width: 75%" name="members[]" class="formselect" id="members" onchange="clear_selected('notmembers')" multiple="multiple">
 					<?php
-																endforeach;
-																if ($rowIndex == 0)
-																	echo "<option></option>";
-					?>
-																</select>
-																<br />
-															</td>
-															<td>
-																<br />
-																<a href="javascript:move_selected('notmembers','members')" class="btn btn-default btn-xs">
-																	<span class="glyphicon glyphicon-arrow-right"></span>
-																</a>
-																<br /><br />
-																<a href="javascript:move_selected('members','notmembers')" class="btn btn-default btn-xs">
-																	<span class="glyphicon glyphicon-arrow-left"></span>
-																</a>
-															</td>
-															<td align="center" width="50%">
-																<strong><?=gettext("Members");?></strong><br />
-																<br />
-																<select size="10" style="width: 75%" name="members[]" class="formselect" id="members" onchange="clear_selected('notmembers')" multiple="multiple">
+                                            $rowIndex = 0;
+                    foreach ($config['system']['user'] as $user) :
+                        if (!(is_array($pconfig['members']) && in_array($user['uid'], $pconfig['members']))) {
+                            continue;
+                        }
+                        $rowIndex++;
+                    ?>
+                        <option value="<?=$user['uid'];?>">
+                            <?=htmlspecialchars($user['name']);?>
+                        </option>
 					<?php
-																$rowIndex = 0;
-																foreach ($config['system']['user'] as $user):
-																	if (!(is_array($pconfig['members']) && in_array($user['uid'],$pconfig['members'])))
-																		continue;
-																	$rowIndex++;
-					?>
-																	<option value="<?=$user['uid'];?>">
-																		<?=htmlspecialchars($user['name']);?>
-																	</option>
+                    endforeach;
+                    if ($rowIndex == 0) {
+                        echo "<option></option>";
+                    }
+                    ?>
+                                            </select>
+                                            <br />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <?=gettext("Hold down CTRL (pc)/COMMAND (mac) key to select multiple items");?>
+                            </td>
+                        </tr>
 					<?php
-																endforeach;
-																if ($rowIndex == 0)
-																	echo "<option></option>";
-					?>
-																</select>
-																<br />
-															</td>
-														</tr>
-													</table>
-													<?=gettext("Hold down CTRL (pc)/COMMAND (mac) key to select multiple items");?>
-												</td>
-											</tr>
+                        endif;
+                        if ($act != "new") :
+                    ?>
+                            <th colspan="2" valign="top" class="vncell"><?=gettext("Assigned Privileges");?></th>
+                            <tr>
+                                <td colspan="2" class="vtable">
+                                    <table class="tabcont table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="privileges">
+                                        <tr>
+                                            <td width="40%" class="listhdrr"><b><?=gettext("Name");?></b></td>
+                                            <td width="60%" class="listhdrr"><b><?=gettext("Description");?></b></td>
+                                            <td class="list"></td>
+                                        </tr>
 					<?php
-										endif;
-										if ($act != "new"):
-					?>
-											<th colspan="2" valign="top" class="vncell"><?=gettext("Assigned Privileges");?></th>
-											<tr>
-												<td colspan="2" class="vtable">
-													<table class="tabcont table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="privileges">
-														<tr>
-															<td width="40%" class="listhdrr"><b><?=gettext("Name");?></b></td>
-															<td width="60%" class="listhdrr"><b><?=gettext("Description");?></b></td>
-															<td class="list"></td>
-														</tr>
+                    if (is_array($pconfig['priv'])) :
+                        $i = 0;
+                        foreach ($pconfig['priv'] as $priv) :
+                    ?>
+                            <tr>
+                                <td class="listr">
+                                    <?=htmlspecialchars($priv_list[$priv]['name']);?>
+                                </td>
+                                <td class="listbg">
+                                    <?=htmlspecialchars($priv_list[$priv]['descr']);?>
+                                </td>
+                                <td valign="middle" class="list nowrap">
+                                    <button type="submit" name="delpriv[]"
+                                        class="btn btn-default btn-xs"
+                                        onclick="document.getElementById('privid').value='<?=$i;?>';
+                                            document.getElementById('groupid').value='<?=$id;?>';
+                                            document.getElementById('act').value='<?php echo "delpriv";?>';
+                                            return confirm('<?=gettext("Do you really want to delete this privilege?");?>');"
+                                        title="<?=gettext("delete privilege");?>" data-toggle="tooltip" data-placement="left" ><span class="glyphicon glyphicon-remove"></span></button>
+                                </td>
+                            </tr>
 					<?php
-												if(is_array($pconfig['priv'])):
-													$i = 0;
-													foreach ($pconfig['priv'] as $priv):
-					?>
-														<tr>
-															<td class="listr">
-																<?=htmlspecialchars($priv_list[$priv]['name']);?>
-															</td>
-															<td class="listbg">
-																<?=htmlspecialchars($priv_list[$priv]['descr']);?>
-															</td>
-															<td valign="middle" class="list nowrap">
-																<button type="submit" name="delpriv[]"
-																	class="btn btn-default btn-xs"
-																	onclick="document.getElementById('privid').value='<?=$i;?>';
-																		document.getElementById('groupid').value='<?=$id;?>';
-																		document.getElementById('act').value='<?php echo "delpriv";?>';
-																		return confirm('<?=gettext("Do you really want to delete this privilege?");?>');"
-																	title="<?=gettext("delete privilege");?>" data-toggle="tooltip" data-placement="left" ><span class="glyphicon glyphicon-remove"></span></button>
-															</td>
-														</tr>
-					<?php
-														$i++;
-													endforeach;
-												endif;
-					?>
-														<tr>
-															<td class="list" colspan="2"></td>
-															<td class="list">
-																<a href="system_groupmanager_addprivs.php?groupid=<?=htmlspecialchars($id)?>" class="btn btn-default btn-xs">
-																	<span class="glyphicon glyphicon-plus"></span>
-																</a>
+                            $i++;
+                        endforeach;
+                    endif;
+                    ?>
+                                        <tr>
+                                            <td class="list" colspan="2"></td>
+                                            <td class="list">
+                                                <a href="system_groupmanager_addprivs.php?groupid=<?=htmlspecialchars($id)?>" class="btn btn-default btn-xs">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </a>
 
-															</td>
-														</tr>
+                                            </td>
+                                        </tr>
 
-													</table>
-												</td>
-											</tr>
+                                    </table>
+                                </td>
+                            </tr>
 					<?php
-										endif;
-					?>
-											<tr>
-												<td width="22%" valign="top">&nbsp;</td>
-												<td width="78%">
-													<input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-													<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_groupmanager.php'" />
-													<?php if (isset($id) && $a_group[$id]): ?>
+                        endif;
+                    ?>
+                                <tr>
+                                    <td width="22%" valign="top">&nbsp;</td>
+                                    <td width="78%">
+                                        <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='/system_groupmanager.php'" />
+                                        <?php if (isset($id) && $a_group[$id]) :
+?>
 													<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 													<input name="gid" type="hidden" value="<?=htmlspecialchars($pconfig['gid']);?>" />
-													<?php endif; ?>
-												</td>
-											</tr>
-										</table>
-								</form>
-								<?php
-											else:
-								?>
+													<?php
+endif; ?>
+                                    </td>
+                                </tr>
+                            </table>
+                    </form>
+                    <?php
+                            else :
+                                ?>
 
 								<form action="system_groupmanager.php" method="post" name="iform2" id="iform2">
 									<input type="hidden" id="act" name="act" value="" />
@@ -461,69 +479,71 @@ function presubmit() {
 											</tfoot>
 											<tbody>
 <?php
-						$i = 0;
-						foreach($a_group as $group):
-							if($group['scope'] == "system")
-								$grpimg = "glyphicon glyphicon-user text-mute";
-							else
-								$grpimg = "glyphicon glyphicon-user";
-							$groupcount = count($group['member']);
-							if ($group["name"] == "all")
-								$groupcount = count($config['system']['user']);
+                        $i = 0;
+foreach ($a_group as $group) :
+    if ($group['scope'] == "system") {
+        $grpimg = "glyphicon glyphicon-user text-mute";
+    } else {
+        $grpimg = "glyphicon glyphicon-user";
+    }
+    $groupcount = count($group['member']);
+    if ($group["name"] == "all") {
+        $groupcount = count($config['system']['user']);
+    }
 ?>
-							<tr ondblclick="document.getElementById('act').value='<?php echo "edit";?>';
-								document.getElementById('groupid').value='<?=$i;?>';
-								document.iform2.submit();">
-								<td class="listlr">
-									<table border="0" cellpadding="0" cellspacing="0" summary="">
-										<tr>
-											<td align="left" width="30px">
-												<span class="<?=$grpimg;?>"></span>
-											</td>
-											<td align="left">
-												<?=htmlspecialchars($group['name']); ?>&nbsp;
-											</td>
-										</tr>
-									</table>
-								</td>
-								<td class="listr">
-									<?=htmlspecialchars($group['description']);?>&nbsp;
-								</td>
-								<td class="listbg">
-									<?=$groupcount;?>
-								</td>
-								<td valign="middle" class="list nowrap">
-									<button type="submit" name="editgroup[]"
-										class="btn btn-default btn-xs"
-										onclick="document.getElementById('groupid').value='<?=$i;?>';
-											document.getElementById('act').value='<?php echo "edit";?>';"
-										title="<?=gettext("edit group");?>"><span class="glyphicon glyphicon-pencil"></span></button>
-									&nbsp;
+    <tr ondblclick="document.getElementById('act').value='<?php echo "edit";?>';
+        document.getElementById('groupid').value='<?=$i;?>';
+        document.iform2.submit();">
+        <td class="listlr">
+            <table border="0" cellpadding="0" cellspacing="0" summary="">
+                <tr>
+                    <td align="left" width="30px">
+                        <span class="<?=$grpimg;?>"></span>
+                    </td>
+                    <td align="left">
+                        <?=htmlspecialchars($group['name']); ?>&nbsp;
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td class="listr">
+            <?=htmlspecialchars($group['description']);?>&nbsp;
+        </td>
+        <td class="listbg">
+            <?=$groupcount;?>
+        </td>
+        <td valign="middle" class="list nowrap">
+            <button type="submit" name="editgroup[]"
+                class="btn btn-default btn-xs"
+                onclick="document.getElementById('groupid').value='<?=$i;?>';
+                    document.getElementById('act').value='<?php echo "edit";?>';"
+                title="<?=gettext("edit group");?>"><span class="glyphicon glyphicon-pencil"></span></button>
+            &nbsp;
 <?php
-								if($group['scope'] != "system"):
+if ($group['scope'] != "system") :
 ?>
-									<button type="submit" name="delgroup[]"
-										class="btn btn-default btn-xs"
-										onclick="document.getElementById('groupid').value='<?=$i;?>';
-											document.getElementById('groupname').value='<?=$group['name'];?>';
-											document.getElementById('act').value='<?php echo "delgroup";?>';
-											return confirm('<?=gettext("Do you really want to delete this group?");?>');"
-										title="<?=gettext("delete group");?>"><span class="glyphicon glyphicon-remove"></span></button>
+    <button type="submit" name="delgroup[]"
+        class="btn btn-default btn-xs"
+        onclick="document.getElementById('groupid').value='<?=$i;?>';
+            document.getElementById('groupname').value='<?=$group['name'];?>';
+            document.getElementById('act').value='<?php echo "delgroup";?>';
+            return confirm('<?=gettext("Do you really want to delete this group?");?>');"
+        title="<?=gettext("delete group");?>"><span class="glyphicon glyphicon-remove"></span></button>
 <?php
-								endif;
+endif;
 ?>
-								</td>
-							</tr>
+        </td>
+    </tr>
 <?php
-							$i++;
-						endforeach;
+    $i++;
+endforeach;
 ?>
 						</tbody>
 					</table>
 								</form>
 
 <?php
-			endif;
+                            endif;
 ?>
 
 						</div>
@@ -532,4 +552,4 @@ function presubmit() {
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");
