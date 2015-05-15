@@ -39,14 +39,18 @@ use \OPNsense\Proxy\Proxy;
 class ServiceController extends ApiControllerBase
 {
     /**
-     * start proxy service
+     * start proxy service (in background)
      * @return array
      */
     public function startAction()
     {
-        $backend = new Backend();
-        $response = $backend->configdRun("proxy start", true);
-        return array("response" => $response);
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = $backend->configdRun("proxy start", true);
+            return array("response" => $response);
+        } else {
+            return array("response" => array());
+        }
     }
 
     /**
@@ -55,9 +59,13 @@ class ServiceController extends ApiControllerBase
      */
     public function stopAction()
     {
-        $backend = new Backend();
-        $response = $backend->configdRun("proxy stop");
-        return array("response" => $response);
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = $backend->configdRun("proxy stop");
+            return array("response" => $response);
+        } else {
+            return array("response" => array());
+        }
     }
 
     /**
@@ -66,9 +74,13 @@ class ServiceController extends ApiControllerBase
      */
     public function restartAction()
     {
-        $backend = new Backend();
-        $response = $backend->configdRun("proxy restart");
-        return array("response" => $response);
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = $backend->configdRun("proxy restart");
+            return array("response" => $response);
+        } else {
+            return array("response" => array());
+        }
     }
 
     /**
@@ -105,31 +117,35 @@ class ServiceController extends ApiControllerBase
      */
     public function reconfigureAction()
     {
-        // close session for long running action
-        $this->sessionClose();
+        if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
 
-        $mdlProxy = new Proxy();
-        $backend = new Backend();
+            $mdlProxy = new Proxy();
+            $backend = new Backend();
 
-        $runStatus = $this->statusAction();
+            $runStatus = $this->statusAction();
 
-        // stop squid when disabled
-        if ($runStatus['status'] == "running" && $mdlProxy->general->enabled->__toString() == 0) {
-            $this->stopAction();
-        }
-
-        // generate template
-        $backend->configdRun("template reload OPNsense.Proxy");
-
-        // (res)start daemon
-        if ($mdlProxy->general->enabled->__toString() == 1) {
-            if ($runStatus['status'] == "running") {
-                $backend->configdRun("proxy reconfigure");
-            } else {
-                $this->startAction();
+            // stop squid when disabled
+            if ($runStatus['status'] == "running" && $mdlProxy->general->enabled->__toString() == 0) {
+                $this->stopAction();
             }
-        }
 
-        return array("status" => "ok");
+            // generate template
+            $backend->configdRun("template reload OPNsense.Proxy");
+
+            // (res)start daemon
+            if ($mdlProxy->general->enabled->__toString() == 1) {
+                if ($runStatus['status'] == "running") {
+                    $backend->configdRun("proxy reconfigure");
+                } else {
+                    $this->startAction();
+                }
+            }
+
+            return array("status" => "ok");
+        } else {
+            return array("status" => "failed");
+        }
     }
 }
