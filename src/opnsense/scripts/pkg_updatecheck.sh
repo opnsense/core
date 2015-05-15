@@ -233,3 +233,8 @@ if [ "$pkg_running" == "" ]; then
 else
   # pkg is already running, quitting
 fi
+
+# output json data
+if [ -f $package_json_output ]; then 
+      cat $package_json_output
+fi
