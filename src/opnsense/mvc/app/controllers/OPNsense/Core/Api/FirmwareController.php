@@ -59,10 +59,12 @@ class FirmwareController extends ApiControllerBase
                 $response["status_msg"] = "no updates found";
             } elseif (array_key_exists("updates", $response) && $response["upgrade_packages"][0]["name"] == "pkg") {
                 $response["status"] = "ok";
+                $response["status_upgrade_action"] = "pkg";
                 $response["status_msg"] = "There is a mandatory update for the package manager. ".
                     "Please install and check for updates again.";
             } elseif (array_key_exists("updates", $response)) {
                 $response["status"] = "ok";
+                $response["status_upgrade_action"] = "all";
                 $response["status_msg"] = sprintf("A total of %s update(s) are available.", $response["updates"]);
             }
         } else {
@@ -81,9 +83,14 @@ class FirmwareController extends ApiControllerBase
     {
         $backend = new Backend();
         $response =array();
-        if ($this->request->isPost()) {
+        if ($this->request->hasPost("upgrade")) {
             $response['status'] = 'ok';
-            $response['uuid'] = trim($backend->configdRun("firmware upgrade", true));
+            if ($this->request->getPost("upgrade") == "pkg") {
+                $action = "firmware upgrade pkg";
+            } else {
+                $action = "firmware upgrade all";
+            }
+            $response['msg_uuid'] = trim($backend->configdRun($action, true));
         } else {
             $response['status'] = 'failure';
         }

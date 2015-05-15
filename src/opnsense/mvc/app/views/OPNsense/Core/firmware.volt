@@ -48,6 +48,7 @@ POSSIBILITY OF SUCH DAMAGE.
             $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
 
             if (data['status'] == "ok") {
+                $.upgrade_action = data['status_upgrade_action'];
                 // unhide upgrade button
                 $("#upgrade").attr("style","");
                 // show upgrade list
@@ -80,7 +81,8 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#maintabs li:eq(1) a').tab('show');
         $('#updatestatus').html("{{ lang._('Starting Upgrade.. Please do not leave this page while upgrade is in progress.') }}");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
-        ajaxCall('/api/core/firmware/upgrade',{},function() {
+
+        ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
             $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
             setTimeout(trackStatus, 1000) ;
         });
@@ -106,6 +108,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     type:BootstrapDialog.TYPE_INFO,
                     title: "{{ lang._('Upgrade') }}",
                     message: "{{ lang._('The upgrade is finished and your device is being rebooted at the moment, please wait.') }}",
+                    closable: false,
                     buttons: [{
                         label: "{{ lang._('Close') }}",
                         cssClass: 'btn-success',
