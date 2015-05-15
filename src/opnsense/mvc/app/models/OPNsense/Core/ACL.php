@@ -209,7 +209,7 @@ class ACL
         }
 
         // sort by name ( case insensitive )
-        uasort($priv_list, function($a, $b) {
+        uasort($priv_list, function ($a, $b) {
             return strcasecmp($a["name"], $b["name"]) ;
         });
 
