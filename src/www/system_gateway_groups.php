@@ -34,15 +34,15 @@ require_once("shaper.inc");
 require_once("openvpn.inc");
 
 if (!is_array($config['gateways'])) {
-	$config['gateways'] = array();
+    $config['gateways'] = array();
 }
 
 if (!is_array($config['gateways']['gateway_item'])) {
-	$config['gateways']['gateway_item'] = array();
+    $config['gateways']['gateway_item'] = array();
 }
 
 if (!is_array($config['gateways']['gateway_group'])) {
-	$config['gateways']['gateway_group'] = array();
+    $config['gateways']['gateway_group'] = array();
 }
 
 $a_gateway_groups = &$config['gateways']['gateway_group'];
@@ -50,49 +50,49 @@ $a_gateways = &$config['gateways']['gateway_item'];
 $changedesc = gettext("Gateway Groups") . ": ";
 
 if ($_POST) {
+    $pconfig = $_POST;
 
-	$pconfig = $_POST;
+    if ($_POST['apply']) {
+        $retval = 0;
 
-	if ($_POST['apply']) {
+        $retval = system_routing_configure();
 
-		$retval = 0;
+        configd_run('dyndns reload');
+        configd_run('ipsecdns reload');
+        configd_run('filter reload');
 
-		$retval = system_routing_configure();
+        /* reconfigure our gateway monitor */
+        setup_gateways_monitor();
 
-		configd_run('dyndns reload');
-		configd_run('ipsecdns reload');
-		configd_run('filter reload');
+        $savemsg = get_std_save_message($retval);
+        if ($retval == 0) {
+            clear_subsystem_dirty('staticroutes');
+        }
 
-		/* reconfigure our gateway monitor */
-		setup_gateways_monitor();
-
-		$savemsg = get_std_save_message($retval);
-		if ($retval == 0)
-			clear_subsystem_dirty('staticroutes');
-
-		foreach ($a_gateway_groups as $gateway_group) {
-			$gw_subsystem = 'gwgroup.' . $gateway_group['name'];
-			if (is_subsystem_dirty($gw_subsystem)) {
-				openvpn_resync_gwgroup($gateway_group['name']);
-				clear_subsystem_dirty($gw_subsystem);
-			}
-		}
-	}
+        foreach ($a_gateway_groups as $gateway_group) {
+            $gw_subsystem = 'gwgroup.' . $gateway_group['name'];
+            if (is_subsystem_dirty($gw_subsystem)) {
+                openvpn_resync_gwgroup($gateway_group['name']);
+                clear_subsystem_dirty($gw_subsystem);
+            }
+        }
+    }
 }
 
 if ($_GET['act'] == "del") {
-	if ($a_gateway_groups[$_GET['id']]) {
-		$changedesc .= gettext("removed gateway group") . " {$_GET['id']}";
-		foreach ($config['filter']['rule'] as $idx => $rule) {
-			if ($rule['gateway'] == $a_gateway_groups[$_GET['id']]['name'])
-				unset($config['filter']['rule'][$idx]['gateway']);
-		}
-		unset($a_gateway_groups[$_GET['id']]);
-		write_config($changedesc);
-		mark_subsystem_dirty('staticroutes');
-		header("Location: system_gateway_groups.php");
-		exit;
-	}
+    if ($a_gateway_groups[$_GET['id']]) {
+        $changedesc .= gettext("removed gateway group") . " {$_GET['id']}";
+        foreach ($config['filter']['rule'] as $idx => $rule) {
+            if ($rule['gateway'] == $a_gateway_groups[$_GET['id']]['name']) {
+                unset($config['filter']['rule'][$idx]['gateway']);
+            }
+        }
+        unset($a_gateway_groups[$_GET['id']]);
+        write_config($changedesc);
+        mark_subsystem_dirty('staticroutes');
+        header("Location: system_gateway_groups.php");
+        exit;
+    }
 }
 
 $pgtitle = array(gettext("System"),gettext("Gateway Groups"));
@@ -101,7 +101,7 @@ $shortcut_section = "gateway-groups";
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>'Add group', 'href'=>'system_gateway_groups_edit.php'),
+    array('label'=>'Add group', 'href'=>'system_gateway_groups_edit.php'),
 );
 
 ?>
@@ -114,10 +114,14 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
-				<?php if (is_subsystem_dirty('staticroutes')): ?><br/>
+				<?php if ($savemsg) {
+                    print_info_box($savemsg);
+} ?>
+				<?php if (is_subsystem_dirty('staticroutes')) :
+?><br/>
 				<?php print_info_box_np(sprintf(gettext("The gateway configuration has been changed.%sYou must apply the changes in order for them to take effect."), "<br />"));?><br /><br />
-				<?php endif; ?>
+				<?php
+endif; ?>
 
 			    <section class="col-xs-12">
 
@@ -144,28 +148,29 @@ $main_buttons = array(
 								</tr>
 								</thead>
 								<tbody>
-									  <?php $i = 0; foreach ($a_gateway_groups as $gateway_group): ?>
+                                        <?php $i = 0; foreach ($a_gateway_groups as $gateway_group) :
+?>
 						                <tr>
 						                  <td class="listlr" ondblclick="document.location='system_gateway_groups_edit.php?id=<?=$i;?>';">
 						                    <?php
-									echo $gateway_group['name'];
-								?>
+                                            echo $gateway_group['name'];
+                                ?>
 						                  </td>
 						                  <td class="listr" ondblclick="document.location='system_gateway_groups_edit.php?id=<?=$i;?>';">
 						                    <?php
-									foreach($gateway_group['item'] as $item) {
-										$itemsplit = explode("|", $item);
-										echo htmlspecialchars(strtoupper($itemsplit[0])) . "<br />\n";
-									}
-								    ?>
+                                            foreach ($gateway_group['item'] as $item) {
+                                                $itemsplit = explode("|", $item);
+                                                echo htmlspecialchars(strtoupper($itemsplit[0])) . "<br />\n";
+                                            }
+                                    ?>
 						                  </td>
 						                  <td class="listr" ondblclick="document.location='system_gateway_groups_edit.php?id=<?=$i;?>';">
 								    <?php
-									foreach($gateway_group['item'] as $item) {
-										$itemsplit = explode("|", $item);
-										echo "Tier ". htmlspecialchars($itemsplit[1]) . "<br />\n";
-									}
-								    ?>
+                                    foreach ($gateway_group['item'] as $item) {
+                                        $itemsplit = explode("|", $item);
+                                        echo "Tier ". htmlspecialchars($itemsplit[1]) . "<br />\n";
+                                    }
+                                    ?>
 						                  </td>
 						                  <td class="listbg" ondblclick="document.location='system_gateway_groups_edit.php?id=<?=$i;?>';">
 										<?=htmlspecialchars($gateway_group['descr']);?>&nbsp;
@@ -174,7 +179,8 @@ $main_buttons = array(
 									<table border="0" cellspacing="0" cellpadding="1" summary="edit">
 									   <tr>
 										<td><a href="system_gateway_groups_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></td>
-										<td><a href="system_gateway_groups.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this gateway group?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+										<td><a href="system_gateway_groups.php?act=del&amp;id=<?=$i;
+?>" onclick="return confirm('<?=gettext("Do you really want to delete this gateway group?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
 									   </tr>
 									   <tr>
 										<td width="17"></td>
@@ -183,12 +189,15 @@ $main_buttons = array(
 									</table>
 						                  </td>
 								</tr>
-									  <?php $i++; endforeach; ?>
+                                        <?php $i++;
+
+endforeach; ?>
 						                <tr style="display:none;"><td></td></tr>
 								</tbody>
 									</table>
 									</div>
-									<p><b><?=gettext("Note:");?></b>  <?=gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.");?></p>
+									<p><b><?=gettext("Note:");
+?></b>  <?=gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.");?></p>
 							</form>
 
 							</div>
@@ -199,4 +208,4 @@ $main_buttons = array(
 							</section>
 
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

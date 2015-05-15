@@ -33,11 +33,11 @@ require_once("vpn.inc");
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateway_groups.php');
 
 if (!is_array($config['gateways'])) {
-	$config['gateways'] = array();
+    $config['gateways'] = array();
 }
 
 if (!is_array($config['gateways']['gateway_group'])) {
-	$config['gateways']['gateway_group'] = array();
+    $config['gateways']['gateway_group'] = array();
 }
 
 $a_gateway_groups = &$config['gateways']['gateway_group'];
@@ -49,107 +49,115 @@ $categories = array('down' => gettext("Member Down"),
                     'downlatency' => gettext("High Latency"),
                     'downlosslatency' => gettext("Packet Loss or High Latency"));
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
-
-if (isset($_GET['dup']) && is_numericint($_GET['dup']))
-	$id = $_GET['dup'];
-
-if (isset($id) && $a_gateway_groups[$id]) {
-	$pconfig['name'] = $a_gateway_groups[$id]['name'];
-	$pconfig['item'] = &$a_gateway_groups[$id]['item'];
-	$pconfig['descr'] = $a_gateway_groups[$id]['descr'];
-	$pconfig['trigger'] = $a_gateway_groups[$id]['trigger'];
+if (is_numericint($_GET['id'])) {
+    $id = $_GET['id'];
+}
+if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+    $id = $_POST['id'];
 }
 
-if (isset($_GET['dup']) && is_numericint($_GET['dup']))
-	unset($id);
+if (isset($_GET['dup']) && is_numericint($_GET['dup'])) {
+    $id = $_GET['dup'];
+}
+
+if (isset($id) && $a_gateway_groups[$id]) {
+    $pconfig['name'] = $a_gateway_groups[$id]['name'];
+    $pconfig['item'] = &$a_gateway_groups[$id]['item'];
+    $pconfig['descr'] = $a_gateway_groups[$id]['descr'];
+    $pconfig['trigger'] = $a_gateway_groups[$id]['trigger'];
+}
+
+if (isset($_GET['dup']) && is_numericint($_GET['dup'])) {
+    unset($id);
+}
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    $reqdfields = explode(" ", "name");
+    $reqdfieldsn = explode(",", "Name");
 
-	/* input validation */
-	$reqdfields = explode(" ", "name");
-	$reqdfieldsn = explode(",", "Name");
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    if (! isset($_POST['name'])) {
+        $input_errors[] = gettext("A valid gateway group name must be specified.");
+    }
+    if (! is_validaliasname($_POST['name'])) {
+        $input_errors[] = gettext("The gateway name must not contain invalid characters.");
+    }
 
-	if (! isset($_POST['name'])) {
-		$input_errors[] = gettext("A valid gateway group name must be specified.");
-	}
-	if (! is_validaliasname($_POST['name'])) {
-		$input_errors[] = gettext("The gateway name must not contain invalid characters.");
-	}
+    if (isset($_POST['name'])) {
+        /* check for overlaps */
+        if (is_array($a_gateway_groups)) {
+            foreach ($a_gateway_groups as $gateway_group) {
+                if (isset($id) && ($a_gateway_groups[$id]) && ($a_gateway_groups[$id] === $gateway_group)) {
+                    if ($gateway_group['name'] != $_POST['name']) {
+                        $input_errors[] = gettext("Changing name on a gateway group is not allowed.");
+                    }
+                    continue;
+                }
 
-	if (isset($_POST['name'])) {
-		/* check for overlaps */
-		if(is_array($a_gateway_groups)) {
-			foreach ($a_gateway_groups as $gateway_group) {
-				if (isset($id) && ($a_gateway_groups[$id]) && ($a_gateway_groups[$id] === $gateway_group)) {
-					if ($gateway_group['name'] != $_POST['name'])
-						$input_errors[] = gettext("Changing name on a gateway group is not allowed.");
-					continue;
-				}
+                if ($gateway_group['name'] == $_POST['name']) {
+                    $input_errors[] = sprintf(gettext('A gateway group with this name "%s" already exists.'), $_POST['name']);
+                    break;
+                }
+            }
+        }
+    }
 
-				if ($gateway_group['name'] == $_POST['name']) {
-					$input_errors[] = sprintf(gettext('A gateway group with this name "%s" already exists.'), $_POST['name']);
-					break;
-				}
-			}
-		}
-	}
+    /* Build list of items in group with priority */
+    $pconfig['item'] = array();
+    foreach ($a_gateways as $gwname => $gateway) {
+        if ($_POST[$gwname] > 0) {
+            $vipname = "{$gwname}_vip";
+            /* we have a priority above 0 (disabled), add item to list */
+            $pconfig['item'][] = "{$gwname}|{$_POST[$gwname]}|{$_POST[$vipname]}";
+        }
+        /* check for overlaps */
+        if ($_POST['name'] == $gwname) {
+            $input_errors[] = sprintf(gettext('A gateway group cannot have the same name with a gateway "%s" please choose another name.'), $_POST['name']);
+        }
 
-	/* Build list of items in group with priority */
-	$pconfig['item'] = array();
-	foreach($a_gateways as $gwname => $gateway) {
-		if($_POST[$gwname] > 0) {
-			$vipname = "{$gwname}_vip";
-			/* we have a priority above 0 (disabled), add item to list */
-			$pconfig['item'][] = "{$gwname}|{$_POST[$gwname]}|{$_POST[$vipname]}";
-		}
-		/* check for overlaps */
-		if ($_POST['name'] == $gwname)
-			$input_errors[] = sprintf(gettext('A gateway group cannot have the same name with a gateway "%s" please choose another name.'), $_POST['name']);
+    }
+    if (count($pconfig['item']) == 0) {
+        $input_errors[] = gettext("No gateway(s) have been selected to be used in this group");
+    }
 
-	}
-	if(count($pconfig['item']) == 0)
-		$input_errors[] = gettext("No gateway(s) have been selected to be used in this group");
+    if (!$input_errors) {
+        $gateway_group = array();
+        $gateway_group['name'] = $_POST['name'];
+        $gateway_group['item'] = $pconfig['item'];
+        $gateway_group['trigger'] = $_POST['trigger'];
+        $gateway_group['descr'] = $_POST['descr'];
 
-	if (!$input_errors) {
-		$gateway_group = array();
-		$gateway_group['name'] = $_POST['name'];
-		$gateway_group['item'] = $pconfig['item'];
-		$gateway_group['trigger'] = $_POST['trigger'];
-		$gateway_group['descr'] = $_POST['descr'];
+        if (isset($id) && $a_gateway_groups[$id]) {
+            $a_gateway_groups[$id] = $gateway_group;
+        } else {
+            $a_gateway_groups[] = $gateway_group;
+        }
 
-		if (isset($id) && $a_gateway_groups[$id])
-			$a_gateway_groups[$id] = $gateway_group;
-		else
-			$a_gateway_groups[] = $gateway_group;
+        mark_subsystem_dirty('staticroutes');
+        mark_subsystem_dirty('gwgroup.' . $gateway_group['name']);
 
-		mark_subsystem_dirty('staticroutes');
-		mark_subsystem_dirty('gwgroup.' . $gateway_group['name']);
+        write_config();
 
-		write_config();
-
-		header("Location: system_gateway_groups.php");
-		exit;
-	}
+        header("Location: system_gateway_groups.php");
+        exit;
+    }
 }
 
 $pgtitle = array(gettext("System"),gettext("Gateways"),gettext("Edit gateway group"));
 $shortcut_section = "gateway-groups";
 
-function build_gateway_protocol_map (&$a_gateways) {
-	$result = array();
-	foreach ($a_gateways as $gwname => $gateway) {
-		$result[$gwname] = $gateway['ipprotocol'];
-	}
-	return $result;
+function build_gateway_protocol_map (&$a_gateways)
+{
+    $result = array();
+    foreach ($a_gateways as $gwname => $gateway) {
+        $result[$gwname] = $gateway['ipprotocol'];
+    }
+    return $result;
 }
 
 include("head.inc");
@@ -217,7 +225,9 @@ jQuery(function ($) {
 	<section class="page-content-main">
 		<div class="container-fluid">
 			<div class="row">
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($input_errors) {
+                    print_input_errors($input_errors);
+} ?>
 				<div id="inputerrors"></div>
 			    <section class="col-xs-12">
 
@@ -246,73 +256,77 @@ jQuery(function ($) {
 														<td class="listhdrr">Description</td>
 													</tr>
 													<?php
-														foreach($a_gateways as $gwname => $gateway) {
-															if(!empty($pconfig['item'])) {
-																$af = explode("|", $pconfig['item'][0]);
-																$family = $a_gateways[$af[0]]['ipprotocol'];
-																if($gateway['ipprotocol'] != $family)
-																	continue;
-															}
-															$interface = $gateway['friendlyiface'];
-															$selected = array();
-															foreach((array)$pconfig['item'] as $item) {
-																$itemsplit = explode("|", $item);
-																if($itemsplit[0] == $gwname) {
-																	$selected[$itemsplit[1]] = "selected=\"selected\"";
-																	break;
-																} else {
-																	$selected[0] = "selected=\"selected\"";
-																}
-															}
-															$tr_id = $gwname . "_row";
-															echo "<tr class='gateway_row' id='{$tr_id}'>\n";
-															echo "<td class='listlr'>";
-															echo "<strong>{$gateway['name']} </strong>";
-															echo "</td><td class='listr'>";
-															echo "<select name='{$gwname}' class='gateway_tier_selector formfldselect selectpicker' data-style='btn-default' data-width='auto' id='{$gwname}'>\n";
-															echo "<option value='0' $selected[0] >" . gettext("Never") . "</option>\n";
-															echo "<option value='1' $selected[1] >" . gettext("Tier 1") . "</option>\n";
-															echo "<option value='2' $selected[2] >" . gettext("Tier 2") . "</option>\n";
-															echo "<option value='3' $selected[3] >" . gettext("Tier 3") . "</option>\n";
-															echo "<option value='4' $selected[4] >" . gettext("Tier 4") . "</option>\n";
-															echo "<option value='5' $selected[5] >" . gettext("Tier 5") . "</option>\n";
-															echo "</select>\n";
-															echo "</td>";
+                                                    foreach ($a_gateways as $gwname => $gateway) {
+                                                        if (!empty($pconfig['item'])) {
+                                                            $af = explode("|", $pconfig['item'][0]);
+                                                            $family = $a_gateways[$af[0]]['ipprotocol'];
+                                                            if ($gateway['ipprotocol'] != $family) {
+                                                                continue;
+                                                            }
+                                                        }
+                                                        $interface = $gateway['friendlyiface'];
+                                                        $selected = array();
+                                                        foreach ((array)$pconfig['item'] as $item) {
+                                                            $itemsplit = explode("|", $item);
+                                                            if ($itemsplit[0] == $gwname) {
+                                                                $selected[$itemsplit[1]] = "selected=\"selected\"";
+                                                                break;
+                                                            } else {
+                                                                $selected[0] = "selected=\"selected\"";
+                                                            }
+                                                        }
+                                                        $tr_id = $gwname . "_row";
+                                                        echo "<tr class='gateway_row' id='{$tr_id}'>\n";
+                                                        echo "<td class='listlr'>";
+                                                        echo "<strong>{$gateway['name']} </strong>";
+                                                        echo "</td><td class='listr'>";
+                                                        echo "<select name='{$gwname}' class='gateway_tier_selector formfldselect selectpicker' data-style='btn-default' data-width='auto' id='{$gwname}'>\n";
+                                                        echo "<option value='0' $selected[0] >" . gettext("Never") . "</option>\n";
+                                                        echo "<option value='1' $selected[1] >" . gettext("Tier 1") . "</option>\n";
+                                                        echo "<option value='2' $selected[2] >" . gettext("Tier 2") . "</option>\n";
+                                                        echo "<option value='3' $selected[3] >" . gettext("Tier 3") . "</option>\n";
+                                                        echo "<option value='4' $selected[4] >" . gettext("Tier 4") . "</option>\n";
+                                                        echo "<option value='5' $selected[5] >" . gettext("Tier 5") . "</option>\n";
+                                                        echo "</select>\n";
+                                                        echo "</td>";
 
-															$selected = array();
-															foreach((array)$pconfig['item'] as $item) {
-																$itemsplit = explode("|", $item);
-																if($itemsplit[0] == $gwname) {
-																	$selected[$itemsplit[2]] = "selected=\"selected\"";
-																	break;
-																} else {
-																	$selected['address'] = "selected=\"selected\"";
-																}
-															}
-															echo "<td class='listr'>";
-															echo "<select name='{$gwname}_vip' class='gateway_vip_selector formfldselect selectpicker' data-style='btn-default' data-width='auto' id='{$gwname}_vip'>\n";
-															echo "<option value='address' {$selected['address']} >" . gettext("Interface Address") . "</option>\n";
-															foreach($carplist as $vip => $address) {
-																echo "<!-- $vip - $address - $interface -->\n";
-																if(!preg_match("/^{$interface}_/i", $vip))
-																	continue;
-																if(($gateway['ipprotocol'] == "inet") && (!is_ipaddrv4($address)))
-																	continue;
-																if(($gateway['ipprotocol'] == "inet6") && (!is_ipaddrv6($address)))
-																	continue;
-																echo "<option value='{$vip}' $selected[$vip] >$vip - $address</option>\n";
-															}
-															echo "</select></td>";
-															echo "<td class='listr'><strong>{$gateway['descr']}&nbsp;</strong>";
-															echo "</td></tr>";
-														}
-													?>
+                                                        $selected = array();
+                                                        foreach ((array)$pconfig['item'] as $item) {
+                                                            $itemsplit = explode("|", $item);
+                                                            if ($itemsplit[0] == $gwname) {
+                                                                $selected[$itemsplit[2]] = "selected=\"selected\"";
+                                                                break;
+                                                            } else {
+                                                                $selected['address'] = "selected=\"selected\"";
+                                                            }
+                                                        }
+                                                        echo "<td class='listr'>";
+                                                        echo "<select name='{$gwname}_vip' class='gateway_vip_selector formfldselect selectpicker' data-style='btn-default' data-width='auto' id='{$gwname}_vip'>\n";
+                                                        echo "<option value='address' {$selected['address']} >" . gettext("Interface Address") . "</option>\n";
+                                                        foreach ($carplist as $vip => $address) {
+                                                            echo "<!-- $vip - $address - $interface -->\n";
+                                                            if (!preg_match("/^{$interface}_/i", $vip)) {
+                                                                continue;
+                                                            }
+                                                            if (($gateway['ipprotocol'] == "inet") && (!is_ipaddrv4($address))) {
+                                                                continue;
+                                                            }
+                                                            if (($gateway['ipprotocol'] == "inet6") && (!is_ipaddrv6($address))) {
+                                                                continue;
+                                                            }
+                                                            echo "<option value='{$vip}' $selected[$vip] >$vip - $address</option>\n";
+                                                        }
+                                                        echo "</select></td>";
+                                                        echo "<td class='listr'><strong>{$gateway['descr']}&nbsp;</strong>";
+                                                        echo "</td></tr>";
+                                                    }
+                                                    ?>
 												</table>
 												<br /><span class="vexpl">
 												<strong><?=gettext("Link Priority"); ?></strong> <br />
 												<?=gettext("The priority selected here defines in what order failover and balancing of links will be done. " .
-												"Multiple links of the same priority will balance connections until all links in the priority will be exhausted. " .
-												"If all links in a priority level are exhausted we will use the next available link(s) in the next priority level.") ?>
+                                                "Multiple links of the same priority will balance connections until all links in the priority will be exhausted. " .
+                                                "If all links in a priority level are exhausted we will use the next available link(s) in the next priority level.") ?>
 												<br />
 												<strong><?=gettext("Virtual IP"); ?></strong> <br />
 												<?=gettext("The virtual IP field selects what (virtual) IP should be used when this group applies to a local Dynamic DNS, IPsec or OpenVPN endpoint") ?>
@@ -324,12 +338,14 @@ jQuery(function ($) {
 									        <td width="78%" class="vtable">
 												<select name='trigger' class='formfldselect trigger_level_selector selectpicker' id='trigger' data-style='btn-default'>
 												<?php
-													foreach ($categories as $category => $categoryd) {
-												        echo "<option value=\"$category\"";
-												        if ($category == $pconfig['trigger']) echo " selected=\"selected\"";
-															echo ">" . htmlspecialchars($categoryd) . "</option>\n";
-													}
-												?>
+                                                foreach ($categories as $category => $categoryd) {
+                                                    echo "<option value=\"$category\"";
+                                                    if ($category == $pconfig['trigger']) {
+                                                        echo " selected=\"selected\"";
+                                                    }
+                                                        echo ">" . htmlspecialchars($categoryd) . "</option>\n";
+                                                }
+                                                ?>
 												</select>
 							                    <br /> <span class="vexpl"><?=gettext("When to trigger exclusion of a member"); ?></span>
 									        </td>
@@ -345,10 +361,13 @@ jQuery(function ($) {
 											<td width="22%" valign="top">&nbsp;</td>
 											<td width="78%">
 							                    <input name="Submit" type="submit" class="btn btn-primary formbtn" value="<?=gettext("Save");?>" />
-							                    <input type="button" class="btn btn-default formbtn" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-							                    <?php if (isset($id) && $a_gateway_groups[$id]): ?>
+							                    <input type="button" class="btn btn-default formbtn" value="<?=gettext("Cancel");
+?>" onclick="window.location.href='<?=$referer;?>'" />
+							                    <?php if (isset($id) && $a_gateway_groups[$id]) :
+?>
 								                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-							                    <?php endif; ?>
+							                    <?php
+endif; ?>
 											</td>
 										</tr>
 									</table>
