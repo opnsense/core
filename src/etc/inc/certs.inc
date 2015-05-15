@@ -600,7 +600,7 @@ function is_captiveportal_cert($certref)
 {
 	global $config;
 
-	if (!issset($config['captiveportal'])) {
+	if (!isset($config['captiveportal'])) {
 		return;
 	}
 
