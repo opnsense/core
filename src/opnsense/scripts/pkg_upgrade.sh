@@ -49,26 +49,27 @@ if [ -z "$pkg_running" ]; then
 		if opnsense-update -c; then
 			echo "!!!!!!!!!!!! ATTENTION !!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
 			echo "A kernel/base upgrade is required." >> ${PKG_PROGRESS_FILE}
-			echo "Please trigger a firmware upgrade" >> ${PKG_PROGRESS_FILE}
-			echo "via root console menu option '12'." >> ${PKG_PROGRESS_FILE}
+			echo "try to perform immediately" >> ${PKG_PROGRESS_FILE}
 			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
-			#if opnsense-update >> ${PKG_PROGRESS_FILE}; then
-			#	REBOOT=1
-			#fi
+			if opnsense-update >> ${PKG_PROGRESS_FILE}; then
+				REBOOT=1
+			fi
 		fi
 	elif [ "$package" == "pkg" ]; then
 		pkg upgrade -y $package >> ${PKG_PROGRESS_FILE}
+		echo  "*** PLEASE CHECK FOR MORE UPGRADES"
 	else
 		echo "Cannot update $package" >> ${PKG_PROGRESS_FILE}
 	fi
-	echo '***CHECKING FOR MORE UPGRADES, CAN TAKE 30 SECONDS***' >> ${PKG_PROGRESS_FILE}
-	/usr/local/opnsense/scripts/pkg_updatecheck.sh
 else
 	echo 'Upgrade already in progress' >> ${PKG_PROGRESS_FILE}
 fi
 
 if [ -n "${REBOOT}" ]; then
 	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
+	# give the frontend some time to figure out that a reboot is coming
+	sleep 10
+	reboot
 else
 	echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 fi
