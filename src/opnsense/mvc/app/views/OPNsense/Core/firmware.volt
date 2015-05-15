@@ -32,11 +32,15 @@ POSSIBILITY OF SUCH DAMAGE.
      * retrieve update status from backend
      */
     function updateStatus() {
+        // update UI
         $('#maintabs li:eq(0) a').tab('show');
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
         $('#updatestatus').attr('class', 'text-info');
         $('#updatestatus').html("{{ lang._('Updating.... (may take up to 30 seconds)') }}");
+
+        // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
+            // update UI
             if (data['status'] == 'unknown') {
                 $('#updatestatus').attr('class', 'text-warning');
             } else if (data['status'] == 'error') {
@@ -53,19 +57,19 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#upgrade").attr("style","");
                 // show upgrade list
                 $("#updatelist").html("<tr><th>{{ lang._('Package Name') }}</th>" +
-                "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th><th></th></tr>");
+                "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th></tr>");
                 $.each(['upgrade_packages','new_packages','reinstall_packages'], function(type_idx,type_name){
                     $.each(data[type_name],function(index,row){
-                        var txt_info = "" ;
                         if (type_name == "new_packages") {
-                            txt_info = "<strong>{{ lang._('NEW') }}</strong>";
+                            $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
+                            "<td><strong>{{ lang._('NEW') }}</strong></td><td>"+row['version']+"</td></tr>");
                         } else if (type_name == "reinstall_packages") {
-                            txt_info = "<strong>{{ lang._('REINSTALL') }}</strong>";
+                            $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
+                            "<td>"+row['version']+"</td><td><strong>{{ lang._('REINSTALL') }}</strong></td></tr>");
+                        } else {
+                            $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
+                            '<td>'+row['current_version']+'</td><td>'+row['new_version']+'</td></tr>');
                         }
-
-
-                        $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                        '<td>'+row['current_version']+'</td><td>'+row['new_version']+'</td><td>'+txt_info+'</td></tr>');
                     });
                 });
 
