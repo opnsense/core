@@ -78,6 +78,7 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function upgrade(){
         $('#maintabs li:eq(1) a').tab('show');
+        $('#updatestatus').html("{{ lang._('Starting Upgrade.. Please do not leave this page while upgrade is in progress.') }}");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
         ajaxCall('/api/core/firmware/upgrade',{},function() {
             $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
@@ -97,11 +98,13 @@ POSSIBILITY OF SUCH DAMAGE.
             if (data['status'] == 'running') {
                 // schedule next poll
                 setTimeout(trackStatus, 1000) ;
-            }else if (data['status'] == 'reboot') {
+            } else if (data['status'] == 'done') {
+                $('#updatestatus').html("{{ lang._('Upgrade done!') }}");
+            } else if (data['status'] == 'reboot') {
                 // reboot required, tell the user to wait until this is finished and redirect after 5 minutes
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
-                    title: 'Upgrade',
+                    title: "{{ lang._('Upgrade') }}",
                     message: "{{ lang._('The upgrade is finished and your device is being rebooted at the moment, please wait.') }}",
                     buttons: [{
                         label: "{{ lang._('Close') }}",
