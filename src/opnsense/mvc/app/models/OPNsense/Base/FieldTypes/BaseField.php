@@ -56,6 +56,11 @@ abstract class BaseField
     protected $internalValue = "";
 
     /**
+     * @var null|string node default value
+     */
+    protected $internalDefaultValue = "";
+
+    /**
      * @var string direct reference to this field in the model object
      */
     protected $internalReference = null;
@@ -426,6 +431,15 @@ abstract class BaseField
     public function setDefault($value)
     {
         $this->internalValue = $value;
+        $this->internalDefaultValue = $value;
+    }
+
+    /**
+     * (re)Apply default value
+     */
+    public function applyDefault()
+    {
+        $this->internalValue = $this->internalDefaultValue;
     }
 
     /**

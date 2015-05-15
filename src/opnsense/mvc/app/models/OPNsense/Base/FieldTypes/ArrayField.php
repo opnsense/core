@@ -103,11 +103,14 @@ class ArrayField extends BaseField
         );
 
         foreach ($new_record as $key => $node) {
+            // initialize field with new internal id and defined default value
             $node->setInternalReference($container_node->__reference.".".$key);
+            $node->applyDefault();
             $container_node->addChildNode($key, $node);
-            // make sure we have a UUID on repeating child items
-            $container_node->setAttributeValue("uuid", $this->generateUUID());
         }
+
+        // make sure we have a UUID on repeating child items
+        $container_node->setAttributeValue("uuid", $this->generateUUID());
 
         // add node to this object
         $this->addChildNode(null, $container_node);
