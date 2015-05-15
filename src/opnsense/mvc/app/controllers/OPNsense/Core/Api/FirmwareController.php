@@ -58,8 +58,8 @@ class FirmwareController extends ApiControllerBase
                 $response["status_msg"] = "no updates found";
             } elseif (array_key_exists("updates", $response) && $response["upgrade_packages"][0]["name"] == "pkg") {
                 $response["status"] = "ok";
-                $response["status_msg"] = "There is a mandatory update for the package manager.".
-                    "please install and check for updates again.";
+                $response["status_msg"] = "There is a mandatory update for the package manager. ".
+                    "Please install and check for updates again.";
             } elseif (array_key_exists("updates", $response)) {
                 $response["status"] = "ok";
                 $response["status_msg"] = sprintf("A total of %s update(s) are available.", $response["updates"]);
