@@ -35,10 +35,10 @@ ifconfig lo0 127.0.0.1/24
 ifconfig lo0 up
 
 # Start the backend in the background (must mute all the ouput)
-lua50c51 /usr/local/share/dfuibe_lua/main.lua \
+daemon -f lua50c51 /usr/local/share/dfuibe_lua/main.lua \
     /usr/local/share/dfuibe_lua/conf/BSDInstaller.lua \
     /usr/local/share/dfuibe_lua/conf/FreeBSD.lua \
-    /usr/local/share/dfuibe_lua/conf/Product.lua > /dev/null 2>&1 &
+    /usr/local/share/dfuibe_lua/conf/Product.lua
 
 conscontrol mute on > /dev/null
 
