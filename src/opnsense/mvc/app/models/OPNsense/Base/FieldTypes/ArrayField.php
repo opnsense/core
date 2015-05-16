@@ -146,4 +146,21 @@ class ArrayField extends BaseField
 
         return null;
     }
+
+    /**
+     * search child item by UUID
+     * @param $uuid item uuid
+     * @return bool
+     */
+    public function delByUUID($uuid)
+    {
+        foreach ($this->internalChildnodes as $nodeKey => $node) {
+            $nodeAttr = $node->getAttributes();
+            if (array_key_exists('uuid', $nodeAttr) && $nodeAttr['uuid'] == $uuid) {
+                unset($this->internalChildnodes[$nodeKey]);
+                return true;
+            }
+        }
+        return false;
+    }
 }
