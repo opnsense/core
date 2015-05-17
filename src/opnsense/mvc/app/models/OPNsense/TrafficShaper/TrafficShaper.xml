@@ -7,13 +7,13 @@
         <pipe type="ArrayField">
             <number type="IntegerField">
                 <MinimumValue>1</MinimumValue>
-                <MaximumValue>4096</MaximumValue>
+                <MaximumValue>65535</MaximumValue>
                 <ValidationMessage></ValidationMessage>
                 <Required>Y</Required>
             </number>
-            <bandwidth type="TextField">
+            <bandwidth type="IntegerField">
                 <Required>Y</Required>
-                <default>1024</default>
+                <default>899795</default>
             </bandwidth>
             <bandwidthMetric type="OptionField">
                 <Required>Y</Required>
@@ -40,6 +40,9 @@
                     <Mbit>Mbit/s</Mbit>
                 </OptionValues>
             </queueMetric>
+            <description type="TextField">
+                <Required>N</Required>
+            </description>
         </pipe>
     </items>
 </model>
