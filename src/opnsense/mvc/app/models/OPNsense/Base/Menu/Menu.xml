@@ -55,14 +55,22 @@
         </Assign>
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
-        <Aliases url="/firewall_aliases.php"/>
+        <Aliases url="/firewall_aliases.php">
+        	<IP url="/firewall_aliases.php?tab=ip"/>
+        	<Ports url="/firewall_aliases.php?tab=port"/>
+        	<URLs url="/firewall_aliases.php?tab=url"/>
+        	<All url="/firewall_aliases.php?tab=all"/>
+        </Aliases>
         <NAT url="/firewall_nat.php">
             <PortForward VisibleName="Port Forward" url="/firewall_nat.php"/>
             <OneOnOne VisibleName="1:1" url="/firewall_nat_1to1.php"/>
             <Outbound url="/firewall_nat_out.php"/>
             <NPt url="/firewall_nat_npt.php"/>
         </NAT>
-        <Rules url="/firewall_rules.php"/>
+        <Rules url="/firewall_rules.php">
+        	<Floating url="/firewall_rules.php?if=FloatingRules"/>
+        	<Interface url="/firewall_rules.php?if=*"/>
+        </Rules>
         <Schedules url="/firewall_schedule.php"/>
         <TrafficShaper VisibleName="Traffic Shaper" url="/firewall_shaper.php">
                 <ByQueue VisibleName="By Queue" url="/firewall_shaper_queues.php"/>
@@ -119,7 +127,9 @@
         <OpenVPN url="/vpn_openvpn_server.php">
             <Client url="/vpn_openvpn_client.php"/>
             <CSC url="/vpn_openvpn_csc.php"/>
-            <Wizards url="/wizard.php"/>
+            <Wizards url="/wizard.php?xml=openvpn_wizard.xml"/>
+            <ClientExport url="/vpn_openvpn_export.php"/>
+            <SharedKeyExport url="/vpn_openvpn_export_shared.php"/>
         </OpenVPN>
         <PPTP url="/vpn_pptp.php">
             <PPTPUsers url="/vpn_pptp_users.php"/>
