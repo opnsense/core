@@ -310,8 +310,8 @@ class MenuItem
         foreach ($this->children as $nodeId => $node) {
             $node->toggleSelected($url);
             if ($node->getUrl() != "") {
-                if (strlen($url) >= strlen($node->getUrl()) &&
-                    $node->getUrl() == substr($url, strlen($url)-strlen($node->getUrl()))) {
+                $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $node->getUrl());
+                if (preg_match("@^{$match}$@", "{$url}")) {
                     $node->select();
                 }
             }
