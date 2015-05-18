@@ -14,7 +14,8 @@
                 </number>
                 <bandwidth type="IntegerField">
                     <Required>Y</Required>
-                    <default>899795</default>
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>899795</MaximumValue>
                 </bandwidth>
                 <bandwidthMetric type="OptionField">
                     <Required>Y</Required>
@@ -28,8 +29,6 @@
                 </bandwidthMetric>
                 <queue type="IntegerField">
                     <Required>N</Required>
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>100</MaximumValue>
                 </queue>
                 <queueMetric type="OptionField">
                     <Required>N</Required>
