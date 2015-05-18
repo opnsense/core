@@ -46,7 +46,14 @@ function saveFormToEndpoint(url,formid,callback_ok) {
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_WARNING,
                     title: 'Input validation',
-                    message: 'Please correct validation errors in form'
+                    message: 'Please correct validation errors in form',
+                    buttons: [{
+                        label: 'Dismiss',
+                        action: function(dialogRef){
+                            dialogRef.close();
+                        }
+                    }]
+
                 });
             } else if ( callback_ok != undefined ) {
                 // execute callback function
