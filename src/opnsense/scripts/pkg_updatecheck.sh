@@ -83,7 +83,7 @@ if [ "$pkg_running" == "" ]; then
         pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
         timer=`echo $timer - 1 | bc`
       done
-      
+
       ## check if timeout is not reached
       if [ $timer -gt 0 ] ; then
         # Connection is ok
@@ -123,7 +123,7 @@ if [ "$pkg_running" == "" ]; then
               if [ "$download_size" == "" ]; then
                 download_size="none"
               fi
-              
+
               upgrade_needs_reboot=`pkg upgrade -nq os-update | grep UPGRADED | wc -l | awk '{print $1;}'`
 
               # First check if there are new packages that need to be installed

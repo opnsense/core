@@ -110,7 +110,7 @@ if (file_exists('/usr/sbin/swapinfo')) {
 
 ## Find out whether there's hardware encryption or not
 unset($hwcrypto);
-$fd = fopen('/var/log/dmesg.boot', 'r');
+$fd = @fopen('/var/run/dmesg.boot', 'r');
 if ($fd) {
     while (!feof($fd)) {
         $dmesgl = fgets($fd);

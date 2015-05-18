@@ -256,7 +256,7 @@ if ($_POST) {
 }
 
 unset($hwcrypto);
-$fd = fopen('/var/log/dmesg.boot', 'r');
+$fd = @fopen('/var/run/dmesg.boot', 'r');
 if ($fd) {
 	while (!feof($fd)) {
 		$dmesgl = fgets($fd);

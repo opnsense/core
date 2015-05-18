@@ -1173,7 +1173,7 @@ EOD;
 		$lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
 
 		/* Hifn accelerators do NOT work with the BEAST mitigation code. Do not allow it to be enabled if a Hifn card has been detected. */
-		$fd = fopen('/var/log/dmesg.boot', 'r');
+		$fd = @fopen('/var/run/dmesg.boot', 'r');
 		if ($fd) {
 			while (!feof($fd)) {
 				$dmesgl = fgets($fd);
@@ -1684,7 +1684,7 @@ function enable_watchdog()
 
 	$install_watchdog = false;
 	$supported_watchdogs = array("Geode");
-	$file = file_get_contents('/var/log/dmesg.boot');
+	$file = @file_get_contents('/var/run/dmesg.boot');
 	foreach($supported_watchdogs as $sd) {
 		if(stristr($file, "Geode")) {
 			$install_watchdog = true;

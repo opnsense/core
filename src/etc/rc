@@ -64,7 +64,7 @@ else
 	done
 fi
 
-# write /var/log/dmesg.boot
+# write /var/run/dmesg.boot
 /etc/rc.d/dmesg onestart
 
 # rewrite message of the day
