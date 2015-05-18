@@ -4809,7 +4809,9 @@ button.close {
 .modal-dialog {
   position: relative;
   width: auto;
-  margin: 62px 10px 10px 10px; }
+  margin: 62px 10px 10px 10px; 
+  z-index:10000;
+}
 
 .modal-content {
   position: relative;
