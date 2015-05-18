@@ -388,7 +388,7 @@ $main_buttons = array(
 
 															<span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules");?>"><span class="glyphicon glyphicon-remove" ></span></span>
 														<?php else: ?>
-															<button name="del_<?=$i;?>_x" type="submit" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules"); ?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected rules?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+															<button name="del_x" type="submit" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules"); ?>" onclick="return confirm('<?=gettext("Do you really want to delete the selected rules?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
 														<?php endif; ?>
 														 <a href="firewall_nat_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>"><span class="glyphicon glyphicon-plus"></span></a>
 													</td>
