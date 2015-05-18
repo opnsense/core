@@ -72,10 +72,10 @@
             <Interface url="/firewall_rules.php?if=*"/>
         </Rules>
         <Schedules url="/firewall_schedule.php"/>
-        <TrafficShaper VisibleName="Traffic Shaper" url="/firewall_shaper.php">
+        <Queues VisibleName="Queues" url="/firewall_shaper.php">
             <ByQueue VisibleName="By Queue" url="/firewall_shaper_queues.php"/>
             <Wizards url="/firewall_shaper_wizards.php"/>
-        </TrafficShaper>
+        </Queues>
         <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php"/>
     </Firewall>
 
