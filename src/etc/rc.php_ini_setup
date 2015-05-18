@@ -93,7 +93,7 @@ fi
 # Populate a dummy php.ini to avoid
 # the file being clobbered and the firewall
 # not being able to boot back up.
-/bin/cat >/usr/local/lib/php.ini <<EOF
+cat >> /usr/local/lib/php.ini << EOF
 ; File generated via rc.php_ini_setup
 output_buffering = "0"
 expose_php = Off
@@ -119,29 +119,7 @@ log_errors=on
 error_log=/tmp/PHP_errors.log
 extension_dir=${EXTENSIONSDIR}
 date.timezone="${TIMEZONE}"
-
-; Extensions
 EOF
-
-# Copy php.ini file to etc/ too (cli)
-/bin/cp /usr/local/lib/php.ini /usr/local/etc/php.ini
-
-# Ensure directory exists
-if [ ! -d /etc/php_dynamodules ]; then
-	/bin/mkdir /etc/php_dynamodules
-fi
-if [ ! -d /etc/php_dynamodules_zend ]; then
-	/bin/mkdir /etc/php_dynamodules_zend
-fi
-if [ ! -d /etc/php_dynamodules_zend_ts ]; then
-	/bin/mkdir /etc/php_dynamodules_zend_ts
-fi
-
-# Read in dynamodules
-if [ -d /etc/php_dynamodules ]; then
-	DYNA_MODULES=`/bin/ls -Utr /etc/php_dynamodules/`
-	PHPMODULES="$PHPMODULES $DYNA_MODULES"
-fi
 
 # Loop through and generate modules to load.
 # Take into account modules built into php.
@@ -156,26 +134,26 @@ for EXT in $PHPMODULES; do
 	if [ "$SHOULDADD" = "true" ]; then
 		# Ensure extension exists before adding.
 		if [ -f "${EXTENSIONSDIR}${EXT}.so" ]; then
-			echo "extension=${EXT}.so" >> /usr/local/lib/php.ini
+			echo "extension=${EXT}.so" >> /usr/local/etc/php/extensions.ini
 		fi
 	fi
 done
 
 # Enable XDebug if enabled in config
-if [ ! -z `/usr/bin/grep "<enable_xdebug>1</enable_xdebug>" /conf/config.xml` ]; then
-	/bin/cat >>/usr/local/lib/php.ini <<EOF
+if [ ! -z `grep "<enable_xdebug>1</enable_xdebug>" /conf/config.xml` ]; then
+	cat >> /usr/local/etc/php/extensions.ini << EOF
 zend_extension=xdebug.so
+EOF
+	cat >> /usr/local/lib/php.ini << EOF
 
 [xdebug]
 xdebug.profiler_enable_trigger = 1
 xdebug.profiler_output_name = cachegrind.out.%t.%p
-
 EOF
-
 fi
 
+cat >> /usr/local/lib/php.ini << EOF
 
-/bin/cat >>/usr/local/lib/php.ini <<EOF
 [suhosin]
 suhosin.get.max_array_depth = 5000
 suhosin.get.max_array_index_length = 256
@@ -194,35 +172,4 @@ suhosin.session.cryptdocroot=Off
 EOF
 
 # Copy php.ini file to etc/ too (cli)
-/bin/cp /usr/local/lib/php.ini /usr/local/etc/php.ini
-
-# Remove old log file if it exists.
-if [ -f /var/run/php_modules_load_errors.txt ]; then
-	/bin/rm /var/run/php_modules_load_errors.txt
-fi
-
-for EXT in $PHPMODULES; do
-	PHPMODULESLC="$PHPMODULESLC `echo "$EXT" | /usr/bin/tr '[:upper:]' '[:lower:]'`"
-done
-
-# Check loaded modules and remove anything that did not load correctly
-LOADED_MODULES=`/usr/local/bin/php -m | /usr/bin/tr '[:upper:]' '[:lower:]' 2>/dev/null | /usr/bin/grep -v "\["`
-for EXT in $PHPMODULESLC; do
-	SHOULDREMOVE="true"
-	for LM in $LOADED_MODULES; do
-		if [ "$EXT" = "$LM" ]; then
-			SHOULDREMOVE="false"
-		fi
-	done
-	if [ "$SHOULDREMOVE" = "true" ]; then
-		if [ -f "${EXTENSIONSDIR}${EXT}.so" ]; then
-			echo ">>> ${EXT} did not load correctly.  Removing from php.ini..." >> /var/run/php_modules_load_errors.txt
-			/bin/cat /usr/local/lib/php.ini | /usr/bin/grep -v $EXT > /tmp/php.ini
-			/bin/rm -f /usr/local/lib/php.ini
-			/bin/mv /tmp/php.ini /usr/local/lib/php.ini
-		fi
-	fi
-done
-
-# Copy php.ini file to etc/ too (cli)
-/bin/cp /usr/local/lib/php.ini /usr/local/etc/php.ini
+cp /usr/local/lib/php.ini /usr/local/etc/php.ini
