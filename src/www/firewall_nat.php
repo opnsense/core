@@ -259,7 +259,7 @@ $main_buttons = array(
 											$alias_local_port_span_end   = $alias_popup["dstport_end"];
 
 											if (isset($natent['disabled']))
-												$textss = "<span class=\"gray\">";
+												$textss = "<span class=\"text-muted\">";
 											else
 												$textss = "<span>";
 
@@ -273,11 +273,18 @@ $main_buttons = array(
 									                  <td class="listt"><input type="checkbox" id="frc<?=$nnats;?>" name="rule[]" value="<?=$i;?>" style="margin: 0; padding: 0; width: 15px; height: 15px;" /></td>
 									                  <td class="listt" align="center">
 														<?php if($natent['associated-rule-id'] == "pass"): ?>
-														<span class="glyphicon glyphicon-play text-success"></span>
+														<?php if(isset($natent['disabled'])):?>
+															<span class="glyphicon glyphicon-play text-muted"></span>
+														<? else: ?>
+															<span class="glyphicon glyphicon-play text-success"></span>
+														<? endif;?>
 
 														<?php elseif (!empty($natent['associated-rule-id'])): ?>
-														<span class="glyphicon glyphicon-resize-horizontal text-success"></span>
-
+														<?php if(isset($natent['disabled'])):?>
+															<span class="glyphicon glyphicon-resize-horizontal text-muted"></span>
+														<? else:?>
+															<span class="glyphicon glyphicon-resize-horizontal text-success"></span>
+														<?php endif; ?>
 														<?php endif; ?>
 													  </td>
 									                  <td class="listlr"  id="frd<?=$nnats;?>" ondblclick="document.location='firewall_nat_edit.php?id=<?=$nnats;?>';">
