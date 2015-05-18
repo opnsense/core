@@ -59,7 +59,7 @@ if ($_POST['apply']) {
 	clear_subsystem_dirty('shaper');
 }
 
-$pgtitle = array(gettext("Firewall"),gettext("Traffic Shaper"),gettext("Wizards"));
+$pgtitle = array(gettext("Firewall"),gettext("Queues"),gettext("Wizards"));
 $shortcut_section = "trafficshaper";
 
 $wizards = array(

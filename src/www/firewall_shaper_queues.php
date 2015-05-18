@@ -157,7 +157,7 @@ if ($_POST['apply']) {
 		clear_subsystem_dirty('shaper');
 }
 
-$pgtitle = gettext("Firewall: Shaper: By Queues View");
+$pgtitle = gettext("Firewall: Queues: By Queues View");
 $shortcut_section = "trafficshaper";
 $closehead = false;
 include("head.inc");
