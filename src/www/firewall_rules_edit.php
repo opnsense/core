@@ -211,8 +211,6 @@ if (isset($id) && $a_filter[$id]) {
 
 	//schedule support
 	$pconfig['sched'] = (($a_filter[$id]['sched'] == "none") ? '' : $a_filter[$id]['sched']);
-	$pconfig['vlanprio'] = (($a_filter[$id]['vlanprio'] == "none") ? '' : $a_filter[$id]['vlanprio']);
-	$pconfig['vlanprioset'] = (($a_filter[$id]['vlanprioset'] == "none") ? '' : $a_filter[$id]['vlanprioset']);
 	if (!isset($_GET['dup']) || !is_numericint($_GET['dup']))
 		$pconfig['associated-rule-id'] = $a_filter[$id]['associated-rule-id'];
 
@@ -680,13 +678,6 @@ if ($_POST) {
 
 		if ($_POST['sched'] != "") {
 			$filterent['sched'] = $_POST['sched'];
-		}
-
-		if ($_POST['vlanprio'] != "") {
-			$filterent['vlanprio'] = $_POST['vlanprio'];
-		}
-		if ($_POST['vlanprioset'] != "") {
-			$filterent['vlanprioset'] = $_POST['vlanprioset'];
 		}
 
 		// If we have an associated nat rule, make sure the source and destination doesn't change
@@ -1370,50 +1361,6 @@ include("head.inc");
 											<div id="shownoxmlrpcadv" <?php if (empty($pconfig['nosync'])) echo "style='display:none'"; ?>>
 												<input type="checkbox" name="nosync"<?php if($pconfig['nosync']) echo " checked=\"checked\""; ?> /><br />
 												<?=gettext("Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.");?>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td width="22%" valign="top" class="vncell"><?=gettext("802.1p");?></td>
-										<td width="78%" class="vtable">
-											<div id="showadvvlanpriobox" <?php if (!empty($pconfig['vlanprio'])) echo "style='display:none'"; ?>>
-												<input type="button" onclick="show_advanced_vlanprio()" class="btn btn-default" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
-											</div>
-											<div id="showvlanprioadv" <?php if (empty($pconfig['vlanprio'])) echo "style='display:none'"; ?>>
-												<?php $vlanprio = array("none", "be", "bk", "ee", "ca", "vi", "vo", "ic", "nc"); ?>
-							<?php
-												$opts = "";
-												foreach($vlanprio as $vprio) {
-													if ($vprio == $pconfig['vlanprio'])
-														$selected = " selected=\"selected\"";
-													else
-														$selected = "";
-													if ($vprio == "none")
-														$opts .= "<option value=\"\">{$vprio}</option>\n";
-													else
-														$opts .= "<option value=\"{$vprio}\" {$selected}>" . strtoupper($vprio) . "</option>\n";
-												}
-
-												$optsset = "";
-												foreach($vlanprio as $vprioset) {
-													if ($vprioset == $pconfig['vlanprioset'])
-														$selected = " selected=\"selected\"";
-													else
-														$selected = "";
-													if ($vprioset == "none")
-														$optsset .= "<option value=\"\">{$vprioset}</option>\n";
-													else
-														$optsset .= "<option value=\"{$vprioset}\" {$selected}>" . strtoupper($vprioset) . "</option>\n";
-												}
-							?>
-												<select name='vlanprio'>
-												<?php echo $opts; ?>
-												</select>
-												<p><?=gettext("Choose 802.1p priority to match on");?></p>
-												<select name='vlanprioset'>
-												<?php echo $optsset; ?>
-												</select>
-												<p><?=gettext("Choose 802.1p priority to apply");?></p>
 											</div>
 										</td>
 									</tr>

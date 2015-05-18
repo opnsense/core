@@ -453,10 +453,6 @@ function firewall_check_for_advanced_options(&$item) {
 		$item_set .= "max-src-conn-rate {$item['max-src-conn-rate']} ";
 	if($item['max-src-conn-rates'])
 		$item_set .= "max-src-conn-rates {$item['max-src-conn-rates']} ";
-	if($item['vlanprio'])
-		$item_set .= "vlanprio {$item['vlanprio']} ";
-	if($item['vlanprioset'])
-		$item_set .= "vlanprioset {$item['vlanprioset']} ";
 	if($item['gateway'])
 		$item_set .= "gateway {$item['gateway']} ";
 	if($item['ackqueue'])
