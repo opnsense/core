@@ -1,18 +1,18 @@
 <menu>
     <!-- Core menu system including legacy stuff -->
     <User order="0" cssClass="glyphicon glyphicon-user">
-        <ChangePassword VisibleName="Change password" url="/system_usermanager_passwordmg.php" />
+        <ChangePassword VisibleName="Change password" url="/system_usermanager_passwordmg.php"/>
     </User>
     <System order="1" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
         <Certificates url="/system_certmanager.php">
-                <Certificates url="/system_certmanager.php"/>
-                <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php"/>
-                <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php"/>
+            <Certificates url="/system_certmanager.php"/>
+            <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php"/>
+            <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php"/>
         </Certificates>
 
         <Firmware url="/system_firmware_check.php">
-                <Auto_Update VisibleName="Auto Update" url="/system_firmware_check.php"/>
-                <UpdaterSettings VisibleName="Updater Settings" url="/system_firmware_settings.php"/>
+            <Auto_Update VisibleName="Auto Update" url="/system_firmware_check.php"/>
+            <UpdaterSettings VisibleName="Updater Settings" url="/system_firmware_settings.php"/>
         </Firmware>
 
         <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>
@@ -20,46 +20,46 @@
         <Routing url="/system_gateways.php"/>
 
         <Settings url="/system_general.php">
-                <General VisibleName="General" url="/system_general.php"/>
-                <Admin_Access VisibleName="Admin Access" url="/system_advanced_admin.php"/>
-                <Firewall_NAT VisibleName="Firewall/NAT" url="/system_advanced_firewall.php"/>
-                <Networking url="/system_advanced_network.php"></Networking>
-                <Miscellaneos url="/system_advanced_misc.php"/>
-                <System_Tunables VisibleName="System Tunables" url="/system_advanced_sysctl.php"/>
-                <Notifications url="system_advanced_notifications.php"/>
+            <General VisibleName="General" url="/system_general.php"/>
+            <Admin_Access VisibleName="Admin Access" url="/system_advanced_admin.php"/>
+            <Firewall_NAT VisibleName="Firewall/NAT" url="/system_advanced_firewall.php"/>
+            <Networking url="/system_advanced_network.php"></Networking>
+            <Miscellaneos url="/system_advanced_misc.php"/>
+            <System_Tunables VisibleName="System Tunables" url="/system_advanced_sysctl.php"/>
+            <Notifications url="system_advanced_notifications.php"/>
         </Settings>
 
-        <SetupWizard  VisibleName="Setup Wizard" url="wizard.php?xml=setup_wizard.xml"/>
+        <SetupWizard VisibleName="Setup Wizard" url="wizard.php?xml=setup_wizard.xml"/>
 
-        <UserManager  VisibleName="User Manager" url="/system_usermanager.php">
-                <Users url="/system_usermanager.php"/>
-                <Groups url="/system_groupmanager.php"/>
-                <Settings url="/system_usermanager_settings.php"/>
-                <Servers url="/system_authservers.php"/>
+        <UserManager VisibleName="User Manager" url="/system_usermanager.php">
+            <Users url="/system_usermanager.php"/>
+            <Groups url="/system_groupmanager.php"/>
+            <Settings url="/system_usermanager_settings.php"/>
+            <Servers url="/system_authservers.php"/>
         </UserManager>
 
     </System>
 
     <Interfaces order="2" cssClass="glyphicon glyphicon-wrench">
         <Assign VisibleName="(Assign)" order="999" url="/interfaces_assign.php">
-                <InterfaceAssignments VisibleName="Interface Addignments" url="/interfaces_assign.php"/>
-                <InterfaceGroups VisibleName="Interface Groups" url="/interfaces_groups.php"/>
-                <Wireless url="/interfaces_wireless.php"/>
-                <VLANs url="/interfaces_vlan.php"/>
-                <QinQs url="/interfaces_qinq.php"/>
-                <PPPs url="/interfaces_ppps.php"/>
-                <GRE url="/interfaces_gre.php"/>
-                <GIF url="/interfaces_gif.php"/>
-                <Bridges url="/interfaces_bridge.php"/>
-                <LAGG url="/interfaces_lagg.php"/>
+            <InterfaceAssignments VisibleName="Interface Addignments" url="/interfaces_assign.php"/>
+            <InterfaceGroups VisibleName="Interface Groups" url="/interfaces_groups.php"/>
+            <Wireless url="/interfaces_wireless.php"/>
+            <VLANs url="/interfaces_vlan.php"/>
+            <QinQs url="/interfaces_qinq.php"/>
+            <PPPs url="/interfaces_ppps.php"/>
+            <GRE url="/interfaces_gre.php"/>
+            <GIF url="/interfaces_gif.php"/>
+            <Bridges url="/interfaces_bridge.php"/>
+            <LAGG url="/interfaces_lagg.php"/>
         </Assign>
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases url="/firewall_aliases.php">
-		<IP url="/firewall_aliases.php?tab=ip"/>
-		<Ports url="/firewall_aliases.php?tab=port"/>
-		<URLs url="/firewall_aliases.php?tab=url"/>
-		<All url="/firewall_aliases.php?tab=all"/>
+            <IP url="/firewall_aliases.php?tab=ip"/>
+            <Ports url="/firewall_aliases.php?tab=port"/>
+            <URLs url="/firewall_aliases.php?tab=url"/>
+            <All url="/firewall_aliases.php?tab=all"/>
         </Aliases>
         <NAT url="/firewall_nat.php">
             <PortForward VisibleName="Port Forward" url="/firewall_nat.php"/>
@@ -68,13 +68,13 @@
             <NPt url="/firewall_nat_npt.php"/>
         </NAT>
         <Rules url="/firewall_rules.php">
-		<Floating url="/firewall_rules.php?if=FloatingRules"/>
-		<Interface url="/firewall_rules.php?if=*"/>
+            <Floating url="/firewall_rules.php?if=FloatingRules"/>
+            <Interface url="/firewall_rules.php?if=*"/>
         </Rules>
         <Schedules url="/firewall_schedule.php"/>
         <TrafficShaper VisibleName="Traffic Shaper" url="/firewall_shaper.php">
-                <ByQueue VisibleName="By Queue" url="/firewall_shaper_queues.php"/>
-                <Wizards url="/firewall_shaper_wizards.php"/>
+            <ByQueue VisibleName="By Queue" url="/firewall_shaper_queues.php"/>
+            <Wizards url="/firewall_shaper_wizards.php"/>
         </TrafficShaper>
         <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php"/>
     </Firewall>
@@ -102,16 +102,16 @@
             <DynamicDNSRFC2136Clients url="/services_rfc2136.php"/>
         </DynamicDNS>
         <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php"></IGMPProxy>
-        <LoadBalancer  VisibleName="Load Balancer" url="/load_balancer_pool.php">
+        <LoadBalancer VisibleName="Load Balancer" url="/load_balancer_pool.php">
             <VirtualServer url="/load_balancer_virtual_server.php"/>
             <Monitors url="/load_balancer_monitor.php"/>
             <Settings url="/load_balancer_setting.php"/>
         </LoadBalancer>
         <NTP VisibleName="Network Time Protocol" url="/services_ntpd.php"></NTP>
-        <PPPoEServer  VisibleName="PPPoE Server" url="/services_vpn_pppoe.php"/>
+        <PPPoEServer VisibleName="PPPoE Server" url="/services_vpn_pppoe.php"/>
         <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
-        <SNMP  VisibleName="SNMP" url="/services_snmp.php"/>
-        <UPnPNATPMP  VisibleName="Universal P&amp;P / NAT-PMP" url="/pkg_edit.php?xml=miniupnpd.xml"/>
+        <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
+        <UPnPNATPMP VisibleName="Universal P&amp;P / NAT-PMP" url="/pkg_edit.php?xml=miniupnpd.xml"/>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php"/>
     </Services>
 
@@ -218,10 +218,13 @@
 
     <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
-        <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers" IsExternal="Y"/>
+        <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers"
+                        IsExternal="Y"/>
         <Documentation url="https://wiki.opnsense.org/" IsExternal="Y"/>
-        <FreeBSDHandbook VisibleName="FreeBSD Handbook" url="https://www.freebsd.org/doc/en/books/handbook/" IsExternal="Y"/>
-        <PaidSupport VisibleName="Paid Support" url="https://opnsense.org/support-overview/commercial-support/" IsExternal="Y"/>
+        <FreeBSDHandbook VisibleName="FreeBSD Handbook" url="https://www.freebsd.org/doc/en/books/handbook/"
+                         IsExternal="Y"/>
+        <PaidSupport VisibleName="Paid Support" url="https://opnsense.org/support-overview/commercial-support/"
+                     IsExternal="Y"/>
         <UserForum VisibleName="UserForum" url="https://forum.opnsense.org/" IsExternal="Y"/>
     </Help>
 
