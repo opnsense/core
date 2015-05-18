@@ -56,10 +56,10 @@
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases url="/firewall_aliases.php">
-        	<IP url="/firewall_aliases.php?tab=ip"/>
-        	<Ports url="/firewall_aliases.php?tab=port"/>
-        	<URLs url="/firewall_aliases.php?tab=url"/>
-        	<All url="/firewall_aliases.php?tab=all"/>
+		<IP url="/firewall_aliases.php?tab=ip"/>
+		<Ports url="/firewall_aliases.php?tab=port"/>
+		<URLs url="/firewall_aliases.php?tab=url"/>
+		<All url="/firewall_aliases.php?tab=all"/>
         </Aliases>
         <NAT url="/firewall_nat.php">
             <PortForward VisibleName="Port Forward" url="/firewall_nat.php"/>
@@ -68,8 +68,8 @@
             <NPt url="/firewall_nat_npt.php"/>
         </NAT>
         <Rules url="/firewall_rules.php">
-        	<Floating url="/firewall_rules.php?if=FloatingRules"/>
-        	<Interface url="/firewall_rules.php?if=*"/>
+		<Floating url="/firewall_rules.php?if=FloatingRules"/>
+		<Interface url="/firewall_rules.php?if=*"/>
         </Rules>
         <Schedules url="/firewall_schedule.php"/>
         <TrafficShaper VisibleName="Traffic Shaper" url="/firewall_shaper.php">
