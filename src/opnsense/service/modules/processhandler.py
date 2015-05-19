@@ -59,7 +59,7 @@ class Handler(object):
                     -> execute ActionHandler command using Action objects
                     <- send back result string
     """
-    def __init__(self, socket_filename, config_path, simulation_mode=False):
+    def __init__(self, socket_filename, config_path, config_environment={}, simulation_mode=False):
         """ Constructor
 
         :param socket_filename: filename of unix domain socket to use
@@ -70,6 +70,7 @@ class Handler(object):
         self.socket_filename = socket_filename
         self.config_path = config_path
         self.simulation_mode = simulation_mode
+        self.config_environment = config_environment
         self.single_threaded = False
 
     def run(self):
@@ -80,7 +81,8 @@ class Handler(object):
         while True:
             try:
                 # open action handler
-                actHandler = ActionHandler(config_path=self.config_path)
+                actHandler = ActionHandler(config_path=self.config_path,
+                                           config_environment=self.config_environment)
 
                 # remove previous socket ( if exists )
                 try:
@@ -218,13 +220,15 @@ class HandlerClient(threading.Thread):
 class ActionHandler(object):
     """ Start/stop services and functions using configuration data defined in conf/actions_<topic>.conf
     """
-    def __init__(self, config_path):
+    def __init__(self, config_path, config_environment):
         """ Initialize action handler to start system functions
 
         :param config_path: full path of configuration data
+        :param config_environment: environment to use (if possible)
         :return:
         """
         self.config_path = config_path
+        self.config_environment = config_environment
         self.action_map = {}
         self.load_config()
 
@@ -248,7 +252,7 @@ class ActionHandler(object):
             cnf.read(config_filename)
             for section in cnf.sections():
                 # map configuration data on object
-                action_obj = Action()
+                action_obj = Action(config_environment = self.config_environment)
                 for act_prop in cnf.items(section):
                     setattr(action_obj, act_prop[0], act_prop[1])
 
@@ -324,11 +328,12 @@ class Action(object):
     """ Action class,  handles actual (system) calls.
     set command, parameters (template) type and log message
     """
-    def __init__(self):
+    def __init__(self, config_environment):
         """ setup default properties
-
+        :param config_environment: environment to use
         :return:
         """
+        self.config_environment = config_environment
         self.command = None
         self.parameters = None
         self.type = None
@@ -389,7 +394,7 @@ class Action(object):
             if self.type.lower() == 'script':
                 # execute script type command
                 try:
-                    exit_status = subprocess.call(script_command, shell=True)
+                    exit_status = subprocess.call(script_command, env=self.config_environment, shell=True)
                     # send response
                     if exit_status == 0:
                         return 'OK'
@@ -402,7 +407,7 @@ class Action(object):
                     return 'Execute error'
             elif self.type.lower() == 'script_output':
                 try:
-                    script_output = subprocess.check_output(script_command, shell=True)
+                    script_output = subprocess.check_output(script_command, env=self.config_environment, shell=True)
                     return script_output
                 except:
                     syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed at %s' % (message_uuid,
