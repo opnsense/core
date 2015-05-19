@@ -108,7 +108,7 @@ POSSIBILITY OF SUCH DAMAGE.
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
                 title: 'Reboot required',
-                message: 'This upgrade requires a reboot, when you install the firewall will automatically reboot!',
+                message: 'This upgrade may require a reboot, when needed the firewall will automatically reboot!',
                 buttons: [{
                     label: 'Ok',
                     action: function(dialogRef){
