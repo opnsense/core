@@ -30,6 +30,7 @@ namespace OPNsense\Base;
 
 use OPNsense\Core\ACL;
 use Phalcon\Mvc\Controller;
+use Phalcon\Logger\Adapter\Syslog;
 
 /**
  * Class ApiControllerBase, inherit this class to implement API calls
@@ -54,6 +55,17 @@ class ApiControllerBase extends Controller
         session_write_close();
     }
 
+    protected function getLogger($ident = "api")
+    {
+        $logger = new Syslog($ident, array(
+            'option' => LOG_PID,
+            'facility' => LOG_LOCAL4
+        ));
+
+        return $logger;
+    }
+
+
     /**
      * before routing event
      * @param Dispatcher $dispatcher
@@ -65,12 +77,15 @@ class ApiControllerBase extends Controller
 
         // use authentication of legacy OPNsense to validate user.
         if ($this->session->has("Username") == false) {
+            $this->getLogger()->error("no active session, user not found");
             $this->response->redirect("/", true);
         }
 
         // Authorization using legacy acl structure
         $acl = new ACL();
         if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
+            $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
+                " not accessible for user ".$this->session->get("Username"));
             $this->response->redirect("/", true);
         }
 
@@ -85,6 +100,7 @@ class ApiControllerBase extends Controller
             ) && !$csrf_valid
         ) {
             // missing csrf, exit.
+            $this->getLogger()->error("no matching csrf found for request");
             return false;
         }
 
