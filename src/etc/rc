@@ -64,9 +64,6 @@ else
 	done
 fi
 
-# write /var/run/dmesg.boot
-/etc/rc.d/dmesg onestart
-
 # rewrite message of the day
 /etc/rc.d/motd onestart
 
@@ -179,6 +176,9 @@ elif [ -d /root/var/db/pkg ]; then
 	mkdir -p /var/db
 	mv /root/var/db/pkg /var/db/
 fi
+
+# write /var/run/dmesg.boot
+/etc/rc.d/dmesg onestart
 
 # make some directories in /var
 mkdir -p /var/run /var/log /var/etc /var/db/entropy /var/at/jobs \
