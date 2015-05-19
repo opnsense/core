@@ -57,7 +57,7 @@ $spd = ipsec_dump_spd();
 							<div class="table-responsive">
 
 								<table class="table table-striped table-sort __nomb">
-								<?php if (count($spd)): ?>
+								<?php if (count($spd)||true): ?>
 								<tr>
 									<td class="listhdrr nowrap"><?= gettext("Source"); ?></td>
 									<td class="listhdrr nowrap"><?= gettext("Destination"); ?></td>
@@ -70,8 +70,7 @@ $spd = ipsec_dump_spd();
 								<tr>
 									<td class="listlr" valign="top"><?=htmlspecialchars($sp['srcid']);?></td>
 									<td class="listr" valign="top"><?=htmlspecialchars($sp['dstid']);?></td>
-									<td class="listr" valign="top">
-										<img src="/themes/<?= $g['theme']; ?>/images/icons/icon_<?=$sp['dir'];?>.gif" width="11" height="11" style="margin-top: 2px" alt="direction" />
+									<td class="listr" valign="top"> <span class="glyphicon glyphicon-arrow-<?php if($sp['dir'] == "in" ) echo "right"; else echo "left";?>  aria-hidden="true"></span>
 									</td>
 									<td class="listr" valign="top"><?=htmlspecialchars(strtoupper($sp['proto']));?></td>
 									<td class="listr" valign="top"><?=htmlspecialchars($sp['src']);?> -> <?=htmlspecialchars($sp['dst']);?></td>
@@ -88,14 +87,14 @@ $spd = ipsec_dump_spd();
 							<br />
 							<table class="tabcont" border="0" cellspacing="0" cellpadding="6" summary="policies">
 								<tr>
-									<td width="16"><img src="/themes/<?= $g['theme']; ?>/images/icons/icon_in.gif" width="11" height="11" alt="in" /></td>
+									<td width="16">	<span class="glyphicon glyphicon-arrow-right" aria-hidden="true" alt="in"></span></td>
 									<td><?= gettext("incoming (as seen by firewall)"); ?></td>
 								</tr>
 								<tr>
 									<td colspan="5" height="4"></td>
 								</tr>
 								<tr>
-									<td><img src="/themes/<?= $g['theme']; ?>/images/icons/icon_out.gif" width="11" height="11" alt="out" /></td>
+									<td><span class="glyphicon glyphicon-arrow-left" aria-hidden="true" alt="out"></span></td>
 									<td><?= gettext("outgoing (as seen by firewall)"); ?></td>
 								</tr>
 								<?php else: ?>
