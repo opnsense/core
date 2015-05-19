@@ -31,7 +31,7 @@ $nocsrf = true;
 require_once("guiconfig.inc");
 require_once("widgets/include/wake_on_lan.inc");
 
-if (is_array($config['wol']['wolentry'])) {
+if (isset($config['wol']['wolentry'])) {
     $wolcomputers = $config['wol']['wolentry'];
 } else {
     $wolcomputers = array();
