@@ -10,9 +10,7 @@
             <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php"/>
         </Certificates>
 
-        <Firmware url="/system_firmware_check.php">
-            <Auto_Update VisibleName="Auto Update" url="/system_firmware_check.php"/>
-            <UpdaterSettings VisibleName="Updater Settings" url="/system_firmware_settings.php"/>
+        <Firmware url="/ui/core/firmware/">
         </Firmware>
 
         <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>

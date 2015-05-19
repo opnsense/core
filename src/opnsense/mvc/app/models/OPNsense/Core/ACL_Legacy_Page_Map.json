@@ -1383,7 +1383,8 @@
         "name": "WebCfg - System: Firmware: Auto Update page",
         "descr": "Allow access to the 'System: Firmware: Auto Update' page.",
         "match": [
-            "system_firmware_check.php*"
+            "ui/core/firmware/*",
+            "api/core/firmware/*"
         ]
     },
     "page-system-firmware-manualupdate": {
