@@ -140,7 +140,7 @@ POSSIBILITY OF SUCH DAMAGE.
             }
             if (data['status'] == 'running' || data['status'] == 'error') {
                 // schedule next poll
-                setTimeout(trackStatus, 1000) ;
+                setTimeout(trackStatus, 500);
             } else if (data['status'] == 'done') {
                 $('#updatestatus').html("{{ lang._('Upgrade done!') }}");
             } else if (data['status'] == 'reboot') {
