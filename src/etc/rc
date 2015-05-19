@@ -19,6 +19,9 @@ export HOME PATH
 
 echo "Mounting filesystems..."
 
+# tunefs may refuse otherwise
+mount -fr /
+
 while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	# only tune our own file systems
 	if [ "${FS_TYPE}" != "ufs" ]; then
@@ -26,13 +29,13 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	fi
 
 	# enables soft updates
-	tunefs -n enable ${FS_PART}
+	tunefs -n enable ${FS_MNT}
 
 	# enables TRIM
 	FS_DEV=$(echo ${FS_PART} | awk 'match($0, /\/dev\/([a-z]+[0-9]+)/) { print substr( $0, RSTART, RLENGTH )}')
 	FS_TRIM=$(camcontrol identify ${FS_DEV} | grep TRIM | awk '{ print $5; }')
 	if [ "${FS_TRIM}" = "yes" ]; then
-		tunefs -t enable ${FS_PART}
+		tunefs -t enable ${FS_MNT}
 	fi
 done < /etc/fstab
 
