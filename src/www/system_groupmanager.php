@@ -120,7 +120,15 @@ if (isset($_POST['save'])) {
                 break;
             }
         }
+        
+        $sys_groups = file_get_contents('/etc/group');
+        foreach (explode("\n",$sys_groups) as $line) {
+            if (explode(":",$line)[0] ==  $_POST['groupname'] ) {
+                $input_errors[] = gettext("That groupname is reserved by the system.");
+            }
+        }
     }
+    
 
     if (!$input_errors) {
         $group = array();
