@@ -45,6 +45,7 @@
 # Variables used
 connection="error"
 repository="error"
+upgrade_needs_reboot="0"
 updates=""
 core_version=""
 pkg_running=""
@@ -82,7 +83,7 @@ if [ "$pkg_running" == "" ]; then
         pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
         timer=`echo $timer - 1 | bc`
       done
-
+      
       ## check if timeout is not reached
       if [ $timer -gt 0 ] ; then
         # Connection is ok
@@ -122,6 +123,9 @@ if [ "$pkg_running" == "" ]; then
               if [ "$download_size" == "" ]; then
                 download_size="none"
               fi
+              
+              upgrade_needs_reboot=`pkg upgrade -nq os-update | grep UPGRADED | wc -l | awk '{print $1;}'`
+
               # First check if there are new packages that need to be installed
               for i in $(cat $tmp_pkg_output_file); do
                 if [ "$itemcount" -gt "$linecount" ]; then
@@ -229,7 +233,7 @@ if [ "$pkg_running" == "" ]; then
       # Get date/timestamp
       last_check=`date`
       # Write our json structure to disk
-      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"core_version\":\"$core_version\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded]}" > $package_json_output
+      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"core_version\":\"$core_version\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}" > $package_json_output
 else
   # pkg is already running, quitting
 fi
