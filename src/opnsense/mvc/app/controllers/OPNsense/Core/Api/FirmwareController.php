@@ -44,7 +44,6 @@ class FirmwareController extends ApiControllerBase
     public function statusAction()
     {
         $this->sessionClose(); // long running action, close session
-        return array("upgrade_needs_reboot" => "1","status"=>"ok","status_msg"=>"test");
         $backend = new Backend();
         $response = json_decode(trim($backend->configdRun("firmware pkgstatus")), true);
 
