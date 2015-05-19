@@ -383,7 +383,7 @@ if ($_POST) {
 			$newcp['page']['logouttext'] = base64_encode(file_get_contents($_FILES['logoutfile']['tmp_name']));
 
 		write_config();
-		captiveportal_configure_zone($newcp);
+		captiveportal_configure();
 		unset($newcp);
 		filter_configure();
 		header("Location: services_captiveportal_zones.php");

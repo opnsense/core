@@ -214,10 +214,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
 
         include("/var/etc/captiveportal-{$cpzone}-logout.html");
 
-    } else {
-        // TODO: remove? should be handled by login page
-        portal_reply_page($my_redirurl, "redir", "Just redirect the user.");
-    }
+    } 
 
     return $sessionid;
 }
@@ -230,10 +227,6 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
 function captiveportal_init_rules($reinit = false) {
 
         $cpc = new OPNsense\CaptivePortal\CPClient();
-	if ($cpc->isEnabled()) {
-	    // load modules ( only if CP is enabled )
-	    captiveportal_load_modules();
-	}
         $cpc->reconfigure();
         unset($cpc);
 }
@@ -343,20 +336,11 @@ function captiveportal_load_modules() {
     mute_kernel_msgs();
     if (!is_module_loaded("ipfw.ko")) {
         mwexec("/sbin/kldload ipfw");
-        /* make sure ipfw is not on pfil hooks */
-        set_sysctl(array(
-            "net.inet.ip.pfil.inbound" => "pf", "net.inet6.ip6.pfil.inbound" => "pf",
-            "net.inet.ip.pfil.outbound" => "pf", "net.inet6.ip6.pfil.outbound" => "pf")
-        );
     }
-    /* Activate layer2 filtering */
-    set_sysctl(array("net.link.ether.ipfw" => "1", "net.inet.ip.fw.one_pass" => "1"));
-
     /* Always load dummynet now that even allowed ip and mac passthrough use it. */
     if (!is_module_loaded("dummynet.ko")) {
-        // TODO : enable dummynet when kernel issues are solved, dummynet currently disabled in the gui
-	//mwexec("/sbin/kldload dummynet");
-	//set_sysctl(array("net.inet.ip.dummynet.io_fast" => "1", "net.inet.ip.dummynet.hash_size" => "256"));
+	mwexec("/sbin/kldload dummynet");
+	set_sysctl(array("net.inet.ip.dummynet.io_fast" => "1", "net.inet.ip.dummynet.hash_size" => "256"));
     }
     unmute_kernel_msgs();
 }
@@ -366,6 +350,13 @@ function captiveportal_configure() {
 
     /* init ipfw rules */
     captiveportal_init_rules(true);
+
+    $cpc = new OPNsense\CaptivePortal\CPClient();
+    if ($cpc->isEnabled()) {
+        // load modules ( only if CP is enabled )
+        captiveportal_load_modules();
+	$cpc->reconfigure();
+    }
 
     if (is_array($config['captiveportal'])) {
         foreach ($config['captiveportal'] as $cpkey => $cp) {
@@ -519,10 +510,10 @@ EOD;
         /* start pruning process (interval defaults to 60 seconds) */
         mwexecf(
 		'/usr/local/bin/minicron %s %s %s %s',
-		 $croninterval,
+		 array($croninterval,
 		"/var/run/cp_prunedb_{$cpzone}.pid",
 		'/usr/local/etc/rc.prunecaptiveportal',
-		$cpzone
+		$cpzone)
 	);
 
         /* generate radius server database */
