@@ -138,7 +138,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#update_status').html(data['log']);
                 $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
             }
-            if (data['status'] == 'running') {
+            if (data['status'] == 'running' || data['status'] == 'error') {
                 // schedule next poll
                 setTimeout(trackStatus, 1000) ;
             } else if (data['status'] == 'done') {
