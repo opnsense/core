@@ -1,4 +1,7 @@
+PAGER?=		less
+
 all:
+	@cat ${.CURDIR}/README.md | ${PAGER}
 
 force:
 
