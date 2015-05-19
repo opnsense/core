@@ -53,26 +53,28 @@ POSSIBILITY OF SUCH DAMAGE.
 
             if (data['status'] == "ok") {
                 $.upgrade_action = data['status_upgrade_action'];
+                $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
                 // unhide upgrade button
                 $("#upgrade").attr("style","");
                 // show upgrade list
                 $("#updatelist").html("<tr><th>{{ lang._('Package Name') }}</th>" +
                 "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th></tr>");
                 $.each(['upgrade_packages','new_packages','reinstall_packages'], function(type_idx,type_name){
-                    $.each(data[type_name],function(index,row){
-                        if (type_name == "new_packages") {
-                            $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                            "<td><strong>{{ lang._('NEW') }}</strong></td><td>"+row['version']+"</td></tr>");
-                        } else if (type_name == "reinstall_packages") {
-                            $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                            "<td>"+row['version']+"</td><td><strong>{{ lang._('REINSTALL') }}</strong></td></tr>");
-                        } else {
-                            $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                            '<td>'+row['current_version']+'</td><td>'+row['new_version']+'</td></tr>');
-                        }
-                    });
+                    if ( data[type_name] != undefined ) {
+                        $.each(data[type_name],function(index,row){
+                            if (type_name == "new_packages") {
+                                $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
+                                "<td><strong>{{ lang._('NEW') }}</strong></td><td>"+row['version']+"</td></tr>");
+                            } else if (type_name == "reinstall_packages") {
+                                $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
+                                "<td>"+row['version']+"</td><td><strong>{{ lang._('REINSTALL') }}</strong></td></tr>");
+                            } else {
+                                $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
+                                '<td>'+row['current_version']+'</td><td>'+row['new_version']+'</td></tr>');
+                            }
+                        });
+                    }
                 });
-
             }
 
         });
@@ -90,6 +92,36 @@ POSSIBILITY OF SUCH DAMAGE.
             $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
             setTimeout(trackStatus, 1000) ;
         });
+    }
+
+    /**
+     *  check if a reboot is required, warn user or just upgrade
+     */
+    function upgrade_ui(){
+        if ( $.upgrade_needs_reboot == "1" ) {
+            // reboot required, inform the user.
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_WARNING,
+                title: 'Reboot required',
+                message: 'This upgrade requires a reboot, when you install the firewall will automatically reboot!',
+                buttons: [{
+                    label: 'Ok',
+                    action: function(dialogRef){
+                        dialogRef.close();
+                        upgrade();
+                    }
+                },{
+                    label: 'Abort',
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+
+            });
+
+        } else {
+            upgrade();
+        }
     }
 
     /**
@@ -136,7 +168,7 @@ POSSIBILITY OF SUCH DAMAGE.
     $( document ).ready(function() {
         // link event handlers
         $('#checkupdate').click(updateStatus);
-        $('#upgrade').click(upgrade);
+        $('#upgrade').click(upgrade_ui);
 
     });
 
