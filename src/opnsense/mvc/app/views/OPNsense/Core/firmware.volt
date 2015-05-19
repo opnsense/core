@@ -53,7 +53,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
             if (data['status'] == "ok") {
                 $.upgrade_action = data['status_upgrade_action'];
-                $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
+                if (data['status_upgrade_action'] != 'pkg') {
+                    $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
+                } else {
+                    $.upgrade_needs_reboot = 0 ;
+                }
+
                 // unhide upgrade button
                 $("#upgrade").attr("style","");
                 // show upgrade list
