@@ -753,13 +753,14 @@ function dpdchkbox_change() {
 										<td width="78%" class="vtable">
 											<select name="certref" class="formselect">
 											<?php
+												if (isset($config['cert'])):
 												foreach ($config['cert'] as $cert):
 													$selected = "";
 													if ($pconfig['certref'] == $cert['refid'])
 														$selected = "selected=\"selected\"";
 											?>
 												<option value="<?=$cert['refid'];?>" <?=$selected;?>><?=$cert['descr'];?></option>
-											<?php endforeach; ?>
+											<?php endforeach; endif; ?>
 											</select>
 											<br />
 											<span class="vexpl">
