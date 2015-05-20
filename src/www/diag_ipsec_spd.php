@@ -57,7 +57,7 @@ $spd = ipsec_dump_spd();
 							<div class="table-responsive">
 
 								<table class="table table-striped table-sort __nomb">
-								<?php if (count($spd)||true): ?>
+								<?php if (count($spd)): ?>
 								<tr>
 									<td class="listhdrr nowrap"><?= gettext("Source"); ?></td>
 									<td class="listhdrr nowrap"><?= gettext("Destination"); ?></td>
