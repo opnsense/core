@@ -39,8 +39,8 @@ __author__ = 'Ad Schellevis'
 #
 import os
 import sys
-import ConfigParser
 import modules.processhandler
+import modules.csconfigparser
 from modules.daemonize import Daemonize
 import cProfile, pstats
 
@@ -55,7 +55,7 @@ sys.path.append(program_path)
 os.chdir(program_path)
 
 # open configuration
-cnf = ConfigParser.ConfigParser()
+cnf = modules.csconfigparser.CSConfigParser()
 cnf.read('conf/configd.conf')
 
 # validate configuration, exit on missing item
@@ -64,12 +64,25 @@ for config_item in  ['socket_filename','pid_filename']:
         print('configuration item main/%s not found in %s/conf/configd.conf'%(config_item,program_path))
         sys.exit(0)
 
+# setup configd environment to use for all configured actions
+if not cnf.has_section('environment'):
+    config_environment = os.environ.copy()
+else:
+    config_environment={}
+    for envKey in cnf.items('environment'):
+        config_environment[envKey[0]] = envKey[1]
+
 # run process coordinator ( on console or as daemon )
 # if command-line arguments contain "emulate",  start in emulation mode
 if len(sys.argv) > 1 and 'simulate' in sys.argv[1:]:
-    proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),config_path='%s/conf'%(program_path),simulation_mode=True)
+    proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),
+                                                  config_path='%s/conf'%program_path,
+                                                  config_environment=config_environment,
+                                                  simulation_mode=True)
 else:
-    proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),config_path='%s/conf'%(program_path))
+    proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),
+                                                  config_path='%s/conf'%program_path,
+                                                  config_environment=config_environment)
 
 if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
     print('run %s in console mode'%sys.argv[0])
