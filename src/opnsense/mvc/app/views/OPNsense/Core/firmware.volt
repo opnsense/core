@@ -150,18 +150,20 @@ POSSIBILITY OF SUCH DAMAGE.
                     title: "{{ lang._('Upgrade') }}",
                     message: "{{ lang._('The upgrade is finished and your device is being rebooted at the moment, please wait.') }}",
                     closable: false,
+                    onshow:function(dialogRef){
+                        dialogRef.setClosable(false);
+                        dialogRef.getModalBody().html("{{ lang._('You will be redirected to the login page in 5 minutes.') }}");
+                        setTimeout(function(){
+                            dialogRef.close();
+                            $(location).attr('href',"/");
+                        }, 60000 * 5);
+                    },
                     buttons: [{
                         label: "{{ lang._('Close') }}",
                         cssClass: 'btn-success',
                         autospin: true,
                         action: function(dialogRef){
                             dialogRef.enableButtons(false);
-                            dialogRef.setClosable(false);
-                            dialogRef.getModalBody().html("{{ lang._('You will be redirected to the login page in 5 minutes.') }}");
-                            setTimeout(function(){
-                                dialogRef.close();
-                                $(location).attr('href',"/");
-                            }, 60000 * 5);
                         }
                     }]
                 });
