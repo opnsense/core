@@ -80,7 +80,7 @@ function dump_clog_vpn($logfile, $tail) {
 	else
 		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | tail {$sor} -n " . $tail, $logarr);
 
-	foreach ($logarr as $logent) {
+	foreach ($logarr as $logent) { 
 		$logent = preg_split("/\s+/", $logent, 6);
 		$llent = explode(",", $logent[5]);
 		$iftype = substr($llent[1], 0, 4);
@@ -90,9 +90,9 @@ function dump_clog_vpn($logfile, $tail) {
 		echo "<td class=\"listlr nowrap\">" . htmlspecialchars(join(" ", array_slice($logent, 0, 3))) . "</td>\n";
 
 		if ($llent[0] == "login")
-			echo "<td class=\"listr\"><img src=\"/themes/{$g['theme']}/images/icons/icon_in.gif\" width=\"11\" height=\"11\" title=\"login\" alt=\"in\" /></td>\n";
+			echo "<td class=\"listr\"><span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\" alt=\"in\"></span></td>\n";
 		else
-			echo "<td class=\"listr\"><img src=\"/themes/{$g['theme']}/images/icons/icon_out.gif\" width=\"11\" height=\"11\" title=\"logout\" alt=\"out\" /></td>\n";
+			echo "<td class=\"listr\"><span class=\"glyphicon glyphicon-arrow-left\" aria-hidden=\"true\" alt=\"out\"></span></td>\n";
 
 		echo "<td class=\"listr\">" . htmlspecialchars($llent[3]) . "</td>\n";
 		echo "<td class=\"listr\">" . htmlspecialchars($llent[2]) . "&nbsp;</td>\n";
