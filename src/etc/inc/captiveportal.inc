@@ -213,8 +213,7 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
             $message = 0;
 
         include("/var/etc/captiveportal-{$cpzone}-logout.html");
-
-    } 
+    }
 
     return $sessionid;
 }
@@ -224,8 +223,8 @@ function portal_allow($clientip,$clientmac,$username,$password = null, $attribut
 //
 
 /* reinit will disconnect all users, be careful! */
-function captiveportal_init_rules($reinit = false) {
-
+function captiveportal_init_rules($reinit = false)
+{
         $cpc = new OPNsense\CaptivePortal\CPClient();
         $cpc->reconfigure();
         unset($cpc);
