@@ -120,7 +120,7 @@ if (isset($_POST['save'])) {
                 break;
             }
         }
-        
+
         $sys_groups = file_get_contents('/etc/group');
         foreach (explode("\n",$sys_groups) as $line) {
             if (explode(":",$line)[0] ==  $_POST['groupname'] ) {
@@ -128,7 +128,6 @@ if (isset($_POST['save'])) {
             }
         }
     }
-    
 
     if (!$input_errors) {
         $group = array();
