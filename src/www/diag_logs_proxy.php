@@ -57,7 +57,11 @@ include("head.inc");
                 <div class="tab-content content-box col-xs-12">
                     <div class="container-fluid">
                         <p> <?php printf(gettext("Last %s log entries"), $max_logentries);?></p>
-                        <pre><?php echo trim(implode("", array_slice(file($logfile), -$max_logentries)));  ?></pre>
+                        <pre><?php 
+                                if (file_exists($logfile)) {
+                                        echo trim(implode("", array_slice(file($logfile), -$max_logentries)));  
+                                }
+                        ?></pre>
                         <form method="post">
                             <input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
                         </form>
