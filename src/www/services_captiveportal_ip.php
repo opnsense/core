@@ -115,10 +115,10 @@ $main_buttons = array(
 										  <td class="listlr">
 											<?php
 											if($ip['dir'] == "to") {
-												echo "any <img src=\"/themes/{$g['theme']}/images/icons/icon_in.gif\" width=\"11\" height=\"11\" align=\"middle\" alt=\"in\" /> ";
+												echo "any <span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\" alt=\"in\"></span>  ";
 											}
 											if($ip['dir'] == "both") {
-												echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_pass.gif\" width=\"11\" height=\"11\" align=\"middle\" alt=\"pass\" />   ";
+												echo "<span class=\"glyphicon glyphicon-resize-horizontal\" aria-hidden=\"true\" alt=\"pass\"></span>   ";
 											}
 											echo strtolower($ip['ip']);
 											if($ip['sn'] != "32" && is_numeric($ip['sn'])) {
@@ -126,7 +126,7 @@ $main_buttons = array(
 												echo "/$sn";
 											}
 											if($ip['dir'] == "from") {
-												echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_in.gif\" width=\"11\" height=\"11\" align=\"middle\" alt=\"any\" /> any";
+												echo "<span class=\"glyphicon glyphicon-arrow-right\" aria-hidden=\"true\" alt=\"any\"></span> any";
 											}
 
 											?>
