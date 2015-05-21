@@ -153,19 +153,26 @@ abstract class BaseModel
                 if ($fieldObject instanceof ArrayField) {
                     // handle Array types, recurring items
                     if ($config_section_data != null) {
-                        $counter = 0 ;
                         foreach ($config_section_data as $conf_section) {
+                            // Array items are identified by a UUID, read from attribute or create a new one
+                            if (isset($conf_section->attributes()->uuid)) {
+                                $tagUUID = $conf_section->attributes()['uuid']->__toString();
+                            } else {
+                                $tagUUID = $internal_data->generateUUID();
+                            }
+
                             // iterate array items from config data
-                            $child_node = new ContainerField($fieldObject->__reference . "." . ($counter++), $tagName);
+                            $child_node = new ContainerField($fieldObject->__reference . "." . $tagUUID, $tagName);
                             $this->parseXml($xmlNode, $conf_section, $child_node);
-                            $fieldObject->addChildNode(null, $child_node);
+                            $fieldObject->addChildNode($tagUUID, $child_node);
                         }
                     } else {
                         // There's no content in config.xml for this array node.
-                        $child_node = new ContainerField($fieldObject->__reference . ".0", $tagName);
+                        $tagUUID = $internal_data->generateUUID();
+                        $child_node = new ContainerField($fieldObject->__reference . ".".$tagUUID, $tagName);
                         $child_node->setInternalIsVirtual();
                         $this->parseXml($xmlNode, $config_section_data, $child_node);
-                        $fieldObject->addChildNode(null, $child_node);
+                        $fieldObject->addChildNode($tagUUID, $child_node);
                     }
                 } else {
                     // All other node types (Text,Email,...)

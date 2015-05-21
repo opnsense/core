@@ -35,25 +35,9 @@ namespace OPNsense\Base\FieldTypes;
 class ArrayField extends BaseField
 {
     /**
-     * @var int item index
-     */
-    private $internalArrayCounter = 0 ;
-
-    /**
      * @var null|BaseField node to use for copying
      */
     private $internalTemplateNode = null;
-
-    /**
-     * add Childnode (list), ignore the name of this item
-     * @param string $name property name
-     * @param BaseField $node content (must be of type BaseField)
-     */
-    public function addChildNode($name, $node)
-    {
-            $this->internalChildnodes[(string)$this->internalArrayCounter] = $node;
-            $this->internalArrayCounter++;
-    }
 
     /**
      * Copy first node pointer as template node to make sure we always have a template to create new nodes from.
@@ -63,20 +47,13 @@ class ArrayField extends BaseField
     {
         // always make sure there's a node to copy our structure from
         if ($this->internalTemplateNode ==null) {
-            $this->internalTemplateNode = $this->internalChildnodes["0"];
+            $firstKey = array_keys($this->internalChildnodes)[0];
+            $this->internalTemplateNode = $this->internalChildnodes[$firstKey];
             /**
              * if first node is empty, remove reference node.
              */
-            if ($this->internalChildnodes["0"]->getInternalIsVirtual()) {
-                unset($this->internalChildnodes["0"]);
-                $this->internalArrayCounter--;
-            }
-        }
-
-        // check if all children have a uuid, generate one if missing
-        foreach ($this->internalChildnodes as $nodeKey => $node) {
-            if (!array_key_exists('uuid', $node->getAttributes())) {
-                $node->setAttributeValue("uuid", $this->generateUUID());
+            if ($this->internalChildnodes[$firstKey]->getInternalIsVirtual()) {
+                unset($this->internalChildnodes[$firstKey]);
             }
         }
     }
@@ -97,8 +74,9 @@ class ArrayField extends BaseField
             $new_record[$key] = clone $node ;
         }
 
+        $nodeUUID = $this->generateUUID();
         $container_node = new ContainerField(
-            $this->__reference . "." . $this->internalArrayCounter,
+            $this->__reference . "." . $nodeUUID,
             $this->internalXMLTagName
         );
 
@@ -110,17 +88,17 @@ class ArrayField extends BaseField
         }
 
         // make sure we have a UUID on repeating child items
-        $container_node->setAttributeValue("uuid", $this->generateUUID());
+        $container_node->setAttributeValue("uuid", $nodeUUID);
 
         // add node to this object
-        $this->addChildNode(null, $container_node);
+        $this->addChildNode($nodeUUID, $container_node);
 
         return $container_node;
     }
 
     /**
      * remove item by id (number)
-     * @param $index index number
+     * @param string $index index number
      */
     public function del($index)
     {
@@ -129,38 +107,43 @@ class ArrayField extends BaseField
         }
     }
 
-
     /**
-     * search child item by UUID
-     * @param $uuid item uuid
-     * @return BaseField|null
+     * @param string|array $fieldNames sort by fieldname
+     * @param bool $descending sort descending
+     * @return array
      */
-    public function findByUUID($uuid)
+    public function sortedBy($fieldNames, $descending = false)
     {
-        foreach ($this->internalChildnodes as $nodeKey => $node) {
-            $nodeAttr = $node->getAttributes();
-            if (array_key_exists('uuid', $nodeAttr) && $nodeAttr['uuid'] == $uuid) {
-                return $node;
-            }
+        // reserve at least X number of characters for every field to improve sorting of multiple fields
+        $MAX_KEY_LENGTH = 30;
+
+        // fieldnames may be a list or a single item, always convert to a list
+        if (!is_array($fieldNames)) {
+            $fieldNames = array($fieldNames);
         }
 
-        return null;
-    }
 
-    /**
-     * search child item by UUID
-     * @param $uuid item uuid
-     * @return bool
-     */
-    public function delByUUID($uuid)
-    {
+        // collect sortable data as key/value store
+        $sortedData=array();
         foreach ($this->internalChildnodes as $nodeKey => $node) {
-            $nodeAttr = $node->getAttributes();
-            if (array_key_exists('uuid', $nodeAttr) && $nodeAttr['uuid'] == $uuid) {
-                unset($this->internalChildnodes[$nodeKey]);
-                return true;
+            // populate sort key
+            $sortKey = '';
+            foreach ($fieldNames as $fieldName) {
+                if (array_key_exists($fieldName, $node->internalChildnodes)) {
+                    $sortKey .=  sprintf("%".$MAX_KEY_LENGTH."s ,", $node->$fieldName) ;
+                }
             }
+            $sortKey .= $nodeKey; // prevent overwrite of duplicates
+            $sortedData[$sortKey] = $node ;
         }
-        return false;
+
+        // sort by key on ascending or descending order
+        if (!$descending) {
+            ksort($sortedData);
+        } else {
+            krsort($sortedData);
+        }
+
+        return array_values($sortedData);
     }
 }

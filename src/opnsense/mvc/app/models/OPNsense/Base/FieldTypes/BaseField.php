@@ -93,7 +93,7 @@ abstract class BaseField
     /**
      * @return string uuid v4 number
      */
-    protected function generateUUID()
+    public function generateUUID()
     {
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
