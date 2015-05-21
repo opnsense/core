@@ -40,10 +40,39 @@
                         <Mbit>Mbit/s</Mbit>
                     </OptionValues>
                 </queueMetric>
+                <origin type="TextField">
+                    <Required>N</Required>
+                </origin>
                 <description type="TextField">
                     <Required>N</Required>
                 </description>
             </pipe>
         </pipes>
+        <rules>
+            <rule  type="ArrayField">
+                <pipe type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage></ValidationMessage>
+                    <Required>Y</Required>
+                </pipe>
+                <proto type="OptionField">
+                    <Required>Y</Required>
+                    <default>ip</default>
+                    <OptionValues>
+                        <ip>ip</ip>
+                        <udp>udp</udp>
+                        <tcp>tcp</tcp>
+                    </OptionValues>
+                </proto>
+                <interface type="TextField">
+                    <Required>Y</Required>
+                    <default>wan</default>
+                </interface>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </rule>
+        </rules>
     </items>
 </model>
