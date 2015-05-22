@@ -792,7 +792,6 @@ EOD;
 				if (!empty($ealgoAHsp2arr))
 					$ipsecconf .= "\tah = " . join(',', $ealgoAHsp2arr) . "!\n";
 				if (!empty($ealgoESPsp2arr)) {
-					file_put_contents("/var/etc/ipsec/dump_test", print_r($ealgoESPsp2arr, true));
 					$ipsecconf .= "\tesp = " . join(',', $ealgoESPsp2arr) . "!\n";
 				}
 				if (!empty($authentication))
