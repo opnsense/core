@@ -80,7 +80,7 @@ function dump_clog_vpn($logfile, $tail) {
 	else
 		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | tail {$sor} -n " . $tail, $logarr);
 
-	foreach ($logarr as $logent) { 
+	foreach ($logarr as $logent) {
 		$logent = preg_split("/\s+/", $logent, 6);
 		$llent = explode(",", $logent[5]);
 		$iftype = substr($llent[1], 0, 4);

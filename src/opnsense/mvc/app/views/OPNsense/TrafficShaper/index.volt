@@ -102,4 +102,3 @@ POSSIBILITY OF SUCH DAMAGE.
         <th><button id="test">test</button></th>
     </tfoot>
 </table>
-

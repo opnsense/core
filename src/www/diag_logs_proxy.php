@@ -57,9 +57,9 @@ include("head.inc");
                 <div class="tab-content content-box col-xs-12">
                     <div class="container-fluid">
                         <p> <?php printf(gettext("Last %s log entries"), $max_logentries);?></p>
-                        <pre><?php 
+                        <pre><?php
                                 if (file_exists($logfile)) {
-                                        echo trim(implode("", array_slice(file($logfile), -$max_logentries)));  
+                                        echo trim(implode("", array_slice(file($logfile), -$max_logentries)));
                                 }
                         ?></pre>
                         <form method="post">

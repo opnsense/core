@@ -1,4 +1,4 @@
-/*! 
+/*!
  * jQuery Bootgrid v1.2.0 - 05/02/2015
  * Copyright (c) 2014-2015 Rafael Staib (http://www.jquery-bootgrid.com)
  * Licensed under MIT http://www.opensource.org/licenses/MIT
@@ -126,7 +126,7 @@
                     searchable: !(data.searchable === false), // default: true
                     sortable: !(data.sortable === false), // default: true
                     visible: !(data.visible === false), // default: true
-                    width: ($.isNumeric(data.width)) ? data.width + "px" : 
+                    width: ($.isNumeric(data.width)) ? data.width + "px" :
                         (typeof(data.width) === "string") ? data.width : null
                 };
             that.columns.push(column);
@@ -1082,7 +1082,7 @@
              * @for searchSettings
              **/
             delay: 250,
-            
+
             /**
              * The characters to type before the search gets executed.
              *
@@ -1330,7 +1330,7 @@
              * @for statusMapping
              **/
             2: "warning",
-            
+
             /**
              * Specifies a dangerous or potentially negative action.
              *
@@ -1514,7 +1514,7 @@
     };
 
     /**
-     * Searches in all rows for a specific phrase (but only in visible cells). 
+     * Searches in all rows for a specific phrase (but only in visible cells).
      * The search filter will be reseted, if no argument is provided.
      *
      * @method search
@@ -1659,7 +1659,7 @@
     };
 
     /**
-     * Sorts the rows by a given sort descriptor dictionary. 
+     * Sorts the rows by a given sort descriptor dictionary.
      * The sort filter will be reseted, if no argument is provided.
      *
      * @method sort
@@ -1820,8 +1820,8 @@
 
         _bgBusyAria: function(busy)
         {
-            return (busy == null || busy) ? 
-                this._bgAria("busy", "true") : 
+            return (busy == null || busy) ?
+                this._bgAria("busy", "true") :
                 this._bgAria("busy", "false");
         },
 
@@ -1832,29 +1832,29 @@
 
         _bgEnableAria: function (enable)
         {
-            return (enable == null || enable) ? 
-                this.removeClass("disabled")._bgAria("disabled", "false") : 
+            return (enable == null || enable) ?
+                this.removeClass("disabled")._bgAria("disabled", "false") :
                 this.addClass("disabled")._bgAria("disabled", "true");
         },
 
         _bgEnableField: function (enable)
         {
-            return (enable == null || enable) ? 
-                this.removeAttr("disabled") : 
+            return (enable == null || enable) ?
+                this.removeAttr("disabled") :
                 this.attr("disabled", "disable");
         },
 
         _bgShowAria: function (show)
         {
-            return (show == null || show) ? 
+            return (show == null || show) ?
                 this.show()._bgAria("hidden", "false") :
                 this.hide()._bgAria("hidden", "true");
         },
 
         _bgSelectAria: function (select)
         {
-            return (select == null || select) ? 
-                this.addClass("active")._bgAria("selected", "true") : 
+            return (select == null || select) ?
+                this.addClass("active")._bgAria("selected", "true") :
                 this.removeClass("active")._bgAria("selected", "false");
         },
 
@@ -1944,8 +1944,8 @@
         {
             var skip = (page - 1) * size,
                 end = skip + size;
-            return (this.length > skip) ? 
-                (this.length > end) ? this.slice(skip, end) : 
+            return (this.length > skip) ?
+                (this.length > end) ? this.slice(skip, end) :
                     this.slice(skip) : [];
         };
     }
