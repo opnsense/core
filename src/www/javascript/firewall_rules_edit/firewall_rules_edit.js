@@ -102,13 +102,6 @@ function proto_change() {
 		document.getElementById("tcpflags").style.display = 'none';
 	}
 
-	/* Disable OS knob if the proto is not TCP. */
-	if (document.iform.proto.selectedIndex < 1) {
-		document.forms[0].os.disabled = 0;
-	} else {
-		document.forms[0].os.disabled = 1;
-	}
-
 	if (document.iform.proto.selectedIndex == 3) {
 		document.iform.icmptype.disabled = 0;
 	} else {
