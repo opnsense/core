@@ -31,102 +31,60 @@ namespace OPNsense\TrafficShaper\Api;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Config;
 use \OPNsense\TrafficShaper\TrafficShaper;
+use \OPNsense\Base\UIModelGrid;
 
 /**
- * Class SettingsController
+ * Class SettingsController Handles settings related API actions for the Traffic Shaper
  * @package OPNsense\Proxy
  */
 class SettingsController extends ApiControllerBase
 {
     /**
-     * retrieve  settings
+     * retrieve pipe settings
+     * @param $uuid item unique id
      * @return array
      */
-    public function getAction()
+    public function getPipeAction($uuid)
     {
-        $result = array('rows'=>array());
-
-        for ($i=1; $i<100; $i++) {
-            $result['rows'][] = array('id'=>$i,'sender'=>$i.'xyz','receiver'=>'xxx'.$i);
+        if ($uuid != null) {
+            $mdlShaper = new TrafficShaper();
+            $node = $mdlShaper->getNodeByReference('pipes.pipe.'.$uuid);
+            if ($node != null) {
+                return $node->getNodes();
+            }
         }
-
-        $result['rowCount'] = count($result['rows']);
-        $result['current'] = 1;
-
-        return $result;
+        return array();
     }
 
     /**
-     * retrieve  settings
+     * search traffic shaper pipes
      * @return array
      */
     public function searchPipesAction()
     {
         if ($this->request->isPost()) {
-            $mdlShaper = new TrafficShaper();
+            // fetch query parameters
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+            $currentPage = $this->request->getPost('current', 'int', 1);
+            $sortBy = array("number");
+            $sortDescending = false;
 
-            // parse search parameters
-            if ($this->request->hasPost('rowCount')) {
-                $itemsPerPage = $this->request->getPost('rowCount');
-            } else {
-                $itemsPerPage = 9999;
-            }
-            if ($this->request->hasPost('current')) {
-                $currentPage = $this->request->getPost('current');
-            } else {
-                $currentPage = 1;
-            }
-
-            if ($this->request->hasPost('sort')) {
+            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
                 $sortBy = array_keys($this->request->getPost("sort"));
                 if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
                     $sortDescending = true;
-                } else {
-                    $sortDescending = false;
                 }
-            } else {
-                $sortBy = array("number");
-                $sortDescending = false;
             }
 
+            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
 
-
-            //searchPhrase
-            //sort
-
-            //$mdlShaper
-
-            $result = array('rows'=>array());
-
-            $fields = array("number", "bandwidth","bandwidthMetric");
-            $recordIndex = 0;
-            foreach ($mdlShaper->pipes->pipe->sortedBy($sortBy, $sortDescending) as $pipe) {
-                if (count($result['rows']) < $itemsPerPage &&
-                    $recordIndex >= ($itemsPerPage*($currentPage-1))
-                ) {
-                    $row =  array();
-                    $row['uuid'] = $pipe->getAttributes()['uuid'];
-                    foreach ($fields as $fieldname) {
-                        $row[$fieldname] = $pipe->$fieldname->getNodeData();
-                        if (is_array($row[$fieldname])) {
-                            foreach ($row[$fieldname] as $fieldKey => $fieldValue) {
-                                if ($fieldValue['selected'] == 1) {
-                                    $row[$fieldname] = $fieldValue['value'];
-                                }
-                            }
-                        }
-                    }
-                    $result['rows'][] = $row;
-                }
-                $recordIndex++;
-            }
-
-
-            $result['rowCount'] = count($result['rows']);
-            $result['total'] = $recordIndex;
-            $result['current'] = (int)$currentPage;
-
-            return $result;
+            // create model and fetch query resuls
+            $fields = array("number", "bandwidth","bandwidthMetric","description");
+            $mdlShaper = new TrafficShaper();
+            $grid = new UIModelGrid($mdlShaper->pipes->pipe);
+            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
+        } else {
+            return array();
         }
 
     }

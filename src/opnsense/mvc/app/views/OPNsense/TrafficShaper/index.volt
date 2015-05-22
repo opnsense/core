@@ -53,7 +53,8 @@ POSSIBILITY OF SUCH DAMAGE.
             /* Executes after data is loaded and rendered */
             grid.find(".command-edit").on("click", function(e)
             {
-                alert("You pressed edit on row: " + $(this).data("row-id"));
+                $('#form_uuid').attr('value',$(this).data("row-id"));
+                $('#myModal').modal();
             }).end().find(".command-delete").on("click", function(e)
             {
                 alert("You pressed delete on row: " + $(this).data("row-id"));
@@ -64,7 +65,8 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#test").click(function(){
             var rows =$("#grid-basic").bootgrid('getSelectedRows');
             alert(rows);
-            $("#grid-basic").bootgrid("reload")
+            $("#grid-basic").bootgrid("reload");
+            setFormData('testfrm')
 //            var rowIds = [];
 //            for (var i = 0; i < rows.length; i++)
 //            {
@@ -80,14 +82,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 </script>
 
-
-
 <table id="grid-basic" class="table table-condensed table-hover table-striped">
     <thead>
     <tr>
         <th data-column-id="number" data-type="number">Number</th>
         <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
         <th data-column-id="bandwidthMetric" data-type="string">BandwidthMetric</th>
+        <th data-column-id="description" data-type="string">description</th>
         <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
         <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
     </tr>
@@ -101,4 +102,43 @@ POSSIBILITY OF SUCH DAMAGE.
         <th></th>
         <th><button id="test">test</button></th>
     </tfoot>
+
 </table>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <form id="testfrm">
+                    <input id="form_uuid">
+                <table class="table table-striped table-condensed table-responsive">
+                    <colgroup>
+                        <col class="col-md-3"/>
+                        <col class="col-md-4"/>
+                        <col class="col-md-5"/>
+                    </colgroup>
+                    <tbody>
+                    {{ partial("layout_partials/form_input_tr",
+                    ['id': 'general.port',
+                    'label':'port',
+                    'type':'text',
+                    'help':'kjdhkjashdkjds'
+                    ])
+                    }}
+
+                    </tbody>
+                </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
