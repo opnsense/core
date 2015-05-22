@@ -1172,26 +1172,7 @@ EOD;
 		// Harden SSL a bit for PCI conformance testing
 		$lighty_config .= "ssl.use-sslv2 = \"disable\"\n";
 
-		/* Hifn accelerators do NOT work with the BEAST mitigation code. Do not allow it to be enabled if a Hifn card has been detected. */
-		$fd = @fopen('/var/run/dmesg.boot', 'r');
-		if ($fd) {
-			while (!feof($fd)) {
-				$dmesgl = fgets($fd);
-				if (preg_match("/^hifn.: (.*?),/", $dmesgl, $matches) && isset($config['system']['webgui']['beast_protection'])) {
-						unset($config['system']['webgui']['beast_protection']);
-						log_error("BEAST Protection disabled because a conflicting cryptographic accelerator card has been detected (" . $matches[1] . ")");
-					break;
-				}
-			}
-			fclose($fd);
-		}
-
-		if (isset($config['system']['webgui']['beast_protection'])) {
-			$lighty_config .= "ssl.honor-cipher-order = \"enable\"\n";
-			$lighty_config .= "ssl.cipher-list = \"ECDHE-RSA-AES256-SHA384:AES256-SHA256:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM\"\n";
-		} else {
-			$lighty_config .= "ssl.cipher-list = \"DHE-RSA-CAMELLIA256-SHA:DHE-DSS-CAMELLIA256-SHA:CAMELLIA256-SHA:DHE-DSS-AES256-SHA:AES256-SHA:DHE-RSA-CAMELLIA128-SHA:DHE-DSS-CAMELLIA128-SHA:CAMELLIA128-SHA:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA:AES128-SHA:RC4-SHA:RC4-MD5:!aNULL:!eNULL:!3DES:@STRENGTH\"\n";
-		}
+		$lighty_config .= 'ssl.cipher-list = "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA"' . PHP_EOL;
 
 		if(!(empty($ca) || (strlen(trim($ca)) == 0)))
 			$lighty_config .= "ssl.ca-file = \"/var/etc/{$ca_location}\"\n\n";
