@@ -180,12 +180,12 @@ elif [ -d /root/var/db/pkg ]; then
 	mv /root/var/db/pkg /var/db/
 fi
 
-# write /var/run/dmesg.boot
-/etc/rc.d/dmesg onestart
-
 # make some directories in /var
 mkdir -p /var/run /var/log /var/etc /var/db/entropy /var/at/jobs \
     /var/empty /var/tmp
+
+# write /var/run/dmesg.boot
+/etc/rc.d/dmesg onestart
 
 rm -rf /tmp/*
 chmod 1777 /tmp
