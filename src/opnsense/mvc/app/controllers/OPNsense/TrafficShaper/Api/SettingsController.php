@@ -88,5 +88,4 @@ class SettingsController extends ApiControllerBase
         }
 
     }
-
 }

@@ -58,8 +58,14 @@ class UIModelGrid
      * @param string $searchPhrase search phrase to use
      * @return array
      */
-    public function fetch($fields, $itemsPerPage, $currentPage, $sortBy = array(), $sortDescending = false, $searchPhrase = '')
-    {
+    public function fetch(
+        $fields,
+        $itemsPerPage,
+        $currentPage,
+        $sortBy = array(),
+        $sortDescending = false,
+        $searchPhrase = ''
+    ) {
         $result = array('rows'=>array());
 
         $recordIndex = 0;
@@ -109,5 +115,4 @@ class UIModelGrid
 
         return $result;
     }
-
 }
