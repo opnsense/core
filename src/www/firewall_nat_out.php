@@ -328,23 +328,6 @@ include("head.inc");
 										$textss = "text-muted";
 									}
 
-									//build Alias popup box
-									$alias_src_span_begin = "";
-									$alias_src_port_span_begin = "";
-									$alias_dst_span_begin = "";
-									$alias_dst_port_span_begin = "";
-
-									$alias_popup = rule_popup($natent['source']['network'],pprint_port($natent['sourceport']),$natent['destination']['address'],pprint_port($natent['dstport']));
-
-									$alias_src_span_begin = $alias_popup["src"];
-									$alias_src_port_span_begin = $alias_popup["srcport"];
-									$alias_dst_span_begin = $alias_popup["dst"];
-									$alias_dst_port_span_begin = $alias_popup["dstport"];
-
-									$alias_src_span_end = $alias_popup["src_end"];
-									$alias_src_port_span_end = $alias_popup["srcport_end"];
-									$alias_dst_span_end = $alias_popup["dst_end"];
-									$alias_dst_port_span_end = $alias_popup["dstport_end"];
 					?>
 									<tr valign="top" id="fr<?=$i;?>">
 										<td class="listt">
@@ -371,7 +354,7 @@ include("head.inc");
 										</td>
 										<td class="listr" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
 											<?PHP $natent['source']['network'] = ($natent['source']['network'] == "(self)") ? "This Firewall" : $natent['source']['network']; ?>
-											<?php echo $alias_src_span_begin . $natent['source']['network'] . $alias_src_span_end . $textse;?>
+											<?php echo  $natent['source']['network'] .  $textse;?>
 										</td>
 										<td class="listr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_out_edit.php?id=<?=$i;?>';">
 					<?php
@@ -380,7 +363,7 @@ include("head.inc");
 											if (!$natent['sourceport'])
 												echo "*";
 											else
-												echo $alias_src_port_span_begin . $natent['sourceport'] . $alias_src_port_span_end;
+												echo  $natent['sourceport'] ;
 											echo $textse;
 					?>
 										</td>
@@ -392,7 +375,7 @@ include("head.inc");
 											else {
 												if (isset($natent['destination']['not']))
 													echo "!&nbsp;";
-												echo $alias_dst_span_begin . $natent['destination']['address'] . $alias_dst_span_end;
+												echo $natent['destination']['address'] ;
 											}
 											echo $textse;
 					?>
@@ -404,7 +387,7 @@ include("head.inc");
 											if (!$natent['dstport'])
 												echo "*";
 											else
-												echo $alias_dst_port_span_begin . $natent['dstport'] . $alias_dst_port_span_end;
+												echo $natent['dstport'] ;
 											echo $textse;
 					?>
 										</td>
