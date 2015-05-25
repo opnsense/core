@@ -557,21 +557,10 @@ include("head.inc");
 										<?php
 											//build Alias popup box
 											$alias_src_span_begin = "";
-											//$alias_src_port_span_begin = "";
-											//$alias_dst_span_begin = "";
-											//$alias_dst_port_span_begin = "";
 
 											$alias_popup = rule_popup($filterent['source']['address'],pprint_port($filterent['source']['port']),$filterent['destination']['address'],pprint_port($filterent['destination']['port']));
-											//var_dump($alias_popup);
-											//$alias_src_span_begin = $alias_popup["src"];
-											//$alias_src_port_span_begin = $alias_popup["srcport"];
-											//$alias_dst_span_begin = $alias_popup["dst"];
-											//$alias_dst_port_span_begin = $alias_popup["dstport"];
 
 											$alias_src_span_end = ""; //$alias_popup["src_end"];
-											//$alias_src_port_span_end = $alias_popup["srcport_end"];
-											//$alias_dst_span_end = $alias_popup["dst_end"];
-											//$alias_dst_port_span_end = $alias_popup["dstport_end"];
 											if ( count($alias_popup) > 0 ) {
 												$aliases_popup['src']['addrlist']=explode(" ",$alias_popup['src']['address']);
 												$aliases_popup['src']['detlist']=explode("||",$alias_popup['src']['detail']);
@@ -751,13 +740,13 @@ include("head.inc");
 											<span class="<?=$textse;?>"><?php echo $alias_src_span_begin;?><?php echo htmlspecialchars(pprint_address($filterent['source']));?><?php echo $alias_src_span_end;?></span>
 										</td>
 										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><!--?php echo $alias_src_port_span_begin;?--><?php echo htmlspecialchars(pprint_port($filterent['source']['port'])); ?><!--?php echo $alias_src_port_span_end;?--></span>
+											<span class="<?=$textse;?>"><?php echo htmlspecialchars(pprint_port($filterent['source']['port'])); ?></span>
 										</td>
 										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><!--?php echo $alias_dst_span_begin;?--><?php echo htmlspecialchars(pprint_address($filterent['destination'])); ?><!--?php echo $alias_dst_span_end;?--></span>
+											<span class="<?=$textse;?>"><?php echo htmlspecialchars(pprint_address($filterent['destination'])); ?></span>
 										</td>
 										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><!--?php echo $alias_dst_port_span_begin;?--><?php echo htmlspecialchars(pprint_port($filterent['destination']['port'])); ?><!--?php echo $alias_dst_port_span_end;?--></span>
+											<span class="<?=$textse;?>"><?php echo htmlspecialchars(pprint_port($filterent['destination']['port'])); ?></span>
 										</td>
 										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
 											<span class="<?=$textse;?>"><?php if (isset($config['interfaces'][$filterent['gateway']]['descr'])) echo htmlspecialchars($config['interfaces'][$filterent['gateway']]['descr']); else  echo htmlspecialchars(pprint_port($filterent['gateway'])); ?></span>
