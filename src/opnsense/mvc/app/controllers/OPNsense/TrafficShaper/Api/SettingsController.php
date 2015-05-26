@@ -127,6 +127,7 @@ class SettingsController extends ApiControllerBase
             $mdlShaper = new TrafficShaper();
             $node = $mdlShaper->addPipe();
             $node->setNodes($this->request->getPost("pipe"));
+            $node->origin = "TrafficShaper"; // set origin to this component.
             return $this->savePipe($mdlShaper, $node);
         }
         return $result;
@@ -179,7 +180,7 @@ class SettingsController extends ApiControllerBase
             $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
 
             // create model and fetch query resuls
-            $fields = array("number", "bandwidth","bandwidthMetric","description");
+            $fields = array("number", "bandwidth","bandwidthMetric","description","mask","origin");
             $mdlShaper = new TrafficShaper();
             $grid = new UIModelGrid($mdlShaper->pipes->pipe);
             return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
