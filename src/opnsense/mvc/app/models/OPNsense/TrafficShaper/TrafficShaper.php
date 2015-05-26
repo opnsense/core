@@ -32,4 +32,47 @@ use OPNsense\Base\BaseModel;
 
 class TrafficShaper extends BaseModel
 {
+    /**
+     * Add new pipe to shaper, generate new number if none is given.
+     * The first 10000 id's are automatically reserved for internal usage.
+     * @param null $pipenr new pipe number
+     * @return ArrayField
+     */
+    public function addPipe($pipenr = null)
+    {
+        $allpipes = array();
+        foreach ($this->pipes->pipe->__items as $uuid => $pipe) {
+            if ($pipenr != null && $pipenr == $pipe->number->__toString()) {
+                // pipe found, return
+                return $pipe;
+            } elseif ($pipenr == null) {
+                // collect pipe numbers to find first possible item
+                $allpipes[] = $pipe->number->__toString();
+            }
+        }
+        sort($allpipes);
+
+        if ($pipenr == null) {
+            // generate new pipe number
+            $newId = 10000;
+            for ($i=0; $i < count($allpipes); ++$i) {
+                if ($allpipes[$i] > $newId && isset($allpipes[$i+1])) {
+                    if ($allpipes[$i+1] - $allpipes[$i] > 1) {
+                        // gap found
+                        $newId = $allpipes[$i] + 1;
+                        break;
+                    }
+                } elseif ($allpipes[$i] >= $newId) {
+                    // last item is higher than target
+                    $newId = $allpipes[$i] + 1;
+                }
+            }
+        } else {
+            $newId = $pipenr;
+        }
+
+        $pipe = $this->pipes->pipe->add();
+        $pipe->number = $newId;
+        return $pipe;
+    }
 }

@@ -34,8 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
     $( document ).ready(function() {
 
-
-        var grid =$("#grid-basic").bootgrid({
+        /**
+         * Render pipe grid using searchPipes api
+         */
+        var gridPipes =$("#grid-pipes").bootgrid({
             ajax: true,
             selection: true,
             multiSelect: true,
@@ -49,32 +51,120 @@ POSSIBILITY OF SUCH DAMAGE.
             }
         });
 
-        grid.on("loaded.rs.jquery.bootgrid", function(){
-            /* Executes after data is loaded and rendered */
-            grid.find(".command-edit").on("click", function(e)
+        /**
+         * Link pipe grid command controls (edit/delete)
+         */
+        gridPipes.on("loaded.rs.jquery.bootgrid", function(){
+            // edit item
+            gridPipes.find(".command-edit").on("click", function(e)
             {
-                $('#form_uuid').attr('value',$(this).data("row-id"));
-                $('#myModal').modal();
-            }).end().find(".command-delete").on("click", function(e)
+                var uuid=$(this).data("row-id");
+                mapDataToFormUI({'frm_DialogPipe':"/api/trafficshaper/settings/getPipe/"+uuid}).done(function(){
+                    // update selectors
+                    formatTokenizersUI();
+                    $('.selectpicker').selectpicker('refresh');
+                    // clear validation errors (if any)
+                    clearFormValidation('frm_DialogPipe');
+                });
+
+                // show dialog for pipe edit
+                $('#DialogPipe').modal();
+                // curry uuid to save action
+                $("#btn_DialogPipe_save").unbind('click').click(savePipe.bind(undefined, uuid));
+            }).end();
+
+            // delete item
+            gridPipes.find(".command-delete").on("click", function(e)
             {
-                alert("You pressed delete on row: " + $(this).data("row-id"));
+                var uuid  = $(this).data("row-id");
+                BootstrapDialog.confirm({
+                    title: 'Remove',
+                    message: 'Remove selected item?',
+                    type: BootstrapDialog.TYPE_DANGER,
+                    btnCancelLabel: 'Cancel',
+                    btnOKLabel: 'Yes',
+                    btnOKClass: 'btn-primary',
+                    callback: function(result) {
+                        if(result) {
+                            var url = "/api/trafficshaper/settings/delPipe/" + uuid;
+                            ajaxCall(url=url,sendData={},callback=function(data,status){
+                                // reload grid after delete
+                                $("#grid-pipes").bootgrid("reload");
+                            });
+                        }
+                    }
+                });
+            }).end();
+        });
+
+        /**
+         * save form data to end point for existing pipe
+         */
+        function savePipe(uuid) {
+            saveFormToEndpoint(url="/api/trafficshaper/settings/setPipe/"+uuid,
+                    formid="frm_DialogPipe", callback_ok=function(){
+                        $("#DialogPipe").modal('hide');
+                        $("#grid-pipes").bootgrid("reload");
+                    });
+        }
+
+        /**
+         * save form data to end point for new pipe
+         */
+        function addPipe() {
+            saveFormToEndpoint(url="/api/trafficshaper/settings/addPipe/",
+                    formid="frm_DialogPipe", callback_ok=function(){
+                        $("#DialogPipe").modal('hide');
+                        $("#grid-pipes").bootgrid("reload");
+                    });
+        }
+
+        /**
+         * Delete list of uuids on click event
+         */
+        $("#deletePipes").click(function(){
+            BootstrapDialog.confirm({
+                title: 'Remove',
+                message: 'Remove selected items?',
+                type: BootstrapDialog.TYPE_DANGER,
+                btnCancelLabel: 'Cancel',
+                btnOKLabel: 'Yes',
+                btnOKClass: 'btn-primary',
+                callback: function(result) {
+                    if(result) {
+                        var rows =$("#grid-pipes").bootgrid('getSelectedRows');
+                        if (rows != undefined){
+                            var deferreds = [];
+                            $.each(rows, function(key,uuid){
+                                deferreds.push(ajaxCall(url="/api/trafficshaper/settings/delPipe/" + uuid, sendData={}));
+                            });
+                            // refresh after load
+                            $.when.apply(null, deferreds).done(function(){
+                                $("#grid-pipes").bootgrid("reload");
+                            });
+                        }
+                    }
+                }
             });
         });
 
+        /**
+         * Add new pipe on click event
+         */
+        $("#addPipe").click(function(){
+            mapDataToFormUI({'frm_DialogPipe':"/api/trafficshaper/settings/getPipe/"}).done(function(){
+                // update selectors
+                formatTokenizersUI();
+                $('.selectpicker').selectpicker('refresh');
+                // clear validation errors (if any)
+                clearFormValidation('frm_DialogPipe');
+            });
 
-        $("#test").click(function(){
-            var rows =$("#grid-basic").bootgrid('getSelectedRows');
-            alert(rows);
-            $("#grid-basic").bootgrid("reload");
-            setFormData('testfrm')
-//            var rowIds = [];
-//            for (var i = 0; i < rows.length; i++)
-//            {
-//                rowIds.push(rows[i]);
-//            }
-//            alert("Select: " + rowIds.join(","));
+            // show dialog for pipe edit
+            $('#DialogPipe').modal();
+            // curry uuid to save action
+            $("#btn_DialogPipe_save").unbind('click').click(addPipe);
 
-            //alert(JSON.stringify($("#grid-basic").bootgrid('getSelectedRows')));
         });
 
     });
@@ -82,63 +172,35 @@ POSSIBILITY OF SUCH DAMAGE.
 
 </script>
 
-<table id="grid-basic" class="table table-condensed table-hover table-striped">
+<table id="grid-pipes" class="table table-condensed table-hover table-striped">
     <thead>
-    <tr>
-        <th data-column-id="number" data-type="number">Number</th>
-        <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
-        <th data-column-id="bandwidthMetric" data-type="string">BandwidthMetric</th>
-        <th data-column-id="description" data-type="string">description</th>
-        <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
-        <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
-    </tr>
+        <tr>
+            <th data-column-id="number" data-type="number">Number</th>
+            <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
+            <th data-column-id="bandwidthMetric" data-type="string">BandwidthMetric</th>
+            <th data-column-id="description" data-type="string">description</th>
+            <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
+            <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+        </tr>
     </thead>
     <tbody>
     </tbody>
     <tfoot>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th><button id="test">test</button></th>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <button type="button" id="addPipe" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
+                <button type="button" id="deletePipes" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+            </td>
+        </tr>
     </tfoot>
-
 </table>
 
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-            </div>
-            <div class="modal-body">
-                <form id="testfrm">
-                    <input id="form_uuid">
-                <table class="table table-striped table-condensed table-responsive">
-                    <colgroup>
-                        <col class="col-md-3"/>
-                        <col class="col-md-4"/>
-                        <col class="col-md-5"/>
-                    </colgroup>
-                    <tbody>
-                    {{ partial("layout_partials/form_input_tr",
-                    ['id': 'general.port',
-                    'label':'port',
-                    'type':'text',
-                    'help':'kjdhkjashdkjds'
-                    ])
-                    }}
+{# include dialogs #}
+{{ partial("layout_partials/base_dialog",['fields':formDialogPipe,'id':'DialogPipe','label':'Edit pipe'])}}
 
-                    </tbody>
-                </table>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>

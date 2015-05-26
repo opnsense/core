@@ -40,20 +40,120 @@ use \OPNsense\Base\UIModelGrid;
 class SettingsController extends ApiControllerBase
 {
     /**
-     * retrieve pipe settings
+     * validate and save model after update or insertion
+     * @param $mdlShaper
+     * @param $node reference node, to use as relative offset
+     * @return array result / validation output
+     */
+    private function savePipe($mdlShaper, $node)
+    {
+        $result = array("result"=>"failed");
+        // perform validation
+        $valMsgs = $mdlShaper->performValidation();
+        foreach ($valMsgs as $field => $msg) {
+            if (!array_key_exists("validations", $result)) {
+                $result["validations"] = array();
+            }
+            // replace absolute path to attribute for relative one at uuid.
+            $fieldnm = $msg->getField();
+            $fieldnm = str_replace($node->__reference, "pipe", $fieldnm);
+            $result["validations"][$fieldnm] = $msg->getMessage();
+        }
+
+        // serialize model to config and save when there are no validation errors
+        if ($valMsgs->count() == 0) {
+            $mdlShaper->serializeToConfig();
+
+            // save config if validated correctly
+            Config::getInstance()->save();
+            $result["result"] = "saved";
+        }
+
+        return $result;
+    }
+
+    /**
+     * retrieve pipe settings or return defaults
      * @param $uuid item unique id
      * @return array
      */
-    public function getPipeAction($uuid)
+    public function getPipeAction($uuid = null)
     {
+        $mdlShaper = new TrafficShaper();
         if ($uuid != null) {
-            $mdlShaper = new TrafficShaper();
             $node = $mdlShaper->getNodeByReference('pipes.pipe.'.$uuid);
             if ($node != null) {
-                return $node->getNodes();
+                // return node
+                return array("pipe" => $node->getNodes());
             }
+        } else {
+            // generate new node, but don't save to disc
+            $node = $mdlShaper->pipes->pipe->add() ;
+            return array("pipe" => $node->getNodes());
+
         }
         return array();
+    }
+
+    /**
+     * update pipe with given properties
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function setPipeAction($uuid)
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost() && $this->request->hasPost("pipe")) {
+            $mdlShaper = new TrafficShaper();
+            if ($uuid != null) {
+                $node = $mdlShaper->getNodeByReference('pipes.pipe.'.$uuid);
+                if ($node != null) {
+                    $node->setNodes($this->request->getPost("pipe"));
+                    return $this->savePipe($mdlShaper, $node);
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * add new pipe
+     * @return array
+     */
+    public function addPipeAction()
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost() && $this->request->hasPost("pipe")) {
+            $mdlShaper = new TrafficShaper();
+            $node = $mdlShaper->addPipe();
+            $node->setNodes($this->request->getPost("pipe"));
+            return $this->savePipe($mdlShaper, $node);
+        }
+        return $result;
+    }
+
+    /**
+     * delete pipe by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delPipeAction($uuid)
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost()) {
+            $mdlShaper = new TrafficShaper();
+            if ($uuid != null) {
+                if ($mdlShaper->pipes->pipe->del($uuid)) {
+                    // if item is removed, serialize to config and save
+                    $mdlShaper->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
     }
 
     /**

@@ -1,0 +1,15 @@
+<form>
+    <field>
+        <id>pipe.bandwidth</id>
+        <label>bandwidth</label>
+        <type>text</type>
+        <help>test
+        </help>
+    </field>
+    <field>
+        <id>pipe.bandwidthMetric</id>
+        <label>Enable traffic management.</label>
+        <type>dropdown</type>
+        <help><![CDATA[test]]></help>
+    </field>
+</form>
