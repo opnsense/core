@@ -24,6 +24,20 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
+---------------------------------------------------------------------------------------------------------------
+Handle input table row, usage the following parameters (as associative array):
+
+id          :   unique id of the attribute
+label       :   attribute label (visible text)
+size        :   size (width in characters) attribute if applicable
+help        :   help text
+advanced    :   property "is advanced", only display in advanced mode
+hint        :   input control hint
+style       :   css class to add
+maxheight   :   maximum heigt in rows if applicable
+width       :   width in pixels if applicable
+allownew    :   allow new items (for list) if applicable
+
 #}
 
 <tr for="{{ id }}" {% if advanced|default(false)=='true' %} data-advanced="true"{% endif %}>
