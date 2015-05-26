@@ -374,7 +374,7 @@ abstract class BaseField
                     $node->setValue($data[$key]);
                 }
             } elseif (get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
-                // mark item as missing in input, remove later
+                // mark item as missing in input, return when finished
                 $delItems[] = array("node" => $this, "key" => $key );
             } else {
                 $delItems += $node->setNodes(array());
