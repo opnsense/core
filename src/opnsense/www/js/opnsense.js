@@ -155,13 +155,22 @@ function handleFormValidation(parent,validationErrors) {
 }
 
 /**
+ * clear form validations
+ * @param parent
+ */
+function clearFormValidation(parent) {
+    handleFormValidation(parent, {});
+}
+
+/**
  * call remote function (post request), wrapper around standard jQuery lib.
  * @param url endpoint url
  * @param sendData input structure
  * @param callback callback function
+ * @return deferred object
  */
 function ajaxCall(url,sendData,callback) {
-    $.ajax({
+    return $.ajax({
         type: "POST",
         url: url,
         dataType:"json",
@@ -183,9 +192,10 @@ function ajaxCall(url,sendData,callback) {
  * @param url endpoint url
  * @param sendData input structure
  * @param callback callback function
+ * @return deferred object
  */
 function ajaxGet(url,sendData,callback) {
-    $.ajax({
+    return $.ajax({
         type: "GET",
         url: url,
         dataType:"json",
