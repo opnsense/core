@@ -99,11 +99,15 @@ class ArrayField extends BaseField
     /**
      * remove item by id (number)
      * @param string $index index number
+     * @return bool item found/deleted
      */
     public function del($index)
     {
         if (array_key_exists((string)$index, $this->internalChildnodes)) {
             unset($this->internalChildnodes[$index]);
+            return true;
+        } else {
+            return false;
         }
     }
 
