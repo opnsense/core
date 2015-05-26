@@ -3,13 +3,29 @@
         <id>pipe.bandwidth</id>
         <label>bandwidth</label>
         <type>text</type>
-        <help>test
-        </help>
+        <help>Total bandwidth for this pipe</help>
     </field>
     <field>
         <id>pipe.bandwidthMetric</id>
-        <label>Enable traffic management.</label>
+        <label>bandwidth Metric</label>
         <type>dropdown</type>
-        <help><![CDATA[test]]></help>
     </field>
+    <field>
+        <id>pipe.queue</id>
+        <label>queue</label>
+        <type>text</type>
+        <help>test</help>
+    </field>
+    <field>
+        <id>pipe.mask</id>
+        <label>mask</label>
+        <type>dropdown</type>
+        <help><![CDATA[Dynamic queue creation by source or destination address]]></help>
+    </field>
+    <field>
+        <id>pipe.description</id>
+        <label>description</label>
+        <type>text</type>
+    </field>
+
 </form>

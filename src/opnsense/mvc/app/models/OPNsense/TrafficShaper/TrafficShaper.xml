@@ -9,13 +9,14 @@
                 <number type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage></ValidationMessage>
+                    <ValidationMessage>Pipe number must be between 1...65535</ValidationMessage>
                     <Required>Y</Required>
                 </number>
                 <bandwidth type="IntegerField">
                     <Required>Y</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>899795</MaximumValue>
+                    <ValidationMessage>Bandwidth out of range</ValidationMessage>
                 </bandwidth>
                 <bandwidthMetric type="OptionField">
                     <Required>Y</Required>
@@ -29,19 +30,23 @@
                 </bandwidthMetric>
                 <queue type="IntegerField">
                     <Required>N</Required>
+                    <MinimumValue>2</MinimumValue>
+                    <MaximumValue>100</MaximumValue>
+                    <ValidationMessage>queue size should be between 2...100</ValidationMessage>
                 </queue>
-                <queueMetric type="OptionField">
-                    <Required>N</Required>
-                    <default>slots</default>
+                <mask type="OptionField">
+                    <Required>Y</Required>
+                    <default>none</default>
                     <OptionValues>
-                        <slots>Slots</slots>
-                        <bit>bit/s</bit>
-                        <Kbit>Kbit/s</Kbit>
-                        <Mbit>Mbit/s</Mbit>
+                        <none></none>
+                        <source>source</source>
+                        <destination>destination</destination>
                     </OptionValues>
-                </queueMetric>
+                </mask>
                 <origin type="TextField">
                     <Required>N</Required>
+                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
                 <description type="TextField">
                     <Required>N</Required>
@@ -50,12 +55,10 @@
         </pipes>
         <rules>
             <rule  type="ArrayField">
-                <pipe type="IntegerField">
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage></ValidationMessage>
+                <interface type="TextField">
                     <Required>Y</Required>
-                </pipe>
+                    <default>wan</default>
+                </interface>
                 <proto type="OptionField">
                     <Required>Y</Required>
                     <default>ip</default>
@@ -65,13 +68,28 @@
                         <tcp>tcp</tcp>
                     </OptionValues>
                 </proto>
-                <interface type="TextField">
+                <source type="TextField">
                     <Required>Y</Required>
-                    <default>wan</default>
-                </interface>
+                    <default>any</default>
+                </source>
+                <destination type="TextField">
+                    <Required>Y</Required>
+                    <default>any</default>
+                </destination>
+                <target type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage></ValidationMessage>
+                    <Required>Y</Required>
+                </target>
                 <description type="TextField">
                     <Required>N</Required>
                 </description>
+                <origin type="TextField">
+                    <Required>N</Required>
+                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
+                </origin>
             </rule>
         </rules>
     </items>

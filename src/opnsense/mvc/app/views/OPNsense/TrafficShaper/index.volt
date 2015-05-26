@@ -34,6 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
     $( document ).ready(function() {
 
+        /*************************************************************************************************************
+         * manage bandwidth pipes
+         *************************************************************************************************************/
+
         /**
          * Render pipe grid using searchPipes api
          */
@@ -41,6 +45,7 @@ POSSIBILITY OF SUCH DAMAGE.
             ajax: true,
             selection: true,
             multiSelect: true,
+            rowCount:[7,14,20,-1],
             url: '/api/trafficshaper/settings/searchPipes',
             formatters: {
                 "commands": function(column, row)
@@ -167,38 +172,113 @@ POSSIBILITY OF SUCH DAMAGE.
 
         });
 
+        /*************************************************************************************************************
+         *
+         *************************************************************************************************************/
+
+        /**
+         * Render rules grid using searchPipes api
+         */
+        var gridRules =$("#grid-rules").bootgrid({
+            ajax: true,
+            selection: true,
+            multiSelect: true,
+            rowCount:[7,14,20,-1],
+            url: '/api/trafficshaper/settings/searchRules',
+            formatters: {
+                "commands": function(column, row)
+                {
+                    return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-pencil\"></span></button> " +
+                            "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o\"></span></button>";
+                }
+            }
+        });
+
     });
 
 
 </script>
 
-<table id="grid-pipes" class="table table-condensed table-hover table-striped">
-    <thead>
-        <tr>
-            <th data-column-id="number" data-type="number">Number</th>
-            <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
-            <th data-column-id="bandwidthMetric" data-type="string">BandwidthMetric</th>
-            <th data-column-id="description" data-type="string">description</th>
-            <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
-            <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-    <tfoot>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-                <button type="button" id="addPipe" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
-                <button type="button" id="deletePipes" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
-            </td>
-        </tr>
-    </tfoot>
-</table>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12" id="content">
+            <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+                <li class="active"><a data-toggle="tab" href="#pipes">{{ lang._('Pipes') }}</a></li>
+                <li><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="pipes" class="tab-pane fade in active">
+                    <!-- tab page "pipes" -->
+                    <table id="grid-pipes" class="table table-condensed table-hover table-striped table-responsive">
+                        <thead>
+                        <tr>
+                            <th data-column-id="origin" data-type="string">Origin</th>
+                            <th data-column-id="number" data-type="number">Number</th>
+                            <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
+                            <th data-column-id="bandwidthMetric" data-type="string">BandwidthMetric</th>
+                            <th data-column-id="mask" data-type="string">mask</th>
+                            <th data-column-id="description" data-type="string">description</th>
+                            <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
+                            <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <button type="button" id="addPipe" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
+                                <button type="button" id="deletePipes" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div id="rules" class="tab-pane fade in">
+                    <!-- tab page "rules" -->
+                    <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive">
+                        <thead>
+                        <tr>
+                            <th data-column-id="origin" data-type="string">Origin</th>
+                            <th data-column-id="interface" data-type="string">Interface</th>
+                            <th data-column-id="proto" data-type="string">Protocol</th>
+                            <th data-column-id="source" data-type="string">Source</th>
+                            <th data-column-id="destination" data-type="string">Destination</th>
+                            <th data-column-id="description" data-type="string">Description</th>
+                            <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
+                            <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <button type="button" id="addRule" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
+                                <button type="button" id="deleteRules" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 {# include dialogs #}
