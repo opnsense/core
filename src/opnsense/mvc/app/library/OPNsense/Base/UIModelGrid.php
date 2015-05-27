@@ -82,6 +82,9 @@ class UIModelGrid
                             $row[$fieldname] = $fieldValue['value'];
                         }
                     }
+                    if (is_array($row[$fieldname])) {
+                        $row[$fieldname] = "##Unlinked";
+                    }
                 }
             }
 
