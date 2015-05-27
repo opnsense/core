@@ -55,6 +55,11 @@ class ApiControllerBase extends Controller
         session_write_close();
     }
 
+    /**
+     * get system logger
+     * @param string $ident syslog identifier
+     * @return Syslog log handler
+     */
     protected function getLogger($ident = "api")
     {
         $logger = new Syslog($ident, array(
