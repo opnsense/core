@@ -101,22 +101,15 @@ class SettingsController extends ApiControllerBase
                 $result["validations"]["proxy.".$msg->getField()] = $msg->getMessage();
             }
 
-            // serialize model to config
+            // serialize model to config and save
             if ($valMsgs->count() == 0) {
                 $mdlProxy->serializeToConfig();
+                $cnf = Config::getInstance();
+                $cnf->save();
+                $result["result"] = "saved";
             }
 
         }
-
-
-        // save config if validated correctly
-        if (!array_key_exists("validations", $result)) {
-            $cnf = Config::getInstance();
-            $cnf->save();
-            $result["result"] = "saved";
-        }
-
-
 
         return $result;
 
