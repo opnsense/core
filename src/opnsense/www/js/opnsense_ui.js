@@ -232,3 +232,22 @@ function initFormAdvancedUI() {
         }
     });
 }
+
+/**
+ * standard remove items dialog, wrapper around BootstrapDialog
+ */
+function stdDialogRemoveItem(message, callback) {
+    BootstrapDialog.confirm({
+        title: 'Remove',
+        message: message,
+        type:BootstrapDialog.TYPE_WARNING,
+        btnCancelLabel: 'Cancel',
+        btnOKLabel: 'Yes',
+        btnOKClass: 'btn-primary',
+        callback: function(result) {
+            if(result) {
+                callback();
+            }
+        }
+    });
+}
