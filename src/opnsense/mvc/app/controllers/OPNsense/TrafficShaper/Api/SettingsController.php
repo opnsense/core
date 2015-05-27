@@ -40,33 +40,40 @@ use \OPNsense\Base\UIModelGrid;
 class SettingsController extends ApiControllerBase
 {
     /**
-     * validate and save model after update or insertion
+     * validate and save model after update or insertion.
+     * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
+     * it easier to reference specific uuids without having to use them in the frontend descriptions.
      * @param $mdlShaper
      * @param $node reference node, to use as relative offset
+     * @param $reference reference for validation output, used to rename the validation output keys
      * @return array result / validation output
      */
-    private function savePipe($mdlShaper, $node)
+    private function save($mdlShaper, $node = null, $reference = null)
     {
-        $result = array("result"=>"failed");
+        $result = array("result"=>"failed","validations" => array());
         // perform validation
         $valMsgs = $mdlShaper->performValidation();
         foreach ($valMsgs as $field => $msg) {
-            if (!array_key_exists("validations", $result)) {
-                $result["validations"] = array();
-            }
             // replace absolute path to attribute for relative one at uuid.
-            $fieldnm = $msg->getField();
-            $fieldnm = str_replace($node->__reference, "pipe", $fieldnm);
-            $result["validations"][$fieldnm] = $msg->getMessage();
+            if ($node != null) {
+                $fieldnm = str_replace($node->__reference, $reference, $msg->getField());
+                if ($fieldnm != $msg->getField()) {
+                    // only collect validation errors for the item we're currently editing.
+                    $result["validations"][$fieldnm] = $msg->getMessage();
+                }
+            } else {
+                $result["validations"][$msg->getField()] = $msg->getMessage();
+            }
         }
 
         // serialize model to config and save when there are no validation errors
-        if ($valMsgs->count() == 0) {
-            $mdlShaper->serializeToConfig();
+        if (count($result['validations']) == 0) {
+            // we've already performed a validation, prevent issues from other items in the model reflecting back to us.
+            $mdlShaper->serializeToConfig($disable_validation = true);
 
             // save config if validated correctly
             Config::getInstance()->save();
-            $result["result"] = "saved";
+            $result = array("result" => "saved");
         }
 
         return $result;
@@ -90,7 +97,6 @@ class SettingsController extends ApiControllerBase
             // generate new node, but don't save to disc
             $node = $mdlShaper->pipes->pipe->add() ;
             return array("pipe" => $node->getNodes());
-
         }
         return array();
     }
@@ -102,22 +108,21 @@ class SettingsController extends ApiControllerBase
      */
     public function setPipeAction($uuid)
     {
-        $result = array("result"=>"failed");
         if ($this->request->isPost() && $this->request->hasPost("pipe")) {
             $mdlShaper = new TrafficShaper();
             if ($uuid != null) {
                 $node = $mdlShaper->getNodeByReference('pipes.pipe.'.$uuid);
                 if ($node != null) {
                     $node->setNodes($this->request->getPost("pipe"));
-                    return $this->savePipe($mdlShaper, $node);
+                    return $this->save($mdlShaper, $node, "pipe");
                 }
             }
         }
-        return $result;
+        return array("result"=>"failed");
     }
 
     /**
-     * add new pipe
+     * add new pipe and set with attributes from post
      * @return array
      */
     public function addPipeAction()
@@ -128,7 +133,7 @@ class SettingsController extends ApiControllerBase
             $node = $mdlShaper->addPipe();
             $node->setNodes($this->request->getPost("pipe"));
             $node->origin = "TrafficShaper"; // set origin to this component.
-            return $this->savePipe($mdlShaper, $node);
+            return $this->save($mdlShaper, $node, "pipe");
         }
         return $result;
     }
@@ -146,7 +151,7 @@ class SettingsController extends ApiControllerBase
             if ($uuid != null) {
                 if ($mdlShaper->pipes->pipe->del($uuid)) {
                     // if item is removed, serialize to config and save
-                    $mdlShaper->serializeToConfig();
+                    $mdlShaper->serializeToConfig($disable_validation = true);
                     Config::getInstance()->save();
                     $result['result'] = 'deleted';
                 } else {
@@ -200,7 +205,7 @@ class SettingsController extends ApiControllerBase
             // fetch query parameters
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
-            $sortBy = array("number");
+            $sortBy = array("sequence");
             $sortDescending = false;
 
             if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
@@ -213,13 +218,96 @@ class SettingsController extends ApiControllerBase
             $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
 
             // create model and fetch query resuls
-            $fields = array("interface", "proto","source","destination","description","origin");
+            $fields = array("interface", "proto","source","destination","description","origin","sequence","target");
             $mdlShaper = new TrafficShaper();
             $grid = new UIModelGrid($mdlShaper->rules->rule);
             return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
         } else {
             return array();
         }
-
     }
+
+    /**
+     * retrieve rule settings or return defaults for new rule
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function getRuleAction($uuid = null)
+    {
+        $mdlShaper = new TrafficShaper();
+        if ($uuid != null) {
+            $node = $mdlShaper->getNodeByReference('rules.rule.'.$uuid);
+            if ($node != null) {
+                // return node
+                return array("rule" => $node->getNodes());
+            }
+        } else {
+            // generate new node, but don't save to disc
+            $node = $mdlShaper->rules->rule->add() ;
+            return array("rule" => $node->getNodes());
+        }
+        return array();
+    }
+
+    /**
+     * update rule with given properties
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function setRuleAction($uuid)
+    {
+        if ($this->request->isPost() && $this->request->hasPost("rule")) {
+            $mdlShaper = new TrafficShaper();
+            if ($uuid != null) {
+                $node = $mdlShaper->getNodeByReference('rules.rule.'.$uuid);
+                if ($node != null) {
+                    $node->setNodes($this->request->getPost("rule"));
+                    return $this->save($mdlShaper, $node, "rule");
+                }
+            }
+        }
+        return array("result"=>"failed");
+    }
+
+    /**
+     * add new rule and set with attributes from post
+     * @return array
+     */
+    public function addRuleAction()
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost() && $this->request->hasPost("rule")) {
+            $mdlShaper = new TrafficShaper();
+            $node = $mdlShaper->rules->rule->add();
+            $node->setNodes($this->request->getPost("rule"));
+            $node->origin = "TrafficShaper"; // set origin to this component.
+            return $this->save($mdlShaper, $node, "rule");
+        }
+        return $result;
+    }
+
+    /**
+     * delete rule by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delRuleAction($uuid)
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost()) {
+            $mdlShaper = new TrafficShaper();
+            if ($uuid != null) {
+                if ($mdlShaper->rules->rule->del($uuid)) {
+                    // if item is removed, serialize to config and save
+                    $mdlShaper->serializeToConfig($disable_validation = true);
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
 }
