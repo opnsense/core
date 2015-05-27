@@ -32,6 +32,7 @@ namespace OPNsense\Base;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
+use Phalcon\Logger\Adapter\Syslog;
 
 /**
  * Class BaseModel implements base model to bind config and definition to object.
@@ -389,14 +390,24 @@ abstract class BaseModel
      */
     public function serializeToConfig($disable_validation = false)
     {
-        if ($disable_validation == false) {
-            // perform validation, collect all messages and raise exception
-            $messages = $this->performValidation();
-            if ($messages->count() > 0) {
-                $exception_msg = "";
-                foreach ($messages as $msg) {
-                    $exception_msg .= "[".$msg-> getField()."] ".$msg->getMessage()."\n";
-                }
+        // create logger to save possible consistency issues to
+        $logger = new Syslog("config", array(
+            'option' => LOG_PID,
+            'facility' => LOG_LOCAL4
+        ));
+
+        // Perform validation, collect all messages and raise exception if validation is not disabled.
+        // If for some reason the developer chooses to ignore the errors, let's at least log there something
+        // wrong in this model.
+        $messages = $this->performValidation();
+        if ($messages->count() > 0) {
+            $exception_msg = "";
+            foreach ($messages as $msg) {
+                $exception_msg .= "[".$msg-> getField()."] ".$msg->getMessage()."\n";
+                // always log validation errors
+                $logger->error(str_replace("\\", ".", get_class($this)).".".$msg-> getField(). " " .$msg->getMessage());
+            }
+            if (!$disable_validation) {
                 throw new \Phalcon\Validation\Exception($exception_msg);
             }
         }
