@@ -55,6 +55,13 @@
         </pipes>
         <rules>
             <rule  type="ArrayField">
+                <sequence type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>1000000</MaximumValue>
+                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <Required>Y</Required>
+                    <default>1</default>
+                </sequence>
                 <interface type="TextField">
                     <Required>Y</Required>
                     <default>wan</default>
@@ -76,10 +83,20 @@
                     <Required>Y</Required>
                     <default>any</default>
                 </destination>
-                <target type="IntegerField">
-                    <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage></ValidationMessage>
+                <target type="ModelRelationField">
+                    <Model>
+                        <pipes>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>pipes.pipe</items>
+                            <display>description</display>
+                        </pipes>
+                        <queues>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>pipes.pipe</items>
+                            <display>description</display>
+                        </queues>
+                    </Model>
+                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
                     <Required>Y</Required>
                 </target>
                 <description type="TextField">
