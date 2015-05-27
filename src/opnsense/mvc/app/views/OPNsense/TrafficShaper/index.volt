@@ -66,7 +66,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 var uuid=$(this).data("row-id");
                 mapDataToFormUI({'frm_DialogPipe':"/api/trafficshaper/settings/getPipe/"+uuid}).done(function(){
                     // update selectors
-                    formatTokenizersUI();
                     $('.selectpicker').selectpicker('refresh');
                     // clear validation errors (if any)
                     clearFormValidation('frm_DialogPipe');
@@ -81,23 +80,13 @@ POSSIBILITY OF SUCH DAMAGE.
             // delete item
             gridPipes.find(".command-delete").on("click", function(e)
             {
-                var uuid  = $(this).data("row-id");
-                BootstrapDialog.confirm({
-                    title: 'Remove',
-                    message: 'Remove selected item?',
-                    type: BootstrapDialog.TYPE_DANGER,
-                    btnCancelLabel: 'Cancel',
-                    btnOKLabel: 'Yes',
-                    btnOKClass: 'btn-primary',
-                    callback: function(result) {
-                        if(result) {
-                            var url = "/api/trafficshaper/settings/delPipe/" + uuid;
-                            ajaxCall(url=url,sendData={},callback=function(data,status){
-                                // reload grid after delete
-                                $("#grid-pipes").bootgrid("reload");
-                            });
-                        }
-                    }
+                var uuid=$(this).data("row-id");
+                stdDialogRemoveItem('Remove selected item?',function() {
+                    ajaxCall(url="/api/trafficshaper/settings/delPipe/" + uuid,
+                            sendData={},callback=function(data,status){
+                        // reload grid after delete
+                        $("#grid-pipes").bootgrid("reload");
+                    });
                 });
             }).end();
         });
@@ -128,27 +117,17 @@ POSSIBILITY OF SUCH DAMAGE.
          * Delete list of uuids on click event
          */
         $("#deletePipes").click(function(){
-            BootstrapDialog.confirm({
-                title: 'Remove',
-                message: 'Remove selected items?',
-                type: BootstrapDialog.TYPE_DANGER,
-                btnCancelLabel: 'Cancel',
-                btnOKLabel: 'Yes',
-                btnOKClass: 'btn-primary',
-                callback: function(result) {
-                    if(result) {
-                        var rows =$("#grid-pipes").bootgrid('getSelectedRows');
-                        if (rows != undefined){
-                            var deferreds = [];
-                            $.each(rows, function(key,uuid){
-                                deferreds.push(ajaxCall(url="/api/trafficshaper/settings/delPipe/" + uuid, sendData={}));
-                            });
-                            // refresh after load
-                            $.when.apply(null, deferreds).done(function(){
-                                $("#grid-pipes").bootgrid("reload");
-                            });
-                        }
-                    }
+            stdDialogRemoveItem("Remove selected items?",function(){
+                var rows =$("#grid-pipes").bootgrid('getSelectedRows');
+                if (rows != undefined){
+                    var deferreds = [];
+                    $.each(rows, function(key,uuid){
+                        deferreds.push(ajaxCall(url="/api/trafficshaper/settings/delPipe/" + uuid, sendData={},null));
+                    });
+                    // refresh after load
+                    $.when.apply(null, deferreds).done(function(){
+                        $("#grid-pipes").bootgrid("reload");
+                    });
                 }
             });
         });
@@ -159,7 +138,6 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#addPipe").click(function(){
             mapDataToFormUI({'frm_DialogPipe':"/api/trafficshaper/settings/getPipe/"}).done(function(){
                 // update selectors
-                formatTokenizersUI();
                 $('.selectpicker').selectpicker('refresh');
                 // clear validation errors (if any)
                 clearFormValidation('frm_DialogPipe');
@@ -173,8 +151,30 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         /*************************************************************************************************************
-         *
+         * manage rules
          *************************************************************************************************************/
+
+        /**
+         * save form data to end point for existing rule
+         */
+        function saveRule(uuid) {
+            saveFormToEndpoint(url="/api/trafficshaper/settings/setRule/"+uuid,
+                    formid="frm_DialogRule", callback_ok=function(){
+                        $("#DialogRule").modal('hide');
+                        $("#grid-rules").bootgrid("reload");
+                    });
+        }
+
+        /**
+         * save form data to end point for new pipe
+         */
+        function addRule() {
+            saveFormToEndpoint(url="/api/trafficshaper/settings/addRule/",
+                    formid="frm_DialogRule", callback_ok=function(){
+                        $("#DialogRule").modal('hide');
+                        $("#grid-rules").bootgrid("reload");
+                    });
+        }
 
         /**
          * Render rules grid using searchPipes api
@@ -192,6 +192,78 @@ POSSIBILITY OF SUCH DAMAGE.
                             "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o\"></span></button>";
                 }
             }
+        });
+
+        /**
+         * Link rule grid command controls (edit/delete)
+         */
+        gridRules.on("loaded.rs.jquery.bootgrid", function(){
+            // edit item
+            gridRules.find(".command-edit").on("click", function(e)
+            {
+                var uuid=$(this).data("row-id");
+                mapDataToFormUI({'frm_DialogRule':"/api/trafficshaper/settings/getRule/"+uuid}).done(function(){
+                    // update selectors
+                    $('.selectpicker').selectpicker('refresh');
+                    // clear validation errors (if any)
+                    clearFormValidation('frm_DialogRule');
+                });
+
+                // show dialog for pipe edit
+                $('#DialogRule').modal();
+                // curry uuid to save action
+                $("#btn_DialogRule_save").unbind('click').click(saveRule.bind(undefined, uuid));
+            }).end();
+
+            // delete item
+            gridRules.find(".command-delete").on("click", function(e)
+            {
+                var uuid = $(this).data("row-id");
+                stdDialogRemoveItem("Remove selected item?",function(){
+                    ajaxCall(url="/api/trafficshaper/settings/delRule/" + uuid,
+                            sendData={},callback=function(data,status){
+                        // reload grid after delete
+                        $("#grid-rules").bootgrid("reload");
+                    });
+                });
+            }).end();
+        });
+
+        /**
+         * Add new rule on click event
+         */
+        $("#addRule").click(function(){
+            mapDataToFormUI({'frm_DialogRule':"/api/trafficshaper/settings/getRule/"}).done(function(){
+                // update selectors
+                $('.selectpicker').selectpicker('refresh');
+                // clear validation errors (if any)
+                clearFormValidation('frm_DialogRule');
+            });
+
+            // show dialog for pipe edit
+            $('#DialogRule').modal();
+            // curry uuid to save action
+            $("#btn_DialogRule_save").unbind('click').click(addRule);
+
+        });
+
+        /**
+         * Delete list of uuids on click event
+         */
+        $("#deleteRules").click(function(){
+            stdDialogRemoveItem("Remove selected items?",function(){
+                var rows =$("#grid-rules").bootgrid('getSelectedRows');
+                if (rows != undefined){
+                    var deferreds = [];
+                    $.each(rows, function(key,uuid){
+                        deferreds.push(ajaxCall(url="/api/trafficshaper/settings/delRule/" + uuid, sendData={},null));
+                    });
+                    // refresh after load
+                    $.when.apply(null, deferreds).done(function(){
+                        $("#grid-rules").bootgrid("reload");
+                    });
+                }
+            });
         });
 
     });
@@ -246,11 +318,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive">
                         <thead>
                         <tr>
+                            <th data-column-id="sequence" data-type="number">#</th>
                             <th data-column-id="origin" data-type="string">Origin</th>
                             <th data-column-id="interface" data-type="string">Interface</th>
                             <th data-column-id="proto" data-type="string">Protocol</th>
                             <th data-column-id="source" data-type="string">Source</th>
                             <th data-column-id="destination" data-type="string">Destination</th>
+                            <th data-column-id="target" data-type="string">target</th>
                             <th data-column-id="description" data-type="string">Description</th>
                             <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
                             <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
@@ -260,6 +334,8 @@ POSSIBILITY OF SUCH DAMAGE.
                         </tbody>
                         <tfoot>
                         <tr>
+                            <td></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -283,4 +359,5 @@ POSSIBILITY OF SUCH DAMAGE.
 
 {# include dialogs #}
 {{ partial("layout_partials/base_dialog",['fields':formDialogPipe,'id':'DialogPipe','label':'Edit pipe'])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Edit rule'])}}
 

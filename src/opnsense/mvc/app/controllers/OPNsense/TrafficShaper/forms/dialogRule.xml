@@ -1,0 +1,44 @@
+<form>
+    <field>
+        <id>rule.sequence</id>
+        <label>sequence</label>
+        <type>text</type>
+        <help>order in which the rule will be evaluated</help>
+    </field>
+    <field>
+        <id>rule.interface</id>
+        <label>interface</label>
+        <type>text</type>
+        <help></help>
+    </field>
+    <field>
+        <id>rule.proto</id>
+        <label>proto</label>
+        <type>dropdown</type>
+        <help></help>
+    </field>
+    <field>
+        <id>rule.source</id>
+        <label>source</label>
+        <type>text</type>
+        <help></help>
+    </field>
+    <field>
+        <id>rule.destination</id>
+        <label>destination</label>
+        <type>text</type>
+        <help></help>
+    </field>
+    <field>
+        <id>rule.target</id>
+        <label>target</label>
+        <type>dropdown</type>
+        <help></help>
+    </field>
+    <field>
+        <id>rule.description</id>
+        <label>description</label>
+        <type>text</type>
+        <help></help>
+    </field>
+</form>
