@@ -44,14 +44,14 @@ import xml.etree.cElementTree as ElementTree
 
 class Config(object):
     def __init__(self, filename):
-        self._filename = filename
         self._config_data = {}
+        self._filename = filename
         self._file_mod = 0
 
         self._load()
 
     def _load(self):
-        """ load config ( if timestamp is changed )
+        """ load config ( if timestamp is changed ), stores all found uuids into an item __uuid__ at the config root
 
         :return:
         """
@@ -59,7 +59,12 @@ class Config(object):
         if self._file_mod != mod_time:
             xml_node = ElementTree.parse(self._filename)
             root = xml_node.getroot()
+            # initialize uuid containers, holds references to all uuid tagged items and names in the xml
+            self.__uuid_data = {}
+            self.__uuid_tags = {}
             self._config_data = self._traverse(root)
+            self._config_data['__uuid__'] = self.__uuid_data
+            self._config_data['__uuid_tags__'] = self.__uuid_tags
             self._file_mod = mod_time
 
     def _traverse(self, xmlNode):
@@ -71,6 +76,9 @@ class Config(object):
         if len(list(xmlNode)) > 0:
             for item in list(xmlNode):
                 item_content = self._traverse(item)
+                if 'uuid' in item.attrib:
+                    self.__uuid_data[item.attrib['uuid']] = item_content
+                    self.__uuid_tags[item.attrib['uuid']] = item.tag
                 if item.tag in this_item:
                     if type(this_item[item.tag]) != list:
                         tmp_item = copy.deepcopy(this_item[item.tag])

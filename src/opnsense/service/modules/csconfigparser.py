@@ -28,7 +28,7 @@
 
     --------------------------------------------------------------------------------------
     package : configd
-    function: make config parser case sensitive
+    function: make standard config parser case sensitive
 
 
 """

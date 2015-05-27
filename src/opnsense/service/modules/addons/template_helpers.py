@@ -35,7 +35,7 @@ class Helpers(object):
     def __init__(self, template_in_data):
         """ initialize template helpers
 
-        :param template_in_data:
+        :param template_in_data: configuration data used by the engine
         :return:
         """
         self._template_in_data = template_in_data
@@ -65,3 +65,24 @@ class Helpers(object):
             return True
         else:
             return False
+
+
+    def getUUIDtag(self, uuid):
+        """ retrieve tag name of registered uuid, returns __not_found__ if none available
+        :param uuid:
+        :return: string
+        """
+        if uuid in self._template_in_data['__uuid_tags__']:
+            return self._template_in_data['__uuid_tags__'][uuid]
+        else:
+            return "__not_found__"
+
+    def getUUID(self, uuid):
+        """ retrieve item by uuid if found
+        :param uuid:
+        :return: dict
+        """
+        if uuid in self._template_in_data['__uuid__']:
+            return self._template_in_data['__uuid__'][uuid]
+        else:
+            return {}
