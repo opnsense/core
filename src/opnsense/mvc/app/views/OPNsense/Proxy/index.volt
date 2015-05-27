@@ -32,8 +32,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
         var data_get_map = {'frm_proxy':"/api/proxy/settings/get"};
 
-
-
         // load initial data
         mapDataToFormUI(data_get_map).done(function(){
             formatTokenizersUI();
