@@ -14,7 +14,7 @@
         <id>pipe.queue</id>
         <label>queue</label>
         <type>text</type>
-        <help>test</help>
+        <help>number of dynamic queues, leave empty for default</help>
     </field>
     <field>
         <id>pipe.mask</id>
@@ -26,6 +26,6 @@
         <id>pipe.description</id>
         <label>description</label>
         <type>text</type>
+        <help>Description to identify this pipe.</help>
     </field>
-
 </form>
