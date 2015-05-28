@@ -39,8 +39,8 @@
                     <default>none</default>
                     <OptionValues>
                         <none></none>
-                        <source>source</source>
-                        <destination>destination</destination>
+                        <src-ip>source</src-ip>
+                        <dst-ip>destination</dst-ip>
                     </OptionValues>
                 </mask>
                 <origin type="TextField">
@@ -71,6 +71,8 @@
                     <default>ip</default>
                     <OptionValues>
                         <ip>ip</ip>
+                        <ip4>ipv4</ip4>
+                        <ip5>ipv6</ip5>
                         <udp>udp</udp>
                         <tcp>tcp</tcp>
                     </OptionValues>
@@ -79,10 +81,27 @@
                     <Required>Y</Required>
                     <default>any</default>
                 </source>
+                <src_port type="TextField">
+                    <Required>Y</Required>
+                    <default>any</default>
+                </src_port>
                 <destination type="TextField">
                     <Required>Y</Required>
                     <default>any</default>
                 </destination>
+                <dst_port type="TextField">
+                    <Required>Y</Required>
+                    <default>any</default>
+                </dst_port>
+                <direction type="OptionField">
+                    <Required>Y</Required>
+                    <default></default>
+                    <OptionValues>
+                        <both></both>
+                        <in>in</in>
+                        <out>out</out>
+                    </OptionValues>
+                </direction>
                 <target type="ModelRelationField">
                     <Model>
                         <pipes>

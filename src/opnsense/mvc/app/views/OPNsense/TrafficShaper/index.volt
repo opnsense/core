@@ -41,20 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * Render pipe grid using searchPipes api
          */
-        var gridPipes =$("#grid-pipes").bootgrid({
-            ajax: true,
-            selection: true,
-            multiSelect: true,
-            rowCount:[7,14,20,-1],
-            url: '/api/trafficshaper/settings/searchPipes',
-            formatters: {
-                "commands": function(column, row)
-                {
-                    return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-pencil\"></span></button> " +
-                            "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o\"></span></button>";
-                }
-            }
-        });
+        var gridPipes = stdBootgridUI("grid-pipes", "/api/trafficshaper/settings/searchPipes");
 
         /**
          * Link pipe grid command controls (edit/delete)
@@ -179,20 +166,7 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * Render rules grid using searchPipes api
          */
-        var gridRules =$("#grid-rules").bootgrid({
-            ajax: true,
-            selection: true,
-            multiSelect: true,
-            rowCount:[7,14,20,-1],
-            url: '/api/trafficshaper/settings/searchRules',
-            formatters: {
-                "commands": function(column, row)
-                {
-                    return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-pencil\"></span></button> " +
-                            "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o\"></span></button>";
-                }
-            }
-        });
+        var gridRules = stdBootgridUI("grid-rules", "/api/trafficshaper/settings/searchRules");
 
         /**
          * Link rule grid command controls (edit/delete)
@@ -266,6 +240,27 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         });
 
+
+        /**
+         * Reconfigure ipfw / trafficshaper
+         */
+        $("#reconfigureAct").click(function(){
+            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall(url="/api/trafficshaper/service/reconfigure", sendData={}, callback=function(data,status) {
+                // when done, disable progress animation.
+                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+
+                if (status != "success" || data['status'] != 'ok') {
+                    BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
+                        title: "Error reconfiguring trafficshaper",
+                        message: JSON.stringify(data),
+                        draggable: true
+                    });
+                }
+            });
+        });
+
     });
 
 
@@ -273,7 +268,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12" id="content">
+        <div class="col-md-12">
             <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
                 <li class="active"><a data-toggle="tab" href="#pipes">{{ lang._('Pipes') }}</a></li>
                 <li><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
@@ -298,12 +293,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
                             <td></td>
                             <td>
                                 <button type="button" id="addPipe" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
@@ -333,15 +322,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <tbody>
                         </tbody>
                         <tfoot>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <tr >
                             <td></td>
                             <td>
                                 <button type="button" id="addRule" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
@@ -352,6 +333,11 @@ POSSIBILITY OF SUCH DAMAGE.
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
         </div>
     </div>
 </div>

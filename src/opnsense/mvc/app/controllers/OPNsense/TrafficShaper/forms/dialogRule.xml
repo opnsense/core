@@ -24,10 +24,26 @@
         <help></help>
     </field>
     <field>
+        <id>rule.src_port</id>
+        <label>src-port</label>
+        <type>text</type>
+        <help></help>
+    </field>
+    <field>
         <id>rule.destination</id>
         <label>destination</label>
         <type>text</type>
         <help></help>
+    </field>
+    <field>
+        <id>rule.dst_port</id>
+        <labek>dst-port</labek>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.direction</id>
+        <label>direction</label>
+        <type>dropdown</type>
     </field>
     <field>
         <id>rule.target</id>
