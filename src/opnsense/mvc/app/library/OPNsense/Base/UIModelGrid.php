@@ -102,9 +102,10 @@ class UIModelGrid
             }
 
             // if result is relevant, count total and add (max number of) items to result.
+            // $itemsPerPage = -1 is used as wildcard for "all results"
             if ($searchFound) {
-                if (count($result['rows']) < $itemsPerPage &&
-                    $recordIndex >= ($itemsPerPage*($currentPage-1))
+                if ((count($result['rows']) < $itemsPerPage &&
+                    $recordIndex >= ($itemsPerPage*($currentPage-1)) || $itemsPerPage == -1)
                 ) {
                     $result['rows'][] = $row;
                 }
