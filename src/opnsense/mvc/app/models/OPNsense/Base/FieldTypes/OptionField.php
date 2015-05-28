@@ -100,7 +100,12 @@ class OptionField extends BaseField
             if ($countid > 0) {
                 $validationMask .= '|';
             }
-            $validationMask .= $key ;
+            if ($key == "") {
+                // match on empty strings
+                $validationMask .= "^$";
+            } else {
+                $validationMask .= $key ;
+            }
             $countid++;
         }
         $validationMask .= ')';
