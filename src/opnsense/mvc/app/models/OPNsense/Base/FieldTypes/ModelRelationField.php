@@ -29,7 +29,7 @@
  */
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Validation\Validator\Regex;
+use Phalcon\Validation\Validator\InclusionIn;
 
 /**
  * Class ModelRelationField defines a relation to another entity within the model, acts like a select item.
@@ -102,25 +102,16 @@ class ModelRelationField extends BaseField
      */
     public function getValidators()
     {
-        // build validation mask
-        $validationMask = '(';
-        $countid = 0 ;
-        foreach (self::$internalOptionList as $key => $value) {
-            if ($countid > 0) {
-                $validationMask .= '|';
-            }
-            $validationMask .= $key ;
-            $countid++;
-        }
-        $validationMask .= ')';
-
         if ($this->internalValidationMessage == null) {
-            $msg = "option not in list" ;
+            $msg = "option not in list";
         } else {
             $msg = $this->internalValidationMessage;
         }
-        if (($this->internalIsRequired == true || $this->internalValue != null) && $validationMask != null) {
-            return array(new Regex(array('message' => $msg,'pattern'=>trim($validationMask))));
+
+        if (($this->internalIsRequired == true || $this->internalValue != null) &&
+            count(self::$internalOptionList) > 0
+        ) {
+            return array(new InclusionIn(array('message' => $msg, 'domain' => array_keys(self::$internalOptionList))));
         } else {
             // empty field and not required, skip this validation.
             return array();
