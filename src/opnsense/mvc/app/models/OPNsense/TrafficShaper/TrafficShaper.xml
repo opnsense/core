@@ -81,7 +81,7 @@
                     <Required>Y</Required>
                     <default>any</default>
                 </source>
-                <src_port type="TextField">
+                <src_port type="PortField">
                     <Required>Y</Required>
                     <default>any</default>
                 </src_port>
@@ -89,7 +89,7 @@
                     <Required>Y</Required>
                     <default>any</default>
                 </destination>
-                <dst_port type="TextField">
+                <dst_port type="PortField">
                     <Required>Y</Required>
                     <default>any</default>
                 </dst_port>
