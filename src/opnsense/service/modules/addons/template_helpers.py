@@ -66,6 +66,19 @@ class Helpers(object):
         else:
             return False
 
+    def toList(self,tag):
+        """ if an item should be a list of items (repeating tag), use this method to make sure that we always return
+            a list. The configuration doesn't know if a non repeating item is supposed to be a list of items, this makes
+            it explicit.
+        :param tag: tag in dot notation (section.item)
+        :return: []
+        """
+        result = self.getNodeByTag(tag)
+        if type(result) == list:
+            return result
+        else:
+            # wrap result
+            return [result]
 
     def getUUIDtag(self, uuid):
         """ retrieve tag name of registered uuid, returns __not_found__ if none available
