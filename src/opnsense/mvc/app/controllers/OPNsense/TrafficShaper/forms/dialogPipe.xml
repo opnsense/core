@@ -15,12 +15,16 @@
         <label>queue</label>
         <type>text</type>
         <help>number of dynamic queues, leave empty for default</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>pipe.mask</id>
         <label>mask</label>
         <type>dropdown</type>
-        <help><![CDATA[Dynamic queue creation by source or destination address]]></help>
+        <help><![CDATA[Dynamic queue creation by source or destination address.
+        <li> choose destination here to share the total bandwidth of this pipe among all connected clients. </li>
+        <li> choose source to provide all connected clients up to a maximum of this pipe configured bandwidth  </li>
+        ]]></help>
     </field>
     <field>
         <id>pipe.description</id>
