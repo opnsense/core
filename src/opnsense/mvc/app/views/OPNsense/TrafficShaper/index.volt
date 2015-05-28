@@ -59,7 +59,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
 
                 // show dialog for pipe edit
-                $('#DialogPipe').modal();
+                $('#DialogPipe').modal({backdrop: 'static', keyboard: false});
                 // curry uuid to save action
                 $("#btn_DialogPipe_save").unbind('click').click(savePipe.bind(undefined, uuid));
             }).end();
@@ -131,7 +131,7 @@ POSSIBILITY OF SUCH DAMAGE.
             });
 
             // show dialog for pipe edit
-            $('#DialogPipe').modal();
+            $('#DialogPipe').modal({backdrop: 'static', keyboard: false});
             // curry uuid to save action
             $("#btn_DialogPipe_save").unbind('click').click(addPipe);
 
@@ -184,7 +184,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
 
                 // show dialog for pipe edit
-                $('#DialogRule').modal();
+                $('#DialogRule').modal({backdrop: 'static', keyboard: false});
                 // curry uuid to save action
                 $("#btn_DialogRule_save").unbind('click').click(saveRule.bind(undefined, uuid));
             }).end();
@@ -215,7 +215,7 @@ POSSIBILITY OF SUCH DAMAGE.
             });
 
             // show dialog for pipe edit
-            $('#DialogRule').modal();
+            $('#DialogRule').modal({backdrop: 'static', keyboard: false});
             // curry uuid to save action
             $("#btn_DialogRule_save").unbind('click').click(addRule);
 
