@@ -26,7 +26,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace OPNsense\Proxy\TrafficShaper;
+namespace OPNsense\TrafficShaper\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
@@ -46,6 +46,9 @@ class ServiceController extends ApiControllerBase
         if ($this->request->isPost()) {
             // close session for long running action
             $this->sessionClose();
+
+            $backend = new Backend();
+            $backend->configdRun("template reload OPNsense.IPFW");
 
             return array("status" => "ok");
         } else {
