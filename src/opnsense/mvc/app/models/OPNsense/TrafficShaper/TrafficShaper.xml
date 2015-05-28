@@ -97,7 +97,7 @@
                     <Required>Y</Required>
                     <default></default>
                     <OptionValues>
-                        <both></both>
+                        <__empty__>both</__empty__>
                         <in>in</in>
                         <out>out</out>
                     </OptionValues>
