@@ -49,8 +49,9 @@ class ServiceController extends ApiControllerBase
 
             $backend = new Backend();
             $backend->configdRun("template reload OPNsense.IPFW");
+            $status = $backend->configdRun("ipfw reload");
 
-            return array("status" => "ok");
+            return array("status" => $status);
         } else {
             return array("status" => "failed");
         }
