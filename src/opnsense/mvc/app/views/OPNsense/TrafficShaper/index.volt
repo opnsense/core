@@ -254,7 +254,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
                         title: "Error reconfiguring trafficshaper",
-                        message: JSON.stringify(data),
+                        message: data['status'],
                         draggable: true
                     });
                 }
