@@ -346,4 +346,3 @@ POSSIBILITY OF SUCH DAMAGE.
 {# include dialogs #}
 {{ partial("layout_partials/base_dialog",['fields':formDialogPipe,'id':'DialogPipe','label':'Edit pipe'])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Edit rule'])}}
-

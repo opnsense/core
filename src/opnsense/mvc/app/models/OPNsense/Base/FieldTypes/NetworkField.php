@@ -77,4 +77,3 @@ class NetworkField extends BaseField
         }
     }
 }
-
