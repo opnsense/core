@@ -38,7 +38,7 @@ function get_locale_list()
 
 	$locales['en_US'] = _('English');
 	//$locales['ja_JP'] = _('Japanese');
-	//$locales['zh_CN'] = _('Chinese (Simplified)');
+	$locales['zh_CN'] = _('Chinese (Simplified)');
 
 	asort($locales);
 
