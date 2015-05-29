@@ -169,6 +169,7 @@ class SettingsController extends ApiControllerBase
     public function searchPipesAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             // fetch query parameters
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
@@ -202,6 +203,7 @@ class SettingsController extends ApiControllerBase
     public function searchQueuesAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             // fetch query parameters
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
@@ -318,6 +320,7 @@ class SettingsController extends ApiControllerBase
     public function searchRulesAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             // fetch query parameters
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
