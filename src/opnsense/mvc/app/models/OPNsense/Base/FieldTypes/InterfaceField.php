@@ -85,7 +85,7 @@ class InterfaceField extends BaseField
                         $fieldData = "0";
                     }
 
-                    if (!preg_match('/'.$filterData.'/', $fieldData)) {
+                    if (!preg_match($filterData, $fieldData)) {
                         $isMatched = false;
                     }
                 }
