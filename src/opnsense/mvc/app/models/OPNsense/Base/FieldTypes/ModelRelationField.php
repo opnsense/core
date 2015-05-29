@@ -45,7 +45,12 @@ class ModelRelationField extends BaseField
     /**
      * @var array collected options
      */
-    private static $internalOptionList = null;
+    private static $internalOptionList = array();
+
+    /**
+     * @var string cache relations
+     */
+    private $internalCacheKey = "";
 
     /**
      * Set model as reference list, use uuid's as key
@@ -53,24 +58,45 @@ class ModelRelationField extends BaseField
      */
     public function setModel($mdlStructure)
     {
-        if (!is_array(self::$internalOptionList)) {
-            self::$internalOptionList = array();
-            if (is_array($mdlStructure)) {
-                foreach ($mdlStructure as $modelData) {
-                    if (array_key_exists("source", $modelData)) {
-                        $className = str_replace(".", "\\", $modelData['source']);
-                        $modelObj = new $className;
-                        if (array_key_exists("items", $modelData)) {
-                            foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
-                                $displayKey = $modelData['display'];
-                                if (array_key_exists("uuid", $node->getAttributes()) && $node->$displayKey != null) {
-                                    $uuid = $node->getAttributes()['uuid'];
-                                    self::$internalOptionList[$uuid] = $node->$displayKey->__toString();
+        // only handle array type input
+        if (!is_array($mdlStructure)) {
+            return;
+        }
+
+        // set internal key for this node based on sources and filter criteria
+        $this->internalCacheKey = md5(serialize($mdlStructure));
+
+        // only collect options once per source/filter combination, we use a static to save our unique option
+        // combinations over the running application.
+        if (!array_key_exists($this->internalCacheKey, self::$internalOptionList)) {
+            self::$internalOptionList[$this->internalCacheKey] = array();
+            foreach ($mdlStructure as $modelData) {
+                // only handle valid model sources
+                if (array_key_exists('source', $modelData) && array_key_exists('items', $modelData) &&
+                    array_key_exists('display', $modelData)) {
+                    $className = str_replace(".", "\\", $modelData['source']);
+                    $modelObj = new $className;
+                    foreach ($modelObj->getNodeByReference($modelData['items'])->__items as $node) {
+                        $displayKey = $modelData['display'];
+                        if (array_key_exists("uuid", $node->getAttributes()) && $node->$displayKey != null) {
+                            // check for filters and apply if found
+                            $isMatched = true;
+                            if (array_key_exists("filters", $modelData)) {
+                                foreach ($modelData['filters'] as $filterKey => $filterValue) {
+                                    $fieldData = $node->$filterKey;
+                                    if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
+                                        $isMatched = false;
+                                    }
                                 }
                             }
+                            if ($isMatched) {
+                                $uuid = $node->getAttributes()['uuid'];
+                                self::$internalOptionList[$this->internalCacheKey][$uuid] =
+                                    $node->$displayKey->__toString();
+                            }
                         }
-                        unset($modelObj);
                     }
+                    unset($modelObj);
                 }
             }
         }
@@ -83,8 +109,9 @@ class ModelRelationField extends BaseField
     public function getNodeData()
     {
         $result = array ();
-        if (is_array(self::$internalOptionList)) {
-            foreach (self::$internalOptionList as $optKey => $optValue) {
+        if (array_key_exists($this->internalCacheKey, self::$internalOptionList) &&
+            is_array(self::$internalOptionList[$this->internalCacheKey])) {
+            foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
                 if ($optKey == $this->internalValue && $this->internalValue != null) {
                     $selected = 1;
                 } else {
@@ -108,10 +135,16 @@ class ModelRelationField extends BaseField
             $msg = $this->internalValidationMessage;
         }
 
-        if (($this->internalIsRequired == true || $this->internalValue != null) &&
-            count(self::$internalOptionList) > 0
+        if (($this->internalIsRequired == true || $this->internalValue != null)
         ) {
-            return array(new InclusionIn(array('message' => $msg, 'domain' => array_keys(self::$internalOptionList))));
+            if (array_key_exists($this->internalCacheKey, self::$internalOptionList) &&
+                count(self::$internalOptionList[$this->internalCacheKey]) > 0) {
+                return array(new InclusionIn(array('message' => $msg,
+                    'domain' => array_keys(self::$internalOptionList[$this->internalCacheKey]))));
+            } else {
+                return array(new InclusionIn(array('message' => $msg,
+                    'domain' => array())));
+            }
         } else {
             // empty field and not required, skip this validation.
             return array();
