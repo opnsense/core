@@ -1,7 +1,7 @@
 # OPNsense Simplified Chinese Language Translation
 # Copyright (C) OPNsense project.
 # This file is distributed under the same BSD license as the OPNsense project.
-# Liu <liuyonghui@grapecity.com>, 2015
+# Liu <liuyonghui@grapecity.com>, 周<kuke666@126.com>，2015
 #
 #, fuzzy
 msgid ""
@@ -26,11 +26,11 @@ msgstr ""
 #
 # File: src/etc/inc/auth.inc, line: 123
 msgid "Redirecting to the dashboard..."
-msgstr ""
+msgstr "正在重定向到仪表盘"
 #
 # File: src/etc/inc/auth.inc, line: 123
 msgid "Redirecting..."
-msgstr ""
+msgstr "正在重定向"
 #
 # File: src/etc/inc/auth.inc, line: 666
 # File: src/etc/inc/auth.inc, line: 739
@@ -38,110 +38,112 @@ msgstr ""
 # File: src/etc/inc/auth.inc, line: 1067
 #, php-format
 msgid "ERROR!  Could not connect to server %s."
-msgstr ""
+msgstr "错误！无法连接到服务器%s。"
 #
 # File: src/etc/inc/auth.inc, line: 686
 #, php-format
 msgid "LDAP: Could not lookup CA by reference for host %s."
-msgstr ""
+msgstr "LDAP: 无法为主机%s查询CA引用。"
 #
 # File: src/etc/inc/auth.inc, line: 798
 msgid ""
 "ERROR!  ldap_get_user_ous() backed selected with no LDAP authentication "
 "server defined."
-msgstr ""
+msgstr "错误！ldap_get_user_ous() 返回选择：没有指定LDAP认证服务器。"
 #
 # File: src/etc/inc/auth.inc, line: 825
 #, php-format
 msgid "ERROR! ldap_get_user_ous() could not bind anonymously to server %s."
-msgstr ""
+msgstr "错误！ldap_get_user_ous()无法匿名绑定到服务器%s。"
 #
 # File: src/etc/inc/auth.inc, line: 830
 #, php-format
 msgid "ERROR! ldap_get_user_ous() could not bind to server %s."
-msgstr ""
+msgstr "错误! ldap_get_user_ous() 无法绑定到服务器%s。"
 #
 # File: src/etc/inc/auth.inc, line: 927
 #, php-format
 msgid "ERROR! ldap_get_groups() Could not connect to server %s."
-msgstr ""
+msgstr "错误! ldap_get_groups() 无法连接服务器%s。"
 #
 # File: src/etc/inc/auth.inc, line: 940
 #, php-format
 msgid "ERROR! ldap_get_groups() could not bind anonymously to server %s."
-msgstr ""
+msgstr "错误! ldap_get_groups()无法匿名绑定到服务器%s。"
 #
 # File: src/etc/inc/auth.inc, line: 945
 #, php-format
 msgid "ERROR! ldap_get_groups() could not bind to server %s."
-msgstr ""
+msgstr "错误! ldap_get_groups() 无法绑定到服务器%s。"
 #
 # File: src/etc/inc/auth.inc, line: 1046
 msgid ""
 "ERROR! ldap_backed() called with no LDAP authentication server defined.  "
 "Defaulting to local user database. Visit System -> User Manager."
 msgstr ""
+"错误! ldap_backed() called with没有指定的LDAP认证服务器"
+"缺少本地用户数据库。请访问 System -> User Manager"
 #
 # File: src/etc/inc/auth.inc, line: 1049
 msgid "ERROR! ldap_backed() called with no LDAP authentication server defined."
-msgstr ""
+msgstr "错误! ldap_backed() called with没有指定的LDAP认证服务器"
 #
 # File: src/etc/inc/auth.inc, line: 1083
 #, php-format
 msgid "ERROR! Could not bind to server %s."
-msgstr ""
+msgstr "错误！无法绑定服务器%s"
 #
 # File: src/etc/inc/auth.inc, line: 1117
 #, php-format
 msgid "Search resulted in error: %s"
-msgstr ""
+msgstr "检索结果出错：%s"
 #
 # File: src/etc/inc/auth.inc, line: 1133
 msgid "ERROR! Either LDAP search failed, or multiple users were found."
-msgstr ""
+msgstr "错误！LDAP检索失败，或者多个用户没有被找到"
 #
 # File: src/etc/inc/auth.inc, line: 1140
 #, php-format
 msgid "ERROR! Could not login to server %1$s as user %2$s: %3$s"
-msgstr ""
+msgstr "错误！无法作为用户%2$s: %3$s登陆服务器%1$s"
 #
 # File: src/etc/inc/auth.inc, line: 1235
 # File: src/etc/inc/auth.inc, line: 1250
 msgid "Local Database"
-msgstr ""
+msgstr "本地数据库"
 #
 # File: src/etc/inc/auth.inc, line: 1343
 #, php-format
 msgid "Successful login for user '%1$s' from: %2$s"
-msgstr ""
+msgstr "用户'%1$s' 从: %2$s成功登陆"
 #
 # File: src/etc/inc/auth.inc, line: 1394
 #, php-format
 msgid "Session timed out for user '%1$s' from: %2$s"
-msgstr ""
+msgstr "用户'%1$s' from: %2$s 进程超时"
 #
 # File: src/etc/inc/auth.inc, line: 1396
 #, php-format
 msgid "User logged out for user '%1$s' from: %2$s"
-msgstr ""
+msgstr "用户'%1$s' 已从: %2$s退出登陆"
 #
 # File: src/etc/inc/authgui.inc, line: 66
 msgid "No page assigned to this user! Click here to logout."
-msgstr ""
+msgstr "该用户无权限！点击这里退出登陆"
 #
 # File: src/etc/inc/authgui.inc, line: 98
 #, php-format
 msgid "Error: %1$s Description: %2$s"
-msgstr ""
+msgstr "错误： %1$s 描述: %2$s"
 #
 # File: src/etc/inc/authgui.inc, line: 150
 msgid "unknown reason"
-msgstr ""
+msgstr "未知原因"
 #
 # File: src/etc/inc/authgui.inc, line: 151
 #, php-format
 msgid "Invalid login (%s)."
-msgstr ""
+msgstr "无效登陆(%s)"
 #
 # File: src/etc/inc/authgui.inc, line: 156
 #, php-format
@@ -151,7 +153,7 @@ msgstr ""
 # File: src/etc/inc/authgui.inc, line: 224
 # File: src/etc/inc/authgui.inc, line: 270
 msgid "Login"
-msgstr ""
+msgstr "登陆"
 #
 # File: src/etc/inc/authgui.inc, line: 238
 msgid ""
@@ -159,38 +161,41 @@ msgid ""
 "may be forwarded by NAT or other means. <br /><br />If you did not setup "
 "this forwarding, you may be the target of a man-in-the-middle attack."
 msgstr ""
+"你正在用本地未配置的IP地址连接路由器，"
+"它或许是NAT转发的或者其他因素导致的. <br /><br />如果你没有设置过这个转发，"
+"你可能是中间人攻击的目标。"
 #
 # File: src/etc/inc/authgui.inc, line: 259
 msgid "Username:"
-msgstr ""
+msgstr "用户名："
 #
 # File: src/etc/inc/authgui.inc, line: 264
 # File: src/www/diag_backup.php, line: 653
 # File: src/www/system_authservers.php, line: 663
 msgid "Password:"
-msgstr ""
+msgstr "密码："
 #
 # File: src/etc/inc/authgui.inc, line: 277
 msgid "Your browser must support cookies to login."
-msgstr ""
+msgstr "你的浏览器必须支持cookies来完成登陆"
 #
 # File: src/etc/inc/captiveportal.inc, line: 1061
 #, php-format
 msgid "Error: cannot open '%s' in captiveportal_write_elements()%s"
-msgstr ""
+msgstr "错误：不能在captiveportal_write_elements()%s打开'%s' "
 #
 # File: src/etc/inc/config.console.inc, line: 59
 # File: src/etc/inc/config.console.inc, line: 462
 msgid "No interfaces found!"
-msgstr ""
+msgstr "没有发现网络接口"
 #
 # File: src/etc/inc/config.console.inc, line: 157
 msgid "VLAN interfaces:"
-msgstr ""
+msgstr "VLAN接口"
 #
 # File: src/etc/inc/config.console.inc, line: 176
 msgid "Enter the WAN interface name or 'a' for auto-detection:"
-msgstr ""
+msgstr "输入WAN接口名称或‘a’自动检测"
 #
 # File: src/etc/inc/config.console.inc, line: 184
 # File: src/etc/inc/config.console.inc, line: 208
@@ -198,7 +203,7 @@ msgstr ""
 # File: src/etc/inc/config.console.inc, line: 485
 #, php-format
 msgid "%sInvalid interface name '%s'%s"
-msgstr ""
+msgstr "%s无效的接口名称'%s'%s"
 #
 # File: src/etc/inc/config.console.inc, line: 191
 #, php-format
@@ -206,11 +211,13 @@ msgid ""
 "%sEnter the LAN interface name or 'a' for auto-detection %sNOTE: this "
 "enables full Firewalling/NAT mode.%s(or nothing if finished):%s"
 msgstr ""
+"%s输入LAN接口名称或‘a’自动检测"
+"%s提示：这会启用完整的防火墙NAT模式。%s(或者已结束，什么都不做):%s"
 #
 # File: src/etc/inc/config.console.inc, line: 225
 #, php-format
 msgid "%sOptional interface %s description found: %s"
-msgstr ""
+msgstr "%s可选接口%s 说明发现: %s"
 #
 # File: src/etc/inc/config.console.inc, line: 227
 #, php-format
@@ -218,258 +225,261 @@ msgid ""
 "%sEnter the Optional %s interface name or 'a' for auto-detection%s(or "
 "nothing if finished):%s"
 msgstr ""
+"%s输入选项%s接口名称或‘a’自动检测%s"
+"（或者已结束,什么都不做）：%s"
 #
 # File: src/etc/inc/config.console.inc, line: 234
 msgid "Optional"
-msgstr ""
+msgstr "可选项"
 #
 # File: src/etc/inc/config.console.inc, line: 268
 msgid "The interfaces will be assigned as follows:"
-msgstr ""
+msgstr "该接口将被如下定义："
 #
 # File: src/etc/inc/config.console.inc, line: 389
 #, php-format
 msgid "%sWriting configuration..."
-msgstr ""
+msgstr "%s正在写入配置..."
 #
 # File: src/etc/inc/config.console.inc, line: 391
 #, php-format
 msgid "done.%s"
-msgstr ""
+msgstr "完成。%s"
 #
 # File: src/etc/inc/config.console.inc, line: 398
 msgid "One moment while we reload the settings..."
-msgstr ""
+msgstr "稍等，正在重新载入设置"
 #
 # File: src/etc/inc/config.console.inc, line: 400
 msgid " done!"
-msgstr ""
+msgstr "完成！"
 #
 # File: src/etc/inc/config.console.inc, line: 421
 #, php-format
 msgid "Detected link-up on interface %s.%s"
-msgstr ""
+msgstr "检测已启用接口%s.%s"
 #
 # File: src/etc/inc/config.console.inc, line: 426
 #, php-format
 msgid "No link-up detected.%s"
-msgstr ""
+msgstr "没有检测到已启用.%s"
 #
 # File: src/etc/inc/config.console.inc, line: 460
 msgid "VLAN Capable interfaces:"
-msgstr ""
+msgstr "VLAN接口："
 #
 # File: src/etc/inc/config.console.inc, line: 475
 msgid "No VLAN capable interfaces detected."
-msgstr ""
+msgstr "没有检测到VLAN接口"
 #
 # File: src/etc/inc/config.console.inc, line: 479
 msgid ""
 "Enter the parent interface name for the new VLAN (or nothing if finished):"
 msgstr ""
+"为新VLAN输入父接口名称（或者已结束，什么都不做)："
 #
 # File: src/etc/inc/config.console.inc, line: 492
 msgid "Enter the VLAN tag (1-4094):"
-msgstr ""
+msgstr "输入VLAN标签（1-4094）："
 #
 # File: src/etc/inc/config.console.inc, line: 496
 #, php-format
 msgid "%sInvalid VLAN tag '%s'%s"
-msgstr ""
+msgstr "%s无效的VLAN标签'%s'%s"
 #
 # File: src/etc/inc/config.lib.inc, line: 52
 # File: src/etc/inc/config.lib.inc, line: 53
 msgid "No (valid) config.xml found, attempting last known config restore."
-msgstr ""
+msgstr "没有发现(有效的) config.xml，正在尝试恢复到最近一次配置。"
 #
 # File: src/etc/inc/config.lib.inc, line: 57
 msgid "No config.xml found, attempting to restore factory config."
-msgstr ""
+msgstr "没有发现config.xml，正在尝试恢复到出厂配置。"
 #
 # File: src/etc/inc/config.lib.inc, line: 86
 #, php-format
 msgid "Start Configuration upgrade at %s, set execution timeout to 15 minutes"
-msgstr ""
+msgstr "开始在%s更新配置，设置执行超时15分钟"
 #
 # File: src/etc/inc/config.lib.inc, line: 97
 # File: src/etc/inc/config.lib.inc, line: 98
 msgid "Updated bogon update frequency to 3am"
-msgstr ""
+msgstr "已更新bogon更新频率到3am"
 #
 # File: src/etc/inc/config.lib.inc, line: 124
 #, php-format
 msgid "Ended Configuration upgrade at %s"
-msgstr ""
+msgstr "配置更新结束在 %s"
 #
 # File: src/etc/inc/config.lib.inc, line: 127
 #, php-format
 msgid "Upgraded config version level from %1$s to %2$s"
-msgstr ""
+msgstr "已更新配置版本级别：从 %1$s 到 %2$s"
 #
 # File: src/etc/inc/config.lib.inc, line: 157
 msgid "WARNING: User"
-msgstr ""
+msgstr "警告：用户"
 #
 # File: src/etc/inc/config.lib.inc, line: 157
 msgid "may not write config (user-config-readonly set)"
-msgstr ""
+msgstr "不可写入配置 (user-config-readonly 已设定)"
 #
 # File: src/etc/inc/config.lib.inc, line: 169
 msgid "WARNING: Corrupt config!"
-msgstr ""
+msgstr "警告：损坏的配置！"
 #
 # File: src/etc/inc/config.lib.inc, line: 180
 msgid "WARNING: Config contents could not be saved. Could not open file!"
-msgstr ""
+msgstr "警告：配置内容不能被保存。不能打开文件！"
 #
 # File: src/etc/inc/config.lib.inc, line: 181
 msgid "Unable to open /conf/config.xml for writing in write_config()"
-msgstr ""
+msgstr "不能打开/conf/config.xml ，以便写入 write_config()"
 #
 # File: src/etc/inc/config.lib.inc, line: 235
 msgid "Reverted to"
-msgstr ""
+msgstr "已恢复"
 #
 # File: src/etc/inc/config.lib.inc, line: 332
 #, php-format
 msgid "%s made unknown change"
-msgstr ""
+msgstr "%s 导致未知更改"
 #
 # File: src/etc/inc/crypt.inc, line: 47
 msgid "Failed to encrypt/decrypt data!"
-msgstr ""
+msgstr "加密/解密数据失败！"
 #
 # File: src/etc/inc/dyndns.class, line: 1222
 #, php-format
 msgid "DynDNS updated IP Address on %s (%s) to %s"
-msgstr ""
+msgstr "DynDNS在 %s (%s) 到 %s更新IP地址"
 #
 # File: src/etc/inc/dyndns.class, line: 1229
 #, php-format
 msgid "DynDNS updated IPv6 Address on %s (%s) to %s"
-msgstr ""
+msgstr "DynDNS在 %s (%s) 到 %s更新IPv6地址"
 #
 # File: src/etc/inc/easyrule.inc, line: 114
 msgid "Easy Rule: Blocked from Firewall Log View"
-msgstr ""
+msgstr "简单规则：查看防火墙拦截日志"
 #
 # File: src/etc/inc/easyrule.inc, line: 115
 # File: src/etc/inc/easyrule.inc, line: 301
 msgid "Easy Rule"
-msgstr ""
+msgstr "简单规则"
 #
 # File: src/etc/inc/easyrule.inc, line: 178
 # File: src/etc/inc/easyrule.inc, line: 186
 msgid "Entry added"
-msgstr ""
+msgstr "入口已添加"
 #
 # File: src/etc/inc/easyrule.inc, line: 183
 msgid "Hosts blocked from Firewall Log view"
-msgstr ""
+msgstr "查看防火墙拦截主机日志"
 #
 # File: src/etc/inc/easyrule.inc, line: 263
 msgid "Easy Rule: Passed from Firewall Log View"
-msgstr ""
+msgstr "简单规则：查看防火墙放行日志"
 #
 # File: src/etc/inc/easyrule.inc, line: 318
 msgid "Tried to block invalid IP:"
-msgstr ""
+msgstr "尝试拦截无效IP："
 #
 # File: src/etc/inc/easyrule.inc, line: 322
 msgid "Invalid interface for block rule:"
-msgstr ""
+msgstr "针对拦截规则的无效网络接口："
 #
 # File: src/etc/inc/easyrule.inc, line: 325
 msgid "Host added successfully"
-msgstr ""
+msgstr "已成功添加主机"
 #
 # File: src/etc/inc/easyrule.inc, line: 327
 msgid "Failed to create block rule, alias, or add host."
-msgstr ""
+msgstr "生成拦截规则、别名或添加主机，都已失败"
 #
 # File: src/etc/inc/easyrule.inc, line: 330
 msgid "Tried to block but had no host IP or interface"
-msgstr ""
+msgstr "尝试拦截但没有主机IP或网络接口"
 #
 # File: src/etc/inc/easyrule.inc, line: 332
 msgid "Unknown block error."
-msgstr ""
+msgstr "未知拦截错误"
 #
 # File: src/etc/inc/easyrule.inc, line: 343
 msgid "Invalid interface for pass rule:"
-msgstr ""
+msgstr "针对放行规则的无效网络接口："
 #
 # File: src/etc/inc/easyrule.inc, line: 346
 msgid "Invalid protocol for pass rule:"
-msgstr ""
+msgstr "针对放行规则的无效协议："
 #
 # File: src/etc/inc/easyrule.inc, line: 349
 msgid "Tried to pass invalid source IP:"
-msgstr ""
+msgstr "尝试放行无效的来源IP："
 #
 # File: src/etc/inc/easyrule.inc, line: 352
 msgid "Tried to pass invalid destination IP:"
-msgstr ""
+msgstr "尝试放行无效的目标IP："
 #
 # File: src/etc/inc/easyrule.inc, line: 356
 msgid "Missing destination port:"
-msgstr ""
+msgstr "缺失目标端口："
 #
 # File: src/etc/inc/easyrule.inc, line: 359
 msgid "Tried to pass invalid destination port:"
-msgstr ""
+msgstr "尝试放行无效的目标端口："
 #
 # File: src/etc/inc/easyrule.inc, line: 366
 msgid "Successfully added pass rule!"
-msgstr ""
+msgstr "成功添加放行规则！"
 #
 # File: src/etc/inc/easyrule.inc, line: 368
 msgid "Failed to add pass rule."
-msgstr ""
+msgstr "添加放行规则失败"
 #
 # File: src/etc/inc/easyrule.inc, line: 371
 msgid "Missing parameters for pass rule."
-msgstr ""
+msgstr "放行规则缺少参数"
 #
 # File: src/etc/inc/easyrule.inc, line: 373
 msgid "Unknown pass error."
-msgstr ""
+msgstr "未知放行错误"
 #
 # File: src/etc/inc/filter.inc, line: 169
 msgid "Initializing"
-msgstr ""
+msgstr "正在初始化"
 #
 # File: src/etc/inc/filter.inc, line: 177
 msgid "Configuring firewall"
-msgstr ""
+msgstr "正在配置防火墙"
 #
 # File: src/etc/inc/filter.inc, line: 182
 msgid "Creating aliases"
-msgstr ""
+msgstr "正在生成别名组"
 #
 # File: src/etc/inc/filter.inc, line: 187
 msgid "Generating Limiter rules"
-msgstr ""
+msgstr "正在生成限制者规则"
 #
 # File: src/etc/inc/filter.inc, line: 188
 msgid "Generating NAT rules"
-msgstr ""
+msgstr "正在生成NAT规则"
 #
 # File: src/etc/inc/filter.inc, line: 193
 msgid "Generating filter rules"
-msgstr ""
+msgstr "正在生成过滤规则"
 #
 # File: src/etc/inc/filter.inc, line: 199
 msgid "Generating ALTQ queues"
-msgstr ""
+msgstr "正在生成ALTQ队列"
 #
 # File: src/etc/inc/filter.inc, line: 203
 msgid "Loading filter rules"
-msgstr ""
+msgstr "正在载入过滤规则"
 #
 # File: src/etc/inc/filter.inc, line: 210
 msgid "Filter is disabled.  Not loading rules."
-msgstr ""
+msgstr "过滤被禁用。不载入规则。"
 #
 # File: src/etc/inc/filter.inc, line: 212
 # File: src/etc/inc/filter.inc, line: 380
@@ -493,46 +503,46 @@ msgstr ""
 # File: src/etc/inc/system.inc, line: 1264
 # File: src/etc/inc/system.inc, line: 1646
 msgid "done."
-msgstr ""
+msgstr "完成"
 #
 # File: src/etc/inc/filter.inc, line: 255
 msgid "Setting up logging information"
-msgstr ""
+msgstr "正在建立日志信息"
 #
 # File: src/etc/inc/filter.inc, line: 260
 msgid "Setting up SCRUB information"
-msgstr ""
+msgstr "正在建立SCRUB信息"
 #
 # File: src/etc/inc/filter.inc, line: 297
 #, php-format
 msgid "The line in question reads [%1$d]: %2$s"
-msgstr ""
+msgstr "问题行读取 [%1$d]: %2$s"
 #
 # File: src/etc/inc/filter.inc, line: 303
 msgid "PF was wedged/busy and has been reset."
-msgstr ""
+msgstr "PF拥塞/繁忙，已重置"
 #
 # File: src/etc/inc/filter.inc, line: 311
 # File: src/etc/inc/filter.inc, line: 312
 #, php-format
 msgid "There were error(s) loading the rules: %1$s - %2$s"
-msgstr ""
+msgstr "载入以下规则时有错误： %1$s - %2$s"
 #
 # File: src/etc/inc/filter.inc, line: 372
 msgid "Processing down interface states"
-msgstr ""
+msgstr "正在处理关闭的网络接口状态"
 #
 # File: src/etc/inc/filter.inc, line: 376
 msgid "Running plugins"
-msgstr ""
+msgstr "正在运行插件"
 #
 # File: src/etc/inc/filter.inc, line: 378
 msgid "Done"
-msgstr ""
+msgstr "完成"
 #
 # File: src/etc/inc/filter.inc, line: 637
 msgid "Creating gateway group item..."
-msgstr ""
+msgstr "正在生成网关组..."
 #
 # File: src/etc/inc/filter.inc, line: 677
 #, php-format
@@ -540,40 +550,41 @@ msgid ""
 "An error occurred while trying to find the interface got %s .  The rule has "
 "not been added."
 msgstr ""
+"试图寻找网络接口got %s 时产生了一个错误。该规则未被添加"
 #
 # File: src/etc/inc/filter.inc, line: 1003
 #, php-format
 msgid "Creating reflection NAT rule for %s..."
-msgstr ""
+msgstr "正在为 %s生成反向NAT规则..."
 #
 # File: src/etc/inc/filter.inc, line: 1092
 #, php-format
 msgid "Creating reflection rule for %s..."
-msgstr ""
+msgstr "正在为 %s生成反向规则..."
 #
 # File: src/etc/inc/filter.inc, line: 1275
 msgid "localhost"
-msgstr ""
+msgstr "本地主机"
 #
 # File: src/etc/inc/filter.inc, line: 1283
 msgid "static route"
-msgstr ""
+msgstr "静态路由"
 #
 # File: src/etc/inc/filter.inc, line: 1294
 msgid "DHCP alias address"
-msgstr ""
+msgstr "DHCP别名地址"
 #
 # File: src/etc/inc/filter.inc, line: 1331
 msgid "PPTP server"
-msgstr ""
+msgstr "PPTP服务器"
 #
 # File: src/etc/inc/filter.inc, line: 1340
 msgid "PPPoE server"
-msgstr ""
+msgstr "PPPOE服务器"
 #
 # File: src/etc/inc/filter.inc, line: 1349
 msgid "L2TP server"
-msgstr ""
+msgstr "L2TP服务器"
 #
 # File: src/etc/inc/filter.inc, line: 1358
 msgid "OpenVPN server"
@@ -581,135 +592,136 @@ msgstr ""
 #
 # File: src/etc/inc/filter.inc, line: 1367
 msgid "OpenVPN client"
-msgstr ""
+msgstr "OpenVPN服务器"
 #
 # File: src/etc/inc/filter.inc, line: 1377
 msgid "IPsec client"
-msgstr ""
+msgstr "IPsec客户端"
 #
 # File: src/etc/inc/filter.inc, line: 1415
 msgid "Auto created rule for ISAKMP"
-msgstr ""
+msgstr "自动生成的ISAKMP规则"
 #
 # File: src/etc/inc/filter.inc, line: 1425
 msgid "Auto created rule"
-msgstr ""
+msgstr "自动生成的规则"
 #
 # File: src/etc/inc/filter.inc, line: 1525
 msgid "Creating 1:1 rules..."
-msgstr ""
+msgstr "正在生成1:1规则..."
 #
 # File: src/etc/inc/filter.inc, line: 1670
 #, php-format
 msgid "Creating advanced outbound rule %s"
-msgstr ""
+msgstr "正在生成高级出站规则 %s"
 #
 # File: src/etc/inc/filter.inc, line: 1708
 msgid "Creating outbound NAT rules"
-msgstr ""
+msgstr "正在生成出站NAT规则"
 #
 # File: src/etc/inc/filter.inc, line: 1715
 msgid "Creating automatic outbound rules"
-msgstr ""
+msgstr "正在生成自动出站规则"
 #
 # File: src/etc/inc/filter.inc, line: 1767
 #, php-format
 msgid "Creating NAT rule %s"
-msgstr ""
+msgstr "正在生成NAT规则 %s"
 #
 # File: src/etc/inc/filter.inc, line: 1973
 #, php-format
 msgid "Creating filter rule %s ..."
-msgstr ""
+msgstr "正在生成过滤规则 %s ..."
 #
 # File: src/etc/inc/filter.inc, line: 1996
 #, php-format
 msgid "filter_generate_port: %s is not a valid %s port."
-msgstr ""
+msgstr "filter_generate_port: %s 不是有效的 %s 端口。"
 #
 # File: src/etc/inc/filter.inc, line: 2301
 #, php-format
 msgid "Setting up pass/block rules %s"
-msgstr ""
+msgstr "正在建立放行/拦截规则 %s"
 #
 # File: src/etc/inc/filter.inc, line: 2316
 #, php-format
 msgid "Could not find IPv4 gateway for interface (%s)."
-msgstr ""
+msgstr "无法为网络接口(%s)找到IPv4网关"
 #
 # File: src/etc/inc/filter.inc, line: 2343
 #, php-format
 msgid "Creating rule %s"
-msgstr ""
+msgstr "正在生成规则 %s"
 #
 # File: src/etc/inc/filter.inc, line: 2564
 msgid "Creating default rules"
-msgstr ""
+msgstr "正在生成默认规则"
 #
 # File: src/etc/inc/filter.inc, line: 3133
 msgid "Creating IPsec rules..."
-msgstr ""
+msgstr "正在生成IPsec规则"
 #
 # File: src/etc/inc/filter.inc, line: 3177
 msgid ""
 "Please use filter_tdr_install_cron() function tdr_install_cron will be "
 "deprecated!"
 msgstr ""
+"请使用filter_tdr_install_cron() 功能，tdr_install_cron 将被丢弃！"
 #
 # File: src/etc/inc/filter.inc, line: 3223
 msgid "Installed 15 minute filter reload for Time Based Rules"
-msgstr ""
+msgstr "已经为基于时间的规则安装了15分钟过滤重新载入"
 #
 # File: src/etc/inc/filter.inc, line: 3230
 msgid "Removed 15 minute filter reload for Time Based Rules"
-msgstr ""
+msgstr "已经为基于时间的规则移除了15分钟过滤重新载入"
 #
 # File: src/etc/inc/filter_log.inc, line: 136
 #, php-format
 msgid "There was an error parsing a rule: no time (`%s')"
-msgstr ""
+msgstr "解析一条规则时有一个错误：没有时间 (`%s')"
 #
 # File: src/etc/inc/filter_log.inc, line: 156
 #, php-format
 msgid "There was an error parsing rule number: %s -- not IPv4 or IPv6 (`%s')"
-msgstr ""
+msgstr "解析规则时有一个错误：%s -- 不是IPv4或IPv6 (`%s')"
 #
 # File: src/etc/inc/filter_log.inc, line: 190
 #, php-format
 msgid "There was an error parsing rule number: %s -- no src or dst (`%s')"
-msgstr ""
+msgstr "解析规则时有一个错误：%s -- 不是来源或目标(`%s')"
 #
 # File: src/etc/inc/filter_log.inc, line: 275
 #, php-format
 msgid "Service %1$s/%2$s: %3$s"
-msgstr ""
+msgstr "服务%1$s/%2$s: %3$s"
 #
 # File: src/etc/inc/functions.inc, line: 89
 msgid "Acknowledge All Notices"
-msgstr ""
+msgstr "确认所有提醒"
 #
 # File: src/etc/inc/functions.inc, line: 109
 msgid "unread notice"
-msgstr ""
+msgstr "未读提醒"
 #
 # File: src/etc/inc/functions.inc, line: 111
 msgid "unread notices"
-msgstr ""
+msgstr "未读提醒"
 #
 # File: src/etc/inc/gwlb.inc, line: 827
 #, php-format
 msgid "MONITOR: %s is down, removing from routing group %s"
-msgstr ""
+msgstr "监视：%s 是关闭的,正在从路由组 %s 移除"
 #
 # File: src/etc/inc/gwlb.inc, line: 831
 #, php-format
 msgid "MONITOR: %s has packet loss, removing from routing group %s"
-msgstr ""
+msgstr "监视：%s 有丢包, 正在从路由组 %s 移除"
 #
 # File: src/etc/inc/gwlb.inc, line: 835
 #, php-format
 msgid "MONITOR: %s has high latency, removing from routing group %s"
-msgstr ""
+msgstr "监视：%s 有高延迟，正在从路由组 %s 移除"
 #
 # File: src/etc/inc/gwlb.inc, line: 856
 #, php-format
@@ -717,78 +729,81 @@ msgid ""
 "Gateways status could not be determined, considering all as up/active. "
 "(Group: %s)"
 msgstr ""
+"不能断定这些网关的状态, 正在把所有认定为开启/活动的。 "
+"(组: %s)"
 #
 # File: src/etc/inc/interfaces.inc, line: 78
 msgid "interfaces_bring_up() was called but no variable defined."
-msgstr ""
+msgstr "interfaces_bring_up() 被呼叫，但没有已定义的变量"
 #
 # File: src/etc/inc/interfaces.inc, line: 235
 msgid "Configuring loopback interface..."
-msgstr ""
+msgstr "正在配置回环网络接口"
 #
 # File: src/etc/inc/interfaces.inc, line: 253
 msgid "Configuring VLAN interfaces..."
-msgstr ""
+msgstr "正在配置VLAN接口"
 #
 # File: src/etc/inc/interfaces.inc, line: 279
 msgid "VLAN: called with wrong options. Problems with config!"
-msgstr ""
+msgstr "VLAN: 呼叫了错误的选项.，配置存在问题！"
 #
 # File: src/etc/inc/interfaces.inc, line: 287
 msgid "interface_vlan_configure called with if undefined."
-msgstr ""
+msgstr "interface_vlan_configure如果未定义，将被呼叫"
 #
 # File: src/etc/inc/interfaces.inc, line: 321
 # File: src/etc/inc/interfaces.inc, line: 413
 #, php-format
 msgid "QinQ compat VLAN: called with wrong options. Problems with config!%s"
-msgstr ""
+msgstr "QinQ compat VLAN：呼叫了错误的选项，配置存在问题！%s"
 #
 # File: src/etc/inc/interfaces.inc, line: 328
 #, php-format
 msgid "interface_qinq_configure called with if undefined.%s"
-msgstr ""
+msgstr "interface_qinq_configure如果未定义，将被呼叫。%s"
 #
 # File: src/etc/inc/interfaces.inc, line: 333
 #, php-format
 msgid "interface_qinq_configure called with invalid if.%s"
-msgstr ""
+msgstr "interface_qinq_configure如果无效，将被呼叫。%s"
 #
 # File: src/etc/inc/interfaces.inc, line: 398
 msgid "Configuring QinQ interfaces..."
-msgstr ""
+msgstr "正在配置QinQ接口"
 #
 # File: src/etc/inc/interfaces.inc, line: 421
 #, php-format
 msgid "interface_qinq2_configure called with if undefined.%s"
-msgstr ""
+msgstr "interface_qinq2_configure如果未定义，将被呼叫。%s"
 #
 # File: src/etc/inc/interfaces.inc, line: 442
 msgid "Creating wireless clone interfaces..."
-msgstr ""
+msgstr "正在生成无线克隆网络接口"
 #
 # File: src/etc/inc/interfaces.inc, line: 511
 #, php-format
 msgid "No members found on %s"
-msgstr ""
+msgstr "在%s没有发现成员"
 #
 # File: src/etc/inc/interfaces.inc, line: 599
 msgid "realif not defined in interfaces bridge - up"
-msgstr ""
+msgstr "realif没有在桥接网络接口被定义 -开启"
 #
 # File: src/etc/inc/interfaces.inc, line: 712
 msgid "bridgeif not defined -- could not bring interface up"
-msgstr ""
+msgstr "bridgeif没有被定义——不能开启网络接口"
 #
 # File: src/etc/inc/interfaces.inc, line: 746
 msgid "Configuring LAGG interfaces..."
-msgstr ""
+msgstr "正在配置LAGG接口"
 #
 # File: src/etc/inc/interfaces.inc, line: 1000
 msgid ""
 "could not bring realif up -- variable not defined -- "
 "interface_gif_configure()"
 msgstr ""
+"不能开启realif——变量未定义——interface_gif_configure()"
 #
 # File: src/etc/inc/interfaces.inc, line: 1107
 # File: src/etc/inc/interfaces.inc, line: 1132
@@ -796,16 +811,16 @@ msgstr ""
 # File: src/etc/inc/interfaces.inc, line: 1164
 #, php-format
 msgid "Configuring %s interface..."
-msgstr ""
+msgstr "正在配置 %s 接口"
 #
 # File: src/etc/inc/interfaces.inc, line: 1245
 msgid "Wrong parameters used during interface_bring_down"
-msgstr ""
+msgstr "interface_bring_down期间使用了错误的参数"
 #
 # File: src/etc/inc/interfaces.inc, line: 1571
 #, php-format
 msgid "Can't find PPP config for %s in interface_ppps_configure()."
-msgstr ""
+msgstr "不能在interface_ppps_configure()为%s找到PPP配置"
 #
 # File: src/etc/inc/interfaces.inc, line: 1629
 #, php-format
@@ -813,33 +828,35 @@ msgid ""
 "Could not get a PPTP/L2TP Remote IP address from %1$s for %2$s in "
 "interfaces_ppps_configure."
 msgstr ""
+"不能在interfaces_ppps_configure中，从%1$s为%2$s得到一个PPTP/L2TP远程IP地址"
 #
 # File: src/etc/inc/interfaces.inc, line: 1636
 #, php-format
 msgid ""
 "Device %s does not exist. PPP link cannot start without the modem device."
 msgstr ""
+"设备%s不存在。PPP连接不能开启，没有modem设备"
 #
 # File: src/etc/inc/interfaces.inc, line: 1641
 #, php-format
 msgid "Unkown %s configured as ppp interface."
-msgstr ""
+msgstr "未知的%s已配置为ppp接口"
 #
 # File: src/etc/inc/interfaces.inc, line: 1913
 #, php-format
 msgid "Error: cannot open mpd_%s.conf in interface_ppps_configure().%s"
-msgstr ""
+msgstr "错误：不能在interface_ppps_configure()打开mpd_%s.conf。%s"
 #
 # File: src/etc/inc/interfaces.inc, line: 1985
 msgid "Configuring CARP settings..."
-msgstr ""
+msgstr "正在配置CARP设置"
 #
 # File: src/etc/inc/interfaces.inc, line: 2196
 #, php-format
 msgid ""
 "Interface specified for the virtual IP address %s does not exist. Skipping "
 "this VIP."
-msgstr ""
+msgstr "为虚拟IP地址 %s定义的网络接口不存在。正在跳过这个虚拟IP"
 #
 # File: src/etc/inc/interfaces.inc, line: 2204
 #, php-format
@@ -847,6 +864,7 @@ msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IP address %s."
 msgstr ""
+"抱歉，我们不能为虚拟IP地址%s在该接口找到一个必需的、已定义的IP地址"
 #
 # File: src/etc/inc/interfaces.inc, line: 2211
 #, php-format
@@ -854,11 +872,12 @@ msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IPv6 address %s."
 msgstr ""
+"抱歉，我们不能为虚拟IPv6地址%s在该接口找到一个必需的、已定义的IP地址"
 #
 # File: src/etc/inc/interfaces.inc, line: 2269
 #, php-format
 msgid "Interface %s changed to hostap mode"
-msgstr ""
+msgstr "接口%s已改为hostap模式"
 #
 # File: src/etc/inc/interfaces.inc, line: 2273
 #, php-format
@@ -1809,7 +1828,7 @@ msgstr ""
 #
 # File: src/etc/inc/shaper.inc, line: 605
 msgid " Beware you can lose information."
-msgstr ""
+msgstr "小心丢失信息！"
 #
 # File: src/etc/inc/shaper.inc, line: 643
 msgid ""
@@ -3101,15 +3120,15 @@ msgstr ""
 # File: src/www/interfaces.php, line: 3455
 # File: src/www/status_queues.php, line: 192
 msgid "here"
-msgstr ""
+msgstr "这里"
 #
 # File: src/www/carp_status.php, line: 185
 msgid "pfSync nodes"
-msgstr ""
+msgstr "pf同步节点"
 #
 # File: src/www/crash_reporter.php, line: 62
 msgid "Crash Reporter"
-msgstr ""
+msgstr "崩溃报告"
 #
 # File: src/www/crash_reporter.php, line: 62
 # File: src/www/diag_arp.php, line: 246
@@ -3135,36 +3154,36 @@ msgstr ""
 # File: src/www/diag_traceroute.php, line: 32
 # File: src/www/reboot.php, line: 34
 msgid "Diagnostics"
-msgstr ""
+msgstr "诊断"
 #
 # File: src/www/crash_reporter.php, line: 91
 msgid "Processing..."
-msgstr ""
+msgstr "正在处理"
 #
 # File: src/www/crash_reporter.php, line: 101
 msgid "Uploading..."
-msgstr ""
+msgstr "上载"
 #
 # File: src/www/crash_reporter.php, line: 115
 msgid "Thank you for submitting this crash report."
-msgstr ""
+msgstr "谢谢提交崩溃报告"
 #
 # File: src/www/crash_reporter.php, line: 117
 msgid "Please consider submitting a crash report if the error persists."
-msgstr ""
+msgstr "如果这个错误持续存在，请考虑提交一个崩溃报告"
 #
 # File: src/www/crash_reporter.php, line: 119
 msgid "Luckily we have not detected a programming bug."
-msgstr ""
+msgstr "没有检测到程序bug"
 #
 # File: src/www/crash_reporter.php, line: 136
 msgid "Unfortunately we have detected at least one programming bug."
-msgstr ""
+msgstr "检测到至少一个程序bug"
 #
 # File: src/www/crash_reporter.php, line: 137
 #, php-format
 msgid "Would you like to submit this crash report to the %s developers?"
-msgstr ""
+msgstr "您愿意提交崩溃报告给 %s 开发者吗？"
 #
 # File: src/www/crash_reporter.php, line: 138
 # File: src/www/diag_defaults.php, line: 48
@@ -3175,24 +3194,25 @@ msgstr ""
 # File: src/www/reboot.php, line: 47
 # File: src/www/reboot.php, line: 57
 msgid "Yes"
-msgstr ""
+msgstr "是"
 #
 # File: src/www/crash_reporter.php, line: 139
 # File: src/www/diag_defaults.php, line: 74
 # File: src/www/diag_halt.php, line: 60
 # File: src/www/reboot.php, line: 58
 msgid "No"
-msgstr ""
+msgstr "不"
 #
 # File: src/www/crash_reporter.php, line: 140
 msgid ""
 "Please-double check the contents to ensure you are comfortable submitting "
 "the following information:"
 msgstr ""
+"请再次检查内容，确定你要提交以下信息："
 #
 # File: src/www/diag_arp.php, line: 246
 msgid "ARP Table"
-msgstr ""
+msgstr "ARP表"
 #
 # File: src/www/diag_arp.php, line: 317
 # File: src/www/diag_ndp.php, line: 134
@@ -3210,7 +3230,7 @@ msgstr ""
 # File: src/www/status_dhcp_leases.php, line: 337
 # File: src/www/status_interfaces.php, line: 243
 msgid "MAC address"
-msgstr ""
+msgstr "MAC地址"
 #
 # File: src/www/diag_arp.php, line: 327
 # File: src/www/diag_ndp.php, line: 144
@@ -3230,7 +3250,7 @@ msgstr ""
 # File: src/www/system_general.php, line: 302
 # File: src/www/widgets/widgets/dyn_dns_status.widget.php, line: 76
 msgid "Hostname"
-msgstr ""
+msgstr "主机名"
 #
 # File: src/www/diag_arp.php, line: 337
 # File: src/www/diag_logs_filter.php, line: 200
@@ -3284,7 +3304,7 @@ msgstr ""
 # File: src/www/vpn_pppoe_edit.php, line: 386
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 44
 msgid "Interface"
-msgstr ""
+msgstr "接口"
 #
 # File: src/www/diag_arp.php, line: 363
 msgid "NDP"
@@ -3292,19 +3312,19 @@ msgstr ""
 #
 # File: src/www/diag_arp.php, line: 363
 msgid "NOTE: Local IPv6 peers use"
-msgstr ""
+msgstr "注意：本地IPv6断使用"
 #
 # File: src/www/diag_arp.php, line: 363
 msgid "instead of ARP"
-msgstr ""
+msgstr "代替ARP"
 #
 # File: src/www/diag_authentication.php, line: 39
 msgid "is not a valid authentication server"
-msgstr ""
+msgstr "不是一个有效的认证服务器"
 #
 # File: src/www/diag_authentication.php, line: 42
 msgid "A username and password must be specified."
-msgstr ""
+msgstr "必须指定一个用户名和密码"
 #
 # File: src/www/diag_authentication.php, line: 46
 # File: src/www/diag_logs_vpn.php, line: 135
@@ -3313,32 +3333,32 @@ msgstr ""
 # File: src/www/vpn_openvpn_export.php, line: 881
 # File: src/www/vpn_pptp_users_edit.php, line: 128
 msgid "User"
-msgstr ""
+msgstr "用户"
 #
 # File: src/www/diag_authentication.php, line: 46
 msgid "authenticated successfully."
-msgstr ""
+msgstr "已认证成功"
 #
 # File: src/www/diag_authentication.php, line: 48
 msgid "This user is a member of these groups"
-msgstr ""
+msgstr "该用户是这些组的一个成员"
 #
 # File: src/www/diag_authentication.php, line: 52
 msgid "Authentication failed."
-msgstr ""
+msgstr "认证失败"
 #
 # File: src/www/diag_authentication.php, line: 56
 # File: src/www/interfaces.php, line: 3192
 # File: src/www/services_captiveportal.php, line: 637
 # File: src/www/services_captiveportal.php, line: 1014
 msgid "Authentication"
-msgstr ""
+msgstr "认证"
 #
 # File: src/www/diag_authentication.php, line: 88
 # File: src/www/system_authservers.php, line: 74
 # File: src/www/system_usermanager_settings.php, line: 132
 msgid "Authentication Server"
-msgstr ""
+msgstr "认证服务器"
 #
 # File: src/www/diag_authentication.php, line: 103
 # File: src/www/firewall_aliases_edit.php, line: 482
@@ -3372,7 +3392,7 @@ msgstr ""
 # File: src/www/vpn_pptp_users_edit.php, line: 160
 # File: src/www/widgets/widgets/captive_portal_status.widget.php, line: 76
 msgid "Username"
-msgstr ""
+msgstr "用户名"
 #
 # File: src/www/diag_authentication.php, line: 107
 # File: src/www/interfaces.php, line: 2579
@@ -3401,13 +3421,13 @@ msgstr ""
 # File: src/www/vpn_pptp_users_edit.php, line: 72
 # File: src/www/vpn_pptp_users_edit.php, line: 166
 msgid "Password"
-msgstr ""
+msgstr "密码"
 #
 # File: src/www/diag_authentication.php, line: 112
 # File: src/www/diag_smart.php, line: 373
 # File: src/www/diag_testport.php, line: 166
 msgid "Test"
-msgstr ""
+msgstr "测试"
 #
 # File: src/www/diag_backup.php, line: 139
 # File: src/www/firewall_aliases.php, line: 147
@@ -3417,26 +3437,26 @@ msgstr ""
 # File: src/www/services_dnsmasq_edit.php, line: 230
 # File: src/www/services_unbound_host_edit.php, line: 232
 msgid "Aliases"
-msgstr ""
+msgstr "别名组"
 #
 # File: src/www/diag_backup.php, line: 141
 msgid "Captive Portal Vouchers"
-msgstr ""
+msgstr "认证券"
 #
 # File: src/www/diag_backup.php, line: 143
 msgid "DHCP Server"
-msgstr ""
+msgstr "DHCP服务器"
 #
 # File: src/www/diag_backup.php, line: 144
 # File: src/www/services_dhcpv6.php, line: 498
 # File: src/www/services_dhcpv6.php, line: 518
 # File: src/www/services_router_advertisements.php, line: 227
 msgid "DHCPv6 Server"
-msgstr ""
+msgstr "DHCPv6服务器"
 #
 # File: src/www/diag_backup.php, line: 145
 msgid "Firewall Rules"
-msgstr ""
+msgstr "防火墙规则"
 #
 # File: src/www/diag_backup.php, line: 146
 # File: src/www/diag_logs_filter_summary.php, line: 43
@@ -3464,7 +3484,7 @@ msgstr ""
 # File: src/www/services_dnsmasq.php, line: 276
 # File: src/www/status_interfaces.php, line: 45
 msgid "Interfaces"
-msgstr ""
+msgstr "网络接口"
 #
 # File: src/www/diag_backup.php, line: 147
 msgid "IPSEC"
@@ -3485,19 +3505,19 @@ msgstr ""
 #
 # File: src/www/diag_backup.php, line: 150
 msgid "PPTP Server"
-msgstr ""
+msgstr "PPTP服务器"
 #
 # File: src/www/diag_backup.php, line: 151
 msgid "RRD Data"
-msgstr ""
+msgstr "RRD数据"
 #
 # File: src/www/diag_backup.php, line: 152
 msgid "Scheduled Tasks"
-msgstr ""
+msgstr "计划任务"
 #
 # File: src/www/diag_backup.php, line: 153
 msgid "Syslog"
-msgstr ""
+msgstr "系统日志"
 #
 # File: src/www/diag_backup.php, line: 154
 # File: src/www/diag_logs_tabs.inc, line: 29
@@ -3532,25 +3552,25 @@ msgstr ""
 # File: src/www/system_usermanager_passwordmg.php, line: 33
 # File: src/www/system_usermanager_settings.php, line: 37
 msgid "System"
-msgstr ""
+msgstr "系统"
 #
 # File: src/www/diag_backup.php, line: 155
 msgid "Static routes"
-msgstr ""
+msgstr "静态路由"
 #
 # File: src/www/diag_backup.php, line: 156
 msgid "System tunables"
-msgstr ""
+msgstr "系统调整"
 #
 # File: src/www/diag_backup.php, line: 157
 msgid "SNMP Server"
-msgstr ""
+msgstr "SNMP服务器"
 #
 # File: src/www/diag_backup.php, line: 158
 # File: src/www/firewall_shaper.php, line: 43
 # File: src/www/firewall_shaper_wizards.php, line: 62
 msgid "Traffic Shaper"
-msgstr ""
+msgstr "数据流整形"
 #
 # File: src/www/diag_backup.php, line: 159
 msgid "VLANS"
@@ -3561,61 +3581,61 @@ msgstr ""
 # File: src/www/services_wol.php, line: 126
 # File: src/www/services_wol_edit.php, line: 105
 msgid "Wake on LAN"
-msgstr ""
+msgstr "局域网内唤醒"
 #
 # File: src/www/diag_backup.php, line: 164
 msgid "ALL"
-msgstr ""
+msgstr "所有"
 #
 # File: src/www/diag_backup.php, line: 203
 # File: src/www/diag_backup.php, line: 687
 # File: src/www/diag_backup.php, line: 731
 msgid "Restore configuration"
-msgstr ""
+msgstr "恢复配置"
 #
 # File: src/www/diag_backup.php, line: 205
 # File: src/www/diag_tables.php, line: 158
 # File: src/www/diag_tables.php, line: 167
 msgid "Download"
-msgstr ""
+msgstr "下载"
 #
 # File: src/www/diag_backup.php, line: 207
 msgid "Restore version"
-msgstr ""
+msgstr "恢复版本"
 #
 # File: src/www/diag_backup.php, line: 209
 # File: src/www/diag_backup.php, line: 768
 msgid "Setup/Test Google Drive"
-msgstr ""
+msgstr "设置/测试Google网盘"
 #
 # File: src/www/diag_backup.php, line: 221
 msgid "You must supply and confirm the password for encryption."
-msgstr ""
+msgstr "必须提供并确认加密所需的密码"
 #
 # File: src/www/diag_backup.php, line: 223
 # File: src/www/diag_backup.php, line: 279
 # File: src/www/diag_backup.php, line: 501
 msgid "The supplied 'Password' and 'Confirm' field values must match."
-msgstr ""
+msgstr "所提供的'密码'和'确认'域的值必须吻合"
 #
 # File: src/www/diag_backup.php, line: 277
 msgid "You must supply and confirm the password for decryption."
-msgstr ""
+msgstr "必须提供并确认解密所需的密码"
 #
 # File: src/www/diag_backup.php, line: 289
 #, php-format
 msgid "Warning, could not read file %s"
-msgstr ""
+msgstr "警告：不能读取文件%s"
 #
 # File: src/www/diag_backup.php, line: 295
 msgid ""
 "The uploaded file does not appear to contain an encrypted OPNsense "
 "configuration."
-msgstr ""
+msgstr "上载的文件没有包含一个加密的OPNsense配置"
 #
 # File: src/www/diag_backup.php, line: 301
 msgid "Upgrading m0n0wall configuration to OPNsense."
-msgstr ""
+msgstr "正在更新m0n0wall配置到OPNsense"
 #
 # File: src/www/diag_backup.php, line: 309
 # File: src/www/diag_backup.php, line: 312
@@ -3623,117 +3643,123 @@ msgid ""
 "You have selected to restore an area but we could not locate the correct xml "
 "tag."
 msgstr ""
+"你已经选择要恢复一个区域，但我们不能定位正确的xml标签"
 #
 # File: src/www/diag_backup.php, line: 321
 msgid ""
 "The configuration area has been restored.  You may need to reboot the "
 "firewall."
 msgstr ""
+"该配置区域已经恢复，你需要重启动防火墙"
 #
 # File: src/www/diag_backup.php, line: 435
 msgid "The m0n0wall configuration has been restored and upgraded to OPNsense."
-msgstr ""
+msgstr "m0n0wall配置已经恢复并更新到OPNsense"
 #
 # File: src/www/diag_backup.php, line: 463
 # File: src/www/diag_backup.php, line: 479
 msgid "The configuration could not be restored."
-msgstr ""
+msgstr "该配置不能被恢复"
 #
 # File: src/www/diag_backup.php, line: 468
 msgid "The configuration could not be restored (file upload error)."
-msgstr ""
+msgstr "该配置不能被恢复（文件上载错误）"
 #
 # File: src/www/diag_backup.php, line: 472
 msgid ""
 "XXX - this feature may hose your config (do NOT backrev configs!) - billm"
 msgstr ""
+"XXX - 该组件可能冲击你的配置(do NOT backrev configs!) - billm"
 #
 # File: src/www/diag_backup.php, line: 482
 msgid "No version selected."
-msgstr ""
+msgstr "没有选择版本"
 #
 # File: src/www/diag_backup.php, line: 525
 msgid "Google Drive communication failure"
-msgstr ""
+msgstr "Google网盘连接失败"
 #
 # File: src/www/diag_backup.php, line: 527
 msgid "Backup succesfull, current filelist:"
-msgstr ""
+msgstr "成功备份，当前文件列表："
 #
 # File: src/www/diag_backup.php, line: 541
 msgid "Backup/restore"
-msgstr ""
+msgstr "备份/恢复"
 #
 # File: src/www/diag_backup.php, line: 584
 msgid "The firewall configuration has been changed."
-msgstr ""
+msgstr "防火墙配置已更改"
 #
 # File: src/www/diag_backup.php, line: 584
 msgid "The firewall is now rebooting."
-msgstr ""
+msgstr "防火墙正在重启动"
 #
 # File: src/www/diag_backup.php, line: 601
 # File: src/www/diag_confbak.php, line: 118
 msgid "Config History"
-msgstr ""
+msgstr "配置历史"
 #
 # File: src/www/diag_backup.php, line: 602
 # File: src/www/diag_confbak.php, line: 119
 msgid "Backup/Restore"
-msgstr ""
+msgstr "备份/恢复"
 #
 # File: src/www/diag_backup.php, line: 626
 msgid "Backup area:"
-msgstr ""
+msgstr "备份区域："
 #
 # File: src/www/diag_backup.php, line: 626
 msgid "Click this button to download the system configuration in XML format."
-msgstr ""
+msgstr "点击该按钮来下载系统配置，使用XML格式"
 #
 # File: src/www/diag_backup.php, line: 638
 msgid "Encrypt this configuration file."
-msgstr ""
+msgstr "加密该配置文件"
 #
 # File: src/www/diag_backup.php, line: 646
 msgid ""
 "Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of config."
 "xml space!)"
 msgstr ""
+"不要备份RRD数据（注意：RRD数据能消耗4+ megabytes的XML配置空间！"
+"xml space!)"
 #
 # File: src/www/diag_backup.php, line: 661
 msgid "confirm:"
-msgstr ""
+msgstr "确认："
 #
 # File: src/www/diag_backup.php, line: 669
 msgid "Download configuration"
-msgstr ""
+msgstr "下载配置"
 #
 # File: src/www/diag_backup.php, line: 695
 msgid "Open a"
-msgstr ""
+msgstr "打开a"
 #
 # File: src/www/diag_backup.php, line: 695
 msgid ""
 "configuration XML file and click the button below to restore the "
 "configuration."
 msgstr ""
+"配置XML文件并点击以下图标来回复配置"
 #
 # File: src/www/diag_backup.php, line: 697
 msgid "Restore area:"
-msgstr ""
+msgstr "恢复区域："
 #
 # File: src/www/diag_backup.php, line: 709
 msgid "Configuration file is encrypted."
-msgstr ""
+msgstr "配置文件是加密的"
 #
 # File: src/www/diag_backup.php, line: 716
 # File: src/www/diag_backup.php, line: 766
 msgid "Password :"
-msgstr ""
+msgstr "密码："
 #
 # File: src/www/diag_backup.php, line: 724
 msgid "confirm :"
-msgstr ""
+msgstr "确认："
 #
 # File: src/www/diag_backup.php, line: 732
 # File: src/www/diag_ipsec.php, line: 351
@@ -3788,15 +3814,15 @@ msgstr ""
 # File: src/www/system_routes.php, line: 360
 # File: src/www/vpn_l2tp.php, line: 456
 msgid "Note:"
-msgstr ""
+msgstr "注意："
 #
 # File: src/www/diag_backup.php, line: 732
 msgid "The firewall will reboot after restoring the configuration."
-msgstr ""
+msgstr "防火墙恢复配置后将重新启动"
 #
 # File: src/www/diag_backup.php, line: 749
 msgid "Remote backup (using Google drive)"
-msgstr ""
+msgstr "远程备份（使用Google网盘）"
 #
 # File: src/www/diag_backup.php, line: 760
 # File: src/www/diag_routes.php, line: 172
@@ -3810,7 +3836,7 @@ msgstr ""
 # File: src/www/services_unbound.php, line: 216
 # File: src/www/vpn_ipsec_phase1.php, line: 891
 msgid "Enable"
-msgstr ""
+msgstr "启用"
 #
 # File: src/www/diag_backup.php, line: 761
 # File: src/www/diag_smart.php, line: 223
@@ -3818,56 +3844,56 @@ msgstr ""
 # File: src/www/system_certmanager.php, line: 746
 # File: src/www/system_certmanager.php, line: 918
 msgid "Email Address"
-msgstr ""
+msgstr "邮件地址"
 #
 # File: src/www/diag_backup.php, line: 762
 msgid "(not loaded)"
-msgstr ""
+msgstr "（没有载入）"
 #
 # File: src/www/diag_backup.php, line: 762
 msgid "(replace)"
-msgstr ""
+msgstr "（代替）"
 #
 # File: src/www/diag_backup.php, line: 762
 msgid "P12 key"
-msgstr ""
+msgstr "P12密钥"
 #
 # File: src/www/diag_backup.php, line: 763
 msgid "Folder ID"
-msgstr ""
+msgstr "文件夹ID"
 #
 # File: src/www/diag_backup.php, line: 764
 # File: src/www/diag_confbak.php, line: 219
 msgid "Backup Count"
-msgstr ""
+msgstr "备份计数"
 #
 # File: src/www/diag_backup.php, line: 765
 msgid "Password protect your data"
-msgstr ""
+msgstr "使用密码保护你的数据"
 #
 # File: src/www/diag_backup.php, line: 767
 msgid "Confirm :"
-msgstr ""
+msgstr "确认："
 #
 # File: src/www/diag_confbak.php, line: 45
 # File: src/www/diag_confbak.php, line: 196
 # File: src/www/diag_gmirror.php, line: 61
 # File: src/www/diag_gmirror.php, line: 205
 msgid "Confirm"
-msgstr ""
+msgstr "确认"
 #
 # File: src/www/diag_confbak.php, line: 59
 #, php-format
 msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
-msgstr ""
+msgstr "删除带有时间戳 %1$s 和描述 \"%2$s\"的备份"
 #
 # File: src/www/diag_confbak.php, line: 98
 msgid "Configuration History"
-msgstr ""
+msgstr "配置历史"
 #
 # File: src/www/diag_confbak.php, line: 135
 msgid "Configuration diff from"
-msgstr ""
+msgstr "比较配置，从"
 #
 # File: src/www/diag_confbak.php, line: 135
 # File: src/www/diag_dump_states.php, line: 234
@@ -3878,17 +3904,17 @@ msgstr ""
 # File: src/www/services_dhcpv6.php, line: 581
 # File: src/www/services_dhcpv6.php, line: 588
 msgid "to"
-msgstr ""
+msgstr "到"
 #
 # File: src/www/diag_confbak.php, line: 177
 # File: src/www/diag_gmirror.php, line: 187
 msgid "Confirm Action"
-msgstr ""
+msgstr "确认动作"
 #
 # File: src/www/diag_confbak.php, line: 182
 # File: src/www/diag_gmirror.php, line: 192
 msgid "Please confirm the selected action"
-msgstr ""
+msgstr "请确认所选的动作"
 #
 # File: src/www/diag_confbak.php, line: 184
 # File: src/www/diag_gmirror.php, line: 194
@@ -3901,30 +3927,31 @@ msgstr ""
 # File: src/www/services_unbound_acls.php, line: 209
 # File: src/www/services_unbound_acls.php, line: 309
 msgid "Action"
-msgstr ""
+msgstr "动作"
 #
 # File: src/www/diag_confbak.php, line: 186
 msgid "Restore from Configuration Backup"
-msgstr ""
+msgstr "从配置备份来恢复"
 #
 # File: src/www/diag_confbak.php, line: 190
 msgid "Remove Configuration Backup"
-msgstr ""
+msgstr "删除配置备份"
 #
 # File: src/www/diag_confbak.php, line: 194
 msgid "Target Configuration"
-msgstr ""
+msgstr "目标配置"
 #
 # File: src/www/diag_confbak.php, line: 195
 #, php-format
 msgid "Timestamp %1$s"
-msgstr ""
+msgstr "时间戳 %1$s"
 #
 # File: src/www/diag_confbak.php, line: 221
 msgid ""
 "Enter the number of older configurations to keep in the local backup cache. "
 "By default this is 30."
 msgstr ""
+"输入旧配置的数量，以便保存在本地备份缓存中。默认值为30"
 #
 # File: src/www/diag_confbak.php, line: 222
 # File: src/www/diag_logs_settings.php, line: 441
@@ -4034,13 +4061,14 @@ msgstr ""
 # File: src/www/vpn_pptp.php, line: 481
 # File: src/www/vpn_pptp_users_edit.php, line: 183
 msgid "Save"
-msgstr ""
+msgstr "保存"
 #
 # File: src/www/diag_confbak.php, line: 228
 msgid ""
 "NOTE: Be aware of how much space is consumed by backups before adjusting "
 "this value. Current space used by backups: "
 msgstr ""
+"注意：确认在调整这个值之前，有多大空间分配给备份。当前给备份使用的空间为： "
 #
 # File: src/www/diag_confbak.php, line: 244
 msgid ""
@@ -4053,15 +4081,15 @@ msgstr ""
 # File: src/www/diag_confbak.php, line: 252
 # File: src/www/diag_confbak.php, line: 309
 msgid "Diff"
-msgstr ""
+msgstr "比较"
 #
 # File: src/www/diag_confbak.php, line: 253
 msgid "Date"
-msgstr ""
+msgstr "日期"
 #
 # File: src/www/diag_confbak.php, line: 254
 msgid "Version"
-msgstr ""
+msgstr "版本"
 #
 # File: src/www/diag_confbak.php, line: 255
 # File: src/www/diag_gmirror.php, line: 289
@@ -4069,96 +4097,97 @@ msgstr ""
 # File: src/www/diag_system_pftop.php, line: 146
 # File: src/www/services_captiveportal_filemanager.php, line: 191
 msgid "Size"
-msgstr ""
+msgstr "大小"
 #
 # File: src/www/diag_confbak.php, line: 256
 msgid "Configuration Change"
-msgstr ""
+msgstr "配置更改"
 #
 # File: src/www/diag_confbak.php, line: 270
 msgid "Current"
-msgstr ""
+msgstr "当前"
 #
 # File: src/www/diag_confbak.php, line: 298
 msgid "Revert to this configuration"
-msgstr ""
+msgstr "恢复到该配置"
 #
 # File: src/www/diag_confbak.php, line: 299
 msgid "Remove this backup"
-msgstr ""
+msgstr "删除该备份"
 #
 # File: src/www/diag_confbak.php, line: 300
 msgid "Download this backup"
-msgstr ""
+msgstr "下载该配置"
 #
 # File: src/www/diag_defaults.php, line: 33
 msgid "Factory defaults"
-msgstr ""
+msgstr "默认初始值"
 #
 # File: src/www/diag_defaults.php, line: 49
 msgid ""
 "The system has been reset to factory defaults and is now rebooting. This may "
 "take a few minutes, depending on your hardware."
 msgstr ""
+"系统已重设为默认初始状态，正在重启动。这将在几分钟后生效，时间取决于你的硬件"
 #
 # File: src/www/diag_defaults.php, line: 59
 msgid "If you click"
-msgstr ""
+msgstr "如果你点击"
 #
 # File: src/www/diag_defaults.php, line: 59
 msgid "the firewall will:"
-msgstr ""
+msgstr "防火墙将："
 #
 # File: src/www/diag_defaults.php, line: 61
 msgid "Reset to factory defaults"
-msgstr ""
+msgstr "重设为默认初始状态"
 #
 # File: src/www/diag_defaults.php, line: 62
 msgid "LAN IP address will be reset to 192.168.1.1"
-msgstr ""
+msgstr "LAN IP地址将重设为192.168.1.1"
 #
 # File: src/www/diag_defaults.php, line: 63
 msgid "System will be configured as a DHCP server on the default LAN interface"
-msgstr ""
+msgstr "系统将在默认的LAN接口上配置为DHCP服务器"
 #
 # File: src/www/diag_defaults.php, line: 64
 msgid "Reboot after changes are installed"
-msgstr ""
+msgstr "改动被应用后重启动"
 #
 # File: src/www/diag_defaults.php, line: 65
 msgid ""
 "WAN interface will be set to obtain an address automatically from a DHCP "
 "server"
-msgstr ""
+msgstr "WAN接口将被设置为自动从DHCP服务器获得一个地址"
 #
 # File: src/www/diag_defaults.php, line: 66
 msgid "webConfigurator admin username will be reset to 'root'"
-msgstr ""
+msgstr "web配置管理员用户名将被重设为‘root’"
 #
 # File: src/www/diag_defaults.php, line: 67
 msgid "webConfigurator admin password will be reset to"
-msgstr ""
+msgstr "web配置管理密码将被重设"
 #
 # File: src/www/diag_defaults.php, line: 69
 msgid "Are you sure you want to proceed?"
-msgstr ""
+msgstr "你确定想要继续吗？"
 #
 # File: src/www/diag_dns.php, line: 29
 # File: src/www/diag_dns.php, line: 265
 msgid "DNS Lookup"
-msgstr ""
+msgstr "DNS查询"
 #
 # File: src/www/diag_dns.php, line: 100
 msgid "Host must be a valid hostname or IP address."
-msgstr ""
+msgstr "主机必须是有效的主机名或IP地址"
 #
 # File: src/www/diag_dns.php, line: 109
 msgid "No response"
-msgstr ""
+msgstr "没有响应"
 #
 # File: src/www/diag_dns.php, line: 142
 msgid "No record found"
-msgstr ""
+msgstr "没有发现记录"
 #
 # File: src/www/diag_dns.php, line: 150
 # File: src/www/diag_tables.php, line: 138
@@ -4169,16 +4198,16 @@ msgstr ""
 # File: src/www/load_balancer_virtual_server_edit.php, line: 179
 # File: src/www/system_advanced_notifications.php, line: 206
 msgid "IP Address"
-msgstr ""
+msgstr "IP地址"
 #
 # File: src/www/diag_dns.php, line: 151
 # File: src/www/system_authservers.php, line: 816
 msgid "Host Name"
-msgstr ""
+msgstr "主机名"
 #
 # File: src/www/diag_dns.php, line: 154
 msgid "Query Time"
-msgstr ""
+msgstr "查询时间"
 #
 # File: src/www/diag_dns.php, line: 154
 # File: src/www/diag_dns.php, line: 231
@@ -4218,29 +4247,29 @@ msgstr ""
 # File: src/www/vpn_openvpn_server.php, line: 1723
 # File: src/www/vpn_openvpn_server.php, line: 1731
 msgid "Server"
-msgstr ""
+msgstr "服务器"
 #
 # File: src/www/diag_dns.php, line: 181
 msgid "Resolve DNS hostname or IP"
-msgstr ""
+msgstr "解析DNS主机名或IP"
 #
 # File: src/www/diag_dns.php, line: 189
 # File: src/www/system_authservers.php, line: 157
 # File: src/www/system_authservers.php, line: 180
 msgid "Hostname or IP"
-msgstr ""
+msgstr "主机名或IP"
 #
 # File: src/www/diag_dns.php, line: 226
 msgid "Resolution time per server"
-msgstr ""
+msgstr "解析每服务器的时间"
 #
 # File: src/www/diag_dns.php, line: 232
 msgid "Query time"
-msgstr ""
+msgstr "查询时间"
 #
 # File: src/www/diag_dns.php, line: 250
 msgid "More Information:"
-msgstr ""
+msgstr "更多信息："
 #
 # File: src/www/diag_dns.php, line: 251
 # File: src/www/diag_ping.php, line: 30
@@ -4261,6 +4290,7 @@ msgid ""
 "NOTE: The following links are to external services, so their reliability "
 "cannot be guaranteed."
 msgstr ""
+"注意：下面这些链接是连接到外部服务，所以可靠性不能被保证"
 #
 # File: src/www/diag_dns.php, line: 255
 msgid "IP WHOIS @ DNS Stuff"
@@ -4275,18 +4305,18 @@ msgstr ""
 # File: src/www/status_openvpn.php, line: 49
 # File: src/www/widgets/widgets/openvpn.widget.php, line: 43
 msgid "invalid input"
-msgstr ""
+msgstr "无效的输入"
 #
 # File: src/www/diag_dump_states.php, line: 59
 msgid "Show States"
-msgstr ""
+msgstr "显示状态"
 #
 # File: src/www/diag_dump_states.php, line: 95
 # File: src/www/diag_dump_states_sources.php, line: 83
 # File: src/www/status_openvpn.php, line: 121
 # File: src/www/widgets/widgets/openvpn.widget.php, line: 110
 msgid "An error occurred."
-msgstr ""
+msgstr "发生了一个错误"
 #
 # File: src/www/diag_dump_states.php, line: 117
 # File: src/www/diag_dump_states_sources.php, line: 99
@@ -4294,21 +4324,21 @@ msgstr ""
 # File: src/www/diag_states_summary.php, line: 144
 # File: src/www/diag_states_summary.php, line: 146
 msgid "States"
-msgstr ""
+msgstr "状态"
 #
 # File: src/www/diag_dump_states.php, line: 118
 # File: src/www/diag_resetstate.php, line: 68
 msgid "Reset states"
-msgstr ""
+msgstr "重设状态"
 #
 # File: src/www/diag_dump_states.php, line: 133
 msgid "Current total state count"
-msgstr ""
+msgstr "当前总共的状态计数"
 #
 # File: src/www/diag_dump_states.php, line: 134
 # File: src/www/diag_dump_states_sources.php, line: 119
 msgid "Filter expression:"
-msgstr ""
+msgstr "过滤表达："
 #
 # File: src/www/diag_dump_states.php, line: 136
 # File: src/www/diag_dump_states_sources.php, line: 130
@@ -4318,15 +4348,15 @@ msgstr ""
 # File: src/www/diag_logs_gateways.php, line: 103
 # File: src/www/diag_logs_resolver.php, line: 102
 msgid "Filter"
-msgstr ""
+msgstr "过滤"
 #
 # File: src/www/diag_dump_states.php, line: 138
 msgid "Kill"
-msgstr ""
+msgstr "终止"
 #
 # File: src/www/diag_dump_states.php, line: 162
 msgid "Int"
-msgstr ""
+msgstr "接口"
 #
 # File: src/www/diag_dump_states.php, line: 172
 # File: src/www/diag_logs_filter.php, line: 306
@@ -4335,152 +4365,156 @@ msgstr ""
 # File: src/www/firewall_nat.php, line: 220
 # File: src/www/firewall_rules.php, line: 399
 msgid "Proto"
-msgstr ""
+msgstr "协议"
 #
 # File: src/www/diag_dump_states.php, line: 182
 msgid "Source -> Router -> Destination"
-msgstr ""
+msgstr "源->路由器->目标"
 #
 # File: src/www/diag_dump_states.php, line: 192
 # File: src/www/diag_system_pftop.php, line: 133
 # File: src/www/status_dhcpv6_leases.php, line: 519
 msgid "State"
-msgstr ""
+msgstr "状态"
 #
 # File: src/www/diag_dump_states.php, line: 234
 msgid "Remove all state entries from"
-msgstr ""
+msgstr "删除所有的状态条目，从"
 #
 # File: src/www/diag_dump_states.php, line: 247
 msgid "No states were found."
-msgstr ""
+msgstr "没有找到状态"
 #
 # File: src/www/diag_dump_states.php, line: 257
 msgid "States matching current filter"
-msgstr ""
+msgstr "状态匹配当前的过滤"
 #
 # File: src/www/diag_dump_states_sources.php, line: 53
 msgid "Show Source Tracking"
-msgstr ""
+msgstr "显示源踪迹"
 #
 # File: src/www/diag_dump_states_sources.php, line: 100
 msgid "Source Tracking"
-msgstr ""
+msgstr "源踪迹"
 #
 # File: src/www/diag_dump_states_sources.php, line: 101
 msgid "Reset States"
-msgstr ""
+msgstr "重设状态"
 #
 # File: src/www/diag_dump_states_sources.php, line: 142
 msgid "Source -> Destination"
-msgstr ""
+msgstr "源->目标"
 #
 # File: src/www/diag_dump_states_sources.php, line: 143
 msgid "# States"
-msgstr ""
+msgstr "状态"
 #
 # File: src/www/diag_dump_states_sources.php, line: 144
 msgid "# Connections"
-msgstr ""
+msgstr "连接"
 #
 # File: src/www/diag_dump_states_sources.php, line: 145
 # File: src/www/diag_system_pftop.php, line: 145
 # File: src/www/status_interfaces.php, line: 367
 msgid "Rate"
-msgstr ""
+msgstr "速度"
 #
 # File: src/www/diag_dump_states_sources.php, line: 177
 msgid "Remove all source tracking entries from"
-msgstr ""
+msgstr "删除所有的源踪迹条目，从"
 #
 # File: src/www/diag_dump_states_sources.php, line: 188
 msgid "No source tracking entries were found."
-msgstr ""
+msgstr "没有找到源踪迹条目"
 #
 # File: src/www/diag_gmirror.php, line: 33
 msgid "GEOM Mirrors"
-msgstr ""
+msgstr "GEOM镜像"
 #
 # File: src/www/diag_gmirror.php, line: 45
 msgid "Forget all formerly connected consumers"
-msgstr ""
+msgstr "忘掉所有以前的已连接用户"
 #
 # File: src/www/diag_gmirror.php, line: 46
 # File: src/www/diag_gmirror.php, line: 302
 msgid "Remove metadata from disk"
-msgstr ""
+msgstr "从磁盘删除元数据"
 #
 # File: src/www/diag_gmirror.php, line: 47
 msgid "Insert consumer into mirror"
-msgstr ""
+msgstr "将用户插入到镜像"
 #
 # File: src/www/diag_gmirror.php, line: 48
 msgid "Remove consumer from mirror"
-msgstr ""
+msgstr "从镜像删除用户"
 #
 # File: src/www/diag_gmirror.php, line: 49
 msgid "Reactivate consumer on mirror"
-msgstr ""
+msgstr "在镜像中重新激活用户"
 #
 # File: src/www/diag_gmirror.php, line: 50
 msgid "Deactivate consumer from mirror"
-msgstr ""
+msgstr "从镜像中使用户不活动"
 #
 # File: src/www/diag_gmirror.php, line: 51
 msgid "Force rebuild of mirror consumer"
-msgstr ""
+msgstr "强制重建镜像用户"
 #
 # File: src/www/diag_gmirror.php, line: 68
 msgid "You must supply a valid mirror name."
-msgstr ""
+msgstr "必须提供一个有效的镜像名字"
 #
 # File: src/www/diag_gmirror.php, line: 71
 msgid "You must supply a valid consumer name"
-msgstr ""
+msgstr "必须提供一个有效的用户名"
 #
 # File: src/www/diag_gmirror.php, line: 77
 msgid ""
 "Consumer is already in use and cannot be inserted. Remove consumer from "
 "existing mirror first."
 msgstr ""
+"用户已经被使用，不能被插入。请先从已存在镜像中删除用户"
 #
 # File: src/www/diag_gmirror.php, line: 79
 msgid ""
 "Consumer has metadata from an existing mirror. Clear metadata before "
 "inserting consumer."
 msgstr ""
+"用户在一个存在的镜像中有元数据。在插入用户前，请先清除元数据"
 #
 # File: src/www/diag_gmirror.php, line: 82
 msgid ""
 "Mirror is not in a COMPLETE state, cannot insert consumer. Forget "
 "disconnected disks or wait for rebuild to finish."
 msgstr ""
+"镜像不在一个COMPLETE状态，不能插入用户。请忘掉无连接磁盘或等候重建完成"
 #
 # File: src/www/diag_gmirror.php, line: 86
 msgid "Consumer is in use and cannot be cleared. Deactivate disk first."
-msgstr ""
+msgstr "用户在使用中，不能被清除。请先释放磁盘"
 #
 # File: src/www/diag_gmirror.php, line: 88
 msgid "Consumer has no metadata to clear."
-msgstr ""
+msgstr "用户没有元数据要清除"
 #
 # File: src/www/diag_gmirror.php, line: 92
 msgid "Consumer is already present on specified mirror."
-msgstr ""
+msgstr "用户已存在于指定的镜像中"
 #
 # File: src/www/diag_gmirror.php, line: 94
 msgid "Consumer has no metadata and cannot be reactivated."
-msgstr ""
+msgstr "用户没有元数据，不能被激活"
 #
 # File: src/www/diag_gmirror.php, line: 101
 msgid "Consumer must be present on the specified mirror."
-msgstr ""
+msgstr "用户必须存在于指定的镜像中"
 #
 # File: src/www/diag_gmirror.php, line: 163
 msgid ""
 "There was an error performing the chosen mirror operation. Check the System "
 "Log for details."
 msgstr ""
+"执行所选择镜像操作时有一个错误。请检查系统日志了解细节"
 #
 # File: src/www/diag_gmirror.php, line: 176
 # File: src/www/interfaces.php, line: 3446
@@ -4491,47 +4525,48 @@ msgstr ""
 # File: src/www/system_routes_edit.php, line: 413
 # File: src/www/vpn_openvpn_export_shared.php, line: 454
 msgid "NOTE:"
-msgstr ""
+msgstr "注意："
 #
 # File: src/www/diag_gmirror.php, line: 178
 msgid ""
 "The options on this page are intended for use by advanced users only. This "
 "page is for managing existing mirrors, not creating new mirrors."
 msgstr ""
+"本页上的操作只计划给高级用户使用。本页面用于管理存在的镜像，不创建新镜像"
 #
 # File: src/www/diag_gmirror.php, line: 197
 msgid "Mirror"
-msgstr ""
+msgstr "镜像"
 #
 # File: src/www/diag_gmirror.php, line: 201
 msgid "Consumer"
-msgstr ""
+msgstr "用户"
 #
 # File: src/www/diag_gmirror.php, line: 210
 msgid "GEOM Mirror information"
-msgstr ""
+msgstr "GEOM镜像信息"
 #
 # File: src/www/diag_gmirror.php, line: 214
 msgid "Mirror Status"
-msgstr ""
+msgstr "镜像状态"
 #
 # File: src/www/diag_gmirror.php, line: 223
 msgid "Component"
-msgstr ""
+msgstr "组件"
 #
 # File: src/www/diag_gmirror.php, line: 235
 msgid "Forget Disconnected Disks"
-msgstr ""
+msgstr "忘掉无连接的磁盘"
 #
 # File: src/www/diag_gmirror.php, line: 243
 # File: src/www/diag_gmirror.php, line: 258
 msgid "Rebuild"
-msgstr ""
+msgstr "重建"
 #
 # File: src/www/diag_gmirror.php, line: 244
 # File: src/www/diag_gmirror.php, line: 259
 msgid "Deactivate"
-msgstr ""
+msgstr "释放"
 #
 # File: src/www/diag_gmirror.php, line: 245
 # File: src/www/diag_gmirror.php, line: 260
@@ -4539,61 +4574,64 @@ msgstr ""
 # File: src/www/load_balancer_pool_edit.php, line: 323
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 255
 msgid "Remove"
-msgstr ""
+msgstr "删除"
 #
 # File: src/www/diag_gmirror.php, line: 268
 msgid "No Mirrors Found"
-msgstr ""
+msgstr "没有发现镜像"
 #
 # File: src/www/diag_gmirror.php, line: 272
 msgid ""
 "Some disk operations may only be performed when there are multiple consumers "
 "present in a mirror."
 msgstr ""
+"当有多个用户存在于一个镜像中时，一些磁盘的操作只可被执行"
 #
 # File: src/www/diag_gmirror.php, line: 277
 msgid "Consumer information"
-msgstr ""
+msgstr "用户信息"
 #
 # File: src/www/diag_gmirror.php, line: 281
 msgid "Available Consumers"
-msgstr ""
+msgstr "有效用户"
 #
 # File: src/www/diag_gmirror.php, line: 290
 msgid "Add to Mirror"
-msgstr ""
+msgstr "添加到镜像"
 #
 # File: src/www/diag_gmirror.php, line: 301
 msgid "Reactivate on:"
-msgstr ""
+msgstr "在以下镜像释放："
 #
 # File: src/www/diag_gmirror.php, line: 317
 msgid "No unused consumers found"
-msgstr ""
+msgstr "没有找到未被使用的用户"
 #
 # File: src/www/diag_gmirror.php, line: 321
 msgid ""
 "Consumers may only be added to a mirror if they are larger than the size of "
 "the mirror."
 msgstr ""
+"如果用户超过该镜像的大小，他们只能被添加到一个镜像中"
 #
 # File: src/www/diag_gmirror.php, line: 328
 msgid ""
 "To repair a failed mirror, first perform a 'Forget' command on the mirror, "
 "followed by an 'insert' action on the new consumer."
 msgstr ""
+"修复一个失败的镜像，先在该镜像执行一个‘忘掉’命令，然后在新用户上执行‘插入’动作 "
 #
 # File: src/www/diag_halt.php, line: 35
 msgid "Halt system"
-msgstr ""
+msgstr "停止系统"
 #
 # File: src/www/diag_halt.php, line: 48
 msgid "The system is halting now. This may take one minute."
-msgstr ""
+msgstr "系统正在停止。可能需要一分钟"
 #
 # File: src/www/diag_halt.php, line: 56
 msgid "Are you sure you want to halt the system?"
-msgstr ""
+msgstr "你确定要停止系统吗？"
 #
 # File: src/www/diag_ipsec.php, line: 34
 # File: src/www/diag_ipsec_leases.php, line: 32
@@ -4612,58 +4650,58 @@ msgstr ""
 #
 # File: src/www/diag_ipsec.php, line: 96
 msgid "Local ID"
-msgstr ""
+msgstr "本地ID"
 #
 # File: src/www/diag_ipsec.php, line: 97
 # File: src/www/interfaces_ppps_edit.php, line: 670
 # File: src/www/vpn_pppoe.php, line: 117
 msgid "Local IP"
-msgstr ""
+msgstr "本地IP"
 #
 # File: src/www/diag_ipsec.php, line: 98
 msgid "Remote ID"
-msgstr ""
+msgstr "远程ID"
 #
 # File: src/www/diag_ipsec.php, line: 99
 msgid "Remote IP"
-msgstr ""
+msgstr "远程IP"
 #
 # File: src/www/diag_ipsec.php, line: 100
 msgid "Role"
-msgstr ""
+msgstr "角色"
 #
 # File: src/www/diag_ipsec.php, line: 227
 msgid "Local subnets"
-msgstr ""
+msgstr "本地子网"
 #
 # File: src/www/diag_ipsec.php, line: 228
 msgid "Local SPI(s)"
-msgstr ""
+msgstr "本地SPI(s)"
 #
 # File: src/www/diag_ipsec.php, line: 229
 msgid "Remote subnets"
-msgstr ""
+msgstr "远程子网"
 #
 # File: src/www/diag_ipsec.php, line: 353
 msgid "You can configure IPsec"
-msgstr ""
+msgstr "你可以配置IPsec"
 #
 # File: src/www/diag_ipsec_leases.php, line: 32
 # File: src/www/diag_ipsec_tabs.inc, line: 29
 msgid "Leases"
-msgstr ""
+msgstr "租约"
 #
 # File: src/www/diag_ipsec_leases.php, line: 65
 msgid "Pool: "
-msgstr ""
+msgstr "池："
 #
 # File: src/www/diag_ipsec_leases.php, line: 66
 msgid "usage: "
-msgstr ""
+msgstr "使用率："
 #
 # File: src/www/diag_ipsec_leases.php, line: 67
 msgid "online: "
-msgstr ""
+msgstr "在线："
 #
 # File: src/www/diag_ipsec_leases.php, line: 73
 # File: src/www/load_balancer_relay_action_edit.php, line: 511
@@ -4687,21 +4725,21 @@ msgstr ""
 # File: src/www/services_unbound_host_edit.php, line: 201
 # File: src/www/services_unbound_host_edit.php, line: 244
 msgid "Host"
-msgstr ""
+msgstr "主机"
 #
 # File: src/www/diag_ipsec_leases.php, line: 90
 msgid "No leases from this pool yet."
-msgstr ""
+msgstr "这个池中还没有租约"
 #
 # File: src/www/diag_ipsec_leases.php, line: 97
 msgid "No IPsec pools."
-msgstr ""
+msgstr "没有IPsec池"
 #
 # File: src/www/diag_ipsec_leases.php, line: 103
 # File: src/www/diag_ipsec_sad.php, line: 97
 # File: src/www/diag_ipsec_spd.php, line: 114
 msgid "You can configure your IPsec"
-msgstr ""
+msgstr "你可以配置你的IPsec"
 #
 # File: src/www/diag_ipsec_leases.php, line: 103
 # File: src/www/diag_ipsec_sad.php, line: 97
@@ -4709,7 +4747,7 @@ msgstr ""
 # File: src/www/firewall_nat_edit.php, line: 534
 # File: src/www/firewall_rules_edit.php, line: 936
 msgid "here."
-msgstr ""
+msgstr "这里"
 #
 # File: src/www/diag_ipsec_sad.php, line: 33
 # File: src/www/diag_ipsec_tabs.inc, line: 30
@@ -4732,7 +4770,7 @@ msgstr ""
 # File: src/www/vpn_ipsec_mobile.php, line: 406
 # File: src/www/widgets/widgets/log.widget.php, line: 200
 msgid "Source"
-msgstr ""
+msgstr "源"
 #
 # File: src/www/diag_ipsec_sad.php, line: 63
 # File: src/www/diag_ipsec_spd.php, line: 63
@@ -4748,7 +4786,7 @@ msgstr ""
 # File: src/www/firewall_rules_edit.php, line: 1076
 # File: src/www/widgets/widgets/log.widget.php, line: 201
 msgid "Destination"
-msgstr ""
+msgstr "目标"
 #
 # File: src/www/diag_ipsec_sad.php, line: 64
 # File: src/www/diag_ipsec_spd.php, line: 65
@@ -4771,7 +4809,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_client.php, line: 1108
 # File: src/www/vpn_openvpn_server.php, line: 817
 msgid "Protocol"
-msgstr ""
+msgstr "协议"
 #
 # File: src/www/diag_ipsec_sad.php, line: 65
 msgid "SPI"
@@ -4779,19 +4817,19 @@ msgstr ""
 #
 # File: src/www/diag_ipsec_sad.php, line: 66
 msgid "Enc. alg."
-msgstr ""
+msgstr "加密. 算法."
 #
 # File: src/www/diag_ipsec_sad.php, line: 67
 msgid "Auth. alg."
-msgstr ""
+msgstr "认证. 算法."
 #
 # File: src/www/diag_ipsec_sad.php, line: 68
 msgid "Data"
-msgstr ""
+msgstr "数据"
 #
 # File: src/www/diag_ipsec_sad.php, line: 87
 msgid "No IPsec security associations."
-msgstr ""
+msgstr "没有关联IPsec安全"
 #
 # File: src/www/diag_ipsec_spd.php, line: 33
 # File: src/www/diag_ipsec_tabs.inc, line: 31
@@ -4803,46 +4841,46 @@ msgstr ""
 # File: src/www/load_balancer_relay_action_edit.php, line: 107
 # File: src/www/load_balancer_relay_action_edit.php, line: 444
 msgid "Direction"
-msgstr ""
+msgstr "方向"
 #
 # File: src/www/diag_ipsec_spd.php, line: 66
 msgid "Tunnel endpoints"
-msgstr ""
+msgstr "隧道终端"
 #
 # File: src/www/diag_ipsec_spd.php, line: 92
 msgid "incoming (as seen by firewall)"
-msgstr ""
+msgstr "进入（如防火墙所看到的）"
 #
 # File: src/www/diag_ipsec_spd.php, line: 99
 msgid "outgoing (as seen by firewall)"
-msgstr ""
+msgstr "出去（如防火墙所看到的）"
 #
 # File: src/www/diag_ipsec_spd.php, line: 104
 msgid "No IPsec security policies."
-msgstr ""
+msgstr "没有IPsec安全策略"
 #
 # File: src/www/diag_ipsec_tabs.inc, line: 28
 msgid "Overview"
-msgstr ""
+msgstr "概览"
 #
 # File: src/www/diag_ipsec_tabs.inc, line: 32
 msgid "Logs"
-msgstr ""
+msgstr "日志"
 #
 # File: src/www/diag_limiter_info.php, line: 31
 msgid "Diagnostics: Limiter Info"
-msgstr ""
+msgstr "诊断：限制者信息"
 #
 # File: src/www/diag_limiter_info.php, line: 92
 msgid "Gathering Limiter information, please wait..."
-msgstr ""
+msgstr "正在搜集限制者信息，请稍等"
 #
 # File: src/www/diag_logs.php, line: 56
 # File: src/www/diag_logs_pills.php, line: 63
 # File: src/www/system_advanced_tabs.inc, line: 6
 # File: src/www/system_general.php, line: 272
 msgid "General"
-msgstr ""
+msgstr "一般"
 #
 # File: src/www/diag_logs.php, line: 56
 # File: src/www/diag_logs_auth.php, line: 43
@@ -4863,7 +4901,7 @@ msgstr ""
 # File: src/www/diag_logs_vpn.php, line: 30
 # File: src/www/diag_logs_wireless.php, line: 45
 msgid "System logs"
-msgstr ""
+msgstr "系统日志"
 #
 # File: src/www/diag_logs.php, line: 97
 # File: src/www/diag_logs_auth.php, line: 77
@@ -4881,17 +4919,17 @@ msgstr ""
 # File: src/www/diag_logs_vpn.php, line: 148
 # File: src/www/diag_logs_wireless.php, line: 79
 msgid "Clear log"
-msgstr ""
+msgstr "清除日志"
 #
 # File: src/www/diag_logs_auth.php, line: 43
 # File: src/www/diag_logs_tabs.inc, line: 32
 msgid "Portal Auth"
-msgstr ""
+msgstr "入口认证"
 #
 # File: src/www/diag_logs_auth.php, line: 67
 #, php-format
 msgid "Last %s Portal Auth log entries"
-msgstr ""
+msgstr "最后 %s 入口认证日志条目"
 #
 # File: src/www/diag_logs_dhcp.php, line: 46
 # File: src/www/diag_logs_tabs.inc, line: 31
@@ -4903,15 +4941,15 @@ msgstr ""
 # File: src/www/diag_logs_dhcp.php, line: 70
 #, php-format
 msgid "Last %s DHCP service log entries"
-msgstr ""
+msgstr "最后 %s DHCP服务日志条目"
 #
 # File: src/www/diag_logs_filter.php, line: 43
 msgid "Cannot resolve"
-msgstr ""
+msgstr "不能解决"
 #
 # File: src/www/diag_logs_filter.php, line: 63
 msgid "The rule that triggered this action is"
-msgstr ""
+msgstr "触发该动作的规则是"
 #
 # File: src/www/diag_logs_filter.php, line: 108
 # File: src/www/diag_logs_tabs.inc, line: 30
@@ -4936,41 +4974,41 @@ msgstr ""
 # File: src/www/firewall_virtual_ip_edit.php, line: 234
 # File: src/www/services_igmpproxy_edit.php, line: 31
 msgid "Firewall"
-msgstr ""
+msgstr "防火墙"
 #
 # File: src/www/diag_logs_filter.php, line: 234
 # File: src/www/diag_routes.php, line: 189
 msgid "Filter expression"
-msgstr ""
+msgstr "过滤表达"
 #
 # File: src/www/diag_logs_filter.php, line: 238
 msgid "Quantity"
-msgstr ""
+msgstr "数量"
 #
 # File: src/www/diag_logs_filter.php, line: 249
 #, php-format
 msgid "Matches %1$s regular expression%2$s."
-msgstr ""
+msgstr "匹配 %1$s 正规的表达 %2$s"
 #
 # File: src/www/diag_logs_filter.php, line: 291
 #, php-format
 msgid "Last %s firewall log entries."
-msgstr ""
+msgstr "最后 %s 防火墙日志条目"
 #
 # File: src/www/diag_logs_filter.php, line: 293
 msgid "matched log entries."
-msgstr ""
+msgstr "匹配日志条目"
 #
 # File: src/www/diag_logs_filter.php, line: 294
 #, php-format
 msgid "Max(%s)"
-msgstr ""
+msgstr "最大(%s)"
 #
 # File: src/www/diag_logs_filter.php, line: 298
 # File: src/www/diag_logs_filter_dynamic.php, line: 111
 # File: src/www/widgets/widgets/log.widget.php, line: 197
 msgid "Act"
-msgstr ""
+msgstr "动作"
 #
 # File: src/www/diag_logs_filter.php, line: 299
 # File: src/www/diag_logs_filter_dynamic.php, line: 112
@@ -4979,115 +5017,115 @@ msgstr ""
 # File: src/www/firewall_schedule_edit.php, line: 925
 # File: src/www/widgets/widgets/log.widget.php, line: 198
 msgid "Time"
-msgstr ""
+msgstr "时间"
 #
 # File: src/www/diag_logs_filter.php, line: 300
 # File: src/www/diag_logs_filter_dynamic.php, line: 113
 # File: src/www/firewall_nat.php, line: 219
 # File: src/www/services_rfc2136.php, line: 82
 msgid "If"
-msgstr ""
+msgstr "如果"
 #
 # File: src/www/diag_logs_filter.php, line: 302
 msgid "Rule"
-msgstr ""
+msgstr "规则"
 #
 # File: src/www/diag_logs_filter.php, line: 345
 # File: src/www/diag_logs_filter.php, line: 351
 msgid "Click to resolve"
-msgstr ""
+msgstr "点击解析"
 #
 # File: src/www/diag_logs_filter.php, line: 346
 # File: src/www/diag_logs_filter.php, line: 352
 msgid "Backups are also nice."
-msgstr ""
+msgstr "备份也是好的"
 #
 # File: src/www/diag_logs_filter.php, line: 346
 # File: src/www/diag_logs_filter.php, line: 352
 msgid "Continue at risk of your own peril."
-msgstr ""
+msgstr "冒险继续"
 #
 # File: src/www/diag_logs_filter.php, line: 346
 msgid "Do you really want to add this BLOCK rule?"
-msgstr ""
+msgstr "你真的要添加该拦截规则吗？"
 #
 # File: src/www/diag_logs_filter.php, line: 346
 # File: src/www/diag_logs_filter.php, line: 352
 msgid "Easy Rule is still experimental."
-msgstr ""
+msgstr "简单规则仍旧在试验"
 #
 # File: src/www/diag_logs_filter.php, line: 346
 msgid "Easy Rule: Add to Block List"
-msgstr ""
+msgstr "简单规则：添加到拦截列表"
 #
 # File: src/www/diag_logs_filter.php, line: 352
 msgid "Do you really want to add this PASS rule?"
-msgstr ""
+msgstr "你真的要添加该放行规则吗？"
 #
 # File: src/www/diag_logs_filter.php, line: 352
 msgid "Easy Rule: Pass this traffic"
-msgstr ""
+msgstr "简单规则：放行该数据流"
 #
 # File: src/www/diag_logs_filter.php, line: 373
 #, php-format
 msgid "Last %s firewall log entries"
-msgstr ""
+msgstr "最后 %s 防火墙日志条目"
 #
 # File: src/www/diag_logs_filter_dynamic.php, line: 48
 msgid "Firewall (Dynamic View)"
-msgstr ""
+msgstr "防火墙（动态浏览）"
 #
 # File: src/www/diag_logs_filter_dynamic.php, line: 107
 #, php-format
 msgid "Last %s records"
-msgstr ""
+msgstr "Last %s 记录"
 #
 # File: src/www/diag_logs_filter_dynamic.php, line: 107
 msgid "Pause"
-msgstr ""
+msgstr "中止"
 #
 # File: src/www/diag_logs_filter_dynamic.php, line: 146
 msgid "TCP Flags"
-msgstr ""
+msgstr "TCP标记"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 30
 msgid "Firewall Log Summary"
-msgstr ""
+msgstr "防火墙日志概要"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 42
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 232
 msgid "Actions"
-msgstr ""
+msgstr "动作"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 44
 msgid "Protocols"
-msgstr ""
+msgstr "协议"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 45
 msgid "Source IPs"
-msgstr ""
+msgstr "源IP"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 46
 msgid "Destination IPs"
-msgstr ""
+msgstr "目标IP"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 47
 msgid "Source Ports"
-msgstr ""
+msgstr "源端口"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 48
 msgid "Destination Ports"
-msgstr ""
+msgstr "目标端口"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 68
 msgid "data"
-msgstr ""
+msgstr "数据"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 78
 # File: src/www/widgets/widgets/log.widget.php, line: 220
 # File: src/www/widgets/widgets/log.widget.php, line: 223
 msgid "Reverse Resolve with DNS"
-msgstr ""
+msgstr "DNS反向解析"
 #
 # File: src/www/diag_logs_filter_summary.php, line: 197
 #, php-format
@@ -5095,10 +5133,11 @@ msgid ""
 "This is a firewall log summary, of the last %1$s lines of the firewall log "
 "(Max %2$s)."
 msgstr ""
+"这是防火墙日志概要，属于防火墙日志的最后 %1$s 行（最大%2$s） "
 #
 # File: src/www/diag_logs_filter_summary.php, line: 198
 msgid "NOTE: IE8 users must enable compatibility view."
-msgstr ""
+msgstr "注意：IE8用户必须启用兼容视图"
 #
 # File: src/www/diag_logs_gateways.php, line: 57
 # File: src/www/diag_logs_pills.php, line: 64
@@ -5112,12 +5151,12 @@ msgstr ""
 # File: src/www/system_gateways_edit.php, line: 513
 # File: src/www/system_gateways_tabs.inc, line: 6
 msgid "Gateways"
-msgstr ""
+msgstr "网关"
 #
 # File: src/www/diag_logs_ipsec.php, line: 72
 #, php-format
 msgid "Last %s  IPsec log entries"
-msgstr ""
+msgstr "最后%s IPsec日志条目"
 #
 # File: src/www/diag_logs_ntpd.php, line: 44
 # File: src/www/diag_logs_tabs.inc, line: 38
@@ -5128,21 +5167,21 @@ msgstr ""
 # File: src/www/status_ntpd.php, line: 145
 # File: src/www/status_rrd_graph_settings.php, line: 48
 msgid "NTP"
-msgstr ""
+msgstr "时间服务器"
 #
 # File: src/www/diag_logs_ntpd.php, line: 69
 #, php-format
 msgid "Last %s NTP log entries"
-msgstr ""
+msgstr "最后%s时间服务器日志条目"
 #
 # File: src/www/diag_logs_openvpn.php, line: 71
 #, php-format
 msgid "Last %s OpenVPN log entries"
-msgstr ""
+msgstr "最后%s OpenVPN日志条目"
 #
 # File: src/www/diag_logs_pills.php, line: 33
 msgid "PPTP Logins"
-msgstr ""
+msgstr "PPTP登陆"
 #
 # File: src/www/diag_logs_pills.php, line: 36
 msgid "PPTP Raw"
@@ -5150,7 +5189,7 @@ msgstr ""
 #
 # File: src/www/diag_logs_pills.php, line: 39
 msgid "PPPoE Logins"
-msgstr ""
+msgstr "PPPOE登陆"
 #
 # File: src/www/diag_logs_pills.php, line: 42
 msgid "PPPoE Raw"
@@ -5158,7 +5197,7 @@ msgstr ""
 #
 # File: src/www/diag_logs_pills.php, line: 45
 msgid "L2TP Logins"
-msgstr ""
+msgstr "L2TP登陆"
 #
 # File: src/www/diag_logs_pills.php, line: 48
 msgid "L2TP Raw"
@@ -5166,25 +5205,25 @@ msgstr ""
 #
 # File: src/www/diag_logs_pills.php, line: 56
 msgid "Normal View"
-msgstr ""
+msgstr "普通浏览"
 #
 # File: src/www/diag_logs_pills.php, line: 57
 msgid "Dynamic View"
-msgstr ""
+msgstr "动态浏览"
 #
 # File: src/www/diag_logs_pills.php, line: 58
 msgid "Summary View"
-msgstr ""
+msgstr "概要浏览"
 #
 # File: src/www/diag_logs_pills.php, line: 65
 # File: src/www/diag_logs_routing.php, line: 43
 msgid "Routing"
-msgstr ""
+msgstr "路由"
 #
 # File: src/www/diag_logs_pills.php, line: 66
 # File: src/www/diag_logs_resolver.php, line: 57
 msgid "Resolver"
-msgstr ""
+msgstr "解析器"
 #
 # File: src/www/diag_logs_pills.php, line: 67
 # File: src/www/diag_logs_wireless.php, line: 45
@@ -5203,7 +5242,7 @@ msgstr ""
 # File: src/www/status_rrd_graph_tabs.inc, line: 19
 # File: src/www/status_wireless.php, line: 31
 msgid "Wireless"
-msgstr ""
+msgstr "无线"
 #
 # File: src/www/diag_logs_ppp.php, line: 44
 # File: src/www/diag_logs_tabs.inc, line: 34
@@ -5215,17 +5254,17 @@ msgstr ""
 # File: src/www/diag_logs_ppp.php, line: 68
 #, php-format
 msgid "Last %s PPP log entries"
-msgstr ""
+msgstr "最后 %s PPP日志条目"
 #
 # File: src/www/diag_logs_proxy.php, line: 44
 # File: src/www/diag_logs_tabs.inc, line: 39
 msgid "Proxy"
-msgstr ""
+msgstr "代理"
 #
 # File: src/www/diag_logs_proxy.php, line: 59
 #, php-format
 msgid "Last %s log entries"
-msgstr ""
+msgstr "最后%s日志条目"
 #
 # File: src/www/diag_logs_relayd.php, line: 44
 # File: src/www/diag_logs_tabs.inc, line: 36
@@ -5243,56 +5282,59 @@ msgstr ""
 # File: src/www/status_lb_pool.php, line: 56
 # File: src/www/status_lb_vs.php, line: 43
 msgid "Load Balancer"
-msgstr ""
+msgstr "负载均衡"
 #
 # File: src/www/diag_logs_relayd.php, line: 70
 #, php-format
 msgid "Last %s Load Balancer log entries"
-msgstr ""
+msgstr "最后%s负载均衡日志条目"
 #
 # File: src/www/diag_logs_settings.php, line: 72
 # File: src/www/diag_logs_settings.php, line: 343
 msgid "Reset Log Files"
-msgstr ""
+msgstr "复位日志文件"
 #
 # File: src/www/diag_logs_settings.php, line: 74
 msgid "The log files have been reset."
-msgstr ""
+msgstr "日志文件已复位"
 #
 # File: src/www/diag_logs_settings.php, line: 82
 msgid ""
 "A valid IP address/hostname or IP/hostname:port must be specified for remote "
 "syslog server #1."
 msgstr ""
+"一个有效的IP地址/主机名：必须为远程syslog服务器#1指定端口"
 #
 # File: src/www/diag_logs_settings.php, line: 85
 msgid ""
 "A valid IP address/hostname or IP/hostname:port must be specified for remote "
 "syslog server #2."
 msgstr ""
+"一个有效的IP地址/主机名：必须为远程syslog服务器#2指定端口"
 #
 # File: src/www/diag_logs_settings.php, line: 88
 msgid ""
 "A valid IP address/hostname or IP/hostname:port must be specified for remote "
 "syslog server #3."
 msgstr ""
+"一个有效的IP地址/主机名：必须为远程syslog服务器#3指定端口"
 #
 # File: src/www/diag_logs_settings.php, line: 92
 msgid "Number of log entries to show must be between 5 and 2000."
-msgstr ""
+msgstr "日志显示条目数值必须介于5~2000"
 #
 # File: src/www/diag_logs_settings.php, line: 97
 msgid "Log file size must be a positive integer greater than 5120."
-msgstr ""
+msgstr "日志文件大小必须是大于5120的正整数"
 #
 # File: src/www/diag_logs_settings.php, line: 162
 # File: src/www/system_advanced_admin.php, line: 634
 msgid "webConfigurator configuration has changed. Restarting webConfigurator."
-msgstr ""
+msgstr "web界面配置已经更改，正在重启web配置"
 #
 # File: src/www/diag_logs_settings.php, line: 164
 msgid "WebGUI process is restarting."
-msgstr ""
+msgstr "Web界面进程正在重启动"
 #
 # File: src/www/diag_logs_settings.php, line: 171
 # File: src/www/diag_logs_tabs.inc, line: 40
@@ -5318,21 +5360,22 @@ msgstr ""
 # File: src/www/system_usermanager_settings.php, line: 109
 # File: src/www/vpn_ipsec_settings.php, line: 110
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 #
 # File: src/www/diag_logs_settings.php, line: 267
 msgid "General Logging Options"
-msgstr ""
+msgstr "普通日志选项"
 #
 # File: src/www/diag_logs_settings.php, line: 272
 msgid "Show log entries in reverse order (newest entries on top)"
-msgstr ""
+msgstr "按相反顺序显示日志条目（最新的条目在上方）"
 #
 # File: src/www/diag_logs_settings.php, line: 278
 msgid ""
 "Hint: This is only the number of log entries displayed in the GUI. It does "
 "not affect how many entries are contained in the actual log files."
 msgstr ""
+"提示:这只是图形界面显示的日志条目数。它不会影响到实际日志文件中包含多少条目"
 #
 # File: src/www/diag_logs_settings.php, line: 284
 msgid ""
@@ -6360,11 +6403,11 @@ msgstr ""
 # File: src/www/diag_traceroute.php, line: 53
 #, php-format
 msgid "Maximum number of hops must be between 1 and %s"
-msgstr ""
+msgstr "最大跳数必须介于1 - %s"
 #
 # File: src/www/diag_traceroute.php, line: 130
 msgid "Maximum number of hops"
-msgstr ""
+msgstr "最大跳数"
 #
 # File: src/www/diag_traceroute.php, line: 138
 msgid "Reverse Address Lookup"
@@ -6968,12 +7011,12 @@ msgstr ""
 # File: src/www/firewall_nat_npt.php, line: 92
 # File: src/www/firewall_nat_out.php, line: 225
 msgid "Port Forward"
-msgstr ""
+msgstr "端口转发"
 #
 # File: src/www/firewall_nat.php, line: 194
 # File: src/www/firewall_nat_npt.php, line: 85
 msgid "The NAT configuration has been changed"
-msgstr ""
+msgstr "NAT配置已更改"
 #
 # File: src/www/firewall_nat.php, line: 203
 # File: src/www/firewall_nat_1to1.php, line: 133
@@ -6991,7 +7034,7 @@ msgstr ""
 # File: src/www/firewall_nat_out.php, line: 227
 # File: src/www/firewall_nat_out_edit.php, line: 326
 msgid "Outbound"
-msgstr ""
+msgstr "出站"
 #
 # File: src/www/firewall_nat.php, line: 205
 # File: src/www/firewall_nat_1to1.php, line: 167
@@ -7004,19 +7047,19 @@ msgstr ""
 #
 # File: src/www/firewall_nat.php, line: 221
 msgid "Src. addr"
-msgstr ""
+msgstr "源地址"
 #
 # File: src/www/firewall_nat.php, line: 222
 msgid "Src. ports"
-msgstr ""
+msgstr "源端口"
 #
 # File: src/www/firewall_nat.php, line: 223
 msgid "Dest. addr"
-msgstr ""
+msgstr "目标地址"
 #
 # File: src/www/firewall_nat.php, line: 224
 msgid "Dest. ports"
-msgstr ""
+msgstr "目标端口"
 #
 # File: src/www/firewall_nat.php, line: 225
 msgid "NAT IP"
@@ -7024,7 +7067,7 @@ msgstr ""
 #
 # File: src/www/firewall_nat.php, line: 226
 msgid "NAT Ports"
-msgstr ""
+msgstr "NAT端口"
 #
 # File: src/www/firewall_nat.php, line: 371
 # File: src/www/firewall_nat_out.php, line: 449
@@ -7038,27 +7081,27 @@ msgstr ""
 #
 # File: src/www/firewall_nat.php, line: 372
 msgid "edit this rule"
-msgstr ""
+msgstr "编辑该规则"
 #
 # File: src/www/firewall_nat.php, line: 373
 # File: src/www/firewall_nat_1to1.php, line: 248
 # File: src/www/firewall_nat_out.php, line: 452
 # File: src/www/system_routes.php, line: 298
 msgid "Do you really want to delete this rule?"
-msgstr ""
+msgstr "你真要删除该规则吗？"
 #
 # File: src/www/firewall_nat.php, line: 373
 msgid "delete this rule"
-msgstr ""
+msgstr "删除该规则"
 #
 # File: src/www/firewall_nat.php, line: 375
 msgid "add new rule based on this one"
-msgstr ""
+msgstr "在这条上面添加新规则"
 #
 # File: src/www/firewall_nat.php, line: 385
 # File: src/www/firewall_rules.php, line: 829
 msgid "move selected rules to end"
-msgstr ""
+msgstr "移动所选规则到末尾"
 #
 # File: src/www/firewall_nat.php, line: 389
 # File: src/www/firewall_nat.php, line: 391
@@ -7068,52 +7111,52 @@ msgstr ""
 # File: src/www/firewall_rules.php, line: 423
 # File: src/www/firewall_rules.php, line: 830
 msgid "delete selected rules"
-msgstr ""
+msgstr "删除所选规则"
 #
 # File: src/www/firewall_nat.php, line: 391
 # File: src/www/firewall_nat.php, line: 413
 # File: src/www/firewall_rules.php, line: 423
 # File: src/www/firewall_rules.php, line: 830
 msgid "Do you really want to delete the selected rules?"
-msgstr ""
+msgstr "真要删除所选规则吗？"
 #
 # File: src/www/firewall_nat.php, line: 393
 # File: src/www/firewall_rules.php, line: 425
 # File: src/www/firewall_rules.php, line: 831
 msgid "add new rule"
-msgstr ""
+msgstr "添加新规则"
 #
 # File: src/www/firewall_nat.php, line: 401
 # File: src/www/firewall_rules.php, line: 844
 msgid "pass"
-msgstr ""
+msgstr "放行"
 #
 # File: src/www/firewall_nat.php, line: 405
 msgid "linked rule"
-msgstr ""
+msgstr "已链接规则"
 #
 # File: src/www/firewall_nat_1to1.php, line: 137
 msgid "add rule"
-msgstr ""
+msgstr "添加规则"
 #
 # File: src/www/firewall_nat_1to1.php, line: 155
 # File: src/www/firewall_nat_out.php, line: 216
 msgid "The NAT configuration has been changed."
-msgstr ""
+msgstr "NAT配置已更改"
 #
 # File: src/www/firewall_nat_1to1.php, line: 183
 msgid "External IP"
-msgstr ""
+msgstr "外部IP"
 #
 # File: src/www/firewall_nat_1to1.php, line: 184
 # File: src/www/firewall_nat_1to1_edit.php, line: 363
 # File: src/www/status_upnp.php, line: 76
 msgid "Internal IP"
-msgstr ""
+msgstr "内部IP"
 #
 # File: src/www/firewall_nat_1to1.php, line: 185
 msgid "Destination IP"
-msgstr ""
+msgstr "目标IP"
 #
 # File: src/www/firewall_nat_1to1.php, line: 208
 # File: src/www/firewall_nat_out.php, line: 363
@@ -7125,56 +7168,56 @@ msgstr ""
 # File: src/www/vpn_ipsec.php, line: 453
 # File: src/www/vpn_ipsec.php, line: 456
 msgid "click to toggle enabled/disabled status"
-msgstr ""
+msgstr "点击触发启用/禁用状态"
 #
 # File: src/www/firewall_nat_1to1.php, line: 244
 msgid "move selected mapping before this rule"
-msgstr ""
+msgstr "移动所选映射到这条规则前"
 #
 # File: src/www/firewall_nat_1to1.php, line: 247
 msgid "edit this mapping"
-msgstr ""
+msgstr "编辑该映射"
 #
 # File: src/www/firewall_nat_1to1.php, line: 248
 msgid "delete this mapping"
-msgstr ""
+msgstr "删除该映射"
 #
 # File: src/www/firewall_nat_1to1.php, line: 249
 msgid "add new mapping based on this one"
-msgstr ""
+msgstr "在这条上面添加新映射"
 #
 # File: src/www/firewall_nat_1to1.php, line: 263
 # File: src/www/firewall_nat_1to1.php, line: 267
 # File: src/www/firewall_nat_out.php, line: 474
 msgid "move selected mappings to end"
-msgstr ""
+msgstr "移动所选映射到末尾"
 #
 # File: src/www/firewall_nat_1to1.php, line: 272
 # File: src/www/firewall_nat_out.php, line: 479
 msgid "add new mapping"
-msgstr ""
+msgstr "添加新映射"
 #
 # File: src/www/firewall_nat_1to1.php, line: 277
 msgid "delete mapping"
-msgstr ""
+msgstr "删除映射"
 #
 # File: src/www/firewall_nat_1to1.php, line: 281
 # File: src/www/firewall_nat_out.php, line: 488
 msgid "delete selected mappings"
-msgstr ""
+msgstr "删除所选映射"
 #
 # File: src/www/firewall_nat_1to1.php, line: 282
 # File: src/www/firewall_nat_out.php, line: 488
 msgid "Do you really want to delete the selected mappings?"
-msgstr ""
+msgstr "真要删除所选映射吗？"
 #
 # File: src/www/firewall_nat_1to1.php, line: 292
 msgid "Depending on the way your WAN connection is setup, you may also need a"
-msgstr ""
+msgstr "依靠这个方法，你的WAN连接被设置，你可能还需要一个"
 #
 # File: src/www/firewall_nat_1to1.php, line: 293
 msgid "Virtual IP."
-msgstr ""
+msgstr "虚拟IP"
 #
 # File: src/www/firewall_nat_1to1.php, line: 294
 msgid ""
@@ -7183,6 +7226,9 @@ msgid ""
 "WAN IP address, any services on this system (IPsec, OpenVPN server, etc.) "
 "using the WAN IP address will no longer function."
 msgstr ""
+"如果你在系统中为该接口任何IP添加一个1:1 NAT条目，将使该系统在这个IP地址难以连接。"
+"也就是说，如果你使用WAN IP地址，任何使用该IP地址的服务（IPsec、OpenVPN server等） "
+"将不再运行。"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 97
 # File: src/www/firewall_nat_out_edit.php, line: 130
@@ -7191,58 +7237,59 @@ msgid ""
 "Invalid characters detected (%s).  Please remove invalid characters and save "
 "again."
 msgstr ""
+"检测到无效字符(%s)，请删除无效字符并再次保存"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 102
 msgid "External subnet"
-msgstr ""
+msgstr "外部子网"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 105
 # File: src/www/firewall_nat_edit.php, line: 190
 msgid "Source address"
-msgstr ""
+msgstr "源地址"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 109
 # File: src/www/firewall_nat_edit.php, line: 194
 msgid "Destination address"
-msgstr ""
+msgstr "目标地址"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 140
 msgid "A valid external subnet must be specified."
-msgstr ""
+msgstr "必须指定一个有效的外部子网"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 144
 # File: src/www/firewall_nat_edit.php, line: 239
 # File: src/www/firewall_rules_edit.php, line: 420
 # File: src/www/firewall_rules_edit.php, line: 424
 msgid "You must specify single host or alias for alias entries."
-msgstr ""
+msgstr "必须为别名条目指定单个主机或别名"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 149
 #, php-format
 msgid "%s is not a valid internal IP address."
-msgstr ""
+msgstr "%s不是有效的IP地址"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 152
 msgid "A valid internal bit count must be specified."
-msgstr ""
+msgstr "必须指定一个有效的内网位数"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 159
 # File: src/www/firewall_nat_edit.php, line: 252
 # File: src/www/firewall_rules_edit.php, line: 437
 #, php-format
 msgid "%s is not a valid destination IP address or alias."
-msgstr ""
+msgstr "%s不是有效的目标IP地址或别名"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 162
 # File: src/www/firewall_nat_edit.php, line: 255
 # File: src/www/firewall_nat_out_edit.php, line: 177
 # File: src/www/firewall_rules_edit.php, line: 440
 msgid "A valid destination bit count must be specified."
-msgstr ""
+msgstr "必须指定一个有效的目标IP位数"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 299
 msgid "Edit NAT 1:1 entry"
-msgstr ""
+msgstr "编辑NAT 1:1条目"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 302
 # File: src/www/firewall_nat_edit.php, line: 470
@@ -7263,7 +7310,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_server.php, line: 765
 # File: src/www/vpn_openvpn_server.php, line: 1830
 msgid "Disabled"
-msgstr ""
+msgstr "禁用"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 305
 # File: src/www/firewall_nat_edit.php, line: 473
@@ -7271,7 +7318,7 @@ msgstr ""
 # File: src/www/firewall_nat_out_edit.php, line: 453
 # File: src/www/firewall_rules_edit.php, line: 798
 msgid "Disable this rule"
-msgstr ""
+msgstr "禁用该规则"
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 306
 # File: src/www/firewall_nat_edit.php, line: 474
@@ -8703,24 +8750,24 @@ msgstr ""
 msgid ""
 "You can only specify the maximum number of established connections per host "
 "(advanced option) for TCP protocol."
-msgstr ""
+msgstr "你只能定义每主机（高级选项）TCP最大建立连接数"
 #
 # File: src/www/firewall_rules_edit.php, line: 489
 msgid ""
 "You can only specify the maximum new connections per host / per second(s) "
 "(advanced option) for TCP protocol."
-msgstr ""
+msgstr "你只能定义每主机每秒（高级选项）最大TCP新连接数。"
 #
 # File: src/www/firewall_rules_edit.php, line: 491
 msgid ""
 "You can only specify the state timeout (advanced option) for TCP protocol."
-msgstr ""
+msgstr "你只能为TCP协议定义超时状态(高级选项)。"
 #
 # File: src/www/firewall_rules_edit.php, line: 496
 msgid ""
 "You can only specify the maximum state entries (advanced option) for Pass "
 "type rules."
-msgstr ""
+msgstr "你只能为‘放行’类型的规则定义最大状态条数。"
 #
 # File: src/www/firewall_rules_edit.php, line: 498
 msgid ""
@@ -8993,7 +9040,7 @@ msgstr ""
 # File: src/www/services_dnsmasq.php, line: 314
 # File: src/www/services_unbound.php, line: 333
 msgid "Show advanced option"
-msgstr ""
+msgstr "显示高级选项"
 #
 # File: src/www/firewall_rules_edit.php, line: 1223
 msgid "OS Type:"
@@ -9729,110 +9776,112 @@ msgstr ""
 #
 # File: src/www/guiconfig.inc, line: 264
 msgid "The following input errors were detected:"
-msgstr ""
+msgstr "检测到以下输入错误："
 #
 # File: src/www/guiconfig.inc, line: 290
 msgid "apply"
-msgstr ""
+msgstr "应用"
 #
 # File: src/www/guiconfig.inc, line: 290
 # File: src/www/system_certmanager.php, line: 654
 # File: src/www/vpn_ipsec_mobile.php, line: 337
 msgid "create"
-msgstr ""
+msgstr "生成"
 #
 # File: src/www/guiconfig.inc, line: 290
 msgid "save"
-msgstr ""
+msgstr "保存"
 #
 # File: src/www/guiconfig.inc, line: 332
 msgid "Undo"
-msgstr ""
+msgstr "取消"
 #
 # File: src/www/guiconfig.inc, line: 355
 # File: src/www/system_usermanager_settings_ldapacpicker.php, line: 68
 # File: src/www/system_usermanager_settings_test.php, line: 85
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 #
 # File: src/www/guiconfig.inc, line: 383
 msgid "The changes have been applied successfully."
-msgstr ""
+msgstr "已成功应用这项改动"
 #
 # File: src/www/guiconfig.inc, line: 388
 msgid ""
 "You can also <a href=\"status_filter_reload.php\">monitor</a> the filter "
 "reload progress."
 msgstr ""
+"你也能 <a href=\"status_filter_reload.php\">监测</a> 过滤重新载入的进程 "
 #
 # File: src/www/guiconfig.inc, line: 937
 msgid "Currently viewing: "
-msgstr ""
+msgstr "当前正在浏览："
 #
 # File: src/www/guiconfig.inc, line: 974
 msgid "move mouse out this alias to hide"
-msgstr ""
+msgstr "从该别名组移出鼠标，隐藏起来"
 #
 # File: src/www/guiconfig.inc, line: 1014
 msgid "listing only first 10k items"
-msgstr ""
+msgstr "只有最初的10K条目正在列出"
 #
 # File: src/www/guiconfig.inc, line: 1038
 msgid "edit this alias"
-msgstr ""
+msgstr "编辑该别名组"
 #
 # File: src/www/index.php, line: 94
 msgid "Widget configuration has been changed."
-msgstr ""
+msgstr "窗体配置已更改"
 #
 # File: src/www/index.php, line: 353
 msgid "Dashboard"
-msgstr ""
+msgstr "仪表盘"
 #
 # File: src/www/index.php, line: 353
 msgid "Lobby"
-msgstr ""
+msgstr "大厅"
 #
 # File: src/www/index.php, line: 382
 msgid "Starting initial configuration"
-msgstr ""
+msgstr "正在开始初始化配置"
 #
 # File: src/www/index.php, line: 398
 #, php-format
 msgid "Welcome to %s!\n"
-msgstr ""
+msgstr "欢迎来到 %s!\n"
 #
 # File: src/www/index.php, line: 399
 msgid "One moment while we start the initial setup wizard."
-msgstr ""
+msgstr "开始初始化设置向导，稍等"
 #
 # File: src/www/index.php, line: 400
 msgid ""
 "Embedded platform users: Please be patient, the wizard takes a little longer "
 "to run than the normal GUI."
 msgstr ""
+"嵌入式平台用户：耐心等候，该向导比运行常规的GUI时间有点长"
 #
 # File: src/www/index.php, line: 401
 #, php-format
 msgid "To bypass the wizard, click on the %s logo on the initial page."
-msgstr ""
+msgstr "要绕过该向导,请点击初始化页面上的 %s 标识"
 #
 # File: src/www/index.php, line: 566
 msgid "Loading selected widget"
-msgstr ""
+msgstr "正在载入所选择的窗体"
 #
 # File: src/www/interfaces.php, line: 246
 #, php-format
 msgid "Sorry, an alias with the name %s already exists."
-msgstr ""
+msgstr "抱歉，一个同名%s的别名组已存在"
 #
 # File: src/www/interfaces.php, line: 414
 msgid "You have already applied your settings!"
-msgstr ""
+msgstr "已经应用你的设置！"
 #
 # File: src/www/interfaces.php, line: 497
 msgid "An interface with the specified description already exists."
-msgstr ""
+msgstr "一个拥有该定义描述的接口已存在"
 #
 # File: src/www/interfaces.php, line: 503
 msgid ""
@@ -9840,6 +9889,8 @@ msgid ""
 "static IP configuration. Please disable the DHCP Server service on this "
 "interface first, then change the interface configuration."
 msgstr ""
+"该接口上的DHCP服务器是激活的，只能使用一个静态IP的配置。请先禁用DHCP服务，"
+"然后更改接口配置"
 #
 # File: src/www/interfaces.php, line: 505
 msgid ""
@@ -9847,23 +9898,26 @@ msgid ""
 "static IPv6 configuration. Please disable the DHCPv6 Server service on this "
 "interface first, then change the interface configuration."
 msgstr ""
+"该接口上的DHCPv6服务器是激活的，只能使用一个静态IPv6的配置。请先禁用DHCPv6服务，"
+"然后更改接口配置"
 #
 # File: src/www/interfaces.php, line: 510
 # File: src/www/interfaces.php, line: 1727
 # File: src/www/status_interfaces.php, line: 257
 msgid "IPv4 address"
-msgstr ""
+msgstr "IPv4地址"
 #
 # File: src/www/interfaces.php, line: 510
 # File: src/www/interfaces.php, line: 563
 msgid "Subnet bit count"
-msgstr ""
+msgstr "子网位数"
 #
 # File: src/www/interfaces.php, line: 517
 msgid ""
 "This interface is referenced by IPv4 VIPs. Please delete those before "
 "setting the interface to 'none' configuration."
 msgstr ""
+"该接口被IPv4的虚拟IP引用了，请在设置接口为'none'配置前删除那些虚拟IP"
 #
 # File: src/www/interfaces.php, line: 522
 # File: src/www/interfaces.php, line: 575
@@ -9872,12 +9926,12 @@ msgstr ""
 # File: src/www/interfaces.php, line: 602
 #, php-format
 msgid "You have to reassign the interface to be able to configure as %s."
-msgstr ""
+msgstr "你必须重新指派接口，以便配置为%s"
 #
 # File: src/www/interfaces.php, line: 526
 # File: src/www/interfaces.php, line: 2597
 msgid "Modem Port"
-msgstr ""
+msgstr "Modem端口"
 #
 # File: src/www/interfaces.php, line: 526
 # File: src/www/interfaces.php, line: 2585
@@ -11902,7 +11956,7 @@ msgstr ""
 # File: src/www/interfaces_bridge_edit.php, line: 308
 # File: src/www/interfaces_ppps_edit.php, line: 756
 msgid "Show advanced options"
-msgstr ""
+msgstr "显示高级选项"
 #
 # File: src/www/interfaces_bridge_edit.php, line: 312
 msgid "RSTP/STP"
@@ -17065,7 +17119,7 @@ msgstr ""
 #
 # File: src/www/services_ntpd_gps.php, line: 400
 msgid "Select Generic if your GPS is not listed."
-msgstr ""
+msgstr "如果你的GPS没有被列出，就选择通用的。"
 #
 # File: src/www/services_ntpd_gps.php, line: 401
 msgid ""
@@ -21412,7 +21466,7 @@ msgstr ""
 # File: src/www/system_firmware_check.php, line: 82
 # File: src/www/widgets/widgets/system_information.widget.php, line: 61
 msgid " no updates found."
-msgstr " 没有发现更新"
+msgstr "没有发现更新"
 #
 # File: src/www/system_firmware_check.php, line: 82
 # File: src/www/widgets/widgets/system_information.widget.php, line: 61
@@ -21446,7 +21500,7 @@ msgstr ""
 # File: src/www/system_firmware_check.php, line: 90
 # File: src/www/widgets/widgets/system_information.widget.php, line: 63
 msgid " update(s) are available."
-msgstr " 有可用的更新"
+msgstr "有可用的更新"
 #
 # File: src/www/system_firmware_check.php, line: 90
 # File: src/www/widgets/widgets/system_information.widget.php, line: 63
@@ -21892,7 +21946,7 @@ msgstr ""
 #
 # File: src/www/system_gateways_edit.php, line: 753
 msgid " - Show advanced option"
-msgstr ""
+msgstr "-显示高级选项"
 #
 # File: src/www/system_gateways_edit.php, line: 758
 msgid "Weight"
@@ -23614,7 +23668,7 @@ msgstr ""
 #
 # File: src/www/vpn_ipsec_settings.php, line: 226
 msgid "Maximum MSS"
-msgstr ""
+msgstr "最大MSS"
 #
 # File: src/www/vpn_ipsec_settings.php, line: 229
 msgid "Enable MSS clamping on VPN traffic"
@@ -24915,7 +24969,7 @@ msgstr ""
 #
 # File: src/www/vpn_openvpn_server.php, line: 1468
 msgid "Address Pool"
-msgstr ""
+msgstr "地址池"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1478
 msgid "Provide a virtual adapter IP address to clients (see Tunnel Network)"
@@ -24946,7 +25000,7 @@ msgstr ""
 #
 # File: src/www/vpn_openvpn_server.php, line: 1589
 msgid "Force DNS cache update"
-msgstr ""
+msgstr "强制DNS缓存更新"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1599
 msgid ""
@@ -24954,14 +25008,17 @@ msgid ""
 "and ''ipconfig /registerdns'' on connection initiation. This is known to "
 "kick Windows into recognizing pushed DNS servers."
 msgstr ""
+"在开始连接上运行''net stop dnscache'', ''net start dnscache'', "
+"''ipconfig /flushdns''和''ipconfig /registerdns''。"
+"这公认被用于迫使windows使用被推送的DNS服务器"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1689
 msgid "Scope ID"
-msgstr ""
+msgstr "范围ID"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1740
 msgid "Client Management Port"
-msgstr ""
+msgstr "客户端管理端口"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1750
 msgid ""
@@ -24969,121 +25026,127 @@ msgid ""
 "a different port if the client machines need to select from multiple OpenVPN "
 "links."
 msgstr ""
+"在客户端使用一个不同的管理端口。默认端口是166。如果客户机需要，从多个OpenVPN"
+"连接中指定一个不同的端口。"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1780
 msgid ""
 "Enter any additional options you would like to add to the OpenVPN server "
 "configuration here, separated by a semicolon"
 msgstr ""
+"输入你要添加的任何附加选项到OpenVPN服务器配置，使用分号隔开"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1831
 msgid "Protocol / Port"
-msgstr ""
+msgstr "协议 /端口"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1861
 msgid "edit server"
-msgstr ""
+msgstr "编辑服务器"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1863
 msgid "Do you really want to delete this server?"
-msgstr ""
+msgstr "真要删除该服务器吗？"
 #
 # File: src/www/vpn_openvpn_server.php, line: 1863
 msgid "delete server"
-msgstr ""
+msgstr "删除服务器"
 #
 # File: src/www/vpn_pppoe.php, line: 87
 msgid "add a new pppoe instance"
-msgstr ""
+msgstr "添加一个新的pppoe实例"
 #
 # File: src/www/vpn_pppoe.php, line: 100
 msgid "The PPPoE entry list has been changed"
-msgstr ""
+msgstr "该PPPoE条目列表已更改"
 #
 # File: src/www/vpn_pppoe.php, line: 118
 msgid "Number of users"
-msgstr ""
+msgstr "用户数目"
 #
 # File: src/www/vpn_pppoe.php, line: 138
 msgid "edit pppoe instance"
-msgstr ""
+msgstr "编辑pppoe实例"
 #
 # File: src/www/vpn_pppoe.php, line: 140
 msgid ""
 "Do you really want to delete this entry? All elements that still use it will "
 "become invalid (e.g. filter rules)!"
 msgstr ""
+"真要删除该条目吗？仍在使用它的所有元素将失效（例如一些过滤规则）！ "
 #
 # File: src/www/vpn_pppoe.php, line: 140
 msgid "delete pppoe instance"
-msgstr ""
+msgstr "删除pppoe实例"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 129
 msgid "The specified server address is equal to an interface ip address."
-msgstr ""
+msgstr "这个指定的服务器地址相当于一个接口的IP地址"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 134
 #, php-format
 msgid "No password specified for username %s"
-msgstr ""
+msgstr "没有密码指定给用户%s"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 136
 #, php-format
 msgid "Incorrect ip address  specified for username %s"
-msgstr ""
+msgstr "不正确的IP地址指定给了用户%s"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 142
 msgid "Wrong data submitted"
-msgstr ""
+msgstr "提交了错误的数据"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 231
 msgid "PPPoE Server"
-msgstr ""
+msgstr "PPPoE服务器"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 369
 msgid "PPPoE server configuration"
-msgstr ""
+msgstr "PPPoE服务器配置"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 382
 msgid "Enable PPPoE server"
-msgstr ""
+msgstr "启用PPPoE服务器"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 405
 msgid "Subnet netmask"
-msgstr ""
+msgstr "子网掩码"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 418
 msgid "Hint"
-msgstr ""
+msgstr "提示"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 422
 msgid "No. PPPoE users"
-msgstr ""
+msgstr "PPPoE用户编号"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 435
 msgid "Hint: 10 is ten PPPoE clients"
-msgstr ""
+msgstr "提示：10是十个PPPoE客户端"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 443
 msgid ""
 "Enter the IP address the PPPoE server should give to clients for use as "
 "their \"gateway\""
 msgstr ""
+"输入IP地址，PPPoE服务器应该给客户端用作它们的\"网关\""
 #
 # File: src/www/vpn_pppoe_edit.php, line: 451
 # File: src/www/vpn_pptp.php, line: 373
 msgid "Remote address range"
-msgstr ""
+msgstr "远程地址范围"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 455
 msgid "Specify the starting address for the client IP address subnet"
-msgstr ""
+msgstr "为子网客户端IP地址指定开始地址"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 472
 msgid ""
 "If entered they will be given to all PPPoE clients, else LAN DNS and one WAN "
 "DNS will go to all clients"
 msgstr ""
+"如果输入，它们将被给予所有的PPPoE客户端，LAN DNS和一个WAN DNS也将给予所有的客户端"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 480
 # File: src/www/vpn_pptp.php, line: 402
@@ -25091,65 +25154,68 @@ msgid ""
 "When set, all users will be authenticated using the RADIUS server specified "
 "below. The local user database will not be used"
 msgstr ""
+"当设定后,所有用户将使用以下指定的RADIUS服务器来认证，而非本地用户数据库"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 487
 # File: src/www/vpn_pptp.php, line: 408
 msgid "Sends accounting packets to the RADIUS server"
-msgstr ""
+msgstr "发送审计数据包到RADIUS服务器"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 489
 msgid "Use Backup RADIUS Server"
-msgstr ""
+msgstr "使用备用RADIUS服务器"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 490
 msgid ""
 "When set, if primary server fails all requests will be sent via backup server"
 msgstr ""
+"当设定后,如果首要服务器失败，所有请求将经由备用服务器发送"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 493
 msgid "NAS IP Address"
-msgstr ""
+msgstr "NAS IP地址"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 496
 msgid "RADIUS server NAS IP Address"
-msgstr ""
+msgstr "RADIUS服务器NAS IP地址"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 500
 # File: src/www/vpn_pptp.php, line: 426
 msgid "RADIUS Accounting Update"
-msgstr ""
+msgstr "RADIUS审计更新"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 503
 msgid "RADIUS accounting update period in seconds"
-msgstr ""
+msgstr "RADIUS审计短时间内更新周期"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 507
 # File: src/www/vpn_pptp.php, line: 415
 msgid "RADIUS issued IPs"
-msgstr ""
+msgstr "RADIUS分配IP"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 510
 msgid "Issue IP Addresses via RADIUS server"
-msgstr ""
+msgstr "通过RADIUS服务器分配IP地址"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 513
 msgid "RADIUS server Primary"
-msgstr ""
+msgstr "首要的RADIUS服务器"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 518
 msgid ""
 "Enter the IP address, authentication port and accounting port (optional) of "
 "the RADIUS server."
 msgstr ""
+"输入RADIUS服务器的IP地址,认证端口和审计端口（可选）"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 519
 # File: src/www/vpn_pppoe_edit.php, line: 535
 msgid "standard port 1812 and 1813 accounting"
-msgstr ""
+msgstr "标准审计端口1812和1813"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 522
 msgid "RADIUS primary shared secret"
-msgstr ""
+msgstr "RADIUS首要预共享密钥"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 525
 # File: src/www/vpn_pppoe_edit.php, line: 542
@@ -25158,37 +25224,40 @@ msgid ""
 "Enter the shared secret that will be used to authenticate to the RADIUS "
 "server"
 msgstr ""
+"输入预共享密钥，用于在RADIUS服务器认证"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 529
 msgid "RADIUS server Secondary"
-msgstr ""
+msgstr "第二个RADIUS服务器"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 534
 msgid ""
 "Enter the IP address, authentication port and accounting port (optional) of "
 "the backup RADIUS server."
 msgstr ""
+"输入备用RADIUS服务器的IP地址,认证端口和审计端口(可选)"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 538
 msgid "RADIUS secondary shared secret"
-msgstr ""
+msgstr "RADIUS第二预共享密钥"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 546
 msgid "User (s)"
-msgstr ""
+msgstr "用户"
 #
 # File: src/www/vpn_pppoe_edit.php, line: 612
 msgid ""
 "don't forget to add a firewall rule to permit traffic from PPPoE clients"
 msgstr ""
+"不要忘记添加一条防火墙规则，允许来自PPTP客户端的数据流"
 #
 # File: src/www/vpn_pptp.php, line: 112
 msgid "PPTP redirection target address"
-msgstr ""
+msgstr "PPTP重定向目标地址"
 #
 # File: src/www/vpn_pptp.php, line: 117
 msgid "A valid target address must be specified."
-msgstr ""
+msgstr "必须指定一个有效的目标地址"
 #
 # File: src/www/vpn_pptp.php, line: 188
 # File: src/www/vpn_pptp_users.php, line: 63
@@ -25205,62 +25274,67 @@ msgid ""
 "OpenVPN or IPsec.<br /><br /><a href=\"https://isc.sans.edu/diary/End+of+Days"
 "+for+MS-CHAPv2/13807\">Read More</a>"
 msgstr ""
+"PPTP不再被认为是安全的VPN技术，因为它依赖脆弱的MS-CHAPv2，容易被第三方解密。"
+"我们建议改用另一个VPN类型，例如OpenVPN或IPsec。<br /><br />"
+"<a href=\"https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807\">Read More</a>"
 #
 # File: src/www/vpn_pptp.php, line: 326
 msgid "Redirect incoming PPTP connections to"
-msgstr ""
+msgstr "重定向进入的PPTP连接到"
 #
 # File: src/www/vpn_pptp.php, line: 329
 msgid "PPTP redirection"
-msgstr ""
+msgstr "PPTP重定向"
 #
 # File: src/www/vpn_pptp.php, line: 333
 msgid ""
 "Enter the IP address of a host which will accept incoming PPTP connections"
 msgstr ""
+"输入一个主机的IP地址，可以接受进入的PPTP连接"
 #
 # File: src/www/vpn_pptp.php, line: 340
 msgid "Enable PPTP server"
-msgstr ""
+msgstr "启用PPTP服务器"
 #
 # File: src/www/vpn_pptp.php, line: 343
 msgid "No. PPTP users"
-msgstr ""
+msgstr "PPTP用户编号"
 #
 # File: src/www/vpn_pptp.php, line: 357
 msgid "Hint: 10 is ten PPTP clients"
-msgstr ""
+msgstr "提示：10是十个PPTP客户端"
 #
 # File: src/www/vpn_pptp.php, line: 365
 msgid ""
 "Enter the IP address the PPTP server should give to clients for use as their "
 "\"gateway\""
 msgstr ""
+"输入IP地址，PPTP服务器应该给客户端用作它们的\"网关\""
 #
 # File: src/www/vpn_pptp.php, line: 378
 msgid "Specify the starting address for the client IP subnet"
-msgstr ""
+msgstr "为客户端IP子网指定开始地址"
 #
 # File: src/www/vpn_pptp.php, line: 382
 msgid "PPTP DNS Servers"
-msgstr ""
+msgstr "PPTP DNS服务器"
 #
 # File: src/www/vpn_pptp.php, line: 388
 msgid "primary and secondary DNS servers assigned to PPTP clients"
-msgstr ""
+msgstr "为PPTP客户端指定首选和第二个DNS服务器"
 #
 # File: src/www/vpn_pptp.php, line: 411
 msgid "Secondary RADIUS server for failover authentication"
-msgstr ""
+msgstr "第二个RADIUS服务器，用于失效备援认证"
 #
 # File: src/www/vpn_pptp.php, line: 412
 msgid ""
 "When set, all requests will go to the secondary server when primary fails"
-msgstr ""
+msgstr "设定后，当第一个失败时，所有需求将前往第二个服务器"
 #
 # File: src/www/vpn_pptp.php, line: 416
 msgid "Issue IP addresses via RADIUS server"
-msgstr ""
+msgstr "由RADIUS服务器分发IP地址"
 #
 # File: src/www/vpn_pptp.php, line: 420
 msgid "RADIUS NAS IP"
@@ -25271,21 +25345,21 @@ msgstr ""
 msgid ""
 "Enter the IP address, RADIUS port, and RADIUS accounting port of the RADIUS "
 "server"
-msgstr ""
+msgstr "输入IP地址，RADIUS端口，RADIUS服务器的RADIUS记账端口"
 #
 # File: src/www/vpn_pptp.php, line: 458
 msgid "Secondary RADIUS shared secret"
-msgstr ""
+msgstr "第二个RADIUS预共享密钥"
 #
 # File: src/www/vpn_pptp.php, line: 462
 msgid ""
 "Enter the shared secret that will be used to authenticate to the secondary "
 "RADIUS server"
-msgstr ""
+msgstr "输入将被第二个RADIUS服务器用来认证的预共享密钥"
 #
 # File: src/www/vpn_pptp.php, line: 472
 msgid "Require 128-bit encryption"
-msgstr ""
+msgstr "需要128位加密"
 #
 # File: src/www/vpn_pptp.php, line: 473
 msgid ""
@@ -25294,34 +25368,36 @@ msgid ""
 "forced on PPTP connections (i.e. unencrypted connections will not be "
 "accepted)"
 msgstr ""
+"设定后, 只有128位加密可被接受。否则，40位和56位加密也可被接受。"
+"注意：加密在PPTP连接上总是会被强制执行，非加密连接不会被接受。"
 #
 # File: src/www/vpn_pptp.php, line: 487
 msgid "add a firewall rule"
-msgstr ""
+msgstr "添加一条防火墙规则"
 #
 # File: src/www/vpn_pptp.php, line: 487
 msgid "don't forget to "
-msgstr ""
+msgstr "不要忘记"
 #
 # File: src/www/vpn_pptp.php, line: 487
 msgid "to permit traffic from PPTP clients"
-msgstr ""
+msgstr "允许来自PPTP客户端的数据流"
 #
 # File: src/www/vpn_pptp_users.php, line: 84
 msgid "The PPTP user list has been modified"
-msgstr ""
+msgstr "PPTP用户列表已修改"
 #
 # File: src/www/vpn_pptp_users.php, line: 84
 msgid "Warning: this will terminate all current PPTP sessions"
-msgstr ""
+msgstr "警告：这将终止所有当前的PPTP连接"
 #
 # File: src/www/vpn_pptp_users_edit.php, line: 81
 msgid "The password cannot start with '!'."
-msgstr ""
+msgstr "密码开头不能是‘!’"
 #
 # File: src/www/vpn_pptp_users_edit.php, line: 171
 msgid "If you want to change the users' password, enter it here twice."
-msgstr ""
+msgstr "如果你想更改用户密码，请在这里输入两次"
 #
 # File: src/www/widgets/widgets/dyn_dns_status.widget.php, line: 74
 msgid "Int."
@@ -25329,11 +25405,11 @@ msgstr ""
 #
 # File: src/www/widgets/widgets/dyn_dns_status.widget.php, line: 125
 msgid "Checking ..."
-msgstr ""
+msgstr "正在检查"
 #
 # File: src/www/widgets/widgets/interface_statistics.widget.php, line: 82
 msgid "Packets In"
-msgstr ""
+msgstr "外出包"
 #
 # File: src/www/widgets/widgets/interface_statistics.widget.php, line: 85
 msgid "Packets Out"
@@ -25341,31 +25417,31 @@ msgstr ""
 #
 # File: src/www/widgets/widgets/interface_statistics.widget.php, line: 88
 msgid "Bytes In"
-msgstr ""
+msgstr "进入字节"
 #
 # File: src/www/widgets/widgets/interface_statistics.widget.php, line: 91
 msgid "Bytes Out"
-msgstr ""
+msgstr "外出字节"
 #
 # File: src/www/widgets/widgets/interface_statistics.widget.php, line: 94
 msgid "Errors In"
-msgstr ""
+msgstr "进入错误"
 #
 # File: src/www/widgets/widgets/interface_statistics.widget.php, line: 97
 msgid "Errors Out"
-msgstr ""
+msgstr "外出错误"
 #
 # File: src/www/widgets/widgets/ipsec.widget.php, line: 94
 msgid "Active Tunnels"
-msgstr ""
+msgstr "活动隧道"
 #
 # File: src/www/widgets/widgets/ipsec.widget.php, line: 95
 msgid "Inactive Tunnels"
-msgstr ""
+msgstr "非活动隧道"
 #
 # File: src/www/widgets/widgets/ipsec.widget.php, line: 96
 msgid "Mobile Users"
-msgstr ""
+msgstr "移动用户"
 #
 # File: src/www/widgets/widgets/log.widget.php, line: 199
 msgid "IF"
@@ -25373,150 +25449,150 @@ msgstr ""
 #
 # File: src/www/widgets/widgets/smart_status.widget.php, line: 39
 msgid "Drive"
-msgstr ""
+msgstr "驱动器"
 #
 # File: src/www/widgets/widgets/smart_status.widget.php, line: 40
 msgid "Ident"
-msgstr ""
+msgstr "识别"
 #
 # File: src/www/widgets/widgets/smart_status.widget.php, line: 41
 msgid "SMART Status"
-msgstr ""
+msgstr "智能状态"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 63
 msgid "Click to upgrade"
-msgstr ""
+msgstr "点击更新"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 106
 msgid "Versions"
-msgstr ""
+msgstr "版本"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 128
 msgid "CPU Type"
-msgstr ""
+msgstr "CPU类型"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 143
 msgid "Hardware crypto"
-msgstr ""
+msgstr "硬件加密"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 148
 msgid "Uptime"
-msgstr ""
+msgstr "正常运转时间"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 152
 msgid "Current date/time"
-msgstr ""
+msgstr "当前日期/时间"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 158
 msgid "DNS server(s)"
-msgstr ""
+msgstr "DNS服务器"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 170
 msgid "Last config change"
-msgstr ""
+msgstr "上一个配置更改"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 175
 msgid "State table size"
-msgstr ""
+msgstr "状态表大小"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 188
 msgid "Show states"
-msgstr ""
+msgstr "显示状态"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 192
 msgid "MBUF Usage"
-msgstr ""
+msgstr "MBUF利用率"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 209
 msgid "Temperature"
-msgstr ""
+msgstr "温度"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 223
 msgid "Load average"
-msgstr ""
+msgstr "负载平衡"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 229
 msgid "CPU usage"
-msgstr ""
+msgstr "CPU利用率"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 241
 msgid "Memory usage"
-msgstr ""
+msgstr "内存利用率"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 254
 msgid "SWAP usage"
-msgstr ""
+msgstr "SWAP利用率"
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 267
 msgid "Disk usage"
-msgstr ""
+msgstr "磁盘利用率"
 #
 # File: src/www/widgets/widgets/traffic_graphs.widget.php, line: 132
 msgid "Scale up"
-msgstr ""
+msgstr "刻度放大"
 #
 # File: src/www/widgets/widgets/traffic_graphs.widget.php, line: 137
 msgid "Scale follow"
-msgstr ""
+msgstr "刻度遵循"
 #
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 43
 msgid "Computer / Device"
-msgstr ""
+msgstr "电脑/设备"
 #
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 69
 msgid "Wake Up"
-msgstr ""
+msgstr "唤醒"
 #
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 74
 msgid "No saved WoL addresses"
-msgstr ""
+msgstr "没有保存 WoL 地址"
 #
 # File: src/www/wizard.php, line: 52
 # File: src/www/wizard.php, line: 60
 #, php-format
 msgid "ERROR:  Could not open %s."
-msgstr ""
+msgstr "错误：无法打开%s"
 #
 # File: src/www/wizard.php, line: 66
 #, php-format
 msgid "ERROR: Could not parse /usr/local/www/wizards/%s file."
-msgstr ""
+msgstr "错误：无法解析 /usr/local/www/wizards/%s file."
 #
 # File: src/www/wizards/openvpn_wizard.inc, line: 625
 # File: src/www/wizards/openvpn_wizard.inc, line: 642
 #, php-format
 msgid "OpenVPN %s wizard"
-msgstr ""
+msgstr "OpenVPN %s 向导"
 #
 # File: src/www/wizards/openvpn_wizard.inc, line: 637
 # File: src/www/wizards/openvpn_wizard.inc, line: 652
 msgid "OpenVPN Wizard"
-msgstr ""
+msgstr "OpenVPN向导"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 58
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 61
 msgid "You need to specify the number of connections."
-msgstr ""
+msgstr "需要定义连接数"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 63
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 66
 msgid "The number of connections should be greater than 1."
-msgstr ""
+msgstr "连接数应当大于1"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 88
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 102
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 109
 msgid "You have less interfaces than number of connections!"
-msgstr ""
+msgstr "网络接口少于了连接数！"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 300
 msgid "You cannot specify bandwidth smaller than 1!"
-msgstr ""
+msgstr "不能定义带宽小于1"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 311
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 334
 msgid "You cannot select the same interface for local and outside."
-msgstr ""
+msgstr "不能为本地和外部选择同一个网络接口"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 493
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 589
@@ -25525,14 +25601,14 @@ msgstr ""
 msgid ""
 "Address must be a valid IP address or Firewall Alias.  Please correct this "
 "value to continue."
-msgstr ""
+msgstr "必须是有效的IP地址或防火墙组，请更改然后继续"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 577
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 606
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 627
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 654
 msgid "Only percentage bandwidth specification is allowed."
-msgstr ""
+msgstr "只允许定义带宽的百分比"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 760
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1144
@@ -25541,12 +25617,12 @@ msgstr ""
 msgid ""
 "Custom Bandwidths are greater than 30%. Please lower them for the wizard to "
 "continue."
-msgstr ""
+msgstr "自定义带宽超过了30%，请降低然后继续"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1446
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1515
 msgid "Penalty Box"
-msgstr ""
+msgstr "处理区"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1453
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1473
@@ -25564,30 +25640,30 @@ msgstr ""
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1644
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1697
 msgid "Traffic Shaper Wizard"
-msgstr ""
+msgstr "数据流整形配置向导"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1465
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1535
 msgid "Connections From Upstream SIP Server"
-msgstr ""
+msgstr "来自上级SIP服务器的连接"
 #
 # File: src/www/wizards/traffic_shaper_wizard_dedicated.inc, line: 1479
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 1549
 msgid "Connections To Upstream SIP Server"
-msgstr ""
+msgstr "连接到上级SIP服务器"
 #
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 72
 msgid "You need to specify the number of LAN type interfaces."
-msgstr ""
+msgstr "需要定义Lan网络接口的序号"
 #
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 77
 msgid "The number of LAN type interfaces should be greater than 1."
-msgstr ""
+msgstr "Lan网络接口序号应该大于1"
 #
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 321
 msgid "You cannot specify 0 bandwidth!"
-msgstr ""
+msgstr "不能定义带宽为0"
 #
 # File: src/www/wizards/traffic_shaper_wizard_multi_all.inc, line: 343
 msgid "You cannot select the same interface twice on local interfaces."
-msgstr ""
+msgstr "不能两次选择同一个网络接口"
