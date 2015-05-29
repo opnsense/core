@@ -108,7 +108,10 @@ class NetworkValidator extends Validator implements ValidatorInterface
             $result = false;
         }
 
-        $validator->appendMessage(new Message($msg, $attribute, 'NetworkValidator'));
+        if (!$result) {
+            // append validation message
+            $validator->appendMessage(new Message($msg, $attribute, 'NetworkValidator'));
+        }
 
         return $result;
     }
