@@ -29,7 +29,7 @@
  */
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Validation\Validator\Regex;
+use Phalcon\Validation\Validator\InclusionIn;
 
 /**
  * Class OptionField
@@ -89,34 +89,17 @@ class OptionField extends BaseField
     }
 
     /**
-     * @return array returns Text/regex validator
+     * @return array returns InclusionIn validator
      */
     public function getValidators()
     {
-        // build validation mask
-        $validationMask = '(';
-        $countid = 0 ;
-        foreach ($this->internalOptionList as $key => $value) {
-            if ($countid > 0) {
-                $validationMask .= '|';
-            }
-            if ($key == "") {
-                // match on empty strings
-                $validationMask .= "^$";
-            } else {
-                $validationMask .= $key ;
-            }
-            $countid++;
-        }
-        $validationMask .= ')';
-
         if ($this->internalValidationMessage == null) {
             $msg = "option not in list" ;
         } else {
             $msg = $this->internalValidationMessage;
         }
-        if (($this->internalIsRequired == true || $this->internalValue != null) && $validationMask != null) {
-            return array(new Regex(array('message' => $msg,'pattern'=>trim($validationMask))));
+        if (($this->internalIsRequired == true || $this->internalValue != null)) {
+            return array(new InclusionIn(array('message' => $msg,'domain'=>array_keys($this->internalOptionList))));
         } else {
             // empty field and not required, skip this validation.
             return array();
