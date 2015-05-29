@@ -29,7 +29,7 @@
     --------------------------------------------------------------------------------------
     package : configd
 """
-
+from operator import itemgetter
 
 class Helpers(object):
     def __init__(self, template_in_data):
@@ -66,19 +66,24 @@ class Helpers(object):
         else:
             return False
 
-    def toList(self,tag):
+    def toList(self, tag, sortBy=None):
         """ if an item should be a list of items (repeating tag), use this method to make sure that we always return
             a list. The configuration doesn't know if a non repeating item is supposed to be a list of items, this makes
             it explicit.
         :param tag: tag in dot notation (section.item)
+        :param sortBy: resort result by specfied key
         :return: []
         """
         result = self.getNodeByTag(tag)
-        if type(result) == list:
+        if type(result) != list:
+            # wrap result
+            result = [result]
+
+        if sortBy is None:
             return result
         else:
-            # wrap result
-            return [result]
+            # resort list by tag
+            return sorted(result,key=itemgetter(sortBy))
 
     def getUUIDtag(self, uuid):
         """ retrieve tag name of registered uuid, returns __not_found__ if none available
