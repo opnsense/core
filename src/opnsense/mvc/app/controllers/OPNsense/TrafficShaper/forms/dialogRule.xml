@@ -3,42 +3,41 @@
         <id>rule.sequence</id>
         <label>sequence</label>
         <type>text</type>
-        <help>order in which the rule will be evaluated</help>
+        <help>order in which the rule will be evaluated (lowest first)</help>
     </field>
     <field>
         <id>rule.interface</id>
         <label>interface</label>
         <type>dropdown</type>
-        <help></help>
     </field>
     <field>
         <id>rule.proto</id>
         <label>proto</label>
         <type>dropdown</type>
-        <help></help>
     </field>
     <field>
         <id>rule.source</id>
         <label>source</label>
         <type>text</type>
-        <help></help>
+        <help>source ip or network, examples 10.0.0.0/24, 10.0.0.1</help>
     </field>
     <field>
         <id>rule.src_port</id>
         <label>src-port</label>
         <type>text</type>
-        <help></help>
+        <help>source port number or well known name (imap,imaps, http,https,...)</help>
     </field>
     <field>
         <id>rule.destination</id>
         <label>destination</label>
         <type>text</type>
-        <help></help>
+        <help>destination ip or network, examples 10.0.0.0/24, 10.0.0.1</help>
     </field>
     <field>
         <id>rule.dst_port</id>
-        <labek>dst-port</labek>
+        <label>dst-port</label>
         <type>text</type>
+        <help>destination port number or well known name (imap,imaps, http,https,...)</help>
     </field>
     <field>
         <id>rule.direction</id>
@@ -49,12 +48,11 @@
         <id>rule.target</id>
         <label>target</label>
         <type>dropdown</type>
-        <help></help>
+        <help>target pipe or queue</help>
     </field>
     <field>
         <id>rule.description</id>
         <label>description</label>
         <type>text</type>
-        <help></help>
     </field>
 </form>
