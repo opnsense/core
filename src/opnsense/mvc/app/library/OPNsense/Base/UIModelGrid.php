@@ -70,46 +70,48 @@ class UIModelGrid
 
         $recordIndex = 0;
         foreach ($this->DataField->sortedBy($sortBy, $sortDescending) as $record) {
-            // parse rows, because we may need to convert some (list) items we need to know the actual content
-            // before searching.
-            $row =  array();
-            $row['uuid'] = $record->getAttributes()['uuid'];
-            foreach ($fields as $fieldname) {
-                $row[$fieldname] = $record->$fieldname->getNodeData();
-                if (is_array($row[$fieldname])) {
-                    foreach ($row[$fieldname] as $fieldKey => $fieldValue) {
-                        if ($fieldValue['selected'] == 1) {
-                            $row[$fieldname] = $fieldValue['value'];
+            if (array_key_exists("uuid", $record->getAttributes())) {
+                // parse rows, because we may need to convert some (list) items we need to know the actual content
+                // before searching.
+                $row =  array();
+                $row['uuid'] = $record->getAttributes()['uuid'];
+                foreach ($fields as $fieldname) {
+                    $row[$fieldname] = $record->$fieldname->getNodeData();
+                    if (is_array($row[$fieldname])) {
+                        foreach ($row[$fieldname] as $fieldKey => $fieldValue) {
+                            if ($fieldValue['selected'] == 1) {
+                                $row[$fieldname] = $fieldValue['value'];
+                            }
+                        }
+                        if (is_array($row[$fieldname])) {
+                            $row[$fieldname] = "##Unlinked";
                         }
                     }
-                    if (is_array($row[$fieldname])) {
-                        $row[$fieldname] = "##Unlinked";
-                    }
                 }
-            }
 
-            // if a search phrase is provided, use it to search in all requested fields
-            if ($searchPhrase != '') {
-                $searchFound = false;
-                foreach ($fields as $fieldname) {
-                    if (strpos(strtolower($row[$fieldname]), strtolower($searchPhrase)) !== false) {
-                        $searchFound = true;
-                        break;
+                // if a search phrase is provided, use it to search in all requested fields
+                if ($searchPhrase != '') {
+                    $searchFound = false;
+                    foreach ($fields as $fieldname) {
+                        if (strpos(strtolower($row[$fieldname]), strtolower($searchPhrase)) !== false) {
+                            $searchFound = true;
+                            break;
+                        }
                     }
+                } else {
+                    $searchFound = true;
                 }
-            } else {
-                $searchFound = true;
-            }
 
-            // if result is relevant, count total and add (max number of) items to result.
-            // $itemsPerPage = -1 is used as wildcard for "all results"
-            if ($searchFound) {
-                if ((count($result['rows']) < $itemsPerPage &&
-                    $recordIndex >= ($itemsPerPage*($currentPage-1)) || $itemsPerPage == -1)
-                ) {
-                    $result['rows'][] = $row;
+                // if result is relevant, count total and add (max number of) items to result.
+                // $itemsPerPage = -1 is used as wildcard for "all results"
+                if ($searchFound) {
+                    if ((count($result['rows']) < $itemsPerPage &&
+                        $recordIndex >= ($itemsPerPage*($currentPage-1)) || $itemsPerPage == -1)
+                    ) {
+                        $result['rows'][] = $row;
+                    }
+                    $recordIndex++;
                 }
-                $recordIndex++;
             }
         }
 
