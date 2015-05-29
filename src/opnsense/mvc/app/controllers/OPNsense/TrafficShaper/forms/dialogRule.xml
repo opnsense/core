@@ -8,7 +8,7 @@
     <field>
         <id>rule.interface</id>
         <label>interface</label>
-        <type>text</type>
+        <type>dropdown</type>
         <help></help>
     </field>
     <field>
