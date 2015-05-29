@@ -1,0 +1,29 @@
+<form>
+    <field>
+        <id>queue.pipe</id>
+        <label>pipe</label>
+        <type>dropdown</type>
+        <help>connected pipe for this queue</help>
+    </field>
+    <field>
+        <id>queue.weight</id>
+        <label>weight</label>
+        <type>text</type>
+        <help>Weight of this queue (1..100)</help>
+    </field>
+    <field>
+        <id>queue.mask</id>
+        <label>mask</label>
+        <type>dropdown</type>
+        <help><![CDATA[Dynamic queue creation by source or destination address.
+        <li> choose destination here to share the total bandwidth of this pipe among all connected clients. </li>
+        <li> choose source to provide all connected clients up to a maximum of this pipe configured bandwidth  </li>
+        ]]></help>
+    </field>
+    <field>
+        <id>queue.description</id>
+        <label>description</label>
+        <type>text</type>
+        <help>Description to identify this pipe.</help>
+    </field>
+</form>

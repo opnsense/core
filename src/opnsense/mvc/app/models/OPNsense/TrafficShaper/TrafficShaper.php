@@ -33,6 +33,31 @@ use OPNsense\Base\BaseModel;
 class TrafficShaper extends BaseModel
 {
     /**
+     * generate new Id by filling a gap or add 1 to the last
+     * @param int $startAt start search at number
+     * @param array $allIds all reserved id's
+     * @return int next number
+     */
+    private function generateNewId($startAt, $allIds)
+    {
+        $newId = $startAt;
+        for ($i=0; $i < count($allIds); ++$i) {
+            if ($allIds[$i] > $newId && isset($allIds[$i+1])) {
+                if ($allIds[$i+1] - $allIds[$i] > 1) {
+                    // gap found
+                    $newId = $allIds[$i] + 1;
+                    break;
+                }
+            } elseif ($allIds[$i] >= $newId) {
+                // last item is higher than target
+                $newId = $allIds[$i] + 1;
+            }
+        }
+
+        return $newId;
+    }
+
+    /**
      * Add new pipe to shaper, generate new number if none is given.
      * The first 10000 id's are automatically reserved for internal usage.
      * @param null $pipenr new pipe number
@@ -54,19 +79,7 @@ class TrafficShaper extends BaseModel
 
         if ($pipenr == null) {
             // generate new pipe number
-            $newId = 10000;
-            for ($i=0; $i < count($allpipes); ++$i) {
-                if ($allpipes[$i] > $newId && isset($allpipes[$i+1])) {
-                    if ($allpipes[$i+1] - $allpipes[$i] > 1) {
-                        // gap found
-                        $newId = $allpipes[$i] + 1;
-                        break;
-                    }
-                } elseif ($allpipes[$i] >= $newId) {
-                    // last item is higher than target
-                    $newId = $allpipes[$i] + 1;
-                }
-            }
+            $newId = $this->generateNewId(10000, $allpipes);
         } else {
             $newId = $pipenr;
         }
@@ -74,5 +87,37 @@ class TrafficShaper extends BaseModel
         $pipe = $this->pipes->pipe->add();
         $pipe->number = $newId;
         return $pipe;
+    }
+
+    /**
+     * Add new queue to shaper, generate new number if none is given.
+     * The first 10000 id's are automatically reserved for internal usage.
+     * @param null $queuenr new queue number
+     * @return ArrayField
+     */
+    public function addQueue($queuenr = null)
+    {
+        $allqueues = array();
+        foreach ($this->queues->queue->__items as $uuid => $queue) {
+            if ($queuenr != null && $queuenr == $queue->number->__toString()) {
+                // queue found, return
+                return $queue;
+            } elseif ($queuenr == null) {
+                // collect pipe numbers to find first possible item
+                $allqueues[] = $queue->number->__toString();
+            }
+        }
+        sort($allqueues);
+
+        if ($queuenr == null) {
+            // generate new queue number
+            $newId = $this->generateNewId(10000, $allqueues);
+        } else {
+            $newId = $queuenr;
+        }
+
+        $queue = $this->queues->queue->add();
+        $queue->number = $newId;
+        return $queue;
     }
 }

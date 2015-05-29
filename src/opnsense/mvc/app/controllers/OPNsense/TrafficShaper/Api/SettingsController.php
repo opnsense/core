@@ -196,6 +196,122 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
+     * search traffic shaper queues
+     * @return array
+     */
+    public function searchQueuesAction()
+    {
+        if ($this->request->isPost()) {
+            // fetch query parameters
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+            $currentPage = $this->request->getPost('current', 'int', 1);
+            $sortBy = array("number");
+            $sortDescending = false;
+
+            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
+                $sortBy = array_keys($this->request->getPost("sort"));
+                if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
+                    $sortDescending = true;
+                }
+            }
+
+            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
+
+            // create model and fetch query resuls
+            $fields = array("number", "pipe","weight","description","mask","origin");
+            $mdlShaper = new TrafficShaper();
+            $grid = new UIModelGrid($mdlShaper->queues->queue);
+            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
+        } else {
+            return array();
+        }
+
+    }
+
+    /**
+     * retrieve queue settings or return defaults
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function getQueueAction($uuid = null)
+    {
+        $mdlShaper = new TrafficShaper();
+        if ($uuid != null) {
+            $node = $mdlShaper->getNodeByReference('queues.queue.'.$uuid);
+            if ($node != null) {
+                // return node
+                return array("queue" => $node->getNodes());
+            }
+        } else {
+            // generate new node, but don't save to disc
+            $node = $mdlShaper->queues->queue->add() ;
+            return array("queue" => $node->getNodes());
+        }
+        return array();
+    }
+
+    /**
+     * update queue with given properties
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function setQueueAction($uuid)
+    {
+        if ($this->request->isPost() && $this->request->hasPost("queue")) {
+            $mdlShaper = new TrafficShaper();
+            if ($uuid != null) {
+                $node = $mdlShaper->getNodeByReference('queues.queue.'.$uuid);
+                if ($node != null) {
+                    $node->setNodes($this->request->getPost("queue"));
+                    return $this->save($mdlShaper, $node, "queue");
+                }
+            }
+        }
+        return array("result"=>"failed");
+    }
+
+    /**
+     * add new queue and set with attributes from post
+     * @return array
+     */
+    public function addQueueAction()
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost() && $this->request->hasPost("queue")) {
+            $mdlShaper = new TrafficShaper();
+            $node = $mdlShaper->addQueue();
+            $node->setNodes($this->request->getPost("queue"));
+            $node->origin = "TrafficShaper"; // set origin to this component.
+            return $this->save($mdlShaper, $node, "queue");
+        }
+        return $result;
+    }
+
+    /**
+     * delete queue by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delQueueAction($uuid)
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost()) {
+            $mdlShaper = new TrafficShaper();
+            if ($uuid != null) {
+                if ($mdlShaper->queues->queue->del($uuid)) {
+                    // if item is removed, serialize to config and save
+                    $mdlShaper->serializeToConfig($disable_validation = true);
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * search traffic shaper rules
      * @return array
      */
@@ -309,5 +425,4 @@ class SettingsController extends ApiControllerBase
         }
         return $result;
     }
-
 }

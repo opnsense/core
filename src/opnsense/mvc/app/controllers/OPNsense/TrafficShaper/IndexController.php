@@ -39,6 +39,7 @@ class IndexController extends \OPNsense\Base\IndexController
         $this->view->title = "Traffic Shaper";
         // include dialog form definitions
         $this->view->formDialogPipe = $this->getForm("dialogPipe");
+        $this->view->formDialogQueue = $this->getForm("dialogQueue");
         $this->view->formDialogRule = $this->getForm("dialogRule");
         // choose template
         $this->view->pick('OPNsense/TrafficShaper/index');

@@ -55,6 +55,53 @@
                 </description>
             </pipe>
         </pipes>
+        <queues>
+            <queue type="ArrayField">
+                <number type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>Queue number must be between 1...65535</ValidationMessage>
+                    <Required>Y</Required>
+                </number>
+                <pipe type="ModelRelationField">
+                    <Model>
+                        <pipes>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>pipes.pipe</items>
+                            <display>description</display>
+                        </pipes>
+                    </Model>
+                    <ValidationMessage>Related pipe not found</ValidationMessage>
+                    <Required>Y</Required>
+                </pipe>
+                <weight type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>100</MaximumValue>
+                    <Default>100</Default>
+                    <Required>Y</Required>
+                    <ValidationMessage>Weight must be between 1...100</ValidationMessage>
+                </weight>
+                <mask type="OptionField">
+                    <Required>Y</Required>
+                    <default>none</default>
+                    <OptionValues>
+                        <none></none>
+                        <src-ip>source</src-ip>
+                        <dst-ip>destination</dst-ip>
+                    </OptionValues>
+                </mask>
+                <description type="TextField">
+                    <Required>Y</Required>
+                    <mask>/^(.){1,255}$/</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+                <origin type="TextField">
+                    <Required>N</Required>
+                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
+                </origin>
+            </queue>
+        </queues>
         <rules>
             <rule type="ArrayField">
                 <sequence type="IntegerField">
@@ -68,7 +115,7 @@
                     <Required>Y</Required>
                     <default>wan</default>
                     <filters>
-                        <enable>^(?!0).*$</enable>
+                        <enable>/^(?!0).*$/</enable>
                     </filters>
                 </interface>
                 <proto type="OptionField">
@@ -113,11 +160,17 @@
                             <source>OPNsense.TrafficShaper.TrafficShaper</source>
                             <items>pipes.pipe</items>
                             <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
                         </pipes>
                         <queues>
                             <source>OPNsense.TrafficShaper.TrafficShaper</source>
-                            <items>pipes.pipe</items>
+                            <items>queues.queue</items>
                             <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
                         </queues>
                     </Model>
                     <ValidationMessage>Related pipe or queue not found</ValidationMessage>
