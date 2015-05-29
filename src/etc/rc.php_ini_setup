@@ -164,7 +164,7 @@ done
 # Enable XDebug if enabled in config
 if [ ! -z `/usr/bin/grep "<enable_xdebug>1</enable_xdebug>" /conf/config.xml` ]; then
 	/bin/cat >>/usr/local/lib/php.ini <<EOF
-extension=xdebug.so
+zend_extension=xdebug.so
 
 [xdebug]
 xdebug.profiler_enable_trigger = 1
