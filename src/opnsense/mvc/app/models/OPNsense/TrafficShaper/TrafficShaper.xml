@@ -49,12 +49,14 @@
                     <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
                 <description type="TextField">
-                    <Required>N</Required>
+                    <Required>Y</Required>
+                    <mask>/^(.){1,255}$/</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </pipe>
         </pipes>
         <rules>
-            <rule  type="ArrayField">
+            <rule type="ArrayField">
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>1000000</MaximumValue>
@@ -62,9 +64,12 @@
                     <Required>Y</Required>
                     <default>1</default>
                 </sequence>
-                <interface type="TextField">
+                <interface type="InterfaceField">
                     <Required>Y</Required>
                     <default>wan</default>
+                    <filters>
+                        <enable>^(?!0).*$</enable>
+                    </filters>
                 </interface>
                 <proto type="OptionField">
                     <Required>Y</Required>
@@ -77,7 +82,7 @@
                         <tcp>tcp</tcp>
                     </OptionValues>
                 </proto>
-                <source type="TextField">
+                <source type="NetworkField">
                     <Required>Y</Required>
                     <default>any</default>
                 </source>
@@ -85,7 +90,7 @@
                     <Required>Y</Required>
                     <default>any</default>
                 </src_port>
-                <destination type="TextField">
+                <destination type="NetworkField">
                     <Required>Y</Required>
                     <default>any</default>
                 </destination>
