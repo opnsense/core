@@ -78,7 +78,7 @@ class PortField extends BaseField
     }
 
     /**
-     * @return array returns Text/regex validator
+     * @return array returns InclusionIn validator
      */
     public function getValidators()
     {
