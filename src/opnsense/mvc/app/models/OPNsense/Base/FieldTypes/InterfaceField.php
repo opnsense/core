@@ -152,4 +152,3 @@ class InterfaceField extends BaseField
         }
     }
 }
-
