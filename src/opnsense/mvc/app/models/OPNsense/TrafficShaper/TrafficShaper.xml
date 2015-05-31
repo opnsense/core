@@ -4,6 +4,10 @@
         OPNsense traffic shaper
     </description>
     <items>
+        <enabled type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+        </enabled>
         <pipes>
             <pipe type="ArrayField">
                 <number type="IntegerField">
