@@ -32,211 +32,237 @@ require_once("openvpn.inc");
 $pgtitle = array(gettext("OpenVPN"), gettext("Client Specific Override"));
 $shortcut_section = "openvpn";
 
-if (!is_array($config['openvpn']['openvpn-csc']))
-	$config['openvpn']['openvpn-csc'] = array();
+if (!is_array($config['openvpn']['openvpn-csc'])) {
+    $config['openvpn']['openvpn-csc'] = array();
+}
 
 $a_csc = &$config['openvpn']['openvpn-csc'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
-
-$act = $_GET['act'];
-if (isset($_POST['act']))
-	$act = $_POST['act'];
-
-if ($_GET['act'] == "del") {
-
-	if (!$a_csc[$id]) {
-		redirectHeader("vpn_openvpn_csc.php");
-		exit;
-	}
-
-	openvpn_delete_csc($a_csc[$id]);
-	unset($a_csc[$id]);
-	write_config();
-	$savemsg = gettext("Client Specific Override successfully deleted")."<br />";
+if (is_numericint($_GET['id'])) {
+    $id = $_GET['id'];
+}
+if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+    $id = $_POST['id'];
 }
 
-if($_GET['act']=="edit"){
+$act = $_GET['act'];
+if (isset($_POST['act'])) {
+    $act = $_POST['act'];
+}
 
-	if (isset($id) && $a_csc[$id]) {
-		$pconfig['custom_options'] = $a_csc[$id]['custom_options'];
-		$pconfig['disable'] = isset($a_csc[$id]['disable']);
-		$pconfig['common_name'] = $a_csc[$id]['common_name'];
-		$pconfig['block'] = $a_csc[$id]['block'];
-		$pconfig['description'] = $a_csc[$id]['description'];
+if ($_GET['act'] == "del") {
+    if (!$a_csc[$id]) {
+        redirectHeader("vpn_openvpn_csc.php");
+        exit;
+    }
 
-		$pconfig['tunnel_network'] = $a_csc[$id]['tunnel_network'];
-		$pconfig['local_network'] = $a_csc[$id]['local_network'];
-		$pconfig['local_networkv6'] = $a_csc[$id]['local_networkv6'];
-		$pconfig['remote_network'] = $a_csc[$id]['remote_network'];
-		$pconfig['remote_networkv6'] = $a_csc[$id]['remote_networkv6'];
-		$pconfig['gwredir'] = $a_csc[$id]['gwredir'];
+    openvpn_delete_csc($a_csc[$id]);
+    unset($a_csc[$id]);
+    write_config();
+    $savemsg = gettext("Client Specific Override successfully deleted")."<br />";
+}
 
-		$pconfig['push_reset'] = $a_csc[$id]['push_reset'];
+if ($_GET['act']=="edit") {
+    if (isset($id) && $a_csc[$id]) {
+        $pconfig['custom_options'] = $a_csc[$id]['custom_options'];
+        $pconfig['disable'] = isset($a_csc[$id]['disable']);
+        $pconfig['common_name'] = $a_csc[$id]['common_name'];
+        $pconfig['block'] = $a_csc[$id]['block'];
+        $pconfig['description'] = $a_csc[$id]['description'];
 
-		$pconfig['dns_domain'] = $a_csc[$id]['dns_domain'];
-		if ($pconfig['dns_domain'])
-			$pconfig['dns_domain_enable'] = true;
+        $pconfig['tunnel_network'] = $a_csc[$id]['tunnel_network'];
+        $pconfig['local_network'] = $a_csc[$id]['local_network'];
+        $pconfig['local_networkv6'] = $a_csc[$id]['local_networkv6'];
+        $pconfig['remote_network'] = $a_csc[$id]['remote_network'];
+        $pconfig['remote_networkv6'] = $a_csc[$id]['remote_networkv6'];
+        $pconfig['gwredir'] = $a_csc[$id]['gwredir'];
 
-		$pconfig['dns_server1'] = $a_csc[$id]['dns_server1'];
-		$pconfig['dns_server2'] = $a_csc[$id]['dns_server2'];
-		$pconfig['dns_server3'] = $a_csc[$id]['dns_server3'];
-		$pconfig['dns_server4'] = $a_csc[$id]['dns_server4'];
-		if ($pconfig['dns_server1'] ||
-			$pconfig['dns_server2'] ||
-			$pconfig['dns_server3'] ||
-			$pconfig['dns_server4'])
-			$pconfig['dns_server_enable'] = true;
+        $pconfig['push_reset'] = $a_csc[$id]['push_reset'];
 
-		$pconfig['ntp_server1'] = $a_csc[$id]['ntp_server1'];
-		$pconfig['ntp_server2'] = $a_csc[$id]['ntp_server2'];
-		if ($pconfig['ntp_server1'] ||
-			$pconfig['ntp_server2'])
-			$pconfig['ntp_server_enable'] = true;
+        $pconfig['dns_domain'] = $a_csc[$id]['dns_domain'];
+        if ($pconfig['dns_domain']) {
+            $pconfig['dns_domain_enable'] = true;
+        }
 
-		$pconfig['netbios_enable'] = $a_csc[$id]['netbios_enable'];
-		$pconfig['netbios_ntype'] = $a_csc[$id]['netbios_ntype'];
-		$pconfig['netbios_scope'] = $a_csc[$id]['netbios_scope'];
+        $pconfig['dns_server1'] = $a_csc[$id]['dns_server1'];
+        $pconfig['dns_server2'] = $a_csc[$id]['dns_server2'];
+        $pconfig['dns_server3'] = $a_csc[$id]['dns_server3'];
+        $pconfig['dns_server4'] = $a_csc[$id]['dns_server4'];
+        if ($pconfig['dns_server1'] ||
+            $pconfig['dns_server2'] ||
+            $pconfig['dns_server3'] ||
+            $pconfig['dns_server4']) {
+            $pconfig['dns_server_enable'] = true;
+        }
 
-		$pconfig['wins_server1'] = $a_csc[$id]['wins_server1'];
-		$pconfig['wins_server2'] = $a_csc[$id]['wins_server2'];
-		if ($pconfig['wins_server1'] ||
-			$pconfig['wins_server2'])
-			$pconfig['wins_server_enable'] = true;
+        $pconfig['ntp_server1'] = $a_csc[$id]['ntp_server1'];
+        $pconfig['ntp_server2'] = $a_csc[$id]['ntp_server2'];
+        if ($pconfig['ntp_server1'] ||
+            $pconfig['ntp_server2']) {
+            $pconfig['ntp_server_enable'] = true;
+        }
 
-		$pconfig['nbdd_server1'] = $a_csc[$id]['nbdd_server1'];
-		if ($pconfig['nbdd_server1'])
-			$pconfig['nbdd_server_enable'] = true;
-	}
+        $pconfig['netbios_enable'] = $a_csc[$id]['netbios_enable'];
+        $pconfig['netbios_ntype'] = $a_csc[$id]['netbios_ntype'];
+        $pconfig['netbios_scope'] = $a_csc[$id]['netbios_scope'];
+
+        $pconfig['wins_server1'] = $a_csc[$id]['wins_server1'];
+        $pconfig['wins_server2'] = $a_csc[$id]['wins_server2'];
+        if ($pconfig['wins_server1'] ||
+            $pconfig['wins_server2']) {
+            $pconfig['wins_server_enable'] = true;
+        }
+
+        $pconfig['nbdd_server1'] = $a_csc[$id]['nbdd_server1'];
+        if ($pconfig['nbdd_server1']) {
+            $pconfig['nbdd_server_enable'] = true;
+        }
+    }
 }
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'Tunnel network')) {
+        $input_errors[] = $result;
+    }
 
-	/* input validation */
-	if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'Tunnel network'))
-		$input_errors[] = $result;
+    if ($result = openvpn_validate_cidr($pconfig['local_network'], 'IPv4 Local Network', true, "ipv4")) {
+        $input_errors[] = $result;
+    }
 
-	if ($result = openvpn_validate_cidr($pconfig['local_network'], 'IPv4 Local Network', true, "ipv4"))
-		$input_errors[] = $result;
+    if ($result = openvpn_validate_cidr($pconfig['local_networkv6'], 'IPv6 Local Network', true, "ipv6")) {
+        $input_errors[] = $result;
+    }
 
-	if ($result = openvpn_validate_cidr($pconfig['local_networkv6'], 'IPv6 Local Network', true, "ipv6"))
-		$input_errors[] = $result;
+    if ($result = openvpn_validate_cidr($pconfig['remote_network'], 'IPv4 Remote Network', true, "ipv4")) {
+        $input_errors[] = $result;
+    }
 
-	if ($result = openvpn_validate_cidr($pconfig['remote_network'], 'IPv4 Remote Network', true, "ipv4"))
-		$input_errors[] = $result;
+    if ($result = openvpn_validate_cidr($pconfig['remote_networkv6'], 'IPv6 Remote Network', true, "ipv6")) {
+        $input_errors[] = $result;
+    }
 
-	if ($result = openvpn_validate_cidr($pconfig['remote_networkv6'], 'IPv6 Remote Network', true, "ipv6"))
-		$input_errors[] = $result;
+    if ($pconfig['dns_server_enable']) {
+        if (!empty($pconfig['dns_server1']) && !is_ipaddr(trim($pconfig['dns_server1']))) {
+            $input_errors[] = gettext("The field 'DNS Server #1' must contain a valid IP address");
+        }
+        if (!empty($pconfig['dns_server2']) && !is_ipaddr(trim($pconfig['dns_server2']))) {
+            $input_errors[] = gettext("The field 'DNS Server #2' must contain a valid IP address");
+        }
+        if (!empty($pconfig['dns_server3']) && !is_ipaddr(trim($pconfig['dns_server3']))) {
+            $input_errors[] = gettext("The field 'DNS Server #3' must contain a valid IP address");
+        }
+        if (!empty($pconfig['dns_server4']) && !is_ipaddr(trim($pconfig['dns_server4']))) {
+            $input_errors[] = gettext("The field 'DNS Server #4' must contain a valid IP address");
+        }
+    }
 
-	if ($pconfig['dns_server_enable']) {
-		if (!empty($pconfig['dns_server1']) && !is_ipaddr(trim($pconfig['dns_server1'])))
-			$input_errors[] = gettext("The field 'DNS Server #1' must contain a valid IP address");
-		if (!empty($pconfig['dns_server2']) && !is_ipaddr(trim($pconfig['dns_server2'])))
-			$input_errors[] = gettext("The field 'DNS Server #2' must contain a valid IP address");
-		if (!empty($pconfig['dns_server3']) && !is_ipaddr(trim($pconfig['dns_server3'])))
-			$input_errors[] = gettext("The field 'DNS Server #3' must contain a valid IP address");
-		if (!empty($pconfig['dns_server4']) && !is_ipaddr(trim($pconfig['dns_server4'])))
-			$input_errors[] = gettext("The field 'DNS Server #4' must contain a valid IP address");
-	}
+    if ($pconfig['ntp_server_enable']) {
+        if (!empty($pconfig['ntp_server1']) && !is_ipaddr(trim($pconfig['ntp_server1']))) {
+            $input_errors[] = gettext("The field 'NTP Server #1' must contain a valid IP address");
+        }
+        if (!empty($pconfig['ntp_server2']) && !is_ipaddr(trim($pconfig['ntp_server2']))) {
+            $input_errors[] = gettext("The field 'NTP Server #2' must contain a valid IP address");
+        }
+        if (!empty($pconfig['ntp_server3']) && !is_ipaddr(trim($pconfig['ntp_server3']))) {
+            $input_errors[] = gettext("The field 'NTP Server #3' must contain a valid IP address");
+        }
+        if (!empty($pconfig['ntp_server4']) && !is_ipaddr(trim($pconfig['ntp_server4']))) {
+            $input_errors[] = gettext("The field 'NTP Server #4' must contain a valid IP address");
+        }
+    }
 
-	if ($pconfig['ntp_server_enable']) {
-		if (!empty($pconfig['ntp_server1']) && !is_ipaddr(trim($pconfig['ntp_server1'])))
-			$input_errors[] = gettext("The field 'NTP Server #1' must contain a valid IP address");
-		if (!empty($pconfig['ntp_server2']) && !is_ipaddr(trim($pconfig['ntp_server2'])))
-			$input_errors[] = gettext("The field 'NTP Server #2' must contain a valid IP address");
-		if (!empty($pconfig['ntp_server3']) && !is_ipaddr(trim($pconfig['ntp_server3'])))
-			$input_errors[] = gettext("The field 'NTP Server #3' must contain a valid IP address");
-		if (!empty($pconfig['ntp_server4']) && !is_ipaddr(trim($pconfig['ntp_server4'])))
-			$input_errors[] = gettext("The field 'NTP Server #4' must contain a valid IP address");
-	}
+    if ($pconfig['netbios_enable']) {
+        if ($pconfig['wins_server_enable']) {
+            if (!empty($pconfig['wins_server1']) && !is_ipaddr(trim($pconfig['wins_server1']))) {
+                $input_errors[] = gettext("The field 'WINS Server #1' must contain a valid IP address");
+            }
+            if (!empty($pconfig['wins_server2']) && !is_ipaddr(trim($pconfig['wins_server2']))) {
+                $input_errors[] = gettext("The field 'WINS Server #2' must contain a valid IP address");
+            }
+        }
+        if ($pconfig['nbdd_server_enable']) {
+            if (!empty($pconfig['nbdd_server1']) && !is_ipaddr(trim($pconfig['nbdd_server1']))) {
+                $input_errors[] = gettext("The field 'NetBIOS Data Distribution Server #1' must contain a valid IP address");
+            }
+        }
+    }
 
-	if ($pconfig['netbios_enable']) {
-		if ($pconfig['wins_server_enable']) {
-			if (!empty($pconfig['wins_server1']) && !is_ipaddr(trim($pconfig['wins_server1'])))
-				$input_errors[] = gettext("The field 'WINS Server #1' must contain a valid IP address");
-			if (!empty($pconfig['wins_server2']) && !is_ipaddr(trim($pconfig['wins_server2'])))
-				$input_errors[] = gettext("The field 'WINS Server #2' must contain a valid IP address");
-		}
-		if ($pconfig['nbdd_server_enable'])
-			if (!empty($pconfig['nbdd_server1']) && !is_ipaddr(trim($pconfig['nbdd_server1'])))
-				$input_errors[] = gettext("The field 'NetBIOS Data Distribution Server #1' must contain a valid IP address");
-	}
-
-	$reqdfields[] = 'common_name';
-	$reqdfieldsn[] = 'Common name';
+    $reqdfields[] = 'common_name';
+    $reqdfieldsn[] = 'Common name';
 
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	if (!$input_errors) {
+    if (!$input_errors) {
+        $csc = array();
 
-		$csc = array();
+        $csc['custom_options'] = $pconfig['custom_options'];
+        if ($_POST['disable'] == "yes") {
+            $csc['disable'] = true;
+        }
+        $csc['common_name'] = $pconfig['common_name'];
+        $csc['block'] = $pconfig['block'];
+        $csc['description'] = $pconfig['description'];
 
-		$csc['custom_options'] = $pconfig['custom_options'];
-		if ($_POST['disable'] == "yes")
-			$csc['disable'] = true;
-		$csc['common_name'] = $pconfig['common_name'];
-		$csc['block'] = $pconfig['block'];
-		$csc['description'] = $pconfig['description'];
+        $csc['tunnel_network'] = $pconfig['tunnel_network'];
+        $csc['local_network'] = $pconfig['local_network'];
+        $csc['local_networkv6'] = $pconfig['local_networkv6'];
+        $csc['remote_network'] = $pconfig['remote_network'];
+        $csc['remote_networkv6'] = $pconfig['remote_networkv6'];
+        $csc['gwredir'] = $pconfig['gwredir'];
 
-		$csc['tunnel_network'] = $pconfig['tunnel_network'];
-		$csc['local_network'] = $pconfig['local_network'];
-		$csc['local_networkv6'] = $pconfig['local_networkv6'];
-		$csc['remote_network'] = $pconfig['remote_network'];
-		$csc['remote_networkv6'] = $pconfig['remote_networkv6'];
-		$csc['gwredir'] = $pconfig['gwredir'];
+        $csc['push_reset'] = $pconfig['push_reset'];
 
-		$csc['push_reset'] = $pconfig['push_reset'];
+        if ($pconfig['dns_domain_enable']) {
+            $csc['dns_domain'] = $pconfig['dns_domain'];
+        }
 
-		if ($pconfig['dns_domain_enable'])
-			$csc['dns_domain'] = $pconfig['dns_domain'];
+        if ($pconfig['dns_server_enable']) {
+            $csc['dns_server1'] = $pconfig['dns_server1'];
+            $csc['dns_server2'] = $pconfig['dns_server2'];
+            $csc['dns_server3'] = $pconfig['dns_server3'];
+            $csc['dns_server4'] = $pconfig['dns_server4'];
+        }
 
-		if ($pconfig['dns_server_enable']) {
-			$csc['dns_server1'] = $pconfig['dns_server1'];
-			$csc['dns_server2'] = $pconfig['dns_server2'];
-			$csc['dns_server3'] = $pconfig['dns_server3'];
-			$csc['dns_server4'] = $pconfig['dns_server4'];
-		}
+        if ($pconfig['ntp_server_enable']) {
+            $csc['ntp_server1'] = $pconfig['ntp_server1'];
+            $csc['ntp_server2'] = $pconfig['ntp_server2'];
+        }
 
-		if ($pconfig['ntp_server_enable']) {
-			$csc['ntp_server1'] = $pconfig['ntp_server1'];
-			$csc['ntp_server2'] = $pconfig['ntp_server2'];
-		}
+        $csc['netbios_enable'] = $pconfig['netbios_enable'];
+        $csc['netbios_ntype'] = $pconfig['netbios_ntype'];
+        $csc['netbios_scope'] = $pconfig['netbios_scope'];
 
-		$csc['netbios_enable'] = $pconfig['netbios_enable'];
-		$csc['netbios_ntype'] = $pconfig['netbios_ntype'];
-		$csc['netbios_scope'] = $pconfig['netbios_scope'];
+        if ($pconfig['netbios_enable']) {
+            if ($pconfig['wins_server_enable']) {
+                $csc['wins_server1'] = $pconfig['wins_server1'];
+                $csc['wins_server2'] = $pconfig['wins_server2'];
+            }
 
-		if ($pconfig['netbios_enable']) {
+            if ($pconfig['dns_server_enable']) {
+                $csc['nbdd_server1'] = $pconfig['nbdd_server1'];
+            }
+        }
 
-			if ($pconfig['wins_server_enable']) {
-				$csc['wins_server1'] = $pconfig['wins_server1'];
-				$csc['wins_server2'] = $pconfig['wins_server2'];
-			}
+        if (isset($id) && $a_csc[$id]) {
+            $old_csc_cn = $a_csc[$id]['common_name'];
+            $a_csc[$id] = $csc;
+        } else {
+            $a_csc[] = $csc;
+        }
 
-			if ($pconfig['dns_server_enable'])
-				$csc['nbdd_server1'] = $pconfig['nbdd_server1'];
-		}
+        if (!empty($old_csc_cn)) {
+            openvpn_cleanup_csc($old_csc_cn);
+        }
+        openvpn_resync_csc($csc);
+        write_config();
 
-		if (isset($id) && $a_csc[$id]) {
-			$old_csc_cn = $a_csc[$id]['common_name'];
-			$a_csc[$id] = $csc;
-		} else
-			$a_csc[] = $csc;
-
-		if (!empty($old_csc_cn))
-			openvpn_cleanup_csc($old_csc_cn);
-		openvpn_resync_csc($csc);
-		write_config();
-
-		header("Location: vpn_openvpn_csc.php");
-		exit;
-	}
+        header("Location: vpn_openvpn_csc.php");
+        exit;
+    }
 }
 
 include("head.inc");
@@ -296,10 +322,10 @@ function netbios_change() {
 
 <?
 
-if($act!="new" && $act!="edit") {
-	$main_buttons = array(
-		array('href'=>'vpn_openvpn_csc.php?act=new', 'label'=>gettext("add csc")),
-	);
+if ($act!="new" && $act!="edit") {
+    $main_buttons = array(
+        array('href'=>'vpn_openvpn_csc.php?act=new', 'label'=>gettext("add csc")),
+    );
 }
 
 ?>
@@ -311,29 +337,32 @@ if($act!="new" && $act!="edit") {
 			<div class="row">
 
 				<?php
-					if ($input_errors)
-						print_input_errors($input_errors);
-					if ($savemsg)
-						print_info_box($savemsg);
-				?>
+                if ($input_errors) {
+                    print_input_errors($input_errors);
+                }
+                if ($savemsg) {
+                    print_info_box($savemsg);
+                }
+                ?>
 
 
 			    <section class="col-xs-12">
 
 				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
-						$tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
-						$tab_array[] = array(gettext("Client Specific Overrides"), true, "vpn_openvpn_csc.php");
-						$tab_array[] = array(gettext("Wizards"), false, "wizard.php?xml=openvpn_wizard.xml");
+                        $tab_array = array();
+                        $tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
+                        $tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
+                        $tab_array[] = array(gettext("Client Specific Overrides"), true, "vpn_openvpn_csc.php");
+                        $tab_array[] = array(gettext("Wizards"), false, "wizard.php?xml=openvpn_wizard.xml");
                                                 $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
                                                 $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
-						display_top_tabs($tab_array);
-					?>
+                        display_top_tabs($tab_array);
+                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 
-							<?php if($act=="new" || $act=="edit"): ?>
+							<?php if ($act=="new" || $act=="edit") :
+?>
 							<form action="vpn_openvpn_csc.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
 
 							 <div class="table-responsive">
@@ -348,7 +377,7 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="0" cellspacing="0" summary="enable disable">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['disable'],$chk); ?>
+														<?php set_checked($pconfig['disable'], $chk); ?>
 														<input name="disable" type="checkbox" value="yes" <?=$chk;?> />
 													</td>
 													<td>
@@ -382,7 +411,7 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="2" cellspacing="0" summary="connection blocking">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['block'],$chk); ?>
+														<?php set_checked($pconfig['block'], $chk); ?>
 														<input name="block" type="checkbox" value="yes" <?=$chk;?> />
 													</td>
 													<td>
@@ -393,8 +422,8 @@ if($act!="new" && $act!="edit") {
 												</tr>
 											</table>
 											 <p class="text-muted"><em><small><?=gettext("Don't use this option to permanently disable a " .
-											"client due to a compromised key or password. " .
-											"Use a CRL (certificate revocation list) instead"); ?>.</small></em></p>
+                                                "client due to a compromised key or password. " .
+                                                "Use a CRL (certificate revocation list) instead"); ?>.</small></em></p>
 										</td>
 									</tr>
 									<tr>
@@ -408,12 +437,12 @@ if($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="tunnel_network" type="text" class="formfld unknown" size="20" value="<?=htmlspecialchars($pconfig['tunnel_network']);?>" />
 											 <p class="text-muted"><em><small><?=gettext("This is the virtual network used for private " .
-											"communications between this client and the " .
-											"server expressed using CIDR (eg. 10.0.8.0/24). " .
-											"The first network address is assumed to be the " .
-											"server address and the second network address " .
-											"will be assigned to the client virtual " .
-											"interface"); ?>.</small></em></p>
+                                                "communications between this client and the " .
+                                                "server expressed using CIDR (eg. 10.0.8.0/24). " .
+                                                "The first network address is assumed to be the " .
+                                                "server address and the second network address " .
+                                                "will be assigned to the client virtual " .
+                                                "interface"); ?>.</small></em></p>
 										</td>
 									</tr>
 									<tr id="local_optsv4">
@@ -421,9 +450,9 @@ if($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="local_network" type="text" class="formfld unknown" size="40" value="<?=htmlspecialchars($pconfig['local_network']);?>" />
 											 <p class="text-muted"><em><small><?=gettext("These are the IPv4 networks that will be accessible " .
-											"from this particular client. Expressed as a comma-separated list of one or more CIDR ranges."); ?>
+                                                "from this particular client. Expressed as a comma-separated list of one or more CIDR ranges."); ?>
 											<br /><?=gettext("NOTE: You do not need to specify networks here if they have " .
-											"already been defined on the main server configuration.");?></small></em></p>
+                                            "already been defined on the main server configuration.");?></small></em></p>
 										</td>
 									</tr>
 									<tr id="local_optsv6">
@@ -431,9 +460,9 @@ if($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="local_networkv6" type="text" class="formfld unknown" size="40" value="<?=htmlspecialchars($pconfig['local_networkv6']);?>" />
 											 <p class="text-muted"><em><small><?=gettext("These are the IPv6 networks that will be accessible " .
-											"from this particular client. Expressed as a comma-separated list of one or more IP/PREFIX networks."); ?>
+                                                "from this particular client. Expressed as a comma-separated list of one or more IP/PREFIX networks."); ?>
 											<br /><?=gettext("NOTE: You do not need to specify networks here if they have " .
-											"already been defined on the main server configuration.");?></small></em></p>
+                                            "already been defined on the main server configuration.");?></small></em></p>
 										</td>
 									</tr>
 									<tr id="remote_optsv4">
@@ -441,13 +470,13 @@ if($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="remote_network" type="text" class="formfld unknown" size="40" value="<?=htmlspecialchars($pconfig['remote_network']);?>" />
 											 <p class="text-muted"><em><small><?=gettext("These are the IPv4 networks that will be routed " .
-											"to this client specifically using iroute, so that a site-to-site " .
-											"VPN can be established. " .
-											"Expressed as a comma-separated list of one or more CIDR ranges. " .
-											"You may leave this blank if there are no client-side networks to " .
-											"be routed"); ?>.
+                                                "to this client specifically using iroute, so that a site-to-site " .
+                                                "VPN can be established. " .
+                                                "Expressed as a comma-separated list of one or more CIDR ranges. " .
+                                                "You may leave this blank if there are no client-side networks to " .
+                                                "be routed"); ?>.
 											<br /><?=gettext("NOTE: Remember to add these subnets to the " .
-											"IPv4 Remote Networks list on the corresponding OpenVPN server settings.");?></small></em></p>
+                                            "IPv4 Remote Networks list on the corresponding OpenVPN server settings.");?></small></em></p>
 										</td>
 									</tr>
 									<tr id="remote_optsv6">
@@ -455,13 +484,13 @@ if($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="remote_networkv6" type="text" class="formfld unknown" size="40" value="<?=htmlspecialchars($pconfig['remote_networkv6']);?>" />
 											 <p class="text-muted"><em><small><?=gettext("These are the IPv6 networks that will be routed " .
-											"to this client specifically using iroute, so that a site-to-site " .
-											"VPN can be established. " .
-											"Expressed as a comma-separated list of one or more IP/PREFIX networks. " .
-											"You may leave this blank if there are no client-side networks to " .
-											"be routed"); ?>.
+                                                "to this client specifically using iroute, so that a site-to-site " .
+                                                "VPN can be established. " .
+                                                "Expressed as a comma-separated list of one or more IP/PREFIX networks. " .
+                                                "You may leave this blank if there are no client-side networks to " .
+                                                "be routed"); ?>.
 											<br /><?=gettext("NOTE: Remember to add these subnets to the " .
-											"IPv6 Remote Networks list on the corresponding OpenVPN server settings.");?></small></em></p>
+                                            "IPv6 Remote Networks list on the corresponding OpenVPN server settings.");?></small></em></p>
 										</td>
 									</tr>
 									<tr>
@@ -470,7 +499,7 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="2" cellspacing="0" summary="redirect gateway">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['gwredir'],$chk); ?>
+														<?php set_checked($pconfig['gwredir'], $chk); ?>
 														<input name="gwredir" type="checkbox" value="yes" <?=$chk;?> />
 													</td>
 													<td>
@@ -494,7 +523,7 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="2" cellspacing="0" summary="server definitions">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['push_reset'],$chk); ?>
+														<?php set_checked($pconfig['push_reset'], $chk); ?>
 														<input name="push_reset" type="checkbox" value="yes" <?=$chk;?> />
 													</td>
 													<td>
@@ -512,7 +541,7 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="2" cellspacing="0" summary="dns default domain">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['dns_domain_enable'],$chk); ?>
+														<?php set_checked($pconfig['dns_domain_enable'], $chk); ?>
 														<input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?=$chk;?> onclick="dns_domain_change()" />
 													</td>
 													<td>
@@ -537,7 +566,7 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="2" cellspacing="0" summary="dns servers">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['dns_server_enable'],$chk); ?>
+														<?php set_checked($pconfig['dns_server_enable'], $chk); ?>
 														<input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=$chk;?> onclick="dns_server_change()" />
 													</td>
 													<td>
@@ -589,7 +618,7 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="2" cellspacing="0" summary="ntp servers">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['ntp_server_enable'],$chk); ?>
+														<?php set_checked($pconfig['ntp_server_enable'], $chk); ?>
 														<input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=$chk;?> onclick="ntp_server_change()" />
 													</td>
 													<td>
@@ -625,7 +654,7 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="2" cellspacing="0" summary="netbios options">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['netbios_enable'],$chk); ?>
+														<?php set_checked($pconfig['netbios_enable'], $chk); ?>
 														<input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=$chk;?> onclick="netbios_change()" />
 													</td>
 													<td>
@@ -646,18 +675,22 @@ if($act!="new" && $act!="edit") {
 														</span>
 														<select name='netbios_ntype' class="formselect">
 														<?php
-															foreach ($netbios_nodetypes as $type => $name):
-																$selected = "";
-																if ($pconfig['netbios_ntype'] == $type)
-																	$selected = "selected=\"selected\"";
-														?>
-															<option value="<?=$type;?>" <?=$selected;?>><?=$name;?></option>
-														<?php endforeach; ?>
+                                                        foreach ($netbios_nodetypes as $type => $name) :
+                                                            $selected = "";
+                                                            if ($pconfig['netbios_ntype'] == $type) {
+                                                                $selected = "selected=\"selected\"";
+                                                            }
+                                                        ?>
+                                                        <option value="<?=$type;
+?>" <?=$selected;
+?>><?=$name;?></option>
+														<?php
+                                                        endforeach; ?>
 														</select>
 														 <p class="text-muted"><em><small><?=gettext("Possible options: b-node (broadcasts), p-node " .
-														"(point-to-point name queries to a WINS server), " .
-														"m-node (broadcast then query name server), and " .
-														"h-node (query name server, then broadcast)"); ?>.</small></em></p>
+                                                            "(point-to-point name queries to a WINS server), " .
+                                                            "m-node (broadcast then query name server), and " .
+                                                            "h-node (query name server, then broadcast)"); ?>.</small></em></p>
 													</td>
 												</tr>
 												<tr>
@@ -669,10 +702,10 @@ if($act!="new" && $act!="edit") {
 														<input name="netbios_scope" type="text" class="formfld unknown" id="netbios_scope" size="30" value="<?=htmlspecialchars($pconfig['netbios_scope']);?>" />
 														<br />
 														 <p class="text-muted"><em><small><?=gettext("A NetBIOS Scope	ID provides an extended naming " .
-														"service for	NetBIOS over TCP/IP. The NetBIOS " .
-														"scope ID isolates NetBIOS traffic on a single " .
-														"network to only those nodes with the same " .
-														"NetBIOS scope ID"); ?>.</small></em></p>
+                                                            "service for	NetBIOS over TCP/IP. The NetBIOS " .
+                                                            "scope ID isolates NetBIOS traffic on a single " .
+                                                            "network to only those nodes with the same " .
+                                                            "NetBIOS scope ID"); ?>.</small></em></p>
 													</td>
 												</tr>
 											</table>
@@ -684,7 +717,7 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="2" cellspacing="0" summary="wins servers">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['wins_server_enable'],$chk); ?>
+														<?php set_checked($pconfig['wins_server_enable'], $chk); ?>
 														<input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?=$chk;?> onclick="wins_server_change()" />
 													</td>
 													<td>
@@ -720,7 +753,8 @@ if($act!="new" && $act!="edit") {
 											<table border="0" cellpadding="2" cellspacing="0" summary="advanced">
 												<tr>
 													<td>
-														<textarea rows="6" cols="70" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea> <p class="text-muted"><em><small><?=gettext("Enter any additional options you would like to add for this client specific override, separated by a semicolon"); ?><br />
+														<textarea rows="6" cols="70" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];
+?></textarea> <p class="text-muted"><em><small><?=gettext("Enter any additional options you would like to add for this client specific override, separated by a semicolon"); ?><br />
 														<?=gettext("EXAMPLE: push \"route 10.0.0.0 255.255.255.0\""); ?>;</small></em></p>
 													</td>
 												</tr>
@@ -732,16 +766,20 @@ if($act!="new" && $act!="edit") {
 										<td width="78%">
 											<input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 											<input name="act" type="hidden" value="<?=$act;?>" />
-											<?php if (isset($id) && $a_csc[$id]): ?>
+											<?php if (isset($id) && $a_csc[$id]) :
+?>
 											<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-											<?php endif; ?>
+											<?php
+endif; ?>
 										</td>
 									</tr>
 								</table>
 							 </div>
 							</form>
 
-							<?php else: ?>
+							<?php
+else :
+?>
 
 							<div class="table-responsive">
 								<table class="table table-striped table-sort">
@@ -753,36 +791,40 @@ if($act!="new" && $act!="edit") {
 										<td width="10%" class="list"></td>
 									</tr>
 									<?php
-										$i = 0;
-										foreach($a_csc as $csc):
-											$disabled = "NO";
-											if (isset($csc['disable']))
-												$disabled = "YES";
-									?>
+                                        $i = 0;
+                                    foreach ($a_csc as $csc) :
+                                        $disabled = "NO";
+                                        if (isset($csc['disable'])) {
+                                            $disabled = "YES";
+                                        }
+                                    ?>
 									<tr ondblclick="document.location='vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>'">
-										<td class="listlr">
-											<?=$disabled;?>
-										</td>
-										<td class="listr">
-											<?=htmlspecialchars($csc['common_name']);?>
-										</td>
-										<td class="listbg">
-											<?=htmlspecialchars($csc['description']);?>
-										</td>
-										<td valign="middle" class="list nowrap">
-											<a href="vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>">
-												<img src="./themes/<?=$g['theme'];?>/images/icons/icon_e.gif" title="<?=gettext("edit csc"); ?>" width="17" height="17" border="0" alt="edit" />
-											</a>
-											&nbsp;
-											<a href="vpn_openvpn_csc.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this csc?"); ?>')">
-												<img src="/themes/<?=$g['theme'];?>/images/icons/icon_x.gif" title="<?=gettext("delete csc"); ?>" width="17" height="17" border="0" alt="delete" />
-											</a>
-										</td>
+                                    <td class="listlr">
+                                        <?=$disabled;?>
+                                    </td>
+                                    <td class="listr">
+                                        <?=htmlspecialchars($csc['common_name']);?>
+                                    </td>
+                                    <td class="listbg">
+                                        <?=htmlspecialchars($csc['description']);?>
+                                    </td>
+                                    <td valign="middle" class="list nowrap">
+                                        <a href="vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>">
+                                            <img src="./themes/<?=$g['theme'];
+?>/images/icons/icon_e.gif" title="<?=gettext("edit csc"); ?>" width="17" height="17" border="0" alt="edit" />
+                                        </a>
+                                        &nbsp;
+                                        <a href="vpn_openvpn_csc.php?act=del&amp;id=<?=$i;
+?>" onclick="return confirm('<?=gettext("Do you really want to delete this csc?"); ?>')">
+                                            <img src="/themes/<?=$g['theme'];
+?>/images/icons/icon_x.gif" title="<?=gettext("delete csc"); ?>" width="17" height="17" border="0" alt="delete" />
+                                        </a>
+                                    </td>
 									</tr>
 									<?php
-										$i++;
-										endforeach;
-									?>
+                                    $i++;
+                                    endforeach;
+                                    ?>
 
 									<tr>
 										<td colspan="3">
@@ -793,7 +835,8 @@ if($act!="new" && $act!="edit") {
 									</tr>
 								</table>
 							</div>
-				    <?php endif; ?>
+				    <?php
+endif; ?>
 
 					</div>
 			    </section>
@@ -816,11 +859,11 @@ netbios_change();
 
 /* local utility functions */
 
-function set_checked($var,& $chk) {
-    if($var)
+function set_checked($var, & $chk)
+{
+    if ($var) {
         $chk = "checked=\"checked\"";
-    else
+    } else {
         $chk = "";
+    }
 }
-
-?>

@@ -32,11 +32,11 @@ require_once("filter.inc");
 require_once("vpn.inc");
 
 if (!is_array($config['pppoes'])) {
-	$config['pppoes'] = array();
+    $config['pppoes'] = array();
 }
 
 if (!is_array($config['pppoes']['pppoe'])) {
-	$config['pppoes']['pppoe'] = array();
+    $config['pppoes']['pppoe'] = array();
 }
 
 $a_pppoes = &$config['pppoes']['pppoe'];
@@ -44,39 +44,40 @@ $a_pppoes = &$config['pppoes']['pppoe'];
 if ($_POST) {
         $pconfig = $_POST;
 
-        if ($_POST['apply']) {
-                if (file_exists('/tmp/.vpn_pppoe.apply')) {
-                        $toapplylist = unserialize(file_get_contents('/tmp/.vpn_pppoe.apply'));
-                        foreach ($toapplylist as $pppoeid) {
-				if (!is_numeric($pppoeid))
-					continue;
-				if (is_array($config['pppoes']['pppoe'])) {
-					foreach ($config['pppoes']['pppoe'] as $pppoe) {
-						if ($pppoe['pppoeid'] == $pppoeid) {
-							vpn_pppoe_configure($pppoe);
-							break;
-						}
-					}
-				}
-                        }
-                        @unlink('/tmp/.vpn_pppoe.apply');
+    if ($_POST['apply']) {
+        if (file_exists('/tmp/.vpn_pppoe.apply')) {
+                $toapplylist = unserialize(file_get_contents('/tmp/.vpn_pppoe.apply'));
+            foreach ($toapplylist as $pppoeid) {
+                if (!is_numeric($pppoeid)) {
+                    continue;
                 }
-                $retval = 0;
-                $retval |= filter_configure();
-                $savemsg = get_std_save_message($retval);
-                clear_subsystem_dirty('vpnpppoe');
+                if (is_array($config['pppoes']['pppoe'])) {
+                    foreach ($config['pppoes']['pppoe'] as $pppoe) {
+                        if ($pppoe['pppoeid'] == $pppoeid) {
+                            vpn_pppoe_configure($pppoe);
+                            break;
+                        }
+                    }
+                }
+            }
+                @unlink('/tmp/.vpn_pppoe.apply');
         }
+            $retval = 0;
+            $retval |= filter_configure();
+            $savemsg = get_std_save_message($retval);
+            clear_subsystem_dirty('vpnpppoe');
+    }
 }
 
 if ($_GET['act'] == "del") {
-	if ($a_pppoes[$_GET['id']]) {
-		killbypid("/var/run/pppoe{$a_pppoes[$_GET['id']]['pppoeid']}-vpn.pid");
-		mwexecf('/bin/rm -r %s', "/var/etc/pppoe{$a_pppoes[$_GET['id']]['pppoeid']}");
-		unset($a_pppoes[$_GET['id']]);
-		write_config();
-		header("Location: vpn_pppoe.php");
-		exit;
-	}
+    if ($a_pppoes[$_GET['id']]) {
+        killbypid("/var/run/pppoe{$a_pppoes[$_GET['id']]['pppoeid']}-vpn.pid");
+        mwexecf('/bin/rm -r %s', "/var/etc/pppoe{$a_pppoes[$_GET['id']]['pppoeid']}");
+        unset($a_pppoes[$_GET['id']]);
+        write_config();
+        header("Location: vpn_pppoe.php");
+        exit;
+    }
 }
 
 $pgtitle = array(gettext("VPN"),gettext("PPPoE"));
@@ -84,7 +85,7 @@ $shortcut_section = "pppoes";
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>gettext("add a new pppoe instance"), 'href'=>'vpn_pppoe_edit.php'),
+    array('label'=>gettext("add a new pppoe instance"), 'href'=>'vpn_pppoe_edit.php'),
 );
 
 ?>
@@ -95,10 +96,14 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
-				<?php if (is_subsystem_dirty('vpnpppoe')): ?><br/>
+				<?php if ($savemsg) {
+                    print_info_box($savemsg);
+} ?>
+				<?php if (is_subsystem_dirty('vpnpppoe')) :
+?><br/>
 				<?php print_info_box_np(gettext("The PPPoE entry list has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?>
-				<?php endif; ?>
+				<?php
+endif; ?>
 
 
 
@@ -120,7 +125,8 @@ $main_buttons = array(
 										  <td width="10%" class="list">
 										  </td>
 										</tr>
-											  <?php $i = 0; foreach ($a_pppoes as $pppoe): ?>
+                                                <?php $i = 0; foreach ($a_pppoes as $pppoe) :
+?>
 										<tr>
 										  <td class="listlr" ondblclick="document.location='vpn_pppoe_edit.php?id=<?=$i;?>';">
 										    <?=htmlspecialchars(strtoupper($pppoe['interface']));?>
@@ -129,18 +135,23 @@ $main_buttons = array(
 										    <?=htmlspecialchars($pppoe['localip']);?>
 										  </td>
 										  <td class="listr" ondblclick="document.location='vpn_pppoe_edit.php?id=<?=$i;?>';">
-										      <?=htmlspecialchars($pppoe['n_pppoe_units']);?>
+                                                <?=htmlspecialchars($pppoe['n_pppoe_units']);?>
 										  </td>
 										  <td class="listbg" ondblclick="document.location='vpn_pppoe_edit.php?id=<?=$i;?>';">
 										    <?=htmlspecialchars($pppoe['descr']);?>&nbsp;
 										  </td>
 										  <td valign="middle" class="list nowrap">
-											<a href="vpn_pppoe_edit.php?id=<?=$i;?>" title="<?=gettext("edit pppoe instance"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+											<a href="vpn_pppoe_edit.php?id=<?=$i;
+?>" title="<?=gettext("edit pppoe instance"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 
-											<a href="vpn_pppoe.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry? All elements that still use it will become invalid (e.g. filter rules)!");?>')" title="<?=gettext("delete pppoe instance");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+											<a href="vpn_pppoe.php?act=del&amp;id=<?=$i;
+?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry? All elements that still use it will become invalid (e.g. filter rules)!");
+?>')" title="<?=gettext("delete pppoe instance");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 										  </td>
 										</tr>
-											  <?php $i++; endforeach; ?>
+                                                <?php $i++;
+
+endforeach; ?>
 
 									</table>
 								</div>
@@ -152,4 +163,4 @@ $main_buttons = array(
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

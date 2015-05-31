@@ -27,15 +27,18 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function pptpusercmp($a, $b) {
-	return strcasecmp($a['name'], $b['name']);
+function pptpusercmp($a, $b)
+{
+    return strcasecmp($a['name'], $b['name']);
 }
 
-function pptpd_users_sort() {
+function pptpd_users_sort()
+{
         global $config;
 
-        if (!is_array($config['ppptpd']['user']))
-                return;
+    if (!is_array($config['ppptpd']['user'])) {
+            return;
+    }
 
         usort($config['pptpd']['user'], "pptpusercmp");
 }
@@ -44,85 +47,91 @@ require_once('guiconfig.inc');
 require_once('vpn.inc');
 
 if (!is_array($config['pptpd']['user'])) {
-	$config['pptpd']['user'] = array();
+    $config['pptpd']['user'] = array();
 }
 $a_secret = &$config['pptpd']['user'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
+if (is_numericint($_GET['id'])) {
+    $id = $_GET['id'];
+}
+if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+    $id = $_POST['id'];
+}
 
 if (isset($id) && $a_secret[$id]) {
-	$pconfig['username'] = $a_secret[$id]['name'];
-	$pconfig['ip'] = $a_secret[$id]['ip'];
+    $pconfig['username'] = $a_secret[$id]['name'];
+    $pconfig['ip'] = $a_secret[$id]['ip'];
 }
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    if (isset($id) && ($a_secret[$id])) {
+        $reqdfields = explode(" ", "username");
+        $reqdfieldsn = array(gettext("Username"));
+    } else {
+        $reqdfields = explode(" ", "username password");
+        $reqdfieldsn = array(gettext("Username"),gettext("Password"));
+    }
 
-	/* input validation */
-	if (isset($id) && ($a_secret[$id])) {
-		$reqdfields = explode(" ", "username");
-		$reqdfieldsn = array(gettext("Username"));
-	} else {
-		$reqdfields = explode(" ", "username password");
-		$reqdfieldsn = array(gettext("Username"),gettext("Password"));
-	}
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    if (preg_match("/[^a-zA-Z0-9\.\-_]/", $_POST['username'])) {
+        $input_errors[] = gettext("The username contains invalid characters.");
+    }
 
-	if (preg_match("/[^a-zA-Z0-9\.\-_]/", $_POST['username']))
-		$input_errors[] = gettext("The username contains invalid characters.");
+    if (preg_match("/^!/", $_POST['password'])) {
+        $input_errors[] = gettext("The password cannot start with '!'.");
+    }
 
-	if (preg_match("/^!/", $_POST['password']))
-		$input_errors[] = gettext("The password cannot start with '!'.");
+    if (!preg_match("/^[\x20-\x7E]*$/", $_POST['password'])) {
+        $input_errors[] = gettext("The password contains invalid characters.");
+    }
 
-	if (!preg_match("/^[\x20-\x7E]*$/", $_POST['password']))
-		$input_errors[] = gettext("The password contains invalid characters.");
+    if (($_POST['password']) && ($_POST['password'] != $_POST['password2'])) {
+        $input_errors[] = gettext("The passwords do not match.");
+    }
+    if (($_POST['ip'] && !is_ipaddr($_POST['ip']))) {
+        $input_errors[] = gettext("The IP address entered is not valid.");
+    }
 
-	if (($_POST['password']) && ($_POST['password'] != $_POST['password2'])) {
-		$input_errors[] = gettext("The passwords do not match.");
-	}
-	if (($_POST['ip'] && !is_ipaddr($_POST['ip']))) {
-		$input_errors[] = gettext("The IP address entered is not valid.");
-	}
+    if (!$input_errors && !(isset($id) && $a_secret[$id])) {
+        /* make sure there are no dupes */
+        foreach ($a_secret as $secretent) {
+            if ($secretent['name'] == $_POST['username']) {
+                $input_errors[] = gettext("Another entry with the same username already exists.");
+                break;
+            }
+        }
+    }
 
-	if (!$input_errors && !(isset($id) && $a_secret[$id])) {
-		/* make sure there are no dupes */
-		foreach ($a_secret as $secretent) {
-			if ($secretent['name'] == $_POST['username']) {
-				$input_errors[] = gettext("Another entry with the same username already exists.");
-				break;
-			}
-		}
-	}
+    if (!$input_errors) {
+        if (isset($id) && $a_secret[$id]) {
+            $secretent = $a_secret[$id];
+        }
 
-	if (!$input_errors) {
+        $secretent['name'] = $_POST['username'];
+        $secretent['ip'] = $_POST['ip'];
 
-		if (isset($id) && $a_secret[$id])
-			$secretent = $a_secret[$id];
+        if ($_POST['password']) {
+            $secretent['password'] = $_POST['password'];
+        }
 
-		$secretent['name'] = $_POST['username'];
-		$secretent['ip'] = $_POST['ip'];
+        if (isset($id) && $a_secret[$id]) {
+            $a_secret[$id] = $secretent;
+        } else {
+            $a_secret[] = $secretent;
+        }
+        pptpd_users_sort();
 
-		if ($_POST['password'])
-			$secretent['password'] = $_POST['password'];
+        write_config();
+        mark_subsystem_dirty('pptpusers');
 
-		if (isset($id) && $a_secret[$id])
-			$a_secret[$id] = $secretent;
-		else
-			$a_secret[] = $secretent;
-		pptpd_users_sort();
-
-		write_config();
-		mark_subsystem_dirty('pptpusers');
-
-		header("Location: vpn_pptp_users.php");
-		exit;
-	}
+        header("Location: vpn_pptp_users.php");
+        exit;
+    }
 }
 
 $pgtitle = array(gettext("VPN"),gettext("VPN PPTP"),gettext("User"),gettext("Edit"));
@@ -139,16 +148,18 @@ include("head.inc");
 			<div class="row">
 
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($input_errors) {
+                    print_input_errors($input_errors);
+} ?>
 
 			    <section class="col-xs-12">
 
 				<?php
-						$tab_array = array();
-						$tab_array[0] = array(gettext("Configuration"), false, "vpn_pptp.php");
-						$tab_array[1] = array(gettext("Users"), true, "vpn_pptp_users.php");
-						display_top_tabs($tab_array);
-					?>
+                        $tab_array = array();
+                        $tab_array[0] = array(gettext("Configuration"), false, "vpn_pptp.php");
+                        $tab_array[1] = array(gettext("Users"), true, "vpn_pptp_users.php");
+                        display_top_tabs($tab_array);
+                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -159,7 +170,8 @@ include("head.inc");
 										<tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
 						                  <td width="78%" class="vtable">
-											<?=$mandfldhtml;?><input name="username" type="text" class="form-control user" id="username" size="20" value="<?=htmlspecialchars($pconfig['username']);?>" />
+											<?=$mandfldhtml;
+?><input name="username" type="text" class="form-control user" id="username" size="20" value="<?=htmlspecialchars($pconfig['username']);?>" />
 						                  </td>
 						                </tr>
 						                <tr>
@@ -167,9 +179,11 @@ include("head.inc");
 						                  <td width="78%" class="vtable">
 						                    <?=$mandfldhtml;?><input name="password" type="password" class="form-control pwd" id="password" size="20" />
 						                    <br /><?=$mandfldhtml;?><input name="password2" type="password" class="form-control pwd" id="password2" size="20" />
-						                    &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]): ?><br />
+						                    &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]) :
+?><br />
 						                    <span class="vexpl"><?=gettext("If you want to change the users' password, ".
-						                    "enter it here twice.");?></span><?php endif; ?></td>
+                                            "enter it here twice.");?></span><?php
+endif; ?></td>
 						                </tr>
 						                <tr>
 						                  <td width="22%" valign="top" class="vncell"><?=gettext("IP address");?></td>
@@ -181,9 +195,11 @@ include("head.inc");
 						                  <td class="vncell" width="22%" valign="top">&nbsp;</td>
 						                  <td class="vncell" width="78%">
 						                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-						                    <?php if (isset($id) && $a_secret[$id]): ?>
+						                    <?php if (isset($id) && $a_secret[$id]) :
+?>
 						                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-						                    <?php endif; ?>
+						                    <?php
+endif; ?>
 						                  </td>
 						                </tr>
 						              </table>
@@ -196,4 +212,4 @@ include("head.inc");
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

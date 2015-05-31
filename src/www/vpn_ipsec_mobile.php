@@ -37,202 +37,234 @@ if (!is_array($config['ipsec'])) {
 }
 
 if (!is_array($config['ipsec']['phase1'])) {
-	$config['ipsec']['phase1'] = array();
+    $config['ipsec']['phase1'] = array();
 }
 
 if (!is_array($config['ipsec']['client'])) {
-	$config['ipsec']['client'] = array();
+    $config['ipsec']['client'] = array();
 }
 
 $a_phase1 = &$config['ipsec']['phase1'];
 $a_client = &$config['ipsec']['client'];
 
 if (count($a_client)) {
+    $pconfig['enable'] = $a_client['enable'];
 
-	$pconfig['enable'] = $a_client['enable'];
+    $pconfig['user_source'] = $a_client['user_source'];
+    $pconfig['group_source'] = $a_client['group_source'];
 
-	$pconfig['user_source'] = $a_client['user_source'];
-	$pconfig['group_source'] = $a_client['group_source'];
+    $pconfig['pool_address'] = $a_client['pool_address'];
+    $pconfig['pool_netbits'] = $a_client['pool_netbits'];
+    $pconfig['net_list'] = $a_client['net_list'];
+    $pconfig['save_passwd'] = $a_client['save_passwd'];
+    $pconfig['dns_domain'] = $a_client['dns_domain'];
+    $pconfig['dns_split'] = $a_client['dns_split'];
+    $pconfig['dns_server1'] = $a_client['dns_server1'];
+    $pconfig['dns_server2'] = $a_client['dns_server2'];
+    $pconfig['dns_server3'] = $a_client['dns_server3'];
+    $pconfig['dns_server4'] = $a_client['dns_server4'];
+    $pconfig['wins_server1'] = $a_client['wins_server1'];
+    $pconfig['wins_server2'] = $a_client['wins_server2'];
+    $pconfig['pfs_group'] = $a_client['pfs_group'];
+    $pconfig['login_banner'] = $a_client['login_banner'];
 
-	$pconfig['pool_address'] = $a_client['pool_address'];
-	$pconfig['pool_netbits'] = $a_client['pool_netbits'];
-	$pconfig['net_list'] = $a_client['net_list'];
-	$pconfig['save_passwd'] = $a_client['save_passwd'];
-	$pconfig['dns_domain'] = $a_client['dns_domain'];
-	$pconfig['dns_split'] = $a_client['dns_split'];
-	$pconfig['dns_server1'] = $a_client['dns_server1'];
-	$pconfig['dns_server2'] = $a_client['dns_server2'];
-	$pconfig['dns_server3'] = $a_client['dns_server3'];
-	$pconfig['dns_server4'] = $a_client['dns_server4'];
-	$pconfig['wins_server1'] = $a_client['wins_server1'];
-	$pconfig['wins_server2'] = $a_client['wins_server2'];
-	$pconfig['pfs_group'] = $a_client['pfs_group'];
-	$pconfig['login_banner'] = $a_client['login_banner'];
+    if (isset($pconfig['enable'])) {
+        $pconfig['enable'] = true;
+    }
 
-	if (isset($pconfig['enable']))
-		$pconfig['enable'] = true;
+    if ($pconfig['pool_address']&&$pconfig['pool_netbits']) {
+        $pconfig['pool_enable'] = true;
+    } else {
+        $pconfig['pool_netbits'] = 24;
+    }
 
-	if ($pconfig['pool_address']&&$pconfig['pool_netbits'])
-		$pconfig['pool_enable'] = true;
-	else
-		$pconfig['pool_netbits'] = 24;
+    if (isset($pconfig['net_list'])) {
+        $pconfig['net_list_enable'] = true;
+    }
 
-	if (isset($pconfig['net_list']))
-		$pconfig['net_list_enable'] = true;
+    if (isset($pconfig['save_passwd'])) {
+        $pconfig['save_passwd_enable'] = true;
+    }
 
-	if (isset($pconfig['save_passwd']))
-		$pconfig['save_passwd_enable'] = true;
+    if ($pconfig['dns_domain']) {
+        $pconfig['dns_domain_enable'] = true;
+    }
 
-	if ($pconfig['dns_domain'])
-		$pconfig['dns_domain_enable'] = true;
+    if ($pconfig['dns_split']) {
+        $pconfig['dns_split_enable'] = true;
+    }
 
-	if ($pconfig['dns_split'])
-		$pconfig['dns_split_enable'] = true;
+    if ($pconfig['dns_server1']||$pconfig['dns_server2']||$pconfig['dns_server3']||$pconfig['dns_server4']) {
+        $pconfig['dns_server_enable'] = true;
+    }
 
-	if ($pconfig['dns_server1']||$pconfig['dns_server2']||$pconfig['dns_server3']||$pconfig['dns_server4'])
-		$pconfig['dns_server_enable'] = true;
+    if ($pconfig['wins_server1']||$pconfig['wins_server2']) {
+        $pconfig['wins_server_enable'] = true;
+    }
 
-	if ($pconfig['wins_server1']||$pconfig['wins_server2'])
-		$pconfig['wins_server_enable'] = true;
+    if (isset($pconfig['pfs_group'])) {
+        $pconfig['pfs_group_enable'] = true;
+    }
 
-	if (isset($pconfig['pfs_group']))
-		$pconfig['pfs_group_enable'] = true;
-
-	if ($pconfig['login_banner'])
-		$pconfig['login_banner_enable'] = true;
+    if ($pconfig['login_banner']) {
+        $pconfig['login_banner_enable'] = true;
+    }
 }
 
 if ($_POST['create']) {
-	header("Location: vpn_ipsec_phase1.php?mobile=true");
+    header("Location: vpn_ipsec_phase1.php?mobile=true");
 }
 
 if ($_POST['apply']) {
-	$retval = 0;
-	$retval = vpn_ipsec_configure();
-	$savemsg = get_std_save_message($retval);
-	if ($retval >= 0)
-		if (is_subsystem_dirty('ipsec'))
-			clear_subsystem_dirty('ipsec');
+    $retval = 0;
+    $retval = vpn_ipsec_configure();
+    $savemsg = get_std_save_message($retval);
+    if ($retval >= 0) {
+        if (is_subsystem_dirty('ipsec')) {
+            clear_subsystem_dirty('ipsec');
+        }
+    }
 }
 
 if ($_POST['submit']) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
-
-	/* input consolidation */
-
+    /* input consolidation */
 
 
-	/* input validation */
 
-	$reqdfields = explode(" ", "user_source group_source");
-	$reqdfieldsn =  array(gettext("User Authentication Source"),gettext("Group Authentication Source"));
+    /* input validation */
+
+    $reqdfields = explode(" ", "user_source group_source");
+    $reqdfieldsn =  array(gettext("User Authentication Source"),gettext("Group Authentication Source"));
 
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	if ($pconfig['pool_enable'])
-		if (!is_ipaddr($pconfig['pool_address']))
-			$input_errors[] = gettext("A valid IP address for 'Virtual Address Pool Network' must be specified.");
+    if ($pconfig['pool_enable']) {
+        if (!is_ipaddr($pconfig['pool_address'])) {
+            $input_errors[] = gettext("A valid IP address for 'Virtual Address Pool Network' must be specified.");
+        }
+    }
 
-	if ($pconfig['dns_domain_enable'])
-		if (!is_domain($pconfig['dns_domain']))
-			$input_errors[] = gettext("A valid value for 'DNS Default Domain' must be specified.");
+    if ($pconfig['dns_domain_enable']) {
+        if (!is_domain($pconfig['dns_domain'])) {
+            $input_errors[] = gettext("A valid value for 'DNS Default Domain' must be specified.");
+        }
+    }
 
-	if ($pconfig['dns_split_enable']) {
-		if (!empty($pconfig['dns_split'])) {
-			$domain_array=preg_split("/[ ,]+/",$pconfig['dns_split']);
-			foreach ($domain_array as $curdomain) {
-				if (!is_domain($curdomain)) {
-					$input_errors[] = gettext("A valid split DNS domain list must be specified.");
-					break;
-				}
-			}
-		}
-	}
+    if ($pconfig['dns_split_enable']) {
+        if (!empty($pconfig['dns_split'])) {
+            $domain_array=preg_split("/[ ,]+/", $pconfig['dns_split']);
+            foreach ($domain_array as $curdomain) {
+                if (!is_domain($curdomain)) {
+                    $input_errors[] = gettext("A valid split DNS domain list must be specified.");
+                    break;
+                }
+            }
+        }
+    }
 
-	if ($pconfig['dns_server_enable']) {
-		if (!$pconfig['dns_server1'] && !$pconfig['dns_server2'] &&
-			!$pconfig['dns_server3'] && !$pconfig['dns_server4'] )
-			$input_errors[] = gettext("At least one DNS server must be specified to enable the DNS Server option.");
-		if ($pconfig['dns_server1'] && !is_ipaddr($pconfig['dns_server1']))
-			$input_errors[] = gettext("A valid IP address for 'DNS Server #1' must be specified.");
-		if ($pconfig['dns_server2'] && !is_ipaddr($pconfig['dns_server2']))
-			$input_errors[] = gettext("A valid IP address for 'DNS Server #2' must be specified.");
-		if ($pconfig['dns_server3'] && !is_ipaddr($pconfig['dns_server3']))
-			$input_errors[] = gettext("A valid IP address for 'DNS Server #3' must be specified.");
-		if ($pconfig['dns_server4'] && !is_ipaddr($pconfig['dns_server4']))
-			$input_errors[] = gettext("A valid IP address for 'DNS Server #4' must be specified.");
-	}
+    if ($pconfig['dns_server_enable']) {
+        if (!$pconfig['dns_server1'] && !$pconfig['dns_server2'] &&
+            !$pconfig['dns_server3'] && !$pconfig['dns_server4'] ) {
+            $input_errors[] = gettext("At least one DNS server must be specified to enable the DNS Server option.");
+        }
+        if ($pconfig['dns_server1'] && !is_ipaddr($pconfig['dns_server1'])) {
+            $input_errors[] = gettext("A valid IP address for 'DNS Server #1' must be specified.");
+        }
+        if ($pconfig['dns_server2'] && !is_ipaddr($pconfig['dns_server2'])) {
+            $input_errors[] = gettext("A valid IP address for 'DNS Server #2' must be specified.");
+        }
+        if ($pconfig['dns_server3'] && !is_ipaddr($pconfig['dns_server3'])) {
+            $input_errors[] = gettext("A valid IP address for 'DNS Server #3' must be specified.");
+        }
+        if ($pconfig['dns_server4'] && !is_ipaddr($pconfig['dns_server4'])) {
+            $input_errors[] = gettext("A valid IP address for 'DNS Server #4' must be specified.");
+        }
+    }
 
-	if ($pconfig['wins_server_enable']) {
-		if (!$pconfig['wins_server1'] && !$pconfig['wins_server2'])
-			$input_errors[] = gettext("At least one WINS server must be specified to enable the DNS Server option.");
-		if ($pconfig['wins_server1'] && !is_ipaddr($pconfig['wins_server1']))
-			$input_errors[] = gettext("A valid IP address for 'WINS Server #1' must be specified.");
-		if ($pconfig['wins_server2'] && !is_ipaddr($pconfig['wins_server2']))
-			$input_errors[] = gettext("A valid IP address for 'WINS Server #2' must be specified.");
-	}
+    if ($pconfig['wins_server_enable']) {
+        if (!$pconfig['wins_server1'] && !$pconfig['wins_server2']) {
+            $input_errors[] = gettext("At least one WINS server must be specified to enable the DNS Server option.");
+        }
+        if ($pconfig['wins_server1'] && !is_ipaddr($pconfig['wins_server1'])) {
+            $input_errors[] = gettext("A valid IP address for 'WINS Server #1' must be specified.");
+        }
+        if ($pconfig['wins_server2'] && !is_ipaddr($pconfig['wins_server2'])) {
+            $input_errors[] = gettext("A valid IP address for 'WINS Server #2' must be specified.");
+        }
+    }
 
-	if ($pconfig['login_banner_enable'])
-		if (!strlen($pconfig['login_banner']))
-			$input_errors[] = gettext("A valid value for 'Login Banner' must be specified.");
+    if ($pconfig['login_banner_enable']) {
+        if (!strlen($pconfig['login_banner'])) {
+            $input_errors[] = gettext("A valid value for 'Login Banner' must be specified.");
+        }
+    }
 
-	if (!$input_errors) {
-		$client = array();
+    if (!$input_errors) {
+        $client = array();
 
-		if ($pconfig['enable'])
-			$client['enable'] = true;
+        if ($pconfig['enable']) {
+            $client['enable'] = true;
+        }
 
-		if (!empty($pconfig['user_source']))
-			$client['user_source'] = implode(",", $pconfig['user_source']);
-		$client['group_source'] = $pconfig['group_source'];
+        if (!empty($pconfig['user_source'])) {
+            $client['user_source'] = implode(",", $pconfig['user_source']);
+        }
+        $client['group_source'] = $pconfig['group_source'];
 
-		if ($pconfig['pool_enable']) {
-			$client['pool_address'] = $pconfig['pool_address'];
-			$client['pool_netbits'] = $pconfig['pool_netbits'];
-		}
+        if ($pconfig['pool_enable']) {
+            $client['pool_address'] = $pconfig['pool_address'];
+            $client['pool_netbits'] = $pconfig['pool_netbits'];
+        }
 
-		if ($pconfig['net_list_enable'])
-			$client['net_list'] = true;
+        if ($pconfig['net_list_enable']) {
+            $client['net_list'] = true;
+        }
 
-		if ($pconfig['save_passwd_enable'])
-			$client['save_passwd'] = true;
+        if ($pconfig['save_passwd_enable']) {
+            $client['save_passwd'] = true;
+        }
 
-		if ($pconfig['dns_domain_enable'])
-			$client['dns_domain'] = $pconfig['dns_domain'];
+        if ($pconfig['dns_domain_enable']) {
+            $client['dns_domain'] = $pconfig['dns_domain'];
+        }
 
-		if ($pconfig['dns_split_enable'])
-			$client['dns_split'] = $pconfig['dns_split'];
+        if ($pconfig['dns_split_enable']) {
+            $client['dns_split'] = $pconfig['dns_split'];
+        }
 
-		if ($pconfig['dns_server_enable']) {
-			$client['dns_server1'] = $pconfig['dns_server1'];
-			$client['dns_server2'] = $pconfig['dns_server2'];
-			$client['dns_server3'] = $pconfig['dns_server3'];
-			$client['dns_server4'] = $pconfig['dns_server4'];
-		}
+        if ($pconfig['dns_server_enable']) {
+            $client['dns_server1'] = $pconfig['dns_server1'];
+            $client['dns_server2'] = $pconfig['dns_server2'];
+            $client['dns_server3'] = $pconfig['dns_server3'];
+            $client['dns_server4'] = $pconfig['dns_server4'];
+        }
 
-		if ($pconfig['wins_server_enable']) {
-			$client['wins_server1'] = $pconfig['wins_server1'];
-			$client['wins_server2'] = $pconfig['wins_server2'];
-		}
+        if ($pconfig['wins_server_enable']) {
+            $client['wins_server1'] = $pconfig['wins_server1'];
+            $client['wins_server2'] = $pconfig['wins_server2'];
+        }
 
-		if ($pconfig['pfs_group_enable'])
-			$client['pfs_group'] = $pconfig['pfs_group'];
+        if ($pconfig['pfs_group_enable']) {
+            $client['pfs_group'] = $pconfig['pfs_group'];
+        }
 
-		if ($pconfig['login_banner_enable'])
-			$client['login_banner'] = $pconfig['login_banner'];
+        if ($pconfig['login_banner_enable']) {
+            $client['login_banner'] = $pconfig['login_banner'];
+        }
 
 //		$echo "login banner = {$pconfig['login_banner']}";
 
-		$a_client = $client;
+        $a_client = $client;
 
-		write_config();
-		mark_subsystem_dirty('ipsec');
+        write_config();
+        mark_subsystem_dirty('ipsec');
 
-		header("Location: vpn_ipsec_mobile.php");
-		exit;
-	}
+        header("Location: vpn_ipsec_mobile.php");
+        exit;
+    }
 }
 
 $pgtitle = array(gettext("VPN"),gettext("IPsec"),gettext("Mobile"));
@@ -326,23 +358,30 @@ function login_banner_change() {
 			<div class="row">
 
 				<?php
-					if ($savemsg)
-						print_info_box($savemsg);
-					if (isset($config['ipsec']['enable']) && is_subsystem_dirty('ipsec'))
-						print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
-					foreach ($a_phase1 as $ph1ent)
-						if (isset($ph1ent['mobile']))
-							$ph1found = true;
-					if ($pconfig['enable'] && !$ph1found)
-						print_info_box_np(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("Please click Create to define one."),gettext("create"),gettext("Create Phase1"));
-					if ($input_errors)
-						print_input_errors($input_errors);
-				?>
+                if ($savemsg) {
+                    print_info_box($savemsg);
+                }
+                if (isset($config['ipsec']['enable']) && is_subsystem_dirty('ipsec')) {
+                    print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
+                }
+                foreach ($a_phase1 as $ph1ent) {
+                    if (isset($ph1ent['mobile'])) {
+                        $ph1found = true;
+                    }
+                }
+                if ($pconfig['enable'] && !$ph1found) {
+                    print_info_box_np(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("Please click Create to define one."), gettext("create"), gettext("Create Phase1"));
+                }
+                if ($input_errors) {
+                    print_input_errors($input_errors);
+                }
+                ?>
 
 
 			    <section class="col-xs-12">
 
-				<? $active_tab = "/vpn_ipsec_mobile.php"; include('vpn_ipsec_tabs.inc'); ?>
+				<? $active_tab = "/vpn_ipsec_mobile.php";
+                include('vpn_ipsec_tabs.inc'); ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -359,7 +398,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="ike extensions">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['enable'],$chk); ?>
+														<?php set_checked($pconfig['enable'], $chk); ?>
 														<input name="enable" type="checkbox" id="enable" value="yes" <?=$chk;?> />
 													</td>
 													<td>
@@ -388,15 +427,16 @@ function login_banner_change() {
 											<?=gettext("Source"); ?>:&nbsp;&nbsp;
 											<select name="user_source[]" class="form-control" id="user_source" multiple="multiple" size="3">
 											<?php
-												$authmodes = explode(",", $pconfig['user_source']);
-												$auth_servers = auth_get_authserver_list();
-												foreach ($auth_servers as $auth_server) {
-													$selected = "";
-													if (in_array($auth_server['name'], $authmodes))
-														$selected = "selected=\"selected\"";
-													echo "<option value='{$auth_server['name']}' {$selected}>{$auth_server['name']}</option>\n";
-												}
-											?>
+                                                $authmodes = explode(",", $pconfig['user_source']);
+                                                $auth_servers = auth_get_authserver_list();
+                                            foreach ($auth_servers as $auth_server) {
+                                                $selected = "";
+                                                if (in_array($auth_server['name'], $authmodes)) {
+                                                    $selected = "selected=\"selected\"";
+                                                }
+                                                echo "<option value='{$auth_server['name']}' {$selected}>{$auth_server['name']}</option>\n";
+                                            }
+                                            ?>
 											</select>
 										</td>
 									</tr>
@@ -406,7 +446,10 @@ function login_banner_change() {
 											<?=gettext("Source"); ?>:&nbsp;&nbsp;
 											<select name="group_source" class="form-control" id="group_source">
 												<option value="none"><?=gettext("none"); ?></option>
-												<option value="system" <?php if ($pconfig['group_source'] == "system") echo "selected=\"selected\""; ?> ><?=gettext("system"); ?></option>
+												<option value="system" <?php if ($pconfig['group_source'] == "system") {
+                                                    echo "selected=\"selected\"";
+
+} ?> ><?=gettext("system"); ?></option>
 											</select>
 										</td>
 									</tr>
@@ -429,7 +472,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable pool">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['pool_enable'],$chk); ?>
+														<?php set_checked($pconfig['pool_enable'], $chk); ?>
 														<input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?=$chk;?> onclick="pool_change()" />
 													</td>
 													<td>
@@ -444,11 +487,15 @@ function login_banner_change() {
 														<input name="pool_address" type="text" class="form-control unknown" id="pool_address" size="20" value="<?=htmlspecialchars($pconfig['pool_address']);?>" />
 														/
 														<select name="pool_netbits" class="form-control" id="pool_netbits">
-															<?php for ($i = 32; $i >= 0; $i--): ?>
-															<option value="<?=$i;?>" <?php if ($i == $pconfig['pool_netbits']) echo "selected=\"selected\""; ?>>
+															<?php for ($i = 32; $i >= 0; $i--) :
+?>
+															<option value="<?=$i;?>" <?php if ($i == $pconfig['pool_netbits']) {
+                                                                echo "selected=\"selected\"";
+} ?>>
 																<?=$i;?>
 															</option>
-															<?php endfor; ?>
+															<?php
+endfor; ?>
 														</select>
 													</td>
 												</tr>
@@ -461,7 +508,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="network list">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['net_list_enable'],$chk); ?>
+														<?php set_checked($pconfig['net_list_enable'], $chk); ?>
 														<input name="net_list_enable" type="checkbox" id="net_list_enable" value="yes" <?=$chk;?> />
 													</td>
 													<td>
@@ -477,7 +524,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="password">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['save_passwd_enable'],$chk); ?>
+														<?php set_checked($pconfig['save_passwd_enable'], $chk); ?>
 														<input name="save_passwd_enable" type="checkbox" id="save_passwd_enable" value="yes" <?=$chk;?> />
 													</td>
 													<td>
@@ -494,7 +541,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable dns default domain">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['dns_domain_enable'],$chk); ?>
+														<?php set_checked($pconfig['dns_domain_enable'], $chk); ?>
 														<input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?=$chk;?> onclick="dns_domain_change()" />
 													</td>
 													<td>
@@ -517,7 +564,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable split dns">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['dns_split_enable'],$chk); ?>
+														<?php set_checked($pconfig['dns_split_enable'], $chk); ?>
 														<input name="dns_split_enable" type="checkbox" id="dns_split_enable" value="yes" <?=$chk;?> onclick="dns_split_change()" />
 													</td>
 													<td>
@@ -541,7 +588,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable dns servers">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['dns_server_enable'],$chk); ?>
+														<?php set_checked($pconfig['dns_server_enable'], $chk); ?>
 														<input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=$chk;?> onclick="dns_server_change()" />
 													</td>
 													<td>
@@ -583,7 +630,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable wins servers">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['wins_server_enable'],$chk); ?>
+														<?php set_checked($pconfig['wins_server_enable'], $chk); ?>
 														<input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?=$chk;?> onclick="wins_server_change()" />
 													</td>
 													<td>
@@ -613,7 +660,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable pfs group">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['pfs_group_enable'],$chk); ?>
+														<?php set_checked($pconfig['pfs_group_enable'], $chk); ?>
 														<input name="pfs_group_enable" type="checkbox" id="pfs_group_enable" value="yes" <?=$chk;?> onclick="pfs_group_change()" />
 													</td>
 													<td>
@@ -626,11 +673,15 @@ function login_banner_change() {
 													<td>
 														<?=gettext("Group"); ?>:&nbsp;&nbsp;
 														<select name="pfs_group" class="form-control" id="pfs_group">
-														<?php foreach ($p2_pfskeygroups as $keygroup => $keygroupname): ?>
-															<option value="<?=$keygroup;?>" <?php if ($pconfig['pfs_group'] == $keygroup) echo "selected=\"selected\""; ?>>
+														<?php foreach ($p2_pfskeygroups as $keygroup => $keygroupname) :
+?>
+															<option value="<?=$keygroup;?>" <?php if ($pconfig['pfs_group'] == $keygroup) {
+                                                                echo "selected=\"selected\"";
+} ?>>
 																<?=htmlspecialchars($keygroupname);?>
 															</option>
-														<?php endforeach; ?>
+														<?php
+endforeach; ?>
 														</select>
 													</td>
 												</tr>
@@ -643,7 +694,7 @@ function login_banner_change() {
 											<table border="0" cellspacing="2" cellpadding="0" summary="enable login banner">
 												<tr>
 													<td>
-														<?php set_checked($pconfig['login_banner_enable'],$chk); ?>
+														<?php set_checked($pconfig['login_banner_enable'], $chk); ?>
 														<input name="login_banner_enable" type="checkbox" id="login_banner_enable" value="yes" <?=$chk;?> onclick="login_banner_change()" />
 													</td>
 													<td>
@@ -694,11 +745,11 @@ login_banner_change();
 
 /* local utility functions */
 
-function set_checked($var,& $chk) {
-	if($var)
-		$chk = "checked=\"checked\"";
-	else
-		$chk = "";
+function set_checked($var, & $chk)
+{
+    if ($var) {
+        $chk = "checked=\"checked\"";
+    } else {
+        $chk = "";
+    }
 }
-
-?>

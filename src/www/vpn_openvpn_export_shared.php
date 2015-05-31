@@ -33,114 +33,127 @@ require_once("openvpn-client-export.inc");
 
 $pgtitle = array("OpenVPN", "Client Export Utility");
 
-if (!is_array($config['openvpn']['openvpn-server']))
-	$config['openvpn']['openvpn-server'] = array();
+if (!is_array($config['openvpn']['openvpn-server'])) {
+    $config['openvpn']['openvpn-server'] = array();
+}
 
 $a_server = $config['openvpn']['openvpn-server'];
 
 $ras_server = array();
-foreach($a_server as $sindex => $server) {
-	if (isset($server['disable']))
-		continue;
-	$ras_user = array();
-	if ($server['mode'] != "p2p_shared_key")
-		continue;
+foreach ($a_server as $sindex => $server) {
+    if (isset($server['disable'])) {
+        continue;
+    }
+    $ras_user = array();
+    if ($server['mode'] != "p2p_shared_key") {
+        continue;
+    }
 
-	$ras_serverent = array();
-	$prot = $server['protocol'];
-	$port = $server['local_port'];
-	if ($server['description'])
-		$name = "{$server['description']} {$prot}:{$port}";
-	else
-		$name = "Shared Key Server {$prot}:{$port}";
-	$ras_serverent['index'] = $sindex;
-	$ras_serverent['name'] = $name;
-	$ras_serverent['mode'] = $server['mode'];
-	$ras_server[] = $ras_serverent;
+    $ras_serverent = array();
+    $prot = $server['protocol'];
+    $port = $server['local_port'];
+    if ($server['description']) {
+        $name = "{$server['description']} {$prot}:{$port}";
+    } else {
+        $name = "Shared Key Server {$prot}:{$port}";
+    }
+    $ras_serverent['index'] = $sindex;
+    $ras_serverent['name'] = $name;
+    $ras_serverent['mode'] = $server['mode'];
+    $ras_server[] = $ras_serverent;
 }
 
 $id = $_GET['id'];
-if (isset($_POST['id']))
-	$id = $_POST['id'];
+if (isset($_POST['id'])) {
+    $id = $_POST['id'];
+}
 
 $act = $_GET['act'];
-if (isset($_POST['act']))
-	$act = $_POST['act'];
+if (isset($_POST['act'])) {
+    $act = $_POST['act'];
+}
 
 $error = false;
 
-if(($act == "skconf") || ($act == "skzipconf")) {
-	$srvid = $_GET['srvid'];
-	if (($srvid === false) || ($config['openvpn']['openvpn-server'][$srvid]['mode'] != "p2p_shared_key")) {
-		redirectHeader("vpn_openvpn_export.php");
-		exit;
-	}
+if (($act == "skconf") || ($act == "skzipconf")) {
+    $srvid = $_GET['srvid'];
+    if (($srvid === false) || ($config['openvpn']['openvpn-server'][$srvid]['mode'] != "p2p_shared_key")) {
+        redirectHeader("vpn_openvpn_export.php");
+        exit;
+    }
 
-	if (empty($_GET['useaddr'])) {
-		$error = true;
-		$input_errors[] = "You need to specify an IP or hostname.";
-	} else
-		$useaddr = $_GET['useaddr'];
+    if (empty($_GET['useaddr'])) {
+        $error = true;
+        $input_errors[] = "You need to specify an IP or hostname.";
+    } else {
+        $useaddr = $_GET['useaddr'];
+    }
 
-	$proxy = "";
-	if (!empty($_GET['proxy_addr']) || !empty($_GET['proxy_port'])) {
-		$proxy = array();
-		if (empty($_GET['proxy_addr'])) {
-			$error = true;
-			$input_errors[] = "You need to specify an address for the proxy port.";
-		} else
-			$proxy['ip'] = $_GET['proxy_addr'];
-		if (empty($_GET['proxy_port'])) {
-			$error = true;
-			$input_errors[] = "You need to specify a port for the proxy ip.";
-		} else
-			$proxy['port'] = $_GET['proxy_port'];
-		$proxy['proxy_type'] = $_GET['proxy_type'];
-		$proxy['proxy_authtype'] = $_GET['proxy_authtype'];
-		if ($_GET['proxy_authtype'] != "none") {
-			if (empty($_GET['proxy_user'])) {
-				$error = true;
-				$input_errors[] = "You need to specify a username with the proxy config.";
-			} else
-				$proxy['user'] = $_GET['proxy_user'];
-			if (!empty($_GET['proxy_user']) && empty($_GET['proxy_password'])) {
-				$error = true;
-				$input_errors[] = "You need to specify a password with the proxy user.";
-			} else
-				$proxy['password'] = $_GET['proxy_password'];
-		}
-	}
+    $proxy = "";
+    if (!empty($_GET['proxy_addr']) || !empty($_GET['proxy_port'])) {
+        $proxy = array();
+        if (empty($_GET['proxy_addr'])) {
+            $error = true;
+            $input_errors[] = "You need to specify an address for the proxy port.";
+        } else {
+            $proxy['ip'] = $_GET['proxy_addr'];
+        }
+        if (empty($_GET['proxy_port'])) {
+            $error = true;
+            $input_errors[] = "You need to specify a port for the proxy ip.";
+        } else {
+            $proxy['port'] = $_GET['proxy_port'];
+        }
+        $proxy['proxy_type'] = $_GET['proxy_type'];
+        $proxy['proxy_authtype'] = $_GET['proxy_authtype'];
+        if ($_GET['proxy_authtype'] != "none") {
+            if (empty($_GET['proxy_user'])) {
+                $error = true;
+                $input_errors[] = "You need to specify a username with the proxy config.";
+            } else {
+                $proxy['user'] = $_GET['proxy_user'];
+            }
+            if (!empty($_GET['proxy_user']) && empty($_GET['proxy_password'])) {
+                $error = true;
+                $input_errors[] = "You need to specify a password with the proxy user.";
+            } else {
+                $proxy['password'] = $_GET['proxy_password'];
+            }
+        }
+    }
 
-	$exp_name = openvpn_client_export_prefix($srvid);
-	if ($act == "skzipconf")
-		$zipconf = true;
-	$exp_data = openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipconf);
-	if (!$exp_data) {
-		$input_errors[] = "Failed to export config files!";
-		$error = true;
-	}
-	if (!$error) {
-		if ($zipconf) {
-			$exp_name = urlencode($exp_data);
-			$exp_size = filesize("/tmp/{$exp_data}");
-		} else {
-			$exp_name = urlencode($exp_name."-config.ovpn");
-			$exp_size = strlen($exp_data);
-		}
+    $exp_name = openvpn_client_export_prefix($srvid);
+    if ($act == "skzipconf") {
+        $zipconf = true;
+    }
+    $exp_data = openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipconf);
+    if (!$exp_data) {
+        $input_errors[] = "Failed to export config files!";
+        $error = true;
+    }
+    if (!$error) {
+        if ($zipconf) {
+            $exp_name = urlencode($exp_data);
+            $exp_size = filesize("/tmp/{$exp_data}");
+        } else {
+            $exp_name = urlencode($exp_name."-config.ovpn");
+            $exp_size = strlen($exp_data);
+        }
 
-		header('Pragma: ');
-		header('Cache-Control: ');
-		header("Content-Type: application/octet-stream");
-		header("Content-Disposition: attachment; filename={$exp_name}");
-		header("Content-Length: $exp_size");
-		if ($zipconf)
-			readfile("/tmp/{$exp_data}");
-		else
-			echo $exp_data;
+        header('Pragma: ');
+        header('Cache-Control: ');
+        header("Content-Type: application/octet-stream");
+        header("Content-Disposition: attachment; filename={$exp_name}");
+        header("Content-Length: $exp_size");
+        if ($zipconf) {
+            readfile("/tmp/{$exp_data}");
+        } else {
+            echo $exp_data;
+        }
 
-		@unlink("/tmp/{$exp_data}");
-		exit;
-	}
+        @unlink("/tmp/{$exp_data}");
+        exit;
+    }
 }
 
 include("head.inc");
@@ -154,12 +167,16 @@ include("head.inc");
 var viscosityAvailable = false;
 
 var servers = new Array();
-<?php	foreach ($ras_server as $sindex => $server): ?>
+<?php	foreach ($ras_server as $sindex => $server) :
+?>
 servers[<?=$sindex;?>] = new Array();
-servers[<?=$sindex;?>][0] = '<?=$server['index'];?>';
+servers[<?=$sindex;
+?>][0] = '<?=$server['index'];?>';
 servers[<?=$sindex;?>][1] = new Array();
-servers[<?=$sindex;?>][2] = '<?=$server['mode'];?>';
-<?	endforeach; ?>
+servers[<?=$sindex;
+?>][2] = '<?=$server['mode'];?>';
+<?
+endforeach; ?>
 
 function download_begin(act) {
 
@@ -273,24 +290,26 @@ function useproxy_changed(obj) {
 //]]>
 </script>
 <?php
-	if ($input_errors)
-		print_input_errors($input_errors);
-	if ($savemsg)
-		print_info_box($savemsg);
+if ($input_errors) {
+    print_input_errors($input_errors);
+}
+if ($savemsg) {
+    print_info_box($savemsg);
+}
 ?>
 <table width="100%" border="0" cellpadding="0" cellspacing="0" summary="openvpn export shared">
 	<tr>
 		<td>
 			<?php
-				$tab_array = array();
-				$tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
-				$tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
-				$tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
-				$tab_array[] = array(gettext("Wizards"), false, "wizard.php?xml=openvpn_wizard.xml");
-				$tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
-				$tab_array[] = array(gettext("Shared Key Export"), true, "vpn_openvpn_export_shared.php");
-				display_top_tabs($tab_array);
-			?>
+                $tab_array = array();
+                $tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
+                $tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
+                $tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
+                $tab_array[] = array(gettext("Wizards"), false, "wizard.php?xml=openvpn_wizard.xml");
+                $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
+                $tab_array[] = array(gettext("Shared Key Export"), true, "vpn_openvpn_export_shared.php");
+                display_top_tabs($tab_array);
+            ?>
 		</td>
 	</tr>
 	<tr>
@@ -301,9 +320,12 @@ function useproxy_changed(obj) {
 						<td width="22%" valign="top" class="vncellreq">Shared Key Server</td>
 						<td width="78%" class="vtable">
 							<select name="server" id="server" class="formselect" onchange="server_changed()">
-								<?php foreach($ras_server as & $server): ?>
-								<option value="<?=$server['sindex'];?>"><?=$server['name'];?></option>
-								<?php endforeach; ?>
+								<?php foreach ($ras_server as & $server) :
+?>
+								<option value="<?=$server['sindex'];
+?>"><?=$server['name'];?></option>
+								<?php
+endforeach; ?>
 							</select>
 						</td>
 					</tr>
@@ -316,11 +338,15 @@ function useproxy_changed(obj) {
 										<select name="useaddr" id="useaddr" class="formselect" onchange="useaddr_changed(this)">
 											<option value="serveraddr" >Interface IP Address</option>
 											<option value="serverhostname" >Installation hostname</option>
-											<?php if (is_array($config['dyndnses']['dyndns'])): ?>
-												<?php foreach ($config['dyndnses']['dyndns'] as $ddns): ?>
+											<?php if (is_array($config['dyndnses']['dyndns'])) :
+?>
+												<?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
+?>
 													<option value="<?php echo $ddns["host"] ?>">DynDNS: <?php echo $ddns["host"] ?></option>
-												<?php endforeach; ?>
-											<?php endif; ?>
+												<?php
+endforeach; ?>
+											<?php
+endif; ?>
 											<option value="other">Other</option>
 										</select>
 										<br />

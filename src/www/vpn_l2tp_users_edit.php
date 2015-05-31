@@ -29,17 +29,20 @@
 $pgtitle = array(gettext("VPN"),gettext("L2TP"),gettext("User"),gettext("Edit"));
 $shortcut_section = "l2tps";
 
-function  l2tpusercmp($a,  $b)  {
-	return  strcasecmp($a['name'],  $b['name']);
+function l2tpusercmp($a, $b)
+{
+    return  strcasecmp($a['name'], $b['name']);
 }
 
-function  l2tp_users_sort()  {
+function l2tp_users_sort()
+{
         global  $config;
 
-        if (!is_array($config['l2tp']['user']))
-                return;
+    if (!is_array($config['l2tp']['user'])) {
+            return;
+    }
 
-        usort($config['l2tp']['user'],  "l2tpusercmp");
+        usort($config['l2tp']['user'], "l2tpusercmp");
 }
 
 require_once("guiconfig.inc");
@@ -48,90 +51,95 @@ require_once("vpn.inc");
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/vpn_l2tp_users.php');
 
 if (!is_array($config['l2tp']['user'])) {
-	$config['l2tp']['user'] = array();
+    $config['l2tp']['user'] = array();
 }
 $a_secret = &$config['l2tp']['user'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
+if (is_numericint($_GET['id'])) {
+    $id = $_GET['id'];
+}
+if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+    $id = $_POST['id'];
+}
 
 if (isset($id) && $a_secret[$id]) {
-	$pconfig['usernamefld'] = $a_secret[$id]['name'];
-	$pconfig['ip'] = $a_secret[$id]['ip'];
+    $pconfig['usernamefld'] = $a_secret[$id]['name'];
+    $pconfig['ip'] = $a_secret[$id]['ip'];
 }
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    if (isset($id) && ($a_secret[$id])) {
+        $reqdfields = explode(" ", "usernamefld");
+        $reqdfieldsn = array(gettext("Username"));
+    } else {
+        $reqdfields = explode(" ", "usernamefld passwordfld");
+        $reqdfieldsn = array(gettext("Username"),gettext("Password"));
+    }
 
-	/* input validation */
-	if (isset($id) && ($a_secret[$id])) {
-		$reqdfields = explode(" ", "usernamefld");
-		$reqdfieldsn = array(gettext("Username"));
-	} else {
-		$reqdfields = explode(" ", "usernamefld passwordfld");
-		$reqdfieldsn = array(gettext("Username"),gettext("Password"));
-	}
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    if (preg_match("/[^a-zA-Z0-9\.\-_]/", $_POST['usernamefld'])) {
+        $input_errors[] = gettext("The username contains invalid characters.");
+    }
 
-	if (preg_match("/[^a-zA-Z0-9\.\-_]/", $_POST['usernamefld']))
-		$input_errors[] = gettext("The username contains invalid characters.");
+    if (preg_match("/[^a-zA-Z0-9\.\-_]/", $_POST['passwordfld'])) {
+        $input_errors[] = gettext("The password contains invalid characters.");
+    }
 
-	if (preg_match("/[^a-zA-Z0-9\.\-_]/", $_POST['passwordfld']))
-		$input_errors[] = gettext("The password contains invalid characters.");
+    if (($_POST['passwordfld']) && ($_POST['passwordfld'] != $_POST['password2'])) {
+        $input_errors[] = gettext("The passwords do not match.");
+    }
+    if (($_POST['ip'] && !is_ipaddr($_POST['ip']))) {
+        $input_errors[] = gettext("The IP address entered is not valid.");
+    }
 
-	if (($_POST['passwordfld']) && ($_POST['passwordfld'] != $_POST['password2'])) {
-		$input_errors[] = gettext("The passwords do not match.");
-	}
-	if (($_POST['ip'] && !is_ipaddr($_POST['ip']))) {
-		$input_errors[] = gettext("The IP address entered is not valid.");
-	}
+    if (!$input_errors && !(isset($id) && $a_secret[$id])) {
+        /* make sure there are no dupes */
+        foreach ($a_secret as $secretent) {
+            if ($secretent['name'] == $_POST['usernamefld']) {
+                $input_errors[] = gettext("Another entry with the same username already exists.");
+                break;
+            }
+        }
+    }
 
-	if (!$input_errors && !(isset($id) && $a_secret[$id])) {
-		/* make sure there are no dupes */
-		foreach ($a_secret as $secretent) {
-			if ($secretent['name'] == $_POST['usernamefld']) {
-				$input_errors[] = gettext("Another entry with the same username already exists.");
-				break;
-			}
-		}
-	}
+    /* if this is an AJAX caller then handle via JSON */
+    if (isAjax() && is_array($input_errors)) {
+        input_errors2Ajax($input_errors);
+        exit;
+    }
 
-	/* if this is an AJAX caller then handle via JSON */
-	if(isAjax() && is_array($input_errors)) {
-		input_errors2Ajax($input_errors);
-		exit;
-	}
+    if (!$input_errors) {
+        if (isset($id) && $a_secret[$id]) {
+            $secretent = $a_secret[$id];
+        }
 
-	if (!$input_errors) {
+        $secretent['name'] = $_POST['usernamefld'];
+        $secretent['ip'] = $_POST['ip'];
 
-		if (isset($id) && $a_secret[$id])
-			$secretent = $a_secret[$id];
+        if ($_POST['passwordfld']) {
+            $secretent['password'] = $_POST['passwordfld'];
+        }
 
-		$secretent['name'] = $_POST['usernamefld'];
-		$secretent['ip'] = $_POST['ip'];
+        if (isset($id) && $a_secret[$id]) {
+            $a_secret[$id] = $secretent;
+        } else {
+            $a_secret[] = $secretent;
+        }
+        l2tp_users_sort();
 
-		if ($_POST['passwordfld'])
-			$secretent['password'] = $_POST['passwordfld'];
+        write_config();
 
-		if (isset($id) && $a_secret[$id])
-			$a_secret[$id] = $secretent;
-		else
-			$a_secret[] = $secretent;
-		l2tp_users_sort();
+        $retval = vpn_l2tp_configure();
 
-		write_config();
+        redirectHeader("vpn_l2tp_users.php");
 
-		$retval = vpn_l2tp_configure();
-
-		redirectHeader("vpn_l2tp_users.php");
-
-		exit;
-	}
+        exit;
+    }
 }
 
 include("head.inc");
@@ -144,7 +152,9 @@ include("head.inc");
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($input_errors) {
+                    print_input_errors($input_errors);
+} ?>
 
 				<div id="inputerrors"></div>
 
@@ -152,11 +162,11 @@ include("head.inc");
 			    <section class="col-xs-12">
 
 				<?php
-						$tab_array = array();
-						$tab_array[0] = array(gettext("Configuration"), false, "vpn_l2tp.php");
-						$tab_array[1] = array(gettext("Users"), true, "vpn_l2tp_users.php");
-						display_top_tabs($tab_array);
-					?>
+                        $tab_array = array();
+                        $tab_array[0] = array(gettext("Configuration"), false, "vpn_l2tp.php");
+                        $tab_array[1] = array(gettext("Users"), true, "vpn_l2tp_users.php");
+                        display_top_tabs($tab_array);
+                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -167,7 +177,8 @@ include("head.inc");
 									<tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
 					                  <td width="78%" class="vtable">
-										<?=$mandfldhtml;?><input name="usernamefld" type="text" class="form-control user" id="usernamefld" size="20" value="<?=htmlspecialchars($pconfig['usernamefld']);?>" />
+										<?=$mandfldhtml;
+?><input name="usernamefld" type="text" class="form-control user" id="usernamefld" size="20" value="<?=htmlspecialchars($pconfig['usernamefld']);?>" />
 					                  </td>
 					                </tr>
 					                <tr>
@@ -175,9 +186,11 @@ include("head.inc");
 					                  <td width="78%" class="vtable">
 					                    <?=$mandfldhtml;?><input name="passwordfld" type="password" class="form-control pwd" id="passwordfld" size="20" />
 					                    <br /><?=$mandfldhtml;?><input name="password2" type="password" class="form-control pwd" id="password2" size="20" />
-					                    &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]): ?><br />
+					                    &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]) :
+?><br />
 					                    <p class="text-muted"><em><small><?=gettext("If you want to change the users password, enter it here twice.");?></small></em></p>
-					                    <?php endif; ?></td>
+					                    <?php
+endif; ?></td>
 					                </tr>
 					                <tr>
 					                  <td width="22%" valign="top" class="vncell"><?=gettext("IP address");?></td>
@@ -189,10 +202,13 @@ include("head.inc");
 					                  <td width="22%" valign="top">&nbsp;</td>
 					                  <td width="78%">
 					                    <input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext('Save');?>" />
-					                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-					                    <?php if (isset($id) && $a_secret[$id]): ?>
+					                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");
+?>" onclick="window.location.href='<?=$referer;?>'" />
+					                    <?php if (isset($id) && $a_secret[$id]) :
+?>
 					                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-					                    <?php endif; ?>
+					                    <?php
+endif; ?>
 					                  </td>
 					                </tr>
 					            </table>
@@ -205,4 +221,4 @@ include("head.inc");
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

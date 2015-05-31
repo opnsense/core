@@ -33,42 +33,42 @@ require_once("guiconfig.inc");
 require_once("vpn.inc");
 
 if (!is_array($config['l2tp']['user'])) {
-	$config['l2tp']['user'] = array();
+    $config['l2tp']['user'] = array();
 }
 $a_secret = &$config['l2tp']['user'];
 
 if ($_POST) {
+    $pconfig = $_POST;
 
-	$pconfig = $_POST;
-
-	if ($_POST['apply']) {
-		$retval = 0;
-		if (!is_subsystem_dirty('rebootreq')) {
-			$retval = vpn_l2tp_configure();
-		}
-		$savemsg = get_std_save_message($retval);
-		if ($retval == 0) {
-			if (is_subsystem_dirty('l2tpusers'))
-				clear_subsystem_dirty('l2tpusers');
-		}
-	}
+    if ($_POST['apply']) {
+        $retval = 0;
+        if (!is_subsystem_dirty('rebootreq')) {
+            $retval = vpn_l2tp_configure();
+        }
+        $savemsg = get_std_save_message($retval);
+        if ($retval == 0) {
+            if (is_subsystem_dirty('l2tpusers')) {
+                clear_subsystem_dirty('l2tpusers');
+            }
+        }
+    }
 }
 
 if ($_GET['act'] == "del") {
-	if ($a_secret[$_GET['id']]) {
-		unset($a_secret[$_GET['id']]);
-		write_config();
-		mark_subsystem_dirty('l2tpusers');
-		redirectHeader("vpn_l2tp_users.php");
-		exit;
-	}
+    if ($a_secret[$_GET['id']]) {
+        unset($a_secret[$_GET['id']]);
+        write_config();
+        mark_subsystem_dirty('l2tpusers');
+        redirectHeader("vpn_l2tp_users.php");
+        exit;
+    }
 }
 
 include("head.inc");
 
 
 $main_buttons = array(
-	array('label'=>gettext("add user"), 'href'=>'vpn_l2tp_users_edit.php'),
+    array('label'=>gettext("add user"), 'href'=>'vpn_l2tp_users_edit.php'),
 );
 
 ?>
@@ -80,12 +80,17 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
-				<?php if (isset($config['l2tp']['radius']['enable']))
-					print_info_box(gettext("Warning: RADIUS is enabled. The local user database will not be used.")); ?>
-				<?php if (is_subsystem_dirty('l2tpusers')): ?><br/>
+				<?php if ($savemsg) {
+                    print_info_box($savemsg);
+} ?>
+				<?php if (isset($config['l2tp']['radius']['enable'])) {
+                    print_info_box(gettext("Warning: RADIUS is enabled. The local user database will not be used."));
+} ?>
+				<?php if (is_subsystem_dirty('l2tpusers')) :
+?><br/>
 				<?php print_info_box_np(gettext("The l2tp user list has been modified") . ".<br />" . gettext("You must apply the changes in order for them to take effect") . ".<br /><b>" . gettext("Warning: this will terminate all current l2tp sessions!") . "</b>");?>
-				<?php endif; ?>
+				<?php
+endif; ?>
 
 				<div id="inputerrors"></div>
 
@@ -93,11 +98,11 @@ $main_buttons = array(
 			    <section class="col-xs-12">
 
 				<?php
-						$tab_array = array();
-						$tab_array[0] = array(gettext("Configuration"), false, "vpn_l2tp.php");
-						$tab_array[1] = array(gettext("Users"), true, "vpn_l2tp_users.php");
-						display_top_tabs($tab_array);
-					?>
+                        $tab_array = array();
+                        $tab_array[0] = array(gettext("Configuration"), false, "vpn_l2tp.php");
+                        $tab_array[1] = array(gettext("Users"), true, "vpn_l2tp_users.php");
+                        display_top_tabs($tab_array);
+                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -110,23 +115,30 @@ $main_buttons = array(
 									<td class="listhdr"><?=gettext("IP address");?></td>
 									<td class="list"></td>
 								</tr>
-							  <?php $i = 0; foreach ($a_secret as $secretent): ?>
+                                <?php $i = 0; foreach ($a_secret as $secretent) :
+?>
 				                <tr>
 				                  <td class="listlr">
 				                    <?=htmlspecialchars($secretent['name']);?>
 				                  </td>
 				                  <td class="listr">
-				              <?php if($secretent['ip'] == "") $secretent['ip'] = "Dynamic"; ?>
+                                <?php if ($secretent['ip'] == "") {
+                                    $secretent['ip'] = "Dynamic";
+} ?>
 				                    <?=htmlspecialchars($secretent['ip']);?>&nbsp;
 				                  </td>
 				                  <td class="list nowrap" width="150">
 					                    <a href="vpn_l2tp_users_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a>
 
-                                        <a href="vpn_l2tp_users.php?act=del&amp;id=<?=$i;?>" class="btn btn-default" onclick="return confirm('<?=gettext("Do you really want to delete this user?");?>')"title="<?=gettext("delete user"); ?>"><span class="glyphicon glyphicon-remove"></span></a>
+                                        <a href="vpn_l2tp_users.php?act=del&amp;id=<?=$i;
+?>" class="btn btn-default" onclick="return confirm('<?=gettext("Do you really want to delete this user?");
+?>')"title="<?=gettext("delete user"); ?>"><span class="glyphicon glyphicon-remove"></span></a>
 
 					                 </td>
 								</tr>
-							  <?php $i++; endforeach; ?>
+                                <?php $i++;
+
+endforeach; ?>
 
 				              </table>
 							 </div>
@@ -138,4 +150,4 @@ $main_buttons = array(
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

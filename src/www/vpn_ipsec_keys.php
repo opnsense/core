@@ -37,35 +37,37 @@ if (!is_array($config['ipsec'])) {
 }
 
 if (!is_array($config['ipsec']['mobilekey'])) {
-	$config['ipsec']['mobilekey'] = array();
+    $config['ipsec']['mobilekey'] = array();
 }
 ipsec_mobilekey_sort();
 $a_secret = &$config['ipsec']['mobilekey'];
 
 $userkeys = array();
 foreach ($config['system']['user'] as $id => $user) {
-	if (!empty($user['ipsecpsk'])) {
-		$userkeys[] = array('ident' => $user['name'], 'pre-shared-key' => $user['ipsecpsk'], 'id' => $id);;
-	}
+    if (!empty($user['ipsecpsk'])) {
+        $userkeys[] = array('ident' => $user['name'], 'pre-shared-key' => $user['ipsecpsk'], 'id' => $id);
+        ;
+    }
 }
 
 if (isset($_POST['apply'])) {
-	$retval = vpn_ipsec_configure();
-	/* reload the filter in the background */
-	filter_configure();
-	$savemsg = get_std_save_message($retval);
-	if (is_subsystem_dirty('ipsec'))
-		clear_subsystem_dirty('ipsec');
+    $retval = vpn_ipsec_configure();
+    /* reload the filter in the background */
+    filter_configure();
+    $savemsg = get_std_save_message($retval);
+    if (is_subsystem_dirty('ipsec')) {
+        clear_subsystem_dirty('ipsec');
+    }
 }
 
 if ($_GET['act'] == "del") {
-	if ($a_secret[$_GET['id']]) {
-		unset($a_secret[$_GET['id']]);
-		write_config(gettext("Deleted IPsec Pre-Shared Key"));
-		mark_subsystem_dirty('ipsec');
-		header("Location: vpn_ipsec_keys.php");
-		exit;
-	}
+    if ($a_secret[$_GET['id']]) {
+        unset($a_secret[$_GET['id']]);
+        write_config(gettext("Deleted IPsec Pre-Shared Key"));
+        mark_subsystem_dirty('ipsec');
+        header("Location: vpn_ipsec_keys.php");
+        exit;
+    }
 }
 
 $pgtitle = gettext("VPN: IPsec: Keys");
@@ -84,16 +86,19 @@ include("head.inc");
 
 
 				<?php
-					if ($savemsg)
-						print_info_box($savemsg);
-					if (is_subsystem_dirty('ipsec'))
-						print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
+                if ($savemsg) {
+                    print_info_box($savemsg);
+                }
+                if (is_subsystem_dirty('ipsec')) {
+                    print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
+                }
 
-				?>
+                ?>
 
 			    <section class="col-xs-12">
 
-				<? $active_tab = "/vpn_ipsec_settings.php"; include('vpn_ipsec_tabs.inc'); ?>
+				<? $active_tab = "/vpn_ipsec_settings.php";
+                include('vpn_ipsec_tabs.inc'); ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -115,15 +120,17 @@ include("head.inc");
 											</table>
 								  </td>
 								</tr>
-									  <?php $i = 0; foreach ($userkeys as $secretent): ?>
+                                        <?php $i = 0; foreach ($userkeys as $secretent) :
+?>
 								<tr>
 								<td class="listlr gray">
 									<?php
-										if ($secretent['ident'] == 'allusers')
-											echo gettext("ANY USER");
-										else
-											echo htmlspecialchars($secretent['ident']);
-									?>
+                                    if ($secretent['ident'] == 'allusers') {
+                                        echo gettext("ANY USER");
+                                    } else {
+                                        echo htmlspecialchars($secretent['ident']);
+                                    }
+                                    ?>
 								</td>
 								<td class="listr gray">
 									<?=htmlspecialchars($secretent['pre-shared-key']);?>
@@ -138,9 +145,12 @@ include("head.inc");
 									</form>
 								&nbsp;</td>
 										</tr>
-									  <?php $i++; endforeach; ?>
+                                        <?php $i++;
 
-									  <?php $i = 0; foreach ($a_secret as $secretent): ?>
+endforeach; ?>
+
+                                        <?php $i = 0; foreach ($a_secret as $secretent) :
+?>
 						                <tr>
 						                  <td class="listlr">
 						                    <?=htmlspecialchars($secretent['ident']);?>
@@ -148,10 +158,17 @@ include("head.inc");
 						                  <td class="listr">
 						                    <?=htmlspecialchars($secretent['pre-shared-key']);?>
 						                  </td>
-						                  <td class="list nowrap"><a href="vpn_ipsec_keys_edit.php?id=<?=$i;?>"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_e.gif" title="<?=gettext("edit key"); ?>" width="17" height="17" border="0" alt="edit" /></a>
-						                     &nbsp;<a href="vpn_ipsec_keys.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this Pre-Shared Key?"); ?>')"><img src="./themes/<?= $g['theme']; ?>/images/icons/icon_x.gif" title="<?=gettext("delete key"); ?>" width="17" height="17" border="0" alt="delete" /></a></td>
+						                  <td class="list nowrap"><a href="vpn_ipsec_keys_edit.php?id=<?=$i;
+?>"><img src="./themes/<?= $g['theme'];
+?>/images/icons/icon_e.gif" title="<?=gettext("edit key"); ?>" width="17" height="17" border="0" alt="edit" /></a>
+						                     &nbsp;<a href="vpn_ipsec_keys.php?act=del&amp;id=<?=$i;
+?>" onclick="return confirm('<?=gettext("Do you really want to delete this Pre-Shared Key?");
+?>')"><img src="./themes/<?= $g['theme'];
+?>/images/icons/icon_x.gif" title="<?=gettext("delete key"); ?>" width="17" height="17" border="0" alt="delete" /></a></td>
 										</tr>
-									  <?php $i++; endforeach; ?>
+                                        <?php $i++;
+
+endforeach; ?>
 						                <tr>
 						                  <td class="list" colspan="2"></td>
 						                  <td class="list">
@@ -183,4 +200,4 @@ include("head.inc");
 		</div>
 </section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

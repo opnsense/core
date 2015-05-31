@@ -31,33 +31,33 @@ require_once('guiconfig.inc');
 require_once('vpn.inc');
 
 if (!is_array($config['pptpd']['user'])) {
-	$config['pptpd']['user'] = array();
+    $config['pptpd']['user'] = array();
 }
 $a_secret = &$config['pptpd']['user'];
 
 if ($_POST) {
+    $pconfig = $_POST;
 
-	$pconfig = $_POST;
-
-	if ($_POST['apply']) {
-		$retval = 0;
-		$retval = vpn_setup();
-		$savemsg = get_std_save_message($retval);
-		if ($retval == 0) {
-			if (is_subsystem_dirty('pptpusers'))
-				clear_subsystem_dirty('pptpusers');
-		}
-	}
+    if ($_POST['apply']) {
+        $retval = 0;
+        $retval = vpn_setup();
+        $savemsg = get_std_save_message($retval);
+        if ($retval == 0) {
+            if (is_subsystem_dirty('pptpusers')) {
+                clear_subsystem_dirty('pptpusers');
+            }
+        }
+    }
 }
 
 if ($_GET['act'] == "del") {
-	if ($a_secret[$_GET['id']]) {
-		unset($a_secret[$_GET['id']]);
-		write_config();
-		mark_subsystem_dirty('pptpusers');
-		header("Location: vpn_pptp_users.php");
-		exit;
-	}
+    if ($a_secret[$_GET['id']]) {
+        unset($a_secret[$_GET['id']]);
+        write_config();
+        mark_subsystem_dirty('pptpusers');
+        header("Location: vpn_pptp_users.php");
+        exit;
+    }
 }
 
 $pgtitle = array(gettext("VPN"),gettext("VPN PPTP"),gettext("Users"));
@@ -65,7 +65,7 @@ $shortcut_section = "pptps";
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>gettext("add user"), 'href'=>'vpn_pptp_users_edit.php'),
+    array('label'=>gettext("add user"), 'href'=>'vpn_pptp_users_edit.php'),
 );
 ?>
 
@@ -77,21 +77,26 @@ $main_buttons = array(
 			<div class="row">
 
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
-				<?php if (isset($config['pptpd']['radius']['enable']))
-					print_info_box(gettext("Warning: RADIUS is enabled. The local user database will not be used.")); ?>
-				<?php if (is_subsystem_dirty('pptpusers')): ?><br/>
+				<?php if ($savemsg) {
+                    print_info_box($savemsg);
+} ?>
+				<?php if (isset($config['pptpd']['radius']['enable'])) {
+                    print_info_box(gettext("Warning: RADIUS is enabled. The local user database will not be used."));
+} ?>
+				<?php if (is_subsystem_dirty('pptpusers')) :
+?><br/>
 				<?php print_info_box_np(gettext("The PPTP user list has been modified").".<br />".gettext("You must apply the changes in order for them to take effect").".<br /></b><b>".gettext("Warning: this will terminate all current PPTP sessions")."!");?><br />
-				<?php endif; ?>
+				<?php
+endif; ?>
 
 			    <section class="col-xs-12">
 
 				<?php
-						$tab_array = array();
-						$tab_array[0] = array(gettext("Configuration"), false, "vpn_pptp.php");
-						$tab_array[1] = array(gettext("Users"), true, "vpn_pptp_users.php");
-						display_top_tabs($tab_array);
-					?>
+                        $tab_array = array();
+                        $tab_array[0] = array(gettext("Configuration"), false, "vpn_pptp.php");
+                        $tab_array[1] = array(gettext("Users"), true, "vpn_pptp_users.php");
+                        display_top_tabs($tab_array);
+                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -106,7 +111,8 @@ $main_buttons = array(
 
 										  </td>
 										</tr>
-									  <?php $i = 0; foreach ($a_secret as $secretent): ?>
+                                        <?php $i = 0; foreach ($a_secret as $secretent) :
+?>
 						                <tr>
 						                  <td class="listlr">
 						                    <?=htmlspecialchars($secretent['name']);?>
@@ -117,9 +123,13 @@ $main_buttons = array(
 						                  <td class="list nowrap">
 							                   <a href="vpn_pptp_users_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a>
 
-                                        <a href="vpn_pptp_users.php?act=del&amp;id=<?=$i;?>" class="btn btn-default" onclick="return confirm('<?=gettext("Do you really want to delete this user?");?>')"title="<?=gettext("delete user"); ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+                                        <a href="vpn_pptp_users.php?act=del&amp;id=<?=$i;
+?>" class="btn btn-default" onclick="return confirm('<?=gettext("Do you really want to delete this user?");
+?>')"title="<?=gettext("delete user"); ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
 										</tr>
-									  <?php $i++; endforeach; ?>
+                                        <?php $i++;
+
+endforeach; ?>
 
 									</table>
 								</div>
@@ -131,4 +141,4 @@ $main_buttons = array(
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");
