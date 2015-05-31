@@ -131,3 +131,16 @@ echo gettext('Dynamic queue creation by source or destination address.
         <li> choose source to provide all connected clients up to a maximum of this pipe configured bandwidth  </li>
         ');
 echo gettext('Description to identify this pipe.');
+echo gettext('order in which the rule will be evaluated (lowest first)');
+echo gettext('source ip or network, examples 10.0.0.0/24, 10.0.0.1');
+echo gettext('source port number or well known name (imap,imaps, http,https,...)');
+echo gettext('destination ip or network, examples 10.0.0.0/24, 10.0.0.1');
+echo gettext('destination port number or well known name (imap,imaps, http,https,...)');
+echo gettext('target pipe or queue');
+echo gettext('connected pipe for this queue');
+echo gettext('Weight of this queue (1..100)');
+echo gettext('Dynamic queue creation by source or destination address.
+        <li> choose destination here to share the total bandwidth of this pipe among all connected clients. </li>
+        <li> choose source to provide all connected clients up to a maximum of this pipe configured bandwidth  </li>
+        ');
+echo gettext('Description to identify this pipe.');
