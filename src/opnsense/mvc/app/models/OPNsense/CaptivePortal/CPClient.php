@@ -91,14 +91,14 @@ class CPClient
      */
     public function reconfigure()
     {
+        $backend = new Backend();
         if ($this->isEnabled()) {
             $ruleset_filename = FactoryDefault::getDefault()->get('config')->globals->temp_path."/ipfw.rules";
-            $backend = new Backend();
             $response = $backend->configdRun("template reload OPNsense.IPFW");
 
             if (trim($response) == "OK") {
                 // load ruleset when ruleset is successfully loaded
-                $this->shell->exec("/sbin/ipfw -f ".$ruleset_filename);
+                $this->shell->exec("/etc/rc.d/ipfw start");
             }
 
             // update tables
@@ -107,8 +107,9 @@ class CPClient
             // after reinit all accounting rules are vanished, reapply them for active sessions
             $this->loadAccounting();
         } else {
-            // captiveportal is disabled, flush all rules to be sure
-            $this->shell->exec("/sbin/ipfw -f flush");
+            // captiveportal is disabled, create new config and reload ipfw
+            $response = $backend->configdRun("template reload OPNsense.IPFW");
+            $this->shell->exec("/etc/rc.d/ipfw start");
         }
     }
 

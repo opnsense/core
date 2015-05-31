@@ -329,20 +329,6 @@ EOD;
     return $htmltext;
 }
 
-function captiveportal_load_modules() {
-    global $config;
-
-    mute_kernel_msgs();
-    if (!is_module_loaded("ipfw.ko")) {
-        mwexec("/sbin/kldload ipfw");
-    }
-    /* Always load dummynet now that even allowed ip and mac passthrough use it. */
-    if (!is_module_loaded("dummynet.ko")) {
-	mwexec("/sbin/kldload dummynet");
-	set_sysctl(array("net.inet.ip.dummynet.io_fast" => "1", "net.inet.ip.dummynet.hash_size" => "256"));
-    }
-    unmute_kernel_msgs();
-}
 
 function captiveportal_configure() {
     global $config, $cpzone, $cpzoneid;
@@ -352,8 +338,6 @@ function captiveportal_configure() {
 
     $cpc = new OPNsense\CaptivePortal\CPClient();
     if ($cpc->isEnabled()) {
-        // load modules ( only if CP is enabled )
-        captiveportal_load_modules();
 	$cpc->reconfigure();
     }
 
