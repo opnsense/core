@@ -29,7 +29,6 @@
  */
 namespace OPNsense\Base\FieldTypes;
 
-
 use OPNsense\Base\Validators\NetworkValidator;
 
 /**

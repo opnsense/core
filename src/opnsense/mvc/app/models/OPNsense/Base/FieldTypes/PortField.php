@@ -29,7 +29,6 @@
  */
 namespace OPNsense\Base\FieldTypes;
 
-
 use Phalcon\Validation\Validator\InclusionIn;
 
 /**
@@ -43,11 +42,53 @@ class PortField extends BaseField
      */
     protected $internalIsContainer = false;
 
-    private static $wellknownservices = array('cvsup','domain','ftp','hbci','http','https','aol','auth','imap','imaps',
-        'ipsec-msft','isakmp','l2f','ldap','ms-streaming','afs3-fileserver','microsoft-ds','ms-wbt-server','wins',
-        'msnp','nntp','ntp','netbios-dgm','netbios-ns','netbios-ssn','openvpn','pop3','pop3s','pptp','radius',
-        'radius-acct','avt-profile-1','sip','smtp','igmpv3lite','urd','snmp','snmptrap','ssh','nat-stun-port','submission',
-        'teredo','telnet','tftp','rfb');
+    private static $wellknownservices = array(
+        'cvsup',
+        'domain',
+        'ftp',
+        'hbci',
+        'http',
+        'https',
+        'aol',
+        'auth',
+        'imap',
+        'imaps',
+        'ipsec-msft',
+        'isakmp',
+        'l2f',
+        'ldap',
+        'ms-streaming',
+        'afs3-fileserver',
+        'microsoft-ds',
+        'ms-wbt-server',
+        'wins',
+        'msnp',
+        'nntp',
+        'ntp',
+        'netbios-dgm',
+        'netbios-ns',
+        'netbios-ssn',
+        'openvpn',
+        'pop3',
+        'pop3s',
+        'pptp',
+        'radius',
+        'radius-acct',
+        'avt-profile-1',
+        'sip',
+        'smtp',
+        'igmpv3lite',
+        'urd',
+        'snmp',
+        'snmptrap',
+        'ssh',
+        'nat-stun-port',
+        'submission',
+        'teredo',
+        'telnet',
+        'tftp',
+        'rfb'
+    );
 
     /**
      * @var array collected options

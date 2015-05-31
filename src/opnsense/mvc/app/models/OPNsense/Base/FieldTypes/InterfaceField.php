@@ -101,7 +101,8 @@ class InterfaceField extends BaseField
     }
 
     /**
-     * set filters to use (in regex) per field, all tags are combined and cached for the next object using the same filters
+     * set filters to use (in regex) per field, all tags are combined
+     * and cached for the next object using the same filters
      * @param $filters filters to use
      */
     public function setFilters($filters)
