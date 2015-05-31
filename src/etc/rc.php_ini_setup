@@ -34,19 +34,16 @@ fi
 
 # Define php modules.  Do not add .so, it will
 # be done automatically by the script below.
-PHPMODULES="standard"
+
 # Config read/write
-PHPMODULES="$PHPMODULES dom xml simplexml"
+PHPMODULES="dom xml simplexml"
 # Downloading via HTTP/FTP (pkg mgr, etc)
-PHPMODULES="$PHPMODULES curl date"
+PHPMODULES="$PHPMODULES curl"
 # Internationalization
 PHPMODULES="$PHPMODULES gettext"
 # User manager
 PHPMODULES="$PHPMODULES ldap openssl pcntl"
-PHPMODULES="$PHPMODULES hash"
-PHPMODULES="$PHPMODULES mcrypt"
-# Regexs, PERL style!
-PHPMODULES="$PHPMODULES pcre"
+PHPMODULES="$PHPMODULES hash mcrypt"
 # Login sessions
 PHPMODULES="$PHPMODULES session"
 # Extra sanity seatbelts
@@ -58,7 +55,6 @@ PHPMODULES="$PHPMODULES mbstring"
 # Page compression
 PHPMODULES="$PHPMODULES zlib"
 # SQLlite & Database
-PHPMODULES="$PHPMODULES spl"
 PHPMODULES="$PHPMODULES pdo"
 PHPMODULES="$PHPMODULES pdo_sqlite"
 PHPMODULES="$PHPMODULES sqlite3"
@@ -80,8 +76,6 @@ PHPMODULES="$PHPMODULES tokenizer"
 rm -f /usr/local/etc/php/extensions.ini
 rm -f /usr/local/etc/php.ini
 rm -f /usr/local/lib/php.ini
-
-LOADED_MODULES=`/usr/local/bin/php -m | /usr/bin/grep -v "\["`
 
 # Fetch the timezone from the XML and set it here. We set it later too in the running scripts
 TIMEZONE=Etc/UTC
@@ -122,20 +116,9 @@ date.timezone="${TIMEZONE}"
 EOF
 
 # Loop through and generate modules to load.
-# Take into account modules built into php.
-for EXT in $PHPMODULES; do
-	SHOULDADD="true"
-	# Check to see if module is compiled into php statically
-	for LM in $LOADED_MODULES; do
-		if [ "$EXT" = "$LM" ]; then
-			SHOULDADD="false"
-		fi
-	done
-	if [ "$SHOULDADD" = "true" ]; then
-		# Ensure extension exists before adding.
-		if [ -f "${EXTENSIONSDIR}${EXT}.so" ]; then
-			echo "extension=${EXT}.so" >> /usr/local/etc/php/extensions.ini
-		fi
+for EXT in ${PHPMODULES}; do
+	if [ -f "${EXTENSIONSDIR}${EXT}.so" ]; then
+		echo "extension=${EXT}.so" >> /usr/local/etc/php/extensions.ini
 	fi
 done
 
