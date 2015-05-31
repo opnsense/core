@@ -162,9 +162,14 @@ abstract class BaseModel
                                 $tagUUID = $internal_data->generateUUID();
                             }
 
+
                             // iterate array items from config data
                             $child_node = new ContainerField($fieldObject->__reference . "." . $tagUUID, $tagName);
                             $this->parseXml($xmlNode, $conf_section, $child_node);
+                            if (!isset($conf_section->attributes()->uuid)) {
+                                // if the node misses a uuid, copy it to this nodes attributes
+                                $child_node->setAttributeValue('uuid', $tagUUID);
+                            }
                             $fieldObject->addChildNode($tagUUID, $child_node);
                         }
                     } else {
