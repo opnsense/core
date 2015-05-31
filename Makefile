@@ -14,17 +14,18 @@ umount: force
 	/sbin/umount -f "<above>:${.CURDIR}/src"
 
 install: force
-	# invoke pkg(8) bootstraping
-	@make -C ${.CURDIR}/pkg install
 	# move all sources to their destination
 	@mkdir -p ${DESTDIR}/usr/local
 	@cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
 	# disable warnings for production systems
 	@sed -i '' -e 's/E_STRICT/E_STRICT | E_WARNING/g' \
 	    ${DESTDIR}/usr/local/etc/rc.php_ini_setup
+	# invoke pkg(8) bootstraping
+	@make -C ${.CURDIR}/pkg install
+	# invoke translation glue
+	@make -C ${.CURDIR}/lang install
 	# finally pretty-print a list of files present
-	@(cd ${.CURDIR}/src; find * -type f \
-	    ! -name "*.po" ! -name "*.pot") | \
+	@(cd ${.CURDIR}/src; find * -type f) | \
 	    xargs -n1 printf "/usr/local/%s\n"
 
 lint: force
@@ -39,6 +40,8 @@ sweep: force
 	    ! -name "*.map" -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 	find ${.CURDIR}/pkg -type f -print0 | \
+	    xargs -0 -n1 scripts/cleanfile
+	find ${.CURDIR}/lang -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 	find ${.CURDIR}/scripts -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
@@ -62,25 +65,6 @@ setup: force
 health: force
 	# check test script output and advertise a failure...
 	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
-
-# translation glue
-XGETTEXT=	xgettext -L PHP --from-code=UTF-8 -F --strict --debug
-MSGFMT=		msgfmt --strict
-LOCALEDIR=	${.CURDIR}/src/share/locale
-POT=		${LOCALEDIR}/en_US/LC_MESSAGES/OPNsense.pot
-PO!=		ls ${LOCALEDIR}/*/LC_MESSAGES/OPNsense.po
-
-.SUFFIXES:	.po .mo
-
-.po.mo: force
-	${MSGFMT} -o ${.TARGET} ${.IMPSRC}
-
-bootstrap: ${PO:S/.po/.mo/g}
-
-translate: force
-	@: > ${POT}
-	scripts/translate/collect.py
-	find src | xargs ${XGETTEXT} -j -o ${POT}
 
 clean:
 	git reset --hard HEAD && git clean -xdqf .
