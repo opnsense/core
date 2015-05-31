@@ -35,11 +35,16 @@ import glob
 import importlib
 import sys
 
+if len(sys.argv) < 2:
+    print 'Usage: collect.py rootdir'
+    sys.exit(1)
+
 # get source location (root of core package)
-OPNsenseRoot='%s/../../src/'%'/'.join(os.path.realpath(__file__).split('/')[:-1])
+OPNsenseRoot=sys.argv[1] + '/src'
 
 # create target location
-targetPath='%s/../../src/opnsense/lang_helpers/'%'/'.join(os.path.realpath(__file__).split('/')[:-1])
+targetPath=sys.argv[1] + '/lang/dynamic/helpers'
+
 if len(glob.glob(targetPath)) == 0:
     os.mkdir(targetPath)
 

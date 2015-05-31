@@ -29,7 +29,8 @@ install: force
 	    xargs -n1 printf "/usr/local/%s\n"
 
 lint: force
-	find ${.CURDIR}/src ! -name "*.xml" ! -name "*.eot" \
+	find ${.CURDIR}/src ${.CURDIR}/lang/dynamic/helpers \
+	    ! -name "*.xml" ! -name "*.eot" \
 	    ! -name "*.svg" ! -name "*.woff" ! -name "*.woff2" \
 	    ! -name "*.otf" ! -name "*.png" ! -name "*.js" \
 	    ! -name "*.scss" ! -name "*.py" ! -name "*.ttf" \

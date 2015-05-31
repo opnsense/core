@@ -18,12 +18,13 @@ ${LANG}:
 
 ${TEMPLATE}:
 	@: > ${TEMPLATE}.pot
-	# XXX bring this back
-	#${.CURDIR}/../scripts/translate/collect.py
-	cd ${.CURDIR}/.. && find src | \
+	cd ${.CURDIR}/.. && find src lang/dynamic/helpers | \
 	    xargs ${XGETTEXT} -j -o ${.CURDIR}/${TEMPLATE}.pot
 
 install: ${LANGUAGES}
 template: ${TEMPLATE}
 
-.PHONY: ${LANGUAGES} ${TEMPLATE}
+dynamic:
+	@${.CURDIR}/dynamic/collect.py ${.CURDIR}/..
+
+.PHONY: ${LANGUAGES} ${TEMPLATE} dynamic
