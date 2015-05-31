@@ -51,12 +51,12 @@ def getTranslations(root):
     rootpath='%s/opnsense/mvc/app/controllers/'%root
 
 
-    for root, dirs, files in os.walk(rootpath, topdown=False):
+    for rootdir, dirs, files in os.walk(rootpath, topdown=False):
         for name in files:
             if name.lower()[-4:] == '.xml':
-                filename = '%s/%s'%(root,name)
+                filename = '%s/%s'%(rootdir,name)
                 tree = ET.parse(filename)
-                root = tree.getroot()
-                if root.tag == 'form':
-                    for tag in recursiveParseForm(root):
+                rootObj = tree.getroot()
+                if rootObj.tag == 'form':
+                    for tag in recursiveParseForm(rootObj):
                         yield tag
