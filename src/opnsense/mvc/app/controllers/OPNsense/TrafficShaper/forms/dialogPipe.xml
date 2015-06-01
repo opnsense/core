@@ -1,5 +1,11 @@
 <form>
     <field>
+        <id>pipe.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>enable this pipe and it's related queues and rules</help>
+    </field>
+    <field>
         <id>pipe.bandwidth</id>
         <label>bandwidth</label>
         <type>text</type>

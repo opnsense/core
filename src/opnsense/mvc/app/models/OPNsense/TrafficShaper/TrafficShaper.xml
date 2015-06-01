@@ -4,10 +4,6 @@
         OPNsense traffic shaper
     </description>
     <items>
-        <enabled type="BooleanField">
-            <default>0</default>
-            <Required>Y</Required>
-        </enabled>
         <pipes>
             <pipe type="ArrayField">
                 <number type="IntegerField">
@@ -16,6 +12,10 @@
                     <ValidationMessage>Pipe number must be between 1...65535</ValidationMessage>
                     <Required>Y</Required>
                 </number>
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
                 <bandwidth type="IntegerField">
                     <Required>Y</Required>
                     <MinimumValue>1</MinimumValue>
@@ -67,6 +67,10 @@
                     <ValidationMessage>Queue number must be between 1...65535</ValidationMessage>
                     <Required>Y</Required>
                 </number>
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
                 <pipe type="ModelRelationField">
                     <Model>
                         <pipes>

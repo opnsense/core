@@ -6,6 +6,17 @@
 {%          endif %}
 {%      endfor %}
 {% endif %}
-firewall_enable="{% if OPNsense.TrafficShaper.enabled|default("0") == "1" or cp_zones %}YES{% else %}NO{% endif %}"
+{# collect enabled #}
+{% set shapers = [] %}
+{% if helpers.exists('OPNsense.TrafficShaper') %}
+{%     if helpers.exists('OPNsense.TrafficShaper.pipes.pipe') %}
+{%         for pipe in helpers.toList('OPNsense.TrafficShaper.pipes.pipe') %}
+{%             if pipe.enabled|default('0') == '1' %}
+{%                 do shapers.append(cp_key) %}
+{%             endif%}
+{%         endfor%}
+{%     endif %}
+{% endif %}
+firewall_enable="{% if shapers or cp_zones %}YES{% else %}NO{% endif %}"
 firewall_script="/usr/local/etc/rc.ipfw"
 dummynet_enable="YES"

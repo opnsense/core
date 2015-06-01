@@ -1,5 +1,11 @@
 <form>
     <field>
+        <id>pipe.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>enable this queue and it's related rules</help>
+    </field>
+    <field>
         <id>queue.pipe</id>
         <label>pipe</label>
         <type>dropdown</type>
