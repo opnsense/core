@@ -382,7 +382,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <li><a data-toggle="tab" href="#queues">{{ lang._('Queues') }}</a></li>
                 <li><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
             </ul>
-            <div class="tab-content">
+            <div class="tab-content content-box tab-content">
                 <div id="pipes" class="tab-pane fade in active">
                     <!-- tab page "pipes" -->
                     <table id="grid-pipes" class="table table-condensed table-hover table-striped table-responsive">
@@ -468,12 +468,11 @@ POSSIBILITY OF SUCH DAMAGE.
                         </tfoot>
                     </table>
                 </div>
+                <div class="col-md-12">
+                    <hr/>
+                    <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
         </div>
     </div>
 </div>
