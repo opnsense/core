@@ -86,7 +86,7 @@ class ARP
         $result = array();
         $shell_output = array();
         // execute arp shell command and collect (only valid) info into named array
-        if ($this->shell->exec("arp -an", false, false, $shell_output) == 0) {
+        if ($this->shell->exec('arp -an', false, $shell_output) == 0) {
             foreach ($shell_output as $line) {
                 $line_parts = explode(" ", $line);
                 if (sizeof($line_parts) >= 4) {

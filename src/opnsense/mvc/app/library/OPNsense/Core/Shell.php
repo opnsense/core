@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Core;
 
 use \Phalcon\DI\FactoryDefault;
@@ -65,30 +67,27 @@ class Shell
      *
      * @param string/Array() $command command to execute
      * @param bool $mute
-     * @param bool $clearsigmask
      * @param Array() &$output
      */
-    public function exec($command, $mute = false, $clearsigmask = false, &$output = null)
+    public function exec($command, $mute = false, &$output = null)
     {
-        if (is_array($command)) {
-            foreach ($command as $comm) {
-                $this->execSingle($comm, $mute, $clearsigmask, $output);
-            }
-        } else {
-            $this->execSingle($command, $mute, $clearsigmask, $output);
-        }
+        if (!is_array($command)) {
+            $command = array($command);
+	}
 
+        foreach ($command as $comm) {
+            $this->execSingle($comm, $mute, $output);
+        }
     }
 
     /**
      * execute shell command
      * @param string $command command to execute
      * @param bool $mute
-     * @param bool $clearsigmask
      * @param Array() &$output
      * @return int
      */
-    private function execSingle($command, $mute = false, $clearsigmask = false, &$output = null)
+    private function execSingle($command, $mute = false, &$output = null)
     {
         $oarr = array();
         $retval = 0;
@@ -100,11 +99,6 @@ class Shell
 
         // only execute actual command if not in simulation mode
         if (!$this->simulate) {
-            if ($clearsigmask) {
-                $oldset = array();
-                pcntl_sigprocmask(SIG_SETMASK, array(), $oldset);
-            }
-
             exec("$command 2>&1", $output, $retval);
 
             if (($retval <> 0) && ($mute === false)) {
@@ -112,11 +106,6 @@ class Shell
                 // returned exit code '%2\$d', the output was '%3\$s' "),  implode(" ", $output);
                 // TODO: log
                 unset($output);
-            }
-
-
-            if ($clearsigmask) {
-                pcntl_sigprocmask(SIG_SETMASK, $oldset);
             }
 
             unset($oarr);

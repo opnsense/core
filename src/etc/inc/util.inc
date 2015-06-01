@@ -986,7 +986,7 @@ function exec_command($command) {
 }
 
 /* wrapper for mwexec() ;) */
-function mwexecf($format, $args = array(), $mute = false, $clearsigmask = false)
+function mwexecf($format, $args = array(), $mute = false)
 {
 	if (!is_array($args)) {
 		/* just in case there's only one argument */
@@ -997,26 +997,17 @@ function mwexecf($format, $args = array(), $mute = false, $clearsigmask = false)
 		$args[$id] = escapeshellarg($arg);
 	}
 
-	return mwexec(vsprintf($format, $args), $mute, $clearsigmask);
+	return mwexec(vsprintf($format, $args), $mute);
 }
 
 /* wrapper for exec() */
-function mwexec($command, $mute = false, $clearsigmask = false)
+function mwexec($command, $mute = false)
 {
 	$oarr = array();
 	$retval = 0;
 
-	if ($clearsigmask) {
-		$oldset = array();
-		pcntl_sigprocmask(SIG_SETMASK, array(), $oldset);
-	}
-
 	$garbage = exec("{$command} 2>&1", $oarr, $retval);
 	unset($garbage);
-
-	if ($clearsigmask) {
-		pcntl_sigprocmask(SIG_SETMASK, $oldset);
-	}
 
 	if ($retval != 0 && $mute == false) {
 		$output = implode(' ', $oarr);
@@ -1030,9 +1021,9 @@ function mwexec($command, $mute = false, $clearsigmask = false)
 }
 
 /* wrapper for exec() in background */
-function mwexec_bg($command, $mute = false, $clearsigmask = false)
+function mwexec_bg($command, $mute = false)
 {
-	mwexec("/usr/sbin/daemon -f {$command}", $mute, $clearsigmask);
+	mwexec("/usr/sbin/daemon -f {$command}", $mute);
 }
 
 /* make a global alias table (for faster lookups) */

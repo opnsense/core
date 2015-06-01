@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\CaptivePortal;
 
 use \Phalcon\Logger\Adapter\Syslog;
@@ -183,7 +185,7 @@ class CPClient
                             );
 
                             // execute all ipfw actions
-                            $this->shell->exec($exec_commands, false, false);
+                            $this->shell->exec($exec_commands);
                             // update administration
                             $db->upsertFixedIP($ip, $pipeno_in, $pipeno_out);
                             // save bandwidth data
@@ -211,7 +213,7 @@ class CPClient
                         );
 
                         // execute all ipfw actions
-                        $this->shell->exec($exec_commands, false, false);
+                        $this->shell->exec($exec_commands);
                         // TODO : cleanup $record->pipeno_in, $record->pipeno_out ;
                         $db->dropFixedIP($ip);
                     }
@@ -311,7 +313,7 @@ class CPClient
                                             );
 
                                             // execute all ipfw actions
-                                            $this->shell->exec($exec_commands, false, false);
+                                            $this->shell->exec($exec_commands);
                                             // update administration
                                             $db->upsertPassthruMAC(
                                                 $tagcontent->mac,
@@ -334,7 +336,7 @@ class CPClient
                                             "/sbin/ipfw table ". $ipfw_tables["out"] .
                                             " add " . $arp_maclist[$mac]['ip']. " " . $pipeno_out,
                                         );
-                                        $this->shell->exec($exec_commands, false, false);
+                                        $this->shell->exec($exec_commands);
 
                                         $db->upsertPassthruMAC(
                                             $tagcontent->mac,
@@ -364,7 +366,7 @@ class CPClient
                             "/sbin/ipfw table ". $ipfw_tables["out"] .
                             " delete ". $db_maclist[$mac]->ip,
                         );
-                        $this->shell->exec($exec_commands, false, false);
+                        $this->shell->exec($exec_commands);
                         // TODO : cleanup $record->pipeno_in, $record->pipeno_out ;
                         $db->dropPassthruMAC($mac);
                     }
@@ -410,7 +412,7 @@ class CPClient
         // TODO: check processing speed, this might need some improvement
         // check if our ip is already in the list and collect first free rule number to place it there if necessary
         $shell_output=array();
-        $this->shell->exec("/sbin/ipfw show", false, false, $shell_output);
+        $this->shell->exec('/sbin/ipfw show', false, $shell_output);
         $prev_id = 0;
         $new_id = null;
         foreach ($shell_output as $line) {
@@ -442,7 +444,7 @@ class CPClient
             );
 
             // execute all ipfw actions
-            $this->shell->exec($exec_commands, false, false);
+            $this->shell->exec($exec_commands);
         }
     }
 
@@ -559,7 +561,7 @@ class CPClient
         // add commands for access tables, and execute all collected
         $exec_commands[] = "/sbin/ipfw table ". $ipfw_tables["in"] ." add ". $clientip . " ".$pipeno_in;
         $exec_commands[] = "/sbin/ipfw table ". $ipfw_tables["out"] ." add ". $clientip . " ".$pipeno_out;
-        $this->shell->exec($exec_commands, false, false);
+        $this->shell->exec($exec_commands);
 
         // lock the user/ip to it's MAC address using arp
         $arp->setStatic($clientip, $clientmac);
@@ -633,7 +635,7 @@ class CPClient
                     "/sbin/ipfw -f table ".$this->rules->getAuthMACTables($zoneid)["out"]." flush",
                     "/sbin/ipfw delete set ".$zoneid,
                 );
-                $this->shell->exec($exec_commands, false, false);
+                $this->shell->exec($exec_commands);
             }
         }
     }
@@ -725,7 +727,7 @@ class CPClient
             $filter_cmd =" | /usr/bin/grep ' " . $ipaddr ." '" ;
         }
 
-        if ($this->shell->exec("/sbin/ipfw -aT list ".$filter_cmd, false, false, $shell_output) == 0) {
+        if ($this->shell->exec("/sbin/ipfw -aT list ".$filter_cmd, false, $shell_output) == 0) {
             foreach ($shell_output as $line) {
                 if (strpos($line, ' count ip from') !== false) {
                     $parts = preg_split('/\s+/', $line);
@@ -790,7 +792,7 @@ class CPClient
                 // only handle disconnect if we can find a client in our database
                 $exec_commands[] = "/sbin/ipfw table " . $ipfw_tables["in"] . " delete " . $db_clients[0]->ip;
                 $exec_commands[] = "/sbin/ipfw table " . $ipfw_tables["out"] . " delete " . $db_clients[0]->ip;
-                $this->shell->exec($exec_commands, false, false);
+                $this->shell->exec($exec_commands);
                 // TODO: cleanup dummynet pipes $db_clients[0]->pipeno_in/out
                 // TODO: log removal
                 // ( was : captiveportal_logportalauth($cpentry[4], $cpentry[3], $cpentry[2], "DISCONNECT");)

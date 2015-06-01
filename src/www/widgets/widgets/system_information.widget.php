@@ -42,7 +42,7 @@ if ($_POST['action'] == 'pkg_update') {
     $shell_output = array();
     $shell = new OPNsense\Core\Shell();
     // execute shell command and collect (only valid) info into named array
-    $shell->exec("/usr/local/opnsense/scripts/pkg_updatecheck.sh", false, false, $shell_output);
+    $shell->exec('/usr/local/opnsense/scripts/pkg_updatecheck.sh', false, $shell_output);
 }
 
 if (file_exists($file_pkg_status)) {
