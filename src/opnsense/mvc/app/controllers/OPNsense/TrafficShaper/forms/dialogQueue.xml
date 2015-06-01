@@ -9,7 +9,7 @@
         <id>queue.weight</id>
         <label>weight</label>
         <type>text</type>
-        <help>Weight of this queue (1..100)</help>
+        <help>Weight of this queue (1..100), used to prioritize within a pipe. (1 is low, 100 is high)</help>
     </field>
     <field>
         <id>queue.mask</id>
