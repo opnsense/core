@@ -35,7 +35,7 @@ use \OPNsense\Base\UIModelGrid;
 
 /**
  * Class SettingsController Handles settings related API actions for the Traffic Shaper
- * @package OPNsense\Proxy
+ * @package OPNsense\TrafficShaper
  */
 class SettingsController extends ApiControllerBase
 {
