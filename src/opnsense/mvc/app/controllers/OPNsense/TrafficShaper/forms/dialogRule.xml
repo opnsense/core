@@ -11,6 +11,14 @@
         <type>dropdown</type>
     </field>
     <field>
+        <id>rule.interface2</id>
+        <label>interface 2</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>secondary interface, matches packets going traveling from interface (1) to interface (2).
+        </help>
+    </field>
+    <field>
         <id>rule.proto</id>
         <label>proto</label>
         <type>dropdown</type>

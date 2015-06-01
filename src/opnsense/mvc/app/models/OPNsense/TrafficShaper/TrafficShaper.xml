@@ -126,6 +126,13 @@
                         <enable>/^(?!0).*$/</enable>
                     </filters>
                 </interface>
+                <interface2 type="InterfaceField">
+                    <Required>N</Required>
+                    <default></default>
+                    <filters>
+                        <enable>/^(?!0).*$/</enable>
+                    </filters>
+                </interface2>
                 <proto type="OptionField">
                     <Required>Y</Required>
                     <default>ip</default>
