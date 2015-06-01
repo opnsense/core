@@ -76,15 +76,17 @@ class UIModelGrid
                 $row =  array();
                 $row['uuid'] = $record->getAttributes()['uuid'];
                 foreach ($fields as $fieldname) {
-                    $row[$fieldname] = $record->$fieldname->getNodeData();
-                    if (is_array($row[$fieldname])) {
-                        foreach ($row[$fieldname] as $fieldKey => $fieldValue) {
-                            if ($fieldValue['selected'] == 1) {
-                                $row[$fieldname] = $fieldValue['value'];
-                            }
-                        }
+                    if ($record->$fieldname != null) {
+                        $row[$fieldname] = $record->$fieldname->getNodeData();
                         if (is_array($row[$fieldname])) {
-                            $row[$fieldname] = "##Unlinked";
+                            foreach ($row[$fieldname] as $fieldKey => $fieldValue) {
+                                if ($fieldValue['selected'] == 1) {
+                                    $row[$fieldname] = $fieldValue['value'];
+                                }
+                            }
+                            if (is_array($row[$fieldname])) {
+                                $row[$fieldname] = "##Unlinked";
+                            }
                         }
                     }
                 }
