@@ -86,7 +86,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     formid="frm_DialogPipe", callback_ok=function(){
                         $("#DialogPipe").modal('hide');
                         $("#grid-pipes").bootgrid("reload");
-                    });
+                    }, true);
         }
 
         /**
@@ -97,7 +97,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     formid="frm_DialogPipe", callback_ok=function(){
                         $("#DialogPipe").modal('hide');
                         $("#grid-pipes").bootgrid("reload");
-                    });
+                    }, true);
         }
 
         /**
@@ -189,7 +189,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     formid="frm_DialogQueue", callback_ok=function(){
                         $("#DialogQueue").modal('hide');
                         $("#grid-queues").bootgrid("reload");
-                    });
+                    }, true);
         }
 
         /**
@@ -200,7 +200,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     formid="frm_DialogQueue", callback_ok=function(){
                         $("#DialogQueue").modal('hide');
                         $("#grid-queues").bootgrid("reload");
-                    });
+                    }, true);
         }
 
         /**
@@ -253,7 +253,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     formid="frm_DialogRule", callback_ok=function(){
                         $("#DialogRule").modal('hide');
                         $("#grid-rules").bootgrid("reload");
-                    });
+                    }, true);
         }
 
         /**
@@ -264,7 +264,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     formid="frm_DialogRule", callback_ok=function(){
                         $("#DialogRule").modal('hide');
                         $("#grid-rules").bootgrid("reload");
-                    });
+                    }, true);
         }
 
         /**
