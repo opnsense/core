@@ -119,7 +119,12 @@ class InterfaceField extends BaseField
      */
     public function getNodeData()
     {
-        $result = array ();
+        $result = array();
+        // if interface is not required, add empty option
+        if (!$this->internalIsRequired) {
+            $result[""] = array("value"=>"none", "selected" => 0);
+        }
+
         foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
             if ($optKey == $this->internalValue) {
                 $selected = 1;
@@ -128,6 +133,8 @@ class InterfaceField extends BaseField
             }
             $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
         }
+
+
 
         return $result;
     }
