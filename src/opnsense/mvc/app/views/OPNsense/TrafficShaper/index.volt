@@ -30,319 +30,41 @@ POSSIBILITY OF SUCH DAMAGE.
         display:none;
     }
 </style>
+
 <script type="text/javascript">
 
     $( document ).ready(function() {
 
         /*************************************************************************************************************
-         * manage bandwidth pipes
+         * link grid actions
          *************************************************************************************************************/
 
-        /**
-         * Render pipe grid using searchPipes api
-         */
-        var gridPipes = stdBootgridUI("grid-pipes", "/api/trafficshaper/settings/searchPipes");
+        $("#grid-pipes").UIBootgrid(
+            {   'search':'/api/trafficshaper/settings/searchPipes',
+                'get':'/api/trafficshaper/settings/getPipe/',
+                'set':'/api/trafficshaper/settings/setPipe/',
+                'add':'/api/trafficshaper/settings/addPipe/',
+                'del':'/api/trafficshaper/settings/delPipe/'
+            }
+        );
 
-        /**
-         * Link pipe grid command controls (edit/delete)
-         */
-        gridPipes.on("loaded.rs.jquery.bootgrid", function(){
-            // edit item
-            gridPipes.find(".command-edit").on("click", function(e)
-            {
-                var uuid=$(this).data("row-id");
-                mapDataToFormUI({'frm_DialogPipe':"/api/trafficshaper/settings/getPipe/"+uuid}).done(function(){
-                    // update selectors
-                    $('.selectpicker').selectpicker('refresh');
-                    // clear validation errors (if any)
-                    clearFormValidation('frm_DialogPipe');
-                });
-
-                // show dialog for pipe edit
-                $('#DialogPipe').modal({backdrop: 'static', keyboard: false});
-                // curry uuid to save action
-                $("#btn_DialogPipe_save").unbind('click').click(savePipe.bind(undefined, uuid));
-            }).end();
-
-            // delete item
-            gridPipes.find(".command-delete").on("click", function(e)
-            {
-                var uuid=$(this).data("row-id");
-                stdDialogRemoveItem('Remove selected item?',function() {
-                    ajaxCall(url="/api/trafficshaper/settings/delPipe/" + uuid,
-                            sendData={},callback=function(data,status){
-                        // reload grid after delete
-                        $("#grid-pipes").bootgrid("reload");
-                    });
-                });
-            }).end();
-        });
-
-        /**
-         * save form data to end point for existing pipe
-         */
-        function savePipe(uuid) {
-            saveFormToEndpoint(url="/api/trafficshaper/settings/setPipe/"+uuid,
-                    formid="frm_DialogPipe", callback_ok=function(){
-                        $("#DialogPipe").modal('hide');
-                        $("#grid-pipes").bootgrid("reload");
-                    }, true);
-        }
-
-        /**
-         * save form data to end point for new pipe
-         */
-        function addPipe() {
-            saveFormToEndpoint(url="/api/trafficshaper/settings/addPipe/",
-                    formid="frm_DialogPipe", callback_ok=function(){
-                        $("#DialogPipe").modal('hide');
-                        $("#grid-pipes").bootgrid("reload");
-                    }, true);
-        }
-
-        /**
-         * Delete list of uuids on click event
-         */
-        $("#deletePipes").click(function(){
-            stdDialogRemoveItem("Remove selected items?",function(){
-                var rows =$("#grid-pipes").bootgrid('getSelectedRows');
-                if (rows != undefined){
-                    var deferreds = [];
-                    $.each(rows, function(key,uuid){
-                        deferreds.push(ajaxCall(url="/api/trafficshaper/settings/delPipe/" + uuid, sendData={},null));
-                    });
-                    // refresh after load
-                    $.when.apply(null, deferreds).done(function(){
-                        $("#grid-pipes").bootgrid("reload");
-                    });
+        $("#grid-queues").UIBootgrid(
+                {   'search':'/api/trafficshaper/settings/searchQueues',
+                    'get':'/api/trafficshaper/settings/getQueue/',
+                    'set':'/api/trafficshaper/settings/setQueue/',
+                    'add':'/api/trafficshaper/settings/addQueue/',
+                    'del':'/api/trafficshaper/settings/delQueue/'
                 }
-            });
-        });
+        );
 
-        /**
-         * Add new pipe on click event
-         */
-        $("#addPipe").click(function(){
-            mapDataToFormUI({'frm_DialogPipe':"/api/trafficshaper/settings/getPipe/"}).done(function(){
-                // update selectors
-                $('.selectpicker').selectpicker('refresh');
-                // clear validation errors (if any)
-                clearFormValidation('frm_DialogPipe');
-            });
-
-            // show dialog for pipe edit
-            $('#DialogPipe').modal({backdrop: 'static', keyboard: false});
-            // curry uuid to save action
-            $("#btn_DialogPipe_save").unbind('click').click(addPipe);
-
-        });
-
-        /*************************************************************************************************************
-         * manage Queues
-         *************************************************************************************************************/
-
-        /**
-         * Render queue grid using searchQueues api
-         */
-        var gridQueues = stdBootgridUI("grid-queues", "/api/trafficshaper/settings/searchQueues");
-
-        /**
-         * Link queue grid command controls (edit/delete)
-         */
-        gridQueues.on("loaded.rs.jquery.bootgrid", function(){
-            // edit item
-            gridQueues.find(".command-edit").on("click", function(e)
-            {
-                var uuid=$(this).data("row-id");
-                mapDataToFormUI({'frm_DialogQueue':"/api/trafficshaper/settings/getQueue/"+uuid}).done(function(){
-                    // update selectors
-                    $('.selectpicker').selectpicker('refresh');
-                    // clear validation errors (if any)
-                    clearFormValidation('frm_DialogQueue');
-                });
-
-                // show dialog for queue edit
-                $('#DialogQueue').modal({backdrop: 'static', keyboard: false});
-                // curry uuid to save action
-                $("#btn_DialogQueue_save").unbind('click').click(saveQueue.bind(undefined, uuid));
-            }).end();
-
-            // delete item
-            gridQueues.find(".command-delete").on("click", function(e)
-            {
-                var uuid=$(this).data("row-id");
-                stdDialogRemoveItem('Remove selected item?',function() {
-                    ajaxCall(url="/api/trafficshaper/settings/delQueue/" + uuid,
-                            sendData={},callback=function(data,status){
-                                // reload grid after delete
-                                $("#grid-queues").bootgrid("reload");
-                            });
-                });
-            }).end();
-        });
-
-        /**
-         * save form data to end point for existing queue
-         */
-        function saveQueue(uuid) {
-            saveFormToEndpoint(url="/api/trafficshaper/settings/setQueue/"+uuid,
-                    formid="frm_DialogQueue", callback_ok=function(){
-                        $("#DialogQueue").modal('hide');
-                        $("#grid-queues").bootgrid("reload");
-                    }, true);
-        }
-
-        /**
-         * save form data to end point for new queue
-         */
-        function addQueue() {
-            saveFormToEndpoint(url="/api/trafficshaper/settings/addQueue/",
-                    formid="frm_DialogQueue", callback_ok=function(){
-                        $("#DialogQueue").modal('hide');
-                        $("#grid-queues").bootgrid("reload");
-                    }, true);
-        }
-
-        /**
-         * Delete list of uuids on click event
-         */
-        $("#deleteQueues").click(function(){
-            stdDialogRemoveItem("Remove selected items?",function(){
-                var rows =$("#grid-queues").bootgrid('getSelectedRows');
-                if (rows != undefined){
-                    var deferreds = [];
-                    $.each(rows, function(key,uuid){
-                        deferreds.push(ajaxCall(url="/api/trafficshaper/settings/delQueue/" + uuid, sendData={},null));
-                    });
-                    // refresh after load
-                    $.when.apply(null, deferreds).done(function(){
-                        $("#grid-queues").bootgrid("reload");
-                    });
+        $("#grid-rules").UIBootgrid(
+                {   'search':'/api/trafficshaper/settings/searchRules',
+                    'get':'/api/trafficshaper/settings/getRule/',
+                    'set':'/api/trafficshaper/settings/setRule/',
+                    'add':'/api/trafficshaper/settings/addRule/',
+                    'del':'/api/trafficshaper/settings/delRule/'
                 }
-            });
-        });
-
-        /**
-         * Add new queue on click event
-         */
-        $("#addQueue").click(function(){
-            mapDataToFormUI({'frm_DialogQueue':"/api/trafficshaper/settings/getQueue/"}).done(function(){
-                // update selectors
-                $('.selectpicker').selectpicker('refresh');
-                // clear validation errors (if any)
-                clearFormValidation('frm_DialogQueue');
-            });
-
-            // show dialog for queue edit
-            $('#DialogQueue').modal({backdrop: 'static', keyboard: false});
-            // curry uuid to save action
-            $("#btn_DialogQueue_save").unbind('click').click(addQueue);
-
-        });
-
-
-        /*************************************************************************************************************
-         * manage rules
-         *************************************************************************************************************/
-
-        /**
-         * save form data to end point for existing rule
-         */
-        function saveRule(uuid) {
-            saveFormToEndpoint(url="/api/trafficshaper/settings/setRule/"+uuid,
-                    formid="frm_DialogRule", callback_ok=function(){
-                        $("#DialogRule").modal('hide');
-                        $("#grid-rules").bootgrid("reload");
-                    }, true);
-        }
-
-        /**
-         * save form data to end point for new pipe
-         */
-        function addRule() {
-            saveFormToEndpoint(url="/api/trafficshaper/settings/addRule/",
-                    formid="frm_DialogRule", callback_ok=function(){
-                        $("#DialogRule").modal('hide');
-                        $("#grid-rules").bootgrid("reload");
-                    }, true);
-        }
-
-        /**
-         * Render rules grid using searchPipes api
-         */
-        var gridRules = stdBootgridUI("grid-rules", "/api/trafficshaper/settings/searchRules");
-
-        /**
-         * Link rule grid command controls (edit/delete)
-         */
-        gridRules.on("loaded.rs.jquery.bootgrid", function(){
-            // edit item
-            gridRules.find(".command-edit").on("click", function(e)
-            {
-                var uuid=$(this).data("row-id");
-                mapDataToFormUI({'frm_DialogRule':"/api/trafficshaper/settings/getRule/"+uuid}).done(function(){
-                    // update selectors
-                    $('.selectpicker').selectpicker('refresh');
-                    // clear validation errors (if any)
-                    clearFormValidation('frm_DialogRule');
-                });
-
-                // show dialog for pipe edit
-                $('#DialogRule').modal({backdrop: 'static', keyboard: false});
-                // curry uuid to save action
-                $("#btn_DialogRule_save").unbind('click').click(saveRule.bind(undefined, uuid));
-            }).end();
-
-            // delete item
-            gridRules.find(".command-delete").on("click", function(e)
-            {
-                var uuid = $(this).data("row-id");
-                stdDialogRemoveItem("Remove selected item?",function(){
-                    ajaxCall(url="/api/trafficshaper/settings/delRule/" + uuid,
-                            sendData={},callback=function(data,status){
-                        // reload grid after delete
-                        $("#grid-rules").bootgrid("reload");
-                    });
-                });
-            }).end();
-        });
-
-        /**
-         * Add new rule on click event
-         */
-        $("#addRule").click(function(){
-            mapDataToFormUI({'frm_DialogRule':"/api/trafficshaper/settings/getRule/"}).done(function(){
-                // update selectors
-                $('.selectpicker').selectpicker('refresh');
-                // clear validation errors (if any)
-                clearFormValidation('frm_DialogRule');
-            });
-
-            // show dialog for pipe edit
-            $('#DialogRule').modal({backdrop: 'static', keyboard: false});
-            // curry uuid to save action
-            $("#btn_DialogRule_save").unbind('click').click(addRule);
-
-        });
-
-        /**
-         * Delete list of uuids on click event
-         */
-        $("#deleteRules").click(function(){
-            stdDialogRemoveItem("Remove selected items?",function(){
-                var rows =$("#grid-rules").bootgrid('getSelectedRows');
-                if (rows != undefined){
-                    var deferreds = [];
-                    $.each(rows, function(key,uuid){
-                        deferreds.push(ajaxCall(url="/api/trafficshaper/settings/delRule/" + uuid, sendData={},null));
-                    });
-                    // refresh after load
-                    $.when.apply(null, deferreds).done(function(){
-                        $("#grid-rules").bootgrid("reload");
-                    });
-                }
-            });
-        });
+        );
 
 
         /*************************************************************************************************************
@@ -374,106 +96,100 @@ POSSIBILITY OF SUCH DAMAGE.
 
 </script>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-                <li class="active"><a data-toggle="tab" href="#pipes">{{ lang._('Pipes') }}</a></li>
-                <li><a data-toggle="tab" href="#queues">{{ lang._('Queues') }}</a></li>
-                <li><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
-            </ul>
-            <div class="tab-content content-box tab-content">
-                <div id="pipes" class="tab-pane fade in active">
-                    <!-- tab page "pipes" -->
-                    <table id="grid-pipes" class="table table-condensed table-hover table-striped table-responsive">
-                        <thead>
-                        <tr>
-                            <th data-column-id="origin" data-type="string" data-visible="false">Origin</th>
-                            <th data-column-id="number" data-type="number"  data-visible="false">Number</th>
-                            <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
-                            <th data-column-id="bandwidthMetric" data-type="string">BandwidthMetric</th>
-                            <th data-column-id="mask" data-type="string">Mask</th>
-                            <th data-column-id="description" data-type="string">Description</th>
-                            <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
-                            <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <button type="button" id="addPipe" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
-                                <button type="button" id="deletePipes" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div id="queues" class="tab-pane fade in">
-                    <!-- tab page "queues" -->
-                    <table id="grid-queues" class="table table-condensed table-hover table-striped table-responsive">
-                        <thead>
-                        <tr>
-                            <th data-column-id="origin" data-type="string" data-visible="false">Origin</th>
-                            <th data-column-id="number" data-type="number" data-visible="false">Number</th>
-                            <th data-column-id="pipe" data-type="string">Pipe</th>
-                            <th data-column-id="weight" data-type="string">Weight</th>
-                            <th data-column-id="description" data-type="string">Description</th>
-                            <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
-                            <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <button type="button" id="addQueue" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
-                                <button type="button" id="deleteQueues" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div id="rules" class="tab-pane fade in">
-                    <!-- tab page "rules" -->
-                    <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive">
-                        <thead>
-                        <tr>
-                            <th data-column-id="sequence" data-type="number">#</th>
-                            <th data-column-id="origin" data-type="string"  data-visible="false">Origin</th>
-                            <th data-column-id="interface" data-type="string">Interface</th>
-                            <th data-column-id="proto" data-type="string">Protocol</th>
-                            <th data-column-id="source" data-type="string">Source</th>
-                            <th data-column-id="destination" data-type="string">Destination</th>
-                            <th data-column-id="target" data-type="string">Target</th>
-                            <th data-column-id="description" data-type="string">Description</th>
-                            <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
-                            <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <tfoot>
-                        <tr >
-                            <td></td>
-                            <td>
-                                <button type="button" id="addRule" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
-                                <button type="button" id="deleteRules" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div class="col-md-12">
-                    <hr/>
-                    <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
-                </div>
-            </div>
-        </div>
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+    <li class="active"><a data-toggle="tab" href="#pipes">{{ lang._('Pipes') }}</a></li>
+    <li><a data-toggle="tab" href="#queues">{{ lang._('Queues') }}</a></li>
+    <li><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
+</ul>
+<div class="tab-content content-box tab-content">
+    <div id="pipes" class="tab-pane fade in active">
+        <!-- tab page "pipes" -->
+        <table id="grid-pipes" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPipe">
+            <thead>
+            <tr>
+                <th data-column-id="origin" data-type="string" data-visible="false">Origin</th>
+                <th data-column-id="number" data-type="number"  data-visible="false">Number</th>
+                <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
+                <th data-column-id="bandwidthMetric" data-type="string">BandwidthMetric</th>
+                <th data-column-id="mask" data-type="string">Mask</th>
+                <th data-column-id="description" data-type="string">Description</th>
+                <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>
+                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
+                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div id="queues" class="tab-pane fade in">
+        <!-- tab page "queues" -->
+        <table id="grid-queues" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogQueue">
+            <thead>
+            <tr>
+                <th data-column-id="origin" data-type="string" data-visible="false">Origin</th>
+                <th data-column-id="number" data-type="number" data-visible="false">Number</th>
+                <th data-column-id="pipe" data-type="string">Pipe</th>
+                <th data-column-id="weight" data-type="string">Weight</th>
+                <th data-column-id="description" data-type="string">Description</th>
+                <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>
+                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
+                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div id="rules" class="tab-pane fade in">
+        <!-- tab page "rules" -->
+        <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
+            <thead>
+            <tr>
+                <th data-column-id="sequence" data-type="number">#</th>
+                <th data-column-id="origin" data-type="string"  data-visible="false">Origin</th>
+                <th data-column-id="interface" data-type="string">Interface</th>
+                <th data-column-id="proto" data-type="string">Protocol</th>
+                <th data-column-id="source" data-type="string">Source</th>
+                <th data-column-id="destination" data-type="string">Destination</th>
+                <th data-column-id="target" data-type="string">Target</th>
+                <th data-column-id="description" data-type="string">Description</th>
+                <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr >
+                <td></td>
+                <td>
+                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
+                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="col-md-12">
+        <hr/>
+        <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
     </div>
 </div>
 
