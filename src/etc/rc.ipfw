@@ -26,9 +26,17 @@
 #    script to glue standard ipfw rc scripting to OPNsense ruleset
 #    see auto generated file /etc/rc.conf.d/ipfw for details
 
+
 # sysctl settings
 /sbin/sysctl net.inet.ip.dummynet.io_fast=1
 /sbin/sysctl net.inet.ip.dummynet.hash_size=256
 
 # reload ipfw rules
 /sbin/ipfw -f /usr/local/etc/ipfw.rules
+
+if [ ! -f /tmp/ipfw.firstload ]; then
+    # we need to make sure ipfw is loaded as last,
+    /sbin/pfctl -d
+    /sbin/pfctl -e
+    touch /tmp/ipfw.firstload
+fi
