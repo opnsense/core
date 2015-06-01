@@ -1553,9 +1553,11 @@ function system_ntp_configure($start_ntpd = true)
 		return;
 	}
 
-	/* At bootup we just want to write out the config. */
-	if (!$start_ntpd)
+	if (!$start_ntpd) {
+		/* write out the config and delay startup */
+		mwexec_bg('/usr/local/sbin/ntpdate_sync_once.sh');
 		return;
+	}
 
 	/* if ntpd is running, kill it */
 	while (isvalidpid('/var/run/ntpd.pid')) {
@@ -1567,7 +1569,10 @@ function system_ntp_configure($start_ntpd = true)
 	@mkdir('/var/empty', 0775, true);
 
 	/* start opentpd, set time now and use new config */
-	mwexec('/usr/local/sbin/ntpd -g -c /var/etc/ntpd.conf -p /var/run/ntpd.pid', false, true);
+	mwexecf(
+		'/usr/local/sbin/ntpd -g -c %s -p %s',
+		array('/var/etc/ntpd.conf', '/var/run/ntpd.pid')
+	);
 
 	// Note that we are starting up
 	log_error("NTPD is starting up.");
