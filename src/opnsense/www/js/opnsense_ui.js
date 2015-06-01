@@ -33,8 +33,10 @@
  * save form to server
  * @param url endpoint url
  * @param formid parent id to grep input data from
+ * @param disable_dialog don't show input validation message box on failure
  */
-function saveFormToEndpoint(url,formid,callback_ok) {
+function saveFormToEndpoint(url,formid,callback_ok, disable_dialog) {
+    disable_dialog = disable_dialog || false;
     var data = getFormData(formid);
     ajaxCall(url=url,sendData=data,callback=function(data,status){
         if ( status == "success") {
@@ -43,18 +45,21 @@ function saveFormToEndpoint(url,formid,callback_ok) {
 
             // if there are validation issues, update our screen and show a dialog.
             if (data['validations'] != undefined) {
-                BootstrapDialog.show({
-                    type:BootstrapDialog.TYPE_WARNING,
-                    title: 'Input validation',
-                    message: 'Please correct validation errors in form',
-                    buttons: [{
-                        label: 'Dismiss',
-                        action: function(dialogRef){
-                            dialogRef.close();
-                        }
-                    }]
+                if (!disable_dialog) {
+                    // validation message box is optional, form is already updated using handleFormValidation
+                    BootstrapDialog.show({
+                        type:BootstrapDialog.TYPE_WARNING,
+                        title: 'Input validation',
+                        message: 'Please correct validation errors in form',
+                        buttons: [{
+                            label: 'Dismiss',
+                            action: function(dialogRef){
+                                dialogRef.close();
+                            }
+                        }]
 
-                });
+                    });
+                }
             } else if ( callback_ok != undefined ) {
                 // execute callback function
                 callback_ok();
