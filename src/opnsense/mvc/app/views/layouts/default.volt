@@ -69,6 +69,7 @@
         <!-- OPNsense standard toolkit -->
         <script type="text/javascript" src="/ui/js/opnsense.js"></script>
         <script type="text/javascript" src="/ui/js/opnsense_ui.js"></script>
+        <script type="text/javascript" src="/ui/js/opnsense_bootgrid_plugin.js"></script>
 
 	</head>
 	<body>

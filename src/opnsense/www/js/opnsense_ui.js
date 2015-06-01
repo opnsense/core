@@ -257,30 +257,3 @@ function stdDialogRemoveItem(message, callback) {
     });
 }
 
-/**
- * wrapper around bootgrid component to use our defaults (including scaling footer)
- * @param id
- * @param sourceUrl
- */
-function stdBootgridUI(id, sourceUrl) {
-    var grid = $("#"+id).bootgrid({
-        ajax: true,
-        selection: true,
-        multiSelect: true,
-        rowCount:[7,14,20,-1],
-        url: sourceUrl,
-        formatters: {
-            "commands": function(column, row)
-            {
-                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-pencil\"></span></button> " +
-                    "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o\"></span></button>";
-            }
-        }
-    }).on("loaded.rs.jquery.bootgrid", function (e)
-    {
-        // scale footer on resize
-        $(this).find("tfoot td:first-child").attr('colspan',$(this).find("th").length - 1);
-    })
-
-    return grid;
-}
