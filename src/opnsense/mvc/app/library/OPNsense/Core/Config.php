@@ -97,6 +97,14 @@ class Config extends Singleton
             $node = $this->simplexml;
         }
 
+        // copy attributes to @attribute key item
+        foreach ($node->attributes() as $AttrKey => $AttrValue) {
+            if (!array_key_exists('@attributes', $result)) {
+                $result['@attributes'] = array();
+            }
+            $result['@attributes'][$AttrKey] = $AttrValue->__toString();
+        }
+        // iterate xml children
         foreach ($node->children() as $xmlNode) {
             $xmlNodeName = $xmlNode->getName();
             if ($xmlNode->count() > 0) {
@@ -173,7 +181,13 @@ class Config extends Singleton
             ) {
                 continue;
             }
-            if (is_numeric($itemKey)) {
+            if ($itemKey === '@attributes') {
+                // copy xml attributes
+                foreach ($itemValue as $attrKey => $attrValue) {
+                    $node->addAttribute($attrKey, $attrValue);
+                }
+                continue;
+            } elseif (is_numeric($itemKey)) {
                 // recurring tag (content), use parent tagname.
                 $childNode = $node->addChild($parentTagName);
             } elseif (is_array($itemValue) && $this->isArraySequential($itemValue)) {
