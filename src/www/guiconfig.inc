@@ -268,14 +268,6 @@ function print_input_errors($input_errors) {
 	echo "</ul></div></div>";
 }
 
-function verify_gzip_file($fname) {
-	$returnvar = mwexec("/usr/bin/gzip -t " . escapeshellarg($fname));
-	if ($returnvar != 0)
-		return 0;
-	else
-		return 1;
-}
-
 function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 	global $g, $nifty_redbox, $nifty_blackbox, $nifty_background;
 
