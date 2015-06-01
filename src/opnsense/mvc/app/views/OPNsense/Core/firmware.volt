@@ -207,7 +207,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <li class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
                 <li><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
             </ul>
-            <div class="tab-content">
+            <div class="tab-content content-box tab-content">
                 <div id="updates" class="tab-pane fade in active">
                     <table class="table table-striped table-condensed table-responsive" id="updatelist">
                     </table>
