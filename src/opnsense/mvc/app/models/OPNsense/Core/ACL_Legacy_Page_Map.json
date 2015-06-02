@@ -448,7 +448,9 @@
         "name": "WebCfg - Firewall: Traffic Shaper page",
         "descr": "Allow access to the 'Firewall: Traffic Shaper' page.",
         "match": [
-            "firewall_shaper.php*"
+            "firewall_shaper.php*",
+            "ui/trafficshaper/*",
+            "api/trafficshaper/*"
         ]
     },
     "page-firewall-trafficshaper-queues": {
