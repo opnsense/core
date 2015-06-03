@@ -256,4 +256,3 @@ function stdDialogRemoveItem(message, callback) {
         }
     });
 }
-

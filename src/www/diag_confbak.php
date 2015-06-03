@@ -64,12 +64,12 @@ if (isset($_POST['backupcount'])) {
 				break;
 			}
 		}
-		
+
 	}
 	if($_POST['rmver'] != "") {
 		// search item by revision
 		foreach ($confvers as $filename => $revision) {
-			if (isset($revision['time']) && $revision['time'] == $_POST['rmver']) {				
+			if (isset($revision['time']) && $revision['time'] == $_POST['rmver']) {
 				@unlink($filename);
 				$savemsg = sprintf(gettext('Deleted backup with timestamp %1$s and description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['rmver']),$revision['description']);
 				break;
@@ -89,16 +89,16 @@ if($_GET['getcfg'] != "") {
 			header("Content-Disposition: attachment; filename={$exp_name}");
 			header("Content-Length: $exp_size");
 			echo $exp_data;
-			exit;		
+			exit;
 		}
 	}
 }
 
 if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime'])
       && is_numeric($_GET['oldtime']) && (is_numeric($_GET['newtime']) || ($_GET['newtime'] == 'current'))) {
-      	$oldfile = "";
-      	$newfile = "" ;
-      	// search filenames to compare
+	$oldfile = "";
+	$newfile = "" ;
+	// search filenames to compare
 	foreach ($confvers as $filename => $revision) {
 		if ($revision['time'] == $_GET['oldtime']) {
 			$oldfile = $filename;
@@ -106,7 +106,7 @@ if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime
 			$newfile = $filename;
 		}
 	}
-      
+
 	$diff = "";
 	$oldtime = $_GET['oldtime'];
 	if ($_GET['newtime'] == 'current') {
