@@ -32,6 +32,11 @@ require_once("config.lib.inc");
 require_once("guiconfig.inc");
 require_once("script/load_phalcon.php");
 
+// list backups
+$cnf = OPNsense\Core\Config::getInstance();
+$confvers = $cnf->getBackups(true);
+
+
 if (isset($_POST['backupcount'])) {
 	if (is_numeric($_POST['backupcount']) && ($_POST['backupcount'] >= 0)) {
 		$config['system']['backupcount'] = $_POST['backupcount'];
@@ -42,58 +47,80 @@ if (isset($_POST['backupcount'])) {
 	}
 	write_config("Changed backup revision count to {$changedescr}");
 } elseif ($_POST) {
-	if (!isset($_POST['confirm']) || ($_POST['confirm'] != gettext("Confirm")) || (!isset($_POST['newver']) && !isset($_POST['rmver']))) {
+	if (!isset($_POST['confirm']) || ($_POST['confirm'] != "Confirm") || (!isset($_POST['newver']) && !isset($_POST['rmver']))) {
 		header("Location: diag_confbak.php");
 		return;
 	}
 
-	$confvers = unserialize(file_get_contents('/conf/backup/backup.cache'));
 	if($_POST['newver'] != "") {
-		if(config_restore('/conf/backup/config-' . $_POST['newver'] . '.xml') == 0)
-		$savemsg = sprintf(gettext('Successfully reverted to timestamp %1$s with description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['newver']), $confvers[$_POST['newver']]['description']);
-		else
-			$savemsg = gettext("Unable to revert to the selected configuration.");
+		// search item by revision
+		foreach ($confvers as $filename => $revision) {
+			if (isset($revision['time']) && $revision['time'] == $_POST['newver']) {
+				if(config_restore($filename)== 0) {
+					$savemsg = sprintf(gettext('Successfully reverted to timestamp %1$s with description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['newver']), $revision['description']);
+				} else {
+					$savemsg = gettext("Unable to revert to the selected configuration.");
+				}
+				break;
+			}
+		}
+		
 	}
 	if($_POST['rmver'] != "") {
-		@unlink('/conf/backup/config-' . $_POST['rmver'] . '.xml');
-		$savemsg = sprintf(gettext('Deleted backup with timestamp %1$s and description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['rmver']),$confvers[$_POST['rmver']]['description']);
+		// search item by revision
+		foreach ($confvers as $filename => $revision) {
+			if (isset($revision['time']) && $revision['time'] == $_POST['rmver']) {				
+				@unlink($filename);
+				$savemsg = sprintf(gettext('Deleted backup with timestamp %1$s and description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['rmver']),$revision['description']);
+				break;
+			}
+		}
 	}
 }
 
 if($_GET['getcfg'] != "") {
-	$file = '/conf/backup/config-' . $_GET['getcfg'] . '.xml';
+	foreach ($confvers as $filename => $revision) {
+		if ($revision['time'] == $_GET['getcfg']) {
+			$exp_name = urlencode("config-{$config['system']['hostname']}.{$config['system']['domain']}-{$_GET['getcfg']}.xml");
+			$exp_data = file_get_contents($filename);
+			$exp_size = strlen($exp_data);
 
-	$exp_name = urlencode("config-{$config['system']['hostname']}.{$config['system']['domain']}-{$_GET['getcfg']}.xml");
-	$exp_data = file_get_contents($file);
-	$exp_size = strlen($exp_data);
-
-	header("Content-Type: application/octet-stream");
-	header("Content-Disposition: attachment; filename={$exp_name}");
-	header("Content-Length: $exp_size");
-	echo $exp_data;
-	exit;
+			header("Content-Type: application/octet-stream");
+			header("Content-Disposition: attachment; filename={$exp_name}");
+			header("Content-Length: $exp_size");
+			echo $exp_data;
+			exit;		
+		}
+	}
 }
 
 if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime'])
       && is_numeric($_GET['oldtime']) && (is_numeric($_GET['newtime']) || ($_GET['newtime'] == 'current'))) {
+      	$oldfile = "";
+      	$newfile = "" ;
+      	// search filenames to compare
+	foreach ($confvers as $filename => $revision) {
+		if ($revision['time'] == $_GET['oldtime']) {
+			$oldfile = $filename;
+		} elseif  ($revision['time'] == $_GET['oldtime']) {
+			$newfile = $filename;
+		}
+	}
+      
 	$diff = "";
-	$oldfile = '/conf/backup/config-' . $_GET['oldtime'] . '.xml';
 	$oldtime = $_GET['oldtime'];
 	if ($_GET['newtime'] == 'current') {
 		$newfile = '/conf/config.xml';
 		$newtime = $config['revision']['time'];
 	} else {
-		$newfile = '/conf/backup/config-' . $_GET['newtime'] . '.xml';
 		$newtime = $_GET['newtime'];
 	}
+
 	if (file_exists($oldfile) && file_exists($newfile)) {
 		exec("/usr/bin/diff -u " . escapeshellarg($oldfile) . " " . escapeshellarg($newfile), $diff);
 	}
 }
 
-// list backups
-$cnf = OPNsense\Core\Config::getInstance();
-$confvers = $cnf->getBackups(true);
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Configuration History"));
 include("head.inc");
@@ -169,7 +196,7 @@ include("head.inc");
 
 
 									<?PHP if ($_GET["newver"] || $_GET["rmver"]): ?>
-									<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
+									<form action="<?=explode("?", $_SERVER['REQUEST_URI'])[0];?>" method="post">
 									<section>
 				                        <div class="content-box">
 
