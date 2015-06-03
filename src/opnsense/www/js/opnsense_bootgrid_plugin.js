@@ -40,16 +40,28 @@ function stdBootgridUI(obj, sourceUrl) {
         rowCount:[7,14,20,-1],
         url: sourceUrl,
         formatters: {
-            "commands": function(column, row)
-            {
+            "commands": function (column, row) {
                 return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-pencil\"></span></button> " +
                     "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o\"></span></button>";
+            },
+            "rowtoggle": function (column, row) {
+                if (parseInt(row[column.id], 2) == 1) {
+                    return "<span class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                } else {
+                    return "<span class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
+                }
             }
         }
     }).on("loaded.rs.jquery.bootgrid", function (e)
     {
         // scale footer on resize
         $(this).find("tfoot td:first-child").attr('colspan',$(this).find("th").length - 1);
+        $(this).find('tr[data-row-id]').each(function(){
+            if ($(this).find('[class*="command-toggle"]').first().data("value") == "0") {
+                $(this).addClass("text-muted");
+            }
+        });
+
     })
 
     return grid;
@@ -132,6 +144,21 @@ $.fn.UIBootgrid = function (params) {
                             console.log("action del missing")
                         }
                     }).end();
+
+                    // toggle item
+                    grid.find(".command-toggle").on("click", function(e)
+                    {
+                        if (gridParams['toggle'] != undefined) {
+                            var uuid=$(this).data("row-id");
+                            ajaxCall(url=gridParams['toggle'] + uuid,
+                                sendData={},callback=function(data,status){
+                                    // reload grid after delete
+                                    $("#"+gridId).bootgrid("reload");
+                                });
+                        } else {
+                            console.log("action toggle missing")
+                        }
+                    }).end();
                 });
 
                 // link Add new to child button with data-action = add
@@ -146,7 +173,7 @@ $.fn.UIBootgrid = function (params) {
                             clearFormValidation('frm_' + editDlg);
                         });
 
-                        // show dialog for pipe edit
+                        // show dialog for edit
                         $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                         //
                         $("#btn_"+editDlg+"_save").unbind('click').click(function(){
@@ -187,3 +214,4 @@ $.fn.UIBootgrid = function (params) {
         }
     }));
 };
+
