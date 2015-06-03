@@ -144,7 +144,7 @@ function setFormData(parent,data) {
  * @param validationErrors
  */
 function handleFormValidation(parent,validationErrors) {
-    $( "#"+parent+"  input" ).each(function( index ) {
+    $( "#"+parent+"  input,#"+parent+" select" ).each(function( index ) {
         if (validationErrors != undefined && $(this).prop('id') in validationErrors) {
             $("*[for='" + $(this).prop('id') + "']").addClass("has-error");
             $("span[for='" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
