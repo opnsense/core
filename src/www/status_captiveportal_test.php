@@ -35,16 +35,18 @@ require_once("captiveportal.inc");
 require_once("voucher.inc");
 
 $cpzone = $_GET['zone'];
-if (isset($_POST['zone']))
+if (isset($_POST['zone'])) {
         $cpzone = $_POST['zone'];
+}
 
 if (empty($cpzone)) {
         header("Location: status_captiveportal.php");
         exit;
 }
 
-if (!is_array($config['captiveportal']))
+if (!is_array($config['captiveportal'])) {
         $config['captiveportal'] = array();
+}
 $a_cp =& $config['captiveportal'];
 
 $pgtitle = array(gettext("Status"), gettext("Captive portal"), gettext("Test Vouchers"), $a_cp[$cpzone]['zone']);
@@ -65,14 +67,14 @@ include("head.inc");
 			    <section class="col-xs-12">
 
 					<?php
-							$tab_array = array();
-					        $tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
-					        $tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
-					        $tab_array[] = array(gettext("Voucher Rolls"), false, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
-					        $tab_array[] = array(gettext("Test Vouchers"), true, "status_captiveportal_test.php?zone={$cpzone}");
-							$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
-					        display_top_tabs($tab_array);
-					?>
+                            $tab_array = array();
+                            $tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
+                            $tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
+                            $tab_array[] = array(gettext("Voucher Rolls"), false, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
+                            $tab_array[] = array(gettext("Test Vouchers"), true, "status_captiveportal_test.php?zone={$cpzone}");
+                            $tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
+                            display_top_tabs($tab_array);
+                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -128,4 +130,4 @@ if ($_POST) {
 
 
 
-<? include("foot.inc"); ?>
+<? include("foot.inc");

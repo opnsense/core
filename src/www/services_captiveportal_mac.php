@@ -37,91 +37,96 @@ global $cpzone;
 global $cpzoneid;
 
 $cpzone = $_GET['zone'];
-if (isset($_POST['zone']))
-	$cpzone = $_POST['zone'];
-
-if (empty($cpzone) || empty($config['captiveportal'][$cpzone])) {
-	header("Location: services_captiveportal_zones.php");
-	exit;
+if (isset($_POST['zone'])) {
+    $cpzone = $_POST['zone'];
 }
 
-if (!is_array($config['captiveportal']))
-	$config['captiveportal'] = array();
+if (empty($cpzone) || empty($config['captiveportal'][$cpzone])) {
+    header("Location: services_captiveportal_zones.php");
+    exit;
+}
+
+if (!is_array($config['captiveportal'])) {
+    $config['captiveportal'] = array();
+}
 $a_cp =& $config['captiveportal'];
 
 $pgtitle = array(gettext("Services"),gettext("Captive portal"), $a_cp[$cpzone]['zone']);
 $shortcut_section = "captiveportal";
 
 if ($_POST) {
+    $pconfig = $_POST;
 
-	$pconfig = $_POST;
+    if ($_POST['apply']) {
+        $retval = 0;
 
-	if ($_POST['apply']) {
-		$retval = 0;
+        $rules = captiveportal_passthrumac_configure();
+        $savemsg = get_std_save_message($retval);
+        if ($retval == 0) {
+            clear_subsystem_dirty('passthrumac');
+        }
+    }
 
-		$rules = captiveportal_passthrumac_configure();
-		$savemsg = get_std_save_message($retval);
-		if ($retval == 0)
-			clear_subsystem_dirty('passthrumac');
-	}
+    if ($_POST['postafterlogin']) {
+        if (!is_array($a_passthrumacs)) {
+            echo gettext("No entry exists yet!") ."\n";
+            exit;
+        }
+        if (empty($_POST['zone'])) {
+            echo gettext("Please set the zone on which the operation should be allowed");
+            exit;
+        }
+        if (!is_array($a_cp[$cpzone]['passthrumac'])) {
+            $a_cp[$cpzone]['passthrumac'] = array();
+        }
+        $a_passthrumacs =& $a_cp[$cpzone]['passthrumac'];
 
-	if ($_POST['postafterlogin']) {
-		if (!is_array($a_passthrumacs)) {
-			echo gettext("No entry exists yet!") ."\n";
-			exit;
-		}
-		if (empty($_POST['zone'])) {
-			echo gettext("Please set the zone on which the operation should be allowed");
-			exit;
-		}
-		if (!is_array($a_cp[$cpzone]['passthrumac']))
-			$a_cp[$cpzone]['passthrumac'] = array();
-		$a_passthrumacs =& $a_cp[$cpzone]['passthrumac'];
-
-		if ($_POST['username']) {
-			$mac = captiveportal_passthrumac_findbyname($_POST['username']);
-			if (!empty($mac))
-				$_POST['delmac'] = $mac['mac'];
-			else
-				echo gettext("No entry exists for this username:") . " " . $_POST['username'] . "\n";
-		}
-		if ($_POST['delmac']) {
-			$found = false;
-			foreach ($a_passthrumacs as $idx => $macent) {
-				if ($macent['mac'] == $_POST['delmac']) {
-					$found = true;
-					break;
-				}
-			}
-			if ($found == true) {
-				$cpzoneid = $a_cp[$cpzone]['zoneid'];
-				captiveportal_passthrumac_delete_entry($a_passthrumacs[$idx]);
-				unset($a_passthrumacs[$idx]);
-				write_config();
-				echo gettext("The entry was sucessfully deleted") . "\n";
-			} else
-				echo gettext("No entry exists for this mac address:") . " " .  $_POST['delmac'] . "\n";
-		}
-		exit;
-	}
+        if ($_POST['username']) {
+            $mac = captiveportal_passthrumac_findbyname($_POST['username']);
+            if (!empty($mac)) {
+                $_POST['delmac'] = $mac['mac'];
+            } else {
+                echo gettext("No entry exists for this username:") . " " . $_POST['username'] . "\n";
+            }
+        }
+        if ($_POST['delmac']) {
+            $found = false;
+            foreach ($a_passthrumacs as $idx => $macent) {
+                if ($macent['mac'] == $_POST['delmac']) {
+                    $found = true;
+                    break;
+                }
+            }
+            if ($found == true) {
+                $cpzoneid = $a_cp[$cpzone]['zoneid'];
+                captiveportal_passthrumac_delete_entry($a_passthrumacs[$idx]);
+                unset($a_passthrumacs[$idx]);
+                write_config();
+                echo gettext("The entry was sucessfully deleted") . "\n";
+            } else {
+                echo gettext("No entry exists for this mac address:") . " " .  $_POST['delmac'] . "\n";
+            }
+        }
+        exit;
+    }
 }
 
 if ($_GET['act'] == "del") {
-	$a_passthrumacs =& $a_cp[$cpzone]['passthrumac'];
-	if ($a_passthrumacs[$_GET['id']]) {
-		$cpzoneid = $a_cp[$cpzone]['zoneid'];
-		captiveportal_passthrumac_delete_entry($a_passthrumacs[$_GET['id']]);
-		unset($a_passthrumacs[$_GET['id']]);
-		write_config();
-		header("Location: services_captiveportal_mac.php?zone={$cpzone}");
-		exit;
-	}
+    $a_passthrumacs =& $a_cp[$cpzone]['passthrumac'];
+    if ($a_passthrumacs[$_GET['id']]) {
+        $cpzoneid = $a_cp[$cpzone]['zoneid'];
+        captiveportal_passthrumac_delete_entry($a_passthrumacs[$_GET['id']]);
+        unset($a_passthrumacs[$_GET['id']]);
+        write_config();
+        header("Location: services_captiveportal_mac.php?zone={$cpzone}");
+        exit;
+    }
 }
 
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>gettext("add host"), 'href'=>'services_captiveportal_mac_edit.php?zone='.$cpzone),
+    array('label'=>gettext("add host"), 'href'=>'services_captiveportal_mac_edit.php?zone='.$cpzone),
 );
 ?>
 
@@ -132,24 +137,28 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
-				<?php if (is_subsystem_dirty('passthrumac')): ?><p>
+				<?php if ($savemsg) {
+                    print_info_box($savemsg);
+} ?>
+				<?php if (is_subsystem_dirty('passthrumac')) :
+?><p>
 				<?php print_info_box_np(gettext("The captive portal MAC address configuration has been changed.<br />You must apply the changes in order for them to take effect."));?><br />
-				<?php endif; ?>
+				<?php
+endif; ?>
 
 			    <section class="col-xs-12">
 
 				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("MAC"), true, "services_captiveportal_mac.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("Allowed IP addresses"), false, "services_captiveportal_ip.php?zone={$cpzone}");
-						// Hide Allowed Hostnames as this feature is currently not supported
-						// $tab_array[] = array(gettext("Allowed Hostnames"), false, "services_captiveportal_hostname.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("Vouchers"), false, "services_captiveportal_vouchers.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("File Manager"), false, "services_captiveportal_filemanager.php?zone={$cpzone}");
-						display_top_tabs($tab_array, true);
-					?>
+                        $tab_array = array();
+                        $tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("MAC"), true, "services_captiveportal_mac.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("Allowed IP addresses"), false, "services_captiveportal_ip.php?zone={$cpzone}");
+                        // Hide Allowed Hostnames as this feature is currently not supported
+                        // $tab_array[] = array(gettext("Allowed Hostnames"), false, "services_captiveportal_hostname.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("Vouchers"), false, "services_captiveportal_vouchers.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("File Manager"), false, "services_captiveportal_filemanager.php?zone={$cpzone}");
+                        display_top_tabs($tab_array, true);
+                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -167,31 +176,36 @@ $main_buttons = array(
 											<td width="10%" class="list"></td>
 										</tr>
 						<?php
-									if (is_array($a_cp[$cpzone]['passthrumac'])):
-										$i = 0;
-										foreach ($a_cp[$cpzone]['passthrumac'] as $mac):
-						?>
-										<tr ondblclick="document.location='services_captiveportal_mac_edit.php?zone=<?=$cpzone;?>&amp;id=<?=$i;?>'">
-											<td valign="middle" class="list nowrap">
-												<img src="./themes/<?= $g['theme']; ?>/images/icons/icon_<?=$mac['action'];?>.gif" width="11" height="11" border="0" alt="icon" />
-											</td>
-											<td class="listlr">
-												<?=$mac['mac'];?>
-											</td>
-											<td class="listbg">
-												<?=htmlspecialchars($mac['descr']);?>&nbsp;
-											</td>
-											<td valign="middle" class="list nowrap">
-												<a href="services_captiveportal_mac_edit.php?zone=<?=$cpzone;?>&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-												&nbsp;
-												<a href="services_captiveportal_mac.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this host?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
-											</td>
-										</tr>
+                        if (is_array($a_cp[$cpzone]['passthrumac'])) :
+                            $i = 0;
+                            foreach ($a_cp[$cpzone]['passthrumac'] as $mac) :
+                        ?>
+                            <tr ondblclick="document.location='services_captiveportal_mac_edit.php?zone=<?=$cpzone;
+?>&amp;id=<?=$i;?>'">
+                                <td valign="middle" class="list nowrap">
+                                    <img src="./themes/<?= $g['theme'];
+?>/images/icons/icon_<?=$mac['action'];?>.gif" width="11" height="11" border="0" alt="icon" />
+                                </td>
+                                <td class="listlr">
+                                    <?=$mac['mac'];?>
+                                </td>
+                                <td class="listbg">
+                                    <?=htmlspecialchars($mac['descr']);?>&nbsp;
+                                </td>
+                                <td valign="middle" class="list nowrap">
+                                    <a href="services_captiveportal_mac_edit.php?zone=<?=$cpzone;
+?>&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    &nbsp;
+                                    <a href="services_captiveportal_mac.php?zone=<?=$cpzone;
+?>&amp;act=del&amp;id=<?=$i;
+?>" onclick="return confirm('<?=gettext("Do you really want to delete this host?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+                                </td>
+                            </tr>
 						<?php
-											$i++;
-										endforeach;
-									endif;
-						?>
+                                $i++;
+                            endforeach;
+                        endif;
+                        ?>
 
 										<tr>
 											<td colspan="3" class="list">
@@ -213,4 +227,4 @@ $main_buttons = array(
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

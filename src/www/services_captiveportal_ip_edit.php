@@ -28,14 +28,16 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function allowedipscmp($a, $b) {
-	return strcmp($a['ip'], $b['ip']);
+function allowedipscmp($a, $b)
+{
+    return strcmp($a['ip'], $b['ip']);
 }
 
-function allowedips_sort() {
-	global $g, $config, $cpzone;
+function allowedips_sort()
+{
+    global $g, $config, $cpzone;
 
-	usort($config['captiveportal'][$cpzone]['allowedip'],"allowedipscmp");
+    usort($config['captiveportal'][$cpzone]['allowedip'], "allowedipscmp");
 }
 
 require_once("guiconfig.inc");
@@ -48,102 +50,114 @@ $pgtitle = array(gettext("Services"),gettext("Captive portal"),gettext("Edit all
 $shortcut_section = "captiveportal";
 
 $cpzone = $_GET['zone'];
-if (isset($_POST['zone']))
+if (isset($_POST['zone'])) {
         $cpzone = $_POST['zone'];
+}
 
 if (empty($cpzone) || empty($config['captiveportal'][$cpzone])) {
         header("Location: services_captiveportal_zones.php");
         exit;
 }
 
-if (!is_array($config['captiveportal']))
+if (!is_array($config['captiveportal'])) {
         $config['captiveportal'] = array();
+}
 $a_cp =& $config['captiveportal'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
+if (is_numericint($_GET['id'])) {
+    $id = $_GET['id'];
+}
+if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+    $id = $_POST['id'];
+}
 
-if (!is_array($config['captiveportal'][$cpzone]['allowedip']))
-	$config['captiveportal'][$cpzone]['allowedip'] = array();
+if (!is_array($config['captiveportal'][$cpzone]['allowedip'])) {
+    $config['captiveportal'][$cpzone]['allowedip'] = array();
+}
 $a_allowedips =& $config['captiveportal'][$cpzone]['allowedip'];
 
 if (isset($id) && $a_allowedips[$id]) {
-	$pconfig['ip'] = $a_allowedips[$id]['ip'];
-	$pconfig['sn'] = $a_allowedips[$id]['sn'];
-	$pconfig['bw_up'] = $a_allowedips[$id]['bw_up'];
-	$pconfig['bw_down'] = $a_allowedips[$id]['bw_down'];
-	$pconfig['descr'] = $a_allowedips[$id]['descr'];
+    $pconfig['ip'] = $a_allowedips[$id]['ip'];
+    $pconfig['sn'] = $a_allowedips[$id]['sn'];
+    $pconfig['bw_up'] = $a_allowedips[$id]['bw_up'];
+    $pconfig['bw_down'] = $a_allowedips[$id]['bw_down'];
+    $pconfig['descr'] = $a_allowedips[$id]['descr'];
 }
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    $reqdfields = explode(" ", "ip sn");
+    $reqdfieldsn = array(gettext("Allowed IP address"), gettext("Subnet mask"));
 
-	/* input validation */
-	$reqdfields = explode(" ", "ip sn");
-	$reqdfieldsn = array(gettext("Allowed IP address"), gettext("Subnet mask"));
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    if ($_POST['ip'] && !is_ipaddr($_POST['ip'])) {
+        $input_errors[] = sprintf(gettext("A valid IP address must be specified. [%s]"), $_POST['ip']);
+    }
 
-	if ($_POST['ip'] && !is_ipaddr($_POST['ip']))
-		$input_errors[] = sprintf(gettext("A valid IP address must be specified. [%s]"), $_POST['ip']);
+    if ($_POST['sn'] && (!is_numeric($_POST['sn']) || ($_POST['sn'] < 1) || ($_POST['sn'] > 32))) {
+        $input_errors[] = gettext("A valid subnet mask must be specified");
+    }
 
-	if ($_POST['sn'] && (!is_numeric($_POST['sn']) || ($_POST['sn'] < 1) || ($_POST['sn'] > 32)))
-		$input_errors[] = gettext("A valid subnet mask must be specified");
+    if ($_POST['bw_up'] && !is_numeric($_POST['bw_up'])) {
+        $input_errors[] = gettext("Upload speed needs to be an integer");
+    }
 
-	if ($_POST['bw_up'] && !is_numeric($_POST['bw_up']))
-		$input_errors[] = gettext("Upload speed needs to be an integer");
+    if ($_POST['bw_down'] && !is_numeric($_POST['bw_down'])) {
+        $input_errors[] = gettext("Download speed needs to be an integer");
+    }
 
-	if ($_POST['bw_down'] && !is_numeric($_POST['bw_down']))
-		$input_errors[] = gettext("Download speed needs to be an integer");
+    foreach ($a_allowedips as $ipent) {
+        if (isset($id) && ($a_allowedips[$id]) && ($a_allowedips[$id] === $ipent)) {
+            continue;
+        }
 
-	foreach ($a_allowedips as $ipent) {
-		if (isset($id) && ($a_allowedips[$id]) && ($a_allowedips[$id] === $ipent))
-			continue;
+        if ($ipent['ip'] == $_POST['ip']) {
+            $input_errors[] = sprintf("[%s] %s.", $_POST['ip'], gettext("already allowed")) ;
+            break ;
+        }
+    }
 
-		if ($ipent['ip'] == $_POST['ip']){
-			$input_errors[] = sprintf("[%s] %s.", $_POST['ip'], gettext("already allowed")) ;
-			break ;
-		}
-	}
+    if (!$input_errors) {
+        $ip = array();
+        $ip['ip'] = $_POST['ip'];
+        $ip['sn'] = $_POST['sn'];
+        $ip['descr'] = $_POST['descr'];
+        if ($_POST['bw_up']) {
+            $ip['bw_up'] = $_POST['bw_up'];
+        }
+        if ($_POST['bw_down']) {
+            $ip['bw_down'] = $_POST['bw_down'];
+        }
+        if (isset($id) && $a_allowedips[$id]) {
+            $oldip = $a_allowedips[$id]['ip'];
+            if (!empty($a_allowedips[$id]['sn'])) {
+                $oldmask = $a_allowedips[$id]['sn'];
+            } else {
+                $oldmask = 32;
+            }
+            $a_allowedips[$id] = $ip;
+        } else {
+            $a_allowedips[] = $ip;
+        }
+        allowedips_sort();
 
-	if (!$input_errors) {
-		$ip = array();
-		$ip['ip'] = $_POST['ip'];
-		$ip['sn'] = $_POST['sn'];
-		$ip['descr'] = $_POST['descr'];
-		if ($_POST['bw_up'])
-			$ip['bw_up'] = $_POST['bw_up'];
-		if ($_POST['bw_down'])
-			$ip['bw_down'] = $_POST['bw_down'];
-		if (isset($id) && $a_allowedips[$id]) {
-			$oldip = $a_allowedips[$id]['ip'];
-			if (!empty($a_allowedips[$id]['sn']))
-				$oldmask = $a_allowedips[$id]['sn'];
-			else
-				$oldmask = 32;
-			$a_allowedips[$id] = $ip;
-		} else {
-			$a_allowedips[] = $ip;
-		}
-		allowedips_sort();
+        write_config();
 
-		write_config();
+        if (isset($a_cp[$cpzone]['enable']) && is_module_loaded("ipfw.ko")) {
+            $rules = "";
+            $cpzoneid = $a_cp[$cpzone]['zoneid'];
+            unset($ipfw);
+            captiveportal_allowedip_configure_entry($ip);
+            $uniqid = uniqid("{$cpzone}_allowed");
+        }
 
-		if (isset($a_cp[$cpzone]['enable']) && is_module_loaded("ipfw.ko")) {
-			$rules = "";
-			$cpzoneid = $a_cp[$cpzone]['zoneid'];
-			unset($ipfw);
-			captiveportal_allowedip_configure_entry($ip);
-			$uniqid = uniqid("{$cpzone}_allowed");
-		}
-
-		header("Location: services_captiveportal_ip.php?zone={$cpzone}");
-		exit;
-	}
+        header("Location: services_captiveportal_ip.php?zone={$cpzone}");
+        exit;
+    }
 }
 
 include("head.inc");
@@ -160,7 +174,9 @@ include("head.inc");
 
 			<div class="row">
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($input_errors) {
+                    print_input_errors($input_errors);
+} ?>
 
 			    <section class="col-xs-12">
 
@@ -176,11 +192,17 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("IP address"); ?></td>
 										<td width="78%" class="vtable">
-											<?=$mandfldhtml;?><input name="ip" type="text" class="formfld unknown" id="ip" size="17" value="<?=htmlspecialchars($pconfig['ip']);?>" />
+											<?=$mandfldhtml;
+?><input name="ip" type="text" class="formfld unknown" id="ip" size="17" value="<?=htmlspecialchars($pconfig['ip']);?>" />
 											/<select name='sn' class="formselect" id='sn'>
-											<?php for ($i = 32; $i >= 1; $i--): ?>
-												<option value="<?=$i;?>" <?php if ($i == $pconfig['sn']) echo "selected=\"selected\""; ?>><?=$i;?></option>
-											<?php endfor; ?>
+											<?php for ($i = 32; $i >= 1; $i--) :
+?>
+												<option value="<?=$i;?>" <?php if ($i == $pconfig['sn']) {
+                                                    echo "selected=\"selected\"";
+
+} ?>><?=$i;?></option>
+											<?php
+endfor; ?>
 											</select>
 											<br />
 											<span class="vexpl"><?=gettext("IP address and subnet mask. Use /32 for a single IP");?>.</span>
@@ -214,9 +236,11 @@ include("head.inc");
 										<td width="78%">
 											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 											<input name="zone" type="hidden" value="<?=htmlspecialchars($cpzone);?>" />
-											<?php if (isset($id) && $a_allowedips[$id]): ?>
+											<?php if (isset($id) && $a_allowedips[$id]) :
+?>
 												<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-											<?php endif; ?>
+											<?php
+endif; ?>
 										</td>
 									</tr>
 								  </table>
@@ -228,4 +252,4 @@ include("head.inc");
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

@@ -35,16 +35,18 @@ require_once("captiveportal.inc");
 require_once("voucher.inc");
 
 $cpzone = $_GET['zone'];
-if (isset($_POST['zone']))
-	$cpzone = $_POST['zone'];
-
-if (empty($cpzone)) {
-	header("Location: status_captiveportal.php");
-	exit;
+if (isset($_POST['zone'])) {
+    $cpzone = $_POST['zone'];
 }
 
-if (!is_array($config['captiveportal']))
-	$config['captiveportal'] = array();
+if (empty($cpzone)) {
+    header("Location: status_captiveportal.php");
+    exit;
+}
+
+if (!is_array($config['captiveportal'])) {
+    $config['captiveportal'] = array();
+}
 $a_cp =& $config['captiveportal'];
 
 $pgtitle = array(gettext("Status"), gettext("Captive portal"), gettext("Expire Vouchers"), $a_cp[$cpzone]['zone']);
@@ -64,14 +66,14 @@ include("head.inc");
 			    <section class="col-xs-12">
 
 					<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("Voucher Rolls"), false, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("Expire Vouchers"), true, "status_captiveportal_expire.php?zone={$cpzone}");
-						display_top_tabs($tab_array);
-					?>
+                        $tab_array = array();
+                        $tab_array[] = array(gettext("Active Users"), false, "status_captiveportal.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("Voucher Rolls"), false, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("Expire Vouchers"), true, "status_captiveportal_expire.php?zone={$cpzone}");
+                        display_top_tabs($tab_array);
+                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -99,20 +101,20 @@ include("head.inc");
 									</table>
 
 									<?php
-if ($_POST) {
-    if ($_POST['vouchers']) {
-        $result = voucher_expire($_POST['vouchers']);
-        echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\" width=\"100%\" summary=\"results\">\n";
-        if ( $result) {
-            echo "<tr><td bgcolor=\"#D9DEE8\"><img src=\"/themes/{$g['theme']}/images/icons/icon_pass.gif\" alt=\"pass\" /></td>";
-            echo "<td bgcolor=\"#D9DEE8\">Success</td></tr>";
-        } else {
-            echo "<tr><td bgcolor=\"#FFD9D1\"><img src=\"/themes/{$g['theme']}/images/icons/icon_block.gif\" alt=\"block\" /></td>";
-            echo "<td bgcolor=\"#FFD9D1\">Error</td></tr>";
-        }
-        echo "</table>";
-    }
-}
+                                    if ($_POST) {
+                                        if ($_POST['vouchers']) {
+                                            $result = voucher_expire($_POST['vouchers']);
+                                            echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\" width=\"100%\" summary=\"results\">\n";
+                                            if ($result) {
+                                                echo "<tr><td bgcolor=\"#D9DEE8\"><img src=\"/themes/{$g['theme']}/images/icons/icon_pass.gif\" alt=\"pass\" /></td>";
+                                                echo "<td bgcolor=\"#D9DEE8\">Success</td></tr>";
+                                            } else {
+                                                echo "<tr><td bgcolor=\"#FFD9D1\"><img src=\"/themes/{$g['theme']}/images/icons/icon_block.gif\" alt=\"block\" /></td>";
+                                                echo "<td bgcolor=\"#FFD9D1\">Error</td></tr>";
+                                            }
+                                            echo "</table>";
+                                        }
+                                    }
 
 ?>
 					</div>
@@ -125,4 +127,4 @@ if ($_POST) {
 	</section>
 
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

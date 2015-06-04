@@ -27,14 +27,16 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function passthrumacscmp($a, $b) {
-	return strcmp($a['mac'], $b['mac']);
+function passthrumacscmp($a, $b)
+{
+    return strcmp($a['mac'], $b['mac']);
 }
 
-function passthrumacs_sort() {
-	global $config, $cpzone;
+function passthrumacs_sort()
+{
+    global $config, $cpzone;
 
-	usort($config['captiveportal'][$cpzone]['passthrumac'],"passthrumacscmp");
+    usort($config['captiveportal'][$cpzone]['passthrumac'], "passthrumacscmp");
 }
 
 require_once("guiconfig.inc");
@@ -50,111 +52,121 @@ $pgtitle = array(gettext("Services"),gettext("Captive portal"),gettext("Edit MAC
 $shortcut_section = "captiveportal";
 
 $cpzone = $_GET['zone'];
-if (isset($_POST['zone']))
-	$cpzone = $_POST['zone'];
-
-if (empty($cpzone) || empty($config['captiveportal'][$cpzone])) {
-	header("Location: services_captiveportal_zones.php");
-	exit;
+if (isset($_POST['zone'])) {
+    $cpzone = $_POST['zone'];
 }
 
-if (!is_array($config['captiveportal']))
-	$config['captiveportal'] = array();
+if (empty($cpzone) || empty($config['captiveportal'][$cpzone])) {
+    header("Location: services_captiveportal_zones.php");
+    exit;
+}
+
+if (!is_array($config['captiveportal'])) {
+    $config['captiveportal'] = array();
+}
 $a_cp =& $config['captiveportal'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
+if (is_numericint($_GET['id'])) {
+    $id = $_GET['id'];
+}
+if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+    $id = $_POST['id'];
+}
 
-if (!is_array($a_cp[$cpzone]['passthrumac']))
-	$a_cp[$cpzone]['passthrumac'] = array();
+if (!is_array($a_cp[$cpzone]['passthrumac'])) {
+    $a_cp[$cpzone]['passthrumac'] = array();
+}
 $a_passthrumacs = &$a_cp[$cpzone]['passthrumac'];
 
 if (isset($id) && $a_passthrumacs[$id]) {
-	$pconfig['action'] = $a_passthrumacs[$id]['action'];
-	$pconfig['mac'] = $a_passthrumacs[$id]['mac'];
-	$pconfig['bw_up'] = $a_passthrumacs[$id]['bw_up'];
-	$pconfig['bw_down'] = $a_passthrumacs[$id]['bw_down'];
-	$pconfig['descr'] = $a_passthrumacs[$id]['descr'];
-	$pconfig['username'] = $a_passthrumacs[$id]['username'];
+    $pconfig['action'] = $a_passthrumacs[$id]['action'];
+    $pconfig['mac'] = $a_passthrumacs[$id]['mac'];
+    $pconfig['bw_up'] = $a_passthrumacs[$id]['bw_up'];
+    $pconfig['bw_down'] = $a_passthrumacs[$id]['bw_down'];
+    $pconfig['descr'] = $a_passthrumacs[$id]['descr'];
+    $pconfig['username'] = $a_passthrumacs[$id]['username'];
 }
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    $reqdfields = explode(" ", "action mac");
+    $reqdfieldsn = array(gettext("Action"), gettext("MAC address"));
 
-	/* input validation */
-	$reqdfields = explode(" ", "action mac");
-	$reqdfieldsn = array(gettext("Action"), gettext("MAC address"));
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    $_POST['mac'] = strtolower(str_replace("-", ":", $_POST['mac']));
 
-	$_POST['mac'] = strtolower(str_replace("-", ":", $_POST['mac']));
+    if ($_POST['mac']) {
+        if (is_macaddr($_POST['mac'])) {
+            $iflist = get_interface_list();
+            foreach ($iflist as $if) {
+                if ($_POST['mac'] == strtolower($if['mac'])) {
+                    $input_errors[] = sprintf(gettext("The MAC address %s belongs to a local interface, you cannot use it here."), $_POST['mac']);
+                    break;
+                }
+            }
+        } else {
+            $input_errors[] = sprintf("%s. [%s]", gettext("A valid MAC address must be specified"), $_POST['mac']);
+        }
+    }
+    if ($_POST['bw_up'] && !is_numeric($_POST['bw_up'])) {
+        $input_errors[] = gettext("Upload speed needs to be an integer");
+    }
+    if ($_POST['bw_down'] && !is_numeric($_POST['bw_down'])) {
+        $input_errors[] = gettext("Download speed needs to be an integer");
+    }
 
-	if ($_POST['mac']) {
-		if (is_macaddr($_POST['mac'])) {
-			$iflist = get_interface_list();
-			foreach ($iflist as $if) {
-				if ($_POST['mac'] == strtolower($if['mac'])) {
-					$input_errors[] = sprintf(gettext("The MAC address %s belongs to a local interface, you cannot use it here."), $_POST['mac']);
-					break;
-				}
-			}
-		} else {
-			$input_errors[] = sprintf("%s. [%s]", gettext("A valid MAC address must be specified"), $_POST['mac']);
-		}
-	}
-	if ($_POST['bw_up'] && !is_numeric($_POST['bw_up']))
-		$input_errors[] = gettext("Upload speed needs to be an integer");
-	if ($_POST['bw_down'] && !is_numeric($_POST['bw_down']))
-		$input_errors[] = gettext("Download speed needs to be an integer");
+    foreach ($a_passthrumacs as $macent) {
+        if (isset($id) && ($a_passthrumacs[$id]) && ($a_passthrumacs[$id] === $macent)) {
+            continue;
+        }
 
-	foreach ($a_passthrumacs as $macent) {
-		if (isset($id) && ($a_passthrumacs[$id]) && ($a_passthrumacs[$id] === $macent))
-			continue;
+        if ($macent['mac'] == $_POST['mac']) {
+            $input_errors[] = sprintf("[%s] %s.", $_POST['mac'], gettext("already exists"));
+            break;
+        }
+    }
 
-		if ($macent['mac'] == $_POST['mac']){
-			$input_errors[] = sprintf("[%s] %s.", $_POST['mac'], gettext("already exists"));
-			break;
-		}
-	}
+    if (!$input_errors) {
+        $mac = array();
+        $mac['action'] = $_POST['action'];
+        $mac['mac'] = $_POST['mac'];
+        if ($_POST['bw_up']) {
+            $mac['bw_up'] = $_POST['bw_up'];
+        }
+        if ($_POST['bw_down']) {
+            $mac['bw_down'] = $_POST['bw_down'];
+        }
+        if ($_POST['username']) {
+            $mac['username'] = $_POST['username'];
+        }
 
-	if (!$input_errors) {
-		$mac = array();
-		$mac['action'] = $_POST['action'];
-		$mac['mac'] = $_POST['mac'];
-		if ($_POST['bw_up'])
-			$mac['bw_up'] = $_POST['bw_up'];
-		if ($_POST['bw_down'])
-			$mac['bw_down'] = $_POST['bw_down'];
-		if ($_POST['username'])
-			$mac['username'] = $_POST['username'];
+        $mac['descr'] = $_POST['descr'];
 
-		$mac['descr'] = $_POST['descr'];
+        if (isset($id) && $a_passthrumacs[$id]) {
+            $oldmac = $a_passthrumacs[$id];
+            $a_passthrumacs[$id] = $mac;
+        } else {
+            $oldmac = $mac;
+            $a_passthrumacs[] = $mac;
+        }
+        passthrumacs_sort();
 
-		if (isset($id) && $a_passthrumacs[$id]) {
-			$oldmac = $a_passthrumacs[$id];
-			$a_passthrumacs[$id] = $mac;
-		} else {
-			$oldmac = $mac;
-			$a_passthrumacs[] = $mac;
-		}
-		passthrumacs_sort();
+        write_config();
 
-		write_config();
+        if (isset($config['captiveportal'][$cpzone]['enable'])) {
+            $cpzoneid = $config['captiveportal'][$cpzone]['zoneid'];
+            captiveportal_passthrumac_delete_entry($oldmac);
+            captiveportal_passthrumac_configure_entry($mac);
+            unset($cpzoneid);
+        }
 
-		if (isset($config['captiveportal'][$cpzone]['enable'])) {
-			$cpzoneid = $config['captiveportal'][$cpzone]['zoneid'];
-			captiveportal_passthrumac_delete_entry($oldmac);
-			captiveportal_passthrumac_configure_entry($mac);
-			unset($cpzoneid);
-		}
-
-		header("Location: services_captiveportal_mac.php?zone={$cpzone}");
-		exit;
-	}
+        header("Location: services_captiveportal_mac.php?zone={$cpzone}");
+        exit;
+    }
 }
 include("head.inc");
 ?>
@@ -168,7 +180,9 @@ include("head.inc");
 
 			<div class="row">
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($input_errors) {
+                    print_input_errors($input_errors);
+} ?>
 
 			    <section class="col-xs-12">
 
@@ -186,15 +200,17 @@ include("head.inc");
 										<td width="78%" class="vtable">
 											<select name="action" class="formselect">
 							<?php
-												$actions = explode(" ", "Pass Block");
-												foreach ($actions as $action):
-							?>
-													<option value="<?=strtolower($action);?>"<?php if (strtolower($action) == strtolower($pconfig['action'])) echo "selected=\"selected\""; ?>>
-														<?=htmlspecialchars($action);?>
-													</option>
+                                                $actions = explode(" ", "Pass Block");
+                            foreach ($actions as $action) :
+                            ?>
+                                <option value="<?=strtolower($action);?>"<?php if (strtolower($action) == strtolower($pconfig['action'])) {
+                                    echo "selected=\"selected\"";
+} ?>>
+                                    <?=htmlspecialchars($action);?>
+                                </option>
 							<?php
-												endforeach;
-							?>
+                            endforeach;
+                            ?>
 											</select>
 											<br />
 											<span class="vexpl"><?=gettext("Choose what to do with packets coming from this MAC address"); ?>.</span>
@@ -203,12 +219,13 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("MAC address"); ?></td>
 										<td width="78%" class="vtable">
-											<?=$mandfldhtml;?><input name="mac" type="text" class="formfld unknown" id="mac" size="17" value="<?=htmlspecialchars($pconfig['mac']);?>" />
+											<?=$mandfldhtml;
+?><input name="mac" type="text" class="formfld unknown" id="mac" size="17" value="<?=htmlspecialchars($pconfig['mac']);?>" />
 							<?php
-											$ip = getenv('REMOTE_ADDR');
-											$mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
-											$mac = str_replace("\n","",$mac);
-							?>
+                                            $ip = getenv('REMOTE_ADDR');
+                                            $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
+                                            $mac = str_replace("\n", "", $mac);
+                            ?>
 											<a onclick="document.forms[0].mac.value='<?=$mac?>';" href="#"><?=gettext("Copy my MAC address");?></a>
 											<br />
 											<span class="vexpl"><?=gettext("MAC address (6 hex octets separated by colons)"); ?></span></td>
@@ -244,12 +261,16 @@ include("head.inc");
 										<td width="78%">
 											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 											<input name="zone" type="hidden" value="<?=htmlspecialchars($cpzone);?>" />
-											<?php if (isset($id) && $a_passthrumacs[$id]): ?>
+											<?php if (isset($id) && $a_passthrumacs[$id]) :
+?>
 												<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-											<?php endif; ?>
-											<?php if (isset($pconfig['username']) && $pconfig['username']): ?>
+											<?php
+endif; ?>
+											<?php if (isset($pconfig['username']) && $pconfig['username']) :
+?>
 												<input name="username" type="hidden" value="<?=htmlspecialchars($pconfig['username']);?>" />
-											<?php endif; ?>
+											<?php
+endif; ?>
 										</td>
 									</tr>
 								</table>
@@ -261,4 +282,4 @@ include("head.inc");
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

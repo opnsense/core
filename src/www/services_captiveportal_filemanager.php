@@ -30,14 +30,16 @@
 
 $captiveportal_element_sizelimit = 1048576;
 
-function cpelementscmp($a, $b) {
-	return strcasecmp($a['name'], $b['name']);
+function cpelementscmp($a, $b)
+{
+    return strcasecmp($a['name'], $b['name']);
 }
 
-function cpelements_sort() {
+function cpelements_sort()
+{
         global $config, $cpzone;
 
-        usort($config['captiveportal'][$cpzone]['element'],"cpelementscmp");
+        usort($config['captiveportal'][$cpzone]['element'], "cpelementscmp");
 }
 
 require_once("guiconfig.inc");
@@ -47,84 +49,87 @@ require_once("shaper.inc");
 require_once("captiveportal.inc");
 
 $cpzone = $_GET['zone'];
-if (isset($_POST['zone']))
+if (isset($_POST['zone'])) {
         $cpzone = $_POST['zone'];
+}
 
 if (empty($cpzone)) {
         header("Location: services_captiveportal_zones.php");
         exit;
 }
 
-if (!is_array($config['captiveportal']))
+if (!is_array($config['captiveportal'])) {
         $config['captiveportal'] = array();
+}
 $a_cp =& $config['captiveportal'];
 
 $pgtitle = array(gettext("Services"),gettext("Captive portal"), $a_cp[$cpzone]['zone']);
 $shortcut_section = "captiveportal";
 
-if (!is_array($a_cp[$cpzone]['element']))
-	$a_cp[$cpzone]['element'] = array();
+if (!is_array($a_cp[$cpzone]['element'])) {
+    $a_cp[$cpzone]['element'] = array();
+}
 $a_element =& $a_cp[$cpzone]['element'];
 
 // Calculate total size of all files
 $total_size = 0;
 foreach ($a_element as $element) {
-	$total_size += $element['size'];
+    $total_size += $element['size'];
 }
 
 if ($_POST) {
     unset($input_errors);
 
     if (is_uploaded_file($_FILES['new']['tmp_name'])) {
+        if (!stristr($_FILES['new']['name'], "captiveportal-")) {
+            $name = "captiveportal-" . $_FILES['new']['name'];
+        } else {
+            $name = $_FILES['new']['name'];
+        }
+        $size = filesize($_FILES['new']['tmp_name']);
 
-	if(!stristr($_FILES['new']['name'], "captiveportal-"))
-		$name = "captiveportal-" . $_FILES['new']['name'];
-	else
-		$name = $_FILES['new']['name'];
-	$size = filesize($_FILES['new']['tmp_name']);
+    // is there already a file with that name?
+        foreach ($a_element as $element) {
+            if ($element['name'] == $name) {
+                $input_errors[] = sprintf(gettext("A file with the name '%s' already exists."), $name);
+                break;
+            }
+        }
 
-	// is there already a file with that name?
-	foreach ($a_element as $element) {
-			if ($element['name'] == $name) {
-				$input_errors[] = sprintf(gettext("A file with the name '%s' already exists."), $name);
-				break;
-			}
-		}
+        // check total file size
+        if (($total_size + $size) > $captiveportal_element_sizelimit) {
+            $input_errors[] = gettext("The total size of all files uploaded may not exceed ") .
+                format_bytes($captiveportal_element_sizelimit) . ".";
+        }
 
-		// check total file size
-		if (($total_size + $size) > $captiveportal_element_sizelimit) {
-			$input_errors[] = gettext("The total size of all files uploaded may not exceed ") .
-				format_bytes($captiveportal_element_sizelimit) . ".";
-		}
+        if (!$input_errors) {
+            $element = array();
+            $element['name'] = $name;
+            $element['size'] = $size;
+            $element['content'] = base64_encode(file_get_contents($_FILES['new']['tmp_name']));
 
-		if (!$input_errors) {
-			$element = array();
-			$element['name'] = $name;
-			$element['size'] = $size;
-			$element['content'] = base64_encode(file_get_contents($_FILES['new']['tmp_name']));
+            $a_element[] = $element;
+            cpelements_sort();
 
-			$a_element[] = $element;
-			cpelements_sort();
-
-			write_config();
-			captiveportal_write_elements();
-			header("Location: services_captiveportal_filemanager.php?zone={$cpzone}");
-			exit;
-		}
+            write_config();
+            captiveportal_write_elements();
+            header("Location: services_captiveportal_filemanager.php?zone={$cpzone}");
+            exit;
+        }
     }
-} else if (($_GET['act'] == "del") && !empty($cpzone) && $a_element[$_GET['id']]) {
-	@unlink("/var/db/cpelements/" . $a_element[$_GET['id']]['name']);
-	@unlink("/usr/local/captiveportal/" . $a_element[$_GET['id']]['name']);
-	unset($a_element[$_GET['id']]);
-	write_config();
-	header("Location: services_captiveportal_filemanager.php?zone={$cpzone}");
-	exit;
+} elseif (($_GET['act'] == "del") && !empty($cpzone) && $a_element[$_GET['id']]) {
+    @unlink("/var/db/cpelements/" . $a_element[$_GET['id']]['name']);
+    @unlink("/usr/local/captiveportal/" . $a_element[$_GET['id']]['name']);
+    unset($a_element[$_GET['id']]);
+    write_config();
+    header("Location: services_captiveportal_filemanager.php?zone={$cpzone}");
+    exit;
 }
 
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>gettext('add file'), 'href'=>'services_captiveportal_filemanager.php?zone='.$cpzone.'&act=add'),
+    array('label'=>gettext('add file'), 'href'=>'services_captiveportal_filemanager.php?zone='.$cpzone.'&act=add'),
 );
 
 
@@ -138,21 +143,23 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if ($input_errors) {
+                    print_input_errors($input_errors);
+} ?>
 
 			    <section class="col-xs-12">
 
 				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("MAC"), false, "services_captiveportal_mac.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("Allowed IP addresses"), false, "services_captiveportal_ip.php?zone={$cpzone}");
-						// Hide Allowed Hostnames as this feature is currently not supported
-						// $tab_array[] = array(gettext("Allowed Hostnames"), false, "services_captiveportal_hostname.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("Vouchers"), false, "services_captiveportal_vouchers.php?zone={$cpzone}");
-						$tab_array[] = array(gettext("File Manager"), true, "services_captiveportal_filemanager.php?zone={$cpzone}");
-						display_top_tabs($tab_array, true);
-					?>
+                        $tab_array = array();
+                        $tab_array[] = array(gettext("Captive portal(s)"), false, "services_captiveportal.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("MAC"), false, "services_captiveportal_mac.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("Allowed IP addresses"), false, "services_captiveportal_ip.php?zone={$cpzone}");
+                        // Hide Allowed Hostnames as this feature is currently not supported
+                        // $tab_array[] = array(gettext("Allowed Hostnames"), false, "services_captiveportal_hostname.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("Vouchers"), false, "services_captiveportal_vouchers.php?zone={$cpzone}");
+                        $tab_array[] = array(gettext("File Manager"), true, "services_captiveportal_filemanager.php?zone={$cpzone}");
+                        display_top_tabs($tab_array, true);
+                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -162,7 +169,8 @@ $main_buttons = array(
 		                        <input type="hidden" name="zone" id="zone" value="<?=htmlspecialchars($cpzone);?>" />
 
 
-								  <?php if ($_GET['act'] == 'add'): ?>
+                                    <?php if ($_GET['act'] == 'add') :
+?>
 								   <div class="table-responsive">
 			                        <table class="table table-striped table-sort">
 									  <tr>
@@ -180,7 +188,8 @@ $main_buttons = array(
 								   </div>
 								   <br/>
 
-								  <?php endif; ?>
+                                    <?php
+endif; ?>
 
 
 
@@ -193,25 +202,34 @@ $main_buttons = array(
 
 									</td>
 								      </tr>
-								<?php if (is_array($a_cp[$cpzone]['element'])):
-									$i = 0; foreach ($a_cp[$cpzone]['element'] as $element): ?>
+								<?php if (is_array($a_cp[$cpzone]['element'])) :
+                                    $i = 0; foreach ($a_cp[$cpzone]['element'] as $element) :
+?>
 									  <tr>
 										<td class="listlr"><?=htmlspecialchars($element['name']);?></td>
 										<td class="listr" align="right"><?=format_bytes($element['size']);?></td>
 										<td valign="middle" class="list nowrap">
-										<a href="services_captiveportal_filemanager.php?zone=<?=$cpzone;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this file?"); ?>')">
+										<a href="services_captiveportal_filemanager.php?zone=<?=$cpzone;
+?>&amp;act=del&amp;id=<?=$i;
+?>" onclick="return confirm('<?=gettext("Do you really want to delete this file?"); ?>')">
 											<span class="glyphicon glyphicon-remove" title="<?=gettext("delete file"); ?>"></span></a>
 										</td>
 									  </tr>
-								  <?php $i++; endforeach; endif; ?>
+                                    <?php $i++;
 
-								  <?php if ($total_size > 0): ?>
+                                    endforeach;
+
+endif; ?>
+
+                                    <?php if ($total_size > 0) :
+?>
 									  <tr>
 										<td class="listlr" style="background-color: #eee"><strong><?=gettext("TOTAL"); ?></strong></td>
 										<td class="listr" style="background-color: #eee" align="right"><strong><?=format_bytes($total_size);?></strong></td>
 										<td valign="middle" style="background-color: #eee" class="list nowrap"></td>
 									  </tr>
-								  <?php endif; ?>
+                                    <?php
+endif; ?>
 
 								</table>
 		                        </div>
@@ -220,14 +238,14 @@ $main_buttons = array(
 								<?=gettext("Note:"); ?><br />
 								</strong></span>
 								<?=gettext("Any files that you upload here with the filename prefix of captiveportal- will " .
-								"be made available in the root directory of the captive portal HTTP(S) server. " .
-								"You may reference them directly from your portal page HTML code using relative paths. " .
-								"Example: you've uploaded an image with the name 'captiveportal-test.jpg' using the " .
-								"file manager. Then you can include it in your portal page like this:"); ?><br /><br />
+                                "be made available in the root directory of the captive portal HTTP(S) server. " .
+                                "You may reference them directly from your portal page HTML code using relative paths. " .
+                                "Example: you've uploaded an image with the name 'captiveportal-test.jpg' using the " .
+                                "file manager. Then you can include it in your portal page like this:"); ?><br /><br />
 								<tt>&lt;img src=&quot;captiveportal-test.jpg&quot; width=... height=...&gt;</tt>
 								<br /><br />
 								<?=gettext("In addition, you can also upload .php files for execution.  You can pass the filename " .
-								"to your custom page from the initial page by using text similar to:"); ?>
+                                "to your custom page from the initial page by using text similar to:"); ?>
 								<br /><br />
 								<tt>&lt;a href="/captiveportal-aup.php?zone=$PORTAL_ZONE$&amp;redirurl=$PORTAL_REDIRURL$"&gt;<?=gettext("Acceptable usage policy"); ?>&lt;/a&gt;</tt>
 								<br /><br />
@@ -241,4 +259,4 @@ $main_buttons = array(
 		</div>
 	</section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

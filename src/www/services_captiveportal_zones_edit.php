@@ -35,43 +35,43 @@ require_once("captiveportal.inc");
 $pgtitle = array(gettext("Services"),gettext("Captive portal"),gettext("Edit Zones"));
 $shortcut_section = "captiveportal";
 
-if (!is_array($config['captiveportal']))
-	$config['captiveportal'] = array();
+if (!is_array($config['captiveportal'])) {
+    $config['captiveportal'] = array();
+}
 $a_cp =& $config['captiveportal'];
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* input validation */
+    $reqdfields = explode(" ", "zone");
+    $reqdfieldsn = array(gettext("Zone name"));
 
-	/* input validation */
-	$reqdfields = explode(" ", "zone");
-	$reqdfieldsn = array(gettext("Zone name"));
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    if (preg_match('/[^A-Za-z0-9_]/', $_POST['zone'])) {
+        $input_errors[] = gettext("The zone name can only contain letters, digits, and underscores (_).");
+    }
 
-	if (preg_match('/[^A-Za-z0-9_]/', $_POST['zone'])) {
-		$input_errors[] = gettext("The zone name can only contain letters, digits, and underscores (_).");
-	}
+    foreach ($a_cp as $cpkey => $cpent) {
+        if ($cpent['zone'] == $_POST['zone']) {
+            $input_errors[] = sprintf("[%s] %s.", $_POST['zone'], gettext("already exists"));
+            break;
+        }
+    }
 
-	foreach ($a_cp as $cpkey => $cpent) {
-		if ($cpent['zone'] == $_POST['zone']) {
-			$input_errors[] = sprintf("[%s] %s.", $_POST['zone'], gettext("already exists"));
-			break;
-		}
-	}
+    if (!$input_errors) {
+        $cpzone = strtolower($_POST['zone']);
+        $a_cp[$cpzone] = array();
+        $a_cp[$cpzone]['zone'] = str_replace(" ", "", $_POST['zone']);
+        $a_cp[$cpzone]['descr'] = $_POST['descr'];
+        $a_cp[$cpzone]['localauth_priv'] = true;
+        write_config();
 
-	if (!$input_errors) {
-		$cpzone = strtolower($_POST['zone']);
-		$a_cp[$cpzone] = array();
-		$a_cp[$cpzone]['zone'] = str_replace(" ", "", $_POST['zone']);
-		$a_cp[$cpzone]['descr'] = $_POST['descr'];
-		$a_cp[$cpzone]['localauth_priv'] = true;
-		write_config();
-
-		header("Location: services_captiveportal.php?zone={$cpzone}");
-		exit;
-	}
+        header("Location: services_captiveportal.php?zone={$cpzone}");
+        exit;
+    }
 }
 include("head.inc");
 ?>
@@ -84,7 +84,9 @@ include("head.inc");
 
         <div class="row">
 
-			<?php if ($input_errors) print_input_errors($input_errors); ?>
+			<?php if ($input_errors) {
+                print_input_errors($input_errors);
+} ?>
 
             <section class="col-xs-12">
 
@@ -131,4 +133,4 @@ include("head.inc");
 	</div>
 </section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");
