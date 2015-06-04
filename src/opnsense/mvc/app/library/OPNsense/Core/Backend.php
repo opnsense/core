@@ -94,4 +94,18 @@ class Backend
 
         return  str_replace($endOfStream, "", $resp);
     }
+
+
+    /**
+     * @return int last restart timestamp
+     */
+    public function getLastRestart()
+    {
+        if (file_exists($this->configdSocket)) {
+            return filemtime($this->configdSocket);
+        } else {
+            return 0;
+        }
+
+    }
 }
