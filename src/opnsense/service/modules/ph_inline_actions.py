@@ -60,5 +60,21 @@ def execute(action, parameters):
         del tmpl
 
         return 'OK'
+    elif action.command == 'configd.actions':
+        # list all available configd actions
+        from processhandler import ActionHandler
+
+        actHandler = ActionHandler()
+        actions = actHandler.listActions(['message', 'description'])
+
+        if unicode(parameters).lower() == 'json':
+            import json
+            return json.dumps(actions)
+        else:
+            result = []
+            for action in actions:
+                result.append('%s [ %s ]'%(action,actions[action]['description']))
+
+            return '\n'.join(result)
 
     return 'ERR'

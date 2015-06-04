@@ -46,6 +46,7 @@ import time
 import uuid
 import shlex
 import ph_inline_actions
+from modules import singleton
 
 
 class Handler(object):
@@ -216,21 +217,25 @@ class HandlerClient(threading.Thread):
             if not exec_in_background:
                 self.connection.close()
 
-
+@singleton
 class ActionHandler(object):
     """ Start/stop services and functions using configuration data defined in conf/actions_<topic>.conf
     """
-    def __init__(self, config_path, config_environment):
+    def __init__(self, config_path=None, config_environment=None):
         """ Initialize action handler to start system functions
 
         :param config_path: full path of configuration data
         :param config_environment: environment to use (if possible)
         :return:
         """
-        self.config_path = config_path
-        self.config_environment = config_environment
-        self.action_map = {}
-        self.load_config()
+        if config_path is not None:
+            self.config_path = config_path
+        if config_environment is not None:
+            self.config_environment = config_environment
+
+        # try to load data on initial start
+        if not hasattr(self, 'action_map'):
+            self.load_config()
 
     def load_config(self):
         """ load action configuration from config files into local dictionary
@@ -265,6 +270,23 @@ class ActionHandler(object):
                 else:
                     for alias in section.split('|'):
                         self.action_map[topic_name][alias] = action_obj
+
+    def listActions(self, attributes=[]):
+        """ list all available actions
+        :return: dict
+        """
+        result = {}
+        for command in self.action_map:
+            for action in self.action_map[command]:
+                cmd='%s %s'%(command,action)
+                result[cmd] = {}
+                for actAttr in attributes:
+                    if hasattr(self.action_map[command][action], actAttr):
+                        result[cmd][actAttr] = getattr(self.action_map[command][action], actAttr)
+                    else:
+                        result[cmd][actAttr] = ''
+
+        return result
 
     def findAction(self, command, action, parameters):
         """ find action object
