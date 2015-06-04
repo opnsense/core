@@ -59,161 +59,175 @@ $pconfig['ftp-proxy-client'] = isset($config['system']['ftp-proxy']['client']);
 $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
 
 if ($_POST) {
-	unset($input_errors);
-	$pconfig = $_POST;
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	/* input validation */
-	if ((empty($_POST['adaptivestart']) && !empty($_POST['adaptiveend'])) || (!empty($_POST['adaptivestart']) && empty($_POST['adaptiveend'])))
-		$input_errors[] = gettext("The Firewall Adaptive values must be set together.");
-	if (!empty($_POST['adaptivestart']) && !is_numericint($_POST['adaptivestart'])) {
-		$input_errors[] = gettext("The Firewall Adaptive Start value must be an integer.");
-	}
-	if (!empty($_POST['adaptiveend']) && !is_numericint($_POST['adaptiveend'])) {
-		$input_errors[] = gettext("The Firewall Adaptive End value must be an integer.");
-	}
-	if ($_POST['maximumstates'] && !is_numericint($_POST['maximumstates'])) {
-		$input_errors[] = gettext("The Firewall Maximum States value must be an integer.");
-	}
-	if ($_POST['aliasesresolveinterval'] && !is_numericint($_POST['aliasesresolveinterval'])) {
-		$input_errors[] = gettext("The Aliases Hostname Resolve Interval value must be an integer.");
-	}
-	if ($_POST['maximumtableentries'] && !is_numericint($_POST['maximumtableentries'])) {
-		$input_errors[] = gettext("The Firewall Maximum Table Entries value must be an integer.");
-	}
-	if ($_POST['tcpidletimeout'] && !is_numericint($_POST['tcpidletimeout'])) {
-		$input_errors[] = gettext("The TCP idle timeout must be an integer.");
-	}
-	if ($_POST['reflectiontimeout'] && !is_numericint($_POST['reflectiontimeout'])) {
-		$input_errors[] = gettext("The Reflection timeout must be an integer.");
-	}
+    /* input validation */
+    if ((empty($_POST['adaptivestart']) && !empty($_POST['adaptiveend'])) || (!empty($_POST['adaptivestart']) && empty($_POST['adaptiveend']))) {
+        $input_errors[] = gettext("The Firewall Adaptive values must be set together.");
+    }
+    if (!empty($_POST['adaptivestart']) && !is_numericint($_POST['adaptivestart'])) {
+        $input_errors[] = gettext("The Firewall Adaptive Start value must be an integer.");
+    }
+    if (!empty($_POST['adaptiveend']) && !is_numericint($_POST['adaptiveend'])) {
+        $input_errors[] = gettext("The Firewall Adaptive End value must be an integer.");
+    }
+    if ($_POST['maximumstates'] && !is_numericint($_POST['maximumstates'])) {
+        $input_errors[] = gettext("The Firewall Maximum States value must be an integer.");
+    }
+    if ($_POST['aliasesresolveinterval'] && !is_numericint($_POST['aliasesresolveinterval'])) {
+        $input_errors[] = gettext("The Aliases Hostname Resolve Interval value must be an integer.");
+    }
+    if ($_POST['maximumtableentries'] && !is_numericint($_POST['maximumtableentries'])) {
+        $input_errors[] = gettext("The Firewall Maximum Table Entries value must be an integer.");
+    }
+    if ($_POST['tcpidletimeout'] && !is_numericint($_POST['tcpidletimeout'])) {
+        $input_errors[] = gettext("The TCP idle timeout must be an integer.");
+    }
+    if ($_POST['reflectiontimeout'] && !is_numericint($_POST['reflectiontimeout'])) {
+        $input_errors[] = gettext("The Reflection timeout must be an integer.");
+    }
 
-	ob_flush();
-	flush();
+    ob_flush();
+    flush();
 
-	if (!$input_errors) {
+    if (!$input_errors) {
+        if ($_POST['disablefilter'] == "yes") {
+            $config['system']['disablefilter'] = "enabled";
+        } else {
+            unset($config['system']['disablefilter']);
+        }
 
-		if($_POST['disablefilter'] == "yes")
-			$config['system']['disablefilter'] = "enabled";
-		else
-			unset($config['system']['disablefilter']);
+        if ($_POST['disablevpnrules'] == "yes") {
+            $config['system']['disablevpnrules'] = true;
+        } else {
+            unset($config['system']['disablevpnrules']);
+        }
+        if ($_POST['rfc959workaround'] == "yes") {
+            $config['system']['rfc959workaround'] = "enabled";
+        } else {
+            unset($config['system']['rfc959workaround']);
+        }
 
-		if($_POST['disablevpnrules'] == "yes")
-			$config['system']['disablevpnrules'] = true;
-		else
-			unset($config['system']['disablevpnrules']);
-		if($_POST['rfc959workaround'] == "yes")
-			$config['system']['rfc959workaround'] = "enabled";
-		else
-			unset($config['system']['rfc959workaround']);
+        if ($_POST['scrubnodf'] == "yes") {
+            $config['system']['scrubnodf'] = "enabled";
+        } else {
+            unset($config['system']['scrubnodf']);
+        }
 
-		if($_POST['scrubnodf'] == "yes")
-			$config['system']['scrubnodf'] = "enabled";
-		else
-			unset($config['system']['scrubnodf']);
+        if ($_POST['scrubrnid'] == "yes") {
+            $config['system']['scrubrnid'] = "enabled";
+        } else {
+            unset($config['system']['scrubrnid']);
+        }
 
-		if($_POST['scrubrnid'] == "yes")
-			$config['system']['scrubrnid'] = "enabled";
-		else
-			unset($config['system']['scrubrnid']);
+        if (!empty($_POST['adaptiveend'])) {
+            $config['system']['adaptiveend'] = $_POST['adaptiveend'];
+        } else {
+            unset($config['system']['adaptiveend']);
+        }
+        if (!empty($_POST['adaptivestart'])) {
+            $config['system']['adaptivestart'] = $_POST['adaptivestart'];
+        } else {
+            unset($config['system']['adaptivestart']);
+        }
 
-		if (!empty($_POST['adaptiveend']))
-			$config['system']['adaptiveend'] = $_POST['adaptiveend'];
-		else
-			unset($config['system']['adaptiveend']);
-		if (!empty($_POST['adaptivestart']))
-			$config['system']['adaptivestart'] = $_POST['adaptivestart'];
-		else
-			unset($config['system']['adaptivestart']);
+        if ($_POST['checkaliasesurlcert'] == "yes") {
+            $config['system']['checkaliasesurlcert'] = true;
+        } else {
+            unset($config['system']['checkaliasesurlcert']);
+        }
 
-		if ($_POST['checkaliasesurlcert'] == "yes")
-			$config['system']['checkaliasesurlcert'] = true;
-		else
-			unset($config['system']['checkaliasesurlcert']);
+        $config['system']['optimization'] = $_POST['optimization'];
+        $config['system']['maximumstates'] = $_POST['maximumstates'];
+        $config['system']['aliasesresolveinterval'] = $_POST['aliasesresolveinterval'];
+        $config['system']['maximumtableentries'] = $_POST['maximumtableentries'];
 
-		$config['system']['optimization'] = $_POST['optimization'];
-		$config['system']['maximumstates'] = $_POST['maximumstates'];
-		$config['system']['aliasesresolveinterval'] = $_POST['aliasesresolveinterval'];
-		$config['system']['maximumtableentries'] = $_POST['maximumtableentries'];
+        if ($_POST['natreflection'] == "proxy") {
+            unset($config['system']['disablenatreflection']);
+            unset($config['system']['enablenatreflectionpurenat']);
+        } elseif ($_POST['natreflection'] == "purenat") {
+            unset($config['system']['disablenatreflection']);
+            $config['system']['enablenatreflectionpurenat'] = "yes";
+        } else {
+            $config['system']['disablenatreflection'] = "yes";
+            unset($config['system']['enablenatreflectionpurenat']);
+        }
 
-		if($_POST['natreflection'] == "proxy") {
-			unset($config['system']['disablenatreflection']);
-			unset($config['system']['enablenatreflectionpurenat']);
-		} else if($_POST['natreflection'] == "purenat") {
-			unset($config['system']['disablenatreflection']);
-			$config['system']['enablenatreflectionpurenat'] = "yes";
-		} else {
-			$config['system']['disablenatreflection'] = "yes";
-			unset($config['system']['enablenatreflectionpurenat']);
-		}
+        if ($_POST['enablebinatreflection'] == "yes") {
+            $config['system']['enablebinatreflection'] = "yes";
+        } else {
+            unset($config['system']['enablebinatreflection']);
+        }
 
-		if($_POST['enablebinatreflection'] == "yes")
-			$config['system']['enablebinatreflection'] = "yes";
-		else
-			unset($config['system']['enablebinatreflection']);
+        if ($_POST['disablereplyto'] == "yes") {
+            $config['system']['disablereplyto'] = $_POST['disablereplyto'];
+        } else {
+            unset($config['system']['disablereplyto']);
+        }
 
-		if($_POST['disablereplyto'] == "yes")
-			$config['system']['disablereplyto'] = $_POST['disablereplyto'];
-		else
-			unset($config['system']['disablereplyto']);
+        if ($_POST['disablenegate'] == "yes") {
+            $config['system']['disablenegate'] = $_POST['disablenegate'];
+        } else {
+            unset($config['system']['disablenegate']);
+        }
 
-		if($_POST['disablenegate'] == "yes")
-			$config['system']['disablenegate'] = $_POST['disablenegate'];
-		else
-			unset($config['system']['disablenegate']);
+        if ($_POST['enablenatreflectionhelper'] == "yes") {
+            $config['system']['enablenatreflectionhelper'] = "yes";
+        } else {
+            unset($config['system']['enablenatreflectionhelper']);
+        }
 
-		if($_POST['enablenatreflectionhelper'] == "yes")
-			$config['system']['enablenatreflectionhelper'] = "yes";
-		else
-			unset($config['system']['enablenatreflectionhelper']);
+        $config['system']['reflectiontimeout'] = $_POST['reflectiontimeout'];
 
-		$config['system']['reflectiontimeout'] = $_POST['reflectiontimeout'];
+        if ($_POST['bypassstaticroutes'] == "yes") {
+            $config['filter']['bypassstaticroutes'] = $_POST['bypassstaticroutes'];
+        } elseif (isset($config['filter']['bypassstaticroutes']))
+            unset($config['filter']['bypassstaticroutes']);
 
-		if($_POST['bypassstaticroutes'] == "yes")
-			$config['filter']['bypassstaticroutes'] = $_POST['bypassstaticroutes'];
-		elseif(isset($config['filter']['bypassstaticroutes']))
-			unset($config['filter']['bypassstaticroutes']);
+        if ($_POST['disablescrub'] == "yes") {
+            $config['system']['disablescrub'] = $_POST['disablescrub'];
+        } else {
+            unset($config['system']['disablescrub']);
+        }
 
-		if($_POST['disablescrub'] == "yes")
-			$config['system']['disablescrub'] = $_POST['disablescrub'];
-		else
-			unset($config['system']['disablescrub']);
+        if ($_POST['ftp-proxy-client'] == 'yes') {
+            $config['system']['ftp-proxy']['client'] = true;
+        } else {
+            unset($config['system']['ftp-proxy']['client']);
+        }
 
-		if ($_POST['ftp-proxy-client'] == 'yes') {
-			$config['system']['ftp-proxy']['client'] = true;
-		} else {
-			unset($config['system']['ftp-proxy']['client']);
-		}
+        if ($_POST['bogonsinterval'] != $config['system']['bogons']['interval']) {
+            switch ($_POST['bogonsinterval']) {
+                case 'daily':
+                    install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "*");
+                    break;
+                case 'weekly':
+                    install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "0");
+                    break;
+                case 'monthly':
+                    // fall through
+                default:
+                    install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "1", "*", "*");
+            }
+            $config['system']['bogons']['interval'] = $_POST['bogonsinterval'];
+        }
 
-		if ($_POST['bogonsinterval'] != $config['system']['bogons']['interval']) {
-			switch ($_POST['bogonsinterval']) {
-				case 'daily':
-					install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "*");
-					break;
-				case 'weekly':
-					install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "0");
-					break;
-				case 'monthly':
-					// fall through
-				default:
-					install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "1", "*", "*");
-			}
-			$config['system']['bogons']['interval'] = $_POST['bogonsinterval'];
-		}
+        write_config();
 
-		write_config();
+        // Kill filterdns when value changes, filter_configure() will restart it
+        if ($old_aliasesresolveinterval != $config['system']['aliasesresolveinterval']) {
+            killbypid('/var/run/filterdns.pid');
+        }
 
-		// Kill filterdns when value changes, filter_configure() will restart it
-		if ($old_aliasesresolveinterval != $config['system']['aliasesresolveinterval']) {
-			killbypid('/var/run/filterdns.pid');
-		}
-
-		$retval = 0;
-		$retval = filter_configure();
-		if(stristr($retval, "error") <> true)
-			$savemsg = get_std_save_message($retval);
-		else
-			$savemsg = $retval;
-	}
+        $retval = 0;
+        $retval = filter_configure();
+        if (stristr($retval, "error") <> true) {
+            $savemsg = get_std_save_message($retval);
+        } else {
+            $savemsg = $retval;
+        }
+    }
 }
 
 $pgtitle = array(gettext("System"),gettext("Settings"),gettext("Firewall and NAT"));
@@ -246,8 +260,12 @@ include("head.inc");
 
         <div class="row">
             <?php
-		if ($input_errors) print_input_errors($input_errors);
-		if ($savemsg) print_info_box($savemsg);
+            if ($input_errors) {
+                print_input_errors($input_errors);
+            }
+            if ($savemsg) {
+                print_info_box($savemsg);
+            }
             ?>
             <section class="col-xs-12">
                 <? include('system_advanced_tabs.inc'); ?>
@@ -265,33 +283,49 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("IP Do-Not-Fragment compatibility");?></td>
 									<td width="78%" class="vtable">
-										<input name="scrubnodf" type="checkbox" id="scrubnodf" value="yes" <?php if (isset($config['system']['scrubnodf'])) echo "checked=\"checked\""; ?> />
+										<input name="scrubnodf" type="checkbox" id="scrubnodf" value="yes" <?php if (isset($config['system']['scrubnodf'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Clear invalid DF bits instead of dropping the packets");?></strong><br />
 										<?=gettext("This allows for communications with hosts that generate fragmented " .
-										"packets with the don't fragment (DF) bit set. Linux NFS is known to " .
-										"do this. This will cause the filter to not drop such packets but " .
-										"instead clear the don't fragment bit.");?>
+                                        "packets with the don't fragment (DF) bit set. Linux NFS is known to " .
+                                        "do this. This will cause the filter to not drop such packets but " .
+                                        "instead clear the don't fragment bit.");?>
 									</td>
 								</tr>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("IP Random id generation");?></td>
 									<td width="78%" class="vtable">
-										<input name="scrubrnid" type="checkbox" id="scrubrnid" value="yes" <?php if (isset($config['system']['scrubrnid'])) echo "checked=\"checked\""; ?> />
+										<input name="scrubrnid" type="checkbox" id="scrubrnid" value="yes" <?php if (isset($config['system']['scrubrnid'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Insert a stronger id into IP header of packets passing through the filter.");?></strong><br />
 										<?=gettext("Replaces the IP identification field of packets with random values to " .
-										"compensate for operating systems that use predictable values. " .
-										"This option only applies to packets that are not fragmented after the " .
-										"optional packet reassembly.");?>
+                                        "compensate for operating systems that use predictable values. " .
+                                        "This option only applies to packets that are not fragmented after the " .
+                                        "optional packet reassembly.");?>
 									</td>
 								</tr>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Firewall Optimization Options");?></td>
 									<td width="78%" class="vtable">
 										<select onchange="update_description(this.selectedIndex);" name="optimization" id="optimization" class="selectpicker" data-style="btn-default">
-											<option value="normal"<?php if($config['system']['optimization']=="normal") echo " selected=\"selected\""; ?>><?=gettext("normal");?></option>
-											<option value="high-latency"<?php if($config['system']['optimization']=="high-latency") echo " selected=\"selected\""; ?>><?=gettext("high-latency");?></option>
-											<option value="aggressive"<?php if($config['system']['optimization']=="aggressive") echo " selected=\"selected\""; ?>><?=gettext("aggressive");?></option>
-											<option value="conservative"<?php if($config['system']['optimization']=="conservative") echo " selected=\"selected\""; ?>><?=gettext("conservative");?></option>
+											<option value="normal"<?php if ($config['system']['optimization']=="normal") {
+                                                echo " selected=\"selected\"";
+
+} ?>><?=gettext("normal");?></option>
+											<option value="high-latency"<?php if ($config['system']['optimization']=="high-latency") {
+                                                echo " selected=\"selected\"";
+
+} ?>><?=gettext("high-latency");?></option>
+											<option value="aggressive"<?php if ($config['system']['optimization']=="aggressive") {
+                                                echo " selected=\"selected\"";
+
+} ?>><?=gettext("aggressive");?></option>
+											<option value="conservative"<?php if ($config['system']['optimization']=="conservative") {
+                                                echo " selected=\"selected\"";
+
+} ?>><?=gettext("conservative");?></option>
 										</select>
 										<br />
 										<textarea readonly="readonly" cols="60" rows="2" id="info" name="info"></textarea>
@@ -307,19 +341,25 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Disable Firewall");?></td>
 									<td width="78%" class="vtable">
-										<input name="disablefilter" type="checkbox" id="disablefilter" value="yes" <?php if (isset($config['system']['disablefilter'])) echo "checked=\"checked\""; ?> />
+										<input name="disablefilter" type="checkbox" id="disablefilter" value="yes" <?php if (isset($config['system']['disablefilter'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Disable all packet filtering.");?></strong>
 										<br />
 										<span class="vexpl"><?php printf(gettext("Note:  This converts %s into a routing only platform!"), $g['product_name']);?><br />
 											<?=gettext("Note:  This will also turn off NAT!");?>
-											<br /><?=gettext("If you only want to disable NAT, and not firewall rules, visit the");?> <a href="firewall_nat_out.php"><?=gettext("Outbound NAT");?></a> <?=gettext("page");?>.
+											<br /><?=gettext("If you only want to disable NAT, and not firewall rules, visit the");
+?> <a href="firewall_nat_out.php"><?=gettext("Outbound NAT");
+?></a> <?=gettext("page");?>.
 										</span>
 									</td>
 								</tr>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Disable Firewall Scrub");?></td>
 									<td width="78%" class="vtable">
-										<input name="disablescrub" type="checkbox" id="disablescrub" value="yes" <?php if (isset($config['system']['disablescrub'])) echo "checked=\"checked\""; ?> />
+										<input name="disablescrub" type="checkbox" id="disablescrub" value="yes" <?php if (isset($config['system']['disablescrub'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Disables the PF scrubbing option which can sometimes interfere with NFS and PPTP traffic.");?></strong>
 										<br />
 									</td>
@@ -358,28 +398,35 @@ include("head.inc");
 										<br />
 										<span class="vexpl">
 											<?=gettext("Note:  Leave this blank for the default.");?>
-											<?php if (empty($pconfig['maximumtableentries'])): ?>
-												<?= gettext("On your system the default size is:");?> <?= default_table_entries_size(); ?>
-											<?php endif; ?>
+											<?php if (empty($pconfig['maximumtableentries'])) :
+?>
+												<?= gettext("On your system the default size is:");
+?> <?= default_table_entries_size(); ?>
+											<?php
+endif; ?>
 										</span>
 									</td>
 								</tr>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Static route filtering");?></td>
 									<td width="78%" class="vtable">
-										<input name="bypassstaticroutes" type="checkbox" id="bypassstaticroutes" value="yes" <?php if ($pconfig['bypassstaticroutes']) echo "checked=\"checked\""; ?> />
+										<input name="bypassstaticroutes" type="checkbox" id="bypassstaticroutes" value="yes" <?php if ($pconfig['bypassstaticroutes']) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Bypass firewall rules for traffic on the same interface");?></strong>
 										<br />
 										<?=gettext("This option only applies if you have defined one or more static routes. If it is enabled, traffic that enters and " .
-										"leaves through the same interface will not be checked by the firewall. This may be desirable in some situations where " .
-										"multiple subnets are connected to the same interface.");?>
+                                        "leaves through the same interface will not be checked by the firewall. This may be desirable in some situations where " .
+                                        "multiple subnets are connected to the same interface.");?>
 										<br />
 									</td>
 								</tr>
 								<tr>
 									<td width="22%" valign="top" class="vncell">Disable Auto-added VPN rules</td>
 									<td width="78%" class="vtable">
-										<input name="disablevpnrules" type="checkbox" id="disablevpnrules" value="yes" <?php if (isset($config['system']['disablevpnrules'])) echo "checked=\"checked\""; ?> />
+										<input name="disablevpnrules" type="checkbox" id="disablevpnrules" value="yes" <?php if (isset($config['system']['disablevpnrules'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Disable all auto-added VPN rules.");?></strong>
 										<br />
 										<span class="vexpl"><?=gettext("Note: This disables automatically added rules for IPsec, PPTP.");?>
@@ -389,18 +436,22 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell">Disable reply-to</td>
 									<td width="78%" class="vtable">
-										<input name="disablereplyto" type="checkbox" id="disablereplyto" value="yes" <?php if ($pconfig['disablereplyto']) echo "checked=\"checked\""; ?> />
+										<input name="disablereplyto" type="checkbox" id="disablereplyto" value="yes" <?php if ($pconfig['disablereplyto']) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Disable reply-to on WAN rules");?></strong>
 										<br />
 										<?=gettext("With Multi-WAN you generally want to ensure traffic leaves the same interface it arrives on, hence reply-to is added automatically by default. " .
-										"When using bridging, you must disable this behavior if the WAN gateway IP is different from the gateway IP of the hosts behind the bridged interface.");?>
+                                        "When using bridging, you must disable this behavior if the WAN gateway IP is different from the gateway IP of the hosts behind the bridged interface.");?>
 										<br />
 									</td>
 								</tr>
 								<tr>
 									<td width="22%" valign="top" class="vncell">Disable Negate rules</td>
 									<td width="78%" class="vtable">
-										<input name="disablenegate" type="checkbox" id="disablenegate" value="yes" <?php if ($pconfig['disablenegate']) echo "checked=\"checked\""; ?> />
+										<input name="disablenegate" type="checkbox" id="disablenegate" value="yes" <?php if ($pconfig['disablenegate']) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Disable Negate rule on policy routing rules");?></strong>
 										<br />
 										<?=gettext("With Multi-WAN you generally want to ensure traffic reaches directly connected networks and VPN networks when using policy routing. You can disable this for special purposes but it requires manually creating rules for these networks");?>
@@ -420,7 +471,9 @@ include("head.inc");
 								<tr>
 								    <td width="22%" valign="top" class="vncell"><?=gettext("Check certificate of aliases URLs");?></td>
 									<td width="78%" class="vtable">
-										<input name="checkaliasesurlcert" type="checkbox" id="checkaliasesurlcert" value="yes" <?php if ($pconfig['checkaliasesurlcert']) echo "checked=\"checked\""; ?> />
+										<input name="checkaliasesurlcert" type="checkbox" id="checkaliasesurlcert" value="yes" <?php if ($pconfig['checkaliasesurlcert']) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Verify HTTPS certificates when downloading alias URLs");?></strong>
 										<br />
 										<?=gettext("Make sure the certificate is valid for all HTTPS addresses on aliases. If it's not valid or is revoked, do not download it.");?>
@@ -436,9 +489,18 @@ include("head.inc");
 									<td width="22%" valign="top" class="vncell"><?=gettext("Update Frequency");?></td>
 									<td width="78%" class="vtable">
 										<select name="bogonsinterval" class="formselect selectpicker" data-style="btn-default">
-										<option value="monthly" <?php if (empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly') echo "selected=\"selected\""; ?>><?=gettext("Monthly"); ?></option>
-										<option value="weekly" <?php if ($pconfig['bogonsinterval'] == 'weekly') echo "selected=\"selected\""; ?>><?=gettext("Weekly"); ?></option>
-										<option value="daily" <?php if ($pconfig['bogonsinterval'] == 'daily') echo "selected=\"selected\""; ?>><?=gettext("Daily"); ?></option>
+										<option value="monthly" <?php if (empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly') {
+                                            echo "selected=\"selected\"";
+
+} ?>><?=gettext("Monthly"); ?></option>
+										<option value="weekly" <?php if ($pconfig['bogonsinterval'] == 'weekly') {
+                                            echo "selected=\"selected\"";
+
+} ?>><?=gettext("Weekly"); ?></option>
+										<option value="daily" <?php if ($pconfig['bogonsinterval'] == 'daily') {
+                                            echo "selected=\"selected\"";
+
+} ?>><?=gettext("Daily"); ?></option>
 										</select>
 										<br />
 										<?=gettext("The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.");?>
@@ -446,7 +508,8 @@ include("head.inc");
 								</tr>
 
 
-								<?php if(count($config['interfaces']) > 1): ?>
+								<?php if (count($config['interfaces']) > 1) :
+?>
 
 									<tr>
 										<th colspan="2" valign="top" class="listtopic"><?=gettext("Network Address Translation");?></th>
@@ -456,9 +519,18 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("NAT Reflection mode for port forwards");?></td>
 										<td width="78%" class="vtable">
 											<select name="natreflection" class="formselect selectpicker" data-style="btn-default">
-											<option value="disable" <?php if (isset($config['system']['disablenatreflection'])) echo "selected=\"selected\""; ?>><?=gettext("Disable"); ?></option>
-											<option value="proxy" <?php if (!isset($config['system']['disablenatreflection']) && !isset($config['system']['enablenatreflectionpurenat'])) echo "selected=\"selected\""; ?>><?=gettext("Enable (NAT + Proxy)"); ?></option>
-											<option value="purenat" <?php if (!isset($config['system']['disablenatreflection']) && isset($config['system']['enablenatreflectionpurenat'])) echo "selected=\"selected\""; ?>><?=gettext("Enable (Pure NAT)"); ?></option>
+											<option value="disable" <?php if (isset($config['system']['disablenatreflection'])) {
+                                                echo "selected=\"selected\"";
+
+} ?>><?=gettext("Disable"); ?></option>
+											<option value="proxy" <?php if (!isset($config['system']['disablenatreflection']) && !isset($config['system']['enablenatreflectionpurenat'])) {
+                                                echo "selected=\"selected\"";
+
+} ?>><?=gettext("Enable (NAT + Proxy)"); ?></option>
+											<option value="purenat" <?php if (!isset($config['system']['disablenatreflection']) && isset($config['system']['enablenatreflectionpurenat'])) {
+                                                echo "selected=\"selected\"";
+
+} ?>><?=gettext("Enable (Pure NAT)"); ?></option>
 											</select>
 											<br />
 											<strong><?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?></strong>
@@ -482,7 +554,9 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Enable NAT Reflection for 1:1 NAT");?></td>
 										<td width="78%" class="vtable">
-											<input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?php if (isset($config['system']['enablebinatreflection'])) echo "checked=\"checked\""; ?> />
+											<input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?php if (isset($config['system']['enablebinatreflection'])) {
+                                                echo "checked=\"checked\"";
+} ?> />
 											<strong><?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?></strong>
 											<br /><br />
 											<?=gettext("Note: Reflection on 1:1 mappings is only for the inbound component of the 1:1 mappings.  This functions the same as the pure NAT mode for port forwards.  For more details, refer to the pure NAT mode description above.");?>
@@ -493,7 +567,9 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("Enable automatic outbound NAT for Reflection");?></td>
 										<td width="78%" class="vtable">
-											<input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?php if (isset($config['system']['enablenatreflectionhelper'])) echo "checked=\"checked\""; ?> />
+											<input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?php if (isset($config['system']['enablenatreflectionhelper'])) {
+                                                echo "checked=\"checked\"";
+} ?> />
 											<strong><?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?></strong>
 											<br />
 											<?=gettext("Required for full functionality of the pure NAT mode of NAT Reflection for port forwards or NAT Reflection for 1:1 NAT.");?>
@@ -504,14 +580,17 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncell"><?=gettext("FTP Proxy");?></td>
 										<td width="78%" class="vtable">
-											<input name="ftp-proxy-client" type="checkbox" id="ftp-proxy-client" value="yes" <?php if (isset($config['system']['ftp-proxy']['client'])) echo "checked=\"checked\""; ?> />
+											<input name="ftp-proxy-client" type="checkbox" id="ftp-proxy-client" value="yes" <?php if (isset($config['system']['ftp-proxy']['client'])) {
+                                                echo "checked=\"checked\"";
+} ?> />
 											<strong><?=gettext("Enable FTP proxy for clients");?></strong>
 											<br />
 											<?=gettext("Configures the FTP proxy to allow for client connections behind the firewall using active file transfer mode.");?>
 										</td>
 									</tr>
 
-									<?php endif; ?>
+									<?php
+endif; ?>
 									<tr>
 										<td width="22%" valign="top">&nbsp;</td>
 										<td width="78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
@@ -525,4 +604,4 @@ include("head.inc");
 		</div>
 </section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

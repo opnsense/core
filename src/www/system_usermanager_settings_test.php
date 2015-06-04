@@ -30,10 +30,10 @@ require_once("guiconfig.inc");
 require_once("auth.inc");
 include('head.inc');
 
-if(isset($config['system']['authserver'][0]['host'])){
-$auth_server = $config['system']['authserver'][0]['host'];
-$authserver = $_GET['authserver'];
-$authcfg = auth_get_authserver($authserver);
+if (isset($config['system']['authserver'][0]['host'])) {
+    $auth_server = $config['system']['authserver'][0]['host'];
+    $authserver = $_GET['authserver'];
+    $authcfg = auth_get_authserver($authserver);
 }
 
 ?>
@@ -44,39 +44,39 @@ $authcfg = auth_get_authserver($authserver);
 <?php
 
 if (!$authcfg) {
-	printf(gettext("Could not find settings for %s%s"), htmlspecialchars($authserver), "<p/>");
+    printf(gettext("Could not find settings for %s%s"), htmlspecialchars($authserver), "<p/>");
 } else {
+    echo "<table class='table table-striped'>";
 
-	echo "<table class='table table-striped'>";
+    echo "<tr><th colspan='2'>".sprintf(gettext("Testing %s LDAP settings... One moment please..."), $g['product_name'])."</th></tr>";
+    echo "<tr><td>" . gettext("Attempting connection to") . " " . $authserver . "</td>";
+    if (ldap_test_connection($authcfg)) {
+        echo "<td><font color='green'>OK</font></td></tr>";
 
-	echo "<tr><th colspan='2'>".sprintf(gettext("Testing %s LDAP settings... One moment please..."), $g['product_name'])."</th></tr>";
-	echo "<tr><td>" . gettext("Attempting connection to") . " " . $authserver . "</td>";
-	if(ldap_test_connection($authcfg)) {
-		echo "<td><font color='green'>OK</font></td></tr>";
+        echo "<tr><td>" . gettext("Attempting bind to") . " " .  $authserver . "</td>";
+        if (ldap_test_bind($authcfg)) {
+            echo "<td><font color='green'>OK</font></td></tr>";
 
-		echo "<tr><td>" . gettext("Attempting bind to") . " " .  $authserver . "</td>";
-		if(ldap_test_bind($authcfg)) {
-			echo "<td><font color='green'>OK</font></td></tr>";
+            echo "<tr><td>" . gettext("Attempting to fetch Organizational Units from") . " " . $authserver . "</td>";
+            $ous = ldap_get_user_ous(true, $authcfg);
+            if (count($ous)>1) {
+                echo "<td><font color=green>OK</font></td></tr>";
+                if (is_array($ous)) {
+                    echo "<tr><td colspan='2'>".gettext("Organization units found") . "</td></tr>";
+                    foreach ($ous as $ou) {
+                        echo "<tr><td colspan='2'>" . $ou . "</td></tr>";
+                    }
+                }
+            } else {
+                echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
+            }
 
-			echo "<tr><td>" . gettext("Attempting to fetch Organizational Units from") . " " . $authserver . "</td>";
-			$ous = ldap_get_user_ous(true, $authcfg);
-			if(count($ous)>1) {
-				echo "<td><font color=green>OK</font></td></tr>";
-				if(is_array($ous)) {
-					echo "<tr><td colspan='2'>".gettext("Organization units found") . "</td></tr>";
-					foreach($ous as $ou) {
-						echo "<tr><td colspan='2'>" . $ou . "</td></tr>";
-					}
-				}
-			} else
-				echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
-
-		} else {
-			echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
-		}
-	} else {
-		echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
-	}
+        } else {
+            echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
+        }
+    } else {
+        echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
+    }
 }
 
 ?>

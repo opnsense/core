@@ -47,98 +47,98 @@ $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelarg
 $pconfig['flowtable'] = isset($config['system']['flowtable']);
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    if ($_POST['ipv6nat_enable'] && !is_ipaddr($_POST['ipv6nat_ipaddr'])) {
+        $input_errors[] = gettext("You must specify an IP address to NAT IPv6 packets.");
+    }
 
-	if ($_POST['ipv6nat_enable'] && !is_ipaddr($_POST['ipv6nat_ipaddr']))
-		$input_errors[] = gettext("You must specify an IP address to NAT IPv6 packets.");
+    ob_flush();
+    flush();
+    if (!$input_errors) {
+        if ($_POST['ipv6nat_enable'] == "yes") {
+            $config['diag']['ipv6nat']['enable'] = true;
+            $config['diag']['ipv6nat']['ipaddr'] = $_POST['ipv6nat_ipaddr'];
+        } else {
+            if ($config['diag']) {
+                if ($config['diag']['ipv6nat']) {
+                    unset($config['diag']['ipv6nat']['enable']);
+                    unset($config['diag']['ipv6nat']['ipaddr']);
+                }
+            }
+        }
 
-	ob_flush();
-	flush();
-	if (!$input_errors) {
+        if ($_POST['ipv6allow'] == "yes") {
+            $config['system']['ipv6allow'] = true;
+        } else {
+            unset($config['system']['ipv6allow']);
+        }
 
-		if($_POST['ipv6nat_enable'] == "yes") {
-			$config['diag']['ipv6nat']['enable'] = true;
-			$config['diag']['ipv6nat']['ipaddr'] = $_POST['ipv6nat_ipaddr'];
-		} else {
-			if($config['diag']) {
-				if($config['diag']['ipv6nat']) {
-					unset($config['diag']['ipv6nat']['enable']);
-					unset($config['diag']['ipv6nat']['ipaddr']);
-				}
-			}
-		}
+        if ($_POST['prefer_ipv4'] == "yes") {
+            $config['system']['prefer_ipv4'] = true;
+        } else {
+            unset($config['system']['prefer_ipv4']);
+        }
 
-		if($_POST['ipv6allow'] == "yes") {
-			$config['system']['ipv6allow'] = true;
-		} else {
-			unset($config['system']['ipv6allow']);
-		}
+        if ($_POST['sharednet'] == "yes") {
+            $config['system']['sharednet'] = true;
+            system_disable_arp_wrong_if();
+        } else {
+            unset($config['system']['sharednet']);
+            system_enable_arp_wrong_if();
+        }
 
-		if($_POST['prefer_ipv4'] == "yes") {
-			$config['system']['prefer_ipv4'] = true;
-		} else {
-			unset($config['system']['prefer_ipv4']);
-		}
+        if ($_POST['polling_enable'] == "yes") {
+            $config['system']['polling'] = true;
+            setup_polling();
+        } else {
+            unset($config['system']['polling']);
+            setup_polling();
+        }
 
-		if($_POST['sharednet'] == "yes") {
-			$config['system']['sharednet'] = true;
-			system_disable_arp_wrong_if();
-		} else {
-			unset($config['system']['sharednet']);
-			system_enable_arp_wrong_if();
-		}
+        if ($_POST['flowtable'] == "yes") {
+            $config['system']['flowtable'] = $_POST['flowtable'];
+        } else {
+            unset($config['system']['flowtable']);
+        }
 
-		if($_POST['polling_enable'] == "yes") {
-			$config['system']['polling'] = true;
-			setup_polling();
-		} else {
-			unset($config['system']['polling']);
-			setup_polling();
-		}
+        if ($_POST['disablechecksumoffloading'] == "yes") {
+            $config['system']['disablechecksumoffloading'] = true;
+        } else {
+            unset($config['system']['disablechecksumoffloading']);
+        }
 
-		if($_POST['flowtable'] == "yes") {
-			$config['system']['flowtable'] = $_POST['flowtable'];
-		} else {
-			unset($config['system']['flowtable']);
-		}
+        if ($_POST['disablesegmentationoffloading'] == "yes") {
+            $config['system']['disablesegmentationoffloading'] = true;
+        } else {
+            unset($config['system']['disablesegmentationoffloading']);
+        }
 
-		if($_POST['disablechecksumoffloading'] == "yes") {
-			$config['system']['disablechecksumoffloading'] = true;
-		} else {
-			unset($config['system']['disablechecksumoffloading']);
-		}
+        if ($_POST['disablelargereceiveoffloading'] == "yes") {
+            $config['system']['disablelargereceiveoffloading'] = true;
+        } else {
+            unset($config['system']['disablelargereceiveoffloading']);
+        }
 
-		if($_POST['disablesegmentationoffloading'] == "yes") {
-			$config['system']['disablesegmentationoffloading'] = true;
-		} else {
-			unset($config['system']['disablesegmentationoffloading']);
-		}
+        setup_microcode();
 
-		if($_POST['disablelargereceiveoffloading'] == "yes") {
-			$config['system']['disablelargereceiveoffloading'] = true;
-		} else {
-			unset($config['system']['disablelargereceiveoffloading']);
-		}
+        // Write out configuration (config.xml)
+        write_config();
 
-		setup_microcode();
+        // Configure flowtable support from filter.inc
+        flowtable_configure();
 
-		// Write out configuration (config.xml)
-		write_config();
+        // Set preferred protocol
+        prefer_ipv4_or_ipv6();
 
-		// Configure flowtable support from filter.inc
-		flowtable_configure();
-
-		// Set preferred protocol
-		prefer_ipv4_or_ipv6();
-
-		$retval = filter_configure();
-		if(stristr($retval, "error") <> true)
-			$savemsg = get_std_save_message(gettext($retval));
-		else
-			$savemsg = gettext($retval);
-	}
+        $retval = filter_configure();
+        if (stristr($retval, "error") <> true) {
+            $savemsg = get_std_save_message(gettext($retval));
+        } else {
+            $savemsg = gettext($retval);
+        }
+    }
 }
 
 $pgtitle = array(gettext("System"),gettext("Settings"),gettext("Networking"));
@@ -168,8 +168,12 @@ include("head.inc");
 	<div class="container-fluid">
         <div class="row">
             <?php
-				if ($input_errors) print_input_errors($input_errors);
-				if ($savemsg) print_info_box($savemsg);
+            if ($input_errors) {
+                print_input_errors($input_errors);
+            }
+            if ($savemsg) {
+                print_info_box($savemsg);
+            }
             ?>
             <section class="col-xs-12">
                 <? include('system_advanced_tabs.inc'); ?>
@@ -186,7 +190,9 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Allow IPv6"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="ipv6allow" type="checkbox" id="ipv6allow" value="yes" <?php if ($pconfig['ipv6allow']) echo "checked=\"checked\""; ?> onclick="enable_change(false)" />
+										<input name="ipv6allow" type="checkbox" id="ipv6allow" value="yes" <?php if ($pconfig['ipv6allow']) {
+                                            echo "checked=\"checked\"";
+} ?> onclick="enable_change(false)" />
 										<strong><?=gettext("Allow IPv6"); ?></strong><br />
 										<?=gettext("All IPv6 traffic will be blocked by the firewall unless this box is checked."); ?><br />
 										<?=gettext("NOTE: This does not disable any IPv6 features on the firewall, it only blocks traffic."); ?><br />
@@ -196,12 +202,14 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("IPv6 over IPv4 Tunneling"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="ipv6nat_enable" type="checkbox" id="ipv6nat_enable" value="yes" <?php if ($pconfig['ipv6nat_enable']) echo "checked=\"checked\""; ?> onclick="enable_change(false)" />
+										<input name="ipv6nat_enable" type="checkbox" id="ipv6nat_enable" value="yes" <?php if ($pconfig['ipv6nat_enable']) {
+                                            echo "checked=\"checked\"";
+} ?> onclick="enable_change(false)" />
 										<strong><?=gettext("Enable IPv4 NAT encapsulation of IPv6 packets"); ?></strong><br />
 										<?=gettext("This provides an RFC 2893 compatibility mechanism ".
-										"that can be used to tunneling IPv6 packets over IPv4 ".
-										"routing infrastructures. If enabled, don't forget to ".
-										"add a firewall rule to permit IPv6 packets."); ?><br />
+                                        "that can be used to tunneling IPv6 packets over IPv4 ".
+                                        "routing infrastructures. If enabled, don't forget to ".
+                                        "add a firewall rule to permit IPv6 packets."); ?><br />
 										<br />
 										<?=gettext("IP address"); ?>&nbsp;:&nbsp;
 										<input name="ipv6nat_ipaddr" type="text" class="formfld unknown" id="ipv6nat_ipaddr" size="20" value="<?=htmlspecialchars($pconfig['ipv6nat_ipaddr']);?>" />
@@ -210,11 +218,13 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Prefer IPv4 over IPv6"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?php if ($pconfig['prefer_ipv4']) echo "checked=\"checked\""; ?> />
+										<input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?php if ($pconfig['prefer_ipv4']) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong><br />
 										<?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
-										"IPv6 will be used, if you check this option, IPv4 will be " .
-										"used instead of IPv6."); ?><br />
+                                        "IPv6 will be used, if you check this option, IPv4 will be " .
+                                        "used instead of IPv6."); ?><br />
 									</td>
 								</tr>
 								<tr>
@@ -223,7 +233,9 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Device polling"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="polling_enable" type="checkbox" id="polling_enable" value="yes" <?php if ($pconfig['polling_enable']) echo "checked=\"checked\""; ?> />
+										<input name="polling_enable" type="checkbox" id="polling_enable" value="yes" <?php if ($pconfig['polling_enable']) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Enable device polling"); ?></strong><br />
 										<?php printf(gettext("Device polling is a technique that lets the system periodically poll network devices for new data instead of relying on interrupts. This prevents your webConfigurator, SSH, etc. from being inaccessible due to interrupt floods when under extreme load. Generally this is not recommended. Not all NICs support polling; see the %s homepage for a list of supported cards."), $g['product_name']); ?>
 									</td>
@@ -231,7 +243,9 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Hardware Checksum Offloading"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?php if (isset($config['system']['disablechecksumoffloading'])) echo "checked=\"checked\""; ?> />
+										<input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?php if (isset($config['system']['disablechecksumoffloading'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Disable hardware checksum offload"); ?></strong><br />
 										<?=gettext("Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs."); ?>
 										<br />
@@ -242,7 +256,9 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Hardware TCP Segmentation Offloading"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?php if (isset($config['system']['disablesegmentationoffloading'])) echo "checked=\"checked\""; ?> />
+										<input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?php if (isset($config['system']['disablesegmentationoffloading'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
 										<?=gettext("Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
 										<br />
@@ -253,7 +269,9 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Hardware Large Receive Offloading"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?php if (isset($config['system']['disablelargereceiveoffloading'])) echo "checked=\"checked\""; ?> />
+										<input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?php if (isset($config['system']['disablelargereceiveoffloading'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
 										<?=gettext("Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
 										<br />
@@ -264,7 +282,9 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("ARP Handling"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="sharednet" type="checkbox" id="sharednet" value="yes" <?php if (isset($pconfig['sharednet'])) echo "checked=\"checked\""; ?> />
+										<input name="sharednet" type="checkbox" id="sharednet" value="yes" <?php if (isset($pconfig['sharednet'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
 										<strong><?=gettext("Suppress ARP messages"); ?></strong><br />
 										<?=gettext("This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain"); ?>
 									</td>
@@ -288,4 +308,4 @@ include("head.inc");
 //]]>
 </script>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

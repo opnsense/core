@@ -33,81 +33,85 @@ require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_advanced_sysctl.php');
 
-if (!is_array($config['sysctl']['item']))
-	$config['sysctl']['item'] = array();
+if (!is_array($config['sysctl']['item'])) {
+    $config['sysctl']['item'] = array();
+}
 
 $a_tunable = &$config['sysctl']['item'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
+if (is_numericint($_GET['id'])) {
+    $id = $_GET['id'];
+}
+if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+    $id = $_POST['id'];
+}
 
 $act = $_GET['act'];
-if (isset($_POST['act']))
-	$act = $_POST['act'];
+if (isset($_POST['act'])) {
+    $act = $_POST['act'];
+}
 
 if ($act == "edit") {
-	if ($a_tunable[$id]) {
-		$pconfig['tunable'] = $a_tunable[$id]['tunable'];
-		$pconfig['value'] = $a_tunable[$id]['value'];
-		$pconfig['descr'] = $a_tunable[$id]['descr'];
-	}
+    if ($a_tunable[$id]) {
+        $pconfig['tunable'] = $a_tunable[$id]['tunable'];
+        $pconfig['value'] = $a_tunable[$id]['value'];
+        $pconfig['descr'] = $a_tunable[$id]['descr'];
+    }
 }
 
 if ($act == "del") {
-	if ($a_tunable[$id]) {
-		/* if this is an AJAX caller then handle via JSON */
-		if(isAjax() && is_array($input_errors)) {
-			input_errors2Ajax($input_errors);
-			exit;
-		}
-		if (!$input_errors) {
-			unset($a_tunable[$id]);
-			write_config();
-			mark_subsystem_dirty('sysctl');
-			redirectHeader("system_advanced_sysctl.php");
-			exit;
-		}
-	}
+    if ($a_tunable[$id]) {
+        /* if this is an AJAX caller then handle via JSON */
+        if (isAjax() && is_array($input_errors)) {
+            input_errors2Ajax($input_errors);
+            exit;
+        }
+        if (!$input_errors) {
+            unset($a_tunable[$id]);
+            write_config();
+            mark_subsystem_dirty('sysctl');
+            redirectHeader("system_advanced_sysctl.php");
+            exit;
+        }
+    }
 }
 
 if ($_POST) {
+    unset($input_errors);
+    $pconfig = $_POST;
 
-	unset($input_errors);
-	$pconfig = $_POST;
+    /* if this is an AJAX caller then handle via JSON */
+    if (isAjax() && is_array($input_errors)) {
+        input_errors2Ajax($input_errors);
+        exit;
+    }
 
-	/* if this is an AJAX caller then handle via JSON */
-	if (isAjax() && is_array($input_errors)) {
-		input_errors2Ajax($input_errors);
-		exit;
-	}
+    if ($_POST['apply']) {
+        $retval = 0;
+        system_setup_sysctl();
+        $savemsg = get_std_save_message($retval);
+        clear_subsystem_dirty('sysctl');
+    }
 
-	if ($_POST['apply']) {
-		$retval = 0;
-		system_setup_sysctl();
-		$savemsg = get_std_save_message($retval);
-		clear_subsystem_dirty('sysctl');
-	}
+    if ($_POST['Submit'] == gettext("Save")) {
+        $tunableent = array();
 
-	if ($_POST['Submit'] == gettext("Save")) {
-		$tunableent = array();
+        $tunableent['tunable'] = $_POST['tunable'];
+        $tunableent['value'] = $_POST['value'];
+        $tunableent['descr'] = $_POST['descr'];
 
-		$tunableent['tunable'] = $_POST['tunable'];
-		$tunableent['value'] = $_POST['value'];
-		$tunableent['descr'] = $_POST['descr'];
+        if (isset($id) && $a_tunable[$id]) {
+            $a_tunable[$id] = $tunableent;
+        } else {
+            $a_tunable[] = $tunableent;
+        }
 
-		if (isset($id) && $a_tunable[$id])
-			$a_tunable[$id] = $tunableent;
-		else
-			$a_tunable[] = $tunableent;
+        mark_subsystem_dirty('sysctl');
 
-		mark_subsystem_dirty('sysctl');
+        write_config();
 
-		write_config();
-
-		redirectHeader("system_advanced_sysctl.php");
-		exit;
+        redirectHeader("system_advanced_sysctl.php");
+        exit;
     }
 }
 
@@ -126,17 +130,23 @@ include("head.inc");
         <div class="row">
             <form action="system_advanced_sysctl.php" method="post">
 				<?php
-					if ($input_errors) print_input_errors($input_errors);
-					if ($savemsg) print_info_box($savemsg);
-					if (is_subsystem_dirty('sysctl') && ($act != "edit" ))
-						print_info_box_np(gettext("The firewall tunables have changed.  You must apply the configuration to take affect."));
-				?>
+                if ($input_errors) {
+                    print_input_errors($input_errors);
+                }
+                if ($savemsg) {
+                    print_info_box($savemsg);
+                }
+                if (is_subsystem_dirty('sysctl') && ($act != "edit" )) {
+                    print_info_box_np(gettext("The firewall tunables have changed.  You must apply the configuration to take affect."));
+                }
+                ?>
 			</form>
 
             <section class="col-xs-12">
                 <? include('system_advanced_tabs.inc'); ?>
                 <div class="table-responsive content-box tab-content" style="overflow: auto;">
-                    <?php if ($act != "edit" ): ?>
+                    <?php if ($act != "edit") :
+?>
 						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
 							<thead>
 							<tr>
@@ -147,7 +157,8 @@ include("head.inc");
 							</thead>
 
 							<tbody>
-							<?php $i = 0; foreach ($config['sysctl']['item'] as $tunable): ?>
+							<?php $i = 0; foreach ($config['sysctl']['item'] as $tunable) :
+?>
 
 							<tr>
 								<td class="listlr" ondblclick="document.location='system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>';">
@@ -159,9 +170,10 @@ include("head.inc");
 								<td class="listr" align="left" ondblclick="document.location='system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>';">
 									<?php echo $tunable['value']; ?>
 									<?php
-										if($tunable['value'] == "default")
-											echo "(" . get_default_sysctl_value($tunable['tunable']) . ")";
-									?>
+                                    if ($tunable['value'] == "default") {
+                                        echo "(" . get_default_sysctl_value($tunable['tunable']) . ")";
+                                    }
+                                    ?>
 								</td>
 								<td class="list nowrap">
 									<table border="0" cellspacing="0" cellpadding="1" summary="edit delete">
@@ -172,7 +184,8 @@ include("head.inc");
 												</a>
 											</td>
 											<td valign="middle">
-												<a href="system_advanced_sysctl.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?"); ?>')" class="btn btn-default btn-xs">
+												<a href="system_advanced_sysctl.php?act=del&amp;id=<?=$i;
+?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?"); ?>')" class="btn btn-default btn-xs">
 													<span data-toggle="tooltip" data-placement="left" title="<?=gettext("Delete Tunable"); ?>" class="glyphicon glyphicon-remove"></span>
 												</a>
 											</td>
@@ -180,7 +193,9 @@ include("head.inc");
 									</table>
 								</td>
 							</tr>
-							<?php $i++; endforeach; ?>
+							<?php $i++;
+
+endforeach; ?>
 							<tr>
 								<td colspan="4">
 									<a href="system_advanced_sysctl.php?act=edit" class="btn btn-primary pull-right">
@@ -191,7 +206,9 @@ include("head.inc");
 
 							</tbody>
 						</table>
-			        <?php else: ?>
+			        <?php
+else :
+?>
 						<form action="system_advanced_sysctl.php" method="post" name="iform" id="iform">
 							<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="edit system tunable" class="table table-striped">
 								<thead>
@@ -222,21 +239,25 @@ include("head.inc");
 										<td width="22%" valign="top">&nbsp;</td>
 										<td width="78%">
 											<input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-											<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+											<input type="button" class="btn btn-default" value="<?=gettext("Cancel");
+?>" onclick="window.location.href='<?=$referer;?>'" />
 
-											<?php if (isset($id) && $a_tunable[$id]): ?>
+											<?php if (isset($id) && $a_tunable[$id]) :
+?>
 											<input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-											<?php endif; ?>
+											<?php
+endif; ?>
 										</td>
 									</tr>
 								</tbody>
 							</table>
 						</form>
-					<?php endif; ?>
+					<?php
+endif; ?>
                 </div>
             </section>
         </div>
     </div>
 </section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");

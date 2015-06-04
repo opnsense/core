@@ -32,19 +32,19 @@ include('head.inc');
 
 $ous = array();
 
-if($_GET) {
-	$authcfg = array();
-	$authcfg['ldap_port'] = $_GET['port'];
-	$authcfg['ldap_basedn'] = $_GET['basedn'];
-	$authcfg['host'] = $_GET['host'];
-	$authcfg['ldap_scope'] = $_GET['scope'];
-	$authcfg['ldap_binddn'] = $_GET['binddn'];
-	$authcfg['ldap_bindpw'] = $_GET['bindpw'];
-	$authcfg['ldap_urltype'] = $_GET['urltype'];
-	$authcfg['ldap_protver'] = $_GET['proto'];
-	$authcfg['ldap_authcn'] = explode(";", $_GET['authcn']);
-	$authcfg['ldap_caref'] = $_GET['cert'];
-	$ous = ldap_get_user_ous(true, $authcfg);
+if ($_GET) {
+    $authcfg = array();
+    $authcfg['ldap_port'] = $_GET['port'];
+    $authcfg['ldap_basedn'] = $_GET['basedn'];
+    $authcfg['host'] = $_GET['host'];
+    $authcfg['ldap_scope'] = $_GET['scope'];
+    $authcfg['ldap_binddn'] = $_GET['binddn'];
+    $authcfg['ldap_bindpw'] = $_GET['bindpw'];
+    $authcfg['ldap_urltype'] = $_GET['urltype'];
+    $authcfg['ldap_protver'] = $_GET['proto'];
+    $authcfg['ldap_authcn'] = explode(";", $_GET['authcn']);
+    $authcfg['ldap_caref'] = $_GET['cert'];
+    $ous = ldap_get_user_ous(true, $authcfg);
 }
 
 ?>
@@ -63,10 +63,13 @@ function post_choices() {
 }
 </script>
  <form method="post" action="system_usermanager_settings_ldapacpicker.php">
-<?php if (empty($ous)): ?>
+<?php if (empty($ous)) :
+?>
 	<p><?=gettext("Could not connect to the LDAP server. Please check your LDAP configuration.");?></p>
 	<input type='button' class="btn btn-default" value='<?=gettext("Close"); ?>' onClick="window.close();">
-<?php else: ?>
+<?php
+else :
+?>
 	<table class="table table-striped">
 		<tbody>
 			<tr>
@@ -75,16 +78,17 @@ function post_choices() {
 			</th>
 			</tr>
 			<?php
-				if(is_array($ous)) {
-					foreach($ous as $ou) {
-						if(in_array($ou, $authcfg['ldap_authcn']))
-							$CHECKED=" CHECKED";
-						else
-							$CHECKED="";
-						echo "			<tr><td><input type='checkbox' value='{$ou}' id='ou' name='ou[]'{$CHECKED}> {$ou}</td></tr>\n";
-					}
-				}
-			?>
+            if (is_array($ous)) {
+                foreach ($ous as $ou) {
+                    if (in_array($ou, $authcfg['ldap_authcn'])) {
+                        $CHECKED=" CHECKED";
+                    } else {
+                        $CHECKED="";
+                    }
+                    echo "			<tr><td><input type='checkbox' value='{$ou}' id='ou' name='ou[]'{$CHECKED}> {$ou}</td></tr>\n";
+                }
+            }
+            ?>
 			<tr>
 				<td align="right">
 					<input type='button' class="btn btn-primary" value='<?=gettext("Save");?>' onClick="post_choices();">
@@ -92,7 +96,8 @@ function post_choices() {
 			</tr>
 		</tbody>
 	</table>
-<?php endif; ?>
+<?php
+endif; ?>
  </form>
  </body>
 </html>

@@ -33,40 +33,43 @@ require_once("guiconfig.inc");
 $pgtitle = array(gettext("System"),gettext("User Password"));
 
 if (isset($_POST['save'])) {
-	unset($input_errors);
-	/* input validation */
+    unset($input_errors);
+    /* input validation */
 
-	$reqdfields = explode(" ", "passwordfld1");
-	$reqdfieldsn = array(gettext("Password"));
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    $reqdfields = explode(" ", "passwordfld1");
+    $reqdfieldsn = array(gettext("Password"));
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	if ($_POST['passwordfld1'] != $_POST['passwordfld2'])
-		$input_errors[] = gettext("The passwords do not match.");
+    if ($_POST['passwordfld1'] != $_POST['passwordfld2']) {
+        $input_errors[] = gettext("The passwords do not match.");
+    }
 
-	if (!$input_errors) {
-		if (session_status() == PHP_SESSION_NONE) {
-			session_start();
-                }
-		// all values are okay --> saving changes
-		$config['system']['user'][$userindex[$_SESSION['Username']]]['password'] = crypt($_POST['passwordfld1'], '$6$');
-		local_user_set($config['system']['user'][$userindex[$_SESSION['Username']]]);
-		session_write_close();
+    if (!$input_errors) {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        // all values are okay --> saving changes
+        $config['system']['user'][$userindex[$_SESSION['Username']]]['password'] = crypt($_POST['passwordfld1'], '$6$');
+        local_user_set($config['system']['user'][$userindex[$_SESSION['Username']]]);
+        session_write_close();
 
-		write_config();
+        write_config();
 
-		$savemsg = gettext("Password successfully changed") . "<br />";
-	}
+        $savemsg = gettext("Password successfully changed") . "<br />";
+    }
 }
 
 if (session_status() == PHP_SESSION_NONE) {
-	session_start();
+    session_start();
 }
 
 /* determine if user is not local to system */
 $islocal = false;
-foreach($config['system']['user'] as $user)
-	if($user['name'] == $_SESSION['Username'])
-		$islocal = true;
+foreach ($config['system']['user'] as $user) {
+    if ($user['name'] == $_SESSION['Username']) {
+        $islocal = true;
+    }
+}
 
 session_write_close();
 
@@ -84,18 +87,20 @@ include("head.inc");
 			<div class="row">
 				<?
 
-				if ($input_errors)
-					print_input_errors($input_errors);
-				if ($savemsg)
-					print_info_box($savemsg);
+                if ($input_errors) {
+                    print_input_errors($input_errors);
+                }
+                if ($savemsg) {
+                    print_info_box($savemsg);
+                }
 
-				if ($islocal == false) {
-					echo gettext("Sorry, you cannot change the password for a non-local user.");
+                if ($islocal == false) {
+                    echo gettext("Sorry, you cannot change the password for a non-local user.");
                                         include("foot.inc");
-					exit;
-				}
+                    exit;
+                }
 
-				?>
+                ?>
 			    <section class="col-xs-12">
 
 				<div class="content-box">
@@ -106,9 +111,9 @@ include("head.inc");
 							<table class="table table-striped table-sort">
 			                                <tr>
 			<?php if (session_status() == PHP_SESSION_NONE) {
-					session_start();
-                        }
-			?>
+                    session_start();
+}
+            ?>
 			                                        <td colspan="2" valign="top" class="listtopic"><?=$_SESSION['Username']?>'s <?=gettext("Password"); ?></td>
 			<?php session_write_close(); ?>
 			                                </tr>
@@ -138,4 +143,4 @@ include("head.inc");
 			</div>
 		</div>
 	</section>
-<?php include("foot.inc");?>
+<?php include("foot.inc");
