@@ -73,7 +73,7 @@ class Shell
     {
         if (!is_array($command)) {
             $command = array($command);
-	}
+        }
 
         foreach ($command as $comm) {
             $this->execSingle($comm, $mute, $output);

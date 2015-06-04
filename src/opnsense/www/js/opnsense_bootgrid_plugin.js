@@ -214,4 +214,3 @@ $.fn.UIBootgrid = function (params) {
         }
     }));
 };
-

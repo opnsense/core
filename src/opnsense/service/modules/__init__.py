@@ -40,4 +40,3 @@ def singleton(cls, *args, **kwargs):
             instances[cls] = cls(*args, **kwargs)
         return instances[cls]
     return getinstance
-
