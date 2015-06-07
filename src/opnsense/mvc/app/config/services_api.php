@@ -59,7 +59,7 @@ $di->set('url', function () use ($config) {
 /**
  * Start the session the first time some component request the session service
  */
-$di->set('session', function () {
+$di->setShared('session', function () {
     $session = new SessionAdapter();
     $session->start();
 
