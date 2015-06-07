@@ -1,0 +1,8 @@
+name: opnsense-ids
+version: 0.1
+origin: opnsense/ids
+comment: IDS (suricata) configuration
+desc: configuration templates for suricata
+maintainer: ad at opnsense.org
+www: https://opnsense.org
+prefix: /

@@ -1,0 +1,8 @@
+<model>
+    <mount>//OPNsense/IDS</mount>
+    <description>
+        OPNsense IDS
+    </description>
+    <items>
+    </items>
+</model>
