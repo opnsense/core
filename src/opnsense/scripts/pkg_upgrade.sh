@@ -45,10 +45,6 @@ if [ -z "$pkg_running" ]; then
 		/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE}
 		# if we can update base, we'll do that as well
 		if opnsense-update -c -bk; then
-			echo "!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
-			echo "A kernel/base upgrade is in progress." >> ${PKG_PROGRESS_FILE}
-			echo "Please do not turn off the system." >> ${PKG_PROGRESS_FILE}
-			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
 			if opnsense-update -bk >> ${PKG_PROGRESS_FILE}; then
 				REBOOT=1
 			fi
