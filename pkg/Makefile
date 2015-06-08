@@ -5,8 +5,8 @@ install:
 	@cp ${.CURDIR}/+POST_INSTALL ${DESTDIR}
 	@cp ${.CURDIR}/+MANIFEST ${DESTDIR}
 	@mkdir -p ${DESTDIR}/usr/local/etc/pkg/repos
-	@cp ${.CURDIR}/OPNsense.conf ${DESTDIR}/usr/local/etc/pkg/repos
-	@echo /usr/local/etc/pkg/repos/OPNsense.conf
+	@cp ${.CURDIR}/OPNsense.conf.sample ${DESTDIR}/usr/local/etc/pkg/repos
+	@echo "@sample /usr/local/etc/pkg/repos/OPNsense.conf.sample"
 	@cp ${.CURDIR}/pkg.conf ${DESTDIR}/usr/local/etc
 	@echo /usr/local/etc/pkg.conf
 	@cp ${.CURDIR}/config.xml.sample ${DESTDIR}/usr/local/etc
