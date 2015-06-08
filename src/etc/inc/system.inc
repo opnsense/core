@@ -813,10 +813,10 @@ function system_webgui_start()
 
 		/* upgrade pkg(8) mirror info */
 		$pkg_sample = file_get_contents('/usr/local/etc/pkg/repos/OPNsense.conf.sample');
-		$pkg_sample = explode(PHP_EOL, $pkg_lines);
+		$pkg_sample = explode(PHP_EOL, $pkg_sample);
 		$pkg_config = '';
 		foreach ($pkg_sample as $pkg_line) {
-			if (strncasecmp($pkg_line, '  url:', 6)) {
+			if (!strncasecmp($pkg_line, '  url:', 6)) {
 				$pkg_line = sprintf(
 					'  url: "pkg+%s/${ABI}/%s",',
 					$pkg_mirror,
