@@ -45,6 +45,7 @@ import glob
 import time
 import uuid
 import shlex
+import tempfile
 import ph_inline_actions
 from modules import singleton
 
@@ -429,8 +430,12 @@ class Action(object):
                     return 'Execute error'
             elif self.type.lower() == 'script_output':
                 try:
-                    script_output = subprocess.check_output(script_command, env=self.config_environment, shell=True)
-                    return script_output
+                    with tempfile.NamedTemporaryFile() as output_stream:
+                        subprocess.check_call(script_command, env=self.config_environment, shell=True,
+                                                              stdout=output_stream, stderr=subprocess.STDOUT)
+                        output_stream.seek(0)
+                        script_output = output_stream.read()
+                        return script_output
                 except:
                     syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed at %s' % (message_uuid,
                                                                                        traceback.format_exc()))
