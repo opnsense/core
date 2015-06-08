@@ -60,17 +60,19 @@ def exec_config_cmd(exec_command):
 
     try:
         sock.send(exec_command)
-        data = ""
+        data = []
         while True:
-            line = sock.recv(4096)
+            line = sock.recv(65536)
             if line:
-                data = data + line
+                data.append(line)
 
             # end of stream marker found, exit
-            if data.find("%c%c%c"%(chr(0),chr(0),chr(0))) > -1:
+            if line.find("%c%c%c"%(chr(0), chr(0), chr(0))) > -1 or (
+                len(line) < 3 and len(data) > 1 and (''.join(data[-2:])).find("%c%c%c"%(chr(0), chr(0), chr(0))) > -1
+            ):
                 break
 
-        return (data[:-3])
+        return ''.join(data)[:-3]
     except:
         print ('error in configd communication %s, see syslog for details')
         syslog.syslog(syslog.LOG_ERR,'error in configd communication \n%s'%traceback.format_exc())
