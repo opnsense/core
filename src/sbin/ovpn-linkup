@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # let the configuration system know that the ip has changed.
-# /usr/local/opnsense/service/configd_ctl.py "interface newip $interface"
+# /usr/local/opnsense/service/configd_ctl.py interface newip $interface
 
 if [ "${dev_type}" = "tun" ]; then
 	if [ "" != "$route_vpn_gateway" ]; then
@@ -13,5 +13,5 @@ fi
 
 /usr/bin/touch /tmp/$1up
 # reload filter
-/usr/local/opnsense/service/configd_ctl.py "interface newip $1"
+/usr/local/opnsense/service/configd_ctl.py interface newip $1
 exit 0

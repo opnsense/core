@@ -5198,7 +5198,7 @@ function interface_setup_pppoe_reset_file($pppif, $iface = '')
 	if(!empty($iface) && !empty($pppif)){
 		$cron_cmd = <<<EOD
 #!/bin/sh
-/usr/local/opnsense/service/configd_ctl.py  'interface reconfigure {$iface}'
+/usr/local/opnsense/service/configd_ctl.py  interface reconfigure {$iface}
 /usr/bin/logger -t {$pppif} "PPPoE periodic reset executed on {$iface}"
 
 EOD;
