@@ -816,7 +816,9 @@ function system_webgui_start()
 		$pkg_sample = explode(PHP_EOL, $pkg_sample);
 		$pkg_config = '';
 		foreach ($pkg_sample as $pkg_line) {
-			if (!strncasecmp($pkg_line, '  url:', 6)) {
+			if (!strlen($pkg_line)) {
+				continue;
+			} elseif (!strncasecmp($pkg_line, '  url:', 6)) {
 				$pkg_line = sprintf(
 					'  url: "pkg+%s/${ABI}/%s",',
 					$pkg_mirror,
