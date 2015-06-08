@@ -40,18 +40,16 @@ if [ -z "$pkg_running" ]; then
 	echo '***STARTING UPGRADE***' >> ${PKG_PROGRESS_FILE}
 	if [ "$package" == "all" ]; then
 		# update all installed packages
-		pkg upgrade -y >> ${PKG_PROGRESS_FILE}
-		pkg autoremove -y >> ${PKG_PROGRESS_FILE}
-		pkg clean -y >> ${PKG_PROGRESS_FILE}
+		opnsense-update -p >> ${PKG_PROGRESS_FILE}
 		# restart the web server
 		/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE}
 		# if we can update base, we'll do that as well
-		if opnsense-update -c; then
-			echo "!!!!!!!!!!!! ATTENTION !!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
-			echo "A kernel/base upgrade is required." >> ${PKG_PROGRESS_FILE}
-			echo "try to perform immediately" >> ${PKG_PROGRESS_FILE}
-			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
-			if opnsense-update >> ${PKG_PROGRESS_FILE}; then
+		if opnsense-update -c -bk; then
+			echo "!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
+			echo "A kernel/base upgrade is in progress." >> ${PKG_PROGRESS_FILE}
+			echo "Please do not turn off the system." >> ${PKG_PROGRESS_FILE}
+			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >> ${PKG_PROGRESS_FILE}
+			if opnsense-update -bk >> ${PKG_PROGRESS_FILE}; then
 				REBOOT=1
 			fi
 		fi
