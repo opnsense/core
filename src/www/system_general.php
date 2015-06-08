@@ -74,7 +74,7 @@ $pconfig['timeupdateinterval'] = $config['system']['time-update-interval'];
 $pconfig['timeservers'] = $config['system']['timeservers'];
 $pconfig['theme'] = $config['system']['theme'];
 $pconfig['language'] = $config['system']['language'];
-if ($isset($config['system']['firmware']['flavour'])) {
+if (isset($config['system']['firmware']['flavour'])) {
 	$pconfig['firmware_flavour'] = $config['system']['firmware']['flavour'];
 }
 
