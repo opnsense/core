@@ -799,6 +799,35 @@ function system_webgui_start()
 	$key = "";
 	$ca = "";
 
+	/* XXX migrate this to a more appropriate place */
+	if (file_exists('/usr/local/etc/pkg/repos/OPNsense.conf.sample')) {
+		$pkg_flavour = 'latest';
+		if (isset($config['system']['firmware']['flavour'])) {
+			$pkg_flavour = $config['system']['firmware']['flavour'];
+		}
+
+		$pkg_mirror = 'http://pkg.opnsense.org';
+		if (isset($config['system']['firmware']['mirror'])) {
+			$pkg_mirror = $config['system']['firmware']['mirror'];
+		}
+
+		/* upgrade pkg(8) mirror info */
+		$pkg_sample = file_get_contents('/usr/local/etc/pkg/repos/OPNsense.conf.sample');
+		$pkg_sample = explode(PHP_EOL, $pkg_lines);
+		$pkg_config = '';
+		foreach ($pkg_sample as $pkg_line) {
+			if (strncasecmp($pkg_line, '  url:', 6)) {
+				$pkg_line = sprintf(
+					'  url: "pkg+%s/${ABI}/%s",',
+					$pkg_mirror,
+					$pkg_flavour
+				);
+			}
+			$pkg_config .= $pkg_line . PHP_EOL;
+		}
+		file_put_contents($pkg_config, '/usr/local/etc/pkg/repos/OPNsense.conf');
+	}
+
 	/* non-standard port? */
 	if (isset($config['system']['webgui']['port']) && $config['system']['webgui']['port'] <> "")
 		$portarg = "{$config['system']['webgui']['port']}";
