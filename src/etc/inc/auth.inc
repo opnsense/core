@@ -373,66 +373,64 @@ function local_sync_accounts()
 	local_group_set($allgrp, true);
 
 	/* sync all local users */
-	if (is_array($config['system']['user']))
-		foreach ($config['system']['user'] as $user)
+	if (is_array($config['system']['user'])) {
+		foreach ($config['system']['user'] as $user) {
 			local_user_set($user);
+		}
+	}
 
 	/* sync all local groups */
-	if (is_array($config['system']['group']))
-		foreach ($config['system']['group'] as $group)
+	if (is_array($config['system']['group'])) {
+		foreach ($config['system']['group'] as $group) {
 			local_group_set($group);
-
+		}
+	}
 }
 
 function local_user_set(&$user)
 {
 	if (empty($user['password'])) {
-		log_error("There is something wrong in your config because user {$user['name']} password is missing!");
+		log_error(sprintf(
+			_('There is something wrong in your config because user %s password is missing!'),
+			$user['name']
+		));
 		return;
 	}
 
-	$home_base = "/home/";
 	$user_uid = $user['uid'];
 	$user_name = $user['name'];
-	$user_home = "{$home_base}{$user_name}";
-	$user_shell = "/usr/local/etc/rc.initial";
-	$user_group = "nobody";
+	$user_home = "/home/{$user_name}";
+	$user_shell = '/sbin/nologin';
+	$user_group = 'nobody';
+	$lock_account = 'lock';
 
-	// Ensure $home_base exists and is writable
-	if (!is_dir($home_base))
-		mkdir($home_base, 0755);
+	@mkdir('/home', 0755);
 
-	$lock_account = false;
-	/* configure shell type */
-	/* Cases here should be ordered by most privileged to least privileged. */
-	if (userHasPrivilege($user, "user-shell-access") || userHasPrivilege($user, "page-all")) {
-		$user_shell = "/bin/csh";
-	} elseif (userHasPrivilege($user, "user-copy-files")) {
-		$user_shell = "/usr/local/bin/scponly";
-	} elseif (userHasPrivilege($user, "user-ssh-tunnel")) {
-		$user_shell = "/usr/local/sbin/ssh_tunnel_shell";
-	} elseif (userHasPrivilege($user, "user-ipsec-xauth-dialin")) {
-		$user_shell = "/sbin/nologin";
-	} else {
-		$user_shell = "/sbin/nologin";
-		$lock_account = true;
+	/* admins access gives wheely rights */
+	if (userHasPrivilege($user, 'page-all')) {
+		$user_group = 'wheel';
 	}
 
-	/* Lock out disabled or expired users, unless it's root */
-	if ((is_account_disabled($user_name) || is_account_expired($user_name)) && ($user_uid != 0)) {
-		$user_shell = "/sbin/nologin";
-		$lock_account = true;
+	/* configure shell type */
+	if (userHasPrivilege($user, 'user-shell-access')) {
+		$user_shell = '/bin/csh';
+	} elseif (userHasPrivilege($user, 'user-copy-files')) {
+		$user_shell = '/usr/local/bin/scponly';
+	} elseif (userHasPrivilege($user, 'user-ssh-tunnel')) {
+		$user_shell = '/usr/local/sbin/ssh_tunnel_shell';
+	}
+
+	/* unlock valid shell users */
+	if (!is_account_disabled($user_name) && !is_account_expired($user_name)) {
+		$lock_account = 'unlock';
 	}
 
 	/* root user special handling */
 	if ($user_uid == 0) {
-		$cmd = "/usr/sbin/pw usermod -q -n root -s /usr/local/etc/rc.initial -H 0";
-		$fd = popen($cmd, "w");
-		fwrite($fd, $user['password']);
-		pclose($fd);
-		$user_group = "wheel";
-		$user_home = "/root";
-		$user_shell = "/usr/local/etc/rc.initial";
+		$user_group = 'wheel';
+		$user_home = '/root';
+		$user_shell = '/usr/local/etc/rc.initial';
+		$lock_account = 'unlock';
 	}
 
 	/* read from pw db */
@@ -442,36 +440,30 @@ function local_user_set(&$user)
 	$userattrs = explode(":", trim($pwread));
 
 	/* determine add or mod */
-	if (($userattrs[0] != $user['name']) || (!strncmp($pwread, "pw:", 3))) {
-		$user_op = "useradd -m -k /etc/skel -o";
+	if (($userattrs[0] != $user['name']) || (!strncmp($pwread, 'pw:', 3))) {
+		$user_op = 'useradd -m -k /etc/skel -o';
 	} else {
-		$user_op = "usermod";
+		$user_op = 'usermod';
 	}
 
-	$comment = str_replace(array(":", "!", "@"), " ", $user['descr']);
+	$comment = str_replace(array(':', '!', '@'), ' ', $user['descr']);
 	/* add or mod pw db */
 	$cmd = "/usr/sbin/pw {$user_op} -q -u {$user_uid} -n {$user_name}".
-			" -g {$user_group} -s {$user_shell} -d {$user_home}".
-			" -c ".escapeshellarg($comment)." -H 0 2>&1";
-
-	$fd = popen($cmd, "w");
+		" -g {$user_group} -s {$user_shell} -d {$user_home}".
+		" -c ".escapeshellarg($comment)." -H 0 2>&1";
+	$fd = popen($cmd, 'w');
 	fwrite($fd, $user['password']);
 	pclose($fd);
 
 	/* create user directory if required */
-	if (!is_dir($user_home)) {
-		mkdir($user_home, 0700);
-		mwexec("/bin/cp /root/.* {$home_base}/", true);
-	}
+	@mkdir($user_home, 0700);
 	@chown($user_home, $user_name);
 	@chgrp($user_home, $user_group);
 
 	/* write out ssh authorized key file */
-	if($user['authorizedkeys']) {
-		if (!is_dir("{$user_home}/.ssh")) {
-			@mkdir("{$user_home}/.ssh", 0700);
-			@chown("{$user_home}/.ssh", $user_name);
-		}
+	if ($user['authorizedkeys']) {
+		@mkdir("{$user_home}/.ssh", 0700);
+		@chown("{$user_home}/.ssh", $user_name);
 		$keys = base64_decode($user['authorizedkeys']);
 		@file_put_contents("{$user_home}/.ssh/authorized_keys", $keys);
 		@chown("{$user_home}/.ssh/authorized_keys", $user_name);
@@ -479,7 +471,7 @@ function local_user_set(&$user)
 		@unlink("{$user_home}/.ssh/authorized_keys");
 	}
 
-	mwexecf('/usr/sbin/pw %s %s', array($lock_account ? 'lock' : 'unlock', $user_name), true);
+	mwexecf('/usr/sbin/pw %s %s', array($lock_account, $user_name), true);
 }
 
 function local_user_del($user)
