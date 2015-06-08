@@ -55,4 +55,4 @@ echo
 REBOOT=
 opnsense-update -c -bk && REBOOT=1
 opnsense-update -bk
-[ -n "${REBOOT}" ] /usr/local/etc/rc.reboot
+[ -n "${REBOOT}" ] && /usr/local/etc/rc.reboot
