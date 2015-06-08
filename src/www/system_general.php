@@ -45,6 +45,18 @@ function get_locale_list()
 	return $locales;
 }
 
+function get_flavour_list()
+{
+	$flavours = array();
+
+	$flavours['libressl'] = 'LibreSSL';
+	$flavours['latest'] = 'OpenSSL';
+
+	asort($flavours);
+
+	return $flavours;
+}
+
 $pconfig['hostname'] = $config['system']['hostname'];
 $pconfig['domain'] = $config['system']['domain'];
 list($pconfig['dns1'],$pconfig['dns2'],$pconfig['dns3'],$pconfig['dns4']) = $config['system']['dnsserver'];
@@ -62,6 +74,9 @@ $pconfig['timeupdateinterval'] = $config['system']['time-update-interval'];
 $pconfig['timeservers'] = $config['system']['timeservers'];
 $pconfig['theme'] = $config['system']['theme'];
 $pconfig['language'] = $config['system']['language'];
+if ($isset($config['system']['firmware']['flavour'])) {
+	$pconfig['firmware_flavour'] = $config['system']['firmware']['flavour'];
+}
 
 $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
 
@@ -173,10 +188,22 @@ if ($_POST) {
 		update_if_changed("NTP servers", $config['system']['timeservers'], strtolower($_POST['timeservers']));
 		update_if_changed("NTP update interval", $config['system']['time-update-interval'], $_POST['timeupdateinterval']);
 
-		if($_POST['language'] && $_POST['language'] != $config['system']['language']) {
+		if ($_POST['language'] && $_POST['language'] != $config['system']['language']) {
 			$config['system']['language'] = $_POST['language'];
 			set_language($config['system']['language']);
 		}
+
+		if (!isset($config['system']['firmware'])) {
+			$config['system']['firmware'] = array();
+		}
+		if ($_POST['firmware_flavour']) {
+			$config['system']['firmware']['flavour'] = $_POST['firmware_flavour'];
+		} else {
+			if (isset($config['system']['firmware']['flavour'])) {
+				unset($config['system']['firmware']['flavour']);
+			}
+		}
+		system_firmware_configure();
 
 		update_if_changed("System Theme", $config['theme'], $_POST['theme']);
 
@@ -460,11 +487,30 @@ include("head.inc");
 							</td>
 						</tr>
 						<tr>
-							<td width="22%" valign="top" class="vncell"><?php echo gettext("Language");?></td>
+							<td width="22%" valign="top" class="vncell"><?=gettext("Cryptography");?></td>
+							<td width="78%" class="vtable">
+								<select name="firmware_flavour" class="selectpicker" data-style="btn-default" data-width="auto">
+									<?php
+									foreach(get_flavour_list() as $fcode => $fdesc) {
+										$selected = ' selected="selected"';
+										if ($fcode != $pconfig['firmware_flavour']) {
+											$selected = '';
+										}
+										echo "<option value=\"{$fcode}\"{$selected}>{$fdesc}</option>";
+									}
+									?>
+								</select>
+								<strong>
+									<?=gettext("Choose the cryptography library to be used by the system."); ?>
+								</strong>
+							</td>
+						</tr>
+						<tr>
+							<td width="22%" valign="top" class="vncell"><?=gettext("Language");?></td>
 							<td width="78%" class="vtable">
 								<select name="language" class="selectpicker" data-style="btn-default" data-width="auto">
 									<?php
-									foreach(get_locale_list() as $lcode => $ldesc) {
+									foreach (get_locale_list() as $lcode => $ldesc) {
 										$selected = ' selected="selected"';
 										if($lcode != $pconfig['language'])
 											$selected = '';
