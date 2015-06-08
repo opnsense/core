@@ -36,11 +36,10 @@ function get_locale_list()
 {
 	$locales = array();
 
+	/* first one is the default */
 	$locales['en_US'] = _('English');
 	//$locales['ja_JP'] = _('Japanese');
 	$locales['zh_CN'] = _('Chinese (Simplified)');
-
-	asort($locales);
 
 	return $locales;
 }
@@ -49,10 +48,9 @@ function get_flavour_list()
 {
 	$flavours = array();
 
-	$flavours['libressl'] = 'LibreSSL';
+	/* first one is the default */
 	$flavours['latest'] = 'OpenSSL';
-
-	asort($flavours);
+	$flavours['libressl'] = 'LibreSSL';
 
 	return $flavours;
 }
