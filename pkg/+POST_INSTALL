@@ -25,3 +25,6 @@ echo "%%REPO_VERSION%%-%%REPO_COMMENT%%" > /usr/local/opnsense/version/opnsense
 if /usr/local/etc/rc.d/configd status > /dev/null; then
 	/usr/local/etc/rc.d/configd restart
 fi
+
+echo "Flush Phalcon volt templates"
+rm /usr/local/opnsense/mvc/app/cache/*.php >/dev/null 2>&1
