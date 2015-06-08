@@ -63,17 +63,10 @@ function setup_gateways_monitor()
 		return;
 	}
 
-	$apinger_debug = "";
-	if (isset($config['system']['apinger_debug'])) {
-		$apinger_debug = "debug on";
-	}
-
 	$apinger_default = return_apinger_defaults();
 	$apingerconfig = <<<EOD
 
 # OPNsense apinger configuration file. Automatically Generated!
-
-{$apinger_debug}
 
 ## User and group the pinger should run as
 user "root"
@@ -600,6 +593,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 			$gateway['monitor'] = $gateway['gateway'];
 
 		$gateway['descr'] = "Interface {$friendly}{$ctype} Gateway";
+		$gateway['monitor_disable'] = true;
 		$gateways_arr[$gateway['name']] = $gateway;
 	}
 	unset($gateway);
@@ -684,6 +678,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 			$gateway['monitor'] = $gateway['gateway'];
 
 		$gateway['descr'] = "Interface {$friendly}{$ctype} Gateway";
+		$gateway['monitor_disable'] = true;
 		$gateways_arr[$gateway['name']] = $gateway;
 	}
 	unset($gateway);

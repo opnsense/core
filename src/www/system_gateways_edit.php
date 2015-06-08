@@ -89,6 +89,8 @@ if (isset($id) && $a_gateways[$id]) {
     $pconfig['descr'] = $a_gateways[$id]['descr'];
     $pconfig['attribute'] = $a_gateways[$id]['attribute'];
     $pconfig['disabled'] = isset($a_gateways[$id]['disabled']);
+} else {
+    $pconfig['monitor_disable'] = true;
 }
 
 if (isset($_GET['dup']) && is_numericint($_GET['dup'])) {
