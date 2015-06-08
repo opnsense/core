@@ -825,7 +825,7 @@ function system_webgui_start()
 			}
 			$pkg_config .= $pkg_line . PHP_EOL;
 		}
-		file_put_contents($pkg_config, '/usr/local/etc/pkg/repos/OPNsense.conf');
+		file_put_contents('/usr/local/etc/pkg/repos/OPNsense.conf', $pkg_config);
 	}
 
 	/* non-standard port? */
