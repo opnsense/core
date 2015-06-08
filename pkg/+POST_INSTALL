@@ -27,4 +27,4 @@ if /usr/local/etc/rc.d/configd status > /dev/null; then
 fi
 
 echo "Flush Phalcon volt templates"
-rm /usr/local/opnsense/mvc/app/cache/*.php >/dev/null 2>&1
+rm -f /usr/local/opnsense/mvc/app/cache/*.php
