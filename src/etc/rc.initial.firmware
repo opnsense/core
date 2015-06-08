@@ -42,9 +42,7 @@ esac
 echo
 
 # upgrade all packages if possible
-pkg upgrade -y
-pkg autoremove -y
-pkg clean -y
+opnsense-update -p
 
 echo
 
@@ -54,8 +52,7 @@ echo
 echo
 
 # if we can update base, we'll do that as well
-if opnsense-update -c; then
-	opnsense-update && /usr/local/etc/rc.reboot
-else
-	opnsense-update
-fi
+REBOOT=
+opnsense-update -c -bk && REBOOT=1
+opnsense-update -bk
+[ -n "${REBOOT}" ] /usr/local/etc/rc.reboot

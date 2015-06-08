@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2.7
 
 # original source from https://github.com/thesharp/daemonize
 

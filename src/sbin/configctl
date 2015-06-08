@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# launch the real utility from here
+/usr/local/opnsense/service/configd_ctl.py "${@}"
