@@ -95,6 +95,24 @@ class Backend
         return  str_replace($endOfStream, "", $resp);
     }
 
+    /**
+     * send event to backend using command parameter list (which will be quoted for proper handling)
+     * @param string $event event string
+     * @param array $params list of parameters to send with command
+     * @param bool $detach detach process
+     * @param int $timeout timeout in seconds
+     * @return string
+     * @throws \Exception
+     */
+    public function configdpRun($event, $params = array(), $detach = false, $timeout = 120)
+    {
+        foreach ($params as $param) {
+            // quote parameters
+            $event .= ' "' . str_replace('"', '\\"', $param) . '"';
+        }
+
+        return $this->configdRun($event, $detach, $timeout);
+    }
 
     /**
      * @return int last restart timestamp
