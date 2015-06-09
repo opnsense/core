@@ -411,6 +411,13 @@ class Action(object):
                 if script_command.find('%s') > -1:
                     # use command execution parameters in action parameter template
                     # use quotes on parameters to prevent code injection
+                    if script_command.count('%s') > len(parameters):
+                        # script command accepts more parameters then given, full with empty parameters
+                        for i in range(script_command.count('%s')-len(parameters)):
+                            parameters.append("")
+                    elif len(parameters) > script_command.count('%s'):
+                        # parameters then expected, fail execution
+                        return 'Parameter mismatch'
                     script_command = script_command % tuple(map(lambda x: '"'+x.replace('"', '\\"')+'"',
                                                                 parameters[0:script_command.count('%s')]))
 
