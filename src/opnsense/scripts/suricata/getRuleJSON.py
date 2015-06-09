@@ -29,79 +29,36 @@
 
     --------------------------------------------------------------------------------------
     script to fetch all suricata rule information into a single json object with the following contents:
-        timestamp : (last timestamp of all files)
-        files : (number of files)
         rules : all relevant metadata from the rules including the default enabled or disabled state
+        total_rows: total rowcount for this selection
+        parameters: list of parameters used
 """
-import os
-import os.path
-import glob
 import json
 import sys
+from rulecache import RuleCache
 
-# suricata rule settings, source directory and cache json file to use
-rule_source_dir='/usr/local/etc/suricata/rules/'
-rule_cache_json='%srules.json'%rule_source_dir
-
-# all relevant metadata tags to fetch
-all_metadata_tags=['sid','msg','classtype','rev','gid']
 
 # Because rule parsing isn't very useful when the rule definitions didn't change we create a single json file
 # to hold the last results (combined with creation date and number of files).
 if __name__ == '__main__':
-    # collect file metadata
-    result_structure = {'timestamp': 0,'files': 0,'rules': []}
-    all_rule_files = []
-    last_mtime = 0
-    for filename in glob.glob('%s*.rules'%(rule_source_dir)):
-        file_mtime = os.stat(filename).st_mtime
-        if file_mtime > last_mtime:
-            last_mtime = file_mtime
+    rc = RuleCache()
+    if rc.isChanged():
+        rc.create()
 
-        all_rule_files.append(filename)
+    # load parameters, ignore validation here the search method only processes valid input
+    parameters = {'limit':'0','offset':'0','sort_by':'', 'filter':'', 'filter_fields':''}
+    cmd=None
+    for arg in sys.argv[1:]:
+        if cmd is None:
+            cmd=arg[1:]
+        else:
+            if cmd in parameters:
+                parameters[cmd] = arg.strip()
+            cmd=None
 
-    result_structure['files'] = len(all_rule_files)
-    result_structure['timestamp'] = last_mtime
-
-    # return last known info if nothing has changed
-    if os.path.isfile(rule_cache_json):
-        try:
-            prev_rules_data=open(rule_cache_json,'rb').read()
-            prev_rules = json.loads(prev_rules_data)
-            if 'timestamp' in prev_rules and 'files' in prev_rules:
-                if prev_rules['timestamp'] == result_structure['timestamp'] \
-                        and prev_rules['files'] == result_structure['files']:
-                    print (prev_rules_data)
-                    sys.exit(0)
-        except ValueError:
-            pass
-
-    # parse all rule files and create json cache file for all data
-    for filename in all_rule_files:
-        rules = []
-        data = open(filename)
-        for rule in data.read().split('\n'):
-            if rule.find('msg:') != -1:
-                record = {'enabled':True, 'source':filename.split('/')[-1]}
-                if rule.strip()[0] =='#':
-                    record['enabled'] = False
-
-                rule_metadata = rule[rule.find('msg:'):-1]
-                for field in rule_metadata.split(';'):
-                    fieldName = field[0:field.find(':')].strip()
-                    fieldContent = field[field.find(':')+1:].strip()
-                    if fieldName in all_metadata_tags:
-                        if fieldContent[0] == '"':
-                            record[fieldName] = fieldContent[1:-1]
-                        else:
-                            record[fieldName] = fieldContent
-                result_structure['rules'].append(record)
-
-    open(rule_cache_json,'wb').write(json.dumps(result_structure))
-    # print json data
-    print(result_structure)
-
-
-
+    # dump output
+    result=rc.search(**parameters)
+    result['parameters'] = parameters
+    print (json.dumps(result))
 
 
