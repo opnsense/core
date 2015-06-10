@@ -35,36 +35,22 @@ require_once('notices.inc');
 include_once("includes/functions.inc.php");
 require_once("script/load_phalcon.php");
 
-/* XXX keep redirect through file because we know it works, but zap this later */
-$file_pkg_status = '/tmp/pkg_status.json';
-
-if ($_POST['action'] == 'pkg_update') {
+if ($_REQUEST['getupdatestatus']) {
     $pkg_json = trim(configd_run('firmware pkgstatus'));
     if ($pkg_json != '') {
-        file_put_contents($file_pkg_status, $pkg_json);
-    }
-}
-
-if ($_REQUEST['getupdatestatus']) {
-    if (file_exists($file_pkg_status)) {
-        $json = file_get_contents($file_pkg_status);
-        $pkg_status = json_decode($json, true);
-        unlink($file_pkg_status);
+        $pkg_status = json_decode($pkg_json, true);
     }
 
-    if (isset($pkg_status)) {
-        if ($pkg_status["connection"]=="error") {
-            echo "<span class='text-danger'>".gettext("Connection Error")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry")."</span>";
-        } elseif ($pkg_status["repository"]=="error") {
-            echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry")."</span>";
-        } elseif ($pkg_status["updates"]=="0") {
-            echo "<span class='text-info'>".gettext("At")." <small>".$pkg_status["last_check"]."</small>".gettext(" no updates found.")."<br/><span class='btn-link' onclick='checkupdate()'>Click to check for updates</span>";
-        } else {
-            echo "<span class='text-danger'>".gettext("There are ").$pkg_status["updates"].gettext(" update(s) available.")."<br/><span class='text-info'><small>(When last checked at: ".$pkg_status["last_check"]." )</small></span>"."</span><br/><a href='/ui/core/firmware/'>".gettext("Click to upgrade")."</a> | <span class='btn-link' onclick='checkupdate()'>Re-check now</span>";
-        }
+    if (!isset($pkg_status) || $pkg_status["connection"]=="error") {
+        echo "<span class='text-danger'>".gettext("Connection Error")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry")."</span>";
+    } elseif ($pkg_status["repository"]=="error") {
+        echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry")."</span>";
+    } elseif ($pkg_status["updates"]=="0") {
+        echo "<span class='text-info'>".gettext("Your system is up to date.")."</span><br/><span class='btn-link' onclick='checkupdate()'>Click to check for updates</span>";
     } else {
-        echo "<span class='btn-link' onclick='checkupdate()'>".gettext("Click to check for updates")."</span>";
+        echo "<span class='text-info'>".gettext("There are ").$pkg_status["updates"].gettext(" update(s) available.")."</span><br/><a href='/ui/core/firmware/'>".gettext("Click to upgrade")."</a> | <span class='btn-link' onclick='checkupdate()'>Re-check now</span>";
     }
+
     exit;
 }
 
@@ -118,18 +104,14 @@ endif; ?>
 			</td>
 
 		</tr>
-					<?php if (!isset($config['system']['firmware']['disablecheck'])) :
-?>
 			<tr>
 				<td>
 					Updates
 				</td>
 					<td>
-						<div id='updatestatus'><span class="text-info">Fetching status</span></div>
+						<div id='updatestatus'><span class='btn-link' onclick='checkupdate()'><?=gettext("Click to check for updates");?></span></div>
 					</td>
 				</tr>
-				<?php
-endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("CPU Type");?></td>
 			<td width="75%" class="listr">
@@ -315,30 +297,24 @@ endforeach; ?>
 			}
 		});
 	}
-	window.onload = function(){
-		getstatus();
-	}
 
-	<?php if (!isset($config['system']['firmware']['disablecheck'])) :
-?>
-		function getstatus() {
-			scroll(0,0);
-			var url = "/widgets/widgets/system_information.widget.php";
-			var pars = 'getupdatestatus=yes';
-			jQuery.ajax(
-			url,
-			{
+	function getstatus() {
+		scroll(0,0);
+		var url = "/widgets/widgets/system_information.widget.php";
+		var pars = 'getupdatestatus=yes';
+		jQuery.ajax(
+		url,
+		{
 			type: 'get',
 			data: pars,
 			complete: activitycallback
-			});
-		}
-		function activitycallback(transport) {
-			// .html() method process all script tags contained in responseText,
-			// to avoid this we set the innerHTML property
-			jQuery('#updatestatus').prop('innerHTML',transport.responseText);
-		}
-	<?php
-endif; ?>
+		});
+	}
+
+	function activitycallback(transport) {
+		// .html() method process all script tags contained in responseText,
+		// to avoid this we set the innerHTML property
+		jQuery('#updatestatus').prop('innerHTML',transport.responseText);
+	}
 //]]>
 </script>
