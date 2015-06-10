@@ -50,7 +50,7 @@ function return_apinger_defaults() {
  */
 function setup_gateways_monitor()
 {
-	global $config, $g;
+	global $config;
 
 	@mkdir('/var/db/rrd', 0775);
 	@chown('/var/db/rrd', 'nobody');
@@ -425,8 +425,9 @@ function return_gateways_status($byname = false)
 }
 
 /* Return all configured gateways on the system */
-function return_gateways_array($disabled = false, $localhost = false, $inactive = false) {
-	global $config, $g;
+function return_gateways_array($disabled = false, $localhost = false, $inactive = false)
+{
+	global $config;
 
 	$gateways_arr = array();
 
@@ -722,8 +723,9 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 	return($gateways_arr);
 }
 
-function fixup_default_gateway($ipprotocol, $gateways_status, $gateways_arr) {
-	global $config, $g;
+function fixup_default_gateway($ipprotocol, $gateways_status, $gateways_arr)
+{
+	global $config;
 	/*
 	 * NOTE: The code below is meant to replace the default gateway when it goes down.
 	 *	This facilitates services running on OPNsense itself and are not handled by a PBR to continue working.
@@ -781,8 +783,9 @@ function fixup_default_gateway($ipprotocol, $gateways_status, $gateways_arr) {
  * Return an array with all gateway groups with name as key
  * All gateway groups will be processed before returning the array.
  */
-function return_gateway_groups_array() {
-	global $config, $g;
+function return_gateway_groups_array()
+{
+	global $config;
 
 	/* fetch the current gateways status */
 	$gateways_status = return_gateways_status(true);
@@ -934,8 +937,9 @@ function lookup_gateway_interface_by_name($name) {
 	return (false);
 }
 
-function get_interface_gateway($interface, &$dynamic = false) {
-	global $config, $g;
+function get_interface_gateway($interface, &$dynamic = false)
+{
+	global $config;
 
 	$gw = NULL;
 
@@ -965,8 +969,9 @@ function get_interface_gateway($interface, &$dynamic = false) {
 	return ($gw);
 }
 
-function get_interface_gateway_v6($interface, &$dynamic = false) {
-	global $config, $g;
+function get_interface_gateway_v6($interface, &$dynamic = false)
+{
+	global $config;
 
 	$gw = NULL;
 	$gwcfg = $config['interfaces'][$interface];

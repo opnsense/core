@@ -31,7 +31,6 @@ function set_networking_interfaces_ports()
 {
 	global $noreboot;
 	global $config;
-	global $g;
 	global $fp;
 
 	$yes_no_prompt = '[y|n]? ';
@@ -430,7 +429,7 @@ EOD;
 
 function vlan_setup()
 {
-	global $iflist, $config, $g, $fp;
+	global $iflist, $config, $fp;
 
 	$yes_no_prompt = '[y|n]? ';
 

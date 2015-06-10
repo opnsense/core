@@ -43,7 +43,7 @@ function dump_rrd_to_xml($rrddatabase, $xmldumpfile)
 
 function restore_rrd()
 {
-	global $g, $config;
+	global $config;
 
 	$rrddbpath = '/var/db/rrd/';
 	$rrdtool = '/usr/local/bin/rrdtool';
@@ -190,7 +190,7 @@ function migrate_rrd_format($rrdoldxml, $rrdnewxml) {
 }
 
 function enable_rrd_graphing() {
-	global $config, $g, $altq_list_queues;
+	global $config, $altq_list_queues;
 
 	if(file_exists("/var/run/booting"))
 		echo gettext("Generating RRD graphs...");
@@ -888,9 +888,8 @@ function enable_rrd_graphing() {
 
 }
 
-# Create gateway quality RRD with settings suitable for OPNsense graph set.
-function create_gateway_quality_rrd($rrd_file) {
-	global $g;
+function create_gateway_quality_rrd($rrd_file)
+{
 	$rrdinterval = 60;
 	$valid = $rrdinterval * 2;
 	$rrdtool = "/usr/local/bin/rrdtool";

@@ -28,7 +28,7 @@
 
 function activate_powerd()
 {
-	global $config, $g;
+	global $config;
 
 	if (is_process_running('powerd')) {
 		exec('/usr/bin/killall powerd');
@@ -60,7 +60,7 @@ function get_default_sysctl_value($id) {
 
 function activate_sysctls()
 {
-	global $config, $g;
+	global $config;
 
 	$sysctls = array(
 		"net.enc.out.ipsec_bpf_mask" => "0x0001",
@@ -85,7 +85,7 @@ function activate_sysctls()
 
 function system_resolvconf_generate($dynupdate = false)
 {
-	global $config, $g;
+	global $config;
 
 	$syscfg = $config['system'];
 
@@ -170,8 +170,9 @@ function system_resolvconf_generate($dynupdate = false)
 	return 0;
 }
 
-function get_searchdomains() {
-	global $config, $g;
+function get_searchdomains()
+{
+	global $config;
 
 	$master_list = array();
 
@@ -192,8 +193,9 @@ function get_searchdomains() {
 	return $master_list;
 }
 
-function get_nameservers() {
-	global $config, $g;
+function get_nameservers()
+{
+	global $config;
 	$master_list = array();
 
 	// Read in dhclient nameservers
@@ -225,7 +227,7 @@ function get_nameservers() {
 
 function system_hosts_generate()
 {
-	global $config, $g;
+	global $config;
 
 	$syscfg = $config['system'];
 	$dnsmasqcfg = $config['dnsmasq'];
@@ -362,7 +364,7 @@ function system_dhcpleases_configure()
 
 function system_hostname_configure()
 {
-	global $config, $g;
+	global $config;
 
 	$syscfg = $config['system'];
 
@@ -378,7 +380,7 @@ function system_hostname_configure()
 
 function system_routing_configure($interface = '')
 {
-	global $config, $g;
+	global $config;
 
 	$gatewayip = "";
 	$interfacegw = "";
@@ -459,8 +461,9 @@ function system_routing_configure($interface = '')
 	return 0;
 }
 
-function system_staticroutes_configure($interface = "", $update_dns = false) {
-	global $config, $g, $aliastable;
+function system_staticroutes_configure($interface = '', $update_dns = false)
+{
+	global $config, $aliastable;
 
 	$filterdns_list = array();
 
@@ -568,7 +571,7 @@ function system_staticroutes_configure($interface = "", $update_dns = false) {
 
 function system_routing_enable()
 {
-	global $config, $g;
+	global $config;
 
 	set_sysctl(array(
 		"net.inet.ip.forwarding" => "1",
@@ -911,7 +914,7 @@ function system_generate_lighty_config(
 	$ca_location = 'ca.pem',
 	$captive_portal = false)
 {
-	global $config, $g;
+	global $config;
 
 	@mkdir('/tmp/lighttpdcompress');
 
@@ -940,7 +943,7 @@ url.rewrite-if-not-file = ( "^/ui/(.*)$" => "/ui/index.php?_url=/$1" ,
 
 EOD;
 		$captive_portal_mod_evasive = "";
-		$server_upload_dirs = "server.upload-dirs = ( \"{$g['upload_path']}/\", \"/tmp/\", \"/var/\" )\n";
+		$server_upload_dirs = "server.upload-dirs = ( \"/root/\", \"/tmp/\", \"/var/\" )\n";
 		$server_max_request_size = "server.max-request-size    = 2097152";
 		$cgi_config = "cgi.assign                 = ( \".cgi\" => \"\" )";
 	}
@@ -1248,7 +1251,7 @@ EOD;
 
 function system_timezone_configure()
 {
-	global $config, $g;
+	global $config;
 
 	$syscfg = $config['system'];
 
@@ -1276,8 +1279,9 @@ function system_timezone_configure()
 		echo gettext("done.") . "\n";
 }
 
-function system_ntp_setup_gps($serialport) {
-	global $config, $g;
+function system_ntp_setup_gps($serialport)
+{
+	global $config;
 	$gps_device = '/dev/gps0';
 	$serialport = '/dev/'.$serialport;
 
@@ -1345,7 +1349,7 @@ function system_ntp_setup_pps($serialport)
 
 function system_ntp_configure($start_ntpd = true)
 {
-	global $config, $g;
+	global $config;
 
 	$driftfile = '/var/db/ntpd.drift';
 	$statsdir = '/var/log/ntp';
@@ -1645,7 +1649,7 @@ function system_console_configure()
 
 function system_set_harddisk_standby()
 {
-	global $g, $config;
+	global $config;
 
 	if (isset($config['system']['harddiskstandby'])) {
 		if (file_exists("/var/run/booting")) {

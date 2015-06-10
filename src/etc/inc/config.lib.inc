@@ -143,7 +143,7 @@ function convert_config() {
 /* save the system configuration */
 function write_config($desc = 'Unknown', $backup = true)
 {
-	global $config, $g;
+	global $config;
 
 	if (!empty($_SERVER['REMOTE_ADDR'])) {
 		if (session_status() == PHP_SESSION_NONE) {
@@ -219,7 +219,7 @@ function reset_factory_defaults($sync = true)
 
 function config_restore($conffile)
 {
-	global $config, $g;
+	global $config;
 
 	if (!file_exists($conffile))
 		return 1;
@@ -265,8 +265,9 @@ function security_checks_disabled()
 /**
  * remove old backups
  */
-function cleanup_backups() {
-	global $g, $config;
+function cleanup_backups()
+{
+	global $config;
 	$i = false;
 
 	if (isset($config['system']['backupcount']) && is_numeric($config['system']['backupcount']) && ($config['system']['backupcount'] >= 0)) {

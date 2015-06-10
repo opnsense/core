@@ -2375,8 +2375,9 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
 	}
 }
 
-function interface_wireless_configure($if, &$wl, &$wlcfg) {
-	global $config, $g;
+function interface_wireless_configure($if, &$wl, &$wlcfg)
+{
+	global $config;
 
 	/*    open up a shell script that will be used to output the commands.
 	 *    since wireless is changing a lot, these series of commands are fragile
@@ -2396,7 +2397,7 @@ function interface_wireless_configure($if, &$wl, &$wlcfg) {
 
 	$fd_set = fopen("/tmp/{$if}_setup.sh","w");
 	fwrite($fd_set, "#!/bin/sh\n");
-	fwrite($fd_set, "# {$g['product_name']} wireless configuration script.\n\n");
+	fwrite($fd_set, "# wireless configuration script.\n\n");
 
 	/* set values for /path/program */
 	$hostapd = "/usr/sbin/hostapd";
@@ -4289,8 +4290,9 @@ function interface_get_wireless_clone($wlif) {
 	}
 }
 
-function get_real_interface($interface = "wan", $family = "all", $realv6iface = false, $flush = true) {
-	global $config, $g;
+function get_real_interface($interface = "wan", $family = "all", $realv6iface = false, $flush = true)
+{
+	global $config;
 
 	$wanif = NULL;
 
@@ -5058,7 +5060,7 @@ function is_altq_capable($int)
  ******/
 function is_interface_wireless($interface)
 {
-	global $config, $g;
+	global $config;
 
 	$friendly = convert_real_interface_to_friendly_interface_name($interface);
 	if (!isset($config['interfaces'][$friendly]['wireless'])) {

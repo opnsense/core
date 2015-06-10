@@ -35,8 +35,9 @@ $buffer_rules_rdr = array();
 $buffer_rules_normal = array();
 
 /* format filter logs */
-function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = "", $filterinterface = null) {
-	global $config, $g;
+function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = '', $filterinterface = null)
+{
+	global $config;
 
 	/* Make sure this is a number before using it in a system call */
 	if (!(is_numeric($tail)))
@@ -279,9 +280,8 @@ function get_port_with_service($port, $proto) {
 	return ':' . $portstr;
 }
 
-function find_rule_by_number($rulenum, $type="block") {
-	global $g;
-
+function find_rule_by_number($rulenum, $type = 'block')
+{
 	/* Passing arbitrary input to grep could be a Very Bad Thing(tm) */
 	if (!is_numeric($rulenum) || !in_array($type, array('pass', 'block', 'match', 'rdr')))
 		return;
@@ -305,8 +305,9 @@ function find_rule_by_number($rulenum, $type="block") {
 	return "";
 }
 
-function buffer_rules_load() {
-	global $g, $buffer_rules_rdr, $buffer_rules_normal;
+function buffer_rules_load()
+{
+	global $buffer_rules_rdr, $buffer_rules_normal;
 	unset($buffer, $buffer_rules_rdr, $buffer_rules_normal);
 	/* Redeclare globals after unset to work around PHP */
 	global $buffer_rules_rdr, $buffer_rules_normal;
@@ -340,13 +341,15 @@ function buffer_rules_load() {
 	unset($_gb, $buffer);
 }
 
-function buffer_rules_clear() {
+function buffer_rules_clear()
+{
 	unset($GLOBALS['buffer_rules_normal']);
 	unset($GLOBALS['buffer_rules_rdr']);
 }
 
-function find_rule_by_number_buffer($rulenum,  $type){
-	global $g, $buffer_rules_rdr, $buffer_rules_normal;
+function find_rule_by_number_buffer($rulenum, $type)
+{
+	global $buffer_rules_rdr, $buffer_rules_normal;
 
 	$lookup_key = "@{$rulenum}";
 
@@ -362,15 +365,17 @@ function find_rule_by_number_buffer($rulenum,  $type){
 	return "{$rulename} ({$lookup_key})";
 }
 
-function find_action_image($action) {
-	// This function will now return a glyphicon class
-	global $g;
-	if ((strstr(strtolower($action), "p")) || (strtolower($action) == "rdr"))
-		return "glyphicon glyphicon-play text-success";
-	else if(strstr(strtolower($action), "r"))
-		return "glyphicon glyphicon-remove text-warning";
-	else
-		return "glyphicon glyphicon-remove text-danger";
+function find_action_image($action)
+{
+	if ((strstr(strtolower($action), 'p')) || (strtolower($action) == 'rdr')) {
+		return 'glyphicon glyphicon-play text-success';
+	}
+
+	if (strstr(strtolower($action), 'r')) {
+		return 'glyphicon glyphicon-remove text-warning';
+	}
+
+	return 'glyphicon glyphicon-remove text-danger';
 }
 
 /* AJAX specific handlers */
