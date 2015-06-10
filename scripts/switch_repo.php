@@ -27,6 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+/* test scipt only, not in production */
 $pkg_mirror = 'http://pkg.opnsense.org';
 $pkg_flavour = 'latest';
 
@@ -37,7 +38,7 @@ if (count($argv) > 2) {
 	$pkg_mirror = $argv[2];
 }
 
-$pkg_sample = file_get_contents('/usr/local/etc/pkg/repos/OPNsense.conf.sample');
+$pkg_sample = file_get_contents('/usr/local/etc/pkg/repos/origin.conf.sample');
 $pkg_sample = explode(PHP_EOL, $pkg_sample);
 $pkg_config = '';
 
@@ -54,4 +55,4 @@ foreach ($pkg_sample as $pkg_line) {
 	$pkg_config .= $pkg_line . PHP_EOL;
 }
 
-file_put_contents('/usr/local/etc/pkg/repos/OPNsense.conf', $pkg_config);
+file_put_contents('/usr/local/etc/pkg/repos/origin.conf', $pkg_config);
