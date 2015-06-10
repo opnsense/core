@@ -48,7 +48,7 @@ if (file_exists($file_pkg_status)) {
 }
 
 if ($_REQUEST['getupdatestatus']) {
-    if (isset((:$pkg_status)) {
+    if (isset($pkg_status)) {
         if ($pkg_status["connection"]=="error") {
             echo "<span class='text-danger'>".gettext("Connection Error")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext("Click to retry")."</span>";
         } elseif ($pkg_status["repository"]=="error") {
