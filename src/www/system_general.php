@@ -72,9 +72,6 @@ $pconfig['timeupdateinterval'] = $config['system']['time-update-interval'];
 $pconfig['timeservers'] = $config['system']['timeservers'];
 $pconfig['theme'] = $config['system']['theme'];
 $pconfig['language'] = $config['system']['language'];
-if (isset($config['system']['firmware']['flavour'])) {
-	$pconfig['firmware_flavour'] = $config['system']['firmware']['flavour'];
-}
 
 $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
 
@@ -190,18 +187,6 @@ if ($_POST) {
 			$config['system']['language'] = $_POST['language'];
 			set_language($config['system']['language']);
 		}
-
-		if (!isset($config['system']['firmware'])) {
-			$config['system']['firmware'] = array();
-		}
-		if ($_POST['firmware_flavour']) {
-			$config['system']['firmware']['flavour'] = $_POST['firmware_flavour'];
-		} else {
-			if (isset($config['system']['firmware']['flavour'])) {
-				unset($config['system']['firmware']['flavour']);
-			}
-		}
-		system_firmware_configure();
 
 		update_if_changed("System Theme", $config['theme'], $_POST['theme']);
 
@@ -482,25 +467,6 @@ include("head.inc");
 									"required). Remember to set up at least one DNS server " .
 									"if you enter a host name here!"); ?>
 								</span>
-							</td>
-						</tr>
-						<tr>
-							<td width="22%" valign="top" class="vncell"><?=gettext("Cryptography");?></td>
-							<td width="78%" class="vtable">
-								<select name="firmware_flavour" class="selectpicker" data-style="btn-default" data-width="auto">
-									<?php
-									foreach(get_flavour_list() as $fcode => $fdesc) {
-										$selected = ' selected="selected"';
-										if ($fcode != $pconfig['firmware_flavour']) {
-											$selected = '';
-										}
-										echo "<option value=\"{$fcode}\"{$selected}>{$fdesc}</option>";
-									}
-									?>
-								</select>
-								<strong>
-									<?=gettext("Choose the cryptography library to be used by the system."); ?>
-								</strong>
 							</td>
 						</tr>
 						<tr>

@@ -790,44 +790,6 @@ EOD;
 	return $retval;
 }
 
-function system_firmware_configure()
-{
-	global $config;
-
-	$pkg_mirror = 'http://pkg.opnsense.org';
-	$pkg_flavour = 'latest';
-
-	if (!file_exists('/usr/local/etc/pkg/repos/OPNsense.conf.sample')) {
-		return;
-	}
-
-	if (isset($config['system']['firmware']['flavour'])) {
-		$pkg_flavour = $config['system']['firmware']['flavour'];
-	}
-
-	if (isset($config['system']['firmware']['mirror'])) {
-		$pkg_mirror = $config['system']['firmware']['mirror'];
-	}
-
-	$pkg_sample = file_get_contents('/usr/local/etc/pkg/repos/OPNsense.conf.sample');
-	$pkg_sample = explode(PHP_EOL, $pkg_sample);
-	$pkg_config = '';
-	foreach ($pkg_sample as $pkg_line) {
-		if (!strlen($pkg_line)) {
-			continue;
-		} elseif (!strncasecmp($pkg_line, '  url:', 6)) {
-			$pkg_line = sprintf(
-				'  url: "pkg+%s/${ABI}/%s",',
-				$pkg_mirror,
-				$pkg_flavour
-			);
-		}
-		$pkg_config .= $pkg_line . PHP_EOL;
-	}
-	file_put_contents('/usr/local/etc/pkg/repos/OPNsense.conf', $pkg_config);
-
-}
-
 function system_webgui_start()
 {
 	global $config;

@@ -532,41 +532,6 @@ function rmdir_recursive($path,$follow_links=false) {
 }
 
 /*
- * check_firmware_version(): Check whether the current firmware installed is the most recently released.
- */
-function check_firmware_version($tocheck = "all", $return_php = true)
-{
-	global $config;
-
-	$xmlrpcfqdn = preg_replace('(https?://)', '', '/xmlrpc.php');
-	$ip = gethostbyname($xmlrpcfqdn);
-	if($ip == $xmlrpcfqdn)
-		return false;
-	$version = php_uname('r');
-	$version = explode('-', $version);
-	$rawparams = array("firmware" => array("version" => trim(file_get_contents('/usr/local/opnsense/version/opnsense'))),
-		"kernel"   => array("version" => $version[0]),
-		"base"     => array("version" => $version[0]),
-		"config_version" => $config['version']
-		);
-	unset($version);
-
-	if($tocheck == "all") {
-		$params = $rawparams;
-	} else {
-		foreach($tocheck as $check) {
-			$params['check'] = $rawparams['check'];
-		}
-	}
-	if($config['system']['firmware']['branch'])
-		$params['branch'] = $config['system']['firmware']['branch'];
-
-	$versions["current"] = $params;
-
-	return $versions;
-}
-
-/*
  * host_firmware_version(): Return the versions used in this install
  */
 function host_firmware_version($tocheck = "")
