@@ -15,10 +15,6 @@
         "name": "User - System - Shell account access",
         "descr": "Indicates whether the user is able to login for example via SSH."
     },
-    "user-ssh-tunnel": {
-        "name": "User - System - SSH tunneling",
-        "descr": "Indicates whether the user is able to login for tunneling via SSH when they have no shell access. Note: User - System - Copy files conflicts with this privilege."
-    },
     "user-ipsec-xauth-dialin": {
         "name": "User - VPN - IPsec xauth Dialin",
         "descr": "Indicates whether the user is allowed to dial in via IPsec xauth (Note: Does not allow shell access, but may allow the user to create ssh tunnels)"

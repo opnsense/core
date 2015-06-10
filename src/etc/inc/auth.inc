@@ -416,8 +416,6 @@ function local_user_set(&$user)
 		$user_shell = '/bin/csh';
 	} elseif (userHasPrivilege($user, 'user-copy-files')) {
 		$user_shell = '/usr/local/bin/scponly';
-	} elseif (userHasPrivilege($user, 'user-ssh-tunnel')) {
-		$user_shell = '/usr/local/sbin/ssh_tunnel_shell';
 	}
 
 	/* unlock valid shell users */
