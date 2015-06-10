@@ -61,7 +61,6 @@ timer=0
 timeout=30 # Wait for a maximum number of seconds to determine connection issues
 
 # File location variables
-package_json_output="/tmp/pkg_status.json"
 tmp_pkg_output_file="/tmp/packages.output"
 tmp_pkg_update_file="/tmp/pkg_updates.output"
 
@@ -233,12 +232,7 @@ if [ "$pkg_running" == "" ]; then
       # Get date/timestamp
       last_check=`date`
       # Write our json structure to disk
-      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"core_version\":\"$core_version\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}" > $package_json_output
+      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"core_version\":\"$core_version\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
 else
   # pkg is already running, quitting
-fi
-
-# output json data
-if [ -f $package_json_output ]; then
-      cat $package_json_output
 fi

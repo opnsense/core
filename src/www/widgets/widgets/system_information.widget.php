@@ -35,13 +35,17 @@ require_once('notices.inc');
 include_once("includes/functions.inc.php");
 require_once("script/load_phalcon.php");
 
+/* XXX keep redirect through file because we know it works, but zap this later */
+$file_pkg_status = '/tmp/pkg_status.json';
 
 if ($_POST['action'] == 'pkg_update') {
-    configd_run('firmware pkgstatus');
+    $pkg_json = trim(configd_run('firmware pkgstatus'));
+    if ($pkg_json != '') {
+        file_put_contents($file_pkg_status, $pkg_json);
+    }
 }
 
 if ($_REQUEST['getupdatestatus']) {
-    $file_pkg_status="/tmp/pkg_status.json";
     if (file_exists($file_pkg_status)) {
         $json = file_get_contents($file_pkg_status);
         $pkg_status = json_decode($json, true);
