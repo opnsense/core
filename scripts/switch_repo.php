@@ -30,11 +30,11 @@
 $pkg_mirror = 'http://pkg.opnsense.org';
 $pkg_flavour = 'latest';
 
-if (isset($argv[1])) {
+if (count($argv) > 1) {
 	$pkg_flavour = $argv[1];
 }
-if (isset($argv[2])) {
-	$pkg_flavour = $argv[2];
+if (count($argv) > 2) {
+	$pkg_mirror = $argv[2];
 }
 
 $pkg_sample = file_get_contents('/usr/local/etc/pkg/repos/OPNsense.conf.sample');
