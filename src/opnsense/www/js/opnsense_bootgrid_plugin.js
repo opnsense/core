@@ -31,9 +31,11 @@
  * wrapper around bootgrid component to use our defaults (including scaling footer)
  * @param id
  * @param sourceUrl
+ * @param options associative array containing extra bootgrid options or overwrites
  */
-function stdBootgridUI(obj, sourceUrl) {
-    var grid = obj.bootgrid({
+function stdBootgridUI(obj, sourceUrl, options) {
+    // set defaults our defaults
+    var gridopt = {
         ajax: true,
         selection: true,
         multiSelect: true,
@@ -52,7 +54,17 @@ function stdBootgridUI(obj, sourceUrl) {
                 }
             }
         }
-    }).on("loaded.rs.jquery.bootgrid", function (e)
+    };
+
+    // merge additional options (if any)
+    if (options != undefined) {
+        $.each(options,  function(key, value) {
+            gridopt[key] = value;
+        });
+    }
+
+    // construct a new grid
+    var grid = obj.bootgrid(gridopt).on("loaded.rs.jquery.bootgrid", function (e)
     {
         // scale footer on resize
         $(this).find("tfoot td:first-child").attr('colspan',$(this).find("th").length - 1);
@@ -92,7 +104,8 @@ $.fn.UIBootgrid = function (params) {
         if (gridParams != undefined) {
             if (gridParams['search'] != undefined) {
                 // create new bootgrid component and link source
-                var grid = stdBootgridUI($(this), gridParams['search']);
+                var grid = stdBootgridUI($(this), gridParams['search'],
+                    {'requestHandler':gridParams['requestHandler']});
 
                 // edit dialog id to use ( see base_dialog.volt template for details)
                 var editDlg = $(this).attr('data-editDialog');
@@ -124,7 +137,7 @@ $.fn.UIBootgrid = function (params) {
                                     }, true);
                             });
                         } else {
-                            console.log("action get/set or data-editDialog missing")
+                            console.log("[grid] action get/set or data-editDialog missing")
                         }
                     }).end();
 
@@ -141,7 +154,7 @@ $.fn.UIBootgrid = function (params) {
                                     });
                             });
                         } else {
-                            console.log("action del missing")
+                            console.log("[grid] action del missing")
                         }
                     }).end();
 
@@ -156,14 +169,14 @@ $.fn.UIBootgrid = function (params) {
                                     $("#"+gridId).bootgrid("reload");
                                 });
                         } else {
-                            console.log("action toggle missing")
+                            console.log("[grid] action toggle missing")
                         }
                     }).end();
                 });
 
                 // link Add new to child button with data-action = add
-                if ( gridParams['get'] != undefined && gridParams['add'] != undefined) {
-                    $(this).find("*[data-action=add]").click(function(){
+                $(this).find("*[data-action=add]").click(function(){
+                    if ( gridParams['get'] != undefined && gridParams['add'] != undefined) {
                         var urlMap = {};
                         urlMap['frm_' + editDlg] = gridParams['get'];
                         mapDataToFormUI(urlMap).done(function(){
@@ -183,15 +196,14 @@ $.fn.UIBootgrid = function (params) {
                                     $("#"+gridId).bootgrid("reload");
                                 }, true);
                         });
-
-                    });
-                }  else {
-                    console.log("action add missing")
-                }
+                    }  else {
+                        console.log("[grid] action add missing")
+                    }
+                });
 
                 // link delete selected items action
-                if ( gridParams['del'] != undefined) {
-                    $(this).find("*[data-action=deleteSelected]").click(function(){
+                $(this).find("*[data-action=deleteSelected]").click(function(){
+                    if ( gridParams['del'] != undefined) {
                         stdDialogRemoveItem("Remove selected items?",function(){
                             var rows =$("#"+gridId).bootgrid('getSelectedRows');
                             if (rows != undefined){
@@ -205,9 +217,10 @@ $.fn.UIBootgrid = function (params) {
                                 });
                             }
                         });
-                    });
-                }
-
+                    } else {
+                        console.log("[grid] action del missing")
+                    }
+                });
 
                 return grid;
             }
