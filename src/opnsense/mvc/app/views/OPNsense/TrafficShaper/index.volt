@@ -123,7 +123,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <tr>
                 <td></td>
                 <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
+                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
                     <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
                 </td>
             </tr>
@@ -150,7 +150,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <tr>
                 <td></td>
                 <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
+                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
                     <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
                 </td>
             </tr>
@@ -180,7 +180,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <tr >
                 <td></td>
                 <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
+                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
                     <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
                 </td>
             </tr>
