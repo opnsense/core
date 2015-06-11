@@ -33,6 +33,7 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function updateStatus() {
         // update UI
+        $('#updatelist').empty();
         $('#maintabs li:eq(0) a').tab('show');
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
         $('#updatestatus').attr('class', 'text-info');
@@ -97,6 +98,7 @@ POSSIBILITY OF SUCH DAMAGE.
             $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
             setTimeout(trackStatus, 1000) ;
         });
+        $('#updatelist').empty();
     }
 
     /**
