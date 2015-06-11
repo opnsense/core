@@ -96,9 +96,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
             $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
+            $('#updatelist').empty();
             setTimeout(trackStatus, 1000) ;
         });
-        $('#updatelist').empty();
     }
 
     /**
