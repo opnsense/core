@@ -46,7 +46,7 @@ if __name__ == '__main__':
         rc.create()
 
     # load parameters, ignore validation here the search method only processes valid input
-    parameters = {'limit':'0','offset':'0','sort_by':'', 'filter':'', 'filter_fields':''}
+    parameters = {'limit':'0','offset':'0','sort_by':'', 'filter':''}
     cmd=None
     for arg in sys.argv[1:]:
         if cmd is None:
@@ -60,3 +60,5 @@ if __name__ == '__main__':
     result=rc.search(**parameters)
     result['parameters'] = parameters
     print (json.dumps(result))
+
+
