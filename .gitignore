@@ -1,5 +1,5 @@
 /src/etc/pkg.conf
-/src/etc/pkg/repos/origin.conf*
+/src/etc/pkg/**
 /src/etc/ssh/**
 /src/etc/php.ini
 /src/lib/**

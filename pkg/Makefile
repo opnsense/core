@@ -8,8 +8,13 @@ install:
 	# config.xml factory reset file
 	@cp ${.CURDIR}/config.xml.sample ${DESTDIR}/usr/local/etc
 	@echo "@sample /usr/local/etc/config.xml.sample"
+	# create needed root direction
+	@mkdir -p ${DESTDIR}/usr/local/etc/pkg
+	# available repository configurations
+	@cp -r ${.CURDIR}/repos ${DESTDIR}/usr/local/etc/pkg/
+	@(cd ${.CURDIR}/repos; find * -type f) | \
+	    xargs -n1 printf "/usr/local/etc/pkg/repos/%s\n"
 	# main package repository configuration
-	@mkdir -p ${DESTDIR}/usr/local/etc/pkg/repos
 	@cp ${.CURDIR}/origin.conf.sample ${DESTDIR}/usr/local/etc/pkg/repos
 	@echo "@sample /usr/local/etc/pkg/repos/origin.conf.sample"
 	# available fingerprints
