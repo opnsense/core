@@ -4,5 +4,17 @@
         OPNsense IDS
     </description>
     <items>
+        <rules>
+            <rule type="ArrayField">
+                <sid type="IntegerField">
+                    <ValidationMessage>sid should be a number</ValidationMessage>
+                    <Required>Y</Required>
+                </sid>
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+            </rule>
+        </rules>
     </items>
 </model>

@@ -32,4 +32,84 @@ use OPNsense\Base\BaseModel;
 
 class IDS extends BaseModel
 {
+    private $sid_list = array();
+
+    private function updateSIDlist()
+    {
+        if (count($this->sid_list) == 0) {
+            foreach ($this->rules->rule->__items as $NodeKey => $NodeValue) {
+                $this->sid_list[$NodeValue->sid->__toString()] = $NodeValue;
+            }
+        }
+    }
+
+    /**
+     * get new or existing rule
+     * @param $sid
+     * @return mixed
+     */
+    private function getRule($sid)
+    {
+        $this->updateSIDlist();
+        if (!array_key_exists($sid, $this->sid_list)) {
+            $rule = $this->rules->rule->Add();
+            $rule->sid = $sid;
+            $this->sid_list[$sid] = $rule;
+        }
+        return $this->sid_list[$sid];
+    }
+
+    /**
+     * enable rule
+     * @param $sid
+     */
+    public function enableRule($sid)
+    {
+        $rule = $this->getRule($sid);
+        $rule->enabled = "1";
+    }
+
+    /**
+     * disable rule
+     * @param $sid
+     */
+    public function disableRule($sid)
+    {
+        $rule = $this->getRule($sid);
+        $rule->enabled = "0";
+    }
+
+    /**
+     * remove rule by sid
+     * @param $sid
+     */
+    public function removeRule($sid)
+    {
+        // search and drop rule
+        foreach ($this->rules->rule->__items as $NodeKey => $NodeValue) {
+            if ((string)$NodeValue->sid == $sid) {
+                $this->rules->rule->Del($NodeKey);
+                unset ($this->sid_list[$sid]);
+                break;
+            }
+        }
+    }
+
+    /**
+     * retrieve current altered rule status
+     * @param $sid
+     * @param $default default value
+     * @return default, 0, 1 ( default, true, false)
+     */
+    public function getRuleStatus($sid, $default)
+    {
+        $this->updateSIDlist();
+        if (array_key_exists($sid, $this->sid_list)) {
+            return (string)$this->sid_list[$sid]->enabled;
+        } else {
+            return $default;
+        }
+
+    }
+
 }

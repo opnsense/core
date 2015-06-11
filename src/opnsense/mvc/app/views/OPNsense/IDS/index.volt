@@ -30,6 +30,45 @@ POSSIBILITY OF SUCH DAMAGE.
 
     $( document ).ready(function() {
 
+        function addFilters(request) {
+            var selected =$('#ruleclass').find("option:selected").val();
+            if ( selected != "") {
+                request['classtype'] = selected;
+            }
+            return request;
+        }
+
+        $("#grid-installedrules").UIBootgrid(
+                {   'search':'/api/ids/settings/searchinstalledrules',
+                    'options':{
+                        'requestHandler':addFilters,
+                        'formatters':{
+                            "rowtoggle": function (column, row) {
+                                if (parseInt(row[column.id], 2) == 1) {
+                                    return "<span class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.sid + "\"></span>";
+                                } else {
+                                    return "<span class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.sid + "\"></span>";
+                                }
+                            }
+                        }
+                    },
+                    'toggle':'/api/ids/settings/toggleRule/'
+                }
+        );
+
+        // list all known classtypes and add to selection box
+        ajaxGet(url="/api/ids/settings/listRuleClasstypes",sendData={}, callback=function(data, status) {
+            if (status == "success") {
+                $.each(data['items'], function(key, value) {
+                    $('#ruleclass').append($("<option></option>").attr("value",value).text(value));
+                });
+                $('.selectpicker').selectpicker('refresh');
+                // link on change event
+                $('#ruleclass').on('change', function(){
+                    $('#grid-installedrules').bootgrid('reload');
+                });
+            }
+        });
 
 
     });
@@ -44,7 +83,38 @@ POSSIBILITY OF SUCH DAMAGE.
 </ul>
 <div class="tab-content content-box tab-content">
     <div id="item1" class="tab-pane fade in active">
+        <div class="bootgrid-header container-fluid">
+            <div class="row">
+                <div class="col-sm-12 actionBar">
+                    <b>Classtype &nbsp;</b>
+                    <select id="ruleclass" class="selectpicker" data-width="200px"><option value="">ALL</option></select>
+                </div>
+            </div>
+        </div>
 
+        <!-- tab page "installed rules" -->
+        <table id="grid-installedrules" class="table table-condensed table-hover table-striped table-responsive">
+            <thead>
+            <tr>
+                <th data-column-id="sid" data-type="number" data-visible="true" data-identifier="true" >sid</th>
+                <th data-column-id="source" data-type="string">Source</th>
+                <th data-column-id="classtype" data-type="string">ClassType</th>
+                <th data-column-id="msg" data-type="string">Message</th>
+                <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false">enabled</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>
+                    <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
     </div>
     <div id="item2" class="tab-pane fade in">
 
