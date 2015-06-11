@@ -139,7 +139,7 @@
                     <OptionValues>
                         <ip>ip</ip>
                         <ip4>ipv4</ip4>
-                        <ip5>ipv6</ip5>
+                        <ip6>ipv6</ip6>
                         <udp>udp</udp>
                         <tcp>tcp</tcp>
                         <icmp>icmp</icmp>
