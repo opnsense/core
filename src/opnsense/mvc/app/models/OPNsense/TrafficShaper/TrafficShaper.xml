@@ -142,6 +142,11 @@
                         <ip5>ipv6</ip5>
                         <udp>udp</udp>
                         <tcp>tcp</tcp>
+                        <icmp>icmp</icmp>
+                        <igmp>igmp</igmp>
+                        <esp>esp</esp>
+                        <ah>ah</ah>
+                        <gre>gre</gre>
                     </OptionValues>
                 </proto>
                 <source type="NetworkField">
