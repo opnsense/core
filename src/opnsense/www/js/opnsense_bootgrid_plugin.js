@@ -104,8 +104,7 @@ $.fn.UIBootgrid = function (params) {
         if (gridParams != undefined) {
             if (gridParams['search'] != undefined) {
                 // create new bootgrid component and link source
-                var grid = stdBootgridUI($(this), gridParams['search'],
-                    {'requestHandler':gridParams['requestHandler']});
+                var grid = stdBootgridUI($(this), gridParams['search'],gridParams['options']);
 
                 // edit dialog id to use ( see base_dialog.volt template for details)
                 var editDlg = $(this).attr('data-editDialog');
