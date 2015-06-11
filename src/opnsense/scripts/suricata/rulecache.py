@@ -199,3 +199,17 @@ class RuleCache(object):
             result['rows'].append(record)
 
         return result
+
+    def listClassTypes(self):
+        """
+        :return: list of installed classtypes
+        """
+        result = []
+        db = sqlite3.connect(self.cachefile)
+        cur = db.cursor()
+        cur.execute('select distinct classtype from rules')
+        for record in cur.fetchall():
+            result.append(record[0])
+
+        return sorted(result)
+
