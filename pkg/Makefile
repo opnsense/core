@@ -14,9 +14,6 @@ install:
 	@cp -r ${.CURDIR}/repos ${DESTDIR}/usr/local/etc/pkg/
 	@(cd ${.CURDIR}/repos; find * -type f) | \
 	    xargs -n1 printf "/usr/local/etc/pkg/repos/%s\n"
-	# main package repository configuration
-	@cp ${.CURDIR}/origin.conf.sample ${DESTDIR}/usr/local/etc/pkg/repos
-	@echo "@sample /usr/local/etc/pkg/repos/origin.conf.sample"
 	# available fingerprints
 	@cp -r ${.CURDIR}/fingerprints ${DESTDIR}/usr/local/etc/pkg/
 	@(cd ${.CURDIR}/fingerprints; find * -type f) | \

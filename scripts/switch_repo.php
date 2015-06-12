@@ -38,7 +38,7 @@ if (count($argv) > 2) {
 	$pkg_mirror = $argv[2];
 }
 
-$pkg_sample = file_get_contents('/usr/local/etc/pkg/repos/origin.conf.sample');
+$pkg_sample = file_get_contents('/usr/local/etc/pkg/repos/origin.conf');
 $pkg_sample = explode(PHP_EOL, $pkg_sample);
 $pkg_config = '';
 
