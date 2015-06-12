@@ -5,6 +5,11 @@
         <type>info</type>
     </field>
     <field>
+        <id>rev</id>
+        <label>rev</label>
+        <type>info</type>
+    </field>
+    <field>
         <id>gid</id>
         <label>gid</label>
         <type>info</type>
