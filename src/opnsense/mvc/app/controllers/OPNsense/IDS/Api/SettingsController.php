@@ -86,7 +86,7 @@ class SettingsController extends ApiControllerBase
                 $sortStr = 'sid';
             }
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
-                $searchPhrase = 'msg,classtype,source,sid/"'.$this->request->getPost('searchPhrase', 'string', '').'%"';
+                $searchPhrase = 'msg,classtype,source,sid/"%'.$this->request->getPost('searchPhrase', 'string', '').'"';
             } else {
                 $searchPhrase = '';
             }
