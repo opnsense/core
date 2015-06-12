@@ -28,15 +28,12 @@
  */
 namespace OPNsense\Base;
 
-use OPNsense\Core\ACL;
-use Phalcon\Mvc\Controller;
-use Phalcon\Logger\Adapter\Syslog;
 
 /**
  * Class ApiControllerBase, inherit this class to implement API calls
  * @package OPNsense\Base
  */
-class ApiControllerBase extends Controller
+class ApiControllerBase extends ControllerRoot
 {
     /**
      * Initialize API controller
@@ -45,29 +42,6 @@ class ApiControllerBase extends Controller
     {
         // disable view processing
         $this->view->disable();
-    }
-
-    /**
-     * Wrap close session, for long running operations.
-     */
-    protected function sessionClose()
-    {
-        session_write_close();
-    }
-
-    /**
-     * get system logger
-     * @param string $ident syslog identifier
-     * @return Syslog log handler
-     */
-    protected function getLogger($ident = "api")
-    {
-        $logger = new Syslog($ident, array(
-            'option' => LOG_PID,
-            'facility' => LOG_LOCAL4
-        ));
-
-        return $logger;
     }
 
 
@@ -81,17 +55,8 @@ class ApiControllerBase extends Controller
         // TODO: implement authentication for api calls, at this moment you need a valid session on the web interface
 
         // use authentication of legacy OPNsense to validate user.
-        if ($this->session->has("Username") == false) {
-            $this->getLogger()->error("no active session, user not found");
-            $this->response->redirect("/", true);
-        }
-
-        // Authorization using legacy acl structure
-        $acl = new ACL();
-        if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
-            $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
-                " not accessible for user ".$this->session->get("Username"));
-            $this->response->redirect("/", true);
+        if (!$this->doAuth()) {
+            return false;
         }
 
         // check for valid csrf on post requests

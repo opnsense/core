@@ -29,7 +29,6 @@
 namespace OPNsense\Base;
 
 use OPNsense\Core\Config;
-use OPNsense\Core\ACL;
 use Phalcon\Mvc\Controller;
 use Phalcon\Translate\Adapter\Gettext;
 use Phalcon\Translate\Adapter\NativeArray;
@@ -38,7 +37,7 @@ use Phalcon\Translate\Adapter\NativeArray;
  * Class ControllerBase implements core controller for OPNsense framework
  * @package OPNsense\Base
  */
-class ControllerBase extends Controller
+class ControllerBase extends ControllerRoot
 {
     /**
      * translate a text
@@ -161,16 +160,9 @@ class ControllerBase extends Controller
         if (!$dispatcher->wasForwarded()) {
             // Authentication
             // - use authentication of legacy OPNsense.
-            if ($this->session->has("Username") == false) {
-                $this->response->redirect("/", true);
+            if (!$this->doAuth()) {
+                return false;
             }
-
-            // Authorization using legacy acl structure
-            $acl = new ACL();
-            if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
-                $this->response->redirect("/", true);
-            }
-
 
             // check for valid csrf on post requests
             if ($this->request->isPost() && !$this->security->checkToken()) {
@@ -215,12 +207,4 @@ class ControllerBase extends Controller
         $this->view->acl = new \OPNsense\Core\ACL();
     }
 
-    /**
-     * @param $dispatcher
-     */
-    public function afterExecuteRoute($dispatcher)
-    {
-        // Executed after every found action
-        // TODO: implement default behavior
-    }
 }
