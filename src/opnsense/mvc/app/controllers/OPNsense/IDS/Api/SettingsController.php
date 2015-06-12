@@ -108,6 +108,7 @@ class SettingsController extends ApiControllerBase
                 $result['rows'] = $data['rows'];
                 // update rule status with own administration
                 foreach ($result['rows'] as &$row) {
+                    $row['enabled_default'] = $row['enabled'];
                     $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
                 }
 
@@ -138,7 +139,9 @@ class SettingsController extends ApiControllerBase
         if ($data != null && array_key_exists("rows", $data) && count($data['rows'])>0) {
             $row = $data['rows'][0];
             // set current enable status (default + registered offset)
+            $row['enabled_default'] = $row['enabled'];
             $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
+            //
             if (isset($row['reference']) && $row['reference'] != '') {
                 // browser friendly reference data
                 $row['reference_html'] = '';
@@ -198,6 +201,7 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
+     * toggle rule enable status
      * @param $sid
      * @return array
      */
@@ -205,7 +209,10 @@ class SettingsController extends ApiControllerBase
     {
         $ruleinfo = $this->getRuleInfoAction($sid);
         if (count($ruleinfo) > 0) {
-            if ($ruleinfo['enabled'] == 1) {
+            if ($ruleinfo['enabled_default'] != $ruleinfo['enabled']) {
+                // if we're switching back to default, remove alter rule
+                $this->getModel()->removeRule($sid) ;
+            } elseif ($ruleinfo['enabled'] == 1) {
                 $this->getModel()->disableRule($sid) ;
             } else {
                 $this->getModel()->enableRule($sid) ;
