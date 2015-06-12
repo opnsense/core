@@ -1,32 +1,32 @@
 <form>
     <field>
         <id>sid</id>
-        <label>sid</label>
+        <label>Signature Id</label>
         <type>info</type>
     </field>
     <field>
         <id>rev</id>
-        <label>rev</label>
+        <label>Revision</label>
         <type>info</type>
     </field>
     <field>
         <id>gid</id>
-        <label>gid</label>
+        <label>Group Id</label>
         <type>info</type>
     </field>
     <field>
         <id>classtype</id>
-        <label>classtype</label>
+        <label>Classtype</label>
         <type>info</type>
     </field>
     <field>
         <id>msg</id>
-        <label>alert message</label>
+        <label>Message</label>
         <type>info</type>
     </field>
     <field>
         <id>reference_html</id>
-        <label>reference</label>
+        <label>Reference</label>
         <type>info</type>
     </field>
 </form>
