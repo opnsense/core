@@ -42,4 +42,3 @@ if __name__ == '__main__':
     result = {'items': items, 'count':len(items)}
 
     print (json.dumps(result))
-

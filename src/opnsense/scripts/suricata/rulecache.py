@@ -212,4 +212,3 @@ class RuleCache(object):
             result.append(record[0])
 
         return sorted(result)
-
