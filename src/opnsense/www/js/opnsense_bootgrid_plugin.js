@@ -48,9 +48,9 @@ function stdBootgridUI(obj, sourceUrl, options) {
             },
             "rowtoggle": function (column, row) {
                 if (parseInt(row[column.id], 2) == 1) {
-                    return "<span class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                    return "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
                 } else {
-                    return "<span class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
+                    return "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                 }
             }
         }
