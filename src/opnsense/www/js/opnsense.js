@@ -96,7 +96,7 @@ function getFormData(parent) {
  * @param data named array structure
  */
 function setFormData(parent,data) {
-    $( "#"+parent+"  input,#"+parent+" select" ).each(function( index ) {
+    $( "#"+parent+"  input,#"+parent+" select,#"+parent+" span" ).each(function( index ) {
         if ($(this).prop('id') == undefined) {
             // we need an id.
             return;
@@ -126,6 +126,11 @@ function setFormData(parent,data) {
                             targetNode.prop("checked",true) ;
                         } else {
                             targetNode.prop("checked",false) ;
+                        }
+                    } else if (targetNode.is("span")) {
+                        if (node[keypart] != null) {
+                            targetNode.text("");
+                            targetNode.append($.parseHTML(String(node[keypart])));
                         }
                     } else {
                         // regular input type
