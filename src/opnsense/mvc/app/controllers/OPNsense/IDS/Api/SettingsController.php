@@ -96,7 +96,6 @@ class SettingsController extends ApiControllerBase
                 $searchPhrase .= "classtype/".$this->request->getPost("classtype", "string", '').' ';
             }
 
-
             // request list of installed rules
             $backend = new Backend();
             $response = $backend->configdpRun("ids list installedrules", array($itemsPerPage,
@@ -138,7 +137,42 @@ class SettingsController extends ApiControllerBase
 
         if ($data != null && array_key_exists("rows", $data) && count($data['rows'])>0) {
             $row = $data['rows'][0];
+            // set current enable status (default + registered offset)
             $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
+            if (isset($row['reference']) && $row['reference'] != '') {
+                // browser friendly reference data
+                $row['reference_html'] = '';
+                foreach (explode("\n", $row['reference']) as $ref) {
+                    $ref = trim($ref);
+                    $item_html = '<small><a href="%url%" target="_blank">%ref%</a></small>';
+                    if (substr($ref, 0, 4) == 'url,') {
+                        $item_html = str_replace("%url%", 'http://'.substr($ref, 4), $item_html);
+                        $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
+                    } elseif (substr($ref, 0, 7) == "system,") {
+                        $item_html = str_replace("%url%", substr($ref, 7), $item_html);
+                        $item_html = str_replace("%ref%", substr($ref, 7), $item_html);
+                    } elseif (substr($ref, 0, 8) == "bugtraq,") {
+                        $item_html = str_replace("%url%", "http://www.securityfocus.com/bid/".
+                            substr($ref, 8), $item_html);
+                        $item_html = str_replace("%ref%", "bugtraq ".substr($ref, 8), $item_html);
+                    } elseif (substr($ref, 0, 4) == "cve,") {
+                        $item_html = str_replace("%url%", "http://cve.mitre.org/cgi-bin/cvename.cgi?name=".
+                            substr($ref, 4), $item_html);
+                        $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
+                    } elseif (substr($ref, 0, 7) == "nessus,") {
+                        $item_html = str_replace("%url%", "http://cgi.nessus.org/plugins/dump.php3?id=".
+                            substr($ref, 7), $item_html);
+                        $item_html = str_replace("%ref%", 'nessus '.substr($ref, 7), $item_html);
+                    } elseif (substr($ref, 0, 7) == "mcafee,") {
+                        $item_html = str_replace("%url%", "http://vil.nai.com/vil/dispVirus.asp?virus_k=".
+                            substr($ref, 7), $item_html);
+                        $item_html = str_replace("%ref%", 'macafee '.substr($ref, 7), $item_html);
+                    } else {
+                        continue;
+                    }
+                    $row['reference_html'] .= $item_html.'<br/>';
+                }
+            }
             return $row;
         } else {
             return array();

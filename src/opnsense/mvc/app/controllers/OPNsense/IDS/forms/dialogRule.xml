@@ -1,0 +1,27 @@
+<form>
+    <field>
+        <id>sid</id>
+        <label>sid</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>gid</id>
+        <label>gid</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>classtype</id>
+        <label>classtype</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>msg</id>
+        <label>alert message</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>reference_html</id>
+        <label>reference</label>
+        <type>info</type>
+    </field>
+</form>

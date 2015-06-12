@@ -37,6 +37,8 @@ class IndexController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->title = "IDS";
+        // link dialog
+        $this->view->formDialogRule = $this->getForm("dialogRule");
         // choose template
         $this->view->pick('OPNsense/IDS/index');
     }
