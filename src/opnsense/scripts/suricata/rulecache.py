@@ -42,7 +42,7 @@ class RuleCache(object):
         # suricata rule settings, source directory and cache json file to use
         self.rule_source_dir = '/usr/local/etc/suricata/rules/'
         self.cachefile = '%srules.sqlite'%self.rule_source_dir
-        self._rule_fields = ['sid','msg','classtype','rev','gid','source','enabled']
+        self._rule_fields = ['sid','msg','classtype','rev','gid','source','enabled','reference']
         self._rule_defaults = {'classtype':'##none##'}
 
     def listLocal(self):
@@ -87,7 +87,8 @@ class RuleCache(object):
         cur = db.cursor()
         cur.execute('create table stats (timestamp number, files number)')
         cur.execute("""create table rules (sid number, msg text, classtype text,
-                                           rev integer, gid integer,enabled boolean,source text)""")
+                                           rev integer, gid integer,reference text,
+                                           enabled boolean,source text)""")
 
         last_mtime=0
         all_rule_files = self.listLocal()
@@ -99,6 +100,7 @@ class RuleCache(object):
             data = open(filename)
             for rule in data.read().split('\n'):
                 if rule.find('msg:') != -1:
+                    # define basic record
                     record = {'enabled':True, 'source':filename.split('/')[-1]}
                     if rule.strip()[0] =='#':
                         record['enabled'] = False
@@ -109,9 +111,17 @@ class RuleCache(object):
                         fieldContent = field[field.find(':')+1:].strip()
                         if fieldName in self._rule_fields:
                             if fieldContent[0] == '"':
-                                record[fieldName] = fieldContent[1:-1]
+                                content = fieldContent[1:-1]
                             else:
-                                record[fieldName] = fieldContent
+                                content = fieldContent
+
+                            if fieldName in record:
+                                # if same field repeats, put items in list
+                                if type(record[fieldName]) != list:
+                                    record[fieldName] = [record[fieldName]]
+                                record[fieldName].append(content)
+                            else:
+                                record[fieldName] = content
 
                     for rule_field in self._rule_fields:
                         if rule_field not in record:
@@ -119,6 +129,11 @@ class RuleCache(object):
                                 record[rule_field] = self._rule_defaults[rule_field]
                             else:
                                 record[rule_field] = None
+
+                    # perform type conversions
+                    for fieldname in record:
+                        if type(record[fieldname]) == list:
+                            record[fieldname] = '\n'.join(record[fieldname])
 
                     rules.append(record)
 
@@ -212,3 +227,4 @@ class RuleCache(object):
             result.append(record[0])
 
         return sorted(result)
+
