@@ -30,6 +30,25 @@ POSSIBILITY OF SUCH DAMAGE.
 
     $( document ).ready(function() {
 
+        // list all known classtypes and add to selection box
+        function updateRuleClassTypes() {
+            ajaxGet(url="/api/ids/settings/listRuleClasstypes",sendData={}, callback=function(data, status) {
+                if (status == "success") {
+                    $.each(data['items'], function(key, value) {
+                        $('#ruleclass').append($("<option></option>").attr("value",value).text(value));
+                    });
+                    $('.selectpicker').selectpicker('refresh');
+                    // link on change event
+                    $('#ruleclass').on('change', function(){
+                        $('#grid-installedrules').bootgrid('reload');
+                    });
+                }
+            });
+        }
+
+        // delay refresh for a bit
+        setTimeout(updateRuleClassTypes, 500);
+
         function addFilters(request) {
             var selected =$('#ruleclass').find("option:selected").val();
             if ( selected != "") {
@@ -61,22 +80,6 @@ POSSIBILITY OF SUCH DAMAGE.
                     toggle:'/api/ids/settings/toggleRule/'
                 }
         );
-
-
-
-        // list all known classtypes and add to selection box
-        ajaxGet(url="/api/ids/settings/listRuleClasstypes",sendData={}, callback=function(data, status) {
-            if (status == "success") {
-                $.each(data['items'], function(key, value) {
-                    $('#ruleclass').append($("<option></option>").attr("value",value).text(value));
-                });
-                $('.selectpicker').selectpicker('refresh');
-                // link on change event
-                $('#ruleclass').on('change', function(){
-                    $('#grid-installedrules').bootgrid('reload');
-                });
-            }
-        });
 
 
     });
