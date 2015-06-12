@@ -64,16 +64,18 @@ label           :   dialog label
                     <table class="table table-striped table-condensed table-responsive">
                         <colgroup>
                             <col class="col-md-3"/>
-                            <col class="col-md-4"/>
-                            <col class="col-md-5"/>
+                            <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
+                            <col class="col-md-{{ msgzone_width|default(5) }}"/>
                         </colgroup>
                         <tbody>
+                        {%  if advanced|default(false) or help|default(false) %}
                         <tr>
                             <td align="left"><a href="#">{% if advanced|default(false) %}<i class="fa fa-toggle-off text-danger" id="show_advanced_formDialogPipe" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
                             <td colspan="2" align="right">
                                 {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_formDialogPipe" type="button"></i></a>{% endif %}
                             </td>
                         </tr>
+                        {% endif %}
                         {% for field in fields|default({})%}
                             {{ partial("layout_partials/form_input_tr",field)}}
                         {% endfor %}
@@ -83,7 +85,9 @@ label           :   dialog label
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                {% if hasSaveBtn|default('true') == 'true' %}
                 <button type="button" class="btn btn-primary" id="btn_{{id}}_save">Save changes</button>
+                {% endif %}
             </div>
         </div>
     </div>
