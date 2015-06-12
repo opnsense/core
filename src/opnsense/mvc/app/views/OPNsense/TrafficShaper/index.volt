@@ -40,29 +40,29 @@ POSSIBILITY OF SUCH DAMAGE.
          *************************************************************************************************************/
 
         $("#grid-pipes").UIBootgrid(
-            {   'search':'/api/trafficshaper/settings/searchPipes',
-                'get':'/api/trafficshaper/settings/getPipe/',
-                'set':'/api/trafficshaper/settings/setPipe/',
-                'add':'/api/trafficshaper/settings/addPipe/',
-                'del':'/api/trafficshaper/settings/delPipe/'
+            {   search:'/api/trafficshaper/settings/searchPipes',
+                get:'/api/trafficshaper/settings/getPipe/',
+                set:'/api/trafficshaper/settings/setPipe/',
+                add:'/api/trafficshaper/settings/addPipe/',
+                del:'/api/trafficshaper/settings/delPipe/'
             }
         );
 
         $("#grid-queues").UIBootgrid(
-                {   'search':'/api/trafficshaper/settings/searchQueues',
-                    'get':'/api/trafficshaper/settings/getQueue/',
-                    'set':'/api/trafficshaper/settings/setQueue/',
-                    'add':'/api/trafficshaper/settings/addQueue/',
-                    'del':'/api/trafficshaper/settings/delQueue/'
+                {   search:'/api/trafficshaper/settings/searchQueues',
+                    get:'/api/trafficshaper/settings/getQueue/',
+                    set:'/api/trafficshaper/settings/setQueue/',
+                    add:'/api/trafficshaper/settings/addQueue/',
+                    del:'/api/trafficshaper/settings/delQueue/'
                 }
         );
 
         $("#grid-rules").UIBootgrid(
-                {   'search':'/api/trafficshaper/settings/searchRules',
-                    'get':'/api/trafficshaper/settings/getRule/',
-                    'set':'/api/trafficshaper/settings/setRule/',
-                    'add':'/api/trafficshaper/settings/addRule/',
-                    'del':'/api/trafficshaper/settings/delRule/'
+                {   search:'/api/trafficshaper/settings/searchRules',
+                    get:'/api/trafficshaper/settings/getRule/',
+                    set:'/api/trafficshaper/settings/setRule/',
+                    add:'/api/trafficshaper/settings/addRule/',
+                    del:'/api/trafficshaper/settings/delRule/'
                 }
         );
 
