@@ -44,7 +44,7 @@ if [ -z "$pkg_running" ]; then
 		# restart the web server
 		/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE}
 		# if we can update base, we'll do that as well
-		if opnsense-update -c -bk; then
+		if opnsense-update -c; then
 			if opnsense-update -bk >> ${PKG_PROGRESS_FILE}; then
 				REBOOT=1
 			fi
@@ -63,7 +63,7 @@ if [ -n "${REBOOT}" ]; then
 	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
 	# give the frontend some time to figure out that a reboot is coming
 	sleep 10
-	reboot
+	/usr/local/etc/rc.reboot
 else
 	echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 fi

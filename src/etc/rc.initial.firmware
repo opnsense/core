@@ -52,7 +52,8 @@ echo
 echo
 
 # if we can update base, we'll do that as well
-REBOOT=
-opnsense-update -c -bk && REBOOT=1
-opnsense-update -bk
-[ -n "${REBOOT}" ] && /usr/local/etc/rc.reboot
+if opnsense-update -c; then
+	if opnsense-update -bk; then
+		/usr/local/etc/rc.reboot
+	fi
+fi
