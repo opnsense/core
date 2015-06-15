@@ -1,6 +1,11 @@
 echo "Resetting root shell"
 pw usermod -n root -s /bin/csh
 
+echo "Updating /etc/shells"
+cp /etc/shells /etc/shells.bak
+(grep -v /usr/local/etc/rc.initial /etc/shells.bak) > /etc/shells
+rm -f /etc/shells.bak
+
 echo "Unhooking from /etc/rc"
 cp /etc/rc /etc/rc.bak
 tail -n +5 /etc/rc.bak > /etc/rc

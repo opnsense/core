@@ -1,3 +1,9 @@
+echo "Updating /etc/shells"
+cp /etc/shells /etc/shells.bak
+(grep -v /usr/local/etc/rc.initial /etc/shells.bak; \
+    echo /usr/local/etc/rc.initial) > /etc/shells
+rm -f /etc/shells.bak
+
 echo "Registering root shell"
 pw usermod -n root -s /usr/local/etc/rc.initial
 
