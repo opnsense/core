@@ -1578,24 +1578,24 @@ function system_ntp_configure($start_ntpd = true)
 
 function system_halt($sync = false)
 {
-	$cmd ='/usr/local/etc/rc.halt > /dev/null 2>&1';
+	$cmd ='/usr/local/etc/rc.halt';
 
 	if (!$sync) {
-		$cmd = sprintf('/usr/bin/nohup %s &', $cmd);
+		mwexec_bg($cmd);
+	} else {
+		mwexec($cmd);
 	}
-
-	mwexec($cmd);
 }
 
 function system_reboot($sync = false)
 {
-	$cmd ='/usr/local/etc/rc.reboot > /dev/null 2>&1';
+	$cmd ='/usr/local/etc/rc.reboot';
 
 	if (!$sync) {
-		$cmd = sprintf('/usr/bin/nohup %s &', $cmd);
+		mwexec_bg($cmd);
+	} else {
+		mwexec($cmd);
 	}
-
-	mwexec($cmd);
 }
 
 function system_console_configure()
