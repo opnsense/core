@@ -140,10 +140,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#update_status').html(data['log']);
                 $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
             }
-            if (data['status'] == 'running' || data['status'] == 'error') {
-                // schedule next poll
-                setTimeout(trackStatus, 500);
-            } else if (data['status'] == 'done') {
+            if (data['status'] == 'done') {
                 $('#updatestatus').html("{{ lang._('Upgrade done!') }}");
             } else if (data['status'] == 'reboot') {
                 // reboot required, tell the user to wait until this is finished and redirect after 5 minutes
@@ -169,7 +166,9 @@ POSSIBILITY OF SUCH DAMAGE.
                         }
                     }]
                 });
-
+            } else {
+                // schedule next poll
+                setTimeout(trackStatus, 500);
             }
         });
     }
