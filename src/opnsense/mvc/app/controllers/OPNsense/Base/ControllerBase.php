@@ -195,11 +195,20 @@ class ControllerBase extends ControllerRoot
 
         // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
         $cnf = Config::getInstance();
-        $ordid = 0;
+        $ifarr = array();
         foreach ($cnf->object()->interfaces->children() as $key => $node) {
-            $menu->appendItem("Interfaces", $key, array("url"=>"/interfaces.php?if=".$key,"order"=>($ordid++),
-                "visiblename"=>$node->descr?$node->descr:strtoupper($key)));
+            $ifarr[$key] = $node;
         }
+        ksort($ifarr);
+        $ordid = 0;
+        foreach ($ifarr as $key => $node) {
+            $menu->appendItem('Interfaces', $key, array(
+                'url' => '/interfaces.php?if='. $key,
+                'order' => ($ordid++),
+                'visiblename' => $node->descr ? $node->descr : strtoupper($key)
+            ));
+        }
+        unset($ifarr);
 
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
