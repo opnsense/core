@@ -126,34 +126,36 @@ class DB
 
         try {
             $this->handle = new Sqlite(array("dbname" => $db_path));
+            $sql = array();
 
             // create structure on new database
-            $sql = "CREATE TABLE IF NOT EXISTS captiveportal (" .# table used for authenticated users
+            $sql[] = "CREATE TABLE IF NOT EXISTS captiveportal (" .# table used for authenticated users
                 "allow_time INTEGER, pipeno_in INTEGER, pipeno_out INTEGER, ip TEXT, mac TEXT, username TEXT, " .
                 "sessionid TEXT, bpassword TEXT, session_timeout INTEGER, idle_timeout INTEGER, " .
-                "session_terminate_time INTEGER, interim_interval INTEGER, radiusctx TEXT); " .
-                "CREATE UNIQUE INDEX IF NOT EXISTS idx_active ON captiveportal (sessionid, username); " .
-                "CREATE INDEX IF NOT EXISTS user ON captiveportal (username); " .
-                "CREATE INDEX IF NOT EXISTS ip ON captiveportal (ip); " .
-                "CREATE INDEX IF NOT EXISTS starttime ON captiveportal (allow_time);" .
-                "CREATE TABLE IF NOT EXISTS captiveportal_mac (" .   # table used for static mac's
-                "mac TEXT, ip TEXT,pipeno_in INTEGER, pipeno_out INTEGER, last_checked INTEGER );" .
-                "CREATE UNIQUE INDEX IF NOT EXISTS idx_mac ON captiveportal_mac (mac) ;" .
-                "CREATE TABLE IF NOT EXISTS captiveportal_ip (" .    # table used for static ip's
-                "ip TEXT,pipeno_in INTEGER, pipeno_out INTEGER, last_checked INTEGER );" .
-                "CREATE UNIQUE INDEX IF NOT EXISTS idx_ip ON captiveportal_ip (ip) " ;
+                "session_terminate_time INTEGER, interim_interval INTEGER, radiusctx TEXT)";
+            $sql[] = "CREATE UNIQUE INDEX IF NOT EXISTS idx_active ON captiveportal (sessionid, username)";
+            $sql[] = "CREATE INDEX IF NOT EXISTS user ON captiveportal (username)";
+            $sql[] = "CREATE INDEX IF NOT EXISTS ip ON captiveportal (ip)";
+            $sql[] = "CREATE INDEX IF NOT EXISTS starttime ON captiveportal (allow_time)";
+            $sql[] = "CREATE TABLE IF NOT EXISTS captiveportal_mac (" .   # table used for static mac's
+                "mac TEXT, ip TEXT,pipeno_in INTEGER, pipeno_out INTEGER, last_checked INTEGER )";
+            $sql[] = "CREATE UNIQUE INDEX IF NOT EXISTS idx_mac ON captiveportal_mac (mac)";
+            $sql[] = "CREATE TABLE IF NOT EXISTS captiveportal_ip (" .    # table used for static ip's
+                "ip TEXT,pipeno_in INTEGER, pipeno_out INTEGER, last_checked INTEGER )";
+            $sql[] = "CREATE UNIQUE INDEX IF NOT EXISTS idx_ip ON captiveportal_ip (ip)";
 
-            if (! $this->handle->execute($sql)) {
-                $logger = new Syslog("logportalauth", array(
-                    'option' => LOG_PID,
-                    'facility' => LOG_LOCAL4
-                ));
-                $msg = "Error during table {$this->zone} creation. Error message: {$this->handle->lastErrorMsg()}";
-                $logger->error($msg);
-                $this->handle = null;
+            foreach ($sql as $cmd) {
+                if (!$this->handle->execute($cmd)) {
+                    $logger = new Syslog("logportalauth", array(
+                        'option' => LOG_PID,
+                        'facility' => LOG_LOCAL4
+                    ));
+                    $msg = "Error during table {$this->zone} creation. Error message: {$this->handle->lastErrorMsg()}";
+                    $logger->error($msg);
+                    $this->handle = null;
+                    break;
+                }
             }
-
-
         } catch (\Exception $e) {
             $logger = new Syslog("logportalauth", array(
                 'option' => LOG_PID,
@@ -164,7 +166,6 @@ class DB
         }
 
         return $this->handle;
-
     }
 
     /**
