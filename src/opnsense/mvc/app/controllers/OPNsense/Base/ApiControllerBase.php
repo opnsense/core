@@ -28,7 +28,6 @@
  */
 namespace OPNsense\Base;
 
-
 /**
  * Class ApiControllerBase, inherit this class to implement API calls
  * @package OPNsense\Base

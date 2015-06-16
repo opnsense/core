@@ -215,5 +215,4 @@ class ControllerBase extends ControllerRoot
         // append ACL object to view
         $this->view->acl = new \OPNsense\Core\ACL();
     }
-
 }
