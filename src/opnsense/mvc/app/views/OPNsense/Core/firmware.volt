@@ -214,7 +214,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     </table>
                 </div>
                 <div id="progress" class="tab-pane fade in">
-                    <textarea name="output"  id="update_status" class="form-control" rows="10" wrap="hard" readonly style="max-width:100%;"></textarea>
+                    <textarea name="output" id="update_status" class="form-control" rows="10" wrap="hard" readonly style="max-width:100%; font-family: monospace;"></textarea>
                 </div>
             </div>
         </div>
