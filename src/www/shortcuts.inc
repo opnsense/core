@@ -212,7 +212,6 @@ $shortcuts['interfaces']['status'] = "status_interfaces.php";
 
 $shortcuts['trafficshaper'] = array();
 $shortcuts['trafficshaper']['main'] = "firewall_shaper.php";
-$shortcuts['trafficshaper']['status'] = "status_queues.php";
 
 $shortcuts['forwarder'] = array();
 $shortcuts['forwarder']['main'] = "services_dnsmasq.php";

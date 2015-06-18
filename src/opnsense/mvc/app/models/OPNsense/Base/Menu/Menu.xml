@@ -155,7 +155,6 @@
         </LoadBalancer>
         <NTP url="/status_ntpd.php"/>
         <OpenVPN url="/status_openvpn.php"/>
-        <Queues url="/status_queues.php"/>
         <RRDGraphs VisibleName="RRD Graphs" url="/status_rrd_graph.php">
             <Settings url="/status_rrd_graph_settings.php"/>
         </RRDGraphs>

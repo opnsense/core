@@ -1286,13 +1286,6 @@
             "ifstats.php*"
         ]
     },
-    "page-status-trafficshaper-queues": {
-        "name": "WebCfg - Status: Traffic shaper: Queues page",
-        "descr": "Allow access to the 'Status: Traffic shaper: Queues' page.",
-        "match": [
-            "status_queues.php*"
-        ]
-    },
     "page-status-upnpstatus": {
         "name": "WebCfg - Status: UPnP Status page",
         "descr": "Allow access to the 'Status: UPnP Status' page.",
