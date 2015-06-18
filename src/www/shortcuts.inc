@@ -210,9 +210,6 @@ $shortcuts['interfaces'] = array();
 $shortcuts['interfaces']['main'] = "interfaces_assign.php";
 $shortcuts['interfaces']['status'] = "status_interfaces.php";
 
-$shortcuts['trafficshaper'] = array();
-$shortcuts['trafficshaper']['main'] = "firewall_shaper.php";
-
 $shortcuts['forwarder'] = array();
 $shortcuts['forwarder']['main'] = "services_dnsmasq.php";
 $shortcuts['forwarder']['log'] = "diag_logs_resolver.php";

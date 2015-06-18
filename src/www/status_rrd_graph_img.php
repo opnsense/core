@@ -158,40 +158,9 @@ chdir($rrddbpath);
 $databases = glob("*.rrd");
 rsort($databases);
 
-/* compare bytes/sec counters, divide bps by 8 */
-read_altq_config();
-if ($altq_list_queues[$curif]) {
-	$altq =& $altq_list_queues[$curif];
-	switch ($altq->GetBwscale()) {
-        case "Gb":
-                $factor = 1024 * 1024 * 1024;
-        break;
-        case "Mb":
-                $factor = 1024 * 1024;
-        break;
-        case "Kb":
-                $factor = 1024;
-        break;
-        case "b":
-        default:
-                $factor = 1;
-        break;
-        }
-	$upstream = (($altq->GetBandwidth()*$factor)/8);
-	if ($upstream != 0)
-		$downstream = $upstream; /* XXX: Ugly hack */
-	else
-		$downstream = $upstream = 12500000;
-	$upif = $curif;
-	$downif = "lan"; /* XXX should this be set to something else?! */
-} else {
-	$altq = null;
-	$downstream = 12500000;
-	$upstream = 12500000;
-	$upif = "wan";
-	$downif = "lan";
-}
-
+/* ALTQ remnants? */
+$downstream = 12500000;
+$upstream = 12500000;
 $speedlimit = ($upstream + $downstream);
 
 /* Set default colors explicitly, the theme can then override them below.
@@ -222,13 +191,6 @@ $colormemory		= array('00AA00','990000','0000FF','666666','DD9B00');
 
 /* MBUF Usage			current, cache,   total,   max */
 $colormbuf		= array('0080FF','00E344','FF0000','000000');
-
-/* Traffic Shaper Queues	q1,      q2,      q3,      q4,      q5,      q6,      q7,      q8,      q9 */
-$colorqueuesup		= array('000000','7B0000','0080FF','00E344','FF0000','2217AA','FFC875','FF9900','CC0000');
-$colorqueuesdown	= array('000000','7B7B7B','999999','BBBBBB','CCCCCC','D9D9D9','EEEEEE','FFFFFF','CCCCCC');
-
-$colorqueuesdropup	= array('000000','7B0000','0080FF','00E344','FF0000','2217AA','FFC875','FF9900','CC0000');
-$colorqueuesdropdown	= array('000000','7B7B7B','999999','BBBBBB','CCCCCC','D9D9D9','EEEEEE','FFFFFF','CCCCCC');
 
 /* Quality Graph Delay	>420,    180-420, 60-180,  20-60,   <20,     Delay Avg */
 $colorqualityrtt	= array('990000','a83c3c','b36666','bd9090','cccccc','000000');
@@ -972,65 +934,6 @@ elseif((strstr($curdatabase, "-mbuf.rrd")) && (file_exists("$rrddbpath$curdataba
 	$graphcmd .= "COMMENT:\"\\n\" ";
 	$graphcmd .= "COMMENT:\"\t\t\t\t\t\t\t\t\t\t\t\t\t" . strftime('%b %d %H\:%M\:%S %Y') . "\" ";
 }
-elseif((strstr($curdatabase, "-queues.rrd")) && (file_exists("$rrddbpath$curdatabase"))) {
-	/* define graphcmd for queue stats */
-	$graphcmd = "$rrdtool graph $rrdtmppath$curdatabase-$curgraph.png ";
-	$graphcmd .= "--start $start --end $end --step $step ";
-	$graphcmd .= "--vertical-label \"bits/sec\" ";
-	$graphcmd .= "--color SHADEA#eeeeee --color SHADEB#eeeeee ";
-	$graphcmd .= "--title \"" . php_uname('n') . " - {$prettydb} - {$hperiod} - {$havg} average\" ";
-	$graphcmd .= "--height 200 --width 620 ";
-	if ($altq) {
-		$a_queues =& $altq->get_queue_list();
-		$t = 0;
-	} else {
-		$a_queues = array();
-		$i = 0;
-		$t = 0;
-	}
-	foreach ($a_queues as $name => $q) {
-		$color = "$colorqueuesup[$t]";
-		if($t > 0) { $stack = ":STACK"; }
-		$graphcmd .= "DEF:\"$name=$rrddbpath$curdatabase:$name:AVERAGE:step=$step\" ";
-		$graphcmd .= "CDEF:\"$name-bytes_out=$name,0,$speedlimit,LIMIT,UN,0,$name,IF\" ";
-		$graphcmd .= "CDEF:\"$name-bits_out=$name-bytes_out,8,*\" ";
-		$graphcmd .= "$AREA:\"$name-bits_out#${color}:$name$stack\" ";
-		$t++;
-		if($t > 7) { $t = 0; }
-	}
-	$graphcmd .= "COMMENT:\"\\n\" ";
-	$graphcmd .= "COMMENT:\"\t\t\t\t\t\t\t\t\t\t\t\t\t" . strftime('%b %d %H\:%M\:%S %Y') . "\" ";
-}
-elseif((strstr($curdatabase, "-queuedrops.rrd")) && (file_exists("$rrddbpath$curdatabase"))) {
-	/* define graphcmd for queuedrop stats */
-	$graphcmd = "$rrdtool graph $rrdtmppath$curdatabase-$curgraph.png ";
-	$graphcmd .= "--start $start --end $end --step $step ";
-	$graphcmd .= "--vertical-label \"drops / sec\" ";
-	$graphcmd .= "--color SHADEA#eeeeee --color SHADEB#eeeeee ";
-	$graphcmd .= "--title \"" . php_uname('n') . " - {$prettydb} - {$hperiod} - {$havg} average\" ";
-	$graphcmd .= "--height 200 --width 620 ";
-	if ($altq) {
-		$a_queues =& $altq->get_queue_list();
-		$t = 0;
-	} else {
-		$a_queues = array();
-		$i = 0;
-		$t = 0;
-	}
-	foreach ($a_queues as $name => $q) {
-		$color = "$colorqueuesdropup[$t]";
-		if($t > 0) { $stack = ":STACK"; }
-		$graphcmd .= "DEF:\"$name=$rrddbpath$curdatabase:$name:AVERAGE:step=$step\" ";
-		$graphcmd .= "CDEF:\"$name-bytes_out=$name,0,$speedlimit,LIMIT,UN,0,$name,IF\" ";
-		$graphcmd .= "CDEF:\"$name-bits_out=$name-bytes_out,8,*\" ";
-		$graphcmd .= "CDEF:\"$name-bits_out_neg=$name-bits_out,$multiplier,*\" ";
-		$graphcmd .= "$AREA:\"$name-bits_out_neg#${color}:$name$stack\" ";
-		$t++;
-		if($t > 7) { $t = 0; }
-	}
-	$graphcmd .= "COMMENT:\"\\n\" ";
-	$graphcmd .= "COMMENT:\"\t\t\t\t\t\t\t\t\t\t\t\t\t" . strftime('%b %d %H\:%M\:%S %Y') . "\" ";
-}
 elseif((strstr($curdatabase, "-quality.rrd")) && (file_exists("$rrddbpath$curdatabase"))) {
 	/* make a link quality graphcmd, we only have WAN for now, others too follow */
 	$graphcmd = "$rrdtool graph $rrdtmppath$curdatabase-$curgraph.png \\
@@ -1234,20 +1137,6 @@ if (file_exists("$rrdtmppath$curdatabase-$curgraph.png")) {
 }
 if(($graphcmdreturn <> 0) || (! $data)) {
 	log_error(sprintf(gettext('Failed to create graph with error code %1$s, the error is: %2$s'),$graphcmdreturn,$graphcmdoutput));
-	if(strstr($curdatabase, "queues")) {
-		log_error(sprintf(gettext("failed to create graph from %s%s, removing database"),$rrddbpath,$curdatabase));
-		@unlink($rrddbpath . $curif . $queues);
-		flush();
-		usleep(500);
-		enable_rrd_graphing();
-	}
-	if(strstr($curdatabase, "queuesdrop")) {
-		log_error(sprintf(gettext("failed to create graph from %s%s, removing database"),$rrddbpath,$curdatabase));
-		@unlink($rrddbpath . $curdatabase);
-		flush();
-		usleep(500);
-		enable_rrd_graphing();
-	}
 	header("Content-type: image/png");
 	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
@@ -1268,5 +1157,3 @@ if(($graphcmdreturn <> 0) || (! $data)) {
 		readfile($file);
 	}
 }
-
-?>

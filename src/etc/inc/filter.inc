@@ -193,11 +193,6 @@ function filter_configure_sync($delete_states_if_needed = true)
 	update_filter_reload_status(gettext("Generating filter rules"));
 	/* generate pfctl rules */
 	$pfrules = filter_rules_generate();
-	/* generate altq, limiter */
-	if(file_exists("/var/run/booting"))
-		echo ".";
-	update_filter_reload_status(gettext("Generating ALTQ queues"));
-	$altq_queues = filter_generate_altq_queues();
 	if(file_exists("/var/run/booting"))
 		echo ".";
 	update_filter_reload_status(gettext("Loading filter rules"));
@@ -260,11 +255,10 @@ function filter_configure_sync($delete_states_if_needed = true)
 	update_filter_reload_status(gettext("Setting up SCRUB information"));
 	$rules .= filter_generate_scrubing();
 	$rules .= "\n";
-	$rules .= "{$altq_queues}\n";
 	$rules .= "{$natrules}\n";
 	$rules .= "{$pfrules}\n";
 
-	unset($aliases, $gateways, $altq_queues, $natrules, $pfrules);
+	unset($aliases, $gateways, $natrules, $pfrules);
 
 	// Copy rules.debug to rules.debug.old
 	if (file_exists('/tmp/rules.debug')) {
@@ -2501,12 +2495,6 @@ function filter_generate_user_rule($rule)
 					$aline['flags'] .= " ) ";
 				}
 	}
-	if($rule['defaultqueue'] <> "") {
-		$aline['queue'] = " queue (".$rule['defaultqueue'];
-		if($rule['ackqueue'] <> "")
-			$aline['queue'] .= ",".$rule['ackqueue'];
-		$aline['queue'] .= ") ";
-	}
 
 	/* is a time based rule schedule attached? */
 	if(!empty($rule['sched']) && !empty($config['schedules'])) {
@@ -2535,8 +2523,7 @@ function filter_generate_user_rule($rule)
 		$line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] .
 			$aline['interface'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] .
 			$negate_networks . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] .
-			$aline['dscp']  . $aline['allowopts'] . $aline['flags'] .
-			$aline['queue'] . $aline['schedlabel'] .
+			$aline['dscp']  . $aline['allowopts'] . $aline['flags'] . $aline['schedlabel'] .
 			" label \"NEGATE_ROUTE: Negate policy routing for destination\"\n";
 
 	}
@@ -2544,7 +2531,7 @@ function filter_generate_user_rule($rule)
 	$line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] . $aline['interface'] .
 		$aline['reply'] . $aline['route'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] . $aline['dst'] .
 		$aline['divert'] . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] . $aline['dscp'] .
-		$aline['allowopts'] . $aline['flags'] . $aline['queue'] . $aline['schedlabel'];
+		$aline['allowopts'] . $aline['flags'] . $aline['schedlabel'];
 
 	unset($aline);
 

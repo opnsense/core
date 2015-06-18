@@ -5000,58 +5000,6 @@ function interface_has_gatewayv6($friendly) {
 	return false;
 }
 
-/****f* interfaces/is_altq_capable
- * NAME
- *   is_altq_capable - Test if interface is capable of using ALTQ
- * INPUTS
- *   $int            - string containing interface name
- * RESULT
- *   boolean         - true or false
- ******/
-
-function is_altq_capable($int)
-{
-	if (stristr($int, '_vlan') || stristr($int, '_wlan')) {
-		return true;
-	}
-
-	/* Per:
-	 * http://www.freebsd.org/cgi/man.cgi?query=altq&apropos=0&sektion=0&manpath=FreeBSD+10.1-RELEASE&arch=default&format=html
-	 * Only the following drivers have ALTQ support
-	 */
-	$capable = array(
-		'ae', 'age', 'alc', 'ale', 'an', 'ath', 'aue', 'axe', 'awi',
-		'bce', 'bfe', 'bge', 'bridge', 'bwn',
-		'cas',
-		'dc', 'de',
-		'ed', 'em', 'ep', 'epair', 'et',
-		'fxp',
-		'gem',
-		'hme', 'hn',
-		'igb', 'ipw', 'iwi', 'ixgbe',
-		'jme',
-		'l2tp', 'le', 'lem',
-		'msk', 'mxge', 'my',
-		'ndis', 'nfe', 'nge', 'npe', 'nve', 'ng',
-		'ovpns', 'ovpnc',
-		'pppoe', 'pptp', 'ppp',
-		'ral', 're', 'rl', 'rum', 'run',
-		'sf', 'sge', 'sis', 'sk', 'ste', 'stge',
-		'ti', 'txp', 'tun',
-		'udav', 'ural',
-		'vge', 'vr', 'vte', 'vlan', 'vtnet',
-		'wi',
-		'xl'
-	);
-
-	$int_family = preg_replace('/[0-9]+$/', '', $int);
-	if (in_array($int_family, $capable)) {
-		return true;
-	}
-
-	return false;
-}
-
 /****f* interfaces/is_interface_wireless
  * NAME
  *   is_interface_wireless - Returns if an interface is wireless

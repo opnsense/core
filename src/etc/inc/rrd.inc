@@ -189,8 +189,9 @@ function migrate_rrd_format($rrdoldxml, $rrdnewxml) {
 	return $rrdoldxml;
 }
 
-function enable_rrd_graphing() {
-	global $config, $altq_list_queues;
+function enable_rrd_graphing()
+{
+	global $config;
 
 	if(file_exists("/var/run/booting"))
 		echo gettext("Generating RRD graphs...");
@@ -202,8 +203,6 @@ function enable_rrd_graphing() {
 	$packets = "-packets.rrd";
 	$states = "-states.rrd";
 	$wireless = "-wireless.rrd";
-	$queues = "-queues.rrd";
-	$queuesdrop = "-queuedrops.rrd";
 	$spamd = "-spamd.rrd";
 	$proc = "-processor.rrd";
 	$mem = "-memory.rrd";
@@ -229,8 +228,6 @@ function enable_rrd_graphing() {
 
 	$rrdtrafficinterval = 60;
 	$rrdwirelessinterval = 60;
-	$rrdqueuesinterval = 60;
-	$rrdqueuesdropinterval = 60;
 	$rrdpacketsinterval = 60;
 	$rrdstatesinterval = 60;
 	$rrdspamdinterval = 60;
@@ -245,8 +242,6 @@ function enable_rrd_graphing() {
 
 	$trafficvalid = $rrdtrafficinterval * 2;
 	$wirelessvalid = $rrdwirelessinterval * 2;
-	$queuesvalid = $rrdqueuesinterval * 2;
-	$queuesdropvalid = $rrdqueuesdropinterval * 2;
 	$packetsvalid = $rrdpacketsinterval * 2;
 	$statesvalid = $rrdstatesinterval*2;
 	$spamdvalid = $rrdspamdinterval * 2;
@@ -262,9 +257,6 @@ function enable_rrd_graphing() {
 	/* Assume 2*10GigE for now */
 	$downstream = 2500000000;
 	$upstream = 2500000000;
-
-	/* read the shaper config */
-	read_altq_config();
 
 	if (isset ($config['rrd']['enable'])) {
 
@@ -439,116 +431,6 @@ function enable_rrd_graphing() {
 				$rrdupdatesh .= "}\n";
 				$rrdupdatesh .= "OVPN=`list_current_users | nc -U /var/etc/openvpn/server{$vpnid}.sock | awk -F\",\" '/^CLIENT_LIST/ {print \$2}' | wc -l | awk '{print $1}'`\n";
 				$rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$vpnusers N:\${OVPN}\n";
-			}
-
-			/* QUEUES, set up the queues databases */
-			if ($altq_list_queues[$ifname]) {
-				$altq =& $altq_list_queues[$ifname];
-				/* NOTE: Is it worth as its own function?! */
-				switch ($altq->GetBwscale()) {
-					case "Gb":
-						$factor = 1024 * 1024 * 1024;
-							break;
-					case "Mb":
-							$factor = 1024 * 1024;
-							break;
-					case "Kb":
-							$factor = 1024;
-							break;
-					case "b":
-					default:
-							$factor = 1;
-							break;
-				}
-				$qbandwidth = $altq->GetBandwidth() * $factor;
-				if ($qbandwidth <=0) {
-					$qbandwidth = 100 * 1000 * 1000; /* 100Mbit */
-				}
-				$qlist =& $altq->get_queue_list($notused);
-				if (!file_exists("$rrddbpath$ifname$queues")) {
-					$rrdcreate = "$rrdtool create $rrddbpath$ifname$queues --step $rrdqueuesinterval ";
-					/* loop list of shaper queues */
-					$q = 0;
-					foreach ($qlist as $qname => $q) {
-						$rrdcreate .= "DS:$qname:COUNTER:$queuesvalid:0:$qbandwidth ";
-					}
-
-					$rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-					$rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-					$rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-					$rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-
-					create_new_rrd($rrdcreate);
-					unset($rrdcreate);
-				}
-
-				if (!file_exists("$rrddbpath$ifname$queuesdrop")) {
-					$rrdcreate = "$rrdtool create $rrddbpath$ifname$queuesdrop --step $rrdqueuesdropinterval ";
-					/* loop list of shaper queues */
-					$q = 0;
-					foreach ($qlist as $qname => $q) {
-						$rrdcreate .= "DS:$qname:COUNTER:$queuesdropvalid:0:$qbandwidth ";
-					}
-
-					$rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-					$rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-					$rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-					$rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-
-					create_new_rrd($rrdcreate);
-					unset($rrdcreate);
-				}
-
-				if(file_exists("/var/run/booting")) {
-					$rrdqcommand = "-t ";
-					$rrducommand = "N";
-					$qi = 0;
-					foreach ($qlist as $qname => $q) {
-						if($qi == 0) {
-							$rrdqcommand .= "{$qname}";
-						} else {
-							$rrdqcommand .= ":{$qname}";
-						}
-						$qi++;
-						$rrducommand .= ":U";
-					}
-					mwexec("$rrdtool update $rrddbpath$ifname$queues $rrdqcommand $rrducommand");
-					mwexec("$rrdtool update $rrddbpath$ifname$queuesdrop $rrdqcommand $rrducommand");
-				}
-
-				/* awk function to gather shaper data */
-				/* yes, it's special */
-				$rrdupdatesh .= "` pfctl -vsq -i {$realif} | awk 'BEGIN {printf \"$rrdtool update $rrddbpath$ifname$queues \" } ";
-				$rrdupdatesh .= "{ ";
-				$rrdupdatesh .= "if ((\$1 == \"queue\") && ( \$2 ~ /^q/ )) { ";
-				$rrdupdatesh .= " dsname = dsname \":\" \$2 ; ";
-				$rrdupdatesh .= " q=1; ";
-				$rrdupdatesh .= "} ";
-				$rrdupdatesh .= " else if ((\$4 == \"bytes:\") && ( q == 1 ) ) { ";
-				$rrdupdatesh .= " dsdata = dsdata \":\" \$5 ; ";
-				$rrdupdatesh .= " q=0; ";
-				$rrdupdatesh .= "} ";
-				$rrdupdatesh .= "} END { ";
-				$rrdupdatesh .= " dsname = substr(dsname,2); ";
-				$rrdupdatesh .= " dsdata = substr(dsdata,2); ";
-				$rrdupdatesh .= " printf \"-t \" dsname \" N:\" dsdata }' ";
-				$rrdupdatesh .= " dsname=\"\" dsdata=\"\"`\n\n";
-
-				$rrdupdatesh .= "` pfctl -vsq -i {$realif} | awk 'BEGIN {printf \"$rrdtool update $rrddbpath$ifname$queuesdrop \" } ";
-				$rrdupdatesh .= "{ ";
-				$rrdupdatesh .= "if ((\$1 == \"queue\") && ( \$2 ~ /^q/ )) { ";
-				$rrdupdatesh .= " dsname = dsname \":\" \$2 ; ";
-				$rrdupdatesh .= " q=1; ";
-				$rrdupdatesh .= "} ";
-				$rrdupdatesh .= " else if ((\$4 == \"bytes:\") && ( q == 1 ) ) { ";
-				$rrdupdatesh .= " dsdata = dsdata \":\" \$8 ; ";
-				$rrdupdatesh .= " q=0; ";
-				$rrdupdatesh .= "} ";
-				$rrdupdatesh .= "} END { ";
-				$rrdupdatesh .= " dsname = substr(dsname,2); ";
-				$rrdupdatesh .= " dsdata = substr(dsdata,2); ";
-				$rrdupdatesh .= " printf \"-t \" dsname \" N:\" dsdata }' ";
-				$rrdupdatesh .= " dsname=\"\" dsdata=\"\"`\n\n";
 			}
 
 			/* 3G interfaces */

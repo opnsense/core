@@ -493,54 +493,6 @@
 		</rule>
 		-->
 	</filter>
-	<shaper>
-		<!-- <enable/> -->
-		<!-- <schedulertype>hfsc</schedulertype> -->
-		<!-- rule syntax:
-		<rule>
-			<disabled/>
-			<descr></descr>
-
-			<targetpipe>number (zero based)</targetpipe>
-			*or*
-			<targetqueue>number (zero based)</targetqueue>
-
-			<interface>lan|wan|opt[n]|pptp</interface>
-			<protocol>tcp|udp</protocol>
-			<direction>in|out</direction>
-			<source>
-				<not/>
-
-				<address>xxx.xxx.xxx.xxx(/xx)</address>
-				*or*
-				<network>lan|opt[n]|pptp</network>
-				*or*
-				<any/>
-
-				<port>a[-b]</port>
-			</source>
-			<destination>
-				*same as for source*
-			</destination>
-
-			<iplen>from[-to]</iplen>
-			<iptos>(!)lowdelay,throughput,reliability,mincost,congestion</iptos>
-			<tcpflags>(!)fin,syn,rst,psh,ack,urg</tcpflags>
-		</rule>
-		<pipe>
-			<descr></descr>
-			<bandwidth></bandwidth>
-			<delay></delay>
-			<mask>source|destination</mask>
-		</pipe>
-		<queue>
-			<descr></descr>
-			<targetpipe>number (zero based)</targetpipe>
-			<weight></weight>
-			<mask>source|destination</mask>
-		</queue>
-		-->
-	</shaper>
 	<ipsec>
 		<!-- <enable/> -->
 		<!-- syntax:

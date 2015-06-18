@@ -220,7 +220,7 @@ echo "done.\n";
 /* generate resolv.conf */
 system_resolvconf_generate();
 
-/* setup altq + pf */
+/* setup pf */
 filter_configure_sync();
 
 /* start pflog */

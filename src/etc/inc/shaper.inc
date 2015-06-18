@@ -434,22 +434,6 @@ class altq_root_queue {
 		}
 	}
 
-	function build_tree() {
-		global $shaperIFlist;
-
-		$tree = " <li><a href=\"firewall_shaper.php?interface=".$this->GetInterface()."&amp;queue=". $this->GetInterface()."&amp;action=show";
-		$tree .= "\">" . $shaperIFlist[$this->GetInterface()] . "</a>";
-		if (is_array($this->queues)) {
-			$tree .= "<ul>";
-			foreach ($this->queues as $q)  {
-				$tree .= $q->build_tree();
-			}
-		$tree .= "</ul>";
-		}
-		$tree .= "</li>";
-		return $tree;
-	}
-
 	function delete_queue() {
 		foreach ($this->queues as $q) {
 		$this->SetAvailableBandwidth($this->GetAvailableBandwidth() + $q->GetAvailableBandwidth());
@@ -978,29 +962,6 @@ class priq_queue {
 		else
 			$this->SetEnabled("");
 
-	}
-
-	function build_tree() {
-		$tree = " <li><a href=\"firewall_shaper.php?interface=". $this->GetInterface()."&amp;queue=". $this->GetQname()."&amp;action=show";
-		$tree .= "\" ";
-		$tmpvalue = $this->GetDefault();
-		if (!empty($tmpvalue))
-			$tree .= " class=\"navlnk\"";
-		$tree .= " >" . $this->GetQname() . "</a>";
-		/*
-		 * Not needed here!
-		 * if (is_array($queues) {
-		 *	  $tree .= "<ul>";
-		 *	  foreach ($q as $queues)
-		 *		  $tree .= $queues['$q->GetName()']->build_tree();
-		 *	  endforeach
-		 *	  $tree .= "</ul>";
-		 * }
-		 */
-
-		$tree .= "</li>";
-
-		return $tree;
 	}
 
 	/* Should return something like:
@@ -1614,24 +1575,6 @@ class hfsc_queue extends priq_queue {
 		parent::ReadConfig($cflink);
 	}
 
-	function build_tree() {
-		$tree = " <li><a href=\"firewall_shaper.php?interface=" . $this->GetInterface() ."&amp;queue=" . $this->GetQname()."&amp;action=show";
-		$tree .= "\" ";
-		$tmpvalue = $this->GetDefault();
-		if (!empty($tmpvalue))
-			$tree .= " class=\"navlnk\"";
-		$tree .= " >" . $this->GetQname() . "</a>";
-		if (is_array($this->subqueues)) {
-			$tree .= "<ul>";
-			foreach ($this->subqueues as $q)  {
-				$tree .= $q->build_tree();
-			}
-			$tree .= "</ul>";
-		}
-		$tree .= "</li>";
-		return $tree;
-	}
-
 	/* Even this should take children into consideration */
 	function build_rules(&$default = false) {
 
@@ -2167,24 +2110,6 @@ class cbq_queue extends priq_queue {
 		return parent::build_javascript();
 	}
 
-	function build_tree() {
-		$tree = " <li><a href=\"firewall_shaper.php?interface=" . $this->GetInterface()."&amp;queue=" . $this->GetQname()."&amp;action=show";
-		$tree .= "\" ";
-		$tmpvalue = trim($this->GetDefault());
-		if (!empty($tmpvalue))
-			$tree .= " class=\"navlnk\"";
-		$tree .= " >" . $this->GetQname() . "</a>";
-		if (is_array($this->subqueues)) {
-			$tree .= "<ul>";
-			foreach ($this->subqueues as $q)  {
-				$tree .= $q->build_tree();
-			}
-			$tree .= "</ul>";
-		}
-		$tree .= "</li>";
-		return $tree;
-	}
-
 	/* Even this should take children into consideration */
 	function build_rules(&$default = false) {
 		$pfq_rule = "queue ". $this->qname;
@@ -2454,18 +2379,6 @@ class fairq_queue extends priq_queue {
 		return parent::build_javascript();
 	}
 
-	function build_tree() {
-		$tree = " <li><a href=\"firewall_shaper.php?interface=" .
-		$this->GetInterface()."&amp;queue=" . $this->GetQname()."&amp;action=show";
-		$tree .= "\" ";
-		$tmpvalue = trim($this->GetDefault());
-		if (!empty($tmpvalue))
-			$tree .= " class=\"navlnk\"";
-		$tree .= " >" . $this->GetQname() . "</a>";
-		$tree .= "</li>";
-		return $tree;
-	}
-
 	/* Even this should take children into consideration */
 	function build_rules(&$default = false) {
 		$pfq_rule = "queue ". $this->qname;
@@ -2700,72 +2613,6 @@ function unref_on_altq_queue_list($qname) {
 	$GLOBALS['queue_list'][$qname]--;
 	if ($GLOBALS['queue_list'][$qname] <= 1)
 		unset($GLOBALS['queue_list'][$qname]);
-}
-
-function read_altq_config() {
-	global $altq_list_queues, $config;
-	$path = array();
-
-	if (!is_array($config['shaper']))
-		$config['shaper'] = array();
-	if (!is_array($config['shaper']['queue']))
-		$config['shaper']['queue'] = array();
-	$a_int = &$config['shaper']['queue'];
-
-	$altq_list_queues = array();
-
-	foreach ($a_int as $key => $conf) {
-		$int = $conf['interface'];
-		$root =& new altq_root_queue();
-		$root->SetInterface($int);
-		$altq_list_queues[$root->GetInterface()] = &$root;
-		$root->ReadConfig($conf);
-		array_push($path, $key);
-		$root->SetLink($path);
-		if (is_array($conf['queue'])) {
-			foreach ($conf['queue'] as $key1 => $q) {
-				array_push($path, $key1);
-				/*
-				 * XXX: we completely ignore errors here but anyway we must have
-				 *	checked them before so no harm should be come from this.
-				 */
-				$root->add_queue($root->GetInterface(), $q, $path, $input_errors);
-				array_pop($path);
-			}
-		}
-		array_pop($path);
-	}
-}
-
-
-function get_interface_list_to_show() {
-	global $altq_list_queues, $config;
-	global $shaperIFlist;
-
-	$tree = "";
-	foreach ($shaperIFlist as $shif => $shDescr) {
-		if ($altq_list_queues[$shif]) {
-			continue;
-		} else  {
-			if (!is_altq_capable(get_real_interface($shif)))
-				continue;
-			$tree .= " <li><a href=\"firewall_shaper.php?interface=".$shif."&amp;action=add\">".$shDescr."</a></li>";
-		}
-	}
-
-	return $tree;
-}
-
-function filter_generate_altq_queues() {
-	global $altq_list_queues;
-
-	read_altq_config();
-
-	$altq_rules = "";
-	foreach ($altq_list_queues as $altq)
-		$altq_rules .= $altq->build_rules();
-
-	return $altq_rules;
 }
 
 $default_shaper_msg =  "<tr><td align=\"left\" width=\"80%\">";

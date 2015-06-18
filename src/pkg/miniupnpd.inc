@@ -35,16 +35,6 @@ function upnp_uuid() {
 	return substr($uuid,0,8).'-'.substr($uuid,9,4).'-'.substr($uuid,13,4).'-'.substr($uuid,17,4).'-'.substr($uuid,21,12);
 }
 
-function upnp_validate_queue($qname) {
-	read_altq_config();
-	$qlist = get_altq_name_list();
-	if (is_array($qlist)) {
-		return in_array($qname, $qlist);
-	} else {
-		return false;
-	}
-}
-
 function upnp_validate_ip($ip, $check_cdir) {
 	/* validate cidr */
 	$ip_array = array();
@@ -95,8 +85,6 @@ function validate_form_miniupnpd($post, &$input_errors) {
 		$input_errors[] = 'You must specify a value greater than 0 in the \'Maximum Download Speed\' field';
 	if($post['upload'] && $post['upload'] <= 0)
 		$input_errors[] = 'You must specify a value greater than 0 in the \'Maximum Upload Speed\' field';
-	if($post['upnpqueue'] && !upnp_validate_queue($post['upnpqueue']))
-		$input_errors[] = 'You must specify a valid traffic shaping queue.';
 
 	/* user permissions validation */
 	for($i=1; $i<=4; $i++) {
@@ -217,14 +205,6 @@ function sync_package_miniupnpd() {
 
 			if($upnp_config['permdefault'])
 				$config_text .= "deny 0-65535 0.0.0.0/0 0-65535\n";
-
-			/* Recheck if queue is valid */
-			if (!upnp_validate_queue($upnp_config['upnpqueue']))
-				unset($upnp_config['upnpqueue']);
-
-			/* Add shaper queue */
-			if($upnp_config['upnpqueue'])
-				$config_text .= "queue={$upnp_config['upnpqueue']}\n";
 
 			/* Allow UPnP or NAT-PMP as requested */
 			$config_text .= "enable_upnp="   . ( $upnp_config['enable_upnp']   ? "yes\n" : "no\n" );

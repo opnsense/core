@@ -71,7 +71,6 @@
         </Rules>
         <Schedules url="/firewall_schedule.php"/>
         <TrafficShaper url="/ui/trafficshaper/" VisibleName="Traffic Shaper"/>
-        <Queues VisibleName="Queues" url="/firewall_shaper.php"/>
         <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php"/>
     </Firewall>
 
