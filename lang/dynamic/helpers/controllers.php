@@ -124,6 +124,7 @@ echo gettext('The prompt will be displayed in the autherntication request window
 echo gettext('This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live).<br/>
             When the TTL expires, the user will be prompted for credentials again.');
 echo gettext('The total number of authenticator processes to spawn.');
+echo gettext('enable this pipe and it\'s related queues and rules');
 echo gettext('Total bandwidth for this pipe');
 echo gettext('number of dynamic queues, leave empty for default');
 echo gettext('Dynamic queue creation by source or destination address.
@@ -131,16 +132,20 @@ echo gettext('Dynamic queue creation by source or destination address.
         <li> choose source to provide all connected clients up to a maximum of this pipe configured bandwidth  </li>
         ');
 echo gettext('Description to identify this pipe.');
+echo gettext('enable this queue and it\'s related rules');
 echo gettext('connected pipe for this queue');
-echo gettext('Weight of this queue (1..100)');
+echo gettext('Weight of this queue (1..100), used to prioritize within a pipe. (1 is low, 100 is high)');
 echo gettext('Dynamic queue creation by source or destination address.
         <li> choose destination here to share the total bandwidth of this pipe among all connected clients. </li>
         <li> choose source to provide all connected clients up to a maximum of this pipe configured bandwidth  </li>
         ');
 echo gettext('Description to identify this pipe.');
 echo gettext('order in which the rule will be evaluated (lowest first)');
+echo gettext('secondary interface, matches packets going traveling from interface (1) to interface (2).
+        ');
 echo gettext('source ip or network, examples 10.0.0.0/24, 10.0.0.1');
 echo gettext('source port number or well known name (imap,imaps, http,https,...)');
 echo gettext('destination ip or network, examples 10.0.0.0/24, 10.0.0.1');
 echo gettext('destination port number or well known name (imap,imaps, http,https,...)');
+echo gettext('matches incomming or outgoing packets or both (default)');
 echo gettext('target pipe or queue');

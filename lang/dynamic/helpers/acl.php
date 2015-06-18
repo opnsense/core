@@ -33,7 +33,6 @@
  *
  */
 echo gettext('Allow access to the \'Status: Captive portal: Voucher Rolls\' page.');
-echo gettext('Allow access to the \'Services: Captive portal\' page.');
 echo gettext('Allow access to the \'Status: IPsec: SAD\' page.');
 echo gettext('Allow access to the \'VPN: PPTP: Users\' page.');
 echo gettext('Allow access to the \'VPN: IPsec: Pre-Shared Keys List\' page.');
@@ -85,7 +84,7 @@ echo gettext('Allow access to the \'Services: DHCP Server : Edit static mapping\
 echo gettext('Allow access to the \'Services: DHCPv6 server\' page.');
 echo gettext('Allow access to the \'Status: Captive portal: Test Vouchers\' page.');
 echo gettext('Allow access to the \'Status: System logs: Load Balancer\' page.');
-echo gettext('Allow access to the \'Firewall: Traffic Shaper: Wizard\' page.');
+echo gettext('Allow access to the \'Services: Captive portal\' page.');
 echo gettext('Allow access to the \'Lobby: Login / Logout/ Dashboard\' page.');
 echo gettext('Allow access to the \'Services: DNS Resolver: Edit host\' page.');
 echo gettext('Allow access to the \'Services: SNMP\' page.');
@@ -148,7 +147,6 @@ echo gettext('Allow access to the \'AJAX: Service Providers\' page.');
 echo gettext('Allow access to the \'Diagnostics: Backup/restore\' page.');
 echo gettext('Allow access to the \'Diagnostics: Halt system\' page.');
 echo gettext('Allow access to the \'Services: DHCP server\' page.');
-echo gettext('Indicates whether the user is able to login for tunneling via SSH when they have no shell access. Note: User - System - Copy files conflicts with this privilege.');
 echo gettext('Allow access to the \'Services: Igmpproxy: Edit\' page.');
 echo gettext('Allow access to the \'System: User Manager: Settings: Test LDAP\' page.');
 echo gettext('Allow access to the \'VPN: L2TP\' page.');
@@ -177,7 +175,6 @@ echo gettext('Allows access to the \'Diagnostics: Limiter Info\' page');
 echo gettext('Allow access to the \'Services: DHCPv6 Relay\' page.');
 echo gettext('Allow access to the \'Diagnostics: Logs: System: Resolver\' page.');
 echo gettext('Allow access to the \'Status: Wireless\' page.');
-echo gettext('Allow access to the \'Firewall: Traffic Shaper: Queues\' page.');
 echo gettext('Allow access to the \'Hidden: No longer included\' page.');
 echo gettext('Allow access to the \'Status: NTP PPS\' page.');
 echo gettext('Allow access to the \'Status: System logs: IPsec VPN\' page.');
@@ -208,7 +205,6 @@ echo gettext('Allow access to the \'System: Gateways: Edit Gateway\' page.');
 echo gettext('Allow access to the \'Services: Captive portal: Edit Zones\' page.');
 echo gettext('Allow access to the \'Diagnostics: Logs: Firewall\' page.');
 echo gettext('Allow direct access to all Dashboard widget pages, required for some widgets using AJAX.');
-echo gettext('Allow access to the \'Status: Traffic shaper: Queues\' page.');
 echo gettext('Allow access to the \'Status: Load Balancer: Virtual Server\' page.');
 echo gettext('Allow access to the \'Diagnostics: Configuration History\' page.');
 echo gettext('Allow access to the \'Interfaces: GRE: Edit\' page.');
