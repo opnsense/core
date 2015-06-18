@@ -31,8 +31,8 @@ require_once("guiconfig.inc");
 $pgtitle = gettext("Diagnostics: pfTop");
 
 $sorttypes = array('age', 'bytes', 'dest', 'dport', 'exp', 'none', 'peak', 'pkt', 'rate', 'size', 'sport', 'src');
-$viewtypes = array('default', 'label', 'long', 'queue', 'rules', 'size', 'speed', 'state', 'time');
-$viewall = array('queue', 'label', 'rules');
+$viewtypes = array('default', 'label', 'long', 'rules', 'size', 'speed', 'state', 'time');
+$viewall = array('label', 'rules');
 $numstates = array('50', '100', '200', '500', '1000', 'all');
 
 if($_REQUEST['getactivity']) {
@@ -126,7 +126,6 @@ if($_REQUEST['sorttype'] && in_array($_REQUEST['sorttype'], $sorttypes)
 						<option value='default' <?php echo ($viewtype == "default") ? "selected=\"selected\"" : ""; ?>><?=gettext("Default");?></option>
 						<option value='label' <?php echo ($viewtype == "label") ? "selected=\"selected\"" : ""; ?>><?=gettext("Label");?></option>
 						<option value='long' <?php echo ($viewtype == "long") ? "selected=\"selected\"" : ""; ?>><?=gettext("Long");?></option>
-						<option value='queue' <?php echo ($viewtype == "queue") ? "selected=\"selected\"" : ""; ?>><?=gettext("Queue");?></option>
 						<option value='rules' <?php echo ($viewtype == "rules") ? "selected=\"selected\"" : ""; ?>><?=gettext("Rules");?></option>
 						<option value='size' <?php echo ($viewtype == "size") ? "selected=\"selected\"" : ""; ?>><?=gettext("Size");?></option>
 						<option value='speed' <?php echo ($viewtype == "speed") ? "selected=\"selected\"" : ""; ?>><?=gettext("Speed");?></option>
@@ -191,7 +190,6 @@ if($_REQUEST['sorttype'] && in_array($_REQUEST['sorttype'], $sorttypes)
 jQuery("#viewtype").change(function() {
 	var selected = jQuery("#viewtype option:selected");
 	switch(selected.val()) {
-		case "queue":
 		case "label":
 		case "rules":
 			jQuery("#sorttype, #sorttypediv, #statesdiv, #states").hide();
