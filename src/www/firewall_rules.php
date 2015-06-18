@@ -752,20 +752,7 @@ include("head.inc");
 											<span class="<?=$textse;?>"><?php if (isset($config['interfaces'][$filterent['gateway']]['descr'])) echo htmlspecialchars($config['interfaces'][$filterent['gateway']]['descr']); else  echo htmlspecialchars(pprint_port($filterent['gateway'])); ?></span>
 										</td>
 										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-										<span class="<?=$textse;?>">
-										<?php
-											if (isset($filterent['ackqueue']) && isset($filterent['defaultqueue'])) {
-												$desc = $filterent['ackqueue'] ;
-												echo "<a href=\"firewall_shaper_queues.php?queue={$filterent['ackqueue']}&amp;action=show\">{$desc}</a>";
-												$desc = $filterent['defaultqueue'];
-												echo "/<a href=\"firewall_shaper_queues.php?queue={$filterent['defaultqueue']}&amp;action=show\">{$desc}</a>";
-											} else if (isset($filterent['defaultqueue'])) {
-												$desc = $filterent['defaultqueue'];
-												echo "<a href=\"firewall_shaper_queues.php?queue={$filterent['defaultqueue']}&amp;action=show\">{$desc}</a>";
-											} else
-												echo gettext("none");
-										?>
-										</span>
+										<span class="<?=$textse;?>"><?=gettext('none');?></span>
 										</td>
 										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';"><font color="black">
 											<?php if ($printicon) { ?><span class="glyphicon <?php echo $image; ?>" title="<?php echo $alttext;?>"></span><?php } ?><span class="<?=$textse;?>"><?php echo $schedule_span_begin;?><?=htmlspecialchars($filterent['sched']);?>&nbsp;<?php echo $schedule_span_end; ?></span>

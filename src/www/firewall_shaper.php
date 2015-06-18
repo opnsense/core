@@ -407,7 +407,6 @@ include("fbegin.inc");
 					<?php
 							$tab_array = array();
 							$tab_array[0] = array(gettext("By Interface"), true, "firewall_shaper.php");
-							$tab_array[1] = array(gettext("By Queue"), false, "firewall_shaper_queues.php");
 							display_top_tabs($tab_array);
 						?>
 

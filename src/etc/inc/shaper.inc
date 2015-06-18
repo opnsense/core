@@ -542,30 +542,6 @@ class altq_root_queue {
 		return $javascript;
 	}
 
-	function build_shortform() {
-		global $g;
-
-		$altq =& $this;
-		if ($altq)
-			$scheduler = ": " . $altq->GetScheduler();
-		$form = "<tr><td width=\"20%\" class=\"vtable\">";
-		$form .= "<a href=\"firewall_shaper.php?interface=" . $this->GetInterface() . "&amp;queue=". $this->GetInterface()."&amp;action=show\">". $shaperIFlist[$this->GetInterface()] .": ".$scheduler."</a>";
-		$form .= "</td></tr>";
-		$form .= "<tr>";
-		$form .= "<td width=\"50%\" class=\"vncellreq\">";
-		$form .= "Bandwidth: " . $this->GetBandwidth().$this->GetBwscale();
-		$form .= "</td><td width=\"50%\"></td></tr>";
-		$form .= "<tr><td width=\"20%\" class=\"vncellreq\">";
-		$form .= "<a href=\"firewall_shaper_queues.php?interface=";
-		$form .= $this->GetInterface() . "&amp;queue=";
-		$form .= $this->GetQname() . "&amp;action=delete\" class=\"btn btn-default btn-xs\"";
-
-		$form .= "  title=\"Disable shaper on interface\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
-		$form .= "</td></tr>";
-
-		return $form;
-
-	}
 	/*
 	 * For requesting the parameters of the root queues
 	 * to the user like the traffic wizard does.
@@ -1168,44 +1144,7 @@ class priq_queue {
 		return $form;
 	}
 
-	function build_shortform() {
-		/* XXX: Hacks in site. Mostly layer violations!  */
-		global $g, $altq_list_queues;
-		global $shaperIFlist;
-
-		$altq =& $altq_list_queues[$this->GetInterface()];
-		if ($altq)
-			$scheduler = ": " . $altq->GetScheduler();
-		$form = "<tr><td width=\"20%\" class=\"vtable\">";
-		$form .= "<a href=\"firewall_shaper.php?interface=" . $this->GetInterface() . "&amp;queue=" . $this->GetQname()."&amp;action=show\">". $shaperIFlist[$this->GetInterface()] .$scheduler."</a>";
-		$form .= "</td></tr>";
-		/*
-		 * XXX: Hack in sight maybe fix with a class that wraps all
-		 * of this layer violations
-		 */
-		$form .= "<tr>";
-		$form .= "<td width=\"50%\" class=\"vncellreq\">";
-		$form .= gettext("Bandwidth:") . " " . $this->GetBandwidth().$this->GetBwscale();
-		$form .= "</td><td width=\"50%\"></td></tr>";
-		$tmpvalue = $this->GetQpriority();
-		if (!empty($tmpvalue))
-			$form .= "<tr><td width=\"20%\" class=\"vncellreq\">" .gettext("Priority: on") . " </td></tr>";
-		$tmpvalue = $this->GetDefault();
-		if (!empty($tmpvalue))
-			$form .= "<tr><td class=\"vncellreq\">" . gettext("Default: on") . " </td></tr>";
-		$form .= "<tr><td width=\"20%\" class=\"vncellreq\">";
-		$form .= "<a href=\"firewall_shaper_queues.php?interface=";
-		$form .= $this->GetInterface() . "&amp;queue=";
-		$form .= $this->GetQname() . "&amp;action=delete\" class=\"btn btn-default btn-xs\"";
-
-		$form .= "  title=\"" . gettext("Delete queue from interface") . "\"  >";
-		$form .= "<span class=\"glyphicon glyphicon-remove\"></span></a></td></tr>";
-
-		return $form;
-
-	}
-
-		function update_altq_queue_data(&$q) {
+	function update_altq_queue_data(&$q) {
 		$this->ReadConfig($q);
 	}
 
@@ -2829,27 +2768,6 @@ function filter_generate_altq_queues() {
 	return $altq_rules;
 }
 
-function build_iface_without_this_queue($iface, $qname) {
-	global $g, $altq_list_queues;
-	global $shaperIFlist;
-
-	$altq =& $altq_list_queues[$iface];
-	if ($altq)
-		$scheduler = ": " . $altq->GetScheduler();
-	$form = "<tr><td width=\"20%\" >";
-	$form .= "<a href=\"firewall_shaper.php?interface=" . $iface . "&amp;queue=" . $iface."&amp;action=show\">". $shaperIFlist[$iface] . $scheduler."</a>";
-	$form .= "</td></tr>";
-	$form .= "<tr><td width=\"100%\" class=\"vncellreq\">";
-	$form .= "<a href=\"firewall_shaper_queues.php?interface=";
-	$form .= $iface . "&amp;queue=". $qname . "&amp;action=add\" class='btn btn-default btn-xs'>";
-	$form .= " <span class='glyphicon glyphicon-plus' title=\"Clone shaper/queue on this interface\" ></span></a></td></tr>";
-	//$form .= gettext(" Clone shaper/queue on this interface") . "</a></td></tr>";
-
-	return $form;
-
-}
-
-
 $default_shaper_msg =  "<tr><td align=\"left\" width=\"80%\">";
 $default_shaper_msg .= "<span class=\"vexpl\"><strong><b>" . sprintf(gettext("Welcome to the %s Traffic Shaper."), $g['product_name']) . "</b><br />";
 $default_shaper_msg .= gettext("The tree on the left helps you navigate through the queues <br />"
@@ -2863,5 +2781,3 @@ $dn_default_shaper_msg .= gettext("The tree on the left helps you navigate throu
 	.  "buttons at the bottom represent queue actions and are activated accordingly.");
 $dn_default_shaper_msg .= "</strong></span>";
 $dn_default_shaper_msg .= "</td></tr>";
-
-?>

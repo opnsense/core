@@ -449,13 +449,6 @@
             "api/trafficshaper/*"
         ]
     },
-    "page-firewall-trafficshaper-queues": {
-        "name": "WebCfg - Firewall: Traffic Shaper: Queues page",
-        "descr": "Allow access to the 'Firewall: Traffic Shaper: Queues' page.",
-        "match": [
-            "firewall_shaper_queues.php*"
-        ]
-    },
     "page-firewall-virtualipaddress-edit": {
         "name": "WebCfg - Firewall: Virtual IP Address: Edit page",
         "descr": "Allow access to the 'Firewall: Virtual IP Address: Edit' page.",
