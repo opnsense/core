@@ -3,7 +3,6 @@
 require_once("util.inc");
 require_once("config.inc");
 require_once("functions.inc");
-require_once("shaper.inc");
 
 $shortcut_section = "upnp";
 

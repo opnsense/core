@@ -32,8 +32,6 @@
 require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
-require_once("shaper.inc");
-
 
 $pconfig['ipv6nat_enable'] = isset($config['diag']['ipv6nat']['enable']);
 $pconfig['ipv6nat_ipaddr'] = $config['diag']['ipv6nat']['ipaddr'];

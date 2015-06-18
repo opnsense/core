@@ -32,7 +32,6 @@
 require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
-require_once("shaper.inc");
 
 $pconfig['disablefilter'] = $config['system']['disablefilter'];
 $pconfig['rfc959workaround'] = $config['system']['rfc959workaround'];

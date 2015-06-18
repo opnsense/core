@@ -99,8 +99,6 @@ require_once("functions.inc");
 echo ".";
 require_once("filter.inc");
 echo ".";
-require_once("shaper.inc");
-echo ".";
 require_once("ipsec.inc");
 echo ".";
 require_once("vpn.inc");

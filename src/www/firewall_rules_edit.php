@@ -30,7 +30,6 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("shaper.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_rules.php');
 

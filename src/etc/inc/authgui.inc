@@ -171,7 +171,6 @@ function display_login_form()
     }
     if (empty($FilterIflist)) {
         require_once('filter.inc');
-        require_once('shaper.inc');
         filter_generate_optcfg_array();
     }
     foreach ($FilterIflist as $iflist) {

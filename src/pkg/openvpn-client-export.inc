@@ -32,7 +32,6 @@
 require_once("globals.inc");
 require_once("openvpn.inc");
 require_once("filter.inc");
-require_once("shaper.inc");
 require_once("util.inc");
 require_once("pfsense-utils.inc");
 

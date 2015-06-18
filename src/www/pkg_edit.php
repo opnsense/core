@@ -32,7 +32,6 @@ ini_set('max_execution_time', '0');
 require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
-require_once("shaper.inc");
 
 function get_pkg_interfaces_select_source($include_localhost=false) {
 	$interfaces = get_configured_interface_with_descr();
