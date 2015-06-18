@@ -456,13 +456,6 @@
             "firewall_shaper_queues.php*"
         ]
     },
-    "page-firewall-trafficshaper-wizard": {
-        "name": "WebCfg - Firewall: Traffic Shaper: Wizard page",
-        "descr": "Allow access to the 'Firewall: Traffic Shaper: Wizard' page.",
-        "match": [
-            "firewall_shaper_wizards.php*"
-        ]
-    },
     "page-firewall-virtualipaddress-edit": {
         "name": "WebCfg - Firewall: Virtual IP Address: Edit page",
         "descr": "Allow access to the 'Firewall: Virtual IP Address: Edit' page.",

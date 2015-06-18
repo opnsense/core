@@ -73,7 +73,6 @@
         <TrafficShaper url="/ui/trafficshaper/" VisibleName="Traffic Shaper"/>
         <Queues VisibleName="Queues" url="/firewall_shaper.php">
             <ByQueue VisibleName="By Queue" url="/firewall_shaper_queues.php"/>
-            <Wizards url="/firewall_shaper_wizards.php"/>
         </Queues>
         <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php"/>
     </Firewall>
