@@ -164,12 +164,6 @@ function show_advanced_sourceos() {
 	aodiv.style.display = "block";
 }
 
-function show_advanced_ackqueue() {
-	document.getElementById("showadvackqueuebox").innerHTML='';
-	aodiv = document.getElementById('showackqueueadv');
-	aodiv.style.display = "block";
-}
-
 function show_advanced_inout() {
 	document.getElementById("showadvinoutbox").innerHTML='';
 	aodiv = document.getElementById('showinoutadv');

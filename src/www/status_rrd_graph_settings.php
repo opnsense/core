@@ -40,7 +40,6 @@ $categories = array('system' => gettext("System"),
 		'traffic' => gettext("Traffic"),
 		'packets' => gettext("Packets"),
 		'quality' => gettext("Quality"),
-		'queues' => gettext("Queues"),
 		'captiveportal' => gettext("Captive Portal"));
 
 if(isset($config['ntpd']['statsgraph'])) {
@@ -87,9 +86,6 @@ $databases = glob("*.rrd");
 foreach($databases as $database) {
 	if(stristr($database, "wireless")) {
 		$wireless = true;
-	}
-	if(stristr($database, "queues")) {
-		$queues = true;
 	}
 	if(stristr($database, "-cellular") && !empty($config['ppps'])) {
 		$cellular = true;

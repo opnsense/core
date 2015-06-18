@@ -74,12 +74,6 @@ if ($_GET['option']) {
 		case "system":
 			$curoption = "processor";
 			break;
-		case "queues":
-			$curoption = "queues";
-			break;
-		case "queuedrops":
-			$curoption = "queuedrops";
-			break;
 		case "quality":
 			foreach($databases as $database) {
 				if(preg_match("/[-]quality\.rrd/i", $database)) {
@@ -211,9 +205,6 @@ $dbheader_custom = array("system-throughput.rrd");
 foreach($databases as $database) {
 	if(stristr($database, "-wireless")) {
 		$wireless = true;
-	}
-	if(stristr($database, "-queues")) {
-		$queues = true;
 	}
 	if(stristr($database, "-cellular") && !empty($config['ppps'])) {
 		$cellular = true;

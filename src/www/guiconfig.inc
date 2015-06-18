@@ -447,10 +447,6 @@ function firewall_check_for_advanced_options(&$item) {
 		$item_set .= "max-src-conn-rates {$item['max-src-conn-rates']} ";
 	if($item['gateway'])
 		$item_set .= "gateway {$item['gateway']} ";
-	if($item['ackqueue'])
-		$item_set .= "ackqueue {$item['ackqueue']} ";
-	if($item['defaultqueue'])
-		$item_set .= "defaultqueue {$item['defaultqueue']} ";
 	if($item['tag'])
 		$item_set .= "tag {$item['tag']} ";
 	if($item['tagged'])
