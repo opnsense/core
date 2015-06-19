@@ -845,8 +845,9 @@ include("head.inc");
 													if(have_ruleint_access("enc0"))
 														$interfaces["enc0"] = "IPsec";
 												/* add openvpn/tun interfaces */
-												if  ($config['openvpn']["openvpn-server"] || $config['openvpn']["openvpn-client"])
-													$interfaces["openvpn"] = "OpenVPN";
+												if  (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
+													$interfaces['openvpn'] = 'OpenVPN';
+												}
 												if (is_array($pconfig['interface']))
 													$pconfig['interface'] = implode(",", $pconfig['interface']);
 												$selected_interfaces = explode(",", $pconfig['interface']);
