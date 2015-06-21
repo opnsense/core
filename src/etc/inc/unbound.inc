@@ -562,7 +562,7 @@ function unbound_add_host_entries() {
 function unbound_control($action) {
     global $config, $g;
 
-    $cache_dumpfile = "/var/tmp/unbound_cache";
+    $cache_dumpfile = "/tmp/unbound_cache";
 
     switch ($action) {
         case "start":
@@ -589,7 +589,7 @@ function unbound_control($action) {
             // Restore Unbound's Cache
             if ((is_process_running("unbound")) && ($config['unbound']['dumpcache'] == "on")) {
                 if (file_exists($cache_dumpfile) && filesize($cache_dumpfile) > 0)
-                    do_as_unbound_user("load_cache < /var/tmp/unbound_cache");
+                    do_as_unbound_user("load_cache < /tmp/unbound_cache");
             }
             break;
         default:
