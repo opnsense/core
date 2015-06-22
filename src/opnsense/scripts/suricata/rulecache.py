@@ -52,6 +52,54 @@ class RuleCache(object):
 
         return all_rule_files
 
+    def listRules(self, filename):
+        """ generator function to list rule file content including metadata
+        :param filename:
+        :return:
+        """
+        data = open(filename)
+        for rule in data.read().split('\n'):
+            rule_info_record = {'rule':rule, 'metadata':None}
+            if rule.find('msg:') != -1:
+                # define basic record
+                record = {'enabled':True, 'source':filename.split('/')[-1]}
+                if rule.strip()[0] =='#':
+                    record['enabled'] = False
+
+                rule_metadata = rule[rule.find('msg:'):-1]
+                for field in rule_metadata.split(';'):
+                    fieldName = field[0:field.find(':')].strip()
+                    fieldContent = field[field.find(':')+1:].strip()
+                    if fieldName in self._rule_fields:
+                        if fieldContent[0] == '"':
+                            content = fieldContent[1:-1]
+                        else:
+                            content = fieldContent
+
+                        if fieldName in record:
+                            # if same field repeats, put items in list
+                            if type(record[fieldName]) != list:
+                                record[fieldName] = [record[fieldName]]
+                            record[fieldName].append(content)
+                        else:
+                            record[fieldName] = content
+
+                for rule_field in self._rule_fields:
+                    if rule_field not in record:
+                        if rule_field in self._rule_defaults:
+                            record[rule_field] = self._rule_defaults[rule_field]
+                        else:
+                            record[rule_field] = None
+
+                # perform type conversions
+                for fieldname in record:
+                    if type(record[fieldname]) == list:
+                        record[fieldname] = '\n'.join(record[fieldname])
+
+                rule_info_record['metadata'] = record
+
+            yield rule_info_record
+
     def isChanged(self):
         """ check if rules on disk are probably different from rules in cache
         :return: boolean
@@ -97,45 +145,9 @@ class RuleCache(object):
             if file_mtime > last_mtime:
                 last_mtime = file_mtime
             rules = []
-            data = open(filename)
-            for rule in data.read().split('\n'):
-                if rule.find('msg:') != -1:
-                    # define basic record
-                    record = {'enabled':True, 'source':filename.split('/')[-1]}
-                    if rule.strip()[0] =='#':
-                        record['enabled'] = False
-
-                    rule_metadata = rule[rule.find('msg:'):-1]
-                    for field in rule_metadata.split(';'):
-                        fieldName = field[0:field.find(':')].strip()
-                        fieldContent = field[field.find(':')+1:].strip()
-                        if fieldName in self._rule_fields:
-                            if fieldContent[0] == '"':
-                                content = fieldContent[1:-1]
-                            else:
-                                content = fieldContent
-
-                            if fieldName in record:
-                                # if same field repeats, put items in list
-                                if type(record[fieldName]) != list:
-                                    record[fieldName] = [record[fieldName]]
-                                record[fieldName].append(content)
-                            else:
-                                record[fieldName] = content
-
-                    for rule_field in self._rule_fields:
-                        if rule_field not in record:
-                            if rule_field in self._rule_defaults:
-                                record[rule_field] = self._rule_defaults[rule_field]
-                            else:
-                                record[rule_field] = None
-
-                    # perform type conversions
-                    for fieldname in record:
-                        if type(record[fieldname]) == list:
-                            record[fieldname] = '\n'.join(record[fieldname])
-
-                    rules.append(record)
+            for rule_info_record in self.listRules(filename=filename):
+                if rule_info_record['metadata'] is not None:
+                    rules.append(rule_info_record['metadata'])
 
             cur.executemany('insert into rules(%(fieldnames)s) '
                             'values (%(fieldvalues)s)'%{'fieldnames':(','.join(self._rule_fields)),
@@ -227,3 +239,4 @@ class RuleCache(object):
             result.append(record[0])
 
         return sorted(result)
+
