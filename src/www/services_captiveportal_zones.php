@@ -43,12 +43,12 @@ if ($_GET['act'] == "del" && !empty($_GET['zone'])) {
     if ($a_cp[$cpzone]) {
         $cpzoneid = $a_cp[$cpzone]['zoneid'];
         unset($a_cp[$cpzone]['enable']);
-        captiveportal_configure();
         unset($a_cp[$cpzone]);
         if (isset($config['voucher'][$cpzone])) {
             unset($config['voucher'][$cpzone]);
         }
         write_config();
+        captiveportal_configure();
         header("Location: services_captiveportal_zones.php");
         exit;
     }
