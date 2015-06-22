@@ -88,8 +88,8 @@ class ConfigdActionsField extends BaseField
                 // use filters to determine relevance
                 $isMatched = true;
                 foreach ($this->internalFilters as $filterKey => $filterData) {
-                    if (isset($value->$filterKey)) {
-                        $fieldData = $value->$filterKey;
+                    if (array_key_exists($filterKey, $value)) {
+                        $fieldData = $value[$filterKey];
                         if (!preg_match($filterData, $fieldData)) {
                             $isMatched = false;
                         }
