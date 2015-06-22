@@ -61,6 +61,16 @@ class Backend
         $endOfStream = chr(0).chr(0).chr(0);
         $poll_timeout = 2 ; // poll timeout interval
 
+        // wait until socket exist for a maximum of $timeout
+        $timeout_wait = $timeout;
+        while (!file_exists($this->configdSocket)) {
+            sleep(1);
+            $timeout_wait -= 1;
+            if ($timeout_wait <= 0) {
+                throw new \Exception("failed waiting for configd (doesn't seem to be running)");
+            }
+        }
+
         $resp = "";
         $stream = stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
         if ($stream === false) {
