@@ -715,13 +715,11 @@ $page_filename = "firewall_rules_edit.php";
 include("head.inc");
 
 ?>
-<link rel="stylesheet" href="/javascript/chosen/chosen.css" />
 </head>
 
 <body>
 	<?php include("fbegin.inc"); ?>
 	<script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js"></script>
-	<script src="/javascript/chosen/chosen.jquery.js" type="text/javascript"></script>
 
 	<section class="page-content-main">
 

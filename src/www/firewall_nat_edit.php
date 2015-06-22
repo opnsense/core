@@ -436,13 +436,10 @@ $pgtitle = array(gettext("Firewall"),gettext("NAT"),gettext("Port Forward"),gett
 include("head.inc");
 
 ?>
-<link type="text/css" rel="stylesheet" href="/javascript/chosen/chosen.css" />
 </head>
 
 <body>
 <?php include("fbegin.inc"); ?>
-
-	<script src="/javascript/chosen/chosen.jquery.js" type="text/javascript"></script>
 
 	<section class="page-content-main">
 
