@@ -909,6 +909,7 @@ include("head.inc");
 
 <script type="text/javascript">
 //<![CDATA[
+$(document).ready(function() {
 	ext_change();
 	dst_change(document.iform.interface.value,'<?=htmlspecialchars($pconfig['interface'])?>','<?=htmlspecialchars($pconfig['dst'])?>');
 	var iface_old = document.iform.interface.value;
@@ -918,6 +919,7 @@ include("head.inc");
 	show_source();
 	<?php endif; ?>
 	nordr_change();
+});
 //]]>
 </script>
 <script type="text/javascript">
