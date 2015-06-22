@@ -1,1 +1,2 @@
 rc.conf.d:/etc/rc.conf.d/suricata
+rules.config:/usr/local/etc/suricata/rules.config
