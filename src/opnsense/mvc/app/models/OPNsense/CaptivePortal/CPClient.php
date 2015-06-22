@@ -656,7 +656,7 @@ class CPClient
                 foreach ($clients as $client) {
                     $idle_time = 0;
                     if (array_key_exists($client->ip, $acc_list)) {
-                        $idle_time = $acc_list[$client->ip];
+                        $idle_time = $acc_list[$client->ip]['idle_time'];
                     }
 
                     // if session timeout is reached, disconnect
