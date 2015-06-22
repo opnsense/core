@@ -114,9 +114,15 @@ class Handler(object):
 
             except KeyboardInterrupt:
                 # exit on <ctrl><c>
+                if os.path.exists(self.socket_filename):
+                    # cleanup, remove socket
+                    os.remove(self.socket_filename)
                 raise
             except SystemExit:
                 # stop process handler on system exit
+                if os.path.exists(self.socket_filename):
+                    # cleanup on exit, remove socket
+                    os.remove(self.socket_filename)
                 return
             except:
                 # something went wrong... send traceback to syslog, restart listener (wait for a short time)
