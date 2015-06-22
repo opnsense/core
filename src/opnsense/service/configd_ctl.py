@@ -38,10 +38,12 @@ import os.path
 import traceback
 import syslog
 import sys
+import time
 
 __author__ = 'Ad Schellevis'
 
 configd_socket_name = '/var/run/configd.socket'
+configd_socket_wait = 20
 
 
 def exec_config_cmd(exec_command):
@@ -90,6 +92,14 @@ if len(sys.argv) <= 1:
     sys.exit(0)
 
 # check if configd socket exists
+# (wait for a maximum of "configd_socket_wait" seconds for configd to start)
+i=0
+while not os.path.exists(configd_socket_name):
+    if i >= configd_socket_wait:
+        break
+    time.sleep(1)
+    i += 1
+
 if not os.path.exists(configd_socket_name):
     print ('configd socket missing (@%s)'%configd_socket_name)
     sys.exit(-1)
@@ -108,3 +118,4 @@ else:
     if result is None:
         sys.exit(-1)
     print('%s'%(result))
+
