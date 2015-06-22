@@ -363,6 +363,7 @@ class SettingsController extends ApiControllerBase
         } else {
             // generate new node, but don't save to disc
             $node = $mdlShaper->rules->rule->add() ;
+            $node->sequence = $mdlShaper->getMaxRuleSequence() + 10;
             return array("rule" => $node->getNodes());
         }
         return array();

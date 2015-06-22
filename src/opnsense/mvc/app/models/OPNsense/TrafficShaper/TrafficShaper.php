@@ -120,4 +120,19 @@ class TrafficShaper extends BaseModel
         $queue->number = $newId;
         return $queue;
     }
+
+    /**
+     * retrieve last generated rule sequence number
+     */
+    public function getMaxRuleSequence()
+    {
+        $seq = 0;
+        foreach ($this->rules->rule->__items as $rule) {
+            if ((string)$rule->sequence > $seq) {
+                $seq = (string)$rule->sequence;
+            }
+        }
+
+        return $seq;
+    }
 }
