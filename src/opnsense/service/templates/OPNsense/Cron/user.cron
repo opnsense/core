@@ -7,6 +7,6 @@ PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin
 {% if helpers.exists('OPNsense.cron.jobs') %}
 {%   for job in helpers.toList('OPNsense.cron.jobs.job') %}
 # Origin/Description: {{job.origin}}/{{job.description}}
-{{job.minutes}} {{job.hours}}   {{job.days}}    {{job.moths}}   {{job.weekdays}}   configd {{job.command}} {{job.parameter}}
+{{job.minutes}} {{job.hours}}   {{job.days}}    {{job.moths}}   {{job.weekdays}}   /usr/local/sbin/configctl {{job.command}} {{job.parameter}}
 {%  endfor %}
 {% endif %}
