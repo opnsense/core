@@ -66,97 +66,14 @@ POSSIBILITY OF SUCH DAMAGE.
         {% if tab['subtabs']|default(false) %}
             {# Tab with dropdown #}
             {% for subtab in tab['subtabs']|default({})%}
-
-                {# Find if there are help supported or advanced field on this page #}
-                    {% set help=false %}
-                    {% set advanced=false %}
-                    {% for field in subtab[2]|default({})%}
-                        {% for name,element in field %}
-                            {% if name=='help' %}
-                                {% set help=true %}
-                            {% endif %}
-
-                            {% if name=='advanced' %}
-                                {% set advanced=true %}
-                            {% endif %}
-                        {% endfor %}
-                        {% if help|default(false) and advanced|default(false) %}
-                            {% break %}
-                        {% endif %}
-                    {% endfor %}
-
                 <div id="subtab_{{subtab[0]}}" class="tab-pane fade{% if activetab|default("") == subtab[0] %} in active {% endif %}">
-                    <form id="frm_{{subtab[0]}}" class="form-inline" data-title="{{subtab[1]}}">
-                        <table class="table table-striped table-condensed table-responsive">
-                            <colgroup>
-                                <col class="col-md-3"/>
-                                <col class="col-md-4"/>
-                                <col class="col-md-5"/>
-                            </colgroup>
-                            <tbody>
-                                <tr>
-                                    <td align="left"><a href="#">{% if advanced|default(false) %}<i class="fa fa-toggle-off text-danger" id="show_advanced_{{subtab[0]}}" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
-                                    <td><i class="fa fa-chevron-right text-primary"></i><b> {{subtab[1]}} </b><i class="fa fa-chevron-left text-primary"></td>
-                                    <td  align="right">
-                                        {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{subtab[0]}}" type="button"></i></a>{% endif %}
-                                    </td>
-                                </tr>
-                                    {% for field in subtab[2]|default({})%}
-                                        {{ partial("layout_partials/form_input_tr",field) }}
-                                    {% endfor %}
-                            <tr>
-                                <td colspan="3"><button class="btn btn-primary" id="save_{{subtab[0]}}" type="button"><b>Apply </b><i id="frm_{{subtab[0]}}_progress" class=""></i></button></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </form>
+                    {{ partial("layout_partials/base_form",['fields':subtab[2],'id':'frm_'~subtab[0],'data_title':subtab[1],'apply_btn_id':'save_'~subtab[0]])}}
                 </div>
             {% endfor %}
         {% endif %}
         {% if tab['subtabs']|default(false)==false %}
-
-            {# Find if there are help supported or advanced field on this page #}
-                {% set help=false %}
-                {% set advanced=false %}
-                {% for field in tab[2]|default({})%}
-                    {% for name,element in field %}
-                        {% if name=='help' %}
-                            {% set help=true %}
-                        {% endif %}
-
-                        {% if name=='advanced' %}
-                            {% set advanced=true %}
-                        {% endif %}
-                    {% endfor %}
-                        {% if help|default(false) and advanced|default(false) %}
-                        {% break %}
-                    {% endif %}
-                {% endfor %}
-
             <div id="tab_{{tab[0]}}" class="tab-pane fade{% if activetab|default("") == tab[0] %} in active {% endif %}">
-                <form id="frm_{{tab[0]}}" class="form-inline">
-                    <table class="table table-striped table-condensed table-responsive">
-                        <colgroup>
-                            <col class="col-md-3"/>
-                            <col class="col-md-4"/>
-                            <col class="col-md-5"/>
-                        </colgroup>
-                        <tbody>
-                        <tr>
-                            <td align="left"><a href="#">{% if advanced|default(false) %}<i class="fa fa-toggle-off text-danger" id="show_advanced_{{tab[0]}}" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
-                            <td colspan="2" align="right">
-                                {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{tab[0]}}" type="button"></i></a>{% endif %}
-                            </td>
-                        </tr>
-                        {% for field in tab[2]|default({})%}
-                            {{ partial("layout_partials/form_input_tr",field)}}
-                        {% endfor %}
-                        <tr>
-                            <td colspan="3"><button class="btn btn-primary"  id="save_{{tab[0]}}" type="button"><b>Apply </b><i id="frm_{{tab[0]}}_progress" class=""></i></button></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </form>
+                {{ partial("layout_partials/base_form",['fields':tab[2],'id':'frm_'~tab[0],'apply_btn_id':'save_'~tab[0]])}}
             </div>
         {% endif %}
     {% endfor %}
