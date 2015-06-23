@@ -16,5 +16,11 @@
                 </enabled>
             </rule>
         </rules>
+        <general>
+            <enabled type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </enabled>
+        </general>
     </items>
 </model>

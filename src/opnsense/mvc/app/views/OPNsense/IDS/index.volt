@@ -29,6 +29,14 @@ POSSIBILITY OF SUCH DAMAGE.
 <script type="text/javascript">
 
     $( document ).ready(function() {
+        //
+        var data_get_map = {'frm_GeneralSettings':"/api/ids/settings/get"};
+
+        // load initial data
+        mapDataToFormUI(data_get_map).done(function(){
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+        });
 
         // list all known classtypes and add to selection box
         function updateRuleClassTypes() {
@@ -81,6 +89,31 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
         );
 
+        /*************************************************************************************************************
+         * Commands
+         *************************************************************************************************************/
+
+        /**
+         * save settings and reconfigure ids
+         */
+        $("#reconfigureAct").click(function(){
+            saveFormToEndpoint(url="/api/ids/settings/set",formid='frm_GeneralSettings',callback_ok=function(){
+                $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
+                ajaxCall(url="/api/ids/service/reconfigure", sendData={}, callback=function(data,status) {
+                    // when done, disable progress animation.
+                    $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+
+                    if (status != "success" || data['status'] != 'ok') {
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_WARNING,
+                            title: "Error reconfiguring IDS",
+                            message: data['status'],
+                            draggable: true
+                        });
+                    }
+                });
+            });
+        });
 
     });
 
@@ -88,12 +121,14 @@ POSSIBILITY OF SUCH DAMAGE.
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
-    <li><a data-toggle="tab" href="#item2">{{ lang._('Item2') }}</a></li>
-    <li><a data-toggle="tab" href="#item3">{{ lang._('Item3') }}</a></li>
+    <li class="active"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
+    <li><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
 </ul>
 <div class="tab-content content-box tab-content">
-    <div id="rules" class="tab-pane fade in active">
+    <div id="settings" class="tab-pane fade in active">
+        {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
+    </div>
+    <div id="rules" class="tab-pane fade in">
         <div class="bootgrid-header container-fluid">
             <div class="row">
                 <div class="col-sm-12 actionBar">
@@ -107,22 +142,16 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-installedrules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
             <thead>
             <tr>
-                <th data-column-id="sid" data-type="number" data-visible="true" data-identifier="true" >sid</th>
+                <th data-column-id="sid" data-type="number" data-visible="true" data-identifier="true" data-width="6em">sid</th>
                 <th data-column-id="source" data-type="string">Source</th>
                 <th data-column-id="classtype" data-type="string">ClassType</th>
                 <th data-column-id="msg" data-type="string">Message</th>
-                <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false">enabled / info</th>
+                <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">enabled / info</th>
             </tr>
             </thead>
             <tbody>
             </tbody>
         </table>
-    </div>
-    <div id="item2" class="tab-pane fade in">
-
-    </div>
-    <div id="item3" class="tab-pane fade in">
-
     </div>
     <div class="col-md-12">
         <hr/>

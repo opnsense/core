@@ -1,0 +1,8 @@
+<form>
+    <field>
+        <id>ids.general.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>enable IDS</help>
+    </field>
+</form>
