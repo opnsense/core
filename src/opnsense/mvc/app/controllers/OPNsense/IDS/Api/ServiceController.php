@@ -30,6 +30,7 @@ namespace OPNsense\IDS\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
+use \OPNsense\IDS\IDS;
 
 /**
  * Class ServiceController
@@ -37,19 +38,114 @@ use \OPNsense\Core\Backend;
  */
 class ServiceController extends ApiControllerBase
 {
+    /**
+     * start ids service
+     * @return array
+     */
+    public function startAction()
+    {
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = trim($backend->configdRun("ids start"));
+            return array("response" => $response);
+        } else {
+            return array("response" => array());
+        }
+    }
 
     /**
-     *
+     * stop ids service
+     * @return array
+     */
+    public function stopAction()
+    {
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = trim($backend->configdRun("ids stop"));
+            return array("response" => $response);
+        } else {
+            return array("response" => array());
+        }
+    }
+
+    /**
+     * restart ids service
+     * @return array
+     */
+    public function restartAction()
+    {
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = $backend->configdRun("ids restart");
+            return array("response" => $response);
+        } else {
+            return array("response" => array());
+        }
+    }
+
+    /**
+     * retrieve status of squid proxy
+     * @return array
+     * @throws \Exception
+     */
+    public function statusAction()
+    {
+        $backend = new Backend();
+        $mdlIDS = new IDS();
+        $response = $backend->configdRun("ids status");
+
+        if (strpos($response, "not running") > 0) {
+            if ((string)$mdlIDS->general->enabled == 1) {
+                $status = "stopped";
+            } else {
+                $status = "disabled";
+            }
+        } elseif (strpos($response, "is running") > 0) {
+            $status = "running";
+        } elseif ((string)$mdlIDS->general->enabled == 0) {
+            $status = "disabled";
+        } else {
+            $status = "unkown";
+        }
+
+        return array("status" => $status);
+    }
+
+    /**
+     * reconfigure IDS
      */
     public function reconfigureAction()
     {
+        $status = "failed";
         if ($this->request->isPost()) {
             // close session for long running action
             $this->sessionClose();
+            $mdlIDS = new IDS();
+            $runStatus = $this->statusAction();
 
-            return array("status" => "failed");
-        } else {
-            return array("status" => "failed");
+            if ($runStatus['status'] == "running" && (string)$mdlIDS->general->enabled == 0) {
+                $this->stopAction();
+            }
+
+            $backend = new Backend();
+            $bckresult = trim($backend->configdRun("template reload OPNsense.IDS"));
+
+            if ($bckresult == "OK") {
+                $bckresult = trim($backend->configdRun("ids install rules"));
+                if ($bckresult == "OK") {
+                    if ($runStatus['status'] == 'running') {
+                        $status = $this->restartAction()['response'];
+                    } else {
+                        $status = $this->startAction()['response'];
+                    }
+                } else {
+                    $status = "error installing ids rules (".$bckresult.")";
+                }
+            } else {
+                $status = "error generating ids template (".$bckresult.")";
+            }
+
         }
+        return array("status" => $status);
     }
 }

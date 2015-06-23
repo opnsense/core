@@ -222,4 +222,54 @@ class SettingsController extends ApiControllerBase
         }
         return array();
     }
+
+    /**
+     * retrieve IDS settings
+     * @return array IDS settings
+     */
+    public function getAction()
+    {
+        // define list of configurable settings
+        $settingsNodes = array('general');
+        $result = array();
+        if ($this->request->isGet()) {
+            $mdlIDS = new IDS();
+            $result['ids'] = array();
+            foreach ($settingsNodes as $key) {
+                $result['ids'][$key] = $mdlIDS->$key->getNodes();
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * update IDS settings
+     * @return array status
+     */
+    public function setAction()
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost()) {
+            // load model and update with provided data
+            $mdlIDS = new IDS();
+            $mdlIDS->setNodes($this->request->getPost("ids"));
+
+            // perform validation
+            $valMsgs = $mdlIDS->performValidation();
+            foreach ($valMsgs as $field => $msg) {
+                if (!array_key_exists("validations", $result)) {
+                    $result["validations"] = array();
+                }
+                $result["validations"]["ids.".$msg->getField()] = $msg->getMessage();
+            }
+
+            // serialize model to config and save
+            if ($valMsgs->count() == 0) {
+                $mdlIDS->serializeToConfig();
+                Config::getInstance()->save();
+                $result["result"] = "saved";
+            }
+        }
+        return $result;
+    }
 }
