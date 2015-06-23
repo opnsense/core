@@ -33,7 +33,7 @@
         total_rows: total rowcount for this selection
         parameters: list of parameters used
 """
-import json
+import ujson
 import sys
 from rulecache import RuleCache
 
@@ -59,4 +59,6 @@ if __name__ == '__main__':
     # dump output
     result=rc.search(**parameters)
     result['parameters'] = parameters
-    print (json.dumps(result))
+    print (ujson.dumps(result))
+
+

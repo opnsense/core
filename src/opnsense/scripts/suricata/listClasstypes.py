@@ -30,7 +30,7 @@
     --------------------------------------------------------------------------------------
     script to fetch all classtypes from the installed suricata rules using the shared rule cache:
 """
-import json
+import ujson
 from rulecache import RuleCache
 
 if __name__ == '__main__':
@@ -41,4 +41,5 @@ if __name__ == '__main__':
     items=rc.listClassTypes()
     result = {'items': items, 'count':len(items)}
 
-    print (json.dumps(result))
+    print (ujson.dumps(result))
+
