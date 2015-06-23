@@ -1,0 +1,8 @@
+name: opnsense-cron
+version: 0.1
+origin: opnsense/cron
+comment: OPNsense Cron configuration
+desc: configuration templates for Cron
+maintainer: jos at opnsense.org
+www: https://opnsense.org
+prefix: /
