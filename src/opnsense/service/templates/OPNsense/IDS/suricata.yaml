@@ -723,6 +723,8 @@ logging:
       facility: local5
       format: "[%i] <%d> -- "
 
+pcap:
+  - interface: default
 
 pcap-file:
   # Possible values are:
