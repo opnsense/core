@@ -1,0 +1,74 @@
+<model>
+    <mount>//OPNsense/cron</mount>
+    <description>
+        (minicron) cron settings
+    </description>
+    <items>
+        <jobs>
+            <job type="ArrayField">
+                <origin type="TextField">
+                    <Required>Y</Required>
+                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <ValidationMessage>Origin should be regular text of max 30 characters</ValidationMessage>
+                </origin>
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <minutes type="TextField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                    <mask>/^((?:\*|[1-5][0-9]|0[0-9]|[0-9])(,{1}|-{1}|$))+$/</mask>
+                    <ValidationMessage>Value needs to be between 0 and 59, multiple values, ranges and * are supported (ex. 1,10,20,30 or 1-30  )</ValidationMessage>
+                </minutes>
+                <hours type="TextField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                    <mask>/^((?:\*|[1-2][0-3]|0[0-9]|[0-9])(,{1}|-{1}|$))+$/</mask>
+                    <ValidationMessage>Value needs to be between 0 and 23, multiple values, ranges and * are supported (ex. 1,2,8 or 0-8 )</ValidationMessage>
+                </hours>
+                <days type="TextField">
+                    <default>*</default>
+                    <Required>Y</Required>
+                    <mask>/^(((?:\*|[1-2][0-9]|0[1-9]|[1-9]|[3][0-1])(,{1}|-{1}|$))+|L)$/</mask>
+                    <ValidationMessage>Value needs to be between 1 and 31, multiple values, ranges, L (last day of month) and * are supported (ex. 1,2,8 or 1-28  )</ValidationMessage>
+                </days>
+                <months type="TextField">
+                    <default>*</default>
+                    <Required>Y</Required>
+                    <mask>/^(((?:\*|[1][0-2]|0[1-9]|[1-9]|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(,{1}|-{1}|$))+)$/</mask>
+                    <ValidationMessage>Value needs to be between 1 and 12 or JAN to DEC, multiple values, ranges and * are supported (ex. JAN,2,10 or 3-8 )</ValidationMessage>
+                </months>
+                <weekdays type="TextField">
+                    <default>*</default>
+                    <Required>Y</Required>
+                    <mask>/^(((?:\*|[0-6])(,{1}|-{1}|$))+)$/</mask>
+                    <ValidationMessage>Value needs to be between 0 and 6 ( Sunday to Saturday), multiple values, ranges and * are supported (ex. 1,2,4 or 0-4  ) </ValidationMessage>
+                </weekdays>
+                <who type="TextField">
+                    <default>root</default>
+                    <Required>Y</Required>
+                </who>
+                <command type="ConfigdActionsField">
+                    <filters>
+                        <description>/(.){1,255}/</description>
+                    </filters>
+                    <ValidationMessage>Select a command from the list.</ValidationMessage>
+                    <Required>Y</Required>
+                </command>
+                <parameters type="TextField">
+                    <mask>/^([^;|`]){1,255}$/</mask>
+                    <ValidationMessage>Enter valid parameter(s) for the chosen command (Found illegal characters).</ValidationMessage>
+                    <Required>N</Required>
+                </parameters>
+                <description type="TextField">
+                    <mask>/^(.){1,255}$/</mask>
+                    <ValidationMessage>Enter a description.</ValidationMessage>
+                    <Required>Y</Required>
+                </description>
+            </job>
+        </jobs>
+    </items>
+</model>
+
+
