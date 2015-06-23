@@ -1,6 +1,6 @@
 <form>
     <field>
-        <id>pipe.enabled</id>
+        <id>queue.enabled</id>
         <label>enabled</label>
         <type>checkbox</type>
         <help>enable this queue and it's related rules</help>
