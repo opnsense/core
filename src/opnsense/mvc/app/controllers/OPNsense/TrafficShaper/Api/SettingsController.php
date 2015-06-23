@@ -163,6 +163,36 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
+     * toggle pipe by uuid (enable/disable)
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function togglePipeAction($uuid)
+    {
+
+        $result = array("result" => "failed");
+        if ($this->request->isPost()) {
+            $mdlShaper = new TrafficShaper();
+            if ($uuid != null) {
+                $node = $mdlShaper->getNodeByReference('pipes.pipe.' . $uuid);
+                if ($node != null) {
+                    if ($node->enabled->__toString() == "1") {
+                        $result['result'] = "Disabled";
+                        $node->enabled = "0";
+                    } else {
+                        $result['result'] = "Enabled";
+                        $node->enabled = "1";
+                    }
+                    // if item has toggled, serialize to config and save
+                    $mdlShaper->serializeToConfig($disable_validation = true);
+                    Config::getInstance()->save();
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * search traffic shaper pipes
      * @return array
      */
@@ -186,7 +216,7 @@ class SettingsController extends ApiControllerBase
             $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
 
             // create model and fetch query resuls
-            $fields = array("number", "bandwidth","bandwidthMetric","description","mask","origin");
+            $fields = array("enabled","number", "bandwidth","bandwidthMetric","description","mask","origin");
             $mdlShaper = new TrafficShaper();
             $grid = new UIModelGrid($mdlShaper->pipes->pipe);
             return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
@@ -220,7 +250,7 @@ class SettingsController extends ApiControllerBase
             $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
 
             // create model and fetch query resuls
-            $fields = array("number", "pipe","weight","description","mask","origin");
+            $fields = array("enabled","number", "pipe","weight","description","mask","origin");
             $mdlShaper = new TrafficShaper();
             $grid = new UIModelGrid($mdlShaper->queues->queue);
             return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
@@ -307,6 +337,36 @@ class SettingsController extends ApiControllerBase
                     $result['result'] = 'deleted';
                 } else {
                     $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * toggle queue by uuid (enable/disable)
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function toggleQueueAction($uuid)
+    {
+
+        $result = array("result" => "failed");
+        if ($this->request->isPost()) {
+            $mdlShaper = new TrafficShaper();
+            if ($uuid != null) {
+                $node = $mdlShaper->getNodeByReference('queues.queue.'.$uuid);
+                if ($node != null) {
+                    if ($node->enabled->__toString() == "1") {
+                        $result['result'] = "Disabled";
+                        $node->enabled = "0";
+                    } else {
+                        $result['result'] = "Enabled";
+                        $node->enabled = "1";
+                    }
+                    // if item has toggled, serialize to config and save
+                    $mdlShaper->serializeToConfig($disable_validation = true);
+                    Config::getInstance()->save();
                 }
             }
         }

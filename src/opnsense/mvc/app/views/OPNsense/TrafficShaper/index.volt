@@ -44,7 +44,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 get:'/api/trafficshaper/settings/getPipe/',
                 set:'/api/trafficshaper/settings/setPipe/',
                 add:'/api/trafficshaper/settings/addPipe/',
-                del:'/api/trafficshaper/settings/delPipe/'
+                del:'/api/trafficshaper/settings/delPipe/',
+                toggle:'/api/trafficshaper/settings/togglePipe/'
             }
         );
 
@@ -53,7 +54,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     get:'/api/trafficshaper/settings/getQueue/',
                     set:'/api/trafficshaper/settings/setQueue/',
                     add:'/api/trafficshaper/settings/addQueue/',
-                    del:'/api/trafficshaper/settings/delQueue/'
+                    del:'/api/trafficshaper/settings/delQueue/',
+                    toggle:'/api/trafficshaper/settings/toggleQueue/'
                 }
         );
 
@@ -108,12 +110,13 @@ POSSIBILITY OF SUCH DAMAGE.
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">Origin</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">Enabled</th>
                 <th data-column-id="number" data-type="number"  data-visible="false">Number</th>
                 <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
-                <th data-column-id="bandwidthMetric" data-type="string">BandwidthMetric</th>
+                <th data-column-id="bandwidthMetric" data-type="string">Metric</th>
                 <th data-column-id="mask" data-type="string">Mask</th>
                 <th data-column-id="description" data-type="string">Description</th>
-                <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">Commands</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
             </tr>
             </thead>
@@ -136,11 +139,12 @@ POSSIBILITY OF SUCH DAMAGE.
             <thead>
             <tr>
                 <th data-column-id="origin" data-type="string" data-visible="false">Origin</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">Enabled</th>
                 <th data-column-id="number" data-type="number" data-visible="false">Number</th>
                 <th data-column-id="pipe" data-type="string">Pipe</th>
                 <th data-column-id="weight" data-type="string">Weight</th>
                 <th data-column-id="description" data-type="string">Description</th>
-                <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">Commands</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
             </tr>
             </thead>
@@ -170,7 +174,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <th data-column-id="destination" data-type="string">Destination</th>
                 <th data-column-id="target" data-type="string">Target</th>
                 <th data-column-id="description" data-type="string">Description</th>
-                <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">Commands</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
             </tr>
             </thead>
