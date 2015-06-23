@@ -77,6 +77,9 @@ class ControllerRoot extends Controller
             && $this->session->get("last_access") < (time() - 14400)) {
             // session expired (todo, use config timeout)
             $this->getLogger()->error("session expired");
+            // cleanup session data
+            $this->session->remove("Username");
+            $this->session->remove("last_access");
             $this->response->redirect("/", true);
             return false;
         }
