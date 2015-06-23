@@ -103,7 +103,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     // when done, disable progress animation.
                     $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
 
-                    if (status != "success" || data['status'] != 'ok') {
+                    if (status != "success" || data['status'].toLowerCase().trim() != "ok") {
                         BootstrapDialog.show({
                             type: BootstrapDialog.TYPE_WARNING,
                             title: "Error reconfiguring IDS",
