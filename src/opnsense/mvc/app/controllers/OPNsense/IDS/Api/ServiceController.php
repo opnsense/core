@@ -131,15 +131,19 @@ class ServiceController extends ApiControllerBase
             $bckresult = trim($backend->configdRun("template reload OPNsense.IDS"));
 
             if ($bckresult == "OK") {
-                $bckresult = trim($backend->configdRun("ids install rules"));
-                if ($bckresult == "OK") {
-                    if ($runStatus['status'] == 'running') {
-                        $status = $this->restartAction()['response'];
+                if ((string)$mdlIDS->general->enabled == 1) {
+                    $bckresult = trim($backend->configdRun("ids install rules"));
+                    if ($bckresult == "OK") {
+                        if ($runStatus['status'] == 'running') {
+                            $status = $this->restartAction()['response'];
+                        } else {
+                            $status = $this->startAction()['response'];
+                        }
                     } else {
-                        $status = $this->startAction()['response'];
+                        $status = "error installing ids rules (".$bckresult.")";
                     }
                 } else {
-                    $status = "error installing ids rules (".$bckresult.")";
+                    $status = "OK";
                 }
             } else {
                 $status = "error generating ids template (".$bckresult.")";
