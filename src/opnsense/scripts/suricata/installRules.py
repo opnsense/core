@@ -28,6 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+    Install suricata ruleset into opnsense.rules directory
 """
 import os.path
 import rulecache
