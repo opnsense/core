@@ -35,7 +35,7 @@
 """
 import ujson
 import sys
-from rulecache import RuleCache
+from lib.rulecache import RuleCache
 
 
 # Because rule parsing isn't very useful when the rule definitions didn't change we create a single json file

@@ -27,3 +27,36 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 """
+import os
+
+def reverse_log_reader(filename, block_size = 8192):
+    """ read log file in reverse order
+    :param filename: filename to parse
+    :param block_size: max block size to examine per loop
+    :return: generator
+    """
+    with open(filename,'rU') as f_in:
+        f_in.seek(0, os.SEEK_END)
+        file_byte_start = f_in.tell()
+
+        data = ''
+        while True:
+            if file_byte_start-block_size < 0:
+                block_size = block_size - file_byte_start
+                file_byte_start = 0
+            else:
+                file_byte_start -= block_size
+
+            f_in.seek(file_byte_start)
+            data = f_in.read(block_size) + data
+
+            eol = data.rfind('\n')
+            while eol > -1:
+                line = data[eol:]
+                data = data[:eol]
+                eol = data.rfind('\n')
+                yield line.strip()
+
+            if file_byte_start == 0:
+                break
+

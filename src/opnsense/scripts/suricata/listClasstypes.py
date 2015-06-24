@@ -31,7 +31,7 @@
     script to fetch all classtypes from the installed suricata rules using the shared rule cache:
 """
 import ujson
-from rulecache import RuleCache
+from lib.rulecache import RuleCache
 
 if __name__ == '__main__':
     rc = RuleCache()
