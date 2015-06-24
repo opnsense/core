@@ -1,4 +1,3 @@
-#!/usr/local/bin/python2.7
 """
     Copyright (c) 2015 Ad Schellevis
 
@@ -28,28 +27,24 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    script to fetch all suricata rule information into a single json object with the following contents:
-        rules : all relevant metadata from the rules including the default enabled or disabled state
-        total_rows: total rowcount for this selection
-        parameters: list of parameters used
 """
-import ujson
-from lib.rulecache import RuleCache
-from lib.params import updateParams
+import sys
 
+def updateParams(parameters):
+    """ update predefined parameters with given list from shell (as switches)
+        for example /a valA /b valB
+        converts to
+            {'a':'valA','b':'valB'}
+        (assuming parameters contains both a and b)
+    :param parameters: parameter dictionary
+    :return:
+    """
+    cmd=None
+    for arg in sys.argv[1:]:
+        if cmd is None:
+            cmd=arg[1:]
+        else:
+            if cmd in parameters and arg.strip() != '':
+                parameters[cmd] = arg.strip()
+            cmd=None
 
-# Because rule parsing isn't very useful when the rule definitions didn't change we create a single json file
-# to hold the last results (combined with creation date and number of files).
-if __name__ == '__main__':
-    rc = RuleCache()
-    if rc.isChanged():
-        rc.create()
-
-    # load parameters, ignore validation here the search method only processes valid input
-    parameters = {'limit':'0','offset':'0','sort_by':'', 'filter':''}
-    updateParams(parameters)
-
-    # dump output
-    result=rc.search(**parameters)
-    result['parameters'] = parameters
-    print (ujson.dumps(result))
