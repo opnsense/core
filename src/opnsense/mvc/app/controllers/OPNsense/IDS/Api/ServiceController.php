@@ -152,4 +152,36 @@ class ServiceController extends ApiControllerBase
         }
         return array("status" => $status);
     }
+
+    /**
+     * @return array
+     */
+    public function queryAlertsAction()
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+
+            // fetch query parameters
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+            $currentPage = $this->request->getPost('current', 'int', 1);
+
+            if ($this->request->getPost('searchPhrase', 'string', '') != "") {
+                $searchPhrase = 'alert,src_ip/"*'.$this->request->getPost('searchPhrase', 'string', '').'*"';
+            } else {
+                $searchPhrase = '';
+            }
+
+            $backend = new Backend();
+            $response = $backend->configdpRun("ids query alerts", array($itemsPerPage,
+                ($currentPage-1)*$itemsPerPage, $searchPhrase));
+            $result = json_decode($response, true);
+            if ($result != null) {
+                $result['rowCount'] = count($result['rows']);
+                $result['total'] = $result['total_rows'];
+                $result['current'] = (int)$currentPage;
+                return $result;
+            }
+        }
+        return array();
+    }
 }

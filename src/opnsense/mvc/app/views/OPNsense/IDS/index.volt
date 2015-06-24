@@ -89,6 +89,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
         );
 
+        $("#grid-alerts").UIBootgrid(
+                {   search:'/api/ids/service/queryAlerts',
+                    get:'/api/ids/service/getAlert',
+                    options:{
+                        multiSelect:false,
+                        selection:false
+                    }
+                });
+
         /*************************************************************************************************************
          * Commands
          *************************************************************************************************************/
@@ -123,6 +132,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
     <li><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
+    <li><a data-toggle="tab" href="#alerts">{{ lang._('Alerts') }}</a></li>
 </ul>
 <div class="tab-content content-box tab-content">
     <div id="settings" class="tab-pane fade in active">
@@ -147,6 +157,22 @@ POSSIBILITY OF SUCH DAMAGE.
                 <th data-column-id="classtype" data-type="string">ClassType</th>
                 <th data-column-id="msg" data-type="string">Message</th>
                 <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">enabled / info</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div id="alerts" class="tab-pane fade in">
+        <!-- tab page "installed rules" -->
+        <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlert">
+            <thead>
+            <tr>
+                <th data-column-id="timestamp" data-type="string" data-width="14em">timestamp</th>
+                <th data-column-id="src_ip" data-type="string" data-width="10em">source</th>
+                <th data-column-id="dest_ip" data-type="string"  data-width="10em">destination</th>
+                <th data-column-id="alert_sid" data-type="number" data-width="6em">sid</th>
+                <th data-column-id="alert" data-type="string">Alert</th>
             </tr>
             </thead>
             <tbody>
