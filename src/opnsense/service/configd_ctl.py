@@ -118,4 +118,3 @@ else:
     if result is None:
         sys.exit(-1)
     print('%s'%(result))
-

@@ -60,5 +60,3 @@ if __name__ == '__main__':
     result=rc.search(**parameters)
     result['parameters'] = parameters
     print (ujson.dumps(result))
-
-

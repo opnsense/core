@@ -134,7 +134,7 @@ outputs:
         # Header name were the actual IP address will be reported, if more than
         # one IP address is present, the last IP address will be the one taken
         # into consideration.
-        header: X-Forwarded-For 
+        header: X-Forwarded-For
 
   # a line based log of HTTP requests (no alerts)
   - http-log:
