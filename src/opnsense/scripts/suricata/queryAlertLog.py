@@ -37,7 +37,7 @@ import ujson
 from lib.log import reverse_log_reader
 from lib.params import updateParams
 
-suricata_log = '/tmp/eve.json'
+suricata_log = '/var/log/suricata/eve.json'
 
 # handle parameters
 parameters = {'limit':'0','offset':'0', 'filter':''}
