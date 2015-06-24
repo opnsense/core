@@ -418,15 +418,20 @@ class Action(object):
                     # use command execution parameters in action parameter template
                     # use quotes on parameters to prevent code injection
                     if script_command.count('%s') > len(parameters):
-                        # script command accepts more parameters then given, full with empty parameters
+                        # script command accepts more parameters then given, fill with empty parameters
                         for i in range(script_command.count('%s')-len(parameters)):
                             parameters.append("")
                     elif len(parameters) > script_command.count('%s'):
                         # parameters then expected, fail execution
                         return 'Parameter mismatch'
+
+                    # force escape of shell exploitable characters for all user parameters
+                    for escape_char in ['`','$','!','(',')','|']:
+                        for i in range(len(parameters[0:script_command.count('%s')])):
+                            parameters[i] = parameters[i].replace(escape_char,'\\%s'%escape_char)
+
                     script_command = script_command % tuple(map(lambda x: '"'+x.replace('"', '\\"')+'"',
                                                                 parameters[0:script_command.count('%s')]))
-
             if self.type.lower() == 'script':
                 # execute script type command
                 try:
