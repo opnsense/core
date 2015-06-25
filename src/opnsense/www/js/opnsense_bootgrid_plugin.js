@@ -114,7 +114,7 @@ $.fn.UIBootgrid = function (params) {
                     // edit item
                     grid.find(".command-edit").on("click", function(e)
                     {
-                        if (editDlg != undefined && gridParams['get'] != undefined && gridParams['set'] != undefined) {
+                        if (editDlg != undefined && gridParams['get'] != undefined) {
                             var uuid = $(this).data("row-id");
                             var urlMap = {};
                             urlMap['frm_' + editDlg] = gridParams['get'] + uuid;
@@ -129,14 +129,18 @@ $.fn.UIBootgrid = function (params) {
                             $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
                             // define save action
                             $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                                saveFormToEndpoint(url=gridParams['set']+uuid,
-                                    formid='frm_' + editDlg, callback_ok=function(){
-                                        $("#"+editDlg).modal('hide');
-                                        $("#"+gridId).bootgrid("reload");
-                                    }, true);
+                                if (gridParams['set'] != undefined) {
+                                    saveFormToEndpoint(url=gridParams['set']+uuid,
+                                        formid='frm_' + editDlg, callback_ok=function(){
+                                            $("#"+editDlg).modal('hide');
+                                            $("#"+gridId).bootgrid("reload");
+                                        }, true);
+                                } else {
+                                    console.log("[grid] action set missing")
+                                }
                             });
                         } else {
-                            console.log("[grid] action get/set or data-editDialog missing")
+                            console.log("[grid] action get or data-editDialog missing")
                         }
                     }).end();
 
