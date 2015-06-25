@@ -17,6 +17,17 @@
         <type>dropdown</type>
     </field>
     <field>
+        <id>pipe.burst</id>
+        <label>burst</label>
+        <type>text</type>
+        <help>If the data to be sent exceeds the	pipe's bandwidth limit (and
+            the pipe was previously idle), up to size bytes of	data are
+            allowed to	bypass the dummynet scheduler, and will	be sent	as
+            fast as the physical link allows.
+        </help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>pipe.queue</id>
         <label>queue</label>
         <type>text</type>

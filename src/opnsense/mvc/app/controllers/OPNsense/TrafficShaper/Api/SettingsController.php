@@ -216,7 +216,7 @@ class SettingsController extends ApiControllerBase
             $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
 
             // create model and fetch query resuls
-            $fields = array("enabled","number", "bandwidth","bandwidthMetric","description","mask","origin");
+            $fields = array("enabled","number", "bandwidth","bandwidthMetric","burst","description","mask","origin");
             $mdlShaper = new TrafficShaper();
             $grid = new UIModelGrid($mdlShaper->pipes->pipe);
             return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);

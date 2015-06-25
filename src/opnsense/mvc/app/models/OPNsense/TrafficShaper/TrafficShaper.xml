@@ -32,6 +32,10 @@
                     </OptionValues>
                     <ValidationMessage>Bandwidth metric should be one of bit,Kbit,Mbit</ValidationMessage>
                 </bandwidthMetric>
+                <burst type="IntegerField">
+                    <Required>N</Required>
+                    <ValidationMessage>The burst value is an integer and represent a number of bytes.</ValidationMessage>
+                </burst>
                 <queue type="IntegerField">
                     <Required>N</Required>
                     <MinimumValue>2</MinimumValue>

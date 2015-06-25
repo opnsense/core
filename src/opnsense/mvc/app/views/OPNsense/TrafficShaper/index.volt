@@ -114,6 +114,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <th data-column-id="number" data-type="number"  data-visible="false">Number</th>
                 <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
                 <th data-column-id="bandwidthMetric" data-type="string">Metric</th>
+                <th data-column-id="burst" data-type="number">Burst</th>
                 <th data-column-id="mask" data-type="string">Mask</th>
                 <th data-column-id="description" data-type="string">Description</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">Commands</th>
