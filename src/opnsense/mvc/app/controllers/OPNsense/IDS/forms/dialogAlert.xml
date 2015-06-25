@@ -1,0 +1,38 @@
+<form>
+    <field>
+        <id>timestamp</id>
+        <label>timestamp</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>alert</id>
+        <label>alert</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>alert_sid</id>
+        <label>alert sid</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>src_ip</id>
+        <label>source ip</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>dest_ip</id>
+        <label>destination ip</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>src_port</id>
+        <label>source port</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>dest_port</id>
+        <label>destination port</label>
+        <type>info</type>
+    </field>
+
+</form>

@@ -68,7 +68,6 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#grid-installedrules").UIBootgrid(
                 {   search:'/api/ids/settings/searchinstalledrules',
                     get:'/api/ids/settings/getRuleInfo/',
-                    set:'/api/ids/settings/setRuleInfo/',
                     options:{
                         multiSelect:false,
                         selection:false,
@@ -91,10 +90,15 @@ POSSIBILITY OF SUCH DAMAGE.
 
         $("#grid-alerts").UIBootgrid(
                 {   search:'/api/ids/service/queryAlerts',
-                    get:'/api/ids/service/getAlert',
+                    get:'/api/ids/service/getAlertInfo/',
                     options:{
                         multiSelect:false,
-                        selection:false
+                        selection:false,
+                        formatters:{
+                            info: function (column, row) {
+                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filepos + "\"><span class=\"fa fa-info-circle\"></span></button> ";
+                            }
+                        }
                     }
                 });
 
@@ -168,11 +172,11 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlert">
             <thead>
             <tr>
-                <th data-column-id="timestamp" data-type="string" data-width="14em">timestamp</th>
-                <th data-column-id="src_ip" data-type="string" data-width="10em">source</th>
-                <th data-column-id="dest_ip" data-type="string"  data-width="10em">destination</th>
-                <th data-column-id="alert_sid" data-type="number" data-width="6em">sid</th>
-                <th data-column-id="alert" data-type="string">Alert</th>
+                <th data-column-id="timestamp" data-type="string" data-sortable="false">timestamp</th>
+                <th data-column-id="src_ip" data-type="string" data-sortable="false"  data-width="10em">source</th>
+                <th data-column-id="dest_ip" data-type="string"  data-sortable="false"  data-width="10em">destination</th>
+                <th data-column-id="alert" data-type="string" data-sortable="false" >Alert</th>
+                <th data-column-id="info" data-formatter="info" data-sortable="false" data-width="4em">info</th>
             </tr>
             </thead>
             <tbody>
@@ -186,3 +190,4 @@ POSSIBILITY OF SUCH DAMAGE.
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Rule details','hasSaveBtn':'false','msgzone_width':1])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogAlert,'id':'DialogAlert','label':'Alert details','hasSaveBtn':'false','msgzone_width':1])}}

@@ -28,6 +28,7 @@
  */
 namespace OPNsense\IDS\Api;
 
+use \Phalcon\Filter;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
 use \OPNsense\IDS\IDS;
@@ -154,6 +155,7 @@ class ServiceController extends ApiControllerBase
     }
 
     /**
+     * query suricata alerts
      * @return array
      */
     public function queryAlertsAction()
@@ -183,5 +185,25 @@ class ServiceController extends ApiControllerBase
             }
         }
         return array();
+    }
+
+    /**
+     * fetch alert detailed info
+     * @param $alertId alert id, position in log file
+     * @return array alert info
+     */
+    public function getAlertInfoAction($alertId)
+    {
+        $backend = new Backend();
+        $filter = new Filter();
+        $id = $filter->sanitize($alertId, "int");
+        $response = $backend->configdpRun("ids query alerts", array(1, 0, "filepos/".$id));
+        $result = json_decode($response, true);
+        if ($result != null && count($result['rows']) > 0) {
+            return $result['rows'][0];
+        } else {
+            return array();
+        }
+
     }
 }
