@@ -29,34 +29,45 @@
 """
 import os
 
-def reverse_log_reader(filename, block_size = 8192):
+def reverse_log_reader(filename, block_size = 8192, start_pos=None):
     """ read log file in reverse order
     :param filename: filename to parse
     :param block_size: max block size to examine per loop
+    :param start_pos: start at position in file (None is end of file)
     :return: generator
     """
     with open(filename,'rU') as f_in:
-        f_in.seek(0, os.SEEK_END)
-        file_byte_start = f_in.tell()
+        if start_pos is None:
+            f_in.seek(0, os.SEEK_END)
+            file_byte_start = f_in.tell()
+        else:
+            file_byte_start = start_pos
 
         data = ''
         while True:
             if file_byte_start-block_size < 0:
-                block_size = block_size - file_byte_start
+                block_size = file_byte_start
                 file_byte_start = 0
             else:
                 file_byte_start -= block_size
 
             f_in.seek(file_byte_start)
-            data = f_in.read(block_size) + data
 
+            data = f_in.read(block_size) + data
             eol = data.rfind('\n')
+
             while eol > -1:
+                line_end = file_byte_start + len(data)
                 line = data[eol:]
                 data = data[:eol]
                 eol = data.rfind('\n')
-                yield line.strip()
+                # field line and position in file
+                yield {'line':line.strip(),'pos':line_end}
+                if file_byte_start == 0 and eol == -1:
+                    # flush last line
+                    yield {'line':data.strip(),'pos':len(data)}
 
             if file_byte_start == 0:
                 break
+
 

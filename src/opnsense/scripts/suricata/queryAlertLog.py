@@ -70,19 +70,25 @@ for filter in shlex.split(parameters['filter']):
             #del data_filters[filterField]
             data_filters_comp[filterField] = re.compile('.*')
 
-
+# filter one specific log line
+if 'filepos' in data_filters and data_filters['filepos'].isdigit():
+    log_start_pos = int(data_filters['filepos'])
+else:
+    log_start_pos = None
 
 # query suricata eve log
 result = {'filters':data_filters,'rows':[],'total_rows':0}
-for line in reverse_log_reader(filename=suricata_log):
+for line in reverse_log_reader(filename=suricata_log, start_pos=log_start_pos):
     try:
-        record = ujson.loads(line)
+        record = ujson.loads(line['line'])
     except ValueError:
         # can not handle line
         record = {}
 
     # only process valid alert items
     if 'alert' in record:
+        # add position in file
+        record['filepos'] = line['pos']
         # flatten structure
         record['alert_sid'] = record['alert']['signature_id']
         record['alert'] = record['alert']['signature']
@@ -101,6 +107,10 @@ for line in reverse_log_reader(filename=suricata_log):
             result['total_rows'] += 1
             if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
                 result['rows'].append(record)
+
+    # only try to fetch one line when filepos is given
+    if log_start_pos != None:
+        break
 
 # output results
 print(ujson.dumps(result))
