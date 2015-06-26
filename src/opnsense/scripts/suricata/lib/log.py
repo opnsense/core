@@ -69,5 +69,3 @@ def reverse_log_reader(filename, block_size = 8192, start_pos=None):
 
             if file_byte_start == 0:
                 break
-
-

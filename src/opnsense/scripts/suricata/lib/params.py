@@ -47,4 +47,3 @@ def updateParams(parameters):
             if cmd in parameters and arg.strip() != '':
                 parameters[cmd] = arg.strip()
             cmd=None
-
