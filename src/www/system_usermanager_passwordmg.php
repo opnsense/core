@@ -35,6 +35,8 @@ $pgtitle = array(gettext("System"),gettext("User Password"));
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+$username = $_SESSION['Username'];
+session_write_close();
 
 if (isset($_POST['save'])) {
     unset($input_errors);
@@ -45,15 +47,14 @@ if (isset($_POST['save'])) {
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
     if ($_POST['passwordfld1'] != $_POST['passwordfld2'] ||
-        $config['system']['user'][$userindex[$_SESSION['Username']]]['password'] != crypt($_POST['passwordfld0'], '$6$')) {
+        $config['system']['user'][$userindex[$username]]['password'] != crypt($_POST['passwordfld0'], '$6$')) {
         $input_errors[] = gettext("The passwords do not match.");
     }
 
     if (!$input_errors) {
         // all values are okay --> saving changes
-        $config['system']['user'][$userindex[$_SESSION['Username']]]['password'] = crypt($_POST['passwordfld1'], '$6$');
-        local_user_set($config['system']['user'][$userindex[$_SESSION['Username']]]);
-        session_write_close();
+        $config['system']['user'][$userindex[$username]]['password'] = crypt($_POST['passwordfld1'], '$6$');
+        local_user_set($config['system']['user'][$userindex[$username]]);
 
         write_config();
 
@@ -64,12 +65,11 @@ if (isset($_POST['save'])) {
 /* determine if user is not local to system */
 $islocal = false;
 foreach ($config['system']['user'] as $user) {
-    if ($user['name'] == $_SESSION['Username']) {
+    if ($user['name'] == $username) {
         $islocal = true;
     }
 }
 
-session_write_close();
 
 include("head.inc");
 
@@ -108,12 +108,7 @@ include("head.inc");
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
 			                                <tr>
-			<?php if (session_status() == PHP_SESSION_NONE) {
-                    session_start();
-}
-            ?>
-			                                        <td colspan="2" valign="top" class="listtopic"><?=$_SESSION['Username']?>'s <?=gettext("Password"); ?></td>
-			<?php session_write_close(); ?>
+			                                        <td colspan="2" valign="top" class="listtopic"><?=$username?>'s <?=gettext("Password"); ?></td>
 			                                </tr>
 			                                <tr>
 			                                        <td width="22%" valign="top" class="vncell"><?=gettext("Old password"); ?></td>
