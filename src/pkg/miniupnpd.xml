@@ -4,7 +4,7 @@
 	<name>miniupnpd</name>
 	<version>20100712</version>
 	<savetext>Change</savetext>
-	<include_file>/usr/local/pkg/miniupnpd.inc</include_file>
+	<include_file>miniupnpd.inc</include_file>
 	<menu>
 		<name>UPnP &amp; NAT-PMP</name>
 		<tooltiptext>Set UPnP &amp; NAT-PMP settings such as interfaces to listen on.</tooltiptext>
