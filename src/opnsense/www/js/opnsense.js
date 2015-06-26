@@ -61,7 +61,7 @@ function getFormData(parent) {
                     sourceNode.children().each(function(index){
                         if ($(this).prop("selected")){
                             if (tmp_str != "") tmp_str = tmp_str + ",";
-                            tmp_str = tmp_str + sourceNode.val();
+                            tmp_str = tmp_str + $(this).val();
                         }
                     });
                     node[keypart] = tmp_str;
