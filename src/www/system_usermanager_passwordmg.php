@@ -32,22 +32,24 @@ require_once("guiconfig.inc");
 
 $pgtitle = array(gettext("System"),gettext("User Password"));
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 if (isset($_POST['save'])) {
     unset($input_errors);
     /* input validation */
 
-    $reqdfields = explode(" ", "passwordfld1");
+    $reqdfields = explode(" ", "passwordfld0 passwordfld1 passwordfld2");
     $reqdfieldsn = array(gettext("Password"));
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if ($_POST['passwordfld1'] != $_POST['passwordfld2']) {
+    if ($_POST['passwordfld1'] != $_POST['passwordfld2'] ||
+        $config['system']['user'][$userindex[$_SESSION['Username']]]['password'] != crypt($_POST['passwordfld0'], '$6$')) {
         $input_errors[] = gettext("The passwords do not match.");
     }
 
     if (!$input_errors) {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
         // all values are okay --> saving changes
         $config['system']['user'][$userindex[$_SESSION['Username']]]['password'] = crypt($_POST['passwordfld1'], '$6$');
         local_user_set($config['system']['user'][$userindex[$_SESSION['Username']]]);
@@ -57,10 +59,6 @@ if (isset($_POST['save'])) {
 
         $savemsg = gettext("Password successfully changed") . "<br />";
     }
-}
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
 }
 
 /* determine if user is not local to system */
@@ -118,7 +116,13 @@ include("head.inc");
 			<?php session_write_close(); ?>
 			                                </tr>
 			                                <tr>
-			                                        <td width="22%" valign="top" class="vncell"><?=gettext("Password"); ?></td>
+			                                        <td width="22%" valign="top" class="vncell"><?=gettext("Old password"); ?></td>
+			                                        <td width="78%" class="vtable">
+			                                                <input name="passwordfld0" type="password" class="formfld pwd" id="passwordfld0" size="20" />
+			                                        </td>
+			                                </tr>
+			                                <tr>
+			                                        <td width="22%" valign="top" class="vncell"><?=gettext("New password"); ?></td>
 			                                        <td width="78%" class="vtable">
 			                                                <input name="passwordfld1" type="password" class="formfld pwd" id="passwordfld1" size="20" />
 			                                        </td>
