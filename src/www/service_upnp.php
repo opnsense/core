@@ -57,23 +57,11 @@ function domTT_title($title_msg){
 	}
 }
 
-/* hardcode miniupnpd.xml here, this file is going away */
-$xml = 'miniupnpd.xml';
-
-$xml_fullpath = realpath('/usr/local/pkg/' . $xml);
-
 global $listtags;
 $listtags = array_flip(array('build_port_path', 'depends_on_package', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'template', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
-$pkg = parse_xml_config_raw($xml_fullpath, "packagegui", false);
+$pkg = parse_xml_config_raw('/usr/local/pkg/miniupnpd.xml', 'packagegui', false);
 
-if($pkg['include_file'] <> "") {
-	require_once($pkg['include_file']);
-}
-
-if (!isset($pkg['adddeleteeditpagefields']))
-	$only_edit = true;
-else
-	$only_edit = false;
+require_once 'miniupnpd.inc';
 
 $package_name = $pkg['menu'][0]['name'];
 $section      = $pkg['menu'][0]['section'];
@@ -244,13 +232,7 @@ if ($_POST) {
 	}
 }
 
-if($pkg['title'] <> "") {
-	$edit = ($only_edit ? '' : ": " .  gettext("Edit"));
-	$title = $pkg['title'] . $edit;
-}
-else
-	$title = gettext("Package Editor");
-
+$title = $pkg['title'];
 $pgtitle = $title;
 
 if ($pkg['custom_php_after_head_command']) {
@@ -941,9 +923,6 @@ echo '<tr><td>';
 		//if (isset($id) && $a_pkg[$id]) // We'll always have a valid ID in our hands
 		echo "<input name='id' type='hidden' value=\"" . htmlspecialchars($id) . "\" />";
 		echo "<input name='Submit' type='submit' class='btn btn-primary formbtn' value=\"" . htmlspecialchars($savevalue) . "\" />\n{$pkg_buttons}\n";
-		if (!$only_edit){
-			echo "<input class=\"formbtn\" type=\"button\" value=\"".gettext("Cancel")."\" onclick=\"window.location.href='" . $_SERVER['HTTP_REFERER'] . "'\" />";
-			}
 		?>
 	</div>
     </td>

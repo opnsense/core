@@ -4,7 +4,6 @@
 	<name>miniupnpd</name>
 	<version>20100712</version>
 	<savetext>Change</savetext>
-	<include_file>miniupnpd.inc</include_file>
 	<menu>
 		<name>Universal Plug and Play</name>
 		<tooltiptext>Set UPnP &amp; NAT-PMP settings such as interfaces to listen on.</tooltiptext>
