@@ -6,10 +6,10 @@
 	<savetext>Change</savetext>
 	<include_file>miniupnpd.inc</include_file>
 	<menu>
-		<name>UPnP &amp; NAT-PMP</name>
+		<name>Universal Plug and Play</name>
 		<tooltiptext>Set UPnP &amp; NAT-PMP settings such as interfaces to listen on.</tooltiptext>
 		<section>Services</section>
-		<url>/pkg_edit.php?xml=miniupnpd.xml&amp;id=0</url>
+		<url>/service_upnp&amp;id=0</url>
 	</menu>
 	<service>
 		<name>miniupnpd</name>

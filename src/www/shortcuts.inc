@@ -132,7 +132,7 @@ function get_shortcut_log_link($shortcut_section, $addspace = true) {
 }
 
 $shortcuts['upnp'] = array();
-$shortcuts['upnp']['main'] = "pkg_edit.php?xml=miniupnpd.xml";
+$shortcuts['upnp']['main'] = "service_upnp.php";
 $shortcuts['upnp']['log'] = "diag_logs_routing.php";
 $shortcuts['upnp']['status'] = "status_upnp.php";
 $shortcuts['upnp']['service'] = "miniupnpd";

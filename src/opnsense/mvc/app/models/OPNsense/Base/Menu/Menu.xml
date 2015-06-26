@@ -106,7 +106,7 @@
         <PPPoEServer VisibleName="PPPoE Server" url="/services_vpn_pppoe.php"/>
         <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
-        <UPnP VisibleName="Universal Plug and Play" url="/pkg_edit.php?xml=miniupnpd.xml"/>
+        <UPnP VisibleName="Universal Plug and Play" url="/service_upnp.php"/>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php"/>
     </Services>
 

@@ -57,20 +57,14 @@ function domTT_title($title_msg){
 	}
 }
 
-$xml = htmlspecialchars($_GET['xml']);
-if($_POST['xml']) $xml = htmlspecialchars($_POST['xml']);
+/* hardcode miniupnpd.xml here, this file is going away */
+$xml = 'miniupnpd.xml';
 
 $xml_fullpath = realpath('/usr/local/pkg/' . $xml);
 
-if ($xml == "" || $xml_fullpath === false ||
-    substr($xml_fullpath, 0, strlen('/usr/local/pkg/')) != '/usr/local/pkg/') {
-            print_info_box_np(gettext("ERROR: No valid package defined."));
-            die;
-} else {
-            global $listtags ;
-            $listtags = array_flip(array('build_port_path', 'depends_on_package', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'template', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
-            $pkg = parse_xml_config_raw($xml_fullpath, "packagegui", false);
-}
+global $listtags;
+$listtags = array_flip(array('build_port_path', 'depends_on_package', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'template', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
+$pkg = parse_xml_config_raw($xml_fullpath, "packagegui", false);
 
 if($pkg['include_file'] <> "") {
 	require_once($pkg['include_file']);
@@ -237,9 +231,9 @@ if ($_POST) {
 			if($pkg['aftersaveredirect'] <> "") {
 			    redirectHeader($pkg['aftersaveredirect']);
 			} elseif(!$pkg['adddeleteeditpagefields']) {
-			    redirectHeader("pkg_edit.php?xml={$xml}&amp;id=0");
+			    redirectHeader("service_upnp.php?id=0");
 			} elseif(!$pkg['preoutput']) {
-			    redirectHeader("pkg.php?xml=" . $xml);
+			    redirectHeader("service_upnp.php");
 			}
 			exit;
 		} else {
@@ -386,9 +380,7 @@ else
 
 				<div class="content-box">
 
-					<form name="iform" action="pkg_edit.php" method="post">
-									<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
-
+					<form name="iform" action="service_upnp.php" method="post">
 
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
@@ -409,7 +401,7 @@ if ($pkg['tabs'] <> "") {
 			$no_drop_down = true;
 		$urltmp = "";
 		if($tab['url'] <> "") $urltmp = $tab['url'];
-		if($tab['xml'] <> "") $urltmp = "pkg_edit.php?xml=" . $tab['xml'];
+		if($tab['xml'] <> "") $urltmp = "service_upnp.php";
 
 		$addresswithport = getenv("HTTP_HOST");
 		$colonpos = strpos($addresswithport, ":");

@@ -50,9 +50,8 @@ if (empty($pagename)) {
 	$pagename = "index.php";
 }
 
-/* If the filename is pkg_edit.php or wizard.php, reparse looking
-	for the .xml filename */
-if (($pagename == "pkg.php") || ($pagename == "pkg_edit.php") || ($pagename == "wizard.php")) {
+/* If the filename is wizard.php, reparse looking for the .xml filename */
+if ($pagename == 'wizard.php') {
 	$param_split = explode('&', $uri_split[2]);
 	foreach ($param_split as $param) {
 		if (substr($param, 0, 4) == "xml=") {

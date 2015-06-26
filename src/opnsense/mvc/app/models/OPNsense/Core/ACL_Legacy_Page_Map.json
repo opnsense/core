@@ -9,7 +9,7 @@
     },
     "user-copy-files": {
         "name": "User - System - Copy files",
-        "descr": "Indicates whether the user is allowed to copy files onto the  appliance via SCP\/SFTP. If you are going to use this privilege, you must install scponly on the appliance (Hint: pkg_add -r scponly)."
+        "descr": "Indicates whether the user is allowed to copy files onto the  appliance via SCP\/SFTP."
     },
     "user-shell-access": {
         "name": "User - System - Shell account access",
@@ -651,27 +651,6 @@
             "index.php*"
         ]
     },
-    "page-package-edit": {
-        "name": "WebCfg - Package: Edit page",
-        "descr": "Allow access to the 'Package: Edit' page.",
-        "match": [
-            "pkg_edit.php*"
-        ]
-    },
-    "page-package-settings": {
-        "name": "WebCfg - Package: Settings page",
-        "descr": "Allow access to the 'Package: Settings' page.",
-        "match": [
-            "pkg.php*"
-        ]
-    },
-    "page-pkg-mgr-settings": {
-        "name": "WebCfg - Packages: Settings page",
-        "descr": "Allow access to the 'Packages: Settings' page.",
-        "match": [
-            "pkg_mgr_settings.php*"
-        ]
-    },
     "page-pfsensewizardsubsystem": {
         "name": "WebCfg - pfSense wizard subsystem page",
         "descr": "Allow access to the 'pfSense wizard subsystem' page.",
@@ -1176,13 +1155,6 @@
             "status_openvpn.php*"
         ]
     },
-    "page-status-packagelogs": {
-        "name": "WebCfg - Status: Package logs page",
-        "descr": "Allow access to the 'Status: Package logs' page.",
-        "match": [
-            "diag_pkglogs.php*"
-        ]
-    },
     "page-status-rrdgraphs": {
         "name": "WebCfg - Status: RRD Graphs page",
         "descr": "Allow access to the 'Status: RRD Graphs' page.",
@@ -1271,9 +1243,16 @@
             "ifstats.php*"
         ]
     },
+    "page-service-upnp": {
+        "name": "WebCfg - Service: Univeral Plug and Play page",
+        "descr": "Allow access to the 'Service: Univeral Plug and Play' page.",
+        "match": [
+            "service_upnp.php*"
+        ]
+    },
     "page-status-upnpstatus": {
-        "name": "WebCfg - Status: UPnP Status page",
-        "descr": "Allow access to the 'Status: UPnP Status' page.",
+        "name": "WebCfg - Status: Univeral Plug and Play Status page",
+        "descr": "Allow access to the 'Status: Univeral Plug and Play Status' page.",
         "match": [
             "status_upnp.php*"
         ]
@@ -1445,27 +1424,6 @@
         "descr": "Allow access to the 'System: License' page.",
         "match": [
             "license.php*"
-        ]
-    },
-    "page-system-packagemanager": {
-        "name": "WebCfg - System: Package Manager page",
-        "descr": "Allow access to the 'System: Package Manager' page.",
-        "match": [
-            "pkg_mgr.php*"
-        ]
-    },
-    "page-system-packagemanager-installpackage": {
-        "name": "WebCfg - System: Package Manager: Install Package page",
-        "descr": "Allow access to the 'System: Package Manager: Install Package' page.",
-        "match": [
-            "pkg_mgr_install.php*"
-        ]
-    },
-    "page-system-packagemanager-installed": {
-        "name": "WebCfg - System: Package Manager: Installed page",
-        "descr": "Allow access to the 'System: Package Manager: Installed' page.",
-        "match": [
-            "pkg_mgr_installed.php*"
         ]
     },
     "page-system-staticroutes": {
