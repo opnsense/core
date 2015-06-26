@@ -93,7 +93,7 @@ class SettingsController extends ApiControllerBase
             }
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
                 $searchTag = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
-                $searchPhrase = 'msg,classtype,source,sid/"*'.$searchTag.'"';
+                $searchPhrase = 'msg,source,sid/"*'.$searchTag.'"';
             } else {
                 $searchPhrase = '';
             }
@@ -101,7 +101,7 @@ class SettingsController extends ApiControllerBase
             // add filter for classtype
             if ($this->request->getPost("classtype", "string", '') != "") {
                 $searchTag = $filter->sanitize($this->request->getPost('classtype'), "query");
-                $searchPhrase .= "classtype/".$searchTag.' ';
+                $searchPhrase .= " classtype/".$searchTag.' ';
             }
 
             // request list of installed rules
@@ -109,6 +109,7 @@ class SettingsController extends ApiControllerBase
             $response = $backend->configdpRun("ids list installedrules", array($itemsPerPage,
                 ($currentPage-1)*$itemsPerPage,
                 $searchPhrase, $sortStr));
+
             $data = json_decode($response, true);
 
             if ($data != null && array_key_exists("rows", $data)) {
