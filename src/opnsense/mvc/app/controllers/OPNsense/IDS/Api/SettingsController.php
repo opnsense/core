@@ -28,7 +28,9 @@
  */
 namespace OPNsense\IDS\Api;
 
+use \Phalcon\Filter;
 use \OPNsense\Base\ApiControllerBase;
+use \OPNsense\Base\Filters\QueryFilter;
 use \OPNsense\Core\Backend;
 use \OPNsense\IDS\IDS;
 use \OPNsense\Core\Config;
@@ -62,6 +64,10 @@ class SettingsController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $this->sessionClose();
+            // create filter to sanitize input data
+            $filter = new Filter();
+            $filter->add('query', new QueryFilter());
+
 
             // fetch query parameters
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
@@ -80,20 +86,22 @@ class SettingsController extends ApiControllerBase
                     if ($sortStr != '') {
                         $sortStr .= ',';
                     }
-                    $sortStr .= $sortKey . ' '. $sortOrd . ' ';
+                    $sortStr .= $filter->sanitize($sortKey, "query") . ' '. $sortOrd . ' ';
                 }
             } else {
                 $sortStr = 'sid';
             }
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
-                $searchPhrase = 'msg,classtype,source,sid/"%'.$this->request->getPost('searchPhrase', 'string', '').'"';
+                $searchTag = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
+                $searchPhrase = 'msg,classtype,source,sid/"*'.$searchTag.'"';
             } else {
                 $searchPhrase = '';
             }
 
             // add filter for classtype
             if ($this->request->getPost("classtype", "string", '') != "") {
-                $searchPhrase .= "classtype/".$this->request->getPost("classtype", "string", '').' ';
+                $searchTag = $filter->sanitize($this->request->getPost('classtype'), "query");
+                $searchPhrase .= "classtype/".$searchTag.' ';
             }
 
             // request list of installed rules
@@ -114,6 +122,7 @@ class SettingsController extends ApiControllerBase
 
                 $result['rowCount'] = count($result['rows']);
                 $result['total'] = $data['total_rows'];
+                $result['parameters'] = $data['parameters'];
                 $result['current'] = (int)$currentPage;
                 return $result;
             } else {

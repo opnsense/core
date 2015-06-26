@@ -29,6 +29,7 @@
 namespace OPNsense\IDS\Api;
 
 use \Phalcon\Filter;
+use \OPNsense\Base\Filters\QueryFilter;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
 use \OPNsense\IDS\IDS;
@@ -162,13 +163,17 @@ class ServiceController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $this->sessionClose();
+            // create filter to sanitize input data
+            $filter = new Filter();
+            $filter->add('query', new QueryFilter());
 
             // fetch query parameters
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
 
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
-                $searchPhrase = 'alert,src_ip/"*'.$this->request->getPost('searchPhrase', 'string', '').'*"';
+                $filterTag = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
+                $searchPhrase = 'alert,src_ip/"*'.$filterTag .'*"';
             } else {
                 $searchPhrase = '';
             }
