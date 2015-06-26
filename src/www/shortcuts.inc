@@ -86,11 +86,12 @@ function get_shortcut_main_link($shortcut_section, $addspace = true, $service = 
 			$link = $shortcuts[$shortcut_section]['main'];
 			break;
 	}
-	if(!empty($link) && ($_SERVER['REQUEST_URI'] != "/{$link}"))
+	if (!empty($link)) {
 		if (strtok($_SERVER['REQUEST_URI'],'?') != "/status_services.php")
 			return "{$space}<a href=\"{$link}\" title=\"" . gettext("Main page for this section") . "\">Main page</a>";
 		else
 			return "{$space}<a href=\"{$link}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Main page for this section") . "\"><span class=\"glyphicon glyphicon-home\"></span></a>";
+	}
 }
 
 function get_shortcut_status_link($shortcut_section, $addspace = true, $service = array()) {
