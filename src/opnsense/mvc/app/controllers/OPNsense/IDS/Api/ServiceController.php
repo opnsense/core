@@ -209,6 +209,5 @@ class ServiceController extends ApiControllerBase
         } else {
             return array();
         }
-
     }
 }

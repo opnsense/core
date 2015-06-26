@@ -3,13 +3,6 @@
 	<title>Services: Universal Plug and Play</title>
 	<name>miniupnpd</name>
 	<version>20100712</version>
-	<savetext>Change</savetext>
-	<menu>
-		<name>Universal Plug and Play</name>
-		<tooltiptext>Set UPnP &amp; NAT-PMP settings such as interfaces to listen on.</tooltiptext>
-		<section>Services</section>
-		<url>/service_upnp&amp;id=0</url>
-	</menu>
 	<service>
 		<name>miniupnpd</name>
 		<rcfile>miniupnpd.sh</rcfile>

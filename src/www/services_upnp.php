@@ -63,9 +63,6 @@ $pkg = parse_xml_config_raw('/usr/local/pkg/miniupnpd.xml', 'packagegui', false)
 
 require_once 'miniupnpd.inc';
 
-$package_name = $pkg['menu'][0]['name'];
-$section      = $pkg['menu'][0]['section'];
-$config_path  = $pkg['configpath'];
 $name         = $pkg['name'];
 $title        = $pkg['title'];
 $pgtitle      = $title;
@@ -84,19 +81,14 @@ if(!is_numeric($id)) {
 	exit;
 }
 
-// grab the installedpackages->package_name section.
 if($config['installedpackages'] && !is_array($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']))
 	$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'] = array();
 
-// If the first entry in the array is an empty <config/> tag, kill it.
 if ($config['installedpackages'] && (count($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']) > 0)
 	&& ($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'][0] == ""))
 	array_shift($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']);
 
 $a_pkg = &$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'];
-
-if($_GET['savemsg'] <> "")
-	$savemsg = htmlspecialchars($_GET['savemsg']);
 
 before_form_miniupnpd($pkg);
 
@@ -179,9 +171,9 @@ if ($_POST) {
 			if($pkg['aftersaveredirect'] <> "") {
 			    redirectHeader($pkg['aftersaveredirect']);
 			} elseif(!$pkg['adddeleteeditpagefields']) {
-			    redirectHeader("service_upnp.php?id=0");
+			    redirectHeader("services_upnp.php?id=0");
 			} elseif(!$pkg['preoutput']) {
-			    redirectHeader("service_upnp.php");
+			    redirectHeader("services_upnp.php");
 			}
 			exit;
 		} else {
@@ -191,9 +183,6 @@ if ($_POST) {
 		exit;
 	}
 }
-
-$title = $pkg['title'];
-$pgtitle = $title;
 
 include("head.inc");
 
@@ -309,80 +298,19 @@ include("head.inc");
 
 			<div class="row">
 				<?php if (!empty($input_errors)) print_input_errors($input_errors); ?>
-				<?php if ($savemsg) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
 
 				<div class="content-box">
 
-					<form name="iform" action="service_upnp.php" method="post">
+					<form name="iform" action="services_upnp.php" method="post">
 
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
 <?php
-if ($pkg['tabs'] <> "") {
-	$tab_array = array();
-	foreach($pkg['tabs']['tab'] as $tab) {
-		if($tab['tab_level'])
-			$tab_level = $tab['tab_level'];
-		else
-			$tab_level = 1;
-		if(isset($tab['active'])) {
-			$active = true;
-		} else {
-			$active = false;
-		}
-		if(isset($tab['no_drop_down']))
-			$no_drop_down = true;
-		$urltmp = "";
-		if($tab['url'] <> "") $urltmp = $tab['url'];
-		if($tab['xml'] <> "") $urltmp = "service_upnp.php";
-
-		$addresswithport = getenv("HTTP_HOST");
-		$colonpos = strpos($addresswithport, ":");
-		if ($colonpos !== False) {
-			//my url is actually just the IP address of the opnsense box
-			$myurl = substr($addresswithport, 0, $colonpos);
-		} else {
-			$myurl = $addresswithport;
-		}
-		// eval url so that above $myurl item can be processed if need be.
-		$url = str_replace('$myurl', $myurl, $urltmp);
-
-		$tab_array[$tab_level][] = array(
-						$tab['text'],
-						$active,
-						$url
-					);
-	}
-
-	ksort($tab_array);
-	foreach($tab_array as $tabid => $tab) {
-		/*
-echo '<tr><td>';
-		display_top_tabs($tab, $no_drop_down, $tabid);
-		echo '</td></tr>';
-*/
-	}
-}
-
-?>
-
-<?php
 	$cols = 0;
 	$savevalue = gettext("Save");
-	if($pkg['savetext'] <> "") $savevalue = $pkg['savetext'];
-	/* If a package's XML has <advanced_options/> configured, then setup
-	 * the table rows for the fields that have <advancedfield/> set.
-	 * These fields will be placed below other fields in a seprate area titled 'Advanced Features'.
-	 * These advanced fields are not normally configured and generally left to default to 'default settings'.
-	 */
 
-	if ($pkg['advanced_options'] == "enabled") {
-		$adv_filed_count = 0;
-		$advanced = "<td>&nbsp;</td>";
-		$advanced .= "<tr><td colspan=\"2\" class=\"listtopic\">". gettext("Advanced features") . "<br /></td></tr>\n";
-		}
 	foreach ($pkg['fields']['field'] as $pkga) {
 		if ($pkga['type'] == "sorting")
 			continue;
@@ -390,22 +318,13 @@ echo '<tr><td>';
 		if ($pkga['type'] == "listtopic") {
 			$input = "<tr id='td_{$pkga['fieldname']}'><td colspan=\"2\">&nbsp;</td></tr>";
 			$input .= "<tr id='tr_{$pkga['fieldname']}'><td colspan=\"2\" class=\"listtopic\">{$pkga['name']}<br /></td></tr>\n";
-			if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-				$advanced .= $input;
-				$adv_filed_count++;
-				}
-			else
-				echo $input;
+			echo $input;
 			continue;
 		}
 
 		if($pkga['combinefields']=="begin"){
 			$input="<tr valign='top' id='tr_{$pkga['fieldname']}'>";
-			if(isset($pkga['advancedfield']) && isset($adv_filed_count))
-				$advanced .= $input;
-			else
-				echo $input;
-			}
+			echo $input;
 
 		$size = "";
 		if (isset($pkga['dontdisplayname'])){
@@ -416,7 +335,6 @@ echo '<tr><td>';
 				$colspan="colspan='2'";
 			else
 				$input .= "<td width='22%' class='vncell{$req}'>&nbsp;</td>";
-			if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
 				$advanced .= $input;
 				$adv_filed_count++;
 				}
@@ -430,30 +348,17 @@ echo '<tr><td>';
 			$input= "<tr><td valign='top' width=\"22%\" class=\"vncell{$req}\">";
 			$input .= fixup_string($pkga['fielddescr']);
 			$input .= "</td>";
-			if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-				$advanced .= $input;
-				$adv_filed_count++;
-				}
-			else
-				echo $input;
+			echo $input;
 		}
 		if($pkga['combinefields']=="begin"){
 			$input="<td class=\"vncell\"><table summary=\"advanced\">";
-			if(isset($pkga['advancedfield']) && isset($adv_filed_count))
-				$advanced .= $input;
-			else
-				echo $input;
+			echo $input;
 			}
 
 		$class=(isset($pkga['combinefields']) ? '' : 'class="vtable"');
 		if (!isset($pkga['placeonbottom'])){
 			$input="<td valign='top' {$colspan} {$class}>";
-			if(isset($pkga['advancedfield']) && isset($adv_filed_count)){
-				$advanced .= $input;
-				$adv_filed_count++;
-				}
-			else
-				echo $input;
+			echo $input;
 		}
 
 		// if user is editing a record, load in the data.
@@ -472,34 +377,19 @@ echo '<tr><td>';
 				$size = ($pkga['size'] ? " size='{$pkga['size']}' " : "");
 				$input = "<input {$size} id='{$pkga['fieldname']}' name='{$pkga['fieldname']}' class='formfld unknown' type='text' value=\"" . htmlspecialchars($value) ."\" />\n";
 				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-					$js_array[] = $pkga['fieldname'];
-					$advanced .= display_advanced_field($pkga['fieldname']).$input ."</div>\n";
-					}
-				else
-					echo $input;
+				echo $input;
 				break;
 
 			case "password":
 				$size = ($pkga['size'] ? " size='{$pkga['size']}' " : "");
 				$input = "<input " . $size . " id='" . $pkga['fieldname'] . "' type='password' name='" . $pkga['fieldname'] . "' class='formfld pwd' value=\"" . htmlspecialchars($value) . "\" />\n";
 				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-					$js_array[] = $pkga['fieldname'];
-					$advanced .= display_advanced_field($pkga['fieldname']).$input ."</div>\n";
-					}
-				else
-					echo $input;
+				echo $input;
 				break;
 
 			case "info":
 				$input = fixup_string($pkga['description']) . "\n";
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-					$js_array[] = $pkga['fieldname'];
-					$advanced .= display_advanced_field($pkga['fieldname']).$input ."</div>\n";
-					}
-				else
-					echo $input;
+				echo $input;
 				break;
 
 			case "select":
@@ -520,13 +410,7 @@ echo '<tr><td>';
 					$input .= "\t<option value=\"{$opt['value']}\" {$selected}>{$opt['name']}</option>\n";
 					}
 				$input .= "</select>\n<br />\n" . fixup_string($pkga['description']) . "\n";
-                if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-					$js_array[] = $pkga['fieldname'];
-					$advanced .= display_advanced_field($pkga['fieldname']).$input;
-					$advanced .= "</div>\n";
-					}
-				else
-					echo $input;
+				echo $input;
 				break;
 
 			case "select_source":
@@ -543,13 +427,7 @@ echo '<tr><td>';
 				$onchange = (isset($pkga['onchange']) ? "onchange=\"{$pkga['onchange']}\"" : '');
 				$input = "<select id='{$pkga['fieldname']}' {$multiple} {$size} {$onchange} name=\"{$fieldname}\">\n";
 
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-					$js_array[] = $pkga['fieldname'];
-					$advanced .= display_advanced_field($pkga['fieldname']) .$input;
-					$advanced .= "</div>\n";
-				} else {
-					echo $input;
-				}
+				echo $input;
 				$source_url = $pkga['source'];
 				eval("\$pkg_source_txt = &$source_url;");
 				$input="";
@@ -565,10 +443,7 @@ echo '<tr><td>';
 					$input  .= "\t<option value=\"{$source_value}\" $selected>{$source_name}</option>\n";
 					}
 				$input .= "</select>\n<br />\n" . fixup_string($pkga['description']) . "\n";
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count))
-					$advanced .= $input;
-				else
-					echo $input;
+				echo $input;
 				break;
 
 			case "vpn_selection" :
@@ -579,13 +454,7 @@ echo '<tr><td>';
 				$input .= "</select>\n";
 				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
 
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-					$js_array[] = $pkga['fieldname'];
-					$advanced .= display_advanced_field($pkga['fieldname']).$input;
-					$advanced .= "</div>\n";
-					}
-				else
-					echo $input;
+				echo $input;
 				break;
 
 			case "checkbox":
@@ -596,13 +465,7 @@ echo '<tr><td>';
 				$input = "<input id='{$pkga['fieldname']}' type='checkbox' name='{$pkga['fieldname']}' {$checkboxchecked} {$onclick} {$onchange} />\n";
 				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
 
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-					$js_array[] = $pkga['fieldname'];
-					$advanced .= display_advanced_field($pkga['fieldname']).$input;
-					$advanced .= "</div>\n";
-					}
-				else
-					echo $input;
+				echo $input;
 				break;
 
 			case "textarea":
@@ -615,13 +478,7 @@ echo '<tr><td>';
 				$wrap =($pkga['wrap'] == "off" ? 'wrap="off" style="white-space:nowrap;"' : '');
 				$input = "<textarea {$rows} {$cols} name='{$pkga['fieldname']}'{$wrap}>{$value}</textarea>\n";
 				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count)) {
-					$js_array[] = $pkga['fieldname'];
-					$advanced .= display_advanced_field($pkga['fieldname']).$input;
-					$advanced .= "</div>\n";
-					}
-				else
-					echo $input;
+				echo $input;
 				break;
 
 			case "aliases":
@@ -725,19 +582,13 @@ echo '<tr><td>';
 					$input .= "<option value=\"{$iface['ip']}\" {$selected}>{$iface['description']}</option>\n";
 					}
 				$input .= "</select>\n<br />" . fixup_string($pkga['description']) . "\n";
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count))
-					$advanced .= $input;
-				else
-					echo $input;
+				echo $input;
 				break;
 
 			case "radio":
 				$input = "<input type='radio' id='{$pkga['fieldname']}' name='{$pkga['fieldname']}' value='{$value}' />";
-				if(isset($pkga['advancedfield']) && isset($adv_filed_count))
-					$advanced .= $input;
-				else
-					echo $input;
-					break;
+				echo $input;
+				break;
 
 			case "button":
 				$input = "<input type='submit' id='{$pkga['fieldname']}' name='{$pkga['fieldname']}' class='formbtn' value='{$pkga['fieldname']}' />\n";
@@ -849,17 +700,10 @@ echo '<tr><td>';
 			if($pkga['usecolspan2'])
 				$input.= "</tr><br />";
 		}
-		if(isset($pkga['advancedfield']) && isset($adv_filed_count))
-			$advanced .= "{$input}\n";
-		else
-			echo "{$input}\n";
+		echo "{$input}\n";
 		#increment counter
 		$i++;
 		}
-
-	#print advanced settings if any after reading all fields
-	if (isset($advanced) && $adv_filed_count > 0)
-		echo $advanced;
 
 	?>
   <tr>
@@ -889,22 +733,6 @@ echo '<tr><td>';
 			</div>
 		</div>
 	</section>
-
-<?php
-	/* JavaScript to handle the advanced fields. */
-	if ($pkg['advanced_options'] == "enabled") {
-		echo "<script type=\"text/javascript\">\n";
-		echo "//<![CDATA[\n";
-		foreach($js_array as $advfieldname) {
-			echo "function show_" . $advfieldname . "() {\n";
-			echo "\tjQuery('#showadv_{$advfieldname}').empty();\n";
-			echo "\tjQuery('#show_{$advfieldname}').css('display', 'block');\n";
-			echo "}\n\n";
-		}
-		echo "//]]>\n";
-		echo "</script>\n";
-	}
-?>
 
 <?php include("foot.inc"); ?>
 
@@ -1065,5 +893,3 @@ function display_advanced_field($fieldname) {
 	$div .= "<div id='show_{$fieldname}' style='display:none'>\n";
 	return $div;
 }
-
-?>

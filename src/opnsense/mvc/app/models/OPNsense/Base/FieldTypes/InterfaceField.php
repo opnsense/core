@@ -29,8 +29,9 @@
  */
 namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Core\Config;
 use Phalcon\Validation\Validator\InclusionIn;
+use OPNsense\Core\Config;
+use OPNsense\Base\Validators\CsvListValidator;
 
 /**
  * Class InterfaceField field type to select usable interfaces, currently this is kind of a backward compatibility
@@ -58,6 +59,11 @@ class InterfaceField extends BaseField
      * @var string key to use for option selections, to prevent excessive reloading
      */
     private $internalCacheKey = '*';
+
+    /**
+     * @var bool field may contain multiple interfaces at once
+     */
+    private $internalMultiSelect = false;
 
     /**
      * generate validation data (list of interfaces and well know ports)
@@ -114,6 +120,19 @@ class InterfaceField extends BaseField
     }
 
     /**
+     * select if multiple interfaces may be selected at once
+     * @param $value boolean value 0/1
+     */
+    public function setmultiple($value)
+    {
+        if ($value == 1) {
+            $this->internalMultiSelect = true;
+        } else {
+            $this->internalMultiSelect = false;
+        }
+    }
+
+    /**
      * get valid options, descriptions and selected value
      * @return array
      */
@@ -125,16 +144,16 @@ class InterfaceField extends BaseField
             $result[""] = array("value"=>"none", "selected" => 0);
         }
 
+        // explode interfaces
+        $interfaces = explode(',', $this->internalValue);
         foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
-            if ($optKey == $this->internalValue) {
+            if (in_array($optKey, $interfaces)) {
                 $selected = 1;
             } else {
                 $selected = 0;
             }
             $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
         }
-
-
 
         return $result;
     }
@@ -152,8 +171,15 @@ class InterfaceField extends BaseField
         }
 
         if (($this->internalIsRequired == true || $this->internalValue != null)) {
-            return array(new InclusionIn(array('message' => $msg,
-                'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey]))));
+            if ($this->internalMultiSelect) {
+                // field may contain more than one interface
+                return array(new CsvListValidator(array('message' => $msg,
+                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey]))));
+            } else {
+                // single interface selection
+                return array(new InclusionIn(array('message' => $msg,
+                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey]))));
+            }
         } else {
             // empty field and not required, skip this validation.
             return array();

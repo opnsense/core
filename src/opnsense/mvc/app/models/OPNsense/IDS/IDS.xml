@@ -21,6 +21,14 @@
                 <default>0</default>
                 <Required>Y</Required>
             </enabled>
+            <interfaces type="InterfaceField">
+                <Required>Y</Required>
+                <default>lan</default>
+                <multiple>1</multiple>
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                </filters>
+            </interfaces>
         </general>
     </items>
 </model>
