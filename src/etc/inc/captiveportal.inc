@@ -687,7 +687,7 @@ function captiveportal_prune_old()
 
         /* Read database */
         /* NOTE: while this can be simplified in non radius case keep as is for now */
-        $cpdb = captiveportal_read_db();
+        $cpdb = array(); // captiveportal_read_db();
 
         $unsetindexes = array();
 
