@@ -11,9 +11,9 @@ suricata_interface="{{helpers.getNodeByTag('interfaces.'+intfName).if}}"
 {%   endif %}
 {% endfor %}
 {#   append additional interfaces #}
-suricata_flags="{%
+suricata_flags="-D {%
    for intf in addFlags
-%} -D -i {{ intf }} --pidfile /var/run/suricata_{{ intf }}.pid  {% endfor
+%} -i {{ intf }} --pidfile /var/run/suricata_{{ intf }}.pid  {% endfor
 %} "
 {% else %}
 suricata_enable="NO"
