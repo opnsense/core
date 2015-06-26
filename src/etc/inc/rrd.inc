@@ -223,7 +223,7 @@ function enable_rrd_graphing()
 	$cpustats = "/usr/local/sbin/cpustats";
 	$spamd_gather = "/usr/local/bin/spamd_gather_stats.php";
 	$ifconfig = "/sbin/ifconfig";
-	$captiveportal_gather = "/usr/local/bin/captiveportal_gather_stats.php";
+	$captiveportal_gather = "/usr/local/sbin/captiveportal_gather_stats.php";
 	$ntpq = "/usr/local/sbin/ntpq";
 
 	$rrdtrafficinterval = 60;

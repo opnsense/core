@@ -257,7 +257,7 @@ echo "done."
 /usr/local/etc/rc.opnsense start
 
 # Start ping handler every 240 seconds
-minicron 240 /var/run/ping_hosts.pid /usr/local/bin/ping_hosts.sh
+minicron 240 /var/run/ping_hosts.pid /usr/local/sbin/ping_hosts.sh
 
 # Start account expire handler every hour
 minicron 3600 /var/run/expire_accounts.pid /usr/local/etc/rc.expireaccounts
@@ -274,7 +274,7 @@ if [ "${GMIRROR_STATUS}" != "" ]; then
 	minicron 60 /var/run/gmirror_status_check.pid /usr/local/sbin/gmirror_status_check.php
 fi
 
-/usr/local/bin/beep.sh start 2>&1 >/dev/null
+/usr/local/sbin/beep.sh start
 
 /usr/local/etc/rc.initial.banner
 

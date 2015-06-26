@@ -1971,7 +1971,7 @@ EOD;
 			$mondev  = substr(basename($port), 0, -1) . "1";
 		}
 		log_error("Starting 3gstats.php on device '{$mondev}' for interface '{$interface}'");
-		mwexec_bg("/usr/local/bin/3gstats.php {$mondev} {$interface}");
+		mwexec_bg("/usr/local/sbin/3gstats.php {$mondev} {$interface}");
 	}
 
 	return 1;
