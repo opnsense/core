@@ -182,11 +182,11 @@ class RuleCache(object):
                 if fieldname in self._rule_fields:
                     if fieldname != fieldnames.split(',')[0].strip():
                         sql += ' or '
-                    if searchcontent.find('%') == -1:
+                    if searchcontent.find('*') == -1:
                         sql += 'cast('+fieldname + " as text) like :"+fieldname+" "
                     else:
                         sql += 'cast('+fieldname + " as text) like '%'|| :"+fieldname+" || '%' "
-                    sql_filters[fieldname] = searchcontent.replace('%', '')
+                    sql_filters[fieldname] = searchcontent.replace('*', '')
                 else:
                     # not a valid fieldname, add a tag to make sure our sql statement is valid
                     sql += ' 1 = 1 '
