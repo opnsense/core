@@ -84,9 +84,6 @@ if(!is_numeric($id)) {
 	exit;
 }
 
-if($pkg['custom_php_global_functions'] <> "")
-        eval($pkg['custom_php_global_functions']);
-
 // grab the installedpackages->package_name section.
 if($config['installedpackages'] && !is_array($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']))
 	$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'] = array();
@@ -101,8 +98,7 @@ $a_pkg = &$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config
 if($_GET['savemsg'] <> "")
 	$savemsg = htmlspecialchars($_GET['savemsg']);
 
-if($pkg['custom_php_command_before_form'] <> "")
-	eval($pkg['custom_php_command_before_form']);
+before_form_miniupnpd($pkg);
 
 if ($_POST) {
 	$firstfield = "";
@@ -120,37 +116,12 @@ if ($_POST) {
 		}
 	}
 	do_input_validation($_POST, $reqfields, $reqfieldsn, $input_errors);
-
-	if ($pkg['custom_php_validation_command'])
-		eval($pkg['custom_php_validation_command']);
+	validate_form_miniupnpd($_POST, $input_errors);
 
 	if($_POST['act'] == "del") {
-		if($pkg['custom_delete_php_command']) {
-		    if($pkg['custom_php_command_before_form'] <> "")
-			    eval($pkg['custom_php_command_before_form']);
-		    eval($pkg['custom_delete_php_command']);
-		}
 		write_config($pkg['delete_string']);
-		// resync the configuration file code if defined.
-		if($pkg['custom_php_resync_config_command'] <> "") {
-			if($pkg['custom_php_command_before_form'] <> "")
-				eval($pkg['custom_php_command_before_form']);
-			eval($pkg['custom_php_resync_config_command']);
-		}
-	} else {
-		if(!$input_errors && $pkg['custom_add_php_command']) {
-			if($pkg['donotsave'] <> "" or $pkg['preoutput'] <> "") {
-			?>
-
-<?php include("head.inc"); ?>
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC">
-<?php include("fbegin.inc"); ?>
-<?php
-			}
-			if($pkg['preoutput']) echo "<pre>";
-			eval($pkg['custom_add_php_command']);
-			if($pkg['preoutput']) echo "</pre>";
-		}
+		before_form_miniupnpd($pkg);
+		sync_package_miniupnpd();
 	}
 
 	// donotsave is enabled.  lets simply exit.
@@ -193,19 +164,8 @@ if ($_POST) {
 				$a_pkg[] = $pkgarr;
 
 			write_config($pkg['addedit_string']);
-			// late running code
-			if($pkg['custom_add_php_command_late'] <> "") {
-			    eval($pkg['custom_add_php_command_late']);
-			}
 
-			if (isset($pkg['filter_rules_needed']))
-				filter_configure();
-
-			// resync the configuration file code if defined.
-			if($pkg['custom_php_resync_config_command'] <> "") {
-			    eval($pkg['custom_php_resync_config_command']);
-			}
-
+			sync_package_miniupnpd();
 			parse_package_templates();
 
 			/* if start_command is defined, restart w/ this */
@@ -235,14 +195,7 @@ if ($_POST) {
 $title = $pkg['title'];
 $pgtitle = $title;
 
-if ($pkg['custom_php_after_head_command']) {
-	$closehead = false;
-	include("head.inc");
-	eval($pkg['custom_php_after_head_command']);
-	echo "</head>\n";
-}
-else
-	include("head.inc");
+include("head.inc");
 
 ?>
 
@@ -936,8 +889,6 @@ echo '<tr><td>';
 			</div>
 		</div>
 	</section>
-
-<?php if ($pkg['custom_php_after_form_command']) eval($pkg['custom_php_after_form_command']); ?>
 
 <?php
 	/* JavaScript to handle the advanced fields. */
