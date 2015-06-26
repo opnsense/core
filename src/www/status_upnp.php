@@ -41,7 +41,7 @@ exec("/sbin/pfctl -aminiupnpd -sn", $rdr_entries, $pf_ret);
 $now = time();
 $year = date("Y");
 
-$pgtitle = array(gettext("Status"),gettext("UPnP &amp; NAT-PMP Status"));
+$pgtitle = array(gettext('Status'), gettext('Universal Plug and Play'));
 $shortcut_section = "upnp";
 include("head.inc");
 ?>

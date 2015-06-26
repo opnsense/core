@@ -106,7 +106,7 @@
         <PPPoEServer VisibleName="PPPoE Server" url="/services_vpn_pppoe.php"/>
         <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
-        <UPnPNATPMP VisibleName="Universal P&amp;P / NAT-PMP" url="/pkg_edit.php?xml=miniupnpd.xml"/>
+        <UPnP VisibleName="Universal Plug and Play" url="/pkg_edit.php?xml=miniupnpd.xml"/>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php"/>
     </Services>
 
@@ -179,7 +179,7 @@
         </SystemLogs>
 
         <TrafficGraphs VisibleName="Traffic Graphs" url="/status_graph.php"/>
-        <UPnPandNATPMP VisibleName="UPnP &amp; NAT-PMP" url="/status_upnp.php"/>
+        <UPnP VisibleName="Universal Plug and Play" url="/status_upnp.php"/>
     </Status>
 
     <Diagnostics order="7" cssClass="glyphicon glyphicon-stats">
