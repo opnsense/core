@@ -39,36 +39,6 @@ global $current_openvpn_version, $current_openvpn_version_rev;
 $current_openvpn_version     = "2.3.6";
 $current_openvpn_version_rev = "01";
 
-function openvpn_client_export_install()
-{
-	global $current_openvpn_version;
-
-	$tarpath = "/usr/local/pkg/openvpn-client-export-{$current_openvpn_version}.tgz";
-	$phpfile = "vpn_openvpn_export.php";
-	$ovpndir = "/usr/local/share/openvpn";
-	$workdir = "{$ovpndir}/client-export";
-
-	@mkdir($workdir, 0777, true);
-
-	exec("/usr/bin/tar zxf {$tarpath} -C {$ovpndir}");
-}
-
-function openvpn_client_export_deinstall()
-{
-	global $current_openvpn_version;
-
-	$phpfile = "vpn_openvpn_export.php";
-	$phpfile2 = "vpn_openvpn_export_shared.php";
-	$ovpndir = "/usr/local/share/openvpn";
-	$workdir = "{$ovpndir}/client-export";
-
-	@unlink("/usr/local/www/{$phpfile}");
-	@unlink("/usr/local/www/{$phpfile2}");
-	@unlink("/usr/local/pkg/openvpn-client-export-{$current_openvpn_version}.tgz");
-
-	exec("/bin/rm -r {$workdir}");
-}
-
 function openvpn_client_export_prefix($srvid, $usrid = null, $crtid = null) {
 	global $config;
 
@@ -499,8 +469,6 @@ function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $veri
 
 	$ovpndir = "/usr/local/share/openvpn";
 	$workdir = "{$ovpndir}/client-export";
-	if (!file_exists($workdir . "/template/{$client_install_exe}"))
-		openvpn_client_export_install();
 
 	$validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
 	if ($validconfig) {
@@ -604,8 +572,6 @@ function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $usead
 	$uname_p = trim(exec("uname -p"));
 
 	$ovpndir = "/usr/local/share/openvpn/";
-	if (!file_exists($workdir . "/template/openvpn-install.exe"))
-		openvpn_client_export_install();
 
 	$uniq = uniqid();
 	$tempdir = "/tmp/openvpn-export-{$uniq}";

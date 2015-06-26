@@ -1,0 +1,3 @@
+;!@Install@!UTF-8!
+RunProgram="procchain.exe procchain-standard"
+;!@InstallEnd@!
