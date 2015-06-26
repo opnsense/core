@@ -1247,7 +1247,7 @@
         "name": "WebCfg - Service: Univeral Plug and Play page",
         "descr": "Allow access to the 'Service: Univeral Plug and Play' page.",
         "match": [
-            "service_upnp.php*"
+            "services_upnp.php*"
         ]
     },
     "page-status-upnpstatus": {
