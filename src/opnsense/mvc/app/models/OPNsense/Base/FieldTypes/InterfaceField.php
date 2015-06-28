@@ -139,8 +139,8 @@ class InterfaceField extends BaseField
     public function getNodeData()
     {
         $result = array();
-        // if interface is not required, add empty option
-        if (!$this->internalIsRequired) {
+        // if interface is not required and single, add empty option
+        if (!$this->internalIsRequired && !$this->internalMultiSelect) {
             $result[""] = array("value"=>"none", "selected" => 0);
         }
 
