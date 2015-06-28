@@ -24,6 +24,8 @@ install: force
 	@make -C ${.CURDIR}/pkg install
 	# invoke translation glue
 	@make -C ${.CURDIR}/lang install
+	# invoke third-party tools
+	@make -C ${.CURDIR}/contrib install
 	# finally pretty-print a list of files present
 	@(cd ${.CURDIR}/src; find * -type f) | \
 	    xargs -n1 printf "/usr/local/%s\n"
