@@ -594,18 +594,6 @@ endif; ?>
 	rowsize[1] = "30";
 //]]>
 </script>
-<?php
-    // Load valid country codes
-    $dn_cc = array();
-if (file_exists("/usr/local/etc/ca_countries")) {
-        $dn_cc_file=file("/usr/local/etc/ca_countries");
-    foreach ($dn_cc_file as $line) {
-        if (preg_match('/^(\S*)\s(.*)$/', $line, $matches)) {
-                array_push($dn_cc, $matches[1]);
-        }
-    }
-}
-?>
 
 <!-- row -->
 <section class="page-content-main">
@@ -959,12 +947,13 @@ endif; ?>
 											<td align="left">
 												<select name='csr_dn_country' class="formselect">
 												<?php
-                                                foreach ($dn_cc as $cc) {
-                                                    $selected = "";
+                                                $dn_cc = get_country_codes();
+                                                foreach ($dn_cc as $cc => $cn) {
+                                                    $selected = '';
                                                     if ($pconfig['csr_dn_country'] == $cc) {
-                                                        $selected = " selected=\"selected\"";
+                                                        $selected = ' selected="selected"';
                                                     }
-                                                    print "<option value=\"$cc\"$selected>$cc</option>";
+                                                    print "<option value=\"$cc\"$selected>$cc ($cn)</option>";
                                                 }
                                                 ?>
 												</select>

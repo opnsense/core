@@ -373,19 +373,6 @@ function method_change() {
 
                 <div class="content-box tab-content table-responsive" style="overflow: auto;">
 
-                <?php
-
-            // Load valid country codes
-                $dn_cc = array();
-                if (file_exists("/usr/local/etc/ca_countries")) {
-                    $dn_cc_file=file("/usr/local/etc/ca_countries");
-                    foreach ($dn_cc_file as $line) {
-                        if (preg_match('/^(\S*)\s(.*)$/', $line, $matches)) {
-                            array_push($dn_cc, $matches[1]);
-                        }
-                    }
-                }
-                ?>
 				<?php if ($act == "new" || $act == "edit" || $act == gettext("Save") || $input_errors) :
 ?>
 
@@ -561,12 +548,13 @@ endif; ?>
 										<td align="left">
 											<select name='dn_country' class="selectpicker">
 											<?php
-                                            foreach ($dn_cc as $cc) {
-                                                $selected = "";
+                                            $dn_cc = get_country_codes();
+                                            foreach ($dn_cc as $cc => $cn) {
+                                                $selected = '';
                                                 if ($pconfig['dn_country'] == $cc) {
-                                                    $selected = " selected=\"selected\"";
+                                                    $selected = ' selected="selected"';
                                                 }
-                                                print "<option value=\"$cc\"$selected>$cc</option>";
+                                                print "<option value=\"$cc\"$selected>$cc ($cn)</option>";
                                             }
                                             ?>
 											</select>
