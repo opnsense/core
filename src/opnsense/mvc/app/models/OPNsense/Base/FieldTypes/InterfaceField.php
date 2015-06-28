@@ -125,7 +125,7 @@ class InterfaceField extends BaseField
      */
     public function setmultiple($value)
     {
-        if ($value == 1) {
+        if (trim(strtoupper($value)) == "Y") {
             $this->internalMultiSelect = true;
         } else {
             $this->internalMultiSelect = false;
