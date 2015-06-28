@@ -125,8 +125,13 @@
             </traffic>
         </general>
         <forward>
-            <interfaces type="CSVListField">
+            <interfaces type="InterfaceField">
                 <Required>N</Required>
+                <multiple>Y</multiple>
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                    <ipaddr>/^((?!dhcp).)*$/</ipaddr>
+                </filters>
             </interfaces>
             <port type="IntegerField">
                 <default>3128</default>
@@ -135,8 +140,13 @@
                 <ValidationMessage>Proxy port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>Y</Required>
             </port>
-            <ftpInterfaces type="CSVListField">
+            <ftpInterfaces type="InterfaceField">
                 <Required>N</Required>
+                <multiple>Y</multiple>
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                    <ipaddr>/^((?!dhcp).)*$/</ipaddr>
+                </filters>
             </ftpInterfaces>
             <ftpPort type="IntegerField">
                 <default>2121</default>
