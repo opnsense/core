@@ -414,8 +414,6 @@ function local_user_set(&$user)
 	/* configure shell type */
 	if (userHasPrivilege($user, 'user-shell-access')) {
 		$user_shell = '/bin/csh';
-	} elseif (userHasPrivilege($user, 'user-copy-files')) {
-		$user_shell = '/usr/local/bin/scponly';
 	}
 
 	/* unlock valid shell users */

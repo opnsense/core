@@ -1356,9 +1356,6 @@ function upgrade_049_to_050()
 				case "hasshell":
 				$privs[] = "user-shell-access";
 				break;
-				case "copyfiles":
-				$privs[] = "user-copy-files";
-				break;
 			}
 		}
 		$user['priv'] = $privs;

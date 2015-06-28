@@ -7,10 +7,6 @@
         "name": "User - Services - Captive portal login",
         "descr": "Indicates whether the user is able to login on the captive portal."
     },
-    "user-copy-files": {
-        "name": "User - System - Copy files",
-        "descr": "Indicates whether the user is allowed to copy files onto the  appliance via SCP\/SFTP."
-    },
     "user-shell-access": {
         "name": "User - System - Shell account access",
         "descr": "Indicates whether the user is able to login for example via SSH."
