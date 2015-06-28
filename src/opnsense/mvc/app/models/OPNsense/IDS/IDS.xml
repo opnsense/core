@@ -24,7 +24,7 @@
             <interfaces type="InterfaceField">
                 <Required>Y</Required>
                 <default>lan</default>
-                <multiple>1</multiple>
+                <multiple>Y</multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                 </filters>
