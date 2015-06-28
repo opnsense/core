@@ -75,12 +75,15 @@ class SettingsController extends ApiControllerBase
                 if ($node != null) {
                     $result = array("result" => "failed", "validations" => array());
                     $jobInfo = $this->request->getPost("job");
-                    if ( $node->origin->__toString() != "cron" ){
-                        if ( $jobInfo["command"]!=$node->command->__toString() ) {
-                            $result["validations"]["job.command"] = "This item has been created by another service, command and parameter may not be changed.";
+                    if ($node->origin->__toString() != "cron") {
+                        if ($jobInfo["command"]!=$node->command->__toString()) {
+                            $result["validations"]["job.command"] = "This item has been created by " .
+                                "another service, command and parameter may not be changed.";
                         }
-                        if ( $jobInfo["parameters"]!=$node->parameters->__toString() ) {
-                            $result["validations"]["job.parameters"] = "This item has been created by another service, command and parameter may not be changed. (was: " . $node->parameters->__toString() . " )";
+                        if ($jobInfo["parameters"]!=$node->parameters->__toString()) {
+                            $result["validations"]["job.parameters"] = "This item has been created by " .
+                                "another service, command and parameter may not be changed. (was: " .
+                                $node->parameters->__toString() . " )";
                         }
                     }
 
@@ -96,7 +99,8 @@ class SettingsController extends ApiControllerBase
                     }
 
                     if (count($result['validations']) == 0) {
-                        // we've already performed a validation, prevent issues from other items in the model reflecting back to us.
+                        // we've already performed a validation, prevent issues
+                        // from other items in the model reflecting back to us.
                         $mdlCron->serializeToConfig($disable_validation = true);
 
                         // save config if validated correctly
@@ -135,7 +139,8 @@ class SettingsController extends ApiControllerBase
             }
 
             if (count($result['validations']) == 0) {
-                // we've already performed a validation, prevent issues from other items in the model reflecting back to us.
+                // we've already performed a validation, prevent issues from
+                // other items in the model reflecting back to us.
                 $mdlCron->serializeToConfig($disable_validation = true);
 
                 // save config if validated correctly
@@ -211,42 +216,41 @@ class SettingsController extends ApiControllerBase
      */
     public function searchJobsAction()
     {
-//        if ($this->request->isPost()) {
-            $this->sessionClose();
-            // fetch query parameters
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-            $currentPage = $this->request->getPost('current', 'int', 1);
-            $sortBy = array("description");
-            $sortDescending = false;
-
-            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
-                $sortBy = array_keys($this->request->getPost("sort"));
-                if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
-                    $sortDescending = true;
-                }
-            }
-
-            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
-
-            // create model and fetch query resuls
-            $fields = array(
-                "enabled",
-                "minutes",
-                "hours",
-                "days",
-                "months",
-                "weekdays",
-                "description",
-                "command",
-                "origin",
-                "cronPermissions"
-            );
-            $mdlCron = new Cron();
-            $grid = new UIModelGrid($mdlCron->jobs->job);
-            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
-//        } else {
+//        if (!$this->request->isPost()) {
 //            return array();
 //        }
+        $this->sessionClose();
+        // fetch query parameters
+        $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+        $currentPage = $this->request->getPost('current', 'int', 1);
+        $sortBy = array("description");
+        $sortDescending = false;
 
+        if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
+            $sortBy = array_keys($this->request->getPost("sort"));
+            if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
+                $sortDescending = true;
+            }
+        }
+
+        $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
+
+        // create model and fetch query resuls
+        $fields = array(
+            "enabled",
+            "minutes",
+            "hours",
+            "days",
+            "months",
+            "weekdays",
+            "description",
+            "command",
+            "origin",
+            "cronPermissions"
+        );
+        $mdlCron = new Cron();
+        $grid = new UIModelGrid($mdlCron->jobs->job);
+
+        return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
     }
 }
