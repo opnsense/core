@@ -16,7 +16,7 @@
         <label>bandwidth Metric</label>
         <type>dropdown</type>
     </field>
-    <field>
+ <!--   <field>
         <id>pipe.burst</id>
         <label>burst</label>
         <type>text</type>
@@ -26,7 +26,7 @@
             fast as the physical link allows.
         </help>
         <advanced>true</advanced>
-    </field>
+    </field> -->
     <field>
         <id>pipe.queue</id>
         <label>queue</label>
