@@ -1,0 +1,136 @@
+#!/usr/local/bin/php
+<?php
+
+/*
+ * Copyright (c) 2015 Franco Fichtner <franco@opnsense.org>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+$etc_group = <<<EOF
+# \$FreeBSD$
+#
+wheel:*:0:root
+daemon:*:1:
+kmem:*:2:
+sys:*:3:
+tty:*:4:
+operator:*:5:root
+mail:*:6:
+bin:*:7:
+news:*:8:
+man:*:9:
+games:*:13:
+ftp:*:14:
+staff:*:20:
+sshd:*:22:
+smmsp:*:25:
+mailnull:*:26:
+guest:*:31:
+bind:*:53:
+unbound:*:59:
+proxy:*:62:
+authpf:*:63:
+_pflogd:*:64:
+_dhcp:*:65:
+uucp:*:66:
+dialer:*:68:
+network:*:69:
+audit:*:77:
+www:*:80:
+hast:*:845:
+nogroup:*:65533:
+nobody:*:65534:
+EOF;
+
+$etc_master_passwd = <<<EOF
+# \$FreeBSD$
+#
+root::0:0::0:0:Charlie &:/root:/bin/csh
+toor:*:0:0::0:0:Bourne-again Superuser:/root:
+daemon:*:1:1::0:0:Owner of many system processes:/root:/usr/sbin/nologin
+operator:*:2:5::0:0:System &:/:/usr/sbin/nologin
+bin:*:3:7::0:0:Binaries Commands and Source:/:/usr/sbin/nologin
+tty:*:4:65533::0:0:Tty Sandbox:/:/usr/sbin/nologin
+kmem:*:5:65533::0:0:KMem Sandbox:/:/usr/sbin/nologin
+games:*:7:13::0:0:Games pseudo-user:/usr/games:/usr/sbin/nologin
+news:*:8:8::0:0:News Subsystem:/:/usr/sbin/nologin
+man:*:9:9::0:0:Mister Man Pages:/usr/share/man:/usr/sbin/nologin
+sshd:*:22:22::0:0:Secure Shell Daemon:/var/empty:/usr/sbin/nologin
+smmsp:*:25:25::0:0:Sendmail Submission User:/var/spool/clientmqueue:/usr/sbin/nologin
+mailnull:*:26:26::0:0:Sendmail Default User:/var/spool/mqueue:/usr/sbin/nologin
+bind:*:53:53::0:0:Bind Sandbox:/:/usr/sbin/nologin
+unbound:*:59:59::0:0:Unbound DNS Resolver:/var/unbound:/usr/sbin/nologin
+proxy:*:62:62::0:0:Packet Filter pseudo-user:/nonexistent:/usr/sbin/nologin
+_pflogd:*:64:64::0:0:pflogd privsep user:/var/empty:/usr/sbin/nologin
+_dhcp:*:65:65::0:0:dhcp programs:/var/empty:/usr/sbin/nologin
+uucp:*:66:66::0:0:UUCP pseudo-user:/var/spool/uucppublic:/usr/local/libexec/uucp/uucico
+pop:*:68:6::0:0:Post Office Owner:/nonexistent:/usr/sbin/nologin
+auditdistd:*:78:77::0:0:Auditdistd unprivileged user:/var/empty:/usr/sbin/nologin
+www:*:80:80::0:0:World Wide Web Owner:/nonexistent:/usr/sbin/nologin
+hast:*:845:845::0:0:HAST unprivileged user:/var/empty:/usr/sbin/nologin
+nobody:*:65534:65534::0:0:Unprivileged user:/nonexistent:/usr/sbin/nologin
+EOF;
+
+function recover_ports()
+{
+	$actions = array(
+		'pre-install',
+		'post-install'
+	);
+
+	exec('/usr/sbin/pkg query -e \'%#U > 0 || %#G > 0\' %n', $pkgs);
+
+	if ($pkgs[0] == '') {
+		return;
+	}
+
+	$tempname = tempnam('/tmp', 'recover.');
+	$tempfile = fopen($tempname, 'w');
+
+	foreach ($pkgs as $pkg) {
+		$raw = exec('/usr/sbin/pkg info --raw --raw-format json-compact ' . $pkg);
+		$info = json_decode($raw, true);
+		foreach($actions as $action) {
+			if (!isset($info['scripts'][$action])) {
+				continue;
+			}
+
+			ftruncate($tempfile, 0);
+			rewind($tempfile);
+			fwrite($tempfile, $info['scripts'][$action] . PHP_EOL);
+			passthru('/bin/sh ' . $tempname);
+		}
+	}
+
+	fclose($tempfile);
+	unlink($tempname);
+}
+
+file_put_contents('/etc/group', $etc_group);
+file_put_contents('/etc/master.passwd', $etc_master_passwd);
+
+recover_ports();
+
+exec('/usr/sbin/pwd_mkdb -p /etc/master.passwd');
