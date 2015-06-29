@@ -107,6 +107,9 @@ for line in reverse_log_reader(filename=suricata_log, start_pos=log_start_pos):
             result['total_rows'] += 1
             if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
                 result['rows'].append(record)
+            elif result['total_rows'] > offset + limit:
+                # do not fetch data until end of file...
+                break
 
     # only try to fetch one line when filepos is given
     if log_start_pos != None:
