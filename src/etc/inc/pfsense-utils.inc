@@ -652,10 +652,6 @@ function reload_all_sync() {
 	/* start the NTP client */
 	system_ntp_configure();
 
-	/* sync pw database */
-	@unlink('/etc/spwd.db.tmp');
-	mwexec('/usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd');
-
 	/* restart sshd */
 	mwexec_bg('/usr/local/etc/rc.sshd');
 

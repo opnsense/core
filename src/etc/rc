@@ -61,6 +61,14 @@ else
 	done
 fi
 
+# mount repo if available
+if [ -d /root/core ]; then
+	make -C /root/core mount
+fi
+
+# regenerate groups and users
+/usr/local/etc/rc.recover > /dev/null
+
 # rewrite message of the day
 /etc/rc.d/motd onestart
 
@@ -84,11 +92,6 @@ if [ -d "/cf/conf" ]; then
 	rm -rf /cf
 fi
 # !!! migration code for OPNsense <= 15.1.7, do not remove !!!
-
-# mount repo if available
-if [ -d /root/core ]; then
-	make -C /root/core mount
-fi
 
 # set up config directory structure
 mkdir -p /conf/backup
@@ -129,10 +132,6 @@ CDDEVICE=`dmesg |egrep -ie "($MANUFACTURER)" | awk -F: '/cd/ {print $1}'`
 if [ "$CDDEVICE" != "" ]; then
 	cdcontrol -f /dev/"$CDDEVICE" eject
 fi
-
-# sync pw database after mount.
-rm -f /etc/spwd.db.tmp
-/usr/sbin/pwd_mkdb -d /etc/ /etc/master.passwd
 
 # Enable console output if its muted.
 /sbin/conscontrol mute off >/dev/null
