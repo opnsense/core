@@ -49,16 +49,40 @@ class CPClient
     private $config = null;
 
     /**
-     * ipfw rule object
-     * @var \CaptivePortal\Rules
-     */
-    private $rules = null;
-
-    /**
      * link to shell object
      * @var  Core\Shell
      */
     private $shell = null;
+
+    /**
+     * get ipfw tables for authenticated users ( in/out )
+     * @param int $zoneid zoneid (number)
+     * @return array
+     */
+    public function getAuthUsersTables($zoneid)
+    {
+        return array("in"=>(6*($zoneid-1) )+1,"out"=>(6*($zoneid-1) )+2);
+    }
+
+    /**
+     * get ipfw tables for authenticated hosts ( in/out )
+     * @param int $zoneid zoneid (number)
+     * @return array
+     */
+    public function getAuthIPTables($zoneid)
+    {
+        return array("in"=>(6*($zoneid-1) )+3,"out"=>(6*($zoneid-1) )+4);
+    }
+
+    /**
+     * get ipfw tables used for authenticated physical addresses
+     * @param int $zoneid zoneid (number)
+     * @return array
+     */
+    public function getAuthMACTables($zoneid)
+    {
+        return array("in"=>(6*($zoneid-1) )+5,"out"=>(6*($zoneid-1) )+6);
+    }
 
     /**
      * Constructor
@@ -67,8 +91,6 @@ class CPClient
     {
         // Request handle to configuration
         $this->config = Core\Config::getInstance();
-        // generate new ruleset
-        $this->rules = new Rules();
         // keep a link to the shell object
         $this->shell = new Core\Shell();
     }
@@ -95,7 +117,6 @@ class CPClient
     {
         $backend = new Backend();
         if ($this->isEnabled()) {
-            $ruleset_filename = FactoryDefault::getDefault()->get('config')->globals->temp_path."/ipfw.rules";
             $response = $backend->configdRun("template reload OPNsense.IPFW");
 
             if (trim($response) == "OK") {
@@ -162,7 +183,7 @@ class CPClient
                 $db_iplist = $db->listFixedIPs();
 
                 // calculate table numbers for this zone
-                $ipfw_tables = $this->rules->getAuthIPTables($zone->zoneid);
+                $ipfw_tables = $this->getAuthIPTables($zone->zoneid);
 
                 foreach ($zone->children() as $tagname => $tagcontent) {
                     $ip = $tagcontent->ip->__toString();
@@ -276,7 +297,7 @@ class CPClient
                 // open administrative database for this zone
                 $db = new DB($cpzonename);
                 $db_maclist = $db->listPassthruMacs();
-                $ipfw_tables = $this->rules->getAuthMACTables($zone->zoneid);
+                $ipfw_tables = $this->getAuthMACTables($zone->zoneid);
 
                 foreach ($zone->children() as $tagname => $tagcontent) {
                     $mac = trim(strtolower($tagcontent->mac));
@@ -497,7 +518,7 @@ class CPClient
 
 
         // grap needed data to generate our rules
-        $ipfw_tables = $this->rules->getAuthUsersTables($zoneid);
+        $ipfw_tables = $this->getAuthUsersTables($zoneid);
         $cp_table = $db->listClients(array("mac"=>$clientmac, "ip"=>$clientip), "or");
         if (sizeof($cp_table) > 0 && ($cp_table[0]->ip == $clientip && $cp_table[0]->mac == $clientmac)) {
             // nothing (important) changed here... move on
@@ -627,12 +648,12 @@ class CPClient
 
             if ($zoneid != -1) {
                 $exec_commands= array(
-                    "/sbin/ipfw -f table ".$this->rules->getAuthUsersTables($zoneid)["in"]." flush",
-                    "/sbin/ipfw -f table ".$this->rules->getAuthUsersTables($zoneid)["out"]." flush",
-                    "/sbin/ipfw -f table ".$this->rules->getAuthIPTables($zoneid)["in"]." flush",
-                    "/sbin/ipfw -f table ".$this->rules->getAuthIPTables($zoneid)["out"]." flush",
-                    "/sbin/ipfw -f table ".$this->rules->getAuthMACTables($zoneid)["in"]." flush",
-                    "/sbin/ipfw -f table ".$this->rules->getAuthMACTables($zoneid)["out"]." flush",
+                    "/sbin/ipfw -f table ".$this->getAuthUsersTables($zoneid)["in"]." flush",
+                    "/sbin/ipfw -f table ".$this->getAuthUsersTables($zoneid)["out"]." flush",
+                    "/sbin/ipfw -f table ".$this->getAuthIPTables($zoneid)["in"]." flush",
+                    "/sbin/ipfw -f table ".$this->getAuthIPTables($zoneid)["out"]." flush",
+                    "/sbin/ipfw -f table ".$this->getAuthMACTables($zoneid)["in"]." flush",
+                    "/sbin/ipfw -f table ".$this->getAuthMACTables($zoneid)["out"]." flush",
                     "/sbin/ipfw delete set ".$zoneid,
                 );
                 $this->shell->exec($exec_commands);
@@ -786,7 +807,7 @@ class CPClient
         $db = new DB($cpzonename);
         $db_clients = $db->listClients(array("sessionid"=>$sessionid));
 
-        $ipfw_tables = $this->rules->getAuthUsersTables($zoneid);
+        $ipfw_tables = $this->getAuthUsersTables($zoneid);
         if (sizeof($db_clients) > 0) {
             if ($db_clients[0]->ip != null) {
                 // only handle disconnect if we can find a client in our database
