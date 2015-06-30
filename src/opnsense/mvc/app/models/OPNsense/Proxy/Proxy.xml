@@ -128,6 +128,7 @@
             <interfaces type="InterfaceField">
                 <Required>N</Required>
                 <multiple>Y</multiple>
+                <default>lan</default>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                     <ipaddr>/^((?!dhcp).)*$/</ipaddr>
