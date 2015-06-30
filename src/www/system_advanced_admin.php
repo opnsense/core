@@ -533,7 +533,7 @@ endif; ?>
 										<input name="sshdpermitrootlogin" type="checkbox" id="sshdpermitrootlogin" value="yes" <?php if ($pconfig['sshdpermitrootlogin']) {
                                             echo "checked=\"checked\"";
 } ?> />
-										<strong><?=gettext("Enable root user login"); ?></strong>
+										<strong><?=gettext("Permit root user login"); ?></strong>
 										<br />
 										<?=gettext("Root login is generally discouraged. It is advised "); ?>
 										<?=gettext("to log in via another user and switch to root afterwards."); ?>
@@ -545,7 +545,7 @@ endif; ?>
 										<input name="passwordauth" type="checkbox" id="passwordauth" value="yes" <?php if ($pconfig['passwordauth']) {
                                             echo "checked=\"checked\"";
 } ?> />
-										<strong><?=gettext("Enable password login for Secure Shell"); ?></strong>
+										<strong><?=gettext("Permit password login"); ?></strong>
 										<br />
 										<?=gettext("When disabled, authorized keys need to be configured for each"); ?>
 										<a href="system_usermanager.php"><?=gettext("user"); ?></a>

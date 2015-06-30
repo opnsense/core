@@ -203,6 +203,9 @@
 			<interval>monthly</interval>
 		</bogons>
 		<kill_states/>
+		<ssh>
+			<sshdkeyonly/>
+		</ssh>
 	</system>
 	<interfaces>
 		<wan>
