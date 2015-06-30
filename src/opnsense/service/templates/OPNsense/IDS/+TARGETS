@@ -2,3 +2,4 @@ rc.conf.d:/etc/rc.conf.d/suricata
 rules.config:/usr/local/etc/suricata/rules.config
 suricata.yaml:/usr/local/etc/suricata/suricata.yaml
 newsyslog.conf:/etc/newsyslog.conf.d/suricata
+rule-updater.config:/usr/local/etc/suricata/rule-updater.config
