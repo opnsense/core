@@ -623,6 +623,9 @@ function system_syslogd_start()
 {
 	global $config, $g;
 
+	/* XXX temporary hook for newsyslog.conf regeneration */
+	configd_run('template reload OPNsense.Syslog');
+
 	mwexec('/etc/rc.d/hostid start');
 
 	$syslogcfg = $config['syslog'];
