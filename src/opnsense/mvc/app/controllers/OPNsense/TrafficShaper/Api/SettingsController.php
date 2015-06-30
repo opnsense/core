@@ -165,9 +165,10 @@ class SettingsController extends ApiControllerBase
     /**
      * toggle pipe by uuid (enable/disable)
      * @param $uuid item unique id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array status
      */
-    public function togglePipeAction($uuid)
+    public function togglePipeAction($uuid, $enabled = null)
     {
 
         $result = array("result" => "failed");
@@ -176,13 +177,14 @@ class SettingsController extends ApiControllerBase
             if ($uuid != null) {
                 $node = $mdlShaper->getNodeByReference('pipes.pipe.' . $uuid);
                 if ($node != null) {
-                    if ($node->enabled->__toString() == "1") {
-                        $result['result'] = "Disabled";
+                    if ($enabled == "0" || $enabled == "1") {
+                        $node->enabled = (string)$enabled;
+                    } elseif ($node->enabled->__toString() == "1") {
                         $node->enabled = "0";
                     } else {
-                        $result['result'] = "Enabled";
                         $node->enabled = "1";
                     }
+                    $result['result'] = $node->enabled;
                     // if item has toggled, serialize to config and save
                     $mdlShaper->serializeToConfig($disable_validation = true);
                     Config::getInstance()->save();
@@ -346,9 +348,10 @@ class SettingsController extends ApiControllerBase
     /**
      * toggle queue by uuid (enable/disable)
      * @param $uuid item unique id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array status
      */
-    public function toggleQueueAction($uuid)
+    public function toggleQueueAction($uuid, $enabled = null)
     {
 
         $result = array("result" => "failed");
@@ -357,13 +360,14 @@ class SettingsController extends ApiControllerBase
             if ($uuid != null) {
                 $node = $mdlShaper->getNodeByReference('queues.queue.'.$uuid);
                 if ($node != null) {
-                    if ($node->enabled->__toString() == "1") {
-                        $result['result'] = "Disabled";
+                    if ($enabled == "0" || $enabled == "1") {
+                        $node->enabled = (string)$enabled;
+                    } elseif ($node->enabled->__toString() == "1") {
                         $node->enabled = "0";
                     } else {
-                        $result['result'] = "Enabled";
                         $node->enabled = "1";
                     }
+                    $result['result'] = $node->enabled;
                     // if item has toggled, serialize to config and save
                     $mdlShaper->serializeToConfig($disable_validation = true);
                     Config::getInstance()->save();
