@@ -30,6 +30,7 @@
     --------------------------------------------------------------------------------------
     query suricata alert log
 """
+import os.path
 import re
 import sre_constants
 import shlex
@@ -37,11 +38,15 @@ import ujson
 from lib.log import reverse_log_reader
 from lib.params import updateParams
 
-suricata_log = '/var/log/suricata/eve.json'
-
 # handle parameters
-parameters = {'limit':'0','offset':'0', 'filter':''}
+parameters = {'limit':'0','offset':'0', 'filter':'','fileid':''}
 updateParams(parameters)
+
+# choose logfile by number
+if parameters['fileid'].isdigit():
+    suricata_log = '/var/log/suricata/eve.json.%d'%int(parameters['fileid'])
+else:
+    suricata_log = '/var/log/suricata/eve.json'
 
 if parameters['limit'].isdigit():
     limit = int(parameters['limit'])
@@ -78,42 +83,43 @@ else:
 
 # query suricata eve log
 result = {'filters':data_filters,'rows':[],'total_rows':0}
-for line in reverse_log_reader(filename=suricata_log, start_pos=log_start_pos):
-    try:
-        record = ujson.loads(line['line'])
-    except ValueError:
-        # can not handle line
-        record = {}
+if os.path.exists(suricata_log):
+    for line in reverse_log_reader(filename=suricata_log, start_pos=log_start_pos):
+        try:
+            record = ujson.loads(line['line'])
+        except ValueError:
+            # can not handle line
+            record = {}
 
-    # only process valid alert items
-    if 'alert' in record:
-        # add position in file
-        record['filepos'] = line['pos']
-        # flatten structure
-        record['alert_sid'] = record['alert']['signature_id']
-        record['alert'] = record['alert']['signature']
+        # only process valid alert items
+        if 'alert' in record:
+            # add position in file
+            record['filepos'] = line['pos']
+            # flatten structure
+            record['alert_sid'] = record['alert']['signature_id']
+            record['alert'] = record['alert']['signature']
 
-        # use filters on data (using regular expressions)
-        do_output = True
-        for filterKeys in data_filters:
-            filter_hit = False
-            for filterKey in filterKeys.split(','):
-                if record.has_key(filterKey) and data_filters_comp[filterKeys].match(('%s'%record[filterKey]).lower()):
-                    filter_hit = True
+            # use filters on data (using regular expressions)
+            do_output = True
+            for filterKeys in data_filters:
+                filter_hit = False
+                for filterKey in filterKeys.split(','):
+                    if record.has_key(filterKey) and data_filters_comp[filterKeys].match(('%s'%record[filterKey]).lower()):
+                        filter_hit = True
 
-            if not filter_hit:
-                do_output = False
-        if do_output:
-            result['total_rows'] += 1
-            if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
-                result['rows'].append(record)
-            elif result['total_rows'] > offset + limit:
-                # do not fetch data until end of file...
-                break
+                if not filter_hit:
+                    do_output = False
+            if do_output:
+                result['total_rows'] += 1
+                if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
+                    result['rows'].append(record)
+                elif result['total_rows'] > offset + limit:
+                    # do not fetch data until end of file...
+                    break
 
-    # only try to fetch one line when filepos is given
-    if log_start_pos != None:
-        break
+        # only try to fetch one line when filepos is given
+        if log_start_pos != None:
+            break
 
 # output results
 print(ujson.dumps(result))
