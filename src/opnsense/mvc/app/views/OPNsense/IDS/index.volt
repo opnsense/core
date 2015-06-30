@@ -57,10 +57,42 @@ POSSIBILITY OF SUCH DAMAGE.
         // delay refresh for a bit
         setTimeout(updateRuleClassTypes, 500);
 
-        function addFilters(request) {
+        // update list of alert logs
+        ajaxGet(url="/api/ids/service/getAlertLogs",sendData={}, callback=function(data, status) {
+            if (status == "success") {
+                $.each(data, function(key, value) {
+                    if (value['sequence'] == undefined) {
+                        $('#alert-logfile').append($("<option></option>").attr("value",'none').text(value['modified']));
+                    } else {
+                        $('#alert-logfile').append($("<option></option>").attr("value",value['sequence']).text(value['modified']));
+                    }
+                });
+                $('.selectpicker').selectpicker('refresh');
+                // link on change event
+                $('#alert-logfile').on('change', function(){
+                    $('#grid-alerts').bootgrid('reload');
+                });
+            }
+        });
+
+        /**
+         * Add classtype to rule filter
+         */
+        function addRuleFilters(request) {
             var selected =$('#ruleclass').find("option:selected").val();
             if ( selected != "") {
                 request['classtype'] = selected;
+            }
+            return request;
+        }
+
+        /**
+         * Add fileid to alert filter
+         */
+        function addAlertQryFilters(request) {
+            var selected =$('#alert-logfile').find("option:selected").val();
+            if ( selected != "") {
+                request['fileid'] = selected;
             }
             return request;
         }
@@ -71,7 +103,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     options:{
                         multiSelect:false,
                         selection:false,
-                        requestHandler:addFilters,
+                        requestHandler:addRuleFilters,
                         formatters:{
                             rowtoggle: function (column, row) {
                                 if (parseInt(row[column.id], 2) == 1) {
@@ -94,6 +126,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     options:{
                         multiSelect:false,
                         selection:false,
+                        requestHandler:addAlertQryFilters,
                         formatters:{
                             info: function (column, row) {
                                 return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filepos + "\"><span class=\"fa fa-info-circle\"></span></button> ";
@@ -168,7 +201,14 @@ POSSIBILITY OF SUCH DAMAGE.
         </table>
     </div>
     <div id="alerts" class="tab-pane fade in">
-        <!-- tab page "installed rules" -->
+        <div class="bootgrid-header container-fluid">
+            <div class="row">
+                <div class="col-sm-12 actionBar">
+                    <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
+                </div>
+            </div>
+        </div>
+        <!-- tab page "alerts" -->
         <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlert">
             <thead>
             <tr>

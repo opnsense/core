@@ -178,9 +178,16 @@ class ServiceController extends ApiControllerBase
                 $searchPhrase = '';
             }
 
+
+            if ($this->request->getPost('fileid', 'string', '') != "") {
+                $fileid = $this->request->getPost('fileid', 'int', -1);
+            } else {
+                $fileid = null;
+            }
+
             $backend = new Backend();
             $response = $backend->configdpRun("ids query alerts", array($itemsPerPage,
-                ($currentPage-1)*$itemsPerPage, $searchPhrase));
+                ($currentPage-1)*$itemsPerPage, $searchPhrase,$fileid));
             $result = json_decode($response, true);
             if ($result != null) {
                 $result['rowCount'] = count($result['rows']);
@@ -206,6 +213,28 @@ class ServiceController extends ApiControllerBase
         $result = json_decode($response, true);
         if ($result != null && count($result['rows']) > 0) {
             return $result['rows'][0];
+        } else {
+            return array();
+        }
+    }
+
+    /**
+     * list all available logs
+     * @return array list of alert logs
+     * @throws \Exception
+     */
+    public function getAlertLogsAction()
+    {
+        $backend = new Backend();
+        $response = $backend->configdRun("ids list alertlogs");
+        $result = json_decode($response, true);
+        if ($result != null) {
+            $logs = array();
+            foreach ($result as $log) {
+                $log['modified'] = date('Y/m/d G:i', $log['modified']);
+                $logs[] = $log;
+            }
+            return $logs;
         } else {
             return array();
         }
