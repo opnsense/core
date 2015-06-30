@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
@@ -44,9 +45,6 @@ foreach ($ifdescrs as $key =>$interface) {
 	$hwif[$config['interfaces'][$key]['if']] = $interface;
 }
 
-/* Array ( [0] => Neighbor [1] => Linklayer [2] => Address
-[3] => Netif [4] => Expire [5] => S
-[6] => Flags ) */
 $data = array();
 array_shift($rawdata);
 foreach ($rawdata as $line) {
@@ -56,30 +54,16 @@ foreach ($rawdata as $line) {
 	$ndpent['ipv6'] = trim($elements[0]);
 	$ndpent['mac'] = trim($elements[1]);
 	$ndpent['interface'] = trim($elements[2]);
-	$data[] = $ndpent;
-}
-
-/* FIXME: Not ipv6 compatible dns resolving. PHP needs fixing */
-function _getHostName($mac,$ip)
-{
-	if(is_ipaddr($ip)) {
-		list($ip, $scope) = explode("%", $ip);
-		if(gethostbyaddr($ip) <> "" and gethostbyaddr($ip) <> $ip)
-			return gethostbyaddr($ip);
-		else
-			return "";
+	$ndpent['dnsresolve'] = 'Z_ ';
+	if (is_ipaddr($ndpent['ipv6'])) {
+		list($ip, $scope) = explode('%', $ndpent['ipv6']);
+		$hostname = gethostbyaddr($ip);
+		if ($hostname !== false && $hostname !== $ip) {
+			$ndpent['dnsresolve'] = $hostname;
+		}
 	}
-}
 
-// Resolve hostnames and replace Z_ with "".  The intention
-// is to sort the list by hostnames, alpha and then the non
-// resolvable addresses will appear last in the list.
-foreach ($data as &$entry) {
-	$dns = trim(_getHostName($entry['mac'], $entry['ipv6']));
-	if(trim($dns))
-		$entry['dnsresolve'] = "$dns";
-	else
-		$entry['dnsresolve'] = "Z_ ";
+	$data[] = $ndpent;
 }
 
 // Sort the data alpha first
