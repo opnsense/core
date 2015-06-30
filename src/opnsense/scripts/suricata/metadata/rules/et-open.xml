@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<ruleset>
+    <location url="https://rules.emergingthreats.net/open/suricata/rules/"/>
+    <files>
+        <file decription="emerging-shellcode">emerging-shellcode.rules</file>
+        <file decription="emerging-smtp">emerging-smtp.rules</file>
+        <file>emerging-sql.rules</file>
+    </files>
+</ruleset>
