@@ -82,7 +82,7 @@ else:
     log_start_pos = None
 
 # query suricata eve log
-result = {'filters':data_filters,'rows':[],'total_rows':0}
+result = {'filters':data_filters,'rows':[],'total_rows':0,'origin':suricata_log.split('/')[-1]}
 if os.path.exists(suricata_log):
     for line in reverse_log_reader(filename=suricata_log, start_pos=log_start_pos):
         try:
