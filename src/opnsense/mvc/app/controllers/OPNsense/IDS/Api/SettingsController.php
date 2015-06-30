@@ -211,6 +211,69 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
+     * list all installable rules including current status
+     * @return array|mixed
+     * @throws \Exception
+     */
+    public function listInstallableRulesetsAction()
+    {
+        $backend = new Backend();
+        $response = $backend->configdRun("ids list installablerulesets");
+        $data = json_decode($response, true);
+        if ($data != null && array_key_exists("items", $data)) {
+            $result = array("items"=>array());
+            foreach ($data['items'] as $filename => $fileinfo) {
+                $item = array();
+                $item['description'] = $fileinfo['description'];
+                $item['filename'] = $fileinfo['filename'];
+                // retrieve status from model
+                $item['enabled'] = (string)$this->getModel()->getFileNode($fileinfo['filename'])->enabled;
+                $result['rows'][] = $item;
+            }
+            $result['rowCount'] = count($result['rows']);
+            $result['total'] = count($result['rows']);
+            $result['current'] = 1;
+            return $result;
+        } else {
+            return array();
+        }
+    }
+
+    /**
+     * toggle usage of rule file or set enabled / disabled depending on parameters
+     * @param $filename (target) rule file name
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return array status 0/1 or error
+     * @throws \Exception
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function toggleInstalledRulesetAction($filename, $enabled = null)
+    {
+        $result = array("status" => "none");
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = $backend->configdRun("ids list installablerulesets");
+            $data = json_decode($response, true);
+            if ($data != null && array_key_exists("items", $data) && array_key_exists($filename, $data['items'])) {
+                $node = $this->getModel()->getFileNode($filename);
+                if ($enabled == "0" || $enabled == "1") {
+                    $node->enabled = (string)$enabled;
+                } elseif ((string)$node->enabled == "1") {
+                    $node->enabled = "0";
+                } else {
+                    $node->enabled = "1";
+                }
+                $result['status'] = $node->enabled;
+                $this->getModel()->serializeToConfig();
+                Config::getInstance()->save();
+            } else {
+                $result['status'] = "error";
+            }
+        }
+        return $result;
+    }
+
+    /**
      * toggle rule enable status
      * @param $sid
      * @return array
@@ -243,7 +306,7 @@ class SettingsController extends ApiControllerBase
         $settingsNodes = array('general');
         $result = array();
         if ($this->request->isGet()) {
-            $mdlIDS = new IDS();
+            $mdlIDS = $this->getModel();
             $result['ids'] = array();
             foreach ($settingsNodes as $key) {
                 $result['ids'][$key] = $mdlIDS->$key->getNodes();
@@ -261,7 +324,7 @@ class SettingsController extends ApiControllerBase
         $result = array("result"=>"failed");
         if ($this->request->isPost()) {
             // load model and update with provided data
-            $mdlIDS = new IDS();
+            $mdlIDS = $this->getModel();
             $mdlIDS->setNodes($this->request->getPost("ids"));
 
             // perform validation

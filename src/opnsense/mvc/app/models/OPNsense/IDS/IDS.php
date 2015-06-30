@@ -32,8 +32,14 @@ use OPNsense\Base\BaseModel;
 
 class IDS extends BaseModel
 {
+    /**
+     * @var array internal list of all sid's in this object
+     */
     private $sid_list = array();
 
+    /**
+     * update internal cache of sid's
+     */
     private function updateSIDlist()
     {
         if (count($this->sid_list) == 0) {
@@ -110,5 +116,24 @@ class IDS extends BaseModel
             return $default;
         }
 
+    }
+
+    /**
+     * retrieve (rule) file entry from config or add a new one
+     * @param string $filename list of filename to merge into config
+     * @return BaseField number of appended items
+     */
+    public function getFileNode($filename)
+    {
+        foreach ($this->files->file->__items as $NodeKey => $NodeValue) {
+            if ($filename == $NodeValue->filename) {
+                return $NodeValue;
+            }
+        }
+        // add a new node
+        $node = $this->files->file->Add();
+        $node->filename = $filename;
+
+        return $node ;
     }
 }

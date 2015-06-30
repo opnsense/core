@@ -97,6 +97,9 @@ POSSIBILITY OF SUCH DAMAGE.
             return request;
         }
 
+        /**
+         * grid installed rules
+         */
         $("#grid-installedrules").UIBootgrid(
                 {   search:'/api/ids/settings/searchinstalledrules',
                     get:'/api/ids/settings/getRuleInfo/',
@@ -120,6 +123,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
         );
 
+        /**
+         * grid query alerts
+         */
         $("#grid-alerts").UIBootgrid(
                 {   search:'/api/ids/service/queryAlerts',
                     get:'/api/ids/service/getAlertInfo/',
@@ -130,6 +136,29 @@ POSSIBILITY OF SUCH DAMAGE.
                         formatters:{
                             info: function (column, row) {
                                 return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filepos + "\"><span class=\"fa fa-info-circle\"></span></button> ";
+                            }
+                        }
+                    }
+                });
+
+        /**
+         * grid for installable rule files
+         */
+        $("#grid-rule-files").UIBootgrid(
+                {   search:'/api/ids/settings/listInstallableRulesets',
+                    toggle:'/api/ids/settings/toggleInstalledRuleset/',
+                    options:{
+                        multiSelect:false,
+                        selection:false,
+                        navigation:0,
+                        formatters:{
+                            rowtoggle: function (column, row) {
+                                if (parseInt(row[column.id], 2) == 1) {
+                                    var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
+                                } else {
+                                    var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
+                                }
+                                return toggle;
                             }
                         }
                     }
@@ -174,6 +203,34 @@ POSSIBILITY OF SUCH DAMAGE.
 <div class="tab-content content-box tab-content">
     <div id="settings" class="tab-pane fade in active">
         {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
+        <!-- add installable rule files -->
+        <table class="table table-striped table-condensed table-responsive">
+            <colgroup>
+                <col class="col-md-3"/>
+                <col class="col-md-9"/>
+            </colgroup>
+            <tbody>
+            <tr>
+                <td><div class="control-label">
+                    <i class="fa fa-info-circle text-muted"></i>
+                    <b>rulesets</b>
+                    </div>
+                </td>
+                <td>
+                <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
+                    <thead>
+                    <tr>
+                        <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">enabled</th>
+                        <th data-column-id="filename" data-type="string" data-visible="true" data-identifier="true">filename</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <div id="rules" class="tab-pane fade in">
         <div class="bootgrid-header container-fluid">
