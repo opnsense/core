@@ -1,0 +1,8 @@
+name: opnsense-syslog
+version: 0.1
+origin: opnsense/syslog
+comment: newsyslog base configuration
+desc: configuration templates for syslog
+maintainer: ad at opnsense.org
+www: https://opnsense.org
+prefix: /
