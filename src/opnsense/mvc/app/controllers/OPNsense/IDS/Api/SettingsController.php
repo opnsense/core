@@ -106,7 +106,7 @@ class SettingsController extends ApiControllerBase
 
             // request list of installed rules
             $backend = new Backend();
-            $response = $backend->configdpRun("ids list installedrules", array($itemsPerPage,
+            $response = $backend->configdpRun("ids query rules", array($itemsPerPage,
                 ($currentPage-1)*$itemsPerPage,
                 $searchPhrase, $sortStr));
 
@@ -143,7 +143,7 @@ class SettingsController extends ApiControllerBase
     {
         // request list of installed rules
         $backend = new Backend();
-        $response = $backend->configdpRun("ids list installedrules", array(1, 0,'sid/'.$sid));
+        $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/'.$sid));
         $data = json_decode($response, true);
 
         if ($data != null && array_key_exists("rows", $data) && count($data['rows'])>0) {
