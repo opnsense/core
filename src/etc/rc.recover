@@ -93,6 +93,19 @@ hast:*:845:845::0:0:HAST unprivileged user:/var/empty:/usr/sbin/nologin
 nobody:*:65534:65534::0:0:Unprivileged user:/nonexistent:/usr/sbin/nologin
 EOF;
 
+$etc_shells = <<<EOF
+# \$FreeBSD$
+#
+# List of acceptable shells for chpass(1).
+# Ftpd will not allow users to connect who are not using
+# one of these shells.
+
+/bin/sh
+/bin/csh
+/bin/tcsh
+/usr/local/etc/rc.initial
+EOF;
+
 function recover_ports()
 {
 	$actions = array(
@@ -128,9 +141,18 @@ function recover_ports()
 	unlink($tempname);
 }
 
+function recover_rebuild()
+{
+	passthru('/usr/sbin/pwd_mkdb -p /etc/master.passwd');
+	passthru('/usr/sbin/pwd_mkdb /etc/master.passwd');
+}
+
+/* first stage recovers the base system state */
 file_put_contents('/etc/group', $etc_group);
 file_put_contents('/etc/master.passwd', $etc_master_passwd);
+file_put_contents('/etc/shells', $etc_shells);
+recover_rebuild();
 
+/* second stage recovers the ports system state */
 recover_ports();
-
-exec('/usr/sbin/pwd_mkdb -p /etc/master.passwd');
+recover_rebuild();
