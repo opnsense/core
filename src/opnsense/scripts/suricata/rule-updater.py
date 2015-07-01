@@ -31,9 +31,19 @@
     update suricata rules
 """
 import os
+import sys
+import fcntl
 from ConfigParser import ConfigParser
 from lib import metadata
 from lib import downloader
+
+# check for a running update process, this may take a while so it's better to check...
+try:
+    lck = open('/tmp/suricata-rule-updater.py','w+')
+    fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
+except IOError:
+    # already running, exit status 99
+    sys.exit(99)
 
 if __name__ == '__main__':
     # load list of configured rules from generated config
