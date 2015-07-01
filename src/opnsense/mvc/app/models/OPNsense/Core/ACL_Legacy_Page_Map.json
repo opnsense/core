@@ -1604,5 +1604,13 @@
         "ui/proxy/*",
         "api/proxy/*"
       ]
+    },
+    "page-services-ids": {
+      "name": "WebCfg - Services: Intrusion detection",
+      "descr": "Allow access to the 'Services: IDS' page'",
+       "match": [
+           "ui/ids/*",
+           "api/ids/*"
+      ]
     }
 }

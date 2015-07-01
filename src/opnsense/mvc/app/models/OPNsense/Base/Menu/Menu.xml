@@ -108,6 +108,7 @@
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
         <UPnP VisibleName="Universal Plug and Play" url="/services_upnp.php"/>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php"/>
+        <IDS VisibleName="Intrusion Detection" url="/ui/ids/"/>
     </Services>
 
     <VPN order="5" cssClass="glyphicon glyphicon-lock">
