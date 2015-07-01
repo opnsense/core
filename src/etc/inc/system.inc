@@ -667,7 +667,7 @@ function system_syslogd_start()
 
 		$syslogconf .= "!ppp\n";
 		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/ppp.log\n";
+			$syslogconf .= "*.*								{$log_directive}/var/log/ppps.log\n";
 
 		$syslogconf .= "!pptps\n";
 		if (!isset($syslogcfg['disablelocallogging']))

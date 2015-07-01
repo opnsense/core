@@ -30,7 +30,7 @@
 
 require_once("guiconfig.inc");
 
-$ppp_logfile = '/var/log/ppp.log';
+$ppps_logfile = '/var/log/ppps.log';
 
 $nentries = $config['syslog']['nentries'];
 if (!$nentries) {
@@ -38,7 +38,7 @@ if (!$nentries) {
 }
 
 if ($_POST['clear']) {
-	clear_log_file($ppp_logfile);
+	clear_log_file($ppps_logfile);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("PPP"));
@@ -69,7 +69,7 @@ include("head.inc");
 
 								 <div class="table-responsive">
 									<table class="table table-striped table-sort">
-										<?php dump_clog($ppp_logfile, $nentries); ?>
+										<?php dump_clog($ppps_logfile, $nentries); ?>
 									</table>
 								 </div>
 
