@@ -32,4 +32,22 @@ use OPNsense\Base\BaseModel;
 
 class Cron extends BaseModel
 {
+    /**
+     * create a new daily job
+     * @param string $origin
+     * @param string $command
+     * @param string $description
+     * @param string $weekdays day(s) of the week to run
+     * @return string
+     */
+    public function newDailyJob($origin, $command, $description, $weekdays = "*")
+    {
+        $cron = $this->jobs->job->Add();
+        $uuid = $cron->getAttributes()['uuid'];
+        $cron->origin = $origin;
+        $cron->command = $command;
+        $cron->description = $description;
+        $cron->weekdays = $weekdays ;
+        return $uuid;
+    }
 }
