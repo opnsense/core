@@ -32,6 +32,14 @@ POSSIBILITY OF SUCH DAMAGE.
         //
         var data_get_map = {'frm_GeneralSettings':"/api/ids/settings/get"};
 
+        /**
+         * update service status
+         */
+        function updateStatus() {
+            ajaxCall(url="/api/ids/service/status", sendData={}, callback=function(data,status) {
+                updateServiceStatusUI(data['status']);
+            });
+        }
 
         /**
          * list all known classtypes and add to selection box
@@ -110,6 +118,8 @@ POSSIBILITY OF SUCH DAMAGE.
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
         });
+
+        updateStatus();
 
         /**
          * load content on tab changes
@@ -210,6 +220,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 ajaxCall(url="/api/ids/service/reconfigure", sendData={}, callback=function(data,status) {
                     // when done, disable progress animation.
                     $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+                    updateStatus();
 
                     if (status != "success" || data['status'].toLowerCase().trim() != "ok") {
                         BootstrapDialog.show({
@@ -232,6 +243,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 // when done, disable progress animation and reload grid.
                 $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
                 $('#grid-rule-files').bootgrid('reload');
+                updateStatus();
             });
         });
 
