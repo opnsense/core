@@ -1,6 +1,6 @@
 <?php
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015 J. Schellevis - Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -31,6 +31,7 @@ namespace OPNsense\Proxy\Api;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Proxy\Proxy;
 use \OPNsense\Core\Config;
+use \OPNsense\Base\UIModelGrid;
 
 /**
  * Class SettingsController
@@ -89,4 +90,196 @@ class SettingsController extends ApiControllerBase
         return $result;
 
     }
+
+    /**
+     *
+     * search remote blacklists
+     * @return array
+     */
+    public function searchRemoteBlacklistsAction()
+    {
+        $this->sessionClose();
+        // fetch query parameters
+        $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+        $currentPage = $this->request->getPost('current', 'int', 1);
+        $sortBy = array("filename");
+        $sortDescending = false;
+
+        if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
+            $sortBy = array_keys($this->request->getPost("sort"));
+            if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
+                $sortDescending = true;
+            }
+        }
+
+        $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
+
+        // create model and fetch query resuls
+        $fields = array(
+            "enabled",
+            "filename",
+            "url",
+            "description"
+        );
+        $mdlProxy = new Proxy();
+        $grid = new UIModelGrid($mdlProxy->forward->acl->remoteACLs->blacklists->blacklist);
+
+        return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
+    }
+
+    /**
+     * retrieve remote blacklist settings or return defaults
+     * @param $uuid item unique id
+     * @return array
+     */
+    public function getRemoteBlacklistAction($uuid = null)
+    {
+        $mdlProxy = new Proxy();
+        if ($uuid != null) {
+            $node = $mdlProxy->getNodeByReference('forward.acl.remoteACLs.blacklists.blacklist.' . $uuid);
+            if ($node != null) {
+                // return node
+                return array("blacklist" => $node->getNodes());
+            }
+        } else {
+            // generate new node, but don't save to disc
+            $node = $mdlProxy->forward->acl->remoteACLs->blacklists->blacklist->add();
+            return array("blacklist" => $node->getNodes());
+        }
+        return array();
+    }
+
+
+    public function setRemoteBlacklistAction($uuid)
+    {
+        if ($this->request->isPost() && $this->request->hasPost("blacklist")) {
+            $mdlProxy = new Proxy();
+            if ($uuid != null) {
+                $node = $mdlProxy->getNodeByReference('forward.acl.remoteACLs.blacklists.blacklist.' . $uuid);
+                if ($node != null) {
+                    $result = array("result" => "failed", "validations" => array());
+                    $blacklistInfo = $this->request->getPost("blacklist");
+
+                    $node->setNodes($blacklistInfo);
+                    $valMsgs = $mdlProxy->performValidation();
+                    foreach ($valMsgs as $field => $msg) {
+                        $fieldnm = str_replace($node->__reference, "blacklist", $msg->getField());
+                        if ($fieldnm != $msg->getField()) {
+                            // only collect validation errors for the item we're currently editing.
+                            $result["validations"][$fieldnm] = $msg->getMessage();
+                        }
+
+                    }
+
+                    if (count($result['validations']) == 0) {
+                        // we've already performed a validation, prevent issues
+                        // from other items in the model reflecting back to us.
+                        $mdlProxy->serializeToConfig($disable_validation = true);
+
+                        // save config if validated correctly
+                        Config::getInstance()->save();
+                        $result = array("result" => "saved");
+                    }
+                    return $result;
+                }
+            }
+        }
+        return array("result" => "failed");
+    }
+
+    /**
+     * add new blacklist and set with attributes from post
+     * @return array
+     */
+    public function addRemoteBlacklistAction()
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost() && $this->request->hasPost("blacklist")) {
+            $result = array("result" => "failed", "validations" => array());
+            $mdlProxy = new Proxy();
+            $node = $mdlProxy->forward->acl->remoteACLs->blacklists->blacklist->Add();
+            $node->setNodes($this->request->getPost("blacklist"));
+            $valMsgs = $mdlProxy->performValidation();
+
+            foreach ($valMsgs as $field => $msg) {
+                $fieldnm = str_replace($node->__reference, "blacklist", $msg->getField());
+                if ($fieldnm != $msg->getField()) {
+                    // only collect validation errors for the item we're currently editing.
+                    $result["validations"][$fieldnm] = $msg->getMessage();
+                }
+
+            }
+
+            if (count($result['validations']) == 0) {
+                // we've already performed a validation, prevent issues from
+                // other items in the model reflecting back to us.
+                $mdlProxy->serializeToConfig($disable_validation = true);
+
+                // save config if validated correctly
+                Config::getInstance()->save();
+                $result = array("result" => "saved");
+            }
+            return $result;
+        }
+        return $result;
+    }
+
+    /**
+     * delete blacklist by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delRemoteBlacklistAction($uuid)
+    {
+
+        $result = array("result" => "failed");
+
+        if ($this->request->isPost()) {
+            $mdlProxy = new Proxy();
+            if ($uuid != null) {
+                if ($mdlProxy->forward->acl->remoteACLs->blacklists->blacklist->del($uuid)) {
+                    // if item is removed, serialize to config and save
+                    $mdlProxy->serializeToConfig($disable_validation = true);
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * toggle blacklist by uuid (enable/disable)
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function toggleRemoteBlacklistAction($uuid)
+    {
+
+        $result = array("result" => "failed");
+
+        if ($this->request->isPost()) {
+            $mdlProxy = new Proxy();
+            if ($uuid != null) {
+                $node = $mdlProxy->getNodeByReference('forward.acl.remoteACLs.blacklists.blacklist.' . $uuid);
+                if ($node != null) {
+                    if ($node->enabled->__toString() == "1") {
+                        $result['result'] = "Disabled";
+                        $node->enabled = "0";
+                    } else {
+                        $result['result'] = "Enabled";
+                        $node->enabled = "1";
+                    }
+                    // if item has toggled, serialize to config and save
+                    $mdlProxy->serializeToConfig($disable_validation = true);
+                    Config::getInstance()->save();
+                }
+            }
+        }
+        return $result;
+    }
+
+
 }
