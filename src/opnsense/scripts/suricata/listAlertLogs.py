@@ -33,9 +33,10 @@
 import os
 import glob
 import ujson
+from lib import suricata_alert_log
 
 result = []
-for filename in sorted(glob.glob('/var/log/suricata/eve.json*')):
+for filename in sorted(glob.glob('%s*'%suricata_alert_log)):
     row = dict()
     row['modified'] = os.stat(filename).st_mtime
     row['filename'] = filename.split('/')[-1]

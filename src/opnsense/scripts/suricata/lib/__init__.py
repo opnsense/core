@@ -27,3 +27,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 """
+# define paths used by suricata
+rule_source_directory='/usr/local/etc/suricata/rules/'
+suricata_alert_log='/var/log/suricata/eve.json'

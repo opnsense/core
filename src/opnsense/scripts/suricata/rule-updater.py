@@ -36,6 +36,7 @@ import fcntl
 from ConfigParser import ConfigParser
 from lib import metadata
 from lib import downloader
+from lib import rule_source_directory
 
 # check for a running update process, this may take a while so it's better to check...
 try:
@@ -49,7 +50,6 @@ if __name__ == '__main__':
     # load list of configured rules from generated config
     enabled_rulefiles=[]
     updater_conf='/usr/local/etc/suricata/rule-updater.config'
-    target_directory='/usr/local/etc/suricata/rules/'
     if os.path.exists(updater_conf):
         cnf = ConfigParser()
         cnf.read(updater_conf)
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     # download / remove rules
     md = metadata.Metadata()
-    dl = downloader.Downloader(target_dir=target_directory)
+    dl = downloader.Downloader(target_dir=rule_source_directory)
     for rule in md.list_rules():
         if 'url' in rule['source']:
             download_proto=str(rule['source']['url']).split(':')[0].lower()
@@ -67,7 +67,7 @@ if __name__ == '__main__':
                 if rule['filename'] not in enabled_rulefiles:
                     try:
                         # remove configurable but unselected file
-                        os.remove(('%s/%s'%(target_directory, rule['filename'])).replace('//', '/'))
+                        os.remove(('%s/%s'%(rule_source_directory, rule['filename'])).replace('//', '/'))
                     except:
                         pass
                 else:

@@ -34,20 +34,21 @@ import os.path
 import glob
 import sqlite3
 import shlex
+from lib import rule_source_directory
+
 
 class RuleCache(object):
     """
     """
     def __init__(self):
         # suricata rule settings, source directory and cache json file to use
-        self.rule_source_dir = '/usr/local/etc/suricata/rules/'
-        self.cachefile = '%srules.sqlite'%self.rule_source_dir
+        self.cachefile = '%srules.sqlite'%rule_source_directory
         self._rule_fields = ['sid','msg','classtype','rev','gid','source','enabled','reference']
         self._rule_defaults = {'classtype':'##none##'}
 
     def listLocal(self):
         all_rule_files=[]
-        for filename in glob.glob('%s*.rules'%(self.rule_source_dir)):
+        for filename in glob.glob('%s*.rules'%(rule_source_directory)):
             all_rule_files.append(filename)
 
         return all_rule_files

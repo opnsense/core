@@ -37,6 +37,7 @@ import shlex
 import ujson
 from lib.log import reverse_log_reader
 from lib.params import updateParams
+from lib import suricata_alert_log
 
 # handle parameters
 parameters = {'limit':'0','offset':'0', 'filter':'','fileid':''}
@@ -44,9 +45,9 @@ updateParams(parameters)
 
 # choose logfile by number
 if parameters['fileid'].isdigit():
-    suricata_log = '/var/log/suricata/eve.json.%d'%int(parameters['fileid'])
+    suricata_log = '%s.%d'%(suricata_alert_log,int(parameters['fileid']))
 else:
-    suricata_log = '/var/log/suricata/eve.json'
+    suricata_log = suricata_alert_log
 
 if parameters['limit'].isdigit():
     limit = int(parameters['limit'])
