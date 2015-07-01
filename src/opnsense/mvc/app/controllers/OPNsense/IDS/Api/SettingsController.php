@@ -222,10 +222,18 @@ class SettingsController extends ApiControllerBase
         $data = json_decode($response, true);
         if ($data != null && array_key_exists("items", $data)) {
             $result = array("items"=>array());
+            ksort($data['items']);
             foreach ($data['items'] as $filename => $fileinfo) {
                 $item = array();
                 $item['description'] = $fileinfo['description'];
                 $item['filename'] = $fileinfo['filename'];
+
+                // format timestamps
+                if ($fileinfo['modified_local'] == null) {
+                    $item['modified_local'] = null ;
+                } else {
+                    $item['modified_local'] = date('Y/m/d G:i', $fileinfo['modified_local']) ;
+                }
                 // retrieve status from model
                 $item['enabled'] = (string)$this->getModel()->getFileNode($fileinfo['filename'])->enabled;
                 $result['rows'][] = $item;
