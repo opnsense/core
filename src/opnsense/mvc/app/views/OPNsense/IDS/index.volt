@@ -101,8 +101,10 @@ POSSIBILITY OF SUCH DAMAGE.
         mapDataToFormUI(data_get_map).done(function(data){
             // set schedule updates link to cron
             $.each(data.frm_GeneralSettings.ids.general.UpdateCron, function(key, value) {
-                $("#scheduled_updates").attr("href","/ui/cron/item/open/"+key);
-                $("#scheduled_updates").show();
+                if (value.selected == 1) {
+                    $("#scheduled_updates").attr("href","/ui/cron/item/open/"+key);
+                    $("#scheduled_updates").show();
+                }
             });
             //alert(JSON.stringify(data.frm_GeneralSettings.ids.general.UpdateCron));
             formatTokenizersUI();
