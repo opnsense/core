@@ -41,6 +41,20 @@
                     <enable>/^(?!0).*$/</enable>
                 </filters>
             </interfaces>
+            <UpdateCron type="ModelRelationField">
+                <Model>
+                    <queues>
+                        <source>OPNsense.Cron.Cron</source>
+                        <items>jobs.job</items>
+                        <display>description</display>
+                        <filters>
+                            <origin>/IDS/</origin>
+                        </filters>
+                    </queues>
+                </Model>
+                <ValidationMessage>Related cron not found</ValidationMessage>
+                <Required>N</Required>
+            </UpdateCron>
         </general>
     </items>
 </model>
