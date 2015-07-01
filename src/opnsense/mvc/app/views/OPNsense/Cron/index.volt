@@ -56,10 +56,11 @@ POSSIBILITY OF SUCH DAMAGE.
             $("#btn_"+editDlg+"_save").unbind('click').click(function(){
                 saveFormToEndpoint(url=setUrl+uuid,
                         formid='frm_' + editDlg, callback_ok=function(){
-                            $("#"+editDlg).modal('hide');
-                            $("#grid-jobs").bootgrid("reload");
+                            // do reconfigure of cron after save (because we're leaving back to the sender)
+                            ajaxCall(url="/api/cron/service/reconfigure", sendData={}, callback=function(data,status) {
+                                $("#"+editDlg).modal('hide');
+                            });
                         }, true);
-                        // go back to where we came from.
             });
 
         }
