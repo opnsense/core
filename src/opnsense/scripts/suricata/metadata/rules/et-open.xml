@@ -2,8 +2,58 @@
 <ruleset>
     <location url="https://rules.emergingthreats.net/open/suricata/rules/"/>
     <files>
+        <file decription="botcc.portgrouped">botcc.portgrouped.rules</file>
+        <file decription="botcc">botcc.rules</file>
+        <file decription="ciarmy">ciarmy.rules</file>
+        <file decription="compromised">compromised.rules</file>
+        <file decription="decoder-events">decoder-events.rules</file>
+        <file decription="drop">drop.rules</file>
+        <file decription="dshield">dshield.rules</file>
+        <file decription="emerging-activex">emerging-activex.rules</file>
+        <file decription="emerging-attack_response">emerging-attack_response.rules</file>
+        <file decription="emerging-chat">emerging-chat.rules</file>
+        <file decription="emerging-current_events">emerging-current_events.rules</file>
+        <file decription="emerging-deleted">emerging-deleted.rules</file>
+        <file decription="emerging-dns">emerging-dns.rules</file>
+        <file decription="emerging-dos">emerging-dos.rules</file>
+        <file decription="emerging-exploit">emerging-exploit.rules</file>
+        <file decription="emerging-ftp">emerging-ftp.rules</file>
+        <file decription="emerging-games">emerging-games.rules</file>
+        <file decription="emerging-icmp">emerging-icmp.rules</file>
+        <file decription="emerging-icmp_info">emerging-icmp_info.rules</file>
+        <file decription="emerging-imap">emerging-imap.rules</file>
+        <file decription="emerging-inappropriate">emerging-inappropriate.rules</file>
+        <file decription="emerging-info">emerging-info.rules</file>
+        <file decription="emerging-malware">emerging-malware.rules</file>
+        <file decription="emerging-misc">emerging-misc.rules</file>
+        <file decription="emerging-mobile_malware">emerging-mobile_malware.rules</file>
+        <file decription="emerging-netbios">emerging-netbios.rules</file>
+        <file decription="emerging-p2p">emerging-p2p.rules</file>
+        <file decription="emerging-policy">emerging-policy.rules</file>
+        <file decription="emerging-pop3">emerging-pop3.rules</file>
+        <file decription="emerging-rpc">emerging-rpc.rules</file>
+        <file decription="emerging-scada">emerging-scada.rules</file>
+        <file decription="emerging-scan">emerging-scan.rules</file>
         <file decription="emerging-shellcode">emerging-shellcode.rules</file>
         <file decription="emerging-smtp">emerging-smtp.rules</file>
-        <file>emerging-sql.rules</file>
+        <file decription="emerging-snmp">emerging-snmp.rules</file>
+        <file decription="emerging-sql">emerging-sql.rules</file>
+        <file decription="emerging-telnet">emerging-telnet.rules</file>
+        <file decription="emerging-tftp">emerging-tftp.rules</file>
+        <file decription="emerging-trojan">emerging-trojan.rules</file>
+        <file decription="emerging-user_agents">emerging-user_agents.rules</file>
+        <file decription="emerging-voip">emerging-voip.rules</file>
+        <file decription="emerging-web_client">emerging-web_client.rules</file>
+        <file decription="emerging-web_server">emerging-web_server.rules</file>
+        <file decription="emerging-web_specific_apps">emerging-web_specific_apps.rules</file>
+        <file decription="emerging-worm">emerging-worm.rules</file>
+        <file decription="files">files.rules</file>
+        <file decription="http-events">http-events.rules</file>
+        <file decription="rbn-malvertisers">rbn-malvertisers.rules</file>
+        <file decription="rbn">rbn.rules</file>
+        <file decription="smtp-events">smtp-events.rules</file>
+        <file decription="stream-events">stream-events.rules</file>
+        <file decription="tls-events">tls-events.rules</file>
+        <file decription="tor">tor.rules</file>
     </files>
 </ruleset>
