@@ -55,6 +55,16 @@ $tcpflags = array("syn", "ack", "fin", "rst", "psh", "urg", "ece", "cwr");
 
 /* Default sysctls */
 $sysctls = array(
+	"debug.pfftpproxy" => "0",
+	"hw.syscons.kbd_reboot" => "0",
+	"kern.ipc.maxsockbuf" => "4262144",
+	"kern.randompid" => "347",
+	"kern.random.sys.harvest.interrupt" => 0,
+	"kern.random.sys.harvest.point_to_point" => 0,
+	"kern.random.sys.harvest.ethernet" => 0,
+	"kern.filedelay" => "5",
+	"kern.dirdelay" => "4",
+	"kern.metadelay" => "3",
 	"net.inet.ip.portrange.first" => "1024",
 	"net.inet.tcp.blackhole" => "2",
 	"net.inet.udp.blackhole" => "1",
@@ -74,23 +84,16 @@ $sysctls = array(
 	"net.link.bridge.pfil_member" => "1",
 	"net.link.bridge.pfil_bridge" => "0",
 	"net.link.tap.user_open" => "1",
-	"kern.randompid" => "347",
 	"net.inet.ip.intr_queue_maxlen" => "1000",
-	"hw.syscons.kbd_reboot" => "0",
 	"net.inet.tcp.log_debug" => "0",
 	"net.inet.tcp.tso" => "1",
 	"net.inet.icmp.icmplim" => "0",
-	"vfs.read_max" => "32",
-	"kern.ipc.maxsockbuf" => "4262144",
-	"debug.pfftpproxy" => "0",
 	"net.inet.ip.process_options" => 0,
-	"kern.random.sys.harvest.interrupt" => 0,
-	"kern.random.sys.harvest.point_to_point" => 0,
-	"kern.random.sys.harvest.ethernet" => 0,
 	"net.route.netisr_maxqlen" => 1024,
 	"net.inet.udp.checksum" => 1,
 	"net.bpf.zerocopy_enable" => 1,
 	"net.inet.icmp.reply_from_interface" => 1,
+	"vfs.read_max" => "32",
 );
 
 function is_install_media()
