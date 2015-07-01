@@ -156,6 +156,40 @@ class ServiceController extends ApiControllerBase
     }
 
     /**
+     * download and update rules
+     * @param null|string $wait wait for update to complete (default) or run in background and return message id
+     * @return array
+     * @throws \Exception
+     */
+    public function updateRulesAction($wait = null)
+    {
+        $status = "failed";
+        if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+            $backend = new Backend();
+            // we have to trigger a template reload to be sure we have the right download configuration
+            // ideally we should only regenerate the download config, but that's not supported at the moment.
+            // (not sure if it should be supported)
+            $bckresult = trim($backend->configdRun("template reload OPNsense.IDS"));
+
+            if ($bckresult == "OK") {
+                if ($wait != null) {
+                    $detach = true;
+                } else {
+                    $detach = false;
+                }
+
+                $status = $backend->configdRun("ids update", $detach);
+            } else {
+                $status = "template error";
+            }
+        }
+
+        return array("status" => $status);
+    }
+
+    /**
      * query suricata alerts
      * @return array
      */
