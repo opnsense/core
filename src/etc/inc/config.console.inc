@@ -149,11 +149,11 @@ EOD;
 		}
 	} while (!$lanif);
 
-	/* optional interfaces */
-	$optif = array();
-	$i = 0;
+	while ($lanif != '') {
+		/* optional interfaces */
+		$optif = array();
+		$i = 0;
 
-	if ($lanif != '') {
 		while (1) {
 			if ($optif[$i])
 				$i++;
@@ -188,6 +188,8 @@ EOD;
 		/* check for double assignments */
 		$ifarr = array_merge(array($lanif, $wanif), $optif);
 
+		$again = false;
+
 		for ($i = 0; $i < (count($ifarr)-1); $i++) {
 			for ($j = ($i+1); $j < count($ifarr); $j++) {
 				if ($ifarr[$i] == $ifarr[$j]) {
@@ -196,10 +198,14 @@ EOD;
 Error: you cannot assign the same interface name twice!
 
 EOD;
-					fclose($fp);
-					return false;
+
+					$again = true;
 				}
 			}
+		}
+
+		if ($again) {
+			continue;
 		}
 
 		echo "\n" . gettext("The interfaces will be assigned as follows:") . "\n\n";
@@ -221,135 +227,90 @@ EOD;
 			$key = 'y';
 			echo $key . PHP_EOL;
 		}
+
+		if (in_array($key, array('y', 'Y'))) {
+			break;
+		}
 	}
 
-	if (!$interactive) {
-		$key = 'y';
+	if ($lanif) {
+		if (!is_array($config['interfaces']['lan'])) {
+			$config['interfaces']['lan'] = array();
+		}
+		$config['interfaces']['lan']['if'] = $lanif;
+		$config['interfaces']['lan']['enable'] = true;
+	} else {
+		if(isset($config['interfaces']['lan']['if']))
+			mwexec("/sbin/ifconfig " . $config['interfaces']['lan']['if'] . " delete");
+		if(isset($config['interfaces']['lan']))
+			unset($config['interfaces']['lan']);
+		if(isset($config['dhcpd']['lan']))
+			unset($config['dhcpd']['lan']);
+		if(isset($config['interfaces']['lan']['if']))
+			unset($config['interfaces']['lan']['if']);
+		if(isset($config['interfaces']['wan']['blockpriv']))
+			unset($config['interfaces']['wan']['blockpriv']);
+		if(isset($config['nat']))
+			unset($config['nat']);
 	}
 
-	if (in_array($key, array('y', 'Y'))) {
-		if ($lanif) {
-			if (!is_array($config['interfaces']['lan'])) {
-				$config['interfaces']['lan'] = array();
-			}
-			$config['interfaces']['lan']['if'] = $lanif;
-			$config['interfaces']['lan']['enable'] = true;
-		} elseif (!file_exists('/var/run/booting') &&
-			isset($config['interfaces']['lan'])) {
-
-echo <<<EODD
-
-You have chosen to remove the LAN interface.
-
-Would you like to remove the LAN IP address and
-unload the interface now ${yes_no_prompt}
-EODD;
-
-				if ($interactive) {
-					$key = chop(fgets($fp));
-				} else {
-					$key = 'y';
-					echo $key . PHP_EOL;
-				}
-				if (strcasecmp($key, 'y') == 0) {
-					if(isset($config['interfaces']['lan']) && $config['interfaces']['lan']['if'])
-						mwexec("/sbin/ifconfig " . $config['interfaces']['lan']['if'] . " delete");
-				}
-				if(isset($config['interfaces']['lan']))
-					unset($config['interfaces']['lan']);
-				if(isset($config['dhcpd']['lan']))
-					unset($config['dhcpd']['lan']);
-				if(isset($config['interfaces']['lan']['if']))
-					unset($config['interfaces']['lan']['if']);
-				if(isset($config['interfaces']['wan']['blockpriv']))
-					unset($config['interfaces']['wan']['blockpriv']);
-				if(isset($config['shaper']))
-					unset($config['shaper']);
-				if(isset($config['ezshaper']))
-					unset($config['ezshaper']);
-				if(isset($config['nat']))
-					unset($config['nat']);
-		} else {
-			if(isset($config['interfaces']['lan']['if']))
-				mwexec("/sbin/ifconfig " . $config['interfaces']['lan']['if'] . " delete");
-			if(isset($config['interfaces']['lan']))
-				unset($config['interfaces']['lan']);
-			if(isset($config['dhcpd']['lan']))
-				unset($config['dhcpd']['lan']);
-			if(isset($config['interfaces']['lan']['if']))
-				unset($config['interfaces']['lan']['if']);
-			if(isset($config['interfaces']['wan']['blockpriv']))
-				unset($config['interfaces']['wan']['blockpriv']);
-			if(isset($config['shaper']))
-				unset($config['shaper']);
-			if(isset($config['ezshaper']))
-				unset($config['ezshaper']);
-			if(isset($config['nat']))
-				unset($config['nat']);
+	if (match_wireless_interface($lanif)) {
+		if (is_array($config['interfaces']['lan']) &&
+			(!is_array($config['interfaces']['lan']['wireless']))) {
+			$config['interfaces']['lan']['wireless'] = array();
 		}
-
-		if (match_wireless_interface($lanif)) {
-			if (is_array($config['interfaces']['lan']) &&
-				(!is_array($config['interfaces']['lan']['wireless']))) {
-				$config['interfaces']['lan']['wireless'] = array();
-			}
-		} else {
-			if (isset($config['interfaces']['lan'])) {
-				unset($config['interfaces']['lan']['wireless']);
-			}
+	} else {
+		if (isset($config['interfaces']['lan'])) {
+			unset($config['interfaces']['lan']['wireless']);
 		}
-
-		if (!is_array($config['interfaces']['wan'])) {
-			$config['interfaces']['wan'] = array();
-		}
-
-		$config['interfaces']['wan']['if'] = $wanif;
-		$config['interfaces']['wan']['enable'] = true;
-
-		if (match_wireless_interface($wanif)) {
-			if (is_array($config['interfaces']['wan']) &&
-				(!is_array($config['interfaces']['wan']['wireless']))) {
-				$config['interfaces']['wan']['wireless'] = array();
-			}
-		} else {
-			if (isset($config['interfaces']['wan'])) {
-				unset($config['interfaces']['wan']['wireless']);
-			}
-		}
-
-		for ($i = 0; $i < count($optif); $i++) {
-			if (!is_array($config['interfaces']['opt' . ($i+1)]))
-				$config['interfaces']['opt' . ($i+1)] = array();
-
-			$config['interfaces']['opt' . ($i+1)]['if'] = $optif[$i];
-
-			if (match_wireless_interface($optif[$i])) {
-				if (!is_array($config['interfaces']['opt' . ($i+1)]['wireless']))
-					$config['interfaces']['opt' . ($i+1)]['wireless'] = array();
-			} else {
-				unset($config['interfaces']['opt' . ($i+1)]['wireless']);
-			}
-
-			if (empty($config['interfaces']['opt' . ($i+1)]['descr'])) {
-				$config['interfaces']['opt' . ($i+1)]['descr'] = "OPT" . ($i+1);
-				unset($config['interfaces']['opt' . ($i+1)]['enable']);
-			}
-		}
-
-		/* remove all other (old) optional interfaces */
-		for (; isset($config['interfaces']['opt' . ($i+1)]); $i++)
-			unset($config['interfaces']['opt' . ($i+1)]);
-
-		printf(gettext("%sWriting configuration..."), "\n");
-		write_config("Console assignment of interfaces");
-		printf(gettext("done.%s"), "\n");
-
-		fclose($fp);
-
-		return true;
 	}
 
-	return false;
+	if (!is_array($config['interfaces']['wan'])) {
+		$config['interfaces']['wan'] = array();
+	}
+
+	$config['interfaces']['wan']['if'] = $wanif;
+	$config['interfaces']['wan']['enable'] = true;
+
+	if (match_wireless_interface($wanif)) {
+		if (is_array($config['interfaces']['wan']) &&
+			(!is_array($config['interfaces']['wan']['wireless']))) {
+			$config['interfaces']['wan']['wireless'] = array();
+		}
+	} else {
+		if (isset($config['interfaces']['wan'])) {
+			unset($config['interfaces']['wan']['wireless']);
+		}
+	}
+
+	for ($i = 0; $i < count($optif); $i++) {
+		if (!is_array($config['interfaces']['opt' . ($i+1)]))
+			$config['interfaces']['opt' . ($i+1)] = array();
+
+		$config['interfaces']['opt' . ($i+1)]['if'] = $optif[$i];
+
+		if (match_wireless_interface($optif[$i])) {
+			if (!is_array($config['interfaces']['opt' . ($i+1)]['wireless']))
+				$config['interfaces']['opt' . ($i+1)]['wireless'] = array();
+		} else {
+			unset($config['interfaces']['opt' . ($i+1)]['wireless']);
+		}
+
+		if (empty($config['interfaces']['opt' . ($i+1)]['descr'])) {
+			$config['interfaces']['opt' . ($i+1)]['descr'] = "OPT" . ($i+1);
+			unset($config['interfaces']['opt' . ($i+1)]['enable']);
+		}
+	}
+
+	/* remove all other (old) optional interfaces */
+	for (; isset($config['interfaces']['opt' . ($i+1)]); $i++)
+		unset($config['interfaces']['opt' . ($i+1)]);
+
+	printf(gettext("%sWriting configuration..."), "\n");
+	write_config("Console assignment of interfaces");
+	printf(gettext("done.%s"), "\n");
+
+	fclose($fp);
 }
 
 function autodetect_interface($ifname, $fp)

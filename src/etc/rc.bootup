@@ -149,12 +149,9 @@ if (is_interface_mismatch()) {
 		}
 	}
 
-	$done = false;
-	do {
-		led_assigninterfaces();
-		$done = set_networking_interfaces_ports();
-		led_kitt();
-	} while (!$done);
+	led_assigninterfaces();
+	set_networking_interfaces_ports();
+	led_kitt();
 }
 
 /* convert config and clean backups */
