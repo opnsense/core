@@ -162,62 +162,68 @@ EOD;
 		}
 	} while (!$lanif);
 
-	while ($lanif != '') {
+	$done = !$lanif;	/* only if lan was set */
+	while (!$done) {
 		/* optional interfaces */
 		$optif = array();
 		$i = 0;
 
 		while (1) {
-			if ($optif[$i])
+			if ($optif[$i]) {
 				$i++;
+			}
 			$io = $i + 1;
 
-			if($config['interfaces']['opt' . $io]['descr'])
+			if ($config['interfaces']['opt' . $io]['descr']) {
 				printf(gettext("%sOptional interface %s description found: %s"), "\n", $io, $config['interfaces']['opt' . $io]['descr']);
+			}
 
 			printf(gettext("%sEnter the Optional %s interface name or 'a' for auto-detection%s" .
 				"(or nothing if finished):%s"), "\n", $io, "\n", " ");
 
 			$optif[$i] = chop(fgets($fp));
 
-			if ($optif[$i]) {
-				if ($optif[$i] === "a") {
-					$ad = autodetect_interface(gettext("Optional") . " " . $io, $fp);
-					if ($ad)
-						$optif[$i] = $ad;
-					else
-						unset($optif[$i]);
-				} else if (!array_key_exists($optif[$i], $iflist)) {
-					printf(gettext("%sInvalid interface name '%s'%s"), "\n", $optif[$i], "\n");
+			if ($optif[$i] == '') {
+				unset($optif[$i]);
+				$done = true;
+				break;
+			}
+
+			if ($optif[$i] == 'a') {
+				$ad = autodetect_interface(gettext("Optional") . " " . $io, $fp);
+				if (!$ad) {
 					unset($optif[$i]);
 					continue;
 				}
-			} else {
-				unset($optif[$i]);
-				break;
+				$optif[$i] = $ad;
 			}
-		}
 
-		/* check for double assignments */
-		$ifarr = array_merge(array($lanif, $wanif), $optif);
+			if (!array_key_exists($optif[$i], $iflist)) {
+				printf(gettext("%sInvalid interface name '%s'%s"), "\n", $optif[$i], "\n");
+				unset($optif[$i]);
+				continue;
+			}
 
-		$again = false;
+			/* check for double assignments */
+			$ifarr = array_merge(array($lanif, $wanif), $optif);
+			$again = false;
 
-		for ($i = 0; $i < (count($ifarr)-1); $i++) {
-			for ($j = ($i+1); $j < count($ifarr); $j++) {
-				if ($ifarr[$i] == $ifarr[$j]) {
-					$again = true;
-					echo <<<EOD
+			for ($k = 0; $k < (count($ifarr)-1); $k++) {
+				for ($j = ($k+1); $j < count($ifarr); $j++) {
+					if ($ifarr[$k] == $ifarr[$j]) {
+						$again = true;
+						echo <<<EOD
 
 Error: you cannot assign the same interface name twice!
 
 EOD;
+					}
 				}
 			}
-		}
 
-		if ($again) {
-			continue;
+			if ($again) {
+				unset($optif[$i]);
+			}
 		}
 	}
 
