@@ -723,11 +723,15 @@ function get_configured_interface_list($only_opt = false, $withdisabled = false)
 	$iflist = array();
 
 	/* if list */
-	foreach($config['interfaces'] as $if => $ifdetail) {
-		if ($only_opt && ($if == "wan" || $if == "lan"))
-			continue;
-		if (isset($ifdetail['enable']) || $withdisabled == true)
-			$iflist[$if] = $if;
+	if (isset($config['interfaces'])) {
+		foreach($config['interfaces'] as $if => $ifdetail) {
+			if ($only_opt && ($if == "wan" || $if == "lan")) {
+				continue;
+			}
+			if (isset($ifdetail['enable']) || $withdisabled == true) {
+				$iflist[$if] = $if;
+			}
+		}
 	}
 
 	return $iflist;
@@ -740,13 +744,15 @@ function get_configured_interface_list_by_realif($only_opt = false, $withdisable
 	$iflist = array();
 
 	/* if list */
-	foreach($config['interfaces'] as $if => $ifdetail) {
-		if ($only_opt && ($if == "wan" || $if == "lan"))
-			continue;
-		if (isset($ifdetail['enable']) || $withdisabled == true) {
-			$tmpif = get_real_interface($if);
-			if (!empty($tmpif))
-				$iflist[$tmpif] = $if;
+	if (isset($config['interfaces'])) {
+		foreach($config['interfaces'] as $if => $ifdetail) {
+			if ($only_opt && ($if == "wan" || $if == "lan"))
+				continue;
+			if (isset($ifdetail['enable']) || $withdisabled == true) {
+				$tmpif = get_real_interface($if);
+				if (!empty($tmpif))
+					$iflist[$tmpif] = $if;
+			}
 		}
 	}
 
@@ -760,14 +766,16 @@ function get_configured_interface_with_descr($only_opt = false, $withdisabled = 
 	$iflist = array();
 
 	/* if list */
-	foreach($config['interfaces'] as $if => $ifdetail) {
-		if ($only_opt && ($if == "wan" || $if == "lan"))
-			continue;
-		if (isset($ifdetail['enable']) || $withdisabled == true) {
-			if(empty($ifdetail['descr']))
-				$iflist[$if] = strtoupper($if);
-			else
-				$iflist[$if] = strtoupper($ifdetail['descr']);
+	if (isset($config['interfaces'])) {
+		foreach($config['interfaces'] as $if => $ifdetail) {
+			if ($only_opt && ($if == "wan" || $if == "lan"))
+				continue;
+			if (isset($ifdetail['enable']) || $withdisabled == true) {
+				if(empty($ifdetail['descr']))
+					$iflist[$if] = strtoupper($if);
+				else
+					$iflist[$if] = strtoupper($ifdetail['descr']);
+			}
 		}
 	}
 
@@ -921,9 +929,10 @@ function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "")
 					$toput['ipaddr'] = $aip[1];
 				}
 			}
-			if (is_array($config['interfaces'])) {
-				foreach($config['interfaces'] as $name => $int)
+			if (isset($config['interfaces'])) {
+				foreach($config['interfaces'] as $name => $int) {
 					if($int['if'] == $ifname) $friendly = $name;
+				}
 			}
 			switch($keyby) {
 			case "physical":
@@ -1410,7 +1419,7 @@ function is_interface_mismatch()
 	$do_assign = false;
 	$i = 0;
 
-	if (is_array($config['interfaces'])) {
+	if (isset($config['interfaces'])) {
 		foreach ($config['interfaces'] as $ifname => $ifcfg) {
 			if (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
 				/* Do not check these interfaces */

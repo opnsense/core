@@ -41,6 +41,12 @@ $machine = trim(`uname -m`);
 print "\n*** Welcome to {$product} {$version} ({$machine}) on {$hostname} ***\n";
 
 $iflist = get_configured_interface_with_descr(false, true);
+
+if (empty($iflist)) {
+	printf("\n\tNo network interfaces are assigned.\n");
+	return;
+}
+
 foreach($iflist as $ifname => $friendly) {
 	/* point to this interface's config */
 	$ifconf = $config['interfaces'][$ifname];
