@@ -33,14 +33,23 @@ function set_networking_interfaces_ports()
 	global $config;
 	global $fp;
 
-	$yes_no_prompt = '[y|n]? ';
-
 	$fp = fopen('php://stdin', 'r');
+	$yes_no_prompt = '[y|n]? ';
+	$interactive = true;
+	$key = null;
 
 	$iflist = get_interface_list();
 
-	/* Function flow is based on $key */
-	$key = null;
+	echo PHP_EOL . gettext('Press any key to start the manual interface assignment:  ');
+
+	$key = timeout(7);
+	if (!isset($key)) {
+		$interactive = false;
+	}
+
+	if ($key != "\n") {
+		echo PHP_EOL;
+	}
 
 	echo <<<EOD
 
@@ -48,7 +57,7 @@ Valid interfaces are:
 
 EOD;
 
-	if(!is_array($iflist)) {
+	if (!is_array($iflist)) {
 		echo gettext("No interfaces found!") . "\n";
 		$iflist = array();
 	} else {
@@ -58,29 +67,31 @@ EOD;
 		}
 	}
 
+	$ifnames = array_keys($iflist);
+
 	echo <<<EOD
 
-Do you want to set up VLANs first?
-
-If you are not going to use VLANs, or only for optional interfaces, you should
-say no here and use the webConfigurator to configure VLANs later, if required.
+You now have the opportunity to configure VLANs.  If you don't require VLANs
+for initial connectivity, say no here and use the GUI to configure VLANs later.
 
 Do you want to set up VLANs now ${yes_no_prompt}
 EOD;
+	if ($interactive) {
+		$key = chop(fgets($fp));
+	} else {
+		$key = 'n';
+		echo $key . PHP_EOL;
+	}
 
-	$key = chop(fgets($fp));
-
-	if (in_array($key, array('y', 'Y')))
+	if (in_array($key, array('y', 'Y'))) {
 		vlan_setup();
+	}
 
-	if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
-
+	if (isset($config['vlans']['vlan'])) {
 		echo "\n\n" . gettext("VLAN interfaces:") . "\n\n";
 		foreach ($config['vlans']['vlan'] as $vlan) {
-
 			echo sprintf("% -16s%s\n", "{$vlan['if']}_vlan{$vlan['tag']}",
 				"VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}");
-
 			$iflist[$vlan['if'] . '_vlan' . $vlan['tag']] = array();
 		}
 	}
@@ -95,13 +106,18 @@ EOD;
 
 	do {
 		echo "\n" . gettext("Enter the WAN interface name or 'a' for auto-detection:") . " ";
-		$wanif = chop(fgets($fp));
-		if ($wanif === "") {
+		if ($interactive) {
+			$wanif = chop(fgets($fp));
+		} else {
+			$wanif = $ifnames[0];
+			echo $wanif . PHP_EOL;
+		}
+		if ($wanif == '') {
 			return;
 		}
-		if ($wanif === "a")
-			$wanif = autodetect_interface("WAN", $fp);
-		else if (!array_key_exists($wanif, $iflist)) {
+		if ($wanif == 'a') {
+			$wanif = autodetect_interface('WAN', $fp);
+		} elseif (!array_key_exists($wanif, $iflist)) {
 			printf(gettext("%sInvalid interface name '%s'%s"), "\n", $wanif, "\n");
 			unset($wanif);
 			continue;
@@ -113,19 +129,19 @@ EOD;
 		    "NOTE: this enables full Firewalling/NAT mode.%s" .
 			"(or nothing if finished):%s"), "\n", "\n", "\n", " ");
 
-		$lanif = chop(fgets($fp));
-
-		if($lanif == "exit") {
-			exit;
+		if ($interactive) {
+			$lanif = chop(fgets($fp));
+		} else {
+			$lanif = '';
+			echo $lanif . PHP_EOL;
 		}
 
-		if($lanif == "") {
+		if ($lanif == '') {
 			break;
 		}
-
-		if ($lanif === "a")
-			$lanif = autodetect_interface("LAN", $fp);
-		else if (!array_key_exists($lanif, $iflist)) {
+		if ($lanif == 'a') {
+			$lanif = autodetect_interface('LAN', $fp);
+		} elseif (!array_key_exists($lanif, $iflist)) {
 			printf(gettext("%sInvalid interface name '%s'%s"), "\n", $lanif, "\n");
 			unset($lanif);
 			continue;
@@ -133,10 +149,10 @@ EOD;
 	} while (!$lanif);
 
 	/* optional interfaces */
-	$i = 0;
 	$optif = array();
+	$i = 0;
 
-	if($lanif <> "") {
+	if ($lanif != '') {
 		while (1) {
 			if ($optif[$i])
 				$i++;
@@ -198,16 +214,27 @@ EOD;
 
 Do you want to proceed ${yes_no_prompt}
 EOD;
+		if ($interactive) {
 			$key = chop(fgets($fp));
+		} else {
+			$key = 'y';
+			echo $key . PHP_EOL;
+		}
+	}
+
+	if (!$interactive) {
+		$key = 'y';
 	}
 
 	if (in_array($key, array('y', 'Y'))) {
-		if($lanif) {
-			if (!is_array($config['interfaces']['lan']))
+		if ($lanif) {
+			if (!is_array($config['interfaces']['lan'])) {
 				$config['interfaces']['lan'] = array();
+			}
 			$config['interfaces']['lan']['if'] = $lanif;
 			$config['interfaces']['lan']['enable'] = true;
-		} elseif (!file_exists("/var/run/booting")) {
+		} elseif (!file_exists('/var/run/booting') &&
+			isset($config['interfaces']['lan'])) {
 
 echo <<<EODD
 
@@ -217,7 +244,13 @@ Would you like to remove the LAN IP address and
 unload the interface now ${yes_no_prompt}
 EODD;
 
-				if (strcasecmp(chop(fgets($fp)), "y") == 0) {
+				if ($interactive) {
+					$key = chop(fgets($fp));
+				} else {
+					$key = 'y';
+					echo $key . PHP_EOL;
+				}
+				if (strcasecmp($key, 'y') == 0) {
 					if(isset($config['interfaces']['lan']) && $config['interfaces']['lan']['if'])
 						mwexec("/sbin/ifconfig " . $config['interfaces']['lan']['if'] . " delete");
 				}
@@ -320,7 +353,6 @@ EODD;
 		echo gettext(" done!") . "\n";
 
 		touch('/tmp/assign_complete');
-
 	}
 }
 

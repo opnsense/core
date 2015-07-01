@@ -1458,18 +1458,21 @@ function isAjax() {
  * RESULT
  *   returns 1 char of user input or null if no input.
  ******/
-function timeout($timer = 9) {
-	while(!isset($key)) {
+function timeout($timer = 9)
+{
+	while (!isset($key)) {
 		if ($timer >= 9) { echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";  }
 		else { echo chr(8). "{$timer}"; }
-		`/bin/stty -icanon min 0 time 25`;
-		$key = trim(`KEY=\`dd count=1 2>/dev/null\`; echo \$KEY`);
-		`/bin/stty icanon`;
-		if ($key == '')
+		shell_exec('/bin/stty -icanon min 0 time 25');
+		$key = shell_exec('/bin/dd count=1 status=none');
+		shell_exec('/bin/stty icanon');
+		if ($key == '') {
 			unset($key);
+		}
 		$timer--;
-		if ($timer == 0)
+		if ($timer == 0) {
 			break;
+		}
 	}
 	return $key;
 }
