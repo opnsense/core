@@ -56,7 +56,7 @@ function upload_crash_report($files)
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 	$response = curl_exec($ch);
 
-	return $response;
+	return !$response;
 }
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Crash Reporter"));
@@ -98,11 +98,11 @@ $crash_report_header = sprintf(
 		@rename('/tmp/PHP_errors.log', '/var/crash/PHP_errors.log');
 		exec('/usr/bin/gzip /var/crash/*');
 		$files_to_upload = glob('/var/crash/*');
-		echo '<br/>' . gettext('Uploading...');
+		echo gettext('ok') . '<br/>' . gettext('Uploading...');
 		ob_flush();
 		flush();
 		$resp = upload_crash_report($files_to_upload);
-		echo '<br/>' . print_r($resp) . '</p>';
+		echo ($resp ? gettext('ok') : gettext('failed')) . '</p>';
 		array_map('unlink', $files_to_upload);
 	} elseif ($_POST['Submit'] == 'no') {
 		array_map('unlink', glob('/var/crash/*'));
