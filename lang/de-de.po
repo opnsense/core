@@ -1644,7 +1644,7 @@ msgid "done"
 msgstr "erledigt."
 
 msgid "Configuring l2tp VPN service... "
-msgstr "Konfiguriere  I2TP VPN Dienst... "
+msgstr "Konfiguriere  L2TP VPN Dienst... "
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_l2tp_configure()."
