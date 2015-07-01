@@ -29,6 +29,40 @@ POSSIBILITY OF SUCH DAMAGE.
 <script type="text/javascript">
 
     $( document ).ready(function() {
+        /**
+         * inline open dialog, go back to previous page on exit
+         */
+        function openDialog(uuid) {
+            var editDlg = "DialogEdit";
+            var setUrl = "/api/cron/settings/setJob/";
+            var getUrl = "/api/cron/settings/getJob/";
+            var urlMap = {};
+            urlMap['frm_' + editDlg] = getUrl + uuid;
+            mapDataToFormUI(urlMap).done(function () {
+                // update selectors
+                $('.selectpicker').selectpicker('refresh');
+                // clear validation errors (if any)
+                clearFormValidation('frm_' + editDlg);
+                // show
+                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+                $('#'+editDlg).on('hidden.bs.modal', function () {
+                    // go back to previous page on exit
+                    parent.history.back();
+                });
+            });
+
+
+            // define save action
+            $("#btn_"+editDlg+"_save").unbind('click').click(function(){
+                saveFormToEndpoint(url=setUrl+uuid,
+                        formid='frm_' + editDlg, callback_ok=function(){
+                            $("#"+editDlg).modal('hide');
+                            $("#grid-jobs").bootgrid("reload");
+                        }, true);
+                        // go back to where we came from.
+            });
+
+        }
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
@@ -42,6 +76,10 @@ POSSIBILITY OF SUCH DAMAGE.
                     'toggle':'/api/cron/settings/toggleJob/'
                 }
         );
+
+        {% if (selected_uuid|default("") != "") %}
+            openDialog(uuid='{{selected_uuid}}');
+        {% endif %}
 
         /*************************************************************************************************************
          * Commands
