@@ -615,7 +615,7 @@ msgid "realif not defined in interfaces bridge - up"
 msgstr ""
 
 msgid "bridgeif not defined -- could not bring interface up"
-msgstr "Bridgeinterface nicht definiert -- konnte interface nicht aktivieren"
+msgstr "Bridgeinterface nicht definiert -- konnte Interface nicht aktivieren"
 
 msgid "Configuring LAGG interfaces..."
 msgstr "Konfiguriere LAGG Interfaces..."
@@ -6805,7 +6805,7 @@ msgid "This bridge cannot be deleted because it is assigned as an interface."
 msgstr ""
 
 msgid "Bridge"
-msgstr "Brigge"
+msgstr "Bridge"
 
 msgid "Members"
 msgstr ""
