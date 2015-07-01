@@ -94,6 +94,7 @@ function mapDataToFormUI(data_get_map) {
         data_map_count += 1;
     });
 
+    var collected_data = {};
     $.each(data_get_map, function(data_index, data_url) {
         ajaxGet(url=data_url,sendData={}, callback=function(data, status) {
             if (status == "success") {
@@ -101,11 +102,12 @@ function mapDataToFormUI(data_get_map) {
                     if ( $(this).attr('id').split('-')[0] == data_index) {
                         // related form found, load data
                         setFormData($(this).attr('id'), data);
+                        collected_data[$(this).attr('id')] = data;
                     }
                 });
             }
             if (data_map_seq == data_map_count) {
-                dfObj.resolve(data_map_seq);
+                dfObj.resolve(collected_data);
             }
             data_map_seq += 1;
         });
