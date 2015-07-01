@@ -150,7 +150,7 @@ if (is_interface_mismatch()) {
 	}
 
 	led_assigninterfaces();
-	set_networking_interfaces_ports();
+	while (!set_networking_interfaces_ports());
 	led_kitt();
 }
 

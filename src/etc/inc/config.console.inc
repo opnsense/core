@@ -219,33 +219,33 @@ EOD;
 		if ($again) {
 			continue;
 		}
+	}
 
-		echo "\n" . gettext("The interfaces will be assigned as follows:") . "\n\n";
+	echo "\n" . gettext("The interfaces will be assigned as follows:") . "\n\n";
 
-		if ($wanif != '') {
-			echo "WAN  -> " . $wanif . "\n";
-		}
-		if ($lanif != '') {
-			echo "LAN  -> " . $lanif . "\n";
-		}
-		for ($i = 0; $i < count($optif); $i++) {
-			echo "OPT" . ($i+1) . " -> " . $optif[$i] . "\n";
-		}
+	if ($wanif != '') {
+		echo "WAN  -> " . $wanif . "\n";
+	}
+	if ($lanif != '') {
+		echo "LAN  -> " . $lanif . "\n";
+	}
+	for ($i = 0; $i < count($optif); $i++) {
+		echo "OPT" . ($i+1) . " -> " . $optif[$i] . "\n";
+	}
 
-		echo <<<EOD
+	echo <<<EOD
 
 Do you want to proceed ${yes_no_prompt}
 EOD;
-		if ($interactive) {
-			$key = chop(fgets($fp));
-		} else {
-			$key = 'y';
-			echo $key . PHP_EOL;
-		}
+	if ($interactive) {
+		$key = chop(fgets($fp));
+	} else {
+		$key = 'y';
+		echo $key . PHP_EOL;
+	}
 
-		if (in_array($key, array('y', 'Y'))) {
-			break;
-		}
+	if (!in_array($key, array('y', 'Y'))) {
+		return false;
 	}
 
 	if ($lanif) {
@@ -332,6 +332,8 @@ EOD;
 	printf(gettext("done.%s"), "\n");
 
 	fclose($fp);
+
+	return true;
 }
 
 function autodetect_interface($ifname, $fp)
