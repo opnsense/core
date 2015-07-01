@@ -63,4 +63,3 @@ if __name__ == '__main__':
                 else:
                     url = ('%s/%s'%(rule['source']['url'],rule['filename']))
                     dl.download(proto=download_proto, url=url)
-
