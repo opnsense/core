@@ -154,7 +154,6 @@ function spit_out_select_items($name, $showall) {
 		       "staticroutes" => gettext("Static routes"),
 		       "sysctl" => gettext("System tunables"),
 		       "snmpd" => gettext("SNMP Server"),
-		       "shaper" => gettext("Traffic Shaper"),
 		       "vlans" => gettext("VLANS"),
 		       "wol" => gettext("Wake on LAN")
 		);
@@ -342,7 +341,6 @@ if ($_POST) {
 								if($m0n0wall_upgrade == true) {
 									if($config['system']['gateway'] <> "")
 										$config['interfaces']['wan']['gateway'] = $config['system']['gateway'];
-									unset($config['shaper']);
 									/* optional if list */
 									$ifdescrs = get_configured_interface_list(true, true);
 									/* remove special characters from interface descriptions */

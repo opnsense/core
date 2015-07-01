@@ -438,8 +438,6 @@ if(!$config['interfaces']['lan']) {
 		unset($config['dhcpd']['lan']);
 	if($config['dhcpdv6']['lan'])
 		unset($config['dhcpdv6']['lan']);
-	unset($config['shaper']);
-	unset($config['ezshaper']);
 	unset($config['nat']);
 	if (!$dry_run) {
 		system("rm /var/dhcpd/var/db/* >/dev/null 2>/dev/null");

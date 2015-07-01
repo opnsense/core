@@ -295,8 +295,6 @@ if (is_array($config['hasync'])) {
 			$config['wol'] = array();
 		$sections[] = 'wol';
 	}
-	if ($hasync['synchronizetrafficshaper'] != "" and is_array($config['shaper']))
-		$sections[] = 'shaper';
 	if ($hasync['synchronizestaticroutes'] != "") {
 		if (!is_array($config['staticroutes']))
 			$config['staticroutes'] = array();

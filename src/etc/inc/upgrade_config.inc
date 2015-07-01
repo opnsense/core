@@ -281,13 +281,10 @@ function upgrade_015_to_016() {
 function upgrade_016_to_017() {
 	global $config;
 	/* wipe previous shaper configuration */
-	unset($config['shaper']['queue']);
-	unset($config['shaper']['rule']);
 	unset($config['interfaces']['wan']['bandwidth']);
 	unset($config['interfaces']['wan']['bandwidthtype']);
 	unset($config['interfaces']['lan']['bandwidth']);
 	unset($config['interfaces']['lan']['bandwidthtype']);
-	$config['shaper']['enable'] = FALSE;
 }
 
 
@@ -365,28 +362,10 @@ function upgrade_019_to_020() {
 	}
 }
 
-function upgrade_020_to_021() {
-	global $config;
-	/* shaper scheduler moved */
-	if(isset($config['system']['schedulertype'])) {
-		$config['shaper']['schedulertype'] = $config['system']['schedulertype'];
-		unset($config['system']['schedulertype']);
-	}
-}
-
-
 function upgrade_021_to_022() {
 	global $config;
 	/* move gateway to wan interface */
 	$config['interfaces']['wan']['gateway'] = $config['system']['gateway'];
-}
-
-function upgrade_022_to_023() {
-	global $config;
-	if(isset($config['shaper'])) {
-		/* wipe previous shaper configuration */
-		unset($config['shaper']);
-	}
 }
 
 function upgrade_024_to_025() {
@@ -637,16 +616,6 @@ function upgrade_040_to_041() {
 
 	}
 }
-
-
-function upgrade_041_to_042() {
-	global $config;
-	if (isset($config['shaper']))
-		unset($config['shaper']);
-	if (isset($config['ezshaper']))
-		unset($config['ezshaper']);
-}
-
 
 function upgrade_042_to_043() {
 	global $config;
