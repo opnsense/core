@@ -462,7 +462,7 @@ msgid "Auto created rule"
 msgstr "Automatisch erstellte Regel"
 
 msgid "Creating 1:1 rules..."
-msgstr "Erstelle 1:1 Regel..."
+msgstr "Erstelle 1:1 Regeln..."
 
 #, php-format
 msgid "Creating advanced outbound rule %s"
