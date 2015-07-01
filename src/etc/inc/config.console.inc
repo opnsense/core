@@ -39,18 +39,12 @@ function set_networking_interfaces_ports()
 
 	$iflist = get_interface_list();
 
-	/* Function flow is based on $key and $auto_assign or the lack thereof */
+	/* Function flow is based on $key */
 	$key = null;
-
-	/* Only present auto interface option if running from LiveCD and interface mismatch*/
-	if (is_install_media() && is_interface_mismatch()) {
-		$auto_assign = false;
-	}
 
 	echo <<<EOD
 
 Valid interfaces are:
-
 
 EOD;
 
@@ -64,15 +58,6 @@ EOD;
 		}
 	}
 
-	if ($auto_assign) {
-		echo <<<EOD
-
-		!!! LiveCD Detected: Auto Interface Option !!!!
-BEGIN MANUAL CONFIGURATION OR WE WILL PROCEED WITH AUTO CONFIGURATION.
-
-EOD;
-	}
-
 	echo <<<EOD
 
 Do you want to set up VLANs first?
@@ -83,87 +68,24 @@ say no here and use the webConfigurator to configure VLANs later, if required.
 Do you want to set up VLANs now ${yes_no_prompt}
 EOD;
 
-	if ($auto_assign) {
-		$key = timeout();
+	$key = chop(fgets($fp));
 
-	} else
-		$key = chop(fgets($fp));
+	if (in_array($key, array('y', 'Y')))
+		vlan_setup();
 
-	if (!isset($key) and $auto_assign) {	// Auto Assign Interfaces
-		do {
-			echo <<<EOD
+	if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
 
-   !!! Auto Assigning Interfaces !!!
+		echo "\n\n" . gettext("VLAN interfaces:") . "\n\n";
+		foreach ($config['vlans']['vlan'] as $vlan) {
 
-For installation purposes, you must plug in at least one NIC
-for the LAN connection. If you plug in a second NIC it will be
-assigned to WAN. Otherwise, we'll temporarily assign WAN to the
-next available NIC found regardless of activity. You should
-assign and configure the WAN interface according to your requirements
+			echo sprintf("% -16s%s\n", "{$vlan['if']}_vlan{$vlan['tag']}",
+				"VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}");
 
-If you haven't plugged in any network cables yet,
-now is the time to do so.
-We'll keep trying until you do.
-
-Searching for active interfaces...
-
-EOD;
-			unset($wanif, $lanif);
-
-			$media_iflist = $plugged_in = array();
-			$media_iflist = get_interface_list("media");
-			foreach ($media_iflist as $iface => $ifa) {
-				if ($ifa['up'])
-					$plugged_in[] = $iface;
-
-			}
-
-			$lanif = array_shift($plugged_in);
-			$wanif = array_shift($plugged_in);
-
-			if(isset($lanif) && !isset($wanif)) {
-				foreach ($iflist as $iface => $ifa) {
-					if ($iface != $lanif) {
-						$wanif = $iface;
-						break;
-					}
-				}
-			}
-
-			echo <<<EOD
-
-Assigned WAN to : ${wanif}
-Assigned LAN to : ${lanif}
-
-If you don't like this assignment,
-press any key to go back to manual configuration.
-
-EOD;
-			$key = timeout(20);
-			if(isset($key))
-				return;
-		} while (!isset($wanif));
-
-		$config['system']['ssh']['enabled'] = 'enabled';
-		$key = 'y';
-
-	} else {		//Manually assign interfaces
-		if (in_array($key, array('y', 'Y')))
-			vlan_setup();
-
-		if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
-
-			echo "\n\n" . gettext("VLAN interfaces:") . "\n\n";
-			foreach ($config['vlans']['vlan'] as $vlan) {
-
-				echo sprintf("% -16s%s\n", "{$vlan['if']}_vlan{$vlan['tag']}",
-					"VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}");
-
-				$iflist[$vlan['if'] . '_vlan' . $vlan['tag']] = array();
-			}
+			$iflist[$vlan['if'] . '_vlan' . $vlan['tag']] = array();
 		}
+	}
 
-		echo <<<EOD
+	echo <<<EOD
 
 If you do not know the names of your interfaces, you may choose to use
 auto-detection. In that case, disconnect all interfaces now before
@@ -171,79 +93,78 @@ hitting 'a' to initiate auto detection.
 
 EOD;
 
-		do {
-			echo "\n" . gettext("Enter the WAN interface name or 'a' for auto-detection:") . " ";
-			$wanif = chop(fgets($fp));
-			if ($wanif === "") {
-				return;
-			}
-			if ($wanif === "a")
-				$wanif = autodetect_interface("WAN", $fp);
-			else if (!array_key_exists($wanif, $iflist)) {
-				printf(gettext("%sInvalid interface name '%s'%s"), "\n", $wanif, "\n");
-				unset($wanif);
-				continue;
-			}
-		} while (!$wanif);
+	do {
+		echo "\n" . gettext("Enter the WAN interface name or 'a' for auto-detection:") . " ";
+		$wanif = chop(fgets($fp));
+		if ($wanif === "") {
+			return;
+		}
+		if ($wanif === "a")
+			$wanif = autodetect_interface("WAN", $fp);
+		else if (!array_key_exists($wanif, $iflist)) {
+			printf(gettext("%sInvalid interface name '%s'%s"), "\n", $wanif, "\n");
+			unset($wanif);
+			continue;
+		}
+	} while (!$wanif);
 
-		do {
-			printf(gettext("%sEnter the LAN interface name or 'a' for auto-detection %s" .
-			    "NOTE: this enables full Firewalling/NAT mode.%s" .
-				"(or nothing if finished):%s"), "\n", "\n", "\n", " ");
+	do {
+		printf(gettext("%sEnter the LAN interface name or 'a' for auto-detection %s" .
+		    "NOTE: this enables full Firewalling/NAT mode.%s" .
+			"(or nothing if finished):%s"), "\n", "\n", "\n", " ");
 
-			$lanif = chop(fgets($fp));
+		$lanif = chop(fgets($fp));
 
-			if($lanif == "exit") {
-				exit;
-			}
+		if($lanif == "exit") {
+			exit;
+		}
 
-			if($lanif == "") {
-				break;
-			}
+		if($lanif == "") {
+			break;
+		}
 
-			if ($lanif === "a")
-				$lanif = autodetect_interface("LAN", $fp);
-			else if (!array_key_exists($lanif, $iflist)) {
-				printf(gettext("%sInvalid interface name '%s'%s"), "\n", $lanif, "\n");
-				unset($lanif);
-				continue;
-			}
-		} while (!$lanif);
+		if ($lanif === "a")
+			$lanif = autodetect_interface("LAN", $fp);
+		else if (!array_key_exists($lanif, $iflist)) {
+			printf(gettext("%sInvalid interface name '%s'%s"), "\n", $lanif, "\n");
+			unset($lanif);
+			continue;
+		}
+	} while (!$lanif);
 
-		/* optional interfaces */
-		$i = 0;
-		$optif = array();
+	/* optional interfaces */
+	$i = 0;
+	$optif = array();
 
-		if($lanif <> "") {
-			while (1) {
-				if ($optif[$i])
-					$i++;
-				$io = $i + 1;
+	if($lanif <> "") {
+		while (1) {
+			if ($optif[$i])
+				$i++;
+			$io = $i + 1;
 
-				if($config['interfaces']['opt' . $io]['descr'])
-					printf(gettext("%sOptional interface %s description found: %s"), "\n", $io, $config['interfaces']['opt' . $io]['descr']);
+			if($config['interfaces']['opt' . $io]['descr'])
+				printf(gettext("%sOptional interface %s description found: %s"), "\n", $io, $config['interfaces']['opt' . $io]['descr']);
 
-				printf(gettext("%sEnter the Optional %s interface name or 'a' for auto-detection%s" .
-					"(or nothing if finished):%s"), "\n", $io, "\n", " ");
+			printf(gettext("%sEnter the Optional %s interface name or 'a' for auto-detection%s" .
+				"(or nothing if finished):%s"), "\n", $io, "\n", " ");
 
-				$optif[$i] = chop(fgets($fp));
+			$optif[$i] = chop(fgets($fp));
 
-				if ($optif[$i]) {
-					if ($optif[$i] === "a") {
-						$ad = autodetect_interface(gettext("Optional") . " " . $io, $fp);
-						if ($ad)
-							$optif[$i] = $ad;
-						else
-							unset($optif[$i]);
-					} else if (!array_key_exists($optif[$i], $iflist)) {
-						printf(gettext("%sInvalid interface name '%s'%s"), "\n", $optif[$i], "\n");
+			if ($optif[$i]) {
+				if ($optif[$i] === "a") {
+					$ad = autodetect_interface(gettext("Optional") . " " . $io, $fp);
+					if ($ad)
+						$optif[$i] = $ad;
+					else
 						unset($optif[$i]);
-						continue;
-					}
-				} else {
+				} else if (!array_key_exists($optif[$i], $iflist)) {
+					printf(gettext("%sInvalid interface name '%s'%s"), "\n", $optif[$i], "\n");
 					unset($optif[$i]);
-					break;
+					continue;
 				}
+			} else {
+				unset($optif[$i]);
+				break;
 			}
 		}
 
@@ -286,7 +207,7 @@ EOD;
 				$config['interfaces']['lan'] = array();
 			$config['interfaces']['lan']['if'] = $lanif;
 			$config['interfaces']['lan']['enable'] = true;
-		} elseif (!file_exists("/var/run/booting") && !$auto_assign) {
+		} elseif (!file_exists("/var/run/booting")) {
 
 echo <<<EODD
 
