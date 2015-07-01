@@ -1,0 +1,26 @@
+<form>
+    <field>
+        <id>blacklist.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>Select if job is enabled or not</help>
+    </field>
+    <field>
+        <id>blacklist.filename</id>
+        <label>Filename</label>
+        <type>text</type>
+        <help>Enter a filename for storing the blacklist.</help>
+    </field>
+    <field>
+        <id>blacklist.url</id>
+        <label>URL</label>
+        <type>text</type>
+        <help>Enter an url to fetch the blacklist from.</help>
+    </field>
+    <field>
+        <id>blacklist.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>Enter a description to explain what this blacklist is intended for.</help>
+    </field>
+</form>
