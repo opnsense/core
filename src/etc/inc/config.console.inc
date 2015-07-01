@@ -113,6 +113,10 @@ EOD;
 			echo $wanif . PHP_EOL;
 		}
 
+		if ($wanif == '') {
+			break;
+		}
+
 		if ($wanif == 'a') {
 			$wanif = autodetect_interface('WAN', $fp);
 		}
@@ -146,6 +150,15 @@ EOD;
 		if (!array_key_exists($lanif, $iflist)) {
 			printf(gettext("%sInvalid interface name '%s'%s"), "\n", $lanif, "\n");
 			unset($lanif);
+		}
+
+		if ($wanif && $lanif == $wanif) {
+			unset($lanif);
+			echo <<<EOD
+
+Error: you cannot assign the same interface name twice!
+
+EOD;
 		}
 	} while (!$lanif);
 
@@ -193,13 +206,12 @@ EOD;
 		for ($i = 0; $i < (count($ifarr)-1); $i++) {
 			for ($j = ($i+1); $j < count($ifarr); $j++) {
 				if ($ifarr[$i] == $ifarr[$j]) {
+					$again = true;
 					echo <<<EOD
 
 Error: you cannot assign the same interface name twice!
 
 EOD;
-
-					$again = true;
 				}
 			}
 		}
@@ -210,9 +222,12 @@ EOD;
 
 		echo "\n" . gettext("The interfaces will be assigned as follows:") . "\n\n";
 
-		echo "WAN  -> " . $wanif . "\n";
-		if ($lanif != "")
+		if ($wanif != '') {
+			echo "WAN  -> " . $wanif . "\n";
+		}
+		if ($lanif != '') {
 			echo "LAN  -> " . $lanif . "\n";
+		}
 		for ($i = 0; $i < count($optif); $i++) {
 			echo "OPT" . ($i+1) . " -> " . $optif[$i] . "\n";
 		}
@@ -239,6 +254,16 @@ EOD;
 		}
 		$config['interfaces']['lan']['if'] = $lanif;
 		$config['interfaces']['lan']['enable'] = true;
+		if (match_wireless_interface($lanif)) {
+			if (is_array($config['interfaces']['lan']) &&
+				(!is_array($config['interfaces']['lan']['wireless']))) {
+				$config['interfaces']['lan']['wireless'] = array();
+			}
+		} else {
+			if (isset($config['interfaces']['lan'])) {
+				unset($config['interfaces']['lan']['wireless']);
+			}
+		}
 	} else {
 		if(isset($config['interfaces']['lan']['if']))
 			mwexec("/sbin/ifconfig " . $config['interfaces']['lan']['if'] . " delete");
@@ -254,33 +279,28 @@ EOD;
 			unset($config['nat']);
 	}
 
-	if (match_wireless_interface($lanif)) {
-		if (is_array($config['interfaces']['lan']) &&
-			(!is_array($config['interfaces']['lan']['wireless']))) {
-			$config['interfaces']['lan']['wireless'] = array();
+	if ($wanif) {
+		if (!is_array($config['interfaces']['wan'])) {
+			$config['interfaces']['wan'] = array();
+		}
+		$config['interfaces']['wan']['if'] = $wanif;
+		$config['interfaces']['wan']['enable'] = true;
+		$config['interfaces']['wan']['ipaddr'] = 'dhcp';
+		$config['interfaces']['wan']['ipaddrv6'] = 'dhcpv6';
+
+		if (match_wireless_interface($wanif)) {
+			if (is_array($config['interfaces']['wan']) &&
+				(!is_array($config['interfaces']['wan']['wireless']))) {
+				$config['interfaces']['wan']['wireless'] = array();
+			}
+		} else {
+			if (isset($config['interfaces']['wan'])) {
+				unset($config['interfaces']['wan']['wireless']);
+			}
 		}
 	} else {
-		if (isset($config['interfaces']['lan'])) {
-			unset($config['interfaces']['lan']['wireless']);
-		}
-	}
-
-	if (!is_array($config['interfaces']['wan'])) {
-		$config['interfaces']['wan'] = array();
-	}
-
-	$config['interfaces']['wan']['if'] = $wanif;
-	$config['interfaces']['wan']['enable'] = true;
-
-	if (match_wireless_interface($wanif)) {
-		if (is_array($config['interfaces']['wan']) &&
-			(!is_array($config['interfaces']['wan']['wireless']))) {
-			$config['interfaces']['wan']['wireless'] = array();
-		}
-	} else {
-		if (isset($config['interfaces']['wan'])) {
-			unset($config['interfaces']['wan']['wireless']);
-		}
+		if (isset($config['interfaces']['wan']))
+			unset($config['interfaces']['wan']);
 	}
 
 	for ($i = 0; $i < count($optif); $i++) {
@@ -303,8 +323,9 @@ EOD;
 	}
 
 	/* remove all other (old) optional interfaces */
-	for (; isset($config['interfaces']['opt' . ($i+1)]); $i++)
+	for (; isset($config['interfaces']['opt' . ($i+1)]); $i++) {
 		unset($config['interfaces']['opt' . ($i+1)]);
+	}
 
 	printf(gettext("%sWriting configuration..."), "\n");
 	write_config("Console assignment of interfaces");
