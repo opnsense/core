@@ -102,6 +102,7 @@ POSSIBILITY OF SUCH DAMAGE.
             // set schedule updates link to cron
             $.each(data.frm_GeneralSettings.ids.general.UpdateCron, function(key, value) {
                 $("#scheduled_updates").attr("href","/ui/cron/item/open/"+key);
+                $("#scheduled_updates").show();
             });
             //alert(JSON.stringify(data.frm_GeneralSettings.ids.general.UpdateCron));
             formatTokenizersUI();
@@ -242,7 +243,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <li class="active"><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
     <li><a data-toggle="tab" href="#rules" id="rule_tab">{{ lang._('Rules') }}</a></li>
     <li><a data-toggle="tab" href="#alerts" id="alert_tab">{{ lang._('Alerts') }}</a></li>
-    <li><a href="" id="scheduled_updates">{{ lang._('Schedule') }}</a></li>
+    <li><a href="" id="scheduled_updates" style="display:none">{{ lang._('Schedule') }}</a></li>
 </ul>
 <div class="tab-content content-box tab-content">
     <div id="settings" class="tab-pane fade in active">
