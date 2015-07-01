@@ -285,13 +285,25 @@ class ActionHandler(object):
         result = {}
         for command in self.action_map:
             for action in self.action_map[command]:
-                cmd='%s %s'%(command,action)
-                result[cmd] = {}
-                for actAttr in attributes:
-                    if hasattr(self.action_map[command][action], actAttr):
-                        result[cmd][actAttr] = getattr(self.action_map[command][action], actAttr)
-                    else:
-                        result[cmd][actAttr] = ''
+                if type(self.action_map[command][action]) == dict:
+                    # parse second level actions
+                    # TODO: nesting actions may be better to solve recursive in here and in load_config part
+                    for subAction in self.action_map[command][action]:
+                        cmd='%s %s %s'%(command,action,subAction)
+                        result[cmd] = {}
+                        for actAttr in attributes:
+                            if hasattr(self.action_map[command][action][subAction], actAttr):
+                                result[cmd][actAttr] = getattr(self.action_map[command][action][subAction], actAttr)
+                            else:
+                                result[cmd][actAttr] = ''
+                else:
+                    cmd='%s %s'%(command,action)
+                    result[cmd] = {}
+                    for actAttr in attributes:
+                        if hasattr(self.action_map[command][action], actAttr):
+                            result[cmd][actAttr] = getattr(self.action_map[command][action], actAttr)
+                        else:
+                            result[cmd][actAttr] = ''
 
         return result
 
