@@ -190,6 +190,19 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         });
 
+        /**
+         * update rule definitions
+         */
+        $("#updateRulesAct").click(function(){
+            $("#updateRulesAct_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall(url="/api/ids/service/updateRules", sendData={}, callback=function(data,status) {
+                // when done, disable progress animation and reload grid.
+                $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
+                $('#grid-rule-files').bootgrid('reload');
+            });
+        });
+
+
     });
 
 
@@ -221,7 +234,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     <thead>
                     <tr>
                         <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">enabled</th>
-                        <th data-column-id="filename" data-type="string" data-visible="true" data-identifier="true">filename</th>
+                        <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">description</th>
+                        <th data-column-id="modified_local" data-type="string" data-sortable="false"  data-visible="true">last updated</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -283,6 +297,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="col-md-12">
         <hr/>
         <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary"  id="updateRulesAct" type="button"><b>Download & Update Rules</b><i id="updateRulesAct_progress" class=""></i></button>
     </div>
 </div>
 
