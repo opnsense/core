@@ -106,21 +106,21 @@ EOD;
 
 	do {
 		echo "\n" . gettext("Enter the WAN interface name or 'a' for auto-detection:") . " ";
+
 		if ($interactive) {
 			$wanif = chop(fgets($fp));
 		} else {
 			$wanif = $ifnames[0];
 			echo $wanif . PHP_EOL;
 		}
-		if ($wanif == '') {
-			return;
-		}
+
 		if ($wanif == 'a') {
 			$wanif = autodetect_interface('WAN', $fp);
-		} elseif (!array_key_exists($wanif, $iflist)) {
-			printf(gettext("%sInvalid interface name '%s'%s"), "\n", $wanif, "\n");
+		}
+
+		if (!array_key_exists($wanif, $iflist)) {
+			printf("\n" . gettext("Invalid interface name '%s'") . "\n", $wanif);
 			unset($wanif);
-			continue;
 		}
 	} while (!$wanif);
 
@@ -139,12 +139,14 @@ EOD;
 		if ($lanif == '') {
 			break;
 		}
+
 		if ($lanif == 'a') {
 			$lanif = autodetect_interface('LAN', $fp);
-		} elseif (!array_key_exists($lanif, $iflist)) {
+		}
+
+		if (!array_key_exists($lanif, $iflist)) {
 			printf(gettext("%sInvalid interface name '%s'%s"), "\n", $lanif, "\n");
 			unset($lanif);
-			continue;
 		}
 	} while (!$lanif);
 
