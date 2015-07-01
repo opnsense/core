@@ -5,7 +5,7 @@ MSGFMT=		msgfmt --strict
 
 LOCALEDIR=	/usr/local/share/locale/%%LANG%%/LC_MESSAGES
 
-LANGUAGES=	es_CO ja_JP zh_CN
+LANGUAGES=	de_DE es_CO ja_JP zh_CN
 TEMPLATE=	en_US
 
 .for LANG in ${LANGUAGES}
