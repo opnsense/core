@@ -129,7 +129,7 @@ class ServiceController extends ApiControllerBase
             // we should always have a cron item configured for IDS, let's create one upon first reconfigure.
             if ((string)$mdlIDS->general->UpdateCron == "") {
                 $mdlCron = new Cron();
-                // update cron relation ( if this doesn't break consistency)
+                // update cron relation (if this doesn't break consistency)
                 $mdlIDS->general->UpdateCron = $mdlCron->newDailyJob("IDS", "ids update", "ids rule updates", "0");
 
                 if ($mdlCron->performValidation()->count() == 0) {
