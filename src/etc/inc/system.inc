@@ -633,18 +633,11 @@ function system_syslogd_start()
 	if (file_exists("/var/run/booting"))
 		echo gettext("Starting syslog...");
 
-	if (is_process_running("fifolog_writer"))
-		mwexec('/bin/pkill fifolog_writer');
-
 	// Which logging type are we using this week??
 	if (isset($config['system']['disablesyslogclog'])) {
 		$log_directive = "";
 		$log_create_directive = "/usr/bin/touch ";
 		$log_size = "";
-	} else if (isset($config['system']['usefifolog'])) {
-		$log_directive = "|/usr/sbin/fifolog_writer ";
-		$log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : "10240";
-		$log_create_directive = "/usr/sbin/fifolog_create -s ";
 	} else { // Defaults to CLOG
 		$log_directive = "%";
 		$log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : "10240";

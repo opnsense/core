@@ -483,7 +483,8 @@ function update_changedesc($update) {
 	$changecount++;
 }
 
-function clear_log_file($logfile = "/var/log/system.log", $restart_syslogd = true) {
+function clear_log_file($logfile = '/var/log/system.log', $restart_syslogd = true)
+{
 	global $config, $g;
 	if ($restart_syslogd)
 		exec("/usr/bin/killall syslogd");
@@ -492,13 +493,11 @@ function clear_log_file($logfile = "/var/log/system.log", $restart_syslogd = tru
 		touch($logfile);
 	} else {
 		$log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : "511488";
-		if(isset($config['system']['usefifolog']))
-			exec("/usr/sbin/fifolog_create -s {$log_size} " . escapeshellarg($logfile));
-		else
-			exec("/usr/local/sbin/clog -i -s {$log_size} " . escapeshellarg($logfile));
+		exec("/usr/local/sbin/clog -i -s {$log_size} " . escapeshellarg($logfile));
 	}
-	if ($restart_syslogd)
+	if ($restart_syslogd) {
 		system_syslogd_start();
+	}
 }
 
 function clear_all_log_files()
@@ -536,27 +535,18 @@ function dump_clog($logfile, $tail, $withorig = true, $grepfor = "", $grepinvert
 		if($config['system']['disablesyslogclog']) {
 			exec("cat " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
 		} else {
-			if(isset($config['system']['usefifolog']))
-				exec("/usr/sbin/fifolog_reader " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-			else
-				exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
+			exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
 		}
 	}
 	foreach ($logarr as $logent) {
 			$logent = preg_split("/\s+/", $logent, 6);
 			echo "<tr valign=\"top\">\n";
 			if ($withorig) {
-					if(isset($config['system']['usefifolog'])) {
-						$entry_date_time = htmlspecialchars(date("F j, Y, g:i a","" . $logent[1] . ""));
-						$entry_text = htmlspecialchars($logent[5]);
-					} else {
-						$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
-						$entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
-						$entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
-					}
+					$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
+					$entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
+					$entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
 					echo "<td class=\"listlr nowrap\">{$entry_date_time}</td>\n";
 					echo "<td class=\"listr\">{$entry_text}</td>\n";
-
 			} else {
 					echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars($logent[5]) . "</td>\n";
 			}
@@ -576,11 +566,7 @@ function return_clog($logfile, $tail, $withorig = true, $grepfor = "", $grepinve
 	if($config['system']['disablesyslogclog']) {
 		exec("cat " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
 	} else {
-		if(isset($config['system']['usefifolog'])) {
-			exec("/usr/sbin/fifolog_reader " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-		} else {
-			exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-		}
+		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
 	}
 	return($logarr);
 }
