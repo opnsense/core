@@ -37,6 +37,7 @@ require_once("vpn.inc");
 require_once("captiveportal.inc");
 require_once("rrd.inc");
 
-set_networking_interfaces_ports();
+/* configure until valid */
+while (!set_networking_interfaces_ports());
 reload_interfaces_sync();
 enable_rrd_graphing();

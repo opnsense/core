@@ -1,8 +1,9 @@
 <?php
 
 /*
-	Copyright (C) 2004-2010 Scott Ullrich
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+	Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
+	Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
+	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -29,9 +30,7 @@
 
 function set_networking_interfaces_ports()
 {
-	global $noreboot;
 	global $config;
-	global $fp;
 
 	$fp = fopen('php://stdin', 'r');
 	$yes_no_prompt = '[y|n]? ';
@@ -84,7 +83,7 @@ EOD;
 	}
 
 	if (in_array($key, array('y', 'Y'))) {
-		vlan_setup();
+		vlan_setup($iflist, $fp);
 	}
 
 	if (isset($config['vlans']['vlan'])) {
@@ -198,7 +197,7 @@ Error: you cannot assign the same interface name twice!
 
 EOD;
 					fclose($fp);
-					return;
+					return false;
 				}
 			}
 		}
@@ -347,15 +346,10 @@ EODD;
 
 		fclose($fp);
 
-		if(file_exists("/var/run/booting"))
-			return;
-
-		echo gettext("One moment while we reload the settings...");
-
-		echo gettext(" done!") . "\n";
-
-		touch('/tmp/assign_complete');
+		return true;
 	}
+
+	return false;
 }
 
 function autodetect_interface($ifname, $fp)
@@ -382,13 +376,11 @@ EOD;
 	return null;
 }
 
-function vlan_setup()
+function vlan_setup($iflist, $fp)
 {
-	global $iflist, $config, $fp;
+	global $config;
 
 	$yes_no_prompt = '[y|n]? ';
-
-	$iflist = get_interface_list();
 
 	if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
 

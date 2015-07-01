@@ -1409,30 +1409,19 @@ function is_interface_mismatch()
 
 	$do_assign = false;
 	$i = 0;
-	$missing_interfaces = array();
+
 	if (is_array($config['interfaces'])) {
 		foreach ($config['interfaces'] as $ifname => $ifcfg) {
 			if (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
-				// Do not check these interfaces.
+				/* Do not check these interfaces */
 				$i++;
 				continue;
-			}
-			else if (does_interface_exist($ifcfg['if']) == false) {
-				$missing_interfaces[] = $ifcfg['if'];
+			} elseif (does_interface_exist($ifcfg['if']) == false) {
 				$do_assign = true;
-			} else
+			} else {
 				$i++;
+			}
 		}
-	}
-
-	if (file_exists('/tmp/assign_complete')) {
-		$do_assign = false;
-	}
-
-	if (!empty($missing_interfaces) && $do_assign) {
-		file_put_contents('/tmp/missing_interfaces', implode(' ', $missing_interfaces));
-	} else {
-		@unlink('/tmp/missing_interfaces');
 	}
 
 	return $do_assign;
