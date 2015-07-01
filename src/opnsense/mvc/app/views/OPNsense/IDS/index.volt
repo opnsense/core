@@ -32,16 +32,14 @@ POSSIBILITY OF SUCH DAMAGE.
         //
         var data_get_map = {'frm_GeneralSettings':"/api/ids/settings/get"};
 
-        // load initial data
-        mapDataToFormUI(data_get_map).done(function(){
-            formatTokenizersUI();
-            $('.selectpicker').selectpicker('refresh');
-        });
 
-        // list all known classtypes and add to selection box
+        /**
+         * list all known classtypes and add to selection box
+         */
         function updateRuleClassTypes() {
             ajaxGet(url="/api/ids/settings/listRuleClasstypes",sendData={}, callback=function(data, status) {
                 if (status == "success") {
+                    $('#ruleclass').html('<option value="">ALL</option>');
                     $.each(data['items'], function(key, value) {
                         $('#ruleclass').append($("<option></option>").attr("value",value).text(value));
                     });
@@ -54,26 +52,28 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         }
 
-        // delay refresh for a bit
-        setTimeout(updateRuleClassTypes, 500);
-
-        // update list of alert logs
-        ajaxGet(url="/api/ids/service/getAlertLogs",sendData={}, callback=function(data, status) {
-            if (status == "success") {
-                $.each(data, function(key, value) {
-                    if (value['sequence'] == undefined) {
-                        $('#alert-logfile').append($("<option></option>").attr("value",'none').text(value['modified']));
-                    } else {
-                        $('#alert-logfile').append($("<option></option>").attr("value",value['sequence']).text(value['modified']));
-                    }
-                });
-                $('.selectpicker').selectpicker('refresh');
-                // link on change event
-                $('#alert-logfile').on('change', function(){
-                    $('#grid-alerts').bootgrid('reload');
-                });
-            }
-        });
+        /**
+         * update list of available alert logs
+         */
+        function updateAlertLogs() {
+            ajaxGet(url="/api/ids/service/getAlertLogs",sendData={}, callback=function(data, status) {
+                if (status == "success") {
+                    $('#alert-logfile').html("");
+                    $.each(data, function(key, value) {
+                        if (value['sequence'] == undefined) {
+                            $('#alert-logfile').append($("<option></option>").attr("value",'none').text(value['modified']));
+                        } else {
+                            $('#alert-logfile').append($("<option></option>").attr("value",value['sequence']).text(value['modified']));
+                        }
+                    });
+                    $('.selectpicker').selectpicker('refresh');
+                    // link on change event
+                    $('#alert-logfile').on('change', function(){
+                        $('#grid-alerts').bootgrid('reload');
+                    });
+                }
+            });
+        }
 
         /**
          * Add classtype to rule filter
@@ -97,49 +97,74 @@ POSSIBILITY OF SUCH DAMAGE.
             return request;
         }
 
-        /**
-         * grid installed rules
-         */
-        $("#grid-installedrules").UIBootgrid(
-                {   search:'/api/ids/settings/searchinstalledrules',
-                    get:'/api/ids/settings/getRuleInfo/',
-                    options:{
-                        multiSelect:false,
-                        selection:false,
-                        requestHandler:addRuleFilters,
-                        formatters:{
-                            rowtoggle: function (column, row) {
-                                if (parseInt(row[column.id], 2) == 1) {
-                                    var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.sid + "\"></span>";
-                                } else {
-                                    var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.sid + "\"></span>";
-                                }
-                                toggle += " &nbsp; <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.sid + "\"><span class=\"fa fa-info-circle\"></span></button> ";
-                                return toggle;
-                            }
-                        }
-                    },
-                    toggle:'/api/ids/settings/toggleRule/'
-                }
-        );
+        // load initial data
+        mapDataToFormUI(data_get_map).done(function(){
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+        });
 
         /**
-         * grid query alerts
+         * load content on tab changes
          */
-        $("#grid-alerts").UIBootgrid(
-                {   search:'/api/ids/service/queryAlerts',
-                    get:'/api/ids/service/getAlertInfo/',
-                    options:{
-                        multiSelect:false,
-                        selection:false,
-                        requestHandler:addAlertQryFilters,
-                        formatters:{
-                            info: function (column, row) {
-                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filepos + "\"><span class=\"fa fa-info-circle\"></span></button> ";
-                            }
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if (e.target.id == 'rule_tab'){
+                //
+                // activate rule tab page
+                //
+
+                // delay refresh for a bit
+                setTimeout(updateRuleClassTypes, 500);
+
+                /**
+                 * grid installed rules
+                 */
+                $('#grid-installedrules').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
+                $("#grid-installedrules").UIBootgrid(
+                        {   search:'/api/ids/settings/searchinstalledrules',
+                            get:'/api/ids/settings/getRuleInfo/',
+                            options:{
+                                multiSelect:false,
+                                selection:false,
+                                requestHandler:addRuleFilters,
+                                formatters:{
+                                    rowtoggle: function (column, row) {
+                                        if (parseInt(row[column.id], 2) == 1) {
+                                            var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.sid + "\"></span>";
+                                        } else {
+                                            var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.sid + "\"></span>";
+                                        }
+                                        toggle += " &nbsp; <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.sid + "\"><span class=\"fa fa-info-circle\"></span></button> ";
+                                        return toggle;
+                                    }
+                                }
+                            },
+                            toggle:'/api/ids/settings/toggleRule/'
                         }
-                    }
-                });
+                );
+            } else if (e.target.id == 'alert_tab') {
+                updateAlertLogs();
+                /**
+                 * grid query alerts
+                 */
+                $('#grid-alerts').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
+                $("#grid-alerts").UIBootgrid(
+                        {   search:'/api/ids/service/queryAlerts',
+                            get:'/api/ids/service/getAlertInfo/',
+                            options:{
+                                multiSelect:false,
+                                selection:false,
+                                requestHandler:addAlertQryFilters,
+                                formatters:{
+                                    info: function (column, row) {
+                                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filepos + "\"><span class=\"fa fa-info-circle\"></span></button> ";
+                                    }
+                                }
+                            }
+                        });
+            }
+        })
+
+
 
         /**
          * grid for installable rule files
@@ -209,9 +234,9 @@ POSSIBILITY OF SUCH DAMAGE.
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
-    <li><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
-    <li><a data-toggle="tab" href="#alerts">{{ lang._('Alerts') }}</a></li>
+    <li class="active"><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
+    <li><a data-toggle="tab" href="#rules" id="rule_tab">{{ lang._('Rules') }}</a></li>
+    <li><a data-toggle="tab" href="#alerts" id="alert_tab">{{ lang._('Alerts') }}</a></li>
 </ul>
 <div class="tab-content content-box tab-content">
     <div id="settings" class="tab-pane fade in active">
@@ -251,7 +276,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <div class="row">
                 <div class="col-sm-12 actionBar">
                     <b>Classtype &nbsp;</b>
-                    <select id="ruleclass" class="selectpicker" data-width="200px"><option value="">ALL</option></select>
+                    <select id="ruleclass" class="selectpicker" data-width="200px"></select>
                 </div>
             </div>
         </div>
