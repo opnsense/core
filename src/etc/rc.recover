@@ -145,6 +145,7 @@ function recover_rebuild()
 {
 	passthru('/usr/sbin/pwd_mkdb -p /etc/master.passwd');
 	passthru('/usr/sbin/pwd_mkdb /etc/master.passwd');
+	passthru('/bin/sync');
 }
 
 /* first stage recovers the base system state */
