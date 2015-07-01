@@ -33,6 +33,8 @@ use \OPNsense\Base\Filters\QueryFilter;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
 use \OPNsense\IDS\IDS;
+use \OPNsense\Cron\Cron;
+use \OPNsense\Core\Config;
 
 /**
  * Class ServiceController
@@ -124,6 +126,20 @@ class ServiceController extends ApiControllerBase
             $this->sessionClose();
             $mdlIDS = new IDS();
             $runStatus = $this->statusAction();
+            // we should always have a cron item configured for IDS, let's create one upon first reconfigure.
+            if ((string)$mdlIDS->general->UpdateCron == "") {
+                $mdlCron = new Cron();
+                // update cron relation ( if this doesn't break consistency)
+                $mdlIDS->general->UpdateCron = $mdlCron->newDailyJob("IDS", "ids update", "ids rule updates", "0");
+
+                if ($mdlCron->performValidation()->count() == 0) {
+                    $mdlCron->serializeToConfig();
+                    // save data to config, do not validate because the current in memory model doesn't know about the
+                    // cron item just created.
+                    $mdlIDS->serializeToConfig($disable_validation = true);
+                    Config::getInstance()->save();
+                }
+            }
 
             if ($runStatus['status'] == "running" && (string)$mdlIDS->general->enabled == 0) {
                 $this->stopAction();
