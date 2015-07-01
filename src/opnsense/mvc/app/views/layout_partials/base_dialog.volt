@@ -86,7 +86,7 @@ label           :   dialog label
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 {% if hasSaveBtn|default('true') == 'true' %}
-                <button type="button" class="btn btn-primary" id="btn_{{id}}_save">Save changes</button>
+                <button type="button" class="btn btn-primary" id="btn_{{id}}_save">Save changes<i id="btn_{{id}}_save_progress" class=""></i></button>
                 {% endif %}
             </div>
         </div>
