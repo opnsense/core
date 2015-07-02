@@ -23,7 +23,7 @@ msgid "Redirecting to the dashboard..."
 msgstr ""
 
 msgid "Redirecting..."
-msgstr ""
+msgstr "Weiterleiten..."
 
 #
 # File: src/etc/inc/auth.inc, line: 394
@@ -149,10 +149,10 @@ msgid "Error: cannot open '%s' in captiveportal_write_elements()%s"
 msgstr ""
 
 msgid "No interfaces found!"
-msgstr ""
+msgstr "Keine Interfaces gefunden!"
 
 msgid "VLAN interfaces:"
-msgstr ""
+msgstr "VLAN Interfaces:"
 
 msgid "Enter the WAN interface name or 'a' for auto-detection:"
 msgstr ""
@@ -176,7 +176,7 @@ msgid "%sEnter the Optional %s interface name or 'a' for auto-detection%s(or not
 msgstr "%sGib den optionalen %s Schnittstellennamen oder 'a' für automatische erkennung.%s(oder nichts wenn Sie fertig sind):%s"
 
 msgid "Optional"
-msgstr ""
+msgstr "Optional"
 
 msgid "The interfaces will be assigned as follows:"
 msgstr ""
@@ -376,10 +376,10 @@ msgid "Generating NAT rules"
 msgstr ""
 
 msgid "Generating filter rules"
-msgstr ""
+msgstr "Generiere Filterregeln"
 
 msgid "Loading filter rules"
-msgstr ""
+msgstr "Lade Filterregeln"
 
 msgid "Filter is disabled.  Not loading rules."
 msgstr "Filter ist deaktiviert. Regeln werden nicht geladen."
@@ -432,16 +432,16 @@ msgid "localhost"
 msgstr "localhost"
 
 msgid "static route"
-msgstr ""
+msgstr "statische Route"
 
 msgid "DHCP alias address"
 msgstr "DHCP Alias Adresse"
 
 msgid "PPTP server"
-msgstr ""
+msgstr "PPTP Server"
 
 msgid "PPPoE server"
-msgstr ""
+msgstr "PPPoE Server"
 
 msgid "L2TP server"
 msgstr ""
@@ -453,7 +453,7 @@ msgid "OpenVPN client"
 msgstr "OpenVPN Client"
 
 msgid "IPsec client"
-msgstr ""
+msgstr "IPsec Client"
 
 msgid "Auto created rule for ISAKMP"
 msgstr "Automatisch erstellte Regel für ISAKMP"
@@ -4032,10 +4032,10 @@ msgid "add new rule"
 msgstr "Eine neue Regel hinzufügen"
 
 msgid "pass"
-msgstr "erlauben"
+msgstr "Erlauben"
 
 msgid "linked rule"
-msgstr ""
+msgstr "verlinkte Regel"
 
 msgid "add rule"
 msgstr "Regel hinzufügen"
@@ -4497,10 +4497,10 @@ msgid "NAT Port"
 msgstr "NAT Port"
 
 msgid "Static Port"
-msgstr ""
+msgstr "Statischer Port"
 
 msgid "This rule is being ignored"
-msgstr ""
+msgstr "Diese Regel wird ignoriert"
 
 msgid "YES"
 msgstr "JA"
@@ -4676,10 +4676,10 @@ msgid "Alternate Host"
 msgstr "Alternativer Host"
 
 msgid "Router advertisement"
-msgstr ""
+msgstr "Router Advertisement"
 
 msgid "Router solicitation"
-msgstr ""
+msgstr "Router Solicitation"
 
 msgid "Time exceeded"
 msgstr ""
@@ -4731,10 +4731,10 @@ msgid "Anti-Lockout Rule"
 msgstr "Anti-Aussperrregel"
 
 msgid "add a new rule based on this one"
-msgstr ""
+msgstr "eine neue Regel basierend auf dieser hinzufügen"
 
 msgid "RFC 1918 networks"
-msgstr ""
+msgstr "RFC 1918 Netzwerke"
 
 msgid "Block private networks"
 msgstr "Blockiere private Netze"
@@ -4755,19 +4755,19 @@ msgid "Mon"
 msgstr "Montag"
 
 msgid "Sat"
-msgstr "Samstag"
+msgstr "Sa"
 
 msgid "Sun"
-msgstr ""
+msgstr "So"
 
 msgid "Thur"
-msgstr ""
+msgstr "Do"
 
 msgid "Tues"
-msgstr ""
+msgstr "Di"
 
 msgid "Wed"
-msgstr ""
+msgstr "Mi"
 
 msgid "April"
 msgstr "April"
@@ -4782,13 +4782,13 @@ msgid "February"
 msgstr "Februar"
 
 msgid "January"
-msgstr ""
+msgstr "Jänner"
 
 msgid "July"
-msgstr ""
+msgstr "Juli"
 
 msgid "June"
-msgstr ""
+msgstr "Juni"
 
 msgid "March"
 msgstr "März"
@@ -4800,7 +4800,7 @@ msgid "November"
 msgstr "November"
 
 msgid "October"
-msgstr ""
+msgstr "Oktober"
 
 msgid "September"
 msgstr "September"
@@ -4815,7 +4815,7 @@ msgid "This rule is not currently active because its period has expired"
 msgstr ""
 
 msgid "none"
-msgstr ""
+msgstr "keiner"
 
 msgid "No floating rules are currently defined."
 msgstr ""
@@ -5045,16 +5045,16 @@ msgid "Choose on which interface packets must come in to match this rule."
 msgstr ""
 
 msgid "TCP/IP Version"
-msgstr ""
+msgstr "TCP/IP Version"
 
 msgid "Select the Internet Protocol version this rule applies to"
-msgstr ""
+msgstr "Wählen Sie die Internet Protokoll-Version aus, für zu der dieser Regel gehört"
 
 msgid "Hint: in most cases, you should specify "
 msgstr ""
 
 msgid "ICMP type"
-msgstr ""
+msgstr "ICMP Typ"
 
 msgid "If you selected ICMP for the protocol above, you may specify an ICMP type here."
 msgstr ""
@@ -5084,10 +5084,10 @@ msgid "Log"
 msgstr "Protokoll"
 
 msgid "Log packets that are handled by this rule"
-msgstr ""
+msgstr "Protokolliere Pakete die von dieser Regel behandelt werden"
 
 msgid "Diagnostics: System logs: Settings"
-msgstr "Diagnose: Systemlogs: Einstellungen"
+msgstr "Diagnose: Systemprotokolle: Einstellungen"
 
 msgid ""
 "Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a remote syslog server"
@@ -5109,7 +5109,7 @@ msgid "Source OS"
 msgstr "Quellbetriebssystem"
 
 msgid "Show advanced option"
-msgstr ""
+msgstr "Zeige erweiterte Optionen"
 
 msgid "OS Type:"
 msgstr "Betriebssystemtyp"
@@ -5276,10 +5276,10 @@ msgid "Month"
 msgstr "Monat"
 
 msgid "Tue"
-msgstr ""
+msgstr "Di"
 
 msgid "Thu"
-msgstr ""
+msgstr "Do"
 
 msgid "Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday."
 msgstr ""
@@ -5306,7 +5306,7 @@ msgid "Add Time"
 msgstr "Zeit hinzufügen"
 
 msgid "Clear Selection"
-msgstr ""
+msgstr "Auswahl löschen"
 
 msgid "Schedule repeat"
 msgstr ""
@@ -5327,19 +5327,19 @@ msgid "This entry cannot be deleted because it is still referenced by a CARP IP 
 msgstr ""
 
 msgid "Virtual IP Addresses"
-msgstr ""
+msgstr "Virtuelle IP Adressen"
 
 msgid "The VIP configuration has been changed."
 msgstr ""
 
 msgid "Virtual IPs"
-msgstr ""
+msgstr "Virtuelle IPs"
 
 msgid "CARP Settings"
 msgstr "CARP Einstellungen"
 
 msgid "Virtual IP address"
-msgstr ""
+msgstr "Virtuelle IP Adresse"
 
 msgid "Do you really want to delete this entry?"
 msgstr ""
@@ -5383,7 +5383,7 @@ msgid "For this type of vip localhost is not allowed."
 msgstr ""
 
 msgid "Virtual IP Address"
-msgstr ""
+msgstr "virtuelle IP Adresse"
 
 msgid "This must be the network's subnet mask. It does not specify a CIDR range."
 msgstr ""
@@ -5481,7 +5481,7 @@ msgid "follow"
 msgstr "folgen"
 
 msgid "Kbps"
-msgstr ""
+msgstr "Kbps"
 
 msgid "Mbps"
 msgstr "Mbps"
@@ -5490,7 +5490,7 @@ msgid "Gbps"
 msgstr "Gbps"
 
 msgid "KB/s"
-msgstr ""
+msgstr "KB/s"
 
 msgid "MB/s"
 msgstr "MB/s"
@@ -5522,7 +5522,7 @@ msgid "save"
 msgstr "speichern"
 
 msgid "Undo"
-msgstr ""
+msgstr "Rückgängig"
 
 msgid "Close"
 msgstr "Schließen"
@@ -5615,7 +5615,7 @@ msgid "Modem Port"
 msgstr ""
 
 msgid "Phone Number"
-msgstr ""
+msgstr "Telefonnummer"
 
 msgid "Dial on demand"
 msgstr "Einwählen bei Bedarf"
@@ -5624,34 +5624,34 @@ msgid "Idle timeout value"
 msgstr ""
 
 msgid "PPPoE password"
-msgstr ""
+msgstr "PPPoE Passwort"
 
 msgid "PPPoE username"
-msgstr ""
+msgstr "PPPoE Benutzername"
 
 msgid "PPTP local IP address"
 msgstr ""
 
 msgid "PPTP password"
-msgstr ""
+msgstr "PPTP Passwort"
 
 msgid "PPTP remote IP address"
 msgstr ""
 
 msgid "PPTP subnet"
-msgstr ""
+msgstr "PPTP Subnetzwerk"
 
 msgid "PPTP username"
-msgstr ""
+msgstr "PPTP Benutzername"
 
 msgid "L2TP password"
-msgstr ""
+msgstr "L2TP Passwort"
 
 msgid "L2TP remote IP address"
 msgstr ""
 
 msgid "L2TP username"
-msgstr ""
+msgstr "L2TP Benutzername"
 
 msgid "This interface is referenced by IPv6 VIPs. Please delete those before setting the interface to 'none' configuration."
 msgstr ""
@@ -5673,7 +5673,7 @@ msgid "A valid IPv4 address must be specified."
 msgstr "Eine gültige IPv4 Adresse muss angegeben werden."
 
 msgid "This IPv4 address is being used by another interface or VIP."
-msgstr ""
+msgstr "Diese IPv4 Adresse wird bereits von einem anderen Interface oder VIP benutzt."
 
 msgid "This IPv4 address is the network address and cannot be used"
 msgstr ""
@@ -5765,16 +5765,16 @@ msgid "Unable to change mode to %s.  You may already have the maximum number of 
 msgstr ""
 
 msgid "L2TP"
-msgstr ""
+msgstr "L2TP"
 
 msgid "PPPoE"
-msgstr ""
+msgstr "PPPoE"
 
 msgid "PPTP"
 msgstr ""
 
 msgid "Static IPv4"
-msgstr ""
+msgstr "Statisches IPv4"
 
 msgid "6rd Tunnel"
 msgstr "6rd Tunnel"
@@ -5789,7 +5789,7 @@ msgid "SLAAC"
 msgstr "SLAAC"
 
 msgid "Static IPv6"
-msgstr ""
+msgstr "Statisches IPv6"
 
 msgid "Track Interface"
 msgstr ""
@@ -5802,25 +5802,25 @@ msgid "The %s configuration has been changed."
 msgstr ""
 
 msgid "General configuration"
-msgstr ""
+msgstr "Allgemeine Konfiguration"
 
 msgid "Enable Interface"
 msgstr "Interface aktivieren"
 
 msgid "Enter a description (name) for the interface here."
-msgstr ""
+msgstr "Geben Sie einen Beschreibung (Name) für das Interface hier ein."
 
 msgid "IPv4 Configuration Type"
-msgstr ""
+msgstr "IPv4 Konfigurationstyp"
 
 msgid "IPv6 Configuration Type"
-msgstr ""
+msgstr "IPv6 Konfigurationstyp"
 
 msgid "Insert my local MAC address"
-msgstr ""
+msgstr "Meine lokale MAC Adresse einfügen"
 
 msgid "This field can be used to modify (\"spoof\") the MAC address of this interface"
-msgstr ""
+msgstr "Dieses Feld kann dazu benutzt werden, um die MAC Adresse für dieses Interface zu ändern(\"spoofen\")"
 
 msgid "(may be required with some cable connections)"
 msgstr "(könnte bei manchen Kabelverbindungen erforderlich sein)"
@@ -5849,7 +5849,7 @@ msgid ""
 msgstr ""
 
 msgid "Static IPv4 configuration"
-msgstr ""
+msgstr "Statische IPv4 Konfiguration"
 
 msgid "IPv4 Upstream Gateway"
 msgstr ""
@@ -6227,7 +6227,7 @@ msgid "This selects the dynamic IPv6 WAN interface to track for configuration"
 msgstr ""
 
 msgid "IPv6 Prefix ID"
-msgstr ""
+msgstr "IPv6 Präfix ID"
 
 msgid "The value in this field is the (Delegated) IPv6 prefix id. This determines the configurable network ID based on the dynamic IPv6 connection"
 msgstr ""
@@ -6246,7 +6246,7 @@ msgid "Country:"
 msgstr "Land:"
 
 msgid "Provider:"
-msgstr ""
+msgstr "Provider:"
 
 msgid "Plan:"
 msgstr ""
@@ -6311,7 +6311,7 @@ msgid "Select a reset timing type"
 msgstr ""
 
 msgid "hour (0-23)"
-msgstr ""
+msgstr "Stunde (0-23)"
 
 msgid "minute (0-59)"
 msgstr "Minute (0-59)"
@@ -6347,10 +6347,10 @@ msgid "PPTP/L2TP configuration"
 msgstr ""
 
 msgid "Local IP address"
-msgstr ""
+msgstr "Lokale IP Adresse"
 
 msgid "Remote IP address"
-msgstr ""
+msgstr "Entfernte IP Adresse"
 
 msgid "This option causes the interface to operate in dial-on-demand mode, allowing you to have a"
 msgstr ""
@@ -6620,7 +6620,7 @@ msgid "AES (recommended)"
 msgstr "AES (empfohlen)"
 
 msgid "TKIP"
-msgstr ""
+msgstr "TKIP"
 
 msgid "Key Rotation"
 msgstr ""
@@ -6680,7 +6680,7 @@ msgid "Authentication Roaming Preauth"
 msgstr ""
 
 msgid "Private networks"
-msgstr ""
+msgstr "Private Netzwerke"
 
 msgid "When set, this option blocks traffic from IP addresses that are reserved for private  networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as"
 msgstr ""
@@ -7030,7 +7030,7 @@ msgid "This gif TUNNEL cannot be deleted because it is still being used as an in
 msgstr ""
 
 msgid "Tunnel to..."
-msgstr ""
+msgstr "Tunnen zu..."
 
 msgid "Do you really want to delete this gif tunnel?"
 msgstr "Wollen Sie diesen gif Tunnel wirklich löschen?"
@@ -7225,7 +7225,7 @@ msgid "Protocol supplied is invalid"
 msgstr ""
 
 msgid "LAGG configuration"
-msgstr ""
+msgstr "LAGG Konfiguration"
 
 msgid "Choose the members that will be used for the link aggregation"
 msgstr ""
@@ -7293,7 +7293,7 @@ msgid "Link Interface(s)"
 msgstr ""
 
 msgid "Subnet"
-msgstr ""
+msgstr "Subnetzwerk"
 
 msgid "Please choose a Link Type."
 msgstr ""
@@ -7622,7 +7622,7 @@ msgid "A QinQ VLAN exists with this tag please remove it to use this tag with."
 msgstr ""
 
 msgid "VLAN configuration"
-msgstr ""
+msgstr "VLAN Konfiguration"
 
 msgid "Only VLAN capable interfaces will be shown."
 msgstr ""
@@ -7680,10 +7680,10 @@ msgid "The load balancer configuration has been changed"
 msgstr ""
 
 msgid "Pools"
-msgstr ""
+msgstr "Pools"
 
 msgid "Virtual Servers"
-msgstr ""
+msgstr "Virtuelle Server"
 
 msgid "Monitors"
 msgstr "Monitore"
@@ -7717,7 +7717,7 @@ msgid "HTTPS"
 msgstr "HTTPS"
 
 msgid "ICMP"
-msgstr ""
+msgstr "ICMP"
 
 msgid "Send/Expect"
 msgstr ""
@@ -7744,7 +7744,7 @@ msgid "This entry cannot be deleted because it is still referenced by at least o
 msgstr ""
 
 msgid "Pool"
-msgstr ""
+msgstr "Pool"
 
 #, php-format
 msgid "The load balancer configuration has been changed%sYou must apply the changes in order for them to take effect."
@@ -7822,7 +7822,7 @@ msgid "You may also specify a port alias listed in Firewall -&gt; Aliases here."
 msgstr ""
 
 msgid "Retry"
-msgstr ""
+msgstr "neu versuchen"
 
 msgid "Optionally specify how many times to retry checking a server before declaring it down."
 msgstr ""
@@ -7844,7 +7844,7 @@ msgid "Current Pool Members"
 msgstr ""
 
 msgid "Pool Disabled"
-msgstr ""
+msgstr "Pool deaktiviert"
 
 msgid "Enabled (default)"
 msgstr "Aktiviert (Standard)"
@@ -7884,10 +7884,10 @@ msgid "Value"
 msgstr "Wert"
 
 msgid "Key"
-msgstr ""
+msgstr "Schlüssel"
 
 msgid "TODO"
-msgstr ""
+msgstr "TODO"
 
 msgid "Relay Protocol"
 msgstr ""
@@ -14144,10 +14144,10 @@ msgid "Edit Phase 1"
 msgstr "Phase 1 bearbeiten"
 
 msgid "Tunnels"
-msgstr ""
+msgstr "Tunnel"
 
 msgid "Mobile clients"
-msgstr "mobile Clienten"
+msgstr "Mobile Clients"
 
 msgid "Pre-Shared Keys"
 msgstr ""
@@ -14165,7 +14165,7 @@ msgid "Set this option to disable this phase1 without removing it from the list"
 msgstr ""
 
 msgid "Key Exchange version"
-msgstr ""
+msgstr "Schlüsselaustauschversion"
 
 msgid "Select the KeyExchange Protocol version to be used. Usually known as IKEv1 or IKEv2."
 msgstr ""
