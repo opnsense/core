@@ -84,24 +84,12 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#fetchandreconfigureAct").click(function(){
             $("#fetchandreconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
             ajaxCall(url="/api/proxy/service/fetchacls", sendData={}, callback=function(data,status) {
-
+                // when done, disable progress animation.
+                $("#fetchandreconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
                 if (status != "success" || data['status'] != 'ok') {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
                         title: "Error fetching remote acls",
-                        message: data['status'],
-                        draggable: true
-                    });
-                }
-            });
-            ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status) {
-                // when done, disable progress animation.
-                $("#fetchandreconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-
-                if (status != "success" || data['status'] != 'ok') {
-                    BootstrapDialog.show({
-                        type: BootstrapDialog.TYPE_WARNING,
-                        title: "Error reconfiguring proxy",
                         message: data['status'],
                         draggable: true
                     });
