@@ -95,6 +95,7 @@
         </DNSResolver>
         <DynamicDNS VisibleName="Dynamic DNS" url="/services_dyndns.php">
             <DynamicDNSRFC2136Clients url="/services_rfc2136.php"/>
+            <DynamicDNSEdit url="/services_dyndns_edit.php"/>
         </DynamicDNS>
         <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php"></IGMPProxy>
         <LoadBalancer VisibleName="Load Balancer" url="/load_balancer_pool.php">
