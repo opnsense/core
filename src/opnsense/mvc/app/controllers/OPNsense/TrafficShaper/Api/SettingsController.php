@@ -57,10 +57,7 @@ class SettingsController extends ApiControllerBase
             // replace absolute path to attribute for relative one at uuid.
             if ($node != null) {
                 $fieldnm = str_replace($node->__reference, $reference, $msg->getField());
-                if ($fieldnm != $msg->getField()) {
-                    // only collect validation errors for the item we're currently editing.
-                    $result["validations"][$fieldnm] = $msg->getMessage();
-                }
+                $result["validations"][$fieldnm] = $msg->getMessage();
             } else {
                 $result["validations"][$msg->getField()] = $msg->getMessage();
             }
@@ -68,10 +65,9 @@ class SettingsController extends ApiControllerBase
 
         // serialize model to config and save when there are no validation errors
         if (count($result['validations']) == 0) {
-            // we've already performed a validation, prevent issues from other items in the model reflecting back to us.
-            $mdlShaper->serializeToConfig($disable_validation = true);
-
             // save config if validated correctly
+            $mdlShaper->serializeToConfig();
+
             Config::getInstance()->save();
             $result = array("result" => "saved");
         }
@@ -151,7 +147,7 @@ class SettingsController extends ApiControllerBase
             if ($uuid != null) {
                 if ($mdlShaper->pipes->pipe->del($uuid)) {
                     // if item is removed, serialize to config and save
-                    $mdlShaper->serializeToConfig($disable_validation = true);
+                    $mdlShaper->serializeToConfig();
                     Config::getInstance()->save();
                     $result['result'] = 'deleted';
                 } else {
@@ -186,7 +182,7 @@ class SettingsController extends ApiControllerBase
                     }
                     $result['result'] = $node->enabled;
                     // if item has toggled, serialize to config and save
-                    $mdlShaper->serializeToConfig($disable_validation = true);
+                    $mdlShaper->serializeToConfig();
                     Config::getInstance()->save();
                 }
             }
@@ -334,7 +330,7 @@ class SettingsController extends ApiControllerBase
             if ($uuid != null) {
                 if ($mdlShaper->queues->queue->del($uuid)) {
                     // if item is removed, serialize to config and save
-                    $mdlShaper->serializeToConfig($disable_validation = true);
+                    $mdlShaper->serializeToConfig();
                     Config::getInstance()->save();
                     $result['result'] = 'deleted';
                 } else {
@@ -369,7 +365,7 @@ class SettingsController extends ApiControllerBase
                     }
                     $result['result'] = $node->enabled;
                     // if item has toggled, serialize to config and save
-                    $mdlShaper->serializeToConfig($disable_validation = true);
+                    $mdlShaper->serializeToConfig();
                     Config::getInstance()->save();
                 }
             }
@@ -483,7 +479,7 @@ class SettingsController extends ApiControllerBase
             if ($uuid != null) {
                 if ($mdlShaper->rules->rule->del($uuid)) {
                     // if item is removed, serialize to config and save
-                    $mdlShaper->serializeToConfig($disable_validation = true);
+                    $mdlShaper->serializeToConfig();
                     Config::getInstance()->save();
                     $result['result'] = 'deleted';
                 } else {
