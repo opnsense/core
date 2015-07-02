@@ -165,66 +165,67 @@ class RuleCache(object):
         :return: dict
         """
         result = {'rows':[]}
-        db = sqlite3.connect(self.cachefile)
-        cur = db.cursor()
+        if os.path.exists(self.cachefile):
+            db = sqlite3.connect(self.cachefile)
+            cur = db.cursor()
 
-        # construct query including filters
-        sql = 'select * from rules '
-        sql_filters = {}
+            # construct query including filters
+            sql = 'select * from rules '
+            sql_filters = {}
 
-        for filtertag in shlex.split(filter):
-            fieldnames = filtertag.split('/')[0]
-            searchcontent = '/'.join(filtertag.split('/')[1:])
-            if len(sql_filters) > 0:
-                sql += ' and ( '
-            else:
-                sql += ' where ( '
-            for fieldname in map(lambda x: x.lower().strip(), fieldnames.split(',')):
-                if fieldname in self._rule_fields:
-                    if fieldname != fieldnames.split(',')[0].strip():
-                        sql += ' or '
-                    if searchcontent.find('*') == -1:
-                        sql += 'cast('+fieldname + " as text) like :"+fieldname+" "
+            for filtertag in shlex.split(filter):
+                fieldnames = filtertag.split('/')[0]
+                searchcontent = '/'.join(filtertag.split('/')[1:])
+                if len(sql_filters) > 0:
+                    sql += ' and ( '
+                else:
+                    sql += ' where ( '
+                for fieldname in map(lambda x: x.lower().strip(), fieldnames.split(',')):
+                    if fieldname in self._rule_fields:
+                        if fieldname != fieldnames.split(',')[0].strip():
+                            sql += ' or '
+                        if searchcontent.find('*') == -1:
+                            sql += 'cast('+fieldname + " as text) like :"+fieldname+" "
+                        else:
+                            sql += 'cast('+fieldname + " as text) like '%'|| :"+fieldname+" || '%' "
+                        sql_filters[fieldname] = searchcontent.replace('*', '')
                     else:
-                        sql += 'cast('+fieldname + " as text) like '%'|| :"+fieldname+" || '%' "
-                    sql_filters[fieldname] = searchcontent.replace('*', '')
-                else:
-                    # not a valid fieldname, add a tag to make sure our sql statement is valid
-                    sql += ' 1 = 1 '
-            sql += ' ) '
+                        # not a valid fieldname, add a tag to make sure our sql statement is valid
+                        sql += ' 1 = 1 '
+                sql += ' ) '
 
-        # apply sort order (if any)
-        sql_sort =[]
-        for sortField in sort_by.split(','):
-            if sortField.split(' ')[0] in self._rule_fields:
-                if sortField.split(' ')[-1].lower() == 'desc':
-                    sql_sort.append('%s desc'%sortField.split()[0])
-                else:
-                    sql_sort.append('%s asc'%sortField.split()[0])
+            # apply sort order (if any)
+            sql_sort =[]
+            for sortField in sort_by.split(','):
+                if sortField.split(' ')[0] in self._rule_fields:
+                    if sortField.split(' ')[-1].lower() == 'desc':
+                        sql_sort.append('%s desc'%sortField.split()[0])
+                    else:
+                        sql_sort.append('%s asc'%sortField.split()[0])
 
-        # count total number of rows
-        cur.execute('select count(*) from (%s) a'%sql, sql_filters)
-        result['total_rows'] = cur.fetchall()[0][0]
+            # count total number of rows
+            cur.execute('select count(*) from (%s) a'%sql, sql_filters)
+            result['total_rows'] = cur.fetchall()[0][0]
 
-        if len(sql_sort) > 0:
-            sql += ' order by %s'%(','.join(sql_sort))
+            if len(sql_sort) > 0:
+                sql += ' order by %s'%(','.join(sql_sort))
 
-        if str(limit) != '0' and str(limit).isdigit():
-            sql += ' limit %s'%(limit)
-            if str(offset) != '0' and str(offset).isdigit():
-                sql += ' offset %s'%(offset)
+            if str(limit) != '0' and str(limit).isdigit():
+                sql += ' limit %s'%(limit)
+                if str(offset) != '0' and str(offset).isdigit():
+                    sql += ' offset %s'%(offset)
 
-        # fetch results
-        cur.execute(sql,sql_filters)
-        while True:
-            row = cur.fetchone()
-            if row is None:
-                break
+            # fetch results
+            cur.execute(sql,sql_filters)
+            while True:
+                row = cur.fetchone()
+                if row is None:
+                    break
 
-            record = {}
-            for fieldNum in range(len(cur.description)):
-                record[cur.description[fieldNum][0]] = row[fieldNum]
-            result['rows'].append(record)
+                record = {}
+                for fieldNum in range(len(cur.description)):
+                    record[cur.description[fieldNum][0]] = row[fieldNum]
+                result['rows'].append(record)
 
         return result
 
@@ -233,10 +234,13 @@ class RuleCache(object):
         :return: list of installed classtypes
         """
         result = []
-        db = sqlite3.connect(self.cachefile)
-        cur = db.cursor()
-        cur.execute('select distinct classtype from rules')
-        for record in cur.fetchall():
-            result.append(record[0])
+        if os.path.exists(self.cachefile):
+            db = sqlite3.connect(self.cachefile)
+            cur = db.cursor()
+            cur.execute('select distinct classtype from rules')
+            for record in cur.fetchall():
+                result.append(record[0])
 
-        return sorted(result)
+            return sorted(result)
+        else:
+            return result
