@@ -146,12 +146,12 @@ POSSIBILITY OF SUCH DAMAGE.
                                 requestHandler:addRuleFilters,
                                 formatters:{
                                     rowtoggle: function (column, row) {
+                                        var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.sid + "\"><span class=\"fa fa-info-circle\"></span></button> ";
                                         if (parseInt(row[column.id], 2) == 1) {
-                                            var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.sid + "\"></span>";
+                                            toggle += "&nbsp; <span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.sid + "\"></span>";
                                         } else {
-                                            var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.sid + "\"></span>";
+                                            toggle += "&nbsp; <span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.sid + "\"></span>";
                                         }
-                                        toggle += " &nbsp; <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.sid + "\"><span class=\"fa fa-info-circle\"></span></button> ";
                                         return toggle;
                                     }
                                 }
@@ -310,7 +310,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <th data-column-id="source" data-type="string">Source</th>
                 <th data-column-id="classtype" data-type="string">ClassType</th>
                 <th data-column-id="msg" data-type="string">Message</th>
-                <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">enabled / info</th>
+                <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">info / enabled</th>
             </tr>
             </thead>
             <tbody>
