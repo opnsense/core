@@ -61,6 +61,11 @@ abstract class BaseField
     protected $internalDefaultValue = "";
 
     /**
+     * @var null|string initial value of this field (first set)
+     */
+    protected $internalInitialValue = null;
+
+    /**
      * @var string direct reference to this field in the model object
      */
     protected $internalReference = null;
@@ -244,7 +249,24 @@ abstract class BaseField
      */
     public function setValue($value)
     {
+        // if first set, store initial value
+        if ($this->internalInitialValue == null) {
+            $this->internalInitialValue = $value;
+        }
         $this->internalValue = $value;
+    }
+
+    /**
+     * check if field content has changed
+     * @return bool change indicator
+     */
+    public function isFieldChanged()
+    {
+        if ($this->internalInitialValue !==  $this->internalValue) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

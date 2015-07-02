@@ -290,8 +290,10 @@ abstract class BaseModel
 
     /**
      * validate full model using all fields and data in a single (1 deep) array
+     * @param bool $validateFullModel validate full model or only changed fields
+     * @return \Phalcon\Validation\Message\Group
      */
-    public function performValidation()
+    public function performValidation($validateFullModel = false)
     {
         // create a Phalcon validator and collect all model validations
         $validation = new \Phalcon\Validation();
@@ -299,12 +301,14 @@ abstract class BaseModel
         $all_nodes = $this->internalData->getFlatNodes();
 
         foreach ($all_nodes as $key => $node) {
-            $node_validators = $node->getValidators();
-            foreach ($node_validators as $item_validator) {
-                $validation->add($key, $item_validator);
-            }
-            if (count($node_validators) > 0) {
-                $validation_data[$key] = $node->__toString();
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $node_validators = $node->getValidators();
+                foreach ($node_validators as $item_validator) {
+                    $validation->add($key, $item_validator);
+                }
+                if (count($node_validators) > 0) {
+                    $validation_data[$key] = $node->__toString();
+                }
             }
         }
 
@@ -390,10 +394,11 @@ abstract class BaseModel
     /**
      * validate model and serialize data to config singleton object.
      *
+     * @param bool $validateFullModel by default we only validate the fields we have changed
      * @param bool $disable_validation skip validation, be careful to use this!
      * @throws \Phalcon\Validation\Exception validation errors
      */
-    public function serializeToConfig($disable_validation = false)
+    public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
         // create logger to save possible consistency issues to
         $logger = new Syslog("config", array(
@@ -404,7 +409,7 @@ abstract class BaseModel
         // Perform validation, collect all messages and raise exception if validation is not disabled.
         // If for some reason the developer chooses to ignore the errors, let's at least log there something
         // wrong in this model.
-        $messages = $this->performValidation();
+        $messages = $this->performValidation($validateFullModel);
         if ($messages->count() > 0) {
             $exception_msg = "";
             foreach ($messages as $msg) {
