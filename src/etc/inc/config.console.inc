@@ -109,7 +109,8 @@ EOD;
 		if ($interactive) {
 			$wanif = chop(fgets($fp));
 		} else {
-			$wanif = $ifnames[0];
+			/* more than one interface: put WAN as second one */
+			$wanif = count($ifnames) > 1 ? $ifnames[1] : '';
 			echo $wanif . PHP_EOL;
 		}
 
@@ -135,7 +136,8 @@ EOD;
 		if ($interactive) {
 			$lanif = chop(fgets($fp));
 		} else {
-			$lanif = '';
+			/* at least one interface: put LAN as first one */
+			$lanif = count($ifnames) > 0 ? $ifnames[0] : '';
 			echo $lanif . PHP_EOL;
 		}
 
@@ -181,7 +183,13 @@ EOD;
 			printf(gettext("%sEnter the Optional %s interface name or 'a' for auto-detection%s" .
 				"(or nothing if finished):%s"), "\n", $io, "\n", " ");
 
-			$optif[$i] = chop(fgets($fp));
+			if ($interactive) {
+				$optif[$i] = chop(fgets($fp));
+			} else {
+				/* never configure OPT in automatic assign */
+				$optif[$i] = '';
+				echo $optif[$i] . PHP_EOL;
+			}
 
 			if ($optif[$i] == '') {
 				unset($optif[$i]);

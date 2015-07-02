@@ -210,7 +210,7 @@
 	<interfaces>
 		<wan>
 			<enable/>
-			<if>em1</if>
+			<if>mismatch1</if>
 			<mtu></mtu>
 			<ipaddr>dhcp</ipaddr>
 			<ipaddrv6>dhcp6</ipaddrv6>
@@ -232,7 +232,7 @@
 		</wan>
 		<lan>
 			<enable/>
-			<if>em0</if>
+			<if>mismatch0</if>
 			<ipaddr>192.168.1.1</ipaddr>
 			<subnet>24</subnet>
 			<ipaddrv6>track6</ipaddrv6>
