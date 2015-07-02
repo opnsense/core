@@ -91,19 +91,12 @@ class SettingsController extends ApiControllerBase
                     $valMsgs = $mdlCron->performValidation();
                     foreach ($valMsgs as $field => $msg) {
                         $fieldnm = str_replace($node->__reference, "job", $msg->getField());
-                        if ($fieldnm != $msg->getField()) {
-                            // only collect validation errors for the item we're currently editing.
-                            $result["validations"][$fieldnm] = $msg->getMessage();
-                        }
-
+                        $result["validations"][$fieldnm] = $msg->getMessage();
                     }
 
                     if (count($result['validations']) == 0) {
-                        // we've already performed a validation, prevent issues
-                        // from other items in the model reflecting back to us.
-                        $mdlCron->serializeToConfig($disable_validation = true);
-
                         // save config if validated correctly
+                        $mdlCron->serializeToConfig();
                         Config::getInstance()->save();
                         $result = array("result" => "saved");
                     }
@@ -131,19 +124,12 @@ class SettingsController extends ApiControllerBase
 
             foreach ($valMsgs as $field => $msg) {
                 $fieldnm = str_replace($node->__reference, "job", $msg->getField());
-                if ($fieldnm != $msg->getField()) {
-                    // only collect validation errors for the item we're currently editing.
-                    $result["validations"][$fieldnm] = $msg->getMessage();
-                }
-
+                $result["validations"][$fieldnm] = $msg->getMessage();
             }
 
             if (count($result['validations']) == 0) {
-                // we've already performed a validation, prevent issues from
-                // other items in the model reflecting back to us.
-                $mdlCron->serializeToConfig($disable_validation = true);
-
                 // save config if validated correctly
+                $mdlCron->serializeToConfig();
                 Config::getInstance()->save();
                 $result = array("result" => "saved");
             }
@@ -153,7 +139,7 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
-     * delete job by uuid
+     * delete job by uuid ( only if origin is cron)
      * @param $uuid item unique id
      * @return array status
      */
@@ -161,13 +147,13 @@ class SettingsController extends ApiControllerBase
     {
 
         $result = array("result" => "failed");
-
         if ($this->request->isPost()) {
             $mdlCron = new Cron();
             if ($uuid != null) {
-                if ($mdlCron->jobs->job->del($uuid)) {
+                $node = $mdlCron->getNodeByReference('jobs.job.' . $uuid);
+                if ($node != null && (string)$node->origin == "cron" && $mdlCron->jobs->job->del($uuid) == true) {
                     // if item is removed, serialize to config and save
-                    $mdlCron->serializeToConfig($disable_validation = true);
+                    $mdlCron->serializeToConfig();
                     Config::getInstance()->save();
                     $result['result'] = 'deleted';
                 } else {
@@ -201,7 +187,7 @@ class SettingsController extends ApiControllerBase
                         $node->enabled = "1";
                     }
                     // if item has toggled, serialize to config and save
-                    $mdlCron->serializeToConfig($disable_validation = true);
+                    $mdlCron->serializeToConfig();
                     Config::getInstance()->save();
                 }
             }
@@ -216,41 +202,42 @@ class SettingsController extends ApiControllerBase
      */
     public function searchJobsAction()
     {
-//        if (!$this->request->isPost()) {
-//            return array();
-//        }
-        $this->sessionClose();
-        // fetch query parameters
-        $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-        $currentPage = $this->request->getPost('current', 'int', 1);
-        $sortBy = array("description");
-        $sortDescending = false;
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            // fetch query parameters
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+            $currentPage = $this->request->getPost('current', 'int', 1);
+            $sortBy = array("description");
+            $sortDescending = false;
 
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
-            $sortBy = array_keys($this->request->getPost("sort"));
-            if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
-                $sortDescending = true;
+            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
+                $sortBy = array_keys($this->request->getPost("sort"));
+                if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
+                    $sortDescending = true;
+                }
             }
+
+            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
+
+            // create model and fetch query resuls
+            $fields = array(
+                "enabled",
+                "minutes",
+                "hours",
+                "days",
+                "months",
+                "weekdays",
+                "description",
+                "command",
+                "origin",
+                "cronPermissions"
+            );
+            $mdlCron = new Cron();
+            $grid = new UIModelGrid($mdlCron->jobs->job);
+
+            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
+        } else {
+            return array();
         }
-
-        $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
-
-        // create model and fetch query resuls
-        $fields = array(
-            "enabled",
-            "minutes",
-            "hours",
-            "days",
-            "months",
-            "weekdays",
-            "description",
-            "command",
-            "origin",
-            "cronPermissions"
-        );
-        $mdlCron = new Cron();
-        $grid = new UIModelGrid($mdlCron->jobs->job);
-
-        return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
     }
 }
