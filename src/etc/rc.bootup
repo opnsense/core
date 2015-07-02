@@ -142,13 +142,6 @@ echo "done.\n";
 if (is_interface_mismatch()) {
 	echo PHP_EOL . gettext('Default interfaces not found -- Running interface assignment option.') . PHP_EOL;
 
-	$ifaces = get_interface_list();
-	if (is_array($ifaces)) {
-		foreach($ifaces as $iface => $ifdata) {
-			interfaces_bring_up($iface);
-		}
-	}
-
 	led_assigninterfaces();
 	while (!set_networking_interfaces_ports());
 	led_kitt();
