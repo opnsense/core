@@ -30,6 +30,7 @@ namespace OPNsense\Proxy\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Proxy\Proxy;
+use \OPNsense\Cron\Cron;
 use \OPNsense\Core\Config;
 use \OPNsense\Base\UIModelGrid;
 
@@ -266,4 +267,41 @@ class SettingsController extends ApiControllerBase
         }
         return $result;
     }
+
+    /**
+     * create new cron item for remote acl or return already available one
+     * @return array status action
+     */
+    public function fetchRBCronAction()
+    {
+        $result = array("result" => "failed");
+
+        if ($this->request->isPost()) {
+            $mdlProxy = new Proxy();
+            if ((string)$mdlProxy->forward->acl->remoteACLs->UpdateCron == "") {
+                $mdlCron = new Cron();
+                // update cron relation (if this doesn't break consistency)
+                $uuid = $mdlCron->newDailyJob("Proxy", "proxy fetchacls", "fetch proxy acls", "1");
+                $mdlProxy->forward->acl->remoteACLs->UpdateCron = $uuid;
+
+                if ($mdlCron->performValidation()->count() == 0) {
+                    $mdlCron->serializeToConfig();
+                    // save data to config, do not validate because the current in memory model doesn't know about the
+                    // cron item just created.
+                    $mdlProxy->serializeToConfig($validateFullModel = false, $disable_validation = true);
+                    Config::getInstance()->save();
+                    $result['result'] = "new";
+                    $result['uuid'] = $uuid;
+                } else {
+                    $result['result'] = "unable to add cron";
+                }
+            } else {
+                $result['result'] = "existing";
+                $result['uuid'] = (string)$mdlProxy->forward->acl->remoteACLs->UpdateCron;
+            }
+        }
+
+        return $result;
+    }
+
 }

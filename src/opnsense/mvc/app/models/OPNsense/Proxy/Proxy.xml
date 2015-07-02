@@ -220,6 +220,20 @@
                             </description>
                         </blacklist>
                     </blacklists>
+                    <UpdateCron type="ModelRelationField">
+                        <Model>
+                            <queues>
+                                <source>OPNsense.Cron.Cron</source>
+                                <items>jobs.job</items>
+                                <display>description</display>
+                                <filters>
+                                    <origin>/Proxy/</origin>
+                                </filters>
+                            </queues>
+                        </Model>
+                        <ValidationMessage>Related cron not found</ValidationMessage>
+                        <Required>N</Required>
+                    </UpdateCron>
                 </remoteACLs>
             </acl>
             <authentication>

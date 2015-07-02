@@ -58,7 +58,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
         /**
          *
-         * Reconfigure poxy - activate changes
+         * Reconfigure proxy - activate changes
          */
         $("#reconfigureAct").click(function(){
             $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
@@ -93,6 +93,20 @@ POSSIBILITY OF SUCH DAMAGE.
                         message: data['status'],
                         draggable: true
                     });
+                }
+            });
+        });
+
+        /**
+         * setup cron item
+         */
+        $("#ScheduleAct").click(function() {
+            $("#scheduleAct_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall(url="/api/proxy/settings/fetchRBCron", sendData={}, callback=function(data,status) {
+                $("#scheduleAct_progress").removeClass("fa fa-spinner fa-pulse");
+                if (data.uuid !=undefined) {
+                    // redirect to cron page
+                    $(location).attr('href',"/ui/cron/item/open/"+data.uuid);
                 }
             });
         });
