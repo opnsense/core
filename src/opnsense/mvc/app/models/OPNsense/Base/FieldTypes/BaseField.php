@@ -61,9 +61,9 @@ abstract class BaseField
     protected $internalDefaultValue = "";
 
     /**
-     * @var null|string initial value of this field (first set)
+     * @var null|bool|string initial value of this field (first set)
      */
-    protected $internalInitialValue = null;
+    protected $internalInitialValue = false;
 
     /**
      * @var string direct reference to this field in the model object
@@ -250,7 +250,7 @@ abstract class BaseField
     public function setValue($value)
     {
         // if first set, store initial value
-        if ($this->internalInitialValue == null) {
+        if ($this->internalInitialValue === false) {
             $this->internalInitialValue = $value;
         }
         $this->internalValue = $value;
@@ -452,8 +452,8 @@ abstract class BaseField
      */
     public function setDefault($value)
     {
-        $this->internalValue = $value;
         $this->internalDefaultValue = $value;
+        $this->setValue($value);
     }
 
     /**
@@ -461,7 +461,7 @@ abstract class BaseField
      */
     public function applyDefault()
     {
-        $this->internalValue = $this->internalDefaultValue;
+        $this->setValue($this->internalDefaultValue);
     }
 
     /**
