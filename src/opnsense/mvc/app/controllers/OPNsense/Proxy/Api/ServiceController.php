@@ -158,8 +158,12 @@ class ServiceController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $backend = new Backend();
-            $response = $backend->configdRun("proxy fetchacls", true);
-            return array("response" => $response);
+            // generate template
+            $backend->configdRun("template reload OPNsense.Proxy");
+
+            // fetch files
+            $response = $backend->configdRun("proxy fetchacls");
+            return array("response" => $response,"status" => "ok");
         } else {
             return array("response" => array());
         }
