@@ -46,7 +46,17 @@ if os.path.exists(acl_config_fn):
     cnf = ConfigParser()
     cnf.read(acl_config_fn)
     for section in cnf.sections():
-        if cnf.has_option(section,'url'):
-            f = urllib2.urlopen(cnf.get(section,'url'),timeout = acl_max_timeout)
-            with open('%s/%s'%(acl_target_dir,section), "wb") as code:
-                code.write(f.read())
+        # check if tag enabled exists in section
+        if cnf.has_option(section,'enabled'):
+            # if enabled fetch file
+            if cnf.get(section,'enabled')=='1':
+                if cnf.has_option(section,'url'):
+                    f = urllib2.urlopen(cnf.get(section,'url'),timeout = acl_max_timeout)
+                    with open('%s/%s'%(acl_target_dir,section), "wb") as code:
+                            code.write(f.read())
+            # if disabled try to remove old file
+            elif cnf.get(section,'enabled')=='0':
+                try:
+                    os.remove(section)
+                except OSError:
+                    pass
