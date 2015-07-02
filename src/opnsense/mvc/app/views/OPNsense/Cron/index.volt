@@ -54,8 +54,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
             // define save action
             $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                $("#btn_"+editDlg+"_save_progress").addClass("fa fa-spinner fa-pulse");
-                $("#btn_"+editDlg+"_save").unbind('click'); // make sure we can't click again.
                 saveFormToEndpoint(url=setUrl+uuid,
                         formid='frm_' + editDlg, callback_ok=function(){
                             // do reconfigure of cron after save (because we're leaving back to the sender)
