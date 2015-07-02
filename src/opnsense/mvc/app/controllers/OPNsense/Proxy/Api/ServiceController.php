@@ -148,4 +148,21 @@ class ServiceController extends ApiControllerBase
             return array("status" => "failed");
         }
     }
+
+
+    /**
+     * fetch acls
+     * @return array
+     */
+    public function fetchaclsAction()
+    {
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = $backend->configdRun("proxy fetchacls", true);
+            return array("response" => $response);
+        } else {
+            return array("response" => array());
+        }
+    }
+
 }

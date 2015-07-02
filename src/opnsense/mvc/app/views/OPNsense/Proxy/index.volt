@@ -69,7 +69,39 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (status != "success" || data['status'] != 'ok') {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
-                        title: "Error reconfiguring cron",
+                        title: "Error reconfiguring proxy",
+                        message: data['status'],
+                        draggable: true
+                    });
+                }
+            });
+        });
+
+        /**
+         *
+         * Download ACLs and reconfigure poxy - activate changes
+         */
+        $("#fetchandreconfigureAct").click(function(){
+            $("#fetchandreconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall(url="/api/proxy/service/fetchacls", sendData={}, callback=function(data,status) {
+
+                if (status != "success" || data['status'] != 'ok') {
+                    BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
+                        title: "Error fetching remote acls",
+                        message: data['status'],
+                        draggable: true
+                    });
+                }
+            });
+            ajaxCall(url="/api/proxy/service/reconfigure", sendData={}, callback=function(data,status) {
+                // when done, disable progress animation.
+                $("#fetchandreconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+
+                if (status != "success" || data['status'] != 'ok') {
+                    BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
+                        title: "Error reconfiguring proxy",
                         message: data['status'],
                         draggable: true
                     });
@@ -228,6 +260,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     <div class="col-md-12">
                         <hr/>
                         <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
+                        <button class="btn btn-primary"  id="fetchandreconfigureAct" type="button"><b>Download ACLs & Apply</b><i id="fetchandreconfigureAct_progress" class=""></i></button>
+                        <button class="btn btn-primary"  id="ScheduleAct" type="button"><b>Schedule with Cron</b><i id="scheduleAct_progress" class=""></i></button>
                     </div>
                 </td>
             </tr>
