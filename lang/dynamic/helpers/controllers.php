@@ -38,23 +38,8 @@ echo gettext('The port number where Squid sends and receives ICP queries to
                 ');
 echo gettext('Enable access logging.');
 echo gettext('Enable store logging.');
-echo gettext('
-                    Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma seperated list into this field.</div>');
-echo gettext('This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first.
-            Squid will still perform both IPv6 and IPv4 DNS lookups before connecting.
-            <div class="alert alert-warning"><b class="text-danger">Warning:</b> This option will restrict the situations under which IPv6
-                connectivity is used (and tested). Hiding network problems
-                which would otherwise be detected and warned about.</div>');
-echo gettext('If set (default), Squid will include a Via header in requests and
-            replies as required by RFC2616.');
 echo gettext('Select what to do with X-Forwarded for header.');
 echo gettext('Suppress Squid version string info in HTTP headers and HTML error pages.');
-echo gettext('Select what to do with URI that contain whitespaces.<br/>
-            <div class="text-info"><b>NOTE:</b> the current Squid implementation of encode and chop violates
-                RFC2616 by not using a 301 redirect after altering the URL.</div>');
-echo gettext('Enable or disable the local cache.<br/>
-        Curently only ufs directory cache type is supported.<br/>
-        <b class="text-danger">Do not enable on embedded systems with SD or CF cards as this may break your drive.</b>');
 echo gettext('Enter the storage size for the local cache (default is 100).');
 echo gettext('
                     Enter the number of first-level subdirectories for the local cache (default is 16).');
@@ -73,79 +58,36 @@ echo gettext('
                     When enabled the subnets of the selected interfaces will be added to the allow access list.');
 echo gettext('Select interface(s) the ftp proxy will bind to.');
 echo gettext('The port the proxy service will listen to.');
-echo gettext('
-                    Type subnets you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>');
-echo gettext('
-                    Type IP adresses you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>');
-echo gettext('
-                    Type IP adresses you want to deny acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>');
-echo gettext('Whitelist destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">.mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^http(s|)://([a-zA-Z]+)\.mydomain\.*</b> -> matches on <b>http(s)://*.mydomain.*</b><br/>
-            <b class="text-primary">\\.+\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\\.+[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>');
-echo gettext('Blacklist destination domains.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">.mydomain.com</b> -> matches on <b>*.mydomain.com</b><br/>
-            <b class="text-primary">^http(s|)://([a-zA-Z]+)\.mydomain\.*</b> -> matches on <b>http(s)://*.mydomain.*</b><br/>
-            <b class="text-primary">\\.+\.gif$</b> -> matches on <b>\*.gif</b> but not on <b class="text-danger">\*.gif\test</b><br/>
-            <b class="text-primary">\\.+[0-9]+\.gif$</b> -> matches on <b>\123.gif</b> but not on <b class="text-danger">\test.gif</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>');
-echo gettext('Block user-agents.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">^(.)+Macintosh(.)+Firefox/37\.0</b> -> matches on <b>Macintosh version of Firefox revision 37.0</b><br/>
-            <b class="text-primary">^Mozilla</b> -> matches on <b>all Mozilla based browsers</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>');
-echo gettext('Block specific MIME type reply.<br/>
-        You may use a regular expression, use a comma or press Enter for new item.<br/>
-        <div class="alert alert-info">
-            <b>Examples:</b><br/>
-            <b class="text-primary">video/flv</b> -> matches on <b>Flash Video</b><br/>
-            <b class="text-primary">application/x-javascript</b> -> matches on <b>javascripts</b><br/>
-        </div>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>');
-echo gettext('Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with collon (ex. 22:ssh).<br/>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>');
-echo gettext('Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with collon (ex. 22:ssh).<br/>
-        <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>');
 echo gettext('Select Authentication method');
 echo gettext('The prompt will be displayed in the autherntication request window.');
-echo gettext('This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live).<br/>
-            When the TTL expires, the user will be prompted for credentials again.');
 echo gettext('The total number of authenticator processes to spawn.');
+echo gettext('Select if job is enabled or not');
+echo gettext('Enter a filename for storing the blacklist.');
+echo gettext('Enter an url to fetch the blacklist from.');
+echo gettext('Enter a description to explain what this blacklist is intended for.');
+echo gettext('enable IDS');
+echo gettext('Select interface(s) to use.');
 echo gettext('enable this pipe and it\'s related queues and rules');
 echo gettext('Total bandwidth for this pipe');
 echo gettext('number of dynamic queues, leave empty for default');
-echo gettext('Dynamic queue creation by source or destination address.
-        <li> choose destination here to share the total bandwidth of this pipe among all connected clients. </li>
-        <li> choose source to provide all connected clients up to a maximum of this pipe configured bandwidth  </li>
-        ');
 echo gettext('Description to identify this pipe.');
 echo gettext('enable this queue and it\'s related rules');
 echo gettext('connected pipe for this queue');
 echo gettext('Weight of this queue (1..100), used to prioritize within a pipe. (1 is low, 100 is high)');
-echo gettext('Dynamic queue creation by source or destination address.
-        <li> choose destination here to share the total bandwidth of this pipe among all connected clients. </li>
-        <li> choose source to provide all connected clients up to a maximum of this pipe configured bandwidth  </li>
-        ');
 echo gettext('Description to identify this pipe.');
 echo gettext('order in which the rule will be evaluated (lowest first)');
-echo gettext('secondary interface, matches packets going traveling from interface (1) to interface (2).
-        ');
 echo gettext('source ip or network, examples 10.0.0.0/24, 10.0.0.1');
 echo gettext('source port number or well known name (imap,imaps, http,https,...)');
 echo gettext('destination ip or network, examples 10.0.0.0/24, 10.0.0.1');
 echo gettext('destination port number or well known name (imap,imaps, http,https,...)');
 echo gettext('matches incomming or outgoing packets or both (default)');
 echo gettext('target pipe or queue');
+echo gettext('Select if job is enabled or not');
+echo gettext('Enter the minutes for the job to act, can also be a comma separated list, * (each) or a range (ex. 10,20,30 or 10-30)');
+echo gettext('Enter the hours for the job to act, can also be a comma separated list, * (each) or a range (ex. 10,11,12 or 10-12)');
+echo gettext('Enter the days of the month for the job to act, can also be a comma separated list, * (each) or a range (ex. 1,20,28 or 1-28)');
+echo gettext('Enter the months for the job to act, can also be a comma separated list, * (each) or a range (ex. 1,2,3 or 1-3)');
+echo gettext('Enter the days of the week for the job to act, can also be a comma separated list, * (each) or a range (ex. 1,2,3 or 1-3)');
+echo gettext('Select the command that needs to be executed at given time frame.');
+echo gettext('Enter parameters for this job if required.');
+echo gettext('Enter a description to explain what this job is intended for.');

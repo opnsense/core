@@ -1606,8 +1606,8 @@
       ]
     },
     "page-services-ids": {
-      "name": "WebCfg - Services: Intrusion detection",
-      "descr": "Allow access to the 'Services: IDS' page'",
+      "name": "WebCfg - Services: Intrusion Detection page",
+      "descr": "Allow access to the 'Services: Intrusion Detection' page'",
        "match": [
            "ui/ids/*",
            "api/ids/*"
