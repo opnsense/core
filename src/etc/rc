@@ -192,6 +192,9 @@ if [ ! ${DEFAULT_LOG_FILE_SIZE} ]; then
 	DEFAULT_LOG_FILE_SIZE=511488
 fi
 
+# purge the old ppp.log and rotated descendants (15.7 migration code)
+rm -f /var/log/ppp.log*
+
 for logfile in $LOG_FILES; do
 	if [ "$DISABLESYSLOGCLOG" -gt "0" ]; then
 		touch /var/log/$logfile.log
