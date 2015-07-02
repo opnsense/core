@@ -1,4 +1,4 @@
 rc.conf.d:/etc/rc.conf.d/squid
 squid.conf:/usr/local/etc/squid/squid.conf
 newsyslog.conf:/etc/newsyslog.conf.d/squid
-externalACLS.conf:/usr/local/etc/squid/externalACLs.conf
+externalACLs.conf:/usr/local/etc/squid/externalACLs.conf
