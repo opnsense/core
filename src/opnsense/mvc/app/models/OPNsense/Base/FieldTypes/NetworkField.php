@@ -48,7 +48,7 @@ class NetworkField extends BaseField
      */
     public function setValue($value)
     {
-        $this->internalValue = trim(strtolower($value));
+        parent::setValue(trim(strtolower($value)));
     }
 
     /**

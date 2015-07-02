@@ -115,7 +115,7 @@ class PortField extends BaseField
      */
     public function setValue($value)
     {
-        $this->internalValue = strtolower($value);
+        parent::setValue(trim(strtolower($value)));
     }
 
     /**
