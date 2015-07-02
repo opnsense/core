@@ -179,6 +179,9 @@ if (!function_exists('get_services')) {
 		if (isset($config['OPNsense']['proxy']['general']['enabled']) && $config['OPNsense']['proxy']['general']['enabled'] == 1) {
 			$services[] = array('name'=>'squid', 'description' => gettext("Proxy server"));
 		}
+		if (isset($config['OPNsense']['IDS']['general']['enabled']) && $config['OPNsense']['IDS']['general']['enabled'] == 1) {
+			 $services[] = array('name'=>'suricata', 'description' => gettext("Intrusion Detection"));
+		}
 		return $services;
 	}
 
@@ -400,6 +403,9 @@ if (!function_exists('service_control_start')) {
 			case 'squid':
 				configd_run("proxy start");
 				break;
+			case 'suricata':
+				configd_run("ids start");
+				break;
 			default:
 				log_error(gettext("Could not start unknown service `%s'", $name));
 				break;
@@ -476,6 +482,9 @@ if (!function_exists('service_control_stop')) {
 			case 'squid':
 				configd_run("proxy stop");
 				break;
+			case 'suricata':
+				configd_run("ids stop");
+				break;
 			default:
 				log_error(gettext("Could not stop unknown service `%s'", $name));
 				break;
@@ -549,6 +558,9 @@ if (!function_exists('service_control_restart')) {
 				break;
 			case 'squid':
 				configd_run("proxy restart");
+				break;
+			case 'suricata':
+				configd_run("ids restart");
 				break;
 			default:
 				log_error(gettext("Could not restart unknown service `%s'", $name));
