@@ -136,7 +136,7 @@ class ServiceController extends ApiControllerBase
                     $mdlCron->serializeToConfig();
                     // save data to config, do not validate because the current in memory model doesn't know about the
                     // cron item just created.
-                    $mdlIDS->serializeToConfig($disable_validation = true);
+                    $mdlIDS->serializeToConfig($validateFullModel = false, $disable_validation = true);
                     Config::getInstance()->save();
                 }
             }
