@@ -95,7 +95,7 @@ msgstr ""
 #
 # File: src/etc/inc/auth.inc, line: 1343
 msgid "Wrong username or password."
-msgstr ""
+msgstr "Falscher Benutzername oder falsches Passwort."
 
 #
 # File: src/etc/inc/auth.inc, line: 1384
