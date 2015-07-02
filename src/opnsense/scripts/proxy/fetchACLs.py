@@ -54,9 +54,9 @@ if os.path.exists(acl_config_fn):
                     f = urllib2.urlopen(cnf.get(section,'url'),timeout = acl_max_timeout)
                     with open('%s/%s'%(acl_target_dir,section), "wb") as code:
                             code.write(f.read())
-            # if disabled try to remove old file
-            elif cnf.get(section,'enabled')=='0':
+            # if disabled or not 1 try to remove old file
+            elif cnf.get(section,'enabled')!='1':
                 try:
-                    os.remove(section)
+                    os.remove(acl_target_dir+'/'+section)
                 except OSError:
                     pass
