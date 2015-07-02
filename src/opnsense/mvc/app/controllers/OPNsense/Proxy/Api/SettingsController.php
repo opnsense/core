@@ -266,6 +266,4 @@ class SettingsController extends ApiControllerBase
         }
         return $result;
     }
-
-
 }
