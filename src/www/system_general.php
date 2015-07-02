@@ -37,21 +37,12 @@ function get_locale_list()
 
 	/* first one is the default */
 	$locales['en_US'] = _('English');
-	//$locales['ja_JP'] = _('Japanese');
+	$locales['de_DE'] = _('German');
+	/* $locales['es_CO'] = */ _('Spanish');
+	/* $locales['ja_JP'] = */ _('Japanese');
 	$locales['zh_CN'] = _('Chinese (Simplified)');
 
 	return $locales;
-}
-
-function get_flavour_list()
-{
-	$flavours = array();
-
-	/* first one is the default */
-	$flavours['latest'] = 'OpenSSL';
-	$flavours['libressl'] = 'LibreSSL';
-
-	return $flavours;
 }
 
 $pconfig['hostname'] = $config['system']['hostname'];
