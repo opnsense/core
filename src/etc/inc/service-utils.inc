@@ -111,7 +111,7 @@ if (!function_exists('get_services')) {
 		}
 
 		$gateways_arr = return_gateways_array();
-		if (is_array($gateways_arr)) {
+		if (is_apinger_enabled() && is_array($gateways_arr)) {
 			$pconfig = array();
 			$pconfig['name'] = "apinger";
 			$pconfig['description'] = gettext("Gateway Monitoring Daemon");
