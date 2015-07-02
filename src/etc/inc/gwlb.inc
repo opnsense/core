@@ -1076,9 +1076,11 @@ function gateway_is_gwgroup_member($name) {
 function is_apinger_enabled() {
 	global $config;
 	$gwcount=0;
-	foreach($config['gateways']['gateway_item'] as $gwkey => $gateway) {
-		if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == "0") {
-			$gwcount += 1;
+	if (isset($config['gateways']['gateway_item'])) {
+		foreach($config['gateways']['gateway_item'] as $gwkey => $gateway) {
+			if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == "0") {
+				$gwcount += 1;
+			}
 		}
 	}
 
