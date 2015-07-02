@@ -38,9 +38,10 @@ class Cron extends BaseModel
      * @param string $command
      * @param string $description
      * @param string $weekdays day(s) of the week to run
+     * @param string $enabled default add disabled cron jobs, if triggered enabled be sure to call regenerate on cron.
      * @return string
      */
-    public function newDailyJob($origin, $command, $description, $weekdays = "*")
+    public function newDailyJob($origin, $command, $description, $weekdays = "*", $enabled = "0")
     {
         $cron = $this->jobs->job->Add();
         $uuid = $cron->getAttributes()['uuid'];
@@ -48,6 +49,7 @@ class Cron extends BaseModel
         $cron->command = $command;
         $cron->description = $description;
         $cron->weekdays = $weekdays ;
+        $cron->enabled = $enabled;
         return $uuid;
     }
 }
