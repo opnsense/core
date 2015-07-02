@@ -257,6 +257,14 @@ abstract class BaseField
     }
 
     /**
+     * force field to act as changed, used after cloning.
+     */
+    public function setChanged()
+    {
+        $this->internalInitialValue = true;
+    }
+
+    /**
      * check if field content has changed
      * @return bool change indicator
      */
@@ -452,16 +460,16 @@ abstract class BaseField
      */
     public function setDefault($value)
     {
+        $this->internalValue = $value;
         $this->internalDefaultValue = $value;
-        $this->setValue($value);
     }
 
     /**
-     * (re)Apply default value
+     * (re)Apply default value without changing the initial value of the field
      */
     public function applyDefault()
     {
-        $this->setValue($this->internalDefaultValue);
+        $this->internalValue = $this->internalDefaultValue;
     }
 
     /**

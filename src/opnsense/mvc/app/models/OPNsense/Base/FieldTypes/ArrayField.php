@@ -84,6 +84,7 @@ class ArrayField extends BaseField
             // initialize field with new internal id and defined default value
             $node->setInternalReference($container_node->__reference.".".$key);
             $node->applyDefault();
+            $node->setChanged();
             $container_node->addChildNode($key, $node);
         }
 
