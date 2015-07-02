@@ -254,12 +254,46 @@ EOD;
 		return false;
 	}
 
+	/*
+	 * XXX Ideally, at this point we'd import the default settings here,
+	 * not hardcode them.  It was this way before, so fixing for now.
+	 */
 	if ($lanif) {
+		$new = false;
+
 		if (!is_array($config['interfaces']['lan'])) {
 			$config['interfaces']['lan'] = array();
+			$new = true;
 		}
 		$config['interfaces']['lan']['if'] = $lanif;
 		$config['interfaces']['lan']['enable'] = true;
+
+		if ($new) {
+			$config['interfaces']['lan']['ipaddr'] = '192.168.1.1';
+			$config['interfaces']['lan']['subnet'] = '24';
+			if ($wanif) {
+				$config['interfaces']['lan']['track6-interface'] = 'wan';
+				$config['interfaces']['lan']['track6-prefix-id'] = '0';
+				$config['interfaces']['lan']['ipaddrv6'] = 'track6';
+				$config['interfaces']['lan']['subnetv6'] = '64';
+			}
+
+			if (!is_array($config['dhcpd']['lan'])) {
+				$config['dhcpd']['lan'] = array();
+				$config['dhcpd']['lan']['range'] = array();
+			}
+			$config['dhcpd']['lan']['enable'] = true;
+			$config['dhcpd']['lan']['range']['from'] = '192.168.1.100';
+			$config['dhcpd']['lan']['range']['to'] = '192.168.1.199';
+			if (!is_array($config['nat'])) {
+				$config['nat'] = array();
+			}
+			if (!is_array($config['nat']['outbound'])) {
+				$config['nat']['outbound'] = array();
+			}
+			$config['nat']['outbound']['mode'] = 'automatic';
+		}
+
 		if (match_wireless_interface($lanif)) {
 			if (is_array($config['interfaces']['lan']) &&
 				(!is_array($config['interfaces']['lan']['wireless']))) {
@@ -271,18 +305,21 @@ EOD;
 			}
 		}
 	} else {
-		if(isset($config['interfaces']['lan']['if']))
+		if (isset($config['interfaces']['lan']['if'])) {
 			mwexec("/sbin/ifconfig " . $config['interfaces']['lan']['if'] . " delete");
-		if(isset($config['interfaces']['lan']))
+		}
+		if (isset($config['interfaces']['lan'])) {
 			unset($config['interfaces']['lan']);
-		if(isset($config['dhcpd']['lan']))
+		}
+		if (isset($config['dhcpd']['lan'])) {
 			unset($config['dhcpd']['lan']);
-		if(isset($config['interfaces']['lan']['if']))
-			unset($config['interfaces']['lan']['if']);
-		if(isset($config['interfaces']['wan']['blockpriv']))
+		}
+		if (isset($config['interfaces']['wan']['blockpriv'])) {
 			unset($config['interfaces']['wan']['blockpriv']);
-		if(isset($config['nat']))
+		}
+		if (isset($config['nat'])) {
 			unset($config['nat']);
+		}
 	}
 
 	if ($wanif) {
@@ -293,6 +330,10 @@ EOD;
 		$config['interfaces']['wan']['enable'] = true;
 		$config['interfaces']['wan']['ipaddr'] = 'dhcp';
 		$config['interfaces']['wan']['ipaddrv6'] = 'dhcpv6';
+		$config['interfaces']['wan']['blockbogons'] = true;
+		if ($lanif) {
+			$config['interfaces']['wan']['blockpriv'] = true;
+		}
 
 		if (match_wireless_interface($wanif)) {
 			if (is_array($config['interfaces']['wan']) &&
@@ -305,8 +346,9 @@ EOD;
 			}
 		}
 	} else {
-		if (isset($config['interfaces']['wan']))
+		if (isset($config['interfaces']['wan'])) {
 			unset($config['interfaces']['wan']);
+		}
 	}
 
 	for ($i = 0; $i < count($optif); $i++) {
