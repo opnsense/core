@@ -164,19 +164,12 @@ class SettingsController extends ApiControllerBase
                     $valMsgs = $mdlProxy->performValidation();
                     foreach ($valMsgs as $field => $msg) {
                         $fieldnm = str_replace($node->__reference, "blacklist", $msg->getField());
-                        if ($fieldnm != $msg->getField()) {
-                            // only collect validation errors for the item we're currently editing.
-                            $result["validations"][$fieldnm] = $msg->getMessage();
-                        }
-
+                        $result["validations"][$fieldnm] = $msg->getMessage();
                     }
 
                     if (count($result['validations']) == 0) {
-                        // we've already performed a validation, prevent issues
-                        // from other items in the model reflecting back to us.
-                        $mdlProxy->serializeToConfig($disable_validation = true);
-
                         // save config if validated correctly
+                        $mdlProxy->serializeToConfig();
                         Config::getInstance()->save();
                         $result = array("result" => "saved");
                     }
@@ -203,19 +196,12 @@ class SettingsController extends ApiControllerBase
 
             foreach ($valMsgs as $field => $msg) {
                 $fieldnm = str_replace($node->__reference, "blacklist", $msg->getField());
-                if ($fieldnm != $msg->getField()) {
-                    // only collect validation errors for the item we're currently editing.
-                    $result["validations"][$fieldnm] = $msg->getMessage();
-                }
-
+                $result["validations"][$fieldnm] = $msg->getMessage();
             }
 
             if (count($result['validations']) == 0) {
-                // we've already performed a validation, prevent issues from
-                // other items in the model reflecting back to us.
-                $mdlProxy->serializeToConfig($disable_validation = true);
-
                 // save config if validated correctly
+                $mdlProxy->serializeToConfig();
                 Config::getInstance()->save();
                 $result = array("result" => "saved");
             }
@@ -239,7 +225,7 @@ class SettingsController extends ApiControllerBase
             if ($uuid != null) {
                 if ($mdlProxy->forward->acl->remoteACLs->blacklists->blacklist->del($uuid)) {
                     // if item is removed, serialize to config and save
-                    $mdlProxy->serializeToConfig($disable_validation = true);
+                    $mdlProxy->serializeToConfig();
                     Config::getInstance()->save();
                     $result['result'] = 'deleted';
                 } else {
@@ -273,7 +259,7 @@ class SettingsController extends ApiControllerBase
                         $node->enabled = "1";
                     }
                     // if item has toggled, serialize to config and save
-                    $mdlProxy->serializeToConfig($disable_validation = true);
+                    $mdlProxy->serializeToConfig();
                     Config::getInstance()->save();
                 }
             }
