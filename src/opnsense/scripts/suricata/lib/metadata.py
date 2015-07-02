@@ -67,5 +67,3 @@ class Metadata(object):
                             metadata_record['description'] = rule_filename.text
 
                         yield metadata_record
-
-
