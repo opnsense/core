@@ -179,7 +179,7 @@ msgid "Optional"
 msgstr "Optional"
 
 msgid "The interfaces will be assigned as follows:"
-msgstr "Das Interface wird folgenderweise zugewiesen:"
+msgstr "Das Interface wird als folgendes zugewiesen:"
 
 #, php-format
 msgid "%sWriting configuration..."
@@ -210,7 +210,7 @@ msgid "No VLAN capable interfaces detected."
 msgstr "Kein VLAN fähiges Interface gefunden."
 
 msgid "Enter the parent interface name for the new VLAN (or nothing if finished):"
-msgstr ""
+msgstr "Geben Sie den übergeordneten Interfacenamen für das neue VLAN ein (oder nichts wenn Sie fertig sind):"
 
 msgid "Enter the VLAN tag (1-4094):"
 msgstr "Geben Sie ein VLAN Tag ein (1-4096):"
