@@ -114,10 +114,10 @@ msgstr ""
 
 #, php-format
 msgid "Error: %1$s Description: %2$s"
-msgstr ""
+msgstr "Fehler: %1$s Beschreibung: %2$s"
 
 msgid "unknown reason"
-msgstr ""
+msgstr "unbekannter Grund"
 
 #, php-format
 msgid "Invalid login (%s)."
@@ -179,7 +179,7 @@ msgid "Optional"
 msgstr "Optional"
 
 msgid "The interfaces will be assigned as follows:"
-msgstr ""
+msgstr "Das Interface wird folgenderweise zugewiesen:"
 
 #, php-format
 msgid "%sWriting configuration..."
@@ -190,7 +190,7 @@ msgid "done.%s"
 msgstr "erledigt.%s"
 
 msgid "One moment while we reload the settings..."
-msgstr ""
+msgstr "Einen Momemt - die Einstellungen werden neu geladen..."
 
 msgid " done!"
 msgstr " erledigt!"
@@ -207,7 +207,7 @@ msgid "VLAN Capable interfaces:"
 msgstr "VLAN Fähige Interfaces:"
 
 msgid "No VLAN capable interfaces detected."
-msgstr ""
+msgstr "Kein VLAN fähiges Interface gefunden."
 
 msgid "Enter the parent interface name for the new VLAN (or nothing if finished):"
 msgstr ""
@@ -316,10 +316,10 @@ msgid "Tried to block invalid IP:"
 msgstr ""
 
 msgid "Invalid interface for block rule:"
-msgstr ""
+msgstr "Ungültiges Interface für Blockierregel"
 
 msgid "Host added successfully"
-msgstr ""
+msgstr "Host erfolgreich hinzugefügt"
 
 msgid "Failed to create block rule, alias, or add host."
 msgstr ""
@@ -328,7 +328,7 @@ msgid "Tried to block but had no host IP or interface"
 msgstr ""
 
 msgid "Unknown block error."
-msgstr ""
+msgstr "Unbekannter Blockierfehler."
 
 msgid "Invalid interface for pass rule:"
 msgstr ""
@@ -343,7 +343,7 @@ msgid "Tried to pass invalid destination IP:"
 msgstr ""
 
 msgid "Missing destination port:"
-msgstr ""
+msgstr "Zielport fehlt:"
 
 msgid "Tried to pass invalid destination port:"
 msgstr ""
@@ -373,7 +373,7 @@ msgid "Generating Limiter rules"
 msgstr ""
 
 msgid "Generating NAT rules"
-msgstr ""
+msgstr "Generiere NAT Regeln"
 
 msgid "Generating filter rules"
 msgstr "Generiere Filterregeln"
@@ -686,7 +686,7 @@ msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
 msgstr ""
 
 msgid "Generating new MAC address."
-msgstr ""
+msgstr "Generiere neue MAC Adresse."
 
 #, php-format
 msgid "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %1$s has been automatically replaced with %2$s"
@@ -732,7 +732,7 @@ msgid "Mobile Client"
 msgstr "mobiler Client"
 
 msgid "None"
-msgstr ""
+msgstr "Keiner(r)"
 
 msgid "IPsec daemon seems to have issues or not running! Could not display mobile user stats!"
 msgstr ""
@@ -777,7 +777,7 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 140
 msgid "it was not possible to send data to the SMTP server"
-msgstr ""
+msgstr "es war nicht möglich, Daten an den SMTP Server zu senden"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 212
@@ -787,7 +787,7 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 215
 msgid "establishing SSL connections requires the OpenSSL extension enabled"
-msgstr ""
+msgstr "Aufbau von SSL Verbindungen benötigt die OpenSSL-Erweiterung"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 224
@@ -992,13 +992,13 @@ msgid "Peer to Peer ( Shared Key )"
 msgstr ""
 
 msgid "Remote Access ( SSL/TLS )"
-msgstr ""
+msgstr "Remotezugriff ( SSL/TLS )"
 
 msgid "Remote Access ( User Auth )"
-msgstr ""
+msgstr "Remotezugriff ( Benutzerauthentifizierung )"
 
 msgid "Remote Access ( SSL/TLS + User Auth )"
-msgstr ""
+msgstr "Remotezugriff ( SSL/TLS + Benutzerauthentifizierung )"
 
 msgid "No Preference"
 msgstr ""
@@ -1013,10 +1013,10 @@ msgid "Enabled without Adaptive Compression"
 msgstr ""
 
 msgid "None (No Encryption)"
-msgstr ""
+msgstr "Keine (Keine Verschlüsselung)"
 
 msgid "None (No Authentication)"
-msgstr ""
+msgstr "Keine (Keine Authentifizierung)"
 
 #, php-format
 msgid "The field '%s' must contain a valid IP address or domain name."
@@ -1132,7 +1132,7 @@ msgstr ""
 
 #, php-format
 msgid "Unexpected return value: %s"
-msgstr ""
+msgstr "Unerwarteter Rückgabewert: %s"
 
 #, php-format
 msgid "RRD dump failed exited with %1$s, the error is: %2$s"
@@ -1187,13 +1187,13 @@ msgid "SNMP Service"
 msgstr "SNMP Dienst"
 
 msgid "IGMP proxy"
-msgstr ""
+msgstr "IGMP Proxy"
 
 msgid "UPnP Service"
-msgstr ""
+msgstr "UPnP Dienst"
 
 msgid "IPsec VPN"
-msgstr ""
+msgstr "IPsec VPN"
 
 msgid "Secure Shell Daemon"
 msgstr ""
@@ -1217,7 +1217,7 @@ msgid "%s Service is"
 msgstr "%s Dienst"
 
 msgid "Stopped"
-msgstr ""
+msgstr "Gestoppt"
 
 #, php-format
 msgid "Restart %sService"
@@ -1266,7 +1266,7 @@ msgid "DHCP leases restore failed exited with %1$s, the error is: %2$s%3$s"
 msgstr ""
 
 msgid "Starting DHCP service..."
-msgstr ""
+msgstr "Starte DHCP Dienst..."
 
 msgid "Warning!  DHCP Failover setup and no CARP virtual IPs defined!"
 msgstr ""
@@ -1415,7 +1415,7 @@ msgid "Permit IPsec traffic."
 msgstr ""
 
 msgid "System Administrators"
-msgstr ""
+msgstr "Systemadministratoren"
 
 msgid "Indicates whether this user will lock access to the webConfigurator for other users."
 msgstr ""
@@ -1511,7 +1511,7 @@ msgstr ""
 
 #, php-format
 msgid "phase2 for %s"
-msgstr ""
+msgstr "Phase 2 für %s"
 
 #, php-format
 msgid "Upgraded Dyndns %s"
@@ -13767,13 +13767,13 @@ msgid "Remote Gateway"
 msgstr ""
 
 msgid "P1 Protocol"
-msgstr ""
+msgstr "Phase 1 Protokoll"
 
 msgid "P1 Transforms"
 msgstr ""
 
 msgid "P1 Description"
-msgstr ""
+msgstr "Phase 1 Beschreibung"
 
 msgid "auto"
 msgstr "automatisch"
@@ -13791,26 +13791,26 @@ msgid "Do you really want to delete this phase1 and all associated phase2 entrie
 msgstr ""
 
 msgid "copy phase1 entry"
-msgstr ""
+msgstr "Kopiere Phase 1 Eintrag"
 
 #, php-format
 msgid "Show %s Phase-2 entries"
 msgstr ""
 
 msgid "Local Subnet"
-msgstr ""
+msgstr "Lokales Subnetzwerk"
 
 msgid "Remote Subnet"
-msgstr ""
+msgstr "Entferntes Subnetzwerk"
 
 msgid "P2 Protocol"
-msgstr ""
+msgstr "Phase 2 Protokoll"
 
 msgid "P2 Transforms"
 msgstr ""
 
 msgid "P2 Auth Methods"
-msgstr ""
+msgstr "Phase 2 Authentifizierungsmethode"
 
 msgid "edit phase2 entry"
 msgstr "Phase 2 Eintrag bearbeiten"
@@ -13852,13 +13852,13 @@ msgid "You can check your IPsec status at"
 msgstr ""
 
 msgid "Status:IPsec"
-msgstr ""
+msgstr "Status:IPsec"
 
 msgid "IPsec Debug Mode can be enabled at"
 msgstr ""
 
 msgid "VPN:IPsec:Advanced Settings"
-msgstr ""
+msgstr "VPN:IPsec:Erweiterte Einstellungen"
 
 msgid "IPsec can be set to prefer older SAs at"
 msgstr ""
@@ -13870,7 +13870,7 @@ msgid "Deleted IPsec Pre-Shared Key"
 msgstr "IPsec Pre-Shared Key gelöscht"
 
 msgid "VPN: IPsec: Keys"
-msgstr ""
+msgstr "VPN: IPsec: Schlüssel"
 
 msgid "Identifier"
 msgstr ""
