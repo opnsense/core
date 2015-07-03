@@ -41,20 +41,23 @@ function upload_crash_report($files)
 	$post = array();
 	$counter = 0;
 
-	foreach($files as $file) {
-		$post["file{$counter}"] = "@{$file}";
+	foreach($files as $filename) {
+		$post["file{$counter}"] = curl_file_create($filename, "plain/text", basename($filename));
 		$counter++;
 	}
 
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_HEADER, 0);
-	curl_setopt($ch, CURLOPT_VERBOSE, 0);
+	curl_setopt($ch, CURLOPT_URL, 'https://crash.opnsense.org/');
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	curl_setopt($ch, CURLOPT_VERBOSE, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible;)');
-	curl_setopt($ch, CURLOPT_URL, 'https://crash.opnsense.org/');
 	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: multipart/form-data;' ) );
 	$response = curl_exec($ch);
+	curl_close($ch);
 
 	return !$response;
 }
@@ -87,7 +90,7 @@ $crash_report_header = sprintf(
 
 
 <?php
-	if ($_POST['Submit'] == 'yes') {
+	if (isset($_POST['Submit']) && $_POST['Submit'] == 'yes') {
 		echo '<p>' . gettext('Processing...');
 		ob_flush();
 		flush();
