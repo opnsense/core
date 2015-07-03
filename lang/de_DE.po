@@ -5048,7 +5048,7 @@ msgid "TCP/IP Version"
 msgstr "TCP/IP Version"
 
 msgid "Select the Internet Protocol version this rule applies to"
-msgstr "Wählen Sie die Internet Protokoll-Version aus, auf die diese Regel angewandt wird"
+msgstr "Wählen Sie die Internet Protokoll-Version aus, auf die diese Regel angewandt werden soll"
 
 msgid "Hint: in most cases, you should specify "
 msgstr ""
