@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-01 17:57+0100\n"
+"PO-Revision-Date: 2015-07-03 10:07+0100\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -173,7 +173,7 @@ msgstr "%sOptionales Interface %s Beschreibung gefunden: %s"
 
 #, php-format
 msgid "%sEnter the Optional %s interface name or 'a' for auto-detection%s(or nothing if finished):%s"
-msgstr "%sGib den optionalen %s Schnittstellennamen oder 'a' für automatische erkennung.%s(oder nichts wenn Sie fertig sind):%s"
+msgstr "%sGeben Sie den optionalen %s Schnittstellennamen oder 'a' für automatische Erkennung.%s(oder nichts falls Sie fertig sind):%s"
 
 msgid "Optional"
 msgstr "Optional"
@@ -2867,7 +2867,7 @@ msgid "Continue at risk of your own peril."
 msgstr ""
 
 msgid "Do you really want to add this BLOCK rule?"
-msgstr ""
+msgstr "Wollen Sie diese Blockierregel wirklich hinzufügen?"
 
 msgid "Easy Rule is still experimental."
 msgstr "Easy Rule ist immer noch experimentell."
@@ -2876,7 +2876,7 @@ msgid "Easy Rule: Add to Block List"
 msgstr "Einfache Regel: Zur Blockierliste hinzufügen"
 
 msgid "Do you really want to add this PASS rule?"
-msgstr ""
+msgstr "Wollen Sie diese Erlaubnisregel wirklich hinzufügen?"
 
 msgid "Easy Rule: Pass this traffic"
 msgstr "Easy Rule: Erlaube diesen Verkehr"
@@ -6967,12 +6967,11 @@ msgstr ""
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 468
-#, fuzzy
 msgid ""
 "Add the interface named by interface as a span port on the bridge.  Span ports transmit a copy of every frame received by the bridge.  This is most useful for "
 "snooping a bridged network passively on another host connected to one of the span ports of the bridge."
 msgstr ""
-"Das Interface genannt in Interface al Span Port der Bridge hinzufügen. Span Ports senden einen Kopie jedes Frames, die die Bridge empfängt. Dies kann am "
+"Das Interface genannt in Interface als Span Port der Bridge hinzufügen. Span Ports senden einen Kopie jedes Frames, die die Bridge empfängt. Dies kann am "
 "nützlichsten für transparente Netzwerküberwachung (z.B durch ein IDS) eingesetzt werden."
 
 msgid "The span interface cannot be part of the bridge member interfaces."
