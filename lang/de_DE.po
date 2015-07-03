@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-01 17:57+0100\n"
+"PO-Revision-Date: 2015-07-03 10:07+0100\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgid "Redirecting to the dashboard..."
 msgstr ""
 
 msgid "Redirecting..."
-msgstr ""
+msgstr "Weiterleiten..."
 
 #
 # File: src/etc/inc/auth.inc, line: 394
@@ -114,10 +114,10 @@ msgstr ""
 
 #, php-format
 msgid "Error: %1$s Description: %2$s"
-msgstr ""
+msgstr "Fehler: %1$s Beschreibung: %2$s"
 
 msgid "unknown reason"
-msgstr ""
+msgstr "unbekannter Grund"
 
 #, php-format
 msgid "Invalid login (%s)."
@@ -149,10 +149,10 @@ msgid "Error: cannot open '%s' in captiveportal_write_elements()%s"
 msgstr ""
 
 msgid "No interfaces found!"
-msgstr ""
+msgstr "Keine Interfaces gefunden!"
 
 msgid "VLAN interfaces:"
-msgstr ""
+msgstr "VLAN Interfaces:"
 
 msgid "Enter the WAN interface name or 'a' for auto-detection:"
 msgstr ""
@@ -173,13 +173,13 @@ msgstr "%sOptionales Interface %s Beschreibung gefunden: %s"
 
 #, php-format
 msgid "%sEnter the Optional %s interface name or 'a' for auto-detection%s(or nothing if finished):%s"
-msgstr "%sGib den optionalen %s Schnittstellennamen oder 'a' für automatische erkennung.%s(oder nichts wenn Sie fertig sind):%s"
+msgstr "%sGeben Sie den optionalen %s Schnittstellennamen oder 'a' für automatische Erkennung.%s(oder nichts falls Sie fertig sind):%s"
 
 msgid "Optional"
-msgstr ""
+msgstr "Optional"
 
 msgid "The interfaces will be assigned as follows:"
-msgstr ""
+msgstr "Das Interface wird als folgendes zugewiesen:"
 
 #, php-format
 msgid "%sWriting configuration..."
@@ -190,7 +190,7 @@ msgid "done.%s"
 msgstr "erledigt.%s"
 
 msgid "One moment while we reload the settings..."
-msgstr ""
+msgstr "Einen Momemt - die Einstellungen werden neu geladen..."
 
 msgid " done!"
 msgstr " erledigt!"
@@ -207,10 +207,10 @@ msgid "VLAN Capable interfaces:"
 msgstr "VLAN Fähige Interfaces:"
 
 msgid "No VLAN capable interfaces detected."
-msgstr ""
+msgstr "Kein VLAN fähiges Interface gefunden."
 
 msgid "Enter the parent interface name for the new VLAN (or nothing if finished):"
-msgstr ""
+msgstr "Geben Sie den übergeordneten Interfacenamen für das neue VLAN ein (oder nichts wenn Sie fertig sind):"
 
 msgid "Enter the VLAN tag (1-4094):"
 msgstr "Geben Sie ein VLAN Tag ein (1-4096):"
@@ -316,10 +316,10 @@ msgid "Tried to block invalid IP:"
 msgstr ""
 
 msgid "Invalid interface for block rule:"
-msgstr ""
+msgstr "Ungültiges Interface für Blockierregel"
 
 msgid "Host added successfully"
-msgstr ""
+msgstr "Host erfolgreich hinzugefügt"
 
 msgid "Failed to create block rule, alias, or add host."
 msgstr ""
@@ -328,7 +328,7 @@ msgid "Tried to block but had no host IP or interface"
 msgstr ""
 
 msgid "Unknown block error."
-msgstr ""
+msgstr "Unbekannter Blockierfehler."
 
 msgid "Invalid interface for pass rule:"
 msgstr ""
@@ -343,7 +343,7 @@ msgid "Tried to pass invalid destination IP:"
 msgstr ""
 
 msgid "Missing destination port:"
-msgstr ""
+msgstr "Zielport fehlt:"
 
 msgid "Tried to pass invalid destination port:"
 msgstr ""
@@ -373,13 +373,13 @@ msgid "Generating Limiter rules"
 msgstr ""
 
 msgid "Generating NAT rules"
-msgstr ""
+msgstr "Generiere NAT Regeln"
 
 msgid "Generating filter rules"
-msgstr ""
+msgstr "Generiere Filterregeln"
 
 msgid "Loading filter rules"
-msgstr ""
+msgstr "Lade Filterregeln"
 
 msgid "Filter is disabled.  Not loading rules."
 msgstr "Filter ist deaktiviert. Regeln werden nicht geladen."
@@ -432,16 +432,16 @@ msgid "localhost"
 msgstr "localhost"
 
 msgid "static route"
-msgstr ""
+msgstr "statische Route"
 
 msgid "DHCP alias address"
 msgstr "DHCP Alias Adresse"
 
 msgid "PPTP server"
-msgstr ""
+msgstr "PPTP Server"
 
 msgid "PPPoE server"
-msgstr ""
+msgstr "PPPoE Server"
 
 msgid "L2TP server"
 msgstr ""
@@ -453,7 +453,7 @@ msgid "OpenVPN client"
 msgstr "OpenVPN Client"
 
 msgid "IPsec client"
-msgstr ""
+msgstr "IPsec Client"
 
 msgid "Auto created rule for ISAKMP"
 msgstr "Automatisch erstellte Regel für ISAKMP"
@@ -686,7 +686,7 @@ msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
 msgstr ""
 
 msgid "Generating new MAC address."
-msgstr ""
+msgstr "Generiere neue MAC Adresse."
 
 #, php-format
 msgid "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %1$s has been automatically replaced with %2$s"
@@ -732,7 +732,7 @@ msgid "Mobile Client"
 msgstr "mobiler Client"
 
 msgid "None"
-msgstr ""
+msgstr "Keiner(r)"
 
 msgid "IPsec daemon seems to have issues or not running! Could not display mobile user stats!"
 msgstr ""
@@ -777,7 +777,7 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 140
 msgid "it was not possible to send data to the SMTP server"
-msgstr ""
+msgstr "es war nicht möglich, Daten an den SMTP Server zu senden"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 212
@@ -787,7 +787,7 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 215
 msgid "establishing SSL connections requires the OpenSSL extension enabled"
-msgstr ""
+msgstr "Aufbau von SSL Verbindungen benötigt die OpenSSL-Erweiterung"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 224
@@ -992,13 +992,13 @@ msgid "Peer to Peer ( Shared Key )"
 msgstr ""
 
 msgid "Remote Access ( SSL/TLS )"
-msgstr ""
+msgstr "Remotezugriff ( SSL/TLS )"
 
 msgid "Remote Access ( User Auth )"
-msgstr ""
+msgstr "Remotezugriff ( Benutzerauthentifizierung )"
 
 msgid "Remote Access ( SSL/TLS + User Auth )"
-msgstr ""
+msgstr "Remotezugriff ( SSL/TLS + Benutzerauthentifizierung )"
 
 msgid "No Preference"
 msgstr ""
@@ -1013,10 +1013,10 @@ msgid "Enabled without Adaptive Compression"
 msgstr ""
 
 msgid "None (No Encryption)"
-msgstr ""
+msgstr "Keine (Keine Verschlüsselung)"
 
 msgid "None (No Authentication)"
-msgstr ""
+msgstr "Keine (Keine Authentifizierung)"
 
 #, php-format
 msgid "The field '%s' must contain a valid IP address or domain name."
@@ -1132,7 +1132,7 @@ msgstr ""
 
 #, php-format
 msgid "Unexpected return value: %s"
-msgstr ""
+msgstr "Unerwarteter Rückgabewert: %s"
 
 #, php-format
 msgid "RRD dump failed exited with %1$s, the error is: %2$s"
@@ -1187,13 +1187,13 @@ msgid "SNMP Service"
 msgstr "SNMP Dienst"
 
 msgid "IGMP proxy"
-msgstr ""
+msgstr "IGMP Proxy"
 
 msgid "UPnP Service"
-msgstr ""
+msgstr "UPnP Dienst"
 
 msgid "IPsec VPN"
-msgstr ""
+msgstr "IPsec VPN"
 
 msgid "Secure Shell Daemon"
 msgstr ""
@@ -1217,7 +1217,7 @@ msgid "%s Service is"
 msgstr "%s Dienst"
 
 msgid "Stopped"
-msgstr ""
+msgstr "Gestoppt"
 
 #, php-format
 msgid "Restart %sService"
@@ -1266,7 +1266,7 @@ msgid "DHCP leases restore failed exited with %1$s, the error is: %2$s%3$s"
 msgstr ""
 
 msgid "Starting DHCP service..."
-msgstr ""
+msgstr "Starte DHCP Dienst..."
 
 msgid "Warning!  DHCP Failover setup and no CARP virtual IPs defined!"
 msgstr ""
@@ -1415,7 +1415,7 @@ msgid "Permit IPsec traffic."
 msgstr ""
 
 msgid "System Administrators"
-msgstr ""
+msgstr "Systemadministratoren"
 
 msgid "Indicates whether this user will lock access to the webConfigurator for other users."
 msgstr ""
@@ -1511,7 +1511,7 @@ msgstr ""
 
 #, php-format
 msgid "phase2 for %s"
-msgstr ""
+msgstr "Phase 2 für %s"
 
 #, php-format
 msgid "Upgraded Dyndns %s"
@@ -2793,13 +2793,13 @@ msgid "Gathering Limiter information, please wait..."
 msgstr ""
 
 msgid "General"
-msgstr ""
+msgstr "Allgemein"
 
 msgid "System logs"
-msgstr ""
+msgstr "Systemprotokolle"
 
 msgid "Clear log"
-msgstr ""
+msgstr "Protokoll löschen"
 
 msgid "Portal Auth"
 msgstr "Portalauthentifizierung"
@@ -2819,7 +2819,7 @@ msgid "Cannot resolve"
 msgstr "Kann nicht aufgelöst werden"
 
 msgid "The rule that triggered this action is"
-msgstr ""
+msgstr "Die Regel die diese Aktion ausgelöst hat ist"
 
 msgid "Firewall"
 msgstr "Firewall"
@@ -2849,7 +2849,7 @@ msgid "Act"
 msgstr "Reagieren"
 
 msgid "Time"
-msgstr ""
+msgstr "Zeit"
 
 msgid "If"
 msgstr "Falls"
@@ -2858,7 +2858,7 @@ msgid "Rule"
 msgstr ""
 
 msgid "Click to resolve"
-msgstr ""
+msgstr "Klicken zum Auflösen"
 
 msgid "Backups are also nice."
 msgstr "Backups sind auch nett."
@@ -2867,7 +2867,7 @@ msgid "Continue at risk of your own peril."
 msgstr ""
 
 msgid "Do you really want to add this BLOCK rule?"
-msgstr ""
+msgstr "Wollen Sie diese Blockierregel wirklich hinzufügen?"
 
 msgid "Easy Rule is still experimental."
 msgstr "Easy Rule ist immer noch experimentell."
@@ -2876,14 +2876,14 @@ msgid "Easy Rule: Add to Block List"
 msgstr "Einfache Regel: Zur Blockierliste hinzufügen"
 
 msgid "Do you really want to add this PASS rule?"
-msgstr ""
+msgstr "Wollen Sie diese Erlaubnisregel wirklich hinzufügen?"
 
 msgid "Easy Rule: Pass this traffic"
 msgstr "Easy Rule: Erlaube diesen Verkehr"
 
 #, php-format
 msgid "Last %s firewall log entries"
-msgstr ""
+msgstr "Neueste %s Firewallprotokolleinträge"
 
 msgid "Firewall (Dynamic View)"
 msgstr "Firewall (Dynamische Ansicht)"
@@ -2899,7 +2899,7 @@ msgid "TCP Flags"
 msgstr "TCP Flags"
 
 msgid "Firewall Log Summary"
-msgstr ""
+msgstr "Firewallprotokollzusammenfassung"
 
 msgid "Actions"
 msgstr "Aktionen"
@@ -2978,16 +2978,16 @@ msgid "Summary View"
 msgstr ""
 
 msgid "Routing"
-msgstr ""
+msgstr "Routing"
 
 msgid "Resolver"
-msgstr ""
+msgstr "Resolver"
 
 msgid "Wireless"
-msgstr ""
+msgstr "Drahtlos"
 
 msgid "PPP"
-msgstr ""
+msgstr "PPP"
 
 #, php-format
 msgid "Last %s PPP log entries"
@@ -3013,7 +3013,7 @@ msgid "Last %s Load Balancer log entries"
 msgstr ""
 
 msgid "Reset Log Files"
-msgstr ""
+msgstr "Protokolldateien zurücksetzen"
 
 msgid "The log files have been reset."
 msgstr ""
@@ -3037,16 +3037,16 @@ msgid "webConfigurator configuration has changed. Restarting webConfigurator."
 msgstr ""
 
 msgid "WebGUI process is restarting."
-msgstr ""
+msgstr "WebGUI Prozess startet neu."
 
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
 msgid "General Logging Options"
-msgstr ""
+msgstr "Allgemeine Protokollierungsoptionen"
 
 msgid "Show log entries in reverse order (newest entries on top)"
-msgstr ""
+msgstr "Zeige Protokolleinträge in umgekehrter Reihenfolge (neueste Einträge oben)"
 
 msgid "Hint: This is only the number of log entries displayed in the GUI. It does not affect how many entries are contained in the actual log files."
 msgstr ""
@@ -3068,7 +3068,7 @@ msgid "Disk space currently used by log files: "
 msgstr "Festplattenspeicher der zurzeit von Logdateien belegt wird:"
 
 msgid "Remaining disk space for log files: "
-msgstr ""
+msgstr "Verbleibender Festplattenspeicher für Protokolldateien: "
 
 msgid "Log packets matched from the default block rules put in the ruleset"
 msgstr ""
@@ -3089,13 +3089,13 @@ msgid "Log packets blocked by 'Block Private Networks' rules"
 msgstr ""
 
 msgid "Log errors from the web server process."
-msgstr ""
+msgstr "Protokolliere Fehler des Webserverprozesses."
 
 msgid "Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log."
 msgstr ""
 
 msgid "Show raw filter logs"
-msgstr ""
+msgstr "Zeige unverarbeitete Filterprotokolle"
 
 msgid ""
 "Hint: If this is checked, filter logs are shown as generated by the packet filter, without any formatting. This will reveal more detailed information, but it is "
@@ -3109,10 +3109,10 @@ msgid "Displaying rule descriptions for all lines in the log might affect perfor
 msgstr ""
 
 msgid "Disable writing log files to the local disk"
-msgstr ""
+msgstr "Deaktiviere das Schreiben von Protokolldateien aud die Lokale Festplatte"
 
 msgid "Do you really want to reset the log files? This will erase all local log data."
-msgstr ""
+msgstr "Möchten Sie wirklich die Protokolldateien zurücksetzen? Dies wird sämtliche lokalen Protokolldaten löschen."
 
 msgid ""
 "Note: Clears all local log files and reinitializes them as empty logs. This also restarts the DHCP daemon. Use the Save button first if you have made any setting "
@@ -3136,7 +3136,7 @@ msgid "NOTE: If an IP address cannot be located on the chosen interface, the dae
 msgstr ""
 
 msgid "IP Protocol"
-msgstr ""
+msgstr "IP Protokoll"
 
 msgid ""
 "This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type "
@@ -3150,7 +3150,7 @@ msgid "Send log messages to remote syslog server"
 msgstr ""
 
 msgid "Remote Syslog Servers"
-msgstr ""
+msgstr "Entfernte Syslog Server"
 
 msgid "IP addresses of remote syslog servers, or an IP:port."
 msgstr ""
@@ -3162,7 +3162,7 @@ msgid "Everything"
 msgstr "Alles"
 
 msgid "System events"
-msgstr ""
+msgstr "Systemereignisse"
 
 msgid "Firewall events"
 msgstr "Firewallereignisse"
@@ -3231,10 +3231,10 @@ msgid "Start"
 msgstr "Start"
 
 msgid "Stop"
-msgstr ""
+msgstr "Stopp"
 
 msgid "Packet capture"
-msgstr ""
+msgstr "Paketaufzeichnung"
 
 msgid "Select the interface on which to capture traffic."
 msgstr ""
@@ -3243,10 +3243,10 @@ msgid "Promiscuous"
 msgstr ""
 
 msgid "If checked, the"
-msgstr ""
+msgstr "Falls ausgewählt, das"
 
 msgid "packet capture"
-msgstr ""
+msgstr "Paketaufzeichnung"
 
 msgid "will be performed using promiscuous mode."
 msgstr ""
@@ -3278,7 +3278,7 @@ msgid "If you leave this field blank, all packets on the specified interface wil
 msgstr ""
 
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgid "Leave blank if you do not want to filter by port."
 msgstr ""
@@ -3305,10 +3305,10 @@ msgid "Level of Detail"
 msgstr ""
 
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 msgid "Medium"
-msgstr ""
+msgstr "Mittel"
 
 msgid "High"
 msgstr "Hoch"
@@ -3496,7 +3496,7 @@ msgid "Perform Self-tests"
 msgstr ""
 
 msgid "Test type"
-msgstr ""
+msgstr "Testtyp"
 
 msgid "Offline"
 msgstr "Offline"
@@ -3511,7 +3511,7 @@ msgid "Conveyance (ATA Disks Only)"
 msgstr ""
 
 msgid "View Logs"
-msgstr "Logs anzeigen"
+msgstr "Protokolle anzeigen"
 
 msgid "Log type"
 msgstr ""
@@ -3520,7 +3520,7 @@ msgid "Error"
 msgstr "Fehler"
 
 msgid "Self-test"
-msgstr ""
+msgstr "Selbsttest"
 
 msgid "Abort tests"
 msgstr "Tests abbrechen"
@@ -3760,7 +3760,7 @@ msgid "Ports"
 msgstr "Ports"
 
 msgid "URLs"
-msgstr ""
+msgstr "URLs"
 
 msgid "Values"
 msgstr "Werte"
@@ -4032,10 +4032,10 @@ msgid "add new rule"
 msgstr "Eine neue Regel hinzufügen"
 
 msgid "pass"
-msgstr "erlauben"
+msgstr "Erlauben"
 
 msgid "linked rule"
-msgstr ""
+msgstr "verlinkte Regel"
 
 msgid "add rule"
 msgstr "Regel hinzufügen"
@@ -4497,10 +4497,10 @@ msgid "NAT Port"
 msgstr "NAT Port"
 
 msgid "Static Port"
-msgstr ""
+msgstr "Statischer Port"
 
 msgid "This rule is being ignored"
-msgstr ""
+msgstr "Diese Regel wird ignoriert"
 
 msgid "YES"
 msgstr "JA"
@@ -4676,10 +4676,10 @@ msgid "Alternate Host"
 msgstr "Alternativer Host"
 
 msgid "Router advertisement"
-msgstr ""
+msgstr "Router Advertisement"
 
 msgid "Router solicitation"
-msgstr ""
+msgstr "Router Solicitation"
 
 msgid "Time exceeded"
 msgstr ""
@@ -4731,10 +4731,10 @@ msgid "Anti-Lockout Rule"
 msgstr "Anti-Aussperrregel"
 
 msgid "add a new rule based on this one"
-msgstr ""
+msgstr "eine neue Regel basierend auf dieser hinzufügen"
 
 msgid "RFC 1918 networks"
-msgstr ""
+msgstr "RFC 1918 Netzwerke"
 
 msgid "Block private networks"
 msgstr "Blockiere private Netze"
@@ -4755,19 +4755,19 @@ msgid "Mon"
 msgstr "Montag"
 
 msgid "Sat"
-msgstr "Samstag"
+msgstr "Sa"
 
 msgid "Sun"
-msgstr ""
+msgstr "So"
 
 msgid "Thur"
-msgstr ""
+msgstr "Do"
 
 msgid "Tues"
-msgstr ""
+msgstr "Di"
 
 msgid "Wed"
-msgstr ""
+msgstr "Mi"
 
 msgid "April"
 msgstr "April"
@@ -4782,13 +4782,13 @@ msgid "February"
 msgstr "Februar"
 
 msgid "January"
-msgstr ""
+msgstr "Jänner"
 
 msgid "July"
-msgstr ""
+msgstr "Juli"
 
 msgid "June"
-msgstr ""
+msgstr "Juni"
 
 msgid "March"
 msgstr "März"
@@ -4800,7 +4800,7 @@ msgid "November"
 msgstr "November"
 
 msgid "October"
-msgstr ""
+msgstr "Oktober"
 
 msgid "September"
 msgstr "September"
@@ -4815,7 +4815,7 @@ msgid "This rule is not currently active because its period has expired"
 msgstr ""
 
 msgid "none"
-msgstr ""
+msgstr "keiner"
 
 msgid "No floating rules are currently defined."
 msgstr ""
@@ -5045,16 +5045,16 @@ msgid "Choose on which interface packets must come in to match this rule."
 msgstr ""
 
 msgid "TCP/IP Version"
-msgstr ""
+msgstr "TCP/IP Version"
 
 msgid "Select the Internet Protocol version this rule applies to"
-msgstr ""
+msgstr "Wählen Sie die Internet Protokoll-Version aus, für zu der dieser Regel gehört"
 
 msgid "Hint: in most cases, you should specify "
 msgstr ""
 
 msgid "ICMP type"
-msgstr ""
+msgstr "ICMP Typ"
 
 msgid "If you selected ICMP for the protocol above, you may specify an ICMP type here."
 msgstr ""
@@ -5084,10 +5084,10 @@ msgid "Log"
 msgstr "Protokoll"
 
 msgid "Log packets that are handled by this rule"
-msgstr ""
+msgstr "Protokolliere Pakete die von dieser Regel behandelt werden"
 
 msgid "Diagnostics: System logs: Settings"
-msgstr "Diagnose: Systemlogs: Einstellungen"
+msgstr "Diagnose: Systemprotokolle: Einstellungen"
 
 msgid ""
 "Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a remote syslog server"
@@ -5109,7 +5109,7 @@ msgid "Source OS"
 msgstr "Quellbetriebssystem"
 
 msgid "Show advanced option"
-msgstr ""
+msgstr "Zeige erweiterte Optionen"
 
 msgid "OS Type:"
 msgstr "Betriebssystemtyp"
@@ -5276,10 +5276,10 @@ msgid "Month"
 msgstr "Monat"
 
 msgid "Tue"
-msgstr ""
+msgstr "Di"
 
 msgid "Thu"
-msgstr ""
+msgstr "Do"
 
 msgid "Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday."
 msgstr ""
@@ -5306,7 +5306,7 @@ msgid "Add Time"
 msgstr "Zeit hinzufügen"
 
 msgid "Clear Selection"
-msgstr ""
+msgstr "Auswahl löschen"
 
 msgid "Schedule repeat"
 msgstr ""
@@ -5327,19 +5327,19 @@ msgid "This entry cannot be deleted because it is still referenced by a CARP IP 
 msgstr ""
 
 msgid "Virtual IP Addresses"
-msgstr ""
+msgstr "Virtuelle IP Adressen"
 
 msgid "The VIP configuration has been changed."
 msgstr ""
 
 msgid "Virtual IPs"
-msgstr ""
+msgstr "Virtuelle IPs"
 
 msgid "CARP Settings"
 msgstr "CARP Einstellungen"
 
 msgid "Virtual IP address"
-msgstr ""
+msgstr "Virtuelle IP Adresse"
 
 msgid "Do you really want to delete this entry?"
 msgstr ""
@@ -5383,7 +5383,7 @@ msgid "For this type of vip localhost is not allowed."
 msgstr ""
 
 msgid "Virtual IP Address"
-msgstr ""
+msgstr "virtuelle IP Adresse"
 
 msgid "This must be the network's subnet mask. It does not specify a CIDR range."
 msgstr ""
@@ -5481,7 +5481,7 @@ msgid "follow"
 msgstr "folgen"
 
 msgid "Kbps"
-msgstr ""
+msgstr "Kbps"
 
 msgid "Mbps"
 msgstr "Mbps"
@@ -5490,7 +5490,7 @@ msgid "Gbps"
 msgstr "Gbps"
 
 msgid "KB/s"
-msgstr ""
+msgstr "KB/s"
 
 msgid "MB/s"
 msgstr "MB/s"
@@ -5522,7 +5522,7 @@ msgid "save"
 msgstr "speichern"
 
 msgid "Undo"
-msgstr ""
+msgstr "Rückgängig"
 
 msgid "Close"
 msgstr "Schließen"
@@ -5615,7 +5615,7 @@ msgid "Modem Port"
 msgstr ""
 
 msgid "Phone Number"
-msgstr ""
+msgstr "Telefonnummer"
 
 msgid "Dial on demand"
 msgstr "Einwählen bei Bedarf"
@@ -5624,34 +5624,34 @@ msgid "Idle timeout value"
 msgstr ""
 
 msgid "PPPoE password"
-msgstr ""
+msgstr "PPPoE Passwort"
 
 msgid "PPPoE username"
-msgstr ""
+msgstr "PPPoE Benutzername"
 
 msgid "PPTP local IP address"
 msgstr ""
 
 msgid "PPTP password"
-msgstr ""
+msgstr "PPTP Passwort"
 
 msgid "PPTP remote IP address"
 msgstr ""
 
 msgid "PPTP subnet"
-msgstr ""
+msgstr "PPTP Subnetzwerk"
 
 msgid "PPTP username"
-msgstr ""
+msgstr "PPTP Benutzername"
 
 msgid "L2TP password"
-msgstr ""
+msgstr "L2TP Passwort"
 
 msgid "L2TP remote IP address"
 msgstr ""
 
 msgid "L2TP username"
-msgstr ""
+msgstr "L2TP Benutzername"
 
 msgid "This interface is referenced by IPv6 VIPs. Please delete those before setting the interface to 'none' configuration."
 msgstr ""
@@ -5673,7 +5673,7 @@ msgid "A valid IPv4 address must be specified."
 msgstr "Eine gültige IPv4 Adresse muss angegeben werden."
 
 msgid "This IPv4 address is being used by another interface or VIP."
-msgstr ""
+msgstr "Diese IPv4 Adresse wird bereits von einem anderen Interface oder VIP benutzt."
 
 msgid "This IPv4 address is the network address and cannot be used"
 msgstr ""
@@ -5765,16 +5765,16 @@ msgid "Unable to change mode to %s.  You may already have the maximum number of 
 msgstr ""
 
 msgid "L2TP"
-msgstr ""
+msgstr "L2TP"
 
 msgid "PPPoE"
-msgstr ""
+msgstr "PPPoE"
 
 msgid "PPTP"
 msgstr ""
 
 msgid "Static IPv4"
-msgstr ""
+msgstr "Statisches IPv4"
 
 msgid "6rd Tunnel"
 msgstr "6rd Tunnel"
@@ -5789,7 +5789,7 @@ msgid "SLAAC"
 msgstr "SLAAC"
 
 msgid "Static IPv6"
-msgstr ""
+msgstr "Statisches IPv6"
 
 msgid "Track Interface"
 msgstr ""
@@ -5802,25 +5802,25 @@ msgid "The %s configuration has been changed."
 msgstr ""
 
 msgid "General configuration"
-msgstr ""
+msgstr "Allgemeine Konfiguration"
 
 msgid "Enable Interface"
 msgstr "Interface aktivieren"
 
 msgid "Enter a description (name) for the interface here."
-msgstr ""
+msgstr "Geben Sie einen Beschreibung (Name) für das Interface hier ein."
 
 msgid "IPv4 Configuration Type"
-msgstr ""
+msgstr "IPv4 Konfigurationstyp"
 
 msgid "IPv6 Configuration Type"
-msgstr ""
+msgstr "IPv6 Konfigurationstyp"
 
 msgid "Insert my local MAC address"
-msgstr ""
+msgstr "Meine lokale MAC Adresse einfügen"
 
 msgid "This field can be used to modify (\"spoof\") the MAC address of this interface"
-msgstr ""
+msgstr "Dieses Feld kann dazu benutzt werden, um die MAC Adresse für dieses Interface zu ändern(\"spoofen\")"
 
 msgid "(may be required with some cable connections)"
 msgstr "(könnte bei manchen Kabelverbindungen erforderlich sein)"
@@ -5849,7 +5849,7 @@ msgid ""
 msgstr ""
 
 msgid "Static IPv4 configuration"
-msgstr ""
+msgstr "Statische IPv4 Konfiguration"
 
 msgid "IPv4 Upstream Gateway"
 msgstr ""
@@ -6227,7 +6227,7 @@ msgid "This selects the dynamic IPv6 WAN interface to track for configuration"
 msgstr ""
 
 msgid "IPv6 Prefix ID"
-msgstr ""
+msgstr "IPv6 Präfix ID"
 
 msgid "The value in this field is the (Delegated) IPv6 prefix id. This determines the configurable network ID based on the dynamic IPv6 connection"
 msgstr ""
@@ -6246,7 +6246,7 @@ msgid "Country:"
 msgstr "Land:"
 
 msgid "Provider:"
-msgstr ""
+msgstr "Provider:"
 
 msgid "Plan:"
 msgstr ""
@@ -6311,7 +6311,7 @@ msgid "Select a reset timing type"
 msgstr ""
 
 msgid "hour (0-23)"
-msgstr ""
+msgstr "Stunde (0-23)"
 
 msgid "minute (0-59)"
 msgstr "Minute (0-59)"
@@ -6347,10 +6347,10 @@ msgid "PPTP/L2TP configuration"
 msgstr ""
 
 msgid "Local IP address"
-msgstr ""
+msgstr "Lokale IP Adresse"
 
 msgid "Remote IP address"
-msgstr ""
+msgstr "Entfernte IP Adresse"
 
 msgid "This option causes the interface to operate in dial-on-demand mode, allowing you to have a"
 msgstr ""
@@ -6620,7 +6620,7 @@ msgid "AES (recommended)"
 msgstr "AES (empfohlen)"
 
 msgid "TKIP"
-msgstr ""
+msgstr "TKIP"
 
 msgid "Key Rotation"
 msgstr ""
@@ -6680,7 +6680,7 @@ msgid "Authentication Roaming Preauth"
 msgstr ""
 
 msgid "Private networks"
-msgstr ""
+msgstr "Private Netzwerke"
 
 msgid "When set, this option blocks traffic from IP addresses that are reserved for private  networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as"
 msgstr ""
@@ -6967,12 +6967,11 @@ msgstr ""
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 468
-#, fuzzy
 msgid ""
 "Add the interface named by interface as a span port on the bridge.  Span ports transmit a copy of every frame received by the bridge.  This is most useful for "
 "snooping a bridged network passively on another host connected to one of the span ports of the bridge."
 msgstr ""
-"Das Interface genannt in Interface al Span Port der Bridge hinzufügen. Span Ports senden einen Kopie jedes Frames, die die Bridge empfängt. Dies kann am "
+"Das Interface genannt in Interface als Span Port der Bridge hinzufügen. Span Ports senden einen Kopie jedes Frames, die die Bridge empfängt. Dies kann am "
 "nützlichsten für transparente Netzwerküberwachung (z.B durch ein IDS) eingesetzt werden."
 
 msgid "The span interface cannot be part of the bridge member interfaces."
@@ -7030,7 +7029,7 @@ msgid "This gif TUNNEL cannot be deleted because it is still being used as an in
 msgstr ""
 
 msgid "Tunnel to..."
-msgstr ""
+msgstr "Tunnen zu..."
 
 msgid "Do you really want to delete this gif tunnel?"
 msgstr "Wollen Sie diesen gif Tunnel wirklich löschen?"
@@ -7225,7 +7224,7 @@ msgid "Protocol supplied is invalid"
 msgstr ""
 
 msgid "LAGG configuration"
-msgstr ""
+msgstr "LAGG Konfiguration"
 
 msgid "Choose the members that will be used for the link aggregation"
 msgstr ""
@@ -7293,7 +7292,7 @@ msgid "Link Interface(s)"
 msgstr ""
 
 msgid "Subnet"
-msgstr ""
+msgstr "Subnetzwerk"
 
 msgid "Please choose a Link Type."
 msgstr ""
@@ -7622,7 +7621,7 @@ msgid "A QinQ VLAN exists with this tag please remove it to use this tag with."
 msgstr ""
 
 msgid "VLAN configuration"
-msgstr ""
+msgstr "VLAN Konfiguration"
 
 msgid "Only VLAN capable interfaces will be shown."
 msgstr ""
@@ -7680,10 +7679,10 @@ msgid "The load balancer configuration has been changed"
 msgstr ""
 
 msgid "Pools"
-msgstr ""
+msgstr "Pools"
 
 msgid "Virtual Servers"
-msgstr ""
+msgstr "Virtuelle Server"
 
 msgid "Monitors"
 msgstr "Monitore"
@@ -7717,7 +7716,7 @@ msgid "HTTPS"
 msgstr "HTTPS"
 
 msgid "ICMP"
-msgstr ""
+msgstr "ICMP"
 
 msgid "Send/Expect"
 msgstr ""
@@ -7744,7 +7743,7 @@ msgid "This entry cannot be deleted because it is still referenced by at least o
 msgstr ""
 
 msgid "Pool"
-msgstr ""
+msgstr "Pool"
 
 #, php-format
 msgid "The load balancer configuration has been changed%sYou must apply the changes in order for them to take effect."
@@ -7822,7 +7821,7 @@ msgid "You may also specify a port alias listed in Firewall -&gt; Aliases here."
 msgstr ""
 
 msgid "Retry"
-msgstr ""
+msgstr "neu versuchen"
 
 msgid "Optionally specify how many times to retry checking a server before declaring it down."
 msgstr ""
@@ -7844,7 +7843,7 @@ msgid "Current Pool Members"
 msgstr ""
 
 msgid "Pool Disabled"
-msgstr ""
+msgstr "Pool deaktiviert"
 
 msgid "Enabled (default)"
 msgstr "Aktiviert (Standard)"
@@ -7884,10 +7883,10 @@ msgid "Value"
 msgstr "Wert"
 
 msgid "Key"
-msgstr ""
+msgstr "Schlüssel"
 
 msgid "TODO"
-msgstr ""
+msgstr "TODO"
 
 msgid "Relay Protocol"
 msgstr ""
@@ -12042,7 +12041,7 @@ msgid "Minimum"
 msgstr "Minimum"
 
 msgid "Maximum"
-msgstr ""
+msgstr "Maximum"
 
 msgid "On Battery Power Mode"
 msgstr ""
@@ -12277,7 +12276,7 @@ msgid "This is a test message from %s.  It is safe to ignore this message."
 msgstr ""
 
 msgid "Test SMTP"
-msgstr ""
+msgstr "Teste SMTP"
 
 msgid "Notifications"
 msgstr "Benachritigungen"
@@ -13726,7 +13725,7 @@ msgid "Enter 0 to never expire sessions. NOTE: This is a security risk!"
 msgstr "Geben Sie eine 0 ein, damit Sitzungen die ablaufen. HINWEIS:Dies ist ein Sicherheitsrisiko!"
 
 msgid "Save and Test"
-msgstr ""
+msgstr "Speichern und Testen"
 
 msgid "Could not connect to the LDAP server. Please check your LDAP configuration."
 msgstr ""
@@ -13767,13 +13766,13 @@ msgid "Remote Gateway"
 msgstr ""
 
 msgid "P1 Protocol"
-msgstr ""
+msgstr "Phase 1 Protokoll"
 
 msgid "P1 Transforms"
 msgstr ""
 
 msgid "P1 Description"
-msgstr ""
+msgstr "Phase 1 Beschreibung"
 
 msgid "auto"
 msgstr "automatisch"
@@ -13791,26 +13790,26 @@ msgid "Do you really want to delete this phase1 and all associated phase2 entrie
 msgstr ""
 
 msgid "copy phase1 entry"
-msgstr ""
+msgstr "Kopiere Phase 1 Eintrag"
 
 #, php-format
 msgid "Show %s Phase-2 entries"
 msgstr ""
 
 msgid "Local Subnet"
-msgstr ""
+msgstr "Lokales Subnetzwerk"
 
 msgid "Remote Subnet"
-msgstr ""
+msgstr "Entferntes Subnetzwerk"
 
 msgid "P2 Protocol"
-msgstr ""
+msgstr "Phase 2 Protokoll"
 
 msgid "P2 Transforms"
 msgstr ""
 
 msgid "P2 Auth Methods"
-msgstr ""
+msgstr "Phase 2 Authentifizierungsmethode"
 
 msgid "edit phase2 entry"
 msgstr "Phase 2 Eintrag bearbeiten"
@@ -13852,13 +13851,13 @@ msgid "You can check your IPsec status at"
 msgstr ""
 
 msgid "Status:IPsec"
-msgstr ""
+msgstr "Status:IPsec"
 
 msgid "IPsec Debug Mode can be enabled at"
 msgstr ""
 
 msgid "VPN:IPsec:Advanced Settings"
-msgstr ""
+msgstr "VPN:IPsec:Erweiterte Einstellungen"
 
 msgid "IPsec can be set to prefer older SAs at"
 msgstr ""
@@ -13870,7 +13869,7 @@ msgid "Deleted IPsec Pre-Shared Key"
 msgstr "IPsec Pre-Shared Key gelöscht"
 
 msgid "VPN: IPsec: Keys"
-msgstr ""
+msgstr "VPN: IPsec: Schlüssel"
 
 msgid "Identifier"
 msgstr ""
@@ -14144,10 +14143,10 @@ msgid "Edit Phase 1"
 msgstr "Phase 1 bearbeiten"
 
 msgid "Tunnels"
-msgstr ""
+msgstr "Tunnel"
 
 msgid "Mobile clients"
-msgstr "mobile Clienten"
+msgstr "Mobile Clients"
 
 msgid "Pre-Shared Keys"
 msgstr ""
@@ -14165,7 +14164,7 @@ msgid "Set this option to disable this phase1 without removing it from the list"
 msgstr ""
 
 msgid "Key Exchange version"
-msgstr ""
+msgstr "Schlüsselaustauschversion"
 
 msgid "Select the KeyExchange Protocol version to be used. Usually known as IKEv1 or IKEv2."
 msgstr ""
