@@ -334,7 +334,7 @@
                 <advanced>true</advanced>
             </field>
         </subtab>
-        <subtab id="proxy-general-authentication" description="Athentication Settings">
+        <subtab id="proxy-general-authentication" description="Authentication Settings">
             <field>
                 <id>proxy.forward.authentication.method</id>
                 <label>Authentication method</label>
