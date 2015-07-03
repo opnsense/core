@@ -261,7 +261,7 @@ function display_login_form()
 
 			  <div class="form-group">
 			    <label for="usernamefld"><?=gettext("Username:"); ?></label>
-			    <input id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" autofocus="autofocus" />
+			    <input id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" autofocus="autofocus" autocapitalize="off" autocorrect="off" />
 			  </div>
 
 			  <div class="form-group">
