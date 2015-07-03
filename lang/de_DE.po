@@ -732,7 +732,7 @@ msgid "Mobile Client"
 msgstr "mobiler Client"
 
 msgid "None"
-msgstr "Keiner(r)"
+msgstr "Keine(r)"
 
 msgid "IPsec daemon seems to have issues or not running! Could not display mobile user stats!"
 msgstr ""
@@ -3109,7 +3109,7 @@ msgid "Displaying rule descriptions for all lines in the log might affect perfor
 msgstr ""
 
 msgid "Disable writing log files to the local disk"
-msgstr "Deaktiviere das Schreiben von Protokolldateien aud die Lokale Festplatte"
+msgstr "Deaktiviere das Schreiben von Protokolldateien auf die lokale Festplatte"
 
 msgid "Do you really want to reset the log files? This will erase all local log data."
 msgstr "Möchten Sie wirklich die Protokolldateien zurücksetzen? Dies wird sämtliche lokalen Protokolldaten löschen."
@@ -4782,7 +4782,7 @@ msgid "February"
 msgstr "Februar"
 
 msgid "January"
-msgstr "Jänner"
+msgstr "Januar"
 
 msgid "July"
 msgstr "Juli"
@@ -5048,7 +5048,7 @@ msgid "TCP/IP Version"
 msgstr "TCP/IP Version"
 
 msgid "Select the Internet Protocol version this rule applies to"
-msgstr "Wählen Sie die Internet Protokoll-Version aus, für zu der dieser Regel gehört"
+msgstr "Wählen Sie die Internet Protokoll-Version aus, auf die diese Regel angewandt wird"
 
 msgid "Hint: in most cases, you should specify "
 msgstr ""
@@ -5808,7 +5808,7 @@ msgid "Enable Interface"
 msgstr "Interface aktivieren"
 
 msgid "Enter a description (name) for the interface here."
-msgstr "Geben Sie einen Beschreibung (Name) für das Interface hier ein."
+msgstr "Geben Sie eine Beschreibung (Name) für das Interface hier ein."
 
 msgid "IPv4 Configuration Type"
 msgstr "IPv4 Konfigurationstyp"
@@ -6350,7 +6350,7 @@ msgid "Local IP address"
 msgstr "Lokale IP Adresse"
 
 msgid "Remote IP address"
-msgstr "Entfernte IP Adresse"
+msgstr "Remote IP Adresse"
 
 msgid "This option causes the interface to operate in dial-on-demand mode, allowing you to have a"
 msgstr ""
@@ -7029,7 +7029,7 @@ msgid "This gif TUNNEL cannot be deleted because it is still being used as an in
 msgstr ""
 
 msgid "Tunnel to..."
-msgstr "Tunnen zu..."
+msgstr "Tunnel zu..."
 
 msgid "Do you really want to delete this gif tunnel?"
 msgstr "Wollen Sie diesen gif Tunnel wirklich löschen?"
@@ -7821,7 +7821,7 @@ msgid "You may also specify a port alias listed in Firewall -&gt; Aliases here."
 msgstr ""
 
 msgid "Retry"
-msgstr "neu versuchen"
+msgstr "Wiederholen"
 
 msgid "Optionally specify how many times to retry checking a server before declaring it down."
 msgstr ""
@@ -7905,7 +7905,7 @@ msgid "name"
 msgstr "Name"
 
 msgid "type"
-msgstr ""
+msgstr "Typ"
 
 msgid "description"
 msgstr "Beschreibung"
