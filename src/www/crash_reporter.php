@@ -42,7 +42,7 @@ function upload_crash_report($files)
 	$counter = 0;
 
 	foreach($files as $filename) {
-		$post["file{$counter}"] = curl_file_create($filename, "plain/text", basename($filename));
+		$post["file{$counter}"] = curl_file_create($filename, "application/x-gzip", basename($filename));
 		$counter++;
 	}
 
