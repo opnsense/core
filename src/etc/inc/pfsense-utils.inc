@@ -240,16 +240,6 @@ function get_carp_status() {
 }
 
 /*
- * convert_ip_to_network_format($ip, $subnet): converts an ip address to network form
-
- */
-function convert_ip_to_network_format($ip, $subnet) {
-	$ipsplit = explode('.', $ip);
-	$string = $ipsplit[0] . "." . $ipsplit[1] . "." . $ipsplit[2] . ".0/" . $subnet;
-	return $string;
-}
-
-/*
  * get_carp_interface_status($carpinterface): returns the status of a carp ip
  */
 function get_carp_interface_status($carpinterface) {
@@ -268,121 +258,6 @@ function get_carp_interface_status($carpinterface) {
 			return gettext("INIT");
 	}
 	return;
-}
-
-/*
- * get_pfsync_interface_status($pfsyncinterface): returns the status of a pfsync
- */
-function get_pfsync_interface_status($pfsyncinterface) {
-	if (!does_interface_exist($pfsyncinterface))
-		return;
-
-	return exec_command("/sbin/ifconfig {$pfsyncinterface} | /usr/bin/awk '/pfsync:/ {print \$5}'");
-}
-
-/*
- * add_rule_to_anchor($anchor, $rule): adds the specified rule to an anchor
- */
-function add_rule_to_anchor($anchor, $rule, $label) {
-	mwexec("echo " . escapeshellarg($rule) . " | /sbin/pfctl -a " . escapeshellarg($anchor) . ":" . escapeshellarg($label) . " -f -");
-}
-
-
-/*
- * add_text_to_file($file, $text): adds $text to $file.
- * replaces the text if it already exists.
- */
-function add_text_to_file($file, $text, $replace = false) {
-	if(file_exists($file) and is_writable($file)) {
-		$filecontents = file($file);
-		$filecontents = array_map('rtrim', $filecontents);
-		array_push($filecontents, $text);
-		if ($replace)
-			$filecontents = array_unique($filecontents);
-
-		$file_text = implode("\n", $filecontents);
-
-		@file_put_contents($file, $file_text);
-		return true;
-	}
-	return false;
-}
-
-/*
- *   after_sync_bump_adv_skew(): create skew values by 1S
- */
-function after_sync_bump_adv_skew()
-{
-	global $config;
-
-	$processed_skew = 1;
-	$a_vip = &$config['virtualip']['vip'];
-	foreach ($a_vip as $vipent) {
-		if($vipent['advskew'] <> "") {
-			$processed_skew = 1;
-			$vipent['advskew'] = $vipent['advskew']+1;
-		}
-	}
-
-	if ($processed_skew == 1) {
-		write_config(gettext("After synch increase advertising skew"));
-	}
-}
-
-/*
- * get_filename_from_url($url): converts a url to its filename.
- */
-function get_filename_from_url($url) {
-	return basename($url);
-}
-
-
-/****f* legacy/WakeOnLan
- * NAME
- *   WakeOnLan - Wake a machine up using the wake on lan format/protocol
- * RESULT
- *   true/false - true if the operation was successful
- ******/
-function WakeOnLan($addr, $mac)
-{
-	$addr_byte = explode(':', $mac);
-	$hw_addr = '';
-
-	for ($a=0; $a < 6; $a++)
-		$hw_addr .= chr(hexdec($addr_byte[$a]));
-
-	$msg = chr(255).chr(255).chr(255).chr(255).chr(255).chr(255);
-
-	for ($a = 1; $a <= 16; $a++)
-		$msg .= $hw_addr;
-
-	// send it to the broadcast address using UDP
-	$s = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-	if ($s == false) {
-		log_error(gettext("Error creating socket!"));
-		log_error(sprintf(gettext("Error code is '%1\$s' - %2\$s"), socket_last_error($s), socket_strerror(socket_last_error($s))));
-	} else {
-		// setting a broadcast option to socket:
-		$opt_ret =  socket_set_option($s, 1, 6, TRUE);
-		if($opt_ret < 0)
-			log_error(sprintf(gettext("setsockopt() failed, error: %s"), strerror($opt_ret)));
-		$e = socket_sendto($s, $msg, strlen($msg), 0, $addr, 2050);
-		socket_close($s);
-		log_error(sprintf(gettext('Magic Packet sent (%1$s) to {%2$s} MAC=%3$s'), $e, $addr, $mac));
-		return true;
-	}
-
-	return false;
-}
-
-/*
- * reverse_strrchr($haystack, $needle):  Return everything in $haystack up to the *last* instance of $needle.
- *					 Useful for finding paths and stripping file extensions.
- */
-function reverse_strrchr($haystack, $needle) {
-	if (!is_string($haystack))
-		return;
-	return strrpos($haystack, $needle) ? substr($haystack, 0, strrpos($haystack, $needle) +1 ) : false;
 }
 
 /*
@@ -460,76 +335,6 @@ function merge_config_section($section_name, $new_contents)
 	unlink($fname);
 	write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
 	disable_security_checks();
-	return;
-}
-
-/*
- * http_post($server, $port, $url, $vars): does an http post to a web server
- *                                         posting the vars array.
- * written by nf@bigpond.net.au
- */
-function http_post($server, $port, $url, $vars) {
-	$user_agent = "Mozilla/4.0 (compatible; MSIE 5.5; Windows 98)";
-	$urlencoded = "";
-	while (list($key,$value) = each($vars))
-		$urlencoded.= urlencode($key) . "=" . urlencode($value) . "&";
-	$urlencoded = substr($urlencoded,0,-1);
-	$content_length = strlen($urlencoded);
-	$headers = "POST $url HTTP/1.1
-Accept: */*
-Accept-Language: en-au
-Content-Type: application/x-www-form-urlencoded
-User-Agent: $user_agent
-Host: $server
-Connection: Keep-Alive
-Cache-Control: no-cache
-Content-Length: $content_length
-
-";
-
-	$errno = "";
-	$errstr = "";
-	$fp = fsockopen($server, $port, $errno, $errstr);
-	if (!$fp) {
-		return false;
-	}
-
-	fputs($fp, $headers);
-	fputs($fp, $urlencoded);
-
-	$ret = "";
-	while (!feof($fp))
-		$ret.= fgets($fp, 1024);
-	fclose($fp);
-
-	return $ret;
-}
-
-/*
- * rmdir_recursive($path,$follow_links=false)
- * Recursively remove a directory tree (rm -rf path)
- * This is for directories _only_
- */
-function rmdir_recursive($path,$follow_links=false) {
-	$to_do = glob($path);
-	if(!is_array($to_do)) $to_do = array($to_do);
-	foreach($to_do as $workingdir) { // Handle wildcards by foreaching.
-		if(file_exists($workingdir)) {
-			if(is_dir($workingdir)) {
-				$dir = opendir($workingdir);
-				while ($entry = readdir($dir)) {
-					if (is_file("$workingdir/$entry") || ((!$follow_links) && is_link("$workingdir/$entry")))
-						unlink("$workingdir/$entry");
-					elseif (is_dir("$workingdir/$entry") && $entry!='.' && $entry!='..')
-						rmdir_recursive("$workingdir/$entry");
-				}
-				closedir($dir);
-				rmdir($workingdir);
-			} elseif (is_file($workingdir)) {
-				unlink($workingdir);
-			}
-		}
-	}
 	return;
 }
 
@@ -1317,13 +1122,6 @@ function load_thermal_hardware()
 	}
 }
 
-
-function get_freebsd_version()
-{
-	$version = explode(".", php_uname("r"));
-	return $version[0];
-}
-
 function download_file($url, $destination, $verify_ssl = false, $connect_timeout = 60, $timeout = 0)
 {
 	global $config, $g;
@@ -1358,73 +1156,6 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
 	fclose($fp);
 	curl_close($ch);
 	return ($http_code == 200) ? true : $http_code;
-}
-
-function read_header($ch, $string) {
-	global $file_size, $fout;
-	$length = strlen($string);
-	$regs = "";
-	preg_match("/(Content-Length:) (.*)/", $string, $regs);
-	if($regs[2] <> "") {
-		$file_size = intval($regs[2]);
-	}
-	ob_flush();
-	return $length;
-}
-
-/*
- *   update_output_window: update bottom textarea dynamically.
- */
-function update_output_window($text) {
-	global $pkg_interface;
-	$log = preg_replace("/\n/", "\\n", $text);
-	if($pkg_interface != "console") {
-		echo "\n<script type=\"text/javascript\">";
-		echo "\n//<![CDATA[";
-		echo "\nthis.document.iform.output.value = \"" . $log . "\";";
-		echo "\nthis.document.iform.output.scrollTop = this.document.iform.output.scrollHeight;";
-		echo "\n//]]>";
-		echo "\n</script>";
-	}
-	/* ensure that contents are written out */
-	ob_flush();
-}
-
-/*
- *   update_status: update top textarea dynamically.
- */
-function update_status($status) {
-	global $pkg_interface;
-	if($pkg_interface == "console") {
-		echo "\r{$status}";
-	} else {
-		echo "\n<script type=\"text/javascript\">";
-		echo "\n//<![CDATA[";
-		echo "\nthis.document.iform.status.value=\"" . $status . "\";";
-		echo "\n//]]>";
-		echo "\n</script>";
-	}
-	/* ensure that contents are written out */
-	ob_flush();
-}
-
-/*
- * update_progress_bar($percent, $first_time): updates the javascript driven progress bar.
- */
-function update_progress_bar($percent, $first_time) {
-	global $pkg_interface;
-	if($percent > 100) $percent = 1;
-	if($pkg_interface <> "console") {
-		echo "\n<script type=\"text/javascript\">";
-		echo "\n//<![CDATA[";
-		echo "\n$('.progress-bar').css('width', '" . $percent . "%');";
-		echo "\n//]]>";
-		echo "\n</script>";
-	} else {
-		if(!($first_time))
-			echo "\x08\x08\x08\x08\x08";
-		echo sprintf("%4d%%", $percent);
-	}
 }
 
 /* Split() is being DEPRECATED as of PHP 5.3.0 and REMOVED as of PHP 6.0.0. Relying on this feature is highly discouraged. */
