@@ -62,7 +62,7 @@ $pconfig['radius_acct_update'] = $pptpcfg['radius']['acct_update'];
 $pconfig['radius_nasip'] = $pptpcfg['radius']['nasip'];
 
 if ($_POST) {
-    if (isset($input_errors)) {
+    if (isset($input_errors) && count($input_errors) > 0) {
         unset($input_errors);
     }
     $pconfig = $_POST;
@@ -302,7 +302,7 @@ function enable_change(enable_over) {
 			<div class="row">
 
 
-				<?php if (isset($input_errors)) {
+				<?php if (isset($input_errors) && count($input_errors) > 0) {
                     print_input_errors($input_errors);
 } ?>
 				<?php if (isset($savemsg)) {
