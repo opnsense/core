@@ -572,7 +572,7 @@ EOD;
 
 ?>
 
-<body onload="<?= $jsevents["body"]["onload"] ?>">
+<body>
 <?php
 	include("fbegin.inc");
 	echo $jscriptstr;

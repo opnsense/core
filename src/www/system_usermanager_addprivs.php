@@ -99,7 +99,7 @@ if (isAjax()) {
 include("head.inc");
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC" onload="<?= $jsevents["body"]["onload"] ?>">
+<body link="#0000CC" vlink="#0000CC" alink="#0000CC" >
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
 //<![CDATA[
