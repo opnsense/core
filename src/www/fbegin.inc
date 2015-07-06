@@ -180,7 +180,7 @@ $pgtitle_output = true;
 
 						<?php
 
-						if (isset($shortcut_section) && !$hide_service_status && !empty($shortcuts[$shortcut_section]['service'])) {
+						if (isset($shortcut_section) && !empty($shortcuts[$shortcut_section]['service'])) {
 							$ssvc = array();
 							switch ($shortcut_section) {
 								case "openvpn":

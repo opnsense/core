@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_hasync.php');
 
-if (!is_array($config['hasync'])) {
+if (!isset($config['hasync']) || !is_array($config['hasync'])) {
     $config['hasync'] = array();
 }
 
@@ -52,14 +52,17 @@ $checkbox_names = array('pfsyncenabled',
             'synchronizestaticroutes',
             'synchronizelb',
             'synchronizevirtualip',
-            'synchronizetrafficshaper',
             'synchronizednsforwarder',
             'synchronizecaptiveportal');
 
 if ($_POST) {
     $pconfig = $_POST;
     foreach ($checkbox_names as $name) {
-        $a_hasync[$name] = $pconfig[$name] ? $pconfig[$name] : false;
+    	if (isset($pconfig[$name])) {
+    		$a_hasync[$name] = $pconfig[$name];
+    	} else {
+    		$a_hasync[$name] = false;
+    	}    	
     }
     $a_hasync['pfsyncpeerip']    = $pconfig['pfsyncpeerip'];
     $a_hasync['pfsyncinterface'] = $pconfig['pfsyncinterface'];
@@ -73,13 +76,19 @@ if ($_POST) {
 }
 
 foreach ($checkbox_names as $name) {
-    $pconfig[$name] = $a_hasync[$name];
+    if (isset($a_hasync[$name])) {
+        $pconfig[$name] = $a_hasync[$name];
+    } else {
+        $pconfig[$name] = null;
+    }	    
 }
-$pconfig['pfsyncpeerip']    = $a_hasync['pfsyncpeerip'];
-$pconfig['pfsyncinterface'] = $a_hasync['pfsyncinterface'];
-$pconfig['synchronizetoip'] = $a_hasync['synchronizetoip'];
-$pconfig['username']        = $a_hasync['username'];
-$pconfig['password']        = $a_hasync['password'];
+foreach (array('pfsyncpeerip','pfsyncinterface','synchronizetoip','username','password') as $tag) {
+	if (isset($a_hasync[$tag])) {
+		$pconfig[$tag] = $a_hasync[$tag];
+	} else {
+		$pconfig[$tag] = null;
+	}
+}
 
 $ifaces = get_configured_interface_with_descr();
 $ifaces["lo0"] = "loopback";
@@ -329,24 +338,6 @@ include("head.inc");
                                 echo "checked='checked'";
 } ?> />
 							Automatically sync the CARP Virtual IPs to the other HA host when changes are made.
-						</td>
-					</tr>
-					<tr valign="top">
-						<td width="22%" class="vncell">Synchronize traffic shaper(queues)</td>
-						<td class="vtable">
-							<input id='synchronizetrafficshaper' type='checkbox' name='synchronizetrafficshaper' value='on' <?php if ($pconfig['synchronizetrafficshaper'] === "on") {
-                                echo "checked='checked'";
-} ?> />
-							Automatically sync the traffic shaper configuration for queues to the other HA host when changes are made.
-						</td>
-					</tr>
-					<tr valign="top">
-						<td width="22%" class="vncell">Synchronize traffic shaper(limiter)</td>
-						<td class="vtable">
-							<input id='synchronizetrafficshaperlimiter' type='checkbox' name='synchronizetrafficshaperlimiter' value='on' <?php if ($pconfig['synchronizetrafficshaperlimiter'] === "on") {
-                                echo "checked='checked'";
-} ?> />
-							Automatically sync the traffic shaper configuration for limiters to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr valign="top">

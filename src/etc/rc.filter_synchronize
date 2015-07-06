@@ -249,6 +249,7 @@ if (file_exists('/var/run/booting')) {
 }
 
 if (is_array($config['hasync'])) {
+	$sections = array();
 	update_filter_reload_status("Building high availability information");
 	$hasync = $config['hasync'];
 
@@ -273,59 +274,59 @@ if (is_array($config['hasync'])) {
 	}
 
 
-	if ($hasync['synchronizerules'] != "") {
+	if (isset($hasync['synchronizerules'])) {
 		if (!is_array($config['filter']))
 			$config['filter'] = array();
 		$sections[] = 'filter';
 	}
-	if ($hasync['synchronizenat'] != "") {
+	if (isset($hasync['synchronizenat'])) {
 		if (!is_array($config['nat']))
 			$config['nat'] = array();
 		$sections[] = 'nat';
 	}
-	if ($hasync['synchronizealiases'] != "") {
+	if (isset($hasync['synchronizealiases'])) {
 		if (!is_array($config['aliases']))
 			$config['aliases'] = array();
 		$sections[] = 'aliases';
 	}
-	if ($hasync['synchronizedhcpd'] != "" and is_array($config['dhcpd']))
+	if (isset($hasync['synchronizedhcpd']) && is_array($config['dhcpd']))
 		$sections[] = 'dhcpd';
-	if ($hasync['synchronizewol'] != "") {
+	if (isset($hasync['synchronizewol'])) {
 		if (!is_array($config['wol']))
 			$config['wol'] = array();
 		$sections[] = 'wol';
 	}
-	if ($hasync['synchronizestaticroutes'] != "") {
+	if (isset($hasync['synchronizestaticroutes'])) {
 		if (!is_array($config['staticroutes']))
 			$config['staticroutes'] = array();
-		if (!is_array($config['staticroutes']['route']))
+		if (!isset($config['staticroutes']['route']) || !is_array($config['staticroutes']['route']))
 			$config['staticroutes']['route'] = array();
 		$sections[] = 'staticroutes';
 		if (!is_array($config['gateways']))
 			$config['gateways'] = array();
 		$sections[] = 'gateways';
 	}
-	if ($hasync['synchronizevirtualip'] != "") {
-		if (!is_array($config['virtualip']))
+	if (isset($hasync['synchronizevirtualip'])) {
+		if (!isset($config['virtualip']) || !is_array($config['virtualip']))
 			$config['virtualip'] = array();
 		$sections[] = 'virtualip';
 	}
-	if ($hasync['synchronizelb'] != "") {
+	if (isset($hasync['synchronizelb'])) {
 		if (!is_array($config['load_balancer']))
 			$config['load_balancer'] = array();
 		$sections[] = 'load_balancer';
 	}
-	if ($hasync['synchronizeipsec'] != "") {
+	if (isset($hasync['synchronizeipsec'])) {
 		if (!is_array($config['ipsec']))
 			$config['ipsec'] = array();
 		$sections[] = 'ipsec';
 	}
-	if ($hasync['synchronizeopenvpn'] != "") {
-		if (!is_array($config['openvpn']))
+	if (isset($hasync['synchronizeopenvpn'])) {
+		if (!isset($config['openvpn']) || !is_array($config['openvpn']))
 			$config['openvpn'] = array();
 		$sections[] = 'openvpn';
 	}
-	if ($hasync['synchronizecerts'] != "" || $hasync['synchronizeopenvpn'] != "") {
+	if (isset($hasync['synchronizecerts']) || isset($hasync['synchronizeopenvpn'])) {
 		if (!is_array($config['cert']))
 			$config['cert'] = array();
 		$sections[] = 'cert';
@@ -334,27 +335,27 @@ if (is_array($config['hasync'])) {
 			$config['ca'] = array();
 		$sections[] = 'ca';
 
-		if (!is_array($config['crl']))
+		if (!isset($config['crl']) || !is_array($config['crl']))
 			$config['crl'] = array();
 		$sections[] = 'crl';
 	}
-	if ($hasync['synchronizeusers'] != "") {
+	if (isset($hasync['synchronizeusers'])) {
 		$sections[] = 'user';
 		$sections[] = 'group';
 	}
-	if ($hasync['synchronizeauthservers'] != "") {
+	if (isset($hasync['synchronizeauthservers'])) {
 		$sections[] = 'authserver';
 	}
-	if ($hasync['synchronizednsforwarder'] != "" and is_array($config['dnsmasq']))
+	if (isset($hasync['synchronizednsforwarder']) && is_array($config['dnsmasq']))
 		$sections[] = 'dnsmasq';
-	if ($hasync['synchronizeschedules'] != "" || $hasync['synchronizerules'] != "") {
-		if (!is_array($config['schedules']))
+	if (isset($hasync['synchronizeschedules']) || isset($hasync['synchronizerules'])) {
+		if (!isset($config['schedules']) || !is_array($config['schedules']))
 			$config['schedules'] = array();
 		$sections[] = 'schedules';
 	}
-	if ($hasync['synchronizecaptiveportal'] != "" and is_array($config['captiveportal']))
+	if (isset($hasync['synchronizecaptiveportal']) && isset($config['captiveportal']) && is_array($config['captiveportal']))
 		$sections[] = 'captiveportal';
-	if ($hasync['synchronizecaptiveportal'] != "" and is_array($config['vouchers']))
+	if (isset($hasync['synchronizecaptiveportal']) && isset($config['vouchers']) &&  is_array($config['vouchers']))
 		$sections[] = 'vouchers';
 
 	if (count($sections) <= 0) {
