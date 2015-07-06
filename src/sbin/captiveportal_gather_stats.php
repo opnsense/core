@@ -59,6 +59,7 @@ echo "N:";
 $result = "NaN";
 
 if ($type == "loggedin") {
+	$timestamp = 0;
 
 	/* Find out the previous user timestamp
 	* so we can determine the difference between the current
