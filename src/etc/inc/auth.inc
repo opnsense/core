@@ -457,7 +457,7 @@ function local_user_set(&$user)
 	@chgrp($user_home, $user_group);
 
 	/* write out ssh authorized key file */
-	if ($user['authorizedkeys']) {
+	if (isset($user['authorizedkeys'])) {
 		@mkdir("{$user_home}/.ssh", 0700);
 		@chown("{$user_home}/.ssh", $user_name);
 		$keys = base64_decode($user['authorizedkeys']);
@@ -1188,8 +1188,9 @@ function radius_backed($username, $passwd, $authcfg, &$attributes = array())
 
 function get_user_expiration_date($username) {
 	$user = getUserEntry($username);
-	if ($user['expires'])
+	if (isset($user['expires'])) {
 		return $user['expires'];
+	}
 }
 
 function is_account_expired($username) {
