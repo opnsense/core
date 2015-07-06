@@ -61,9 +61,6 @@ if ($pagename == 'wizard.php') {
 	}
 }
 
-/* Build the full help URL. */
-$helpurl .= "/help.php?page={$pagename}";
-
 // link menu system
 $menu = new OPNsense\Base\Menu\MenuSystem();
 
@@ -136,7 +133,7 @@ $pgtitle_output = true;
 							echo '<li>'.get_shortcut_log_link($shortcut_section, false).'</li>';
 						}
 					?>
-					<li><a href="<?php echo $helpurl; ?>" target="_blank" title="<?php echo gettext("Help for items on this page"); ?>">Help</a></li>
+					<li><a href="<?php echo "/help.php?page={$pagename}"; ?>" target="_blank" title="<?php echo gettext("Help for items on this page"); ?>">Help</a></li>
 					<li class="active"><a href="/index.php?logout">Logout</a></li>
 				</ul>
 
