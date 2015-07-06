@@ -142,14 +142,14 @@ if(function_exists("display_error_form") && !isset($config['system']['webgui']['
 				}
 			}
 
-			if(is_array($config['dyndnses']['dyndns']) && !$found_host)
+			if(isset($config['dyndnses']['dyndns']) && is_array($config['dyndnses']['dyndns']) && !$found_host)
 				foreach($config['dyndnses']['dyndns'] as $dyndns)
 					if(strcasecmp($dyndns['host'], $referrer_host) == 0) {
 						$found_host = true;
 						break;
 					}
 
-			if(is_array($config['dnsupdates']['dnsupdate']) && !$found_host)
+			if(isset($config['dnsupdates']['dnsupdate']) && is_array($config['dnsupdates']['dnsupdate']) && !$found_host)
 				foreach($config['dnsupdates']['dnsupdate'] as $rfc2136)
 					if(strcasecmp($rfc2136['host'], $referrer_host) == 0) {
 						$found_host = true;
