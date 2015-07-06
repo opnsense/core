@@ -187,6 +187,14 @@ function get_country_codes()
     return $dn_cc;
 }
 
+function get_zoneinfo()
+{
+	return array_map(
+		function ($path) { return str_replace('/usr/share/zoneinfo/', '', $path); },
+		glob('/usr/share/zoneinfo/*/*')
+	);
+}
+
 function get_searchdomains()
 {
 	global $config;
@@ -1229,10 +1237,7 @@ function system_timezone_configure()
 
 	/* extract appropriate timezone file */
 	$timezone = $syscfg['timezone'];
-	$timezones = array_map(
-		function ($path) { return str_replace('/usr/share/zoneinfo/', '', $path); },
-		glob('/usr/share/zoneinfo/*/*')
-	);
+	$timezones = get_zoneinfo();
 
 	// Reset to default if empty or not existend
 	if (empty($timezone) || !in_array($timezone, $timezones)) {

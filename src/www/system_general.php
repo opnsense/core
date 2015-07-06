@@ -79,10 +79,7 @@ if ($pconfig['timezone'] <> $_POST['timezone']) {
 	filter_pflog_start();
 }
 
-$timezonelist = array_map(
-	function ($path) { return str_replace('/usr/share/zoneinfo/', '', $path); },
-	glob('/usr/share/zoneinfo/*/*')
-);
+$timezonelist = get_zoneinfo();
 
 $multiwan = false;
 $interfaces = get_configured_interface_list();
