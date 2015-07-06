@@ -43,7 +43,7 @@ $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 
 $pgtitle = array(gettext("System"), gettext("Certificate Manager"));
 
-if (is_numericint($_GET['userid'])) {
+if (isset($_GET['userid']) && is_numericint($_GET['userid'])) {
     $userid = $_GET['userid'];
 }
 if (isset($_POST['userid']) && is_numericint($_POST['userid'])) {
@@ -58,14 +58,14 @@ if (isset($userid)) {
     $a_user =& $config['system']['user'];
 }
 
-if (is_numericint($_GET['id'])) {
+if (isset($_GET['id']) && is_numericint($_GET['id'])) {
     $id = $_GET['id'];
 }
 if (isset($_POST['id']) && is_numericint($_POST['id'])) {
     $id = $_POST['id'];
 }
 
-if (!is_array($config['ca'])) {
+if (!isset($config['ca']) || !is_array($config['ca'])) {
     $config['ca'] = array();
 }
 
