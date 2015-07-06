@@ -536,17 +536,15 @@ function rmdir_recursive($path,$follow_links=false) {
 /*
  * host_firmware_version(): Return the versions used in this install
  */
-function host_firmware_version($tocheck = "")
+function host_firmware_version()
 {
 	global $config;
 
-	$os_version = trim(substr(php_uname("r"), 0, strpos(php_uname("r"), '-')));
-
 	return array(
-		"firmware" => array("version" => trim(file_get_contents('/usr/local/opnsense/version/opnsense', " \n"))),
-		"kernel"   => array("version" => $os_version),
-		"base"     => array("version" => $os_version),
-		"config_version" => $config['version']
+		'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
+		'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/os-update.kernel')),
+		'base' => array('version' => file_get_contents('/usr/local/opnsense/version/os-update.base')),
+		'config_version' => $config['version']
 	);
 }
 
