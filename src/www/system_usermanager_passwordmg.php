@@ -36,7 +36,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 $username = $_SESSION['Username'];
-session_write_close();
 
 if (isset($_POST['save'])) {
     unset($input_errors);
@@ -62,6 +61,8 @@ if (isset($_POST['save'])) {
     }
 }
 
+session_write_close();
+
 /* determine if user is not local to system */
 $islocal = false;
 foreach ($config['system']['user'] as $user) {
@@ -85,10 +86,10 @@ include("head.inc");
 			<div class="row">
 				<?
 
-                if ($input_errors) {
+                if (isset($input_errors)) {
                     print_input_errors($input_errors);
                 }
-                if ($savemsg) {
+                if (isset($savemsg)) {
                     print_info_box($savemsg);
                 }
 
