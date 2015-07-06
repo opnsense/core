@@ -40,14 +40,14 @@ $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 
 $pgtitle = array(gettext("System"), gettext("Certificate Authority Manager"));
 
-if (is_numericint($_GET['id'])) {
+if (isset($_GET['id']) && is_numericint($_GET['id'])) {
     $id = $_GET['id'];
 }
 if (isset($_POST['id']) && is_numericint($_POST['id'])) {
     $id = $_POST['id'];
 }
 
-if (!is_array($config['ca'])) {
+if (!isset($config['ca']) || !is_array($config['ca'])) {
     $config['ca'] = array();
 }
 
@@ -59,14 +59,16 @@ if (!is_array($config['cert'])) {
 
 $a_cert =& $config['cert'];
 
-if (!is_array($config['crl'])) {
+if (!isset($config['crl']) || !is_array($config['crl'])) {
     $config['crl'] = array();
 }
 
 $a_crl =& $config['crl'];
 
-$act = $_GET['act'];
-if ($_POST['act']) {
+$act=null;
+if (isset($_GET['act'])) {
+    $act = $_GET['act'];
+} elseif (isset($_POST['act'])) {
     $act = $_POST['act'];
 }
 
@@ -99,7 +101,7 @@ if ($act == "del") {
 }
 
 if ($act == "edit") {
-    if (!$a_ca[$id]) {
+    if (!isset($a_ca[$id])) {
         redirectHeader("system_camanager.php");
         exit;
     }
@@ -113,7 +115,11 @@ if ($act == "edit") {
 }
 
 if ($act == "new") {
-    $pconfig['method'] = $_GET['method'];
+    if (isset($_GET['method'])) { 
+        $pconfig['method'] = $_GET['method'];
+    } else {
+        $pconfig['method'] = null ;
+    }
     $pconfig['keylen'] = "2048";
     $pconfig['digest_alg'] = "sha256";
     $pconfig['lifetime'] = "365";
@@ -251,9 +257,13 @@ if ($_POST) {
             $ca = $a_ca[$id];
         }
 
-        $ca['descr'] = $pconfig['descr'];
+        if (isset($pconfig['descr'])) {
+            $ca['descr'] = $pconfig['descr'];
+        } else {
+            $ca['descr'] = null;
+        }
 
-        if ($_POST['edit'] == "edit") {
+        if (isset($_POST['edit']) && $_POST['edit'] == "edit") {
             $ca['descr']  = $pconfig['descr'];
             $ca['refid']  = $pconfig['refid'];
             $ca['serial'] = $pconfig['serial'];
@@ -305,12 +315,12 @@ if ($_POST) {
 
         if (!$input_errors) {
             write_config();
+            unset($input_errors);
         }
 
 //		redirectHeader("system_camanager.php");
     }
 }
-
 include("head.inc");
 
 $main_buttons = array(
@@ -373,7 +383,7 @@ function method_change() {
 
                 <div class="content-box tab-content table-responsive" style="overflow: auto;">
 
-				<?php if ($act == "new" || $act == "edit" || $act == gettext("Save") || $input_errors) :
+				<?php if ($act == "new" || $act == "edit" || $act == gettext("Save") || isset($input_errors)) :
 ?>
 
 				<form action="system_camanager.php" method="post" name="iform" id="iform" class="table table-striped">
@@ -390,7 +400,7 @@ endif; ?>
 						<tr>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Descriptive name");?></td>
 							<td width="78%" class="vtable">
-								<input name="descr" type="text" class="formfld unknown" id="descr" size="20" value="<?=htmlspecialchars($pconfig['descr']);?>"/>
+								<input name="descr" type="text" class="formfld unknown" id="descr" size="20" value="<?php if (isset($pconfig['descr'])) echo htmlspecialchars($pconfig['descr']);?>"/>
 							</td>
 						</tr>
 
@@ -403,7 +413,7 @@ endif; ?>
 								<?php
                                 foreach ($ca_methods as $method => $desc) :
                                     $selected = "";
-                                    if ($pconfig['method'] == $method) {
+                                    if (isset($pconfig['method']) && $pconfig['method'] == $method) {
                                         $selected = " selected=\"selected\"";
                                     }
                                 ?>
@@ -431,7 +441,7 @@ endif; ?>
 						<tr>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Certificate data");?></td>
 							<td width="78%" class="vtable">
-								<textarea name="cert" id="cert" cols="65" rows="7" class="formfld_cert"><?=htmlspecialchars($pconfig['cert']);?></textarea>
+								<textarea name="cert" id="cert" cols="65" rows="7" class="formfld_cert"><?php if (isset($pconfig['cert'])) echo htmlspecialchars($pconfig['cert']);?></textarea>
 								<br />
 								<?=gettext("Paste a certificate in X.509 PEM format here.");?>
 							</td>
@@ -440,7 +450,7 @@ endif; ?>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Certificate Private Key");
 ?><br /><?=gettext("(optional)");?></td>
 							<td width="78%" class="vtable">
-								<textarea name="key" id="key" cols="65" rows="7" class="formfld_cert"><?=htmlspecialchars($pconfig['key']);?></textarea>
+								<textarea name="key" id="key" cols="65" rows="7" class="formfld_cert"><?php if (isset($pconfig['key'])) echo htmlspecialchars($pconfig['key']);?></textarea>
 								<br />
 								<?=gettext("Paste the private key for the above certificate here. This is optional in most cases, but required if you need to generate a Certificate Revocation List (CRL).");?>
 							</td>
@@ -451,7 +461,7 @@ endif; ?>
 						<tr>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Serial for next certificate");?></td>
 							<td width="78%" class="vtable">
-								<input name="serial" type="text" class="formfld unknown" id="serial" size="20" value="<?=htmlspecialchars($pconfig['serial']);?>"/>
+								<input name="serial" type="text" class="formfld unknown" id="serial" size="20" value="<?php if(isset($pconfig['serial'])) echo htmlspecialchars($pconfig['serial']);?>"/>
 								<br /><?=gettext("Enter a decimal number to be used as the serial number for the next certificate to be created using this CA.");?>
 							</td>
 						</tr>
@@ -480,7 +490,7 @@ endif; ?>
                                             continue;
                                         }
                                         $selected = "";
-                                        if ($pconfig['caref'] == $ca['refid']) {
+                                        if (isset($pconfig['caref']) && isset($ca['refid']) && $pconfig['caref'] == $ca['refid']) {
                                             $selected = " selected=\"selected\"";
                                         }
                                     ?>
@@ -499,7 +509,7 @@ endif; ?>
 								<?php
                                 foreach ($ca_keylens as $len) :
                                     $selected = "";
-                                    if ($pconfig['keylen'] == $len) {
+                                    if (isset($pconfig['keylen']) && $pconfig['keylen'] == $len) {
                                         $selected = " selected=\"selected\"";
                                     }
                                 ?>
@@ -519,7 +529,7 @@ endif; ?>
 								<?php
                                 foreach ($openssl_digest_algs as $digest_alg) :
                                     $selected = "";
-                                    if ($pconfig['digest_alg'] == $digest_alg) {
+                                    if (isset($pconfig['digest_alg']) && $pconfig['digest_alg'] == $digest_alg) {
                                         $selected = " selected=\"selected\"";
                                     }
                                 ?>
@@ -535,7 +545,7 @@ endif; ?>
 						<tr>
 							<td width="22%" valign="top" class="vncellreq"><?=gettext("Lifetime");?></td>
 							<td width="78%" class="vtable">
-								<input name="lifetime" type="text" class="formfld unknown" id="lifetime" size="5" value="<?=htmlspecialchars($pconfig['lifetime']);?>"/>
+								<input name="lifetime" type="text" class="formfld unknown" id="lifetime" size="5" value="<?php if (isset($pconfig['lifetime'])) echo htmlspecialchars($pconfig['lifetime']);?>"/>
 								<?=gettext("days");?>
 							</td>
 						</tr>
@@ -551,7 +561,7 @@ endif; ?>
                                             $dn_cc = get_country_codes();
                                             foreach ($dn_cc as $cc => $cn) {
                                                 $selected = '';
-                                                if ($pconfig['dn_country'] == $cc) {
+                                                if (isset($pconfig['dn_country']) && $pconfig['dn_country'] == $cc) {
                                                     $selected = ' selected="selected"';
                                                 }
                                                 print "<option value=\"$cc\"$selected>$cc ($cn)</option>";
@@ -563,7 +573,7 @@ endif; ?>
 									<tr>
 										<td align="right"><?=gettext("State or Province");?> : &nbsp;</td>
 										<td align="left">
-											<input name="dn_state" type="text" class="formfld unknown" size="40" value="<?=htmlspecialchars($pconfig['dn_state']);?>"/>
+											<input name="dn_state" type="text" class="formfld unknown" size="40" value="<?php if (isset($pconfig['dn_state'])) echo htmlspecialchars($pconfig['dn_state']);?>"/>
 											&nbsp;
 											<em><?=gettext("ex:");?></em>
 											&nbsp;
@@ -573,7 +583,7 @@ endif; ?>
 									<tr>
 										<td align="right"><?=gettext("City");?> : &nbsp;</td>
 										<td align="left">
-											<input name="dn_city" type="text" class="formfld unknown" size="40" value="<?=htmlspecialchars($pconfig['dn_city']);?>"/>
+											<input name="dn_city" type="text" class="formfld unknown" size="40" value="<?php if (isset($pconfig['dn_city'])) echo htmlspecialchars($pconfig['dn_city']);?>"/>
 											&nbsp;
 											<em><?=gettext("ex:");?></em>
 											&nbsp;
@@ -583,7 +593,7 @@ endif; ?>
 									<tr>
 										<td align="right"><?=gettext("Organization");?> : &nbsp;</td>
 										<td align="left">
-											<input name="dn_organization" type="text" class="formfld unknown" size="40" value="<?=htmlspecialchars($pconfig['dn_organization']);?>"/>
+											<input name="dn_organization" type="text" class="formfld unknown" size="40" value="<?php if (isset($pconfig['dn_organization'])) echo htmlspecialchars($pconfig['dn_organization']);?>"/>
 											&nbsp;
 											<em><?=gettext("ex:");?></em>
 											&nbsp;
@@ -593,7 +603,7 @@ endif; ?>
 									<tr>
 										<td align="right"><?=gettext("Email Address");?> : &nbsp;</td>
 										<td align="left">
-											<input name="dn_email" type="text" class="formfld unknown" size="25" value="<?=htmlspecialchars($pconfig['dn_email']);?>"/>
+											<input name="dn_email" type="text" class="formfld unknown" size="25" value="<?php if (isset($pconfig['dn_email'])) echo htmlspecialchars($pconfig['dn_email']);?>"/>
 											&nbsp;
 											<em><?=gettext("ex:");?></em>
 											&nbsp;
@@ -603,7 +613,7 @@ endif; ?>
 									<tr>
 										<td align="right"><?=gettext("Common Name");?> : &nbsp;</td>
 										<td align="left">
-											<input name="dn_commonname" type="text" class="formfld unknown" size="25" value="<?=htmlspecialchars($pconfig['dn_commonname']);?>"/>
+											<input name="dn_commonname" type="text" class="formfld unknown" size="25" value="<?php if (isset($pconfig['dn_commonname'])) echo htmlspecialchars($pconfig['dn_commonname']);?>"/>
 											&nbsp;
 											<em><?=gettext("ex:");?></em>
 											&nbsp;
@@ -664,11 +674,23 @@ else :
                         $subj = htmlspecialchars($subj);
                         $issuer = htmlspecialchars($issuer);
                         $certcount = 0;
-
-                        $issuer_ca = lookup_ca($ca['caref']);
-                        if ($issuer_ca) {
-                            $issuer_name = $issuer_ca['descr'];
-                        }
+                        
+                        if (isset($ca['caref'])) {
+                            $issuer_ca = lookup_ca($ca['caref']);
+                            if ($issuer_ca) {
+                                $issuer_name = $issuer_ca['descr'];
+                            }
+                            foreach ($a_cert as $cert) {
+                                if ($cert['caref'] == $ca['refid']) {
+                                    $certcount++;
+                                }
+                            }
+                            foreach ($a_ca as $cert) {
+                                if ($cert['caref'] == $ca['refid']) {
+                                    $certcount++;
+                                }
+                            }
+                        } 
 
                         // TODO : Need gray certificate icon
 
@@ -679,16 +701,6 @@ else :
                         } else {
                             $caimg = "/themes/{$g['theme']}/images/icons/icon_frmfld_cert.png";
                             $internal = "NO";
-                        }
-                        foreach ($a_cert as $cert) {
-                            if ($cert['caref'] == $ca['refid']) {
-                                $certcount++;
-                            }
-                        }
-                        foreach ($a_ca as $cert) {
-                            if ($cert['caref'] == $ca['refid']) {
-                                $certcount++;
-                            }
                         }
                     ?>
 					<tr>
