@@ -94,4 +94,4 @@ $pagetitle = gentitle( $pgtitle );
 		<? endif; ?>
 
 
-<?php if (!$closehead):?></head><? endif;?>
+<?php if (!isset($closehead) || !$closehead):?></head><? endif;?>
