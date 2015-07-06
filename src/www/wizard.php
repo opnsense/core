@@ -678,12 +678,7 @@ function showchange() {
 
 				break;
 			case "timezone_select":
-				$timezonelist = array_map(
-					function ($path) {
-						return str_replace('/usr/share/zoneinfo/', '', $path);
-					},
-					glob('/usr/share/zoneinfo/*/*')
-				);
+				$timezonelist = get_zoneinfo();
 
 				if ($field['displayname']) {
 					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
