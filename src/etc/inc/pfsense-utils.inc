@@ -398,6 +398,8 @@ function backup_config_section($section_name) {
 	return $xmlconfig;
 }
 
+/* KEEP THIS: unbreaks syntax highlighting <? */
+
 /*
  *  restore_config_section($section_name, new_contents): restore a configuration section,
  *                                                  and write the configuration out
@@ -595,7 +597,8 @@ function reload_interfaces_sync()
  * RESULT
  *   none
  ******/
-function reload_all() {
+function reload_all()
+{
 	configd_run("service reload all", true);
 }
 
@@ -607,7 +610,8 @@ function reload_all() {
  * RESULT
  *   none
  ******/
-function reload_interfaces() {
+function reload_interfaces()
+{
 	configd_run("interface reload");
 }
 
@@ -619,7 +623,8 @@ function reload_interfaces() {
  * RESULT
  *   none
  ******/
-function reload_all_sync() {
+function reload_all_sync()
+{
 	global $config;
 
 	/* parse config.xml again */
