@@ -90,7 +90,7 @@ include("head.inc");
 		<div class="row">
 			<section class="col-xs-12">
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 				<?PHP	if ($carp_detected_problems) print_info_box(gettext("CARP has detected a problem and this unit has been demoted to BACKUP status.") . "<br />" . gettext("Check link status on all interfaces with configured CARP VIPs.")); ?>
 

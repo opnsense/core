@@ -112,7 +112,7 @@ include("head.inc");
 			<section class="col-xs-12">
 
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 
 				<select id="type" onchange="method_change(jQuery('#type').val());" name="type" class='form-control'>

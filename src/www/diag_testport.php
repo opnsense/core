@@ -92,7 +92,7 @@ include("head.inc"); ?>
 <?php echo gettext("No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."); ?>
 <br /><br /><br />
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
 
                 <div class="content-box">
 

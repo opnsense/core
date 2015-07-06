@@ -77,7 +77,7 @@ $main_buttons = array(
 			<div class="row">
 
 
-				<?php if ($savemsg) {
+				<?php if (isset($savemsg)) {
                     print_info_box($savemsg);
 } ?>
 				<?php if (isset($config['pptpd']['radius']['enable'])) {

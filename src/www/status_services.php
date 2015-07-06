@@ -63,7 +63,7 @@ include("fbegin.inc");
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
 

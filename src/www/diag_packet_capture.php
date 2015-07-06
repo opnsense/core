@@ -220,7 +220,7 @@ include("fbegin.inc");
 			<section class="col-xs-12">
                 <div class="content-box">
 
-					<?php if ($input_errors) print_input_errors($input_errors); ?>
+					<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
 
                     <header class="content-box-head container-fluid">
 				        <h3><?=gettext("Packet capture");?></h3>

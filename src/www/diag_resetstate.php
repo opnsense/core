@@ -35,13 +35,13 @@ if ($_POST) {
 	$savemsg = "";
 	if ($_POST['statetable']) {
 		filter_flush_state_table();
-		if ($savemsg)
+		if (isset($savemsg))
 			$savemsg .= " ";
 		$savemsg .= gettext("The state table has been flushed successfully.");
 	}
 	if ($_POST['sourcetracking']) {
 		mwexec("/sbin/pfctl -F Sources");
-		if ($savemsg)
+		if (isset($savemsg))
 			$savemsg .= " <br />";
 		$savemsg .= gettext("The source tracking table has been flushed successfully.");
 	}
@@ -77,8 +77,8 @@ include("head.inc");
 					<div class="tab-pane active" id="system">
 
 
-								<?php if ($input_errors) print_input_errors($input_errors); ?>
-								<?php if ($savemsg) print_info_box($savemsg); ?>
+								<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
+								<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 
 								<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">

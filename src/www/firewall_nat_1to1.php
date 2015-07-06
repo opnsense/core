@@ -148,7 +148,7 @@ $main_buttons = array(
 			<div class="row">
 
 				<?php
-				if ($savemsg)
+				if (isset($savemsg))
 					print_info_box($savemsg);
 				if (is_subsystem_dirty('natconf'))
 					print_info_box_np(gettext("The NAT configuration has been changed.") .

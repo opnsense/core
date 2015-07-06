@@ -178,10 +178,10 @@ include("head.inc");
         <div class="row">
             <form action="system_advanced_notifications.php" method="post">
 			<?php
-            if ($input_errors) {
+            if (isset($input_errors)) {
                 print_input_errors($input_errors);
             }
-            if ($savemsg) {
+            if (isset($savemsg)) {
                 print_info_box($savemsg);
             }
             ?>

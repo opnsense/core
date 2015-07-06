@@ -64,14 +64,14 @@ include("head.inc");
 
 <?php include("fbegin.inc"); ?>
 
-<?php if ($savemsg) print_info_box($savemsg);?>
+<?php if (isset($savemsg)) print_info_box($savemsg);?>
 
 <form id="iform" name="iform" action="<?php echo $_SERVER['REQUEST_URI'];?>" method="post">
 <section class="page-content-main">
 	<div class="container-fluid">
 		<div class="row">
 
-			<?php if ($input_errors) print_input_errors($input_errors);?>
+			<?php if (isset($input_errors)) print_input_errors($input_errors);?>
 
 			<section class="col-xs-12">
                 <div class="content-box">

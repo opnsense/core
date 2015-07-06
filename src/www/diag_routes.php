@@ -153,7 +153,7 @@ include('head.inc');
 
 			<section class="col-xs-12">
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
 
                 <div class="content-box">
 

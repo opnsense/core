@@ -157,7 +157,7 @@ foreach ($unused_disks as $disk) {
 			<div class="row">
 				<?
 
-				if ($input_errors)
+				if (isset($input_errors))
 					print_input_errors($input_errors);
 				if ($_GET["error"] && ($_GET["error"] != 0))
 					print_info_box(gettext("There was an error performing the chosen mirror operation. Check the System Log for details."));

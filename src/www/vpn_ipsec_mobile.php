@@ -358,7 +358,7 @@ function login_banner_change() {
 			<div class="row">
 
 				<?php
-                if ($savemsg) {
+                if (isset($savemsg)) {
                     print_info_box($savemsg);
                 }
                 if (isset($config['ipsec']['enable']) && is_subsystem_dirty('ipsec')) {
@@ -372,7 +372,7 @@ function login_banner_change() {
                 if ($pconfig['enable'] && !$ph1found) {
                     print_info_box_np(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("Please click Create to define one."), gettext("create"), gettext("Create Phase1"));
                 }
-                if ($input_errors) {
+                if (isset($input_errors)) {
                     print_input_errors($input_errors);
                 }
                 ?>
