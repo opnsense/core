@@ -30,7 +30,7 @@
 
 /* Include authentication routines */
 /* THIS MUST BE ABOVE ALL OTHER CODE */
-if(!$nocsrf) {
+if(isset($nocsrf) && !$nocsrf) {
 
 function csrf_startup() {
 		csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
@@ -42,7 +42,7 @@ function csrf_startup() {
 }
 
 /* make sure nothing is cached */
-if (!$omit_nocacheheaders) {
+if (isset($omit_nocacheheaders) && $omit_nocacheheaders) {
 	header("Expires: 0");
 	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 	header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -58,9 +58,9 @@ require_once("functions.inc");
 $g['theme'] = get_current_theme();
 
 /* Set the default interface language */
-if($config['system']['language'] <> "") {
+if(isset($config['system']['language']) && $config['system']['language'] <> "") {
 	$g['language'] = $config['system']['language'];
-} elseif ($g['language'] == "") {
+} elseif (!isset($g['language']) || $g['language'] == "") {
 	$g['language'] = 'en_US';
 }
 
