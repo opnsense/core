@@ -166,7 +166,7 @@ include("head.inc");
 	<div class="container-fluid">
         <div class="row">
             <?php
-            if (isset($input_errors)) {
+            if (isset($input_errors) && count($input_errors) > 0) {
                 print_input_errors($input_errors);
             }
             if (isset($savemsg)) {

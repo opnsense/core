@@ -53,7 +53,7 @@ $showAllOption = $showAll ? "" : "?showAll";
                 <p>For explanation about the meaning of the information listed for each socket click <a href="#about">here</a>.</p>
                 <p><input type="button" class="btn btn-default" value="<?=$showAllText?>" onclick="window.location.href='diag_sockets.php<?=$showAllOption?>'"/><br/>To show information about both listening and connected sockets click this.</p>
 
-				<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
+				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 			</section>
 
 

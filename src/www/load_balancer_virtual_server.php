@@ -100,7 +100,7 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
+				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
 				<?php print_info_box_np(gettext("The virtual server configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
