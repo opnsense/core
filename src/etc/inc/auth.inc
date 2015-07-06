@@ -1228,7 +1228,7 @@ function auth_get_authserver_list() {
 
 	$list = array();
 
-        if (is_array($config['system']['authserver'])) {
+        if (isset($config['system']['authserver']) && is_array($config['system']['authserver'])) {
                 foreach ($config['system']['authserver'] as $authcfg) {
 			/* Add support for disabled entries? */
 			$list[$authcfg['name']] = $authcfg;

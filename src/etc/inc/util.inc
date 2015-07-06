@@ -942,7 +942,11 @@ function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "")
 				$dmesg_arr = array();
 				exec("/sbin/dmesg |grep $ifname | head -n1", $dmesg_arr);
 				preg_match_all("/<(.*?)>/i", $dmesg_arr[0], $dmesg);
-				$toput['dmesg'] = $dmesg[1][0];
+				if (isset($dmesg[1][0])) {
+					$toput['dmesg'] = $dmesg[1][0];
+				} else {
+					$toput['dmesg'] = null;
+				}
 				$iflist[$ifname] = $toput;
 				break;
 			case "ppp":

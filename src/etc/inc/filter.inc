@@ -838,8 +838,13 @@ function filter_generate_optcfg_array()
 		$oic['ipv6'] = get_interface_ipv6($if);
 		if(!is_ipaddrv4($oc['ipaddr']) && !empty($oc['ipaddr']))
 			$oic['type'] = $oc['ipaddr'];
-		if(!is_ipaddrv6($oc['ipaddrv6']) && !empty($oc['ipaddrv6']))
-			$oic['type6'] = $oc['ipaddrv6'];
+		if (isset($oc['ipaddrv6'])) {
+			if( !is_ipaddrv6($oc['ipaddrv6']) && !empty($oc['ipaddrv6'])) {
+				$oic['type6'] = $oc['ipaddrv6'];
+			}
+		} else {
+			$oic['type6'] = null;
+		}
 		if (!empty($oc['track6-interface']))
 			$oic['track6-interface'] = $oc['track6-interface'];
 		$oic['sn'] = get_interface_subnet($if);
@@ -849,11 +854,31 @@ function filter_generate_optcfg_array()
 		$oic['descr'] = $ifdetail;
 		$oic['sa'] = gen_subnet($oic['ip'], $oic['sn']);
 		$oic['sav6'] = gen_subnetv6($oic['ipv6'], $oic['snv6']);
-		$oic['nonat'] = $oc['nonat'];
-		$oic['alias-address'] = $oc['alias-address'];
-		$oic['alias-subnet'] = $oc['alias-subnet'];
-		$oic['gateway'] = $oc['gateway'];
-		$oic['gatewayv6'] = $oc['gatewayv6'];
+		if (isset($oc['nonat'])) {
+			$oic['nonat'] = $oc['nonat'];
+		} else {
+			$oic['nonat'] = null;
+		}
+		if (isset($oc['alias-address'])) {
+			$oic['alias-address'] = $oc['alias-address'];
+		} else {
+			$oic['alias-address'] = null;
+		}
+		if (isset($oc['alias-subnet'])) {
+			$oic['alias-subnet'] = $oc['alias-subnet'];
+		} else {
+			$oc['alias-subnet'] = null;
+		}
+		if (isset($oc['gateway'])) {
+			$oic['gateway'] = $oc['gateway'];
+		} else {
+			$oic['gateway'] = null ;
+		}
+		if (isset($oc['gatewayv6'])) {
+			$oic['gatewayv6'] = $oc['gatewayv6'];
+		} else {
+			$oic['gatewayv6'] = null;
+		}
 		$oic['spoofcheck'] = "yes";
 		$oic['bridge'] = link_interface_to_bridge($if);
 		$vips = link_interface_to_vips($if);
@@ -896,7 +921,7 @@ function filter_generate_optcfg_array()
 			$oic['sn'] = "32";
 		$FilterIflist['pptp'] = $oic;
 	}
-	if($config['l2tp']['mode'] == "server") {
+	if(isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server") {
 		$oic = array();
 		$oic['if'] = 'l2tp';
 		$oic['descr'] = 'L2TP';
@@ -910,7 +935,7 @@ function filter_generate_optcfg_array()
 		$oic['virtual'] = true;
 		$FilterIflist['l2tp'] = $oic;
 	}
-	if (is_array($config['pppoes']['pppoe']) && (count($config['pppoes']['pppoe']) > 0)) {
+	if (isset($config['pppoes']['pppoe']) && is_array($config['pppoes']['pppoe']) && (count($config['pppoes']['pppoe']) > 0)) {
 		$pppoeifs = array();
 		foreach($config['pppoes']['pppoe'] as $pppoe) {
 			if ($pppoe['mode'] == "server") {

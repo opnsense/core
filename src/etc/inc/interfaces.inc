@@ -4146,6 +4146,7 @@ function convert_real_interface_to_friendly_interface_name($interface = "wan") {
 /* attempt to resolve interface to friendly descr */
 function convert_friendly_interface_to_friendly_descr($interface) {
 	global $config;
+	$ifdesc = null;
 
 	switch ($interface) {
 	case "l2tp":
@@ -4752,8 +4753,9 @@ function find_interface_ipv6($interface, $flush = false) {
 			$interface_ipv6_arr_cache[$interface] = $ifinfo['ipaddr6'];
 			$interface_snv6_arr_cache[$interface] = $ifinfo['subnetbits6'];
 		}
+		return $interface_ipv6_arr_cache[$interface];
 	}
-	return $interface_ipv6_arr_cache[$interface];
+	return;
 }
 
 /*
@@ -4794,11 +4796,13 @@ function find_interface_subnet($interface, $flush = false) {
 
 	if (!isset($interface_sn_arr_cache[$interface]) or $flush) {
 		$ifinfo = pfSense_get_interface_addresses($interface);
-		$interface_ip_arr_cache[$interface] = $ifinfo['ipaddr'];
-		$interface_sn_arr_cache[$interface] = $ifinfo['subnetbits'];
+		if (isset($ifinfo['ipaddr'])) {
+			$interface_ip_arr_cache[$interface] = $ifinfo['ipaddr'];
+			$interface_sn_arr_cache[$interface] = $ifinfo['subnetbits'];
+			return $interface_sn_arr_cache[$interface];
+		}
 	}
-
-	return $interface_sn_arr_cache[$interface];
+	return;
 }
 
 function find_interface_subnetv6($interface, $flush = false) {
@@ -4811,11 +4815,13 @@ function find_interface_subnetv6($interface, $flush = false) {
 
 	if (!isset($interface_snv6_arr_cache[$interface]) or $flush) {
 		$ifinfo = pfSense_get_interface_addresses($interface);
-		$interface_ipv6_arr_cache[$interface] = $ifinfo['ipaddr6'];
-		$interface_snv6_arr_cache[$interface] = $ifinfo['subnetbits6'];
+		if (isset($ifinfo['ipaddr6'])) {
+			$interface_ipv6_arr_cache[$interface] = $ifinfo['ipaddr6'];
+			$interface_snv6_arr_cache[$interface] = $ifinfo['subnetbits6'];
+			return $interface_snv6_arr_cache[$interface];
+		}
 	}
-
-	return $interface_snv6_arr_cache[$interface];
+	return;
 }
 
 function ip_in_interface_alias_subnet($interface, $ipalias) {
@@ -4984,7 +4990,12 @@ function interface_has_gatewayv6($friendly) {
 
 	if (!empty($config['interfaces'][$friendly])) {
 		$ifname = &$config['interfaces'][$friendly];
-		switch ($ifname['ipaddrv6']) {
+		if (isset($ifname['ipaddrv6'])) {
+			$ipaddrv6 = $ifname['ipaddrv6'];
+		} else {
+			$ipaddrv6 = "";
+		}
+		switch ($ipaddrv6) {
 			case "slaac":
 			case "dhcp6":
 			case "6to4":
@@ -5227,13 +5238,13 @@ function get_failover_interface($interface, $family = "all") {
 	global $config;
 
 	/* shortcut to get_real_interface if we find it in the config */
-	if (is_array($config['interfaces'][$interface])) {
+	if (isset($config['interfaces'][$interface]) && is_array($config['interfaces'][$interface])) {
 		return get_real_interface($interface, $family);
 	}
 
 	/* compare against gateway groups */
 	$a_groups = return_gateway_groups_array();
-	if (is_array($a_groups[$interface])) {
+	if (isset($a_groups[$interface]) && is_array($a_groups[$interface])) {
 		/* we found a gateway group, fetch the interface or vip */
 		if ($a_groups[$interface][0]['vip'] <> "")
 			return $a_groups[$interface][0]['vip'];

@@ -464,15 +464,23 @@ function get_lb_summary() {
 	$relay_hosts=Array();
 	foreach( (array) $relayctl as $line) {
 		$t = explode("\t", $line);
-		switch (trim($t[1])) {
-			case "table":
-				$curpool=trim($t[2]);
-				break;
-			case "host":
-				$curhost=trim($t[2]);
-				$relay_hosts[$curpool][$curhost]['avail']=trim($t[3]);
-				$relay_hosts[$curpool][$curhost]['state']=trim($t[4]);
-				break;
+		if (isset($t[1])) {
+			switch (trim($t[1])) {
+				case "table":
+					$curpool=trim($t[2]);
+					break;
+				case "host":
+					$curhost=trim($t[2]);
+					if (!isset($relay_hosts[$curpool])) {
+						$relay_hosts[$curpool] = array();
+					}
+					if (!isset($relay_hosts[$curpool][$curhost])) {
+						$relay_hosts[$curpool][$curhost]['avail'] = array();
+					}
+					$relay_hosts[$curpool][$curhost]['avail']=trim($t[3]);
+					$relay_hosts[$curpool][$curhost]['state']=trim($t[4]);
+					break;
+			}
 		}
 	}
 	return $relay_hosts;

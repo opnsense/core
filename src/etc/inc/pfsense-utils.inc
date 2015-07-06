@@ -37,7 +37,7 @@
  ******/
 function have_natpfruleint_access($if) {
 	$security_url = "firewall_nat_edit.php?if=". strtolower($if);
-	if(isAllowedPage($security_url, $allowed))
+	if(isAllowedPage($security_url))
 		return true;
 	return false;
 }
@@ -810,8 +810,9 @@ function is_dhcpv6_server_enabled() {
 function is_radvd_enabled() {
 	global $config;
 
-	if (!is_array($config['dhcpdv6']))
+	if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
 		$config['dhcpdv6'] = array();
+	}
 
 	$dhcpdv6cfg = $config['dhcpdv6'];
 	$Iflist = get_configured_interface_list();
@@ -1905,8 +1906,9 @@ function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, 
 function calculate_ipv6_delegation_length($if) {
 	global $config;
 
-	if(!is_array($config['interfaces'][$if]))
+	if(!isset($config['interfaces'][$if]) || !is_array($config['interfaces'][$if])) {
 		return false;
+	}
 
 	switch($config['interfaces'][$if]['ipaddrv6']) {
 		case "6to4":
@@ -2027,7 +2029,7 @@ function zte_simstate_to_string($state) {
 function get_configured_pppoe_server_interfaces() {
 	global $config;
 	$iflist = array();
-	if (is_array($config['pppoes']['pppoe'])) {
+	if (isset($config['pppoes']['pppoe']) && is_array($config['pppoes']['pppoe'])) {
 		foreach($config['pppoes']['pppoe'] as $pppoe) {
 			if ($pppoe['mode'] == "server") {
 				$int = "poes". $pppoe['pppoeid'];
