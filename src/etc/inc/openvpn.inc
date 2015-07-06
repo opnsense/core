@@ -1240,7 +1240,7 @@ function openvpn_refresh_crls() {
 
 	openvpn_create_dirs();
 
-	if (is_array($config['openvpn']['openvpn-server'])) {
+	if (isset($config['openvpn']['openvpn-server']) && is_array($config['openvpn']['openvpn-server'])) {
 		foreach ($config['openvpn']['openvpn-server'] as $settings) {
 			if (empty($settings))
 				continue;

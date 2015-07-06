@@ -710,7 +710,7 @@ function is_cert_revoked($cert, $crlref = "") {
 
 	if (!empty($crlref)) {
 		$crl = lookup_crl($crlref);
-		if (!is_array($crl['cert']))
+		if (!isset($crl['cert']) || !is_array($crl['cert']))
 			return false;
 		foreach ($crl['cert'] as $rcert) {
 			if (cert_compare($rcert, $cert))
@@ -731,7 +731,7 @@ function is_cert_revoked($cert, $crlref = "") {
 
 function is_openvpn_server_crl($crlref) {
 	global $config;
-	if (!is_array($config['openvpn']['openvpn-server']))
+	if (!isset($config['openvpn']['openvpn-server']) || !is_array($config['openvpn']['openvpn-server']))
 		return;
 	foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
 		if (!empty($ovpns['crlref']) && ($ovpns['crlref'] == $crlref))

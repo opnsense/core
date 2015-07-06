@@ -80,7 +80,7 @@ if ($act == "del") {
 
     $index = count($a_cert) - 1;
     for (; $index >=0; $index--) {
-        if ($a_cert[$index]['caref'] == $a_ca[$id]['refid']) {
+        if (isset($a_cert[$index]['caref']) && isset($a_ca[$id]['refid']) && $a_cert[$index]['caref'] == $a_ca[$id]['refid']) {
             unset($a_cert[$index]);
         }
     }
