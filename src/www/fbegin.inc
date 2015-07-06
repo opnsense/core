@@ -130,12 +130,11 @@ $pgtitle_output = true;
 					?>
 					</li>
 					<?php
-
-
-						echo '<li>'.get_shortcut_main_link($shortcut_section, false).'</li>';
-						echo '<li>'.get_shortcut_status_link($shortcut_section, false).'</li>';
-						echo '<li>'.get_shortcut_log_link($shortcut_section, false).'</li>';
-
+						if (isset($shortcut_section)) {
+							echo '<li>'.get_shortcut_main_link($shortcut_section, false).'</li>';
+							echo '<li>'.get_shortcut_status_link($shortcut_section, false).'</li>';
+							echo '<li>'.get_shortcut_log_link($shortcut_section, false).'</li>';
+						}
 					?>
 					<li><a href="<?php echo $helpurl; ?>" target="_blank" title="<?php echo gettext("Help for items on this page"); ?>">Help</a></li>
 					<li class="active"><a href="/index.php?logout">Logout</a></li>
