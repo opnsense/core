@@ -35,7 +35,7 @@
             </enabled>
             <interfaces type="InterfaceField">
                 <Required>Y</Required>
-                <default>lan</default>
+                <default>wan</default>
                 <multiple>Y</multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
