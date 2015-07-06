@@ -1730,7 +1730,7 @@ function get_possible_traffic_source_addresses($include_ipv6_link_local=false) {
 	global $config;
 	$sourceips = get_possible_listen_ips($include_ipv6_link_local);
 	foreach (array('server', 'client') as $mode) {
-		if (is_array($config['openvpn']["openvpn-{$mode}"])) {
+		if (isset($config['openvpn']["openvpn-{$mode}"]) && is_array($config['openvpn']["openvpn-{$mode}"])) {
 			foreach ($config['openvpn']["openvpn-{$mode}"] as $id => $setting) {
 				if (!isset($setting['disable'])) {
 					$vpn = array();

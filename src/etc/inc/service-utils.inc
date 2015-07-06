@@ -70,7 +70,7 @@ if (!function_exists('get_services')) {
 		$pconfig['description'] = gettext("NTP clock sync");
 		$services[] = $pconfig;
 
-		if (is_array($config['captiveportal'])) {
+		if (isset($config['captiveportal']) && is_array($config['captiveportal'])) {
 			foreach ($config['captiveportal'] as $zone => $setting) {
 				if (isset($setting['enable'])) {
 					$pconfig = array();
@@ -126,7 +126,7 @@ if (!function_exists('get_services')) {
 			$services[] = $pconfig;
 		}
 
-		if (is_array($config['igmpproxy']['igmpentry']) && (count($config['igmpproxy']['igmpentry']) > 0)) {
+		if (isset($config['igmpproxy']['igmpentry']) && is_array($config['igmpproxy']['igmpentry']) && (count($config['igmpproxy']['igmpentry']) > 0)) {
 			$pconfig = array();
 			$pconfig['name'] = "igmpproxy";
 			$pconfig['description'] = gettext("IGMP proxy");
@@ -170,7 +170,7 @@ if (!function_exists('get_services')) {
 			}
 		}
 
-		if (count($config['load_balancer']['virtual_server']) && count($config['load_balancer']['lbpool'])) {
+		if (isset($config['load_balancer']['virtual_server']) && isset($config['load_balancer']['lbpool']) && count($config['load_balancer']['virtual_server']) && count($config['load_balancer']['lbpool'])) {
 			$pconfig = array();
 			$pconfig['name'] = "relayd";
 			$pconfig['description'] = gettext("Server load balancing daemon");

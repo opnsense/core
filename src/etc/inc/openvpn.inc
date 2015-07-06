@@ -1016,7 +1016,7 @@ function openvpn_get_active_servers($type="multipoint") {
 	global $config, $g;
 
 	$servers = array();
-	if (is_array($config['openvpn']['openvpn-server'])) {
+	if (isset($config['openvpn']['openvpn-server']) && is_array($config['openvpn']['openvpn-server'])) {
 		foreach ($config['openvpn']['openvpn-server'] as & $settings) {
 			if (empty($settings) || isset($settings['disable']))
 				continue;
@@ -1118,7 +1118,7 @@ function openvpn_get_active_clients() {
 	global $config, $g;
 
 	$clients = array();
-	if (is_array($config['openvpn']['openvpn-client'])) {
+	if (isset($config['openvpn']['openvpn-client']) && is_array($config['openvpn']['openvpn-client'])) {
 		foreach ($config['openvpn']['openvpn-client'] as & $settings) {
 
 			if (empty($settings) || isset($settings['disable']))

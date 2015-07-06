@@ -48,17 +48,18 @@ $openssl_crl_status = array(
 
 function & lookup_ca($refid) {
 	global $config;
+	$false = false;
 
 	if (is_array($config['ca']))
 		foreach ($config['ca'] as & $ca)
 			if ($ca['refid'] == $refid)
 				return $ca;
-
-	return false;
+	return $false;
 }
 
 function & lookup_ca_by_subject($subject) {
 	global $config;
+	$false = false;
 
 	if (is_array($config['ca']))
 		foreach ($config['ca'] as & $ca)
@@ -68,37 +69,41 @@ function & lookup_ca_by_subject($subject) {
 				return $ca;
 		}
 
-	return false;
+	return $false;
 }
 
 function & lookup_cert($refid) {
 	global $config;
+	$false = false;
 
 	if (is_array($config['cert']))
 		foreach ($config['cert'] as & $cert)
 			if ($cert['refid'] == $refid)
 				return $cert;
 
-	return false;
+	return $false;
 }
 
 function & lookup_cert_by_name($name) {
 	global $config;
+	$null = null;
 	if (is_array($config['cert']))
 		foreach ($config['cert'] as & $cert)
 			if ($cert['descr'] == $name)
 				return $cert;
+	return $null;
 }
 
 function & lookup_crl($refid) {
 	global $config;
+	$false = false;
 
 	if (is_array($config['crl']))
 		foreach ($config['crl'] as & $crl)
 			if ($crl['refid'] == $refid)
 				return $crl;
 
-	return false;
+	return $false;
 }
 
 function ca_chain_array(& $cert) {
@@ -395,11 +400,11 @@ function cert_get_subject($str_crt, $decode = true) {
 			ksort($v);
 			foreach ($v as $w) {
 				$asubject = "{$a}={$w}";
-				$subject = (strlen($subject)) ? "{$asubject}, {$subject}" : $asubject;
+				$subject = (isset($subject)) ? "{$asubject}, {$subject}" : $asubject;
 			}
 		} else {
 			$asubject = "{$a}={$v}";
-			$subject = (strlen($subject)) ? "{$asubject}, {$subject}" : $asubject;
+			$subject = (isset($subject)) ? "{$asubject}, {$subject}" : $asubject;
 		}
 	}
 
@@ -445,11 +450,11 @@ function cert_get_issuer($str_crt, $decode = true) {
 			ksort($v);
 			foreach ($v as $w) {
 				$aissuer = "{$a}={$w}";
-				$issuer = (strlen($issuer)) ? "{$aissuer}, {$issuer}" : $aissuer;
+				$issuer = (isset($issuer)) ? "{$aissuer}, {$issuer}" : $aissuer;
 			}
 		} else {
 			$aissuer = "{$a}={$v}";
-			$issuer = (strlen($issuer)) ? "{$aissuer}, {$issuer}" : $aissuer;
+			$issuer = (isset($issuer)) ? "{$aissuer}, {$issuer}" : $aissuer;
 		}
 	}
 
@@ -490,7 +495,11 @@ function cert_get_purpose($str_crt, $decode = true) {
 	$crt_details = openssl_x509_parse($str_crt);
 	$purpose = array();
 	$purpose['ca'] = (stristr($crt_details['extensions']['basicConstraints'], 'CA:TRUE') === false) ? 'No': 'Yes';
-	$purpose['server'] = ($crt_details['extensions']['nsCertType'] == "SSL Server") ? 'Yes': 'No';
+	if (isset($crt_details['extensions']['nsCertType']) && $crt_details['extensions']['nsCertType'] == "SSL Server") {
+		$purpose['server'] = 'Yes';
+	} else {
+		$purpose['server'] = 'No';
+	}
 	return $purpose;
 }
 
@@ -524,7 +533,7 @@ function is_user_cert($certref)
 	}
 
 	foreach ($config['system']['user'] as $user) {
-		if (!is_array($user['cert'])) {
+		if (!isset($user['cert']) || !is_array($user['cert'])) {
 			continue;
 		}
 		foreach ($user['cert'] as $cert) {
@@ -696,7 +705,7 @@ function cert_compare($cert1, $cert2) {
 
 function is_cert_revoked($cert, $crlref = "") {
 	global $config;
-	if (!is_array($config['crl']))
+	if (!isset($config['crl']) || !is_array($config['crl']))
 		return false;
 
 	if (!empty($crlref)) {

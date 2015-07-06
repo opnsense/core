@@ -37,7 +37,7 @@
  ******/
 function have_natpfruleint_access($if) {
 	$security_url = "firewall_nat_edit.php?if=". strtolower($if);
-	if(isAllowedPage($security_url, $allowed))
+	if(isAllowedPage($security_url))
 		return true;
 	return false;
 }
@@ -579,8 +579,9 @@ function reload_ttys()
 function is_radvd_enabled() {
 	global $config;
 
-	if (!is_array($config['dhcpdv6']))
+	if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
 		$config['dhcpdv6'] = array();
+	}
 
 	$dhcpdv6cfg = $config['dhcpdv6'];
 	$Iflist = get_configured_interface_list();
@@ -1600,8 +1601,9 @@ function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, 
 function calculate_ipv6_delegation_length($if) {
 	global $config;
 
-	if(!is_array($config['interfaces'][$if]))
+	if(!isset($config['interfaces'][$if]) || !is_array($config['interfaces'][$if])) {
 		return false;
+	}
 
 	switch($config['interfaces'][$if]['ipaddrv6']) {
 		case "6to4":
