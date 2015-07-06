@@ -455,10 +455,10 @@ endif; ?>
 			<div class="row">
 
 				<?php
-                if ($input_errors) {
+                if (isset($input_errors)) {
                     print_input_errors($input_errors);
                 }
-                if ($savemsg) {
+                if (isset($savemsg)) {
                     print_info_box($savemsg);
                 }
                 ?>

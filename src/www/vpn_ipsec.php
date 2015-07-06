@@ -246,7 +246,7 @@ include("head.inc");
 			<div class="row">
 
 				<?php
-                if ($savemsg) {
+                if (isset($savemsg)) {
                     print_info_box($savemsg);
                 }
                 if ($pconfig['enable'] && is_subsystem_dirty('ipsec')) {

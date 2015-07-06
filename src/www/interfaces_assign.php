@@ -444,7 +444,7 @@ if(file_exists("/var/run/interface_mismatch_reboot_needed"))
 			} elseif($savemsg)
 				print_info_box($savemsg);
 
-			if ($input_errors)
+			if (isset($input_errors))
 				print_input_errors($input_errors);
 			?>
 

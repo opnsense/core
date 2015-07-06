@@ -574,7 +574,7 @@ function backuparea_change(obj) {
 </script>
 
 
-<?php if ($savemsg) print_info_box($savemsg); ?>
+<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 <?php if (is_subsystem_dirty('restore')): ?><br/>
 <form action="reboot.php" method="post">
 <input name="Submit" type="hidden" value="Yes" />
@@ -588,7 +588,7 @@ function backuparea_change(obj) {
 		<div class="container-fluid">
 			<div class="row">
 			        <?php if ($input_messages) print_info_box($input_messages); ?>
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
 

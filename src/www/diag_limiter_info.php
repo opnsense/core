@@ -84,7 +84,7 @@ include("head.inc");
 					print_info_box($savemsg);
 					echo "</div>";
 				}
-				if ($input_errors)
+				if (isset($input_errors))
 					print_input_errors($input_errors);
 			?>
 

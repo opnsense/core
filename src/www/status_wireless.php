@@ -57,7 +57,7 @@ if(empty($if)) {
 		<div class="container-fluid">
 
 			<div class="row">
-				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 				<?php
 					$tab_array = array();
 					foreach($ciflist as $interface => $ifdescr) {
@@ -73,7 +73,7 @@ if(empty($if)) {
 						mwexec_bg("/sbin/ifconfig {$rwlif} scan 2>&1");
 						$savemsg = gettext("Rescan has been initiated in the background. Refresh this page in 10 seconds to see the results.");
 					}
-					if ($savemsg) print_info_box($savemsg);
+					if (isset($savemsg)) print_info_box($savemsg);
 					display_top_tabs($tab_array);
 				?>
 

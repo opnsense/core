@@ -79,7 +79,7 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('natconf')): ?>
 				<?php print_info_box_np(gettext("The NAT configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
 				<?php endif; ?>

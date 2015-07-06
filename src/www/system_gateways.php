@@ -204,10 +204,10 @@ $main_buttons = array(
         <div class="row">
 
             <?php
-            if ($input_errors) {
+            if (isset($input_errors)) {
                 print_input_errors($input_errors);
             }
-            if ($savemsg) {
+            if (isset($savemsg)) {
                 print_info_box($savemsg);
             }
             if (is_subsystem_dirty('staticroutes')) {

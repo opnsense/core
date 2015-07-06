@@ -348,7 +348,7 @@ include("head.inc");
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('filter')): ?><p>
 				<?php
 				if($_REQUEST['undodrag']) {

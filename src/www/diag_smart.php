@@ -194,7 +194,7 @@ switch($action) {
 			}
 		}
 		// Was the config changed? if so , print the message
-		if ($savemsg) print_info_box($savemsg);
+		if (isset($savemsg)) print_info_box($savemsg);
 		// Get users email from the xml file
 		$pconfig['smartmonemail'] = $config['system']['smartmonemail'];
 
@@ -276,7 +276,7 @@ switch($action) {
 
 
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
 
                 <div class="content-box">
 

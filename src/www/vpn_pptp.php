@@ -302,10 +302,10 @@ function enable_change(enable_over) {
 			<div class="row">
 
 
-				<?php if ($input_errors) {
+				<?php if (isset($input_errors)) {
                     print_input_errors($input_errors);
 } ?>
-				<?php if ($savemsg) {
+				<?php if (isset($savemsg)) {
                     print_info_box($savemsg);
 } ?>
 				<?php print_info_box(gettext("PPTP is no longer considered a secure VPN technology because it relies upon MS-CHAPv2 which has been compromised. If you continue to use PPTP be aware that intercepted traffic can be decrypted by a third party, so it should be considered unencrypted. We advise migrating to another VPN type such as OpenVPN or IPsec.<br /><br /><a href=\"https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807\">Read More</a>")); ?>

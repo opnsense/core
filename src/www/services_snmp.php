@@ -271,8 +271,8 @@ function enable_change(whichone) {
 		<div class="container-fluid">
 
 			<div class="row">
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
-				<?php if ($savemsg) print_info_box($savemsg); ?>
+				<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
+				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 
                 <form action="services_snmp.php" method="post" name="iform" id="iform">

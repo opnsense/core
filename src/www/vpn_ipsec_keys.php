@@ -86,7 +86,7 @@ include("head.inc");
 
 
 				<?php
-                if ($savemsg) {
+                if (isset($savemsg)) {
                     print_info_box($savemsg);
                 }
                 if (is_subsystem_dirty('ipsec')) {

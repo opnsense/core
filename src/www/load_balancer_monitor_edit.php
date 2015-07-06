@@ -220,7 +220,7 @@ $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => get
 
 			<div class="row">
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
 

@@ -80,7 +80,7 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($savemsg) {
+				<?php if (isset($savemsg)) {
                     print_info_box($savemsg);
 } ?>
 				<?php if (isset($config['l2tp']['radius']['enable'])) {

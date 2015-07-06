@@ -607,7 +607,7 @@ EOD;
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if ($input_errors) print_input_errors($input_errors); ?>
+				<?php if (isset($input_errors)) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 
 

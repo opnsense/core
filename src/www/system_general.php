@@ -288,8 +288,8 @@ include("head.inc");
 
         <div class="row">
             <?php
-		if ($input_errors) print_input_errors($input_errors);
-		if ($savemsg) print_info_box($savemsg);
+		if (isset($input_errors)) print_input_errors($input_errors);
+		if (isset($savemsg)) print_info_box($savemsg);
             ?>
             <section class="col-xs-12">
                 <? include('system_advanced_tabs.inc'); ?>
