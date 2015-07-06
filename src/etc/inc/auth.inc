@@ -80,14 +80,14 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
 			strcasecmp($http_host, $config['system']['hostname']) == 0)
 		$found_host = true;
 
-	if(is_array($config['dyndnses']['dyndns']) && !$found_host)
+	if(isset($config['dyndnses']['dyndns']) && is_array($config['dyndnses']['dyndns']) && !$found_host)
 		foreach($config['dyndnses']['dyndns'] as $dyndns)
 			if(strcasecmp($dyndns['host'], $http_host) == 0) {
 				$found_host = true;
 				break;
 			}
 
-	if(is_array($config['dnsupdates']['dnsupdate']) && !$found_host)
+	if(isset($config['dnsupdates']['dnsupdate']) && is_array($config['dnsupdates']['dnsupdate']) && !$found_host)
 		foreach($config['dnsupdates']['dnsupdate'] as $rfc2136)
 			if(strcasecmp($rfc2136['host'], $http_host) == 0) {
 				$found_host = true;
@@ -114,7 +114,7 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
 
 // If the HTTP_REFERER is something other than ourselves then disallow.
 if(function_exists("display_error_form") && !isset($config['system']['webgui']['nohttpreferercheck'])) {
-	if($_SERVER['HTTP_REFERER']) {
+	if(isset($_SERVER['HTTP_REFERER'])) {
 		if(file_exists('/tmp/setupwizard_lastreferrer')) {
 			if($_SERVER['HTTP_REFERER'] == file_get_contents('/tmp/setupwizard_lastreferrer')) {
 				unlink('/tmp/setupwizard_lastreferrer');
@@ -1404,20 +1404,6 @@ function session_auth() {
 
 		return false;
 	}
-
-	/*
-	 * this is for debugging purpose if you do not want to use Ajax
-	 * to submit a HTML form. It basically diables the observation
-	 * of the submit event and hence does not trigger Ajax.
-	 */
-	if ($_GET['disable_ajax'])
-		$_SESSION['NO_AJAX'] = "True";
-
-	/*
-	 * Same to re-enable Ajax.
-	 */
-	if ($_GET['enable_ajax'])
-		unset($_SESSION['NO_AJAX']);
 
 	return true;
 }
