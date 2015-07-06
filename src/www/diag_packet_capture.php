@@ -25,8 +25,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$allowautocomplete = true;
-
 function fixup_host_logic($value) {
 	return str_replace(array(" ", ",", "+", "|", "!"), array("", "and ", "and ", "or ", "not "), $value);
 }

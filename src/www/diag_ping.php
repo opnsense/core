@@ -26,7 +26,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$allowautocomplete = true;
 $pgtitle = array(gettext("Diagnostics"), gettext("Ping"));
 require_once("guiconfig.inc");
 

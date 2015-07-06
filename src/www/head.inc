@@ -75,7 +75,7 @@ $pagetitle = gentitle( $pgtitle );
 
 		?>
 
-		<?php if (basename($_SERVER["SCRIPT_FILENAME"] != "index.php") && !$allowautocomplete): ?>
+		<?php if (basename($_SERVER["SCRIPT_FILENAME"] != "index.php")): ?>
 		<script type="text/javascript">
 		//<![CDATA[
 		$( document ).ready(function() {
