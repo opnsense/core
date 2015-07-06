@@ -33,10 +33,20 @@ require_once('globals.inc');
 require_once('config.inc');
 require_once('functions.inc');
 
-killbyname('sshd');
+$bin_ssh_keygen = '/usr/local/bin/ssh-keygen';
+$sbin_sshd = '/usr/local/sbin/sshd';
+$etc_ssh = '/usr/local/etc/ssh';
+
+/* if run from a shell session, `-af' and the full path is needed */
+mwexecf('/bin/pkill -af %s', $sbin_sshd);
 
 if (!isset($config['system']['ssh']['enabled'])) {
 	return;
+}
+
+/* reinstall the backup if it is available */
+if (file_exists('/conf/sshd/ssh_host_key') && !file_exists("{$etc_ssh}/ssh_host_key")) {
+	mwexec("/bin/cp -p /conf/sshd/* {$etc_ssh}/");
 }
 
 $keys = array(
@@ -47,15 +57,6 @@ $keys = array(
 	'ecdsa' => 'ssh_host_ecdsa_key',
 	'ed25519' => 'ssh_host_ed25519_key',
 );
-
-$bin_ssh_keygen = '/usr/local/bin/ssh-keygen';
-$sbin_sshd = '/usr/local/sbin/sshd';
-$etc_ssh = '/usr/local/etc/ssh';
-
-/* reinstall the backup if it is available */
-if (file_exists('/conf/sshd/ssh_host_key') && !file_exists("{$etc_ssh}/ssh_host_key")) {
-	mwexec("/bin/cp -p /conf/sshd/* {$etc_ssh}/");
-}
 
 foreach($keys as $name) {
 	$file = "{$etc_ssh}/etc/ssh/{$name}";
@@ -141,7 +142,7 @@ if ($generate_keys) {
 
 /* Launch new server process */
 echo "Reloading sshd...";
-if (mwexec($sbin_sshd)) {
+if (mwexecf('/usr/bin/protect -i %s', $sbin_sshd)) {
 	echo "failed.\n";
 } else {
 	echo "done.\n";
@@ -150,5 +151,3 @@ if (mwexec($sbin_sshd)) {
 /* back up files in case they are useful ;) */
 @mkdir('/conf/sshd', 0777, true);
 mwexec("/bin/cp -p ${etc_ssh}/ssh_host_* /conf/sshd/");
-
-unset($keys);
