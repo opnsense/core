@@ -314,12 +314,12 @@ function notify_via_growl($message, $force=false) {
 	}
 
 	$hostname = $config['system']['hostname'] . "." . $config['system']['domain'];
-	$growl_ip = $config['notifications']['growl']['ipaddress'];
-	$growl_password = $config['notifications']['growl']['password'];
-	$growl_name = $config['notifications']['growl']['name'];
-	$growl_notification = $config['notifications']['growl']['notification_name'];
+	if (isset($config['notifications']['growl']['ipaddress'])) {
+		$growl_ip = $config['notifications']['growl']['ipaddress'];
+		$growl_password = $config['notifications']['growl']['password'];
+		$growl_name = $config['notifications']['growl']['name'];
+		$growl_notification = $config['notifications']['growl']['notification_name'];
 
-	if(!empty($growl_ip)) {
 		$growl = new Growl($growl_ip, $growl_password, $growl_name);
 		$growl->notify("{$growl_notification}", gettext(sprintf("%s (%s) - Notification", $g['product_name'], $hostname)), "{$message}");
 	}
