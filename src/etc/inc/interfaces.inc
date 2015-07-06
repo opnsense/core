@@ -4332,7 +4332,12 @@ function get_real_interface($interface = "wan", $family = "all", $realv6iface = 
 		$cfg = &$config['interfaces'][$interface];
 
 		if ($family == "inet6") {
-			switch ($cfg['ipaddrv6']) {
+			if (isset($cfg['ipaddrv6'])) {
+				$ipaddrv6 = $cfg['ipaddrv6'];
+			} else {
+				$ipaddrv6 = "";
+			}
+			switch ($ipaddrv6) {
 			case "6rd":
 			case "6to4":
 				$wanif = "{$interface}_stf";
@@ -4743,10 +4748,11 @@ function find_interface_ipv6($interface, $flush = false) {
 	/* Setup IP cache */
 	if (!isset($interface_ipv6_arr_cache[$interface]) or $flush) {
 		$ifinfo = pfSense_get_interface_addresses($interface);
-		$interface_ipv6_arr_cache[$interface] = $ifinfo['ipaddr6'];
-		$interface_snv6_arr_cache[$interface] = $ifinfo['subnetbits6'];
+		if (isset($ifinfo['ipaddr6'])) {
+			$interface_ipv6_arr_cache[$interface] = $ifinfo['ipaddr6'];
+			$interface_snv6_arr_cache[$interface] = $ifinfo['subnetbits6'];
+		}
 	}
-
 	return $interface_ipv6_arr_cache[$interface];
 }
 
