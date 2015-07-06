@@ -107,14 +107,14 @@ $crash_report_header = sprintf(
 		$resp = upload_crash_report($files_to_upload);
 		echo ($resp ? gettext('ok') : gettext('failed')) . '</p>';
 		array_map('unlink', $files_to_upload);
-	} elseif ($_POST['Submit'] == 'no') {
+	} elseif (isset($_POST['Submit']) && $_POST['Submit'] == 'no') {
 		array_map('unlink', glob('/var/crash/*'));
 		@unlink('/tmp/PHP_errors.log');
 	}
 
 	if (get_crash_report(true) == '') {
 		echo '<p><strong>';
-		if ($_POST['Submit'] == 'yes') {
+		if (isset($_POST['Submit']) && $_POST['Submit'] == 'yes') {
 			echo gettext('Thank you for submitting this crash report.');
 		} elseif ($_POST['Submit'] == 'no') {
 			echo gettext('Please consider submitting a crash report if the error persists.');
