@@ -28,7 +28,6 @@
 
 require_once("guiconfig.inc");
 
-$allowautocomplete = true;
 $pgtitle = array(gettext("Diagnostics"),gettext("Traceroute"));
 include("head.inc");
 

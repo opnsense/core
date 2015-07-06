@@ -27,8 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$allowautocomplete = true;
-
 $pgtitle = array(gettext("Diagnostics"), gettext("Test Port"));
 require_once("guiconfig.inc");
 
