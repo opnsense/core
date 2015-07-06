@@ -42,7 +42,6 @@ $pconfig['sharednet'] = $config['system']['sharednet'];
 $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
 $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
 $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
-$pconfig['flowtable'] = isset($config['system']['flowtable']);
 
 if ($_POST) {
     unset($input_errors);
@@ -95,12 +94,6 @@ if ($_POST) {
             setup_polling();
         }
 
-        if ($_POST['flowtable'] == "yes") {
-            $config['system']['flowtable'] = $_POST['flowtable'];
-        } else {
-            unset($config['system']['flowtable']);
-        }
-
         if ($_POST['disablechecksumoffloading'] == "yes") {
             $config['system']['disablechecksumoffloading'] = true;
         } else {
@@ -123,9 +116,6 @@ if ($_POST) {
 
         // Write out configuration (config.xml)
         write_config();
-
-        // Configure flowtable support from filter.inc
-        flowtable_configure();
 
         // Set preferred protocol
         prefer_ipv4_or_ipv6();
