@@ -81,7 +81,7 @@ if ($_POST) {
 include("head.inc");
 ?>
 
-<body onload="<?= $jsevents["body"]["onload"] ?>">
+<body>
 
 <?php
 if ($save_and_test) {
