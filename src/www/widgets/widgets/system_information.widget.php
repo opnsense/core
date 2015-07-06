@@ -35,7 +35,7 @@ require_once('notices.inc');
 include_once("includes/functions.inc.php");
 require_once("script/load_phalcon.php");
 
-if ($_REQUEST['getupdatestatus']) {
+if (isset($_REQUEST['getupdatestatus'])) {
     $pkg_json = trim(configd_run('firmware pkgstatus'));
     if ($pkg_json != '') {
         $pkg_status = json_decode($pkg_json, true);
@@ -128,7 +128,7 @@ endif; ?>
         endif; ?>
 			</td>
 		</tr>
-		<?php if ($hwcrypto) :
+		<?php if (isset($hwcrypto)) :
 ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Hardware crypto");?></td>

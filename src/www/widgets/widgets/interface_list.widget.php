@@ -37,6 +37,7 @@ require_once("functions.inc");
 require_once("widgets/include/interfaces.inc");
 
         $i = 0;
+	$iswireless=false;
         $ifdescrs = get_configured_interface_with_descr();
 ?>
 
@@ -49,7 +50,7 @@ require_once("widgets/include/interfaces.inc");
 				<tr>
 				<td class="vncellt" >
 				<?php
-                if ($ifinfo['ppplink']) {
+                if (isset($ifinfo['ppplink'])) {
                     ?> <span alt="3g" class="glyphicon glyphicon-phone text-success"></span> <?php
                 } elseif ($iswireless) {
                     if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up') {
@@ -79,7 +80,7 @@ require_once("widgets/include/interfaces.inc");
 				<span onclick="location.href='/interfaces.php?if=<?=$ifdescr; ?>'" style="cursor:pointer">
 				<?=htmlspecialchars($ifname);?></span></u></strong>
 				<?php
-                if ($ifinfo['dhcplink']) {
+                if (isset($ifinfo['dhcplink'])) {
                     echo "&nbsp;(DHCP)";
                 }
                 ?>
