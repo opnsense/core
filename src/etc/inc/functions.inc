@@ -68,6 +68,7 @@ function get_menu_messages()
 {
 	global $config;
 
+	$menu_messages = '';
 	if (are_notices_pending()) {
 		$notices = get_notices();
 		$requests = array();
@@ -103,7 +104,6 @@ function get_menu_messages()
 			}
 
 			$notice_msgs .="</ul>";
-			$menu_messages = '';
 
 			if (count($notices) == 1) {
 				$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notice");
