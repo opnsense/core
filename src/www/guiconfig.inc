@@ -273,6 +273,8 @@ function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 		if($_POST['if'])
 			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
 		$savebutton.="</form>";
+	} else {
+		$savebutton = '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>';
 	}
 	$nifty_redbox = "#990000";
 	$nifty_blackbox = "#000000";
@@ -287,10 +289,6 @@ function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 	if(file_exists("/usr/local/www/themes/{$themename}/infobox.php")) {
 		$toeval = file_get_contents("/usr/local/www/themes/{$themename}/infobox.php");
 		eval($toeval);
-	}
-
-	if(!$savebutton) {
-		$savebutton = '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>';
 	}
 
 	echo <<<EOFnp
@@ -312,8 +310,10 @@ function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $und
 		$savebutton .= "<input class=\"btn btn-default\"  type=\"button\" value=\"". gettext("Undo") . "\" onclick=\"document.location='{$undo}'\" />";
 		$savebutton .= "<input class=\"btn btn-default\"  name=\"{$name}\" type=\"submit\" class=\"formbtn\" id=\"${name}\" value=\"{$value}\" />";
 
-		if($_POST['if'])
+		if(isset($_POST['if']))
 			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
+	} else {
+		$savebutton = "<input class=\"btn btn-default\" value=\"" . gettext("Close") . "\" type=\"button\" onclick=\"$('#redboxtable').hide();\" />";
 	}
 	$nifty_redbox = "#990000";
 	$nifty_blackbox = "#000000";
@@ -330,10 +330,6 @@ function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $und
 		eval($toeval);
 	}
 
-
-	if(!$savebutton) {
-		$savebutton = "<input class=\"btn btn-default\" value=\"" . gettext("Close") . "\" type=\"button\" onclick=\"$('#redboxtable').hide();\" />";
-	}
 
 	$url = $_SERVER['REQUEST_URI'];
 
@@ -1004,23 +1000,6 @@ function rule_popup($src,$srcport,$dst,$dstport){
 	if (isset($config['aliases']['alias'])) {
 		$descriptions = array ();
 		foreach ($config['aliases']['alias'] as $alias_id=>$alias_name){
-			//$loading_image="<a><img src=\'/themes/{$g['theme']}/images/misc/loader.gif\' alt=\'loader\' /> " .gettext("loading...")."</a>";
-			//switch ($alias_name['type']){
-			//case "port":
-			//	$width="250";
-			//	break;
-			//case "urltable":
-			//	$width="500";
-			//	break;
-			//default:
-			//	$width="350";
-			//	break;
-			//}
-			//$span_begin = "<span style=\"cursor: help;\" onmouseover=\"var response_html=domTT_activate(this, event, 'id','ttalias_{$alias_id}','content','{$loading_image}', 'trail', true, 'delay', 300, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle','type','velcro','width',{$width});alias_popup('{$alias_id}','{$g['theme']}','".gettext('loading...')."');\" onmouseout=\"this.style.color = ''; domTT_mouseout(this, event);\"><u>";
-			//$span_begin ="<span style=\"cursor: help;\"><u>";
-			//$span_end = "</u></span>";
-			//$span_begin=$span_begin.$config['aliases']['alias'][$alias_id]['name'];
-			//var_dump($config['aliases']['alias'][$alias_id]);
 			if ($alias_name['name'] == $src) {
 				//var_dump($config['aliases']['alias'][$alias_id]);
 				$aliases_array['src']=$config['aliases']['alias'][$alias_id];

@@ -41,7 +41,7 @@
 
 									$widgettitle = $widgetname . "_title";
 									$widgettitlelink = $widgetname . "_title_link";
-										if ($$widgettitle != ""):
+										if (isset($$widgettitle)):
 							?>
 
 
