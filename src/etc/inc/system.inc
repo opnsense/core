@@ -189,10 +189,7 @@ function get_country_codes()
 
 function get_zoneinfo()
 {
-	return array_map(
-		function ($path) { return str_replace('/usr/share/zoneinfo/', '', $path); },
-		glob('/usr/share/zoneinfo/*/*')
-	);
+	return timezone_identifiers_list(DateTimeZone::ALL ^ DateTimeZone::UTC);
 }
 
 function get_searchdomains()
