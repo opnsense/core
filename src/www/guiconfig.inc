@@ -75,18 +75,6 @@ $navlevelsep = ": ";	/* navigation level separator string */
 $mandfldhtml = "";		/* display this before mandatory input fields */
 $mandfldhtmlspc = "";	/* same as above, but with spacing */
 
-/* Some ajax scripts still need access to GUI */
-if(!$ignorefirmwarelock) {
-	if (is_subsystem_dirty('firmwarelock')) {
-		if (!$d_isfwfile) {
-			header("Location: system_firmware.php");
-			exit;
-		} else {
-			return;
-		}
-	}
-}
-
 /* Reserved table names to avoid colision */
 $reserved_table_names = array(
         "bogons",
