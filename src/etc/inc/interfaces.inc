@@ -1987,10 +1987,16 @@ function interfaces_carp_setup()
 	}
 
 	/* suck in configuration items */
-	if ($config['hasync']) {
-		$pfsyncenabled = $config['hasync']['pfsyncenabled'];
-		$pfsyncinterface = $config['hasync']['pfsyncinterface'];
-		$pfsyncpeerip = $config['hasync']['pfsyncpeerip'];
+	if (isset($config['hasync'])) {
+		if (isset($config['hasync']['pfsyncenabled'])) {
+			$pfsyncenabled = $config['hasync']['pfsyncenabled'];
+		}
+		if (isset($config['hasync']['pfsyncinterface'])) {
+			$pfsyncinterface = $config['hasync']['pfsyncinterface'];
+		}
+		if (isset($config['hasync']['pfsyncpeerip'])) {
+			$pfsyncpeerip = $config['hasync']['pfsyncpeerip'];
+		}
 	} else {
 		unset($pfsyncinterface);
 		unset($pfsyncenabled);
@@ -2007,7 +2013,7 @@ function interfaces_carp_setup()
 		unset($carp_sync_int);
 
 	/* setup pfsync interface */
-	if ($carp_sync_int and $pfsyncenabled) {
+	if ($carp_sync_int && isset($pfsyncenabled)) {
 		if (is_ipaddr($pfsyncpeerip))
 			$syncpeer = "syncpeer {$pfsyncpeerip}";
 		else
@@ -2032,7 +2038,7 @@ function interfaces_carp_setup()
 		mwexec("/sbin/ifconfig pfsync0 -syncdev -syncpeer down", false);
 	}
 
-	if($config['virtualip']['vip'])
+	if(isset($config['virtualip']['vip']) && $config['virtualip']['vip'])
 		set_single_sysctl("net.inet.carp.allow", "1");
 	else
 		set_single_sysctl("net.inet.carp.allow", "0");
