@@ -170,7 +170,7 @@ class Crypt_CHAP_MSv1 extends Crypt_CHAP
     function Crypt_CHAP_MSv1()
     {
         $this->Crypt_CHAP();
-        $this->loadExtension('hash');
+        self::loadExtension('hash');
     }
 
     /**
