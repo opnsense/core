@@ -157,6 +157,9 @@ if [ ${USE_MFS_TMPVAR} -ne 0 ]; then
 	if [ ! -d /root/var/db/pkg ]; then
 		mkdir -p /root/var/db
 		mv /var/db/pkg /root/var/db
+		# create a symlink underneath as well
+		# to fix early boot pkg(8) issues:
+		ln -s /root/var/db/pkg /var/db/pkg
 	fi
 
 	mdmfs -S -M -s ${tmpsize} md /tmp
@@ -170,6 +173,9 @@ elif [ -d /root/var/db/pkg ]; then
 	# User must have just disabled RAM disks,
 	# let's move these back into place.
 	mkdir -p /var/db
+	# reverse the recovery symlink before moving
+	# back the original database:
+	rm -f /var/db/pkg
 	mv /root/var/db/pkg /var/db/
 fi
 
