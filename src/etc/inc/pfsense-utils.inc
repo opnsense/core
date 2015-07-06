@@ -667,6 +667,9 @@ function reload_all_sync()
 function setup_serial_port($when = 'save', $path = '')
 {
 	global $config;
+
+	$serial_enabled = isset($config['system']['enableserial']);
+
 	$prefix = "";
 	if (($when == "upgrade") && (!empty($path)) && is_dir($path.'/boot/'))
 		$prefix = "/tmp/{$path}";
@@ -691,7 +694,7 @@ function setup_serial_port($when = 'save', $path = '')
 						fwrite($fd, "{$bcs}\n");
 				}
 			}
-			if (is_serial_enabled()) {
+			if ($serial_enabled) {
 				fwrite($fd, "-S{$serialspeed} -D\n");
 			}
 			fclose($fd);
@@ -715,7 +718,7 @@ function setup_serial_port($when = 'save', $path = '')
 					&& (stripos($bcs, "autoboot_delay") === false))
 					$new_boot_config[] = $bcs;
 
-			if (is_serial_enabled()) {
+			if ($serial_enabled) {
 				$new_boot_config[] = 'boot_multicons="YES"';
 				$new_boot_config[] = 'boot_serial="YES"';
 				$primaryconsole = $config['system']['primaryconsole'];
@@ -739,7 +742,7 @@ function setup_serial_port($when = 'save', $path = '')
 	$ttys_split = explode("\n", $ttys);
 	$fd = fopen("/etc/ttys", "w");
 
-	$on_off = (is_serial_enabled() ? 'on' : 'off');
+	$on_off = $serial_enabled ? 'on' : 'off';
 
 	if (isset($config['system']['disableconsolemenu'])) {
 		$console_type = 'Pc';
@@ -759,13 +762,6 @@ function setup_serial_port($when = 'save', $path = '')
 	unset($on_off, $console_type, $serial_type);
 	fclose($fd);
 	reload_ttys();
-}
-
-function is_serial_enabled()
-{
-	global $config;
-
-	return isset($config['system']['enableserial']);
 }
 
 function reload_ttys()
