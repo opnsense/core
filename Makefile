@@ -17,9 +17,6 @@ install: force
 	# move all sources to their destination
 	@mkdir -p ${DESTDIR}/usr/local
 	@cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
-	# disable warnings for production systems
-	@sed -i '' -e 's/E_STRICT/E_STRICT | E_WARNING/g' \
-	    ${DESTDIR}/usr/local/etc/rc.php_ini_setup
 	# invoke pkg(8) bootstraping
 	@make -C ${.CURDIR}/pkg install
 	# invoke translation glue
