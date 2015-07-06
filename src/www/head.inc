@@ -8,7 +8,7 @@ function system_get_language_code() {
 	if (isset($config['system']['language'])) {
 		$language = $config['system']['language'];
 		$code = str_replace("_", "-", $language);
-	} 
+	}
 
 	return $code;
 }
