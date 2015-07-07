@@ -1318,7 +1318,7 @@ function services_igmpproxy_configure() {
         /* kill any running igmpproxy */
         killbyname("igmpproxy");
 
-	if (!is_array($config['igmpproxy']['igmpentry']) || (count($config['igmpproxy']['igmpentry']) == 0))
+	if (!isset($config['igmpproxy']['igmpentry']) || !is_array($config['igmpproxy']['igmpentry']) || (count($config['igmpproxy']['igmpentry']) == 0))
 		return 1;
 
         $iflist = get_configured_interface_list();
@@ -1669,24 +1669,27 @@ function services_dyndns_configure($int = '')
 {
 	global $config, $g;
 
-	$dyndnscfg = $config['dyndnses']['dyndns'];
-	$gwgroups = return_gateway_groups_array();
-	if (is_array($dyndnscfg)) {
-		if (file_exists("/var/run/booting"))
-			echo gettext("Starting DynDNS clients...");
+	if (isset($config['dyndnses']['dyndns'])) {
+		$dyndnscfg = $config['dyndnses']['dyndns'];
 
-		foreach ($dyndnscfg as $dyndns) {
-			if ((empty($int)) || ($int == $dyndns['interface']) || (is_array($gwgroups[$dyndns['interface']]))) {
-				$dyndns['verboselog'] = isset($dyndns['verboselog']);
-				$dyndns['curl_ipresolve_v4'] = isset($dyndns['curl_ipresolve_v4']);
-				$dyndns['curl_ssl_verifypeer'] = isset($dyndns['curl_ssl_verifypeer']);
-				services_dyndns_configure_client($dyndns);
-				sleep(1);
+		$gwgroups = return_gateway_groups_array();
+		if (is_array($dyndnscfg)) {
+			if (file_exists("/var/run/booting"))
+				echo gettext("Starting DynDNS clients...");
+
+			foreach ($dyndnscfg as $dyndns) {
+				if ((empty($int)) || ($int == $dyndns['interface']) || (is_array($gwgroups[$dyndns['interface']]))) {
+					$dyndns['verboselog'] = isset($dyndns['verboselog']);
+					$dyndns['curl_ipresolve_v4'] = isset($dyndns['curl_ipresolve_v4']);
+					$dyndns['curl_ssl_verifypeer'] = isset($dyndns['curl_ssl_verifypeer']);
+					services_dyndns_configure_client($dyndns);
+					sleep(1);
+				}
 			}
-		}
 
-		if (file_exists("/var/run/booting"))
-			echo gettext("done.") . "\n";
+			if (file_exists("/var/run/booting"))
+				echo gettext("done.") . "\n";
+		}
 	}
 
 	return 0;
@@ -2099,7 +2102,7 @@ function services_dnsupdate_process($int = '', $updatehost = '', $forced = false
 	global $config, $g;
 
 	/* Dynamic DNS updating active? */
-	if (is_array($config['dnsupdates']['dnsupdate'])) {
+	if (isset($config['dnsupdates']['dnsupdate']) && is_array($config['dnsupdates']['dnsupdate'])) {
 		$notify_text = "";
 		foreach ($config['dnsupdates']['dnsupdate'] as $i => $dnsupdate) {
 			if (!isset($dnsupdate['enable']))
