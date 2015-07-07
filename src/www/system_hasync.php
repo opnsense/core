@@ -58,11 +58,11 @@ $checkbox_names = array('pfsyncenabled',
 if ($_POST) {
     $pconfig = $_POST;
     foreach ($checkbox_names as $name) {
-    	if (isset($pconfig[$name])) {
-    		$a_hasync[$name] = $pconfig[$name];
-    	} else {
-    		$a_hasync[$name] = false;
-    	}    	
+	if (isset($pconfig[$name])) {
+		$a_hasync[$name] = $pconfig[$name];
+	} else {
+		$a_hasync[$name] = false;
+	}
     }
     $a_hasync['pfsyncpeerip']    = $pconfig['pfsyncpeerip'];
     $a_hasync['pfsyncinterface'] = $pconfig['pfsyncinterface'];
@@ -80,7 +80,7 @@ foreach ($checkbox_names as $name) {
         $pconfig[$name] = $a_hasync[$name];
     } else {
         $pconfig[$name] = null;
-    }	    
+    }
 }
 foreach (array('pfsyncpeerip','pfsyncinterface','synchronizetoip','username','password') as $tag) {
 	if (isset($a_hasync[$tag])) {

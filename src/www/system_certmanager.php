@@ -109,7 +109,7 @@ if ($act == "new") {
     if (isset($_GET['method'])) {
 	$pconfig['method'] = $_GET['method'];
     } else {
-    	$pconfig['method'] = null;
+	$pconfig['method'] = null;
     }
     $pconfig['keylen'] = "2048";
     $pconfig['digest_alg'] = "sha256";
@@ -1048,9 +1048,9 @@ endif;?>
                                         }
                                         if (isset($cert['caref'])) {
 	                                        $ca = lookup_ca($cert['caref']);
-        	                                if ($ca) {
-                	                            $caname = " (CA: {$ca['descr']})";
-                        	                }
+		                                if ($ca) {
+			                            $caname = " (CA: {$ca['descr']})";
+				                }
 					} else {
 						$ca = null;
 					}

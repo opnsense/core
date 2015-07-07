@@ -115,7 +115,7 @@ if ($act == "edit") {
 }
 
 if ($act == "new") {
-    if (isset($_GET['method'])) { 
+    if (isset($_GET['method'])) {
         $pconfig['method'] = $_GET['method'];
     } else {
         $pconfig['method'] = null ;
@@ -674,7 +674,7 @@ else :
                         $subj = htmlspecialchars($subj);
                         $issuer = htmlspecialchars($issuer);
                         $certcount = 0;
-                        
+
                         if (isset($ca['caref'])) {
                             $issuer_ca = lookup_ca($ca['caref']);
                             if ($issuer_ca) {
@@ -690,7 +690,7 @@ else :
                                     $certcount++;
                                 }
                             }
-                        } 
+                        }
 
                         // TODO : Need gray certificate icon
 

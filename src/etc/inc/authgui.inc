@@ -65,7 +65,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
         display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
         exit;
     }
-} 
+}
 
 /*
  * Close session data to allow other scripts from same host to come in.
@@ -130,7 +130,7 @@ function display_login_form()
 
     unset($input_errors);
 
- 
+
     if (isAjax()) {
         exit;
     }
