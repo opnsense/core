@@ -104,7 +104,7 @@ if ($act == "del") {
 if ($act == "new") {
     if (isset($_GET['method'])) {
         $pconfig['method'] = $_GET['method'];
-    } else { 
+    } else {
         $pconfig['method'] = null;
     }
     if (isset($_GET['caref'])) {

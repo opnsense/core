@@ -825,7 +825,7 @@ endforeach; ?>
 									<tr id="opt_psk">
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Pre-Shared Key"); ?></td>
 										<td width="78%" class="vtable">
-											
+
 											<input name="pskey" type="text" class="formfld unknown" id="pskey" size="40" value="<?=htmlspecialchars($pconfig['pskey']);?>" />
 											<span class="vexpl">
 											<br />
