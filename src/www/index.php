@@ -36,7 +36,6 @@ ob_start(null, "1000");
 
 
 ## Load Essential Includes
-require_once('functions.inc');
 require_once('guiconfig.inc');
 require_once('notices.inc');
 
@@ -91,9 +90,6 @@ if ($_POST && $_POST['sequence']) {
     header("Location: index.php");
     exit;
 }
-
-## Load Functions Files
-require_once('includes/functions.inc.php');
 
 ## Check to see if we have a swap space,
 ## if true, display, if false, hide it ...
