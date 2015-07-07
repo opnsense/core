@@ -953,8 +953,9 @@ function openvpn_resync_all($interface = '')
 
 	openvpn_create_dirs();
 
-	if (!is_array($config['openvpn']))
-		$config['openvpn'] = array();
+	if (!isset($config['openvpn']) || !is_array($config['openvpn'])) {
+		return;
+	}
 
 	if ($interface <> "")
 		log_error("Resyncing OpenVPN instances for interface " . convert_friendly_interface_to_friendly_descr($interface) . ".");

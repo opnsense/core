@@ -45,8 +45,11 @@ if (file_exists('/var/run/booting')) {
 }
 
 /* Interface IP address has changed */
-$argument = str_replace("\n", "", $argv[1]);
-
+if (isset($argv[1])) {
+	$argument = str_replace("\n", "", $argv[1]);
+} else {
+	$argument = null;
+}
 log_error("rc.newwanip: Informational is starting {$argument}.");
 
 if (empty($argument)) {
@@ -128,21 +131,23 @@ if (!empty($bridgetmp))
 system_hosts_generate();
 
 /* check tunneled IPv6 interface tracking */
-switch($config['interfaces'][$interface]['ipaddrv6']) {
-	case "6to4":
-		interface_6to4_configure($interface, $config['interfaces'][$interface]);
-		break;
-	case "6rd":
-		interface_6rd_configure($interface, $config['interfaces'][$interface]);
-		break;
-	case "dhcp6":
-		if (isset($config['interfaces'][$interface]['dhcp6usev4iface']))
-			interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
-		break;
+if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
+	switch($config['interfaces'][$interface]['ipaddrv6']) {
+		case "6to4":
+			interface_6to4_configure($interface, $config['interfaces'][$interface]);
+			break;
+		case "6rd":
+			interface_6rd_configure($interface, $config['interfaces'][$interface]);
+			break;
+		case "dhcp6":
+			if (isset($config['interfaces'][$interface]['dhcp6usev4iface']))
+				interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
+			break;
+	}
 }
 
 /* Check Gif tunnels */
-if(is_array($config['gifs']['gif'])){
+if(isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
 	foreach($config['gifs']['gif'] as $gif) {
 		if($gif['if'] == $interface) {
 			foreach($config['interfaces'] as $ifname => $ifparent) {

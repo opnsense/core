@@ -1716,7 +1716,7 @@ function filter_nat_rules_generate() {
 				$natrules .= filter_nat_rules_generate_if($a_out['interface'],
 					$a_out['source']['network'],
 					$a_out['sourceport'],
-					$a_out['destination']['address'],
+					isset($a_out['destination']['address']) ? $a_out['destination']['address'] : null,
 					$a_out['dstport'],
 					$a_out['target'],
 					$a_out['natport'],
@@ -2254,12 +2254,12 @@ function filter_generate_user_rule($rule)
 	}
 
 	/* check for unresolvable aliases */
-	if($rule['source']['address'] && !alias_expand($rule['source']['address'])) {
+	if(isset($rule['source']['address']) && !alias_expand($rule['source']['address'])) {
 		$error_text = "Unresolvable source alias '{$rule['source']['address']}' for rule '{$rule['descr']}'";
 		file_notice("Filter_Reload", $error_text);
 		return "# {$error_text}";
 	}
-	if($rule['destination']['address'] && !alias_expand($rule['destination']['address'])) {
+	if(isset($rule['destination']['address']) && !alias_expand($rule['destination']['address'])) {
 		$error_text = "Unresolvable destination alias '{$rule['destination']['address']}' for rule '{$rule['descr']}'";
 		file_notice("Filter_Reload", $error_text);
 		return "# {$error_text}";
@@ -2370,6 +2370,7 @@ function filter_generate_user_rule($rule)
 			default:    $aline['dscp'] = " dscp " . $rule['dscp'] . " "; break;
 		}
 	}
+	$aline['allowopts'] = "";
 	if ($type == "pass") {
 		if (isset($rule['allowopts']))
 			$aline['allowopts'] = " allow-opts ";
@@ -2858,7 +2859,7 @@ EOD;
 		}
 			break;
 		default:
-			if ((is_array($config['dhcpdv6'][$on]) && isset($config['dhcpdv6'][$on]['enable'])) || isset($oc['track6-interface'])
+			if (isset($config['dhcpdv6'][$on]['enable']) || isset($oc['track6-interface'])
 				|| (is_array($config['dhcrelay6']) && !empty($config['dhcrelay6']['interface']) && in_array($on, explode(',', $config['dhcrelay6']['interface'])))) {
 				$ipfrules .= <<<EOD
 # allow access to DHCPv6 server on {$oc['descr']}

@@ -1388,7 +1388,7 @@ function mute_kernel_msgs()
 {
 	global $config;
 
-	if ($config['system']['enableserial']) {
+	if (isset($config['system']['enableserial'])) {
 		return;
 	}
 

@@ -111,7 +111,7 @@ function system_resolvconf_generate($dynupdate = false)
 				$resolvconf .= "nameserver $nameserver\n";
 		}
 	}
-	if (is_array($syscfg['dnsserver'])) {
+	if (isset($syscfg['dnsserver']) && is_array($syscfg['dnsserver'])) {
 		foreach ($syscfg['dnsserver'] as $ns) {
 			if ($ns)
 				$resolvconf .= "nameserver $ns\n";
@@ -276,7 +276,7 @@ function system_hosts_generate()
 	}
 
 	if (isset($dnsmasqcfg['enable'])) {
-		if (!is_array($dnsmasqcfg['hosts']))
+		if (!isset($dnsmasqcfg['hosts']) || !is_array($dnsmasqcfg['hosts']))
 			$dnsmasqcfg['hosts'] = array();
 
 		foreach ($dnsmasqcfg['hosts'] as $host) {
@@ -1328,7 +1328,7 @@ function system_ntp_configure($start_ntpd = true)
 
 	@mkdir($statsdir, 0755);
 
-	if (!is_array($config['ntpd'])) {
+	if (!isset($config['ntpd']) || !is_array($config['ntpd'])) {
 		$config['ntpd'] = array();
 	}
 
@@ -1387,7 +1387,7 @@ function system_ntp_configure($start_ntpd = true)
 	/* End PPS configuration */
 
 	/* Add GPS configuration */
-        if (!empty($config['ntpd']['gps'] && !empty($config['ntpd']['gps']['port']))
+        if (isset($config['ntpd']['gps']['port'])
 		&& file_exists('/dev/'.$config['ntpd']['gps']['port'])
 		&& system_ntp_setup_gps($config['ntpd']['gps']['port'])) {
 		$ntpcfg .= "\n";
@@ -1462,8 +1462,8 @@ function system_ntp_configure($start_ntpd = true)
 	/* foreach through ntp servers and write out to ntpd.conf */
 	foreach (explode(' ', $config['system']['timeservers']) as $ts) {
 		$ntpcfg .= "server {$ts} iburst maxpoll 9";
-		if (substr_count($config['ntpd']['prefer'], $ts)) $ntpcfg .= ' prefer';
-		if (substr_count($config['ntpd']['noselect'], $ts)) $ntpcfg .= ' noselect';
+		if (isset($config['ntpd']['prefer']) && substr_count($config['ntpd']['prefer'], $ts)) $ntpcfg .= ' prefer';
+		if (isset($config['ntpd']['noselect']) && substr_count($config['ntpd']['noselect'], $ts)) $ntpcfg .= ' noselect';
 		$ntpcfg .= "\n";
 	}
 	unset($ts);

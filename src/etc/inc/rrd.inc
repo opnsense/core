@@ -368,7 +368,7 @@ function enable_rrd_graphing()
 			$rrdupdatesh .= "END {print b4pi \":\" b4po \":\" b4bi \":\" b4bo \":\" b6pi \":\" b6po \":\" b6bi \":\" b6bo};'`\n";
 
 			/* WIRELESS, set up the rrd file */
-			if($config['interfaces'][$ifname]['wireless']['mode'] == "bss") {
+			if(isset($config['interfaces'][$ifname]['wireless']['mode']) && $config['interfaces'][$ifname]['wireless']['mode'] == "bss") {
 				if (!file_exists("$rrddbpath$ifname$wireless")) {
 					$rrdcreate = "$rrdtool create $rrddbpath$ifname$wireless --step $rrdwirelessinterval ";
 					$rrdcreate .= "DS:snr:GAUGE:$wirelessvalid:0:1000 ";
