@@ -346,8 +346,7 @@ function enable_change(enable_over) {
 										<tr>
 										  <td width="22%" valign="top" class="vncellreq"><?=gettext("PPTP redirection");?></td>
 						                  <td width="78%" class="vtable">
-						                    <?=$mandfldhtml;
-?><input name="redir" type="text" class="form-control unknown" id="redir" size="20" value="<?=htmlspecialchars($pconfig['redir']);?>" />
+						                    <input name="redir" type="text" class="form-control unknown" id="redir" size="20" value="<?=htmlspecialchars($pconfig['redir']);?>" />
 						                    <br />
 						                    <?=gettext("Enter the IP address of a host which will accept incoming " .
                                             "PPTP connections"); ?>.</td>
@@ -382,8 +381,7 @@ function enable_change(enable_over) {
 						                <tr>
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Server address"); ?></td>
 						                  <td width="78%" class="vtable">
-						                    <?=$mandfldhtml;
-?><input name="localip" type="text" class="form-control unknown" id="localip" size="20" value="<?=htmlspecialchars($pconfig['localip']);?>" />
+						                    <input name="localip" type="text" class="form-control unknown" id="localip" size="20" value="<?=htmlspecialchars($pconfig['localip']);?>" />
 									<br />
 									<?=gettext("Enter the IP address the PPTP server should give to clients for use as their \"gateway\""); ?>.
 									<br />
@@ -396,8 +394,7 @@ function enable_change(enable_over) {
 						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Remote address " .
                                             "range"); ?></td>
 						                  <td width="78%" class="vtable">
-						                    <?=$mandfldhtml;
-?><input name="remoteip" type="text" class="form-control unknown" id="remoteip" size="20" value="<?=htmlspecialchars($pconfig['remoteip']);?>" />
+						                    <input name="remoteip" type="text" class="form-control unknown" id="remoteip" size="20" value="<?=htmlspecialchars($pconfig['remoteip']);?>" />
 						                    <br />
 						                    <?=gettext("Specify the starting address for the client IP subnet"); ?>.<br />
 						                  </td>
@@ -405,8 +402,7 @@ function enable_change(enable_over) {
 						                <tr>
 						                  <td width="22%" valign="top" class="vncell"><?=gettext("PPTP DNS Servers"); ?></td>
 						                  <td width="78%" class="vtable">
-						                    <?=$mandfldhtml;
-?><input name="pptp_dns1" type="text" class="form-control unknown" id="pptp_dns1" size="20" value="<?=htmlspecialchars($pconfig['pptp_dns1']);?>" />
+						                    <input name="pptp_dns1" type="text" class="form-control unknown" id="pptp_dns1" size="20" value="<?=htmlspecialchars($pconfig['pptp_dns1']);?>" />
 						                    <br />
 											<input name="pptp_dns2" type="text" class="form-control unknown" id="pptp_dns2" size="20" value="<?=htmlspecialchars($pconfig['pptp_dns2']);?>" />
 						                    <br />

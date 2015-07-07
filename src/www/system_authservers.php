@@ -31,6 +31,49 @@
 require_once("guiconfig.inc");
 require_once("auth.inc");
 
+$ldap_urltypes = array(
+	'TCP - Standard' => 389,
+	'SSL - Encrypted' => 636);
+
+$auth_server_types = array(
+	'ldap' => "LDAP",
+	'radius' => "Radius");
+
+$ldap_scopes = array(
+	'one' => "One Level",
+	'subtree' => "Entire Subtree");
+
+$ldap_protvers = array(
+	2,
+	3);
+
+$ldap_templates = array(
+
+	'open' => array(
+				'desc' => "OpenLDAP",
+				'attr_user' => "cn",
+				'attr_group' => "cn",
+				'attr_member' => "member"),
+
+	'msad' => array(
+				'desc' => "Microsoft AD",
+				'attr_user' => "samAccountName",
+				'attr_group' => "cn",
+				'attr_member' => "memberOf"),
+
+	'edir' => array(
+				'desc' => "Novell eDirectory",
+				'attr_user' => "cn",
+				'attr_group' => "cn",
+				'attr_member' => "uniqueMember"));
+
+$radius_srvcs = array(
+	'both' => "Authentication and Accounting",
+	'auth' => "Authentication",
+	'acct' => "Accounting");
+
+
+
 $pgtitle = array(gettext("System"), gettext("Authentication Servers"));
 $shortcut_section = "authentication";
 

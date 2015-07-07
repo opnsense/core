@@ -68,13 +68,6 @@ set_language($g['language']);
 
 require_once("authgui.inc");
 
-/* used by progress bar */
-$lastseen = "-1";
-
-$navlevelsep = ": ";	/* navigation level separator string */
-$mandfldhtml = "";		/* display this before mandatory input fields */
-$mandfldhtmlspc = "";	/* same as above, but with spacing */
-
 /* Reserved table names to avoid colision */
 $reserved_table_names = array(
         "bogons",
@@ -88,71 +81,6 @@ $reserved_table_names = array(
         "webConfiguratorlockout"
 );
 
-$firewall_rules_dscp_types = array("af11",
-				"af12",
-				"af13",
-				"af21",
-				"af22",
-				"af23",
-				"af31",
-				"af32",
-				"af33",
-				"af41",
-				"af42",
-				"af43",
-				"VA",
-				"EF",
-				"cs1",
-				"cs2",
-				"cs3",
-				"cs4",
-				"cs5",
-				"cs6",
-				"cs7",
-				"0x01",
-				"0x02",
-				"0x04");
-
-$auth_server_types = array(
-	'ldap' => "LDAP",
-	'radius' => "Radius");
-
-$ldap_urltypes = array(
-	'TCP - Standard' => 389,
-	'SSL - Encrypted' => 636);
-
-$ldap_scopes = array(
-	'one' => "One Level",
-	'subtree' => "Entire Subtree");
-
-$ldap_protvers = array(
-	2,
-	3);
-
-$ldap_templates = array(
-
-	'open' => array(
-				'desc' => "OpenLDAP",
-				'attr_user' => "cn",
-				'attr_group' => "cn",
-				'attr_member' => "member"),
-
-	'msad' => array(
-				'desc' => "Microsoft AD",
-				'attr_user' => "samAccountName",
-				'attr_group' => "cn",
-				'attr_member' => "memberOf"),
-
-	'edir' => array(
-				'desc' => "Novell eDirectory",
-				'attr_user' => "cn",
-				'attr_group' => "cn",
-				'attr_member' => "uniqueMember"));
-
-$radius_srvcs = array(
-	'both' => "Authentication and Accounting",
-	'auth' => "Authentication",
-	'acct' => "Accounting");
 
 $netbios_nodetypes = array(
 	'0' => "none",
@@ -211,17 +139,6 @@ $wkports = array(
 /* TCP flags */
 $tcpflags = array("fin", "syn", "rst", "psh", "ack", "urg", "ece", "cwr");
 
-$specialnets = array("(self)" => "This Firewall", "pptp" => "PPTP clients", "pppoe" => "PPPoE clients", "l2tp" => "L2TP clients");
-
-$spiflist = get_configured_interface_with_descr(false, true);
-foreach ($spiflist as $ifgui => $ifdesc) {
-	$specialnets[$ifgui] = $ifdesc . " net";
-	$specialnets[$ifgui . 'ip'] = $ifdesc . " address";
-}
-
-$medias = array("auto" => "autoselect", "100full" => "100BASE-TX full-duplex",
-	"100half" => "100BASE-TX half-duplex", "10full" => "10BASE-T full-duplex",
-	"10half" => "10BASE-T half-duplex");
 
 $wlan_modes = array("bss" => "Infrastructure (BSS)", "adhoc" => "Ad-hoc (IBSS)",
 	"hostap" => "Access Point");
@@ -243,8 +160,6 @@ function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_error
 }
 
 function print_input_errors($input_errors) {
-	global $g;
-
 	echo '<div class="col-xs-12"><div class="alert alert-danger alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 	';
@@ -257,15 +172,9 @@ function print_input_errors($input_errors) {
 }
 
 function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
-	global $g, $nifty_redbox, $nifty_blackbox, $nifty_background;
-
 	if(empty($value)) {
 		$value = gettext("Apply changes");
 	}
-
-	// Set the Nifty background color if one is not set already (defaults to white)
-	if($nifty_background == "")
-		$nifty_background = "#FFF";
 
 	if(stristr($msg, gettext("apply")) != false || stristr($msg, gettext("save")) != false || stristr($msg, gettext("create")) != false || $showapply) {
 		$savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
@@ -275,20 +184,6 @@ function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 		$savebutton.="</form>";
 	} else {
 		$savebutton = '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>';
-	}
-	$nifty_redbox = "#990000";
-	$nifty_blackbox = "#000000";
-
-	$themename = $g['theme'];
-
-	if(file_exists("/usr/local/www/themes/{$themename}/tabcontrols.php")) {
-		$toeval = file_get_contents("/usr/local/www/themes/{$themename}/tabcontrols.php");
-		eval($toeval);
-	}
-
-	if(file_exists("/usr/local/www/themes/{$themename}/infobox.php")) {
-		$toeval = file_get_contents("/usr/local/www/themes/{$themename}/infobox.php");
-		eval($toeval);
 	}
 
 	echo <<<EOFnp
@@ -303,8 +198,6 @@ EOFnp;
 }
 
 function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $undo) {
-	global $g;
-
 	if(stristr($msg, "apply") != false || stristr($msg, "save") != false || stristr($msg, "create") != false) {
 
 		$savebutton .= "<input class=\"btn btn-default\"  type=\"button\" value=\"". gettext("Undo") . "\" onclick=\"document.location='{$undo}'\" />";
@@ -314,20 +207,6 @@ function print_info_box_np_undo($msg, $name="apply",$value="Apply changes", $und
 			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
 	} else {
 		$savebutton = "<input class=\"btn btn-default\" value=\"" . gettext("Close") . "\" type=\"button\" onclick=\"$('#redboxtable').hide();\" />";
-	}
-	$nifty_redbox = "#990000";
-	$nifty_blackbox = "#000000";
-
-	$themename = $g['theme'];
-
-	if(file_exists("/usr/local/www/themes/{$themename}/tabcontrols.php")) {
-		$toeval = file_get_contents("/usr/local/www/themes/{$themename}/tabcontrols.php");
-		eval($toeval);
-	}
-
-	if(file_exists("/usr/local/www/themes/{$themename}/infobox.php")) {
-		$toeval = file_get_contents("/usr/local/www/themes/{$themename}/infobox.php");
-		eval($toeval);
 	}
 
 
@@ -366,11 +245,20 @@ function get_std_save_message($ok) {
 }
 
 function pprint_address($adr) {
-	global $specialnets;
+	if (!isset($specialnets)) {
+		global $specialnets;
+		$specialnets = array("(self)" => "This Firewall", "pptp" => "PPTP clients", "pppoe" => "PPPoE clients", "l2tp" => "L2TP clients");
+
+		$spiflist = get_configured_interface_with_descr(false, true);
+		foreach ($spiflist as $ifgui => $ifdesc) {
+			$specialnets[$ifgui] = $ifdesc . " net";
+			$specialnets[$ifgui . 'ip'] = $ifdesc . " address";
+		}
+	}
 
 	if (isset($adr['any'])) {
 		$padr = "*";
-	} else if ($adr['network']) {
+	} else if (isset($adr['network'])) {
 		$padr = $specialnets[$adr['network']];
 	} else {
 		$padr = $adr['address'];
@@ -446,16 +334,11 @@ function firewall_check_for_advanced_options(&$item) {
 }
 
 function gentitle($title) {
-	global $navlevelsep;
+	$navlevelsep = ": ";	/* navigation level separator string */
 	if(!is_array($title))
 		return $title;
 	else
 		return join($navlevelsep, $title);
-}
-
-function genhtmltitle($title) {
-	global $config;
-	return gentitle($title);
 }
 
 /* update the changedesc and changecount(er) variables */
@@ -538,22 +421,6 @@ function dump_clog($logfile, $tail, $withorig = true, $grepfor = "", $grepinvert
 	}
 }
 
-function return_clog($logfile, $tail, $withorig = true, $grepfor = "", $grepinvert = "", $grepreverse = false) {
-	global $g, $config;
-	$sor = (isset($config['syslog']['reverse']) || $grepreverse) ? "-r" : "";
-	$logarr = "";
-	$grepline = "  ";
-	if(is_array($grepfor))
-		$grepline .= " | /usr/bin/egrep " . escapeshellarg(implode("|", $grepfor));
-	if(is_array($grepinvert))
-		$grepline .= " | /usr/bin/egrep -v " . escapeshellarg(implode("|", $grepinvert));
-	if($config['system']['disablesyslogclog']) {
-		exec("cat " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-	} else {
-		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-	}
-	return($logarr);
-}
 
 /* Check if variable has changed, update and log if it has
  * returns true if var changed
@@ -660,169 +527,7 @@ function is_specialnet($net) {
 		return false;
 }
 
-//function to create widget tabs when called
-function display_widget_tabs(& $tab_array) {
-	echo "<div id=\"tabs\">";
-	$tabscounter = 0;
-	foreach ($tab_array as $ta) {
-	$dashpos = strpos($ta[2],'-');
-	$tabname = $ta[2] . "-tab";
-	$tabclass = substr($ta[2],0,$dashpos);
-	$tabclass = $tabclass . "-class";
-		if ($ta[1] == true) {
-			$tabActive = "table-cell";
-			$tabNonActive = "none";
-		}
-		else {
-			$tabActive = "none";
-			$tabNonActive = "table-cell";
-		}
-		echo "<div id=\"{$ta[2]}-active\" class=\"{$tabclass}-tabactive\" style=\"display:{$tabActive}; background-color:#EEEEEE; color:black;\">";
-		echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
-		echo "&nbsp;&nbsp;&nbsp;</b>";
-		echo "</div>";
 
-		echo "<div id=\"{$ta[2]}-deactive\" class=\"{$tabclass}-tabdeactive\" style=\"display:{$tabNonActive}; background-color:#777777; color:white; cursor: pointer;\" onclick=\"return changeTabDIV('{$ta[2]}')\">";
-		echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
-		echo "&nbsp;&nbsp;&nbsp;</b>";
-		echo "</div>";
-	}
-
-}
-
-
-// Return inline javascript file or CSS to minimizie
-// request count going back to server.
-function outputJavaScriptFileInline($javascript) {
-	if(file_exists($javascript)) {
-		echo "\n<script type=\"text/javascript\">\n";
-		include($javascript);
-		echo "\n</script>\n";
-	} else {
-		echo "\n\n<!-- Could not location file:  {$javascript} -->\n\n";
-	}
-}
-
-
-
-function outputCSSPrintFileInline($css) {
-	if(file_exists($css)) {
-		echo "\n<style media=\"print\" type=\"text/css\">\n";
-		include($css);
-		echo "\n</style>\n";
-	} else {
-		echo "\n\n<!-- Could not location file:  {$css} -->\n\n";
-	}
-}
-
-
-function outputCSSFileInline($css) {
-	if(file_exists($css)) {
-		echo "\n<style type=\"text/css\">\n";
-		include($css);
-		echo "\n</style>\n";
-	} else {
-		echo "\n\n<!-- Could not location file:  {$css} -->\n\n";
-	}
-}
-
-$rfc2616 = array(
-	100 => "100 Continue",
-	101 => "101 Switching Protocols",
-	200 => "200 OK",
-	201 => "201 Created",
-	202 => "202 Accepted",
-	203 => "203 Non-Authoritative Information",
-	204 => "204 No Content",
-	205 => "205 Reset Content",
-	206 => "206 Partial Content",
-	300 => "300 Multiple Choices",
-	301 => "301 Moved Permanently",
-	302 => "302 Found",
-	303 => "303 See Other",
-	304 => "304 Not Modified",
-	305 => "305 Use Proxy",
-	306 => "306 (Unused)",
-	307 => "307 Temporary Redirect",
-	400 => "400 Bad Request",
-	401 => "401 Unauthorized",
-	402 => "402 Payment Required",
-	403 => "403 Forbidden",
-	404 => "404 Not Found",
-	405 => "405 Method Not Allowed",
-	406 => "406 Not Acceptable",
-	407 => "407 Proxy Authentication Required",
-	408 => "408 Request Timeout",
-	409 => "409 Conflict",
-	410 => "410 Gone",
-	411 => "411 Length Required",
-	412 => "412 Precondition Failed",
-	413 => "413 Request Entity Too Large",
-	414 => "414 Request-URI Too Long",
-	415 => "415 Unsupported Media Type",
-	416 => "416 Requested Range Not Satisfiable",
-	417 => "417 Expectation Failed",
-	500 => "500 Internal Server Error",
-	501 => "501 Not Implemented",
-	502 => "502 Bad Gateway",
-	503 => "503 Service Unavailable",
-	504 => "504 Gateway Timeout",
-	505 => "505 HTTP Version Not Supported"
-);
-
-function is_rfc2616_code($code) {
-	global $rfc2616;
-	if (isset($rfc2616[$code]))
-		return true;
-	else
-		return false;
-}
-
-function print_rfc2616_select($tag, $current){
-	global $rfc2616;
-
-	/* Default to 200 OK if not set */
-	if ($current == "")
-		$current = 200;
-
-	echo "<select id=\"{$tag}\" name=\"{$tag}\">\n";
-	foreach($rfc2616 as $code => $message) {
-		if ($code == $current) {
-			$sel = " selected=\"selected\"";
-		} else {
-			$sel = "";
-		}
-		echo "<option value=\"{$code}\"{$sel}>{$message}</option>\n";
-	}
-	echo "</select>\n";
-}
-
-// Useful debugging function, much cleaner than print_r
-function echo_array($array,$return_me=false){
-	if(is_array($array) == false){
-		$return = "The provided variable is not an array.";
-	}else{
-		foreach($array as $name=>$value){
-			if(is_array($value)){
-				$return .= "";
-				$return .= "['<b>$name</b>'] {<div style=\"margin-left:10px;\">\n";
-				$return .= echo_array($value,true);
-				$return .= "</div>}";
-				$return .= "\n\n";
-			}else{
-				if(is_string($value)){
-					$value = "\"$value\"";
-				}
-				$return .= "['<b>$name</b>'] = $value\n\n";
-			}
-		}
-	}
-	if($return_me == true){
-		return $return;
-	}else{
-		echo "<pre>".$return."</pre>";
-	}
-}
 
 /****f* guiconfig/display_top_tabs
  * NAME
@@ -835,45 +540,16 @@ function echo_array($array,$return_me=false){
 function display_top_tabs(& $tab_array, $no_drop_down = false) {
 	global $config;
 	global $g;
-	global $tab_array_indent;
-	global $tab_array_space;
-	global $tab_array_char_limit;
+	$tab_array_char_limit = 92;
 
 	/*  does the user have access to this tab?
 	 *  master user has access to everything.
 	 *  if the user does not have access, simply
 	 *  unset the tab item.
 	 */
-
-	/* empty string code */
-	if ($tab_array_indent == '') {
-		$tab_array_indent = 0;
-	}
-
-	if ($tab_array_space == '') {
-		$tab_array_space = 1;
-	}
-
-	if ($tab_array_char_limit == '') {
-		$tab_array_char_limit = 92;
-	}
-
 	foreach ($tab_array as $tab_id => $ta){
 		if(!isAllowedPage($ta[2]))
 			unset ($tab_array[$tab_id]);
-	}
-
-	$tab_active_bg   = "#EEEEEE";
-	$tab_inactive_bg = "#777777";
-	$nifty_tabs_corners = "#FFF";
-	$font_color = "white";
-
-	/* if tabcontrols.php exist for a theme, allow it to be overriden */
-	$themename = $config['theme'];
-	$filename = "/usr/local/www/themes/{$themename}/tabcontrols.php";
-	if(file_exists($filename)) {
-		$eval_code = file_get_contents($filename);
-		eval($eval_code);
 	}
 
 	$tabcharcount = 0;
@@ -922,113 +598,7 @@ function display_top_tabs(& $tab_array, $no_drop_down = false) {
 }
 
 
-function alias_info_popup($alias_id){
-	global $config;
-	$maxlength = 60;
-	$close_title="title='".gettext('move mouse out this alias to hide')."'";
-	if (is_array($config['aliases']['alias'][$alias_id])){
-		$alias_name=$config['aliases']['alias'][$alias_id];
-		$alias_objects_with_details = "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\" summary=\"alias info popup\">";
-		if ($alias_name['url']) {
-			// TODO: Change it when pf supports tables with ports
-			if ($alias_name['type'] == "urltable") {
-				exec("/sbin/pfctl -t {$alias_name['name']} -T show | wc -l", $total_entries);
-				$counter=preg_replace("/\D/","",$total_entries[0]);
-				exec("/sbin/pfctl -t {$alias_name['name']} -T show | head -10002", $alias_addresses);
-			} else {
-				$urlfn = alias_expand_urltable($alias_name['name']);
-				$alias_addresses = explode("\n", file_get_contents($urlfn));
-				$counter = count($alias_addresses);
-			}
-			$alias_objects_with_details .= "<tr><td colspan=\"3\" $close_title class=\"vncell\">{$alias_name['url']}</td></tr>";
-			$x=0;
-			foreach ($alias_addresses as $alias_ports_address ) {
-				switch ($x) {
-				case 0:
-					$x++;
-					$alias_objects_with_details .= "<tr><td $close_title class=\"vncell\" width=\"33%\" style=\"background: #FFFFFF;color: #000000;\">{$alias_ports_address}</td>";
-					break;
-				case 1:
-					$x++;
-					$alias_objects_with_details .= "<td $close_title class=\"vncell\" width=\"33%\" style=\"background: #FFFFFF;color: #000000;\">{$alias_ports_address}</td>";
-					break;
-				default:
-					$x=0;
-					$alias_objects_with_details .= "<td  $close_title class=\"vncell\" width=\"33%\" style=\"background: #FFFFFF;color: #000000;\">{$alias_ports_address}</td><tr>";
-					break;
-				}
-			}
-			for ($y = $x; $y <= $x; $y++) {
-				$alias_objects_with_details .= "<td $close_title class=\"vncell\" width=\"33%\">&nbsp;</td>";
-			}
-			if ($x > 0) {
-				$alias_objects_with_details .= "</tr>";
-			}
-			if ($counter > 10002) {
-				$alias_objects_with_details .= "<tr><td colspan=\"3\"> ". gettext("listing only first 10k items") . "</td><tr>";
-			}
-		}
-		else{
-			$alias_addresses = explode (" ", $alias_name['address']);
-			$alias_details = explode ("||", $alias_name['detail']);
-			$counter = 0;
-			foreach ($alias_addresses as $alias_ports_address) {
-				$alias_objects_with_details .= "<tr><td $close_title width=\"5%\" class=\"vncell\" style=\"background: #FFFFFF;color: #000000;\">{$alias_addresses[$counter]}</td>";
-				$alias_detail_default = strpos ($alias_details[$counter],"Entry added");
-				if ($alias_details[$counter] != "" && $alias_detail_default === False)
-					$alias_objects_with_details .="<td $close_title width=\"95%\" class=\"vncell\" style=\"background: #FFFFFF;color: #000000;\">{$alias_details[$counter]}</td>";
-				else
-					$alias_objects_with_details .="<td $close_title width=\"95%\" class=\"vncell\" style=\"background: #FFFFFF;color: #000000;\">&nbsp;</td>";
-				$alias_objects_with_details .= "</tr>";
-				$counter++;
-			}
-		}
-		$alias_objects_with_details .= "</table>";
-	}
-	$alias_descr_substr = $alias_name['descr'];
-	if ($strlength >= $maxlength)
-		$alias_descr_substr = substr($alias_descr_substr, 0, $maxlength) . "...";
-	$item_text = ($counter > 1 ? "items" : "item");
-	$alias_caption = "{$alias_descr_substr} - {$counter} {$item_text}<a href=\"/firewall_aliases_edit.php?id={$alias_id}\" title=\"".gettext('edit this alias')."\">&nbsp;&nbsp;edit </a>";
-	$strlength = strlen ($alias_caption);
-	print "<h1>{$alias_caption}</h1>" . $alias_objects_with_details;
-}
 
-function rule_popup($src,$srcport,$dst,$dstport){
-	global $config,$g;
-	$aliases_array = array();
-	if (isset($config['aliases']['alias'])) {
-		$descriptions = array ();
-		foreach ($config['aliases']['alias'] as $alias_id=>$alias_name){
-			if ($alias_name['name'] == $src) {
-				//var_dump($config['aliases']['alias'][$alias_id]);
-				$aliases_array['src']=$config['aliases']['alias'][$alias_id];
-				$aliases_array['src']['aliasid']=$alias_id;
-				//$descriptions['src'] = $span_begin;
-				//$descriptions['src_end'] = $span_end;
-			}
-			if ($alias_name['name'] == $srcport) {
-				$aliases_array['srcport']=$config['aliases']['alias'][$alias_id];
-				$aliases_array['srcport']['aliasid']=$alias_id;
-				//$descriptions['srcport'] = $span_begin;
-				//$descriptions['srcport_end'] = $span_end;
-			}
-			if ($alias_name['name'] == $dst ) {
-				$aliases_array['dst']=$config['aliases']['alias'][$alias_id];
-				$aliases_array['dst']['aliasid']=$alias_id;
-				//$descriptions['dst'] = $span_begin;
-				//$descriptions['dst_end'] = $span_end;
-			}
-			if ($alias_name['name'] == $dstport) {
-				$aliases_array['dstport']=$config['aliases']['alias'][$alias_id];
-				$aliases_array['dstport']['aliasid']=$alias_id;
-				//$descriptions['dstport'] = $span_begin;
-				//$descriptions['dstport_end'] = $span_end;
-			}
-		}
-		return $aliases_array;//$descriptions;
-	}
-}
 
 $timezone = $config['system']['timezone'];
 if (!$timezone) {

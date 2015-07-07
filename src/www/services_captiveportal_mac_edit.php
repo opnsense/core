@@ -218,8 +218,7 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("MAC address"); ?></td>
 										<td width="78%" class="vtable">
-											<?=$mandfldhtml;
-?><input name="mac" type="text" class="formfld unknown" id="mac" size="17" value="<?=htmlspecialchars($pconfig['mac']);?>" />
+										<input name="mac" type="text" class="formfld unknown" id="mac" size="17" value="<?=htmlspecialchars($pconfig['mac']);?>" />
 							<?php
                                             $ip = getenv('REMOTE_ADDR');
                                             $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;

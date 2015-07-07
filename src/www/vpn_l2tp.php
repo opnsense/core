@@ -347,8 +347,7 @@ function enable_change(enable_over) {
 					                <tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Server Address");?></td>
 					                  <td width="78%" class="vtable">
-					                    <?=$mandfldhtml;
-?><input name="localip" type="text" class="form-control unknown" id="localip" size="20" value="<?=htmlspecialchars($pconfig['localip']);?>" />
+					                    <input name="localip" type="text" class="form-control unknown" id="localip" size="20" value="<?=htmlspecialchars($pconfig['localip']);?>" />
 								<p class="text-muted"><em><small>
 								<?=gettext("Enter the IP address the L2TP server should give to clients for use as their \"gateway\""); ?>.
 								<br />
@@ -360,8 +359,7 @@ function enable_change(enable_over) {
 					                <tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Remote Address Range");?></td>
 					                  <td width="78%" class="vtable">
-					                    <?=$mandfldhtml;
-?><input name="remoteip" type="text" class="form-control unknown" id="remoteip" size="20" value="<?=htmlspecialchars($pconfig['remoteip']);?>" />
+					                    <input name="remoteip" type="text" class="form-control unknown" id="remoteip" size="20" value="<?=htmlspecialchars($pconfig['remoteip']);?>" />
 					                    <p class="text-muted"><em><small><?=gettext("Specify the starting address for the client IP address subnet.");?></small></em></p>
 					                    </td>
 					                </tr>
@@ -414,7 +412,7 @@ function enable_change(enable_over) {
 					                <tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Authentication Type");?></td>
 					                  <td width="78%" class="vtable">
-					                    <?=$mandfldhtml;?><select name="paporchap" id="paporchap">
+					                    <select name="paporchap" id="paporchap">
 								<option value='chap'<?php if ($pconfig['paporchap'] == "chap") {
                                     echo " selected=\"selected\"";
 
@@ -431,8 +429,7 @@ function enable_change(enable_over) {
 							<tr>
 							  <td width="22%" valign="top" class="vncell"><?=gettext("L2TP DNS Servers"); ?></td>
 							  <td width="78%" class="vtable">
-							    <?=$mandfldhtml;
-?><input name="l2tp_dns1" type="text" class="form-control unknown" id="l2tp_dns1" size="20" value="<?=htmlspecialchars($pconfig['l2tp_dns1']);?>" />
+							    <input name="l2tp_dns1" type="text" class="form-control unknown" id="l2tp_dns1" size="20" value="<?=htmlspecialchars($pconfig['l2tp_dns1']);?>" />
 								<br />
 									<input name="l2tp_dns2" type="text" class="form-control unknown" id="l2tp_dns2" size="20" value="<?=htmlspecialchars($pconfig['l2tp_dns2']);?>" />
 								<br />

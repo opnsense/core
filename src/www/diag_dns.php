@@ -187,7 +187,7 @@ include("head.inc"); ?>
 							        <tbody>
 							        <tr>
 							          <td><?=gettext("Hostname or IP");?></td>
-							          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" size="20" value="<?=htmlspecialchars($host);?>" /></td>
+							          <td><input name="host" type="text" class="form-control" id="host" size="20" value="<?=htmlspecialchars($host);?>" /></td>
 							          <?php if ($resolved && $type): ?>
 							          <td>
 								      <?php

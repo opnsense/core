@@ -32,6 +32,43 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 
+function rule_popup($src,$srcport,$dst,$dstport){
+	global $config,$g;
+	$aliases_array = array();
+	if (isset($config['aliases']['alias'])) {
+		$descriptions = array ();
+		foreach ($config['aliases']['alias'] as $alias_id=>$alias_name){
+			if ($alias_name['name'] == $src) {
+				//var_dump($config['aliases']['alias'][$alias_id]);
+				$aliases_array['src']=$config['aliases']['alias'][$alias_id];
+				$aliases_array['src']['aliasid']=$alias_id;
+				//$descriptions['src'] = $span_begin;
+				//$descriptions['src_end'] = $span_end;
+			}
+			if ($alias_name['name'] == $srcport) {
+				$aliases_array['srcport']=$config['aliases']['alias'][$alias_id];
+				$aliases_array['srcport']['aliasid']=$alias_id;
+				//$descriptions['srcport'] = $span_begin;
+				//$descriptions['srcport_end'] = $span_end;
+			}
+			if ($alias_name['name'] == $dst ) {
+				$aliases_array['dst']=$config['aliases']['alias'][$alias_id];
+				$aliases_array['dst']['aliasid']=$alias_id;
+				//$descriptions['dst'] = $span_begin;
+				//$descriptions['dst_end'] = $span_end;
+			}
+			if ($alias_name['name'] == $dstport) {
+				$aliases_array['dstport']=$config['aliases']['alias'][$alias_id];
+				$aliases_array['dstport']['aliasid']=$alias_id;
+				//$descriptions['dstport'] = $span_begin;
+				//$descriptions['dstport_end'] = $span_end;
+			}
+		}
+		return $aliases_array;//$descriptions;
+	}
+}
+
+
 $pgtitle = array(gettext("Firewall"),gettext("Rules"));
 $shortcut_section = "firewall";
 
