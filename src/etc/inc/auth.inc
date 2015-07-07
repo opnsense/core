@@ -1214,7 +1214,7 @@ function is_account_disabled($username) {
 function auth_get_authserver($name) {
         global $config;
 
-        if (is_array($config['system']['authserver'])) {
+        if (isset($config['system']['authserver']) && is_array($config['system']['authserver'])) {
                 foreach ($config['system']['authserver'] as $authcfg) {
                         if ($authcfg['name'] == $name)
                                 return $authcfg;
@@ -1319,7 +1319,11 @@ function session_auth() {
 
 	/* Validate incoming login request */
 	if (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld'])) {
-		$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
+		if (isset($config['system']['webgui']['authmode'])) {
+			$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
+		} else {
+			$authcfg = null;
+		}
 		if (authenticate_user($_POST['usernamefld'], $_POST['passwordfld'], $authcfg) ||
 		    authenticate_user($_POST['usernamefld'], $_POST['passwordfld'])) {
 			// Generate a new id to avoid session fixation
