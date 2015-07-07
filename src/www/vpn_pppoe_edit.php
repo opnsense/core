@@ -472,8 +472,7 @@ function enable_change(enable_over) {
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Server address"); ?></td>
 												<td width="78%" class="vtable">
-													<?=$mandfldhtml;
-?><input name="localip" type="text" class="formfld unknown" id="localip" size="20" value="<?=htmlspecialchars($pconfig['localip']);?>" />
+													<input name="localip" type="text" class="formfld unknown" id="localip" size="20" value="<?=htmlspecialchars($pconfig['localip']);?>" />
 													<br />
 													<?=gettext("Enter the IP address the PPPoE server should give to clients for use as their \"gateway\""); ?>.
 													<br />
@@ -485,8 +484,7 @@ function enable_change(enable_over) {
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Remote address range"); ?></td>
 												<td width="78%" class="vtable">
-													<?=$mandfldhtml;
-?><input name="remoteip" type="text" class="formfld unknown" id="remoteip" size="20" value="<?=htmlspecialchars($pconfig['remoteip']);?>" />
+													<input name="remoteip" type="text" class="formfld unknown" id="remoteip" size="20" value="<?=htmlspecialchars($pconfig['remoteip']);?>" />
 													<br />
 													<?=gettext("Specify the starting address for the client IP address subnet"); ?>.<br />
 												</td>
@@ -494,16 +492,14 @@ function enable_change(enable_over) {
 											<tr>
 												<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
 												<td width="78%" class="vtable">
-													<?=$mandfldhtml;
-?><input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
+													<input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
 													<br />
 												</td>
 											</tr>
 											<tr>
 												<td width="22%" valign="top" class="vncell"><?=gettext("DNS servers"); ?></td>
 												<td width="78%" class="vtable">
-													<?=$mandfldhtml;
-?><input name="pppoe_dns1" type="text" class="formfld unknown" id="pppoe_dns1" size="20" value="<?=htmlspecialchars($pconfig['pppoe_dns1']);?>" />
+													<input name="pppoe_dns1" type="text" class="formfld unknown" id="pppoe_dns1" size="20" value="<?=htmlspecialchars($pconfig['pppoe_dns1']);?>" />
 													<br />
 													<input name="pppoe_dns2" type="text" class="formfld unknown" id="pppoe_dns2" size="20" value="<?=htmlspecialchars($pconfig['pppoe_dns2']);?>" />
 													<br />
@@ -536,16 +532,14 @@ function enable_change(enable_over) {
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("NAS IP Address"); ?></td>
 												<td width="78%" class="vtable">
-													<?=$mandfldhtml;
-?><input name="radius_nasip" type="text" class="formfld unknown" id="radius_nasip" size="20" value="<?=htmlspecialchars($pconfig['radius_nasip']);?>" />
+													<input name="radius_nasip" type="text" class="formfld unknown" id="radius_nasip" size="20" value="<?=htmlspecialchars($pconfig['radius_nasip']);?>" />
 													<br /><?=gettext("RADIUS server NAS IP Address"); ?><br />
 												</td>
 											</tr>
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("RADIUS Accounting Update"); ?></td>
 												<td width="78%" class="vtable">
-													<?=$mandfldhtml;
-?><input name="radius_acct_update" type="text" class="formfld unknown" id="radius_acct_update" size="20" value="<?=htmlspecialchars($pconfig['radius_acct_update']);?>" />
+													<input name="radius_acct_update" type="text" class="formfld unknown" id="radius_acct_update" size="20" value="<?=htmlspecialchars($pconfig['radius_acct_update']);?>" />
 													<br /><?=gettext("RADIUS accounting update period in seconds"); ?>
 												</td>
 											</tr>

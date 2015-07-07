@@ -34,6 +34,38 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("ipsec.inc");
 
+//function to create widget tabs when called
+function display_widget_tabs(& $tab_array) {
+	echo "<div id=\"tabs\">";
+	$tabscounter = 0;
+	foreach ($tab_array as $ta) {
+	$dashpos = strpos($ta[2],'-');
+	$tabname = $ta[2] . "-tab";
+	$tabclass = substr($ta[2],0,$dashpos);
+	$tabclass = $tabclass . "-class";
+		if ($ta[1] == true) {
+			$tabActive = "table-cell";
+			$tabNonActive = "none";
+		}
+		else {
+			$tabActive = "none";
+			$tabNonActive = "table-cell";
+		}
+		echo "<div id=\"{$ta[2]}-active\" class=\"{$tabclass}-tabactive\" style=\"display:{$tabActive}; background-color:#EEEEEE; color:black;\">";
+		echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
+		echo "&nbsp;&nbsp;&nbsp;</b>";
+		echo "</div>";
+
+		echo "<div id=\"{$ta[2]}-deactive\" class=\"{$tabclass}-tabdeactive\" style=\"display:{$tabNonActive}; background-color:#777777; color:white; cursor: pointer;\" onclick=\"return changeTabDIV('{$ta[2]}')\">";
+		echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
+		echo "&nbsp;&nbsp;&nbsp;</b>";
+		echo "</div>";
+	}
+
+}
+
+
+
 if (isset($config['ipsec']['phase1'])) {
     echo "<div>&nbsp;</div>\n";
     $tab_array = array();

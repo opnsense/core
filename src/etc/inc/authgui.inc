@@ -51,7 +51,6 @@ $allowedpages = getAllowedPages($_SESSION['Username']);
 if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
     if (count($allowedpages) > 0) {
         $page = str_replace('*', '', $allowedpages[0]);
-        $_SESSION['Post_Login'] = true;
         require_once("functions.inc");
         redirectHeader("/{$page}");
 
@@ -66,20 +65,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
         display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
         exit;
     }
-} else {
-    $_SESSION['Post_Login'] = true;
-}
-
-/*
- * redirect browsers post-login to avoid pages
- * taking action in reponse to a POST request
- */
-if (!$_SESSION['Post_Login']) {
-    $_SESSION['Post_Login'] = true;
-    require_once("functions.inc");
-    redirectHeader($_SERVER['REQUEST_URI']);
-    exit;
-}
+} 
 
 /*
  * Close session data to allow other scripts from same host to come in.
@@ -144,24 +130,14 @@ function display_login_form()
 
     unset($input_errors);
 
+ 
     if (isAjax()) {
-        if (isset($_POST['login'])) {
-            if ($_SESSION['Logged_In'] <> "True") {
-                isset($_SESSION['Login_Error']) ? $login_error = $_SESSION['Login_Error'] : $login_error = gettext("unknown reason");
-                printf("showajaxmessage('" . gettext("Invalid login (%s).") . "')", $login_error);
-            }
-            if (file_exists('/tmp/webconfigurator.lock')) {
-                // TODO: add the IP from the user who did lock the device
-                $whom = file_get_contents('/tmp/webconfigurator.lock');
-                printf("showajaxmessage('" . gettext("This device is currently being maintained by: %s.") . "');", $whom);
-            }
-        }
         exit;
     }
 
     /* Check against locally configured IP addresses, which will catch when someone
 	   port forwards WebGUI access from WAN to an internal IP on the router. */
-    global $FilterIflist, $nifty_background;
+    global $FilterIflist;
     $local_ip = false;
     if (strstr($_SERVER['HTTP_HOST'], ":")) {
         $http_host_port = explode(":", $_SERVER['HTTP_HOST']);
@@ -183,7 +159,7 @@ function display_login_form()
     }
     unset($FilterIflist);
 
-    if ($config['virtualip']) {
+    if (isset($config['virtualip'])) {
         if ($config['virtualip']['vip']) {
             foreach ($config['virtualip']['vip'] as $vip) {
                 if ($vip['subnet'] == $http_host) {
@@ -236,7 +212,6 @@ function display_login_form()
 	<div class="container">
 		<?php
         if (is_ipaddr($http_host) && !$local_ip && !isset($config['system']['webgui']['nohttpreferercheck'])) {
-            $nifty_background = "#999";
             print_info_box(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this forwarding, you may be the target of a man-in-the-middle attack."));
         }
                 $loginautocomplete = isset($config['system']['webgui']['loginautocomplete']) ? '' : 'autocomplete="off"';

@@ -177,15 +177,14 @@ include("head.inc");
 									<tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
 					                  <td width="78%" class="vtable">
-										<?=$mandfldhtml;
-?><input name="usernamefld" type="text" class="form-control user" id="usernamefld" size="20" value="<?=htmlspecialchars($pconfig['usernamefld']);?>" />
+										<input name="usernamefld" type="text" class="form-control user" id="usernamefld" size="20" value="<?=htmlspecialchars($pconfig['usernamefld']);?>" />
 					                  </td>
 					                </tr>
 					                <tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Password");?></td>
 					                  <td width="78%" class="vtable">
-					                    <?=$mandfldhtml;?><input name="passwordfld" type="password" class="form-control pwd" id="passwordfld" size="20" />
-					                    <br /><?=$mandfldhtml;?><input name="password2" type="password" class="form-control pwd" id="password2" size="20" />
+					                    <input name="passwordfld" type="password" class="form-control pwd" id="passwordfld" size="20" />
+					                    <br /><input name="password2" type="password" class="form-control pwd" id="password2" size="20" />
 					                    &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]) :
 ?><br />
 					                    <p class="text-muted"><em><small><?=gettext("If you want to change the users password, enter it here twice.");?></small></em></p>

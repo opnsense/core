@@ -963,7 +963,7 @@ function enable_change(enable_change) {
 										<tr>
 											<td width="22%" valign="top" class="vncell"><?=gettext("Portal page contents"); ?></td>
 											<td width="78%" class="vtable">
-											<?=$mandfldhtml;?><input type="file" name="htmlfile" class="formfld file btn btn-default" id="htmlfile" /><br />
+											<input type="file" name="htmlfile" class="formfld file btn btn-default" id="htmlfile" /><br />
 											<?php
 												list($host) = explode(":", $_SERVER['HTTP_HOST']);
 												$zoneid = $pconfig['zoneid'] ? ( $pconfig['zoneid'] + 8000 ) : 8000;

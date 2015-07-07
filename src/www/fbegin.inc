@@ -98,7 +98,6 @@ if($need_alert_display == true) {
     echo "<div class=\"col-xs-12\"><div class=\"alert alert-info\"><p>".$display_text."</p></div></div>";
 }
 
-$pgtitle_output = true;
 ?>
 
 <header class="page-head">
@@ -174,7 +173,7 @@ $pgtitle_output = true;
 			<div class="container-fluid">
 			    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
 				<ul class="list-inline">
-					<li class="__mb"><h1><?=genhtmltitle($pgtitle);?></h1></li>
+					<li class="__mb"><h1><?=gentitle($pgtitle);?></h1></li>
 
 					<li class="btn-group-container">
 

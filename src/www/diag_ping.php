@@ -92,7 +92,7 @@ include("head.inc"); ?>
 					        <tbody>
 						        <tr>
 						          <td><?=gettext("Host"); ?></td>
-						          <td><?=$mandfldhtml;?><input name="host" type="text" class="form-control" id="host" value="<?=htmlspecialchars($host);?>" /></td>
+						          <td><input name="host" type="text" class="form-control" id="host" value="<?=htmlspecialchars($host);?>" /></td>
 						        </tr>
 						        <tr>
 						          <td><?=gettext("IP Protocol"); ?></td>

@@ -191,8 +191,7 @@ include("head.inc");
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("IP address"); ?></td>
 										<td width="78%" class="vtable">
-											<?=$mandfldhtml;
-?><input name="ip" type="text" class="formfld unknown" id="ip" size="17" value="<?=htmlspecialchars($pconfig['ip']);?>" />
+											<input name="ip" type="text" class="formfld unknown" id="ip" size="17" value="<?=htmlspecialchars($pconfig['ip']);?>" />
 											/<select name='sn' class="formselect" id='sn'>
 											<?php for ($i = 32; $i >= 1; $i--) :
 ?>

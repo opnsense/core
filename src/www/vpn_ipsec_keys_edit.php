@@ -142,8 +142,7 @@ include("head.inc");
 					                <tr>
 					                  <td valign="top" class="vncellreq"><?=gettext("Identifier"); ?></td>
 					                  <td class="vtable">
-										<?=$mandfldhtml;
-?><input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=htmlspecialchars($pconfig['ident']);?>" />
+					                  <input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=htmlspecialchars($pconfig['ident']);?>" />
 					                    <br />
 					<?=gettext("This can be either an IP address, fully qualified domain name or an e-mail address"); ?>.
 					                  </td>
@@ -151,8 +150,7 @@ include("head.inc");
 					                <tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Pre-Shared Key"); ?></td>
 					                  <td width="78%" class="vtable">
-					                    <?=$mandfldhtml;
-?><input name="psk" type="text" class="formfld unknown" id="psk" size="40" value="<?=htmlspecialchars($pconfig['psk']);?>" />
+					                  <input name="psk" type="text" class="formfld unknown" id="psk" size="40" value="<?=htmlspecialchars($pconfig['psk']);?>" />
 					                  </td>
 					                </tr>
 					                <tr>
