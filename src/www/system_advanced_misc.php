@@ -50,8 +50,6 @@ $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
 $pconfig['kill_states'] = isset($config['system']['kill_states']);
 $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
 $pconfig['use_mfs_tmpvar'] = isset($config['system']['use_mfs_tmpvar']);
-$pconfig['use_mfs_tmp_size'] = $config['system']['use_mfs_tmp_size'];
-$pconfig['use_mfs_var_size'] = $config['system']['use_mfs_var_size'];
 
 $pconfig['powerd_ac_mode'] = "hadp";
 if (!empty($config['system']['powerd_ac_mode'])) {
@@ -82,14 +80,6 @@ if ($_POST) {
 
     if (!empty($_POST['thermal_hardware']) && !array_key_exists($_POST['thermal_hardware'], $thermal_hardware_modules)) {
         $input_errors[] = gettext("Please select a valid Thermal Hardware Sensor.");
-    }
-
-    if (!empty($_POST['use_mfs_tmp_size']) && (!is_numeric($_POST['use_mfs_tmp_size']) || ($_POST['use_mfs_tmp_size'] <= 40))) {
-        $input_errors[] = gettext("/tmp Size must be numeric and should not be less than 40MB.");
-    }
-
-    if (!empty($_POST['use_mfs_var_size']) && (!is_numeric($_POST['use_mfs_var_size']) || ($_POST['use_mfs_var_size'] <= 60))) {
-        $input_errors[] = gettext("/var Size must be numeric and should not be less than 60MB.");
     }
 
     if (!$input_errors) {
@@ -189,9 +179,6 @@ if ($_POST) {
             unset($config['system']['use_mfs_tmpvar']);
         }
 
-        $config['system']['use_mfs_tmp_size'] = $_POST['use_mfs_tmp_size'];
-        $config['system']['use_mfs_var_size'] = $_POST['use_mfs_var_size'];
-
         if (isset($_POST['rrdbackup'])) {
             $config['system']['rrdbackup'] = $_POST['rrdbackup'];
             install_cron_job("/usr/local/etc/rc.backup_rrd", ($config['system']['rrdbackup'] > 0), $minute = "0", "*/{$config['system']['rrdbackup']}");
@@ -240,15 +227,11 @@ include("head.inc");
     }
     function tmpvar_checked(obj) {
 	if (obj.checked) {
-		jQuery('#use_mfs_tmp_size').attr('disabled',false);
-		jQuery('#use_mfs_var_size').attr('disabled',false);
 		jQuery('#rrdbackup').attr('disabled',false);
 		jQuery('#dhcpbackup').attr('disabled',false);
 		jQuery('#rrdbackup').selectpicker('refresh');
 		jQuery('#dhcpbackup').selectpicker('refresh');
 	} else {
-		jQuery('#use_mfs_tmp_size').attr('disabled','true');
-		jQuery('#use_mfs_var_size').attr('disabled','true');
 		jQuery('#rrdbackup').attr('disabled','true');
 		jQuery('#dhcpbackup').attr('disabled','true');
 		jQuery('#rrdbackup').selectpicker('refresh');
@@ -547,32 +530,6 @@ endforeach; ?>
 										<strong><?=gettext("Use memory file system for /tmp and /var"); ?></strong><br />
 										<?=gettext("Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install " .
                                         "rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost at reboot, including log data. RRD and DHCP Leases will be retained."); ?>
-									</td>
-								</tr>
-								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("/tmp RAM Disk Size"); ?></td>
-									<td width="78%" class="vtable">
-										<input name="use_mfs_tmp_size" id="use_mfs_tmp_size" type="text" value="<?php if ($pconfig['use_mfs_tmp_size'] <> "") {
-                                            echo $pconfig['use_mfs_tmp_size'];
-} ?>" class="formfld unknown" <?php if ($pconfig['use_mfs_tmpvar'] == false) {
-    echo "disabled=\"disabled\"";
-} ?> /> MB
-										<br />
-										<?=gettext("Set the size, in MB, for the /tmp RAM disk. " .
-                                        "Leave blank for 40MB. Do not set lower than 40."); ?>
-									</td>
-								</tr>
-								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("/var RAM Disk Size"); ?></td>
-									<td width="78%" class="vtable">
-										<input name="use_mfs_var_size" id="use_mfs_var_size" type="text" value="<?php if ($pconfig['use_mfs_var_size'] <> "") {
-                                            echo $pconfig['use_mfs_var_size'];
-} ?>" class="formfld unknown" <?php if ($pconfig['use_mfs_tmpvar'] == false) {
-    echo "disabled=\"disabled\"";
-} ?> /> MB
-										<br />
-										<?=gettext("Set the size, in MB, for the /var RAM disk. " .
-                                        "Leave blank for 60MB. Do not set lower than 60."); ?>
 									</td>
 								</tr>
 								<tr>
