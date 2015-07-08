@@ -32,6 +32,22 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("itemid.inc");
 
+/****f* legacy/have_natpfruleint_access
+ * NAME
+ *   have_natpfruleint_access
+ * INPUTS
+ *      none
+ * RESULT
+ *   returns true if user has access to edit a specific firewall nat port forward interface
+ ******/
+function have_natpfruleint_access($if) {
+        $security_url = "firewall_nat_edit.php?if=". strtolower($if);
+        if(isAllowedPage($security_url))
+                return true;
+        return false;
+}
+
+
 if (!is_array($config['nat']['rule']))
 	$config['nat']['rule'] = array();
 

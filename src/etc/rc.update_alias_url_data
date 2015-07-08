@@ -30,6 +30,73 @@
 require_once("config.inc");
 require_once("functions.inc");
 
+function update_alias_url_data()
+{
+	global $config;
+
+	$updated = false;
+
+	/* item is a url type */
+	$lockkey = lock('aliasurl');
+	if (isset($config['aliases']['alias']) && is_array($config['aliases']['alias'])) {
+		foreach ($config['aliases']['alias'] as $x => $alias) {
+			if (empty($alias['aliasurl']))
+				continue;
+
+			$address = "";
+			$isfirst = 0;
+			foreach ($alias['aliasurl'] as $alias_url) {
+				/* fetch down and add in */
+				$temp_filename = tempnam('/tmp/', 'alias_import');
+				unlink($temp_filename);
+				$verify_ssl = isset($config['system']['checkaliasesurlcert']);
+				mkdir($temp_filename);
+				download_file($alias_url, $temp_filename . "/aliases", $verify_ssl);
+
+				/* if the item is tar gzipped then extract */
+				if (stripos($alias_url, '.tgz')) {
+					if (!process_alias_tgz($temp_filename))
+						continue;
+				} else if (stripos($alias_url, '.zip')) {
+					if (!process_alias_unzip($temp_filename))
+						continue;
+				}
+				if (file_exists("{$temp_filename}/aliases")) {
+					$fd = @fopen("{$temp_filename}/aliases", 'r');
+					if (!$fd) {
+						log_error(sprintf(_('Could not process aliases from alias: %s'), $alias_url));
+						continue;
+					}
+					/* NOTE: fgetss() is not a typo RTFM before being smart */
+					while (($fc = fgetss($fd)) !== FALSE) {
+						$tmp = trim($fc, " \t\n\r");
+						if (empty($tmp))
+							continue;
+						$tmp_str = strstr($tmp, '#', true);
+						if (!empty($tmp_str))
+							$tmp = $tmp_str;
+						if ($isfirst == 1)
+							$address .= ' ';
+						$address .= $tmp;
+						$isfirst = 1;
+					}
+					fclose($fd);
+					mwexec("/bin/rm -rf {$temp_filename}");
+				}
+			}
+			if (!empty($address)) {
+				$config['aliases']['alias'][$x]['address'] = $address;
+				$updated = true;
+			}
+		}
+	}
+	unlock($lockkey);
+
+	/* Report status to callers as well */
+	return $updated;
+}
+
+
 if (update_alias_url_data()) {
 	write_config();
 	configd_run("filter reload");

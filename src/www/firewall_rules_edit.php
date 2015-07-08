@@ -59,6 +59,23 @@ $firewall_rules_dscp_types = array("af11",
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_rules.php');
 
+/****f* legacy/strncpy
+ * NAME
+ *   strncpy - copy strings
+ * INPUTS
+ *   &$dst, $src, $length
+ * RESULT
+ *   none
+ ******/
+function strncpy(&$dst, $src, $length) {
+        if (strlen($src) > $length) {
+                $dst = substr($src, 0, $length);
+        } else {
+                $dst = $src;
+        }
+}
+
+
 function is_posnumericint($arg) {
 	// Note that to be safe we do not allow any leading zero - "01", "007"
 	return (is_numericint($arg) && $arg[0] != '0' && $arg > 0);
