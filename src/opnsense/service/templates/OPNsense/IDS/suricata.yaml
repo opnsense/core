@@ -308,7 +308,7 @@ nflog:
     max-size: 20000
 
 legacy:
-  uricontent: disabled
+  uricontent: enabled
 
 # You can specify a threshold config file by setting "threshold-file"
 # to the path of the threshold config file:
