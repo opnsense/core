@@ -70,7 +70,7 @@ function stat_block($summary, $stat, $num) {
 	$total = 0;
 	$numentries = 0;
 	for ($i=0; $i < $num; $i++) {
-		if ($k[$i]) {
+		if (isset($k[$i])) {
 			$total += $summary[$stat][$k[$i]];
 			$numentries++;
 			$outstr = $k[$i];
@@ -101,7 +101,7 @@ function pie_block($summary, $stat, $num) {
 	print "\n<script type=\"text/javascript\">\n";
 	print "//<![CDATA[\n";
 	for ($i=0; $i < $num; $i++) {
-		if ($k[$i]) {
+		if (isset($k[$i])) {
 			$total += $summary[$stat][$k[$i]];
 			$numentries++;
 			print "var d{$stat}{$i} = [];\n";
@@ -118,7 +118,7 @@ function pie_block($summary, $stat, $num) {
 	print "	new Proto.Chart($('piechart{$stat}'),\n";
 	print "	[\n";
 	for ($i=0; $i < $num; $i++) {
-		if ($k[$i]) {
+		if (isset($k[$i])) {
 			print "		{ data: d{$stat}{$i}, label: \"{$k[$i]}\"}";
 			if (!(($i == ($numentries - 1)) && ($leftover <= 0)))
 				print ",\n";
@@ -143,20 +143,17 @@ function pie_block($summary, $stat, $num) {
 }
 
 foreach ($filterlog as $fe) {
-	$specialfields = array('srcport', 'dstport');
 	foreach (array_keys($fields) as $field) {
-		if (!in_array($field, $specialfields))
+		if (isset($fe[$field])) {
+			if (!isset($summary[$field])) {
+				$summary[$field] = array(); 
+			}
+			if (!isset($summary[$field][$fe[$field]])) {
+				$summary[$field][$fe[$field]] = 0;
+			}
 			$summary[$field][$fe[$field]]++;
+		}
 	}
-	/* Handle some special cases */
-	if ($fe['srcport'])
-		$summary['srcport'][$fe['proto'].'/'.$fe['srcport']]++;
-	else
-		$summary['srcport'][$fe['srcport']]++;
-	if ($fe['dstport'])
-		$summary['dstport'][$fe['proto'].'/'.$fe['dstport']]++;
-	else
-		$summary['dstport'][$fe['dstport']]++;
 }
 
 include("head.inc"); ?>
