@@ -39,6 +39,74 @@ require_once("rrd.inc");
 require_once("vpn.inc");
 require_once("xmlparse_attr.inc");
 
+function get_wireless_modes($interface) {
+	/* return wireless modes and channels */
+	$wireless_modes = array();
+
+	$cloned_interface = get_real_interface($interface);
+
+	if($cloned_interface && is_interface_wireless($cloned_interface)) {
+		$chan_list = "/sbin/ifconfig {$cloned_interface} list chan";
+		$stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
+		$format_list = "/usr/bin/awk '{print \$5 \" \" \$6 \",\" \$1}'";
+
+		$interface_channels = "";
+		exec("$chan_list | $stack_list | sort -u | $format_list 2>&1", $interface_channels);
+		$interface_channel_count = count($interface_channels);
+
+		$c = 0;
+		while ($c < $interface_channel_count) {
+			$channel_line = explode(",", $interface_channels["$c"]);
+			$wireless_mode = trim($channel_line[0]);
+			$wireless_channel = trim($channel_line[1]);
+			if(trim($wireless_mode) != "") {
+				/* if we only have 11g also set 11b channels */
+				if($wireless_mode == "11g") {
+					if(!isset($wireless_modes["11b"]))
+						$wireless_modes["11b"] = array();
+				} else if($wireless_mode == "11g ht") {
+					if(!isset($wireless_modes["11b"]))
+						$wireless_modes["11b"] = array();
+					if(!isset($wireless_modes["11g"]))
+						$wireless_modes["11g"] = array();
+					$wireless_mode = "11ng";
+				} else if($wireless_mode == "11a ht") {
+					if(!isset($wireless_modes["11a"]))
+						$wireless_modes["11a"] = array();
+					$wireless_mode = "11na";
+				}
+				$wireless_modes["$wireless_mode"]["$c"] = $wireless_channel;
+			}
+			$c++;
+		}
+	}
+	return($wireless_modes);
+}
+
+/* return channel numbers, frequency, max txpower, and max regulation txpower */
+function get_wireless_channel_info($interface) {
+	$wireless_channels = array();
+
+	$cloned_interface = get_real_interface($interface);
+
+	if($cloned_interface && is_interface_wireless($cloned_interface)) {
+		$chan_list = "/sbin/ifconfig {$cloned_interface} list txpower";
+		$stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
+		$format_list = "/usr/bin/awk '{print \$1 \",\" \$3 \" \" \$4 \",\" \$5 \",\" \$7}'";
+
+		$interface_channels = "";
+		exec("$chan_list | $stack_list | sort -u | $format_list 2>&1", $interface_channels);
+
+		foreach ($interface_channels as $channel_line) {
+			$channel_line = explode(",", $channel_line);
+			if(!isset($wireless_channels[$channel_line[0]]))
+				$wireless_channels[$channel_line[0]] = $channel_line;
+		}
+	}
+	return($wireless_channels);
+}
+
+
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces.php');
 
 // Get configured interface list
