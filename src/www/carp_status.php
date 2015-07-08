@@ -30,6 +30,26 @@
 require_once("guiconfig.inc");
 require_once("globals.inc");
 
+function interfaces_carp_set_maintenancemode($carp_maintenancemode){
+	global $config;
+	if (isset($config["virtualip_carp_maintenancemode"]) && $carp_maintenancemode == false) {
+		unset($config["virtualip_carp_maintenancemode"]);
+		write_config("Leave CARP maintenance mode");
+	} else
+	if (!isset($config["virtualip_carp_maintenancemode"]) && $carp_maintenancemode == true) {
+		$config["virtualip_carp_maintenancemode"] = true;
+		write_config("Enter CARP maintenance mode");
+	}
+
+	$viparr = &$config['virtualip']['vip'];
+	foreach ($viparr as $vip) {
+		if ($vip['mode'] == "carp") {
+			interface_carp_configure($vip);
+		}
+	}
+}
+
+
 unset($interface_arr_cache);
 unset($carp_interface_count_cache);
 unset($interface_ip_arr_cache);

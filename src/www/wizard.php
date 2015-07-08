@@ -34,6 +34,41 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("rrd.inc");
 
+/*
+ * find_ip_interface($ip): return the interface where an ip is defined
+ *   (or if $bits is specified, where an IP within the subnet is defined)
+ */
+function find_ip_interface($ip, $bits = null) {
+	if (!is_ipaddr($ip))
+		return false;
+
+	$isv6ip = is_ipaddrv6($ip);
+
+	/* if list */
+	$ifdescrs = get_configured_interface_list();
+
+	foreach ($ifdescrs as $ifdescr => $ifname) {
+		$ifip = ($isv6ip) ? get_interface_ipv6($ifname) : get_interface_ip($ifname);
+		if (is_null($ifip))
+			continue;
+		if (is_null($bits)) {
+			if ($ip == $ifip) {
+				$int = get_real_interface($ifname);
+				return $int;
+			}
+		}
+		else {
+			if (ip_in_subnet($ifip, $ip . "/" . $bits)) {
+				$int = get_real_interface($ifname);
+				return $int;
+			}
+		}
+	}
+
+	return false;
+}
+
+
 global $g;
 
 $stepid = htmlspecialchars($_GET['stepid']);
