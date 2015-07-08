@@ -134,8 +134,8 @@ if [ ${USE_MFS_TMPVAR} -ne 0 ]; then
 		ln -s /root/var/db/pkg /var/db/pkg
 	fi
 
-	mdmfs -S -M -s 40m md /tmp
-	mdmfs -S -M -s 60m md /var
+	mount -t tmpfs -o mode=01777 tmpfs /tmp
+	mount -t tmpfs tmpfs /var
 
 	mkdir -p /var/db
 	ln -s /root/var/db/pkg /var/db/pkg
