@@ -45,13 +45,13 @@ function easyrule_find_rule_interface($int) {
 	/* Borrowed from firewall_rules.php */
 	$iflist = get_configured_interface_with_descr(false, true);
 
-	if ($config['pptpd']['mode'] == "server")
+	if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
 		$iflist['pptp'] = "PPTP VPN";
 
-	if ($config['pppoe']['mode'] == "server")
+	if (isset($config['pppoe']['mode']) && $config['pppoe']['mode'] == "server")
 		$iflist['pppoe'] = "PPPoE VPN";
 
-	if ($config['l2tp']['mode'] == "server")
+	if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
                 $iflist['l2tp'] = "L2TP VPN";
 
 	/* add ipsec interfaces */
@@ -164,12 +164,11 @@ function easyrule_block_alias_add($host, $int = 'wan') {
 	  unset($id);
 
 	$alias = array();
-
 	if (is_subnet($host)) {
 		list($host, $mask) = explode("/", $host);
 	} elseif (is_specialnet($host)) {
 		$mask = 0;
-	} elseif (is_ipaddrv6($host)) {
+	} elseif (strpos($host,':') !== false && is_ipaddrv6($host)) {
 		$mask = 128;
 	} else {
 		$mask = 32;
@@ -243,12 +242,7 @@ function easyrule_block_host_add($host, $int = 'wan', $ipproto = "inet") {
 	if ($dirty) {
 		write_config();
 		$retval = filter_configure();
-		if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-			header("Location: firewall_aliases.php");
-			exit;
-		} else {
-			return true;
-		}
+		return true;
 	} else {
 		return false;
 	}
@@ -313,12 +307,7 @@ function easyrule_pass_rule_add($int, $proto, $srchost, $dsthost, $dstport, $ipp
 
 	write_config($filterent['descr']);
 	$retval = filter_configure();
-	if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-		header("Location: firewall_rules.php?if={$int}");
-		exit;
-	} else {
-		return true;
-	}
+	return true;
 }
 
 function easyrule_parse_block($int, $src, $ipproto = "inet") {
@@ -403,7 +392,6 @@ if (isset($_POST['resolve'])) {
 }
 
 if (isset($_POST['easyrule'])) {
-	require_once("easyrule.inc");
 	require_once("filter.inc");
 	
 	$response = array("status"=>"unknown") ;
