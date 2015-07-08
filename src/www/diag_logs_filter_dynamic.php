@@ -39,7 +39,7 @@ $nentries = 50;
 /* AJAX related routines */
 handle_ajax($nentries, $nentries + 20);
 
-if ($_POST['clear']) {
+if (isset($_POST['clear'])) {
 	clear_log_file($filter_logfile);
 }
 
