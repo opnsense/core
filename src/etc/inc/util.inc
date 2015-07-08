@@ -1398,20 +1398,6 @@ function unmute_kernel_msgs()
 	exec('/sbin/conscontrol mute off');
 }
 
-function is_interface_vlan_mismatch()
-{
-	global $config;
-
-	if (isset($config['vlans']['vlan'])) {
-		foreach ($config['vlans']['vlan'] as $vlan) {
-			if (does_interface_exist($vlan['if']) == false)
-				return true;
-		}
-	}
-
-	return false;
-}
-
 function is_interface_mismatch()
 {
 	global $config;
