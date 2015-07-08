@@ -307,7 +307,7 @@ include("head.inc");
 								</tr>
 
 								<tr>
-									<th colspan="2" class="listtopic"><?=gettext("Load Balancing"); ?></th>
+									<th colspan="2" valign="top" class="listtopic"><?=gettext("Load Balancing"); ?></th>
 								</tr>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Load Balancing"); ?></td>
@@ -519,7 +519,7 @@ endforeach; ?>
 									</td>
 								</tr>
 								<tr>
-									<td colspan="2" valign="top" class="listtopic"><?=gettext("RAM Disk Settings (Reboot to Apply Changes)"); ?></td>
+									<th colspan="2" valign="top" class="listtopic"><?=gettext("RAM Disk Settings (Reboot to Apply Changes)"); ?></th>
 								</tr>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Use RAM Disks"); ?></td>
