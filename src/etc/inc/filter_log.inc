@@ -43,8 +43,9 @@ function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = '', $fil
 	if (!(is_numeric($tail)))
 		return;
 
-	if ($filtertext)
+	if ($filtertext!=""){
 		$tail = 5000;
+	}
 
 	/* Always do a reverse tail, to be sure we're grabbing the 'end' of the log. */
 	$logarr = "";
@@ -54,20 +55,22 @@ function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = '', $fil
 	$filterlog = array();
 	$counter = 0;
 
-	$filterinterface = strtoupper($filterinterface);
 	foreach ($logarr as $logent) {
 		if($counter >= $nentries)
 			break;
 
 		$flent = parse_filter_line($logent);
-		if (!$filterinterface || ($filterinterface == $flent['interface']))
-		{
-			if ( ( ($flent != "") && (!is_array($filtertext)) && (match_filter_line ($flent, $filtertext))) ||
-			     ( ($flent != "") && ( is_array($filtertext)) && (match_filter_field($flent, $filtertext)) ) ) {
-				$counter++;
-				$filterlog[] = $flent;
+		if (isset($flent) && is_array($flent)) {
+			if ($filterinterface == null || strtoupper($filterinterface) == $flent['interface']) {
+				if ( (!is_array($filtertext) && match_filter_line ($flent, $filtertext)) ||
+					( is_array($filtertext) && match_filter_field($flent, $filtertext))
+				) {
+					$counter++;
+					$filterlog[] = $flent;
+				}
 			}
 		}
+
 	}
 	/* Since the lines are in reverse order, flip them around if needed based on the user's preference */
 	return isset($config['syslog']['reverse']) ? $filterlog : array_reverse($filterlog);
@@ -248,7 +251,9 @@ function parse_filter_line($line)
 			$flent['icmp_ttime'] = $rule_data[$field++];
 			break;
 		default :
-			$flent['icmp_descr'] = $rule_data[$field++];
+			if (isset($rule_data[$field++])) {
+				$flent['icmp_descr'] = $rule_data[$field++];
+			}
 			break;
 		}
 	} elseif ($flent['protoid'] == '112') { // CARP
@@ -378,11 +383,11 @@ function find_action_image($action)
 /* AJAX specific handlers */
 function handle_ajax($nentries, $tail = 50) {
 	global $config;
-	if($_GET['lastsawtime'] or $_POST['lastsawtime']) {
+	if(isset($_GET['lastsawtime']) || isset($_POST['lastsawtime'])) {
 		global $filter_logfile,$filterent;
-		if($_GET['lastsawtime'])
+		if(isset($_GET['lastsawtime']))
 			$lastsawtime = $_GET['lastsawtime'];
-		if($_POST['lastsawtime'])
+		if(isset($_POST['lastsawtime']))
 			$lastsawtime = $_POST['lastsawtime'];
 		/*  compare lastsawrule's time stamp to filter logs.
 		 *  afterwards return the newer records so that client
