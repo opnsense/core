@@ -32,6 +32,124 @@
 include_once("auth.inc");
 include_once("priv.inc");
 
+function session_auth() {
+	global $config, $_SESSION;
+
+	// Handle HTTPS httponly and secure flags
+	$currentCookieParams = session_get_cookie_params();
+	session_set_cookie_params(
+		$currentCookieParams["lifetime"],
+		$currentCookieParams["path"],
+		NULL,
+		($config['system']['webgui']['protocol'] == "https"),
+		true
+	);
+
+	if (session_status() == PHP_SESSION_NONE) {
+		session_start();
+	}
+
+	// Detect protocol change
+	if (!isset($_POST['login']) && !empty($_SESSION['Logged_In']) && $_SESSION['protocol'] != $config['system']['webgui']['protocol'])
+		return false;
+
+	/* Validate incoming login request */
+	if (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld'])) {
+		if (isset($config['system']['webgui']['authmode'])) {
+			$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
+		} else {
+			$authcfg = null;
+		}
+		if (authenticate_user($_POST['usernamefld'], $_POST['passwordfld'], $authcfg) ||
+		    authenticate_user($_POST['usernamefld'], $_POST['passwordfld'])) {
+			// Generate a new id to avoid session fixation
+			session_regenerate_id();
+			$_SESSION['Logged_In'] = "True";
+			$_SESSION['Username'] = $_POST['usernamefld'];
+			$_SESSION['last_access'] = time();
+			$_SESSION['protocol'] = $config['system']['webgui']['protocol'];
+			if (!isset($config['system']['webgui']['quietlogin'])) {
+				log_error(sprintf(gettext("Successful login for user '%1\$s' from: %2\$s"), $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
+			}
+			if (isset($_POST['postafterlogin']))
+				return true;
+			else {
+				header("Location: {$_SERVER['REQUEST_URI']}");
+			}
+			exit;
+		} else {
+			/* give the user an error message */
+			$_SESSION['Login_Error'] = _('Wrong username or password.');
+			log_error("webConfigurator authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
+			if (isAjax()) {
+				echo "showajaxmessage('{$_SESSION['Login_Error']}');";
+				return;
+			}
+		}
+	}
+
+	/* Show login page if they aren't logged in */
+	if (empty($_SESSION['Logged_In']))
+		return false;
+
+	/* If session timeout isn't set, we don't mark sessions stale */
+	if (!isset($config['system']['webgui']['session_timeout'])) {
+		/* Default to 4 hour timeout if one is not set */
+		if ($_SESSION['last_access'] < (time() - 14400)) {
+			$_GET['logout'] = true;
+			$_SESSION['Logout'] = true;
+		} else
+			$_SESSION['last_access'] = time();
+	} else if (intval($config['system']['webgui']['session_timeout']) == 0) {
+		/* only update if it wasn't ajax */
+		if (!isAjax())
+			$_SESSION['last_access'] = time();
+	} else {
+		/* Check for stale session */
+		if ($_SESSION['last_access'] < (time() - ($config['system']['webgui']['session_timeout'] * 60))) {
+			$_GET['logout'] = true;
+			$_SESSION['Logout'] = true;
+		} else {
+			/* only update if it wasn't ajax */
+			if (!isAjax())
+				$_SESSION['last_access'] = time();
+		}
+	}
+
+	/* user hit the logout button */
+	if (isset($_GET['logout'])) {
+
+		if ($_SESSION['Logout'])
+			log_error(sprintf(gettext("Session timed out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+		else
+			log_error(sprintf(gettext("User logged out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+
+		/* wipe out $_SESSION */
+		$_SESSION = array();
+
+		if (isset($_COOKIE[session_name()]))
+			setcookie(session_name(), '', time()-42000, '/');
+
+		/* and destroy it */
+		session_destroy();
+
+		$scriptName = explode("/", $_SERVER["SCRIPT_FILENAME"]);
+		$scriptElms = count($scriptName);
+		$scriptName = $scriptName[$scriptElms-1];
+
+		if (isAjax())
+			return false;
+
+		/* redirect to page the user is on, it'll prompt them to login again */
+		header("Location: {$scriptName}");
+
+		return false;
+	}
+
+	return true;
+}
+
+
 /* Authenticate user - exit if failed */
 if (!session_auth()) {
     display_login_form();
