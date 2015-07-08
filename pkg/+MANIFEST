@@ -1,6 +1,6 @@
-name: opnsense
+name: opnsense%%REPO_SUFFIX%%
 version: "%%REPO_VERSION%%"
-origin: opnsense/opnsense
+origin: opnsense/opnsense%%REPO_SUFFIX%%
 comment: "%%REPO_COMMENT%%"
 desc: "OPNsense core package"
 maintainer: franco@opnsense.org
