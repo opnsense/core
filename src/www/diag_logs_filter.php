@@ -734,7 +734,7 @@ $( document ).ready(function() {
 					intf:$(this).find('#intf').val()
 				},
 				complete: function(data,status) {
-					alert("done");
+					alert("added block rule");
 				},
 			});
 
@@ -756,7 +756,7 @@ $( document ).ready(function() {
 					intf:$(this).find('#intf').val()
 				},
 				complete: function(data,status) {
-					alert("done");
+					alert("added pass rule");
 				},
 			});
 
