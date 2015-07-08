@@ -27,21 +27,6 @@
  *
  */
 
-/****f* legacy/have_natpfruleint_access
- * NAME
- *   have_natpfruleint_access
- * INPUTS
- *	none
- * RESULT
- *   returns true if user has access to edit a specific firewall nat port forward interface
- ******/
-function have_natpfruleint_access($if) {
-	$security_url = "firewall_nat_edit.php?if=". strtolower($if);
-	if(isAllowedPage($security_url))
-		return true;
-	return false;
-}
-
 /****f* legacy/have_ruleint_access
  * NAME
  *   have_ruleint_access
@@ -132,36 +117,6 @@ function enable_hardware_offloading($interface)
 	}
 }
 
-/****f* legacy/is_schedule_inuse
- * NAME
- *   checks to see if a schedule is currently in use by a rule
- * INPUTS
- *
- * RESULT
- *   true or false
- * NOTES
- *
- ******/
-function is_schedule_inuse($schedule)
-{
-	global $config;
-
-	if ($schedule == '') {
-		return false;
-	}
-
-	/* loop through firewall rules looking for schedule in use */
-	if (isset($config['filter']['rule'])) {
-		foreach ($config['filter']['rule'] as $rule) {
-			if ($rule['sched'] == $schedule) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
 /****f* legacy/setup_polling
  * NAME
  *   sets up polling
@@ -180,18 +135,6 @@ function setup_polling()
 		set_single_sysctl("kern.polling.idle_poll", "1");
 	} else {
 		set_single_sysctl("kern.polling.idle_poll", "0");
-	}
-
-	if ($config['system']['polling_each_burst']) {
-		set_single_sysctl("kern.polling.each_burst", $config['system']['polling_each_burst']);
-	}
-
-	if ($config['system']['polling_burst_max']) {
-		set_single_sysctl("kern.polling.burst_max", $config['system']['polling_burst_max']);
-	}
-
-	if ($config['system']['polling_user_frac']) {
-		set_single_sysctl("kern.polling.user_frac", $config['system']['polling_user_frac']);
 	}
 }
 
@@ -291,14 +234,14 @@ function restore_config_section($section_name, $new_contents)
 	fclose($fout);
 
 	$xml = parse_xml_config($tmpxml, null);
-	if ($xml['pfsense']) {
+	if (isset($xml['pfsense'])) {
 		$xml = $xml['pfsense'];
-	} elseif ($xml['m0n0wall']) {
+	} elseif (isset($xml['m0n0wall'])) {
 		$xml = $xml['m0n0wall'];
-	} elseif ($xml['opnsense']) {
+	} elseif (isset($xml['opnsense'])) {
 		$xml = $xml['opnsense'];
 	}
-	if ($xml[$section_name]) {
+	if (isset($xml[$section_name])) {
 		$section_xml = $xml[$section_name];
 	} else {
 		$section_xml = -1;
@@ -353,22 +296,6 @@ function host_firmware_version()
 	);
 }
 
-
-/****f* legacy/strncpy
- * NAME
- *   strncpy - copy strings
- * INPUTS
- *   &$dst, $src, $length
- * RESULT
- *   none
- ******/
-function strncpy(&$dst, $src, $length) {
-	if (strlen($src) > $length) {
-		$dst = substr($src, 0, $length);
-	} else {
-		$dst = $src;
-	}
-}
 
 /****f* legacy/reload_interfaces_sync
  * NAME
@@ -599,7 +526,7 @@ function is_dhcpv6_server_enabled() {
 		}
 	}
 
-	if (!is_array($config['dhcpdv6']))
+	if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6']))
 		return false;
 
 	foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
@@ -668,7 +595,7 @@ function is_pppoe_server_enabled() {
 
 	$pppoeenable = false;
 
-	if (!is_array($config['pppoes']) || !is_array($config['pppoes']['pppoe']))
+	if (!isset($config['pppoes']['pppoe']) || !is_array($config['pppoes']['pppoe']))
 		return false;
 
 	foreach ($config['pppoes']['pppoe'] as $pppoes)
@@ -958,19 +885,6 @@ function get_interface_info($ifdescr)
 	return $ifinfo;
 }
 
-function get_uptime_sec() {
-	$boottime = "";
-	$matches = "";
-	$boottime = get_single_sysctl("kern.boottime");
-	preg_match("/sec = (\d+)/", $boottime, $matches);
-	$boottime = $matches[1];
-	if(intval($boottime) == 0)
-		return 0;
-
-	$uptime = time() - $boottime;
-	return $uptime;
-}
-
 function add_hostname_to_watch($hostname) {
 	if(!is_dir("/var/db/dnscache")) {
 		mkdir("/var/db/dnscache");
@@ -1033,56 +947,6 @@ function default_state_size()
 	return $max_states;
 }
 
-function default_table_entries_size()
-{
-	$current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
-
-	return $current;
-}
-
-/* Compare the current hostname DNS to the DNS cache we made
- * if it has changed we return the old records
- * if no change we return false */
-function compare_hostname_to_dnscache($hostname) {
-	if(!is_dir("/var/db/dnscache")) {
-		mkdir("/var/db/dnscache");
-	}
-	$hostname = trim($hostname);
-	if(is_readable("/var/db/dnscache/{$hostname}")) {
-		$oldcontents = file_get_contents("/var/db/dnscache/{$hostname}");
-	} else {
-		$oldcontents = "";
-	}
-	if((is_fqdn($hostname)) && (!is_ipaddr($hostname))) {
-		$domrecords = array();
-		$domips = array();
-		exec("host -t A " . escapeshellarg($hostname), $domrecords, $rethost);
-		if($rethost == 0) {
-			foreach($domrecords as $domr) {
-				$doml = explode(" ", $domr);
-				$domip = $doml[3];
-				/* fill array with domain ip addresses */
-				if(is_ipaddr($domip)) {
-					$domips[] = $domip;
-				}
-			}
-		}
-		sort($domips);
-		$contents = "";
-		if(! empty($domips)) {
-			foreach($domips as $ip) {
-				$contents .= "$ip\n";
-			}
-		}
-	}
-
-	if(trim($oldcontents) != trim($contents)) {
-		log_error(sprintf(gettext('DNSCACHE: Found old IP %1$s and new IP %2$s'), $oldcontents, $contents));
-		return ($oldcontents);
-	} else {
-		return false;
-	}
-}
 
 /*
  * load_crypto() - Load crypto modules if enabled in config.
@@ -1093,7 +957,7 @@ function load_crypto()
 
 	$crypto_modules = array('glxsb', 'aesni');
 
-	if (!in_array($config['system']['crypto_hardware'], $crypto_modules)) {
+	if (!isset($config['system']['crypto_hardware']) || !in_array($config['system']['crypto_hardware'], $crypto_modules)) {
 		return false;
 	}
 
@@ -1112,7 +976,7 @@ function load_thermal_hardware()
 
 	$thermal_hardware_modules = array('coretemp', 'amdtemp');
 
-	if (!in_array($config['system']['thermal_hardware'], $thermal_hardware_modules)) {
+	if (!isset($config['system']['thermal_hardware']) || !in_array($config['system']['thermal_hardware'], $thermal_hardware_modules)) {
 		return false;
 	}
 
@@ -1201,71 +1065,6 @@ function update_alias_names_upon_change($section, $field, $new_alias_name, $orig
 	}
 }
 
-function update_alias_url_data()
-{
-	global $config;
-
-	$updated = false;
-
-	/* item is a url type */
-	$lockkey = lock('aliasurl');
-	if (is_array($config['aliases']['alias'])) {
-		foreach ($config['aliases']['alias'] as $x => $alias) {
-			if (empty($alias['aliasurl']))
-				continue;
-
-			$address = "";
-			$isfirst = 0;
-			foreach ($alias['aliasurl'] as $alias_url) {
-				/* fetch down and add in */
-				$temp_filename = tempnam('/tmp/', 'alias_import');
-				unlink($temp_filename);
-				$verify_ssl = isset($config['system']['checkaliasesurlcert']);
-				mkdir($temp_filename);
-				download_file($alias_url, $temp_filename . "/aliases", $verify_ssl);
-
-				/* if the item is tar gzipped then extract */
-				if (stripos($alias_url, '.tgz')) {
-					if (!process_alias_tgz($temp_filename))
-						continue;
-				} else if (stripos($alias_url, '.zip')) {
-					if (!process_alias_unzip($temp_filename))
-						continue;
-				}
-				if (file_exists("{$temp_filename}/aliases")) {
-					$fd = @fopen("{$temp_filename}/aliases", 'r');
-					if (!$fd) {
-						log_error(sprintf(_('Could not process aliases from alias: %s'), $alias_url));
-						continue;
-					}
-					/* NOTE: fgetss() is not a typo RTFM before being smart */
-					while (($fc = fgetss($fd)) !== FALSE) {
-						$tmp = trim($fc, " \t\n\r");
-						if (empty($tmp))
-							continue;
-						$tmp_str = strstr($tmp, '#', true);
-						if (!empty($tmp_str))
-							$tmp = $tmp_str;
-						if ($isfirst == 1)
-							$address .= ' ';
-						$address .= $tmp;
-						$isfirst = 1;
-					}
-					fclose($fd);
-					mwexec("/bin/rm -rf {$temp_filename}");
-				}
-			}
-			if (!empty($address)) {
-				$config['aliases']['alias'][$x]['address'] = $address;
-				$updated = true;
-			}
-		}
-	}
-	unlock($lockkey);
-
-	/* Report status to callers as well */
-	return $updated;
-}
 
 function process_alias_unzip($temp_filename) {
 	if(!file_exists("/usr/local/bin/unzip")) {
@@ -1638,6 +1437,8 @@ function calculate_ipv6_delegation_length($if) {
 
 	if(!isset($config['interfaces'][$if]) || !is_array($config['interfaces'][$if])) {
 		return false;
+	} elseif (!isset($config['interfaces'][$if]['ipaddrv6'])) {
+		return (0);
 	}
 
 	switch($config['interfaces'][$if]['ipaddrv6']) {

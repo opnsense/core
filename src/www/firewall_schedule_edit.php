@@ -27,6 +27,37 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+/****f* legacy/is_schedule_inuse
+ * NAME
+ *   checks to see if a schedule is currently in use by a rule
+ * INPUTS
+ *
+ * RESULT
+ *   true or false
+ * NOTES 
+ *
+ ******/   
+function is_schedule_inuse($schedule)
+{
+        global $config;
+
+        if ($schedule == '') {
+                return false;
+        }  
+
+        /* loop through firewall rules looking for schedule in use */
+        if (isset($config['filter']['rule'])) {
+                foreach ($config['filter']['rule'] as $rule) {
+                        if ($rule['sched'] == $schedule) {
+                                return true;
+                        }
+                }
+        }  
+
+        return false;
+}
+
+
 function schedulecmp($a, $b) {
 	return strcmp($a['name'], $b['name']);
 }

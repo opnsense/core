@@ -7,6 +7,19 @@ if(Connection_Aborted()) {
 require_once("config.inc");
 require_once("pfsense-utils.inc");
 
+function get_uptime_sec() {
+        $boottime = "";
+        $matches = "";
+        $boottime = get_single_sysctl("kern.boottime");
+        preg_match("/sec = (\d+)/", $boottime, $matches);
+        $boottime = $matches[1];
+        if(intval($boottime) == 0)
+                return 0;
+
+        $uptime = time() - $boottime;
+        return $uptime;
+}
+
 function get_stats() {
 	$stats['cpu'] = cpu_usage();
 	$stats['mem'] = mem_usage();

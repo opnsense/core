@@ -483,6 +483,50 @@ function system_routing_configure($interface = '')
 	return 0;
 }
 
+/* Compare the current hostname DNS to the DNS cache we made
+ * if it has changed we return the old records
+ * if no change we return false */
+function compare_hostname_to_dnscache($hostname) {
+        if(!is_dir("/var/db/dnscache")) {
+                mkdir("/var/db/dnscache");
+        }
+        $hostname = trim($hostname);
+        if(is_readable("/var/db/dnscache/{$hostname}")) {
+                $oldcontents = file_get_contents("/var/db/dnscache/{$hostname}");
+        } else {
+                $oldcontents = "";
+        }
+        if((is_fqdn($hostname)) && (!is_ipaddr($hostname))) {
+                $domrecords = array();
+                $domips = array();
+                exec("host -t A " . escapeshellarg($hostname), $domrecords, $rethost);
+                if($rethost == 0) {
+                        foreach($domrecords as $domr) {
+                                $doml = explode(" ", $domr);
+                                $domip = $doml[3];
+                                /* fill array with domain ip addresses */
+                                if(is_ipaddr($domip)) {
+                                        $domips[] = $domip;
+                                }
+                        }
+                }
+                sort($domips);
+                $contents = "";
+                if(! empty($domips)) {
+                        foreach($domips as $ip) {
+                                $contents .= "$ip\n";
+                        }
+                }
+        }
+
+        if(trim($oldcontents) != trim($contents)) {
+                log_error(sprintf(gettext('DNSCACHE: Found old IP %1$s and new IP %2$s'), $oldcontents, $contents));
+                return ($oldcontents);
+        } else {
+                return false;
+        }
+}
+
 function system_staticroutes_configure($interface = '', $update_dns = false)
 {
 	global $config, $aliastable;

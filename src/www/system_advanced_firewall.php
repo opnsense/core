@@ -33,6 +33,14 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 
+function default_table_entries_size()
+{
+        $current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
+
+        return $current;
+}
+
+
 $pconfig['disablefilter'] = $config['system']['disablefilter'];
 $pconfig['rfc959workaround'] = $config['system']['rfc959workaround'];
 $pconfig['scrubnodf'] = $config['system']['scrubnodf'];
