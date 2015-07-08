@@ -138,20 +138,6 @@ fi
 
 USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
 if [ ${USE_MFS_TMPVAR} -ne 0 ]; then
-	USE_MFS_TMP_SIZE=`/usr/bin/grep use_mfs_tmp_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
-	if [ ! -z ${USE_MFS_TMP_SIZE} ] && [ ${USE_MFS_TMP_SIZE} -gt 0 ]; then
-		tmpsize="${USE_MFS_TMP_SIZE}m"
-	else
-		tmpsize="40m"
-	fi
-
-	USE_MFS_VAR_SIZE=`/usr/bin/grep use_mfs_var_size /conf/config.xml | /usr/bin/cut -f2 -d'>' | /usr/bin/cut -f1 -d'<'`
-	if [ ! -z ${USE_MFS_VAR_SIZE} ] && [ ${USE_MFS_VAR_SIZE} -gt 0 ]; then
-		varsize="${USE_MFS_VAR_SIZE}m"
-	else
-		varsize="60m"
-	fi
-
 	echo -n "Setting up memory disks..."
 
 	if [ ! -d /root/var/db/pkg ]; then
@@ -162,8 +148,8 @@ if [ ${USE_MFS_TMPVAR} -ne 0 ]; then
 		ln -s /root/var/db/pkg /var/db/pkg
 	fi
 
-	mdmfs -S -M -s ${tmpsize} md /tmp
-	mdmfs -S -M -s ${varsize} md /var
+	mdmfs -S -M -s 40m md /tmp
+	mdmfs -S -M -s 60m md /var
 
 	mkdir -p /var/db
 	ln -s /root/var/db/pkg /var/db/pkg
