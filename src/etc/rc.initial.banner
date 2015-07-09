@@ -37,7 +37,7 @@ $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-'
 $hostname = $config['system']['hostname'];
 $product = $g['product_name'];
 $machine = trim(shell_exec('uname -m'));
-$flavour = strtok(exec('/usr/local/bin/openssl version'), ' ');
+$flavour = strtok(shell_exec('/usr/local/bin/openssl version'), ' ');
 
 print "\n*** Welcome to {$product} {$version} ({$machine}/${flavour}) on {$hostname} ***\n";
 
