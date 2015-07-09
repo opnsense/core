@@ -276,7 +276,7 @@ function voucher_configure($sync = false)
 
 	$ret = true;
 
-	if (!is_array($config['voucher'])) {
+	if (!isset($config['voucher']) || !is_array($config['voucher'])) {
 		return $ret;
 	}
 
@@ -427,25 +427,6 @@ function voucher_write_active_db($roll, $active) {
     }
 }
 
-/* return how many vouchers are marked used on a roll */
-function voucher_used_count($roll) {
-    global $g, $cpzone;
-
-    $bitstring = voucher_read_used_db($roll);
-    $max = strlen($bitstring) * 8;
-    $used = 0;
-    for ($i = 1; $i <= $max; $i++) {
-        // check if ticket already used or not.
-        $pos = $i >> 3;            // divide by 8 -> octet
-        $mask = 1 << ($i % 8);  // mask to test bit in octet
-        if (ord($bitstring[$pos]) & $mask)
-            $used++;
-    }
-    unset($bitstring);
-
-    return $used;
-}
-
 function voucher_read_used_db($roll)
 {
 	global $cpzone;
@@ -464,13 +445,6 @@ function voucher_read_used_db($roll)
 	return base64_decode($vdb);
 }
 
-function voucher_unlink_db($roll)
-{
-	global $cpzone;
-
-	@unlink("/var/db/voucher_{$cpzone}_used_{$roll}.db");
-	@unlink("/var/db/voucher_{$cpzone}_active_{$roll}.db");
-}
 
 /* we share the log with captiveportal for now */
 function voucher_log($priority, $message)
