@@ -48,12 +48,12 @@ echo "                                      ${option99}"
 fi
 
 echo
-read -p "Enter an option: " opmode
+read -p "Enter an option: " OPCODE
 echo
 
 # see what the user has chosen
-case ${opmode} in
-0)
+case ${OPCODE} in
+0|exit|logout|quit)
         exit
         ;;
 1)
@@ -99,6 +99,7 @@ case ${opmode} in
 	/usr/local/etc/rc.installer
 	;;
 *)
+	/bin/sh -c "${OPCODE}"
 	;;
 esac
 
