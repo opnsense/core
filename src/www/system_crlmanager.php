@@ -30,6 +30,32 @@ require_once("guiconfig.inc");
 require_once("certs.inc");
 require_once('openvpn.inc');
 
+function cert_unrevoke($cert, & $crl) {
+	global $config;
+	if (!is_crl_internal($crl))
+		return false;
+	foreach ($crl['cert'] as $id => $rcert) {
+		if (($rcert['refid'] == $cert['refid']) || ($rcert['descr'] == $cert['descr'])) {
+			unset($crl['cert'][$id]);
+			if (count($crl['cert']) == 0) {
+				// Protect against accidentally switching the type to imported, for older CRLs
+				if (!isset($crl['method']))
+					$crl['method'] = "internal";
+				crl_update($crl);
+			} else
+				crl_update($crl);
+			return true;
+		}
+	}
+	return false;
+}
+
+// Keep this general to allow for future expansion. See cert_in_use() above.
+function crl_in_use($crlref) {
+	return (is_openvpn_server_crl($crlref));
+}
+
+
 global $openssl_crl_status;
 
 $pgtitle = array(gettext("System"), gettext("Certificate Revocation List Manager"));
