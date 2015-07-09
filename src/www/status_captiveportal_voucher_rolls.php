@@ -33,6 +33,27 @@ require_once("filter.inc");
 require_once("captiveportal.inc");
 require_once("voucher.inc");
 
+/* return how many vouchers are marked used on a roll */
+function voucher_used_count($roll) {
+    global $g, $cpzone;
+
+    $bitstring = voucher_read_used_db($roll);
+    $max = strlen($bitstring) * 8;
+    $used = 0;
+    for ($i = 1; $i <= $max; $i++) {
+        // check if ticket already used or not.
+        $pos = $i >> 3;            // divide by 8 -> octet
+        $mask = 1 << ($i % 8);  // mask to test bit in octet
+        if (ord($bitstring[$pos]) & $mask)
+            $used++;
+    }
+    unset($bitstring);
+
+    return $used;
+}
+
+
+
 $cpzone = $_GET['zone'];
 if (isset($_POST['zone'])) {
     $cpzone = $_POST['zone'];

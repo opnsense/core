@@ -37,6 +37,15 @@ require_once('filter.inc');
 require_once('captiveportal.inc');
 require_once('voucher.inc');
 
+function voucher_unlink_db($roll)
+{
+	global $cpzone;
+
+	@unlink("/var/db/voucher_{$cpzone}_used_{$roll}.db");
+	@unlink("/var/db/voucher_{$cpzone}_active_{$roll}.db");
+}
+
+
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_captiveportal_vouchers.php');
 
 $cpzone = $_GET['zone'];
