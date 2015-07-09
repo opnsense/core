@@ -53,7 +53,7 @@ require_once("widgets/include/interfaces.inc");
                 if (isset($ifinfo['ppplink'])) {
                     ?> <span alt="3g" class="glyphicon glyphicon-phone text-success"></span> <?php
                 } elseif ($iswireless) {
-                    if ($ifinfo['status'] == "associated") {
+                    if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up') {
 ?>
 						<span alt="wlan" class="glyphicon glyphicon-signal text-success"></span>
 					<?php
