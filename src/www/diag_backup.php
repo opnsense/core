@@ -43,6 +43,19 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("util.inc");
 
+/**
+ * check if cron exists
+ */
+function cron_job_exists($command) {
+	global $config;
+	foreach($config['cron']['item'] as $item) {
+		if(strstr($item['command'], $command)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 $rrddbpath = '/var/db/rrd';
 $rrdtool = '/usr/local/bin/rrdtool';
 
