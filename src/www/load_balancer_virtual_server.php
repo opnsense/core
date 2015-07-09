@@ -33,6 +33,45 @@ require_once("filter.inc");
 require_once("vslb.inc");
 require_once("maintable.inc");
 
+/* Cleanup relayd anchors that have been marked for cleanup. */
+function cleanup_lb_marked()
+{
+	global $config;
+
+	$filename = '/tmp/relayd_anchors_remove';
+	$cleanup_anchors = array();
+
+	/* Nothing to do! */
+	if (!file_exists($filename)) {
+		return;
+	} else {
+		$cleanup_anchors = explode("\n", file_get_contents($filename));
+		/* Nothing to do! */
+		if (empty($cleanup_anchors)) {
+			return;
+		}
+	}
+
+	/* Load current names so we can make sure we don't remove an anchor that is still in use. */
+	$vs_a = $config['load_balancer']['virtual_server'];
+	$active_vsnames = array();
+	if (isset($vs_a)) {
+		foreach ($vs_a as $vs) {
+			$active_vsnames[] = $vs['name'];
+		}
+	}
+
+	foreach ($cleanup_anchors as $anchor) {
+		/* Only cleanup an anchor if it is not still active. */
+		if (!in_array($anchor, $active_vsnames)) {
+			cleanup_lb_anchor($anchor);
+		}
+	}
+
+	@unlink($filename);
+}
+
+
 if (!is_array($config['load_balancer']['virtual_server'])) {
 	$config['load_balancer']['virtual_server'] = array();
 }
