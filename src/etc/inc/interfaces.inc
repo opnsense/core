@@ -1266,7 +1266,12 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 	}
 
 	$track6 = array();
-	switch ($ifcfg['ipaddrv6']) {
+	if (isset($ifcfg['ipaddrv6'])) {
+		$ipaddrv6 = $ifcfg['ipaddrv6'];
+	} else {
+		$ipaddrv6 = null;
+	}
+	switch ($ipaddrv6) {
 	case "slaac":
 	case "dhcp6":
 		$pidv6 = find_dhcp6c_process($realif);
@@ -1345,7 +1350,7 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
 
 	/* hostapd and wpa_supplicant do not need to be running when the interface is down.
 	 * They will also use 100% CPU if running after the wireless clone gets deleted. */
-	if (is_array($ifcfg['wireless'])) {
+	if (isset($ifcfg['wireless']) && is_array($ifcfg['wireless'])) {
 		kill_hostapd($realif);
 		mwexec(kill_wpasupplicant($realif));
 	}
@@ -4559,6 +4564,8 @@ function find_interface_ip($interface, $flush = false) {
 		$ifinfo = pfSense_get_interface_addresses($interface);
 		if (isset($ifinfo['ipaddr'])) {
 			$interface_ip_arr_cache[$interface] = $ifinfo['ipaddr'];
+		} else  {
+			return null;
 		}
 	}
 
