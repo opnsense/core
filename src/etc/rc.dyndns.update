@@ -34,7 +34,11 @@ require_once("filter.inc");
 
 /* Interface IP address has changed */
 
-$argument = trim($argv[1], " \n");
+if (isset($argv[1])) {
+	$argument = trim($argv[1], " \n");
+} else {
+	$argument = null;
+}
 
 if(empty($argument)) {
 	services_dyndns_configure();
