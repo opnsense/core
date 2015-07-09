@@ -27,6 +27,12 @@
 */
 require_once("openvpn.inc");
 
+function cert_get_subject_hash($crt) {
+	$str_crt = base64_decode($crt);
+	$inf_crt = openssl_x509_parse($str_crt);
+	return $inf_crt['subject'];
+}
+
 function has_special_chars($text) {
 	return preg_match('/[^A-Za-z0-9 _-]/', $text);
 }

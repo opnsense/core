@@ -30,6 +30,86 @@
 require_once('guiconfig.inc');
 require_once('certs.inc');
 
+function ca_import(& $ca, $str, $key="", $serial=0) {
+	global $config;
+
+	$ca['crt'] = base64_encode($str);
+	if (!empty($key))
+		$ca['prv'] = base64_encode($key);
+	if (!empty($serial))
+		$ca['serial'] = $serial;
+	$subject = cert_get_subject($str, false);
+	$issuer = cert_get_issuer($str, false);
+
+	// Find my issuer unless self-signed
+	if($issuer <> $subject) {
+		$issuer_crt =& lookup_ca_by_subject($issuer);
+		if($issuer_crt)
+			$ca['caref'] = $issuer_crt['refid'];
+	}
+
+	/* Correct if child certificate was loaded first */
+	if (is_array($config['ca']))
+		foreach ($config['ca'] as & $oca)
+		{
+			$issuer = cert_get_issuer($oca['crt']);
+			if($ca['refid']<>$oca['refid'] && $issuer==$subject)
+				$oca['caref'] = $ca['refid'];
+		}
+	if (is_array($config['cert']))
+		foreach ($config['cert'] as & $cert)
+		{
+			$issuer = cert_get_issuer($cert['crt']);
+			if($issuer==$subject)
+				$cert['caref'] = $ca['refid'];
+		}
+	return true;
+}
+
+function ca_inter_create(& $ca, $keylen, $lifetime, $dn, $caref, $digest_alg = "sha256") {
+	// Create Intermediate Certificate Authority
+	$signing_ca =& lookup_ca($caref);
+	if (!$signing_ca)
+		return false;
+
+	$signing_ca_res_crt = openssl_x509_read(base64_decode($signing_ca['crt']));
+	$signing_ca_res_key = openssl_pkey_get_private(array(0 => base64_decode($signing_ca['prv']) , 1 => ""));
+	if (!$signing_ca_res_crt || !$signing_ca_res_key) return false;
+	$signing_ca_serial = ++$signing_ca['serial'];
+
+	$args = array(
+		"x509_extensions" => "v3_ca",
+		"digest_alg" => $digest_alg,
+		"private_key_bits" => (int)$keylen,
+		"private_key_type" => OPENSSL_KEYTYPE_RSA,
+		"encrypt_key" => false);
+
+	// generate a new key pair
+	$res_key = openssl_pkey_new($args);
+	if (!$res_key) return false;
+
+	// generate a certificate signing request
+	$res_csr = openssl_csr_new($dn, $res_key, $args);
+	if (!$res_csr) return false;
+
+	// Sign the certificate
+	$res_crt = openssl_csr_sign($res_csr, $signing_ca_res_crt, $signing_ca_res_key, $lifetime, $args, $signing_ca_serial);
+	if (!$res_crt) return false;
+
+	// export our certificate data
+	if (!openssl_pkey_export($res_key, $str_key) ||
+	    !openssl_x509_export($res_crt, $str_crt))
+		return false;
+
+	// return our ca information
+	$ca['crt'] = base64_encode($str_crt);
+	$ca['prv'] = base64_encode($str_key);
+	$ca['serial'] = 0;
+
+	return true;
+}
+
+
 $ca_methods = array(
     "existing" => gettext("Import an existing Certificate Authority"),
     "internal" => gettext("Create an internal Certificate Authority"),
