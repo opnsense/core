@@ -1132,7 +1132,7 @@ EOD;
 function vpn_pppoes_configure() {
 	global $config;
 
-	if (is_array($config['pppoes']['pppoe'])) {
+	if (isset($config['pppoes']['pppoe']) && is_array($config['pppoes']['pppoe'])) {
 		foreach ($config['pppoes']['pppoe'] as $pppoe)
 			vpn_pppoe_configure($pppoe);
 	}
@@ -1352,10 +1352,14 @@ function vpn_l2tp_configure()
 	global $config, $g;
 
 	$syscfg = $config['system'];
-	$l2tpcfg = $config['l2tp'];
+	if (isset($config['l2tp'])) {
+		$l2tpcfg = $config['l2tp'];
+	} else {
+		return 0;
+	}
 
 	if (file_exists("/var/run/booting")) {
-		if (!$l2tpcfg['mode'] || ($l2tpcfg['mode'] == "off"))
+		if (!isset($l2tpcfg['mode']) || $l2tpcfg['mode'] == "off")
 			return 0;
 
 		echo gettext("Configuring l2tp VPN service... ");
