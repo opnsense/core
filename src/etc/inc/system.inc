@@ -258,7 +258,7 @@ function system_hosts_generate()
 	$lhosts = "";
 	$dhosts = "";
 
-	if ($config['interfaces']['lan']) {
+	if (isset($config['interfaces']['lan'])) {
 		$cfgip = get_interface_ip("lan");
 		if (is_ipaddr($cfgip))
 			$hosts .= "{$cfgip}	{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
@@ -445,13 +445,13 @@ function system_routing_configure($interface = '')
 				break;
 		}
 	}
-	if ($foundgw == false) {
+	if (!$foundgw) {
 		$defaultif = get_real_interface("wan");
 		$interfacegw = "wan";
 		$gatewayip = get_interface_gateway("wan");
 		@touch("/tmp/{$defaultif}_defaultgw");
 	}
-	if ($foundgwv6 == false) {
+	if (!$foundgwv6) {
 		$defaultifv6 = get_real_interface("wan");
 		$interfacegwv6 = "wan";
 		$gatewayipv6 = get_interface_gateway_v6("wan");
@@ -671,6 +671,7 @@ function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*") {
 function system_syslogd_start()
 {
 	global $config, $g;
+	$retval = null;
 
 	/* XXX temporary hook for newsyslog.conf regeneration */
 	configd_run('template reload OPNsense.Syslog');
@@ -940,9 +941,12 @@ function system_generate_lighty_config(
 		$captiveportal = ',"mod_evasive"';
 		$http_rewrite_rules = "url.rewrite-once = ( \"(.*captiveportal.*)\" => \"$1\", \"(.*)\" => \"/index.php?zone={$captive_portal}&redirurl=$1\" )\n";
 
-		$maxprocperip = $config['captiveportal'][$captive_portal]['maxprocperip'];
-		if (empty($maxprocperip))
+		if (!isset($config['captiveportal'][$captive_portal]['maxprocperip']) || empty($config['captiveportal'][$captive_portal]['maxprocperip'])) {
 			$maxprocperip = 10;
+		} else {
+			$maxprocperip = $config['captiveportal'][$captive_portal]['maxprocperip'];
+		}
+		
 		$captive_portal_mod_evasive = "evasive.max-conns-per-ip = {$maxprocperip}";
 
 		$server_upload_dirs = "server.upload-dirs = ( \"/tmp/captiveportal/\" )\n";
@@ -1239,8 +1243,11 @@ EOD;
 
 	// Add HTTP to HTTPS redirect
 	if ($captive_portal === false && $config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
-		if($lighty_port != "443")
+		if($lighty_port != "443") {
 			$redirectport = ":{$lighty_port}";
+		} else {
+			$redirectport = "";
+		}
 		$lighty_config .= <<<EOD
 \$SERVER["socket"] == ":80" {
 	\$HTTP["host"] =~ "(.*)" {
@@ -1708,14 +1715,6 @@ function system_disable_arp_wrong_if()
 	set_sysctl(array(
 		"net.link.ether.inet.log_arp_wrong_iface" => "0",
 		"net.link.ether.inet.log_arp_movements" => "0"
-	));
-}
-
-function system_enable_arp_wrong_if()
-{
-	set_sysctl(array(
-		"net.link.ether.inet.log_arp_wrong_iface" => "1",
-		"net.link.ether.inet.log_arp_movements" => "1"
 	));
 }
 

@@ -33,6 +33,15 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 
+function system_enable_arp_wrong_if()
+{
+	set_sysctl(array(
+		"net.link.ether.inet.log_arp_wrong_iface" => "1",
+		"net.link.ether.inet.log_arp_movements" => "1"
+	));
+}
+
+
 $pconfig['ipv6nat_enable'] = isset($config['diag']['ipv6nat']['enable']);
 $pconfig['ipv6nat_ipaddr'] = $config['diag']['ipv6nat']['ipaddr'];
 $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
