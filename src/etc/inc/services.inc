@@ -80,7 +80,7 @@ function services_radvd_configure($blacklist = array())
 {
 	global $config, $g;
 
-	if (!is_array($config['dhcpdv6'])) {
+	if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
 		$config['dhcpdv6'] = array();
 	}
 
@@ -263,9 +263,11 @@ function services_radvd_configure($blacklist = array())
 		}
 		$radvdifs[$realif] = $realif;
 
-		$autotype = $config['interfaces'][$trackif]['ipaddrv6'];
+		if (isset($config['interfaces'][$trackif]['ipaddrv6'])) {
+			$autotype = $config['interfaces'][$trackif]['ipaddrv6'];
+			$radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
+		}
 
-		$radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
 		$radvdconf .= "interface {$realif} {\n";
 		$radvdconf .= "\tAdvSendAdvert on;\n";
 		$radvdconf .= "\tMinRtrAdvInterval 3;\n";
@@ -1005,7 +1007,7 @@ function services_dhcpdv6_configure($blacklist = array())
 	}
 
 	$syscfg = $config['system'];
-	if (!is_array($config['dhcpdv6']))
+	if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6']))
 		$config['dhcpdv6'] = array();
 	$dhcpdv6cfg = $config['dhcpdv6'];
 	$Iflist = get_configured_interface_list();
@@ -1750,8 +1752,9 @@ function services_dnsmasq_configure()
 		}
 
 		/* Setup listen port, if non-default */
-		if (is_port($config['dnsmasq']['port']))
+		if (isset($config['dnsmasq']['port']) && is_port($config['dnsmasq']['port'])) {
 			$args .= " --port={$config['dnsmasq']['port']} ";
+		}
 
 		$listen_addresses = "";
 		if(isset($config['dnsmasq']['interface'])) {
@@ -1841,13 +1844,14 @@ function services_dnsmasq_configure()
 			$args .= " --domain-needed ";
 		}
 
-		if ($config['dnsmasq']['custom_options'])
+		if (isset($config['dnsmasq']['custom_options'])) {
 			foreach (preg_split('/\s+/', $config['dnsmasq']['custom_options']) as $c) {
 				$args .= " " . escapeshellarg("--{$c}");
 				$p = explode('=', $c);
 				if (array_key_exists($p[0], $standard_args))
 					unset($standard_args[$p[0]]);
 			}
+		}
 		$args .= ' ' . implode(' ', array_values($standard_args));
 
 		/* run dnsmasq */
@@ -2316,18 +2320,6 @@ function upnp_start()
        }
 }
 
-/**
- * check if cron exists
- */
-function cron_job_exists($command) {
-	global $config;
-	foreach($config['cron']['item'] as $item) {
-		if(strstr($item['command'], $command)) {
-			return true;
-		}
-	}
-	return false;
-}
 
 function install_cron_job($command, $active=false, $minute="0", $hour="*", $monthday="*", $month="*", $weekday="*", $who="root") {
 	global $config, $g;
