@@ -2,6 +2,7 @@
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+	(from itemid.inc) Copyright (C) 2009 Janne Enberg <janne.enberg@lietu.net>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -27,8 +28,80 @@
 */
 
 require_once("guiconfig.inc");
-require_once("itemid.inc");
 require_once("filter.inc");
+
+/****f* itemid/delete_id
+ * NAME
+ *   delete_id - delete an item with ['id'] = $id from $array
+ * INPUTS
+ *   $id       - int: The ID to delete
+ *   $array    - array to delete the item from
+ * RESULT
+ *   boolean   - true if item was found and deleted
+ ******/
+function delete_id($id, &$array){
+	// Index to delete
+	$delete_index = NULL;
+
+	if (!is_array($array))
+		return false;
+
+	// Search for the item in the array
+	foreach ($array as $key => $item){
+		// If this item is the one we want to delete
+		if(isset($item['associated-rule-id']) && $item['associated-rule-id']==$id ){
+			$delete_index = $key;
+			break;
+		}
+	}
+
+	// If we found the item, unset it
+	if( $delete_index!==NULL ){
+		unset($array[$delete_index]);
+		return true;
+	} else {
+		return false;
+	}
+
+}
+
+
+/****f* itemid/get_id
+ * NAME
+ *   get_id - Get an item id with ['associated-rule-id'] = $id from $array
+ * INPUTS
+ *   $id       - string: The ID to get
+ *   $array    - array to get the item from
+ * RESULT
+ *   mixed   - The id, NULL if not found
+ ******/
+function get_id($id, &$array) {
+	// Use $foo = &get_id('id', array('id'=>'value'));
+
+	if (!is_array($array))
+		return false;
+
+	// Search for the item in the array
+	foreach ($array as $key => $item){
+		// If this item is the one we want to delete
+		if (isset($item['associated-rule-id']) && $item['associated-rule-id']==$id)
+			return $key;
+	}
+
+	return false;
+}
+
+/****f* itemid/get_unique_id
+ * NAME
+ *   get_unique_id - get a unique identifier
+ * RESULT
+ *   string     - unique id
+ ******/
+function get_unique_id(){
+
+	return uniqid("nat_", true);
+}
+
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat.php');
 
