@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("vslb.inc");
-require_once("maintable.inc");
+require_once("load_balancer_maintable.inc");
 
 /* Cleanup relayd anchors that have been marked for cleanup. */
 function cleanup_lb_marked()
