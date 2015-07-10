@@ -56,6 +56,8 @@ $firewall_rules_dscp_types = array("af11",
 				"0x02",
 				"0x04");
 
+/* TCP flags */
+$tcpflags = array("syn", "ack", "fin", "rst", "psh", "urg", "ece", "cwr");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_rules.php');
 

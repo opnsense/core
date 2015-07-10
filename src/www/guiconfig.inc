@@ -136,10 +136,6 @@ $wkports = array(
 	69 => "TFTP",
 	5900 => "VNC");
 
-/* TCP flags */
-$tcpflags = array("fin", "syn", "rst", "psh", "ack", "urg", "ece", "cwr");
-
-
 $wlan_modes = array("bss" => "Infrastructure (BSS)", "adhoc" => "Ad-hoc (IBSS)",
 	"hostap" => "Access Point");
 

@@ -47,11 +47,6 @@ $g = array(
 	"latest_config" => "11.2",
 );
 
-/* IP TOS flags */
-$iptos = array("lowdelay", "throughput", "reliability");
-
-/* TCP flags */
-$tcpflags = array("syn", "ack", "fin", "rst", "psh", "urg", "ece", "cwr");
 
 /* Default sysctls */
 $sysctls = array(
