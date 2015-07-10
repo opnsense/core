@@ -362,6 +362,23 @@ function services_dhcpd_configure($family = "all", $blacklist = array())
 	}
 }
 
+function is_dhcp_server_enabled()
+{
+	global $config;
+
+	if (!is_array($config['dhcpd'])) {
+		return false;
+	}
+
+	foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
+		if (isset($dhcpifconf['enable']) && !empty($config['interfaces'][$dhcpif])) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 function services_dhcpdv4_configure()
 {
 	global $config, $g;
@@ -973,6 +990,31 @@ function dhcpdzones($ddns_zones, $dhcpifconf)
 	}
 
 	return $dhcpdconf;
+}
+
+function is_dhcpv6_server_enabled()
+{
+	global $config;
+
+	if (is_array($config['interfaces'])) {
+		foreach ($config['interfaces'] as $ifcfg) {
+			if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface'])) {
+				return true;
+			}
+		}
+	}
+
+	if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
+		return false;
+	}
+
+	foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
+		if (isset($dhcpv6ifconf['enable']) && !empty($config['interfaces'][$dhcpv6if])) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 function services_dhcpdv6_configure($blacklist = array())

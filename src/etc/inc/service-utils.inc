@@ -29,6 +29,7 @@
 require_once("globals.inc");
 require_once("captiveportal.inc");
 require_once("openvpn.inc");
+require_once("services.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
 require_once("vslb.inc");

@@ -575,43 +575,6 @@ function reload_ttys()
 	exec('/bin/kill -HUP 1');
 }
 
-/* DHCP enabled on any interfaces? */
-function is_dhcp_server_enabled() {
-	global $config;
-
-	if (!is_array($config['dhcpd']))
-		return false;
-
-	foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-		if (isset($dhcpifconf['enable']) && !empty($config['interfaces'][$dhcpif]))
-			return true;
-	}
-
-	return false;
-}
-
-/* DHCP enabled on any interfaces? */
-function is_dhcpv6_server_enabled() {
-	global $config;
-
-	if (is_array($config['interfaces'])) {
-		foreach ($config['interfaces'] as $ifcfg) {
-			if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']))
-				return true;
-		}
-	}
-
-	if (!is_array($config['dhcpdv6']))
-		return false;
-
-	foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
-		if (isset($dhcpv6ifconf['enable']) && !empty($config['interfaces'][$dhcpv6if]))
-			return true;
-	}
-
-	return false;
-}
-
 /* radvd enabled on any interfaces? */
 function is_radvd_enabled() {
 	global $config;
