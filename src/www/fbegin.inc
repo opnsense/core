@@ -30,8 +30,25 @@
 require_once("globals.inc");
 require_once("functions.inc");
 require_once("shortcuts.inc");
-require_once("service-utils.inc");
+require_once("services.inc");
 require_once("script/load_phalcon.php");
+
+function find_service_by_name($name) {
+	$services = get_services();
+	foreach ($services as $service)
+		if ($service["name"] == $name)
+			return $service;
+	return array();
+}
+
+function find_service_by_cp_zone($zone) {
+	$services = get_services();
+	foreach ($services as $service)
+		if (($service["name"] == "captiveportal") && isset($service["zone"]) && ($service["zone"] == $zone))
+			return $service;
+	return array();
+}
+
 
 /* Determine automated help URL. Should output the page name and
    parameters separately */

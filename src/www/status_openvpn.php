@@ -35,7 +35,7 @@ $shortcut_section = "openvpn";
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("shortcuts.inc");
-require_once("service-utils.inc");
+require_once("services.inc");
 
 /* Handle AJAX */
 if($_GET['action']) {
