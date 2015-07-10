@@ -32,6 +32,11 @@ require_once("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
 
+$p2_modes = array(
+	'tunnel' => 'Tunnel IPv4',
+	'tunnel6' => 'Tunnel IPv6',
+	'transport' => 'Transport');
+
 if (!is_array($config['ipsec'])) {
         $config['ipsec'] = array();
 }

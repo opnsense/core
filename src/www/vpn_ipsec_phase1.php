@@ -34,6 +34,70 @@ require_once("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
 
+$my_identifier_list = array(
+	'myaddress' => array( 'desc' => gettext('My IP address'), 'mobile' => true ),
+	'address' => array( 'desc' => gettext('IP address'), 'mobile' => true ),
+	'fqdn' => array( 'desc' => gettext('Distinguished name'), 'mobile' => true ),
+	'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
+	'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
+	'keyid tag' => array( 'desc' => gettext('KeyID tag'), 'mobile' => true ),
+	'dyn_dns' => array( 'desc' => gettext('Dynamic DNS'), 'mobile' => true ));
+
+$peer_identifier_list = array(
+	'peeraddress' => array( 'desc' => gettext('Peer IP address'), 'mobile' => false ),
+	'address' => array( 'desc' => gettext('IP address'), 'mobile' => false ),
+	'fqdn' => array( 'desc' => gettext('Distinguished name'), 'mobile' => true ),
+	'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
+	'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
+	'keyid tag' => array( 'desc' =>gettext('KeyID tag'), 'mobile' => true ));
+
+$p1_dhgroups = array(
+	1  => '1 (768 bit)',
+	2  => '2 (1024 bit)',
+	5  => '5 (1536 bit)',
+	14 => '14 (2048 bit)',
+	15 => '15 (3072 bit)',
+	16 => '16 (4096 bit)',
+	17 => '17 (6144 bit)',
+	18 => '18 (8192 bit)',
+	22 => '22 (1024(sub 160) bit)',
+	23 => '23 (2048(sub 224) bit)',
+	24 => '24 (2048(sub 256) bit)'
+);
+
+$p1_authentication_methods = array(
+	'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
+	'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
+	'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
+	'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
+	'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
+	'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ) );
+
+/*
+ * ikeid management functions
+ */
+
+function ipsec_ikeid_used($ikeid) {
+	global $config;
+
+	foreach ($config['ipsec']['phase1'] as $ph1ent)
+		if( $ikeid == $ph1ent['ikeid'] )
+			return true;
+
+	return false;
+}
+
+function ipsec_ikeid_next() {
+
+	$ikeid = 1;
+	while(ipsec_ikeid_used($ikeid))
+		$ikeid++;
+
+	return $ikeid;
+}
+
+
+
 if (!is_array($config['ipsec'])) {
         $config['ipsec'] = array();
 }

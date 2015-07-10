@@ -38,6 +38,42 @@ require_once("guiconfig.inc");
 include("head.inc");
 require_once("ipsec.inc");
 
+function ipsec_get_descr($ikeid) {
+	global $config;
+
+	if (!isset($config['ipsec']['phase1']) ||
+	    !is_array($config['ipsec']['phase1']))
+		return "";
+
+	$descr = '';
+	$a_phase1 = $config['ipsec']['phase1'];
+	foreach ($a_phase1 as $p1) {
+		if ($p1['ikeid'] == $ikeid) {
+			$descr = $p1['descr'];
+			break;
+		}
+	}
+	unset($a_phase1);
+
+	return $descr;
+}
+
+function ipsec_fixup_network($network) {
+	if (substr($network, -3) == '|/0')
+		$result = substr($network, 0, -3);
+	else {
+		$tmp = explode('|', $network);
+		if (isset($tmp[1]))
+			$result = $tmp[1];
+		else
+			$result = $tmp[0];
+		unset($tmp);
+	}
+
+	return $result;
+}
+
+
 if ($_GET['act'] == 'connect') {
 	if (ctype_digit($_GET['ikeid'])) {
 		mwexec("/usr/local/sbin/ipsec down con" . escapeshellarg($_GET['ikeid']));

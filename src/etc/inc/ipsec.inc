@@ -36,23 +36,6 @@ $ipsec_loglevels = array("dmn" => "Daemon", "mgr" => "SA Manager", "ike" => "IKE
 	"imc" => "Integrity checker", "imv" => "Integrity Verifier", "pts" => "Platform Trust Service",
 	"tls" => "TLS handler", "esp" => "IPsec traffic", "lib" => "StrongSWAN Lib");
 
-$my_identifier_list = array(
-	'myaddress' => array( 'desc' => gettext('My IP address'), 'mobile' => true ),
-	'address' => array( 'desc' => gettext('IP address'), 'mobile' => true ),
-	'fqdn' => array( 'desc' => gettext('Distinguished name'), 'mobile' => true ),
-	'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
-	'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
-	'keyid tag' => array( 'desc' => gettext('KeyID tag'), 'mobile' => true ),
-	'dyn_dns' => array( 'desc' => gettext('Dynamic DNS'), 'mobile' => true ));
-
-$peer_identifier_list = array(
-	'peeraddress' => array( 'desc' => gettext('Peer IP address'), 'mobile' => false ),
-	'address' => array( 'desc' => gettext('IP address'), 'mobile' => false ),
-	'fqdn' => array( 'desc' => gettext('Distinguished name'), 'mobile' => true ),
-	'user_fqdn' => array( 'desc' => gettext('User distinguished name'), 'mobile' => true ),
-	'asn1dn' => array( 'desc' => gettext('ASN.1 distinguished Name'), 'mobile' => true ),
-	'keyid tag' => array( 'desc' =>gettext('KeyID tag'), 'mobile' => true ));
-
 $p1_ealgos = array(
 	'aes' => array( 'name' => 'AES', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
 	'aes128gcm' => array( 'name' => 'AES128-GCM', 'keysel' => array( 'lo' => 64, 'hi' => 128, 'step' => 32 ) ),
@@ -82,20 +65,6 @@ $p1_halgos = array(
 	'aesxcbc' => 'AES-XCBC'
 );
 
-$p1_dhgroups = array(
-	1  => '1 (768 bit)',
-	2  => '2 (1024 bit)',
-	5  => '5 (1536 bit)',
-	14 => '14 (2048 bit)',
-	15 => '15 (3072 bit)',
-	16 => '16 (4096 bit)',
-	17 => '17 (6144 bit)',
-	18 => '18 (8192 bit)',
-	22 => '22 (1024(sub 160) bit)',
-	23 => '23 (2048(sub 224) bit)',
-	24 => '24 (2048(sub 256) bit)'
-);
-
 $p2_halgos = array(
 	'hmac_md5' => 'MD5',
 	'hmac_sha1' => 'SHA1',
@@ -105,18 +74,6 @@ $p2_halgos = array(
 	'aesxcbc' => 'AES-XCBC'
 );
 
-$p1_authentication_methods = array(
-	'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
-	'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
-	'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
-	'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
-	'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
-	'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ) );
-
-$p2_modes = array(
-	'tunnel' => 'Tunnel IPv4',
-	'tunnel6' => 'Tunnel IPv6',
-	'transport' => 'Transport');
 
 $p2_protos = array(
 	'esp' => 'ESP',
@@ -133,29 +90,6 @@ $p2_pfskeygroups = array(
 	17 => '17 (6144 bit)',
 	18 => '18 (8192 bit)'
 );
-
-/*
- * ikeid management functions
- */
-
-function ipsec_ikeid_used($ikeid) {
-	global $config;
-
-	foreach ($config['ipsec']['phase1'] as $ph1ent)
-		if( $ikeid == $ph1ent['ikeid'] )
-			return true;
-
-	return false;
-}
-
-function ipsec_ikeid_next() {
-
-	$ikeid = 1;
-	while(ipsec_ikeid_used($ikeid))
-		$ikeid++;
-
-	return $ikeid;
-}
 
 /*
  * Return phase1 local address
@@ -505,32 +439,6 @@ function ipsec_get_number_of_phase2($ikeid) {
 	return $nbph2;
 }
 
-function ipsec_get_descr($ikeid) {
-	global $config;
-
-	if (!isset($config['ipsec']['phase1']) ||
-	    !is_array($config['ipsec']['phase1']))
-		return "";
-
-	$descr = '';
-	$a_phase1 = $config['ipsec']['phase1'];
-	foreach ($a_phase1 as $p1) {
-		if ($p1['ikeid'] == $ikeid) {
-			$descr = $p1['descr'];
-			break;
-		}
-	}
-	unset($a_phase1);
-
-	return $descr;
-}
-
-function ipsec_fixup_ip($ipaddr) {
-	if (is_ipaddrv6($ipaddr) || is_subnetv6($ipaddr))
-		return Net_IPv6::compress(Net_IPv6::uncompress($ipaddr));
-	else
-		return $ipaddr;
-}
 
 function ipsec_find_id(& $ph1ent, $side = "local", $rgmap = array()) {
 	if ($side == "local") {
@@ -586,19 +494,5 @@ function ipsec_find_id(& $ph1ent, $side = "local", $rgmap = array()) {
 	return array($thisid_type, $thisid_data);
 }
 
-function ipsec_fixup_network($network) {
-	if (substr($network, -3) == '|/0')
-		$result = substr($network, 0, -3);
-	else {
-		$tmp = explode('|', $network);
-		if (isset($tmp[1]))
-			$result = $tmp[1];
-		else
-			$result = $tmp[0];
-		unset($tmp);
-	}
-
-	return $result;
-}
 
 ?>
