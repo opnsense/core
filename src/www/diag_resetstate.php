@@ -31,6 +31,12 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
+function filter_flush_state_table()
+{
+	return mwexec('/sbin/pfctl -F state');
+}
+
+
 if ($_POST) {
 	$savemsg = "";
 	if ($_POST['statetable']) {
