@@ -211,7 +211,7 @@ function get_temp() {
 function get_mounted_filesystems() {
 	$mout = "";
 	$filesystems = array();
-	exec("/bin/df -Tht ufs,zfs,cd9660 | /usr/bin/awk '{print $1, $2, $3, $4, $6, $7;}'", $mout);
+	exec("/bin/df -Tht ufs,tmpfs,zfs,cd9660 | /usr/bin/awk '{print $1, $2, $3, $4, $6, $7;}'", $mout);
 
 	/* Get rid of the header */
 	array_shift($mout);
