@@ -30,6 +30,111 @@ require_once("guiconfig.inc");
 require_once("config.inc");
 require_once("gmirror.inc");
 
+/* Get only status word for a single mirror. */
+function gmirror_get_status_single($mirror) {
+	$status = "";
+	$mirror_status = gmirror_get_status();
+	var_dump($mirror_status);
+	return $mirror_status[$mirror]['status'];
+}
+
+/* Test if a given consumer is a member of an existing mirror */
+function is_consumer_in_mirror($consumer, $mirror) {
+	if (!is_valid_consumer($consumer) || !is_valid_mirror($mirror))
+		return false;
+
+	$mirrorconsumers = gmirror_get_consumers_in_mirror($mirror);
+	return in_array(basename($consumer), $mirrorconsumers);
+}
+
+/* Remove all disconnected drives from a mirror */
+function gmirror_forget_disconnected($mirror) {
+	if (!is_valid_mirror($mirror))
+		return false;
+	return mwexec("/sbin/gmirror forget " . escapeshellarg($mirror));
+}
+
+/* Insert another consumer into a mirror */
+function gmirror_insert_consumer($mirror, $consumer) {
+	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
+		return false;
+	return mwexec("/sbin/gmirror insert " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
+}
+
+/* Remove consumer from a mirror and clear its metadata */
+function gmirror_remove_consumer($mirror, $consumer) {
+	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
+		return false;
+	return mwexec("/sbin/gmirror remove " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
+}
+
+/* Wipe geom info from drive (if mirror is not running) */
+function gmirror_clear_consumer($consumer) {
+	if (!is_valid_consumer($consumer))
+		return false;
+	return mwexec("/sbin/gmirror clear " . escapeshellarg($consumer));
+}
+
+/* Force a mirror member to rebuild */
+function gmirror_force_rebuild($mirror, $consumer) {
+	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
+		return false;
+	return mwexec("/sbin/gmirror rebuild " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
+}
+
+/* Test if a consumer has metadata, indicating it is a member of a mirror (active or inactive) */
+function gmirror_consumer_has_metadata($consumer) {
+	return (count(gmirror_get_consumer_metadata($consumer)) > 0);
+}
+
+/* Find the mirror to which this consumer belongs */
+function gmirror_get_consumer_metadata_mirror($consumer) {
+	if (!is_valid_consumer($consumer))
+		return array();
+	$metadata = gmirror_get_consumer_metadata($consumer);
+	foreach ($metadata as $line) {
+		if (substr($line, 0, 5) == "name:") {
+			list ($key, $value) = explode(":", $line, 2);
+			return trim($value);
+		}
+	}
+}
+
+
+/* Deactivate consumer, removing it from service in the mirror, but leave metadata intact */
+function gmirror_deactivate_consumer($mirror, $consumer) {
+	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
+		return false;
+	return mwexec("/sbin/gmirror deactivate " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
+}
+
+/* Reactivate a deactivated consumer */
+function gmirror_activate_consumer($mirror, $consumer) {
+	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
+		return false;
+	return mwexec("/sbin/gmirror activate " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
+}
+
+/* Find the size of the given mirror */
+function gmirror_get_mirror_size($mirror) {
+	if (!is_valid_mirror($mirror))
+		return false;
+	$mirrorsize = "";
+	exec("/sbin/gmirror list " . escapeshellarg($mirror) . " | /usr/bin/grep 'Mediasize:' | /usr/bin/head -n 1 | /usr/bin/awk '{print $2;}'", $mirrorsize);
+	return $mirrorsize[0];
+}
+
+/* Get only the size for one specific potential consumer. */
+function gmirror_get_unused_consumer_size($consumer) {
+	$consumersizes = gmirror_get_all_unused_consumer_sizes_on_disk($consumer);
+	foreach ($consumersizes as $csize) {
+		if ($csize['name'] == $consumer)
+			return $csize['size'];
+	}
+	return -1;
+}
+
+
 $pgtitle = array(gettext("Diagnostics"), gettext("GEOM Mirrors"));
 
 include("head.inc");

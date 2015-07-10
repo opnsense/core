@@ -25,9 +25,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-global $balance_methods;
-$balance_methods = array("load", "prefer", "round-robin", "split");
-
 /* Create a status array for each mirror and its disk components. */
 function gmirror_get_status() {
 	$status = "";
@@ -55,46 +52,6 @@ function gmirror_get_status() {
 	return $mirrors;
 }
 
-/* Get only status word for a single mirror. */
-function gmirror_get_status_single($mirror) {
-	$status = "";
-	$mirror_status = gmirror_get_status();
-	var_dump($mirror_status);
-	return $mirror_status[$mirror]['status'];
-}
-
-/* Generate an HTML formatted status for mirrors and disks in a small format for the widget */
-function gmirror_html_status() {
-	$mirrors = gmirror_get_status();
-	$output = "";
-	if (count($mirrors) > 0) {
-		$output .= "<tr>\n";
-		$output .= "<td width=\"40%\" class=\"vncellt\">Name</td>\n";
-		$output .= "<td width=\"40%\" class=\"vncellt\">Status</td>\n";
-		$output .= "<td width=\"20%\" class=\"vncellt\">Component</td>\n";
-		$output .= "</tr>\n";
-		foreach ($mirrors as $mirror => $name) {
-			$components = count($name["components"]);
-			$output .= "<tr>\n";
-			$output .= "<td width=\"40%\" rowspan=\"{$components}\" class=\"listr\">{$name['name']}</td>\n";
-			$output .= "<td width=\"40%\" rowspan=\"{$components}\" class=\"listr\">{$name['status']}</td>\n";
-			$output .= "<td width=\"20%\" class=\"listr\">{$name['components'][0]}</td>\n";
-			$output .= "</tr>\n";
-			if (count($name["components"]) > 1) {
-				$morecomponents = array_slice($name["components"], 1);
-				foreach ($morecomponents as $component) {
-					$output .= "<tr>\n";
-					$output .= "<td width=\"20%\" class=\"listr\">{$component}</td>\n";
-					$output .= "</tr>\n";
-				}
-			}
-		}
-	} else {
-		$output .= "<tr><td colspan=\"3\" class=\"listr\">No Mirrors Found</td></tr>\n";
-	}
-	// $output .= "<tr><td colspan=\"3\" class=\"listr\">Updated at " . date("F j, Y, g:i:s a") . "</td></tr>\n";
-	return $output;
-}
 
 /* List all disks in the system (potential gmirror targets) */
 function gmirror_get_disks() {
@@ -136,15 +93,6 @@ function gmirror_get_consumers_in_mirror($mirror) {
 	return $consumers;
 }
 
-/* Test if a given consumer is a member of an existing mirror */
-function is_consumer_in_mirror($consumer, $mirror) {
-	if (!is_valid_consumer($consumer) || !is_valid_mirror($mirror))
-		return false;
-
-	$mirrorconsumers = gmirror_get_consumers_in_mirror($mirror);
-	return in_array(basename($consumer), $mirrorconsumers);
-}
-
 /* Test if a mirror exists */
 function is_valid_mirror($mirror) {
 	$mirrors = gmirror_get_mirrors();
@@ -180,40 +128,6 @@ function is_valid_consumer($consumer) {
 	return (is_consumer_unused($consumer) || is_consumer_used($consumer));
 }
 
-/* Remove all disconnected drives from a mirror */
-function gmirror_forget_disconnected($mirror) {
-	if (!is_valid_mirror($mirror))
-		return false;
-	return mwexec("/sbin/gmirror forget " . escapeshellarg($mirror));
-}
-
-/* Insert another consumer into a mirror */
-function gmirror_insert_consumer($mirror, $consumer) {
-	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
-		return false;
-	return mwexec("/sbin/gmirror insert " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
-}
-
-/* Remove consumer from a mirror and clear its metadata */
-function gmirror_remove_consumer($mirror, $consumer) {
-	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
-		return false;
-	return mwexec("/sbin/gmirror remove " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
-}
-
-/* Wipe geom info from drive (if mirror is not running) */
-function gmirror_clear_consumer($consumer) {
-	if (!is_valid_consumer($consumer))
-		return false;
-	return mwexec("/sbin/gmirror clear " . escapeshellarg($consumer));
-}
-
-/* Force a mirror member to rebuild */
-function gmirror_force_rebuild($mirror, $consumer) {
-	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
-		return false;
-	return mwexec("/sbin/gmirror rebuild " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
-}
 
 /* Show all metadata on the physical consumer */
 function gmirror_get_consumer_metadata($consumer) {
@@ -222,47 +136,6 @@ function gmirror_get_consumer_metadata($consumer) {
 	$output = "";
 	exec("/sbin/gmirror dump " . escapeshellarg($consumer), $output);
 	return array_map('trim', $output);
-}
-
-/* Test if a consumer has metadata, indicating it is a member of a mirror (active or inactive) */
-function gmirror_consumer_has_metadata($consumer) {
-	return (count(gmirror_get_consumer_metadata($consumer)) > 0);
-}
-
-/* Find the mirror to which this consumer belongs */
-function gmirror_get_consumer_metadata_mirror($consumer) {
-	if (!is_valid_consumer($consumer))
-		return array();
-	$metadata = gmirror_get_consumer_metadata($consumer);
-	foreach ($metadata as $line) {
-		if (substr($line, 0, 5) == "name:") {
-			list ($key, $value) = explode(":", $line, 2);
-			return trim($value);
-		}
-	}
-}
-
-/* Deactivate consumer, removing it from service in the mirror, but leave metadata intact */
-function gmirror_deactivate_consumer($mirror, $consumer) {
-	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
-		return false;
-	return mwexec("/sbin/gmirror deactivate " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
-}
-
-/* Reactivate a deactivated consumer */
-function gmirror_activate_consumer($mirror, $consumer) {
-	if (!is_valid_mirror($mirror) || !is_valid_consumer($consumer))
-		return false;
-	return mwexec("/sbin/gmirror activate " . escapeshellarg($mirror) . " " . escapeshellarg($consumer));
-}
-
-/* Find the size of the given mirror */
-function gmirror_get_mirror_size($mirror) {
-	if (!is_valid_mirror($mirror))
-		return false;
-	$mirrorsize = "";
-	exec("/sbin/gmirror list " . escapeshellarg($mirror) . " | /usr/bin/grep 'Mediasize:' | /usr/bin/head -n 1 | /usr/bin/awk '{print $2;}'", $mirrorsize);
-	return $mirrorsize[0];
 }
 
 /* Return a list of all potential consumers on a disk with sizes. The geom part
@@ -285,13 +158,4 @@ function gmirror_get_all_unused_consumer_sizes_on_disk($disk) {
 	return $disk_contents;
 }
 
-/* Get only the size for one specific potential consumer. */
-function gmirror_get_unused_consumer_size($consumer) {
-	$consumersizes = gmirror_get_all_unused_consumer_sizes_on_disk($consumer);
-	foreach ($consumersizes as $csize) {
-		if ($csize['name'] == $consumer)
-			return $csize['size'];
-	}
-	return -1;
-}
 ?>
