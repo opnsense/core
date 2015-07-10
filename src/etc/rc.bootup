@@ -29,6 +29,33 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+
+function is_interface_mismatch()
+{
+	global $config;
+
+	$do_assign = false;
+	$i = 0;
+
+	if (isset($config['interfaces'])) {
+		foreach ($config['interfaces'] as $ifname => $ifcfg) {
+			if (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
+				/* Do not check these interfaces */
+				$i++;
+				continue;
+			} elseif (does_interface_exist($ifcfg['if']) == false) {
+				$do_assign = true;
+			} else {
+				$i++;
+			}
+		}
+	}
+
+	return $do_assign;
+}
+
+
+
 function rescue_detect_keypress()
 {
 	$timeout = 9;

@@ -35,6 +35,21 @@ require_once("crypt.inc");
 require_once("util.inc");
 require_once("script/load_phalcon.php");
 
+/* make a global alias table (for faster lookups) */
+function alias_make_table($config)
+{
+	global $aliastable;
+
+	$aliastable = array();
+
+	if (isset($config['aliases']['alias'])) {
+		foreach ($config['aliases']['alias'] as $alias) {
+			if ($alias['name'])
+				$aliastable[$alias['name']] = $alias['address'];
+		}
+	}
+}
+
 /****f* config/parse_config
  * NAME
  *   parse_config - Read in config.xml if needed and return $config array

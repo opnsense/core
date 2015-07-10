@@ -34,6 +34,24 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 
+/* returns an array consisting of every element of $haystack that is not equal to $needle. */
+function array_exclude($needle, $haystack)
+{
+	$result = array();
+
+	if (is_array($haystack)) {
+		foreach ($haystack as $thing) {
+			if ($needle !== $thing) {
+				$result[] = $thing;
+			}
+		}
+	}
+
+	return $result;
+}
+
+
+
 $pgtitle = array(gettext("Firewall"),gettext("Aliases"),gettext("Edit"));
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_aliases.php');

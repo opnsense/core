@@ -106,33 +106,6 @@ function lock($lock, $op = LOCK_SH)
 	}
 }
 
-function try_lock($lock, $timeout = 5)
-{
-	if (!$lock) {
-		die(gettext("WARNING: You must give a name as parameter to try_lock() function."));
-	}
-
-	if (!file_exists("/tmp/{$lock}.lock")) {
-		@touch("/tmp/{$lock}.lock");
-		@chmod("/tmp/{$lock}.lock", 0666);
-	}
-
-	if ($fp = fopen("/tmp/{$lock}.lock", "w")) {
-		$trycounter = 0;
-		while(!flock($fp, LOCK_EX | LOCK_NB)) {
-			if ($trycounter >= $timeout) {
-				fclose($fp);
-				return NULL;
-			}
-			sleep(1);
-			$trycounter++;
-		}
-
-		return $fp;
-	}
-
-	return NULL;
-}
 
 /* unlock configuration file */
 function unlock($cfglckkey = 0)
@@ -1039,20 +1012,6 @@ function mwexec_bg($command, $mute = false)
 	mwexec("/usr/sbin/daemon -f {$command}", $mute);
 }
 
-/* make a global alias table (for faster lookups) */
-function alias_make_table($config)
-{
-	global $aliastable;
-
-	$aliastable = array();
-
-	if (isset($config['aliases']['alias'])) {
-		foreach ($config['aliases']['alias'] as $alias) {
-			if ($alias['name'])
-				$aliastable[$alias['name']] = $alias['address'];
-		}
-	}
-}
 
 /* check if an alias exists */
 function is_alias($name) {
@@ -1086,24 +1045,6 @@ function alias_expand($name) {
 		return null;
 }
 
-function alias_expand_urltable($name) {
-	global $config;
-	$urltable_prefix = "/var/db/aliastables/";
-	$urltable_filename = $urltable_prefix . $name . ".txt";
-
-	if (is_array($config['aliases']['alias'])) {
-		foreach ($config['aliases']['alias'] as $alias) {
-			if (preg_match("/urltable/i", $alias['type']) && ($alias['name'] == $name)) {
-				if (is_URL($alias["url"]) && file_exists($urltable_filename) && filesize($urltable_filename))
-					return $urltable_filename;
-				else if (process_alias_urltable($name, $alias["url"], 0, true))
-					return $urltable_filename;
-			}
-		}
-	}
-	return null;
-}
-
 function subnet_size($subnet) {
 	if (is_subnetv4($subnet)) {
 		list ($ip, $bits) = explode("/", $subnet);
@@ -1116,19 +1057,6 @@ function subnet_size($subnet) {
 	else {
 		return 0;
 	}
-}
-
-function subnetv4_expand($subnet) {
-	$result = array();
-	list ($ip, $bits) = explode("/", $subnet);
-	$net  = ip2long($ip);
-	$mask = (0xffffffff << (32 - $bits));
-	$net &= $mask;
-	$size = round(exp(log(2) * (32 - $bits)));
-	for ($i = 0; $i < $size; $i += 1) {
-		$result[] = long2ip($net | $i);
-	}
-	return $result;
 }
 
 /* find out whether two subnets overlap */
@@ -1148,16 +1076,6 @@ function check_subnets_overlap($subnet1, $bits1, $subnet2, $bits2) {
 	$sn2 = gen_subnet_mask_long($relbits) & ip2long($subnet2);
 
 	return ($sn1 == $sn2);
-}
-
-/* find out whether two IPv6 subnets overlap */
-function check_subnetsv6_overlap($subnet1, $bits1, $subnet2, $bits2) {
-	$sub1_min = gen_subnetv6($subnet1, $bits1);
-	$sub1_max = gen_subnetv6_max($subnet1, $bits1);
-	$sub2_min = gen_subnetv6($subnet2, $bits2);
-	$sub2_max = gen_subnetv6_max($subnet2, $bits2);
-
-	return (is_inrange_v6($sub1_min, $sub2_min, $sub2_max) || is_inrange_v6($sub1_max, $sub2_min, $sub2_max) || is_inrange_v6($sub2_min, $sub1_min, $sub1_max));
 }
 
 /* compare two IP addresses */
@@ -1182,14 +1100,6 @@ function ip_in_subnet($addr,$subnet) {
 }
 
 
-/* return a fieldname that is safe for xml usage */
-function xml_safe_fieldname($fieldname) {
-	$replace = array('/', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
-			 '_', '+', '=', '{', '}', '[', ']', '|', '/', '<', '>', '?',
-			 ':', ',', '.', '\'', '\\'
-		);
-	return strtolower(str_replace($replace, "", $fieldname));
-}
 
 function mac_format($clientmac) {
 	global $config, $cpzone;
@@ -1372,20 +1282,6 @@ function set_single_sysctl($name, $value) {
 	return true;
 }
 
-/*
- *     get_memory()
- *     returns an array listing the amount of
- *     memory installed in the hardware
- *     [0] net memory available for the OS (FreeBSD) after some is taken by BIOS, video or whatever - e.g. 235 MBytes
- *     [1] real (actual) memory of the system, should be the size of the RAM card/s - e.g. 256 MBytes
- */
-function get_memory() {
-	$physmem = get_single_sysctl("hw.physmem");
-	$realmem = get_single_sysctl("hw.realmem");
-	/* convert from bytes to megabytes */
-	return array(($physmem/1048576),($realmem/1048576));
-}
-
 function mute_kernel_msgs()
 {
 	global $config;
@@ -1402,30 +1298,6 @@ function unmute_kernel_msgs()
 	exec('/sbin/conscontrol mute off');
 }
 
-function is_interface_mismatch()
-{
-	global $config;
-
-	$do_assign = false;
-	$i = 0;
-
-	if (isset($config['interfaces'])) {
-		foreach ($config['interfaces'] as $ifname => $ifcfg) {
-			if (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
-				/* Do not check these interfaces */
-				$i++;
-				continue;
-			} elseif (does_interface_exist($ifcfg['if']) == false) {
-				$do_assign = true;
-			} else {
-				$i++;
-			}
-		}
-	}
-
-	return $do_assign;
-}
-
 /****f* util/isAjax
  * NAME
  *   isAjax - reports if the request is driven from prototype
@@ -1436,33 +1308,6 @@ function is_interface_mismatch()
  ******/
 function isAjax() {
 	return isset ($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
-}
-
-/****f* util/timeout
- * NAME
- *   timeout - console input with timeout countdown. Note: erases 2 char of screen for timer. Leave space.
- * INPUTS
- *   optional, seconds to wait before timeout. Default 9 seconds.
- * RESULT
- *   returns 1 char of user input or null if no input.
- ******/
-function timeout($timer = 9)
-{
-	while (!isset($key)) {
-		if ($timer >= 9) { echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";  }
-		else { echo chr(8). "{$timer}"; }
-		shell_exec('/bin/stty -icanon min 0 time 25');
-		$key = shell_exec('/bin/dd count=1 status=none');
-		shell_exec('/bin/stty icanon');
-		if ($key == '') {
-			unset($key);
-		}
-		$timer--;
-		if ($timer == 0) {
-			break;
-		}
-	}
-	return $key;
 }
 
 /****f* util/msort
@@ -1511,92 +1356,6 @@ function is_URL($url) {
 	if($match)
 		return true;
 	return false;
-}
-
-/*
- * Replace a value on a deep associative array using regex
- */
-function array_replace_values_recursive($data, $match, $replace)
-{
-	if (empty($data)) {
-		return $data;
-	}
-
-	if (is_string($data)) {
-		$data = preg_replace("/{$match}/", $replace, $data);
-	} elseif (is_array($data)) {
-		foreach ($data as $k => $v) {
-			$data[$k] = array_replace_values_recursive($v, $match, $replace);
-		}
-	}
-
-	return $data;
-}
-
-/*
-	This function was borrowed from a comment on PHP.net at the following URL:
-	http://www.php.net/manual/en/function.array-merge-recursive.php#73843
- */
-function array_merge_recursive_unique($array0, $array1) {
-
-	$arrays = func_get_args();
-	$remains = $arrays;
-
-	// We walk through each arrays and put value in the results (without
-	// considering previous value).
-	$result = array();
-
-	// loop available array
-	foreach($arrays as $array) {
-
-		// The first remaining array is $array. We are processing it. So
-		// we remove it from remaing arrays.
-		array_shift($remains);
-
-		// We don't care non array param, like array_merge since PHP 5.0.
-		if(is_array($array)) {
-			// Loop values
-			foreach($array as $key => $value) {
-				if(is_array($value)) {
-					// we gather all remaining arrays that have such key available
-					$args = array();
-					foreach($remains as $remain) {
-						if(array_key_exists($key, $remain)) {
-							array_push($args, $remain[$key]);
-						}
-					}
-
-					if(count($args) > 2) {
-						// put the recursion
-						$result[$key] = call_user_func_array(__FUNCTION__, $args);
-					} else {
-						foreach($value as $vkey => $vval) {
-							$result[$key][$vkey] = $vval;
-						}
-					}
-				} else {
-					// simply put the value
-					$result[$key] = $value;
-				}
-			}
-		}
-	}
-	return $result;
-}
-
-
-/*
- * converts a string like "a,b,c,d"
- * into an array like array("a" => "b", "c" => "d")
- */
-function explode_assoc($delimiter, $string) {
-	$array = explode($delimiter, $string);
-	$result = array();
-	$numkeys = floor(count($array) / 2);
-	for ($i = 0; $i < $numkeys; $i += 1) {
-		$result[$array[$i * 2]] = $array[$i * 2 + 1];
-	}
-	return $result;
 }
 
 function get_staticroutes($returnsubnetsonly = false, $returnhostnames = false)
@@ -1669,22 +1428,6 @@ function get_alias_list($type = null)
 				}
 			} elseif ($type === $alias['type']) {
 				$result[] = $alias['name'];
-			}
-		}
-	}
-
-	return $result;
-}
-
-/* returns an array consisting of every element of $haystack that is not equal to $needle. */
-function array_exclude($needle, $haystack)
-{
-	$result = array();
-
-	if (is_array($haystack)) {
-		foreach ($haystack as $thing) {
-			if ($needle !== $thing) {
-				$result[] = $thing;
 			}
 		}
 	}

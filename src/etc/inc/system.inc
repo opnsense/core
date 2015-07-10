@@ -921,6 +921,21 @@ function system_webgui_start()
 	return !mwexec("/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf");
 }
 
+/*
+ *     get_memory()
+ *     returns an array listing the amount of
+ *     memory installed in the hardware
+ *     [0] net memory available for the OS (FreeBSD) after some is taken by BIOS, video or whatever - e.g. 235 MBytes
+ *     [1] real (actual) memory of the system, should be the size of the RAM card/s - e.g. 256 MBytes
+ */
+function get_memory() {
+	$physmem = get_single_sysctl("hw.physmem");
+	$realmem = get_single_sysctl("hw.realmem");
+	/* convert from bytes to megabytes */
+	return array(($physmem/1048576),($realmem/1048576));
+}
+
+
 function system_generate_lighty_config(
 	$filename,
 	$cert,

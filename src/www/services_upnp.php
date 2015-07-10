@@ -33,6 +33,15 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 
+/* return a fieldname that is safe for xml usage */
+function xml_safe_fieldname($fieldname) {
+	$replace = array('/', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
+			 '_', '+', '=', '{', '}', '[', ']', '|', '/', '<', '>', '?',
+			 ':', ',', '.', '\'', '\\'
+		);
+	return strtolower(str_replace($replace, "", $fieldname));
+}
+
 function get_pkg_interfaces_select_source($include_localhost=false) {
 	$interfaces = get_configured_interface_with_descr();
 	$ssifs = array();

@@ -89,6 +89,35 @@ function openvpn_resync_if_needed ($mode, $ovpn_settings, $interface) {
 	}
 }
 
+function try_lock($lock, $timeout = 5)
+{
+	if (!$lock) {
+		die(gettext("WARNING: You must give a name as parameter to try_lock() function."));
+	}
+
+	if (!file_exists("/tmp/{$lock}.lock")) {
+		@touch("/tmp/{$lock}.lock");
+		@chmod("/tmp/{$lock}.lock", 0666);
+	}
+
+	if ($fp = fopen("/tmp/{$lock}.lock", "w")) {
+		$trycounter = 0;
+		while(!flock($fp, LOCK_EX | LOCK_NB)) {
+			if ($trycounter >= $timeout) {
+				fclose($fp);
+				return NULL;
+			}
+			sleep(1);
+			$trycounter++;
+		}
+
+		return $fp;
+	}
+
+	return NULL;
+}
+
+
 /* make sure to wait until the boot scripts have finished */
 if (file_exists('/var/run/booting')) {
         return;
