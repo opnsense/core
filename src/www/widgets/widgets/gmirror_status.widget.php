@@ -30,6 +30,40 @@ $nocsrf = true;
 require_once("guiconfig.inc");
 require_once("gmirror.inc");
 
+/* Generate an HTML formatted status for mirrors and disks in a small format for the widget */
+function gmirror_html_status() {
+	$mirrors = gmirror_get_status();
+	$output = "";
+	if (count($mirrors) > 0) {
+		$output .= "<tr>\n";
+		$output .= "<td width=\"40%\" class=\"vncellt\">Name</td>\n";
+		$output .= "<td width=\"40%\" class=\"vncellt\">Status</td>\n";
+		$output .= "<td width=\"20%\" class=\"vncellt\">Component</td>\n";
+		$output .= "</tr>\n";
+		foreach ($mirrors as $mirror => $name) {
+			$components = count($name["components"]);
+			$output .= "<tr>\n";
+			$output .= "<td width=\"40%\" rowspan=\"{$components}\" class=\"listr\">{$name['name']}</td>\n";
+			$output .= "<td width=\"40%\" rowspan=\"{$components}\" class=\"listr\">{$name['status']}</td>\n";
+			$output .= "<td width=\"20%\" class=\"listr\">{$name['components'][0]}</td>\n";
+			$output .= "</tr>\n";
+			if (count($name["components"]) > 1) {
+				$morecomponents = array_slice($name["components"], 1);
+				foreach ($morecomponents as $component) {
+					$output .= "<tr>\n";
+					$output .= "<td width=\"20%\" class=\"listr\">{$component}</td>\n";
+					$output .= "</tr>\n";
+				}
+			}
+		}
+	} else {
+		$output .= "<tr><td colspan=\"3\" class=\"listr\">No Mirrors Found</td></tr>\n";
+	}
+	// $output .= "<tr><td colspan=\"3\" class=\"listr\">Updated at " . date("F j, Y, g:i:s a") . "</td></tr>\n";
+	return $output;
+}
+
+
 if ($_GET['textonly'] == "true") {
     header("Cache-Control: no-cache");
     echo gmirror_html_status();
