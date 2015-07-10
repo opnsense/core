@@ -29,6 +29,119 @@
 
 require_once('rrd.inc');
 
+function dump_rrd_to_xml($rrddatabase, $xmldumpfile)
+{
+	$rrdtool = '/usr/local/bin/rrdtool';
+
+	@unlink($xmldumpfile);
+
+	exec("$rrdtool dump " . escapeshellarg($rrddatabase) . " {$xmldumpfile} 2>&1", $dumpout, $dumpret);
+	if ($dumpret <> 0) {
+		$dumpout = implode(" ", $dumpout);
+		log_error(sprintf(gettext('RRD dump failed exited with %1$s, the error is: %2$s'), $dumpret, $dumpout));
+	}
+
+	return($dumpret);
+}
+
+
+function migrate_rrd_format($rrdoldxml, $rrdnewxml) {
+	if(!file_exists("/tmp/rrd_notice_sent.txt")) {
+		$_gb = exec("echo 'Converting RRD configuration to new format.  This might take a bit...' | wall");
+		@touch("/tmp/rrd_notice_sent.txt");
+	}
+	$numrraold = count($rrdoldxml['rra']);
+	$numrranew = count($rrdnewxml['rra']);
+	$numdsold = count($rrdoldxml['ds']);
+	$numdsnew = count($rrdnewxml['ds']);
+	log_error(sprintf(gettext('Import RRD has %1$s DS values and %2$s RRA databases, new format RRD has %3$s DS values and %4$s RRA databases'), $numdsold, $numrraold, $numdsnew ,$numrranew));
+
+	/* add data sources not found in the old array from the new array */
+	$i = 0;
+	foreach($rrdnewxml['ds'] as $ds) {
+		if(!is_array($rrdoldxml['ds'][$i])) {
+			$rrdoldxml['ds'][$i] = $rrdnewxml['ds'][$i];
+			/* set unknown values to 0 */
+			$rrdoldxml['ds'][$i]['last_ds'] = " 0.0000000000e+00 ";
+			$rrdoldxml['ds'][$i]['value'] = " 0.0000000000e+00 ";
+			$rrdoldxml['ds'][$i]['unknown_sec'] = "0";
+		}
+		$i++;
+	}
+
+	$i = 0;
+	$rracountold = count($rrdoldxml['rra']);
+	$rracountnew = count($rrdnewxml['rra']);
+	/* process each RRA, which contain a database */
+	foreach($rrdnewxml['rra'] as $rra) {
+		if(!is_array($rrdoldxml['rra'][$i])) {
+			$rrdoldxml['rra'][$i] = $rrdnewxml['rra'][$i];
+		}
+
+		$d = 0;
+		/* process cdp_prep */
+		$cdp_prep = $rra['cdp_prep'];
+		foreach($cdp_prep['ds'] as $ds) {
+			if(!is_array($rrdoldxml['rra'][$i]['cdp_prep']['ds'][$d])) {
+				$rrdoldxml['rra'][$i]['cdp_prep']['ds'][$d] = $rrdnewxml['rra'][$i]['cdp_prep']['ds'][$d];
+				$rrdoldxml['rra'][$i]['cdp_prep']['ds'][$d]['primary_value'] = " 0.0000000000e+00 ";
+				$rrdoldxml['rra'][$i]['cdp_prep']['ds'][$d]['secondary_value'] = " 0.0000000000e+00 ";
+				$rrdoldxml['rra'][$i]['cdp_prep']['ds'][$d]['value'] = " 0.0000000000e+00 ";
+				$rrdoldxml['rra'][$i]['cdp_prep']['ds'][$d]['unknown_datapoints'] = "0";
+			}
+			$d++;
+		}
+
+		/* process database */
+		$rows = $rra['database'];
+		$k = 0;
+		$rowcountold = count($rrdoldxml['rra'][$i]['database']['row']);
+		$rowcountnew = count($rrdnewxml['rra'][$i]['database']['row']);
+		$rowcountdiff = $rowcountnew - $rowcountold;
+		/* save old rows for a bit before we put the required empty rows before it */
+		$rowsdata = $rows;
+		$rowsempty = array();
+		$r = 0;
+		while($r < $rowcountdiff) {
+			$rowsempty[] = $rrdnewxml['rra'][$i]['database']['row'][$r];
+			$r++;
+		}
+		$rows = $rowsempty + $rowsdata;
+		/* now foreach the rows in the database */
+		foreach($rows['row'] as $row) {
+			if(!is_array($rrdoldxml['rra'][$i]['database']['row'][$k])) {
+				$rrdoldxml['rra'][$i]['database']['row'][$k] = $rrdnewxml['rra'][$i]['database']['row'][$k];
+			}
+			$m = 0;
+			$vcountold = count($rrdoldxml['rra'][$i]['database']['row'][$k]['v']);
+			$vcountnew = count($rrdnewxml['rra'][$i]['database']['row'][$k]['v']);
+			foreach($row['v'] as $value) {
+				if(empty($rrdoldxml['rra'][$i]['database']['row'][$k]['v'][$m])) {
+					if(isset($valid)) {
+						$rrdoldxml['rra'][$i]['database']['row'][$k]['v'][$m] = "0.0000000000e+00 ";
+					} else {
+						$rrdoldxml['rra'][$i]['database']['row'][$k]['v'][$m] = $rrdnewxml['rra'][$i]['database']['row'][$k]['v'][$m];
+					}
+				} else {
+					if($value <> " NaN ") {
+						$valid = true;
+					} else {
+						$valid = false;
+					}
+				}
+				$m++;
+			}
+			$k++;
+		}
+		$i++;
+	}
+
+	$numrranew = count($rrdoldxml['rra']);
+	$numdsnew = count($rrdoldxml['ds']);
+	log_error(sprintf(gettext('The new RRD now has %1$s DS values and %2$s RRA databases'), $numdsnew, $numrranew));
+	return $rrdoldxml;
+}
+
 /*
  * Upgrade functions must be named:
  *    upgrade_XXX_to_YYY
