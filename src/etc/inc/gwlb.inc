@@ -912,20 +912,6 @@ function lookup_gateway_ip_by_name($name) {
 	return false;
 }
 
-function lookup_gateway_monitor_ip_by_name($name) {
-
-	$gateways_arr = return_gateways_array(false, true);
-	if (!empty($gateways_arr[$name])) {
-		$gateway = $gateways_arr[$name];
-		if(!is_ipaddr($gateway['monitor']))
-			return $gateway['gateway'];
-
-		return $gateway['monitor'];
-	}
-
-	return (false);
-}
-
 function lookup_gateway_interface_by_name($name) {
 
 	$gateways_arr = return_gateways_array(false, true);
@@ -1049,48 +1035,5 @@ function validate_address_family($ipaddr, $gwname) {
 	return false;
 }
 
-function gateway_is_gwgroup_member($name) {
-	global $config;
-
-	if (is_array($config['gateways']['gateway_group']))
-		$groups = $config['gateways']['gateway_group'];
-	else
-		return false;
-
-	$members = array();
-	foreach($groups as $group) {
-		if (is_array($group['item'])) {
-			foreach($group['item'] as $item) {
-				$elements = explode("|", $item);
-				$gwname = $elements[0];
-				if ($name == $elements[0])
-					$members[] = $group['name'];
-			}
-		}
-	}
-
-	return $members;
-}
-
-/**
- * check if apinger service is enabled
- */
-function is_apinger_enabled() {
-	global $config;
-	$gwcount=0;
-	if (isset($config['gateways']['gateway_item'])) {
-		foreach($config['gateways']['gateway_item'] as $gwkey => $gateway) {
-			if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == "0") {
-				$gwcount += 1;
-			}
-		}
-	}
-
-	if ($gwcount == 0) {
-		return false;
-	} else {
-		return true;
-	}
-}
 
 ?>
