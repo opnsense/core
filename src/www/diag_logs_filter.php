@@ -372,6 +372,110 @@ function easyrule_parse_pass($int, $proto, $src, $dst, $dstport = 0, $ipproto = 
 	return gettext("Unknown pass error.");
 }
 
+/********************************************************************************************************************
+ * other imported
+ ********************************************************************************************************************/
+
+function get_port_with_service($port, $proto) {
+	if (!$port)
+		return '';
+
+	$service = getservbyport($port, $proto);
+	$portstr = "";
+	if ($service) {
+		$portstr = sprintf('<span title="' . gettext('Service %1$s/%2$s: %3$s') . '">' . htmlspecialchars($port) . '</span>', $port, $proto, $service);
+	} else {
+		$portstr = htmlspecialchars($port);
+	}
+	return ':' . $portstr;
+}
+
+function find_rule_by_number($rulenum, $type = 'block')
+{
+	/* Passing arbitrary input to grep could be a Very Bad Thing(tm) */
+	if (!is_numeric($rulenum) || !in_array($type, array('pass', 'block', 'match', 'rdr')))
+		return;
+
+	$lookup_pattern = "^@{$rulenum}[[:space:]]{$type}[[:space:]].*[[:space:]]log[[:space:]]";
+	/* At the moment, miniupnpd is the only thing I know of that
+	   generates logging rdr rules */
+	unset($buffer);
+	if ($type == "rdr")
+		$_gb = exec("/sbin/pfctl -vvPsn -a \"miniupnpd\" | /usr/bin/egrep " . escapeshellarg("^@{$rulenum}"), $buffer);
+	else {
+		if (file_exists('/tmp/rules.debug')) {
+			$_gb = exec('/sbin/pfctl -vvPnf /tmp/rules.debug 2>/dev/null | /usr/bin/egrep ' . escapeshellarg($lookup_pattern), $buffer);
+		} else {
+			$_gb = exec('/sbin/pfctl -vvPsr | /usr/bin/egrep ' . escapeshellarg($lookup_pattern), $buffer);
+		}
+	}
+	if (is_array($buffer))
+		return $buffer[0];
+
+	return "";
+}
+
+function buffer_rules_load()
+{
+	global $buffer_rules_rdr, $buffer_rules_normal;
+	unset($buffer, $buffer_rules_rdr, $buffer_rules_normal);
+	/* Redeclare globals after unset to work around PHP */
+	global $buffer_rules_rdr, $buffer_rules_normal;
+	$buffer_rules_rdr = array();
+	$buffer_rules_normal = array();
+
+	$_gb = exec("/sbin/pfctl -vvPsn -a \"miniupnpd\" | grep '^@'", $buffer);
+	if (is_array($buffer)) {
+		foreach ($buffer as $line) {
+			list($key, $value) = explode (" ", $line, 2);
+			$buffer_rules_rdr[$key] = $value;
+		}
+	}
+	unset($buffer, $_gb);
+	if (file_exists('/tmp/rules.debug')) {
+		$_gb = exec("/sbin/pfctl -vvPnf /tmp/rules.debug 2>/dev/null | /usr/bin/egrep '^@[0-9]+\([0-9]+\)[[:space:]].*[[:space:]]log[[:space:]]' | /usr/bin/egrep -v '^@[0-9]+\([0-9]+\)[[:space:]](nat|rdr|binat|no|scrub)'", $buffer);
+	} else {
+		$_gb = exec("/sbin/pfctl -vvPsr | /usr/bin/egrep '^@[0-9]+\([0-9]+\)[[:space:]].*[[:space:]]log[[:space:]]'", $buffer);
+	}
+
+	if (is_array($buffer)) {
+		foreach ($buffer as $line) {
+			list($key, $value) = explode (" ", $line, 2);
+			$matches = array();
+			if (preg_match('/\@(?P<rulenum>\d+)\)/', $key, $matches) == 1) {
+				$key = "@{$matches['rulenum']}";
+			}
+			$buffer_rules_normal[$key] = $value;
+		}
+	}
+	unset($_gb, $buffer);
+}
+
+function buffer_rules_clear()
+{
+	unset($GLOBALS['buffer_rules_normal']);
+	unset($GLOBALS['buffer_rules_rdr']);
+}
+
+function find_rule_by_number_buffer($rulenum, $type)
+{
+	global $buffer_rules_rdr, $buffer_rules_normal;
+
+	$lookup_key = "@{$rulenum}";
+
+	if ($type == "rdr")	{
+		$ruleString = $buffer_rules_rdr[$lookup_key];
+		//TODO: get the correct 'description' part of a RDR log line. currently just first 30 characters..
+		$rulename = substr($ruleString,0,30);
+	} else {
+		$ruleString = $buffer_rules_normal[$lookup_key];
+		list(,$rulename,) = explode("\"",$ruleString);
+		$rulename = str_replace("USER_RULE: ",'<span class="glyphicon glyphicon-user" title="USER_RULE" alt="USER_RULE"></span>',$rulename);
+	}
+	return "{$rulename} ({$lookup_key})";
+}
+
+
 /**********************************************************************************************************************************
  * End of imported code
  *********************************************************************************************************************************/
