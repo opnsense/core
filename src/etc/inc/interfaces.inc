@@ -2941,7 +2941,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	 * the interface config again, which attempts to spoof the MAC again,
 	 * which cycles the link again...
 	 */
-	if (isset($wancfg['spoofmac']) && ($wancfg['spoofmac'] != $mac)) {
+	if (!empty($wancfg['spoofmac']) && ($wancfg['spoofmac'] != $mac)) {
 		mwexec("/sbin/ifconfig " . escapeshellarg($realhwif) .
 			" link " . escapeshellarg($wancfg['spoofmac']));
 
@@ -2973,12 +2973,12 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	}
 
 	/* media */
-	if (isset($wancfg['media']) || isset($wancfg['mediaopt'])) {
+	if (!empty($wancfg['media']) || !empty($wancfg['mediaopt'])) {
 		$cmd = "/sbin/ifconfig " . escapeshellarg($realhwif);
-		if (isset($wancfg['media'])) {
+		if (!empty($wancfg['media'])) {
 			$cmd .= " media " . escapeshellarg($wancfg['media']);
 		}
-		if (isset($wancfg['mediaopt'])) {
+		if (!empty($wancfg['mediaopt'])) {
 			$cmd .= " mediaopt " . escapeshellarg($wancfg['mediaopt']);
 		}
 		mwexec($cmd);
