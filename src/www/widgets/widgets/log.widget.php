@@ -36,6 +36,20 @@ require_once("pfsense-utils.inc");
 require_once("functions.inc");
 require_once("filter_log.inc");
 
+function find_action_image($action)
+{
+	if ((strstr(strtolower($action), 'p')) || (strtolower($action) == 'rdr')) {
+		return 'glyphicon glyphicon-play text-success';
+	}
+
+	if (strstr(strtolower($action), 'r')) {
+		return 'glyphicon glyphicon-remove text-warning';
+	}
+
+	return 'glyphicon glyphicon-remove text-danger';
+}
+
+
 if (is_numeric($_POST['filterlogentries'])) {
     $config['widgets']['filterlogentries'] = $_POST['filterlogentries'];
 
