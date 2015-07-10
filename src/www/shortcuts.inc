@@ -111,7 +111,11 @@ function get_shortcut_status_link($shortcut_section, $addspace = true, $service 
 				$link = $shortcuts[$shortcut_section]['status'];
 			break;
 		default:
-			$link = $shortcuts[$shortcut_section]['status'];
+			if (isset($shortcuts[$shortcut_section]['status'])) {
+				$link = $shortcuts[$shortcut_section]['status'];
+			} else {
+				$link = null;
+			}
 			break;
 	}
 	if(!empty($link))
