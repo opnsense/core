@@ -25,6 +25,19 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+function subnetv4_expand($subnet) {
+	$result = array();
+	list ($ip, $bits) = explode("/", $subnet);
+	$net  = ip2long($ip);
+	$mask = (0xffffffff << (32 - $bits));
+	$net &= $mask;
+	$size = round(exp(log(2) * (32 - $bits)));
+	for ($i = 0; $i < $size; $i += 1) {
+		$result[] = long2ip($net | $i);
+	}
+	return $result;
+}
+
 
 /* include all configuration functions */
 

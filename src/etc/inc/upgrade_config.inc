@@ -143,6 +143,28 @@ function migrate_rrd_format($rrdoldxml, $rrdnewxml) {
 }
 
 /*
+ * Replace a value on a deep associative array using regex
+ */
+function array_replace_values_recursive($data, $match, $replace)
+{
+	if (empty($data)) {
+		return $data;
+	}
+
+	if (is_string($data)) {
+		$data = preg_replace("/{$match}/", $replace, $data);
+	} elseif (is_array($data)) {
+		foreach ($data as $k => $v) {
+			$data[$k] = array_replace_values_recursive($v, $match, $replace);
+		}
+	}
+
+	return $data;
+}
+
+
+
+/*
  * Upgrade functions must be named:
  *    upgrade_XXX_to_YYY
  * where XXX == previous version, zero padded, and YYY == next version, zero padded

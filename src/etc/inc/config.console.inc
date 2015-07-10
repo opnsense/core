@@ -28,6 +28,35 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+/****f* util/timeout
+ * NAME
+ *   timeout - console input with timeout countdown. Note: erases 2 char of screen for timer. Leave space.
+ * INPUTS
+ *   optional, seconds to wait before timeout. Default 9 seconds.
+ * RESULT
+ *   returns 1 char of user input or null if no input.
+ ******/
+function timeout($timer = 9)
+{
+	while (!isset($key)) {
+		if ($timer >= 9) { echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";  }
+		else { echo chr(8). "{$timer}"; }
+		shell_exec('/bin/stty -icanon min 0 time 25');
+		$key = shell_exec('/bin/dd count=1 status=none');
+		shell_exec('/bin/stty icanon');
+		if ($key == '') {
+			unset($key);
+		}
+		$timer--;
+		if ($timer == 0) {
+			break;
+		}
+	}
+	return $key;
+}
+
+
+
 function set_networking_interfaces_ports()
 {
 	global $config;

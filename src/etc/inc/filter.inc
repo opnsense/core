@@ -48,6 +48,24 @@ $filterdns = array();
 /* Used for aliases and interface macros */
 $aliases = "";
 
+function alias_expand_urltable($name) {
+	global $config;
+	$urltable_prefix = "/var/db/aliastables/";
+	$urltable_filename = $urltable_prefix . $name . ".txt";
+
+	if (is_array($config['aliases']['alias'])) {
+		foreach ($config['aliases']['alias'] as $alias) {
+			if (preg_match("/urltable/i", $alias['type']) && ($alias['name'] == $name)) {
+				if (is_URL($alias["url"]) && file_exists($urltable_filename) && filesize($urltable_filename))
+					return $urltable_filename;
+				else if (process_alias_urltable($name, $alias["url"], 0, true))
+					return $urltable_filename;
+			}
+		}
+	}
+	return null;
+}
+
 
 
 function fix_rule_label($descr) {
