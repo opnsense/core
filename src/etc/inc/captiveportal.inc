@@ -368,14 +368,14 @@ function captiveportal_configure_zone($cpcfg) {
         killbypid("/var/run/cp_prunedb_{$cpzone}.pid");
 
         /* initialize minicron interval value */
-        $croninterval = $cpcfg['croninterval'] ? $cpcfg['croninterval'] : 60;
+        $croninterval = isset($cpcfg['croninterval']) && !empty($cpcfg['croninterval']) ? $cpcfg['croninterval'] : 60;
 
         /* double check if the $croninterval is numeric and at least 10 seconds. If not we set it to 60 to avoid problems */
         if ((!is_numeric($croninterval)) || ($croninterval < 10))
             $croninterval = 60;
 
         /* write portal page */
-        if (is_array($cpcfg['page']) && $cpcfg['page']['htmltext'])
+        if (isset($cpcfg['page']['htmltext']) && $cpcfg['page']['htmltext'])
             $htmltext = base64_decode($cpcfg['page']['htmltext']);
         else {
             /* example/template page */
@@ -403,7 +403,7 @@ function captiveportal_configure_zone($cpcfg) {
         unset($htmltext);
 
         /* write error page */
-        if (is_array($cpcfg['page']) && $cpcfg['page']['errtext'])
+        if (isset($cpcfg['page']['errtext']) && $cpcfg['page']['errtext'])
             $errtext = base64_decode($cpcfg['page']['errtext']);
         else {
             /* example page  */
@@ -431,7 +431,7 @@ function captiveportal_configure_zone($cpcfg) {
         unset($errtext);
 
         /* write logout page */
-        if (is_array($cpcfg['page']) && $cpcfg['page']['logouttext'])
+        if (isset($cpcfg['page']['logouttext']) && $cpcfg['page']['logouttext'])
             $logouttext = base64_decode($cpcfg['page']['logouttext']);
         else {
             /* example page */
@@ -1029,7 +1029,7 @@ function captiveportal_write_elements()
 
     @mkdir('/var/db/cpelements');
 
-    if (is_array($cpcfg['element'])) {
+    if (isset($cpcfg['element']) && is_array($cpcfg['element'])) {
         foreach ($cpcfg['element'] as $data) {
             if (!@file_put_contents("/var/db/cpelements/{$data['name']}", base64_decode($data['content']))) {
                 printf(gettext("Error: cannot open '%s' in captiveportal_write_elements()%s"), $data['name'], "\n");
