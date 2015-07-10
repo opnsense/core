@@ -3,6 +3,7 @@
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
+	(from service-utils.inc) Copyright (C) 2005-2006 Colin Smith (ethethlay@gmail.com)
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

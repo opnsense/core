@@ -3,6 +3,7 @@
 /*
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
 	Copyright (C) 2010 Ermal Luci
+	(from service-utils.inc) Copyright (C) 2005-2006 Colin Smith (ethethlay@gmail.com)
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
