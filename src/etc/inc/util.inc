@@ -66,7 +66,7 @@ function is_subsystem_dirty($subsystem = '')
 		return false;
 	}
 
-	if (file_exists("/var/run/{$subsystem}.dirty")) {
+	if (file_exists("/tmp/{$subsystem}.dirty")) {
 		return true;
 	}
 
@@ -75,14 +75,12 @@ function is_subsystem_dirty($subsystem = '')
 
 function mark_subsystem_dirty($subsystem = '')
 {
-	if (!file_put_contents("/var/run/{$subsystem}.dirty", 'DIRTY')) {
-		log_error(sprintf(gettext("WARNING: Could not mark subsystem: %s dirty"), $subsystem));
-	}
+	touch("/tmp/{$subsystem}.dirty");
 }
 
 function clear_subsystem_dirty($subsystem = '')
 {
-	@unlink("/var/run/{$subsystem}.dirty");
+	@unlink("/tmp/{$subsystem}.dirty");
 }
 
 /* lock configuration file */
