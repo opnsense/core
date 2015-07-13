@@ -121,4 +121,41 @@ class FirmwareController extends ApiControllerBase
 
         return $result;
     }
+
+    /**
+     * list local and remote packages
+     * @return array
+     */
+    public function infoAction()
+    {
+        $this->sessionClose(); // long running action, close session
+
+        $backend = new Backend();
+        $remote = $backend->configdRun('firmware remote');
+        $local = $backend->configdRun('firmware local');
+        /*
+         * pkg(8) returns malformed json by simply outputting each
+         * indivudual package json block... fix it up for now.
+         */
+        $local = str_replace("\n}\n", "\n},\n", trim($local));
+        $local = json_decode('[' . $local . ']', true);
+        /* Remote packages are only a flat list */
+        $remote = explode("\n", trim($remote));
+
+        $response = array('local' => array(), 'remote' => $remote);
+        if ($local != null) {
+            $keep = array('name', 'version', 'comment', 'www', 'flatsize', 'licenses', 'desc', 'categories');
+            foreach ($local as $infos) {
+                $stripped = array();
+                foreach ($infos as $key => $info) {
+                    if (in_array($key, $keep)) {
+                        $stripped[$key] = $info;
+                    }
+                }
+                $response['local'][] = $stripped;
+            }
+        }
+
+        return $response;
+    }
 }
