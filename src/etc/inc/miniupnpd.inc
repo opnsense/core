@@ -4,8 +4,6 @@ require_once("util.inc");
 require_once("config.inc");
 require_once("functions.inc");
 
-$shortcut_section = "upnp";
-
 /* MiniUPnPd */
 
 function upnp_notice ($msg) { log_error("miniupnpd: {$msg}"); }
@@ -32,80 +30,6 @@ function upnp_uuid() {
 	$uuid = md5(get_interface_mac(get_real_interface("wan")));
 	/* put uuid in correct format 8-4-4-4-12 */
 	return substr($uuid,0,8).'-'.substr($uuid,9,4).'-'.substr($uuid,13,4).'-'.substr($uuid,17,4).'-'.substr($uuid,21,12);
-}
-
-function upnp_validate_ip($ip, $check_cdir) {
-	/* validate cidr */
-	$ip_array = array();
-	if($check_cdir)	{
-		$ip_array = explode('/', $ip);
-		if(count($ip_array) == 2) {
-			if($ip_array[1] < 1 || $ip_array[1] > 32)
-				return false;
-		} else
-			if(count($ip_array) != 1)
-				return false;
-	} else
-		$ip_array[] = $ip;
-
-	/* validate ip */
-	if (!is_ipaddr($ip_array[0]))
-		return false;
-	return true;
-}
-
-function upnp_validate_port($port) {
-	foreach(explode('-', $port) as $sub)
-		if($sub < 0 || $sub > 65535)
-			return false;
-	return true;
-}
-
-function before_form_miniupnpd(&$pkg) {
-	global $config;
-
-}
-
-function validate_form_miniupnpd($post, &$input_errors) {
-	if($post['enable'] && (!$post['enable_upnp'] && !$post['enable_natpmp']))
-		$input_errors[] = 'At least one of \'UPnP\' or \'NAT-PMP\' must be allowed';
-	if($post['iface_array'])
-		foreach($post['iface_array'] as $iface) {
-			if($iface == 'wan')
-				$input_errors[] = 'It is a security risk to specify WAN in the \'Interface\' field';
-			elseif ($iface == $post['ext_iface'])
-				$input_errors[] = 'You cannot select the external interface as an internal interface.';
-		}
-	if($post['overridewanip'] && !upnp_validate_ip($post['overridewanip'],false))
-		$input_errors[] = 'You must specify a valid ip address in the \'Override WAN address\' field';
-	if(($post['download'] && !$post['upload']) || ($post['upload'] && !$post['download']))
-		$input_errors[] = 'You must fill in both \'Maximum Download Speed\' and \'Maximum Upload Speed\' fields';
-	if($post['download'] && $post['download'] <= 0)
-		$input_errors[] = 'You must specify a value greater than 0 in the \'Maximum Download Speed\' field';
-	if($post['upload'] && $post['upload'] <= 0)
-		$input_errors[] = 'You must specify a value greater than 0 in the \'Maximum Upload Speed\' field';
-
-	/* user permissions validation */
-	for($i=1; $i<=4; $i++) {
-		if($post["permuser{$i}"]) {
-			$perm = explode(' ',$post["permuser{$i}"]);
-			/* should explode to 4 args */
-			if(count($perm) != 4) {
-				$input_errors[] = "You must follow the specified format in the 'User specified permissions {$i}' field";
-			} else {
-				/* must with allow or deny */
-				if(!($perm[0] == 'allow' || $perm[0] == 'deny'))
-					$input_errors[] = "You must begin with allow or deny in the 'User specified permissions {$i}' field";
-				/* verify port or port range */
-				if(!upnp_validate_port($perm[1]) || !upnp_validate_port($perm[3]))
-					$input_errors[] = "You must specify a port or port range between 0 and 65535 in the 'User specified
-						permissions {$i}' field";
-				/* verify ip address */
-				if(!upnp_validate_ip($perm[2],true))
-					$input_errors[] = "You must specify a valid ip address in the 'User specified permissions {$i}' field";
-			}
-		}
-	}
 }
 
 function sync_package_miniupnpd() {

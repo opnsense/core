@@ -29,9 +29,86 @@
 
 ini_set('max_execution_time', '0');
 
+$shortcut_section = "upnp";
+
 require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
+require_once('miniupnpd.inc');
+
+function upnp_validate_ip($ip, $check_cdir) {
+	/* validate cidr */
+	$ip_array = array();
+	if($check_cdir)	{
+		$ip_array = explode('/', $ip);
+		if(count($ip_array) == 2) {
+			if($ip_array[1] < 1 || $ip_array[1] > 32)
+				return false;
+		} else
+			if(count($ip_array) != 1)
+				return false;
+	} else
+		$ip_array[] = $ip;
+
+	/* validate ip */
+	if (!is_ipaddr($ip_array[0]))
+		return false;
+	return true;
+}
+
+
+
+
+function upnp_validate_port($port) {
+	foreach(explode('-', $port) as $sub)
+		if($sub < 0 || $sub > 65535)
+			return false;
+	return true;
+}
+
+function validate_form_miniupnpd($post, &$input_errors) {
+	if(!empty($post['enable']) && (!empty($post['enable_upnp']) && !empty($post['enable_natpmp'])))
+		$input_errors[] = 'At least one of \'UPnP\' or \'NAT-PMP\' must be allowed';
+	if($post['iface_array'])
+		foreach($post['iface_array'] as $iface) {
+			if($iface == 'wan')
+				$input_errors[] = 'It is a security risk to specify WAN in the \'Interface\' field';
+			elseif ($iface == $post['ext_iface'])
+				$input_errors[] = 'You cannot select the external interface as an internal interface.';
+		}
+	if(!empty($post['overridewanip']) && !upnp_validate_ip($post['overridewanip'],false))
+		$input_errors[] = 'You must specify a valid ip address in the \'Override WAN address\' field';
+	if((!empty($post['download']) && empty($post['upload'])) || (!empty($post['upload']) && empty($post['download'])))
+		$input_errors[] = 'You must fill in both \'Maximum Download Speed\' and \'Maximum Upload Speed\' fields';
+	if(!empty($post['download']) && $post['download'] <= 0)
+		$input_errors[] = 'You must specify a value greater than 0 in the \'Maximum Download Speed\' field';
+	if(!empty($post['upload']) && $post['upload'] <= 0)
+		$input_errors[] = 'You must specify a value greater than 0 in the \'Maximum Upload Speed\' field';
+
+	/* user permissions validation */
+	for($i=1; $i<=4; $i++) {
+		if(!empty($post["permuser{$i}"])) {
+			$perm = explode(' ',$post["permuser{$i}"]);
+			/* should explode to 4 args */
+			if(count($perm) != 4) {
+				$input_errors[] = "You must follow the specified format in the 'User specified permissions {$i}' field";
+			} else {
+				/* must with allow or deny */
+				if(!($perm[0] == 'allow' || $perm[0] == 'deny'))
+					$input_errors[] = "You must begin with allow or deny in the 'User specified permissions {$i}' field";
+				/* verify port or port range */
+				if(!upnp_validate_port($perm[1]) || !upnp_validate_port($perm[3]))
+					$input_errors[] = "You must specify a port or port range between 0 and 65535 in the 'User specified
+						permissions {$i}' field";
+				/* verify ip address */
+				if(!upnp_validate_ip($perm[2],true))
+					$input_errors[] = "You must specify a valid ip address in the 'User specified permissions {$i}' field";
+			}
+		}
+	}
+}
+
+
 
 /* return a fieldname that is safe for xml usage */
 function xml_safe_fieldname($fieldname) {
@@ -70,15 +147,18 @@ global $listtags;
 $listtags = array_flip(array('build_port_path', 'depends_on_package', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'template', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
 $pkg = parse_xml_config_raw('/usr/local/pkg/miniupnpd.xml', 'packagegui', false);
 
-require_once 'miniupnpd.inc';
 
 $name         = $pkg['name'];
 $title        = $pkg['title'];
 $pgtitle      = $title;
 
-$id = $_GET['id'];
-if (isset($_POST['id']))
+if (isset($_GET['id'])) {
+	$id = $_GET['id'];
+} elseif (isset($_POST['id'])) {
 	$id = htmlspecialchars($_POST['id']);
+} else {
+	$id = null;
+}
 
 // Not posting?  Then user is editing a record. There must be a valid id
 // when editing a record.
@@ -99,7 +179,7 @@ if ($config['installedpackages'] && (count($config['installedpackages'][xml_safe
 
 $a_pkg = &$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'];
 
-before_form_miniupnpd($pkg);
+global $config;
 
 if ($_POST) {
 	$firstfield = "";
@@ -119,9 +199,8 @@ if ($_POST) {
 	do_input_validation($_POST, $reqfields, $reqfieldsn, $input_errors);
 	validate_form_miniupnpd($_POST, $input_errors);
 
-	if($_POST['act'] == "del") {
+	if(isset($_POST['act']) && $_POST['act'] == "del") {
 		write_config($pkg['delete_string']);
-		before_form_miniupnpd($pkg);
 		sync_package_miniupnpd();
 	}
 
@@ -144,14 +223,22 @@ if ($_POST) {
 							}
 						break;
 					default:
-						$fieldname  = $fields['fieldname'];
+						if (isset($fields['fieldname'])) {
+							$fieldname  = $fields['fieldname'];
+						} else {
+							$fieldname  = null ;
+						}
 						if ($fieldname == "interface_array") {
 							$fieldvalue = $_POST[$fieldname];
-						} elseif (is_array($_POST[$fieldname])) {
+						} elseif (isset($_POST[$fieldname]) && is_array($_POST[$fieldname])) {
 							$fieldvalue = implode(',', $_POST[$fieldname]);
 						} else {
-							$fieldvalue = trim($_POST[$fieldname]);
-							if ($fields['encoding'] == 'base64')
+							if (isset($_POST[$fieldname])) {
+								$fieldvalue = trim($_POST[$fieldname]);
+							} else {
+								$fieldvalue = null;
+							}
+							if (isset($fields['encoding']) && $fields['encoding'] == 'base64')
 								$fieldvalue = base64_encode($fieldvalue);
 						}
 						if($fieldname)
@@ -164,24 +251,24 @@ if ($_POST) {
 			else
 				$a_pkg[] = $pkgarr;
 
-			write_config($pkg['addedit_string']);
+			write_config(isset($pkg['addedit_string'])?$pkg['addedit_string']:"");
 
 			sync_package_miniupnpd();
 			parse_package_templates();
 
 			/* if start_command is defined, restart w/ this */
-			if($pkg['start_command'] <> "")
+			if(!empty($pkg['start_command']))
 			    exec($pkg['start_command'] . ">/dev/null 2&>1");
 
 			/* if restart_command is defined, restart w/ this */
-			if($pkg['restart_command'] <> "")
+			if(!empty($pkg['restart_command']))
 			    exec($pkg['restart_command'] . ">/dev/null 2&>1");
 
-			if($pkg['aftersaveredirect'] <> "") {
+			if(!empty($pkg['aftersaveredirect'])) {
 			    redirectHeader($pkg['aftersaveredirect']);
-			} elseif(!$pkg['adddeleteeditpagefields']) {
+			} elseif(empty($pkg['adddeleteeditpagefields'])) {
 			    redirectHeader("services_upnp.php?id=0");
-			} elseif(!$pkg['preoutput']) {
+			} elseif(empty($pkg['preoutput'])) {
 			    redirectHeader("services_upnp.php");
 			}
 			exit;
@@ -250,7 +337,12 @@ include("head.inc");
 	<?php
 	foreach ($pkg['fields']['field'] as $field) {
 		if (isset($field['enablefields']) or isset($field['checkenablefields'])) {
-			echo "\tif (jQuery('form[name=\"iform\"] input[name=\"{$field['fieldname']}\"]').prop('checked') == false) {\n";
+			if (isset($field['fieldname'])) {
+				$fieldname = $field['fieldname'];
+			} else {
+				$fieldname = "";
+			}
+			echo "\tif (jQuery('form[name=\"iform\"] input[name=\"{$fieldname}\"]').prop('checked') == false) {\n";
 
 			if (isset($field['enablefields'])) {
 				foreach (explode(',', $field['enablefields']) as $enablefield) {
@@ -319,19 +411,32 @@ include("head.inc");
 <?php
 	$cols = 0;
 	$savevalue = gettext("Save");
+	$pkg_buttons = "";
 
 	foreach ($pkg['fields']['field'] as $pkga) {
+		if (isset($pkga['fieldname'])) {
+			$fieldname = $pkga['fieldname'];
+		} else {
+			$fieldname = "";
+		}
+		if (isset($pkga['description'])) {
+			$description = $pkga['description'];
+		} else {
+			$description = "";
+		}
+		$colspan = '';
+		
 		if ($pkga['type'] == "sorting")
 			continue;
 
 		if ($pkga['type'] == "listtopic") {
-			$input = "<tr id='td_{$pkga['fieldname']}'><td colspan=\"2\">&nbsp;</td></tr>";
-			$input .= "<tr id='tr_{$pkga['fieldname']}'><td colspan=\"2\" class=\"listtopic\">{$pkga['name']}<br /></td></tr>\n";
+			$input = "<tr id='td_{$fieldname}'><td colspan=\"2\">&nbsp;</td></tr>";
+			$input .= "<tr id='tr_{$fieldname}'><td colspan=\"2\" class=\"listtopic\">{$pkga['name']}<br /></td></tr>\n";
 			echo $input;
 			continue;
 		}
 
-		if($pkga['combinefields']=="begin"){
+		if(isset($pkga['combinefields']) && $pkga['combinefields']=="begin"){
 			$input="<tr valign='top' id='tr_{$pkga['fieldname']}'>";
 			echo $input;
 
@@ -352,14 +457,17 @@ include("head.inc");
 			}
 		else if (!isset($pkga['placeonbottom'])){
 			unset($req);
-			if (isset($pkga['required']))
+			if (isset($pkga['required'])) {
 				$req = 'req';
+			} else {
+				$req = '';
+			}
 			$input= "<tr><td valign='top' width=\"22%\" class=\"vncell{$req}\">";
 			$input .= fixup_string($pkga['fielddescr']);
 			$input .= "</td>";
 			echo $input;
 		}
-		if($pkga['combinefields']=="begin"){
+		if(isset($pkga['combinefields']) && $pkga['combinefields']=="begin"){
 			$input="<td class=\"vncell\"><table summary=\"advanced\">";
 			echo $input;
 			}
@@ -371,8 +479,7 @@ include("head.inc");
 		}
 
 		// if user is editing a record, load in the data.
-		$fieldname = $pkga['fieldname'];
-		if ($get_from_post) {
+		if (isset($get_from_post)) {
 			$value = $_POST[$fieldname];
 			if (is_array($value)) $value = implode(',', $value);
 		} else {
@@ -383,21 +490,21 @@ include("head.inc");
 		}
 		switch($pkga['type']){
 			case "input":
-				$size = ($pkga['size'] ? " size='{$pkga['size']}' " : "");
+				$size = (!empty($pkga['size']) ? " size='{$pkga['size']}' " : "");
 				$input = "<input {$size} id='{$pkga['fieldname']}' name='{$pkga['fieldname']}' class='formfld unknown' type='text' value=\"" . htmlspecialchars($value) ."\" />\n";
-				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
+				$input .= "<br />" . fixup_string($description) . "\n";
 				echo $input;
 				break;
 
 			case "password":
 				$size = ($pkga['size'] ? " size='{$pkga['size']}' " : "");
 				$input = "<input " . $size . " id='" . $pkga['fieldname'] . "' type='password' name='" . $pkga['fieldname'] . "' class='formfld pwd' value=\"" . htmlspecialchars($value) . "\" />\n";
-				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
+				$input .= "<br />" . fixup_string($description) . "\n";
 				echo $input;
 				break;
 
 			case "info":
-				$input = fixup_string($pkga['description']) . "\n";
+				$input = fixup_string($description) . "\n";
 				echo $input;
 				break;
 
@@ -418,7 +525,7 @@ include("head.inc");
 					$selected = (in_array($opt['value'], $items) ? 'selected="selected"' : '');
 					$input .= "\t<option value=\"{$opt['value']}\" {$selected}>{$opt['name']}</option>\n";
 					}
-				$input .= "</select>\n<br />\n" . fixup_string($pkga['description']) . "\n";
+				$input .= "</select>\n<br />\n" . fixup_string($description) . "\n";
 				echo $input;
 				break;
 
@@ -451,7 +558,7 @@ include("head.inc");
 					$selected = (in_array($source_value, $items)? 'selected="selected"' : '' );
 					$input  .= "\t<option value=\"{$source_value}\" $selected>{$source_name}</option>\n";
 					}
-				$input .= "</select>\n<br />\n" . fixup_string($pkga['description']) . "\n";
+				$input .= "</select>\n<br />\n" . fixup_string($description) . "\n";
 				echo $input;
 				break;
 
@@ -461,7 +568,7 @@ include("head.inc");
 					$input .= "\t<option value=\"{$vpn['descr']}\">{$vpn['descr']}</option>\n";
 					}
 				$input .= "</select>\n";
-				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
+				$input .= "<br />" . fixup_string($description) . "\n";
 
 				echo $input;
 				break;
@@ -472,7 +579,7 @@ include("head.inc");
 				if (isset($pkga['enablefields']) || isset($pkga['checkenablefields']))
 					$onclick = ' onclick="javascript:enablechange();"';
 				$input = "<input id='{$pkga['fieldname']}' type='checkbox' name='{$pkga['fieldname']}' {$checkboxchecked} {$onclick} {$onchange} />\n";
-				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
+				$input .= "<br />" . fixup_string($description) . "\n";
 
 				echo $input;
 				break;
@@ -486,7 +593,7 @@ include("head.inc");
 					$value = base64_decode($value);
 				$wrap =($pkga['wrap'] == "off" ? 'wrap="off" style="white-space:nowrap;"' : '');
 				$input = "<textarea {$rows} {$cols} name='{$pkga['fieldname']}'{$wrap}>{$value}</textarea>\n";
-				$input .= "<br />" . fixup_string($pkga['description']) . "\n";
+				$input .= "<br />" . fixup_string($description) . "\n";
 				echo $input;
 				break;
 
@@ -517,7 +624,7 @@ include("head.inc");
 				}
 
 				$input = "<input name='{$fieldname}' type='text' class='formfldalias' id='{$fieldname}' {$size} {$value} />\n<br />";
-				$input .= fixup_string($pkga['description']) . "\n";
+				$input .= fixup_string($description) . "\n";
 
 				$script = "<script type='text/javascript'>\n";
 				$script .= "//<![CDATA[\n";
@@ -590,7 +697,7 @@ include("head.inc");
 					$selected = (in_array($iface['ip'], $values) ? 'selected="selected"' : '');
 					$input .= "<option value=\"{$iface['ip']}\" {$selected}>{$iface['description']}</option>\n";
 					}
-				$input .= "</select>\n<br />" . fixup_string($pkga['description']) . "\n";
+				$input .= "</select>\n<br />" . fixup_string($description) . "\n";
 				echo $input;
 				break;
 
@@ -604,7 +711,7 @@ include("head.inc");
 				if(isset($pkga['placeonbottom']))
 					$pkg_buttons .= $input;
 				else
-					echo $input ."\n<br />" . fixup_string($pkga['description']) . "\n";
+					echo $input ."\n<br />" . fixup_string($description) . "\n";
 				break;
 
 			case "rowhelper":
@@ -681,7 +788,7 @@ include("head.inc");
 
 				<!-- <br /><a onclick="javascript:addRowTo('maintable'); return false;" href="#"><img border="0" src="./themes/<?#= $g['theme']; ?>/images/icons/icon_plus.gif" alt="add" /></a>-->
 				<br /><a class="add" href="#"><img border="0" src="./themes/<?= $g['theme']; ?>/images/icons/icon_plus.gif" alt="add" /></a>
-				<br /><?php if($pkga['description'] != "") echo $pkga['description']; ?>
+				<br /><?php if($description != "") echo $description; ?>
 				<script type="text/javascript">
 				//<![CDATA[
 				field_counter_js = <?= $fieldcounter ?>;
@@ -696,7 +803,7 @@ include("head.inc");
 				break;
 		    }
 		#check typehint value
-		if($pkga['typehint'])
+		if(isset($pkga['typehint']))
 			echo " " . $pkga['typehint'];
 		#check combinefields options
 	if (isset($pkga['combinefields'])){
@@ -706,12 +813,10 @@ include("head.inc");
 		}
 	else{
 			$input= "</td></tr>";
-			if($pkga['usecolspan2'])
+			if(isset($pkga['usecolspan2']))
 				$input.= "</tr><br />";
 		}
 		echo "{$input}\n";
-		#increment counter
-		$i++;
 		}
 
 	?>
@@ -723,7 +828,7 @@ include("head.inc");
     <td width="78%">
     <div id="buttons">
 		<?php
-		if($pkg['note'] != ""){
+		if(!empty($pkg['note'])){
 			echo "<p><span class=\"red\"><strong>" . gettext("Note") . ":</strong></span> {$pkg['note']}</p>";
 			}
 		//if (isset($id) && $a_pkg[$id]) // We'll always have a valid ID in our hands
@@ -818,7 +923,11 @@ function fixup_string($string) {
 	global $config;
 	// fixup #1: $myurl -> http[s]://ip_address:port/
 	$https = "";
-	$port = $config['system']['webguiport'];
+	if (!empty($config['system']['webguiport'])) {
+		$port = $config['system']['webguiport'];
+	} else {
+		$port = null;
+	}
 	if($port <> "443" and $port <> "80")
 		$urlport = ":" . $port;
 	else
@@ -847,7 +956,7 @@ function fixup_string($string) {
 function parse_package_templates() {
 	global $pkg, $config;
 	$rows = 0;
-	if($pkg['templates']['template'] <> "")
+	if(!empty($pkg['templates']['template']))
 	    foreach($pkg['templates']['template'] as $pkg_template_row) {
 			$filename = $pkg_template_row['filename'];
 			$template_text = $pkg_template_row['templatecontents'];
