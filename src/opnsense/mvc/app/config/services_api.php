@@ -73,7 +73,7 @@ $di->set('config', $config);
 /**
  * Setup router
  */
-$di->set('router', function() {
+$di->set('router', function () {
 
     $router = new \Phalcon\Mvc\Router(false);
 

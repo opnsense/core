@@ -95,7 +95,7 @@ class IDS extends BaseModel
         foreach ($this->rules->rule->__items as $NodeKey => $NodeValue) {
             if ((string)$NodeValue->sid == $sid) {
                 $this->rules->rule->Del($NodeKey);
-                unset ($this->sid_list[$sid]);
+                unset($this->sid_list[$sid]);
                 break;
             }
         }
