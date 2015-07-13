@@ -510,4 +510,3 @@ function cleanup_lb_mark_anchor($name)
 
 	file_put_contents($filename, implode("\n", $cleanup_anchors));
 }
-

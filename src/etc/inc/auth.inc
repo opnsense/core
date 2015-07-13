@@ -1282,5 +1282,3 @@ function authenticate_user($username, $password, $authcfg = NULL, &$attributes =
 
 	return $authenticated;
 }
-
-

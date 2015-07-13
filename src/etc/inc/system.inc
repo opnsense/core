@@ -961,7 +961,7 @@ function system_generate_lighty_config(
 		} else {
 			$maxprocperip = $config['captiveportal'][$captive_portal]['maxprocperip'];
 		}
-		
+
 		$captive_portal_mod_evasive = "evasive.max-conns-per-ip = {$maxprocperip}";
 
 		$server_upload_dirs = "server.upload-dirs = ( \"/tmp/captiveportal/\" )\n";

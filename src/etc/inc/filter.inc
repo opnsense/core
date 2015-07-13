@@ -1995,7 +1995,7 @@ function filter_generate_user_rule_arr($rule) {
 function filter_generate_port(& $rule, $target = "source", $isnat = false) {
 
 	$src = "";
-	
+
 	if (isset($rule['protocol'])) {
 		$rule['protocol'] = strtolower($rule['protocol']);
 	}
@@ -2590,7 +2590,7 @@ function filter_rules_generate()
 
 	# BEGIN OF firewall rules
 	/* default block logging? */
-	$log = array("block"=>null,"pass"=>null); 
+	$log = array("block"=>null,"pass"=>null);
 	if(!isset($config['syslog']['nologdefaultblock']))
 		$log['block'] = "log";
 	if(isset($config['syslog']['nologdefaultpass']))

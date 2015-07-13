@@ -3041,7 +3041,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 		break;
 	}
 
-	if (isset($wancfg['ipaddrv6'])) {		
+	if (isset($wancfg['ipaddrv6'])) {
 		switch ($wancfg['ipaddrv6']) {
 		case 'slaac':
 		case 'dhcp6':

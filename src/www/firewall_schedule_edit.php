@@ -34,16 +34,16 @@
  *
  * RESULT
  *   true or false
- * NOTES 
+ * NOTES
  *
- ******/   
+ ******/
 function is_schedule_inuse($schedule)
 {
         global $config;
 
         if ($schedule == '') {
                 return false;
-        }  
+        }
 
         /* loop through firewall rules looking for schedule in use */
         if (isset($config['filter']['rule'])) {
@@ -52,7 +52,7 @@ function is_schedule_inuse($schedule)
                                 return true;
                         }
                 }
-        }  
+        }
 
         return false;
 }
