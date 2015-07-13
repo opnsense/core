@@ -39,8 +39,16 @@ function handle_argument_group($iface, $argument2) {
 	if (!is_array($config['interfaces'][$iface]))
 		return;
 
-	$ipaddr = $config['interfaces'][$iface]['ipaddr'];
-	$ip6addr = $config['interfaces'][$iface]['ipaddrv6'];
+	if (isset($config['interfaces'][$iface]['ipaddr'])) { 
+		$ipaddr = $config['interfaces'][$iface]['ipaddr'];
+	} else {
+		$ipaddr = null ;
+	}
+	if (isset($config['interfaces'][$iface]['ipaddrv6'])) {
+		$ip6addr = $config['interfaces'][$iface]['ipaddrv6'];
+	} else {
+		$ip6addr = null;
+	}
 	$staticv4 = false;
 	if (empty($ipaddr))
 		$staticv4 = true;
