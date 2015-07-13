@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-13 21:31+0100\n"
+"PO-Revision-Date: 2015-07-13 21:37+0100\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -15373,7 +15373,7 @@ msgid "Do you really want to delete this entry? All elements that still use it w
 msgstr "Wollen Sie diesen Eintrag wirklich löschen? Alle Elemente die ihn noch verwenden werden ungültig (z.B. Filterregeln)!"
 
 msgid "delete pppoe instance"
-msgstr "Lösche PPPOE Instanz"
+msgstr "Lösche PPPoE Instanz"
 
 msgid "The specified server address is equal to an interface ip address."
 msgstr ""
