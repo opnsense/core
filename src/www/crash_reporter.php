@@ -92,7 +92,6 @@ $crash_report_header = sprintf(
 <?php
 	if (isset($_POST['Submit']) && $_POST['Submit'] == 'yes') {
 		echo '<p>' . gettext('Processing...');
-		ob_flush();
 		flush();
 		if (!is_dir('/var/crash')) {
 			mkdir('/var/crash', 0750, true);
@@ -102,7 +101,6 @@ $crash_report_header = sprintf(
 		exec('/usr/bin/gzip /var/crash/*');
 		$files_to_upload = glob('/var/crash/*');
 		echo gettext('ok') . '<br/>' . gettext('Uploading...');
-		ob_flush();
 		flush();
 		$resp = upload_crash_report($files_to_upload);
 		echo ($resp ? gettext('ok') : gettext('failed')) . '</p>';
