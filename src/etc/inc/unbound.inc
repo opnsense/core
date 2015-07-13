@@ -382,24 +382,6 @@ function sync_unbound_service() {
 
 }
 
-function unbound_acl_id_used($id) {
-    global $config;
-
-    if (is_array($config['unbound']['acls']))
-        foreach($config['unbound']['acls'] as & $acls)
-            if ($id == $acls['aclid'])
-                return true;
-
-    return false;
-}
-
-function unbound_get_next_id() {
-    $aclid = 0;
-    while(unbound_acl_id_used($aclid))
-        $aclid++;
-    return $aclid;
-}
-
 // Execute commands as the user unbound
 function do_as_unbound_user($cmd) {
     global $g;
