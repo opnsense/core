@@ -32,6 +32,69 @@
 include_once("auth.inc");
 include_once("priv.inc");
 
+function getPrivPages(& $entry, & $allowed_pages) {
+	global $priv_list;
+
+	if (!isset($entry['priv']) || !is_array($entry['priv']))
+		return;
+
+	foreach ($entry['priv'] as $pname) {
+		if (strncmp($pname, "page-", 5))
+			continue;
+		$priv = &$priv_list[$pname];
+		if (!is_array($priv))
+			continue;
+		$matches = &$priv['match'];
+		if (!is_array($matches))
+			continue;
+		foreach ($matches as $match)
+			$allowed_pages[] = $match;
+	}
+}
+
+
+
+function getAllowedPages($username) {
+	global $config, $_SESSION;
+
+	if (!function_exists("ldap_connect"))
+		return;
+
+	$allowed_pages = array();
+	$allowed_groups = array();
+
+	if (isset($config['system']['webgui']['authmode'])) {
+		$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
+	} else {
+		$authcfg['type'] = 'local';
+	}
+	// obtain ldap groups if we are in ldap mode
+	if ($authcfg['type'] == "ldap")
+		$allowed_groups = @ldap_get_groups($username, $authcfg);
+	else {
+		// search for a local user by name
+		$local_user = getUserEntry($username);
+		getPrivPages($local_user, $allowed_pages);
+
+		// obtain local groups if we have a local user
+		$allowed_groups = local_user_get_groups($local_user);
+	}
+
+	// build a list of allowed pages
+	if (is_array($config['system']['group']) && is_array($allowed_groups)) {
+		foreach ($config['system']['group'] as $group) {
+			if (in_array($group['name'], $allowed_groups)) {
+				getPrivPages($group, $allowed_pages);
+			}
+		}
+	}
+
+	$_SESSION['page-match'] = $allowed_pages;
+
+	return $allowed_pages;
+}
+
+
 function session_auth() {
 	global $config, $_SESSION;
 
@@ -119,7 +182,7 @@ function session_auth() {
 	/* user hit the logout button */
 	if (isset($_GET['logout'])) {
 
-		if ($_SESSION['Logout'])
+		if (isset($_SESSION['Logout']))
 			log_error(sprintf(gettext("Session timed out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
 		else
 			log_error(sprintf(gettext("User logged out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));

@@ -32,6 +32,41 @@
 require_once("certs.inc");
 require_once("guiconfig.inc");
 
+function get_user_privdesc(& $user) {
+	global $priv_list;
+
+	$privs = array();
+
+	$user_privs = $user['priv'];
+	if (!is_array($user_privs))
+		$user_privs = array();
+
+	$names = local_user_get_groups($user, true);
+
+	foreach ($names as $name) {
+		$group = getGroupEntry($name);
+		$group_privs = $group['priv'];
+		if (!is_array($group_privs))
+			continue;
+		foreach ($group_privs as $pname) {
+			if (in_array($pname,$user_privs))
+				continue;
+			if (!$priv_list[$pname])
+				continue;
+			$priv = $priv_list[$pname];
+			$priv['group'] = $group['name'];
+			$privs[] = $priv;
+		}
+	}
+
+	foreach ($user_privs as $pname)
+		if($priv_list[$pname])
+			$privs[] = $priv_list[$pname];
+
+	return $privs;
+}
+
+
 
 // start admin user code
 $pgtitle = array(gettext("System"),gettext("User Manager"));

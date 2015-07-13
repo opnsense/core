@@ -36,10 +36,6 @@ $priv_list = $acl->getLegacyPrivList();
 
 
 function cmp_page_matches($page, & $matches, $fullwc = true) {
-
-//	$dbg_matches = implode(",", $matches);
-//	log_error("debug: checking page {$page} match with {$dbg_matches}");
-
 	if (!is_array($matches))
 		return false;
 
@@ -66,40 +62,6 @@ function cmp_page_matches($page, & $matches, $fullwc = true) {
 	return false;
 }
 
-
-function get_user_privdesc(& $user) {
-	global $priv_list;
-
-	$privs = array();
-
-	$user_privs = $user['priv'];
-	if (!is_array($user_privs))
-		$user_privs = array();
-
-	$names = local_user_get_groups($user, true);
-
-	foreach ($names as $name) {
-		$group = getGroupEntry($name);
-		$group_privs = $group['priv'];
-		if (!is_array($group_privs))
-			continue;
-		foreach ($group_privs as $pname) {
-			if (in_array($pname,$user_privs))
-				continue;
-			if (!$priv_list[$pname])
-				continue;
-			$priv = $priv_list[$pname];
-			$priv['group'] = $group['name'];
-			$privs[] = $priv;
-		}
-	}
-
-	foreach ($user_privs as $pname)
-		if($priv_list[$pname])
-			$privs[] = $priv_list[$pname];
-
-	return $privs;
-}
 
 function isAllowed($username, $page)
 {
@@ -129,16 +91,12 @@ function isAllowed($username, $page)
 
 function isAllowedPage($page)
 {
-	global $_SESSION;
-
-	$username = $_SESSION['Username'];
-
-	if (!isset($username)) {
+	if (!isset($_SESSION['Username'])) {
 		return false;
 	}
 
 	/* root access check */
-	$user = getUserEntry($username);
+	$user = getUserEntry($_SESSION['Username']);
 	if (isset($user)) {
 		if (isset($user['uid'])) {
 			if ($user['uid'] == 0) {
@@ -151,78 +109,5 @@ function isAllowedPage($page)
 	return cmp_page_matches($page, $_SESSION['page-match']);
 }
 
-function getPrivPages(& $entry, & $allowed_pages) {
-	global $priv_list;
 
-	if (!isset($entry['priv']) || !is_array($entry['priv']))
-		return;
-
-	foreach ($entry['priv'] as $pname) {
-		if (strncmp($pname, "page-", 5))
-			continue;
-		$priv = &$priv_list[$pname];
-		if (!is_array($priv))
-			continue;
-		$matches = &$priv['match'];
-		if (!is_array($matches))
-			continue;
-		foreach ($matches as $match)
-			$allowed_pages[] = $match;
-	}
-}
-
-function getAllowedPages($username) {
-	global $config, $_SESSION;
-
-	if (!function_exists("ldap_connect"))
-		return;
-
-	$allowed_pages = array();
-	$allowed_groups = array();
-
-	if (isset($config['system']['webgui']['authmode'])) {
-		$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
-	} else {
-		$authcfg['type'] = 'local';
-	}
-	// obtain ldap groups if we are in ldap mode
-	if ($authcfg['type'] == "ldap")
-		$allowed_groups = @ldap_get_groups($username, $authcfg);
-	else {
-		// search for a local user by name
-		$local_user = getUserEntry($username);
-		getPrivPages($local_user, $allowed_pages);
-
-		// obtain local groups if we have a local user
-		$allowed_groups = local_user_get_groups($local_user);
-	}
-
-	// build a list of allowed pages
-	if (is_array($config['system']['group']) && is_array($allowed_groups)) {
-		foreach ($config['system']['group'] as $group) {
-			if (in_array($group['name'], $allowed_groups)) {
-				getPrivPages($group, $allowed_pages);
-			}
-		}
-	}
-
-//	$dbg_pages = implode(",", $allowed_pages);
-//	$dbg_groups = implode(",", $allowed_groups);
-//	log_error("debug: user {$username} groups = {$dbg_groups}");
-//	log_error("debug: user {$username} pages = {$dbg_pages}");
-
-	$_SESSION['page-match'] = $allowed_pages;
-
-	return $allowed_pages;
-}
-
-function sort_user_privs($privs) {
-	// Privileges to place first, to redirect properly.
-	$priority_privs = array("page-dashboard-all", "page-system-login/logout");
-
-	$fprivs = array_intersect($privs, $priority_privs);
-	$sprivs  = array_diff($privs, $priority_privs);
-
-	return array_merge($fprivs, $sprivs);
-}
 ?>
