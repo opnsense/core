@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
     function updateStatus() {
         // update UI
         $('#updatelist').empty();
-        $('#maintabs li:eq(0) a').tab('show');
+        $('#maintabs li:eq(1) a').tab('show');
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
         $('#updatestatus').attr('class', 'text-info');
         $('#updatestatus').html("{{ lang._('Updating.... (may take up to 30 seconds)') }}");
@@ -90,7 +90,7 @@ POSSIBILITY OF SUCH DAMAGE.
      * perform upgrade, install poller to update status
      */
     function upgrade(){
-        $('#maintabs li:eq(1) a').tab('show');
+        $('#maintabs li:eq(2) a').tab('show');
         $('#updatestatus').html("{{ lang._('Starting Upgrade.. Please do not leave this page while upgrade is in progress.') }}");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
 
@@ -142,6 +142,7 @@ POSSIBILITY OF SUCH DAMAGE.
             }
             if (data['status'] == 'done') {
                 $('#updatestatus').html("{{ lang._('Upgrade done!') }}");
+                packagesInfo();
             } else if (data['status'] == 'reboot') {
                 // reboot required, tell the user to wait until this is finished and redirect after 5 minutes
                 BootstrapDialog.show({
@@ -173,11 +174,30 @@ POSSIBILITY OF SUCH DAMAGE.
         });
     }
 
+    /**
+     * show package info
+     */
+    function packagesInfo() {
+        $('#packageslist').empty();
+        ajaxGet('/api/core/firmware/info', {}, function (data, status) {
+            $("#packageslist").html("<tr><th>{{ lang._('Name') }}</th>" +
+            "<th>{{ lang._('Version') }}</th><th>{{ lang._('Comment') }}</th></tr>");
+            $.each(data['local'], function(index, row) {
+                $('#packageslist').append('<tr><td>'+row['name']+'</td>' +
+                "<td>"+row['version']+"</td><td>"+row['comment']+"</td></tr>");
+            });
+        });
+    }
+
     $( document ).ready(function() {
         // link event handlers
         $('#checkupdate').click(updateStatus);
         $('#upgrade').click(upgrade_ui);
-
+        if (window.location.hash == '#checkupdate') {
+            // dashboard link: run check automatically
+            updateStatus();
+        }
+        packagesInfo();
     });
 
 
@@ -205,11 +225,16 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-                <li class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
+                <li class="active"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
+                <li><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
                 <li><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
             </ul>
             <div class="tab-content content-box tab-content">
-                <div id="updates" class="tab-pane fade in active">
+                <div id="packages" class="tab-pane fade in active">
+                    <table class="table table-striped table-condensed table-responsive" id="packageslist">
+                    </table>
+                </div>
+                <div id="updates" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="updatelist">
                     </table>
                 </div>
