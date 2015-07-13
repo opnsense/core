@@ -339,7 +339,11 @@ function is_ipaddrv6($ipaddr) {
 		$tmpip = explode("%", $ipaddr);
 		$ipaddr = $tmpip[0];
 	}
-	return Net_IPv6::checkIPv6($ipaddr);
+	if (strpos($ipaddr, ":") === false) {
+		return false;
+	} else {
+		return Net_IPv6::checkIPv6($ipaddr);
+	}
 }
 
 /* returns true if $ipaddr is a valid dotted IPv4 address */

@@ -31,10 +31,11 @@ require_once("config.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 
-$argument = str_replace("\n", "", $argv[1]);
-if (empty($argument))
-	interface_configure("wan");
-else {
-	if (!empty($config['interfaces'][$argument]))
+if (!empty($argv[1])) {
+	$argument = str_replace("\n", "", $argv[1]);
+	if (!empty($config['interfaces'][$argument])) {
 		interface_configure($argument);
+	}
+} else {
+	interface_configure("wan");
 }
