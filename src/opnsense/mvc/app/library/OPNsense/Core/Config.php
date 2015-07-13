@@ -169,7 +169,7 @@ class Config extends Singleton
             $node = $this->simplexml ;
             // invalidate object on warnings/errors (prevent save from happening)
             set_error_handler(
-                function() {
+                function () {
                     $this->statusIsValid = false;
                 }
             );
@@ -293,7 +293,7 @@ class Config extends Singleton
         }
 
         set_error_handler(
-            function() {
+            function () {
                 // reset simplexml pointer on parse error.
                 $this->simplexml = null ;
             }

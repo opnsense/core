@@ -730,8 +730,7 @@ class CPClient
             }
         }
 
-        unset ($acc_list);
-
+        unset($acc_list);
     }
 
     /**
