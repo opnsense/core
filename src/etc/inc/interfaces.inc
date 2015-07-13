@@ -3004,12 +3004,13 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	/* skip vlans for checksumming and polling */
 	if (!stristr($realif, "_vlan") && is_array($options)) {
 		legacy_interface_flags($realhwif, sprintf(
-			'%stxcsum %srxcsum %stso %slro %spolling',
+			'%stxcsum %srxcsum %stso %slro %spolling %svlanhwfilter',
 			isset($config['system']['disablechecksumoffloading']) ? '-' : '',
 			isset($config['system']['disablechecksumoffloading']) ? '-' : '',
 			isset($config['system']['disablesegmentationoffloading']) ? '-' : '',
 			isset($config['system']['disablelargereceiveoffloading']) ? '-' : '',
-			isset($config['system']['polling']) ? '' : '-'
+			isset($config['system']['polling']) ? '' : '-',
+			isset($config['system']['disablevlanhwfilter']) ? '-' : ''
 		));
 	}
 

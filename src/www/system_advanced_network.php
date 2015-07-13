@@ -35,92 +35,84 @@ require_once("filter.inc");
 
 function system_enable_arp_wrong_if()
 {
-	set_sysctl(array(
-		"net.link.ether.inet.log_arp_wrong_iface" => "1",
-		"net.link.ether.inet.log_arp_movements" => "1"
-	));
+    set_sysctl(array(
+        "net.link.ether.inet.log_arp_wrong_iface" => "1",
+        "net.link.ether.inet.log_arp_movements" => "1"
+    ));
 }
 
 
-$pconfig['ipv6nat_enable'] = isset($config['diag']['ipv6nat']['enable']);
-$pconfig['ipv6nat_ipaddr'] = $config['diag']['ipv6nat']['ipaddr'];
-$pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
-$pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
-$pconfig['polling_enable'] = isset($config['system']['polling']);
-$pconfig['sharednet'] = $config['system']['sharednet'];
-$pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
-$pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
-$pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
+if (isset($_POST) && count($_POST) > 0) {
+    $input_errors = array();
 
-if ($_POST) {
-    unset($input_errors);
-    $pconfig = $_POST;
-
-    if ($_POST['ipv6nat_enable'] && !is_ipaddr($_POST['ipv6nat_ipaddr'])) {
+    if (isset($_POST['ipv6nat_enable']) && !is_ipaddr($_POST['ipv6nat_ipaddr'])) {
         $input_errors[] = gettext("You must specify an IP address to NAT IPv6 packets.");
     }
 
-    ob_flush();
-    flush();
-    if (!$input_errors) {
-        if ($_POST['ipv6nat_enable'] == "yes") {
-            $config['diag']['ipv6nat']['enable'] = true;
-            $config['diag']['ipv6nat']['ipaddr'] = $_POST['ipv6nat_ipaddr'];
-        } else {
-            if ($config['diag']) {
-                if ($config['diag']['ipv6nat']) {
-                    unset($config['diag']['ipv6nat']['enable']);
-                    unset($config['diag']['ipv6nat']['ipaddr']);
-                }
-            }
-        }
+    if (isset($_POST['ipv6nat_enable']) && $_POST['ipv6nat_enable'] == "yes") {
+        $config['diag']['ipv6nat']['enable'] = true;
+        $config['diag']['ipv6nat']['ipaddr'] = $_POST['ipv6nat_ipaddr'];
+    } elseif (isset($config['diag']['ipv6nat'])) {
+        unset($config['diag']['ipv6nat']['enable']);
+        unset($config['diag']['ipv6nat']['ipaddr']);
+    }
 
-        if ($_POST['ipv6allow'] == "yes") {
-            $config['system']['ipv6allow'] = true;
-        } else {
-            unset($config['system']['ipv6allow']);
-        }
+    if (isset($_POST['ipv6allow']) && $_POST['ipv6allow'] == "yes") {
+        $config['system']['ipv6allow'] = true;
+    } else {
+        unset($config['system']['ipv6allow']);
+    }
 
-        if ($_POST['prefer_ipv4'] == "yes") {
-            $config['system']['prefer_ipv4'] = true;
-        } else {
-            unset($config['system']['prefer_ipv4']);
-        }
+    if (isset($_POST['prefer_ipv4']) && $_POST['prefer_ipv4'] == "yes") {
+        $config['system']['prefer_ipv4'] = true;
+    } else {
+        unset($config['system']['prefer_ipv4']);
+    }
 
-        if ($_POST['sharednet'] == "yes") {
-            $config['system']['sharednet'] = true;
+    if (isset($_POST['sharednet']) && $_POST['sharednet'] == "yes") {
+        $config['system']['sharednet'] = true;
+    } else {
+        unset($config['system']['sharednet']);
+    }
+
+    if (isset($_POST['polling_enable']) && $_POST['polling_enable'] == "yes") {
+        $config['system']['polling'] = true;
+    } else {
+        unset($config['system']['polling']);
+    }
+
+    if (isset($_POST['disablechecksumoffloading']) && $_POST['disablechecksumoffloading'] == "yes") {
+        $config['system']['disablechecksumoffloading'] = true;
+    } else {
+        unset($config['system']['disablechecksumoffloading']);
+    }
+
+    if (isset($_POST['disablesegmentationoffloading']) && $_POST['disablesegmentationoffloading'] == "yes") {
+        $config['system']['disablesegmentationoffloading'] = true;
+    } else {
+        unset($config['system']['disablesegmentationoffloading']);
+    }
+
+    if (isset($_POST['disablelargereceiveoffloading']) && $_POST['disablelargereceiveoffloading'] == "yes") {
+        $config['system']['disablelargereceiveoffloading'] = true;
+    } else {
+        unset($config['system']['disablelargereceiveoffloading']);
+    }
+
+    if (isset($_POST['disablevlanhwfilter']) && $_POST['disablevlanhwfilter'] == "yes") {
+        $config['system']['disablevlanhwfilter'] = true;
+    } else {
+        unset($config['system']['disablevlanhwfilter']);
+    }
+
+    // save when no errors are found
+    if (count($input_errors) == 0) {
+        setup_polling();
+        if (isset($config['system']['sharednet'])) {
             system_disable_arp_wrong_if();
         } else {
-            unset($config['system']['sharednet']);
             system_enable_arp_wrong_if();
         }
-
-        if ($_POST['polling_enable'] == "yes") {
-            $config['system']['polling'] = true;
-            setup_polling();
-        } else {
-            unset($config['system']['polling']);
-            setup_polling();
-        }
-
-        if ($_POST['disablechecksumoffloading'] == "yes") {
-            $config['system']['disablechecksumoffloading'] = true;
-        } else {
-            unset($config['system']['disablechecksumoffloading']);
-        }
-
-        if ($_POST['disablesegmentationoffloading'] == "yes") {
-            $config['system']['disablesegmentationoffloading'] = true;
-        } else {
-            unset($config['system']['disablesegmentationoffloading']);
-        }
-
-        if ($_POST['disablelargereceiveoffloading'] == "yes") {
-            $config['system']['disablelargereceiveoffloading'] = true;
-        } else {
-            unset($config['system']['disablelargereceiveoffloading']);
-        }
-
         setup_microcode();
 
         // Write out configuration (config.xml)
@@ -187,7 +179,7 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Allow IPv6"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="ipv6allow" type="checkbox" id="ipv6allow" value="yes" <?php if ($pconfig['ipv6allow']) {
+										<input name="ipv6allow" type="checkbox" id="ipv6allow" value="yes" <?php if (isset($config['system']['ipv6allow'])) {
                                             echo "checked=\"checked\"";
 } ?> onclick="enable_change(false)" />
 										<strong><?=gettext("Allow IPv6"); ?></strong><br />
@@ -199,7 +191,7 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("IPv6 over IPv4 Tunneling"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="ipv6nat_enable" type="checkbox" id="ipv6nat_enable" value="yes" <?php if ($pconfig['ipv6nat_enable']) {
+										<input name="ipv6nat_enable" type="checkbox" id="ipv6nat_enable" value="yes" <?php if (isset($config['diag']['ipv6nat']['enable'])) {
                                             echo "checked=\"checked\"";
 } ?> onclick="enable_change(false)" />
 										<strong><?=gettext("Enable IPv4 NAT encapsulation of IPv6 packets"); ?></strong><br />
@@ -209,13 +201,13 @@ include("head.inc");
                                         "add a firewall rule to permit IPv6 packets."); ?><br />
 										<br />
 										<?=gettext("IP address"); ?>&nbsp;:&nbsp;
-										<input name="ipv6nat_ipaddr" type="text" class="formfld unknown" id="ipv6nat_ipaddr" size="20" value="<?=htmlspecialchars($pconfig['ipv6nat_ipaddr']);?>" />
+										<input name="ipv6nat_ipaddr" type="text" class="formfld unknown" id="ipv6nat_ipaddr" size="20" value="<?=htmlspecialchars(isset($config['diag']['ipv6nat']['ipaddr']) ? $config['diag']['ipv6nat']['ipaddr']:"");?>" />
 									</td>
 								</tr>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Prefer IPv4 over IPv6"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?php if ($pconfig['prefer_ipv4']) {
+										<input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?php if (isset($config['system']['prefer_ipv4'])) {
                                             echo "checked=\"checked\"";
 } ?> />
 										<strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong><br />
@@ -230,7 +222,7 @@ include("head.inc");
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Device polling"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="polling_enable" type="checkbox" id="polling_enable" value="yes" <?php if ($pconfig['polling_enable']) {
+										<input name="polling_enable" type="checkbox" id="polling_enable" value="yes" <?php if (isset($config['system']['polling'])) {
                                             echo "checked=\"checked\"";
 } ?> />
 										<strong><?=gettext("Enable device polling"); ?></strong><br />
@@ -277,9 +269,22 @@ include("head.inc");
 									</td>
 								</tr>
 								<tr>
+									<td width="22%" valign="top" class="vncell"><?=gettext("VLAN Hardware Filtering"); ?></td>
+									<td width="78%" class="vtable">
+										<input name="disablevlanhwfilter" type="checkbox" id="disablevlanhwfilter" value="yes" <?php if (isset($config['system']['disablevlanhwfilter'])) {
+                                            echo "checked=\"checked\"";
+} ?> />
+										<strong><?=gettext("Disable VLAN Hardware Filtering"); ?></strong><br />
+										<?=gettext("Checking this option will disable VLAN hardware filtering. This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
+										<br />
+										<span class="red"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
+										<?=gettext("This will take effect after you reboot the machine or re-configure each interface.");?>
+									</td>
+								</tr>
+								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("ARP Handling"); ?></td>
 									<td width="78%" class="vtable">
-										<input name="sharednet" type="checkbox" id="sharednet" value="yes" <?php if (isset($pconfig['sharednet'])) {
+										<input name="sharednet" type="checkbox" id="sharednet" value="yes" <?php if (isset($config['system']['sharednet'])) {
                                             echo "checked=\"checked\"";
 } ?> />
 										<strong><?=gettext("Suppress ARP messages"); ?></strong><br />
