@@ -479,7 +479,7 @@ function find_rule_by_number_buffer($rulenum, $type)
 /**********************************************************************************************************************************
  * End of imported code
  *********************************************************************************************************************************/
- 
+
 
 # --- AJAX RESOLVE ---
 if (isset($_POST['resolve'])) {
@@ -497,7 +497,7 @@ if (isset($_POST['resolve'])) {
 
 if (isset($_POST['easyrule'])) {
 	require_once("filter.inc");
-	
+
 	$response = array("status"=>"unknown") ;
 	switch ($_POST['easyrule']) {
 		case 'block':
@@ -509,8 +509,8 @@ if (isset($_POST['easyrule'])) {
 			$response["status"] = "pass" ;
 			break;
 	}
-	
-	
+
+
 	echo json_encode(str_replace("\\","\\\\", $response));
 	exit;
 }
@@ -740,7 +740,7 @@ include("head.inc");
 									  ?>
 									  <td class="listMRr nowrap">
 										<span onclick="javascript:resolve_with_ajax('<?php echo "{$filterent['srcip']}"; ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $src_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs glyphicon glyphicon-info-sign"></span></span>
-										
+
 										<a title="<?=gettext("Easy Rule: Add to Block List");?>" href="#blockEasy" class="btn btn-danger btn-xs easy_block">
 											<input type="hidden" value="<?= $filterent['srcip']; ?>" id="srcip"/>
 											<input type="hidden" value="<?= $int;?>" id="intf"/>
@@ -813,7 +813,7 @@ include("head.inc");
 <script type="text/javascript">
 //<![CDATA[
 $( document ).ready(function() {
-	$(".easy_block").click(function(){		
+	$(".easy_block").click(function(){
 		$.ajax(
 			"/diag_logs_filter.php",
 			{
@@ -831,8 +831,8 @@ $( document ).ready(function() {
 			});
 
 	});
-	
-	$(".easy_pass").click(function(){		
+
+	$(".easy_pass").click(function(){
 		$.ajax(
 			"/diag_logs_filter.php",
 			{

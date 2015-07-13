@@ -146,7 +146,7 @@ foreach ($filterlog as $fe) {
 	foreach (array_keys($fields) as $field) {
 		if (isset($fe[$field])) {
 			if (!isset($summary[$field])) {
-				$summary[$field] = array(); 
+				$summary[$field] = array();
 			}
 			if (!isset($summary[$field][$fe[$field]])) {
 				$summary[$field][$fe[$field]] = 0;
