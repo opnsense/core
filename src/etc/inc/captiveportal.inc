@@ -39,6 +39,8 @@ require_once("config.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("radius.inc");
+require_once("captiveportal.radius_accounting.inc");
+require_once("captiveportal.radius_authentication.inc");
 require_once("voucher.inc");
 require_once("script/load_phalcon.php");
 

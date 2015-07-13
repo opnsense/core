@@ -46,8 +46,6 @@
 */
 
 require_once("PEAR.inc");
-require_once("radius_authentication.inc");
-require_once("radius_accounting.inc");
 
 /**
 * Client implementation of RADIUS. This are wrapper classes for
