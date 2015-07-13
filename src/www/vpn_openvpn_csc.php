@@ -29,6 +29,17 @@
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 
+function openvpn_cleanup_csc($common_name)
+{
+	@unlink('/var/etc/openvpn-csc/' . basename($common_name));
+}
+
+
+function openvpn_delete_csc(&$settings)
+{
+	@unlink("/var/etc/openvpn-csc/{$settings['common_name']}");
+}
+
 $pgtitle = array(gettext("OpenVPN"), gettext("Client Specific Override"));
 $shortcut_section = "openvpn";
 

@@ -70,32 +70,6 @@ $openvpn_verbosity_level = array(
  * -mgrooms
  */
 
-global $openvpn_dh_lengths;
-$openvpn_dh_lengths = array(
-	1024, 2048, 4096 );
-
-global $openvpn_cert_depths;
-$openvpn_cert_depths = array(
-	1 => "One (Client+Server)",
-	2 => "Two (Client+Intermediate+Server)",
-	3 => "Three (Client+2xIntermediate+Server)",
-	4 => "Four (Client+3xIntermediate+Server)",
-	5 => "Five (Client+4xIntermediate+Server)"
-);
-
-global $openvpn_server_modes;
-$openvpn_server_modes = array(
-	'p2p_tls' => gettext("Peer to Peer ( SSL/TLS )"),
-	'p2p_shared_key' => gettext("Peer to Peer ( Shared Key )"),
-	'server_tls' => gettext("Remote Access ( SSL/TLS )"),
-	'server_user' => gettext("Remote Access ( User Auth )"),
-	'server_tls_user' => gettext("Remote Access ( SSL/TLS + User Auth )"));
-
-global $openvpn_client_modes;
-$openvpn_client_modes = array(
-	'p2p_tls' => gettext("Peer to Peer ( SSL/TLS )"),
-	'p2p_shared_key' => gettext("Peer to Peer ( Shared Key )") );
-
 global $openvpn_compression_modes;
 $openvpn_compression_modes = array(
 	'' =>	gettext("No Preference"),
@@ -248,13 +222,6 @@ function openvpn_get_engines()
 function openvpn_validate_engine($engine) {
 	$engines = openvpn_get_engines();
 	return array_key_exists($engine, $engines);
-}
-
-function openvpn_validate_host($value, $name) {
-	$value = trim($value);
-	if (empty($value) || (!is_domain($value) && !is_ipaddr($value)))
-		return sprintf(gettext("The field '%s' must contain a valid IP address or domain name."), $name);
-	return false;
 }
 
 function openvpn_validate_port($value, $name) {
@@ -872,10 +839,6 @@ function openvpn_delete($mode, & $settings)
 	@array_map('unlink', glob("/var/etc/openvpn/{$mode_id}.*"));
 }
 
-function openvpn_cleanup_csc($common_name)
-{
-	@unlink('/var/etc/openvpn-csc/' . basename($common_name));
-}
 
 function openvpn_resync_csc(&$settings)
 {
@@ -936,10 +899,6 @@ function openvpn_resync_csc(&$settings)
 	chgrp($fpath, 'nobody');
 }
 
-function openvpn_delete_csc(&$settings)
-{
-	@unlink("/var/etc/openvpn-csc/{$settings['common_name']}");
-}
 
 function openvpn_resync($mode, $settings)
 {
@@ -984,34 +943,6 @@ function openvpn_resync_all($interface = '')
 
 }
 
-// Resync and restart all VPNs using a gateway group.
-function openvpn_resync_gwgroup($gwgroupname = "") {
-	global $g, $config;
-
-	if ($gwgroupname <> "") {
-		if (is_array($config['openvpn']['openvpn-server'])) {
-			foreach ($config['openvpn']['openvpn-server'] as & $settings) {
-				if ($gwgroupname == $settings['interface']) {
-					log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " server " . $settings["description"] . ".");
-					openvpn_resync('server', $settings);
-				}
-			}
-		}
-
-		if (is_array($config['openvpn']['openvpn-client'])) {
-			foreach ($config['openvpn']['openvpn-client'] as & $settings) {
-				if ($gwgroupname == $settings['interface']) {
-					log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " client " . $settings["description"] . ".");
-					openvpn_resync('client', $settings);
-				}
-			}
-		}
-
-		// Note: no need to resysnc Client Specific (csc) here, as changes to the OpenVPN real interface do not effect these.
-
-	} else
-		log_error("openvpn_resync_gwgroup called with null gwgroup parameter.");
-}
 
 function openvpn_get_active_servers($type="multipoint") {
 	global $config, $g;
@@ -1236,36 +1167,6 @@ function openvpn_get_client_status($client, $socket) {
 	return $client;
 }
 
-function openvpn_refresh_crls() {
-	global $g, $config;
-
-	openvpn_create_dirs();
-
-	if (isset($config['openvpn']['openvpn-server']) && is_array($config['openvpn']['openvpn-server'])) {
-		foreach ($config['openvpn']['openvpn-server'] as $settings) {
-			if (empty($settings))
-				continue;
-			if (isset($settings['disable']))
-				continue;
-			// Write the settings for the keys
-			switch($settings['mode']) {
-				case 'p2p_tls':
-				case 'server_tls':
-				case 'server_tls_user':
-				case 'server_user':
-					if (!empty($settings['crlref'])) {
-						$crl = lookup_crl($settings['crlref']);
-						crl_update($crl);
-						$fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
-						file_put_contents($fpath, base64_decode($crl['text']));
-						@chmod($fpath, 0644);
-					}
-					break;
-			}
-		}
-	}
-}
-
 function openvpn_create_dirs()
 {
 	@mkdir('/var/etc/openvpn-csc', 0750);
@@ -1376,7 +1277,3 @@ function openvpn_get_settings($mode, $vpnid) {
 	return array();
 }
 
-function openvpn_restart_by_vpnid($mode, $vpnid) {
-	$settings = openvpn_get_settings($mode, $vpnid);
-	openvpn_restart($mode, $settings);
-}

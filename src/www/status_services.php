@@ -31,6 +31,12 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("shortcuts.inc");
 
+function openvpn_restart_by_vpnid($mode, $vpnid) {
+	$settings = openvpn_get_settings($mode, $vpnid);
+	openvpn_restart($mode, $settings);
+}
+
+
 $service_name = '';
 if (isset($_GET['service']))
 	$service_name = htmlspecialchars($_GET['service']);
