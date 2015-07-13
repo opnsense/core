@@ -97,7 +97,7 @@ POSSIBILITY OF SUCH DAMAGE.
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
             $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
             $('#updatelist').empty();
-            setTimeout(trackStatus, 1000) ;
+            setTimeout(trackStatus, 500);
         });
     }
 
@@ -131,6 +131,17 @@ POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
+    function rebootWait() {
+        $.ajax({
+            url: document.url,
+            timeout: 2500
+        }).fail(function () {
+            setTimeout(rebootWait, 2500);
+        }).done(function () {
+            $(location).attr('href',"/");
+	});
+    }
+
     /**
      * handle update status
      */
@@ -147,25 +158,17 @@ POSSIBILITY OF SUCH DAMAGE.
                 // reboot required, tell the user to wait until this is finished and redirect after 5 minutes
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
-                    title: "{{ lang._('Upgrade') }}",
+                    title: "{{ lang._('Your device is rebooting') }}",
                     message: "{{ lang._('The upgrade is finished and your device is being rebooted at the moment, please wait.') }}",
                     closable: false,
                     onshow:function(dialogRef){
                         dialogRef.setClosable(false);
-                        dialogRef.getModalBody().html("{{ lang._('You will be redirected to the login page in 5 minutes.') }}");
-                        setTimeout(function(){
-                            dialogRef.close();
-                            $(location).attr('href',"/");
-                        }, 60000 * 5);
+                        dialogRef.getModalBody().html(
+                            "{{ lang._('The upgrade is finished and your device is being rebooted at the moment, please wait...') }}" +
+                            ' <i class="fa fa-cog fa-spin"></i>'
+                        );
+                        setTimeout(rebootWait, 30000);
                     },
-                    buttons: [{
-                        label: "{{ lang._('Close') }}",
-                        cssClass: 'btn-success',
-                        autospin: true,
-                        action: function(dialogRef){
-                            dialogRef.enableButtons(false);
-                        }
-                    }]
                 });
             } else {
                 // schedule next poll

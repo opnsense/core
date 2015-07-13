@@ -62,8 +62,8 @@ fi
 if [ -n "${REBOOT}" ]; then
 	echo '***REBOOT***' >> ${PKG_PROGRESS_FILE}
 	# give the frontend some time to figure out that a reboot is coming
-	sleep 10
+	sleep 5
 	/usr/local/etc/rc.reboot
-else
-	echo '***DONE***' >> ${PKG_PROGRESS_FILE}
 fi
+
+echo '***DONE***' >> ${PKG_PROGRESS_FILE}
