@@ -262,8 +262,11 @@ function interface_vlan_configure(&$vlan) {
 
 	/* make sure the parent interface is up */
 	interfaces_bring_up($if);
-	/* Since we are going to add vlan(4) try to enable all that hardware supports. */
-	legacy_interface_flags($if, 'vlanhwtag vlanmtu vlanhwfilter');
+	if (!isset($config['system']['disablevlanhwfilter'])) {
+		/* Since we are going to add vlan(4) try to enable all that hardware supports. */
+		/* (but only when not disabled in system advanced network settings) */
+		legacy_interface_flags($if, 'vlanhwtag vlanmtu vlanhwfilter');
+	}
 
 	if (!empty($vlanif) && does_interface_exist($vlanif)) {
 		interface_bring_down($vlanif, true);
