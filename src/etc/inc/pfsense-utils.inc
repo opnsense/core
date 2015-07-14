@@ -1718,17 +1718,3 @@ function zte_simstate_to_string($state) {
 	$string = "{$modes[$state]} State";
 	return $string;
 }
-
-function get_configured_pppoe_server_interfaces() {
-	global $config;
-	$iflist = array();
-	if (is_array($config['pppoes']['pppoe'])) {
-		foreach($config['pppoes']['pppoe'] as $pppoe) {
-			if ($pppoe['mode'] == "server") {
-				$int = "poes". $pppoe['pppoeid'];
-				$iflist[$int] = strtoupper($int);
-			}
-		}
-	}
-	return $iflist;
-}
