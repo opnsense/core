@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-14 14:16+0100\n"
+"PO-Revision-Date: 2015-07-14 14:32+0100\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -15145,7 +15145,7 @@ msgstr ""
 #
 # File: src/www/vpn_openvpn_export_shared.php, line: 474
 msgid "Client Type"
-msgstr "Client Typ"
+msgstr "Client-Typ"
 
 #
 # File: src/www/vpn_openvpn_export_shared.php, line: 481
@@ -15675,7 +15675,7 @@ msgid "Click to check for updates"
 msgstr "Klicken Sie hier um mach Aktualisierungen zu suchen"
 
 msgid "CPU Type"
-msgstr "CPU Typ"
+msgstr "CPU-Typ"
 
 msgid "Hardware crypto"
 msgstr "Hardwarekryptografie"
