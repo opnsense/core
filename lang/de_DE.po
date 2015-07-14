@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-13 21:37+0100\n"
+"PO-Revision-Date: 2015-07-14 12:42+0100\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -4562,7 +4562,7 @@ msgid "Negating destination address of \"any\" is invalid."
 msgstr ""
 
 msgid "A valid target IP address must be specified."
-msgstr ""
+msgstr "Eine gültige Ziel-IP-Adresse muss angegeben werden."
 
 msgid "A valid target IP must be specified when using the 'Other Subnet' type."
 msgstr ""
@@ -7480,8 +7480,9 @@ msgstr ""
 msgid "Disable acfcomp (compression) (auto-negotiated by default)."
 msgstr ""
 
+#, fuzzy
 msgid "Address and control field compression. This option only applies to asynchronous link types. It saves two bytes per frame."
-msgstr ""
+msgstr "Adress- und Control-Feldkomprimierung. Diese Option wird bei asynchronen Verbindungstypen angewandt. Dadurch werden zwei Byte pro Frame gespart."
 
 msgid "ProtoComp"
 msgstr ""
@@ -8550,6 +8551,9 @@ msgid ""
 "may reference them directly from your portal page HTML code using relative paths. Example: you've uploaded an image with the name 'captiveportal-test.jpg' using "
 "the file manager. Then you can include it in your portal page like this:"
 msgstr ""
+"Jede Datei mit den Dateinamenspräfix captiveportal- hochladen wird, wird über das Rootverzeichnis des Captive Portal HTTP(S)-Server zugänglich gemacht. Sie können "
+"diese direkt aus dem HTML Code Ihrer Portalseite mit relativen Pfaden referenzieren. Beispiel: Wenn Sie eine Bilddatei mit dem Namen 'captiveportal-test.jpg' mit "
+"dem Dateimanager hochgeladen haben, dann können Sie diese folgend in Ihrer Portalseite verwenden:"
 
 msgid "In addition, you can also upload .php files for execution.  You can pass the filename to your custom page from the initial page by using text similar to:"
 msgstr ""
@@ -8568,6 +8572,8 @@ msgid ""
 "Adding allowed IP addresses will allow IP access to/from these addresses through the captive portal without being taken to the portal page. This can be used for a "
 "web server serving images for the portal page or a DNS server on another network, for example."
 msgstr ""
+"Das Hinzufügen von erlaubter IP Adressen erlaubt den Zugriff zu/von diesen Adressen ohne zur Portalseite weitergeleitet zu werden. Dies kann zum Beispiel für einen "
+"Webserver genutzt werden, die Bilder für die Portalseite ausliefert oder auch für einen DNS Server in einem anderen Netzwerk."
 
 msgid "Edit allowed IP address"
 msgstr ""
@@ -8579,7 +8585,7 @@ msgid "Subnet mask"
 msgstr ""
 
 msgid "A valid subnet mask must be specified"
-msgstr ""
+msgstr "Eine gültige Subnetzmaske muss angegeben werden"
 
 msgid "Upload speed needs to be an integer"
 msgstr ""
@@ -9289,10 +9295,10 @@ msgid "and the default bios filename"
 msgstr "und der standard BIOS Dateiname"
 
 msgid "and the UEFI 32bit filename  "
-msgstr ""
+msgstr "und den UEFI 32 Bit Dateinamen "
 
 msgid "and the UEFI 64bit filename  "
-msgstr ""
+msgstr "und den UEFI 64 Bit Dateinamen "
 
 msgid "Note: You need both a filename and a boot server configured for this to work!"
 msgstr ""
@@ -9466,7 +9472,7 @@ msgid "A valid IPv6 address or hostname must be specified for the TFTP server."
 msgstr "Eine gültige IPv6 Adresse oder Hostname muss für den TFTP Server spezifiziert werden."
 
 msgid "A valid URL must be specified for the network bootfile."
-msgstr ""
+msgstr "Eine gültige URL muss für die Netzwerkbootdatei angegeben werden."
 
 #, php-format
 msgid "The subnet range cannot overlap with virtual IPv6 address %s."
@@ -10004,7 +10010,7 @@ msgid "Network (s)"
 msgstr "Netzwerk(e)"
 
 msgid "Add another Time server"
-msgstr ""
+msgstr "Einen weiteren Zeitserver hinzufügen"
 
 msgid "Serial GPS"
 msgstr ""
@@ -10250,7 +10256,7 @@ msgid "to reliably supply the time of each PPS pulse."
 msgstr ""
 
 msgid "All serial ports are listed, be sure to pick the port with the PPS source attached."
-msgstr ""
+msgstr "Alle seriellen Ports sind gelistet. Stellen Sie sicher, dass die den Port auswählen, an dem die PPS Quelle angeschlossen ist."
 
 msgid "Fudge time is used to specify the PPS signal offset from the actual second such as the transmission delay between the transmitter and the receiver."
 msgstr ""
@@ -10631,7 +10637,7 @@ msgid "Access List Name"
 msgstr "Zugriffslistenname"
 
 msgid "Access Lists to control access to the DNS Resolver can be defined here."
-msgstr ""
+msgstr "Zugriffslisten zur Zugriffssteuerung zum DNS Resolver können hier definiert werden."
 
 msgid "Do you really want to delete this access list?"
 msgstr "Wollen Sie diese Zugriffsliste wirklich löschen?"
@@ -13433,7 +13439,7 @@ msgid "The group name is longer than 16 characters."
 msgstr ""
 
 msgid "Another entry with the same group name already exists."
-msgstr ""
+msgstr "Ein anderer Eintrag mit dem selben Gruppennamen existiert bereits."
 
 #
 # File: src/www/system_groupmanager.php, line: 127
@@ -13481,6 +13487,10 @@ msgid ""
 "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAn icon that appears grey indicates that it is a system defined object.\n"
 "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tSome system object properties can be modified but they cannot be deleted."
 msgstr ""
+"Zusätzliche Webkonfigurator Gruppen können hier hinzugefügt werden.\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tGruppenberechtigungen können zugewiesen werden, welche von Benutzern in der Gruppe geerbt werden.\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tEin graues Icon ist ein Indikator für ein vom System definierten Objekt.\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tManche Eigenschaften von Systemobjekten können verändert aber nicht gelöscht werden."
 
 msgid "Do you really want to delete this group?"
 msgstr "Wollen Sie diese Gruppe wirklich löschen?"
@@ -13687,9 +13697,11 @@ msgid ""
 "Additional users can be added here. User permissions for accessing the webConfigurator can be assigned directly or inherited from group memberships. An icon that "
 "appears grey indicates that it is a system defined object. Some system object properties can be modified but they cannot be deleted."
 msgstr ""
+"Zusätzliche Benutzer können hier hinzugefügt werden. Benutzerberechtigungen zum Zugriff zum Webkonfigurator können direkt zugewiesen oder von einer "
+"Gruppenmitgliedschaft geerbt werden. Ein graues Icon ist ein Indikator für ein Systemobjekt. Manche Systemobjekte können verändert, jedoch nicht gelöscht werden."
 
 msgid "Accounts created here are also used for other parts of the system such as OpenVPN, IPsec, and Captive Portal."
-msgstr ""
+msgstr "Accounts die hier erstellt werden, werden auch in anderen Teilen des Systems wie OpenVPN, IPsec und Captive Portal verwendet."
 
 msgid "edit user"
 msgstr "Benutzer bearbeiten"
@@ -13905,7 +13917,7 @@ msgid "A user with this name already exists. Add the key to the user instead."
 msgstr "Ein Benutzer mit dem Namen existiert bereits. Weisen sie den Schlüssel stattdessen diesem Benutzer zu."
 
 msgid "Another entry with the same identifier already exists."
-msgstr ""
+msgstr "Ein anderer Eintrag mit dem selben Identifizierer existiert bereits."
 
 msgid "Edited"
 msgstr "Bearbeited"
@@ -13929,10 +13941,10 @@ msgid "A valid IP address for 'Virtual Address Pool Network' must be specified."
 msgstr ""
 
 msgid "A valid value for 'DNS Default Domain' must be specified."
-msgstr ""
+msgstr "Ein gültiger Wert muss für 'DNS Standarddomain' angegeben werden."
 
 msgid "A valid split DNS domain list must be specified."
-msgstr ""
+msgstr "Eine gültige Split-DNS Domain muss angegeben werden."
 
 msgid "At least one DNS server must be specified to enable the DNS Server option."
 msgstr "Mindestens ein DNS Server muss angegeben werden um die DNS Server Option zu aktivieren."
@@ -15229,8 +15241,9 @@ msgstr ""
 msgid "Bridge DHCP"
 msgstr "Bridge DHCP"
 
+#, fuzzy
 msgid "Allow clients on the bridge to obtain DHCP."
-msgstr ""
+msgstr "Erlaube den Clients an der Bridge DHCP Nachrichten zu erhalten."
 
 msgid "Bridge Interface"
 msgstr "Bridge Interface"
@@ -15289,7 +15302,7 @@ msgid "Inter-client communication"
 msgstr ""
 
 msgid "Allow communication between clients connected to this server"
-msgstr ""
+msgstr "Kommunikation zwischen den Clients, die mit diesem Server verbunden sind, erlauben"
 
 msgid "Duplicate Connections"
 msgstr ""
@@ -15302,7 +15315,7 @@ msgid "Dynamic IP"
 msgstr "Dynamische IP"
 
 msgid "Allow connected clients to retain their connections if their IP address changes"
-msgstr ""
+msgstr "Erlaube den Verbundenen Clients, deren Verbindung aufrecht zu erhalten falls sich deren IP Adresse ändert"
 
 msgid "Address Pool"
 msgstr "Adresspool"
@@ -15358,7 +15371,7 @@ msgid "delete server"
 msgstr "Server löschen"
 
 msgid "add a new pppoe instance"
-msgstr ""
+msgstr "Eine neue PPPoE Instanz hinzufügen"
 
 msgid "The PPPoE entry list has been changed"
 msgstr ""
@@ -15489,7 +15502,7 @@ msgid "PPTP redirection target address"
 msgstr ""
 
 msgid "A valid target address must be specified."
-msgstr ""
+msgstr "Eine gültige Zieladresse muss angegeben werden."
 
 msgid "VPN PPTP"
 msgstr "VPN PPTP"
