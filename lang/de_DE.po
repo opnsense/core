@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-14 14:32+0100\n"
+"PO-Revision-Date: 2015-07-14 19:07+0100\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -925,7 +925,7 @@ msgstr ""
 # File: src/etc/inc/notices.smtp.inc, line: 454
 #, php-format
 msgid "Connected to SMTP server \"%s\"."
-msgstr "Verbunden mit SMTP Server \"%s\""
+msgstr "Verbunden mit SMTP Server \"%s\"."
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 468
@@ -4464,7 +4464,7 @@ msgid "Mode:"
 msgstr "Modus:"
 
 msgid "Automatic outbound NAT rule generation"
-msgstr "Automatische ausgehende NAT Regel generierung"
+msgstr "Automatische ausgehende NAT Regelgenerierung"
 
 msgid "(IPsec passthrough included)"
 msgstr "(IPsec passthrough inkludiert)"
@@ -8599,13 +8599,13 @@ msgid "IP address and subnet mask. Use /32 for a single IP"
 msgstr ""
 
 msgid "Bandwidth up"
-msgstr "Bandbreite hoch"
+msgstr "Bandbreite upload"
 
 msgid "Enter a upload limit to be enforced on this IP address in Kbit/s"
 msgstr ""
 
 msgid "Bandwidth down"
-msgstr "Bandbreite herunter"
+msgstr "Bandbreite download"
 
 msgid "Enter a download limit to be enforced on this IP address in Kbit/s"
 msgstr ""
