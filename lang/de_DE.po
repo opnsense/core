@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-14 12:42+0100\n"
+"PO-Revision-Date: 2015-07-14 12:59+0100\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -723,7 +723,7 @@ msgid "KeyID tag"
 msgstr ""
 
 msgid "Dynamic DNS"
-msgstr "Dynamischer DNS"
+msgstr "Dynamisches DNS"
 
 msgid "Peer IP address"
 msgstr ""
@@ -2273,7 +2273,7 @@ msgid "Folder ID"
 msgstr ""
 
 msgid "Backup Count"
-msgstr "Backup Anzahl"
+msgstr "Anzahl an Backups"
 
 #
 # File: src/www/diag_backup.php, line: 764
@@ -9791,7 +9791,7 @@ msgid "Enter additional names for this host."
 msgstr "Geben Sie zusätzliche Namen für den Host ein."
 
 msgid "Dynamic DNS clients"
-msgstr "Dynamische DNS-Clients"
+msgstr "Clients für dynamische DNS"
 
 msgid "DynDns"
 msgstr "DynDns"
@@ -9827,7 +9827,7 @@ msgid "The username contains invalid characters."
 msgstr ""
 
 msgid "Dynamic DNS client"
-msgstr "Dynamischer DNS-Client"
+msgstr "Client für dynamisches DNS"
 
 msgid "yes"
 msgstr "ja"
@@ -9860,7 +9860,7 @@ msgid "Wildcards"
 msgstr ""
 
 msgid "Enable "
-msgstr "Aktivieren"
+msgstr "Aktivieren "
 
 msgid "Wildcard"
 msgstr ""
@@ -12712,7 +12712,7 @@ msgid "internal-ca"
 msgstr ""
 
 msgid "Internal"
-msgstr "Internes"
+msgstr "Intern"
 
 msgid "Issuer"
 msgstr ""
@@ -15630,7 +15630,7 @@ msgid "IF"
 msgstr "FALLS"
 
 msgid "Drive"
-msgstr ""
+msgstr "Festplatte"
 
 msgid "Ident"
 msgstr "Ident"
@@ -15712,7 +15712,7 @@ msgid "Load average"
 msgstr ""
 
 msgid "CPU usage"
-msgstr "CPU Verwendung"
+msgstr "CPU-Auslastung"
 
 msgid "Memory usage"
 msgstr ""
