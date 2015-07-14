@@ -75,6 +75,22 @@ function get_pppoes_child_interfaces($ifpattern) {
 
 }
 
+function get_configured_pppoe_server_interfaces()
+{
+	global $config;
+
+	$iflist = array();
+	if (isset($config['pppoes']['pppoe'])) {
+		foreach($config['pppoes']['pppoe'] as $pppoe) {
+			if ($pppoe['mode'] == 'server') {
+				$int = 'poes'. $pppoe['pppoeid'];
+				$iflist[$int] = strtoupper($int);
+			}
+		}
+	}
+
+	return $iflist;
+}
 
 /* implement ipv6 route advertising deamon */
 function services_radvd_configure($blacklist = array())
