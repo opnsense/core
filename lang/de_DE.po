@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-14 12:59+0100\n"
+"PO-Revision-Date: 2015-07-14 14:03+0100\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -146,7 +146,7 @@ msgstr "Ihr Browser muss Cookies unterstützen um einen Login zu ermöglichen."
 
 #, php-format
 msgid "Error: cannot open '%s' in captiveportal_write_elements()%s"
-msgstr ""
+msgstr "Fehler: konnte '%s' in captiveportal_write_elements() nicht öffnen%s"
 
 msgid "No interfaces found!"
 msgstr "Keine Interfaces gefunden!"
@@ -284,10 +284,8 @@ msgstr ""
 msgid "%s made unknown change"
 msgstr "%s machte unbekannte Änderungen"
 
-#
-# File: src/etc/inc/crypt.inc, line: 47
 msgid "Failed to encrypt/decrypt data!"
-msgstr ""
+msgstr "Konnte Daten nicht ver- bzw. entschlüsseln!"
 
 #, php-format
 msgid "DynDNS updated IP Address on %s (%s) to %s"
@@ -352,7 +350,7 @@ msgid "Successfully added pass rule!"
 msgstr ""
 
 msgid "Failed to add pass rule."
-msgstr ""
+msgstr "Das hinzufügen einer Erlaubnisregel ist fehlgeschlagen."
 
 msgid "Missing parameters for pass rule."
 msgstr ""
@@ -444,7 +442,7 @@ msgid "PPPoE server"
 msgstr "PPPoE Server"
 
 msgid "L2TP server"
-msgstr ""
+msgstr "L2TP Server"
 
 msgid "OpenVPN server"
 msgstr "OpenVPN Server"
@@ -782,7 +780,7 @@ msgstr "es war nicht möglich, Daten an den SMTP Server zu senden"
 #
 # File: src/etc/inc/notices.smtp.inc, line: 212
 msgid "establishing SSL connections requires at least PHP version 4.3.0"
-msgstr ""
+msgstr "der Aufbau von SSL-Verbindungen erfordert PHP in der Version 4.3.0 oder neuer"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 215
@@ -1273,7 +1271,7 @@ msgstr ""
 
 #, php-format
 msgid "Error: cannot open dhcpd.conf in services_dhcpdv4_configure().%s"
-msgstr ""
+msgstr "Fehler: konnte dhcpd.conf in services_dhcpdv4_configure() nicht öffnen.%s"
 
 msgid "Could not write Igmpproxy configuration file!"
 msgstr ""
@@ -1361,18 +1359,18 @@ msgstr ""
 
 #, php-format
 msgid "Error: cannot open cert.pem in system_webgui_start().%s"
-msgstr ""
+msgstr "Fehler: konnte cert.pem in system_webgui_start() nicht öffnen.%s"
 
 #, php-format
 msgid "Error: cannot open ca.pem in system_webgui_start().%s"
-msgstr ""
+msgstr "Fehler: konnte ca.pem in system_webgui_start() nicht öffnen.%s"
 
 msgid "ssl configuration"
 msgstr "SSL Konfiguration"
 
 #, php-format
 msgid "Error: cannot open %s in system_generate_lighty_config().%s"
-msgstr ""
+msgstr "Fehler: konnte %s in system_generate_lighty_config() nicht öffnen.%s"
 
 msgid "Setting timezone..."
 msgstr ""
@@ -1555,7 +1553,7 @@ msgid "Access granted for %d Minutes in total."
 msgstr "Zugriff für %d Minuten in Summe gewährt."
 
 msgid "Error: cannot write voucher.cfg"
-msgstr ""
+msgstr "Fehler: Konnte voucher.cfg nicht schreiben."
 
 #
 # File: src/etc/inc/voucher.inc, line: 378
@@ -1663,7 +1661,7 @@ msgid "XML error: %1$s at line %2$d cannot occur more than once"
 msgstr ""
 
 msgid "Error: could not open XML input"
-msgstr ""
+msgstr "Fehler: konnte XML-Eingabe nicht öffnen"
 
 #, php-format
 msgid "XML error: %1$s at line %2$d in %3$s"
@@ -2078,7 +2076,7 @@ msgid "Interfaces"
 msgstr ""
 
 msgid "IPSEC"
-msgstr ""
+msgstr "IPSEC"
 
 msgid "NAT"
 msgstr "NAT"
@@ -2174,10 +2172,8 @@ msgstr ""
 msgid "No version selected."
 msgstr ""
 
-#
-# File: src/www/diag_backup.php, line: 524
 msgid "Google Drive communication failure"
-msgstr ""
+msgstr "Kommunikation mit Google Drive fehlgeschlagen"
 
 #
 # File: src/www/diag_backup.php, line: 526
@@ -2669,7 +2665,7 @@ msgid "Are you sure you want to halt the system?"
 msgstr "Sind Sie sicher, dass Sie das System herunterfahren möchten?"
 
 msgid "IPsec"
-msgstr ""
+msgstr "IPsec"
 
 msgid "Description"
 msgstr "Beschreibung"
@@ -3628,7 +3624,7 @@ msgid "No entries exist in this table."
 msgstr ""
 
 msgid "entries in this table."
-msgstr ""
+msgstr "Einträge in dieser Tabelle."
 
 msgid "Delete"
 msgstr "Löschen"
@@ -3823,7 +3819,7 @@ msgid "URL '%s' is not valid."
 msgstr ""
 
 msgid "is not a valid port or alias."
-msgstr ""
+msgstr "ist kein gültiger Port oder Alias."
 
 #, php-format
 msgid "%1$s is not a valid %2$s alias."
@@ -3850,7 +3846,7 @@ msgid "Host(s)"
 msgstr "Host(s)"
 
 msgid "IP or FQDN"
-msgstr ""
+msgstr "IP oder FQDN"
 
 msgid "Port(s)"
 msgstr "Port(s)"
@@ -4181,7 +4177,7 @@ msgid "PPPoE clients"
 msgstr ""
 
 msgid "L2TP clients"
-msgstr ""
+msgstr "L2TP Clients"
 
 msgid "net"
 msgstr "Netzwerk"
@@ -4272,13 +4268,13 @@ msgid "NAT Port Forward"
 msgstr "NAT Portweiterleitung"
 
 msgid "Edit Redirect entry"
-msgstr ""
+msgstr "Weiterleitungseintrag bearbeiten"
 
 msgid "No RDR (NOT)"
 msgstr ""
 
 msgid "Enabling this option will disable redirection for traffic matching this rule."
-msgstr ""
+msgstr "Die Aktivierung dieser Option deaktiviert die Weiterleitung von Datenverkehr der dieser Regel entspricht."
 
 msgid "Hint: this option is rarely needed, don't use this unless you know what you're doing."
 msgstr ""
@@ -5399,7 +5395,7 @@ msgid "Edit Virtual IP"
 msgstr "Virtuelle IP bearbeiten"
 
 msgid "IP Alias"
-msgstr ""
+msgstr "IP Alias"
 
 msgid "Proxy ARP"
 msgstr ""
@@ -5408,7 +5404,7 @@ msgid "Other"
 msgstr "Andere(r|s)"
 
 msgid "IP Address(es)"
-msgstr ""
+msgstr "IP Adresse(n)"
 
 msgid "Single address"
 msgstr "Einzelne Adresse"
@@ -5573,7 +5569,7 @@ msgid "One moment while we start the initial setup wizard."
 msgstr ""
 
 msgid "Embedded platform users: Please be patient, the wizard takes a little longer to run than the normal GUI."
-msgstr ""
+msgstr "Nutzer von Embedded-Plattformen: Bitte seien Sie geduldig, der Wizard benötigt etwas länger als das normale GUI."
 
 #, php-format
 msgid "To bypass the wizard, click on the %s logo on the initial page."
@@ -6540,7 +6536,7 @@ msgid "Setting this option will force the card to use WME (wireless QoS)."
 msgstr ""
 
 msgid "Enable Hide SSID"
-msgstr "Verstecke SSID"
+msgstr "SSID verstecken"
 
 msgid "Setting this option will force the card to NOT broadcast its SSID"
 msgstr ""
@@ -6717,7 +6713,7 @@ msgid "VLAN %1$s on %2$s"
 msgstr ""
 
 msgid "lan"
-msgstr ""
+msgstr "LAN"
 
 msgid "LAN"
 msgstr "LAN"
@@ -6785,7 +6781,7 @@ msgid "Bridges"
 msgstr "Bridges"
 
 msgid "LAGG"
-msgstr ""
+msgstr "LAGG"
 
 msgid "Network port"
 msgstr "Netzwerkport"
@@ -6954,7 +6950,7 @@ msgid "Cache size"
 msgstr "Cachegröße"
 
 msgid "entries"
-msgstr ""
+msgstr "Einträge"
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 437
@@ -7221,7 +7217,7 @@ msgid "LAGG allows for link aggregation, bonding and fault tolerance. Only unass
 msgstr ""
 
 msgid "Lagg protocol"
-msgstr ""
+msgstr "Lagg Protokoll"
 
 msgid "Interface supplied as member is invalid"
 msgstr ""
@@ -7411,7 +7407,7 @@ msgid ""
 msgstr ""
 
 msgid "IP Address OR Hostname"
-msgstr ""
+msgstr "IP Adresse ODER Hostname"
 
 msgid "Dial On Demand"
 msgstr "Einwählen bei Bedarf"
@@ -8180,7 +8176,7 @@ msgid "Waiting period to restore pass-through credits"
 msgstr ""
 
 msgid "hours"
-msgstr ""
+msgstr "Stunden"
 
 msgid ""
 "Clients will have their available pass-through credits restored to the original count after this amount of time since using the first one. This must be above 0 "
@@ -8200,7 +8196,7 @@ msgid "Logout popup window"
 msgstr ""
 
 msgid "Enable logout popup window"
-msgstr ""
+msgstr "Pop-up Fenster zum Abmelden aktivieren"
 
 msgid ""
 "If enabled, a popup window will appear when clients are allowed through the captive portal. This allows clients to explicitly disconnect themselves before the idle "
@@ -8251,7 +8247,7 @@ msgid "Default download"
 msgstr "Standarddownload"
 
 msgid "Kbit/s"
-msgstr ""
+msgstr "KBit/s"
 
 msgid "Default upload"
 msgstr "Standardupload"
@@ -8493,7 +8489,7 @@ msgid "Example code for the form:"
 msgstr "Beispielcode für das Formular:"
 
 msgid "error page"
-msgstr ""
+msgstr "Fehlerseite"
 
 msgid "contents"
 msgstr "Inhalt"
@@ -8576,7 +8572,7 @@ msgstr ""
 "Webserver genutzt werden, die Bilder für die Portalseite ausliefert oder auch für einen DNS Server in einem anderen Netzwerk."
 
 msgid "Edit allowed IP address"
-msgstr ""
+msgstr "Erlaubte IP Adresse bearbeiten"
 
 msgid "Allowed IP address"
 msgstr "Erlaubte IP Adresse"
@@ -8597,7 +8593,7 @@ msgid "already allowed"
 msgstr "bereits erlaubt"
 
 msgid "Edit allowed ip rule"
-msgstr ""
+msgstr "Erlaubte IP Regel bearbeiten"
 
 msgid "IP address and subnet mask. Use /32 for a single IP"
 msgstr ""
@@ -8780,7 +8776,7 @@ msgid "Paste an RSA public key (64 Bit or smaller) in PEM format here. This key 
 msgstr ""
 
 msgid "Generate"
-msgstr ""
+msgstr "Generieren"
 
 msgid "new key"
 msgstr "neuer Schlüssel"
@@ -8877,7 +8873,7 @@ msgid "All %1$s vouchers from Roll %2$s marked unused"
 msgstr "Alle %1$s Gutscheine der Rolle %2$s wurden als ungültig markiert"
 
 msgid "Enter the Roll"
-msgstr ""
+msgstr "Geben Sie die Rolle ein"
 
 msgid "found on top of the generated/printed vouchers"
 msgstr ""
@@ -8889,7 +8885,7 @@ msgid "Defines the time in minutes that a user is allowed access. The clock star
 msgstr ""
 
 msgid "Enter the number of vouchers"
-msgstr ""
+msgstr "Geben Sie die Anzahl an Voucher ein"
 
 msgid "found on top of the generated/printed vouchers. WARNING: Changing this number for an existing Roll will mark all vouchers as unused again"
 msgstr ""
@@ -9283,7 +9279,7 @@ msgid "Show Network booting"
 msgstr ""
 
 msgid "Enables network booting."
-msgstr ""
+msgstr "Aktiviert das Booten über das Netzwerk."
 
 msgid "Enter the IP of the"
 msgstr ""
@@ -9488,7 +9484,7 @@ msgstr ""
 # File: src/www/services_dhcpv6.php, line: 521
 #, php-format
 msgid "Enable DHCPv6 server on %s interface"
-msgstr ""
+msgstr "DHCPv6 Server auf Interface %s aktivieren"
 
 msgid "Subnet Mask"
 msgstr ""
@@ -9530,7 +9526,7 @@ msgid "DHCPv6 Static Mappings for this interface."
 msgstr "DHCPv6 statische Zuweisung für dieses Interface"
 
 msgid "DUID"
-msgstr ""
+msgstr "DUID"
 
 msgid "DUID Identifier"
 msgstr ""
@@ -9564,7 +9560,7 @@ msgstr "DHCPv6 Relay Konfiguration"
 
 #, php-format
 msgid "Enable DHCPv6 relay on interface"
-msgstr ""
+msgstr "DHCPv6 Relay auf dem Interface aktivieren"
 
 msgid "Interfaces without an IPv6 address will not be shown."
 msgstr ""
@@ -10515,7 +10511,7 @@ msgid "The configuration for the DNS Resolver, has been changed"
 msgstr ""
 
 msgid "General settings"
-msgstr ""
+msgstr "Allgemeine Einstellungen"
 
 msgid "Advanced settings"
 msgstr "Erweiterte Einstellungen"
@@ -10599,7 +10595,7 @@ msgid "The settings for the DNS Resolver have changed. You must apply the config
 msgstr ""
 
 msgid "General Settings"
-msgstr ""
+msgstr "Allgemeine Einstellungen"
 
 #, php-format
 msgid "%s Access List"
@@ -11008,7 +11004,7 @@ msgid "Hostname/MAC"
 msgstr "Hostname/MAC"
 
 msgid "IPv6 Prefix"
-msgstr ""
+msgstr "IPv6 Präfix"
 
 msgid "Filter Reload Status"
 msgstr ""
@@ -11141,10 +11137,10 @@ msgid "Media"
 msgstr ""
 
 msgid "LAGG Protocol"
-msgstr ""
+msgstr "LAGG Protokoll"
 
 msgid "LAGG Ports"
-msgstr ""
+msgstr "LAGG Ports"
 
 msgid "BSSID"
 msgstr "BSSID"
@@ -11208,7 +11204,7 @@ msgid "Offset"
 msgstr ""
 
 msgid "Jitter"
-msgstr ""
+msgstr "Jitter"
 
 msgid "Clock Latitude"
 msgstr ""
@@ -11333,7 +11329,7 @@ msgid "End:"
 msgstr "Ende:"
 
 msgid "Go"
-msgstr ""
+msgstr "Los"
 
 msgid "Image viewer"
 msgstr ""
@@ -11356,7 +11352,7 @@ msgid "Quality"
 msgstr "Qualität"
 
 msgid "Enables the RRD graphing backend."
-msgstr ""
+msgstr "Aktiviert das Backend für RRD Graphen"
 
 msgid "Default category"
 msgstr "Standardkategorie"
@@ -11730,7 +11726,7 @@ msgid "normal"
 msgstr ""
 
 msgid "high-latency"
-msgstr ""
+msgstr "hohe Latenz"
 
 msgid "aggressive"
 msgstr "aggressiv"
@@ -12169,7 +12165,7 @@ msgid "Frequency:"
 msgstr "Frequenz:"
 
 msgid "hour"
-msgstr ""
+msgstr "Stunde"
 
 msgid ""
 "This will periodically backup the RRD data so it can be restored automatically on the next boot. Keep in mind that the more frequent the backup, the more writes "
@@ -12645,7 +12641,7 @@ msgid "Method"
 msgstr ""
 
 msgid "Existing Certificate Authority"
-msgstr ""
+msgstr "Existierende Zertifizierungsstelle"
 
 msgid "Paste a certificate in X.509 PEM format here."
 msgstr ""
@@ -12849,7 +12845,7 @@ msgid "Paste the certificate received from your certificate authority here."
 msgstr ""
 
 msgid "In Use"
-msgstr ""
+msgstr "In Verwendung"
 
 msgid "external - signature pending"
 msgstr "extern - Signatur ausstehend"
@@ -12911,13 +12907,13 @@ msgstr "Zertifikat %s aus der Zertifikatsrückrufliste %s gelöscht"
 
 #, php-format
 msgid "Failed to delete Certificate %s from CRL %s"
-msgstr ""
+msgstr "Das Löschen des Zertifikats %s von der CRL %s ist fehlgeschlagen"
 
 msgid "Certificate Revocation List data"
 msgstr ""
 
 msgid "Existing Certificate Revocation List"
-msgstr ""
+msgstr "Existierende Zertifikatsrückrufliste"
 
 msgid "CRL data"
 msgstr "CRL Daten"
@@ -13018,7 +13014,7 @@ msgid "Packet Loss"
 msgstr ""
 
 msgid "High Latency"
-msgstr ""
+msgstr "Hohe Latenz"
 
 msgid "Packet Loss or High Latency"
 msgstr ""
@@ -14173,7 +14169,7 @@ msgid "Advanced Settings"
 msgstr "Erweiterte Einstellungen"
 
 msgid "General information"
-msgstr ""
+msgstr "Allgemeine Information"
 
 msgid "Disable this phase1 entry"
 msgstr "Deaktiviere diesen Phase 1 Eintrag"
@@ -14277,7 +14273,7 @@ msgid "Dead Peer Detection"
 msgstr "Dead Peer Detection"
 
 msgid "Enable DPD"
-msgstr ""
+msgstr "DPD aktivieren"
 
 msgid "Delay between requesting peer acknowledgement"
 msgstr ""
@@ -14313,7 +14309,7 @@ msgid "A valid local network IPv6 address must be specified or you need to chang
 msgstr ""
 
 msgid "Invalid Local Network."
-msgstr ""
+msgstr "Ungültiges lokales Netzwerk."
 
 msgid "has no subnet."
 msgstr "hat kein Subnetz."
@@ -14386,7 +14382,7 @@ msgid "Phase 2 proposal (SA/Key Exchange)"
 msgstr ""
 
 msgid "ESP is encryption, AH is authentication only"
-msgstr ""
+msgstr "ESP ist Verschlüsselung, AH ist nur Authentifizierung"
 
 msgid "Encryption algorithms"
 msgstr "Verschlüsselungsalgorithmen"
@@ -14407,7 +14403,7 @@ msgid "Automatically ping host"
 msgstr "Automatisch Host pingen"
 
 msgid "IPSec Advanced Settings"
-msgstr ""
+msgstr "IPSec erweiterte Einstellungen"
 
 msgid "LAN security associsations"
 msgstr ""
@@ -14738,7 +14734,7 @@ msgid "TLS Authentication"
 msgstr ""
 
 msgid "Enable authentication of TLS packets"
-msgstr ""
+msgstr "Authentifizierung von TLS Paketen aktivieren"
 
 msgid "Automatically generate a shared TLS authentication key"
 msgstr "Automatisch gemeinsamen Authentifizierungsschlüssel generieren"
@@ -14768,7 +14764,7 @@ msgid "Tunnel Settings"
 msgstr ""
 
 msgid "IPv4 Tunnel Network"
-msgstr ""
+msgstr "IPv4 Tunnelnetzwerk"
 
 msgid ""
 "This is the virtual network used for private communications between this client and the server expressed using CIDR (eg. 10.0.8.0/24). The first network address is "
@@ -14784,7 +14780,7 @@ msgid ""
 msgstr ""
 
 msgid "IPv4 Remote Network/s"
-msgstr ""
+msgstr "IPv4 Remote Netzwerk(e)"
 
 msgid ""
 "These are the IPv4 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. "
@@ -14942,7 +14938,7 @@ msgid "Tunnel Network"
 msgstr ""
 
 msgid "IPv4 Local Network/s"
-msgstr ""
+msgstr "IPv4 lokale(es) Netzwerk(e)"
 
 msgid "These are the IPv4 networks that will be accessible from this particular client. Expressed as a comma-separated list of one or more CIDR ranges."
 msgstr ""
@@ -15139,7 +15135,7 @@ msgstr ""
 #
 # File: src/www/vpn_openvpn_export.php, line: 961
 msgid "Free client for OSX"
-msgstr ""
+msgstr "Freier Client für OSX"
 
 #
 # File: src/www/vpn_openvpn_export.php, line: 961
@@ -15481,7 +15477,7 @@ msgid "RADIUS primary shared secret"
 msgstr ""
 
 msgid "Enter the shared secret that will be used to authenticate to the RADIUS server"
-msgstr ""
+msgstr "Geben Sie den gemeinsamen Schlüssel ein, der der zur Authentifizierung am RADIUS-Server benutzt wird"
 
 msgid "RADIUS server Secondary"
 msgstr ""
@@ -15621,7 +15617,7 @@ msgid "Active Tunnels"
 msgstr "Aktive Tunnel"
 
 msgid "Inactive Tunnels"
-msgstr ""
+msgstr "Inaktive Tunnel"
 
 msgid "Mobile Users"
 msgstr "mobile Benutzer"
@@ -15740,7 +15736,7 @@ msgstr ""
 
 #, php-format
 msgid "ERROR:  Could not open %s."
-msgstr ""
+msgstr "FEHLER: Konnte %s nicht öffnen."
 
 #, php-format
 msgid "ERROR: Could not parse /usr/local/www/wizards/%s file."
