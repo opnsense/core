@@ -4574,6 +4574,10 @@ function link_interface_to_gif($interface)
 function find_interface_ip($interface, $flush = false) {
 	global $interface_ip_arr_cache;
 
+	if (!isset($interface_ip_arr_cache) || !is_array($interface_ip_arr_cache)) {
+		$interface_ip_arr_cache = array() ;
+	}
+
 	$interface = str_replace("\n", "", $interface);
 
 	if (!does_interface_exist($interface))
@@ -4597,8 +4601,11 @@ function find_interface_ip($interface, $flush = false) {
  */
 function find_interface_ipv6($interface, $flush = false) {
 	global $interface_ipv6_arr_cache;
-	global $interface_snv6_arr_cache;
 	global $config;
+
+	if (!isset($interface_ipv6_arr_cache) || !is_array($interface_ipv6_arr_cache)) {
+		$interface_ipv6_arr_cache = array();
+	}
 
 	$interface = trim($interface);
 	$interface = get_real_interface($interface);
@@ -4611,11 +4618,12 @@ function find_interface_ipv6($interface, $flush = false) {
 		$ifinfo = pfSense_get_interface_addresses($interface);
 		if (isset($ifinfo['ipaddr6'])) {
 			$interface_ipv6_arr_cache[$interface] = $ifinfo['ipaddr6'];
-			$interface_snv6_arr_cache[$interface] = $ifinfo['subnetbits6'];
+		} else {
+			return null;
 		}
-		return $interface_ipv6_arr_cache[$interface];
 	}
-	return;
+
+	return $interface_ipv6_arr_cache[$interface];
 }
 
 /*
@@ -4649,37 +4657,47 @@ function find_interface_ipv6_ll($interface, $flush = false) {
 function find_interface_subnet($interface, $flush = false) {
 	global $interface_sn_arr_cache;
 
+	if (!isset($interface_sn_arr_cache) || !is_array($interface_sn_arr_cache)){
+		$interface_sn_arr_cache = array();
+	}
+
 	$interface = str_replace("\n", "", $interface);
 	if (does_interface_exist($interface) == false)
 		return;
 
-	if (!isset($interface_sn_arr_cache[$interface]) || $flush) {
+	if (!isset($interface_sn_arr_cache[$interface]['subnetbits']) || $flush) {
 		$ifinfo = pfSense_get_interface_addresses($interface);
 		if (isset($ifinfo['subnetbits'])) {
 			$interface_sn_arr_cache[$interface] = $ifinfo['subnetbits'];
-			return $interface_sn_arr_cache[$interface];
+		} else {
+			return null;
 		}
 	}
-	return;
+
+	return $interface_sn_arr_cache[$interface];
 }
 
 function find_interface_subnetv6($interface, $flush = false) {
 	global $interface_snv6_arr_cache;
-	global $interface_ipv6_arr_cache;
+
+	if (!isset($interface_snv6_arr_cache) || !is_array($interface_snv6_arr_cache)) {
+		$interface_snv6_arr_cache = array();
+	}
 
 	$interface = str_replace("\n", "", $interface);
 	if (does_interface_exist($interface) == false)
 		return;
 
-	if (!isset($interface_snv6_arr_cache[$interface]) or $flush) {
+	if (!isset($interface_snv6_arr_cache[$interface]['subnetbits6']) || $flush) {
 		$ifinfo = pfSense_get_interface_addresses($interface);
-		if (isset($ifinfo['ipaddr6'])) {
-			$interface_ipv6_arr_cache[$interface] = $ifinfo['ipaddr6'];
+		if (isset($ifinfo['subnetbits6'])) {
 			$interface_snv6_arr_cache[$interface] = $ifinfo['subnetbits6'];
-			return $interface_snv6_arr_cache[$interface];
+		} else {
+			return null ;
 		}
 	}
-	return;
+
+	return $interface_snv6_arr_cache[$interface];
 }
 
 function ip_in_interface_alias_subnet($interface, $ipalias) {
