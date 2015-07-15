@@ -34,9 +34,9 @@ $system_logfile = '/var/log/system.log';
 
 if (!$config['widgets']['systemlogfiltercount']){
 	$syslogEntriesToFetch = $config['syslog']['nentries'];
-	if (!$syslogEntriesToFetch) { 
-		$syslogEntriesToFetch = 20;  
-  	}
+	if (!$syslogEntriesToFetch) {
+		$syslogEntriesToFetch = 20;
+	}
 } else {
 	$syslogEntriesToFetch = $config['widgets']['systemlogfiltercount'];
 }
@@ -55,7 +55,7 @@ if(is_numeric($_POST['logfiltercount'])) {
 <div id="system_log-settings" class="widgetconfigdiv" style="display:none;">
 	<form action="/widgets/widgets/system_log.widget.php" method="post" name="iform">
 		<table class="table table-striped" summary="system_log widget">
-		<tr>	
+		<tr>
 			<td><?=gettext("Number of Log lines to display");?>:</td>
 
 			<td>
@@ -64,11 +64,11 @@ if(is_numeric($_POST['logfiltercount'])) {
 			<option value="<?php echo $i;?>" <?php if ($syslogEntriesToFetch == $i) { echo "selected=\"selected\"";}?>><?php echo $i;?></option>
 			<?php } ?>
 			</td>
-			
+
 			<td>
 			<input id="submit" name="submit" type="submit" class="btn btn-primary formbtn" value="Save" autocomplete="off">
 			</td>
-		
+
 		</tr>
 	</table>
    </form>
