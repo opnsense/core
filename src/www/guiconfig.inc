@@ -517,7 +517,7 @@ function is_specialnet($net) {
 
 	if(!$net)
 		return false;
-	if (is_array($net) && in_array($net, $specialsrcdst))
+	if (is_array($specialsrcdst) && in_array($net, $specialsrcdst))
 		return true;
 	else
 		return false;
