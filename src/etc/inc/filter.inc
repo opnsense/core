@@ -36,9 +36,6 @@ $after_filter_configure_run = array();
 /* For installing cron job of schedules */
 $time_based_rules = false;
 
-/* Used to hold the interface list that will be used on ruleset creation. */
-$FilterIflist = array();
-
 /* Create a global array to avoid errors on rulesets. */
 $GatewaysList = array();
 
@@ -149,8 +146,10 @@ function filter_delete_states_for_down_gateways() {
 /* reload filter sync */
 function filter_configure_sync($delete_states_if_needed = true)
 {
-	global $config, $g, $after_filter_configure_run, $FilterIflist;
+	global $config, $g, $after_filter_configure_run;
 	global $time_based_rules, $filterdns, $aliases;
+
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	/* Use filter lock to not allow concurrent filter reloads during this run. */
 	$filterlck = lock('filter', LOCK_EX);
@@ -372,7 +371,8 @@ function filter_configure_sync($delete_states_if_needed = true)
 }
 
 function filter_generate_scrubing() {
-	global $config, $FilterIflist;
+	global $config;
+	$FilterIflist = filter_generate_optcfg_array() ;
 	$scrubrules = "";
 
 	if (isset($config['system']['maxmss_enable'])) {
@@ -483,7 +483,8 @@ function filter_expand_alias_array($alias_name) {
 
 function filter_generate_aliases()
 {
-	global $config, $FilterIflist, $after_filter_configure_run;
+	global $config, $after_filter_configure_run;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	$alias = "#System aliases\n ";
 	$aliases = "loopback = \"{ lo0 }\"\n";
@@ -756,13 +757,12 @@ function filter_get_vpns_list() {
  * optionally returns an array instead, including friendly interface and gateway (if applicable)
  */
 function filter_get_direct_networks_list($returnsubnetsonly = true) {
-	global $config, $FilterIflist, $GatewaysList;
+	global $config, $GatewaysList;
+	$FilterIflist = filter_generate_optcfg_array() ;
 	/* build list of directly connected interfaces and networks */
 	$networks = "";
 	$networks_arr = array();
-	if(empty($FilterIflist)) {
-		filter_generate_optcfg_array();
-	}
+
 	foreach ($FilterIflist as $ifent => $ifcfg) {
 		$subnet = "{$ifcfg['sa']}/{$ifcfg['sn']}";
 		if(is_subnet($subnet)) {
@@ -818,6 +818,14 @@ function filter_get_direct_networks_list($returnsubnetsonly = true) {
 function filter_generate_optcfg_array()
 {
 	global $config, $FilterIflist;
+
+	// Nasty hack to avoid unkown status of $FilterIflist, every piece of code using $FilterIflist should use
+	// this function to retrieve it's content.
+	if (isset($FilterIflist) && is_array($FilterIflist) && count($FilterIflist) > 0) {
+		return $FilterIflist;
+	}
+
+	$FilterIflist = array();
 
 	/* if list */
 	$iflist = get_configured_interface_with_descr();
@@ -978,11 +986,13 @@ function filter_generate_optcfg_array()
 			$FilterIflist[$ifgen['ifname']] = $oc;
 		}
 	}
+
+	return $FilterIflist ;
 }
 
 
 function filter_get_reflection_interfaces($natif = "") {
-	global $FilterIflist;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	$nat_if_list = array();
 
@@ -1001,7 +1011,8 @@ function filter_get_reflection_interfaces($natif = "") {
 }
 
 function filter_generate_reflection_nat($rule, &$route_table, $nat_ifs, $protocol, $target, $target_ip, $target_subnet = "") {
-	global $config, $FilterIflist;
+	global $config;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	if(!isset($config['system']['enablenatreflectionhelper']))
 		return "";
@@ -1086,7 +1097,8 @@ function filter_generate_reflection_nat($rule, &$route_table, $nat_ifs, $protoco
 }
 
 function filter_generate_reflection_proxy($rule, $nordr, $rdr_ifs, $srcaddr, $dstaddr_port, &$starting_localhost_port, &$reflection_txt) {
-	global $FilterIflist, $config;
+	global $config;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	// Initialize natrules holder string
 	$natrules = "";
@@ -1278,7 +1290,8 @@ function filter_generate_reflection_proxy($rule, $nordr, $rdr_ifs, $srcaddr, $ds
 }
 
 function filter_nat_rules_automatic_tonathosts($with_descr = false) {
-	global $config, $FilterIflist, $GatewaysList;
+	global $config, $GatewaysList;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	$tonathosts = array("127.0.0.0/8");
 	$descriptions = array(gettext("localhost"));
@@ -1401,7 +1414,8 @@ function filter_nat_rules_automatic_tonathosts($with_descr = false) {
 
 function filter_nat_rules_outbound_automatic($src)
 {
-	global $config, $FilterIflist;
+	global $config ;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	$rules = array();
 
@@ -1443,7 +1457,8 @@ function filter_nat_rules_outbound_automatic($src)
 
 /* Generate a 'nat on' or 'no nat on' rule for given interface */
 function filter_nat_rules_generate_if($if, $src = "any", $srcport = "", $dst = "any", $dstport = "", $natip = "", $natport = "", $nonat = false, $staticnatport = false, $proto = "", $poolopts = "") {
-	global $config, $FilterIflist;
+	global $config;
+	$FilterIflist = filter_generate_optcfg_array() ;
 	/* XXX: billm - any idea if this code is needed? */
 	if($src == "/32" || $src{0} == "/")
 		return "# src incorrectly specified\n";
@@ -1524,7 +1539,8 @@ function filter_nat_rules_generate_if($if, $src = "any", $srcport = "", $dst = "
 }
 
 function filter_nat_rules_generate() {
-	global $config, $g, $after_filter_configure_run, $FilterIflist, $GatewaysList, $aliases;
+	global $config, $g, $after_filter_configure_run, $GatewaysList, $aliases;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	$natrules = "no nat proto carp\n";
 	$natrules .= "no rdr proto carp\n";
@@ -2029,7 +2045,7 @@ function filter_generate_port(& $rule, $target = "source", $isnat = false) {
 }
 
 function filter_address_add_vips_subnets(&$subnets, $if, $not) {
-	global $FilterIflist;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	$if_subnets = array($subnets);
 
@@ -2067,7 +2083,8 @@ function filter_address_add_vips_subnets(&$subnets, $if, $not) {
 }
 
 function filter_generate_address(& $rule, $target = "source", $isnat = false) {
-	global $FilterIflist, $config;
+	global $config;
+	$FilterIflist = filter_generate_optcfg_array() ;
 	$src = "";
 
 	if(isset($rule[$target]['any'])) {
@@ -2219,7 +2236,8 @@ function filter_generate_address(& $rule, $target = "source", $isnat = false) {
 
 function filter_generate_user_rule($rule)
 {
-	global $config, $g, $FilterIflist, $GatewaysList;
+	global $config, $g, $GatewaysList;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	/* don't include disabled rules */
 	if(isset($rule['disabled'])) {
@@ -2566,7 +2584,8 @@ function filter_generate_user_rule($rule)
 
 function filter_rules_generate()
 {
-	global $config, $g, $FilterIflist, $time_based_rules, $GatewaysList;
+	global $config, $g, $time_based_rules, $GatewaysList;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	$fix_rule_label = 'fix_rule_label';
 
@@ -3364,7 +3383,8 @@ function filter_tdr_month($schedule) {
 
 function filter_setup_logging_interfaces()
 {
-	global $config, $FilterIflist;
+	global $config;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	$rules = '';
 	if (isset($FilterIflist['lan']))
@@ -3391,7 +3411,8 @@ function filter_process_carp_rules($log)
 /* Generate IPsec Filter Items */
 function filter_generate_ipsec_rules($log = array())
 {
-	global $config, $g, $FilterIflist;
+	global $config, $g;
+	$FilterIflist = filter_generate_optcfg_array() ;
 
 	if (isset($config['system']['disablevpnrules'])) {
 		return "\n# VPN Rules not added disabled in System->Advanced.\n";

@@ -31,6 +31,7 @@
 
 include_once("auth.inc");
 include_once("priv.inc");
+require_once("filter.inc");
 
 function getPrivPages(& $entry, & $allowed_pages) {
 	global $priv_list;
@@ -317,18 +318,14 @@ function display_login_form()
     }
 
     /* Check against locally configured IP addresses, which will catch when someone
-	   port forwards WebGUI access from WAN to an internal IP on the router. */
-    global $FilterIflist;
+	   port forwards WebGUI access from WAN to an internal IP on the router. */    
+    $FilterIflist = filter_generate_optcfg_array() ;
     $local_ip = false;
     if (strstr($_SERVER['HTTP_HOST'], ":")) {
         $http_host_port = explode(":", $_SERVER['HTTP_HOST']);
         $http_host = $http_host_port[0];
     } else {
         $http_host = $_SERVER['HTTP_HOST'];
-    }
-    if (empty($FilterIflist)) {
-        require_once('filter.inc');
-        filter_generate_optcfg_array();
     }
     foreach ($FilterIflist as $iflist) {
         if ($iflist['ip'] == $http_host) {
@@ -338,7 +335,6 @@ function display_login_form()
             $local_ip = true;
         }
     }
-    unset($FilterIflist);
 
     if (isset($config['virtualip'])) {
         if ($config['virtualip']['vip']) {
