@@ -931,7 +931,7 @@ function get_interface_gateway($interface, &$dynamic = false)
 
 	if (isset($config['interfaces'][$interface])) {
 		$gwcfg = $config['interfaces'][$interface];
-		if (isset($gwcfg['gateway']) && is_array($config['gateways']['gateway_item'])) {
+		if (!empty($gwcfg['gateway']) && isset($config['gateways']['gateway_item']) && is_array($config['gateways']['gateway_item'])) {
 			foreach($config['gateways']['gateway_item'] as $gateway) {
 				if(($gateway['name'] == $gwcfg['gateway']) && (is_ipaddrv4($gateway['gateway']))) {
 					$gw = $gateway['gateway'];
