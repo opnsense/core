@@ -47,35 +47,63 @@ function get_locale_list()
 
 $pconfig['hostname'] = $config['system']['hostname'];
 $pconfig['domain'] = $config['system']['domain'];
-list($pconfig['dns1'],$pconfig['dns2'],$pconfig['dns3'],$pconfig['dns4']) = $config['system']['dnsserver'];
+if (isset($config['system']['dnsserver'])) {
+	list($pconfig['dns1'],$pconfig['dns2'],$pconfig['dns3'],$pconfig['dns4']) = $config['system']['dnsserver'];
+} else {
+	list($pconfig['dns1'],$pconfig['dns2'],$pconfig['dns3'],$pconfig['dns4']) = null;
+}
 
 $arr_gateways = return_gateways_array();
 
-$pconfig['dns1gw'] = $config['system']['dns1gw'];
-$pconfig['dns2gw'] = $config['system']['dns2gw'];
-$pconfig['dns3gw'] = $config['system']['dns3gw'];
-$pconfig['dns4gw'] = $config['system']['dns4gw'];
+if (isset($config['system']['dns1gw'])) {
+	$pconfig['dns1gw'] = $config['system']['dns1gw'];
+} else {
+	$pconfig['dns1gw'] = null; 
+}
+if (isset($config['system']['dns2gw'])) {
+	$pconfig['dns2gw'] = $config['system']['dns2gw'];
+} else {
+	$pconfig['dns2gw'] = null;
+}
+if (isset($config['system']['dns3gw'])) {
+	$pconfig['dns3gw'] = $config['system']['dns3gw'];
+} else {
+	$pconfig['dns3gw'] = null;
+}
+if (isset($config['system']['dns4gw'])) {
+	$pconfig['dns4gw'] = $config['system']['dns4gw'];
+} else {
+	$pconfig['dns4gw'] = null ;
+}
 
 $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
 $pconfig['timezone'] = $config['system']['timezone'];
 $pconfig['timeupdateinterval'] = $config['system']['time-update-interval'];
 $pconfig['timeservers'] = $config['system']['timeservers'];
-$pconfig['theme'] = $config['system']['theme'];
-$pconfig['language'] = $config['system']['language'];
+if (isset($config['system']['theme'])) {
+	$pconfig['theme'] = $config['system']['theme'];
+} else {
+	$pconfig['theme'] = null;
+}
+if (isset($config['system']['language'])) {
+	$pconfig['language'] = $config['system']['language'];
+} else {
+	$pconfig['language'] = null;
+}
 
 $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
 
 if (!isset($pconfig['timeupdateinterval']))
 	$pconfig['timeupdateinterval'] = 300;
-if (!$pconfig['timezone'])
+if (empty($pconfig['timezone']))
 	$pconfig['timezone'] = "Etc/UTC";
-if (!$pconfig['timeservers'])
+if (empty($pconfig['timeservers']))
 	$pconfig['timeservers'] = "pool.ntp.org";
 
 $changedesc = gettext("System") . ": ";
 $changecount = 0;
 
-if ($pconfig['timezone'] <> $_POST['timezone']) {
+if (isset($_POST['timezone']) && $pconfig['timezone'] <> $_POST['timezone']) {
 	filter_pflog_start();
 }
 
