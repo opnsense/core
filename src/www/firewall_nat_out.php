@@ -31,8 +31,9 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 
-global $FilterIflist;
 global $GatewaysList;
+
+$FilterIflist = filter_generate_optcfg_array() ;
 
 if (!is_array($config['nat']['outbound']))
 	$config['nat']['outbound'] = array();
@@ -72,8 +73,6 @@ if (isset($_POST['save']) && $_POST['save'] == "Save") {
 		 *    lets automatically create entries
 		 *    for all of the interfaces to make life easier on the pip-o-chap
 		 */
-		if(empty($FilterIflist))
-			filter_generate_optcfg_array();
 		if(empty($GatewaysList))
 			filter_generate_gateways();
 		$tonathosts = filter_nat_rules_automatic_tonathosts(true);
@@ -105,7 +104,7 @@ if (isset($_POST['save']) && $_POST['save'] == "Save") {
 			}
 		}
 		$savemsg = gettext("Default rules for each interface have been created.");
-		unset($FilterIflist, $GatewaysList);
+		unset($GatewaysList);
 	}
 
 	$config['nat']['outbound']['mode'] = $_POST['mode'];
@@ -477,12 +476,10 @@ include("head.inc");
             </tbody>
 <?php
 			if ($mode == "automatic" || $mode == "hybrid"):
-				if(empty($FilterIflist))
-					filter_generate_optcfg_array();
 				if(empty($GatewaysList))
 					filter_generate_gateways();
 				$automatic_rules = filter_nat_rules_outbound_automatic(implode(" ", filter_nat_rules_automatic_tonathosts()));
-				unset($FilterIflist, $GatewaysList);
+				unset($GatewaysList);
 ?>
             <thead>
 				<tr><th colspan="12"><?=gettext("Automatic rules:"); ?></th></tr>

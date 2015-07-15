@@ -845,9 +845,8 @@ function openvpn_client_export_build_remote_lines($settings, $useaddr, $interfac
 }
 
 function openvpn_client_export_find_port_forwards($targetip, $targetport, $targetproto, $skipprivate, $findhostname=false) {
-	global $config, $FilterIflist;
-	if (empty($FilterIflist))
-		filter_generate_optcfg_array();
+	global $config;
+	$FilterIflist = filter_generate_optcfg_array() ;
 	$destinations = array();
 
 	if (!is_array($config['nat']) || !is_array($config['nat']['rule']))
