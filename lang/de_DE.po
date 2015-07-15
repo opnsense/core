@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-14 19:13+0100\n"
+"PO-Revision-Date: 2015-07-15 09:54+0100\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -10150,7 +10150,7 @@ msgid "The perdefined configurations assume your GPS has already been set to NME
 msgstr ""
 
 msgid "All serial ports are listed, be sure to pick the port with the GPS attached."
-msgstr "Alle seriellen Ports sind gelistet, stellen Sie sicher, dass sie den Port auswählen mit denmGPS verbunden ist."
+msgstr "Alle seriellen Ports sind gelistet; stellen Sie sicher, dass sie den Port auswählen mit dem das GPS verbunden ist."
 
 msgid "Serial port baud rate."
 msgstr ""
@@ -10252,7 +10252,7 @@ msgid "to reliably supply the time of each PPS pulse."
 msgstr ""
 
 msgid "All serial ports are listed, be sure to pick the port with the PPS source attached."
-msgstr "Alle seriellen Ports sind gelistet. Stellen Sie sicher, dass die den Port auswählen, an dem die PPS Quelle angeschlossen ist."
+msgstr "Alle seriellen Ports sind gelistet; stellen Sie sicher, dass die den Port auswählen, an dem die PPS Quelle angeschlossen ist."
 
 msgid "Fudge time is used to specify the PPS signal offset from the actual second such as the transmission delay between the transmitter and the receiver."
 msgstr ""
@@ -11699,7 +11699,7 @@ msgid "IP Do-Not-Fragment compatibility"
 msgstr ""
 
 msgid "Clear invalid DF bits instead of dropping the packets"
-msgstr "Entferne ungültige DF Bits anstatt die die Pakete zu verwerfen"
+msgstr "Entferne ungültige DF Bits, anstatt die die Pakete zu verwerfen"
 
 #
 # File: src/www/system_advanced_firewall.php, line: 289
@@ -12380,7 +12380,7 @@ msgid "Startup/Shutdown Sound"
 msgstr ""
 
 msgid "Disable the startup/shutdown beep"
-msgstr "Deaktiviere den Piepton beim starten/herunterfahren"
+msgstr "Deaktiviere den Piepton beim Starten/Herunterfahren"
 
 msgid "When this is checked, startup and shutdown sounds will no longer play."
 msgstr ""
@@ -12586,7 +12586,7 @@ msgid "Create an intermediate Certificate Authority"
 msgstr "Erstelle eine Unterzertifizierungsstelle"
 
 msgid "Certificate Authority Manager"
-msgstr "Zertifizerungsstellenmanager"
+msgstr "Zertifizerungsstellenverwaltung"
 
 #, php-format
 msgid "Certificate Authority %s and its CRLs (if any) successfully deleted"
@@ -14403,7 +14403,7 @@ msgid "Automatically ping host"
 msgstr "Automatisch Host pingen"
 
 msgid "IPSec Advanced Settings"
-msgstr "IPSec erweiterte Einstellungen"
+msgstr "Erweiterte IPSec Einstellungen"
 
 msgid "LAN security associsations"
 msgstr ""
@@ -14772,7 +14772,7 @@ msgid ""
 msgstr ""
 
 msgid "IPv6 Tunnel Network"
-msgstr ""
+msgstr "IPv6 Tunnelnetzwerk"
 
 msgid ""
 "This is the IPv6 virtual network used for private communications between this client and the server expressed using CIDR (eg. fe80::/64). The first network address "
@@ -14780,7 +14780,7 @@ msgid ""
 msgstr ""
 
 msgid "IPv4 Remote Network/s"
-msgstr "IPv4 Remote Netzwerk(e)"
+msgstr "Ferne IPv4 Netzwerke"
 
 msgid ""
 "These are the IPv4 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. "
@@ -14789,7 +14789,7 @@ msgid ""
 msgstr ""
 
 msgid "IPv6 Remote Network/s"
-msgstr ""
+msgstr "Ferne IPv6 Netzwerke"
 
 msgid ""
 "These are the IPv6 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. "
@@ -14938,7 +14938,7 @@ msgid "Tunnel Network"
 msgstr ""
 
 msgid "IPv4 Local Network/s"
-msgstr "IPv4 lokale(es) Netzwerk(e)"
+msgstr "IPv4 lokale Netzwerke"
 
 msgid "These are the IPv4 networks that will be accessible from this particular client. Expressed as a comma-separated list of one or more CIDR ranges."
 msgstr ""
@@ -15075,7 +15075,7 @@ msgstr ""
 #
 # File: src/www/vpn_openvpn_export.php, line: 956
 msgid "Binaries for Windows, Source for other platforms. Packaged above in the Windows Installers"
-msgstr "Binärdateien für Windows, Quelldateien für andere Plattformen. Packetiert in den Windows Installern."
+msgstr "Binärdateien für Windows, Quelldateien für andere Plattformen. Paketiert in den Windows Installern."
 
 #
 # File: src/www/vpn_openvpn_export.php, line: 956
@@ -15477,7 +15477,7 @@ msgid "RADIUS primary shared secret"
 msgstr ""
 
 msgid "Enter the shared secret that will be used to authenticate to the RADIUS server"
-msgstr "Geben Sie den gemeinsamen Schlüssel ein, der der zur Authentifizierung am RADIUS-Server benutzt wird"
+msgstr "Geben Sie den gemeinsamen Schlüssel ein, der zur Authentifizierung am RADIUS-Server benutzt wird"
 
 msgid "RADIUS server Secondary"
 msgstr ""
