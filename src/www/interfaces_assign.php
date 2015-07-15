@@ -424,15 +424,13 @@ include("head.inc");
 		<div class="row">
 
 			<?php
-			if (file_exists("/tmp/reload_interfaces")) {
-				echo "<p>\n";
-				print_info_box_np(gettext("The interface configuration has been changed.<br />You must apply the changes in order for them to take effect."));
-				echo "<br /></p>\n";
-			} elseif($savemsg)
+			if (isset($savemsg)) {
 				print_info_box($savemsg);
+			}
 
-			if (isset($input_errors) && count($input_errors) > 0)
+			if (isset($input_errors) && count($input_errors) > 0) {
 				print_input_errors($input_errors);
+			}
 			?>
 
 		    <section class="col-xs-12">
