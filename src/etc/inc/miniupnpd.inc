@@ -57,7 +57,7 @@ function sync_package_miniupnpd() {
 	$ifaces_active = '';
 
 	/* since config is written before this file invoked we don't need to read post data */
-	if($upnp_config['enable'] && !empty($upnp_config['iface_array'])) {
+	if(!empty($upnp_config['enable']) && !empty($upnp_config['iface_array'])) {
 		$iface_array = explode(',', $upnp_config['iface_array']);
 
 		foreach($iface_array as $iface) {
