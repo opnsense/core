@@ -1,14 +1,19 @@
 all:
 
+CORE_NAME=	opnsense
+
+name:
+	@echo ${CORE_NAME}
+
 scripts:
 	@mkdir -p ${DESTDIR}
 	@cp -v ${.CURDIR}/+PRE_DEINSTALL ${DESTDIR}
 	@cp -v ${.CURDIR}/+POST_INSTALL ${DESTDIR}
 
 manifest:
-	@echo "name: opnsense"
+	@echo "name: ${CORE_NAME}"
 	@echo "version: \"%%REPO_VERSION%%\""
-	@echo "origin: opnsense/opnsense"
+	@echo "origin: opnsense/${CORE_NAME}"
 	@echo "comment: \"OPNsense core release package\""
 	@echo "desc: XXX"
 	@echo "maintainer: franco@opnsense.org"
