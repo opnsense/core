@@ -14,22 +14,27 @@ umount: force
 	/sbin/umount -f "<above>:${.CURDIR}/src"
 
 install: force
-	# move all sources to their destination
-	@mkdir -p ${DESTDIR}/usr/local
-	@cp -r ${.CURDIR}/src/* ${DESTDIR}/usr/local
-	# invoke pkg(8) bootstraping
 	@make -C ${.CURDIR}/pkg install
-	# invoke translation glue
 	@make -C ${.CURDIR}/lang install
-	# invoke third-party tools
 	@make -C ${.CURDIR}/contrib install
-	# finally pretty-print a list of files present
-	@(cd ${.CURDIR}/src; find * -type f) | \
-	    xargs -n1 printf "/usr/local/%s\n"
+	@mkdir -p ${DESTDIR}/usr/local
+	@cp -vr ${.CURDIR}/src/* ${DESTDIR}/usr/local
+
+plist: force
+	@make -C ${.CURDIR}/pkg plist
+	@make -C ${.CURDIR}/lang plist
+	@make -C ${.CURDIR}/contrib plist
+	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
+		if [ $${FILE%%.sample} != $${FILE} ]; then \
+			echo "@sample /usr/local/$${FILE}"; \
+		else \
+			echo "/usr/local/$${FILE}"; \
+		fi; \
+	done
 
 lint: force
 	find ${.CURDIR}/src ${.CURDIR}/lang/dynamic/helpers \
-	    ! -name "*.xml" ! -name "*.eot" \
+	    ! -name "*.xml" ! -name "*.xml.sample" ! -name "*.eot" \
 	    ! -name "*.svg" ! -name "*.woff" ! -name "*.woff2" \
 	    ! -name "*.otf" ! -name "*.png" ! -name "*.js" \
 	    ! -name "*.scss" ! -name "*.py" ! -name "*.ttf" \
