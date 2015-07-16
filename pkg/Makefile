@@ -8,7 +8,7 @@ scripts:
 manifest:
 	@echo "name: opnsense"
 	@echo "version: \"%%REPO_VERSION%%\""
-	@echo "origin: opnsense/opnsense-devel"
+	@echo "origin: opnsense/opnsense"
 	@echo "comment: \"OPNsense core release package\""
 	@echo "desc: XXX"
 	@echo "maintainer: franco@opnsense.org"
