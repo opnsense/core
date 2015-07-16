@@ -13,6 +13,12 @@ mount: force
 umount: force
 	/sbin/umount -f "<above>:${.CURDIR}/src"
 
+scripts: force
+	@make -C ${.CURDIR}/pkg scripts
+
+manifest: force
+	@make -C ${.CURDIR}/pkg manifest
+
 install: force
 	@make -C ${.CURDIR}/pkg install
 	@make -C ${.CURDIR}/lang install
