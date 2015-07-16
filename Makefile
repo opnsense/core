@@ -34,7 +34,7 @@ plist: force
 
 lint: force
 	find ${.CURDIR}/src ${.CURDIR}/lang/dynamic/helpers \
-	    ! -name "*.xml" ! -name "*.eot" \
+	    ! -name "*.xml" ! -name "*.xml.sample" ! -name "*.eot" \
 	    ! -name "*.svg" ! -name "*.woff" ! -name "*.woff2" \
 	    ! -name "*.otf" ! -name "*.png" ! -name "*.js" \
 	    ! -name "*.scss" ! -name "*.py" ! -name "*.ttf" \
