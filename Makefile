@@ -24,8 +24,13 @@ install: force
 	# invoke third-party tools
 	@make -C ${.CURDIR}/contrib install
 	# finally pretty-print a list of files present
-	@(cd ${.CURDIR}/src; find * -type f) | \
-	    xargs -n1 printf "/usr/local/%s\n"
+	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
+		if [ $${FILE%%.sample} != $${FILE} ]; then \
+			xargs -n1 printf "@sample /usr/local/%s\n"; \
+		else \
+			xargs -n1 printf "/usr/local/%s\n"; \
+		fi; \
+	done
 
 lint: force
 	find ${.CURDIR}/src ${.CURDIR}/lang/dynamic/helpers \
