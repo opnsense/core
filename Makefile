@@ -26,9 +26,9 @@ install: force
 	# finally pretty-print a list of files present
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
 		if [ $${FILE%%.sample} != $${FILE} ]; then \
-			xargs -n1 printf "@sample /usr/local/%s\n"; \
+			echo "@sample /usr/local/$${FILE}"; \
 		else \
-			xargs -n1 printf "/usr/local/%s\n"; \
+			echo "/usr/local/$${FILE}"; \
 		fi; \
 	done
 
