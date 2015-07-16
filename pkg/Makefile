@@ -18,8 +18,5 @@ install:
 	@cp -r ${.CURDIR}/fingerprints ${DESTDIR}/usr/local/etc/pkg/
 	@(cd ${.CURDIR}/fingerprints; find * -type f) | \
 	    xargs -n1 printf "/usr/local/etc/pkg/fingerprints/%s\n"
-	# XXX CONSERVATIVE_UPGRADE is not very helpful
-	@cp ${.CURDIR}/pkg.conf ${DESTDIR}/usr/local/etc
-	@echo /usr/local/etc/pkg.conf
 
 .PHONY: install
