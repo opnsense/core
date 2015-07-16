@@ -16,6 +16,9 @@ umount: force
 scripts: force
 	@make -C ${.CURDIR}/pkg scripts
 
+name: force
+	@make -C ${.CURDIR}/pkg name
+
 manifest: force
 	@make -C ${.CURDIR}/pkg manifest
 
