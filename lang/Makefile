@@ -1,7 +1,9 @@
 all:
 
-XGETTEXT=	xgettext -L PHP --from-code=UTF-8 -F --strict --debug
-MSGFMT=		msgfmt --strict
+_XGETTEXT!=	which xgettext || echo true
+XGETTEXT=	${_XGETTEXT} -L PHP --from-code=UTF-8 -F --strict --debug
+_MSGFMT!=	which msgfmt || echo true
+MSGFMT=		${_MSGFMT} --strict
 
 LOCALEDIR=	/usr/local/share/locale/%%LANG%%/LC_MESSAGES
 
