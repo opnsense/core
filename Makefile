@@ -13,14 +13,37 @@ mount: force
 umount: force
 	/sbin/umount -f "<above>:${.CURDIR}/src"
 
-scripts: force
-	@make -C ${.CURDIR}/pkg scripts
+CORE_COMMIT!=	${.CURDIR}/scripts/version.sh
+CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
+CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
-name: force
-	@make -C ${.CURDIR}/pkg name
+CORE_NAME?=		opnsense
+CORE_ORIGIN?=		opnsense/${CORE_NAME}
+CORE_COMMENT?=		OPNsense release package
+CORE_MAINTAINER?=	franco@opnsense.org
+CORE_WWW?=		https://opnsense.org/
 
 manifest: force
-	@make -C ${.CURDIR}/pkg manifest
+	@echo "name: \"${CORE_NAME}\""
+	@echo "version: \"${CORE_VERSION}\""
+	@echo "origin: \"${CORE_ORIGIN}\""
+	@echo "comment: \"${CORE_COMMENT}\""
+	@echo "desc: \"${CORE_HASH}\""
+	@echo "maintainer: \"${CORE_MAINTAINER}\""
+	@echo "www: \"${CORE_WWW}\""
+	@echo "prefix: /"
+	@echo "deps: {"
+	@echo "%%REPO_DEPENDS%%"
+	@echo "}"
+
+name: force
+	@echo ${CORE_NAME}
+
+scripts: force
+	@mkdir -p ${DESTDIR}
+	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}
+	@sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
+	    ${DESTDIR}/+POST_INSTALL
 
 install: force
 	@make -C ${.CURDIR}/pkg install

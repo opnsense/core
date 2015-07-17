@@ -20,7 +20,7 @@ rm -f /etc/rc.bak
 
 echo "Writing OPNsense version"
 mkdir -p /usr/local/opnsense/version
-echo "%%REPO_VERSION%%-%%REPO_COMMENT%%" > /usr/local/opnsense/version/opnsense
+echo "%%CORE_COMMIT%%" > /usr/local/opnsense/version/opnsense
 
 if /usr/local/etc/rc.d/configd status > /dev/null; then
 	/usr/local/etc/rc.d/configd restart
