@@ -1,3 +1,4 @@
+PKG!=		which pkg || echo true
 PAGER?=		less
 
 all:
@@ -22,6 +23,85 @@ CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_COMMENT?=		OPNsense release package
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_WWW?=		https://opnsense.org/
+CORE_DEPENDS?=		apinger \
+			ataidle \
+			beep \
+			bind910 \
+			bsdinstaller \
+			bsnmp-regex \
+			bsnmp-ucd \
+			ca_root_nss \
+			choparp \
+			cpustats \
+			dhcp6 \
+			dhcpleases \
+			dnsmasq \
+			expiretable \
+			filterdns \
+			filterlog \
+			ifinfo \
+			igmpproxy \
+			isc-dhcp42-client \
+			isc-dhcp42-relay \
+			isc-dhcp42-server \
+			lighttpd \
+			minicron \
+			miniupnpd \
+			mpd4 \
+			mpd5 \
+			ntp \
+			openssh-portable \
+			openvpn \
+			os-update \
+			pecl-radius \
+			pftop \
+			phalcon \
+			php-pfSense \
+			php-suhosin \
+			php-xdebug \
+			php56 \
+			php56-bcmath \
+			php56-bz2 \
+			php56-ctype \
+			php56-curl \
+			php56-dom \
+			php56-filter \
+			php56-gettext \
+			php56-hash \
+			php56-json \
+			php56-ldap \
+			php56-mbstring \
+			php56-mcrypt \
+			php56-mysql \
+			php56-openssl \
+			php56-pdo \
+			php56-pdo_sqlite \
+			php56-session \
+			php56-simplexml \
+			php56-sockets \
+			php56-sqlite3 \
+			php56-tokenizer \
+			php56-xml \
+			php56-zlib \
+			py27-Jinja2 \
+			py27-requests \
+			py27-sqlite3 \
+			py27-ujson \
+			python27 \
+			radvd \
+			rate \
+			relayd \
+			rrdtool12 \
+			smartmontools \
+			squid \
+			sshlockout_pf \
+			strongswan \
+			sudo \
+			suricata \
+			syslogd \
+			voucher \
+			wol \
+			zip
 
 manifest: force
 	@echo "name: \"${CORE_NAME}\""
@@ -33,11 +113,17 @@ manifest: force
 	@echo "www: \"${CORE_WWW}\""
 	@echo "prefix: /"
 	@echo "deps: {"
-	@echo "%%REPO_DEPENDS%%"
+	@for CORE_DEPEND in ${CORE_DEPENDS}; do \
+		${PKG} query '  %n: { version: "%v", origin: "%o" }' \
+		    $${CORE_DEPEND}; \
+	done
 	@echo "}"
 
 name: force
 	@echo ${CORE_NAME}
+
+depends: force
+	@echo ${CORE_DEPENDS}
 
 scripts: force
 	@mkdir -p ${DESTDIR}
