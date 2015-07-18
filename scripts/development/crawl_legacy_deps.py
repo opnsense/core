@@ -212,7 +212,7 @@ for filename in crawler.get_files():
         dot_filename = ('%s/%s.dot' % (target_directory, filename)).replace('//', '/')
         target_filename = dot_filename.replace('.dot', '.png')
         open(dot_filename, 'w').write(crawler.generate_dot(filename))
-        os.system('/usr/local/bin/dot -Tpng %s -o %s' % (dot_filename, target_filename))
+        os.system('/usr/local/bin/dot -Tpng %s -o %s ' % (dot_filename, target_filename))
         generated_files.append(os.path.basename(target_filename))
     else:
         # not interested, item has no children.
