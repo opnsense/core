@@ -64,7 +64,7 @@ if ($_REQUEST['getdyndnsstatus']) {
             echo htmlspecialchars($cached_ip);
             echo "</font>";
         } else {
-            echo "N/A " . date("H:i:s");
+            echo gettext("N/A ") . date("H:i:s");
         }
     }
     exit;

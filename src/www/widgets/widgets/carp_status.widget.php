@@ -61,14 +61,14 @@ if (is_array($config['virtualip']['vip'])) {
 <td width="65%"  class="listr">
 <?php
 if ($carp_enabled == false) {
-    $status = "DISABLED";
+    $status = gettext("DISABLED");
     echo "<span class=\"glyphicon glyphicon-remove text-danger\" title=\"$status\" alt=\"$status\" ></span>";
 } else {
-    if ($status == "MASTER") {
+    if ($status == gettext("MASTER")) {
         echo "<span class=\"glyphicon glyphicon-play text-success\" title=\"$status\" alt=\"$status\" ></span>";
-    } elseif ($status == "BACKUP") {
+    } elseif ($status == gettext("BACKUP")) {
         echo "<span class=\"glyphicon glyphicon-play text-muted\" title=\"$status\" alt=\"$status\" ></span>";
-    } elseif ($status == "INIT") {
+    } elseif ($status == gettext("INIT")) {
         echo "<span class=\"glyphicon glyphicon-info-sign\" title=\"$status\" alt=\"$status\" ></span>";
     }
 }
@@ -81,7 +81,7 @@ if ($ipaddress) {
     }
 } else {
 ?>
-		<tr><td class="listr">No CARP Interfaces Defined. Click <a href="carp_status.php">here</a> to configure CARP.</td></tr>
+  <tr><td class="listr"><?= gettext('No CARP Interfaces Defined. Click <a href="carp_status.php">here</a> to configure CARP.') ?></td></tr>
 <?php
 } ?>
 </table>

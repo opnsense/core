@@ -61,13 +61,13 @@ foreach ($ifdescrs as $ifdescr => $ifname) {
             $array_in_errors[] = $ifinfo['inerrs'];
             $array_out_errors[] = $ifinfo['outerrs'];
         } else {
-            $array_in_errors[] = "n/a";
-            $array_out_errors[] = "n/a";
+            $array_in_errors[] = gettext("n/a");
+            $array_out_errors[] = gettext("n/a");
         }
         if (isset($ifinfo['collisions'])) {
             $array_collisions[] = htmlspecialchars($ifinfo['collisions']);
         } else {
-            $array_collisions[] = "n/a";
+            $array_collisions[] = gettext("n/a");
         }
     }
 

@@ -133,7 +133,7 @@ if ($_REQUEST['updateme']) {
 			<td width="60%" class="listr">
 			<?php if ($ntpq_counter == 0) :
 ?>
-				No active peers available
+        <?= gettext('No active peers available') ?>
 			<?php
 else :
 ?>
@@ -145,7 +145,7 @@ endif; ?>
 		<?php if (($gps_ok) && ($gps_lat) && ($gps_lon)) :
 ?>
 			<tr>
-				<td width="40%" class="vncellt">Clock location</td>
+        <td width="40%" class="vncellt"><?= gettext('Clock location') ?></td>
 				<td width="60%" class="listr">
 					<a target="_gmaps" href="http://maps.google.com/?q=<?php echo $gps_lat; ?>,<?php echo $gps_lon; ?>">
 					<?php
@@ -159,17 +159,17 @@ endif; ?>
 			<?php if (isset($gps_sat) || isset($gps_satview)) :
 ?>
 				<tr>
-					<td width="40%" class="vncellt">Satellites</td>
+        <td width="40%" class="vncellt"><?= gettext('Satellites') ?></td>
 					<td width="60%" class="listr">
 					<?php
                     if (isset($gps_satview)) {
-                        echo 'in view ' . intval($gps_satview);
+                        echo gettext('in view ') . intval($gps_satview);
                     }
                     if (isset($gps_sat) && isset($gps_satview)) {
                         echo ', ';
                     }
                     if (isset($gps_sat)) {
-                        echo 'in use ' . $gps_sat;
+                        echo gettext('in use ') . $gps_sat;
                     }
                     ?>
 					</td>

@@ -95,7 +95,7 @@ if ($config['widgets']['rssfeed']) {
 			</tr>
 			<tr>
 				<td>
-					Display number of items:
+          <?= gettext('Display number of items:') ?>
 				</td>
 				<td>
 					<select name='rssmaxitems' id='rssmaxitems'>
@@ -110,7 +110,7 @@ if ($config['widgets']['rssfeed']) {
 			</tr>
 			<tr>
 				<td>
-					Widget height:
+          <?= gettext('Widget height:') ?>
 				</td>
 				<td>
 					<select name='rsswidgetheight' id='rsswidgetheight'>
@@ -125,7 +125,7 @@ if ($config['widgets']['rssfeed']) {
 			</tr>
 			<tr>
 				<td>
-					Show how many characters from story:
+          <?= gettext('Show how many characters from story:') ?>
 				</td>
 				<td>
 					<select name='rsswidgettextlength' id='rsswidgettextlength'>
@@ -140,7 +140,7 @@ if ($config['widgets']['rssfeed']) {
 			</tr>
 			<tr>
 				<td colspan="2">
-					<input id="submitc" name="submitc" type="submit" class="btn btn-primary formbtn" value="Save" />
+					<input id="submitc" name="submitc" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
 				</td>
 			</tr>
 		</table>
