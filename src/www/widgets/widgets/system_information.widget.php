@@ -106,7 +106,7 @@ endif; ?>
 		</tr>
 			<tr>
 				<td>
-					Updates
+					<?= gettext('Updates') ?>
 				</td>
 					<td>
 						<div id='updatestatus'><span class='btn-link' onclick='checkupdate()'><?=gettext("Click to check for updates");?></span></div>
@@ -231,7 +231,7 @@ endif; ?>
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
-				<span id="cpumeter">(Updating in 10 seconds)</span>
+				<span id="cpumeter">(<?= gettext('Updating in 10 seconds') ?>)</span>
 			</td>
 		</tr>
 		<tr>
