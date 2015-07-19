@@ -59,7 +59,7 @@ if (isset($_POST['servicestatusfilter'])) {
 	<tr>
 	  <td class="widgetsubheader" align="center"><b><?= gettext('Service') ?></b></td>
     <td class="widgetsubheader" align="center"><b><?= gettext('Description') ?></b></td>
-    <td class="widgetsubheader" align="center"><b><?= gettext('Status' ?></b></td>
+    <td class="widgetsubheader" align="center"><b><?= gettext('Status') ?></b></td>
 	  <td class="widgetsubheader">&nbsp;</td>
 	</tr>
 <?php
