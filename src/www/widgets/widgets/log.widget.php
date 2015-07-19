@@ -193,7 +193,7 @@ if ($nentriesinterfaces == "All") {
 		<tr>
 			<td>
 		<select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="formselect">
-			<option value="All">ALL</option>
+			<option value="All"><?= gettext('ALL') ?></option>
 <?php
         $interfaces = get_configured_interface_with_descr();
 foreach ($interfaces as $iface => $ifacename) :
@@ -213,7 +213,7 @@ endforeach;
 	</tr>
 	<tr>
 		<td>
-		<input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="Save" />
+		<input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
 		</td>
 	</tr>
 	</tbody>

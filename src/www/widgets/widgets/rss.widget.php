@@ -140,7 +140,7 @@ if ($config['widgets']['rssfeed']) {
 			</tr>
 			<tr>
 				<td colspan="2">
-					<input id="submitc" name="submitc" type="submit" class="btn btn-primary formbtn" value="Save" />
+					<input id="submitc" name="submitc" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
 				</td>
 			</tr>
 		</table>

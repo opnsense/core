@@ -89,7 +89,7 @@ if (!$nentries) {
         ?>
 		<td class="listlr">
 			<?=$vsent['name'];?><br />
-			<span style="background-color: <?=$bgcolor?>; display: block"><i><?=$rdr_a[$vsent['name']]['status']?></i></span>
+			<span style="background-color: <?=$bgcolor?>; display: block"><i><?= gettext($rdr_a[$vsent['name']]['status']) ?></i></span>
 			<?=$vsent['ipaddr'].":".$vsent['port'];?><br />
 		</td>
 		<td class="listr" align="center" >

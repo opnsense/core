@@ -82,7 +82,7 @@ if ($_POST) {
 			</tr>
 			<tr>
 				<td>
-					<input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="Upload" />
+					<input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Upload') ?>" />
 				</td>
 			</tr>
 		</table>

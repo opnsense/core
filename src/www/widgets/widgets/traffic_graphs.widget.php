@@ -150,7 +150,7 @@ if (isset($a_config["scale_type"])) {
 			</tr>
 			<tr>
 				<td>
-					<input id="submit_settings" name="submit_settings" type="submit" class="formbtn btn btn-primary" value="Save Settings" />
+					<input id="submit_settings" name="submit_settings" type="submit" class="formbtn btn btn-primary" value="<?= gettext('Save Settings') ?>" />
 				</td>
 			</tr>
 		</tbody>
