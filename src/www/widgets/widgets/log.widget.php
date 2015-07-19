@@ -150,7 +150,7 @@ function format_log_line(row) {
 			<tbody>
 				<tr>
 					<td>
-				Number of lines to display:
+            <?= gettext('Number of lines to display:') ?>
 					</td>
 				</tr>
 				<tr>
@@ -187,7 +187,7 @@ if ($nentriesinterfaces == "All") {
 		</tr>
 		<tr>
 			<td>
-			Interfaces:
+        <?= gettext('Interfaces:'); ?>
 			</td>
 		</tr>
 		<tr>

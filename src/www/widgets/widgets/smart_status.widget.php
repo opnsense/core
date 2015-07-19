@@ -69,7 +69,7 @@ if (count($devs) > 0) {
 		<tr>
 			<td class="listlr"><?php echo $dev; ?></td>
 			<td class="listr" align="center"><?php echo $dev_ident; ?></td>
-			<td class="listr" align="center"><span style="background-color:<?php echo $color; ?>">&nbsp;<?php echo $dev_state; ?>&nbsp;</span></td>
+			<td class="listr" align="center"><span style="background-color:<?php echo $color; ?>">&nbsp;<?php echo gettext($dev_state); ?>&nbsp;</span></td>
 		</tr>
 <?php
     }

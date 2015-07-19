@@ -111,7 +111,7 @@ if (isset($a_config["scale_type"])) {
 
 						<tr>
 							<td>
-								Default AutoScale:
+                <?= gettext('Default AutoScale:') ?>
 							</td>
 						</tr>
 							<?php
@@ -145,7 +145,7 @@ if (isset($a_config["scale_type"])) {
 }?>><?= $i ?></option>
 					<?php
 } ?>
-				</select>&nbsp; Seconds<br />&nbsp; &nbsp; &nbsp; <b>Note:</b> changing this setting will increase CPU utilization<br /><br />
+        </select>&nbsp; <?= gettext('Seconds') ?><br />&nbsp; &nbsp; &nbsp; <b><?= gettext('Note:') ?></b> <?= gettext('changing this setting will increase CPU utilization') ?><br /><br />
 				</td>
 			</tr>
 			<tr>

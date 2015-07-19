@@ -74,14 +74,14 @@ if ($carp_enabled == false) {
 }
 if ($ipaddress) {
 ?> &nbsp;
-        <?=htmlspecialchars($status);?> &nbsp;
+        <?=htmlspecialchars(gettext($status));?> &nbsp;
         <?=htmlspecialchars($ipaddress);
 }?>
 </td></tr><?php
     }
 } else {
 ?>
-		<tr><td class="listr">No CARP Interfaces Defined. Click <a href="carp_status.php">here</a> to configure CARP.</td></tr>
+  <tr><td class="listr"><?= gettext('No CARP Interfaces Defined. Click <a href="carp_status.php">here</a> to configure CARP.') ?></td></tr>
 <?php
 } ?>
 </table>

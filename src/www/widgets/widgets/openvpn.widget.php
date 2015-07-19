@@ -183,14 +183,14 @@ endforeach; ?>
 <table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td colspan="6" class="listtopic">
-			Peer to Peer Server Instance Statistics
+      <?= gettext('Peer to Peer Server Instance Statistics') ?>
 		</td>
 	</tr>
 	<tr>
 		<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<td class="listhdrr">Name/Time</td>
-			<td class="listhdrr">Remote/Virtual IP</td>
+      <td class="listhdrr"><?= gettext('Name/Time') ?></td>
+      <td class="listhdrr"><?= gettext('Remote/Virtual IP') ?></td>
 		</tr>
 
 <?php foreach ($sk_servers as $sk_server) :
@@ -236,14 +236,14 @@ endforeach; ?>
 <table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td colspan="6" class="listtopic">
-			Client Instance Statistics
+      <?= gettext('Client Instance Statistics') ?>
 		</td>
 	</tr>
 	<tr>
 		<table class="table table-striped" style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<td class="listhdrr">Name/Time</td>
-			<td class="listhdrr">Remote/Virtual IP</td>
+      <td class="listhdrr"><?= gettext('Name/Time') ?></td>
+      <td class="listhdrr"><?= gettext('Remote/Virtual IP') ?></td>
 		</tr>
 
 <?php foreach ($clients as $client) :
@@ -286,9 +286,9 @@ endforeach; ?>
 }
 
 if ($DisplayNote) {
-    echo "<br /><b>NOTE:</b> You need to bind each OpenVPN client to enable its management daemon: use 'Local port' setting in the OpenVPN client screen";
+    echo "<br /><b>".gettext('NOTE:')."</b> ".gettext("You need to bind each OpenVPN client to enable its management daemon: use 'Local port' setting in the OpenVPN client screen");
 }
 
 if ((empty($clients)) && (empty($servers)) && (empty($sk_servers))) {
-    echo "No OpenVPN instance defined";
+    echo gettext("No OpenVPN instance defined");
 }

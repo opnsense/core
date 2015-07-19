@@ -108,7 +108,7 @@ endif; ?>
 	<a href="?order=<?=$_GET['order'];
 ?>&amp;showact=<?=$_GET['showact'];
 ?>&amp;act=del&amp;zone=<?=$cpzone;
-?>&amp;id=<?=$cpent->sessionid;?>" onclick="return confirm('Do you really want to disconnect this client?')"><span class="glyphicon glyphicon-remove"></span></a></td>
+?>&amp;id=<?=$cpent->sessionid;?>" onclick="return confirm('<?= gettext('Do you really want to disconnect this client?');?>')"><span class="glyphicon glyphicon-remove"></span></a></td>
   </tr>
     <?php
 endforeach; ?>
