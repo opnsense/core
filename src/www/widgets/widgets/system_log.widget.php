@@ -66,7 +66,7 @@ if(is_numeric($_POST['logfiltercount'])) {
 			</td>
 
 			<td>
-			<input id="submit" name="submit" type="submit" class="btn btn-primary formbtn" value="Save" autocomplete="off">
+			<input id="submit" name="submit" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" autocomplete="off">
 			</td>
 
 		</tr>

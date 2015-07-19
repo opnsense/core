@@ -76,4 +76,4 @@ if (count($wolcomputers) > 0) {
 }
 ?>
 </table>
-<center><a href="status_dhcp_leases.php" class="navlink">DHCP Leases Status</a></center>
+<center><a href="status_dhcp_leases.php" class="navlink"><?= gettext('DHCP Leases Status') ?></a></center>

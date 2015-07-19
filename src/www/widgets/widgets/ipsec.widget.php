@@ -69,9 +69,9 @@ function display_widget_tabs(& $tab_array) {
 if (isset($config['ipsec']['phase1'])) {
     echo "<div>&nbsp;</div>\n";
     $tab_array = array();
-    $tab_array[0] = array("Overview", true, "ipsec-Overview");
-    $tab_array[1] = array("Tunnels", false, "ipsec-tunnel");
-    $tab_array[2] = array("Mobile", false, "ipsec-mobile");
+    $tab_array[0] = array(gettext("Overview"), true, "ipsec-Overview");
+    $tab_array[1] = array(gettext("Tunnels"), false, "ipsec-tunnel");
+    $tab_array[2] = array(gettext("Mobile"), false, "ipsec-mobile");
     display_widget_tabs($tab_array);
 
     $spd = ipsec_dump_spd();
@@ -201,9 +201,9 @@ if (isset($config['ipsec']['phase2'])) {
 <div id="ipsec-mobile" style="display:none;background-color:#EEEEEE;">
 	<div style="padding: 10px">
 		<div style="display:table-row;">
-			<div class="widgetsubheader" style="display:table-cell;width:140px">User</div>
-			<div class="widgetsubheader" style="display:table-cell;width:130px">IP</div>
-			<div class="widgetsubheader" style="display:table-cell;width:30px">Status</div>
+    <div class="widgetsubheader" style="display:table-cell;width:140px"><?= gettext('User') ?></div>
+    <div class="widgetsubheader" style="display:table-cell;width:130px"><?= gettext('IP') ?></div>
+    <div class="widgetsubheader" style="display:table-cell;width:30px"><?= gettext('Status') ?></div>
 		</div>
 		<div style="max-height:105px;overflow:auto;">
 <?php
@@ -243,11 +243,11 @@ else {
 	        <span class="vexpl">
 	          <span class="red">
 	            <strong>
-	              Note: There are no configured IPsec Tunnels<br />
+                <?= gettext('Note: There are no configured IPsec Tunnels') ?><br />
 	            </strong>
 	          </span>
-	          You can configure your IPsec
-	          <a href="vpn_ipsec.php">here</a>.
+            <?= gettext('You can configure your IPsec') ?>
+            <a href="vpn_ipsec.php"><?= gettext('here') ?></a>.
 	        </span>
 		</td>
 	  </tr>

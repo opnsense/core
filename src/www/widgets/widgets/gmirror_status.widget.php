@@ -36,9 +36,9 @@ function gmirror_html_status() {
 	$output = "";
 	if (count($mirrors) > 0) {
 		$output .= "<tr>\n";
-		$output .= "<td width=\"40%\" class=\"vncellt\">Name</td>\n";
-		$output .= "<td width=\"40%\" class=\"vncellt\">Status</td>\n";
-		$output .= "<td width=\"20%\" class=\"vncellt\">Component</td>\n";
+		$output .= "<td width=\"40%\" class=\"vncellt\">".gettext('Name')."</td>\n";
+		$output .= "<td width=\"40%\" class=\"vncellt\">".gettext('Status')."</td>\n";
+		$output .= "<td width=\"20%\" class=\"vncellt\">".gettext('Component')."</td>\n";
 		$output .= "</tr>\n";
 		foreach ($mirrors as $mirror => $name) {
 			$components = count($name["components"]);
@@ -57,7 +57,7 @@ function gmirror_html_status() {
 			}
 		}
 	} else {
-		$output .= "<tr><td colspan=\"3\" class=\"listr\">No Mirrors Found</td></tr>\n";
+		$output .= "<tr><td colspan=\"3\" class=\"listr\">".gettext('No Mirrors Found')."</td></tr>\n";
 	}
 	// $output .= "<tr><td colspan=\"3\" class=\"listr\">Updated at " . date("F j, Y, g:i:s a") . "</td></tr>\n";
 	return $output;
