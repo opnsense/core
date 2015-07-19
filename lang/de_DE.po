@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-15 10:01+0100\n"
+"PO-Revision-Date: 2015-07-19 15:15+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.6\n"
+"X-Generator: Poedit 1.8.2\n"
 
 msgid "Potential DNS Rebind attack detected, see http://en.wikipedia.org/wiki/DNS_rebinding<br />Try accessing the router by IP address instead of by hostname."
 msgstr ""
@@ -278,7 +278,7 @@ msgid "Unable to open /conf/config.xml for writing in write_config()"
 msgstr ""
 
 msgid "Reverted to"
-msgstr ""
+msgstr "Zurückgesetzt auf"
 
 #, php-format
 msgid "%s made unknown change"
@@ -329,10 +329,10 @@ msgid "Unknown block error."
 msgstr "Unbekannter Blockierfehler."
 
 msgid "Invalid interface for pass rule:"
-msgstr ""
+msgstr "Ungültiges Interface für Erlaubnisregel:"
 
 msgid "Invalid protocol for pass rule:"
-msgstr ""
+msgstr "Ungültiges Protokoll für Erlaubnisregel:"
 
 msgid "Tried to pass invalid source IP:"
 msgstr ""
@@ -347,13 +347,13 @@ msgid "Tried to pass invalid destination port:"
 msgstr ""
 
 msgid "Successfully added pass rule!"
-msgstr ""
+msgstr "Erlaubnisregel erfolgreich hinzugefügt!"
 
 msgid "Failed to add pass rule."
 msgstr "Das hinzufügen einer Erlaubnisregel ist fehlgeschlagen."
 
 msgid "Missing parameters for pass rule."
-msgstr ""
+msgstr "Es fehlen Parameter für Erlaubnisregel."
 
 msgid "Unknown pass error."
 msgstr ""
@@ -368,7 +368,7 @@ msgid "Creating aliases"
 msgstr "Erstelle Aliase"
 
 msgid "Generating Limiter rules"
-msgstr ""
+msgstr "Generiere Begrenzerregeln"
 
 msgid "Generating NAT rules"
 msgstr "Generiere NAT Regeln"
@@ -400,13 +400,13 @@ msgstr ""
 
 #, php-format
 msgid "There were error(s) loading the rules: %1$s - %2$s"
-msgstr ""
+msgstr "Es gab Fehler während die Regeln geladen wurden: %1$s - %2$s"
 
 msgid "Processing down interface states"
 msgstr ""
 
 msgid "Running plugins"
-msgstr ""
+msgstr "Laufende Plugins"
 
 msgid "Done"
 msgstr "Erledigt"
@@ -424,7 +424,7 @@ msgstr ""
 
 #, php-format
 msgid "Creating reflection rule for %s..."
-msgstr ""
+msgstr "Erstelle Reflektionsregel für %s..."
 
 msgid "localhost"
 msgstr "localhost"
@@ -488,11 +488,11 @@ msgstr ""
 
 #, php-format
 msgid "Setting up pass/block rules %s"
-msgstr ""
+msgstr "Konfiguriere Erlaubnis- und Blockierregeln %s"
 
 #, php-format
 msgid "Could not find IPv4 gateway for interface (%s)."
-msgstr ""
+msgstr "Konnte IPv4 Gateway für das Interface nicht finden (%s)."
 
 #, php-format
 msgid "Creating rule %s"
@@ -523,50 +523,50 @@ msgstr ""
 # File: src/etc/inc/filter_log.inc, line: 157
 #, php-format
 msgid "There was an error parsing rule number: %s -- not IPv4 or IPv6 (`%s')"
-msgstr ""
+msgstr "Es gab einen Fehler beim Parsen der Regel mit der Nummmer %s -- nicht IPv4 oder IPv6 ('%s')"
 
 #
 # File: src/etc/inc/filter_log.inc, line: 191
 #, php-format
 msgid "There was an error parsing rule number: %s -- no src or dst (`%s')"
-msgstr ""
+msgstr "Es gab einen Fehler beim Parsen der Regel mit der Nummer %s -- keine Quelle oder Ziel ('%s')"
 
 #, php-format
 msgid "Service %1$s/%2$s: %3$s"
-msgstr ""
+msgstr "Dienst %1$s/%2$s: %3$s"
 
 msgid "Acknowledge All Notices"
 msgstr "Alle Meldungen bestätigen"
 
 msgid "unread notice"
-msgstr ""
+msgstr "ungelesene Mitteilung"
 
 msgid "unread notices"
-msgstr ""
+msgstr "ungelesense Mitteilungen"
 
 #
 # File: src/etc/inc/gwlb.inc, line: 825
 #, php-format
 msgid "MONITOR: %s is down, removing from routing group %s"
-msgstr ""
+msgstr "MONITOR: %s ist nicht erreichbar und wird daher aus der Routinggruppe %s entfernt"
 
 #
 # File: src/etc/inc/gwlb.inc, line: 829
 #, php-format
 msgid "MONITOR: %s has packet loss, removing from routing group %s"
-msgstr ""
+msgstr "MONITOR: %s verliert Pakete und wird daher aus der Routinggruppe %s entfernt"
 
 #
 # File: src/etc/inc/gwlb.inc, line: 833
 #, php-format
 msgid "MONITOR: %s has high latency, removing from routing group %s"
-msgstr ""
+msgstr "MONITOR: %s hat eine hohe Latenz und wird aus der Routinggruppe %s entfernt"
 
 #
 # File: src/etc/inc/gwlb.inc, line: 854
 #, php-format
 msgid "Gateways status could not be determined, considering all as up/active. (Group: %s)"
-msgstr ""
+msgstr "Der Gatewaystatus konnte nicht erkannt werden; nehme an, dass alle erreichbar/aktiv sind. (Gruppe: %s)"
 
 msgid "interfaces_bring_up() was called but no variable defined."
 msgstr ""
@@ -603,11 +603,11 @@ msgid "interface_qinq2_configure called with if undefined.%s"
 msgstr ""
 
 msgid "Creating wireless clone interfaces..."
-msgstr ""
+msgstr "Erstelle drahtlose Kloninterfaces..."
 
 #, php-format
 msgid "No members found on %s"
-msgstr ""
+msgstr "Keine Mitglieder auf %s gefunden"
 
 msgid "realif not defined in interfaces bridge - up"
 msgstr ""
@@ -646,7 +646,7 @@ msgstr ""
 
 #, php-format
 msgid "Error: cannot open mpd_%s.conf in interface_ppps_configure().%s"
-msgstr ""
+msgstr "Fehler: konnte mpd_%s.conf in interface_ppps_configure() nicht öffnen.%s"
 
 msgid "Configuring CARP settings..."
 msgstr "Konfiguriere CARP Einstellungen..."
@@ -665,19 +665,19 @@ msgstr ""
 
 #, php-format
 msgid "Interface %s changed to hostap mode"
-msgstr ""
+msgstr "Das Interface %s wechselte in den hostap-Modus"
 
 #, php-format
 msgid "Interface %s changed to adhoc mode"
-msgstr ""
+msgstr "Das Interface %s wechselte in den adhoc-Modus"
 
 #, php-format
 msgid "Interface %s changed to infrastructure mode"
-msgstr ""
+msgstr "Das Interface %s wechselte in den Infrastrukturmodus"
 
 #, php-format
 msgid "Cloning new wireless interface %s"
-msgstr ""
+msgstr "Klone neues drahtloses Interface %s"
 
 #, php-format
 msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
@@ -688,7 +688,7 @@ msgstr "Generiere neue MAC Adresse."
 
 #, php-format
 msgid "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %1$s has been automatically replaced with %2$s"
-msgstr ""
+msgstr "Die ungültige MAC Adresse (ff:ff:ff:ff:ff:ff) am Interface %1$s wurde automatisch durch %2$s ersetzt."
 
 #, php-format
 msgid "Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s"
