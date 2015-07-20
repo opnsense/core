@@ -75,20 +75,7 @@ if ($carp_enabled == false) {
 if ($ipaddress) {
 ?> &nbsp;
         <?php
-          switch($status) {
-            case 'MASTER':
-              echo htmlspecialchars(gettext('MASTER'));
-              break;
-            case 'BACKUP':
-              echo htmlspecialchars(gettext('BACKUP'));
-              break;
-            case 'INIT':
-              echo htmlspecialchars(gettext('INIT'));
-              break;
-            case 'DISABLED':
-              echo htmlspecialchars(gettext('DISABLED'));
-              break;
-          }
+              echo htmlspecialchars($status);
         ?> &nbsp;
         <?=htmlspecialchars($ipaddress);
 }?>
