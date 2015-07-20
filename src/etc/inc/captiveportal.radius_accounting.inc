@@ -61,8 +61,6 @@ function RADIUS_ACCOUNTING_START($ruleno, $username, $sessionid, $radiusservers,
         break;
 
         default:
-            if (!function_exists('getNasIP'))
-                require_once("captiveportal.inc");
 	$calledstationid = getNasIP();
         $callingstationid = $clientmac;
 	break;

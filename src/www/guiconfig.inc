@@ -27,7 +27,9 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
+require_once("config.inc");
+require_once("csrf/csrf-magic.php");
+ 
 /* Include authentication routines */
 /* THIS MUST BE ABOVE ALL OTHER CODE */
 if(isset($nocsrf) && !$nocsrf) {
@@ -37,9 +39,21 @@ function csrf_startup() {
 		$timeout_minutes = isset($config['system']['webgui']['session_timeout']) ?  $config['system']['webgui']['session_timeout'] : 240;
 		csrf_conf('expires', $timeout_minutes * 60);
 	}
-	require_once("csrf/csrf-magic.php");
-
 }
+
+function set_language($lang)
+{
+	$lang_encoding = $lang . '.UTF-8';
+	$textdomain = 'OPNsense';
+
+	putenv('LANG=' . $lang_encoding);
+	setlocale(LC_ALL, $lang_encoding);
+	textdomain($textdomain);
+	bindtextdomain($textdomain, '/usr/local/share/locale');
+	bind_textdomain_codeset($textdomain, $lang_encoding);
+}
+
+
 
 /* make sure nothing is cached */
 if (isset($omit_nocacheheaders) && $omit_nocacheheaders) {
@@ -51,9 +65,6 @@ if (isset($omit_nocacheheaders) && $omit_nocacheheaders) {
 }
 
 header("X-Frame-Options: SAMEORIGIN");
-
-/* parse the configuration and include all configuration functions */
-require_once("functions.inc");
 
 $g['theme'] = get_current_theme();
 
@@ -634,4 +645,86 @@ function get_crash_report($pedantic = false)
 	}
 
 	return $savemsg;
+}
+
+function redirectHeader($text)
+{
+        global $_SERVER;
+
+	if (isAjax()) {
+                if ($_SERVER['HTTPS'] == 'on') {
+                        $protocol = 'https';
+                } else {
+                        $protocol = 'http';
+		}
+
+		$port = '';
+
+		if (
+			!($_SERVER['SERVER_PORT'] == '80' && $protocol == 'http') &&
+			!($_SERVER['SERVER_PORT'] == '443' && $protocol == 'https')
+		) {
+			$port = ":{$_SERVER['SERVER_PORT']}";
+		}
+
+		echo "\ndocument.location.href = '{$protocol}://{$_SERVER['SERVER_NAME']}{$port}/{$text}';\n";
+	} else {
+		header("Location: $text");
+	}
+}
+
+
+function get_menu_messages()
+{
+	global $config;
+
+	$menu_messages = '';
+	if (are_notices_pending()) {
+		$notices = get_notices();
+		$requests = array();
+
+		## Get Query Arguments from URL ###
+		foreach ($_REQUEST as $key => $value) {
+			if ($key != "PHPSESSID") {
+				$requests[] = $key.'='.$value;
+			}
+		}
+
+		if (is_array($requests)) {
+			$request_string = implode("&", $requests);
+		}
+
+		if (is_array($notices)) {
+			$notice_msgs = "<ul class=\"dropdown-menu\" role=\"menu\">";
+
+			$notice_msgs .= "<li><a href=\"#\" onclick=\"notice_action('acknowledge','all');\" >".gettext("Acknowledge All Notices")."</a></li><li class=\"divider\"></li>";
+
+			foreach ($notices as $key => $value) {
+				$date = date("m-d-y H:i:s", $key);
+				$noticemsg = ($value['notice'] != "" ? $value['notice'] : $value['id']);
+				$noticemsg = preg_replace("/(\"|\'|\n|<.?\w+>)/i","",$noticemsg);
+				$alert_action ="onclick=\"notice_action('acknowledge','{$key}'); jQuery(this).parent().parent().remove();\"";
+				$notice_msgs .= "<li><a href=\"#\"  {$alert_action}>{$date} [ ".htmlspecialchars($noticemsg)."]</a></li>";
+			}
+
+			$notice_msgs .="</ul>";
+
+			if (count($notices) == 1) {
+				$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notice");
+			} else {
+				$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notices");
+			}
+
+			$menu_messages.="<a href=\"/\" class=\"dropdown-toggle \" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\"><span class=\"text-primary\">{$msg}&nbsp;</span><span class=\"caret text-primary\"></span></a>{$notice_msgs}\n";
+		}
+	} else {
+		$menu_messages .= sprintf(
+			'<a href="#">%s@%s.%s</a>',
+			$_SESSION['Username'],
+			$config['system']['hostname'],
+			$config['system']['domain']
+		);
+	}
+
+	return ($menu_messages);
 }

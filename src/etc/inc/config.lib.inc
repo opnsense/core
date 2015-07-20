@@ -33,7 +33,8 @@ require_once("globals.inc");
 require_once("xmlparse.inc");
 require_once("crypt.inc");
 require_once("util.inc");
-require_once("script/load_phalcon.php");
+require_once("notices.inc");
+require_once("legacy_bindings.inc");
 
 /* make a global alias table (for faster lookups) */
 function alias_make_table($config)

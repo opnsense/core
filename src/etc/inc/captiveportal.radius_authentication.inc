@@ -62,8 +62,6 @@ function RADIUS_AUTHENTICATION($username,$password,$radiusservers,$clientip,$cli
 		$callingstationid = $clientip;
 		break;
         default:
-            if (!function_exists('getNasIP'))
-                require_once("captiveportal.inc");
 		$calledstationid = getNasIP();
 		$callingstationid = $clientmac;
 		break;

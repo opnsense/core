@@ -37,7 +37,6 @@ ob_start(null, "1000");
 
 ## Load Essential Includes
 require_once('guiconfig.inc');
-require_once('notices.inc');
 
 if (isset($_REQUEST['closenotice'])) {
     close_notice($_REQUEST['closenotice']);

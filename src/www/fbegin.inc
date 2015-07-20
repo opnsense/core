@@ -32,7 +32,6 @@ require_once("globals.inc");
 require_once("functions.inc");
 require_once("shortcuts.inc");
 require_once("services.inc");
-require_once("script/load_phalcon.php");
 
 function find_service_by_name($name) {
 	$services = get_services();

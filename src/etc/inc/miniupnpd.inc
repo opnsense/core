@@ -1,7 +1,6 @@
 <?php
 
 require_once("util.inc");
-require_once("config.inc");
 require_once("functions.inc");
 
 /* MiniUPnPd */

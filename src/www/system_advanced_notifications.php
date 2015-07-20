@@ -27,7 +27,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("notices.inc");
 
 // Growl
 $pconfig['disable_growl'] = isset($config['notifications']['growl']['disable']);

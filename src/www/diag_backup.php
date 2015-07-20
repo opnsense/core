@@ -27,7 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-require_once("script/load_phalcon.php");
 
 /* Allow additional execution time 0 = no limit. */
 ini_set('max_execution_time', '0');
