@@ -27,6 +27,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("guiconfig.inc");
+
 function staticmapcmp($a, $b) {
 	return ipcmp($a['ipaddr'], $b['ipaddr']);
 }
@@ -36,9 +38,6 @@ function staticmaps_sort($ifgui) {
 
 	usort($config['dhcpd'][$ifgui]['staticmap'], "staticmapcmp");
 }
-
-require_once('globals.inc');
-require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dhcp.php');
 

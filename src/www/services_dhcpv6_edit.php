@@ -27,6 +27,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("guiconfig.inc");
 
 function staticmapcmp($a, $b) {
         return ipcmp($a['ipaddrv6'], $b['ipaddrv6']);
@@ -38,8 +39,6 @@ function staticmaps_sort($ifgui) {
         usort($config['dhcpdv6'][$ifgui]['staticmap'], "staticmapcmp");
 }
 
-require_once('globals.inc');
-require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dhcpv6.php');
 

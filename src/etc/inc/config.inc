@@ -44,7 +44,6 @@ require_once("util.inc");
 require_once("IPv6.inc");
 require_once("xmlparse.inc");
 require_once("crypt.inc");
-require_once("globals.inc");
 
 $config = parse_config();
 

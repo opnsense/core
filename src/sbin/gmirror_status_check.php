@@ -27,7 +27,6 @@
 */
 
 require_once("config.inc");
-require_once("globals.inc");
 require_once("gmirror.inc");
 
 global $g;

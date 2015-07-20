@@ -28,7 +28,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("globals.inc");
 
 function interfaces_carp_set_maintenancemode($carp_maintenancemode){
 	global $config;

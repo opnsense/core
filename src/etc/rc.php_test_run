@@ -7,7 +7,6 @@
      small tests to ensure the php environment is sane.
 */
 
-require_once('globals.inc');
 require_once('util.inc');
 require_once('xmlparse.inc');
 require_once('config.lib.inc');
