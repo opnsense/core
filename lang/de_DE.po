@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-20 18:43+0200\n"
+"PO-Revision-Date: 2015-07-20 18:44+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -2486,7 +2486,7 @@ msgid "Proto"
 msgstr ""
 
 msgid "Source -> Router -> Destination"
-msgstr "Quelle->Router->Ziel"
+msgstr "Quelle -> Router -> Ziel"
 
 # unclear if country ("Staat") or state ("Status") - it can be translated to both!
 #, fuzzy
@@ -2695,7 +2695,7 @@ msgid "Remote subnets"
 msgstr ""
 
 msgid "You can configure IPsec"
-msgstr "Sie könne IPsec konfigurieren"
+msgstr "Sie können IPsec konfigurieren"
 
 msgid "Leases"
 msgstr ""
