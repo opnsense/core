@@ -28,7 +28,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("globals.inc");
 require_once("functions.inc");
 require_once("shortcuts.inc");
 require_once("services.inc");

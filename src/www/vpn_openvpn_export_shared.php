@@ -27,7 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("globals.inc");
 require_once("guiconfig.inc");
 require_once("openvpn-client-export.inc");
 

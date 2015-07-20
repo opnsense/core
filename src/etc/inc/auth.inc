@@ -36,9 +36,6 @@
  * file courtesy of Michael Retterklieber.
  */
 
-// previous in config.gui.inc
-require_once("globals.inc");
-
 /* include globals from notices.inc /utility/XML parser files */
 require_once('config.lib.inc');
 require_once("util.inc");

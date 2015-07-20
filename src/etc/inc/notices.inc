@@ -28,7 +28,6 @@
  *
  */
 
-require_once("globals.inc");
 require_once("led.inc");
 require_once("util.inc");
 require_once("notices.growl.class");
@@ -90,8 +89,6 @@ function file_notice($id, $notice, $category = "General", $url = "", $priority =
  ******/
 function get_notices($category = 'all')
 {
-	global $g;
-
 	if (file_exists('/tmp/notices')) {
 		$queue = unserialize(file_get_contents('/tmp/notices'));
 		if(!$queue) return false;
@@ -218,7 +215,7 @@ function are_notices_pending($category = 'all')
  *   returns true if message was sent
  ******/
 function notify_via_smtp($message, $force = false) {
-	global $config, $g;
+	global $config;
 	if(file_exists("/var/run/booting"))
 		return;
 
@@ -242,7 +239,7 @@ function notify_via_smtp($message, $force = false) {
 }
 
 function send_smtp_message($message, $subject = "(no subject)") {
-	global $config, $g;
+	global $config;
 
 	if(!$config['notifications']['smtp']['ipaddress'])
 		return;

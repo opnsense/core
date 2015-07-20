@@ -33,7 +33,6 @@
 require_once("auth.inc");
 require_once("filter.inc");
 require_once("functions.inc");
-require_once("globals.inc");
 
 // provided via legacy_bindings.inc 
 global $priv_list;

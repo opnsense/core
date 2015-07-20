@@ -30,7 +30,6 @@
 	DISABLE_PHP_LINT_CHECKING
 */
 
-require_once("globals.inc");
 require_once("guiconfig.inc");
 require("openvpn-client-export.inc");
 

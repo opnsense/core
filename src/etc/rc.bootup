@@ -103,8 +103,6 @@ echo " done.\n";
 
 echo "Initializing...";
 echo ".";
-require_once("globals.inc");
-echo ".";
 require_once("led.inc");
 led_normalize();
 echo ".";

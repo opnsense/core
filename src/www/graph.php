@@ -28,7 +28,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("globals.inc");
 require_once("guiconfig.inc");
 
 header("Last-Modified: " . gmdate( "D, j M Y H:i:s" ) . " GMT" );

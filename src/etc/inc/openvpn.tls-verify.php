@@ -35,7 +35,6 @@
  *  intermediates.
  */
 
-require_once("globals.inc");
 require_once("config.inc");
 require_once("interfaces.inc");
 
