@@ -58,7 +58,7 @@ $arr_gateways = return_gateways_array();
 if (isset($config['system']['dns1gw'])) {
 	$pconfig['dns1gw'] = $config['system']['dns1gw'];
 } else {
-	$pconfig['dns1gw'] = null; 
+	$pconfig['dns1gw'] = null;
 }
 if (isset($config['system']['dns2gw'])) {
 	$pconfig['dns2gw'] = $config['system']['dns2gw'];

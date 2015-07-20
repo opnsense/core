@@ -39,7 +39,7 @@ function handle_argument_group($iface, $argument2) {
 	if (!is_array($config['interfaces'][$iface]))
 		return;
 
-	if (isset($config['interfaces'][$iface]['ipaddr'])) { 
+	if (isset($config['interfaces'][$iface]['ipaddr'])) {
 		$ipaddr = $config['interfaces'][$iface]['ipaddr'];
 	} else {
 		$ipaddr = null ;

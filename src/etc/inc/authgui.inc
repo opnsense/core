@@ -318,7 +318,7 @@ function display_login_form()
     }
 
     /* Check against locally configured IP addresses, which will catch when someone
-	   port forwards WebGUI access from WAN to an internal IP on the router. */    
+	   port forwards WebGUI access from WAN to an internal IP on the router. */
     $FilterIflist = filter_generate_optcfg_array() ;
     $local_ip = false;
     if (strstr($_SERVER['HTTP_HOST'], ":")) {
