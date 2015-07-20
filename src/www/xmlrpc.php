@@ -26,9 +26,9 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-require_once("xmlrpc.inc");
-require_once("config.lib.inc");
+require_once("config.inc");
 require_once("auth.inc");
+require_once("xmlrpc.inc");
 
 /**
  * do a basic authentication, uses $_SERVER['HTTP_AUTHORIZATION'] to validate user.

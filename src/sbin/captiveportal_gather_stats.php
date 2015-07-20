@@ -28,6 +28,7 @@
 */
 
 require_once("functions.inc");
+require_once("config.inc");
 require_once("captiveportal.inc");
 require_once("util.inc");
 
