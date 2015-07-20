@@ -85,7 +85,7 @@ class DependancyCrawler(object):
             for wroot, wdirs, wfiles in os.walk(analyse_dir):
                 for src_filename in wfiles:
                     src_filename = '%s/%s' % (wroot, src_filename)
-                    if src_filename.split('.')[-1] in ('php', 'inc') \
+                    if src_filename.split('.')[-1] in ('php', 'inc','class') \
                             or open(src_filename).read(1024).find('/bin/php') > -1:
                         self.fetch_php(src_filename)
 
