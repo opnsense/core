@@ -48,8 +48,9 @@ class DependancyCrawler(object):
 
     def fetch_php(self, src_filename):
         # create a new list for this base filename
-        # to avoid too much complexity, we will assume that filenames are unique.
         base_filename = os.path.basename(src_filename)
+        if base_filename in self._all_dependancies:
+            base_filename = '%s__%s' % (src_filename.split('/')[-2], base_filename)
         self._all_dependancies[base_filename] = []
 
         source_data = open(src_filename).read()
@@ -74,7 +75,7 @@ class DependancyCrawler(object):
                                     self._all_dependancies[base_filename].append(dep_filename)
                         data = data[strlen+startpos:]
 
-    def crawl(self, root, analyse_dirs=('www', 'etc', 'captiveportal', 'sbin')):
+    def crawl(self, root, analyse_dirs=('etc','www', 'captiveportal', 'sbin')):
         """ Crawl through legacy code
         :param root: start crawling at
         :param analyse_dirs: only analyse these directories
