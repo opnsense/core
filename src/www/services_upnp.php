@@ -425,7 +425,7 @@ include("head.inc");
 			$description = "";
 		}
 		$colspan = '';
-		
+
 		if ($pkga['type'] == "sorting")
 			continue;
 

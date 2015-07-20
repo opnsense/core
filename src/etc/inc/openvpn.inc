@@ -1276,4 +1276,3 @@ function openvpn_get_settings($mode, $vpnid) {
 
 	return array();
 }
-
