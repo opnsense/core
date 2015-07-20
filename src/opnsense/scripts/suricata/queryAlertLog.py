@@ -1,9 +1,7 @@
 #!/usr/local/bin/python2.7
+
 """
     Copyright (c) 2015 Ad Schellevis
-
-    part of OPNsense (https://www.opnsense.org/)
-
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,8 +26,10 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+
     query suricata alert log
 """
+
 import os.path
 import re
 import sre_constants

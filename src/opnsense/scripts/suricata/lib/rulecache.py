@@ -1,8 +1,5 @@
 """
     Copyright (c) 2015 Ad Schellevis
-
-    part of OPNsense (https://www.opnsense.org/)
-
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -27,8 +24,10 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+
     shared module for suricata scripts, handles the installed rules cache for easy access
 """
+
 import os
 import os.path
 import glob

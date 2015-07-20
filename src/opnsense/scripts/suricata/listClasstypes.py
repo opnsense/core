@@ -1,9 +1,7 @@
 #!/usr/local/bin/python2.7
+
 """
     Copyright (c) 2015 Ad Schellevis
-
-    part of OPNsense (https://www.opnsense.org/)
-
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,8 +26,10 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+
     script to fetch all classtypes from the installed suricata rules using the shared rule cache:
 """
+
 import ujson
 from lib.rulecache import RuleCache
 

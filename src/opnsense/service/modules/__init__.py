@@ -1,8 +1,5 @@
 """
     Copyright (c) 2014 Ad Schellevis
-
-    part of opnSense (https://www.opnsense.org/)
-
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -25,12 +22,8 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-
-
-
 """
+
 def singleton(cls, *args, **kwargs):
     """ singleton pattern, use ad decorator
     """

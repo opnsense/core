@@ -1,9 +1,7 @@
 #!/usr/local/bin/python2.7
+
 """
     Copyright (c) 2014 Ad Schellevis
-
-    part of OPNsense (https://www.opnsense.org/)
-
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,15 +26,13 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+
     package : configd
     function: delivers a process coordinator to handle frontend functions
-
-
-
 """
+
 __author__ = 'Ad Schellevis'
 
-#
 import os
 import sys
 import modules.processhandler

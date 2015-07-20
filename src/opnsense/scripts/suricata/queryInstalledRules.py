@@ -1,9 +1,7 @@
 #!/usr/local/bin/python2.7
+
 """
     Copyright (c) 2015 Ad Schellevis
-
-    part of OPNsense (https://www.opnsense.org/)
-
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,11 +26,13 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+
     script to fetch all suricata rule information into a single json object with the following contents:
         rules : all relevant metadata from the rules including the default enabled or disabled state
         total_rows: total rowcount for this selection
         parameters: list of parameters used
 """
+
 import ujson
 from lib.rulecache import RuleCache
 from lib.params import updateParams
