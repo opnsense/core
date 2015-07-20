@@ -65,9 +65,9 @@ if (!$nentries) {
 
 <table class="table table-stiped" bgcolor="#990000" width="100%" border="0" cellspacing="0" cellpadding="0" summary="load balancer">
 	<thead>
-		<td width="10%" class="listhdrr">Server</td>
-		<td width="10%" class="listhdrr">Pool</td>
-		<td width="30%" class="listhdr">Description</td>
+    <td width="10%" class="listhdrr"><?= gettext('Server') ?></td>
+    <td width="10%" class="listhdrr"><?= gettext('Pool') ?></td>
+    <td width="30%" class="listhdr"><?= gettext('Description') ?></td>
 	</thead>
 	<?php $i = 0; foreach ($a_vs as $vsent) :
 ?>
@@ -76,20 +76,20 @@ if (!$nentries) {
         switch (trim($rdr_a[$vsent['name']]['status'])) {
             case 'active':
                 $bgcolor = "#90EE90";  // lightgreen
-                $rdr_a[$vsent['name']]['status'] = "Active";
+                $rdr_a[$vsent['name']]['status'] = gettext("Active");
                 break;
             case 'down':
                 $bgcolor = "#F08080";  // lightcoral
-                $rdr_a[$vsent['name']]['status'] = "Down";
+                $rdr_a[$vsent['name']]['status'] = gettext("Down");
                 break;
             default:
                 $bgcolor = "#D3D3D3";  // lightgray
-                 $rdr_a[$vsent['name']]['status'] = 'Unknown - relayd not running?';
+                 $rdr_a[$vsent['name']]['status'] = gettext('Unknown - relayd not running?');
         }
         ?>
 		<td class="listlr">
 			<?=$vsent['name'];?><br />
-			<span style="background-color: <?=$bgcolor?>; display: block"><i><?= gettext($rdr_a[$vsent['name']]['status']) ?></i></span>
+			<span style="background-color: <?=$bgcolor?>; display: block"><i><?= $rdr_a[$vsent['name']]['status'] ?></i></span>
 			<?=$vsent['ipaddr'].":".$vsent['port'];?><br />
 		</td>
 		<td class="listr" align="center" >
