@@ -360,8 +360,6 @@ function filter_configure_sync($delete_states_if_needed = true)
 		filter_delete_states_for_down_gateways();
 	}
 
-	update_filter_reload_status(gettext("Running plugins"));
-
 	update_filter_reload_status(gettext("Done"));
 	if(file_exists("/var/run/booting"))
 		echo gettext("done.") . "\n";
