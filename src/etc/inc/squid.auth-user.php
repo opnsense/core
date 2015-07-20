@@ -28,6 +28,7 @@
  *
  */
 
+require_once("config.lib.inc");
 require_once("auth.inc");
 
 openlog("squid", LOG_ODELAY, LOG_AUTH);

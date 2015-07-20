@@ -27,6 +27,7 @@
  *
  */
 require_once("xmlrpc.inc");
+require_once("config.lib.inc");
 require_once("auth.inc");
 
 /**
