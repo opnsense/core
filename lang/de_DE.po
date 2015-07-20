@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-20 18:33+0200\n"
+"PO-Revision-Date: 2015-07-20 18:37+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -1823,7 +1823,7 @@ msgid "Which configuration would you like to restore?"
 msgstr "Welche Konfiguration möchten Sie wiederherstellen?"
 
 msgid "That is not a valid backup number.\n"
-msgstr "Das ist keine gültige Backupnummer.\n"
+msgstr "Dies ist keine gültige Backupnummer.\n"
 
 msgid "Is this the backup you wish to restore?"
 msgstr "Ist dies das Backup, welches Sie wiederherstellen möchten?"
@@ -1941,7 +1941,7 @@ msgid "Could not locate any defined CARP interfaces."
 msgstr "Konnte kein definiertes CARP Interface finden."
 
 msgid "Note"
-msgstr "Notiz"
+msgstr "Anmerkung"
 
 #
 # File: src/www/carp_status.php, line: 181
