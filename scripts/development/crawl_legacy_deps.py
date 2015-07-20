@@ -45,11 +45,11 @@ if not os.path.exists(target_directory):
     os.mkdir(target_directory)
 
 # start crawling
-crawler = DependancyCrawler()
+crawler = DependancyCrawler(src_root)
 print '[%.2f] started ' % (time.time())
-crawler.crawl(src_root)
+crawler.crawl()
 print '[%.2f] collected %d dependancies in %d files' % (time.time(),
-                                                        crawler.get_total_dependancies(),
+                                                        crawler.get_total_dependencies(),
                                                         crawler.get_total_files())
 
 # generate graphs

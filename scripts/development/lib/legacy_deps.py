@@ -30,21 +30,40 @@ import os
 import os.path
 
 class DependancyCrawler(object):
-    """ Legacy dependancy crawler and grapher
+    """ Legacy dependency crawler and grapher
     """
-    def __init__(self):
-        self._all_dependancies = {}
+    def __init__(self, root):
+        """ init
+        :param root: start crawling at
+        :return:
+        """
+        self._all_dependencies = {}
+        self._all_dependencies_src = {}
+        self._all_functions = {}
+        self.root = root
 
-    def fetch_php(self, src_filename):
+    def get_dependency_by_src(self, src_filename):
+        """ dependencies are stored by a single name, this method maps a filename back to it's name
+                usually the basename of the file.
+        :param src_filename:
+        :return:
+        """
+        if src_filename in self._all_dependencies_src:
+            return self._all_dependencies_src[src_filename]
+        else:
+            return None
+
+    def fetch_php_modules(self, src_filename):
         # create a new list for this base filename
         base_filename = os.path.basename(src_filename)
-        if base_filename in self._all_dependancies:
+        if base_filename in self._all_dependencies:
             base_filename = '%s__%s' % (src_filename.split('/')[-2], base_filename)
-        self._all_dependancies[base_filename] = []
+        self._all_dependencies[base_filename] = []
+        self._all_dependencies_src[src_filename] = base_filename
 
         source_data = open(src_filename).read()
         # fetch all include, include_once, require, require_once statements and
-        # add dependancies to object dependancy list.
+        # add dependencies to object dependency list.
         for tag in ('include', 'require'):
             data = source_data
             while True:
@@ -60,45 +79,93 @@ class DependancyCrawler(object):
                             dep_stmt = dep_stmt[1:].replace("'", '"')
                             if dep_stmt.find('\n') == -1 and dep_stmt.count('"') == 2:
                                 dep_filename = dep_stmt.split('"')[1]
-                                if dep_filename not in self._all_dependancies[base_filename]:
-                                    self._all_dependancies[base_filename].append(dep_filename)
+                                if dep_filename not in self._all_dependencies[base_filename]:
+                                    self._all_dependencies[base_filename].append(dep_filename)
                         data = data[strlen+startpos:]
 
-    def crawl(self, root, analyse_dirs=('etc','www', 'captiveportal', 'sbin')):
-        """ Crawl through legacy code
-        :param root: start crawling at
-        :param analyse_dirs: only analyse these directories
-        :return: None
+    def fetch_php_functions(self, src_filename):
+        """ find php functions
+        :param src_filename:
+        :return:
+        """
+        base_filename = os.path.basename(src_filename)
+        if base_filename in self._all_functions:
+            base_filename = '%s__%s' % (src_filename.split('/')[-2], base_filename)
+
+        function_list = []
+        for line in open(src_filename,'r').read().split('\n'):
+            if line.find('function ') > -1 and line.find('(') > -1:
+                function_nm = line.split('(')[0].split(' ')[-1]
+                if function_nm.find('*') == -1:
+                    function_list.append(function_nm)
+        self._all_functions[base_filename] = function_list
+
+    def find_files(self, analyse_dirs=('etc','www', 'captiveportal', 'sbin')):
+        """
+        :param analyse_dirs: directories to analyse
+        :return:
         """
         for analyse_dir in analyse_dirs:
-            analyse_dir = ('%s/%s' % (root, analyse_dir)).replace('//', '/')
+            analyse_dir = ('%s/%s' % (self.root, analyse_dir)).replace('//', '/')
             for wroot, wdirs, wfiles in os.walk(analyse_dir):
                 for src_filename in wfiles:
                     src_filename = '%s/%s' % (wroot, src_filename)
                     if src_filename.split('.')[-1] in ('php', 'inc','class') \
                             or open(src_filename).read(1024).find('/bin/php') > -1:
-                        self.fetch_php(src_filename)
+                        yield src_filename
+
+    def crawl(self):
+        """ Crawl through legacy code
+        :param analyse_dirs: only analyse these directories
+        :return: None
+        """
+        for src_filename in self.find_files():
+            self.fetch_php_modules(src_filename)
+            self.fetch_php_functions(src_filename)
+
+    def where_used(self, src):
+        """
+        :param src: source object name (base name)
+        :return: dictionary containing files and functions
+        """
+        where_used_lst={}
+        for src_filename in self.find_files():
+            data = open(src_filename,'r').read().replace('\n',' ')
+            use_list = []
+            for function in self._all_functions[src]:
+                if data.find(' %s(' % (function)) > -1 or \
+                                data.find('!%s ') > -1 or \
+                                data.find('!%s(') > -1 or \
+                                data.find('(%s(') > -1 or \
+                                data.find('(%s ') > -1 or \
+                                data.find(' %s ' % (function)) > -1:
+                    use_list.append(function)
+
+            if len(use_list) > 0:
+                where_used_lst[src_filename] = sorted(use_list)
+
+        return where_used_lst
 
     def get_total_files(self):
         """ get total number of analysed files
         :return: int
         """
-        return len(self._all_dependancies)
+        return len(self._all_dependencies)
 
-    def get_total_dependancies(self):
+    def get_total_dependencies(self):
         """ get total number of dependencies
         :return: int
         """
         count = 0
-        for src_filename in self._all_dependancies:
-            count += len(self._all_dependancies[src_filename])
+        for src_filename in self._all_dependencies:
+            count += len(self._all_dependencies[src_filename])
         return count
 
     def get_files(self):
         """ retrieve all analysed files as iterator (ordered by name)
         :return: iterator
         """
-        for src_filename in sorted(self._all_dependancies):
+        for src_filename in sorted(self._all_dependencies):
             yield src_filename
 
     def trace(self, src_filename, parent_filename=None, result=None, level=0):
@@ -117,8 +184,8 @@ class DependancyCrawler(object):
             result[src_filename]['dup'].append(parent_filename)
             return
 
-        if src_filename in self._all_dependancies:
-            for dependency in self._all_dependancies[src_filename]:
+        if src_filename in self._all_dependencies:
+            for dependency in self._all_dependencies[src_filename]:
                 self.trace(dependency, src_filename, result, level=level+1)
 
         return result
@@ -129,7 +196,7 @@ class DependancyCrawler(object):
         :return:
         """
         result = {'levels': 0,'dup_count':0}
-        if src_filename in self._all_dependancies:
+        if src_filename in self._all_dependencies:
             data = self.trace(src_filename)
             for dep_filename in data:
                 if data[dep_filename]['level'] > result['levels']:
