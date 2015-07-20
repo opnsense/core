@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-15 10:01+0100\n"
+"PO-Revision-Date: 2015-07-20 18:44+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.6\n"
+"X-Generator: Poedit 1.8.2\n"
 
 msgid "Potential DNS Rebind attack detected, see http://en.wikipedia.org/wiki/DNS_rebinding<br />Try accessing the router by IP address instead of by hostname."
 msgstr ""
@@ -278,7 +278,7 @@ msgid "Unable to open /conf/config.xml for writing in write_config()"
 msgstr ""
 
 msgid "Reverted to"
-msgstr ""
+msgstr "Zurückgesetzt auf"
 
 #, php-format
 msgid "%s made unknown change"
@@ -329,10 +329,10 @@ msgid "Unknown block error."
 msgstr "Unbekannter Blockierfehler."
 
 msgid "Invalid interface for pass rule:"
-msgstr ""
+msgstr "Ungültiges Interface für Erlaubnisregel:"
 
 msgid "Invalid protocol for pass rule:"
-msgstr ""
+msgstr "Ungültiges Protokoll für Erlaubnisregel:"
 
 msgid "Tried to pass invalid source IP:"
 msgstr ""
@@ -347,13 +347,13 @@ msgid "Tried to pass invalid destination port:"
 msgstr ""
 
 msgid "Successfully added pass rule!"
-msgstr ""
+msgstr "Erlaubnisregel erfolgreich hinzugefügt!"
 
 msgid "Failed to add pass rule."
 msgstr "Das hinzufügen einer Erlaubnisregel ist fehlgeschlagen."
 
 msgid "Missing parameters for pass rule."
-msgstr ""
+msgstr "Es fehlen Parameter für Erlaubnisregel."
 
 msgid "Unknown pass error."
 msgstr ""
@@ -368,7 +368,7 @@ msgid "Creating aliases"
 msgstr "Erstelle Aliase"
 
 msgid "Generating Limiter rules"
-msgstr ""
+msgstr "Generiere Begrenzerregeln"
 
 msgid "Generating NAT rules"
 msgstr "Generiere NAT Regeln"
@@ -400,13 +400,13 @@ msgstr ""
 
 #, php-format
 msgid "There were error(s) loading the rules: %1$s - %2$s"
-msgstr ""
+msgstr "Es ist zu Fehlern gekommen während die Regeln geladen wurden: %1$s - %2$s"
 
 msgid "Processing down interface states"
 msgstr ""
 
 msgid "Running plugins"
-msgstr ""
+msgstr "Laufende Plugins"
 
 msgid "Done"
 msgstr "Erledigt"
@@ -424,7 +424,7 @@ msgstr ""
 
 #, php-format
 msgid "Creating reflection rule for %s..."
-msgstr ""
+msgstr "Erstelle Reflektionsregel für %s..."
 
 msgid "localhost"
 msgstr "localhost"
@@ -488,11 +488,11 @@ msgstr ""
 
 #, php-format
 msgid "Setting up pass/block rules %s"
-msgstr ""
+msgstr "Konfiguriere Erlaubnis- und Blockierregeln %s"
 
 #, php-format
 msgid "Could not find IPv4 gateway for interface (%s)."
-msgstr ""
+msgstr "Konnte IPv4 Gateway für das Interface nicht finden (%s)."
 
 #, php-format
 msgid "Creating rule %s"
@@ -523,50 +523,50 @@ msgstr ""
 # File: src/etc/inc/filter_log.inc, line: 157
 #, php-format
 msgid "There was an error parsing rule number: %s -- not IPv4 or IPv6 (`%s')"
-msgstr ""
+msgstr "Es gab einen Fehler beim Parsen der Regel mit der Nummmer %s -- nicht IPv4 oder IPv6 ('%s')"
 
 #
 # File: src/etc/inc/filter_log.inc, line: 191
 #, php-format
 msgid "There was an error parsing rule number: %s -- no src or dst (`%s')"
-msgstr ""
+msgstr "Es gab einen Fehler beim Parsen der Regel mit der Nummer %s -- keine Quelle oder Ziel ('%s')"
 
 #, php-format
 msgid "Service %1$s/%2$s: %3$s"
-msgstr ""
+msgstr "Dienst %1$s/%2$s: %3$s"
 
 msgid "Acknowledge All Notices"
 msgstr "Alle Meldungen bestätigen"
 
 msgid "unread notice"
-msgstr ""
+msgstr "ungelesene Mitteilung"
 
 msgid "unread notices"
-msgstr ""
+msgstr "ungelesense Mitteilungen"
 
 #
 # File: src/etc/inc/gwlb.inc, line: 825
 #, php-format
 msgid "MONITOR: %s is down, removing from routing group %s"
-msgstr ""
+msgstr "MONITOR: %s ist nicht erreichbar und wird daher aus der Routinggruppe %s entfernt"
 
 #
 # File: src/etc/inc/gwlb.inc, line: 829
 #, php-format
 msgid "MONITOR: %s has packet loss, removing from routing group %s"
-msgstr ""
+msgstr "MONITOR: %s verliert Pakete und wird daher aus der Routinggruppe %s entfernt"
 
 #
 # File: src/etc/inc/gwlb.inc, line: 833
 #, php-format
 msgid "MONITOR: %s has high latency, removing from routing group %s"
-msgstr ""
+msgstr "MONITOR: %s hat eine hohe Latenz und wird aus der Routinggruppe %s entfernt"
 
 #
 # File: src/etc/inc/gwlb.inc, line: 854
 #, php-format
 msgid "Gateways status could not be determined, considering all as up/active. (Group: %s)"
-msgstr ""
+msgstr "Der Gatewaystatus konnte nicht erkannt werden; nehme an, dass alle erreichbar/aktiv sind. (Gruppe: %s)"
 
 msgid "interfaces_bring_up() was called but no variable defined."
 msgstr ""
@@ -603,11 +603,11 @@ msgid "interface_qinq2_configure called with if undefined.%s"
 msgstr ""
 
 msgid "Creating wireless clone interfaces..."
-msgstr ""
+msgstr "Erstelle drahtlose Kloninterfaces..."
 
 #, php-format
 msgid "No members found on %s"
-msgstr ""
+msgstr "Keine Mitglieder auf %s gefunden"
 
 msgid "realif not defined in interfaces bridge - up"
 msgstr ""
@@ -646,7 +646,7 @@ msgstr ""
 
 #, php-format
 msgid "Error: cannot open mpd_%s.conf in interface_ppps_configure().%s"
-msgstr ""
+msgstr "Fehler: konnte mpd_%s.conf in interface_ppps_configure() nicht öffnen.%s"
 
 msgid "Configuring CARP settings..."
 msgstr "Konfiguriere CARP Einstellungen..."
@@ -665,19 +665,19 @@ msgstr ""
 
 #, php-format
 msgid "Interface %s changed to hostap mode"
-msgstr ""
+msgstr "Das Interface %s wechselte in den hostap-Modus"
 
 #, php-format
 msgid "Interface %s changed to adhoc mode"
-msgstr ""
+msgstr "Das Interface %s wechselte in den adhoc-Modus"
 
 #, php-format
 msgid "Interface %s changed to infrastructure mode"
-msgstr ""
+msgstr "Das Interface %s wechselte in den Infrastrukturmodus"
 
 #, php-format
 msgid "Cloning new wireless interface %s"
-msgstr ""
+msgstr "Klone neues drahtloses Interface %s"
 
 #, php-format
 msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
@@ -688,7 +688,7 @@ msgstr "Generiere neue MAC Adresse."
 
 #, php-format
 msgid "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %1$s has been automatically replaced with %2$s"
-msgstr ""
+msgstr "Die ungültige MAC Adresse (ff:ff:ff:ff:ff:ff) am Interface %1$s wurde automatisch durch %2$s ersetzt."
 
 #, php-format
 msgid "Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s"
@@ -718,13 +718,13 @@ msgid "ASN.1 distinguished Name"
 msgstr ""
 
 msgid "KeyID tag"
-msgstr ""
+msgstr "KeyID Tag"
 
 msgid "Dynamic DNS"
 msgstr "Dynamisches DNS"
 
 msgid "Peer IP address"
-msgstr ""
+msgstr "Peer IP Adresse"
 
 msgid "Mobile Client"
 msgstr "mobiler Client"
@@ -733,7 +733,7 @@ msgid "None"
 msgstr "Keine(r)"
 
 msgid "IPsec daemon seems to have issues or not running! Could not display mobile user stats!"
-msgstr ""
+msgstr "Der IPsec Daemon scheint Probleme zu haben oder läuft nicht! Konnte Statisitiken mobiler Benutzer nicht anzeigen!"
 
 #, php-format
 msgid "Could not open %s for writing"
@@ -741,7 +741,7 @@ msgstr "Konnte %s nicht zum Schreiben öffnen"
 
 #, php-format
 msgid "Message sent to %s OK"
-msgstr ""
+msgstr "Nachricht erfolgreich an %s gesendet"
 
 #, php-format
 msgid "Could not send the message to %1$s -- Error: %2$s"
@@ -903,12 +903,12 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 419
 msgid "POP3 authentication user was not accepted:"
-msgstr ""
+msgstr "Der POP3 Benutzer wurde nicht akzeptiert:"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 427
 msgid "POP3 authentication password was not accepted:"
-msgstr ""
+msgstr "Das POP3 Passwort wurde nicht akzeptiert:"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 436
@@ -930,7 +930,7 @@ msgstr "Verbunden mit SMTP Server \"%s\"."
 #
 # File: src/etc/inc/notices.smtp.inc, line: 468
 msgid "server does not require authentication"
-msgstr ""
+msgstr "Der Server benötigt keine Authentifizierung"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 532
@@ -945,7 +945,7 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 637
 msgid "connection is not in the initial state"
-msgstr ""
+msgstr "Die Verbindung ist nicht im initialen Status"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 659
@@ -984,10 +984,10 @@ msgid "it was not previously established a SMTP connection"
 msgstr ""
 
 msgid "Peer to Peer ( SSL/TLS )"
-msgstr ""
+msgstr "Peer-to-Peer ( SSL/TLS )"
 
 msgid "Peer to Peer ( Shared Key )"
-msgstr ""
+msgstr "Peer-to-Peer ( gemeinsamer Schlüssel )"
 
 msgid "Remote Access ( SSL/TLS )"
 msgstr "Remotezugriff ( SSL/TLS )"
@@ -1018,15 +1018,15 @@ msgstr "Keine (Keine Authentifizierung)"
 
 #, php-format
 msgid "The field '%s' must contain a valid IP address or domain name."
-msgstr ""
+msgstr "Das Feld '%s' muss eine gültige IP Adresse oder einen gültigen Domainnamen beinhalten."
 
 #, php-format
 msgid "The field '%s' must contain a valid port, ranging from 0 to 65535."
-msgstr ""
+msgstr "Das Feld '%s' muss einen gültigen Port im Bereich zwischen 0 und 65535 beinhalten."
 
 #, php-format
 msgid "The field '%s' must contain a single valid %s CIDR range."
-msgstr ""
+msgstr "Das Feld '%s' muss einen gültigen %s CIDR-Bereich beinhalten."
 
 #, php-format
 msgid "The field '%s' must contain only valid %s CIDR range(s) separated by commas."
@@ -1055,7 +1055,7 @@ msgstr ""
 
 #, php-format
 msgid "setsockopt() failed, error: %s"
-msgstr ""
+msgstr "setsockopt() fehlgeschlagen, Fehler: %s"
 
 #, php-format
 msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s"
@@ -1075,7 +1075,7 @@ msgid "running"
 msgstr "läuft"
 
 msgid "up"
-msgstr ""
+msgstr "aktiv"
 
 msgid "blocking"
 msgstr "blockieren"
@@ -1123,7 +1123,7 @@ msgid "Error sending request:"
 msgstr "Fehler bei der Anfrage:"
 
 msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting"
-msgstr ""
+msgstr "RADIUS_ACCESS_ACCEPT wurde bei Accounting nicht erwartet"
 
 msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
 msgstr ""
@@ -1149,7 +1149,7 @@ msgid "The new RRD now has %1$s DS values and %2$s RRA databases"
 msgstr ""
 
 msgid "Generating RRD graphs..."
-msgstr ""
+msgstr "Generiere RRD Graphen..."
 
 msgid "Creating rrd update script"
 msgstr "Erstelle rrd Updateskript"
@@ -1289,13 +1289,13 @@ msgid "Starting DynDNS clients..."
 msgstr ""
 
 msgid "Starting DNS forwarder..."
-msgstr ""
+msgstr "Starte DNS-Forwarder..."
 
 msgid "Starting DNS Resolver..."
 msgstr ""
 
 msgid "Starting SNMP daemon... "
-msgstr ""
+msgstr "Starte SNMP Daemon... "
 
 #, php-format
 msgid "Error: cannot open snmpd.conf in services_snmpd_configure().%s"
@@ -1326,36 +1326,36 @@ msgid "If you do so, this file must be terminated with a blank line (e.g. new li
 msgstr ""
 
 msgid "Starting UPnP service... "
-msgstr ""
+msgstr "Starte UPnP Dienst..."
 
 #, php-format
 msgid "Installed cron job for %s"
-msgstr ""
+msgstr "Cronjob für %s installiert"
 
 #, php-format
 msgid "Updated cron job for %s"
-msgstr ""
+msgstr "Cronjob für %s aktualisiert"
 
 #, php-format
 msgid "Removed cron job for %s"
-msgstr ""
+msgstr "Cronjob für %s entfernt"
 
 #, php-format
 msgid "Static Routes: Gateway IP could not be found for %s"
 msgstr ""
 
 msgid "Starting syslog..."
-msgstr ""
+msgstr "Starte Systemprotokoll..."
 
 #, php-format
 msgid "Error: cannot open syslog.conf in system_syslogd_start().%s"
-msgstr ""
+msgstr "Fehler: Konnte syslog.conf in system_syslogd_start() nicht öffnen.%s"
 
 msgid "webConfigurator default"
 msgstr ""
 
 msgid "Importing HTTPS certificate"
-msgstr ""
+msgstr "Importiere HTTPS Zertifikat"
 
 #, php-format
 msgid "Error: cannot open cert.pem in system_webgui_start().%s"
@@ -1373,7 +1373,7 @@ msgid "Error: cannot open %s in system_generate_lighty_config().%s"
 msgstr "Fehler: konnte %s in system_generate_lighty_config() nicht öffnen.%s"
 
 msgid "Setting timezone..."
-msgstr ""
+msgstr "Setze Zeitzone..."
 
 msgid "Setting hard disk standby... "
 msgstr ""
@@ -1410,7 +1410,7 @@ msgid "CARP vhid %s"
 msgstr "CARP vhid %s"
 
 msgid "Permit IPsec traffic."
-msgstr ""
+msgstr "Erlaube IPsec-Verkehr."
 
 msgid "System Administrators"
 msgstr "Systemadministratoren"
@@ -1486,7 +1486,7 @@ msgid ""
 msgstr ""
 
 msgid "Set ICMP Limits"
-msgstr ""
+msgstr "Setze ICMP Limits"
 
 msgid "TCP Offload engine"
 msgstr ""
@@ -1520,7 +1520,7 @@ msgstr "Alle Benutzer"
 
 #, php-format
 msgid "Converted bridged %s"
-msgstr ""
+msgstr "Brücke konvertiert %s"
 
 msgid "Auto added OpenVPN rule from config upgrade."
 msgstr "Automatisch hinzugefügte OpenVPN-Regel aus dem Konfigurationsupgrade."
@@ -1756,10 +1756,10 @@ msgstr ""
 
 #, php-format
 msgid "not an %s IP address!"
-msgstr ""
+msgstr "keine %s IP Adresse!"
 
 msgid "not in subnet!"
-msgstr ""
+msgstr "nicht im Subnetzwerk!"
 
 #, php-format
 msgid "Enter the start address of the %s client address range:"
@@ -1792,17 +1792,17 @@ msgstr "%s IP Konfiguration aus dme Konsolenmenü"
 
 #, php-format
 msgid "The IPv4 %s address has been set to %s"
-msgstr ""
+msgstr "Die %s IPv4 Adresse wurde auf %s gesetzt"
 
 #, php-format
 msgid "The IPv6 %s address has been set to %s"
-msgstr ""
+msgstr "Die %s IPv6 Adresse wurde auf %s gesetzt"
 
 msgid "You can now access the webConfigurator by opening the following URL in your web browser:"
 msgstr ""
 
 msgid "Press <ENTER> to continue."
-msgstr ""
+msgstr "Drücken Sie <Enter> um fortzufahren."
 
 msgid "Could not obtain openvpn lock for executing rc.openvpn for more than 10 seconds continuing..."
 msgstr ""
@@ -1811,22 +1811,22 @@ msgid "n/j/y H:i:s"
 msgstr ""
 
 msgid "Unknown"
-msgstr ""
+msgstr "Unbekannt"
 
 msgid "Unknown Page"
-msgstr ""
+msgstr "Unbekannte Seite"
 
 msgid "No backups found in the configuration history."
 msgstr ""
 
 msgid "Which configuration would you like to restore?"
-msgstr ""
+msgstr "Welche Konfiguration möchten Sie wiederherstellen?"
 
 msgid "That is not a valid backup number.\n"
-msgstr ""
+msgstr "Dies ist keine gültige Backupnummer.\n"
 
 msgid "Is this the backup you wish to restore?"
-msgstr ""
+msgstr "Ist dies das Backup, welches Sie wiederherstellen möchten?"
 
 msgid "Y/N?"
 msgstr "J/N?"
@@ -1839,10 +1839,10 @@ msgid "Successfully reverted to timestamp %1$s with description \"%2$s\"."
 msgstr ""
 
 msgid "You may need to reboot the firewall or restart services before the restored configuration is fully active."
-msgstr ""
+msgstr "Es kann sein, dass Sie die Firewall oder Dienste neustarten müssen, bevor die wiederhergestellte Konfiguration vollständig übernommen wird."
 
 msgid "Unable to revert to the selected configuration."
-msgstr ""
+msgstr "Auf die ausgewählte Konfiguration konnte nicht zurückgesetzt werden."
 
 msgid "Restore canceled."
 msgstr ""
@@ -1857,7 +1857,7 @@ msgid "List Backups"
 msgstr ""
 
 msgid "Restore Backup"
-msgstr ""
+msgstr "Backup Wiederherstellen"
 
 msgid "Quit"
 msgstr "Beenden"
@@ -1871,7 +1871,7 @@ msgstr "beenden"
 #
 # File: src/etc/rc.sshd, line: 132
 msgid "Started creating your SSH keys. SSH startup is being delayed a wee bit."
-msgstr ""
+msgstr "Die Erstellung von SSH Schlüsseln wurde gestartet. Der Start von von SSH verzögert sich dadurch."
 
 #
 # File: src/etc/rc.sshd, line: 139
@@ -1895,10 +1895,10 @@ msgid "Mirror %s drive status changed. Old: (%s) New: (%s)"
 msgstr ""
 
 msgid "Wrong Interface"
-msgstr ""
+msgstr "Falsches Interface"
 
 msgid "no info"
-msgstr ""
+msgstr "keine Information"
 
 #, php-format
 msgid "%s IPs have been disabled. Please note that disabling does not survive a reboot."
@@ -1923,25 +1923,25 @@ msgid "Enable CARP"
 msgstr "Aktiviere CARP"
 
 msgid "Temporarily Disable CARP"
-msgstr ""
+msgstr "CARP temporär deaktivieren"
 
 msgid "Leave Persistent CARP Maintenance Mode"
-msgstr ""
+msgstr "Den persistenten CARP Wartungsmodus verlassen"
 
 msgid "Enter Persistent CARP Maintenance Mode"
-msgstr ""
+msgstr "In den persistenten CARP Wartungsmodus wechseln"
 
 msgid "CARP Interface"
 msgstr "CARP Interface"
 
 msgid "Virtual IP"
-msgstr ""
+msgstr "Virtuelle IP"
 
 msgid "Could not locate any defined CARP interfaces."
 msgstr "Konnte kein definiertes CARP Interface finden."
 
 msgid "Note"
-msgstr ""
+msgstr "Anmerkung"
 
 #
 # File: src/www/carp_status.php, line: 181
@@ -1952,7 +1952,7 @@ msgid "here"
 msgstr "hier"
 
 msgid "pfSync nodes"
-msgstr ""
+msgstr "pfSync Knoten"
 
 msgid "Crash Reporter"
 msgstr "Absturzreporter"
@@ -1961,36 +1961,36 @@ msgid "Diagnostics"
 msgstr "Diagnose"
 
 msgid "Processing..."
-msgstr ""
+msgstr "Verarbeite..."
 
 msgid "Uploading..."
-msgstr ""
+msgstr "Hochladen..."
 
 #
 # File: src/www/crash_reporter.php, line: 115
 msgid "Thank you for submitting this crash report."
-msgstr ""
+msgstr "Danke, dass Sie diesen Fehlerbericht gesendet haben."
 
 #
 # File: src/www/crash_reporter.php, line: 117
 msgid "Please consider submitting a crash report if the error persists."
-msgstr ""
+msgstr "Ziehen Sie bitte in Betracht, einen Crash Report zu senden, falls der Fehler häufiger auftritt."
 
 #
 # File: src/www/crash_reporter.php, line: 119
 msgid "Luckily we have not detected a programming bug."
-msgstr ""
+msgstr "Zm Glück haben wir keinen Programmierfehler gefunden."
 
 #
 # File: src/www/crash_reporter.php, line: 136
 msgid "Unfortunately we have detected at least one programming bug."
-msgstr ""
+msgstr "Unglücklicherweise haben wir mindestens einen Programmierfehler entdeckt."
 
 #
 # File: src/www/crash_reporter.php, line: 137
 #, php-format
 msgid "Would you like to submit this crash report to the %s developers?"
-msgstr ""
+msgstr "Möchten Sie diesen Crash Report an die %s-Entwickler senden?"
 
 msgid "Yes"
 msgstr "Ja"
@@ -2001,7 +2001,7 @@ msgstr "Nein"
 #
 # File: src/www/crash_reporter.php, line: 140
 msgid "Please-double check the contents to ensure you are comfortable submitting the following information:"
-msgstr ""
+msgstr "Bitte prüfen Sie noch einmal ob Sie damit einverstanden sind, dass folgende Informationen übertragen werden:"
 
 msgid "ARP Table"
 msgstr "ARP Tabelle"
@@ -2025,19 +2025,19 @@ msgid "instead of ARP"
 msgstr "anstatt ARP"
 
 msgid "is not a valid authentication server"
-msgstr ""
+msgstr "ist kein gültiger Authentifizierungsserver"
 
 msgid "A username and password must be specified."
 msgstr "Ein Benutzername und ein Passwort müssen angegeben werden."
 
 msgid "User"
-msgstr ""
+msgstr "Benutzer"
 
 msgid "authenticated successfully."
 msgstr "Erfolgreich authentifiziert."
 
 msgid "This user is a member of these groups"
-msgstr ""
+msgstr "Dieser Benutzer ist Mitglied dieser Gruppen"
 
 msgid "Authentication failed."
 msgstr "Authentifizierung fehlgeschlagen."
@@ -2049,7 +2049,7 @@ msgid "Authentication Server"
 msgstr "Authentifizierungsserver"
 
 msgid "Username"
-msgstr ""
+msgstr "Benutzername"
 
 msgid "Password"
 msgstr "Passwort"
@@ -2073,7 +2073,7 @@ msgid "Firewall Rules"
 msgstr "Firewall Regeln"
 
 msgid "Interfaces"
-msgstr ""
+msgstr "Interfaces"
 
 msgid "IPSEC"
 msgstr "IPSEC"
@@ -2082,22 +2082,22 @@ msgid "NAT"
 msgstr "NAT"
 
 msgid "PPTP Server"
-msgstr ""
+msgstr "PPTP Server"
 
 msgid "RRD Data"
-msgstr ""
+msgstr "RRD Daten"
 
 msgid "Scheduled Tasks"
-msgstr ""
+msgstr "Geplante Tasks"
 
 msgid "Syslog"
-msgstr ""
+msgstr "Systemprotokoll"
 
 msgid "System"
-msgstr ""
+msgstr "System"
 
 msgid "Static routes"
-msgstr ""
+msgstr "Statische Routen"
 
 msgid "System tunables"
 msgstr ""
@@ -2106,7 +2106,7 @@ msgid "SNMP Server"
 msgstr "SNMP Server"
 
 msgid "Traffic Shaper"
-msgstr ""
+msgstr "Traffic Shaper"
 
 msgid "VLANS"
 msgstr "VLANS"
@@ -2118,13 +2118,13 @@ msgid "ALL"
 msgstr "ALLE"
 
 msgid "Restore configuration"
-msgstr ""
+msgstr "Konfiguration Wiederherstellen"
 
 msgid "Download"
 msgstr "Herunterladen"
 
 msgid "Restore version"
-msgstr ""
+msgstr "Version wiederherstellen"
 
 #
 # File: src/www/diag_backup.php, line: 208
@@ -2133,13 +2133,13 @@ msgid "Setup/Test Google Drive"
 msgstr ""
 
 msgid "You must supply and confirm the password for encryption."
-msgstr ""
+msgstr "Sie müssen ein Passwort zur Verschlüsselung angeben und bestätigen."
 
 msgid "The supplied 'Password' and 'Confirm' field values must match."
-msgstr ""
+msgstr "Die Eingaben der Felder 'Passwort' und 'Bestätigung' müssen übereinstimmen."
 
 msgid "You must supply and confirm the password for decryption."
-msgstr ""
+msgstr "Die müssen das Passwort zur Entschlüsselung eingeben und bestätigen."
 
 #, php-format
 msgid "Warning, could not read file %s"
@@ -2155,7 +2155,7 @@ msgid "You have selected to restore an area but we could not locate the correct 
 msgstr ""
 
 msgid "The configuration area has been restored.  You may need to reboot the firewall."
-msgstr ""
+msgstr "Der Konfigurationsbereich wurde wiederhergestellt. Sie müssen die Firewall eventuell neu starten."
 
 msgid "The m0n0wall configuration has been restored and upgraded to OPNsense."
 msgstr ""
@@ -2170,7 +2170,7 @@ msgid "XXX - this feature may hose your config (do NOT backrev configs!) - billm
 msgstr ""
 
 msgid "No version selected."
-msgstr ""
+msgstr "Keine Version ausgewählt."
 
 msgid "Google Drive communication failure"
 msgstr "Kommunikation mit Google Drive fehlgeschlagen"
@@ -2187,7 +2187,7 @@ msgid "The firewall configuration has been changed."
 msgstr ""
 
 msgid "The firewall is now rebooting."
-msgstr ""
+msgstr "Die Firewall startet jetzt neu."
 
 msgid "Config History"
 msgstr ""
@@ -2214,13 +2214,13 @@ msgid "Download configuration"
 msgstr "Konfiguration herunterladen"
 
 msgid "Open a"
-msgstr ""
+msgstr "Öffne ein(e)"
 
 msgid "configuration XML file and click the button below to restore the configuration."
 msgstr ""
 
 msgid "Restore area:"
-msgstr ""
+msgstr "Wiederherstellungsbereich:"
 
 msgid "Configuration file is encrypted."
 msgstr "Konfigurationsdatei ist verschlüsselt."
@@ -2375,7 +2375,7 @@ msgid "the firewall will:"
 msgstr ""
 
 msgid "Reset to factory defaults"
-msgstr ""
+msgstr "Auf Werkseinstellungen zurücksetzen"
 
 msgid "LAN IP address will be reset to 192.168.1.1"
 msgstr ""
@@ -2405,10 +2405,10 @@ msgid "Host must be a valid hostname or IP address."
 msgstr ""
 
 msgid "No response"
-msgstr ""
+msgstr "Keine Antwort"
 
 msgid "No record found"
-msgstr ""
+msgstr "Kein Eintrag gefunden"
 
 msgid "IP Address"
 msgstr "IP Adresse"
@@ -2438,7 +2438,7 @@ msgid "More Information:"
 msgstr "Mehr Information"
 
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 msgid "Traceroute"
 msgstr ""
@@ -2486,7 +2486,7 @@ msgid "Proto"
 msgstr ""
 
 msgid "Source -> Router -> Destination"
-msgstr ""
+msgstr "Quelle -> Router -> Ziel"
 
 # unclear if country ("Staat") or state ("Status") - it can be translated to both!
 #, fuzzy
@@ -2512,7 +2512,7 @@ msgid "Reset States"
 msgstr ""
 
 msgid "Source -> Destination"
-msgstr ""
+msgstr "Quelle -> Ziel"
 
 msgid "# States"
 msgstr " Statuse"
@@ -2611,7 +2611,7 @@ msgid "Component"
 msgstr "Komponente"
 
 msgid "Forget Disconnected Disks"
-msgstr ""
+msgstr "Nicht angeschlossene Festplatten vergessen"
 
 msgid "Rebuild"
 msgstr ""
@@ -2620,7 +2620,7 @@ msgid "Deactivate"
 msgstr "Deaktivieren"
 
 msgid "Remove"
-msgstr ""
+msgstr "Entfernen"
 
 msgid "No Mirrors Found"
 msgstr ""
@@ -2683,7 +2683,7 @@ msgid "Remote IP"
 msgstr ""
 
 msgid "Role"
-msgstr ""
+msgstr "Rolle"
 
 msgid "Local subnets"
 msgstr ""
@@ -2695,7 +2695,7 @@ msgid "Remote subnets"
 msgstr ""
 
 msgid "You can configure IPsec"
-msgstr ""
+msgstr "Sie können IPsec konfigurieren"
 
 msgid "Leases"
 msgstr ""
@@ -2770,12 +2770,12 @@ msgid "outgoing (as seen by firewall)"
 msgstr ""
 
 msgid "No IPsec security policies."
-msgstr ""
+msgstr "Keine IPsec Sicherheitsrichtlinien."
 
 #
 # File: src/www/diag_ipsec_tabs.inc, line: 28
 msgid "Overview"
-msgstr ""
+msgstr "Überblick"
 
 #
 # File: src/www/diag_ipsec_tabs.inc, line: 32
@@ -2851,7 +2851,7 @@ msgid "If"
 msgstr "Falls"
 
 msgid "Rule"
-msgstr ""
+msgstr "Regel"
 
 msgid "Click to resolve"
 msgstr "Klicken zum Auflösen"
@@ -3164,7 +3164,7 @@ msgid "Firewall events"
 msgstr "Firewallereignisse"
 
 msgid "DHCP service events"
-msgstr ""
+msgstr "DHCP Dienstereignisse"
 
 msgid "Portal Auth events"
 msgstr ""
@@ -3199,13 +3199,13 @@ msgid "Download Capture"
 msgstr "Aufzeichnung herunterladen"
 
 msgid "Packet Capture"
-msgstr ""
+msgstr "Paketaufzeichnung"
 
 msgid "Invalid interface."
 msgstr "Ungültiges Interface"
 
 msgid "Invalid address family."
-msgstr ""
+msgstr "Ungültige Adressfamilie"
 
 msgid "Invalid protocol."
 msgstr "Ungültiges Protokoll"
@@ -3283,22 +3283,24 @@ msgid "The port can be either the source or destination port. The packet capture
 msgstr ""
 
 msgid "Packet Length"
-msgstr ""
+msgstr "Paketlänge"
 
 msgid "The Packet length is the number of bytes of each packet that will be captured. Default value is 0, which will capture the entire frame regardless of its size."
 msgstr ""
+"Die Paketlänge ist die Anzahl an Bytes eines jeden Paketes, das aufgezeichnet wird. Der Standardwert ist 0, wodurch jeder Frame unabhängig seiner Größe "
+"aufgezeichnet wird."
 
 msgid "Count"
 msgstr "Anzahl"
 
 msgid "Enter 0 (zero) for no count limit."
-msgstr ""
+msgstr "Geben Sie 0 (Null) für kein Limit ein."
 
 msgid "This is the number of packets the packet capture will grab. Default value is 100."
-msgstr ""
+msgstr "Dies ist die Anzahl an Paketen die aufgezeichnet werden sollen. Der Standardwert ist 100."
 
 msgid "Level of Detail"
-msgstr ""
+msgstr "Detaillierungsgrad"
 
 msgid "Normal"
 msgstr "Normal"
@@ -3334,13 +3336,13 @@ msgid "The packet capture file was last updated:"
 msgstr ""
 
 msgid "Packet Capture is running."
-msgstr ""
+msgstr "Paketaufzeichnung läuft."
 
 msgid "Packet Capture stopped."
 msgstr ""
 
 msgid "Packets Captured:"
-msgstr ""
+msgstr "Aufgezeichnete Pakete:"
 
 msgid "Diagnostics: pfInfo"
 msgstr "Diagnose: pfInfo"
@@ -3397,7 +3399,7 @@ msgid "This does not clear active connection states, only source tracking."
 msgstr ""
 
 msgid "Reset"
-msgstr ""
+msgstr "Zurücksetzen"
 
 msgid "Routing tables"
 msgstr "Routingtabellen"
