@@ -1903,7 +1903,7 @@ function services_dnsmasq_configure()
 			$args .= " --domain-needed ";
 		}
 
-		if (isset($config['dnsmasq']['custom_options'])) {
+		if (isset($config['dnsmasq']['custom_options']) && !empty($config['dnsmasq']['custom_options'])) {
 			foreach (preg_split('/\s+/', $config['dnsmasq']['custom_options']) as $c) {
 				$args .= " " . escapeshellarg("--{$c}");
 				$p = explode('=', $c);
