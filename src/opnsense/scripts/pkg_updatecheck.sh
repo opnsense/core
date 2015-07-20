@@ -33,7 +33,6 @@
 # repository: error|ok
 # last_ckeck: <date_time_stamp>
 # updates: <#num_of_updates>
-# core_version: unknown|<current core version>
 # download_size: none|<size_of_total_downloads>
 # extra_space_required: none|<size_of_total_extra_space_required>
 # new_packages: array with { name: <package_name>, version: <package_version> }
@@ -47,7 +46,6 @@ connection="error"
 repository="error"
 upgrade_needs_reboot="0"
 updates=""
-core_version=""
 pkg_running=""
 packes_output=""
 last_check="unknown"
@@ -71,9 +69,6 @@ if [ "$pkg_running" == "" ]; then
       pkg update -f > $tmp_pkg_update_file &
       pkg_running="started" # Set running state to arbitrary value
       timer=$timeout # Reset our timer
-
-      # Lets get coreversion first
-      core_version=`pkg info opnsense | grep 'Version' | awk -F '[:]' '{print $2}'` # Changed to reflect current installed core version
 
       # Timeout loop for pkg update -f
       while [ "$pkg_running" != "" ] && [ $timer -ne 0 ];
@@ -208,9 +203,6 @@ if [ "$pkg_running" == "" ]; then
                   itemcount=`echo $linecount + 4 | bc`
                 fi
               done
-              if [ "$core_version" == "" ]; then
-                core_version="unknown"
-              fi
             fi
           fi
         else
@@ -232,7 +224,7 @@ if [ "$pkg_running" == "" ]; then
       # Get date/timestamp
       last_check=`date`
       # Write our json structure to disk
-      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"core_version\":\"$core_version\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
+      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
 else
   # pkg is already running, quitting
 fi
