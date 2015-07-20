@@ -2,7 +2,6 @@
 <?php
 
 require_once('config.inc');
-require_once("script/load_phalcon.php");
 
 $cnf = OPNsense\Core\Config::getInstance();
 $confvers = $cnf->getBackups(true);

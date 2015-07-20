@@ -41,11 +41,13 @@ require_once("globals.inc");
 
 /* include globals from notices.inc /utility/XML parser files */
 require_once('config.lib.inc');
-require_once("notices.inc");
 require_once("util.inc");
 require_once("IPv6.inc");
 require_once("xmlparse.inc");
 require_once("crypt.inc");
+require_once("certs.inc");
+require_once("radius.inc");
+
 
 $config = parse_config();
 //
@@ -654,7 +656,6 @@ function ldap_test_connection($authcfg)
 
 function ldap_setup_caenv($authcfg)
 {
-	require_once("certs.inc");
 
 	unset($caref);
 
@@ -1134,8 +1135,6 @@ function radius_backed($username, $passwd, $authcfg, &$attributes = array())
 {
 	global $config;
 	$ret = false;
-
-	require_once("radius.inc");
 
 	$rauth = new Auth_RADIUS_PAP($username, $passwd);
 	if ($authcfg) {

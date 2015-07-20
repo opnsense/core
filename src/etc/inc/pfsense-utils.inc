@@ -138,18 +138,6 @@ function setup_polling()
 	}
 }
 
-function set_language($lang)
-{
-	$lang_encoding = $lang . '.UTF-8';
-	$textdomain = 'OPNsense';
-
-	putenv('LANG=' . $lang_encoding);
-	setlocale(LC_ALL, $lang_encoding);
-	textdomain($textdomain);
-	bindtextdomain($textdomain, '/usr/local/share/locale');
-	bind_textdomain_codeset($textdomain, $lang_encoding);
-}
-
 /****f* legacy/setup_microcode
  * NAME
  *   enumerates all interfaces and calls enable_hardware_offloading which

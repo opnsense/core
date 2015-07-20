@@ -31,9 +31,7 @@
 
 require_once("functions.inc");
 require_once("guiconfig.inc");
-require_once('notices.inc');
 include_once("includes/functions.inc.php");
-require_once("script/load_phalcon.php");
 
 if (isset($_REQUEST['getupdatestatus'])) {
     $pkg_json = trim(configd_run('firmware pkgstatus'));

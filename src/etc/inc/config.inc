@@ -39,10 +39,9 @@ if(php_uname("m") == "amd64") {
 }
 
 /* include globals from notices.inc /utility/XML parser files */
-require_once("notices.inc");
+require_once('config.lib.inc');
 require_once("util.inc");
 require_once("IPv6.inc");
-require_once('config.lib.inc');
 require_once("xmlparse.inc");
 require_once("crypt.inc");
 require_once("globals.inc");

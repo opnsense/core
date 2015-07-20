@@ -112,13 +112,6 @@ function unlock($cfglckkey = 0)
 	fclose($cfglckkey);
 }
 
-function configd_run($cmd, $detach = false)
-{
-	require_once("script/load_phalcon.php");
-	$backend = new OPNsense\Core\Backend();
-	return $backend->configdRun("{$cmd}", $detach);
-}
-
 function is_module_loaded($module_name) {
 	$module_name = str_replace(".ko", "", $module_name);
 	$running = 0;

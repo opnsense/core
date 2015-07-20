@@ -42,7 +42,6 @@ require_once("radius.inc");
 require_once("captiveportal.radius_accounting.inc");
 require_once("captiveportal.radius_authentication.inc");
 require_once("voucher.inc");
-require_once("script/load_phalcon.php");
 
 function get_include_contents($filename) {
 	if (is_file($filename)) {

@@ -30,7 +30,6 @@
 
 require_once("config.lib.inc");
 require_once("guiconfig.inc");
-require_once("script/load_phalcon.php");
 
 // list backups
 $cnf = OPNsense\Core\Config::getInstance();

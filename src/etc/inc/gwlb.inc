@@ -27,7 +27,6 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("config.inc");
 require_once("rrd.inc");
 
 /* Returns an array of default values used for apinger.conf */
