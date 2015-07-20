@@ -615,8 +615,7 @@ function get_crash_report($pedantic = false)
 		if ($pedantic) {
 			$total = `/usr/bin/wc -l /tmp/PHP_errors.log | /usr/bin/awk '{ print $1 }'`;
 		} else {
-			/* only notify about crash report when there's an error */
-			$total = `/usr/bin/grep -v 'PHP Warning:' /tmp/PHP_errors.log | /usr/bin/wc -l | /usr/bin/awk '{ print $1 }'`;
+			$total = `/usr/bin/grep -v 'PHP Notice:' /tmp/PHP_errors.log | /usr/bin/wc -l | /usr/bin/awk '{ print $1 }'`;
 		}
 		if ($total > 0) {
 			$count++;
