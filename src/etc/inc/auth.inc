@@ -45,9 +45,6 @@ require_once("certs.inc");
 require_once("radius.inc");
 
 
-$config = parse_config();
-//
-
 // Will be changed to false if security checks fail
 $security_passed = true;
 

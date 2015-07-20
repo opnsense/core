@@ -141,8 +141,6 @@ function array_merge_recursive_unique($array0, $array1) {
  */
 function get_notices_xmlrpc($category = null)
 {
-    require_once("notices.inc");
-
     if ($category==null) {
         return get_notices();
     } else {
@@ -192,14 +190,12 @@ function interfaces_carp_configure_xmlrpc()
 function filter_configure_xmlrpc()
 {
     global $config;
-    require_once("config.inc");
     require_once("filter.inc");
     require_once("system.inc");
     require_once("gwlb.inc");
     require_once("vslb.inc");
     require_once("openvpn.inc");
     require_once("services.inc");
-    require_once("auth.inc");
 
     filter_configure();
     system_routing_configure();
@@ -229,8 +225,6 @@ function filter_configure_xmlrpc()
 function merge_config_section_xmlrpc($confData)
 {
     global $config;
-    require_once("config.inc");
-
     $config_new = array_merge_recursive($config, $confData);
     $config = $config_new;
     $mergedkeys = implode(",", array_keys($confData));
@@ -246,7 +240,6 @@ function merge_config_section_xmlrpc($confData)
 function restore_config_section_xmlrpc($new_config)
 {
     global $config;
-    require_once("config.inc");
     require_once("interfaces.inc");
 
     // TODO: initial cleanup operation performed, but a full rewrite is probably a better plan.
@@ -369,7 +362,6 @@ function restore_config_section_xmlrpc($new_config)
 function backup_config_section_xmlrpc($sectionKeys)
 {
     global $config;
-    require_once("config.inc");
     if (!is_array($sectionKeys)) {
         // single item
         return array_intersect_key($config, array($sectionKeys => 0));
