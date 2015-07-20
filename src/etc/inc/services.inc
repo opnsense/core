@@ -27,7 +27,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-require_once("globals.inc");
 
 function generate_ipv6_from_mac($mac) {
 	$elements = explode(":", $mac);
@@ -1126,7 +1125,7 @@ function services_dhcpdv6_configure($blacklist = array())
 
 	$custoptionsv6 = "";
 	foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
-		if(is_array($dhcpv6ifconf['numberoptions']) && is_array($dhcpv6ifconf['numberoptions']['item'])) {
+		if(isset($dhcpv6ifconf['numberoptions']['item'])) {
 			foreach($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
 				$custoptionsv6 .= "option custom-{$dhcpv6if}-{$itemv6idx} code {$itemv6['number']} = text;\n";
 			}
@@ -1178,11 +1177,11 @@ EOD;
 
 		$dnscfgv6 = "";
 
-		if ($dhcpv6ifconf['domain']) {
+		if (!empty($dhcpv6ifconf['domain'])) {
 			$dnscfgv6 .= "	option domain-name \"{$dhcpv6ifconf['domain']}\";\n";
 		}
 
-	if ($dhcpv6ifconf['domainsearchlist'] <> "") {
+	if (!empty($dhcpv6ifconf['domainsearchlist'])) {
 			$dnscfgv6 .= "	option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpv6ifconf['domainsearchlist'])) . "\";\n";
 	}
 
@@ -1194,7 +1193,7 @@ EOD;
 			$nsupdate = true;
 		}
 
-		if (is_array($dhcpv6ifconf['dnsserver']) && ($dhcpv6ifconf['dnsserver'][0])) {
+		if (isset($dhcpv6ifconf['dnsserver'][0])) {
 			$dnscfgv6 .= "	option dhcp6.name-servers " . join(",", $dhcpv6ifconf['dnsserver']) . ";";
 		} else if ((isset($config['dnsmasq']['enable'])) && (is_ipaddrv6($ifcfgipv6))) {
 			$dnscfgv6 .= "	option dhcp6.name-servers {$ifcfgipv6};";
@@ -1209,7 +1208,7 @@ EOD;
 				$dnscfgv6 .= "	option dhcp6.name-servers " . join(",", $dns_arrv6) . ";";
 		}
 
-		if ($dhcpv6ifconf['domain']) {
+		if (!empty($dhcpv6ifconf['domain'])) {
 			$newzone = array();
 			$newzone['domain-name'] = $dhcpv6ifconf['domain'];
 			$newzone['dns-servers'][] = $dhcpv6ifconf['ddnsdomainprimary'];
@@ -1230,22 +1229,22 @@ $dnscfgv6
 
 EOD;
 
-		if (is_ipaddrv6($dhcpv6ifconf['prefixrange']['from']) && is_ipaddrv6($dhcpv6ifconf['prefixrange']['to'])) {
+		if (!empty($dhcpv6ifconf['prefixrange']['from']) && is_ipaddrv6($dhcpv6ifconf['prefixrange']['from']) && is_ipaddrv6($dhcpv6ifconf['prefixrange']['to'])) {
 			$dhcpdv6conf .= "	prefix6 {$dhcpv6ifconf['prefixrange']['from']} {$dhcpv6ifconf['prefixrange']['to']}/{$dhcpv6ifconf['prefixrange']['prefixlength']};\n";
 		}
-		if (is_ipaddrv6($dhcpv6ifconf['dns6ip'])) {
+		if (isset($dhcpv6ifconf['dns6ip']) && is_ipaddrv6($dhcpv6ifconf['dns6ip'])) {
 			$dhcpdv6conf .= "       option dhcp6.name-servers {$dhcpv6ifconf['dns6ip']};\n";
 		}
 		// default-lease-time
-		if ($dhcpv6ifconf['defaultleasetime'])
+		if (!empty($dhcpv6ifconf['defaultleasetime']))
 			$dhcpdv6conf .= "	default-lease-time {$dhcpv6ifconf['defaultleasetime']};\n";
 
 		// max-lease-time
-		if ($dhcpv6ifconf['maxleasetime'])
+		if (!empty($dhcpv6ifconf['maxleasetime']))
 			$dhcpdv6conf .= "	max-lease-time {$dhcpv6ifconf['maxleasetime']};\n";
 
 		// ntp-servers
-		if (is_array($dhcpv6ifconf['ntpserver']) && $dhcpv6ifconf['ntpserver'][0]) {
+		if (isset($dhcpv6ifconf['ntpserver'][0])) {
 			$ntpservers = array();
 			foreach($dhcpv6ifconf['ntpserver'] as $ntpserver) {
 				if(is_ipaddrv6($ntpserver))
@@ -1269,7 +1268,7 @@ EOD;
 		}
 
 		// ldap-server
-		if ($dhcpv6ifconf['ldap'] <> "")
+		if (!empty($dhcpv6ifconf['ldap']))
 			$dhcpdv6conf .= "	option ldap-server \"{$dhcpv6ifconf['ldap']}\";\n";
 
 		// net boot information
@@ -1283,7 +1282,7 @@ EOD;
 
 		/* add static mappings */
 		/* Needs to use DUID */
-		if (is_array($dhcpv6ifconf['staticmap'])) {
+		if (isset($dhcpv6ifconf['staticmap'])) {
 			$i = 0;
 			foreach ($dhcpv6ifconf['staticmap'] as $sm) {
 				$dhcpdv6conf .= <<<EOD
@@ -1310,13 +1309,13 @@ EOD;
 			}
 		}
 
-		if ($dhcpv6ifconf['domain'])
+		if (!empty($dhcpv6ifconf['domain']))
 		{
 			$dhcpdv6conf .= dhcpdkey($dhcpv6ifconf);
 			$dhcpdv6conf .= dhcpdzones($ddns_zones, $dhcpv6ifconf);
 		}
 
-		if ($config['dhcpdv6'][$dhcpv6if]['ramode'] <> "unmanaged") {
+		if (isset($config['dhcpdv6'][$dhcpv6if]['ramode']) && $config['dhcpdv6'][$dhcpv6if]['ramode'] <> "unmanaged") {
 			if(preg_match("/poes/si", $dhcpv6if)) {
 				/* magic here */
 				$dhcpdv6ifs = array_merge($dhcpdv6ifs, get_pppoes_child_interfaces($dhcpv6if));
