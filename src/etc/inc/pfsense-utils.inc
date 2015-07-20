@@ -1029,13 +1029,13 @@ function process_alias_unzip($temp_filename) {
 	/* foreach through all extracted files and build up aliases file */
 	$fd = @fopen("{$temp_filename}/aliases", "w");
 	if (!$fd) {
-		log_error(sprintf(_('Could not open %s/aliases for writing!'), $temp_filename));
+		log_error(sprintf(gettext('Could not open %s/aliases for writing!'), $temp_filename));
 		return false;
 	}
 	foreach($files_to_process as $f2p) {
 		$tmpfd = @fopen($f2p, 'r');
 		if (!$tmpfd) {
-			log_error(sprintf(_('The following file could not be read %s from %s'), $f2p, $temp_filename));
+			log_error(sprintf(gettext('The following file could not be read %s from %s'), $f2p, $temp_filename));
 			continue;
 		}
 		while (($tmpbuf = fread($tmpfd, 65536)) !== FALSE)
@@ -1061,13 +1061,13 @@ function process_alias_tgz($temp_filename) {
 	/* foreach through all extracted files and build up aliases file */
 	$fd = @fopen("{$temp_filename}/aliases", "w");
 	if (!$fd) {
-		log_error(sprintf(_('Could not open %s/aliases for writing!'), $temp_filename));
+		log_error(sprintf(gettext('Could not open %s/aliases for writing!'), $temp_filename));
 		return false;
 	}
 	foreach($files_to_process as $f2p) {
 		$tmpfd = @fopen($f2p, 'r');
 		if (!$tmpfd) {
-			log_error(sprintf(_('The following file could not be read %s from %s'), $f2p, $temp_filename));
+			log_error(sprintf(gettext('The following file could not be read %s from %s'), $f2p, $temp_filename));
 			continue;
 		}
 		while (($tmpbuf = fread($tmpfd, 65536)) !== FALSE)

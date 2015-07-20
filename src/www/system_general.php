@@ -36,11 +36,11 @@ function get_locale_list()
 	$locales = array();
 
 	/* first one is the default */
-	$locales['en_US'] = _('English');
-	$locales['de_DE'] = _('German');
-	/* $locales['es_CO'] = */ _('Spanish');
-	/* $locales['ja_JP'] = */ _('Japanese');
-	$locales['zh_CN'] = _('Chinese (Simplified)');
+	$locales['en_US'] = gettext('English');
+	$locales['de_DE'] = gettext('German');
+	/* $locales['es_CO'] = */ gettext('Spanish');
+	/* $locales['ja_JP'] = */ gettext('Japanese');
+	$locales['zh_CN'] = gettext('Chinese (Simplified)');
 
 	return $locales;
 }

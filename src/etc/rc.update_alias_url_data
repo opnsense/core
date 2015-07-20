@@ -64,7 +64,7 @@ function update_alias_url_data()
 				if (file_exists("{$temp_filename}/aliases")) {
 					$fd = @fopen("{$temp_filename}/aliases", 'r');
 					if (!$fd) {
-						log_error(sprintf(_('Could not process aliases from alias: %s'), $alias_url));
+						log_error(sprintf(gettext('Could not process aliases from alias: %s'), $alias_url));
 						continue;
 					}
 					/* NOTE: fgetss() is not a typo RTFM before being smart */
