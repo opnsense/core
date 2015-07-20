@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-19 17:12+0200\n"
+"PO-Revision-Date: 2015-07-20 18:33+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -1289,7 +1289,7 @@ msgid "Starting DynDNS clients..."
 msgstr ""
 
 msgid "Starting DNS forwarder..."
-msgstr "Starte DNS-Forwarder"
+msgstr "Starte DNS-Forwarder..."
 
 msgid "Starting DNS Resolver..."
 msgstr ""
@@ -1373,7 +1373,7 @@ msgid "Error: cannot open %s in system_generate_lighty_config().%s"
 msgstr "Fehler: konnte %s in system_generate_lighty_config() nicht öffnen.%s"
 
 msgid "Setting timezone..."
-msgstr "Setze Zeitzone"
+msgstr "Setze Zeitzone..."
 
 msgid "Setting hard disk standby... "
 msgstr ""
@@ -1520,7 +1520,7 @@ msgstr "Alle Benutzer"
 
 #, php-format
 msgid "Converted bridged %s"
-msgstr "Bridge konvertiert %s"
+msgstr "Brücke konvertiert %s"
 
 msgid "Auto added OpenVPN rule from config upgrade."
 msgstr "Automatisch hinzugefügte OpenVPN-Regel aus dem Konfigurationsupgrade."
@@ -1802,7 +1802,7 @@ msgid "You can now access the webConfigurator by opening the following URL in yo
 msgstr ""
 
 msgid "Press <ENTER> to continue."
-msgstr "Drücken Sie Enter um fortzufahren."
+msgstr "Drücken Sie <Enter> um fortzufahren."
 
 msgid "Could not obtain openvpn lock for executing rc.openvpn for more than 10 seconds continuing..."
 msgstr ""
