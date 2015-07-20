@@ -130,14 +130,14 @@ foreach ($keys as $name) {
 }
 
 if ($generate_keys) {
-	log_error(_('Started creating your SSH keys. SSH startup is being delayed a wee bit.'));
+	log_error(gettext('Started creating your SSH keys. SSH startup is being delayed a wee bit.'));
 	mark_subsystem_dirty('sshdkeys');
 	mwexec("/bin/rm -f {$etc_ssh}/ssh_host_*");
 	foreach ($keys as $type => $name) {
 		mwexec(sprintf('%s -t %s -N "" -f %s/%s', $bin_ssh_keygen, $type, $etc_ssh, $name));
 	}
 	clear_subsystem_dirty('sshdkeys');
-	log_error(_('Completed creating your SSH keys. SSH will now be started.'));
+	log_error(gettext('Completed creating your SSH keys. SSH will now be started.'));
 }
 
 /* Launch new server process */

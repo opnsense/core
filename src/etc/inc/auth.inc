@@ -385,7 +385,7 @@ function local_user_set(&$user)
 {
 	if (empty($user['password'])) {
 		log_error(sprintf(
-			_('There is something wrong in your config because user %s password is missing!'),
+			gettext('There is something wrong in your config because user %s password is missing!'),
 			$user['name']
 		));
 		return;

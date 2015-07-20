@@ -128,7 +128,7 @@ if (!isset($config['voucher'][$cpzone]['magic'])) {
 if ($_REQUEST['generatekey']) {
     $key = generatekey($config['voucher'][$cpzone]['exponent']);
 
-    $alertmessage = _(
+    $alertmessage = gettext(
         'You will need to recreate any existing Voucher Rolls due ' .
         'to the public and private key changes. Click cancel if you ' .
         'do not wish to recreate the vouchers.'

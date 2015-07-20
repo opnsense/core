@@ -822,15 +822,15 @@ function return_gateway_groups_array()
 					$status = $gateways_status[$gwname];
 					$gwdown = false;
 					if (stristr($status['status'], 'down')) {
-						$msg = sprintf(_('MONITOR: %s is down, removing from routing group %s'), $gwname, $group['name']);
+						$msg = sprintf(gettext('MONITOR: %s is down, removing from routing group %s'), $gwname, $group['name']);
 						$gwdown = true;
 					} elseif (stristr($status['status'], 'loss') && strstr($group['trigger'], 'loss')) {
 						/* packet loss */
-						$msg = sprintf(_('MONITOR: %s has packet loss, removing from routing group %s'), $gwname, $group['name']);
+						$msg = sprintf(gettext('MONITOR: %s has packet loss, removing from routing group %s'), $gwname, $group['name']);
 						$gwdown = true;
 					} elseif (stristr($status['status'], 'delay') && strstr($group['trigger'] , 'latency')) {
 						/* high latency */
-						$msg = sprintf(_('MONITOR: %s has high latency, removing from routing group %s'), $gwname, $group['name']);
+						$msg = sprintf(gettext('MONITOR: %s has high latency, removing from routing group %s'), $gwname, $group['name']);
 						$gwdown = true;
 					}
 					if ($gwdown == true) {
@@ -851,7 +851,7 @@ function return_gateway_groups_array()
 			if ($tiers_count == 0) {
 				/* Oh dear, we have no members! Engage Plan B */
 				if (!file_exists('/var/run/booting')) {
-					$msg = sprintf(_('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
+					$msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
 					log_error($msg);
 					notify_via_growl($msg);
 					//notify_via_smtp($msg);
