@@ -31,6 +31,7 @@ from lib.legacy_deps import DependancyCrawler
 
 src_root = '/usr/local/'
 crawler = DependancyCrawler(src_root)
+crawler.crawl()
 if len(sys.argv) < 2:
     print ('inspect legacy function usage of module, choose one of:')
     for module_name in crawler.get_files():
@@ -39,11 +40,12 @@ if len(sys.argv) < 2:
 
 chk_source = sys.argv[1]
 
-crawler.crawl()
 usage = crawler.where_used(chk_source)
 for src_filename in usage:
     module_name = crawler.get_dependency_by_src(src_filename)
     trace_data = crawler.trace(module_name)
-    if module_name not in trace_data:
-        print ('inspect : %s' % (src_filename))
+    if chk_source not in trace_data:
+        print ('inspect : %s (%s)' % (src_filename, ',' .join(usage[src_filename] ) ))
+        
+        
 
