@@ -1,8 +1,5 @@
 """
     Copyright (c) 2015 Deciso B.V.
-
-    part of OPNsense (https://www.opnsense.org/)
-
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -27,11 +24,9 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+
     package : translate
     function: collect model translatable text
-
-
-
 """
 __author__ = 'Ad Schellevis'
 
