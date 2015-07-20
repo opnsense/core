@@ -10150,7 +10150,7 @@ msgid "The perdefined configurations assume your GPS has already been set to NME
 msgstr ""
 
 msgid "All serial ports are listed, be sure to pick the port with the GPS attached."
-msgstr "Alle seriellen Ports sind gelistet; stellen Sie sicher, dass sie den Port auswählen mit dem das GPS verbunden ist."
+msgstr "Alle seriellen Ports sind gelistet; stellen Sie sicher, dass Sie den Port auswählen mit dem das GPS verbunden ist."
 
 msgid "Serial port baud rate."
 msgstr ""
@@ -10252,7 +10252,7 @@ msgid "to reliably supply the time of each PPS pulse."
 msgstr ""
 
 msgid "All serial ports are listed, be sure to pick the port with the PPS source attached."
-msgstr "Alle seriellen Ports sind gelistet; stellen Sie sicher, dass die den Port auswählen, an dem die PPS Quelle angeschlossen ist."
+msgstr "Alle seriellen Ports sind gelistet; stellen Sie sicher, dass Sie die den Port auswählen, an dem die PPS Quelle angeschlossen ist."
 
 msgid "Fudge time is used to specify the PPS signal offset from the actual second such as the transmission delay between the transmitter and the receiver."
 msgstr ""
@@ -11699,7 +11699,7 @@ msgid "IP Do-Not-Fragment compatibility"
 msgstr ""
 
 msgid "Clear invalid DF bits instead of dropping the packets"
-msgstr "Entferne ungültige DF Bits, anstatt die die Pakete zu verwerfen"
+msgstr "Entferne ungültige DF Bits, anstatt die Pakete zu verwerfen"
 
 #
 # File: src/www/system_advanced_firewall.php, line: 289
@@ -13943,19 +13943,19 @@ msgid "A valid split DNS domain list must be specified."
 msgstr "Eine gültige Split-DNS Domain muss angegeben werden."
 
 msgid "At least one DNS server must be specified to enable the DNS Server option."
-msgstr "Mindestens ein DNS Server muss angegeben werden um die DNS Server Option zu aktivieren."
+msgstr "Mindestens ein DNS Server muss angegeben werden, um die DNS Server Option zu aktivieren."
 
 msgid "A valid IP address for 'DNS Server #1' must be specified."
-msgstr "Es muss eine gültige IP Adresse "
+msgstr "Es muss eine gültige IP Adresse für 'DNS Server #1' eingegeben werden."
 
 msgid "A valid IP address for 'DNS Server #2' must be specified."
-msgstr ""
+msgstr "Es muss eine gültige IP Adresse für 'DNS Server #2' eingegeben werden."
 
 msgid "A valid IP address for 'DNS Server #3' must be specified."
-msgstr ""
+msgstr "Es muss eine gültige IP Adresse für 'DNS Server #3' eingegeben werden."
 
 msgid "A valid IP address for 'DNS Server #4' must be specified."
-msgstr ""
+msgstr "Es muss eine gültige IP Adresse für 'DNS Server #4' eingegeben werden."
 
 msgid "At least one WINS server must be specified to enable the DNS Server option."
 msgstr ""
