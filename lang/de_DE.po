@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-20 18:37+0200\n"
+"PO-Revision-Date: 2015-07-20 18:43+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -1952,7 +1952,7 @@ msgid "here"
 msgstr "hier"
 
 msgid "pfSync nodes"
-msgstr ""
+msgstr "pfSync Knoten"
 
 msgid "Crash Reporter"
 msgstr "Absturzreporter"
@@ -1969,7 +1969,7 @@ msgstr "Hochladen..."
 #
 # File: src/www/crash_reporter.php, line: 115
 msgid "Thank you for submitting this crash report."
-msgstr "Danke, dass Sie diesen Crash Report gesendet haben."
+msgstr "Danke, dass Sie diesen Fehlerbericht gesendet haben."
 
 #
 # File: src/www/crash_reporter.php, line: 117
@@ -2001,7 +2001,7 @@ msgstr "Nein"
 #
 # File: src/www/crash_reporter.php, line: 140
 msgid "Please-double check the contents to ensure you are comfortable submitting the following information:"
-msgstr "Bitte prüfen Sie zweimal ob Sie damit einverstanden sind, dass folgende Informationen übertragen werden:"
+msgstr "Bitte prüfen Sie noch einmal ob Sie damit einverstanden sind, dass folgende Informationen übertragen werden:"
 
 msgid "ARP Table"
 msgstr "ARP Tabelle"
@@ -2155,7 +2155,7 @@ msgid "You have selected to restore an area but we could not locate the correct 
 msgstr ""
 
 msgid "The configuration area has been restored.  You may need to reboot the firewall."
-msgstr "Der Konfigurationsbereich wurde wiederhergestellt. Sie müssen die Firewall neu starten."
+msgstr "Der Konfigurationsbereich wurde wiederhergestellt. Sie müssen die Firewall eventuell neu starten."
 
 msgid "The m0n0wall configuration has been restored and upgraded to OPNsense."
 msgstr ""
