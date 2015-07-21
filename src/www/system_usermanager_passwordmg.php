@@ -27,7 +27,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("certs.inc");
 require_once("guiconfig.inc");
 
 $pgtitle = array(gettext("System"),gettext("User Password"));

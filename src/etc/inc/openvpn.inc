@@ -29,7 +29,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once('certs.inc');
 require_once('pfsense-utils.inc');
 require_once('util.inc');
 

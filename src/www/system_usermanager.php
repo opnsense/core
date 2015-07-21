@@ -29,7 +29,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("certs.inc");
 require_once("guiconfig.inc");
 
 function get_user_privdesc(& $user) {

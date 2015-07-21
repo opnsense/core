@@ -29,7 +29,6 @@
 
 require_once('rrd.inc');
 require_once("services.inc");
-require_once("certs.inc");
 
 function dump_rrd_to_xml($rrddatabase, $xmldumpfile)
 {
