@@ -29,6 +29,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("ipsec.inc");
 
 /* holds the items that will be executed *AFTER* the filter is fully loaded */
 $after_filter_configure_run = array();
@@ -700,8 +701,6 @@ function filter_get_vpns_list() {
 		if (is_array($config['ipsec']['phase2'])) {
 			foreach ($config['ipsec']['phase2'] as $ph2ent) {
 				if ((!$ph2ent['mobile']) && ($ph2ent['mode'] != 'transport')) {
-					if (!function_exists('ipsec_idinfo_to_cidr'))
-						require_once("ipsec.inc");
 					if (!is_array($ph2ent['remoteid']))
 						continue;
 					$ph2ent['remoteid']['mode'] = $ph2ent['mode'];
@@ -1642,8 +1641,6 @@ function filter_nat_rules_generate() {
 		if (is_array($config['ipsec']['phase2'])) {
 			foreach ($config['ipsec']['phase2'] as $ph2ent) {
 				if ($ph2ent['mode'] != 'transport' && !empty($ph2ent['natlocalid'])) {
-					if (!function_exists('ipsec_idinfo_to_cidr'))
-						require_once("ipsec.inc");
 					if (!is_array($ph2ent['localid']))
 						$ph2ent['localid'] = array();
 					$ph2ent['localid']['mode'] = $ph2ent['mode'];
@@ -3433,8 +3430,6 @@ function filter_generate_ipsec_rules($log = array())
 				continue;
 			/* determine local and remote peer addresses */
 			if(!isset($ph1ent['mobile'])) {
-				if (!function_exists('ipsec_get_phase1_dst'))
-					require_once("ipsec.inc");
 				$rgip = ipsec_get_phase1_dst($ph1ent);
 				if(!$rgip) {
 					$ipfrules .= "# ERROR! Unable to determine remote IPsec peer address for {$ph1ent['remote-gateway']}\n";

@@ -25,6 +25,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("interfaces.inc");
 
 function killbyname($procname, $sig = 'TERM')
 {
@@ -758,8 +759,6 @@ function get_configured_interface_with_descr($only_opt = false, $withdisabled = 
 function get_configured_ip_addresses() {
 	global $config;
 
-	if (!function_exists('get_interface_ip'))
-		require_once("interfaces.inc");
 	$ip_array = array();
 	$interfaces = get_configured_interface_list();
 	if (is_array($interfaces)) {
@@ -797,7 +796,6 @@ function get_configured_ip_addresses() {
  */
 function get_configured_ipv6_addresses()
 {
-	require_once("interfaces.inc");
 	$ipv6_array = array();
 	$interfaces = get_configured_interface_list();
 	if(is_array($interfaces)) {

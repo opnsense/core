@@ -25,6 +25,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("unbound.inc");
 
 function activate_powerd()
 {
@@ -337,7 +338,6 @@ function system_hosts_generate()
 	fclose($fd);
 
 	if (isset($config['unbound']['enable'])) {
-		require_once("unbound.inc");
 		unbound_hosts_generate();
 	}
 

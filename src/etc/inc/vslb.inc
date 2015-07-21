@@ -25,6 +25,8 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("filter.inc");
+
 function subnetv4_expand($subnet) {
 	$result = array();
 	list ($ip, $bits) = explode("/", $subnet);
@@ -127,12 +129,6 @@ class SendMonitor extends Monitor {
 
 function relayd_configure($kill_first=false) {
 	global $config, $g;
-
-	// have to do this until every call to filter.inc is
-	// require_once() instead of require().
-	if (!function_exists('filter_expand_alias_array')) {
-		require_once("filter.inc");
-	}
 
 	if (isset($config['load_balancer']['virtual_server'])) {
 		$vs_a = $config['load_balancer']['virtual_server'];
