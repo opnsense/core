@@ -31,7 +31,6 @@
 */
 
 require_once("auth.inc");
-require_once("functions.inc");
 
 // provided via legacy_bindings.inc 
 global $priv_list;
@@ -408,25 +407,7 @@ function display_login_form()
 
     // fix, local ip check was previously done using "filter_generate_optcfg_array" which basically includes alomst everything here.
     // this should do the trick as well.
-    if (isset($config['interfaces'])) {
-	foreach($config['interfaces'] as $if => $ifdetail) {
-		if (isset($ifdetail['enable'])) {
-			if (isset($ifdetail['ipaddr']) && $ifdetail['ipaddr'] == $http_host) {
-				$local_ip = true;
-			} elseif (isset($ifdetail['ipaddr6']) && $ifdetail['ipaddr6'] == $http_host) {
-				$local_ip = true;
-			}
-		}
-	}
-    }
-
-    if (isset($config['virtualip']['vip'])) {
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($vip['subnet'] == $http_host) {
-                $local_ip = true;
-            }
-        }
-    }
+    $local_ip = isAuthLocalIP($http_host);
 
     if (isset($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
