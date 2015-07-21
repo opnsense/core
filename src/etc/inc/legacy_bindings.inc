@@ -38,4 +38,3 @@ function configd_run($cmd, $detach = false)
 	$backend = new OPNsense\Core\Backend();
 	return $backend->configdRun("{$cmd}", $detach);
 }
-

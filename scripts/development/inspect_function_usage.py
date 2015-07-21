@@ -46,6 +46,3 @@ for src_filename in usage:
     trace_data = crawler.trace(module_name)
     if chk_source not in trace_data:
         print ('inspect : %s (%s)' % (src_filename, ',' .join(usage[src_filename] ) ))
-        
-        
-

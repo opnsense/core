@@ -249,4 +249,3 @@ class DependancyCrawler(object):
         html = html_body % ('\n'.join(map(lambda x: html_row % (x, x), sorted(filelist))))
 
         return html
-

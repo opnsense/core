@@ -30,7 +30,7 @@
 require_once("config.inc");
 require_once("csrf/csrf-magic.php");
 require_once("util.inc");
- 
+
 /* Include authentication routines */
 /* THIS MUST BE ABOVE ALL OTHER CODE */
 if(isset($nocsrf) && !$nocsrf) {
@@ -740,4 +740,3 @@ function get_current_theme()
 
 	return $theme;
 }
-

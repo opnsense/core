@@ -32,7 +32,7 @@
 
 require_once("auth.inc");
 
-// provided via legacy_bindings.inc 
+// provided via legacy_bindings.inc
 global $priv_list;
 $acl = new OPNsense\Core\ACL();
 $priv_list = $acl->getLegacyPrivList();
