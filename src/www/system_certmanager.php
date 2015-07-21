@@ -28,7 +28,6 @@
 */
 
 require_once('guiconfig.inc');
-require_once('certs.inc');
 
 function csr_generate(& $cert, $keylen, $dn, $digest_alg = "sha256") {
 

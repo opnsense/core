@@ -28,7 +28,6 @@
 */
 
 require_once('guiconfig.inc');
-require_once('certs.inc');
 
 function ca_import(& $ca, $str, $key="", $serial=0) {
 	global $config;
