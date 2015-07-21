@@ -25,6 +25,7 @@
         ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
         POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("util.inc");
 
 if (empty($common_name)) {
 	$common_name = getenv("common_name");

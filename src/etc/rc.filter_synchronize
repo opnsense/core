@@ -36,6 +36,7 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
 require_once("XMLRPC_Client.inc") ;
+require_once("util.inc");
 
 /*
  *  backup_vip_config_section($section): returns as an xml file string of

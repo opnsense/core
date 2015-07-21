@@ -30,7 +30,6 @@
 */
 
 require_once("interfaces.lib.inc");
-require_once("util.inc");
 require_once("gwlb.inc");
 require_once('services.inc');
 require_once('openvpn.inc');

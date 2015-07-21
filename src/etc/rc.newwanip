@@ -36,6 +36,7 @@ require_once("ipsec.inc");
 require_once("vpn.inc");
 require_once("openvpn.inc");
 require_once("rrd.inc");
+require_once("util.inc");
 
 // Do not process while booting
 if (file_exists('/var/run/booting')) {

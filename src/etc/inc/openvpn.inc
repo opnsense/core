@@ -30,7 +30,6 @@
 */
 
 require_once('pfsense-utils.inc');
-require_once('util.inc');
 
 global $openvpn_prots;
 $openvpn_prots = array("UDP", "UDP6", "TCP", "TCP6");
