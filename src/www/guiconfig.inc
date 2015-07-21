@@ -728,3 +728,15 @@ function get_menu_messages()
 
 	return ($menu_messages);
 }
+
+function get_current_theme()
+{
+	$theme = 'opnsense';
+
+	if (isset($config['theme']) && is_dir('/usr/local/www/themes/' . $config['theme'])) {
+		$theme = $config['theme'];
+	}
+
+	return $theme;
+}
+
