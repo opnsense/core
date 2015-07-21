@@ -40,8 +40,6 @@ if(php_uname("m") == "amd64") {
 
 /* include globals from notices.inc /utility/XML parser files */
 require_once('config.lib.inc');
-require_once("util.inc");
-require_once("IPv6.inc");
 
 $config = parse_config();
 

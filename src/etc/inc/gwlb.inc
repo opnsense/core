@@ -27,8 +27,6 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("rrd.inc");
-
 /* Returns an array of default values used for apinger.conf */
 function return_apinger_defaults() {
 	return array(

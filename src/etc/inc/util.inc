@@ -26,6 +26,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 require_once("interfaces.inc");
+require_once("IPv6.inc");
 
 function killbyname($procname, $sig = 'TERM')
 {
