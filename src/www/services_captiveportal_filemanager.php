@@ -27,6 +27,10 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("guiconfig.inc");
+require_once("functions.inc");
+require_once("captiveportal.inc");
+
 
 $captiveportal_element_sizelimit = 1048576;
 
@@ -41,11 +45,6 @@ function cpelements_sort()
 
         usort($config['captiveportal'][$cpzone]['element'], "cpelementscmp");
 }
-
-require_once("guiconfig.inc");
-require_once("functions.inc");
-require_once("filter.inc");
-require_once("captiveportal.inc");
 
 $cpzone = $_GET['zone'];
 if (isset($_POST['zone'])) {

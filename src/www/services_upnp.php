@@ -33,7 +33,6 @@ $shortcut_section = "upnp";
 
 require_once("guiconfig.inc");
 require_once("functions.inc");
-require_once("filter.inc");
 require_once('miniupnpd.inc');
 
 function upnp_validate_ip($ip, $check_cdir) {

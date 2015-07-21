@@ -27,6 +27,10 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("guiconfig.inc");
+require_once("functions.inc");
+
+
 /****f* legacy/is_schedule_inuse
  * NAME
  *   checks to see if a schedule is currently in use by a rule
@@ -70,10 +74,6 @@ function schedule_sort(){
 
         usort($config['schedules']['schedule'], "schedulecmp");
 }
-
-require_once("guiconfig.inc");
-require_once("functions.inc");
-require_once("filter.inc");
 
 $pgtitle = array(gettext("Firewall"),gettext("Schedules"),gettext("Edit"));
 

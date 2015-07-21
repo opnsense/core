@@ -26,6 +26,10 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("guiconfig.inc");
+require_once("interfaces.inc");
+
+
 function natnptcmp($a, $b) {
 	return ipcmp($a['external'], $b['external']);
 }
@@ -39,10 +43,6 @@ function nat_npt_rules_sort() {
 
         usort($config['nat']['npt'], "natnptcmp");
 }
-
-require_once("guiconfig.inc");
-require_once("interfaces.inc");
-require_once("filter.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat_npt.php');
 

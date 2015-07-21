@@ -30,7 +30,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("filter.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_virtual_ip.php');
 

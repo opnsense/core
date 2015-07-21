@@ -29,7 +29,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("filter.inc");
 
 $firewall_rules_dscp_types = array("af11",
 				"af12",

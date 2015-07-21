@@ -27,7 +27,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("filter.inc");
 require_once("rrd.inc");
 
 $pconfig['enable'] = isset($config['rrd']['enable']);
