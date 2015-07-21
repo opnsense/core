@@ -29,7 +29,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("filter.inc");
 
 if ($_POST['if'] && $_POST['submit']) {
 	$interface = $_POST['if'];

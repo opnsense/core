@@ -28,7 +28,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("filter.inc");
 
 /****f* itemid/delete_id
  * NAME

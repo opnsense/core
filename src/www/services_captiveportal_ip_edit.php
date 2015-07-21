@@ -28,6 +28,11 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("guiconfig.inc");
+require_once("functions.inc");
+require_once("captiveportal.inc");
+
+
 function allowedipscmp($a, $b)
 {
     return strcmp($a['ip'], $b['ip']);
@@ -39,11 +44,6 @@ function allowedips_sort()
 
     usort($config['captiveportal'][$cpzone]['allowedip'], "allowedipscmp");
 }
-
-require_once("guiconfig.inc");
-require_once("functions.inc");
-require_once("filter.inc");
-require_once("captiveportal.inc");
 
 $pgtitle = array(gettext("Services"),gettext("Captive portal"),gettext("Edit allowed IP address"));
 $shortcut_section = "captiveportal";

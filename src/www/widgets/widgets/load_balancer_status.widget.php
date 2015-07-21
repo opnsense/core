@@ -36,6 +36,7 @@ $nocsrf = true;
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("functions.inc");
+require_once("filter.inc");
 require_once("vslb.inc");
 
 $now = time();

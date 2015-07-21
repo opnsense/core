@@ -32,7 +32,6 @@ $reserved_keywords = array("all", "pass", "block", "out", "queue", "max", "min",
 
 require_once("guiconfig.inc");
 require_once("util.inc");
-require_once("filter.inc");
 
 $pgtitle = array(gettext("Firewall"),gettext("Aliases"),gettext("Bulk import"));
 

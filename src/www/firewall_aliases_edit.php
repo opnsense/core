@@ -32,7 +32,6 @@
 
 require_once("guiconfig.inc");
 require_once("functions.inc");
-require_once("filter.inc");
 
 /* returns an array consisting of every element of $haystack that is not equal to $needle. */
 function array_exclude($needle, $haystack)

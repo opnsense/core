@@ -31,7 +31,6 @@
 */
 
 require_once("auth.inc");
-require_once("filter.inc");
 require_once("functions.inc");
 
 // provided via legacy_bindings.inc 
