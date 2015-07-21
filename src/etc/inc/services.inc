@@ -27,6 +27,10 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+/* load up the dyndns.class */
+require_once("dyndns.class");
+require_once('unbound.inc');
+require_once('miniupnpd.inc');
 
 function generate_ipv6_from_mac($mac) {
 	$elements = explode(":", $mac);
@@ -1700,9 +1704,6 @@ function services_dyndns_configure_client($conf) {
 	if (!isset($conf['enable']))
 		return;
 
-	/* load up the dyndns.class */
-	require_once("dyndns.class");
-
 	$dns = new updatedns($dnsService = $conf['type'],
 		$dnsHost = $conf['host'],
 		$dnsUser = $conf['username'],
@@ -1944,7 +1945,6 @@ function services_unbound_configure()
 		else
 			sleep(1);
 
-		require_once('unbound.inc');
 		sync_unbound_service();
 		if (file_exists("/var/run/booting"))
 			echo gettext("done.") . "\n";
@@ -2372,7 +2372,6 @@ function upnp_start()
 
        if (!empty($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
                echo gettext("Starting UPnP service... ");
-               require_once('miniupnpd.inc');
                sync_package_miniupnpd();
                echo "done.\n";
        }
