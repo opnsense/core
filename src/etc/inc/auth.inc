@@ -148,20 +148,8 @@ if(function_exists("display_error_form") && !isset($config['system']['webgui']['
 					}
 
 			if(!$found_host) {
-				$interface_list_ips = get_configured_ip_addresses();
-				foreach($interface_list_ips as $ilips) {
-					if(strcasecmp($referrer_host, $ilips) == 0) {
-						$found_host = true;
-						break;
-					}
-				}
-				$interface_list_ipv6s = get_configured_ipv6_addresses();
-				foreach($interface_list_ipv6s as $ilipv6s) {
-					if(strcasecmp($referrer_host, $ilipv6s) == 0) {
-						$found_host = true;
-						break;
-					}
-				}
+				$found_host = isAuthLocalIP($referrer_host) ;
+
 				if($referrer_host == "127.0.0.1" || $referrer_host == "localhost") {
 					// allow SSH port forwarded connections and links from localhost
 					$found_host = true;
@@ -187,6 +175,37 @@ unset($security_passed);
 
 $groupindex = index_groups();
 $userindex = index_users();
+
+/**
+ * check if $http_host is a local configured ip address
+ */
+function isAuthLocalIP($http_host) {
+    global $config;
+    $local_ip = false;
+    if (isset($config['interfaces'])) {
+	foreach($config['interfaces'] as $if => $ifdetail) {
+		if (isset($ifdetail['enable'])) {
+			if (isset($ifdetail['ipaddr']) && $ifdetail['ipaddr'] == $http_host) {
+				$local_ip = true;
+			} elseif (isset($ifdetail['ipaddr6']) && $ifdetail['ipaddr6'] == $http_host) {
+				$local_ip = true;
+			}
+		}
+	}
+    }
+
+    if (isset($config['virtualip'])) {
+        if ($config['virtualip']['vip']) {
+            foreach ($config['virtualip']['vip'] as $vip) {
+                if ($vip['subnet'] == $http_host) {
+                    $local_ip = true;
+                }
+            }
+        }
+    }
+
+    return $local_ip;
+}
 
 function index_groups()
 {
