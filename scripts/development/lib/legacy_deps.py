@@ -97,7 +97,7 @@ class DependancyCrawler(object):
             if line.find('function ') > -1 and line.find('(') > -1:
                 if line.find('*') > -1 and line.find('function') > line.find('*'):
                     continue
-                function_nm = line.split('(')[0].split(' ')[-1]
+                function_nm = line.split('(')[0].split(' ')[-1].strip()
                 function_list.append(function_nm)
 
         self._all_functions[base_filename] = function_list
@@ -136,10 +136,10 @@ class DependancyCrawler(object):
             use_list = []
             for function in self._all_functions[src]:
                 if data.find(' %s(' % (function)) > -1 or \
-                                data.find('!%s ') > -1 or \
-                                data.find('!%s(') > -1 or \
-                                data.find('(%s(') > -1 or \
-                                data.find('(%s ') > -1 or \
+                                data.find('!%s ' % (function)) > -1 or \
+                                data.find('!%s(' % (function)) > -1 or \
+                                data.find('(%s(' % (function)) > -1 or \
+                                data.find('(%s ' % (function)) > -1 or \
                                 data.find(' %s ' % (function)) > -1:
                     use_list.append(function)
 
