@@ -81,7 +81,7 @@ if ($ipaddress) {
     }
 } else {
 ?>
-  <tr><td class="listr"><?= gettext('No CARP Interfaces Defined. Click <a href="carp_status.php">here</a> to configure CARP.') ?></td></tr>
+  <tr><td class="listr"><?= sprintf(gettext('No CARP Interfaces Defined. Click %shere%s to configure CARP.'), '<a href="carp_status.php">', '</a>'); ?></td></tr>
 <?php
 } ?>
 </table>

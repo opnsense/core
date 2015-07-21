@@ -246,8 +246,7 @@ else {
                 <?= gettext('Note: There are no configured IPsec Tunnels') ?><br />
 	            </strong>
 	          </span>
-            <?= gettext('You can configure your IPsec') ?>
-            <a href="vpn_ipsec.php"><?= gettext('here') ?></a>.
+            <?= sprintf(gettext('You can configure your IPsec %shere%s.'), '<a href="vpn_ipsec.php">', '</a>'); ?>
 	        </span>
 		</td>
 	  </tr>
