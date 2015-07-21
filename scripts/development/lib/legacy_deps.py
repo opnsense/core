@@ -95,9 +95,11 @@ class DependancyCrawler(object):
         function_list = []
         for line in open(src_filename,'r').read().split('\n'):
             if line.find('function ') > -1 and line.find('(') > -1:
+                if line.find('*') > -1 and line.find('function') > line.find('*'):
+                    continue
                 function_nm = line.split('(')[0].split(' ')[-1]
-                if function_nm.find('*') == -1:
-                    function_list.append(function_nm)
+                function_list.append(function_nm)
+
         self._all_functions[base_filename] = function_list
 
     def find_files(self, analyse_dirs=('etc','www', 'captiveportal', 'sbin')):
