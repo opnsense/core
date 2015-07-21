@@ -42,8 +42,6 @@ if(php_uname("m") == "amd64") {
 require_once('config.lib.inc');
 require_once("util.inc");
 require_once("IPv6.inc");
-require_once("xmlparse.inc");
-require_once("crypt.inc");
 
 $config = parse_config();
 

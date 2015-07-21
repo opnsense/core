@@ -31,7 +31,6 @@
 
 require_once('certs.inc');
 require_once('pfsense-utils.inc');
-require_once('auth.inc');
 require_once('util.inc');
 
 global $openvpn_prots;

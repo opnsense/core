@@ -35,6 +35,8 @@ require_once("crypt.inc");
 require_once("util.inc");
 require_once("notices.inc");
 require_once("legacy_bindings.inc");
+require_once('upgrade_config.inc');
+
 
 /* make a global alias table (for faster lookups) */
 function alias_make_table($config)
@@ -121,10 +123,6 @@ function convert_config() {
 
 	// Save off config version
 	$prev_version = $config['version'];
-
-	include_once('auth.inc');
-	include_once('upgrade_config.inc');
-
 	/* Loop and run upgrade_VER_to_VER() until we're at current version */
 	while ($config['version'] < $g['latest_config']) {
 		$cur = $config['version'] * 10;
