@@ -1429,17 +1429,6 @@ function get_alias_list($type = null)
 	return $result;
 }
 
-function get_current_theme()
-{
-	$theme = 'opnsense';
-
-	if (isset($config['theme']) && is_dir('/usr/local/www/themes/' . $config['theme'])) {
-		$theme = $config['theme'];
-	}
-
-	return $theme;
-}
-
 /* Define what is preferred, IPv4 or IPv6 */
 function prefer_ipv4_or_ipv6() {
 	global $config;
