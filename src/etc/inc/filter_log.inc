@@ -28,8 +28,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require 'config.inc';
-
 global $buffer_rules_rdr, $buffer_rules_normal;
 $buffer_rules_rdr = array();
 $buffer_rules_normal = array();
