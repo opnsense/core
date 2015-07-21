@@ -74,7 +74,9 @@ if ($carp_enabled == false) {
 }
 if ($ipaddress) {
 ?> &nbsp;
-        <?=htmlspecialchars($status);?> &nbsp;
+        <?php
+              echo htmlspecialchars($status);
+        ?> &nbsp;
         <?=htmlspecialchars($ipaddress);
 }?>
 </td></tr><?php
