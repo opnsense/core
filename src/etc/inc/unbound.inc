@@ -28,7 +28,6 @@
 
 /* include all configuration functions */
 require_once("functions.inc");
-require_once("util.inc");
 
 /* Optimize Unbound for environment */
 function unbound_optimization() {

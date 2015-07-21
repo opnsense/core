@@ -31,6 +31,7 @@ require_once("config.inc");
 require_once("auth.inc");
 require_once("functions.inc");
 require_once("captiveportal.inc");
+require_once("util.inc");
 
 $errormsg = "Invalid credentials specified.";
 
