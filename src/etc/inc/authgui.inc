@@ -398,7 +398,6 @@ function display_login_form()
 
     /* Check against locally configured IP addresses, which will catch when someone
 	   port forwards WebGUI access from WAN to an internal IP on the router. */
-    $FilterIflist = filter_generate_optcfg_array() ;
     $local_ip = false;
     if (strstr($_SERVER['HTTP_HOST'], ":")) {
         $http_host_port = explode(":", $_SERVER['HTTP_HOST']);
@@ -406,13 +405,19 @@ function display_login_form()
     } else {
         $http_host = $_SERVER['HTTP_HOST'];
     }
-    foreach ($FilterIflist as $iflist) {
-        if ($iflist['ip'] == $http_host) {
-            $local_ip = true;
-        }
-        if ($iflist['ipv6'] == $http_host) {
-            $local_ip = true;
-        }
+
+    // fix, local ip check was previously done using "filter_generate_optcfg_array" which basically includes alomst everything here.
+    // this should do the trick as well.
+    if (isset($config['interfaces'])) {
+	foreach($config['interfaces'] as $if => $ifdetail) {
+		if (isset($ifdetail['enable'])) {
+			if (isset($ifdetail['ipaddr']) && $ifdetail['ipaddr'] == $http_host) {
+				$local_ip = true;
+			} elseif (isset($ifdetail['ipaddr6']) && $ifdetail['ipaddr6'] == $http_host) {
+				$local_ip = true;
+			}
+		}
+	}
     }
 
     if (isset($config['virtualip'])) {
