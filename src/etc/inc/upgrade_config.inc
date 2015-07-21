@@ -27,7 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('rrd.inc');
 require_once("services.inc");
 
 function dump_rrd_to_xml($rrddatabase, $xmldumpfile)
