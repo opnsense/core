@@ -32,6 +32,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("filter.inc");
 require_once("filter_log.inc");
 
 /********************************************************************************************************************
@@ -496,7 +497,6 @@ if (isset($_POST['resolve'])) {
 }
 
 if (isset($_POST['easyrule'])) {
-	require_once("filter.inc");
 
 	$response = array("status"=>"unknown") ;
 	switch ($_POST['easyrule']) {

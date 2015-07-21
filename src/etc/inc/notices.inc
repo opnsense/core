@@ -29,7 +29,6 @@
  */
 
 require_once("led.inc");
-require_once("util.inc");
 require_once("notices.growl.class");
 require_once("notices.sasl.inc");
 require_once("notices.smtp.inc");
