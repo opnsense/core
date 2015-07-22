@@ -31,7 +31,6 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("captiveportal.inc");
-require_once("shortcuts.inc");
 require_once("openvpn.inc");
 require_once("vpn.inc");
 
