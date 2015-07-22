@@ -26,6 +26,9 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+require_once("guiconfig.inc");
+require_once("pfsense-utils.inc");
+require_once("services.inc") ;
 
 /* returns true if $uname is a valid DynDNS username */
 function is_dyndns_username($uname) {
@@ -37,8 +40,6 @@ function is_dyndns_username($uname) {
         else
                 return true;
 }
-
-require_once("guiconfig.inc");
 
 if (!is_array($config['dyndnses']['dyndns'])) {
 	$config['dyndnses']['dyndns'] = array();

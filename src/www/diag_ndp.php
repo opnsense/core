@@ -33,6 +33,7 @@
 @ini_set('implicit_flush', 1);
 
 require_once("guiconfig.inc");
+require_once("pfsense-utils.inc");
 
 exec("/usr/sbin/ndp -na", $rawdata);
 

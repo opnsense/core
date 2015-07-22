@@ -39,6 +39,7 @@ require_once("services.inc");
 require_once("rrd.inc");
 require_once("util.inc");
 require_once("system.inc");
+require_once("pfsense-utils.inc");
 
 /* Interface IP address has changed */
 $argument = trim($argv[1], " \n\t");

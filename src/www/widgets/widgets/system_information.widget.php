@@ -32,6 +32,8 @@
 require_once("functions.inc");
 require_once("guiconfig.inc");
 include_once("includes/functions.inc.php");
+require_once("pfsense-utils.inc");
+require_once("system.inc");
 
 if (isset($_REQUEST['getupdatestatus'])) {
     $pkg_json = trim(configd_run('firmware pkgstatus'));

@@ -36,6 +36,7 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
+require_once("pfsense-utils.inc");
 
 /* make sure to wait until the boot scripts have finished */
 if (file_exists('/var/run/booting')) {

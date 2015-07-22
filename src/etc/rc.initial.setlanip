@@ -34,6 +34,7 @@ require_once("util.inc");
 require_once("filter.inc");
 require_once("rrd.inc");
 require_once("util.inc");
+require_once("pfsense-utils.inc");
 
 $options = getopt("hn", array("dry-run", "help"));
 

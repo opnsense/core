@@ -29,6 +29,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("pfsense-utils.inc");
 
 /****f* itemid/delete_id
  * NAME

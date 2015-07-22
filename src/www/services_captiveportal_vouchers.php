@@ -36,6 +36,7 @@ require_once('functions.inc');
 require_once('captiveportal.inc');
 require_once('voucher.inc');
 require_once("services.inc");
+require_once("pfsense-utils.inc");
 
 function voucher_unlink_db($roll)
 {
