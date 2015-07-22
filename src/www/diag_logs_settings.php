@@ -31,6 +31,27 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("system.inc");
+require_once("pfsense-utils.inc");
+
+function clear_all_log_files()
+{
+	killbyname('syslogd');
+
+	$log_files = array(
+		"system", "filter", "dhcpd", "vpn", "pptps", "poes", "l2tps", "openvpn", "portalauth",
+		"ipsec", "ppp", "relayd", "wireless", "lighttpd", "ntpd", "gateways", "resolver", "routing"
+	);
+
+	foreach ($log_files as $lfile) {
+		clear_log_file("/var/log/{$lfile}.log", false);
+	}
+
+	system_syslogd_start();
+	killbyname("dhcpd");
+	services_dhcpd_configure();
+}
+
+
 
 $pconfig['reverse'] = isset($config['syslog']['reverse']);
 $pconfig['nentries'] = $config['syslog']['nentries'];
