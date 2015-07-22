@@ -33,6 +33,7 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("rrd.inc");
 require_once("system.inc");
+require_once("pfsense-utils.inc");
 
 /*
  * find_ip_interface($ip): return the interface where an ip is defined

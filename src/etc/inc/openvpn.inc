@@ -29,8 +29,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once('pfsense-utils.inc');
-
 global $openvpn_prots;
 $openvpn_prots = array("UDP", "UDP6", "TCP", "TCP6");
 

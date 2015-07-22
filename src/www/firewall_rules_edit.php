@@ -29,6 +29,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("pfsense-utils.inc");
 
 $firewall_rules_dscp_types = array("af11",
 				"af12",

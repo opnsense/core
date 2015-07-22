@@ -36,6 +36,7 @@ require_once("captiveportal.inc");
 require_once("util.inc");
 require_once("system.inc");
 require_once("certs.inc");
+require_once("pfsense-utils.inc");
 
 /****f* legacy/reload_all_sync
  * NAME

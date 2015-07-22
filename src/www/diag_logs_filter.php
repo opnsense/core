@@ -35,6 +35,7 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("filter_log.inc");
 require_once("system.inc");
+require_once("pfsense-utils.inc");
 
 /********************************************************************************************************************
  * imported from easyrule.inc/php

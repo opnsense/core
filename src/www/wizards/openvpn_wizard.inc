@@ -26,6 +26,7 @@
 
 */
 require_once("openvpn.inc");
+require_once("pfsense-utils.inc");
 
 function cert_get_subject_hash($crt) {
 	$str_crt = base64_decode($crt);

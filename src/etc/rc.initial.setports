@@ -39,6 +39,7 @@ require_once("captiveportal.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("pfsense-utils.inc");
 
 if (set_networking_interfaces_ports()) {
 	echo "Reloading interfaces...";

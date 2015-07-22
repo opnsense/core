@@ -33,6 +33,7 @@ require_once("filter.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
 require_once("services.inc");
+require_once("pfsense-utils.inc");
 
 if (!is_array($config['ipsec'])) {
     $config['ipsec'] = array();

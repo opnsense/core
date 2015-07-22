@@ -31,6 +31,7 @@
 require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
+require_once("pfsense-utils.inc");
 
 function rule_popup($src,$srcport,$dst,$dstport){
 	global $config,$g;

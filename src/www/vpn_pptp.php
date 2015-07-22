@@ -31,6 +31,7 @@ require_once('guiconfig.inc');
 require_once('functions.inc');
 require_once('filter.inc');
 require_once('vpn.inc');
+require_once("pfsense-utils.inc");
 
 if (!is_array($config['pptpd']['radius'])) {
     $config['pptpd']['radius'] = array();

@@ -33,6 +33,7 @@ require_once("util.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("pfsense-utils.inc");
 
 if (!empty($argv[1])) {
 	$argument = str_replace("\n", "", $argv[1]);

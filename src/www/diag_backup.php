@@ -42,6 +42,7 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("rrd.inc");
 require_once("system.inc");
+require_once("pfsense-utils.inc");
 
 /**
  * check if cron exists
