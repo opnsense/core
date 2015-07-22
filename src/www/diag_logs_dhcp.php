@@ -29,6 +29,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 
 $dhcpd_logfile = '/var/log/dhcpd.log';
 

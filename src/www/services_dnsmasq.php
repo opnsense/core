@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
+require_once("services.inc");
 
 $pconfig['enable'] = isset($config['dnsmasq']['enable']);
 $pconfig['regdhcp'] = isset($config['dnsmasq']['regdhcp']);

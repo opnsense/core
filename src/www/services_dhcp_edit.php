@@ -28,6 +28,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 
 function staticmapcmp($a, $b) {
 	return ipcmp($a['ipaddr'], $b['ipaddr']);

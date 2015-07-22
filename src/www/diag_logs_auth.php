@@ -28,6 +28,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 
 $portal_logfile = '/var/log/portalauth.log';
 

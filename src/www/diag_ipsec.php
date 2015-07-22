@@ -35,8 +35,9 @@ $pgtitle = array(gettext("Status"),gettext("IPsec"));
 $shortcut_section = "ipsec";
 
 require_once("guiconfig.inc");
-include("head.inc");
 require_once("ipsec.inc");
+require_once("services.inc");
+include("head.inc");
 
 function ipsec_get_descr($ikeid) {
 	global $config;

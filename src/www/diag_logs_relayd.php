@@ -29,6 +29,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 
 $relayd_logfile = '/var/log/relayd.log';
 

@@ -31,6 +31,7 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("captiveportal.inc");
 require_once("voucher.inc");
+require_once("services.inc");
 
 /* return how many vouchers are marked used on a roll */
 function voucher_used_count($roll) {

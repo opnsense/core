@@ -33,6 +33,8 @@ require_once("functions.inc");
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
+require_once("services.inc");
+
 
 $my_identifier_list = array(
 	'myaddress' => array( 'desc' => gettext('My IP address'), 'mobile' => true ),

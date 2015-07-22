@@ -26,6 +26,10 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("guiconfig.inc");
+require_once("services.inc");
+
+
 function hostcmp($a, $b) {
 	return strcasecmp($a['host'], $b['host']);
 }
@@ -38,8 +42,6 @@ function hosts_sort() {
 
         usort($config['dnsmasq']['hosts'], "hostcmp");
 }
-
-require_once("guiconfig.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dnsmasq.php');
 

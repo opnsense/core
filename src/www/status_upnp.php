@@ -27,6 +27,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 
 if ($_POST) {
 	if ($_POST['clear'] == "Clear") {

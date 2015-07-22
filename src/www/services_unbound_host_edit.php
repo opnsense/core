@@ -27,6 +27,9 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once("guiconfig.inc");
+require_once("services.inc");
+
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_unbound.php');
 
 function hostcmp($a, $b) {
@@ -41,8 +44,6 @@ function hosts_sort() {
 
 	usort($config['unbound']['hosts'], "hostcmp");
 }
-
-require_once("guiconfig.inc");
 
 if (!is_array($config['unbound']['hosts']))
 	$config['unbound']['hosts'] = array();

@@ -29,13 +29,13 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = array(gettext("Status"), gettext("OpenVPN"));
-$shortcut_section = "openvpn";
-
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("shortcuts.inc");
 require_once("services.inc");
+
+$pgtitle = array(gettext("Status"), gettext("OpenVPN"));
+$shortcut_section = "openvpn";
 
 /* Handle AJAX */
 if($_GET['action']) {

@@ -30,6 +30,7 @@ require_once("functions.inc");
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
+require_once("services.inc");
 
 if (!is_array($config['ipsec'])) {
         $config['ipsec'] = array();

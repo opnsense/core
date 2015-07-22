@@ -30,7 +30,6 @@
 
 require_once("functions.inc");
 require_once("shortcuts.inc");
-require_once("services.inc");
 
 function find_service_by_name($name) {
 	$services = get_services();
