@@ -34,8 +34,11 @@ require_once("util.inc");
 require_once("openvpn.inc");
 require_once("vpn.inc");
 require_once("captiveportal.inc");
+require_once("system.inc");
+require_once("interfaces.inc");
 
-reload_interfaces_sync();
+system_routing_enable();
+interfaces_configure();
 filter_configure_sync();
 /* XXX: needs fixing */
 //ovpn_config_server("pfreload");

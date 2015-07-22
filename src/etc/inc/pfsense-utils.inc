@@ -285,28 +285,6 @@ function host_firmware_version()
 }
 
 
-/****f* legacy/reload_interfaces_sync
- * NAME
- *   reload_interfaces - reload all interfaces
- * INPUTS
- *   none
- * RESULT
- *   none
- ******/
-function reload_interfaces_sync()
-{
-	global $config;
-
-	/* parse config.xml again */
-	$config = parse_config();
-
-	/* enable routing */
-	system_routing_enable();
-
-	/* set up interfaces */
-	interfaces_configure();
-}
-
 /****f* legacy/reload_all
  * NAME
  *   reload_all - triggers a reload of all settings
