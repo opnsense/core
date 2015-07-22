@@ -37,10 +37,15 @@ require_once("ipsec.inc");
 require_once("vpn.inc");
 require_once("captiveportal.inc");
 require_once("rrd.inc");
+require_once("system.inc");
+require_once("interfaces.inc");
 
 if (set_networking_interfaces_ports()) {
 	echo "Reloading interfaces...";
-	reload_interfaces_sync();
+	global $config;
+	$config = parse_config();
+	system_routing_enable();
+	interfaces_configure();
 	echo "done.\n";
 	enable_rrd_graphing();
 }
