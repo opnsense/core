@@ -30,6 +30,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("system.inc");
 
 $wireless_logfile = '/var/log/wireless.log';
 

@@ -30,6 +30,7 @@
 $pgtitle = array(gettext("Status"), gettext("System logs"), gettext("VPN"));
 require_once("guiconfig.inc");
 require_once("vpn.inc");
+require_once("system.inc");
 
 $nentries = $config['syslog']['nentries'];
 if (!$nentries)

@@ -28,6 +28,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("system.inc");
 
 $routing_logfile = '/var/log/routing.log';
 
