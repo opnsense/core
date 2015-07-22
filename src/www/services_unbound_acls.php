@@ -28,6 +28,7 @@
 
 require_once("guiconfig.inc");
 require_once("unbound.inc");
+require_once("system.inc");
 
 function unbound_acl_id_used($id) {
     global $config;

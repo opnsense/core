@@ -28,8 +28,7 @@
 */
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
-require_once("captiveportal.inc");
+require_once("system.inc");
 
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Halt system"));
@@ -44,7 +43,7 @@ include('head.inc');
 		<div class="row">
 		    <section class="col-xs-12">
 
-			<?php if ($_POST['Submit'] == gettext("Yes")):
+			<?php if (isset($_POST['Submit']) && $_POST['Submit'] == gettext("Yes")):
 				print_info_box(gettext("The system is halting now. This may take one minute.")); ?>
 			<pre>
 			<?php	system_halt(); ?>

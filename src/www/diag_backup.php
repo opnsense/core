@@ -41,6 +41,7 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("services.inc");
 require_once("rrd.inc");
+require_once("system.inc");
 
 /**
  * check if cron exists

@@ -30,6 +30,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("system.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_advanced_sysctl.php');
 

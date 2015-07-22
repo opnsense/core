@@ -27,7 +27,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once 'guiconfig.inc';
+require_once("guiconfig.inc");
+require_once("system.inc");
 
 if (!is_array($config['opendns'])) {
 	$config['opendns'] = array();

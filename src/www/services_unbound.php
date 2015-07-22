@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("unbound.inc");
 require_once("services.inc");
+require_once("system.inc");
 
 
 if (!is_array($config['unbound']))

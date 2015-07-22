@@ -28,6 +28,7 @@
 */
 
 require_once('guiconfig.inc');
+require_once("system.inc");
 
 function ca_import(& $ca, $str, $key="", $serial=0) {
 	global $config;

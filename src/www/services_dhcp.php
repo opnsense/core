@@ -30,6 +30,8 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("services.inc");
+require_once("system.inc");
+require_once("unbound.inc");
 
 /* This function will remove entries from dhcpd.leases that would otherwise
  * overlap with static DHCP reservations. If we don't clean these out,
