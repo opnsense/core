@@ -5418,3 +5418,22 @@ function zte_simstate_to_string($state) {
 	$string = "{$modes[$state]} State";
 	return $string;
 }
+
+/* Compute the total uptime from the ppp uptime log file in the conf directory */
+
+function get_ppp_uptime($port){
+	if (file_exists("/conf/{$port}.log")){
+		$saved_time = file_get_contents("/conf/{$port}.log");
+		$uptime_data = explode("\n",$saved_time);
+		$sec=0;
+		foreach($uptime_data as $upt) {
+			$sec += substr($upt, 1 + strpos($upt, " "));
+		}
+		return convert_seconds_to_hms($sec);
+	} else {
+		$total_time = gettext("No history data found!");
+		return $total_time;
+	}
+}
+
+
