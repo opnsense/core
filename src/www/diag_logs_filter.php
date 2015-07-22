@@ -39,7 +39,6 @@ require_once("filter_log.inc");
  * imported from easyrule.inc/php
  ********************************************************************************************************************/
 require_once("functions.inc");
-require_once("util.inc");
 
 function easyrule_find_rule_interface($int) {
 	global $config;
