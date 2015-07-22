@@ -32,6 +32,7 @@ require_once("functions.inc");
 require_once("filter.inc");
 require_once("load_balancer_maintable.inc");
 require_once("services.inc");
+require_once("vslb.inc");
 
 
 if (!is_array($config['load_balancer']['lbaction'])) {
