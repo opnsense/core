@@ -31,7 +31,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
 require_once("pfsense-utils.inc");
 
 /* returns an array consisting of every element of $haystack that is not equal to $needle. */

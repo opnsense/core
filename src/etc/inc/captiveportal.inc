@@ -36,7 +36,6 @@
 
 /* include all configuration functions */
 require_once("config.inc");
-require_once("functions.inc");
 require_once("radius.inc");
 require_once("captiveportal.radius_accounting.inc");
 require_once("captiveportal.radius_authentication.inc");

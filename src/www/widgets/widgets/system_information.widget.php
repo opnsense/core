@@ -29,7 +29,6 @@
         POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("functions.inc");
 require_once("guiconfig.inc");
 include_once("includes/functions.inc.php");
 require_once("pfsense-utils.inc");

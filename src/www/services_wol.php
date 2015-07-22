@@ -27,6 +27,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("interfaces.inc");
 
 if (!is_array($config['wol'])) {
   $config['wol'] = array();

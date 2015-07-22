@@ -28,7 +28,6 @@
 */
 
 require_once("config.inc");
-require_once("functions.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 

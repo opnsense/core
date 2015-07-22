@@ -28,7 +28,7 @@
 */
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
+require_once("interfaces.inc");
 
 $pgtitle = array(gettext("Interfaces"),gettext("Groups"),gettext("Edit"));
 $shortcut_section = "interfaces";

@@ -28,6 +28,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("interfaces.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_hasync.php');
 

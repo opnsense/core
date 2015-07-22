@@ -29,7 +29,6 @@
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
-require_once("functions.inc");
 require_once("widgets/include/smart_status.inc");
 
 ?>

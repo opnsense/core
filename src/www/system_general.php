@@ -28,11 +28,11 @@
 */
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("unbound.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 function get_locale_list()
 {

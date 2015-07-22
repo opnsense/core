@@ -31,7 +31,7 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
+require_once("interfaces.inc");
 require_once("ipsec.inc");
 
 //function to create widget tabs when called

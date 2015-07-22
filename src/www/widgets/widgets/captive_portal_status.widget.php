@@ -32,7 +32,6 @@ $nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
-require_once("functions.inc");
 require_once("captiveportal.inc");
 
 if (($_GET['act'] == "del") && (!empty($_GET['zone']))) {

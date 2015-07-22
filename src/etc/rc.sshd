@@ -30,7 +30,6 @@
 */
 
 require_once('config.inc');
-require_once('functions.inc');
 require_once("util.inc");
 
 $bin_ssh_keygen = '/usr/local/bin/ssh-keygen';

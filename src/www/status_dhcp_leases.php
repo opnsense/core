@@ -31,6 +31,7 @@ require_once("guiconfig.inc");
 require_once("config.inc");
 require_once("services.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 $pgtitle = array(gettext("Status"),gettext("DHCP leases"));
 $shortcut_section = "dhcp";

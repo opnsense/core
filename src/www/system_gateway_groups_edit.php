@@ -29,6 +29,7 @@
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
+require_once("interfaces.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateway_groups.php');
 

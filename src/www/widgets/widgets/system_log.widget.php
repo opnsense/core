@@ -28,7 +28,6 @@
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
-require_once("functions.inc");;
 
 $system_logfile = '/var/log/system.log';
 

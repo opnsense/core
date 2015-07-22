@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 
 $openvpn_dh_lengths = array(1024, 2048, 4096 );
 $openvpn_cert_depths = array(

@@ -32,6 +32,7 @@ require_once("openvpn.inc");
 require_once("filter.inc");
 require_once("util.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 require_once("openvpn-client-export.inc");
 
 $pgtitle = array("OpenVPN", "Client Export Utility");

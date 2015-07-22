@@ -32,11 +32,11 @@
 require_once("util.inc");
 require_once("config.inc");
 require_once("gwlb.inc");
-require_once("functions.inc");
 require_once("filter.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 /* make sure to wait until the boot scripts have finished */
 if (file_exists('/var/run/booting')) {

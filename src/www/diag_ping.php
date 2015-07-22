@@ -29,6 +29,7 @@
 $pgtitle = array(gettext("Diagnostics"), gettext("Ping"));
 require_once("guiconfig.inc");
 require_once("system.inc");
+require_once("interfaces.inc");
 
 define('MAX_COUNT', 10);
 define('DEFAULT_COUNT', 3);

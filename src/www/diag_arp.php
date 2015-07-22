@@ -32,6 +32,7 @@
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 function leasecmp($a, $b) {
 	return strcmp($a[$_GET['order']], $b[$_GET['order']]);

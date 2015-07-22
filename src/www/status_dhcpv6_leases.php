@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 $pgtitle = array(gettext("Status"),gettext("DHCPv6 leases"));
 $shortcut_section = "dhcp6";

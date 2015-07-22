@@ -29,7 +29,7 @@
 */
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
+require_once("interfaces.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_ppps.php');
 
