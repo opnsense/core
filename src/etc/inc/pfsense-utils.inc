@@ -333,54 +333,6 @@ function reload_interfaces()
 	configd_run("interface reload");
 }
 
-/****f* legacy/reload_all_sync
- * NAME
- *   reload_all - reload all settings
- *   * INPUTS
- *   none
- * RESULT
- *   none
- ******/
-function reload_all_sync()
-{
-	global $config;
-
-	/* parse config.xml again */
-	$config = parse_config();
-
-	/* set up our timezone */
-	system_timezone_configure();
-
-	/* set up our hostname */
-	system_hostname_configure();
-
-	/* make hosts file */
-	system_hosts_generate();
-
-	/* generate resolv.conf */
-	system_resolvconf_generate();
-
-	/* enable routing */
-	system_routing_enable();
-
-	/* set up interfaces */
-	interfaces_configure();
-
-	/* start dyndns service */
-	services_dyndns_configure();
-
-	/* configure cron service */
-	configure_cron();
-
-	/* start the NTP client */
-	system_ntp_configure();
-
-	/* restart sshd */
-	mwexec_bg('/usr/local/etc/rc.sshd');
-
-	/* restart webConfigurator if needed */
-	mwexec_bg('/usr/local/etc/rc.restart_webgui');
-}
 
 function setup_serial_port($when = 'save', $path = '')
 {
