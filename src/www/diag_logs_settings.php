@@ -39,7 +39,7 @@ function clear_all_log_files()
 
 	$log_files = array(
 		"system", "filter", "dhcpd", "vpn", "pptps", "poes", "l2tps", "openvpn", "portalauth",
-		"ipsec", "ppp", "relayd", "wireless", "lighttpd", "ntpd", "gateways", "resolver", "routing"
+		"ipsec", "ppps", "relayd", "wireless", "lighttpd", "ntpd", "gateways", "resolver", "routing"
 	);
 
 	foreach ($log_files as $lfile) {
