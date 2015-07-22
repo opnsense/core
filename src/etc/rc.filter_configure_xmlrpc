@@ -40,6 +40,7 @@ require_once("xmlrpc.inc");
 require_once("interfaces.inc");
 require_once("openvpn.inc");
 require_once("vslb.inc");
+require_once("system.inc");
 
 system_routing_configure();
 setup_gateways_monitor();

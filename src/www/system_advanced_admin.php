@@ -32,6 +32,8 @@
 require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
+require_once("system.inc");
+require_once("unbound.inc");
 
 $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
 $pconfig['webguiport'] = $config['system']['webgui']['port'];

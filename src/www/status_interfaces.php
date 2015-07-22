@@ -29,6 +29,8 @@
 */
 
 require_once("guiconfig.inc");
+require_once("system.inc");
+require_once("interfaces.inc");
 
 if ($_POST['if'] && $_POST['submit']) {
 	$interface = $_POST['if'];

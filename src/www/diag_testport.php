@@ -29,6 +29,7 @@
 
 $pgtitle = array(gettext("Diagnostics"), gettext("Test Port"));
 require_once("guiconfig.inc");
+require_once("system.inc");
 
 define('NC_TIMEOUT', 10);
 $do_testport = false;

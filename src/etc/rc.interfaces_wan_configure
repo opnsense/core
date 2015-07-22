@@ -31,6 +31,8 @@ require_once("config.inc");
 require_once("functions.inc");
 require_once("util.inc");
 require_once("filter.inc");
+require_once("system.inc");
+require_once("interfaces.inc");
 
 if (!empty($argv[1])) {
 	$argument = str_replace("\n", "", $argv[1]);

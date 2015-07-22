@@ -32,6 +32,7 @@ require_once("functions.inc");
 require_once("captiveportal.inc");
 require_once("filter.inc");
 require_once("services.inc");
+require_once("system.inc");
 
 if (substr($_GET['act'], 0, 3) == "get")
 	$nocsrf = true;

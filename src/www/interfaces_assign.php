@@ -38,6 +38,8 @@ require_once("ipsec.inc");
 require_once("vpn.inc");
 require_once("captiveportal.inc");
 require_once("rrd.inc");
+require_once("system.inc");
+require_once("interfaces.inc");
 
 function interface_assign_description($portinfo, $portname) {
 	if ($portinfo['isvlan']) {

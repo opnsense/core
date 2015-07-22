@@ -31,6 +31,9 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("vslb.inc");
+require_once("system.inc");
+require_once("unbound.inc");
+require_once("captiveportal.inc");
 
 function openvpn_restart_by_vpnid($mode, $vpnid) {
 	$settings = openvpn_get_settings($mode, $vpnid);
