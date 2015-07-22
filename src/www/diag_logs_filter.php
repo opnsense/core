@@ -34,6 +34,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("filter_log.inc");
+require_once("system.inc");
 
 /********************************************************************************************************************
  * imported from easyrule.inc/php
