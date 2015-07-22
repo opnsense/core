@@ -28,6 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 require_once("guiconfig.inc");
+require_once("interfaces.inc");
 
 function staticmapcmp($a, $b) {
         return ipcmp($a['ipaddrv6'], $b['ipaddrv6']);

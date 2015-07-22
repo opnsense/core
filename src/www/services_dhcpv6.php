@@ -33,6 +33,7 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("unbound.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 /*  Fix failover DHCP problem
  *  http://article.gmane.org/gmane.comp.security.firewalls.pfsense.support/18749

@@ -28,7 +28,6 @@
 */
 
 require_once("config.inc");
-require_once("functions.inc");
 
 $arguments = getopt("egm:");
 

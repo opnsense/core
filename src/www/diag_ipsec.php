@@ -37,6 +37,7 @@ $shortcut_section = "ipsec";
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 include("head.inc");
 
 function ipsec_get_descr($ikeid) {

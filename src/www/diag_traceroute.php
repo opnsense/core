@@ -28,6 +28,7 @@
 
 require_once("guiconfig.inc");
 require_once("system.inc");
+require_once("interfaces.inc");
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Traceroute"));
 include("head.inc");

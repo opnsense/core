@@ -28,7 +28,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("functions.inc");
 require_once("shortcuts.inc");
 
 function find_service_by_name($name) {

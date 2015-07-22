@@ -26,9 +26,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* include all configuration functions */
-require_once("functions.inc");
-
 /* Optimize Unbound for environment */
 function unbound_optimization() {
     global $config;

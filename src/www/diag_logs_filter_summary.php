@@ -31,6 +31,7 @@ $pgtitle = gettext("Status").": ".gettext("System logs").": ".gettext("Firewall 
 $shortcut_section = "firewall";
 require_once("guiconfig.inc");
 require_once("filter_log.inc");
+require_once("interfaces.inc");
 
 $filter_logfile = '/var/log/filter.log';
 $lines = 5000;

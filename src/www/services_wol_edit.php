@@ -37,6 +37,7 @@ function wol_sort() {
 }
 
 require_once("guiconfig.inc");
+require_once("interfaces.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_wol.php');
 

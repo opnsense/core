@@ -36,11 +36,11 @@ require_once("filter.inc");
 require_once("filter_log.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 /********************************************************************************************************************
  * imported from easyrule.inc/php
  ********************************************************************************************************************/
-require_once("functions.inc");
 
 function easyrule_find_rule_interface($int) {
 	global $config;

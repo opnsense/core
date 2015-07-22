@@ -27,7 +27,7 @@
 */
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
+require_once("interfaces.inc");
 
 function ppp_inuse($num) {
 	global $config, $g;

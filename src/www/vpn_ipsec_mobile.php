@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("functions.inc");
+require_once("interfaces.inc");
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");

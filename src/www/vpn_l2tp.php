@@ -32,6 +32,7 @@ $shortcut_section = "l2tps";
 require_once("guiconfig.inc");
 require_once("vpn.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 if (!is_array($config['l2tp']['radius'])) {
     $config['l2tp']['radius'] = array();

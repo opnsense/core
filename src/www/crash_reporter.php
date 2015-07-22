@@ -29,7 +29,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("functions.inc");
 require_once("captiveportal.inc");
 
 define("FILE_SIZE", 450000);
