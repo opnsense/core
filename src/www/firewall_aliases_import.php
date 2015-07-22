@@ -31,7 +31,6 @@
 $reserved_keywords = array("all", "pass", "block", "out", "queue", "max", "min", "pptp", "pppoe", "L2TP", "OpenVPN", "IPsec");
 
 require_once("guiconfig.inc");
-require_once("util.inc");
 
 $pgtitle = array(gettext("Firewall"),gettext("Aliases"),gettext("Bulk import"));
 
