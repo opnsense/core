@@ -28,6 +28,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 require_once("pfsense-utils.inc");
 
 $serviceproviders_xml = "/usr/local/share/mobile-broadband-provider-info/serviceproviders.xml";
