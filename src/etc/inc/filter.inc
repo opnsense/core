@@ -3552,4 +3552,18 @@ function filter_get_antilockout_ports($wantarray = false) {
 
 }
 
+function default_state_size()
+{
+	/* get system memory amount */
+	$memory = get_memory();
+	$physmem = $memory[0];
+
+	/* Be cautious and only allocate 10% of system memory to the state table */
+	$max_states = (int) ($physmem/10)*1000;
+
+	return $max_states;
+}
+
+
+
 ?>

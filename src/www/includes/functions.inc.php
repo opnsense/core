@@ -5,6 +5,7 @@ if(Connection_Aborted()) {
 }
 
 require_once("config.inc");
+require_once("filter.inc");
 require_once("pfsense-utils.inc");
 
 function get_uptime_sec() {
