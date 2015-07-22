@@ -28,6 +28,8 @@
 
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
+require_once("services.inc");
+
 
 $pgtitle = array(gettext("Status"),gettext("IPsec"),gettext("Leases"));
 $shortcut_section = "ipsec";

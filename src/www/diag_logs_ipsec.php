@@ -30,6 +30,8 @@
 
 require_once("guiconfig.inc");
 require_once("ipsec.inc");
+require_once("services.inc");
+
 
 function return_clog($logfile, $tail, $withorig = true, $grepfor = "", $grepinvert = "", $grepreverse = false) {
 	global $g, $config;

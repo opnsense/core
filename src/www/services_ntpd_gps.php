@@ -28,6 +28,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 
 function set_default_gps() {
 	global $config;

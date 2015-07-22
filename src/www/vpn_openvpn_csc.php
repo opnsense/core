@@ -28,6 +28,8 @@
 
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
+require_once("services.inc");
+
 
 function openvpn_cleanup_csc($common_name)
 {

@@ -29,6 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("functions.inc");
+require_once("services.inc");
 
 if (!is_array($config['snmpd'])) {
 	$config['snmpd'] = array();

@@ -29,6 +29,8 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
+
 
 $ntpd_logfile = '/var/log/ntpd.log';
 

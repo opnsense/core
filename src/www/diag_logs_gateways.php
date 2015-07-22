@@ -30,6 +30,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 
 $system_logfile = '/var/log/gateways.log';
 

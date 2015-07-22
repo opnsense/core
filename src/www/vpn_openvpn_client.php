@@ -29,6 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
+require_once("services.inc");
 
 function openvpn_validate_host($value, $name) {
 	$value = trim($value);

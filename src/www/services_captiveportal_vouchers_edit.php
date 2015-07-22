@@ -30,6 +30,7 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("captiveportal.inc");
 require_once("voucher.inc");
+require_once("services.inc");
 
 $pgtitle = array(gettext("Services"), gettext("Captive portal"), gettext("Edit Voucher Rolls"));
 $shortcut_section = "captiveportal-vouchers";
