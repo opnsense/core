@@ -621,12 +621,12 @@ include("head.inc");
                                 <table class="table table-striped">
 					      <thead>
 					        <tr>
-					          <th>Action</th>
-					          <th>Time and interface</th>
-					          <th>Source and destination IP Address</th>
-					          <th>Source and destination port</th>
-					          <th>Protocol</th>
-					          <th>Protocol</th>
+					          <th><?= gettext('Action') ?></th>
+					          <th><?= gettext('Time and interface') ?></th>
+					          <th><?= gettext('Source and destination IP Address') ?></th>
+					          <th><?= gettext('Source and destination port') ?></th>
+					          <th><?= gettext('Protocol') ?></th>
+					          <th><?= gettext('Protocol') ?></th>
 					        </tr>
 					      </thead>
 					      <tbody>
@@ -636,11 +636,11 @@ include("head.inc");
                                             <input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass',   $Include_Act)) echo "checked=\"checked\""; ?> />&nbsp;&nbsp;Pass
                                           </label>
                                       </td>
-					          <td><input type="text" class="form-control" placeholder="Time" id="filterlogentries_time" name="filterlogentries_time" value="<?= $filterfieldsarray['time'] ?>"></td>
-					          <td><input type="text" class="form-control" placeholder="Source IP Address" id="filterlogentries_sourceipaddress" name="filterlogentries_sourceipaddress" value="<?= $filterfieldsarray['srcip'] ?>"></td>
-					          <td><input type="text" class="form-control" placeholder="Source Port" id="filterlogentries_sourceport" name="filterlogentries_sourceport" value="<?= $filterfieldsarray['srcport'] ?>"></td>
-					          <td><input type="text" class="form-control" placeholder="Protocol" id="filterlogentries_protocol" name="filterlogentries_protocol" value="<?= $filterfieldsarray['proto'] ?>"></td>
-					          <td><input type="text" class="form-control" placeholder="Quantity" id="filterlogentries_qty" name="filterlogentries_qty" value="<?= $filterlogentries_qty ?>"></td>
+					          <td><input type="text" class="form-control" placeholder="<?= gettext('Time') ?>" id="filterlogentries_time" name="filterlogentries_time" value="<?= $filterfieldsarray['time'] ?>"></td>
+					          <td><input type="text" class="form-control" placeholder="<?= gettext('Source IP Address') ?>" id="filterlogentries_sourceipaddress" name="filterlogentries_sourceipaddress" value="<?= $filterfieldsarray['srcip'] ?>"></td>
+					          <td><input type="text" class="form-control" placeholder="<?= gettext('Source Port') ?>" id="filterlogentries_sourceport" name="filterlogentries_sourceport" value="<?= $filterfieldsarray['srcport'] ?>"></td>
+					          <td><input type="text" class="form-control" placeholder="<?= gettext('Protocol') ?>" id="filterlogentries_protocol" name="filterlogentries_protocol" value="<?= $filterfieldsarray['proto'] ?>"></td>
+					          <td><input type="text" class="form-control" placeholder="<?= gettext('Quantity') ?>" id="filterlogentries_qty" name="filterlogentries_qty" value="<?= $filterlogentries_qty ?>"></td>
 					        </tr>
 					        <tr>
 					          <td>
@@ -648,10 +648,10 @@ include("head.inc");
                                             <input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block',  $Include_Act)) echo "checked=\"checked\""; ?> /> &nbsp;&nbsp;Block
                                           </label>
                                       </td>
-					          <td><input type="text" class="form-control" placeholder="Interface" id="filterlogentries_interfaces" name="filterlogentries_interfaces" value="<?= $filterfieldsarray['interface'] ?>"></td>
-					          <td><input type="text" class="form-control" placeholder="Destination IP Address" id="filterlogentries_destinationipaddress" name="filterlogentries_destinationipaddress" value="<?= $filterfieldsarray['dstip'] ?>"></td>
-					          <td><input type="text" class="form-control" placeholder="Destination Port" id="filterlogentries_destinationport" name="filterlogentries_destinationport" value="<?= $filterfieldsarray['dstport'] ?>"></td>
-					          <td><input type="text" class="form-control" placeholder="Protocol Flags" id="filterlogentries_protocolflags" name="filterlogentries_protocolflags" value="<?= $filterfieldsarray['tcpflags'] ?>"></td>
+					          <td><input type="text" class="form-control" placeholder="<?= gettext('Interface') ?>" id="filterlogentries_interfaces" name="filterlogentries_interfaces" value="<?= $filterfieldsarray['interface'] ?>"></td>
+					          <td><input type="text" class="form-control" placeholder="<?= gettext('Destination IP Address') ?>" id="filterlogentries_destinationipaddress" name="filterlogentries_destinationipaddress" value="<?= $filterfieldsarray['dstip'] ?>"></td>
+					          <td><input type="text" class="form-control" placeholder="<?= gettext('Destination Port') ?>" id="filterlogentries_destinationport" name="filterlogentries_destinationport" value="<?= $filterfieldsarray['dstport'] ?>"></td>
+					          <td><input type="text" class="form-control" placeholder="<?= gettext('Protocol Flags') ?>" id="filterlogentries_protocolflags" name="filterlogentries_protocolflags" value="<?= $filterfieldsarray['tcpflags'] ?>"></td>
 					          <td><input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" style="vertical-align:top;" value="<?=gettext("Filter");?>" /></td>
 					        </tr>
 					      </tbody>
@@ -710,7 +710,20 @@ include("head.inc");
 									$rowIndex++;?>
 									<tr class="<?=$evenRowClass?>">
 									  <td class="listMRlr nowrap" align="center" sorttable_customkey="<?=$filterent['act']?>">
-									  <a onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);" title="<?php echo $filterent['act'] .'/';?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+									  <a onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);" title="<?php echo $filterent['act'];?>"><span class="glyphicon glyphicon-<?php switch ($filterent['act']) {
+									    case 'pass':
+                                                                                echo "play";  /* icon for a tick */
+                                                                                break;
+                                                                            case 'match':
+                                                                                echo "random";
+                                                                                break;
+                                                                            case 'reject':
+									    case 'block':
+									    default:
+                                                                            echo 'remove'; /* a x*/
+                                                                            break;
+									  }
+									  ?>"></span></a></td>
 									  <?php if (isset($filterent['count'])) echo $filterent['count'];?></a></center></td>
 									  <td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['time']);?></td>
 									  <td class="listMRr nowrap">
