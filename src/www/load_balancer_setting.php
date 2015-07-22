@@ -31,6 +31,8 @@ require_once("guiconfig.inc");
 require_once("functions.inc");
 require_once("filter.inc");
 require_once("services.inc");
+require_once("vslb.inc");
+
 
 if (!is_array($config['load_balancer']['setting'])) {
 	$config['load_balancer']['setting'] = array();
