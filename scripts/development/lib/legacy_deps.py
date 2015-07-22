@@ -132,7 +132,7 @@ class DependancyCrawler(object):
         """
         where_used_lst={}
         for src_filename in self.find_files():
-            data = open(src_filename,'r').read().replace('\n',' ').replace('\t',' ')
+            data = open(src_filename,'r').read().replace('\n',' ').replace('\t',' ').replace('@',' ')
             use_list = []
             for function in self._all_functions[src]:
                 if data.find(' %s(' % (function)) > -1 or \
