@@ -29,63 +29,62 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("system.inc");
+require_once("interfaces.inc");
 
-if (!is_array($config['ntpd']))
+if (!isset($config['ntpd']) || !is_array($config['ntpd']))
 	$config['ntpd'] = array();
-if (!is_array($config['ntpd']['pps']))
+if (!isset($config['ntpd']['pps']))
 	$config['ntpd']['pps'] = array();
 
 if ($_POST) {
 
 	unset($input_errors);
 
-	if (!$input_errors) {
-		if (!empty($_POST['ppsport']) && file_exists('/dev/'.$_POST['ppsport']))
-			$config['ntpd']['pps']['port'] = $_POST['ppsport'];
-		/* if port is not set, remove all the pps config */
-		else unset($config['ntpd']['pps']);
+	if (!empty($_POST['ppsport']) && file_exists('/dev/'.$_POST['ppsport']))
+		$config['ntpd']['pps']['port'] = $_POST['ppsport'];
+	/* if port is not set, remove all the pps config */
+	else unset($config['ntpd']['pps']);
 
-		if (!empty($_POST['ppsfudge1']))
-			$config['ntpd']['pps']['fudge1'] = $_POST['ppsfudge1'];
-		elseif (isset($config['ntpd']['pps']['fudge1']))
-			unset($config['ntpd']['pps']['fudge1']);
+	if (!empty($_POST['ppsfudge1']))
+		$config['ntpd']['pps']['fudge1'] = $_POST['ppsfudge1'];
+	elseif (isset($config['ntpd']['pps']['fudge1']))
+		unset($config['ntpd']['pps']['fudge1']);
 
-		if (!empty($_POST['ppsstratum']) && ($_POST['ppsstratum']) < 17 )
-			$config['ntpd']['pps']['stratum'] = $_POST['ppsstratum'];
-		elseif (isset($config['ntpd']['pps']['stratum']))
-			unset($config['ntpd']['pps']['stratum']);
+	if (!empty($_POST['ppsstratum']) && ($_POST['ppsstratum']) < 17 )
+		$config['ntpd']['pps']['stratum'] = $_POST['ppsstratum'];
+	elseif (isset($config['ntpd']['pps']['stratum']))
+		unset($config['ntpd']['pps']['stratum']);
 
-		if (!empty($_POST['ppsselect']))
-			$config['ntpd']['pps']['noselect'] = $_POST['ppsselect'];
-		elseif (isset($config['ntpd']['pps']['noselect']))
-			unset($config['ntpd']['pps']['noselect']);
+	if (!empty($_POST['ppsselect']))
+		$config['ntpd']['pps']['noselect'] = $_POST['ppsselect'];
+	elseif (isset($config['ntpd']['pps']['noselect']))
+		unset($config['ntpd']['pps']['noselect']);
 
-		if (!empty($_POST['ppsflag2']))
-			$config['ntpd']['pps']['flag2'] = $_POST['ppsflag2'];
-		elseif (isset($config['ntpd']['pps']['flag2']))
-			unset($config['ntpd']['pps']['flag2']);
+	if (!empty($_POST['ppsflag2']))
+		$config['ntpd']['pps']['flag2'] = $_POST['ppsflag2'];
+	elseif (isset($config['ntpd']['pps']['flag2']))
+		unset($config['ntpd']['pps']['flag2']);
 
-		if (!empty($_POST['ppsflag3']))
-			$config['ntpd']['pps']['flag3'] = $_POST['ppsflag3'];
-		elseif (isset($config['ntpd']['pps']['flag3']))
-			unset($config['ntpd']['pps']['flag3']);
+	if (!empty($_POST['ppsflag3']))
+		$config['ntpd']['pps']['flag3'] = $_POST['ppsflag3'];
+	elseif (isset($config['ntpd']['pps']['flag3']))
+		unset($config['ntpd']['pps']['flag3']);
 
-		if (!empty($_POST['ppsflag4']))
-			$config['ntpd']['pps']['flag4'] = $_POST['ppsflag4'];
-		elseif (isset($config['ntpd']['pps']['flag4']))
-			unset($config['ntpd']['pps']['flag4']);
+	if (!empty($_POST['ppsflag4']))
+		$config['ntpd']['pps']['flag4'] = $_POST['ppsflag4'];
+	elseif (isset($config['ntpd']['pps']['flag4']))
+		unset($config['ntpd']['pps']['flag4']);
 
-		if (!empty($_POST['ppsrefid']))
-			$config['ntpd']['pps']['refid'] = $_POST['ppsrefid'];
-		elseif (isset($config['ntpd']['pps']['refid']))
-			unset($config['ntpd']['pps']['refid']);
+	if (!empty($_POST['ppsrefid']))
+		$config['ntpd']['pps']['refid'] = $_POST['ppsrefid'];
+	elseif (isset($config['ntpd']['pps']['refid']))
+		unset($config['ntpd']['pps']['refid']);
 
-		write_config("Updated NTP PPS Settings");
+	write_config("Updated NTP PPS Settings");
 
-		$retval = 0;
-		$retval = system_ntp_configure();
-		$savemsg = get_std_save_message($retval);
-	}
+	$retval = 0;
+	$retval = system_ntp_configure();
+	$savemsg = get_std_save_message($retval);
 }
 $pconfig = &$config['ntpd']['pps'];
 
@@ -143,7 +142,7 @@ include("head.inc");
 													<option value="">none</option>
 													<?php foreach ($serialports as $port):
 														$shortport = substr($port,5);
-														$selected = ($shortport == $pconfig['port']) ? " selected=\"selected\"" : "";?>
+														$selected = ($shortport == isset($pconfig['port'])?$pconfig['port']:null) ? " selected=\"selected\"" : "";?>
 														<option value="<?php echo $shortport;?>"<?php echo $selected;?>><?php echo $shortport;?></option>
 													<?php endforeach; ?>
 												</select>&nbsp;
@@ -154,13 +153,13 @@ include("head.inc");
 										<tr>
 											<td width="22%" valign="top" class="vncellreq">Fudge time</td>
 											<td width="78%" class="vtable">
-												<input name="ppsfudge1" type="text" class="formfld unknown" id="ppsfudge1" min="-1" max="1" size="20" value="<?=htmlspecialchars($pconfig['fudge1']);?>" />(<?php echo gettext("seconds");?>)<br />
+												<input name="ppsfudge1" type="text" class="formfld unknown" id="ppsfudge1" min="-1" max="1" size="20" value="<?=htmlspecialchars(isset($pconfig['fudge1'])?$pconfig['fudge1']:"");?>" />(<?php echo gettext("seconds");?>)<br />
 												<?php echo gettext("Fudge time is used to specify the PPS signal offset from the actual second such as the transmission delay between the transmitter and the receiver.");?> (<?php echo gettext("default");?>: 0.0).</td>
 										</tr>
 										<tr>
 											<td width="22%" valign="top" class="vncellreq">Stratum</td>
 											<td width="78%" class="vtable">
-												<input name="ppsstratum" type="text" class="formfld unknown" id="ppsstratum" max="16" size="20" value="<?=htmlspecialchars($pconfig['stratum']);?>" /><?php echo gettext("(0-16)");?><br />
+												<input name="ppsstratum" type="text" class="formfld unknown" id="ppsstratum" max="16" size="20" value="<?=htmlspecialchars(isset($pconfig['stratum'])?$pconfig['stratum']:"");?>" /><?php echo gettext("(0-16)");?><br />
 												<?php echo gettext("This may be used to change the PPS Clock stratum");?> (<?php echo gettext("default");?>: 0). <?php echo gettext("This may be useful if, for some reason, you want ntpd to prefer a different clock and just monitor this source."); ?></td>
 										</tr>
 										<tr>
@@ -176,7 +175,7 @@ include("head.inc");
 												<table>
 													<tr>
 														<td>
-															<input name="ppsflag2" type="checkbox" class="formcheckbox" id="ppsflag2"<?php if($pconfig['flag2']) echo " checked=\"checked\""; ?> />
+															<input name="ppsflag2" type="checkbox" class="formcheckbox" id="ppsflag2"<?php if(!empty($pconfig['flag2'])) echo " checked=\"checked\""; ?> />
 														</td>
 														<td>
 															<span class="vexpl"><?php echo gettext("Enable falling edge PPS signal processing (default: rising edge)."); ?></span>
@@ -184,7 +183,7 @@ include("head.inc");
 													</tr>
 													<tr>
 														<td>
-															<input name="ppsflag3" type="checkbox" class="formcheckbox" id="ppsflag3"<?php if($pconfig['flag3']) echo " checked=\"checked\""; ?> />
+															<input name="ppsflag3" type="checkbox" class="formcheckbox" id="ppsflag3"<?php if(!empty($pconfig['flag3'])) echo " checked=\"checked\""; ?> />
 														</td>
 														<td>
 															<span class="vexpl"><?php echo gettext("Enable kernel PPS clock discipline (default: disabled)."); ?></span>
@@ -192,7 +191,7 @@ include("head.inc");
 													</tr>
 													<tr>
 														<td>
-															<input name="ppsflag4" type="checkbox" class="formcheckbox" id="ppsflag4"<?php if($pconfig['flag4']) echo " checked=\"checked\""; ?> />
+															<input name="ppsflag4" type="checkbox" class="formcheckbox" id="ppsflag4"<?php if(!empty($pconfig['flag4'])) echo " checked=\"checked\""; ?> />
 														</td>
 														<td>
 															<span class="vexpl"><?php echo gettext("Record a timestamp once for each second, useful for constructing Allan deviation plots (default: disabled)."); ?></span>
@@ -204,7 +203,7 @@ include("head.inc");
 										<tr>
 											<td width="22%" valign="top" class="vncellreq">Clock ID</td>
 											<td width="78%" class="vtable">
-												<input name="ppsrefid" type="text" class="formfld unknown" id="ppsrefid" maxlength= "4" size="20" value="<?php htmlspecialchars($pconfig['refid']);?>" /><?php echo gettext("(1 to 4 charactors)");?><br />
+												<input name="ppsrefid" type="text" class="formfld unknown" id="ppsrefid" maxlength= "4" size="20" value="<?php htmlspecialchars(isset($pconfig['refid'])?$pconfig['refid']:"");?>" /><?php echo gettext("(1 to 4 charactors)");?><br />
 												<?php echo gettext("This may be used to change the PPS Clock ID");?> (<?php echo gettext("default");?>: PPS).</td>
 										</tr>
 										<tr>
