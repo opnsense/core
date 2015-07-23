@@ -32,7 +32,7 @@ $nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("ipsec.inc");
+require_once("vpn.inc");
 
 //function to create widget tabs when called
 function display_widget_tabs(& $tab_array) {

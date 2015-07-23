@@ -35,6 +35,7 @@ require_once('openvpn.inc');
 require_once("util.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
+require_once("unbound.inc");
 
 function handle_argument_group($iface, $argument2) {
 	global $config;

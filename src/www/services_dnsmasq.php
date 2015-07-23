@@ -33,6 +33,7 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
+require_once("unbound.inc");
 
 $pconfig['enable'] = isset($config['dnsmasq']['enable']);
 $pconfig['regdhcp'] = isset($config['dnsmasq']['regdhcp']);
