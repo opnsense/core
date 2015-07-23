@@ -107,7 +107,9 @@
             <Settings url="/load_balancer_setting.php"/>
         </LoadBalancer>
         <NTP VisibleName="Network Time Protocol" url="/services_ntpd.php"></NTP>
-        <PPPoEServer VisibleName="PPPoE Server" url="/services_vpn_pppoe.php"/>
+        <PPPoEServer VisibleName="PPPoE Server" url="/services_vpn_pppoe.php">
+        	<PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
+        </PPPoEServer>
         <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
         <UPnP VisibleName="Universal Plug and Play" url="/services_upnp.php"/>
