@@ -32,6 +32,7 @@ require_once("filter.inc");
 require_once("vslb.inc");
 require_once("load_balancer_maintable.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 
 /* Cleanup relayd anchors that have been marked for cleanup. */
 function cleanup_lb_marked()

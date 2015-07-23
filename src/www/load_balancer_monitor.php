@@ -32,7 +32,7 @@ require_once("filter.inc");
 require_once("load_balancer_maintable.inc");
 require_once("services.inc");
 require_once("vslb.inc");
-
+require_once("interfaces.inc");
 
 if (!is_array($config['load_balancer']['monitor_type'])) {
 	$config['load_balancer']['monitor_type'] = array();
