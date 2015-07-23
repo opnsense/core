@@ -85,10 +85,10 @@ if (isset($_POST['id']) && is_numericint($_POST['id'])) {
     $id = $_POST['id'];
 }
 
-if (isset($_GET['act'])) {
-    $act = $_GET['act'];
-} elseif (isset($_POST['act'])) {
+if (isset($_POST['act'])) {
     $act = $_POST['act'];
+} elseif (isset($_GET['act'])) {
+   $act = $_GET['act'];
 } else {
     $act = null;
 }

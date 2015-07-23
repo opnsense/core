@@ -29,7 +29,7 @@
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
-
+require_once("interfaces.inc");
 
 function openvpn_cleanup_csc($common_name)
 {
@@ -45,7 +45,7 @@ function openvpn_delete_csc(&$settings)
 $pgtitle = array(gettext("OpenVPN"), gettext("Client Specific Override"));
 $shortcut_section = "openvpn";
 
-if (!is_array($config['openvpn']['openvpn-csc'])) {
+if (!isset($config['openvpn']['openvpn-csc'])) {
     $config['openvpn']['openvpn-csc'] = array();
 }
 

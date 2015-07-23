@@ -49,7 +49,7 @@ $openvpn_client_modes = array(
 $pgtitle = array(gettext("OpenVPN"), gettext("Client"));
 $shortcut_section = "openvpn";
 
-if (!is_array($config['openvpn']['openvpn-client'])) {
+if (!isset($config['openvpn']['openvpn-client'])) {
     $config['openvpn']['openvpn-client'] = array();
 }
 
@@ -67,22 +67,25 @@ if (!is_array($config['cert'])) {
 
 $a_cert =& $config['cert'];
 
-if (!is_array($config['crl'])) {
+if (!isset($config['crl']) || !is_array($config['crl'])) {
     $config['crl'] = array();
 }
 
 $a_crl =& $config['crl'];
 
-if (is_numericint($_GET['id'])) {
+if (isset($_GET['id']) && is_numericint($_GET['id'])) {
     $id = $_GET['id'];
 }
 if (isset($_POST['id']) && is_numericint($_POST['id'])) {
     $id = $_POST['id'];
 }
 
-$act = $_GET['act'];
 if (isset($_POST['act'])) {
     $act = $_POST['act'];
+} elseif (isset($_GET['act'])) {
+    $act = $_GET['act'];
+} else {
+   $act = null;
 }
 
 if (isset($id) && $a_client[$id]) {
@@ -91,7 +94,7 @@ if (isset($id) && $a_client[$id]) {
     $vpnid = 0;
 }
 
-if ($_GET['act'] == "del") {
+if (isset($_GET['act']) && $_GET['act'] == "del") {
     if (!isset($a_client[$id])) {
         redirectHeader("vpn_openvpn_client.php");
         exit;
@@ -104,7 +107,7 @@ if ($_GET['act'] == "del") {
     $savemsg = gettext("Client successfully deleted")."<br />";
 }
 
-if ($_GET['act']=="new") {
+if (isset($_GET['act']) && $_GET['act']=="new") {
     $pconfig['autokey_enable'] = "yes";
     $pconfig['tlsauth_enable'] = "yes";
     $pconfig['autotls_enable'] = "yes";
@@ -118,7 +121,7 @@ if ($_GET['act']=="new") {
 global $simplefields;
 $simplefields = array('auth_user','auth_pass');
 
-if ($_GET['act']=="edit") {
+if (isset($_GET['act']) && $_GET['act']=="edit") {
     if (isset($id) && $a_client[$id]) {
         foreach ($simplefields as $stat) {
             $pconfig[$stat] = $a_client[$id][$stat];
@@ -184,7 +187,7 @@ if ($_GET['act']=="edit") {
 }
 
 if ($_POST) {
-    unset($input_errors);
+    $input_errors = array();
     $pconfig = $_POST;
 
     if (isset($id) && $a_client[$id]) {
@@ -443,7 +446,7 @@ function useproxy_changed() {
 
 function tlsauth_change() {
 
-<?php if (!$pconfig['tls']) :
+<?php if (empty($pconfig['tls'])) :
 ?>
 	if (document.iform.tlsauth_enable.checked)
 		document.getElementById("tlsauth_opts").style.display="";
@@ -457,7 +460,7 @@ endif; ?>
 
 function autotls_change() {
 
-<?php if (!$pconfig['tls']) :
+<?php if (empty($pconfig['tls'])) :
 ?>
 	autocheck = document.iform.autotls_enable.checked;
 <?php
@@ -483,10 +486,6 @@ endif; ?>
 			<div class="row">
 
 				<?php
-                if (!$savemsg) {
-                    $savemsg = "";
-                }
-
                 if (isset($input_errors) && count($input_errors) > 0) {
                     print_input_errors($input_errors);
                 }
