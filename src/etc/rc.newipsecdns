@@ -31,7 +31,6 @@
 /* parse the configuration and include all functions used below */
 require_once("util.inc");
 require_once("config.inc");
-require_once("gwlb.inc");
 require_once("filter.inc");
 require_once("ipsec.inc");
 require_once("vpn.inc");
