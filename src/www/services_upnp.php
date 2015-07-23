@@ -32,7 +32,6 @@ ini_set('max_execution_time', '0');
 $shortcut_section = "upnp";
 
 require_once("guiconfig.inc");
-require_once('miniupnpd.inc');
 require_once("services.inc");
 require_once("interfaces.inc");
 
