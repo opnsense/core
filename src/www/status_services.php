@@ -36,6 +36,7 @@ require_once("captiveportal.inc");
 require_once("pfsense-utils.inc");
 require_once("openvpn.inc");
 require_once("vpn.inc");
+require_once("interfaces.inc");
 
 function openvpn_restart_by_vpnid($mode, $vpnid) {
 	$settings = openvpn_get_settings($mode, $vpnid);
