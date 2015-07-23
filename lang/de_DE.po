@@ -7620,7 +7620,7 @@ msgstr ""
 
 #, php-format
 msgid "A VLAN with the tag %s is already defined on this interface."
-msgstr "Ein VLAN mit dem Tag %s ist bereits definiert auf diesem Interface."
+msgstr "Ein VLAN mit dem Tag %s ist bereits auf diesem Interface definiert."
 
 msgid "A QinQ VLAN exists with this tag please remove it to use this tag with."
 msgstr ""
@@ -7656,7 +7656,7 @@ msgstr ""
 
 #, php-format
 msgid "Error creating interface with mode %1$s.  The %2$s interface may not support creating more clones with the selected mode."
-msgstr "Fehler beim Erstellen des Interfaces im Modus %1$s. Das %2$s Interface könnte die Erstellung mehrere Klone im ausgewählten Modus nicht unterstützen."
+msgstr "Fehler beim Erstellen des Interfaces im Modus %1$s. Das %2$s Interface konnte die Erstellung mehrere Klone im ausgewählten Modus nicht unterstützen."
 
 #, php-format
 msgid "Created with id %s"
@@ -8216,7 +8216,7 @@ msgstr ""
 
 #, fuzzy
 msgid "After authentication Redirection URL"
-msgstr "Nach Authentifizireung - WeiterleitungsURL"
+msgstr "Nach Authentifizierung - WeiterleitungsURL"
 
 msgid "If you provide a URL here, clients will be redirected to that URL instead of the one they initially tried to access after they've authenticated."
 msgstr ""
@@ -8506,7 +8506,7 @@ msgid "which will be replaced by the error or reply messages from the RADIUS ser
 msgstr ""
 
 msgid "Logout"
-msgstr "Logout"
+msgstr "Abmelden"
 
 msgid "Restore default logout page"
 msgstr ""
@@ -8549,7 +8549,7 @@ msgid ""
 "may reference them directly from your portal page HTML code using relative paths. Example: you've uploaded an image with the name 'captiveportal-test.jpg' using "
 "the file manager. Then you can include it in your portal page like this:"
 msgstr ""
-"Jede Datei mit den Dateinamenspräfix captiveportal- hochladen wird, wird über das Rootverzeichnis des Captive Portal HTTP(S)-Server zugänglich gemacht. Sie können "
+"Jede Datei, die Sie mit den Dateinamenspräfix captiveportal- hochladen, wird über das Rootverzeichnis des Captive Portal HTTP(S)-Server zugänglich gemacht. Sie können "
 "diese direkt aus dem HTML Code Ihrer Portalseite mit relativen Pfaden referenzieren. Beispiel: Wenn Sie eine Bilddatei mit dem Namen 'captiveportal-test.jpg' mit "
 "dem Dateimanager hochgeladen haben, dann können Sie diese folgend in Ihrer Portalseite verwenden:"
 
@@ -8570,7 +8570,7 @@ msgid ""
 "Adding allowed IP addresses will allow IP access to/from these addresses through the captive portal without being taken to the portal page. This can be used for a "
 "web server serving images for the portal page or a DNS server on another network, for example."
 msgstr ""
-"Das Hinzufügen von erlaubter IP Adressen erlaubt den Zugriff zu/von diesen Adressen ohne zur Portalseite weitergeleitet zu werden. Dies kann zum Beispiel für einen "
+"Das Hinzufügen von erlaubten IP Adressen ermöglicht den Zugriff zu/von diesen Adressen ohne zur Portalseite weitergeleitet zu werden. Dies kann zum Beispiel für einen "
 "Webserver genutzt werden, die Bilder für die Portalseite ausliefert oder auch für einen DNS Server in einem anderen Netzwerk."
 
 msgid "Edit allowed IP address"
@@ -8647,7 +8647,7 @@ msgid "The MAC address %s belongs to a local interface, you cannot use it here."
 msgstr ""
 
 msgid "A valid MAC address must be specified"
-msgstr ".Eine gültige MAC Adresse muss spezifiziert werden"
+msgstr "Eine gültige MAC Adresse muss spezifiziert werden"
 
 msgid "already exists"
 msgstr "existiert bereits"
@@ -8772,7 +8772,7 @@ msgid "Enable Voucher support first using the checkbox above and hit Save at the
 msgstr ""
 
 msgid "Voucher public key"
-msgstr "Voucher Öffentlicher Schlüssel"
+msgstr "Öffentlicher Voucherschlüssel"
 
 msgid "Paste an RSA public key (64 Bit or smaller) in PEM format here. This key is used to decrypt vouchers."
 msgstr ""
@@ -8784,7 +8784,7 @@ msgid "new key"
 msgstr "neuer Schlüssel"
 
 msgid "Voucher private key"
-msgstr "Voucher privater Schlüssel"
+msgstr "Privater Voucherschlüssel"
 
 msgid ""
 "Paste an RSA private key (64 Bit or smaller) in PEM format here. This key is only used to generate encrypted vouchers and doesn't need to be available if the "
@@ -8950,7 +8950,7 @@ msgid "A valid range must be specified."
 msgstr "Ein gültiger Bereich muss angegeben werden."
 
 msgid "A valid IP address must be specified for the gateway."
-msgstr "Eine gültige IP Adresse muss für den Gateway angegeben werden."
+msgstr "Eine gültige IP Adresse muss für des Gateway angegeben werden."
 
 msgid "A valid IP address must be specified for the primary/secondary WINS servers."
 msgstr ""
@@ -9759,7 +9759,7 @@ msgid "Hostnames in alias list can only contain the characters A-Z, 0-9 and '-'.
 msgstr ""
 
 msgid "A valid domain must be specified in alias list."
-msgstr "Eine gültige Domain muss in der Alias liste spezifiziert werden."
+msgstr "Eine gültige Domain muss in der Aliasliste spezifiziert werden."
 
 msgid "This host/domain already exists."
 msgstr ""
@@ -10130,7 +10130,7 @@ msgid "For the best results, NTP should have at least three sources of time. So 
 msgstr ""
 
 msgid "Services > NTP"
-msgstr "Services > NTP"
+msgstr "Dienste > NTP"
 
 msgid ""
 "to minimize clock drift if the GPS data is not valid over time. Otherwise ntpd may only use values from the unsynchronized local clock when providing time to "
@@ -10155,7 +10155,7 @@ msgid "All serial ports are listed, be sure to pick the port with the GPS attach
 msgstr "Alle seriellen Ports sind gelistet; stellen Sie sicher, dass Sie den Port auswählen mit dem das GPS verbunden ist."
 
 msgid "Serial port baud rate."
-msgstr ""
+msgstr "Baud Rate des seriellen Ports"
 
 msgid ""
 "Note: A higher baud rate is generally only helpful if the GPS is sending too many sentences. It is recommended to configure the GPS to send only one sentence at a "
@@ -10504,7 +10504,7 @@ msgid "Bind Interface"
 msgstr "Bind Interface"
 
 msgid "You must specify a valid port number."
-msgstr "Sie müssen eine gültige Portnummer angeben"
+msgstr "Sie müssen eine gültige Portnummer angeben."
 
 msgid "DNS Resolver"
 msgstr "DNS Resolver"
@@ -10519,7 +10519,7 @@ msgid "Advanced settings"
 msgstr "Erweiterte Einstellungen"
 
 msgid "Access Lists"
-msgstr "Zufriffslisten"
+msgstr "Zufgriffslisten"
 
 msgid "General DNS Resolver Options"
 msgstr ""
@@ -10788,7 +10788,7 @@ msgid "A valid IP address and port must be specified, for example 192.168.100.10
 msgstr "Eine gültige IP Adresse und Port muss angegeben werden. Zum Beispiel 192.168.100.10@5353."
 
 msgid "A valid IP address must be specified, for example 192.168.100.10."
-msgstr "Eine gültige IP Adresse muss angegeben werden, zum Beispiel 192.168.100.10."
+msgstr "Eine gültige IP Adresse muss angegeben werden. Zum Beispiel 192.168.100.10."
 
 msgid "To use a nondefault port for communication, append an '@' with the port number."
 msgstr ""
@@ -10985,7 +10985,7 @@ msgid "add a Wake on LAN mapping for this MAC address"
 msgstr ""
 
 msgid "delete this DHCP lease"
-msgstr "löschen dieses DHCP Lease"
+msgstr "lösche dieses DHCP Lease"
 
 msgid "Show active and static leases only"
 msgstr ""
@@ -11052,10 +11052,10 @@ msgid "Host Name or IP"
 msgstr ""
 
 msgid "Bandwidth In"
-msgstr "Bandbreite Eingehend"
+msgstr "Bandbreite eingehend"
 
 msgid "Bandwidth Out"
-msgstr "Bandbreite Ausgehend"
+msgstr "Bandbreite ausgehend"
 
 msgid "Adobe SVG Viewer"
 msgstr "Adobe SVG Viewer"
@@ -12116,7 +12116,7 @@ msgid ""
 msgstr ""
 
 msgid "Gateway Monitoring"
-msgstr "Gateway Monitoring"
+msgstr "Gatewayüberwachung"
 
 msgid "State Killing on Gateway Failure"
 msgstr "Verbindungsstatus zurücksetzen bei Gatewayfehler"
@@ -12155,7 +12155,7 @@ msgid "Set the size, in MB, for the /tmp RAM disk. Leave blank for 40MB. Do not 
 msgstr ""
 
 msgid "/var RAM Disk Size"
-msgstr "/var RAM Disk Größe"
+msgstr "/var RAMdiskgröße"
 
 msgid "Set the size, in MB, for the /var RAM disk. Leave blank for 60MB. Do not set lower than 60."
 msgstr ""
@@ -12289,7 +12289,7 @@ msgid "Test SMTP"
 msgstr "Teste SMTP"
 
 msgid "Notifications"
-msgstr "Benachritigungen"
+msgstr "Benachrichtigungen"
 
 msgid "Growl"
 msgstr ""
@@ -12454,7 +12454,7 @@ msgid "Authentication port value"
 msgstr "Authentifizierungsportnummer"
 
 msgid "Accounting port value"
-msgstr "Accouting Portnummer"
+msgstr "Accounting Portnummer"
 
 msgid "Shared Secret"
 msgstr ""
@@ -12579,10 +12579,10 @@ msgid "Do you really want to delete this Server?"
 msgstr "Wollen Sie diesen Server wirklich löschen?"
 
 msgid "Import an existing Certificate Authority"
-msgstr ""
+msgstr "Eine existierende Zertifizierungsstelle importieren"
 
 msgid "Create an internal Certificate Authority"
-msgstr "Erstelle einer interne Zertifizierungsstelle"
+msgstr "Erstelle eine interne Zertifizierungsstelle"
 
 msgid "Create an intermediate Certificate Authority"
 msgstr "Erstelle eine Unterzertifizierungsstelle"
@@ -12878,7 +12878,7 @@ msgid "Certificate Revocation List Manager"
 msgstr ""
 
 msgid "Create an internal Certificate Revocation List"
-msgstr "Erstelle einen neue interne Zertifikatsrückrufliste"
+msgstr "Erstelle eine neue interne Zertifikatsrückrufliste"
 
 msgid "Import an existing Certificate Revocation List"
 msgstr ""
@@ -13600,7 +13600,7 @@ msgid "Certificate"
 msgstr "Zertifikat"
 
 msgid "association removed."
-msgstr "zuweisung entfernt."
+msgstr "Zuweisung entfernt."
 
 msgid "The username is longer than 16 characters."
 msgstr ""
@@ -13738,7 +13738,7 @@ msgid "Time in minutes to expire idle management sessions. The default is 4 hour
 msgstr ""
 
 msgid "Enter 0 to never expire sessions. NOTE: This is a security risk!"
-msgstr "Geben Sie eine 0 ein, damit Sitzungen die ablaufen. HINWEIS:Dies ist ein Sicherheitsrisiko!"
+msgstr "Geben Sie eine 0 ein, damit Sitzungen niemals ablaufen. Hinweis: Dies ist ein Sicherheitsrisiko!"
 
 msgid "Save and Test"
 msgstr "Speichern und Testen"
@@ -14946,7 +14946,7 @@ msgid "These are the IPv4 networks that will be accessible from this particular 
 msgstr ""
 
 msgid "NOTE: You do not need to specify networks here if they have already been defined on the main server configuration."
-msgstr "Hinweis: Sie müssen  hier keine Netzwerke spezifizieren falls diese schon in der Hauptserverkonfiguration definiert sind"
+msgstr "Hinweis: Sie müssen hier keine Netzwerke spezifizieren falls diese schon in der Hauptserverkonfiguration definiert sind"
 
 msgid "IPv6 Local Network/s"
 msgstr ""
@@ -15598,10 +15598,10 @@ msgid "Checking ..."
 msgstr "Prüfe..."
 
 msgid "Packets In"
-msgstr "Pakete Eingehend"
+msgstr "Pakete eingehend"
 
 msgid "Packets Out"
-msgstr "Pakete Ausgehend"
+msgstr "Pakete ausgehend"
 
 msgid "Bytes In"
 msgstr "Bytes eingehend"
@@ -15610,10 +15610,10 @@ msgid "Bytes Out"
 msgstr "Bytes ausgehend"
 
 msgid "Errors In"
-msgstr "Fehler Eingehend"
+msgstr "Fehler eingehend"
 
 msgid "Errors Out"
-msgstr "Fehler Ausgehend"
+msgstr "Fehler ausgehend"
 
 msgid "Active Tunnels"
 msgstr "Aktive Tunnel"
@@ -15659,22 +15659,22 @@ msgid " update(s) available."
 msgstr "Aktualisierung(en) verfügbar."
 
 msgid "Click to upgrade"
-msgstr "Für Upgrade klicken"
+msgstr "Für Aktualisierung klicken"
 
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 51
 msgid "There are "
-msgstr ""
+msgstr "Es gibt "
 
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 96
 msgid "Versions"
-msgstr ""
+msgstr "Versionen"
 
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 112
 msgid "Click to check for updates"
-msgstr "Klicken Sie hier um mach Aktualisierungen zu suchen"
+msgstr "Klicken Sie hier um nach Aktualisierungen zu suchen"
 
 msgid "CPU Type"
 msgstr "CPU-Typ"
@@ -15704,10 +15704,10 @@ msgid "MBUF Usage"
 msgstr ""
 
 msgid "Temperature"
-msgstr ""
+msgstr "Temperatur"
 
 msgid "Load average"
-msgstr ""
+msgstr "Durchschnttliche Auslastung"
 
 msgid "CPU usage"
 msgstr "CPU-Auslastung"
