@@ -27,14 +27,31 @@
  *
  */
 
-require_once("script/load_phalcon.php");
+// initialize transitional components
+use Phalcon\DI\FactoryDefault;
+use Phalcon\Loader;
+
+$di = new FactoryDefault();
+$phalcon_config = include_once(__DIR__."/../../opnsense/mvc/app/config/config.php");
+
+$loader = new Loader();
+$loader->registerDirs(
+    array(
+        $phalcon_config->application->controllersDir,
+        $phalcon_config->application->modelsDir,
+        $phalcon_config->application->libraryDir
+    )
+)->register();
+
+$di->set('config', $phalcon_config);
+
+unset($phalcon_config);
 
 /**
  * wrap config run
  */
 function configd_run($cmd, $detach = false)
 {
-	require_once("script/load_phalcon.php");
 	$backend = new OPNsense\Core\Backend();
 	return $backend->configdRun("{$cmd}", $detach);
 }
