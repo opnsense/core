@@ -29,9 +29,6 @@
 
 */
 
-/* include all configuration functions */
-require_once("captiveportal.inc");
-
 function voucher_expire($voucher_received) {
 	global $g, $config, $cpzone;
 

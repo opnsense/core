@@ -32,6 +32,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("openvpn.inc");
 require_once("pfsense-utils.inc");
+require_once("unbound.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_vlan.php');
 
