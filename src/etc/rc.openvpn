@@ -33,7 +33,6 @@ require_once("util.inc");
 require_once("config.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
-require_once("gwlb.inc");
 require_once("openvpn.inc");
 
 function gateway_is_gwgroup_member($name) {
