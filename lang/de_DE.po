@@ -8216,7 +8216,7 @@ msgstr ""
 
 #, fuzzy
 msgid "After authentication Redirection URL"
-msgstr "Nach Authentifizierung - WeiterleitungsURL"
+msgstr "URL zur Weiterleitung nach der Authentifizierung"
 
 msgid "If you provide a URL here, clients will be redirected to that URL instead of the one they initially tried to access after they've authenticated."
 msgstr ""
