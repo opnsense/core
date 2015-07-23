@@ -183,7 +183,7 @@ msgstr "Das Interface wird als folgendes zugewiesen:"
 
 #, php-format
 msgid "%sWriting configuration..."
-msgstr "%sSchreibe Konfiguraiton..."
+msgstr "%sSchreibe Konfiguration..."
 
 #, php-format
 msgid "done.%s"
@@ -204,7 +204,7 @@ msgid "No link-up detected.%s"
 msgstr ""
 
 msgid "VLAN Capable interfaces:"
-msgstr "VLAN Fähige Interfaces:"
+msgstr "VLAN-fähige Interfaces:"
 
 msgid "No VLAN capable interfaces detected."
 msgstr "Kein VLAN fähiges Interface gefunden."
@@ -542,7 +542,7 @@ msgid "unread notice"
 msgstr "ungelesene Mitteilung"
 
 msgid "unread notices"
-msgstr "ungelesense Mitteilungen"
+msgstr "ungelesene Mitteilungen"
 
 #
 # File: src/etc/inc/gwlb.inc, line: 825
@@ -733,7 +733,7 @@ msgid "None"
 msgstr "Keine(r)"
 
 msgid "IPsec daemon seems to have issues or not running! Could not display mobile user stats!"
-msgstr "Der IPsec Daemon scheint Probleme zu haben oder läuft nicht! Konnte Statisitiken mobiler Benutzer nicht anzeigen!"
+msgstr "Der IPsec Daemon scheint Probleme zu haben oder läuft nicht! Konnte Statistiken mobiler Benutzer nicht anzeigen!"
 
 #, php-format
 msgid "Could not open %s for writing"
@@ -819,7 +819,7 @@ msgstr "-4 DNS Auflösung auf Host \"%s\" fehlgeschlagen"
 #
 # File: src/etc/inc/notices.smtp.inc, line: 241
 msgid "-5 connection refused or timed out"
-msgstr "-5 Verbindung abgelehnt oder der Timer ist abgelaufen"
+msgstr "-5 Verbindung abgelehnt oder Zeitüberschreitung"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 243
@@ -1543,7 +1543,7 @@ msgstr ""
 
 #, php-format
 msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes"
-msgstr "%1$s (%2$s/%3$s) aktiv und in ordnung für %4$d Minuten"
+msgstr "%1$s (%2$s/%3$s) aktiv und in Ordnung für %4$d Minuten"
 
 msgid "Access denied!"
 msgstr "Zugriff verweigert!"
@@ -1788,7 +1788,7 @@ msgstr ""
 
 #, php-format
 msgid "%s IP configuration from console menu"
-msgstr "%s IP Konfiguration aus dme Konsolenmenü"
+msgstr "%s IP Konfiguration aus dem Konsolenmenü"
 
 #, php-format
 msgid "The IPv4 %s address has been set to %s"
@@ -2118,7 +2118,7 @@ msgid "ALL"
 msgstr "ALLE"
 
 msgid "Restore configuration"
-msgstr "Konfiguration Wiederherstellen"
+msgstr "Konfiguration wiederherstellen"
 
 msgid "Download"
 msgstr "Herunterladen"
@@ -3913,7 +3913,7 @@ msgid "Enter as many usernames as you wish."
 msgstr "Geben Sie so viele Benutzer ein wie Sie wollen."
 
 msgid "Alias Edit"
-msgstr "Alias Bearbeiten"
+msgstr "Alias bearbeiten"
 
 msgid "The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and _\"."
 msgstr ""
@@ -3931,7 +3931,7 @@ msgid "Network"
 msgstr "Netzwerk"
 
 msgid "remove this entry"
-msgstr "diesen Eingrag entfernen"
+msgstr "diesen Eintrag entfernen"
 
 msgid "Cancel"
 msgstr "Beenden"
@@ -4235,23 +4235,23 @@ msgstr ""
 
 #, php-format
 msgid "%s is not a valid start source port. It must be a port alias or integer between 1 and 65535."
-msgstr "%s ist kein gültiger Start-Quellport. It must be a port alias or integer between 1 and 65535."
+msgstr "%s ist kein gültiger Start-Quellport. Es muss ein Portalias oder eine Zahl zwischen 1 und 65535 sein."
 
 #, php-format
 msgid "%s is not a valid end source port. It must be a port alias or integer between 1 and 65535."
-msgstr "%s ist kein gültiger End-Zielport. Es muss ein Portalias oder eine Zahl zwischen 1 und 65535."
+msgstr "%s ist kein gültiger End-Zielport. Es muss ein Portalias oder eine Zahl zwischen 1 und 65535 sein."
 
 #, php-format
 msgid "%s is not a valid start destination port. It must be a port alias or integer between 1 and 65535."
-msgstr "%s ist kein gültiger Start-Zielport. It must be a port alias or integer between 1 and 65535."
+msgstr "%s ist kein gültiger Start-Zielport. Es muss ein Portalias oder eine Zahl zwischen 1 und 65535 sein."
 
 #, php-format
 msgid "%s is not a valid end destination port. It must be a port alias or integer between 1 and 65535."
-msgstr "%s ist kein gültiger End-Zielport. Es muss ein Portalias oder eine Zahl zwischen 1 und 65535."
+msgstr "%s ist kein gültiger End-Zielport. Es muss ein Portalias oder eine Zahl zwischen 1 und 65535 sein."
 
 #, php-format
 msgid "A valid redirect target port must be specified. It must be a port alias or integer between 1 and 65535."
-msgstr ""
+msgstr "Ein gültiger Zielport für die Umleitung muss angegeben werden. Es muss ein Portalias oder eine Zahl zwischen 1 und 65535 sein."
 
 #, php-format
 msgid "%s is not a valid source IP address or alias."
@@ -4835,10 +4835,10 @@ msgid "Click the"
 msgstr "Klicken Sie auf"
 
 msgid "match"
-msgstr ""
+msgstr "entsprechen"
 
 msgid "block"
-msgstr "Blockieren"
+msgstr "blockieren"
 
 msgid "reject"
 msgstr "ablehnen"
@@ -4847,13 +4847,13 @@ msgid "log"
 msgstr "protokollieren"
 
 msgid "pass (disabled)"
-msgstr "Erlauben (deaktiviert)"
+msgstr "erlauben (deaktiviert)"
 
 msgid "match (disabled)"
-msgstr ""
+msgstr "entsprechen (deaktiviert)"
 
 msgid "block (disabled)"
-msgstr "Blockieren (deaktiviert)"
+msgstr "blockieren (deaktiviert)"
 
 msgid "reject (disabled)"
 msgstr "ablehnen (deaktiviert)"
@@ -4899,7 +4899,7 @@ msgstr "%s ist nur mit dem Protokoll TCP gültig"
 
 #, php-format
 msgid "%s is only valid if the gateway is set to 'default'."
-msgstr "%s ist nur gültig, wenn Gateway auf 'default' gesetzt wird."
+msgstr "%s ist nur gültig, wenn Gateway auf 'Standard' gesetzt wird."
 
 #, php-format
 msgid "%s  is not a valid end source port. It must be a port alias or integer between 1 and 65535."
@@ -5165,7 +5165,7 @@ msgid "TCP flags"
 msgstr "TCP Flags"
 
 msgid "Any flags."
-msgstr "jeglische Flags."
+msgstr "Jeglische Flags."
 
 msgid "Use this to choose TCP flags that must be set or cleared for this rule to match."
 msgstr ""
@@ -5536,7 +5536,7 @@ msgid "You can also <a href=\"status_filter_reload.php\">monitor</a> the filter 
 msgstr ""
 
 msgid "Currently viewing: "
-msgstr "Aktuell Betrachtet: "
+msgstr "Aktuelle Ansicht: "
 
 msgid "move mouse out this alias to hide"
 msgstr ""
@@ -5735,7 +5735,7 @@ msgid "A valid PPTP remote IP address must be specified."
 msgstr ""
 
 msgid "A valid MAC address must be specified."
-msgstr ".Eine gültige MAC Adresse muss spezifiziert werden."
+msgstr "Eine gültige MAC Adresse muss spezifiziert werden."
 
 msgid "The MTU must be greater than 576 bytes and less than 9000."
 msgstr ""
@@ -5828,7 +5828,7 @@ msgid "(may be required with some cable connections)"
 msgstr "(könnte bei manchen Kabelverbindungen erforderlich sein)"
 
 msgid "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank"
-msgstr "Geben Sie eine MAC Adresse im Format xx:xx:xx:xx:xx:xx ein oder lassen sie das Feld leer."
+msgstr "Geben Sie eine MAC Adresse im Format xx:xx:xx:xx:xx:xx ein oder lassen Sie das Feld leer."
 
 msgid "MTU"
 msgstr "MTU"
@@ -5866,10 +5866,10 @@ msgid "On local LANs the upstream gateway should be \"none\"."
 msgstr ""
 
 msgid "Add new gateway"
-msgstr "Einen neuen Gateway hinzufügen"
+msgstr "Einen neues Gateway hinzufügen"
 
 msgid "Default gateway:"
-msgstr "Default Gateway:"
+msgstr "Standardgateway:"
 
 msgid "Gateway Name:"
 msgstr "Gateway Name:"
@@ -5890,7 +5890,7 @@ msgid "IPv6 Upstream Gateway"
 msgstr ""
 
 msgid "Add new v6 gateway:"
-msgstr "Neuen v6 Gateway hinzufügen"
+msgstr "Neues v6 Gateway hinzufügen"
 
 msgid "Default v6 gateway:"
 msgstr "Standard v6 Gateway"
@@ -6260,10 +6260,10 @@ msgid "Access Point Name (APN)"
 msgstr "Access Point Name (APN)"
 
 msgid "Advanced PPP"
-msgstr "Erweitert PPP"
+msgstr "Erweitertes PPP"
 
 msgid "Click here"
-msgstr "Hier clicken"
+msgstr "Hier klicken"
 
 msgid "to edit PPP configuration."
 msgstr ""
@@ -6275,7 +6275,7 @@ msgid "PPPoE configuration"
 msgstr ""
 
 msgid "Service name"
-msgstr "Servicename"
+msgstr "Dienstname"
 
 msgid "Hint: this field can usually be left empty"
 msgstr ""
@@ -6568,7 +6568,7 @@ msgid "Key 4:"
 msgstr ""
 
 msgid "40 (64) bit keys may be entered as 5 ASCII characters or 10 hex digits preceded by '0x'."
-msgstr "40 (64) Bit Schlüssel können al 5 ASCII Zeichen oder 10 Hexadezimalziffern mit vorangestelltem '0x' eingegeben werden."
+msgstr "40 (64) Bit Schlüssel können als 5 ASCII Zeichen oder 10 Hexadezimalziffern mit vorangestelltem '0x' eingegeben werden."
 
 msgid "104 (128) bit keys may be entered as 13 ASCII characters or 26 hex digits preceded by '0x'."
 msgstr ""
@@ -6975,7 +6975,7 @@ msgid ""
 "Add the interface named by interface as a span port on the bridge.  Span ports transmit a copy of every frame received by the bridge.  This is most useful for "
 "snooping a bridged network passively on another host connected to one of the span ports of the bridge."
 msgstr ""
-"Das Interface genannt in Interface als Span Port der Bridge hinzufügen. Span Ports senden einen Kopie jedes Frames, die die Bridge empfängt. Dies kann am "
+"Das Interface genannt in Interface als Span Port der Bridge hinzufügen. Span Ports senden eine Kopie jedes Frames, die die Bridge empfängt. Dies kann am "
 "nützlichsten für transparente Netzwerküberwachung (z.B durch ein IDS) eingesetzt werden."
 
 msgid "The span interface cannot be part of the bridge member interfaces."
