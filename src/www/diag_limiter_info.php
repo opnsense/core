@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 $pgtitle = gettext("Diagnostics: Limiter Info");
 $shortcut_section = "trafficshaper-limiters";
 
-if($_REQUEST['getactivity']) {
+if(isset($_POST['getactivity'])) {
 	$text = `/sbin/ipfw pipe show`;
 	if($text == "")
 		$text = "We could not find any limiters on this system.";
@@ -67,7 +67,7 @@ include("head.inc");
 		jQuery('#limiteractivitydiv').html('<font face="Courier" size="2"><pre style="text-align:left;">' + transport.responseText  + '<\/pre><\/font>');
 		setTimeout('getlimiteractivity()', 2000);
 	}
-	setTimeout('getlimiteractivity()', 5000);
+	setTimeout('getlimiteractivity()', 1000);
 //]]>
 </script>
 
