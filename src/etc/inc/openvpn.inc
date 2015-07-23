@@ -111,7 +111,7 @@ function openvpn_vpnid_next() {
 function openvpn_port_used($prot, $interface, $port, $curvpnid = 0) {
 	global $config;
 
-	if (is_array($config['openvpn']['openvpn-server'])) {
+	if (isset($config['openvpn']['openvpn-server'])) {
 		foreach ($config['openvpn']['openvpn-server'] as & $settings) {
 			if (isset($settings['disable']))
 				continue;
@@ -125,7 +125,7 @@ function openvpn_port_used($prot, $interface, $port, $curvpnid = 0) {
 		}
 	}
 
-	if (is_array($config['openvpn']['openvpn-client'])) {
+	if (isset($config['openvpn']['openvpn-client'])) {
 		foreach ($config['openvpn']['openvpn-client'] as & $settings) {
 			if (isset($settings['disable']))
 				continue;
