@@ -48,7 +48,7 @@ $openvpn_server_modes = array(
 	'server_user' => gettext("Remote Access ( User Auth )"),
 	'server_tls_user' => gettext("Remote Access ( SSL/TLS + User Auth )"));
 
-if (!is_array($config['openvpn']['openvpn-server'])) {
+if (!isset($config['openvpn']['openvpn-server'])) {
     $config['openvpn']['openvpn-server'] = array();
 }
 
@@ -60,13 +60,13 @@ if (!is_array($config['ca'])) {
 
 $a_ca =& $config['ca'];
 
-if (!is_array($config['cert'])) {
+if (!isset($config['cert']) || !is_array($config['cert'])) {
     $config['cert'] = array();
 }
 
 $a_cert =& $config['cert'];
 
-if (!is_array($config['crl'])) {
+if (!isset($config['crl']) || !is_array($config['crl'])) {
     $config['crl'] = array();
 }
 
@@ -78,16 +78,19 @@ foreach ($a_crl as $cid => $acrl) {
     }
 }
 
-if (is_numericint($_GET['id'])) {
+if (isset($_GET['id']) && is_numericint($_GET['id'])) {
     $id = $_GET['id'];
 }
 if (isset($_POST['id']) && is_numericint($_POST['id'])) {
     $id = $_POST['id'];
 }
 
-$act = $_GET['act'];
-if (isset($_POST['act'])) {
+if (isset($_GET['act'])) {
+    $act = $_GET['act'];
+} elseif (isset($_POST['act'])) {
     $act = $_POST['act'];
+} else {
+    $act = null;
 }
 
 if (isset($id) && $a_server[$id]) {
@@ -96,7 +99,7 @@ if (isset($id) && $a_server[$id]) {
     $vpnid = 0;
 }
 
-if ($_GET['act'] == "del") {
+if (isset($_GET['act']) && $_GET['act'] == "del") {
     if (!isset($a_server[$id])) {
         redirectHeader("vpn_openvpn_server.php");
         exit;
@@ -109,7 +112,7 @@ if ($_GET['act'] == "del") {
     $savemsg = gettext("Server successfully deleted")."<br />";
 }
 
-if ($_GET['act']=="new") {
+if (isset($_GET['act']) && $_GET['act']=="new") {
     $pconfig['autokey_enable'] = "yes";
     $pconfig['tlsauth_enable'] = "yes";
     $pconfig['autotls_enable'] = "yes";
@@ -124,7 +127,7 @@ if ($_GET['act']=="new") {
     $pconfig['digest'] = "SHA1";
 }
 
-if ($_GET['act']=="edit") {
+if (isset($_GET['act']) && $_GET['act']=="edit") {
     if (isset($id) && $a_server[$id]) {
         $pconfig['disable'] = isset($a_server[$id]['disable']);
         $pconfig['mode'] = $a_server[$id]['mode'];
@@ -246,7 +249,7 @@ if ($_GET['act']=="edit") {
     }
 }
 if ($_POST) {
-    unset($input_errors);
+    $input_errors = array();
     $pconfig = $_POST;
 
     if (isset($id) && $a_server[$id]) {
@@ -659,7 +662,7 @@ function autokey_change() {
 
 function tlsauth_change() {
 
-<?php if (!$pconfig['tls']) :
+<?php if (empty($pconfig['tls'])) :
 ?>
 	if (document.iform.tlsauth_enable.checked)
 		document.getElementById("tlsauth_opts").style.display="";
@@ -673,7 +676,7 @@ endif; ?>
 
 function autotls_change() {
 
-<?php if (!$pconfig['tls']) :
+<?php if (empty($pconfig['tls'])) :
 ?>
 	autocheck = document.iform.autotls_enable.checked;
 <?php
@@ -815,10 +818,6 @@ function tuntap_change() {
 			<div class="row">
 
 				<?php
-                if (!$savemsg) {
-                    $savemsg = "";
-                }
-
                 if (isset($input_errors) && count($input_errors) > 0) {
                     print_input_errors($input_errors);
                 }
