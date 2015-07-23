@@ -4899,7 +4899,7 @@ msgstr "%s ist nur mit dem Protokoll TCP gültig"
 
 #, php-format
 msgid "%s is only valid if the gateway is set to 'default'."
-msgstr "%s ist nur gültig, wenn Gateway auf 'Standard' gesetzt wird."
+msgstr "%s ist nur gültig, wenn Gateway auf 'standard' gesetzt wird."
 
 #, php-format
 msgid "%s  is not a valid end source port. It must be a port alias or integer between 1 and 65535."
@@ -10519,7 +10519,7 @@ msgid "Advanced settings"
 msgstr "Erweiterte Einstellungen"
 
 msgid "Access Lists"
-msgstr "Zufgriffslisten"
+msgstr "Zugriffslisten"
 
 msgid "General DNS Resolver Options"
 msgstr ""
