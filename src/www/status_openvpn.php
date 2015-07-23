@@ -32,6 +32,7 @@
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 
 $pgtitle = array(gettext("Status"), gettext("OpenVPN"));
 $shortcut_section = "openvpn";
