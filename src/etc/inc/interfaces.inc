@@ -32,7 +32,6 @@
 require_once("interfaces.lib.inc");
 require_once("gwlb.inc");
 require_once('openvpn.inc');
-require_once("services.inc");
 
 /*
  * converts a string like "a,b,c,d"
