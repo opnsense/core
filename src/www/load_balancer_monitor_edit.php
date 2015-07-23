@@ -28,7 +28,7 @@
 
 require_once("guiconfig.inc");
 require_once("services.inc");
-
+require_once("interfaces.inc");
 
 $rfc2616 = array(
 	100 => "100 Continue",
