@@ -40,7 +40,7 @@ class DependancyCrawler(object):
         self._all_dependencies = {}
         self._all_dependencies_src = {}
         self._all_functions = {}
-        self._exclude_deps = ['/../../opnsense/mvc/app/config/config.php']
+        self._exclude_deps = ['/usr/local/opnsense/mvc/app/config/config.php']
         self.root = root
 
     def get_dependency_by_src(self, src_filename):
