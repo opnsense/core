@@ -1176,7 +1176,7 @@ msgid "DHCPv6 Relay"
 msgstr "DHCPv6 Relay"
 
 msgid "DHCP Service"
-msgstr "DHCP Service"
+msgstr "DHCP Dienst"
 
 msgid "Gateway Monitoring Daemon"
 msgstr "Gateway Monitoring Daemon"
@@ -1212,22 +1212,22 @@ msgstr "Läuft"
 
 #, php-format
 msgid "%s Service is"
-msgstr "%s Dienst"
+msgstr "%s Dienst ist"
 
 msgid "Stopped"
 msgstr "Gestoppt"
 
 #, php-format
 msgid "Restart %sService"
-msgstr ""
+msgstr "%sDienst neu starten"
 
 #, php-format
 msgid "Stop %sService"
-msgstr ""
+msgstr "%sDienst anhalten"
 
 #, php-format
 msgid "Start %sService"
-msgstr "Starte %s Dienst"
+msgstr "%sDienst starten"
 
 #
 # File: src/etc/inc/service-utils.inc, line: 404
@@ -7305,10 +7305,10 @@ msgid "Multilink connections (MLPPP) using the PPP link type is not currently su
 msgstr ""
 
 msgid "The Service name contains invalid characters."
-msgstr ""
+msgstr "Der Dienstname enthält ungültige Zeichen."
 
 msgid "Do not specify both a Service name and a NULL Service name."
-msgstr ""
+msgstr "Sie können keinen Dienstnamen und einen NULL Dienstnamen gleichzeitig verwenden."
 
 msgid "A valid PPPoE reset month must be specified (1-12) in the Custom PPPoE Periodic reset fields."
 msgstr ""
@@ -7401,7 +7401,7 @@ msgid "This option causes cumulative uptime to be recorded and displayed on the 
 msgstr ""
 
 msgid "Configure a NULL Service name"
-msgstr ""
+msgstr "Einen NULL Dienstnamen konfigurieren"
 
 msgid ""
 "Hint: this field can usually be left empty. Service name will not be configured if this field is empty. Check the \"Configure NULL\" box to configure a blank "
@@ -9798,7 +9798,7 @@ msgid "RFC 2136"
 msgstr ""
 
 msgid "Service"
-msgstr "Service"
+msgstr "Dienst"
 
 msgid "Cached IP"
 msgstr "Zwischengespeicherte IP"
@@ -9810,7 +9810,7 @@ msgid "You can force an update for an IP address on the edit page for that servi
 msgstr ""
 
 msgid "Service type"
-msgstr "Servicetyp"
+msgstr "Typ des Dienstes"
 
 msgid "Update URL"
 msgstr ""
@@ -12553,7 +12553,7 @@ msgid "Radius Server Settings"
 msgstr ""
 
 msgid "Services offered"
-msgstr "Services angeboten"
+msgstr "Angebotene Dienste"
 
 msgid "Authentication Timeout"
 msgstr "Authentifiktionstimeout"
@@ -14813,7 +14813,7 @@ msgid ""
 msgstr ""
 
 msgid "Type-of-Service"
-msgstr ""
+msgstr "Typ des Dienstes"
 
 msgid "Set the TOS IP header value of tunnel packets to match the encapsulated packet value"
 msgstr ""
