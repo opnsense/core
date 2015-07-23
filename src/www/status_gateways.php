@@ -28,6 +28,7 @@
 
 require_once("guiconfig.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 
 $a_gateways = return_gateways_array();
 $gateways_status = array();

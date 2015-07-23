@@ -42,7 +42,7 @@ global $current_openvpn_version, $current_openvpn_version_rev;
 
 $pgtitle = array("OpenVPN", "Client Export Utility");
 
-if (!is_array($config['openvpn']['openvpn-server'])) {
+if (!isset($config['openvpn']['openvpn-server'])) {
     $config['openvpn']['openvpn-server'] = array();
 }
 

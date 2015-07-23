@@ -30,6 +30,7 @@ require_once("guiconfig.inc");
 require_once("captiveportal.inc");
 require_once("services.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 $cpzone = $_GET['zone'];
 if (isset($_POST['zone']))
