@@ -32,6 +32,7 @@ require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
+require_once("services.inc");
 
 function clear_all_log_files()
 {
