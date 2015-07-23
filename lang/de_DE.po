@@ -8950,7 +8950,7 @@ msgid "A valid range must be specified."
 msgstr "Ein gültiger Bereich muss angegeben werden."
 
 msgid "A valid IP address must be specified for the gateway."
-msgstr "Eine gültige IP Adresse muss für des Gateway angegeben werden."
+msgstr "Eine gültige IP Adresse muss für das Gateway angegeben werden."
 
 msgid "A valid IP address must be specified for the primary/secondary WINS servers."
 msgstr ""
@@ -12155,7 +12155,7 @@ msgid "Set the size, in MB, for the /tmp RAM disk. Leave blank for 40MB. Do not 
 msgstr ""
 
 msgid "/var RAM Disk Size"
-msgstr "/var RAMdiskgröße"
+msgstr "/var Ramdiskgröße"
 
 msgid "Set the size, in MB, for the /var RAM disk. Leave blank for 60MB. Do not set lower than 60."
 msgstr ""
@@ -15707,7 +15707,7 @@ msgid "Temperature"
 msgstr "Temperatur"
 
 msgid "Load average"
-msgstr "Durchschnttliche Auslastung"
+msgstr "Durchschnittliche Auslastung"
 
 msgid "CPU usage"
 msgstr "CPU-Auslastung"
