@@ -30,6 +30,7 @@
 /* parse the configuration and include all functions used below */
 require_once("config.inc");
 require_once("interfaces.inc");
+require_once("openvpn.inc");
 require_once("util.inc");
 require_once("ipsec.inc");
 require_once("filter.inc");

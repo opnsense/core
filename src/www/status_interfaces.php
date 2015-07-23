@@ -32,6 +32,7 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 require_once("pfsense-utils.inc");
+require_once("openvpn.inc");
 
 if ($_POST['if'] && $_POST['submit']) {
 	$interface = $_POST['if'];
