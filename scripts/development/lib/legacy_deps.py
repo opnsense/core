@@ -40,6 +40,7 @@ class DependancyCrawler(object):
         self._all_dependencies = {}
         self._all_dependencies_src = {}
         self._all_functions = {}
+        self._exclude_deps = ['/../../opnsense/mvc/app/config/config.php']
         self.root = root
 
     def get_dependency_by_src(self, src_filename):
@@ -80,7 +81,8 @@ class DependancyCrawler(object):
                             if dep_stmt.find('\n') == -1 and dep_stmt.count('"') == 2:
                                 dep_filename = dep_stmt.split('"')[1]
                                 if dep_filename not in self._all_dependencies[base_filename]:
-                                    self._all_dependencies[base_filename].append(dep_filename)
+                                    if dep_filename not in self._exclude_deps:
+                                        self._all_dependencies[base_filename].append(dep_filename)
                         data = data[strlen+startpos:]
 
     def fetch_php_functions(self, src_filename):
