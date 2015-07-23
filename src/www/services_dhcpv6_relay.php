@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("services.inc");
 
 $pconfig['enable'] = isset($config['dhcrelay6']['enable']);
 if (empty($config['dhcrelay6']['interface']))

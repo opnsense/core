@@ -30,6 +30,7 @@ require_once("guiconfig.inc");
 require_once("unbound.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
+require_once("services.inc");
 
 function unbound_acl_id_used($id) {
     global $config;

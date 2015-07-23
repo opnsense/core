@@ -33,6 +33,7 @@ require_once("system.inc");
 require_once("unbound.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
+require_once("services.inc");
 
 function get_locale_list()
 {

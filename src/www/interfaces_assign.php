@@ -40,6 +40,7 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 require_once("pfsense-utils.inc");
+require_once("services.inc");
 
 function interface_assign_description($portinfo, $portname) {
 	if ($portinfo['isvlan']) {
