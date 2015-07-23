@@ -5165,7 +5165,7 @@ msgid "TCP flags"
 msgstr "TCP Flags"
 
 msgid "Any flags."
-msgstr "Jeglische Flags."
+msgstr "Jegliche Flags."
 
 msgid "Use this to choose TCP flags that must be set or cleared for this rule to match."
 msgstr ""
@@ -5866,7 +5866,7 @@ msgid "On local LANs the upstream gateway should be \"none\"."
 msgstr ""
 
 msgid "Add new gateway"
-msgstr "Einen neues Gateway hinzufügen"
+msgstr "Ein neues Gateway hinzufügen"
 
 msgid "Default gateway:"
 msgstr "Standardgateway:"
