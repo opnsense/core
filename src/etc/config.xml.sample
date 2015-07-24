@@ -191,7 +191,6 @@
 		</webgui>
 		<disablenatreflection>yes</disablenatreflection>
 		<disableconsolemenu/>
-		<!-- <disablefirmwarecheck/> -->
 		<!-- <harddiskstandby></harddiskstandby> -->
 		<disablesegmentationoffloading/>
 		<disablelargereceiveoffloading/>
