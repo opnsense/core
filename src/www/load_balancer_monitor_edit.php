@@ -359,7 +359,7 @@ $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => get
 												<tr align="left">
 													<td valign="top"  align="right" class="vtable"><?=gettext("HTTP Code"); ?></td>
 													<td class="vtable" colspan="2">
-														<?= print_rfc2616_select("http_options_code", $pconfig['options']['code']); ?>
+														<?= print_rfc2616_select("http_options_code", isset($pconfig['options']['code'])?$pconfig['options']['code']:""); ?>
 													</td>
 												</tr>
 							<!-- BILLM: XXX not supported digest checking just yet
@@ -392,7 +392,7 @@ $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => get
 												<tr align="left">
 													<td valign="top"  align="right" class="vtable"><?=gettext("HTTP Code"); ?></td>
 													<td class="vtable" colspan="2">
-														<?= print_rfc2616_select("https_options_code", $pconfig['options']['code']); ?>
+														<?= print_rfc2616_select("https_options_code", isset($pconfig['options']['code'])?$pconfig['options']['code']:""); ?>
 													</td>
 												</tr>
 							<!-- BILLM: XXX not supported digest checking just yet
