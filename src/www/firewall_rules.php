@@ -75,7 +75,7 @@ $shortcut_section = "firewall";
 function delete_nat_association($id) {
 	global $config;
 
-	if (!$id || !is_array($config['nat']['rule']))
+	if (!$id || !isset($config['nat']['rule']))
 		return;
 
 	$a_nat = &$config['nat']['rule'];
@@ -85,7 +85,7 @@ function delete_nat_association($id) {
 			$natent['associated-rule-id'] = '';
 }
 
-if (!is_array($config['filter']['rule'])) {
+if (!isset($config['filter']['rule'])) {
 	$config['filter']['rule'] = array();
 }
 filter_rules_sort();
@@ -171,7 +171,7 @@ $icmptypes = array(
 );
 
 /* add group interfaces */
-if (is_array($config['ifgroups']['ifgroupentry']))
+if (isset($config['ifgroups']['ifgroupentry']))
 	foreach($config['ifgroups']['ifgroupentry'] as $ifgen)
 		if (have_ruleint_access($ifgen['ifname']))
 			$iflist[$ifgen['ifname']] = $ifgen['ifname'];
@@ -180,15 +180,15 @@ foreach ($ifdescs as $ifent => $ifdesc)
 	if(have_ruleint_access($ifent))
 		$iflist[$ifent] = $ifdesc;
 
-if ($config['l2tp']['mode'] == "server")
+if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
 	if(have_ruleint_access("l2tp"))
 		$iflist['l2tp'] = "L2TP VPN";
 
-if ($config['pptpd']['mode'] == "server")
+if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
 	if(have_ruleint_access("pptp"))
 		$iflist['pptp'] = "PPTP VPN";
 
-if (is_array($config['pppoes']['pppoe'])) {
+if (isset($config['pppoes']['pppoe'])) {
 	foreach ($config['pppoes']['pppoe'] as $pppoes) {
 		if (($pppoes['mode'] == 'server') && have_ruleint_access('pppoe')) {
 			$iflist['pppoe'] = "PPPoE Server";
@@ -252,7 +252,7 @@ if($_REQUEST['savemsg'])
 
 if (isset($_POST['del_x'])) {
 	/* delete selected rules */
-	if (is_array($_POST['rule']) && count($_POST['rule'])) {
+	if (isset($_POST['rule']) && count($_POST['rule'])) {
 		foreach ($_POST['rule'] as $rulei) {
 			delete_nat_association($a_filter[$rulei]['associated-rule-id']);
 			unset($a_filter[$rulei]);
@@ -287,7 +287,7 @@ if (isset($_POST['del_x'])) {
 
 
 	/* move selected rules before this rule */
-	if (isset($movebtn) && is_array($_POST['rule']) && count($_POST['rule'])) {
+	if (isset($movebtn) && isset($_POST['rule']) && count($_POST['rule'])) {
 		$a_filter_new = array();
 
 		/* copy all rules < $movebtn and not selected */
@@ -619,7 +619,7 @@ include("head.inc");
 											$schedstatus = false;
 											$dayArray = array (gettext('Mon'),gettext('Tues'),gettext('Wed'),gettext('Thur'),gettext('Fri'),gettext('Sat'),gettext('Sun'));
 											$monthArray = array (gettext('January'),gettext('February'),gettext('March'),gettext('April'),gettext('May'),gettext('June'),gettext('July'),gettext('August'),gettext('September'),gettext('October'),gettext('November'),gettext('December'));
-											if($config['schedules']['schedule'] <> "" and is_array($config['schedules']['schedule'])) {
+											if(isset($config['schedules']['schedule'])) {
 												foreach ($a_schedules as $schedule)
 												{
 													if ($schedule['name'] == $filterent['sched'] ){
