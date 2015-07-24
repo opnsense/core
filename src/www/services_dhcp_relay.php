@@ -158,7 +158,7 @@ function enable_change(enable_over) {
 												if (!is_ipaddr(get_interface_ip($ifent)))
 													continue;
 												echo "<option value=\"{$ifent}\"";
-												if (in_array($ifent, $pconfig['interface']))
+												if (isset($pconfig['interface']) && in_array($ifent, $pconfig['interface']))
 													echo " selected=\"selected\"";
 												echo ">{$ifdesc}</option>\n";
 											}
