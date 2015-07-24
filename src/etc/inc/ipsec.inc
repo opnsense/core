@@ -95,28 +95,31 @@ $p2_pfskeygroups = array(
  * Return phase1 local address
  */
 function ipsec_get_phase1_src(& $ph1ent) {
-
-	if ($ph1ent['interface']) {
+	if (!empty($ph1ent['interface'])) {
 		if (!is_ipaddr($ph1ent['interface'])) {
-			if ($ph1ent['protocol'] == "inet6") {
-				$if = get_failover_interface($ph1ent['interface'], "inet6");
-				$interfaceip = get_interface_ipv6($if);
+			if (strpos($ph1ent['interface'],'_vip') !== false) {
+				// if this is a vip, set the interface to $ph1ent['interface']
+				$if = $ph1ent['interface'];
 			} else {
-				$if = get_failover_interface($ph1ent['interface']);
-				$interfaceip = get_interface_ip($if);
+				// not a vip, check failover interface
+				if ($ph1ent['protocol'] == "inet6") {
+						$if = get_failover_interface($ph1ent['interface'], "inet6");
+				} else {
+						$if = get_failover_interface($ph1ent['interface']);
+				}
 			}
 		} else {
-			$interfaceip=$ph1ent['interface'];
+			// interface is an ip address, return
+			return $ph1ent['interface'];
 		}
 	} else {
 		$if = "wan";
-		if ($ph1ent['protocol'] == "inet6")
-			$interfaceip = get_interface_ipv6($if);
-		else
-			$interfaceip = get_interface_ip($if);
 	}
-
-	return $interfaceip;
+	if ($ph1ent['protocol'] == "inet6") {
+		return get_interface_ipv6($if);
+	} else {
+		return get_interface_ip($if);
+	}
 }
 
 /*
