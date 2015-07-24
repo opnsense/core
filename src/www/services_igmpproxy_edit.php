@@ -32,7 +32,7 @@ $pgtitle = array(gettext("Firewall"),gettext("IGMP Proxy"), gettext("Edit"));
 
 require_once("guiconfig.inc");
 
-if (!is_array($config['igmpproxy']['igmpentry']))
+if (!isset($config['igmpproxy']['igmpentry']))
 	$config['igmpproxy']['igmpentry'] = array();
 
 //igmpproxy_sort();
