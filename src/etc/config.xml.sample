@@ -191,7 +191,10 @@
 		</webgui>
 		<disablenatreflection>yes</disablenatreflection>
 		<disableconsolemenu/>
+		<!-- <disablefirmwarecheck/> -->
 		<!-- <harddiskstandby></harddiskstandby> -->
+		<disablesegmentationoffloading/>
+		<disablelargereceiveoffloading/>
 		<ipv6allow/>
 		<powerd_ac_mode>hadp</powerd_ac_mode>
 		<powerd_battery_mode>hadp</powerd_battery_mode>
