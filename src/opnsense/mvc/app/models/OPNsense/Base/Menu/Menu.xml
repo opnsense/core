@@ -5,9 +5,9 @@
     </User>
     <System order="1" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
         <Certificates url="/system_certmanager.php">
-            <Certificates url="/system_certmanager.php"/>
-            <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php"/>
-            <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php"/>
+            <Certificates url="/system_certmanager.php*"/>
+            <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php*"/>
+            <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php*"/>
         </Certificates>
 
         <Firmware url="/ui/core/firmware/">
@@ -17,7 +17,9 @@
 
         <Routing url="/system_gateways.php">
 		<Routes url="/system_routes.php"/>
+		<RoutesEdit url="/system_routes_edit.php*"/>
 		<GatewayGroups url="/system_gateway_groups.php"/>
+		<GatewayGroupsEdit url="/system_gateway_groups_edit.php*"/>
         </Routing>
 
         <Settings url="/system_general.php">
@@ -36,7 +38,7 @@
             <Users url="/system_usermanager.php"/>
             <Groups url="/system_groupmanager.php"/>
             <Settings url="/system_usermanager_settings.php"/>
-            <Servers url="/system_authservers.php"/>
+            <Servers url="/system_authservers.php*"/>
         </UserManager>
 
     </System>
@@ -57,6 +59,7 @@
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases url="/firewall_aliases.php">
+            <AliasesEdit url="/firewall_aliases_edit.php*"/>
             <IP url="/firewall_aliases.php?tab=ip"/>
             <Ports url="/firewall_aliases.php?tab=port"/>
             <URLs url="/firewall_aliases.php?tab=url"/>
@@ -67,82 +70,117 @@
             <OneOnOne VisibleName="1:1" url="/firewall_nat_1to1.php"/>
             <Outbound url="/firewall_nat_out.php"/>
             <NPt url="/firewall_nat_npt.php"/>
+            <NPtEdit url="/firewall_nat_npt_edit.php"/>
         </NAT>
         <Rules url="/firewall_rules.php">
             <Floating url="/firewall_rules.php?if=FloatingRules"/>
             <Interface url="/firewall_rules.php?if=*"/>
         </Rules>
-        <Schedules url="/firewall_schedule.php"/>
+        <Schedules url="/firewall_schedule.php">
+        	<SchedulesEdit  url="/firewall_schedule_edit.php*"/>
+        </Schedules>
         <TrafficShaper url="/ui/trafficshaper/" VisibleName="Traffic Shaper"/>
-        <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php"/>
+        <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php">
+        	<VirtualIPEdit url="/firewall_virtual_ip_edit.php*"/>
+        </VirtualIPs>
     </Firewall>
 
     <Services order="4" cssClass="glyphicon glyphicon-cog">
         <CaptivePortal VisibleName="Captive Portal" url="/services_captiveportal_zones.php">
-            <IP url="/services_captiveportal_ip.php"/>
-            <MAC url="/services_captiveportal_mac.php"/>
-            <Voucher url="/services_captiveportal_vouchers.php"/>
-            <FileManager url="/services_captiveportal_filemanager.php"/>
+            <Edit url="/services_captiveportal.php?zone=*"/>
+            <IP url="/services_captiveportal_ip.php?zone=*"/>
+            <IP_edit url="/services_captiveportal_ip_edit.php?zone=*"/>
+            <MAC url="/services_captiveportal_mac.php?zone=*"/>
+            <MAC_edit url="/services_captiveportal_mac_edit.php?zone=*"/>
+            <Voucher url="/services_captiveportal_vouchers.php?zone=*"/>
+            <FileManager url="/services_captiveportal_filemanager.php?zone=*"/>
         </CaptivePortal>
         <DHCPRelay VisibleName="DHCP Relay" url="/services_dhcp_relay.php"/>
-        <DHCPServer VisibleName="DHCP Server" url="/services_dhcp.php"/>
+        <DHCPServer VisibleName="DHCP Server" url="/services_dhcp.php">
+        	<DHCPServerEdit  url="/services_dhcp_edit.php?*"/>
+        </DHCPServer>
         <DHCPv6Relay VisibleName="DHCPv6 Relay" url="/services_dhcpv6_relay.php"/>
         <DHCPv6ServerRA VisibleName="DHCPv6 Server/RA" url="/services_dhcpv6.php">
-            <RouterAdvertisement url="/services_router_advertisements.php"/>
+            <EditStaticMap url="/services_dhcpv6_edit.php?*"/>
+            <RouterAdvertisement url="/services_router_advertisements.php?*"/>
         </DHCPv6ServerRA>
         <DNSFilter VisibleName="DNS Filter" url="/services_opendns.php"/>
         <DNSForwarder VisibleName="DNS Forwarder" url="/services_dnsmasq.php"/>
         <DNSResolver VisibleName="DNS Resolver" url="/services_unbound.php">
-            <Advanced url="/services_unbound_advanced.php/"/>
-            <ACLs url="/services_unbound_acls.php"/>
+            <Advanced url="/services_unbound_advanced.php"/>
+            <ACLs url="/services_unbound_acls.php*"/>            
         </DNSResolver>
         <DynamicDNS VisibleName="Dynamic DNS" url="/services_dyndns.php">
             <DynamicDNSRFC2136Clients url="/services_rfc2136.php"/>
+            <DynamicDNSRFC2136ClientsEdit url="/services_rfc2136_edit.php"/>
             <DynamicDNSEdit url="/services_dyndns_edit.php"/>
         </DynamicDNS>
-        <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php"></IGMPProxy>
+        <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php">
+        	<IGMPProxyEdit url="/services_igmpproxy_edit.php"/>
+        </IGMPProxy>
         <LoadBalancer VisibleName="Load Balancer" url="/load_balancer_pool.php">
+            <Edit url="/load_balancer_pool_edit.php"/>
             <VirtualServer url="/load_balancer_virtual_server.php"/>
+            <VirtualServerEdit url="/load_balancer_virtual_server_edit.php"/>
             <Monitors url="/load_balancer_monitor.php"/>
             <Settings url="/load_balancer_setting.php"/>
         </LoadBalancer>
-        <NTP VisibleName="Network Time Protocol" url="/services_ntpd.php"></NTP>
+        <NTP VisibleName="Network Time Protocol" url="/services_ntpd.php">
+        	<GPS url="/services_ntpd_gps.php"/>
+        	<PPS url="/services_ntpd_pps.php"/>
+        </NTP>
         <PPPoEServer VisibleName="PPPoE Server" url="/services_vpn_pppoe.php">
         	<PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
+        	<VPNPPPOE url="/vpn_pppoe.php"/>
         </PPPoEServer>
         <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
-        <UPnP VisibleName="Universal Plug and Play" url="/services_upnp.php"/>
-        <WoL VisibleName="Wake on LAN" url="/services_wol.php"/>
+        <UPnP VisibleName="Universal Plug and Play" url="/services_upnp.php">
+        	<UPnPEdit url="/services_upnp.php?*"/>
+        </UPnP>
+        <WoL VisibleName="Wake on LAN" url="/services_wol.php">
+        	<WoLEdit url="/services_wol_edit.php*"/>
+        </WoL>
         <IDS VisibleName="Intrusion Detection" url="/ui/ids/"/>
     </Services>
 
     <VPN order="5" cssClass="glyphicon glyphicon-lock">
         <IPsec url="/vpn_ipsec.php">
+            <IPsecPhase1Edit  url="/vpn_ipsec_phase1.php*"/>
             <MobileClients url="/vpn_ipsec_mobile.php"/>
             <Keys url="/vpn_ipsec_keys.php"/>
+            <KeysEdit url="/vpn_ipsec_keys_edit.php"/>
             <AdvancedSettings url="/vpn_ipsec_settings.php"/>
         </IPsec>
         <L2TP url="/vpn_l2tp.php">
             <L2TPUsers url="/vpn_l2tp_users.php"/>
+            <L2TPUsersEdit url="/vpn_l2tp_users_edit.php*"/>
         </L2TP>
         <OpenVPN url="/vpn_openvpn_server.php">
-            <Client url="/vpn_openvpn_client.php"/>
-            <CSC url="/vpn_openvpn_csc.php"/>
+            <ServerEdit url="/vpn_openvpn_server.php?*"/>
+            <Client url="/vpn_openvpn_client.php*"/>
+            <CSC url="/vpn_openvpn_csc.php*"/>
             <Wizards url="/wizard.php?xml=openvpn_wizard.xml"/>
             <ClientExport url="/vpn_openvpn_export.php"/>
             <SharedKeyExport url="/vpn_openvpn_export_shared.php"/>
         </OpenVPN>
         <PPTP url="/vpn_pptp.php">
             <PPTPUsers url="/vpn_pptp_users.php"/>
+            <PPTPUsersEdit url="/vpn_pptp_users_edit.php"/>
         </PPTP>
     </VPN>
 
     <Status order="6" cssClass="glyphicon glyphicon-tasks">
-        <CaptivePortal VisibleName="Captive Portal" url="/status_captiveportal.php"/>
+        <CaptivePortal VisibleName="Captive Portal" url="/status_captiveportal.php">
+        	<CaptivePortalDetails url="/status_captiveportal.php?*"/>
+        </CaptivePortal>
         <CARP url="/carp_status.php"/>
-        <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_dhcp_leases.php"/>
-        <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php"/>
+        <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_dhcp_leases.php">
+        	<DHCPLeasesDetails  url="/status_dhcp_leases.php?*"/>
+        </DHCPLeases>
+        <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php">
+        	<DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
+        </DHCPv6Leases>
         <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
         <Gateways url="/status_gateways.php">
             <GatewayGroups url="/status_gateway_groups.php"/>
@@ -161,7 +199,9 @@
         <RRDGraphs VisibleName="RRD Graphs" url="/status_rrd_graph.php">
             <Settings url="/status_rrd_graph_settings.php"/>
         </RRDGraphs>
-        <Services url="/status_services.php"/>
+        <Services url="/status_services.php">
+        	<ServicesActions url="/status_services.php?*"/>
+        </Services>
         <SystemLogs VisibleName="System Logs" url="/diag_logs.php">
             <System url="/diag_logs.php">
                 <Gateways url="/diag_logs_gateways.php"/>
@@ -177,7 +217,7 @@
             <PortalAuth url="/diag_logs_auth.php"/>
             <IPsec url="/diag_logs_ipsec.php"/>
             <PPP url="/diag_logs_ppp.php"/>
-            <VPN url="/diag_logs_vpn.php"/>
+            <VPN url="/diag_logs_vpn.php*"/>
             <LoadBalancer url="/diag_logs_relayd.php"/>
             <OpenVPN url="/diag_logs_openvpn.php"/>
             <NTP url="/diag_logs_ntpd.php"/>
@@ -185,7 +225,9 @@
             <Settings url="/diag_logs_settings.php"/>
         </SystemLogs>
 
-        <TrafficGraphs VisibleName="Traffic Graphs" url="/status_graph.php"/>
+        <TrafficGraphs VisibleName="Traffic Graphs" url="/status_graph.php">
+        	<TrafficGraphsDetails  url="/status_graph.php?*"/>
+        </TrafficGraphs>
         <UPnP VisibleName="Universal Plug and Play" url="/status_upnp.php"/>
     </Status>
 
@@ -208,7 +250,9 @@
         <Reboot url="/diag_reboot.php"/>
         <Routes url="/diag_routes.php"/>
         <SmartStatus VisibleName="SMART Status" url="/diag_smart.php"/>
-        <Sockets url="/diag_sockets.php"/>
+        <Sockets url="/diag_sockets.php">
+        	<SocketsDetails url="/diag_sockets.php?*"/>
+        </Sockets>
         <States url="/diag_dump_states.php"/>
         <StatesSummary VisibleName="States Summary" url="/diag_states_summary.php"/>
         <SystemActivity VisibleName="System Activity" url="/diag_system_activity.php"/>
