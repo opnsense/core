@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("captiveportal.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 
 
 $captiveportal_element_sizelimit = 1048576;
