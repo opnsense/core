@@ -668,7 +668,7 @@ endforeach; ?>
 											<option value="servermagic" >Automagic Multi-WAN IPs (port forward targets)</option>
 											<option value="servermagichost" >Automagic Multi-WAN DDNS Hostnames (port forward targets)</option>
 											<option value="serverhostname" >Installation hostname</option>
-											<?php if (is_array($config['dyndnses']['dyndns'])) :
+											<?php if (isset($config['dyndnses']['dyndns'])) :
 ?>
 												<?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
 ?>
@@ -677,7 +677,7 @@ endforeach; ?>
 endforeach; ?>
 											<?php
 endif; ?>
-											<?php if (is_array($config['dnsupdates']['dnsupdate'])) :
+											<?php if (isset($config['dnsupdates']['dnsupdate'])) :
 ?>
 												<?php foreach ($config['dnsupdates']['dnsupdate'] as $ddns) :
 ?>
