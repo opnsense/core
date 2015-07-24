@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("vpn.inc");
+require_once("interfaces.inc");
 
 if (!is_array($config['pppoes'])) {
     $config['pppoes'] = array();

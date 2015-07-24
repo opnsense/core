@@ -342,7 +342,7 @@ endforeach; ?>
 										<select name="useaddr" id="useaddr" class="formselect" onchange="useaddr_changed(this)">
 											<option value="serveraddr" >Interface IP Address</option>
 											<option value="serverhostname" >Installation hostname</option>
-											<?php if (is_array($config['dyndnses']['dyndns'])) :
+											<?php if (isset($config['dyndnses']['dyndns'])) :
 ?>
 												<?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
 ?>
