@@ -1370,7 +1370,7 @@ function vpn_l2tp_configure()
 
 	@mkdir('/var/etc/l2tp-vpn');
 
-	switch ($l2tpcfg['mode']) {
+	switch (isset($l2tpcfg['mode'])?$l2tpcfg['mode']:null) {
 
 		case 'server' :
 			if ($l2tpcfg['paporchap'] == "chap")

@@ -32,7 +32,8 @@ $shortcut_section = "l2tps";
 require_once("guiconfig.inc");
 require_once("vpn.inc");
 
-if (!is_array($config['l2tp']['user'])) {
+
+if (!isset($config['l2tp']['user'])) {
     $config['l2tp']['user'] = array();
 }
 $a_secret = &$config['l2tp']['user'];
