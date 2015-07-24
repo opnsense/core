@@ -90,7 +90,7 @@ if ($act == "edit") {
 }
 
 if ($_POST) {
-	unset($input_errors);
+	$input_errors = array();
 	$pconfig = $_POST;
 
 	if ($_POST['apply']) {
@@ -186,9 +186,6 @@ include("head.inc");
 			<div class="row">
 
 				<?php
-					if (!$savemsg)
-						$savemsg = "";
-
 					if (isset($input_errors) && count($input_errors) > 0)
 						print_input_errors($input_errors);
 
