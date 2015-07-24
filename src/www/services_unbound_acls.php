@@ -31,6 +31,7 @@ require_once("unbound.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 
 function unbound_acl_id_used($id) {
     global $config;
@@ -87,6 +88,8 @@ if ($act == "edit") {
 		$pconfig = $a_acls[$id];
 		$networkacl = $a_acls[$id]['row'];
 	}
+} else {
+	$networkacl = array();
 }
 
 if ($_POST) {
@@ -124,7 +127,7 @@ if ($_POST) {
 				unset($networkacl[$x]);
 		}
 
-		if (!$input_errors) {
+		if (!isset($input_errors) || count($input_errors) == 0) {
 			if ($pconfig['Submit'] == gettext("Save")) {
 				$acl_entry = array();
 				$acl_entry['aclid'] = $pconfig['aclid'];
