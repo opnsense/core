@@ -713,7 +713,7 @@ include("head.inc");
 									  <td class="listMRlr nowrap" align="center" sorttable_customkey="<?=$filterent['act']?>">
 									  <a onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);" title="<?php echo $filterent['act'];?>"><span class="glyphicon glyphicon-<?php switch ($filterent['act']) {
 									    case 'pass':
-                                                                                echo "play";  /* icon for a tick */
+                                                                                echo "play";  /* icon triangle */
                                                                                 break;
                                                                             case 'match':
                                                                                 echo "random";

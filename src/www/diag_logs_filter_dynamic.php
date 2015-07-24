@@ -126,7 +126,20 @@ include("head.inc");
 									$rowIndex++;?>
 									<tr class="<?=$evenRowClass?>">
 										<td class="listMRlr nowrap" align="center">
-										<a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);"  title="<?php echo $filterent['act'];?>"><span class="glyphicon glyphicon-remove"></span>
+										<a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);"  title="<?php echo $filterent['act'];?>"><span class="glyphicon glyphicon-<?php switch ($filterent['act']) {
+									    case 'pass':
+                                                                                echo "play";  /* icon triangle */
+                                                                                break;
+                                                                            case 'match':
+                                                                                echo "random";
+                                                                                break;
+                                                                            case 'reject':
+									    case 'block':
+									    default:
+                                                                            echo 'remove'; /* a x*/
+                                                                            break;
+									  }
+									  ?>"></span>
 										</a>
 										</td>
 										<td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['time']);?></td>
