@@ -29,6 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 
 /*  Fix failover DHCP problem
  *  http://article.gmane.org/gmane.comp.security.firewalls.pfsense.support/18749
