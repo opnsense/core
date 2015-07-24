@@ -50,7 +50,7 @@ function vpn_pppoe_get_id()
     return $vpnid;
 }
 
-if (!is_array($config['pppoes']['pppoe'])) {
+if (!isset($config['pppoes']['pppoe'])) {
     $config['pppoes']['pppoe'] = array();
 }
 $a_pppoes = &$config['pppoes']['pppoe'];
