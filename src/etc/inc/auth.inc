@@ -37,7 +37,6 @@
  */
 
 /* include globals from notices.inc /utility/XML parser files */
-require_once("certs.inc");
 require_once("radius.inc");
 
 

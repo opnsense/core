@@ -36,6 +36,7 @@ require_once("util.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("unbound.inc");
+require_once("services.inc");
 
 function handle_argument_group($iface, $argument2) {
 	global $config;

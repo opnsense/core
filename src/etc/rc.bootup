@@ -117,8 +117,6 @@ require_once("config.console.inc");
 echo ".";
 require_once("auth.inc");
 echo ".";
-require_once("certs.inc");
-echo ".";
 require_once("util.inc");
 echo ".";
 require_once("interfaces.inc");
