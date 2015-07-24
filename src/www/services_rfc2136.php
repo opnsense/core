@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-if (!is_array($config['dnsupdates']['dnsupdate']))
+if (!isset($config['dnsupdates']['dnsupdate']))
 	$config['dnsupdates']['dnsupdate'] = array();
 
 $a_rfc2136 = &$config['dnsupdates']['dnsupdate'];

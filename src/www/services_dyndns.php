@@ -30,8 +30,10 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
+require_once("pfsense-utils.inc");
 
-if (!is_array($config['dyndnses']['dyndns']))
+if (!isset($config['dyndnses']['dyndns']))
 	$config['dyndnses']['dyndns'] = array();
 
 $a_dyndns = &$config['dyndnses']['dyndns'];

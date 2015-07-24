@@ -30,7 +30,7 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 
-if (!is_array($config['dnsupdates']['dnsupdate'])) {
+if (!isset($config['dnsupdates']['dnsupdate'])) {
 	$config['dnsupdates']['dnsupdate'] = array();
 }
 

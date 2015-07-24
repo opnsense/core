@@ -29,6 +29,7 @@
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc") ;
+require_once("interfaces.inc");
 
 /* returns true if $uname is a valid DynDNS username */
 function is_dyndns_username($uname) {
