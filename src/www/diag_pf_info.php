@@ -48,7 +48,7 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {setTimeout('getpfinfo()', 5000);});
+jQuery(document).ready(function() {setTimeout('getpfinfo()', 500);});
 //<![CDATA[
 	function getpfinfo() {
 		jQuery.ajax({

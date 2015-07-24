@@ -29,6 +29,7 @@
 require_once("guiconfig.inc");
 require_once("captiveportal.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 
 $pgtitle = array(gettext("Services"),gettext("Captive portal"),gettext("Edit Zones"));
 $shortcut_section = "captiveportal";

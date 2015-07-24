@@ -29,6 +29,7 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("pfsense-utils.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dnsmasq.php');
 
