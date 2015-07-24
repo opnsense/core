@@ -1393,7 +1393,7 @@ include("head.inc");
 										//build list of schedules
 										$schedules = array();
 										$schedules[] = "none";//leave none to leave rule enabled all the time
-										if(is_array($config['schedules']['schedule'])) {
+										if(isset($config['schedules']['schedule'])) {
 											foreach ($config['schedules']['schedule'] as $schedule) {
 												if ($schedule['name'] <> "")
 													$schedules[] = $schedule['name'];
