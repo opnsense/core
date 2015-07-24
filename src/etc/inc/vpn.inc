@@ -40,7 +40,7 @@ function vpn_ipsec_configure_loglevels($forconfig = false)
 		foreach ($ipsec_loglevels as $lkey => $ldescr) {
 			if (!isset($config['ipsec']["ipsec_{$lkey}"]) && !$forconfig)
 				mwexec("/usr/local/sbin/ipsec stroke loglevel {$lkey} -- -1", false);
-			else if (is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
+			else if (isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
 			    intval($config['ipsec']["ipsec_{$lkey}"]) >= 1 && intval($config['ipsec']["ipsec_{$lkey}"]) <= 5)
 				$forconfig ? $cfgtext[] = "${lkey} " . (intval($config['ipsec']["ipsec_{$lkey}"]) - 1) :
 					mwexec("/usr/local/sbin/ipsec stroke loglevel {$lkey} " . (intval($config['ipsec']["ipsec_{$lkey}"]) - 1) , false);
@@ -146,7 +146,6 @@ function vpn_ipsec_configure($ipchg = false)
 		$ipmap = array();
 		$rgmap = array();
 		$filterdns_list = array();
-		$listeniflist = array();
 		unset($iflist);
 		if (is_array($a_phase1) && count($a_phase1)) {
 
@@ -157,7 +156,6 @@ function vpn_ipsec_configure($ipchg = false)
 					continue;
 
 				$ikeid = $ph1ent['ikeid'];
-				$listeniflist = get_real_interface($a_phase1['interface']);
 
 				$ep = ipsec_get_phase1_src($ph1ent);
 				if (!is_ipaddr($ep))
@@ -392,7 +390,7 @@ EOD;
 		unset($strongswan);
 
 		/* generate CA certificates files */
-		if (is_array($config['ca']) && count($config['ca'])) {
+		if (isset($config['ca'])) {
 			foreach ($config['ca'] as $ca) {
 				if (!isset($ca['crt'])) {
 					log_error(sprintf(gettext("Error: Invalid certificate info for %s"), $ca['descr']));
@@ -477,7 +475,7 @@ EOD;
 		}
 
 		/* add PSKs for mobile clients */
-		if (is_array($ipseccfg['mobilekey'])) {
+		if (isset($ipseccfg['mobilekey'])) {
 			foreach ($ipseccfg['mobilekey'] as $key) {
 				if ($key['ident'] == "allusers")
 					$key['ident'] = '';
@@ -535,14 +533,15 @@ EOD;
 				if (!isset($ph1ent['mobile']))
 					$peerid_spec = $peerid_data;
 
-				if (is_array($ph1ent['encryption-algorithm']) && !empty($ph1ent['encryption-algorithm']['name']) && !empty($ph1ent['hash-algorithm'])) {
+				if (!empty($ph1ent['encryption-algorithm']['name']) && !empty($ph1ent['hash-algorithm'])) {
 					$ealgosp1 = '';
 					$ealg_id = $ph1ent['encryption-algorithm']['name'];
-					$ealg_kl = $ph1ent['encryption-algorithm']['keylen'];
-					if ($ealg_kl)
-						$ealgosp1 = "ike = {$ealg_id}{$ealg_kl}-{$ph1ent['hash-algorithm']}";
-					else
-						$ealgosp1 = "ike = {$ealg_id}-{$ph1ent['hash-algorithm']}";
+					if (isset($ph1ent['encryption-algorithm']['keylen'])){
+						$ealgosp1 = "ike = {$ealg_id}{$ph1ent['encryption-algorithm']['keylen']}-{$ph1ent['hash-algorithm']}";
+					} else {
+							$ealgosp1 = "ike = {$ealg_id}-{$ph1ent['hash-algorithm']}";
+					}
+
 
 					$modp = vpn_ipsec_convert_to_modp($ph1ent['dhgroup']);
 					if (!empty($modp))
@@ -691,7 +690,12 @@ EOD;
 						if (is_array($ph2ent['encryption-algorithm-option'])) {
 							foreach ($ph2ent['encryption-algorithm-option'] as $ealg) {
 								$ealg_id = $ealg['name'];
-								$ealg_kl = $ealg['keylen'];
+								if (isset($ealg['keylen'])) {
+									$ealg_kl = $ealg['keylen'];
+								} else {
+									$ealg_kl = null;
+								}
+
 
 								if (!empty($ealg_kl) && $ealg_kl == "auto") {
 									$key_hi = $p2_ealgos[$ealg_id]['keysel']['hi'];
