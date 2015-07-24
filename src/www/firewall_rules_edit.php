@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
+require_once("interfaces.inc");
 
 $firewall_rules_dscp_types = array("af11",
 				"af12",
@@ -874,10 +875,10 @@ include("head.inc");
 											foreach ($ifdescs as $ifent => $ifdesc)
 												if(have_ruleint_access($ifent))
 														$interfaces[$ifent] = $ifdesc;
-												if ($config['l2tp']['mode'] == "server")
+												if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
 													if(have_ruleint_access("l2tp"))
 														$interfaces['l2tp'] = "L2TP VPN";
-												if ($config['pptpd']['mode'] == "server")
+												if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
 													if(have_ruleint_access("pptp"))
 														$interfaces['pptp'] = "PPTP VPN";
 
