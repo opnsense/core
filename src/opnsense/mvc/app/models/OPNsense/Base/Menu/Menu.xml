@@ -187,6 +187,7 @@
         </Gateways>
         <Interfaces url="/status_interfaces.php"/>
         <IPsec url="/diag_ipsec.php">
+            <IPsecACT url="/diag_ipsec.php?*"/>
             <Leases url="/diag_ipsec_leases.php"/>
             <SAD url="/diag_ipsec_sad.php"/>
             <SPD url="/diag_ipsec_spd.php"/>
