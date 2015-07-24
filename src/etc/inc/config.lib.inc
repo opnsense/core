@@ -35,6 +35,7 @@ require_once("crypt.inc");
 require_once("notices.inc");
 require_once("legacy_bindings.inc");
 require_once('upgrade_config.inc');
+require_once("certs.inc");
 
 
 /* make a global alias table (for faster lookups) */

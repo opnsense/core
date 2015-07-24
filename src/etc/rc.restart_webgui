@@ -7,8 +7,6 @@ require_once('captiveportal.inc');
 require_once('rrd.inc');
 require_once("util.inc");
 require_once("system.inc");
-require_once("certs.inc");
-
 
 if (count($argv) > 1 && is_numeric($argv[1])) {
     // starting delayed.
