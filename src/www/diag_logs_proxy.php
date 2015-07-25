@@ -45,6 +45,23 @@ $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Proxy"));
 
 include("head.inc");
 
+/**
+* this function takes a line in the format:
+* YYYY/MM/DD HH:MM:SS process| text
+* and split it into a hash
+* ['date' => datestring, 'time' => timestring, 'process' => processstring, 'message'  => text]
+*/
+function split_proxy_log_line($line)
+{
+    $split = explode("|",$line,2);
+    $text = $split[1];
+    $information = explode(' ',$split[0]);
+    $date = $information[0];
+    $time = $information[1];
+    $process = $information[2];
+    return array('date' => $date, 'time' => $time, 'process' => $process, 'message' => $text);
+}
+
 ?>
 
 <body>
@@ -57,11 +74,44 @@ include("head.inc");
                 <div class="tab-content content-box col-xs-12">
                     <div class="container-fluid">
                         <p> <?php printf(gettext("Last %s log entries"), $max_logentries);?></p>
-                        <pre><?php
+                        <?php
                                 if (file_exists($logfile)) {
-                                        echo trim(implode("", array_slice(file($logfile), -$max_logentries)));
+                                       ?> 
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th><?= gettext('Date') ?></th>
+                                            <th><?= gettext('Time') ?></th>
+                                            <th><?= gettext('Process') ?></th>
+                                            <th><?= gettext('Message') ?></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            $rows = array_map (
+                                                'split_proxy_log_line',
+                                                array_slice(
+                                                    file($logfile),
+                                                    -$max_logentries
+                                                )
+                                            );
+                                            foreach ($rows as $index => $row)
+                                            {
+                                                ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($row['date']) ?></td>
+                                                    <td><?= htmlspecialchars($row['time']) ?></td>
+                                                    <td><?= htmlspecialchars($row['process']) ?></td>
+                                                    <td><pre style="background-color: transparent; border: none;"><?= htmlspecialchars($row['message']) ?></pre></td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        ?>
+                                    </tbody>
+                                </table>
+                                       <?php
                                 }
-                        ?></pre>
+                        ?>
                         <form method="post">
                             <input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
                         </form>
