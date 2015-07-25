@@ -71,7 +71,7 @@ class ConfigdActionsField extends BaseField
 
             // check configd daemon for list of available actions, cache results as long as configd is not restarted
             if (!file_exists($service_tempfile) || filemtime($service_tempfile) < $backend->getLastRestart()) {
-                $response = $backend->configdRun("configd actions json");
+                $response = $backend->configdRun("configd actions json", false, 20);
                 $actions = json_decode($response, true);
                 if (is_array($actions)) {
                     file_put_contents($service_tempfile, $response);
