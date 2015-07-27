@@ -1665,7 +1665,7 @@ default:
 EOD;
 	$setdefaultgw = false;
 	$founddefaultgw = false;
-	if (is_array($config['gateways']['gateway_item'])) {
+	if (isset($config['gateways']['gateway_item'])) {
 		foreach($config['gateways']['gateway_item'] as $gateway) {
 			if($interface == $gateway['interface'] && isset($gateway['defaultgw'])) {
 				$setdefaultgw = true;
