@@ -1212,6 +1212,14 @@ function auth_get_authserver($name) {
 					if (!empty($authcfg['ldap_port'])) {
 						$authcfg['ldap_full_url'] .= ":{$authcfg['ldap_port']}";
 					}
+					// make sure a user and password entry exists and are null for anonymous usage
+					if (empty($authcfg['ldap_binddn'])) {
+						$authcfg['ldap_binddn'] = null;
+					}
+					if (empty($authcfg['ldap_bindpw'])) {
+						$authcfg['ldap_bindpw'] = null;
+					}
+
 				}
 				return $authcfg;
 			}
