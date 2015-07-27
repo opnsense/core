@@ -138,7 +138,7 @@ $crash_report_header = sprintf(
 		echo "<p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
 		echo "<p><br/>" . sprintf(gettext("Would you like to submit this crash report to the %s developers?"), $g['product_name']) . "</p>";
 		echo "<p><button name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"yes\">" . gettext('Yes') . "</button> ";
-		echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"no\">" . gettext('No') . "</button></p>";
+		echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-default\" value=\"no\">" . gettext('No') . "</button></p>";
 		echo "<p><br/><i>" . gettext("Please-double check the contents to ensure you are comfortable submitting the following information:") . "</i></p>";
 		echo "<textarea readonly=\"readonly\" style=\"max-width: none;\" rows=\"24\" cols=\"80\" name=\"crashreports\">{$crash_reports}</textarea></p>";
 	}
