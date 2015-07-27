@@ -34,17 +34,22 @@ $ous = array();
 
 if ($_GET) {
     $authcfg = array();
-    $authcfg['ldap_port'] = $_GET['port'];
-    $authcfg['ldap_basedn'] = $_GET['basedn'];
-    $authcfg['host'] = $_GET['host'];
-    $authcfg['ldap_scope'] = $_GET['scope'];
-    $authcfg['ldap_binddn'] = $_GET['binddn'];
-    $authcfg['ldap_bindpw'] = $_GET['bindpw'];
-    $authcfg['ldap_urltype'] = $_GET['urltype'];
-    $authcfg['ldap_protver'] = $_GET['proto'];
-    $authcfg['ldap_authcn'] = explode(";", $_GET['authcn']);
-    $authcfg['ldap_caref'] = $_GET['cert'];
-    $ous = ldap_get_user_ous(true, $authcfg);
+    $authcfg['ldap_port'] = isset($_GET['port']) ? $_GET['port'] : null;
+    $authcfg['ldap_basedn'] = isset($_GET['basedn']) ? $_GET['basedn'] : null;
+    $authcfg['host'] = isset($_GET['basedn']) ? $_GET['host'] : null;
+    $authcfg['ldap_scope'] = isset($_GET['scope']) ? $_GET['scope'] : null;
+    $authcfg['ldap_binddn'] = isset($_GET['binddn']) ? $_GET['binddn'] : null;
+    $authcfg['ldap_bindpw'] = isset($_GET['bindpw']) ? $_GET['bindpw'] : null;
+    $authcfg['ldap_urltype'] = isset($_GET['urltype']) ? $_GET['urltype'] : null;
+    $authcfg['ldap_protver'] = isset($_GET['proto']) ? $_GET['proto'] : null;
+    $authcfg['ldap_authcn'] = isset($_GET['authcn']) ? explode(";", $_GET['authcn']) : array();
+    $authcfg['ldap_caref'] = isset($_GET['cert']) ? $_GET['cert'] : null;
+    $ldap_auth = new OPNsense\Auth\LDAP($authcfg['ldap_basedn']);
+    ldap_setup_caenv($authcfg);
+    $ldap_is_connected = $ldap_auth->connect($authcfg['ldap_full_url'], $authcfg['ldap_binddn'], $authcfg['ldap_bindpw']);
+    if ($ldap_is_connected) {
+        $ous = $ldap_auth->listOUs();
+    }
 }
 
 ?>
