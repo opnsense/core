@@ -1923,16 +1923,19 @@ EOD;
 	exec("usbconfig | egrep -ie '(huawei)'", $usbmodemoutput);
 	mwexec("/bin/ps auxww|grep \"{$interface}\" |grep \"[3]gstats\" | awk '{print $2}' |xargs kill");
 	foreach($ports as $port) {
-		if(preg_match("/huawei/i", implode("\n", $usbmodemoutput))) {
+		$mondev = '';
+		if (preg_match("/huawei/i", implode("\n", $usbmodemoutput))) {
 			$mondev  = substr(basename($port), 0, -1);
 			$devlist = glob("/dev/{$mondev}?");
 			$mondev = basename(end($devlist));
 		}
-		if(preg_match("/zte/i", implode("\n", $usbmodemoutput))) {
+		if (preg_match("/zte/i", implode("\n", $usbmodemoutput))) {
 			$mondev  = substr(basename($port), 0, -1) . "1";
 		}
-		log_error("Starting 3gstats.php on device '{$mondev}' for interface '{$interface}'");
-		mwexec_bg("/usr/local/sbin/3gstats.php {$mondev} {$interface}");
+		if ($mondev != '') {
+			log_error("Starting 3gstats.php on device '{$mondev}' for interface '{$interface}'");
+			mwexec_bg("/usr/local/sbin/3gstats.php {$mondev} {$interface}");
+		}
 	}
 
 	return 1;
