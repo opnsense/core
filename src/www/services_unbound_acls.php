@@ -89,8 +89,6 @@ if ($act == "edit") {
 		$pconfig = $a_acls[$id];
 		$networkacl = $a_acls[$id]['row'];
 	}
-} else {
-	$networkacl = array();
 }
 
 if ($_POST) {
