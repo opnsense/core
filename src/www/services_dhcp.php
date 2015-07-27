@@ -924,48 +924,25 @@ include("head.inc");
 										<?php endif; ?>
 										<?php if (!is_numeric($pool) && !($act == "newpool")): ?>
 										<tr>
-										<td width="22%" valign="top" class="vncell"><?=gettext("Static ARP");?></td>
-										<td width="78%" class="vtable">
-											<table summary="static arp">
-												<tr>
-												<td>
-													<input style="vertical-align:middle" type="checkbox" value="yes" name="staticarp" id="staticarp" <?php if($pconfig['staticarp']) echo " checked=\"checked\""; ?> />&nbsp;
-												</td>
-												<td><b><?=gettext("Enable Static ARP entries");?></b></td>
-												</tr>
-												<tr>
-												<td>&nbsp;</td>
-												<td>
-													<span class="red"><strong><?=gettext("Note:");?></strong></span> <?=gettext("This option persists even if DHCP server is disabled. Only the machines listed below will be able to communicate with the firewall on this NIC.");?>
-												</td>
-												</tr>
-											</table>
-										</td>
+											<td width="22%" valign="top" class="vncell"><?=gettext("Static ARP");?></td>
+											<td width="78%" class="vtable">
+												<input type="checkbox" value="yes" name="staticarp" id="staticarp" <?php if($pconfig['staticarp']) echo " checked=\"checked\""; ?> />&nbsp;
+												<strong><?=gettext("Enable Static ARP entries");?></strong>
+												<br />
+												<?=gettext("Warning: This option persists even if DHCP server is disabled. Only the machines listed below will be able to communicate with the firewall on this NIC.");?>
+											</td>
 										</tr>
 										<?php endif; ?>
 										<?php if (!is_numeric($pool) && !($act == "newpool")): ?>
 										<tr>
 											<td width="22%" valign="top" class="vncell"><?=gettext("Time format change"); ?></td>
 											<td width="78%" class="vtable">
-											<table summary="time format">
-												<tr>
-												<td>
-													<input name="dhcpleaseinlocaltime" type="checkbox" id="dhcpleaseinlocaltime" value="yes" <?php if ($pconfig['dhcpleaseinlocaltime']) echo "checked=\"checked\""; ?> />
-												</td>
-												<td>
-													<strong>
-														<?=gettext("Change DHCP display lease time from UTC to local time."); ?>
-													</strong>
-												</td>
-												</tr>
-												<tr>
-												<td>&nbsp;</td>
-												<td>
-													<span class="red"><strong><?=gettext("Note:");?></strong></span> <?=gettext("By default DHCP leases are displayed in UTC time.  By checking this
-													box DHCP lease time will be displayed in local time and set to time zone selected.  This will be used for all DHCP interfaces lease time."); ?>
-												</td>
-												</tr>
-											</table>
+												<input name="dhcpleaseinlocaltime" type="checkbox" id="dhcpleaseinlocaltime" value="yes" <?php if ($pconfig['dhcpleaseinlocaltime']) echo "checked=\"checked\""; ?> />
+												<strong><?=gettext("Change DHCP display lease time from UTC to local time."); ?></strong>
+												<br />
+												<?=gettext("Warning: By default DHCP leases are displayed in UTC time. By checking this " .
+												"box DHCP lease time will be displayed in local time and set to time zone selected. This " .
+												"will be used for all DHCP interfaces lease time."); ?>
 											</td>
 										</tr>
 										<?php endif; ?>
@@ -976,8 +953,8 @@ include("head.inc");
 												<input type="button" onclick="show_ddns_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Dynamic DNS");?>
 											</div>
 											<div id="showddns" style="display:none">
-												<input style="vertical-align:middle" type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />&nbsp;
-												<b><?=gettext("Enable registration of DHCP client names in DNS.");?></b><br />
+												<input type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?php if($pconfig['ddnsupdate']) echo " checked=\"checked\""; ?> />
+												<strong><?=gettext("Enable registration of DHCP client names in DNS.");?></strong><br />
 												<br/>
 												<input name="ddnsdomain" type="text" class="form-control unknown" id="ddnsdomain" size="20" value="<?=htmlspecialchars($pconfig['ddnsdomain']);?>" /><br />
 												<?=gettext("Note: Leave blank to disable dynamic DNS registration.");?><br />
@@ -1048,8 +1025,8 @@ include("head.inc");
 												<input type="button" onclick="show_netboot_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Network booting");?>
 											</div>
 											<div id="shownetboot" style="display:none">
-												<input style="vertical-align:middle" type="checkbox" value="yes" name="netboot" id="netboot" <?php if($pconfig['netboot']) echo " checked=\"checked\""; ?> />&nbsp;
-												<b><?=gettext("Enables network booting.");?></b>
+												<input type="checkbox" value="yes" name="netboot" id="netboot" <?php if($pconfig['netboot']) echo " checked=\"checked\""; ?> />
+												<strong><?=gettext("Enables network booting.");?></strong>
 												<br/>
 												<?=gettext("Enter the IP of the"); ?> <b><?=gettext("next-server"); ?></b>
 												<input name="nextserver" type="text" class="form-control unknown" id="nextserver" size="20" value="<?=htmlspecialchars($pconfig['nextserver']);?>" /><br />
