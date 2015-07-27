@@ -373,13 +373,20 @@ endif; ?>
                                             }
                                             ?>
 										</select>
+										<br />
+										<span class="vexpl">
+											<?=sprintf(
+												gettext('The %sSSL certificate manager%s can be used to ' .
+												'create or import certificates if required.'),
+												'<a href="/system_certmanager.php">', '</a>'
+											);?>
+										</span>
 									</td>
 								</tr>
 								<tr>
 									<td valign="top" class="vncell"><?=gettext("TCP port"); ?></td>
 									<td class="vtable">
 										<input name="webguiport" type="text" class="formfld unknown" id="webguiport" size="5" value="<?=htmlspecialchars($config['system']['webgui']['port']);?>" />
-										<br />
 										<span class="vexpl">
 											<?=gettext("Enter a custom port number for the webConfigurator " .
                                             "above if you want to override the default (80 for HTTP, 443 " .
@@ -391,7 +398,6 @@ endif; ?>
 									<td valign="top" class="vncell"><?=gettext("Max Processes"); ?></td>
 									<td class="vtable">
 										<input name="max_procs" type="text" class="formfld unknown" id="max_procs" size="5" value="<?=htmlspecialchars($pconfig['max_procs']);?>" />
-										<br />
 										<span class="vexpl">
 											<?=gettext("Enter the number of webConfigurator processes you " .
                                             "want to run. This defaults to 2. Increasing this will allow more " .
@@ -482,7 +488,6 @@ endif; ?>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Alternate Hostnames"); ?></td>
 									<td width="78%" class="vtable">
 										<input name="althostnames" type="text" class="formfld unknown" id="althostnames" size="75" value="<?=htmlspecialchars($pconfig['althostnames']);?>"/>
-										<br />
 										<strong><?=gettext("Alternate Hostnames for DNS Rebinding and HTTP_REFERER Checks"); ?></strong>
 										<br />
 										<?php echo gettext("Here you can specify alternate hostnames by which the router may be queried, to " .
