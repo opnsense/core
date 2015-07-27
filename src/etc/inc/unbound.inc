@@ -93,8 +93,12 @@ function unbound_optimization() {
 
 }
 
-function unbound_generate_config() {
+function unbound_generate_config()
+{
     global $config, $g;
+
+    /* bootstrap unbound root (needed for /var MFS */
+    @mkdir($g['unbound_chroot_path']);
 
     // Setup optimization
     $optimization = unbound_optimization();
@@ -647,9 +651,10 @@ function unbound_acls_config() {
             }
         }
     }
-    // Write out Access list
-    file_put_contents("{$g['unbound_chroot_path']}/access_lists.conf", $aclcfg);
 
+    // Write out Access list
+    @mkdir($g['unbound_chroot_path']);
+    file_put_contents("{$g['unbound_chroot_path']}/access_lists.conf", $aclcfg);
 }
 
 // Generate hosts and reload services
@@ -661,4 +666,3 @@ function unbound_hosts_generate() {
     unbound_control("reload");
 }
 
-?>
