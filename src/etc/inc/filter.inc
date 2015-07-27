@@ -1680,7 +1680,7 @@ function filter_nat_rules_generate() {
 		}
 	}
 
-	if ($config['nat']['outbound']['mode'] == "disabled")
+	if (isset($config['nat']['outbound']['mode']) && $config['nat']['outbound']['mode'] == "disabled")
 		$natrules .= "\n# Outbound NAT rules are disabled\n";
 
 	if (isset($config['nat']['outbound']['mode']) && ($config['nat']['outbound']['mode'] == "advanced" || $config['nat']['outbound']['mode'] == "hybrid")) {
