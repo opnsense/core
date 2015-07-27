@@ -385,7 +385,7 @@ function filter_generate_scrubing() {
 		if(isset($scrubcfg['virtual']) || empty($scrubcfg['descr']))
 			continue;
 		/* set up MSS clamping */
-		if($scrubcfg['mss'] <> "" && is_numeric($scrubcfg['mss']) && $scrubcfg['if'] != "pppoe" && $scrubcfg['if'] != "pptp" &&
+		if($scrubcfg['mss'] <> "" && is_numeric($scrubcfg['mss']) && isset($scrubcfg['if']) && $scrubcfg['if'] != "pppoe" && $scrubcfg['if'] != "pptp" &&
 			$scrubif['if'] != "l2tp")
 			$mssclamp = "max-mss " . (intval($scrubcfg['mss'] - 40));
 		else
