@@ -10,6 +10,3 @@ echo "Unhooking from /etc/rc"
 cp /etc/rc /etc/rc.bak
 tail -n +5 /etc/rc.bak > /etc/rc
 rm -f /etc/rc.bak
-
-echo "Removing OPNsense version"
-rm -f /usr/local/opnsense/version/opnsense

@@ -29,6 +29,7 @@ CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_COMMENT?=		OPNsense development package
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_WWW?=		https://opnsense.org/
+CORE_MESSAGE?=		Follow the brave badger!
 CORE_DEPENDS?=		apinger \
 			ataidle \
 			beep \
@@ -117,7 +118,11 @@ manifest: force
 	@echo "desc: \"${CORE_HASH}\""
 	@echo "maintainer: \"${CORE_MAINTAINER}\""
 	@echo "www: \"${CORE_WWW}\""
-	@echo "prefix: /"
+	@echo "message: \"${CORE_MESSAGE}\""
+	@echo "categories: [ \"sysutils\", \"www\" ]"
+	@echo "licenselogic: \"single\""
+	@echo "licenses: [ \"BSD2CLAUSE\" ]"
+	@echo "prefix: /usr/local"
 	@echo "deps: {"
 	@for CORE_DEPEND in ${CORE_DEPENDS}; do \
 		${PKG} query '  %n: { version: "%v", origin: "%o" }' \
