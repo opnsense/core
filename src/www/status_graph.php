@@ -44,7 +44,7 @@ $ifdescrs = get_configured_interface_with_descr();
 if (isset($config['ipsec']['enable']))
 	$ifdescrs['enc0'] = "IPsec";
 foreach (array('server', 'client') as $mode) {
-	if (is_array($config['openvpn']["openvpn-{$mode}"])) {
+	if (isset($config['openvpn']["openvpn-{$mode}"])) {
 		foreach ($config['openvpn']["openvpn-{$mode}"] as $id => $setting) {
 			if (!isset($setting['disable'])) {
 				$ifdescrs['ovpn' . substr($mode, 0, 1) . $setting['vpnid']] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
