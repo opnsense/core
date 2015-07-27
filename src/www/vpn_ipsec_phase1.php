@@ -929,7 +929,8 @@ endforeach; ?>
 										<td width="78%" class="vtable">
 											<select name="caref" class="formselect">
 											<?php
-                                            foreach ($config['ca'] as $ca) :
+					    $config__ca = isset($config['ca']) ? $config['ca'] : array();
+                                            foreach ($config__ca as $ca) :
                                                 $selected = "";
                                                 if ($pconfig['caref'] == $ca['refid']) {
                                                     $selected = "selected=\"selected\"";
